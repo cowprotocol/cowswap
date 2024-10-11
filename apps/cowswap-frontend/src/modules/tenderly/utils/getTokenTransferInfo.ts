@@ -2,13 +2,13 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { TokenBuyTransferInfo } from './bundleSimulation'
 
-import { TokenHolderItem } from '../types'
+import { TokenHolder } from '../types'
 
 export function getTokenTransferInfo({
   tokenHolders,
   amountToTransfer,
 }: {
-  tokenHolders: TokenHolderItem[]
+  tokenHolders: TokenHolder[]
   amountToTransfer: CurrencyAmount<Currency>
 }): TokenBuyTransferInfo {
   let sum = CurrencyAmount.fromRawAmount(amountToTransfer.currency, '0')
@@ -22,7 +22,7 @@ export function getTokenTransferInfo({
     // skip token holders with no address or balance
     if (!tokenHolder.address || !tokenHolder.balance) continue
 
-    const tokenHolderAmount = CurrencyAmount.fromRawAmount(amountToTransfer.currency, tokenHolder.balance.toString())
+    const tokenHolderAmount = CurrencyAmount.fromRawAmount(amountToTransfer.currency, tokenHolder.balance)
     const sumWithTokenHolder = sum.add(tokenHolderAmount)
 
     if (sumWithTokenHolder.greaterThan(amountToTransfer) || sumWithTokenHolder.equalTo(amountToTransfer)) {

@@ -47,8 +47,8 @@ export function AppliedHookItem({
     return data[hookDetails.uuid]
   }, [data, hookDetails.uuid])
 
-  const simulationStatus = simulationData?.simulationPassed ? 'Simulation successful' : 'Simulation failed'
-  const simulationTooltip = simulationData?.simulationPassed
+  const simulationStatus = simulationData?.status ? 'Simulation successful' : 'Simulation failed'
+  const simulationTooltip = simulationData?.status
     ? 'The Tenderly simulation was successful. Your transaction is expected to succeed.'
     : 'The Tenderly simulation failed. Please review your transaction.'
 
@@ -60,7 +60,7 @@ export function AppliedHookItem({
             <SVG src={ICON_GRID} />
           </styledEl.DragIcon>
           <styledEl.HookNumber>{index + 1}</styledEl.HookNumber>
-          <img src={dapp.image} alt={dapp.name} />
+          <img src={dapp?.image || ''} alt={dapp.name} />
           <span>{dapp.name}</span>
           {isValidating && <styledEl.Spinner />}
         </styledEl.HookItemInfo>
@@ -75,14 +75,14 @@ export function AppliedHookItem({
       </styledEl.HookItemHeader>
 
       {account && isBundleSimulationReady && simulationData && (
-        <styledEl.SimulateContainer isSuccessful={simulationData.simulationPassed}>
-          {simulationData.simulationPassed ? (
+        <styledEl.SimulateContainer isSuccessful={simulationData.status}>
+          {simulationData.status ? (
             <SVG src={ICON_CHECK_ICON} color="green" width={16} height={16} aria-label="Simulation Successful" />
           ) : (
             <SVG src={ICON_X} color="red" width={14} height={14} aria-label="Simulation Failed" />
           )}
-          {simulationData.tenderlySimulationLink ? (
-            <a href={simulationData.tenderlySimulationLink} target="_blank" rel="noopener noreferrer">
+          {simulationData.link ? (
+            <a href={simulationData.link} target="_blank" rel="noopener noreferrer">
               {simulationStatus}
               <ExternalLinkIcon size={14} />
             </a>

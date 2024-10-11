@@ -1,9 +1,10 @@
 import { PostBundleSimulationParams } from './bundleSimulation'
 
-import { getSimulationLink } from '../const'
-import { SimulationData, TenderlyBundleSimulationResponse } from '../types'
+import { SimulationData } from '../types'
 
-export function generateSimulationDataToError(postParams: PostBundleSimulationParams): Record<string, SimulationData> {
+export function generateSimulationDataToError(
+  postParams: Pick<PostBundleSimulationParams, 'preHooks' | 'postHooks'>,
+): Record<string, SimulationData> {
   const preHooksKeys = postParams.preHooks.map(({ hookDetails }) => hookDetails.uuid)
   const postHooksKeys = postParams.postHooks.map(({ hookDetails }) => hookDetails.uuid)
   const hooksKeys = [...preHooksKeys, ...postHooksKeys]
@@ -11,28 +12,22 @@ export function generateSimulationDataToError(postParams: PostBundleSimulationPa
   return hooksKeys.reduce(
     (acc, key) => ({
       ...acc,
-      [key]: { tenderlySimulationLink: '', simulationPassed: false },
+      [key]: { link: '', status: false, id: key },
     }),
     {},
   )
 }
 
 export function generateNewSimulationData(
-  bundleSimulationResponse: TenderlyBundleSimulationResponse,
+  simulationData: SimulationData[],
   postParams: PostBundleSimulationParams,
 ): Record<string, SimulationData> {
   const preHooksKeys = postParams.preHooks.map(({ hookDetails }) => hookDetails.uuid)
   const postHooksKeys = postParams.postHooks.map(({ hookDetails }) => hookDetails.uuid)
 
-  const preHooksData = bundleSimulationResponse.simulation_results.slice(0, preHooksKeys.length).map((simulation) => ({
-    tenderlySimulationLink: getSimulationLink(simulation.simulation.id),
-    simulationPassed: simulation.simulation.status,
-  }))
+  const preHooksData = simulationData.slice(0, preHooksKeys.length)
 
-  const postHooksData = bundleSimulationResponse.simulation_results.slice(-postHooksKeys.length).map((simulation) => ({
-    tenderlySimulationLink: getSimulationLink(simulation.simulation.id),
-    simulationPassed: simulation.simulation.status,
-  }))
+  const postHooksData = simulationData.slice(-postHooksKeys.length)
 
   return {
     ...preHooksKeys.reduce((acc, key, index) => ({ ...acc, [key]: preHooksData[index] }), {}),
