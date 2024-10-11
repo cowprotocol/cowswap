@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { cowAmmBannerStateAtom } from './cowAmmBannerState'
 
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 
 import styled from 'styled-components/macro'
 import ICON_STAR from '@cowprotocol/assets/cow-swap/star-shine.svg'
@@ -11,12 +11,12 @@ import { ClosableBanner } from '@cowprotocol/ui'
 import SVG from 'react-inlinesvg'
 import { Textfit } from 'react-textfit'
 
-import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
-
 import { cowAnalytics } from 'modules/analytics'
 
 import { dummyData, StateKey } from './dummyData'
 import * as styledEl from './styled'
+
+import { ArrowBackground } from './arrowBackground'
 
 export const Wrapper = styled.div`
   z-index: 3;
@@ -47,6 +47,7 @@ const BANNER_ID = 'cow_amm_banner_tokenselector_2024_va'
 
 export function CoWAmmTokenSelectorBanner() {
   const selectedState = useAtomValue(cowAmmBannerStateAtom)
+  const arrowBackgroundRef = useRef<HTMLDivElement>(null)
 
   const handleCTAClick = useCallback(() => {
     cowAnalytics.sendEvent({
@@ -62,6 +63,20 @@ export function CoWAmmTokenSelectorBanner() {
       category: 'CoW Swap',
       action: 'CoW AMM Banner [Token selector] Closed',
     })
+  }, [])
+
+  const handleCTAMouseEnter = useCallback(() => {
+    if (arrowBackgroundRef.current) {
+      arrowBackgroundRef.current.style.visibility = 'visible'
+      arrowBackgroundRef.current.style.opacity = '1'
+    }
+  }, [])
+
+  const handleCTAMouseLeave = useCallback(() => {
+    if (arrowBackgroundRef.current) {
+      arrowBackgroundRef.current.style.visibility = 'hidden'
+      arrowBackgroundRef.current.style.opacity = '0'
+    }
   }, [])
 
   const aprMessage = useMemo(() => {
@@ -132,6 +147,8 @@ export function CoWAmmTokenSelectorBanner() {
 
         <styledEl.CTAButton
           onClick={handleCTAClick}
+          onMouseEnter={handleCTAMouseEnter}
+          onMouseLeave={handleCTAMouseLeave}
           size={38}
           fontSize={18}
           bgColor={`var(${UI.COLOR_COWAMM_DARK_GREEN})`}
@@ -140,6 +157,8 @@ export function CoWAmmTokenSelectorBanner() {
         >
           Boooooost APR gas-free!
         </styledEl.CTAButton>
+
+        <ArrowBackground ref={arrowBackgroundRef} count={14} color={`var(${UI.COLOR_COWAMM_GREEN})`} />
       </WrapperInner>
     </Wrapper>
   ))

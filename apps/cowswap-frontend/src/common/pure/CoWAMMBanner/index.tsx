@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai'
 import { cowAmmBannerStateAtom } from './cowAmmBannerState'
 
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 
 import ICON_ARROW from '@cowprotocol/assets/cow-swap/arrow.svg'
 import ICON_CURVE from '@cowprotocol/assets/cow-swap/icon-curve.svg'
@@ -11,6 +11,8 @@ import ICON_UNISWAP from '@cowprotocol/assets/cow-swap/icon-uni.svg'
 import ICON_STAR from '@cowprotocol/assets/cow-swap/star-shine.svg'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 import { ClosableBanner } from '@cowprotocol/ui'
+
+import { ArrowBackground } from './arrowBackground'
 
 import SVG from 'react-inlinesvg'
 import { Textfit } from 'react-textfit'
@@ -46,6 +48,7 @@ const lpTokenIcons: Record<LpToken, string> = {
 export function CoWAmmBanner() {
   const [selectedState, setSelectedState] = useAtom(cowAmmBannerStateAtom)
   const isMobile = useMediaQuery(upToSmall)
+  const arrowBackgroundRef = useRef<HTMLDivElement>(null)
 
   const handleCTAClick = useCallback(() => {
     cowAnalytics.sendEvent({
@@ -61,6 +64,20 @@ export function CoWAmmBanner() {
       category: 'CoW Swap',
       action: 'CoW AMM Banner [Global] Closed',
     })
+  }, [])
+
+  const handleCTAMouseEnter = useCallback(() => {
+    if (arrowBackgroundRef.current) {
+      arrowBackgroundRef.current.style.visibility = 'visible'
+      arrowBackgroundRef.current.style.opacity = '1'
+    }
+  }, [])
+
+  const handleCTAMouseLeave = useCallback(() => {
+    if (arrowBackgroundRef.current) {
+      arrowBackgroundRef.current.style.visibility = 'hidden'
+      arrowBackgroundRef.current.style.opacity = '0'
+    }
   }, [])
 
   const aprMessage = useMemo(() => {
@@ -167,7 +184,16 @@ export function CoWAmmBanner() {
         </styledEl.Card>
       )}
 
-      <styledEl.CTAButton onClick={handleCTAClick}>Booooost APR gas-free!</styledEl.CTAButton>
+      <styledEl.CTAButton
+        onClick={handleCTAClick}
+        onMouseEnter={handleCTAMouseEnter}
+        onMouseLeave={handleCTAMouseLeave}
+      >
+        Booooost APR gas-free!
+      </styledEl.CTAButton>
+
+      <ArrowBackground ref={arrowBackgroundRef} />
+
       <styledEl.SecondaryLink href={'https://cow.fi/'}>Pool analytics ↗</styledEl.SecondaryLink>
     </styledEl.BannerWrapper>
   ))
