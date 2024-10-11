@@ -1,4 +1,7 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useAtomValue } from 'jotai'
+import { cowAmmBannerStateAtom } from './cowAmmBannerState'
+
+import { useCallback, useMemo } from 'react'
 
 import styled from 'styled-components/macro'
 import ICON_STAR from '@cowprotocol/assets/cow-swap/star-shine.svg'
@@ -43,7 +46,7 @@ const ANALYTICS_URL = 'https://cow.fi/pools?utm_source=swap.cow.fi&utm_medium=we
 const BANNER_ID = 'cow_amm_banner_tokenselector_2024_va'
 
 export function CoWAmmTokenSelectorBanner() {
-  const [selectedState, setSelectedState] = useState<StateKey>('noLp')
+  const selectedState = useAtomValue(cowAmmBannerStateAtom)
 
   const handleCTAClick = useCallback(() => {
     cowAnalytics.sendEvent({

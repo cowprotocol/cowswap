@@ -1,4 +1,7 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useAtom } from 'jotai'
+import { cowAmmBannerStateAtom } from './cowAmmBannerState'
+
+import { useCallback, useMemo } from 'react'
 
 import ICON_ARROW from '@cowprotocol/assets/cow-swap/arrow.svg'
 import ICON_CURVE from '@cowprotocol/assets/cow-swap/icon-curve.svg'
@@ -41,7 +44,7 @@ const lpTokenIcons: Record<LpToken, string> = {
 }
 
 export function CoWAmmBanner() {
-  const [selectedState, setSelectedState] = useState<StateKey>('noLp')
+  const [selectedState, setSelectedState] = useAtom(cowAmmBannerStateAtom)
   const isMobile = useMediaQuery(upToSmall)
 
   const handleCTAClick = useCallback(() => {
