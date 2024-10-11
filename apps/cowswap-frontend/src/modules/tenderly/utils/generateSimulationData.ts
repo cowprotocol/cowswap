@@ -29,7 +29,7 @@ export function generateNewSimulationData(
     simulationPassed: simulation.simulation.status,
   }))
 
-  const postHooksData = bundleSimulationResponse.simulation_results.slice(preHooksKeys.length).map((simulation) => ({
+  const postHooksData = bundleSimulationResponse.simulation_results.slice(-postHooksKeys.length).map((simulation) => ({
     tenderlySimulationLink: getSimulationLink(simulation.simulation.id),
     simulationPassed: simulation.simulation.status,
   }))
