@@ -1,5 +1,5 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CowSwapWidgetPaletteColors, TradeType } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetPaletteColors, PartnerFee, TradeType } from '@cowprotocol/widget-lib'
 
 import { PaletteMode } from '@mui/material'
 
@@ -25,7 +25,7 @@ export interface ConfiguratorState {
   customColors: ColorPalette
   defaultColors: ColorPalette
   partnerFeeBps: number
-  partnerFeeRecipient: string
+  partnerFeeRecipient: PartnerFee['recipient']
   standaloneMode: boolean
   disableToastMessages: boolean
   disableProgressBar: boolean

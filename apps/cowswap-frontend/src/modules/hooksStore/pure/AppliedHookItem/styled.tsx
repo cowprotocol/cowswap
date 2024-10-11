@@ -177,7 +177,6 @@ export const SimulateContainer = styled.div<{ isSuccessful: boolean }>`
 `
 
 export const OldSimulateContainer = styled.div`
-  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_25});
   border-radius: 4px;
   padding: 10px;
   display: flex;

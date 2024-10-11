@@ -1,10 +1,20 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowWidgetEventListeners, CowWidgetEvents, ToastMessageType } from '@cowprotocol/events'
 import { CowSwapWidgetPaletteParams, TokenInfo, TradeType } from '@cowprotocol/widget-lib'
 
 import { TokenListItem } from './types'
 
-// CoW DAO address
-export const DEFAULT_PARTNER_FEE_RECIPIENT = '0xcA771eda0c70aA7d053aB1B25004559B918FE662'
+// CoW DAO addresses
+const GNOSIS_DEFAULT_PARTNER_FEE_RECIPIENT = '0x6b3214fd11dc91de14718dee98ef59bcbfcfb432'
+const MAINNET_DEFAULT_PARTNER_FEE_RECIPIENT = '0xB64963f95215FDe6510657e719bd832BB8bb941B'
+const ARB1_DEFAULT_PARTNER_FEE_RECIPIENT = '0x451100Ffc88884bde4ce87adC8bB6c7Df7fACccd'
+export const DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK: Record<SupportedChainId, string> = {
+  [SupportedChainId.MAINNET]: MAINNET_DEFAULT_PARTNER_FEE_RECIPIENT,
+  [SupportedChainId.GNOSIS_CHAIN]: GNOSIS_DEFAULT_PARTNER_FEE_RECIPIENT,
+  [SupportedChainId.ARBITRUM_ONE]: ARB1_DEFAULT_PARTNER_FEE_RECIPIENT,
+  [SupportedChainId.SEPOLIA]: MAINNET_DEFAULT_PARTNER_FEE_RECIPIENT,
+}
+
 export const TRADE_MODES = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED]
 
 // Sourced from https://tokenlists.org/
@@ -35,7 +45,7 @@ export const DEFAULT_TOKEN_LISTS: TokenListItem[] = [
   { url: 'https://wrapped.tokensoft.eth.link', enabled: false },
 ]
 // TODO: Move default palette to a new lib that only exposes the palette colors.
-// This wayit can be consumed by both the configurator and the widget.
+// This way it can be consumed by both the configurator and the widget.
 export const DEFAULT_LIGHT_PALETTE: CowSwapWidgetPaletteParams = {
   primary: '#052b65',
   background: '#FFFFFF',

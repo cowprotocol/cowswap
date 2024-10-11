@@ -6,6 +6,7 @@ import ICON_CHECK_ICON from '@cowprotocol/assets/cow-swap/check-singular.svg'
 import ICON_GRID from '@cowprotocol/assets/cow-swap/grid.svg'
 import TenderlyLogo from '@cowprotocol/assets/cow-swap/tenderly-logo.svg'
 import ICON_X from '@cowprotocol/assets/cow-swap/x.svg'
+import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { Edit2, Trash2, ExternalLink as ExternalLinkIcon } from 'react-feather'
@@ -16,12 +17,12 @@ import { useTenderlyBundleSimulateSWR } from 'modules/tenderly/hooks/useTenderly
 import * as styledEl from './styled'
 
 import { TenderlySimulate } from '../../containers/TenderlySimulate'
-import { CowHookDetailsSerialized, HookDapp } from '../../types/hooks'
+import { HookDapp } from '../../types/hooks'
 
 interface HookItemProp {
   account: string | undefined
-  hookDetails: CowHookDetailsSerialized
-  dapp: HookDapp
+  hookDetails: CowHookDetails
+  dapp: HookDapp | undefined
   isPreHook: boolean
   removeHook: (uuid: string, isPreHook: boolean) => void
   editHook: (uuid: string) => void
@@ -31,15 +32,7 @@ interface HookItemProp {
 // TODO: refactor tu use single simulation as fallback
 const isBundleSimulationReady = true
 
-export function AppliedHookItem({
-  account,
-  hookDetails: { hookDetails },
-  dapp,
-  isPreHook,
-  editHook,
-  removeHook,
-  index,
-}: HookItemProp) {
+export function AppliedHookItem({ account, hookDetails, dapp, isPreHook, editHook, removeHook, index }: HookItemProp) {
   const { isValidating, data } = useTenderlyBundleSimulateSWR()
 
   const simulationData = useMemo(() => {
@@ -60,8 +53,8 @@ export function AppliedHookItem({
             <SVG src={ICON_GRID} />
           </styledEl.DragIcon>
           <styledEl.HookNumber>{index + 1}</styledEl.HookNumber>
-          <img src={dapp?.image || ''} alt={dapp.name} />
-          <span>{dapp.name}</span>
+          <img src={dapp?.image || ''} alt={dapp?.name} />
+          <span>{dapp?.name}</span>
           {isValidating && <styledEl.Spinner />}
         </styledEl.HookItemInfo>
         <styledEl.HookItemActions>

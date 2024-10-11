@@ -1,11 +1,12 @@
 import { Erc20 } from '@cowprotocol/abis'
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { BigNumberish } from 'ethers'
 
-import { CowHook, CowHookDetailsSerialized, HookDappOrderParams } from 'modules/hooksStore/types/hooks'
+import { CowHook, HookDappOrderParams } from 'modules/hooksStore/types/hooks'
 
 import { SimulationData, SimulationInput } from '../types'
 
@@ -25,8 +26,8 @@ export interface PostBundleSimulationParams {
   chainId: SupportedChainId
   tokenSell: Erc20
   tokenBuy: Erc20
-  preHooks: CowHookDetailsSerialized[]
-  postHooks: CowHookDetailsSerialized[]
+  preHooks: CowHookDetails[]
+  postHooks: CowHookDetails[]
   orderParams: HookDappOrderParams
   tokenBuyTransferInfo: TokenBuyTransferInfo
 }
@@ -95,17 +96,13 @@ export function getBundleTenderlySimulationInput({
   tokenBuyTransferInfo,
 }: PostBundleSimulationParams): SimulationInput[] {
   const settlementAddress = COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[chainId]
-  const preHooksSimulations = preHooks.map((hook) =>
-    getCoWHookTenderlySimulationInput(settlementAddress, hook.hookDetails.hook),
-  )
-  const postHooksSimulations = postHooks.map((hook) =>
-    getCoWHookTenderlySimulationInput(settlementAddress, hook.hookDetails.hook),
-  )
+  const preHooksSimulations = preHooks.map((hook) => getCoWHookTenderlySimulationInput(settlementAddress, hook.hook))
+  const postHooksSimulations = postHooks.map((hook) => getCoWHookTenderlySimulationInput(settlementAddress, hook.hook))
 
   // If there are no post hooks, we don't need to simulate the transfer
   if (postHooks.length === 0) return preHooksSimulations
 
-  const receiver = postHooks[0].hookDetails.recipientOverride || orderParams.receiver
+  const receiver = postHooks[0].recipientOverride || orderParams.receiver
 
   const sellTokenTransfer = getTransferTenderlySimulationInput({
     currencyAmount: orderParams.sellAmount,

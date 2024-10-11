@@ -1,7 +1,7 @@
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
+import { CenteredDots, HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -64,7 +64,8 @@ export const getNonNativeSlippageTooltip = () => (
   </Trans>
 )
 
-const SUGGESTED_SLIPPAGE_TOOLTIP = "Based on recent volatility for the selected token pair, this is the suggested slippage for ensuring quick execution of your order."
+const SUGGESTED_SLIPPAGE_TOOLTIP =
+  'Based on recent volatility for the selected token pair, this is the suggested slippage for ensuring quick execution of your order.'
 
 export interface RowSlippageContentProps {
   chainId: SupportedChainId
@@ -82,6 +83,7 @@ export interface RowSlippageContentProps {
   setAutoSlippage?: Command // todo: make them optional
   smartSlippage?: string
   isSmartSlippageApplied: boolean
+  isSmartSlippageLoading: boolean
 }
 
 // TODO: RowDeadlineContent and RowSlippageContent are very similar. Refactor and extract base component?
@@ -101,6 +103,7 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
     setAutoSlippage,
     smartSlippage,
     isSmartSlippageApplied,
+    isSmartSlippageLoading,
   } = props
 
   const tooltipContent =
@@ -109,14 +112,33 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
   // In case the user happened to set the same slippage as the suggestion, do not show the suggestion
   const suggestedEqualToUserSlippage = smartSlippage && smartSlippage === displaySlippage
 
-  const displayDefaultSlippage = isSlippageModified && setAutoSlippage && smartSlippage && !suggestedEqualToUserSlippage && (
-    <DefaultSlippage>
-      <LinkStyledButton onClick={setAutoSlippage}>(Suggested: {smartSlippage})</LinkStyledButton>
-      <HoverTooltip wrapInContainer content={SUGGESTED_SLIPPAGE_TOOLTIP}>
-        <StyledInfoIcon size={16} />
-      </HoverTooltip>
-    </DefaultSlippage>
-  )
+  const displayDefaultSlippage = isSlippageModified &&
+    setAutoSlippage &&
+    smartSlippage &&
+    !suggestedEqualToUserSlippage && (
+      <DefaultSlippage>
+        {isSmartSlippageLoading ? (
+          <CenteredDots />
+        ) : (
+          <>
+            <LinkStyledButton onClick={setAutoSlippage}>(Suggested: {smartSlippage})</LinkStyledButton>
+            <HoverTooltip wrapInContainer content={SUGGESTED_SLIPPAGE_TOOLTIP}>
+              <StyledInfoIcon size={16} />
+            </HoverTooltip>
+          </>
+        )}
+      </DefaultSlippage>
+    )
+
+  const displaySlippageWithLoader =
+    isSmartSlippageLoading && isSmartSlippageApplied ? (
+      <CenteredDots />
+    ) : (
+      <>
+        {displaySlippage}
+        {displayDefaultSlippage}
+      </>
+    )
 
   return (
     <StyledRowBetween {...styleProps}>
@@ -124,10 +146,18 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
         <TextWrapper>
           {showSettingOnClick ? (
             <ClickableText onClick={toggleSettings}>
-              <SlippageTextContents isEoaEthFlow={isEoaEthFlow} slippageLabel={slippageLabel} isDynamicSlippageSet={isSmartSlippageApplied} />
+              <SlippageTextContents
+                isEoaEthFlow={isEoaEthFlow}
+                slippageLabel={slippageLabel}
+                isDynamicSlippageSet={isSmartSlippageApplied}
+              />
             </ClickableText>
           ) : (
-            <SlippageTextContents isEoaEthFlow={isEoaEthFlow} slippageLabel={slippageLabel} isDynamicSlippageSet={isSmartSlippageApplied} />
+            <SlippageTextContents
+              isEoaEthFlow={isEoaEthFlow}
+              slippageLabel={slippageLabel}
+              isDynamicSlippageSet={isSmartSlippageApplied}
+            />
           )}
         </TextWrapper>
         <HoverTooltip wrapInContainer content={tooltipContent}>
@@ -136,20 +166,20 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
       </RowFixed>
       <TextWrapper textAlign="right">
         {showSettingOnClick ? (
-          <ClickableText onClick={toggleSettings}>
-            {displaySlippage}{displayDefaultSlippage}
-          </ClickableText>
+          <ClickableText onClick={toggleSettings}>{displaySlippageWithLoader}</ClickableText>
         ) : (
-          <span>
-            {displaySlippage}{displayDefaultSlippage}
-          </span>
+          <span>{displaySlippageWithLoader}</span>
         )}
       </TextWrapper>
     </StyledRowBetween>
   )
 }
 
-type SlippageTextContentsProps = { isEoaEthFlow: boolean; slippageLabel?: React.ReactNode, isDynamicSlippageSet: boolean }
+type SlippageTextContentsProps = {
+  isEoaEthFlow: boolean
+  slippageLabel?: React.ReactNode
+  isDynamicSlippageSet: boolean
+}
 
 function SlippageTextContents({ isEoaEthFlow, slippageLabel, isDynamicSlippageSet }: SlippageTextContentsProps) {
   return (

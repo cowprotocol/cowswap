@@ -16,12 +16,14 @@ const DEFAULT_HOOK_STATE: CowHook = {
   target: '',
   callData: '',
   gasLimit: '',
+  dappId: '',
 }
 
 const DEFAULT_ERRORS_STATE: Record<keyof CowHook, string> = {
   target: '',
   callData: '',
   gasLimit: '',
+  dappId: '',
 }
 
 const FIELDS = [
@@ -52,6 +54,8 @@ export function BuildHookApp({ context }: HookDappProps) {
     const newErrors: Record<keyof CowHook, string> = { ...DEFAULT_ERRORS_STATE }
 
     const hasErrors = Object.entries(hook).some(([key, value]) => {
+      if (key === 'dappId') return false
+
       if (!value.trim()) {
         newErrors[key as keyof CowHook] = `${capitalizeFirstLetter(key)} is required`
         return true

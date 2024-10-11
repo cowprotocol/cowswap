@@ -22,7 +22,7 @@ function _getPriceStrategyApiBaseUrl(chainId: SupportedChainId): string {
     new Error(
       `Unsupported Network. The ${API_NAME} strategy API is not deployed in the Network ` +
         chainId +
-        '. Defaulting to using Mainnet strategy.'
+        '. Defaulting to using Mainnet strategy.',
     )
   }
   return baseUrl
@@ -34,8 +34,6 @@ function _fetchPriceStrategy(chainId: SupportedChainId): Promise<Response> {
 }
 
 export async function getPriceStrategy(chainId: SupportedChainId): Promise<PriceStrategy> {
-  console.log(`[api:${API_NAME}] Get GP price strategy for`, chainId)
-
   const response = await _fetchPriceStrategy(chainId)
 
   if (!response.ok) {

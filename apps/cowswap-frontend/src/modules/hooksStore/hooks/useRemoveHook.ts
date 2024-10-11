@@ -14,13 +14,13 @@ export function useRemoveHook(isPreHook: boolean): RemoveHook {
       updateHooks((hooks) => {
         if (isPreHook) {
           return {
-            preHooks: hooks.preHooks.filter((hook) => hook.hookDetails.uuid !== uuid),
+            preHooks: hooks.preHooks.filter((hook) => hook.uuid !== uuid),
             postHooks: hooks.postHooks,
           }
         } else {
           return {
             preHooks: hooks.preHooks,
-            postHooks: hooks.postHooks.filter((hook) => hook.hookDetails.uuid !== uuid),
+            postHooks: hooks.postHooks.filter((hook) => hook.uuid !== uuid),
           }
         }
       })

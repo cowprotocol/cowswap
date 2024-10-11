@@ -6,7 +6,6 @@ import {
   HookDappOrderParams,
   CoWHookDappActions,
   HookDappContext as GenericHookDappContext,
-  CowHookDetails,
   HookDappBase,
   HookDappType,
 } from '@cowprotocol/hook-dapp-lib'
@@ -25,11 +24,6 @@ export interface HookDappIframe extends HookDappBase {
 }
 
 export type HookDapp = HookDappInternal | HookDappIframe
-
-export interface CowHookDetailsSerialized {
-  hookDetails: CowHookDetails
-  dappId: string
-}
 
 export type AddHook = CoWHookDappActions['addHook']
 export type EditHook = CoWHookDappActions['editHook']

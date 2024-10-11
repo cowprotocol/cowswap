@@ -5,8 +5,8 @@ import { SimulationData } from '../types'
 export function generateSimulationDataToError(
   postParams: Pick<PostBundleSimulationParams, 'preHooks' | 'postHooks'>,
 ): Record<string, SimulationData> {
-  const preHooksKeys = postParams.preHooks.map(({ hookDetails }) => hookDetails.uuid)
-  const postHooksKeys = postParams.postHooks.map(({ hookDetails }) => hookDetails.uuid)
+  const preHooksKeys = postParams.preHooks.map((hookDetails) => hookDetails.uuid)
+  const postHooksKeys = postParams.postHooks.map((hookDetails) => hookDetails.uuid)
   const hooksKeys = [...preHooksKeys, ...postHooksKeys]
 
   return hooksKeys.reduce(
@@ -22,8 +22,8 @@ export function generateNewSimulationData(
   simulationData: SimulationData[],
   postParams: PostBundleSimulationParams,
 ): Record<string, SimulationData> {
-  const preHooksKeys = postParams.preHooks.map(({ hookDetails }) => hookDetails.uuid)
-  const postHooksKeys = postParams.postHooks.map(({ hookDetails }) => hookDetails.uuid)
+  const preHooksKeys = postParams.preHooks.map((hookDetails) => hookDetails.uuid)
+  const postHooksKeys = postParams.postHooks.map((hookDetails) => hookDetails.uuid)
 
   const preHooksData = simulationData.slice(0, preHooksKeys.length)
 

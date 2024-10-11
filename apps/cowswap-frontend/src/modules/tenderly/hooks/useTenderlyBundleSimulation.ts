@@ -25,8 +25,18 @@ export function useTenderlyBundleSimulateSWR() {
   })
 
   const getNewSimulationData = useCallback(async () => {
+    console.log('getNewSimulationData')
     if (postHooks.length === 0 && preHooks.length === 0) return {}
 
+    console.log('getNewSimulationData 2')
+    console.log({
+      account,
+      buyTokenTopHolders,
+      tokenBuy,
+      orderParams,
+      tokenSell,
+      buyAmount,
+    })
     if (!account || !buyTokenTopHolders || !tokenBuy || !orderParams || !tokenSell || !buyAmount) {
       return generateSimulationDataToError({ postHooks, preHooks })
     }
@@ -46,6 +56,8 @@ export function useTenderlyBundleSimulateSWR() {
       account,
       chainId,
     }
+
+    console.log({ paramsComplete })
 
     try {
       const response = await bundleSimulation(paramsComplete)

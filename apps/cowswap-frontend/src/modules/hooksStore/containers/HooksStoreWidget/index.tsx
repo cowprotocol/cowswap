@@ -1,35 +1,36 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
-
-import styled from 'styled-components/macro'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { SwapWidget } from 'modules/swap'
 import { useIsSellNative } from 'modules/trade'
 
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+
+import { HooksTopActions, RescueFundsToggle, TradeWidgetWrapper } from './styled'
+
 import { useSetRecipientOverride } from '../../hooks/useSetRecipientOverride'
 import { useSetupHooksStoreOrderParams } from '../../hooks/useSetupHooksStoreOrderParams'
+import { IframeDappsManifestUpdater } from '../../updaters/iframeDappsManifestUpdater'
 import { HookRegistryList } from '../HookRegistryList'
 import { PostHookButton } from '../PostHookButton'
 import { PreHookButton } from '../PreHookButton'
+import { RescueFundsFromProxy } from '../RescueFundsFromProxy'
 
 type HookPosition = 'pre' | 'post'
 
 console.log(ICON_HOOK)
 
-const TradeWidgetWrapper = styled.div<{ visible$: boolean }>`
-  visibility: ${({ visible$ }) => (visible$ ? 'visible' : 'hidden')};
-  height: ${({ visible$ }) => (visible$ ? '' : '0px')};
-  width: ${({ visible$ }) => (visible$ ? '100%' : '0px')};
-  overflow: hidden;
-`
-
 export function HooksStoreWidget() {
+  const { account, chainId } = useWalletInfo()
+  const [isRescueWidgetOpen, setRescueWidgetOpen] = useState<boolean>(false)
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)
   const [hookToEdit, setHookToEdit] = useState<string | undefined>(undefined)
 
   const isNativeSell = useIsSellNative()
+  const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
   const onDismiss = useCallback(() => {
     setSelectedHookPosition(null)
@@ -46,15 +47,33 @@ export function HooksStoreWidget() {
     setHookToEdit(uuid)
   }, [])
 
+  useEffect(() => {
+    if (!account) {
+      setRescueWidgetOpen(false)
+    }
+  }, [account])
+
+  // Close all screens on network changes (including unsupported chain case)
+  useEffect(() => {
+    setRescueWidgetOpen(false)
+    onDismiss()
+  }, [chainId, isChainIdUnsupported, onDismiss])
+
   useSetupHooksStoreOrderParams()
   useSetRecipientOverride()
 
   const isHookSelectionOpen = !!(selectedHookPosition || hookToEdit)
+  const hideSwapWidget = isHookSelectionOpen || isRescueWidgetOpen
 
-  const shouldNotUseHooks = isNativeSell
+  const shouldNotUseHooks = isNativeSell || isChainIdUnsupported
 
   const TopContent = shouldNotUseHooks ? null : (
     <>
+      {!isRescueWidgetOpen && account && (
+        <HooksTopActions>
+          <RescueFundsToggle onClick={() => setRescueWidgetOpen(true)}>Rescue funds</RescueFundsToggle>
+        </HooksTopActions>
+      )}
       <DismissableInlineBanner
         orientation={BannerOrientation.Horizontal}
         customIcon={ICON_HOOK}
@@ -78,12 +97,14 @@ export function HooksStoreWidget() {
 
   return (
     <>
-      <TradeWidgetWrapper visible$={!isHookSelectionOpen}>
+      <TradeWidgetWrapper visible$={!hideSwapWidget}>
         <SwapWidget topContent={TopContent} bottomContent={BottomContent} />
       </TradeWidgetWrapper>
+      <IframeDappsManifestUpdater />
       {isHookSelectionOpen && (
         <HookRegistryList onDismiss={onDismiss} hookToEdit={hookToEdit} isPreHook={selectedHookPosition === 'pre'} />
       )}
+      {isRescueWidgetOpen && <RescueFundsFromProxy onDismiss={() => setRescueWidgetOpen(false)} />}
     </>
   )
 }
