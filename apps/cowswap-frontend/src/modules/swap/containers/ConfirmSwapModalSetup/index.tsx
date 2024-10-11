@@ -96,7 +96,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
           : undefined,
       slippageTooltip: isEoaEthFlow
         ? getNativeSlippageTooltip(chainId, [nativeCurrency.symbol])
-        : getNonNativeSlippageTooltip(),
+        : getNonNativeSlippageTooltip(isSmartSlippageApplied),
       expectReceiveLabel: isExactIn ? 'Expected to receive' : 'Expected to sell',
       minReceivedLabel: isExactIn ? 'Minimum receive' : 'Maximum sent',
       minReceivedTooltip: getMinimumReceivedTooltip(allowedSlippage, isExactIn),

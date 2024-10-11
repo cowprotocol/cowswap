@@ -47,7 +47,7 @@ enum DeadlineError {
   InvalidInput = 'InvalidInput',
 }
 
-const Option = styled(FancyButton) <{ active: boolean }>`
+const Option = styled(FancyButton)<{ active: boolean }>`
   margin-right: 8px;
 
   :hover {
@@ -75,7 +75,7 @@ export const Input = styled.input`
   text-align: right;
 `
 
-export const OptionCustom = styled(FancyButton) <{ active?: boolean; warning?: boolean }>`
+export const OptionCustom = styled(FancyButton)<{ active?: boolean; warning?: boolean }>`
   height: 2rem;
   position: relative;
   padding: 0 0.75rem;
@@ -84,7 +84,7 @@ export const OptionCustom = styled(FancyButton) <{ active?: boolean; warning?: b
 
   :hover {
     border: ${({ theme, active, warning }) =>
-    active && `1px solid ${warning ? darken(theme.error, 0.1) : darken(theme.bg2, 0.1)}`};
+      active && `1px solid ${warning ? darken(theme.error, 0.1) : darken(theme.bg2, 0.1)}`};
   }
 
   input {
@@ -97,6 +97,7 @@ export const OptionCustom = styled(FancyButton) <{ active?: boolean; warning?: b
 
 const SlippageEmojiContainer = styled.span`
   color: #f3841e;
+
   ${Media.upToSmall()} {
     display: none;
   }
@@ -242,7 +243,7 @@ export function TransactionSettings() {
 
   const tooLow = swapSlippage.lessThan(new Percent(isEoaEthFlow ? minEthFlowSlippageBps : LOW_SLIPPAGE_BPS, 10_000))
   const tooHigh = swapSlippage.greaterThan(
-    new Percent(isEoaEthFlow ? HIGH_ETH_FLOW_SLIPPAGE_BPS : HIGH_SLIPPAGE_BPS, 10_000)
+    new Percent(isEoaEthFlow ? HIGH_ETH_FLOW_SLIPPAGE_BPS : HIGH_SLIPPAGE_BPS, 10_000),
   )
 
   function parseCustomDeadline(value: string) {
@@ -259,10 +260,10 @@ export function TransactionSettings() {
         if (
           !Number.isInteger(parsed) || // Check deadline is a number
           parsed <
-          (isEoaEthFlow
-            ? // 10 minute low threshold for eth flow
-            MINIMUM_ETH_FLOW_DEADLINE_SECONDS
-            : MINIMUM_ORDER_VALID_TO_TIME_SECONDS) || // Check deadline is not too small
+            (isEoaEthFlow
+              ? // 10 minute low threshold for eth flow
+                MINIMUM_ETH_FLOW_DEADLINE_SECONDS
+              : MINIMUM_ORDER_VALID_TO_TIME_SECONDS) || // Check deadline is not too small
           parsed > MAX_DEADLINE_MINUTES * 60 // Check deadline is not too big
         ) {
           setDeadlineError(DeadlineError.InvalidInput)
@@ -299,14 +300,14 @@ export function TransactionSettings() {
         <AutoColumn gap="sm">
           <RowFixed>
             <ThemedText.Black fontWeight={400} fontSize={14}>
-              <Trans>MEV protected slippage</Trans>
+              <Trans>MEV-protected slippage</Trans>
             </ThemedText.Black>
             <HelpTooltip
               text={
                 // <Trans>Your transaction will revert if the price changes unfavorably by more than this percentage.</Trans>
                 isEoaEthFlow
                   ? getNativeSlippageTooltip(chainId, [nativeCurrency.symbol, getWrappedToken(nativeCurrency).symbol])
-                  : getNonNativeSlippageTooltip()
+                  : getNonNativeSlippageTooltip(true, true)
               }
             />
           </RowFixed>
@@ -366,8 +367,8 @@ export function TransactionSettings() {
                 <HelpTooltip
                   text={
                     <Trans>
-                      Based on recent volatility observed for this token pair, it's recommended to leave the default
-                      to account for price changes.
+                      CoW Swap has dynamically selected this slippage amount to account for current gas prices and
+                      volatility. Changes may result in slower execution.
                     </Trans>
                   }
                 />
