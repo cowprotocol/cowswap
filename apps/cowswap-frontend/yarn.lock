@@ -2,14 +2,3 @@
 # yarn lockfile v1
 
 
-"@covalenthq/client-sdk@^2.1.1":
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/@covalenthq/client-sdk/-/client-sdk-2.1.1.tgz#d49a70f67f9f03747acbe28455240ee38b9ecc90"
-  integrity sha512-wrtb6sn5cUOTOTD+GbE1Xi92b2Q2Wd76roK2wwUMdbOQ591ucahgSPfaJEgZY29nocLc3wDV2vhR11fNX8nZxA==
-  dependencies:
-    big.js "^6.2.1"
-
-big.js@^6.2.1:
-  version "6.2.2"
-  resolved "https://registry.yarnpkg.com/big.js/-/big.js-6.2.2.tgz#be3bb9ac834558b53b099deef2a1d06ac6368e1a"
-  integrity sha512-y/ie+Faknx7sZA5MfGA2xKlu0GDv8RWrXGsmlteyJQ2lvoKv9GBK/fpRMc2qlSoBAgNxrixICFCBefIq8WCQpQ==
