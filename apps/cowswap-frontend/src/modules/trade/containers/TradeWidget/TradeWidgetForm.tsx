@@ -68,6 +68,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     priceImpact,
     recipient,
     hideTradeWarnings,
+    enableSmartSlippage,
   } = params
 
   const inputCurrencyInfo = useMemo(
@@ -229,7 +230,18 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
             </div>
             {withRecipient && <SetRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />}
 
-            {isWrapOrUnwrap ? <WrapFlowActionButton /> : bottomContent?.(hideTradeWarnings ? null : <TradeWarnings />)}
+            {isWrapOrUnwrap ? (
+              <WrapFlowActionButton />
+            ) : (
+              bottomContent?.(
+                hideTradeWarnings ? null : (
+                  <TradeWarnings
+                    enableSmartSlippage={enableSmartSlippage}
+                    isTradePriceUpdating={isTradePriceUpdating}
+                  />
+                ),
+              )
+            )}
           </>
         )}
 

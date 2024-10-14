@@ -126,8 +126,7 @@ export const WarningContainer = styled(AuxInformationContainer).attrs((props) =>
   }
 `
 
-const StyledInfoIcon = styled(Info)`
-  color: inherit;
+export const ErrorStyledInfoIcon = styled(Info)`
   opacity: 0.6;
   line-height: 0;
   vertical-align: middle;
@@ -136,8 +135,5 @@ const StyledInfoIcon = styled(Info)`
   &:hover {
     opacity: 1;
   }
-`
-
-export const ErrorStyledInfoIcon = styled(StyledInfoIcon)`
   color: ${({ theme }) => (theme.darkMode ? '#FFCA4A' : '#564D00')};
 `

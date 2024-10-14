@@ -2,7 +2,6 @@ import { ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
-import { percentToBps } from '@cowprotocol/common-utils'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
@@ -41,7 +40,7 @@ import {
   useIsNoImpactWarningAccepted,
 } from 'modules/trade'
 import { getQuoteTimeOffset } from 'modules/tradeQuote'
-import { useIsSmartSlippageApplied, useTradeSlippage } from 'modules/tradeSlippage'
+import { useTradeSlippage } from 'modules/tradeSlippage'
 import { SettingsTab, TradeRateDetails, useHighFeeWarning } from 'modules/tradeWidgetAddons'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
@@ -60,7 +59,7 @@ export interface SwapWidgetProps {
 }
 
 export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
-  const { chainId, account } = useWalletInfo()
+  const { chainId } = useWalletInfo()
   const { currencies, trade } = useDerivedSwapInfo()
   const slippage = useTradeSlippage()
   const parsedAmounts = useSwapCurrenciesAmounts()
@@ -189,8 +188,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   }
   const showTwapSuggestionBanner = !enabledTradeTypes || enabledTradeTypes.includes(TradeType.ADVANCED)
 
-  const isSuggestedSlippage = useIsSmartSlippageApplied() && !isTradePriceUpdating && !!account
-
   const swapWarningsTopProps: SwapWarningsTopProps = {
     chainId,
     trade,
@@ -198,8 +195,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     buyingFiatAmount,
     priceImpact: priceImpactParams.priceImpact,
     tradeUrlParams,
-    slippageBps: percentToBps(slippage),
-    isSuggestedSlippage,
   }
 
   const swapWarningsBottomProps: SwapWarningsBottomProps = {
@@ -234,6 +229,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const params = {
     isEoaEthFlow,
     compactView: true,
+    enableSmartSlippage: true,
     recipient,
     showRecipient: showRecipientControls,
     isTradePriceUpdating,

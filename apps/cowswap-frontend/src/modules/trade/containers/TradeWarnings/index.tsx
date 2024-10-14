@@ -5,13 +5,19 @@ import { useIsSafeViaWc } from '@cowprotocol/wallet'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { HighSuggestedSlippageWarning } from 'modules/tradeSlippage'
 import { useShouldZeroApprove } from 'modules/zeroApproval'
 
 import { useReceiveAmountInfo } from '../../hooks/useReceiveAmountInfo'
 import { ZeroApprovalWarning } from '../../pure/ZeroApprovalWarning'
 import { NoImpactWarning } from '../NoImpactWarning'
 
-export function TradeWarnings() {
+interface TradeWarningsProps {
+  isTradePriceUpdating: boolean
+  enableSmartSlippage?: boolean
+}
+
+export function TradeWarnings({ isTradePriceUpdating, enableSmartSlippage }: TradeWarningsProps) {
   const { banners: widgetBanners } = useInjectedWidgetParams()
   const primaryFormValidation = useGetTradeFormValidation()
   const receiveAmountInfo = useReceiveAmountInfo()
@@ -29,6 +35,7 @@ export function TradeWarnings() {
       <NoImpactWarning />
       {showBundleTxApprovalBanner && <BundleTxApprovalBanner />}
       {showSafeWcBundlingBanner && <BundleTxSafeWcBanner />}
+      {enableSmartSlippage && <HighSuggestedSlippageWarning isTradePriceUpdating={isTradePriceUpdating} />}
     </>
   )
 }
