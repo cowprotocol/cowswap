@@ -1,4 +1,4 @@
-import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
+import { MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { CenteredDots, HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
@@ -53,33 +53,22 @@ export const getNativeSlippageTooltip = (chainId: SupportedChainId, symbols: (st
     robust MEV protection, consider wrapping your {symbols?.[0] || 'native currency'} before trading.
   </Trans>
 )
-export const getNonNativeSlippageTooltip = (isDynamic?: boolean, isSettingsModal?: boolean) =>
-  isDynamic ? (
-    <Trans>
-      CoW Swap dynamically adjusts your slippage tolerance to ensure your trade executes quickly while still getting the
-      best price.{' '}
-      {isSettingsModal ? (
-        <>
-          To override this, enter your desired slippage amount.
-          <br />
-          <br />
-          Either way, your slippage is protected from MEV!
-        </>
-      ) : (
-        "Trades are protected from MEV, so your slippage can't be exploited!"
-      )}
-    </Trans>
-  ) : (
-    <Trans>
-      Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.
-      <br />
-      <br />
-      The slippage set enables a resubmission of your order in case of unfavourable price movements.
-      <br />
-      <br />
-      {INPUT_OUTPUT_EXPLANATION}
-    </Trans>
-  )
+export const getNonNativeSlippageTooltip = (isSettingsModal?: boolean) => (
+  <Trans>
+    CoW Swap dynamically adjusts your slippage tolerance to ensure your trade executes quickly while still getting the
+    best price.{' '}
+    {isSettingsModal ? (
+      <>
+        To override this, enter your desired slippage amount.
+        <br />
+        <br />
+        Either way, your slippage is protected from MEV!
+      </>
+    ) : (
+      "Trades are protected from MEV, so your slippage can't be exploited!"
+    )}
+  </Trans>
+)
 
 const SUGGESTED_SLIPPAGE_TOOLTIP =
   'This is the recommended slippage tolerance based on current gas prices & volatility. A lower amount may result in slower execution.'
@@ -124,8 +113,7 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
   } = props
 
   const tooltipContent =
-    slippageTooltip ||
-    (isEoaEthFlow ? getNativeSlippageTooltip(chainId, symbols) : getNonNativeSlippageTooltip(isSmartSlippageApplied))
+    slippageTooltip || (isEoaEthFlow ? getNativeSlippageTooltip(chainId, symbols) : getNonNativeSlippageTooltip())
 
   // In case the user happened to set the same slippage as the suggestion, do not show the suggestion
   const suggestedEqualToUserSlippage = smartSlippage && smartSlippage === displaySlippage

@@ -313,7 +313,7 @@ export function TransactionSettings() {
                 // <Trans>Your transaction will revert if the price changes unfavorably by more than this percentage.</Trans>
                 isEoaEthFlow
                   ? getNativeSlippageTooltip(chainId, [nativeCurrency.symbol, getWrappedToken(nativeCurrency).symbol])
-                  : getNonNativeSlippageTooltip(true, true)
+                  : getNonNativeSlippageTooltip(true)
               }
             />
           </RowFixed>
