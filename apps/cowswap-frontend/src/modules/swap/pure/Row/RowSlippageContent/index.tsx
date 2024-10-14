@@ -1,4 +1,4 @@
-import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
+import { MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { CenteredDots, HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
@@ -49,23 +49,29 @@ export const getNativeSlippageTooltip = (chainId: SupportedChainId, symbols: (st
     matching, even in volatile market conditions.
     <br />
     <br />
-    Orders on CoW Swap are always protected from MEV, so your slippage tolerance cannot be exploited.
+    {symbols?.[0] || 'Native currency'} orders can, in rare cases, be frontrun due to their on-chain component. For more
+    robust MEV protection, consider wrapping your {symbols?.[0] || 'native currency'} before trading.
   </Trans>
 )
-export const getNonNativeSlippageTooltip = () => (
+export const getNonNativeSlippageTooltip = (isSettingsModal?: boolean) => (
   <Trans>
-    Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.
-    <br />
-    <br />
-    The slippage set enables a resubmission of your order in case of unfavourable price movements.
-    <br />
-    <br />
-    {INPUT_OUTPUT_EXPLANATION}
+    CoW Swap dynamically adjusts your slippage tolerance to ensure your trade executes quickly while still getting the
+    best price.{' '}
+    {isSettingsModal ? (
+      <>
+        To override this, enter your desired slippage amount.
+        <br />
+        <br />
+        Either way, your slippage is protected from MEV!
+      </>
+    ) : (
+      "Trades are protected from MEV, so your slippage can't be exploited!"
+    )}
   </Trans>
 )
 
 const SUGGESTED_SLIPPAGE_TOOLTIP =
-  'Based on recent volatility for the selected token pair, this is the suggested slippage for ensuring quick execution of your order.'
+  'This is the recommended slippage tolerance based on current gas prices & volatility. A lower amount may result in slower execution.'
 
 export interface RowSlippageContentProps {
   chainId: SupportedChainId
@@ -121,7 +127,7 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
           <CenteredDots />
         ) : (
           <>
-            <LinkStyledButton onClick={setAutoSlippage}>(Suggested: {smartSlippage})</LinkStyledButton>
+            <LinkStyledButton onClick={setAutoSlippage}>(Recommended: {smartSlippage})</LinkStyledButton>
             <HoverTooltip wrapInContainer content={SUGGESTED_SLIPPAGE_TOOLTIP}>
               <StyledInfoIcon size={16} />
             </HoverTooltip>
