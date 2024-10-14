@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { BundleTxWrapBanner, HighFeeWarning } from 'modules/tradeWidgetAddons'
 
 export function Warnings() {

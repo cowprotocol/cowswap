@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { useIsNoImpactWarningAccepted, useTradeConfirmActions } from 'modules/trade'
 import { TradeFormButtons, useGetTradeFormValidation, useTradeFormButtonContext } from 'modules/tradeFormValidation'
 import { useHighFeeWarning } from 'modules/tradeWidgetAddons'

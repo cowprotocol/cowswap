@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Field } from 'legacy/state/types'
 
 import {
