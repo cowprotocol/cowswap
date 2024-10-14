@@ -21,6 +21,7 @@
     "widget-lib"
   ],
   "dependencies": {
-    "@cowprotocol/events": "^1.4.1-RC.0"
+    "@cowprotocol/events": "^1.5.0",
+    "@cowprotocol/iframe-transport": "^1.1.0"
   }
 }
