@@ -15,5 +15,5 @@ export const defaultYieldSettings: YieldSettingsState = {
 }
 
 export const { atom: yieldSettingsAtom, updateAtom: updateYieldSettingsAtom } = atomWithPartialUpdate(
-  atomWithStorage<YieldSettingsState>('yieldSettingsAtom:v1', defaultYieldSettings, getJotaiIsolatedStorage()),
+  atomWithStorage<YieldSettingsState>('yieldSettingsAtom:v0', defaultYieldSettings, getJotaiIsolatedStorage()),
 )
