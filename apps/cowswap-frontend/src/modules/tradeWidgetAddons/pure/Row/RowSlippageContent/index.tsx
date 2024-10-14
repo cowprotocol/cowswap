@@ -1,3 +1,5 @@
+import { useSetAtom } from 'jotai'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { CenteredDots, HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
@@ -8,6 +10,7 @@ import styled from 'styled-components/macro'
 
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
 
+import { settingsTabStateAtom } from '../../../state/settingsTabState'
 import { StyledRowBetween, TextWrapper, StyledInfoIcon, TransactionText, RowStyleProps } from '../styled'
 
 const DefaultSlippage = styled.span`
@@ -62,6 +65,8 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
     isSmartSlippageLoading,
   } = props
 
+  const setSettingTabState = useSetAtom(settingsTabStateAtom)
+
   const tooltipContent =
     slippageTooltip || (isEoaEthFlow ? getNativeSlippageTooltip(chainId, symbols) : getNonNativeSlippageTooltip())
 
@@ -99,7 +104,7 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
   return (
     <StyledRowBetween {...styleProps}>
       <RowFixed>
-        <TextWrapper>
+        <TextWrapper onClick={() => setSettingTabState({ open: true })}>
           <SlippageTextContents
             isEoaEthFlow={isEoaEthFlow}
             slippageLabel={slippageLabel}
