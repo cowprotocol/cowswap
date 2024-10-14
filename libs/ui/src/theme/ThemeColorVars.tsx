@@ -102,6 +102,7 @@ export const ThemeColorVars = css`
     ${UI.COLOR_COWAMM_DARK_GREEN_OPACITY_30}: ${() => transparentize('#194d05', 0.7)};
     ${UI.COLOR_COWAMM_GREEN}: #2b6f0b;
     ${UI.COLOR_COWAMM_LIGHT_GREEN}: #bcec79;
+    ${UI.COLOR_COWAMM_LIGHT_GREEN_OPACITY_30}: ${() => transparentize('#bcec79', 0.7)};
     ${UI.COLOR_COWAMM_LIGHTER_GREEN}: #dcf8a7;
     ${UI.COLOR_COWAMM_BLUE}: #3fc4ff;
     ${UI.COLOR_COWAMM_LIGHT_BLUE}: #ccf8ff;

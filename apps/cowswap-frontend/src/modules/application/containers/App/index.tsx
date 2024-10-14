@@ -24,7 +24,7 @@ import { useInitializeUtm } from 'modules/utm'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useMenuItems } from 'common/hooks/useMenuItems'
-import { CoWAmmBanner } from 'common/pure/CoWAMMBanner'
+import { BannerLocation, CoWAmmBanner } from 'common/pure/CoWAMMBanner'
 import { LoadingApp } from 'common/pure/LoadingApp'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
@@ -62,7 +62,7 @@ export function App() {
         onClick: toggleDarkMode,
       },
     ],
-    [darkMode, toggleDarkMode]
+    [darkMode, toggleDarkMode],
   )
 
   const tradeContext = useTradeRouteContext()
@@ -129,7 +129,7 @@ export function App() {
           )}
 
           {/* CoW AMM banner */}
-          {!isInjectedWidgetMode && <CoWAmmBanner />}
+          {!isInjectedWidgetMode && <CoWAmmBanner location={BannerLocation.Global} />}
 
           <styledEl.BodyWrapper>
             <TopLevelModals />

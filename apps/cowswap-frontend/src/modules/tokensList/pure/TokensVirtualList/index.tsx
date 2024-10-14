@@ -5,7 +5,7 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import ms from 'ms.macro'
 
-import { CoWAmmBanner } from 'common/pure/CoWAMMBanner'
+import { CoWAmmBanner, BannerLocation } from 'common/pure/CoWAMMBanner'
 
 import * as styledEl from './styled'
 
@@ -67,8 +67,7 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
 
   return (
     <CommonListContainer id="tokens-list" ref={parentRef} onScroll={onScroll}>
-      <CoWAmmBanner location="tokenSelector" />
-
+      <CoWAmmBanner location={BannerLocation.TokenSelector} />
       <styledEl.TokensInner ref={wrapperRef} style={{ height: virtualizer.getTotalSize() }}>
         <styledEl.TokensScroller style={{ transform: `translateY(${items[0]?.start ?? 0}px)` }}>
           {items.map((virtualRow) => {

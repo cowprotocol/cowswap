@@ -110,7 +110,7 @@ export const Card = styled.div<{
   position: relative;
 
   > h3,
-  > p {
+  > span {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -133,11 +133,11 @@ export const Card = styled.div<{
     letter-spacing: -2px;
   }
 
-  > p {
+  > span {
     font-weight: inherit;
   }
 
-  > p b {
+  > span b {
     font-weight: 900;
     color: var(${UI.COLOR_COWAMM_LIGHTER_GREEN});
   }
@@ -380,13 +380,13 @@ export const TokenSelectorWrapper = styled.div`
   position: relative;
 `
 
-export const TokenSelectorWrapperInner = styled.div`
+export const TokenSelectorWrapperInner = styled.div<{ bgColor?: string; color?: string }>`
   position: relative;
   width: 100%;
   height: auto;
   border-radius: 24px;
-  background-color: var(${UI.COLOR_COWAMM_LIGHT_GREEN});
-  color: var(${UI.COLOR_COWAMM_DARK_GREEN});
+  background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_COWAMM_LIGHT_GREEN})`};
+  color: ${({ color }) => color || `var(${UI.COLOR_COWAMM_DARK_GREEN})`};
   padding: 14px;
   margin: 0 auto;
   display: flex;

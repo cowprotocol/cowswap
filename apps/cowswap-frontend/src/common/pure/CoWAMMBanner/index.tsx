@@ -9,6 +9,7 @@ import { CoWAmmBannerContent } from './CoWAmmBannerContent'
 import { cowAmmBannerStateAtom } from './cowAmmBannerState'
 import { dummyData, lpTokenConfig } from './dummyData'
 
+const IS_DEMO_MODE = true
 const ANALYTICS_URL = 'https://cow.fi/pools?utm_source=swap.cow.fi&utm_medium=web&utm_content=cow_amm_banner'
 
 export const DEMO_DROPDOWN_OPTIONS = [
@@ -22,7 +23,10 @@ export const DEMO_DROPDOWN_OPTIONS = [
   { value: 'fourLps', label: '4 LP tokens' },
 ]
 
-type BannerLocation = 'global' | 'tokenSelector'
+export enum BannerLocation {
+  Global = 'global',
+  TokenSelector = 'tokenSelector',
+}
 
 interface BannerProps {
   location: BannerLocation
@@ -47,22 +51,28 @@ export function CoWAmmBanner({ location }: BannerProps) {
     })
   }, [location])
 
-  const handleBannerClose = (close: () => void) => () => {
+  const handleBannerClose = useCallback(() => {
     handleClose()
-    close()
-  }
+  }, [handleClose])
 
   const bannerId = `cow_amm_banner_2024_va_${location}`
 
   return ClosableBanner(bannerId, (close) => (
     <CoWAmmBannerContent
+      id={bannerId}
+      title="CoW AMM"
+      ctaText="Explore CoW AMM"
       location={location}
+      isDemo={IS_DEMO_MODE}
       selectedState={selectedState}
       setSelectedState={setSelectedState}
       dummyData={dummyData}
       lpTokenConfig={lpTokenConfig}
-      handleCTAClick={handleCTAClick}
-      handleBannerClose={handleBannerClose(close)}
+      onCtaClick={handleCTAClick}
+      onClose={() => {
+        handleBannerClose()
+        close()
+      }}
     />
   ))
 }

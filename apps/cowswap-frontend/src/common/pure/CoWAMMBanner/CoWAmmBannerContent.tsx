@@ -12,12 +12,13 @@ import SVG from 'react-inlinesvg'
 import { Textfit } from 'react-textfit'
 
 import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { ArrowBackground } from './arrowBackground'
 import { LpToken, StateKey } from './dummyData'
 import * as styledEl from './styled'
 
-import { DEMO_DROPDOWN_OPTIONS } from './index'
+import { BannerLocation, DEMO_DROPDOWN_OPTIONS } from './index'
 
 const lpTokenIcons: Record<LpToken, string> = {
   [LpToken.UniswapV2]: ICON_UNISWAP,
@@ -27,25 +28,34 @@ const lpTokenIcons: Record<LpToken, string> = {
 }
 
 interface CoWAmmBannerContentProps {
-  location: 'global' | 'tokenSelector'
+  id: string
+  title: string
+  ctaText: string
+  location: BannerLocation
+  isDemo: boolean
   selectedState: StateKey
   setSelectedState: (state: StateKey) => void
   dummyData: Record<StateKey, { apr: number; comparison: string }>
   lpTokenConfig: Record<StateKey, LpToken[]>
-  handleCTAClick: () => void
-  handleBannerClose: () => void
+  onCtaClick: () => void
+  onClose: () => void
 }
 
 export function CoWAmmBannerContent({
+  id,
+  title,
+  ctaText,
   location,
+  isDemo,
   selectedState,
   setSelectedState,
   dummyData,
   lpTokenConfig,
-  handleCTAClick,
-  handleBannerClose,
+  onCtaClick,
+  onClose,
 }: CoWAmmBannerContentProps) {
   const isMobile = useMediaQuery(upToSmall)
+  const isDarkMode = useIsDarkMode()
   const arrowBackgroundRef = useRef<HTMLDivElement>(null)
 
   const handleCTAMouseEnter = useCallback(() => {
@@ -62,21 +72,19 @@ export function CoWAmmBannerContent({
     }
   }, [])
 
-  const aprMessage = useMemo(() => {
-    const { apr } = dummyData[selectedState]
-    return `+${apr.toFixed(1)}%`
-  }, [selectedState, dummyData])
+  const { apr, comparison } = dummyData[selectedState]
+
+  const aprMessage = useMemo(() => `+${apr.toFixed(1)}%`, [apr])
 
   const comparisonMessage = useMemo(() => {
-    const { comparison } = dummyData[selectedState]
     if (selectedState === 'noLp') {
       return `yield over the average UNI-V2 pool`
     }
-    if (selectedState === 'twoLps' || selectedState === 'threeLps') {
-      return `Get higher average APR than ${comparison}`
-    }
-    return `Get higher APR than ${comparison}`
-  }, [selectedState, dummyData])
+    const prefix = ['twoLps', 'threeLps'].includes(selectedState)
+      ? 'Get higher average APR than'
+      : 'Get higher APR than'
+    return `${prefix} ${comparison}`
+  }, [selectedState, comparison])
 
   const lpEmblems = useMemo(() => {
     const tokens = lpTokenConfig[selectedState]
@@ -110,132 +118,141 @@ export function CoWAmmBannerContent({
     )
   }, [selectedState, lpTokenConfig])
 
-  const isTokenSelector = (loc: typeof location): loc is 'tokenSelector' => loc === 'tokenSelector'
+  const renderProductLogo = (color: string) => (
+    <ProductLogo height={20} overrideColor={`var(${color})`} variant={ProductVariant.CowAmm} logoIconOnly />
+  )
 
-  const renderBannerContent = () => {
-    if (isTokenSelector(location)) {
-      return (
-        <styledEl.TokenSelectorWrapper>
-          <styledEl.TokenSelectorWrapperInner>
-            <styledEl.Title>
-              <ProductLogo
-                height={20}
-                overrideColor={`var(${UI.COLOR_COWAMM_DARK_GREEN})`}
-                variant={ProductVariant.CowAmm}
-                logoIconOnly
-              />
-              <span>CoW AMM</span>
-            </styledEl.Title>
-            <styledEl.Card
-              bgColor={'transparent'}
-              borderColor={`var(${UI.COLOR_COWAMM_DARK_GREEN_OPACITY_30})`}
-              borderWidth={2}
-              padding={'14px'}
-              gap={'14px'}
-              height={'78px'}
-            >
-              <styledEl.StarIcon size={26} top={-16} right={80} color={`var(${UI.COLOR_COWAMM_LIGHTER_GREEN})`}>
-                <SVG src={ICON_STAR} />
-              </styledEl.StarIcon>
-              <h3>
-                <Textfit mode="single" forceSingleModeWidth={false} min={45} max={48} key={aprMessage}>
-                  {aprMessage}
-                </Textfit>
-              </h3>
-              <p>
-                <Textfit mode="multi" forceSingleModeWidth={false} min={12} max={21} key={comparisonMessage}>
-                  {comparisonMessage}
-                </Textfit>
-              </p>
-              <styledEl.StarIcon size={16} bottom={3} right={20} color={`var(${UI.COLOR_COWAMM_LIGHTER_GREEN})`}>
-                <SVG src={ICON_STAR} />
-              </styledEl.StarIcon>
-            </styledEl.Card>
-          </styledEl.TokenSelectorWrapperInner>
-        </styledEl.TokenSelectorWrapper>
-      )
-    }
+  const renderStarIcon = (props: any) => (
+    <styledEl.StarIcon {...props}>
+      <SVG src={ICON_STAR} />
+    </styledEl.StarIcon>
+  )
 
-    return (
-      <>
-        <styledEl.Title>
-          <ProductLogo
-            height={20}
-            overrideColor={`var(${UI.COLOR_COWAMM_LIGHT_GREEN})`}
-            variant={ProductVariant.CowAmm}
-            logoIconOnly
-          />
-          <span>CoW AMM</span>
+  const renderTextfit = (
+    content: React.ReactNode,
+    mode: 'single' | 'multi',
+    minFontSize: number,
+    maxFontSize: number,
+  ) => (
+    <Textfit mode={mode} forceSingleModeWidth={false} min={minFontSize} max={maxFontSize}>
+      {content}
+    </Textfit>
+  )
+
+  const renderTokenSelectorContent = () => (
+    <styledEl.TokenSelectorWrapper>
+      <styledEl.TokenSelectorWrapperInner
+        bgColor={isDarkMode ? `var(${UI.COLOR_COWAMM_DARK_GREEN})` : undefined}
+        color={isDarkMode ? `var(${UI.COLOR_COWAMM_LIGHT_GREEN})` : undefined}
+      >
+        <styledEl.CloseButton
+          size={24}
+          top={14}
+          onClick={onClose}
+          color={`var(${isDarkMode ? UI.COLOR_COWAMM_LIGHT_GREEN : UI.COLOR_COWAMM_DARK_GREEN})`}
+        />
+        <styledEl.Title color={`var(${isDarkMode ? UI.COLOR_COWAMM_LIGHT_GREEN : UI.COLOR_COWAMM_DARK_GREEN})`}>
+          {renderProductLogo(isDarkMode ? UI.COLOR_COWAMM_LIGHT_GREEN : UI.COLOR_COWAMM_DARK_GREEN)}
+          <span>{title}</span>
         </styledEl.Title>
-        <styledEl.Card bgColor={`var(${UI.COLOR_COWAMM_BLUE})`}>
-          <styledEl.StarIcon size={36} top={-17} right={80}>
-            <SVG src={ICON_STAR} />
-          </styledEl.StarIcon>
-          <h3>
-            <Textfit mode="single" forceSingleModeWidth={false} min={80} max={80} key={aprMessage}>
-              {aprMessage}
-            </Textfit>
-          </h3>
-          <p>
-            <Textfit mode="multi" forceSingleModeWidth={false} min={10} max={28} key={comparisonMessage}>
-              {comparisonMessage}
-            </Textfit>
-          </p>
-          <styledEl.StarIcon size={26} bottom={-10} right={20}>
-            <SVG src={ICON_STAR} />
-          </styledEl.StarIcon>
+        <styledEl.Card
+          bgColor={'transparent'}
+          borderColor={`var(${isDarkMode ? UI.COLOR_COWAMM_LIGHT_GREEN_OPACITY_30 : UI.COLOR_COWAMM_DARK_GREEN_OPACITY_30})`}
+          borderWidth={2}
+          padding={'14px'}
+          gap={'14px'}
+          height={'78px'}
+        >
+          {renderStarIcon({ size: 26, top: -16, right: 80, color: `var(${UI.COLOR_COWAMM_LIGHTER_GREEN})` })}
+          <h3>{renderTextfit(aprMessage, 'single', 45, 48)}</h3>
+          <span>{renderTextfit(comparisonMessage, 'multi', 12, 21)}</span>
+          {renderStarIcon({ size: 16, bottom: 3, right: 20, color: `var(${UI.COLOR_COWAMM_LIGHTER_GREEN})` })}
         </styledEl.Card>
+        <styledEl.CTAButton
+          onClick={onCtaClick}
+          onMouseEnter={handleCTAMouseEnter}
+          onMouseLeave={handleCTAMouseLeave}
+          size={38}
+          fontSize={18}
+          bgColor={isDarkMode ? `var(${UI.COLOR_COWAMM_LIGHT_GREEN})` : `var(${UI.COLOR_COWAMM_DARK_GREEN})`}
+          bgHoverColor={isDarkMode ? `var(${UI.COLOR_COWAMM_LIGHTER_GREEN})` : `var(${UI.COLOR_COWAMM_GREEN})`}
+          color={isDarkMode ? `var(${UI.COLOR_COWAMM_DARK_GREEN})` : `var(${UI.COLOR_COWAMM_LIGHT_GREEN})`}
+        >
+          {ctaText}
+        </styledEl.CTAButton>
+      </styledEl.TokenSelectorWrapperInner>
+    </styledEl.TokenSelectorWrapper>
+  )
 
-        {!isMobile && (
-          <styledEl.Card bgColor={`var(${UI.COLOR_COWAMM_GREEN})`} color={`var(${UI.COLOR_COWAMM_LIGHT_GREEN})`}>
-            <p>
-              <Textfit mode="multi" forceSingleModeWidth={false} min={10} max={30}>
-                One-click convert, <b>boost yield</b>
-              </Textfit>
-            </p>
-            {lpEmblems}
-          </styledEl.Card>
-        )}
-      </>
-    )
+  const renderGlobalContent = () => (
+    <styledEl.BannerWrapper>
+      <styledEl.CloseButton size={24} onClick={onClose} />
+      <styledEl.Title>
+        {renderProductLogo(UI.COLOR_COWAMM_LIGHT_GREEN)}
+        <span>{title}</span>
+      </styledEl.Title>
+      <styledEl.Card bgColor={`var(${UI.COLOR_COWAMM_BLUE})`}>
+        {renderStarIcon({ size: 36, top: -17, right: 80 })}
+        <h3>{renderTextfit(aprMessage, 'single', 80, 80)}</h3>
+        <span>{renderTextfit(comparisonMessage, 'multi', 10, 28)}</span>
+        {renderStarIcon({ size: 26, bottom: -10, right: 20 })}
+      </styledEl.Card>
+
+      {!isMobile && (
+        <styledEl.Card bgColor={`var(${UI.COLOR_COWAMM_GREEN})`} color={`var(${UI.COLOR_COWAMM_LIGHT_GREEN})`}>
+          <span>
+            {renderTextfit(
+              <>
+                One-click convert, <strong>boost yield</strong>
+              </>,
+              'multi',
+              10,
+              30,
+            )}
+          </span>
+          {lpEmblems}
+        </styledEl.Card>
+      )}
+
+      <styledEl.CTAButton onClick={onCtaClick} onMouseEnter={handleCTAMouseEnter} onMouseLeave={handleCTAMouseLeave}>
+        {ctaText}
+      </styledEl.CTAButton>
+
+      <styledEl.SecondaryLink href={'https://cow.fi/'}>Pool analytics ↗</styledEl.SecondaryLink>
+
+      <ArrowBackground ref={arrowBackgroundRef} />
+    </styledEl.BannerWrapper>
+  )
+
+  const renderDemoDropdown = () => (
+    <styledEl.DEMO_DROPDOWN value={selectedState} onChange={(e) => setSelectedState(e.target.value as StateKey)}>
+      {DEMO_DROPDOWN_OPTIONS.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </styledEl.DEMO_DROPDOWN>
+  )
+
+  const content = (() => {
+    switch (location) {
+      case BannerLocation.TokenSelector:
+        return renderTokenSelectorContent()
+      case BannerLocation.Global:
+        return renderGlobalContent()
+      default:
+        return null
+    }
+  })()
+
+  if (!content) {
+    return null
   }
 
   return (
-    <>
-      {isTokenSelector(location) ? (
-        renderBannerContent()
-      ) : (
-        <styledEl.BannerWrapper>
-          <styledEl.CloseButton size={24} onClick={handleBannerClose} />
-
-          <styledEl.DEMO_DROPDOWN value={selectedState} onChange={(e) => setSelectedState(e.target.value as StateKey)}>
-            {DEMO_DROPDOWN_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </styledEl.DEMO_DROPDOWN>
-
-          {renderBannerContent()}
-
-          <styledEl.CTAButton
-            onClick={handleCTAClick}
-            onMouseEnter={handleCTAMouseEnter}
-            onMouseLeave={handleCTAMouseLeave}
-            size={isTokenSelector(location) ? 38 : undefined}
-            fontSize={isTokenSelector(location) ? 18 : undefined}
-            bgColor={isTokenSelector(location) ? `var(${UI.COLOR_COWAMM_DARK_GREEN})` : undefined}
-            bgHoverColor={isTokenSelector(location) ? `var(${UI.COLOR_COWAMM_GREEN})` : undefined}
-            color={isTokenSelector(location) ? `var(${UI.COLOR_COWAMM_LIGHT_GREEN})` : undefined}
-          >
-            Booooost APR gas-free!
-          </styledEl.CTAButton>
-
-          <ArrowBackground ref={arrowBackgroundRef} />
-
-          <styledEl.SecondaryLink href={'https://cow.fi/'}>Pool analytics ↗</styledEl.SecondaryLink>
-        </styledEl.BannerWrapper>
-      )}
-    </>
+    <div data-banner-id={id}>
+      {content}
+      {isDemo && renderDemoDropdown()}
+    </div>
   )
 }
