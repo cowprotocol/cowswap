@@ -21,9 +21,16 @@ export function getDefaultYieldState(chainId: SupportedChainId | null): YieldRaw
   }
 }
 
-export const { atom: yieldRawStateAtom, updateAtom: updateYieldRawStateAtom } = atomWithPartialUpdate(
+const rawState = atomWithPartialUpdate(
   atomWithStorage<YieldRawState>('yieldStateAtom:v1', getDefaultYieldState(null), getJotaiIsolatedStorage()),
 )
+
+export const yieldRawStateAtom = atom((get) => ({
+  ...get(rawState.atom),
+  orderKind: OrderKind.SELL,
+}))
+
+export const updateYieldRawStateAtom = rawState.updateAtom
 
 export const yieldDerivedStateAtom = atom<YieldDerivedState>({
   ...DEFAULT_TRADE_DERIVED_STATE,

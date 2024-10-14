@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
 import { BadgeType } from '@cowprotocol/ui'
@@ -7,7 +7,7 @@ import type { TradeType } from '@cowprotocol/widget-lib'
 import { Trans } from '@lingui/macro'
 import IMAGE_CARET from 'assets/icon/caret.svg'
 import SVG from 'react-inlinesvg'
-import { matchPath, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { ModalHeader } from 'modules/tokensList/pure/ModalHeader'
@@ -18,7 +18,9 @@ import { useMenuItems } from 'common/hooks/useMenuItems'
 import * as styledEl from './styled'
 
 import { useTradeRouteContext } from '../../hooks/useTradeRouteContext'
-import { parameterizeTradeRoute } from '../../utils/parameterizeTradeRoute'
+import { useGetTradeStateByRoute } from '../../hooks/useTradeState'
+import { TradeUrlParams } from '../../types/TradeRawState'
+import { addChainIdToRoute, parameterizeTradeRoute } from '../../utils/parameterizeTradeRoute'
 
 interface MenuItemConfig {
   route: RoutesValues
@@ -48,11 +50,7 @@ export function TradeWidgetLinks({
   const [isDropdownVisible, setDropdownVisible] = useState(false)
   const { enabledTradeTypes } = useInjectedWidgetParams()
   const menuItems = useMenuItems()
-
-  const handleMenuItemClick = (_item?: MenuItemConfig) => {
-    if (menuItemsElements.length === 1) return
-    setDropdownVisible(false)
-  }
+  const getTradeStateByType = useGetTradeStateByRoute()
 
   const enabledItems = useMemo(() => {
     return menuItems.filter((item) => {
@@ -62,10 +60,37 @@ export function TradeWidgetLinks({
     })
   }, [menuItems, enabledTradeTypes])
 
+  const enabledItemsCount = enabledItems.length
+
+  const handleMenuItemClick = useCallback(
+    (_item?: MenuItemConfig) => {
+      if (enabledItemsCount === 1) return
+      setDropdownVisible(false)
+    },
+    [enabledItemsCount],
+  )
+
   const menuItemsElements = useMemo(() => {
     return enabledItems.map((item) => {
-      const routePath = parameterizeTradeRoute(tradeContext, item.route, true)
-      const isActive = !!matchPath(location.pathname, routePath.split('?')[0])
+      const isItemYield = item.route === Routes.YIELD
+      const isCurrentPathYield = location.pathname.startsWith(addChainIdToRoute(Routes.YIELD, tradeContext.chainId))
+      const itemTradeState = getTradeStateByType(item.route)
+
+      const routePath = isItemYield
+        ? addChainIdToRoute(item.route, tradeContext.chainId)
+        : parameterizeTradeRoute(
+            isCurrentPathYield
+              ? ({
+                  chainId: tradeContext.chainId,
+                  inputCurrencyId: itemTradeState.inputCurrencyId,
+                  outputCurrencyId: itemTradeState.outputCurrencyId,
+                } as TradeUrlParams)
+              : tradeContext,
+            item.route,
+            true,
+          )
+
+      const isActive = location.pathname.startsWith(routePath.split('?')[0])
 
       return (
         <MenuItem
@@ -89,6 +114,7 @@ export function TradeWidgetLinks({
     highlightedBadgeText,
     highlightedBadgeType,
     handleMenuItemClick,
+    getTradeStateByType,
   ])
 
   const singleMenuItem = menuItemsElements.length === 1

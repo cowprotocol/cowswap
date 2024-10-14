@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import {
   useAdvancedOrdersRawState,
@@ -8,6 +8,8 @@ import { useLimitOrdersRawState, useUpdateLimitOrdersRawState } from 'modules/li
 import { useSwapRawState, useUpdateSwapRawState } from 'modules/swap/hooks/useSwapRawState'
 import { ExtendedTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
 import { useUpdateYieldRawState, useYieldRawState } from 'modules/yield'
+
+import { Routes, RoutesValues } from 'common/constants/routes'
 
 import { useTradeTypeInfoFromUrl } from './useTradeTypeInfoFromUrl'
 
@@ -77,4 +79,21 @@ export function useTradeState(): {
     updateLimitOrdersState,
     updateYieldRawState,
   ])
+}
+
+export function useGetTradeStateByRoute() {
+  const limitOrdersState = useLimitOrdersRawState()
+  const advancedOrdersState = useAdvancedOrdersRawState()
+  const swapTradeState = useSwapRawState()
+  const yieldRawState = useYieldRawState()
+
+  return useCallback(
+    (route: RoutesValues) => {
+      if (route === Routes.SWAP) return swapTradeState
+      if (route === Routes.ABOUT) return advancedOrdersState
+      if (route === Routes.YIELD) return yieldRawState
+      return limitOrdersState
+    },
+    [swapTradeState, advancedOrdersState, yieldRawState, limitOrdersState],
+  )
 }
