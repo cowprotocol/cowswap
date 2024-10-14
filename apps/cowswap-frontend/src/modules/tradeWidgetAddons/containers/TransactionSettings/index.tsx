@@ -48,7 +48,7 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import * as styledEl from './styled'
 
-const MAX_DEADLINE_MINUTES = 180 // 3h
+const MAX_DEADLINE_MINUTES = 60 * 12 // 12h
 
 enum SlippageError {
   InvalidInput = 'InvalidInput',
