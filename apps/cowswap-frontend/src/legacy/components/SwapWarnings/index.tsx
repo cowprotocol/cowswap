@@ -192,7 +192,7 @@ export function HighSuggestedSlippageWarning(props: HighSuggestedSlippageWarning
         <HoverTooltip
           wrapInContainer
           content={
-            'CoW Swap dynamically adjusts your slippage tolerance based on current volatility. You can set a custom slippage using the gear icon above.'
+            'CoW Swap dynamically adjusts your slippage tolerance based on current volatility. You can set a custom slippage using the settings icon above.'
           }
         >
           <ErrorStyledInfoIcon />
