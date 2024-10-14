@@ -149,15 +149,16 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
       setDeadlineInput(value)
       setDeadlineError(false)
 
-      if (value.length === 0) {
-        orderExpirationTimeAnalytics('Default', DEFAULT_DEADLINE_FROM_NOW)
-        setDeadline(DEFAULT_DEADLINE_FROM_NOW)
-      } else {
-        try {
-          const parsed: number = Math.floor(Number.parseFloat(value) * 60)
-          if (
-            !Number.isInteger(parsed) || // Check deadline is a number
-            parsed < minDeadline || // Check deadline is not too small
+    if (value.length === 0) {
+      orderExpirationTimeAnalytics('Default', DEFAULT_DEADLINE_FROM_NOW)
+      setDeadline(DEFAULT_DEADLINE_FROM_NOW)
+    } else {
+      try {
+        const parsed: number = Math.floor(Number.parseFloat(value) * 60)
+        if (
+          !Number.isInteger(parsed) || // Check deadline is a number
+          parsed <
+            minDeadline || // Check deadline is not too small
             parsed > maxDeadline // Check deadline is not too big
           ) {
             setDeadlineError(DeadlineError.InvalidInput)
@@ -279,7 +280,8 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
                 <HelpTooltip
                   text={
                     <Trans>
-                      CoW Swap has dynamically selected this slippage amount to account for current gas prices and trade
+                      CoW Swap has dynamically selected this slippage amount to
+                      account for current gas prices and trade
                       size. Changes may result in slower execution.
                     </Trans>
                   }
