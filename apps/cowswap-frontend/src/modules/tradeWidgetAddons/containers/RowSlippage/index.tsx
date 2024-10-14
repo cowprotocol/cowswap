@@ -16,9 +16,16 @@ export interface RowSlippageProps {
   slippageLabel?: React.ReactNode
   slippageTooltip?: React.ReactNode
   isSlippageModified: boolean
+  isTradePriceUpdating: boolean
 }
 
-export function RowSlippage({ allowedSlippage, slippageTooltip, slippageLabel, isSlippageModified }: RowSlippageProps) {
+export function RowSlippage({
+  allowedSlippage,
+  slippageTooltip,
+  slippageLabel,
+  isTradePriceUpdating,
+  isSlippageModified,
+}: RowSlippageProps) {
   const { chainId } = useWalletInfo()
 
   const isEoaEthFlow = useIsEoaEthFlow()
@@ -37,6 +44,7 @@ export function RowSlippage({ allowedSlippage, slippageTooltip, slippageLabel, i
       slippageTooltip,
       displaySlippage: `${formatPercent(allowedSlippage)}%`,
       isSmartSlippageApplied,
+      isSmartSlippageLoading: isTradePriceUpdating,
       smartSlippage:
         smartSlippage && !isEoaEthFlow ? `${formatPercent(new Percent(smartSlippage, 10_000))}%` : undefined,
       setAutoSlippage: smartSlippage && !isEoaEthFlow ? () => setSlippage(null) : undefined,

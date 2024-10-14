@@ -16,6 +16,7 @@ const defaultProps: RowSlippageContentProps = {
   setAutoSlippage: () => {
     console.log('setAutoSlippage called!')
   },
+  isSmartSlippageLoading: false
 }
 
 export default <RowSlippageContent {...defaultProps} />

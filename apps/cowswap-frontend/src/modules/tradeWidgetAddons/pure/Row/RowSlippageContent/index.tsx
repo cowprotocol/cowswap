@@ -1,6 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
+import { CenteredDots, HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -43,6 +43,7 @@ export interface RowSlippageContentProps {
   setAutoSlippage?: Command // todo: make them optional
   smartSlippage?: string
   isSmartSlippageApplied: boolean
+  isSmartSlippageLoading: boolean
 }
 
 export function RowSlippageContent(props: RowSlippageContentProps) {
@@ -58,6 +59,7 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
     setAutoSlippage,
     smartSlippage,
     isSmartSlippageApplied,
+    isSmartSlippageLoading,
   } = props
 
   const tooltipContent =
@@ -71,11 +73,27 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
     smartSlippage &&
     !suggestedEqualToUserSlippage && (
       <DefaultSlippage>
-        <LinkStyledButton onClick={setAutoSlippage}>(Suggested: {smartSlippage})</LinkStyledButton>
-        <HoverTooltip wrapInContainer content={SUGGESTED_SLIPPAGE_TOOLTIP}>
-          <StyledInfoIcon size={16} />
-        </HoverTooltip>
+        {isSmartSlippageLoading ? (
+          <CenteredDots />
+        ) : (
+          <>
+            <LinkStyledButton onClick={setAutoSlippage}>(Suggested: {smartSlippage})</LinkStyledButton>
+            <HoverTooltip wrapInContainer content={SUGGESTED_SLIPPAGE_TOOLTIP}>
+              <StyledInfoIcon size={16} />
+            </HoverTooltip>
+          </>
+        )}
       </DefaultSlippage>
+    )
+
+  const displaySlippageWithLoader =
+    isSmartSlippageLoading && isSmartSlippageApplied ? (
+      <CenteredDots />
+    ) : (
+      <>
+        {displaySlippage}
+        {displayDefaultSlippage}
+      </>
     )
 
   return (
@@ -93,10 +111,7 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
         </HoverTooltip>
       </RowFixed>
       <TextWrapper textAlign="right">
-        <span>
-          {displaySlippage}
-          {displayDefaultSlippage}
-        </span>
+        <span>{displaySlippageWithLoader}</span>
       </TextWrapper>
     </StyledRowBetween>
   )

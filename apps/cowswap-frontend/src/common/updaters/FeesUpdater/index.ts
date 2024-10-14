@@ -12,8 +12,6 @@ import ms from 'ms.macro'
 
 import { useRefetchQuoteCallback } from 'legacy/hooks/useRefetchPriceCallback'
 import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from 'legacy/state/price/hooks'
-import { QuoteInformationObject } from 'legacy/state/price/reducer'
-import { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
@@ -22,95 +20,11 @@ import { useAppData } from 'modules/appData'
 import { useDerivedSwapInfo, useSwapState } from 'modules/swap/hooks/useSwapState'
 import { useIsEoaEthFlow } from 'modules/trade'
 
+import { isRefetchQuoteRequired } from './isRefetchQuoteRequired'
+import { quoteUsingSameParameters } from './quoteUsingSameParameters'
+
 export const TYPED_VALUE_DEBOUNCE_TIME = 350
 export const SWAP_QUOTE_CHECK_INTERVAL = ms`30s` // Every 30s
-const RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME = ms`30s` // Will renew the quote if there's less than 30 seconds left for the quote to expire
-const WAITING_TIME_BETWEEN_EQUAL_REQUESTS = ms`5s` // Prevents from sending the same request to often (max, every 5s)
-
-type FeeQuoteParams = Omit<LegacyFeeQuoteParams, 'validTo'>
-
-/**
- * Returns if the quote has been recently checked
- */
-function wasQuoteCheckedRecently(lastQuoteCheck: number): boolean {
-  return lastQuoteCheck + WAITING_TIME_BETWEEN_EQUAL_REQUESTS > Date.now()
-}
-
-/**
- * Returns true if the fee quote expires soon (in less than RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME milliseconds)
- */
-function isExpiringSoon(quoteExpirationIsoDate: string, threshold: number): boolean {
-  const feeExpirationDate = Date.parse(quoteExpirationIsoDate)
-  return feeExpirationDate <= Date.now() + threshold
-}
-
-/**
- * Checks if the parameters for the current quote are correct
- *
- * Quotes are only valid for a given token-pair and amount. If any of these parameter change, the fee needs to be re-fetched
- */
-function quoteUsingSameParameters(currentParams: FeeQuoteParams, quoteInfo: QuoteInformationObject): boolean {
-  const {
-    amount: currentAmount,
-    sellToken: currentSellToken,
-    buyToken: currentBuyToken,
-    kind: currentKind,
-    userAddress: currentUserAddress,
-    receiver: currentReceiver,
-    appData: currentAppData,
-  } = currentParams
-  const { amount, buyToken, sellToken, kind, userAddress, receiver, appData } = quoteInfo
-  const hasSameReceiver = currentReceiver && receiver ? currentReceiver === receiver : true
-
-  // cache the base quote params without quoteInfo user address to check
-  const paramsWithoutAddress =
-    sellToken === currentSellToken &&
-    buyToken === currentBuyToken &&
-    amount === currentAmount &&
-    kind === currentKind &&
-    appData === currentAppData &&
-    hasSameReceiver
-  // 2 checks: if there's a quoteInfo user address (meaning quote was already calculated once) and one without
-  // in case user is not connected
-  return userAddress ? currentUserAddress === userAddress && paramsWithoutAddress : paramsWithoutAddress
-}
-
-/**
- *  Decides if we need to refetch the fee information given the current parameters (selected by the user), and the current feeInfo (in the state)
- */
-function isRefetchQuoteRequired(
-  isLoading: boolean,
-  currentParams: FeeQuoteParams,
-  quoteInformation?: QuoteInformationObject,
-): boolean {
-  // If there's no quote/fee information, we always re-fetch
-  if (!quoteInformation) {
-    return true
-  }
-
-  if (!quoteUsingSameParameters(currentParams, quoteInformation)) {
-    // If the current parameters don't match the fee, the fee information is invalid and needs to be re-fetched
-    return true
-  }
-
-  // The query params are the same, so we only ask for a new quote if:
-  //  - If the quote was not queried recently
-  //  - There's not another price query going on right now
-  //  - The quote will expire soon
-  if (wasQuoteCheckedRecently(quoteInformation.lastCheck)) {
-    // Don't Re-fetch if it was queried recently
-    return false
-  } else if (isLoading) {
-    // Don't Re-fetch if there's another quote going on with the same params
-    // It's better to wait for the timeout or resolution. Also prevents an issue of refreshing too fast with slow APIs
-    return false
-  } else if (quoteInformation.fee) {
-    // Re-fetch if the fee is expiring soon
-    return isExpiringSoon(quoteInformation.fee.expirationDate, RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME)
-  }
-
-  return false
-}
 
 export function FeesUpdater(): null {
   const { chainId, account } = useWalletInfo()
@@ -219,7 +133,7 @@ export function FeesUpdater(): null {
     // Callback to re-fetch both the fee and the price
     const refetchQuoteIfRequired = () => {
       // if no token is unsupported and needs refetching
-      const hasToRefetch = !unsupportedToken && isRefetchQuoteRequired(isLoading, quoteParams, quoteInfo)
+      const hasToRefetch = !unsupportedToken && isRefetchQuoteRequired(isLoading, quoteParams, quoteInfo) //
 
       if (hasToRefetch) {
         // Decide if this is a new quote, or just a refresh

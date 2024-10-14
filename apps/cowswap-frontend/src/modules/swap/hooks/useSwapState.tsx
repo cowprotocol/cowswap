@@ -230,7 +230,6 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     }
 
     // compare input balance to max input based on version
-    // const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], trade.trade?.maximumAmountIn(allowedSlippage)] // mod
     const balanceIn = currencyBalances[Field.INPUT]
     const amountIn = slippageAdjustedSellAmount
 

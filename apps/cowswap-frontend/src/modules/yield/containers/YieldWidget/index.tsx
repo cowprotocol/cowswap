@@ -86,7 +86,11 @@ export function YieldWidget() {
     bottomContent(tradeWarnings) {
       return (
         <>
-          <TradeRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
+          <TradeRateDetails
+            isTradePriceUpdating={isRateLoading}
+            rateInfoParams={rateInfoParams}
+            deadline={deadlineState[0]}
+          />
           <Warnings />
           {tradeWarnings}
           <TradeButtons isTradeContextReady={doTrade.contextIsReady} />

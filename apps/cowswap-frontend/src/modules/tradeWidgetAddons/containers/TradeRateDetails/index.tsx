@@ -27,9 +27,10 @@ interface TradeRateDetailsProps {
   deadline: number
   rateInfoParams: RateInfoParams
   children?: ReactElement
+  isTradePriceUpdating: boolean
 }
 
-export function TradeRateDetails({ rateInfoParams, deadline }: TradeRateDetailsProps) {
+export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdating }: TradeRateDetailsProps) {
   const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(false)
 
   const slippage = useTradeSlippage()
@@ -89,7 +90,13 @@ export function TradeRateDetails({ rateInfoParams, deadline }: TradeRateDetailsP
         networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
         alwaysRow
       />
-      {slippage && <RowSlippage allowedSlippage={slippage} isSlippageModified={isSlippageModified} />}
+      {slippage && (
+        <RowSlippage
+          isTradePriceUpdating={isTradePriceUpdating}
+          allowedSlippage={slippage}
+          isSlippageModified={isSlippageModified}
+        />
+      )}
       <RowDeadline deadline={deadline} />
     </TradeTotalCostsDetails>
   )

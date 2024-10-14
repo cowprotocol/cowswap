@@ -8,7 +8,7 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
-import { BundleTxWrapBanner, HighFeeWarning } from 'modules/tradeWidgetAddons'
+import { BundleTxWrapBanner, HighFeeWarning, HighSuggestedSlippageWarning } from 'modules/tradeWidgetAddons'
 
 import { TwapSuggestionBanner } from './banners/TwapSuggestionBanner'
 
@@ -19,6 +19,8 @@ export interface SwapWarningsTopProps {
   buyingFiatAmount: CurrencyAmount<Currency> | null
   priceImpact: Percent | undefined
   tradeUrlParams: TradeUrlParams
+  isSuggestedSlippage: boolean | undefined
+  slippageBps: number | undefined
 }
 
 export interface SwapWarningsBottomProps {
@@ -29,11 +31,21 @@ export interface SwapWarningsBottomProps {
 }
 
 export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps) {
-  const { chainId, trade, showTwapSuggestionBanner, buyingFiatAmount, priceImpact, tradeUrlParams } = props
+  const {
+    chainId,
+    trade,
+    showTwapSuggestionBanner,
+    buyingFiatAmount,
+    priceImpact,
+    tradeUrlParams,
+    isSuggestedSlippage,
+    slippageBps,
+  } = props
 
   return (
     <>
       <HighFeeWarning />
+      <HighSuggestedSlippageWarning isSuggestedSlippage={isSuggestedSlippage} slippageBps={slippageBps} />
       <BundleTxWrapBanner />
 
       {showTwapSuggestionBanner && (
