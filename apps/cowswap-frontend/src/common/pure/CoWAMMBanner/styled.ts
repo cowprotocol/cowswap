@@ -372,3 +372,27 @@ export const Arrow = styled.span<{ delay: number }>`
   left: ${() => Math.random() * 100}%;
   font-weight: 500;
 `
+
+export const TokenSelectorWrapper = styled.div`
+  z-index: 3;
+  width: 100%;
+  padding: 20px;
+  position: relative;
+`
+
+export const TokenSelectorWrapperInner = styled.div`
+  position: relative;
+  width: 100%;
+  height: auto;
+  border-radius: 24px;
+  background-color: var(${UI.COLOR_COWAMM_LIGHT_GREEN});
+  color: var(${UI.COLOR_COWAMM_DARK_GREEN});
+  padding: 14px;
+  margin: 0 auto;
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  overflow: hidden;
+`
