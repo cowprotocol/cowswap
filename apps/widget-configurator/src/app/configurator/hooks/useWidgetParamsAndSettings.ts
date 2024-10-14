@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetParams, TradeType } from '@cowprotocol/widget-lib'
 
 import { isDev, isLocalHost, isVercel } from '../../../env'
 import { ConfiguratorState } from '../types'
@@ -31,6 +31,10 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       sellTokenAmount,
       buyToken,
       buyTokenAmount,
+      deadline,
+      swapDeadline,
+      limitDeadline,
+      advancedDeadline,
       tokenListUrls,
       customColors,
       defaultColors,
@@ -57,6 +61,14 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       tradeType: currentTradeType,
       sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
       buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
+      deadlines:
+        swapDeadline || limitDeadline || advancedDeadline
+          ? {
+              [TradeType.SWAP]: swapDeadline,
+              [TradeType.LIMIT]: limitDeadline,
+              [TradeType.ADVANCED]: advancedDeadline,
+            }
+          : deadline,
       enabledTradeTypes,
       theme:
         JSON.stringify(customColors) === JSON.stringify(defaultColors)
