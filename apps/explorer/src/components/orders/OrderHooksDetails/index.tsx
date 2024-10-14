@@ -17,7 +17,7 @@ interface OrderHooksDetailsProps {
 export function OrderHooksDetails({ appData, fullAppData, children }: OrderHooksDetailsProps) {
   const { appDataDoc } = useAppData(appData, fullAppData)
 
-  if (!appDataDoc) return null
+  if (!appDataDoc?.metadata) return null
 
   const metadata = appDataDoc.metadata as latest.Metadata
 
