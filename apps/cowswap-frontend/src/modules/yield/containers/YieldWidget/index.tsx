@@ -1,5 +1,6 @@
 import { Field } from 'legacy/state/types'
 
+import { SelectTokenWidget } from 'modules/tokensList'
 import {
   TradeWidget,
   TradeWidgetSlots,
@@ -80,6 +81,7 @@ export function YieldWidget() {
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
 
   const slots: TradeWidgetSlots = {
+    selectTokenWidget: <SelectTokenWidget displayLpTokenLists />,
     settingsWidget: <SettingsTab recipientToggleState={recipientToggleState} deadlineState={deadlineState} />,
     bottomContent(tradeWarnings) {
       return (

@@ -4,7 +4,8 @@ import type { TokenList as UniTokenList } from '@uniswap/token-lists'
 
 export enum TokenListCategory {
   ERC20 = 'ERC20',
-  LP = 'LP'
+  LP = 'LP',
+  COW_AMM_LP = 'COW_AMM_LP',
 }
 
 export type ListSourceConfig = {

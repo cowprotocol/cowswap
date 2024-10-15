@@ -11,6 +11,7 @@ import { PermitCompatibleTokens } from 'modules/permit'
 
 import * as styledEl from './styled'
 
+import { LpTokenListsWidget } from '../../containers/LpTokenListsWidget'
 import { TokenSearchResults } from '../../containers/TokenSearchResults'
 import { SelectTokenContext } from '../../types'
 import { FavoriteTokensList } from '../FavoriteTokensList'
@@ -24,6 +25,7 @@ export interface SelectTokenModalProps {
   selectedToken?: string
   permitCompatibleTokens: PermitCompatibleTokens
   hideFavoriteTokensTooltip?: boolean
+  displayLpTokenLists?: boolean
   account: string | undefined
 
   onSelectToken(token: TokenWithLogo): void
@@ -52,6 +54,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     onOpenManageWidget,
     onInputPressEnter,
     account,
+    displayLpTokenLists
   } = props
 
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
@@ -61,8 +64,31 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     selectedToken,
     onSelectToken,
     unsupportedTokens,
-    permitCompatibleTokens,
+    permitCompatibleTokens
   }
+
+  const allListsContent = <>
+    <styledEl.Row>
+      <FavoriteTokensList
+        onSelectToken={onSelectToken}
+        selectedToken={selectedToken}
+        tokens={favoriteTokens}
+        hideTooltip={hideFavoriteTokensTooltip}
+      />
+    </styledEl.Row>
+    <styledEl.Separator />
+    {inputValue.trim() ? (
+      <TokenSearchResults searchInput={inputValue.trim()} {...selectTokenContext} />
+    ) : (
+      <TokensVirtualList allTokens={allTokens} {...selectTokenContext} account={account} />
+    )}
+    <styledEl.Separator />
+    <div>
+      <styledEl.ActionButton id="list-token-manage-button" onClick={onOpenManageWidget}>
+        <Edit /> <span>Manage Token Lists</span>
+      </styledEl.ActionButton>
+    </div>
+  </>
 
   return (
     <styledEl.Wrapper>
@@ -80,26 +106,9 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
           placeholder="Search name or paste address"
         />
       </styledEl.Row>
-      <styledEl.Row>
-        <FavoriteTokensList
-          onSelectToken={onSelectToken}
-          selectedToken={selectedToken}
-          tokens={favoriteTokens}
-          hideTooltip={hideFavoriteTokensTooltip}
-        />
-      </styledEl.Row>
-      <styledEl.Separator />
-      {inputValue.trim() ? (
-        <TokenSearchResults searchInput={inputValue.trim()} {...selectTokenContext} />
-      ) : (
-        <TokensVirtualList allTokens={allTokens} {...selectTokenContext} account={account} />
-      )}
-      <styledEl.Separator />
-      <div>
-        <styledEl.ActionButton id="list-token-manage-button" onClick={onOpenManageWidget}>
-          <Edit /> <span>Manage Token Lists</span>
-        </styledEl.ActionButton>
-      </div>
+      {displayLpTokenLists
+        ? <LpTokenListsWidget>{allListsContent}</LpTokenListsWidget>
+        : allListsContent}
     </styledEl.Wrapper>
   )
 }

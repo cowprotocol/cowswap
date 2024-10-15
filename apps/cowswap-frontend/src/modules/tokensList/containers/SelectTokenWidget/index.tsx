@@ -37,7 +37,11 @@ const Wrapper = styled.div`
   }
 `
 
-export function SelectTokenWidget() {
+interface SelectTokenWidgetProps {
+  displayLpTokenLists?: boolean
+}
+
+export function SelectTokenWidget({displayLpTokenLists}: SelectTokenWidgetProps) {
   const { open, onSelectToken, tokenToImport, listToImport, selectedToken, onInputPressEnter } =
     useSelectTokenWidgetState()
   const [isManageWidgetOpen, setIsManageWidgetOpen] = useState(false)
@@ -137,6 +141,7 @@ export function SelectTokenWidget() {
 
         return (
           <SelectTokenModal
+            displayLpTokenLists={displayLpTokenLists}
             unsupportedTokens={unsupportedTokens}
             selectedToken={selectedToken}
             allTokens={allTokens}
