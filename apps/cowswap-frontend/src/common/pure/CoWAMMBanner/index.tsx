@@ -13,14 +13,16 @@ const IS_DEMO_MODE = true
 const ANALYTICS_URL = 'https://cow.fi/pools?utm_source=swap.cow.fi&utm_medium=web&utm_content=cow_amm_banner'
 
 export const DEMO_DROPDOWN_OPTIONS = [
-  { value: 'noLp', label: 'No LP tokens' },
-  { value: 'uniV2', label: 'UNI-V2 LP' },
-  { value: 'sushi', label: 'SushiSwap LP' },
-  { value: 'curve', label: 'Curve LP' },
-  { value: 'pancake', label: 'PancakeSwap LP' },
-  { value: 'twoLps', label: '2 LP tokens' },
-  { value: 'threeLps', label: '3 LP tokens' },
-  { value: 'fourLps', label: '4 LP tokens' },
+  { value: 'noLp', label: '🚫 No LP Tokens' },
+  { value: 'uniV2Superior', label: '⬆️ 🐴 UNI-V2 LP (Superior Yield)' },
+  { value: 'uniV2Inferior', label: '⬇️ 🐴 UNI-V2 LP (Inferior Yield)' },
+  { value: 'sushi', label: '⬇️ 🍣 SushiSwap LP (Inferior Yield)' },
+  { value: 'curve', label: '⬇️ 🌈 Curve LP (Inferior Yield)' },
+  { value: 'pancake', label: '⬇️ 🥞 PancakeSwap LP (Inferior Yield)' },
+  { value: 'twoLpsMixed', label: '⬆️ 🐴 UNI-V2 (Superior) & ⬇️ 🍣 SushiSwap (Inferior) LPs' },
+  { value: 'twoLpsBothSuperior', label: '⬆️ 🐴 UNI-V2 & ⬆️ 🍣 SushiSwap LPs (Both Superior, but UNI-V2 is higher)' },
+  { value: 'threeLps', label: '⬇️ 🐴 UNI-V2, 🍣 SushiSwap & 🌈 Curve LPs (Inferior Yield)' },
+  { value: 'fourLps', label: '⬇️ 🐴 UNI-V2, 🍣 SushiSwap, 🌈 Curve & 🥞 PancakeSwap LPs (Inferior Yield)' },
 ]
 
 export enum BannerLocation {
@@ -61,7 +63,7 @@ export function CoWAmmBanner({ location }: BannerProps) {
     <CoWAmmBannerContent
       id={bannerId}
       title="CoW AMM"
-      ctaText="Explore CoW AMM"
+      ctaText="Booooost APR gas-free!"
       location={location}
       isDemo={IS_DEMO_MODE}
       selectedState={selectedState}

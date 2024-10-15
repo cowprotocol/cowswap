@@ -2,6 +2,7 @@ import { UI, Media } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
 import styled, { keyframes } from 'styled-components/macro'
+import { TokenLogoWrapper } from '../../../../../../libs/tokens/src/pure/TokenLogo'
 
 const arrowUpAnimation = keyframes`
   0% {
@@ -82,7 +83,7 @@ export const Title = styled.h2<{ color?: string }>`
 export const Card = styled.div<{
   bgColor?: string
   color?: string
-  height?: string
+  height?: number | 'max-content'
   borderColor?: string
   borderWidth?: number
   padding?: string
@@ -100,14 +101,23 @@ export const Card = styled.div<{
   margin: 0;
   width: 100%;
   max-width: 100%;
-  height: ${({ height }) => height || 'var(--default-height)'};
-  max-height: ${({ height }) => height || 'var(--default-height)'};
+  height: ${({ height }) =>
+    height === 'max-content' ? 'max-content' : height ? `${height}px` : 'var(--default-height)'};
+  max-height: ${({ height }) =>
+    height === 'max-content' ? 'max-content' : height ? `${height}px` : 'var(--default-height)'};
   border-radius: 16px;
   padding: ${({ padding }) => padding || '24px'};
   background: ${({ bgColor }) => bgColor || 'transparent'};
   color: ${({ color }) => color || 'inherit'};
   border: ${({ borderWidth, borderColor }) => borderWidth && borderColor && `${borderWidth}px solid ${borderColor}`};
   position: relative;
+
+  ${Media.upToSmall()} {
+    flex-flow: column wrap;
+    height: auto;
+    max-height: initial;
+    gap: 8px;
+  }
 
   > h3,
   > span {
@@ -118,6 +128,12 @@ export const Card = styled.div<{
     width: max-content;
     height: 100%;
     max-height: 100%;
+    color: inherit;
+
+    ${Media.upToSmall()} {
+      width: 100%;
+      text-align: center;
+    }
 
     > div {
       width: 100%;
@@ -143,21 +159,63 @@ export const Card = styled.div<{
   }
 `
 
+export const PoolInfo = styled.div<{
+  flow?: 'column' | 'row'
+  align?: 'flex-start' | 'center'
+  color?: string
+  bgColor?: string
+  tokenBorderColor?: string
+}>`
+  display: flex;
+  align-items: ${({ align = 'flex-start' }) => align};
+  flex-flow: ${({ flow = 'column' }) => flow};
+  font-size: 16px;
+  gap: 10px;
+
+  > i {
+    font-style: normal;
+    background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_COWAMM_LIGHT_BLUE})`};
+    color: ${({ color }) => color || `var(${UI.COLOR_COWAMM_DARK_BLUE})`};
+    display: flex;
+    flex-flow: row;
+    gap: 6px;
+    padding: 6px 12px 6px 6px;
+    height: min-content;
+    border-radius: 62px;
+    width: min-content;
+    box-shadow: var(${UI.BOX_SHADOW_2});
+  }
+
+  > i > div {
+    display: flex;
+  }
+
+  ${TokenLogoWrapper} {
+    border: 2px solid ${({ tokenBorderColor }) => tokenBorderColor || `var(${UI.COLOR_COWAMM_LIGHT_BLUE})`};
+
+    :last-child {
+      margin-left: -18px;
+    }
+  }
+`
+
 export const CTAButton = styled.button<{
   bgColor?: string
   bgHoverColor?: string
   color?: string
   size?: number
   fontSize?: number
+  fontSizeMobile?: number
 }>`
   --size: ${({ size = 58 }) => size}px;
+  --font-size: ${({ fontSize = 24 }) => fontSize}px;
   background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_COWAMM_LIGHT_GREEN})`};
   color: ${({ color }) => color || `var(${UI.COLOR_COWAMM_DARK_GREEN})`};
   border: none;
   border-radius: var(--size);
   min-height: var(--size);
   padding: 12px 24px;
-  font-size: ${({ fontSize = 24 }) => fontSize}px;
+  font-size: var(--font-size);
   font-weight: bold;
   cursor: pointer;
   width: 100%;
@@ -169,6 +227,11 @@ export const CTAButton = styled.button<{
   position: relative;
   overflow: hidden;
   z-index: 1;
+
+  ${Media.upToSmall()} {
+    --font-size: ${({ fontSizeMobile = 21 }) => fontSizeMobile}px;
+    min-height: initial;
+  }
 
   &::before {
     content: '';
@@ -206,11 +269,19 @@ export const SecondaryLink = styled.a`
 
 export const DEMO_DROPDOWN = styled.select`
   position: fixed;
-  bottom: 150px;
-  right: 10px;
+  bottom: 20px;
+  right: 20px;
   z-index: 999999999;
   padding: 5px;
-  font-size: 16px;
+  font-size: 14px;
+
+  ${Media.upToSmall()} {
+    bottom: initial;
+    top: 0;
+    width: 100%;
+    right: 0;
+    left: 0;
+  }
 `
 
 export const StarIcon = styled.div<{
@@ -228,7 +299,7 @@ export const StarIcon = styled.div<{
   left: ${({ left }) => (left === 'initial' ? 'initial' : left != null ? `${left}px` : 'initial')};
   right: ${({ right }) => (right === 'initial' ? 'initial' : right != null ? `${right}px` : 'initial')};
   bottom: ${({ bottom }) => (bottom === 'initial' ? 'initial' : bottom != null ? `${bottom}px` : 'initial')};
-  color: ${({ color }) => color ?? `var(${UI.COLOR_WHITE})`};
+  color: ${({ color }) => color ?? `var(${UI.COLOR_COWAMM_LIGHT_BLUE})`};
 
   > svg > path {
     fill: ${({ color }) => color ?? 'currentColor'};

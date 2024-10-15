@@ -5,26 +5,87 @@ export enum LpToken {
   Curve = 'Curve',
 }
 
+type BaseScenario = {
+  readonly apr: number
+  readonly comparison: string
+  readonly hasCoWAmmPool: boolean
+}
+
+export type TwoLpScenario = BaseScenario & {
+  readonly uniV2Apr: number
+  readonly sushiApr: number
+}
+
 export const dummyData = {
-  noLp: { apr: 1.5, comparison: 'UNI-V2' },
-  uniV2: { apr: 2.1, comparison: 'UNI-V2' },
-  sushi: { apr: 1.8, comparison: 'SushiSwap' },
-  curve: { apr: 1.3, comparison: 'Curve' },
-  pancake: { apr: 2.5, comparison: 'PancakeSwap' },
-  twoLps: { apr: 2.0, comparison: 'UNI-V2 and SushiSwap' },
-  threeLps: { apr: 2.2, comparison: 'UNI-V2, SushiSwap, and Curve' },
-  fourLps: { apr: 2.4, comparison: 'UNI-V2, Sushiswap, Curve, and Balancer' },
+  noLp: {
+    apr: 1.5,
+    comparison: 'average UNI-V2 pool',
+    hasCoWAmmPool: false,
+  },
+  uniV2Superior: {
+    apr: 2.1,
+    comparison: 'UNI-V2',
+    hasCoWAmmPool: true,
+  },
+  uniV2Inferior: {
+    apr: 1.2,
+    comparison: 'UNI-V2',
+    hasCoWAmmPool: true,
+  },
+  sushi: {
+    apr: 1.8,
+    comparison: 'SushiSwap',
+    hasCoWAmmPool: true,
+  },
+  curve: {
+    apr: 1.3,
+    comparison: 'Curve',
+    hasCoWAmmPool: true,
+  },
+  pancake: {
+    apr: 2.5,
+    comparison: 'PancakeSwap',
+    hasCoWAmmPool: true,
+    isYieldSuperior: true,
+  },
+  twoLpsMixed: {
+    apr: 2.5,
+    comparison: 'UNI-V2 and SushiSwap',
+    hasCoWAmmPool: true,
+    uniV2Apr: 3.0,
+    sushiApr: 1.8,
+  } as TwoLpScenario,
+  twoLpsBothSuperior: {
+    apr: 3.2,
+    comparison: 'UNI-V2 and SushiSwap',
+    hasCoWAmmPool: true,
+    uniV2Apr: 3.5,
+    sushiApr: 2.9,
+  } as TwoLpScenario,
+  threeLps: {
+    apr: 2.2,
+    comparison: 'UNI-V2, SushiSwap, and Curve',
+    hasCoWAmmPool: false,
+  },
+  fourLps: {
+    apr: 2.4,
+    comparison: 'UNI-V2, SushiSwap, Curve, and PancakeSwap',
+    hasCoWAmmPool: false,
+  },
 } as const
 
 export type StateKey = keyof typeof dummyData
+export type DummyDataType = typeof dummyData
 
 export const lpTokenConfig: Record<StateKey, LpToken[]> = {
-  noLp: [LpToken.UniswapV2],
-  uniV2: [LpToken.UniswapV2],
+  noLp: [],
+  uniV2Superior: [LpToken.UniswapV2],
+  uniV2Inferior: [LpToken.UniswapV2],
   sushi: [LpToken.Sushiswap],
   curve: [LpToken.Curve],
   pancake: [LpToken.PancakeSwap],
-  twoLps: [LpToken.UniswapV2, LpToken.Sushiswap],
+  twoLpsMixed: [LpToken.UniswapV2, LpToken.Sushiswap],
+  twoLpsBothSuperior: [LpToken.UniswapV2, LpToken.Sushiswap],
   threeLps: [LpToken.UniswapV2, LpToken.Sushiswap, LpToken.Curve],
-  fourLps: [LpToken.UniswapV2, LpToken.Sushiswap, LpToken.Curve, LpToken.Curve],
+  fourLps: [LpToken.UniswapV2, LpToken.Sushiswap, LpToken.Curve, LpToken.PancakeSwap],
 }
