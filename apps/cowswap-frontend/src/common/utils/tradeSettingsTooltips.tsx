@@ -36,18 +36,24 @@ export const getNativeSlippageTooltip = (chainId: SupportedChainId, symbols: (st
     matching, even in volatile market conditions.
     <br />
     <br />
-    Orders on CoW Swap are always protected from MEV, so your slippage tolerance cannot be exploited.
+    {symbols?.[0] || 'Native currency'} orders can, in rare cases, be frontrun due to their on-chain component. For more
+    robust MEV protection, consider wrapping your {symbols?.[0] || 'native currency'} before trading.
   </Trans>
 )
 
-export const getNonNativeSlippageTooltip = () => (
+export const getNonNativeSlippageTooltip = (isSettingsModal?: boolean) => (
   <Trans>
-    Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.
-    <br />
-    <br />
-    The slippage set enables a resubmission of your order in case of unfavourable price movements.
-    <br />
-    <br />
-    {INPUT_OUTPUT_EXPLANATION}
+    CoW Swap dynamically adjusts your slippage tolerance to ensure your trade executes quickly while still getting the
+    best price.{' '}
+    {isSettingsModal ? (
+      <>
+        To override this, enter your desired slippage amount.
+        <br />
+        <br />
+        Either way, your slippage is protected from MEV!
+      </>
+    ) : (
+      "Trades are protected from MEV, so your slippage can't be exploited!"
+    )}
   </Trans>
 )

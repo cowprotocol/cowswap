@@ -23,8 +23,8 @@ export function HighSuggestedSlippageWarning(props: HighSuggestedSlippageWarning
 
   return (
     <InlineBanner bannerType="alert" orientation={BannerOrientation.Horizontal} noWrapContent>
-      Beware! High dynamic slippage suggested ({`${slippageBps / 100}`}%)
-      <InfoTooltip size={24} content="It's not thaaat bad. Just to make sure you noticed 😉" />
+      Slippage adjusted to {`${slippageBps / 100}`}% to ensure quick execution
+      <InfoTooltip size={24} content="CoW Swap dynamically adjusts your slippage tolerance based on current volatility. You can set a custom slippage using the settings icon above." />
     </InlineBanner>
   )
 }
