@@ -34,4 +34,5 @@ export interface ConfiguratorState {
   disableToastMessages: boolean
   disableProgressBar: boolean
   hideBridgeInfo: boolean | undefined
+  hideOrdersTable: boolean | undefined
 }
