@@ -255,12 +255,12 @@ export function CoWAmmBannerContent({
           borderWidth={2}
           padding={'10px'}
           gap={'14px'}
-          height={'max-content'}
+          height={90}
         >
           {renderStarIcon({ size: 26, top: -16, right: 80, color: `var(${UI.COLOR_COWAMM_LIGHTER_GREEN})` })}
-          <h3>{renderTextfit(aprMessage, 'single', 24, 48, `apr-${selectedState}`)}</h3>
+          <h3>{renderTextfit(aprMessage, 'single', 35, 65, `apr-${selectedState}`)}</h3>
           <span>
-            {renderTextfit(comparisonMessage, 'multi', 12, isMobile ? 18 : 21, `comparison-${selectedState}`)}
+            {renderTextfit(comparisonMessage, 'multi', 15, isMobile ? 15 : 21, `comparison-${selectedState}`)}
           </span>
           {renderStarIcon({ size: 16, bottom: 3, right: 20, color: `var(${UI.COLOR_COWAMM_LIGHTER_GREEN})` })}
         </styledEl.Card>

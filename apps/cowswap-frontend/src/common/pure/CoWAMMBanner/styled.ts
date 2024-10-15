@@ -169,8 +169,12 @@ export const PoolInfo = styled.div<{
   display: flex;
   align-items: ${({ align = 'flex-start' }) => align};
   flex-flow: ${({ flow = 'column' }) => flow};
-  font-size: 16px;
+  font-size: inherit;
   gap: 10px;
+
+  ${Media.upToSmall()} {
+    flex-flow: column wrap;
+  }
 
   > i {
     font-style: normal;
@@ -184,6 +188,10 @@ export const PoolInfo = styled.div<{
     border-radius: 62px;
     width: min-content;
     box-shadow: var(${UI.BOX_SHADOW_2});
+
+    ${Media.upToSmall()} {
+      margin: 0 auto;
+    }
   }
 
   > i > div {
