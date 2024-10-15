@@ -2,10 +2,16 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 import type { TokenList as UniTokenList } from '@uniswap/token-lists'
 
+export enum TokenListCategory {
+  ERC20 = 'ERC20',
+  LP = 'LP'
+}
+
 export type ListSourceConfig = {
   widgetAppCode?: string
   priority?: number
   enabledByDefault?: boolean
+  category?: TokenListCategory
   source: string
 }
 
