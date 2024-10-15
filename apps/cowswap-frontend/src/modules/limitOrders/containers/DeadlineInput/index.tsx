@@ -27,12 +27,6 @@ export function DeadlineInput() {
     if (widgetDeadlineMinutes) {
       const widgetDeadlineDelta = widgetDeadlineMinutes * 60 * 1000
 
-      console.log(
-        `fuck:limit deadline custom stuff`,
-        widgetDeadlineMinutes,
-        widgetDeadlineDelta,
-        new Date(Date.now() + widgetDeadlineDelta),
-      )
       const widgetTimestamp = (Date.now() + widgetDeadlineDelta) / 1000
 
       const [min, max] = calculateMinMax()

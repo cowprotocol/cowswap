@@ -290,7 +290,6 @@ export function TransactionSettings() {
   )
 
   useEffect(() => {
-    console.log(`fuck:update widgetDeadline`, widgetDeadline)
     if (widgetDeadline) {
       // Deadline is stored in seconds
       const value = Math.floor(widgetDeadline) * 60

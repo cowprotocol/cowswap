@@ -93,15 +93,6 @@ export function TwapFormWidget() {
         minutes = maxDuration
       }
 
-      console.log(
-        `fuck:twap deadline`,
-        widgetDeadline,
-        minDuration,
-        maxDuration,
-        minutes,
-        new Date(widgetDeadline * 60 * 1000 + Date.now()),
-      )
-
       updateSettingsState({
         customDeadline: { hours: 0, minutes },
         isCustomDeadline: true,
