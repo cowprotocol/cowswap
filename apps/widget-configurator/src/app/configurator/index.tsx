@@ -275,7 +275,7 @@ export function Configurator({ title }: { title: string }) {
 
         <TokenListControl tokenListUrlsState={tokenListUrlsState} customTokensState={customTokensState} />
 
-        <Divider variant="middle">Deadline</Divider>
+        <Divider variant="middle">Forced Order Deadline</Divider>
 
         <Typography variant="subtitle1">Global deadline settings</Typography>
         <DeadlineControl label={'Deadline'} deadlineState={deadlineState} />

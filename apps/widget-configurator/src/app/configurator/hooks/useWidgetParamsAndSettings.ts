@@ -61,7 +61,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       tradeType: currentTradeType,
       sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
       buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
-      deadlines:
+      forcedOrderDeadline:
         swapDeadline || limitDeadline || advancedDeadline
           ? {
               [TradeType.SWAP]: swapDeadline,

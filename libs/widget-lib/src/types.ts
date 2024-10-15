@@ -83,7 +83,7 @@ interface TradeAsset {
   amount?: string
 }
 
-export type OrderDeadlines = number | Partial<Record<TradeType, number>>
+export type ForcedOrderDeadline = FlexibleConfig<number>
 
 export enum TradeType {
   SWAP = 'swap',
@@ -234,11 +234,13 @@ export interface CowSwapWidgetParams {
   buy?: TradeAsset
 
   /**
-   * Order deadline in minutes, up to the max supported for each order type
+   * Forced order deadline in minutes. When set, user's won't be able to edit the deadline.
    *
-   * Either a single value applied to each individual order type accordingly or and individual value per order type.
+   * Either a single value applied to each individual order type accordingly or an optional individual value per order type.
+   *
+   * The app will use the appropriated min/max value per order type.
    */
-  deadlines?: OrderDeadlines
+  forcedOrderDeadline?: ForcedOrderDeadline
 
   /**
    * Enables the ability to switch between trade types in the widget.
