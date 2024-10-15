@@ -40,6 +40,7 @@ export { useAreThereTokensWithSameSymbol } from './hooks/tokens/useAreThereToken
 export { useSearchList } from './hooks/lists/useSearchList'
 export { useSearchToken } from './hooks/tokens/useSearchToken'
 export { useSearchNonExistentToken } from './hooks/tokens/useSearchNonExistentToken'
+export { useAllLpTokens } from './hooks/tokens/useAllLpTokens'
 
 // Utils
 export { getTokenListViewLink } from './utils/getTokenListViewLink'

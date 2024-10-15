@@ -24,11 +24,8 @@ export type UnsupportedTokensState = { [tokenAddress: string]: { dateAdded: numb
 
 export type ListsEnabledState = { [listId: string]: boolean | undefined }
 
-export interface ListState {
-  source: string
+export interface ListState extends Pick<ListSourceConfig, 'source' | 'priority' | 'widgetAppCode' | 'category'>{
   list: UniTokenList
-  widgetAppCode?: string
-  priority?: number
   isEnabled?: boolean
 }
 
