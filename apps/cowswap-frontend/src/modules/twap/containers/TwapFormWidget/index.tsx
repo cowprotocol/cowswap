@@ -3,9 +3,11 @@ import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 
 import { renderTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { TradeType } from '@cowprotocol/widget-lib'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { openAdvancedOrdersTabAnalytics, twapWalletCompatibilityAnalytics } from 'modules/analytics'
+import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
 import { useReceiveAmountInfo } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
@@ -21,7 +23,14 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import * as styledEl from './styled'
 import { LABELS_TOOLTIPS } from './tooltips'
 
-import { DEFAULT_NUM_OF_PARTS, DEFAULT_TWAP_SLIPPAGE, MAX_TWAP_SLIPPAGE, ORDER_DEADLINES } from '../../const'
+import {
+  DEFAULT_NUM_OF_PARTS,
+  DEFAULT_TWAP_SLIPPAGE,
+  MAX_PART_TIME,
+  MAX_TWAP_SLIPPAGE,
+  MINIMUM_PART_TIME,
+  ORDER_DEADLINES,
+} from '../../const'
 import {
   useFallbackHandlerVerification,
   useIsFallbackHandlerCompatible,
@@ -65,8 +74,42 @@ export function TwapFormWidget() {
 
   const limitPriceAfterSlippage = usePrice(
     receiveAmountInfo?.afterSlippage.sellAmount,
-    receiveAmountInfo?.afterSlippage.buyAmount
+    receiveAmountInfo?.afterSlippage.buyAmount,
   )
+
+  const widgetDeadline = useInjectedWidgetDeadline(TradeType.ADVANCED)
+
+  useEffect(() => {
+    if (widgetDeadline) {
+      // Ensure min part duration
+      const minDuration = Math.floor(MINIMUM_PART_TIME / 60) * 2 // it must have at least 2 parts
+
+      const maxDuration = Math.floor(MAX_PART_TIME / 60) * numberOfPartsValue
+
+      let minutes = widgetDeadline
+      if (widgetDeadline < minDuration) {
+        minutes = minDuration
+      } else if (widgetDeadline > maxDuration) {
+        minutes = maxDuration
+      }
+
+      console.log(
+        `fuck:twap deadline`,
+        widgetDeadline,
+        minDuration,
+        maxDuration,
+        minutes,
+        new Date(widgetDeadline * 60 * 1000 + Date.now()),
+      )
+
+      updateSettingsState({
+        customDeadline: { hours: 0, minutes },
+        isCustomDeadline: true,
+      })
+    }
+  }, [widgetDeadline, updateSettingsState, numberOfPartsValue])
+
+  const isDeadlineDisabled = !!widgetDeadline
 
   const deadlineState = {
     deadline,
@@ -166,8 +209,9 @@ export function TwapFormWidget() {
       <styledEl.Row>
         <DeadlineSelector
           deadline={deadlineState}
+          isDeadlineDisabled={isDeadlineDisabled}
           items={ORDER_DEADLINES}
-          setDeadline={(value) => updateSettingsState(value)}
+          setDeadline={updateSettingsState}
           label={LABELS_TOOLTIPS.totalDuration.label}
           tooltip={renderTooltip(LABELS_TOOLTIPS.totalDuration.tooltip, {
             parts: numberOfPartsValue,
