@@ -67,14 +67,14 @@ export function YieldWidget() {
     amount: inputCurrencyInfo.amount,
     fiatAmount: inputCurrencyInfo.fiatAmount,
     balance: inputCurrencyInfo.balance,
-    label: inputCurrencyInfo.label,
+    label: 'Sell amount',
   }
 
   const outputCurrencyPreviewInfo = {
     amount: outputCurrencyInfo.amount,
     fiatAmount: outputCurrencyInfo.fiatAmount,
     balance: outputCurrencyInfo.balance,
-    label: outputCurrencyInfo.label,
+    label: 'Receive (before fees)',
   }
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)

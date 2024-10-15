@@ -67,6 +67,8 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
 
   const setSettingTabState = useSetAtom(settingsTabStateAtom)
 
+  const openSettings = () => setSettingTabState({ open: true })
+
   const tooltipContent =
     slippageTooltip || (isEoaEthFlow ? getNativeSlippageTooltip(chainId, symbols) : getNonNativeSlippageTooltip())
 
@@ -104,7 +106,7 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
   return (
     <StyledRowBetween {...styleProps}>
       <RowFixed>
-        <TextWrapper onClick={() => setSettingTabState({ open: true })}>
+        <TextWrapper onClick={openSettings}>
           <SlippageTextContents
             isEoaEthFlow={isEoaEthFlow}
             slippageLabel={slippageLabel}
@@ -115,7 +117,7 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
           <StyledInfoIcon size={16} />
         </HoverTooltip>
       </RowFixed>
-      <TextWrapper textAlign="right">
+      <TextWrapper textAlign="right" onClick={openSettings}>
         <span>{displaySlippageWithLoader}</span>
       </TextWrapper>
     </StyledRowBetween>

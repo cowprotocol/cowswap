@@ -87,7 +87,7 @@ export function TradeWidgetLinks({
                 } as TradeUrlParams)
               : tradeContext,
             item.route,
-            true,
+            !isCurrentPathYield,
           )
 
       const isActive = location.pathname.startsWith(routePath.split('?')[0])
