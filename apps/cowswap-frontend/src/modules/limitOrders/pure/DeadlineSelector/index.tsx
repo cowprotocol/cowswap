@@ -31,12 +31,15 @@ const CUSTOM_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
 export interface DeadlineSelectorProps {
   deadline: LimitOrderDeadline | undefined
   customDeadline: number | null
+  isDeadlineDisabled: boolean
+
   selectDeadline(deadline: LimitOrderDeadline): void
+
   selectCustomDeadline(deadline: number | null): void
 }
 
 export function DeadlineSelector(props: DeadlineSelectorProps) {
-  const { deadline, customDeadline, selectDeadline, selectCustomDeadline } = props
+  const { deadline, customDeadline, isDeadlineDisabled, selectDeadline, selectCustomDeadline } = props
 
   const currentDeadlineNode = useRef<HTMLButtonElement | null>(null)
   const [[minDate, maxDate], setMinMax] = useState<[Date, Date]>(calculateMinMax)
@@ -81,7 +84,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
       selectCustomDeadline(null) // reset custom deadline
       currentDeadlineNode.current?.click() // Close dropdown
     },
-    [selectCustomDeadline, selectDeadline]
+    [selectCustomDeadline, selectDeadline],
   )
 
   // Sets value from input, if it exists
@@ -92,7 +95,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
       // In that case, use the default min value
       setValue(value || formatDateToLocalTime(minDate))
     },
-    [minDate]
+    [minDate],
   )
 
   const [isOpen, setIsOpen] = useState(false)
@@ -118,29 +121,38 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     onDismiss()
   }, [onDismiss, selectCustomDeadline, value])
 
+  const deadlineDisplay = customDeadline ? customDeadlineTitle : existingDeadline?.title
+
   return (
     <styledEl.Wrapper>
       <styledEl.Label>
         <Trans>Expiry</Trans>
       </styledEl.Label>
-      <Menu>
-        <styledEl.Current ref={currentDeadlineNode as any} $custom={!!customDeadline}>
-          <span>{customDeadline ? customDeadlineTitle : existingDeadline?.title}</span>
-          <ChevronDown size="18" />
-        </styledEl.Current>
-        <styledEl.ListWrapper>
-          {limitOrdersDeadlines.map((item) => (
-            <li key={item.value}>
-              <styledEl.ListItem onSelect={() => setDeadline(item)}>
-                <Trans>{item.title}</Trans>
-              </styledEl.ListItem>
-            </li>
-          ))}
-          <styledEl.ListItem onSelect={openModal}>
-            <Trans>Custom</Trans>
-          </styledEl.ListItem>
-        </styledEl.ListWrapper>
-      </Menu>
+
+      {isDeadlineDisabled ? (
+        <div>
+          <span>{deadlineDisplay}</span>
+        </div>
+      ) : (
+        <Menu>
+          <styledEl.Current ref={currentDeadlineNode as any} $custom={!!customDeadline}>
+            <span>{deadlineDisplay}</span>
+            <ChevronDown size="18" />
+          </styledEl.Current>
+          <styledEl.ListWrapper>
+            {limitOrdersDeadlines.map((item) => (
+              <li key={item.value}>
+                <styledEl.ListItem onSelect={() => setDeadline(item)}>
+                  <Trans>{item.title}</Trans>
+                </styledEl.ListItem>
+              </li>
+            ))}
+            <styledEl.ListItem onSelect={openModal}>
+              <Trans>Custom</Trans>
+            </styledEl.ListItem>
+          </styledEl.ListWrapper>
+        </Menu>
+      )}
 
       {/* Custom deadline modal */}
       <Modal isOpen={isOpen} onDismiss={onDismiss}>
