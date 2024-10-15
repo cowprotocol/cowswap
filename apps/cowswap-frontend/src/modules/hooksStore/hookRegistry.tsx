@@ -23,5 +23,5 @@ export const ALL_HOOK_DAPPS = [
     ...hookDappsRegistry.CLAIM_COW_AIRDROP,
     component: (props) => <AirdropHookApp {...props} />,
   },
-  hookDappsRegistry.CLAIM_VESTING,
+  hookDappsRegistry.CLAIM_LLAMAPAY_VESTING,
 ] as HookDapp[]
