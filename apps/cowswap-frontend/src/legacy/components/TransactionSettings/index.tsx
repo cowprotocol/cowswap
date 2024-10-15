@@ -1,4 +1,4 @@
-import { useCallback, useContext, useRef, useState } from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 
 import {
   DEFAULT_DEADLINE_FROM_NOW,
@@ -16,6 +16,7 @@ import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { getWrappedToken, percentToBps } from '@cowprotocol/common-utils'
 import { FancyButton, HelpTooltip, Media, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { TradeType } from '@cowprotocol/widget-lib'
 import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -27,6 +28,7 @@ import { AutoColumn } from 'legacy/components/Column'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from 'modules/analytics'
+import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useIsSlippageModified } from 'modules/swap/hooks/useIsSlippageModified'
 import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
@@ -191,6 +193,7 @@ export function TransactionSettings() {
   const chosenSlippageMatchesSmartSlippage = smartSlippage && new Percent(smartSlippage, 10_000).equalTo(swapSlippage)
 
   const [deadline, setDeadline] = useUserTransactionTTL()
+  const widgetDeadline = useInjectedWidgetDeadline(TradeType.SWAP)
 
   const [slippageInput, setSlippageInput] = useState('')
   const [slippageError, setSlippageError] = useState<SlippageError | false>(false)
@@ -249,6 +252,12 @@ export function TransactionSettings() {
     new Percent(isEoaEthFlow ? HIGH_ETH_FLOW_SLIPPAGE_BPS : smartSlippage || HIGH_SLIPPAGE_BPS, 10_000),
   )
 
+  const minDeadline = isEoaEthFlow
+    ? // 10 minute low threshold for eth flow
+      MINIMUM_ETH_FLOW_DEADLINE_SECONDS
+    : MINIMUM_ORDER_VALID_TO_TIME_SECONDS
+  const maxDeadline = MAX_DEADLINE_MINUTES * 60
+
   const parseCustomDeadline = useCallback(
     (value: string) => {
       // populate what the user typed and clear the error
@@ -263,12 +272,8 @@ export function TransactionSettings() {
           const parsed: number = Math.floor(Number.parseFloat(value) * 60)
           if (
             !Number.isInteger(parsed) || // Check deadline is a number
-            parsed <
-              (isEoaEthFlow
-                ? // 10 minute low threshold for eth flow
-                  MINIMUM_ETH_FLOW_DEADLINE_SECONDS
-                : MINIMUM_ORDER_VALID_TO_TIME_SECONDS) || // Check deadline is not too small
-            parsed > MAX_DEADLINE_MINUTES * 60 // Check deadline is not too big
+            parsed < minDeadline || // Check deadline is not too small
+            parsed > maxDeadline // Check deadline is not too big
           ) {
             setDeadlineError(DeadlineError.InvalidInput)
           } else {
@@ -281,8 +286,26 @@ export function TransactionSettings() {
         }
       }
     },
-    [isEoaEthFlow],
+    [minDeadline, maxDeadline],
   )
+
+  useEffect(() => {
+    console.log(`fuck:update widgetDeadline`, widgetDeadline)
+    if (widgetDeadline) {
+      // Deadline is stored in seconds
+      const value = Math.floor(widgetDeadline) * 60
+
+      if (value < minDeadline) {
+        setDeadline(minDeadline)
+      } else if (value > maxDeadline) {
+        setDeadline(maxDeadline)
+      } else {
+        setDeadline(value)
+      }
+    }
+  }, [widgetDeadline, minDeadline, maxDeadline])
+
+  const isDeadlineDisabled = !!widgetDeadline
 
   const showCustomDeadlineRow = Boolean(chainId)
 
@@ -417,6 +440,7 @@ export function TransactionSettings() {
                     setDeadlineError(false)
                   }}
                   color={deadlineError ? 'red' : ''}
+                  disabled={isDeadlineDisabled}
                 />
               </OptionCustom>
               <ThemedText.Body style={{ paddingLeft: '8px' }} fontSize={14}>
