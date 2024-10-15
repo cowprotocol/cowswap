@@ -42,7 +42,6 @@ export function HwAccountIndexUpdater() {
   useEffect(() => {
     if (account) return
 
-    console.debug('[Hardware wallet] reset account index to 0')
     setHwAccountIndex(0)
   }, [setHwAccountIndex, account])
 

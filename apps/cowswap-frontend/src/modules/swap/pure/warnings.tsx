@@ -7,7 +7,7 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { HighFeeWarning } from 'legacy/components/SwapWarnings'
+import { HighFeeWarning, HighSuggestedSlippageWarning } from 'legacy/components/SwapWarnings'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
@@ -35,7 +35,11 @@ export interface SwapWarningsTopProps {
   buyingFiatAmount: CurrencyAmount<Currency> | null
   priceImpact: Percent | undefined
   tradeUrlParams: TradeUrlParams
+  isSuggestedSlippage: boolean | undefined
+  slippageBps: number | undefined
+
   setFeeWarningAccepted(cb: (state: boolean) => boolean): void
+
   setImpactWarningAccepted(cb: (state: boolean) => boolean): void
 }
 
@@ -70,6 +74,8 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     buyingFiatAmount,
     priceImpact,
     tradeUrlParams,
+    isSuggestedSlippage,
+    slippageBps,
   } = props
 
   return (
@@ -80,6 +86,7 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
         acceptedStatus={feeWarningAccepted}
         acceptWarningCb={account ? () => setFeeWarningAccepted((state) => !state) : undefined}
       />
+      <HighSuggestedSlippageWarning isSuggestedSlippage={isSuggestedSlippage} slippageBps={slippageBps} />
       {!hideUnknownImpactWarning && (
         <StyledNoImpactWarning
           isAccepted={impactWarningAccepted}
