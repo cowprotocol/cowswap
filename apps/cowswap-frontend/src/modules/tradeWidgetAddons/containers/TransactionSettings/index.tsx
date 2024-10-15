@@ -90,78 +90,84 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
 
   const placeholderSlippage = isSlippageModified ? defaultSwapSlippage : swapSlippage
 
-  function parseSlippageInput(value: string) {
-    // populate what the user typed and clear the error
-    setSlippageInput(value)
-    setSlippageError(false)
+  const parseSlippageInput = useCallback(
+    (value: string) => {
+      // populate what the user typed and clear the error
+      setSlippageInput(value)
+      setSlippageError(false)
 
-    if (value.length === 0) {
-      slippageToleranceAnalytics('Default', placeholderSlippage.toFixed(2))
-      setSwapSlippage(isEoaEthFlow ? percentToBps(minEthFlowSlippage) : null)
-    } else {
-      let v = value
+      if (value.length === 0) {
+        slippageToleranceAnalytics('Default', placeholderSlippage.toFixed(2))
+        setSwapSlippage(isEoaEthFlow ? percentToBps(minEthFlowSlippage) : null)
+      } else {
+        let v = value
 
-      // Prevent inserting more than 2 decimal precision
-      if (value.split('.')[1]?.length > 2) {
-        // indexOf + 3 because we are cutting it off at `.XX`
-        v = value.slice(0, value.indexOf('.') + 3)
-        // Update the input to remove the extra numbers from UI input
-        setSlippageInput(v)
-      }
-
-      const parsed = Math.round(Number.parseFloat(v) * 100)
-
-      if (
-        !Number.isInteger(parsed) ||
-        parsed < (isEoaEthFlow ? minEthFlowSlippageBps : MIN_SLIPPAGE_BPS) ||
-        parsed > MAX_SLIPPAGE_BPS
-      ) {
-        if (v !== '.') {
-          setSlippageError(SlippageError.InvalidInput)
+        // Prevent inserting more than 2 decimal precision
+        if (value.split('.')[1]?.length > 2) {
+          // indexOf + 3 because we are cutting it off at `.XX`
+          v = value.slice(0, value.indexOf('.') + 3)
+          // Update the input to remove the extra numbers from UI input
+          setSlippageInput(v)
         }
-      }
 
-      slippageToleranceAnalytics('Custom', parsed)
-      setSwapSlippage(percentToBps(new Percent(parsed, 10_000)))
-    }
-  }
+        const parsed = Math.round(Number.parseFloat(v) * 100)
+
+        if (
+          !Number.isInteger(parsed) ||
+          parsed < (isEoaEthFlow ? minEthFlowSlippageBps : MIN_SLIPPAGE_BPS) ||
+          parsed > MAX_SLIPPAGE_BPS
+        ) {
+          if (v !== '.') {
+            setSlippageError(SlippageError.InvalidInput)
+          }
+        }
+
+        slippageToleranceAnalytics('Custom', parsed)
+        setSwapSlippage(percentToBps(new Percent(parsed, 10_000)))
+      }
+    },
+    [placeholderSlippage, isEoaEthFlow, minEthFlowSlippage],
+  )
 
   const tooLow = swapSlippage.lessThan(new Percent(isEoaEthFlow ? minEthFlowSlippageBps : LOW_SLIPPAGE_BPS, 10_000))
   const tooHigh = swapSlippage.greaterThan(
-    new Percent(isEoaEthFlow ? HIGH_ETH_FLOW_SLIPPAGE_BPS : HIGH_SLIPPAGE_BPS, 10_000),
+    new Percent(isEoaEthFlow ? HIGH_ETH_FLOW_SLIPPAGE_BPS : smartSlippage || HIGH_SLIPPAGE_BPS, 10_000),
   )
 
-  function parseCustomDeadline(value: string) {
-    // populate what the user typed and clear the error
-    setDeadlineInput(value)
-    setDeadlineError(false)
+  const parseCustomDeadline = useCallback(
+    (value: string) => {
+      // populate what the user typed and clear the error
+      setDeadlineInput(value)
+      setDeadlineError(false)
 
-    if (value.length === 0) {
-      orderExpirationTimeAnalytics('Default', DEFAULT_DEADLINE_FROM_NOW)
-      setDeadline(DEFAULT_DEADLINE_FROM_NOW)
-    } else {
-      try {
-        const parsed: number = Math.floor(Number.parseFloat(value) * 60)
-        if (
-          !Number.isInteger(parsed) || // Check deadline is a number
-          parsed <
-            (isEoaEthFlow
-              ? // 10 minute low threshold for eth flow
-                MINIMUM_ETH_FLOW_DEADLINE_SECONDS
-              : MINIMUM_ORDER_VALID_TO_TIME_SECONDS) || // Check deadline is not too small
-          parsed > MAX_DEADLINE_MINUTES * 60 // Check deadline is not too big
-        ) {
+      if (value.length === 0) {
+        orderExpirationTimeAnalytics('Default', DEFAULT_DEADLINE_FROM_NOW)
+        setDeadline(DEFAULT_DEADLINE_FROM_NOW)
+      } else {
+        try {
+          const parsed: number = Math.floor(Number.parseFloat(value) * 60)
+          if (
+            !Number.isInteger(parsed) || // Check deadline is a number
+            parsed <
+              (isEoaEthFlow
+                ? // 10 minute low threshold for eth flow
+                  MINIMUM_ETH_FLOW_DEADLINE_SECONDS
+                : MINIMUM_ORDER_VALID_TO_TIME_SECONDS) || // Check deadline is not too small
+            parsed > MAX_DEADLINE_MINUTES * 60 // Check deadline is not too big
+          ) {
+            setDeadlineError(DeadlineError.InvalidInput)
+          } else {
+            orderExpirationTimeAnalytics('Custom', parsed)
+            setDeadline(parsed)
+          }
+        } catch (error: any) {
+          console.error(error)
           setDeadlineError(DeadlineError.InvalidInput)
-        } else {
-          orderExpirationTimeAnalytics('Custom', parsed)
-          setDeadline(parsed)
         }
-      } catch (error: any) {
-        console.error(error)
-        setDeadlineError(DeadlineError.InvalidInput)
       }
-    }
-  }
+    },
+    [isEoaEthFlow],
+  )
 
   const showCustomDeadlineRow = Boolean(chainId)
 
@@ -185,14 +191,14 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
         <AutoColumn gap="sm">
           <RowFixed>
             <ThemedText.Black fontWeight={400} fontSize={14}>
-              <Trans>MEV protected slippage</Trans>
+              <Trans>MEV-protected slippage</Trans>
             </ThemedText.Black>
             <HelpTooltip
               text={
                 // <Trans>Your transaction will revert if the price changes unfavorably by more than this percentage.</Trans>
                 isEoaEthFlow
                   ? getNativeSlippageTooltip(chainId, [nativeCurrency.symbol, getWrappedToken(nativeCurrency).symbol])
-                  : getNonNativeSlippageTooltip()
+                  : getNonNativeSlippageTooltip(true)
               }
             />
           </RowFixed>
@@ -251,8 +257,8 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
                 <HelpTooltip
                   text={
                     <Trans>
-                      Based on recent volatility observed for this token pair, it's recommended to leave the default to
-                      account for price changes.
+                      CoW Swap has dynamically selected this slippage amount to account for current gas prices and
+                      volatility. Changes may result in slower execution.
                     </Trans>
                   }
                 />

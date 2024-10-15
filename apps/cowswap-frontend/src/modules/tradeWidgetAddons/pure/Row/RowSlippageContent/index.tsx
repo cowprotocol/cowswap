@@ -30,7 +30,7 @@ const DefaultSlippage = styled.span`
 `
 
 const SUGGESTED_SLIPPAGE_TOOLTIP =
-  'Based on recent volatility for the selected token pair, this is the suggested slippage for ensuring quick execution of your order.'
+  'This is the recommended slippage tolerance based on current gas prices & volatility. A lower amount may result in slower execution.'
 
 export interface RowSlippageContentProps {
   chainId: SupportedChainId
@@ -82,7 +82,7 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
           <CenteredDots />
         ) : (
           <>
-            <LinkStyledButton onClick={setAutoSlippage}>(Suggested: {smartSlippage})</LinkStyledButton>
+            <LinkStyledButton onClick={setAutoSlippage}>(Recommended: {smartSlippage})</LinkStyledButton>
             <HoverTooltip wrapInContainer content={SUGGESTED_SLIPPAGE_TOOLTIP}>
               <StyledInfoIcon size={16} />
             </HoverTooltip>
