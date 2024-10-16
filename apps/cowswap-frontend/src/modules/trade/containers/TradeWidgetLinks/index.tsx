@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useCallback } from 'react'
 
 import { Command } from '@cowprotocol/types'
 import { Badge } from '@cowprotocol/ui'
@@ -43,10 +43,9 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
   const { enabledTradeTypes } = useInjectedWidgetParams()
   const menuItems = useMenuItems()
 
-  const handleMenuItemClick = (_item?: MenuItemConfig) => {
-    if (menuItemsElements.length === 1) return
+  const handleMenuItemClick = useCallback((_item?: MenuItemConfig): void => {
     setDropdownVisible(false)
-  }
+  }, [])
 
   const enabledItems = useMemo(() => {
     return menuItems.filter((item) => {
@@ -56,7 +55,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
     })
   }, [menuItems, enabledTradeTypes])
 
-  const menuItemsElements = useMemo(() => {
+  const menuItemsElements: JSX.Element[] = useMemo(() => {
     return enabledItems.map((item) => {
       const routePath = parameterizeTradeRoute(tradeContext, item.route, true)
       const isActive = !!matchPath(location.pathname, routePath.split('?')[0])
@@ -119,7 +118,7 @@ const MenuItem = ({
     <styledEl.Link to={routePath}>
       <Trans>{item.label}</Trans>
       {!isActive && item.badge && (
-        <Badge type="information">
+        <Badge type="alert">
           <Trans>{item.badge}</Trans>
         </Badge>
       )}
