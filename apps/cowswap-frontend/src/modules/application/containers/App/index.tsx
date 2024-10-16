@@ -3,6 +3,7 @@ import { lazy, PropsWithChildren, Suspense, useMemo } from 'react'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { NavLink } from 'react-router-dom'
 import { ThemeProvider } from 'theme'
@@ -24,7 +25,7 @@ import { useInitializeUtm } from 'modules/utm'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useMenuItems } from 'common/hooks/useMenuItems'
-import { CoWAmmBanner } from 'common/pure/CoWAMMBanner'
+import { BannerLocation, CoWAmmBanner } from 'common/pure/CoWAMMBanner'
 import { LoadingApp } from 'common/pure/LoadingApp'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
@@ -62,7 +63,7 @@ export function App() {
         onClick: toggleDarkMode,
       },
     ],
-    [darkMode, toggleDarkMode]
+    [darkMode, toggleDarkMode],
   )
 
   const tradeContext = useTradeRouteContext()
@@ -93,6 +94,8 @@ export function App() {
       </HeaderElement>
     </HeaderControls>
   )
+
+  const { account } = useWalletInfo()
 
   return (
     <ErrorBoundary>
@@ -129,7 +132,7 @@ export function App() {
           )}
 
           {/* CoW AMM banner */}
-          {!isInjectedWidgetMode && <CoWAmmBanner />}
+          {!isInjectedWidgetMode && account && <CoWAmmBanner location={BannerLocation.Global} />}
 
           <styledEl.BodyWrapper>
             <TopLevelModals />

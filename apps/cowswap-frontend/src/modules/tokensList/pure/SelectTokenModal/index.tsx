@@ -88,7 +88,9 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
           hideTooltip={hideFavoriteTokensTooltip}
         />
       </styledEl.Row>
+
       <styledEl.Separator />
+
       {inputValue.trim() ? (
         <TokenSearchResults searchInput={inputValue.trim()} {...selectTokenContext} />
       ) : (
