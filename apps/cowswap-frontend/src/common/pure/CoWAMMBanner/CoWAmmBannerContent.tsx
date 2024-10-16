@@ -23,7 +23,7 @@ import { BannerLocation, DEMO_DROPDOWN_OPTIONS } from './index'
 import { TokenLogo } from '../../../../../../libs/tokens/src/pure/TokenLogo'
 import { USDC, WBTC } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { DummyDataType, TwoLpScenario } from './dummyData'
+import { DummyDataType, TwoLpScenario, InferiorYieldScenario } from './dummyData'
 
 const lpTokenIcons: Record<LpToken, string> = {
   [LpToken.UniswapV2]: ICON_UNISWAP,
@@ -48,6 +48,10 @@ interface CoWAmmBannerContentProps {
 
 function isTwoLpScenario(scenario: DummyDataType[keyof DummyDataType]): scenario is TwoLpScenario {
   return 'uniV2Apr' in scenario && 'sushiApr' in scenario
+}
+
+function isInferiorYieldScenario(scenario: DummyDataType[keyof DummyDataType]): scenario is InferiorYieldScenario {
+  return 'poolsCount' in scenario
 }
 
 const renderTextfit = (
@@ -95,7 +99,15 @@ export function CoWAmmBannerContent({
 
   const { apr } = dummyData[selectedState]
 
-  const aprMessage = useMemo(() => `+${apr.toFixed(1)}%`, [apr])
+  const aprMessage = useMemo(() => {
+    if (selectedState === 'uniV2InferiorWithLowAverageYield') {
+      const currentData = dummyData[selectedState]
+      if (isInferiorYieldScenario(currentData)) {
+        return `${currentData.poolsCount}+`
+      }
+    }
+    return `+${apr.toFixed(1)}%`
+  }, [selectedState, apr, dummyData])
 
   const comparisonMessage = useMemo(() => {
     const currentData = dummyData[selectedState]
@@ -138,6 +150,10 @@ export function CoWAmmBannerContent({
       return renderPoolInfo('UNI-V2')
     }
 
+    if (selectedState === 'uniV2InferiorWithLowAverageYield' && isInferiorYieldScenario(currentData)) {
+      return 'pools available to get yield on your assets!'
+    }
+
     if (currentData.hasCoWAmmPool) {
       return `yield over average ${currentData.comparison} pool`
     } else {
@@ -165,30 +181,44 @@ export function CoWAmmBannerContent({
         return `yield over average UNI-V2 pool`
       }
     }
-  }, [selectedState, lpTokenConfig])
+  }, [selectedState, location, lpTokenConfig])
 
   const lpEmblems = useMemo(() => {
     const tokens = lpTokenConfig[selectedState]
     const totalItems = tokens.length
 
-    if (totalItems === 0) {
-      // Fallback to UniswapV2 emblem if no LP tokens
+    const renderEmblemContent = () => (
+      <>
+        <styledEl.EmblemArrow>
+          <SVG src={ICON_ARROW} />
+        </styledEl.EmblemArrow>
+        <styledEl.CoWAMMEmblemItem>
+          <ProductLogo
+            height={'100%'}
+            overrideColor={`var(${UI.COLOR_COWAMM_DARK_GREEN})`}
+            variant={ProductVariant.CowAmm}
+            logoIconOnly
+          />
+        </styledEl.CoWAMMEmblemItem>
+      </>
+    )
+
+    if (totalItems === 0 || selectedState === 'uniV2InferiorWithLowAverageYield') {
       return (
         <styledEl.LpEmblems>
-          <styledEl.LpEmblemItem key={LpToken.UniswapV2} totalItems={1} index={0}>
-            <SVG src={lpTokenIcons[LpToken.UniswapV2]} />
+          <styledEl.LpEmblemItem
+            key="USDC"
+            totalItems={1}
+            index={0}
+            isUSDC={selectedState === 'uniV2InferiorWithLowAverageYield'}
+          >
+            {selectedState === 'uniV2InferiorWithLowAverageYield' ? (
+              <TokenLogo token={USDC[SupportedChainId.MAINNET]} size={40} />
+            ) : (
+              <SVG src={lpTokenIcons[LpToken.UniswapV2]} />
+            )}
           </styledEl.LpEmblemItem>
-          <styledEl.EmblemArrow>
-            <SVG src={ICON_ARROW} />
-          </styledEl.EmblemArrow>
-          <styledEl.CoWAMMEmblemItem>
-            <ProductLogo
-              height={'100%'}
-              overrideColor={`var(${UI.COLOR_COWAMM_DARK_GREEN})`}
-              variant={ProductVariant.CowAmm}
-              logoIconOnly
-            />
-          </styledEl.CoWAMMEmblemItem>
+          {renderEmblemContent()}
         </styledEl.LpEmblems>
       )
     }
@@ -202,17 +232,7 @@ export function CoWAmmBannerContent({
             </styledEl.LpEmblemItem>
           ))}
         </styledEl.LpEmblemItemsWrapper>
-        <styledEl.EmblemArrow>
-          <SVG src={ICON_ARROW} />
-        </styledEl.EmblemArrow>
-        <styledEl.CoWAMMEmblemItem>
-          <ProductLogo
-            height={'100%'}
-            overrideColor={`var(${UI.COLOR_COWAMM_DARK_GREEN})`}
-            variant={ProductVariant.CowAmm}
-            logoIconOnly
-          />
-        </styledEl.CoWAMMEmblemItem>
+        {renderEmblemContent()}
       </styledEl.LpEmblems>
     )
   }, [selectedState, lpTokenConfig, lpTokenIcons])

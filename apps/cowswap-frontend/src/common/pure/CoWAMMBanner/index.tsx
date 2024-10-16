@@ -16,6 +16,7 @@ export const DEMO_DROPDOWN_OPTIONS = [
   { value: 'noLp', label: '🚫 No LP Tokens' },
   { value: 'uniV2Superior', label: '⬆️ 🐴 UNI-V2 LP (Superior Yield)' },
   { value: 'uniV2Inferior', label: '⬇️ 🐴 UNI-V2 LP (Inferior Yield)' },
+  { value: 'uniV2InferiorWithLowAverageYield', label: '⬇️ 🐴 UNI-V2 LP (Inferior Yield, Lower Average)' },
   { value: 'sushi', label: '⬇️ 🍣 SushiSwap LP (Inferior Yield)' },
   { value: 'curve', label: '⬇️ 🌈 Curve LP (Inferior Yield)' },
   { value: 'pancake', label: '⬇️ 🥞 PancakeSwap LP (Inferior Yield)' },

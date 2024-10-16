@@ -350,12 +350,14 @@ export const LpEmblemItemsWrapper = styled.div<{ totalItems: number }>`
 export const LpEmblemItem = styled.div<{
   totalItems: number
   index: number
+  isUSDC?: boolean
 }>`
   --size: ${({ totalItems }) =>
     totalItems === 4 ? '50px' : totalItems === 3 ? '65px' : totalItems === 2 ? '80px' : '104px'};
   width: var(--size);
   height: var(--size);
-  padding: ${({ totalItems }) => (totalItems === 4 ? '10px' : totalItems >= 2 ? '15px' : '20px')};
+  padding: ${({ totalItems, isUSDC }) =>
+    isUSDC ? '9px' : totalItems === 4 ? '10px' : totalItems >= 2 ? '15px' : '20px'};
   border-radius: 50%;
   background: var(${UI.COLOR_COWAMM_DARK_GREEN});
   color: var(${UI.COLOR_COWAMM_LIGHT_GREEN});
@@ -391,6 +393,11 @@ export const LpEmblemItem = styled.div<{
 
     return styleMap[totalItems]?.[index] || ''
   }}
+
+  ${TokenLogoWrapper} {
+    width: 100%;
+    height: 100%;
+  }
 `
 
 export const CoWAMMEmblemItem = styled.div`

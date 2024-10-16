@@ -16,7 +16,25 @@ export type TwoLpScenario = BaseScenario & {
   readonly sushiApr: number
 }
 
-export const dummyData = {
+export type InferiorYieldScenario = BaseScenario & {
+  readonly poolsCount: number
+}
+
+export type DummyDataType = {
+  noLp: BaseScenario
+  uniV2Superior: BaseScenario
+  uniV2Inferior: BaseScenario
+  sushi: BaseScenario
+  curve: BaseScenario
+  pancake: BaseScenario & { readonly isYieldSuperior: boolean }
+  twoLpsMixed: TwoLpScenario
+  twoLpsBothSuperior: TwoLpScenario
+  threeLps: BaseScenario
+  fourLps: BaseScenario
+  uniV2InferiorWithLowAverageYield: InferiorYieldScenario
+}
+
+export const dummyData: DummyDataType = {
   noLp: {
     apr: 1.5,
     comparison: 'average UNI-V2 pool',
@@ -72,10 +90,15 @@ export const dummyData = {
     comparison: 'UNI-V2, SushiSwap, Curve, and PancakeSwap',
     hasCoWAmmPool: false,
   },
-} as const
+  uniV2InferiorWithLowAverageYield: {
+    apr: 1.2,
+    comparison: 'UNI-V2',
+    hasCoWAmmPool: true,
+    poolsCount: 195,
+  },
+}
 
 export type StateKey = keyof typeof dummyData
-export type DummyDataType = typeof dummyData
 
 export const lpTokenConfig: Record<StateKey, LpToken[]> = {
   noLp: [],
@@ -88,4 +111,5 @@ export const lpTokenConfig: Record<StateKey, LpToken[]> = {
   twoLpsBothSuperior: [LpToken.UniswapV2, LpToken.Sushiswap],
   threeLps: [LpToken.UniswapV2, LpToken.Sushiswap, LpToken.Curve],
   fourLps: [LpToken.UniswapV2, LpToken.Sushiswap, LpToken.Curve, LpToken.PancakeSwap],
+  uniV2InferiorWithLowAverageYield: [LpToken.UniswapV2],
 }
