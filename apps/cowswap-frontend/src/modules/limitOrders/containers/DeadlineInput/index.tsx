@@ -27,11 +27,11 @@ export function DeadlineInput() {
     if (widgetDeadlineMinutes) {
       const widgetDeadlineDelta = widgetDeadlineMinutes * 60 * 1000
 
-      const widgetTimestamp = (Date.now() + widgetDeadlineDelta) / 1000
+      const widgetTimestamp = Math.floor((Date.now() + widgetDeadlineDelta) / 1000)
 
       const [min, max] = calculateMinMax()
-      const minTimestamp = min.getTime() / 1000
-      const maxTimestamp = max.getTime() / 1000
+      const minTimestamp = Math.floor(min.getTime() / 1000)
+      const maxTimestamp = Math.floor(max.getTime() / 1000)
 
       let customDeadlineTimestamp = widgetTimestamp
       if (widgetTimestamp < minTimestamp) {
