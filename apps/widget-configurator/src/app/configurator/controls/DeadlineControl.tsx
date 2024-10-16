@@ -14,9 +14,9 @@ export function DeadlineControl({ label, deadlineState: [state, setState] }: Dea
         type="number"
         label={label}
         value={state}
-        onChange={(e) => setState(Math.max(0, Number(e.target.value)))}
+        onChange={({ target: { value } }) => setState(value && !isNaN(+value) ? Math.max(1, Number(value)) : undefined)}
         size="small"
-        inputProps={{ min: 0 }} // Set minimum value to 0
+        inputProps={{ min: 1 }} // Set minimum value to 1
       />
     </FormControl>
   )
