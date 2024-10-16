@@ -2,7 +2,6 @@ import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { useTradeConfirmState } from 'modules/trade'
-import { useHighFeeWarning } from 'modules/tradeWidgetAddons'
 
 import { useSmartSlippageFromBff } from './useSmartSlippageFromBff'
 import { useSmartSlippageFromFeeMultiplier } from './useSmartSlippageFromFeeMultiplier'
