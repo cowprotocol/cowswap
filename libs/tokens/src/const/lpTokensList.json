@@ -1,26 +1,26 @@
 [
   {
-    "priority": 1,
+    "priority": 100,
     "category": "COW_AMM_LP",
     "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/4ff665a85e88d7015c7bddac7c5e66ecfcfa77a8/src/public/lp-tokens/cow-amm.json"
   },
   {
-    "priority": 1,
+    "priority": 101,
     "category": "LP",
     "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/055c8ccebe59e91874baf8600403a487ad33e93d/src/public/lp-tokens/uniswapv2.json"
   },
   {
-    "priority": 1,
+    "priority": 102,
     "category": "LP",
     "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/055c8ccebe59e91874baf8600403a487ad33e93d/src/public/lp-tokens/balancerv2.json"
   },
   {
-    "priority": 1,
+    "priority": 103,
     "category": "LP",
     "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/055c8ccebe59e91874baf8600403a487ad33e93d/src/public/lp-tokens/sushiswap.json"
   },
   {
-    "priority": 1,
+    "priority": 104,
     "category": "LP",
     "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/055c8ccebe59e91874baf8600403a487ad33e93d/src/public/lp-tokens/pancakeswap.json"
   }

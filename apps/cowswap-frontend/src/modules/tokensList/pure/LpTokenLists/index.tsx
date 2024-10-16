@@ -1,21 +1,34 @@
 import { useCallback, useRef } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
+import { LpToken } from '@cowprotocol/common-const'
+import { TokenLogo, TokensByAddress } from '@cowprotocol/tokens'
+import { InfoTooltip, TokenName, TokenSymbol } from '@cowprotocol/ui'
 
 import { useVirtualizer } from '@tanstack/react-virtual'
 import ms from 'ms.macro'
 
-import { ListInner, ListScroller, ListWrapper, Wrapper } from './styled'
+import {
+  ListHeader,
+  ListInner,
+  ListItem,
+  ListScroller,
+  ListWrapper,
+  LpTokenInfo,
+  LpTokenLogo,
+  LpTokenWrapper,
+  Wrapper,
+} from './styled'
 
 const scrollDelay = ms`400ms`
 
 const estimateSize = () => 56
 
 interface LpTokenListsProps {
-  tokens: TokenWithLogo[]
+  lpTokens: LpToken[]
+  tokensByAddress: TokensByAddress
 }
 
-export function LpTokenLists({ tokens }: LpTokenListsProps) {
+export function LpTokenLists({ lpTokens, tokensByAddress }: LpTokenListsProps) {
   const parentRef = useRef<HTMLDivElement>(null)
   const wrapperRef = useRef<HTMLDivElement>(null)
   const scrollTimeoutRef = useRef<NodeJS.Timeout>()
@@ -33,7 +46,7 @@ export function LpTokenLists({ tokens }: LpTokenListsProps) {
 
   const virtualizer = useVirtualizer({
     getScrollElement: () => parentRef.current,
-    count: tokens.length,
+    count: lpTokens.length,
     estimateSize,
     overscan: 5,
   })
@@ -42,24 +55,46 @@ export function LpTokenLists({ tokens }: LpTokenListsProps) {
 
   return (
     <Wrapper>
-      <div>
+      <ListHeader>
         <span>Pool</span>
         <span>Balance</span>
         <span>APR</span>
         <span></span>
-      </div>
+      </ListHeader>
       <ListWrapper ref={parentRef} onScroll={onScroll}>
         <ListInner ref={wrapperRef} style={{ height: virtualizer.getTotalSize() }}>
           <ListScroller style={{ transform: `translateY(${items[0]?.start ?? 0}px)` }}>
             {items.map((item) => {
-              const token = tokens[item.index]
+              const token = lpTokens[item.index]
+              const token0 = token.tokens?.[0]?.toLowerCase()
+              const token1 = token.tokens?.[1]?.toLowerCase()
+
               return (
-                <div key={token.address} data-index={item.index} ref={virtualizer.measureElement}>
-                  <span>{token.name}</span>
+                <ListItem key={token.address} data-index={item.index} ref={virtualizer.measureElement}>
+                  <LpTokenWrapper>
+                    <LpTokenLogo>
+                      <div>
+                        <TokenLogo token={tokensByAddress[token0]} sizeMobile={32} />
+                      </div>
+                      <div>
+                        <TokenLogo token={tokensByAddress[token1]} sizeMobile={32} />
+                      </div>
+                    </LpTokenLogo>
+                    <LpTokenInfo>
+                      <strong>
+                        <TokenSymbol token={token} />
+                      </strong>
+                      <p>
+                        <TokenName token={token} />
+                      </p>
+                    </LpTokenInfo>
+                  </LpTokenWrapper>
                   <span>---</span>
                   <span>40%</span>
-                  <span></span>
-                </div>
+                  <span>
+                    <InfoTooltip>TODO</InfoTooltip>
+                  </span>
+                </ListItem>
               )
             })}
           </ListScroller>

@@ -5,10 +5,10 @@ import tokensList from './tokensList.json'
 
 import { ListSourceConfig, ListsSourcesByNetwork } from '../types'
 
-export const DEFAULT_TOKENS_LISTS: ListsSourcesByNetwork = {
-  ...tokensList,
-  ...mapSupportedNetworks(lpTokensList as Array<ListSourceConfig>)
-}
+export const DEFAULT_TOKENS_LISTS: ListsSourcesByNetwork = mapSupportedNetworks((chainId) => [
+  ...tokensList[chainId],
+  ...(lpTokensList as Array<ListSourceConfig>),
+])
 
 export const UNISWAP_TOKENS_LIST = 'https://ipfs.io/ipns/tokens.uniswap.org'
 

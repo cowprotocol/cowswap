@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react'
 
-import { TokenListCategory, useAllLpTokens } from '@cowprotocol/tokens'
+import { TokenListCategory, useAllLpTokens, useTokensByAddressMap } from '@cowprotocol/tokens'
 
 import { TabButton, TabsContainer } from './styled'
 
@@ -19,6 +19,7 @@ const tabs = [
 export function LpTokenListsWidget({ children }: LpTokenListsProps) {
   const [listsCategories, setListsCategories] = useState<TokenListCategory[] | null>(null)
   const lpTokens = useAllLpTokens(listsCategories)
+  const tokensByAddress = useTokensByAddressMap()
 
   return (
     <>
@@ -35,7 +36,7 @@ export function LpTokenListsWidget({ children }: LpTokenListsProps) {
           )
         })}
       </TabsContainer>
-      {listsCategories === null ? children : <LpTokenLists tokens={lpTokens} />}
+      {listsCategories === null ? children : <LpTokenLists tokensByAddress={tokensByAddress} lpTokens={lpTokens} />}
     </>
   )
 }

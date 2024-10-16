@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import { SWR_NO_REFRESH_OPTIONS, TokenWithLogo } from '@cowprotocol/common-const'
+import { LpToken, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 
 import useSWR from 'swr'
 
@@ -10,9 +10,9 @@ import { TokenListCategory, TokensMap } from '../../types'
 import { parseTokenInfo } from '../../utils/parseTokenInfo'
 import { tokenMapToListWithLogo } from '../../utils/tokenMapToListWithLogo'
 
-const fallbackData: TokenWithLogo[] = []
+const fallbackData: LpToken[] = []
 
-export function useAllLpTokens(categories: TokenListCategory[] | null): TokenWithLogo[] {
+export function useAllLpTokens(categories: TokenListCategory[] | null): LpToken[] {
   const { chainId } = useAtomValue(environmentAtom)
   const state = useAtomValue(listsStatesListAtom)
 
@@ -36,7 +36,7 @@ export function useAllLpTokens(categories: TokenListCategory[] | null): TokenWit
         return acc
       }, {})
 
-      return tokenMapToListWithLogo(tokensMap, chainId)
+      return tokenMapToListWithLogo(tokensMap, chainId) as LpToken[]
     },
     { ...SWR_NO_REFRESH_OPTIONS, fallbackData },
   ).data
