@@ -8,32 +8,18 @@ import * as styledEl from './styled'
 import { TokenInfo } from '../TokenInfo'
 import { TokenTags } from '../TokenTags'
 
-import type { VirtualItem } from '@tanstack/react-virtual'
-
 export interface TokenListItemProps {
   token: TokenWithLogo
   selectedToken?: string
   balance: BigNumber | undefined
   onSelectToken(token: TokenWithLogo): void
-  measureElement?: (node: Element | null) => void
-  virtualRow?: VirtualItem
   isUnsupported: boolean
   isPermitCompatible: boolean
   isWalletConnected: boolean
 }
 
 export function TokenListItem(props: TokenListItemProps) {
-  const {
-    token,
-    selectedToken,
-    balance,
-    onSelectToken,
-    virtualRow,
-    isUnsupported,
-    isPermitCompatible,
-    measureElement,
-    isWalletConnected,
-  } = props
+  const { token, selectedToken, balance, onSelectToken, isUnsupported, isPermitCompatible, isWalletConnected } = props
 
   const isTokenSelected = token.address.toLowerCase() === selectedToken?.toLowerCase()
 
@@ -41,9 +27,6 @@ export function TokenListItem(props: TokenListItemProps) {
 
   return (
     <styledEl.TokenItem
-      key={token.address}
-      data-index={virtualRow?.index}
-      ref={measureElement}
       data-address={token.address.toLowerCase()}
       disabled={isTokenSelected}
       onClick={() => onSelectToken(token)}

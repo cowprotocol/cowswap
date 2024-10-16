@@ -1,5 +1,6 @@
 import { ReactNode, useState } from 'react'
 
+import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenListCategory, useAllLpTokens, useTokensByAddressMap } from '@cowprotocol/tokens'
 
 import { TabButton, TabsContainer } from './styled'
@@ -20,6 +21,7 @@ export function LpTokenListsWidget({ children }: LpTokenListsProps) {
   const [listsCategories, setListsCategories] = useState<TokenListCategory[] | null>(null)
   const lpTokens = useAllLpTokens(listsCategories)
   const tokensByAddress = useTokensByAddressMap()
+  const balancesState = useTokensBalances()
 
   return (
     <>
@@ -36,7 +38,11 @@ export function LpTokenListsWidget({ children }: LpTokenListsProps) {
           )
         })}
       </TabsContainer>
-      {listsCategories === null ? children : <LpTokenLists tokensByAddress={tokensByAddress} lpTokens={lpTokens} />}
+      {listsCategories === null ? (
+        children
+      ) : (
+        <LpTokenLists balancesState={balancesState} tokensByAddress={tokensByAddress} lpTokens={lpTokens} />
+      )}
     </>
   )
 }
