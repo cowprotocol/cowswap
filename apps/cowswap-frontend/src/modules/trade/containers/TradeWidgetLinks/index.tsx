@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { BadgeType } from '@cowprotocol/ui'
+import { Badge, BadgeType } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
 
 import { Trans } from '@lingui/macro'
@@ -139,9 +139,9 @@ const MenuItem = ({
     <styledEl.Link to={routePath}>
       <Trans>{item.label}</Trans>
       {!isActive && badgeText && (
-        <styledEl.Badge type={badgeType}>
+        <Badge type={badgeType}>
           <Trans>{badgeText}</Trans>
-        </styledEl.Badge>
+        </Badge>
       )}
     </styledEl.Link>
   </styledEl.MenuItem>
