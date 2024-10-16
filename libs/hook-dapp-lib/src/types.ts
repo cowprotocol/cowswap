@@ -44,6 +44,8 @@ export interface HookDappOrderParams {
   validTo: number
   sellTokenAddress: string
   buyTokenAddress: string
+  sellAmount: string
+  buyAmount: string
 }
 
 export interface HookDappContext {
