@@ -19,7 +19,7 @@ import * as styledEl from './styled'
 
 import { useTradeRouteContext } from '../../hooks/useTradeRouteContext'
 import { useGetTradeStateByRoute } from '../../hooks/useTradeState'
-import { TradeUrlParams } from '../../types/TradeRawState'
+import { getDefaultTradeRawState, TradeUrlParams } from '../../types/TradeRawState'
 import { addChainIdToRoute, parameterizeTradeRoute } from '../../utils/parameterizeTradeRoute'
 
 interface MenuItemConfig {
@@ -73,16 +73,19 @@ export function TradeWidgetLinks({
   const menuItemsElements = useMemo(() => {
     return enabledItems.map((item) => {
       const isItemYield = item.route === Routes.YIELD
-      const isCurrentPathYield = location.pathname.startsWith(addChainIdToRoute(Routes.YIELD, tradeContext.chainId))
+      const chainId = tradeContext.chainId
+
+      const isCurrentPathYield = location.pathname.startsWith(addChainIdToRoute(Routes.YIELD, chainId))
       const itemTradeState = getTradeStateByType(item.route)
 
       const routePath = isItemYield
-        ? addChainIdToRoute(item.route, tradeContext.chainId)
+        ? addChainIdToRoute(item.route, chainId)
         : parameterizeTradeRoute(
             isCurrentPathYield
               ? ({
-                  chainId: tradeContext.chainId,
-                  inputCurrencyId: itemTradeState.inputCurrencyId,
+                  chainId,
+                  inputCurrencyId:
+                    itemTradeState.inputCurrencyId || (chainId && getDefaultTradeRawState(+chainId).inputCurrencyId),
                   outputCurrencyId: itemTradeState.outputCurrencyId,
                 } as TradeUrlParams)
               : tradeContext,
