@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components/macro'
 
 import { Color, Font } from '../../consts'
+import { UI } from '../../enum'
 import { CowSwapTheme } from '../../types'
 import { ProductLogoWrapper } from '../ProductLogo'
 
@@ -488,6 +489,8 @@ export const DropdownContentItemText = styled.div`
 `
 
 export const DropdownContentItemTitle = styled.span`
+  display: flex;
+  gap: 5px;
   font-weight: bold;
   font-size: 18px;
   line-height: 1.2;
@@ -693,4 +696,18 @@ export const GlobalSettingsButton = styled.button<{ mobileMode?: boolean }>`
       color: var(--activeFill);
     }
   }
+`
+
+export const TagLabel = styled.span`
+  display: inline-block;
+  padding: 4px 8px;
+  background: var(${UI.COLOR_ALERT_BG});
+  color: var(${UI.COLOR_ALERT_TEXT});
+  font-size: 10px;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+  font-weight: bold;
+  border-radius: 9px;
+  margin: auto 0;
+  position: relative;
 `

@@ -30,6 +30,7 @@ import {
   RightAligned,
   RootNavItem,
   StyledDropdownContentItem,
+  TagLabel,
 } from './styled'
 
 import { Color } from '../../consts'
@@ -98,6 +99,7 @@ export interface MenuItem {
   hasDivider?: boolean
   utmContent?: string
   utmSource?: string
+  tag?: string
 }
 
 interface DropdownMenuItem {
@@ -118,10 +120,12 @@ interface DropdownMenuItem {
   hasDivider?: boolean
   utmContent?: string
   utmSource?: string
+  tag?: string
 }
 
 interface DropdownMenuContent {
   title: string | undefined
+  tag?: string
   items?: DropdownMenuItem[]
 }
 
@@ -169,7 +173,7 @@ const NavItem = ({
   return item.children ? (
     <GenericDropdown
       isOpen={openDropdown === item.label}
-      content={{ title: item.label, items: item.children }}
+      content={{ title: item.label, tag: item.tag, items: item.children }} // Pass tag here
       onTrigger={handleToggle}
       interaction="click" // Ensure it's 'click' for both mobile and desktop
       mobileMode={mobileMode}
@@ -409,6 +413,7 @@ const GenericDropdown: React.FC<DropdownProps> = ({
     <DropdownMenu {...interactionProps} mobileMode={mobileMode}>
       <RootNavItem as="button" aria-haspopup="true" aria-expanded={isOpen} isOpen={isOpen} mobileMode={mobileMode}>
         <span>{content.title}</span>
+        {content.tag && <TagLabel>{content.tag}</TagLabel>}
         {content.items && <SVG src={IMG_ICON_CARRET_DOWN} />}
       </RootNavItem>
       {isOpen && (
@@ -477,7 +482,10 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
           <>
             {item.icon && <DropdownContentItemIcon src={item.icon} alt="" />}
             <DropdownContentItemText>
-              <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
+              <DropdownContentItemTitle>
+                {item.label}
+                {item.tag && <TagLabel>{item.tag}</TagLabel>}
+              </DropdownContentItemTitle>
               {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
             </DropdownContentItemText>
             {item.children && <SVG src={IMG_ICON_CARRET_DOWN} />}
