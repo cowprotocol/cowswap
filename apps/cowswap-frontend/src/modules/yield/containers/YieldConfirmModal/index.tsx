@@ -17,13 +17,19 @@ import { HighFeeWarning } from 'modules/tradeWidgetAddons'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
+import { getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
 
 import { useYieldDerivedState } from '../../hooks/useYieldDerivedState'
 
 const CONFIRM_TITLE = 'Confirm order'
 
+const labelsAndTooltips = {
+  slippageTooltip: getNonNativeSlippageTooltip(),
+}
+
 export interface YieldConfirmModalProps {
   doTrade(): Promise<false | void>
+
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   priceImpact: PriceImpact
@@ -77,6 +83,7 @@ export function YieldConfirmModal(props: YieldConfirmModalProps) {
                 receiveAmountInfo={receiveAmountInfo}
                 recipient={recipient}
                 account={account}
+                labelsAndTooltips={labelsAndTooltips}
                 hideLimitPrice
                 hideUsdValues
                 withTimelineDot={false}
