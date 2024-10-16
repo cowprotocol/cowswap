@@ -18,10 +18,11 @@ const ALLOWANCES_SWR_CONFIG = { refreshInterval: ms`33s` }
 // A small gap between balances and allowances refresh intervals is needed to avoid high load to the node at the same time
 const LP_BALANCES_SWR_CONFIG = { refreshInterval: ms`62s` }
 const LP_ALLOWANCES_SWR_CONFIG = { refreshInterval: ms`66s` }
+const LP_MULTICALL_OPTIONS = { consequentExecution: true }
 
 // To avoid high load to the node at the same time
 // We start the updater with a delay
-const LP_UPDATER_START_DELAY = ms`6s`
+const LP_UPDATER_START_DELAY = ms`3s`
 
 const LP_CATEGORIES = [TokenListCategory.LP, TokenListCategory.COW_AMM_LP]
 
@@ -57,6 +58,7 @@ export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAl
     setLoadingState: false,
     balancesSwrConfig: LP_BALANCES_SWR_CONFIG,
     allowancesSwrConfig: LP_ALLOWANCES_SWR_CONFIG,
+    multicallOptions: LP_MULTICALL_OPTIONS,
   })
 
   useEffect(() => {

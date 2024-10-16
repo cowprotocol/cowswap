@@ -5,7 +5,7 @@ import { useEffect, useMemo } from 'react'
 import { ERC_20_INTERFACE } from '@cowprotocol/abis'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useMultipleContractSingleData } from '@cowprotocol/multicall'
+import { MultiCallOptions, useMultipleContractSingleData } from '@cowprotocol/multicall'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { SWRConfiguration } from 'swr'
@@ -13,7 +13,7 @@ import { SWRConfiguration } from 'swr'
 import { AllowancesState, allowancesFullState } from '../state/allowancesAtom'
 import { balancesAtom, BalancesState } from '../state/balancesAtom'
 
-const MULTICALL_OPTIONS = { consequentExecution: true }
+const MULTICALL_OPTIONS = {}
 
 export interface PersistBalancesAndAllowancesParams {
   account: string | undefined
@@ -22,10 +22,19 @@ export interface PersistBalancesAndAllowancesParams {
   balancesSwrConfig: SWRConfiguration
   allowancesSwrConfig: SWRConfiguration
   setLoadingState?: boolean
+  multicallOptions?: MultiCallOptions
 }
 
 export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowancesParams) {
-  const { account, chainId, tokenAddresses, setLoadingState, balancesSwrConfig, allowancesSwrConfig } = params
+  const {
+    account,
+    chainId,
+    tokenAddresses,
+    setLoadingState,
+    balancesSwrConfig,
+    allowancesSwrConfig,
+    multicallOptions = MULTICALL_OPTIONS,
+  } = params
 
   const setBalances = useSetAtom(balancesAtom)
   const setAllowances = useSetAtom(allowancesFullState)
@@ -43,7 +52,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     ERC_20_INTERFACE,
     'balanceOf',
     balanceOfParams,
-    MULTICALL_OPTIONS,
+    multicallOptions,
     balancesSwrConfig,
   )
 
@@ -52,7 +61,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     ERC_20_INTERFACE,
     'allowance',
     allowanceParams,
-    MULTICALL_OPTIONS,
+    multicallOptions,
     allowancesSwrConfig,
   )
 
