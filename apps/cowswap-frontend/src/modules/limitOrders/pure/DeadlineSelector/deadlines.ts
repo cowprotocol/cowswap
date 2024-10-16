@@ -12,7 +12,7 @@ export const MAX_CUSTOM_DEADLINE = MAX_ORDER_DEADLINE
 
 export const defaultLimitOrderDeadline: LimitOrderDeadline = { title: '7 Days', value: ms`7d` }
 
-export const limitOrdersDeadlines: LimitOrderDeadline[] = [
+export const LIMIT_ORDERS_DEADLINES: LimitOrderDeadline[] = [
   { title: '5 Minutes', value: ms`5m` },
   { title: '30 Minutes', value: ms`30m` },
   { title: '1 Hour', value: ms`1 hour` },

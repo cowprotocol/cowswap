@@ -16,7 +16,7 @@ import {
 
 import { CowModal as Modal } from 'common/pure/Modal'
 
-import { LimitOrderDeadline, limitOrdersDeadlines } from './deadlines'
+import { LIMIT_ORDERS_DEADLINES, LimitOrderDeadline } from './deadlines'
 import * as styledEl from './styled'
 
 const CUSTOM_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
@@ -69,7 +69,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     }
   }, [maxDate, minDate, selectCustomDeadline, value])
 
-  const existingDeadline = useMemo(() => limitOrdersDeadlines.find((item) => item === deadline), [deadline])
+  const existingDeadline = useMemo(() => LIMIT_ORDERS_DEADLINES.find((item) => item === deadline), [deadline])
 
   const customDeadlineTitle = useMemo(() => {
     if (!customDeadline) {
@@ -140,7 +140,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
             <ChevronDown size="18" />
           </styledEl.Current>
           <styledEl.ListWrapper>
-            {limitOrdersDeadlines.map((item) => (
+            {LIMIT_ORDERS_DEADLINES.map((item) => (
               <li key={item.value}>
                 <styledEl.ListItem onSelect={() => setDeadline(item)}>
                   <Trans>{item.title}</Trans>

@@ -5,7 +5,7 @@ import { TradeType } from '@cowprotocol/widget-lib'
 
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
 import { DeadlineSelector } from 'modules/limitOrders/pure/DeadlineSelector'
-import { LimitOrderDeadline, limitOrdersDeadlines } from 'modules/limitOrders/pure/DeadlineSelector/deadlines'
+import { LIMIT_ORDERS_DEADLINES, LimitOrderDeadline } from 'modules/limitOrders/pure/DeadlineSelector/deadlines'
 import {
   limitOrdersSettingsAtom,
   updateLimitOrdersSettingsAtom,
@@ -18,7 +18,7 @@ export function DeadlineInput() {
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
   const currentDeadlineNode = useRef<HTMLButtonElement>()
   const existingDeadline = useMemo(() => {
-    return limitOrdersDeadlines.find((item) => item.value === deadlineMilliseconds)
+    return LIMIT_ORDERS_DEADLINES.find((item) => item.value === deadlineMilliseconds)
   }, [deadlineMilliseconds])
 
   const widgetDeadlineMinutes = useInjectedWidgetDeadline(TradeType.LIMIT)
