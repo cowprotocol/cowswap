@@ -13,7 +13,7 @@ import { SWRConfiguration } from 'swr'
 import { AllowancesState, allowancesFullState } from '../state/allowancesAtom'
 import { balancesAtom, BalancesState } from '../state/balancesAtom'
 
-const MULTICALL_OPTIONS = {}
+const MULTICALL_OPTIONS = { consequentExecution: true }
 
 export interface PersistBalancesAndAllowancesParams {
   account: string | undefined
@@ -44,7 +44,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     'balanceOf',
     balanceOfParams,
     MULTICALL_OPTIONS,
-    balancesSwrConfig
+    balancesSwrConfig,
   )
 
   const { isLoading: isAllowancesLoading, data: allowances } = useMultipleContractSingleData<[BigNumber]>(
@@ -53,7 +53,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     'allowance',
     allowanceParams,
     MULTICALL_OPTIONS,
-    allowancesSwrConfig
+    allowancesSwrConfig,
   )
 
   // Set balances loading state
