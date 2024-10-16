@@ -113,7 +113,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const shouldShowMyOrdersButton =
     !alternativeOrderModalVisible &&
     (!isInjectedWidgetMode && isConnectedSwapMode ? isUpToLarge : true) &&
-    !hideOrdersTable &&
+    (isConnectedSwapMode || !hideOrdersTable) &&
     ((isConnectedSwapMode && standaloneMode !== true) ||
       (isLimitOrderMode && isUpToLarge && isLimitOrdersUnlocked) ||
       (isAdvancedMode && isUpToLarge && isAdvancedOrdersUnlocked))
