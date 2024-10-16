@@ -29,4 +29,5 @@ export interface ConfiguratorState {
   standaloneMode: boolean
   disableToastMessages: boolean
   disableProgressBar: boolean
+  hideBridgeInfo: boolean | undefined
 }

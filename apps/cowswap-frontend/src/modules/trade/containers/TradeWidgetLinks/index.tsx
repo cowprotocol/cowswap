@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { BadgeType } from '@cowprotocol/ui'
+import { Badge } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
 
 import { Trans } from '@lingui/macro'
@@ -25,6 +25,7 @@ import { addChainIdToRoute, parameterizeTradeRoute } from '../../utils/parameter
 interface MenuItemConfig {
   route: RoutesValues
   label: string
+  badge?: string
 }
 
 const TRADE_TYPE_TO_ROUTE: Record<TradeType, string> = {
@@ -35,16 +36,10 @@ const TRADE_TYPE_TO_ROUTE: Record<TradeType, string> = {
 }
 
 interface TradeWidgetLinksProps {
-  highlightedBadgeText?: string
-  highlightedBadgeType?: BadgeType
   isDropdown?: boolean
 }
 
-export function TradeWidgetLinks({
-  highlightedBadgeText,
-  highlightedBadgeType,
-  isDropdown = false,
-}: TradeWidgetLinksProps) {
+export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) {
   const tradeContext = useTradeRouteContext()
   const location = useLocation()
   const [isDropdownVisible, setDropdownVisible] = useState(false)
@@ -101,8 +96,6 @@ export function TradeWidgetLinks({
           routePath={routePath}
           item={item}
           isActive={isActive}
-          badgeText={highlightedBadgeText}
-          badgeType={highlightedBadgeType}
           onClick={() => handleMenuItemClick(item)}
           isDropdownVisible={isDropdown && isDropdownVisible}
         />
@@ -114,8 +107,6 @@ export function TradeWidgetLinks({
     enabledItems,
     tradeContext,
     location.pathname,
-    highlightedBadgeText,
-    highlightedBadgeType,
     handleMenuItemClick,
     getTradeStateByType,
   ])
@@ -152,26 +143,22 @@ const MenuItem = ({
   routePath,
   item,
   isActive,
-  badgeText,
-  badgeType,
   onClick,
   isDropdownVisible,
 }: {
   routePath: string
   item: MenuItemConfig
   isActive: boolean
-  badgeText?: string
-  badgeType?: BadgeType
   onClick: Command
   isDropdownVisible: boolean
 }) => (
   <styledEl.MenuItem isActive={isActive} onClick={onClick} isDropdownVisible={isDropdownVisible}>
     <styledEl.Link to={routePath}>
       <Trans>{item.label}</Trans>
-      {!isActive && badgeText && (
-        <styledEl.Badge type={badgeType}>
-          <Trans>{badgeText}</Trans>
-        </styledEl.Badge>
+      {!isActive && item.badge && (
+        <Badge type="information">
+          <Trans>{item.badge}</Trans>
+        </Badge>
       )}
     </styledEl.Link>
   </styledEl.MenuItem>
