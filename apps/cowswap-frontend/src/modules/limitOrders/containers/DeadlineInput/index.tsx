@@ -5,42 +5,41 @@ import { TradeType } from '@cowprotocol/widget-lib'
 
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
 import { DeadlineSelector } from 'modules/limitOrders/pure/DeadlineSelector'
-import { LIMIT_ORDERS_DEADLINES, LimitOrderDeadline } from 'modules/limitOrders/pure/DeadlineSelector/deadlines'
+import {
+  getLimitOrderDeadlines,
+  LIMIT_ORDERS_DEADLINES,
+  LimitOrderDeadline,
+} from 'modules/limitOrders/pure/DeadlineSelector/deadlines'
 import {
   limitOrdersSettingsAtom,
   updateLimitOrdersSettingsAtom,
 } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 
-import { calculateMinMax } from '../../pure/DeadlineSelector/utils'
-
 export function DeadlineInput() {
   const { deadlineMilliseconds, customDeadlineTimestamp } = useAtomValue(limitOrdersSettingsAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
   const currentDeadlineNode = useRef<HTMLButtonElement>()
-  const existingDeadline = useMemo(() => {
-    return LIMIT_ORDERS_DEADLINES.find((item) => item.value === deadlineMilliseconds)
-  }, [deadlineMilliseconds])
+  const existingDeadline = useMemo(
+    () => getLimitOrderDeadlines(deadlineMilliseconds).find((item) => item.value === deadlineMilliseconds),
+    [deadlineMilliseconds],
+  )
 
   const widgetDeadlineMinutes = useInjectedWidgetDeadline(TradeType.LIMIT)
 
   useEffect(() => {
     if (widgetDeadlineMinutes) {
       const widgetDeadlineDelta = widgetDeadlineMinutes * 60 * 1000
+      const min = LIMIT_ORDERS_DEADLINES[0].value
+      const max = LIMIT_ORDERS_DEADLINES[LIMIT_ORDERS_DEADLINES.length - 1].value
 
-      const widgetTimestamp = Math.floor((Date.now() + widgetDeadlineDelta) / 1000)
-
-      const [min, max] = calculateMinMax()
-      const minTimestamp = Math.floor(min.getTime() / 1000)
-      const maxTimestamp = Math.floor(max.getTime() / 1000)
-
-      let customDeadlineTimestamp = widgetTimestamp
-      if (widgetTimestamp < minTimestamp) {
-        customDeadlineTimestamp = minTimestamp
-      } else if (widgetTimestamp > maxTimestamp) {
-        customDeadlineTimestamp = maxTimestamp
+      let deadlineMilliseconds = widgetDeadlineDelta
+      if (widgetDeadlineDelta < min) {
+        deadlineMilliseconds = min
+      } else if (widgetDeadlineDelta > max) {
+        deadlineMilliseconds = max
       }
 
-      updateSettingsState({ customDeadlineTimestamp })
+      updateSettingsState({ customDeadlineTimestamp: null, deadlineMilliseconds })
     }
   }, [widgetDeadlineMinutes, updateSettingsState])
 

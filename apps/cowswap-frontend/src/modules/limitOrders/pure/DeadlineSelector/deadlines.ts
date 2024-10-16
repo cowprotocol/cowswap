@@ -1,4 +1,5 @@
 import ms from 'ms.macro'
+import { format } from 'timeago.js'
 
 import { MAX_ORDER_DEADLINE } from 'common/constants/common'
 
@@ -22,3 +23,27 @@ export const LIMIT_ORDERS_DEADLINES: LimitOrderDeadline[] = [
   { title: '1 Month', value: ms`30d` },
   { title: '6 Months (max)', value: MAX_CUSTOM_DEADLINE },
 ]
+
+/**
+ * Get limit order deadlines and optionally adds
+ * @param value
+ */
+export function getLimitOrderDeadlines(value?: number | LimitOrderDeadline): LimitOrderDeadline[] {
+  if (!value || LIMIT_ORDERS_DEADLINES.find((item) => item === value || item.value === value)) {
+    return LIMIT_ORDERS_DEADLINES
+  }
+
+  const itemToAdd = typeof value === 'number' ? buildLimitOrderDeadline(value) : value
+
+  return [...LIMIT_ORDERS_DEADLINES, itemToAdd].sort((a, b) => a.value - b.value)
+}
+
+/**
+ * Builds a LimitOrderDeadline from milliseconds value.
+ * Uses timeago to an approximate title
+ */
+export function buildLimitOrderDeadline(value: number): LimitOrderDeadline {
+  const title = format(Date.now() + value, undefined).replace(/in /, '')
+
+  return { title, value }
+}

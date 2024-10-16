@@ -16,7 +16,7 @@ import {
 
 import { CowModal as Modal } from 'common/pure/Modal'
 
-import { LIMIT_ORDERS_DEADLINES, LimitOrderDeadline } from './deadlines'
+import { getLimitOrderDeadlines, LimitOrderDeadline } from './deadlines'
 import * as styledEl from './styled'
 
 const CUSTOM_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
@@ -69,7 +69,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     }
   }, [maxDate, minDate, selectCustomDeadline, value])
 
-  const existingDeadline = useMemo(() => LIMIT_ORDERS_DEADLINES.find((item) => item === deadline), [deadline])
+  const limitOrderDeadlines = useMemo(() => getLimitOrderDeadlines(deadline), [deadline])
 
   const customDeadlineTitle = useMemo(() => {
     if (!customDeadline) {
@@ -121,7 +121,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     onDismiss()
   }, [onDismiss, selectCustomDeadline, value])
 
-  const deadlineDisplay = customDeadline ? customDeadlineTitle : existingDeadline?.title
+  const deadlineDisplay = customDeadline ? customDeadlineTitle : deadline?.title
 
   return (
     <styledEl.Wrapper>
@@ -140,7 +140,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
             <ChevronDown size="18" />
           </styledEl.Current>
           <styledEl.ListWrapper>
-            {LIMIT_ORDERS_DEADLINES.map((item) => (
+            {limitOrderDeadlines.map((item) => (
               <li key={item.value}>
                 <styledEl.ListItem onSelect={() => setDeadline(item)}>
                   <Trans>{item.title}</Trans>
