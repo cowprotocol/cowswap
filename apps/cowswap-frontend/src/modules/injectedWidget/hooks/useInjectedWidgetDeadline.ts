@@ -21,7 +21,7 @@ export function useInjectedWidgetDeadline(tradeType: TradeType): number | undefi
     }
 
     return getDeadline(forcedOrderDeadline, chainId, tradeType)
-  }, [tradeType, forcedOrderDeadline])
+  }, [tradeType, forcedOrderDeadline, chainId])
 }
 
 function getDeadline(deadline: ForcedOrderDeadline | undefined, chainId: SupportedChainId, tradeType: TradeType) {
