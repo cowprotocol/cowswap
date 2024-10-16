@@ -34,6 +34,7 @@ import {
 
 import { Color } from '../../consts'
 import { Media } from '../../consts'
+import { Badge } from '../Badge'
 import { ProductLogo, ProductVariant } from '../ProductLogo'
 
 const DAO_NAV_ITEMS: MenuItem[] = [
@@ -84,6 +85,7 @@ type LinkComponentType = ComponentType<PropsWithChildren<{ href: string }>>
 export interface MenuItem {
   href?: string
   label?: string
+  badge?: string
   children?: DropdownMenuItem[]
   productVariant?: ProductVariant
   icon?: string
@@ -105,6 +107,7 @@ interface DropdownMenuItem {
   external?: boolean
   label?: string
   icon?: string
+  badge?: string
   description?: string
   isButton?: boolean
   children?: DropdownMenuItem[]
@@ -127,7 +130,7 @@ interface DropdownMenuContent {
 
 interface DropdownProps {
   isOpen: boolean
-  content: DropdownMenuContent
+  item: MenuItem
   onTrigger: () => void
   closeDropdown: () => void
   interaction: 'hover' | 'click'
@@ -169,7 +172,7 @@ const NavItem = ({
   return item.children ? (
     <GenericDropdown
       isOpen={openDropdown === item.label}
-      content={{ title: item.label, items: item.children }}
+      item={item}
       onTrigger={handleToggle}
       interaction="click" // Ensure it's 'click' for both mobile and desktop
       mobileMode={mobileMode}
@@ -381,7 +384,7 @@ const NavDaoTrigger: React.FC<{
 
 const GenericDropdown: React.FC<DropdownProps> = ({
   isOpen,
-  content,
+  item,
   onTrigger,
   interaction,
   mobileMode,
@@ -390,8 +393,8 @@ const GenericDropdown: React.FC<DropdownProps> = ({
   rootDomain,
   LinkComponent,
 }) => {
-  if (!content.title) {
-    throw new Error('Dropdown content must have a title')
+  if (!item.label) {
+    throw new Error('Dropdown content must have a title and children')
   }
 
   const interactionProps = useMemo(() => {
@@ -408,12 +411,13 @@ const GenericDropdown: React.FC<DropdownProps> = ({
   return (
     <DropdownMenu {...interactionProps} mobileMode={mobileMode}>
       <RootNavItem as="button" aria-haspopup="true" aria-expanded={isOpen} isOpen={isOpen} mobileMode={mobileMode}>
-        <span>{content.title}</span>
-        {content.items && <SVG src={IMG_ICON_CARRET_DOWN} />}
+        <span>{item.label}</span>
+        {item.badge && <Badge type="information">{item.badge}</Badge>}
+        {item.children && <SVG src={IMG_ICON_CARRET_DOWN} />}
       </RootNavItem>
       {isOpen && (
         <DropdownContentWrapper
-          content={content}
+          content={{ title: item.label, items: item.children }}
           mobileMode={mobileMode}
           isNavItemDropdown={isNavItemDropdown}
           closeDropdown={closeDropdown}
@@ -477,7 +481,10 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
           <>
             {item.icon && <DropdownContentItemIcon src={item.icon} alt="" />}
             <DropdownContentItemText>
-              <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
+              <DropdownContentItemTitle>
+                <span>{item.label}</span>
+                {item.badge && <Badge type="information">{item.badge}</Badge>}
+              </DropdownContentItemTitle>
               {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
             </DropdownContentItemText>
             {item.children && <SVG src={IMG_ICON_CARRET_DOWN} />}
