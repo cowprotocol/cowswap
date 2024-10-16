@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.35.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.35.0...explorer-v2.35.1) (2024-10-14)
+
+
+### Bug Fixes
+
+* **explorer:** do not crash when appData is not parsed ([#4983](https://github.com/cowprotocol/cowswap/issues/4983)) ([b960bde](https://github.com/cowprotocol/cowswap/commit/b960bde94570dba2a297ecb59a7a79cbbbfcefb8))
+
 ## [2.35.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.34.1...explorer-v2.35.0) (2024-10-10)
 
 

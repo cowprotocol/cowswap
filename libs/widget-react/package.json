@@ -22,6 +22,6 @@
     "react"
   ],
   "dependencies": {
-    "@cowprotocol/widget-lib": "^0.14.1-RC.0"
+    "@cowprotocol/widget-lib": "^0.15.0"
   }
 }

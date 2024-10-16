@@ -20,6 +20,6 @@
     "dex"
   ],
   "dependencies": {
-    "@cowprotocol/types": "^1.1.1-RC.0"
+    "@cowprotocol/types": "^1.2.0"
   }
 }
