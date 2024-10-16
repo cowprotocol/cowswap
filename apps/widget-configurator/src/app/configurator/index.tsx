@@ -128,9 +128,10 @@ export function Configurator({ title }: { title: string }) {
   const firstToast = toasts?.[0]
 
   const [disableProgressBar, setDisableProgressBar] = useState<boolean>(false)
-  const toggleDisableProgressBar = useCallback(() => {
-    setDisableProgressBar((curr) => !curr)
-  }, [])
+  const toggleDisableProgressBar = useCallback(() => setDisableProgressBar((curr) => !curr), [])
+
+  const [hideBridgeInfo, setHideBridgeInfo] = useState<boolean | undefined>(false)
+  const toggleHideBridgeInfo = useCallback(() => setHideBridgeInfo((curr) => !curr), [])
 
   const LINKS = [
     { icon: <CodeIcon />, label: 'View embed code', onClick: () => handleDialogOpen() },
@@ -161,6 +162,7 @@ export function Configurator({ title }: { title: string }) {
     standaloneMode,
     disableToastMessages,
     disableProgressBar,
+    hideBridgeInfo,
   }
 
   const computedParams = useWidgetParams(state)
@@ -283,11 +285,20 @@ export function Configurator({ title }: { title: string }) {
             <FormControlLabel value="true" control={<Radio />} label="Dapp mode" />
           </RadioGroup>
         </FormControl>
+
         <FormControl component="fieldset">
           <FormLabel component="legend">Progress bar:</FormLabel>
           <RadioGroup row aria-label="mode" name="mode" value={disableProgressBar} onChange={toggleDisableProgressBar}>
             <FormControlLabel value="false" control={<Radio />} label="Show SWAP progress bar" />
             <FormControlLabel value="true" control={<Radio />} label="Hide SWAP progress bar" />
+          </RadioGroup>
+        </FormControl>
+
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Hide bridge info:</FormLabel>
+          <RadioGroup row aria-label="mode" name="mode" value={hideBridgeInfo} onChange={toggleHideBridgeInfo}>
+            <FormControlLabel value="false" control={<Radio />} label="Show bridge info" />
+            <FormControlLabel value="true" control={<Radio />} label="Hide bridge info" />
           </RadioGroup>
         </FormControl>
 
