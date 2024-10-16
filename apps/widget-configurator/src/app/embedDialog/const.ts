@@ -14,7 +14,7 @@ export const COMMENTS_BY_PARAM_NAME: Record<string, string> = {
   tradeType: 'swap, limit or advanced',
   sell: 'Sell token. Optionally add amount for sell orders',
   buy: 'Buy token. Optionally add amount for buy orders',
-  enabledTradeTypes: 'swap, limit and/or advanced',
+  enabledTradeTypes: 'swap, limit, advanced, yield',
   partnerFee: 'Partner fee, in Basis Points (BPS) and a receiver address',
 }
 
