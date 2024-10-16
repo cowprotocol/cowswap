@@ -3,6 +3,7 @@ import { lazy, PropsWithChildren, Suspense, useMemo } from 'react'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { NavLink } from 'react-router-dom'
 import { ThemeProvider } from 'theme'
@@ -94,6 +95,8 @@ export function App() {
     </HeaderControls>
   )
 
+  const { account } = useWalletInfo()
+
   return (
     <ErrorBoundary>
       <Suspense fallback={<LoadingApp />}>
@@ -129,7 +132,7 @@ export function App() {
           )}
 
           {/* CoW AMM banner */}
-          {!isInjectedWidgetMode && <CoWAmmBanner location={BannerLocation.Global} />}
+          {!isInjectedWidgetMode && account && <CoWAmmBanner location={BannerLocation.Global} />}
 
           <styledEl.BodyWrapper>
             <TopLevelModals />

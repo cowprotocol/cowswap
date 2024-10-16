@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useVirtualizer } from '@tanstack/react-virtual'
 import ms from 'ms.macro'
@@ -35,6 +36,8 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
     props
   const { values: balances, isLoading: balancesLoading } = balancesState
 
+  const { account: connectedAccount } = useWalletInfo()
+
   const isWalletConnected = !!account
 
   const scrollTimeoutRef = useRef<NodeJS.Timeout>()
@@ -67,7 +70,7 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
 
   return (
     <CommonListContainer id="tokens-list" ref={parentRef} onScroll={onScroll}>
-      <CoWAmmBanner location={BannerLocation.TokenSelector} />
+      {connectedAccount && <CoWAmmBanner location={BannerLocation.TokenSelector} />}
       <styledEl.TokensInner ref={wrapperRef} style={{ height: virtualizer.getTotalSize() }}>
         <styledEl.TokensScroller style={{ transform: `translateY(${items[0]?.start ?? 0}px)` }}>
           {items.map((virtualRow) => {
