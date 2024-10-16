@@ -1,5 +1,3 @@
-// src/modules/hooksStore/pure/AppliedHookItem/index.tsx
-
 import { useMemo } from 'react'
 
 import ICON_CHECK_ICON from '@cowprotocol/assets/cow-swap/check-singular.svg'

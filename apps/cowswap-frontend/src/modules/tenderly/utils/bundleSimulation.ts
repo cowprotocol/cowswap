@@ -4,8 +4,6 @@ import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, SupportedChainId } from '@cow
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { BigNumberish } from 'ethers'
-
 import { CowHook, HookDappOrderParams } from 'modules/hooksStore/types/hooks'
 
 import { SimulationData, SimulationInput } from '../types'
@@ -52,20 +50,6 @@ export function getCoWHookTenderlySimulationInput(from: string, params: CowHook)
     from,
   }
 }
-// TODO: check if there is a function to do this conversion
-function currencyAmountToBigNumberish(amount: CurrencyAmount<Currency>): BigNumberish {
-  // CurrencyAmount already stores the amount as a fraction internally
-  const fraction = amount.asFraction
-
-  // Get the numerator and denominator as BigInts
-  const numerator = BigInt(fraction.numerator.toString())
-  const denominator = BigInt(fraction.denominator.toString())
-
-  const result = numerator / denominator
-
-  // Convert the result to a string
-  return result.toString()
-}
 
 export function getTransferTenderlySimulationInput({
   currencyAmount,
@@ -73,10 +57,7 @@ export function getTransferTenderlySimulationInput({
   receiver,
   token,
 }: GetTransferTenderlySimulationInput): SimulationInput {
-  const callData = token.interface.encodeFunctionData('transfer', [
-    receiver,
-    currencyAmountToBigNumberish(currencyAmount),
-  ])
+  const callData = token.interface.encodeFunctionData('transfer', [receiver, currencyAmount.quotient.toString()])
 
   return {
     input: callData,

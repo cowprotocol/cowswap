@@ -2,14 +2,18 @@ import { useCallback } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { bundleSimulation } from '../utils/bundleSimulation'
-import { useTopTokenHolders } from './useTopTokenHolders'
-import { getTokenTransferInfo } from '../utils/getTokenTransferInfo'
-import { useOrderParams } from 'modules/hooksStore/hooks/useOrderParams'
-import { useTokenContract } from 'common/hooks/useContract'
 import useSWR from 'swr'
+
 import { useHooks } from 'modules/hooksStore'
+import { useOrderParams } from 'modules/hooksStore/hooks/useOrderParams'
+
+import { useTokenContract } from 'common/hooks/useContract'
+
+import { useTopTokenHolders } from './useTopTokenHolders'
+
+import { bundleSimulation } from '../utils/bundleSimulation'
 import { generateNewSimulationData, generateSimulationDataToError } from '../utils/generateSimulationData'
+import { getTokenTransferInfo } from '../utils/getTokenTransferInfo'
 
 export function useTenderlyBundleSimulateSWR() {
   const { account, chainId } = useWalletInfo()
