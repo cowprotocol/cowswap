@@ -10,7 +10,17 @@ import { VirtualItem } from '@tanstack/react-virtual'
 
 import { VirtualList } from 'common/pure/VirtualList'
 
-import { ListHeader, ListItem, LpTokenInfo, LpTokenLogo, LpTokenWrapper, Wrapper } from './styled'
+import {
+  ArrowUpRight,
+  CreatePoolLink,
+  ListHeader,
+  ListItem,
+  LpTokenInfo,
+  LpTokenLogo,
+  LpTokenWrapper,
+  NoPoolWrapper,
+  Wrapper,
+} from './styled'
 
 const LoadingElement = (
   <LoadingRows>
@@ -75,10 +85,17 @@ export function LpTokenLists({ lpTokens, tokensByAddress, balancesState }: LpTok
         <span></span>
       </ListHeader>
       <VirtualList items={lpTokens} getItemView={getItemView} />
-      <div>
-        <div>Can' find?</div>
-        <a>Create a pool</a>
-      </div>
+      <NoPoolWrapper>
+        <div>Can’t find the pool you’re looking for?</div>
+        <CreatePoolLink
+          href="https://balancer.fi/pools/cow?utm_source=swap.cow.fi&utm_medium=web&utm_content=yield-token-selector"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Create a pool
+          <ArrowUpRight size={16} />
+        </CreatePoolLink>
+      </NoPoolWrapper>
     </Wrapper>
   )
 }
