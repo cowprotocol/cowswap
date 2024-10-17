@@ -89,7 +89,7 @@ export function useGetTradeStateByRoute() {
 
   return useCallback(
     (route: RoutesValues) => {
-      if (route === Routes.SWAP) return swapTradeState
+      if (route === Routes.SWAP || route === Routes.HOOKS) return swapTradeState
       if (route === Routes.ABOUT) return advancedOrdersState
       if (route === Routes.YIELD) return yieldRawState
       return limitOrdersState
