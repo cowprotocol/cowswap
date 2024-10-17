@@ -44,6 +44,7 @@ export interface HookDappOrderParams {
   validTo: number
   sellTokenAddress: string
   buyTokenAddress: string
+  receiver: string
   sellAmount: string
   buyAmount: string
 }
