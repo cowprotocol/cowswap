@@ -35,11 +35,11 @@ import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
 import { useNavigateToNewOrderCallback } from '../../hooks/useNavigateToNewOrderCallback'
 import { useShouldPayGas } from '../../hooks/useShouldPayGas'
 import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
+import { useSmartSwapSlippage } from '../../hooks/useSwapSlippage'
 import { useSwapState } from '../../hooks/useSwapState'
 import { NetworkCostsTooltipSuffix } from '../../pure/NetworkCostsTooltipSuffix'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '../../pure/Row/RowSlippageContent'
 import { RowDeadline } from '../Row/RowDeadline'
-import { useSmartSwapSlippage } from '../../hooks/useSwapSlippage'
 
 const CONFIRM_TITLE = 'Swap'
 
