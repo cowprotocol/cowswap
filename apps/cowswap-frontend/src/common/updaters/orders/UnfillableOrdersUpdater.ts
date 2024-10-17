@@ -5,7 +5,6 @@ import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCY_ADDRESS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { getPromiseFulfilledValue, isSellOrder } from '@cowprotocol/common-utils'
-import { timestamp } from '@cowprotocol/contracts'
 import { PriceQuality, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -22,7 +21,7 @@ import {
   getEstimatedExecutionPrice,
   getOrderMarketPrice,
   getRemainderAmount,
-  isOrderUnfillable,
+  isOrderUnfillable
 } from 'legacy/state/orders/utils'
 import type { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 import { getBestQuote } from 'legacy/utils/price'
@@ -222,13 +221,8 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: PriceStr
   }
 
   const legacyFeeQuoteParams = quoteParams as LegacyFeeQuoteParams
-  // Limit order may have arbitrary validTo, but API doesn't allow values greater than 1 hour
-  // To avoid ExcessiveValidTo error we use PRICE_QUOTE_VALID_TO_TIME
-  if (order.class === 'limit') {
-    legacyFeeQuoteParams.validFor = Math.round(PRICE_QUOTE_VALID_TO_TIME / 1000)
-  } else {
-    legacyFeeQuoteParams.validTo = timestamp(order.validTo)
-  }
+
+  legacyFeeQuoteParams.validFor = Math.round(PRICE_QUOTE_VALID_TO_TIME / 1000)
 
   try {
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })

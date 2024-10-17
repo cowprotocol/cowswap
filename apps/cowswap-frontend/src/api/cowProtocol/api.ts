@@ -10,7 +10,6 @@ import {
 } from '@cowprotocol/common-utils'
 import {
   Address,
-  SupportedChainId as ChainId,
   CompetitionOrderStatus,
   CowEnv,
   EnrichedOrder,
@@ -21,6 +20,7 @@ import {
   OrderQuoteSideKindSell,
   PartialApiContext,
   SigningScheme,
+  SupportedChainId as ChainId,
   TotalSurplus,
   Trade,
 } from '@cowprotocol/cow-sdk'
@@ -31,9 +31,12 @@ import { LegacyFeeQuoteParams as FeeQuoteParams } from 'legacy/state/price/types
 
 import { getAppData } from 'modules/appData'
 
+import { getQuoteValidFor } from 'utils/orderUtils/getQuoteValidFor'
+
 import { ApiErrorCodes } from './errors/OperatorError'
 import QuoteApiError, { mapOperatorErrorToQuoteError, QuoteApiErrorDetails } from './errors/QuoteError'
 import { getIsOrderBookTypedError } from './getIsOrderBookTypedError'
+
 
 function getProfileUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -70,7 +73,7 @@ function _fetchProfile(
   chainId: ChainId,
   url: string,
   method: 'GET' | 'POST' | 'DELETE',
-  data?: any
+  data?: any,
 ): Promise<Response> {
   const baseUrl = _getProfileApiBaseUrl(chainId)
 
@@ -96,19 +99,8 @@ const ETH_FLOW_AUX_QUOTE_PARAMS = {
 }
 
 function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
-  const {
-    amount,
-    kind,
-    userAddress,
-    receiver,
-    validTo,
-    validFor,
-    sellToken,
-    buyToken,
-    chainId,
-    priceQuality,
-    isEthFlow,
-  } = params
+  const { amount, kind, userAddress, receiver, validFor, sellToken, buyToken, chainId, priceQuality, isEthFlow } =
+    params
   const fallbackAddress = userAddress || ZERO_ADDRESS
   const { appData, appDataHash } = _getAppDataQuoteParams(params)
 
@@ -122,7 +114,7 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
     appDataHash,
     partiallyFillable: false,
     priceQuality,
-    ...(validFor ? { validFor } : { validTo }),
+    ...getQuoteValidFor(validFor),
   }
 
   if (isEthFlow) {
@@ -172,7 +164,7 @@ export async function getQuote(params: FeeQuoteParams): Promise<OrderQuoteRespon
       mapOperatorErrorToQuoteError({
         errorType: ApiErrorCodes.SameBuyAndSellToken,
         description: QuoteApiErrorDetails.SameBuyAndSellToken,
-      })
+      }),
     )
   }
 
@@ -208,7 +200,7 @@ export async function getOrders(
     offset?: number
     limit?: number
   },
-  context: PartialApiContext
+  context: PartialApiContext,
 ): Promise<EnrichedOrder[]> {
   return orderBookApi.getOrders(params, context)
 }
@@ -227,7 +219,7 @@ export async function getSurplusData(chainId: ChainId, address: string): Promise
 
 export async function getOrderCompetitionStatus(
   chainId: ChainId,
-  orderId: string
+  orderId: string,
 ): Promise<CompetitionOrderStatus | undefined> {
   try {
     return await orderBookApi.getOrderCompetitionStatus(orderId, { chainId })

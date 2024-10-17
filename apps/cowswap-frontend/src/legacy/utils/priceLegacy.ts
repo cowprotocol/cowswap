@@ -11,17 +11,18 @@ import { PriceInformation } from 'types'
 import {
   getPriceQuote as getPriceQuote1inch,
   PriceQuote1inch,
-  toPriceInformation as toPriceInformation1inch,
+  toPriceInformation as toPriceInformation1inch
 } from 'api/1inch'
 import { getQuote } from 'api/cowProtocol'
 import QuoteApiError, { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
+import { getQuoteValidFor } from 'utils/orderUtils/getQuoteValidFor'
 
 import {
   LegacyPriceInformationWithSource,
   LegacyPriceQuoteError,
   LegacyPriceQuoteParams,
   LegacyPromiseRejectedResultWithSource,
-  LegacyQuoteParams,
+  LegacyQuoteParams
 } from '../state/price/types'
 
 /**
@@ -91,7 +92,7 @@ async function getAllPrices(params: LegacyPriceQuoteParams): Promise<AllPricesRe
  * successful price quotes and errors price quotes. For each price, it also give the context (the name of the price feed)
  */
 function _extractPriceAndErrorPromiseValues(
-  oneInchPriceResult: PromiseSettledResult<PriceQuote1inch | null>
+  oneInchPriceResult: PromiseSettledResult<PriceQuote1inch | null>,
 ): [Array<LegacyPriceInformationWithSource>, Array<LegacyPromiseRejectedResultWithSource>] {
   // Prepare an array with all successful estimations
   const priceQuotes: Array<LegacyPriceInformationWithSource> = []
@@ -131,7 +132,7 @@ function _checkFeeErrorForData(error: QuoteApiError) {
  */
 export async function getBestPrice(
   params: LegacyPriceQuoteParams,
-  options?: GetBestPriceOptions
+  options?: GetBestPriceOptions,
 ): Promise<PriceInformation> {
   // Get all prices
   const { oneInchPriceResult } = await getAllPrices(params)
@@ -181,19 +182,8 @@ export async function getBestQuoteLegacy({
   fetchFee,
   previousResponse,
 }: Omit<LegacyQuoteParams, 'strategy'>): Promise<QuoteResult> {
-  const {
-    sellToken,
-    buyToken,
-    fromDecimals,
-    toDecimals,
-    amount,
-    kind,
-    chainId,
-    userAddress,
-    validTo,
-    validFor,
-    priceQuality,
-  } = quoteParams
+  const { sellToken, buyToken, fromDecimals, toDecimals, amount, kind, chainId, userAddress, validFor, priceQuality } =
+    quoteParams
   const { baseToken, quoteToken } = getCanonicalMarket({ sellToken, buyToken, kind })
   // Get a new fee quote (if required)
   const feePromise = fetchFee || !previousResponse ? getQuote(quoteParams) : Promise.resolve(previousResponse)
@@ -238,7 +228,7 @@ export async function getBestQuoteLegacy({
           kind,
           userAddress,
           priceQuality,
-          ...(validFor ? { validFor } : { validTo }),
+          ...getQuoteValidFor(validFor),
         })
       : // fee exceeds our price, is invalid
         Promise.reject(FEE_EXCEEDS_FROM_ERROR)

@@ -4,6 +4,7 @@ import { GlobalWarning } from '../../pure/GlobalWarning'
 
 const TIME_OFFSET_THRESHOLD = 60 // 60 seconds
 
+// TODO: maybe remove this completely
 /**
  * When the local device time is not valid ()
  */
@@ -16,8 +17,7 @@ export function InvalidLocalTimeWarning() {
 
   return (
     <GlobalWarning>
-      Local device time does is not accurate, CoW Swap most likely will not work correctly. Please adjust your device's
-      time.
+      Local device time is not accurate, CoW Swap most likely will not work correctly. Please adjust your device's time.
     </GlobalWarning>
   )
 }
