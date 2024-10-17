@@ -20,10 +20,13 @@ export function getNativeOrderDeadlineTooltip(symbols: (string | undefined)[] | 
     </Trans>
   )
 }
+
 export function getNonNativeOrderDeadlineTooltip() {
   return (
     <Trans>
       Your swap expires and will not execute if it is pending for longer than the selected duration.
+      <br />
+      <br />
       {INPUT_OUTPUT_EXPLANATION}
     </Trans>
   )

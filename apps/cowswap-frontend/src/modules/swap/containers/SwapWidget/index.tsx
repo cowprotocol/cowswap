@@ -2,7 +2,7 @@ import { ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
-import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { isFractionFalsy, percentToBps } from '@cowprotocol/common-utils'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
@@ -43,6 +43,7 @@ import { SWAP_QUOTE_CHECK_INTERVAL } from 'common/updaters/FeesUpdater'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { useIsSlippageModified } from '../../hooks/useIsSlippageModified'
+import { useIsSmartSlippageApplied } from '../../hooks/useIsSmartSlippageApplied'
 import { useIsSwapEth } from '../../hooks/useIsSwapEth'
 import { useSwapSlippage } from '../../hooks/useSwapSlippage'
 import {
@@ -223,6 +224,8 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
   const wrappedCurrencySymbol = useWrappedToken().symbol || 'WETH'
 
+  const isSuggestedSlippage = useIsSmartSlippageApplied() && !isTradePriceUpdating && !!account
+
   const swapWarningsTopProps: SwapWarningsTopProps = {
     chainId,
     trade,
@@ -242,6 +245,8 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     buyingFiatAmount,
     priceImpact: priceImpactParams.priceImpact,
     tradeUrlParams,
+    slippageBps: percentToBps(slippage),
+    isSuggestedSlippage,
   }
 
   const swapWarningsBottomProps: SwapWarningsBottomProps = {

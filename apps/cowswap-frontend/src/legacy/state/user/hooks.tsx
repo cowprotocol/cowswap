@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import { L2_DEADLINE_FROM_NOW, NATIVE_CURRENCIES, SupportedLocale, TokenWithLogo } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCIES, SupportedLocale, TokenWithLogo } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
@@ -20,11 +20,12 @@ export function useIsDarkMode(): boolean {
       userDarkMode,
       matchesDarkMode,
     }),
-    shallowEqual
+    shallowEqual,
   )
 
   return userDarkMode === null ? matchesDarkMode : userDarkMode
 }
+
 export function useDarkModeManager(): [boolean, Command] {
   const dispatch = useAppDispatch()
   const darkMode = useIsDarkMode()
@@ -48,7 +49,7 @@ export function useUserLocaleManager(): [SupportedLocale | null, (newLocale: Sup
     (newLocale: SupportedLocale) => {
       dispatch(updateUserLocale({ userLocale: newLocale }))
     },
-    [dispatch]
+    [dispatch],
   )
 
   return [locale, setLocale]
@@ -67,7 +68,7 @@ export function useRecipientToggleManager(): [boolean, (value?: boolean) => void
     (recipient: string | null) => {
       dispatch(setRecipient({ recipient }))
     },
-    [dispatch]
+    [dispatch],
   )
 
   const toggleVisibility = useCallback(
@@ -78,7 +79,7 @@ export function useRecipientToggleManager(): [boolean, (value?: boolean) => void
         onChangeRecipient(null)
       }
     },
-    [isVisible, dispatch, onChangeRecipient]
+    [isVisible, dispatch, onChangeRecipient],
   )
 
   return [isVisible, toggleVisibility]
@@ -86,15 +87,13 @@ export function useRecipientToggleManager(): [boolean, (value?: boolean) => void
 
 export function useUserTransactionTTL(): [number, (slippage: number) => void] {
   const dispatch = useAppDispatch()
-  const userDeadline = useAppSelector((state) => state.user.userDeadline)
-  const onL2 = false
-  const deadline = onL2 ? L2_DEADLINE_FROM_NOW : userDeadline
+  const deadline = useAppSelector((state) => state.user.userDeadline)
 
   const setUserDeadline = useCallback(
     (userDeadline: number) => {
       dispatch(updateUserDeadline({ userDeadline }))
     },
-    [dispatch]
+    [dispatch],
   )
 
   return [deadline, setUserDeadline]

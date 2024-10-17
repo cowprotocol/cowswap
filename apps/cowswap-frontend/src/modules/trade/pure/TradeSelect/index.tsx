@@ -1,6 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
-import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button'
+import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button'
 import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -47,7 +47,6 @@ const StyledMenuButton = styled(MenuButton)`
   cursor: pointer;
   width: 100%;
   justify-content: space-between;
-  color: inherit;
 `
 
 const StyledMenuItem = styled(MenuItem)`
