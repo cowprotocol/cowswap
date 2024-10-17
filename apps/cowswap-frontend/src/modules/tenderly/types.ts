@@ -1,3 +1,5 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 export interface SimulationInput {
   input: string
   from: string
@@ -11,6 +13,11 @@ export interface SimulationData {
   link: string
   status: boolean
   id: string
+}
+
+export interface GetTopTokenHoldersParams {
+  tokenAddress?: string
+  chainId: SupportedChainId
 }
 
 export interface TokenHolder {

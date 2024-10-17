@@ -9,31 +9,43 @@ import { useOrderParams } from 'modules/hooksStore/hooks/useOrderParams'
 
 import { useTokenContract } from 'common/hooks/useContract'
 
-import { useTopTokenHolders } from './useTopTokenHolders'
+import { useGetTopTokenHolders } from './useGetTopTokenHolders'
 
-import { bundleSimulation } from '../utils/bundleSimulation'
+import { completeBundleSimulation, preHooksBundleSimulation } from '../utils/bundleSimulation'
 import { generateNewSimulationData, generateSimulationDataToError } from '../utils/generateSimulationData'
 import { getTokenTransferInfo } from '../utils/getTokenTransferInfo'
 
-export function useTenderlyBundleSimulateSWR() {
+export function useTenderlyBundleSimulate() {
   const { account, chainId } = useWalletInfo()
   const { preHooks, postHooks } = useHooks()
   const orderParams = useOrderParams()
   const tokenSell = useTokenContract(orderParams?.sellTokenAddress)
   const tokenBuy = useTokenContract(orderParams?.buyTokenAddress)
   const buyAmount = orderParams?.buyAmount
+  const sellAmount = orderParams?.sellAmount
+  const orderReceiver = orderParams?.receiver || account
 
-  const { data: buyTokenTopHolders, isValidating: isTopTokenHoldersValidating } = useTopTokenHolders({
-    tokenAddress: tokenBuy?.address,
-    chainId,
-  })
+  const getTopTokenHolder = useGetTopTokenHolders()
 
-  const getNewSimulationData = useCallback(async () => {
-    if (postHooks.length === 0 && preHooks.length === 0) return {}
+  const simulateBundle = useCallback(async () => {
+    if (postHooks.length === 0 && preHooks.length === 0) return
 
-    if (!account || !buyTokenTopHolders || !tokenBuy || !orderParams || !tokenSell || !buyAmount) {
-      return generateSimulationDataToError({ postHooks, preHooks })
+    if (!postHooks.length)
+      return preHooksBundleSimulation({
+        chainId,
+        preHooks,
+      })
+
+    if (!account || !tokenBuy || !tokenSell || !buyAmount || !sellAmount || !orderReceiver) {
+      return
     }
+
+    const buyTokenTopHolders = await getTopTokenHolder({
+      tokenAddress: tokenBuy.address,
+      chainId,
+    })
+
+    if (!buyTokenTopHolders) return
 
     const tokenBuyTransferInfo = getTokenTransferInfo({
       tokenHolders: buyTokenTopHolders,
@@ -45,19 +57,40 @@ export function useTenderlyBundleSimulateSWR() {
       preHooks,
       tokenBuy,
       tokenBuyTransferInfo,
-      orderParams,
+      sellAmount,
+      orderReceiver,
       tokenSell,
       account,
       chainId,
     }
 
+    return completeBundleSimulation(paramsComplete)
+  }, [
+    account,
+    chainId,
+    getTopTokenHolder,
+    tokenBuy,
+    postHooks,
+    preHooks,
+    buyAmount,
+    sellAmount,
+    orderReceiver,
+    tokenSell,
+  ])
+
+  const getNewSimulationData = useCallback(async () => {
     try {
-      const response = await bundleSimulation(paramsComplete)
-      return generateNewSimulationData(response, paramsComplete)
+      const simulationData = await simulateBundle()
+
+      if (!simulationData) {
+        return {}
+      }
+
+      return generateNewSimulationData(simulationData, { preHooks, postHooks })
     } catch {
-      return generateSimulationDataToError(paramsComplete)
+      return generateSimulationDataToError({ preHooks, postHooks })
     }
-  }, [account, chainId, buyTokenTopHolders, tokenBuy, postHooks, preHooks, buyAmount])
+  }, [preHooks, postHooks, simulateBundle])
 
   const { data, isValidating: isBundleSimulationLoading } = useSWR(
     ['tenderly-bundle-simulation', postHooks, preHooks, orderParams?.sellTokenAddress, orderParams?.buyTokenAddress],
@@ -69,5 +102,5 @@ export function useTenderlyBundleSimulateSWR() {
     },
   )
 
-  return { data, isValidating: isBundleSimulationLoading || isTopTokenHoldersValidating }
+  return { data, isValidating: isBundleSimulationLoading }
 }

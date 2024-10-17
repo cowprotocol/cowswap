@@ -20,7 +20,7 @@ export function generateSimulationDataToError(
 
 export function generateNewSimulationData(
   simulationData: SimulationData[],
-  postParams: PostBundleSimulationParams,
+  postParams: Pick<PostBundleSimulationParams, 'preHooks' | 'postHooks'>,
 ): Record<string, SimulationData> {
   const preHooksKeys = postParams.preHooks.map((hookDetails) => hookDetails.uuid)
   const postHooksKeys = postParams.postHooks.map((hookDetails) => hookDetails.uuid)

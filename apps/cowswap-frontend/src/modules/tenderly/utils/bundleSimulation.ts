@@ -4,7 +4,7 @@ import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, SupportedChainId } from '@cow
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { CowHook, HookDappOrderParams } from 'modules/hooksStore/types/hooks'
+import { CowHook } from 'modules/hooksStore/types/hooks'
 
 import { SimulationData, SimulationInput } from '../types'
 
@@ -26,13 +26,27 @@ export interface PostBundleSimulationParams {
   tokenBuy: Erc20
   preHooks: CowHookDetails[]
   postHooks: CowHookDetails[]
-  orderParams: HookDappOrderParams
+  sellAmount: CurrencyAmount<Currency>
+  orderReceiver: string
   tokenBuyTransferInfo: TokenBuyTransferInfo
 }
 
-export const bundleSimulation = async (params: PostBundleSimulationParams): Promise<SimulationData[]> => {
+export const completeBundleSimulation = async (params: PostBundleSimulationParams): Promise<SimulationData[]> => {
   const input = getBundleTenderlySimulationInput(params)
-  const response = await fetch(`${BFF_BASE_URL}/${params.chainId}/simulation/simulateBundle`, {
+  return simulateBundle(input, params.chainId)
+}
+
+export const preHooksBundleSimulation = async (
+  params: Pick<PostBundleSimulationParams, 'chainId' | 'preHooks'>,
+): Promise<SimulationData[]> => {
+  const input = params.preHooks.map((hook) =>
+    getCoWHookTenderlySimulationInput(COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[params.chainId], hook.hook),
+  )
+  return simulateBundle(input, params.chainId)
+}
+
+const simulateBundle = async (input: SimulationInput[], chainId: SupportedChainId): Promise<SimulationData[]> => {
+  const response = await fetch(`${BFF_BASE_URL}/${chainId}/simulation/simulateBundle`, {
     method: 'POST',
     body: JSON.stringify(input),
     headers: {
@@ -73,7 +87,8 @@ export function getBundleTenderlySimulationInput({
   tokenBuy,
   preHooks,
   postHooks,
-  orderParams,
+  sellAmount,
+  orderReceiver,
   tokenBuyTransferInfo,
 }: PostBundleSimulationParams): SimulationInput[] {
   const settlementAddress = COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[chainId]
@@ -83,10 +98,8 @@ export function getBundleTenderlySimulationInput({
   // If there are no post hooks, we don't need to simulate the transfer
   if (postHooks.length === 0) return preHooksSimulations
 
-  const receiver = postHooks[0].recipientOverride || orderParams.receiver
-
   const sellTokenTransfer = getTransferTenderlySimulationInput({
-    currencyAmount: orderParams.sellAmount,
+    currencyAmount: sellAmount,
     from: account,
     receiver: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[chainId],
     token: tokenSell,
@@ -96,7 +109,7 @@ export function getBundleTenderlySimulationInput({
     getTransferTenderlySimulationInput({
       currencyAmount: transferInfo.amount,
       from: transferInfo.sender,
-      receiver,
+      receiver: postHooks[0].recipientOverride || orderReceiver,
       token: tokenBuy,
     }),
   )
