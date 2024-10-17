@@ -27,14 +27,15 @@ import { ThemedText } from 'theme'
 import { AutoColumn } from 'legacy/components/Column'
 
 import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from 'modules/analytics'
+import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
 import { useIsEoaEthFlow } from 'modules/trade'
 import {
   useDefaultTradeSlippage,
-  useSmartTradeSlippage,
-  useTradeSlippage,
   useIsSlippageModified,
   useIsSmartSlippageApplied,
   useSetSlippage,
+  useSmartTradeSlippage,
+  useTradeSlippage,
 } from 'modules/tradeSlippage'
 
 import {
