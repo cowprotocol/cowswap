@@ -1,8 +1,9 @@
-import { useSetAtom } from 'jotai/index'
+import { useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 import { useEffect, useMemo } from 'react'
 
 import { ERC_20_INTERFACE } from '@cowprotocol/abis'
+import { usePrevious } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { MultiCallOptions, useMultipleContractSingleData } from '@cowprotocol/multicall'
@@ -36,6 +37,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     multicallOptions = MULTICALL_OPTIONS,
   } = params
 
+  const prevAccount = usePrevious(account)
   const setBalances = useSetAtom(balancesAtom)
   const setAllowances = useSetAtom(allowancesFullState)
 
@@ -119,9 +121,9 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
 
   // Reset states when wallet is not connected
   useEffect(() => {
-    if (!account) {
+    if (prevAccount && prevAccount !== account) {
       resetBalances()
       resetAllowances()
     }
-  }, [account, resetAllowances, resetBalances])
+  }, [account, prevAccount, resetAllowances, resetBalances])
 }
