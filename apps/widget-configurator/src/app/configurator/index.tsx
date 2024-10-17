@@ -143,6 +143,9 @@ export function Configurator({ title }: { title: string }) {
   const [hideBridgeInfo, setHideBridgeInfo] = useState<boolean | undefined>(false)
   const toggleHideBridgeInfo = useCallback(() => setHideBridgeInfo((curr) => !curr), [])
 
+  const [hideOrdersTable, setHideOrdersTable] = useState<boolean | undefined>(false)
+  const toggleHideOrdersTable = useCallback(() => setHideOrdersTable((curr) => !curr), [])
+
   const LINKS = [
     { icon: <CodeIcon />, label: 'View embed code', onClick: () => handleDialogOpen() },
     { icon: <LanguageIcon />, label: 'Widget web', url: `https://cow.fi/widget/?${UTM_PARAMS}` },
@@ -177,6 +180,7 @@ export function Configurator({ title }: { title: string }) {
     disableToastMessages,
     disableProgressBar,
     hideBridgeInfo,
+    hideOrdersTable,
   }
 
   const computedParams = useWidgetParams(state)
@@ -323,6 +327,14 @@ export function Configurator({ title }: { title: string }) {
           <RadioGroup row aria-label="mode" name="mode" value={hideBridgeInfo} onChange={toggleHideBridgeInfo}>
             <FormControlLabel value="false" control={<Radio />} label="Show bridge info" />
             <FormControlLabel value="true" control={<Radio />} label="Hide bridge info" />
+          </RadioGroup>
+        </FormControl>
+
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Hide orders table:</FormLabel>
+          <RadioGroup row aria-label="mode" name="mode" value={hideOrdersTable} onChange={toggleHideOrdersTable}>
+            <FormControlLabel value="false" control={<Radio />} label="Show orders table" />
+            <FormControlLabel value="true" control={<Radio />} label="Hide orders table" />
           </RadioGroup>
         </FormControl>
 

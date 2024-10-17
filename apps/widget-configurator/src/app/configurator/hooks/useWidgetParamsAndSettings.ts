@@ -44,6 +44,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       disableToastMessages,
       disableProgressBar,
       hideBridgeInfo,
+      hideOrdersTable,
     } = configuratorState
 
     const themeColors = {
@@ -98,6 +99,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
             }
           : undefined,
       hideBridgeInfo,
+      hideOrdersTable,
     }
 
     return params

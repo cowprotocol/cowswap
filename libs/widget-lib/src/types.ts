@@ -292,9 +292,16 @@ export interface CowSwapWidgetParams {
   hideBridgeInfo?: boolean
 
   /**
+   * Option to hide orders table on LIMIT and TWAP forms.
+   *
+   * Warning! When `true`, users won't be able to see their LIMIT/TWAP order status or history, neither they'll be able to cancel active orders.
+   */
+  hideOrdersTable?: boolean
+
+  /**
    * Defines the widget mode.
    *  - `true` (standalone mode): The widget is standalone, so it will use its own Ethereum provider. The user can connect from within the widget.
-   *  - `false` (dapp mode): The widget is embedded in a dapp which is responsible of providing the Ethereum provider. Therefore, there won't be a connect button in the widget as this should happen in the host app.
+   *  - `false` (dapp mode): The widget is embedded in a dapp which is responsible for providing the Ethereum provider. Therefore, there won't be a connect button in the widget as this should happen in the host app.
    *
    * Defaults to standalone.
    */
