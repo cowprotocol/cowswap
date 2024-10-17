@@ -124,7 +124,10 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
   } = props
 
   const tooltipContent =
-    slippageTooltip || (isEoaEthFlow ? getNativeSlippageTooltip(chainId, symbols) : getNonNativeSlippageTooltip())
+    slippageTooltip ||
+    (isEoaEthFlow
+      ? getNativeSlippageTooltip(chainId, symbols)
+      : getNonNativeSlippageTooltip({ isDynamic: !!smartSlippage }))
 
   // In case the user happened to set the same slippage as the suggestion, do not show the suggestion
   const suggestedEqualToUserSlippage = smartSlippage && smartSlippage === displaySlippage
