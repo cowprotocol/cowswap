@@ -39,6 +39,7 @@ import { useSwapState } from '../../hooks/useSwapState'
 import { NetworkCostsTooltipSuffix } from '../../pure/NetworkCostsTooltipSuffix'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '../../pure/Row/RowSlippageContent'
 import { RowDeadline } from '../Row/RowDeadline'
+import { useSmartSwapSlippage } from '../../hooks/useSwapSlippage'
 
 const CONFIRM_TITLE = 'Swap'
 
@@ -87,6 +88,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const buttonText = useSwapConfirmButtonText(slippageAdjustedSellAmount)
 
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
+  const smartSlippage = useSmartSwapSlippage()
 
   const labelsAndTooltips = useMemo(
     () => ({
@@ -96,7 +98,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
           : undefined,
       slippageTooltip: isEoaEthFlow
         ? getNativeSlippageTooltip(chainId, [nativeCurrency.symbol])
-        : getNonNativeSlippageTooltip(),
+        : getNonNativeSlippageTooltip({ isDynamic: !!smartSlippage }),
       expectReceiveLabel: isExactIn ? 'Expected to receive' : 'Expected to sell',
       minReceivedLabel: isExactIn ? 'Minimum receive' : 'Maximum sent',
       minReceivedTooltip: getMinimumReceivedTooltip(allowedSlippage, isExactIn),

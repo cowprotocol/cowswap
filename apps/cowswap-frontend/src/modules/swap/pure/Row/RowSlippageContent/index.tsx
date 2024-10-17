@@ -53,19 +53,30 @@ export const getNativeSlippageTooltip = (chainId: SupportedChainId, symbols: (st
     robust MEV protection, consider wrapping your {symbols?.[0] || 'native currency'} before trading.
   </Trans>
 )
-export const getNonNativeSlippageTooltip = (isSettingsModal?: boolean) => (
+
+export const getNonNativeSlippageTooltip = (params?: { isDynamic?: boolean; isSettingsModal?: boolean }) => (
   <Trans>
-    CoW Swap dynamically adjusts your slippage tolerance to ensure your trade executes quickly while still getting the
-    best price.{' '}
-    {isSettingsModal ? (
+    {params?.isDynamic ? (
       <>
-        To override this, enter your desired slippage amount.
-        <br />
-        <br />
-        Either way, your slippage is protected from MEV!
+        CoW Swap dynamically adjusts your slippage tolerance to ensure your trade executes quickly while still getting
+        the best price.{' '}
+        {params?.isSettingsModal ? (
+          <>
+            To override this, enter your desired slippage amount.
+            <br />
+            <br />
+            Either way, your slippage is protected from MEV!
+          </>
+        ) : (
+          <>
+            <br />
+            <br />
+            Trades are protected from MEV, so your slippage can't be exploited!
+          </>
+        )}
       </>
     ) : (
-      "Trades are protected from MEV, so your slippage can't be exploited!"
+      <>CoW Swap trades are protected from MEV, so your slippage can't be exploited!</>
     )}
   </Trans>
 )
