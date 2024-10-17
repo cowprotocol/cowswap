@@ -15,7 +15,7 @@ import {
   updateLimitOrdersSettingsAtom,
 } from 'modules/limitOrders'
 import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
-import { limitOrdersDeadlines } from 'modules/limitOrders/pure/DeadlineSelector/deadlines'
+import { LIMIT_ORDERS_DEADLINES } from 'modules/limitOrders/pure/DeadlineSelector/deadlines'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { useAlternativeOrder, useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
 
@@ -118,7 +118,7 @@ function useSetAlternativeRate(): null {
       // Set new active rate
       // The rate expects a raw fraction which is NOT a Price instace
       const activeRate = FractionUtils.fromPrice(
-        new Price({ baseAmount: inputCurrencyAmount, quoteAmount: outputCurrencyAmount })
+        new Price({ baseAmount: inputCurrencyAmount, quoteAmount: outputCurrencyAmount }),
       )
 
       updateRate({ activeRate, isTypedValue: false, isRateFromUrl: false, isAlternativeOrderRate: true })
@@ -170,7 +170,7 @@ function getDuration(order: Order | ParsedOrder): number {
  */
 function getMatchingDeadline(duration: number) {
   // Match duration with approximate time
-  return limitOrdersDeadlines.find(({ value }) => {
+  return LIMIT_ORDERS_DEADLINES.find(({ value }) => {
     const ratio = value / duration
     // If the ratio is +/-10% off of 1, consider it a match
     return ratio > 0.9 && ratio < 1.1

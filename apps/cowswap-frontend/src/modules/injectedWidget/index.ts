@@ -1,6 +1,7 @@
 export { InjectedWidgetUpdater } from './updaters/InjectedWidgetUpdater'
 export { CowEventsUpdater } from './updaters/CowEventsUpdater'
 export { useInjectedWidgetParams, useWidgetPartnerFee } from './hooks/useInjectedWidgetParams'
+export { useInjectedWidgetDeadline } from './hooks/useInjectedWidgetDeadline'
 export { useInjectedWidgetMetaData } from './hooks/useInjectedWidgetMetaData'
 export { useInjectedWidgetPalette } from './hooks/useInjectedWidgetPalette'
 export { injectedWidgetPartnerFeeAtom } from './state/injectedWidgetParamsAtom'
