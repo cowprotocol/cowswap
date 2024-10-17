@@ -50,7 +50,7 @@ const scrollToMyOrders = () => {
 
 export function TradeWidgetForm(props: TradeWidgetProps) {
   const isInjectedWidgetMode = isInjectedWidget()
-  const { standaloneMode } = useInjectedWidgetParams()
+  const { standaloneMode, hideOrdersTable } = useInjectedWidgetParams()
 
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const { pendingActivity } = useCategorizeRecentActivity()
@@ -123,6 +123,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const shouldShowMyOrdersButton =
     !alternativeOrderModalVisible &&
     (!isInjectedWidgetMode && isConnectedSwapMode ? isUpToLarge : true) &&
+    (isConnectedSwapMode || !hideOrdersTable) &&
     ((isConnectedSwapMode && standaloneMode !== true) ||
       (isLimitOrderMode && isUpToLarge && isLimitOrdersUnlocked) ||
       (isAdvancedMode && isUpToLarge && isAdvancedOrdersUnlocked))

@@ -47,6 +47,10 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
   const menuItems = useMenuItems()
   const getTradeStateByType = useGetTradeStateByRoute()
 
+  const handleMenuItemClick = useCallback((_item?: MenuItemConfig): void => {
+    setDropdownVisible(false)
+  }, [])
+
   const enabledItems = useMemo(() => {
     return menuItems.filter((item) => {
       if (!enabledTradeTypes?.length) return true
@@ -55,17 +59,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
     })
   }, [menuItems, enabledTradeTypes])
 
-  const enabledItemsCount = enabledItems.length
-
-  const handleMenuItemClick = useCallback(
-    (_item?: MenuItemConfig) => {
-      if (enabledItemsCount === 1) return
-      setDropdownVisible(false)
-    },
-    [enabledItemsCount],
-  )
-
-  const menuItemsElements = useMemo(() => {
+  const menuItemsElements: JSX.Element[] = useMemo(() => {
     return enabledItems.map((item) => {
       const isItemYield = item.route === Routes.YIELD
       const chainId = tradeContext.chainId
@@ -156,7 +150,7 @@ const MenuItem = ({
     <styledEl.Link to={routePath}>
       <Trans>{item.label}</Trans>
       {!isActive && item.badge && (
-        <Badge type="information">
+        <Badge type="alert">
           <Trans>{item.badge}</Trans>
         </Badge>
       )}

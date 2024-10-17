@@ -9,6 +9,7 @@ const Fixtures = {
       customDeadline={null}
       selectDeadline={() => void 0}
       selectCustomDeadline={() => void 0}
+      isDeadlineDisabled={false}
     />
   ),
 }

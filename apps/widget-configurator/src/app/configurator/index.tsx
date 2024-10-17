@@ -34,6 +34,7 @@ import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { CustomImagesControl } from './controls/CustomImagesControl'
 import { CustomSoundsControl } from './controls/CustomSoundsControl'
+import { DeadlineControl } from './controls/DeadlineControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { PaletteControl } from './controls/PaletteControl'
 import { PartnerFeeControl } from './controls/PartnerFeeControl'
@@ -106,6 +107,15 @@ export function Configurator({ title }: { title: string }) {
   const [buyToken] = buyTokenState
   const [buyTokenAmount] = buyTokenAmountState
 
+  const deadlineState = useState<number | undefined>()
+  const [deadline] = deadlineState
+  const swapDeadlineState = useState<number | undefined>()
+  const [swapDeadline] = swapDeadlineState
+  const limitDeadlineState = useState<number | undefined>()
+  const [limitDeadline] = limitDeadlineState
+  const advancedDeadlineState = useState<number | undefined>()
+  const [advancedDeadline] = advancedDeadlineState
+
   const tokenListUrlsState = useState<TokenListItem[]>(DEFAULT_TOKEN_LISTS)
   const customTokensState = useState<TokenInfo[]>([])
   const [tokenListUrls] = tokenListUrlsState
@@ -133,6 +143,9 @@ export function Configurator({ title }: { title: string }) {
   const [hideBridgeInfo, setHideBridgeInfo] = useState<boolean | undefined>(false)
   const toggleHideBridgeInfo = useCallback(() => setHideBridgeInfo((curr) => !curr), [])
 
+  const [hideOrdersTable, setHideOrdersTable] = useState<boolean | undefined>(false)
+  const toggleHideOrdersTable = useCallback(() => setHideOrdersTable((curr) => !curr), [])
+
   const LINKS = [
     { icon: <CodeIcon />, label: 'View embed code', onClick: () => handleDialogOpen() },
     { icon: <LanguageIcon />, label: 'Widget web', url: `https://cow.fi/widget/?${UTM_PARAMS}` },
@@ -146,6 +159,10 @@ export function Configurator({ title }: { title: string }) {
   // Don't change chainId in the widget URL if the user is connected to a wallet
   // Because useSyncWidgetNetwork() will send a request to change the network
   const state: ConfiguratorState = {
+    deadline,
+    swapDeadline,
+    limitDeadline,
+    advancedDeadline,
     chainId: IS_IFRAME ? undefined : !isConnected || !walletChainId ? chainId : walletChainId,
     theme: mode,
     currentTradeType,
@@ -163,6 +180,7 @@ export function Configurator({ title }: { title: string }) {
     disableToastMessages,
     disableProgressBar,
     hideBridgeInfo,
+    hideOrdersTable,
   }
 
   const computedParams = useWidgetParams(state)
@@ -261,6 +279,16 @@ export function Configurator({ title }: { title: string }) {
 
         <TokenListControl tokenListUrlsState={tokenListUrlsState} customTokensState={customTokensState} />
 
+        <Divider variant="middle">Forced Order Deadline</Divider>
+
+        <Typography variant="subtitle1">Global deadline settings</Typography>
+        <DeadlineControl label={'Deadline'} deadlineState={deadlineState} />
+
+        <Typography variant="subtitle1">Individual deadline settings</Typography>
+        <DeadlineControl label={'Swap'} deadlineState={swapDeadlineState} />
+        <DeadlineControl label={'Limit'} deadlineState={limitDeadlineState} />
+        <DeadlineControl label={'Advanced'} deadlineState={advancedDeadlineState} />
+
         <Divider variant="middle">Integrations</Divider>
 
         <PartnerFeeControl feeBpsState={partnerFeeBpsState} />
@@ -299,6 +327,14 @@ export function Configurator({ title }: { title: string }) {
           <RadioGroup row aria-label="mode" name="mode" value={hideBridgeInfo} onChange={toggleHideBridgeInfo}>
             <FormControlLabel value="false" control={<Radio />} label="Show bridge info" />
             <FormControlLabel value="true" control={<Radio />} label="Hide bridge info" />
+          </RadioGroup>
+        </FormControl>
+
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Hide orders table:</FormLabel>
+          <RadioGroup row aria-label="mode" name="mode" value={hideOrdersTable} onChange={toggleHideOrdersTable}>
+            <FormControlLabel value="false" control={<Radio />} label="Show orders table" />
+            <FormControlLabel value="true" control={<Radio />} label="Hide orders table" />
           </RadioGroup>
         </FormControl>
 
