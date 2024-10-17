@@ -6,8 +6,8 @@ import { Trans } from '@lingui/macro'
 
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
-import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { getOrderTypeReceiveAmounts } from 'modules/trade'
+import { useIsEoaEthFlow } from 'modules/trade'
 import { ReceiveAmountInfo } from 'modules/trade/types'
 
 import * as styledEl from './styled'

@@ -38,7 +38,7 @@ export function ClaimGnoHookApp({ context }: HookDappProps) {
     }
 
     return SbcDepositContractInterface.encodeFunctionData('claimWithdrawal', [account])
-  }, [context])
+  }, [context, account])
 
   useEffect(() => {
     if (!account || !provider) {

@@ -32,16 +32,17 @@ const StyledTooltipContainer = styled(TooltipContainer)`
 
 export interface InfoTooltipProps {
   content: ReactNode
+  size?: number
   className?: string
 }
 
-export function InfoTooltip({ content, className }: InfoTooltipProps) {
+export function InfoTooltip({ content, className, size = 16 }: InfoTooltipProps) {
   const tooltipContent = <StyledTooltipContainer>{content}</StyledTooltipContainer>
 
   return (
     <HoverTooltip wrapInContainer={false} content={tooltipContent} placement="bottom">
       <StyledIcon>
-        <Info className={className} size={16} />
+        <Info className={className} size={size} />
       </StyledIcon>
     </HoverTooltip>
   )

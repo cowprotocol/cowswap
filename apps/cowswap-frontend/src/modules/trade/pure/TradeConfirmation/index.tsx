@@ -25,6 +25,7 @@ import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
 import * as styledEl from './styled'
 
+import { NoImpactWarning } from '../../containers/NoImpactWarning'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
 
@@ -47,7 +48,7 @@ export interface TradeConfirmationProps {
   isPriceStatic?: boolean
   recipient?: string | null
   buttonText?: React.ReactNode
-  children?: ReactElement | ((restContent: ReactElement) => ReactElement)
+  children?: (restContent: ReactElement) => ReactElement
 }
 
 export function TradeConfirmation(props: TradeConfirmationProps) {
@@ -151,13 +152,11 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
             priceImpactParams={priceImpact}
           />
         </styledEl.AmountsPreviewContainer>
-        {typeof children === 'function' ? (
-          children(hookDetailsElement)
-        ) : (
+        {children?.(
           <>
-            {children}
             {hookDetailsElement}
-          </>
+            <NoImpactWarning withoutAccepting />
+          </>,
         )}
 
         {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}

@@ -168,6 +168,7 @@ export interface InlineBannerProps {
   padding?: string
   margin?: string
   width?: string
+  noWrapContent?: boolean
   onClose?: () => void
 }
 
@@ -185,6 +186,7 @@ export function InlineBanner({
   margin,
   width,
   onClose,
+  noWrapContent,
 }: InlineBannerProps) {
   const colorEnums = getColorEnums(bannerType)
 
@@ -213,7 +215,7 @@ export function InlineBanner({
         ) : !hideIcon && colorEnums.iconText ? (
           <i>{colorEnums.iconText}</i>
         ) : null}
-        <span>{children}</span>
+        {noWrapContent ? children : <span>{children}</span>}
       </span>
 
       {onClose && <CloseIcon onClick={onClose} />}

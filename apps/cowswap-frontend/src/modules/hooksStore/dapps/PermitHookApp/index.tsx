@@ -42,7 +42,7 @@ export function PermitHookApp({ context }: HookDappProps) {
     }
 
     context.addHook({ hook })
-  }, [generatePermitHook, context, permitInfo, token, spenderAddress])
+  }, [generatePermitHook, context, permitInfo, token, spenderAddress, hookToEdit])
 
   const buttonProps = useMemo(() => {
     if (!context.account) return { message: 'Connect wallet', disabled: true }

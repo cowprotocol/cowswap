@@ -5,6 +5,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 import { TradeQuoteState, TradeQuoteUpdater, useUpdateTradeQuote } from 'modules/tradeQuote'
+import { SmartSlippageUpdater } from 'modules/tradeSlippage'
 
 import { usePriorityTokenAddresses } from '../../hooks/usePriorityTokenAddresses'
 import { useResetRecipient } from '../../hooks/useResetRecipient'
@@ -16,6 +17,7 @@ import { RecipientAddressUpdater } from '../../updaters/RecipientAddressUpdater'
 interface TradeWidgetUpdatersProps {
   disableQuotePolling: boolean
   disableNativeSelling: boolean
+  enableSmartSlippage?: boolean
   children: ReactNode
   tradeQuoteStateOverride?: TradeQuoteState | null
   onChangeRecipient: (recipient: string | null) => void
@@ -25,6 +27,7 @@ export function TradeWidgetUpdaters({
   disableQuotePolling,
   disableNativeSelling,
   tradeQuoteStateOverride,
+  enableSmartSlippage,
   onChangeRecipient,
   children,
 }: TradeWidgetUpdatersProps) {
@@ -49,6 +52,7 @@ export function TradeWidgetUpdaters({
       <PriceImpactUpdater />
       <TradeFormValidationUpdater />
       <CommonTradeUpdater />
+      {enableSmartSlippage && <SmartSlippageUpdater />}
       {disableNativeSelling && <DisableNativeTokenSellingUpdater />}
       {children}
     </>

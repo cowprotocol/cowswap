@@ -9,6 +9,7 @@ const widgetTypeMap: Record<TradeType, string> = {
   [TradeType.LIMIT_ORDER]: 'LIMIT',
   // TODO: set different type for other advanced orders
   [TradeType.ADVANCED_ORDERS]: 'TWAP',
+  [TradeType.YIELD]: 'YIELD',
 }
 
 /**\
