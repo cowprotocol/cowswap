@@ -6,7 +6,6 @@ import { useReceiveAmountInfo } from 'modules/trade'
 
 import { calculateBpsFromFeeMultiplier } from './calculateBpsFromFeeMultiplier'
 
-
 /**
  * Calculates smart slippage in bps, based on quoted fee
  *
@@ -19,7 +18,7 @@ export function useSmartSlippageFromFeeMultiplier(): number | undefined {
   const sellAmount = isSell ? afterNetworkCosts?.sellAmount : beforeNetworkCosts?.sellAmount
   const feeAmount = costs?.networkFee?.amountInSellCurrency
 
-  const { smartSlippageFeeMultiplierPercentage = 50 } = useFeatureFlags()
+  const { smartSlippageFeeMultiplierPercentage } = useFeatureFlags()
 
   return useMemo(
     () => calculateBpsFromFeeMultiplier(sellAmount, feeAmount, isSell, smartSlippageFeeMultiplierPercentage),
