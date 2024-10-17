@@ -5,7 +5,7 @@ import { BadgeType } from '../../types'
 
 const badgeBackgrounds: Record<BadgeType, string> = {
   information: `var(${UI.COLOR_INFO_BG})`,
-  alert: `var(${UI.COLOR_BADGE_YELLOW_BG})`,
+  alert: `var(${UI.COLOR_ALERT_BG})`,
   alert2: `var(${UI.COLOR_BADGE_YELLOW_BG})`,
   success: `var(${UI.COLOR_SUCCESS_BG})`,
   default: 'transparent', // text only
@@ -13,7 +13,7 @@ const badgeBackgrounds: Record<BadgeType, string> = {
 
 const badgeColors: Record<BadgeType, string> = {
   information: `var(${UI.COLOR_INFO_TEXT})`,
-  alert: `var(${UI.COLOR_BADGE_YELLOW_TEXT})`,
+  alert: `var(${UI.COLOR_ALERT_TEXT})`,
   alert2: `var(${UI.COLOR_BADGE_YELLOW_TEXT})`,
   success: `var(${UI.COLOR_SUCCESS_TEXT})`,
   default: `var(${UI.COLOR_DISABLED_TEXT})`, // text only
@@ -25,7 +25,7 @@ export const Badge = styled.div<{ type?: BadgeType }>`
   border: 0;
   cursor: pointer;
   border-radius: 16px;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: inherit;
   text-transform: uppercase;
   padding: ${({ type }) => (!type || type === 'default' ? '0' : '4px 6px')};

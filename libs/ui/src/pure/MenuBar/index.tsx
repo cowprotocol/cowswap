@@ -412,7 +412,7 @@ const GenericDropdown: React.FC<DropdownProps> = ({
     <DropdownMenu {...interactionProps} mobileMode={mobileMode}>
       <RootNavItem as="button" aria-haspopup="true" aria-expanded={isOpen} isOpen={isOpen} mobileMode={mobileMode}>
         <span>{item.label}</span>
-        {item.badge && <Badge type="information">{item.badge}</Badge>}
+        {item.badge && <Badge type="alert">{item.badge}</Badge>}
         {item.children && <SVG src={IMG_ICON_CARRET_DOWN} />}
       </RootNavItem>
       {isOpen && (
@@ -483,7 +483,7 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
             <DropdownContentItemText>
               <DropdownContentItemTitle>
                 <span>{item.label}</span>
-                {item.badge && <Badge type="information">{item.badge}</Badge>}
+                {item.badge && <Badge type="alert">{item.badge}</Badge>}
               </DropdownContentItemTitle>
               {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
             </DropdownContentItemText>
