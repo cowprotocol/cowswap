@@ -1,5 +1,6 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowWidgetEventListeners, CowWidgetEventPayloadMap, CowWidgetEvents } from '@cowprotocol/events'
+
 export type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export type PerTradeTypeConfig<T> = Partial<Record<TradeType, T>>
@@ -81,6 +82,8 @@ interface TradeAsset {
    */
   amount?: string
 }
+
+export type ForcedOrderDeadline = FlexibleConfig<number>
 
 export enum TradeType {
   SWAP = 'swap',
@@ -229,6 +232,15 @@ export interface CowSwapWidgetParams {
    * Buy token, and optionally the amount.
    */
   buy?: TradeAsset
+
+  /**
+   * Forced order deadline in minutes. When set, user's won't be able to edit the deadline.
+   *
+   * Either a single value applied to each individual order type accordingly or an optional individual value per order type.
+   *
+   * The app will use the appropriated min/max value per order type.
+   */
+  forcedOrderDeadline?: ForcedOrderDeadline
 
   /**
    * Enables the ability to switch between trade types in the widget.
