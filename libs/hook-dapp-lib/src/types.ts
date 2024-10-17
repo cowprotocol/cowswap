@@ -1,7 +1,5 @@
 import type { ReactNode } from 'react'
 
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-
 import { HookDappType, HookDappWalletCompatibility } from './consts'
 
 export interface CowHook {
@@ -47,8 +45,8 @@ export interface HookDappOrderParams {
   sellTokenAddress: string
   buyTokenAddress: string
   receiver: string
-  sellAmount: CurrencyAmount<Currency>
-  buyAmount: CurrencyAmount<Currency>
+  sellAmount: string
+  buyAmount: string
 }
 
 export interface HookDappContext {

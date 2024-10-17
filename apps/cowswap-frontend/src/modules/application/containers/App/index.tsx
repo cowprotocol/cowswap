@@ -24,7 +24,6 @@ import { useInitializeUtm } from 'modules/utm'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useMenuItems } from 'common/hooks/useMenuItems'
-import { CoWAmmBanner } from 'common/pure/CoWAMMBanner'
 import { LoadingApp } from 'common/pure/LoadingApp'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
@@ -62,7 +61,7 @@ export function App() {
         onClick: toggleDarkMode,
       },
     ],
-    [darkMode, toggleDarkMode]
+    [darkMode, toggleDarkMode],
   )
 
   const tradeContext = useTradeRouteContext()
@@ -74,7 +73,7 @@ export function App() {
         children: menuItems.map((item) => {
           const href = parameterizeTradeRoute(tradeContext, item.route, true)
 
-          return { href, label: item.label, description: item.description }
+          return { href, label: item.label, description: item.description, badge: item.badge }
         }),
       },
       ...NAV_ITEMS,
@@ -127,9 +126,6 @@ export function App() {
               additionalContent={null} // On desktop renders inside the menu bar, on mobile renders inside the mobile menu
             />
           )}
-
-          {/* CoW AMM banner */}
-          {!isInjectedWidgetMode && <CoWAmmBanner />}
 
           <styledEl.BodyWrapper>
             <TopLevelModals />

@@ -2,14 +2,13 @@ import { Erc20 } from '@cowprotocol/abis'
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { CowHook } from 'modules/hooksStore/types/hooks'
 
 import { SimulationData, SimulationInput } from '../types'
 
 export interface GetTransferTenderlySimulationInput {
-  currencyAmount: CurrencyAmount<Currency>
+  currencyAmount: string
   from: string
   receiver: string
   token: Erc20
@@ -17,7 +16,7 @@ export interface GetTransferTenderlySimulationInput {
 
 export type TokenBuyTransferInfo = {
   sender: string
-  amount: CurrencyAmount<Currency>
+  amount: string
 }[]
 export interface PostBundleSimulationParams {
   account: string
@@ -26,7 +25,7 @@ export interface PostBundleSimulationParams {
   tokenBuy: Erc20
   preHooks: CowHookDetails[]
   postHooks: CowHookDetails[]
-  sellAmount: CurrencyAmount<Currency>
+  sellAmount: string
   orderReceiver: string
   tokenBuyTransferInfo: TokenBuyTransferInfo
 }
@@ -71,7 +70,7 @@ export function getTransferTenderlySimulationInput({
   receiver,
   token,
 }: GetTransferTenderlySimulationInput): SimulationInput {
-  const callData = token.interface.encodeFunctionData('transfer', [receiver, currencyAmount.quotient.toString()])
+  const callData = token.interface.encodeFunctionData('transfer', [receiver, currencyAmount])
 
   return {
     input: callData,

@@ -491,6 +491,9 @@ export const DropdownContentItemTitle = styled.span`
   font-weight: bold;
   font-size: 18px;
   line-height: 1.2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `
 
 export const DropdownContentItemDescription = styled.span`

@@ -188,8 +188,13 @@ export function HighSuggestedSlippageWarning(props: HighSuggestedSlippageWarning
     <WarningContainer {...rest} level={LOW_TIER_FEE}>
       <div>
         <AlertTriangle size={24} />
-        Beware! High dynamic slippage suggested ({`${slippageBps / 100}`}%)
-        <HoverTooltip wrapInContainer content={"It's not thaaat bad. Just to make sure you noticed 😉"}>
+        Slippage adjusted to {`${slippageBps / 100}`}% to ensure quick execution
+        <HoverTooltip
+          wrapInContainer
+          content={
+            'CoW Swap dynamically adjusts your slippage tolerance based on current volatility. You can set a custom slippage using the settings icon above.'
+          }
+        >
           <ErrorStyledInfoIcon />
         </HoverTooltip>
       </div>

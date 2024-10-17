@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { BigNumber } from 'ethers'
 
 import { TokenBuyTransferInfo } from './bundleSimulation'
 
@@ -9,9 +9,10 @@ export function getTokenTransferInfo({
   amountToTransfer,
 }: {
   tokenHolders: TokenHolder[]
-  amountToTransfer: CurrencyAmount<Currency>
+  amountToTransfer: string
 }): TokenBuyTransferInfo {
-  let sum = CurrencyAmount.fromRawAmount(amountToTransfer.currency, '0')
+  const amountToTransferBigNumber = BigNumber.from(amountToTransfer)
+  let sum = BigNumber.from('0')
   const result: TokenBuyTransferInfo = []
 
   if (!tokenHolders) {
@@ -22,21 +23,21 @@ export function getTokenTransferInfo({
     // skip token holders with no address or balance
     if (!tokenHolder.address || !tokenHolder.balance) continue
 
-    const tokenHolderAmount = CurrencyAmount.fromRawAmount(amountToTransfer.currency, tokenHolder.balance)
+    const tokenHolderAmount = BigNumber.from(tokenHolder.balance)
     const sumWithTokenHolder = sum.add(tokenHolderAmount)
 
-    if (sumWithTokenHolder.greaterThan(amountToTransfer) || sumWithTokenHolder.equalTo(amountToTransfer)) {
-      const remainingAmount = amountToTransfer.subtract(sum)
+    if (sumWithTokenHolder.gte(amountToTransferBigNumber)) {
+      const remainingAmount = amountToTransferBigNumber.sub(sum)
       result.push({
         sender: tokenHolder.address,
-        amount: remainingAmount,
+        amount: remainingAmount.toString(),
       })
       break
     }
     sum = sum.add(tokenHolderAmount)
     result.push({
       sender: tokenHolder.address,
-      amount: tokenHolderAmount,
+      amount: tokenHolderAmount.toString(),
     })
   }
 
