@@ -18,7 +18,7 @@ export const LpTokenWrapper = styled.div`
 
 export const ListHeader = styled.div`
   display: grid;
-  grid-template-columns: 1fr 100px 50px 20px;
+  grid-template-columns: 1fr 100px 50px 30px;
   font-size: 12px;
   font-weight: 500;
   color: var(${UI.COLOR_TEXT_OPACITY_70});

@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { TokenAmount } from '@cowprotocol/ui'
+import { LoadingRows, LoadingRowSmall, TokenAmount } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -7,6 +7,12 @@ import * as styledEl from './styled'
 
 import { TokenInfo } from '../TokenInfo'
 import { TokenTags } from '../TokenTags'
+
+const LoadingElement = (
+  <LoadingRows>
+    <LoadingRowSmall />
+  </LoadingRows>
+)
 
 export interface TokenListItemProps {
   token: TokenWithLogo
@@ -34,7 +40,9 @@ export function TokenListItem(props: TokenListItemProps) {
       <TokenInfo token={token} />
       {isWalletConnected && (
         <>
-          <styledEl.TokenBalance>{balanceAmount && <TokenAmount amount={balanceAmount} />}</styledEl.TokenBalance>
+          <styledEl.TokenBalance>
+            {balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement}
+          </styledEl.TokenBalance>
           <TokenTags isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} />
         </>
       )}

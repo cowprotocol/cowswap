@@ -18,7 +18,7 @@ export interface TokensVirtualListProps extends SelectTokenContext {
 export function TokensVirtualList(props: TokensVirtualListProps) {
   const { allTokens, selectedToken, balancesState, onSelectToken, unsupportedTokens, permitCompatibleTokens, account } =
     props
-  const { values: balances, isLoading: balancesLoading } = balancesState
+  const { values: balances } = balancesState
 
   const isWalletConnected = !!account
 
@@ -47,5 +47,5 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
     [balances, unsupportedTokens, permitCompatibleTokens, selectedToken, onSelectToken, isWalletConnected],
   )
 
-  return <VirtualList id="tokens-list" loading={balancesLoading} items={sortedTokens} getItemView={getItemView} />
+  return <VirtualList id="tokens-list" items={sortedTokens} getItemView={getItemView} />
 }

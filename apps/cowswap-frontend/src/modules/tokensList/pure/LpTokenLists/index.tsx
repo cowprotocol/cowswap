@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { LpToken } from '@cowprotocol/common-const'
 import { TokenLogo, TokensByAddress } from '@cowprotocol/tokens'
-import { InfoTooltip, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
+import { InfoTooltip, LoadingRows, LoadingRowSmall, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { VirtualItem } from '@tanstack/react-virtual'
@@ -12,6 +12,12 @@ import { VirtualList } from 'common/pure/VirtualList'
 
 import { ListHeader, ListItem, LpTokenInfo, LpTokenLogo, LpTokenWrapper, Wrapper } from './styled'
 
+const LoadingElement = (
+  <LoadingRows>
+    <LoadingRowSmall />
+  </LoadingRows>
+)
+
 interface LpTokenListsProps {
   lpTokens: LpToken[]
   tokensByAddress: TokensByAddress
@@ -19,7 +25,7 @@ interface LpTokenListsProps {
 }
 
 export function LpTokenLists({ lpTokens, tokensByAddress, balancesState }: LpTokenListsProps) {
-  const { values: balances, isLoading: balancesLoading } = balancesState
+  const { values: balances } = balancesState
 
   const getItemView = useCallback(
     (lpTokens: LpToken[], item: VirtualItem) => {
@@ -49,9 +55,7 @@ export function LpTokenLists({ lpTokens, tokensByAddress, balancesState }: LpTok
               </p>
             </LpTokenInfo>
           </LpTokenWrapper>
-          <span>
-            <TokenAmount amount={balanceAmount} />
-          </span>
+          <span>{balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement}</span>
           <span>40%</span>
           <span>
             <InfoTooltip>TODO</InfoTooltip>
@@ -70,7 +74,7 @@ export function LpTokenLists({ lpTokens, tokensByAddress, balancesState }: LpTok
         <span>APR</span>
         <span></span>
       </ListHeader>
-      <VirtualList items={lpTokens} loading={balancesLoading} getItemView={getItemView} />
+      <VirtualList items={lpTokens} getItemView={getItemView} />
       <div>
         <div>Can' find?</div>
         <a>Create a pool</a>
