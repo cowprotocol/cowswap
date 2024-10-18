@@ -91,6 +91,7 @@
     "@material-ui/core": "^4.11.0",
     "@metamask/eth-sig-util": "^5.0.2",
     "@metamask/jazzicon": "^2.0.0",
+    "@metamask/sdk": "^0.30.1",
     "@mui/icons-material": "^5.14.13",
     "@mui/lab": "^5.0.0-alpha.148",
     "@mui/material": "^5.14.13",
