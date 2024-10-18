@@ -13,10 +13,11 @@ import { Web3ReactConnection } from '../types'
 interface Web3ProviderProps {
   children: ReactNode
   selectedWallet: ConnectionType | undefined
+  standaloneMode?: boolean
 }
 
-export function Web3Provider({ children, selectedWallet }: Web3ProviderProps) {
-  useEagerlyConnect(selectedWallet)
+export function Web3Provider({ children, selectedWallet, standaloneMode }: Web3ProviderProps) {
+  useEagerlyConnect(selectedWallet, standaloneMode)
 
   const connections = useOrderedConnections(selectedWallet)
   const connectors: [Connector, Web3ReactHooks][] = connections
@@ -25,7 +26,7 @@ export function Web3Provider({ children, selectedWallet }: Web3ProviderProps) {
 
   const key = useMemo(
     () => connections.map(({ type }: Web3ReactConnection) => getConnectionName(type)).join('-'),
-    [connections]
+    [connections],
   )
 
   return (

@@ -70,8 +70,13 @@ function Main() {
 
 function Web3ProviderInstance({ children }: { children: ReactNode }) {
   const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
+  const { standaloneMode } = useInjectedWidgetParams()
 
-  return <Web3Provider selectedWallet={selectedWallet}>{children}</Web3Provider>
+  return (
+    <Web3Provider standaloneMode={standaloneMode} selectedWallet={selectedWallet}>
+      {children}
+    </Web3Provider>
+  )
 }
 
 function Toasts() {

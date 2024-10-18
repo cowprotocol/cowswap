@@ -27,7 +27,7 @@ async function connect(connector: Connector) {
   }
 }
 
-export function useEagerlyConnect(selectedWallet: ConnectionType | undefined) {
+export function useEagerlyConnect(selectedWallet: ConnectionType | undefined, standaloneMode?: boolean) {
   const [tryConnectEip6963Provider, setTryConnectEip6963Provider] = useState(false)
   const eagerlyConnectInitRef = useRef(false)
   const selectedEip6963ProviderInfo = useSelectedEip6963ProviderInfo()
@@ -75,6 +75,8 @@ export function useEagerlyConnect(selectedWallet: ConnectionType | undefined) {
    * Activate the selected eip6963 provider
    */
   useEffect(() => {
+    // Ignore remembered eip6963 provider if the app is in widget dapp mode
+    if (isInjectedWidget() && !standaloneMode) return
     if (!selectedWallet || !tryConnectEip6963Provider) return
 
     const connection = getWeb3ReactConnection(selectedWallet)
@@ -90,5 +92,5 @@ export function useEagerlyConnect(selectedWallet: ConnectionType | undefined) {
       setTryConnectEip6963Provider(false)
       connect(connector)
     }
-  }, [selectedEip6963ProviderInfo, selectedWallet, setEip6963Provider, tryConnectEip6963Provider])
+  }, [standaloneMode, selectedEip6963ProviderInfo, selectedWallet, setEip6963Provider, tryConnectEip6963Provider])
 }
