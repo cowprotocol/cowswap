@@ -164,8 +164,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     label: outputCurrencyInfo.label,
   }
 
-  console.debug('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
-
   const slots = {
     settingsWidget: <SettingsWidget />,
     lockScreen: isUnlocked ? undefined : (

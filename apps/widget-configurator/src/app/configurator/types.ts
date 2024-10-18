@@ -21,6 +21,10 @@ export interface ConfiguratorState {
   sellTokenAmount: number | undefined
   buyToken: string
   buyTokenAmount: number | undefined
+  deadline: number | undefined
+  swapDeadline: number | undefined
+  limitDeadline: number | undefined
+  advancedDeadline: number | undefined
   tokenListUrls: TokenListItem[]
   customColors: ColorPalette
   defaultColors: ColorPalette
@@ -29,4 +33,6 @@ export interface ConfiguratorState {
   standaloneMode: boolean
   disableToastMessages: boolean
   disableProgressBar: boolean
+  hideBridgeInfo: boolean | undefined
+  hideOrdersTable: boolean | undefined
 }

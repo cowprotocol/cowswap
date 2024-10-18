@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.10.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.9.0...tokens-v1.10.0) (2024-10-10)
+
+
+### Features
+
+* add balancer token list to arb1 ([#4975](https://github.com/cowprotocol/cowswap/issues/4975)) ([54c0f6c](https://github.com/cowprotocol/cowswap/commit/54c0f6c42937840e48e95d85c139874ca8b76737))
+
+
+### Bug Fixes
+
+* **tokens-selector:** fix tokens displaying on mobile view ([#4929](https://github.com/cowprotocol/cowswap/issues/4929)) ([f055957](https://github.com/cowprotocol/cowswap/commit/f055957af450967b4bc4d58a15fc7a7b80f0aa77))
+
 ## [1.9.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.8.1...tokens-v1.9.0) (2024-09-30)
 
 

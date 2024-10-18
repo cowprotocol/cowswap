@@ -9,7 +9,7 @@ import { useIsSellNative } from 'modules/trade'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-import { RescueFundsToggle, TradeWidgetWrapper } from './styled'
+import { HooksTopActions, RescueFundsToggle, TradeWidgetWrapper } from './styled'
 
 import { useSetRecipientOverride } from '../../hooks/useSetRecipientOverride'
 import { useSetupHooksStoreOrderParams } from '../../hooks/useSetupHooksStoreOrderParams'
@@ -70,7 +70,9 @@ export function HooksStoreWidget() {
   const TopContent = shouldNotUseHooks ? null : (
     <>
       {!isRescueWidgetOpen && account && (
-        <RescueFundsToggle onClick={() => setRescueWidgetOpen(true)}>Problems receiving funds?</RescueFundsToggle>
+        <HooksTopActions>
+          <RescueFundsToggle onClick={() => setRescueWidgetOpen(true)}>Rescue funds</RescueFundsToggle>
+        </HooksTopActions>
       )}
       <DismissableInlineBanner
         orientation={BannerOrientation.Horizontal}
@@ -79,8 +81,12 @@ export function HooksStoreWidget() {
         bannerId="hooks-store-banner-tradeContainer"
       >
         <p>
-          With hooks you can add specific actions <b>before</b> and <b>after</b> your swap. {/*TODO: update the link*/}
-          <a href="https://docs.cow.fi/cow-protocol/reference/sdks/cow-sdk" target="_blank" rel="noopener noreferrer">
+          With hooks you can add specific actions <b>before</b> and <b>after</b> your swap.{' '}
+          <a
+            href="https://blog.cow.fi/cow-hooks-you-are-in-control-480ccb40044a"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Learn more.
           </a>
         </p>

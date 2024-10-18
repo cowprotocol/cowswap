@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
 
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import { useDispatch, useSelector } from 'react-redux'
 
+import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
+
 import {
-  ClearQuoteParams,
   getNewQuote,
   GetQuoteParams,
   refreshQuote,
@@ -26,16 +27,8 @@ type SetQuoteErrorCallback = (params: SetQuoteErrorParams) => void
 
 type QuoteParams = { chainId?: ChainId; token?: string | null }
 
-export const useAllQuotes = ({
-  chainId,
-}: Partial<Pick<ClearQuoteParams, 'chainId'>>): Partial<QuotesMap> | undefined => {
-  return useSelector<AppState, Partial<QuotesMap> | undefined>((state) => {
-    const quotes = chainId && state.price.quotes[chainId]
-
-    if (!quotes) return {}
-
-    return quotes
-  })
+export const useAllQuotes = (chainId: SupportedChainId): Partial<QuotesMap> | undefined => {
+  return useSelector<AppState, Partial<QuotesMap> | undefined>((state) => state.price.quotes[chainId])
 }
 
 export const useQuote = ({ token, chainId }: QuoteParams): QuoteInformationObject | undefined => {
@@ -71,7 +64,11 @@ export const useGetQuoteAndStatus = (params: QuoteParams): UseGetQuoteAndStatus 
   const isGettingNewQuote = Boolean(isLoading && !quote?.price?.amount)
   const isRefreshingQuote = Boolean(isLoading && quote?.price?.amount)
 
-  return { quote, isGettingNewQuote, isRefreshingQuote }
+  return useSafeMemoObject({
+    quote,
+    isGettingNewQuote,
+    isRefreshingQuote,
+  })
 }
 
 export const useGetNewQuote = (): GetNewQuoteCallback => {

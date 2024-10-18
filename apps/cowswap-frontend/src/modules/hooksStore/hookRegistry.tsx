@@ -23,5 +23,6 @@ export const ALL_HOOK_DAPPS = [
     ...hookDappsRegistry.CLAIM_COW_AIRDROP,
     component: (props) => <AirdropHookApp {...props} />,
   },
-  { ...hookDappsRegistry.COW_AMM_WITHDRAW, type: 'IFRAME', url: 'https://cow-hooks-dapps-withdraw-pool.vercel.app/' },
+  hookDappsRegistry.COW_AMM_WITHDRAW,
+  hookDappsRegistry.CLAIM_LLAMAPAY_VESTING,
 ] as HookDapp[]

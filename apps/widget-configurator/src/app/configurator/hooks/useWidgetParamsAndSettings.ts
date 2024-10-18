@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetParams, TradeType } from '@cowprotocol/widget-lib'
 
 import { isDev, isLocalHost, isVercel } from '../../../env'
 import { ConfiguratorState } from '../types'
@@ -11,8 +11,8 @@ const getBaseUrl = (): string => {
   if (isLocalHost) return 'http://localhost:3000'
   if (isDev) return 'https://dev.swap.cow.fi'
   if (isVercel) {
-    // TODO: revert before merging!!
-    return 'https://swap-dev-git-fix-widget-configurator-fee-recipient-cowswap.vercel.app/'
+    const prKey = window.location.hostname.replace('widget-configurator-git-', '').replace('-cowswap.vercel.app', '')
+    return `https://swap-dev-git-${prKey}-cowswap.vercel.app`
   }
 
   return 'https://swap.cow.fi'
@@ -31,6 +31,10 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       sellTokenAmount,
       buyToken,
       buyTokenAmount,
+      deadline,
+      swapDeadline,
+      limitDeadline,
+      advancedDeadline,
       tokenListUrls,
       customColors,
       defaultColors,
@@ -39,6 +43,8 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       standaloneMode,
       disableToastMessages,
       disableProgressBar,
+      hideBridgeInfo,
+      hideOrdersTable,
     } = configuratorState
 
     const themeColors = {
@@ -56,6 +62,14 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       tradeType: currentTradeType,
       sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
       buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
+      forcedOrderDeadline:
+        swapDeadline || limitDeadline || advancedDeadline
+          ? {
+              [TradeType.SWAP]: swapDeadline,
+              [TradeType.LIMIT]: limitDeadline,
+              [TradeType.ADVANCED]: advancedDeadline,
+            }
+          : deadline,
       enabledTradeTypes,
       theme:
         JSON.stringify(customColors) === JSON.stringify(defaultColors)
@@ -84,6 +98,8 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
               recipient: partnerFeeRecipient,
             }
           : undefined,
+      hideBridgeInfo,
+      hideOrdersTable,
     }
 
     return params

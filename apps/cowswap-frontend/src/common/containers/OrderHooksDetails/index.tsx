@@ -16,9 +16,10 @@ import { CircleCount } from './styled'
 interface OrderHooksDetailsProps {
   appData: string | AppDataInfo
   children: (content: ReactElement) => ReactElement
+  margin?: string
 }
 
-export function OrderHooksDetails({ appData, children }: OrderHooksDetailsProps) {
+export function OrderHooksDetails({ appData, children, margin }: OrderHooksDetailsProps) {
   const [isOpen, setOpen] = useState(false)
   const appDataDoc = useMemo(() => {
     return typeof appData === 'string' ? decodeAppData(appData) : appData.doc
@@ -36,7 +37,7 @@ export function OrderHooksDetails({ appData, children }: OrderHooksDetailsProps)
   if (!preHooksToDapp.length && !postHooksToDapp.length) return null
 
   return children(
-    <styledEl.Wrapper isOpen={isOpen}>
+    <styledEl.Wrapper isOpen={isOpen} margin={margin}>
       <styledEl.Summary>
         <styledEl.Label>
           Hooks

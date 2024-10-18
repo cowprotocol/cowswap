@@ -45,8 +45,6 @@ export class CowAnalyticsGoogle implements CowAnalytics {
       return acc
     }, {} as CowDimensionValues)
 
-    // Init Google analytics
-    console.log('[CowAnalyticsGoogle] Init analytics: ', googleAnalyticsId)
     ReactGA.initialize(googleAnalyticsId, options)
   }
   setUserAccount(account: string | undefined): void {
