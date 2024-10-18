@@ -121,10 +121,26 @@ export function CoWAmmBannerContent({
         flow={location === BannerLocation.TokenSelector ? 'row' : 'column'}
         align={location === BannerLocation.TokenSelector ? 'center' : 'flex-start'}
         bgColor={
-          location === BannerLocation.TokenSelector ? `var(${UI.COLOR_COWAMM_DARK_GREEN_OPACITY_15})` : undefined
+          location === BannerLocation.TokenSelector
+            ? isDarkMode
+              ? `var(${UI.COLOR_COWAMM_LIGHT_BLUE})`
+              : `var(${UI.COLOR_COWAMM_DARK_GREEN_OPACITY_15})`
+            : undefined
         }
-        color={location === BannerLocation.TokenSelector ? `var(${UI.COLOR_COWAMM_DARK_GREEN})` : undefined}
-        tokenBorderColor={location === BannerLocation.TokenSelector ? `var(${UI.COLOR_COWAMM_LIGHT_GREEN})` : undefined}
+        color={
+          location === BannerLocation.TokenSelector
+            ? isDarkMode
+              ? `var(${UI.COLOR_COWAMM_DARK_BLUE})`
+              : `var(${UI.COLOR_COWAMM_DARK_GREEN})`
+            : undefined
+        }
+        tokenBorderColor={
+          location === BannerLocation.TokenSelector
+            ? isDarkMode
+              ? `var(${UI.COLOR_COWAMM_LIGHT_BLUE})`
+              : `var(${UI.COLOR_COWAMM_DARK_GREEN})`
+            : undefined
+        }
       >
         higher APR available for your {poolName} pool:
         <i>
@@ -181,7 +197,7 @@ export function CoWAmmBannerContent({
         return `yield over average UNI-V2 pool`
       }
     }
-  }, [selectedState, location, lpTokenConfig])
+  }, [selectedState, location, lpTokenConfig, isDarkMode])
 
   const lpEmblems = useMemo(() => {
     const tokens = lpTokenConfig[selectedState]
