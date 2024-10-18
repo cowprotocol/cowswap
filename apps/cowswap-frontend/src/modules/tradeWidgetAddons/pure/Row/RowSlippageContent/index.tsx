@@ -11,7 +11,7 @@ import styled from 'styled-components/macro'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
 
 import { settingsTabStateAtom } from '../../../state/settingsTabState'
-import { StyledRowBetween, TextWrapper, StyledInfoIcon, TransactionText, RowStyleProps } from '../styled'
+import { RowStyleProps, StyledInfoIcon, StyledRowBetween, TextWrapper, TransactionText } from '../styled'
 
 const DefaultSlippage = styled.span`
   display: inline-flex;
@@ -30,7 +30,7 @@ const DefaultSlippage = styled.span`
 `
 
 const SUGGESTED_SLIPPAGE_TOOLTIP =
-  'This is the recommended slippage tolerance based on current gas prices & volatility. A lower amount may result in slower execution.'
+  'This is the recommended slippage tolerance based on current gas prices & trade size. A lower amount may result in slower execution.'
 
 export interface RowSlippageContentProps {
   chainId: SupportedChainId
