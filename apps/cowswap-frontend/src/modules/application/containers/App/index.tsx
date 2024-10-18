@@ -24,6 +24,7 @@ import { useInitializeUtm } from 'modules/utm'
 
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useMenuItems } from 'common/hooks/useMenuItems'
 import { BannerLocation, CoWAmmBanner } from 'common/pure/CoWAMMBanner'
 import { LoadingApp } from 'common/pure/LoadingApp'
@@ -96,6 +97,7 @@ export function App() {
   )
 
   const { account } = useWalletInfo()
+  const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
   return (
     <ErrorBoundary>
@@ -132,7 +134,9 @@ export function App() {
           )}
 
           {/* CoW AMM banner */}
-          {!isInjectedWidgetMode && account && <CoWAmmBanner location={BannerLocation.Global} />}
+          {!isInjectedWidgetMode && account && !isChainIdUnsupported && (
+            <CoWAmmBanner location={BannerLocation.Global} />
+          )}
 
           <styledEl.BodyWrapper>
             <TopLevelModals />
