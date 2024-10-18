@@ -3,7 +3,6 @@ import { useAtomValue } from 'jotai/index'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { HookDappBase, HookDappType } from '@cowprotocol/hook-dapp-lib'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 
@@ -21,7 +20,6 @@ const getLastUpdateTimestamp = () => {
 export function IframeDappsManifestUpdater() {
   const hooksState = useAtomValue(customHookDappsAtom)
   const upsertCustomHookDapp = useSetAtom(upsertCustomHookDappAtom)
-  const { chainId } = useWalletInfo()
 
   const [preHooks, postHooks] = useMemo(
     () => [Object.values(hooksState.pre), Object.values(hooksState.post)],
@@ -55,7 +53,7 @@ export function IframeDappsManifestUpdater() {
           }
         })
     },
-    [chainId, upsertCustomHookDapp],
+    [upsertCustomHookDapp],
   )
 
   /**

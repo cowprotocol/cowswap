@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import ICON_TOKENS from '@cowprotocol/assets/svg/tokens.svg'
@@ -35,6 +35,7 @@ import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateF
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { useTradeTypeInfo } from '../../hooks/useTradeTypeInfo'
 import { TradeType } from '../../types'
+import { TradeWarnings } from '../TradeWarnings'
 import { TradeWidgetLinks } from '../TradeWidgetLinks'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
 
@@ -49,7 +50,7 @@ const scrollToMyOrders = () => {
 
 export function TradeWidgetForm(props: TradeWidgetProps) {
   const isInjectedWidgetMode = isInjectedWidget()
-  const { standaloneMode } = useInjectedWidgetParams()
+  const { standaloneMode, hideOrdersTable } = useInjectedWidgetParams()
 
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const { pendingActivity } = useCategorizeRecentActivity()
@@ -59,7 +60,16 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const { settingsWidget, lockScreen, topContent, middleContent, bottomContent, outerContent } = slots
 
   const { onCurrencySelection, onUserInput, onSwitchTokens, onChangeRecipient } = actions
-  const { compactView, showRecipient, isTradePriceUpdating, isEoaEthFlow = false, priceImpact, recipient } = params
+  const {
+    compactView,
+    showRecipient,
+    isTradePriceUpdating,
+    isEoaEthFlow = false,
+    priceImpact,
+    recipient,
+    hideTradeWarnings,
+    enableSmartSlippage,
+  } = params
 
   const inputCurrencyInfo = useMemo(
     () => (isWrapOrUnwrap ? { ...props.inputCurrencyInfo, receiveAmountInfo: null } : props.inputCurrencyInfo),
@@ -113,6 +123,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const shouldShowMyOrdersButton =
     !alternativeOrderModalVisible &&
     (!isInjectedWidgetMode && isConnectedSwapMode ? isUpToLarge : true) &&
+    (isConnectedSwapMode || !hideOrdersTable) &&
     ((isConnectedSwapMode && standaloneMode !== true) ||
       (isLimitOrderMode && isUpToLarge && isLimitOrdersUnlocked) ||
       (isAdvancedMode && isUpToLarge && isAdvancedOrdersUnlocked))
@@ -199,7 +210,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 isCollapsed={compactView}
                 hasSeparatorLine={!compactView}
                 onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
-                isLoading={isTradePriceUpdating}
+                isLoading={Boolean(inputCurrencyInfo.currency && outputCurrencyInfo.currency && isTradePriceUpdating)}
                 disabled={isAlternativeOrderModalVisible}
               />
             </styledEl.CurrencySeparatorBox>
@@ -220,7 +231,18 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
             </div>
             {withRecipient && <SetRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />}
 
-            {isWrapOrUnwrap ? <WrapFlowActionButton /> : bottomContent}
+            {isWrapOrUnwrap ? (
+              <WrapFlowActionButton />
+            ) : (
+              bottomContent?.(
+                hideTradeWarnings ? null : (
+                  <TradeWarnings
+                    enableSmartSlippage={enableSmartSlippage}
+                    isTradePriceUpdating={isTradePriceUpdating}
+                  />
+                ),
+              )
+            )}
           </>
         )}
 

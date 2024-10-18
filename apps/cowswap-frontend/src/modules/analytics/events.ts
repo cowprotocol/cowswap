@@ -168,6 +168,7 @@ const LABEL_FROM_TYPE: Record<UiOrderType, string> = {
   [UiOrderType.SWAP]: 'Market Order',
   [UiOrderType.TWAP]: 'TWAP Order',
   [UiOrderType.HOOKS]: 'Hooks',
+  [UiOrderType.YIELD]: 'Yield',
 }
 
 function getClassLabel(orderClass: UiOrderType, label?: string) {

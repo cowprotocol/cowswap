@@ -19,5 +19,5 @@ export function useSetRecipientOverride() {
     if (!hookRecipientOverride || !isHooksTradeType) return
 
     onChangeRecipient(hookRecipientOverride)
-  }, [hookRecipientOverride, isHooksTradeType, isNativeIn])
+  }, [hookRecipientOverride, isHooksTradeType, isNativeIn, onChangeRecipient])
 }

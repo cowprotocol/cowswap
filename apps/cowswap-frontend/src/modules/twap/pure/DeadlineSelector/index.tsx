@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 
-import { UI } from '@cowprotocol/ui'
-import { renderTooltip } from '@cowprotocol/ui'
+import { renderTooltip, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -10,14 +9,17 @@ import { Content } from 'modules/trade/pure/TradeWidgetField/styled'
 import { LabelTooltip } from 'modules/twap'
 import { customDeadlineToSeconds, deadlinePartsDisplay } from 'modules/twap/utils/deadlinePartsDisplay'
 
+import { TradeWidgetField } from '../../../trade/pure/TradeWidgetField'
 import { defaultCustomDeadline, TwapOrdersDeadline } from '../../state/twapOrdersSettingsAtom'
 import { CustomDeadlineSelector } from '../CustomDeadlineSelector'
 
 interface DeadlineSelectorProps {
   items: TradeSelectItem[]
   deadline: TwapOrdersDeadline
+  isDeadlineDisabled: boolean
   label: LabelTooltip['label']
   tooltip: LabelTooltip['tooltip']
+
   setDeadline(value: TwapOrdersDeadline): void
 }
 
@@ -48,10 +50,22 @@ const StyledTradeSelect = styled(TradeSelect)`
   }
 `
 
+const StyledTradeField = styled(TradeWidgetField)`
+  ${Content} {
+    width: 100%;
+    color: inherit;
+  }
+
+  ${Content} > div {
+    width: 100%;
+  }
+`
+
 export function DeadlineSelector(props: DeadlineSelectorProps) {
   const {
     items,
     deadline: { deadline, customDeadline, isCustomDeadline },
+    isDeadlineDisabled,
     label,
     tooltip,
     setDeadline,
@@ -74,7 +88,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
         })
       }
     },
-    [setIsCustomModalOpen, setDeadline]
+    [setIsCustomModalOpen, setDeadline],
   )
 
   const activeLabel = useMemo(() => {
@@ -87,13 +101,19 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
 
   return (
     <>
-      <StyledTradeSelect
-        label={label}
-        tooltip={renderTooltip(tooltip)}
-        items={itemsWithCustom}
-        activeLabel={activeLabel}
-        onSelect={onSelect}
-      />
+      {isDeadlineDisabled ? (
+        <StyledTradeField label={label} tooltip={renderTooltip(tooltip)}>
+          <div>{activeLabel}</div>
+        </StyledTradeField>
+      ) : (
+        <StyledTradeSelect
+          label={label}
+          tooltip={renderTooltip(tooltip)}
+          items={itemsWithCustom}
+          activeLabel={activeLabel}
+          onSelect={onSelect}
+        />
+      )}
       <CustomDeadlineSelector
         selectCustomDeadline={(value) => setDeadline({ isCustomDeadline: true, customDeadline: value, deadline: 0 })}
         customDeadline={customDeadline}

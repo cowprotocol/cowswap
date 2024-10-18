@@ -76,7 +76,7 @@ export function App() {
         children: menuItems.map((item) => {
           const href = parameterizeTradeRoute(tradeContext, item.route, true)
 
-          return { href, label: item.label, description: item.description }
+          return { href, label: item.label, description: item.description, badge: item.badge }
         }),
       },
       ...NAV_ITEMS,

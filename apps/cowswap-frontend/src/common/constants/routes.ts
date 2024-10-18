@@ -7,6 +7,7 @@ export const Routes = {
   SWAP: `/:chainId?${TRADE_WIDGET_PREFIX}/swap/:inputCurrencyId?/:outputCurrencyId?`,
   HOOKS: `/:chainId?${TRADE_WIDGET_PREFIX}/swap/hooks/:inputCurrencyId?/:outputCurrencyId?`,
   LIMIT_ORDER: `/:chainId?${TRADE_WIDGET_PREFIX}/limit/:inputCurrencyId?/:outputCurrencyId?`,
+  YIELD: `/:chainId?${TRADE_WIDGET_PREFIX}/yield/:inputCurrencyId?/:outputCurrencyId?`,
   ADVANCED_ORDERS: `/:chainId?${TRADE_WIDGET_PREFIX}/advanced/:inputCurrencyId?/:outputCurrencyId?`,
   LONG_LIMIT_ORDER: `/:chainId?${TRADE_WIDGET_PREFIX}/limit-orders/:inputCurrencyId?/:outputCurrencyId?`,
   LONG_ADVANCED_ORDERS: `/:chainId?${TRADE_WIDGET_PREFIX}/advanced-orders/:inputCurrencyId?/:outputCurrencyId?`,
@@ -37,7 +38,13 @@ export const Routes = {
 export type RoutesKeys = keyof typeof Routes
 export type RoutesValues = (typeof Routes)[RoutesKeys]
 
-export const MENU_ITEMS: { route: RoutesValues; label: string; fullLabel?: string; description: string }[] = [
+export const MENU_ITEMS: {
+  route: RoutesValues
+  label: string
+  fullLabel?: string
+  description: string
+  badge?: string
+}[] = [
   { route: Routes.SWAP, label: 'Swap', description: 'Trade tokens' },
   { route: Routes.LIMIT_ORDER, label: 'Limit', fullLabel: 'Limit order', description: 'Set your own price' },
   { route: Routes.ADVANCED_ORDERS, label: 'TWAP', description: 'Place orders with a time-weighted average price' },
@@ -47,4 +54,12 @@ export const HOOKS_STORE_MENU_ITEM = {
   route: Routes.HOOKS,
   label: 'Hooks',
   description: 'Powerful tool to generate pre/post interaction for CoW Protocol',
+  badge: 'New',
+}
+
+export const YIELD_MENU_ITEM = {
+  route: Routes.YIELD,
+  label: 'Yield',
+  fullLabel: 'Yield',
+  description: 'Provide liquidity',
 }

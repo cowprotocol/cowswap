@@ -1,5 +1,7 @@
 export type Command = () => void
 
+export type StatefulValue<T> = [T, (value: T) => void]
+
 /**
  * UI order type that is different from existing types or classes
  *
@@ -11,6 +13,7 @@ export enum UiOrderType {
   LIMIT = 'LIMIT',
   TWAP = 'TWAP',
   HOOKS = 'HOOKS',
+  YIELD = 'YIELD',
 }
 
 export type TokenInfo = {

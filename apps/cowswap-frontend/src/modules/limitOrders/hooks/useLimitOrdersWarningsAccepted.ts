@@ -1,16 +1,15 @@
 import { useAtomValue } from 'jotai'
-import { useMemo } from 'react'
 
 import { limitOrdersWarningsAtom } from 'modules/limitOrders/state/limitOrdersWarningsAtom'
+import { useIsNoImpactWarningAccepted } from 'modules/trade'
 
 export function useLimitOrdersWarningsAccepted(isConfirmScreen: boolean): boolean {
-  const { isPriceImpactAccepted, isRateImpactAccepted } = useAtomValue(limitOrdersWarningsAtom)
+  const { isRateImpactAccepted } = useAtomValue(limitOrdersWarningsAtom)
+  const isPriceImpactAccepted = useIsNoImpactWarningAccepted()
 
-  return useMemo(() => {
-    if (isConfirmScreen) {
-      return isRateImpactAccepted
-    } else {
-      return isPriceImpactAccepted
-    }
-  }, [isConfirmScreen, isPriceImpactAccepted, isRateImpactAccepted])
+  if (isConfirmScreen) {
+    return isRateImpactAccepted
+  } else {
+    return isPriceImpactAccepted
+  }
 }

@@ -17,8 +17,8 @@ import { Field } from 'legacy/state/types'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 import { useAppData } from 'modules/appData'
-import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useDerivedSwapInfo, useSwapState } from 'modules/swap/hooks/useSwapState'
+import { useIsEoaEthFlow } from 'modules/trade'
 
 import { isRefetchQuoteRequired } from './isRefetchQuoteRequired'
 import { quoteUsingSameParameters } from './quoteUsingSameParameters'
