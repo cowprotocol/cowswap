@@ -3,6 +3,7 @@ import { lazy, PropsWithChildren, Suspense, useMemo } from 'react'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { NavLink } from 'react-router-dom'
 import { ThemeProvider } from 'theme'
@@ -23,7 +24,9 @@ import { useInitializeUtm } from 'modules/utm'
 
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useMenuItems } from 'common/hooks/useMenuItems'
+import { BannerLocation, CoWAmmBanner } from 'common/pure/CoWAMMBanner'
 import { LoadingApp } from 'common/pure/LoadingApp'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
@@ -93,6 +96,9 @@ export function App() {
     </HeaderControls>
   )
 
+  const { account } = useWalletInfo()
+  const isChainIdUnsupported = useIsProviderNetworkUnsupported()
+
   return (
     <ErrorBoundary>
       <Suspense fallback={<LoadingApp />}>
@@ -125,6 +131,11 @@ export function App() {
               persistentAdditionalContent={isMobile ? null : persistentAdditionalContent} // This will stay at its original location
               additionalContent={null} // On desktop renders inside the menu bar, on mobile renders inside the mobile menu
             />
+          )}
+
+          {/* CoW AMM banner */}
+          {!isInjectedWidgetMode && account && !isChainIdUnsupported && (
+            <CoWAmmBanner location={BannerLocation.Global} />
           )}
 
           <styledEl.BodyWrapper>
