@@ -32,9 +32,10 @@ interface LpTokenListsProps {
   lpTokens: LpToken[]
   tokensByAddress: TokensByAddress
   balancesState: BalancesState
+  displayCreatePoolBanner: boolean
 }
 
-export function LpTokenLists({ lpTokens, tokensByAddress, balancesState }: LpTokenListsProps) {
+export function LpTokenLists({ lpTokens, tokensByAddress, balancesState, displayCreatePoolBanner }: LpTokenListsProps) {
   const { values: balances } = balancesState
 
   const getItemView = useCallback(
@@ -85,17 +86,19 @@ export function LpTokenLists({ lpTokens, tokensByAddress, balancesState }: LpTok
         <span></span>
       </ListHeader>
       <VirtualList items={lpTokens} getItemView={getItemView} />
-      <NoPoolWrapper>
-        <div>Can’t find the pool you’re looking for?</div>
-        <CreatePoolLink
-          href="https://balancer.fi/pools/cow?utm_source=swap.cow.fi&utm_medium=web&utm_content=yield-token-selector"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Create a pool
-          <ArrowUpRight size={16} />
-        </CreatePoolLink>
-      </NoPoolWrapper>
+      {displayCreatePoolBanner && (
+        <NoPoolWrapper>
+          <div>Can’t find the pool you’re looking for?</div>
+          <CreatePoolLink
+            href="https://balancer.fi/pools/cow?utm_source=swap.cow.fi&utm_medium=web&utm_content=yield-token-selector"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Create a pool
+            <ArrowUpRight size={16} />
+          </CreatePoolLink>
+        </NoPoolWrapper>
+      )}
     </Wrapper>
   )
 }

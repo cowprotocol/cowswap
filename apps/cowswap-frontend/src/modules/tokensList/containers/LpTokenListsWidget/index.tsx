@@ -41,7 +41,12 @@ export function LpTokenListsWidget({ children }: LpTokenListsProps) {
       {listsCategories === null ? (
         children
       ) : (
-        <LpTokenLists balancesState={balancesState} tokensByAddress={tokensByAddress} lpTokens={lpTokens} />
+        <LpTokenLists
+          displayCreatePoolBanner={listsCategories === tabs[2].value}
+          balancesState={balancesState}
+          tokensByAddress={tokensByAddress}
+          lpTokens={lpTokens}
+        />
       )}
     </>
   )
