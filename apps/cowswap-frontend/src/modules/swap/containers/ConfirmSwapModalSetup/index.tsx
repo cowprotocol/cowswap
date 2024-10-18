@@ -35,6 +35,7 @@ import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
 import { useNavigateToNewOrderCallback } from '../../hooks/useNavigateToNewOrderCallback'
 import { useShouldPayGas } from '../../hooks/useShouldPayGas'
 import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
+import { useSmartSwapSlippage } from '../../hooks/useSwapSlippage'
 import { useSwapState } from '../../hooks/useSwapState'
 import { NetworkCostsTooltipSuffix } from '../../pure/NetworkCostsTooltipSuffix'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '../../pure/Row/RowSlippageContent'
@@ -87,6 +88,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const buttonText = useSwapConfirmButtonText(slippageAdjustedSellAmount)
 
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
+  const smartSlippage = useSmartSwapSlippage()
 
   const labelsAndTooltips = useMemo(
     () => ({
@@ -96,7 +98,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
           : undefined,
       slippageTooltip: isEoaEthFlow
         ? getNativeSlippageTooltip(chainId, [nativeCurrency.symbol])
-        : getNonNativeSlippageTooltip(),
+        : getNonNativeSlippageTooltip({ isDynamic: !!smartSlippage }),
       expectReceiveLabel: isExactIn ? 'Expected to receive' : 'Expected to sell',
       minReceivedLabel: isExactIn ? 'Minimum receive' : 'Maximum sent',
       minReceivedTooltip: getMinimumReceivedTooltip(allowedSlippage, isExactIn),

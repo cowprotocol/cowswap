@@ -1,4 +1,3 @@
-
 import { Command } from '@cowprotocol/types'
 import { HoverTooltip } from '@cowprotocol/ui'
 import { Fraction } from '@uniswap/sdk-core'
@@ -45,7 +44,7 @@ const WarningCheckboxContainer = styled.span`
 const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
   ...props,
   hideInput: true,
-})) <HighFeeContainerProps>`
+}))<HighFeeContainerProps>`
   --warningColor: ${({ theme, level }) =>
     level === HIGH_TIER_FEE
       ? theme.danger
@@ -168,6 +167,37 @@ export const HighFeeWarning = (props: WarningProps) => {
           anyway
         </WarningCheckboxContainer>
       )}
+    </WarningContainer>
+  )
+}
+
+export type HighSuggestedSlippageWarningProps = {
+  isSuggestedSlippage: boolean | undefined
+  slippageBps: number | undefined
+  className?: string
+} & HighFeeContainerProps
+
+export function HighSuggestedSlippageWarning(props: HighSuggestedSlippageWarningProps) {
+  const { isSuggestedSlippage, slippageBps, ...rest } = props
+
+  if (!isSuggestedSlippage || !slippageBps || slippageBps <= 200) {
+    return null
+  }
+
+  return (
+    <WarningContainer {...rest} level={LOW_TIER_FEE}>
+      <div>
+        <AlertTriangle size={24} />
+        Slippage adjusted to {`${slippageBps / 100}`}% to ensure quick execution
+        <HoverTooltip
+          wrapInContainer
+          content={
+            'CoW Swap dynamically adjusts your slippage tolerance based on current volatility. You can set a custom slippage using the settings icon above.'
+          }
+        >
+          <ErrorStyledInfoIcon />
+        </HoverTooltip>
+      </div>
     </WarningContainer>
   )
 }

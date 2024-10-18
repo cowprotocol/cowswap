@@ -1,4 +1,4 @@
-import { useCallback, useContext, useRef, useState } from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 
 import {
   DEFAULT_DEADLINE_FROM_NOW,
@@ -16,6 +16,7 @@ import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { getWrappedToken, percentToBps } from '@cowprotocol/common-utils'
 import { FancyButton, HelpTooltip, Media, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { TradeType } from '@cowprotocol/widget-lib'
 import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -27,6 +28,7 @@ import { AutoColumn } from 'legacy/components/Column'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from 'modules/analytics'
+import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useIsSlippageModified } from 'modules/swap/hooks/useIsSlippageModified'
 import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
@@ -47,7 +49,7 @@ enum DeadlineError {
   InvalidInput = 'InvalidInput',
 }
 
-const Option = styled(FancyButton) <{ active: boolean }>`
+const Option = styled(FancyButton)<{ active: boolean }>`
   margin-right: 8px;
 
   :hover {
@@ -75,7 +77,7 @@ export const Input = styled.input`
   text-align: right;
 `
 
-export const OptionCustom = styled(FancyButton) <{ active?: boolean; warning?: boolean }>`
+export const OptionCustom = styled(FancyButton)<{ active?: boolean; warning?: boolean }>`
   height: 2rem;
   position: relative;
   padding: 0 0.75rem;
@@ -84,7 +86,7 @@ export const OptionCustom = styled(FancyButton) <{ active?: boolean; warning?: b
 
   :hover {
     border: ${({ theme, active, warning }) =>
-    active && `1px solid ${warning ? darken(theme.error, 0.1) : darken(theme.bg2, 0.1)}`};
+      active && `1px solid ${warning ? darken(theme.error, 0.1) : darken(theme.bg2, 0.1)}`};
   }
 
   input {
@@ -97,6 +99,7 @@ export const OptionCustom = styled(FancyButton) <{ active?: boolean; warning?: b
 
 const SlippageEmojiContainer = styled.span`
   color: #f3841e;
+
   ${Media.upToSmall()} {
     display: none;
   }
@@ -190,6 +193,7 @@ export function TransactionSettings() {
   const chosenSlippageMatchesSmartSlippage = smartSlippage && new Percent(smartSlippage, 10_000).equalTo(swapSlippage)
 
   const [deadline, setDeadline] = useUserTransactionTTL()
+  const widgetDeadline = useInjectedWidgetDeadline(TradeType.SWAP)
 
   const [slippageInput, setSlippageInput] = useState('')
   const [slippageError, setSlippageError] = useState<SlippageError | false>(false)
@@ -204,78 +208,103 @@ export function TransactionSettings() {
 
   const placeholderSlippage = isSlippageModified ? defaultSwapSlippage : swapSlippage
 
-  function parseSlippageInput(value: string) {
-    // populate what the user typed and clear the error
-    setSlippageInput(value)
-    setSlippageError(false)
+  const parseSlippageInput = useCallback(
+    (value: string) => {
+      // populate what the user typed and clear the error
+      setSlippageInput(value)
+      setSlippageError(false)
 
-    if (value.length === 0) {
-      slippageToleranceAnalytics('Default', placeholderSlippage.toFixed(2))
-      setSwapSlippage(isEoaEthFlow ? percentToBps(minEthFlowSlippage) : null)
-    } else {
-      let v = value
+      if (value.length === 0) {
+        slippageToleranceAnalytics('Default', placeholderSlippage.toFixed(2))
+        setSwapSlippage(isEoaEthFlow ? percentToBps(minEthFlowSlippage) : null)
+      } else {
+        let v = value
 
-      // Prevent inserting more than 2 decimal precision
-      if (value.split('.')[1]?.length > 2) {
-        // indexOf + 3 because we are cutting it off at `.XX`
-        v = value.slice(0, value.indexOf('.') + 3)
-        // Update the input to remove the extra numbers from UI input
-        setSlippageInput(v)
-      }
-
-      const parsed = Math.round(Number.parseFloat(v) * 100)
-
-      if (
-        !Number.isInteger(parsed) ||
-        parsed < (isEoaEthFlow ? minEthFlowSlippageBps : MIN_SLIPPAGE_BPS) ||
-        parsed > MAX_SLIPPAGE_BPS
-      ) {
-        if (v !== '.') {
-          setSlippageError(SlippageError.InvalidInput)
+        // Prevent inserting more than 2 decimal precision
+        if (value.split('.')[1]?.length > 2) {
+          // indexOf + 3 because we are cutting it off at `.XX`
+          v = value.slice(0, value.indexOf('.') + 3)
+          // Update the input to remove the extra numbers from UI input
+          setSlippageInput(v)
         }
-      }
 
-      slippageToleranceAnalytics('Custom', parsed)
-      setSwapSlippage(percentToBps(new Percent(parsed, 10_000)))
-    }
-  }
+        const parsed = Math.round(Number.parseFloat(v) * 100)
+
+        if (
+          !Number.isInteger(parsed) ||
+          parsed < (isEoaEthFlow ? minEthFlowSlippageBps : MIN_SLIPPAGE_BPS) ||
+          parsed > MAX_SLIPPAGE_BPS
+        ) {
+          if (v !== '.') {
+            setSlippageError(SlippageError.InvalidInput)
+          }
+        }
+
+        slippageToleranceAnalytics('Custom', parsed)
+        setSwapSlippage(percentToBps(new Percent(parsed, 10_000)))
+      }
+    },
+    [placeholderSlippage, isEoaEthFlow, minEthFlowSlippage],
+  )
 
   const tooLow = swapSlippage.lessThan(new Percent(isEoaEthFlow ? minEthFlowSlippageBps : LOW_SLIPPAGE_BPS, 10_000))
   const tooHigh = swapSlippage.greaterThan(
-    new Percent(isEoaEthFlow ? HIGH_ETH_FLOW_SLIPPAGE_BPS : HIGH_SLIPPAGE_BPS, 10_000)
+    new Percent(isEoaEthFlow ? HIGH_ETH_FLOW_SLIPPAGE_BPS : smartSlippage || HIGH_SLIPPAGE_BPS, 10_000),
   )
 
-  function parseCustomDeadline(value: string) {
-    // populate what the user typed and clear the error
-    setDeadlineInput(value)
-    setDeadlineError(false)
+  const minDeadline = isEoaEthFlow
+    ? // 10 minute low threshold for eth flow
+      MINIMUM_ETH_FLOW_DEADLINE_SECONDS
+    : MINIMUM_ORDER_VALID_TO_TIME_SECONDS
+  const maxDeadline = MAX_DEADLINE_MINUTES * 60
 
-    if (value.length === 0) {
-      orderExpirationTimeAnalytics('Default', DEFAULT_DEADLINE_FROM_NOW)
-      setDeadline(DEFAULT_DEADLINE_FROM_NOW)
-    } else {
-      try {
-        const parsed: number = Math.floor(Number.parseFloat(value) * 60)
-        if (
-          !Number.isInteger(parsed) || // Check deadline is a number
-          parsed <
-          (isEoaEthFlow
-            ? // 10 minute low threshold for eth flow
-            MINIMUM_ETH_FLOW_DEADLINE_SECONDS
-            : MINIMUM_ORDER_VALID_TO_TIME_SECONDS) || // Check deadline is not too small
-          parsed > MAX_DEADLINE_MINUTES * 60 // Check deadline is not too big
-        ) {
+  const parseCustomDeadline = useCallback(
+    (value: string) => {
+      // populate what the user typed and clear the error
+      setDeadlineInput(value)
+      setDeadlineError(false)
+
+      if (value.length === 0) {
+        orderExpirationTimeAnalytics('Default', DEFAULT_DEADLINE_FROM_NOW)
+        setDeadline(DEFAULT_DEADLINE_FROM_NOW)
+      } else {
+        try {
+          const parsed: number = Math.floor(Number.parseFloat(value) * 60)
+          if (
+            !Number.isInteger(parsed) || // Check deadline is a number
+            parsed < minDeadline || // Check deadline is not too small
+            parsed > maxDeadline // Check deadline is not too big
+          ) {
+            setDeadlineError(DeadlineError.InvalidInput)
+          } else {
+            orderExpirationTimeAnalytics('Custom', parsed)
+            setDeadline(parsed)
+          }
+        } catch (error: any) {
+          console.error(error)
           setDeadlineError(DeadlineError.InvalidInput)
-        } else {
-          orderExpirationTimeAnalytics('Custom', parsed)
-          setDeadline(parsed)
         }
-      } catch (error: any) {
-        console.error(error)
-        setDeadlineError(DeadlineError.InvalidInput)
+      }
+    },
+    [minDeadline, maxDeadline],
+  )
+
+  useEffect(() => {
+    if (widgetDeadline) {
+      // Deadline is stored in seconds
+      const value = Math.floor(widgetDeadline) * 60
+
+      if (value < minDeadline) {
+        setDeadline(minDeadline)
+      } else if (value > maxDeadline) {
+        setDeadline(maxDeadline)
+      } else {
+        setDeadline(value)
       }
     }
-  }
+  }, [widgetDeadline, minDeadline, maxDeadline])
+
+  const isDeadlineDisabled = !!widgetDeadline
 
   const showCustomDeadlineRow = Boolean(chainId)
 
@@ -299,14 +328,14 @@ export function TransactionSettings() {
         <AutoColumn gap="sm">
           <RowFixed>
             <ThemedText.Black fontWeight={400} fontSize={14}>
-              <Trans>MEV protected slippage</Trans>
+              <Trans>MEV-protected slippage</Trans>
             </ThemedText.Black>
             <HelpTooltip
               text={
                 // <Trans>Your transaction will revert if the price changes unfavorably by more than this percentage.</Trans>
                 isEoaEthFlow
                   ? getNativeSlippageTooltip(chainId, [nativeCurrency.symbol, getWrappedToken(nativeCurrency).symbol])
-                  : getNonNativeSlippageTooltip()
+                  : getNonNativeSlippageTooltip({ isDynamic: !!smartSlippage, isSettingsModal: true })
               }
             />
           </RowFixed>
@@ -366,8 +395,8 @@ export function TransactionSettings() {
                 <HelpTooltip
                   text={
                     <Trans>
-                      Based on recent volatility observed for this token pair, it's recommended to leave the default
-                      to account for price changes.
+                      CoW Swap has dynamically selected this slippage amount to account for current gas prices and
+                      volatility. Changes may result in slower execution.
                     </Trans>
                   }
                 />
@@ -410,6 +439,7 @@ export function TransactionSettings() {
                     setDeadlineError(false)
                   }}
                   color={deadlineError ? 'red' : ''}
+                  disabled={isDeadlineDisabled}
                 />
               </OptionCustom>
               <ThemedText.Body style={{ paddingLeft: '8px' }} fontSize={14}>
