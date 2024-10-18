@@ -48,7 +48,7 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import * as styledEl from './styled'
 
-const MAX_DEADLINE_MINUTES = 180 // 3h
+const MAX_DEADLINE_MINUTES = 60 * 12 // 12h
 
 enum SlippageError {
   InvalidInput = 'InvalidInput',
@@ -149,15 +149,16 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
       setDeadlineInput(value)
       setDeadlineError(false)
 
-      if (value.length === 0) {
-        orderExpirationTimeAnalytics('Default', DEFAULT_DEADLINE_FROM_NOW)
-        setDeadline(DEFAULT_DEADLINE_FROM_NOW)
-      } else {
-        try {
-          const parsed: number = Math.floor(Number.parseFloat(value) * 60)
-          if (
-            !Number.isInteger(parsed) || // Check deadline is a number
-            parsed < minDeadline || // Check deadline is not too small
+    if (value.length === 0) {
+      orderExpirationTimeAnalytics('Default', DEFAULT_DEADLINE_FROM_NOW)
+      setDeadline(DEFAULT_DEADLINE_FROM_NOW)
+    } else {
+      try {
+        const parsed: number = Math.floor(Number.parseFloat(value) * 60)
+        if (
+          !Number.isInteger(parsed) || // Check deadline is a number
+          parsed <
+            minDeadline || // Check deadline is not too small
             parsed > maxDeadline // Check deadline is not too big
           ) {
             setDeadlineError(DeadlineError.InvalidInput)
@@ -279,7 +280,8 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
                 <HelpTooltip
                   text={
                     <Trans>
-                      CoW Swap has dynamically selected this slippage amount to account for current gas prices and
+                      CoW Swap has dynamically selected this slippage amount to
+                      account for current gas prices and
                       volatility. Changes may result in slower execution.
                     </Trans>
                   }

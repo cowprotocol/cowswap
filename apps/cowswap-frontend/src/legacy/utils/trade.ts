@@ -65,7 +65,7 @@ export function getOrderSubmitSummary(
   params: Pick<
     PostOrderParams,
     'kind' | 'account' | 'inputAmount' | 'outputAmount' | 'recipient' | 'recipientAddressOrName' | 'feeAmount'
-  >
+  >,
 ): string {
   const { kind, account, inputAmount, outputAmount, recipient, recipientAddressOrName, feeAmount } = params
 
@@ -249,7 +249,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
         appData: appData.fullAppData, // We sign the keccak256 hash, but we send the API the full appData string
         appDataHash: appData.appDataKeccak256,
       },
-      { chainId }
+      { chainId },
     )
 
     const pendingOrderParams: Order = mapUnsignedOrderToOrder({
@@ -288,7 +288,7 @@ export async function sendOrderCancellation(params: OrderCancellationParams): Pr
         signature,
         signingScheme,
       },
-      { chainId }
+      { chainId },
     )
 
     cancelPendingOrder({ chainId, id: orderId })
