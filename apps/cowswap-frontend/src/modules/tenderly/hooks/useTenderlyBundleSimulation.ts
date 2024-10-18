@@ -15,7 +15,7 @@ import { completeBundleSimulation, preHooksBundleSimulation } from '../utils/bun
 import { generateNewSimulationData, generateSimulationDataToError } from '../utils/generateSimulationData'
 import { getTokenTransferInfo } from '../utils/getTokenTransferInfo'
 
-export function useTenderlyBundleSimulate() {
+export function useTenderlyBundleSimulation() {
   const { account, chainId } = useWalletInfo()
   const { preHooks, postHooks } = useHooks()
   const orderParams = useOrderParams()

@@ -10,7 +10,7 @@ import { InfoTooltip } from '@cowprotocol/ui'
 import { Edit2, Trash2, ExternalLink as ExternalLinkIcon } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
-import { useTenderlyBundleSimulate } from 'modules/tenderly/hooks/useTenderlyBundleSimulation'
+import { useTenderlyBundleSimulation } from 'modules/tenderly/hooks/useTenderlyBundleSimulation'
 
 import * as styledEl from './styled'
 
@@ -31,7 +31,7 @@ interface HookItemProp {
 const isBundleSimulationReady = true
 
 export function AppliedHookItem({ account, hookDetails, dapp, isPreHook, editHook, removeHook, index }: HookItemProp) {
-  const { isValidating, data } = useTenderlyBundleSimulate()
+  const { isValidating, data } = useTenderlyBundleSimulation()
 
   const simulationData = useMemo(() => {
     if (!data) return
