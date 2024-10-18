@@ -279,8 +279,8 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
                 <HelpTooltip
                   text={
                     <Trans>
-                      CoW Swap has dynamically selected this slippage amount to account for current gas prices and
-                      volatility. Changes may result in slower execution.
+                      CoW Swap has dynamically selected this slippage amount to account for current gas prices and trade
+                      size. Changes may result in slower execution.
                     </Trans>
                   }
                 />
