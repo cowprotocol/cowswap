@@ -20,9 +20,8 @@ import {
   useTradeConfirmActions,
 } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
-import { useIsSmartSlippageApplied } from 'modules/tradeSlippage'
-import { HighFeeWarning } from 'modules/tradeWidgetAddons'
-import { NetworkCostsTooltipSuffix, RowDeadline } from 'modules/tradeWidgetAddons'
+import { useIsSmartSlippageApplied, useSmartTradeSlippage } from 'modules/tradeSlippage'
+import { HighFeeWarning, NetworkCostsTooltipSuffix, RowDeadline } from 'modules/tradeWidgetAddons'
 
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
@@ -31,7 +30,6 @@ import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/ut
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
-import { useSmartSwapSlippage } from '../../hooks/useSwapSlippage'
 import { useSwapState } from '../../hooks/useSwapState'
 
 const CONFIRM_TITLE = 'Swap'
@@ -79,7 +77,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const buttonText = useSwapConfirmButtonText(slippageAdjustedSellAmount)
 
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
-  const smartSlippage = useSmartSwapSlippage()
+  const smartSlippage = useSmartTradeSlippage()
 
   const labelsAndTooltips = useMemo(
     () => ({
