@@ -2,6 +2,7 @@ import { useAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { ClosableBanner } from '@cowprotocol/ui'
+import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { cowAnalytics } from 'modules/analytics'
 
@@ -60,11 +61,13 @@ export function CoWAmmBanner({ location }: BannerProps) {
 
   const bannerId = `cow_amm_banner_2024_va_${location}`
 
+  const isSmartContractWallet = useIsSmartContractWallet()
+
   return ClosableBanner(bannerId, (close) => (
     <CoWAmmBannerContent
       id={bannerId}
       title="CoW AMM"
-      ctaText="Booooost APR gas-free!"
+      ctaText={isSmartContractWallet ? 'Booooost APR!' : 'Booooost APR gas-free!'}
       location={location}
       isDemo={IS_DEMO_MODE}
       selectedState={selectedState}
