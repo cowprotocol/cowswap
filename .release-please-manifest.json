@@ -1,6 +1,6 @@
 {
-  "apps/cowswap-frontend": "1.86.0",
-  "apps/explorer": "2.35.2",
+  "apps/cowswap-frontend": "1.86.1",
+  "apps/explorer": "2.36.0",
   "libs/permit-utils": "0.4.0",
   "libs/widget-lib": "0.16.0",
   "libs/widget-react": "0.11.0",
@@ -17,7 +17,7 @@
   "libs/tokens": "1.10.0",
   "libs/types": "1.2.0",
   "libs/ui": "1.11.0",
-  "libs/wallet": "1.6.0",
+  "libs/wallet": "1.6.1",
   "apps/cow-fi": "1.15.0",
   "libs/wallet-provider": "1.0.0",
   "libs/ui-utils": "1.1.0",
