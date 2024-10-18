@@ -208,22 +208,33 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     settingsWidget: <SettingsTab recipientToggleState={recipientToggleState} deadlineState={deadlineState} />,
 
     topContent,
-    bottomContent(warnings) {
-      return (
-        <>
-          {bottomContent}
-          <TradeRateDetails
-            isTradePriceUpdating={isTradePriceUpdating}
-            rateInfoParams={rateInfoParams}
-            deadline={deadlineState[0]}
-          />
-          <SwapWarningsTop {...swapWarningsTopProps} />
-          {warnings}
-          <SwapButtons {...swapButtonContext} />
-          <SwapWarningsBottom {...swapWarningsBottomProps} />
-        </>
-      )
-    },
+    bottomContent: useCallback(
+      (warnings: ReactNode | null) => {
+        return (
+          <>
+            {bottomContent}
+            <TradeRateDetails
+              isTradePriceUpdating={isTradePriceUpdating}
+              rateInfoParams={rateInfoParams}
+              deadline={deadlineState[0]}
+            />
+            <SwapWarningsTop {...swapWarningsTopProps} />
+            {warnings}
+            <SwapButtons {...swapButtonContext} />
+            <SwapWarningsBottom {...swapWarningsBottomProps} />
+          </>
+        )
+      },
+      [
+        bottomContent,
+        deadlineState,
+        isTradePriceUpdating,
+        rateInfoParams,
+        swapButtonContext,
+        swapWarningsTopProps,
+        swapWarningsBottomProps,
+      ],
+    ),
   }
 
   const params = {

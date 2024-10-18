@@ -1,3 +1,5 @@
+import { ReactNode, useCallback } from 'react'
+
 import { Field } from 'legacy/state/types'
 
 import {
@@ -81,20 +83,23 @@ export function YieldWidget() {
 
   const slots: TradeWidgetSlots = {
     settingsWidget: <SettingsTab recipientToggleState={recipientToggleState} deadlineState={deadlineState} />,
-    bottomContent(tradeWarnings) {
-      return (
-        <>
-          <TradeRateDetails
-            isTradePriceUpdating={isRateLoading}
-            rateInfoParams={rateInfoParams}
-            deadline={deadlineState[0]}
-          />
-          <Warnings />
-          {tradeWarnings}
-          <TradeButtons isTradeContextReady={doTrade.contextIsReady} />
-        </>
-      )
-    },
+    bottomContent: useCallback(
+      (tradeWarnings: ReactNode | null) => {
+        return (
+          <>
+            <TradeRateDetails
+              isTradePriceUpdating={isRateLoading}
+              rateInfoParams={rateInfoParams}
+              deadline={deadlineState[0]}
+            />
+            <Warnings />
+            {tradeWarnings}
+            <TradeButtons isTradeContextReady={doTrade.contextIsReady} />
+          </>
+        )
+      },
+      [doTrade.contextIsReady, isRateLoading, rateInfoParams, deadlineState],
+    ),
   }
 
   const params = {
