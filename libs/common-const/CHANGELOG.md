@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.7.0...common-const-v1.8.0) (2024-10-18)
+
+
+### Features
+
+* **smart-slippage:** update smart slippage text ([#4982](https://github.com/cowprotocol/cowswap/issues/4982)) ([4b89ecb](https://github.com/cowprotocol/cowswap/commit/4b89ecbf661e6c30193586c704e23c78b2bfc22b))
+* **widget:** deadline widget param ([#4991](https://github.com/cowprotocol/cowswap/issues/4991)) ([ce3b5b8](https://github.com/cowprotocol/cowswap/commit/ce3b5b8adb5cc95a5ca3097d5cf2d45b249748c2))
+
 ## [1.7.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.6.2...common-const-v1.7.0) (2024-07-12)
 
 
