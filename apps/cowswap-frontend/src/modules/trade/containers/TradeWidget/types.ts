@@ -38,6 +38,7 @@ export interface TradeWidgetSlots {
   bottomContent?(warnings: ReactNode | null): ReactNode
   outerContent?: ReactNode
   updaters?: ReactNode
+  selectTokenWidget?: ReactNode
 }
 
 export interface TradeWidgetProps {

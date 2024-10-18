@@ -31,13 +31,15 @@ const StyledTooltipContainer = styled(TooltipContainer)`
 `
 
 export interface InfoTooltipProps {
-  content: ReactNode
+  // @deprecated use children instead
+  content?: ReactNode
+  children?: ReactNode
   size?: number
   className?: string
 }
 
-export function InfoTooltip({ content, className, size = 16 }: InfoTooltipProps) {
-  const tooltipContent = <StyledTooltipContainer>{content}</StyledTooltipContainer>
+export function InfoTooltip({ content, children, className, size = 16 }: InfoTooltipProps) {
+  const tooltipContent = <StyledTooltipContainer>{children || content}</StyledTooltipContainer>
 
   return (
     <HoverTooltip wrapInContainer={false} content={tooltipContent} placement="bottom">
