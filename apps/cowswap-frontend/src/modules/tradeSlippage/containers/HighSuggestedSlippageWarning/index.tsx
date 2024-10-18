@@ -2,7 +2,13 @@ import { percentToBps } from '@cowprotocol/common-utils'
 import { BannerOrientation, InfoTooltip, InlineBanner } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import styled from 'styled-components/macro'
+
 import { useIsSmartSlippageApplied, useTradeSlippage } from 'modules/tradeSlippage'
+
+const StyledInlineBanner = styled(InlineBanner)`
+  text-align: center;
+`
 
 export type HighSuggestedSlippageWarningProps = {
   isTradePriceUpdating: boolean
@@ -22,9 +28,12 @@ export function HighSuggestedSlippageWarning(props: HighSuggestedSlippageWarning
   }
 
   return (
-    <InlineBanner bannerType="alert" orientation={BannerOrientation.Horizontal} noWrapContent>
+    <StyledInlineBanner bannerType="alert" orientation={BannerOrientation.Horizontal} noWrapContent>
       Slippage adjusted to {`${slippageBps / 100}`}% to ensure quick execution
-      <InfoTooltip size={24} content="CoW Swap dynamically adjusts your slippage tolerance based on current volatility. You can set a custom slippage using the settings icon above." />
-    </InlineBanner>
+      <InfoTooltip
+        size={24}
+        content="CoW Swap dynamically adjusts your slippage tolerance based on current volatility. You can set a custom slippage using the settings icon above."
+      />
+    </StyledInlineBanner>
   )
 }
