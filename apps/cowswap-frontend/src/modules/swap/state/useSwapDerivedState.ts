@@ -6,13 +6,13 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Field } from 'legacy/state/types'
 
 import { TradeType } from 'modules/trade'
+import { useTradeSlippage } from 'modules/tradeSlippage'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
 import { SwapDerivedState, swapDerivedStateAtom } from './swapDerivedStateAtom'
 
-import { useSwapSlippage } from '../hooks/useSwapSlippage'
 import { useDerivedSwapInfo, useSwapState } from '../hooks/useSwapState'
 
 export function useSwapDerivedState(): SwapDerivedState {
@@ -23,7 +23,7 @@ export function useFillSwapDerivedState() {
   const { independentField, recipient, recipientAddress } = useSwapState()
   const { trade, currencyBalances, currencies, slippageAdjustedSellAmount, slippageAdjustedBuyAmount, parsedAmount } =
     useDerivedSwapInfo()
-  const slippage = useSwapSlippage()
+  const slippage = useTradeSlippage()
 
   const isSellTrade = independentField === Field.INPUT
   const inputCurrency = currencies.INPUT || null

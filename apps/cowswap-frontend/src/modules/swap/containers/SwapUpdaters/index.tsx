@@ -1,16 +1,13 @@
 import { percentToBps } from '@cowprotocol/common-utils'
 
-import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
+import { AppDataUpdater } from 'modules/appData'
+import { useTradeSlippage, useIsSmartSlippageApplied } from 'modules/tradeSlippage'
 
-import { AppDataUpdater } from '../../../appData'
-import { useSwapSlippage } from '../../hooks/useSwapSlippage'
-import { BaseFlowContextUpdater } from '../../updaters/BaseFlowContextUpdater'
-import { SmartSlippageUpdater } from '../../updaters/SmartSlippageUpdater'
 import { SwapAmountsFromUrlUpdater } from '../../updaters/SwapAmountsFromUrlUpdater'
 import { SwapDerivedStateUpdater } from '../../updaters/SwapDerivedStateUpdater'
 
 export function SwapUpdaters() {
-  const slippage = useSwapSlippage()
+  const slippage = useTradeSlippage()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
 
   return (
@@ -22,8 +19,6 @@ export function SwapUpdaters() {
       />
       <SwapDerivedStateUpdater />
       <SwapAmountsFromUrlUpdater />
-      <SmartSlippageUpdater />
-      <BaseFlowContextUpdater />
     </>
   )
 }

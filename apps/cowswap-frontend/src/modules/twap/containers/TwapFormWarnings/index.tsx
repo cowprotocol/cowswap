@@ -1,20 +1,14 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { BundleTxApprovalBanner } from '@cowprotocol/ui'
 import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { modifySafeHandlerAnalytics } from 'modules/analytics'
 import { SellNativeWarningBanner } from 'modules/trade/containers/SellNativeWarningBanner'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
-import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { TradeFormValidation } from 'modules/tradeFormValidation/types'
 import { useTradeQuoteFeeFiatAmount } from 'modules/tradeQuote'
-import { useShouldZeroApprove } from 'modules/zeroApproval'
-
-import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 
 import {
   FallbackHandlerWarning,
@@ -31,11 +25,9 @@ import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
 import { swapAmountDifferenceAtom } from '../../state/swapAmountDifferenceAtom'
-import { twapDeadlineAtom, twapOrderAtom } from '../../state/twapOrderAtom'
+import { twapDeadlineAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { isPriceProtectionNotEnough } from '../../utils/isPriceProtectionNotEnough'
-
-const BUNDLE_APPROVAL_STATES = [TradeFormValidation.ApproveAndSwap]
 
 interface TwapFormWarningsProps {
   localFormValidation: TwapFormState | null
@@ -43,20 +35,18 @@ interface TwapFormWarningsProps {
 }
 
 export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: TwapFormWarningsProps) {
-  const { isFallbackHandlerSetupAccepted, isPriceImpactAccepted } = useAtomValue(twapOrdersSettingsAtom)
+  const { isFallbackHandlerSetupAccepted } = useAtomValue(twapOrdersSettingsAtom)
   const updateTwapOrdersSettings = useSetAtom(updateTwapOrdersSettingsAtom)
-  const twapOrder = useAtomValue(twapOrderAtom)
   const slippage = useTwapSlippage()
   const deadline = useAtomValue(twapDeadlineAtom)
   const swapAmountDifference = useAtomValue(swapAmountDifferenceAtom)
-  const { outputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const primaryFormValidation = useGetTradeFormValidation()
 
   const { chainId } = useWalletInfo()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
   const isSafeViaWc = useIsSafeViaWc()
   const tradeQuoteFeeFiatAmount = useTradeQuoteFeeFiatAmount()
-  const { canTrade, showPriceImpactWarning, walletIsNotConnected } = useTwapWarningsContext()
+  const { canTrade, walletIsNotConnected } = useTwapWarningsContext()
   const tradeUrlParams = useTradeRouteContext()
 
   const toggleFallbackHandlerSetupFlag = useCallback(
@@ -67,16 +57,8 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
     [updateTwapOrdersSettings],
   )
 
-  const shouldZeroApprove = useShouldZeroApprove(twapOrder?.sellAmount)
-  const showZeroApprovalWarning = !isConfirmationModal && shouldZeroApprove && outputCurrencyAmount !== null
-  const showApprovalBundlingBanner =
-    !isConfirmationModal && primaryFormValidation && BUNDLE_APPROVAL_STATES.includes(primaryFormValidation)
   const showTradeFormWarnings = !isConfirmationModal && canTrade
   const showFallbackHandlerWarning = showTradeFormWarnings && isFallbackHandlerRequired
-
-  const setIsPriceImpactAccepted = useCallback(() => {
-    updateTwapOrdersSettings({ isPriceImpactAccepted: !isPriceImpactAccepted })
-  }, [updateTwapOrdersSettings, isPriceImpactAccepted])
 
   // Don't display any warnings while a wallet is not connected
   if (walletIsNotConnected) return null
@@ -91,17 +73,6 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
 
   return (
     <>
-      {showZeroApprovalWarning && <ZeroApprovalWarning currency={twapOrder?.sellAmount?.currency} />}
-      {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
-
-      {!isConfirmationModal && showPriceImpactWarning && (
-        <NoImpactWarning
-          withoutAccepting={false}
-          isAccepted={isPriceImpactAccepted}
-          acceptCallback={() => setIsPriceImpactAccepted()}
-        />
-      )}
-
       {(() => {
         if (localFormValidation === TwapFormState.NOT_SAFE) {
           return <UnsupportedWalletWarning isSafeViaWc={isSafeViaWc} />

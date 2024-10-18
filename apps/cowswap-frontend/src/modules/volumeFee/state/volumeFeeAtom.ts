@@ -49,4 +49,5 @@ const TradeTypeMap: Record<TradeType, WidgetTradeType> = {
   [TradeType.SWAP]: WidgetTradeType.SWAP,
   [TradeType.LIMIT_ORDER]: WidgetTradeType.LIMIT,
   [TradeType.ADVANCED_ORDERS]: WidgetTradeType.ADVANCED,
+  [TradeType.YIELD]: WidgetTradeType.YIELD,
 }

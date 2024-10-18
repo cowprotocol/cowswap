@@ -52,7 +52,7 @@ export function TenderlySimulate({ hook }: TenderlySimulateProps) {
     } finally {
       setIsLoading(false)
     }
-  }, [simulate, hook, hookId])
+  }, [simulate, hook, hookId, setSimulationError])
 
   if (isLoading) {
     return (
