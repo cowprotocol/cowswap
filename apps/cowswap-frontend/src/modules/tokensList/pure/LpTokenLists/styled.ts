@@ -31,6 +31,8 @@ export const ListItem = styled.div`
   grid-template-columns: 1fr 100px 50px 20px;
   padding: 10px 20px;
   cursor: pointer;
+  font-size: 14px;
+  align-items: center;
 
   &:hover {
     background: var(${UI.COLOR_PAPER_DARKER});

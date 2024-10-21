@@ -4,6 +4,8 @@ import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getTokenSearchFilter, LP_TOKEN_LIST_CATEGORIES, TokenListCategory, useAllLpTokens } from '@cowprotocol/tokens'
 
+import { usePoolsInfo } from 'modules/yield/shared'
+
 import { TabButton, TabsContainer } from './styled'
 
 import { LpTokenLists } from '../../pure/LpTokenLists'
@@ -25,6 +27,7 @@ export function LpTokenListsWidget({ search, children, onSelectToken }: LpTokenL
   const [listsCategories, setListsCategories] = useState<TokenListCategory[] | null>(null)
   const lpTokens = useAllLpTokens(listsCategories)
   const balancesState = useTokensBalances()
+  const poolsInfo = usePoolsInfo()
 
   const balances = balancesState.values
 
@@ -57,6 +60,7 @@ export function LpTokenListsWidget({ search, children, onSelectToken }: LpTokenL
           balancesState={balancesState}
           lpTokens={sortedTokens}
           onSelectToken={onSelectToken}
+          poolsInfo={poolsInfo}
         />
       )}
     </>

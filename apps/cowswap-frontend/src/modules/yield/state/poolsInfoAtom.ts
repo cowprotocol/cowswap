@@ -17,7 +17,7 @@ type PoolInfoState = {
   updatedAt: number
 }
 
-type PoolInfoStates = Record<string, PoolInfoState>
+export type PoolInfoStates = Record<string, PoolInfoState>
 
 type PoolInfoStatesPerAccount = Record<string, PoolInfoStates>
 

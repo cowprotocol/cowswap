@@ -8,6 +8,8 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { VirtualItem } from '@tanstack/react-virtual'
 
+import type { PoolInfoStates } from 'modules/yield/shared'
+
 import { VirtualList } from 'common/pure/VirtualList'
 
 import {
@@ -31,18 +33,27 @@ interface LpTokenListsProps {
   lpTokens: LpToken[]
   balancesState: BalancesState
   displayCreatePoolBanner: boolean
+  poolsInfo: PoolInfoStates | undefined
   onSelectToken(token: TokenWithLogo): void
 }
 
-export function LpTokenLists({ onSelectToken, lpTokens, balancesState, displayCreatePoolBanner }: LpTokenListsProps) {
+export function LpTokenLists({
+  onSelectToken,
+  lpTokens,
+  balancesState,
+  displayCreatePoolBanner,
+  poolsInfo,
+}: LpTokenListsProps) {
   const { values: balances } = balancesState
 
   const getItemView = useCallback(
     (lpTokens: LpToken[], item: VirtualItem) => {
       const token = lpTokens[item.index]
 
-      const balance = balances ? balances[token.address.toLowerCase()] : undefined
+      const tokenAddressLower = token.address.toLowerCase()
+      const balance = balances ? balances[tokenAddressLower] : undefined
       const balanceAmount = balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
+      const info = poolsInfo?.[tokenAddressLower]?.info
 
       return (
         <ListItem data-address={token.address} onClick={() => onSelectToken(token)}>
@@ -58,14 +69,14 @@ export function LpTokenLists({ onSelectToken, lpTokens, balancesState, displayCr
             </LpTokenInfo>
           </LpTokenWrapper>
           <span>{balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement}</span>
-          <span>40%</span>
+          <span>{info?.apy ? `${info.apy}%` : '-'}</span>
           <span>
             <InfoTooltip>TODO</InfoTooltip>
           </span>
         </ListItem>
       )
     },
-    [balances, onSelectToken],
+    [balances, onSelectToken, poolsInfo],
   )
 
   return (

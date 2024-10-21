@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
@@ -8,7 +8,8 @@ import ms from 'ms.macro'
 import { MOCK_POOL_INFO } from './mockPoolInfo'
 
 import { useLpTokensWithBalances } from '../../hooks/useLpTokensWithBalances'
-import { currentPoolsInfoAtom, upsertPoolsInfoAtom } from '../../state/poolsInfoAtom'
+import { usePoolsInfo } from '../../hooks/usePoolsInfo'
+import { upsertPoolsInfoAtom } from '../../state/poolsInfoAtom'
 
 const POOL_INFO_CACHE_TIME = ms`1h`
 
@@ -26,7 +27,7 @@ function fetchPoolsInfo(tokenAddresses: string[]) {
 }
 
 export function PoolsInfoUpdater() {
-  const poolsInfo = useAtomValue(currentPoolsInfoAtom)
+  const poolsInfo = usePoolsInfo()
   const upsertPoolsInfo = useSetAtom(upsertPoolsInfoAtom)
 
   const lpTokensWithBalances = useLpTokensWithBalances()
