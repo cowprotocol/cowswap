@@ -2,6 +2,7 @@ import { ReactNode, useState } from 'react'
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenListCategory, useAllLpTokens, useTokensByAddressMap } from '@cowprotocol/tokens'
+import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { TabButton, TabsContainer } from './styled'
 
@@ -12,9 +13,24 @@ interface LpTokenListsProps {
 }
 
 const tabs = [
-  { title: 'All', value: null },
-  { title: 'Pool tokens', value: [TokenListCategory.LP, TokenListCategory.COW_AMM_LP] },
-  { title: 'CoW AMM only', value: [TokenListCategory.COW_AMM_LP] },
+  { id: 'all', title: 'All', value: null },
+  { id: 'pool', title: 'Pool tokens', value: [TokenListCategory.LP, TokenListCategory.COW_AMM_LP] },
+  {
+    id: 'cow-amm',
+    title: (
+      <>
+        <ProductLogo
+          variant={ProductVariant.CowAmm}
+          height={12}
+          overrideColor={UI.COLOR_TEXT_OPACITY_60}
+          theme="dark"
+          logoIconOnly
+        />{' '}
+        CoW AMM only
+      </>
+    ),
+    value: [TokenListCategory.COW_AMM_LP],
+  },
 ]
 
 export function LpTokenListsWidget({ children }: LpTokenListsProps) {
@@ -26,20 +42,21 @@ export function LpTokenListsWidget({ children }: LpTokenListsProps) {
   return (
     <>
       <TabsContainer>
-        {tabs.map((tab) => {
-          return (
-            <TabButton
-              key={tab.title}
-              active$={tab.value === listsCategories}
-              onClick={() => setListsCategories(tab.value)}
-            >
-              {tab.title}
-            </TabButton>
-          )
-        })}
+        {tabs.map((tab) => (
+          <TabButton key={tab.id} active$={tab.value === listsCategories} onClick={() => setListsCategories(tab.value)}>
+            {tab.title}
+          </TabButton>
+        ))}
       </TabsContainer>
       {listsCategories === null ? (
         children
+      ) : lpTokens.length === 0 ? (
+        <LpTokenLists
+          displayCreatePoolBanner={listsCategories === tabs[2].value}
+          balancesState={balancesState}
+          tokensByAddress={tokensByAddress}
+          lpTokens={[]}
+        />
       ) : (
         <LpTokenLists
           displayCreatePoolBanner={listsCategories === tabs[2].value}

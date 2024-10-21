@@ -13,7 +13,7 @@ export const Wrapper = styled.div`
 `
 
 export const Row = styled.div`
-  margin: 0 20px 15px 20px;
+  margin: 0 20px 20px;
 `
 
 export const Separator = styled.div`
