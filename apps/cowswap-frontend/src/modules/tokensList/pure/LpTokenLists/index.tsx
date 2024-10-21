@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
-import { LpToken } from '@cowprotocol/common-const'
+import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenLogo, TokensByAddress } from '@cowprotocol/tokens'
 import { InfoTooltip, LoadingRows, LoadingRowSmall, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -33,9 +33,16 @@ interface LpTokenListsProps {
   tokensByAddress: TokensByAddress
   balancesState: BalancesState
   displayCreatePoolBanner: boolean
+  onSelectToken(token: TokenWithLogo): void
 }
 
-export function LpTokenLists({ lpTokens, tokensByAddress, balancesState, displayCreatePoolBanner }: LpTokenListsProps) {
+export function LpTokenLists({
+  onSelectToken,
+  lpTokens,
+  tokensByAddress,
+  balancesState,
+  displayCreatePoolBanner,
+}: LpTokenListsProps) {
   const { values: balances } = balancesState
 
   const getItemView = useCallback(
@@ -47,7 +54,7 @@ export function LpTokenLists({ lpTokens, tokensByAddress, balancesState, display
       const balanceAmount = balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
 
       return (
-        <ListItem data-address={token.address}>
+        <ListItem data-address={token.address} onClick={() => onSelectToken(token)}>
           <LpTokenWrapper>
             <LpTokenLogo>
               <div>
@@ -74,7 +81,7 @@ export function LpTokenLists({ lpTokens, tokensByAddress, balancesState, display
         </ListItem>
       )
     },
-    [balances, tokensByAddress],
+    [balances, tokensByAddress, onSelectToken],
   )
 
   return (

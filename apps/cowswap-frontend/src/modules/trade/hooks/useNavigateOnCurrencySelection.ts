@@ -16,7 +16,7 @@ export type CurrencySelectionCallback = (
   field: Field,
   currency: Currency | null,
   stateUpdateCallback?: Command,
-  searchParams?: TradeSearchParams
+  searchParams?: TradeSearchParams,
 ) => void
 
 function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => string | null {
@@ -28,7 +28,7 @@ function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => str
 
       return areThereTokensWithSameSymbol(currency.symbol) ? (currency as Token).address : currency.symbol || null
     },
-    [areThereTokensWithSameSymbol]
+    [areThereTokensWithSameSymbol],
   )
 }
 
@@ -63,11 +63,11 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
               inputCurrencyId: targetInputCurrencyId,
               outputCurrencyId: targetOutputCurrencyId,
             },
-        searchParams
+        searchParams,
       )
 
       stateUpdateCallback?.()
     },
-    [navigate, chainId, state, resolveCurrencyAddressOrSymbol]
+    [navigate, chainId, state, resolveCurrencyAddressOrSymbol],
   )
 }

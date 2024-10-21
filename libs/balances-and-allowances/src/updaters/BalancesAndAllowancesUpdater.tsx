@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { LpToken, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAllTokens } from '@cowprotocol/tokens'
 
@@ -27,7 +27,10 @@ export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAl
   const allTokens = useAllTokens()
   const { data: nativeTokenBalance } = useNativeTokenBalance(account)
 
-  const tokenAddresses = useMemo(() => allTokens.map((token) => token.address), [allTokens])
+  const tokenAddresses = useMemo(
+    () => allTokens.filter((token) => !(token instanceof LpToken)).map((token) => token.address),
+    [allTokens],
+  )
 
   usePersistBalancesAndAllowances({
     account,

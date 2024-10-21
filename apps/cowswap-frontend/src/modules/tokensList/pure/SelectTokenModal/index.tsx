@@ -109,7 +109,9 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
         />
       </styledEl.Row>
       {displayLpTokenLists ? (
-        <LpTokenListsWidget search={inputValue}>{allListsContent}</LpTokenListsWidget>
+        <LpTokenListsWidget search={inputValue} onSelectToken={onSelectToken}>
+          {allListsContent}
+        </LpTokenListsWidget>
       ) : (
         allListsContent
       )}

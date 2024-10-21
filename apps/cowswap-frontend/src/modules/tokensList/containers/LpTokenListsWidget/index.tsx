@@ -1,6 +1,7 @@
 import { ReactNode, useMemo, useState } from 'react'
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import {
   getTokenSearchFilter,
   LP_TOKEN_LIST_CATEGORIES,
@@ -17,6 +18,7 @@ import { tokensListSorter } from '../../utils/tokensListSorter'
 interface LpTokenListsProps {
   children: ReactNode
   search: string
+  onSelectToken(token: TokenWithLogo): void
 }
 
 const tabs = [
@@ -25,7 +27,7 @@ const tabs = [
   { title: 'CoW AMM only', value: [TokenListCategory.COW_AMM_LP] },
 ]
 
-export function LpTokenListsWidget({ search, children }: LpTokenListsProps) {
+export function LpTokenListsWidget({ search, children, onSelectToken }: LpTokenListsProps) {
   const [listsCategories, setListsCategories] = useState<TokenListCategory[] | null>(null)
   const lpTokens = useAllLpTokens(listsCategories)
   const tokensByAddress = useTokensByAddressMap()
@@ -62,6 +64,7 @@ export function LpTokenListsWidget({ search, children }: LpTokenListsProps) {
           balancesState={balancesState}
           tokensByAddress={tokensByAddress}
           lpTokens={sortedTokens}
+          onSelectToken={onSelectToken}
         />
       )}
     </>
