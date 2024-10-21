@@ -20,9 +20,8 @@ import {
   useTradeConfirmActions,
 } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
-import { useIsSmartSlippageApplied } from 'modules/tradeSlippage'
-import { HighFeeWarning } from 'modules/tradeWidgetAddons'
-import { NetworkCostsTooltipSuffix, RowDeadline } from 'modules/tradeWidgetAddons'
+import { useIsSmartSlippageApplied, useSmartTradeSlippage } from 'modules/tradeSlippage'
+import { HighFeeWarning, NetworkCostsTooltipSuffix, RowDeadline } from 'modules/tradeWidgetAddons'
 
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
@@ -78,6 +77,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const buttonText = useSwapConfirmButtonText(slippageAdjustedSellAmount)
 
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
+  const smartSlippage = useSmartTradeSlippage()
 
   const labelsAndTooltips = useMemo(
     () => ({
@@ -87,7 +87,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
           : undefined,
       slippageTooltip: isEoaEthFlow
         ? getNativeSlippageTooltip(chainId, [nativeCurrency.symbol])
-        : getNonNativeSlippageTooltip(),
+        : getNonNativeSlippageTooltip({ isDynamic: !!smartSlippage }),
       expectReceiveLabel: isExactIn ? 'Expected to receive' : 'Expected to sell',
       minReceivedLabel: isExactIn ? 'Minimum receive' : 'Maximum sent',
       minReceivedTooltip: getMinimumReceivedTooltip(allowedSlippage, isExactIn),

@@ -24,6 +24,7 @@ import { useYieldDerivedState } from '../../hooks/useYieldDerivedState'
 const CONFIRM_TITLE = 'Confirm order'
 
 const labelsAndTooltips = {
+  // TODO: pass parameters
   slippageTooltip: getNonNativeSlippageTooltip(),
 }
 

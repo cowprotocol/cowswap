@@ -8,7 +8,7 @@ export function calculateBpsFromFeeMultiplier(
   isSell: boolean | undefined,
   multiplierPercentage: number,
 ): number | undefined {
-  if (!sellAmount || !feeAmount || isSell === undefined || multiplierPercentage <= 0) {
+  if (!sellAmount || !feeAmount || isSell === undefined || !multiplierPercentage || multiplierPercentage <= 0) {
     return undefined
   }
 
