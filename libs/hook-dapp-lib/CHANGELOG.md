@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.1.0...hook-dapp-lib-v1.2.0) (2024-10-18)
+
+
+### Features
+
+* **hooks-store:** add claim vesting iframe hook ([#4924](https://github.com/cowprotocol/cowswap/issues/4924)) ([395f48f](https://github.com/cowprotocol/cowswap/commit/395f48f57d93de67305791fdb9a668bdd693074e))
+* **hooks-store:** add sell/buy amounts to hook-dapp context ([#4990](https://github.com/cowprotocol/cowswap/issues/4990)) ([26cbffb](https://github.com/cowprotocol/cowswap/commit/26cbffbbfe8edbc0a4a9ba31fe9c0d42852118d9))
+
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.0.0...hook-dapp-lib-v1.1.0) (2024-10-10)
 
 
