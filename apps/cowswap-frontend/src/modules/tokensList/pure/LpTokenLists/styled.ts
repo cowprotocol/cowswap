@@ -37,30 +37,6 @@ export const ListItem = styled.div`
   }
 `
 
-export const LpTokenLogo = styled.div`
-  --size: 36px;
-  --halfSize: 18px;
-
-  width: var(--size);
-  height: var(--size);
-  position: relative;
-
-  > div {
-    position: absolute;
-    width: var(--halfSize);
-    overflow: hidden;
-  }
-
-  > div:last-child {
-    right: -1px;
-  }
-
-  > div:last-child > div {
-    right: 100%;
-    position: relative;
-  }
-`
-
 export const LpTokenInfo = styled.div`
   display: flex;
   flex-direction: column;

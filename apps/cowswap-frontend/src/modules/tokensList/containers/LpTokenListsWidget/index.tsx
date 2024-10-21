@@ -2,13 +2,7 @@ import { ReactNode, useMemo, useState } from 'react'
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import {
-  getTokenSearchFilter,
-  LP_TOKEN_LIST_CATEGORIES,
-  TokenListCategory,
-  useAllLpTokens,
-  useTokensByAddressMap,
-} from '@cowprotocol/tokens'
+import { getTokenSearchFilter, LP_TOKEN_LIST_CATEGORIES, TokenListCategory, useAllLpTokens } from '@cowprotocol/tokens'
 
 import { TabButton, TabsContainer } from './styled'
 
@@ -30,7 +24,6 @@ const tabs = [
 export function LpTokenListsWidget({ search, children, onSelectToken }: LpTokenListsProps) {
   const [listsCategories, setListsCategories] = useState<TokenListCategory[] | null>(null)
   const lpTokens = useAllLpTokens(listsCategories)
-  const tokensByAddress = useTokensByAddressMap()
   const balancesState = useTokensBalances()
 
   const balances = balancesState.values
@@ -62,7 +55,6 @@ export function LpTokenListsWidget({ search, children, onSelectToken }: LpTokenL
         <LpTokenLists
           displayCreatePoolBanner={listsCategories === tabs[2].value}
           balancesState={balancesState}
-          tokensByAddress={tokensByAddress}
           lpTokens={sortedTokens}
           onSelectToken={onSelectToken}
         />

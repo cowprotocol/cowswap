@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
-import { TokenLogo, TokensByAddress } from '@cowprotocol/tokens'
+import { TokenLogo } from '@cowprotocol/tokens'
 import { InfoTooltip, LoadingRows, LoadingRowSmall, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -16,7 +16,6 @@ import {
   ListHeader,
   ListItem,
   LpTokenInfo,
-  LpTokenLogo,
   LpTokenWrapper,
   NoPoolWrapper,
   Wrapper,
@@ -30,40 +29,25 @@ const LoadingElement = (
 
 interface LpTokenListsProps {
   lpTokens: LpToken[]
-  tokensByAddress: TokensByAddress
   balancesState: BalancesState
   displayCreatePoolBanner: boolean
   onSelectToken(token: TokenWithLogo): void
 }
 
-export function LpTokenLists({
-  onSelectToken,
-  lpTokens,
-  tokensByAddress,
-  balancesState,
-  displayCreatePoolBanner,
-}: LpTokenListsProps) {
+export function LpTokenLists({ onSelectToken, lpTokens, balancesState, displayCreatePoolBanner }: LpTokenListsProps) {
   const { values: balances } = balancesState
 
   const getItemView = useCallback(
     (lpTokens: LpToken[], item: VirtualItem) => {
       const token = lpTokens[item.index]
-      const token0 = token.tokens?.[0]?.toLowerCase()
-      const token1 = token.tokens?.[1]?.toLowerCase()
+
       const balance = balances ? balances[token.address.toLowerCase()] : undefined
       const balanceAmount = balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
 
       return (
         <ListItem data-address={token.address} onClick={() => onSelectToken(token)}>
           <LpTokenWrapper>
-            <LpTokenLogo>
-              <div>
-                <TokenLogo token={tokensByAddress[token0]} sizeMobile={32} />
-              </div>
-              <div>
-                <TokenLogo token={tokensByAddress[token1]} sizeMobile={32} />
-              </div>
-            </LpTokenLogo>
+            <TokenLogo token={token} sizeMobile={32} />
             <LpTokenInfo>
               <strong>
                 <TokenSymbol token={token} />
@@ -81,7 +65,7 @@ export function LpTokenLists({
         </ListItem>
       )
     },
-    [balances, tokensByAddress, onSelectToken],
+    [balances, onSelectToken],
   )
 
   return (
