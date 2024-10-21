@@ -76,12 +76,14 @@ const LpTokenWrapper = styled.div<{ size?: number }>`
     right: -1px;
   }
 
-  > div:last-child > img {
+  > div:last-child > img,
+  > div:last-child > svg {
     right: 100%;
     position: relative;
   }
 
-  > div > img {
+  > div > img,
+  > div > svg {
     width: ${({ size = defaultSize }) => size}px;
     height: ${({ size = defaultSize }) => size}px;
     min-width: ${({ size = defaultSize }) => size}px;
