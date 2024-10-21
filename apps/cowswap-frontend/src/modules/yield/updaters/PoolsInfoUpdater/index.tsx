@@ -1,8 +1,6 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-
 import ms from 'ms.macro'
 
 import { MOCK_POOL_INFO } from './mockPoolInfo'
@@ -12,11 +10,6 @@ import { usePoolsInfo } from '../../hooks/usePoolsInfo'
 import { upsertPoolsInfoAtom } from '../../state/poolsInfoAtom'
 
 const POOL_INFO_CACHE_TIME = ms`1h`
-
-const swrConfig = {
-  ...SWR_NO_REFRESH_OPTIONS,
-  // refreshInterval: POOL_INFO_CACHE_TIME,
-}
 
 /**
  * The API should return info about requested pools + alternative COW AMM pools

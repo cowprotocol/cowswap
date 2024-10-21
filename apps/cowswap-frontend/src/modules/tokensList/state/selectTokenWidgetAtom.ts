@@ -10,9 +10,10 @@ export const { atom: selectTokenWidgetAtom, updateAtom: updateSelectTokenWidgetA
   atom<{
     open: boolean
     selectedToken?: string
+    selectedPoolAddress?: string
     tokenToImport?: TokenWithLogo
     listToImport?: ListState
     onSelectToken?: (currency: Currency) => void
     onInputPressEnter?: Command
-  }>({ open: false })
+  }>({ open: false }),
 )

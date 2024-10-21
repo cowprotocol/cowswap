@@ -1,14 +1,15 @@
-import { useCallback } from 'react'
+import { MouseEventHandler, useCallback } from 'react'
 
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { InfoTooltip, LoadingRows, LoadingRowSmall, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
+import { LoadingRows, LoadingRowSmall, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { VirtualItem } from '@tanstack/react-virtual'
+import { Info } from 'react-feather'
 
-import type { PoolInfoStates } from 'modules/yield/shared'
+import { PoolInfoStates } from 'modules/yield/shared'
 
 import { VirtualList } from 'common/pure/VirtualList'
 
@@ -35,10 +36,12 @@ interface LpTokenListsProps {
   displayCreatePoolBanner: boolean
   poolsInfo: PoolInfoStates | undefined
   onSelectToken(token: TokenWithLogo): void
+  openPoolPage(poolAddress: string): void
 }
 
 export function LpTokenLists({
   onSelectToken,
+  openPoolPage,
   lpTokens,
   balancesState,
   displayCreatePoolBanner,
@@ -54,6 +57,11 @@ export function LpTokenLists({
       const balance = balances ? balances[tokenAddressLower] : undefined
       const balanceAmount = balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
       const info = poolsInfo?.[tokenAddressLower]?.info
+
+      const onInfoClick: MouseEventHandler<SVGElement> = (e) => {
+        e.stopPropagation()
+        openPoolPage(tokenAddressLower)
+      }
 
       return (
         <ListItem data-address={token.address} onClick={() => onSelectToken(token)}>
@@ -71,12 +79,12 @@ export function LpTokenLists({
           <span>{balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement}</span>
           <span>{info?.apy ? `${info.apy}%` : '-'}</span>
           <span>
-            <InfoTooltip>TODO</InfoTooltip>
+            <Info onClick={onInfoClick} size={16} />
           </span>
         </ListItem>
       )
     },
-    [balances, onSelectToken, poolsInfo],
+    [balances, onSelectToken, poolsInfo, openPoolPage],
   )
 
   return (

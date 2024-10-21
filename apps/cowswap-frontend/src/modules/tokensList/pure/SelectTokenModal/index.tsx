@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { UnsupportedTokensState } from '@cowprotocol/tokens'
+import { TokenListCategory, UnsupportedTokensState } from '@cowprotocol/tokens'
 import { BackButton, SearchInput } from '@cowprotocol/ui'
 
 import { Edit } from 'react-feather'
@@ -17,7 +17,7 @@ import { SelectTokenContext } from '../../types'
 import { FavoriteTokensList } from '../FavoriteTokensList'
 import { TokensVirtualList } from '../TokensVirtualList'
 
-export interface SelectTokenModalProps {
+export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   allTokens: TokenWithLogo[]
   favoriteTokens: TokenWithLogo[]
   balancesState: BalancesState
@@ -27,8 +27,11 @@ export interface SelectTokenModalProps {
   hideFavoriteTokensTooltip?: boolean
   displayLpTokenLists?: boolean
   account: string | undefined
+  tokenListCategoryState: [T, (category: T) => void]
 
   onSelectToken(token: TokenWithLogo): void
+
+  openPoolPage(poolAddress: string): void
 
   onInputPressEnter?(): void
 
@@ -55,6 +58,8 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     onInputPressEnter,
     account,
     displayLpTokenLists,
+    openPoolPage,
+    tokenListCategoryState,
   } = props
 
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
@@ -109,7 +114,12 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
         />
       </styledEl.Row>
       {displayLpTokenLists ? (
-        <LpTokenListsWidget search={inputValue} onSelectToken={onSelectToken}>
+        <LpTokenListsWidget
+          search={inputValue}
+          onSelectToken={onSelectToken}
+          openPoolPage={openPoolPage}
+          tokenListCategoryState={tokenListCategoryState}
+        >
           {allListsContent}
         </LpTokenListsWidget>
       ) : (

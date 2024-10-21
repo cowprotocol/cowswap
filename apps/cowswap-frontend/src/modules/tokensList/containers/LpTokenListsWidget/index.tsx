@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useState } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
@@ -11,10 +11,12 @@ import { TabButton, TabsContainer } from './styled'
 import { LpTokenLists } from '../../pure/LpTokenLists'
 import { tokensListSorter } from '../../utils/tokensListSorter'
 
-interface LpTokenListsProps {
+interface LpTokenListsProps<T = TokenListCategory[] | null> {
   children: ReactNode
   search: string
   onSelectToken(token: TokenWithLogo): void
+  openPoolPage(poolAddress: string): void
+  tokenListCategoryState: [T, (category: T) => void]
 }
 
 const tabs = [
@@ -23,8 +25,14 @@ const tabs = [
   { title: 'CoW AMM only', value: [TokenListCategory.COW_AMM_LP] },
 ]
 
-export function LpTokenListsWidget({ search, children, onSelectToken }: LpTokenListsProps) {
-  const [listsCategories, setListsCategories] = useState<TokenListCategory[] | null>(null)
+export function LpTokenListsWidget({
+  search,
+  children,
+  onSelectToken,
+  openPoolPage,
+  tokenListCategoryState,
+}: LpTokenListsProps) {
+  const [listsCategories, setListsCategories] = tokenListCategoryState
   const lpTokens = useAllLpTokens(listsCategories)
   const balancesState = useTokensBalances()
   const poolsInfo = usePoolsInfo()
@@ -60,6 +68,7 @@ export function LpTokenListsWidget({ search, children, onSelectToken }: LpTokenL
           balancesState={balancesState}
           lpTokens={sortedTokens}
           onSelectToken={onSelectToken}
+          openPoolPage={openPoolPage}
           poolsInfo={poolsInfo}
         />
       )}
