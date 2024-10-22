@@ -22,9 +22,10 @@ export class TokenWithLogo extends Token {
 }
 
 export class LpToken extends TokenWithLogo {
-  static fromToken(token: Token | TokenInfo): LpToken {
+  static fromTokenToLp(token: Token | TokenInfo, isCowAmm: boolean): LpToken {
     return new LpToken(
       token instanceof Token ? emptyTokens : token.tokens || emptyTokens,
+      isCowAmm,
       token.chainId,
       token.address,
       token.decimals,
@@ -35,6 +36,7 @@ export class LpToken extends TokenWithLogo {
 
   constructor(
     public tokens: string[],
+    public isCowAmm: boolean,
     chainId: number,
     address: string,
     decimals: number,

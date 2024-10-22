@@ -1,12 +1,12 @@
 import { atom } from 'jotai'
 
-import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
+import { LpToken, NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenInfo } from '@cowprotocol/types'
 
 import { favoriteTokensAtom } from './favoriteTokensAtom'
 import { userAddedTokensAtom } from './userAddedTokensAtom'
 
-import { LP_TOKEN_LIST_CATEGORIES, TokensMap } from '../../types'
+import { LP_TOKEN_LIST_CATEGORIES, TokenListCategory, TokensMap } from '../../types'
 import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
 import { parseTokenInfo } from '../../utils/parseTokenInfo'
 import { tokenMapToListWithLogo } from '../../utils/tokenMapToListWithLogo'
@@ -21,12 +21,25 @@ export interface TokensBySymbol {
   [address: string]: TokenWithLogo[]
 }
 
-export interface TokensState {
-  activeTokens: TokensMap
-  inactiveTokens: TokensMap
+type TokenCategoryByMap = Record<TokenListCategory, TokensMap>
+
+type LpTokensByCategory = {
+  [TokenListCategory.LP]: LpToken[]
+  [TokenListCategory.COW_AMM_LP]: LpToken[]
 }
 
-export const tokensStateAtom = atom<TokensState>((get) => {
+interface TokensState {
+  activeTokens: TokenCategoryByMap
+  inactiveTokens: TokenCategoryByMap
+}
+
+const DEFAULT_TOKEN_CATEGORY_BY_MAP = {
+  [TokenListCategory.ERC20]: {},
+  [TokenListCategory.LP]: {},
+  [TokenListCategory.COW_AMM_LP]: {},
+}
+
+const tokensStateAtom = atom<TokensState>((get) => {
   const { chainId } = get(environmentAtom)
   const listsStatesList = get(listsStatesListAtom)
   const listsEnabledState = get(listsEnabledStateAtom)
@@ -41,43 +54,62 @@ export const tokensStateAtom = atom<TokensState>((get) => {
 
         if (!tokenInfo || !tokenAddressKey) return
 
+        const category = list.category || TokenListCategory.ERC20
+
         if (isListEnabled) {
-          if (!acc.activeTokens[tokenAddressKey]) {
-            acc.activeTokens[tokenAddressKey] = tokenInfo
+          if (!acc.activeTokens[category][tokenAddressKey]) {
+            acc.activeTokens[category][tokenAddressKey] = tokenInfo
           }
         } else {
-          if (!acc.inactiveTokens[tokenAddressKey]) {
-            acc.inactiveTokens[tokenAddressKey] = tokenInfo
+          if (!acc.inactiveTokens[category][tokenAddressKey]) {
+            acc.inactiveTokens[category][tokenAddressKey] = tokenInfo
           }
         }
       })
 
       return acc
     },
-    { activeTokens: {}, inactiveTokens: {} },
+    { activeTokens: { ...DEFAULT_TOKEN_CATEGORY_BY_MAP }, inactiveTokens: { ...DEFAULT_TOKEN_CATEGORY_BY_MAP } },
   )
 })
 
-export const lpTokensMapAtom = atom<TokensMap>((get) => {
+const lpTokensMapAtom = atom((get) => {
   const { chainId } = get(environmentAtom)
   const listsStatesList = get(listsStatesListAtom)
 
-  return listsStatesList.reduce<TokensMap>((acc, list) => {
-    if (!list.category || !LP_TOKEN_LIST_CATEGORIES.includes(list.category)) {
+  return listsStatesList.reduce<TokenCategoryByMap>(
+    (acc, list) => {
+      const category = !list.category || !LP_TOKEN_LIST_CATEGORIES.includes(list.category) ? undefined : list.category
+
+      if (!category) {
+        return acc
+      }
+
+      list.list.tokens.forEach((token) => {
+        const tokenInfo = parseTokenInfo(chainId, token)
+        const tokenAddressKey = tokenInfo?.address.toLowerCase()
+
+        if (!tokenInfo || !tokenAddressKey) return
+
+        acc[category][tokenAddressKey] = tokenInfo
+      })
+
       return acc
-    }
+    },
+    { [TokenListCategory.COW_AMM_LP]: {}, [TokenListCategory.LP]: {} } as TokenCategoryByMap,
+  )
+})
 
-    list.list.tokens.forEach((token) => {
-      const tokenInfo = parseTokenInfo(chainId, token)
-      const tokenAddressKey = tokenInfo?.address.toLowerCase()
+export const lpTokensByCategoryAtom = atom<LpTokensByCategory>((get) => {
+  const { chainId } = get(environmentAtom)
+  const lpTokensMap = get(lpTokensMapAtom)
+  const getTokensByCategory = (category: TokenListCategory) =>
+    tokenMapToListWithLogo(lpTokensMap[category], category, chainId) as LpToken[]
 
-      if (!tokenInfo || !tokenAddressKey) return
-
-      acc[tokenAddressKey] = tokenInfo
-    })
-
-    return acc
-  }, {})
+  return {
+    [TokenListCategory.LP]: getTokensByCategory(TokenListCategory.LP),
+    [TokenListCategory.COW_AMM_LP]: getTokensByCategory(TokenListCategory.COW_AMM_LP),
+  }
 })
 
 /**
@@ -91,26 +123,46 @@ export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
   const favoriteTokensState = get(favoriteTokensAtom)
 
   const tokensMap = get(tokensStateAtom)
-  const lpTokensMap = get(lpTokensMapAtom)
+  const lpTokensByCategory = get(lpTokensByCategoryAtom)
   const nativeToken = NATIVE_CURRENCIES[chainId]
 
-  return tokenMapToListWithLogo(
-    {
-      [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo,
-      ...tokensMap.activeTokens,
-      ...(enableLpTokensByDefault ? lpTokensMap : null),
-      ...lowerCaseTokensMap(userAddedTokens[chainId]),
-      ...lowerCaseTokensMap(favoriteTokensState[chainId]),
-    },
-    chainId,
-  )
+  return [
+    // Native, user added and favorite tokens
+    ...tokenMapToListWithLogo(
+      {
+        [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo,
+        ...lowerCaseTokensMap(userAddedTokens[chainId]),
+        ...lowerCaseTokensMap(favoriteTokensState[chainId]),
+      },
+      TokenListCategory.ERC20,
+      chainId,
+    ),
+    // Tokens from active lists
+    ...Object.keys(tokensMap.activeTokens).reduce<TokenWithLogo[]>((acc, _category) => {
+      const category = _category as TokenListCategory
+      const categoryMap = tokensMap.activeTokens[category]
+
+      acc.push(...tokenMapToListWithLogo(categoryMap, category, chainId))
+      return acc
+    }, []),
+    // LP tokens
+    ...(enableLpTokensByDefault
+      ? lpTokensByCategory[TokenListCategory.LP].concat(lpTokensByCategory[TokenListCategory.COW_AMM_LP])
+      : []),
+  ]
 })
 
 export const inactiveTokensAtom = atom<TokenWithLogo[]>((get) => {
   const { chainId } = get(environmentAtom)
   const tokensMap = get(tokensStateAtom)
 
-  return tokenMapToListWithLogo(tokensMap.inactiveTokens, chainId)
+  return Object.keys(tokensMap.inactiveTokens).reduce<TokenWithLogo[]>((acc, _category) => {
+    const category = _category as TokenListCategory
+    const categoryMap = tokensMap.inactiveTokens[category]
+
+    acc.push(...tokenMapToListWithLogo(categoryMap, category, chainId))
+    return acc
+  }, [])
 })
 
 export const tokensByAddressAtom = atom<TokensByAddress>((get) => {

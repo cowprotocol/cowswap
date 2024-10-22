@@ -11,9 +11,19 @@ export function getDefaultTokenListCategories(
 ): TokenListCategory[] | null {
   // When select buy token
   if (field === Field.OUTPUT) {
-    // If sell token is LP token, then propose COW AMM pools by default as buy token
-    // If sell token is ERC-20 token, then propose all LP tokens by default as buy token
-    return oppositeToken instanceof LpToken ? LP_TOKEN_LIST_COW_AMM_ONLY : LP_TOKEN_LIST_CATEGORIES
+    // If sell token is LP token
+    if (oppositeToken instanceof LpToken) {
+      // And sell token is COW AMM LP token, propose all LP tokens by default as buy token
+      if (oppositeToken.isCowAmm) {
+        return LP_TOKEN_LIST_CATEGORIES
+      } else {
+        // And sell token is not COW AMM LP token, propose COW AMM LP tokens by default as buy token
+        return LP_TOKEN_LIST_COW_AMM_ONLY
+      }
+    } else {
+      // And sell token is not LP token, propose all LP tokens by default as buy token
+      return LP_TOKEN_LIST_COW_AMM_ONLY
+    }
   }
 
   // When select sell token
