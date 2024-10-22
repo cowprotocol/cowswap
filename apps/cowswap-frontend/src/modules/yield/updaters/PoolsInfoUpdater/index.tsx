@@ -3,13 +3,13 @@ import { useEffect, useMemo } from 'react'
 
 import ms from 'ms.macro'
 
+import { TradeType, useTradeTypeInfo } from 'modules/trade'
+
 import { MOCK_POOL_INFO } from './mockPoolInfo'
 
-import { LP_CATEGORY, useLpTokensWithBalances } from '../../hooks/useLpTokensWithBalances'
+import { useLpTokensWithBalances } from '../../hooks/useLpTokensWithBalances'
 import { usePoolsInfo } from '../../hooks/usePoolsInfo'
 import { upsertPoolsInfoAtom } from '../../state/poolsInfoAtom'
-import { TradeType, useTradeTypeInfo } from '../../../trade'
-import { LP_TOKEN_LIST_CATEGORIES, useAllLpTokens } from '@cowprotocol/tokens'
 
 const POOL_INFO_CACHE_TIME = ms`1h`
 
