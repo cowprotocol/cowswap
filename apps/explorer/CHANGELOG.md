@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.36.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.35.2...explorer-v2.36.0) (2024-10-18)
+
+
+### Features
+
+* **explorer:** update explorer graph images ([#5008](https://github.com/cowprotocol/cowswap/issues/5008)) ([8952e9f](https://github.com/cowprotocol/cowswap/commit/8952e9f7b29ff848fa3da3f811e3e6232eb92361))
+
+## [2.35.2](https://github.com/cowprotocol/cowswap/compare/explorer-v2.35.1...explorer-v2.35.2) (2024-10-18)
+
+
+### Bug Fixes
+
+* **explorer:** display hook details of unknown hook-dapp ([#4995](https://github.com/cowprotocol/cowswap/issues/4995)) ([eaa29f3](https://github.com/cowprotocol/cowswap/commit/eaa29f3ed421d92214b857bf1c57d75b0317cbba))
+
 ## [2.35.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.35.0...explorer-v2.35.1) (2024-10-14)
 
 

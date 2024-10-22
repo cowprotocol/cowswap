@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.10.1...ui-v1.11.0) (2024-10-18)
+
+
+### Features
+
+* display new label for cow amm ([#4994](https://github.com/cowprotocol/cowswap/issues/4994)) ([531e63f](https://github.com/cowprotocol/cowswap/commit/531e63f666ffcafdaf8e2b1c2850991facbe5cf1))
+
 ## [1.10.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.10.0...ui-v1.10.1) (2024-10-10)
 
 

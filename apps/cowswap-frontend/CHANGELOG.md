@@ -1,5 +1,31 @@
 # Changelog
 
+## [1.86.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.86.0...cowswap-v1.86.1) (2024-10-18)
+
+
+### Bug Fixes
+
+* **widget:** ignore selected eip6963 provider when in widget ([#5009](https://github.com/cowprotocol/cowswap/issues/5009)) ([3f8446b](https://github.com/cowprotocol/cowswap/commit/3f8446b48a4f493448b262959b943756a24382d9))
+
+## [1.86.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.85.0...cowswap-v1.86.0) (2024-10-18)
+
+
+### Features
+
+* display new label for cow amm ([#4994](https://github.com/cowprotocol/cowswap/issues/4994)) ([531e63f](https://github.com/cowprotocol/cowswap/commit/531e63f666ffcafdaf8e2b1c2850991facbe5cf1))
+* **hooks-store:** add claim vesting iframe hook ([#4924](https://github.com/cowprotocol/cowswap/issues/4924)) ([395f48f](https://github.com/cowprotocol/cowswap/commit/395f48f57d93de67305791fdb9a668bdd693074e))
+* **hooks-store:** add sell/buy amounts to hook-dapp context ([#4990](https://github.com/cowprotocol/cowswap/issues/4990)) ([26cbffb](https://github.com/cowprotocol/cowswap/commit/26cbffbbfe8edbc0a4a9ba31fe9c0d42852118d9))
+* **slippage:** small order slippage v2 ([#4934](https://github.com/cowprotocol/cowswap/issues/4934)) ([7b2a49c](https://github.com/cowprotocol/cowswap/commit/7b2a49c41ecfd62107a3128e771003743094d246))
+* **smart-slippage:** update smart slippage text ([#4982](https://github.com/cowprotocol/cowswap/issues/4982)) ([4b89ecb](https://github.com/cowprotocol/cowswap/commit/4b89ecbf661e6c30193586c704e23c78b2bfc22b))
+* **widget:** deadline widget param ([#4991](https://github.com/cowprotocol/cowswap/issues/4991)) ([ce3b5b8](https://github.com/cowprotocol/cowswap/commit/ce3b5b8adb5cc95a5ca3097d5cf2d45b249748c2))
+* **widget:** hide bridge info ([#4992](https://github.com/cowprotocol/cowswap/issues/4992)) ([9842afd](https://github.com/cowprotocol/cowswap/commit/9842afdb887497d235a01538663488b0b8852bb5))
+* **widget:** hide orders table ([#4993](https://github.com/cowprotocol/cowswap/issues/4993)) ([681fb20](https://github.com/cowprotocol/cowswap/commit/681fb20dab0b4155d50ad7f32c7a48cb95e084a3))
+
+
+### Bug Fixes
+
+* **smart-slippage:** fix smart slip tooltip and feature flag ([#5004](https://github.com/cowprotocol/cowswap/issues/5004)) ([c6ea5af](https://github.com/cowprotocol/cowswap/commit/c6ea5af5d24b9a806540d53d2a0d9e12799d4eff))
+
 ## [1.85.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.84.0...cowswap-v1.85.0) (2024-10-10)
 
 
