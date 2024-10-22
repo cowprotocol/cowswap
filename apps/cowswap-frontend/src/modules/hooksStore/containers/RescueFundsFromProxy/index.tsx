@@ -32,7 +32,7 @@ const BALANCE_UPDATE_INTERVAL = ms`5s`
 const selectedCurrencyAtom = atom<Currency | undefined>(undefined)
 
 export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
-  const [selectedCurrency, seSelectedCurrency] = useAtom(selectedCurrencyAtom)
+  const [selectedCurrency, setSelectedCurrency] = useAtom(selectedCurrencyAtom)
   const [tokenBalance, setTokenBalance] = useState<CurrencyAmount<Currency> | null>(null)
 
   const selectedTokenAddress = selectedCurrency ? getCurrencyAddress(selectedCurrency) : undefined
@@ -81,8 +81,8 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
   }, [rescueFundsCallback, addTransaction, handleSetError])
 
   const onCurrencySelectClick = useCallback(() => {
-    onSelectToken(selectedTokenAddress, seSelectedCurrency)
-  }, [onSelectToken, selectedTokenAddress, seSelectedCurrency])
+    onSelectToken(selectedTokenAddress, undefined, undefined, setSelectedCurrency)
+  }, [onSelectToken, selectedTokenAddress, setSelectedCurrency])
 
   return (
     <Wrapper>

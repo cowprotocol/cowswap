@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
-import { TokenWithLogo } from '@cowprotocol/common-const'
+import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import {
   ListState,
@@ -18,8 +18,13 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 
+import { Field } from 'legacy/state/types'
+
 import { addListAnalytics } from 'modules/analytics'
 import { usePermitCompatibleTokens } from 'modules/permit'
+import { useLpTokensWithBalances } from 'modules/yield/shared'
+
+import { getDefaultTokenListCategories } from './getDefaultTokenListCategories'
 
 import { useOnTokenListAddingError } from '../../hooks/useOnTokenListAddingError'
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
@@ -44,10 +49,25 @@ interface SelectTokenWidgetProps {
 }
 
 export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProps) {
-  const { open, onSelectToken, tokenToImport, listToImport, selectedToken, onInputPressEnter, selectedPoolAddress } =
-    useSelectTokenWidgetState()
+  const {
+    open,
+    onSelectToken,
+    tokenToImport,
+    listToImport,
+    selectedToken,
+    onInputPressEnter,
+    selectedPoolAddress,
+    field,
+    oppositeToken,
+  } = useSelectTokenWidgetState()
+  const { count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
+
   const [isManageWidgetOpen, setIsManageWidgetOpen] = useState(false)
-  const tokenListCategoryState = useState<TokenListCategory[] | null>(null)
+  const isSellErc20Selected = field === Field.OUTPUT && !(oppositeToken instanceof LpToken)
+
+  const tokenListCategoryState = useState<TokenListCategory[] | null>(
+    getDefaultTokenListCategories(field, oppositeToken, lpTokensWithBalancesCount),
+  )
 
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
   const { account } = useWalletInfo()
@@ -181,6 +201,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
             hideFavoriteTokensTooltip={isInjectedWidgetMode}
             openPoolPage={openPoolPage}
             tokenListCategoryState={tokenListCategoryState}
+            disableErc20={isSellErc20Selected}
             account={account}
           />
         )
