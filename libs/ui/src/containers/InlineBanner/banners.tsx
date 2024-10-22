@@ -3,7 +3,6 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { CowSwapSafeAppLink } from '../../containers/CowSwapSafeAppLink'
 import { ButtonSecondaryAlt } from '../../pure/ButtonSecondaryAlt'
 import { LinkStyledButton } from '../../pure/LinkStyledButton'
 import { TokenAmount } from '../../pure/TokenAmount'
@@ -14,57 +13,6 @@ import { InlineBanner, InlineBannerProps } from './index'
 export enum BannerOrientation {
   Horizontal = 'horizontal',
   Vertical = 'vertical',
-}
-
-export function BundleTxApprovalBanner() {
-  return (
-    <InlineBanner bannerType="information" iconSize={32}>
-      <strong>Token approval bundling</strong>
-      <p>
-        For your convenience, token approval and order placement will be bundled into a single transaction, streamlining
-        your experience!
-      </p>
-    </InlineBanner>
-  )
-}
-
-export type BundleTxWrapBannerProps = {
-  nativeCurrencySymbol: string
-  wrappedCurrencySymbol: string
-}
-
-export function BundleTxWrapBanner({ nativeCurrencySymbol, wrappedCurrencySymbol }: BundleTxWrapBannerProps) {
-  return (
-    <InlineBanner bannerType="information" iconSize={32}>
-      <strong>Token wrapping bundling</strong>
-      <p>
-        For your convenience, CoW Swap will bundle all the necessary actions for this trade into a single transaction.
-        This includes the&nbsp;{nativeCurrencySymbol}&nbsp;wrapping and, if needed,&nbsp;{wrappedCurrencySymbol}
-        &nbsp;approval. Even if the trade fails, your wrapping and approval will be done!
-      </p>
-    </InlineBanner>
-  )
-}
-
-// If supportsWrapping is true, nativeCurrencySymbol is required
-type WrappingSupportedProps = { supportsWrapping: true; nativeCurrencySymbol: string }
-// If supportsWrapping is not set or false, nativeCurrencySymbol is not required
-type WrappingUnsupportedProps = { supportsWrapping?: false; nativeCurrencySymbol?: undefined }
-
-export type BundleTxSafeWcBannerProps = WrappingSupportedProps | WrappingUnsupportedProps
-
-export function BundleTxSafeWcBanner({ nativeCurrencySymbol, supportsWrapping }: BundleTxSafeWcBannerProps) {
-  const supportsWrappingText = supportsWrapping ? `${nativeCurrencySymbol} wrapping, ` : ''
-
-  return (
-    <InlineBanner bannerType="information" iconSize={32}>
-      <strong>Use Safe web app</strong>
-      <p>
-        Use the Safe web app for streamlined trading: {supportsWrappingText}token approval and orders bundled in one go!
-        Only available in the <CowSwapSafeAppLink />
-      </p>
-    </InlineBanner>
-  )
 }
 
 export type SmallVolumeWarningBannerProps = {

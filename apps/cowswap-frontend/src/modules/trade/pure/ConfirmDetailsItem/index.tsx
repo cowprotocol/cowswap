@@ -5,9 +5,9 @@ import { InfoTooltip } from '@cowprotocol/ui'
 
 import { CornerDownRight } from 'react-feather'
 
-import { TimelineDot } from 'modules/trade/pure/Row/styled'
-
 import { Content, Row, Wrapper, Label } from './styled'
+
+import { TimelineDot } from '../Row/styled'
 
 export type ConfirmDetailsItemProps = {
   children: ReactNode

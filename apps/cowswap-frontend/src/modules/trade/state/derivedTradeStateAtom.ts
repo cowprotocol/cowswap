@@ -3,6 +3,7 @@ import { atom } from 'jotai'
 import { advancedOrdersDerivedStateAtom } from 'modules/advancedOrders'
 import { limitOrdersDerivedStateAtom } from 'modules/limitOrders'
 import { swapDerivedStateAtom } from 'modules/swap'
+import { yieldDerivedStateAtom } from 'modules/yield'
 
 import { tradeTypeAtom } from './tradeTypeAtom'
 
@@ -19,6 +20,10 @@ export const derivedTradeStateAtom = atom<TradeDerivedState | null>((get) => {
 
   if (tradeTypeInfo.tradeType === TradeType.ADVANCED_ORDERS) {
     return get(advancedOrdersDerivedStateAtom)
+  }
+
+  if (tradeTypeInfo.tradeType === TradeType.YIELD) {
+    return get(yieldDerivedStateAtom)
   }
 
   return get(limitOrdersDerivedStateAtom)

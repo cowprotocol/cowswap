@@ -96,7 +96,7 @@ export function useRescueFundsFromProxy(
     } finally {
       setTxSigningInProgress(false)
     }
-  }, [provider, proxyAddress, cowShedContract, selectedTokenAddress, account, tokenBalance])
+  }, [provider, proxyAddress, cowShedContract, selectedTokenAddress, account, tokenBalance, cowShedHooks])
 
   return { callback, isTxSigningInProgress, proxyAddress }
 }

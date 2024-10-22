@@ -33,6 +33,6 @@ export function useAddHook(dapp: HookDapp, isPreHook: boolean): AddHook {
         }
       })
     },
-    [updateHooks, dapp],
+    [updateHooks, dapp, isPreHook],
   )
 }

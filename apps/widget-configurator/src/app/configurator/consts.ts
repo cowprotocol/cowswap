@@ -15,7 +15,7 @@ export const DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK: Record<SupportedChainId,
   [SupportedChainId.SEPOLIA]: MAINNET_DEFAULT_PARTNER_FEE_RECIPIENT,
 }
 
-export const TRADE_MODES = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED]
+export const TRADE_MODES = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED, TradeType.YIELD]
 
 // Sourced from https://tokenlists.org/
 export const DEFAULT_TOKEN_LISTS: TokenListItem[] = [

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/cowprotocol/cowswap/compare/wallet-v1.6.0...wallet-v1.6.1) (2024-10-18)
+
+
+### Bug Fixes
+
+* **widget:** ignore selected eip6963 provider when in widget ([#5009](https://github.com/cowprotocol/cowswap/issues/5009)) ([3f8446b](https://github.com/cowprotocol/cowswap/commit/3f8446b48a4f493448b262959b943756a24382d9))
+
 ## [1.6.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.5.2...wallet-v1.6.0) (2024-09-30)
 
 
