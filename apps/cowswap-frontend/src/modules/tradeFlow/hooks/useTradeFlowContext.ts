@@ -181,7 +181,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             allowsOffchainSigning,
             appData,
             class: OrderClass.MARKET,
-            partiallyFillable: true,
+            partiallyFillable: false, // SWAP orders are always fill or kill - for now
             quoteId: quoteResponse.id,
             isSafeWallet,
           },
