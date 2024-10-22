@@ -18,6 +18,10 @@ import {
 
 import { ModalHeader } from '../../pure/ModalHeader'
 
+function renderValue<T>(value: T | undefined, template: (v: T) => string, defaultValue?: string): string | undefined {
+  return value ? template(value) : defaultValue
+}
+
 interface LpTokenPageProps {
   poolAddress: string
   onBack(): void
@@ -70,25 +74,25 @@ export function LpTokenPage({ poolAddress, onBack, onDismiss, onSelectToken }: L
         <InfoRow>
           <div>Fee tier</div>
           <div>
-            <span>{info?.feeTier ? `${info.feeTier}%` : '-'}</span>
+            <span>{renderValue(info?.feeTier, (t) => `${t}%`, '-')}</span>
           </div>
         </InfoRow>
         <InfoRow>
           <div>Volume (24h)</div>
           <div>
-            <span>${info?.volume24h}</span>
+            <span>{renderValue(info?.volume24h, (t) => `$${t}`, '-')}</span>
           </div>
         </InfoRow>
         <InfoRow>
           <div>APY</div>
           <div>
-            <span>{info?.apy ? `${info.apy}%` : '-'}</span>
+            <span>{renderValue(info?.apy, (t) => `${t}%`, '-')}</span>
           </div>
         </InfoRow>
         <InfoRow>
           <div>TVL</div>
           <div>
-            <span>${info?.tvl}</span>
+            <span>{renderValue(info?.tvl, (t) => `$${t}`, '-')}</span>
           </div>
         </InfoRow>
         <InfoRow>
