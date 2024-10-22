@@ -37,10 +37,10 @@ export const topTokenHoldersAtom = atom(
   async (get, set, params: GetTopTokenHoldersParams) => {
     const key = `${params.chainId}:${params.tokenAddress?.toLowerCase()}`
     const cachedData = get(baseTopTokenHolderAtom)
-    const currentTime = Date.now()
+    const currentTime = Date.now() / 1000
 
-    // 1 hour in milliseconds
-    if (cachedData[key] && currentTime - cachedData[key].timestamp <= 3600000) {
+    // 1 hour in seconds
+    if (cachedData[key] && currentTime - cachedData[key].timestamp <= 3600) {
       return cachedData[key].value
     }
 
