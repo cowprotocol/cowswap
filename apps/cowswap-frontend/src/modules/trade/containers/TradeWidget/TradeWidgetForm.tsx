@@ -12,6 +12,7 @@ import SVG from 'react-inlinesvg'
 
 import { AccountElement } from 'legacy/components/Header/AccountElement'
 import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+import { Field } from 'legacy/state/types'
 
 import { useToggleAccountModal } from 'modules/account'
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
@@ -32,7 +33,6 @@ import { PoweredFooter } from 'common/pure/PoweredFooter'
 import * as styledEl from './styled'
 import { TradeWidgetProps } from './types'
 
-import { Field } from '../../../../legacy/state/types'
 import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateFromUrl'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { useTradeTypeInfo } from '../../hooks/useTradeTypeInfo'
