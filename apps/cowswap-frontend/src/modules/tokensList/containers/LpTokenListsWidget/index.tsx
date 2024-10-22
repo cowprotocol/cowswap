@@ -12,6 +12,7 @@ import { LpTokenLists } from '../../pure/LpTokenLists'
 import { tokensListSorter } from '../../utils/tokensListSorter'
 
 interface LpTokenListsProps<T = TokenListCategory[] | null> {
+  account: string | undefined
   children: ReactNode
   search: string
   onSelectToken(token: TokenWithLogo): void
@@ -26,6 +27,7 @@ const tabs = [
 ]
 
 export function LpTokenListsWidget({
+  account,
   search,
   children,
   onSelectToken,
@@ -64,6 +66,7 @@ export function LpTokenListsWidget({
         children
       ) : (
         <LpTokenLists
+          account={account}
           displayCreatePoolBanner={listsCategories === tabs[2].value}
           balancesState={balancesState}
           lpTokens={sortedTokens}

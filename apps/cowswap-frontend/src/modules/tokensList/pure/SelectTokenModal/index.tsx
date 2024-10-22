@@ -115,6 +115,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
       </styledEl.Row>
       {displayLpTokenLists ? (
         <LpTokenListsWidget
+          account={account}
           search={inputValue}
           onSelectToken={onSelectToken}
           openPoolPage={openPoolPage}

@@ -31,6 +31,7 @@ const LoadingElement = (
 )
 
 interface LpTokenListsProps {
+  account: string | undefined
   lpTokens: LpToken[]
   balancesState: BalancesState
   displayCreatePoolBanner: boolean
@@ -40,6 +41,7 @@ interface LpTokenListsProps {
 }
 
 export function LpTokenLists({
+  account,
   onSelectToken,
   openPoolPage,
   lpTokens,
@@ -76,7 +78,7 @@ export function LpTokenLists({
               </p>
             </LpTokenInfo>
           </LpTokenWrapper>
-          <span>{balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement}</span>
+          <span>{balanceAmount ? <TokenAmount amount={balanceAmount} /> : account ? LoadingElement : null}</span>
           <span>{info?.apy ? `${info.apy}%` : '-'}</span>
           <span>
             <Info onClick={onInfoClick} size={16} />
@@ -84,7 +86,7 @@ export function LpTokenLists({
         </ListItem>
       )
     },
-    [balances, onSelectToken, poolsInfo, openPoolPage],
+    [balances, onSelectToken, poolsInfo, openPoolPage, account],
   )
 
   return (
