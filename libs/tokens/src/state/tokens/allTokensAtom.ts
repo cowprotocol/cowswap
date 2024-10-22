@@ -86,7 +86,7 @@ export const lpTokensMapAtom = atom<TokensMap>((get) => {
  * Native token is always the first element in the list
  */
 export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
-  const { chainId } = get(environmentAtom)
+  const { chainId, enableLpTokensByDefault } = get(environmentAtom)
   const userAddedTokens = get(userAddedTokensAtom)
   const favoriteTokensState = get(favoriteTokensAtom)
 
@@ -98,7 +98,7 @@ export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
     {
       [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo,
       ...tokensMap.activeTokens,
-      ...lpTokensMap,
+      ...(enableLpTokensByDefault ? lpTokensMap : null),
       ...lowerCaseTokensMap(userAddedTokens[chainId]),
       ...lowerCaseTokensMap(favoriteTokensState[chainId]),
     },

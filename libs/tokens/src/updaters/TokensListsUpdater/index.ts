@@ -35,6 +35,7 @@ const NETWORKS_WITHOUT_RESTRICTIONS = [SupportedChainId.SEPOLIA]
 interface TokensListsUpdaterProps {
   chainId: SupportedChainId
   isGeoBlockEnabled: boolean
+  enableLpTokensByDefault: boolean
 }
 
 /**
@@ -45,7 +46,11 @@ interface TokensListsUpdaterProps {
  */
 const GEOBLOCK_ERRORS_TO_IGNORE = /(failed to fetch)|(load failed)/i
 
-export function TokensListsUpdater({ chainId: currentChainId, isGeoBlockEnabled }: TokensListsUpdaterProps) {
+export function TokensListsUpdater({
+  chainId: currentChainId,
+  isGeoBlockEnabled,
+  enableLpTokensByDefault,
+}: TokensListsUpdaterProps) {
   const { chainId } = useAtomValue(environmentAtom)
   const setEnvironment = useSetAtom(updateEnvironmentAtom)
   const allTokensLists = useAtomValue(allListsSourcesAtom)
@@ -56,8 +61,8 @@ export function TokensListsUpdater({ chainId: currentChainId, isGeoBlockEnabled 
   const upsertLists = useSetAtom(upsertListsAtom)
 
   useEffect(() => {
-    setEnvironment({ chainId: currentChainId })
-  }, [setEnvironment, currentChainId])
+    setEnvironment({ chainId: currentChainId, enableLpTokensByDefault })
+  }, [setEnvironment, currentChainId, enableLpTokensByDefault])
 
   // Fetch tokens lists once in 6 hours
   const { data: listsStates, isLoading } = useSWR<ListState[] | null>(

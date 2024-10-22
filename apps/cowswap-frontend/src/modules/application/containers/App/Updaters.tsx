@@ -70,7 +70,11 @@ export function Updaters() {
       <ProgressBarV2ExecutingOrdersUpdater />
       <SolversInfoUpdater />
 
-      <TokensListsUpdater chainId={chainId} isGeoBlockEnabled={isGeoBlockEnabled} />
+      <TokensListsUpdater
+        chainId={chainId}
+        isGeoBlockEnabled={isGeoBlockEnabled}
+        enableLpTokensByDefault={isYieldWidget}
+      />
       <WidgetTokensListsUpdater
         tokenLists={tokenLists}
         customTokens={customTokens}
