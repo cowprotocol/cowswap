@@ -1,6 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { UiOrderType } from '@cowprotocol/types'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
@@ -13,11 +12,12 @@ import { useCloseModals } from 'legacy/state/application/hooks'
 import { useAppData, useAppDataHooks } from 'modules/appData'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
-import { TradeType, useDerivedTradeState, useReceiveAmountInfo, useTradeConfirmActions } from 'modules/trade'
+import { useDerivedTradeState, useReceiveAmountInfo, useTradeConfirmActions, useTradeTypeInfo } from 'modules/trade'
 import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
 
+import { TradeTypeToUiOrderType } from '../../trade/const/common'
 import { TradeFlowContext } from '../types/TradeFlowContext'
 
 export interface TradeFlowParams {
@@ -31,6 +31,9 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const isSafeWallet = useIsSafeWallet()
   const derivedTradeState = useDerivedTradeState()
   const receiveAmountInfo = useReceiveAmountInfo()
+  const tradeTypeInfo = useTradeTypeInfo()
+  const tradeType = tradeTypeInfo?.tradeType
+  const uiOrderType = tradeType ? TradeTypeToUiOrderType[tradeType] : null
 
   const sellCurrency = derivedTradeState?.inputCurrency
   const inputAmount = receiveAmountInfo?.afterNetworkCosts.sellAmount
@@ -39,7 +42,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const inputAmountWithSlippage = receiveAmountInfo?.afterSlippage.sellAmount
   const networkFee = receiveAmountInfo?.costs.networkFee.amountInSellCurrency
 
-  const permitInfo = usePermitInfo(sellCurrency, TradeType.YIELD)
+  const permitInfo = usePermitInfo(sellCurrency, tradeType)
   const generatePermitHook = useGeneratePermitHook()
   const getCachedPermit = useGetCachedPermit()
   const closeModals = useCloseModals()
@@ -84,7 +87,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         quoteResponse &&
         localQuoteTimestamp &&
         orderKind &&
-        settlementContract
+        settlementContract &&
+        uiOrderType
         ? [
             account,
             allowsOffchainSigning,
@@ -112,6 +116,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             typedHooks,
             deadline,
             orderKind,
+            uiOrderType,
           ]
         : null,
       ([
@@ -141,6 +146,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         typedHooks,
         deadline,
         orderKind,
+        uiOrderType,
       ]) => {
         return {
           context: {
@@ -163,7 +169,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             recipient,
             recipientAddress,
             marketLabel: [inputAmount?.currency.symbol, outputAmount?.currency.symbol].join(','),
-            orderType: UiOrderType.YIELD,
+            orderType: uiOrderType,
           },
           contract: settlementContract,
           permitInfo: !enoughAllowance ? permitInfo : undefined,
