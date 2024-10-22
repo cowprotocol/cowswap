@@ -12,9 +12,10 @@ import { HookDetailHeader } from '../HookDetailHeader'
 interface HookDappDetailsProps {
   dapp: HookDapp
   onSelect: Command
+  walletType: HookDappWalletCompatibility
 }
 
-export function HookDappDetails({ dapp, onSelect }: HookDappDetailsProps) {
+export function HookDappDetails({ dapp, onSelect, walletType }: HookDappDetailsProps) {
   const tags = useMemo(() => {
     const { version, website, type, conditions } = dapp
     const walletCompatibility = conditions?.walletCompatibility || []
@@ -60,7 +61,7 @@ export function HookDappDetails({ dapp, onSelect }: HookDappDetailsProps) {
 
   return (
     <styled.Wrapper>
-      <HookDetailHeader dapp={dapp} onSelect={onSelect} />
+      <HookDetailHeader dapp={dapp} onSelect={onSelect} walletType={walletType} />
       <styled.Body>
         <p>{dapp.description}</p>
       </styled.Body>
