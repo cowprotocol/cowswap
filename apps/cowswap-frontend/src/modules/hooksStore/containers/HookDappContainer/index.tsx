@@ -15,6 +15,7 @@ import { useOrderParams } from '../../hooks/useOrderParams'
 import { HookDapp, HookDappContext as HookDappContextType } from '../../types/hooks'
 import { isHookDappIframe } from '../../utils'
 import { IframeDappContainer } from '../IframeDappContainer'
+import { useHookBalancesDiff } from 'modules/hooksStore/hooks/useBalancesDiff'
 
 interface HookDappContainerProps {
   dapp: HookDapp
@@ -35,6 +36,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
   const tradeState = useTradeState()
   const tradeNavigate = useTradeNavigate()
   const isDarkMode = useIsDarkMode()
+  const balancesDiff = useHookBalancesDiff(isPreHook, hookToEditDetails)
 
   const { inputCurrencyId = null, outputCurrencyId = null } = tradeState.state || {}
   const signer = useMemo(() => provider?.getSigner(), [provider])
@@ -49,6 +51,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
       isSmartContract,
       isPreHook,
       isDarkMode,
+      balancesDiff,
       editHook(...args) {
         editHook(...args)
         onDismiss()

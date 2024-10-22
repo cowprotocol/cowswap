@@ -9,10 +9,15 @@ export interface SimulationInput {
   gas_price?: string
 }
 
+// { [address: string]: { [token: string]: balanceDiff: string } }
+// example: { '0x123': { '0x456': '100', '0xabc': '-100' } }
+export type BalancesDiff = Record<string, Record<string, string>>
+
 export interface SimulationData {
   link: string
   status: boolean
   id: string
+  cumulativeBalancesDiff: BalancesDiff
 }
 
 export interface GetTopTokenHoldersParams {

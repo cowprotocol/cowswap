@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
-import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
+// import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -15,6 +15,7 @@ import { useRecipientToggleManager, useUserTransactionTTL } from 'legacy/state/u
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
+import { useCurrencyAmountBalanceCombined } from 'modules/swap/hooks/useCurrencyAmountBalanceCombined'
 import { useShowRecipientControls } from 'modules/swap/hooks/useShowRecipientControls'
 import { useSwapButtonContext } from 'modules/swap/hooks/useSwapButtonContext'
 import { useSwapCurrenciesAmounts } from 'modules/swap/hooks/useSwapCurrenciesAmounts'
@@ -96,8 +97,8 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     return TokenWithLogo.fromToken(currencies.OUTPUT)
   }, [chainId, currencies.OUTPUT])
 
-  const inputCurrencyBalance = useCurrencyAmountBalance(inputToken) || null
-  const outputCurrencyBalance = useCurrencyAmountBalance(outputToken) || null
+  const inputCurrencyBalance = useCurrencyAmountBalanceCombined(inputToken) || null
+  const outputCurrencyBalance = useCurrencyAmountBalanceCombined(outputToken) || null
 
   const isSellTrade = independentField === Field.INPUT
 

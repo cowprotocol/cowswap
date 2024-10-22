@@ -1,13 +1,13 @@
 import { Atom, useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { tryParseFractionalAmount } from '@cowprotocol/common-utils'
 import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
+import { useCurrencyAmountBalanceCombined } from 'modules/swap/hooks/useCurrencyAmountBalanceCombined'
 import { ExtendedTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
@@ -24,14 +24,14 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
   const outputCurrency = useTokenBySymbolOrAddress(rawState.outputCurrencyId)
   const inputCurrencyAmount = useMemo(
     () => getCurrencyAmount(inputCurrency, rawState.inputCurrencyAmount),
-    [inputCurrency, rawState.inputCurrencyAmount]
+    [inputCurrency, rawState.inputCurrencyAmount],
   )
   const outputCurrencyAmount = useMemo(
     () => getCurrencyAmount(outputCurrency, rawState.outputCurrencyAmount),
-    [outputCurrency, rawState.outputCurrencyAmount]
+    [outputCurrency, rawState.outputCurrencyAmount],
   )
-  const inputCurrencyBalance = useCurrencyAmountBalance(inputCurrency) || null
-  const outputCurrencyBalance = useCurrencyAmountBalance(outputCurrency) || null
+  const inputCurrencyBalance = useCurrencyAmountBalanceCombined(inputCurrency) || null
+  const outputCurrencyBalance = useCurrencyAmountBalanceCombined(outputCurrency) || null
 
   const {
     inputAmount: { value: inputCurrencyFiatAmount },
@@ -61,7 +61,7 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
 
 function getCurrencyAmount(
   currency: Nullish<Currency> | null,
-  currencyAmount: Nullish<string>
+  currencyAmount: Nullish<string>,
 ): CurrencyAmount<Currency> | null {
   if (!currency || !currencyAmount) {
     return null

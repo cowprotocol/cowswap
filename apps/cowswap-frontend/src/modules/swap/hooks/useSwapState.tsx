@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
-import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
+// import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { formatSymbol, getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { useENS } from '@cowprotocol/ens'
 import { useAreThereTokensWithSameSymbol, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
@@ -27,6 +27,8 @@ import { useVolumeFee } from 'modules/volumeFee'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
+
+import { useCurrencyAmountBalanceCombined } from './useCurrencyAmountBalanceCombined'
 
 export const BAD_RECIPIENT_ADDRESSES: { [address: string]: true } = {
   '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f': true, // v2 factory
@@ -132,8 +134,8 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   const recipientLookup = useENS(recipient ?? undefined)
   const to: string | null = (recipient ? recipientLookup.address : account) ?? null
 
-  const inputCurrencyBalance = useCurrencyAmountBalance(inputCurrency)
-  const outputCurrencyBalance = useCurrencyAmountBalance(outputCurrency)
+  const inputCurrencyBalance = useCurrencyAmountBalanceCombined(inputCurrency)
+  const outputCurrencyBalance = useCurrencyAmountBalanceCombined(outputCurrency)
 
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = useMemo(
