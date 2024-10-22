@@ -1,27 +1,28 @@
-import { useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai/index'
 
 import { LpToken, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 
 import useSWR from 'swr'
 
-import { lpTokensByCategoryAtom } from '../../state/tokens/allTokensAtom'
+import { activeTokensAtom, inactiveTokensAtom } from '../../state/tokens/allTokensAtom'
 import { TokenListCategory } from '../../types'
 
 const fallbackData: LpToken[] = []
 
 export function useAllLpTokens(categories: TokenListCategory[] | null): LpToken[] {
-  const lpTokensByCategory = useAtomValue(lpTokensByCategoryAtom)
+  const activeTokens = useAtomValue(activeTokensAtom)
+  const inactiveTokens = useAtomValue(inactiveTokensAtom)
 
   return useSWR(
-    categories ? [lpTokensByCategory, categories] : null,
-    ([lpTokensByCategory, categories]) => {
-      return categories.reduce<LpToken[]>((acc, category) => {
-        if (category === TokenListCategory.LP || category === TokenListCategory.COW_AMM_LP) {
-          acc.push(...lpTokensByCategory[category])
-        }
+    categories ? [activeTokens, inactiveTokens, categories] : null,
+    ([activeTokens, inactiveTokens, categories]) => {
+      const allTokens = [...activeTokens, ...inactiveTokens]
+      const selectOnlyCoWAmm = categories?.length === 1 && categories.includes(TokenListCategory.COW_AMM_LP)
 
-        return acc
-      }, [])
+      return allTokens.filter((token) => {
+        const isLp = token instanceof LpToken
+        return isLp ? (selectOnlyCoWAmm ? token.isCowAmm : true) : false
+      }) as LpToken[]
     },
     { ...SWR_NO_REFRESH_OPTIONS, fallbackData },
   ).data

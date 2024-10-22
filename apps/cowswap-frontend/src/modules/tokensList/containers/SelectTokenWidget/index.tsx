@@ -9,7 +9,7 @@ import {
   useAddList,
   useAddUserToken,
   useAllListsList,
-  useAllTokens,
+  useAllActiveTokens,
   useFavoriteTokens,
   useUnsupportedTokens,
   useUserAddedTokens,
@@ -75,7 +75,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
   const addCustomTokenLists = useAddList((source) => addListAnalytics('Success', source))
   const importTokenCallback = useAddUserToken()
 
-  const allTokens = useAllTokens()
+  const allTokens = useAllActiveTokens()
   const favoriteTokens = useFavoriteTokens()
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllListsList()

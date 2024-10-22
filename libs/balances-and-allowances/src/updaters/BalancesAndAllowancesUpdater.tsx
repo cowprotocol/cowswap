@@ -3,7 +3,7 @@ import { useEffect, useMemo } from 'react'
 
 import { LpToken, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useAllTokens } from '@cowprotocol/tokens'
+import { useAllActiveTokens } from '@cowprotocol/tokens'
 
 import ms from 'ms.macro'
 
@@ -24,7 +24,7 @@ export interface BalancesAndAllowancesUpdaterProps {
 export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAllowancesUpdaterProps) {
   const setBalances = useSetAtom(balancesAtom)
 
-  const allTokens = useAllTokens()
+  const allTokens = useAllActiveTokens()
   const { data: nativeTokenBalance } = useNativeTokenBalance(account)
 
   const tokenAddresses = useMemo(
