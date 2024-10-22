@@ -57,6 +57,9 @@ export interface HookDappContext {
   isSmartContract: boolean | undefined
   isPreHook: boolean
   isDarkMode: boolean
+  // { [address: string]: { [token: string]: balanceDiff: string } }
+  // example: { '0x123': { '0x456': '100', '0xabc': '-100' } }
+  balancesDiff: Record<string, Record<string, string>>
 }
 
 export interface HookDappBase {
