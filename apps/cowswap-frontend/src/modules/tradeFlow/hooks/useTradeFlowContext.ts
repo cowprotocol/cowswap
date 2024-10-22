@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -57,7 +57,13 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
     checkAllowanceAddress,
   })
 
-  const { inputCurrency: sellToken, outputCurrency: buyToken, recipient, recipientAddress } = derivedTradeState || {}
+  const {
+    inputCurrency: sellToken,
+    outputCurrency: buyToken,
+    recipient,
+    recipientAddress,
+    orderKind,
+  } = derivedTradeState || {}
   const quoteParams = tradeQuote?.quoteParams
   const quoteResponse = tradeQuote?.response
   const localQuoteTimestamp = tradeQuote?.localQuoteTimestamp
@@ -77,6 +83,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         quoteParams &&
         quoteResponse &&
         localQuoteTimestamp &&
+        orderKind &&
         settlementContract
         ? [
             account,
@@ -104,6 +111,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             tradeConfirmActions,
             typedHooks,
             deadline,
+            orderKind,
           ]
         : null,
       ([
@@ -132,6 +140,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         tradeConfirmActions,
         typedHooks,
         deadline,
+        orderKind,
       ]) => {
         return {
           context: {
@@ -164,7 +173,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             account,
             chainId,
             signer: provider.getSigner(),
-            kind: OrderKind.SELL,
+            kind: orderKind,
             inputAmount,
             outputAmount,
             sellAmountBeforeFee,
