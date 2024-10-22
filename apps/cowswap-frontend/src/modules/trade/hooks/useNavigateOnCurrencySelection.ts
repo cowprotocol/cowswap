@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 
+import { LpToken } from '@cowprotocol/common-const'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -26,7 +27,9 @@ function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => str
     (currency: Currency | null): string | null => {
       if (!currency) return null
 
-      return areThereTokensWithSameSymbol(currency.symbol) ? (currency as Token).address : currency.symbol || null
+      return currency instanceof LpToken || areThereTokensWithSameSymbol(currency.symbol)
+        ? (currency as Token).address
+        : currency.symbol || null
     },
     [areThereTokensWithSameSymbol],
   )
