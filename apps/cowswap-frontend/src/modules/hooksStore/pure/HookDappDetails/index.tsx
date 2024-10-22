@@ -12,7 +12,7 @@ import { HookDetailHeader } from '../HookDetailHeader'
 interface HookDappDetailsProps {
   dapp: HookDapp
   onSelect: Command
-  walletType: HookDappWalletCompatibility
+  walletType?: HookDappWalletCompatibility
 }
 
 export function HookDappDetails({ dapp, onSelect, walletType }: HookDappDetailsProps) {

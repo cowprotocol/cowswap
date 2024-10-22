@@ -6,7 +6,7 @@ import { HookDapp } from '../../types/hooks'
 
 interface HookDetailHeaderProps {
   dapp: HookDapp
-  walletType: HookDappWalletCompatibility
+  walletType?: HookDappWalletCompatibility
   onSelect?: () => void
   iconSize?: number
   gap?: number
