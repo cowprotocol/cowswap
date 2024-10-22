@@ -181,7 +181,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             allowsOffchainSigning,
             appData,
             class: OrderClass.MARKET,
-            partiallyFillable: true,
+            partiallyFillable: quoteResponse.quote.partiallyFillable,
             quoteId: quoteResponse.id,
             isSafeWallet,
           },
