@@ -43,7 +43,11 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   subsidyAndBalance?: BalanceAndSubsidy
   onCurrencySelection: (field: Field, currency: Currency) => void
   onUserInput: (field: Field, typedValue: string) => void
-  openTokenSelectWidget(selectedToken: string | undefined, onCurrencySelection: (currency: Currency) => void): void
+  openTokenSelectWidget(
+    selectedToken: string | undefined,
+    field: Field | undefined,
+    onCurrencySelection: (currency: Currency) => void,
+  ): void
   topLabel?: string
 }
 
@@ -84,7 +88,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
       setTypedValue(typedValue)
       onUserInput(field, typedValue)
     },
-    [onUserInput, field]
+    [onUserInput, field],
   )
   const handleMaxInput = useCallback(() => {
     if (!maxBalance) {
@@ -136,7 +140,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   }, [_priceImpactParams, bothCurrenciesSet])
 
   const onTokenSelectClick = useCallback(() => {
-    openTokenSelectWidget(selectedTokenAddress, (currency) => onCurrencySelection(field, currency))
+    openTokenSelectWidget(selectedTokenAddress, field, (currency) => onCurrencySelection(field, currency))
   }, [openTokenSelectWidget, selectedTokenAddress, onCurrencySelection, field])
 
   return (

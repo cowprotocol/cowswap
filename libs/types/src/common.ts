@@ -24,4 +24,6 @@ export type TokenInfo = {
   symbol: string
   logoURI?: string
   tokens?: string[]
+  isLpToken?: boolean
+  isCoWAmmToken?: boolean
 }

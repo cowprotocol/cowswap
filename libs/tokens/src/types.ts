@@ -9,6 +9,7 @@ export enum TokenListCategory {
 }
 
 export const LP_TOKEN_LIST_CATEGORIES = [TokenListCategory.LP, TokenListCategory.COW_AMM_LP]
+export const LP_TOKEN_LIST_COW_AMM_ONLY = [TokenListCategory.COW_AMM_LP]
 
 export type ListSourceConfig = {
   widgetAppCode?: string

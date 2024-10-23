@@ -18,6 +18,10 @@ export function tokensListSorter(balances: BalancesState['values']): (a: TokenWi
       return +bBalance.sub(aBalance)
     }
 
+    if (aBalance && !bBalance) {
+      return -1
+    }
+
     return 0
   }
 }

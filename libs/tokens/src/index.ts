@@ -16,7 +16,7 @@ export type { TokenSearchResponse } from './hooks/tokens/useSearchToken'
 // Hooks
 export { useAllListsList } from './hooks/lists/useAllListsList'
 export { useAddList } from './hooks/lists/useAddList'
-export { useAllTokens } from './hooks/tokens/useAllTokens'
+export { useAllActiveTokens } from './hooks/tokens/useAllActiveTokens'
 export { useVirtualLists } from './hooks/lists/useVirtualLists'
 export { useFavoriteTokens } from './hooks/tokens/favorite/useFavoriteTokens'
 export { useUserAddedTokens } from './hooks/tokens/userAdded/useUserAddedTokens'

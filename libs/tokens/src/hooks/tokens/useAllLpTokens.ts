@@ -1,42 +1,33 @@
-import { useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai/index'
 
 import { LpToken, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 
 import useSWR from 'swr'
 
-import { environmentAtom } from '../../state/environmentAtom'
-import { listsStatesListAtom } from '../../state/tokenLists/tokenListsStateAtom'
-import { TokenListCategory, TokensMap } from '../../types'
-import { parseTokenInfo } from '../../utils/parseTokenInfo'
-import { tokenMapToListWithLogo } from '../../utils/tokenMapToListWithLogo'
+import { activeTokensAtom, inactiveTokensAtom } from '../../state/tokens/allTokensAtom'
+import { TokenListCategory } from '../../types'
 
 const fallbackData: LpToken[] = []
 
 export function useAllLpTokens(categories: TokenListCategory[] | null): LpToken[] {
-  const { chainId } = useAtomValue(environmentAtom)
-  const state = useAtomValue(listsStatesListAtom)
+  const activeTokens = useAtomValue(activeTokensAtom)
+  const inactiveTokens = useAtomValue(inactiveTokensAtom)
 
   return useSWR(
-    categories ? [state, chainId, categories] : null,
-    ([state, chainId, categories]) => {
-      const tokensMap = state.reduce<TokensMap>((acc, list) => {
-        if (!list.category || !categories.includes(list.category)) {
-          return acc
-        }
-
-        list.list.tokens.forEach((token) => {
-          const tokenInfo = parseTokenInfo(chainId, token)
-          const tokenAddressKey = tokenInfo?.address.toLowerCase()
-
-          if (!tokenInfo || !tokenAddressKey) return
-
-          acc[tokenAddressKey] = tokenInfo
-        })
-
+    categories ? [activeTokens, inactiveTokens, categories] : null,
+    ([activeTokens, inactiveTokens, categories]) => {
+      const activeTokensMap = activeTokens.reduce<Record<string, true>>((acc, token) => {
+        acc[token.address] = true
         return acc
       }, {})
 
-      return tokenMapToListWithLogo(tokensMap, chainId) as LpToken[]
+      const allTokens = [...activeTokens, ...inactiveTokens.filter((token) => !activeTokensMap[token.address])]
+      const selectOnlyCoWAmm = categories?.length === 1 && categories.includes(TokenListCategory.COW_AMM_LP)
+
+      return allTokens.filter((token) => {
+        const isLp = token instanceof LpToken
+        return isLp ? (selectOnlyCoWAmm ? token.isCowAmm : true) : false
+      }) as LpToken[]
     },
     { ...SWR_NO_REFRESH_OPTIONS, fallbackData },
   ).data
