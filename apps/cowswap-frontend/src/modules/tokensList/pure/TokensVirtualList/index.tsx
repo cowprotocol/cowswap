@@ -1,14 +1,9 @@
 import { useCallback, useMemo, useRef } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useVirtualizer } from '@tanstack/react-virtual'
 import ms from 'ms.macro'
-
-import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { CoWAmmBanner, BannerLocation } from 'common/pure/CoWAMMBanner'
 
 import * as styledEl from './styled'
 
@@ -38,11 +33,9 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
     props
   const { values: balances, isLoading: balancesLoading } = balancesState
 
-  const { account: connectedAccount } = useWalletInfo()
-
-  const isInjectedWidgetMode = isInjectedWidget()
   const isWalletConnected = !!account
-  const isChainIdUnsupported = useIsProviderNetworkUnsupported()
+  // const isInjectedWidgetMode = isInjectedWidget()
+  // const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
   const scrollTimeoutRef = useRef<NodeJS.Timeout>()
   const parentRef = useRef<HTMLDivElement>(null)
@@ -74,9 +67,9 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
 
   return (
     <CommonListContainer id="tokens-list" ref={parentRef} onScroll={onScroll}>
-      {!isInjectedWidgetMode && connectedAccount && !isChainIdUnsupported && (
-        <CoWAmmBanner location={BannerLocation.TokenSelector} />
-      )}
+      {/*{!isInjectedWidgetMode && account && !isChainIdUnsupported && (*/}
+      {/*  <CoWAmmBanner location={BannerLocation.TokenSelector} />*/}
+      {/*)}*/}
       <styledEl.TokensInner ref={wrapperRef} style={{ height: virtualizer.getTotalSize() }}>
         <styledEl.TokensScroller style={{ transform: `translateY(${items[0]?.start ?? 0}px)` }}>
           {items.map((virtualRow) => {
