@@ -3,10 +3,11 @@ import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import * as styled from './styled'
 
 import { HookDapp } from '../../types/hooks'
+import { isHookCompatible } from '../../utils'
 
 interface HookDetailHeaderProps {
   dapp: HookDapp
-  walletType?: HookDappWalletCompatibility
+  walletType: HookDappWalletCompatibility
   onSelect?: () => void
   iconSize?: number
   gap?: number
@@ -15,14 +16,7 @@ interface HookDetailHeaderProps {
 
 export function HookDetailHeader({ dapp, walletType, onSelect, iconSize, gap, padding }: HookDetailHeaderProps) {
   const { name, image, descriptionShort } = dapp
-
-  const isCompatible =
-    !dapp.conditions?.walletCompatibility ||
-    dapp.conditions.walletCompatibility.includes(
-      walletType === HookDappWalletCompatibility.EOA
-        ? HookDappWalletCompatibility.EOA
-        : HookDappWalletCompatibility.SMART_CONTRACT,
-    )
+  const isCompatible = isHookCompatible(dapp, walletType)
 
   return (
     <styled.Header iconSize={iconSize} gap={gap} padding={padding}>

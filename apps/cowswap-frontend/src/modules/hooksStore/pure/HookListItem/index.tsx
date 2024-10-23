@@ -7,6 +7,7 @@ import SVG from 'react-inlinesvg'
 import * as styled from './styled'
 
 import { HookDapp } from '../../types/hooks'
+import { isHookCompatible } from '../../utils'
 
 interface HookListItemProps {
   dapp: HookDapp
@@ -19,6 +20,8 @@ interface HookListItemProps {
 export function HookListItem({ dapp, walletType, onSelect, onOpenDetails, onRemove }: HookListItemProps) {
   const { name, descriptionShort, image, version } = dapp
 
+  const isCompatible = isHookCompatible(dapp, walletType)
+
   const handleItemClick = (event: React.MouseEvent<HTMLLIElement>) => {
     const target = event.target as HTMLElement
     // Check if the click target is not a button or the info icon
@@ -26,13 +29,6 @@ export function HookListItem({ dapp, walletType, onSelect, onOpenDetails, onRemo
       onOpenDetails()
     }
   }
-
-  // If walletCompatibility is not defined, the hook is compatible with any wallet type
-  const isCompatible =
-    !dapp.conditions?.walletCompatibility ||
-    dapp.conditions.walletCompatibility.includes(
-      walletType === 'EOA' ? HookDappWalletCompatibility.EOA : HookDappWalletCompatibility.SMART_CONTRACT,
-    )
 
   return (
     <styled.HookDappListItem onClick={handleItemClick} isCompatible={isCompatible}>

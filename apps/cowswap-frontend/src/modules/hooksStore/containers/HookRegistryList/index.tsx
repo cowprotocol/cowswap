@@ -21,7 +21,7 @@ import { HookDetailHeader } from '../../pure/HookDetailHeader'
 import { HookListItem } from '../../pure/HookListItem'
 import { HookListsTabs } from '../../pure/HookListsTabs'
 import { HookDapp, HookDappIframe } from '../../types/hooks'
-import { findHookDappById, isHookDappIframe } from '../../utils'
+import { findHookDappById, isHookCompatible, isHookDappIframe } from '../../utils'
 import { HookDappContainer } from '../HookDappContainer'
 import { HookSearchInput } from '../HookSearchInput'
 
@@ -29,18 +29,14 @@ interface HookStoreModal {
   onDismiss: Command
   isPreHook: boolean
   hookToEdit?: string
+  walletType: HookDappWalletCompatibility
 }
 
-export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStoreModal) {
+export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType }: HookStoreModal) {
   const [selectedDapp, setSelectedDapp] = useState<HookDapp | null>(null)
   const [dappDetails, setDappDetails] = useState<HookDapp | null>(null)
   const [isAllHooksTab, setIsAllHooksTab] = useState<boolean>(true)
   const [searchQuery, setSearchQuery] = useState<string>('')
-
-  const isSmartContractWallet = useIsSmartContractWallet()
-  const walletType = isSmartContractWallet
-    ? HookDappWalletCompatibility.SMART_CONTRACT
-    : HookDappWalletCompatibility.EOA
   const addCustomHookDapp = useAddCustomHookDapp(isPreHook)
   const removeCustomHookDapp = useRemoveCustomHookDapp()
   const customHookDapps = useCustomHookDapps(isPreHook)
@@ -61,10 +57,12 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
   }, [currentDapps, searchQuery])
 
   const sortedFilteredDapps = useMemo(() => {
-    const isCompatible = (dapp: HookDapp) =>
-      !dapp.conditions?.walletCompatibility || dapp.conditions.walletCompatibility.includes(walletType)
-    return filteredDapps.sort((a, b) => (isCompatible(a) === isCompatible(b) ? 0 : isCompatible(a) ? -1 : 1))
-  }, [filteredDapps, isSmartContractWallet])
+    return filteredDapps.sort((a, b) => {
+      const isCompatibleA = isHookCompatible(a, walletType)
+      const isCompatibleB = isHookCompatible(b, walletType)
+      return isCompatibleA === isCompatibleB ? 0 : isCompatibleA ? -1 : 1
+    })
+  }, [filteredDapps, walletType])
 
   const customHooksCount = customHookDapps.length
   const allHooksCount = internalHookDapps.length + customHooksCount
@@ -100,59 +98,64 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
   const handleAddCustomHook = () => setIsAllHooksTab(false)
   const handleClearSearch = () => setSearchQuery('')
 
-  const emptyListMessage = isAllHooksTab
-    ? searchQuery
-      ? 'No hooks match your search.'
-      : 'No hooks available.'
-    : "You haven't added any custom hooks yet. Add a custom hook to get started."
+  const emptyListMessage = useMemo(
+    () =>
+      isAllHooksTab
+        ? searchQuery
+          ? 'No hooks match your search.'
+          : 'No hooks available.'
+        : "You haven't added any custom hooks yet. Add a custom hook to get started.",
+    [isAllHooksTab, searchQuery],
+  )
 
-  const DappsListContent = (
-    <>
-      {isAllHooksTab && (
-        <DismissableInlineBanner
-          orientation={BannerOrientation.Horizontal}
-          customIcon={ICON_HOOK}
-          iconSize={36}
-          bannerId="hooks-store-banner-tradeContainer-customHooks"
-          margin="0 10px 10px"
-          width="auto"
-        >
-          <p>
-            Can't find a hook that you like?{' '}
-            <span onClick={handleAddCustomHook} style={{ cursor: 'pointer', textDecoration: 'underline' }}>
-              Add a custom hook
-            </span>
-          </p>
-        </DismissableInlineBanner>
-      )}
+  const DappsListContent = useMemo(
+    () => (
+      <>
+        {isAllHooksTab && (
+          <DismissableInlineBanner
+            orientation={BannerOrientation.Horizontal}
+            customIcon={ICON_HOOK}
+            iconSize={36}
+            bannerId="hooks-store-banner-tradeContainer-customHooks"
+            margin="0 10px 10px"
+            width="auto"
+          >
+            <p>
+              Can't find a hook that you like?{' '}
+              <span onClick={handleAddCustomHook} style={{ cursor: 'pointer', textDecoration: 'underline' }}>
+                Add a custom hook
+              </span>
+            </p>
+          </DismissableInlineBanner>
+        )}
 
-      <HookSearchInput
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value?.trim())}
-        placeholder="Search hooks by title or description"
-        ariaLabel="Search hooks"
-        onClear={handleClearSearch}
-      />
+        <HookSearchInput
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value?.trim())}
+          placeholder="Search hooks by title or description"
+          ariaLabel="Search hooks"
+          onClear={handleClearSearch}
+        />
 
-      {sortedFilteredDapps.length > 0 ? (
-        <HookDappsList>
-          {sortedFilteredDapps.map((dapp) => (
-            <HookListItem
-              key={isHookDappIframe(dapp) ? dapp.url : dapp.name}
-              dapp={dapp}
-              walletType={
-                isSmartContractWallet ? HookDappWalletCompatibility.SMART_CONTRACT : HookDappWalletCompatibility.EOA
-              }
-              onRemove={!isAllHooksTab ? () => removeCustomHookDapp(dapp as HookDappIframe) : undefined}
-              onSelect={() => setSelectedDapp(dapp)}
-              onOpenDetails={() => setDappDetails(dapp)}
-            />
-          ))}
-        </HookDappsList>
-      ) : (
-        <EmptyList>{emptyListMessage}</EmptyList>
-      )}
-    </>
+        {sortedFilteredDapps.length > 0 ? (
+          <HookDappsList>
+            {sortedFilteredDapps.map((dapp) => (
+              <HookListItem
+                key={isHookDappIframe(dapp) ? dapp.url : dapp.name}
+                dapp={dapp}
+                walletType={walletType}
+                onRemove={!isAllHooksTab ? () => removeCustomHookDapp(dapp as HookDappIframe) : undefined}
+                onSelect={() => setSelectedDapp(dapp)}
+                onOpenDetails={() => setDappDetails(dapp)}
+              />
+            ))}
+          </HookDappsList>
+        ) : (
+          <EmptyList>{emptyListMessage}</EmptyList>
+        )}
+      </>
+    ),
+    [isAllHooksTab, searchQuery, sortedFilteredDapps, handleAddCustomHook, handleClearSearch],
   )
 
   return (
@@ -188,11 +191,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
         ) : isAllHooksTab ? (
           DappsListContent
         ) : (
-          <AddCustomHookForm
-            isPreHook={isPreHook}
-            isSmartContractWallet={isSmartContractWallet}
-            addHookDapp={addCustomHookDapp}
-          >
+          <AddCustomHookForm isPreHook={isPreHook} walletType={walletType} addHookDapp={addCustomHookDapp}>
             {DappsListContent}
           </AddCustomHookForm>
         )}
