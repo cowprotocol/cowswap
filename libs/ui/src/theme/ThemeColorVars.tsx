@@ -97,8 +97,20 @@ export const ThemeColorVars = css`
     ${UI.COLOR_GREEN}: ${({ theme }) => theme.success};
     ${UI.COLOR_RED}: ${({ theme }) => theme.danger};
 
+    // CoW AMM Colors
+    ${UI.COLOR_COWAMM_DARK_GREEN}: #194d05;
+    ${UI.COLOR_COWAMM_DARK_GREEN_OPACITY_30}: ${() => transparentize('#194d05', 0.7)};
+    ${UI.COLOR_COWAMM_DARK_GREEN_OPACITY_15}: ${() => transparentize('#194d05', 0.85)};
+    ${UI.COLOR_COWAMM_GREEN}: #2b6f0b;
+    ${UI.COLOR_COWAMM_LIGHT_GREEN}: #bcec79;
+    ${UI.COLOR_COWAMM_LIGHT_GREEN_OPACITY_30}: ${() => transparentize('#bcec79', 0.7)};
+    ${UI.COLOR_COWAMM_LIGHTER_GREEN}: #dcf8a7;
+    ${UI.COLOR_COWAMM_BLUE}: #3fc4ff;
+    ${UI.COLOR_COWAMM_DARK_BLUE}: #012F7A;
+    ${UI.COLOR_COWAMM_LIGHT_BLUE}: #ccf8ff;
+
     // Base
-    ${UI.COLOR_CONTAINER_BG_02}: ${UI.COLOR_PAPER};
+    ${UI.COLOR_CONTAINER_BG_02}: var(${UI.COLOR_PAPER});
     ${UI.MODAL_BACKDROP}: var(${UI.COLOR_TEXT});
     ${UI.BORDER_RADIUS_NORMAL}: 24px;
     ${UI.PADDING_NORMAL}: 24px;
@@ -115,7 +127,7 @@ export const ThemeColorVars = css`
     ${UI.COLOR_TEXT_OPACITY_25}: ${({ theme }) => transparentize(theme.text, 0.75)};
     ${UI.COLOR_TEXT_OPACITY_10}: ${({ theme }) => transparentize(theme.text, 0.9)};
     ${UI.COLOR_TEXT2}: ${({ theme }) => transparentize(theme.text, 0.3)};
-    ${UI.COLOR_LINK}: ${`var(${UI.COLOR_PRIMARY})`};
+    ${UI.COLOR_LINK}: var(${UI.COLOR_PRIMARY});
     ${UI.COLOR_LINK_OPACITY_10}: ${({ theme }) => transparentize(theme.info, 0.9)};
 
     // Font Weights & Sizes
