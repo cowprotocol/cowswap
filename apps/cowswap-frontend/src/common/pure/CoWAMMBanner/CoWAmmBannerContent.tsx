@@ -1,5 +1,4 @@
-import React from 'react'
-import { useCallback, useMemo, useRef } from 'react'
+import React, { useCallback, useMemo, useRef } from 'react'
 
 import ICON_ARROW from '@cowprotocol/assets/cow-swap/arrow.svg'
 import ICON_CURVE from '@cowprotocol/assets/cow-swap/icon-curve.svg'
@@ -7,6 +6,9 @@ import ICON_PANCAKESWAP from '@cowprotocol/assets/cow-swap/icon-pancakeswap.svg'
 import ICON_SUSHISWAP from '@cowprotocol/assets/cow-swap/icon-sushi.svg'
 import ICON_UNISWAP from '@cowprotocol/assets/cow-swap/icon-uni.svg'
 import ICON_STAR from '@cowprotocol/assets/cow-swap/star-shine.svg'
+import { USDC, WBTC } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenLogo } from '@cowprotocol/tokens'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
@@ -16,14 +18,18 @@ import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { ArrowBackground } from './arrowBackground'
-import { LpToken, StateKey, dummyData, lpTokenConfig } from './dummyData'
+import {
+  dummyData,
+  DummyDataType,
+  InferiorYieldScenario,
+  LpToken,
+  lpTokenConfig,
+  StateKey,
+  TwoLpScenario,
+} from './dummyData'
 import * as styledEl from './styled'
 
 import { BannerLocation, DEMO_DROPDOWN_OPTIONS } from './index'
-import { TokenLogo } from '../../../../../../libs/tokens/src/pure/TokenLogo'
-import { USDC, WBTC } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { DummyDataType, TwoLpScenario, InferiorYieldScenario } from './dummyData'
 
 const lpTokenIcons: Record<LpToken, string> = {
   [LpToken.UniswapV2]: ICON_UNISWAP,
@@ -197,7 +203,7 @@ export function CoWAmmBannerContent({
         return `yield over average UNI-V2 pool`
       }
     }
-  }, [selectedState, location, lpTokenConfig, isDarkMode])
+  }, [selectedState, location, lpTokenConfig, isDarkMode, dummyData])
 
   const lpEmblems = useMemo(() => {
     const tokens = lpTokenConfig[selectedState]
@@ -251,7 +257,7 @@ export function CoWAmmBannerContent({
         {renderEmblemContent()}
       </styledEl.LpEmblems>
     )
-  }, [selectedState, lpTokenConfig, lpTokenIcons])
+  }, [selectedState, lpTokenConfig])
 
   const renderProductLogo = useCallback(
     (color: string) => (

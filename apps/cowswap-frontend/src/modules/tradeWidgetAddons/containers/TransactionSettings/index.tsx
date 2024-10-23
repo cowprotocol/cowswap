@@ -131,7 +131,7 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
         setSwapSlippage(percentToBps(new Percent(parsed, 10_000)))
       }
     },
-    [placeholderSlippage, isEoaEthFlow, minEthFlowSlippage],
+    [placeholderSlippage, isEoaEthFlow, minEthFlowSlippage, minEthFlowSlippageBps, setSwapSlippage],
   )
 
   const tooLow = swapSlippage.lessThan(new Percent(isEoaEthFlow ? minEthFlowSlippageBps : LOW_SLIPPAGE_BPS, 10_000))
@@ -173,7 +173,7 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
         }
       }
     },
-    [minDeadline, maxDeadline],
+    [minDeadline, maxDeadline, setDeadline],
   )
 
   useEffect(() => {
@@ -189,7 +189,7 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
         setDeadline(value)
       }
     }
-  }, [widgetDeadline, minDeadline, maxDeadline])
+  }, [widgetDeadline, minDeadline, maxDeadline, setDeadline])
 
   const isDeadlineDisabled = !!widgetDeadline
 
