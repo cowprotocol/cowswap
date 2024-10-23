@@ -1,12 +1,15 @@
-import { useCallback } from 'react'
+import { MouseEventHandler, useCallback } from 'react'
 
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
-import { LpToken } from '@cowprotocol/common-const'
-import { TokenLogo, TokensByAddress } from '@cowprotocol/tokens'
-import { InfoTooltip, LoadingRows, LoadingRowSmall, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
+import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
+import { TokenLogo } from '@cowprotocol/tokens'
+import { LoadingRows, LoadingRowSmall, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { VirtualItem } from '@tanstack/react-virtual'
+import { Info } from 'react-feather'
+
+import { PoolInfoStates } from 'modules/yield/shared'
 
 import { VirtualList } from 'common/pure/VirtualList'
 
@@ -16,7 +19,6 @@ import {
   ListHeader,
   ListItem,
   LpTokenInfo,
-  LpTokenLogo,
   LpTokenWrapper,
   NoPoolWrapper,
   Wrapper,
@@ -29,34 +31,44 @@ const LoadingElement = (
 )
 
 interface LpTokenListsProps {
+  account: string | undefined
   lpTokens: LpToken[]
-  tokensByAddress: TokensByAddress
   balancesState: BalancesState
   displayCreatePoolBanner: boolean
+  poolsInfo: PoolInfoStates | undefined
+  onSelectToken(token: TokenWithLogo): void
+  openPoolPage(poolAddress: string): void
 }
 
-export function LpTokenLists({ lpTokens, tokensByAddress, balancesState, displayCreatePoolBanner }: LpTokenListsProps) {
+export function LpTokenLists({
+  account,
+  onSelectToken,
+  openPoolPage,
+  lpTokens,
+  balancesState,
+  displayCreatePoolBanner,
+  poolsInfo,
+}: LpTokenListsProps) {
   const { values: balances } = balancesState
 
   const getItemView = useCallback(
     (lpTokens: LpToken[], item: VirtualItem) => {
       const token = lpTokens[item.index]
-      const token0 = token.tokens?.[0]?.toLowerCase()
-      const token1 = token.tokens?.[1]?.toLowerCase()
-      const balance = balances ? balances[token.address.toLowerCase()] : undefined
+
+      const tokenAddressLower = token.address.toLowerCase()
+      const balance = balances ? balances[tokenAddressLower] : undefined
       const balanceAmount = balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
+      const info = poolsInfo?.[tokenAddressLower]?.info
+
+      const onInfoClick: MouseEventHandler<SVGElement> = (e) => {
+        e.stopPropagation()
+        openPoolPage(tokenAddressLower)
+      }
 
       return (
-        <ListItem data-address={token.address}>
+        <ListItem data-address={token.address} onClick={() => onSelectToken(token)}>
           <LpTokenWrapper>
-            <LpTokenLogo>
-              <div>
-                <TokenLogo token={tokensByAddress[token0]} sizeMobile={32} />
-              </div>
-              <div>
-                <TokenLogo token={tokensByAddress[token1]} sizeMobile={32} />
-              </div>
-            </LpTokenLogo>
+            <TokenLogo token={token} sizeMobile={32} />
             <LpTokenInfo>
               <strong>
                 <TokenSymbol token={token} />
@@ -66,15 +78,15 @@ export function LpTokenLists({ lpTokens, tokensByAddress, balancesState, display
               </p>
             </LpTokenInfo>
           </LpTokenWrapper>
-          <span>{balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement}</span>
-          <span>40%</span>
+          <span>{balanceAmount ? <TokenAmount amount={balanceAmount} /> : account ? LoadingElement : null}</span>
+          <span>{info?.apy ? `${info.apy}%` : ''}</span>
           <span>
-            <InfoTooltip>TODO</InfoTooltip>
+            <Info onClick={onInfoClick} size={16} />
           </span>
         </ListItem>
       )
     },
-    [balances, tokensByAddress],
+    [balances, onSelectToken, poolsInfo, openPoolPage, account],
   )
 
   return (

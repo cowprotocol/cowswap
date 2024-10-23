@@ -67,20 +67,21 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
       const isCurrentPathYield = location.pathname.startsWith(addChainIdToRoute(Routes.YIELD, chainId))
       const itemTradeState = getTradeStateByType(item.route)
 
-      const routePath = isItemYield
-        ? addChainIdToRoute(item.route, chainId)
-        : parameterizeTradeRoute(
-            isCurrentPathYield
-              ? ({
-                  chainId,
-                  inputCurrencyId:
-                    itemTradeState.inputCurrencyId || (chainId && getDefaultTradeRawState(+chainId).inputCurrencyId),
-                  outputCurrencyId: itemTradeState.outputCurrencyId,
-                } as TradeUrlParams)
-              : tradeContext,
-            item.route,
-            !isCurrentPathYield,
-          )
+      const routePath =
+        isItemYield && !isCurrentPathYield
+          ? addChainIdToRoute(item.route, chainId)
+          : parameterizeTradeRoute(
+              isCurrentPathYield
+                ? ({
+                    chainId,
+                    inputCurrencyId:
+                      itemTradeState.inputCurrencyId || (chainId && getDefaultTradeRawState(+chainId).inputCurrencyId),
+                    outputCurrencyId: itemTradeState.outputCurrencyId,
+                  } as TradeUrlParams)
+                : tradeContext,
+              item.route,
+              !isCurrentPathYield,
+            )
 
       const isActive = location.pathname.startsWith(routePath.split('?')[0])
 

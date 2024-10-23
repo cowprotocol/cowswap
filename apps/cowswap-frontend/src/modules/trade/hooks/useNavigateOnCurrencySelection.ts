@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 
+import { LpToken } from '@cowprotocol/common-const'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -16,7 +17,7 @@ export type CurrencySelectionCallback = (
   field: Field,
   currency: Currency | null,
   stateUpdateCallback?: Command,
-  searchParams?: TradeSearchParams
+  searchParams?: TradeSearchParams,
 ) => void
 
 function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => string | null {
@@ -26,9 +27,11 @@ function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => str
     (currency: Currency | null): string | null => {
       if (!currency) return null
 
-      return areThereTokensWithSameSymbol(currency.symbol) ? (currency as Token).address : currency.symbol || null
+      return currency instanceof LpToken || areThereTokensWithSameSymbol(currency.symbol)
+        ? (currency as Token).address
+        : currency.symbol || null
     },
-    [areThereTokensWithSameSymbol]
+    [areThereTokensWithSameSymbol],
   )
 }
 
@@ -63,11 +66,11 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
               inputCurrencyId: targetInputCurrencyId,
               outputCurrencyId: targetOutputCurrencyId,
             },
-        searchParams
+        searchParams,
       )
 
       stateUpdateCallback?.()
     },
-    [navigate, chainId, state, resolveCurrencyAddressOrSymbol]
+    [navigate, chainId, state, resolveCurrencyAddressOrSymbol],
   )
 }

@@ -6,11 +6,12 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 interface TokensModuleEnvironment {
   chainId: SupportedChainId
   useCuratedListOnly?: boolean
+  enableLpTokensByDefault?: boolean
   widgetAppCode?: string
   selectedLists?: string[]
 }
 export const { atom: environmentAtom, updateAtom: updateEnvironmentAtom } = atomWithPartialUpdate(
   atom<TokensModuleEnvironment>({
     chainId: getCurrentChainIdFromUrl(),
-  })
+  }),
 )

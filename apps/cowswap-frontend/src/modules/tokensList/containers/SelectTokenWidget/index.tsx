@@ -5,6 +5,7 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import {
   ListState,
+  TokenListCategory,
   useAddList,
   useAddUserToken,
   useAllListsList,
@@ -26,6 +27,7 @@ import { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectToke
 import { ImportListModal } from '../../pure/ImportListModal'
 import { ImportTokenModal } from '../../pure/ImportTokenModal'
 import { SelectTokenModal } from '../../pure/SelectTokenModal'
+import { LpTokenPage } from '../LpTokenPage'
 import { ManageListsAndTokens } from '../ManageListsAndTokens'
 
 const Wrapper = styled.div`
@@ -41,10 +43,11 @@ interface SelectTokenWidgetProps {
   displayLpTokenLists?: boolean
 }
 
-export function SelectTokenWidget({displayLpTokenLists}: SelectTokenWidgetProps) {
-  const { open, onSelectToken, tokenToImport, listToImport, selectedToken, onInputPressEnter } =
+export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProps) {
+  const { open, onSelectToken, tokenToImport, listToImport, selectedToken, onInputPressEnter, selectedPoolAddress } =
     useSelectTokenWidgetState()
   const [isManageWidgetOpen, setIsManageWidgetOpen] = useState(false)
+  const tokenListCategoryState = useState<TokenListCategory[] | null>(null)
 
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
   const { account } = useWalletInfo()
@@ -70,19 +73,31 @@ export function SelectTokenWidget({displayLpTokenLists}: SelectTokenWidgetProps)
       onSelectToken: undefined,
       tokenToImport: undefined,
       listToImport: undefined,
+      selectedPoolAddress: undefined,
     })
   }, [updateSelectTokenWidget])
 
-  const resetTokenImport = () => {
+  const openPoolPage = useCallback(
+    (selectedPoolAddress: string) => {
+      updateSelectTokenWidget({ selectedPoolAddress })
+    },
+    [updateSelectTokenWidget],
+  )
+
+  const closePoolPage = useCallback(() => {
+    updateSelectTokenWidget({ selectedPoolAddress: undefined })
+  }, [updateSelectTokenWidget])
+
+  const resetTokenImport = useCallback(() => {
     updateSelectTokenWidget({
       tokenToImport: undefined,
     })
-  }
+  }, [updateSelectTokenWidget])
 
-  const onDismiss = () => {
+  const onDismiss = useCallback(() => {
     setIsManageWidgetOpen(false)
     closeTokenSelectWidget()
-  }
+  }, [closeTokenSelectWidget])
 
   const importTokenAndClose = (tokens: TokenWithLogo[]) => {
     importTokenCallback(tokens)
@@ -139,6 +154,17 @@ export function SelectTokenWidget({displayLpTokenLists}: SelectTokenWidgetProps)
           )
         }
 
+        if (selectedPoolAddress) {
+          return (
+            <LpTokenPage
+              poolAddress={selectedPoolAddress}
+              onDismiss={onDismiss}
+              onBack={closePoolPage}
+              onSelectToken={onSelectToken}
+            />
+          )
+        }
+
         return (
           <SelectTokenModal
             displayLpTokenLists={displayLpTokenLists}
@@ -153,6 +179,8 @@ export function SelectTokenWidget({displayLpTokenLists}: SelectTokenWidgetProps)
             onDismiss={onDismiss}
             onOpenManageWidget={() => setIsManageWidgetOpen(true)}
             hideFavoriteTokensTooltip={isInjectedWidgetMode}
+            openPoolPage={openPoolPage}
+            tokenListCategoryState={tokenListCategoryState}
             account={account}
           />
         )

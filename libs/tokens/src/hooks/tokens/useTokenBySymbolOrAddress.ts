@@ -3,10 +3,12 @@ import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
-import { tokensByAddressAtom, tokensBySymbolAtom } from '../../state/tokens/allTokensAtom'
+import { useTokensByAddressMap } from './useTokensByAddressMap'
+
+import { tokensBySymbolAtom } from '../../state/tokens/allTokensAtom'
 
 export function useTokenBySymbolOrAddress(symbolOrAddress?: string | null): TokenWithLogo | null {
-  const tokensByAddress = useAtomValue(tokensByAddressAtom)
+  const tokensByAddress = useTokensByAddressMap()
   const tokensBySymbol = useAtomValue(tokensBySymbolAtom)
 
   return useMemo(() => {

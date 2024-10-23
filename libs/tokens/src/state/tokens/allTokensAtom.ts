@@ -6,7 +6,7 @@ import { TokenInfo } from '@cowprotocol/types'
 import { favoriteTokensAtom } from './favoriteTokensAtom'
 import { userAddedTokensAtom } from './userAddedTokensAtom'
 
-import { TokensMap } from '../../types'
+import { LP_TOKEN_LIST_CATEGORIES, TokensMap } from '../../types'
 import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
 import { parseTokenInfo } from '../../utils/parseTokenInfo'
 import { tokenMapToListWithLogo } from '../../utils/tokenMapToListWithLogo'
@@ -58,23 +58,47 @@ export const tokensStateAtom = atom<TokensState>((get) => {
   )
 })
 
+export const lpTokensMapAtom = atom<TokensMap>((get) => {
+  const { chainId } = get(environmentAtom)
+  const listsStatesList = get(listsStatesListAtom)
+
+  return listsStatesList.reduce<TokensMap>((acc, list) => {
+    if (!list.category || !LP_TOKEN_LIST_CATEGORIES.includes(list.category)) {
+      return acc
+    }
+
+    list.list.tokens.forEach((token) => {
+      const tokenInfo = parseTokenInfo(chainId, token)
+      const tokenAddressKey = tokenInfo?.address.toLowerCase()
+
+      if (!tokenInfo || !tokenAddressKey) return
+
+      acc[tokenAddressKey] = tokenInfo
+    })
+
+    return acc
+  }, {})
+})
+
 /**
  * Returns a list of tokens that are active and sorted alphabetically
  * The list includes: native token, user added tokens, favorite tokens and tokens from active lists
  * Native token is always the first element in the list
  */
 export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
-  const { chainId } = get(environmentAtom)
+  const { chainId, enableLpTokensByDefault } = get(environmentAtom)
   const userAddedTokens = get(userAddedTokensAtom)
   const favoriteTokensState = get(favoriteTokensAtom)
 
   const tokensMap = get(tokensStateAtom)
+  const lpTokensMap = get(lpTokensMapAtom)
   const nativeToken = NATIVE_CURRENCIES[chainId]
 
   return tokenMapToListWithLogo(
     {
       [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo,
       ...tokensMap.activeTokens,
+      ...(enableLpTokensByDefault ? lpTokensMap : null),
       ...lowerCaseTokensMap(userAddedTokens[chainId]),
       ...lowerCaseTokensMap(favoriteTokensState[chainId]),
     },

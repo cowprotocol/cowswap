@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { usePersistBalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokenListCategory, useAllLpTokens } from '@cowprotocol/tokens'
+import { LP_TOKEN_LIST_CATEGORIES, useAllLpTokens } from '@cowprotocol/tokens'
 
 import ms from 'ms.macro'
 
@@ -16,15 +16,13 @@ const LP_MULTICALL_OPTIONS = { consequentExecution: true }
 // We start the updater with a delay
 const LP_UPDATER_START_DELAY = ms`3s`
 
-const LP_CATEGORIES = [TokenListCategory.LP, TokenListCategory.COW_AMM_LP]
-
 export interface BalancesAndAllowancesUpdaterProps {
   account: string | undefined
   chainId: SupportedChainId
   enablePolling: boolean
 }
 export function LpBalancesAndAllowancesUpdater({ account, chainId, enablePolling }: BalancesAndAllowancesUpdaterProps) {
-  const allLpTokens = useAllLpTokens(LP_CATEGORIES)
+  const allLpTokens = useAllLpTokens(LP_TOKEN_LIST_CATEGORIES)
   const [isUpdaterPaused, setIsUpdaterPaused] = useState(true)
 
   const lpTokenAddresses = useMemo(() => allLpTokens.map((token) => token.address), [allLpTokens])

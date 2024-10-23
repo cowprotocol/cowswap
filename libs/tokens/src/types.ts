@@ -8,6 +8,8 @@ export enum TokenListCategory {
   COW_AMM_LP = 'COW_AMM_LP',
 }
 
+export const LP_TOKEN_LIST_CATEGORIES = [TokenListCategory.LP, TokenListCategory.COW_AMM_LP]
+
 export type ListSourceConfig = {
   widgetAppCode?: string
   priority?: number
@@ -24,7 +26,7 @@ export type UnsupportedTokensState = { [tokenAddress: string]: { dateAdded: numb
 
 export type ListsEnabledState = { [listId: string]: boolean | undefined }
 
-export interface ListState extends Pick<ListSourceConfig, 'source' | 'priority' | 'widgetAppCode' | 'category'>{
+export interface ListState extends Pick<ListSourceConfig, 'source' | 'priority' | 'widgetAppCode' | 'category'> {
   list: UniTokenList
   isEnabled?: boolean
 }

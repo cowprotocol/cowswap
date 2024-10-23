@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
+import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
 import { isTruthy } from '@cowprotocol/common-utils'
 import { useSearchNonExistentToken } from '@cowprotocol/tokens'
 
@@ -14,13 +14,13 @@ interface AutoImportTokensState {
 }
 export function useAutoImportTokensState(
   inputToken: Nullish<string>,
-  outputToken: Nullish<string>
+  outputToken: Nullish<string>,
 ): AutoImportTokensState {
   const foundInputToken = useSearchNonExistentToken(inputToken || null)
   const foundOutputToken = useSearchNonExistentToken(outputToken || null)
 
   const tokensToImport = useMemo(() => {
-    return [foundInputToken, foundOutputToken].filter(isTruthy)
+    return [foundInputToken, foundOutputToken].filter(isTruthy).filter((token) => !(token instanceof LpToken))
   }, [foundInputToken, foundOutputToken])
 
   const tokensToImportCount = tokensToImport.length

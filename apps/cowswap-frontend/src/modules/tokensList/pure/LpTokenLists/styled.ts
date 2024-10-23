@@ -31,33 +31,11 @@ export const ListItem = styled.div`
   grid-template-columns: 1fr 100px 50px 20px;
   padding: 10px 20px;
   cursor: pointer;
+  font-size: 14px;
+  align-items: center;
 
   &:hover {
     background: var(${UI.COLOR_PAPER_DARKER});
-  }
-`
-
-export const LpTokenLogo = styled.div`
-  --size: 36px;
-  --halfSize: 18px;
-
-  width: var(--size);
-  height: var(--size);
-  position: relative;
-
-  > div {
-    position: absolute;
-    width: var(--halfSize);
-    overflow: hidden;
-  }
-
-  > div:last-child {
-    right: -1px;
-  }
-
-  > div:last-child > div {
-    right: 100%;
-    position: relative;
   }
 `
 

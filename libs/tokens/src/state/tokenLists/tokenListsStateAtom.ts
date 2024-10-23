@@ -8,6 +8,7 @@ import {
   ARBITRUM_ONE_TOKENS_LIST,
   DEFAULT_TOKENS_LISTS,
   GNOSIS_UNISWAP_TOKENS_LIST,
+  LP_TOKEN_LISTS,
   UNISWAP_TOKENS_LIST,
 } from '../../const/tokensLists'
 import {
@@ -47,7 +48,7 @@ export const allListsSourcesAtom = atom((get) => {
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
 
   if (useCuratedListOnly) {
-    return [get(curatedListSourceAtom), ...userAddedTokenLists[chainId]]
+    return [get(curatedListSourceAtom), ...LP_TOKEN_LISTS, ...userAddedTokenLists[chainId]]
   }
 
   return [...DEFAULT_TOKENS_LISTS[chainId], ...(userAddedTokenLists[chainId] || [])]
@@ -86,8 +87,13 @@ export const listsStatesMapAtom = atom((get) => {
     return acc
   }, {})
 
+  const lpTokenListSources = LP_TOKEN_LISTS.reduce<{ [key: string]: boolean }>((acc, list) => {
+    acc[list.source] = true
+    return acc
+  }, {})
+
   const listsSources = Object.keys(currentNetworkLists).filter((source) => {
-    return useCuratedListOnly ? userAddedListSources[source] : true
+    return useCuratedListOnly ? userAddedListSources[source] || lpTokenListSources[source] : true
   })
 
   const lists = useCuratedListOnly ? [get(curatedListSourceAtom).source, ...listsSources] : listsSources
