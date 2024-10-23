@@ -16,7 +16,12 @@ export function useAllLpTokens(categories: TokenListCategory[] | null): LpToken[
   return useSWR(
     categories ? [activeTokens, inactiveTokens, categories] : null,
     ([activeTokens, inactiveTokens, categories]) => {
-      const allTokens = [...activeTokens, ...inactiveTokens]
+      const activeTokensMap = activeTokens.reduce<Record<string, true>>((acc, token) => {
+        acc[token.address] = true
+        return acc
+      }, {})
+
+      const allTokens = [...activeTokens, ...inactiveTokens.filter((token) => !activeTokensMap[token.address])]
       const selectOnlyCoWAmm = categories?.length === 1 && categories.includes(TokenListCategory.COW_AMM_LP)
 
       return allTokens.filter((token) => {
