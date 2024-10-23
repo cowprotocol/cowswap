@@ -1,5 +1,4 @@
-import React from 'react'
-import { useCallback, useMemo, useRef } from 'react'
+import React, { useCallback, useMemo, useRef } from 'react'
 
 import ICON_ARROW from '@cowprotocol/assets/cow-swap/arrow.svg'
 import ICON_CURVE from '@cowprotocol/assets/cow-swap/icon-curve.svg'
@@ -7,7 +6,7 @@ import ICON_PANCAKESWAP from '@cowprotocol/assets/cow-swap/icon-pancakeswap.svg'
 import ICON_SUSHISWAP from '@cowprotocol/assets/cow-swap/icon-sushi.svg'
 import ICON_UNISWAP from '@cowprotocol/assets/cow-swap/icon-uni.svg'
 import ICON_STAR from '@cowprotocol/assets/cow-swap/star-shine.svg'
-import { USDC, WBTC } from '@cowprotocol/common-const'
+import { USDC } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
@@ -17,12 +16,20 @@ import { Textfit } from 'react-textfit'
 
 import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
-import { LpToken, StateKey, dummyData, lpTokenConfig } from './dummyData'
-import { DummyDataType, TwoLpScenario, InferiorYieldScenario } from './dummyData'
+import {
+  dummyData,
+  DummyDataType,
+  InferiorYieldScenario,
+  LpToken,
+  lpTokenConfig,
+  StateKey,
+  TwoLpScenario,
+} from './dummyData'
 import * as styledEl from './styled'
 
 import { ArrowBackground } from '../ArrowBackground'
 import { BannerLocation } from './types'
+import { PoolInfo } from './PoolInfo'
 
 const lpTokenIcons: Record<LpToken, string> = {
   [LpToken.UniswapV2]: ICON_UNISWAP,
@@ -94,6 +101,7 @@ export function CoWAmmBannerContent({
   }, [])
 
   const { apr } = dummyData[selectedState]
+  const isTokenSelectorView = location === BannerLocation.TokenSelector
 
   const aprMessage = useMemo(() => {
     if (selectedState === 'uniV2InferiorWithLowAverageYield') {
@@ -112,54 +120,19 @@ export function CoWAmmBannerContent({
       return 'Invalid state selected'
     }
 
-    const renderPoolInfo = (poolName: string) => (
-      <styledEl.PoolInfo
-        flow={location === BannerLocation.TokenSelector ? 'row' : 'column'}
-        align={location === BannerLocation.TokenSelector ? 'center' : 'flex-start'}
-        bgColor={
-          location === BannerLocation.TokenSelector
-            ? isDarkMode
-              ? `var(${UI.COLOR_COWAMM_LIGHT_BLUE})`
-              : `var(${UI.COLOR_COWAMM_DARK_GREEN_OPACITY_15})`
-            : undefined
-        }
-        color={
-          location === BannerLocation.TokenSelector
-            ? isDarkMode
-              ? `var(${UI.COLOR_COWAMM_DARK_BLUE})`
-              : `var(${UI.COLOR_COWAMM_DARK_GREEN})`
-            : undefined
-        }
-        tokenBorderColor={
-          location === BannerLocation.TokenSelector
-            ? isDarkMode
-              ? `var(${UI.COLOR_COWAMM_LIGHT_BLUE})`
-              : `var(${UI.COLOR_COWAMM_DARK_GREEN})`
-            : undefined
-        }
-      >
-        higher APR available for your {poolName} pool:
-        <i>
-          <div>
-            <TokenLogo token={WBTC} /> <TokenLogo token={USDC[SupportedChainId.MAINNET]} />
-          </div>
-          <span>WBTC-USDC</span>
-        </i>
-      </styledEl.PoolInfo>
-    )
-
     if (isTwoLpScenario(currentData)) {
       if (selectedState === 'twoLpsMixed') {
-        return renderPoolInfo('UNI-V2')
+        return <PoolInfo poolName="UNI-V2" isDarkMode={isDarkMode} isTokenSelectorView={isTokenSelectorView} />
       } else if (selectedState === 'twoLpsBothSuperior') {
         const { uniV2Apr, sushiApr } = currentData
         const higherAprPool = uniV2Apr > sushiApr ? 'UNI-V2' : 'SushiSwap'
-        return renderPoolInfo(higherAprPool)
+
+        return <PoolInfo poolName={higherAprPool} isDarkMode={isDarkMode} isTokenSelectorView={isTokenSelectorView} />
       }
     }
 
     if (selectedState === 'uniV2Superior') {
-      return renderPoolInfo('UNI-V2')
+      return <PoolInfo poolName="UNI-V2" isDarkMode={isDarkMode} isTokenSelectorView={isTokenSelectorView} />
     }
 
     if (selectedState === 'uniV2InferiorWithLowAverageYield' && isInferiorYieldScenario(currentData)) {
