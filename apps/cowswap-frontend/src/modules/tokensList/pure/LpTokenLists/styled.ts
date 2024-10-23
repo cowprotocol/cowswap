@@ -113,6 +113,7 @@ export const LpTokenBalance = styled.span`
   font-size: 14px;
   letter-spacing: -0.02rem;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
+  padding: 0 8px 0 0;
 `
 
 export const LpTokenTooltip = styled.div`
