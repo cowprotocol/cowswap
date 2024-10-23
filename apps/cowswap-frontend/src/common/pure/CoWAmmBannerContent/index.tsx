@@ -7,23 +7,22 @@ import ICON_PANCAKESWAP from '@cowprotocol/assets/cow-swap/icon-pancakeswap.svg'
 import ICON_SUSHISWAP from '@cowprotocol/assets/cow-swap/icon-sushi.svg'
 import ICON_UNISWAP from '@cowprotocol/assets/cow-swap/icon-uni.svg'
 import ICON_STAR from '@cowprotocol/assets/cow-swap/star-shine.svg'
+import { USDC, WBTC } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenLogo } from '@cowprotocol/tokens'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import { Textfit } from 'react-textfit'
 
 import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
-import { useIsDarkMode } from 'legacy/state/user/hooks'
 
-import { ArrowBackground } from './arrowBackground'
 import { LpToken, StateKey, dummyData, lpTokenConfig } from './dummyData'
+import { DummyDataType, TwoLpScenario, InferiorYieldScenario } from './dummyData'
 import * as styledEl from './styled'
 
-import { BannerLocation, DEMO_DROPDOWN_OPTIONS } from './index'
-import { TokenLogo } from '../../../../../../libs/tokens/src/pure/TokenLogo'
-import { USDC, WBTC } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { DummyDataType, TwoLpScenario, InferiorYieldScenario } from './dummyData'
+import { ArrowBackground } from '../ArrowBackground'
+import { BannerLocation } from './types'
 
 const lpTokenIcons: Record<LpToken, string> = {
   [LpToken.UniswapV2]: ICON_UNISWAP,
@@ -37,9 +36,8 @@ interface CoWAmmBannerContentProps {
   title: string
   ctaText: string
   location: BannerLocation
-  isDemo: boolean
+  isDarkMode: boolean
   selectedState: StateKey
-  setSelectedState: (state: StateKey) => void
   dummyData: typeof dummyData
   lpTokenConfig: typeof lpTokenConfig
   onCtaClick: () => void
@@ -71,16 +69,14 @@ export function CoWAmmBannerContent({
   title,
   ctaText,
   location,
-  isDemo,
   selectedState,
-  setSelectedState,
   dummyData,
   lpTokenConfig,
   onCtaClick,
   onClose,
+  isDarkMode,
 }: CoWAmmBannerContentProps) {
   const isMobile = useMediaQuery(upToSmall)
-  const isDarkMode = useIsDarkMode()
   const arrowBackgroundRef = useRef<HTMLDivElement>(null)
 
   const handleCTAMouseEnter = useCallback(() => {
@@ -362,35 +358,9 @@ export function CoWAmmBannerContent({
     )
   }
 
-  const renderDemoDropdown = () => (
-    <styledEl.DEMO_DROPDOWN value={selectedState} onChange={(e) => setSelectedState(e.target.value as StateKey)}>
-      {DEMO_DROPDOWN_OPTIONS.map((option) => (
-        <option key={option.value} value={option.value}>
-          {option.label}
-        </option>
-      ))}
-    </styledEl.DEMO_DROPDOWN>
-  )
+  const content = location === BannerLocation.TokenSelector ? renderTokenSelectorContent() : renderGlobalContent()
 
-  const content = (() => {
-    switch (location) {
-      case BannerLocation.TokenSelector:
-        return renderTokenSelectorContent()
-      case BannerLocation.Global:
-        return renderGlobalContent()
-      default:
-        return null
-    }
-  })()
-
-  if (!content) {
-    return null
-  }
-
-  return (
-    <div data-banner-id={id}>
-      {content}
-      {isDemo && renderDemoDropdown()}
-    </div>
-  )
+  return <div data-banner-id={id}>{content}</div>
 }
+
+export { BannerLocation } from './types'

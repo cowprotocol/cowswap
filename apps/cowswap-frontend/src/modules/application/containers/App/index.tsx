@@ -21,9 +21,11 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { parameterizeTradeRoute, useTradeRouteContext } from 'modules/trade'
 import { useInitializeUtm } from 'modules/utm'
 
+import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useMenuItems } from 'common/hooks/useMenuItems'
+import { BannerLocation } from 'common/pure/CoWAmmBannerContent'
 import { LoadingApp } from 'common/pure/LoadingApp'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
@@ -93,9 +95,6 @@ export function App() {
     </HeaderControls>
   )
 
-  // const { account } = useWalletInfo()
-  // const isChainIdUnsupported = useIsProviderNetworkUnsupported()
-
   return (
     <ErrorBoundary>
       <Suspense fallback={<LoadingApp />}>
@@ -130,10 +129,7 @@ export function App() {
             />
           )}
 
-          {/* CoW AMM banner */}
-          {/*{!isInjectedWidgetMode && account && !isChainIdUnsupported && (*/}
-          {/*  <CoWAmmBanner location={BannerLocation.Global} />*/}
-          {/*)}*/}
+          <CoWAmmBanner location={BannerLocation.Global} />
 
           <styledEl.BodyWrapper>
             <TopLevelModals />

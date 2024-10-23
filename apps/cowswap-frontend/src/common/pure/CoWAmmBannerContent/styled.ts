@@ -1,8 +1,8 @@
+import { TokenLogoWrapper } from '@cowprotocol/tokens'
 import { UI, Media } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
 import styled, { keyframes } from 'styled-components/macro'
-import { TokenLogoWrapper } from '../../../../../../libs/tokens/src/pure/TokenLogo'
 
 const arrowUpAnimation = keyframes`
   0% {
