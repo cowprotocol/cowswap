@@ -1,10 +1,5 @@
 import { ReactNode } from 'react'
 
-export enum BannerLocation {
-  Global = 'global',
-  TokenSelector = 'tokenSelector',
-}
-
 export interface CoWAmmBannerContext {
   title: string
   ctaText: string

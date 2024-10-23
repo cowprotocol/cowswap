@@ -9,42 +9,43 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 import { cowAnalytics } from 'modules/analytics'
 
 import { useIsProviderNetworkUnsupported } from '../../hooks/useIsProviderNetworkUnsupported'
-import { BannerLocation, CoWAmmBannerContent } from '../../pure/CoWAmmBannerContent'
+import { CoWAmmBannerContent } from '../../pure/CoWAmmBannerContent'
 import { dummyData, lpTokenConfig } from '../../pure/CoWAmmBannerContent/dummyData'
 
 const ANALYTICS_URL = 'https://cow.fi/pools?utm_source=swap.cow.fi&utm_medium=web&utm_content=cow_amm_banner'
 
 interface BannerProps {
-  location: BannerLocation
+  isTokenSelectorView?: boolean
 }
 
-export function CoWAmmBanner({ location }: BannerProps) {
+export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
   const isDarkMode = useIsDarkMode()
   const isInjectedWidgetMode = isInjectedWidget()
   const { account } = useWalletInfo()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
+  const key = isTokenSelectorView ? 'tokenSelector' : 'global'
   const handleCTAClick = useCallback(() => {
     cowAnalytics.sendEvent({
       category: 'CoW Swap',
-      action: `CoW AMM Banner [${location}] CTA Clicked`,
+      action: `CoW AMM Banner [${key}] CTA Clicked`,
     })
 
     window.open(ANALYTICS_URL, '_blank')
-  }, [location])
+  }, [key])
 
   const handleClose = useCallback(() => {
     cowAnalytics.sendEvent({
       category: 'CoW Swap',
-      action: `CoW AMM Banner [${location}] Closed`,
+      action: `CoW AMM Banner [${key}] Closed`,
     })
-  }, [location])
+  }, [key])
 
   const handleBannerClose = useCallback(() => {
     handleClose()
   }, [handleClose])
 
-  const bannerId = `cow_amm_banner_2024_va_${location}`
+  const bannerId = `cow_amm_banner_2024_va_${key}`
 
   const isSmartContractWallet = useIsSmartContractWallet()
 
@@ -56,7 +57,7 @@ export function CoWAmmBanner({ location }: BannerProps) {
       isDarkMode={isDarkMode}
       title="CoW AMM"
       ctaText={isSmartContractWallet ? 'Booooost APR!' : 'Booooost APR gas-free!'}
-      location={location}
+      isTokenSelectorView={!!isTokenSelectorView}
       selectedState="noLp" // TODO
       dummyData={dummyData}
       lpTokenConfig={lpTokenConfig}

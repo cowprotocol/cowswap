@@ -6,7 +6,7 @@ import { ComparisonMessage } from './ComparisonMessage'
 import { dummyData, lpTokenConfig, StateKey } from './dummyData'
 import { GlobalContent } from './GlobalContent'
 import { TokenSelectorContent } from './TokenSelectorContent'
-import { BannerLocation, CoWAmmBannerContext } from './types'
+import { CoWAmmBannerContext } from './types'
 
 import { useSafeMemoObject } from '../../hooks/useSafeMemo'
 
@@ -14,7 +14,7 @@ interface CoWAmmBannerContentProps {
   id: string
   title: string
   ctaText: string
-  location: BannerLocation
+  isTokenSelectorView: boolean
   isDarkMode: boolean
   selectedState: StateKey
   dummyData: typeof dummyData
@@ -27,7 +27,7 @@ export function CoWAmmBannerContent({
   id,
   title,
   ctaText,
-  location,
+  isTokenSelectorView,
   selectedState,
   dummyData,
   lpTokenConfig,
@@ -40,7 +40,6 @@ export function CoWAmmBannerContent({
 
   const tokens = lpTokenConfig[selectedState]
   const data = dummyData[selectedState]
-  const isTokenSelectorView = location === BannerLocation.TokenSelector
   const isUniV2InferiorWithLowAverageYield = selectedState === 'uniV2InferiorWithLowAverageYield'
 
   const handleCTAMouseEnter = useCallback(() => {
@@ -101,5 +100,3 @@ export function CoWAmmBannerContent({
     </div>
   )
 }
-
-export { BannerLocation } from './types'

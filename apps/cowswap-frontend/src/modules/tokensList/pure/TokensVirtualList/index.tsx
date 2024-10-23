@@ -5,7 +5,6 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { VirtualItem } from '@tanstack/react-virtual'
 
 import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
-import { BannerLocation } from 'common/pure/CoWAmmBannerContent'
 import { VirtualList } from 'common/pure/VirtualList'
 
 import { SelectTokenContext } from '../../types'
@@ -51,7 +50,7 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
 
   return (
     <VirtualList id="tokens-list" items={sortedTokens} getItemView={getItemView}>
-      <CoWAmmBanner location={BannerLocation.TokenSelector} />
+      <CoWAmmBanner isTokenSelectorView />
     </VirtualList>
   )
 }
