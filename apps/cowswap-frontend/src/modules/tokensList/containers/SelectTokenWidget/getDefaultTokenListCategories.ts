@@ -9,10 +9,12 @@ export function getDefaultTokenListCategories(
   oppositeToken: Currency | LpToken | undefined,
   lpTokensWithBalancesCount: number,
 ): TokenListCategory[] | null {
+  const isOppositeLp = oppositeToken instanceof LpToken
+
   // When select buy token
   if (field === Field.OUTPUT) {
     // If sell token is LP token
-    if (oppositeToken instanceof LpToken) {
+    if (isOppositeLp) {
       // And sell token is COW AMM LP token, propose all LP tokens by default as buy token
       if (oppositeToken.isCowAmm) {
         return LP_TOKEN_LIST_CATEGORIES
@@ -24,6 +26,10 @@ export function getDefaultTokenListCategories(
       // And sell token is not LP token, propose all LP tokens by default as buy token
       return LP_TOKEN_LIST_COW_AMM_ONLY
     }
+  }
+
+  if (isOppositeLp && oppositeToken.isCowAmm) {
+    return LP_TOKEN_LIST_CATEGORIES
   }
 
   // When select sell token
