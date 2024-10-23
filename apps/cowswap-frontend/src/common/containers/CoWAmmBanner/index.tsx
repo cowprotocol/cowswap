@@ -41,10 +41,6 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
     })
   }, [key])
 
-  const handleBannerClose = useCallback(() => {
-    handleClose()
-  }, [handleClose])
-
   const bannerId = `cow_amm_banner_2024_va_${key}`
 
   const isSmartContractWallet = useIsSmartContractWallet()
@@ -63,7 +59,7 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
       lpTokenConfig={lpTokenConfig}
       onCtaClick={handleCTAClick}
       onClose={() => {
-        handleBannerClose()
+        handleClose()
         close()
       }}
     />
