@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import ICON_CHECK_ICON from '@cowprotocol/assets/cow-swap/check-singular.svg'
 import ICON_GRID from '@cowprotocol/assets/cow-swap/grid.svg'
 import TenderlyLogo from '@cowprotocol/assets/cow-swap/tenderly-logo.svg'
@@ -7,6 +9,8 @@ import { InfoTooltip } from '@cowprotocol/ui'
 
 import { Edit2, Trash2, ExternalLink as ExternalLinkIcon } from 'react-feather'
 import SVG from 'react-inlinesvg'
+
+import { useTenderlyBundleSimulation } from 'modules/tenderly/hooks/useTenderlyBundleSimulation'
 
 import * as styledEl from './styled'
 
@@ -23,25 +27,21 @@ interface HookItemProp {
   index: number
 }
 
-// TODO: remove once a tenderly bundle simulation is ready
-const isBundleSimulationReady = false
+// TODO: refactor tu use single simulation as fallback
+const isBundleSimulationReady = true
 
 export function AppliedHookItem({ account, hookDetails, dapp, isPreHook, editHook, removeHook, index }: HookItemProp) {
-  // TODO: Determine the simulation status based on actual simulation results
-  // For demonstration, using a placeholder. Replace with actual logic.
-  const simulationPassed = true // TODO: Replace with actual condition
-  const simulationStatus = simulationPassed ? 'Simulation successful' : 'Simulation failed'
-  const simulationTooltip = simulationPassed
+  const { isValidating, data } = useTenderlyBundleSimulation()
+
+  const simulationData = useMemo(() => {
+    if (!data) return
+    return data[hookDetails.uuid]
+  }, [data, hookDetails.uuid])
+
+  const simulationStatus = simulationData?.status ? 'Simulation successful' : 'Simulation failed'
+  const simulationTooltip = simulationData?.status
     ? 'The Tenderly simulation was successful. Your transaction is expected to succeed.'
     : 'The Tenderly simulation failed. Please review your transaction.'
-
-  // TODO: Placeholder for Tenderly simulation URL; replace with actual logic when available
-  const tenderlySimulationUrl = '' // e.g., 'https://tenderly.co/simulation/12345'
-
-  // TODO: Determine if simulation passed or failed
-  const isSimulationSuccessful = simulationPassed
-
-  if (!dapp) return null
 
   return (
     <styledEl.HookItemWrapper data-uid={hookDetails.uuid} as="li">
@@ -51,8 +51,9 @@ export function AppliedHookItem({ account, hookDetails, dapp, isPreHook, editHoo
             <SVG src={ICON_GRID} />
           </styledEl.DragIcon>
           <styledEl.HookNumber>{index + 1}</styledEl.HookNumber>
-          <img src={dapp.image} alt={dapp.name} />
-          <span>{dapp.name}</span>
+          <img src={dapp?.image || ''} alt={dapp?.name} />
+          <span>{dapp?.name}</span>
+          {isValidating && <styledEl.Spinner />}
         </styledEl.HookItemInfo>
         <styledEl.HookItemActions>
           <styledEl.ActionBtn onClick={() => editHook(hookDetails.uuid)}>
@@ -64,15 +65,15 @@ export function AppliedHookItem({ account, hookDetails, dapp, isPreHook, editHoo
         </styledEl.HookItemActions>
       </styledEl.HookItemHeader>
 
-      {account && isBundleSimulationReady && (
-        <styledEl.SimulateContainer isSuccessful={isSimulationSuccessful}>
-          {isSimulationSuccessful ? (
+      {account && isBundleSimulationReady && simulationData && (
+        <styledEl.SimulateContainer isSuccessful={simulationData.status}>
+          {simulationData.status ? (
             <SVG src={ICON_CHECK_ICON} color="green" width={16} height={16} aria-label="Simulation Successful" />
           ) : (
             <SVG src={ICON_X} color="red" width={14} height={14} aria-label="Simulation Failed" />
           )}
-          {tenderlySimulationUrl ? (
-            <a href={tenderlySimulationUrl} target="_blank" rel="noopener noreferrer">
+          {simulationData.link ? (
+            <a href={simulationData.link} target="_blank" rel="noopener noreferrer">
               {simulationStatus}
               <ExternalLinkIcon size={14} />
             </a>
