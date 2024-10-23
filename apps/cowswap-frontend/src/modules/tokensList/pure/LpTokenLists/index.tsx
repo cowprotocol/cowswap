@@ -79,7 +79,7 @@ export function LpTokenLists({
             </LpTokenInfo>
           </LpTokenWrapper>
           <span>{balanceAmount ? <TokenAmount amount={balanceAmount} /> : account ? LoadingElement : null}</span>
-          <span>{info?.apy ? `${info.apy}%` : '-'}</span>
+          <span>{info?.apy ? `${info.apy}%` : ''}</span>
           <span>
             <Info onClick={onInfoClick} size={16} />
           </span>
