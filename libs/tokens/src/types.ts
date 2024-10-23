@@ -1,5 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokenInfo } from '@cowprotocol/types'
+import { LpTokenProvider, TokenInfo } from '@cowprotocol/types'
 import type { TokenList as UniTokenList } from '@uniswap/token-lists'
 
 export enum TokenListCategory {
@@ -15,7 +15,7 @@ export type ListSourceConfig = {
   widgetAppCode?: string
   priority?: number
   enabledByDefault?: boolean
-  category?: TokenListCategory
+  lpTokenProvider?: LpTokenProvider
   source: string
 }
 
@@ -27,7 +27,7 @@ export type UnsupportedTokensState = { [tokenAddress: string]: { dateAdded: numb
 
 export type ListsEnabledState = { [listId: string]: boolean | undefined }
 
-export interface ListState extends Pick<ListSourceConfig, 'source' | 'priority' | 'widgetAppCode' | 'category'> {
+export interface ListState extends Pick<ListSourceConfig, 'source' | 'priority' | 'widgetAppCode' | 'lpTokenProvider'> {
   list: UniTokenList
   isEnabled?: boolean
 }
