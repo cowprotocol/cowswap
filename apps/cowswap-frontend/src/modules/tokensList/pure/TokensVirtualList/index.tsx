@@ -21,6 +21,8 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
   const { values: balances } = balancesState
 
   const isWalletConnected = !!account
+  // const isInjectedWidgetMode = isInjectedWidget()
+  // const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
   const sortedTokens = useMemo(() => {
     return balances ? allTokens.sort(tokensListSorter(balances)) : allTokens

@@ -1,237 +1,84 @@
-import { Media } from '@cowprotocol/ui'
-import { ClosableBanner } from '@cowprotocol/ui'
+import { useAtom } from 'jotai'
+import { useCallback } from 'react'
 
-import { X } from 'react-feather'
-import styled from 'styled-components/macro'
+import { ClosableBanner } from '@cowprotocol/ui'
+import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { cowAnalytics } from 'modules/analytics'
 
-const BannerWrapper = styled.div`
-  --darkGreen: #194d05;
-  --lightGreen: #bcec79;
+import { CoWAmmBannerContent } from './CoWAmmBannerContent'
+import { cowAmmBannerStateAtom } from './cowAmmBannerState'
+import { dummyData, lpTokenConfig } from './dummyData'
 
-  position: fixed;
-  top: 76px;
-  right: 10px;
-  z-index: 3;
-  width: 400px;
-  height: 345px;
-  border-radius: 24px;
-  background-color: var(--darkGreen);
-  color: var(--lightGreen);
-  padding: 24px;
-  display: flex;
-  flex-flow: column wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  overflow: hidden;
+const IS_DEMO_MODE = true
+const ANALYTICS_URL = 'https://cow.fi/pools?utm_source=swap.cow.fi&utm_medium=web&utm_content=cow_amm_banner'
 
-  ${Media.upToSmall()} {
-    width: 100%;
-    height: auto;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    bottom: 57px;
-    top: initial;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    box-shadow: 0 0 0 100vh rgb(0 0 0 / 40%);
-    z-index: 10;
-  }
+export const DEMO_DROPDOWN_OPTIONS = [
+  { value: 'noLp', label: '🚫 No LP Tokens' },
+  { value: 'uniV2Superior', label: '⬆️ 🐴 UNI-V2 LP (Superior Yield)' },
+  { value: 'uniV2Inferior', label: '⬇️ 🐴 UNI-V2 LP (Inferior Yield)' },
+  { value: 'uniV2InferiorWithLowAverageYield', label: '⬇️ 🐴 UNI-V2 LP (Inferior Yield, Lower Average)' },
+  { value: 'sushi', label: '⬇️ 🍣 SushiSwap LP (Inferior Yield)' },
+  { value: 'curve', label: '⬇️ 🌈 Curve LP (Inferior Yield)' },
+  { value: 'pancake', label: '⬇️ 🥞 PancakeSwap LP (Inferior Yield)' },
+  { value: 'twoLpsMixed', label: '⬆️ 🐴 UNI-V2 (Superior) & ⬇️ 🍣 SushiSwap (Inferior) LPs' },
+  { value: 'twoLpsBothSuperior', label: '⬆️ 🐴 UNI-V2 & ⬆️ 🍣 SushiSwap LPs (Both Superior, but UNI-V2 is higher)' },
+  { value: 'threeLps', label: '⬇️ 🐴 UNI-V2, 🍣 SushiSwap & 🌈 Curve LPs (Inferior Yield)' },
+  { value: 'fourLps', label: '⬇️ 🐴 UNI-V2, 🍣 SushiSwap, 🌈 Curve & 🥞 PancakeSwap LPs (Inferior Yield)' },
+]
 
-  > i {
-    position: absolute;
-    top: -30px;
-    left: -30px;
-    width: 166px;
-    height: 42px;
-    border: 1px solid var(--lightGreen);
-    border-radius: 16px;
-    border-left: 0;
-    animation: bounceLeftRight 7s infinite;
-    animation-delay: 2s;
-  }
+export enum BannerLocation {
+  Global = 'global',
+  TokenSelector = 'tokenSelector',
+}
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: 100px;
-    left: -23px;
-    width: 56px;
-    height: 190px;
-    border: 1px solid var(--lightGreen);
-    border-radius: 16px;
-    border-left: 0;
-    animation: bounceUpDown 7s infinite;
-  }
+interface BannerProps {
+  location: BannerLocation
+}
 
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -21px;
-    right: 32px;
-    width: 76px;
-    height: 36px;
-    border: 1px solid var(--lightGreen);
-    border-radius: 16px;
-    border-bottom: 0;
-    animation: bounceLeftRight 7s infinite;
-    animation-delay: 1s;
-  }
+export function CoWAmmBanner({ location }: BannerProps) {
+  const [selectedState, setSelectedState] = useAtom(cowAmmBannerStateAtom)
 
-  > div {
-    display: flex;
-    flex-flow: column wrap;
-    gap: 24px;
-    width: 100%;
-    max-width: 75%;
-    margin: 0 auto;
-  }
-
-  @keyframes bounceUpDown {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-7px);
-    }
-  }
-
-  @keyframes bounceLeftRight {
-    0%,
-    100% {
-      transform: translateX(0);
-    }
-    50% {
-      transform: translateX(7px);
-    }
-  }
-`
-
-const Title = styled.h2`
-  font-size: 34px;
-  font-weight: bold;
-  margin: 0;
-
-  ${Media.upToSmall()} {
-    font-size: 26px;
-  }
-`
-
-const Description = styled.p`
-  font-size: 17px;
-  line-height: 1.5;
-  margin: 0;
-
-  ${Media.upToSmall()} {
-    font-size: 15px;
-  }
-`
-
-const CTAButton = styled.button`
-  background-color: var(--lightGreen);
-  color: var(--darkGreen);
-  border: none;
-  border-radius: 56px;
-  padding: 12px 24px;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-  width: 100%;
-  max-width: 75%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: border-radius 0.2s ease-in-out;
-
-  &:hover {
-    border-radius: 16px;
-
-    > i {
-      transform: rotate(45deg);
-    }
-  }
-
-  > i {
-    font-size: 22px;
-    font-weight: bold;
-    font-style: normal;
-    line-height: 1;
-    margin: 3px 0 0;
-    transition: transform 0.2s ease-in-out;
-    animation: spin 6s infinite;
-  }
-
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    20% {
-      transform: rotate(360deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-`
-
-const CloseButton = styled(X)`
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  cursor: pointer;
-  color: var(--lightGreen);
-  opacity: 0.6;
-  transition: opacity 0.2s ease-in-out;
-
-  &:hover {
-    opacity: 1;
-  }
-`
-
-export function CoWAmmBanner() {
-  const handleCTAClick = () => {
+  const handleCTAClick = useCallback(() => {
     cowAnalytics.sendEvent({
       category: 'CoW Swap',
-      action: 'CoW AMM Banner CTA Clicked',
+      action: `CoW AMM Banner [${location}] CTA Clicked`,
     })
 
-    window.open(
-      'https://balancer.fi/pools/cow?utm_source=swap.cow.fi&utm_medium=web&utm_content=cow_amm_banner',
-      '_blank'
-    )
-  }
+    window.open(ANALYTICS_URL, '_blank')
+  }, [location])
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     cowAnalytics.sendEvent({
       category: 'CoW Swap',
-      action: 'CoW AMM Banner Closed',
+      action: `CoW AMM Banner [${location}] Closed`,
     })
-  }
+  }, [location])
 
-  return ClosableBanner('cow_amm_banner', (close) => (
-    <BannerWrapper>
-      <i></i>
-      <CloseButton
-        size={24}
-        onClick={() => {
-          handleClose()
-          close()
-        }}
-      />
-      <div>
-        <Title>Now live: the first MEV-capturing AMM</Title>
-        <Description>
-          CoW AMM shields you from LVR, so you can provide liquidity with less risk and more rewards.
-        </Description>
-      </div>
-      <CTAButton onClick={handleCTAClick}>
-        LP on CoW AMM <i>↗</i>
-      </CTAButton>
-    </BannerWrapper>
+  const handleBannerClose = useCallback(() => {
+    handleClose()
+  }, [handleClose])
+
+  const bannerId = `cow_amm_banner_2024_va_${location}`
+
+  const isSmartContractWallet = useIsSmartContractWallet()
+
+  return ClosableBanner(bannerId, (close) => (
+    <CoWAmmBannerContent
+      id={bannerId}
+      title="CoW AMM"
+      ctaText={isSmartContractWallet ? 'Booooost APR!' : 'Booooost APR gas-free!'}
+      location={location}
+      isDemo={IS_DEMO_MODE}
+      selectedState={selectedState}
+      setSelectedState={setSelectedState}
+      dummyData={dummyData}
+      lpTokenConfig={lpTokenConfig}
+      onCtaClick={handleCTAClick}
+      onClose={() => {
+        handleBannerClose()
+        close()
+      }}
+    />
   ))
 }

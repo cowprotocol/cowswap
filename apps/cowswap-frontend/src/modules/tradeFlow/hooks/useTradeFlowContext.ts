@@ -1,6 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { UiOrderType } from '@cowprotocol/types'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
@@ -13,11 +12,12 @@ import { useCloseModals } from 'legacy/state/application/hooks'
 import { useAppData, useAppDataHooks } from 'modules/appData'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
-import { TradeType, useDerivedTradeState, useReceiveAmountInfo, useTradeConfirmActions } from 'modules/trade'
+import { useDerivedTradeState, useReceiveAmountInfo, useTradeConfirmActions, useTradeTypeInfo } from 'modules/trade'
 import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
 
+import { TradeTypeToUiOrderType } from '../../trade/const/common'
 import { TradeFlowContext } from '../types/TradeFlowContext'
 
 export interface TradeFlowParams {
@@ -31,6 +31,9 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const isSafeWallet = useIsSafeWallet()
   const derivedTradeState = useDerivedTradeState()
   const receiveAmountInfo = useReceiveAmountInfo()
+  const tradeTypeInfo = useTradeTypeInfo()
+  const tradeType = tradeTypeInfo?.tradeType
+  const uiOrderType = tradeType ? TradeTypeToUiOrderType[tradeType] : null
 
   const sellCurrency = derivedTradeState?.inputCurrency
   const inputAmount = receiveAmountInfo?.afterNetworkCosts.sellAmount
@@ -39,7 +42,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const inputAmountWithSlippage = receiveAmountInfo?.afterSlippage.sellAmount
   const networkFee = receiveAmountInfo?.costs.networkFee.amountInSellCurrency
 
-  const permitInfo = usePermitInfo(sellCurrency, TradeType.YIELD)
+  const permitInfo = usePermitInfo(sellCurrency, tradeType)
   const generatePermitHook = useGeneratePermitHook()
   const getCachedPermit = useGetCachedPermit()
   const closeModals = useCloseModals()
@@ -57,7 +60,13 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
     checkAllowanceAddress,
   })
 
-  const { inputCurrency: sellToken, outputCurrency: buyToken, recipient, recipientAddress } = derivedTradeState || {}
+  const {
+    inputCurrency: sellToken,
+    outputCurrency: buyToken,
+    recipient,
+    recipientAddress,
+    orderKind,
+  } = derivedTradeState || {}
   const quoteParams = tradeQuote?.quoteParams
   const quoteResponse = tradeQuote?.response
   const localQuoteTimestamp = tradeQuote?.localQuoteTimestamp
@@ -77,7 +86,9 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         quoteParams &&
         quoteResponse &&
         localQuoteTimestamp &&
-        settlementContract
+        orderKind &&
+        settlementContract &&
+        uiOrderType
         ? [
             account,
             allowsOffchainSigning,
@@ -104,6 +115,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             tradeConfirmActions,
             typedHooks,
             deadline,
+            orderKind,
+            uiOrderType,
           ]
         : null,
       ([
@@ -132,6 +145,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         tradeConfirmActions,
         typedHooks,
         deadline,
+        orderKind,
+        uiOrderType,
       ]) => {
         return {
           context: {
@@ -154,7 +169,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             recipient,
             recipientAddress,
             marketLabel: [inputAmount?.currency.symbol, outputAmount?.currency.symbol].join(','),
-            orderType: UiOrderType.YIELD,
+            orderType: uiOrderType,
           },
           contract: settlementContract,
           permitInfo: !enoughAllowance ? permitInfo : undefined,
@@ -164,7 +179,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             account,
             chainId,
             signer: provider.getSigner(),
-            kind: OrderKind.SELL,
+            kind: orderKind,
             inputAmount,
             outputAmount,
             sellAmountBeforeFee,
@@ -181,7 +196,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             allowsOffchainSigning,
             appData,
             class: OrderClass.MARKET,
-            partiallyFillable: true,
+            partiallyFillable: false, // SWAP orders are always fill or kill - for now
             quoteId: quoteResponse.id,
             isSafeWallet,
           },
