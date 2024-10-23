@@ -1,12 +1,11 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
 
 import { calculatePrice, invertPrice, TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { ZERO_BIG_NUMBER } from 'const'
 import { formatSmartMaxPrecision, formattingAmountPrecision } from 'utils'
 
-import { Order, OrderStatus, RawOrder, Trade } from 'api/operator/types'
+import { Order, OrderStatus, RawOrder, RawTrade, Trade } from 'api/operator/types'
 
 import { PENDING_ORDERS_BUFFER } from '../explorer/const'
 
@@ -341,7 +340,7 @@ export enum FormatAmountPrecision {
 export function formattedAmount(
   erc20: TokenErc20 | null | undefined,
   amount: BigNumber,
-  typePrecision: FormatAmountPrecision = FormatAmountPrecision.maxPrecision
+  typePrecision: FormatAmountPrecision = FormatAmountPrecision.maxPrecision,
 ): string {
   if (!isTokenErc20(erc20)) return '-'
 
@@ -407,13 +406,13 @@ export function transformOrder(rawOrder: RawOrder): Order {
     filledPercentage,
     surplusAmount,
     surplusPercentage,
-  } as Order
+  }
 }
 
 /**
  * Transforms a RawTrade into a Trade object
  */
-export function transformTrade(rawTrade: TradeMetaData, order: Order, executionTimestamp?: number): Trade {
+export function transformTrade(rawTrade: RawTrade, order: Order, executionTimestamp?: number): Trade {
   const { orderUid, buyAmount, sellAmount, sellAmountBeforeFees, buyToken, sellToken, ...rest } = rawTrade
   const { amount, percentage } = getTradeSurplus(rawTrade, order)
 
@@ -432,7 +431,7 @@ export function transformTrade(rawTrade: TradeMetaData, order: Order, executionT
   }
 }
 
-export function getTradeSurplus(rawTrade: TradeMetaData, order: Order): Surplus {
+export function getTradeSurplus(rawTrade: RawTrade, order: Order): Surplus {
   const params: PartialFillSurplusParams = {
     sellAmount: order.sellAmount,
     buyAmount: order.buyAmount,
@@ -443,4 +442,55 @@ export function getTradeSurplus(rawTrade: TradeMetaData, order: Order): Surplus 
   const surplus = isSellOrder(order.kind) ? _getPartialFillSellSurplus(params) : _getPartialFillBuySurplus(params)
 
   return surplus || ZERO_SURPLUS
+}
+
+export type OrderFees = { networkCosts: BigNumber | undefined; protocolFees: BigNumber | undefined }
+
+export function getFees(order: Order, trades: Trade[]): OrderFees {
+  // No trades, no fees
+  if (trades.length < 1) {
+    return { networkCosts: undefined, protocolFees: undefined }
+  }
+  // This should always be at most 1, but just in case, let's do a map for each token
+  const feesMap = new Map<string, BigNumber>()
+
+  trades.forEach(({ executedProtocolFees }) => {
+    executedProtocolFees?.forEach(({ amount, token, policy: _policy }) => {
+      if (!amount || !token) {
+        return
+      }
+      const tokenFee = feesMap.get(token) || ZERO_BIG_NUMBER
+      const feeAmount = new BigNumber(amount).plus(tokenFee)
+      feesMap.set(token, feeAmount)
+    })
+  })
+
+  // No fees collected for this order
+  if (feesMap.size === 0) {
+    console.debug(`[getFees] No fees for order: ${order.uid}`)
+    return { networkCosts: ZERO_BIG_NUMBER, protocolFees: ZERO_BIG_NUMBER }
+  }
+
+  if (feesMap.size > 1) {
+    console.warn(`[getFees] Order has fees in more than once currency: ${order.uid}`)
+    // TODO: deal with this case. Not sure it's even possible. Maybe pick only the surplus token, or convert all to a single currency?
+    return { networkCosts: undefined, protocolFees: undefined }
+  }
+
+  // TODO: get surplus token and check it maches the fee token
+
+  const [[_surplusToken, protocolFees]] = Array.from(feesMap.entries())
+
+  const networkCosts = order.totalFee.minus(protocolFees)
+
+  console.debug(
+    `[getFees] Fees for order: ${order.uid}`,
+    _surplusToken,
+    isSellOrder(order.kind) ? _surplusToken === order.buyTokenAddress : _surplusToken === order.sellTokenAddress,
+    protocolFees.toString(10),
+    networkCosts.toString(10),
+    order.totalFee.toString(10),
+  )
+
+  return { protocolFees, networkCosts }
 }
