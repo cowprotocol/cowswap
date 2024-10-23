@@ -93,6 +93,9 @@ export function App() {
     </HeaderControls>
   )
 
+  // const { account } = useWalletInfo()
+  // const isChainIdUnsupported = useIsProviderNetworkUnsupported()
+
   return (
     <ErrorBoundary>
       <Suspense fallback={<LoadingApp />}>
@@ -126,6 +129,11 @@ export function App() {
               additionalContent={null} // On desktop renders inside the menu bar, on mobile renders inside the mobile menu
             />
           )}
+
+          {/* CoW AMM banner */}
+          {/*{!isInjectedWidgetMode && account && !isChainIdUnsupported && (*/}
+          {/*  <CoWAmmBanner location={BannerLocation.Global} />*/}
+          {/*)}*/}
 
           <styledEl.BodyWrapper>
             <TopLevelModals />
