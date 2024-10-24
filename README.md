@@ -51,7 +51,7 @@ yarn test
 
 # 🔎 Explorer
 
-Start the Explorer on http://localhost:4200
+Start the Explorer on <http://localhost:4200>
 
 [Read more about the Explorer](apps/explorer/README.md)
 
@@ -69,7 +69,7 @@ yarn build:explorer
 
 # 🐄 cow.fi
 
-Start CoW.fi on http://localhost:3001
+Start CoW.fi on <http://localhost:3001>
 
 ### Start
 
@@ -85,7 +85,7 @@ yarn build:cowfi
 
 # 🖼️ Widget Configurator
 
-Start the Widget Configurator on http://127.0.0.1:4200/widget-configurator
+Start the Widget Configurator on <http://127.0.0.1:4200/widget-configurator>
 
 ```bash
 # Start
@@ -97,7 +97,7 @@ yarn build:widget
 
 # 🌌 Cosmos UI Library
 
-Start the Cosmos UI Library on http://localhost:5000
+Start the Cosmos UI Library on <http://localhost:5000>
 
 ```bash
 yarn run cosmos
@@ -174,6 +174,7 @@ REACT_APP_NETWORK_URL_1: https://...
 REACT_APP_NETWORK_URL_11155111: https://...
 REACT_APP_NETWORK_URL_100: https://...
 REACT_APP_NETWORK_URL_42161: https://...
+REACT_APP_NETWORK_URL_8453: https://...
 ```
 
 Additionally, if you plan to run the integration tests locally you must define:
@@ -216,7 +217,6 @@ The API endpoint is configured using the environment variable
 REACT_APP_BFF_BASE_URL=https://bff.cow.fi
 ```
 
-
 ## CMS API Endpoints (Content Management System)
 
 The CMS API is a helper API that provides some additional content to the frontend.
@@ -234,10 +234,6 @@ The API endpoint is configured using the environment variable
 ```ini
 REACT_APP_CMS_BASE_URL=https://cms.cow.fi/api
 ```
-
-
-
-
 
 ## Price feeds
 
@@ -295,4 +291,3 @@ In case of problems with the service worker cache you force a reset using
 1. [Oveall Architecture](docs/architecture-overview.md)
 2. [Amounts formatting](apps/cowswap-frontend/src/utils/amountFormat/README.md)
 3. [ABIs](libs/abis/README.md)
-

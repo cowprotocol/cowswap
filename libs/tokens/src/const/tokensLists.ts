@@ -16,3 +16,6 @@ export const GNOSIS_UNISWAP_TOKENS_LIST =
 
 export const ARBITRUM_ONE_TOKENS_LIST =
   'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/ArbitrumOneUniswapTokensList.json'
+
+// TODO: create BASE UNI token list
+export const BASE_TOKENS_LIST = ''

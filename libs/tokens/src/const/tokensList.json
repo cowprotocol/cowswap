@@ -112,5 +112,12 @@
       "enabledByDefault": true,
       "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CowSwapSepolia.json"
     }
+  ],
+  "8453": [
+    {
+      "priority": 1,
+      "enabledByDefault": true,
+      "source": "https://files.cow.fi/tokens/CowSwap.json"
+    }
   ]
 }
