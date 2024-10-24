@@ -84,7 +84,7 @@ export function App() {
   const { hideNetworkSelector } = useInjectedWidgetParams()
   const { pendingActivity } = useCategorizeRecentActivity()
   const isMobile = useMediaQuery(Media.upToMedium(false))
-  const customTheme = IS_HALLOWEEN_MODE && darkMode ? ('darkHalloween' as CowSwapTheme) : undefined
+  const customTheme = IS_HALLOWEEN_MODE ? ('darkHalloween' as CowSwapTheme) : undefined
 
   const persistentAdditionalContent = (
     <HeaderControls>
@@ -138,7 +138,7 @@ export function App() {
           {/*  <CoWAmmBanner location={BannerLocation.Global} />*/}
           {/*)}*/}
 
-          <styledEl.BodyWrapper>
+          <styledEl.BodyWrapper customTheme={customTheme}>
             <TopLevelModals />
 
             <RoutesApp />
