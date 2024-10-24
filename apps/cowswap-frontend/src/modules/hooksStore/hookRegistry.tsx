@@ -24,4 +24,5 @@ export const ALL_HOOK_DAPPS = [
     component: (props) => <AirdropHookApp {...props} />,
   },
   hookDappsRegistry.CLAIM_LLAMAPAY_VESTING,
+  hookDappsRegistry.CREATE_LLAMAPAY_VESTING
 ] as HookDapp[]
