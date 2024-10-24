@@ -70,7 +70,7 @@ export function ExternalDappLoader({
     return () => {
       isRequestRelevant = false
     }
-  }, [input, isSmartContractWallet, chainId])
+  }, [input, isSmartContractWallet, chainId, isPreHook, setDappInfo, setLoading, setManifestError])
 
   return null
 }
