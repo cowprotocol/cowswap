@@ -6,6 +6,7 @@ import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import {
   ARBITRUM_ONE_TOKENS_LIST,
+  BASE_TOKENS_LIST,
   DEFAULT_TOKENS_LISTS,
   GNOSIS_UNISWAP_TOKENS_LIST,
   UNISWAP_TOKENS_LIST,
@@ -23,6 +24,7 @@ const UNISWAP_TOKEN_LIST_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: UNISWAP_TOKENS_LIST,
   [SupportedChainId.GNOSIS_CHAIN]: GNOSIS_UNISWAP_TOKENS_LIST,
   [SupportedChainId.ARBITRUM_ONE]: ARBITRUM_ONE_TOKENS_LIST,
+  [SupportedChainId.BASE]: BASE_TOKENS_LIST,
   [SupportedChainId.SEPOLIA]: UNISWAP_TOKENS_LIST,
 }
 
@@ -39,7 +41,7 @@ const curatedListSourceAtom = atom((get) => {
 export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>(
   'userAddedTokenListsAtom:v3',
   mapSupportedNetworks([]),
-  getJotaiMergerStorage()
+  getJotaiMergerStorage(),
 )
 
 export const allListsSourcesAtom = atom((get) => {
@@ -57,7 +59,7 @@ export const allListsSourcesAtom = atom((get) => {
 export const listsStatesByChainAtom = atomWithStorage<TokenListsByChainState>(
   'allTokenListsInfoAtom:v3',
   mapSupportedNetworks({}),
-  getJotaiMergerStorage()
+  getJotaiMergerStorage(),
 )
 
 export const tokenListsUpdatingAtom = atom<boolean>(false)

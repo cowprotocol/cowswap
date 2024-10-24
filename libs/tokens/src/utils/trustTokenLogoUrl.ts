@@ -4,6 +4,7 @@ const chainIdToName: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: 'ethereum',
   [SupportedChainId.GNOSIS_CHAIN]: 'xdai',
   [SupportedChainId.ARBITRUM_ONE]: 'arbitrum',
+  [SupportedChainId.BASE]: 'base',
   [SupportedChainId.SEPOLIA]: 'ethereum',
 }
 

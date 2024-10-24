@@ -1,4 +1,4 @@
-import { COW, GNO } from '@cowprotocol/common-const'
+import { COW, GNO_MAINNET } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { DemoContainer } from 'cosmos.decorator'
@@ -9,7 +9,7 @@ import { ApprovalState } from '../../hooks/useApproveState'
 import { ApproveButton } from '.'
 
 const COW_TOKEN = COW[SupportedChainId.MAINNET]
-const GNO_TOKEN = GNO[SupportedChainId.MAINNET]
+const GNO_TOKEN = GNO_MAINNET
 
 const Custom = () => {
   const [currencyRaw] = useSelect('currency', {

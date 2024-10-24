@@ -20,6 +20,7 @@ export const COINGECKO_PLATFORMS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: 'ethereum',
   [SupportedChainId.GNOSIS_CHAIN]: 'xdai',
   [SupportedChainId.ARBITRUM_ONE]: 'arbitrum-one',
+  [SupportedChainId.BASE]: 'base',
   [SupportedChainId.SEPOLIA]: null,
 }
 
@@ -91,7 +92,7 @@ export async function getCoingeckoUsdPrice(currency: Token): Promise<Fraction | 
 }
 
 function isErrorResponse(
-  res: SuccessCoingeckoUsdQuoteResponse | ErrorCoingeckoResponse
+  res: SuccessCoingeckoUsdQuoteResponse | ErrorCoingeckoResponse,
 ): res is ErrorCoingeckoResponse {
   return 'status' in res
 }

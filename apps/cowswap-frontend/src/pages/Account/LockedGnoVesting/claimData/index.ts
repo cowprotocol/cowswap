@@ -13,6 +13,7 @@ const indexFiles: Record<SupportedChainId, string[]> = {
   [SupportedChainId.MAINNET]: mainnetIndex,
   [SupportedChainId.GNOSIS_CHAIN]: gnosisChainIndex,
   [SupportedChainId.ARBITRUM_ONE]: [],
+  [SupportedChainId.BASE]: [],
   [SupportedChainId.SEPOLIA]: [],
 }
 
@@ -20,6 +21,7 @@ const chainNames: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: 'mainnet',
   [SupportedChainId.GNOSIS_CHAIN]: 'gnosisChain',
   [SupportedChainId.ARBITRUM_ONE]: null,
+  [SupportedChainId.BASE]: null,
   [SupportedChainId.SEPOLIA]: null,
 }
 
@@ -53,7 +55,7 @@ const fetchChunk = (path: string) => {
   const promise =
     chunkCache.get(path) ??
     (fetch(
-      `https://raw.githubusercontent.com/gnosis/locked-gno-cow-merkle-distro/${DISTRO_REPO_BRANCH_NAME}/${path}`
+      `https://raw.githubusercontent.com/gnosis/locked-gno-cow-merkle-distro/${DISTRO_REPO_BRANCH_NAME}/${path}`,
     ).then((res) => res.json()) as Promise<Record<string, Claim>>)
   chunkCache.set(path, promise)
   return promise

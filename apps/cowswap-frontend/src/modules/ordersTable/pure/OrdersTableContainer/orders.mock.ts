@@ -1,4 +1,4 @@
-import { COW, DAI, GNO, USDC, WETH_GNOSIS_CHAIN } from '@cowprotocol/common-const'
+import { COW, DAI, GNO_GNOSIS_CHAIN, USDC, WETH_GNOSIS_CHAIN } from '@cowprotocol/common-const'
 import { OrderClass, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -16,10 +16,10 @@ export const ordersMock: ParsedOrder[] = [
     status: OrderStatus.PENDING,
     creationTime: '2022-11-11T13:15:13.551Z',
     inputToken: WETH_GNOSIS_CHAIN,
-    outputToken: GNO[chainId],
+    outputToken: GNO_GNOSIS_CHAIN,
     receiver: '',
     sellToken: WETH_GNOSIS_CHAIN.address,
-    buyToken: GNO[chainId].address,
+    buyToken: GNO_GNOSIS_CHAIN.address,
     sellAmount: '5000300000000000',
     buyAmount: '23000000000000',
     sellAmountBeforeFee: '5000300000000000',
@@ -39,10 +39,10 @@ export const ordersMock: ParsedOrder[] = [
     status: OrderStatus.PENDING,
     creationTime: '2022-10-03T09:15:13.551Z',
     inputToken: COW[chainId],
-    outputToken: GNO[chainId],
+    outputToken: GNO_GNOSIS_CHAIN,
     receiver: '',
     sellToken: COW[chainId].address,
-    buyToken: GNO[chainId].address,
+    buyToken: GNO_GNOSIS_CHAIN.address,
     sellAmount: '1230000000000000',
     buyAmount: '55000000000000',
     sellAmountBeforeFee: '1230000000000000',
@@ -85,10 +85,10 @@ export const ordersMock: ParsedOrder[] = [
     status: OrderStatus.FULFILLED,
     creationTime: '2022-11-11T13:15:13.551Z',
     inputToken: USDC[chainId],
-    outputToken: GNO[chainId],
+    outputToken: GNO_GNOSIS_CHAIN,
     receiver: '',
     sellToken: USDC[chainId].address,
-    buyToken: GNO[chainId].address,
+    buyToken: GNO_GNOSIS_CHAIN.address,
     sellAmount: '5000300000000000',
     buyAmount: '23000000000000',
     sellAmountBeforeFee: '5000300000000000',

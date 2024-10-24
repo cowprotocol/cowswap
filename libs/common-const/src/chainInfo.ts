@@ -1,5 +1,6 @@
 import ArbitrumOneLogoLight from '@cowprotocol/assets/cow-swap/network-arbitrum-one-logo-blue.svg'
 import ArbitrumOneLogoDark from '@cowprotocol/assets/cow-swap/network-arbitrum-one-logo-white.svg'
+import BaseLogo from '@cowprotocol/assets/cow-swap/network-base-logo.svg'
 import GnosisChainLogo from '@cowprotocol/assets/cow-swap/network-gnosis-chain-logo.svg'
 import EthereumLogo from '@cowprotocol/assets/cow-swap/network-mainnet-logo.svg'
 import SepoliaLogo from '@cowprotocol/assets/cow-swap/network-sepolia-logo.svg'
@@ -54,6 +55,20 @@ export const CHAIN_INFO: ChainInfoMap = {
     logo: { light: ArbitrumOneLogoLight, dark: ArbitrumOneLogoDark },
     color: '#1B4ADD',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.ARBITRUM_ONE],
+  },
+  [SupportedChainId.BASE]: {
+    docs: 'https://docs.base.org/',
+    bridge: 'https://bridge.base.org/deposit',
+    explorer: 'https://basescan.io',
+    infoLink: 'https://www.base.org/',
+    label: 'Base',
+    addressPrefix: 'base',
+    name: 'base',
+    explorerTitle: 'Basescan',
+    urlAlias: 'base',
+    logo: { light: BaseLogo, dark: BaseLogo },
+    color: '#0052FF',
+    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.BASE],
   },
   [SupportedChainId.GNOSIS_CHAIN]: {
     docs: 'https://docs.gnosischain.com',
