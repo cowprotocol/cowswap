@@ -1,6 +1,7 @@
 import { ReactElement, useCallback, useEffect, useState } from 'react'
 
 import { uriToHttp } from '@cowprotocol/common-utils'
+import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { ButtonOutlined, ButtonPrimary, InlineBanner, Loader, SearchInput } from '@cowprotocol/ui'
 
 import { ExternalSourceAlert } from 'common/pure/ExternalSourceAlert'
@@ -13,12 +14,12 @@ import { HookDappDetails } from '../HookDappDetails'
 
 interface AddCustomHookFormProps {
   isPreHook: boolean
-  isSmartContractWallet: boolean | undefined
+  walletType: HookDappWalletCompatibility
   addHookDapp(dapp: HookDappIframe): void
   children: ReactElement | null
 }
 
-export function AddCustomHookForm({ addHookDapp, children, isPreHook, isSmartContractWallet }: AddCustomHookFormProps) {
+export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType }: AddCustomHookFormProps) {
   const [input, setInput] = useState<string | undefined>(undefined)
   const [isSearchOpen, setSearchOpen] = useState<boolean>(false)
   const [isWarningAccepted, setWarningAccepted] = useState<boolean>(false)
@@ -101,7 +102,7 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, isSmartCon
             <ExternalDappLoader
               input={input}
               isPreHook={isPreHook}
-              isSmartContractWallet={isSmartContractWallet}
+              walletType={walletType}
               setDappInfo={setDappInfo}
               setLoading={setLoading}
               setManifestError={setManifestError}
@@ -109,7 +110,9 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, isSmartCon
           )}
 
           {/* Display dapp details */}
-          {dappInfo && !isFinalStep && <HookDappDetails dapp={dappInfo} onSelect={() => setFinalStep(true)} />}
+          {dappInfo && !isFinalStep && (
+            <HookDappDetails dapp={dappInfo} walletType={walletType} onSelect={() => setFinalStep(true)} />
+          )}
 
           {/* Final Step: Warning and Confirmation */}
           {isFinalStep && (

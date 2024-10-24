@@ -1,4 +1,5 @@
 import ICON_INFO from '@cowprotocol/assets/cow-swap/info.svg'
+import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { Command } from '@cowprotocol/types'
 
 import SVG from 'react-inlinesvg'
@@ -6,16 +7,20 @@ import SVG from 'react-inlinesvg'
 import * as styled from './styled'
 
 import { HookDapp } from '../../types/hooks'
+import { isHookCompatible } from '../../utils'
 
 interface HookListItemProps {
   dapp: HookDapp
+  walletType: HookDappWalletCompatibility
   onSelect: Command
   onOpenDetails: Command
   onRemove?: Command
 }
 
-export function HookListItem({ dapp, onSelect, onOpenDetails, onRemove }: HookListItemProps) {
+export function HookListItem({ dapp, walletType, onSelect, onOpenDetails, onRemove }: HookListItemProps) {
   const { name, descriptionShort, image, version } = dapp
+
+  const isCompatible = isHookCompatible(dapp, walletType)
 
   const handleItemClick = (event: React.MouseEvent<HTMLLIElement>) => {
     const target = event.target as HTMLElement
@@ -26,7 +31,7 @@ export function HookListItem({ dapp, onSelect, onOpenDetails, onRemove }: HookLi
   }
 
   return (
-    <styled.HookDappListItem onClick={handleItemClick}>
+    <styled.HookDappListItem onClick={handleItemClick} isCompatible={isCompatible}>
       <img src={image} alt={name} />
 
       <styled.HookDappDetails onClick={onOpenDetails}>
@@ -37,9 +42,15 @@ export function HookListItem({ dapp, onSelect, onOpenDetails, onRemove }: HookLi
         </p>
       </styled.HookDappDetails>
       <span>
-        <styled.LinkButton onClick={onSelect} className="link-button">
-          Add
-        </styled.LinkButton>
+        {isCompatible ? (
+          <styled.LinkButton onClick={onSelect} className="link-button">
+            Add
+          </styled.LinkButton>
+        ) : (
+          <styled.LinkButton disabled title="Not compatible with current wallet type">
+            n/a
+          </styled.LinkButton>
+        )}
         {onRemove ? (
           <styled.RemoveButton onClick={onRemove} className="remove-button">
             Remove
