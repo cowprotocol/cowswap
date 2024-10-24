@@ -1,4 +1,6 @@
 import { lazy, PropsWithChildren, Suspense, useMemo } from 'react'
+import { useAtom } from 'jotai'
+import { featureFlagsAtom } from 'common/state/featureFlagsState'
 
 import { ACTIVE_CUSTOM_THEME, CustomTheme } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
@@ -50,6 +52,8 @@ export function App() {
   useAnalyticsReporterCowSwap()
   useInitializeUtm()
 
+  const [featureFlags] = useAtom(featureFlagsAtom)
+
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
 
@@ -85,7 +89,7 @@ export function App() {
   const { pendingActivity } = useCategorizeRecentActivity()
   const isMobile = useMediaQuery(Media.upToMedium(false))
   const customTheme = useMemo(() => {
-    if (ACTIVE_CUSTOM_THEME === CustomTheme.HALLOWEEN && darkMode) {
+    if (ACTIVE_CUSTOM_THEME === CustomTheme.HALLOWEEN && darkMode && featureFlags.isHalloweenEnabled) {
       return 'darkHalloween' as CowSwapTheme
     }
     return undefined

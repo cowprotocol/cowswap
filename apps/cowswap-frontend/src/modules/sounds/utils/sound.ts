@@ -6,6 +6,8 @@ import { cowSwapStore } from 'legacy/state'
 
 import { injectedWidgetParamsAtom } from 'modules/injectedWidget/state/injectedWidgetParamsAtom'
 
+import { featureFlagsAtom } from 'common/state/featureFlagsState'
+
 type SoundType = 'SEND' | 'SUCCESS' | 'ERROR'
 type Sounds = Record<SoundType, string>
 type WidgetSounds = keyof NonNullable<CowSwapWidgetAppParams['sounds']>
@@ -43,6 +45,8 @@ function isDarkMode(): boolean {
 }
 
 function getThemeBasedSound(type: SoundType): string {
+  const featureFlags = jotaiStore.get(featureFlagsAtom) as Record<string, boolean>
+
   const defaultSound = DEFAULT_COW_SOUNDS[type]
   const themedOptions = THEMED_SOUNDS[type]
 
@@ -50,12 +54,19 @@ function getThemeBasedSound(type: SoundType): string {
     return defaultSound
   }
 
-  if (ACTIVE_CUSTOM_THEME === CustomTheme.CHRISTMAS && themedOptions.winterSound) {
+  if (ACTIVE_CUSTOM_THEME === CustomTheme.CHRISTMAS && featureFlags.isChristmasEnabled && themedOptions.winterSound) {
     return themedOptions.winterSound
   }
-  if (ACTIVE_CUSTOM_THEME === CustomTheme.HALLOWEEN && themedOptions.halloweenSound && isDarkMode()) {
+
+  if (
+    ACTIVE_CUSTOM_THEME === CustomTheme.HALLOWEEN &&
+    featureFlags.isHalloweenEnabled &&
+    themedOptions.halloweenSound &&
+    isDarkMode()
+  ) {
     return themedOptions.halloweenSound
   }
+
   return defaultSound
 }
 
