@@ -11,7 +11,7 @@ import {
   useTradeConfirmState,
   useTradePriceImpact,
 } from 'modules/trade'
-import { UnlockWidgetScreen, BulletListItem } from 'modules/trade/pure/UnlockWidgetScreen' // Ensure correct import
+import { UnlockWidgetScreen, BulletListItem } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useHandleSwap } from 'modules/tradeFlow'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { SettingsTab, TradeRateDetails } from 'modules/tradeWidgetAddons'
