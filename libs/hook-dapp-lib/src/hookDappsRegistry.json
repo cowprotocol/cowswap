@@ -50,6 +50,22 @@
       "supportedNetworks": [11155111]
     }
   },
+  "COW_AMM_WITHDRAW": {
+    "id": "5dc71fa5829d976c462bdf37b38b6fd9bbc289252a5a18e61525f8c8a3c775df",
+    "name": "CoW AMM Withdraw Liquidity",
+    "type": "IFRAME",
+    "descriptionShort": "Remove liquidity from a CoW AMM pool before the swap",
+    "description": "Reduce or withdraw liquidity from a pool before a token swap integrating the process directly into the transaction flow. By adjusting your liquidity ahead of time, you gain more control over your assets without any extra steps. Optimize your position in a pool, all in one seamless action — no need for multiple transactions or added complexity.",
+    "version": "0.0.1",
+    "website": "https://balancer.fi/pools/cow",
+    "image": "https://cow-hooks-dapps-withdraw-pool.vercel.app/icon.png",
+    "url": "https://cow-hooks-dapps-withdraw-pool.vercel.app/",
+    "conditions": {
+      "position": "pre",
+      "walletCompatibility": ["EOA"],
+      "smartContractWalletSupported": false
+    }
+  },
   "CLAIM_LLAMAPAY_VESTING": {
     "id": "5d2c081d11a01ca0b76e2fafbc0d3c62a4c9945ce404706fb1e49e826c0f99eb",
     "type": "IFRAME",
