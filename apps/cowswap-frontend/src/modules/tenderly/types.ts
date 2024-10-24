@@ -18,6 +18,7 @@ export interface SimulationData {
   status: boolean
   id: string
   cumulativeBalancesDiff: BalancesDiff
+  gasUsed: string
 }
 
 export interface GetTopTokenHoldersParams {

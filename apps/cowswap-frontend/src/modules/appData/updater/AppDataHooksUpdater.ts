@@ -6,7 +6,7 @@ import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { Nullish } from 'types'
 
-import { useHooks } from 'modules/hooksStore'
+import { useHooksStateWithSimulatedGas } from 'modules/hooksStore'
 import { useAccountAgnosticPermitHookData } from 'modules/permit'
 import { useDerivedTradeState, useHasTradeEnoughAllowance, useIsHooksTradeType, useIsSellNative } from 'modules/trade'
 
@@ -33,7 +33,7 @@ function useAgnosticPermitDataIfUserHasNoAllowance(): Nullish<PermitHookData> {
 export function AppDataHooksUpdater(): null {
   const tradeState = useDerivedTradeState()
   const isHooksTradeType = useIsHooksTradeType()
-  const hooksStoreState = useHooks()
+  const hooksStoreState = useHooksStateWithSimulatedGas()
   const preHooks = isHooksTradeType ? hooksStoreState.preHooks : null
   const postHooks = isHooksTradeType ? hooksStoreState.postHooks : null
   const updateAppDataHooks = useUpdateAppDataHooks()
