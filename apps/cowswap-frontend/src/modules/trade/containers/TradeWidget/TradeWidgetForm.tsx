@@ -109,11 +109,10 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const isConnectedMarketOrderWidget = !!account && isMarketOrderWidget
 
   const shouldShowMyOrdersButton =
-    !!account &&
     !alternativeOrderModalVisible &&
     (!isInjectedWidgetMode && isConnectedMarketOrderWidget ? isUpToLarge : true) &&
     (isConnectedMarketOrderWidget || !hideOrdersTable) &&
-    ((isConnectedMarketOrderWidget && standaloneMode !== true) || (isUpToLarge && !lockScreen))
+    ((isConnectedMarketOrderWidget && standaloneMode !== true) || (!isMarketOrderWidget && isUpToLarge && !lockScreen))
 
   const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode
 
