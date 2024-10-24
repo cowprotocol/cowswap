@@ -25,13 +25,13 @@ export const Media = {
   isMediumOnly: (useMediaPrefix = true) =>
     getMediaQuery(
       `(min-width: ${MEDIA_WIDTHS.upToSmall + 1}px) and (max-width: ${MEDIA_WIDTHS.upToMedium}px)`,
-      useMediaPrefix
+      useMediaPrefix,
     ),
   upToMedium: (useMediaPrefix = true) => getMediaQuery(`(max-width: ${MEDIA_WIDTHS.upToMedium}px)`, useMediaPrefix),
   isLargeOnly: (useMediaPrefix = true) =>
     getMediaQuery(
       `(min-width: ${MEDIA_WIDTHS.upToMedium + 1}px) and (max-width: ${MEDIA_WIDTHS.upToLarge}px)`,
-      useMediaPrefix
+      useMediaPrefix,
     ),
   upToLarge: (useMediaPrefix = true) => getMediaQuery(`(max-width: ${MEDIA_WIDTHS.upToLarge}px)`, useMediaPrefix),
   upToLargeAlt: (useMediaPrefix = true) => getMediaQuery(`(max-width: ${MEDIA_WIDTHS.upToLargeAlt}px)`, useMediaPrefix),

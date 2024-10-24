@@ -1,5 +1,6 @@
 import { lazy, PropsWithChildren, Suspense, useMemo } from 'react'
 
+import { ACTIVE_CUSTOM_THEME, CustomTheme } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar, CowSwapTheme } from '@cowprotocol/ui'
@@ -32,7 +33,6 @@ import { ADDITIONAL_FOOTER_CONTENT, NAV_ITEMS, PRODUCT_VARIANT } from './menuCon
 import * as styledEl from './styled'
 
 const RoutesApp = lazy(() => import('./RoutesApp').then((module) => ({ default: module.RoutesApp })))
-const IS_HALLOWEEN_MODE = true
 
 const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts, 'transparent')
 
@@ -84,7 +84,12 @@ export function App() {
   const { hideNetworkSelector } = useInjectedWidgetParams()
   const { pendingActivity } = useCategorizeRecentActivity()
   const isMobile = useMediaQuery(Media.upToMedium(false))
-  const customTheme = IS_HALLOWEEN_MODE ? ('darkHalloween' as CowSwapTheme) : undefined
+  const customTheme = useMemo(() => {
+    if (ACTIVE_CUSTOM_THEME === CustomTheme.HALLOWEEN && darkMode) {
+      return 'darkHalloween' as CowSwapTheme
+    }
+    return undefined
+  }, [darkMode])
 
   const persistentAdditionalContent = (
     <HeaderControls>
