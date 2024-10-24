@@ -37,6 +37,8 @@ export type Order = Pick<
   executedFeeAmount: BigNumber
   executedSurplusFee: BigNumber | null
   totalFee: BigNumber
+  networkCosts?: BigNumber
+  protocolFees?: BigNumber
   cancelled: boolean
   status: OrderStatus
   partiallyFilled: boolean
@@ -55,7 +57,7 @@ export type RawTrade = TradeMetaData
 /**
  * Enriched Trade type
  */
-export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHash'> & {
+export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHash' | 'executedProtocolFees'> & {
   orderId: string
   kind?: OrderKind
   buyAmount: BigNumber

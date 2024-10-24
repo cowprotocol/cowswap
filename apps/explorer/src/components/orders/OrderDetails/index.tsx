@@ -20,7 +20,7 @@ import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
 import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
 import { Errors } from 'types'
-import { formatPercentage } from 'utils'
+import { formatPercentage, getFees } from 'utils'
 
 import { Order, Trade } from 'api/operator'
 
@@ -92,7 +92,7 @@ const tabItems = (
   isPriceInverted: boolean,
   invertPrice: Command,
 ): TabItemInterface[] => {
-  const order = getOrderWithTxHash(_order, trades)
+  const order = addTradesDataToOrder(_order, trades)
   const areTokensLoaded = order?.buyToken && order?.sellToken
   const isLoadingForTheFirstTime = isOrderLoading && !areTokensLoaded
   const filledPercentage = order?.filledPercentage && formatPercentage(order.filledPercentage)
@@ -145,10 +145,25 @@ const tabItems = (
  *
  * That is the case for any filled fill or kill or a partial fill that has a single trade
  */
-function getOrderWithTxHash(order: Order | null, trades: Trade[]): Order | null {
-  if (order && trades.length === 1) {
-    return { ...order, txHash: trades[0].txHash || undefined, executionDate: trades[0].executionTime || undefined }
+function addTradesDataToOrder(order: Order | null, trades: Trade[]): Order | null {
+  if (order) {
+    let txHash: undefined | string = undefined
+    let executionDate: undefined | Date = undefined
+
+    // Only if single trade, otherwise this info will be in the fills tab
+    if (trades.length === 1) {
+      // txHash
+      txHash = trades[0].txHash || undefined
+      // executionDate
+      executionDate = trades[0].executionTime || undefined
+    }
+
+    // fee related
+    const { networkCosts, protocolFees } = getFees(order, trades)
+
+    return { ...order, txHash, executionDate, networkCosts, protocolFees }
   }
+
   return order
 }
 
