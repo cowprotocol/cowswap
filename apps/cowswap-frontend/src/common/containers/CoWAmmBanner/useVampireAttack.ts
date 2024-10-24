@@ -4,29 +4,11 @@ import { LP_TOKEN_LIST_COW_AMM_ONLY, useAllLpTokens } from '@cowprotocol/tokens'
 import { LpTokenProvider } from '@cowprotocol/types'
 
 import { useLpTokensWithBalances, usePoolsInfo } from 'modules/yield/shared'
+import { POOLS_AVERAGE_DATA_MOCK } from 'modules/yield/updaters/PoolsInfoUpdater/mockPoolInfo'
 
 import { TokenWithAlternative, VampireAttackContext } from './types'
 
 import { useSafeMemoObject } from '../../hooks/useSafeMemo'
-
-// TODO
-const POOLS_AVERAGE_DATA_MOCK: Partial<Record<LpTokenProvider, { apy: number }>> = {
-  [LpTokenProvider.COW_AMM]: {
-    apy: 7.3,
-  },
-  [LpTokenProvider.UNIV2]: {
-    apy: 3.1,
-  },
-  [LpTokenProvider.CURVE]: {
-    apy: 0.4,
-  },
-  [LpTokenProvider.PANCAKE]: {
-    apy: 0.2,
-  },
-  [LpTokenProvider.SUSHI]: {
-    apy: 0.41,
-  },
-}
 
 export function useVampireAttack(): VampireAttackContext {
   const { tokens: lpTokensWithBalances, count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
