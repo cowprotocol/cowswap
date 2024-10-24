@@ -1,11 +1,13 @@
 import { Erc20 } from '@cowprotocol/abis'
+import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
-import { signAndPostOrder } from 'legacy/utils/trade'
+import { type PostOrderParams, signAndPostOrder } from 'legacy/utils/trade'
 
 import { removePermitHookFromAppData } from 'modules/appData'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
@@ -33,12 +35,18 @@ export async function safeBundleEthFlow(
     return false
   }
 
-  const { context, callbacks, orderParams, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks } = tradeContext
+  const { context, callbacks, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks } = tradeContext
 
   const { spender, settlementContract, safeAppsSdk, needsApproval, wrappedNativeContract } = safeBundleContext
 
-  const { account, recipientAddressOrName, kind } = orderParams
   const { inputAmountWithSlippage, chainId, inputAmount, outputAmount } = context
+
+  const orderParams: PostOrderParams = {
+    ...tradeContext.orderParams,
+    sellToken: WRAPPED_NATIVE_CURRENCIES[chainId as SupportedChainId],
+  }
+
+  const { account, recipientAddressOrName, kind } = orderParams
 
   tradeFlowAnalytics.wrapApproveAndPresign(swapFlowAnalyticsContext)
   const nativeAmountInWei = inputAmountWithSlippage.quotient.toString()
