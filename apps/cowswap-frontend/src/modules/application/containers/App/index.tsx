@@ -2,7 +2,7 @@ import { lazy, PropsWithChildren, Suspense, useMemo } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
+import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar, CowSwapTheme } from '@cowprotocol/ui'
 
 import { NavLink } from 'react-router-dom'
 import { ThemeProvider } from 'theme'
@@ -32,6 +32,7 @@ import { ADDITIONAL_FOOTER_CONTENT, NAV_ITEMS, PRODUCT_VARIANT } from './menuCon
 import * as styledEl from './styled'
 
 const RoutesApp = lazy(() => import('./RoutesApp').then((module) => ({ default: module.RoutesApp })))
+const IS_HALLOWEEN_MODE = true
 
 const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts, 'transparent')
 
@@ -83,6 +84,7 @@ export function App() {
   const { hideNetworkSelector } = useInjectedWidgetParams()
   const { pendingActivity } = useCategorizeRecentActivity()
   const isMobile = useMediaQuery(Media.upToMedium(false))
+  const customTheme = IS_HALLOWEEN_MODE && darkMode ? ('darkHalloween' as CowSwapTheme) : undefined
 
   const persistentAdditionalContent = (
     <HeaderControls>
@@ -114,6 +116,7 @@ export function App() {
             <MenuBar
               navItems={navItems}
               productVariant={PRODUCT_VARIANT}
+              customTheme={customTheme}
               settingsNavItems={settingsNavItems}
               showGlobalSettings
               bgColorDark={'rgb(222 227 230 / 7%)'}
