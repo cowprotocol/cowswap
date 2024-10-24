@@ -7,6 +7,7 @@ const RPC_URL_ENVS: Record<SupportedChainId, string | undefined> = {
   [SupportedChainId.MAINNET]: process.env.REACT_APP_NETWORK_URL_1 || undefined,
   [SupportedChainId.GNOSIS_CHAIN]: process.env.REACT_APP_NETWORK_URL_100 || undefined,
   [SupportedChainId.ARBITRUM_ONE]: process.env.REACT_APP_NETWORK_URL_42161 || undefined,
+  [SupportedChainId.BASE]: process.env.REACT_APP_NETWORK_URL_8453 || undefined,
   [SupportedChainId.SEPOLIA]: process.env.REACT_APP_NETWORK_URL_11155111 || undefined,
 }
 
@@ -14,6 +15,7 @@ const DEFAULT_RPC_URL: Record<SupportedChainId, { url: string; usesInfura: boole
   [SupportedChainId.MAINNET]: { url: `https://mainnet.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
   [SupportedChainId.GNOSIS_CHAIN]: { url: `https://rpc.gnosis.gateway.fm`, usesInfura: false },
   [SupportedChainId.ARBITRUM_ONE]: { url: `https://arbitrum-mainnet.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
+  [SupportedChainId.BASE]: { url: `https://base-mainnet.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
   [SupportedChainId.SEPOLIA]: { url: `https://sepolia.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
 }
 

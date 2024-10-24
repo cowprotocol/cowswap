@@ -13,6 +13,7 @@ const COWSWAP_VOLUME_FEES: Record<SupportedChainId, VolumeFee | null> = {
   [SupportedChainId.MAINNET]: null,
   [SupportedChainId.SEPOLIA]: null,
   [SupportedChainId.ARBITRUM_ONE]: null,
+  [SupportedChainId.BASE]: null,
   // Only Gnosis chain
   [SupportedChainId.GNOSIS_CHAIN]: {
     bps: 10, // 0.1%

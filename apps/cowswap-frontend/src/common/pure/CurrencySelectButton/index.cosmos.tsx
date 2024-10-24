@@ -1,4 +1,4 @@
-import { COW, GNO } from '@cowprotocol/common-const'
+import { COW, GNO_MAINNET } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useSelect } from 'react-cosmos/client'
@@ -6,7 +6,7 @@ import { useSelect } from 'react-cosmos/client'
 import { CurrencySelectButton, CurrencySelectButtonProps } from 'common/pure/CurrencySelectButton/index'
 
 const COW_TOKEN = COW[SupportedChainId.MAINNET]
-const GNO_TOKEN = GNO[SupportedChainId.MAINNET]
+const GNO_TOKEN = GNO_MAINNET
 
 function useCustomProps(): CurrencySelectButtonProps {
   const [currencyRaw] = useSelect('currency', {

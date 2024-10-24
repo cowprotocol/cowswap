@@ -1,13 +1,16 @@
 import {
   DAI,
   DAI_ARBITRUM_ONE,
+  DAI_BASE,
   NATIVE_CURRENCY_ADDRESS,
   USDC_ARBITRUM_ONE,
+  USDC_BASE,
   USDC_GNOSIS_CHAIN,
   USDC_MAINNET,
   USDC_SEPOLIA,
   USDT,
   USDT_ARBITRUM_ONE,
+  USDT_BASE,
   USDT_GNOSIS_CHAIN,
   WXDAI,
 } from '@cowprotocol/common-const'
@@ -25,8 +28,9 @@ const STABLE_COINS: Record<SupportedChainId, string[]> = {
     // XDAI and WXDAI are stable-coins
     .concat(NATIVE_CURRENCY_ADDRESS),
   [SupportedChainId.ARBITRUM_ONE]: [USDT_ARBITRUM_ONE, USDC_ARBITRUM_ONE, DAI_ARBITRUM_ONE].map((token) =>
-    token.address.toLowerCase()
+    token.address.toLowerCase(),
   ),
+  [SupportedChainId.BASE]: [USDT_BASE, USDC_BASE, DAI_BASE].map((token) => token.address.toLowerCase()),
   [SupportedChainId.SEPOLIA]: [USDC_SEPOLIA].map((token) => token.address.toLowerCase()),
 }
 
@@ -41,7 +45,7 @@ const STABLE_COINS: Record<SupportedChainId, string[]> = {
 export function getQuoteCurrency(
   chainId: SupportedChainId | undefined,
   inputCurrencyAmount: Nullish<CurrencyAmount<Currency>>,
-  outputCurrencyAmount: Nullish<CurrencyAmount<Currency>>
+  outputCurrencyAmount: Nullish<CurrencyAmount<Currency>>,
 ): Currency | null {
   if (!chainId || !inputCurrencyAmount || !outputCurrencyAmount) return null
 
@@ -58,7 +62,7 @@ export function getQuoteCurrency(
 export function getQuoteCurrencyByStableCoin(
   chainId: SupportedChainId | undefined,
   inputCurrency: Currency | null,
-  outputCurrency: Currency | null
+  outputCurrency: Currency | null,
 ): Currency | null {
   if (!chainId || !inputCurrency || !outputCurrency) return null
 
