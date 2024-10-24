@@ -58,7 +58,7 @@ export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: '0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB',
   [SupportedChainId.GNOSIS_CHAIN]: '0x177127622c4A00F3d409B75571e12cB3c8973d3c',
   [SupportedChainId.ARBITRUM_ONE]: '0xcb8b5cd20bdcaea9a010ac1f8d835824f5c87a04',
-  [SupportedChainId.BASE]: '', // TODO: bridge to base
+  [SupportedChainId.BASE]: '0xc694a91e6b071bF030A18BD3053A7fE09B6DaE69',
   [SupportedChainId.SEPOLIA]: '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59',
 }
 
