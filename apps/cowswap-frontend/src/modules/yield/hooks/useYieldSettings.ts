@@ -19,6 +19,7 @@ export function useYieldDeadlineState(): StatefulValue<number> {
     [settings.deadline, updateState],
   )
 }
+
 export function useYieldRecipientToggleState(): StatefulValue<boolean> {
   const updateState = useSetAtom(updateYieldSettingsAtom)
   const settings = useYieldSettings()
@@ -26,5 +27,15 @@ export function useYieldRecipientToggleState(): StatefulValue<boolean> {
   return useMemo(
     () => [settings.showRecipient, (showRecipient: boolean) => updateState({ showRecipient })],
     [settings.showRecipient, updateState],
+  )
+}
+
+export function useYieldUnlockState(): StatefulValue<boolean> {
+  const updateState = useSetAtom(updateYieldSettingsAtom)
+  const settings = useYieldSettings()
+
+  return useMemo(
+    () => [settings.isUnlocked, (isUnlocked: boolean) => updateState({ isUnlocked })],
+    [settings.isUnlocked, updateState],
   )
 }

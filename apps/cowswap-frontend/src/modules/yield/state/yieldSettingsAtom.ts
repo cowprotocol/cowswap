@@ -7,11 +7,13 @@ import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 export interface YieldSettingsState {
   readonly showRecipient: boolean
   readonly deadline: number
+  readonly isUnlocked: boolean
 }
 
 export const defaultYieldSettings: YieldSettingsState = {
   showRecipient: false,
   deadline: DEFAULT_DEADLINE_FROM_NOW,
+  isUnlocked: false,
 }
 
 export const { atom: yieldSettingsAtom, updateAtom: updateYieldSettingsAtom } = atomWithPartialUpdate(
