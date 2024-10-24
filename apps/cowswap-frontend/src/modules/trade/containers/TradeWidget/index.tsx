@@ -14,7 +14,7 @@ export function TradeWidget(props: TradeWidgetProps) {
     tradeQuoteStateOverride,
     enableSmartSlippage,
   } = params
-  const modals = TradeWidgetModals(confirmModal, genericModal)
+  const modals = TradeWidgetModals({confirmModal, genericModal, selectTokenWidget: slots.selectTokenWidget})
 
   return (
     <>

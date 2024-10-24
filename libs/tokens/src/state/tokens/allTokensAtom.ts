@@ -8,10 +8,10 @@ import { userAddedTokensAtom } from './userAddedTokensAtom'
 
 import { TokensMap } from '../../types'
 import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
+import { parseTokenInfo } from '../../utils/parseTokenInfo'
 import { tokenMapToListWithLogo } from '../../utils/tokenMapToListWithLogo'
 import { environmentAtom } from '../environmentAtom'
 import { listsEnabledStateAtom, listsStatesListAtom } from '../tokenLists/tokenListsStateAtom'
-
 
 export interface TokensByAddress {
   [address: string]: TokenWithLogo | undefined
@@ -26,12 +26,6 @@ export interface TokensState {
   inactiveTokens: TokensMap
 }
 
-interface BridgeInfo {
-  [chainId: number]: {
-    tokenAddress: string
-  }
-}
-
 export const tokensStateAtom = atom<TokensState>((get) => {
   const { chainId } = get(environmentAtom)
   const listsStatesList = get(listsStatesListAtom)
@@ -42,18 +36,10 @@ export const tokensStateAtom = atom<TokensState>((get) => {
       const isListEnabled = listsEnabledState[list.source]
 
       list.list.tokens.forEach((token) => {
-        const bridgeInfo = token.extensions?.['bridgeInfo'] as never as BridgeInfo | undefined
-        const currentChainInfo = bridgeInfo?.[chainId]
-        const bridgeAddress = currentChainInfo?.tokenAddress
+        const tokenInfo = parseTokenInfo(chainId, token)
+        const tokenAddressKey = tokenInfo?.address.toLowerCase()
 
-        if (token.chainId !== chainId && !bridgeAddress) return
-
-        const tokenAddress = bridgeAddress || token.address
-        const tokenAddressKey = tokenAddress.toLowerCase()
-        const tokenInfo: TokenInfo = {
-          ...token,
-          address: tokenAddress,
-        }
+        if (!tokenInfo || !tokenAddressKey) return
 
         if (isListEnabled) {
           if (!acc.activeTokens[tokenAddressKey]) {
@@ -68,7 +54,7 @@ export const tokensStateAtom = atom<TokensState>((get) => {
 
       return acc
     },
-    { activeTokens: {}, inactiveTokens: {} }
+    { activeTokens: {}, inactiveTokens: {} },
   )
 })
 
@@ -92,7 +78,7 @@ export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
       ...lowerCaseTokensMap(userAddedTokens[chainId]),
       ...lowerCaseTokensMap(favoriteTokensState[chainId]),
     },
-    chainId
+    chainId,
   )
 })
 

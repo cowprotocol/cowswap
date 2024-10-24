@@ -1,10 +1,3 @@
-// Containers
-import { userAddedTokenListsAtomv2Migration } from './migrations/userAddedTokenListsAtomv2Migration'
-
-// Run migrations first of all
-// TODO: remove it after 01.04.2024
-userAddedTokenListsAtomv2Migration()
-
 // Updaters
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'
 export { UnsupportedTokensUpdater } from './updaters/UnsupportedTokensUpdater'
@@ -47,6 +40,7 @@ export { useAreThereTokensWithSameSymbol } from './hooks/tokens/useAreThereToken
 export { useSearchList } from './hooks/lists/useSearchList'
 export { useSearchToken } from './hooks/tokens/useSearchToken'
 export { useSearchNonExistentToken } from './hooks/tokens/useSearchNonExistentToken'
+export { useAllLpTokens } from './hooks/tokens/useAllLpTokens'
 
 // Utils
 export { getTokenListViewLink } from './utils/getTokenListViewLink'
