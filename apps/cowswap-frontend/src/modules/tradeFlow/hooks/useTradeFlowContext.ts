@@ -193,7 +193,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
               quoteValidTo: quoteResponse.quote.validTo,
               localQuoteTimestamp,
             }),
-            recipient: recipientAddress || account,
+            recipient: recipientAddress || recipient || account,
             recipientAddressOrName: recipient || null,
             allowsOffchainSigning,
             appData,
