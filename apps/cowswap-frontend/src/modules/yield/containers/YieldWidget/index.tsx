@@ -1,4 +1,5 @@
-import { ReactNode, useCallback } from 'react'
+import React, { useCallback } from 'react'
+import { ReactNode } from 'react'
 
 import { Field } from 'legacy/state/types'
 
@@ -10,6 +11,7 @@ import {
   useTradeConfirmState,
   useTradePriceImpact,
 } from 'modules/trade'
+import { UnlockWidgetScreen, BulletListItem } from 'modules/trade/pure/UnlockWidgetScreen' // Ensure correct import
 import { useHandleSwap } from 'modules/tradeFlow'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { SettingsTab, TradeRateDetails } from 'modules/tradeWidgetAddons'
@@ -19,16 +21,37 @@ import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
 import { useYieldDerivedState } from '../../hooks/useYieldDerivedState'
-import { useYieldDeadlineState, useYieldRecipientToggleState, useYieldSettings } from '../../hooks/useYieldSettings'
+import {
+  useYieldDeadlineState,
+  useYieldRecipientToggleState,
+  useYieldSettings,
+  useYieldUnlockState,
+} from '../../hooks/useYieldSettings'
 import { useYieldWidgetActions } from '../../hooks/useYieldWidgetActions'
 import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
 import { YieldConfirmModal } from '../YieldConfirmModal'
 
+const YIELD_BULLET_LIST_CONTENT: BulletListItem[] = [
+  { content: 'Maximize your yield on existing LP positions' },
+  { content: 'Seamlessly swap your tokens into CoW AMM pools' },
+  { content: 'Earn higher returns with reduced impermanent loss' },
+  { content: 'Leverage advanced strategies for optimal growth' },
+]
+
+const YIELD_UNLOCK_SCREEN = {
+  id: 'yield-widget',
+  title: 'Unlock Enhanced Yield Features',
+  subtitle: 'Boooost your current LP positions with CoW AMM’s pools.',
+  orderType: 'yield',
+  buttonText: 'Start boooosting your yield!',
+}
+
 export function YieldWidget() {
   const { showRecipient } = useYieldSettings()
   const deadlineState = useYieldDeadlineState()
   const recipientToggleState = useYieldRecipientToggleState()
+  const [isUnlocked, setIsUnlocked] = useYieldUnlockState()
   const { isLoading: isRateLoading } = useTradeQuote()
   const priceImpact = useTradePriceImpact()
   const { isOpen: isConfirmOpen } = useTradeConfirmState()
@@ -102,6 +125,18 @@ export function YieldWidget() {
       },
       [doTrade.contextIsReady, isRateLoading, rateInfoParams, deadlineState],
     ),
+
+    lockScreen: !isUnlocked ? (
+      <UnlockWidgetScreen
+        id={YIELD_UNLOCK_SCREEN.id}
+        items={YIELD_BULLET_LIST_CONTENT}
+        handleUnlock={() => setIsUnlocked(true)}
+        title={YIELD_UNLOCK_SCREEN.title}
+        subtitle={YIELD_UNLOCK_SCREEN.subtitle}
+        orderType={YIELD_UNLOCK_SCREEN.orderType}
+        buttonText={YIELD_UNLOCK_SCREEN.buttonText}
+      />
+    ) : undefined,
   }
 
   const params = {
