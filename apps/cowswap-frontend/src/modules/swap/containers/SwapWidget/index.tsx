@@ -245,6 +245,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     isEoaEthFlow,
     compactView: true,
     enableSmartSlippage: true,
+    isMarketOrderWidget: true,
     recipient,
     showRecipient: showRecipientControls,
     isTradePriceUpdating,
