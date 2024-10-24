@@ -1,9 +1,10 @@
-import { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
 import { VirtualItem } from '@tanstack/react-virtual'
 
+import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
 import { VirtualList } from 'common/pure/VirtualList'
 
 import { SelectTokenContext } from '../../types'
@@ -21,8 +22,6 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
   const { values: balances } = balancesState
 
   const isWalletConnected = !!account
-  // const isInjectedWidgetMode = isInjectedWidget()
-  // const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
   const sortedTokens = useMemo(() => {
     return balances ? allTokens.sort(tokensListSorter(balances)) : allTokens
@@ -49,5 +48,9 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
     [balances, unsupportedTokens, permitCompatibleTokens, selectedToken, onSelectToken, isWalletConnected],
   )
 
-  return <VirtualList id="tokens-list" items={sortedTokens} getItemView={getItemView} />
+  return (
+    <VirtualList id="tokens-list" items={sortedTokens} getItemView={getItemView}>
+      <CoWAmmBanner isTokenSelectorView />
+    </VirtualList>
+  )
 }
