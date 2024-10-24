@@ -91,6 +91,7 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
 
 export const SelectMenu = styled.div`
   width: 100%;
+  min-height: 100%;
   position: absolute;
   z-index: 100;
   left: 0;
