@@ -43,7 +43,7 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
     if (!postHooksRecipientOverride) {
       onChangeRecipient(null)
     }
-  }, [chainId, onChangeRecipient])
+  }, [chainId, onChangeRecipient, postHooksRecipientOverride])
 
   /**
    * Remove recipient override when its source hook was deleted

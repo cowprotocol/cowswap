@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
 import { Badge } from '@cowprotocol/ui'
@@ -7,7 +7,7 @@ import type { TradeType } from '@cowprotocol/widget-lib'
 import { Trans } from '@lingui/macro'
 import IMAGE_CARET from 'assets/icon/caret.svg'
 import SVG from 'react-inlinesvg'
-import { matchPath, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { ModalHeader } from 'modules/tokensList/pure/ModalHeader'
@@ -18,7 +18,9 @@ import { useMenuItems } from 'common/hooks/useMenuItems'
 import * as styledEl from './styled'
 
 import { useTradeRouteContext } from '../../hooks/useTradeRouteContext'
-import { parameterizeTradeRoute } from '../../utils/parameterizeTradeRoute'
+import { useGetTradeStateByRoute } from '../../hooks/useTradeState'
+import { getDefaultTradeRawState, TradeUrlParams } from '../../types/TradeRawState'
+import { addChainIdToRoute, parameterizeTradeRoute } from '../../utils/parameterizeTradeRoute'
 
 interface MenuItemConfig {
   route: RoutesValues
@@ -30,6 +32,7 @@ const TRADE_TYPE_TO_ROUTE: Record<TradeType, string> = {
   swap: Routes.SWAP,
   limit: Routes.LIMIT_ORDER,
   advanced: Routes.ADVANCED_ORDERS,
+  yield: Routes.YIELD,
 }
 
 interface TradeWidgetLinksProps {
@@ -42,6 +45,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
   const [isDropdownVisible, setDropdownVisible] = useState(false)
   const { enabledTradeTypes } = useInjectedWidgetParams()
   const menuItems = useMenuItems()
+  const getTradeStateByType = useGetTradeStateByRoute()
 
   const handleMenuItemClick = useCallback((_item?: MenuItemConfig): void => {
     setDropdownVisible(false)
@@ -57,8 +61,28 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
 
   const menuItemsElements: JSX.Element[] = useMemo(() => {
     return enabledItems.map((item) => {
-      const routePath = parameterizeTradeRoute(tradeContext, item.route, true)
-      const isActive = !!matchPath(location.pathname, routePath.split('?')[0])
+      const isItemYield = item.route === Routes.YIELD
+      const chainId = tradeContext.chainId
+
+      const isCurrentPathYield = location.pathname.startsWith(addChainIdToRoute(Routes.YIELD, chainId))
+      const itemTradeState = getTradeStateByType(item.route)
+
+      const routePath = isItemYield
+        ? addChainIdToRoute(item.route, chainId)
+        : parameterizeTradeRoute(
+            isCurrentPathYield
+              ? ({
+                  chainId,
+                  inputCurrencyId:
+                    itemTradeState.inputCurrencyId || (chainId && getDefaultTradeRawState(+chainId).inputCurrencyId),
+                  outputCurrencyId: itemTradeState.outputCurrencyId,
+                } as TradeUrlParams)
+              : tradeContext,
+            item.route,
+            !isCurrentPathYield,
+          )
+
+      const isActive = location.pathname.startsWith(routePath.split('?')[0])
 
       return (
         <MenuItem
@@ -71,7 +95,15 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
         />
       )
     })
-  }, [isDropdown, isDropdownVisible, enabledItems, tradeContext, location.pathname, handleMenuItemClick])
+  }, [
+    isDropdown,
+    isDropdownVisible,
+    enabledItems,
+    tradeContext,
+    location.pathname,
+    handleMenuItemClick,
+    getTradeStateByType,
+  ])
 
   const singleMenuItem = menuItemsElements.length === 1
 

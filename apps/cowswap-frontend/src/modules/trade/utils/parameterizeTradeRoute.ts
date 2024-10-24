@@ -11,7 +11,7 @@ import { RoutesValues } from 'common/constants/routes'
 export function parameterizeTradeRoute(
   { chainId, orderKind, inputCurrencyId, outputCurrencyId, inputCurrencyAmount, outputCurrencyAmount }: TradeUrlParams,
   route: RoutesValues,
-  withAmounts?: boolean
+  withAmounts?: boolean,
 ): string {
   const path = route
     .replace('/:chainId?', chainId ? `/${encodeURIComponent(chainId)}` : '')
@@ -35,4 +35,11 @@ export function parameterizeTradeRoute(
   }
 
   return path
+}
+
+export function addChainIdToRoute(route: RoutesValues, chainId: string | undefined): string {
+  return route
+    .replace('/:chainId?', chainId ? `/${encodeURIComponent(chainId)}` : '')
+    .replace('/:inputCurrencyId?', '')
+    .replace('/:outputCurrencyId?', '')
 }

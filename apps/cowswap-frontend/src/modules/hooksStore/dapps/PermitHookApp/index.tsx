@@ -42,7 +42,7 @@ export function PermitHookApp({ context }: HookDappProps) {
     }
 
     context.addHook({ hook })
-  }, [generatePermitHook, context, permitInfo, token, spenderAddress])
+  }, [generatePermitHook, context, permitInfo, token, spenderAddress, hookToEdit])
 
   const buttonProps = useMemo(() => {
     if (!context.account) return { message: 'Connect wallet', disabled: true }
@@ -52,7 +52,7 @@ export function PermitHookApp({ context }: HookDappProps) {
     if (!token || !isAddress(spenderAddress)) return { message: 'Invalid parameters', disabled: true }
     if (!isSupportedPermitInfo(permitInfo)) return { message: 'Token not permittable', disabled: true }
     return { message: confirmMessage, disabled: false }
-  }, [hookToEdit, token, permitInfo, context.account, tokenAddress, spenderAddress])
+  }, [hookToEdit, token, permitInfo, context.account, tokenAddress, spenderAddress, isPermitEnabled, isPreHook])
 
   return (
     <Wrapper>

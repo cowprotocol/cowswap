@@ -12,13 +12,12 @@ import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/s
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
 import { emitPostedOrderEvent } from 'modules/orders'
-import { handlePermit } from 'modules/permit'
-import { callDataContainsPermitSigner } from 'modules/permit'
-import { presignOrderStep } from 'modules/swap/services/swapFlow/steps/presignOrderStep'
+import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-import { TradeFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import { tradeFlowAnalytics, TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
+import { presignOrderStep } from 'modules/tradeFlow/services/swapFlow/steps/presignOrderStep'
 
 export async function tradeFlow(
   params: TradeFlowContext,

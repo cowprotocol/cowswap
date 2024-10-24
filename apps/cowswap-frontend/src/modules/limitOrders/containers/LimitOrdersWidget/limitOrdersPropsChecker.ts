@@ -23,6 +23,7 @@ export interface LimitOrdersProps {
   settingsState: LimitOrdersSettingsState
   feeAmount: CurrencyAmount<Currency> | null
   widgetActions: TradeWidgetActions
+  isWrapOrUnwrap: boolean
 }
 
 export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps): boolean {
@@ -34,6 +35,7 @@ export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps
     a.showRecipient === b.showRecipient &&
     a.recipient === b.recipient &&
     a.widgetActions === b.widgetActions &&
+    a.isWrapOrUnwrap === b.isWrapOrUnwrap &&
     checkRateInfoParams(a.rateInfoParams, b.rateInfoParams) &&
     checkPriceImpact(a.priceImpact, b.priceImpact) &&
     genericPropsChecker(a.settingsState, b.settingsState) &&

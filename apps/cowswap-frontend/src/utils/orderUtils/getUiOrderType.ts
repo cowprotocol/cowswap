@@ -25,6 +25,7 @@ export const ORDER_UI_TYPE_TITLES: Record<UiOrderType, string> = {
   [UiOrderType.LIMIT]: 'Limit order',
   [UiOrderType.TWAP]: 'TWAP order',
   [UiOrderType.HOOKS]: 'Hooks',
+  [UiOrderType.YIELD]: 'Yield',
 }
 
 export type UiOrderTypeParams = Pick<Order, 'fullAppData' | 'composableCowInfo' | 'class'>

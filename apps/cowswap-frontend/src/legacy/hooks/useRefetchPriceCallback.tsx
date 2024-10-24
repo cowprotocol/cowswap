@@ -16,17 +16,19 @@ import { QuoteError } from 'legacy/state/price/actions'
 import { useQuoteDispatchers } from 'legacy/state/price/hooks'
 import { QuoteInformationObject } from 'legacy/state/price/reducer'
 import { LegacyFeeQuoteParams, LegacyQuoteParams } from 'legacy/state/price/types'
-import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { getBestQuote, getFastQuote, QuoteResult } from 'legacy/utils/price'
 
-import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
+import { useIsEoaEthFlow } from 'modules/trade'
 
 import { ApiErrorCodes, isValidOperatorError } from 'api/cowProtocol/errors/OperatorError'
 import QuoteApiError, {
+  isValidQuoteError,
   QuoteApiErrorCodes,
   QuoteApiErrorDetails,
-  isValidQuoteError,
 } from 'api/cowProtocol/errors/QuoteError'
+
+import { PRICE_QUOTE_VALID_TO_TIME } from '../../common/constants/quote'
+import { useUserTransactionTTL } from '../state/user/hooks'
 
 interface HandleQuoteErrorParams {
   quoteData: QuoteInformationObject | LegacyFeeQuoteParams
@@ -114,6 +116,8 @@ function handleQuoteError({ quoteData, error, addUnsupportedToken }: HandleQuote
 const getBestQuoteResolveOnlyLastCall = onlyResolvesLast<QuoteResult>(getBestQuote)
 const getFastQuoteResolveOnlyLastCall = onlyResolvesLast<QuoteResult>(getFastQuote)
 
+const MAX_VALID_FOR = Math.round(PRICE_QUOTE_VALID_TO_TIME / 1000)
+
 /**
  * @returns callback that fetches a new quote and update the state
  */
@@ -131,7 +135,7 @@ export function useRefetchQuoteCallback() {
     async (params: QuoteParamsForFetching) => {
       const { quoteParams, isPriceRefresh } = params
       // set the validTo time here
-      quoteParams.validFor = deadline
+      quoteParams.validFor = Math.min(deadline, MAX_VALID_FOR) // do not go over MAX_VALID_FOR
       quoteParams.isEthFlow = isEoaEthFlow
 
       let quoteData: LegacyFeeQuoteParams | QuoteInformationObject = quoteParams
@@ -183,8 +187,8 @@ export function useRefetchQuoteCallback() {
         const previouslyUnsupportedToken = getIsUnsupportedToken(sellToken)
           ? sellToken
           : getIsUnsupportedToken(buyToken)
-          ? buyToken
-          : null
+            ? buyToken
+            : null
         // can be a previously unsupported token which is now valid
         // so we check against map and remove it
         if (previouslyUnsupportedToken) {
@@ -263,6 +267,6 @@ export function useRefetchQuoteCallback() {
       removeGpUnsupportedToken,
       addUnsupportedToken,
       setQuoteError,
-    ]
+    ],
   )
 }

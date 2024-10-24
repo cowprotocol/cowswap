@@ -23,6 +23,7 @@ const ORDER_TYPE_SUPPORTS_PERMIT: Record<TradeType, boolean> = {
   [TradeType.SWAP]: true,
   [TradeType.LIMIT_ORDER]: true,
   [TradeType.ADVANCED_ORDERS]: false,
+  [TradeType.YIELD]: true,
 }
 
 const UNSUPPORTED: PermitInfo = { type: 'unsupported', name: 'native' }

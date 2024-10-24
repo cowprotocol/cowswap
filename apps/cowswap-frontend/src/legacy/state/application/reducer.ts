@@ -4,7 +4,6 @@ import { initialState } from './initialState'
 
 export enum ApplicationModal {
   NETWORK_SELECTOR,
-  SETTINGS,
   WALLET,
   // -----------------      MOD: CowSwap specific modals      --------------------
   TRANSACTION_ERROR,
@@ -16,7 +15,7 @@ export enum ApplicationModal {
 }
 
 export interface ApplicationState {
-  readonly openModal: ApplicationModal | null
+  openModal: ApplicationModal | null
 }
 
 const applicationSlice = createSlice({
@@ -29,5 +28,4 @@ const applicationSlice = createSlice({
   },
 })
 
-export const { setOpenModal } = applicationSlice.actions
 export default applicationSlice.reducer

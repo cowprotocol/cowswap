@@ -88,6 +88,7 @@ export function AppDataInfoUpdater({
     typedHooks,
     volumeFee,
     replacedOrderUid,
+    isSmartSlippage,
   ])
 }
 

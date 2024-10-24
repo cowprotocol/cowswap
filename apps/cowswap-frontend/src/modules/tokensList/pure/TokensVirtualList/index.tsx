@@ -34,6 +34,8 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
   const { values: balances, isLoading: balancesLoading } = balancesState
 
   const isWalletConnected = !!account
+  // const isInjectedWidgetMode = isInjectedWidget()
+  // const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
   const scrollTimeoutRef = useRef<NodeJS.Timeout>()
   const parentRef = useRef<HTMLDivElement>(null)
@@ -65,6 +67,9 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
 
   return (
     <CommonListContainer id="tokens-list" ref={parentRef} onScroll={onScroll}>
+      {/*{!isInjectedWidgetMode && account && !isChainIdUnsupported && (*/}
+      {/*  <CoWAmmBanner location={BannerLocation.TokenSelector} />*/}
+      {/*)}*/}
       <styledEl.TokensInner ref={wrapperRef} style={{ height: virtualizer.getTotalSize() }}>
         <styledEl.TokensScroller style={{ transform: `translateY(${items[0]?.start ?? 0}px)` }}>
           {items.map((virtualRow) => {

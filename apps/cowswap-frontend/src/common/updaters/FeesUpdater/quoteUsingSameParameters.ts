@@ -3,14 +3,15 @@ import { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 
 import { decodeAppData } from 'modules/appData'
 
-type FeeQuoteParams = Omit<LegacyFeeQuoteParams, 'validTo'>
-
 /**
  * Checks if the parameters for the current quote are correct
  *
  * Quotes are only valid for a given token-pair and amount. If any of these parameter change, the fee needs to be re-fetched
  */
-export function quoteUsingSameParameters(currentParams: FeeQuoteParams, quoteInfo: QuoteInformationObject): boolean {
+export function quoteUsingSameParameters(
+  currentParams: LegacyFeeQuoteParams,
+  quoteInfo: QuoteInformationObject,
+): boolean {
   const {
     amount: currentAmount,
     sellToken: currentSellToken,

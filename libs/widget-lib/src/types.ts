@@ -93,6 +93,7 @@ export enum TradeType {
    * But in the future it can be extended to support other order types.
    */
   ADVANCED = 'advanced',
+  YIELD = 'yield',
 }
 
 /**
