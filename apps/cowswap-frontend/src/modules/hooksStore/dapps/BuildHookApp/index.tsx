@@ -38,6 +38,10 @@ export function BuildHookApp({ context }: HookDappProps) {
   const [hook, setHook] = useState<CowHook>(hookToEdit?.hook || DEFAULT_HOOK_STATE)
   const [errors, setErrors] = useState<Record<keyof CowHook, string>>(DEFAULT_ERRORS_STATE)
 
+  // JUST FOR TESTING PROPOSES
+  // REMOVE THIS ON MERGE
+  console.log({ balanceDiff: context.balancesDiff })
+
   const validateInput = useCallback((name: keyof CowHook, value: string) => {
     setErrors((prev) => ({ ...prev, [name]: value.trim() ? '' : `${capitalizeFirstLetter(name)} is required` }))
   }, [])

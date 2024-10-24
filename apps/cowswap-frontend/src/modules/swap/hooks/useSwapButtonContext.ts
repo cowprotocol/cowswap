@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
+// import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { currencyAmountToTokenAmount, getWrappedToken } from '@cowprotocol/common-utils'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import {
@@ -29,6 +29,7 @@ import { QuoteDeadlineParams } from 'modules/tradeQuote'
 import { useApproveState } from 'common/hooks/useApproveState'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
+import { useCurrencyAmountBalanceCombined } from './useCurrencyAmountBalanceCombined'
 import { useHandleSwapOrEthFlow } from './useHandleSwapOrEthFlow'
 import { useDerivedSwapInfo, useSwapActionHandlers } from './useSwapState'
 
@@ -157,7 +158,9 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
 
 function useHasEnoughWrappedBalanceForSwap(inputAmount?: CurrencyAmount<Currency>): boolean {
   const { currencies } = useDerivedSwapInfo()
-  const wrappedBalance = useCurrencyAmountBalance(currencies.INPUT ? getWrappedToken(currencies.INPUT) : undefined)
+  const wrappedBalance = useCurrencyAmountBalanceCombined(
+    currencies.INPUT ? getWrappedToken(currencies.INPUT) : undefined,
+  )
 
   // is a native currency trade but wrapped token has enough balance
   return !!(wrappedBalance && inputAmount && !wrappedBalance.lessThan(inputAmount))

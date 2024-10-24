@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 
-import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
+// import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import {
@@ -19,6 +19,7 @@ import styled from 'styled-components/macro'
 
 import { addListAnalytics } from 'modules/analytics'
 import { usePermitCompatibleTokens } from 'modules/permit'
+import { useTokensBalancesCombined } from 'modules/swap/hooks/useTokensBalancesCombined'
 
 import { useOnTokenListAddingError } from '../../hooks/useOnTokenListAddingError'
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
@@ -52,7 +53,7 @@ export function SelectTokenWidget() {
   const favoriteTokens = useFavoriteTokens()
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllListsList()
-  const balancesState = useTokensBalances()
+  const balancesState = useTokensBalancesCombined()
   const unsupportedTokens = useUnsupportedTokens()
   const permitCompatibleTokens = usePermitCompatibleTokens()
   const onTokenListAddingError = useOnTokenListAddingError()

@@ -1,11 +1,8 @@
-import {
-  AllowancesState,
-  BalancesState,
-  useTokensAllowances,
-  useTokensBalances,
-} from '@cowprotocol/balances-and-allowances'
+import { AllowancesState, BalancesState, useTokensAllowances } from '@cowprotocol/balances-and-allowances'
 import { isEnoughAmount, getAddress, getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { useTokensBalancesCombined } from 'modules/swap/hooks/useTokensBalancesCombined'
 
 export interface UseEnoughBalanceParams {
   /**
@@ -39,7 +36,7 @@ const DEFAULT_BALANCE_AND_ALLOWANCE = { enoughBalance: undefined, enoughAllowanc
 export function useEnoughBalanceAndAllowance(params: UseEnoughBalanceParams): UseEnoughBalanceAndAllowanceResult {
   const { checkAllowanceAddress } = params
 
-  const { values: balances } = useTokensBalances()
+  const { values: balances } = useTokensBalancesCombined()
   const { values: allowances } = useTokensAllowances()
 
   return hasEnoughBalanceAndAllowance({
@@ -86,7 +83,7 @@ export function hasEnoughBalanceAndAllowance(params: EnoughBalanceParams): UseEn
 function _enoughBalance(
   tokenAddress: string | undefined,
   amount: CurrencyAmount<Currency>,
-  balances: BalancesState['values']
+  balances: BalancesState['values'],
 ): boolean | undefined {
   const balance = tokenAddress ? balances[tokenAddress] : undefined
 
@@ -97,7 +94,7 @@ function _enoughAllowance(
   tokenAddress: string | undefined,
   amount: CurrencyAmount<Currency>,
   allowances: AllowancesState['values'] | undefined,
-  isNativeCurrency: boolean
+  isNativeCurrency: boolean,
 ): boolean | undefined {
   if (!tokenAddress || !allowances) {
     return undefined
