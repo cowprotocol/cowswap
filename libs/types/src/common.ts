@@ -24,6 +24,14 @@ export type TokenInfo = {
   symbol: string
   logoURI?: string
   tokens?: string[]
-  isLpToken?: boolean
-  isCoWAmmToken?: boolean
+  lpTokenProvider?: LpTokenProvider
+}
+
+export enum LpTokenProvider {
+  COW_AMM = 'COW_AMM',
+  UNIV2 = 'UNIV2',
+  CURVE = 'CURVE',
+  BALANCERV2 = 'BALANCERV2',
+  SUSHI = 'SUSHI',
+  PANCAKE = 'PANCAKE',
 }

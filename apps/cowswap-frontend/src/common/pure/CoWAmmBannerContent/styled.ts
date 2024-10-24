@@ -188,6 +188,7 @@ export const PoolInfo = styled.div<{
     border-radius: 62px;
     width: min-content;
     box-shadow: var(${UI.BOX_SHADOW_2});
+    align-items: center;
 
     ${Media.upToSmall()} {
       margin: 0 auto;

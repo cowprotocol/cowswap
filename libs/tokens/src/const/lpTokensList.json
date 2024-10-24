@@ -1,32 +1,32 @@
 [
   {
     "priority": 100,
-    "category": "COW_AMM_LP",
+    "lpTokenProvider": "COW_AMM",
     "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/95687bdc19a91b2934eca8a11b8fb6f09546bbda/src/public/lp-tokens/cow-amm.json"
   },
   {
     "priority": 101,
-    "category": "LP",
+    "lpTokenProvider": "UNIV2",
     "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/95687bdc19a91b2934eca8a11b8fb6f09546bbda/src/public/lp-tokens/uniswapv2.json"
   },
   {
     "priority": 102,
-    "category": "LP",
+    "lpTokenProvider": "CURVE",
     "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/95687bdc19a91b2934eca8a11b8fb6f09546bbda/src/public/lp-tokens/curve.json"
   },
   {
     "priority": 103,
-    "category": "LP",
+    "lpTokenProvider": "BALANCERV2",
     "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/95687bdc19a91b2934eca8a11b8fb6f09546bbda/src/public/lp-tokens/balancerv2.json"
   },
   {
     "priority": 104,
-    "category": "LP",
+    "lpTokenProvider": "SUSHI",
     "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/95687bdc19a91b2934eca8a11b8fb6f09546bbda/src/public/lp-tokens/sushiswap.json"
   },
   {
     "priority": 105,
-    "category": "LP",
+    "lpTokenProvider": "PANCAKE",
     "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/055c8ccebe59e91874baf8600403a487ad33e93d/src/public/lp-tokens/pancakeswap.json"
   }
 ]

@@ -6,7 +6,7 @@ import { TokenInfo } from '@cowprotocol/types'
 import { favoriteTokensAtom } from './favoriteTokensAtom'
 import { userAddedTokensAtom } from './userAddedTokensAtom'
 
-import { TokenListCategory, TokensMap } from '../../types'
+import { TokensMap } from '../../types'
 import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
 import { parseTokenInfo } from '../../utils/parseTokenInfo'
 import { tokenMapToListWithLogo } from '../../utils/tokenMapToListWithLogo'
@@ -34,21 +34,15 @@ const tokensStateAtom = atom<TokensState>((get) => {
   return listsStatesList.reduce<TokensState>(
     (acc, list) => {
       const isListEnabled = listsEnabledState[list.source]
-
+      const lpTokenProvider = list.lpTokenProvider
       list.list.tokens.forEach((token) => {
-        const category = list.category || TokenListCategory.ERC20
         const tokenInfo = parseTokenInfo(chainId, token)
         const tokenAddressKey = tokenInfo?.address.toLowerCase()
 
         if (!tokenInfo || !tokenAddressKey) return
 
-        if (category === TokenListCategory.LP) {
-          tokenInfo.isLpToken = true
-        }
-
-        if (category === TokenListCategory.COW_AMM_LP) {
-          tokenInfo.isLpToken = true
-          tokenInfo.isCoWAmmToken = true
+        if (lpTokenProvider) {
+          tokenInfo.lpTokenProvider = lpTokenProvider
         }
 
         if (isListEnabled) {
@@ -91,7 +85,7 @@ export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
         ? Object.keys(tokensMap.inactiveTokens).reduce<TokensMap>((acc, key) => {
             const token = tokensMap.inactiveTokens[key]
 
-            if (token.isLpToken) {
+            if (token.lpTokenProvider) {
               acc[key] = token
             }
 

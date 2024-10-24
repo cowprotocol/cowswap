@@ -1,4 +1,4 @@
-import { TokenInfo } from '@cowprotocol/types'
+import { LpTokenProvider, TokenInfo } from '@cowprotocol/types'
 import { Token } from '@uniswap/sdk-core'
 
 const emptyTokens = [] as string[]
@@ -22,10 +22,10 @@ export class TokenWithLogo extends Token {
 }
 
 export class LpToken extends TokenWithLogo {
-  static fromTokenToLp(token: Token | TokenInfo, isCowAmm: boolean): LpToken {
+  static fromTokenToLp(token: Token | TokenInfo, lpTokenProvider?: LpTokenProvider): LpToken {
     return new LpToken(
       token instanceof Token ? emptyTokens : token.tokens || emptyTokens,
-      isCowAmm,
+      lpTokenProvider,
       token.chainId,
       token.address,
       token.decimals,
@@ -36,7 +36,7 @@ export class LpToken extends TokenWithLogo {
 
   constructor(
     public tokens: string[],
-    public isCowAmm: boolean,
+    public lpTokenProvider: LpTokenProvider | undefined,
     chainId: number,
     address: string,
     decimals: number,

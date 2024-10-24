@@ -21,6 +21,6 @@ export function parseTokenInfo(chainId: SupportedChainId, token: Erc20TokenInfo)
   return {
     ...token,
     address: tokenAddress,
-    ...(lpTokens ? { tokens: lpTokens.split(',') } : undefined),
+    ...(lpTokens ? { tokens: lpTokens.split(',').map((t) => t.toLowerCase()) } : undefined),
   }
 }

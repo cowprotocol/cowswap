@@ -56,7 +56,7 @@ export const allListsSourcesAtom = atom((get) => {
 
 // Lists states
 export const listsStatesByChainAtom = atomWithStorage<TokenListsByChainState>(
-  'allTokenListsInfoAtom:v3',
+  'allTokenListsInfoAtom:v4',
   mapSupportedNetworks({}),
   getJotaiMergerStorage(),
 )

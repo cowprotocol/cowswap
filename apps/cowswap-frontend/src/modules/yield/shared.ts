@@ -1,4 +1,5 @@
 export { PoolsInfoUpdater } from './updaters/PoolsInfoUpdater'
+export { LpTokensWithBalancesUpdater } from './updaters/LpTokensWithBalancesUpdater'
 export { usePoolsInfo } from './hooks/usePoolsInfo'
 export { useLpTokensWithBalances } from './hooks/useLpTokensWithBalances'
 export type { PoolInfo, PoolInfoStates } from './state/poolsInfoAtom'

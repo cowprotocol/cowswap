@@ -1,5 +1,6 @@
 import { LpToken } from '@cowprotocol/common-const'
 import { LP_TOKEN_LIST_CATEGORIES, LP_TOKEN_LIST_COW_AMM_ONLY, TokenListCategory } from '@cowprotocol/tokens'
+import { LpTokenProvider } from '@cowprotocol/types'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
@@ -16,7 +17,7 @@ export function getDefaultTokenListCategories(
     // If sell token is LP token
     if (isOppositeLp) {
       // And sell token is COW AMM LP token, propose all LP tokens by default as buy token
-      if (oppositeToken.isCowAmm) {
+      if (oppositeToken.lpTokenProvider === LpTokenProvider.COW_AMM) {
         return LP_TOKEN_LIST_CATEGORIES
       } else {
         // And sell token is not COW AMM LP token, propose COW AMM LP tokens by default as buy token
@@ -28,7 +29,7 @@ export function getDefaultTokenListCategories(
     }
   }
 
-  if (isOppositeLp && oppositeToken.isCowAmm) {
+  if (isOppositeLp && oppositeToken.lpTokenProvider === LpTokenProvider.COW_AMM) {
     return LP_TOKEN_LIST_CATEGORIES
   }
 

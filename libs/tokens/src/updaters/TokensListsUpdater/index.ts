@@ -19,7 +19,7 @@ import { ListState } from '../../types'
 
 const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomWithPartialUpdate(
   atomWithStorage<Record<SupportedChainId, number>>(
-    'tokens:lastUpdateTimeAtom:v2',
+    'tokens:lastUpdateTimeAtom:v3',
     mapSupportedNetworks(0),
     getJotaiMergerStorage(),
   ),

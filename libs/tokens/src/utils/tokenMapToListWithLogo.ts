@@ -10,8 +10,8 @@ export function tokenMapToListWithLogo(tokenMap: TokensMap, chainId: number): To
     .filter((token) => token.chainId === chainId)
     .sort((a, b) => a.symbol.localeCompare(b.symbol))
     .map((token) =>
-      token.isLpToken
-        ? LpToken.fromTokenToLp(token, !!token.isCoWAmmToken)
+      token.lpTokenProvider
+        ? LpToken.fromTokenToLp(token, token.lpTokenProvider)
         : TokenWithLogo.fromToken(token, token.logoURI),
     )
 }
