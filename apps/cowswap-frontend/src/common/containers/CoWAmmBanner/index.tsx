@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { ClosableBanner } from '@cowprotocol/ui'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -8,9 +9,10 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { cowAnalytics } from 'modules/analytics'
 
+import { useVampireAttack } from './useVampireAttack'
+
 import { useIsProviderNetworkUnsupported } from '../../hooks/useIsProviderNetworkUnsupported'
 import { CoWAmmBannerContent } from '../../pure/CoWAmmBannerContent'
-import { dummyData, lpTokenConfig } from '../../pure/CoWAmmBannerContent/dummyData'
 
 const ANALYTICS_URL = 'https://cow.fi/pools?utm_source=swap.cow.fi&utm_medium=web&utm_content=cow_amm_banner'
 
@@ -23,6 +25,8 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
   const isInjectedWidgetMode = isInjectedWidget()
   const { account } = useWalletInfo()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
+  const vampireAttackContext = useVampireAttack()
+  const tokensByAddress = useTokensByAddressMap()
 
   const key = isTokenSelectorView ? 'tokenSelector' : 'global'
   const handleCTAClick = useCallback(() => {
@@ -54,9 +58,8 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
       title="CoW AMM"
       ctaText={isSmartContractWallet ? 'Booooost APR!' : 'Booooost APR gas-free!'}
       isTokenSelectorView={!!isTokenSelectorView}
-      selectedState="noLp" // TODO
-      dummyData={dummyData}
-      lpTokenConfig={lpTokenConfig}
+      vampireAttackContext={vampireAttackContext}
+      tokensByAddress={tokensByAddress}
       onCtaClick={handleCTAClick}
       onClose={() => {
         handleClose()

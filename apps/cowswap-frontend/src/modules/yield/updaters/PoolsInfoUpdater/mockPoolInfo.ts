@@ -10,7 +10,7 @@ export const MOCK_POOL_INFO: Record<string, PoolInfo> = {
   },
   // CoW AMM AAVE/WETH
   '0xf706c50513446d709f08d3e5126cd74fb6bfda19': {
-    apy: 0.07,
+    apy: 20.07,
     tvl: 52972,
     feeTier: 0.3,
     volume24h: 10,
