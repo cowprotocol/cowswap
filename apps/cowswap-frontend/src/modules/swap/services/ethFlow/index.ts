@@ -22,7 +22,7 @@ export async function ethFlow(
   ethFlowContext: EthFlowContext,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
-): Promise<void | false> {
+): Promise<void | boolean> {
   const {
     tradeConfirmActions,
     swapFlowAnalyticsContext,
@@ -112,6 +112,8 @@ export async function ethFlow(
     logTradeFlow('ETH FLOW', 'STEP 7: show UI of the successfully sent transaction', orderId)
     tradeConfirmActions.onSuccess(orderId)
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
+
+    return true
   } catch (error: any) {
     logTradeFlow('ETH FLOW', 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)

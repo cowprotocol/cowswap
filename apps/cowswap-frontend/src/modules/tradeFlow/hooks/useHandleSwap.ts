@@ -1,6 +1,8 @@
 import { useCallback } from 'react'
 
-import { useTradePriceImpact } from 'modules/trade'
+import { Field } from 'legacy/state/types'
+
+import { TradeWidgetActions, useTradePriceImpact } from 'modules/trade'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
@@ -13,12 +15,13 @@ import { safeBundleApprovalFlow, safeBundleEthFlow } from '../services/safeBundl
 import { swapFlow } from '../services/swapFlow'
 import { FlowType } from '../types/TradeFlowContext'
 
-export function useHandleSwap(params: TradeFlowParams) {
+export function useHandleSwap(params: TradeFlowParams, actions: TradeWidgetActions) {
   const tradeFlowType = useTradeFlowType()
   const tradeFlowContext = useTradeFlowContext(params)
   const safeBundleFlowContext = useSafeBundleFlowContext()
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
   const priceImpactParams = useTradePriceImpact()
+  const { onUserInput, onChangeRecipient } = actions
 
   const contextIsReady =
     Boolean(
@@ -30,27 +33,48 @@ export function useHandleSwap(params: TradeFlowParams) {
   const callback = useCallback(async () => {
     if (!tradeFlowContext) return
 
-    if (tradeFlowType === FlowType.SAFE_BUNDLE_APPROVAL) {
-      if (!safeBundleFlowContext) throw new Error('Safe bundle flow context is not ready')
+    const result = await (() => {
+      if (tradeFlowType === FlowType.SAFE_BUNDLE_APPROVAL) {
+        if (!safeBundleFlowContext) throw new Error('Safe bundle flow context is not ready')
 
-      logTradeFlow('SAFE BUNDLE APPROVAL FLOW', 'Start safe bundle approval flow')
-      return safeBundleApprovalFlow(
-        tradeFlowContext,
-        safeBundleFlowContext,
-        priceImpactParams,
-        confirmPriceImpactWithoutFee,
-      )
+        logTradeFlow('SAFE BUNDLE APPROVAL FLOW', 'Start safe bundle approval flow')
+        return safeBundleApprovalFlow(
+          tradeFlowContext,
+          safeBundleFlowContext,
+          priceImpactParams,
+          confirmPriceImpactWithoutFee,
+        )
+      }
+      if (tradeFlowType === FlowType.SAFE_BUNDLE_ETH) {
+        if (!safeBundleFlowContext) throw new Error('Safe bundle flow context is not ready')
+
+        logTradeFlow('SAFE BUNDLE ETH FLOW', 'Start safe bundle eth flow')
+        return safeBundleEthFlow(
+          tradeFlowContext,
+          safeBundleFlowContext,
+          priceImpactParams,
+          confirmPriceImpactWithoutFee,
+        )
+      }
+
+      logTradeFlow('SWAP FLOW', 'Start swap flow')
+      return swapFlow(tradeFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
+    })()
+
+    // Clean up form fields after successful swap
+    if (result === true) {
+      onChangeRecipient(null)
+      onUserInput(Field.INPUT, '')
     }
-    if (tradeFlowType === FlowType.SAFE_BUNDLE_ETH) {
-      if (!safeBundleFlowContext) throw new Error('Safe bundle flow context is not ready')
-
-      logTradeFlow('SAFE BUNDLE ETH FLOW', 'Start safe bundle eth flow')
-      return safeBundleEthFlow(tradeFlowContext, safeBundleFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
-    }
-
-    logTradeFlow('SWAP FLOW', 'Start swap flow')
-    return swapFlow(tradeFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
-  }, [tradeFlowType, tradeFlowContext, safeBundleFlowContext, priceImpactParams, confirmPriceImpactWithoutFee])
+  }, [
+    tradeFlowType,
+    tradeFlowContext,
+    safeBundleFlowContext,
+    priceImpactParams,
+    confirmPriceImpactWithoutFee,
+    onChangeRecipient,
+    onUserInput,
+  ])
 
   return { callback, contextIsReady }
 }

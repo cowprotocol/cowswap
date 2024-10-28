@@ -22,7 +22,7 @@ export async function swapFlow(
   input: TradeFlowContext,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
-): Promise<void | false> {
+): Promise<void | boolean> {
   const {
     tradeConfirmActions,
     callbacks: { getCachedPermit },
@@ -123,6 +123,8 @@ export async function swapFlow(
     logTradeFlow('SWAP FLOW', 'STEP 7: show UI of the successfully sent transaction', orderUid)
     tradeConfirmActions.onSuccess(orderUid)
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
+
+    return true
   } catch (error: any) {
     logTradeFlow('SWAP FLOW', 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
