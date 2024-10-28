@@ -28,7 +28,7 @@ export async function safeBundleEthFlow(
   safeBundleContext: SafeBundleFlowContext,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
-): Promise<void | false> {
+): Promise<void | boolean> {
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
 
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
@@ -149,6 +149,8 @@ export async function safeBundleEthFlow(
 
     logTradeFlow(LOG_PREFIX, 'STEP 8: show UI of the successfully sent transaction')
     tradeConfirmActions.onSuccess(orderId)
+
+    return true
   } catch (error) {
     logTradeFlow(LOG_PREFIX, 'STEP 9: error', error)
     const swapErrorMessage = getSwapErrorMessage(error)
