@@ -142,6 +142,7 @@ export function YieldWidget() {
   const params = {
     compactView: true,
     enableSmartSlippage: true,
+    isMarketOrderWidget: true,
     recipient,
     showRecipient,
     isTradePriceUpdating: isRateLoading,

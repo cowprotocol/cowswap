@@ -1,7 +1,6 @@
 import { TokenLogoWrapper } from '@cowprotocol/tokens'
-import { Media, UI } from '@cowprotocol/ui'
+import { ExternalLink, Media, UI } from '@cowprotocol/ui'
 
-import { ArrowRight } from 'react-feather'
 import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
@@ -140,13 +139,7 @@ export const NoPoolWrapper = styled.div`
   }
 `
 
-export const ArrowUpRight = styled(ArrowRight)`
-  transform: rotate(-45deg);
-  margin-left: 2px;
-  margin-bottom: -2px;
-`
-
-export const CreatePoolLink = styled.a`
+export const CreatePoolLink = styled(ExternalLink)`
   display: inline-block;
   background: #bcec79;
   color: #194d05;

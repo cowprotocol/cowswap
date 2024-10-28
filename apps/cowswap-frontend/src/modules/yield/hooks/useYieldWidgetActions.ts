@@ -5,7 +5,7 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeWidgetActions, useIsWrapOrUnwrap, useOnCurrencySelection, useSwitchTokensPlaces } from 'modules/trade'
+import { TradeWidgetActions, useOnCurrencySelection, useSwitchTokensPlaces } from 'modules/trade'
 
 import { useUpdateCurrencyAmount } from './useUpdateCurrencyAmount'
 import { useUpdateYieldRawState } from './useUpdateYieldRawState'
@@ -13,7 +13,6 @@ import { useYieldDerivedState } from './useYieldDerivedState'
 
 export function useYieldWidgetActions(): TradeWidgetActions {
   const { inputCurrency, outputCurrency, orderKind } = useYieldDerivedState()
-  const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const updateYieldState = useUpdateYieldRawState()
   const onCurrencySelection = useOnCurrencySelection()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
@@ -28,7 +27,7 @@ export function useYieldWidgetActions(): TradeWidgetActions {
 
       updateCurrencyAmount(field, value)
     },
-    [updateCurrencyAmount, isWrapOrUnwrap, inputCurrency, outputCurrency],
+    [updateCurrencyAmount, inputCurrency, outputCurrency],
   )
 
   const onSwitchTokens = useSwitchTokensPlaces({

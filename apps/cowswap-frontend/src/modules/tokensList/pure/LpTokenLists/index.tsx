@@ -13,7 +13,6 @@ import { VirtualItem } from '@tanstack/react-virtual'
 import { VirtualList } from 'common/pure/VirtualList'
 
 import {
-  ArrowUpRight,
   CreatePoolLink,
   ListHeader,
   ListItem,
@@ -153,14 +152,7 @@ export function LpTokenLists({ lpTokens, tokensByAddress, balancesState, display
       {displayCreatePoolBanner && (
         <NoPoolWrapper>
           <div>Can’t find the pool you’re looking for?</div>
-          <CreatePoolLink
-            href="https://balancer.fi/pools/cow?utm_source=swap.cow.fi&utm_medium=web&utm_content=yield-token-selector"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Create a pool
-            <ArrowUpRight size={16} />
-          </CreatePoolLink>
+          <CreatePoolLink href="https://pool-creator.balancer.fi/cow">Create a pool ↗</CreatePoolLink>
         </NoPoolWrapper>
       )}
     </Wrapper>

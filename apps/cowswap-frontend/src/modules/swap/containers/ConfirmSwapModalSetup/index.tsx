@@ -94,7 +94,16 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
       networkCostsSuffix: shouldPayGas ? <NetworkCostsSuffix /> : null,
       networkCostsTooltipSuffix: <NetworkCostsTooltipSuffix />,
     }),
-    [chainId, allowedSlippage, nativeCurrency.symbol, isEoaEthFlow, isExactIn, shouldPayGas, isSmartSlippageApplied],
+    [
+      chainId,
+      allowedSlippage,
+      nativeCurrency.symbol,
+      isEoaEthFlow,
+      isExactIn,
+      shouldPayGas,
+      isSmartSlippageApplied,
+      smartSlippage,
+    ],
   )
 
   const submittedContent = useOrderSubmittedContent(chainId)

@@ -95,22 +95,22 @@ function SettingsTabController({ buttonRef, children }: SettingsTabControllerPro
   const [settingsTabState, setSettingsTabState] = useAtom(settingsTabStateAtom)
   const { isExpanded } = useMenuButtonContext()
 
-  const toggleMenu = () => {
+  const toggleMenu = useCallback(() => {
     buttonRef.current?.dispatchEvent(new Event('mousedown', { bubbles: true }))
-  }
+  }, [buttonRef.current])
 
   useEffect(() => {
     if (settingsTabState.open) {
       toggleMenu()
     }
-  }, [settingsTabState.open])
+  }, [settingsTabState.open, toggleMenu])
 
   useEffect(() => {
     if (settingsTabState.open && !isExpanded) {
       toggleMenu()
       setSettingsTabState({ open: false })
     }
-  }, [settingsTabState.open, isExpanded])
+  }, [settingsTabState.open, isExpanded, toggleMenu, setSettingsTabState])
 
   return children
 }
