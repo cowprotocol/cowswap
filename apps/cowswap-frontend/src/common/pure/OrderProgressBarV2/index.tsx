@@ -22,8 +22,7 @@ import { ExplorerDataType, getExplorerLink, getRandomInt, isSellOrder, shortenAd
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
-import { ExternalLink, InfoTooltip, ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
-import { Confetti } from '@cowprotocol/ui'
+import { Confetti, ExternalLink, InfoTooltip, ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { AnimatePresence, motion } from 'framer-motion'
@@ -47,6 +46,7 @@ import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
+
 const IS_DEBUG_MODE = false
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
@@ -328,7 +328,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
   }, [currentStep, getDuration])
 
   // Ensure StepComponent will be a valid React component or null
-  let StepComponent: React.ComponentType<OrderProgressBarV2Props> | null = null
+  let StepComponent: React.ComponentType<OrderProgressBarV2Props> | null
 
   if (currentStep === 'cancellationFailed' || currentStep === 'finished') {
     StepComponent = FinishedStep
@@ -408,21 +408,6 @@ function RenderProgressTopSection({
   const { surplusPercent, showSurplus } = surplusData || {}
   const shouldShowSurplus = DEBUG_FORCE_SHOW_SURPLUS || showSurplus
   const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
-
-  const shareOnTwitter = useCallback(() => {
-    const twitterUrl = shouldShowSurplus
-      ? getTwitterShareUrl(surplusData, order)
-      : getTwitterShareUrlForBenefit(randomBenefit)
-    window.open(twitterUrl, '_blank', 'noopener,noreferrer')
-  }, [shouldShowSurplus, surplusData, order, randomBenefit])
-
-  const trackShareClick = useCallback(() => {
-    cowAnalytics.sendEvent({
-      category: Category.PROGRESS_BAR,
-      action: 'Click Share Button',
-      label: shouldShowSurplus ? 'Surplus' : 'Benefit',
-    })
-  }, [shouldShowSurplus])
 
   const content = useMemo(() => {
     switch (stepName) {
@@ -577,17 +562,7 @@ function RenderProgressTopSection({
       default:
         return null
     }
-  }, [
-    stepName,
-    order,
-    countdown,
-    randomImage,
-    randomBenefit,
-    shouldShowSurplus,
-    surplusPercentValue,
-    shareOnTwitter,
-    trackShareClick,
-  ])
+  }, [stepName, order, countdown, randomImage, randomBenefit, shouldShowSurplus, surplusPercentValue])
 
   return (
     <styledEl.ProgressTopSection>
