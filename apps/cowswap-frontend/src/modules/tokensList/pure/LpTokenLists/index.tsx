@@ -4,7 +4,7 @@ import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { InfoTooltip, LoadingRows, LoadingRowSmall, Media, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
+import { LoadingRows, LoadingRowSmall, Media, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { VirtualItem } from '@tanstack/react-virtual'
@@ -45,7 +45,6 @@ const MobileCardRowItem: React.FC<{ label: string; value: React.ReactNode }> = (
   </MobileCardRow>
 )
 
-
 interface LpTokenListsProps {
   account: string | undefined
   lpTokens: LpToken[]
@@ -77,7 +76,7 @@ export function LpTokenLists({
       const balanceAmount = balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
       const info = poolsInfo?.[tokenAddressLower]?.info
 
-      const onInfoClick: MouseEventHandler<SVGElement> = (e) => {
+      const onInfoClick: MouseEventHandler<HTMLDivElement> = (e) => {
         e.stopPropagation()
         openPoolPage(tokenAddressLower)
       }
@@ -96,20 +95,20 @@ export function LpTokenLists({
         </>
       )
 
+      const BalanceDisplay = balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement
+
       if (isMobile) {
         return (
           <MobileCard key={token.address}>
             <MobileCardRow>{commonContent}</MobileCardRow>
-            <MobileCardRowItem
-              label="Balance"
-              value={balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement}
-            />
+            <MobileCardRowItem label="Balance" value={BalanceDisplay} />
             <MobileCardRowItem label="APR" value={info?.apy ? `${info.apy}%` : ''} />
             <MobileCardRowItem
               label="Details"
               value={
-                <LpTokenTooltip>
-                  <Info onClick={onInfoClick} size={18} />
+                <LpTokenTooltip onClick={onInfoClick}>
+                  Pool details
+                  <Info size={18} />
                 </LpTokenTooltip>
               }
             />
@@ -120,10 +119,10 @@ export function LpTokenLists({
       return (
         <ListItem data-address={token.address} onClick={() => onSelectToken(token)}>
           <LpTokenWrapper>{commonContent}</LpTokenWrapper>
-          <LpTokenBalance>{balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement}</LpTokenBalance>
+          <LpTokenBalance>{BalanceDisplay}</LpTokenBalance>
           <LpTokenYieldPercentage>{info?.apy ? `${info.apy}%` : ''}</LpTokenYieldPercentage>
-          <LpTokenTooltip>
-            <Info onClick={onInfoClick} size={18} />
+          <LpTokenTooltip onClick={onInfoClick}>
+            <Info size={18} />
           </LpTokenTooltip>
         </ListItem>
       )

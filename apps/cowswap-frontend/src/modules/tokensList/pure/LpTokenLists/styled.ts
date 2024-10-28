@@ -77,6 +77,13 @@ export const LpTokenTooltip = styled.div`
   display: flex;
   align-items: center;
   margin: auto;
+  gap: 6px;
+  opacity: 0.8;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1;
+  }
 `
 
 export const NoPoolWrapper = styled.div`
