@@ -41,6 +41,7 @@ export interface CoWHookDappActions {
 }
 
 export interface HookDappOrderParams {
+  kind: 'buy' | 'sell'
   validTo: number
   sellTokenAddress: string
   buyTokenAddress: string
