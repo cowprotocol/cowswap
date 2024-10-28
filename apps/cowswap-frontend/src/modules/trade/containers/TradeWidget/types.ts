@@ -28,6 +28,7 @@ interface TradeWidgetParams {
   disablePriceImpact?: boolean
   hideTradeWarnings?: boolean
   enableSmartSlippage?: boolean
+  isMarketOrderWidget?: boolean
   displayTokenName?: boolean
 }
 

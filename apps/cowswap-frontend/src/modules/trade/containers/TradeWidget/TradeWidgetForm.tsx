@@ -1,9 +1,8 @@
 import React, { useCallback, useMemo } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
-import ICON_TOKENS from '@cowprotocol/assets/svg/tokens.svg'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
-import { BannerOrientation, ButtonOutlined, ClosableBanner, InlineBanner, MY_ORDERS_ID } from '@cowprotocol/ui'
+import { ButtonOutlined, Media, MY_ORDERS_ID } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
@@ -15,9 +14,7 @@ import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { Field } from 'legacy/state/types'
 
 import { useToggleAccountModal } from 'modules/account'
-import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { useIsWidgetUnlocked } from 'modules/limitOrders'
 import { SetRecipient } from 'modules/swap/containers/SetRecipient'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
@@ -35,13 +32,9 @@ import { TradeWidgetProps } from './types'
 
 import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateFromUrl'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
-import { useTradeTypeInfo } from '../../hooks/useTradeTypeInfo'
-import { TradeType } from '../../types'
 import { TradeWarnings } from '../TradeWarnings'
 import { TradeWidgetLinks } from '../TradeWidgetLinks'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
-
-const ZERO_BANNER_STORAGE_KEY = 'limitOrdersZeroBalanceBanner:v0'
 
 const scrollToMyOrders = () => {
   const element = document.getElementById(MY_ORDERS_ID)
@@ -53,6 +46,7 @@ const scrollToMyOrders = () => {
 export function TradeWidgetForm(props: TradeWidgetProps) {
   const isInjectedWidgetMode = isInjectedWidget()
   const { standaloneMode, hideOrdersTable } = useInjectedWidgetParams()
+  const isMobile = useMediaQuery(Media.upToSmall(false))
 
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const { pendingActivity } = useCategorizeRecentActivity()
@@ -72,6 +66,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     hideTradeWarnings,
     enableSmartSlippage,
     displayTokenName = false,
+    isMarketOrderWidget = false,
   } = params
 
   const inputCurrencyInfo = useMemo(
@@ -113,25 +108,17 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   // Disable too frequent tokens switching
   const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
 
-  const tradeTypeInfo = useTradeTypeInfo()
-  const { isUnlocked: isAdvancedOrdersUnlocked } = useAdvancedOrdersDerivedState()
-  const isLimitOrdersUnlocked = useIsWidgetUnlocked()
   const isUpToLarge = useMediaQuery(upToLarge)
 
-  const isSwapMode = tradeTypeInfo?.tradeType === TradeType.SWAP
-  const isLimitOrderMode = tradeTypeInfo?.tradeType === TradeType.LIMIT_ORDER
-  const isAdvancedMode = tradeTypeInfo?.tradeType === TradeType.ADVANCED_ORDERS
-  const isConnectedSwapMode = !!account && isSwapMode
+  const isConnectedMarketOrderWidget = !!account && isMarketOrderWidget
 
   const shouldShowMyOrdersButton =
     !alternativeOrderModalVisible &&
-    (!isInjectedWidgetMode && isConnectedSwapMode ? isUpToLarge : true) &&
-    (isConnectedSwapMode || !hideOrdersTable) &&
-    ((isConnectedSwapMode && standaloneMode !== true) ||
-      (isLimitOrderMode && isUpToLarge && isLimitOrdersUnlocked) ||
-      (isAdvancedMode && isUpToLarge && isAdvancedOrdersUnlocked))
+    (!isInjectedWidgetMode && isConnectedMarketOrderWidget ? isUpToLarge : true) &&
+    (isConnectedMarketOrderWidget || !hideOrdersTable) &&
+    ((isConnectedMarketOrderWidget && standaloneMode !== true) || (!isMarketOrderWidget && isUpToLarge && !lockScreen))
 
-  const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode
+  const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode || isMobile
 
   const currencyInputCommonProps = {
     isChainIdUnsupported,
@@ -161,13 +148,13 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
 
   const toggleAccountModal = useToggleAccountModal()
 
-  const handleClick = useCallback(() => {
-    if (isSwapMode) {
+  const handleMyOrdersClick = useCallback(() => {
+    if (isMarketOrderWidget) {
       toggleAccountModal()
     } else {
       scrollToMyOrders()
     }
-  }, [isSwapMode, toggleAccountModal])
+  }, [isMarketOrderWidget, toggleAccountModal])
 
   return (
     <>
@@ -179,7 +166,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
           )}
 
           {shouldShowMyOrdersButton && (
-            <ButtonOutlined margin={'0 16px 0 auto'} onClick={handleClick}>
+            <ButtonOutlined margin={'0 16px 0 auto'} onClick={handleMyOrdersClick}>
               My orders <SVG src={ICON_ORDERS} />
             </ButtonOutlined>
           )}
@@ -203,25 +190,6 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 openTokenSelectWidget={openSellTokenSelect}
                 {...currencyInputCommonProps}
               />
-
-              {isLimitOrderMode &&
-                !isWrapOrUnwrap &&
-                ClosableBanner(ZERO_BANNER_STORAGE_KEY, (onClose) => (
-                  <InlineBanner
-                    bannerType="success"
-                    orientation={BannerOrientation.Horizontal}
-                    customIcon={ICON_TOKENS}
-                    iconSize={32}
-                    margin={'10px 0 0'}
-                    onClose={onClose}
-                  >
-                    <p>
-                      <b>NEW: </b>You can now place limit orders for amounts larger than your wallet balance. Partial
-                      fill orders will execute until you run out of sell tokens. Fill-or-kill orders will become active
-                      once you top up your balance.
-                    </p>
-                  </InlineBanner>
-                ))}
             </div>
             {!isWrapOrUnwrap && middleContent}
             <styledEl.CurrencySeparatorBox compactView={compactView}>
