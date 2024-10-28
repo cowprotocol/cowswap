@@ -1,8 +1,8 @@
-import { useAtom } from 'jotai'
 import { lazy, PropsWithChildren, Suspense, useMemo } from 'react'
 
 import { ACTIVE_CUSTOM_THEME, CustomTheme } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar, CowSwapTheme } from '@cowprotocol/ui'
 
@@ -27,7 +27,6 @@ import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarni
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useMenuItems } from 'common/hooks/useMenuItems'
 import { LoadingApp } from 'common/pure/LoadingApp'
-import { featureFlagsAtom } from 'common/state/featureFlagsState'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 
@@ -52,7 +51,7 @@ export function App() {
   useAnalyticsReporterCowSwap()
   useInitializeUtm()
 
-  const [featureFlags] = useAtom(featureFlagsAtom)
+  const featureFlags = useFeatureFlags()
 
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
