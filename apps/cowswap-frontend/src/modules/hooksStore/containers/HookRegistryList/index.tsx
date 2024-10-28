@@ -4,7 +4,6 @@ import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
 import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { Command } from '@cowprotocol/types'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
-import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { NewModal } from 'common/pure/NewModal'
 
