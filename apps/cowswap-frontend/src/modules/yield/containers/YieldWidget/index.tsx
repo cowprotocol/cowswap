@@ -18,6 +18,8 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
+import { CoWAmmInlineBanner } from './CoWAmmInlineBanner'
+
 import { useYieldDerivedState } from '../../hooks/useYieldDerivedState'
 import { useYieldDeadlineState, useYieldRecipientToggleState, useYieldSettings } from '../../hooks/useYieldSettings'
 import { useYieldWidgetActions } from '../../hooks/useYieldWidgetActions'
@@ -83,6 +85,7 @@ export function YieldWidget() {
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
 
   const slots: TradeWidgetSlots = {
+    topContent: CoWAmmInlineBanner,
     selectTokenWidget: <SelectTokenWidget displayLpTokenLists />,
     settingsWidget: <SettingsTab recipientToggleState={recipientToggleState} deadlineState={deadlineState} />,
     bottomContent: useCallback(

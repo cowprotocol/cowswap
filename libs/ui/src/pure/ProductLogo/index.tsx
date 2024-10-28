@@ -212,6 +212,7 @@ export interface LogoProps {
   heightMobile?: number | string
   href?: string // Optional href for the logo
   external?: boolean // Indicates if the href is an external link
+  className?: string
 }
 
 export const ProductLogoWrapper = styled.span<{
@@ -268,6 +269,7 @@ export const ProductLogo = ({
   heightMobile,
   href,
   external = false,
+  className,
 }: LogoProps) => {
   const themeMode = useTheme()
   const logoForTheme = LOGOS[variant][customThemeMode || (themeMode.darkMode ? 'dark' : 'light')]
@@ -284,6 +286,7 @@ export const ProductLogo = ({
 
   return (
     <ProductLogoWrapper
+      className={className}
       color={initialColor}
       hoverColor={overrideHoverColor || 'inherit'}
       height={height}
