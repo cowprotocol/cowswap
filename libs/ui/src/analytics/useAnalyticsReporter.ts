@@ -44,7 +44,7 @@ export function useAnalyticsReporter(props: UseAnalyticsReporterProps) {
     if (typeof window !== 'undefined') {
       cowAnalytics.setContext(
         AnalyticsContext.customBrowserType,
-        !isMobile ? 'desktop' : 'web3' in window || 'ethereum' in window ? 'mobileWeb3' : 'mobileRegular'
+        !isMobile ? 'desktop' : 'web3' in window || 'ethereum' in window ? 'mobileWeb3' : 'mobileRegular',
       )
     }
 
@@ -54,7 +54,7 @@ export function useAnalyticsReporter(props: UseAnalyticsReporterProps) {
       const hit = Boolean((window as any).__isDocumentCached)
       serviceWorkerLoad(cowAnalytics, installed, hit)
     }
-  }, [webVitalsAnalytics])
+  }, [webVitalsAnalytics, cowAnalytics])
 
   // Set analytics context: chainId
   useEffect(() => {
@@ -63,7 +63,7 @@ export function useAnalyticsReporter(props: UseAnalyticsReporterProps) {
     }
 
     cowAnalytics.setContext(AnalyticsContext.chainId, chainId.toString())
-  }, [chainId])
+  }, [chainId, cowAnalytics])
 
   // Set analytics context: user account and wallet name
   useEffect(() => {
@@ -74,11 +74,11 @@ export function useAnalyticsReporter(props: UseAnalyticsReporterProps) {
     if (!prevAccount && account && pixelAnalytics) {
       pixelAnalytics.sendAllPixels(PixelEvent.CONNECT_WALLET)
     }
-  }, [account, walletName, prevAccount, pixelAnalytics])
+  }, [account, walletName, prevAccount, pixelAnalytics, cowAnalytics])
 
   useEffect(() => {
     cowAnalytics.sendPageView(`${pathname}${search}`)
-  }, [pathname, search])
+  }, [pathname, search, cowAnalytics])
 
   // Handle initiate pixel tracking
   useEffect(() => {
