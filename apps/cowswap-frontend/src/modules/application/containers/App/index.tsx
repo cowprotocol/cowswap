@@ -1,7 +1,6 @@
 import { useAtom } from 'jotai'
 import { lazy, PropsWithChildren, Suspense, useMemo } from 'react'
 
-
 import { ACTIVE_CUSTOM_THEME, CustomTheme } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
@@ -94,7 +93,7 @@ export function App() {
       return 'darkHalloween' as CowSwapTheme
     }
     return undefined
-  }, [darkMode])
+  }, [darkMode, featureFlags.isHalloweenEnabled])
 
   const persistentAdditionalContent = (
     <HeaderControls>
@@ -104,9 +103,6 @@ export function App() {
       </HeaderElement>
     </HeaderControls>
   )
-
-  // const { account } = useWalletInfo()
-  // const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
   return (
     <ErrorBoundary>

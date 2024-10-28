@@ -1,4 +1,5 @@
 import { ACTIVE_CUSTOM_THEME, CustomTheme } from '@cowprotocol/common-const'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
@@ -46,9 +47,14 @@ function isDarkMode(): boolean {
 
 function getThemeBasedSound(type: SoundType): string {
   const featureFlags = jotaiStore.get(featureFlagsAtom) as Record<string, boolean>
-
   const defaultSound = DEFAULT_COW_SOUNDS[type]
   const themedOptions = THEMED_SOUNDS[type]
+  const isInjectedWidgetMode = isInjectedWidget()
+
+  // When in widget mode, always return default sounds
+  if (isInjectedWidgetMode) {
+    return DEFAULT_COW_SOUNDS[type]
+  }
 
   if (!themedOptions) {
     return defaultSound
