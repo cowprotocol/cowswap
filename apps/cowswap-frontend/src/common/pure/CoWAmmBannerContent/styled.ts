@@ -393,7 +393,6 @@ export const LpEmblemItem = styled.div<{
 
     return styleMap[totalItems]?.[index] || ''
   }}
-
   ${TokenLogoWrapper} {
     width: 100%;
     height: 100%;
