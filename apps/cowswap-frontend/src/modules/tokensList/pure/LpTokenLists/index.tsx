@@ -2,8 +2,9 @@ import { MouseEventHandler, useCallback } from 'react'
 
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { LoadingRows, LoadingRowSmall, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
+import { LoadingRows, LoadingRowSmall, Media, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { VirtualItem } from '@tanstack/react-virtual'
@@ -14,20 +15,34 @@ import { PoolInfoStates } from 'modules/yield/shared'
 import { VirtualList } from 'common/pure/VirtualList'
 
 import {
-  ArrowUpRight,
   CreatePoolLink,
   ListHeader,
   ListItem,
   LpTokenInfo,
   LpTokenWrapper,
+  LpTokenYieldPercentage,
+  LpTokenBalance,
+  LpTokenTooltip,
   NoPoolWrapper,
   Wrapper,
+  EmptyList,
+  MobileCard,
+  MobileCardRow,
+  MobileCardLabel,
+  MobileCardValue,
 } from './styled'
 
 const LoadingElement = (
   <LoadingRows>
     <LoadingRowSmall />
   </LoadingRows>
+)
+
+const MobileCardRowItem: React.FC<{ label: string; value: React.ReactNode }> = ({ label, value }) => (
+  <MobileCardRow>
+    <MobileCardLabel>{label}:</MobileCardLabel>
+    <MobileCardValue>{value}</MobileCardValue>
+  </MobileCardRow>
 )
 
 interface LpTokenListsProps {
@@ -50,6 +65,7 @@ export function LpTokenLists({
   poolsInfo,
 }: LpTokenListsProps) {
   const { values: balances } = balancesState
+  const isMobile = useMediaQuery(Media.upToSmall(false))
 
   const getItemView = useCallback(
     (lpTokens: LpToken[], item: VirtualItem) => {
@@ -60,55 +76,81 @@ export function LpTokenLists({
       const balanceAmount = balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
       const info = poolsInfo?.[tokenAddressLower]?.info
 
-      const onInfoClick: MouseEventHandler<SVGElement> = (e) => {
+      const onInfoClick: MouseEventHandler<HTMLDivElement> = (e) => {
         e.stopPropagation()
         openPoolPage(tokenAddressLower)
       }
 
+      const commonContent = (
+        <>
+          <TokenLogo token={token} sizeMobile={isMobile ? 24 : 32} />
+          <LpTokenInfo>
+            <strong>
+              <TokenSymbol token={token} />
+            </strong>
+            <p>
+              <TokenName token={token} />
+            </p>
+          </LpTokenInfo>
+        </>
+      )
+
+      const BalanceDisplay = balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement
+
+      if (isMobile) {
+        return (
+          <MobileCard key={token.address}>
+            <MobileCardRow>{commonContent}</MobileCardRow>
+            <MobileCardRowItem label="Balance" value={BalanceDisplay} />
+            <MobileCardRowItem label="APR" value={info?.apy ? `${info.apy}%` : ''} />
+            <MobileCardRowItem
+              label="Details"
+              value={
+                <LpTokenTooltip onClick={onInfoClick}>
+                  Pool details
+                  <Info size={18} />
+                </LpTokenTooltip>
+              }
+            />
+          </MobileCard>
+        )
+      }
+
       return (
         <ListItem data-address={token.address} onClick={() => onSelectToken(token)}>
-          <LpTokenWrapper>
-            <TokenLogo token={token} sizeMobile={32} />
-            <LpTokenInfo>
-              <strong>
-                <TokenSymbol token={token} />
-              </strong>
-              <p>
-                <TokenName token={token} />
-              </p>
-            </LpTokenInfo>
-          </LpTokenWrapper>
-          <span>{balanceAmount ? <TokenAmount amount={balanceAmount} /> : account ? LoadingElement : null}</span>
-          <span>{info?.apy ? `${info.apy}%` : ''}</span>
-          <span>
-            <Info onClick={onInfoClick} size={16} />
-          </span>
+          <LpTokenWrapper>{commonContent}</LpTokenWrapper>
+          <LpTokenBalance>{BalanceDisplay}</LpTokenBalance>
+          <LpTokenYieldPercentage>{info?.apy ? `${info.apy}%` : ''}</LpTokenYieldPercentage>
+          <LpTokenTooltip onClick={onInfoClick}>
+            <Info size={18} />
+          </LpTokenTooltip>
         </ListItem>
       )
     },
-    [balances, onSelectToken, poolsInfo, openPoolPage, account],
+    [balances, onSelectToken, poolsInfo, openPoolPage, account, isMobile],
   )
 
   return (
     <Wrapper>
-      <ListHeader>
-        <span>Pool</span>
-        <span>Balance</span>
-        <span>APR</span>
-        <span></span>
-      </ListHeader>
-      <VirtualList items={lpTokens} getItemView={getItemView} />
+      {lpTokens.length > 0 ? (
+        <>
+          {!isMobile && (
+            <ListHeader>
+              <span>Pool</span>
+              <span>Balance</span>
+              <span>APR</span>
+              <span></span>
+            </ListHeader>
+          )}
+          <VirtualList items={lpTokens} getItemView={getItemView} />
+        </>
+      ) : (
+        <EmptyList>No pool tokens available</EmptyList>
+      )}
       {displayCreatePoolBanner && (
         <NoPoolWrapper>
           <div>Can’t find the pool you’re looking for?</div>
-          <CreatePoolLink
-            href="https://balancer.fi/pools/cow?utm_source=swap.cow.fi&utm_medium=web&utm_content=yield-token-selector"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Create a pool
-            <ArrowUpRight size={16} />
-          </CreatePoolLink>
+          <CreatePoolLink href="https://pool-creator.balancer.fi/cow">Create a pool ↗</CreatePoolLink>
         </NoPoolWrapper>
       )}
     </Wrapper>

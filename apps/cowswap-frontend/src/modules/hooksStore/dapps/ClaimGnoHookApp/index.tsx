@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ButtonPrimary } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { ButtonPrimary, UI } from '@cowprotocol/ui'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -11,7 +10,7 @@ import { formatUnits } from 'ethers/lib/utils'
 import { SBC_DEPOSIT_CONTRACT_ADDRESS, SBCDepositContract } from './const'
 
 import { HookDappProps } from '../../types/hooks'
-import { ContentWrapper, Text, LoadingLabel, Wrapper } from '../styled'
+import { ContentWrapper, LoadingLabel, Text, Wrapper } from '../styled'
 
 const SbcDepositContractInterface = SBCDepositContract.interface
 
@@ -38,7 +37,7 @@ export function ClaimGnoHookApp({ context }: HookDappProps) {
     }
 
     return SbcDepositContractInterface.encodeFunctionData('claimWithdrawal', [account])
-  }, [context, account])
+  }, [account])
 
   useEffect(() => {
     if (!account || !provider) {

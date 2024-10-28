@@ -1,8 +1,8 @@
-import { UI, Media } from '@cowprotocol/ui'
+import { TokenLogoWrapper } from '@cowprotocol/tokens'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
 import styled, { keyframes } from 'styled-components/macro'
-import { TokenLogoWrapper } from '../../../../../../libs/tokens/src/pure/TokenLogo'
 
 const arrowUpAnimation = keyframes`
   0% {
@@ -393,7 +393,6 @@ export const LpEmblemItem = styled.div<{
 
     return styleMap[totalItems]?.[index] || ''
   }}
-
   ${TokenLogoWrapper} {
     width: 100%;
     height: 100%;

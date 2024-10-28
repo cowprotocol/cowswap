@@ -6,20 +6,26 @@ import styled from 'styled-components/macro'
 import { UI } from '../../enum'
 import { HoverTooltip, TooltipContainer } from '../Tooltip'
 
-const StyledIcon = styled.div`
-  display: inline-block;
+const StyledIcon = styled.div<{ size: number }>`
+  display: inline-flex;
+  align-items: center;
   color: inherit;
+  opacity: 0.6;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  height: ${({ size }) => size}px;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  > span {
+    margin-right: 4px;
+  }
 
   > svg {
-    opacity: 0.6;
     stroke: currentColor;
     line-height: 0;
     vertical-align: middle;
-    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-    :hover {
-      opacity: 1;
-    }
   }
 `
 
@@ -36,14 +42,16 @@ export interface InfoTooltipProps {
   children?: ReactNode
   size?: number
   className?: string
+  preText?: string
 }
 
-export function InfoTooltip({ content, children, className, size = 16 }: InfoTooltipProps) {
+export function InfoTooltip({ content, children, className, size = 16, preText }: InfoTooltipProps) {
   const tooltipContent = <StyledTooltipContainer>{children || content}</StyledTooltipContainer>
 
   return (
     <HoverTooltip wrapInContainer={false} content={tooltipContent} placement="bottom">
-      <StyledIcon>
+      <StyledIcon size={size}>
+        {preText && <span>{preText}</span>}
         <Info className={className} size={size} />
       </StyledIcon>
     </HoverTooltip>
