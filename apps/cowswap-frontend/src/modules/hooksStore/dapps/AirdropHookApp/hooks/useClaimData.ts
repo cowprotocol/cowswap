@@ -9,7 +9,7 @@ import useSWR from 'swr'
 
 import { useContract } from 'common/hooks/useContract'
 
-import { AirdropDataInfo, IClaimData, IAirdrop } from '../types'
+import { AirdropDataInfo, IAirdrop, IClaimData } from '../types'
 
 type IntervalsType = { [key: string]: string }
 
@@ -136,7 +136,7 @@ export const useClaimData = (selectedAirdrop?: IAirdrop) => {
         formattedAmount,
       }
     },
-    [account, airdropContract],
+    [account, airdropContract, selectedAirdrop],
   )
 
   return useSWR<IClaimData | undefined, Error>(

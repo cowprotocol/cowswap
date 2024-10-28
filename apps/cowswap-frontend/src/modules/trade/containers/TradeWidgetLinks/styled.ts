@@ -86,7 +86,7 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
         width: 100%;
         margin: 0 0 10px;
       `}
- 
+
     }
   }
 `
@@ -94,13 +94,17 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
 export const SelectMenu = styled.div`
   display: block;
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   position: absolute;
   z-index: 100;
   left: 0;
   top: 0;
   background: var(${UI.COLOR_PAPER});
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+
+  > div:first-child {
+    margin-bottom: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '24px')};
+  }
 `
 
 export const TradeWidgetContent = styled.div`
