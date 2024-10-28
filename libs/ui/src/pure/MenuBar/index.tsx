@@ -37,6 +37,8 @@ import { Media } from '../../consts'
 import { Badge } from '../Badge'
 import { ProductLogo, ProductVariant } from '../ProductLogo'
 
+import type { CowSwapTheme } from '../../types'
+
 const DAO_NAV_ITEMS: MenuItem[] = [
   {
     href: 'https://cow.fi/',
@@ -674,6 +676,7 @@ interface MenuBarProps {
   hoverBackgroundDark?: string
   padding?: string
   maxWidth?: number
+  customTheme?: CowSwapTheme
 }
 
 export const MenuBar = (props: MenuBarProps) => {
@@ -701,6 +704,7 @@ export const MenuBar = (props: MenuBarProps) => {
     hoverBackgroundDark,
     padding,
     maxWidth,
+    customTheme,
     LinkComponent,
   } = props
 
@@ -784,7 +788,7 @@ export const MenuBar = (props: MenuBarProps) => {
           rootDomain={rootDomain}
           LinkComponent={LinkComponent}
         />
-        <ProductLogo variant={productVariant} logoIconOnly={isMobile} height={30} href="/" />
+        <ProductLogo variant={productVariant} logoIconOnly={isMobile} height={30} href="/" theme={customTheme} />
 
         {!isMobile && (
           <NavItems ref={navItemsRef}>
