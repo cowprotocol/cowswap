@@ -45,7 +45,7 @@ export function YieldWidget() {
     outputCurrencyFiatAmount,
     recipient,
   } = useYieldDerivedState()
-  const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }))
+  const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }), widgetActions)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
