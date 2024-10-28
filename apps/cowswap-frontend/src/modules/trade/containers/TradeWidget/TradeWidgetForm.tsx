@@ -71,6 +71,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     recipient,
     hideTradeWarnings,
     enableSmartSlippage,
+    displayTokenName = false,
   } = params
 
   const inputCurrencyInfo = useMemo(
@@ -141,6 +142,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     onUserInput,
     allowsOffchainSigning,
     tokenSelectorDisabled: alternativeOrderModalVisible,
+    displayTokenName,
   }
 
   const openSellTokenSelect = useCallback(
@@ -197,6 +199,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 showSetMax={showSetMax}
                 maxBalance={maxBalance}
                 topLabel={isWrapOrUnwrap ? undefined : inputCurrencyInfo.label}
+                topContent={inputCurrencyInfo.topContent}
                 openTokenSelectWidget={openSellTokenSelect}
                 {...currencyInputCommonProps}
               />
@@ -242,6 +245,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 currencyInfo={outputCurrencyInfo}
                 priceImpactParams={!disablePriceImpact ? priceImpact : undefined}
                 topLabel={isWrapOrUnwrap ? undefined : outputCurrencyInfo.label}
+                topContent={outputCurrencyInfo.topContent}
                 openTokenSelectWidget={openBuyTokenSelect}
                 {...currencyInputCommonProps}
               />

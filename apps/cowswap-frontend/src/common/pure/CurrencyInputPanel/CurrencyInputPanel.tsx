@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { formatInputAmount, getIsNativeToken } from '@cowprotocol/common-utils'
@@ -34,6 +34,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   disabled?: boolean
   inputDisabled?: boolean
   tokenSelectorDisabled?: boolean
+  displayTokenName?: boolean
   inputTooltip?: string
   showSetMax?: boolean
   maxBalance?: CurrencyAmount<Currency> | undefined
@@ -49,6 +50,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
     onCurrencySelection: (currency: Currency) => void,
   ): void
   topLabel?: string
+  topContent?: ReactNode
 }
 
 export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
@@ -63,6 +65,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     maxBalance,
     inputDisabled = false,
     tokenSelectorDisabled = false,
+    displayTokenName = false,
     inputTooltip,
     onUserInput,
     allowsOffchainSigning,
@@ -76,6 +79,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
       },
     },
     topLabel,
+    topContent,
   } = props
 
   const { field, currency, balance, fiatAmount, amount, isIndependent, receiveAmountInfo } = currencyInfo
@@ -155,6 +159,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
       >
         {topLabel && <styledEl.CurrencyTopLabel>{topLabel}</styledEl.CurrencyTopLabel>}
 
+        {topContent}
         <styledEl.CurrencyInputBox>
           <div>
             <CurrencySelectButton
@@ -162,6 +167,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
               currency={disabled ? undefined : currency || undefined}
               loading={areCurrenciesLoading || disabled}
               readonlyMode={tokenSelectorDisabled}
+              displayTokenName={displayTokenName}
             />
           </div>
           <div>

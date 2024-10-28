@@ -1,4 +1,6 @@
-import { ReactNode, useCallback } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
+
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
 
 import { Field } from 'legacy/state/types'
 
@@ -20,9 +22,12 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
 import { CoWAmmInlineBanner } from './CoWAmmInlineBanner'
 
+import { usePoolsInfo } from '../../hooks/usePoolsInfo'
 import { useYieldDerivedState } from '../../hooks/useYieldDerivedState'
 import { useYieldDeadlineState, useYieldRecipientToggleState, useYieldSettings } from '../../hooks/useYieldSettings'
 import { useYieldWidgetActions } from '../../hooks/useYieldWidgetActions'
+import { PoolApyPreview } from '../../pure/PoolApyPreview'
+import { TargetPoolPreviewInfo } from '../../pure/TargetPoolPreviewInfo'
 import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
 import { YieldConfirmModal } from '../YieldConfirmModal'
@@ -36,6 +41,7 @@ export function YieldWidget() {
   const { isOpen: isConfirmOpen } = useTradeConfirmState()
   const widgetActions = useYieldWidgetActions()
   const receiveAmountInfo = useReceiveAmountInfo()
+  const poolsInfo = usePoolsInfo()
 
   const {
     inputCurrency,
@@ -50,6 +56,21 @@ export function YieldWidget() {
   } = useYieldDerivedState()
   const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }))
 
+  const inputPoolState = useMemo(() => {
+    if (!poolsInfo || !inputCurrency) return null
+
+    return poolsInfo[getCurrencyAddress(inputCurrency).toLowerCase()]
+  }, [inputCurrency, poolsInfo])
+
+  const outputPoolState = useMemo(() => {
+    if (!poolsInfo || !outputCurrency) return null
+
+    return poolsInfo[getCurrencyAddress(outputCurrency).toLowerCase()]
+  }, [outputCurrency, poolsInfo])
+
+  const inputApy = inputPoolState?.info.apy
+  const outputApy = outputPoolState?.info.apy
+
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
     currency: inputCurrency,
@@ -58,7 +79,13 @@ export function YieldWidget() {
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
     receiveAmountInfo: null,
+    topContent: (
+      <div>
+        <PoolApyPreview apy={inputApy} isSuperior={Boolean(inputApy && outputApy && inputApy > outputApy)} />
+      </div>
+    ),
   }
+
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
     currency: outputCurrency,
@@ -67,6 +94,11 @@ export function YieldWidget() {
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo,
+    topContent: inputCurrency ? (
+      <TargetPoolPreviewInfo sellToken={inputCurrency}>
+        <PoolApyPreview apy={outputApy} isSuperior={Boolean(inputApy && outputApy && outputApy > inputApy)} />
+      </TargetPoolPreviewInfo>
+    ) : null,
   }
   const inputCurrencyPreviewInfo = {
     amount: inputCurrencyInfo.amount,
@@ -110,6 +142,7 @@ export function YieldWidget() {
   const params = {
     compactView: true,
     enableSmartSlippage: true,
+    displayTokenName: true,
     recipient,
     showRecipient,
     isTradePriceUpdating: isRateLoading,
