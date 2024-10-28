@@ -26,7 +26,7 @@ export async function safeBundleApprovalFlow(
   safeBundleContext: SafeBundleFlowContext,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
-): Promise<void | false> {
+): Promise<void | boolean> {
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
 
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
@@ -135,6 +135,8 @@ export async function safeBundleApprovalFlow(
 
     logTradeFlow(LOG_PREFIX, 'STEP 7: show UI of the successfully sent transaction')
     tradeConfirmActions.onSuccess(orderId)
+
+    return true
   } catch (error) {
     logTradeFlow(LOG_PREFIX, 'STEP 8: error', error)
     const swapErrorMessage = getSwapErrorMessage(error)
