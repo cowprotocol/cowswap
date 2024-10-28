@@ -16,6 +16,7 @@ export function useSetupHooksStoreOrderParams() {
       setOrderParams(null)
     } else {
       setOrderParams({
+        kind: orderParams.kind,
         validTo: orderParams.validTo,
         sellAmount: orderParams.inputAmount.quotient.toString(),
         buyAmount: orderParams.outputAmount.quotient.toString(),
