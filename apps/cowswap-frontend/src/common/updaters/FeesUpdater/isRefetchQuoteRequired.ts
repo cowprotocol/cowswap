@@ -8,8 +8,6 @@ import { quoteUsingSameParameters } from './quoteUsingSameParameters'
 const RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME = ms`30s` // Will renew the quote if there's less than 30 seconds left for the quote to expire
 const WAITING_TIME_BETWEEN_EQUAL_REQUESTS = ms`5s` // Prevents from sending the same request to often (max, every 5s)
 
-type FeeQuoteParams = Omit<LegacyFeeQuoteParams, 'validTo'>
-
 /**
  * Returns if the quote has been recently checked
  */
@@ -30,7 +28,7 @@ function isExpiringSoon(quoteExpirationIsoDate: string, threshold: number): bool
  */
 export function isRefetchQuoteRequired(
   isLoading: boolean,
-  currentParams: FeeQuoteParams,
+  currentParams: LegacyFeeQuoteParams,
   quoteInformation?: QuoteInformationObject,
 ): boolean {
   // If there's no quote/fee information, we always re-fetch

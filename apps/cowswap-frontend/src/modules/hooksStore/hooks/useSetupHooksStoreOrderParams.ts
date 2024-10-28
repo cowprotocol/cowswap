@@ -16,11 +16,13 @@ export function useSetupHooksStoreOrderParams() {
       setOrderParams(null)
     } else {
       setOrderParams({
+        kind: orderParams.kind,
         validTo: orderParams.validTo,
         sellAmount: orderParams.inputAmount.quotient.toString(),
         buyAmount: orderParams.outputAmount.quotient.toString(),
         sellTokenAddress: getCurrencyAddress(orderParams.inputAmount.currency),
         buyTokenAddress: getCurrencyAddress(orderParams.outputAmount.currency),
+        receiver: orderParams.recipient,
       })
     }
   }, [orderParams, setOrderParams])

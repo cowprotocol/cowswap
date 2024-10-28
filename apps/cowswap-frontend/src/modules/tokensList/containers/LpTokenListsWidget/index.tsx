@@ -3,6 +3,7 @@ import { ReactNode, useMemo } from 'react'
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getTokenSearchFilter, LP_TOKEN_LIST_CATEGORIES, TokenListCategory, useAllLpTokens } from '@cowprotocol/tokens'
+import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { usePoolsInfo } from 'modules/yield/shared'
 
@@ -21,9 +22,20 @@ interface LpTokenListsProps<T = TokenListCategory[] | null> {
 }
 
 const tabs = [
-  { title: 'All', value: null },
-  { title: 'Pool tokens', value: LP_TOKEN_LIST_CATEGORIES },
-  { title: 'CoW AMM only', value: [TokenListCategory.COW_AMM_LP] },
+  { id: 'all', title: 'All', value: null },
+  { id: 'pool', title: 'Pool tokens', value: LP_TOKEN_LIST_CATEGORIES },
+  { id: 'cow-amm', title: (
+      <>
+        <ProductLogo
+          variant={ProductVariant.CowAmm}
+          height={12}
+          overrideColor={UI.COLOR_TEXT_OPACITY_60}
+          theme="dark"
+          logoIconOnly
+        />{' '}
+        CoW AMM only
+      </>
+    ), value: [TokenListCategory.COW_AMM_LP] },
 ]
 
 export function LpTokenListsWidget({
@@ -53,7 +65,7 @@ export function LpTokenListsWidget({
         {tabs.map((tab) => {
           return (
             <TabButton
-              key={tab.title}
+              key={tab.id}
               active$={tab.value === listsCategories}
               onClick={() => setListsCategories(tab.value)}
             >

@@ -21,5 +21,5 @@ export function useMenuItems() {
     }
 
     return items
-  }, [isHooksStoreEnabled])
+  }, [isHooksStoreEnabled, isYieldEnabled])
 }
