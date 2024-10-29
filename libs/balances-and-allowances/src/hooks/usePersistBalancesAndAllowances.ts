@@ -5,14 +5,15 @@ import { useEffect, useMemo } from 'react'
 import { ERC_20_INTERFACE } from '@cowprotocol/abis'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { MultiCallOptions, useMultipleContractSingleData } from '@cowprotocol/multicall'
+import { Command } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { SWRConfiguration } from 'swr'
 
 import { AllowancesState, allowancesFullState } from '../state/allowancesAtom'
-import { balancesAtom, BalancesState } from '../state/balancesAtom'
+import { balancesAtom, balancesCacheAtom, BalancesState } from '../state/balancesAtom'
 
 const MULTICALL_OPTIONS = {}
 
@@ -24,6 +25,7 @@ export interface PersistBalancesAndAllowancesParams {
   allowancesSwrConfig: SWRConfiguration
   setLoadingState?: boolean
   multicallOptions?: MultiCallOptions
+  onBalancesUpdate?: Command
 }
 
 export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowancesParams) {
@@ -35,11 +37,13 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     balancesSwrConfig,
     allowancesSwrConfig,
     multicallOptions = MULTICALL_OPTIONS,
+    onBalancesUpdate,
   } = params
 
   const prevAccount = usePrevious(account)
   const setBalances = useSetAtom(balancesAtom)
   const setAllowances = useSetAtom(allowancesFullState)
+  const setBalancesCache = useSetAtom(balancesCacheAtom)
 
   const resetBalances = useResetAtom(balancesAtom)
   const resetAllowances = useResetAtom(allowancesFullState)
@@ -92,6 +96,8 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
       return acc
     }, {})
 
+    onBalancesUpdate?.()
+
     setBalances((state) => {
       return {
         ...state,
@@ -99,7 +105,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
         ...(setLoadingState ? { isLoading: false } : {}),
       }
     })
-  }, [balances, tokenAddresses, setBalances, chainId, setLoadingState])
+  }, [balances, tokenAddresses, setBalances, chainId, setLoadingState, onBalancesUpdate])
 
   // Set allowances to the store
   useEffect(() => {
@@ -124,6 +130,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     if (prevAccount && prevAccount !== account) {
       resetBalances()
       resetAllowances()
+      setBalancesCache(mapSupportedNetworks({}))
     }
-  }, [account, prevAccount, resetAllowances, resetBalances])
+  }, [account, prevAccount, resetAllowances, resetBalances, setBalancesCache])
 }

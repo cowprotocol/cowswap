@@ -52,7 +52,7 @@ export function GlobalContent({ context, children, arrowBackgroundRef, comparedP
         {ctaText}
       </styledEl.CTAButton>
 
-      <styledEl.SecondaryLink href={'https://cow.fi/'}>Pool analytics ↗</styledEl.SecondaryLink>
+      <styledEl.SecondaryLink href="https://dune.com/cowprotocol/cow-amms-v2">Pool analytics ↗</styledEl.SecondaryLink>
 
       <ArrowBackground ref={arrowBackgroundRef} />
     </styledEl.BannerWrapper>
