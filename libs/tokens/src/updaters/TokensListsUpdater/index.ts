@@ -2,7 +2,6 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { useEffect } from 'react'
 
-
 import { atomWithPartialUpdate, isInjectedWidget } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
@@ -20,10 +19,10 @@ import { ListState } from '../../types'
 
 const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomWithPartialUpdate(
   atomWithStorage<Record<SupportedChainId, number>>(
-    'tokens:lastUpdateTimeAtom:v1',
+    'tokens:lastUpdateTimeAtom:v2',
     mapSupportedNetworks(0),
-    getJotaiMergerStorage()
-  )
+    getJotaiMergerStorage(),
+  ),
 )
 
 const swrOptions: SWRConfiguration = {
@@ -68,7 +67,7 @@ export function TokensListsUpdater({ chainId: currentChainId, isGeoBlockEnabled 
 
       return Promise.allSettled(allTokensLists.map(fetchTokenList)).then(getFulfilledResults)
     },
-    swrOptions
+    swrOptions,
   )
 
   // Fulfill tokens lists with tokens from fetched lists

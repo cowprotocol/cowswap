@@ -84,12 +84,15 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
       css`
         padding: 16px;
         width: 100%;
-        margin-bottom: 20px;
+        margin: 0 0 10px;
       `}
+
+    }
   }
 `
 
 export const SelectMenu = styled.div`
+  display: block;
   width: 100%;
   min-height: 100%;
   position: absolute;
@@ -105,5 +108,5 @@ export const SelectMenu = styled.div`
 `
 
 export const TradeWidgetContent = styled.div`
-  padding: 0 16px 16px 16px;
+  padding: 16px;
 `

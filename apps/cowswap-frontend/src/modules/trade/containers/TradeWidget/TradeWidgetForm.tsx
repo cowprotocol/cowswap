@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
-import { ButtonOutlined, MY_ORDERS_ID } from '@cowprotocol/ui'
+import { ButtonOutlined, Media, MY_ORDERS_ID } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/macro'
@@ -44,6 +44,7 @@ const scrollToMyOrders = () => {
 export function TradeWidgetForm(props: TradeWidgetProps) {
   const isInjectedWidgetMode = isInjectedWidget()
   const { standaloneMode, hideOrdersTable } = useInjectedWidgetParams()
+  const isMobile = useMediaQuery(Media.upToSmall(false))
 
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const { pendingActivity } = useCategorizeRecentActivity()
@@ -114,7 +115,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     (isConnectedMarketOrderWidget || !hideOrdersTable) &&
     ((isConnectedMarketOrderWidget && standaloneMode !== true) || (!isMarketOrderWidget && isUpToLarge && !lockScreen))
 
-  const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode
+  const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode || isMobile
 
   const currencyInputCommonProps = {
     isChainIdUnsupported,

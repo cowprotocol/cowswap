@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai/index'
+import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
@@ -6,6 +6,8 @@ import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAllTokens } from '@cowprotocol/tokens'
 
 import ms from 'ms.macro'
+
+import { BalancesCacheUpdater } from './BalancesCacheUpdater'
 
 import { useNativeTokenBalance } from '../hooks/useNativeTokenBalance'
 import { usePersistBalancesAndAllowances } from '../hooks/usePersistBalancesAndAllowances'
@@ -44,5 +46,5 @@ export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAl
     setBalances((state) => ({ ...state, values: { ...state.values, ...nativeBalanceState } }))
   }, [nativeTokenBalance, chainId, setBalances])
 
-  return null
+  return <BalancesCacheUpdater chainId={chainId} />
 }

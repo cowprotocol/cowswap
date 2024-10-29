@@ -39,7 +39,7 @@ const curatedListSourceAtom = atom((get) => {
 export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>(
   'userAddedTokenListsAtom:v3',
   mapSupportedNetworks([]),
-  getJotaiMergerStorage()
+  getJotaiMergerStorage(),
 )
 
 export const allListsSourcesAtom = atom((get) => {
@@ -57,7 +57,7 @@ export const allListsSourcesAtom = atom((get) => {
 export const listsStatesByChainAtom = atomWithStorage<TokenListsByChainState>(
   'allTokenListsInfoAtom:v3',
   mapSupportedNetworks({}),
-  getJotaiMergerStorage()
+  getJotaiMergerStorage(),
 )
 
 export const tokenListsUpdatingAtom = atom<boolean>(false)
