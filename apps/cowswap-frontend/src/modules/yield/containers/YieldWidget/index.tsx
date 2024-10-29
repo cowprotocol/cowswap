@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useMemo } from 'react'
 
+import { LpToken } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 
 import { Field } from 'legacy/state/types'
@@ -103,7 +104,12 @@ export function YieldWidget() {
     receiveAmountInfo: null,
     topContent: (
       <div>
-        <PoolApyPreview apy={inputApy} isSuperior={Boolean(inputApy && outputApy && inputApy > outputApy)} />
+        <PoolApyPreview
+          apy={inputApy}
+          isSuperior={Boolean(
+            inputCurrency && inputCurrency instanceof LpToken && (inputApy && outputApy ? inputApy > outputApy : true),
+          )}
+        />
       </div>
     ),
   }
@@ -118,7 +124,14 @@ export function YieldWidget() {
     receiveAmountInfo,
     topContent: inputCurrency ? (
       <TargetPoolPreviewInfo sellToken={inputCurrency}>
-        <PoolApyPreview apy={outputApy} isSuperior={Boolean(inputApy && outputApy && outputApy > inputApy)} />
+        <PoolApyPreview
+          apy={outputApy}
+          isSuperior={Boolean(
+            outputCurrency &&
+              outputCurrency instanceof LpToken &&
+              (inputApy && outputApy ? outputApy > inputApy : true),
+          )}
+        />
       </TargetPoolPreviewInfo>
     ) : null,
   }
