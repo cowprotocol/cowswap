@@ -1,11 +1,13 @@
 import { Erc20 } from '@cowprotocol/abis'
+import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
-import { signAndPostOrder } from 'legacy/utils/trade'
+import { type PostOrderParams, signAndPostOrder } from 'legacy/utils/trade'
 
 import { removePermitHookFromAppData } from 'modules/appData'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
@@ -26,19 +28,25 @@ export async function safeBundleEthFlow(
   safeBundleContext: SafeBundleFlowContext,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
-): Promise<void | false> {
+): Promise<void | boolean> {
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
 
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
     return false
   }
 
-  const { context, callbacks, orderParams, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks } = tradeContext
+  const { context, callbacks, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks } = tradeContext
 
   const { spender, settlementContract, safeAppsSdk, needsApproval, wrappedNativeContract } = safeBundleContext
 
-  const { account, recipientAddressOrName, kind } = orderParams
   const { inputAmountWithSlippage, chainId, inputAmount, outputAmount } = context
+
+  const orderParams: PostOrderParams = {
+    ...tradeContext.orderParams,
+    sellToken: WRAPPED_NATIVE_CURRENCIES[chainId as SupportedChainId],
+  }
+
+  const { account, recipientAddressOrName, kind } = orderParams
 
   tradeFlowAnalytics.wrapApproveAndPresign(swapFlowAnalyticsContext)
   const nativeAmountInWei = inputAmountWithSlippage.quotient.toString()
@@ -141,6 +149,8 @@ export async function safeBundleEthFlow(
 
     logTradeFlow(LOG_PREFIX, 'STEP 8: show UI of the successfully sent transaction')
     tradeConfirmActions.onSuccess(orderId)
+
+    return true
   } catch (error) {
     logTradeFlow(LOG_PREFIX, 'STEP 9: error', error)
     const swapErrorMessage = getSwapErrorMessage(error)

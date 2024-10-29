@@ -57,20 +57,20 @@ export const Description = styled.span`
   }
 `
 
-export const AddButton = styled.button`
-  background: var(${UI.COLOR_PRIMARY});
-  color: var(${UI.COLOR_PAPER});
+export const AddButton = styled.button<{ disabled?: boolean }>`
+  background: ${({ disabled }) => `var(${disabled ? UI.COLOR_PRIMARY_OPACITY_10 : UI.COLOR_PRIMARY})`};
+  color: ${({ disabled }) => `var(${disabled ? UI.COLOR_TEXT_OPACITY_50 : UI.COLOR_PAPER})`};
   border: none;
   outline: none;
   font-weight: 600;
   font-size: 16px;
   padding: 11px;
   border-radius: 21px;
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   transition: background 0.2s ease-in-out;
   margin: 16px 0 0;
 
   &:hover {
-    background: var(${UI.COLOR_PRIMARY_DARKEST});
+    background: ${({ disabled }) => `var(${disabled ? UI.COLOR_PRIMARY_OPACITY_10 : UI.COLOR_PRIMARY_DARKEST})`};
   }
 `
