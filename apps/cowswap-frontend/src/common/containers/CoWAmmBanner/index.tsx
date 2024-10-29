@@ -68,7 +68,7 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
 
   const isSmartContractWallet = useIsSmartContractWallet()
 
-  if (isInjectedWidgetMode || !account || isChainIdUnsupported) return null
+  if (isInjectedWidgetMode || !account || isChainIdUnsupported || !vampireAttackContext) return null
 
   return ClosableBanner(bannerId, (close) => (
     <CoWAmmBannerContent

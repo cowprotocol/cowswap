@@ -101,8 +101,8 @@ export function CoWAmmBannerContent({
       <h3>
         <TextFit
           mode="single"
-          minFontSize={isTokenSelectorView ? 35 : isMobile ? 40 : 80}
-          maxFontSize={isTokenSelectorView ? 65 : isMobile ? 50 : 80}
+          minFontSize={isTokenSelectorView ? 35 : isMobile ? 40 : isCowAmmAverageBetter ? 60 : 80}
+          maxFontSize={isTokenSelectorView ? 65 : isMobile ? 50 : isCowAmmAverageBetter ? 60 : 80}
         >
           {firstItemWithBetterCowAmm
             ? `+${firstItemWithBetterCowAmm.alternativePoolInfo.apy.toFixed(1)}%`

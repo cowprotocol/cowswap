@@ -7,6 +7,7 @@ import { usePrevious } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { MultiCallOptions, useMultipleContractSingleData } from '@cowprotocol/multicall'
+import { Command } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { SWRConfiguration } from 'swr'
@@ -24,6 +25,7 @@ export interface PersistBalancesAndAllowancesParams {
   allowancesSwrConfig: SWRConfiguration
   setLoadingState?: boolean
   multicallOptions?: MultiCallOptions
+  onBalancesUpdate?: Command
 }
 
 export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowancesParams) {
@@ -35,6 +37,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     balancesSwrConfig,
     allowancesSwrConfig,
     multicallOptions = MULTICALL_OPTIONS,
+    onBalancesUpdate,
   } = params
 
   const prevAccount = usePrevious(account)
@@ -93,6 +96,8 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
       return acc
     }, {})
 
+    onBalancesUpdate?.()
+
     setBalances((state) => {
       return {
         ...state,
@@ -100,7 +105,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
         ...(setLoadingState ? { isLoading: false } : {}),
       }
     })
-  }, [balances, tokenAddresses, setBalances, chainId, setLoadingState])
+  }, [balances, tokenAddresses, setBalances, chainId, setLoadingState, onBalancesUpdate])
 
   // Set allowances to the store
   useEffect(() => {

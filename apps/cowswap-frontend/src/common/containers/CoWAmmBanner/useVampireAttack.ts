@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { LP_TOKEN_LIST_COW_AMM_ONLY, useAllLpTokens } from '@cowprotocol/tokens'
@@ -9,11 +10,13 @@ import { POOLS_AVERAGE_DATA_MOCK } from 'modules/yield/updaters/PoolsInfoUpdater
 import { TokenWithAlternative, TokenWithSuperiorAlternative, VampireAttackContext } from './types'
 
 import { useSafeMemoObject } from '../../hooks/useSafeMemo'
+import { areLpBalancesLoadedAtom } from '../../updaters/LpBalancesAndAllowancesUpdater'
 
-export function useVampireAttack(): VampireAttackContext {
+export function useVampireAttack(): VampireAttackContext | null {
   const { tokens: lpTokensWithBalances, count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
   const cowAmmLpTokens = useAllLpTokens(LP_TOKEN_LIST_COW_AMM_ONLY)
   const poolsInfo = usePoolsInfo()
+  const areLpBalancesLoaded = useAtomValue(areLpBalancesLoadedAtom)
 
   const alternativesResult = useMemo(() => {
     if (lpTokensWithBalancesCount === 0) return null
@@ -82,11 +85,15 @@ export function useVampireAttack(): VampireAttackContext {
   const { [LpTokenProvider.COW_AMM]: cowAmmData, ...poolsAverageData } = POOLS_AVERAGE_DATA_MOCK
   const averageApyDiff = cowAmmData ? +(cowAmmData.apy - averageApy).toFixed(2) : 0
 
-  return useSafeMemoObject({
+  const context = useSafeMemoObject({
     superiorAlternatives: alternativesResult?.superiorAlternatives || null,
     alternatives: alternativesResult?.alternatives || null,
     cowAmmLpTokensCount: cowAmmLpTokens.length,
     poolsAverageData,
     averageApyDiff,
   })
+
+  if (cowAmmLpTokens.length === 0 || !areLpBalancesLoaded) return null
+
+  return context
 }
