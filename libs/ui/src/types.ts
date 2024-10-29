@@ -13,4 +13,4 @@ export type ComposableCowInfo = {
 
 export type BadgeType = 'information' | 'success' | 'alert' | 'alert2' | 'default'
 
-export type CowSwapTheme = 'dark' | 'light'
+export type CowSwapTheme = 'dark' | 'light' | 'darkHalloween'
