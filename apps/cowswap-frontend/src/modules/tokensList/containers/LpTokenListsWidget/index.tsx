@@ -1,23 +1,30 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
-import { TokenListCategory, useAllLpTokens, useTokensByAddressMap } from '@cowprotocol/tokens'
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import { getTokenSearchFilter, LP_TOKEN_LIST_CATEGORIES, TokenListCategory, useAllLpTokens } from '@cowprotocol/tokens'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
+
+import { usePoolsInfo } from 'modules/yield/shared'
 
 import { TabButton, TabsContainer } from './styled'
 
 import { LpTokenLists } from '../../pure/LpTokenLists'
+import { tokensListSorter } from '../../utils/tokensListSorter'
 
-interface LpTokenListsProps {
+interface LpTokenListsProps<T = TokenListCategory[] | null> {
+  account: string | undefined
   children: ReactNode
+  search: string
+  onSelectToken(token: TokenWithLogo): void
+  openPoolPage(poolAddress: string): void
+  tokenListCategoryState: [T, (category: T) => void]
 }
 
 const tabs = [
   { id: 'all', title: 'All', value: null },
-  { id: 'pool', title: 'Pool tokens', value: [TokenListCategory.LP, TokenListCategory.COW_AMM_LP] },
-  {
-    id: 'cow-amm',
-    title: (
+  { id: 'pool', title: 'Pool tokens', value: LP_TOKEN_LIST_CATEGORIES },
+  { id: 'cow-amm', title: (
       <>
         <ProductLogo
           variant={ProductVariant.CowAmm}
@@ -28,41 +35,56 @@ const tabs = [
         />{' '}
         CoW AMM only
       </>
-    ),
-    value: [TokenListCategory.COW_AMM_LP],
-  },
+    ), value: [TokenListCategory.COW_AMM_LP] },
 ]
 
-export function LpTokenListsWidget({ children }: LpTokenListsProps) {
-  const [listsCategories, setListsCategories] = useState<TokenListCategory[] | null>(null)
+export function LpTokenListsWidget({
+  account,
+  search,
+  children,
+  onSelectToken,
+  openPoolPage,
+  tokenListCategoryState,
+}: LpTokenListsProps) {
+  const [listsCategories, setListsCategories] = tokenListCategoryState
   const lpTokens = useAllLpTokens(listsCategories)
-  const tokensByAddress = useTokensByAddressMap()
   const balancesState = useTokensBalances()
+  const poolsInfo = usePoolsInfo()
+
+  const balances = balancesState.values
+
+  const sortedTokens = useMemo(() => {
+    const filter = getTokenSearchFilter(search)
+
+    return balances ? lpTokens.filter(filter).sort(tokensListSorter(balances)) : lpTokens
+  }, [lpTokens, balances, search])
 
   return (
     <>
       <TabsContainer>
-        {tabs.map((tab) => (
-          <TabButton key={tab.id} active$={tab.value === listsCategories} onClick={() => setListsCategories(tab.value)}>
-            {tab.title}
-          </TabButton>
-        ))}
+        {tabs.map((tab) => {
+          return (
+            <TabButton
+              key={tab.id}
+              active$={tab.value === listsCategories}
+              onClick={() => setListsCategories(tab.value)}
+            >
+              {tab.title}
+            </TabButton>
+          )
+        })}
       </TabsContainer>
       {listsCategories === null ? (
         children
-      ) : lpTokens.length === 0 ? (
-        <LpTokenLists
-          displayCreatePoolBanner={listsCategories === tabs[2].value}
-          balancesState={balancesState}
-          tokensByAddress={tokensByAddress}
-          lpTokens={[]}
-        />
       ) : (
         <LpTokenLists
+          account={account}
           displayCreatePoolBanner={listsCategories === tabs[2].value}
           balancesState={balancesState}
-          tokensByAddress={tokensByAddress}
-          lpTokens={lpTokens}
+          lpTokens={sortedTokens}
+          onSelectToken={onSelectToken}
+          openPoolPage={openPoolPage}
+          poolsInfo={poolsInfo}
         />
       )}
     </>

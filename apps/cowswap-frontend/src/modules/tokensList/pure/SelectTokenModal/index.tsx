@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { UnsupportedTokensState } from '@cowprotocol/tokens'
+import { TokenListCategory, UnsupportedTokensState } from '@cowprotocol/tokens'
 import { BackButton, SearchInput } from '@cowprotocol/ui'
 
 import { Edit } from 'react-feather'
@@ -17,7 +17,7 @@ import { SelectTokenContext } from '../../types'
 import { FavoriteTokensList } from '../FavoriteTokensList'
 import { TokensVirtualList } from '../TokensVirtualList'
 
-export interface SelectTokenModalProps {
+export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   allTokens: TokenWithLogo[]
   favoriteTokens: TokenWithLogo[]
   balancesState: BalancesState
@@ -27,8 +27,11 @@ export interface SelectTokenModalProps {
   hideFavoriteTokensTooltip?: boolean
   displayLpTokenLists?: boolean
   account: string | undefined
+  tokenListCategoryState: [T, (category: T) => void]
 
   onSelectToken(token: TokenWithLogo): void
+
+  openPoolPage(poolAddress: string): void
 
   onInputPressEnter?(): void
 
@@ -54,7 +57,9 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     onOpenManageWidget,
     onInputPressEnter,
     account,
-    displayLpTokenLists
+    displayLpTokenLists,
+    openPoolPage,
+    tokenListCategoryState,
   } = props
 
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
@@ -64,31 +69,33 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     selectedToken,
     onSelectToken,
     unsupportedTokens,
-    permitCompatibleTokens
+    permitCompatibleTokens,
   }
 
-  const allListsContent = <>
-    <styledEl.Row>
-      <FavoriteTokensList
-        onSelectToken={onSelectToken}
-        selectedToken={selectedToken}
-        tokens={favoriteTokens}
-        hideTooltip={hideFavoriteTokensTooltip}
-      />
-    </styledEl.Row>
-    <styledEl.Separator />
-    {inputValue.trim() ? (
-      <TokenSearchResults searchInput={inputValue.trim()} {...selectTokenContext} />
-    ) : (
-      <TokensVirtualList allTokens={allTokens} {...selectTokenContext} account={account} />
-    )}
-    <styledEl.Separator />
-    <div>
-      <styledEl.ActionButton id="list-token-manage-button" onClick={onOpenManageWidget}>
-        <Edit /> <span>Manage Token Lists</span>
-      </styledEl.ActionButton>
-    </div>
-  </>
+  const allListsContent = (
+    <>
+      <styledEl.Row>
+        <FavoriteTokensList
+          onSelectToken={onSelectToken}
+          selectedToken={selectedToken}
+          tokens={favoriteTokens}
+          hideTooltip={hideFavoriteTokensTooltip}
+        />
+      </styledEl.Row>
+      <styledEl.Separator />
+      {inputValue.trim() ? (
+        <TokenSearchResults searchInput={inputValue.trim()} {...selectTokenContext} />
+      ) : (
+        <TokensVirtualList allTokens={allTokens} {...selectTokenContext} account={account} />
+      )}
+      <styledEl.Separator />
+      <div>
+        <styledEl.ActionButton id="list-token-manage-button" onClick={onOpenManageWidget}>
+          <Edit /> <span>Manage Token Lists</span>
+        </styledEl.ActionButton>
+      </div>
+    </>
+  )
 
   return (
     <styledEl.Wrapper>
@@ -106,9 +113,19 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
           placeholder="Search name or paste address"
         />
       </styledEl.Row>
-      {displayLpTokenLists
-        ? <LpTokenListsWidget>{allListsContent}</LpTokenListsWidget>
-        : allListsContent}
+      {displayLpTokenLists ? (
+        <LpTokenListsWidget
+          account={account}
+          search={inputValue}
+          onSelectToken={onSelectToken}
+          openPoolPage={openPoolPage}
+          tokenListCategoryState={tokenListCategoryState}
+        >
+          {allListsContent}
+        </LpTokenListsWidget>
+      ) : (
+        allListsContent
+      )}
     </styledEl.Wrapper>
   )
 }

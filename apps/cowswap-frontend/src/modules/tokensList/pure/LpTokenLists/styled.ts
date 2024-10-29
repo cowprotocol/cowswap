@@ -1,5 +1,4 @@
-import { TokenLogoWrapper } from '@cowprotocol/tokens'
-import { ExternalLink, Media, UI } from '@cowprotocol/ui'
+import { ExternalLink, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -33,52 +32,11 @@ export const ListItem = styled.div`
   grid-template-columns: var(--grid-columns);
   padding: 10px 20px;
   cursor: pointer;
+  font-size: 14px;
+  align-items: center;
 
   &:hover {
     background: var(${UI.COLOR_PAPER_DARKER});
-  }
-`
-
-export const LpTokenLogo = styled.div`
-  --size: 36px;
-  position: relative;
-  width: var(--size);
-  height: var(--size);
-  object-fit: contain;
-
-  ${Media.upToSmall()} {
-    --size: 32px;
-  }
-
-  ${TokenLogoWrapper} {
-    position: relative;
-    z-index: 1;
-    border-radius: var(--size);
-    width: var(--size);
-    height: var(--size);
-    min-width: var(--size);
-    min-height: var(--size);
-    font-size: var(--size);
-  }
-
-  ${TokenLogoWrapper}:nth-child(2) {
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 2;
-    clip-path: inset(0 0 0 50%);
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: 2px;
-    height: 100%;
-    background-color: var(${UI.COLOR_PAPER});
-    transform: translateX(-50%);
-    z-index: 3;
   }
 `
 
@@ -119,6 +77,13 @@ export const LpTokenTooltip = styled.div`
   display: flex;
   align-items: center;
   margin: auto;
+  gap: 6px;
+  opacity: 0.8;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1;
+  }
 `
 
 export const NoPoolWrapper = styled.div`
