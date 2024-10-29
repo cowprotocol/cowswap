@@ -1,9 +1,7 @@
-import { useCallback, useEffect } from 'react'
+import { PropsWithChildren } from 'react'
 
 import { Media } from '@cowprotocol/ui'
 
-import Spinner from 'components/common/Spinner'
-import { Notification } from 'components/Notification'
 import useSafeState from 'hooks/useSafeState'
 import styled from 'styled-components/macro'
 
@@ -45,57 +43,20 @@ const DetailsWrapper = styled.div`
 `
 
 type BreakdownProps = {
-  fetchData: () => Promise<any>
-  renderContent: (data: any) => React.ReactNode
   showExpanded?: boolean
-}
+} & PropsWithChildren
 
-export const NumbersBreakdown = ({
-  fetchData,
-  renderContent,
-  showExpanded = false,
-}: BreakdownProps): React.ReactNode => {
-  const [loading, setLoading] = useSafeState(false)
-  const [error, setError] = useSafeState(false)
-  const [detailedData, setDetailedData] = useSafeState<any | undefined>(undefined)
+export const NumbersBreakdown = ({ children, showExpanded = false }: BreakdownProps): React.ReactNode => {
   const [showDetails, setShowDetails] = useSafeState<boolean>(showExpanded)
 
-  const handleFetchData = useCallback(async (): Promise<void> => {
-    setLoading(true)
-    try {
-      const result = await fetchData()
-      setDetailedData(result)
-    } catch {
-      setError(true)
-    } finally {
-      setLoading(false)
-    }
-  }, [fetchData, setLoading, setError])
-
-  useEffect(() => {
-    if (showExpanded) {
-      handleFetchData().catch(console.error)
-    }
-  }, [showExpanded, handleFetchData])
-
   const handleToggle = async (): Promise<void> => {
-    if (!showDetails) {
-      await handleFetchData()
-    }
     setShowDetails(!showDetails)
-  }
-
-  const renderData = (): React.ReactNode | null => {
-    if (loading) return <Spinner />
-    if (error)
-      return <Notification type="error" message="Error when getting details." closable={false} appendMessage={false} />
-    return detailedData ? renderContent(detailedData) : null
   }
 
   return (
     <>
       <ShowMoreButton onClick={handleToggle}>{showDetails ? '[-] Show less' : '[+] Show more'}</ShowMoreButton>
-      {showDetails && <DetailsWrapper>{renderData()}</DetailsWrapper>}
+      {showDetails && <DetailsWrapper>{children}</DetailsWrapper>}
     </>
   )
 }
