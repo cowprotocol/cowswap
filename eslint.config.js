@@ -28,6 +28,7 @@ module.exports = [
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
+      'react-hooks/exhaustive-deps': 'error',
     },
   },
   {

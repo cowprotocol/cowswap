@@ -97,7 +97,7 @@ function SettingsTabController({ buttonRef, children }: SettingsTabControllerPro
 
   const toggleMenu = useCallback(() => {
     buttonRef.current?.dispatchEvent(new Event('mousedown', { bubbles: true }))
-  }, [buttonRef.current])
+  }, [buttonRef])
 
   useEffect(() => {
     if (settingsTabState.open) {
