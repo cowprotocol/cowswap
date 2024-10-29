@@ -94,8 +94,8 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
     setDappDetails(null)
   }, [isAllHooksTab])
 
-  const handleAddCustomHook = () => setIsAllHooksTab(false)
-  const handleClearSearch = () => setSearchQuery('')
+  const handleAddCustomHook = useCallback(() => setIsAllHooksTab(false), [setIsAllHooksTab])
+  const handleClearSearch = useCallback(() => setSearchQuery(''), [setSearchQuery])
 
   const emptyListMessage = useMemo(
     () =>
@@ -154,7 +154,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
         )}
       </>
     ),
-    [isAllHooksTab, searchQuery, sortedFilteredDapps, handleAddCustomHook, handleClearSearch],
+    [isAllHooksTab, searchQuery, sortedFilteredDapps, handleAddCustomHook, handleClearSearch, emptyListMessage, removeCustomHookDapp, walletType],
   )
 
   return (
