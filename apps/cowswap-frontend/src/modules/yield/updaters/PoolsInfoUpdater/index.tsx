@@ -46,7 +46,7 @@ export function PoolsInfoUpdater() {
     if (tokensToUpdate.length > 0 || isYield) {
       fetchPoolsInfo(isYield ? null : tokensToUpdate).then(upsertPoolsInfo)
     }
-  }, [isYield, tokensKey])
+  }, [isYield, tokensKey, tokensToUpdate, upsertPoolsInfo])
 
   return null
 }
