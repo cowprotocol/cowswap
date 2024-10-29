@@ -4,12 +4,14 @@ import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
 import { ButtonOutlined, Media, MY_ORDERS_ID } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { Currency } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
 
 import { AccountElement } from 'legacy/components/Header/AccountElement'
 import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+import { Field } from 'legacy/state/types'
 
 import { useToggleAccountModal } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -125,9 +127,22 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     onCurrencySelection,
     onUserInput,
     allowsOffchainSigning,
-    openTokenSelectWidget,
     tokenSelectorDisabled: alternativeOrderModalVisible,
   }
+
+  const openSellTokenSelect = useCallback(
+    (selectedToken: string | undefined, field: Field | undefined, onSelectToken: (currency: Currency) => void) => {
+      openTokenSelectWidget(selectedToken, field, outputCurrencyInfo.currency || undefined, onSelectToken)
+    },
+    [openTokenSelectWidget, outputCurrencyInfo.currency],
+  )
+
+  const openBuyTokenSelect = useCallback(
+    (selectedToken: string | undefined, field: Field | undefined, onSelectToken: (currency: Currency) => void) => {
+      openTokenSelectWidget(selectedToken, field, inputCurrencyInfo.currency || undefined, onSelectToken)
+    },
+    [openTokenSelectWidget, inputCurrencyInfo.currency],
+  )
 
   const toggleAccountModal = useToggleAccountModal()
 
@@ -169,6 +184,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 showSetMax={showSetMax}
                 maxBalance={maxBalance}
                 topLabel={isWrapOrUnwrap ? undefined : inputCurrencyInfo.label}
+                openTokenSelectWidget={openSellTokenSelect}
                 {...currencyInputCommonProps}
               />
             </div>
@@ -194,6 +210,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 currencyInfo={outputCurrencyInfo}
                 priceImpactParams={!disablePriceImpact ? priceImpact : undefined}
                 topLabel={isWrapOrUnwrap ? undefined : outputCurrencyInfo.label}
+                openTokenSelectWidget={openBuyTokenSelect}
                 {...currencyInputCommonProps}
               />
             </div>

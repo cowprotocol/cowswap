@@ -2,7 +2,13 @@ import { ReactNode, useMemo } from 'react'
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getTokenSearchFilter, LP_TOKEN_LIST_CATEGORIES, TokenListCategory, useAllLpTokens } from '@cowprotocol/tokens'
+import {
+  getTokenSearchFilter,
+  LP_TOKEN_LIST_CATEGORIES,
+  LP_TOKEN_LIST_COW_AMM_ONLY,
+  TokenListCategory,
+  useAllLpTokens,
+} from '@cowprotocol/tokens'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { usePoolsInfo } from 'modules/yield/shared'
@@ -16,6 +22,7 @@ interface LpTokenListsProps<T = TokenListCategory[] | null> {
   account: string | undefined
   children: ReactNode
   search: string
+  disableErc20?: boolean
   onSelectToken(token: TokenWithLogo): void
   openPoolPage(poolAddress: string): void
   tokenListCategoryState: [T, (category: T) => void]
@@ -35,7 +42,7 @@ const tabs = [
         />{' '}
         CoW AMM only
       </>
-    ), value: [TokenListCategory.COW_AMM_LP] },
+    ), value: LP_TOKEN_LIST_COW_AMM_ONLY },
 ]
 
 export function LpTokenListsWidget({
@@ -45,6 +52,7 @@ export function LpTokenListsWidget({
   onSelectToken,
   openPoolPage,
   tokenListCategoryState,
+  disableErc20,
 }: LpTokenListsProps) {
   const [listsCategories, setListsCategories] = tokenListCategoryState
   const lpTokens = useAllLpTokens(listsCategories)
@@ -62,7 +70,7 @@ export function LpTokenListsWidget({
   return (
     <>
       <TabsContainer>
-        {tabs.map((tab) => {
+        {(disableErc20 ? tabs.slice(1) : tabs).map((tab) => {
           return (
             <TabButton
               key={tab.id}

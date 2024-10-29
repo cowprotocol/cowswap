@@ -26,6 +26,7 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   permitCompatibleTokens: PermitCompatibleTokens
   hideFavoriteTokensTooltip?: boolean
   displayLpTokenLists?: boolean
+  disableErc20?: boolean
   account: string | undefined
   tokenListCategoryState: [T, (category: T) => void]
 
@@ -60,6 +61,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     displayLpTokenLists,
     openPoolPage,
     tokenListCategoryState,
+    disableErc20,
   } = props
 
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
@@ -119,6 +121,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
           search={inputValue}
           onSelectToken={onSelectToken}
           openPoolPage={openPoolPage}
+          disableErc20={disableErc20}
           tokenListCategoryState={tokenListCategoryState}
         >
           {allListsContent}

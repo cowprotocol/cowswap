@@ -28,24 +28,22 @@ export function PoolsInfoUpdater() {
   const tradeTypeInfo = useTradeTypeInfo()
   const isYield = tradeTypeInfo?.tradeType === TradeType.YIELD
 
-  const lpTokensWithBalances = useLpTokensWithBalances()
+  const { tokens: lpTokensWithBalances } = useLpTokensWithBalances()
 
   const tokensToUpdate = useMemo(() => {
-    return lpTokensWithBalances
-      ? Object.keys(lpTokensWithBalances).filter((address) => {
-          const state = poolsInfo?.[address]
+    return Object.keys(lpTokensWithBalances).filter((address) => {
+      const state = poolsInfo?.[address]
 
-          if (!state) return true
+      if (!state) return true
 
-          return state.updatedAt + POOL_INFO_CACHE_TIME > Date.now()
-        })
-      : null
+      return state.updatedAt + POOL_INFO_CACHE_TIME > Date.now()
+    })
   }, [lpTokensWithBalances, poolsInfo])
 
-  const tokensKey = useMemo(() => tokensToUpdate?.join(','), [tokensToUpdate])
+  const tokensKey = useMemo(() => tokensToUpdate.join(','), [tokensToUpdate])
 
   useEffect(() => {
-    if ((tokensToUpdate && tokensToUpdate.length > 0) || isYield) {
+    if (tokensToUpdate.length > 0 || isYield) {
       fetchPoolsInfo(isYield ? null : tokensToUpdate).then(upsertPoolsInfo)
     }
   }, [isYield, tokensKey])

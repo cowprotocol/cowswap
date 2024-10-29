@@ -4,7 +4,6 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 
 import { activeTokensAtom } from '../../state/tokens/allTokensAtom'
 
-
-export function useAllTokens(): TokenWithLogo[] {
+export function useAllActiveTokens(): TokenWithLogo[] {
   return useAtomValue(activeTokensAtom)
 }
