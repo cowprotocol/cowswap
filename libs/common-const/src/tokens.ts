@@ -335,7 +335,7 @@ const GBPE_GNOSIS_CHAIN_ADDRESS = '0x5cb9073902f2035222b9749f8fb0c9bfe5527108'
 
 // NOTE: whenever this list is updated, make sure to update the docs section regarding the volume fees
 // https://github.com/cowprotocol/docs/blob/main/docs/governance/fees/fees.md?plain=1#L40
-export const GNOSIS_CHAIN_STABLECOINS = [
+const GNOSIS_CHAIN_STABLECOINS = [
   SDAI_GNOSIS_CHAIN_ADDRESS,
   NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN].address, //xDAI
   WRAPPED_NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN].address, //wxDAI
@@ -346,7 +346,7 @@ export const GNOSIS_CHAIN_STABLECOINS = [
   USDT_GNOSIS_CHAIN.address,
 ].map((t) => t.toLowerCase())
 
-export const ARBITRUM_ONE_STABLECOINS = [
+const ARBITRUM_ONE_STABLECOINS = [
   USDC_ARBITRUM_ONE.address,
   DAI_ARBITRUM_ONE.address,
   USDT_ARBITRUM_ONE.address,
