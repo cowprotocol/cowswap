@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.16.0...widget-lib-v0.17.0) (2024-10-29)
+
+
+### Features
+
+* setup vampire attack widget ([#4950](https://github.com/cowprotocol/cowswap/issues/4950)) ([99c4c42](https://github.com/cowprotocol/cowswap/commit/99c4c42aec60a734a37926935be5dca6cd4cf11c))
+
 ## [0.16.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.15.0...widget-lib-v0.16.0) (2024-10-18)
 
 
