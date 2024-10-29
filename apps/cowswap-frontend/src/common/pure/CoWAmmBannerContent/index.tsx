@@ -41,7 +41,7 @@ export function CoWAmmBannerContent({
 }: CoWAmmBannerContentProps) {
   const isMobile = useMediaQuery(upToSmall)
   const arrowBackgroundRef = useRef<HTMLDivElement>(null)
-  const { alternatives, cowAmmLpTokensCount, averageApyDiff, poolsAverageData } = vampireAttackContext
+  const { superiorAlternatives, cowAmmLpTokensCount, averageApyDiff, poolsAverageData } = vampireAttackContext
 
   const handleCTAMouseEnter = useCallback(() => {
     if (arrowBackgroundRef.current) {
@@ -57,18 +57,18 @@ export function CoWAmmBannerContent({
     }
   }, [])
 
-  const firstItemWithBetterCowAmm = alternatives?.[0]
+  const firstItemWithBetterCowAmm = superiorAlternatives?.[0]
   const isCowAmmAverageBetter = !!averageApyDiff && averageApyDiff > 0
 
   const worseThanCoWAmmProviders = useMemo(() => {
-    return alternatives?.reduce((acc, item) => {
+    return superiorAlternatives?.reduce((acc, item) => {
       if (item.token.lpTokenProvider && !acc.includes(item.token.lpTokenProvider)) {
         return acc.concat(item.token.lpTokenProvider)
       }
 
       return acc
     }, [] as LpTokenProvider[])
-  }, [alternatives])
+  }, [superiorAlternatives])
 
   const sortedAverageProviders = useMemo(() => {
     if (!poolsAverageData) return undefined
