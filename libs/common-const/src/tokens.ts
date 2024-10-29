@@ -12,7 +12,7 @@ export const USDT = new TokenWithLogo(
   '0xdAC17F958D2ee523a2206206994597C13D831ec7',
   6,
   'USDT',
-  'Tether USD'
+  'Tether USD',
 )
 export const WBTC = new TokenWithLogo(
   cowprotocolTokenLogoUrl('0x2260fac5e5542a773aa44fbcfedf7c193bc2c599', SupportedChainId.MAINNET),
@@ -20,7 +20,7 @@ export const WBTC = new TokenWithLogo(
   '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
   8,
   'WBTC',
-  'Wrapped BTC'
+  'Wrapped BTC',
 )
 
 export const USDC_MAINNET = new TokenWithLogo(
@@ -29,7 +29,7 @@ export const USDC_MAINNET = new TokenWithLogo(
   '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
   6,
   'USDC',
-  'USD Coin'
+  'USD Coin',
 )
 
 export const DAI = new TokenWithLogo(
@@ -38,7 +38,7 @@ export const DAI = new TokenWithLogo(
   '0x6B175474E89094C44Da98b954EedeAC495271d0F',
   18,
   'DAI',
-  'Dai Stablecoin'
+  'Dai Stablecoin',
 )
 
 const GNO_MAINNET = new TokenWithLogo(
@@ -47,7 +47,7 @@ const GNO_MAINNET = new TokenWithLogo(
   '0x6810e776880c02933d47db1b9fc05908e5386b96',
   18,
   'GNO',
-  'Gnosis'
+  'Gnosis',
 )
 
 // Gnosis chain
@@ -59,7 +59,7 @@ export const USDT_GNOSIS_CHAIN = new TokenWithLogo(
   '0x4ECaBa5870353805a9F068101A40E0f32ed605C6',
   6,
   'USDT',
-  'Tether USD'
+  'Tether USD',
 )
 export const USDC_GNOSIS_CHAIN = new TokenWithLogo(
   USDC_MAINNET.logoURI,
@@ -67,7 +67,7 @@ export const USDC_GNOSIS_CHAIN = new TokenWithLogo(
   '0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83',
   6,
   'USDC',
-  'USD Coin (old)'
+  'USD Coin (old)',
 )
 export const USDCe_GNOSIS_CHAIN = new TokenWithLogo(
   USDC_MAINNET.logoURI,
@@ -75,7 +75,7 @@ export const USDCe_GNOSIS_CHAIN = new TokenWithLogo(
   '0x2a22f9c3b484c3629090feed35f17ff8f88f76f0',
   6,
   'USDC.e',
-  'USD Coin'
+  'USD Coin',
 )
 export const WBTC_GNOSIS_CHAIN = new TokenWithLogo(
   WBTC.logoURI,
@@ -83,7 +83,7 @@ export const WBTC_GNOSIS_CHAIN = new TokenWithLogo(
   '0x8e5bbbb09ed1ebde8674cda39a0c169401db4252',
   8,
   'WBTC',
-  'Wrapped BTC'
+  'Wrapped BTC',
 )
 export const WETH_GNOSIS_CHAIN = new TokenWithLogo(
   WETH_MAINNET.logoURI,
@@ -91,7 +91,7 @@ export const WETH_GNOSIS_CHAIN = new TokenWithLogo(
   '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1',
   18,
   'WETH',
-  'Wrapped Ether on Gnosis Chain'
+  'Wrapped Ether on Gnosis Chain',
 )
 export const GNO_GNOSIS_CHAIN = new TokenWithLogo(
   GNO_MAINNET.logoURI,
@@ -99,7 +99,7 @@ export const GNO_GNOSIS_CHAIN = new TokenWithLogo(
   '0x9C58BAcC331c9aa871AFD802DB6379a98e80CEdb',
   18,
   'GNO',
-  'Gnosis Token'
+  'Gnosis Token',
 )
 
 export const EURE_GNOSIS_CHAIN = new TokenWithLogo(
@@ -108,7 +108,7 @@ export const EURE_GNOSIS_CHAIN = new TokenWithLogo(
   '0xcb444e90d8198415266c6a2724b7900fb12fc56e',
   18,
   'EURe',
-  'Monerium EUR emoney'
+  'Monerium EUR emoney',
 )
 
 // Arbitrum
@@ -119,7 +119,7 @@ export const USDT_ARBITRUM_ONE = new TokenWithLogo(
   '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
   6,
   'USDT',
-  'Tether USD'
+  'Tether USD',
 )
 export const WBTC_ARBITRUM_ONE = new TokenWithLogo(
   WBTC.logoURI,
@@ -127,7 +127,7 @@ export const WBTC_ARBITRUM_ONE = new TokenWithLogo(
   '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',
   8,
   'WBTC',
-  'Wrapped BTC'
+  'Wrapped BTC',
 )
 
 export const USDC_ARBITRUM_ONE = new TokenWithLogo(
@@ -136,7 +136,7 @@ export const USDC_ARBITRUM_ONE = new TokenWithLogo(
   '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
   6,
   'USDC',
-  'USD Coin'
+  'USD Coin',
 )
 
 export const DAI_ARBITRUM_ONE = new TokenWithLogo(
@@ -145,7 +145,7 @@ export const DAI_ARBITRUM_ONE = new TokenWithLogo(
   '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
   18,
   'DAI',
-  'Dai Stablecoin'
+  'Dai Stablecoin',
 )
 
 export const ARB_ARBITRUM_ONE = new TokenWithLogo(
@@ -154,7 +154,7 @@ export const ARB_ARBITRUM_ONE = new TokenWithLogo(
   '0x912ce59144191c1204e64559fe8253a0e49e6548',
   18,
   'ARB',
-  'Arbitrum'
+  'Arbitrum',
 )
 
 export const GNO_ARBITRUM_ONE = new TokenWithLogo(
@@ -163,7 +163,43 @@ export const GNO_ARBITRUM_ONE = new TokenWithLogo(
   '0xa0b862F60edEf4452F25B4160F177db44DeB6Cf1',
   18,
   'GNO',
-  'Gnosis Token'
+  'Gnosis Token',
+)
+
+const USDE_ARBITRUM_ONE = new TokenWithLogo(
+  '', // TODO: add logo, and add it to default token list
+  SupportedChainId.ARBITRUM_ONE,
+  '0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34',
+  18,
+  'USDe',
+  'USDe',
+)
+
+const USDM_ARBITRUM_ONE = new TokenWithLogo(
+  '', // TODO: add logo, and add it to default token list
+  SupportedChainId.ARBITRUM_ONE,
+  '0x59D9356E565Ab3A36dD77763Fc0d87fEaf85508C',
+  18,
+  'USDM',
+  'Mountain Protocol USD',
+)
+
+const FRAX_ARBITRUM_ONE = new TokenWithLogo(
+  '', // TODO: add logo, and add it to default token list
+  SupportedChainId.ARBITRUM_ONE,
+  '0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F',
+  18,
+  'FRAX',
+  'Frax',
+)
+
+const MIM_ARBITRUM_ONE = new TokenWithLogo(
+  '', // TODO: add logo, and add it to default token list
+  SupportedChainId.ARBITRUM_ONE,
+  '0xFEa7a6a0B346362BF88A9e4A88416B77a57D6c2A',
+  18,
+  'MIM',
+  'Magic Internet Money',
 )
 
 // Sepolia
@@ -174,7 +210,7 @@ const GNO_SEPOLIA = new TokenWithLogo(
   '0xd3f3d46FeBCD4CdAa2B83799b7A5CdcB69d135De',
   18,
   'GNO',
-  'GNO (test)'
+  'GNO (test)',
 )
 
 // Sepolia
@@ -184,7 +220,7 @@ export const USDC_SEPOLIA = new TokenWithLogo(
   '0xbe72E441BF55620febc26715db68d3494213D8Cb',
   18,
   'USDC',
-  'USDC (test)'
+  'USDC (test)',
 )
 
 export const USDC: Record<SupportedChainId, TokenWithLogo> = {
@@ -212,7 +248,7 @@ const V_COW_TOKEN_MAINNET = new TokenWithLogo(
   V_COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET] || '',
   18,
   'vCOW',
-  'CoW Protocol Virtual Token'
+  'CoW Protocol Virtual Token',
 )
 
 const V_COW_TOKEN_XDAI = new TokenWithLogo(
@@ -221,7 +257,7 @@ const V_COW_TOKEN_XDAI = new TokenWithLogo(
   V_COW_CONTRACT_ADDRESS[SupportedChainId.GNOSIS_CHAIN] || '',
   18,
   'vCOW',
-  'CoW Protocol Virtual Token'
+  'CoW Protocol Virtual Token',
 )
 
 const V_COW_TOKEN_SEPOLIA = new TokenWithLogo(
@@ -230,7 +266,7 @@ const V_COW_TOKEN_SEPOLIA = new TokenWithLogo(
   V_COW_CONTRACT_ADDRESS[SupportedChainId.SEPOLIA] || '',
   18,
   'vCOW',
-  'CoW Protocol Virtual Token'
+  'CoW Protocol Virtual Token',
 )
 
 // TODO: V_COW not present in all chains, make sure code using it can handle that
@@ -250,7 +286,7 @@ const COW_TOKEN_MAINNET = new TokenWithLogo(
   COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET] || '',
   18,
   'COW',
-  'CoW Protocol Token'
+  'CoW Protocol Token',
 )
 
 const COW_TOKEN_XDAI = new TokenWithLogo(
@@ -259,7 +295,7 @@ const COW_TOKEN_XDAI = new TokenWithLogo(
   COW_CONTRACT_ADDRESS[SupportedChainId.GNOSIS_CHAIN] || '',
   18,
   'COW',
-  'CoW Protocol Token'
+  'CoW Protocol Token',
 )
 
 export const COW_TOKEN_ARBITRUM = new TokenWithLogo(
@@ -268,7 +304,7 @@ export const COW_TOKEN_ARBITRUM = new TokenWithLogo(
   COW_CONTRACT_ADDRESS[SupportedChainId.ARBITRUM_ONE] || '',
   18,
   'COW',
-  'CoW Protocol Token'
+  'CoW Protocol Token',
 )
 
 const COW_TOKEN_SEPOLIA = new TokenWithLogo(
@@ -277,7 +313,7 @@ const COW_TOKEN_SEPOLIA = new TokenWithLogo(
   COW_CONTRACT_ADDRESS[SupportedChainId.SEPOLIA] || '',
   18,
   'COW',
-  'CoW Protocol Token'
+  'CoW Protocol Token',
 )
 
 export const COW: Record<SupportedChainId, TokenWithLogo> = {
@@ -309,6 +345,23 @@ export const GNOSIS_CHAIN_STABLECOINS = [
   USDCe_GNOSIS_CHAIN.address,
   USDT_GNOSIS_CHAIN.address,
 ].map((t) => t.toLowerCase())
+
+export const ARBITRUM_ONE_STABLECOINS = [
+  USDC_ARBITRUM_ONE.address,
+  DAI_ARBITRUM_ONE.address,
+  USDT_ARBITRUM_ONE.address,
+  USDE_ARBITRUM_ONE.address,
+  USDM_ARBITRUM_ONE.address,
+  FRAX_ARBITRUM_ONE.address,
+  MIM_ARBITRUM_ONE.address,
+].map((t) => t.toLowerCase())
+
+export const STABLECOINS: Record<ChainId, string[]> = {
+  [SupportedChainId.MAINNET]: [],
+  [SupportedChainId.GNOSIS_CHAIN]: GNOSIS_CHAIN_STABLECOINS,
+  [SupportedChainId.ARBITRUM_ONE]: ARBITRUM_ONE_STABLECOINS,
+  [SupportedChainId.SEPOLIA]: [],
+}
 
 /**
  * Addresses related to COW vesting for Locked GNO
