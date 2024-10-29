@@ -30,7 +30,6 @@ import IMG_SMARTORDERS from '@cowprotocol/assets/images/image-smartorders.svg'
 import IMG_LOGO_NEXUS from '@cowprotocol/assets/images/logo-nexus-icon.svg'
 import IMG_LOGO_ENS from '@cowprotocol/assets/images/logo-ens-icon.svg'
 import IMG_LOGO_AAVE from '@cowprotocol/assets/images/logo-aave-icon.svg'
-import { clickOnCowProtocol } from 'modules/analytics'
 
 export const ADVANCED_ORDER_TYPES = [
   {
@@ -147,7 +146,6 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
           external
           utmContent="cow-protocol-introduction-intents"
-          onClick={() => clickOnCowProtocol('click-introduction-intents')}
         >
           intents
         </Link>
@@ -156,7 +154,6 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => clickOnCowProtocol('click-introduction-solvers')}
         >
           solvers
         </Link>
@@ -165,7 +162,6 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
           external
           utmContent="cow-protocol-introduction-batch-auctions"
-          onClick={() => clickOnCowProtocol('click-introduction-batch-auctions')}
         >
           batch auctions
         </Link>{' '}
@@ -178,12 +174,7 @@ export const FAQ_DATA = [
     answer: (
       <>
         CoW Protocol is the decentralized, permissionless DeFi protocol that powers{' '}
-        <Link
-          href="https://swap.cow.fi/"
-          external
-          utmContent="cow-protocol-cow-swap"
-          onClick={() => clickOnCowProtocol('click-cow-swap')}
-        >
+        <Link href="https://swap.cow.fi/" external utmContent="cow-protocol-cow-swap">
           CoW Swap
         </Link>{' '}
         and other DEX UIs. While CoW Swap is available as a trading venue for retail and institutional users, CoW
@@ -206,7 +197,6 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => clickOnCowProtocol('click-introduction-solvers')}
         >
           solvers
         </Link>{' '}
@@ -227,7 +217,6 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => clickOnCowProtocol('click-introduction-solvers')}
         >
           solvers
         </Link>{' '}
@@ -237,7 +226,6 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/how-it-works/coincidence-of-wants"
           external
           utmContent="cow-protocol-coincidence-of-wants"
-          onClick={() => clickOnCowProtocol('click-coincidence-of-wants')}
         >
           Coincidences of Wants
         </Link>{' '}
@@ -266,7 +254,6 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
           external
           utmContent="cow-protocol-introduction-intents"
-          onClick={() => clickOnCowProtocol('click-introduction-intents')}
         >
           intent
         </Link>{' '}
@@ -277,7 +264,6 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => clickOnCowProtocol('click-introduction-solvers')}
         >
           solvers
         </Link>
@@ -288,7 +274,6 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => clickOnCowProtocol('click-introduction-solvers')}
         >
           solver
         </Link>{' '}
@@ -304,7 +289,6 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => clickOnCowProtocol('click-introduction-solvers')}
         >
           Solvers
         </Link>{' '}
@@ -313,7 +297,6 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
           external
           utmContent="cow-protocol-introduction-intents"
-          onClick={() => clickOnCowProtocol('click-introduction-intents')}
         >
           intent to trade message
         </Link>
@@ -322,7 +305,6 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
           external
           utmContent="cow-protocol-introduction-batch-auctions"
-          onClick={() => clickOnCowProtocol('click-introduction-batch-auctions')}
         >
           batch
         </Link>
@@ -332,7 +314,6 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/benefits/price-improvement"
           external
           utmContent="cow-protocol-price-improvement"
-          onClick={() => clickOnCowProtocol('click-price-improvement')}
         >
           surplus
         </Link>{' '}
@@ -343,7 +324,6 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/tutorials/solvers"
           external
           utmContent="cow-protocol-tutorials-solvers"
-          onClick={() => clickOnCowProtocol('click-tutorials-solvers')}
         >
           CoW Protocol documentation
         </Link>
@@ -360,7 +340,6 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
           external
           utmContent="cow-protocol-introduction-intents"
-          onClick={() => clickOnCowProtocol('click-introduction-intents')}
         >
           intent to trade
         </Link>{' '}
@@ -369,7 +348,6 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => clickOnCowProtocol('click-introduction-solvers')}
         >
           solvers
         </Link>
@@ -380,7 +358,6 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
           external
           utmContent="cow-protocol-introduction-batch-auctions"
-          onClick={() => clickOnCowProtocol('click-introduction-batch-auctions')}
         >
           batch auction
         </Link>
@@ -392,7 +369,6 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/benefits/mev-protection"
           external
           utmContent="cow-protocol-mev-protection"
-          onClick={() => clickOnCowProtocol('click-mev-protection')}
         >
           prevents MEV
         </Link>
@@ -414,12 +390,7 @@ export const FAQ_DATA = [
         <br />
         <br />
         CoW DAO Discord:{' '}
-        <Link
-          href="https://discord.gg/cowprotocol"
-          external
-          utmContent="cow-discord"
-          onClick={() => clickOnCowProtocol('click-discord')}
-        >
+        <Link href="https://discord.gg/cowprotocol" external utmContent="cow-discord">
           https://discord.gg/cowprotocol
         </Link>
       </>
@@ -437,8 +408,6 @@ export const COW_PROTOCOL_SECTIONS = [
     titleColor: '#FFF8F7',
     linkHref: 'https://docs.cow.fi/',
     linkText: 'Read the docs',
-    linkEvent: 'click-docs',
-    linkUtmContent: 'cow-protocol-docs',
     imageSrc: IMG_DOCS,
   },
   {
@@ -450,7 +419,6 @@ export const COW_PROTOCOL_SECTIONS = [
     titleColor: '#FFF8F7',
     linkHref: '/widget',
     linkText: 'Integrate the widget',
-    linkEvent: 'click-integrate-widget',
     imageSrc: IMG_WIDGET,
   },
   {
@@ -462,8 +430,6 @@ export const COW_PROTOCOL_SECTIONS = [
     titleColor: '#490072',
     linkHref: 'https://grants.cow.fi/',
     linkText: 'Apply for a grant',
-    linkEvent: 'click-apply-for-a-grant',
-    linkUtmContent: 'cow-protocol-grants',
     imageSrc: IMG_GRANT_COLOR,
   },
 ]

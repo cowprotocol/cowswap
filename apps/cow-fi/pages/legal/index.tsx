@@ -9,7 +9,6 @@ import { Link } from '@/components/Link'
 import { ContainerCard, ArticleContent, Breadcrumbs, ArticleMainTitle, BodyContent } from '@/styles/styled'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnLegal } from 'modules/analytics'
 
 const LEGAL_LINKS = [
   {
@@ -54,10 +53,7 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
           <ArticleContent maxWidth="100%">
             <Breadcrumbs>
-              <Link href="/" onClick={() => clickOnLegal('click-legal-breadcrumbs')}>
-                Home
-              </Link>
-
+              <Link href="/">Home</Link>
               <span>{title}</span>
             </Breadcrumbs>
 
@@ -71,9 +67,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <ul>
                 {LEGAL_LINKS.map((link, index) => (
                   <li key={index}>
-                    <Link href={link.href} onClick={() => clickOnLegal(`click-${link.title}`)}>
-                      {link.title}
-                    </Link>
+                    <Link href={link.href}>{link.title}</Link>
                   </li>
                 ))}
               </ul>

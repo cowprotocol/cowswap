@@ -43,7 +43,6 @@ import { CategoryLinks } from '@/components/CategoryLinks'
 import { Link, LinkType } from '@/components/Link'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnKnowledgeBase } from 'modules/analytics'
 import { CmsImage } from '@cowprotocol/ui'
 import { useLazyLoadImages } from 'hooks/useLazyLoadImages'
 
@@ -193,23 +192,15 @@ export default function ArticlePage({
         <ContainerCard gap={62} gapMobile={42} margin="0 auto" centerContent>
           <ArticleContent>
             <Breadcrumbs>
-              <a href="/" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-home')}>
-                Home
-              </a>
-              <a href="/learn" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-knowledge-base')}>
-                Knowledge Base
-              </a>
+              <a href="/">Home</a>
+              <a href="/learn">Knowledge Base</a>
               <span>{title}</span>
             </Breadcrumbs>
 
             {categories && Array.isArray(categories.data) && categories.data.length > 0 && (
               <CategoryTags>
                 {categories.data.map((category: { id: string; attributes?: { slug?: string; name?: string } }) => (
-                  <a
-                    key={category.id}
-                    href={`/learn/topic/${category.attributes?.slug ?? ''}`}
-                    onClick={() => clickOnKnowledgeBase(`click-category-${category.attributes?.name}`)}
-                  >
+                  <a key={category.id} href={`/learn/topic/${category.attributes?.slug ?? ''}`}>
                     {category.attributes?.name ?? ''}
                   </a>
                 ))}
@@ -256,12 +247,7 @@ export default function ArticlePage({
               <ul>
                 {featuredArticles.map((article) => (
                   <li key={article.id}>
-                    <a
-                      href={`/learn/${article.attributes?.slug}`}
-                      onClick={() => clickOnKnowledgeBase(`click-related-article-${article.attributes?.title}`)}
-                    >
-                      {article.attributes?.title}
-                    </a>
+                    <a href={`/learn/${article.attributes?.slug}`}>{article.attributes?.title}</a>
                   </li>
                 ))}
               </ul>
@@ -281,11 +267,7 @@ export default function ArticlePage({
                 const imageUrl = coverData?.attributes?.url
 
                 return (
-                  <ArticleCard
-                    key={article.id}
-                    href={`/learn/${article.attributes?.slug}`}
-                    onClick={() => clickOnKnowledgeBase(`click-read-more-${article.attributes?.title}`)}
-                  >
+                  <ArticleCard key={article.id} href={`/learn/${article.attributes?.slug}`}>
                     {imageUrl && (
                       <ArticleImage>
                         <CmsImage

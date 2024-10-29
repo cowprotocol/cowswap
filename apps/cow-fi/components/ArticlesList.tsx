@@ -1,5 +1,4 @@
 import React from 'react'
-import { clickOnKnowledgeBase } from 'modules/analytics'
 import { LinkItem, LinkColumn } from '@/styles/styled'
 import { Article } from 'services/cms'
 
@@ -17,11 +16,7 @@ export const ArticlesList: React.FC<ArticlesListProps> = ({ articles }) => (
       const { slug, title } = article.attributes
 
       return (
-        <LinkItem
-          key={article.id}
-          href={`${ARTICLES_PATH}${slug}`}
-          onClick={() => clickOnKnowledgeBase(`click-article-${title}`)}
-        >
+        <LinkItem key={article.id} href={`${ARTICLES_PATH}${slug}`}>
           {title}
           <span>→</span>
         </LinkItem>

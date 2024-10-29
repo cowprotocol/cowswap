@@ -2,7 +2,6 @@ import { Confetti } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 import { darken, transparentize } from 'polished'
 import { useConnectAndAddToWallet } from '../../lib/hooks/useConnectAndAddToWallet'
-import { clickOnMevBlocker } from 'modules/analytics'
 import { useAccount } from 'wagmi'
 
 import { Link, LinkType } from '@/components/Link'
@@ -32,7 +31,6 @@ export function AddRpcButton() {
   const { isConnected } = useAccount()
 
   const handleClick = async () => {
-    clickOnMevBlocker('click-add-rpc-to-wallet')
     try {
       if (connectAndAddToWallet) {
         // Start the connection process
@@ -43,9 +41,7 @@ export function AddRpcButton() {
       } else {
         throw new Error('connectAndAddToWallet is not defined')
       }
-    } catch (error) {
-      clickOnMevBlocker('click-add-rpc-to-wallet-error')
-    }
+    } catch (error) {}
   }
 
   // Get the label and enable state of button
@@ -55,10 +51,10 @@ export function AddRpcButton() {
   const buttonLabel = isConnecting
     ? 'Connecting Wallet...'
     : isAdding
-    ? 'Adding to Wallet...'
-    : isConnected
-    ? 'Add MEV Blocker RPC'
-    : 'Get protected'
+      ? 'Adding to Wallet...'
+      : isConnected
+        ? 'Add MEV Blocker RPC'
+        : 'Get protected'
 
   return (
     <>

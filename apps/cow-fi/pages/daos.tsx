@@ -46,7 +46,6 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, Navigation } from 'swiper/modules'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnDaos } from 'modules/analytics'
 
 interface PageProps {
   siteConfigData: typeof CONFIG
@@ -165,12 +164,7 @@ export default function Page() {
                   <TopicTitle>Milkman Orders</TopicTitle>
                   <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
                     Ensure your trades are always close to the real-time market price thanks to the{' '}
-                    <Link
-                      href="https://github.com/charlesndalton/milkman"
-                      external
-                      utmContent="link-to-milkman"
-                      onClick={() => clickOnDaos('click-milkman')}
-                    >
+                    <Link href="https://github.com/charlesndalton/milkman" external utmContent="link-to-milkman">
                       Milkman bot
                     </Link>
                     . Set the maximum deviation you&apos;ll accept, and Milkman will do the rest.
@@ -224,12 +218,7 @@ export default function Page() {
                 <TopicCardInner contentAlign="left">
                   <TopicTitle>Basket Sells</TopicTitle>
                   <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
-                    <Link
-                      href="https://dump.services/"
-                      external
-                      utmContent="link-to-dump-services"
-                      onClick={() => clickOnDaos('click-dump-services')}
-                    >
+                    <Link href="https://dump.services/" external utmContent="link-to-dump-services">
                       Dump.services
                     </Link>
                     , a collaboration between CoW Swap and Yearn, allows DAOs and traders to sell multiple tokens in a
@@ -258,7 +247,6 @@ export default function Page() {
               utmContent="link-to-advanced-order-types"
               margin="24px auto 0"
               external
-              onClick={() => clickOnDaos('click-advanced-order-types')}
             >
               Explore advanced order types
             </Link>
@@ -303,7 +291,6 @@ export default function Page() {
                         href={dao.link}
                         utmContent={`dao-${dao.title.toLowerCase().replace(/\s/g, '-')}`}
                         external
-                        onClick={() => clickOnDaos(`click-${dao.title.toLowerCase()}`)}
                       >
                         Learn more
                       </Link>
@@ -318,7 +305,6 @@ export default function Page() {
                     href={`${dao.link}?utm_source=cow.fi&utm_medium=web&utm_content=dao-${dao.title}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={() => clickOnDaos(`click-${dao.title.toLowerCase()}`)}
                   >
                     <TopicImage
                       iconColor={Color.neutral0}

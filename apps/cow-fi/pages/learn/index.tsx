@@ -38,7 +38,6 @@ import {
   TopicTitle,
 } from '@/styles/styled'
 
-import { clickOnKnowledgeBase } from 'modules/analytics'
 import LazySVG from '@/components/LazySVG'
 import { CategoryLinks } from '@/components/CategoryLinks'
 
@@ -187,7 +186,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
               </ContainerCardSectionTop>
               <ArticleList columnsTablet={2}>
                 {featuredArticles.map(({ title, description, cover, link }, index) => (
-                  <ArticleCard key={index} href={link} onClick={() => clickOnKnowledgeBase(`click-article-${title}`)}>
+                  <ArticleCard key={index} href={link}>
                     <ArticleImage color="#000">
                       {cover && <LazyImage src={cover} alt={title} width={700} height={200} />}
                     </ArticleImage>
@@ -205,13 +204,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
               <TopicList columns={3}>
                 {categories.map(({ name, bgColor, textColor, iconColor, link, imageUrl }, index) => {
                   return (
-                    <TopicCard
-                      key={index}
-                      bgColor={bgColor}
-                      textColor={textColor}
-                      href={link}
-                      onClick={() => clickOnKnowledgeBase(`click-topic-${name}`)}
-                    >
+                    <TopicCard key={index} bgColor={bgColor} textColor={textColor} href={link}>
                       <TopicImage iconColor={iconColor} bgColor={bgColor} borderRadius={90} widthMobile={'auto'}>
                         {imageUrl ? (
                           <LazyImage
@@ -248,7 +241,6 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
                       href={`${podcast.link}?utm_source=cow.fi&utm_medium=web&utm_content=podcast-${podcast.title}`}
                       rel="noopener noreferrer nofollow"
                       target="_blank"
-                      onClick={() => clickOnKnowledgeBase(`click-podcast-${podcast.title}`)}
                     >
                       {podcast.title}
                       <span>→</span>
@@ -264,7 +256,6 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
                       href={`${space.link}?utm_source=cow.fi&utm_medium=web&utm_content=space-${space.title}`}
                       rel="noopener noreferrer nofollow"
                       target="_blank"
-                      onClick={() => clickOnKnowledgeBase(`click-space-${space.title}`)}
                     >
                       {space.title}
                       <span>→</span>
@@ -285,7 +276,6 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
                     href={`${link}?utm_source=cow.fi&utm_medium=web&utm_content=media-${title}`}
                     target={linkExternal ? '_blank' : '_self'}
                     rel={linkExternal ? 'noopener' : ''}
-                    onClick={() => clickOnKnowledgeBase(`click-media-${title}`)}
                   >
                     <ArticleImage>{image && <LazyImage src={image} alt={title} />}</ArticleImage>
                     <ArticleTitle fontSize={21}>{title}</ArticleTitle>
@@ -308,7 +298,6 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
               href="https://docs.cow.fi/?utm_source=cow.fi&utm_medium=web&utm_content=cta-read-docs"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => clickOnKnowledgeBase('click-read-docs')}
             >
               Read the docs
             </CTAButton>

@@ -8,12 +8,17 @@ import { apolloClient } from 'services/uniswap-price/apollo-client'
 import { useInitializeUtm } from 'modules/utm'
 import { WithLDProvider } from '@/components/WithLDProvider'
 import { ThemeProvider } from '../theme'
-import { CowAnalyticsProvider } from '@cowprotocol/analytics'
-import { cowAnalytics } from 'modules/analytics'
+import { useEffect } from 'react'
+import { initGtm } from '@cowprotocol/analytics'
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props
   useInitializeUtm()
+
+  // Initialize GTM on mount
+  useEffect(() => {
+    initGtm()
+  }, [])
 
   const router = useRouter()
   const CURRENT_URL = `${CONFIG.url.root}${router.asPath}`
@@ -57,9 +62,7 @@ export default function App(props: AppProps) {
       <ApolloProvider client={apolloClient}>
         <WithLDProvider>
           <ThemeProvider>
-            <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
-              <Component {...pageProps} />
-            </CowAnalyticsProvider>
+            <Component {...pageProps} />
           </ThemeProvider>
         </WithLDProvider>
       </ApolloProvider>

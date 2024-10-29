@@ -37,7 +37,6 @@ import { DAO_CONTENT as CONTENT } from '@/data/widget/const'
 import LazySVG from '@/components/LazySVG'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnWidget } from 'modules/analytics'
 
 const FEATURE_ITEMS = [
   'Live styling configurator',
@@ -86,10 +85,8 @@ export default function Page() {
                 utmContent="widget-page-configure-widget-cta-hero"
                 external
                 linkType={LinkType.HeroButton}
-                onClick={() => clickOnWidget('click-config-widget')}
               >
-                {' '}
-                Configure widget{' '}
+                Configure widget
               </Link>
 
               <Link
@@ -99,9 +96,7 @@ export default function Page() {
                 utmContent="widget-page-readdocs-cta-hero"
                 external
                 linkType={LinkType.HeroButton}
-                onClick={() => clickOnWidget('click-read-docs')}
               >
-                {' '}
                 Read docs
               </Link>
             </HeroButtonWrapper>
@@ -308,10 +303,8 @@ export default function Page() {
                   utmContent="widget-page-configure-widget-cta-hero"
                   external
                   linkType={LinkType.HeroButton}
-                  onClick={() => clickOnWidget('click-config-widget')}
                 >
-                  {' '}
-                  Configure widget{' '}
+                  Configure widget
                 </Link>
 
                 <Link
@@ -321,9 +314,7 @@ export default function Page() {
                   utmContent="widget-page-readdocs-cta-hero"
                   external
                   linkType={LinkType.HeroButton}
-                  onClick={() => clickOnWidget('click-read-docs')}
                 >
-                  {' '}
                   Read docs
                 </Link>
               </HeroButtonWrapper>

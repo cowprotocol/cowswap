@@ -22,7 +22,6 @@ import {
 } from '@/styles/styled'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnKnowledgeBase } from 'modules/analytics'
 import { CmsImage } from '@cowprotocol/ui'
 
 interface PageProps {
@@ -91,13 +90,7 @@ export default function Page({ siteConfigData, categories, articles }: PageProps
               </ContainerCardSectionTop>
               <TopicList columns={3}>
                 {categories.map(({ name, bgColor, textColor, iconColor, link, imageUrl }, index) => (
-                  <TopicCard
-                    key={index}
-                    bgColor={bgColor}
-                    textColor={textColor}
-                    href={link}
-                    onClick={() => clickOnKnowledgeBase(`click-topic-${name}`)}
-                  >
+                  <TopicCard key={index} bgColor={bgColor} textColor={textColor} href={link}>
                     <TopicImage iconColor={iconColor}>
                       {imageUrl ? (
                         <CmsImage

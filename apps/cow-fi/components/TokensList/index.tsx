@@ -13,7 +13,6 @@ import {
   Wrapper,
   NoTokensText,
 } from './index.style'
-import { clickOnToken } from 'modules/analytics'
 
 export interface TokenListProps {
   tokens: TokenInfo[]
@@ -28,8 +27,8 @@ export function TokenList({ tokens }: TokenListProps) {
       tokens.filter(
         (token) =>
           token.name.toLowerCase().includes(search.toLowerCase()) ||
-          token.symbol.toLowerCase().includes(search.toLowerCase())
-      )
+          token.symbol.toLowerCase().includes(search.toLowerCase()),
+      ),
     )
   }, [search, tokens])
 
@@ -74,7 +73,7 @@ function TokenItem({ token, index }: TokenItemProps) {
     <ListItem key={id}>
       <span>{index + 1}</span>
 
-      <TokenLink href={`/tokens/${id}`} onClick={() => clickOnToken(name)}>
+      <TokenLink href={`/tokens/${id}`}>
         {image.large && image.large !== 'missing_large.png' ? (
           <img src={image.large} alt={name} />
         ) : (

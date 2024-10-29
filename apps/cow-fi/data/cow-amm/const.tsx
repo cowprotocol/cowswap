@@ -5,8 +5,6 @@ import IMG_COWAMM_LP_2 from '@cowprotocol/assets/images/image-cowamm-lp-2.svg'
 import IMG_COWAMM_LP_3 from '@cowprotocol/assets/images/image-cowamm-lp-3.svg'
 import IMG_COWAMM_LP_4 from '@cowprotocol/assets/images/image-cowamm-lp-4.svg'
 
-import { clickOnCowAmm } from 'modules/analytics'
-
 export const QUOTES = [
   {
     title:
@@ -176,21 +174,11 @@ export const FAQ_DATA = [
     answer: (
       <>
         Anyone can create a CoW AMM pool easily and permissionlessly with the{' '}
-        <Link
-          href="https://pool-creator.balancer.fi/cow"
-          external
-          utmContent="cow-amm-pool-creator"
-          onClick={() => clickOnCowAmm('Content link click - FAQ:Contact us')}
-        >
+        <Link href="https://pool-creator.balancer.fi/cow" external utmContent="cow-amm-pool-creator">
           CoW AMM pool creator
         </Link>
         . Engineers may also{' '}
-        <Link
-          href="https://docs.cow.fi/cow-amm/tutorials/cow-amm-deployer"
-          external
-          utmContent="cow-amm-deployer"
-          onClick={() => clickOnCowAmm('Content link click - FAQ:Deploy a pool')}
-        >
+        <Link href="https://docs.cow.fi/cow-amm/tutorials/cow-amm-deployer" external utmContent="cow-amm-deployer">
           follow these instructions in the CoW AMM docs
         </Link>{' '}
         to deploy pools directly.
@@ -202,12 +190,7 @@ export const FAQ_DATA = [
     answer: (
       <>
         CoW AMM pools live on Balancer can be found at{' '}
-        <Link
-          href="http://balancer.fi/pools/cow"
-          external
-          utmContent="cow-amm-balancer-pools"
-          onClick={() => clickOnCowAmm('Content link click - FAQ:Balancer pools')}
-        >
+        <Link href="http://balancer.fi/pools/cow" external utmContent="cow-amm-balancer-pools">
           balancer.fi/pools/cow
         </Link>
         . It is easy to create a new pool or enter an existing pool directly from this interface.

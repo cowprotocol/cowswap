@@ -7,7 +7,6 @@ import { Link } from '@/components/Link'
 import { PageWrapper, ContainerCard, ArticleContent, ArticleMainTitle, BodyContent } from '@/styles/styled'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnError404GoHome } from 'modules/analytics'
 
 interface PageProps {
   siteConfigData: typeof CONFIG
@@ -31,11 +30,8 @@ export default function Page({ siteConfigData }: PageProps) {
 
             <BodyContent>
               <p>
-                This page could not be found. Please go back to the{' '}
-                <Link href="/" onClick={clickOnError404GoHome}>
-                  homepage
-                </Link>{' '}
-                or use the navigation menu to find what you are looking for.
+                This page could not be found. Please go back to the <Link href="/">homepage</Link> or use the navigation
+                menu to find what you are looking for.
               </p>
             </BodyContent>
           </ArticleContent>

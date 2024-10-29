@@ -56,7 +56,6 @@ import LazySVG from '@/components/LazySVG'
 import { FAQ_DATA, TRUSTED_BY_CONTENT, TESTIMONIAL_LIST, MEV_BLOCKER_LIST } from '@/data/mev-blocker/const'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnMevBlocker } from 'modules/analytics'
 
 // Configure chains and providers
 const { chains, publicClient } = configureChains([mainnet], [publicProvider()])
@@ -117,13 +116,7 @@ export default function Page() {
                   </ol>
                 </HeroDescription>
 
-                <Link
-                  linkType={LinkType.HeroButton}
-                  bgColor={'#EC4612'}
-                  color={'#FEE7CF'}
-                  href="#rpc"
-                  onClick={() => clickOnMevBlocker('click-get-protected-heroSection')}
-                >
+                <Link linkType={LinkType.HeroButton} bgColor={'#EC4612'} color={'#FEE7CF'} href="#rpc">
                   Get protected
                 </Link>
               </HeroContent>
@@ -155,7 +148,6 @@ export default function Page() {
                 external
                 linkType={LinkType.SectionTitleButton}
                 utmContent="mev-blocker-metrics-link"
-                onClick={() => clickOnMevBlocker('click-metrics-dune')}
               >
                 View all metrics on DUNE &#8599;
               </Link>
@@ -170,12 +162,7 @@ export default function Page() {
                   <SectionTitleText maxWidth={500}>Broad spectrum MEV defense</SectionTitleText>
                   <SectionTitleDescription maxWidth={'100%'} color={Color.neutral50}>
                     MEV bots have extracted more than{' '}
-                    <Link
-                      href="https://dune.com/queries/2259793/3703605"
-                      external
-                      utmContent="mev-blocker-dune-link"
-                      onClick={() => clickOnMevBlocker('click-dune-link')}
-                    >
+                    <Link href="https://dune.com/queries/2259793/3703605" external utmContent="mev-blocker-dune-link">
                       $1.38 billion
                     </Link>{' '}
                     from well-meaning Ethereum users across a variety of use cases (trading, providing liquidity,
@@ -201,12 +188,7 @@ export default function Page() {
                 <SectionTitleWrapper maxWidth={1200} margin="0 auto">
                   <SectionTitleDescription fontSize={28} color={Color.neutral50}>
                     Curious if you've been the victim of an MEV attack?{' '}
-                    <Link
-                      href="https://www.mevscanner.com/"
-                      external
-                      utmContent="mev-blocker-mev-scanner-link"
-                      onClick={() => clickOnMevBlocker('click-mev-scanner-link')}
-                    >
+                    <Link href="https://www.mevscanner.com/" external utmContent="mev-blocker-mev-scanner-link">
                       Use MEV Scanner
                     </Link>{' '}
                     to find out
@@ -352,12 +334,7 @@ export default function Page() {
                 <SectionTitleWrapper margin={'24px auto 0'}>
                   <SectionTitleDescription color={Color.neutral50}>
                     To learn more about each of the endpoints MEV Blocker has to offer,{' '}
-                    <Link
-                      href="https://docs.cow.fi/mevblocker"
-                      external
-                      utmContent="mev-blocker-docs-link"
-                      onClick={() => clickOnMevBlocker('click-mev-blocker-docs-link')}
-                    >
+                    <Link href="https://docs.cow.fi/mevblocker" external utmContent="mev-blocker-docs-link">
                       read the MEV Blocker docs
                     </Link>
                     .
@@ -438,7 +415,6 @@ export default function Page() {
                     external
                     linkType={LinkType.SectionTitleButton}
                     utmContent="mev-blocker-learn-more"
-                    onClick={() => clickOnMevBlocker('click-mev-blocker-learn-more')}
                   >
                     Learn more
                   </Link>
@@ -465,7 +441,6 @@ export default function Page() {
                       href={item.href}
                       rel={'noopener noreferrer nofollow'}
                       target="_blank"
-                      onClick={() => clickOnMevBlocker(`click-trusted-by-${item.href}`)}
                     >
                       <TopicImage
                         iconColor={Color.neutral20}

@@ -41,7 +41,6 @@ import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 import { FAQ_DATA, TWEETS, COW_IS_DIFFERENT, ADVANCED_ORDER_TYPES, BETTER_UX } from '@/data/cow-swap/const'
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 import LazyLoadTweet from '@/components/LazyLoadTweet'
-import { clickOnCowSwap } from 'modules/analytics'
 
 interface PageProps {
   siteConfigData: typeof CONFIG
@@ -99,7 +98,6 @@ export default function Page({ tweets }: PageProps) {
               external
               linkType={LinkType.HeroButton}
               utmContent="cow-swap-launch-app-button"
-              onClick={() => clickOnCowSwap('click-launch-app')}
             >
               Launch app
             </Link>
@@ -132,7 +130,6 @@ export default function Page({ tweets }: PageProps) {
             external
             linkType={LinkType.SectionTitleButton}
             utmContent="cow-swap-metrics-link"
-            onClick={() => clickOnCowSwap('click-metrics-link')}
           >
             View all metrics on DUNE &#8599;
           </Link>
@@ -188,13 +185,7 @@ export default function Page({ tweets }: PageProps) {
                 A powerful, open-source, and permissionless DEX aggregation protocol that anyone can integrate for a
                 variety of DeFi purposes
               </SectionTitleDescription>
-              <Link
-                bgColor="#65D9FF"
-                color="#012F7A"
-                href="/cow-protocol"
-                linkType={LinkType.SectionTitleButton}
-                onClick={() => clickOnCowSwap('click-learn-about-cow-protocol')}
-              >
+              <Link bgColor="#65D9FF" color="#012F7A" href="/cow-protocol" linkType={LinkType.SectionTitleButton}>
                 Learn about CoW Protocol
               </Link>
             </SectionTitleWrapper>
@@ -413,7 +404,6 @@ export default function Page({ tweets }: PageProps) {
                 external
                 linkType={LinkType.SectionTitleButton}
                 utmContent="cow-swap-launch-app-button"
-                onClick={() => clickOnCowSwap('click-launch-app')}
               >
                 Launch app
               </Link>

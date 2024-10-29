@@ -22,7 +22,6 @@ import {
 } from '@/styles/styled'
 import { Link, LinkType } from '@/components/Link'
 import SVG from 'react-inlinesvg'
-import { clickOnHome } from 'modules/analytics'
 
 export const PRODUCT_LIST = [
   {
@@ -30,7 +29,6 @@ export const PRODUCT_LIST = [
     description: 'Open-source, permissionless DEX aggregation protocol',
     linkHref: '/cow-protocol',
     linkText: 'Start building',
-    linkEvent: 'click-start-building',
     bgColor: '#490072',
     textColor: '#F996EE',
     descriptionColor: '#F996EE',
@@ -44,7 +42,6 @@ export const PRODUCT_LIST = [
     description: 'The DEX that lets you do what you want',
     linkHref: 'https://swap.cow.fi/#/1/swap/USDC/COW',
     linkText: 'Start trading',
-    linkEvent: 'click-trade-on-cow-swap',
     linkExternal: true,
     linkUtmContent: 'home-page-trade-on-cow-swap',
     bgColor: '#65D9FF',
@@ -60,7 +57,6 @@ export const PRODUCT_LIST = [
     description: 'The first MEV-capturing AMM',
     linkHref: '/cow-amm',
     linkText: 'Deposit liquidity',
-    linkEvent: 'click-deploy-liquidity',
     bgColor: '#194D06',
     textColor: '#BCEC79',
     descriptionColor: '#BCEC79',
@@ -74,7 +70,6 @@ export const PRODUCT_LIST = [
     description: 'The best MEV protection RPC under the sun',
     linkHref: '/mev-blocker',
     linkText: 'Get protected',
-    linkEvent: 'click-get-protected',
     bgColor: '#FEE7CF',
     textColor: '#EC4612',
     descriptionColor: '#EC4612',
@@ -89,7 +84,6 @@ export const CHANNEL_LIST = [
   {
     title: 'Discord',
     href: 'https://discord.com/invite/cowprotocol?utm_source=cow.fi&utm_medium=web&utm_content=link',
-    linkEvent: 'click-discord',
     iconColor: '#FDADA3',
     textColor: '#23191A',
     iconImage: IMG_DISCORD,
@@ -97,7 +91,6 @@ export const CHANNEL_LIST = [
   {
     title: 'Forum',
     href: 'https://forum.cow.fi/?utm_source=cow.fi&utm_medium=web&utm_content=link',
-    linkEvent: 'click-forum',
     iconColor: '#1E5C06',
     textColor: '#FFF8F7',
     iconImage: IMG_FORUM,
@@ -105,7 +98,6 @@ export const CHANNEL_LIST = [
   {
     title: 'Snapshot',
     href: 'https://snapshot.org/#/cow.eth?utm_source=cow.fi&utm_medium=web&utm_content=link',
-    linkEvent: 'click-snapshot',
     iconColor: '#710408',
     textColor: '#FFF8F7',
     iconImage: IMG_SNAPSHOT,
@@ -142,7 +134,6 @@ export const PRODUCT_CONTAINERS = (
                 color={topic.linkColor}
                 href={topic.linkHref}
                 linkType={LinkType.TopicButton}
-                onClick={() => clickOnHome(topic.linkEvent)}
                 external={topic.linkExternal}
                 utmContent={topic.linkUtmContent}
               >

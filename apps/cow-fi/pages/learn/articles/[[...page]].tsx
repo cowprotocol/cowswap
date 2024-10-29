@@ -20,7 +20,6 @@ import {
 } from '@/styles/styled'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnKnowledgeBase } from 'modules/analytics'
 
 const LEARN_PATH = '/learn/'
 const ARTICLES_PATH = `${LEARN_PATH}articles/`
@@ -95,9 +94,7 @@ const ArticlesPage = ({
           <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>
             <ContainerCardSectionTop>
               <Breadcrumbs padding="0">
-                <a href="/learn" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-home')}>
-                  Knowledge Base
-                </a>
+                <a href="/learn">Knowledge Base</a>
                 <h1>All articles</h1>
               </Breadcrumbs>
               <ArticleCount>
@@ -112,12 +109,7 @@ const ArticlesPage = ({
             </ContainerCardSection>
             <Pagination>
               {Array.from({ length: totalPages }, (_, i) => (
-                <a
-                  key={i}
-                  href={`${ARTICLES_PATH}${i + 1}`}
-                  className={i + 1 === currentPage ? 'active' : ''}
-                  onClick={() => clickOnKnowledgeBase(`click-pagination-${i + 1}`)}
-                >
+                <a key={i} href={`${ARTICLES_PATH}${i + 1}`} className={i + 1 === currentPage ? 'active' : ''}>
                   {i + 1}
                 </a>
               ))}

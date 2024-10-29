@@ -31,7 +31,6 @@ import IMG_ICON_GRANTS_CARTON from '@cowprotocol/assets/images/icon-grants-carto
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
 import { CHANNEL_LIST, PRODUCT_CONTAINERS } from '@/data/home/const'
-import { clickOnHome } from 'modules/analytics'
 
 interface PageProps {
   siteConfigData: typeof CONFIG
@@ -70,11 +69,7 @@ export default function Page() {
                 the CoW DAO Knowledge Base.
               </SectionTitleDescription>
 
-              <Link
-                linkType={LinkType.SectionTitleButton}
-                href="/learn"
-                onClick={() => clickOnHome('click-cow-knowledge-base-learn-more')}
-              >
+              <Link linkType={LinkType.SectionTitleButton} href="/learn">
                 Learn more
               </Link>
             </SectionTitleWrapper>
@@ -90,11 +85,7 @@ export default function Page() {
               <SectionTitleText textAlign="center">Governance</SectionTitleText>
               <SectionTitleDescription color={Color.neutral60} fontWeight={Font.weight.regular} textAlign="center">
                 Anyone can join CoW DAO by holding{' '}
-                <Link
-                  href="https://swap.cow.fi/#/1/swap/USDC/COW"
-                  onClick={() => clickOnHome('click-cow-tokens')}
-                  external
-                >
+                <Link href="https://swap.cow.fi/#/1/swap/USDC/COW" external>
                   COW tokens
                 </Link>
                 . Tokenholders contribute to CoW DAO's mission by participating in "CoWmunity" discussions on Discord,
@@ -111,7 +102,6 @@ export default function Page() {
                   href={social.href}
                   rel="noopener noreferrer"
                   target="_blank"
-                  onClick={() => clickOnHome(social.linkEvent)}
                 >
                   <TopicImage iconColor="transparent" maxWidth={290} maxHeight={290} height={290} width={290}>
                     <LazySVG src={social.iconImage} title={social.title} />
@@ -139,7 +129,6 @@ export default function Page() {
                 linkType={LinkType.SectionTitleButton}
                 utmContent="home-page-apply-for-a-grant"
                 href="https://grants.cow.fi/"
-                onClick={() => clickOnHome('click-apply-for-a-grant')}
               >
                 Explore grants
               </Link>

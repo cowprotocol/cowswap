@@ -21,7 +21,6 @@ import {
 } from '@/styles/styled'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnCareers } from 'modules/analytics'
 
 interface PageProps {
   siteConfigData: typeof CONFIG
@@ -99,7 +98,6 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                                 utmContent={`job-${title}`}
                                 margin="auto auto 0 0"
                                 marginTablet="auto auto 0"
-                                onClick={() => clickOnCareers(`click-job-${title}`)}
                               >
                                 Apply
                               </Link>
@@ -130,7 +128,6 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                                 linkType={LinkType.TopicButton}
                                 href={`https://jobs.ashbyhq.com/cow-dao/${id}`}
                                 utmContent={`job-${title}`}
-                                onClick={() => clickOnCareers(`click-job-${title}`)}
                               >
                                 Apply
                               </Link>
@@ -156,13 +153,7 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                     Know someone who is looking not just for a job, but for a great opportunity to grow? Refer them to
                     earn up to $6,000 in USD or USDC.{' '}
                   </TopicDescription>
-                  <Link
-                    linkType={LinkType.TopicButton}
-                    bgColor="#194D05"
-                    color="#BCEC79"
-                    href="/careers/refer-to-earn"
-                    onClick={() => clickOnCareers(`click-refer-to-earn`)}
-                  >
+                  <Link linkType={LinkType.TopicButton} bgColor="#194D05" color="#BCEC79" href="/careers/refer-to-earn">
                     Refer-to-Earn details
                   </Link>
                 </TopicCardInner>
