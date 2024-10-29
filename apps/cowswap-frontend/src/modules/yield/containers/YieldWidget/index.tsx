@@ -91,6 +91,7 @@ export function YieldWidget() {
     return poolsInfo[getCurrencyAddress(outputCurrency).toLowerCase()]
   }, [outputCurrency, poolsInfo])
 
+  const isOutputLpToken = Boolean(outputCurrency && outputCurrency instanceof LpToken)
   const inputApy = inputPoolState?.info.apy
   const outputApy = outputPoolState?.info.apy
 
@@ -126,11 +127,7 @@ export function YieldWidget() {
       <TargetPoolPreviewInfo sellToken={inputCurrency}>
         <PoolApyPreview
           apy={outputApy}
-          isSuperior={Boolean(
-            outputCurrency &&
-              outputCurrency instanceof LpToken &&
-              (inputApy && outputApy ? outputApy > inputApy : true),
-          )}
+          isSuperior={Boolean(isOutputLpToken && (inputApy && outputApy ? outputApy > inputApy : true))}
         />
       </TargetPoolPreviewInfo>
     ) : null,
@@ -166,7 +163,7 @@ export function YieldWidget() {
             />
             <Warnings />
             {tradeWarnings}
-            <TradeButtons isTradeContextReady={doTrade.contextIsReady} />
+            <TradeButtons isOutputLpToken={isOutputLpToken} isTradeContextReady={doTrade.contextIsReady} />
           </>
         )
       },
