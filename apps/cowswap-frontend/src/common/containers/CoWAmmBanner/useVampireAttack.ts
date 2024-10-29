@@ -68,6 +68,7 @@ export function useVampireAttack(): VampireAttackContext | null {
 
   const averageApy = useMemo(() => {
     const keys = Object.keys(POOLS_AVERAGE_DATA_MOCK)
+    let count = 0
 
     return (
       keys.reduce((result, _key) => {
@@ -75,10 +76,11 @@ export function useVampireAttack(): VampireAttackContext | null {
 
         if (key === LpTokenProvider.COW_AMM) return result
 
+        count++
         const pool = POOLS_AVERAGE_DATA_MOCK[key]
 
         return result + (pool?.apy || 0)
-      }, 0) / keys.length
+      }, 0) / count
     )
   }, [])
 
