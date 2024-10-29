@@ -57,7 +57,7 @@ export function useVampireAttack(): VampireAttackContext {
         const aBalance = lpTokensWithBalances[a.token.address.toLowerCase()].balance
         const bBalance = lpTokensWithBalances[b.token.address.toLowerCase()].balance
 
-        return bBalance.sub(aBalance).toNumber()
+        return +bBalance.sub(aBalance).toString()
       }),
     }
   }, [lpTokensWithBalancesCount, lpTokensWithBalances, cowAmmLpTokens, poolsInfo])
