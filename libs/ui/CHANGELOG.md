@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.12.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.11.0...ui-v1.12.0) (2024-10-29)
+
+
+### Features
+
+* add vampire attack banner ([#4981](https://github.com/cowprotocol/cowswap/issues/4981)) ([5246046](https://github.com/cowprotocol/cowswap/commit/52460461d6cc80635a25aefe5b119dbd7de1fb69))
+* **halloween:** add Halloween mode ([#5036](https://github.com/cowprotocol/cowswap/issues/5036)) ([791796d](https://github.com/cowprotocol/cowswap/commit/791796d139828f3dd0657222cbf98a5ce93ff321))
+* setup vampire attack widget ([#4950](https://github.com/cowprotocol/cowswap/issues/4950)) ([99c4c42](https://github.com/cowprotocol/cowswap/commit/99c4c42aec60a734a37926935be5dca6cd4cf11c))
+
 ## [1.11.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.10.1...ui-v1.11.0) (2024-10-18)
 
 

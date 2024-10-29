@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/cowprotocol/cowswap/compare/types-v1.2.0...types-v1.3.0) (2024-10-29)
+
+
+### Features
+
+* setup vampire attack widget ([#4950](https://github.com/cowprotocol/cowswap/issues/4950)) ([99c4c42](https://github.com/cowprotocol/cowswap/commit/99c4c42aec60a734a37926935be5dca6cd4cf11c))
+
 ## [1.2.0](https://github.com/cowprotocol/cowswap/compare/types-v1.1.0...types-v1.2.0) (2024-09-17)
 
 
