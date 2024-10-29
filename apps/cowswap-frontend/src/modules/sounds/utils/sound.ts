@@ -1,23 +1,79 @@
-import { CHRISTMAS_THEME_ENABLED } from '@cowprotocol/common-const'
+import { ACTIVE_CUSTOM_THEME, CustomTheme } from '@cowprotocol/common-const'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
+import { cowSwapStore } from 'legacy/state'
+
 import { injectedWidgetParamsAtom } from 'modules/injectedWidget/state/injectedWidgetParamsAtom'
+
+import { featureFlagsAtom } from 'common/state/featureFlagsState'
 
 type SoundType = 'SEND' | 'SUCCESS' | 'ERROR'
 type Sounds = Record<SoundType, string>
 type WidgetSounds = keyof NonNullable<CowSwapWidgetAppParams['sounds']>
+type ThemedSoundOptions = {
+  winterSound?: string
+  halloweenSound?: string
+}
 
-const COW_SOUNDS: Sounds = {
-  SEND: CHRISTMAS_THEME_ENABLED ? '/audio/send-winterTheme.mp3' : '/audio/send.mp3',
+const DEFAULT_COW_SOUNDS: Sounds = {
+  SEND: '/audio/send.mp3',
   SUCCESS: '/audio/success.mp3',
   ERROR: '/audio/error.mp3',
+}
+
+const THEMED_SOUNDS: Partial<Record<SoundType, ThemedSoundOptions>> = {
+  SEND: {
+    winterSound: '/audio/send-winterTheme.mp3',
+    halloweenSound: '/audio/halloween.mp3',
+  },
+  SUCCESS: {
+    halloweenSound: '/audio/halloween.mp3',
+  },
 }
 
 const COW_SOUND_TO_WIDGET_KEY: Record<SoundType, WidgetSounds> = {
   SEND: 'postOrder',
   SUCCESS: 'orderExecuted',
   ERROR: 'orderError',
+}
+
+function isDarkMode(): boolean {
+  const state = cowSwapStore.getState()
+  const { userDarkMode, matchesDarkMode } = state.user
+  return userDarkMode === null ? matchesDarkMode : userDarkMode
+}
+
+function getThemeBasedSound(type: SoundType): string {
+  const featureFlags = jotaiStore.get(featureFlagsAtom) as Record<string, boolean>
+  const defaultSound = DEFAULT_COW_SOUNDS[type]
+  const themedOptions = THEMED_SOUNDS[type]
+  const isInjectedWidgetMode = isInjectedWidget()
+
+  // When in widget mode, always return default sounds
+  if (isInjectedWidgetMode) {
+    return DEFAULT_COW_SOUNDS[type]
+  }
+
+  if (!themedOptions) {
+    return defaultSound
+  }
+
+  if (ACTIVE_CUSTOM_THEME === CustomTheme.CHRISTMAS && featureFlags.isChristmasEnabled && themedOptions.winterSound) {
+    return themedOptions.winterSound
+  }
+
+  if (
+    ACTIVE_CUSTOM_THEME === CustomTheme.HALLOWEEN &&
+    featureFlags.isHalloweenEnabled &&
+    themedOptions.halloweenSound &&
+    isDarkMode()
+  ) {
+    return themedOptions.halloweenSound
+  }
+
+  return defaultSound
 }
 
 const EMPTY_SOUND = new Audio('')
@@ -37,7 +93,8 @@ function getAudio(type: SoundType): HTMLAudioElement {
     return EMPTY_SOUND
   }
 
-  const soundPath = widgetSound || COW_SOUNDS[type]
+  // Widget sounds take precedence over themed sounds
+  const soundPath = widgetSound || getThemeBasedSound(type)
   let sound = SOUND_CACHE[soundPath]
 
   if (!sound) {
