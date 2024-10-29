@@ -1,10 +1,13 @@
 import { ReactNode } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
+import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink, InfoTooltip, TokenSymbol, UI } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
+
+import { LP_PAGE_LINKS } from '../lpPageLinks'
 
 const Wrapper = styled.div`
   display: flex;
@@ -38,11 +41,14 @@ const StyledExternalLink = styled(ExternalLink)`
 `
 
 interface TargetPoolPreviewInfoProps {
+  chainId: SupportedChainId
   children: ReactNode
-  sellToken: TokenWithLogo | Currency
+  sellToken: LpToken | TokenWithLogo | Currency
 }
 
-export function TargetPoolPreviewInfo({ sellToken, children }: TargetPoolPreviewInfoProps) {
+export function TargetPoolPreviewInfo({ chainId, sellToken, children }: TargetPoolPreviewInfoProps) {
+  if (!(sellToken instanceof LpToken) || !sellToken.lpTokenProvider) return null
+
   return (
     <Wrapper>
       <LeftPart>
@@ -56,7 +62,9 @@ export function TargetPoolPreviewInfo({ sellToken, children }: TargetPoolPreview
           </InfoTooltip>
         </InfoButton>
       </LeftPart>
-      <StyledExternalLink href="TODO">Analytics ↗</StyledExternalLink>
+      <StyledExternalLink href={LP_PAGE_LINKS[sellToken.lpTokenProvider](chainId, sellToken.address)}>
+        Analytics ↗
+      </StyledExternalLink>
     </Wrapper>
   )
 }

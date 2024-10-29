@@ -2,6 +2,7 @@ import { ReactNode, useCallback, useMemo } from 'react'
 
 import { LpToken } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
 
@@ -55,6 +56,7 @@ const YIELD_UNLOCK_SCREEN = {
 }
 
 export function YieldWidget() {
+  const { chainId } = useWalletInfo()
   const { showRecipient } = useYieldSettings()
   const deadlineState = useYieldDeadlineState()
   const recipientToggleState = useYieldRecipientToggleState()
@@ -124,7 +126,7 @@ export function YieldWidget() {
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo,
     topContent: inputCurrency ? (
-      <TargetPoolPreviewInfo sellToken={inputCurrency}>
+      <TargetPoolPreviewInfo chainId={chainId} sellToken={inputCurrency}>
         <PoolApyPreview
           apy={outputApy}
           isSuperior={Boolean(isOutputLpToken && (inputApy && outputApy ? outputApy > inputApy : true))}
