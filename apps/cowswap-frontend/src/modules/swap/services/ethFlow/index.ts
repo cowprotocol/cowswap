@@ -12,33 +12,29 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { tradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import { TradeFlowContext } from 'modules/tradeFlow'
 import { isQuoteExpired } from 'modules/tradeQuote'
 
 import { calculateUniqueOrderId } from './steps/calculateUniqueOrderId'
 
 export async function ethFlow(
+  tradeContext: TradeFlowContext,
   ethFlowContext: EthFlowContext,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
-): Promise<void | false> {
+): Promise<void | boolean> {
   const {
     tradeConfirmActions,
     swapFlowAnalyticsContext,
     context,
-    contract,
     callbacks,
-    appDataInfo,
-    dispatch,
     orderParams: orderParamsOriginal,
-    checkEthFlowOrderExists,
-    addInFlightOrderId,
-    quote,
     typedHooks,
-  } = ethFlowContext
-  const {
-    chainId,
-    trade: { inputAmount, outputAmount, fee },
-  } = context
+  } = tradeContext
+  const { contract, appData, uploadAppData, addTransaction, checkEthFlowOrderExists, addInFlightOrderId, quote } =
+    ethFlowContext
+
+  const { chainId, inputAmount, outputAmount } = context
   const tradeAmounts = { inputAmount, outputAmount }
   const { account, recipientAddressOrName, kind } = orderParamsOriginal
 
@@ -61,7 +57,7 @@ export async function ethFlow(
     // Do not proceed if fee is expired
     if (
       isQuoteExpired({
-        expirationDate: fee.expirationDate,
+        expirationDate: quote?.fee?.expirationDate,
         deadlineParams: {
           validFor: quote?.validFor,
           quoteValidTo: quote?.quoteValidTo,
@@ -69,7 +65,7 @@ export async function ethFlow(
         },
       })
     ) {
-      reportPlaceOrderWithExpiredQuote({ ...orderParamsOriginal, fee })
+      reportPlaceOrderWithExpiredQuote({ ...orderParamsOriginal, fee: quote?.fee })
       throw new Error('Quote expired. Please refresh.')
     }
 
@@ -105,17 +101,19 @@ export async function ethFlow(
         order,
         isSafeWallet: orderParams.isSafeWallet,
       },
-      dispatch,
+      callbacks.dispatch,
     )
     // TODO: maybe move this into addPendingOrderStep?
-    ethFlowContext.addTransaction({ hash: txReceipt.hash, ethFlow: { orderId: order.id, subType: 'creation' } })
+    addTransaction({ hash: txReceipt.hash, ethFlow: { orderId: order.id, subType: 'creation' } })
 
     logTradeFlow('ETH FLOW', 'STEP 6: add app data to upload queue')
-    callbacks.uploadAppData({ chainId: context.chainId, orderId, appData: appDataInfo })
+    uploadAppData({ chainId: context.chainId, orderId, appData })
 
     logTradeFlow('ETH FLOW', 'STEP 7: show UI of the successfully sent transaction', orderId)
     tradeConfirmActions.onSuccess(orderId)
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
+
+    return true
   } catch (error: any) {
     logTradeFlow('ETH FLOW', 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)

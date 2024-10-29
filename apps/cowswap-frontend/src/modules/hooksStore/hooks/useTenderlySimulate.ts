@@ -8,7 +8,7 @@ import { CowHook } from '../types/hooks'
 import { SimulationError, TenderlySimulatePayload, TenderlySimulation } from '../types/TenderlySimulation'
 
 export function useTenderlySimulate(): (params: CowHook) => Promise<TenderlySimulation | SimulationError> {
-  const { account, chainId } = useWalletInfo()
+  const { chainId } = useWalletInfo()
   const settlementContract = COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[chainId]
 
   return useCallback(
@@ -20,7 +20,7 @@ export function useTenderlySimulate(): (params: CowHook) => Promise<TenderlySimu
 
       return response as TenderlySimulation | SimulationError
     },
-    [account, chainId],
+    [chainId, settlementContract],
   )
 }
 

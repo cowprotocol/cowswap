@@ -1,8 +1,10 @@
 import { lazy, PropsWithChildren, Suspense, useMemo } from 'react'
 
+import { ACTIVE_CUSTOM_THEME, CustomTheme } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
+import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar, CowSwapTheme } from '@cowprotocol/ui'
 
 import { NavLink } from 'react-router-dom'
 import { ThemeProvider } from 'theme'
@@ -49,6 +51,8 @@ export function App() {
   useAnalyticsReporterCowSwap()
   useInitializeUtm()
 
+  const featureFlags = useFeatureFlags()
+
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
 
@@ -83,6 +87,12 @@ export function App() {
   const { hideNetworkSelector } = useInjectedWidgetParams()
   const { pendingActivity } = useCategorizeRecentActivity()
   const isMobile = useMediaQuery(Media.upToMedium(false))
+  const customTheme = useMemo(() => {
+    if (ACTIVE_CUSTOM_THEME === CustomTheme.HALLOWEEN && darkMode && featureFlags.isHalloweenEnabled) {
+      return 'darkHalloween' as CowSwapTheme
+    }
+    return undefined
+  }, [darkMode, featureFlags.isHalloweenEnabled])
 
   const persistentAdditionalContent = (
     <HeaderControls>
@@ -111,6 +121,7 @@ export function App() {
             <MenuBar
               navItems={navItems}
               productVariant={PRODUCT_VARIANT}
+              customTheme={customTheme}
               settingsNavItems={settingsNavItems}
               showGlobalSettings
               bgColorDark={'rgb(222 227 230 / 7%)'}
@@ -127,7 +138,12 @@ export function App() {
             />
           )}
 
-          <styledEl.BodyWrapper>
+          {/* CoW AMM banner */}
+          {/*{!isInjectedWidgetMode && account && !isChainIdUnsupported && (*/}
+          {/*  <CoWAmmBanner location={BannerLocation.Global} />*/}
+          {/*)}*/}
+
+          <styledEl.BodyWrapper customTheme={customTheme}>
             <TopLevelModals />
 
             <RoutesApp />
