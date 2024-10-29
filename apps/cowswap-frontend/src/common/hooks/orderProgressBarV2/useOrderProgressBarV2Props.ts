@@ -61,7 +61,7 @@ export function useOrderProgressBarV2Props(chainId: SupportedChainId, order: Ord
   const showCancellationModal = useMemo(
     // Sort of duplicate cancellation logic since ethflow on creating state don't have progress bar props
     () => progressBarV2Props?.showCancellationModal || (order && getCancellation ? getCancellation(order) : null),
-    [progressBarV2Props?.showCancellationModal, order, getCancellation]
+    [progressBarV2Props?.showCancellationModal, order, getCancellation],
   )
   const surplusData = useGetSurplusData(order)
   const receiverEnsName = useENS(order?.receiver).name || undefined
@@ -87,7 +87,7 @@ export function useOrderProgressBarV2Props(chainId: SupportedChainId, order: Ord
 }
 
 function useOrderBaseProgressBarV2Props(
-  params: UseOrderProgressBarPropsParams
+  params: UseOrderProgressBarPropsParams,
 ): UseOrderProgressBarV2Result | undefined {
   const { activityDerivedState, chainId } = params
 
@@ -129,7 +129,7 @@ function useOrderBaseProgressBarV2Props(
   const solversInfo = useSolversInfo(chainId)
   const totalSolvers = Object.keys(solversInfo).length
 
-  const doNotQuery = getDoNotQueryStatusEndpoint(order, apiSolverCompetition, disableProgressBar)
+  const doNotQuery = getDoNotQueryStatusEndpoint(order, apiSolverCompetition, !!disableProgressBar)
 
   // Local updaters of the respective atom
   useBackendApiStatusUpdater(chainId, orderId, doNotQuery)
@@ -145,7 +145,7 @@ function useOrderBaseProgressBarV2Props(
     backendApiStatus,
     previousBackendApiStatus,
     lastTimeChangedSteps,
-    previousStepName
+    previousStepName,
   )
   useCancellingOrderUpdater(orderId, isCancelling)
   useCountdownStartUpdater(orderId, countdown, backendApiStatus)
@@ -156,7 +156,7 @@ function useOrderBaseProgressBarV2Props(
         ?.map((entry) => mergeSolverData(entry, solversInfo))
         // Reverse it since backend returns the solutions ranked ascending. Winner is the last one.
         .reverse(),
-    [apiSolverCompetition, solversInfo]
+    [apiSolverCompetition, solversInfo],
   )
 
   return useMemo(() => {
@@ -184,7 +184,7 @@ function useOrderBaseProgressBarV2Props(
 function getDoNotQueryStatusEndpoint(
   order: Order | undefined,
   apiSolverCompetition: CompetitionOrderStatus['value'] | undefined,
-  disableProgressBar: boolean
+  disableProgressBar: boolean,
 ) {
   return (
     !!(
@@ -224,7 +224,7 @@ function useSetExecutingOrderProgressBarStepNameCallback() {
 function useCountdownStartUpdater(
   orderId: string,
   countdown: OrderProgressBarState['countdown'],
-  backendApiStatus: OrderProgressBarState['backendApiStatus']
+  backendApiStatus: OrderProgressBarState['backendApiStatus'],
 ) {
   const setCountdown = useSetExecutingOrderCountdownCallback()
 
@@ -259,7 +259,7 @@ function useProgressBarStepNameUpdater(
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
   previousBackendApiStatus: OrderProgressBarState['previousBackendApiStatus'],
   lastTimeChangedSteps: OrderProgressBarState['lastTimeChangedSteps'],
-  previousStepName: OrderProgressBarState['previousStepName']
+  previousStepName: OrderProgressBarState['previousStepName'],
 ) {
   const setProgressBarStepName = useSetExecutingOrderProgressBarStepNameCallback()
 
@@ -273,7 +273,7 @@ function useProgressBarStepNameUpdater(
     countdown,
     backendApiStatus,
     previousBackendApiStatus,
-    previousStepName
+    previousStepName,
   )
 
   // Update state with new step name
@@ -321,7 +321,7 @@ function getProgressBarStepName(
   countdown: OrderProgressBarState['countdown'],
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
   previousBackendApiStatus: OrderProgressBarState['previousBackendApiStatus'],
-  previousStepName: OrderProgressBarState['previousStepName']
+  previousStepName: OrderProgressBarState['previousStepName'],
 ): OrderProgressBarStepName {
   if (isExpired) {
     return 'expired'
@@ -391,7 +391,7 @@ function usePendingOrderStatus(chainId: SupportedChainId, orderId: string, doNot
   return useSWR(
     chainId && orderId && !doNotQuery ? ['getOrderCompetitionStatus', chainId, orderId] : null,
     async ([, _chainId, _orderId]) => getOrderCompetitionStatus(_chainId, _orderId),
-    doNotQuery ? SWR_NO_REFRESH_OPTIONS : POOLING_SWR_OPTIONS
+    doNotQuery ? SWR_NO_REFRESH_OPTIONS : POOLING_SWR_OPTIONS,
   ).data
 }
 
@@ -404,7 +404,7 @@ function usePendingOrderStatus(chainId: SupportedChainId, orderId: string, doNot
  */
 function mergeSolverData(
   solverCompetition: ApiSolverCompetition,
-  solversInfo: Record<string, SolverInfo>
+  solversInfo: Record<string, SolverInfo>,
 ): SolverCompetition {
   // Backend has the prefix `-solve` on some solvers. We should discard that for now.
   // In the future this prefix will be removed.
