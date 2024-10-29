@@ -7,7 +7,6 @@ import { usePrevious } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { MultiCallOptions, useMultipleContractSingleData } from '@cowprotocol/multicall'
-import { Command } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { SWRConfiguration } from 'swr'
@@ -25,7 +24,7 @@ export interface PersistBalancesAndAllowancesParams {
   allowancesSwrConfig: SWRConfiguration
   setLoadingState?: boolean
   multicallOptions?: MultiCallOptions
-  onBalancesUpdate?: Command
+  onBalancesLoaded?(loaded: boolean): void
 }
 
 export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowancesParams) {
@@ -37,7 +36,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     balancesSwrConfig,
     allowancesSwrConfig,
     multicallOptions = MULTICALL_OPTIONS,
-    onBalancesUpdate,
+    onBalancesLoaded,
   } = params
 
   const prevAccount = usePrevious(account)
@@ -96,7 +95,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
       return acc
     }, {})
 
-    onBalancesUpdate?.()
+    onBalancesLoaded?.(true)
 
     setBalances((state) => {
       return {
@@ -105,7 +104,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
         ...(setLoadingState ? { isLoading: false } : {}),
       }
     })
-  }, [balances, tokenAddresses, setBalances, chainId, setLoadingState, onBalancesUpdate])
+  }, [balances, tokenAddresses, setBalances, chainId, setLoadingState, onBalancesLoaded])
 
   // Set allowances to the store
   useEffect(() => {
@@ -131,6 +130,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
       resetBalances()
       resetAllowances()
       setBalancesCache(mapSupportedNetworks({}))
+      onBalancesLoaded?.(false)
     }
-  }, [account, prevAccount, resetAllowances, resetBalances, setBalancesCache])
+  }, [account, prevAccount, resetAllowances, resetBalances, setBalancesCache, onBalancesLoaded])
 }
