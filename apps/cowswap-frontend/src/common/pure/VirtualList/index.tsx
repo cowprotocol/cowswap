@@ -21,9 +21,17 @@ interface VirtualListProps<T> {
   getItemView(items: T[], item: VirtualItem): ReactNode
   loading?: boolean
   estimateSize?: () => number
+  children?: ReactNode
 }
 
-export function VirtualList<T>({ id, items, loading, getItemView, estimateSize = () => 56 }: VirtualListProps<T>) {
+export function VirtualList<T>({
+  id,
+  items,
+  loading,
+  getItemView,
+  children,
+  estimateSize = () => 56,
+}: VirtualListProps<T>) {
   const parentRef = useRef<HTMLDivElement>(null)
   const wrapperRef = useRef<HTMLDivElement>(null)
   const scrollTimeoutRef = useRef<NodeJS.Timeout>()
@@ -52,6 +60,7 @@ export function VirtualList<T>({ id, items, loading, getItemView, estimateSize =
     <ListWrapper id={id} ref={parentRef} onScroll={onScroll}>
       <ListInner ref={wrapperRef} style={{ height: virtualizer.getTotalSize() }}>
         <ListScroller style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}>
+          {children}
           {virtualItems.map((item) => {
             if (loading) {
               return <LoadingRows key={item.key}>{threeDivs()}</LoadingRows>

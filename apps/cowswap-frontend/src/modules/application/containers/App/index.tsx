@@ -23,6 +23,7 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { parameterizeTradeRoute, useTradeRouteContext } from 'modules/trade'
 import { useInitializeUtm } from 'modules/utm'
 
+import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useMenuItems } from 'common/hooks/useMenuItems'
@@ -138,10 +139,7 @@ export function App() {
             />
           )}
 
-          {/* CoW AMM banner */}
-          {/*{!isInjectedWidgetMode && account && !isChainIdUnsupported && (*/}
-          {/*  <CoWAmmBanner location={BannerLocation.Global} />*/}
-          {/*)}*/}
+          <CoWAmmBanner />
 
           <styledEl.BodyWrapper customTheme={customTheme}>
             <TopLevelModals />
