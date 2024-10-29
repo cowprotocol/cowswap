@@ -51,6 +51,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   ): void
   topLabel?: string
   topContent?: ReactNode
+  customSelectTokenButton?: ReactNode
 }
 
 export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
@@ -80,6 +81,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     },
     topLabel,
     topContent,
+    customSelectTokenButton,
   } = props
 
   const { field, currency, balance, fiatAmount, amount, isIndependent, receiveAmountInfo } = currencyInfo
@@ -168,6 +170,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
               loading={areCurrenciesLoading || disabled}
               readonlyMode={tokenSelectorDisabled}
               displayTokenName={displayTokenName}
+              customSelectTokenButton={customSelectTokenButton}
             />
           </div>
           <div>

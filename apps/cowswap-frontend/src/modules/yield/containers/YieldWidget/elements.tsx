@@ -1,15 +1,19 @@
 import { BannerOrientation, DismissableInlineBanner, ExternalLink, ProductVariant, UI } from '@cowprotocol/ui'
 
-import { CoWAmmLogo } from './styled'
+import { ChevronDown } from 'react-feather'
+
+import { CoWAmmLogo, SelectPoolBtn } from './styled'
+
+export const CoWAmmGreenLogo = (
+  <CoWAmmLogo overrideColor={`var(${UI.COLOR_COWAMM_DARK_GREEN})`} variant={ProductVariant.CowAmm} logoIconOnly />
+)
 
 export const CoWAmmInlineBanner = (
   <DismissableInlineBanner
     bannerId="yieldTopBanner"
     orientation={BannerOrientation.Horizontal}
     bannerType="savings"
-    customIcon={
-      <CoWAmmLogo overrideColor={`var(${UI.COLOR_COWAMM_DARK_GREEN})`} variant={ProductVariant.CowAmm} logoIconOnly />
-    }
+    customIcon={CoWAmmGreenLogo}
   >
     <strong>Boost Your Yield with One-Click Conversion</strong>
     <span>
@@ -18,4 +22,10 @@ export const CoWAmmInlineBanner = (
       <ExternalLink href="https://cow.fi/cow-amm">Learn more</ExternalLink>
     </span>
   </DismissableInlineBanner>
+)
+
+export const SelectAPoolButton = (
+  <SelectPoolBtn>
+    {CoWAmmGreenLogo} <span>Select a pool</span> <ChevronDown size="18" />
+  </SelectPoolBtn>
 )

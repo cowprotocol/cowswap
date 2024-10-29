@@ -21,7 +21,7 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
-import { CoWAmmInlineBanner } from './CoWAmmInlineBanner'
+import { CoWAmmInlineBanner, SelectAPoolButton } from './elements'
 
 import { usePoolsInfo } from '../../hooks/usePoolsInfo'
 import { useYieldDerivedState } from '../../hooks/useYieldDerivedState'
@@ -183,6 +183,7 @@ export function YieldWidget() {
     isTradePriceUpdating: isRateLoading,
     priceImpact,
     disableQuotePolling: isConfirmOpen,
+    customSelectTokenButton: SelectAPoolButton,
   }
 
   return (

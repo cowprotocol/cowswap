@@ -30,6 +30,7 @@ interface TradeWidgetParams {
   enableSmartSlippage?: boolean
   isMarketOrderWidget?: boolean
   displayTokenName?: boolean
+  customSelectTokenButton?: ReactNode
 }
 
 export interface TradeWidgetSlots {

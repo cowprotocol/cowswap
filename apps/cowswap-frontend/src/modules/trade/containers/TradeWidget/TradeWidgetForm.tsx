@@ -188,6 +188,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 topLabel={isWrapOrUnwrap ? undefined : inputCurrencyInfo.label}
                 topContent={inputCurrencyInfo.topContent}
                 openTokenSelectWidget={openSellTokenSelect}
+                customSelectTokenButton={params.customSelectTokenButton}
                 {...currencyInputCommonProps}
               />
             </div>
@@ -215,6 +216,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 topLabel={isWrapOrUnwrap ? undefined : outputCurrencyInfo.label}
                 topContent={outputCurrencyInfo.topContent}
                 openTokenSelectWidget={openBuyTokenSelect}
+                customSelectTokenButton={params.customSelectTokenButton}
                 {...currencyInputCommonProps}
               />
             </div>

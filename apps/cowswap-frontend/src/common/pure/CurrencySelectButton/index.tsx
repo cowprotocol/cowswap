@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenName } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
@@ -14,11 +16,14 @@ export interface CurrencySelectButtonProps {
   readonlyMode?: boolean
   displayTokenName?: boolean
   onClick?(): void
+  customSelectTokenButton?: ReactNode
 }
 
 export function CurrencySelectButton(props: CurrencySelectButtonProps) {
-  const { currency, onClick, loading, readonlyMode = false, displayTokenName = false } = props
+  const { currency, onClick, loading, readonlyMode = false, displayTokenName = false, customSelectTokenButton } = props
   const $stubbed = !currency || false
+
+  if (!currency && customSelectTokenButton) return <div onClick={onClick}>{customSelectTokenButton}</div>
 
   return (
     <styledEl.CurrencySelectWrapper
