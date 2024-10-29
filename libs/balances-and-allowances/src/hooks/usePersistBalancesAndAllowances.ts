@@ -5,14 +5,14 @@ import { useEffect, useMemo } from 'react'
 import { ERC_20_INTERFACE } from '@cowprotocol/abis'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { MultiCallOptions, useMultipleContractSingleData } from '@cowprotocol/multicall'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { SWRConfiguration } from 'swr'
 
 import { AllowancesState, allowancesFullState } from '../state/allowancesAtom'
-import { balancesAtom, BalancesState } from '../state/balancesAtom'
+import { balancesAtom, balancesCacheAtom, BalancesState } from '../state/balancesAtom'
 
 const MULTICALL_OPTIONS = {}
 
@@ -40,6 +40,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
   const prevAccount = usePrevious(account)
   const setBalances = useSetAtom(balancesAtom)
   const setAllowances = useSetAtom(allowancesFullState)
+  const setBalancesCache = useSetAtom(balancesCacheAtom)
 
   const resetBalances = useResetAtom(balancesAtom)
   const resetAllowances = useResetAtom(allowancesFullState)
@@ -124,6 +125,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     if (prevAccount && prevAccount !== account) {
       resetBalances()
       resetAllowances()
+      setBalancesCache(mapSupportedNetworks({}))
     }
-  }, [account, prevAccount, resetAllowances, resetBalances])
+  }, [account, prevAccount, resetAllowances, resetBalances, setBalancesCache])
 }

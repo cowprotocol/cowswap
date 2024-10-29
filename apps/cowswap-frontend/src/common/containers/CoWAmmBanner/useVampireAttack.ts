@@ -14,6 +14,7 @@ export function useVampireAttack(): VampireAttackContext {
   const { tokens: lpTokensWithBalances, count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
   const cowAmmLpTokens = useAllLpTokens(LP_TOKEN_LIST_COW_AMM_ONLY)
   const poolsInfo = usePoolsInfo()
+
   const alternativesResult = useMemo(() => {
     if (lpTokensWithBalancesCount === 0) return null
 
