@@ -1,5 +1,5 @@
 import { atom, useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { usePersistBalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
@@ -30,7 +30,6 @@ export function LpBalancesAndAllowancesUpdater({ account, chainId, enablePolling
   const setAreLpBalancesLoaded = useSetAtom(areLpBalancesLoadedAtom)
 
   const lpTokenAddresses = useMemo(() => allLpTokens.map((token) => token.address), [allLpTokens])
-  const onBalancesUpdate = useCallback(() => setAreLpBalancesLoaded(true), [setAreLpBalancesLoaded])
 
   usePersistBalancesAndAllowances({
     account: isUpdaterPaused ? undefined : account,
@@ -40,7 +39,7 @@ export function LpBalancesAndAllowancesUpdater({ account, chainId, enablePolling
     balancesSwrConfig: enablePolling ? LP_BALANCES_SWR_CONFIG : SWR_NO_REFRESH_OPTIONS,
     allowancesSwrConfig: enablePolling ? LP_ALLOWANCES_SWR_CONFIG : SWR_NO_REFRESH_OPTIONS,
     multicallOptions: LP_MULTICALL_OPTIONS,
-    onBalancesUpdate,
+    onBalancesLoaded: setAreLpBalancesLoaded,
   })
 
   useEffect(() => {
