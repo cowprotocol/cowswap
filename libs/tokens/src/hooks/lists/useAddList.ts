@@ -43,6 +43,6 @@ export function useAddList(onAddList: (source: string) => void) {
       addList(state)
       onAddList(state.source)
     },
-    [addList, listsStatesByChain, chainId]
+    [addList, listsStatesByChain, chainId, onAddList],
   )
 }

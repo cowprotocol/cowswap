@@ -16,20 +16,20 @@ import { VirtualList } from 'common/pure/VirtualList'
 
 import {
   CreatePoolLink,
+  EmptyList,
   ListHeader,
   ListItem,
+  LpTokenBalance,
   LpTokenInfo,
+  LpTokenTooltip,
   LpTokenWrapper,
   LpTokenYieldPercentage,
-  LpTokenBalance,
-  LpTokenTooltip,
+  MobileCard,
+  MobileCardLabel,
+  MobileCardRow,
+  MobileCardValue,
   NoPoolWrapper,
   Wrapper,
-  EmptyList,
-  MobileCard,
-  MobileCardRow,
-  MobileCardLabel,
-  MobileCardValue,
 } from './styled'
 
 const LoadingElement = (
@@ -56,7 +56,6 @@ interface LpTokenListsProps {
 }
 
 export function LpTokenLists({
-  account,
   onSelectToken,
   openPoolPage,
   lpTokens,
@@ -127,7 +126,7 @@ export function LpTokenLists({
         </ListItem>
       )
     },
-    [balances, onSelectToken, poolsInfo, openPoolPage, account, isMobile],
+    [balances, onSelectToken, poolsInfo, openPoolPage, isMobile],
   )
 
   return (

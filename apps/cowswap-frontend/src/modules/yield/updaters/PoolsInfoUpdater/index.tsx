@@ -46,7 +46,9 @@ export function PoolsInfoUpdater() {
     if (tokensToUpdate.length > 0 || isYield) {
       fetchPoolsInfo(isYield ? null : tokensToUpdate).then(upsertPoolsInfo)
     }
-  }, [isYield, tokensKey])
+    // To avoid excessive recalculations we use tokensKey instead of tokensToUpdate in deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isYield, tokensKey, upsertPoolsInfo])
 
   return null
 }

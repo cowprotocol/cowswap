@@ -114,7 +114,7 @@ export function CoWAmmBannerContent({
       <span>
         <TextFit
           mode="multi"
-          minFontSize={isTokenSelectorView ? 15 : 10}
+          minFontSize={isTokenSelectorView ? 10 : 15}
           maxFontSize={isTokenSelectorView ? (isMobile ? 15 : 21) : isMobile ? 21 : 28}
         >
           {firstItemWithBetterCowAmm ? (
