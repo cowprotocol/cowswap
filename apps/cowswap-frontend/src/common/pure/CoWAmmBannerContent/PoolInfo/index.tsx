@@ -43,7 +43,7 @@ export function PoolInfo({ token, tokensByAddress, isTokenSelectorView, isDarkMo
         isTokenSelectorView
           ? isDarkMode
             ? `var(${UI.COLOR_COWAMM_LIGHT_BLUE})`
-            : `var(${UI.COLOR_COWAMM_DARK_GREEN})`
+            : `var(${UI.COLOR_COWAMM_LIGHT_GREEN})`
           : undefined
       }
     >
