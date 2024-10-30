@@ -54,6 +54,12 @@ export const cowSwapFeeAtom = atom((get) => {
 })
 
 function shouldApplyFee(account: string | undefined, percentage: number | boolean | undefined): boolean {
+  // Early exit for 100%, meaning should be enabled for everyone
+  if (percentage === 100) {
+    return true
+  }
+
+  // Falsy conditions
   if (typeof percentage !== 'number' || !account || percentage < 0 || percentage > 100) {
     return false
   }
