@@ -20,21 +20,18 @@ export function CowSwapWidget(props: CowSwapWidgetProps) {
   const widgetHandlerRef = useRef<CowSwapWidgetHandler | null>(null)
 
   // Error handling
-  const tryOrHandleError = useCallback(
-    (action: string, actionThatMightFail: Command) => {
-      try {
-        console.log(`[WIDGET] ${action}`)
-        actionThatMightFail()
-      } catch (error) {
-        const errorMessage = `Error ${action.toLowerCase()}`
-        console.error(`[WIDGET] ${errorMessage}`, error)
-        setError({ message: errorMessage, error })
-      }
-    },
-    [setError],
-  )
+  const tryOrHandleError = useCallback((action: string, actionThatMightFail: Command) => {
+    try {
+      console.log(`[WIDGET] ${action}`)
+      actionThatMightFail()
+    } catch (error) {
+      const errorMessage = `Error ${action.toLowerCase()}`
+      console.error(`[WIDGET] ${errorMessage}`, error)
+      setError({ message: errorMessage, error })
+    }
+  }, [])
 
-  // Cleanup widget
+  // Cleanup widget on mount
   useEffect(() => {
     return () => {
       // Cleanup references
@@ -49,6 +46,7 @@ export function CowSwapWidget(props: CowSwapWidgetProps) {
         widgetHandlerRef.current = null
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Create/Update the widget if the parameters change
@@ -69,7 +67,9 @@ export function CowSwapWidget(props: CowSwapWidgetProps) {
     } else {
       tryOrHandleError('Updating the widget', () => handler.updateParams(params))
     }
-  }, [params])
+    // Trigger only on params changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params, tryOrHandleError])
 
   // Update widget provider (if it changes)
   useEffect(() => {
@@ -98,7 +98,9 @@ export function CowSwapWidget(props: CowSwapWidgetProps) {
         widgetHandlerRef.current = createCowSwapWidget(container, { params, provider: providerRef.current, listeners })
       })
     }
-  }, [provider])
+    // Trigger only on provider changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [provider, tryOrHandleError])
 
   // Update widget listeners (if they change)
   useEffect(() => {
@@ -106,7 +108,7 @@ export function CowSwapWidget(props: CowSwapWidgetProps) {
 
     const handler = widgetHandlerRef.current
     tryOrHandleError('Updating the listeners', () => handler.updateListeners(listeners))
-  }, [listeners])
+  }, [listeners, tryOrHandleError])
 
   // Handle errors
   if (error) {
