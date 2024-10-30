@@ -167,7 +167,7 @@ export const GNO_ARBITRUM_ONE = new TokenWithLogo(
 )
 
 const USDE_ARBITRUM_ONE = new TokenWithLogo(
-  '', // TODO: add logo, and add it to default token list
+  cowprotocolTokenLogoUrl('0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34', SupportedChainId.ARBITRUM_ONE),
   SupportedChainId.ARBITRUM_ONE,
   '0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34',
   18,
@@ -176,7 +176,7 @@ const USDE_ARBITRUM_ONE = new TokenWithLogo(
 )
 
 const USDM_ARBITRUM_ONE = new TokenWithLogo(
-  '', // TODO: add logo, and add it to default token list
+  cowprotocolTokenLogoUrl('0x59d9356e565ab3a36dd77763fc0d87feaf85508c', SupportedChainId.ARBITRUM_ONE),
   SupportedChainId.ARBITRUM_ONE,
   '0x59D9356E565Ab3A36dD77763Fc0d87fEaf85508C',
   18,
@@ -185,7 +185,7 @@ const USDM_ARBITRUM_ONE = new TokenWithLogo(
 )
 
 const FRAX_ARBITRUM_ONE = new TokenWithLogo(
-  '', // TODO: add logo, and add it to default token list
+  cowprotocolTokenLogoUrl('0x17fc002b466eec40dae837fc4be5c67993ddbd6f', SupportedChainId.ARBITRUM_ONE),
   SupportedChainId.ARBITRUM_ONE,
   '0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F',
   18,
@@ -194,7 +194,7 @@ const FRAX_ARBITRUM_ONE = new TokenWithLogo(
 )
 
 const MIM_ARBITRUM_ONE = new TokenWithLogo(
-  '', // TODO: add logo, and add it to default token list
+  cowprotocolTokenLogoUrl('0x99d8a9c45b2eca8864373a26d1459e3dff1e17f3', SupportedChainId.ARBITRUM_ONE),
   SupportedChainId.ARBITRUM_ONE,
   '0xFEa7a6a0B346362BF88A9e4A88416B77a57D6c2A',
   18,
