@@ -1,4 +1,4 @@
-import { MouseEventHandler, useCallback } from 'react'
+import { MouseEventHandler, ReactNode, useCallback } from 'react'
 
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
@@ -38,7 +38,7 @@ const LoadingElement = (
   </LoadingRows>
 )
 
-const MobileCardRowItem: React.FC<{ label: string; value: React.ReactNode }> = ({ label, value }) => (
+const MobileCardRowItem: React.FC<{ label: string; value: ReactNode }> = ({ label, value }) => (
   <MobileCardRow>
     <MobileCardLabel>{label}:</MobileCardLabel>
     <MobileCardValue>{value}</MobileCardValue>
@@ -56,6 +56,7 @@ interface LpTokenListsProps {
 }
 
 export function LpTokenLists({
+  account,
   onSelectToken,
   openPoolPage,
   lpTokens,
@@ -94,11 +95,11 @@ export function LpTokenLists({
         </>
       )
 
-      const BalanceDisplay = balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement
+      const BalanceDisplay = balanceAmount ? <TokenAmount amount={balanceAmount} /> : account ? LoadingElement : null
 
       if (isMobile) {
         return (
-          <MobileCard key={token.address}>
+          <MobileCard key={token.address} data-address={token.address} onClick={() => onSelectToken(token)}>
             <MobileCardRow>{commonContent}</MobileCardRow>
             <MobileCardRowItem label="Balance" value={BalanceDisplay} />
             <MobileCardRowItem label="APR" value={info?.apy ? `${info.apy}%` : ''} />
@@ -116,7 +117,7 @@ export function LpTokenLists({
       }
 
       return (
-        <ListItem data-address={token.address} onClick={() => onSelectToken(token)}>
+        <ListItem key={token.address} data-address={token.address} onClick={() => onSelectToken(token)}>
           <LpTokenWrapper>{commonContent}</LpTokenWrapper>
           <LpTokenBalance>{BalanceDisplay}</LpTokenBalance>
           <LpTokenYieldPercentage>{info?.apy ? `${info.apy}%` : ''}</LpTokenYieldPercentage>

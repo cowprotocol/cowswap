@@ -57,7 +57,7 @@ export function TargetPoolPreviewInfo({ chainId, sellToken, children }: TargetPo
           Details{' '}
           <InfoTooltip>
             When you swap (sell) <TokenSymbol token={sellToken} />, solvers handle the transaction by purchasing the
-            required tokens, depositing them into the pool, and issuing LP tokens to you in return—all in a gas-less
+            required tokens, depositing them into the pool, and issuing LP tokens to you in return — all in a gas-less
             operation.
           </InfoTooltip>
         </InfoButton>

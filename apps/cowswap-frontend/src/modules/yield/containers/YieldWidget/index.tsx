@@ -14,7 +14,7 @@ import {
   useTradeConfirmState,
   useTradePriceImpact,
 } from 'modules/trade'
-import { UnlockWidgetScreen, BulletListItem } from 'modules/trade/pure/UnlockWidgetScreen'
+import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useHandleSwap } from 'modules/tradeFlow'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { SettingsTab, TradeRateDetails } from 'modules/tradeWidgetAddons'
@@ -39,6 +39,7 @@ import { TargetPoolPreviewInfo } from '../../pure/TargetPoolPreviewInfo'
 import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
 import { YieldConfirmModal } from '../YieldConfirmModal'
+import { LpTokenProvider } from '@cowprotocol/types'
 
 const YIELD_BULLET_LIST_CONTENT: BulletListItem[] = [
   { content: 'Maximize your yield on existing LP positions' },
@@ -110,7 +111,10 @@ export function YieldWidget() {
         <PoolApyPreview
           apy={inputApy}
           isSuperior={Boolean(
-            inputCurrency && inputCurrency instanceof LpToken && (inputApy && outputApy ? inputApy > outputApy : true),
+            inputCurrency &&
+              inputCurrency instanceof LpToken &&
+              inputCurrency.lpTokenProvider === LpTokenProvider.COW_AMM &&
+              (inputApy && outputApy ? inputApy > outputApy : true),
           )}
         />
       </div>
@@ -125,14 +129,19 @@ export function YieldWidget() {
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo,
-    topContent: inputCurrency ? (
-      <TargetPoolPreviewInfo chainId={chainId} sellToken={inputCurrency}>
-        <PoolApyPreview
-          apy={outputApy}
-          isSuperior={Boolean(isOutputLpToken && (inputApy && outputApy ? outputApy > inputApy : true))}
-        />
-      </TargetPoolPreviewInfo>
-    ) : null,
+    topContent:
+      inputCurrency && outputCurrency ? (
+        <TargetPoolPreviewInfo chainId={chainId} sellToken={inputCurrency}>
+          <PoolApyPreview
+            apy={outputApy}
+            isSuperior={Boolean(
+              outputCurrency instanceof LpToken &&
+                outputCurrency.lpTokenProvider === LpTokenProvider.COW_AMM &&
+                (inputApy && outputApy ? outputApy > inputApy : true),
+            )}
+          />
+        </TargetPoolPreviewInfo>
+      ) : null,
   }
   const inputCurrencyPreviewInfo = {
     amount: inputCurrencyInfo.amount,
