@@ -37,6 +37,7 @@ export const cowSwapFeeAtom = atom((get) => {
   // Don't user it when the currencies are not set
   if (!inputCurrency || !outputCurrency) return null
 
+  // TODO: remove this feature flag in another PR
   // Don't use it when isCowSwapFeeEnabled is not enabled
   if (!featureFlags.isCowSwapFeeEnabled) return null
 
