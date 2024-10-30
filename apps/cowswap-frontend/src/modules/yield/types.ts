@@ -2,7 +2,7 @@ import { LpToken } from '@cowprotocol/common-const'
 import { LpTokenProvider } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { PoolInfo } from 'modules/yield/state/poolsInfoAtom'
+import { PoolInfo } from './state/poolsInfoAtom'
 
 export interface TokenWithAlternative {
   token: LpToken

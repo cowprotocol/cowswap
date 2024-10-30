@@ -1,5 +1,5 @@
-import { useAtomValue } from 'jotai'
-import { useMemo } from 'react'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { useEffect, useMemo } from 'react'
 
 import { LP_TOKEN_LIST_COW_AMM_ONLY, useAllLpTokens } from '@cowprotocol/tokens'
 import { LpTokenProvider } from '@cowprotocol/types'
@@ -7,16 +7,18 @@ import { LpTokenProvider } from '@cowprotocol/types'
 import { useLpTokensWithBalances, usePoolsInfo } from 'modules/yield/shared'
 import { POOLS_AVERAGE_DATA_MOCK } from 'modules/yield/updaters/PoolsInfoUpdater/mockPoolInfo'
 
-import { TokenWithAlternative, TokenWithSuperiorAlternative, VampireAttackContext } from './types'
+import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
+import { areLpBalancesLoadedAtom } from 'common/updaters/LpBalancesAndAllowancesUpdater'
 
-import { useSafeMemoObject } from '../../hooks/useSafeMemo'
-import { areLpBalancesLoadedAtom } from '../../updaters/LpBalancesAndAllowancesUpdater'
+import { vampireAttackAtom } from '../state/vampireAttackAtom'
+import { TokenWithAlternative, TokenWithSuperiorAlternative } from '../types'
 
-export function useVampireAttack(): VampireAttackContext | null {
+export function VampireAttackUpdater(): null {
   const { tokens: lpTokensWithBalances, count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
   const cowAmmLpTokens = useAllLpTokens(LP_TOKEN_LIST_COW_AMM_ONLY)
   const poolsInfo = usePoolsInfo()
   const areLpBalancesLoaded = useAtomValue(areLpBalancesLoadedAtom)
+  const setVampireAttack = useSetAtom(vampireAttackAtom)
 
   const alternativesResult = useMemo(() => {
     if (lpTokensWithBalancesCount === 0) return null
@@ -42,7 +44,11 @@ export function useVampireAttack(): VampireAttackContext | null {
               tokenBalance,
             })
           } else {
-            acc.alternatives.push({ token: lpToken, alternative, tokenBalance })
+            acc.alternatives.push({
+              token: lpToken,
+              alternative,
+              tokenBalance,
+            })
           }
         }
 
@@ -95,7 +101,13 @@ export function useVampireAttack(): VampireAttackContext | null {
     averageApyDiff,
   })
 
-  if (cowAmmLpTokens.length === 0 || !areLpBalancesLoaded) return null
+  useEffect(() => {
+    if (cowAmmLpTokens.length === 0 || !areLpBalancesLoaded) {
+      setVampireAttack(null)
+    } else {
+      setVampireAttack(context)
+    }
+  }, [context, cowAmmLpTokens.length, areLpBalancesLoaded, setVampireAttack])
 
-  return context
+  return null
 }

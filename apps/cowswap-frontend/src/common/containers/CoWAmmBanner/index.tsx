@@ -11,8 +11,7 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { cowAnalytics } from 'modules/analytics'
 import { useTradeNavigate } from 'modules/trade'
-
-import { useVampireAttack } from './useVampireAttack'
+import { useVampireAttack, useVampireAttackFirstTarget } from 'modules/yield/shared'
 
 import { Routes } from '../../constants/routes'
 import { useIsProviderNetworkUnsupported } from '../../hooks/useIsProviderNetworkUnsupported'
@@ -30,12 +29,11 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
   const vampireAttackContext = useVampireAttack()
   const tokensByAddress = useTokensByAddressMap()
   const tradeNavigate = useTradeNavigate()
+  const vampireAttackFirstTarget = useVampireAttackFirstTarget()
 
   const key = isTokenSelectorView ? 'tokenSelector' : 'global'
   const handleCTAClick = useCallback(() => {
-    const superiorAlternative = vampireAttackContext?.superiorAlternatives?.[0]
-    const alternative = vampireAttackContext?.alternatives?.[0]
-    const target = superiorAlternative || alternative
+    const target = vampireAttackFirstTarget?.target
 
     const targetTrade = {
       inputCurrencyId: target?.token.address || null,
@@ -55,7 +53,7 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
     })
 
     tradeNavigate(chainId, targetTrade, targetTradeParams, Routes.YIELD)
-  }, [key, chainId, vampireAttackContext, tradeNavigate])
+  }, [key, chainId, vampireAttackFirstTarget, tradeNavigate])
 
   const handleClose = useCallback(() => {
     cowAnalytics.sendEvent({

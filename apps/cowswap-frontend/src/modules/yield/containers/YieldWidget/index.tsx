@@ -2,6 +2,7 @@ import { ReactNode, useCallback, useMemo } from 'react'
 
 import { LpToken } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { LpTokenProvider } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
@@ -26,6 +27,7 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { CoWAmmInlineBanner, SelectAPoolButton } from './elements'
 
 import { usePoolsInfo } from '../../hooks/usePoolsInfo'
+import { useVampireAttackFirstTarget } from '../../hooks/useVampireAttack'
 import { useYieldDerivedState } from '../../hooks/useYieldDerivedState'
 import {
   useYieldDeadlineState,
@@ -39,7 +41,6 @@ import { TargetPoolPreviewInfo } from '../../pure/TargetPoolPreviewInfo'
 import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
 import { YieldConfirmModal } from '../YieldConfirmModal'
-import { LpTokenProvider } from '@cowprotocol/types'
 
 const YIELD_BULLET_LIST_CONTENT: BulletListItem[] = [
   { content: 'Maximize your yield on existing LP positions' },
@@ -68,6 +69,7 @@ export function YieldWidget() {
   const widgetActions = useYieldWidgetActions()
   const receiveAmountInfo = useReceiveAmountInfo()
   const poolsInfo = usePoolsInfo()
+  const vampireAttackTarget = useVampireAttackFirstTarget()
 
   const {
     inputCurrency,
@@ -160,7 +162,7 @@ export function YieldWidget() {
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
 
   const slots: TradeWidgetSlots = {
-    topContent: CoWAmmInlineBanner,
+    topContent: <CoWAmmInlineBanner token={vampireAttackTarget?.target.token} apyDiff={vampireAttackTarget?.apyDiff} />,
     selectTokenWidget: <SelectTokenWidget displayLpTokenLists />,
     settingsWidget: <SettingsTab recipientToggleState={recipientToggleState} deadlineState={deadlineState} />,
     bottomContent: useCallback(
