@@ -356,11 +356,11 @@ const ARBITRUM_ONE_STABLECOINS = [
   MIM_ARBITRUM_ONE.address,
 ].map((t) => t.toLowerCase())
 
-export const STABLECOINS: Record<ChainId, string[]> = {
-  [SupportedChainId.MAINNET]: [],
-  [SupportedChainId.GNOSIS_CHAIN]: GNOSIS_CHAIN_STABLECOINS,
-  [SupportedChainId.ARBITRUM_ONE]: ARBITRUM_ONE_STABLECOINS,
-  [SupportedChainId.SEPOLIA]: [],
+export const STABLECOINS: Record<ChainId, Set<string>> = {
+  [SupportedChainId.MAINNET]: new Set(),
+  [SupportedChainId.GNOSIS_CHAIN]: new Set(GNOSIS_CHAIN_STABLECOINS),
+  [SupportedChainId.ARBITRUM_ONE]: new Set(ARBITRUM_ONE_STABLECOINS),
+  [SupportedChainId.SEPOLIA]: new Set(),
 }
 
 /**
