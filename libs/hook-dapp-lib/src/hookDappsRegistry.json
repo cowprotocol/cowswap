@@ -93,7 +93,7 @@
     "url": "https://cow-hooks-dapps-create-vesting.vercel.app",
     "conditions": {
       "position": "post",
-      "smartContractWalletSupported": false,
+      "walletCompatibility": ["EOA"],
       "supportedNetworks": [1, 100, 42161]
     }
   }
