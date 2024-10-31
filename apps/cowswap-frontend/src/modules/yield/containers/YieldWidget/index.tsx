@@ -131,19 +131,18 @@ export function YieldWidget() {
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo,
-    topContent:
-      inputCurrency && outputCurrency ? (
-        <TargetPoolPreviewInfo chainId={chainId} sellToken={outputCurrency} oppositeToken={inputCurrency}>
-          <PoolApyPreview
-            apy={outputApy}
-            isSuperior={Boolean(
-              outputCurrency instanceof LpToken &&
-                outputCurrency.lpTokenProvider === LpTokenProvider.COW_AMM &&
-                (inputApy && outputApy ? outputApy > inputApy : true),
-            )}
-          />
-        </TargetPoolPreviewInfo>
-      ) : null,
+    topContent: outputCurrency ? (
+      <TargetPoolPreviewInfo chainId={chainId} sellToken={outputCurrency} oppositeToken={inputCurrency}>
+        <PoolApyPreview
+          apy={outputApy}
+          isSuperior={Boolean(
+            outputCurrency instanceof LpToken &&
+              outputCurrency.lpTokenProvider === LpTokenProvider.COW_AMM &&
+              (inputApy && outputApy ? outputApy > inputApy : true),
+          )}
+        />
+      </TargetPoolPreviewInfo>
+    ) : null,
   }
   const inputCurrencyPreviewInfo = {
     amount: inputCurrencyInfo.amount,

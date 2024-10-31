@@ -44,7 +44,7 @@ interface TargetPoolPreviewInfoProps {
   chainId: SupportedChainId
   children: ReactNode
   sellToken: LpToken | TokenWithLogo | Currency
-  oppositeToken?: Currency
+  oppositeToken?: Currency | null
 }
 
 export function TargetPoolPreviewInfo({ chainId, sellToken, oppositeToken, children }: TargetPoolPreviewInfoProps) {
