@@ -1,10 +1,22 @@
+import React from 'react'
+
 import { UI } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
 import { useIsNoImpactWarningAccepted, useTradeConfirmActions } from 'modules/trade'
-import { TradeFormButtons, useGetTradeFormValidation, useTradeFormButtonContext } from 'modules/tradeFormValidation'
+import {
+  TradeFormBlankButton,
+  TradeFormButtons,
+  useGetTradeFormValidation,
+  useTradeFormButtonContext,
+} from 'modules/tradeFormValidation'
 import { useHighFeeWarning } from 'modules/tradeWidgetAddons'
+
+import { yieldTradeButtonsMap } from './yieldTradeButtonsMap'
+
+import { useYieldFormState } from '../../hooks/useYieldFormState'
 
 const StyledTradeFormButtons = styled((props) => <TradeFormButtons {...props} />)<{ active: boolean }>`
   background: ${({ active }) => (active ? `var(${UI.COLOR_COWAMM_DARK_GREEN})` : null)};
@@ -21,6 +33,7 @@ export function TradeButtons({ isTradeContextReady, isOutputLpToken }: TradeButt
   const tradeConfirmActions = useTradeConfirmActions()
   const { feeWarningAccepted } = useHighFeeWarning()
   const isNoImpactWarningAccepted = useIsNoImpactWarningAccepted()
+  const localFormValidation = useYieldFormState()
 
   const confirmText = primaryFormValidation ? 'Swap' : 'Deposit'
   const confirmTrade = tradeConfirmActions.onOpen
@@ -30,6 +43,16 @@ export function TradeButtons({ isTradeContextReady, isOutputLpToken }: TradeButt
   const isDisabled = !isTradeContextReady || !feeWarningAccepted || !isNoImpactWarningAccepted
 
   if (!tradeFormButtonContext) return null
+
+  if (localFormValidation) {
+    const button = yieldTradeButtonsMap[localFormValidation]
+
+    return (
+      <TradeFormBlankButton id={button.id} disabled={true}>
+        <Trans>{button.text}</Trans>
+      </TradeFormBlankButton>
+    )
+  }
 
   return (
     <StyledTradeFormButtons
