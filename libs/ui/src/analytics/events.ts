@@ -1,6 +1,5 @@
-import { CowAnalytics } from '@cowprotocol/analytics';
+import { CowAnalytics } from '@cowprotocol/analytics'
 import { detectExplorer } from '@cowprotocol/common-utils'
-
 
 /**
  * Common UI shared events
@@ -18,13 +17,6 @@ export function externalLinkAnalytics(cowAnalytics: CowAnalytics, href: string) 
     category: Category.EXTERNAL_LINK,
     action: explorer ? `View on ${explorer}` : 'Click external link',
     label: href,
-  })
-}
-
-export function clickOnFooter(cowAnalytics: CowAnalytics, name: string) {
-  cowAnalytics.sendEvent({
-    category: Category.FOOTER,
-    action: name,
   })
 }
 
