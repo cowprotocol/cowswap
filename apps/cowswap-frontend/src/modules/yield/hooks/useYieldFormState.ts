@@ -12,8 +12,13 @@ export function useYieldFormState(): YieldFormState | null {
   const state = useYieldDerivedState()
 
   return useMemo(() => {
-    if (state.outputCurrency && !(state.outputCurrency instanceof LpToken)) {
-      return YieldFormState.Erc20BuyIsNotAllowed
+    if (state.outputCurrency && state.inputCurrency) {
+      const isInputLp = state.inputCurrency instanceof LpToken
+      const isOutputLp = state.outputCurrency instanceof LpToken
+
+      if (!isInputLp && !isOutputLp) {
+        return YieldFormState.Erc20BuyIsNotAllowed
+      }
     }
 
     return null
