@@ -162,11 +162,14 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const openNativeWrapModal = useCallback(() => setOpenNativeWrapModal(true), [])
   const dismissNativeWrapModal = useCallback(() => setOpenNativeWrapModal(false), [])
 
-  const swapButtonContext = useSwapButtonContext({
-    feeWarningAccepted,
-    impactWarningAccepted,
-    openNativeWrapModal,
-  })
+  const swapButtonContext = useSwapButtonContext(
+    {
+      feeWarningAccepted,
+      impactWarningAccepted,
+      openNativeWrapModal,
+    },
+    swapActions,
+  )
 
   const tradeUrlParams = useTradeRouteContext()
 
@@ -245,6 +248,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     isEoaEthFlow,
     compactView: true,
     enableSmartSlippage: true,
+    isMarketOrderWidget: true,
     recipient,
     showRecipient: showRecipientControls,
     isTradePriceUpdating,

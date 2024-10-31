@@ -1,5 +1,5 @@
 import { TokenLogoWrapper } from '@cowprotocol/tokens'
-import { Media, UI } from '@cowprotocol/ui'
+import { UI, Media } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
 import styled, { keyframes } from 'styled-components/macro'

@@ -6,6 +6,7 @@ import { getMulticallContract } from './utils/getMulticallContract'
 
 export interface MultiCallOptions {
   batchSize?: number
+  consequentExecution?: boolean
 }
 
 /**
@@ -16,19 +17,31 @@ export interface MultiCallOptions {
 export async function multiCall(
   provider: Web3Provider,
   calls: Multicall3.CallStruct[],
-  options: MultiCallOptions = {}
+  options: MultiCallOptions = {},
 ): Promise<Multicall3.ResultStructOutput[]> {
-  const { batchSize = DEFAULT_BATCH_SIZE } = options
+  const { batchSize = DEFAULT_BATCH_SIZE, consequentExecution } = options
 
   const multicall = getMulticallContract(provider)
 
   const batches = splitIntoBatches(calls, batchSize)
 
-  const requests = batches.map((batch) => {
-    return multicall.callStatic.tryAggregate(false, batch)
-  })
+  return consequentExecution
+    ? batches
+        .reduce<Promise<Multicall3.ResultStructOutput[][]>>((acc, batch) => {
+          return acc.then((results) => {
+            return multicall.callStatic.tryAggregate(false, batch).then((batchResults) => {
+              results.push(batchResults)
 
-  return (await Promise.all(requests)).flat()
+              return results
+            })
+          })
+        }, Promise.resolve([]))
+        .then((results) => results.flat())
+    : Promise.all(
+        batches.map((batch) => {
+          return multicall.callStatic.tryAggregate(false, batch)
+        }),
+      ).then((res) => res.flat())
 }
 
 function splitIntoBatches(calls: Multicall3.CallStruct[], batchSize: number): Multicall3.CallStruct[][] {

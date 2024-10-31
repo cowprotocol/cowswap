@@ -21,11 +21,7 @@ export function fetchTokenList(list: ListSourceConfig): Promise<ListState> {
 
 async function fetchTokenListByUrl(list: ListSourceConfig): Promise<ListState> {
   return _fetchTokenList(list.source, [list.source]).then((result) => {
-    return {
-      ...result,
-      priority: list.priority,
-      source: list.source,
-    }
+    return listStateFromSourceConfig(result, list)
   })
 }
 
@@ -35,11 +31,7 @@ async function fetchTokenListByEnsName(list: ListSourceConfig): Promise<ListStat
   const urls = uriToHttp(translatedUri)
 
   return _fetchTokenList(list.source, urls).then((result) => {
-    return {
-      ...result,
-      priority: list.priority,
-      source: list.source,
-    }
+    return listStateFromSourceConfig(result, list)
   })
 }
 
@@ -88,6 +80,15 @@ async function _fetchTokenList(source: string, urls: string[]): Promise<ListStat
   }
 
   throw new Error('Unrecognized list URL protocol.')
+}
+
+function listStateFromSourceConfig(result: ListState, list: ListSourceConfig): ListState {
+  return {
+    ...result,
+    priority: list.priority,
+    source: list.source,
+    category: list.category
+  }
 }
 
 async function sanitizeList(list: TokenList): Promise<TokenList> {

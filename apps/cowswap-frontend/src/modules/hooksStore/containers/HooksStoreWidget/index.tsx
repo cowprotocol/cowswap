@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
+import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { SwapWidget } from 'modules/swap'
 import { useIsSellNative } from 'modules/trade'
@@ -31,6 +32,10 @@ export function HooksStoreWidget() {
 
   const isNativeSell = useIsSellNative()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
+
+  const walletType = useIsSmartContractWallet()
+    ? HookDappWalletCompatibility.SMART_CONTRACT
+    : HookDappWalletCompatibility.EOA
 
   const onDismiss = useCallback(() => {
     setSelectedHookPosition(null)
@@ -106,7 +111,12 @@ export function HooksStoreWidget() {
       </TradeWidgetWrapper>
       <IframeDappsManifestUpdater />
       {isHookSelectionOpen && (
-        <HookRegistryList onDismiss={onDismiss} hookToEdit={hookToEdit} isPreHook={selectedHookPosition === 'pre'} />
+        <HookRegistryList
+          walletType={walletType}
+          onDismiss={onDismiss}
+          hookToEdit={hookToEdit}
+          isPreHook={selectedHookPosition === 'pre'}
+        />
       )}
       {isRescueWidgetOpen && <RescueFundsFromProxy onDismiss={() => setRescueWidgetOpen(false)} />}
     </>

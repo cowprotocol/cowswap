@@ -50,7 +50,7 @@ export function useActivateConnector({
         onActivationError(error)
       }
     },
-    [chainId, pendingConnector, skipNetworkChanging, afterActivation, beforeActivation, onActivationError]
+    [chainId, skipNetworkChanging, afterActivation, beforeActivation, onActivationError],
   )
 
   return useMemo(
@@ -62,6 +62,6 @@ export function useActivateConnector({
         }
       },
     }),
-    [tryActivation, pendingConnector]
+    [tryActivation, pendingConnector],
   )
 }

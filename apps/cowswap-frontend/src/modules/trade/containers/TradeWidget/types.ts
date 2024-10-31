@@ -28,6 +28,7 @@ interface TradeWidgetParams {
   disablePriceImpact?: boolean
   hideTradeWarnings?: boolean
   enableSmartSlippage?: boolean
+  isMarketOrderWidget?: boolean
 }
 
 export interface TradeWidgetSlots {
@@ -38,6 +39,7 @@ export interface TradeWidgetSlots {
   bottomContent?(warnings: ReactNode | null): ReactNode
   outerContent?: ReactNode
   updaters?: ReactNode
+  selectTokenWidget?: ReactNode
 }
 
 export interface TradeWidgetProps {

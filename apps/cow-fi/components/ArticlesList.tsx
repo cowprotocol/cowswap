@@ -7,7 +7,7 @@ interface ArticlesListProps {
   articles: Article[]
 }
 
-const ARTICLES_PATH = '/learn/articles/'
+const ARTICLES_PATH = '/learn/'
 
 export const ArticlesList: React.FC<ArticlesListProps> = ({ articles }) => (
   <LinkColumn>
