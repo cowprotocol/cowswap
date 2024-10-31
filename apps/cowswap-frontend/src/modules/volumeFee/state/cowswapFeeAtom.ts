@@ -1,11 +1,11 @@
 import { atom } from 'jotai'
 
-import { GNOSIS_CHAIN_STABLECOINS } from '@cowprotocol/common-const'
+import { GNOSIS_CHAIN_STABLECOINS, LpToken } from '@cowprotocol/common-const'
 import { getCurrencyAddress, isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
-import { derivedTradeStateAtom } from 'modules/trade'
+import { derivedTradeStateAtom, TradeType, tradeTypeAtom } from 'modules/trade'
 
 import { VolumeFee } from '../types'
 
@@ -23,6 +23,8 @@ const COWSWAP_VOLUME_FEES: Record<SupportedChainId, VolumeFee | null> = {
 export const cowSwapFeeAtom = atom((get) => {
   const { chainId } = get(walletInfoAtom)
   const tradeState = get(derivedTradeStateAtom)
+  const tradeTypeState = get(tradeTypeAtom)
+  const isYieldWidget = tradeTypeState?.tradeType === TradeType.YIELD
 
   const { inputCurrency, outputCurrency } = tradeState || {}
 
@@ -30,6 +32,9 @@ export const cowSwapFeeAtom = atom((get) => {
   if (isInjectedWidget()) return null
 
   if (!inputCurrency || !outputCurrency) return null
+
+  // No fee for Yield widget and LP tokens
+  if (isYieldWidget || inputCurrency instanceof LpToken || outputCurrency instanceof LpToken) return null
 
   const isInputTokenStable = GNOSIS_CHAIN_STABLECOINS.includes(getCurrencyAddress(inputCurrency).toLowerCase())
   const isOutputTokenStable = GNOSIS_CHAIN_STABLECOINS.includes(getCurrencyAddress(outputCurrency).toLowerCase())
