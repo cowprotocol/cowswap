@@ -19,7 +19,7 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useTokenSupportsPermit } from 'modules/permit'
 import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { SwapButtonsContext } from 'modules/swap/pure/SwapButtons'
-import { TradeType, useTradeConfirmActions, useWrapNativeFlow } from 'modules/trade'
+import { TradeType, TradeWidgetActions, useTradeConfirmActions, useWrapNativeFlow } from 'modules/trade'
 import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
 import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
@@ -38,7 +38,7 @@ export interface SwapButtonInput {
   openNativeWrapModal(): void
 }
 
-export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext {
+export function useSwapButtonContext(input: SwapButtonInput, actions: TradeWidgetActions): SwapButtonsContext {
   const { feeWarningAccepted, impactWarningAccepted, openNativeWrapModal } = input
 
   const { account, chainId } = useWalletInfo()
@@ -76,7 +76,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const wrapCallback = useWrapNativeFlow()
   const { state: approvalState } = useApproveState(slippageAdjustedSellAmount || null)
 
-  const { callback: handleSwap, contextIsReady } = useHandleSwapOrEthFlow()
+  const { callback: handleSwap, contextIsReady } = useHandleSwapOrEthFlow(actions)
 
   const swapCallbackError = contextIsReady ? null : 'Missing dependencies'
 

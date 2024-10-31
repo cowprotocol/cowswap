@@ -1,13 +1,14 @@
 import { useCallback, useState } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
+import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import {
   ListState,
+  TokenListCategory,
   useAddList,
   useAddUserToken,
   useAllListsList,
-  useAllTokens,
+  useAllActiveTokens,
   useFavoriteTokens,
   useUnsupportedTokens,
   useUserAddedTokens,
@@ -16,9 +17,14 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 
+import { Field } from 'legacy/state/types'
+
 import { addListAnalytics } from 'modules/analytics'
 import { usePermitCompatibleTokens } from 'modules/permit'
 import { useTokensBalancesCombined } from 'modules/swap/hooks/useTokensBalancesCombined'
+import { useLpTokensWithBalances } from 'modules/yield/shared'
+
+import { getDefaultTokenListCategories } from './getDefaultTokenListCategories'
 
 import { useOnTokenListAddingError } from '../../hooks/useOnTokenListAddingError'
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
@@ -26,6 +32,7 @@ import { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectToke
 import { ImportListModal } from '../../pure/ImportListModal'
 import { ImportTokenModal } from '../../pure/ImportTokenModal'
 import { SelectTokenModal } from '../../pure/SelectTokenModal'
+import { LpTokenPage } from '../LpTokenPage'
 import { ManageListsAndTokens } from '../ManageListsAndTokens'
 
 const Wrapper = styled.div`
@@ -37,10 +44,30 @@ const Wrapper = styled.div`
   }
 `
 
-export function SelectTokenWidget() {
-  const { open, onSelectToken, tokenToImport, listToImport, selectedToken, onInputPressEnter } =
-    useSelectTokenWidgetState()
+interface SelectTokenWidgetProps {
+  displayLpTokenLists?: boolean
+}
+
+export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProps) {
+  const {
+    open,
+    onSelectToken,
+    tokenToImport,
+    listToImport,
+    selectedToken,
+    onInputPressEnter,
+    selectedPoolAddress,
+    field,
+    oppositeToken,
+  } = useSelectTokenWidgetState()
+  const { count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
+
   const [isManageWidgetOpen, setIsManageWidgetOpen] = useState(false)
+  const isSellErc20Selected = field === Field.OUTPUT && !(oppositeToken instanceof LpToken)
+
+  const tokenListCategoryState = useState<TokenListCategory[] | null>(
+    getDefaultTokenListCategories(field, oppositeToken, lpTokensWithBalancesCount),
+  )
 
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
   const { account } = useWalletInfo()
@@ -48,7 +75,7 @@ export function SelectTokenWidget() {
   const addCustomTokenLists = useAddList((source) => addListAnalytics('Success', source))
   const importTokenCallback = useAddUserToken()
 
-  const allTokens = useAllTokens()
+  const allTokens = useAllActiveTokens()
   const favoriteTokens = useFavoriteTokens()
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllListsList()
@@ -66,19 +93,31 @@ export function SelectTokenWidget() {
       onSelectToken: undefined,
       tokenToImport: undefined,
       listToImport: undefined,
+      selectedPoolAddress: undefined,
     })
   }, [updateSelectTokenWidget])
 
-  const resetTokenImport = () => {
+  const openPoolPage = useCallback(
+    (selectedPoolAddress: string) => {
+      updateSelectTokenWidget({ selectedPoolAddress })
+    },
+    [updateSelectTokenWidget],
+  )
+
+  const closePoolPage = useCallback(() => {
+    updateSelectTokenWidget({ selectedPoolAddress: undefined })
+  }, [updateSelectTokenWidget])
+
+  const resetTokenImport = useCallback(() => {
     updateSelectTokenWidget({
       tokenToImport: undefined,
     })
-  }
+  }, [updateSelectTokenWidget])
 
-  const onDismiss = () => {
+  const onDismiss = useCallback(() => {
     setIsManageWidgetOpen(false)
     closeTokenSelectWidget()
-  }
+  }, [closeTokenSelectWidget])
 
   const importTokenAndClose = (tokens: TokenWithLogo[]) => {
     importTokenCallback(tokens)
@@ -135,8 +174,20 @@ export function SelectTokenWidget() {
           )
         }
 
+        if (selectedPoolAddress) {
+          return (
+            <LpTokenPage
+              poolAddress={selectedPoolAddress}
+              onDismiss={onDismiss}
+              onBack={closePoolPage}
+              onSelectToken={onSelectToken}
+            />
+          )
+        }
+
         return (
           <SelectTokenModal
+            displayLpTokenLists={displayLpTokenLists}
             unsupportedTokens={unsupportedTokens}
             selectedToken={selectedToken}
             allTokens={allTokens}
@@ -148,6 +199,9 @@ export function SelectTokenWidget() {
             onDismiss={onDismiss}
             onOpenManageWidget={() => setIsManageWidgetOpen(true)}
             hideFavoriteTokensTooltip={isInjectedWidgetMode}
+            openPoolPage={openPoolPage}
+            tokenListCategoryState={tokenListCategoryState}
+            disableErc20={isSellErc20Selected}
             account={account}
           />
         )

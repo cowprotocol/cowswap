@@ -1,10 +1,3 @@
-// Containers
-import { userAddedTokenListsAtomv2Migration } from './migrations/userAddedTokenListsAtomv2Migration'
-
-// Run migrations first of all
-// TODO: remove it after 01.04.2024
-userAddedTokenListsAtomv2Migration()
-
 // Updaters
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'
 export { UnsupportedTokensUpdater } from './updaters/UnsupportedTokensUpdater'
@@ -23,7 +16,7 @@ export type { TokenSearchResponse } from './hooks/tokens/useSearchToken'
 // Hooks
 export { useAllListsList } from './hooks/lists/useAllListsList'
 export { useAddList } from './hooks/lists/useAddList'
-export { useAllTokens } from './hooks/tokens/useAllTokens'
+export { useAllActiveTokens } from './hooks/tokens/useAllActiveTokens'
 export { useVirtualLists } from './hooks/lists/useVirtualLists'
 export { useFavoriteTokens } from './hooks/tokens/favorite/useFavoriteTokens'
 export { useUserAddedTokens } from './hooks/tokens/userAdded/useUserAddedTokens'
@@ -47,8 +40,10 @@ export { useAreThereTokensWithSameSymbol } from './hooks/tokens/useAreThereToken
 export { useSearchList } from './hooks/lists/useSearchList'
 export { useSearchToken } from './hooks/tokens/useSearchToken'
 export { useSearchNonExistentToken } from './hooks/tokens/useSearchNonExistentToken'
+export { useAllLpTokens } from './hooks/tokens/useAllLpTokens'
 
 // Utils
 export { getTokenListViewLink } from './utils/getTokenListViewLink'
 export { getTokenLogoUrls } from './utils/getTokenLogoUrls'
 export { fetchTokenFromBlockchain } from './utils/fetchTokenFromBlockchain'
+export { getTokenSearchFilter } from './utils/getTokenSearchFilter'

@@ -14,7 +14,7 @@ export function SolversInfoUpdater() {
     const solversInfo = mapCmsSolversInfoToSolversInfo(cmsSolversInfo)
 
     solversInfo && setSolversInfo(solversInfo)
-  }, [cmsSolversInfo])
+  }, [cmsSolversInfo, setSolversInfo])
 
   return null
 }
