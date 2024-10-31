@@ -9,6 +9,12 @@ export const MOCK_POOL_INFO: Record<string, PoolInfo> = MOCK_POOL_INFO_OVERRIDE
   ? JSON.parse(MOCK_POOL_INFO_OVERRIDE)
   : {
       // COW AMM
+      '0xf706c50513446d709f08d3e5126cd74fb6bfda19': {
+        apy: 6.07,
+        tvl: 52972,
+        feeTier: 0.3,
+        volume24h: 10,
+      },
       '0xf8f5b88328dff3d19e5f4f11a9700293ac8f638f': { apy: 2.41, tvl: 4462967, feeTier: 0.3, volume24h: 226375 },
       '0x9bd702e05b9c97e4a4a3e47df1e0fe7a0c26d2f1': { apy: 2.37, tvl: 2767573, feeTier: 0.3, volume24h: 202029 },
       '0xdfee48c9df6d26c734296c0e6bd02401100a7217': { apy: 2.87, tvl: 4690794, feeTier: 0.3, volume24h: 120412 },
