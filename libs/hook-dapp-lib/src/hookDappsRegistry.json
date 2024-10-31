@@ -77,7 +77,9 @@
     "website": "https://github.com/bleu/cow-hooks-dapps",
     "url": "https://cow-hooks-dapps-claim-vesting.vercel.app",
     "conditions": {
-      "supportedNetworks": [1, 100, 42161]
+      "supportedNetworks": [1, 100, 42161],
+      "walletCompatibility": ["EOA"],
+      "smartContractWalletSupported": false
     }
   },
   "CREATE_LLAMAPAY_VESTING": {
@@ -89,11 +91,11 @@
     "version": "0.1.0",
     "website": "https://llamapay.io/vesting",
     "image": "https://cow-hooks-dapps-create-vesting.vercel.app/llama-pay-icon.png",
-    "walletCompatibility": ["EOA"],
     "url": "https://cow-hooks-dapps-create-vesting.vercel.app",
     "conditions": {
       "position": "post",
       "walletCompatibility": ["EOA"],
+      "smartContractWalletSupported": false,
       "supportedNetworks": [1, 100, 42161]
     }
   }
