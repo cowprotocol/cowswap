@@ -127,7 +127,7 @@ export function LpTokenLists({
         </ListItem>
       )
     },
-    [balances, onSelectToken, poolsInfo, openPoolPage, isMobile],
+    [balances, onSelectToken, poolsInfo, openPoolPage, isMobile, account],
   )
 
   return (

@@ -6,7 +6,7 @@ import { useIsNoImpactWarningAccepted, useTradeConfirmActions } from 'modules/tr
 import { TradeFormButtons, useGetTradeFormValidation, useTradeFormButtonContext } from 'modules/tradeFormValidation'
 import { useHighFeeWarning } from 'modules/tradeWidgetAddons'
 
-const StyledTradeFormButtons = styled(TradeFormButtons)<{ active: boolean }>`
+const StyledTradeFormButtons = styled((props) => <TradeFormButtons {...props} />)<{ active: boolean }>`
   background: ${({ active }) => (active ? `var(${UI.COLOR_COWAMM_DARK_GREEN})` : null)};
   color: ${({ active }) => (active ? `var(${UI.COLOR_COWAMM_LIGHT_GREEN})` : null)};
 `

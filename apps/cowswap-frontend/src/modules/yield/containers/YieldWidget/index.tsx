@@ -180,7 +180,7 @@ export function YieldWidget() {
           </>
         )
       },
-      [doTrade.contextIsReady, isRateLoading, rateInfoParams, deadlineState],
+      [doTrade.contextIsReady, isRateLoading, rateInfoParams, deadlineState, isOutputLpToken],
     ),
 
     lockScreen: !isUnlocked ? (
