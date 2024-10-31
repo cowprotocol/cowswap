@@ -37,10 +37,6 @@ export const cowSwapFeeAtom = atom((get) => {
   // Don't user it when the currencies are not set
   if (!inputCurrency || !outputCurrency) return null
 
-  // TODO: remove this feature flag in another PR
-  // Don't use it when isCowSwapFeeEnabled is not enabled
-  if (!featureFlags.isCowSwapFeeEnabled) return null
-
   // Don't use it when on arb1 and shouldn't apply fee based on percentage
   if (chainId === SupportedChainId.ARBITRUM_ONE && !shouldApplyFee(account, featureFlags.arb1CowSwapFeePercentage))
     return null
