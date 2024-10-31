@@ -45,8 +45,8 @@ export const cowSwapFeeAtom = atom((get) => {
   if (chainId === SupportedChainId.ARBITRUM_ONE && !shouldApplyFee(account, featureFlags.arb1CowSwapFeePercentage))
     return null
 
-  const isInputTokenStable = STABLECOINS[chainId].includes(getCurrencyAddress(inputCurrency).toLowerCase())
-  const isOutputTokenStable = STABLECOINS[chainId].includes(getCurrencyAddress(outputCurrency).toLowerCase())
+  const isInputTokenStable = STABLECOINS[chainId].has(getCurrencyAddress(inputCurrency).toLowerCase())
+  const isOutputTokenStable = STABLECOINS[chainId].has(getCurrencyAddress(outputCurrency).toLowerCase())
 
   // No stable-stable trades
   if (isInputTokenStable && isOutputTokenStable) return null
