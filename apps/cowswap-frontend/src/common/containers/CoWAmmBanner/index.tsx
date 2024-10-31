@@ -30,6 +30,7 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
   const tokensByAddress = useTokensByAddressMap()
   const tradeNavigate = useTradeNavigate()
   const vampireAttackFirstTarget = useVampireAttackFirstTarget()
+  const isSmartContractWallet = useIsSmartContractWallet()
 
   const key = isTokenSelectorView ? 'tokenSelector' : 'global'
   const handleCTAClick = useCallback(() => {
@@ -62,11 +63,9 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
     })
   }, [key])
 
-  const bannerId = `cow_amm_banner_2024_va_${key}`
-
-  const isSmartContractWallet = useIsSmartContractWallet()
-
   if (isInjectedWidgetMode || !account || isChainIdUnsupported || !vampireAttackContext) return null
+
+  const bannerId = `cow_amm_banner_2024_va_${key}${isTokenSelectorView ? account : ''}`
 
   return ClosableBanner(bannerId, (close) => (
     <CoWAmmBannerContent
