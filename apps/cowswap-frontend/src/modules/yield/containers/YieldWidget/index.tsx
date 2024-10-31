@@ -108,8 +108,8 @@ export function YieldWidget() {
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
     receiveAmountInfo: null,
-    topContent: (
-      <div>
+    topContent: inputCurrency && (
+      <TargetPoolPreviewInfo chainId={chainId} sellToken={inputCurrency}>
         <PoolApyPreview
           apy={inputApy}
           isSuperior={Boolean(
@@ -119,7 +119,7 @@ export function YieldWidget() {
               (inputApy && outputApy ? inputApy > outputApy : true),
           )}
         />
-      </div>
+      </TargetPoolPreviewInfo>
     ),
   }
 
@@ -133,7 +133,7 @@ export function YieldWidget() {
     receiveAmountInfo,
     topContent:
       inputCurrency && outputCurrency ? (
-        <TargetPoolPreviewInfo chainId={chainId} sellToken={inputCurrency}>
+        <TargetPoolPreviewInfo chainId={chainId} sellToken={outputCurrency} oppositeToken={inputCurrency}>
           <PoolApyPreview
             apy={outputApy}
             isSuperior={Boolean(

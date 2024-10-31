@@ -44,23 +44,26 @@ interface TargetPoolPreviewInfoProps {
   chainId: SupportedChainId
   children: ReactNode
   sellToken: LpToken | TokenWithLogo | Currency
+  oppositeToken?: Currency
 }
 
-export function TargetPoolPreviewInfo({ chainId, sellToken, children }: TargetPoolPreviewInfoProps) {
+export function TargetPoolPreviewInfo({ chainId, sellToken, oppositeToken, children }: TargetPoolPreviewInfoProps) {
   if (!(sellToken instanceof LpToken) || !sellToken.lpTokenProvider) return null
 
   return (
     <Wrapper>
       <LeftPart>
         {children}
-        <InfoButton>
-          Details{' '}
-          <InfoTooltip>
-            When you swap (sell) <TokenSymbol token={sellToken} />, solvers handle the transaction by purchasing the
-            required tokens, depositing them into the pool, and issuing LP tokens to you in return — all in a gas-less
-            operation.
-          </InfoTooltip>
-        </InfoButton>
+        {oppositeToken && (
+          <InfoButton>
+            Details{' '}
+            <InfoTooltip>
+              When you swap (sell) <TokenSymbol token={oppositeToken} />, solvers handle the transaction by purchasing
+              the required tokens, depositing them into the pool, and issuing LP tokens to you in return — all in a
+              gas-less operation.
+            </InfoTooltip>
+          </InfoButton>
+        )}
       </LeftPart>
       <StyledExternalLink href={LP_PAGE_LINKS[sellToken.lpTokenProvider](chainId, sellToken.address)}>
         Analytics ↗
