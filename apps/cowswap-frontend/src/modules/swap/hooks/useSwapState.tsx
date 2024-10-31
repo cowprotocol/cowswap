@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react'
 
-// import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { formatSymbol, getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { useENS } from '@cowprotocol/ens'
 import { useAreThereTokensWithSameSymbol, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'

@@ -1,11 +1,15 @@
-import { useTenderlyBundleSimulation } from 'modules/tenderly/hooks/useTenderlyBundleSimulation'
-import { useOrderParams } from './useOrderParams'
-import { useHooks } from './useHooks'
 import { useMemo } from 'react'
-import { useWalletInfo } from '@cowprotocol/wallet'
+
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
-import { BalancesDiff } from 'modules/tenderly/types'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import { BigNumber } from 'ethers'
+
+import { useTenderlyBundleSimulation } from 'modules/tenderly/hooks/useTenderlyBundleSimulation'
+import { BalancesDiff } from 'modules/tenderly/types'
+
+import { useHooks } from './useHooks'
+import { useOrderParams } from './useOrderParams'
 
 const EMPTY_BALANCE_DIFF: BalancesDiff = {}
 
@@ -53,7 +57,7 @@ export function useHookBalancesDiff(isPreHook: boolean, hookToEditDetails?: CowH
 
     const lastPostHook = postHooks[postHooks.length - 1]
     return data[lastPostHook?.uuid]?.cumulativeBalancesDiff || firstPostHookBalanceDiff
-  }, [data, postHooks, orderMockBalanceDiff, preHookBalanceDiff])
+  }, [data, postHooks, firstPostHookBalanceDiff])
 
   const hookToEditBalanceDiff = useMemo(() => {
     if (!data || !hookToEditDetails?.uuid) return EMPTY_BALANCE_DIFF
@@ -72,13 +76,20 @@ export function useHookBalancesDiff(isPreHook: boolean, hookToEditDetails?: CowH
     const previousHookIndex = hookToEditIndex - 1
 
     return data[otherHooks[previousHookIndex]?.uuid]?.cumulativeBalancesDiff || EMPTY_BALANCE_DIFF
-  }, [data, hookToEditDetails])
+  }, [data, hookToEditDetails, isPreHook, preHooks, postHooks, firstPostHookBalanceDiff])
 
   return useMemo(() => {
     if (hookToEditDetails?.uuid) return hookToEditBalanceDiff
     if (isPreHook) return preHookBalanceDiff
     return postHookBalanceDiff
-  }, [data, orderParams, preHooks, postHooks])
+  }, [hookToEditDetails, isPreHook, preHookBalanceDiff, hookToEditBalanceDiff, postHookBalanceDiff])
+}
+
+// Helper function to add BigNumber strings
+const addBigNumberStrings = (a: string, b: string): string => {
+  const bigA = BigNumber.from(a)
+  const bigB = BigNumber.from(b)
+  return bigA.add(bigB).toString()
 }
 
 function mergeBalanceDiffs(
@@ -86,13 +97,6 @@ function mergeBalanceDiffs(
   second: Record<string, Record<string, string>>,
 ): Record<string, Record<string, string>> {
   const result: Record<string, Record<string, string>> = {}
-
-  // Helper function to add BigNumber strings
-  const addBigNumberStrings = (a: string, b: string): string => {
-    const bigA = BigNumber.from(a)
-    const bigB = BigNumber.from(b)
-    return bigA.add(bigB).toString()
-  }
 
   // Process all addresses from first input
   for (const address of Object.keys(first)) {
