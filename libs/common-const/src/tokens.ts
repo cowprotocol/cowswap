@@ -212,13 +212,13 @@ export const USDT_BASE = new TokenWithLogo(
   'USDT',
   'Tether USD',
 )
-export const WBTC_BASE = new TokenWithLogo(
-  WBTC.logoURI,
+export const CBBTC_BASE = new TokenWithLogo(
+  cowprotocolTokenLogoUrl('0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf', SupportedChainId.BASE),
   SupportedChainId.BASE,
-  '0x0555E30da8f98308EdB960aa94C0Db47230d2B9c',
+  '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf',
   8,
-  'WBTC',
-  'Wrapped BTC',
+  'cbBTC',
+  'Coinbase Wrapped BTC',
 )
 
 export const USDC_BASE = new TokenWithLogo(
