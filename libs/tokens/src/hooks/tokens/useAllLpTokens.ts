@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai/index'
 
 import { LpToken, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { LpTokenProvider } from '@cowprotocol/types'
 
 import useSWR from 'swr'
 
@@ -26,7 +27,7 @@ export function useAllLpTokens(categories: TokenListCategory[] | null): LpToken[
 
       return allTokens.filter((token) => {
         const isLp = token instanceof LpToken
-        return isLp ? (selectOnlyCoWAmm ? token.isCowAmm : true) : false
+        return isLp ? (selectOnlyCoWAmm ? token.lpTokenProvider === LpTokenProvider.COW_AMM : true) : false
       }) as LpToken[]
     },
     { ...SWR_NO_REFRESH_OPTIONS, fallbackData },

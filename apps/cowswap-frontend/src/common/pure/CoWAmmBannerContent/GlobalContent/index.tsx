@@ -1,38 +1,23 @@
-import React, { RefObject } from 'react'
+import React, { ReactNode, RefObject } from 'react'
 
+import { LpTokenProvider } from '@cowprotocol/types'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { ArrowBackground } from '../../ArrowBackground'
 import { StarIcon, TextFit } from '../Common'
-import { LpToken } from '../dummyData'
 import { LpEmblems } from '../LpEmblems'
 import * as styledEl from '../styled'
 import { CoWAmmBannerContext } from '../types'
 
 interface GlobalContentProps {
-  isUniV2InferiorWithLowAverageYield: boolean
-  tokens: LpToken[]
   arrowBackgroundRef: RefObject<HTMLDivElement>
   context: CoWAmmBannerContext
+  comparedProviders: LpTokenProvider[] | undefined
+  children: ReactNode
 }
 
-export function GlobalContent({
-  context,
-  isUniV2InferiorWithLowAverageYield,
-  tokens,
-  arrowBackgroundRef,
-}: GlobalContentProps) {
-  const {
-    title,
-    ctaText,
-    aprMessage,
-    comparisonMessage,
-    onClose,
-    isMobile,
-    onCtaClick,
-    handleCTAMouseLeave,
-    handleCTAMouseEnter,
-  } = context
+export function GlobalContent({ context, children, arrowBackgroundRef, comparedProviders }: GlobalContentProps) {
+  const { title, ctaText, onClose, isMobile, onCtaClick, handleCTAMouseLeave, handleCTAMouseEnter } = context
 
   return (
     <styledEl.BannerWrapper>
@@ -48,16 +33,7 @@ export function GlobalContent({
       </styledEl.Title>
       <styledEl.Card bgColor={`var(${UI.COLOR_COWAMM_BLUE})`} color={`var(${UI.COLOR_COWAMM_DARK_BLUE})`}>
         <StarIcon size={36} right={80} top={-17} />
-        <h3>
-          <TextFit mode="single" minFontSize={isMobile ? 40 : 80} maxFontSize={isMobile ? 50 : 80}>
-            {aprMessage}
-          </TextFit>
-        </h3>
-        <span>
-          <TextFit mode="multi" minFontSize={10} maxFontSize={isMobile ? 21 : 28}>
-            {comparisonMessage}
-          </TextFit>
-        </span>
+        {children}
         <StarIcon size={26} right={20} bottom={-10} />
       </styledEl.Card>
 
@@ -68,7 +44,7 @@ export function GlobalContent({
               One-click convert, <strong>boost yield</strong>
             </TextFit>
           </span>
-          <LpEmblems tokens={tokens} isUniV2InferiorWithLowAverageYield={isUniV2InferiorWithLowAverageYield} />
+          <LpEmblems comparedProviders={comparedProviders} />
         </styledEl.Card>
       )}
 
@@ -76,7 +52,7 @@ export function GlobalContent({
         {ctaText}
       </styledEl.CTAButton>
 
-      <styledEl.SecondaryLink href={'https://cow.fi/'}>Pool analytics ↗</styledEl.SecondaryLink>
+      <styledEl.SecondaryLink href="https://dune.com/cowprotocol/cow-amms-v2">Pool analytics ↗</styledEl.SecondaryLink>
 
       <ArrowBackground ref={arrowBackgroundRef} />
     </styledEl.BannerWrapper>

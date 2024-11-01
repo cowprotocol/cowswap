@@ -3,7 +3,7 @@ import { ExternalLink, UI } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
-  --grid-columns: 1fr 100px 50px 20px;
+  --grid-columns: 1fr 90px 60px 20px;
   display: flex;
   flex-direction: column;
   overflow: auto;
@@ -60,7 +60,7 @@ export const LpTokenInfo = styled.div`
 export const LpTokenYieldPercentage = styled.span`
   display: flex;
   align-items: center;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
 `
 
