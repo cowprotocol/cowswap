@@ -261,7 +261,7 @@ export const EURC_BASE = new TokenWithLogo(
   cowprotocolTokenLogoUrl('0x60a3e35cc302bfa44cb288bc5a4f316fdb1adb42', SupportedChainId.BASE),
   SupportedChainId.BASE,
   '0x60a3e35cc302bfa44cb288bc5a4f316fdb1adb42',
-  18,
+  6,
   'EURC',
   'EURC',
 )
@@ -270,7 +270,7 @@ export const CGUSD_BASE = new TokenWithLogo(
   cowprotocolTokenLogoUrl('0xca72827a3d211cfd8f6b00ac98824872b72cab49', SupportedChainId.BASE),
   SupportedChainId.BASE,
   '0xca72827a3d211cfd8f6b00ac98824872b72cab49',
-  18,
+  6,
   'cgUSD',
   'Cygnus Global USD',
 )
@@ -279,7 +279,7 @@ export const USD_PLUS_BASE = new TokenWithLogo(
   cowprotocolTokenLogoUrl('0xb79dd08ea68a908a97220c76d19a6aa9cbde4376', SupportedChainId.BASE),
   SupportedChainId.BASE,
   '0xb79dd08ea68a908a97220c76d19a6aa9cbde4376',
-  18,
+  6,
   'USD+',
   'USD+',
 )
