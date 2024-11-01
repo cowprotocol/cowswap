@@ -11,6 +11,8 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { cowAnalytics } from 'modules/analytics'
 import { useTradeNavigate } from 'modules/trade'
+import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
+import { useYieldRawState } from 'modules/yield'
 import { useVampireAttack, useVampireAttackFirstTarget } from 'modules/yield/shared'
 
 import { Routes } from '../../constants/routes'
@@ -31,15 +33,22 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
   const tradeNavigate = useTradeNavigate()
   const vampireAttackFirstTarget = useVampireAttackFirstTarget()
   const isSmartContractWallet = useIsSmartContractWallet()
+  const yieldState = useYieldRawState()
 
   const key = isTokenSelectorView ? 'tokenSelector' : 'global'
   const handleCTAClick = useCallback(() => {
     const target = vampireAttackFirstTarget?.target
+    const defaulTradeState = getDefaultTradeRawState(chainId)
 
-    const targetTrade = {
-      inputCurrencyId: target?.token.address || null,
-      outputCurrencyId: target?.alternative.address || null,
-    }
+    const targetTrade = target
+      ? {
+          inputCurrencyId: target.token.address || null,
+          outputCurrencyId: target.alternative.address || null,
+        }
+      : {
+          inputCurrencyId: yieldState.inputCurrencyId || defaulTradeState.inputCurrencyId,
+          outputCurrencyId: yieldState.outputCurrencyId || defaulTradeState.outputCurrencyId,
+        }
 
     const targetTradeParams = {
       amount: target
@@ -54,7 +63,7 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
     })
 
     tradeNavigate(chainId, targetTrade, targetTradeParams, Routes.YIELD)
-  }, [key, chainId, vampireAttackFirstTarget, tradeNavigate])
+  }, [key, chainId, yieldState, vampireAttackFirstTarget, tradeNavigate])
 
   const handleClose = useCallback(() => {
     cowAnalytics.sendEvent({
