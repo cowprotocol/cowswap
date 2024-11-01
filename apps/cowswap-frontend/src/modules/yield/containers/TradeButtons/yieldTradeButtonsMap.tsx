@@ -23,7 +23,7 @@ export const yieldTradeButtonsMap: Record<YieldFormState, YieldTradeButton> = {
       <Wrapper>
         Swaps not supported{' '}
         <InfoTooltip>
-          <div>Please use Swap/Limit/Twap order form for placing regular orders</div>
+          <div>Use the Swap tab for trades that don't involve an LP token.</div>
         </InfoTooltip>
       </Wrapper>
     ),
