@@ -19,30 +19,26 @@ type PoolInfoState = {
 
 export type PoolInfoStates = Record<string, PoolInfoState>
 
-type PoolInfoStatesPerAccount = Record<string, PoolInfoStates>
-
-type PoolsInfoState = Record<SupportedChainId, PoolInfoStatesPerAccount | undefined>
+type PoolsInfoState = Record<SupportedChainId, PoolInfoStates | undefined>
 
 const poolsInfoAtom = atomWithStorage<PoolsInfoState>(
-  'poolsInfoAtom:v0',
+  'poolsInfoAtom:v1',
   mapSupportedNetworks({}),
   getJotaiIsolatedStorage(),
 )
 
 export const currentPoolsInfoAtom = atom((get) => {
-  const { chainId, account } = get(walletInfoAtom)
+  const { chainId } = get(walletInfoAtom)
   const poolsInfo = get(poolsInfoAtom)
 
-  return account ? poolsInfo[chainId]?.[account] : undefined
+  return poolsInfo[chainId]
 })
 
 export const upsertPoolsInfoAtom = atom(null, (get, set, update: Record<string, PoolInfo>) => {
-  const { chainId, account } = get(walletInfoAtom)
+  const { chainId } = get(walletInfoAtom)
   const poolsInfo = get(poolsInfoAtom)
 
-  if (!account) return
-
-  const currentState = poolsInfo[chainId]?.[account]
+  const currentState = poolsInfo[chainId]
   const updatedState = {
     ...currentState,
     ...Object.keys(update).reduce((acc, address) => {
@@ -59,7 +55,7 @@ export const upsertPoolsInfoAtom = atom(null, (get, set, update: Record<string, 
     ...poolsInfo,
     [chainId]: {
       ...poolsInfo[chainId],
-      [account]: updatedState,
+      ...updatedState,
     },
   })
 })

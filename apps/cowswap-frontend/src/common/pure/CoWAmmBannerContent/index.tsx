@@ -6,6 +6,8 @@ import { LpTokenProvider } from '@cowprotocol/types'
 
 import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
+import { VampireAttackContext } from 'modules/yield/types'
+
 import { TextFit } from './Common'
 import { LP_PROVIDER_NAMES } from './const'
 import { GlobalContent } from './GlobalContent'
@@ -13,7 +15,6 @@ import { PoolInfo } from './PoolInfo'
 import { TokenSelectorContent } from './TokenSelectorContent'
 import { CoWAmmBannerContext } from './types'
 
-import { VampireAttackContext } from '../../containers/CoWAmmBanner/types'
 import { useSafeMemoObject } from '../../hooks/useSafeMemo'
 
 interface CoWAmmBannerContentProps {
@@ -59,6 +60,9 @@ export function CoWAmmBannerContent({
 
   const firstItemWithBetterCowAmm = superiorAlternatives?.[0]
   const isCowAmmAverageBetter = !!averageApyDiff && averageApyDiff > 0
+  const betterAlternativeApyDiff = firstItemWithBetterCowAmm
+    ? firstItemWithBetterCowAmm.alternativePoolInfo.apy - firstItemWithBetterCowAmm.tokenPoolInfo.apy
+    : undefined
 
   const worseThanCoWAmmProviders = useMemo(() => {
     return superiorAlternatives?.reduce((acc, item) => {
@@ -104,8 +108,8 @@ export function CoWAmmBannerContent({
           minFontSize={isTokenSelectorView ? 35 : isMobile ? 40 : isCowAmmAverageBetter ? 60 : 80}
           maxFontSize={isTokenSelectorView ? 65 : isMobile ? 50 : isCowAmmAverageBetter ? 60 : 80}
         >
-          {firstItemWithBetterCowAmm
-            ? `+${firstItemWithBetterCowAmm.alternativePoolInfo.apy.toFixed(1)}%`
+          {firstItemWithBetterCowAmm && betterAlternativeApyDiff && betterAlternativeApyDiff > 0
+            ? `+${betterAlternativeApyDiff.toFixed(1)}%`
             : isCowAmmAverageBetter
               ? `+${averageApyDiff}%`
               : `${cowAmmLpTokensCount}+`}

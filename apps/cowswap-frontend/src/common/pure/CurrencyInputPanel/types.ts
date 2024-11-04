@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
@@ -13,4 +15,5 @@ export interface CurrencyInfo {
   receiveAmountInfo: ReceiveAmountInfo | null
   balance: CurrencyAmount<Currency> | null
   fiatAmount: CurrencyAmount<Currency> | null
+  topContent?: ReactNode
 }
