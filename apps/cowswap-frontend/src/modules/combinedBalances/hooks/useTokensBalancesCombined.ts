@@ -6,17 +6,19 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from 'ethers'
 
 import { usePreHookBalanceDiff } from 'modules/hooksStore/hooks/useBalancesDiff'
+import { useIsHooksTradeType } from 'modules/trade'
 
 export function useTokensBalancesCombined() {
   const { account } = useWalletInfo()
   const preHooksBalancesDiff = usePreHookBalanceDiff()
   const tokenBalances = useTokensBalances()
+  const isHooksTradeType = useIsHooksTradeType()
 
   return useMemo(() => {
-    if (!account) return tokenBalances
+    if (!account || !isHooksTradeType) return tokenBalances
     const accountBalancesDiff = preHooksBalancesDiff[account.toLowerCase()] || {}
     return applyBalanceDiffs(tokenBalances, accountBalancesDiff)
-  }, [account, preHooksBalancesDiff, tokenBalances])
+  }, [account, preHooksBalancesDiff, tokenBalances, isHooksTradeType])
 }
 
 function applyBalanceDiffs(currentState: BalancesState, diffs: Record<string, string>): BalancesState {
