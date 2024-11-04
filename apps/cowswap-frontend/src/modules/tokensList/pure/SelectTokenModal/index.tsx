@@ -88,7 +88,12 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
       {inputValue.trim() ? (
         <TokenSearchResults searchInput={inputValue.trim()} {...selectTokenContext} />
       ) : (
-        <TokensVirtualList allTokens={allTokens} {...selectTokenContext} account={account} />
+        <TokensVirtualList
+          allTokens={allTokens}
+          {...selectTokenContext}
+          account={account}
+          displayLpTokenLists={displayLpTokenLists}
+        />
       )}
       <styledEl.Separator />
       <div>

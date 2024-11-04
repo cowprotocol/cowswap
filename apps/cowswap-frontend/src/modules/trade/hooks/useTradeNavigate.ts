@@ -4,6 +4,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useLocation } from 'react-router-dom'
 
+import { RoutesValues } from 'common/constants/routes'
 import { useNavigate } from 'common/hooks/useNavigate'
 
 import { useTradeTypeInfo } from './useTradeTypeInfo'
@@ -16,7 +17,8 @@ interface UseTradeNavigateCallback {
   (
     chainId: SupportedChainId | null | undefined,
     { inputCurrencyId, outputCurrencyId }: TradeCurrenciesIds,
-    searchParams?: TradeSearchParams
+    searchParams?: TradeSearchParams,
+    customRoute?: RoutesValues,
   ): void
 }
 
@@ -30,9 +32,11 @@ export function useTradeNavigate(): UseTradeNavigateCallback {
     (
       chainId: SupportedChainId | null | undefined,
       { inputCurrencyId, outputCurrencyId }: TradeCurrenciesIds,
-      searchParams?: TradeSearchParams
+      searchParams?: TradeSearchParams,
+      customRoute?: RoutesValues,
     ) => {
-      if (!tradeRoute) return
+      const targetRoute = customRoute || tradeRoute
+      if (!targetRoute) return
 
       const route = parameterizeTradeRoute(
         {
@@ -43,7 +47,7 @@ export function useTradeNavigate(): UseTradeNavigateCallback {
           outputCurrencyAmount: undefined,
           orderKind: undefined,
         },
-        tradeRoute
+        targetRoute,
       )
 
       if (location.pathname === route) return
@@ -52,6 +56,6 @@ export function useTradeNavigate(): UseTradeNavigateCallback {
 
       navigate({ pathname: route, search })
     },
-    [tradeRoute, navigate, location.pathname, location.search]
+    [tradeRoute, navigate, location.pathname, location.search],
   )
 }

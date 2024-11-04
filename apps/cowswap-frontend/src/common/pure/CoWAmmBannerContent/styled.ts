@@ -1,5 +1,5 @@
 import { TokenLogoWrapper } from '@cowprotocol/tokens'
-import { UI, Media } from '@cowprotocol/ui'
+import { UI, Media, ExternalLink } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
 import styled, { keyframes } from 'styled-components/macro'
@@ -188,6 +188,7 @@ export const PoolInfo = styled.div<{
     border-radius: 62px;
     width: min-content;
     box-shadow: var(${UI.BOX_SHADOW_2});
+    align-items: center;
 
     ${Media.upToSmall()} {
       margin: 0 auto;
@@ -264,7 +265,7 @@ export const CTAButton = styled.button<{
   }
 `
 
-export const SecondaryLink = styled.a`
+export const SecondaryLink = styled(ExternalLink)`
   color: var(${UI.COLOR_COWAMM_LIGHT_GREEN});
   font-size: 14px;
   font-weight: 500;

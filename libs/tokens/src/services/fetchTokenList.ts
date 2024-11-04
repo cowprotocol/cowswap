@@ -87,7 +87,7 @@ function listStateFromSourceConfig(result: ListState, list: ListSourceConfig): L
     ...result,
     priority: list.priority,
     source: list.source,
-    category: list.category
+    lpTokenProvider: list.lpTokenProvider,
   }
 }
 
