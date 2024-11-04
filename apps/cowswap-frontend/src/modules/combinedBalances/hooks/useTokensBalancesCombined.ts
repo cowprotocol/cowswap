@@ -14,7 +14,7 @@ export function useTokensBalancesCombined() {
 
   return useMemo(() => {
     if (!account) return tokenBalances
-    const accountBalancesDiff = preHooksBalancesDiff[account] || {}
+    const accountBalancesDiff = preHooksBalancesDiff[account.toLowerCase()] || {}
     return applyBalanceDiffs(tokenBalances, accountBalancesDiff)
   }, [account, preHooksBalancesDiff, tokenBalances])
 }
