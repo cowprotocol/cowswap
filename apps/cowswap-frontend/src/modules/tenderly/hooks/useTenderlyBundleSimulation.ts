@@ -81,7 +81,6 @@ export function useTenderlyBundleSimulation() {
 
   const getNewSimulationData = useCallback(
     async ([_, preHooks, postHooks]: [string, CowHookDetails[], CowHookDetails[]]) => {
-      console.log({ _, preHooks, postHooks })
       try {
         const simulationData = await simulateBundle()
 
