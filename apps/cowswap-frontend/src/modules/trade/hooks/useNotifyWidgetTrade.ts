@@ -2,13 +2,14 @@ import { useEffect, useRef } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { AtomsAndUnits, CowWidgetEvents, OnTradeParamsPayload } from '@cowprotocol/events'
-import { TokenInfo, UiOrderType } from '@cowprotocol/types'
+import { TokenInfo } from '@cowprotocol/types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 
+import { TradeTypeToUiOrderType } from '../const/common'
 import { TradeType } from '../types'
 import { TradeDerivedState } from '../types/TradeDerivedState'
 
@@ -30,13 +31,6 @@ export function useNotifyWidgetTrade() {
       getTradeParamsEventPayload(state.tradeType, state),
     )
   }, [state])
-}
-
-const TradeTypeToUiOrderType: Record<TradeType, UiOrderType> = {
-  [TradeType.SWAP]: UiOrderType.SWAP,
-  [TradeType.LIMIT_ORDER]: UiOrderType.LIMIT,
-  [TradeType.ADVANCED_ORDERS]: UiOrderType.TWAP,
-  [TradeType.YIELD]: UiOrderType.YIELD,
 }
 
 function getTradeParamsEventPayload(tradeType: TradeType, state: TradeDerivedState): OnTradeParamsPayload {

@@ -23,4 +23,7 @@ export type TokenInfo = {
   decimals: number
   symbol: string
   logoURI?: string
+  tokens?: string[]
+  isLpToken?: boolean
+  isCoWAmmToken?: boolean
 }

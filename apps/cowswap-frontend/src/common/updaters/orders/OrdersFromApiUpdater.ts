@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { EnrichedOrder, EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { TokensByAddress, useAllTokens } from '@cowprotocol/tokens'
+import { TokensByAddress, useAllActiveTokens } from '@cowprotocol/tokens'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
@@ -32,7 +32,7 @@ const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
 function _transformOrderBookOrderToStoreOrder(
   order: EnrichedOrder,
   chainId: ChainId,
-  allTokens: TokensByAddress
+  allTokens: TokensByAddress,
 ): Order | undefined {
   const {
     uid: id,
@@ -63,7 +63,7 @@ function _transformOrderBookOrderToStoreOrder(
     console.warn(
       `OrdersFromApiUpdater::Tokens not found for order ${id}: sellToken ${
         !inputToken ? sellToken : 'found'
-      } - buyToken ${!outputToken ? buyToken : 'found'}`
+      } - buyToken ${!outputToken ? buyToken : 'found'}`,
     )
     return
   }
@@ -110,7 +110,7 @@ function _getInputToken(
   isEthFlow: boolean,
   chainId: ChainId,
   sellToken: string,
-  allTokens: TokensByAddress
+  allTokens: TokensByAddress,
 ): ReturnType<typeof getTokenFromMapping> {
   return isEthFlow ? NATIVE_CURRENCIES[chainId] : getTokenFromMapping(sellToken, chainId, allTokens)
 }
@@ -141,7 +141,7 @@ export function OrdersFromApiUpdater(): null {
   const clearOrderStorage = useClearOrdersStorage()
 
   const { account, chainId } = useWalletInfo()
-  const allTokens = useAllTokens()
+  const allTokens = useAllActiveTokens()
   const tokensAreLoaded = useMemo(() => Object.keys(allTokens).length > 0, [allTokens])
   const addOrUpdateOrders = useAddOrUpdateOrders()
   const updateApiOrders = useSetAtom(apiOrdersAtom)
@@ -176,7 +176,7 @@ export function OrdersFromApiUpdater(): null {
         console.error(`OrdersFromApiUpdater::Failed to fetch orders`, e)
       }
     },
-    [addOrUpdateOrders, ordersFromOrderBook, getTokensForOrdersList, isSafeWallet]
+    [addOrUpdateOrders, ordersFromOrderBook, getTokensForOrdersList, isSafeWallet],
   )
 
   useEffect(() => {

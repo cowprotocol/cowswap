@@ -28,27 +28,7 @@ export const StyledLink = styled.a`
     text-decoration: none;
   }
 `
-const LinkIconWrapper = styled.a`
-  text-decoration: none;
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  display: flex;
 
-  :hover {
-    text-decoration: none;
-    opacity: 0.7;
-  }
-
-  :focus {
-    outline: none;
-    text-decoration: none;
-  }
-
-  :active {
-    text-decoration: none;
-  }
-`
 export const LinkIcon = styled(LinkIconFeather as any)`
   height: 16px;
   width: 18px;
@@ -113,25 +93,4 @@ function handleClickExternalLink(cowAnalytics: CowAnalytics, event: React.MouseE
       }
     },
   })
-}
-
-export function ExternalLinkIcon({
-  target = '_blank',
-  href,
-  rel = 'noopener noreferrer',
-  ...rest
-}: Omit<HTMLProps<HTMLAnchorElement>, 'as' | 'ref' | 'onClick'> & { href: string }) {
-  const cowAnalytics = useCowAnalytics()
-
-  return (
-    <LinkIconWrapper
-      target={target}
-      rel={rel}
-      href={href}
-      onClick={(e) => handleClickExternalLink(cowAnalytics, e)}
-      {...rest}
-    >
-      <LinkIcon />
-    </LinkIconWrapper>
-  )
 }

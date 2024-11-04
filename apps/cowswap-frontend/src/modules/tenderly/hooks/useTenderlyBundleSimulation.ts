@@ -93,7 +93,7 @@ export function useTenderlyBundleSimulation() {
   }, [preHooks, postHooks, simulateBundle])
 
   const { data, isValidating: isBundleSimulationLoading } = useSWR(
-    ['tenderly-bundle-simulation', postHooks, preHooks],
+    ['tenderly-bundle-simulation', postHooks, preHooks, orderParams?.sellTokenAddress, orderParams?.buyTokenAddress],
     getNewSimulationData,
     {
       revalidateOnFocus: false,

@@ -4,7 +4,6 @@ import { useCallback, useMemo } from 'react'
 import { formatSymbol, getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { useENS } from '@cowprotocol/ens'
 import { useAreThereTokensWithSameSymbol, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
-import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -20,6 +19,7 @@ import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
 
 import { changeSwapAmountAnalytics, switchTokensAnalytics } from 'modules/analytics'
+import type { TradeWidgetActions } from 'modules/trade'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useTradeSlippage } from 'modules/tradeSlippage'
@@ -50,13 +50,6 @@ export function useSwapState(): AppState['swap'] {
 
 export type Currencies = { [field in Field]?: Currency | null }
 
-export interface SwapActions {
-  onCurrencySelection: (field: Field, currency: Currency) => void
-  onSwitchTokens: Command
-  onUserInput: (field: Field, typedValue: string) => void
-  onChangeRecipient: (recipient: string | null) => void
-}
-
 interface DerivedSwapInfo {
   currencies: Currencies
   currenciesIds: { [field in Field]?: string | null }
@@ -69,7 +62,7 @@ interface DerivedSwapInfo {
   trade: TradeGp | undefined
 }
 
-export function useSwapActionHandlers(): SwapActions {
+export function useSwapActionHandlers(): TradeWidgetActions {
   const { chainId } = useWalletInfo()
   const dispatch = useAppDispatch()
   const onCurrencySelection = useNavigateOnCurrencySelection()

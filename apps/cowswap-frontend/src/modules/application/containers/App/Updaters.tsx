@@ -13,13 +13,16 @@ import { FinalizeTxUpdater } from 'modules/onchainTransactions'
 import { OrdersNotificationsUpdater } from 'modules/orders'
 import { EthFlowDeadlineUpdater } from 'modules/swap/state/EthFlow/updaters'
 import { useOnTokenListAddingError } from 'modules/tokensList'
+import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { UsdPricesUpdater } from 'modules/usdAmount'
+import { PoolsInfoUpdater } from 'modules/yield/shared'
 
 import { ProgressBarV2ExecutingOrdersUpdater } from 'common/hooks/orderProgressBarV2'
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { FeatureFlagsUpdater } from 'common/updaters/FeatureFlagsUpdater'
 import { FeesUpdater } from 'common/updaters/FeesUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
+import { LpBalancesAndAllowancesUpdater } from 'common/updaters/LpBalancesAndAllowancesUpdater'
 import {
   CancelledOrdersUpdater,
   ExpiredOrdersUpdater,
@@ -36,6 +39,8 @@ export function Updaters() {
   const { tokenLists, appCode, customTokens, standaloneMode } = useInjectedWidgetParams()
   const onTokenListAddingError = useOnTokenListAddingError()
   const { isGeoBlockEnabled } = useFeatureFlags()
+  const tradeTypeInfo = useTradeTypeInfo()
+  const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
 
   return (
     <>
@@ -65,7 +70,11 @@ export function Updaters() {
       <ProgressBarV2ExecutingOrdersUpdater />
       <SolversInfoUpdater />
 
-      <TokensListsUpdater chainId={chainId} isGeoBlockEnabled={isGeoBlockEnabled} />
+      <TokensListsUpdater
+        chainId={chainId}
+        isGeoBlockEnabled={isGeoBlockEnabled}
+        enableLpTokensByDefault={isYieldWidget}
+      />
       <WidgetTokensListsUpdater
         tokenLists={tokenLists}
         customTokens={customTokens}
@@ -76,6 +85,8 @@ export function Updaters() {
       />
       <UnsupportedTokensUpdater />
       <BalancesAndAllowancesUpdater chainId={chainId} account={account} />
+      <LpBalancesAndAllowancesUpdater chainId={chainId} account={account} enablePolling={isYieldWidget} />
+      <PoolsInfoUpdater />
     </>
   )
 }

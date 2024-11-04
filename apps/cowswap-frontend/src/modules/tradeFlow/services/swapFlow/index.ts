@@ -8,8 +8,7 @@ import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
 import { emitPostedOrderEvent } from 'modules/orders'
-import { handlePermit } from 'modules/permit'
-import { callDataContainsPermitSigner } from 'modules/permit'
+import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
@@ -23,7 +22,7 @@ export async function swapFlow(
   input: TradeFlowContext,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
-): Promise<void | false> {
+): Promise<void | boolean> {
   const {
     tradeConfirmActions,
     callbacks: { getCachedPermit },
@@ -124,6 +123,8 @@ export async function swapFlow(
     logTradeFlow('SWAP FLOW', 'STEP 7: show UI of the successfully sent transaction', orderUid)
     tradeConfirmActions.onSuccess(orderUid)
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
+
+    return true
   } catch (error: any) {
     logTradeFlow('SWAP FLOW', 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)

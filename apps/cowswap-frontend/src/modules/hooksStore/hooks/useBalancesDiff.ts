@@ -72,7 +72,7 @@ export function useHookBalancesDiff(isPreHook: boolean, hookToEditDetails?: CowH
     const previousHookIndex = hookToEditIndex - 1
 
     return data[otherHooks[previousHookIndex]?.uuid]?.cumulativeBalancesDiff || EMPTY_BALANCE_DIFF
-  }, [data, hookToEditDetails])
+  }, [data, hookToEditDetails, isPreHook, preHooks, postHooks, firstPostHookBalanceDiff])
 
   return useMemo(() => {
     if (hookToEditDetails?.uuid) return hookToEditBalanceDiff

@@ -1,11 +1,12 @@
-import { useSetAtom } from 'jotai/index'
+import { useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 import { useEffect, useMemo } from 'react'
 
 import { ERC_20_INTERFACE } from '@cowprotocol/abis'
+import { usePrevious } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useMultipleContractSingleData } from '@cowprotocol/multicall'
+import { MultiCallOptions, useMultipleContractSingleData } from '@cowprotocol/multicall'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { SWRConfiguration } from 'swr'
@@ -22,11 +23,21 @@ export interface PersistBalancesAndAllowancesParams {
   balancesSwrConfig: SWRConfiguration
   allowancesSwrConfig: SWRConfiguration
   setLoadingState?: boolean
+  multicallOptions?: MultiCallOptions
 }
 
 export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowancesParams) {
-  const { account, chainId, tokenAddresses, setLoadingState, balancesSwrConfig, allowancesSwrConfig } = params
+  const {
+    account,
+    chainId,
+    tokenAddresses,
+    setLoadingState,
+    balancesSwrConfig,
+    allowancesSwrConfig,
+    multicallOptions = MULTICALL_OPTIONS,
+  } = params
 
+  const prevAccount = usePrevious(account)
   const setBalances = useSetAtom(balancesAtom)
   const setAllowances = useSetAtom(allowancesFullState)
 
@@ -43,8 +54,8 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     ERC_20_INTERFACE,
     'balanceOf',
     balanceOfParams,
-    MULTICALL_OPTIONS,
-    balancesSwrConfig
+    multicallOptions,
+    balancesSwrConfig,
   )
 
   const { isLoading: isAllowancesLoading, data: allowances } = useMultipleContractSingleData<[BigNumber]>(
@@ -52,8 +63,8 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     ERC_20_INTERFACE,
     'allowance',
     allowanceParams,
-    MULTICALL_OPTIONS,
-    allowancesSwrConfig
+    multicallOptions,
+    allowancesSwrConfig,
   )
 
   // Set balances loading state
@@ -110,9 +121,9 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
 
   // Reset states when wallet is not connected
   useEffect(() => {
-    if (!account) {
+    if (prevAccount && prevAccount !== account) {
       resetBalances()
       resetAllowances()
     }
-  }, [account, resetAllowances, resetBalances])
+  }, [account, prevAccount, resetAllowances, resetBalances])
 }

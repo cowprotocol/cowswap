@@ -31,14 +31,12 @@ import {
   TradeWidget,
   TradeWidgetContainer,
   TradeWidgetSlots,
+  useIsEoaEthFlow,
+  useIsNoImpactWarningAccepted,
   useReceiveAmountInfo,
   useTradePriceImpact,
-} from 'modules/trade'
-import {
-  useIsEoaEthFlow,
   useTradeRouteContext,
   useUnknownImpactWarning,
-  useIsNoImpactWarningAccepted,
 } from 'modules/trade'
 import { getQuoteTimeOffset } from 'modules/tradeQuote'
 import { useTradeSlippage } from 'modules/tradeSlippage'
@@ -165,11 +163,14 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const openNativeWrapModal = useCallback(() => setOpenNativeWrapModal(true), [])
   const dismissNativeWrapModal = useCallback(() => setOpenNativeWrapModal(false), [])
 
-  const swapButtonContext = useSwapButtonContext({
-    feeWarningAccepted,
-    impactWarningAccepted,
-    openNativeWrapModal,
-  })
+  const swapButtonContext = useSwapButtonContext(
+    {
+      feeWarningAccepted,
+      impactWarningAccepted,
+      openNativeWrapModal,
+    },
+    swapActions,
+  )
 
   const tradeUrlParams = useTradeRouteContext()
 
@@ -189,21 +190,27 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   }
   const showTwapSuggestionBanner = !enabledTradeTypes || enabledTradeTypes.includes(TradeType.ADVANCED)
 
-  const swapWarningsTopProps: SwapWarningsTopProps = {
-    chainId,
-    trade,
-    showTwapSuggestionBanner,
-    buyingFiatAmount,
-    priceImpact: priceImpactParams.priceImpact,
-    tradeUrlParams,
-  }
+  const swapWarningsTopProps: SwapWarningsTopProps = useMemo(
+    () => ({
+      chainId,
+      trade,
+      showTwapSuggestionBanner,
+      buyingFiatAmount,
+      priceImpact: priceImpactParams.priceImpact,
+      tradeUrlParams,
+    }),
+    [chainId, trade, showTwapSuggestionBanner, buyingFiatAmount, priceImpactParams.priceImpact, tradeUrlParams],
+  )
 
-  const swapWarningsBottomProps: SwapWarningsBottomProps = {
-    isSupportedWallet,
-    swapIsUnsupported: isSwapUnsupported,
-    currencyIn: currencies.INPUT || undefined,
-    currencyOut: currencies.OUTPUT || undefined,
-  }
+  const swapWarningsBottomProps: SwapWarningsBottomProps = useMemo(
+    () => ({
+      isSupportedWallet,
+      swapIsUnsupported: isSwapUnsupported,
+      currencyIn: currencies.INPUT || undefined,
+      currencyOut: currencies.OUTPUT || undefined,
+    }),
+    [isSupportedWallet, isSwapUnsupported, currencies.INPUT, currencies.OUTPUT],
+  )
 
   const slots: TradeWidgetSlots = {
     settingsWidget: <SettingsTab recipientToggleState={recipientToggleState} deadlineState={deadlineState} />,
@@ -242,6 +249,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     isEoaEthFlow,
     compactView: true,
     enableSmartSlippage: true,
+    isMarketOrderWidget: true,
     recipient,
     showRecipient: showRecipientControls,
     isTradePriceUpdating,

@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect } from 'react'
 
-import { HookDappBase, HookDappType } from '@cowprotocol/hook-dapp-lib'
+import { HookDappBase, HookDappType, HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { HookDappIframe } from '../../../types/hooks'
@@ -9,7 +9,7 @@ import { validateHookDappManifest } from '../../../validateHookDappManifest'
 interface ExternalDappLoaderProps {
   input: string
   isPreHook: boolean
-  isSmartContractWallet: boolean | undefined
+  walletType: HookDappWalletCompatibility
   setDappInfo: Dispatch<SetStateAction<HookDappIframe | null>>
   setLoading: Dispatch<SetStateAction<boolean>>
   setManifestError: Dispatch<SetStateAction<string | React.ReactNode | null>>
@@ -20,7 +20,7 @@ export function ExternalDappLoader({
   setLoading,
   setManifestError,
   setDappInfo,
-  isSmartContractWallet,
+  walletType,
   isPreHook,
 }: ExternalDappLoaderProps) {
   const { chainId } = useWalletInfo()
@@ -41,7 +41,7 @@ export function ExternalDappLoader({
           data.cow_hook_dapp as HookDappBase,
           chainId,
           isPreHook,
-          isSmartContractWallet,
+          walletType === HookDappWalletCompatibility.SMART_CONTRACT,
         )
 
         if (validationError) {
@@ -70,7 +70,7 @@ export function ExternalDappLoader({
     return () => {
       isRequestRelevant = false
     }
-  }, [input, isSmartContractWallet, chainId])
+  }, [input, walletType, chainId, isPreHook, setDappInfo, setLoading, setManifestError])
 
   return null
 }
