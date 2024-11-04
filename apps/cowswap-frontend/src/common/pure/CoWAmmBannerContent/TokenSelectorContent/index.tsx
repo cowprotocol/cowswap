@@ -1,27 +1,18 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
-import { StarIcon, TextFit } from '../Common'
+import { StarIcon } from '../Common'
 import * as styledEl from '../styled'
 import { CoWAmmBannerContext } from '../types'
 
 interface TokenSelectorContentProps {
   isDarkMode: boolean
   context: CoWAmmBannerContext
+  children: ReactNode
 }
-export function TokenSelectorContent({ isDarkMode, context }: TokenSelectorContentProps) {
-  const {
-    title,
-    isMobile,
-    ctaText,
-    onClose,
-    onCtaClick,
-    aprMessage,
-    comparisonMessage,
-    handleCTAMouseEnter,
-    handleCTAMouseLeave,
-  } = context
+export function TokenSelectorContent({ isDarkMode, context, children }: TokenSelectorContentProps) {
+  const { title, ctaText, onClose, onCtaClick, handleCTAMouseEnter, handleCTAMouseLeave } = context
 
   const mainColor = isDarkMode ? UI.COLOR_COWAMM_LIGHT_GREEN : UI.COLOR_COWAMM_DARK_GREEN
 
@@ -45,16 +36,7 @@ export function TokenSelectorContent({ isDarkMode, context }: TokenSelectorConte
           height={90}
         >
           <StarIcon size={26} top={-16} right={80} color={UI.COLOR_COWAMM_LIGHTER_GREEN} />
-          <h3>
-            <TextFit mode="single" minFontSize={35} maxFontSize={65}>
-              {aprMessage}
-            </TextFit>
-          </h3>
-          <span>
-            <TextFit mode="multi" minFontSize={15} maxFontSize={isMobile ? 15 : 21}>
-              {comparisonMessage}
-            </TextFit>
-          </span>
+          {children}
           <StarIcon size={16} bottom={3} right={20} color={UI.COLOR_COWAMM_LIGHTER_GREEN} />
         </styledEl.Card>
         <styledEl.CTAButton

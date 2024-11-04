@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 
-import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import {
   ListState,
@@ -63,7 +63,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
   const { count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
 
   const [isManageWidgetOpen, setIsManageWidgetOpen] = useState(false)
-  const isSellErc20Selected = field === Field.OUTPUT && !(oppositeToken instanceof LpToken)
+  const disableErc20 = field === Field.OUTPUT && !!displayLpTokenLists
 
   const tokenListCategoryState = useState<TokenListCategory[] | null>(
     getDefaultTokenListCategories(field, oppositeToken, lpTokensWithBalancesCount),
@@ -201,7 +201,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
             hideFavoriteTokensTooltip={isInjectedWidgetMode}
             openPoolPage={openPoolPage}
             tokenListCategoryState={tokenListCategoryState}
-            disableErc20={isSellErc20Selected}
+            disableErc20={disableErc20}
             account={account}
           />
         )

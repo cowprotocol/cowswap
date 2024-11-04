@@ -1,11 +1,11 @@
 import { atom } from 'jotai'
 
-import { STABLECOINS } from '@cowprotocol/common-const'
+import { STABLECOINS, LpToken } from '@cowprotocol/common-const'
 import { getCurrencyAddress, isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
-import { derivedTradeStateAtom } from 'modules/trade'
+import { derivedTradeStateAtom, TradeType, tradeTypeAtom } from 'modules/trade'
 
 import { featureFlagsAtom } from 'common/state/featureFlagsState'
 
@@ -27,6 +27,8 @@ const COWSWAP_VOLUME_FEES: Record<SupportedChainId, VolumeFee | null> = {
 export const cowSwapFeeAtom = atom((get) => {
   const { chainId, account } = get(walletInfoAtom)
   const tradeState = get(derivedTradeStateAtom)
+  const tradeTypeState = get(tradeTypeAtom)
+  const isYieldWidget = tradeTypeState?.tradeType === TradeType.YIELD
   const featureFlags = get(featureFlagsAtom)
 
   const { inputCurrency, outputCurrency } = tradeState || {}
@@ -36,6 +38,9 @@ export const cowSwapFeeAtom = atom((get) => {
 
   // Don't user it when the currencies are not set
   if (!inputCurrency || !outputCurrency) return null
+
+  // No fee for Yield widget and LP tokens
+  if (isYieldWidget || inputCurrency instanceof LpToken || outputCurrency instanceof LpToken) return null
 
   // Don't use it when on arb1 and shouldn't apply fee based on percentage
   if (chainId === SupportedChainId.ARBITRUM_ONE && !shouldApplyFee(account, featureFlags.arb1CowSwapFeePercentage))
