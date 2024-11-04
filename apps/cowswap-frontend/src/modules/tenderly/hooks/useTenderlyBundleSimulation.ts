@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 
+import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import useSWR from 'swr'
@@ -78,22 +79,26 @@ export function useTenderlyBundleSimulation() {
     tokenSell,
   ])
 
-  const getNewSimulationData = useCallback(async () => {
-    try {
-      const simulationData = await simulateBundle()
+  const getNewSimulationData = useCallback(
+    async ([_, preHooks, postHooks]: [string, CowHookDetails[], CowHookDetails[]]) => {
+      console.log({ _, preHooks, postHooks })
+      try {
+        const simulationData = await simulateBundle()
 
-      if (!simulationData) {
-        return {}
+        if (!simulationData) {
+          return {}
+        }
+
+        return generateNewSimulationData(simulationData, { preHooks, postHooks })
+      } catch {
+        return generateSimulationDataToError({ preHooks, postHooks })
       }
-
-      return generateNewSimulationData(simulationData, { preHooks, postHooks })
-    } catch {
-      return generateSimulationDataToError({ preHooks, postHooks })
-    }
-  }, [preHooks, postHooks, simulateBundle])
+    },
+    [simulateBundle],
+  )
 
   const { data, isValidating: isBundleSimulationLoading } = useSWR(
-    ['tenderly-bundle-simulation', postHooks, preHooks, orderParams?.sellTokenAddress, orderParams?.buyTokenAddress],
+    ['tenderly-bundle-simulation', preHooks, postHooks],
     getNewSimulationData,
     {
       revalidateOnFocus: false,

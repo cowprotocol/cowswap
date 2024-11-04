@@ -7,7 +7,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { useCurrencyAmountBalanceCombined } from 'modules/swap/hooks/useCurrencyAmountBalanceCombined'
+import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
 import { ExtendedTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 

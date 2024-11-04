@@ -20,8 +20,8 @@ import styled from 'styled-components/macro'
 import { Field } from 'legacy/state/types'
 
 import { addListAnalytics } from 'modules/analytics'
+import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { usePermitCompatibleTokens } from 'modules/permit'
-import { useTokensBalancesCombined } from 'modules/swap/hooks/useTokensBalancesCombined'
 import { useLpTokensWithBalances } from 'modules/yield/shared'
 
 import { getDefaultTokenListCategories } from './getDefaultTokenListCategories'

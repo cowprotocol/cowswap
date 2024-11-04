@@ -3,7 +3,6 @@ import { useOrderParams } from './useOrderParams'
 import { useHooks } from './useHooks'
 import { useMemo } from 'react'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 import { BalancesDiff } from 'modules/tenderly/types'
 import { BigNumber } from 'ethers'
 
@@ -23,7 +22,7 @@ export function usePreHookBalanceDiff(): BalancesDiff {
 }
 
 // Returns all the ERC20 Balance Diff of the current hook to be passed to the iframe context
-export function useHookBalancesDiff(isPreHook: boolean, hookToEditDetails?: CowHookDetails): BalancesDiff {
+export function useHookBalancesDiff(isPreHook: boolean, hookToEditUid?: string): BalancesDiff {
   const { account } = useWalletInfo()
   const { data } = useTenderlyBundleSimulation()
   const orderParams = useOrderParams()
@@ -35,10 +34,10 @@ export function useHookBalancesDiff(isPreHook: boolean, hookToEditDetails?: CowH
     const balanceDiff: Record<string, string> = {}
 
     if (orderParams?.buyAmount && orderParams.buyTokenAddress && account)
-      balanceDiff[orderParams.buyTokenAddress] = orderParams.buyAmount
+      balanceDiff[orderParams.buyTokenAddress.toLowerCase()] = orderParams.buyAmount
 
     if (orderParams?.sellAmount && orderParams.sellTokenAddress && account)
-      balanceDiff[orderParams.sellTokenAddress] = `-${orderParams.sellAmount}`
+      balanceDiff[orderParams.sellTokenAddress.toLowerCase()] = `-${orderParams.sellAmount}`
 
     return { account: balanceDiff }
   }, [orderParams, account])
@@ -56,11 +55,11 @@ export function useHookBalancesDiff(isPreHook: boolean, hookToEditDetails?: CowH
   }, [data, postHooks, orderMockBalanceDiff, preHookBalanceDiff])
 
   const hookToEditBalanceDiff = useMemo(() => {
-    if (!data || !hookToEditDetails?.uuid) return EMPTY_BALANCE_DIFF
+    if (!data || !hookToEditUid) return EMPTY_BALANCE_DIFF
 
     const otherHooks = isPreHook ? preHooks : postHooks
 
-    const hookToEditIndex = otherHooks.findIndex((hook) => hook.uuid === hookToEditDetails.uuid)
+    const hookToEditIndex = otherHooks.findIndex((hook) => hook.uuid === hookToEditUid)
 
     // is editing first preHook -> return empty state
     if (!hookToEditIndex && isPreHook) return EMPTY_BALANCE_DIFF
@@ -72,27 +71,25 @@ export function useHookBalancesDiff(isPreHook: boolean, hookToEditDetails?: CowH
     const previousHookIndex = hookToEditIndex - 1
 
     return data[otherHooks[previousHookIndex]?.uuid]?.cumulativeBalancesDiff || EMPTY_BALANCE_DIFF
-  }, [data, hookToEditDetails, isPreHook, preHooks, postHooks, firstPostHookBalanceDiff])
+  }, [data, hookToEditUid, isPreHook, preHooks, postHooks, firstPostHookBalanceDiff])
 
   return useMemo(() => {
-    if (hookToEditDetails?.uuid) return hookToEditBalanceDiff
+    if (hookToEditUid) return hookToEditBalanceDiff
     if (isPreHook) return preHookBalanceDiff
     return postHookBalanceDiff
   }, [data, orderParams, preHooks, postHooks])
 }
 
-function mergeBalanceDiffs(
-  first: Record<string, Record<string, string>>,
-  second: Record<string, Record<string, string>>,
-): Record<string, Record<string, string>> {
-  const result: Record<string, Record<string, string>> = {}
+const addBigNumberStrings = (a: string, b: string): string => {
+  const bigA = BigNumber.from(a)
+  const bigB = BigNumber.from(b)
+  return bigA.add(bigB).toString()
+}
+
+function mergeBalanceDiffs(first: BalancesDiff, second: BalancesDiff): BalancesDiff {
+  const result: BalancesDiff = {}
 
   // Helper function to add BigNumber strings
-  const addBigNumberStrings = (a: string, b: string): string => {
-    const bigA = BigNumber.from(a)
-    const bigB = BigNumber.from(b)
-    return bigA.add(bigB).toString()
-  }
 
   // Process all addresses from first input
   for (const address of Object.keys(first)) {

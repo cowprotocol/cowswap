@@ -34,6 +34,7 @@ export function AppliedHookItem({ account, hookDetails, dapp, isPreHook, editHoo
   const { isValidating, data } = useTenderlyBundleSimulation()
 
   const simulationData = useMemo(() => {
+    console.log({ data, uuid: hookDetails.uuid })
     if (!data) return
     return data[hookDetails.uuid]
   }, [data, hookDetails.uuid])

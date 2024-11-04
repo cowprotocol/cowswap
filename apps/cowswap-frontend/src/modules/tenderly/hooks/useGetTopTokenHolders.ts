@@ -10,10 +10,7 @@ export function useGetTopTokenHolders() {
   return useCallback(
     async (params: GetTopTokenHoldersParams) => {
       const key = `${params.chainId}-${params.tokenAddress}`
-      if (cachedData[key]?.value) {
-        return cachedData[key].value
-      }
-      return fetchTopTokenHolders(params)
+      return cachedData[key]?.value || fetchTopTokenHolders(params)
     },
     [cachedData, fetchTopTokenHolders],
   )

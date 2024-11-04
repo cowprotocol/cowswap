@@ -12,10 +12,10 @@ import { useAddHook } from '../../hooks/useAddHook'
 import { useEditHook } from '../../hooks/useEditHook'
 import { useHookById } from '../../hooks/useHookById'
 import { useOrderParams } from '../../hooks/useOrderParams'
+import { useHookBalancesDiff } from '../../hooks/useBalancesDiff'
 import { HookDapp, HookDappContext as HookDappContextType } from '../../types/hooks'
 import { isHookDappIframe } from '../../utils'
 import { IframeDappContainer } from '../IframeDappContainer'
-import { useHookBalancesDiff } from 'modules/hooksStore/hooks/useBalancesDiff'
 
 interface HookDappContainerProps {
   dapp: HookDapp
@@ -36,7 +36,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
   const tradeState = useTradeState()
   const tradeNavigate = useTradeNavigate()
   const isDarkMode = useIsDarkMode()
-  const balancesDiff = useHookBalancesDiff(isPreHook, hookToEditDetails)
+  const balancesDiff = useHookBalancesDiff(isPreHook, hookToEditDetails?.uuid)
 
   const { inputCurrencyId = null, outputCurrencyId = null } = tradeState.state || {}
   const signer = useMemo(() => provider?.getSigner(), [provider])

@@ -16,6 +16,7 @@ import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useGetQuoteAndStatus, useIsBestQuoteLoading } from 'legacy/state/price/hooks'
 import { Field } from 'legacy/state/types'
 
+import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useTokenSupportsPermit } from 'modules/permit'
 import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
@@ -29,7 +30,6 @@ import { QuoteDeadlineParams } from 'modules/tradeQuote'
 import { useApproveState } from 'common/hooks/useApproveState'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
-import { useCurrencyAmountBalanceCombined } from './useCurrencyAmountBalanceCombined'
 import { useHandleSwapOrEthFlow } from './useHandleSwapOrEthFlow'
 import { useDerivedSwapInfo, useSwapActionHandlers } from './useSwapState'
 

@@ -14,7 +14,7 @@ export function useTokensBalancesCombined() {
 
   return useMemo(() => {
     if (!account) return tokenBalances
-    const accountBalancesDiff = preHooksBalancesDiff[account.toLowerCase()] || {}
+    const accountBalancesDiff = preHooksBalancesDiff[account] || {}
     return applyBalanceDiffs(tokenBalances, accountBalancesDiff)
   }, [account, preHooksBalancesDiff, tokenBalances])
 }
@@ -28,12 +28,12 @@ function applyBalanceDiffs(currentState: BalancesState, diffs: Record<string, st
 
   // Normalize current state values
   for (const address of Object.keys(currentState.values)) {
-    normalizedCurrentValues[address.toLowerCase()] = currentState.values[address]
+    normalizedCurrentValues[address] = currentState.values[address]
   }
 
   // Normalize diffs
   for (const address of Object.keys(diffs)) {
-    normalizedDiffs[address.toLowerCase()] = diffs[address]
+    normalizedDiffs[address] = diffs[address]
   }
 
   // Process all addresses in the normalized current state

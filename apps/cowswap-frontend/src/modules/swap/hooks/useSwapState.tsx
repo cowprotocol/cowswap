@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react'
 
-// import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { formatSymbol, getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { useENS } from '@cowprotocol/ens'
 import { useAreThereTokensWithSameSymbol, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
@@ -19,6 +18,7 @@ import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
 
 import { changeSwapAmountAnalytics, switchTokensAnalytics } from 'modules/analytics'
+import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
 import type { TradeWidgetActions } from 'modules/trade'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
@@ -27,8 +27,6 @@ import { useVolumeFee } from 'modules/volumeFee'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
-
-import { useCurrencyAmountBalanceCombined } from './useCurrencyAmountBalanceCombined'
 
 export const BAD_RECIPIENT_ADDRESSES: { [address: string]: true } = {
   '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f': true, // v2 factory

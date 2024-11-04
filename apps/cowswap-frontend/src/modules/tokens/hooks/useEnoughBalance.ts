@@ -2,7 +2,7 @@ import { AllowancesState, BalancesState, useTokensAllowances } from '@cowprotoco
 import { isEnoughAmount, getAddress, getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useTokensBalancesCombined } from 'modules/swap/hooks/useTokensBalancesCombined'
+import { useTokensBalancesCombined } from 'modules/combinedBalances'
 
 export interface UseEnoughBalanceParams {
   /**
