@@ -14,11 +14,20 @@ import { TokenListItem } from '../TokenListItem'
 export interface TokensVirtualListProps extends SelectTokenContext {
   allTokens: TokenWithLogo[]
   account: string | undefined
+  displayLpTokenLists?: boolean
 }
 
 export function TokensVirtualList(props: TokensVirtualListProps) {
-  const { allTokens, selectedToken, balancesState, onSelectToken, unsupportedTokens, permitCompatibleTokens, account } =
-    props
+  const {
+    allTokens,
+    selectedToken,
+    balancesState,
+    onSelectToken,
+    unsupportedTokens,
+    permitCompatibleTokens,
+    account,
+    displayLpTokenLists,
+  } = props
   const { values: balances } = balancesState
 
   const isWalletConnected = !!account
@@ -50,7 +59,7 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
 
   return (
     <VirtualList id="tokens-list" items={sortedTokens} getItemView={getItemView}>
-      <CoWAmmBanner isTokenSelectorView />
+      {displayLpTokenLists ? null : <CoWAmmBanner isTokenSelectorView />}
     </VirtualList>
   )
 }

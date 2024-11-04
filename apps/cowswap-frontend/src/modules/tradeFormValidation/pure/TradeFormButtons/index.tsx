@@ -11,16 +11,22 @@ export interface TradeFormButtonsProps {
   validation: TradeFormValidation | null
   context: TradeFormButtonContext
   confirmText: string
+  className?: string
   isDisabled?: boolean
 }
 
 export function TradeFormButtons(props: TradeFormButtonsProps) {
-  const { validation, context, isDisabled, confirmText } = props
+  const { validation, context, isDisabled, confirmText, className } = props
 
   // When there are no validation errors
   if (validation === null) {
     return (
-      <TradeFormBlankButton id="do-trade-button" disabled={isDisabled} onClick={() => context.confirmTrade()}>
+      <TradeFormBlankButton
+        id="do-trade-button"
+        className={className}
+        disabled={isDisabled}
+        onClick={() => context.confirmTrade()}
+      >
         {confirmText}
       </TradeFormBlankButton>
     )
@@ -33,7 +39,7 @@ export function TradeFormButtons(props: TradeFormButtonsProps) {
   }
 
   return (
-    <TradeFormBlankButton id={buttonFactory.id} disabled={true}>
+    <TradeFormBlankButton id={buttonFactory.id} className={className} disabled={true}>
       <Trans>{buttonFactory.text}</Trans>
     </TradeFormBlankButton>
   )

@@ -7,22 +7,16 @@ import { injectedWidgetPartnerFeeAtom } from 'modules/injectedWidget'
 import { tradeTypeAtom } from 'modules/trade'
 import { TradeType } from 'modules/trade/types/TradeType'
 
-import { featureFlagsAtom } from 'common/state/featureFlagsState'
-
 import { cowSwapFeeAtom } from './cowswapFeeAtom'
 
 import { VolumeFee } from '../types'
 
 export const volumeFeeAtom = atom<VolumeFee | undefined>((get) => {
-  const featureFlags = get(featureFlagsAtom)
   const cowSwapFee = get(cowSwapFeeAtom)
   const widgetPartnerFee = get(widgetPartnerFeeAtom)
 
-  if (featureFlags.isCowSwapFeeEnabled) {
-    return cowSwapFee || widgetPartnerFee
-  }
-
-  return widgetPartnerFee
+  // CoW Swap Fee won't be enabled when in Widget mode, thus it takes precedence here
+  return cowSwapFee || widgetPartnerFee
 })
 
 const widgetPartnerFeeAtom = atom<VolumeFee | undefined>((get) => {

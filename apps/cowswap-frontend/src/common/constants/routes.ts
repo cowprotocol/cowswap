@@ -62,4 +62,5 @@ export const YIELD_MENU_ITEM = {
   label: 'Yield',
   fullLabel: 'Yield',
   description: 'Provide liquidity',
+  badge: 'New',
 }

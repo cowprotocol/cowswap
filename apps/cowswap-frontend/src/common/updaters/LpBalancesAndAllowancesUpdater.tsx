@@ -1,3 +1,4 @@
+import { atom, useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState } from 'react'
 
 import { usePersistBalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
@@ -16,6 +17,8 @@ const LP_MULTICALL_OPTIONS = { consequentExecution: true }
 // We start the updater with a delay
 const LP_UPDATER_START_DELAY = ms`3s`
 
+export const areLpBalancesLoadedAtom = atom(false)
+
 export interface BalancesAndAllowancesUpdaterProps {
   account: string | undefined
   chainId: SupportedChainId
@@ -24,6 +27,7 @@ export interface BalancesAndAllowancesUpdaterProps {
 export function LpBalancesAndAllowancesUpdater({ account, chainId, enablePolling }: BalancesAndAllowancesUpdaterProps) {
   const allLpTokens = useAllLpTokens(LP_TOKEN_LIST_CATEGORIES)
   const [isUpdaterPaused, setIsUpdaterPaused] = useState(true)
+  const setAreLpBalancesLoaded = useSetAtom(areLpBalancesLoadedAtom)
 
   const lpTokenAddresses = useMemo(() => allLpTokens.map((token) => token.address), [allLpTokens])
 
@@ -35,6 +39,7 @@ export function LpBalancesAndAllowancesUpdater({ account, chainId, enablePolling
     balancesSwrConfig: enablePolling ? LP_BALANCES_SWR_CONFIG : SWR_NO_REFRESH_OPTIONS,
     allowancesSwrConfig: enablePolling ? LP_ALLOWANCES_SWR_CONFIG : SWR_NO_REFRESH_OPTIONS,
     multicallOptions: LP_MULTICALL_OPTIONS,
+    onBalancesLoaded: setAreLpBalancesLoaded,
   })
 
   useEffect(() => {
