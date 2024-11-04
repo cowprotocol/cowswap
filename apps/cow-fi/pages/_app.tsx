@@ -9,7 +9,7 @@ import { useInitializeUtm } from 'modules/utm'
 import { WithLDProvider } from '@/components/WithLDProvider'
 import { ThemeProvider } from '../theme'
 import { useEffect } from 'react'
-import { initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@/lib/analytics/initGtm'
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props
