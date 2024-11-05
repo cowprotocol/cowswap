@@ -3,11 +3,14 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import ms from 'ms.macro'
-import useSWR, { SWRResponse } from 'swr'
+import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
 
 const SWR_CONFIG = { refreshInterval: ms`11s` }
 
-export function useNativeTokenBalance(account: string | undefined): SWRResponse<BigNumber> {
+export function useNativeTokenBalance(
+  account: string | undefined,
+  swrConfig: SWRConfiguration = SWR_CONFIG,
+): SWRResponse<BigNumber> {
   const provider = useWalletProvider()
 
   return useSWR(
@@ -17,6 +20,6 @@ export function useNativeTokenBalance(account: string | undefined): SWRResponse<
 
       return contract.callStatic.getEthBalance(_account)
     },
-    SWR_CONFIG
+    swrConfig,
   )
 }
