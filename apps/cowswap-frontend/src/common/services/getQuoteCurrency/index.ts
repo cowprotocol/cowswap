@@ -1,38 +1,9 @@
-import {
-  DAI,
-  DAI_ARBITRUM_ONE,
-  DAI_BASE,
-  NATIVE_CURRENCY_ADDRESS,
-  USDC_ARBITRUM_ONE,
-  USDC_BASE,
-  USDC_GNOSIS_CHAIN,
-  USDC_MAINNET,
-  USDC_SEPOLIA,
-  USDT,
-  USDT_ARBITRUM_ONE,
-  USDT_BASE,
-  USDT_GNOSIS_CHAIN,
-  WXDAI,
-} from '@cowprotocol/common-const'
+import { STABLECOINS } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
-
-// TODO: Find a solution for using API: https://www.coingecko.com/en/categories/stablecoins
-const STABLE_COINS: Record<SupportedChainId, string[]> = {
-  [SupportedChainId.MAINNET]: [USDC_MAINNET, USDT, DAI].map((token) => token.address.toLowerCase()),
-  [SupportedChainId.GNOSIS_CHAIN]: [USDC_GNOSIS_CHAIN, USDT_GNOSIS_CHAIN, WXDAI]
-    .map((token) => token.address.toLowerCase())
-    // XDAI and WXDAI are stable-coins
-    .concat(NATIVE_CURRENCY_ADDRESS),
-  [SupportedChainId.ARBITRUM_ONE]: [USDT_ARBITRUM_ONE, USDC_ARBITRUM_ONE, DAI_ARBITRUM_ONE].map((token) =>
-    token.address.toLowerCase(),
-  ),
-  [SupportedChainId.BASE]: [USDT_BASE, USDC_BASE, DAI_BASE].map((token) => token.address.toLowerCase()),
-  [SupportedChainId.SEPOLIA]: [USDC_SEPOLIA].map((token) => token.address.toLowerCase()),
-}
 
 /**
  * Quote - means the currency we consider as base (https://www.investopedia.com/terms/q/quotecurrency.asp#:~:text=What%20Is%20a%20Quote%20Currency,value%20of%20the%20base%20currency)
@@ -66,13 +37,13 @@ export function getQuoteCurrencyByStableCoin(
 ): Currency | null {
   if (!chainId || !inputCurrency || !outputCurrency) return null
 
-  const stableCoins = STABLE_COINS[chainId]
+  const stableCoins = STABLECOINS[chainId]
 
   const inputAddress = getCurrencyAddress(inputCurrency).toLowerCase()
   const outputAddress = getCurrencyAddress(outputCurrency).toLowerCase()
 
-  const isInputStableCoin = stableCoins.includes(inputAddress)
-  const isOutputStableCoin = stableCoins.includes(outputAddress)
+  const isInputStableCoin = stableCoins.has(inputAddress)
+  const isOutputStableCoin = stableCoins.has(outputAddress)
 
   if (isInputStableCoin) return outputCurrency
   if (isOutputStableCoin) return inputCurrency

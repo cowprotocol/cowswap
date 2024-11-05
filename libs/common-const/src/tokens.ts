@@ -437,6 +437,9 @@ export const GNO: Record<SupportedChainId, TokenWithLogo | null> = {
 const SDAI_GNOSIS_CHAIN_ADDRESS = '0xaf204776c7245bf4147c2612bf6e5972ee483701'
 const GBPE_GNOSIS_CHAIN_ADDRESS = '0x5cb9073902f2035222b9749f8fb0c9bfe5527108'
 
+// Not used for fees
+const MAINNET_STABLECOINS = [USDC_MAINNET.address, USDT.address, DAI.address].map((t) => t.toLowerCase())
+
 // NOTE: whenever this list is updated, make sure to update the docs section regarding the volume fees
 // https://github.com/cowprotocol/docs/blob/main/docs/governance/fees/fees.md?plain=1#L40
 const GNOSIS_CHAIN_STABLECOINS = [
@@ -460,7 +463,8 @@ const ARBITRUM_ONE_STABLECOINS = [
   MIM_ARBITRUM_ONE.address,
 ].map((t) => t.toLowerCase())
 
-const _BASE_STABLECOINS = [
+// Not used for fees
+const BASE_STABLECOINS = [
   USDC_BASE.address,
   DAI_BASE.address,
   DOLA_BASE.address,
@@ -472,11 +476,11 @@ const _BASE_STABLECOINS = [
 ].map((t) => t.toLowerCase())
 
 export const STABLECOINS: Record<ChainId, Set<string>> = {
-  [SupportedChainId.MAINNET]: new Set(),
+  [SupportedChainId.MAINNET]: new Set(MAINNET_STABLECOINS),
   [SupportedChainId.GNOSIS_CHAIN]: new Set(GNOSIS_CHAIN_STABLECOINS),
   [SupportedChainId.ARBITRUM_ONE]: new Set(ARBITRUM_ONE_STABLECOINS),
-  [SupportedChainId.SEPOLIA]: new Set(),
-  [SupportedChainId.BASE]: new Set(),
+  [SupportedChainId.SEPOLIA]: new Set([USDC_SEPOLIA.address]),
+  [SupportedChainId.BASE]: new Set(BASE_STABLECOINS),
 }
 
 /**
