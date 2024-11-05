@@ -88,13 +88,26 @@ function getWidgetSoundUrl(type: SoundType): string | null | undefined {
 
 function getAudio(type: SoundType): HTMLAudioElement {
   const widgetSound = getWidgetSoundUrl(type)
+  const isWidgetMode = isInjectedWidget()
 
-  if (widgetSound === null) {
-    return EMPTY_SOUND
+  if (isWidgetMode) {
+    if (widgetSound === null) {
+      return EMPTY_SOUND
+    }
+    // If in widget mode, use widget sound if provided, otherwise use default sound
+    const soundPath = widgetSound || DEFAULT_COW_SOUNDS[type]
+    let sound = SOUND_CACHE[soundPath]
+
+    if (!sound) {
+      sound = new Audio(soundPath)
+      SOUND_CACHE[soundPath] = sound
+    }
+
+    return sound
   }
 
-  // Widget sounds take precedence over themed sounds
-  const soundPath = widgetSound || getThemeBasedSound(type)
+  // If not in widget mode, use theme-based sound
+  const soundPath = getThemeBasedSound(type)
   let sound = SOUND_CACHE[soundPath]
 
   if (!sound) {

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.8.0...common-const-v1.9.0) (2024-10-29)
+
+
+### Features
+
+* **halloween:** add Halloween mode ([#5036](https://github.com/cowprotocol/cowswap/issues/5036)) ([791796d](https://github.com/cowprotocol/cowswap/commit/791796d139828f3dd0657222cbf98a5ce93ff321))
+
 ## [1.8.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.7.0...common-const-v1.8.0) (2024-10-18)
 
 
