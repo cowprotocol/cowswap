@@ -1,5 +1,4 @@
 import { RPC_URLS } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { initializeConnector } from '@web3-react/core'
 
 import { onError } from './onError'
@@ -8,9 +7,9 @@ import { default as MetamaskImage } from '../../api/assets/metamask.png'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../api/types'
 import { getConnectionName } from '../../api/utils/connection'
+import { MetaMaskSDK } from '../connectors/metaMaskSdk'
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
 import { ConnectionOptionProps, Web3ReactConnection } from '../types'
-import { MetaMaskSDK } from '../connectors/metaMaskSdk'
 
 const metaMaskOption = {
   color: '#E8831D',
@@ -19,17 +18,20 @@ const metaMaskOption = {
 }
 
 const [web3MetaMask, web3MetaMaskHooks] = initializeConnector<MetaMaskSDK>(
-  (actions) => new MetaMaskSDK({
-    actions, options: {
-      dappMetadata: {
-        name: 'CoW Swap',
-        url: 'https://swap.cow.fi'
+  (actions) =>
+    new MetaMaskSDK({
+      actions,
+      options: {
+        dappMetadata: {
+          name: 'CoW Swap',
+          url: 'https://swap.cow.fi',
+        },
+        readonlyRPCMap: Object.fromEntries(
+          Object.entries(RPC_URLS).map(([chainId, url]) => [`0x${Number(chainId).toString(16)}`, url]),
+        ),
       },
-      readonlyRPCMap: {
-        [`0x${SupportedChainId.MAINNET.toString(16)}`]: RPC_URLS[SupportedChainId.MAINNET]
-      },
-    }, onError
-  })
+      onError,
+    }),
 )
 
 export const metaMaskSdkConnection: Web3ReactConnection = {
