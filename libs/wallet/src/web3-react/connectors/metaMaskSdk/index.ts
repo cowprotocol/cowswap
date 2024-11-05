@@ -1,9 +1,4 @@
 import type {
-  MetaMaskSDK as _MetaMaskSDK,
-  MetaMaskSDKOptions as _MetaMaskSDKOptions,
-  SDKProvider,
-} from '@metamask/sdk'
-import type {
   Actions,
   AddEthereumChainParameter,
   Provider,
@@ -12,6 +7,8 @@ import type {
   WatchAssetParameters,
 } from '@web3-react/types'
 import { Connector } from '@web3-react/types'
+
+import type { MetaMaskSDK as _MetaMaskSDK, MetaMaskSDKOptions as _MetaMaskSDKOptions, SDKProvider } from '@metamask/sdk'
 
 /**
  * MetaMaskSDK options.
@@ -57,7 +54,7 @@ export interface MetaMaskSDKConstructorArgs {
  * Connector for the MetaMaskSDK.
  */
 export class MetaMaskSDK extends Connector {
-  private sdk?: _MetaMaskSDK;
+  private sdk?: _MetaMaskSDK
   declare provider?: SDKProvider
   private readonly options: MetaMaskSDKOptions
   private eagerConnection?: Promise<void>
@@ -68,10 +65,7 @@ export class MetaMaskSDK extends Connector {
   constructor({ actions, options, onError }: MetaMaskSDKConstructorArgs) {
     super(actions, onError)
 
-    const defaultUrl =
-      typeof window !== 'undefined'
-        ? `${window.location.protocol}//${window.location.host}`
-        : ''
+    const defaultUrl = typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.host}` : ''
 
     this.options = {
       ...options,
@@ -128,7 +122,7 @@ export class MetaMaskSDK extends Connector {
       }) as Listener)
 
       this.provider.on('disconnect', (async (error: ProviderRpcError): Promise<void> => {
-        const originalError = ((error.data as any)?.originalError ?? error) as ProviderRpcError;
+        const originalError = ((error.data as any)?.originalError ?? error) as ProviderRpcError
 
         // If MetaMask emits a `code: 1013` error, wait for reconnection before disconnecting
         // https://github.com/MetaMask/providers/pull/120
@@ -180,7 +174,7 @@ export class MetaMaskSDK extends Connector {
       if (!accounts.length) throw new Error('No accounts returned')
       const chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
       this.actions.update({ chainId: parseChainId(chainId), accounts })
-    } catch (error) {
+    } catch {
       // we should be able to use `cancelActivation` here, but on mobile, metamask emits a 'connect'
       // event, meaning that chainId is updated, and cancelActivation doesn't work because an intermediary
       // update has occurred, so we reset state instead
@@ -204,8 +198,8 @@ export class MetaMaskSDK extends Connector {
         : [desiredChainIdOrChainParameters?.chainId, desiredChainIdOrChainParameters]
 
     // If user already connected, only switch chain
-    if (this.provider && await this.isConnected()) {
-      await this.switchChain(desiredChainId, desiredChain);
+    if (this.provider && (await this.isConnected())) {
+      await this.switchChain(desiredChainId, desiredChain)
       return
     }
 
@@ -217,9 +211,10 @@ export class MetaMaskSDK extends Connector {
         if (!this.provider || !this.sdk) throw new NoMetaMaskSDKError()
 
         const accounts = await this.sdk.connect()
-        const chainId = await this.switchChain(desiredChainId, desiredChain)
+        const currentChainIdHex = (await this.provider.request({ method: 'eth_chainId' })) as string
+        const currentChainId = parseChainId(currentChainIdHex)
 
-        await this.actions.update({ chainId, accounts })
+        await this.actions.update({ chainId: currentChainId, accounts })
       })
       .catch((error) => {
         cancelActivation?.()
@@ -227,7 +222,7 @@ export class MetaMaskSDK extends Connector {
       })
   }
 
-  /** 
+  /**
    * @inheritdoc Connector.deactivate
    */
   public deactivate(): void {
@@ -261,7 +256,7 @@ export class MetaMaskSDK extends Connector {
 
   /**
    * Switches the chain of the MetaMask wallet.
-   * 
+   *
    * Only switches the chain if the desired chain is different from the current chain.
    * Else returns the current chain id.
    */
@@ -280,7 +275,7 @@ export class MetaMaskSDK extends Connector {
         params: [{ chainId: chainIdHex }],
       })
       .catch(async (error: ProviderRpcError) => {
-        const originalError = ((error.data as any)?.originalError ?? error) as ProviderRpcError;
+        const originalError = ((error.data as any)?.originalError ?? error) as ProviderRpcError
 
         if (originalError.code === 4902 && desiredChain !== undefined) {
           if (!this.provider) throw new NoMetaMaskSDKError()
@@ -297,7 +292,7 @@ export class MetaMaskSDK extends Connector {
     const newChainIdHex = (await this.provider.request({ method: 'eth_chainId' })) as string
     const newChainId = parseChainId(newChainIdHex)
 
-    return newChainId;
+    return newChainId
   }
 
   /**

@@ -1,7 +1,7 @@
 import { isMobile } from '@cowprotocol/common-utils'
 
-import CoinbaseWalletIcon from '../assets/coinbase.svg'
 import { default as MetamaskImage } from '../../api/assets/metamask.png'
+import CoinbaseWalletIcon from '../assets/coinbase.svg'
 import TrezorIcon from '../assets/trezor.svg'
 import WalletConnectIcon from '../assets/walletConnectIcon.svg'
 import { ConnectionType } from '../types'
