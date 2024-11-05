@@ -6,7 +6,7 @@ import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { SwapWidget } from 'modules/swap'
-import { useIsSellNative } from 'modules/trade'
+import { useIsSellNative, useIsWrapOrUnwrap } from 'modules/trade'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
@@ -32,6 +32,7 @@ export function HooksStoreWidget() {
 
   const isNativeSell = useIsSellNative()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const walletType = useIsSmartContractWallet()
     ? HookDappWalletCompatibility.SMART_CONTRACT
@@ -79,6 +80,8 @@ export function HooksStoreWidget() {
   )
 
   const TopContent = shouldNotUseHooks ? (
+    HooksTop
+  ) : isWrapOrUnwrap ? (
     HooksTop
   ) : (
     <>
