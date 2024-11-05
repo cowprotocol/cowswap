@@ -72,13 +72,17 @@ export function HooksStoreWidget() {
 
   const shouldNotUseHooks = isNativeSell || isChainIdUnsupported
 
-  const TopContent = shouldNotUseHooks ? null : (
+  const HooksTop = (
+    <HooksTopActions>
+      <RescueFundsToggle onClick={() => setRescueWidgetOpen(true)}>Rescue funds</RescueFundsToggle>
+    </HooksTopActions>
+  )
+
+  const TopContent = shouldNotUseHooks ? (
+    HooksTop
+  ) : (
     <>
-      {!isRescueWidgetOpen && account && (
-        <HooksTopActions>
-          <RescueFundsToggle onClick={() => setRescueWidgetOpen(true)}>Rescue funds</RescueFundsToggle>
-        </HooksTopActions>
-      )}
+      {!isRescueWidgetOpen && account && HooksTop}
       <DismissableInlineBanner
         orientation={BannerOrientation.Horizontal}
         customIcon={ICON_HOOK}
