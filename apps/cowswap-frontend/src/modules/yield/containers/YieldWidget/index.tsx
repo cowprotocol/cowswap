@@ -101,6 +101,11 @@ export function YieldWidget() {
   const inputApy = inputPoolState?.info.apy
   const outputApy = outputPoolState?.info.apy
 
+  const isTradeContainAlternativePool =
+    inputCurrency instanceof LpToken &&
+    outputCurrency instanceof LpToken &&
+    inputCurrency.tokens.every((token) => outputCurrency.tokens.includes(token))
+
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
     currency: inputCurrency,
@@ -114,8 +119,7 @@ export function YieldWidget() {
         <PoolApyPreview
           apy={inputApy}
           isSuperior={Boolean(
-            inputCurrency &&
-              inputCurrency instanceof LpToken &&
+            isTradeContainAlternativePool &&
               inputCurrency.lpTokenProvider === LpTokenProvider.COW_AMM &&
               (inputApy && outputApy ? inputApy > outputApy : true),
           )}
@@ -137,7 +141,7 @@ export function YieldWidget() {
         <PoolApyPreview
           apy={outputApy}
           isSuperior={Boolean(
-            outputCurrency instanceof LpToken &&
+            isTradeContainAlternativePool &&
               outputCurrency.lpTokenProvider === LpTokenProvider.COW_AMM &&
               (inputApy && outputApy ? outputApy > inputApy : true),
           )}
