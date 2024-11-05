@@ -58,7 +58,7 @@ const YIELD_UNLOCK_SCREEN = {
 }
 
 export function YieldWidget() {
-  const { chainId } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
   const { showRecipient } = useYieldSettings()
   const deadlineState = useYieldDeadlineState()
   const recipientToggleState = useYieldRecipientToggleState()
@@ -168,6 +168,8 @@ export function YieldWidget() {
   const slots: TradeWidgetSlots = {
     topContent: vampireAttackContext ? (
       <CoWAmmInlineBanner token={vampireAttackTarget?.target.token} apyDiff={vampireAttackTarget?.apyDiff} />
+    ) : !account ? (
+      <CoWAmmInlineBanner token={undefined} apyDiff={undefined} />
     ) : null,
     selectTokenWidget: <SelectTokenWidget displayLpTokenLists />,
     settingsWidget: <SettingsTab recipientToggleState={recipientToggleState} deadlineState={deadlineState} />,
