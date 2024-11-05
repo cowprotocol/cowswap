@@ -25,4 +25,5 @@ export const ALL_HOOK_DAPPS = [
   },
   hookDappsRegistry.COW_AMM_WITHDRAW,
   hookDappsRegistry.CLAIM_LLAMAPAY_VESTING,
+  hookDappsRegistry.COW_AMM_DEPOSIT,
 ] as HookDapp[]
