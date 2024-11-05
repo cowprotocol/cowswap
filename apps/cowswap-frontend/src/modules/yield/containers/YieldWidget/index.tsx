@@ -27,7 +27,7 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { CoWAmmInlineBanner, SelectAPoolButton } from './elements'
 
 import { usePoolsInfo } from '../../hooks/usePoolsInfo'
-import { useVampireAttackFirstTarget } from '../../hooks/useVampireAttack'
+import { useVampireAttack, useVampireAttackFirstTarget } from '../../hooks/useVampireAttack'
 import { useYieldDerivedState } from '../../hooks/useYieldDerivedState'
 import {
   useYieldDeadlineState,
@@ -69,6 +69,7 @@ export function YieldWidget() {
   const widgetActions = useYieldWidgetActions()
   const receiveAmountInfo = useReceiveAmountInfo()
   const poolsInfo = usePoolsInfo()
+  const vampireAttackContext = useVampireAttack()
   const vampireAttackTarget = useVampireAttackFirstTarget()
 
   const {
@@ -161,7 +162,9 @@ export function YieldWidget() {
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
 
   const slots: TradeWidgetSlots = {
-    topContent: <CoWAmmInlineBanner token={vampireAttackTarget?.target.token} apyDiff={vampireAttackTarget?.apyDiff} />,
+    topContent: vampireAttackContext ? (
+      <CoWAmmInlineBanner token={vampireAttackTarget?.target.token} apyDiff={vampireAttackTarget?.apyDiff} />
+    ) : null,
     selectTokenWidget: <SelectTokenWidget displayLpTokenLists />,
     settingsWidget: <SettingsTab recipientToggleState={recipientToggleState} deadlineState={deadlineState} />,
     bottomContent: useCallback(
