@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.10.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.9.0...common-const-v1.10.0) (2024-11-06)
+
+
+### Features
+
+* **protocol-fees:** arb1 protocol fee ([#5055](https://github.com/cowprotocol/cowswap/issues/5055)) ([ed176c3](https://github.com/cowprotocol/cowswap/commit/ed176c3ab95fe51065a905e05ca184f3abf7e282))
+* **yield:** define token category by default for selection ([#5018](https://github.com/cowprotocol/cowswap/issues/5018)) ([7c18b7d](https://github.com/cowprotocol/cowswap/commit/7c18b7d85de6feac9c7e64740a93572f3af3c273))
+* **yield:** display cow amm banner conditionally ([#5035](https://github.com/cowprotocol/cowswap/issues/5035)) ([1a517a3](https://github.com/cowprotocol/cowswap/commit/1a517a3f21b94c10b8e59e68bc49a569c1be904b))
+
 ## [1.9.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.8.0...common-const-v1.9.0) (2024-10-29)
 
 

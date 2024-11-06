@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.88.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.87.0...cowswap-v1.88.0) (2024-11-06)
+
+
+### Features
+
+* **protocol-fees:** arb1 protocol fee ([#5055](https://github.com/cowprotocol/cowswap/issues/5055)) ([ed176c3](https://github.com/cowprotocol/cowswap/commit/ed176c3ab95fe51065a905e05ca184f3abf7e282))
+* **yield:** define token category by default for selection ([#5018](https://github.com/cowprotocol/cowswap/issues/5018)) ([7c18b7d](https://github.com/cowprotocol/cowswap/commit/7c18b7d85de6feac9c7e64740a93572f3af3c273))
+* **yield:** display cow amm banner conditionally ([#5035](https://github.com/cowprotocol/cowswap/issues/5035)) ([1a517a3](https://github.com/cowprotocol/cowswap/commit/1a517a3f21b94c10b8e59e68bc49a569c1be904b))
+* **yield:** display pools info in widget ([#5046](https://github.com/cowprotocol/cowswap/issues/5046)) ([562d020](https://github.com/cowprotocol/cowswap/commit/562d0207d1acf4e1735c4b3f629ff63dd65d3725))
+* **yield:** use lp-token in widget ([#5013](https://github.com/cowprotocol/cowswap/issues/5013)) ([b66d206](https://github.com/cowprotocol/cowswap/commit/b66d2068a9f3bcaddc8da7df5499c17fc05f693f))
+
+
+### Bug Fixes
+
+* **hooks:** support native currency rescuing from proxy ([#5062](https://github.com/cowprotocol/cowswap/issues/5062)) ([843e00b](https://github.com/cowprotocol/cowswap/commit/843e00b0e84e8060b9241c6d4767962df3de96eb))
+* remove isNotificationsFeedEnabled ([#5054](https://github.com/cowprotocol/cowswap/issues/5054)) ([0fbb9b5](https://github.com/cowprotocol/cowswap/commit/0fbb9b585c4beb0978309c8ebda7e8aa1f8bf57c))
+* **swap:** take slippage into account for buy orders ([#5067](https://github.com/cowprotocol/cowswap/issues/5067)) ([21f39fe](https://github.com/cowprotocol/cowswap/commit/21f39fe3811fb65d6f1a98bb2185321f378afdd4))
+* **widget:** remove irrelevant change trade params events ([#5060](https://github.com/cowprotocol/cowswap/issues/5060)) ([6ae8ca1](https://github.com/cowprotocol/cowswap/commit/6ae8ca1569d9248bb8f82bb3fea777eb03f12d49))
+
 ## [1.87.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.86.1...cowswap-v1.87.0) (2024-10-29)
 
 
