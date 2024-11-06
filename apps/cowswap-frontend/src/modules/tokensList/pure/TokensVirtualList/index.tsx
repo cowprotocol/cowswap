@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { VirtualItem } from '@tanstack/react-virtual'
 
@@ -31,6 +32,7 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
   const { values: balances } = balancesState
 
   const isWalletConnected = !!account
+  const { isYieldEnabled } = useFeatureFlags()
 
   const sortedTokens = useMemo(() => {
     return balances ? allTokens.sort(tokensListSorter(balances)) : allTokens
@@ -59,7 +61,7 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
 
   return (
     <VirtualList id="tokens-list" items={sortedTokens} getItemView={getItemView}>
-      {displayLpTokenLists ? null : <CoWAmmBanner isTokenSelectorView />}
+      {displayLpTokenLists || !isYieldEnabled ? null : <CoWAmmBanner isTokenSelectorView />}
     </VirtualList>
   )
 }
