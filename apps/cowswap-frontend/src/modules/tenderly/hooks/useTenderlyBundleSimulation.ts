@@ -81,30 +81,25 @@ export function useTenderlyBundleSimulation() {
 
   const getNewSimulationData = useCallback(
     async ([_, preHooks, postHooks]: [string, CowHookDetails[], CowHookDetails[]]) => {
+      const simulationData = await simulateBundle()
+
+      if (!simulationData) {
+        return {}
+      }
+
       try {
-        const simulationData = await simulateBundle()
-
-        if (!simulationData) {
-          return {}
-        }
-
         return generateNewSimulationData(simulationData, { preHooks, postHooks })
-      } catch {
+      } catch (e) {
+        console.log(`error`, { e, simulationData })
         return generateSimulationDataToError({ preHooks, postHooks })
       }
     },
     [simulateBundle],
   )
 
-  const { data, isValidating: isBundleSimulationLoading } = useSWR(
-    ['tenderly-bundle-simulation', preHooks, postHooks],
-    getNewSimulationData,
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      refreshWhenOffline: false,
-    },
-  )
-
-  return { data, isValidating: isBundleSimulationLoading }
+  return useSWR(['tenderly-bundle-simulation', preHooks, postHooks], getNewSimulationData, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    refreshWhenOffline: false,
+  })
 }
