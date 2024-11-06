@@ -44,7 +44,7 @@ export function useTokenList(chainId: SupportedChainId | undefined): { data: Tok
       : {}
 
     return { data, isLoading }
-  }, [chainId, coingeckoList, honeyswapList, cowSwapList, arbitrumOneList, isLoading])
+  }, [chainId, coingeckoList, honeyswapList, cowSwapList, arbitrumOneList, isLoading, baseList])
 }
 
 function useTokenListByUrl(tokenListUrl: string) {
