@@ -39,7 +39,7 @@ export async function safeBundleEthFlow(
 
   const { spender, settlementContract, safeAppsSdk, needsApproval, wrappedNativeContract } = safeBundleContext
 
-  const { inputAmountWithSlippage, chainId, inputAmount, outputAmount } = context
+  const { chainId, inputAmount, outputAmount } = context
 
   const orderParams: PostOrderParams = {
     ...tradeContext.orderParams,
@@ -49,7 +49,7 @@ export async function safeBundleEthFlow(
   const { account, recipientAddressOrName, kind } = orderParams
 
   tradeFlowAnalytics.wrapApproveAndPresign(swapFlowAnalyticsContext)
-  const nativeAmountInWei = inputAmountWithSlippage.quotient.toString()
+  const nativeAmountInWei = inputAmount.quotient.toString()
   const tradeAmounts = { inputAmount, outputAmount }
 
   tradeConfirmActions.onSign(tradeAmounts)
@@ -72,7 +72,7 @@ export async function safeBundleEthFlow(
       const approveTx = await buildApproveTx({
         erc20Contract: wrappedNativeContract as unknown as Erc20,
         spender,
-        amountToApprove: inputAmountWithSlippage,
+        amountToApprove: inputAmount,
       })
 
       txs.push({
