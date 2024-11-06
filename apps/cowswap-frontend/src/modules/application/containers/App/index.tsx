@@ -53,6 +53,7 @@ export function App() {
   useInitializeUtm()
 
   const featureFlags = useFeatureFlags()
+  const { isYieldEnabled } = featureFlags
 
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
@@ -139,7 +140,7 @@ export function App() {
             />
           )}
 
-          <CoWAmmBanner />
+          {isYieldEnabled && <CoWAmmBanner />}
 
           <styledEl.BodyWrapper customTheme={customTheme}>
             <TopLevelModals />
