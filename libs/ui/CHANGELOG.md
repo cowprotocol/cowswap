@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.12.0...ui-v1.13.0) (2024-11-06)
+
+
+### Features
+
+* **yield:** display pools info in widget ([#5046](https://github.com/cowprotocol/cowswap/issues/5046)) ([562d020](https://github.com/cowprotocol/cowswap/commit/562d0207d1acf4e1735c4b3f629ff63dd65d3725))
+
 ## [1.12.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.11.0...ui-v1.12.0) (2024-10-29)
 
 
