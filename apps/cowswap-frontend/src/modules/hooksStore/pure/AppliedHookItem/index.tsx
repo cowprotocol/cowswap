@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 
 import ICON_CHECK_ICON from '@cowprotocol/assets/cow-swap/check-singular.svg'
 import ICON_GRID from '@cowprotocol/assets/cow-swap/grid.svg'
@@ -16,7 +16,6 @@ import * as styledEl from './styled'
 
 import { TenderlySimulate } from '../../containers/TenderlySimulate'
 import { HookDapp } from '../../types/hooks'
-import { useOrderParams } from 'modules/hooksStore/hooks/useOrderParams'
 
 interface HookItemProp {
   account: string | undefined
@@ -32,23 +31,12 @@ interface HookItemProp {
 const isBundleSimulationReady = true
 
 export function AppliedHookItem({ account, hookDetails, dapp, isPreHook, editHook, removeHook, index }: HookItemProp) {
-  const { isValidating, data, mutate } = useTenderlyBundleSimulation()
-  const orderParams = useOrderParams()
+  const { isValidating, data } = useTenderlyBundleSimulation()
 
   const simulationData = useMemo(() => {
     if (!data) return
     return data[hookDetails.uuid]
   }, [data, hookDetails.uuid])
-
-  // Run simulation on orderParams if no data is available
-  // This is a fallback for the flow where the user
-  // first adds a post hook and then setup the order
-  useEffect(() => {
-    if (isPreHook) return
-    if (isValidating) return
-    if (Object.keys(data || {}).length) return
-    mutate()
-  }, [orderParams, data, mutate])
 
   const simulationStatus = simulationData?.status ? 'Simulation successful' : 'Simulation failed'
   const simulationTooltip = simulationData?.status

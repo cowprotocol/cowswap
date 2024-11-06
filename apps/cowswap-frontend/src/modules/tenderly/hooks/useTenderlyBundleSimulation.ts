@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -12,7 +12,7 @@ import { useTokenContract } from 'common/hooks/useContract'
 
 import { useGetTopTokenHolders } from './useGetTopTokenHolders'
 
-import { completeBundleSimulation, preHooksBundleSimulation } from '../utils/bundleSimulation'
+import { completeBundleSimulation, hooksBundleSimulation } from '../utils/bundleSimulation'
 import { generateNewSimulationData, generateSimulationDataToError } from '../utils/generateSimulationData'
 import { getTokenTransferInfo } from '../utils/getTokenTransferInfo'
 
@@ -28,17 +28,26 @@ export function useTenderlyBundleSimulation() {
 
   const getTopTokenHolder = useGetTopTokenHolders()
 
+  const isOrderComplete = useMemo(() => {
+    return !!account && !!tokenBuy && !!tokenSell && !!buyAmount && !!sellAmount && !!orderReceiver
+  }, [account, tokenBuy, tokenSell, buyAmount, sellAmount, orderReceiver])
+
   const simulateBundle = useCallback(async () => {
     if (postHooks.length === 0 && preHooks.length === 0) return
 
     if (!postHooks.length)
-      return preHooksBundleSimulation({
+      return hooksBundleSimulation({
         chainId,
         preHooks,
+        postHooks: [],
       })
 
     if (!account || !tokenBuy || !tokenSell || !buyAmount || !sellAmount || !orderReceiver) {
-      return
+      return hooksBundleSimulation({
+        chainId,
+        preHooks,
+        postHooks,
+      })
     }
 
     const buyTokenTopHolders = await getTopTokenHolder({
@@ -80,7 +89,7 @@ export function useTenderlyBundleSimulation() {
   ])
 
   const getNewSimulationData = useCallback(
-    async ([_, preHooks, postHooks]: [string, CowHookDetails[], CowHookDetails[]]) => {
+    async ([_, preHooks, postHooks, _isOrderComplete]: [string, CowHookDetails[], CowHookDetails[], boolean]) => {
       const simulationData = await simulateBundle()
 
       if (!simulationData) {
@@ -97,7 +106,7 @@ export function useTenderlyBundleSimulation() {
     [simulateBundle],
   )
 
-  return useSWR(['tenderly-bundle-simulation', preHooks, postHooks], getNewSimulationData, {
+  return useSWR(['tenderly-bundle-simulation', preHooks, postHooks, isOrderComplete], getNewSimulationData, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
     refreshWhenOffline: false,

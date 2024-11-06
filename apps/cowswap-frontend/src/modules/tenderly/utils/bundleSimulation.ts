@@ -35,10 +35,11 @@ export const completeBundleSimulation = async (params: PostBundleSimulationParam
   return simulateBundle(input, params.chainId)
 }
 
-export const preHooksBundleSimulation = async (
-  params: Pick<PostBundleSimulationParams, 'chainId' | 'preHooks'>,
+export const hooksBundleSimulation = async (
+  params: Pick<PostBundleSimulationParams, 'chainId' | 'preHooks' | 'postHooks'>,
 ): Promise<SimulationData[]> => {
-  const input = params.preHooks.map((hook) =>
+  const hooks = [...params.preHooks, ...params.postHooks]
+  const input = hooks.map((hook) =>
     getCoWHookTenderlySimulationInput(COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[params.chainId], hook.hook),
   )
   return simulateBundle(input, params.chainId)
