@@ -25,11 +25,11 @@ import { useSwapActionHandlers } from './useSwapState'
  *
  * In case when both sellAmount and buyAmount specified, buyAmount will be ignored
  */
-export function useSetupSwapAmountsFromUrl() {
+export function useSetupSwapAmountsFromUrl({ allowSameToken }: { allowSameToken: boolean }): void {
   const { search, pathname } = useLocation()
   const navigate = useNavigate()
   const params = useMemo(() => new URLSearchParams(search), [search])
-  const { onUserInput } = useSwapActionHandlers()
+  const { onUserInput } = useSwapActionHandlers({ allowSameToken })
 
   const cleanParams = useCallback(() => {
     const queryParams = new URLSearchParams(search)

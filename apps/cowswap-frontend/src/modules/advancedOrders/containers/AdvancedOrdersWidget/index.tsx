@@ -68,7 +68,7 @@ export function AdvancedOrdersWidget({
     orderKind,
     isUnlocked,
   } = useAdvancedOrdersDerivedState()
-  const actions = useAdvancedOrdersActions()
+  const actions = useAdvancedOrdersActions({ allowSameToken: false })
   const { isLoading: isTradePriceUpdating } = useTradeQuote()
   const { showRecipient } = useAtomValue(advancedOrdersSettingsAtom)
   const priceImpact = useTradePriceImpact()
@@ -124,6 +124,7 @@ export function AdvancedOrdersWidget({
     isTradePriceUpdating,
     priceImpact,
     disablePriceImpact,
+    allowSameToken: false,
   }
 
   return (

@@ -66,7 +66,7 @@ export function HooksStoreWidget() {
   }, [chainId, isChainIdUnsupported, onDismiss])
 
   useSetupHooksStoreOrderParams()
-  useSetRecipientOverride()
+  useSetRecipientOverride({ allowSameToken: true })
 
   const isHookSelectionOpen = !!(selectedHookPosition || hookToEdit)
   const hideSwapWidget = isHookSelectionOpen || isRescueWidgetOpen
@@ -114,7 +114,7 @@ export function HooksStoreWidget() {
   return (
     <>
       <TradeWidgetWrapper visible$={!hideSwapWidget}>
-        <SwapWidget topContent={TopContent} bottomContent={BottomContent} />
+        <SwapWidget topContent={TopContent} bottomContent={BottomContent} allowSameToken />
       </TradeWidgetWrapper>
       <IframeDappsManifestUpdater />
       {isHookSelectionOpen && (

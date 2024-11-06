@@ -4,7 +4,7 @@ import { SwapUpdaters } from 'modules/swap'
 export function HooksPage() {
   return (
     <>
-      <SwapUpdaters />
+      <SwapUpdaters allowSameToken={true} />
       <HooksStoreWidget />
     </>
   )

@@ -41,6 +41,7 @@ import { TargetPoolPreviewInfo } from '../../pure/TargetPoolPreviewInfo'
 import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
 import { YieldConfirmModal } from '../YieldConfirmModal'
+import { a } from '@react-spring/web'
 
 const YIELD_BULLET_LIST_CONTENT: BulletListItem[] = [
   { content: 'Maximize your yield on existing LP positions' },
@@ -206,6 +207,7 @@ export function YieldWidget() {
     priceImpact,
     disableQuotePolling: isConfirmOpen,
     customSelectTokenButton: SelectAPoolButton,
+    allowSameToken: false,
   }
 
   return (

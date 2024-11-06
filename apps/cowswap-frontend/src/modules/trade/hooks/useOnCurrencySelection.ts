@@ -11,9 +11,13 @@ import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateO
 
 import { convertAmountToCurrency } from 'utils/orderUtils/calculateExecutionPrice'
 
-export function useOnCurrencySelection(): (field: Field, currency: Currency | null) => void {
+export function useOnCurrencySelection({
+  allowSameToken,
+}: {
+  allowSameToken: boolean
+}): (field: Field, currency: Currency | null) => void {
   const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
-  const navigateOnCurrencySelection = useNavigateOnCurrencySelection()
+  const navigateOnCurrencySelection = useNavigateOnCurrencySelection({ allowSameToken })
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
 
   return useCallback(
@@ -44,6 +48,6 @@ export function useOnCurrencySelection(): (field: Field, currency: Currency | nu
 
       return navigateOnCurrencySelection(field, currency)
     },
-    [navigateOnCurrencySelection, updateLimitOrdersState, inputCurrencyAmount, outputCurrencyAmount]
+    [navigateOnCurrencySelection, updateLimitOrdersState, inputCurrencyAmount, outputCurrencyAmount],
   )
 }

@@ -38,7 +38,11 @@ export interface SwapButtonInput {
   openNativeWrapModal(): void
 }
 
-export function useSwapButtonContext(input: SwapButtonInput, actions: TradeWidgetActions): SwapButtonsContext {
+export function useSwapButtonContext(
+  input: SwapButtonInput,
+  actions: TradeWidgetActions,
+  allowSameToken: boolean,
+): SwapButtonsContext {
   const { feeWarningAccepted, impactWarningAccepted, openNativeWrapModal } = input
 
   const { account, chainId } = useWalletInfo()
@@ -52,7 +56,7 @@ export function useSwapButtonContext(input: SwapButtonInput, actions: TradeWidge
     inputError: swapInputError,
   } = useDerivedSwapInfo()
   const toggleWalletModal = useToggleWalletModal()
-  const { onCurrencySelection } = useSwapActionHandlers()
+  const { onCurrencySelection } = useSwapActionHandlers({ allowSameToken })
   const isBestQuoteLoading = useIsBestQuoteLoading()
   const tradeConfirmActions = useTradeConfirmActions()
   const { standaloneMode } = useInjectedWidgetParams()

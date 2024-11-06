@@ -60,10 +60,10 @@ interface DerivedSwapInfo {
   trade: TradeGp | undefined
 }
 
-export function useSwapActionHandlers(): TradeWidgetActions {
+export function useSwapActionHandlers({ allowSameToken }: { allowSameToken: boolean }): TradeWidgetActions {
   const { chainId } = useWalletInfo()
   const dispatch = useAppDispatch()
-  const onCurrencySelection = useNavigateOnCurrencySelection()
+  const onCurrencySelection = useNavigateOnCurrencySelection({ allowSameToken })
   const navigate = useTradeNavigate()
   const swapState = useSwapState()
 

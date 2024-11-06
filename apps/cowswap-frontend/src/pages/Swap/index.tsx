@@ -1,4 +1,3 @@
-
 import { WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -19,7 +18,7 @@ export function SwapPage() {
 
   return (
     <>
-      <SwapUpdaters />
+      <SwapUpdaters allowSameToken={false} />
       <SwapWidget />
     </>
   )

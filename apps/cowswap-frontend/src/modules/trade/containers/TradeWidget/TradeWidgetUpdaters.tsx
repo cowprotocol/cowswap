@@ -21,6 +21,7 @@ interface TradeWidgetUpdatersProps {
   children: ReactNode
   tradeQuoteStateOverride?: TradeQuoteState | null
   onChangeRecipient: (recipient: string | null) => void
+  allowSameToken: boolean
 }
 
 export function TradeWidgetUpdaters({
@@ -30,6 +31,7 @@ export function TradeWidgetUpdaters({
   enableSmartSlippage,
   onChangeRecipient,
   children,
+  allowSameToken,
 }: TradeWidgetUpdatersProps) {
   const { chainId, account } = useWalletInfo()
   const updateQuoteState = useUpdateTradeQuote()
@@ -51,7 +53,7 @@ export function TradeWidgetUpdaters({
       {!disableQuotePolling && <TradeQuoteUpdater />}
       <PriceImpactUpdater />
       <TradeFormValidationUpdater />
-      <CommonTradeUpdater />
+      <CommonTradeUpdater allowSameToken={allowSameToken} />
       {enableSmartSlippage && <SmartSlippageUpdater />}
       {disableNativeSelling && <DisableNativeTokenSellingUpdater />}
       {children}

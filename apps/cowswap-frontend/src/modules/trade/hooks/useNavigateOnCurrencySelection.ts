@@ -40,7 +40,11 @@ function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => str
  * if there are more than one token with the same symbol
  * @see useResetStateWithSymbolDuplication.ts
  */
-export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
+export function useNavigateOnCurrencySelection({
+  allowSameToken,
+}: {
+  allowSameToken: boolean
+}): CurrencySelectionCallback {
   const { chainId } = useWalletInfo()
   const { state } = useTradeState()
   const navigate = useTradeNavigate()
@@ -60,7 +64,7 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
       navigate(
         chainId,
         // Just invert tokens when user selected the same token
-        areCurrenciesTheSame
+        areCurrenciesTheSame && !allowSameToken
           ? { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId }
           : {
               inputCurrencyId: targetInputCurrencyId,

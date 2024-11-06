@@ -31,6 +31,7 @@ interface TradeWidgetParams {
   isMarketOrderWidget?: boolean
   displayTokenName?: boolean
   customSelectTokenButton?: ReactNode
+  allowSameToken: boolean
 }
 
 export interface TradeWidgetSlots {

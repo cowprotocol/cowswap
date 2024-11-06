@@ -6,7 +6,7 @@ import { useTradeSlippage, useIsSmartSlippageApplied } from 'modules/tradeSlippa
 import { SwapAmountsFromUrlUpdater } from '../../updaters/SwapAmountsFromUrlUpdater'
 import { SwapDerivedStateUpdater } from '../../updaters/SwapDerivedStateUpdater'
 
-export function SwapUpdaters() {
+export function SwapUpdaters({ allowSameToken }: { allowSameToken: boolean }) {
   const slippage = useTradeSlippage()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
 
@@ -18,7 +18,7 @@ export function SwapUpdaters() {
         isSmartSlippage={isSmartSlippageApplied}
       />
       <SwapDerivedStateUpdater />
-      <SwapAmountsFromUrlUpdater />
+      <SwapAmountsFromUrlUpdater allowSameToken={allowSameToken} />
     </>
   )
 }
