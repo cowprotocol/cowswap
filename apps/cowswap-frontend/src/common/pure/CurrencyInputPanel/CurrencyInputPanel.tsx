@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { formatInputAmount, getIsNativeToken } from '@cowprotocol/common-utils'
@@ -34,6 +34,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   disabled?: boolean
   inputDisabled?: boolean
   tokenSelectorDisabled?: boolean
+  displayTokenName?: boolean
   inputTooltip?: string
   showSetMax?: boolean
   maxBalance?: CurrencyAmount<Currency> | undefined
@@ -43,8 +44,14 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   subsidyAndBalance?: BalanceAndSubsidy
   onCurrencySelection: (field: Field, currency: Currency) => void
   onUserInput: (field: Field, typedValue: string) => void
-  openTokenSelectWidget(selectedToken: string | undefined, onCurrencySelection: (currency: Currency) => void): void
+  openTokenSelectWidget(
+    selectedToken: string | undefined,
+    field: Field | undefined,
+    onCurrencySelection: (currency: Currency) => void,
+  ): void
   topLabel?: string
+  topContent?: ReactNode
+  customSelectTokenButton?: ReactNode
 }
 
 export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
@@ -59,6 +66,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     maxBalance,
     inputDisabled = false,
     tokenSelectorDisabled = false,
+    displayTokenName = false,
     inputTooltip,
     onUserInput,
     allowsOffchainSigning,
@@ -72,6 +80,8 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
       },
     },
     topLabel,
+    topContent,
+    customSelectTokenButton,
   } = props
 
   const { field, currency, balance, fiatAmount, amount, isIndependent, receiveAmountInfo } = currencyInfo
@@ -84,7 +94,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
       setTypedValue(typedValue)
       onUserInput(field, typedValue)
     },
-    [onUserInput, field]
+    [onUserInput, field],
   )
   const handleMaxInput = useCallback(() => {
     if (!maxBalance) {
@@ -136,7 +146,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   }, [_priceImpactParams, bothCurrenciesSet])
 
   const onTokenSelectClick = useCallback(() => {
-    openTokenSelectWidget(selectedTokenAddress, (currency) => onCurrencySelection(field, currency))
+    openTokenSelectWidget(selectedTokenAddress, field, (currency) => onCurrencySelection(field, currency))
   }, [openTokenSelectWidget, selectedTokenAddress, onCurrencySelection, field])
 
   return (
@@ -151,6 +161,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
       >
         {topLabel && <styledEl.CurrencyTopLabel>{topLabel}</styledEl.CurrencyTopLabel>}
 
+        {topContent}
         <styledEl.CurrencyInputBox>
           <div>
             <CurrencySelectButton
@@ -158,6 +169,8 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
               currency={disabled ? undefined : currency || undefined}
               loading={areCurrenciesLoading || disabled}
               readonlyMode={tokenSelectorDisabled}
+              displayTokenName={displayTokenName}
+              customSelectTokenButton={customSelectTokenButton}
             />
           </div>
           <div>

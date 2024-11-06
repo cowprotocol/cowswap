@@ -2,14 +2,16 @@ import React, { useCallback, useMemo } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
-import { ButtonOutlined, MY_ORDERS_ID } from '@cowprotocol/ui'
+import { ButtonOutlined, Media, MY_ORDERS_ID } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { Currency } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
 
 import { AccountElement } from 'legacy/components/Header/AccountElement'
 import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+import { Field } from 'legacy/state/types'
 
 import { useToggleAccountModal } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -44,6 +46,7 @@ const scrollToMyOrders = () => {
 export function TradeWidgetForm(props: TradeWidgetProps) {
   const isInjectedWidgetMode = isInjectedWidget()
   const { standaloneMode, hideOrdersTable } = useInjectedWidgetParams()
+  const isMobile = useMediaQuery(Media.upToSmall(false))
 
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const { pendingActivity } = useCategorizeRecentActivity()
@@ -62,6 +65,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     recipient,
     hideTradeWarnings,
     enableSmartSlippage,
+    displayTokenName = false,
     isMarketOrderWidget = false,
   } = params
 
@@ -114,7 +118,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     (isConnectedMarketOrderWidget || !hideOrdersTable) &&
     ((isConnectedMarketOrderWidget && standaloneMode !== true) || (!isMarketOrderWidget && isUpToLarge && !lockScreen))
 
-  const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode
+  const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode || isMobile
 
   const currencyInputCommonProps = {
     isChainIdUnsupported,
@@ -124,9 +128,23 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     onCurrencySelection,
     onUserInput,
     allowsOffchainSigning,
-    openTokenSelectWidget,
     tokenSelectorDisabled: alternativeOrderModalVisible,
+    displayTokenName,
   }
+
+  const openSellTokenSelect = useCallback(
+    (selectedToken: string | undefined, field: Field | undefined, onSelectToken: (currency: Currency) => void) => {
+      openTokenSelectWidget(selectedToken, field, outputCurrencyInfo.currency || undefined, onSelectToken)
+    },
+    [openTokenSelectWidget, outputCurrencyInfo.currency],
+  )
+
+  const openBuyTokenSelect = useCallback(
+    (selectedToken: string | undefined, field: Field | undefined, onSelectToken: (currency: Currency) => void) => {
+      openTokenSelectWidget(selectedToken, field, inputCurrencyInfo.currency || undefined, onSelectToken)
+    },
+    [openTokenSelectWidget, inputCurrencyInfo.currency],
+  )
 
   const toggleAccountModal = useToggleAccountModal()
 
@@ -160,7 +178,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
           lockScreen
         ) : (
           <>
-            {!isWrapOrUnwrap && topContent}
+            {topContent}
             <div>
               <CurrencyInputPanel
                 id="input-currency-input"
@@ -168,6 +186,9 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 showSetMax={showSetMax}
                 maxBalance={maxBalance}
                 topLabel={isWrapOrUnwrap ? undefined : inputCurrencyInfo.label}
+                topContent={inputCurrencyInfo.topContent}
+                openTokenSelectWidget={openSellTokenSelect}
+                customSelectTokenButton={params.customSelectTokenButton}
                 {...currencyInputCommonProps}
               />
             </div>
@@ -193,6 +214,9 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 currencyInfo={outputCurrencyInfo}
                 priceImpactParams={!disablePriceImpact ? priceImpact : undefined}
                 topLabel={isWrapOrUnwrap ? undefined : outputCurrencyInfo.label}
+                topContent={outputCurrencyInfo.topContent}
+                openTokenSelectWidget={openBuyTokenSelect}
+                customSelectTokenButton={params.customSelectTokenButton}
                 {...currencyInputCommonProps}
               />
             </div>

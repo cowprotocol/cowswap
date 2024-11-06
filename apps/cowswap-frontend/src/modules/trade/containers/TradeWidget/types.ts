@@ -29,6 +29,8 @@ interface TradeWidgetParams {
   hideTradeWarnings?: boolean
   enableSmartSlippage?: boolean
   isMarketOrderWidget?: boolean
+  displayTokenName?: boolean
+  customSelectTokenButton?: ReactNode
 }
 
 export interface TradeWidgetSlots {
@@ -39,6 +41,7 @@ export interface TradeWidgetSlots {
   bottomContent?(warnings: ReactNode | null): ReactNode
   outerContent?: ReactNode
   updaters?: ReactNode
+  selectTokenWidget?: ReactNode
 }
 
 export interface TradeWidgetProps {

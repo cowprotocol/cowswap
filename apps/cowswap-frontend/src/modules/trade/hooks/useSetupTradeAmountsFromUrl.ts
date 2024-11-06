@@ -41,6 +41,8 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
   const { inputCurrency, outputCurrency } = state || {}
 
   const cleanParams = useCallback(() => {
+    if (!search) return
+
     const queryParams = new URLSearchParams(search)
 
     queryParams.delete(TRADE_URL_BUY_AMOUNT_KEY)

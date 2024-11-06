@@ -50,7 +50,7 @@ export function TokenTags({
   }
 
   if (tagsToShow.length === 0) {
-    return <span />
+    return null
   }
 
   return (

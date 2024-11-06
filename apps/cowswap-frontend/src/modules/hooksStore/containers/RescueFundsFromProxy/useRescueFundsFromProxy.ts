@@ -21,6 +21,7 @@ const fnCalldata = (sig: string, encodedData: string) => pack(['bytes4', 'bytes'
 export function useRescueFundsFromProxy(
   selectedTokenAddress: string | undefined,
   tokenBalance: CurrencyAmount<Currency> | null,
+  isNativeToken: boolean,
 ) {
   const [isTxSigningInProgress, setTxSigningInProgress] = useState<boolean>(false)
 
@@ -50,31 +51,44 @@ export function useRescueFundsFromProxy(
     setTxSigningInProgress(true)
 
     try {
-      const calls: ICoWShedCall[] = [
-        {
-          target: selectedTokenAddress,
-          callData: fnCalldata(
-            'approve(address,uint256)',
-            defaultAbiCoder.encode(['address', 'uint256'], [proxyAddress, tokenBalance.quotient.toString()]),
-          ),
-          value: 0n,
-          isDelegateCall: false,
-          allowFailure: false,
-        },
-        {
-          target: selectedTokenAddress,
-          callData: fnCalldata(
-            'transferFrom(address,address,uint256)',
-            defaultAbiCoder.encode(
-              ['address', 'address', 'uint256'],
-              [proxyAddress, account, tokenBalance.quotient.toString()],
-            ),
-          ),
-          value: 0n,
-          isDelegateCall: false,
-          allowFailure: false,
-        },
-      ]
+      const calls: ICoWShedCall[] = isNativeToken
+        ? [
+            {
+              target: account,
+              callData: fnCalldata(
+                'send(uint256)',
+                defaultAbiCoder.encode(['uint256'], [tokenBalance.quotient.toString()]),
+              ),
+              value: BigInt(tokenBalance.quotient.toString()),
+              isDelegateCall: false,
+              allowFailure: false,
+            },
+          ]
+        : [
+            {
+              target: selectedTokenAddress,
+              callData: fnCalldata(
+                'approve(address,uint256)',
+                defaultAbiCoder.encode(['address', 'uint256'], [proxyAddress, tokenBalance.quotient.toString()]),
+              ),
+              value: 0n,
+              isDelegateCall: false,
+              allowFailure: false,
+            },
+            {
+              target: selectedTokenAddress,
+              callData: fnCalldata(
+                'transferFrom(address,address,uint256)',
+                defaultAbiCoder.encode(
+                  ['address', 'address', 'uint256'],
+                  [proxyAddress, account, tokenBalance.quotient.toString()],
+                ),
+              ),
+              value: 0n,
+              isDelegateCall: false,
+              allowFailure: false,
+            },
+          ]
 
       const nonce = formatBytes32String(Date.now().toString())
       // This field is supposed to be used with orders, but here we just do a transaction
@@ -96,7 +110,16 @@ export function useRescueFundsFromProxy(
     } finally {
       setTxSigningInProgress(false)
     }
-  }, [provider, proxyAddress, cowShedContract, selectedTokenAddress, account, tokenBalance, cowShedHooks])
+  }, [
+    provider,
+    proxyAddress,
+    cowShedContract,
+    selectedTokenAddress,
+    account,
+    tokenBalance,
+    cowShedHooks,
+    isNativeToken,
+  ])
 
   return { callback, isTxSigningInProgress, proxyAddress }
 }

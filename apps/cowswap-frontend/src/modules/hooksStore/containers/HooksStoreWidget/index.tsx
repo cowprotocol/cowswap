@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
+import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { SwapWidget } from 'modules/swap'
-import { useIsSellNative } from 'modules/trade'
+import { useIsSellNative, useIsWrapOrUnwrap } from 'modules/trade'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
@@ -31,6 +32,11 @@ export function HooksStoreWidget() {
 
   const isNativeSell = useIsSellNative()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
+
+  const walletType = useIsSmartContractWallet()
+    ? HookDappWalletCompatibility.SMART_CONTRACT
+    : HookDappWalletCompatibility.EOA
 
   const onDismiss = useCallback(() => {
     setSelectedHookPosition(null)
@@ -67,13 +73,19 @@ export function HooksStoreWidget() {
 
   const shouldNotUseHooks = isNativeSell || isChainIdUnsupported
 
-  const TopContent = shouldNotUseHooks ? null : (
+  const HooksTop = (
+    <HooksTopActions>
+      <RescueFundsToggle onClick={() => setRescueWidgetOpen(true)}>Rescue funds</RescueFundsToggle>
+    </HooksTopActions>
+  )
+
+  const TopContent = shouldNotUseHooks ? (
+    HooksTop
+  ) : isWrapOrUnwrap ? (
+    HooksTop
+  ) : (
     <>
-      {!isRescueWidgetOpen && account && (
-        <HooksTopActions>
-          <RescueFundsToggle onClick={() => setRescueWidgetOpen(true)}>Rescue funds</RescueFundsToggle>
-        </HooksTopActions>
-      )}
+      {!isRescueWidgetOpen && account && HooksTop}
       <DismissableInlineBanner
         orientation={BannerOrientation.Horizontal}
         customIcon={ICON_HOOK}
@@ -106,7 +118,12 @@ export function HooksStoreWidget() {
       </TradeWidgetWrapper>
       <IframeDappsManifestUpdater />
       {isHookSelectionOpen && (
-        <HookRegistryList onDismiss={onDismiss} hookToEdit={hookToEdit} isPreHook={selectedHookPosition === 'pre'} />
+        <HookRegistryList
+          walletType={walletType}
+          onDismiss={onDismiss}
+          hookToEdit={hookToEdit}
+          isPreHook={selectedHookPosition === 'pre'}
+        />
       )}
       {isRescueWidgetOpen && <RescueFundsFromProxy onDismiss={() => setRescueWidgetOpen(false)} />}
     </>

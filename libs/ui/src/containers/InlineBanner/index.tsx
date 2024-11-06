@@ -164,7 +164,7 @@ export interface InlineBannerProps {
   orientation?: BannerOrientation
   iconSize?: number
   iconPadding?: string
-  customIcon?: string
+  customIcon?: string | ReactNode
   padding?: string
   margin?: string
   width?: string
@@ -203,7 +203,11 @@ export function InlineBanner({
     >
       <span>
         {!hideIcon && customIcon ? (
-          <SVG src={customIcon} width={iconSize} height={iconSize} />
+          typeof customIcon === 'string' ? (
+            <SVG src={customIcon} width={iconSize} height={iconSize} />
+          ) : (
+            customIcon
+          )
         ) : !hideIcon && colorEnums.icon ? (
           <Icon
             image={colorEnums.icon}

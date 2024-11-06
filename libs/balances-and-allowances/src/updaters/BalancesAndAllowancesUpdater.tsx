@@ -1,11 +1,13 @@
-import { useSetAtom } from 'jotai/index'
+import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { LpToken, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useAllTokens } from '@cowprotocol/tokens'
+import { useAllActiveTokens } from '@cowprotocol/tokens'
 
 import ms from 'ms.macro'
+
+import { BalancesCacheUpdater } from './BalancesCacheUpdater'
 
 import { useNativeTokenBalance } from '../hooks/useNativeTokenBalance'
 import { usePersistBalancesAndAllowances } from '../hooks/usePersistBalancesAndAllowances'
@@ -22,10 +24,13 @@ export interface BalancesAndAllowancesUpdaterProps {
 export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAllowancesUpdaterProps) {
   const setBalances = useSetAtom(balancesAtom)
 
-  const allTokens = useAllTokens()
+  const allTokens = useAllActiveTokens()
   const { data: nativeTokenBalance } = useNativeTokenBalance(account)
 
-  const tokenAddresses = useMemo(() => allTokens.map((token) => token.address), [allTokens])
+  const tokenAddresses = useMemo(
+    () => allTokens.filter((token) => !(token instanceof LpToken)).map((token) => token.address),
+    [allTokens],
+  )
 
   usePersistBalancesAndAllowances({
     account,
@@ -44,5 +49,5 @@ export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAl
     setBalances((state) => ({ ...state, values: { ...state.values, ...nativeBalanceState } }))
   }, [nativeTokenBalance, chainId, setBalances])
 
-  return null
+  return account ? <BalancesCacheUpdater chainId={chainId} /> : null
 }
