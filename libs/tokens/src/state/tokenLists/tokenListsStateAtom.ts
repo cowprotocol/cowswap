@@ -44,14 +44,16 @@ export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>(
 )
 
 export const allListsSourcesAtom = atom((get) => {
-  const { chainId, useCuratedListOnly } = get(environmentAtom)
+  const { chainId, useCuratedListOnly, isYieldEnabled } = get(environmentAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
 
+  const lpLists = isYieldEnabled ? LP_TOKEN_LISTS : []
+
   if (useCuratedListOnly) {
-    return [get(curatedListSourceAtom), ...LP_TOKEN_LISTS, ...userAddedTokenLists[chainId]]
+    return [get(curatedListSourceAtom), ...lpLists, ...userAddedTokenLists[chainId]]
   }
 
-  return [...DEFAULT_TOKENS_LISTS[chainId], ...(userAddedTokenLists[chainId] || [])]
+  return [...DEFAULT_TOKENS_LISTS[chainId], ...lpLists, ...(userAddedTokenLists[chainId] || [])]
 })
 
 // Lists states
