@@ -2,15 +2,11 @@ import { useCallback, useMemo } from 'react'
 
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 
-import { BigNumber } from 'ethers'
-
 import { useTenderlyBundleSimulation } from 'modules/tenderly/hooks/useTenderlyBundleSimulation'
 
 import { useHooks } from './useHooks'
 
 import { HooksStoreState } from '../state/hookDetailsAtom'
-
-const GAS_BUFFER_PERCENTAGE = 110 // 10% buffer
 
 export function useHooksStateWithSimulatedGas(): HooksStoreState {
   const hooksRaw = useHooks()
@@ -20,8 +16,7 @@ export function useHooksStateWithSimulatedGas(): HooksStoreState {
     (hook: CowHookDetails): CowHookDetails => {
       const simulatedGasUsed = tenderlyData?.[hook.uuid]?.gasUsed
       if (!simulatedGasUsed || simulatedGasUsed === '0') return hook
-      const gasLimit = BigNumber.from(simulatedGasUsed).mul(GAS_BUFFER_PERCENTAGE).div(100).toString()
-      const hookData = { ...hook.hook, gasLimit }
+      const hookData = { ...hook.hook, gasLimit: simulatedGasUsed }
       return { ...hook, hook: hookData }
     },
     [tenderlyData],
