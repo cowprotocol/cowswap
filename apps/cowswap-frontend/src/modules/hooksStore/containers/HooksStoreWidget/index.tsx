@@ -6,7 +6,7 @@ import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { SwapWidget } from 'modules/swap'
-import { useIsSellNative } from 'modules/trade'
+import { useIsSellNative, useIsWrapOrUnwrap } from 'modules/trade'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
@@ -32,6 +32,7 @@ export function HooksStoreWidget() {
 
   const isNativeSell = useIsSellNative()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const walletType = useIsSmartContractWallet()
     ? HookDappWalletCompatibility.SMART_CONTRACT
@@ -72,13 +73,19 @@ export function HooksStoreWidget() {
 
   const shouldNotUseHooks = isNativeSell || isChainIdUnsupported
 
-  const TopContent = shouldNotUseHooks ? null : (
+  const HooksTop = (
+    <HooksTopActions>
+      <RescueFundsToggle onClick={() => setRescueWidgetOpen(true)}>Rescue funds</RescueFundsToggle>
+    </HooksTopActions>
+  )
+
+  const TopContent = shouldNotUseHooks ? (
+    HooksTop
+  ) : isWrapOrUnwrap ? (
+    HooksTop
+  ) : (
     <>
-      {!isRescueWidgetOpen && account && (
-        <HooksTopActions>
-          <RescueFundsToggle onClick={() => setRescueWidgetOpen(true)}>Rescue funds</RescueFundsToggle>
-        </HooksTopActions>
-      )}
+      {!isRescueWidgetOpen && account && HooksTop}
       <DismissableInlineBanner
         orientation={BannerOrientation.Horizontal}
         customIcon={ICON_HOOK}

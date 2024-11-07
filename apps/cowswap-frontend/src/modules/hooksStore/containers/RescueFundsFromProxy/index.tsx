@@ -1,7 +1,8 @@
 import { atom, useAtom } from 'jotai'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
-import { getCurrencyAddress, getEtherscanLink } from '@cowprotocol/common-utils'
+import { useNativeTokenBalance } from '@cowprotocol/balances-and-allowances'
+import { getCurrencyAddress, getEtherscanLink, getIsNativeToken } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { BannerOrientation, ButtonPrimary, ExternalLink, InlineBanner, Loader, TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -28,6 +29,7 @@ import { Content, ProxyInfo, Wrapper } from './styled'
 import { useRescueFundsFromProxy } from './useRescueFundsFromProxy'
 
 const BALANCE_UPDATE_INTERVAL = ms`5s`
+const BALANCE_SWR_CFG = { refreshInterval: BALANCE_UPDATE_INTERVAL, revalidateOnFocus: true }
 
 const selectedCurrencyAtom = atom<Currency | undefined>(undefined)
 
@@ -37,6 +39,7 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
 
   const selectedTokenAddress = selectedCurrency ? getCurrencyAddress(selectedCurrency) : undefined
   const hasBalance = !!tokenBalance?.greaterThan(0)
+  const isNativeToken = !!selectedCurrency && getIsNativeToken(selectedCurrency)
 
   const { chainId } = useWalletInfo()
   const { ErrorModal, handleSetError } = useErrorModal()
@@ -55,17 +58,32 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
     callback: rescueFundsCallback,
     isTxSigningInProgress,
     proxyAddress,
-  } = useRescueFundsFromProxy(selectedTokenAddress, tokenBalance)
+  } = useRescueFundsFromProxy(selectedTokenAddress, tokenBalance, isNativeToken)
 
-  const { isLoading: isBalanceLoading } = useSWR(
-    erc20Contract && proxyAddress && selectedCurrency ? [erc20Contract, proxyAddress, selectedCurrency] : null,
+  const { isLoading: isErc20BalanceLoading } = useSWR(
+    !isNativeToken && erc20Contract && proxyAddress && selectedCurrency
+      ? [erc20Contract, proxyAddress, selectedCurrency]
+      : null,
     async ([erc20Contract, proxyAddress, selectedCurrency]) => {
       const balance = await erc20Contract.balanceOf(proxyAddress)
 
       setTokenBalance(CurrencyAmount.fromRawAmount(selectedCurrency, balance.toHexString()))
     },
-    { refreshInterval: BALANCE_UPDATE_INTERVAL, revalidateOnFocus: true },
+    BALANCE_SWR_CFG,
   )
+
+  const { isLoading: isNativeBalanceLoading, data: nativeTokenBalance } = useNativeTokenBalance(
+    isNativeToken ? proxyAddress : undefined,
+    BALANCE_SWR_CFG,
+  )
+
+  useEffect(() => {
+    if (!selectedCurrency || !nativeTokenBalance) return
+
+    setTokenBalance(CurrencyAmount.fromRawAmount(selectedCurrency, nativeTokenBalance.toHexString()))
+  }, [selectedCurrency, nativeTokenBalance])
+
+  const isBalanceLoading = isErc20BalanceLoading || isNativeBalanceLoading
 
   const rescueFunds = useCallback(async () => {
     try {

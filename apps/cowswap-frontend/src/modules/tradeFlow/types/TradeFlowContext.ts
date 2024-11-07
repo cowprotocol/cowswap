@@ -23,7 +23,6 @@ export interface TradeFlowContext {
     chainId: number
     inputAmount: CurrencyAmount<Currency>
     outputAmount: CurrencyAmount<Currency>
-    inputAmountWithSlippage: CurrencyAmount<Currency>
   }
   flags: {
     allowsOffchainSigning: boolean

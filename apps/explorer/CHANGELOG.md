@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.36.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.36.0...explorer-v2.36.1) (2024-11-06)
+
+
+### Bug Fixes
+
+* **explorer:** make sure txHash always has the 0x prefix ([#5061](https://github.com/cowprotocol/cowswap/issues/5061)) ([9054969](https://github.com/cowprotocol/cowswap/commit/9054969abcc4daceb16bbc04e186918fb092e3db))
+
 ## [2.36.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.35.2...explorer-v2.36.0) (2024-10-18)
 
 
