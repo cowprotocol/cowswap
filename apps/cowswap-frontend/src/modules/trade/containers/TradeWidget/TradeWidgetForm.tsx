@@ -52,7 +52,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const { pendingActivity } = useCategorizeRecentActivity()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
-  const { slots, actions, params, disableOutput, allowSameToken } = props
+  const { slots, actions, params, disableOutput } = props
   const { settingsWidget, lockScreen, topContent, middleContent, bottomContent, outerContent } = slots
 
   const { onCurrencySelection, onUserInput, onSwitchTokens, onChangeRecipient } = actions

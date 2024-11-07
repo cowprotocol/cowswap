@@ -99,7 +99,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
 
       {/*// TODO: must be replaced by <NotificationBanner>*/}
       {showHighFeeWarning && <SmallVolumeWarningBanner feeAmount={feeAmount} feePercentage={feePercentage} />}
-      {showNativeSellWarning && <SellNativeWarningBanner />}
+      {showNativeSellWarning && <SellNativeWarningBanner allowSameToken={false} />}
     </Wrapper>
   ) : null
 }
