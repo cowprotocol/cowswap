@@ -376,7 +376,7 @@ export const V_COW: Record<SupportedChainId, TokenWithLogo | null> = {
 const COW_TOKEN_MAINNET = new TokenWithLogo(
   undefined,
   SupportedChainId.MAINNET,
-  COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET] || '',
+  COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET],
   18,
   'COW',
   'CoW Protocol Token',
@@ -385,7 +385,7 @@ const COW_TOKEN_MAINNET = new TokenWithLogo(
 const COW_TOKEN_XDAI = new TokenWithLogo(
   COW_TOKEN_MAINNET.logoURI,
   SupportedChainId.GNOSIS_CHAIN,
-  COW_CONTRACT_ADDRESS[SupportedChainId.GNOSIS_CHAIN] || '',
+  COW_CONTRACT_ADDRESS[SupportedChainId.GNOSIS_CHAIN],
   18,
   'COW',
   'CoW Protocol Token',
@@ -394,7 +394,7 @@ const COW_TOKEN_XDAI = new TokenWithLogo(
 export const COW_TOKEN_ARBITRUM = new TokenWithLogo(
   COW_TOKEN_MAINNET.logoURI,
   SupportedChainId.ARBITRUM_ONE,
-  COW_CONTRACT_ADDRESS[SupportedChainId.ARBITRUM_ONE] || '',
+  COW_CONTRACT_ADDRESS[SupportedChainId.ARBITRUM_ONE],
   18,
   'COW',
   'CoW Protocol Token',
@@ -403,7 +403,7 @@ export const COW_TOKEN_ARBITRUM = new TokenWithLogo(
 export const COW_TOKEN_BASE = new TokenWithLogo(
   COW_TOKEN_MAINNET.logoURI,
   SupportedChainId.BASE,
-  COW_CONTRACT_ADDRESS[SupportedChainId.BASE] || '',
+  COW_CONTRACT_ADDRESS[SupportedChainId.BASE],
   18,
   'COW',
   'CoW Protocol Token',
@@ -412,7 +412,7 @@ export const COW_TOKEN_BASE = new TokenWithLogo(
 const COW_TOKEN_SEPOLIA = new TokenWithLogo(
   COW_TOKEN_MAINNET.logoURI,
   SupportedChainId.SEPOLIA,
-  COW_CONTRACT_ADDRESS[SupportedChainId.SEPOLIA] || '',
+  COW_CONTRACT_ADDRESS[SupportedChainId.SEPOLIA],
   18,
   'COW',
   'CoW Protocol Token',
