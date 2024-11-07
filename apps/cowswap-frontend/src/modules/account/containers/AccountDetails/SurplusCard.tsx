@@ -21,6 +21,18 @@ import { InfoCard } from './styled'
 
 const DEFAULT_START_DATE = 'March 2023'
 const ARBITRUM_ONE_START_DATE = 'May 2024'
+const BASE_START_DATE = 'December 2024'
+
+
+
+const START_DATE: Record<SupportedChainId, string> = {
+  [SupportedChainId.MAINNET]: DEFAULT_START_DATE,
+  [SupportedChainId.GNOSIS_CHAIN]: DEFAULT_START_DATE,
+  [SupportedChainId.ARBITRUM_ONE]: ARBITRUM_ONE_START_DATE,
+  [SupportedChainId.BASE]: BASE_START_DATE,
+  [SupportedChainId.SEPOLIA]: DEFAULT_START_DATE
+}
+
 
 export function SurplusCard() {
   const { surplusAmount, isLoading } = useTotalSurplus()
@@ -29,7 +41,7 @@ export function SurplusCard() {
   const surplusUsdAmount = useUsdAmount(showSurplusAmount ? surplusAmount : undefined).value
   const native = useNativeCurrency()
   const nativeSymbol = native.symbol || 'ETH'
-  const isArbitrumOne = native.chainId === SupportedChainId.ARBITRUM_ONE
+  const startDate = START_DATE[native.chainId as SupportedChainId]
 
   const Wrapper = styled.div`
     margin: 12px auto 24px;
@@ -158,9 +170,7 @@ export function SurplusCard() {
             <i>
               Your total surplus{' '}
               <HelpTooltip
-                text={`The total surplus CoW Swap has generated for you in ${nativeSymbol} across all your trades since ${
-                  isArbitrumOne ? ARBITRUM_ONE_START_DATE : DEFAULT_START_DATE
-                }`}
+                text={`The total surplus CoW Swap has generated for you in ${nativeSymbol} across all your trades since ${startDate}`}
               />
             </i>
           </span>
