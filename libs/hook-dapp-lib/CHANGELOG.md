@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.2.0...hook-dapp-lib-v1.3.0) (2024-10-29)
+
+
+### Features
+
+* **hook-store:** create bundle hooks tenderly simulation ([#4943](https://github.com/cowprotocol/cowswap/issues/4943)) ([435bfdf](https://github.com/cowprotocol/cowswap/commit/435bfdfa3e68cea1652bc00dcf5908bbc991d7b1))
+
 ## [1.2.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.1.0...hook-dapp-lib-v1.2.0) (2024-10-18)
 
 

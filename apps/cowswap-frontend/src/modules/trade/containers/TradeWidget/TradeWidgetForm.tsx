@@ -178,7 +178,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
           lockScreen
         ) : (
           <>
-            {!isWrapOrUnwrap && topContent}
+            {topContent}
             <div>
               <CurrencyInputPanel
                 id="input-currency-input"

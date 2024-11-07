@@ -38,7 +38,7 @@ export function Updaters() {
   const { chainId, account } = useWalletInfo()
   const { tokenLists, appCode, customTokens, standaloneMode } = useInjectedWidgetParams()
   const onTokenListAddingError = useOnTokenListAddingError()
-  const { isGeoBlockEnabled } = useFeatureFlags()
+  const { isGeoBlockEnabled, isYieldEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
   const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
 
@@ -74,6 +74,7 @@ export function Updaters() {
         chainId={chainId}
         isGeoBlockEnabled={isGeoBlockEnabled}
         enableLpTokensByDefault={isYieldWidget}
+        isYieldEnabled={isYieldEnabled}
       />
       <WidgetTokensListsUpdater
         tokenLists={tokenLists}

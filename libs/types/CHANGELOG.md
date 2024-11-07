@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.4.0](https://github.com/cowprotocol/cowswap/compare/types-v1.3.0...types-v1.4.0) (2024-11-06)
+
+
+### Features
+
+* **yield:** define token category by default for selection ([#5018](https://github.com/cowprotocol/cowswap/issues/5018)) ([7c18b7d](https://github.com/cowprotocol/cowswap/commit/7c18b7d85de6feac9c7e64740a93572f3af3c273))
+* **yield:** display cow amm banner conditionally ([#5035](https://github.com/cowprotocol/cowswap/issues/5035)) ([1a517a3](https://github.com/cowprotocol/cowswap/commit/1a517a3f21b94c10b8e59e68bc49a569c1be904b))
+
+## [1.3.0](https://github.com/cowprotocol/cowswap/compare/types-v1.2.0...types-v1.3.0) (2024-10-29)
+
+
+### Features
+
+* setup vampire attack widget ([#4950](https://github.com/cowprotocol/cowswap/issues/4950)) ([99c4c42](https://github.com/cowprotocol/cowswap/commit/99c4c42aec60a734a37926935be5dca6cd4cf11c))
+
 ## [1.2.0](https://github.com/cowprotocol/cowswap/compare/types-v1.1.0...types-v1.2.0) (2024-09-17)
 
 

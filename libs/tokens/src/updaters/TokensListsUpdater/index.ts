@@ -36,6 +36,7 @@ interface TokensListsUpdaterProps {
   chainId: SupportedChainId
   isGeoBlockEnabled: boolean
   enableLpTokensByDefault: boolean
+  isYieldEnabled: boolean
 }
 
 /**
@@ -50,6 +51,7 @@ export function TokensListsUpdater({
   chainId: currentChainId,
   isGeoBlockEnabled,
   enableLpTokensByDefault,
+  isYieldEnabled,
 }: TokensListsUpdaterProps) {
   const { chainId } = useAtomValue(environmentAtom)
   const setEnvironment = useSetAtom(updateEnvironmentAtom)
@@ -61,8 +63,8 @@ export function TokensListsUpdater({
   const upsertLists = useSetAtom(upsertListsAtom)
 
   useEffect(() => {
-    setEnvironment({ chainId: currentChainId, enableLpTokensByDefault })
-  }, [setEnvironment, currentChainId, enableLpTokensByDefault])
+    setEnvironment({ chainId: currentChainId, enableLpTokensByDefault, isYieldEnabled })
+  }, [setEnvironment, currentChainId, enableLpTokensByDefault, isYieldEnabled])
 
   // Fetch tokens lists once in 6 hours
   const { data: listsStates, isLoading } = useSWR<ListState[] | null>(
