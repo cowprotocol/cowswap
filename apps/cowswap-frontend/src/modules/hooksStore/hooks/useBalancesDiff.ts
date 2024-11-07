@@ -29,7 +29,9 @@ export function useHookBalancesDiff(isPreHook: boolean, hookToEditUid?: string):
   const { preHooks, postHooks } = useHooks()
   const preHookBalanceDiff = usePreHookBalanceDiff()
 
-  const orderMockBalanceDiff = useMemo(() => {
+  // balance diff expected from the order without the simulation
+  // this is used when the order isn't simulated like in the case of only preHooks
+  const orderExpectedBalanceDiff = useMemo(() => {
     if (!account) return EMPTY_BALANCE_DIFF
     const balanceDiff: Record<string, string> = {}
 
@@ -43,8 +45,8 @@ export function useHookBalancesDiff(isPreHook: boolean, hookToEditUid?: string):
   }, [orderParams, account])
 
   const firstPostHookBalanceDiff = useMemo(() => {
-    return mergeBalanceDiffs(preHookBalanceDiff, orderMockBalanceDiff)
-  }, [preHookBalanceDiff, orderMockBalanceDiff])
+    return mergeBalanceDiffs(preHookBalanceDiff, orderExpectedBalanceDiff)
+  }, [preHookBalanceDiff, orderExpectedBalanceDiff])
 
   const postHookBalanceDiff = useMemo(() => {
     // is adding the first post hook or simulation not available
@@ -52,7 +54,7 @@ export function useHookBalancesDiff(isPreHook: boolean, hookToEditUid?: string):
 
     const lastPostHook = postHooks[postHooks.length - 1]
     return data[lastPostHook?.uuid]?.cumulativeBalancesDiff || firstPostHookBalanceDiff
-  }, [data, postHooks, orderMockBalanceDiff, preHookBalanceDiff])
+  }, [data, postHooks, orderExpectedBalanceDiff, preHookBalanceDiff])
 
   const hookToEditBalanceDiff = useMemo(() => {
     if (!data || !hookToEditUid) return EMPTY_BALANCE_DIFF
@@ -80,12 +82,6 @@ export function useHookBalancesDiff(isPreHook: boolean, hookToEditUid?: string):
   }, [data, orderParams, preHooks, postHooks])
 }
 
-const addBigNumberStrings = (a: string, b: string): string => {
-  const bigA = BigNumber.from(a)
-  const bigB = BigNumber.from(b)
-  return bigA.add(bigB).toString()
-}
-
 function mergeBalanceDiffs(first: BalancesDiff, second: BalancesDiff): BalancesDiff {
   const result: BalancesDiff = {}
 
@@ -110,7 +106,7 @@ function mergeBalanceDiffs(first: BalancesDiff, second: BalancesDiff): BalancesD
         } else {
           // If token exists, sum up the balances
           try {
-            result[address][token] = addBigNumberStrings(result[address][token], second[address][token])
+            result[address][token] = BigNumber.from(result[address][token]).add(second[address][token]).toString()
           } catch (error) {
             console.error(`Error adding balances for address ${address} and token ${token}:`, error)
             throw error

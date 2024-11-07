@@ -21,40 +21,25 @@ export function useTokensBalancesCombined() {
   }, [account, preHooksBalancesDiff, tokenBalances, isHooksTradeType])
 }
 
-function applyBalanceDiffs(currentState: BalancesState, diffs: Record<string, string>): BalancesState {
-  const normalizedValues: Record<string, BigNumber> = {}
+function applyBalanceDiffs(currentBalances: BalancesState, balanceDiff: Record<string, string>): BalancesState {
+  // Get all unique addresses from both objects
+  const allAddresses = [...new Set([...Object.keys(currentBalances.values), ...Object.keys(balanceDiff)])]
 
-  // Create normalized versions of inputs
-  const normalizedCurrentValues: Record<string, BigNumber | undefined> = {}
-  const normalizedDiffs: Record<string, string> = {}
+  const normalizedValues = allAddresses.reduce(
+    (acc, address) => {
+      const currentBalance = currentBalances.values[address] || BigNumber.from(0)
+      const diff = balanceDiff[address] ? BigNumber.from(balanceDiff[address]) : BigNumber.from(0)
 
-  // Normalize current state values
-  for (const address of Object.keys(currentState.values)) {
-    normalizedCurrentValues[address] = currentState.values[address]
-  }
+      return {
+        ...acc,
+        [address]: currentBalance.add(diff),
+      }
+    },
+    {} as Record<string, BigNumber>,
+  )
 
-  // Normalize diffs
-  for (const address of Object.keys(diffs)) {
-    normalizedDiffs[address] = diffs[address]
-  }
-
-  // Process all addresses in the normalized current state
-  for (const address of Object.keys(normalizedCurrentValues)) {
-    const currentBalance = normalizedCurrentValues[address] || BigNumber.from(0)
-    const diff = normalizedDiffs[address] ? BigNumber.from(normalizedDiffs[address]) : BigNumber.from(0)
-    normalizedValues[address] = currentBalance.add(diff)
-  }
-
-  // Process any new addresses from diffs that weren't in the current state
-  for (const address of Object.keys(normalizedDiffs)) {
-    if (!normalizedCurrentValues.hasOwnProperty(address)) {
-      normalizedValues[address] = BigNumber.from(normalizedDiffs[address])
-    }
-  }
-
-  // Return new state object maintaining the isLoading property
   return {
-    isLoading: currentState.isLoading,
+    isLoading: currentBalances.isLoading,
     values: normalizedValues,
   }
 }

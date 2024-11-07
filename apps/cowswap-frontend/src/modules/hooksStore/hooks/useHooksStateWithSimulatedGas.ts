@@ -10,6 +10,8 @@ import { useHooks } from './useHooks'
 
 import { HooksStoreState } from '../state/hookDetailsAtom'
 
+const GAS_BUFFER_PERCENTAGE = 110 // 10% buffer
+
 export function useHooksStateWithSimulatedGas(): HooksStoreState {
   const hooksRaw = useHooks()
   const { data: tenderlyData } = useTenderlyBundleSimulation()
@@ -18,7 +20,7 @@ export function useHooksStateWithSimulatedGas(): HooksStoreState {
     (hook: CowHookDetails): CowHookDetails => {
       const simulatedGasUsed = tenderlyData?.[hook.uuid]?.gasUsed
       if (!simulatedGasUsed || simulatedGasUsed === '0') return hook
-      const gasLimit = BigNumber.from(simulatedGasUsed).mul(110).div(100).toString() // 10% buffer
+      const gasLimit = BigNumber.from(simulatedGasUsed).mul(GAS_BUFFER_PERCENTAGE).div(100).toString()
       const hookData = { ...hook.hook, gasLimit }
       return { ...hook, hook: hookData }
     },

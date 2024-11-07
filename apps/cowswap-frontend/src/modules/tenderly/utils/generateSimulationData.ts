@@ -19,14 +19,14 @@ export function generateSimulationDataToError(
 }
 
 function convertBalanceDiffToLowerCaseKeys(data: BalancesDiff): BalancesDiff {
-  return Object.entries(data).reduce((acc, [outerKey, innerObj]) => {
-    const lowerOuterKey = outerKey.toLowerCase()
+  return Object.entries(data).reduce((acc, [tokenHolder, tokenHolderDiffs]) => {
+    const lowerOuterKey = tokenHolder.toLowerCase()
 
-    const processedInnerObj = Object.entries(innerObj || {}).reduce((innerAcc, [innerKey, value]) => {
-      const lowerInnerKey = innerKey.toLowerCase()
+    const processedInnerObj = Object.entries(tokenHolderDiffs || {}).reduce((innerAcc, [tokenAddress, balanceDiff]) => {
+      const lowerInnerKey = tokenAddress.toLowerCase()
       return {
         ...innerAcc,
-        [lowerInnerKey]: value,
+        [lowerInnerKey]: balanceDiff,
       }
     }, {})
 
