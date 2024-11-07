@@ -59,7 +59,7 @@ export const CHAIN_INFO: ChainInfoMap = {
   [SupportedChainId.BASE]: {
     docs: 'https://docs.base.org/',
     bridge: 'https://bridge.base.org/deposit',
-    explorer: 'https://basescan.io',
+    explorer: 'https://basescan.org',
     infoLink: 'https://www.base.org/',
     label: 'Base',
     addressPrefix: 'base',
