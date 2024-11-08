@@ -55,7 +55,7 @@ export interface MetaMaskSDKConstructorArgs {
  */
 export class MetaMaskSDK extends Connector {
   private sdk?: _MetaMaskSDK
-  declare provider?: SDKProvider
+  provider?: SDKProvider = undefined
   private readonly options: MetaMaskSDKOptions
   private eagerConnection?: Promise<void>
 
