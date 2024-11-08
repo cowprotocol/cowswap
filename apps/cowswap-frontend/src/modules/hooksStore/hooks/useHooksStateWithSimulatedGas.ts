@@ -14,9 +14,9 @@ export function useHooksStateWithSimulatedGas(): HooksStoreState {
 
   const combineHookWithSimulatedGas = useCallback(
     (hook: CowHookDetails): CowHookDetails => {
-      const simulatedGasUsed = tenderlyData?.[hook.uuid]?.gasUsed
-      if (!simulatedGasUsed || simulatedGasUsed === '0') return hook
-      const hookData = { ...hook.hook, gasLimit: simulatedGasUsed }
+      const hookTenderlyData = tenderlyData?.[hook.uuid]
+      if (!hookTenderlyData?.gasUsed || hookTenderlyData.gasUsed === '0' || !hookTenderlyData.status) return hook
+      const hookData = { ...hook.hook, gasLimit: hookTenderlyData.gasUsed }
       return { ...hook, hook: hookData }
     },
     [tenderlyData],
