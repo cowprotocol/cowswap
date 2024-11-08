@@ -33,6 +33,17 @@ export const Label = styled.span`
   gap: 4px;
 `
 
+export const ErrorLabel = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(${UI.COLOR_DANGER_TEXT});
+  background-color: var(${UI.COLOR_DANGER_BG});
+  border-radius: 8px;
+  margin-left: 4px;
+  padding: 2px 6px;
+`
+
 export const Content = styled.div`
   display: flex;
   width: max-content;
@@ -163,4 +174,22 @@ export const CircleCount = styled.span`
   font-size: 12px;
   font-weight: var(${UI.FONT_WEIGHT_BOLD});
   margin: 0;
+`
+
+export const Spinner = styled.div`
+  border: 5px solid transparent;
+  border-top-color: ${`var(${UI.COLOR_PRIMARY_LIGHTER})`};
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  animation: spin 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 `
