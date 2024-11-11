@@ -1,6 +1,6 @@
 import { PostBundleSimulationParams } from './bundleSimulation'
 
-import { SimulationData } from '../types'
+import { BalancesDiff, SimulationData } from '../types'
 
 export function generateSimulationDataToError(
   postParams: Pick<PostBundleSimulationParams, 'preHooks' | 'postHooks'>,
@@ -18,6 +18,25 @@ export function generateSimulationDataToError(
   )
 }
 
+function convertBalanceDiffToLowerCaseKeys(data: BalancesDiff): BalancesDiff {
+  return Object.entries(data).reduce((acc, [tokenHolder, tokenHolderDiffs]) => {
+    const lowerOuterKey = tokenHolder.toLowerCase()
+
+    const processedInnerObj = Object.entries(tokenHolderDiffs || {}).reduce((innerAcc, [tokenAddress, balanceDiff]) => {
+      const lowerInnerKey = tokenAddress.toLowerCase()
+      return {
+        ...innerAcc,
+        [lowerInnerKey]: balanceDiff,
+      }
+    }, {})
+
+    return {
+      ...acc,
+      [lowerOuterKey]: processedInnerObj,
+    }
+  }, {})
+}
+
 export function generateNewSimulationData(
   simulationData: SimulationData[],
   postParams: Pick<PostBundleSimulationParams, 'preHooks' | 'postHooks'>,
@@ -25,9 +44,14 @@ export function generateNewSimulationData(
   const preHooksKeys = postParams.preHooks.map((hookDetails) => hookDetails.uuid)
   const postHooksKeys = postParams.postHooks.map((hookDetails) => hookDetails.uuid)
 
-  const preHooksData = simulationData.slice(0, preHooksKeys.length)
+  const simulationDataWithLowerCaseBalanceDiffKeys = simulationData.map((data) => ({
+    ...data,
+    cumulativeBalancesDiff: convertBalanceDiffToLowerCaseKeys(data.cumulativeBalancesDiff),
+  }))
 
-  const postHooksData = simulationData.slice(-postHooksKeys.length)
+  const preHooksData = simulationDataWithLowerCaseBalanceDiffKeys.slice(0, preHooksKeys.length)
+
+  const postHooksData = simulationDataWithLowerCaseBalanceDiffKeys.slice(-postHooksKeys.length)
 
   return {
     ...preHooksKeys.reduce((acc, key, index) => ({ ...acc, [key]: preHooksData[index] }), {}),

@@ -7,7 +7,7 @@ import ICON_X from '@cowprotocol/assets/cow-swap/x.svg'
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 import { InfoTooltip } from '@cowprotocol/ui'
 
-import { Edit2, Trash2, ExternalLink as ExternalLinkIcon } from 'react-feather'
+import { Edit2, Trash2, ExternalLink as ExternalLinkIcon, RefreshCw } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
 import { useTenderlyBundleSimulation } from 'modules/tenderly/hooks/useTenderlyBundleSimulation'
@@ -31,7 +31,7 @@ interface HookItemProp {
 const isBundleSimulationReady = true
 
 export function AppliedHookItem({ account, hookDetails, dapp, isPreHook, editHook, removeHook, index }: HookItemProp) {
-  const { isValidating, data } = useTenderlyBundleSimulation()
+  const { isValidating, data, mutate } = useTenderlyBundleSimulation()
 
   const simulationData = useMemo(() => {
     if (!data) return
@@ -56,6 +56,9 @@ export function AppliedHookItem({ account, hookDetails, dapp, isPreHook, editHoo
           {isValidating && <styledEl.Spinner />}
         </styledEl.HookItemInfo>
         <styledEl.HookItemActions>
+          <styledEl.ActionBtn onClick={() => mutate()} disabled={isValidating}>
+            <RefreshCw size={14} />
+          </styledEl.ActionBtn>
           <styledEl.ActionBtn onClick={() => editHook(hookDetails.uuid)}>
             <Edit2 size={14} />
           </styledEl.ActionBtn>
