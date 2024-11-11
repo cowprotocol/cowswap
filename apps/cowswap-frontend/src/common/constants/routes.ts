@@ -54,7 +54,6 @@ export const HOOKS_STORE_MENU_ITEM = {
   route: Routes.HOOKS,
   label: 'Hooks',
   description: 'Powerful tool to generate pre/post interaction for CoW Protocol',
-  badge: 'New',
 }
 
 export const YIELD_MENU_ITEM = {
