@@ -1,10 +1,14 @@
-import { useTenderlyBundleSimulation } from 'modules/tenderly/hooks/useTenderlyBundleSimulation'
-import { useOrderParams } from './useOrderParams'
-import { useHooks } from './useHooks'
 import { useMemo } from 'react'
+
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { BalancesDiff } from 'modules/tenderly/types'
+
 import { BigNumber } from 'ethers'
+
+import { useTenderlyBundleSimulation } from 'modules/tenderly/hooks/useTenderlyBundleSimulation'
+import { BalancesDiff } from 'modules/tenderly/types'
+
+import { useHooks } from './useHooks'
+import { useOrderParams } from './useOrderParams'
 
 const EMPTY_BALANCE_DIFF: BalancesDiff = {}
 

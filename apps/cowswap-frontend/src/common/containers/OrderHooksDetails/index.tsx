@@ -8,11 +8,11 @@ import { ChevronDown, ChevronUp } from 'react-feather'
 
 import { AppDataInfo, decodeAppData } from 'modules/appData'
 import { useCustomHookDapps } from 'modules/hooksStore'
+import { useTenderlyBundleSimulation } from 'modules/tenderly/hooks/useTenderlyBundleSimulation'
 
 import { HookItem } from './HookItem'
 import * as styledEl from './styled'
 import { CircleCount } from './styled'
-import { useTenderlyBundleSimulation } from 'modules/tenderly/hooks/useTenderlyBundleSimulation'
 
 interface OrderHooksDetailsProps {
   appData: string | AppDataInfo
