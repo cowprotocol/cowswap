@@ -1,4 +1,4 @@
-import { ReactElement, useMemo, useState } from 'react'
+import { ReactElement, useEffect, useMemo, useState } from 'react'
 
 import { latest } from '@cowprotocol/app-data'
 import { HookToDappMatch, matchHooksToDappsRegistry } from '@cowprotocol/hook-dapp-lib'
@@ -8,6 +8,7 @@ import { ChevronDown, ChevronUp } from 'react-feather'
 
 import { AppDataInfo, decodeAppData } from 'modules/appData'
 import { useCustomHookDapps } from 'modules/hooksStore'
+import { useTenderlyBundleSimulation } from 'modules/tenderly/hooks/useTenderlyBundleSimulation'
 
 import { HookItem } from './HookItem'
 import * as styledEl from './styled'
@@ -27,9 +28,17 @@ export function OrderHooksDetails({ appData, children, margin }: OrderHooksDetai
   const preCustomHookDapps = useCustomHookDapps(true)
   const postCustomHookDapps = useCustomHookDapps(false)
 
+  const { mutate, isValidating, data } = useTenderlyBundleSimulation()
+
+  useEffect(() => {
+    mutate()
+  }, [])
+
   if (!appDataDoc) return null
 
   const metadata = appDataDoc.metadata as latest.Metadata
+
+  const hasSomeFailedSimulation = Object.values(data || {}).some((hook) => !hook.status)
 
   const preHooksToDapp = matchHooksToDappsRegistry(metadata.hooks?.pre || [], preCustomHookDapps)
   const postHooksToDapp = matchHooksToDappsRegistry(metadata.hooks?.post || [], postCustomHookDapps)
@@ -42,6 +51,8 @@ export function OrderHooksDetails({ appData, children, margin }: OrderHooksDetai
         <styledEl.Label>
           Hooks
           <InfoTooltip content="Hooks are interactions before/after order execution." />
+          {hasSomeFailedSimulation && <styledEl.ErrorLabel>Simulation failed</styledEl.ErrorLabel>}
+          {isValidating && <styledEl.Spinner />}
         </styledEl.Label>
         <styledEl.Content onClick={() => setOpen(!isOpen)}>
           {preHooksToDapp.length > 0 && (
