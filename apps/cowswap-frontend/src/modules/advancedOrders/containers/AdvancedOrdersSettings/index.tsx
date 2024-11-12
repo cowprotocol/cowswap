@@ -3,9 +3,9 @@ import { useCallback } from 'react'
 
 import { Menu, MenuItem } from '@reach/menu-button'
 
-import { Settings } from 'modules/advancedOrders/pure/Settings'
 import { MenuContent, SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
 
+import { Settings } from '../../pure/Settings'
 import {
   advancedOrdersSettingsAtom,
   AdvancedOrdersSettingsState,
@@ -20,7 +20,7 @@ export function AdvancedOrdersSettings() {
     (state: Partial<AdvancedOrdersSettingsState>) => {
       updateSettingsState(state)
     },
-    [updateSettingsState]
+    [updateSettingsState],
   )
 
   return (

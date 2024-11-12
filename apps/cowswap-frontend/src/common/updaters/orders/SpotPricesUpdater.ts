@@ -11,13 +11,13 @@ import { Token } from '@uniswap/sdk-core'
 import { SPOT_PRICE_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useCombinedPendingOrders } from 'legacy/state/orders/hooks'
 
-import { requestPrice } from 'modules/limitOrders/hooks/useGetInitialPrice'
 import { UpdateSpotPriceAtom, updateSpotPricesAtom } from 'modules/orders/state/spotPricesAtom'
 
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { useSafeMemo } from '../../hooks/useSafeMemo'
 import { getCanonicalMarketChainKey } from '../../utils/markets'
+import { requestPrice } from '../../services/requestPrice'
 
 type MarketRecord = Record<
   string,
@@ -52,7 +52,7 @@ function useMarkets(chainId: SupportedChainId, account: string | undefined): Mar
 
         return acc
       },
-      {}
+      {},
     )
   }, [pending])
 }

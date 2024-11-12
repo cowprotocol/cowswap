@@ -4,7 +4,7 @@ import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
-import { isUnsupportedTokenInQuote } from 'modules/limitOrders/utils/isUnsupportedTokenInQuote'
+import { isUnsupportedTokenInQuote } from 'common/utils/isUnsupportedTokenInQuote'
 import { useTokenSupportsPermit } from 'modules/permit'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'

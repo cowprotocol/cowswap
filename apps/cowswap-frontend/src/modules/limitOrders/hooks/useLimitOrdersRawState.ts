@@ -1,10 +1,10 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 
 import {
-  limitOrdersRawStateAtom,
   LimitOrdersRawState,
+  limitOrdersRawStateAtom,
   updateLimitOrdersRawStateAtom,
-} from 'modules/limitOrders/state/limitOrdersRawStateAtom'
+} from '../state/limitOrdersRawStateAtom'
 
 export function useLimitOrdersRawState(): LimitOrdersRawState {
   return useAtomValue(limitOrdersRawStateAtom)
