@@ -27,16 +27,14 @@ import {
 
 import { orderBookApi } from 'cowSdk'
 
-import { LegacyFeeQuoteParams as FeeQuoteParams } from 'legacy/state/price/types'
-
 import { getAppData } from 'modules/appData'
+import { FeeQuoteParams } from 'modules/tradeQuote/types'
 
 import { getQuoteValidFor } from 'utils/orderUtils/getQuoteValidFor'
 
 import { ApiErrorCodes } from './errors/OperatorError'
 import QuoteApiError, { mapOperatorErrorToQuoteError, QuoteApiErrorDetails } from './errors/QuoteError'
 import { getIsOrderBookTypedError } from './getIsOrderBookTypedError'
-
 
 function getProfileUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {

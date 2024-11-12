@@ -2,16 +2,16 @@ import { atom } from 'jotai'
 
 import { OrderQuoteResponse, PriceQuality } from '@cowprotocol/cow-sdk'
 
-import type { LegacyFeeQuoteParams } from 'legacy/state/price/types'
-
 import QuoteApiError from 'api/cowProtocol/errors/QuoteError'
+
+import { FeeQuoteParams } from '../types'
 
 export interface TradeQuoteState {
   response: OrderQuoteResponse | null
   error: QuoteApiError | null
   isLoading: boolean
   hasParamsChanged: boolean
-  quoteParams: LegacyFeeQuoteParams | null
+  quoteParams: FeeQuoteParams | null
   fetchStartTimestamp: number | null
   localQuoteTimestamp: number | null
 }

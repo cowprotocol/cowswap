@@ -8,11 +8,10 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { shallowEqual } from 'react-redux'
 
-import { updateRecipientToggleVisible, updateUserDarkMode, updateUserDeadline, updateUserLocale } from './reducer'
+import { updateUserDarkMode, updateUserDeadline, updateUserLocale } from './reducer'
 import { SerializedToken } from './types'
 
 import { useAppDispatch, useAppSelector } from '../hooks'
-import { setRecipient } from '../swap/actions'
 
 export function useIsDarkMode(): boolean {
   const { userDarkMode, matchesDarkMode } = useAppSelector(
@@ -53,34 +52,6 @@ export function useUserLocaleManager(): [SupportedLocale | null, (newLocale: Sup
   )
 
   return [locale, setLocale]
-}
-
-export function useIsRecipientToggleVisible(): boolean {
-  return useAppSelector((state) => state.user.recipientToggleVisible)
-}
-
-export function useRecipientToggleManager(): [boolean, (value: boolean) => void] {
-  const dispatch = useAppDispatch()
-  const isVisible = useIsRecipientToggleVisible()
-  const onChangeRecipient = useCallback(
-    (recipient: string | null) => {
-      dispatch(setRecipient({ recipient }))
-    },
-    [dispatch],
-  )
-
-  const toggleVisibility = useCallback(
-    (value: boolean) => {
-      const newIsVisible = value
-      dispatch(updateRecipientToggleVisible({ recipientToggleVisible: newIsVisible }))
-      if (!newIsVisible) {
-        onChangeRecipient(null)
-      }
-    },
-    [dispatch, onChangeRecipient],
-  )
-
-  return [isVisible, toggleVisibility]
 }
 
 export function useUserTransactionTTL(): [number, (slippage: number) => void] {

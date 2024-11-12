@@ -4,8 +4,6 @@ import { SolversInfoUpdater } from '@cowprotocol/core'
 import { TokensListsUpdater, UnsupportedTokensUpdater, WidgetTokensListsUpdater } from '@cowprotocol/tokens'
 import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
-import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
-
 import { addListAnalytics, removeListAnalytics } from 'modules/analytics'
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { EthFlowDeadlineUpdater } from 'modules/ethFlow'
@@ -55,7 +53,6 @@ export function Updaters() {
       <UnfillableOrdersUpdater />
       <OrdersFromApiUpdater />
       <GasUpdater />
-      <GasPriceStrategyUpdater />
       <SentryUpdater />
       <UploadToIpfsUpdater />
       <EthFlowDeadlineUpdater />
