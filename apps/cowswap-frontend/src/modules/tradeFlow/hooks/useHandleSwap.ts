@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 
 import { Field } from 'legacy/state/types'
 
+import { ethFlow, useEthFlowContext } from 'modules/ethFlow'
 import { TradeWidgetActions, useTradePriceImpact } from 'modules/trade'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 
@@ -21,6 +22,7 @@ export function useHandleSwap(params: TradeFlowParams, actions: TradeWidgetActio
   const safeBundleFlowContext = useSafeBundleFlowContext()
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
   const priceImpactParams = useTradePriceImpact()
+  const ethFlowContext = useEthFlowContext()
   const { onUserInput, onChangeRecipient } = actions
 
   const contextIsReady =
@@ -34,6 +36,13 @@ export function useHandleSwap(params: TradeFlowParams, actions: TradeWidgetActio
     if (!tradeFlowContext) return
 
     const result = await (() => {
+      if (tradeFlowType === FlowType.EOA_ETH_FLOW) {
+        if (!ethFlowContext) throw new Error('Eth flow context is not ready')
+
+        logTradeFlow('ETH FLOW', 'Start eth flow')
+        return ethFlow(tradeFlowContext, ethFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
+      }
+
       if (tradeFlowType === FlowType.SAFE_BUNDLE_APPROVAL) {
         if (!safeBundleFlowContext) throw new Error('Safe bundle flow context is not ready')
 
@@ -74,6 +83,7 @@ export function useHandleSwap(params: TradeFlowParams, actions: TradeWidgetActio
     confirmPriceImpactWithoutFee,
     onChangeRecipient,
     onUserInput,
+    ethFlowContext,
   ])
 
   return { callback, contextIsReady }

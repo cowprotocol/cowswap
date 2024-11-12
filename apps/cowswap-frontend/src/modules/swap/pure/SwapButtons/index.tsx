@@ -15,7 +15,6 @@ import { AutoColumn } from 'legacy/components/Column'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { Field } from 'legacy/state/types'
 
-import { EthFlowBanner } from 'modules/swap/containers/EthFlow/EthFlowBanner'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { QuoteDeadlineParams } from 'modules/tradeQuote'
 
@@ -23,6 +22,8 @@ import { TradeApproveButton } from 'common/containers/TradeApprove/TradeApproveB
 
 import { SafeReadOnlyButton } from './SafeReadOnlyButton'
 import * as styledEl from './styled'
+
+import { EthFlowBanner } from '../../../ethFlow/containers/EthFlow/EthFlowBanner'
 
 export type HandleSwapCallback = Command
 export interface SwapButtonsContext {
@@ -55,6 +56,7 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       </Text>
     </ButtonError>
   ),
+  // TODO
   [SwapButtonState.SwapWithWrappedToken]: (props: SwapButtonsContext) => (
     <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onEthFlow}>
       <styledEl.SwapButtonBox>
@@ -172,11 +174,8 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       </styledEl.SwapButtonBox>
     </ButtonError>
   ),
-  [SwapButtonState.RegularEthFlowSwap]: (props: SwapButtonsContext) => <EthFlowSwapButton {...props} />,
-}
-
-function EthFlowSwapButton(props: SwapButtonsContext) {
-  return (
+  // TODO
+  [SwapButtonState.RegularEthFlowSwap]: (props: SwapButtonsContext) => (
     <>
       <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm}>
         <styledEl.SwapButtonBox>
@@ -189,7 +188,7 @@ function EthFlowSwapButton(props: SwapButtonsContext) {
         wrapCallback={props.onEthFlow}
       />
     </>
-  )
+  ),
 }
 
 export const SwapButtons = React.memo(function (props: SwapButtonsContext) {

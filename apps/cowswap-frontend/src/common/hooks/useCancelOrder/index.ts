@@ -11,7 +11,6 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useGasPrices } from 'legacy/state/gas/hooks'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
-import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 import { useGetOnChainCancellation } from 'common/hooks/useCancelOrder/useGetOnChainCancellation'
@@ -22,6 +21,8 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { cancellationModalContextAtom, CancellationType, updateCancellationModalContextAtom } from './state'
 import { useOffChainCancelOrder } from './useOffChainCancelOrder'
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'
+
+import { getIsEthFlowOrder } from '../../utils/getIsEthFlowOrder'
 
 export type UseCancelOrderReturn = Command | null
 
@@ -131,6 +132,6 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
       gasPrices,
       nativeCurrency,
       isPendingSignature,
-    ]
+    ],
   )
 }

@@ -8,10 +8,10 @@ import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-upd
 
 import { addListAnalytics, removeListAnalytics } from 'modules/analytics'
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
+import { EthFlowDeadlineUpdater } from 'modules/ethFlow'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
 import { FinalizeTxUpdater } from 'modules/onchainTransactions'
 import { OrdersNotificationsUpdater } from 'modules/orders'
-import { EthFlowDeadlineUpdater } from 'modules/swap/state/EthFlow/updaters'
 import { useOnTokenListAddingError } from 'modules/tokensList'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { UsdPricesUpdater } from 'modules/usdAmount'
@@ -20,7 +20,6 @@ import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } f
 import { ProgressBarV2ExecutingOrdersUpdater } from 'common/hooks/orderProgressBarV2'
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { FeatureFlagsUpdater } from 'common/updaters/FeatureFlagsUpdater'
-import { FeesUpdater } from 'common/updaters/FeesUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
 import { LpBalancesAndAllowancesUpdater } from 'common/updaters/LpBalancesAndAllowancesUpdater'
 import {
@@ -53,7 +52,6 @@ export function Updaters() {
       <PendingOrdersUpdater />
       <CancelledOrdersUpdater />
       <ExpiredOrdersUpdater />
-      <FeesUpdater />
       <UnfillableOrdersUpdater />
       <OrdersFromApiUpdater />
       <GasUpdater />

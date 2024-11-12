@@ -11,10 +11,10 @@ import { FlowType } from 'modules/tradeFlow'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
-import { useEthFlowContext } from './useEthFlowContext'
 import { useSwapFlowContext } from './useSwapFlowContext'
 
-import { ethFlow } from '../services/ethFlow'
+import { useEthFlowContext } from '../../ethFlow/hooks/useEthFlowContext'
+import { ethFlow } from '../../ethFlow/services/ethFlow'
 
 export function useHandleSwapOrEthFlow(actions: TradeWidgetActions) {
   const priceImpactParams = useTradePriceImpact()

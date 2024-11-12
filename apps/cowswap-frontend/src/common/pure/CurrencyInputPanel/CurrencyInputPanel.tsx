@@ -13,7 +13,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { Field } from 'legacy/state/types'
 
 import { setMaxSellTokensAnalytics } from 'modules/analytics'
-import { ReceiveAmount } from 'modules/swap/pure/ReceiveAmount'
+import { ReceiveAmount } from '../ReceiveAmount'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'

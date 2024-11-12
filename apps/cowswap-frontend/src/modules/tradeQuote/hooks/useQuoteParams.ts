@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { getAddress, getCurrencyAddress } from '@cowprotocol/common-utils'
+import { getCurrencyAddress, getWrappedToken } from '@cowprotocol/common-utils'
 import { PriceQuality } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -21,7 +21,7 @@ export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | un
 
   const { inputCurrency, outputCurrency, orderKind } = state || {}
 
-  const sellToken = getAddress(inputCurrency)
+  const sellToken = inputCurrency ? getWrappedToken(inputCurrency).address : undefined
   const buyToken = outputCurrency ? getCurrencyAddress(outputCurrency) : undefined
   const fromDecimals = inputCurrency?.decimals
   const toDecimals = outputCurrency?.decimals

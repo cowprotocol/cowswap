@@ -16,7 +16,6 @@ import SVG from 'react-inlinesvg'
 import { CREATING_STATES, OrderStatus } from 'legacy/state/orders/actions'
 
 import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
-import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { RateInfo } from 'common/pure/RateInfo'
@@ -33,6 +32,7 @@ import { EstimatedExecutionPrice } from './EstimatedExecutionPrice'
 import { OrderContextMenu } from './OrderContextMenu'
 import * as styledEl from './styled'
 
+import { getIsEthFlowOrder } from '../../../../../common/utils/getIsEthFlowOrder'
 import { OrderParams } from '../../../utils/getOrderParams'
 import { OrderStatusBox } from '../../OrderStatusBox'
 import { CheckboxCheckmark, TableRow, TableRowCheckbox, TableRowCheckboxWrapper } from '../styled'
@@ -173,7 +173,7 @@ export function OrderRow({
   }, [orderActions, order])
   const alternativeOrderModalContext = useMemo(
     () => orderActions.getAlternativeOrderModalContext(order),
-    [order, orderActions]
+    [order, orderActions],
   )
 
   const withAllowanceWarning = hasEnoughAllowance === false && hasValidPendingPermit === false
@@ -401,7 +401,7 @@ export function OrderRow({
 function usePricesDifference(
   prices: OrderRowProps['prices'],
   spotPrice: OrderRowProps['spotPrice'],
-  isInverted: boolean
+  isInverted: boolean,
 ): PriceDifference {
   const { estimatedExecutionPrice } = prices || {}
 
@@ -415,13 +415,13 @@ function usePricesDifference(
  */
 function useFeeAmountDifference(
   { inputCurrencyAmount }: OrderRowProps['orderParams']['rateInfoParams'],
-  prices: OrderRowProps['prices']
+  prices: OrderRowProps['prices'],
 ): Percent | undefined {
   const { feeAmount } = prices || {}
 
   return useSafeMemo(
     () => calculatePercentageInRelationToReference({ value: feeAmount, reference: inputCurrencyAmount }),
-    [feeAmount, inputCurrencyAmount]
+    [feeAmount, inputCurrencyAmount],
   )
 }
 

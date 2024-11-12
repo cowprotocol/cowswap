@@ -12,7 +12,7 @@ import type { Order } from 'legacy/state/orders/actions'
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { GnosisSafeTxDetails } from 'modules/account/containers/Transaction/ActivityDetails'
 import { Category, cowAnalytics } from 'modules/analytics'
-import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
+import { EthFlowStepper } from 'modules/ethFlow'
 import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
 
 import * as styledEl from './styled'

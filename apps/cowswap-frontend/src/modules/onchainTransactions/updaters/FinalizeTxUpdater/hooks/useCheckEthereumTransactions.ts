@@ -10,13 +10,13 @@ import { useGetSafeTxInfo } from 'legacy/hooks/useGetSafeTxInfo'
 import { useAppDispatch } from 'legacy/state/hooks'
 import { useCancelOrdersBatch } from 'legacy/state/orders/hooks'
 
-import { removeInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
 import { useGetTwapOrderById } from 'modules/twap/hooks/useGetTwapOrderById'
 
 import { useBlockNumber } from 'common/hooks/useBlockNumber'
 import { useGetReceipt } from 'common/hooks/useGetReceipt'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
+import { removeInFlightOrderIdAtom } from '../../../../ethFlow/state/ethFlowInFlightOrderIdsAtom'
 import { CheckEthereumTransactions } from '../types'
 
 // TODO: rename to usePendingTransactionsContext
@@ -77,6 +77,6 @@ export function useCheckEthereumTransactions(): CheckEthereumTransactions | null
       getTwapOrderById,
       safeInfo,
     ],
-    null
+    null,
   )
 }
