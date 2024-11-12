@@ -113,6 +113,7 @@ export function useTenderlyBundleSimulation() {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
       refreshWhenOffline: false,
+      revalidateOnMount: false,
     },
   )
 }
