@@ -37,8 +37,15 @@ function applyBalanceDiffs(currentBalances: BalancesState, balanceDiff: Record<s
   // Only process addresses that have balance differences
   // This optimizes since the balances diff object is usually smaller than the balances object
   Object.entries(balanceDiff).forEach(([address, diff]) => {
-    const currentBalance = normalizedValues[address] || BigNumber.from(0)
-    normalizedValues[address] = currentBalance.add(BigNumber.from(diff))
+    if (normalizedValues[address] === undefined) return
+    const currentBalance = normalizedValues[address]
+    const balanceWithDiff = currentBalance.add(BigNumber.from(diff))
+
+    // If the balance with diff is negative, set the balance to 0
+    // This avoid the UI crashing in case of some error
+    normalizedValues[address] = balanceWithDiff.isNegative()
+      ? BigNumber.from(0)
+      : currentBalance.add(BigNumber.from(diff))
   })
 
   return {
