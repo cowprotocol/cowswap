@@ -6,7 +6,7 @@ import { LpTokenProvider } from '@cowprotocol/types'
 
 import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
-import { VampireAttackContext } from 'modules/yield/types'
+import type { VampireAttackContext } from 'modules/yield/types'
 
 import { TextFit } from './Common'
 import { LP_PROVIDER_NAMES } from './const'
