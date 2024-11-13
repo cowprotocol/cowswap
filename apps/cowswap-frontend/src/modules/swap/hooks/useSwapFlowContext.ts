@@ -4,7 +4,11 @@ import { useTradeFlowContext } from 'modules/tradeFlow'
 
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
-export function useSwapFlowContext() {
+interface SwapFlowContext {
+  defaultPartiallyFillable: boolean
+}
+
+export function useSwapFlowContext({ defaultPartiallyFillable }: SwapFlowContext) {
   const [deadline] = useUserTransactionTTL()
-  return useTradeFlowContext(useSafeMemoObject({ deadline }))
+  return useTradeFlowContext(useSafeMemoObject({ deadline, defaultPartiallyFillable }))
 }

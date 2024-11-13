@@ -22,9 +22,10 @@ import { TradeFlowContext } from '../types/TradeFlowContext'
 
 export interface TradeFlowParams {
   deadline: number
+  defaultPartiallyFillable: boolean
 }
 
-export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowContext | null {
+export function useTradeFlowContext({ deadline, defaultPartiallyFillable }: TradeFlowParams): TradeFlowContext | null {
   const { chainId, account } = useWalletInfo()
   const provider = useWalletProvider()
   const { allowsOffchainSigning } = useWalletDetails()
@@ -194,7 +195,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             allowsOffchainSigning,
             appData,
             class: OrderClass.MARKET,
-            partiallyFillable: false, // SWAP orders are always fill or kill - for now
+            partiallyFillable: defaultPartiallyFillable,
             quoteId: quoteResponse.id,
             isSafeWallet,
           },

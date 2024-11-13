@@ -55,9 +55,10 @@ import { ConfirmSwapModalSetup } from '../ConfirmSwapModalSetup'
 export interface SwapWidgetProps {
   topContent?: ReactNode
   bottomContent?: ReactNode
+  defaultPartiallyFillable?: boolean
 }
 
-export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
+export function SwapWidget({ topContent, bottomContent, defaultPartiallyFillable = false }: SwapWidgetProps) {
   const { chainId } = useWalletInfo()
   const { currencies, trade } = useDerivedSwapInfo()
   const slippage = useTradeSlippage()
@@ -170,6 +171,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
       openNativeWrapModal,
     },
     swapActions,
+    defaultPartiallyFillable,
   )
 
   const tradeUrlParams = useTradeRouteContext()

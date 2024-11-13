@@ -65,7 +65,8 @@ export function HooksStoreWidget() {
     onDismiss()
   }, [chainId, isChainIdUnsupported, onDismiss])
 
-  useSetupHooksStoreOrderParams()
+  const defaultPartiallyFillable = true
+  useSetupHooksStoreOrderParams({ defaultPartiallyFillable })
   useSetRecipientOverride()
 
   const isHookSelectionOpen = !!(selectedHookPosition || hookToEdit)
@@ -114,7 +115,11 @@ export function HooksStoreWidget() {
   return (
     <>
       <TradeWidgetWrapper visible$={!hideSwapWidget}>
-        <SwapWidget topContent={TopContent} bottomContent={BottomContent} />
+        <SwapWidget
+          topContent={TopContent}
+          bottomContent={BottomContent}
+          defaultPartiallyFillable={defaultPartiallyFillable}
+        />
       </TradeWidgetWrapper>
       <IframeDappsManifestUpdater />
       {isHookSelectionOpen && (
