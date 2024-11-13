@@ -82,7 +82,10 @@ export function YieldWidget() {
     outputCurrencyFiatAmount,
     recipient,
   } = useYieldDerivedState()
-  const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }), widgetActions)
+  const doTrade = useHandleSwap(
+    useSafeMemoObject({ deadline: deadlineState[0], defaultPartiallyFillable: false }),
+    widgetActions,
+  )
 
   const inputPoolState = useMemo(() => {
     if (!poolsInfo || !inputCurrency) return null
