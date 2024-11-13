@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { HookToDappMatch } from '@cowprotocol/hook-dapp-lib'
+import { CowHookDetails, HookToDappMatch } from '@cowprotocol/hook-dapp-lib'
 
 import { ChevronDown, ChevronUp } from 'react-feather'
 
@@ -8,9 +8,10 @@ import { clickOnHooks } from 'modules/analytics'
 
 import * as styledEl from './styled'
 
-export function HookItem({ item, index }: { item: HookToDappMatch; index: number }) {
+export function HookItem({ details, item, index }: { details?: CowHookDetails; item: HookToDappMatch; index: number }) {
   const [isOpen, setIsOpen] = useState(false)
 
+  console.log('TODO', details?.uuid)
   const handleLinkClick = () => {
     clickOnHooks(item.dapp?.name || 'Unknown hook dapp')
   }
