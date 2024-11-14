@@ -8,6 +8,7 @@ import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-upd
 
 import { addListAnalytics, removeListAnalytics } from 'modules/analytics'
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
+import { BalancesCombinedUpdater } from 'modules/combinedBalances/updater/BalancesCombinedUpdater'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
 import { FinalizeTxUpdater } from 'modules/onchainTransactions'
 import { OrdersNotificationsUpdater } from 'modules/orders'
@@ -90,6 +91,7 @@ export function Updaters() {
       <PoolsInfoUpdater />
       <LpTokensWithBalancesUpdater />
       <VampireAttackUpdater />
+      <BalancesCombinedUpdater />
     </>
   )
 }
