@@ -24,6 +24,7 @@ import { HooksPage } from 'pages/Hooks'
 import LimitOrderPage from 'pages/LimitOrders'
 import { SwapPage } from 'pages/Swap'
 import YieldPage from 'pages/Yield'
+import { CowShed } from 'pages/Hooks/cowShed'
 
 // Async routes
 const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
@@ -87,6 +88,7 @@ export function RoutesApp() {
         {/*Swap*/}
         <Route path={RoutesEnum.SWAP} element={<SwapPage />} />
         <Route path={RoutesEnum.HOOKS} element={<HooksPage />} />
+        <Route path={RoutesEnum.COW_SHED} element={<CowShed />} />
         <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
 
         {lazyRoutes.map((item, key) => LazyRoute({ ...item, key }))}
