@@ -25,13 +25,13 @@ import { useEthFlowActions } from './hooks/useEthFlowActions'
 import useRemainingNativeTxsAndCosts from './hooks/useRemainingNativeTxsAndCosts'
 import { useSetupEthFlow } from './hooks/useSetupEthFlow'
 
-
 export interface EthFlowProps {
   nativeInput?: CurrencyAmount<Currency>
   hasEnoughWrappedBalanceForSwap: boolean
   wrapCallback: WrapUnwrapCallback | null
   directSwapCallback: HandleSwapCallback
   onDismiss: Command
+  allowSameToken: boolean
 }
 
 export function EthFlowModal({
@@ -40,6 +40,7 @@ export function EthFlowModal({
   wrapCallback,
   directSwapCallback,
   hasEnoughWrappedBalanceForSwap,
+  allowSameToken,
 }: EthFlowProps) {
   const { chainId } = useWalletInfo()
   const native = useNativeCurrency()
@@ -48,14 +49,17 @@ export function EthFlowModal({
 
   const ethFlowContext = useAtomValue(ethFlowContextAtom)
   const approveCallback = useTradeApproveCallback(
-    (nativeInput && currencyAmountToTokenAmount(nativeInput)) || undefined
+    (nativeInput && currencyAmountToTokenAmount(nativeInput)) || undefined,
   )
-  const ethFlowActions = useEthFlowActions({
-    wrap: wrapCallback,
-    approve: approveCallback,
-    dismiss: onDismiss,
-    directSwap: directSwapCallback,
-  })
+  const ethFlowActions = useEthFlowActions(
+    {
+      wrap: wrapCallback,
+      approve: approveCallback,
+      dismiss: onDismiss,
+      directSwap: directSwapCallback,
+    },
+    allowSameToken,
+  )
 
   const approveActivity = useSingleActivityDescriptor({ chainId, id: ethFlowContext.approve.txHash || undefined })
   const wrapActivity = useSingleActivityDescriptor({ chainId, id: ethFlowContext.wrap.txHash || undefined })
@@ -86,7 +90,7 @@ export function EthFlowModal({
     approvalState,
     approveActivity,
     wrapActivity,
-    onDismiss
+    onDismiss,
   })
 
   return (

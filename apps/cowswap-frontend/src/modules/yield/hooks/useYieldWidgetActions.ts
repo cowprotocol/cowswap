@@ -14,7 +14,7 @@ import { useYieldDerivedState } from './useYieldDerivedState'
 export function useYieldWidgetActions(): TradeWidgetActions {
   const { inputCurrency, outputCurrency, orderKind } = useYieldDerivedState()
   const updateYieldState = useUpdateYieldRawState()
-  const onCurrencySelection = useOnCurrencySelection()
+  const onCurrencySelection = useOnCurrencySelection({ allowSameToken: false })
   const updateCurrencyAmount = useUpdateCurrencyAmount()
 
   const onUserInput = useCallback(

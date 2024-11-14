@@ -60,16 +60,17 @@ import { Link } from 'react-router-dom'
 export interface SwapWidgetProps {
   topContent?: ReactNode
   bottomContent?: ReactNode
+  allowSameToken?: boolean
 }
 
-export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
+export function SwapWidget({ topContent, bottomContent, allowSameToken = false }: SwapWidgetProps) {
   const { chainId } = useWalletInfo()
   const { currencies, trade } = useDerivedSwapInfo()
   const slippage = useTradeSlippage()
   const parsedAmounts = useSwapCurrenciesAmounts()
   const { isSupportedWallet } = useWalletDetails()
   const isSwapUnsupported = useIsTradeUnsupported(currencies.INPUT, currencies.OUTPUT)
-  const swapActions = useSwapActionHandlers()
+  const swapActions = useSwapActionHandlers({ allowSameToken })
   const swapState = useSwapState()
   const { independentField, recipient } = swapState
   const showRecipientControls = useShowRecipientControls(recipient)
@@ -177,6 +178,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
       openNativeWrapModal,
     },
     swapActions,
+    allowSameToken,
   )
 
   const tradeUrlParams = useTradeRouteContext()
@@ -189,6 +191,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     wrapCallback: swapButtonContext.onWrapOrUnwrap,
     directSwapCallback: swapButtonContext.handleSwap,
     hasEnoughWrappedBalanceForSwap: swapButtonContext.hasEnoughWrappedBalanceForSwap,
+    allowSameToken,
   }
 
   const swapModalsProps: SwapModalsProps = {
@@ -269,6 +272,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     priceImpact: priceImpactParams,
     disableQuotePolling: true,
     tradeQuoteStateOverride,
+    allowSameToken,
   }
 
   useSetLocalTimeOffset(getQuoteTimeOffset(swapButtonContext.quoteDeadlineParams))

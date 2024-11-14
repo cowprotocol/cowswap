@@ -30,13 +30,13 @@ export interface EthFlowActions {
   directSwap(): void
 }
 
-export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowActions {
+export function useEthFlowActions(callbacks: EthFlowActionCallbacks, allowSameToken: boolean): EthFlowActions {
   const { chainId } = useWalletInfo()
   const { trade } = useDerivedSwapInfo()
 
   const updateEthFlowContext = useSetAtom(updateEthFlowContextAtom)
 
-  const { onCurrencySelection } = useSwapActionHandlers()
+  const { onCurrencySelection } = useSwapActionHandlers({ allowSameToken })
   const { onOpen: openSwapConfirmModal } = useTradeConfirmActions()
 
   return useMemo(() => {

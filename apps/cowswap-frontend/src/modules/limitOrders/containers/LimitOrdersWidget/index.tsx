@@ -75,7 +75,7 @@ export function LimitOrdersWidget() {
   const { feeAmount } = useAtomValue(limitRateAtom)
   const { isLoading: isRateLoading } = useTradeQuote()
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
-  const widgetActions = useLimitOrdersWidgetActions()
+  const widgetActions = useLimitOrdersWidgetActions({ allowSameToken: false })
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const { showRecipient: showRecipientSetting } = settingsState
@@ -228,6 +228,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     disablePriceImpact: localFormValidation === LimitOrdersFormState.FeeExceedsFrom,
     disableQuotePolling: isConfirmOpen,
     hideTradeWarnings: !!localFormValidation,
+    allowSameToken: false,
   }
 
   return (

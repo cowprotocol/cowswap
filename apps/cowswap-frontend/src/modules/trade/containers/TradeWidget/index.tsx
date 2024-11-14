@@ -13,8 +13,9 @@ export function TradeWidget(props: TradeWidgetProps) {
     disableNativeSelling = false,
     tradeQuoteStateOverride,
     enableSmartSlippage,
+    allowSameToken,
   } = params
-  const modals = TradeWidgetModals({confirmModal, genericModal, selectTokenWidget: slots.selectTokenWidget})
+  const modals = TradeWidgetModals({ confirmModal, genericModal, selectTokenWidget: slots.selectTokenWidget })
 
   return (
     <>
@@ -25,6 +26,7 @@ export function TradeWidget(props: TradeWidgetProps) {
           tradeQuoteStateOverride={tradeQuoteStateOverride}
           enableSmartSlippage={enableSmartSlippage}
           onChangeRecipient={props.actions.onChangeRecipient}
+          allowSameToken={allowSameToken}
         >
           {slots.updaters}
         </TradeWidgetUpdaters>

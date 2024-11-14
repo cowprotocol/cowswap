@@ -19,7 +19,7 @@ import { useTradeState } from '../useTradeState'
 const INITIAL_CHAIN_ID_FROM_URL = getRawCurrentChainIdFromUrl()
 const EMPTY_TOKEN_ID = '_'
 
-export function useSetupTradeState(): void {
+export function useSetupTradeState({ allowSameToken }: { allowSameToken: boolean }): void {
   useSetupTradeStateFromUrl()
   const { chainId: providerChainId, account } = useWalletInfo()
   const prevProviderChainId = usePrevious(providerChainId)
@@ -130,7 +130,8 @@ export function useSetupTradeState(): void {
 
     const tokensAreEmpty = !inputCurrencyId && !outputCurrencyId
 
-    const sameTokens =
+    const sameTokensError =
+      !allowSameToken &&
       inputCurrencyId !== EMPTY_TOKEN_ID &&
       (inputCurrencyId || outputCurrencyId) &&
       inputCurrencyId?.toLowerCase() === outputCurrencyId?.toLowerCase()
@@ -155,10 +156,10 @@ export function useSetupTradeState(): void {
       return
     }
 
-    if (sameTokens || tokensAreEmpty || onlyChainIdIsChanged) {
+    if (sameTokensError || tokensAreEmpty || onlyChainIdIsChanged) {
       tradeNavigate(currentChainId, defaultState)
 
-      if (sameTokens) {
+      if (sameTokensError) {
         console.debug('[TRADE STATE]', 'Url contains invalid tokens, resetting')
       } else if (tokensAreEmpty) {
         console.debug('[TRADE STATE]', 'Url does not contain both tokens, resetting')

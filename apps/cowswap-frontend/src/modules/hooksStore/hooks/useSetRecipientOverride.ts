@@ -5,8 +5,8 @@ import { useIsHooksTradeType, useIsNativeIn } from 'modules/trade'
 
 import { usePostHooksRecipientOverride } from './usePostHooksRecipientOverride'
 
-export function useSetRecipientOverride() {
-  const { onChangeRecipient } = useSwapActionHandlers()
+export function useSetRecipientOverride({ allowSameToken }: { allowSameToken: boolean }): void {
+  const { onChangeRecipient } = useSwapActionHandlers({ allowSameToken })
   const hookRecipientOverride = usePostHooksRecipientOverride()
   const isHooksTradeType = useIsHooksTradeType()
   const isNativeIn = useIsNativeIn()

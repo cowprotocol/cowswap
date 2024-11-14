@@ -79,7 +79,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
         }
 
         if (primaryFormValidation === TradeFormValidation.SellNativeToken) {
-          return <SellNativeWarningBanner />
+          return <SellNativeWarningBanner allowSameToken={false} />
         }
 
         if (localFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL) {

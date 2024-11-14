@@ -16,7 +16,7 @@ import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useOnCurrencySelection } from 'modules/trade/hooks/useOnCurrencySelection'
 import { useSwitchTokensPlaces } from 'modules/trade/hooks/useSwitchTokensPlaces'
 
-export function useLimitOrdersWidgetActions(): TradeWidgetActions {
+export function useLimitOrdersWidgetActions({ allowSameToken }: { allowSameToken: boolean }): TradeWidgetActions {
   const { inputCurrency, outputCurrency, orderKind } = useLimitOrdersDerivedState()
   const { activeRate } = useAtomValue(limitRateAtom)
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
@@ -24,7 +24,7 @@ export function useLimitOrdersWidgetActions(): TradeWidgetActions {
 
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
 
-  const onCurrencySelection = useOnCurrencySelection()
+  const onCurrencySelection = useOnCurrencySelection({ allowSameToken })
 
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
@@ -42,7 +42,7 @@ export function useLimitOrdersWidgetActions(): TradeWidgetActions {
         orderKind: isWrapOrUnwrap || field === Field.INPUT ? OrderKind.SELL : OrderKind.BUY,
       })
     },
-    [updateCurrencyAmount, isWrapOrUnwrap, inputCurrency, outputCurrency, activeRate]
+    [updateCurrencyAmount, isWrapOrUnwrap, inputCurrency, outputCurrency, activeRate],
   )
 
   const onSwitchTokens = useSwitchTokensPlaces({
@@ -51,11 +51,11 @@ export function useLimitOrdersWidgetActions(): TradeWidgetActions {
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => updateLimitOrdersState({ recipient }),
-    [updateLimitOrdersState]
+    [updateLimitOrdersState],
   )
 
   return useMemo(
     () => ({ onUserInput, onSwitchTokens, onChangeRecipient, onCurrencySelection }),
-    [onUserInput, onSwitchTokens, onChangeRecipient, onCurrencySelection]
+    [onUserInput, onSwitchTokens, onChangeRecipient, onCurrencySelection],
   )
 }

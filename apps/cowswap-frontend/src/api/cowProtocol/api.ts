@@ -37,7 +37,6 @@ import { ApiErrorCodes } from './errors/OperatorError'
 import QuoteApiError, { mapOperatorErrorToQuoteError, QuoteApiErrorDetails } from './errors/QuoteError'
 import { getIsOrderBookTypedError } from './getIsOrderBookTypedError'
 
-
 function getProfileUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
     return {
@@ -157,16 +156,16 @@ function _getAppDataQuoteParams(params: FeeQuoteParams) {
 export async function getQuote(params: FeeQuoteParams): Promise<OrderQuoteResponse> {
   const { chainId } = params
   const quoteParams = _mapNewToLegacyParams(params)
-  const { sellToken, buyToken } = quoteParams
+  // const { sellToken, buyToken } = quoteParams
 
-  if (sellToken === buyToken) {
-    return Promise.reject(
-      mapOperatorErrorToQuoteError({
-        errorType: ApiErrorCodes.SameBuyAndSellToken,
-        description: QuoteApiErrorDetails.SameBuyAndSellToken,
-      }),
-    )
-  }
+  // if (sellToken === buyToken) {
+  //   return Promise.reject(
+  //     mapOperatorErrorToQuoteError({
+  //       errorType: ApiErrorCodes.SameBuyAndSellToken,
+  //       description: QuoteApiErrorDetails.SameBuyAndSellToken,
+  //     }),
+  //   )
+  // }
 
   return orderBookApi.getQuote(quoteParams, { chainId }).catch((error) => {
     if (getIsOrderBookTypedError(error)) {

@@ -44,7 +44,7 @@ export async function getBestQuote({
       console.warn(
         '[GP PRICE::API] getBestQuote - error using COWSWAP price strategy, reason: [',
         err,
-        '] - trying back up price sources...'
+        '] - trying back up price sources...',
       )
       // ATTEMPT LEGACY CALL
       return getBestQuote({

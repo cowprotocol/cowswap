@@ -9,10 +9,10 @@ import { useDerivedTradeState } from '../../hooks/useDerivedTradeState'
 import { useNavigateOnCurrencySelection } from '../../hooks/useNavigateOnCurrencySelection'
 import { useWrappedToken } from '../../hooks/useWrappedToken'
 
-export function SellNativeWarningBanner() {
+export function SellNativeWarningBanner({ allowSameToken }: { allowSameToken: boolean }) {
   const native = useNativeCurrency()
   const wrapped = useWrappedToken()
-  const navigateOnCurrencySelection = useNavigateOnCurrencySelection()
+  const navigateOnCurrencySelection = useNavigateOnCurrencySelection({ allowSameToken })
 
   const state = useDerivedTradeState()
 

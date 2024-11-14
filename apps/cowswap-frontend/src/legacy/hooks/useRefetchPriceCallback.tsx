@@ -109,6 +109,7 @@ function handleQuoteError({ quoteData, error, addUnsupportedToken }: HandleQuote
 
     // Some other error getting the quote ocurred
     console.error('Error quoting price/fee: ' + error)
+    console.error(error)
     return 'fetch-quote-error'
   }
 }

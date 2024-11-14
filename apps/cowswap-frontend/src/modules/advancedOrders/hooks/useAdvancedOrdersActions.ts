@@ -12,10 +12,10 @@ import { useAdvancedOrdersDerivedState } from './useAdvancedOrdersDerivedState'
 import { useUpdateAdvancedOrdersRawState } from './useAdvancedOrdersRawState'
 
 // TODO: this should be also unified for each trade widget (swap, limit, advanced)
-export function useAdvancedOrdersActions() {
+export function useAdvancedOrdersActions({ allowSameToken }: { allowSameToken: boolean }) {
   const { inputCurrency } = useAdvancedOrdersDerivedState()
 
-  const naviageOnCurrencySelection = useNavigateOnCurrencySelection()
+  const naviageOnCurrencySelection = useNavigateOnCurrencySelection({ allowSameToken })
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const resetTradeQuote = useResetTradeQuote()
 
@@ -33,7 +33,7 @@ export function useAdvancedOrdersActions() {
       naviageOnCurrencySelection(field, currency)
       resetTradeQuote()
     },
-    [naviageOnCurrencySelection, updateCurrencyAmount, resetTradeQuote]
+    [naviageOnCurrencySelection, updateCurrencyAmount, resetTradeQuote],
   )
 
   const onUserInput = useCallback(
@@ -45,14 +45,14 @@ export function useAdvancedOrdersActions() {
         field,
       })
     },
-    [inputCurrency, updateCurrencyAmount]
+    [inputCurrency, updateCurrencyAmount],
   )
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
       updateAdvancedOrdersState({ recipient })
     },
-    [updateAdvancedOrdersState]
+    [updateAdvancedOrdersState],
   )
 
   const onSwitchTokensDefault = useSwitchTokensPlaces({
@@ -71,6 +71,6 @@ export function useAdvancedOrdersActions() {
       onChangeRecipient,
       onSwitchTokens,
     }),
-    [onCurrencySelection, onUserInput, onChangeRecipient, onSwitchTokens]
+    [onCurrencySelection, onUserInput, onChangeRecipient, onSwitchTokens],
   )
 }
