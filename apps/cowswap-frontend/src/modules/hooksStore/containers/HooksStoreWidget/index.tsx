@@ -64,7 +64,6 @@ export function HooksStoreWidget() {
 
   const TopContent = shouldNotUseHooks ? undefined : isWrapOrUnwrap ? undefined : (
     <>
-      {account}
       <DismissableInlineBanner
         orientation={BannerOrientation.Horizontal}
         customIcon={ICON_HOOK}
