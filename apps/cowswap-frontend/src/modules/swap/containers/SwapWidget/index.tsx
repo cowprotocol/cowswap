@@ -10,7 +10,7 @@ import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
-import { useRecipientToggleManager, useUserTransactionTTL } from 'legacy/state/user/hooks'
+import { useHooksEnabledManager, useRecipientToggleManager, useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -75,6 +75,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const tradeQuoteStateOverride = useTradeQuoteStateFromLegacy()
   const receiveAmountInfo = useReceiveAmountInfo()
   const recipientToggleState = useRecipientToggleManager()
+  const hooksEnabledState = useHooksEnabledManager()
   const deadlineState = useUserTransactionTTL()
 
   const isTradePriceUpdating = useTradePricesUpdate()
@@ -213,7 +214,13 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   )
 
   const slots: TradeWidgetSlots = {
-    settingsWidget: <SettingsTab recipientToggleState={recipientToggleState} deadlineState={deadlineState} />,
+    settingsWidget: (
+      <SettingsTab
+        recipientToggleState={recipientToggleState}
+        hooksEnabledState={hooksEnabledState}
+        deadlineState={deadlineState}
+      />
+    ),
 
     topContent,
     bottomContent: useCallback(

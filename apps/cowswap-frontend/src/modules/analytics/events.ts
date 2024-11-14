@@ -93,6 +93,14 @@ export function toggleRecipientAddressAnalytics(enable: boolean) {
   })
 }
 
+export function toggleHooksEnabledAnalytics(enable: boolean) {
+  cowAnalytics.sendEvent({
+    category: Category.HOOKS,
+    action: 'Toggle Hooks Enabled',
+    label: enable ? 'Enabled' : 'Disabled',
+  })
+}
+
 export function searchByAddressAnalytics(isAddressSearch: string) {
   cowAnalytics.sendEvent({
     category: Category.CURRENCY_SELECT,
