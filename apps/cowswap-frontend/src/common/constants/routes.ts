@@ -6,6 +6,7 @@ export const Routes = {
   HOME: '/',
   SWAP: `/:chainId?${TRADE_WIDGET_PREFIX}/swap/:inputCurrencyId?/:outputCurrencyId?`,
   HOOKS: `/:chainId?${TRADE_WIDGET_PREFIX}/swap/hooks/:inputCurrencyId?/:outputCurrencyId?`,
+  COW_SHED: `/:chainId?${TRADE_WIDGET_PREFIX}/cowShed`,
   LIMIT_ORDER: `/:chainId?${TRADE_WIDGET_PREFIX}/limit/:inputCurrencyId?/:outputCurrencyId?`,
   YIELD: `/:chainId?${TRADE_WIDGET_PREFIX}/yield/:inputCurrencyId?/:outputCurrencyId?`,
   ADVANCED_ORDERS: `/:chainId?${TRADE_WIDGET_PREFIX}/advanced/:inputCurrencyId?/:outputCurrencyId?`,
@@ -54,6 +55,7 @@ export const HOOKS_STORE_MENU_ITEM = {
   route: Routes.HOOKS,
   label: 'Hooks',
   description: 'Powerful tool to generate pre/post interaction for CoW Protocol',
+  badge: '🧪',
 }
 
 export const YIELD_MENU_ITEM = {

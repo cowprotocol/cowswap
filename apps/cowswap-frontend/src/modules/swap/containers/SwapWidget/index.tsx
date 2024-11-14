@@ -11,6 +11,7 @@ import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager, useRecipientToggleManager, useUserTransactionTTL } from 'legacy/state/user/hooks'
+import { Routes } from 'common/constants/routes'
 
 import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -28,10 +29,12 @@ import {
   SwapWarningsTopProps,
 } from 'modules/swap/pure/warnings'
 import {
+  parameterizeTradeRoute,
   TradeWidget,
   TradeWidgetContainer,
   TradeWidgetSlots,
   useIsEoaEthFlow,
+  useIsHooksTradeType,
   useIsNoImpactWarningAccepted,
   useReceiveAmountInfo,
   useTradePriceImpact,
@@ -51,6 +54,8 @@ import { SWAP_QUOTE_CHECK_INTERVAL } from 'common/updaters/FeesUpdater'
 import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from '../../hooks/useSwapState'
 import { useTradeQuoteStateFromLegacy } from '../../hooks/useTradeQuoteStateFromLegacy'
 import { ConfirmSwapModalSetup } from '../ConfirmSwapModalSetup'
+import { InlineBanner } from '@cowprotocol/ui'
+import { Link } from 'react-router-dom'
 
 export interface SwapWidgetProps {
   topContent?: ReactNode
@@ -77,6 +82,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const recipientToggleState = useRecipientToggleManager()
   const hooksEnabledState = useHooksEnabledManager()
   const deadlineState = useUserTransactionTTL()
+  const isHookTradeType = useIsHooksTradeType()
 
   const isTradePriceUpdating = useTradePricesUpdate()
 
@@ -267,6 +273,22 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
 
   useSetLocalTimeOffset(getQuoteTimeOffset(swapButtonContext.quoteDeadlineParams))
 
+  const cowShedLink = useMemo(
+    () =>
+      parameterizeTradeRoute(
+        {
+          chainId: chainId.toString(),
+          inputCurrencyId: undefined,
+          outputCurrencyId: undefined,
+          inputCurrencyAmount: undefined,
+          outputCurrencyAmount: undefined,
+          orderKind: undefined,
+        },
+        Routes.COW_SHED,
+      ),
+    [chainId],
+  )
+
   return (
     <>
       <SwapModals {...swapModalsProps} />
@@ -293,7 +315,13 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
           }
           genericModal={showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
         />
-        <NetworkAlert />
+
+        {!isHookTradeType && <NetworkAlert />}
+        {isHookTradeType && (
+          <InlineBanner>
+            CoW Shed: <Link to={cowShedLink}>Recover funds</Link>
+          </InlineBanner>
+        )}
       </TradeWidgetContainer>
     </>
   )
