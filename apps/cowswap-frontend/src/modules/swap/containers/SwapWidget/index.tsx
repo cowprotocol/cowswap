@@ -63,7 +63,7 @@ export interface SwapWidgetProps {
 }
 
 export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
-  const { chainId } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
   const { currencies, trade } = useDerivedSwapInfo()
   const slippage = useTradeSlippage()
   const parsedAmounts = useSwapCurrenciesAmounts()
@@ -317,7 +317,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         />
 
         {!isHookTradeType && <NetworkAlert />}
-        {isHookTradeType && (
+        {isHookTradeType && !!account && (
           <InlineBanner>
             CoW Shed: <Link to={cowShedLink}>Recover funds</Link>
           </InlineBanner>
