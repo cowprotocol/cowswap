@@ -95,7 +95,7 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
                     <ThemedText.Black fontWeight={400} fontSize={14}>
                       <Trans>Enable Hooks</Trans>
                     </ThemedText.Black>
-                    <HelpTooltip text={<Trans>🧪 Add deFI interactions before and after your trade</Trans>} />
+                    <HelpTooltip text={<Trans>🧪 Add DeFI interactions before and after your trade</Trans>} />
                   </RowFixed>
                   <Toggle id="toggle-hooks-mode-button" isActive={hooksEnabled} toggle={toggleHooksEnabled} />
                 </RowBetween>
