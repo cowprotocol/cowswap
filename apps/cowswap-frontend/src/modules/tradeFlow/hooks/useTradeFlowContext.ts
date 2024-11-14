@@ -12,13 +12,20 @@ import { useCloseModals } from 'legacy/state/application/hooks'
 import { useAppData, useAppDataHooks } from 'modules/appData'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
-import { useDerivedTradeState, useReceiveAmountInfo, useTradeConfirmActions, useTradeTypeInfo } from 'modules/trade'
+import {
+  useDerivedTradeState,
+  useIsHooksTradeType,
+  useReceiveAmountInfo,
+  useTradeConfirmActions,
+  useTradeTypeInfo,
+} from 'modules/trade'
 import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
 
 import { TradeTypeToUiOrderType } from '../../trade/const/common'
 import { TradeFlowContext } from '../types/TradeFlowContext'
+import { UiOrderType } from '@cowprotocol/types'
 
 export interface TradeFlowParams {
   deadline: number
@@ -34,6 +41,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const tradeTypeInfo = useTradeTypeInfo()
   const tradeType = tradeTypeInfo?.tradeType
   const uiOrderType = tradeType ? TradeTypeToUiOrderType[tradeType] : null
+  const isHooksTradeType = useIsHooksTradeType()
 
   const sellCurrency = derivedTradeState?.inputCurrency
   const inputAmount = receiveAmountInfo?.afterSlippage.sellAmount
@@ -194,7 +202,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             allowsOffchainSigning,
             appData,
             class: OrderClass.MARKET,
-            partiallyFillable: false, // SWAP orders are always fill or kill - for now
+            partiallyFillable: isHooksTradeType,
             quoteId: quoteResponse.id,
             isSafeWallet,
           },

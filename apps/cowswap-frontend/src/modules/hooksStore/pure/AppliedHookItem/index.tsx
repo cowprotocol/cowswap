@@ -1,5 +1,3 @@
-import { useMemo } from 'react'
-
 import ICON_CHECK_ICON from '@cowprotocol/assets/cow-swap/check-singular.svg'
 import ICON_GRID from '@cowprotocol/assets/cow-swap/grid.svg'
 import TenderlyLogo from '@cowprotocol/assets/cow-swap/tenderly-logo.svg'
@@ -10,6 +8,7 @@ import { InfoTooltip } from '@cowprotocol/ui'
 import { Edit2, Trash2, ExternalLink as ExternalLinkIcon, RefreshCw } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
+import { useSimulationData } from 'modules/tenderly/hooks/useSimulationData'
 import { useTenderlyBundleSimulation } from 'modules/tenderly/hooks/useTenderlyBundleSimulation'
 
 import * as styledEl from './styled'
@@ -31,12 +30,9 @@ interface HookItemProp {
 const isBundleSimulationReady = true
 
 export function AppliedHookItem({ account, hookDetails, dapp, isPreHook, editHook, removeHook, index }: HookItemProp) {
-  const { isValidating, data, mutate } = useTenderlyBundleSimulation()
+  const { isValidating, mutate } = useTenderlyBundleSimulation()
 
-  const simulationData = useMemo(() => {
-    if (!data) return
-    return data[hookDetails.uuid]
-  }, [data, hookDetails.uuid])
+  const simulationData = useSimulationData(hookDetails.uuid)
 
   const simulationStatus = simulationData?.status ? 'Simulation successful' : 'Simulation failed'
   const simulationTooltip = simulationData?.status

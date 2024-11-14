@@ -4,15 +4,16 @@ import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isLocal } from '@cowprotocol/common-utils'
 
 import { HOOKS_STORE_MENU_ITEM, MENU_ITEMS, YIELD_MENU_ITEM } from '../constants/routes'
+import { useHooksEnabled } from 'legacy/state/user/hooks'
 
 export function useMenuItems() {
-  const { isHooksStoreEnabled } = useFeatureFlags()
+  const isHooksEnabled = useHooksEnabled()
   const { isYieldEnabled } = useFeatureFlags()
 
   return useMemo(() => {
     const items = [...MENU_ITEMS]
 
-    if (isHooksStoreEnabled || isLocal) {
+    if (isHooksEnabled) {
       items.push(HOOKS_STORE_MENU_ITEM)
     }
 
@@ -21,5 +22,5 @@ export function useMenuItems() {
     }
 
     return items
-  }, [isHooksStoreEnabled, isYieldEnabled])
+  }, [isHooksEnabled, isYieldEnabled])
 }
