@@ -7,7 +7,7 @@ import { InfoTooltip } from '@cowprotocol/ui'
 import { ChevronDown, ChevronUp } from 'react-feather'
 
 import { AppDataInfo, decodeAppData } from 'modules/appData'
-import { useCustomHookDapps, useHooks, useHooksStateWithSimulatedGas } from 'modules/hooksStore'
+import { useCustomHookDapps, useHooksStateWithSimulatedGas } from 'modules/hooksStore'
 import { useTenderlyBundleSimulation } from 'modules/tenderly/hooks/useTenderlyBundleSimulation'
 
 import { HookItem } from './HookItem'
@@ -34,7 +34,7 @@ export function OrderHooksDetails({ appData, children, margin }: OrderHooksDetai
 
   useEffect(() => {
     mutate()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!appDataDoc) return null
 

@@ -25,7 +25,6 @@ import { useGP2SettlementContract } from 'common/hooks/useContract'
 
 import { TradeTypeToUiOrderType } from '../../trade/const/common'
 import { TradeFlowContext } from '../types/TradeFlowContext'
-import { UiOrderType } from '@cowprotocol/types'
 
 export interface TradeFlowParams {
   deadline: number
