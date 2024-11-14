@@ -25,7 +25,7 @@ import { useTokenContract } from 'common/hooks/useContract'
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 import { NewModal } from 'common/pure/NewModal'
 
-import { Content, ProxyInfo, Wrapper } from './styled'
+import { Content, ProxyInfo, Wrapper, Title } from './styled'
 import { useRescueFundsFromProxy } from './useRescueFundsFromProxy'
 
 const BALANCE_UPDATE_INTERVAL = ms`5s`
@@ -131,7 +131,7 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
               an intermediary account who will do the trading on your behalf.
             </p>
 
-            <h3>Rescue funds</h3>
+            <Title>Rescue funds</Title>
             <p>
               Because this contract holds the funds temporarily, it's possible the funds are stuck in some edge cases.
               This tool will help you recover your funds.
