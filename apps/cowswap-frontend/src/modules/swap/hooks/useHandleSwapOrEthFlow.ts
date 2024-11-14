@@ -16,19 +16,16 @@ import { useSwapFlowContext } from './useSwapFlowContext'
 
 import { ethFlow } from '../services/ethFlow'
 
-export function useHandleSwapOrEthFlow(actions: TradeWidgetActions, defaultPartiallyFillable: boolean) {
+export function useHandleSwapOrEthFlow(actions: TradeWidgetActions) {
   const priceImpactParams = useTradePriceImpact()
-  const swapFlowContext = useSwapFlowContext({ defaultPartiallyFillable })
+  const swapFlowContext = useSwapFlowContext()
   const ethFlowContext = useEthFlowContext()
   const tradeFlowType = useTradeFlowType()
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
   const { onUserInput, onChangeRecipient } = actions
 
   const [deadline] = useUserTransactionTTL()
-  const { callback: handleSwap, contextIsReady } = useHandleSwap(
-    useSafeMemoObject({ deadline, defaultPartiallyFillable }),
-    actions,
-  )
+  const { callback: handleSwap, contextIsReady } = useHandleSwap(useSafeMemoObject({ deadline }), actions)
 
   const callback = useCallback(async () => {
     if (!swapFlowContext) return

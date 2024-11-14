@@ -39,11 +39,7 @@ export interface SwapButtonInput {
   openNativeWrapModal(): void
 }
 
-export function useSwapButtonContext(
-  input: SwapButtonInput,
-  actions: TradeWidgetActions,
-  defaultPartiallyFillable: boolean,
-): SwapButtonsContext {
+export function useSwapButtonContext(input: SwapButtonInput, actions: TradeWidgetActions): SwapButtonsContext {
   const { feeWarningAccepted, impactWarningAccepted, openNativeWrapModal } = input
 
   const { account, chainId } = useWalletInfo()
@@ -81,7 +77,7 @@ export function useSwapButtonContext(
   const wrapCallback = useWrapNativeFlow()
   const { state: approvalState } = useApproveState(slippageAdjustedSellAmount || null)
 
-  const { callback: handleSwap, contextIsReady } = useHandleSwapOrEthFlow(actions, defaultPartiallyFillable)
+  const { callback: handleSwap, contextIsReady } = useHandleSwapOrEthFlow(actions)
 
   const swapCallbackError = contextIsReady ? null : 'Missing dependencies'
 

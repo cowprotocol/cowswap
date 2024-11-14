@@ -6,12 +6,8 @@ import { useSetOrderParams } from './useSetOrderParams'
 
 import { useSwapFlowContext } from '../../swap/hooks/useSwapFlowContext'
 
-interface SetupHooksStoreOrderParams {
-  defaultPartiallyFillable: boolean
-}
-
-export function useSetupHooksStoreOrderParams({ defaultPartiallyFillable }: SetupHooksStoreOrderParams) {
-  const tradeFlowContext = useSwapFlowContext({ defaultPartiallyFillable })
+export function useSetupHooksStoreOrderParams() {
+  const tradeFlowContext = useSwapFlowContext()
   const setOrderParams = useSetOrderParams()
   const orderParams = tradeFlowContext?.orderParams
 
