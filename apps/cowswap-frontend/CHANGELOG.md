@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.89.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.88.0...cowswap-v1.89.0) (2024-11-14)
+
+
+### Features
+
+* enable hooks using settings ([#5081](https://github.com/cowprotocol/cowswap/issues/5081)) ([20f543a](https://github.com/cowprotocol/cowswap/commit/20f543a4690e99e2df18a73995e476ce0efc4a6a))
+* make hooks use partially fillable by default ([#5086](https://github.com/cowprotocol/cowswap/issues/5086)) ([27a8d4d](https://github.com/cowprotocol/cowswap/commit/27a8d4d0f827495cefb16c09c228151fc9f89426))
+* misc hooks improvements ([#5079](https://github.com/cowprotocol/cowswap/issues/5079)) ([adec6fe](https://github.com/cowprotocol/cowswap/commit/adec6fecaed225531140ae947801be9d5ee52532))
+
+
+### Bug Fixes
+
+* add cow-shed page ([#5088](https://github.com/cowprotocol/cowswap/issues/5088)) ([a0bc92c](https://github.com/cowprotocol/cowswap/commit/a0bc92cf3ce8263c620ccd488cdf663028490324))
+* add cow-shed page ([#5089](https://github.com/cowprotocol/cowswap/issues/5089)) ([1102691](https://github.com/cowprotocol/cowswap/commit/1102691f8f8260dbbcae9f2fba2629ef59b4384d))
+* **combinedBalances:** Optimize balance diff calculations ([#5082](https://github.com/cowprotocol/cowswap/issues/5082)) ([38aae71](https://github.com/cowprotocol/cowswap/commit/38aae718e54fb50634706eafb973e8027d2b28df))
+
 ## [1.88.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.87.0...cowswap-v1.88.0) (2024-11-06)
 
 
