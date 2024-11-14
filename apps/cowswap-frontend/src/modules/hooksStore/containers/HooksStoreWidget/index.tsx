@@ -24,7 +24,7 @@ type HookPosition = 'pre' | 'post'
 console.log(ICON_HOOK)
 
 export function HooksStoreWidget() {
-  const { account, chainId } = useWalletInfo()
+  const { chainId } = useWalletInfo()
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)
   const [hookToEdit, setHookToEdit] = useState<string | undefined>(undefined)
 

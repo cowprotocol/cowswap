@@ -21,10 +21,10 @@ import Account, { AccountOverview } from 'pages/Account'
 import AdvancedOrdersPage from 'pages/AdvancedOrders'
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import { HooksPage } from 'pages/Hooks'
+import { CowShed } from 'pages/Hooks/cowShed'
 import LimitOrderPage from 'pages/LimitOrders'
 import { SwapPage } from 'pages/Swap'
 import YieldPage from 'pages/Yield'
-import { CowShed } from 'pages/Hooks/cowShed'
 
 // Async routes
 const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))

@@ -3,15 +3,18 @@ import { ReactNode, useCallback, useMemo, useState } from 'react'
 // import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
+import { InlineBanner } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
+
+import { Link } from 'react-router-dom'
 
 import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager, useRecipientToggleManager, useUserTransactionTTL } from 'legacy/state/user/hooks'
-import { Routes } from 'common/constants/routes'
+
 
 import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -46,6 +49,7 @@ import { useTradeSlippage } from 'modules/tradeSlippage'
 import { SettingsTab, TradeRateDetails, useHighFeeWarning } from 'modules/tradeWidgetAddons'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
+import { Routes } from 'common/constants/routes'
 import { useSetLocalTimeOffset } from 'common/containers/InvalidLocalTimeWarning/localTimeOffsetState'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
@@ -54,8 +58,6 @@ import { SWAP_QUOTE_CHECK_INTERVAL } from 'common/updaters/FeesUpdater'
 import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from '../../hooks/useSwapState'
 import { useTradeQuoteStateFromLegacy } from '../../hooks/useTradeQuoteStateFromLegacy'
 import { ConfirmSwapModalSetup } from '../ConfirmSwapModalSetup'
-import { InlineBanner } from '@cowprotocol/ui'
-import { Link } from 'react-router-dom'
 
 export interface SwapWidgetProps {
   topContent?: ReactNode
