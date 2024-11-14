@@ -1,12 +1,14 @@
 import { RescueFundsFromProxy } from 'modules/hooksStore/containers/RescueFundsFromProxy'
-import { useNavigate } from 'react-router-dom'
+
+import { useNavigateBack } from 'common/hooks/useNavigate'
+
 
 export function CowShed() {
-  const navigate = useNavigate()
+  const navigateBack = useNavigateBack()
 
   return (
     <>
-      <RescueFundsFromProxy onDismiss={() => navigate(-1)} />
+      <RescueFundsFromProxy onDismiss={navigateBack} />
     </>
   )
 }

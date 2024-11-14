@@ -25,7 +25,7 @@ import { useTokenContract } from 'common/hooks/useContract'
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 import { NewModal } from 'common/pure/NewModal'
 
-import { Content, ProxyInfo, Wrapper } from './styled'
+import { Content, ProxyInfo, Wrapper, Title } from './styled'
 import { useRescueFundsFromProxy } from './useRescueFundsFromProxy'
 
 const BALANCE_UPDATE_INTERVAL = ms`5s`
@@ -102,7 +102,7 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
     onSelectToken(selectedTokenAddress, undefined, undefined, setSelectedCurrency)
   }, [onSelectToken, selectedTokenAddress, setSelectedCurrency])
 
-  const etherscanLink = proxyAddress ? getEtherscanLink(chainId, 'address', proxyAddress) : undefined
+  const explorerLink = proxyAddress ? getEtherscanLink(chainId, 'address', proxyAddress) : undefined
 
   return (
     <Wrapper>
@@ -131,7 +131,7 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
               an intermediary account who will do the trading on your behalf.
             </p>
 
-            <h3>Rescue funds</h3>
+            <Title>Rescue funds</Title>
             <p>
               Because this contract holds the funds temporarily, it's possible the funds are stuck in some edge cases.
               This tool will help you recover your funds.
@@ -140,10 +140,10 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
               <strong>How do I unstuck my funds in CoW Shed?</strong>
               <ol>
                 <li>
-                  {etherscanLink ? (
-                    <ExternalLink href={etherscanLink}>Check in Etherscan</ExternalLink>
+                  {explorerLink ? (
+                    <ExternalLink href={explorerLink}>Check in the block explorer</ExternalLink>
                   ) : (
-                    'Check in Etherscan'
+                    'Check in block explorer'
                   )}{' '}
                   if your own CoW Shed has any token
                 </li>
@@ -153,8 +153,8 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
             </InlineBanner>
             <ProxyInfo>
               <h4>Proxy account:</h4>
-              {etherscanLink && (
-                <ExternalLink href={etherscanLink}>
+              {explorerLink && (
+                <ExternalLink href={explorerLink}>
                   <span>{proxyAddress} ↗</span>
                 </ExternalLink>
               )}

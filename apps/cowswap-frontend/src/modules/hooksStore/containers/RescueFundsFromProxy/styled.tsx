@@ -9,12 +9,6 @@ export const Wrapper = styled.div`
   margin: 0 auto;
   position: relative;
 
-  h3 {
-    font-size: 24px;
-    font-weight: 600;
-    margin: 10px 0;
-  }
-
   p {
     padding: 0.8rem 0 0.8rem 0;
   }
@@ -66,4 +60,10 @@ export const Content = styled.div`
   p {
     text-align: center;
   }
+`
+
+export const Title = styled.div`
+  font-size: 24px;
+  font-weight: 600;
+  margin: 10px 0;
 `
