@@ -6,24 +6,25 @@ export const Wrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
   width: 100%;
-  padding: 24px 8px 16px;
+  padding: 10px;
   justify-content: flex-end;
   flex: 1 1 auto;
-  gap: 24px;
+  gap: 10px;
   font-size: 14px;
 `
 
-export const ContentWrapper = styled.div`
+export const ContentWrapper = styled.div<{ minHeight?: number }>`
   flex-flow: column wrap;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
   padding: 0;
   text-align: center;
-  gap: 16px;
+  gap: 10px;
   flex: 1 1 auto;
   color: var(${UI.COLOR_TEXT});
   font-size: inherit;
+  min-height: ${({ minHeight }) => (minHeight ? `${minHeight}px` : 'initial')};
 `
 
 export const Row = styled.div`
@@ -42,7 +43,7 @@ export const Row = styled.div`
     width: 100%;
     padding: 14px 16px;
     border: 1px solid transparent;
-    border-radius: 9px;
+    border-radius: 16px;
     font-size: 16px;
     background: var(${UI.COLOR_PAPER_DARKER});
     color: inherit;

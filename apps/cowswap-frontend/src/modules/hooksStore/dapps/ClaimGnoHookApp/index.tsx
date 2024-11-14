@@ -88,7 +88,7 @@ export function ClaimGnoHookApp({ context }: HookDappProps) {
 
   return (
     <Wrapper>
-      <ContentWrapper>
+      <ContentWrapper minHeight={150}>
         {context.chainId !== SupportedChainId.GNOSIS_CHAIN ? (
           'Unsupported network. Please change to Gnosis Chain'
         ) : !account ? (

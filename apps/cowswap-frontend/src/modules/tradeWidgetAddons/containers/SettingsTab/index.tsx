@@ -1,6 +1,7 @@
 import { useAtom } from 'jotai'
 import { ReactElement, RefObject, useCallback, useEffect, useRef } from 'react'
 
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { StatefulValue } from '@cowprotocol/types'
 import { HelpTooltip, RowBetween, RowFixed } from '@cowprotocol/ui'
 
@@ -19,7 +20,6 @@ import * as styledEl from './styled'
 
 import { settingsTabStateAtom } from '../../state/settingsTabState'
 import { TransactionSettings } from '../TransactionSettings'
-import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 interface SettingsTabProps {
   className?: string
@@ -50,7 +50,7 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
       toggleHooksEnabledAnalytics(isEnabled)
       toggleHooksEnabledAux(isEnabled)
     },
-    [toggleRecipientVisibilityAux, hooksEnabled],
+    [hooksEnabled, toggleHooksEnabledAux],
   )
 
   return (

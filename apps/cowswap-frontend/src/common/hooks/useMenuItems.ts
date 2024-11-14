@@ -3,8 +3,9 @@ import { useMemo } from 'react'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isLocal } from '@cowprotocol/common-utils'
 
-import { HOOKS_STORE_MENU_ITEM, MENU_ITEMS, YIELD_MENU_ITEM } from '../constants/routes'
 import { useHooksEnabled } from 'legacy/state/user/hooks'
+
+import { HOOKS_STORE_MENU_ITEM, MENU_ITEMS, YIELD_MENU_ITEM } from '../constants/routes'
 
 export function useMenuItems() {
   const isHooksEnabled = useHooksEnabled()

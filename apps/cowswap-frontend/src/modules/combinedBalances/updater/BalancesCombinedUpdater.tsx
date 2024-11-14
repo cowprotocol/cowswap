@@ -1,3 +1,4 @@
+import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { BalancesState, useTokensBalances } from '@cowprotocol/balances-and-allowances'
@@ -8,7 +9,7 @@ import { BigNumber } from 'ethers'
 import { useHooks } from 'modules/hooksStore'
 import { usePreHookBalanceDiff } from 'modules/hooksStore/hooks/useBalancesDiff'
 import { useIsHooksTradeType } from 'modules/trade'
-import { useSetAtom } from 'jotai'
+
 import { balancesCombinedAtom } from '../state/balanceCombinedAtom'
 
 export function BalancesCombinedUpdater() {
@@ -26,7 +27,7 @@ export function BalancesCombinedUpdater() {
     }
     const accountBalancesDiff = preHooksBalancesDiff[account.toLowerCase()] || {}
     setBalancesCombined(applyBalanceDiffs(tokenBalances, accountBalancesDiff))
-  }, [account, preHooksBalancesDiff, isHooksTradeType, tokenBalances])
+  }, [account, preHooksBalancesDiff, isHooksTradeType, tokenBalances, preHooks.length, setBalancesCombined])
 
   return null
 }
