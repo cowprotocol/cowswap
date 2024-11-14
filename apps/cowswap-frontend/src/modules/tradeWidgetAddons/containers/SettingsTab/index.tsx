@@ -19,6 +19,7 @@ import * as styledEl from './styled'
 
 import { settingsTabStateAtom } from '../../state/settingsTabState'
 import { TransactionSettings } from '../TransactionSettings'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 interface SettingsTabProps {
   className?: string
@@ -40,10 +41,10 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
     [toggleRecipientVisibilityAux, recipientToggleVisible],
   )
 
-  const [hooksEnabled, toggleHooksEnabledAux] = hooksEnabledState || [undefined, undefined]
+  const [hooksEnabled, toggleHooksEnabledAux] = hooksEnabledState || [null, null]
   const toggleHooksEnabled = useCallback(
     (value?: boolean) => {
-      if (hooksEnabled === undefined || toggleHooksEnabledAux === undefined) return
+      if (hooksEnabled === null || toggleHooksEnabledAux === null) return
 
       const isEnabled = value ?? !hooksEnabled
       toggleHooksEnabledAnalytics(isEnabled)
@@ -89,7 +90,7 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
                 />
               </RowBetween>
 
-              {hooksEnabled !== undefined && (
+              {!isInjectedWidget() && hooksEnabled !== null && (
                 <RowBetween>
                   <RowFixed>
                     <ThemedText.Black fontWeight={400} fontSize={14}>
