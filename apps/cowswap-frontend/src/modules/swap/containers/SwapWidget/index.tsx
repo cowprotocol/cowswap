@@ -1,9 +1,10 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
 // import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
+import HAND_SVG from '@cowprotocol/assets/cow-swap/hand.svg'
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
-import { InlineBanner } from '@cowprotocol/ui'
+import { BannerOrientation, InlineBanner } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
 
@@ -14,7 +15,6 @@ import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager, useRecipientToggleManager, useUserTransactionTTL } from 'legacy/state/user/hooks'
-
 
 import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -320,8 +320,13 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
 
         {!isHookTradeType && <NetworkAlert />}
         {isHookTradeType && !!account && (
-          <InlineBanner>
-            CoW Shed: <Link to={cowShedLink}>Recover funds</Link>
+          <InlineBanner
+            bannerType="information"
+            customIcon={HAND_SVG}
+            iconSize={24}
+            orientation={BannerOrientation.Horizontal}
+          >
+            Funds stuck? <Link to={cowShedLink}>Recover your funds</Link>
           </InlineBanner>
         )}
       </TradeWidgetContainer>

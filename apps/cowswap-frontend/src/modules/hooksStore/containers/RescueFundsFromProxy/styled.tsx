@@ -56,6 +56,7 @@ export const Content = styled.div`
   align-items: center;
   justify-content: center;
   gap: 20px;
+  padding: 0 20px;
 
   p {
     text-align: center;

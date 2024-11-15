@@ -91,7 +91,7 @@ const Wrapper = styled.span<{
     flex-flow: ${({ orientation = BannerOrientation.Vertical }) =>
       orientation === BannerOrientation.Horizontal ? 'row' : 'column wrap'};
     gap: 10px;
-    width: 100%;
+    width: auto;
   }
 
   > span > svg > path {
@@ -107,34 +107,37 @@ const Wrapper = styled.span<{
     gap: 10px;
     justify-content: ${({ orientation = BannerOrientation.Vertical }) =>
       orientation === BannerOrientation.Horizontal ? 'flex-start' : 'center'};
-  }
 
-  > span > span a {
-    color: inherit;
-    text-decoration: underline;
-  }
+    a {
+      color: inherit;
+      text-decoration: underline;
+    }
 
-  > span > span > strong {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    gap: 6px;
-    color: ${({ colorEnums }) => `var(${colorEnums.text})`};
-  }
+    > strong {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      gap: 6px;
+    }
 
-  > span > span > p {
-    line-height: 1.4;
-    margin: auto;
-    padding: 0;
-    width: 100%;
-    text-align: ${({ orientation = BannerOrientation.Vertical }) =>
-      orientation === BannerOrientation.Horizontal ? 'left' : 'center'};
-  }
+    > p {
+      line-height: 1.4;
+      margin: auto;
+      padding: 0;
+      width: 100%;
+      text-align: ${({ orientation = BannerOrientation.Vertical }) =>
+        orientation === BannerOrientation.Horizontal ? 'left' : 'center'};
+    }
 
-  > span > span > i {
-    font-style: normal;
-    font-size: 32px;
-    line-height: 1;
+    > i {
+      font-style: normal;
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    > ol {
+      padding-left: 20px;
+    }
   }
 `
 

@@ -116,7 +116,8 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
         <ErrorModal />
         <SelectTokenWidget />
         {!isSelectTokenWidgetOpen && (
-          <>
+          <Content>
+            <Title>Rescue funds</Title>
             <p>
               <ExternalLink href="https://github.com/cowdao-grants/cow-shed">CoW Shed</ExternalLink> is a helper
               contract that enhances user experience inside CoW Swap for features like{' '}
@@ -124,18 +125,16 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
                 CoW Hooks
               </ExternalLink>
               .
-            </p>
-
-            <p>
+              <br />
+              <br />
               This contract is deployed only once per account. This account becomes the only owner. CoW Shed will act as
               an intermediary account who will do the trading on your behalf.
-            </p>
-
-            <Title>Rescue funds</Title>
-            <p>
+              <br />
+              <br />
               Because this contract holds the funds temporarily, it's possible the funds are stuck in some edge cases.
               This tool will help you recover your funds.
             </p>
+
             <InlineBanner orientation={BannerOrientation.Horizontal}>
               <strong>How do I unstuck my funds in CoW Shed?</strong>
               <ol>
@@ -159,31 +158,30 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
                 </ExternalLink>
               )}
             </ProxyInfo>
-            <Content>
-              <CurrencySelectButton currency={selectedCurrency} loading={false} onClick={onCurrencySelectClick} />
 
-              {selectedTokenAddress ? (
-                <>
-                  <p>
-                    Balance to be rescued:
-                    <br />
-                    {tokenBalance ? (
-                      <b>
-                        <TokenAmount amount={tokenBalance} defaultValue="0" tokenSymbol={tokenBalance.currency} />
-                      </b>
-                    ) : isBalanceLoading ? (
-                      <Loader />
-                    ) : null}
-                  </p>
-                  <ButtonPrimary onClick={rescueFunds} disabled={!hasBalance || isTxSigningInProgress}>
-                    {isTxSigningInProgress ? <Loader /> : hasBalance ? 'Rescue funds' : 'No funds to rescue'}
-                  </ButtonPrimary>
-                </>
-              ) : (
-                <div></div>
-              )}
-            </Content>
-          </>
+            <CurrencySelectButton currency={selectedCurrency} loading={false} onClick={onCurrencySelectClick} />
+
+            {selectedTokenAddress ? (
+              <>
+                <p>
+                  Balance to be rescued:
+                  <br />
+                  {tokenBalance ? (
+                    <b>
+                      <TokenAmount amount={tokenBalance} defaultValue="0" tokenSymbol={tokenBalance.currency} />
+                    </b>
+                  ) : isBalanceLoading ? (
+                    <Loader />
+                  ) : null}
+                </p>
+                <ButtonPrimary onClick={rescueFunds} disabled={!hasBalance || isTxSigningInProgress}>
+                  {isTxSigningInProgress ? <Loader /> : hasBalance ? 'Rescue funds' : 'No funds to rescue'}
+                </ButtonPrimary>
+              </>
+            ) : (
+              <div></div>
+            )}
+          </Content>
         )}
       </NewModal>
     </Wrapper>
