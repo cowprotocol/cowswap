@@ -31,11 +31,21 @@ export const Badge = styled.div<{ type?: BadgeType }>`
   padding: ${({ type }) => (!type || type === 'default' ? '0' : '4px 6px')};
   letter-spacing: 0.2px;
   font-weight: 600;
-  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  transition: all var(${UI.ANIMATION_DURATION}) ease-in-out;
   margin: 0;
 
   a & {
     color: ${({ type }) => badgeColors[type || 'default']};
+  }
+
+  svg {
+    width: 10px;
+    height: 10px;
+    color: ${({ type }) => badgeColors[type || 'default']};
+  }
+
+  svg > path {
+    fill: ${({ type }) => badgeColors[type || 'default']};
   }
 `
 
