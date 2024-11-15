@@ -14,6 +14,7 @@ export const ContainerBox = styled.div`
   display: flex;
   flex-flow: column wrap;
   gap: 10px;
+  max-width: 100%;
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT_PAPER});
   border: none;
@@ -21,6 +22,11 @@ export const ContainerBox = styled.div`
   box-shadow: ${({ theme }) => (theme.isInjectedWidgetMode ? theme.boxShadow1 : 'none')};
   padding: 10px;
   position: relative;
+
+  > div,
+  > span {
+    max-width: 100%;
+  }
 
   .modalMode & {
     box-shadow: none;

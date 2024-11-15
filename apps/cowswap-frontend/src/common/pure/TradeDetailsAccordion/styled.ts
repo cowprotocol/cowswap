@@ -25,18 +25,17 @@ export const Details = styled.div`
 
 export const Summary = styled.div`
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: 1fr auto;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  gap: 8px;
+  gap: 10px;
   font-size: inherit;
   font-weight: inherit;
 
   span {
     font-size: inherit;
     font-weight: inherit;
-    white-space: nowrap;
   }
 `
 

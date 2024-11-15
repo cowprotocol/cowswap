@@ -86,8 +86,6 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
         width: 100%;
         margin: 0 0 10px;
       `}
-
-    }
   }
 `
 

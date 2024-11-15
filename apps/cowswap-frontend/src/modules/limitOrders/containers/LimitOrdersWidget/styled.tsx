@@ -14,6 +14,7 @@ export const TradeButtonBox = styled.div`
 export const FooterBox = styled.div`
   display: flex;
   flex-flow: column wrap;
+  max-width: 100%;
   margin: 0 4px;
   padding: 0;
 `
@@ -22,6 +23,7 @@ export const RateWrapper = styled.div`
   display: grid;
   grid-template-columns: auto 151px;
   grid-template-rows: max-content;
+  max-width: 100%;
   gap: 6px;
   text-align: right;
   color: inherit;

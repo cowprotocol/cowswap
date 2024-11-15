@@ -84,7 +84,9 @@ const InvertIcon = styled.div`
     min-width: var(--size);
     min-height: var(--size);
     border-radius: var(--size);
-    transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, var(${UI.ANIMATION_DURATION}) ease-in-out;
+    transition:
+      background var(${UI.ANIMATION_DURATION}) ease-in-out,
+      var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 
   > svg {
@@ -118,7 +120,7 @@ export const RateWrapper = styled.button`
   color: inherit;
   font-size: 13px;
   letter-spacing: -0.1px;
-  text-align: right;
+  text-align: left;
   font-weight: 500;
   width: 100%;
 `
