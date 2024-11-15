@@ -8,7 +8,7 @@ const badgeBackgrounds: Record<BadgeType, string> = {
   alert: `var(${UI.COLOR_ALERT_BG})`,
   alert2: `var(${UI.COLOR_BADGE_YELLOW_BG})`,
   success: `var(${UI.COLOR_SUCCESS_BG})`,
-  default: 'transparent', // text only
+  default: 'transparent',
 }
 
 const badgeColors: Record<BadgeType, string> = {
@@ -16,7 +16,7 @@ const badgeColors: Record<BadgeType, string> = {
   alert: `var(${UI.COLOR_ALERT_TEXT})`,
   alert2: `var(${UI.COLOR_BADGE_YELLOW_TEXT})`,
   success: `var(${UI.COLOR_SUCCESS_TEXT})`,
-  default: `var(${UI.COLOR_DISABLED_TEXT})`, // text only
+  default: `var(${UI.COLOR_DISABLED_TEXT})`,
 }
 
 export const Badge = styled.div<{ type?: BadgeType }>`
@@ -33,10 +33,6 @@ export const Badge = styled.div<{ type?: BadgeType }>`
   font-weight: 600;
   transition: all var(${UI.ANIMATION_DURATION}) ease-in-out;
   margin: 0;
-
-  a & {
-    color: ${({ type }) => badgeColors[type || 'default']};
-  }
 
   svg {
     width: 10px;
