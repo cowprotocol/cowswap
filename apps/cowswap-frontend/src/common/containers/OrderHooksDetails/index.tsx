@@ -18,9 +18,10 @@ interface OrderHooksDetailsProps {
   appData: string | AppDataInfo
   children: (content: ReactElement) => ReactElement
   margin?: string
+  isTradeConfirmation?: boolean
 }
 
-export function OrderHooksDetails({ appData, children, margin }: OrderHooksDetailsProps) {
+export function OrderHooksDetails({ appData, children, margin, isTradeConfirmation }: OrderHooksDetailsProps) {
   const [isOpen, setOpen] = useState(false)
   const appDataDoc = useMemo(() => {
     return typeof appData === 'string' ? decodeAppData(appData) : appData.doc
@@ -33,14 +34,14 @@ export function OrderHooksDetails({ appData, children, margin }: OrderHooksDetai
   const { mutate, isValidating, data } = useTenderlyBundleSimulation()
 
   useEffect(() => {
-    mutate()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    if (isTradeConfirmation) mutate()
+  }, [isTradeConfirmation, mutate])
 
   if (!appDataDoc) return null
 
   const metadata = appDataDoc.metadata as latest.Metadata
 
-  const hasSomeFailedSimulation = Object.values(data || {}).some((hook) => !hook.status)
+  const hasSomeFailedSimulation = isTradeConfirmation && Object.values(data || {}).some((hook) => !hook.status)
 
   const preHooksToDapp = matchHooksToDappsRegistry(metadata.hooks?.pre || [], preCustomHookDapps)
   const postHooksToDapp = matchHooksToDappsRegistry(metadata.hooks?.post || [], postCustomHookDapps)
@@ -76,8 +77,8 @@ export function OrderHooksDetails({ appData, children, margin }: OrderHooksDetai
       </styledEl.Summary>
       {isOpen && (
         <styledEl.Details>
-          <HooksInfo data={preHooksToDapp} hooks={hooks.preHooks} title="Pre Hooks" />
-          <HooksInfo data={postHooksToDapp} hooks={hooks.postHooks} title="Post Hooks" />
+          <HooksInfo data={preHooksToDapp} hooks={isTradeConfirmation ? hooks.preHooks : []} title="Pre Hooks" />
+          <HooksInfo data={postHooksToDapp} hooks={isTradeConfirmation ? hooks.postHooks : []} title="Post Hooks" />
         </styledEl.Details>
       )}
     </styledEl.Wrapper>,
