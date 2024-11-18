@@ -1,13 +1,14 @@
-import { ReactElement, useMemo, useState } from 'react'
+import { ReactElement, useEffect, useMemo, useState } from 'react'
 
 import { latest } from '@cowprotocol/app-data'
-import { HookToDappMatch, matchHooksToDappsRegistry } from '@cowprotocol/hook-dapp-lib'
+import { CowHookDetails, HookToDappMatch, matchHooksToDappsRegistry } from '@cowprotocol/hook-dapp-lib'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { ChevronDown, ChevronUp } from 'react-feather'
 
 import { AppDataInfo, decodeAppData } from 'modules/appData'
-import { useCustomHookDapps } from 'modules/hooksStore'
+import { useCustomHookDapps, useHooksStateWithSimulatedGas } from 'modules/hooksStore'
+import { useTenderlyBundleSimulation } from 'modules/tenderly/hooks/useTenderlyBundleSimulation'
 
 import { HookItem } from './HookItem'
 import * as styledEl from './styled'
@@ -27,9 +28,19 @@ export function OrderHooksDetails({ appData, children, margin }: OrderHooksDetai
   const preCustomHookDapps = useCustomHookDapps(true)
   const postCustomHookDapps = useCustomHookDapps(false)
 
+  const hooks = useHooksStateWithSimulatedGas()
+
+  const { mutate, isValidating, data } = useTenderlyBundleSimulation()
+
+  useEffect(() => {
+    mutate()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   if (!appDataDoc) return null
 
   const metadata = appDataDoc.metadata as latest.Metadata
+
+  const hasSomeFailedSimulation = Object.values(data || {}).some((hook) => !hook.status)
 
   const preHooksToDapp = matchHooksToDappsRegistry(metadata.hooks?.pre || [], preCustomHookDapps)
   const postHooksToDapp = matchHooksToDappsRegistry(metadata.hooks?.post || [], postCustomHookDapps)
@@ -42,6 +53,8 @@ export function OrderHooksDetails({ appData, children, margin }: OrderHooksDetai
         <styledEl.Label>
           Hooks
           <InfoTooltip content="Hooks are interactions before/after order execution." />
+          {hasSomeFailedSimulation && <styledEl.ErrorLabel>Simulation failed</styledEl.ErrorLabel>}
+          {isValidating && <styledEl.Spinner />}
         </styledEl.Label>
         <styledEl.Content onClick={() => setOpen(!isOpen)}>
           {preHooksToDapp.length > 0 && (
@@ -63,8 +76,8 @@ export function OrderHooksDetails({ appData, children, margin }: OrderHooksDetai
       </styledEl.Summary>
       {isOpen && (
         <styledEl.Details>
-          <HooksInfo data={preHooksToDapp} title="Pre Hooks" />
-          <HooksInfo data={postHooksToDapp} title="Post Hooks" />
+          <HooksInfo data={preHooksToDapp} hooks={hooks.preHooks} title="Pre Hooks" />
+          <HooksInfo data={postHooksToDapp} hooks={hooks.postHooks} title="Post Hooks" />
         </styledEl.Details>
       )}
     </styledEl.Wrapper>,
@@ -74,9 +87,10 @@ export function OrderHooksDetails({ appData, children, margin }: OrderHooksDetai
 interface HooksInfoProps {
   data: HookToDappMatch[]
   title: string
+  hooks: CowHookDetails[]
 }
 
-function HooksInfo({ data, title }: HooksInfoProps) {
+function HooksInfo({ data, title, hooks }: HooksInfoProps) {
   return (
     <>
       {data.length ? (
@@ -85,9 +99,11 @@ function HooksInfo({ data, title }: HooksInfoProps) {
             {title} <CircleCount>{data.length}</CircleCount>
           </h3>
           <styledEl.HooksList>
-            {data.map((item, index) => (
-              <HookItem key={item.hook.callData + item.hook.target + item.hook.gasLimit} item={item} index={index} />
-            ))}
+            {data.map((item, index) => {
+              const key = item.hook.callData + item.hook.target + item.hook.gasLimit
+              const details = hooks.find(({ hook }) => key === hook.callData + hook.target + hook.gasLimit)
+              return <HookItem key={key} item={item} index={index} details={details} />
+            })}
           </styledEl.HooksList>
         </styledEl.InfoWrapper>
       ) : null}

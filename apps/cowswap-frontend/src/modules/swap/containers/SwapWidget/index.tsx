@@ -1,17 +1,22 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
-import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
+// import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
+import { InlineBanner } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
+
+import { Link } from 'react-router-dom'
 
 import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
-import { useRecipientToggleManager, useUserTransactionTTL } from 'legacy/state/user/hooks'
+import { useHooksEnabledManager, useRecipientToggleManager, useUserTransactionTTL } from 'legacy/state/user/hooks'
 
+
+import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
@@ -27,10 +32,12 @@ import {
   SwapWarningsTopProps,
 } from 'modules/swap/pure/warnings'
 import {
+  parameterizeTradeRoute,
   TradeWidget,
   TradeWidgetContainer,
   TradeWidgetSlots,
   useIsEoaEthFlow,
+  useIsHooksTradeType,
   useIsNoImpactWarningAccepted,
   useReceiveAmountInfo,
   useTradePriceImpact,
@@ -42,6 +49,7 @@ import { useTradeSlippage } from 'modules/tradeSlippage'
 import { SettingsTab, TradeRateDetails, useHighFeeWarning } from 'modules/tradeWidgetAddons'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
+import { Routes } from 'common/constants/routes'
 import { useSetLocalTimeOffset } from 'common/containers/InvalidLocalTimeWarning/localTimeOffsetState'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
@@ -57,7 +65,7 @@ export interface SwapWidgetProps {
 }
 
 export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
-  const { chainId } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
   const { currencies, trade } = useDerivedSwapInfo()
   const slippage = useTradeSlippage()
   const parsedAmounts = useSwapCurrenciesAmounts()
@@ -74,7 +82,9 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const tradeQuoteStateOverride = useTradeQuoteStateFromLegacy()
   const receiveAmountInfo = useReceiveAmountInfo()
   const recipientToggleState = useRecipientToggleManager()
+  const hooksEnabledState = useHooksEnabledManager()
   const deadlineState = useUserTransactionTTL()
+  const isHookTradeType = useIsHooksTradeType()
 
   const isTradePriceUpdating = useTradePricesUpdate()
 
@@ -94,8 +104,8 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     return TokenWithLogo.fromToken(currencies.OUTPUT)
   }, [chainId, currencies.OUTPUT])
 
-  const inputCurrencyBalance = useCurrencyAmountBalance(inputToken) || null
-  const outputCurrencyBalance = useCurrencyAmountBalance(outputToken) || null
+  const inputCurrencyBalance = useCurrencyAmountBalanceCombined(inputToken) || null
+  const outputCurrencyBalance = useCurrencyAmountBalanceCombined(outputToken) || null
 
   const isSellTrade = independentField === Field.INPUT
 
@@ -212,7 +222,13 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   )
 
   const slots: TradeWidgetSlots = {
-    settingsWidget: <SettingsTab recipientToggleState={recipientToggleState} deadlineState={deadlineState} />,
+    settingsWidget: (
+      <SettingsTab
+        recipientToggleState={recipientToggleState}
+        hooksEnabledState={hooksEnabledState}
+        deadlineState={deadlineState}
+      />
+    ),
 
     topContent,
     bottomContent: useCallback(
@@ -259,6 +275,22 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
 
   useSetLocalTimeOffset(getQuoteTimeOffset(swapButtonContext.quoteDeadlineParams))
 
+  const cowShedLink = useMemo(
+    () =>
+      parameterizeTradeRoute(
+        {
+          chainId: chainId.toString(),
+          inputCurrencyId: undefined,
+          outputCurrencyId: undefined,
+          inputCurrencyAmount: undefined,
+          outputCurrencyAmount: undefined,
+          orderKind: undefined,
+        },
+        Routes.COW_SHED,
+      ),
+    [chainId],
+  )
+
   return (
     <>
       <SwapModals {...swapModalsProps} />
@@ -285,7 +317,13 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
           }
           genericModal={showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
         />
-        <NetworkAlert />
+
+        {!isHookTradeType && <NetworkAlert />}
+        {isHookTradeType && !!account && (
+          <InlineBanner>
+            CoW Shed: <Link to={cowShedLink}>Recover funds</Link>
+          </InlineBanner>
+        )}
       </TradeWidgetContainer>
     </>
   )

@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react'
 
-import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { formatSymbol, getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { useENS } from '@cowprotocol/ens'
 import { useAreThereTokensWithSameSymbol, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
@@ -19,6 +18,7 @@ import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
 
 import { changeSwapAmountAnalytics, switchTokensAnalytics } from 'modules/analytics'
+import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
 import type { TradeWidgetActions } from 'modules/trade'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
@@ -125,8 +125,8 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   const recipientLookup = useENS(recipient ?? undefined)
   const to: string | null = (recipient ? recipientLookup.address : account) ?? null
 
-  const inputCurrencyBalance = useCurrencyAmountBalance(inputCurrency)
-  const outputCurrencyBalance = useCurrencyAmountBalance(outputCurrency)
+  const inputCurrencyBalance = useCurrencyAmountBalanceCombined(inputCurrency)
+  const outputCurrencyBalance = useCurrencyAmountBalanceCombined(outputCurrency)
 
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = useMemo(
