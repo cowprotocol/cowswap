@@ -50,7 +50,7 @@ export function BalancesCacheUpdater({ chainId }: { chainId: SupportedChainId })
         },
       }
     })
-  }, [chainId, balances.values, setBalancesCache, setBalances])
+  }, [chainId, balances.values, setBalancesCache])
 
   // Restore balances from cache once
   useEffect(() => {
