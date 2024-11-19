@@ -18,7 +18,7 @@ const fnSelector = (sig: string) => keccak256(toUtf8Bytes(sig)).slice(0, 10)
 
 const fnCalldata = (sig: string, encodedData: string) => pack(['bytes4', 'bytes'], [fnSelector(sig), encodedData])
 
-export function useRescueFundsFromProxy(
+export function useRecoverFundsFromProxy(
   selectedTokenAddress: string | undefined,
   tokenBalance: CurrencyAmount<Currency> | null,
   isNativeToken: boolean,

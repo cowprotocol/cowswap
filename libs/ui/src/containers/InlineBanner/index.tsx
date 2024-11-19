@@ -67,6 +67,7 @@ const Wrapper = styled.span<{
   margin?: string
   width?: string
   dismissable?: boolean
+  backDropBlur?: boolean
 }>`
   display: flex;
   align-items: center;
@@ -82,6 +83,7 @@ const Wrapper = styled.span<{
   font-weight: 400;
   line-height: 1.2;
   width: ${({ width = '100%' }) => width};
+  backdrop-filter: ${({ backDropBlur }) => backDropBlur && 'blur(20px)'};
 
   // Icon + Text content wrapper
   > span {
@@ -173,6 +175,7 @@ export interface InlineBannerProps {
   width?: string
   noWrapContent?: boolean
   onClose?: () => void
+  backDropBlur?: boolean
 }
 
 export function InlineBanner({
@@ -190,6 +193,7 @@ export function InlineBanner({
   width,
   onClose,
   noWrapContent,
+  backDropBlur,
 }: InlineBannerProps) {
   const colorEnums = getColorEnums(bannerType)
 
@@ -203,6 +207,7 @@ export function InlineBanner({
       margin={margin}
       width={width}
       dismissable={!!onClose}
+      backDropBlur={backDropBlur}
     >
       <span>
         {!hideIcon && customIcon ? (
