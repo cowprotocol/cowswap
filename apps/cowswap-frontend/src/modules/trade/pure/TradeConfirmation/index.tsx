@@ -127,7 +127,13 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
   }
 
   const hookDetailsElement = (
-    <>{appData && <OrderHooksDetails appData={appData}>{(hookChildren) => hookChildren}</OrderHooksDetails>}</>
+    <>
+      {appData && (
+        <OrderHooksDetails appData={appData} isTradeConfirmation>
+          {(hookChildren) => hookChildren}
+        </OrderHooksDetails>
+      )}
+    </>
   )
 
   return (
