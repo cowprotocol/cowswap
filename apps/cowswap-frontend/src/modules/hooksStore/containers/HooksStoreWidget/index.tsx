@@ -10,7 +10,7 @@ import { useIsSellNative, useIsWrapOrUnwrap } from 'modules/trade'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-import { HooksTopActions, RescueFundsToggle, TradeWidgetWrapper } from './styled'
+import { TradeWidgetWrapper } from './styled'
 
 import { useSetRecipientOverride } from '../../hooks/useSetRecipientOverride'
 import { useSetupHooksStoreOrderParams } from '../../hooks/useSetupHooksStoreOrderParams'
@@ -18,15 +18,13 @@ import { IframeDappsManifestUpdater } from '../../updaters/iframeDappsManifestUp
 import { HookRegistryList } from '../HookRegistryList'
 import { PostHookButton } from '../PostHookButton'
 import { PreHookButton } from '../PreHookButton'
-import { RescueFundsFromProxy } from '../RescueFundsFromProxy'
 
 type HookPosition = 'pre' | 'post'
 
 console.log(ICON_HOOK)
 
 export function HooksStoreWidget() {
-  const { account, chainId } = useWalletInfo()
-  const [isRescueWidgetOpen, setRescueWidgetOpen] = useState<boolean>(false)
+  const { chainId } = useWalletInfo()
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)
   const [hookToEdit, setHookToEdit] = useState<string | undefined>(undefined)
 
@@ -53,39 +51,19 @@ export function HooksStoreWidget() {
     setHookToEdit(uuid)
   }, [])
 
-  useEffect(() => {
-    if (!account) {
-      setRescueWidgetOpen(false)
-    }
-  }, [account])
-
   // Close all screens on network changes (including unsupported chain case)
-  useEffect(() => {
-    setRescueWidgetOpen(false)
-    onDismiss()
-  }, [chainId, isChainIdUnsupported, onDismiss])
+  useEffect(onDismiss, [chainId, isChainIdUnsupported, onDismiss])
 
   useSetupHooksStoreOrderParams()
   useSetRecipientOverride()
 
   const isHookSelectionOpen = !!(selectedHookPosition || hookToEdit)
-  const hideSwapWidget = isHookSelectionOpen || isRescueWidgetOpen
+  const hideSwapWidget = isHookSelectionOpen
 
   const shouldNotUseHooks = isNativeSell || isChainIdUnsupported
 
-  const HooksTop = (
-    <HooksTopActions>
-      <RescueFundsToggle onClick={() => setRescueWidgetOpen(true)}>Rescue funds</RescueFundsToggle>
-    </HooksTopActions>
-  )
-
-  const TopContent = shouldNotUseHooks ? (
-    HooksTop
-  ) : isWrapOrUnwrap ? (
-    HooksTop
-  ) : (
+  const TopContent = shouldNotUseHooks ? undefined : isWrapOrUnwrap ? undefined : (
     <>
-      {!isRescueWidgetOpen && account && HooksTop}
       <DismissableInlineBanner
         orientation={BannerOrientation.Horizontal}
         customIcon={ICON_HOOK}
@@ -125,7 +103,6 @@ export function HooksStoreWidget() {
           isPreHook={selectedHookPosition === 'pre'}
         />
       )}
-      {isRescueWidgetOpen && <RescueFundsFromProxy onDismiss={() => setRescueWidgetOpen(false)} />}
     </>
   )
 }

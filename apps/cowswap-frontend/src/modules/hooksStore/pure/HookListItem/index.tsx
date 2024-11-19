@@ -44,7 +44,7 @@ export function HookListItem({ dapp, walletType, onSelect, onOpenDetails, onRemo
       <span>
         {isCompatible ? (
           <styled.LinkButton onClick={onSelect} className="link-button">
-            Add
+            Open
           </styled.LinkButton>
         ) : (
           <styled.LinkButton disabled title="Not compatible with current wallet type">

@@ -1,15 +1,18 @@
 import { useState } from 'react'
 
-import { HookToDappMatch } from '@cowprotocol/hook-dapp-lib'
+import { CowHookDetails, HookToDappMatch } from '@cowprotocol/hook-dapp-lib'
 
 import { ChevronDown, ChevronUp } from 'react-feather'
 
 import { clickOnHooks } from 'modules/analytics'
+import { useSimulationData } from 'modules/tenderly/hooks/useSimulationData'
 
 import * as styledEl from './styled'
 
-export function HookItem({ item, index }: { item: HookToDappMatch; index: number }) {
+export function HookItem({ details, item, index }: { details?: CowHookDetails; item: HookToDappMatch; index: number }) {
   const [isOpen, setIsOpen] = useState(false)
+
+  const simulationData = useSimulationData(details?.uuid)
 
   const handleLinkClick = () => {
     clickOnHooks(item.dapp?.name || 'Unknown hook dapp')
@@ -37,6 +40,16 @@ export function HookItem({ item, index }: { item: HookToDappMatch; index: number
         <styledEl.HookItemContent>
           {item.dapp && (
             <>
+              {simulationData && (
+                <p>
+                  <b>Simulation:</b>
+                  <styledEl.SimulationLink status={simulationData.status}>
+                    <a href={simulationData.link} target="_blank" rel="noopener noreferrer">
+                      {simulationData.status ? 'Simulation successful' : 'Simulation failed'}
+                    </a>
+                  </styledEl.SimulationLink>
+                </p>
+              )}
               <p>
                 <b>Description:</b> {item.dapp.descriptionShort}
               </p>

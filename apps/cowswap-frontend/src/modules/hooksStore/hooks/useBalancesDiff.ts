@@ -58,7 +58,7 @@ export function useHookBalancesDiff(isPreHook: boolean, hookToEditUid?: string):
 
     const lastPostHook = postHooks[postHooks.length - 1]
     return data[lastPostHook?.uuid]?.cumulativeBalancesDiff || firstPostHookBalanceDiff
-  }, [data, postHooks, orderExpectedBalanceDiff, preHookBalanceDiff])
+  }, [data, firstPostHookBalanceDiff, postHooks])
 
   const hookToEditBalanceDiff = useMemo(() => {
     if (!data || !hookToEditUid) return EMPTY_BALANCE_DIFF
@@ -83,7 +83,7 @@ export function useHookBalancesDiff(isPreHook: boolean, hookToEditUid?: string):
     if (hookToEditUid) return hookToEditBalanceDiff
     if (isPreHook) return preHookBalanceDiff
     return postHookBalanceDiff
-  }, [data, orderParams, preHooks, postHooks])
+  }, [hookToEditBalanceDiff, hookToEditUid, isPreHook, postHookBalanceDiff, preHookBalanceDiff])
 }
 
 function mergeBalanceDiffs(first: BalancesDiff, second: BalancesDiff): BalancesDiff {

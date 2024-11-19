@@ -25,7 +25,7 @@ import { useTokenContract } from 'common/hooks/useContract'
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 import { NewModal } from 'common/pure/NewModal'
 
-import { Content, ProxyInfo, Wrapper } from './styled'
+import { Content, ProxyInfo, Wrapper, Title } from './styled'
 import { useRescueFundsFromProxy } from './useRescueFundsFromProxy'
 
 const BALANCE_UPDATE_INTERVAL = ms`5s`
@@ -102,11 +102,13 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
     onSelectToken(selectedTokenAddress, undefined, undefined, setSelectedCurrency)
   }, [onSelectToken, selectedTokenAddress, setSelectedCurrency])
 
+  const explorerLink = proxyAddress ? getEtherscanLink(chainId, 'address', proxyAddress) : undefined
+
   return (
     <Wrapper>
       <NewModal
         modalMode={false}
-        title="Rescue funds from CoW Shed Proxy"
+        title="CoW Shed"
         onDismiss={onDismissCallback}
         contentPadding="10px"
         justifyContent="flex-start"
@@ -115,16 +117,44 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
         <SelectTokenWidget />
         {!isSelectTokenWidgetOpen && (
           <>
+            <p>
+              <ExternalLink href="https://github.com/cowdao-grants/cow-shed">CoW Shed</ExternalLink> is a helper
+              contract that enhances user experience inside CoW Swap for features like{' '}
+              <ExternalLink href="https://docs.cow.fi/cow-protocol/reference/core/intents/hooks">
+                CoW Hooks
+              </ExternalLink>
+              .
+            </p>
+
+            <p>
+              This contract is deployed only once per account. This account becomes the only owner. CoW Shed will act as
+              an intermediary account who will do the trading on your behalf.
+            </p>
+
+            <Title>Rescue funds</Title>
+            <p>
+              Because this contract holds the funds temporarily, it's possible the funds are stuck in some edge cases.
+              This tool will help you recover your funds.
+            </p>
             <InlineBanner orientation={BannerOrientation.Horizontal}>
-              <p>
-                In some cases, when orders contain a post-hook using a proxy account, something may go wrong and funds
-                may remain on the proxy account. Select a currency and get your funds back.
-              </p>
+              <strong>How do I unstuck my funds in CoW Shed?</strong>
+              <ol>
+                <li>
+                  {explorerLink ? (
+                    <ExternalLink href={explorerLink}>Check in the block explorer</ExternalLink>
+                  ) : (
+                    'Check in block explorer'
+                  )}{' '}
+                  if your own CoW Shed has any token
+                </li>
+                <li>Select the token you want to withdraw from CoW Shed</li>
+                <li>Withdraw!</li>
+              </ol>
             </InlineBanner>
             <ProxyInfo>
               <h4>Proxy account:</h4>
-              {proxyAddress && (
-                <ExternalLink href={getEtherscanLink(chainId, 'address', proxyAddress)}>
+              {explorerLink && (
+                <ExternalLink href={explorerLink}>
                   <span>{proxyAddress} ↗</span>
                 </ExternalLink>
               )}
