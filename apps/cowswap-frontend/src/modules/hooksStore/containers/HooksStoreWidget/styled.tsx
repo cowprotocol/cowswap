@@ -21,7 +21,7 @@ export const HooksTopActions = styled.div`
   background: var(${UI.COLOR_PAPER_DARKER});
 `
 
-export const RescueFundsToggle = styled.button`
+export const RecoverFundsToggle = styled.button`
   background: transparent;
   font-size: inherit;
   color: inherit;

@@ -5,9 +5,9 @@ import { isLocal } from '@cowprotocol/common-utils'
 
 import { useHooksEnabled } from 'legacy/state/user/hooks'
 
-import { HOOKS_STORE_MENU_ITEM, MENU_ITEMS, YIELD_MENU_ITEM } from '../constants/routes'
+import { HOOKS_STORE_MENU_ITEM, MENU_ITEMS, IMenuItem, YIELD_MENU_ITEM } from '../constants/routes'
 
-export function useMenuItems() {
+export function useMenuItems(): IMenuItem[] {
   const isHooksEnabled = useHooksEnabled()
   const { isYieldEnabled } = useFeatureFlags()
 
