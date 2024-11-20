@@ -14,22 +14,19 @@ export const Contents = styled.div`
   color: var(${UI.COLOR_DANGER_TEXT});
   background: var(${UI.COLOR_DANGER_BG});
 
-  h3 {
-    font-size: 24px;
-    text-align: center;
-    margin: 16px 0;
-    font-weight: bold;
-  }
-
-  p {
-    margin: 6px 0;
-  }
-
   > svg > path,
   > svg > line {
     stroke: var(${UI.COLOR_DANGER_TEXT});
     stroke-width: 2px;
   }
+`
+
+export const Title = styled.h4`
+  font-size: 24px;
+  text-align: center;
+  margin: 16px 0;
+  font-weight: bold;
+  width: 100%;
 `
 
 export const AcceptanceBox = styled.label`

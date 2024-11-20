@@ -82,7 +82,7 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType
             type="text"
             placeholder="Enter a hook dapp URL"
             value={input}
-            onChange={(e) => setInput(e.target.value?.trim())}
+            onChange={(e) => setInput(e.target.value?.trim().replace(/\/+$/, ''))}
           />
 
           {/* Validation and Error Messages */}
