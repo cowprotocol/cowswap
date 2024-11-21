@@ -326,6 +326,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
             iconSize={24}
             orientation={BannerOrientation.Horizontal}
             backDropBlur
+            margin="10px auto auto"
           >
             Funds stuck? <Link to={cowShedLink}>Recover your funds</Link>
           </InlineBanner>

@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.90.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.89.0...cowswap-v1.90.0) (2024-11-21)
+
+
+### Features
+
+* **hooks-store:** add loading logo for hook-dapp ([#5112](https://github.com/cowprotocol/cowswap/issues/5112)) ([4b7267f](https://github.com/cowprotocol/cowswap/commit/4b7267fb6ea37c7bfcc896c7953b70fa8af2729d))
+* refactor badge component and experimental icon ([#5102](https://github.com/cowprotocol/cowswap/issues/5102)) ([f642ce5](https://github.com/cowprotocol/cowswap/commit/f642ce5d5a8f2f81dbc72cb1d8942eaa8905bb3b))
+* refactor trade container styles ([#5103](https://github.com/cowprotocol/cowswap/issues/5103)) ([29ab5c4](https://github.com/cowprotocol/cowswap/commit/29ab5c45971767716df2d048b87198ac1acb2c90))
+
+
+### Bug Fixes
+
+* **hooks-store:** fix custom hook alert title and trim slash from url ([#5117](https://github.com/cowprotocol/cowswap/issues/5117)) ([4858b7c](https://github.com/cowprotocol/cowswap/commit/4858b7c1cfd220b98d2f185682c6f71af2f8edfc))
+* **hooks-store:** log simulation only on trade simulation ([#5101](https://github.com/cowprotocol/cowswap/issues/5101)) ([84f5d5e](https://github.com/cowprotocol/cowswap/commit/84f5d5e3252f78564821be67ad738009426150f1))
+* **limit-orders:** do not crash when sell amount is giant ([#5120](https://github.com/cowprotocol/cowswap/issues/5120)) ([94d71f1](https://github.com/cowprotocol/cowswap/commit/94d71f1c785a682e608d00ad477f429ee4df4e9d))
+* **yield:** show green banner only when vampire attack is ready ([#5064](https://github.com/cowprotocol/cowswap/issues/5064)) ([cd9f2e1](https://github.com/cowprotocol/cowswap/commit/cd9f2e18b36a280d25c8727f730414c95ea90979))
+
 ## [1.89.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.88.0...cowswap-v1.89.0) (2024-11-14)
 
 

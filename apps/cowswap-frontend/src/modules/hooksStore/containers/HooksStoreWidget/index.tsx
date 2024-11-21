@@ -81,12 +81,20 @@ export function HooksStoreWidget() {
           </a>
         </p>
       </DismissableInlineBanner>
-      <PreHookButton onOpen={() => setSelectedHookPosition('pre')} onEditHook={onPreHookEdit} />
+      <PreHookButton
+        onOpen={() => setSelectedHookPosition('pre')}
+        onEditHook={onPreHookEdit}
+        hideTooltip={isHookSelectionOpen}
+      />
     </>
   )
 
   const BottomContent = shouldNotUseHooks ? null : (
-    <PostHookButton onOpen={() => setSelectedHookPosition('post')} onEditHook={onPostHookEdit} />
+    <PostHookButton
+      onOpen={() => setSelectedHookPosition('post')}
+      onEditHook={onPostHookEdit}
+      hideTooltip={isHookSelectionOpen}
+    />
   )
 
   return (

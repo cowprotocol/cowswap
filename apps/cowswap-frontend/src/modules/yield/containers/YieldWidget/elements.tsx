@@ -29,7 +29,7 @@ export const CoWAmmInlineBanner = ({ token, apyDiff }: { token: LpToken | undefi
         {token && apyDiff && apyDiff > 0 ? (
           <>
             Convert your <TokenSymbol token={token} /> LP tokens into CoW AMM pools and earn up to{' '}
-            <strong>+{apyDiff}%</strong> more yield compared to <TokenSymbol token={token} />. Or, swap
+            <strong>+{apyDiff.toFixed(1)}%</strong> more yield compared to <TokenSymbol token={token} />. Or, swap
           </>
         ) : (
           'Swap'
