@@ -37,7 +37,7 @@ export function LpTokensWithBalancesUpdater() {
     if (!account) {
       setState(LP_TOKENS_WITH_BALANCES_DEFAULT_STATE())
     }
-  }, [account])
+  }, [account, setState])
 
   return null
 }
