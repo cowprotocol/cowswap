@@ -35,7 +35,14 @@ export function QuoteObserverUpdater() {
     const price = FractionUtils.fractionLikeToFraction(new Price({ baseAmount: sellAmount, quoteAmount: buyAmount }))
     const marketRate = price.subtract(price.multiply(LIMIT_ORDERS_PRICE_SLIPPAGE.divide(100)))
 
-    updateLimitRateState({ marketRate, feeAmount })
+    const biggestDecimal = Math.max(sellAmount.currency.decimals, buyAmount.currency.decimals)
+    /**
+     * In case when inputted sell amount is enormously big and the price is very small
+     * App crashes with "Invariant failed"
+     */
+    const isPriceInvalid = +marketRate.toFixed(biggestDecimal) === 0
+
+    updateLimitRateState({ marketRate: isPriceInvalid ? null : marketRate, feeAmount })
   }, [response, inputCurrency, outputCurrency, updateLimitRateState])
 
   return null
