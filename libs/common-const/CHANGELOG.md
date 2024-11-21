@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.10.0...common-const-v1.10.1) (2024-11-21)
+
+
+### Bug Fixes
+
+* **volume-fee:** do not add fee for USDC.e on arb ([#5119](https://github.com/cowprotocol/cowswap/issues/5119)) ([ba11c02](https://github.com/cowprotocol/cowswap/commit/ba11c02ccbd9631d15a1c3c898606a62cc636270))
+
 ## [1.10.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.9.0...common-const-v1.10.0) (2024-11-06)
 
 
