@@ -6,6 +6,7 @@ import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar, CowSwapTheme } from '@cowprotocol/ui'
 
+import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router-dom'
 import { ThemeProvider } from 'theme'
 
@@ -79,7 +80,13 @@ export function App() {
         children: menuItems.map((item) => {
           const href = parameterizeTradeRoute(tradeContext, item.route, true)
 
-          return { href, label: item.label, description: item.description, badge: item.badge }
+          return {
+            href,
+            label: item.label,
+            description: item.description,
+            badge: item.badgeImage ? <SVG src={item.badgeImage} width={10} height={10} /> : item.badge,
+            badgeType: item.badgeType,
+          }
         }),
       },
       ...NAV_ITEMS,

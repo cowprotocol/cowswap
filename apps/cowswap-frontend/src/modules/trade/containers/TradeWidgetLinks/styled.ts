@@ -16,16 +16,28 @@ export const Link = styled(NavLink)`
     color var(${UI.ANIMATION_DURATION}) ease-in-out,
     fill var(${UI.ANIMATION_DURATION}) ease-in-out;
 
+  svg {
+    width: 10px;
+    height: 10px;
+    margin: 0 auto;
+    object-fit: contain;
+
+    path {
+      fill: currentColor;
+      transition: fill var(${UI.ANIMATION_DURATION}) ease-in-out;
+    }
+  }
+
   &:hover {
     color: inherit;
     text-decoration: none;
 
-    > svg > path {
+    svg > path {
       fill: currentColor;
     }
   }
 
-  > svg > path {
+  svg > path {
     fill: currentColor;
   }
 `
@@ -86,8 +98,6 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
         width: 100%;
         margin: 0 0 10px;
       `}
-
-    }
   }
 `
 

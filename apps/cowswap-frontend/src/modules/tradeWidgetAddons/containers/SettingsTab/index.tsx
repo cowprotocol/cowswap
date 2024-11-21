@@ -1,12 +1,14 @@
 import { useAtom } from 'jotai'
 import { ReactElement, RefObject, useCallback, useEffect, useRef } from 'react'
 
+import EXPERIMENT_ICON from '@cowprotocol/assets/cow-swap/experiment.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { StatefulValue } from '@cowprotocol/types'
 import { HelpTooltip, RowBetween, RowFixed } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { Menu, useMenuButtonContext } from '@reach/menu-button'
+import SVG from 'react-inlinesvg'
 import { Text } from 'rebass'
 import { ThemedText } from 'theme'
 
@@ -96,7 +98,16 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
                     <ThemedText.Black fontWeight={400} fontSize={14}>
                       <Trans>Enable Hooks</Trans>
                     </ThemedText.Black>
-                    <HelpTooltip text={<Trans>🧪 Add DeFI interactions before and after your trade</Trans>} />
+                    <HelpTooltip
+                      text={
+                        <Trans>
+                          <b>
+                            <SVG src={EXPERIMENT_ICON} width={12} height={12} /> Experimental:
+                          </b>{' '}
+                          Add DeFI interactions before and after your trade
+                        </Trans>
+                      }
+                    />
                   </RowFixed>
                   <Toggle id="toggle-hooks-mode-button" isActive={hooksEnabled} toggle={toggleHooksEnabled} />
                 </RowBetween>

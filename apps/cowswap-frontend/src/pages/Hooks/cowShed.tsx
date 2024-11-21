@@ -1,14 +1,13 @@
-import { RescueFundsFromProxy } from 'modules/hooksStore/containers/RescueFundsFromProxy'
+import { RecoverFundsFromProxy } from 'modules/hooksStore/containers/RecoverFundsFromProxy'
 
 import { useNavigateBack } from 'common/hooks/useNavigate'
-
 
 export function CowShed() {
   const navigateBack = useNavigateBack()
 
   return (
     <>
-      <RescueFundsFromProxy onDismiss={navigateBack} />
+      <RecoverFundsFromProxy onDismiss={navigateBack} />
     </>
   )
 }

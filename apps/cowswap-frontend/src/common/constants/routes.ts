@@ -1,4 +1,6 @@
+import EXPERIMENT_ICON from '@cowprotocol/assets/cow-swap/experiment.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { BadgeTypes } from '@cowprotocol/ui'
 
 export const TRADE_WIDGET_PREFIX = isInjectedWidget() ? '/widget' : ''
 
@@ -39,29 +41,35 @@ export const Routes = {
 export type RoutesKeys = keyof typeof Routes
 export type RoutesValues = (typeof Routes)[RoutesKeys]
 
-export const MENU_ITEMS: {
+export interface IMenuItem {
   route: RoutesValues
   label: string
   fullLabel?: string
   description: string
   badge?: string
-}[] = [
+  badgeImage?: string
+  badgeType?: (typeof BadgeTypes)[keyof typeof BadgeTypes]
+}
+
+export const MENU_ITEMS: IMenuItem[] = [
   { route: Routes.SWAP, label: 'Swap', description: 'Trade tokens' },
   { route: Routes.LIMIT_ORDER, label: 'Limit', fullLabel: 'Limit order', description: 'Set your own price' },
   { route: Routes.ADVANCED_ORDERS, label: 'TWAP', description: 'Place orders with a time-weighted average price' },
 ]
 
-export const HOOKS_STORE_MENU_ITEM = {
+export const HOOKS_STORE_MENU_ITEM: IMenuItem = {
   route: Routes.HOOKS,
   label: 'Hooks',
   description: 'Powerful tool to generate pre/post interaction for CoW Protocol',
-  badge: '🧪',
+  badgeImage: EXPERIMENT_ICON,
+  badgeType: BadgeTypes.INFORMATION,
 }
 
-export const YIELD_MENU_ITEM = {
+export const YIELD_MENU_ITEM: IMenuItem = {
   route: Routes.YIELD,
   label: 'Yield',
   fullLabel: 'Yield',
   description: 'Provide liquidity',
   badge: 'New',
+  badgeType: BadgeTypes.ALERT,
 }
