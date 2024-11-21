@@ -175,6 +175,15 @@ const USDE_ARBITRUM_ONE = new TokenWithLogo(
   'USDe',
 )
 
+const USDCE_ARBITRUM_ONE = new TokenWithLogo(
+  cowprotocolTokenLogoUrl('0xff970a61a04b1ca14834a43f5de4533ebddb5cc8', SupportedChainId.ARBITRUM_ONE),
+  SupportedChainId.ARBITRUM_ONE,
+  '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8',
+  6,
+  'USDC',
+  'USD Coin (Arb1)',
+)
+
 const USDM_ARBITRUM_ONE = new TokenWithLogo(
   cowprotocolTokenLogoUrl('0x59d9356e565ab3a36dd77763fc0d87feaf85508c', SupportedChainId.ARBITRUM_ONE),
   SupportedChainId.ARBITRUM_ONE,
@@ -352,6 +361,7 @@ const ARBITRUM_ONE_STABLECOINS = [
   USDT_ARBITRUM_ONE.address,
   USDE_ARBITRUM_ONE.address,
   USDM_ARBITRUM_ONE.address,
+  USDCE_ARBITRUM_ONE.address,
   FRAX_ARBITRUM_ONE.address,
   MIM_ARBITRUM_ONE.address,
 ].map((t) => t.toLowerCase())
