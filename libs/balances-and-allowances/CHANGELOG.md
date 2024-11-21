@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.1.0...balances-and-allowances-v1.1.1) (2024-11-21)
+
+
+### Bug Fixes
+
+* **yield:** show green banner only when vampire attack is ready ([#5064](https://github.com/cowprotocol/cowswap/issues/5064)) ([cd9f2e1](https://github.com/cowprotocol/cowswap/commit/cd9f2e18b36a280d25c8727f730414c95ea90979))
+
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.0.0...balances-and-allowances-v1.1.0) (2024-11-06)
 
 
