@@ -93,7 +93,6 @@
     }
   },
   "COW_AMM_DEPOSIT": {
-    "id": "b01b0c1aae771fe2d2adcefd550187ac48b9fa81ca1af363289b9fd7bb39caac",
     "name": "CoW AMM Deposit",
     "type": "IFRAME",
     "descriptionShort": "Add liquidity to any of the CoW AMM pools",
