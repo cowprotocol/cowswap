@@ -42,8 +42,6 @@ export function ExternalDappLoader({
             setManifestError(
               <>
                 HTTPS is required. Please use <code>https://</code>
-                <br />
-                <small>HTTP is not supported as this app runs on HTTPS</small>
               </>,
             )
             return
