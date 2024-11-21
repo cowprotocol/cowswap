@@ -1,6 +1,6 @@
-import { ReactElement, useCallback, useMemo, useState, Dispatch, SetStateAction } from 'react'
+import { ReactElement, useCallback, useState } from 'react'
 
-import { debounce, uriToHttp } from '@cowprotocol/common-utils'
+import { uriToHttp } from '@cowprotocol/common-utils'
 import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { BannerOrientation, ButtonOutlined, ButtonPrimary, InlineBanner, Loader, SearchInput } from '@cowprotocol/ui'
 
@@ -30,7 +30,6 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType
 
   const dismiss = useCallback(() => {
     setDappInfo(null)
-    setManifestError(null)
     setLoading(false)
     setFinalStep(false)
     setWarningAccepted(false)
@@ -38,6 +37,7 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType
 
   const goBack = useCallback(() => {
     dismiss()
+    setManifestError(null)
     setInput('')
     setSearchOpen(false)
   }, [dismiss])
@@ -80,54 +80,16 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType
     return url
   }, [])
 
-  const validateUrl = useMemo(() => {
-    type SetErrorType = Dispatch<SetStateAction<string | React.ReactNode | null>>
-
-    return debounce((value: string, setError: SetErrorType) => {
-      if (!value || (!value.includes('://') && !value.includes('.'))) {
-        setError(null)
-        return
-      }
-
-      try {
-        const url = new URL(value)
-        if (!url.protocol.startsWith('https')) {
-          setError(
-            <>
-              HTTPS is required. Please use <code>https://</code>
-            </>,
-          )
-        } else {
-          setError(null)
-        }
-      } catch {
-        if (value.includes('://')) {
-          setError(
-            <>
-              Invalid URL format. Please enter a valid URL (e.g., <code>https://example.com</code>)
-            </>,
-          )
-        }
-      }
-    }, 1500)
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    // Clear error when input changes
+    setManifestError(null)
+    setInput(value)
+    setDappInfo(null)
+    setLoading(false)
+    setFinalStep(false)
+    setWarningAccepted(false)
   }, [])
-
-  const debouncedValidate = useCallback(
-    (value: string) => {
-      validateUrl(value, setManifestError)
-    },
-    [validateUrl],
-  )
-
-  const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value
-      setInput(value)
-      debouncedValidate(value)
-      dismiss()
-    },
-    [debouncedValidate, dismiss],
-  )
 
   const handlePaste = useCallback(
     (e: React.ClipboardEvent<HTMLInputElement>) => {
@@ -135,28 +97,30 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType
       const normalizedValue = normalizeUrl(pastedValue, true)
       e.preventDefault() // Prevent default to avoid double paste
       setInput(normalizedValue)
-      debouncedValidate(normalizedValue)
-      dismiss()
+      // Clear error on paste
+      setManifestError(null)
+      setDappInfo(null)
+      setLoading(false)
+      setFinalStep(false)
+      setWarningAccepted(false)
     },
-    [normalizeUrl, debouncedValidate, dismiss],
+    [normalizeUrl],
   )
 
   const handleBlur = useCallback(() => {
     if (!input.startsWith('https://')) {
       const normalizedValue = normalizeUrl(input, true)
       setInput(normalizedValue)
-      debouncedValidate(normalizedValue)
     }
-  }, [input, normalizeUrl, debouncedValidate])
+  }, [input, normalizeUrl])
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault()
       const normalizedValue = normalizeUrl(input, true)
       setInput(normalizedValue)
-      debouncedValidate(normalizedValue)
     },
-    [input, normalizeUrl, debouncedValidate],
+    [input, normalizeUrl],
   )
 
   return (

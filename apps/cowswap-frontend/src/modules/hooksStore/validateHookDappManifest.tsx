@@ -21,34 +21,50 @@ export function validateHookDappManifest(
     const emptyFields = MANDATORY_DAPP_FIELDS.filter((field) => typeof dapp[field] === 'undefined')
 
     if (emptyFields.length > 0) {
-      return `${emptyFields.join(',')} fields are no set.`
+      return `Missing required fields in manifest: ${emptyFields.join(', ')}`
     } else {
       if (
         isSmartContractWallet === true &&
         typeof conditions.walletCompatibility !== 'undefined' &&
         !conditions.walletCompatibility.includes(HookDappWalletCompatibility.SMART_CONTRACT)
       ) {
-        return 'The app does not support smart-contract wallets.'
+        return 'This hook is not compatible with smart contract wallets. It only supports EOA wallets.'
       } else if (!isHex(dapp.id) || dapp.id.length !== HOOK_DAPP_ID_LENGTH) {
-        return <p>Hook dapp id must be a hex with length 64.</p>
+        return 'Invalid hook dapp ID format. The ID must be a 64-character hexadecimal string.'
       } else if (chainId && conditions.supportedNetworks && !conditions.supportedNetworks.includes(chainId)) {
-        return <p>This app/hook doesn't support current network (chainId={chainId}).</p>
+        return (
+          <p>
+            Network compatibility error:
+            <br />
+            This app/hook doesn't support the current network (Chain ID: {chainId}).
+            <br />
+            Supported networks: {conditions.supportedNetworks.join(', ')}
+          </p>
+        )
       } else if (conditions.position === 'post' && isPreHook === true) {
         return (
           <p>
-            This app/hook can only be used as a <strong>post-hook</strong> and cannot be added as a pre-hook.
+            Hook position mismatch:
+            <br />
+            This app/hook can only be used as a <strong>post-hook</strong>
+            <br />
+            and cannot be added as a pre-hook.
           </p>
         )
       } else if (conditions.position === 'pre' && isPreHook === false) {
         return (
           <p>
-            This app/hook can only be used as a <strong>pre-hook</strong> and cannot be added as a post-hook.
+            Hook position mismatch:
+            <br />
+            This app/hook can only be used as a <strong>pre-hook</strong>
+            <br />
+            and cannot be added as a post-hook.
           </p>
         )
       }
     }
   } else {
-    return 'Manifest does not contain "cow_hook_dapp" property.'
+    return 'Invalid manifest format: Missing "cow_hook_dapp" property in manifest.json'
   }
 
   return null
