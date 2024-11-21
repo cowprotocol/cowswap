@@ -3,6 +3,7 @@ import { useEffect, useMemo } from 'react'
 
 import { LP_TOKEN_LIST_COW_AMM_ONLY, useAllLpTokens } from '@cowprotocol/tokens'
 import { LpTokenProvider } from '@cowprotocol/types'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLpTokensWithBalances, usePoolsInfo } from 'modules/yield/shared'
 import { POOLS_AVERAGE_DATA_MOCK } from 'modules/yield/updaters/PoolsInfoUpdater/mockPoolInfo'
@@ -14,6 +15,7 @@ import { vampireAttackAtom } from '../state/vampireAttackAtom'
 import { TokenWithAlternative, TokenWithSuperiorAlternative } from '../types'
 
 export function VampireAttackUpdater(): null {
+  const { account } = useWalletInfo()
   const { tokens: lpTokensWithBalances, count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
   const cowAmmLpTokens = useAllLpTokens(LP_TOKEN_LIST_COW_AMM_ONLY)
   const poolsInfo = usePoolsInfo()
@@ -102,12 +104,12 @@ export function VampireAttackUpdater(): null {
   })
 
   useEffect(() => {
-    if (cowAmmLpTokens.length === 0 || !areLpBalancesLoaded) {
+    if (!account || cowAmmLpTokens.length === 0 || !areLpBalancesLoaded) {
       setVampireAttack(null)
     } else {
       setVampireAttack(context)
     }
-  }, [context, cowAmmLpTokens.length, areLpBalancesLoaded, setVampireAttack])
+  }, [account, context, cowAmmLpTokens.length, areLpBalancesLoaded, setVampireAttack])
 
   return null
 }
