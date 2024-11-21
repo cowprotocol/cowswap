@@ -18,27 +18,24 @@ export function LpTokensWithBalancesUpdater() {
   useEffect(() => {
     if (!lpTokens.length) return
 
-    const state = lpTokens.reduce(
-      (acc, token) => {
-        const addressLower = token.address.toLowerCase()
-        const balance = balances[addressLower]
+    const state = lpTokens.reduce((acc, token) => {
+      const addressLower = token.address.toLowerCase()
+      const balance = balances[addressLower]
 
-        if (balance && !balance.isZero()) {
-          acc.count++
-          acc.tokens[addressLower] = { token, balance }
-        }
+      if (balance && !balance.isZero()) {
+        acc.count++
+        acc.tokens[addressLower] = { token, balance }
+      }
 
-        return acc
-      },
-      { ...LP_TOKENS_WITH_BALANCES_DEFAULT_STATE },
-    )
+      return acc
+    }, LP_TOKENS_WITH_BALANCES_DEFAULT_STATE())
 
     setState(state)
   }, [setState, lpTokens, balances])
 
   useEffect(() => {
     if (!account) {
-      setState(LP_TOKENS_WITH_BALANCES_DEFAULT_STATE)
+      setState(LP_TOKENS_WITH_BALANCES_DEFAULT_STATE())
     }
   }, [account])
 
