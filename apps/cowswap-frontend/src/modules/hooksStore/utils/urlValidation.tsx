@@ -47,17 +47,11 @@ export function validateHookDappUrl(url: string): ValidationResult {
     return { isValid: true, error: null }
   } catch (error) {
     if (error instanceof TypeError && error.message === 'Failed to fetch') {
-      return { isValid: false, error: 'Invalid URL: No manifest.json file found. Please check the URL and try again.' }
+      return { isValid: false, error: ERROR_MESSAGES.MANIFEST_NOT_FOUND }
     }
     return {
       isValid: false,
-      error: (
-        <>
-          Invalid URL format
-          <br />
-          <small>Technical details: {(error as Error).message}</small>
-        </>
-      ),
+      error: ERROR_MESSAGES.INVALID_URL_FORMAT(error as Error),
     }
   }
 }

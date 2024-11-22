@@ -24,7 +24,7 @@ export function validateHookDappManifest(
     const emptyFields = MANDATORY_DAPP_FIELDS.filter((field) => typeof dapp[field] === 'undefined')
 
     if (emptyFields.length > 0) {
-      return `Missing required fields in manifest: ${emptyFields.join(', ')}`
+      return ERROR_MESSAGES.MISSING_REQUIRED_FIELDS(emptyFields)
     } else {
       if (
         isSmartContractWallet === true &&
@@ -35,48 +35,15 @@ export function validateHookDappManifest(
       } else if (!isHex(dapp.id) || dapp.id.length !== HOOK_DAPP_ID_LENGTH) {
         return ERROR_MESSAGES.INVALID_HOOK_ID
       } else if (chainId && conditions.supportedNetworks && !conditions.supportedNetworks.includes(chainId)) {
-        return (
-          <p>
-            <b>Network compatibility error</b>
-            <br />
-            <br />
-            This app/hook doesn't support the current network:{' '}
-            <b>
-              {getChainInfo(chainId).label} (Chain ID: {chainId})
-            </b>
-            .
-            <br />
-            <br />
-            Supported networks:
-            <br />
-            {conditions.supportedNetworks.map((id) => (
-              <>
-                • {getChainInfo(id).label} (Chain ID: {id})
-                <br />
-              </>
-            ))}
-          </p>
+        return ERROR_MESSAGES.NETWORK_COMPATIBILITY_ERROR(
+          chainId,
+          getChainInfo(chainId).label,
+          conditions.supportedNetworks.map((id) => ({ id, label: getChainInfo(id).label })),
         )
       } else if (conditions.position === 'post' && isPreHook === true) {
-        return (
-          <p>
-            Hook position mismatch:
-            <br />
-            This app/hook can only be used as a <strong>post-hook</strong>
-            <br />
-            and cannot be added as a pre-hook.
-          </p>
-        )
+        return ERROR_MESSAGES.HOOK_POSITION_MISMATCH('post')
       } else if (conditions.position === 'pre' && isPreHook === false) {
-        return (
-          <p>
-            Hook position mismatch:
-            <br />
-            This app/hook can only be used as a <strong>pre-hook</strong>
-            <br />
-            and cannot be added as a post-hook.
-          </p>
-        )
+        return ERROR_MESSAGES.HOOK_POSITION_MISMATCH('pre')
       }
     }
   } else {
