@@ -80,9 +80,7 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType
     return url
   }, [])
 
-  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    // Clear error when input changes
+  const resetStates = useCallback((value: string) => {
     setManifestError(null)
     setInput(value)
     setDappInfo(null)
@@ -91,36 +89,37 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType
     setWarningAccepted(false)
   }, [])
 
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      resetStates(e.target.value)
+    },
+    [resetStates],
+  )
+
   const handlePaste = useCallback(
     (e: React.ClipboardEvent<HTMLInputElement>) => {
       const pastedValue = e.clipboardData.getData('text')
       const normalizedValue = normalizeUrl(pastedValue, true)
       e.preventDefault() // Prevent default to avoid double paste
-      setInput(normalizedValue)
-      // Clear error on paste
-      setManifestError(null)
-      setDappInfo(null)
-      setLoading(false)
-      setFinalStep(false)
-      setWarningAccepted(false)
+      resetStates(normalizedValue)
     },
-    [normalizeUrl],
+    [normalizeUrl, resetStates],
   )
 
   const handleBlur = useCallback(() => {
     if (!input.startsWith('https://')) {
       const normalizedValue = normalizeUrl(input, true)
-      setInput(normalizedValue)
+      resetStates(normalizedValue)
     }
-  }, [input, normalizeUrl])
+  }, [input, normalizeUrl, resetStates])
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault()
       const normalizedValue = normalizeUrl(input, true)
-      setInput(normalizedValue)
+      resetStates(normalizedValue)
     },
-    [input, normalizeUrl],
+    [input, normalizeUrl, resetStates],
   )
 
   return (

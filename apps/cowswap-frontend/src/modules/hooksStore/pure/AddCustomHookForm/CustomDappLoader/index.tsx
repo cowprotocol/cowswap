@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useCallback } from 'react'
 
-import { HookDappBase, HookDappType, HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
+import { getTimeoutAbortController } from '@cowprotocol/common-utils'
+import { HookDappType, HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { HookDappIframe } from '../../../types/hooks'
@@ -16,20 +17,15 @@ interface ExternalDappLoaderProps {
 }
 
 const TIMEOUT = 5000
+const TIMEOUT_ERROR_MESSAGE = 'Request timed out. Please try again.'
 
 const fetchWithTimeout = async (url: string, options: any) => {
-  const controller = new AbortController()
-  const timeoutId = setTimeout(() => {
-    controller.abort()
-  }, options.timeout)
-
   try {
-    const response = await fetch(url, { signal: controller.signal, ...options })
-    clearTimeout(timeoutId)
+    const response = await fetch(url, { signal: getTimeoutAbortController(options.timeout).signal, ...options })
     return response
   } catch (error) {
     if (error.name === 'AbortError') {
-      throw new Error('Request timed out. Please try again.')
+      throw new Error(TIMEOUT_ERROR_MESSAGE)
     }
     throw error
   }
@@ -53,9 +49,8 @@ export function ExternalDappLoader({
 
       try {
         // Basic URL validation first
-        let urlObject: URL
         try {
-          urlObject = new URL(url)
+          const urlObject = new URL(url)
           // Accept only https, convert http in parent component
           if (!urlObject.protocol.startsWith('https')) {
             setManifestError(
@@ -129,7 +124,7 @@ export function ExternalDappLoader({
             </>,
           )
         } else if (error.name === 'AbortError') {
-          setManifestError('Request timed out. Please try again.')
+          setManifestError(TIMEOUT_ERROR_MESSAGE)
         } else if (error instanceof TypeError && error.message === 'Failed to fetch') {
           setManifestError('Invalid URL: No manifest.json file found. Please check the URL and try again.')
         } else {
@@ -146,17 +141,14 @@ export function ExternalDappLoader({
   )
 
   useEffect(() => {
-    let isRequestRelevant = true
-
     if (input) {
       fetchManifest(input)
     }
 
     return () => {
-      isRequestRelevant = false
       setLoading(false)
     }
-  }, [input, fetchManifest])
+  }, [input, fetchManifest, setLoading])
 
   return null
 }
