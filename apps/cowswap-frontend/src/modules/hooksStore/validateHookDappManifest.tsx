@@ -1,5 +1,6 @@
 import { ReactElement } from 'react'
 
+import { getChainInfo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { HOOK_DAPP_ID_LENGTH, HookDappBase, HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 
@@ -34,11 +35,24 @@ export function validateHookDappManifest(
       } else if (chainId && conditions.supportedNetworks && !conditions.supportedNetworks.includes(chainId)) {
         return (
           <p>
-            Network compatibility error:
+            <b>Network compatibility error</b>
             <br />
-            This app/hook doesn't support the current network (Chain ID: {chainId}).
             <br />
-            Supported networks: {conditions.supportedNetworks.join(', ')}
+            This app/hook doesn't support the current network:{' '}
+            <b>
+              {getChainInfo(chainId).label} (Chain ID: {chainId})
+            </b>
+            .
+            <br />
+            <br />
+            Supported networks:
+            <br />
+            {conditions.supportedNetworks.map((id) => (
+              <>
+                • {getChainInfo(id).label} (Chain ID: {id})
+                <br />
+              </>
+            ))}
           </p>
         )
       } else if (conditions.position === 'post' && isPreHook === true) {

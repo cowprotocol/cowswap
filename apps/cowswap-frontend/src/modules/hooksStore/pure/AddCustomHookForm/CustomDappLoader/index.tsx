@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useCallback } from 'react'
 
-import { getTimeoutAbortController } from '@cowprotocol/common-utils'
+import { getTimeoutAbortController, isDevelopmentEnv } from '@cowprotocol/common-utils'
 import { HookDappType, HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -51,34 +51,76 @@ export function ExternalDappLoader({
         // Basic URL validation first
         try {
           const urlObject = new URL(url)
-          // Accept only https, convert http in parent component
-          if (!urlObject.protocol.startsWith('https')) {
+          const isLocalhost = urlObject.hostname === 'localhost' || urlObject.hostname === '127.0.0.1'
+          const isHttps = urlObject.protocol.startsWith('https')
+
+          // In production, always require HTTPS except for localhost in development
+          if (!isDevelopmentEnv() && !isLocalhost && !isHttps) {
             setManifestError(
               <>
                 HTTPS is required. Please use <code>https://</code>
               </>,
             )
-            setDappInfo(null) // Reset dapp info when there's an error
-            setLoading(false)
             return
           }
 
           // Handle common URL mistakes
           if (urlObject.pathname === '/manifest.json') {
             setManifestError('Please enter the base URL of your dapp, not the direct manifest.json path')
-            setDappInfo(null) // Reset dapp info when there's an error
+            setDappInfo(null)
             setLoading(false)
             return
           }
-        } catch {
-          setManifestError(
-            <>
-              Invalid URL format. Please enter a valid URL (e.g., <code>https://example.com</code>)
-              <br />
-              Make sure to include the protocol (<code>https://</code>)
-            </>,
-          )
-          setDappInfo(null) // Reset dapp info when there's an error
+        } catch (error) {
+          console.error('Hook dapp loading error:', error)
+
+          if (error.message?.includes('JSON')) {
+            setManifestError(
+              <>
+                Invalid manifest format
+                <br />
+                <small>Technical details: {error.message}</small>
+              </>,
+            )
+          } else if (error.name === 'AbortError') {
+            setManifestError(TIMEOUT_ERROR_MESSAGE)
+          } else if (error instanceof TypeError) {
+            if (error.message === 'Failed to fetch') {
+              // Check if it might be a TLS issue
+              const urlObject = new URL(url)
+              if (urlObject.protocol === 'https:') {
+                setManifestError(
+                  <>
+                    Failed to load manifest. This might be due to an SSL/TLS configuration issue.
+                    <br />
+                    <small>
+                      If you're running a local development server:
+                      <ul>
+                        <li>Try using HTTP instead of HTTPS for localhost</li>
+                        <li>Or ensure your server's SSL certificate is properly configured</li>
+                        <li>Technical details: {error.message}</li>
+                      </ul>
+                    </small>
+                  </>,
+                )
+              } else {
+                setManifestError('Invalid URL: No manifest.json file found. Please check the URL and try again.')
+              }
+            } else {
+              setManifestError(
+                <>
+                  Failed to load manifest
+                  <br />
+                  <small>Technical details: {error.message}</small>
+                </>,
+              )
+            }
+          } else {
+            setManifestError(
+              error instanceof Error ? error.message : 'Failed to load manifest. Please verify the URL and try again.',
+            )
+          }
+          setDappInfo(null)
           setLoading(false)
           return
         }
@@ -103,7 +145,7 @@ export function ExternalDappLoader({
 
         if (validationError) {
           setManifestError(validationError)
-          setDappInfo(null) // Reset dapp info when there's an error
+          setDappInfo(null)
         } else {
           setManifestError(null)
           setDappInfo({
@@ -132,7 +174,7 @@ export function ExternalDappLoader({
             error instanceof Error ? error.message : 'Failed to load manifest. Please verify the URL and try again.',
           )
         }
-        setDappInfo(null) // Reset dapp info when there's an error
+        setDappInfo(null)
       } finally {
         setLoading(false)
       }

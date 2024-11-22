@@ -1,6 +1,6 @@
 import { ReactElement, useCallback, useState } from 'react'
 
-import { uriToHttp } from '@cowprotocol/common-utils'
+import { isDevelopmentEnv, uriToHttp } from '@cowprotocol/common-utils'
 import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { BannerOrientation, ButtonOutlined, ButtonPrimary, InlineBanner, Loader, SearchInput } from '@cowprotocol/ui'
 
@@ -55,6 +55,19 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType
     if (shouldNormalize) {
       try {
         const normalizedUrl = url.trim().replace(/\/+$/, '')
+
+        // Parse URL to check if it's localhost
+        try {
+          const urlObject = new URL(normalizedUrl)
+          const isLocalhost = urlObject.hostname === 'localhost' || urlObject.hostname === '127.0.0.1'
+
+          // In development mode or for localhost, preserve the original protocol
+          if (isDevelopmentEnv() || isLocalhost) {
+            return normalizedUrl
+          }
+        } catch {
+          // URL parsing failed, continue with normal normalization
+        }
 
         if (normalizedUrl.startsWith('https://')) {
           return normalizedUrl
