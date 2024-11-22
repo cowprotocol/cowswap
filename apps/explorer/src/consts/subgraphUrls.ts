@@ -8,8 +8,8 @@ function getSubgraphUrl(chainId: SupportedChainId, suffix: string): string | nul
  * When value is null, then Subgraph is not supported for the network
  */
 export const SUBGRAPH_URLS: Record<SupportedChainId, string | null> = {
-  [SupportedChainId.MAINNET]: getSubgraphUrl(SupportedChainId.MAINNET, 'MAINNET'),
-  [SupportedChainId.GNOSIS_CHAIN]: getSubgraphUrl(SupportedChainId.GNOSIS_CHAIN, 'GNOSIS_CHAIN'),
-  [SupportedChainId.ARBITRUM_ONE]: getSubgraphUrl(SupportedChainId.ARBITRUM_ONE, 'ARBITRUM_ONE'),
-  [SupportedChainId.SEPOLIA]: getSubgraphUrl(SupportedChainId.SEPOLIA, 'SEPOLIA'),
+  [SupportedChainId.MAINNET]: 'https://api.studio.thegraph.com/query/49707/cow-subgraph-mainnet/version/latest',
+  [SupportedChainId.GNOSIS_CHAIN]: 'https://api.studio.thegraph.com/query/49707/cow-subgraph-gnosis/version/latest',
+  [SupportedChainId.ARBITRUM_ONE]: 'https://api.studio.thegraph.com/query/49707/cow-subgraph-arb/version/latest',
+  [SupportedChainId.SEPOLIA]: 'https://api.studio.thegraph.com/query/49707/cow-subgraph-sepolia/version/latest',
 }
