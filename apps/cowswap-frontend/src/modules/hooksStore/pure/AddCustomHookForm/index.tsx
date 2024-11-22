@@ -54,7 +54,7 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType
 
     if (shouldNormalize) {
       try {
-        const normalizedUrl = url.replace(/\/+$/, '')
+        const normalizedUrl = url.trim().replace(/\/+$/, '')
 
         if (normalizedUrl.startsWith('https://')) {
           return normalizedUrl
