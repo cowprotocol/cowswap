@@ -4,6 +4,8 @@ import { getChainInfo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { HOOK_DAPP_ID_LENGTH, HookDappBase, HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 
+import { ERROR_MESSAGES } from './pure/AddCustomHookForm/constants'
+
 type HookDappBaseInfo = Omit<HookDappBase, 'type' | 'conditions'>
 
 const MANDATORY_DAPP_FIELDS: (keyof HookDappBaseInfo)[] = ['id', 'name', 'image', 'version', 'website']
@@ -29,9 +31,9 @@ export function validateHookDappManifest(
         typeof conditions.walletCompatibility !== 'undefined' &&
         !conditions.walletCompatibility.includes(HookDappWalletCompatibility.SMART_CONTRACT)
       ) {
-        return 'This hook is not compatible with smart contract wallets. It only supports EOA wallets.'
+        return ERROR_MESSAGES.SMART_CONTRACT_INCOMPATIBLE
       } else if (!isHex(dapp.id) || dapp.id.length !== HOOK_DAPP_ID_LENGTH) {
-        return 'Invalid hook dapp ID format. The ID must be a 64-character hexadecimal string.'
+        return ERROR_MESSAGES.INVALID_HOOK_ID
       } else if (chainId && conditions.supportedNetworks && !conditions.supportedNetworks.includes(chainId)) {
         return (
           <p>
@@ -78,7 +80,7 @@ export function validateHookDappManifest(
       }
     }
   } else {
-    return 'Invalid manifest format: Missing "cow_hook_dapp" property in manifest.json'
+    return ERROR_MESSAGES.INVALID_MANIFEST
   }
 
   return null

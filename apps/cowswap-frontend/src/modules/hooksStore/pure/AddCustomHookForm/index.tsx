@@ -93,14 +93,20 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType
     return url
   }, [])
 
-  const resetStates = useCallback((value: string) => {
-    setManifestError(null)
-    setInput(value)
-    setDappInfo(null)
-    setLoading(false)
-    setFinalStep(false)
-    setWarningAccepted(false)
-  }, [])
+  const resetStates = useCallback(
+    (value: string) => {
+      // Only clear the error if the input value actually changed
+      if (value !== input) {
+        setManifestError(null)
+      }
+      setInput(value)
+      setDappInfo(null)
+      setLoading(false)
+      setFinalStep(false)
+      setWarningAccepted(false)
+    },
+    [input],
+  )
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,7 +128,10 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType
   const handleBlur = useCallback(() => {
     if (!input.startsWith('https://')) {
       const normalizedValue = normalizeUrl(input, true)
-      resetStates(normalizedValue)
+      // Don't reset states on blur if the value hasn't changed
+      if (normalizedValue !== input) {
+        resetStates(normalizedValue)
+      }
     }
   }, [input, normalizeUrl, resetStates])
 

@@ -1,11 +1,13 @@
 import { Dispatch, SetStateAction, useEffect, useCallback } from 'react'
 
-import { getTimeoutAbortController, isDevelopmentEnv } from '@cowprotocol/common-utils'
+import { getTimeoutAbortController } from '@cowprotocol/common-utils'
 import { HookDappType, HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { HookDappIframe } from '../../../types/hooks'
+import { validateHookDappUrl } from '../../../utils/urlValidation'
 import { validateHookDappManifest } from '../../../validateHookDappManifest'
+import { ERROR_MESSAGES } from '../constants'
 
 interface ExternalDappLoaderProps {
   input: string
@@ -17,7 +19,6 @@ interface ExternalDappLoaderProps {
 }
 
 const TIMEOUT = 5000
-const TIMEOUT_ERROR_MESSAGE = 'Request timed out. Please try again.'
 
 const fetchWithTimeout = async (url: string, options: any) => {
   try {
@@ -25,7 +26,7 @@ const fetchWithTimeout = async (url: string, options: any) => {
     return response
   } catch (error) {
     if (error.name === 'AbortError') {
-      throw new Error(TIMEOUT_ERROR_MESSAGE)
+      throw new Error(ERROR_MESSAGES.TIMEOUT)
     }
     throw error
   }
@@ -48,89 +49,31 @@ export function ExternalDappLoader({
       setLoading(true)
 
       try {
-        // Basic URL validation first
-        try {
-          const urlObject = new URL(url)
-          const isLocalhost = urlObject.hostname === 'localhost' || urlObject.hostname === '127.0.0.1'
-          const isHttps = urlObject.protocol.startsWith('https')
-
-          // In production, always require HTTPS except for localhost in development
-          if (!isDevelopmentEnv() && !isLocalhost && !isHttps) {
-            setManifestError(
-              <>
-                HTTPS is required. Please use <code>https://</code>
-              </>,
-            )
-            return
-          }
-
-          // Handle common URL mistakes
-          if (urlObject.pathname === '/manifest.json') {
-            setManifestError('Please enter the base URL of your dapp, not the direct manifest.json path')
-            setDappInfo(null)
-            setLoading(false)
-            return
-          }
-        } catch (error) {
-          console.error('Hook dapp loading error:', error)
-
-          if (error.message?.includes('JSON')) {
-            setManifestError(
-              <>
-                Invalid manifest format
-                <br />
-                <small>Technical details: {error.message}</small>
-              </>,
-            )
-          } else if (error.name === 'AbortError') {
-            setManifestError(TIMEOUT_ERROR_MESSAGE)
-          } else if (error instanceof TypeError) {
-            if (error.message === 'Failed to fetch') {
-              // Check if it might be a TLS issue
-              const urlObject = new URL(url)
-              if (urlObject.protocol === 'https:') {
-                setManifestError(
-                  <>
-                    Failed to load manifest. This might be due to an SSL/TLS configuration issue.
-                    <br />
-                    <small>
-                      If you're running a local development server:
-                      <ul>
-                        <li>Try using HTTP instead of HTTPS for localhost</li>
-                        <li>Or ensure your server's SSL certificate is properly configured</li>
-                        <li>Technical details: {error.message}</li>
-                      </ul>
-                    </small>
-                  </>,
-                )
-              } else {
-                setManifestError('Invalid URL: No manifest.json file found. Please check the URL and try again.')
-              }
-            } else {
-              setManifestError(
-                <>
-                  Failed to load manifest
-                  <br />
-                  <small>Technical details: {error.message}</small>
-                </>,
-              )
-            }
-          } else {
-            setManifestError(
-              error instanceof Error ? error.message : 'Failed to load manifest. Please verify the URL and try again.',
-            )
-          }
+        const validation = validateHookDappUrl(url)
+        if (!validation.isValid) {
+          setManifestError(validation.error)
           setDappInfo(null)
           setLoading(false)
           return
         }
 
-        const manifestResponse = await fetchWithTimeout(`${url}/manifest.json`, { timeout: TIMEOUT })
-        const data = await manifestResponse.json()
+        const trimmedUrl = url.trim()
+        const manifestUrl = `${trimmedUrl}${trimmedUrl.endsWith('/') ? '' : '/'}manifest.json`
+
+        const response = await fetchWithTimeout(manifestUrl, { timeout: TIMEOUT })
+        if (!response.ok) {
+          setManifestError('Failed to fetch manifest. Please verify the URL and try again.')
+          setDappInfo(null)
+          setLoading(false)
+          return
+        }
+
+        const data = await response.json()
 
         if (!data.cow_hook_dapp) {
           setManifestError('Invalid manifest format: missing cow_hook_dapp property')
           setDappInfo(null)
+          setLoading(false)
           return
         }
 
@@ -158,20 +101,14 @@ export function ExternalDappLoader({
         console.error('Hook dapp loading error:', error)
 
         if (error.message?.includes('JSON')) {
-          setManifestError(
-            <>
-              Invalid manifest format
-              <br />
-              <small>Technical details: {error.message}</small>
-            </>,
-          )
+          setManifestError(ERROR_MESSAGES.INVALID_MANIFEST_HTML)
         } else if (error.name === 'AbortError') {
-          setManifestError(TIMEOUT_ERROR_MESSAGE)
+          setManifestError(ERROR_MESSAGES.TIMEOUT)
         } else if (error instanceof TypeError && error.message === 'Failed to fetch') {
-          setManifestError('Invalid URL: No manifest.json file found. Please check the URL and try again.')
+          setManifestError(ERROR_MESSAGES.CONNECTION_ERROR)
         } else {
           setManifestError(
-            error instanceof Error ? error.message : 'Failed to load manifest. Please verify the URL and try again.',
+            error instanceof Error ? error.message : ERROR_MESSAGES.GENERIC_MANIFEST_ERROR
           )
         }
         setDappInfo(null)
