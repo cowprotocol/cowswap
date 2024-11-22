@@ -108,7 +108,7 @@ export const ContentCard = styled.div`
 `
 
 export const StyledSearch = styled(Search)`
-  width: 100%;
+  width: calc(100% - 3.2rem);
   max-width: 60rem;
 
   ${Media.upToMedium()} {
