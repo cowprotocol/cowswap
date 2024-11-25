@@ -17,7 +17,6 @@ import {
   LinkColumn,
   LinkItem,
 } from '@/styles/styled'
-import { clickOnKnowledgeBase } from 'modules/analytics'
 import { CmsImage } from '@cowprotocol/ui'
 import { CategoryLinks } from '@/components/CategoryLinks'
 const Wrapper = styled.div`
@@ -111,14 +110,14 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
         <ContainerCard gap={42} gapMobile={24} minHeight="100vh" alignContent="flex-start" touchFooter>
           <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>
             <Breadcrumbs padding={'0'}>
-              <a href="/" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-home')}>
+              <a href="/" data-click-event="click-breadcrumbs-home">
                 Home
               </a>
-              <a href="/learn" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-knowledgebase')}>
+              <a href="/learn" data-click-event="click-breadcrumbs-knowledgebase">
                 Knowledge Base
               </a>
-              <a href="/learn/topics/" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-topics')}>
-                Topic
+              <a href="/learn/topics/" data-click-event="click-breadcrumbs-topics">
+                Topics
               </a>
               <span>{name}</span>
             </Breadcrumbs>
@@ -148,7 +147,7 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
                       <LinkItem
                         key={article.id}
                         href={`/learn/${article.attributes.slug}`}
-                        onClick={() => clickOnKnowledgeBase(`click-article-${article.attributes.title}`)}
+                        data-click-event={`click-article-${article.attributes.title}`}
                       >
                         {article.attributes.title}
                         <span>→</span>

@@ -22,7 +22,6 @@ import {
 } from '@/styles/styled'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnKnowledgeBase } from 'modules/analytics'
 import { CmsImage } from '@cowprotocol/ui'
 
 interface PageProps {
@@ -96,7 +95,7 @@ export default function Page({ siteConfigData, categories, articles }: PageProps
                     bgColor={bgColor}
                     textColor={textColor}
                     href={link}
-                    onClick={() => clickOnKnowledgeBase(`click-topic-${name}`)}
+                    data-click-event={`click-topic-${name.toLowerCase().replace(/\s/g, '-')}`}
                   >
                     <TopicImage iconColor={iconColor}>
                       {imageUrl ? (

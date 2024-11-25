@@ -100,6 +100,7 @@ export interface MenuItem {
   hoverColor?: string
   overrideHoverColor?: string
   onClick?: (event: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => void
+  'data-click-event'?: string
   hasDivider?: boolean
   utmContent?: string
   utmSource?: string
@@ -123,6 +124,7 @@ interface DropdownMenuItem {
   color?: string
   hoverColor?: string
   onClick?: (event: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => void
+  'data-click-event'?: string
   hasDivider?: boolean
   utmContent?: string
   utmSource?: string
@@ -842,6 +844,7 @@ export const MenuBar = (props: MenuBarProps) => {
                   hoverColor={item.hoverColor}
                   mobileMode={isMedium}
                   as={item.isButton ? 'button' : 'div'}
+                  {...(item['data-click-event'] && { 'data-click-event': item['data-click-event'] })}
                 >
                   <LinkComponent href={href}>
                     <DropdownContentItemText>
@@ -908,6 +911,7 @@ export const MenuBar = (props: MenuBarProps) => {
                     hoverBgColor={item.hoverBgColor}
                     hoverColor={item.hoverColor}
                     as={item.isButton ? 'button' : 'div'}
+                    {...(item['data-click-event'] && { 'data-click-event': item['data-click-event'] })}
                   >
                     <LinkComponent
                       href={appendUtmParams(

@@ -43,7 +43,6 @@ import { CategoryLinks } from '@/components/CategoryLinks'
 import { Link, LinkType } from '@/components/Link'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnKnowledgeBase } from 'modules/analytics'
 import { CmsImage } from '@cowprotocol/ui'
 import { useLazyLoadImages } from 'hooks/useLazyLoadImages'
 
@@ -193,10 +192,10 @@ export default function ArticlePage({
         <ContainerCard gap={62} gapMobile={42} margin="0 auto" centerContent>
           <ArticleContent>
             <Breadcrumbs>
-              <a href="/" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-home')}>
+              <a href="/" data-click-event="click-breadcrumbs-home">
                 Home
               </a>
-              <a href="/learn" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-knowledge-base')}>
+              <a href="/learn" data-click-event="click-breadcrumbs-knowledge-base">
                 Knowledge Base
               </a>
               <span>{title}</span>
@@ -207,8 +206,8 @@ export default function ArticlePage({
                 {categories.data.map((category: { id: string; attributes?: { slug?: string; name?: string } }) => (
                   <a
                     key={category.id}
-                    href={`/learn/topic/${category.attributes?.slug ?? ''}`}
-                    onClick={() => clickOnKnowledgeBase(`click-category-${category.attributes?.name}`)}
+                    href={`/learn/topics/${category.attributes?.slug}`}
+                    data-click-event={`click-category-${category.attributes?.name}`}
                   >
                     {category.attributes?.name ?? ''}
                   </a>
@@ -258,7 +257,7 @@ export default function ArticlePage({
                   <li key={article.id}>
                     <a
                       href={`/learn/${article.attributes?.slug}`}
-                      onClick={() => clickOnKnowledgeBase(`click-related-article-${article.attributes?.title}`)}
+                      data-click-event={`click-related-article-${article.attributes?.title}`}
                     >
                       {article.attributes?.title}
                     </a>
@@ -284,7 +283,7 @@ export default function ArticlePage({
                   <ArticleCard
                     key={article.id}
                     href={`/learn/${article.attributes?.slug}`}
-                    onClick={() => clickOnKnowledgeBase(`click-read-more-${article.attributes?.title}`)}
+                    data-click-event={`click-read-more-${article.attributes?.title}`}
                   >
                     {imageUrl && (
                       <ArticleImage>

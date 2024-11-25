@@ -9,7 +9,6 @@ import IMG_COWSWAP_TWAP from '@cowprotocol/assets/images/image-cowswap-twap.svg'
 import IMG_COWSWAP_GASLESS from '@cowprotocol/assets/images/image-cowswap-gasless.svg'
 import IMG_COWSWAP_NOFEES from '@cowprotocol/assets/images/image-cowswap-nofees.svg'
 import IMG_COWSWAP_MULTIPLE from '@cowprotocol/assets/images/image-cowswap-multiple.svg'
-import { clickOnCowSwap } from 'modules/analytics'
 
 export const COW_IS_DIFFERENT = [
   {
@@ -101,7 +100,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
           external
           utmContent="cow-protocol-introduction-intents"
-          onClick={() => clickOnCowSwap('click-introduction-intents')}
+          data-click-event="click-introduction-intents"
         >
           intents
         </Link>{' '}
@@ -110,7 +109,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
           external
           utmContent="cow-protocol-introduction-batch-auctions"
-          onClick={() => clickOnCowSwap('click-introduction-batch-auctions')}
+          data-click-event="click-introduction-batch-auctions"
         >
           batch auctions{' '}
         </Link>
@@ -121,7 +120,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => clickOnCowSwap('click-introduction-solvers')}
+          data-click-event="click-introduction-solvers"
         >
           solvers
         </Link>{' '}
@@ -130,7 +129,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
           external
           utmContent="cow-protocol-introduction-intents"
-          onClick={() => clickOnCowSwap('click-introduction-intents')}
+          data-click-event="click-introduction-intents"
         >
           trade intent
         </Link>{' '}
@@ -139,7 +138,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/how-it-works/coincidence-of-wants"
           external
           utmContent="cow-protocol-coincidence-of-wants"
-          onClick={() => clickOnCowSwap('click-coincidence-of-wants')}
+          data-click-event="click-coincidence-of-wants"
         >
           Coincidences of Wants
         </Link>{' '}
@@ -168,7 +167,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/how-it-works/coincidence-of-wants"
           external
           utmContent="cow-protocol-coincidence-of-wants"
-          onClick={() => clickOnCowSwap('click-coincidence-of-wants')}
+          data-click-event="click-coincidence-of-wants"
         >
           Coincidence of Wants
         </Link>
@@ -180,7 +179,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
           external
           utmContent="cow-protocol-introduction-batch-auctions"
-          onClick={() => clickOnCowSwap('click-introduction-batch-auctions')}
+          data-click-event="click-introduction-batch-auctions"
         >
           batching mechanism
         </Link>
@@ -202,7 +201,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => clickOnCowSwap('click-introduction-solvers')}
+          data-click-event="click-introduction-solvers"
         >
           solvers
         </Link>{' '}
@@ -238,7 +237,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
           external
           utmContent="cow-protocol-introduction-batch-auctions"
-          onClick={() => clickOnCowSwap('click-introduction-batch-auctions')}
+          data-click-event="click-introduction-batch-auctions"
         >
           batch auctions
         </Link>{' '}
@@ -256,7 +255,7 @@ export const FAQ_DATA = [
       <>
         Please beware of fake links and phishing scams. The official CoW DAO channels can be found at the footer of all
         our pages on{' '}
-        <Link href="https://www.cow.fi" utmContent="cow-website" onClick={() => clickOnCowSwap('click-website')}>
+        <Link href="https://www.cow.fi" utmContent="cow-website" data-click-event="click-website">
           www.cow.fi
         </Link>
         .
@@ -265,32 +264,17 @@ export const FAQ_DATA = [
         For reference, here is our full list of social channels:
         <br />
         X:{' '}
-        <Link
-          href="https://x.com/CoWSwap"
-          external
-          utmContent="cow-twitter"
-          onClick={() => clickOnCowSwap('click-twitter')}
-        >
+        <Link href="https://x.com/CoWSwap" external utmContent="cow-twitter" data-click-event="click-twitter">
           https://x.com/CoWSwap
         </Link>
         <br />
         Discord:{' '}
-        <Link
-          href="https://discord.gg/cowprotocol"
-          external
-          utmContent="cow-discord"
-          onClick={() => clickOnCowSwap('click-discord')}
-        >
+        <Link href="https://discord.gg/cowprotocol" external utmContent="cow-discord" data-click-event="click-discord">
           https://discord.gg/cowprotocol
         </Link>
         <br />
         Forum:{' '}
-        <Link
-          href="https://forum.cow.fi/"
-          external
-          utmContent="cow-forum"
-          onClick={() => clickOnCowSwap('click-forum')}
-        >
+        <Link href="https://forum.cow.fi/" external utmContent="cow-forum" data-click-event="click-forum">
           https://forum.cow.fi/
         </Link>
         <br />
@@ -299,18 +283,13 @@ export const FAQ_DATA = [
           href="https://snapshot.org/#/cow.eth"
           external
           utmContent="cow-snapshot"
-          onClick={() => clickOnCowSwap('click-snapshot')}
+          data-click-event="click-snapshot"
         >
           https://snapshot.org/#/cow.eth
         </Link>
         <br />
         Github:{' '}
-        <Link
-          href="https://github.com/cowprotocol/"
-          external
-          utmContent="cow-github"
-          onClick={() => clickOnCowSwap('click-github')}
-        >
+        <Link href="https://github.com/cowprotocol/" external utmContent="cow-github" data-click-event="click-github">
           https://github.com/cowprotocol/
         </Link>
       </>
@@ -330,12 +309,7 @@ export const FAQ_DATA = [
         <br />
         <br />
         CoW DAO Discord:{' '}
-        <Link
-          href="https://discord.gg/cowprotocol"
-          external
-          utmContent="cow-discord"
-          onClick={() => clickOnCowSwap('click-discord')}
-        >
+        <Link href="https://discord.gg/cowprotocol" external utmContent="cow-discord" data-click-event="click-discord">
           https://discord.gg/cowprotocol
         </Link>
       </>

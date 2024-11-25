@@ -20,7 +20,6 @@ import IMAGE_MEVBLOCKER_REVIEW_6 from '@cowprotocol/assets/images/image-mevblock
 import IMAGE_FULLPROTECTION from '@cowprotocol/assets/images/image-fullprotection.svg'
 import IMGAGE_FASTFREE from '@cowprotocol/assets/images/image-fastfree.svg'
 import IMAGE_PROFIT from '@cowprotocol/assets/images/image-profit.svg'
-import { clickOnMevBlocker } from 'modules/analytics'
 
 export const MEV_BLOCKER_LIST = [
   {
@@ -165,8 +164,8 @@ export const FAQ_DATA = [
         <Link
           href="https://t.me/+yonLSGoFPRI0YTFk"
           external
-          utmContent="mev-blocker-contact"
-          onClick={() => clickOnMevBlocker('click-contact-us')}
+          utmContent="mev-blocker-contact-us"
+          data-click-event="click-contact-us"
         >
           Get in touch
         </Link>{' '}
@@ -206,12 +205,7 @@ export const FAQ_DATA = [
         <br />
         <br />
         While some DEXs like{' '}
-        <Link
-          href="https://swap.cow.fi/"
-          external
-          utmContent="mev-blocker-cow-swap"
-          onClick={() => clickOnMevBlocker('click-cow-swap')}
-        >
+        <Link href="https://swap.cow.fi" external utmContent="mev-blocker-cow-swap" data-click-event="click-cow-swap">
           CoW Swap
         </Link>{' '}
         offer MEV protection for your DeFi trades, most DeFi venues and NFT marketplaces do not provide any type of MEV
@@ -239,7 +233,7 @@ export const FAQ_DATA = [
       <>
         To use MEV Blocker, you will need to add the MEV Blocker RPC endpoint to your wallet. You can do that easily by
         following the instructions{' '}
-        <Link href="#rpc" onClick={() => clickOnMevBlocker('click-rpc')}>
+        <Link href="#rpc" data-click-event="click-rpc">
           here
         </Link>
         . (Note that once your MEV Blocker is added to your wallet, you might need to check that it is your selected
@@ -290,7 +284,7 @@ export const FAQ_DATA = [
         <br />
         This separate endpoint focuses on providing revert protection first, at the expense of possibly slower inclusion
         time. You can use this second endpoint by using{' '}
-        <Link href="https://rpc.mevblocker.io/noreverts" external onClick={() => clickOnMevBlocker('click-noreverts')}>
+        <Link href="https://rpc.mevblocker.io/noreverts" external data-click-event="click-noreverts">
           https://rpc.mevblocker.io/noreverts
         </Link>{' '}
         as the url instead.
@@ -303,7 +297,7 @@ export const FAQ_DATA = [
       <>
         Yes! if you want your transactions to be completely private, and you don’t care about the refund, you need to
         connect to the following endpoint:{' '}
-        <Link href="https://rpc.mevblocker.io/norefunds" external onClick={() => clickOnMevBlocker('click-norefunds')}>
+        <Link href="https://rpc.mevblocker.io/norefunds" external data-click-event="click-norefunds">
           https://rpc.mevblocker.io/norefunds
         </Link>{' '}
         as the url instead.
@@ -338,7 +332,7 @@ export const FAQ_DATA = [
           href="https://cow.fi/"
           external
           utmContent="mev-blocker-cow-protocol"
-          onClick={() => clickOnMevBlocker('click-cow-protocol')}
+          data-click-event="click-cow-protocol"
         >
           CoW Protocol
         </Link>
@@ -347,17 +341,12 @@ export const FAQ_DATA = [
           href="https://agnostic-relay.net/"
           external
           utmContent="mev-blocker-agnostic"
-          onClick={() => clickOnMevBlocker('click-agnostic')}
+          data-click-event="click-agnostic"
         >
           Agnostic Relay
         </Link>
         , and{' '}
-        <Link
-          href="https://beaverbuild.org/"
-          external
-          utmContent="mev-blocker-beaver"
-          onClick={() => clickOnMevBlocker('click-beaver')}
-        >
+        <Link href="https://beaverbuild.org/" external utmContent="mev-blocker-beaver" data-click-event="click-beaver">
           Beaver Build
         </Link>
         . It is open to all searchers and block builders.
@@ -378,7 +367,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/mevblocker"
           external
           utmContent="mev-blocker-docs"
-          onClick={() => clickOnMevBlocker('click-docs')}
+          data-click-event="click-docs"
         >
           documentation
         </Link>{' '}
@@ -387,7 +376,7 @@ export const FAQ_DATA = [
           href="https://t.me/+yonLSGoFPRI0YTFk"
           external
           utmContent="mev-blocker-telegram"
-          onClick={() => clickOnMevBlocker('click-telegram')}
+          data-click-event="click-telegram"
         >
           join the community
         </Link>
@@ -405,7 +394,7 @@ export const FAQ_DATA = [
           href="https://t.me/+yonLSGoFPRI0YTFk"
           external
           utmContent="mev-blocker-telegram"
-          onClick={() => clickOnMevBlocker('click-telegram')}
+          data-click-event="click-telegram"
         >
           Telegram
         </Link>

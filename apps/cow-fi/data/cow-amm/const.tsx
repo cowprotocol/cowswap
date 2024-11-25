@@ -5,8 +5,6 @@ import IMG_COWAMM_LP_2 from '@cowprotocol/assets/images/image-cowamm-lp-2.svg'
 import IMG_COWAMM_LP_3 from '@cowprotocol/assets/images/image-cowamm-lp-3.svg'
 import IMG_COWAMM_LP_4 from '@cowprotocol/assets/images/image-cowamm-lp-4.svg'
 
-import { clickOnCowAmm } from 'modules/analytics'
-
 export const QUOTES = [
   {
     title:
@@ -180,7 +178,7 @@ export const FAQ_DATA = [
           href="https://pool-creator.balancer.fi/cow"
           external
           utmContent="cow-amm-pool-creator"
-          onClick={() => clickOnCowAmm('Content link click - FAQ:Contact us')}
+          data-click-event="Content link click - FAQ:Contact us"
         >
           CoW AMM pool creator
         </Link>
@@ -189,7 +187,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-amm/tutorials/cow-amm-deployer"
           external
           utmContent="cow-amm-deployer"
-          onClick={() => clickOnCowAmm('Content link click - FAQ:Deploy a pool')}
+          data-click-event="Content link click - FAQ:Deploy a pool"
         >
           follow these instructions in the CoW AMM docs
         </Link>{' '}
@@ -206,7 +204,7 @@ export const FAQ_DATA = [
           href="http://balancer.fi/pools/cow"
           external
           utmContent="cow-amm-balancer-pools"
-          onClick={() => clickOnCowAmm('Content link click - FAQ:Balancer pools')}
+          data-click-event="Content link click - FAQ:Balancer pools"
         >
           balancer.fi/pools/cow
         </Link>
