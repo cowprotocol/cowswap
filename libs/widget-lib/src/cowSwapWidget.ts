@@ -228,14 +228,16 @@ function interceptDeepLinks() {
 function listenToHeightChanges(
   iframe: HTMLIFrameElement,
   defaultHeight = DEFAULT_HEIGHT,
-  maxHeight = `${document.body.offsetHeight}px`,
+  maxHeight?: number,
 ): WindowListener[] {
   return [
     widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsEmit.UPDATE_HEIGHT, (data) => {
-      iframe.style.height = data.height ? `${data.height + HEIGHT_THRESHOLD}px` : defaultHeight
+      const newHeight = data.height ? data.height + HEIGHT_THRESHOLD : undefined
+
+      iframe.style.height = newHeight ? `${maxHeight ? Math.min(newHeight, maxHeight) : newHeight}px` : defaultHeight
     }),
     widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsEmit.SET_FULL_HEIGHT, ({ isUpToSmall }) => {
-      iframe.style.height = isUpToSmall ? defaultHeight : maxHeight
+      iframe.style.height = isUpToSmall ? defaultHeight : `${maxHeight || document.body.offsetHeight}px`
     }),
   ]
 }
