@@ -3,6 +3,7 @@ import styled from 'styled-components/macro'
 import { darken, transparentize } from 'polished'
 import { useConnectAndAddToWallet } from '../../lib/hooks/useConnectAndAddToWallet'
 import { useAccount } from 'wagmi'
+import { MouseEvent } from 'react'
 
 import { Link, LinkType } from '@/components/Link'
 
@@ -30,19 +31,14 @@ export function AddRpcButton() {
   const { errorMessage, state } = addWalletState
   const { isConnected } = useAccount()
 
-  const handleClick = async () => {
-    try {
-      if (connectAndAddToWallet) {
-        // Start the connection process
-        const connectionPromise = connectAndAddToWallet()
-
-        // Wait for the connection process to complete
-        await connectionPromise
-      } else {
-        throw new Error('connectAndAddToWallet is not defined')
+  const handleButtonClick = async (e: MouseEvent<HTMLAnchorElement & HTMLDivElement>) => {
+    e.preventDefault()
+    if (connectAndAddToWallet) {
+      try {
+        await connectAndAddToWallet()
+      } catch (error) {
+        console.error('Failed to connect wallet:', error)
       }
-    } catch (error) {
-      // No need to log error here as it's handled by the component
     }
   }
 
@@ -74,6 +70,7 @@ export function AddRpcButton() {
             bgColor="#EC4612"
             data-click-event="click-add-rpc"
             disabled={disabledButton}
+            onClick={handleButtonClick}
             asButton
           >
             {buttonLabel}

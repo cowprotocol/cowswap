@@ -64,7 +64,10 @@ export const SwapWidgetWrapper = styled.div`
   background: ${Color.neutral100};
   height: 26.2rem;
   width: 100%;
-  box-shadow: 0 0.2rem 1.2rem rgba(0, 0, 0, 0.03), 0 2rem 7rem rgba(0, 0, 0, 0.06), 0 0.2rem 0.4rem rgba(0, 0, 0, 0.02);
+  box-shadow:
+    0 0.2rem 1.2rem rgba(0, 0, 0, 0.03),
+    0 2rem 7rem rgba(0, 0, 0, 0.06),
+    0 0.2rem 0.4rem rgba(0, 0, 0, 0.02);
   border-radius: 1.6rem;
   margin: 0 0 2rem;
   padding: 1.2rem;
@@ -287,12 +290,6 @@ export const SwapCard = styled.div`
   }
 `
 
-export const CopyMessage = styled.span`
-  color: #007b28;
-  font-size: 1.3rem;
-  margin: 0 0 0 0.2rem;
-`
-
 export const Stats = styled.div`
   margin: 1.2rem 0;
   display: flex;
@@ -323,27 +320,35 @@ export const StatValue = styled.h5`
 `
 
 export const CopyIcon = styled.img`
+  --size: 2rem;
+  height: var(--size);
+  width: var(--size);
   cursor: pointer;
   opacity: 0.6;
   transition: opacity 0.2s ease-in-out;
   padding: 0.2rem;
-  margin-left: 5px;
-  max-width: 20px;
 
   &:hover {
     opacity: 1;
   }
 `
 
-export const CopyWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  width: auto;
-  min-width: 100px;
-  text-align: right;
-  justify-content: flex-end;
+export const CopyWrapper = styled.div<{ margin?: string }>`
+  display: inline-block;
+  margin: ${({ margin }) => margin || 0};
 
   ${Media.upToSmall()} {
     justify-content: flex-start;
   }
+`
+export const CopyMessage = styled.span`
+  background: #007b28;
+  color: #fff;
+  font-size: 1.3rem;
+  display: block;
+  width: 100%;
+  padding: 0.4rem;
+  text-align: center;
+  border-radius: 0.4rem;
+  margin: 0.4rem 0 0;
 `

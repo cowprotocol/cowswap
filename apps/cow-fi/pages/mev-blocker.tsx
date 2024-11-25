@@ -7,6 +7,7 @@ import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
 import { AddRpcButton } from '@/components/AddRpcButton'
 import { Link, LinkType } from '@/components/Link'
+import { CopyToClipboard } from '@/components/CopyToClipboard'
 
 import useWebShare from '../hooks/useWebShare'
 
@@ -248,15 +249,18 @@ export default function Page() {
                       <TopicTable>
                         <tbody>
                           <tr>
-                            <td>Network name</td>
+                            <td>Network Name:</td>
                             <td>
                               <b>MEV Blocker</b>
                             </td>
                           </tr>
                           <tr>
-                            <td>New RPC URL</td>
+                            <td>RPC URL:</td>
                             <td>
-                              <b>https://rpc.mevblocker.io</b>
+                              <b>
+                                https://rpc.mevblocker.io
+                                <CopyToClipboard text="https://rpc.mevblocker.io" margin="0 0 0 0.4rem" />
+                              </b>
                             </td>
                           </tr>
                           <tr>
