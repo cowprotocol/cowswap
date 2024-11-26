@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useCallback } from 'react'
 
-import { getTimeoutAbortController } from '@cowprotocol/common-utils'
+import { fetchWithTimeout } from '@cowprotocol/common-utils'
 import { HookDappType, HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -19,18 +19,6 @@ interface ExternalDappLoaderProps {
 }
 
 const TIMEOUT = 5000
-
-const fetchWithTimeout = async (url: string, options: any) => {
-  try {
-    const response = await fetch(url, { signal: getTimeoutAbortController(options.timeout).signal, ...options })
-    return response
-  } catch (error) {
-    if (error.name === 'AbortError') {
-      throw new Error(ERROR_MESSAGES.TIMEOUT)
-    }
-    throw error
-  }
-}
 
 export function ExternalDappLoader({
   input,
@@ -60,7 +48,10 @@ export function ExternalDappLoader({
         const trimmedUrl = url.trim()
         const manifestUrl = `${trimmedUrl}${trimmedUrl.endsWith('/') ? '' : '/'}manifest.json`
 
-        const response = await fetchWithTimeout(manifestUrl, { timeout: TIMEOUT })
+        const response = await fetchWithTimeout(manifestUrl, {
+          timeout: TIMEOUT,
+          timeoutMessage: ERROR_MESSAGES.TIMEOUT,
+        })
         if (!response.ok) {
           setManifestError('Failed to fetch manifest. Please verify the URL and try again.')
           setDappInfo(null)
@@ -107,9 +98,7 @@ export function ExternalDappLoader({
         } else if (error instanceof TypeError && error.message === 'Failed to fetch') {
           setManifestError(ERROR_MESSAGES.CONNECTION_ERROR)
         } else {
-          setManifestError(
-            error instanceof Error ? error.message : ERROR_MESSAGES.GENERIC_MANIFEST_ERROR
-          )
+          setManifestError(error instanceof Error ? error.message : ERROR_MESSAGES.GENERIC_MANIFEST_ERROR)
         }
         setDappInfo(null)
       } finally {
