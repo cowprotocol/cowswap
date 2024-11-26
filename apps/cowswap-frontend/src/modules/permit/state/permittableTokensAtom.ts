@@ -16,10 +16,10 @@ type PermittableTokens = Record<string, PermitInfo>
  * Contains the permit info for every token checked locally
  */
 
-export const permittableTokensAtom = atomWithStorage<Record<SupportedChainId, PermittableTokens>>(
+export const permittableTokensAtom = atomWithStorage<Record<SupportedChainId, PermittableTokens | undefined>>(
   'permittableTokens:v3',
   mapSupportedNetworks({}),
-  getJotaiMergerStorage()
+  getJotaiMergerStorage(),
 )
 
 /**
@@ -30,8 +30,12 @@ export const addPermitInfoForTokenAtom = atom(
   (get, set, { chainId, tokenAddress, permitInfo }: AddPermitTokenParams) => {
     const permittableTokens = { ...get(permittableTokensAtom) }
 
+    if (!permittableTokens[chainId]) {
+      permittableTokens[chainId] = {}
+    }
+
     permittableTokens[chainId][tokenAddress.toLowerCase()] = permitInfo
 
     set(permittableTokensAtom, permittableTokens)
-  }
+  },
 )

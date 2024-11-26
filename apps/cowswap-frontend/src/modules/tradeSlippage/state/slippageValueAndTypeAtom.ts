@@ -8,16 +8,19 @@ import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { isEoaEthFlowAtom } from 'modules/trade'
 
-type SlippageBpsPerNetwork = Record<SupportedChainId, number | null>
+type SlippageBpsPerNetwork = Record<SupportedChainId, number | undefined>
 
 type SlippageType = 'smart' | 'default' | 'user'
 
 const normalTradeSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>(
   'swapSlippageAtom:v0',
-  mapSupportedNetworks(null),
+  mapSupportedNetworks(undefined),
 )
 
-const ethFlowSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>('ethFlowSlippageAtom:v0', mapSupportedNetworks(null))
+const ethFlowSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>(
+  'ethFlowSlippageAtom:v0',
+  mapSupportedNetworks(undefined),
+)
 
 export const smartTradeSlippageAtom = atom<number | null>(null)
 

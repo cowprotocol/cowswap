@@ -18,7 +18,7 @@ type CustomHooksState = {
 
 const EMPTY_STATE: CustomHooksState = { pre: {}, post: {} }
 
-const customHookDappsInner = atomWithStorage<Record<SupportedChainId, CustomHooksState>>(
+const customHookDappsInner = atomWithStorage<Record<SupportedChainId, CustomHooksState | undefined>>(
   'customHookDappsAtom:v1',
   mapSupportedNetworks(EMPTY_STATE),
   getJotaiIsolatedStorage(),
@@ -48,7 +48,7 @@ export const upsertCustomHookDappAtom = atom(null, (get, set, isPreHook: boolean
     [chainId]: {
       ...state[chainId],
       [isPreHook ? 'pre' : 'post']: {
-        ...state[chainId][isPreHook ? 'pre' : 'post'],
+        ...(state[chainId] && state[chainId][isPreHook ? 'pre' : 'post']),
         [dapp.url]: dapp,
       },
     },
@@ -60,8 +60,12 @@ export const removeCustomHookDappAtom = atom(null, (get, set, dapp: HookDappIfra
   const state = get(customHookDappsInner)
   const currentState = { ...state[chainId] }
 
-  delete currentState.pre[dapp.url]
-  delete currentState.post[dapp.url]
+  if (currentState.pre) {
+    delete currentState.pre[dapp.url]
+  }
+  if (currentState.post) {
+    delete currentState.post[dapp.url]
+  }
 
   set(customHookDappsInner, {
     ...state,

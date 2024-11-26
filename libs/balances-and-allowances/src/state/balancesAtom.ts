@@ -5,7 +5,7 @@ import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { Erc20MulticallState } from '../types'
 
-type BalancesCache = Record<SupportedChainId, Record<string, string>>
+type BalancesCache = Record<SupportedChainId, Record<string, string> | undefined>
 
 export interface BalancesState extends Erc20MulticallState {}
 

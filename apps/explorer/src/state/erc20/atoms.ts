@@ -5,13 +5,13 @@ import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 
-export type TokensLoadedFromChain = Record<SupportedChainId, Record<string, TokenErc20>>
+export type TokensLoadedFromChain = Record<SupportedChainId, Record<string, TokenErc20> | undefined>
 
 const DEFAULT_TOKENS_LOADED_FROM_CHAIN: TokensLoadedFromChain = mapSupportedNetworks({})
 
 export const tokensLoadedFromChainAtom = atomWithStorage<TokensLoadedFromChain>(
   'tokensLoadedFromChain:v0',
-  DEFAULT_TOKENS_LOADED_FROM_CHAIN
+  DEFAULT_TOKENS_LOADED_FROM_CHAIN,
 )
 
 type AddLoadedTokens = {
@@ -32,7 +32,7 @@ export const addLoadedTokensToChainAtom = atom(null, (get, set, { chainId, token
       }
       return acc
     },
-    { ...chainTokens }
+    { ...chainTokens },
   )
 
   set(tokensLoadedFromChainAtom, { ...current, [chainId]: updatedChainTokens })

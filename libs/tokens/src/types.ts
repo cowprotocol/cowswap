@@ -19,7 +19,7 @@ export type ListSourceConfig = {
   source: string
 }
 
-export type ListsSourcesByNetwork = Record<SupportedChainId, Array<ListSourceConfig>>
+export type ListsSourcesByNetwork = Record<SupportedChainId, Array<ListSourceConfig> | undefined>
 
 export type TokensMap = { [address: string]: TokenInfo }
 

@@ -12,7 +12,7 @@ export type HooksStoreState = {
 }
 
 type StatePerAccount = Record<string, HooksStoreState>
-type StatePerNetwork = Record<SupportedChainId, StatePerAccount>
+type StatePerNetwork = Record<SupportedChainId, StatePerAccount | undefined>
 
 const EMPTY_STATE: HooksStoreState = {
   preHooks: [],
@@ -29,7 +29,7 @@ export const hooksAtom = atom((get) => {
   const { chainId, account = '' } = get(walletInfoAtom)
   const state = get(hooksAtomInner)
 
-  return state[chainId][account] || EMPTY_STATE
+  return (state[chainId] && state[chainId][account]) || EMPTY_STATE
 })
 
 export const setHooksAtom = atom(null, (get, set, update: SetStateAction<HooksStoreState>) => {
@@ -40,7 +40,8 @@ export const setHooksAtom = atom(null, (get, set, update: SetStateAction<HooksSt
       ...state,
       [chainId]: {
         ...state[chainId],
-        [account]: typeof update === 'function' ? update(state[chainId][account] || EMPTY_STATE) : update,
+        [account]:
+          typeof update === 'function' ? update((state[chainId] && state[chainId][account]) || EMPTY_STATE) : update,
       },
     }
   })
