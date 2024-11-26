@@ -20,6 +20,19 @@ interface ExternalDappLoaderProps {
 
 const TIMEOUT = 5000
 
+// Utility functions for error checking
+const isJsonParseError = (error: unknown): boolean => {
+  return error instanceof Error && error.message?.includes('JSON')
+}
+
+const isTimeoutError = (error: unknown): boolean => {
+  return error instanceof Error && error.name === 'AbortError'
+}
+
+const isConnectionError = (error: unknown): boolean => {
+  return error instanceof TypeError && error.message === 'Failed to fetch'
+}
+
 export function ExternalDappLoader({
   input,
   setLoading,
@@ -101,11 +114,11 @@ export function ExternalDappLoader({
       } catch (error) {
         console.error('Hook dapp loading error:', error)
 
-        if (error.message?.includes('JSON')) {
+        if (isJsonParseError(error)) {
           setError(ERROR_MESSAGES.INVALID_MANIFEST_HTML)
-        } else if (error.name === 'AbortError') {
+        } else if (isTimeoutError(error)) {
           setError(ERROR_MESSAGES.TIMEOUT)
-        } else if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        } else if (isConnectionError(error)) {
           setError(ERROR_MESSAGES.CONNECTION_ERROR)
         } else {
           setError(error instanceof Error ? error.message : ERROR_MESSAGES.GENERIC_MANIFEST_ERROR)
