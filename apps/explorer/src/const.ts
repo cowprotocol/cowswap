@@ -96,6 +96,7 @@ export const MEDIA = {
 export const WETH_ADDRESS_MAINNET = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
 export const WXDAI_ADDRESS_XDAI = '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d'
 export const WETH_ADDRESS_ARBITRUM_ONE = '0x82af49447d8a07e3bd95bd0d56f35241523fbab1'
+export const WETH_ADDRESS_BASE = '0x4200000000000000000000000000000000000006'
 export const WETH_ADDRESS_SEPOLIA = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
 export const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 export const NATIVE_TOKEN_ADDRESS_LOWERCASE = NATIVE_TOKEN_ADDRESS.toLowerCase()
@@ -104,6 +105,7 @@ export const WRAPPED_NATIVE_ADDRESS: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: WETH_ADDRESS_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: WXDAI_ADDRESS_XDAI,
   [SupportedChainId.ARBITRUM_ONE]: WETH_ADDRESS_ARBITRUM_ONE,
+  [SupportedChainId.BASE]: WETH_ADDRESS_BASE,
   [SupportedChainId.SEPOLIA]: WETH_ADDRESS_SEPOLIA,
 }
 
@@ -125,6 +127,7 @@ export const NATIVE_TOKEN_PER_NETWORK: Record<SupportedChainId, TokenErc20> = {
   [SupportedChainId.MAINNET]: ETH,
   [SupportedChainId.GNOSIS_CHAIN]: XDAI,
   [SupportedChainId.ARBITRUM_ONE]: ETH,
+  [SupportedChainId.BASE]: ETH,
   [SupportedChainId.SEPOLIA]: ETH,
 }
 

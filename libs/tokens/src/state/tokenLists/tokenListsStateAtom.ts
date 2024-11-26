@@ -5,7 +5,6 @@ import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import {
-  ARBITRUM_ONE_TOKENS_LIST,
   DEFAULT_TOKENS_LISTS,
   GNOSIS_UNISWAP_TOKENS_LIST,
   LP_TOKEN_LISTS,
@@ -23,7 +22,8 @@ import { environmentAtom } from '../environmentAtom'
 const UNISWAP_TOKEN_LIST_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: UNISWAP_TOKENS_LIST,
   [SupportedChainId.GNOSIS_CHAIN]: GNOSIS_UNISWAP_TOKENS_LIST,
-  [SupportedChainId.ARBITRUM_ONE]: ARBITRUM_ONE_TOKENS_LIST,
+  [SupportedChainId.ARBITRUM_ONE]: UNISWAP_TOKENS_LIST,
+  [SupportedChainId.BASE]: UNISWAP_TOKENS_LIST,
   [SupportedChainId.SEPOLIA]: UNISWAP_TOKENS_LIST,
 }
 

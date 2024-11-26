@@ -5,6 +5,7 @@ const COW_AMM_CHAINS = {
   [SupportedChainId.MAINNET]: 'ethereum',
   [SupportedChainId.GNOSIS_CHAIN]: 'gnosis',
   [SupportedChainId.ARBITRUM_ONE]: 'arbitrum',
+  [SupportedChainId.BASE]: 'base',
   [SupportedChainId.SEPOLIA]: '',
 }
 
@@ -12,6 +13,7 @@ const UNI_CHAINS = {
   [SupportedChainId.MAINNET]: 'ethereum',
   [SupportedChainId.GNOSIS_CHAIN]: '',
   [SupportedChainId.ARBITRUM_ONE]: 'arbitrum',
+  [SupportedChainId.BASE]: 'base',
   [SupportedChainId.SEPOLIA]: '',
 }
 
@@ -19,6 +21,7 @@ const SUSHI_CHAINS = {
   [SupportedChainId.MAINNET]: 'ethereum',
   [SupportedChainId.GNOSIS_CHAIN]: 'gnosis',
   [SupportedChainId.ARBITRUM_ONE]: 'arbitrum',
+  [SupportedChainId.BASE]: 'base',
   [SupportedChainId.SEPOLIA]: '',
 }
 
@@ -26,6 +29,7 @@ const PANCAKE_CHAINS = {
   [SupportedChainId.MAINNET]: 'eth',
   [SupportedChainId.GNOSIS_CHAIN]: '',
   [SupportedChainId.ARBITRUM_ONE]: 'arb',
+  [SupportedChainId.BASE]: 'base',
   [SupportedChainId.SEPOLIA]: '',
 }
 
