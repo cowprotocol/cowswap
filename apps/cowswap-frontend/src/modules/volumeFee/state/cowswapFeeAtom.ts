@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { STABLECOINS, LpToken } from '@cowprotocol/common-const'
+import { LpToken, STABLECOINS } from '@cowprotocol/common-const'
 import { getCurrencyAddress, isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
@@ -18,6 +18,7 @@ const COWSWAP_VOLUME_FEES: Record<SupportedChainId, VolumeFee | null> = {
     bps: 10, // 0.1%
     recipient: '0x451100Ffc88884bde4ce87adC8bB6c7Df7fACccd', // Arb1 Protocol fee safe
   },
+  [SupportedChainId.BASE]: null,
   [SupportedChainId.GNOSIS_CHAIN]: {
     bps: 10, // 0.1%
     recipient: '0x6b3214fD11dc91De14718DeE98Ef59bCbFcfB432', // Gnosis Chain Protocol fee safe
@@ -26,6 +27,14 @@ const COWSWAP_VOLUME_FEES: Record<SupportedChainId, VolumeFee | null> = {
 
 export const cowSwapFeeAtom = atom((get) => {
   const { chainId, account } = get(walletInfoAtom)
+
+  const volumeFee = COWSWAP_VOLUME_FEES[chainId]
+
+  // Early exit if fee is not set for this network
+  if (!volumeFee) {
+    return null
+  }
+
   const tradeState = get(derivedTradeStateAtom)
   const tradeTypeState = get(tradeTypeAtom)
   const isYieldWidget = tradeTypeState?.tradeType === TradeType.YIELD
@@ -52,7 +61,7 @@ export const cowSwapFeeAtom = atom((get) => {
   // No stable-stable trades
   if (isInputTokenStable && isOutputTokenStable) return null
 
-  return COWSWAP_VOLUME_FEES[chainId]
+  return volumeFee
 })
 
 function shouldApplyFee(account: string | undefined, percentage: number | boolean | undefined): boolean {
