@@ -13,6 +13,7 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import LanguageIcon from '@mui/icons-material/Language'
 import { FormControl, FormControlLabel, FormLabel, IconButton, Radio, RadioGroup, Snackbar } from '@mui/material'
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
 import Fab from '@mui/material/Fab'
@@ -20,6 +21,7 @@ import List from '@mui/material/List'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
+import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { useWeb3ModalAccount, useWeb3ModalTheme } from '@web3modal/ethers5/react'
 
@@ -129,6 +131,9 @@ export function Configurator({ title }: { title: string }) {
   const [customImages] = customImagesState
   const [customSounds] = customSoundsState
 
+  const [rawParams, setRawParams] = useState<string | undefined>()
+  const [isWidgetDisplayed, setIsWidgetDisplayed] = useState(true)
+
   const paletteManager = useColorPaletteManager(mode)
   const { colorPalette, defaultPalette } = paletteManager
 
@@ -183,6 +188,15 @@ export function Configurator({ title }: { title: string }) {
     hideOrdersTable,
   }
 
+  const rawParamsObject = useMemo(() => {
+    if (!rawParams) return undefined
+    try {
+      return JSON.parse(rawParams)
+    } catch {
+      return undefined
+    }
+  }, [rawParams])
+
   const computedParams = useWidgetParams(state)
   const params = useMemo(
     () => ({
@@ -190,10 +204,17 @@ export function Configurator({ title }: { title: string }) {
       images: customImages,
       sounds: customSounds,
       customTokens,
+      ...rawParamsObject,
       ...window.cowSwapWidgetParams,
     }),
-    [computedParams, customImages, customSounds, customTokens],
+    [computedParams, customImages, customSounds, customTokens, rawParamsObject],
   )
+
+  const updateWidget = useCallback(() => {
+    setIsWidgetDisplayed(false)
+
+    setTimeout(() => setIsWidgetDisplayed(true), 100)
+  }, [])
 
   useEffect(() => {
     setThemeMode(mode)
@@ -338,6 +359,20 @@ export function Configurator({ title }: { title: string }) {
           </RadioGroup>
         </FormControl>
 
+        <TextField
+          fullWidth
+          margin="dense"
+          id="rawParams"
+          label="Raw JSON params"
+          value={rawParams}
+          onChange={(e) => setRawParams(e.target.value)}
+          size="medium"
+        />
+
+        <Button sx={{ width: '100%' }} variant="contained" onClick={updateWidget}>
+          Update widget
+        </Button>
+
         {isDrawerOpen && (
           <Fab
             size="small"
@@ -381,11 +416,13 @@ export function Configurator({ title }: { title: string }) {
               open={dialogOpen}
               handleClose={handleDialogClose}
             />
-            <CowSwapWidget
-              params={params}
-              provider={!IS_IFRAME && !standaloneMode ? provider : undefined}
-              listeners={listeners}
-            />
+            {isWidgetDisplayed && (
+              <CowSwapWidget
+                params={params}
+                provider={!IS_IFRAME && !standaloneMode ? provider : undefined}
+                listeners={listeners}
+              />
+            )}
           </>
         )}
       </Box>

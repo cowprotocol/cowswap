@@ -205,6 +205,11 @@ export interface CowSwapWidgetParams {
   height?: string
 
   /**
+   * The maximum height of the widget in pixels. Default: body.offsetHeight
+   */
+  maxHeight?: number
+
+  /**
    * Network ID.
    */
   chainId?: SupportedChainId
