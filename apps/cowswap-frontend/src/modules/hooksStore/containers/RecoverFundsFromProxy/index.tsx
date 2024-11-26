@@ -1,14 +1,17 @@
 import { atom, useAtom } from 'jotai'
 import { useCallback, useEffect, useState } from 'react'
 
+import IMG_ICON_MINUS from '@cowprotocol/assets/images/icon-minus.svg'
+import IMG_ICON_PLUS from '@cowprotocol/assets/images/icon-plus.svg'
 import { useNativeTokenBalance } from '@cowprotocol/balances-and-allowances'
 import { getCurrencyAddress, getEtherscanLink, getIsNativeToken } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
-import { BannerOrientation, ButtonPrimary, ExternalLink, InlineBanner, Loader, TokenAmount } from '@cowprotocol/ui'
+import { ButtonPrimary, ExternalLink, Loader, TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
+import SVG from 'react-inlinesvg'
 import useSWR from 'swr'
 
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
@@ -25,15 +28,81 @@ import { useTokenContract } from 'common/hooks/useContract'
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 import { NewModal } from 'common/pure/NewModal'
 
-import { Content, ProxyInfo, Wrapper } from './styled'
-import { useRescueFundsFromProxy } from './useRescueFundsFromProxy'
+import { Content, FAQItem, FAQWrapper, ProxyInfo, Title, Wrapper } from './styled'
+import { useRecoverFundsFromProxy } from './useRecoverFundsFromProxy'
 
 const BALANCE_UPDATE_INTERVAL = ms`5s`
 const BALANCE_SWR_CFG = { refreshInterval: BALANCE_UPDATE_INTERVAL, revalidateOnFocus: true }
 
 const selectedCurrencyAtom = atom<Currency | undefined>(undefined)
 
-export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
+function FAQ({ explorerLink }: { explorerLink: string | undefined }) {
+  const [openItems, setOpenItems] = useState<Record<number, boolean>>({})
+
+  const handleToggle = (index: number) => (e: React.MouseEvent) => {
+    e.preventDefault()
+    setOpenItems((prev) => ({ ...prev, [index]: !prev[index] }))
+  }
+
+  const FAQ_DATA = [
+    {
+      question: 'What is CoW Shed?',
+      answer: (
+        <>
+          <ExternalLink href="https://github.com/cowdao-grants/cow-shed">CoW Shed</ExternalLink> is a helper contract
+          that enhances user experience inside CoW Swap for features like{' '}
+          <ExternalLink href="https://docs.cow.fi/cow-protocol/reference/core/intents/hooks">CoW Hooks</ExternalLink>
+          .
+          <br />
+          <br />
+          This contract is deployed only once per account. This account becomes the only owner. CoW Shed will act as an
+          intermediary account who will do the trading on your behalf.
+          <br />
+          <br />
+          Because this contract holds the funds temporarily, it's possible the funds are stuck in some edge cases. This
+          tool will help you recover your funds.
+        </>
+      ),
+    },
+    {
+      question: 'How do I recover my funds from CoW Shed?',
+      answer: (
+        <>
+          <ol>
+            <li>
+              {explorerLink ? (
+                <ExternalLink href={explorerLink}>Check in the block explorer</ExternalLink>
+              ) : (
+                'Check in block explorer'
+              )}{' '}
+              if your own CoW Shed has any token
+            </li>
+            <li>Select the token you want to recover from CoW Shed</li>
+            <li>Recover!</li>
+          </ol>
+        </>
+      ),
+    },
+  ]
+
+  return (
+    <FAQWrapper>
+      {FAQ_DATA.map((faq, index) => (
+        <FAQItem key={index} open={openItems[index]}>
+          <summary onClick={handleToggle(index)}>
+            {faq.question}
+            <i>
+              <SVG src={openItems[index] ? IMG_ICON_MINUS : IMG_ICON_PLUS} />
+            </i>
+          </summary>
+          {openItems[index] && <div>{faq.answer}</div>}
+        </FAQItem>
+      ))}
+    </FAQWrapper>
+  )
+}
+
+export function RecoverFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
   const [selectedCurrency, setSelectedCurrency] = useAtom(selectedCurrencyAtom)
   const [tokenBalance, setTokenBalance] = useState<CurrencyAmount<Currency> | null>(null)
 
@@ -55,10 +124,10 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
   }, [updateSelectTokenWidget, onDismiss])
 
   const {
-    callback: rescueFundsCallback,
+    callback: recoverFundsCallback,
     isTxSigningInProgress,
     proxyAddress,
-  } = useRescueFundsFromProxy(selectedTokenAddress, tokenBalance, isNativeToken)
+  } = useRecoverFundsFromProxy(selectedTokenAddress, tokenBalance, isNativeToken)
 
   const { isLoading: isErc20BalanceLoading } = useSWR(
     !isNativeToken && erc20Contract && proxyAddress && selectedCurrency
@@ -85,28 +154,30 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
 
   const isBalanceLoading = isErc20BalanceLoading || isNativeBalanceLoading
 
-  const rescueFunds = useCallback(async () => {
+  const recoverFunds = useCallback(async () => {
     try {
-      const txHash = await rescueFundsCallback()
+      const txHash = await recoverFundsCallback()
 
       if (txHash) {
-        addTransaction({ hash: txHash, summary: 'Rescue funds from CoW Shed Proxy' })
+        addTransaction({ hash: txHash, summary: 'Recover funds from CoW Shed Proxy' })
       }
     } catch (e) {
       console.error(e)
       handleSetError(e.message || e.toString())
     }
-  }, [rescueFundsCallback, addTransaction, handleSetError])
+  }, [recoverFundsCallback, addTransaction, handleSetError])
 
   const onCurrencySelectClick = useCallback(() => {
     onSelectToken(selectedTokenAddress, undefined, undefined, setSelectedCurrency)
   }, [onSelectToken, selectedTokenAddress, setSelectedCurrency])
 
+  const explorerLink = proxyAddress ? getEtherscanLink(chainId, 'address', proxyAddress) : undefined
+
   return (
     <Wrapper>
       <NewModal
         modalMode={false}
-        title="Rescue funds from CoW Shed Proxy"
+        title="CoW Shed"
         onDismiss={onDismissCallback}
         contentPadding="10px"
         justifyContent="flex-start"
@@ -115,27 +186,24 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
         <SelectTokenWidget />
         {!isSelectTokenWidgetOpen && (
           <>
-            <InlineBanner orientation={BannerOrientation.Horizontal}>
-              <p>
-                In some cases, when orders contain a post-hook using a proxy account, something may go wrong and funds
-                may remain on the proxy account. Select a currency and get your funds back.
-              </p>
-            </InlineBanner>
-            <ProxyInfo>
-              <h4>Proxy account:</h4>
-              {proxyAddress && (
-                <ExternalLink href={getEtherscanLink(chainId, 'address', proxyAddress)}>
-                  <span>{proxyAddress} ↗</span>
-                </ExternalLink>
-              )}
-            </ProxyInfo>
             <Content>
+              <Title>Recover funds</Title>
+
+              <ProxyInfo>
+                <h4>Proxy account:</h4>
+                {explorerLink && (
+                  <ExternalLink href={explorerLink}>
+                    <span>{proxyAddress} ↗</span>
+                  </ExternalLink>
+                )}
+              </ProxyInfo>
+
               <CurrencySelectButton currency={selectedCurrency} loading={false} onClick={onCurrencySelectClick} />
 
               {selectedTokenAddress ? (
                 <>
                   <p>
-                    Balance to be rescued:
+                    Balance to be recovered:
                     <br />
                     {tokenBalance ? (
                       <b>
@@ -145,14 +213,21 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
                       <Loader />
                     ) : null}
                   </p>
-                  <ButtonPrimary onClick={rescueFunds} disabled={!hasBalance || isTxSigningInProgress}>
-                    {isTxSigningInProgress ? <Loader /> : hasBalance ? 'Rescue funds' : 'No funds to rescue'}
+                  <ButtonPrimary onClick={recoverFunds} disabled={!hasBalance || isTxSigningInProgress}>
+                    {isTxSigningInProgress ? (
+                      <Loader />
+                    ) : hasBalance ? (
+                      'Recover funds'
+                    ) : (
+                      <span className="noFunds">No funds to recover</span>
+                    )}
                   </ButtonPrimary>
                 </>
               ) : (
                 <div></div>
               )}
             </Content>
+            <FAQ explorerLink={explorerLink} />
           </>
         )}
       </NewModal>

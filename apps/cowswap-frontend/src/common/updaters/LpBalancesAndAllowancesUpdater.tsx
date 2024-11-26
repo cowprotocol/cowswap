@@ -50,5 +50,9 @@ export function LpBalancesAndAllowancesUpdater({ account, chainId, enablePolling
     return () => clearTimeout(timeout)
   }, [])
 
+  useEffect(() => {
+    setAreLpBalancesLoaded(false)
+  }, [account, setAreLpBalancesLoaded])
+
   return null
 }

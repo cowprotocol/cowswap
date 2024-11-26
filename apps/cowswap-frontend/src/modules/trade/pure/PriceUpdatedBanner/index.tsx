@@ -4,7 +4,6 @@ import { InlineBanner } from '@cowprotocol/ui'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
@@ -15,8 +14,11 @@ const Wrapper = styled.div`
 `
 
 const StyledBanner = styled(InlineBanner)`
+  width: 100%;
+
   > span {
     flex-flow: row nowrap;
+    width: 100%;
   }
 `
 

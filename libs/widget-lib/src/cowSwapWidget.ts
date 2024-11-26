@@ -64,7 +64,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   windowListeners.push(sendAppCodeOnActivation(iframeWindow, params.appCode))
 
   // 4. Handle widget height changes
-  windowListeners.push(...listenToHeightChanges(iframe, params.height))
+  windowListeners.push(...listenToHeightChanges(iframe, params.height, params.maxHeight))
 
   // 5. Intercept deeplinks navigation in the iframe
   windowListeners.push(interceptDeepLinks())
@@ -223,14 +223,21 @@ function interceptDeepLinks() {
  *
  * @param iframe - The HTMLIFrameElement of the widget.
  * @param defaultHeight - Default height for the widget.
+ * @param maxHeight - Maximum height for the widget.
  */
-function listenToHeightChanges(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_HEIGHT): WindowListener[] {
+function listenToHeightChanges(
+  iframe: HTMLIFrameElement,
+  defaultHeight = DEFAULT_HEIGHT,
+  maxHeight?: number,
+): WindowListener[] {
   return [
     widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsEmit.UPDATE_HEIGHT, (data) => {
-      iframe.style.height = data.height ? `${data.height + HEIGHT_THRESHOLD}px` : defaultHeight
+      const newHeight = data.height ? data.height + HEIGHT_THRESHOLD : undefined
+
+      iframe.style.height = newHeight ? `${maxHeight ? Math.min(newHeight, maxHeight) : newHeight}px` : defaultHeight
     }),
     widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsEmit.SET_FULL_HEIGHT, ({ isUpToSmall }) => {
-      iframe.style.height = isUpToSmall ? defaultHeight : `${document.body.offsetHeight}px`
+      iframe.style.height = isUpToSmall ? defaultHeight : `${maxHeight || document.body.offsetHeight}px`
     }),
   ]
 }

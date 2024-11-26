@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { Badge } from '@cowprotocol/ui'
+import { Badge, BadgeTypes } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
 
 import { Trans } from '@lingui/macro'
@@ -26,6 +26,8 @@ interface MenuItemConfig {
   route: RoutesValues
   label: string
   badge?: string
+  badgeImage?: string
+  badgeType?: (typeof BadgeTypes)[keyof typeof BadgeTypes]
 }
 
 const TRADE_TYPE_TO_ROUTE: Record<TradeType, string> = {
@@ -150,11 +152,11 @@ const MenuItem = ({
   <styledEl.MenuItem isActive={isActive} onClick={onClick} isDropdownVisible={isDropdownVisible}>
     <styledEl.Link to={routePath}>
       <Trans>{item.label}</Trans>
-      {!isActive && item.badge && (
-        <Badge type="alert">
-          <Trans>{item.badge}</Trans>
+      {(!isActive && item.badgeImage) || item.badge ? (
+        <Badge {...(item.badgeType && { type: item.badgeType })}>
+          {item.badgeImage ? <SVG src={item.badgeImage} /> : <Trans>{item.badge}</Trans>}
         </Badge>
-      )}
+      ) : null}
     </styledEl.Link>
   </styledEl.MenuItem>
 )

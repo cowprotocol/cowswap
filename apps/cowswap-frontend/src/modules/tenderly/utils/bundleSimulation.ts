@@ -1,17 +1,20 @@
-import { Erc20 } from '@cowprotocol/abis'
+import { Erc20Abi } from '@cowprotocol/abis'
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
+
+import { Interface } from 'ethers/lib/utils'
 
 import { CowHook } from 'modules/hooksStore/types/hooks'
 
 import { SimulationData, SimulationInput } from '../types'
 
+const erc20Interface = new Interface(Erc20Abi)
 export interface GetTransferTenderlySimulationInput {
   currencyAmount: string
   from: string
   receiver: string
-  token: Erc20
+  token: string
 }
 
 export type TokenBuyTransferInfo = {
@@ -21,8 +24,8 @@ export type TokenBuyTransferInfo = {
 export interface PostBundleSimulationParams {
   account: string
   chainId: SupportedChainId
-  tokenSell: Erc20
-  tokenBuy: Erc20
+  tokenSell: string
+  tokenBuy: string
   preHooks: CowHookDetails[]
   postHooks: CowHookDetails[]
   sellAmount: string
@@ -35,10 +38,11 @@ export const completeBundleSimulation = async (params: PostBundleSimulationParam
   return simulateBundle(input, params.chainId)
 }
 
-export const preHooksBundleSimulation = async (
-  params: Pick<PostBundleSimulationParams, 'chainId' | 'preHooks'>,
+export const hooksBundleSimulation = async (
+  params: Pick<PostBundleSimulationParams, 'chainId' | 'preHooks' | 'postHooks'>,
 ): Promise<SimulationData[]> => {
-  const input = params.preHooks.map((hook) =>
+  const hooks = [...params.preHooks, ...params.postHooks]
+  const input = hooks.map((hook) =>
     getCoWHookTenderlySimulationInput(COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[params.chainId], hook.hook),
   )
   return simulateBundle(input, params.chainId)
@@ -70,11 +74,11 @@ export function getTransferTenderlySimulationInput({
   receiver,
   token,
 }: GetTransferTenderlySimulationInput): SimulationInput {
-  const callData = token.interface.encodeFunctionData('transfer', [receiver, currencyAmount])
+  const callData = erc20Interface.encodeFunctionData('transfer', [receiver, currencyAmount])
 
   return {
     input: callData,
-    to: token.address,
+    to: token,
     from,
   }
 }

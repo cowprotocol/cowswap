@@ -110,13 +110,21 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
   const DappsListContent = useMemo(
     () => (
       <>
+        <HookSearchInput
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value?.trim())}
+          placeholder="Search hooks by title or description"
+          ariaLabel="Search hooks"
+          onClear={handleClearSearch}
+        />
+
         {isAllHooksTab && (
           <DismissableInlineBanner
             orientation={BannerOrientation.Horizontal}
             customIcon={ICON_HOOK}
             iconSize={36}
             bannerId="hooks-store-banner-tradeContainer-customHooks"
-            margin="0 10px 10px"
+            margin="10px 10px 0"
             width="auto"
           >
             <p>
@@ -127,14 +135,6 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
             </p>
           </DismissableInlineBanner>
         )}
-
-        <HookSearchInput
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value?.trim())}
-          placeholder="Search hooks by title or description"
-          ariaLabel="Search hooks"
-          onClear={handleClearSearch}
-        />
 
         {sortedFilteredDapps.length > 0 ? (
           <HookDappsList>
@@ -154,7 +154,16 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
         )}
       </>
     ),
-    [isAllHooksTab, searchQuery, sortedFilteredDapps, handleAddCustomHook, handleClearSearch, emptyListMessage, removeCustomHookDapp, walletType],
+    [
+      isAllHooksTab,
+      searchQuery,
+      sortedFilteredDapps,
+      handleAddCustomHook,
+      handleClearSearch,
+      emptyListMessage,
+      removeCustomHookDapp,
+      walletType,
+    ],
   )
 
   return (
@@ -166,7 +175,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
         contentPadding="0"
         justifyContent="flex-start"
       >
-        {!dappDetails && !hookToEditDetails && (
+        {!dappDetails && !hookToEditDetails && !selectedDapp && (
           <HookListsTabs
             isAllHooksTab={isAllHooksTab}
             setIsAllHooksTab={setIsAllHooksTab}
