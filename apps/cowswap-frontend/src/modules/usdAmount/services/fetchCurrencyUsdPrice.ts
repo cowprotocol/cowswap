@@ -5,15 +5,16 @@ import { RateLimitError, UnknownCurrencyError } from '../apis/errors'
 import { COINGECKO_PLATFORMS, COINGECKO_RATE_LIMIT_TIMEOUT, getCoingeckoUsdPrice } from '../apis/getCoingeckoUsdPrice'
 import { getCowProtocolUsdPrice } from '../apis/getCowProtocolUsdPrice'
 import { DEFILLAMA_PLATFORMS, DEFILLAMA_RATE_LIMIT_TIMEOUT, getDefillamaUsdPrice } from '../apis/getDefillamaUsdPrice'
+import { PersistentStateByChain } from '@cowprotocol/types'
 
 type UnknownCurrencies = { [address: string]: true }
-type UnknownCurrenciesMap = Record<SupportedChainId, UnknownCurrencies | undefined>
+type UnknownCurrenciesMap = PersistentStateByChain<UnknownCurrencies>
 
 let coingeckoRateLimitHitTimestamp: null | number = null
 let defillamaRateLimitHitTimestamp: null | number = null
 
-const coingeckoUnknownCurrencies: Record<SupportedChainId, UnknownCurrencies | undefined> = mapSupportedNetworks({})
-const defillamaUnknownCurrencies: Record<SupportedChainId, UnknownCurrencies | undefined> = mapSupportedNetworks({})
+const coingeckoUnknownCurrencies: UnknownCurrenciesMap = mapSupportedNetworks({})
+const defillamaUnknownCurrencies: UnknownCurrenciesMap = mapSupportedNetworks({})
 
 function getShouldSkipCoingecko(currency: Token): boolean {
   return getShouldSkipPriceSource(
@@ -43,10 +44,11 @@ function getShouldSkipPriceSource(
   timeout: number,
 ): boolean {
   const chainId = currency.chainId as SupportedChainId
+  const unknownCurrenciesForChain = unknownCurrenciesMap[chainId] || {}
 
   if (!platforms[chainId]) return true
 
-  if (unknownCurrenciesMap[chainId] && unknownCurrenciesMap[chainId][currency.address.toLowerCase()]) return true
+  if (unknownCurrenciesForChain[currency.address.toLowerCase()]) return true
 
   return !!rateLimitTimestamp && Date.now() - rateLimitTimestamp < timeout
 }

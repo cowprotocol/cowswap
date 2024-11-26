@@ -7,8 +7,9 @@ import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { isEoaEthFlowAtom } from 'modules/trade'
+import { PersistentStateByChain } from '@cowprotocol/types'
 
-type SlippageBpsPerNetwork = Record<SupportedChainId, number | undefined>
+type SlippageBpsPerNetwork = PersistentStateByChain<number>
 
 type SlippageType = 'smart' | 'default' | 'user'
 

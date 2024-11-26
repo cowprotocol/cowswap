@@ -8,6 +8,7 @@ import { walletInfoAtom } from '@cowprotocol/wallet'
 import { setHooksAtom } from './hookDetailsAtom'
 
 import { HookDappIframe } from '../types/hooks'
+import { PersistentStateByChain } from '@cowprotocol/types'
 
 type CustomHookDapps = Record<HookDappIframe['url'], HookDappIframe>
 
@@ -18,7 +19,7 @@ type CustomHooksState = {
 
 const EMPTY_STATE: CustomHooksState = { pre: {}, post: {} }
 
-const customHookDappsInner = atomWithStorage<Record<SupportedChainId, CustomHooksState | undefined>>(
+const customHookDappsInner = atomWithStorage<PersistentStateByChain<CustomHooksState>>(
   'customHookDappsAtom:v1',
   mapSupportedNetworks(EMPTY_STATE),
   getJotaiIsolatedStorage(),
@@ -42,13 +43,14 @@ export const customPostHookDappsAtom = atom((get) => {
 export const upsertCustomHookDappAtom = atom(null, (get, set, isPreHook: boolean, dapp: HookDappIframe) => {
   const { chainId } = get(walletInfoAtom)
   const state = get(customHookDappsInner)
+  const stateForChain = state[chainId] || EMPTY_STATE
 
   set(customHookDappsInner, {
     ...state,
     [chainId]: {
       ...state[chainId],
       [isPreHook ? 'pre' : 'post']: {
-        ...(state[chainId] && state[chainId][isPreHook ? 'pre' : 'post']),
+        ...stateForChain[isPreHook ? 'pre' : 'post'],
         [dapp.url]: dapp,
       },
     },
@@ -58,7 +60,8 @@ export const upsertCustomHookDappAtom = atom(null, (get, set, isPreHook: boolean
 export const removeCustomHookDappAtom = atom(null, (get, set, dapp: HookDappIframe) => {
   const { chainId } = get(walletInfoAtom)
   const state = get(customHookDappsInner)
-  const currentState = { ...state[chainId] }
+  const stateForChain = state[chainId] || EMPTY_STATE
+  const currentState = { ...stateForChain }
 
   if (currentState.pre) {
     delete currentState.pre[dapp.url]

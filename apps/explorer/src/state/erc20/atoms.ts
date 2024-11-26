@@ -4,8 +4,9 @@ import { atomWithStorage } from 'jotai/utils'
 import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
+import { PersistentStateByChain } from '@cowprotocol/types'
 
-export type TokensLoadedFromChain = Record<SupportedChainId, Record<string, TokenErc20> | undefined>
+export type TokensLoadedFromChain = PersistentStateByChain<Record<string, TokenErc20>>
 
 const DEFAULT_TOKENS_LOADED_FROM_CHAIN: TokensLoadedFromChain = mapSupportedNetworks({})
 

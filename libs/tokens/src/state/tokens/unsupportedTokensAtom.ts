@@ -6,8 +6,9 @@ import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { UnsupportedTokensState } from '../../types'
 import { environmentAtom } from '../environmentAtom'
+import { PersistentStateByChain } from '@cowprotocol/types'
 
-export const unsupportedTokensAtom = atomWithStorage<Record<SupportedChainId, UnsupportedTokensState | undefined>>(
+export const unsupportedTokensAtom = atomWithStorage<PersistentStateByChain<UnsupportedTokensState>>(
   'unsupportedTokensAtom:v2',
   mapSupportedNetworks({}),
   getJotaiMergerStorage(),

@@ -16,11 +16,12 @@ import { environmentAtom, updateEnvironmentAtom } from '../../state/environmentA
 import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { allListsSourcesAtom, tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { ListState } from '../../types'
+import { PersistentStateByChain } from '@cowprotocol/types'
 
 const LAST_UPDATE_TIME_DEFAULT = 0
 
 const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomWithPartialUpdate(
-  atomWithStorage<Record<SupportedChainId, number | undefined>>(
+  atomWithStorage<PersistentStateByChain<number>>(
     'tokens:lastUpdateTimeAtom:v4',
     mapSupportedNetworks(LAST_UPDATE_TIME_DEFAULT),
     getJotaiMergerStorage(),
