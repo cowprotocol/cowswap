@@ -251,7 +251,9 @@ export default function Page() {
                           <tr>
                             <td>Network Name:</td>
                             <td>
-                              <b>MEV Blocker</b>
+                              <b>
+                                MEV Blocker <CopyToClipboard text="MEV Blocker" margin="0 0 0 0.4rem" />
+                              </b>
                             </td>
                           </tr>
                           <tr>
@@ -266,19 +268,26 @@ export default function Page() {
                           <tr>
                             <td>Chain ID</td>
                             <td>
-                              <b>1</b>
+                              <b>
+                                1 <CopyToClipboard text="1" margin="0 0 0 0.4rem" />
+                              </b>
                             </td>
                           </tr>
                           <tr>
                             <td>Currency symbol</td>
                             <td>
-                              <b>ETH</b>
+                              <b>
+                                ETH <CopyToClipboard text="ETH" margin="0 0 0 0.4rem" />
+                              </b>
                             </td>
                           </tr>
                           <tr>
                             <td>Block Explorer URL</td>
                             <td>
-                              <b>https://etherscan.io</b>
+                              <b>
+                                https://etherscan.io
+                                <CopyToClipboard text="https://etherscan.io" margin="0 0 0 0.4rem" />
+                              </b>
                             </td>
                           </tr>
                         </tbody>
