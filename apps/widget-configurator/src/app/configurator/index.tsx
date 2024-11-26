@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { CowWidgetEventListeners } from '@cowprotocol/events'
@@ -13,6 +13,7 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import LanguageIcon from '@mui/icons-material/Language'
 import { FormControl, FormControlLabel, FormLabel, IconButton, Radio, RadioGroup, Snackbar } from '@mui/material'
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
 import Fab from '@mui/material/Fab'
@@ -54,7 +55,6 @@ import { ConfiguratorState, TokenListItem } from './types'
 import { ColorModeContext } from '../../theme/ColorModeContext'
 import { connectWalletToConfiguratorGA } from '../analytics'
 import { EmbedDialog } from '../embedDialog'
-import Button from '@mui/material/Button'
 
 declare global {
   interface Window {
@@ -207,7 +207,7 @@ export function Configurator({ title }: { title: string }) {
       ...rawParamsObject,
       ...window.cowSwapWidgetParams,
     }),
-    [computedParams, customImages, customSounds, customTokens],
+    [computedParams, customImages, customSounds, customTokens, rawParamsObject],
   )
 
   const updateWidget = useCallback(() => {
