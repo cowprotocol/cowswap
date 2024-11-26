@@ -30,6 +30,15 @@ export function ExternalDappLoader({
 }: ExternalDappLoaderProps) {
   const { chainId } = useWalletInfo()
 
+  const setError = useCallback(
+    (message: string | React.ReactNode) => {
+      setManifestError(message)
+      setDappInfo(null)
+      setLoading(false)
+    },
+    [setManifestError, setDappInfo, setLoading],
+  )
+
   const fetchManifest = useCallback(
     async (url: string) => {
       if (!url) return
@@ -39,9 +48,7 @@ export function ExternalDappLoader({
       try {
         const validation = validateHookDappUrl(url)
         if (!validation.isValid) {
-          setManifestError(validation.error)
-          setDappInfo(null)
-          setLoading(false)
+          setError(validation.error)
           return
         }
 
@@ -53,18 +60,14 @@ export function ExternalDappLoader({
           timeoutMessage: ERROR_MESSAGES.TIMEOUT,
         })
         if (!response.ok) {
-          setManifestError(`Failed to fetch manifest from ${manifestUrl}. Please verify the URL and try again.`)
-          setDappInfo(null)
-          setLoading(false)
+          setError(`Failed to fetch manifest from ${manifestUrl}. Please verify the URL and try again.`)
           return
         }
 
         const data = await response.json()
 
         if (!data.cow_hook_dapp) {
-          setManifestError(`Invalid manifest format at ${manifestUrl}: missing cow_hook_dapp property`)
-          setDappInfo(null)
-          setLoading(false)
+          setError(`Invalid manifest format at ${manifestUrl}: missing cow_hook_dapp property`)
           return
         }
 
@@ -78,8 +81,7 @@ export function ExternalDappLoader({
         )
 
         if (validationError) {
-          setManifestError(validationError)
-          setDappInfo(null)
+          setError(validationError)
         } else {
           setManifestError(null)
           setDappInfo({
@@ -92,20 +94,19 @@ export function ExternalDappLoader({
         console.error('Hook dapp loading error:', error)
 
         if (error.message?.includes('JSON')) {
-          setManifestError(ERROR_MESSAGES.INVALID_MANIFEST_HTML)
+          setError(ERROR_MESSAGES.INVALID_MANIFEST_HTML)
         } else if (error.name === 'AbortError') {
-          setManifestError(ERROR_MESSAGES.TIMEOUT)
+          setError(ERROR_MESSAGES.TIMEOUT)
         } else if (error instanceof TypeError && error.message === 'Failed to fetch') {
-          setManifestError(ERROR_MESSAGES.CONNECTION_ERROR)
+          setError(ERROR_MESSAGES.CONNECTION_ERROR)
         } else {
-          setManifestError(error instanceof Error ? error.message : ERROR_MESSAGES.GENERIC_MANIFEST_ERROR)
+          setError(error instanceof Error ? error.message : ERROR_MESSAGES.GENERIC_MANIFEST_ERROR)
         }
-        setDappInfo(null)
       } finally {
         setLoading(false)
       }
     },
-    [input, walletType, chainId, isPreHook, setDappInfo, setLoading, setManifestError],
+    [input, walletType, chainId, isPreHook, setDappInfo, setLoading, setManifestError, setError],
   )
 
   useEffect(() => {
