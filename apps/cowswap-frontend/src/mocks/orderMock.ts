@@ -1,11 +1,11 @@
-import { COW, GNO } from '@cowprotocol/common-const'
+import { COW, USDC } from '@cowprotocol/common-const'
 import { OrderClass, OrderKind, SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 export const getOrderMock = (chainId: SupportedChainId): Order => {
   const inputToken = COW[chainId]
-  const outputToken = GNO[chainId]
+  const outputToken = USDC[chainId]
   const creationTime = '2023-05-29T15:27:32.319Z'
 
   return {

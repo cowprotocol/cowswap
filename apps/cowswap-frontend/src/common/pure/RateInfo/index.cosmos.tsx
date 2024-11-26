@@ -1,4 +1,4 @@
-import { COW, GNO, USDC_SEPOLIA, WETH_GNOSIS_CHAIN, WETH_SEPOLIA, WXDAI } from '@cowprotocol/common-const'
+import { COW, GNO_SEPOLIA, USDC_SEPOLIA, WETH_GNOSIS_CHAIN, WETH_SEPOLIA, WXDAI } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenSymbol } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
@@ -9,7 +9,7 @@ import { RateInfo, RateInfoParams } from './index'
 
 const inputCurrency = WETH_GNOSIS_CHAIN
 const outputCurrency = WXDAI
-const GNO_SEPOLIA = GNO[SupportedChainId.GNOSIS_CHAIN]
+
 const COW_SEPOLIA = COW[SupportedChainId.GNOSIS_CHAIN]
 
 const rateInfoParams = {
