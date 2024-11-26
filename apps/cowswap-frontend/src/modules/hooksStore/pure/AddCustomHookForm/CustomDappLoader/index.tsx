@@ -53,7 +53,7 @@ export function ExternalDappLoader({
           timeoutMessage: ERROR_MESSAGES.TIMEOUT,
         })
         if (!response.ok) {
-          setManifestError('Failed to fetch manifest. Please verify the URL and try again.')
+          setManifestError(`Failed to fetch manifest from ${manifestUrl}. Please verify the URL and try again.`)
           setDappInfo(null)
           setLoading(false)
           return
@@ -62,7 +62,7 @@ export function ExternalDappLoader({
         const data = await response.json()
 
         if (!data.cow_hook_dapp) {
-          setManifestError('Invalid manifest format: missing cow_hook_dapp property')
+          setManifestError(`Invalid manifest format at ${manifestUrl}: missing cow_hook_dapp property`)
           setDappInfo(null)
           setLoading(false)
           return
