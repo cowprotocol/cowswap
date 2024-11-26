@@ -16,7 +16,7 @@ export const WRAPPED_NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> 
     WETH9_MAINNET_ADDRESS,
     DEFAULT_NATIVE_DECIMALS,
     'WETH',
-    'Wrapped Ether'
+    'Wrapped Ether',
   ),
   [SupportedChainId.GNOSIS_CHAIN]: new TokenWithLogo(
     undefined,
@@ -24,7 +24,7 @@ export const WRAPPED_NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> 
     '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d',
     DEFAULT_NATIVE_DECIMALS,
     'WXDAI',
-    'Wrapped XDAI'
+    'Wrapped XDAI',
   ),
   [SupportedChainId.ARBITRUM_ONE]: new TokenWithLogo(
     ETH_LOGO_URL,
@@ -32,7 +32,15 @@ export const WRAPPED_NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> 
     '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
     DEFAULT_NATIVE_DECIMALS,
     'WETH',
-    'Wrapped Ether'
+    'Wrapped Ether',
+  ),
+  [SupportedChainId.BASE]: new TokenWithLogo(
+    ETH_LOGO_URL,
+    SupportedChainId.BASE,
+    '0x4200000000000000000000000000000000000006',
+    DEFAULT_NATIVE_DECIMALS,
+    'WETH',
+    'Wrapped Ether',
   ),
   [SupportedChainId.SEPOLIA]: new TokenWithLogo(
     ETH_LOGO_URL,
@@ -40,7 +48,7 @@ export const WRAPPED_NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> 
     '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14',
     DEFAULT_NATIVE_DECIMALS,
     'WETH',
-    'Wrapped Ether'
+    'Wrapped Ether',
   ),
 }
 
@@ -51,7 +59,7 @@ export const NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> = {
     NATIVE_CURRENCY_ADDRESS,
     DEFAULT_NATIVE_DECIMALS,
     'ETH',
-    'Ether'
+    'Ether',
   ),
   [SupportedChainId.GNOSIS_CHAIN]: new TokenWithLogo(
     undefined,
@@ -59,7 +67,7 @@ export const NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> = {
     NATIVE_CURRENCY_ADDRESS,
     DEFAULT_NATIVE_DECIMALS,
     'xDAI',
-    'xDAI'
+    'xDAI',
   ),
   [SupportedChainId.ARBITRUM_ONE]: new TokenWithLogo(
     undefined,
@@ -67,7 +75,15 @@ export const NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> = {
     NATIVE_CURRENCY_ADDRESS,
     DEFAULT_NATIVE_DECIMALS,
     'ETH',
-    'Ether'
+    'Ether',
+  ),
+  [SupportedChainId.BASE]: new TokenWithLogo(
+    undefined,
+    SupportedChainId.BASE,
+    NATIVE_CURRENCY_ADDRESS,
+    DEFAULT_NATIVE_DECIMALS,
+    'ETH',
+    'Ether',
   ),
   [SupportedChainId.SEPOLIA]: new TokenWithLogo(
     undefined,
@@ -75,7 +91,7 @@ export const NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> = {
     NATIVE_CURRENCY_ADDRESS,
     DEFAULT_NATIVE_DECIMALS,
     'ETH',
-    'Ether'
+    'Ether',
   ),
 }
 
