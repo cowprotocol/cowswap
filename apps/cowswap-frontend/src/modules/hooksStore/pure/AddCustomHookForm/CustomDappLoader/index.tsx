@@ -64,6 +64,14 @@ export function ExternalDappLoader({
           return
         }
 
+        const contentType = response.headers.get('content-type')
+        if (!contentType || !contentType.includes('application/json')) {
+          setError(
+            `Invalid content type: Expected JSON but received ${contentType || 'unknown'}. Make sure the URL points to a valid manifest file.`,
+          )
+          return
+        }
+
         const data = await response.json()
 
         if (!data.cow_hook_dapp) {
