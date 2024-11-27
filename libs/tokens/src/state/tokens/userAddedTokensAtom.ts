@@ -8,18 +8,20 @@ import { Token } from '@uniswap/sdk-core'
 
 import { TokensMap } from '../../types'
 import { environmentAtom } from '../environmentAtom'
+import { PersistentStateByChain } from '@cowprotocol/types'
 
-export const userAddedTokensAtom = atomWithStorage<Record<SupportedChainId, TokensMap>>(
+export const userAddedTokensAtom = atomWithStorage<PersistentStateByChain<TokensMap>>(
   'userAddedTokensAtom:v1',
   mapSupportedNetworks({}),
-  getJotaiMergerStorage()
+  getJotaiMergerStorage(),
 )
 
 export const userAddedTokensListAtom = atom((get) => {
   const { chainId } = get(environmentAtom)
   const userAddedTokensState = get(userAddedTokensAtom)
+  const userAddedTokenStateForChain = userAddedTokensState[chainId] || {}
 
-  return Object.values(userAddedTokensState[chainId]).map((token) => TokenWithLogo.fromToken(token, token.logoURI))
+  return Object.values(userAddedTokenStateForChain).map((token) => TokenWithLogo.fromToken(token, token.logoURI))
 })
 
 export const addUserTokenAtom = atom(null, (get, set, tokens: TokenWithLogo[]) => {

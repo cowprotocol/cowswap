@@ -5,15 +5,16 @@ import { RateLimitError, UnknownCurrencyError } from '../apis/errors'
 import { COINGECKO_PLATFORMS, COINGECKO_RATE_LIMIT_TIMEOUT, getCoingeckoUsdPrice } from '../apis/getCoingeckoUsdPrice'
 import { getCowProtocolUsdPrice } from '../apis/getCowProtocolUsdPrice'
 import { DEFILLAMA_PLATFORMS, DEFILLAMA_RATE_LIMIT_TIMEOUT, getDefillamaUsdPrice } from '../apis/getDefillamaUsdPrice'
+import { PersistentStateByChain } from '@cowprotocol/types'
 
 type UnknownCurrencies = { [address: string]: true }
-type UnknownCurrenciesMap = Record<SupportedChainId, UnknownCurrencies>
+type UnknownCurrenciesMap = PersistentStateByChain<UnknownCurrencies>
 
 let coingeckoRateLimitHitTimestamp: null | number = null
 let defillamaRateLimitHitTimestamp: null | number = null
 
-const coingeckoUnknownCurrencies: Record<SupportedChainId, UnknownCurrencies> = mapSupportedNetworks({})
-const defillamaUnknownCurrencies: Record<SupportedChainId, UnknownCurrencies> = mapSupportedNetworks({})
+const coingeckoUnknownCurrencies: UnknownCurrenciesMap = mapSupportedNetworks({})
+const defillamaUnknownCurrencies: UnknownCurrenciesMap = mapSupportedNetworks({})
 
 function getShouldSkipCoingecko(currency: Token): boolean {
   return getShouldSkipPriceSource(
@@ -21,7 +22,7 @@ function getShouldSkipCoingecko(currency: Token): boolean {
     COINGECKO_PLATFORMS,
     coingeckoUnknownCurrencies,
     coingeckoRateLimitHitTimestamp,
-    COINGECKO_RATE_LIMIT_TIMEOUT
+    COINGECKO_RATE_LIMIT_TIMEOUT,
   )
 }
 
@@ -31,7 +32,7 @@ function getShouldSkipDefillama(currency: Token): boolean {
     DEFILLAMA_PLATFORMS,
     defillamaUnknownCurrencies,
     defillamaRateLimitHitTimestamp,
-    DEFILLAMA_RATE_LIMIT_TIMEOUT
+    DEFILLAMA_RATE_LIMIT_TIMEOUT,
   )
 }
 
@@ -40,13 +41,14 @@ function getShouldSkipPriceSource(
   platforms: Record<SupportedChainId, string | null>,
   unknownCurrenciesMap: UnknownCurrenciesMap,
   rateLimitTimestamp: null | number,
-  timeout: number
+  timeout: number,
 ): boolean {
   const chainId = currency.chainId as SupportedChainId
+  const unknownCurrenciesForChain = unknownCurrenciesMap[chainId] || {}
 
   if (!platforms[chainId]) return true
 
-  if (unknownCurrenciesMap[chainId][currency.address.toLowerCase()]) return true
+  if (unknownCurrenciesForChain[currency.address.toLowerCase()]) return true
 
   return !!rateLimitTimestamp && Date.now() - rateLimitTimestamp < timeout
 }
@@ -58,7 +60,7 @@ function getShouldSkipPriceSource(
  */
 export function fetchCurrencyUsdPrice(
   currency: Token,
-  getUsdcPrice: () => Promise<Fraction | null>
+  getUsdcPrice: () => Promise<Fraction | null>,
 ): Promise<Fraction | null> {
   const shouldSkipCoingecko = getShouldSkipCoingecko(currency)
   const shouldSkipDefillama = getShouldSkipDefillama(currency)
@@ -81,19 +83,19 @@ export function fetchCurrencyUsdPrice(
   // No coingecko. Try Defillama, then cow
   if (shouldSkipCoingecko) {
     return getDefillamaUsdPrice(currency).catch(
-      handleErrorFactory(currency, defillamaRateLimitHitTimestamp, defillamaUnknownCurrencies, getCowPrice)
+      handleErrorFactory(currency, defillamaRateLimitHitTimestamp, defillamaUnknownCurrencies, getCowPrice),
     )
   }
   // No Defillama. Try coingecko, then cow
   if (shouldSkipDefillama) {
     return getCoingeckoUsdPrice(currency).catch(
-      handleErrorFactory(currency, coingeckoRateLimitHitTimestamp, coingeckoUnknownCurrencies, getCowPrice)
+      handleErrorFactory(currency, coingeckoRateLimitHitTimestamp, coingeckoUnknownCurrencies, getCowPrice),
     )
   }
   // Both coingecko and defillama available. Try coingecko, then defillama, then cow
   return getCoingeckoUsdPrice(currency)
     .catch(
-      handleErrorFactory(currency, coingeckoRateLimitHitTimestamp, coingeckoUnknownCurrencies, getDefillamaUsdPrice)
+      handleErrorFactory(currency, coingeckoRateLimitHitTimestamp, coingeckoUnknownCurrencies, getDefillamaUsdPrice),
     )
     .catch(handleErrorFactory(currency, defillamaRateLimitHitTimestamp, defillamaUnknownCurrencies, getCowPrice))
 }
@@ -102,14 +104,22 @@ function handleErrorFactory(
   currency: Token,
   rateLimitTimestamp: null | number,
   unknownCurrenciesMap: UnknownCurrenciesMap,
-  fetchPriceFallback: (currency: Token) => Promise<Fraction | null>
+  fetchPriceFallback: (currency: Token) => Promise<Fraction | null>,
 ): ((reason: any) => Fraction | PromiseLike<Fraction | null> | null) | null | undefined {
   return (error) => {
     if (error instanceof RateLimitError) {
       rateLimitTimestamp = Date.now()
     } else if (error instanceof UnknownCurrencyError) {
       // Mark currency as unknown
-      unknownCurrenciesMap[currency.chainId as SupportedChainId][currency.address.toLowerCase()] = true
+      const chainId = currency.chainId as SupportedChainId
+      const unknownCurrenciesForChain = unknownCurrenciesMap[chainId]
+      const addressToLowercase = currency.address.toLowerCase()
+
+      if (unknownCurrenciesForChain === undefined) {
+        unknownCurrenciesMap[chainId] = { [addressToLowercase]: true }
+      } else {
+        unknownCurrenciesForChain[addressToLowercase] = true
+      }
     } else {
     }
 

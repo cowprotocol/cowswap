@@ -16,11 +16,14 @@ import { environmentAtom, updateEnvironmentAtom } from '../../state/environmentA
 import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { allListsSourcesAtom, tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { ListState } from '../../types'
+import { PersistentStateByChain } from '@cowprotocol/types'
+
+const LAST_UPDATE_TIME_DEFAULT = 0
 
 const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomWithPartialUpdate(
-  atomWithStorage<Record<SupportedChainId, number>>(
+  atomWithStorage<PersistentStateByChain<number>>(
     'tokens:lastUpdateTimeAtom:v4',
-    mapSupportedNetworks(0),
+    mapSupportedNetworks(LAST_UPDATE_TIME_DEFAULT),
     getJotaiMergerStorage(),
   ),
 )
@@ -70,7 +73,7 @@ export function TokensListsUpdater({
   const { data: listsStates, isLoading } = useSWR<ListState[] | null>(
     ['TokensListsUpdater', allTokensLists, chainId, lastUpdateTimeState],
     () => {
-      if (!getIsTimeToUpdate(lastUpdateTimeState[chainId])) return null
+      if (!getIsTimeToUpdate(lastUpdateTimeState[chainId] || LAST_UPDATE_TIME_DEFAULT)) return null
 
       return Promise.allSettled(allTokensLists.map(fetchTokenList)).then(getFulfilledResults)
     },

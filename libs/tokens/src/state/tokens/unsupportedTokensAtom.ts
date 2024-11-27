@@ -6,11 +6,12 @@ import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { UnsupportedTokensState } from '../../types'
 import { environmentAtom } from '../environmentAtom'
+import { PersistentStateByChain } from '@cowprotocol/types'
 
-export const unsupportedTokensAtom = atomWithStorage<Record<SupportedChainId, UnsupportedTokensState>>(
+export const unsupportedTokensAtom = atomWithStorage<PersistentStateByChain<UnsupportedTokensState>>(
   'unsupportedTokensAtom:v2',
   mapSupportedNetworks({}),
-  getJotaiMergerStorage()
+  getJotaiMergerStorage(),
 )
 
 export const currentUnsupportedTokensAtom = atom((get) => {
@@ -22,8 +23,9 @@ export const currentUnsupportedTokensAtom = atom((get) => {
 export const addUnsupportedTokenAtom = atom(null, (get, set, chainId: SupportedChainId, tokenAddress: string) => {
   const tokenId = tokenAddress.toLowerCase()
   const tokenList = get(unsupportedTokensAtom)
+  const tokenListForChain = tokenList[chainId] || {}
 
-  if (!tokenList[chainId][tokenId]) {
+  if (!tokenListForChain[tokenId]) {
     const update: UnsupportedTokensState = {
       ...tokenList[chainId],
       [tokenId]: { dateAdded: Date.now() },
@@ -39,11 +41,12 @@ export const addUnsupportedTokenAtom = atom(null, (get, set, chainId: SupportedC
 export const removeUnsupportedTokensAtom = atom(null, (get, set, tokenAddresses: Array<string>) => {
   const { chainId } = get(environmentAtom)
   const tokenList = { ...get(unsupportedTokensAtom) }
+  const tokenListForChain = tokenList[chainId] || {}
 
   tokenAddresses.forEach((tokenAddress) => {
     const tokenId = tokenAddress.toLowerCase()
 
-    delete tokenList[chainId][tokenId]
+    delete tokenListForChain[tokenId]
   })
 
   set(unsupportedTokensAtom, tokenList)
