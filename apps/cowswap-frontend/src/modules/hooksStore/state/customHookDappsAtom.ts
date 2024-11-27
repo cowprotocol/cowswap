@@ -2,13 +2,13 @@ import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 import { getJotaiIsolatedStorage } from '@cowprotocol/core'
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { PersistentStateByChain } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { setHooksAtom } from './hookDetailsAtom'
 
 import { HookDappIframe } from '../types/hooks'
-import { PersistentStateByChain } from '@cowprotocol/types'
 
 type CustomHookDapps = Record<HookDappIframe['url'], HookDappIframe>
 

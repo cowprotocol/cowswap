@@ -2,10 +2,10 @@ import { atom, SetStateAction } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 import { getJotaiIsolatedStorage } from '@cowprotocol/core'
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
-import { walletInfoAtom } from '@cowprotocol/wallet'
 import { PersistentStateByChain } from '@cowprotocol/types'
+import { walletInfoAtom } from '@cowprotocol/wallet'
 
 export type HooksStoreState = {
   preHooks: CowHookDetails[]

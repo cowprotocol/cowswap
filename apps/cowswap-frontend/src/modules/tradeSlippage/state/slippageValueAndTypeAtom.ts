@@ -3,11 +3,11 @@ import { atomWithStorage } from 'jotai/utils'
 
 import { DEFAULT_SLIPPAGE_BPS, MINIMUM_ETH_FLOW_SLIPPAGE_BPS } from '@cowprotocol/common-const'
 import { bpsToPercent } from '@cowprotocol/common-utils'
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { PersistentStateByChain } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { isEoaEthFlowAtom } from 'modules/trade'
-import { PersistentStateByChain } from '@cowprotocol/types'
 
 type SlippageBpsPerNetwork = PersistentStateByChain<number>
 
