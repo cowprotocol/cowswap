@@ -1,4 +1,3 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { LpTokenProvider, PersistentStateByChain, TokenInfo } from '@cowprotocol/types'
 import type { TokenList as UniTokenList } from '@uniswap/token-lists'
 

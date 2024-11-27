@@ -3,12 +3,12 @@ import { atomWithStorage } from 'jotai/utils'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { PersistentStateByChain } from '@cowprotocol/types'
 import { Token } from '@uniswap/sdk-core'
 
 import { TokensMap } from '../../types'
 import { environmentAtom } from '../environmentAtom'
-import { PersistentStateByChain } from '@cowprotocol/types'
 
 export const userAddedTokensAtom = atomWithStorage<PersistentStateByChain<TokensMap>>(
   'userAddedTokensAtom:v1',
