@@ -34,7 +34,7 @@ export function BalancesCacheUpdater({ chainId, account }: { chainId: SupportedC
         {} as Record<string, string>,
       )
 
-      const currentCache = state[chainId]
+      const currentCache = state[chainId] || {}
       // Remove zero balances from the current cache
       const updatedCache = Object.keys(currentCache).reduce(
         (acc, tokenAddress) => {

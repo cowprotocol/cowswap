@@ -7,17 +7,21 @@ import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { isEoaEthFlowAtom } from 'modules/trade'
+import { PersistentStateByChain } from '@cowprotocol/types'
 
-type SlippageBpsPerNetwork = Record<SupportedChainId, number | null>
+type SlippageBpsPerNetwork = PersistentStateByChain<number>
 
 type SlippageType = 'smart' | 'default' | 'user'
 
 const normalTradeSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>(
   'swapSlippageAtom:v0',
-  mapSupportedNetworks(null),
+  mapSupportedNetworks(undefined),
 )
 
-const ethFlowSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>('ethFlowSlippageAtom:v0', mapSupportedNetworks(null))
+const ethFlowSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>(
+  'ethFlowSlippageAtom:v0',
+  mapSupportedNetworks(undefined),
+)
 
 export const smartTradeSlippageAtom = atom<number | null>(null)
 
