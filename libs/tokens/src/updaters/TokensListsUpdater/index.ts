@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import { atomWithPartialUpdate, isInjectedWidget } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { PersistentStateByChain } from '@cowprotocol/types'
 
 import * as Sentry from '@sentry/browser'
 import useSWR, { SWRConfiguration } from 'swr'
@@ -16,7 +17,6 @@ import { environmentAtom, updateEnvironmentAtom } from '../../state/environmentA
 import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { allListsSourcesAtom, tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { ListState } from '../../types'
-import { PersistentStateByChain } from '@cowprotocol/types'
 
 const LAST_UPDATE_TIME_DEFAULT = 0
 
