@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet'
 import styled from 'styled-components/macro'
 
-import { Wrapper as WrapperMod } from './styled'
+import { Wrapper as WrapperMod, StyledSearch } from './styled'
 
 import RedirectToSearch from '../../components/RedirectToSearch'
 import { useOrderIdParam } from '../../hooks/useSanitizeOrderIdAndUpdateUrl'
@@ -29,6 +29,7 @@ const Order = () => {
       <Helmet>
         <title>Order Details - {APP_TITLE}</title>
       </Helmet>
+      <StyledSearch />
       <OrderWidget />
     </Wrapper>
   )

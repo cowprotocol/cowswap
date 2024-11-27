@@ -72,11 +72,7 @@ export function HooksStoreWidget() {
       >
         <p>
           With hooks you can add specific actions <b>before</b> and <b>after</b> your swap.{' '}
-          <a
-            href="https://blog.cow.fi/cow-hooks-you-are-in-control-480ccb40044a"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href="https://cow.fi/learn/cow-hooks-you-are-in-control" target="_blank" rel="noopener noreferrer">
             Learn more.
           </a>
         </p>
