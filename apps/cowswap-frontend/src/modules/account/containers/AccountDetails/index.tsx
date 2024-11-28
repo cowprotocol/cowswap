@@ -12,6 +12,7 @@ import {
   useDisconnectWallet,
   useConnectionType,
   getIsInjectedMobileBrowser,
+  ConnectionType,
 } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
@@ -176,7 +177,7 @@ export function AccountDetails({
                     </AddressLink>
                   )}
 
-                  {standaloneMode !== false && (
+                  {standaloneMode !== false && connectionType !== ConnectionType.GNOSIS_SAFE && (
                     <WalletAction onClick={handleDisconnectClick}>
                       <Trans>Disconnect</Trans>
                     </WalletAction>
