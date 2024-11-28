@@ -5,7 +5,6 @@ import { getEtherscanLink, getExplorerLabel, shortenAddress, getExplorerAddressL
 import { Command } from '@cowprotocol/types'
 import { ExternalLink } from '@cowprotocol/ui'
 import {
-  ConnectionType,
   useWalletInfo,
   useWalletDetails,
   useIsWalletConnect,
@@ -75,7 +74,6 @@ export interface AccountDetailsProps {
   confirmedTransactions: string[]
   ENSName?: string
   forceHardwareWallet?: boolean
-  toggleWalletModal: Command
   toggleAccountSelectorModal: Command
   handleCloseOrdersPanel: Command
 }
@@ -84,7 +82,6 @@ export function AccountDetails({
   pendingTransactions = [],
   confirmedTransactions = [],
   ENSName,
-  toggleWalletModal,
   toggleAccountSelectorModal,
   handleCloseOrdersPanel,
   forceHardwareWallet,
@@ -180,16 +177,9 @@ export function AccountDetails({
                   )}
 
                   {standaloneMode !== false && (
-                    <>
-                      {connectionType !== ConnectionType.GNOSIS_SAFE && (
-                        <WalletAction onClick={toggleWalletModal}>
-                          <Trans>Change Wallet</Trans>
-                        </WalletAction>
-                      )}
-                      <WalletAction onClick={handleDisconnectClick}>
-                        <Trans>Disconnect</Trans>
-                      </WalletAction>
-                    </>
+                    <WalletAction onClick={handleDisconnectClick}>
+                      <Trans>Disconnect</Trans>
+                    </WalletAction>
                   )}
                 </>
               )}
