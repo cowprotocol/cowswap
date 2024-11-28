@@ -1,28 +1,32 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
+import { BFF_BASE_URL, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import ms from 'ms.macro'
+import useSWR from 'swr'
 
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
 
-import { MOCK_POOL_INFO } from './mockPoolInfo'
-
 import { useLpTokensWithBalances } from '../../hooks/useLpTokensWithBalances'
 import { usePoolsInfo } from '../../hooks/usePoolsInfo'
-import { upsertPoolsInfoAtom } from '../../state/poolsInfoAtom'
+import { PoolInfo, upsertPoolsInfoAtom } from '../../state/poolsInfoAtom'
 
 const POOL_INFO_CACHE_TIME = ms`1h`
 
-/**
- * The API should return info about requested pools + alternative COW AMM pools
- * When tokenAddresses is null, it should return info about all pools
- */
-function fetchPoolsInfo(tokenAddresses: string[] | null) {
-  console.log('TODO', tokenAddresses)
-  return Promise.resolve(MOCK_POOL_INFO)
+interface PoolInfoDto {
+  apr: number
+  chain_id: number
+  contract_address: string
+  fee: number
+  project: string
+  tvl: number
+  volume: number
 }
 
 export function PoolsInfoUpdater() {
+  const { chainId } = useWalletInfo()
   const poolsInfo = usePoolsInfo()
   const upsertPoolsInfo = useSetAtom(upsertPoolsInfoAtom)
   const tradeTypeInfo = useTradeTypeInfo()
@@ -42,13 +46,37 @@ export function PoolsInfoUpdater() {
 
   const tokensKey = useMemo(() => tokensToUpdate.join(','), [tokensToUpdate])
 
+  const { data: poolsAverageData } = useSWR(
+    tokensKey || isYield ? [chainId, tokensToUpdate, 'getPoolsInfo'] : null,
+    async ([chainId, tokensToUpdate]) => {
+      const results: PoolInfoDto[] = await fetch(`${BFF_BASE_URL}/${chainId}/yield/getPoolsInfo`, {
+        method: 'post',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(tokensToUpdate),
+      }).then((res) => res.json())
+
+      return results.reduce(
+        (acc, val) => {
+          acc[val.contract_address.toLowerCase()] = {
+            apr: +val.apr.toFixed(2),
+            tvl: +val.tvl.toFixed(2),
+            feeTier: val.fee,
+            volume24h: +val.volume.toFixed(2),
+          }
+
+          return acc
+        },
+        {} as Record<string, PoolInfo>,
+      )
+    },
+    SWR_NO_REFRESH_OPTIONS,
+  )
+
   useEffect(() => {
-    if (tokensToUpdate.length > 0 || isYield) {
-      fetchPoolsInfo(isYield ? null : tokensToUpdate).then(upsertPoolsInfo)
-    }
-    // To avoid excessive recalculations we use tokensKey instead of tokensToUpdate in deps
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isYield, tokensKey, upsertPoolsInfo])
+    if (!poolsAverageData) return
+
+    upsertPoolsInfo(poolsAverageData)
+  }, [poolsAverageData, upsertPoolsInfo])
 
   return null
 }

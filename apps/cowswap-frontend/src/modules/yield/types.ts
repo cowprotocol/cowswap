@@ -19,6 +19,6 @@ export interface VampireAttackContext {
   alternatives: TokenWithAlternative[] | null
   superiorAlternatives: TokenWithSuperiorAlternative[] | null
   cowAmmLpTokensCount: number
-  poolsAverageData: Partial<Record<LpTokenProvider, { apy: number }> | undefined>
-  averageApyDiff: number | undefined
+  poolsAverageData: Partial<Record<LpTokenProvider, number> | undefined>
+  averageAprDiff: number | undefined
 }

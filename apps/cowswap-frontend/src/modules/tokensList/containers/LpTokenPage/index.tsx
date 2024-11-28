@@ -86,7 +86,7 @@ export function LpTokenPage({ poolAddress, onBack, onDismiss, onSelectToken }: L
         <InfoRow>
           <div>APR</div>
           <div>
-            <span>{renderValue(info?.apy, (t) => `${t}%`, '-')}</span>
+            <span>{renderValue(info?.apr, (t) => `${t}%`, '-')}</span>
           </div>
         </InfoRow>
         <InfoRow>

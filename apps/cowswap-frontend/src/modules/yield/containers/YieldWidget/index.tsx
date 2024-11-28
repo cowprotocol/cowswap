@@ -98,8 +98,8 @@ export function YieldWidget() {
   }, [outputCurrency, poolsInfo])
 
   const isOutputLpToken = Boolean(outputCurrency && outputCurrency instanceof LpToken)
-  const inputApy = inputPoolState?.info.apy
-  const outputApy = outputPoolState?.info.apy
+  const inputApy = inputPoolState?.info.apr
+  const outputApy = outputPoolState?.info.apr
 
   const isTradeContainAlternativePool =
     inputCurrency instanceof LpToken &&
@@ -167,9 +167,9 @@ export function YieldWidget() {
 
   const slots: TradeWidgetSlots = {
     topContent: vampireAttackContext ? (
-      <CoWAmmInlineBanner token={vampireAttackTarget?.target.token} apyDiff={vampireAttackTarget?.apyDiff} />
+      <CoWAmmInlineBanner token={vampireAttackTarget?.target.token} aprDiff={vampireAttackTarget?.aprDiff} />
     ) : !account ? (
-      <CoWAmmInlineBanner token={undefined} apyDiff={undefined} />
+      <CoWAmmInlineBanner token={undefined} aprDiff={undefined} />
     ) : null,
     selectTokenWidget: <SelectTokenWidget displayLpTokenLists />,
     settingsWidget: <SettingsTab recipientToggleState={recipientToggleState} deadlineState={deadlineState} />,

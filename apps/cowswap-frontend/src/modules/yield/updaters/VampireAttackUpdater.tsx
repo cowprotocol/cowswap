@@ -1,12 +1,14 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
+import { BFF_BASE_URL, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { LP_TOKEN_LIST_COW_AMM_ONLY, useAllLpTokens } from '@cowprotocol/tokens'
 import { LpTokenProvider } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import useSWR from 'swr'
+
 import { useLpTokensWithBalances, usePoolsInfo } from 'modules/yield/shared'
-import { POOLS_AVERAGE_DATA_MOCK } from 'modules/yield/updaters/PoolsInfoUpdater/mockPoolInfo'
 
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { areLpBalancesLoadedAtom } from 'common/updaters/LpBalancesAndAllowancesUpdater'
@@ -14,13 +16,45 @@ import { areLpBalancesLoadedAtom } from 'common/updaters/LpBalancesAndAllowances
 import { vampireAttackAtom } from '../state/vampireAttackAtom'
 import { TokenWithAlternative, TokenWithSuperiorAlternative } from '../types'
 
+const lpProviderNameMap: Record<string, LpTokenProvider> = {
+  'CoW AMM': LpTokenProvider.COW_AMM,
+  uniswap: LpTokenProvider.UNIV2,
+  pancakeswap: LpTokenProvider.PANCAKE,
+  curve: LpTokenProvider.CURVE,
+  sushiswap: LpTokenProvider.SUSHI,
+  balancer: LpTokenProvider.BALANCERV2,
+}
+
 export function VampireAttackUpdater(): null {
-  const { account } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const { tokens: lpTokensWithBalances, count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
   const cowAmmLpTokens = useAllLpTokens(LP_TOKEN_LIST_COW_AMM_ONLY)
   const poolsInfo = usePoolsInfo()
   const areLpBalancesLoaded = useAtomValue(areLpBalancesLoadedAtom)
   const setVampireAttack = useSetAtom(vampireAttackAtom)
+  const { data: poolsAverageApr } = useSWR(
+    [chainId, 'getPoolsAverageApr'],
+    async ([chainId]) => {
+      // TODO: use BFF_BASE_URL
+      const result: Record<string, number> = await fetch(`${BFF_BASE_URL}/${chainId}/yield/getPoolsAverageApr`).then(
+        (res) => res.json(),
+      )
+
+      return Object.keys(result).reduce(
+        (acc, key) => {
+          const provider = lpProviderNameMap[key]
+
+          if (provider) {
+            acc[provider] = result[key]
+          }
+
+          return acc
+        },
+        {} as Record<LpTokenProvider, number>,
+      )
+    },
+    SWR_NO_REFRESH_OPTIONS,
+  )
 
   const alternativesResult = useMemo(() => {
     if (lpTokensWithBalancesCount === 0) return null
@@ -37,7 +71,7 @@ export function VampireAttackUpdater(): null {
           const alternativePoolInfo = poolsInfo?.[alternative.address.toLowerCase()]?.info
 
           // When CoW AMM pool has better APY
-          if (alternativePoolInfo?.apy && tokenPoolInfo?.apy && alternativePoolInfo.apy > tokenPoolInfo.apy) {
+          if (alternativePoolInfo?.apr && tokenPoolInfo?.apr && alternativePoolInfo.apr > tokenPoolInfo.apr) {
             acc.superiorAlternatives.push({
               token: lpToken,
               alternative,
@@ -63,7 +97,7 @@ export function VampireAttackUpdater(): null {
       superiorAlternatives: result.superiorAlternatives.sort((a, b) => {
         if (!b.tokenPoolInfo || !a.tokenPoolInfo) return 0
 
-        return b.tokenPoolInfo.apy - a.tokenPoolInfo.apy
+        return b.tokenPoolInfo.apr - a.tokenPoolInfo.apr
       }),
       alternatives: result.alternatives.sort((a, b) => {
         const aBalance = lpTokensWithBalances[a.token.address.toLowerCase()].balance
@@ -75,7 +109,9 @@ export function VampireAttackUpdater(): null {
   }, [lpTokensWithBalancesCount, lpTokensWithBalances, cowAmmLpTokens, poolsInfo])
 
   const averageApy = useMemo(() => {
-    const keys = Object.keys(POOLS_AVERAGE_DATA_MOCK)
+    if (!poolsAverageApr) return 0
+
+    const keys = Object.keys(poolsAverageApr)
     let count = 0
 
     return (
@@ -85,22 +121,22 @@ export function VampireAttackUpdater(): null {
         if (key === LpTokenProvider.COW_AMM) return result
 
         count++
-        const pool = POOLS_AVERAGE_DATA_MOCK[key]
+        const poolApr = poolsAverageApr[key]
 
-        return result + (pool?.apy || 0)
+        return result + (poolApr || 0)
       }, 0) / count
     )
-  }, [])
+  }, [poolsAverageApr])
 
-  const { [LpTokenProvider.COW_AMM]: cowAmmData, ...poolsAverageData } = POOLS_AVERAGE_DATA_MOCK
-  const averageApyDiff = cowAmmData ? +(cowAmmData.apy - averageApy).toFixed(2) : 0
+  const { [LpTokenProvider.COW_AMM]: cowAmmApr, ...otherPoolsAverageData } = poolsAverageApr || {}
+  const averageAprDiff = cowAmmApr ? +(cowAmmApr - averageApy).toFixed(2) : 0
 
   const context = useSafeMemoObject({
     superiorAlternatives: alternativesResult?.superiorAlternatives || null,
     alternatives: alternativesResult?.alternatives || null,
     cowAmmLpTokensCount: cowAmmLpTokens.length,
-    poolsAverageData,
-    averageApyDiff,
+    poolsAverageData: otherPoolsAverageData,
+    averageAprDiff,
   })
 
   useEffect(() => {

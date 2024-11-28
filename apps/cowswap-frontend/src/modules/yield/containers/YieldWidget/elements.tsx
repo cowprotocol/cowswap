@@ -16,7 +16,7 @@ export const CoWAmmGreenLogo = (
   <CoWAmmLogo overrideColor={`var(${UI.COLOR_COWAMM_DARK_GREEN})`} variant={ProductVariant.CowAmm} logoIconOnly />
 )
 
-export const CoWAmmInlineBanner = ({ token, apyDiff }: { token: LpToken | undefined; apyDiff: number | undefined }) => {
+export const CoWAmmInlineBanner = ({ token, aprDiff }: { token: LpToken | undefined; aprDiff: number | undefined }) => {
   return (
     <DismissableInlineBanner
       bannerId="yieldTopBanner"
@@ -26,10 +26,10 @@ export const CoWAmmInlineBanner = ({ token, apyDiff }: { token: LpToken | undefi
     >
       <strong>Boost Your Yield with One-Click Conversion</strong>
       <span>
-        {token && apyDiff && apyDiff > 0 ? (
+        {token && aprDiff && aprDiff > 0 ? (
           <>
             Convert your <TokenSymbol token={token} /> LP tokens into CoW AMM pools and earn up to{' '}
-            <strong>+{apyDiff.toFixed(1)}%</strong> more yield compared to <TokenSymbol token={token} />. Or, swap
+            <strong>+{aprDiff.toFixed(1)}%</strong> more yield compared to <TokenSymbol token={token} />. Or, swap
           </>
         ) : (
           'Swap'
