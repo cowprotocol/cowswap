@@ -41,7 +41,7 @@ export const safeAppFeeAtom = atom<VolumeFee | null>((get) => {
   if (!isSafeApp) return null
 
   const fiatCurrencyValue = orderKind === OrderKind.SELL ? inputCurrencyFiatAmount : outputCurrencyFiatAmount
-  const fiatAmount = fiatCurrencyValue ? +fiatCurrencyValue.quotient.toString() : null
+  const fiatAmount = fiatCurrencyValue ? +fiatCurrencyValue.toExact() : null
 
   if (typeof fiatAmount !== 'number') return null
 
