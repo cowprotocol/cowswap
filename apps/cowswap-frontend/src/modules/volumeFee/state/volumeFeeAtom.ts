@@ -8,15 +8,17 @@ import { tradeTypeAtom } from 'modules/trade'
 import { TradeType } from 'modules/trade/types/TradeType'
 
 import { cowSwapFeeAtom } from './cowswapFeeAtom'
+import { safeAppFeeAtom } from './safeAppFeeAtom'
 
 import { VolumeFee } from '../types'
 
 export const volumeFeeAtom = atom<VolumeFee | undefined>((get) => {
   const cowSwapFee = get(cowSwapFeeAtom)
   const widgetPartnerFee = get(widgetPartnerFeeAtom)
+  const safeAppFee = get(safeAppFeeAtom)
 
   // CoW Swap Fee won't be enabled when in Widget mode, thus it takes precedence here
-  return cowSwapFee || widgetPartnerFee
+  return safeAppFee || cowSwapFee || widgetPartnerFee
 })
 
 const widgetPartnerFeeAtom = atom<VolumeFee | undefined>((get) => {
