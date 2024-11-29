@@ -5,6 +5,7 @@ import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { walletDetailsAtom, walletInfoAtom } from '@cowprotocol/wallet'
 
+import { featureFlagsAtom } from '../../../common/state/featureFlagsState'
 import { derivedTradeStateAtom } from '../../trade'
 import { VolumeFee } from '../types'
 
@@ -35,10 +36,11 @@ const FEE_PERCENTAGE_BPS = {
 export const safeAppFeeAtom = atom<VolumeFee | null>((get) => {
   const { chainId } = get(walletInfoAtom)
   const { isSafeApp } = get(walletDetailsAtom)
+  const { isSafeAppFeeEnabled } = get(featureFlagsAtom)
   const { inputCurrency, outputCurrency, inputCurrencyFiatAmount, outputCurrencyFiatAmount, orderKind } =
     get(derivedTradeStateAtom) || {}
 
-  if (!isSafeApp) return null
+  if (!isSafeApp || !isSafeAppFeeEnabled) return null
 
   const fiatCurrencyValue = orderKind === OrderKind.SELL ? inputCurrencyFiatAmount : outputCurrencyFiatAmount
   const fiatAmount = fiatCurrencyValue ? +fiatCurrencyValue.toExact() : null

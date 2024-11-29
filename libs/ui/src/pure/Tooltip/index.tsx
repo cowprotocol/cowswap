@@ -63,7 +63,7 @@ export function HoverTooltip(props: HoverTooltipProps) {
       setShow(true)
       onOpen?.()
     },
-    [onOpen]
+    [onOpen],
   )
 
   // Close the tooltip
@@ -113,7 +113,7 @@ export function HoverTooltip(props: HoverTooltipProps) {
         open(e)
       }
     },
-    [close, open, show]
+    [close, open, show],
   )
 
   // Hide tooltip when scrolling
