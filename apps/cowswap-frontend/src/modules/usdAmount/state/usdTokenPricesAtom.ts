@@ -28,7 +28,7 @@ export const usdTokenPricesAtom = atom((get) => {
   }, {})
 })
 
-const ONE_USDC_ATOM = new Fraction(1, 1_000_000)
+const MINIMAL_PRICE_VALUE = new Fraction(1, 1_000_000_000)
 
 function calculatePrice(currency: Token, price: Fraction | null): Price<Token, Token> | null {
   if (!price) {
@@ -37,8 +37,8 @@ function calculatePrice(currency: Token, price: Fraction | null): Price<Token, T
 
   const usdcToken = USDC[currency.chainId as SupportedChainId]
 
-  if (price.lessThan(ONE_USDC_ATOM)) {
-    // Less than 1 atom of USDC, cannot create a Price instance
+  if (price.lessThan(MINIMAL_PRICE_VALUE)) {
+    console.error('Price is too small, cannot create a Price instance', currency.address, currency, price)
     return null
   }
 
