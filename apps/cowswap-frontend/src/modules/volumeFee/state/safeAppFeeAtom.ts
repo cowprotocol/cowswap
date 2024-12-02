@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 
-import { OrderKind } from '@cowprotocol/cow-sdk'
-import { walletDetailsAtom } from '@cowprotocol/wallet'
+import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { walletDetailsAtom, walletInfoAtom } from '@cowprotocol/wallet'
 
 import { featureFlagsAtom } from '../../../common/state/featureFlagsState'
 import { derivedTradeStateAtom } from '../../trade'
@@ -15,11 +15,13 @@ const SAFE_FEE_BPS = 10
  * https://github.com/safe-global/safe-wallet-web/blob/0818e713fa0f9bb7a6472e34a05888896ffc3835/src/features/swap/helpers/fee.ts
  */
 export const safeAppFeeAtom = atom<VolumeFee | null>((get) => {
+  const { chainId } = get(walletInfoAtom)
   const { isSafeApp } = get(walletDetailsAtom)
   const { isSafeAppFeeEnabled } = get(featureFlagsAtom)
   const { inputCurrencyFiatAmount, outputCurrencyFiatAmount, orderKind } = get(derivedTradeStateAtom) || {}
+  const isBaseNetwork = chainId === SupportedChainId.BASE
 
-  if (!isSafeApp || !isSafeAppFeeEnabled) return null
+  if (!isSafeApp || !isSafeAppFeeEnabled || isBaseNetwork) return null
 
   const fiatCurrencyValue = orderKind === OrderKind.SELL ? inputCurrencyFiatAmount : outputCurrencyFiatAmount
   const fiatAmount = fiatCurrencyValue ? +fiatCurrencyValue.toExact() : null
