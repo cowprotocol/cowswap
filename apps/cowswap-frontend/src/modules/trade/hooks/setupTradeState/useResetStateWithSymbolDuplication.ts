@@ -9,7 +9,7 @@ import { getDefaultTradeRawState, TradeRawState } from '../../types/TradeRawStat
 import { useTradeNavigate } from '../useTradeNavigate'
 
 const alertMessage = (
-  doubledSymbol: string
+  doubledSymbol: string,
 ) => t`There is more than one token in the list of tokens with the symbol: ${doubledSymbol}.
 Please select the token you need from the UI or use the address of the token instead of the symbol`
 
@@ -45,8 +45,8 @@ export function useResetStateWithSymbolDuplication(state: TradeRawState | null):
 
       const defaultState = getDefaultTradeRawState(chainId)
       navigate(chainId, {
-        inputCurrencyId: defaultState.inputCurrencyId,
-        outputCurrencyId: defaultState.outputCurrencyId,
+        inputCurrencyId: defaultState.inputCurrencyId === inputCurrencyId ? '' : defaultState.inputCurrencyId,
+        outputCurrencyId: defaultState.outputCurrencyId === outputCurrencyId ? '' : defaultState.outputCurrencyId,
       })
     }
 
