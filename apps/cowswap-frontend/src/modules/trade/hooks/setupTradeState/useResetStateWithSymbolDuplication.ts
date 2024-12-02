@@ -13,6 +13,7 @@ const alertMessage = (
 ) => t`There is more than one token in the list of tokens with the symbol: ${doubledSymbol}.
 Please select the token you need from the UI or use the address of the token instead of the symbol`
 
+let timeoutId: NodeJS.Timeout | null = null
 /**
  * Case: when user opened a link with a token symbol and there are more than one token with the same symbol
  * Example: /limit/UST/WETH
@@ -30,12 +31,23 @@ export function useResetStateWithSymbolDuplication(state: TradeRawState | null):
   const { inputCurrencyId, outputCurrencyId } = state || {}
 
   useEffect(() => {
+    const defaultState = getDefaultTradeRawState(chainId)
+
     const inputCurrencyIsDuplicated = checkTokensWithSameSymbol(inputCurrencyId)
     const outputCurrencyIsDuplicated = checkTokensWithSameSymbol(outputCurrencyId)
-    let timeoutId: NodeJS.Timeout | null = null
+
+    const defaultInputIsDuplicated = checkTokensWithSameSymbol(defaultState.inputCurrencyId)
+    const defaultOutputIsDuplicated = checkTokensWithSameSymbol(defaultState.outputCurrencyId)
+
+    const defaultInput = defaultInputIsDuplicated ? '' : defaultState.inputCurrencyId
+    const defaultOutput = defaultOutputIsDuplicated ? '' : defaultState.outputCurrencyId
 
     if (chainId && (inputCurrencyIsDuplicated || outputCurrencyIsDuplicated)) {
       const doubledSymbol = inputCurrencyIsDuplicated ? inputCurrencyId : outputCurrencyId
+
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+      }
 
       // TODO: add UI modal instead of alert
       // Show alert in 500ms to avoid glitch with transparent Import token modal
@@ -43,17 +55,10 @@ export function useResetStateWithSymbolDuplication(state: TradeRawState | null):
         alert(alertMessage(doubledSymbol || ''))
       }, 500)
 
-      const defaultState = getDefaultTradeRawState(chainId)
       navigate(chainId, {
-        inputCurrencyId: defaultState.inputCurrencyId === inputCurrencyId ? '' : defaultState.inputCurrencyId,
-        outputCurrencyId: defaultState.outputCurrencyId === outputCurrencyId ? '' : defaultState.outputCurrencyId,
+        inputCurrencyId: defaultInput,
+        outputCurrencyId: defaultOutput,
       })
-    }
-
-    return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId)
-      }
     }
   }, [navigate, checkTokensWithSameSymbol, chainId, inputCurrencyId, outputCurrencyId])
 }
