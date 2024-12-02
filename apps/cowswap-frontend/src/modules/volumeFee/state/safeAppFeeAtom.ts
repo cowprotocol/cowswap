@@ -1,5 +1,7 @@
 import { atom } from 'jotai'
 
+import { STABLECOINS } from '@cowprotocol/common-const'
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { walletDetailsAtom, walletInfoAtom } from '@cowprotocol/wallet'
 
@@ -8,7 +10,24 @@ import { derivedTradeStateAtom } from '../../trade'
 import { VolumeFee } from '../types'
 
 const SAFE_FEE_RECIPIENT = '0x63695Eee2c3141BDE314C5a6f89B98E62808d716'
-const SAFE_FEE_BPS = 10
+
+const FEE_TIERS = {
+  TIER_1: 100_000, // 0 - 100k
+  TIER_2: 1_000_000, // 100k - 1m
+}
+
+const FEE_PERCENTAGE_BPS = {
+  REGULAR: {
+    TIER_1: 10,
+    TIER_2: 10,
+    TIER_3: 10,
+  },
+  STABLE: {
+    TIER_1: 10,
+    TIER_2: 7,
+    TIER_3: 5,
+  },
+}
 
 /**
  * https://help.safe.global/en/articles/178530-how-does-the-widget-fee-work-for-native-swaps
@@ -18,7 +37,8 @@ export const safeAppFeeAtom = atom<VolumeFee | null>((get) => {
   const { chainId } = get(walletInfoAtom)
   const { isSafeApp } = get(walletDetailsAtom)
   const { isSafeAppFeeEnabled } = get(featureFlagsAtom)
-  const { inputCurrencyFiatAmount, outputCurrencyFiatAmount, orderKind } = get(derivedTradeStateAtom) || {}
+  const { inputCurrency, outputCurrency, inputCurrencyFiatAmount, outputCurrencyFiatAmount, orderKind } =
+    get(derivedTradeStateAtom) || {}
   const isBaseNetwork = chainId === SupportedChainId.BASE
 
   if (!isSafeApp || !isSafeAppFeeEnabled || isBaseNetwork) return null
@@ -28,5 +48,22 @@ export const safeAppFeeAtom = atom<VolumeFee | null>((get) => {
 
   if (typeof fiatAmount !== 'number') return null
 
-  return { bps: SAFE_FEE_BPS, recipient: SAFE_FEE_RECIPIENT }
+  const stablecoins = STABLECOINS[chainId]
+  const isInputStableCoin = !!inputCurrency && stablecoins.has(getCurrencyAddress(inputCurrency).toLowerCase())
+  const isOutputStableCoin = !!outputCurrency && stablecoins.has(getCurrencyAddress(outputCurrency).toLowerCase())
+  const isStableCoinTrade = isInputStableCoin && isOutputStableCoin
+
+  const bps = (() => {
+    if (fiatAmount < FEE_TIERS.TIER_1) {
+      return isStableCoinTrade ? FEE_PERCENTAGE_BPS.STABLE.TIER_1 : FEE_PERCENTAGE_BPS.REGULAR.TIER_1
+    }
+
+    if (fiatAmount < FEE_TIERS.TIER_2) {
+      return isStableCoinTrade ? FEE_PERCENTAGE_BPS.STABLE.TIER_2 : FEE_PERCENTAGE_BPS.REGULAR.TIER_2
+    }
+
+    return isStableCoinTrade ? FEE_PERCENTAGE_BPS.STABLE.TIER_3 : FEE_PERCENTAGE_BPS.REGULAR.TIER_3
+  })()
+
+  return { bps, recipient: SAFE_FEE_RECIPIENT }
 })
