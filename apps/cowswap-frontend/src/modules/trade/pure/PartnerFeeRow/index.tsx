@@ -16,6 +16,7 @@ interface PartnerFeeRowProps {
   withTimelineDot: boolean
   alwaysRow?: boolean
   widgetContent?: CowSwapWidgetContent
+  volumeFeeTooltip?: string
 }
 
 export function PartnerFeeRow({
@@ -25,6 +26,7 @@ export function PartnerFeeRow({
   withTimelineDot,
   alwaysRow,
   widgetContent,
+  volumeFeeTooltip,
 }: PartnerFeeRowProps) {
   const feeAsPercent = partnerFeeBps ? formatPercent(bpsToPercent(partnerFeeBps)) : null
   const minPartnerFeeAmount = FractionUtils.amountToAtLeastOneWei(partnerFeeAmount)
@@ -38,8 +40,8 @@ export function PartnerFeeRow({
           fiatAmount={partnerFeeUsd}
           alwaysRow={alwaysRow}
           tooltip={
-            widgetContent?.feeTooltipMarkdown ? (
-              <WidgetMarkdownContent>{widgetContent.feeTooltipMarkdown}</WidgetMarkdownContent>
+            volumeFeeTooltip ? (
+              <WidgetMarkdownContent>{volumeFeeTooltip}</WidgetMarkdownContent>
             ) : (
               <>
                 This fee helps pay for maintenance & improvements to the trade experience.

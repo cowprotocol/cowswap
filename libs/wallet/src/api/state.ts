@@ -19,6 +19,7 @@ export const walletDetailsAtom = atom<WalletDetails>({
 
   // Feature Support
   allowsOffchainSigning: false,
+  isSafeApp: false,
 })
 
 export const gnosisSafeInfoAtom = atom<GnosisSafeInfo | undefined>(undefined)
