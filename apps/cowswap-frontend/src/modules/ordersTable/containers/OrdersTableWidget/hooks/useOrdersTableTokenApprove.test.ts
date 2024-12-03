@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 import { WETH_SEPOLIA } from '@cowprotocol/common-const'
 
-import { renderHook } from '@testing-library/react-hooks'
+import { renderHook } from '@testing-library/react'
 
 import { useTradeApproveCallback } from 'common/containers/TradeApprove'
 
