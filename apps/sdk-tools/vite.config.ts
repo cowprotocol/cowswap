@@ -26,7 +26,7 @@ const plugins = [
 
 export default defineConfig(({ mode }) => {
   return {
-    base: '/sdk-tools',
+    base: './',
     define: {
       ...getReactProcessEnv(mode),
     },
