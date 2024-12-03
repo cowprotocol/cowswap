@@ -1,11 +1,12 @@
 import { atomWithReset, atomWithStorage } from 'jotai/utils'
 
 import { getJotaiMergerStorage } from '@cowprotocol/core'
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { PersistentStateByChain } from '@cowprotocol/types'
 
 import { Erc20MulticallState } from '../types'
 
-type BalancesCache = Record<SupportedChainId, Record<string, string>>
+type BalancesCache = PersistentStateByChain<Record<string, string>>
 
 export interface BalancesState extends Erc20MulticallState {}
 

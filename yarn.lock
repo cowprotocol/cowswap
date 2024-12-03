@@ -2568,10 +2568,10 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@^5.5.1":
-  version "5.5.1"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-5.5.1.tgz#7bb4627c56958e8c438d08c10f7bdb3a89dc3c2f"
-  integrity sha512-FFc9pj8xhsfGZ1vjw+4IFGb6UTdPzuOoZOvM/OhZlrfy15ohfSSb2urbHWASvKjbcXeg6KqL4aHS6KEw+BYnmA==
+"@cowprotocol/cow-sdk@^5.8.0":
+  version "5.8.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-5.8.0.tgz#f5a4533a02e8055087a47fae6917819283c021c8"
+  integrity sha512-rNfkJ9wf1/x9R5L/sfTPWc8i5aAmodVb2whnlrb7JNl0BYviE1V0rtPmT8b2vwB6JWMIF41gFd9dXEWeqlavJA==
   dependencies:
     "@cowprotocol/contracts" "^1.6.0"
     "@ethersproject/abstract-signer" "^5.7.0"
@@ -2583,8 +2583,8 @@
     limiter "^2.1.0"
 
 "@cowprotocol/ethflowcontract@cowprotocol/ethflowcontract.git#main-artifacts":
-  version "1.2.0"
-  resolved "https://codeload.github.com/cowprotocol/ethflowcontract/tar.gz/0163ee489587fb7f2cbabcab9d566ebc4ec189f5"
+  version "1.3.0"
+  resolved "https://codeload.github.com/cowprotocol/ethflowcontract/tar.gz/ed75d811aba0e18aa80e949cbc979d34ab7fd9ee"
 
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"

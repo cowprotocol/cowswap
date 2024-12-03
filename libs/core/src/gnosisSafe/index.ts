@@ -12,6 +12,7 @@ const SAFE_TRANSACTION_SERVICE_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: 'https://safe-transaction-mainnet.safe.global',
   [SupportedChainId.GNOSIS_CHAIN]: 'https://safe-transaction-gnosis-chain.safe.global',
   [SupportedChainId.ARBITRUM_ONE]: 'https://safe-transaction-arbitrum.safe.global',
+  [SupportedChainId.BASE]: 'https://safe-transaction-base.safe.global',
   [SupportedChainId.SEPOLIA]: 'https://safe-transaction-sepolia.safe.global',
 }
 
@@ -77,7 +78,7 @@ export function getSafeWebUrl(chainId: SupportedChainId, safeAddress: string, sa
 export function getSafeTransaction(
   chainId: number,
   safeTxHash: string,
-  library: Web3Provider
+  library: Web3Provider,
 ): Promise<SafeMultisigTransactionResponse> {
   console.log('[api/gnosisSafe] getSafeTransaction', chainId, safeTxHash)
   const client = _getClientOrThrow(chainId, library)

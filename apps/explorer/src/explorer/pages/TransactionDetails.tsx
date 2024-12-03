@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet'
 import { useParams } from 'react-router'
 
-import { Wrapper } from './styled'
+import { Wrapper, StyledSearch } from './styled'
 
 import RedirectToSearch from '../../components/RedirectToSearch'
 import { useNetworkId } from '../../state/network'
@@ -24,6 +24,7 @@ const TransactionDetails = () => {
       <Helmet>
         <title>Transaction Details - {APP_TITLE}</title>
       </Helmet>
+      <StyledSearch />
       {txHashWithOx && <TransactionsTableWidget txHash={txHashWithOx} networkId={networkId} />}
     </Wrapper>
   )

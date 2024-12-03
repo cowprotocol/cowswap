@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.37.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.36.1...explorer-v2.37.0) (2024-12-03)
+
+
+### Features
+
+* allow adding networks without invalidating local-storage ([#5134](https://github.com/cowprotocol/cowswap/issues/5134)) ([995b4c0](https://github.com/cowprotocol/cowswap/commit/995b4c05da90356c6621a92dc58efbd6f37349ff))
+* **base:** add base chain support ([#5044](https://github.com/cowprotocol/cowswap/issues/5044)) ([4cf0c91](https://github.com/cowprotocol/cowswap/commit/4cf0c91a300d6fcdc026364e74c45e5b2f729f2b))
+* **explorer:** add search bar in order view ([#5118](https://github.com/cowprotocol/cowswap/issues/5118)) ([d708dcf](https://github.com/cowprotocol/cowswap/commit/d708dcf7e8428eaef611a9288f45f2c3f51bc689))
+* improve custom hook validation messages ([#5123](https://github.com/cowprotocol/cowswap/issues/5123)) ([91bab8d](https://github.com/cowprotocol/cowswap/commit/91bab8dc3b124a32790c3bb1955b01dd3a75ea7b))
+
 ## [2.36.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.36.0...explorer-v2.36.1) (2024-11-06)
 
 

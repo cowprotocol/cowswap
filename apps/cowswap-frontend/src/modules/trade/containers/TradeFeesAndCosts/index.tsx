@@ -16,6 +16,7 @@ interface TradeFeesAndCostsProps {
   networkCostsTooltipSuffix?: ReactNode
   withTimelineDot?: boolean
   alwaysRow?: boolean
+  volumeFeeTooltip?: string
 }
 
 export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
@@ -26,6 +27,7 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
     networkCostsTooltipSuffix,
     withTimelineDot = true,
     alwaysRow,
+    volumeFeeTooltip,
   } = props
 
   const networkFeeAmount = receiveAmountInfo && getOrderTypeReceiveAmounts(receiveAmountInfo).networkFeeAmount
@@ -46,6 +48,7 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
         partnerFeeAmount={partnerFeeAmount}
         partnerFeeBps={partnerFeeBps}
         widgetContent={widgetParams.content}
+        volumeFeeTooltip={volumeFeeTooltip}
       />
 
       {/*Network cost*/}

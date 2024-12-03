@@ -2,7 +2,8 @@ import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 import { getJotaiIsolatedStorage } from '@cowprotocol/core'
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { PersistentStateByChain } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { setHooksAtom } from './hookDetailsAtom'
@@ -18,7 +19,7 @@ type CustomHooksState = {
 
 const EMPTY_STATE: CustomHooksState = { pre: {}, post: {} }
 
-const customHookDappsInner = atomWithStorage<Record<SupportedChainId, CustomHooksState>>(
+const customHookDappsInner = atomWithStorage<PersistentStateByChain<CustomHooksState>>(
   'customHookDappsAtom:v1',
   mapSupportedNetworks(EMPTY_STATE),
   getJotaiIsolatedStorage(),
@@ -42,13 +43,14 @@ export const customPostHookDappsAtom = atom((get) => {
 export const upsertCustomHookDappAtom = atom(null, (get, set, isPreHook: boolean, dapp: HookDappIframe) => {
   const { chainId } = get(walletInfoAtom)
   const state = get(customHookDappsInner)
+  const stateForChain = state[chainId] || EMPTY_STATE
 
   set(customHookDappsInner, {
     ...state,
     [chainId]: {
       ...state[chainId],
       [isPreHook ? 'pre' : 'post']: {
-        ...state[chainId][isPreHook ? 'pre' : 'post'],
+        ...stateForChain[isPreHook ? 'pre' : 'post'],
         [dapp.url]: dapp,
       },
     },
@@ -58,10 +60,15 @@ export const upsertCustomHookDappAtom = atom(null, (get, set, isPreHook: boolean
 export const removeCustomHookDappAtom = atom(null, (get, set, dapp: HookDappIframe) => {
   const { chainId } = get(walletInfoAtom)
   const state = get(customHookDappsInner)
-  const currentState = { ...state[chainId] }
+  const stateForChain = state[chainId] || EMPTY_STATE
+  const currentState = { ...stateForChain }
 
-  delete currentState.pre[dapp.url]
-  delete currentState.post[dapp.url]
+  if (currentState.pre) {
+    delete currentState.pre[dapp.url]
+  }
+  if (currentState.post) {
+    delete currentState.post[dapp.url]
+  }
 
   set(customHookDappsInner, {
     ...state,

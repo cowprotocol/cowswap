@@ -2,8 +2,9 @@ import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 import { getJotaiMergerStorage } from '@cowprotocol/core'
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { PermitInfo } from '@cowprotocol/permit-utils'
+import { PersistentStateByChain } from '@cowprotocol/types'
 
 import { AddPermitTokenParams } from '../types'
 
@@ -16,10 +17,10 @@ type PermittableTokens = Record<string, PermitInfo>
  * Contains the permit info for every token checked locally
  */
 
-export const permittableTokensAtom = atomWithStorage<Record<SupportedChainId, PermittableTokens>>(
+export const permittableTokensAtom = atomWithStorage<PersistentStateByChain<PermittableTokens>>(
   'permittableTokens:v3',
   mapSupportedNetworks({}),
-  getJotaiMergerStorage()
+  getJotaiMergerStorage(),
 )
 
 /**
@@ -29,9 +30,13 @@ export const addPermitInfoForTokenAtom = atom(
   null,
   (get, set, { chainId, tokenAddress, permitInfo }: AddPermitTokenParams) => {
     const permittableTokens = { ...get(permittableTokensAtom) }
+    const permittableTokensForChain = permittableTokens[chainId] || {}
 
-    permittableTokens[chainId][tokenAddress.toLowerCase()] = permitInfo
+    permittableTokens[chainId] = {
+      ...permittableTokensForChain,
+      [tokenAddress.toLowerCase()]: permitInfo,
+    }
 
     set(permittableTokensAtom, permittableTokens)
-  }
+  },
 )
