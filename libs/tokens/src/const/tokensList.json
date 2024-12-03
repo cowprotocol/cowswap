@@ -121,7 +121,8 @@
     },
     {
       "priority": 2,
-      "source": "https://tokens.coingecko.com/base/all.json"
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.8453.json",
+      "enabledByDefault": true
     }
   ]
 }
