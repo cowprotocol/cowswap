@@ -3,8 +3,7 @@ import { isMobile, isInjectedWidget } from '@cowprotocol/common-utils'
 import {
   CoinbaseWalletOption,
   InjectedOption as DefaultInjectedOption,
-  InstallMetaMaskOption,
-  OpenMetaMaskMobileOption,
+  MetaMaskSdkOption,
   TrezorOption,
   WalletConnectV2Option,
   getIsInjected,
@@ -28,17 +27,22 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
 
   const isWidget = isInjectedWidget()
   const isInjectedMobileBrowser = getIsInjectedMobileBrowser()
+  const isMetamaskInstalled = multiInjectedProviders.some((provider) => provider.info.rdns.startsWith('io.metamask'))
 
   const connectionProps = { darkMode, selectedWallet, tryActivation }
 
+  const metaMaskSdkOption = <MetaMaskSdkOption {...connectionProps} />
   const coinbaseWalletOption = (!hasCoinbaseEip6963 && <CoinbaseWalletOption {...connectionProps} />) ?? null
   const walletConnectionV2Option =
     ((!isInjectedMobileBrowser || isWidget) && <WalletConnectV2Option {...connectionProps} />) ?? null
   const trezorOption = (!isInjectedMobileBrowser && !isMobile && <TrezorOption {...connectionProps} />) ?? null
+  const injectedOption = (getIsInjected() && <InjectedOptions connectionProps={connectionProps} multiInjectedProviders={multiInjectedProviders} />) ?? null
 
   return (
     <>
-      <InjectedOptions connectionProps={connectionProps} multiInjectedProviders={multiInjectedProviders} />
+      {isMetamaskInstalled && metaMaskSdkOption}
+      {injectedOption}
+      {!isMetamaskInstalled && metaMaskSdkOption}
       {walletConnectionV2Option}
       {coinbaseWalletOption}
       {trezorOption}
@@ -57,19 +61,13 @@ interface InjectedOptionsProps {
 }
 
 function InjectedOptions({ connectionProps, multiInjectedProviders }: InjectedOptionsProps) {
-  const isInjected = getIsInjected()
-
-  if (!isInjected) {
-    if (!isMobile) {
-      return <InstallMetaMaskOption />
-    } else {
-      return <OpenMetaMaskMobileOption />
-    }
-  } else {
-    if (multiInjectedProviders.length) {
-      return (
-        <>
-          {multiInjectedProviders.map((providerInfo) => {
+  if (multiInjectedProviders.length) {
+    return (
+      <>
+        {multiInjectedProviders
+          // Even if we detect the MetaMask Extension, we prefer to use the MetaMask SDK
+          .filter((providerInfo) => !providerInfo.info.rdns.startsWith('io.metamask'))
+          .map((providerInfo) => {
             return (
               <Eip6963Option
                 key={providerInfo.info.rdns}
@@ -80,10 +78,9 @@ function InjectedOptions({ connectionProps, multiInjectedProviders }: InjectedOp
               />
             )
           })}
-        </>
-      )
-    }
-
-    return <DefaultInjectedOption {...connectionProps} />
+      </>
+    )
   }
+
+  return <DefaultInjectedOption {...connectionProps} />
 }
