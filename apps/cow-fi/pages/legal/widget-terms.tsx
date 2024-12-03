@@ -9,7 +9,6 @@ import { Link } from '@/components/Link'
 import { ContainerCard, ArticleContent, Breadcrumbs, ArticleMainTitle, BodyContent } from '@/styles/styled'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnLegal } from 'modules/analytics'
 
 interface PageProps {
   siteConfigData: typeof CONFIG
@@ -39,10 +38,10 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
           <ArticleContent maxWidth="100%">
             <Breadcrumbs>
-              <Link href="/ " onClick={() => clickOnLegal('click-legal-breadcrumbs')}>
+              <Link href="/ " data-click-event="click-legal-breadcrumbs">
                 Home
               </Link>
-              <Link href="/legal" onClick={() => clickOnLegal('click-legal-breadcrumbs')}>
+              <Link href="/legal" data-click-event="click-legal-breadcrumbs">
                 Legal
               </Link>
               <span>{title}</span>
@@ -184,13 +183,11 @@ export default function Page({ siteConfigData }: PageProps) {
                 <li>the Widget, the Interface, the Protocol or its infrastructure;</li>
                 <li>Server(s) hosting the Widget, the Interface, the Protocol or its infrastructure;</li>
                 <li>
-                  Any computer or database connected to the Widget, the Interface, the Protocol or its
-                  infrastructure.
+                  Any computer or database connected to the Widget, the Interface, the Protocol or its infrastructure.
                 </li>
               </ul>
               <p>
-                You are prohibited from attacking the Widget, the Interface, the Protocol or its infrastructure
-                through:
+                You are prohibited from attacking the Widget, the Interface, the Protocol or its infrastructure through:
               </p>
               <ul>
                 <li>Denial-of-service attacks;</li>

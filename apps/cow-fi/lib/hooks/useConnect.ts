@@ -2,21 +2,19 @@ import { useAccount, useConnect as useConnectWagmi } from 'wagmi'
 import { useCallback, useEffect, useState } from 'react'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { ConnectResult, PublicClient } from '@wagmi/core'
-import { clickOnMevBlocker } from '../../modules/analytics'
 
 export function useConnect() {
   const { isConnected } = useAccount()
   const { openConnectModal } = useConnectModal()
   const { connectAsync, connectors } = useConnectWagmi()
   const [connectionPromise, setConnectionPromise] = useState<Promise<ConnectResult<PublicClient> | undefined> | null>(
-    null
+    null,
   )
 
   const injectedConnector = connectors.find((c) => c.id === 'injected')
 
   useEffect(() => {
     if (isConnected && connectionPromise) {
-      clickOnMevBlocker('wallet-connected')
       setConnectionPromise(null)
     }
   }, [isConnected, connectionPromise])

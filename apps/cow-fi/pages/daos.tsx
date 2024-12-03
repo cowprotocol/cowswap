@@ -46,7 +46,6 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, Navigation } from 'swiper/modules'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnDaos } from 'modules/analytics'
 
 interface PageProps {
   siteConfigData: typeof CONFIG
@@ -169,7 +168,7 @@ export default function Page() {
                       href="https://github.com/charlesndalton/milkman"
                       external
                       utmContent="link-to-milkman"
-                      onClick={() => clickOnDaos('click-milkman')}
+                      data-click-event="click-milkman"
                     >
                       Milkman bot
                     </Link>
@@ -228,7 +227,7 @@ export default function Page() {
                       href="https://dump.services/"
                       external
                       utmContent="link-to-dump-services"
-                      onClick={() => clickOnDaos('click-dump-services')}
+                      data-click-event="click-dump-services"
                     >
                       Dump.services
                     </Link>
@@ -256,9 +255,9 @@ export default function Page() {
               href="https://blog.cow.fi/list/advanced-order-types-b391bd4390cb"
               linkType={LinkType.SectionTitleButton}
               utmContent="link-to-advanced-order-types"
+              data-click-event="click-advanced-order-types"
               margin="24px auto 0"
               external
-              onClick={() => clickOnDaos('click-advanced-order-types')}
             >
               Explore advanced order types
             </Link>
@@ -301,9 +300,9 @@ export default function Page() {
                       <Link
                         linkType={LinkType.TopicButton}
                         href={dao.link}
-                        utmContent={`dao-${dao.title.toLowerCase().replace(/\s/g, '-')}`}
                         external
-                        onClick={() => clickOnDaos(`click-${dao.title.toLowerCase()}`)}
+                        utmContent={`dao-${dao.title.toLowerCase().replace(/\s/g, '-')}`}
+                        data-click-event={`click-${dao.title.toLowerCase()}`}
                       >
                         Learn more
                       </Link>
@@ -318,7 +317,7 @@ export default function Page() {
                     href={`${dao.link}?utm_source=cow.fi&utm_medium=web&utm_content=dao-${dao.title}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={() => clickOnDaos(`click-${dao.title.toLowerCase()}`)}
+                    data-click-event={`click-${dao.title.toLowerCase()}`}
                   >
                     <TopicImage
                       iconColor={Color.neutral0}

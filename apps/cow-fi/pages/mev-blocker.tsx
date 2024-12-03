@@ -7,6 +7,7 @@ import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
 import { AddRpcButton } from '@/components/AddRpcButton'
 import { Link, LinkType } from '@/components/Link'
+import { CopyToClipboard } from '@/components/CopyToClipboard'
 
 import useWebShare from '../hooks/useWebShare'
 
@@ -56,7 +57,6 @@ import LazySVG from '@/components/LazySVG'
 import { FAQ_DATA, TRUSTED_BY_CONTENT, TESTIMONIAL_LIST, MEV_BLOCKER_LIST } from '@/data/mev-blocker/const'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnMevBlocker } from 'modules/analytics'
 
 // Configure chains and providers
 const { chains, publicClient } = configureChains([mainnet], [publicProvider()])
@@ -122,7 +122,7 @@ export default function Page() {
                   bgColor={'#EC4612'}
                   color={'#FEE7CF'}
                   href="#rpc"
-                  onClick={() => clickOnMevBlocker('click-get-protected-heroSection')}
+                  data-click-event="click-get-protected-heroSection"
                 >
                   Get protected
                 </Link>
@@ -155,7 +155,7 @@ export default function Page() {
                 external
                 linkType={LinkType.SectionTitleButton}
                 utmContent="mev-blocker-metrics-link"
-                onClick={() => clickOnMevBlocker('click-metrics-dune')}
+                data-click-event="click-metrics-dune"
               >
                 View all metrics on DUNE &#8599;
               </Link>
@@ -174,7 +174,7 @@ export default function Page() {
                       href="https://dune.com/queries/2259793/3703605"
                       external
                       utmContent="mev-blocker-dune-link"
-                      onClick={() => clickOnMevBlocker('click-dune-link')}
+                      data-click-event="click-dune-link"
                     >
                       $1.38 billion
                     </Link>{' '}
@@ -205,7 +205,7 @@ export default function Page() {
                       href="https://www.mevscanner.com/"
                       external
                       utmContent="mev-blocker-mev-scanner-link"
-                      onClick={() => clickOnMevBlocker('click-mev-scanner-link')}
+                      data-click-event="click-mev-scanner-link"
                     >
                       Use MEV Scanner
                     </Link>{' '}
@@ -249,33 +249,45 @@ export default function Page() {
                       <TopicTable>
                         <tbody>
                           <tr>
-                            <td>Network name</td>
+                            <td>Network Name:</td>
                             <td>
-                              <b>MEV Blocker</b>
+                              <b>
+                                MEV Blocker <CopyToClipboard text="MEV Blocker" margin="0 0 0 0.4rem" />
+                              </b>
                             </td>
                           </tr>
                           <tr>
-                            <td>New RPC URL</td>
+                            <td>RPC URL:</td>
                             <td>
-                              <b>https://rpc.mevblocker.io</b>
+                              <b>
+                                https://rpc.mevblocker.io
+                                <CopyToClipboard text="https://rpc.mevblocker.io" margin="0 0 0 0.4rem" />
+                              </b>
                             </td>
                           </tr>
                           <tr>
                             <td>Chain ID</td>
                             <td>
-                              <b>1</b>
+                              <b>
+                                1 <CopyToClipboard text="1" margin="0 0 0 0.4rem" />
+                              </b>
                             </td>
                           </tr>
                           <tr>
                             <td>Currency symbol</td>
                             <td>
-                              <b>ETH</b>
+                              <b>
+                                ETH <CopyToClipboard text="ETH" margin="0 0 0 0.4rem" />
+                              </b>
                             </td>
                           </tr>
                           <tr>
                             <td>Block Explorer URL</td>
                             <td>
-                              <b>https://etherscan.io</b>
+                              <b>
+                                https://etherscan.io
+                                <CopyToClipboard text="https://etherscan.io" margin="0 0 0 0.4rem" />
+                              </b>
                             </td>
                           </tr>
                         </tbody>
@@ -356,7 +368,7 @@ export default function Page() {
                       href="https://docs.cow.fi/mevblocker"
                       external
                       utmContent="mev-blocker-docs-link"
-                      onClick={() => clickOnMevBlocker('click-mev-blocker-docs-link')}
+                      data-click-event="click-mev-blocker-docs-link"
                     >
                       read the MEV Blocker docs
                     </Link>
@@ -438,7 +450,7 @@ export default function Page() {
                     external
                     linkType={LinkType.SectionTitleButton}
                     utmContent="mev-blocker-learn-more"
-                    onClick={() => clickOnMevBlocker('click-mev-blocker-learn-more')}
+                    data-click-event="click-mev-blocker-learn-more"
                   >
                     Learn more
                   </Link>
@@ -465,7 +477,7 @@ export default function Page() {
                       href={item.href}
                       rel={'noopener noreferrer nofollow'}
                       target="_blank"
-                      onClick={() => clickOnMevBlocker(`click-trusted-by-${item.href}`)}
+                      data-click-event={`click-trusted-by-${item.href}`}
                     >
                       <TopicImage
                         iconColor={Color.neutral20}
@@ -511,6 +523,7 @@ export default function Page() {
                     color={'#FEE7CF'}
                     onClick={handleShareClick}
                     asButton
+                    data-click-event="click-share-mev-blocker"
                   >
                     Share MEV Blocker
                   </Link>

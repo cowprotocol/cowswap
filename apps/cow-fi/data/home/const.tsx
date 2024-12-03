@@ -22,7 +22,6 @@ import {
 } from '@/styles/styled'
 import { Link, LinkType } from '@/components/Link'
 import SVG from 'react-inlinesvg'
-import { clickOnHome } from 'modules/analytics'
 
 export const PRODUCT_LIST = [
   {
@@ -142,9 +141,9 @@ export const PRODUCT_CONTAINERS = (
                 color={topic.linkColor}
                 href={topic.linkHref}
                 linkType={LinkType.TopicButton}
-                onClick={() => clickOnHome(topic.linkEvent)}
                 external={topic.linkExternal}
                 utmContent={topic.linkUtmContent}
+                data-click-event={topic.linkEvent}
               >
                 {topic.linkText}
               </Link>
