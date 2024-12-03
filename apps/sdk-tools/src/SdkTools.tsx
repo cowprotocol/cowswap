@@ -200,8 +200,6 @@ export function SdkTools() {
               </Value>
             </KeyValuePair>
             {Object.entries(conditionalOrder.data as Object).map(([key, value]) => {
-              if (!isNaN(Number(key))) return null // Ignore numeric keys
-
               let displayValue = value
               if (value && typeof value === 'object' && typeof value.toString === 'function') {
                 displayValue = value.toString()
