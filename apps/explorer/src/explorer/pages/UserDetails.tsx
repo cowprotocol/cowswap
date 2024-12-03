@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet'
 import { useParams } from 'react-router'
 import styled from 'styled-components/macro'
 
-import { TitleAddress, Wrapper as WrapperMod, FlexContainerVar } from './styled'
+import { TitleAddress, Wrapper as WrapperMod, FlexContainerVar, StyledSearch } from './styled'
 
 import { BlockExplorerLink } from '../../components/common/BlockExplorerLink'
 import CowLoading from '../../components/common/CowLoading'
@@ -30,6 +30,7 @@ const UserDetails: React.FC = () => {
       <Helmet>
         <title>User Details - {APP_TITLE}</title>
       </Helmet>
+      <StyledSearch />
       {addressAccount ? (
         <>
           <FlexContainerVar>

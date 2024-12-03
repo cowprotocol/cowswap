@@ -11,7 +11,7 @@ import ms from 'ms.macro'
 
 import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
-import { useWalletMetaData } from './hooks/useWalletMetadata'
+import { useIsSafeApp, useWalletMetaData } from './hooks/useWalletMetadata'
 
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
@@ -50,6 +50,7 @@ function _useWalletDetails(account?: string, standaloneMode?: boolean): WalletDe
   const { ENSName: ensName } = useENSName(account ?? undefined)
   const isSmartContractWallet = useIsSmartContractWallet()
   const { walletName, icon } = useWalletMetaData(standaloneMode)
+  const isSafeApp = useIsSafeApp()
 
   return useMemo(() => {
     return {
@@ -62,8 +63,9 @@ function _useWalletDetails(account?: string, standaloneMode?: boolean): WalletDe
       // TODO: For now, all SC wallets use pre-sign instead of offchain signing
       // In the future, once the API adds EIP-1271 support, we can allow some SC wallets to use offchain signing
       allowsOffchainSigning: !isSmartContractWallet,
+      isSafeApp,
     }
-  }, [isSmartContractWallet, walletName, icon, ensName])
+  }, [isSmartContractWallet, isSafeApp, walletName, icon, ensName])
 }
 
 function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {

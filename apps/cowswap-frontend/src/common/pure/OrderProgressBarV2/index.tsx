@@ -649,14 +649,15 @@ const COW_SWAP_BENEFITS = [
   "Unlike most other exchanges, CoW Swap doesn't charge you any fees if your trade fails.",
 ]
 
-const TRADE_ON_ARBITRUM_BENEFIT =
-  'CoW Swap is now live on Arbitrum. Switch the network toggle in the nav bar for quick, cheap transactions.'
+const TRADE_ON_NEW_CHAINS_BENEFIT =
+  'CoW Swap is now live on Arbitrum and Base. Switch the network toggle in the nav bar for quick, cheap transactions.'
 
 const CHAIN_SPECIFIC_BENEFITS: Record<SupportedChainId, string[]> = {
-  [SupportedChainId.MAINNET]: [TRADE_ON_ARBITRUM_BENEFIT, ...COW_SWAP_BENEFITS],
+  [SupportedChainId.MAINNET]: [TRADE_ON_NEW_CHAINS_BENEFIT, ...COW_SWAP_BENEFITS],
   [SupportedChainId.ARBITRUM_ONE]: COW_SWAP_BENEFITS,
-  [SupportedChainId.GNOSIS_CHAIN]: [TRADE_ON_ARBITRUM_BENEFIT, ...COW_SWAP_BENEFITS],
-  [SupportedChainId.SEPOLIA]: [TRADE_ON_ARBITRUM_BENEFIT, ...COW_SWAP_BENEFITS],
+  [SupportedChainId.BASE]: COW_SWAP_BENEFITS,
+  [SupportedChainId.GNOSIS_CHAIN]: [TRADE_ON_NEW_CHAINS_BENEFIT, ...COW_SWAP_BENEFITS],
+  [SupportedChainId.SEPOLIA]: [TRADE_ON_NEW_CHAINS_BENEFIT, ...COW_SWAP_BENEFITS],
 }
 
 function truncateWithEllipsis(str: string, maxLength: number): string {

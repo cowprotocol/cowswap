@@ -11,5 +11,6 @@ export const SUBGRAPH_URLS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: getSubgraphUrl(SupportedChainId.MAINNET, 'MAINNET'),
   [SupportedChainId.GNOSIS_CHAIN]: getSubgraphUrl(SupportedChainId.GNOSIS_CHAIN, 'GNOSIS_CHAIN'),
   [SupportedChainId.ARBITRUM_ONE]: getSubgraphUrl(SupportedChainId.ARBITRUM_ONE, 'ARBITRUM_ONE'),
+  [SupportedChainId.BASE]: getSubgraphUrl(SupportedChainId.BASE, 'BASE'),
   [SupportedChainId.SEPOLIA]: getSubgraphUrl(SupportedChainId.SEPOLIA, 'SEPOLIA'),
 }
