@@ -1,3 +1,5 @@
+import React from 'react'
+
 import {
   COMPOSABLE_COW,
   ConditionalOrder,
@@ -5,8 +7,8 @@ import {
   DEFAULT_CONDITIONAL_ORDER_REGISTRY,
   IsValidResult,
 } from '@cowprotocol/cow-sdk'
-import React from 'react'
-import styled from 'styled-components'
+
+import styled from 'styled-components/macro'
 
 const ordersFactory = new ConditionalOrderFactory(DEFAULT_CONDITIONAL_ORDER_REGISTRY)
 
