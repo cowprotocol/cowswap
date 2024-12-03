@@ -16,7 +16,7 @@ export function ExternalSourceAlert({ className, onChange, title, children }: Ex
   return (
     <styledEl.Contents className={className}>
       <AlertTriangle size={48} strokeWidth={1} />
-      <h3>{title}</h3>
+      <styledEl.Title>{title}</styledEl.Title>
       {children}
 
       <styledEl.AcceptanceBox>

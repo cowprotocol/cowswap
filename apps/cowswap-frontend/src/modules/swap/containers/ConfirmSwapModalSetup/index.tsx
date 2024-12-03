@@ -1,43 +1,36 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
 import { getMinimumReceivedTooltip } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Command } from '@cowprotocol/types'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Percent, TradeType } from '@uniswap/sdk-core'
 
-import { HighFeeWarning } from 'legacy/components/SwapWarnings'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { useOrder } from 'legacy/state/orders/hooks'
 import TradeGp from 'legacy/state/swap/TradeGp'
+import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
+import { useAppData } from 'modules/appData'
 import {
   TradeConfirmation,
   TradeConfirmModal,
+  useIsEoaEthFlow,
+  useOrderSubmittedContent,
   useReceiveAmountInfo,
+  useShouldPayGas,
   useTradeConfirmActions,
-  useTradeConfirmState,
 } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
-import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
+import { useIsSmartSlippageApplied, useSmartTradeSlippage } from 'modules/tradeSlippage'
+import { HighFeeWarning, NetworkCostsTooltipSuffix, RowDeadline } from 'modules/tradeWidgetAddons'
 
-import { useOrderProgressBarV2Props } from 'common/hooks/orderProgressBarV2'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 import { RateInfoParams } from 'common/pure/RateInfo'
-import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
+import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
-import { useNavigateToNewOrderCallback } from '../../hooks/useNavigateToNewOrderCallback'
-import { useShouldPayGas } from '../../hooks/useShouldPayGas'
 import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
 import { useSwapState } from '../../hooks/useSwapState'
-import { NetworkCostsTooltipSuffix } from '../../pure/NetworkCostsTooltipSuffix'
-import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '../../pure/Row/RowSlippageContent'
-import { RowDeadline } from '../Row/RowDeadline'
 
 const CONFIRM_TITLE = 'Swap'
 
@@ -53,7 +46,6 @@ export interface ConfirmSwapModalSetupProps {
 
   doTrade(): void
 }
-
 
 export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const {
@@ -73,12 +65,11 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const { recipient } = useSwapState()
   const tradeConfirmActions = useTradeConfirmActions()
   const receiveAmountInfo = useReceiveAmountInfo()
-  const widgetParams = useInjectedWidgetParams()
   const shouldPayGas = useShouldPayGas()
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
-
-  const isInvertedState = useState(false)
+  const appData = useAppData()
+  const [userDeadline] = useUserTransactionTTL()
 
   const slippageAdjustedSellAmount = trade?.maximumAmountIn(allowedSlippage)
   const isExactIn = trade?.tradeType === TradeType.EXACT_INPUT
@@ -86,23 +77,36 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const buttonText = useSwapConfirmButtonText(slippageAdjustedSellAmount)
 
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
+  const smartSlippage = useSmartTradeSlippage()
 
   const labelsAndTooltips = useMemo(
     () => ({
-      slippageLabel: isEoaEthFlow || isSmartSlippageApplied ? `Slippage tolerance (${isEoaEthFlow ? 'modified' : 'dynamic'})` : undefined,
+      slippageLabel:
+        isEoaEthFlow || isSmartSlippageApplied
+          ? `Slippage tolerance (${isEoaEthFlow ? 'modified' : 'dynamic'})`
+          : undefined,
       slippageTooltip: isEoaEthFlow
         ? getNativeSlippageTooltip(chainId, [nativeCurrency.symbol])
-        : getNonNativeSlippageTooltip(),
+        : getNonNativeSlippageTooltip({ isDynamic: !!smartSlippage }),
       expectReceiveLabel: isExactIn ? 'Expected to receive' : 'Expected to sell',
       minReceivedLabel: isExactIn ? 'Minimum receive' : 'Maximum sent',
       minReceivedTooltip: getMinimumReceivedTooltip(allowedSlippage, isExactIn),
       networkCostsSuffix: shouldPayGas ? <NetworkCostsSuffix /> : null,
       networkCostsTooltipSuffix: <NetworkCostsTooltipSuffix />,
     }),
-    [chainId, allowedSlippage, nativeCurrency.symbol, isEoaEthFlow, isExactIn, shouldPayGas]
+    [
+      chainId,
+      allowedSlippage,
+      nativeCurrency.symbol,
+      isEoaEthFlow,
+      isExactIn,
+      shouldPayGas,
+      isSmartSlippageApplied,
+      smartSlippage,
+    ],
   )
 
-  const submittedContent = useSubmittedContent(chainId)
+  const submittedContent = useOrderSubmittedContent(chainId)
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
@@ -119,54 +123,31 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
         priceImpact={priceImpact}
         buttonText={buttonText}
         recipient={recipient}
+        appData={appData || undefined}
       >
-        <>
-          {receiveAmountInfo && (
-            <TradeBasicConfirmDetails
-              isInvertedState={isInvertedState}
-              rateInfoParams={rateInfoParams}
-              slippage={allowedSlippage}
-              receiveAmountInfo={receiveAmountInfo}
-              widgetParams={widgetParams}
-              labelsAndTooltips={labelsAndTooltips}
-              recipient={recipient}
-              account={account}
-              hideLimitPrice
-              hideUsdValues
-              withTimelineDot={false}
-              alwaysRow
-            >
-              <RowDeadline />
-            </TradeBasicConfirmDetails>
-          )}
-          <HighFeeWarning trade={trade} />
-          {!priceImpact.priceImpact && <NoImpactWarning isAccepted withoutAccepting />}
-        </>
+        {(restContent) => (
+          <>
+            {receiveAmountInfo && (
+              <TradeBasicConfirmDetails
+                rateInfoParams={rateInfoParams}
+                slippage={allowedSlippage}
+                receiveAmountInfo={receiveAmountInfo}
+                labelsAndTooltips={labelsAndTooltips}
+                recipient={recipient}
+                account={account}
+                hideLimitPrice
+                hideUsdValues
+                withTimelineDot={false}
+                alwaysRow
+              >
+                <RowDeadline deadline={userDeadline} />
+              </TradeBasicConfirmDetails>
+            )}
+            {restContent}
+            <HighFeeWarning readonlyMode />
+          </>
+        )}
       </TradeConfirmation>
     </TradeConfirmModal>
   )
 }
-
-function useSubmittedContent(chainId: SupportedChainId) {
-  const { transactionHash } = useTradeConfirmState()
-  const order = useOrder({ chainId, id: transactionHash || undefined })
-
-  const orderProgressBarV2Props = useOrderProgressBarV2Props(chainId, order)
-
-  const navigateToNewOrderCallback = useNavigateToNewOrderCallback()
-
-  return useCallback(
-    (onDismiss: Command) => (
-      <TransactionSubmittedContent
-        chainId={chainId}
-        hash={transactionHash || undefined}
-        onDismiss={onDismiss}
-        activityDerivedState={orderProgressBarV2Props.activityDerivedState}
-        orderProgressBarV2Props={orderProgressBarV2Props}
-        navigateToNewOrderCallback={navigateToNewOrderCallback}
-      />
-    ),
-    [chainId, transactionHash, orderProgressBarV2Props, navigateToNewOrderCallback]
-  )
-}
-

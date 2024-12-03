@@ -17,13 +17,14 @@ const BaseButton = css`
   transition: all 0.2s ease-in-out;
 `
 
-export const LinkButton = styled.button`
+export const LinkButton = styled.button<{ disabled?: boolean }>`
   ${BaseButton}
-  background: var(${UI.COLOR_PRIMARY});
-  color: var(${UI.COLOR_PAPER});
+  background: ${({ disabled }) => `var(${disabled ? UI.COLOR_PRIMARY_OPACITY_10 : UI.COLOR_PRIMARY})`};
+  color: ${({ disabled }) => `var(${disabled ? UI.COLOR_TEXT_OPACITY_50 : UI.COLOR_PAPER})`};
   border: none;
   font-weight: 600;
   font-size: 16px;
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
 
   ${Media.upToSmall()} {
     width: 100%;
@@ -31,7 +32,7 @@ export const LinkButton = styled.button`
   }
 
   &:hover {
-    background: var(${UI.COLOR_PRIMARY_DARKEST});
+    background: ${({ disabled }) => `var(${disabled ? UI.COLOR_PRIMARY_OPACITY_10 : UI.COLOR_PRIMARY_DARKEST})`};
   }
 `
 
@@ -48,7 +49,7 @@ export const RemoveButton = styled.button`
   }
 `
 
-export const HookDappListItem = styled.li<{ isDescriptionView?: boolean }>`
+export const HookDappListItem = styled.li<{ isDescriptionView?: boolean; isCompatible?: boolean }>`
   width: 100%;
   background: transparent;
   display: flex;
@@ -63,6 +64,21 @@ export const HookDappListItem = styled.li<{ isDescriptionView?: boolean }>`
   transition: all 0.2s ease-in-out;
   margin: 0;
   cursor: pointer;
+  background: ${({ isCompatible }) => (isCompatible ? `var(${UI.COLOR_PAPER})` : `var(${UI.COLOR_PAPER_DARKER})`)};
+
+  &::after {
+    content: ${({ isCompatible }) => (isCompatible ? 'none' : '"This hook is not compatible with your wallet"')};
+    color: var(${UI.COLOR_ALERT_TEXT});
+    font-size: 12px;
+    background-color: var(${UI.COLOR_ALERT_BG});
+    padding: 4px 8px;
+    border-radius: 12px;
+    display: ${({ isCompatible }) => (isCompatible ? 'none' : 'block')};
+    width: 100%;
+    text-align: center;
+    margin: 0 0 -8px;
+  }
+
   &:hover {
     background: ${({ isDescriptionView }) =>
       isDescriptionView ? 'transparent' : `var(${UI.COLOR_PRIMARY_OPACITY_10})`};

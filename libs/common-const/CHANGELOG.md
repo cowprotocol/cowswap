@@ -1,5 +1,36 @@
 # Changelog
 
+## [1.10.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.10.0...common-const-v1.10.1) (2024-11-21)
+
+
+### Bug Fixes
+
+* **volume-fee:** do not add fee for USDC.e on arb ([#5119](https://github.com/cowprotocol/cowswap/issues/5119)) ([ba11c02](https://github.com/cowprotocol/cowswap/commit/ba11c02ccbd9631d15a1c3c898606a62cc636270))
+
+## [1.10.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.9.0...common-const-v1.10.0) (2024-11-06)
+
+
+### Features
+
+* **protocol-fees:** arb1 protocol fee ([#5055](https://github.com/cowprotocol/cowswap/issues/5055)) ([ed176c3](https://github.com/cowprotocol/cowswap/commit/ed176c3ab95fe51065a905e05ca184f3abf7e282))
+* **yield:** define token category by default for selection ([#5018](https://github.com/cowprotocol/cowswap/issues/5018)) ([7c18b7d](https://github.com/cowprotocol/cowswap/commit/7c18b7d85de6feac9c7e64740a93572f3af3c273))
+* **yield:** display cow amm banner conditionally ([#5035](https://github.com/cowprotocol/cowswap/issues/5035)) ([1a517a3](https://github.com/cowprotocol/cowswap/commit/1a517a3f21b94c10b8e59e68bc49a569c1be904b))
+
+## [1.9.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.8.0...common-const-v1.9.0) (2024-10-29)
+
+
+### Features
+
+* **halloween:** add Halloween mode ([#5036](https://github.com/cowprotocol/cowswap/issues/5036)) ([791796d](https://github.com/cowprotocol/cowswap/commit/791796d139828f3dd0657222cbf98a5ce93ff321))
+
+## [1.8.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.7.0...common-const-v1.8.0) (2024-10-18)
+
+
+### Features
+
+* **smart-slippage:** update smart slippage text ([#4982](https://github.com/cowprotocol/cowswap/issues/4982)) ([4b89ecb](https://github.com/cowprotocol/cowswap/commit/4b89ecbf661e6c30193586c704e23c78b2bfc22b))
+* **widget:** deadline widget param ([#4991](https://github.com/cowprotocol/cowswap/issues/4991)) ([ce3b5b8](https://github.com/cowprotocol/cowswap/commit/ce3b5b8adb5cc95a5ca3097d5cf2d45b249748c2))
+
 ## [1.7.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.6.2...common-const-v1.7.0) (2024-07-12)
 
 

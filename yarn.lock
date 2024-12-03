@@ -2396,10 +2396,10 @@
   resolved "https://registry.yarnpkg.com/@corex/deepmerge/-/deepmerge-4.0.43.tgz#9bd42559ebb41cc5a7fb7cfeea5f231c20977dca"
   integrity sha512-N8uEMrMPL0cu/bdboEWpQYb/0i2K5Qn8eCsxzOmxSggJbbQte7ljMRoXm917AbntqTGOzdTu+vP3KOOzoC70HQ==
 
-"@cowprotocol/app-data@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-2.2.0.tgz#0e03634f7a1d63226330628de2720687ab26dbc7"
-  integrity sha512-hHwUeF7UXCgPmYP67a446vl273zRmDqIbCp6Fqf7geNBT7IrXEMQazxWXa+D6HttTJnSVXrJoGc/rJnKpLQkGw==
+"@cowprotocol/app-data@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-2.3.0.tgz#8c9a8ca934193eaba6cc6d67344f2f1f368e8e77"
+  integrity sha512-wClmhKUAEVEgt9o7+ZLvV5AT/LP2ySMfPwveyy1Nwd762m8djaIddZ5cbex6iBROyOHEmk+9x9rcn8sUHXQ4Ww==
   dependencies:
     ajv "^8.11.0"
     cross-fetch "^3.1.5"
@@ -2429,10 +2429,10 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@^5.4.1":
-  version "5.4.1"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-5.4.1.tgz#35dd62c8eb1c60e2877b5f16f9b0c07e9a6b0432"
-  integrity sha512-/RFHVVRWr2mwVIZZy1ttG5xGSneth7sahcx5M+x5D7U4FJLXXPlc71njTpr5/dCj3HZ0vlqbZUEbN0KOLoysFA==
+"@cowprotocol/cow-sdk@^5.7.1":
+  version "5.7.1"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-5.7.1.tgz#22b556b79c949a3c5a65ee87f188a477f29d76eb"
+  integrity sha512-1SKzf6hqLEUP3if+Ki6eweSWcUA7hDyFcmUW2tf6a0XROwl9ktNHWP7dJ09zMrnFn6k03DqoYvKun1i+WS1D7Q==
   dependencies:
     "@cowprotocol/contracts" "^1.6.0"
     "@ethersproject/abstract-signer" "^5.7.0"
@@ -2444,8 +2444,8 @@
     limiter "^2.1.0"
 
 "@cowprotocol/ethflowcontract@cowprotocol/ethflowcontract.git#main-artifacts":
-  version "1.2.0"
-  resolved "https://codeload.github.com/cowprotocol/ethflowcontract/tar.gz/0163ee489587fb7f2cbabcab9d566ebc4ec189f5"
+  version "1.3.0"
+  resolved "https://codeload.github.com/cowprotocol/ethflowcontract/tar.gz/ed75d811aba0e18aa80e949cbc979d34ab7fd9ee"
 
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"

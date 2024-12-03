@@ -6,9 +6,9 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
+import { useIsSafeEthFlow } from 'modules/trade'
 
-import { useIsSafeEthFlow } from './useIsSafeEthFlow'
+import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 
 export function useSwapConfirmButtonText(slippageAdjustedSellAmount: Nullish<CurrencyAmount<Currency>>) {
   const isSafeApprovalBundle = useIsSafeApprovalBundle(slippageAdjustedSellAmount)

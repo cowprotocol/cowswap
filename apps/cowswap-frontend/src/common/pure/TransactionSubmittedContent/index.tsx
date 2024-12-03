@@ -1,4 +1,5 @@
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
 import { BackButton } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
@@ -6,12 +7,12 @@ import { Nullish } from 'types'
 
 import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/DisplayLink'
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
+import type { Order } from 'legacy/state/orders/actions'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { GnosisSafeTxDetails } from 'modules/account/containers/Transaction/ActivityDetails'
 import { Category, cowAnalytics } from 'modules/analytics'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
-import { NavigateToNewOrderCallback } from 'modules/swap/hooks/useNavigateToNewOrderCallback'
 import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
 
 import * as styledEl from './styled'
@@ -46,7 +47,7 @@ export interface TransactionSubmittedContentProps {
   activityDerivedState: ActivityDerivedState | null
   currencyToAdd?: Nullish<Currency>
   orderProgressBarV2Props: OrderProgressBarV2Props
-  navigateToNewOrderCallback?: NavigateToNewOrderCallback
+  navigateToNewOrderCallback?: (chainId: SupportedChainId, order?: Order, callback?: Command) => () => void
 }
 
 export function TransactionSubmittedContent({

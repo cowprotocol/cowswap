@@ -177,7 +177,6 @@ export const SimulateContainer = styled.div<{ isSuccessful: boolean }>`
 `
 
 export const OldSimulateContainer = styled.div`
-  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_25});
   border-radius: 4px;
   padding: 10px;
   display: flex;
@@ -210,5 +209,21 @@ export const SimulateFooter = styled.div`
     background: #fff;
     border-radius: 4px;
     padding: 2px;
+  }
+`
+
+export const Spinner = styled.div`
+  border: 5px solid transparent;
+  border-top-color: ${`var(${UI.COLOR_PRIMARY_LIGHTER})`};
+  border-radius: 50%;
+  animation: spin 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 `

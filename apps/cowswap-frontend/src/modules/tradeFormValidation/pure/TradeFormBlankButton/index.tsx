@@ -24,7 +24,9 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
   cursor: pointer;
   min-height: 58px;
   text-align: center;
-  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  transition:
+    background var(${UI.ANIMATION_DURATION}) ease-in-out,
+    color var(${UI.ANIMATION_DURATION}) ease-in-out;
   border: none;
   outline: none;
 
@@ -49,9 +51,17 @@ export interface TradeFormPrimaryButtonProps {
   loading?: boolean
   id?: string
   onClick?(): void
+  className?: string
 }
 
-export function TradeFormBlankButton({ onClick, children, disabled, loading, id }: TradeFormPrimaryButtonProps) {
+export function TradeFormBlankButton({
+  onClick,
+  children,
+  disabled,
+  loading,
+  id,
+  className,
+}: TradeFormPrimaryButtonProps) {
   const ref = useRef<HTMLButtonElement>(null)
   const [hasLongText, setHasLongText] = useState(false)
   const [justClicked, setJustClicked] = useState(false)
@@ -89,7 +99,14 @@ export function TradeFormBlankButton({ onClick, children, disabled, loading, id 
   }, [justClicked])
 
   return (
-    <ActionButton ref={ref} id={id} onClick={handleClick} disabled={showLoader || disabled} hasLongText$={hasLongText}>
+    <ActionButton
+      ref={ref}
+      id={id}
+      className={className}
+      onClick={handleClick}
+      disabled={showLoader || disabled}
+      hasLongText$={hasLongText}
+    >
       {showLoader ? (
         <>
           <LongLoadText>Confirm with your wallet </LongLoadText> <CenteredDots smaller />

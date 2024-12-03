@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.16.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.15.0...cow-fi-v1.16.0) (2024-10-29)
+
+
+### Features
+
+* fix path ([#5022](https://github.com/cowprotocol/cowswap/issues/5022)) ([92ad33c](https://github.com/cowprotocol/cowswap/commit/92ad33c5d6a280bd1a9e40e6cf49486f6f71130a))
+
+## [1.15.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.14.0...cow-fi-v1.15.0) (2024-10-10)
+
+
+### Features
+
+* **cow.fi:** modify sitemap lastmod and lazy load twitter js ([#4951](https://github.com/cowprotocol/cowswap/issues/4951)) ([6017924](https://github.com/cowprotocol/cowswap/commit/6017924aec4df1a53181b5ab4c818afc5d2c5091))
+
 ## [1.14.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.13.0...cow-fi-v1.14.0) (2024-09-30)
 
 

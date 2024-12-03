@@ -1,15 +1,20 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
+import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
-
-import styled from 'styled-components/macro'
+import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { SwapWidget } from 'modules/swap'
-import { useIsSellNative } from 'modules/trade'
+import { useIsSellNative, useIsWrapOrUnwrap } from 'modules/trade'
+
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+
+import { TradeWidgetWrapper } from './styled'
 
 import { useSetRecipientOverride } from '../../hooks/useSetRecipientOverride'
 import { useSetupHooksStoreOrderParams } from '../../hooks/useSetupHooksStoreOrderParams'
+import { IframeDappsManifestUpdater } from '../../updaters/iframeDappsManifestUpdater'
 import { HookRegistryList } from '../HookRegistryList'
 import { PostHookButton } from '../PostHookButton'
 import { PreHookButton } from '../PreHookButton'
@@ -18,18 +23,18 @@ type HookPosition = 'pre' | 'post'
 
 console.log(ICON_HOOK)
 
-const TradeWidgetWrapper = styled.div<{ visible$: boolean }>`
-  visibility: ${({ visible$ }) => (visible$ ? 'visible' : 'hidden')};
-  height: ${({ visible$ }) => (visible$ ? '' : '0px')};
-  width: ${({ visible$ }) => (visible$ ? '100%' : '0px')};
-  overflow: hidden;
-`
-
 export function HooksStoreWidget() {
+  const { chainId } = useWalletInfo()
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)
   const [hookToEdit, setHookToEdit] = useState<string | undefined>(undefined)
 
   const isNativeSell = useIsSellNative()
+  const isChainIdUnsupported = useIsProviderNetworkUnsupported()
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
+
+  const walletType = useIsSmartContractWallet()
+    ? HookDappWalletCompatibility.SMART_CONTRACT
+    : HookDappWalletCompatibility.EOA
 
   const onDismiss = useCallback(() => {
     setSelectedHookPosition(null)
@@ -46,14 +51,18 @@ export function HooksStoreWidget() {
     setHookToEdit(uuid)
   }, [])
 
+  // Close all screens on network changes (including unsupported chain case)
+  useEffect(onDismiss, [chainId, isChainIdUnsupported, onDismiss])
+
   useSetupHooksStoreOrderParams()
   useSetRecipientOverride()
 
   const isHookSelectionOpen = !!(selectedHookPosition || hookToEdit)
+  const hideSwapWidget = isHookSelectionOpen
 
-  const shouldNotUseHooks = isNativeSell
+  const shouldNotUseHooks = isNativeSell || isChainIdUnsupported
 
-  const TopContent = shouldNotUseHooks ? null : (
+  const TopContent = shouldNotUseHooks ? undefined : isWrapOrUnwrap ? undefined : (
     <>
       <DismissableInlineBanner
         orientation={BannerOrientation.Horizontal}
@@ -62,27 +71,41 @@ export function HooksStoreWidget() {
         bannerId="hooks-store-banner-tradeContainer"
       >
         <p>
-          With hooks you can add specific actions <b>before</b> and <b>after</b> your swap. {/*TODO: update the link*/}
-          <a href="https://docs.cow.fi/cow-protocol/reference/sdks/cow-sdk" target="_blank" rel="noopener noreferrer">
+          With hooks you can add specific actions <b>before</b> and <b>after</b> your swap.{' '}
+          <a href="https://cow.fi/learn/cow-hooks-you-are-in-control" target="_blank" rel="noopener noreferrer">
             Learn more.
           </a>
         </p>
       </DismissableInlineBanner>
-      <PreHookButton onOpen={() => setSelectedHookPosition('pre')} onEditHook={onPreHookEdit} />
+      <PreHookButton
+        onOpen={() => setSelectedHookPosition('pre')}
+        onEditHook={onPreHookEdit}
+        hideTooltip={isHookSelectionOpen}
+      />
     </>
   )
 
   const BottomContent = shouldNotUseHooks ? null : (
-    <PostHookButton onOpen={() => setSelectedHookPosition('post')} onEditHook={onPostHookEdit} />
+    <PostHookButton
+      onOpen={() => setSelectedHookPosition('post')}
+      onEditHook={onPostHookEdit}
+      hideTooltip={isHookSelectionOpen}
+    />
   )
 
   return (
     <>
-      <TradeWidgetWrapper visible$={!isHookSelectionOpen}>
+      <TradeWidgetWrapper visible$={!hideSwapWidget}>
         <SwapWidget topContent={TopContent} bottomContent={BottomContent} />
       </TradeWidgetWrapper>
+      <IframeDappsManifestUpdater />
       {isHookSelectionOpen && (
-        <HookRegistryList onDismiss={onDismiss} hookToEdit={hookToEdit} isPreHook={selectedHookPosition === 'pre'} />
+        <HookRegistryList
+          walletType={walletType}
+          onDismiss={onDismiss}
+          hookToEdit={hookToEdit}
+          isPreHook={selectedHookPosition === 'pre'}
+        />
       )}
     </>
   )

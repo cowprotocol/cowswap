@@ -14,6 +14,7 @@ export interface FiatAmountProps {
 
 const Wrapper = styled.span`
   color: inherit;
+  word-break: break-all;
 `
 
 export function FiatAmount({ amount, defaultValue, className, accurate = false }: FiatAmountProps) {

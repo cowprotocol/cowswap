@@ -10,6 +10,7 @@ webVitalsAnalytics.reportWebVitals()
 export enum Category {
   TRADE = 'Trade',
   LIST = 'Lists',
+  HOOKS = 'Hooks',
   CURRENCY_SELECT = 'Currency Select',
   RECIPIENT_ADDRESS = 'Recipient address',
   ORDER_SLIPAGE_TOLERANCE = 'Order Slippage Tolerance',
@@ -92,6 +93,14 @@ export function toggleRecipientAddressAnalytics(enable: boolean) {
   })
 }
 
+export function toggleHooksEnabledAnalytics(enable: boolean) {
+  cowAnalytics.sendEvent({
+    category: Category.HOOKS,
+    action: 'Toggle Hooks Enabled',
+    label: enable ? 'Enabled' : 'Disabled',
+  })
+}
+
 export function searchByAddressAnalytics(isAddressSearch: string) {
   cowAnalytics.sendEvent({
     category: Category.CURRENCY_SELECT,
@@ -167,6 +176,7 @@ const LABEL_FROM_TYPE: Record<UiOrderType, string> = {
   [UiOrderType.SWAP]: 'Market Order',
   [UiOrderType.TWAP]: 'TWAP Order',
   [UiOrderType.HOOKS]: 'Hooks',
+  [UiOrderType.YIELD]: 'Yield',
 }
 
 function getClassLabel(orderClass: UiOrderType, label?: string) {
@@ -329,5 +339,12 @@ export function clickNotifications(event: string, notificationId?: number, title
     action: event,
     value: notificationId,
     label: title,
+  })
+}
+
+export function clickOnHooks(event: string) {
+  cowAnalytics.sendEvent({
+    category: Category.HOOKS,
+    action: event,
   })
 }

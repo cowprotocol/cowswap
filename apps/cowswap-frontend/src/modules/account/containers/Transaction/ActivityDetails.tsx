@@ -25,6 +25,7 @@ import { useToggleAccountModal } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 
+import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
@@ -193,6 +194,7 @@ export function ActivityDetails(props: {
   const getShowCancellationModal = useCancelOrder()
 
   const isSwap = order && getUiOrderType(order) === UiOrderType.SWAP
+  const appData = !!order && order.fullAppData
 
   const { disableProgressBar } = useInjectedWidgetParams()
 
@@ -390,9 +392,20 @@ export function ActivityDetails(props: {
                   </i>
                 </SummaryInnerRow>
               )}
+
+              {appData && (
+                <OrderHooksDetails appData={appData} margin="10px 0 0">
+                  {(children) => (
+                    <SummaryInnerRow>
+                      <b>Hooks</b>
+                      <i>{children}</i>
+                    </SummaryInnerRow>
+                  )}
+                </OrderHooksDetails>
+              )}
             </>
           ) : (
-            summary ?? id
+            (summary ?? id)
           )}
 
           {activityLinkUrl && enhancedTransaction?.replacementType !== 'replaced' && (

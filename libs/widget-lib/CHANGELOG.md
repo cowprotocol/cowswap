@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.17.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.16.0...widget-lib-v0.17.0) (2024-10-29)
+
+
+### Features
+
+* setup vampire attack widget ([#4950](https://github.com/cowprotocol/cowswap/issues/4950)) ([99c4c42](https://github.com/cowprotocol/cowswap/commit/99c4c42aec60a734a37926935be5dca6cd4cf11c))
+
+## [0.16.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.15.0...widget-lib-v0.16.0) (2024-10-18)
+
+
+### Features
+
+* **widget:** deadline widget param ([#4991](https://github.com/cowprotocol/cowswap/issues/4991)) ([ce3b5b8](https://github.com/cowprotocol/cowswap/commit/ce3b5b8adb5cc95a5ca3097d5cf2d45b249748c2))
+* **widget:** hide bridge info ([#4992](https://github.com/cowprotocol/cowswap/issues/4992)) ([9842afd](https://github.com/cowprotocol/cowswap/commit/9842afdb887497d235a01538663488b0b8852bb5))
+* **widget:** hide orders table ([#4993](https://github.com/cowprotocol/cowswap/issues/4993)) ([681fb20](https://github.com/cowprotocol/cowswap/commit/681fb20dab0b4155d50ad7f32c7a48cb95e084a3))
+
 ## [0.15.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.14.1...widget-lib-v0.15.0) (2024-09-30)
 
 

@@ -1,13 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 
-import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
-import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
 import { formatSymbol, getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { useENS } from '@cowprotocol/ens'
 import { useAreThereTokensWithSameSymbol, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
-import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'
 
@@ -21,14 +18,15 @@ import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
 
 import { changeSwapAmountAnalytics, switchTokensAnalytics } from 'modules/analytics'
+import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
+import type { TradeWidgetActions } from 'modules/trade'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
+import { useTradeSlippage } from 'modules/tradeSlippage'
 import { useVolumeFee } from 'modules/volumeFee'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
-
-import { useSwapSlippage } from './useSwapSlippage'
 
 export const BAD_RECIPIENT_ADDRESSES: { [address: string]: true } = {
   '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f': true, // v2 factory
@@ -50,13 +48,6 @@ export function useSwapState(): AppState['swap'] {
 
 export type Currencies = { [field in Field]?: Currency | null }
 
-export interface SwapActions {
-  onCurrencySelection: (field: Field, currency: Currency) => void
-  onSwitchTokens: Command
-  onUserInput: (field: Field, typedValue: string) => void
-  onChangeRecipient: (recipient: string | null) => void
-}
-
 interface DerivedSwapInfo {
   currencies: Currencies
   currenciesIds: { [field in Field]?: string | null }
@@ -69,7 +60,7 @@ interface DerivedSwapInfo {
   trade: TradeGp | undefined
 }
 
-export function useSwapActionHandlers(): SwapActions {
+export function useSwapActionHandlers(): TradeWidgetActions {
   const { chainId } = useWalletInfo()
   const dispatch = useAppDispatch()
   const onCurrencySelection = useNavigateOnCurrencySelection()
@@ -90,14 +81,14 @@ export function useSwapActionHandlers(): SwapActions {
       changeSwapAmountAnalytics(field, Number(typedValue))
       dispatch(typeInput({ field, typedValue }))
     },
-    [dispatch]
+    [dispatch],
   )
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
       dispatch(setRecipient({ recipient }))
     },
-    [dispatch]
+    [dispatch],
   )
 
   return useMemo(
@@ -107,94 +98,14 @@ export function useSwapActionHandlers(): SwapActions {
       onUserInput,
       onChangeRecipient,
     }),
-    [onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient]
-  )
-}
-
-/**
- * useHighFeeWarning
- * @description checks whether fee vs trade inputAmount = high fee warning
- * @description returns params related to high fee and a cb for checking/unchecking fee acceptance
- * @param trade TradeGp param
- */
-export function useHighFeeWarning(trade?: TradeGp) {
-  const { INPUT, OUTPUT, independentField } = useSwapState()
-
-  const [feeWarningAccepted, setFeeWarningAccepted] = useState<boolean>(false) // mod - high fee warning disable state
-
-  // only considers inputAmount vs fee (fee is in input token)
-  const [isHighFee, feePercentage] = useMemo(() => {
-    if (!trade) return [false, undefined]
-
-    const { outputAmountWithoutFee, inputAmountAfterFees, fee, volumeFeeAmount } = trade
-    const isExactInput = trade.tradeType === TradeType.EXACT_INPUT
-    const feeAsCurrency = isExactInput ? trade.executionPrice.quote(fee.feeAsCurrency) : fee.feeAsCurrency
-
-    const totalFeeAmount = volumeFeeAmount ? feeAsCurrency.add(volumeFeeAmount) : feeAsCurrency
-    const targetAmount = isExactInput ? outputAmountWithoutFee : inputAmountAfterFees
-    const feePercentage = totalFeeAmount.divide(targetAmount).multiply(100).asFraction
-
-    return [feePercentage.greaterThan(FEE_SIZE_THRESHOLD), feePercentage]
-  }, [trade])
-
-  // reset the state when users change swap params
-  useEffect(() => {
-    setFeeWarningAccepted(false)
-  }, [INPUT.currencyId, OUTPUT.currencyId, independentField])
-
-  return useSafeMemo(
-    () => ({
-      isHighFee,
-      feePercentage,
-      // we only care/check about feeWarning being accepted if the fee is actually high..
-      feeWarningAccepted: _computeFeeWarningAcceptedState({ feeWarningAccepted, isHighFee }),
-      setFeeWarningAccepted,
-    }),
-    [isHighFee, feePercentage, feeWarningAccepted, setFeeWarningAccepted]
-  )
-}
-
-function _computeFeeWarningAcceptedState({
-  feeWarningAccepted,
-  isHighFee,
-}: {
-  feeWarningAccepted: boolean
-  isHighFee: boolean
-}) {
-  if (feeWarningAccepted) return true
-  else {
-    // is the fee high? that's only when we care
-    if (isHighFee) {
-      return feeWarningAccepted
-    } else {
-      return true
-    }
-  }
-}
-
-export function useUnknownImpactWarning() {
-  const { INPUT, OUTPUT, independentField } = useSwapState()
-
-  const [impactWarningAccepted, setImpactWarningAccepted] = useState<boolean>(false)
-
-  // reset the state when users change swap params
-  useEffect(() => {
-    setImpactWarningAccepted(false)
-  }, [INPUT.currencyId, OUTPUT.currencyId, independentField])
-
-  return useMemo(
-    () => ({
-      impactWarningAccepted,
-      setImpactWarningAccepted,
-    }),
-    [impactWarningAccepted, setImpactWarningAccepted]
+    [onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient],
   )
 }
 
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedSwapInfo(): DerivedSwapInfo {
   const { account, chainId } = useWalletInfo()
-  const slippage = useSwapSlippage()
+  const slippage = useTradeSlippage()
 
   const {
     independentField,
@@ -214,13 +125,13 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   const recipientLookup = useENS(recipient ?? undefined)
   const to: string | null = (recipient ? recipientLookup.address : account) ?? null
 
-  const inputCurrencyBalance = useCurrencyAmountBalance(inputCurrency)
-  const outputCurrencyBalance = useCurrencyAmountBalance(outputCurrency)
+  const inputCurrencyBalance = useCurrencyAmountBalanceCombined(inputCurrency)
+  const outputCurrencyBalance = useCurrencyAmountBalanceCombined(outputCurrency)
 
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = useMemo(
     () => tryParseCurrencyAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined),
-    [inputCurrency, isExactIn, outputCurrency, typedValue]
+    [inputCurrency, isExactIn, outputCurrency, typedValue],
   )
 
   const currencies: { [field in Field]?: Currency | null } = useMemo(
@@ -228,7 +139,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
       [Field.INPUT]: inputCurrency,
       [Field.OUTPUT]: outputCurrency,
     }),
-    [inputCurrency, outputCurrency]
+    [inputCurrency, outputCurrency],
   )
 
   // TODO: be careful! For native tokens we use symbol instead of address
@@ -243,7 +154,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
           ? currencies.OUTPUT.symbol
           : currencies.OUTPUT?.address?.toLowerCase(),
     }),
-    [currencies]
+    [currencies],
   )
 
   const { quote } = useGetQuoteAndStatus({
@@ -280,7 +191,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
       [Field.INPUT]: inputCurrencyBalance,
       [Field.OUTPUT]: outputCurrencyBalance,
     }),
-    [inputCurrencyBalance, outputCurrencyBalance]
+    [inputCurrencyBalance, outputCurrencyBalance],
   )
 
   // allowed slippage is either auto slippage, or custom user defined slippage if auto slippage disabled
@@ -312,7 +223,6 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     }
 
     // compare input balance to max input based on version
-    // const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], trade.trade?.maximumAmountIn(allowedSlippage)] // mod
     const balanceIn = currencyBalances[Field.INPUT]
     const amountIn = slippageAdjustedSellAmount
 

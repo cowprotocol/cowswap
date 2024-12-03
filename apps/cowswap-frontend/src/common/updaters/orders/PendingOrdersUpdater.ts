@@ -57,7 +57,7 @@ async function _updatePresignGnosisSafeTx(
   getSafeTxInfo: GetSafeTxInfo,
   updatePresignGnosisSafeTx: UpdatePresignGnosisSafeTxCallback,
   cancelOrdersBatch: CancelOrdersBatchCallback,
-  safeInfo: GnosisSafeInfo | undefined
+  safeInfo: GnosisSafeInfo | undefined,
 ) {
   const getSafeTxPromises = allPendingOrders
     // Update orders that are pending for presingature
@@ -100,7 +100,7 @@ async function _updatePresignGnosisSafeTx(
           if (!error.isCancelledError) {
             console.error(
               `[PendingOrdersUpdater] Failed to check Gnosis Safe tx hash: ${presignGnosisSafeTxHash}`,
-              error
+              error,
             )
           }
         })
@@ -113,7 +113,7 @@ async function _updateCreatingOrders(
   chainId: ChainId,
   pendingOrders: Order[],
   isSafeWallet: boolean,
-  addOrUpdateOrders: AddOrUpdateOrdersCallback
+  addOrUpdateOrders: AddOrUpdateOrdersCallback,
 ): Promise<void> {
   const promises = pendingOrders.reduce<Promise<void>[]>((acc, order) => {
     if (order.status === OrderStatus.CREATING) {
@@ -205,7 +205,7 @@ async function _updateOrders({
 
   // Iterate over pending orders fetching API data
   const unfilteredOrdersData = await Promise.all(
-    pending.map(async (orderFromStore) => fetchAndClassifyOrder(orderFromStore, chainId))
+    pending.map(async (orderFromStore) => fetchAndClassifyOrder(orderFromStore, chainId)),
   )
 
   // Group resolved promises by status
@@ -219,7 +219,7 @@ async function _updateOrders({
       }
       return acc
     },
-    { fulfilled: [], expired: [], cancelled: [], unknown: [], presigned: [], pending: [], presignaturePending: [] }
+    { fulfilled: [], expired: [], cancelled: [], unknown: [], presigned: [], pending: [], presignaturePending: [] },
   )
 
   if (presigned.length > 0) {
@@ -310,7 +310,7 @@ async function _updateOrders({
     getSafeTxInfo,
     updatePresignGnosisSafeTx,
     cancelOrdersBatch,
-    safeInfo
+    safeInfo,
   )
   // Update the creating EthFlow orders (if any)
   await _updateCreatingOrders(chainId, orders, isSafeWallet, addOrUpdateOrders)
@@ -318,7 +318,7 @@ async function _updateOrders({
 
 function getReplacedOrCancelledEthFlowOrders(
   orders: Order[],
-  allTransactions: UpdateOrdersParams['allTransactions']
+  allTransactions: UpdateOrdersParams['allTransactions'],
 ): Order[] {
   return orders.filter((order) => {
     if (!order.orderCreationHash || order.status !== OrderStatus.CREATING) return false
@@ -373,6 +373,7 @@ export function PendingOrdersUpdater(): null {
   const isUpdatingLimit = useRef(false)
   const isUpdatingTwap = useRef(false)
   const isUpdatingHooks = useRef(false)
+  const isUpdatingYield = useRef(false)
 
   const updatersRefMap = useMemo(
     () => ({
@@ -380,8 +381,9 @@ export function PendingOrdersUpdater(): null {
       [UiOrderType.LIMIT]: isUpdatingLimit,
       [UiOrderType.TWAP]: isUpdatingTwap,
       [UiOrderType.HOOKS]: isUpdatingHooks,
+      [UiOrderType.YIELD]: isUpdatingYield,
     }),
-    []
+    [],
   )
 
   // Ref, so we don't rerun useEffect
@@ -411,7 +413,7 @@ export function PendingOrdersUpdater(): null {
       // Remove orders from the cancelling queue (marked by checkbox in the orders table)
       removeOrdersToCancel(fulfillOrdersBatchParams.orders.map(({ uid }) => uid))
     },
-    [chainId, _fulfillOrdersBatch, removeOrdersToCancel]
+    [chainId, _fulfillOrdersBatch, removeOrdersToCancel],
   )
 
   const updateOrders = useCallback(
@@ -460,7 +462,7 @@ export function PendingOrdersUpdater(): null {
       getSafeTxInfo,
       safeInfo,
       allTransactions,
-    ]
+    ],
   )
 
   useEffect(() => {
@@ -470,15 +472,15 @@ export function PendingOrdersUpdater(): null {
 
     const marketInterval = setInterval(
       () => updateOrders(chainId, account, isSafeWallet, UiOrderType.SWAP),
-      MARKET_OPERATOR_API_POLL_INTERVAL
+      MARKET_OPERATOR_API_POLL_INTERVAL,
     )
     const limitInterval = setInterval(
       () => updateOrders(chainId, account, isSafeWallet, UiOrderType.LIMIT),
-      LIMIT_OPERATOR_API_POLL_INTERVAL
+      LIMIT_OPERATOR_API_POLL_INTERVAL,
     )
     const twapInterval = setInterval(
       () => updateOrders(chainId, account, isSafeWallet, UiOrderType.TWAP),
-      LIMIT_OPERATOR_API_POLL_INTERVAL
+      LIMIT_OPERATOR_API_POLL_INTERVAL,
     )
 
     updateOrders(chainId, account, isSafeWallet, UiOrderType.SWAP)

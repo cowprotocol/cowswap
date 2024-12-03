@@ -4,6 +4,7 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { useSearchToken } from '@cowprotocol/tokens'
 import { BannerOrientation, ExternalLink, InlineBanner, LINK_GUIDE_ADD_CUSTOM_TOKEN, Loader } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useNetworkName } from 'common/hooks/useNetworkName'
 
@@ -31,6 +32,9 @@ export function TokenSearchResults({
   unsupportedTokens,
   permitCompatibleTokens,
 }: TokenSearchResultsProps) {
+  const { account } = useWalletInfo()
+  const isWalletConnected = !!account
+
   const searchResults = useSearchToken(searchInput)
   const { values: balances } = balancesState
 
@@ -121,6 +125,7 @@ export function TokenSearchResults({
                   token={token}
                   balance={balances ? balances[token.address.toLowerCase()] : undefined}
                   onSelectToken={onSelectToken}
+                  isWalletConnected={isWalletConnected}
                 />
               )
             })}

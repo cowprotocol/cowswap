@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { UI } from '@cowprotocol/ui'
 import { BackButton } from '@cowprotocol/ui'
 
@@ -24,7 +26,7 @@ const Header = styled.div`
 `
 
 export interface ModalHeaderProps {
-  children: string
+  children: ReactNode
   onBack?(): void
   onClose?(): void
   className?: string

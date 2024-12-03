@@ -15,11 +15,12 @@ import { HookTooltip } from '../../pure/HookTooltip'
 export interface PreHookButtonProps {
   onOpen(): void
   onEditHook(uuid: string): void
+  hideTooltip?: boolean
 }
 
 const isPreHook = true
 
-export function PreHookButton({ onOpen, onEditHook }: PreHookButtonProps) {
+export function PreHookButton({ onOpen, onEditHook, hideTooltip }: PreHookButtonProps) {
   const { account } = useWalletInfo()
   const { preHooks } = useHooks()
   const removeHook = useRemoveHook(isPreHook)
@@ -42,8 +43,8 @@ export function PreHookButton({ onOpen, onEditHook }: PreHookButtonProps) {
 
       <styledEl.Wrapper>
         <styledEl.AddHookButton onClick={onOpen}>
-          <SVG src={PLUS_ICON} /> Add Pre-Hook Action <HookTooltip isPreHook />
-        </styledEl.AddHookButton>{' '}
+          <SVG src={PLUS_ICON} /> Add Pre-Hook Action {!hideTooltip && <HookTooltip isPreHook />}
+        </styledEl.AddHookButton>
       </styledEl.Wrapper>
     </>
   )

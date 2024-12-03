@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.11.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.10.0...tokens-v1.11.0) (2024-11-06)
+
+
+### Features
+
+* **yield:** define token category by default for selection ([#5018](https://github.com/cowprotocol/cowswap/issues/5018)) ([7c18b7d](https://github.com/cowprotocol/cowswap/commit/7c18b7d85de6feac9c7e64740a93572f3af3c273))
+* **yield:** display cow amm banner conditionally ([#5035](https://github.com/cowprotocol/cowswap/issues/5035)) ([1a517a3](https://github.com/cowprotocol/cowswap/commit/1a517a3f21b94c10b8e59e68bc49a569c1be904b))
+* **yield:** display pools info in widget ([#5046](https://github.com/cowprotocol/cowswap/issues/5046)) ([562d020](https://github.com/cowprotocol/cowswap/commit/562d0207d1acf4e1735c4b3f629ff63dd65d3725))
+* **yield:** fetch balances for LP-tokens ([#5005](https://github.com/cowprotocol/cowswap/issues/5005)) ([2877df5](https://github.com/cowprotocol/cowswap/commit/2877df52be2fd519a20157a1cd91a2e18e954dae))
+* **yield:** use lp-token in widget ([#5013](https://github.com/cowprotocol/cowswap/issues/5013)) ([b66d206](https://github.com/cowprotocol/cowswap/commit/b66d2068a9f3bcaddc8da7df5499c17fc05f693f))
+
+## [1.10.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.9.0...tokens-v1.10.0) (2024-10-10)
+
+
+### Features
+
+* add balancer token list to arb1 ([#4975](https://github.com/cowprotocol/cowswap/issues/4975)) ([54c0f6c](https://github.com/cowprotocol/cowswap/commit/54c0f6c42937840e48e95d85c139874ca8b76737))
+
+
+### Bug Fixes
+
+* **tokens-selector:** fix tokens displaying on mobile view ([#4929](https://github.com/cowprotocol/cowswap/issues/4929)) ([f055957](https://github.com/cowprotocol/cowswap/commit/f055957af450967b4bc4d58a15fc7a7b80f0aa77))
+
 ## [1.9.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.8.1...tokens-v1.9.0) (2024-09-30)
 
 

@@ -11,6 +11,14 @@ export type ComposableCowInfo = {
   isTheLastPart?: boolean
 }
 
-export type BadgeType = 'information' | 'success' | 'alert' | 'alert2' | 'default'
+export const BadgeTypes = {
+  INFORMATION: 'information',
+  SUCCESS: 'success',
+  ALERT: 'alert',
+  ALERT2: 'alert2',
+  DEFAULT: 'default',
+} as const
 
-export type CowSwapTheme = 'dark' | 'light'
+export type BadgeType = (typeof BadgeTypes)[keyof typeof BadgeTypes]
+
+export type CowSwapTheme = 'dark' | 'light' | 'darkHalloween'

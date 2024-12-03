@@ -1,27 +1,36 @@
-import { Dispatch, SetStateAction, useEffect } from 'react'
+import { Dispatch, SetStateAction, useEffect, useCallback } from 'react'
 
-import { HookDappBase, HookDappIframe, HookDappType } from '../../../types/hooks'
+import { fetchWithTimeout } from '@cowprotocol/common-utils'
+import { HookDappType, HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
-interface HookDappConditions {
-  position?: 'post' | 'pre'
-  smartContractWalletSupported?: boolean
-}
-
-type HookDappBaseInfo = Omit<HookDappBase, 'type'>
-
-type HookDappManifest = HookDappBaseInfo & {
-  conditions?: HookDappConditions
-}
-
-const MANDATORY_DAPP_FIELDS: (keyof HookDappBaseInfo)[] = ['name', 'image', 'version', 'website']
+import { HookDappIframe } from '../../../types/hooks'
+import { validateHookDappUrl } from '../../../utils/urlValidation'
+import { validateHookDappManifest } from '../../../validateHookDappManifest'
+import { ERROR_MESSAGES } from '../constants'
 
 interface ExternalDappLoaderProps {
   input: string
   isPreHook: boolean
-  isSmartContractWallet: boolean | undefined
+  walletType: HookDappWalletCompatibility
   setDappInfo: Dispatch<SetStateAction<HookDappIframe | null>>
   setLoading: Dispatch<SetStateAction<boolean>>
   setManifestError: Dispatch<SetStateAction<string | React.ReactNode | null>>
+}
+
+const TIMEOUT = 5000
+
+// Utility functions for error checking
+const isJsonParseError = (error: unknown): boolean => {
+  return error instanceof Error && error.message?.includes('JSON')
+}
+
+const isTimeoutError = (error: unknown): boolean => {
+  return error instanceof Error && error.name === 'AbortError'
+}
+
+const isConnectionError = (error: unknown): boolean => {
+  return error instanceof TypeError && error.message === 'Failed to fetch'
 }
 
 export function ExternalDappLoader({
@@ -29,70 +38,107 @@ export function ExternalDappLoader({
   setLoading,
   setManifestError,
   setDappInfo,
-  isSmartContractWallet,
+  walletType,
   isPreHook,
 }: ExternalDappLoaderProps) {
-  useEffect(() => {
-    let isRequestRelevant = true
+  const { chainId } = useWalletInfo()
 
-    setLoading(true)
+  const setError = useCallback(
+    (message: string | React.ReactNode) => {
+      setManifestError(message)
+      setDappInfo(null)
+      setLoading(false)
+    },
+    [setManifestError, setDappInfo, setLoading],
+  )
 
-    fetch(`${input}/manifest.json`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (!isRequestRelevant) return
+  const fetchManifest = useCallback(
+    async (url: string) => {
+      if (!url) return
 
-        const { conditions = {}, ...dapp } = data.cow_hook_dapp as HookDappManifest
+      setLoading(true)
 
-        if (dapp) {
-          const emptyFields = MANDATORY_DAPP_FIELDS.filter((field) => typeof dapp[field] === 'undefined')
-
-          if (emptyFields.length > 0) {
-            setManifestError(`${emptyFields.join(',')} fields are no set.`)
-          } else {
-            if (conditions.smartContractWalletSupported === false && isSmartContractWallet === true) {
-              setManifestError('The app does not support smart-contract wallets.')
-            } else if (conditions.position === 'post' && isPreHook) {
-              setManifestError(
-                <p>
-                  This app/hook can only be used as a <strong>post-hook</strong> and cannot be added as a pre-hook.
-                </p>,
-              )
-            } else if (conditions.position === 'pre' && !isPreHook) {
-              setManifestError(
-                <p>
-                  This app/hook can only be used as a <strong>pre-hook</strong> and cannot be added as a post-hook.
-                </p>,
-              )
-            } else {
-              setManifestError(null)
-              setDappInfo({
-                ...dapp,
-                type: HookDappType.IFRAME,
-                url: input,
-              })
-            }
-          }
-        } else {
-          setManifestError('Manifest does not contain "cow_hook_dapp" property.')
+      try {
+        const validation = validateHookDappUrl(url)
+        if (!validation.isValid) {
+          setError(validation.error)
+          return
         }
-      })
-      .catch((error) => {
-        if (!isRequestRelevant) return
 
-        console.error(error)
-        setManifestError('Can not fetch the manifest.json')
-      })
-      .finally(() => {
-        if (!isRequestRelevant) return
+        const trimmedUrl = url.trim()
+        const manifestUrl = `${trimmedUrl}${trimmedUrl.endsWith('/') ? '' : '/'}manifest.json`
 
+        const response = await fetchWithTimeout(manifestUrl, {
+          timeout: TIMEOUT,
+          timeoutMessage: ERROR_MESSAGES.TIMEOUT,
+        })
+        if (!response.ok) {
+          setError(`Failed to fetch manifest from ${manifestUrl}. Please verify the URL and try again.`)
+          return
+        }
+
+        const contentType = response.headers.get('content-type')
+        if (!contentType || !contentType.includes('application/json')) {
+          setError(
+            `Invalid content type: Expected JSON but received ${contentType || 'unknown'}. Make sure the URL points to a valid manifest file.`,
+          )
+          return
+        }
+
+        const data = await response.json()
+
+        if (!data.cow_hook_dapp) {
+          setError(`Invalid manifest format at ${manifestUrl}: missing cow_hook_dapp property`)
+          return
+        }
+
+        const dapp = data.cow_hook_dapp
+
+        const validationError = validateHookDappManifest(
+          dapp,
+          chainId,
+          isPreHook,
+          walletType === HookDappWalletCompatibility.SMART_CONTRACT,
+        )
+
+        if (validationError) {
+          setError(validationError)
+        } else {
+          setManifestError(null)
+          setDappInfo({
+            ...dapp,
+            type: HookDappType.IFRAME,
+            url: input,
+          })
+        }
+      } catch (error) {
+        console.error('Hook dapp loading error:', error)
+
+        if (isJsonParseError(error)) {
+          setError(ERROR_MESSAGES.INVALID_MANIFEST_HTML)
+        } else if (isTimeoutError(error)) {
+          setError(ERROR_MESSAGES.TIMEOUT)
+        } else if (isConnectionError(error)) {
+          setError(ERROR_MESSAGES.CONNECTION_ERROR)
+        } else {
+          setError(error instanceof Error ? error.message : ERROR_MESSAGES.GENERIC_MANIFEST_ERROR)
+        }
+      } finally {
         setLoading(false)
-      })
+      }
+    },
+    [input, walletType, chainId, isPreHook, setDappInfo, setLoading, setManifestError, setError],
+  )
+
+  useEffect(() => {
+    if (input) {
+      fetchManifest(input)
+    }
 
     return () => {
-      isRequestRelevant = false
+      setLoading(false)
     }
-  }, [input])
+  }, [input, fetchManifest, setLoading])
 
   return null
 }

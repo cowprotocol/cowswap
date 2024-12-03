@@ -26,6 +26,11 @@ interface TradeWidgetParams {
   disableQuotePolling?: boolean
   disableNativeSelling?: boolean
   disablePriceImpact?: boolean
+  hideTradeWarnings?: boolean
+  enableSmartSlippage?: boolean
+  isMarketOrderWidget?: boolean
+  displayTokenName?: boolean
+  customSelectTokenButton?: ReactNode
 }
 
 export interface TradeWidgetSlots {
@@ -33,9 +38,10 @@ export interface TradeWidgetSlots {
   lockScreen?: ReactNode
   topContent?: ReactNode
   middleContent?: ReactNode
-  bottomContent?: ReactNode
+  bottomContent?(warnings: ReactNode | null): ReactNode
   outerContent?: ReactNode
   updaters?: ReactNode
+  selectTokenWidget?: ReactNode
 }
 
 export interface TradeWidgetProps {

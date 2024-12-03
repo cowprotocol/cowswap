@@ -1,4 +1,3 @@
-
 import styled from 'styled-components/macro'
 
 const AppDataWrapper = styled.div`
@@ -23,10 +22,6 @@ const AppDataWrapper = styled.div`
     ::-webkit-scrollbar-track {
       background-color: rgba(0, 0, 0, 0.2);
     }
-  }
-
-  .hidden-content {
-    margin-top: 10px;
   }
 `
 

@@ -6,6 +6,10 @@ import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from '../utils
 import { getPermitDeadline } from '../utils/getPermitDeadline'
 import { isSupportedPermitInfo } from '../utils/isSupportedPermitInfo'
 
+// keccak(PERMIT_TOKEN)
+// See hookDappsRegistry.json in @cowprotocol/hook-dapp-lib
+const PERMIT_HOOK_DAPP_ID = '1db4bacb661a90fb6b475fd5b585acba9745bc373573c65ecc3e8f5bfd5dee1f'
+
 const REQUESTS_CACHE: { [permitKey: string]: Promise<PermitHookData | undefined> } = {}
 
 export async function generatePermitHook(params: PermitHookParams): Promise<PermitHookData | undefined> {
@@ -98,6 +102,7 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
     target: tokenAddress,
     callData,
     gasLimit,
+    dappId: PERMIT_HOOK_DAPP_ID,
   }
 }
 
@@ -106,7 +111,7 @@ async function calculateGasLimit(
   from: string,
   to: string,
   provider: JsonRpcProvider,
-  isUserAccount: boolean
+  isUserAccount: boolean,
 ): Promise<string> {
   try {
     // Query the actual gas estimate

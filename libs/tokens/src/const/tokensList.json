@@ -100,6 +100,10 @@
     {
       "priority": 4,
       "source": "https://curvefi.github.io/curve-assets/arbitrum.json"
+    },
+    {
+      "priority": 5,
+      "source": "https://raw.githubusercontent.com/balancer/tokenlists/refs/heads/main/generated/balancer.tokenlist.json"
     }
   ],
   "11155111": [
@@ -107,6 +111,18 @@
       "priority": 1,
       "enabledByDefault": true,
       "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CowSwapSepolia.json"
+    }
+  ],
+  "8453": [
+    {
+      "priority": 1,
+      "enabledByDefault": true,
+      "source": "https://files.cow.fi/tokens/CowSwap.json"
+    },
+    {
+      "priority": 2,
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.8453.json",
+      "enabledByDefault": true
     }
   ]
 }

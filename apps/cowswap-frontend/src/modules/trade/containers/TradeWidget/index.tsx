@@ -8,8 +8,13 @@ export const TradeWidgetContainer = styledEl.Container
 
 export function TradeWidget(props: TradeWidgetProps) {
   const { id, slots, params, confirmModal, genericModal } = props
-  const { disableQuotePolling = false, disableNativeSelling = false, tradeQuoteStateOverride } = params
-  const modals = TradeWidgetModals(confirmModal, genericModal)
+  const {
+    disableQuotePolling = false,
+    disableNativeSelling = false,
+    tradeQuoteStateOverride,
+    enableSmartSlippage,
+  } = params
+  const modals = TradeWidgetModals({confirmModal, genericModal, selectTokenWidget: slots.selectTokenWidget})
 
   return (
     <>
@@ -18,6 +23,7 @@ export function TradeWidget(props: TradeWidgetProps) {
           disableQuotePolling={disableQuotePolling}
           disableNativeSelling={disableNativeSelling}
           tradeQuoteStateOverride={tradeQuoteStateOverride}
+          enableSmartSlippage={enableSmartSlippage}
           onChangeRecipient={props.actions.onChangeRecipient}
         >
           {slots.updaters}

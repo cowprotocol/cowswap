@@ -1,15 +1,24 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokenInfo } from '@cowprotocol/types'
+import { LpTokenProvider, PersistentStateByChain, TokenInfo } from '@cowprotocol/types'
 import type { TokenList as UniTokenList } from '@uniswap/token-lists'
+
+export enum TokenListCategory {
+  ERC20 = 'ERC20',
+  LP = 'LP',
+  COW_AMM_LP = 'COW_AMM_LP',
+}
+
+export const LP_TOKEN_LIST_CATEGORIES = [TokenListCategory.LP, TokenListCategory.COW_AMM_LP]
+export const LP_TOKEN_LIST_COW_AMM_ONLY = [TokenListCategory.COW_AMM_LP]
 
 export type ListSourceConfig = {
   widgetAppCode?: string
   priority?: number
   enabledByDefault?: boolean
+  lpTokenProvider?: LpTokenProvider
   source: string
 }
 
-export type ListsSourcesByNetwork = Record<SupportedChainId, Array<ListSourceConfig>>
+export type ListsSourcesByNetwork = PersistentStateByChain<Array<ListSourceConfig>>
 
 export type TokensMap = { [address: string]: TokenInfo }
 
@@ -17,14 +26,11 @@ export type UnsupportedTokensState = { [tokenAddress: string]: { dateAdded: numb
 
 export type ListsEnabledState = { [listId: string]: boolean | undefined }
 
-export interface ListState {
-  source: string
+export interface ListState extends Pick<ListSourceConfig, 'source' | 'priority' | 'widgetAppCode' | 'lpTokenProvider'> {
   list: UniTokenList
-  widgetAppCode?: string
-  priority?: number
   isEnabled?: boolean
 }
 
 export type TokenListsState = { [source: string]: ListState }
 
-export type TokenListsByChainState = Record<SupportedChainId, TokenListsState | undefined>
+export type TokenListsByChainState = PersistentStateByChain<TokenListsState>

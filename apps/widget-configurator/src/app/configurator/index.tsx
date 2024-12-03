@@ -13,6 +13,7 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import LanguageIcon from '@mui/icons-material/Language'
 import { FormControl, FormControlLabel, FormLabel, IconButton, Radio, RadioGroup, Snackbar } from '@mui/material'
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
 import Fab from '@mui/material/Fab'
@@ -20,14 +21,22 @@ import List from '@mui/material/List'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
+import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { useWeb3ModalAccount, useWeb3ModalTheme } from '@web3modal/ethers5/react'
 
-import { COW_LISTENERS, DEFAULT_PARTNER_FEE_RECIPIENT, DEFAULT_TOKEN_LISTS, IS_IFRAME, TRADE_MODES } from './consts'
+import {
+  COW_LISTENERS,
+  DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK,
+  DEFAULT_TOKEN_LISTS,
+  IS_IFRAME,
+  TRADE_MODES,
+} from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { CustomImagesControl } from './controls/CustomImagesControl'
 import { CustomSoundsControl } from './controls/CustomSoundsControl'
+import { DeadlineControl } from './controls/DeadlineControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { PaletteControl } from './controls/PaletteControl'
 import { PartnerFeeControl } from './controls/PartnerFeeControl'
@@ -100,6 +109,15 @@ export function Configurator({ title }: { title: string }) {
   const [buyToken] = buyTokenState
   const [buyTokenAmount] = buyTokenAmountState
 
+  const deadlineState = useState<number | undefined>()
+  const [deadline] = deadlineState
+  const swapDeadlineState = useState<number | undefined>()
+  const [swapDeadline] = swapDeadlineState
+  const limitDeadlineState = useState<number | undefined>()
+  const [limitDeadline] = limitDeadlineState
+  const advancedDeadlineState = useState<number | undefined>()
+  const [advancedDeadline] = advancedDeadlineState
+
   const tokenListUrlsState = useState<TokenListItem[]>(DEFAULT_TOKEN_LISTS)
   const customTokensState = useState<TokenInfo[]>([])
   const [tokenListUrls] = tokenListUrlsState
@@ -113,6 +131,9 @@ export function Configurator({ title }: { title: string }) {
   const [customImages] = customImagesState
   const [customSounds] = customSoundsState
 
+  const [rawParams, setRawParams] = useState<string | undefined>()
+  const [isWidgetDisplayed, setIsWidgetDisplayed] = useState(true)
+
   const paletteManager = useColorPaletteManager(mode)
   const { colorPalette, defaultPalette } = paletteManager
 
@@ -122,9 +143,13 @@ export function Configurator({ title }: { title: string }) {
   const firstToast = toasts?.[0]
 
   const [disableProgressBar, setDisableProgressBar] = useState<boolean>(false)
-  const toggleDisableProgressBar = useCallback(() => {
-    setDisableProgressBar((curr) => !curr)
-  }, [])
+  const toggleDisableProgressBar = useCallback(() => setDisableProgressBar((curr) => !curr), [])
+
+  const [hideBridgeInfo, setHideBridgeInfo] = useState<boolean | undefined>(false)
+  const toggleHideBridgeInfo = useCallback(() => setHideBridgeInfo((curr) => !curr), [])
+
+  const [hideOrdersTable, setHideOrdersTable] = useState<boolean | undefined>(false)
+  const toggleHideOrdersTable = useCallback(() => setHideOrdersTable((curr) => !curr), [])
 
   const LINKS = [
     { icon: <CodeIcon />, label: 'View embed code', onClick: () => handleDialogOpen() },
@@ -139,6 +164,10 @@ export function Configurator({ title }: { title: string }) {
   // Don't change chainId in the widget URL if the user is connected to a wallet
   // Because useSyncWidgetNetwork() will send a request to change the network
   const state: ConfiguratorState = {
+    deadline,
+    swapDeadline,
+    limitDeadline,
+    advancedDeadline,
     chainId: IS_IFRAME ? undefined : !isConnected || !walletChainId ? chainId : walletChainId,
     theme: mode,
     currentTradeType,
@@ -151,11 +180,22 @@ export function Configurator({ title }: { title: string }) {
     customColors: colorPalette,
     defaultColors: defaultPalette,
     partnerFeeBps,
-    partnerFeeRecipient: DEFAULT_PARTNER_FEE_RECIPIENT,
+    partnerFeeRecipient: DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK,
     standaloneMode,
     disableToastMessages,
     disableProgressBar,
+    hideBridgeInfo,
+    hideOrdersTable,
   }
+
+  const rawParamsObject = useMemo(() => {
+    if (!rawParams) return undefined
+    try {
+      return JSON.parse(rawParams)
+    } catch {
+      return undefined
+    }
+  }, [rawParams])
 
   const computedParams = useWidgetParams(state)
   const params = useMemo(
@@ -164,10 +204,17 @@ export function Configurator({ title }: { title: string }) {
       images: customImages,
       sounds: customSounds,
       customTokens,
+      ...rawParamsObject,
       ...window.cowSwapWidgetParams,
     }),
-    [computedParams, customImages, customSounds, customTokens],
+    [computedParams, customImages, customSounds, customTokens, rawParamsObject],
   )
+
+  const updateWidget = useCallback(() => {
+    setIsWidgetDisplayed(false)
+
+    setTimeout(() => setIsWidgetDisplayed(true), 100)
+  }, [])
 
   useEffect(() => {
     setThemeMode(mode)
@@ -253,6 +300,16 @@ export function Configurator({ title }: { title: string }) {
 
         <TokenListControl tokenListUrlsState={tokenListUrlsState} customTokensState={customTokensState} />
 
+        <Divider variant="middle">Forced Order Deadline</Divider>
+
+        <Typography variant="subtitle1">Global deadline settings</Typography>
+        <DeadlineControl label={'Deadline'} deadlineState={deadlineState} />
+
+        <Typography variant="subtitle1">Individual deadline settings</Typography>
+        <DeadlineControl label={'Swap'} deadlineState={swapDeadlineState} />
+        <DeadlineControl label={'Limit'} deadlineState={limitDeadlineState} />
+        <DeadlineControl label={'Advanced'} deadlineState={advancedDeadlineState} />
+
         <Divider variant="middle">Integrations</Divider>
 
         <PartnerFeeControl feeBpsState={partnerFeeBpsState} />
@@ -277,6 +334,7 @@ export function Configurator({ title }: { title: string }) {
             <FormControlLabel value="true" control={<Radio />} label="Dapp mode" />
           </RadioGroup>
         </FormControl>
+
         <FormControl component="fieldset">
           <FormLabel component="legend">Progress bar:</FormLabel>
           <RadioGroup row aria-label="mode" name="mode" value={disableProgressBar} onChange={toggleDisableProgressBar}>
@@ -284,6 +342,36 @@ export function Configurator({ title }: { title: string }) {
             <FormControlLabel value="true" control={<Radio />} label="Hide SWAP progress bar" />
           </RadioGroup>
         </FormControl>
+
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Hide bridge info:</FormLabel>
+          <RadioGroup row aria-label="mode" name="mode" value={hideBridgeInfo} onChange={toggleHideBridgeInfo}>
+            <FormControlLabel value="false" control={<Radio />} label="Show bridge info" />
+            <FormControlLabel value="true" control={<Radio />} label="Hide bridge info" />
+          </RadioGroup>
+        </FormControl>
+
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Hide orders table:</FormLabel>
+          <RadioGroup row aria-label="mode" name="mode" value={hideOrdersTable} onChange={toggleHideOrdersTable}>
+            <FormControlLabel value="false" control={<Radio />} label="Show orders table" />
+            <FormControlLabel value="true" control={<Radio />} label="Hide orders table" />
+          </RadioGroup>
+        </FormControl>
+
+        <TextField
+          fullWidth
+          margin="dense"
+          id="rawParams"
+          label="Raw JSON params"
+          value={rawParams}
+          onChange={(e) => setRawParams(e.target.value)}
+          size="medium"
+        />
+
+        <Button sx={{ width: '100%' }} variant="contained" onClick={updateWidget}>
+          Update widget
+        </Button>
 
         {isDrawerOpen && (
           <Fab
@@ -328,11 +416,13 @@ export function Configurator({ title }: { title: string }) {
               open={dialogOpen}
               handleClose={handleDialogClose}
             />
-            <CowSwapWidget
-              params={params}
-              provider={!IS_IFRAME && !standaloneMode ? provider : undefined}
-              listeners={listeners}
-            />
+            {isWidgetDisplayed && (
+              <CowSwapWidget
+                params={params}
+                provider={!IS_IFRAME && !standaloneMode ? provider : undefined}
+                listeners={listeners}
+              />
+            )}
           </>
         )}
       </Box>

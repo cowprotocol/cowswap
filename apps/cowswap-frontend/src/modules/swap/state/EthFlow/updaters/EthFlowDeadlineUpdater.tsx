@@ -5,7 +5,7 @@ import { loadJsonFromLocalStorage, setJsonToLocalStorage } from '@cowprotocol/co
 
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
-import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
+import { useIsEoaEthFlow } from 'modules/trade'
 
 import { DeadlineSettings } from './types'
 

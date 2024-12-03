@@ -1,21 +1,19 @@
-import { CowHookDetailsSerialized, DappId, HookDapp, HookDappBase, HookDappIframe, HookDappType } from './types/hooks'
+import { CowHookDetails, HookDappType, HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
+
+import { HookDapp, HookDappIframe } from './types/hooks'
 
 // Do a safe guard assertion that receives a HookDapp and asserts is a HookDappIframe
 export function isHookDappIframe(dapp: HookDapp): dapp is HookDappIframe {
   return dapp.type === HookDappType.IFRAME
 }
 
-export const getHookDappId = (dapp: HookDapp): DappId => `${dapp.type}:::${dapp.name}`
-export function parseDappId(id: DappId): Pick<HookDappBase, 'type' | 'name'> {
-  const [type, name] = id.split(':::')
-
-  return { type: type as HookDappType, name }
+export function findHookDappById(dapps: HookDapp[], hookDetails: CowHookDetails): HookDapp | undefined {
+  return dapps.find((i) => i.id === hookDetails.hook.dappId)
 }
 
-export function findHookDappById(dapps: HookDapp[], hookDetails: CowHookDetailsSerialized): HookDapp | undefined {
-  return dapps.find((i) => {
-    const { type, name } = parseDappId(hookDetails.dappId)
-
-    return i.type === type && i.name === name
-  })
-}
+// If walletCompatibility is not defined, the hook is compatible with any wallet type
+export const isHookCompatible = (dapp: HookDapp, walletType: HookDappWalletCompatibility) =>
+  !dapp.conditions?.walletCompatibility ||
+  dapp.conditions.walletCompatibility.includes(
+    walletType === 'EOA' ? HookDappWalletCompatibility.EOA : HookDappWalletCompatibility.SMART_CONTRACT,
+  )

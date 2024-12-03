@@ -5,6 +5,7 @@ import { Interface } from '@ethersproject/abi'
 
 import _AirdropAbi from './abis/Airdrop.json'
 import _ComposableCoWAbi from './abis/ComposableCoW.json'
+import _CowShedContractAbi from './abis/CowShedContract.json'
 import _CoWSwapEthFlowAbi from './abis/CoWSwapEthFlow.json'
 import _GPv2SettlementAbi from './abis/GPv2Settlement.json'
 import _MerkleDropAbi from './abis/MerkleDrop.json'
@@ -36,6 +37,7 @@ export const TokenDistroAbi = _TokenDistroAbi
 export const CoWSwapEthFlowAbi = _CoWSwapEthFlowAbi
 export const SBCDepositContractAbi = _SBCDepositContractAbi
 export const AirdropAbi = _AirdropAbi
+export const CowShedContractAbi = _CowShedContractAbi
 
 export * from './generated/custom'
 export type { GPv2Order } from './generated/custom/ComposableCoW'

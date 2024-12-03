@@ -2,10 +2,10 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { useEffect } from 'react'
 
-
 import { atomWithPartialUpdate, isInjectedWidget } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { PersistentStateByChain } from '@cowprotocol/types'
 
 import * as Sentry from '@sentry/browser'
 import useSWR, { SWRConfiguration } from 'swr'
@@ -18,12 +18,14 @@ import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { allListsSourcesAtom, tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { ListState } from '../../types'
 
+const LAST_UPDATE_TIME_DEFAULT = 0
+
 const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomWithPartialUpdate(
-  atomWithStorage<Record<SupportedChainId, number>>(
-    'tokens:lastUpdateTimeAtom:v1',
-    mapSupportedNetworks(0),
-    getJotaiMergerStorage()
-  )
+  atomWithStorage<PersistentStateByChain<number>>(
+    'tokens:lastUpdateTimeAtom:v4',
+    mapSupportedNetworks(LAST_UPDATE_TIME_DEFAULT),
+    getJotaiMergerStorage(),
+  ),
 )
 
 const swrOptions: SWRConfiguration = {
@@ -36,6 +38,8 @@ const NETWORKS_WITHOUT_RESTRICTIONS = [SupportedChainId.SEPOLIA]
 interface TokensListsUpdaterProps {
   chainId: SupportedChainId
   isGeoBlockEnabled: boolean
+  enableLpTokensByDefault: boolean
+  isYieldEnabled: boolean
 }
 
 /**
@@ -46,7 +50,12 @@ interface TokensListsUpdaterProps {
  */
 const GEOBLOCK_ERRORS_TO_IGNORE = /(failed to fetch)|(load failed)/i
 
-export function TokensListsUpdater({ chainId: currentChainId, isGeoBlockEnabled }: TokensListsUpdaterProps) {
+export function TokensListsUpdater({
+  chainId: currentChainId,
+  isGeoBlockEnabled,
+  enableLpTokensByDefault,
+  isYieldEnabled,
+}: TokensListsUpdaterProps) {
   const { chainId } = useAtomValue(environmentAtom)
   const setEnvironment = useSetAtom(updateEnvironmentAtom)
   const allTokensLists = useAtomValue(allListsSourcesAtom)
@@ -57,18 +66,18 @@ export function TokensListsUpdater({ chainId: currentChainId, isGeoBlockEnabled 
   const upsertLists = useSetAtom(upsertListsAtom)
 
   useEffect(() => {
-    setEnvironment({ chainId: currentChainId })
-  }, [setEnvironment, currentChainId])
+    setEnvironment({ chainId: currentChainId, enableLpTokensByDefault, isYieldEnabled })
+  }, [setEnvironment, currentChainId, enableLpTokensByDefault, isYieldEnabled])
 
   // Fetch tokens lists once in 6 hours
   const { data: listsStates, isLoading } = useSWR<ListState[] | null>(
     ['TokensListsUpdater', allTokensLists, chainId, lastUpdateTimeState],
     () => {
-      if (!getIsTimeToUpdate(lastUpdateTimeState[chainId])) return null
+      if (!getIsTimeToUpdate(lastUpdateTimeState[chainId] || LAST_UPDATE_TIME_DEFAULT)) return null
 
       return Promise.allSettled(allTokensLists.map(fetchTokenList)).then(getFulfilledResults)
     },
-    swrOptions
+    swrOptions,
   )
 
   // Fulfill tokens lists with tokens from fetched lists

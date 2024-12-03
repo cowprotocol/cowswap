@@ -1,13 +1,14 @@
-import { Dispatch, ReactNode, SetStateAction, useMemo } from 'react'
+import { ReactNode, useMemo, useState } from 'react'
 
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { PercentDisplay } from '@cowprotocol/ui'
-import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 import { Percent, Price } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useUsdAmount } from 'modules/usdAmount'
+import { useVolumeFeeTooltip } from 'modules/volumeFee'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
 
@@ -24,9 +25,7 @@ import { TradeFeesAndCosts } from '../TradeFeesAndCosts'
 type Props = {
   receiveAmountInfo: ReceiveAmountInfo
   rateInfoParams: RateInfoParams
-  isInvertedState: [boolean, Dispatch<SetStateAction<boolean>>]
   slippage: Percent
-  widgetParams: Partial<CowSwapWidgetAppParams>
   labelsAndTooltips?: LabelsAndTooltips
   children?: ReactNode
   recipient?: Nullish<string>
@@ -53,11 +52,9 @@ type LabelsAndTooltips = {
 export function TradeBasicConfirmDetails(props: Props) {
   const {
     rateInfoParams,
-    isInvertedState,
     slippage,
     labelsAndTooltips,
     receiveAmountInfo,
-    widgetParams,
     hideLimitPrice,
     hideUsdValues,
     withTimelineDot = true,
@@ -66,6 +63,9 @@ export function TradeBasicConfirmDetails(props: Props) {
     recipient,
     account,
   } = props
+  const isInvertedState = useState(false)
+  const widgetParams = useInjectedWidgetParams()
+  const volumeFeeTooltip = useVolumeFeeTooltip()
   const { amountAfterFees, amountAfterSlippage } = getOrderTypeReceiveAmounts(receiveAmountInfo)
   const { networkCostsSuffix, networkCostsTooltipSuffix } = labelsAndTooltips || {}
 
@@ -111,6 +111,7 @@ export function TradeBasicConfirmDetails(props: Props) {
         alwaysRow={alwaysRow}
         networkCostsSuffix={networkCostsSuffix}
         networkCostsTooltipSuffix={networkCostsTooltipSuffix}
+        volumeFeeTooltip={volumeFeeTooltip}
       />
 
       <ReviewOrderModalAmountRow

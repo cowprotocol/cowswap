@@ -67,6 +67,7 @@ const Wrapper = styled.span<{
   margin?: string
   width?: string
   dismissable?: boolean
+  backDropBlur?: boolean
 }>`
   display: flex;
   align-items: center;
@@ -82,6 +83,7 @@ const Wrapper = styled.span<{
   font-weight: 400;
   line-height: 1.2;
   width: ${({ width = '100%' }) => width};
+  backdrop-filter: ${({ backDropBlur }) => backDropBlur && 'blur(20px)'};
 
   // Icon + Text content wrapper
   > span {
@@ -91,7 +93,7 @@ const Wrapper = styled.span<{
     flex-flow: ${({ orientation = BannerOrientation.Vertical }) =>
       orientation === BannerOrientation.Horizontal ? 'row' : 'column wrap'};
     gap: 10px;
-    width: 100%;
+    width: auto;
   }
 
   > span > svg > path {
@@ -107,33 +109,37 @@ const Wrapper = styled.span<{
     gap: 10px;
     justify-content: ${({ orientation = BannerOrientation.Vertical }) =>
       orientation === BannerOrientation.Horizontal ? 'flex-start' : 'center'};
-  }
 
-  > span > span a {
-    color: inherit;
-    text-decoration: underline;
-  }
+    a {
+      color: inherit;
+      text-decoration: underline;
+    }
 
-  > span > span > strong {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: ${({ colorEnums }) => `var(${colorEnums.text})`};
-  }
+    > strong {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      gap: 6px;
+    }
 
-  > span > span > p {
-    line-height: 1.4;
-    margin: auto;
-    padding: 0;
-    width: 100%;
-    text-align: ${({ orientation = BannerOrientation.Vertical }) =>
-      orientation === BannerOrientation.Horizontal ? 'left' : 'center'};
-  }
+    > p {
+      line-height: 1.4;
+      margin: auto;
+      padding: 0;
+      width: 100%;
+      text-align: ${({ orientation = BannerOrientation.Vertical }) =>
+        orientation === BannerOrientation.Horizontal ? 'left' : 'center'};
+    }
 
-  > span > span > i {
-    font-style: normal;
-    font-size: 32px;
-    line-height: 1;
+    > i {
+      font-style: normal;
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    > ol {
+      padding-left: 20px;
+    }
   }
 `
 
@@ -163,11 +169,13 @@ export interface InlineBannerProps {
   orientation?: BannerOrientation
   iconSize?: number
   iconPadding?: string
-  customIcon?: string
+  customIcon?: string | ReactNode
   padding?: string
   margin?: string
   width?: string
+  noWrapContent?: boolean
   onClose?: () => void
+  backDropBlur?: boolean
 }
 
 export function InlineBanner({
@@ -184,6 +192,8 @@ export function InlineBanner({
   margin,
   width,
   onClose,
+  noWrapContent,
+  backDropBlur,
 }: InlineBannerProps) {
   const colorEnums = getColorEnums(bannerType)
 
@@ -197,10 +207,15 @@ export function InlineBanner({
       margin={margin}
       width={width}
       dismissable={!!onClose}
+      backDropBlur={backDropBlur}
     >
       <span>
         {!hideIcon && customIcon ? (
-          <SVG src={customIcon} width={iconSize} height={iconSize} />
+          typeof customIcon === 'string' ? (
+            <SVG src={customIcon} width={iconSize} height={iconSize} />
+          ) : (
+            customIcon
+          )
         ) : !hideIcon && colorEnums.icon ? (
           <Icon
             image={colorEnums.icon}
@@ -212,7 +227,7 @@ export function InlineBanner({
         ) : !hideIcon && colorEnums.iconText ? (
           <i>{colorEnums.iconText}</i>
         ) : null}
-        <span>{children}</span>
+        {noWrapContent ? children : <span>{children}</span>}
       </span>
 
       {onClose && <CloseIcon onClick={onClose} />}

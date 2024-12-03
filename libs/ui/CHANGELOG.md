@@ -1,5 +1,43 @@
 # Changelog
 
+## [1.14.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.13.0...ui-v1.14.0) (2024-11-21)
+
+
+### Features
+
+* refactor badge component and experimental icon ([#5102](https://github.com/cowprotocol/cowswap/issues/5102)) ([f642ce5](https://github.com/cowprotocol/cowswap/commit/f642ce5d5a8f2f81dbc72cb1d8942eaa8905bb3b))
+* refactor trade container styles ([#5103](https://github.com/cowprotocol/cowswap/issues/5103)) ([29ab5c4](https://github.com/cowprotocol/cowswap/commit/29ab5c45971767716df2d048b87198ac1acb2c90))
+
+## [1.13.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.12.0...ui-v1.13.0) (2024-11-06)
+
+
+### Features
+
+* **yield:** display pools info in widget ([#5046](https://github.com/cowprotocol/cowswap/issues/5046)) ([562d020](https://github.com/cowprotocol/cowswap/commit/562d0207d1acf4e1735c4b3f629ff63dd65d3725))
+
+## [1.12.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.11.0...ui-v1.12.0) (2024-10-29)
+
+
+### Features
+
+* add vampire attack banner ([#4981](https://github.com/cowprotocol/cowswap/issues/4981)) ([5246046](https://github.com/cowprotocol/cowswap/commit/52460461d6cc80635a25aefe5b119dbd7de1fb69))
+* **halloween:** add Halloween mode ([#5036](https://github.com/cowprotocol/cowswap/issues/5036)) ([791796d](https://github.com/cowprotocol/cowswap/commit/791796d139828f3dd0657222cbf98a5ce93ff321))
+* setup vampire attack widget ([#4950](https://github.com/cowprotocol/cowswap/issues/4950)) ([99c4c42](https://github.com/cowprotocol/cowswap/commit/99c4c42aec60a734a37926935be5dca6cd4cf11c))
+
+## [1.11.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.10.1...ui-v1.11.0) (2024-10-18)
+
+
+### Features
+
+* display new label for cow amm ([#4994](https://github.com/cowprotocol/cowswap/issues/4994)) ([531e63f](https://github.com/cowprotocol/cowswap/commit/531e63f666ffcafdaf8e2b1c2850991facbe5cf1))
+
+## [1.10.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.10.0...ui-v1.10.1) (2024-10-10)
+
+
+### Bug Fixes
+
+* **tokens-selector:** fix tokens displaying on mobile view ([#4929](https://github.com/cowprotocol/cowswap/issues/4929)) ([f055957](https://github.com/cowprotocol/cowswap/commit/f055957af450967b4bc4d58a15fc7a7b80f0aa77))
+
 ## [1.10.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.9.0...ui-v1.10.0) (2024-09-30)
 
 

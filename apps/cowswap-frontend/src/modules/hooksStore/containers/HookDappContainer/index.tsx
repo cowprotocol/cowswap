@@ -9,6 +9,7 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 import { useTradeState, useTradeNavigate } from 'modules/trade'
 
 import { useAddHook } from '../../hooks/useAddHook'
+import { useHookBalancesDiff } from '../../hooks/useBalancesDiff'
 import { useEditHook } from '../../hooks/useEditHook'
 import { useHookById } from '../../hooks/useHookById'
 import { useOrderParams } from '../../hooks/useOrderParams'
@@ -35,6 +36,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
   const tradeState = useTradeState()
   const tradeNavigate = useTradeNavigate()
   const isDarkMode = useIsDarkMode()
+  const balancesDiff = useHookBalancesDiff(isPreHook, hookToEditDetails?.uuid)
 
   const { inputCurrencyId = null, outputCurrencyId = null } = tradeState.state || {}
   const signer = useMemo(() => provider?.getSigner(), [provider])
@@ -44,11 +46,12 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
       chainId,
       account,
       orderParams,
-      hookToEdit: hookToEditDetails?.hookDetails,
+      hookToEdit: hookToEditDetails,
       signer,
       isSmartContract,
       isPreHook,
       isDarkMode,
+      balancesDiff,
       editHook(...args) {
         editHook(...args)
         onDismiss()
@@ -77,6 +80,9 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
     tradeNavigate,
     inputCurrencyId,
     outputCurrencyId,
+    isDarkMode,
+    orderParams,
+    balancesDiff,
   ])
 
   const dappProps = useMemo(() => ({ context, dapp, isPreHook }), [context, dapp, isPreHook])

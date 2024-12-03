@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
+// import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { currencyAmountToTokenAmount, getWrappedToken } from '@cowprotocol/common-utils'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import {
@@ -12,20 +12,16 @@ import {
 } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useGetQuoteAndStatus, useIsBestQuoteLoading } from 'legacy/state/price/hooks'
 import { Field } from 'legacy/state/types'
 
+import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useTokenSupportsPermit } from 'modules/permit'
 import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
-import { useEthFlowContext } from 'modules/swap/hooks/useEthFlowContext'
-import { useHandleSwap } from 'modules/swap/hooks/useHandleSwap'
-import { useSafeBundleApprovalFlowContext } from 'modules/swap/hooks/useSafeBundleApprovalFlowContext'
-import { useSwapFlowContext } from 'modules/swap/hooks/useSwapFlowContext'
 import { SwapButtonsContext } from 'modules/swap/pure/SwapButtons'
-import { TradeType, useTradeConfirmActions, useWrapNativeFlow } from 'modules/trade'
+import { TradeType, TradeWidgetActions, useTradeConfirmActions, useWrapNativeFlow } from 'modules/trade'
 import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
 import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
@@ -34,18 +30,17 @@ import { QuoteDeadlineParams } from 'modules/tradeQuote'
 import { useApproveState } from 'common/hooks/useApproveState'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
-import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
+import { useHandleSwapOrEthFlow } from './useHandleSwapOrEthFlow'
 import { useDerivedSwapInfo, useSwapActionHandlers } from './useSwapState'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean
   impactWarningAccepted: boolean
-  priceImpactParams: PriceImpact
   openNativeWrapModal(): void
 }
 
-export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext {
-  const { feeWarningAccepted, impactWarningAccepted, openNativeWrapModal, priceImpactParams } = input
+export function useSwapButtonContext(input: SwapButtonInput, actions: TradeWidgetActions): SwapButtonsContext {
+  const { feeWarningAccepted, impactWarningAccepted, openNativeWrapModal } = input
 
   const { account, chainId } = useWalletInfo()
   const { isSupportedWallet } = useWalletDetails()
@@ -58,10 +53,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     inputError: swapInputError,
   } = useDerivedSwapInfo()
   const toggleWalletModal = useToggleWalletModal()
-  const swapFlowContext = useSwapFlowContext()
-  const ethFlowContext = useEthFlowContext()
-  const safeBundleApprovalFlowContext = useSafeBundleApprovalFlowContext()
-  const safeBundleEthFlowContext = useSafeBundleEthFlowContext()
   const { onCurrencySelection } = useSwapActionHandlers()
   const isBestQuoteLoading = useIsBestQuoteLoading()
   const tradeConfirmActions = useTradeConfirmActions()
@@ -86,12 +77,9 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const wrapCallback = useWrapNativeFlow()
   const { state: approvalState } = useApproveState(slippageAdjustedSellAmount || null)
 
-  const handleSwap = useHandleSwap(priceImpactParams)
+  const { callback: handleSwap, contextIsReady } = useHandleSwapOrEthFlow(actions)
 
-  const contextExists = ethFlowContext || swapFlowContext || safeBundleApprovalFlowContext || safeBundleEthFlowContext
-  const recipientAddressOrName = contextExists?.orderParams.recipientAddressOrName || null
-
-  const swapCallbackError = contextExists ? null : 'Missing dependencies'
+  const swapCallbackError = contextIsReady ? null : 'Missing dependencies'
 
   const gnosisSafeInfo = useGnosisSafeInfo()
   const isReadonlyGnosisSafeUser = gnosisSafeInfo?.isReadOnly || false
@@ -106,7 +94,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
       quoteValidTo: quote?.quoteValidTo,
       localQuoteTimestamp: quote?.localQuoteTimestamp,
     }),
-    [quote?.validFor, quote?.quoteValidTo, quote?.localQuoteTimestamp]
+    [quote?.validFor, quote?.quoteValidTo, quote?.localQuoteTimestamp],
   )
 
   const swapButtonState = getSwapButtonState({
@@ -146,7 +134,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
       toggleWalletModal,
       swapInputError,
       onCurrencySelection,
-      recipientAddressOrName,
       widgetStandaloneMode: standaloneMode,
       quoteDeadlineParams,
     }),
@@ -163,16 +150,17 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
       toggleWalletModal,
       swapInputError,
       onCurrencySelection,
-      recipientAddressOrName,
       standaloneMode,
       quoteDeadlineParams,
-    ]
+    ],
   )
 }
 
 function useHasEnoughWrappedBalanceForSwap(inputAmount?: CurrencyAmount<Currency>): boolean {
   const { currencies } = useDerivedSwapInfo()
-  const wrappedBalance = useCurrencyAmountBalance(currencies.INPUT ? getWrappedToken(currencies.INPUT) : undefined)
+  const wrappedBalance = useCurrencyAmountBalanceCombined(
+    currencies.INPUT ? getWrappedToken(currencies.INPUT) : undefined,
+  )
 
   // is a native currency trade but wrapped token has enough balance
   return !!(wrappedBalance && inputAmount && !wrappedBalance.lessThan(inputAmount))

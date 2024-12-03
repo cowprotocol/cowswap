@@ -2,7 +2,7 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
 
-import { StyledRowBetween } from 'modules/swap/pure/Row/styled'
+import { StyledRowBetween } from 'modules/tradeWidgetAddons/pure/Row/styled'
 
 export const Wrapper = styled.div<{ alwaysRow: boolean }>`
   display: flex;
@@ -83,7 +83,9 @@ export const Label = styled.span<{ labelOpacity?: boolean }>`
   gap: 5px;
   text-align: left;
   opacity: ${({ labelOpacity }) => (labelOpacity ? 0.7 : 1)};
-  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out, opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  transition:
+    color var(${UI.ANIMATION_DURATION}) ease-in-out,
+    opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   color: inherit;
 
   &:hover {

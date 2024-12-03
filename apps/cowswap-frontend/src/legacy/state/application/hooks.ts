@@ -31,10 +31,6 @@ export function useToggleWalletModal(): Command {
   return useToggleModal(ApplicationModal.WALLET)
 }
 
-export function useToggleSettingsMenu(): Command {
-  return useToggleModal(ApplicationModal.SETTINGS)
-}
-
 // TODO: These two seem to be gone from original. Check whether they have been replaced
 export function useOpenModal(modal: ApplicationModal): Command {
   const dispatch = useAppDispatch()

@@ -30,6 +30,8 @@ import { capitalize } from 'utils'
 import { Order } from 'api/operator'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
+import { OrderHooksDetails } from '../OrderHooksDetails'
+
 const tooltip = {
   orderID: 'A unique identifier ID for this order.',
   from: 'The account address which signed the order.',
@@ -38,6 +40,7 @@ const tooltip = {
   appData:
     'The AppData hash for this order. It can denote encoded metadata with info on the app, environment and more, although not all interfaces follow the same pattern. Show more will try to decode that information.',
   status: 'The order status is either Open, Filled, Expired or Canceled.',
+  hooks: 'Hooks are interactions before/after order execution.',
   submission:
     'The date and time at which the order was submitted. The timezone is based on the browser locale settings.',
   expiration:
@@ -413,6 +416,18 @@ export function DetailsTable(props: Props): React.ReactNode | null {
               <GasFeeDisplay order={order} />
             </td>
           </tr>
+          <OrderHooksDetails appData={appData} fullAppData={fullAppData ?? undefined}>
+            {(content) => (
+              <tr>
+                <td>
+                  <span>
+                    <HelpTooltip tooltip={tooltip.hooks} /> Hooks
+                  </span>
+                </td>
+                <td>{content}</td>
+              </tr>
+            )}
+          </OrderHooksDetails>
           <tr>
             <td>
               <span>

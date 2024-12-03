@@ -18,13 +18,15 @@ import { RedirectPathToSwapOnly, RedirectToPath } from 'legacy/pages/Swap/redire
 
 import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
 import Account, { AccountOverview } from 'pages/Account'
+import AdvancedOrdersPage from 'pages/AdvancedOrders'
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import { HooksPage } from 'pages/Hooks'
+import { CowShed } from 'pages/Hooks/cowShed'
+import LimitOrderPage from 'pages/LimitOrders'
 import { SwapPage } from 'pages/Swap'
+import YieldPage from 'pages/Yield'
 
 // Async routes
-const LimitOrders = lazy(() => import(/* webpackChunkName: "limit_orders" */ 'pages/LimitOrders'))
-const AdvancedOrders = lazy(() => import(/* webpackChunkName: "advanced_orders" */ 'pages/AdvancedOrders'))
 const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
 const CowRunner = lazy(() => import(/* webpackChunkName: "cow_runner" */ 'pages/games/CowRunner'))
 const MevSlicer = lazy(() => import(/* webpackChunkName: "mev_slicer" */ 'pages/games/MevSlicer'))
@@ -51,9 +53,10 @@ function LazyRoute({ route, element, key }: LazyRouteProps) {
 }
 
 const lazyRoutes: LazyRouteProps[] = [
-  { route: RoutesEnum.LIMIT_ORDER, element: <LimitOrders /> },
+  { route: RoutesEnum.LIMIT_ORDER, element: <LimitOrderPage /> },
+  { route: RoutesEnum.YIELD, element: <YieldPage /> },
   { route: RoutesEnum.LONG_LIMIT_ORDER, element: <RedirectToPath path={'/limit'} /> },
-  { route: RoutesEnum.ADVANCED_ORDERS, element: <AdvancedOrders /> },
+  { route: RoutesEnum.ADVANCED_ORDERS, element: <AdvancedOrdersPage /> },
   { route: RoutesEnum.LONG_ADVANCED_ORDERS, element: <RedirectToPath path={'/advanced'} /> },
   { route: RoutesEnum.ABOUT, element: <ExternalRedirect url={COWDAO_COWSWAP_ABOUT_LINK} /> },
   { route: RoutesEnum.FAQ, element: <ExternalRedirect url={COWDAO_KNOWLEDGE_BASE_LINK} /> },
@@ -85,6 +88,7 @@ export function RoutesApp() {
         {/*Swap*/}
         <Route path={RoutesEnum.SWAP} element={<SwapPage />} />
         <Route path={RoutesEnum.HOOKS} element={<HooksPage />} />
+        <Route path={RoutesEnum.COW_SHED} element={<CowShed />} />
         <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
 
         {lazyRoutes.map((item, key) => LazyRoute({ ...item, key }))}

@@ -27,12 +27,16 @@ export interface WalletDetails {
   walletName?: string
   icon?: string
   isSupportedWallet: boolean
+  isSafeApp: boolean
 
   // Feature Support
   allowsOffchainSigning: boolean
 }
 
-export type GnosisSafeInfo = Pick<SafeInfoResponse, 'address' | 'threshold' | 'owners' | 'nonce' > & { isReadOnly?: boolean, chainId: number }
+export type GnosisSafeInfo = Pick<SafeInfoResponse, 'address' | 'threshold' | 'owners' | 'nonce'> & {
+  isReadOnly?: boolean
+  chainId: number
+}
 
 export enum WalletType {
   SAFE,

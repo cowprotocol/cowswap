@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef, useState } from 'react'
 
 import { CoWHookDappEvents, hookDappIframeTransport } from '@cowprotocol/hook-dapp-lib'
 import { EthereumProvider, IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
+import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import styled from 'styled-components/macro'
@@ -10,7 +11,42 @@ import { HookDappContext as HookDappContextType, HookDappIframe } from '../../ty
 
 const Iframe = styled.iframe`
   border: 0;
-  min-height: 350px;
+  min-height: 300px;
+  opacity: ${({ $isLoading }: { $isLoading: boolean }) => ($isLoading ? 0 : 1)};
+  transition: opacity 0.2s ease-in-out;
+`
+
+const LoadingWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  gap: 16px;
+`
+
+const LoadingText = styled.div`
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  font-size: 15px;
+`
+
+const StyledProductLogo = styled(ProductLogo)`
+  animation: pulse 1.5s ease-in-out infinite;
+
+  @keyframes pulse {
+    0% {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  }
 `
 
 interface IframeDappContainerProps {
@@ -26,6 +62,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
   const setBuyTokenRef = useRef(context.setBuyToken)
 
   const [isIframeActive, setIsIframeActive] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   const walletProvider = useWalletProvider()
 
@@ -33,6 +70,10 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
   editHookRef.current = context.editHook
   setSellTokenRef.current = context.setSellToken
   setBuyTokenRef.current = context.setBuyToken
+
+  const handleIframeLoad = () => {
+    setIsLoading(false)
+  }
 
   useLayoutEffect(() => {
     const iframeWindow = iframeRef.current?.contentWindow
@@ -85,5 +126,21 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
     hookDappIframeTransport.postMessageToWindow(iframeWindow, CoWHookDappEvents.CONTEXT_UPDATE, iframeContext)
   }, [context, isIframeActive])
 
-  return <Iframe ref={iframeRef} src={dapp.url} allow="clipboard-read; clipboard-write" />
+  return (
+    <>
+      {isLoading && (
+        <LoadingWrapper>
+          <StyledProductLogo variant={ProductVariant.CowSwap} logoIconOnly height={56} />
+          <LoadingText>Loading hook...</LoadingText>
+        </LoadingWrapper>
+      )}
+      <Iframe
+        ref={iframeRef}
+        src={dapp.url}
+        allow="clipboard-read; clipboard-write"
+        onLoad={handleIframeLoad}
+        $isLoading={isLoading}
+      />
+    </>
+  )
 }

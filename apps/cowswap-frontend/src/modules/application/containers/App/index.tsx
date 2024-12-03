@@ -1,9 +1,12 @@
 import { lazy, PropsWithChildren, Suspense, useMemo } from 'react'
 
+import { ACTIVE_CUSTOM_THEME, CustomTheme } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
+import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar, CowSwapTheme } from '@cowprotocol/ui'
 
+import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router-dom'
 import { ThemeProvider } from 'theme'
 
@@ -21,10 +24,10 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { parameterizeTradeRoute, useTradeRouteContext } from 'modules/trade'
 import { useInitializeUtm } from 'modules/utm'
 
+import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useMenuItems } from 'common/hooks/useMenuItems'
-import { CoWAmmBanner } from 'common/pure/CoWAMMBanner'
 import { LoadingApp } from 'common/pure/LoadingApp'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
@@ -50,6 +53,9 @@ export function App() {
   useAnalyticsReporterCowSwap()
   useInitializeUtm()
 
+  const featureFlags = useFeatureFlags()
+  const { isYieldEnabled } = featureFlags
+
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
 
@@ -62,7 +68,7 @@ export function App() {
         onClick: toggleDarkMode,
       },
     ],
-    [darkMode, toggleDarkMode]
+    [darkMode, toggleDarkMode],
   )
 
   const tradeContext = useTradeRouteContext()
@@ -74,7 +80,13 @@ export function App() {
         children: menuItems.map((item) => {
           const href = parameterizeTradeRoute(tradeContext, item.route, true)
 
-          return { href, label: item.label, description: item.description }
+          return {
+            href,
+            label: item.label,
+            description: item.description,
+            badge: item.badgeImage ? <SVG src={item.badgeImage} width={10} height={10} /> : item.badge,
+            badgeType: item.badgeType,
+          }
         }),
       },
       ...NAV_ITEMS,
@@ -84,6 +96,12 @@ export function App() {
   const { hideNetworkSelector } = useInjectedWidgetParams()
   const { pendingActivity } = useCategorizeRecentActivity()
   const isMobile = useMediaQuery(Media.upToMedium(false))
+  const customTheme = useMemo(() => {
+    if (ACTIVE_CUSTOM_THEME === CustomTheme.HALLOWEEN && darkMode && featureFlags.isHalloweenEnabled) {
+      return 'darkHalloween' as CowSwapTheme
+    }
+    return undefined
+  }, [darkMode, featureFlags.isHalloweenEnabled])
 
   const persistentAdditionalContent = (
     <HeaderControls>
@@ -112,6 +130,7 @@ export function App() {
             <MenuBar
               navItems={navItems}
               productVariant={PRODUCT_VARIANT}
+              customTheme={customTheme}
               settingsNavItems={settingsNavItems}
               showGlobalSettings
               bgColorDark={'rgb(222 227 230 / 7%)'}
@@ -128,10 +147,9 @@ export function App() {
             />
           )}
 
-          {/* CoW AMM banner */}
-          {!isInjectedWidgetMode && <CoWAmmBanner />}
+          {isYieldEnabled && <CoWAmmBanner />}
 
-          <styledEl.BodyWrapper>
+          <styledEl.BodyWrapper customTheme={customTheme}>
             <TopLevelModals />
 
             <RoutesApp />

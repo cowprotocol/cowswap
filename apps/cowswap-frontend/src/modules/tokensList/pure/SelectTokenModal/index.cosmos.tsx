@@ -26,10 +26,12 @@ const balances = allTokensMock.reduce<BalancesState['values']>((acc, token) => {
 }, {})
 
 const defaultProps: SelectTokenModalProps = {
+  account: undefined,
   permitCompatibleTokens: {},
   unsupportedTokens,
   allTokens: allTokensMock,
   favoriteTokens: favoriteTokensMock,
+  tokenListCategoryState: [null, () => void 0],
   balancesState: {
     values: balances,
     isLoading: false,
@@ -43,6 +45,9 @@ const defaultProps: SelectTokenModalProps = {
   },
   onDismiss() {
     console.log('onDismiss')
+  },
+  openPoolPage() {
+    console.log('openPoolPage')
   },
 }
 

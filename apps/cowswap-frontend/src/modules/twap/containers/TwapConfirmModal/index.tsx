@@ -1,13 +1,11 @@
 import { useAtomValue } from 'jotai'
-import React, { useState } from 'react'
+import React from 'react'
 
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
-import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
 import { PRICE_UPDATE_INTERVAL } from 'modules/tradeQuote/hooks/useTradeQuotePolling'
 
@@ -20,7 +18,6 @@ import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
-import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { scaledReceiveAmountInfoAtom } from '../../state/scaledReceiveAmountInfoAtom'
 import { twapOrderAtom } from '../../state/twapOrderAtom'
 import { TwapFormWarnings } from '../TwapFormWarnings'
@@ -70,14 +67,9 @@ export function TwapConfirmModal() {
   const twapOrder = useAtomValue(twapOrderAtom)
   const receiveAmountInfo = useAtomValue(scaledReceiveAmountInfoAtom)
   const slippage = useTwapSlippage()
-  const { showPriceImpactWarning } = useTwapWarningsContext()
   const localFormValidation = useTwapFormState()
   const tradeConfirmActions = useTradeConfirmActions()
   const createTwapOrder = useCreateTwapOrder()
-
-  const widgetParams = useInjectedWidgetParams()
-
-  const isInvertedState = useState(false)
 
   const isConfirmDisabled = !!localFormValidation
 
@@ -121,40 +113,40 @@ export function TwapConfirmModal() {
         refreshInterval={PRICE_UPDATE_INTERVAL}
         recipient={recipient}
       >
-        <>
-          {receiveAmountInfo && numOfParts && (
-            <TradeBasicConfirmDetails
-              widgetParams={widgetParams}
-              rateInfoParams={rateInfoParams}
-              receiveAmountInfo={receiveAmountInfo}
-              isInvertedState={isInvertedState}
-              slippage={slippage}
-              recipient={recipient}
-              account={account}
-              labelsAndTooltips={{
-                ...CONFIRM_MODAL_CONFIG,
-                networkCostsSuffix: !allowsOffchainSigning ? <NetworkCostsSuffix /> : null,
-                networkCostsTooltipSuffix: !allowsOffchainSigning ? (
-                  <>
-                    <br />
-                    <br />
-                    Because you are using a smart contract wallet, you will pay a separate gas cost for signing the
-                    order placement on-chain.
-                  </>
-                ) : null,
-              }}
+        {(warnings) => (
+          <>
+            {receiveAmountInfo && numOfParts && (
+              <TradeBasicConfirmDetails
+                rateInfoParams={rateInfoParams}
+                receiveAmountInfo={receiveAmountInfo}
+                slippage={slippage}
+                recipient={recipient}
+                account={account}
+                labelsAndTooltips={{
+                  ...CONFIRM_MODAL_CONFIG,
+                  networkCostsSuffix: !allowsOffchainSigning ? <NetworkCostsSuffix /> : null,
+                  networkCostsTooltipSuffix: !allowsOffchainSigning ? (
+                    <>
+                      <br />
+                      <br />
+                      Because you are using a smart contract wallet, you will pay a separate gas cost for signing the
+                      order placement on-chain.
+                    </>
+                  ) : null,
+                }}
+              />
+            )}
+            <DividerHorizontal />
+            <TwapConfirmDetails
+              startTime={twapOrder?.startTime}
+              numOfParts={numOfParts}
+              partDuration={partDuration}
+              totalDuration={totalDuration}
             />
-          )}
-          <DividerHorizontal />
-          <TwapConfirmDetails
-            startTime={twapOrder?.startTime}
-            numOfParts={numOfParts}
-            partDuration={partDuration}
-            totalDuration={totalDuration}
-          />
-          {showPriceImpactWarning && <NoImpactWarning withoutAccepting={true} isAccepted={true} />}
-          <TwapFormWarnings localFormValidation={localFormValidation} isConfirmationModal />
-        </>
+            {warnings}
+            <TwapFormWarnings localFormValidation={localFormValidation} isConfirmationModal />
+          </>
+        )}
       </TradeConfirmation>
     </TradeConfirmModal>
   )

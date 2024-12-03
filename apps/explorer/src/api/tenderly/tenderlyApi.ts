@@ -22,15 +22,15 @@ import { SPECIAL_ADDRESSES } from '../../explorer/const'
 export const ALIAS_TRADER_NAME = 'Trader'
 const COW_PROTOCOL_CONTRACT_NAME = 'GPv2Settlement'
 
-const API_BASE_URLs: Record<SupportedChainId, string> = mapSupportedNetworks(
-  (_networkId: SupportedChainId): string => `${TENDERLY_API_URL}/${_networkId}`
+const API_BASE_URLs: Record<SupportedChainId, string | undefined> = mapSupportedNetworks(
+  (_networkId: SupportedChainId): string => `${TENDERLY_API_URL}/${_networkId}`,
 )
 
 function _getApiBaseUrl(networkId: SupportedChainId): string {
   const baseUrl = API_BASE_URLs[networkId]
 
   if (!baseUrl) {
-    throw new Error('Unsupported Network. The tenderly API is not available in the SupportedChainId ' + networkId)
+    throw new Error('Unsupported Network. The tenderly API is not available or configured for chain id ' + networkId)
   } else {
     return baseUrl
   }
@@ -65,7 +65,7 @@ export async function getTransactionContracts(networkId: SupportedChainId, txHas
 
 export async function getTradesAndTransfers(
   networkId: SupportedChainId,
-  txHash: string
+  txHash: string,
 ): Promise<TxTradesAndTransfers> {
   const trace = await _fetchTrace(networkId, txHash)
 
@@ -132,7 +132,7 @@ export async function getTradesAccount(
   networkId: SupportedChainId,
   txHash: string,
   trades: Array<Trade>,
-  transfers: Array<Transfer>
+  transfers: Array<Transfer>,
 ): Promise<Map<string, Account>> {
   const contracts = await _fetchTradesAccounts(networkId, txHash)
 
@@ -146,7 +146,7 @@ export async function getTradesAccount(
 export function accountAddressesInvolved(
   contracts: Contract[],
   trades: Array<Trade>,
-  transfers: Array<Transfer>
+  transfers: Array<Transfer>,
 ): Map<string, Account> {
   const result = new Map()
 

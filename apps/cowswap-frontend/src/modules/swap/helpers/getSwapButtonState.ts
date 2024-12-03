@@ -4,7 +4,6 @@ import { QuoteError } from 'legacy/state/price/actions'
 import { QuoteInformationObject } from 'legacy/state/price/reducer'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
-import { getEthFlowEnabled } from 'modules/swap/helpers/getEthFlowEnabled'
 import { isQuoteExpired, QuoteDeadlineParams } from 'modules/tradeQuote'
 
 import { ApprovalState } from 'common/hooks/useApproveState'
@@ -141,7 +140,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   }
 
   if (input.isNativeIn) {
-    if (getEthFlowEnabled(input.isSmartContractWallet === true)) {
+    if (!input.isSmartContractWallet) {
       return SwapButtonState.RegularEthFlowSwap
     } else if (input.isBundlingSupported) {
       return SwapButtonState.WrapAndSwap

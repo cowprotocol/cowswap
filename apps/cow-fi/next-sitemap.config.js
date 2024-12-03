@@ -20,33 +20,32 @@ module.exports = {
   transform: async (config, url) => {
     // Handle /learn/* pages with lastmod from CMS
     if (url.startsWith('/learn/')) {
-      const articles = await getAllArticleSlugsWithDates()
-      const article = articles.find(({ slug }) => `/learn/${slug}` === url)
-      if (article) {
-        return {
-          loc: url,
-          changefreq: 'weekly',
-          priority: 0.6,
-          lastmod: article.lastModified,
+      try {
+        console.log(`Transforming learn page: ${url}`)
+        const articles = await getAllArticleSlugsWithDates()
+        const article = articles.find(({ slug }) => `/learn/${slug}` === url)
+
+        if (article) {
+          console.log(`Found matching article for ${url}`)
+          return {
+            loc: url,
+            changefreq: config.changefreq,
+            priority: config.priority,
+            lastmod: article.updatedAt,
+          }
+        } else {
+          console.log(`No matching article found for ${url}`)
         }
+      } catch (error) {
+        console.error(`Error processing ${url}:`, error)
       }
     }
 
-    // Handle /tokens/* pages
-    if (url.startsWith('/tokens/')) {
-      return {
-        loc: url,
-        changefreq: 'daily',
-        priority: 0.6,
-        lastmod: new Date().toISOString(), // Assume updated daily
-      }
-    }
-
-    // Default transformation for all other pages
+    console.log(`Applying default transformation for: ${url}`)
     return {
       loc: url,
-      changefreq: 'weekly',
-      priority: 0.5,
+      changefreq: config.changefreq,
+      priority: config.priority,
       lastmod: new Date().toISOString(),
     }
   },
@@ -54,66 +53,44 @@ module.exports = {
 
 /**
  * Function to fetch all article slugs with lastModified dates from the CMS API
- * Implements caching to avoid redundant network requests
+ * Implements pagination to fetch all pages of articles
  */
 async function getAllArticleSlugsWithDates() {
-  // Check if articles are already cached
-  if (getAllArticleSlugsWithDates.cachedArticles) {
-    return getAllArticleSlugsWithDates.cachedArticles
-  }
-
-  const articles = []
   const cmsBaseUrl = process.env.NEXT_PUBLIC_CMS_BASE_URL || 'https://cms.cow.fi/api'
   const cmsApiUrl = `${cmsBaseUrl}/articles`
-
+  let allArticles = []
   let page = 1
-  const pageSize = 100
-  let totalPages = 1
+  let hasMorePages = true
 
-  while (page <= totalPages) {
+  while (hasMorePages) {
     try {
-      console.log(`Fetching page ${page} of articles from CMS...`)
-
-      const params = new URLSearchParams({
-        'query[fields]': 'slug,updatedAt', // Fetch both slug and updatedAt
-        'query[pagination][page]': page,
-        'query[pagination][pageSize]': pageSize,
-      })
-
-      const response = await fetch(`${cmsApiUrl}?${params.toString()}`, {
-        headers: {
-          // Include Authorization header if required
-          // Authorization: `Bearer ${process.env.CMS_API_KEY}`,
-        },
-      })
+      const url = `${cmsApiUrl}?pagination[page]=${page}&pagination[pageSize]=100`
+      console.log(`Fetching articles from: ${url}`)
+      const response = await fetch(url)
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch articles: ${response.statusText}`)
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
 
       const data = await response.json()
+      const articles = data.data
+      allArticles = allArticles.concat(articles)
 
-      // Adjust based on your actual CMS API response structure
-      data.data.forEach((article) => {
-        articles.push({
-          slug: article.attributes.slug, // Ensure 'slug' is the correct field
-          lastModified: article.attributes.updatedAt, // Ensure 'updatedAt' is the correct field
-        })
-      })
+      console.log(`Fetched ${articles.length} articles from page ${page}`)
 
-      const pagination = data.meta.pagination
-      totalPages = pagination.pageCount
-      page += 1
+      // Check if there are more pages
+      hasMorePages = data.meta.pagination.page < data.meta.pagination.pageCount
+      page++
     } catch (error) {
       console.error('Error fetching articles for sitemap:', error)
-      throw error
+      hasMorePages = false // Stop trying if there's an error
     }
   }
 
-  console.log(`Total articles fetched: ${articles.length}`)
+  console.log(`Total articles fetched: ${allArticles.length}`)
 
-  // Cache the fetched articles
-  getAllArticleSlugsWithDates.cachedArticles = articles
-
-  return articles
+  return allArticles.map((article) => ({
+    slug: article.attributes.slug,
+    updatedAt: article.attributes.updatedAt,
+  }))
 }

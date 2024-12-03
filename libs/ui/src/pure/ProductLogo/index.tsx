@@ -2,6 +2,7 @@ import LOGO_COWAMM from '@cowprotocol/assets/images/logo-cowamm.svg'
 import LOGO_COWDAO from '@cowprotocol/assets/images/logo-cowdao.svg'
 import LOGO_COWEXPLORER from '@cowprotocol/assets/images/logo-cowexplorer.svg'
 import LOGO_COWPROTOCOL from '@cowprotocol/assets/images/logo-cowprotocol.svg'
+import LOGO_COWSWAP_HALLOWEEN from '@cowprotocol/assets/images/logo-cowswap-halloween.svg'
 import LOGO_COWSWAP from '@cowprotocol/assets/images/logo-cowswap.svg'
 import LOGO_ICON_COW from '@cowprotocol/assets/images/logo-icon-cow.svg'
 import LOGO_ICON_MEVBLOCKER from '@cowprotocol/assets/images/logo-icon-mevblocker.svg'
@@ -30,7 +31,11 @@ interface LogoInfo {
   color?: string // Optional color attribute for SVG
 }
 
-export type ThemedLogo = Record<CowSwapTheme, { default: LogoInfo; logoIconOnly?: LogoInfo }>
+export type ThemedLogo = Partial<Record<CowSwapTheme, { default: LogoInfo; logoIconOnly?: LogoInfo }>> & {
+  light: { default: LogoInfo; logoIconOnly?: LogoInfo }
+  dark: { default: LogoInfo; logoIconOnly?: LogoInfo }
+  darkHalloween?: { default: LogoInfo; logoIconOnly?: LogoInfo }
+}
 
 const LOGOS: Record<ProductVariant, ThemedLogo> = {
   // CoW Swap
@@ -55,6 +60,13 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
+        alt: 'CoW Swap',
+        color: '#65D9FF',
+      },
+    },
+    darkHalloween: {
+      default: {
+        src: LOGO_COWSWAP_HALLOWEEN,
         alt: 'CoW Swap',
         color: '#65D9FF',
       },
@@ -212,6 +224,7 @@ export interface LogoProps {
   heightMobile?: number | string
   href?: string // Optional href for the logo
   external?: boolean // Indicates if the href is an external link
+  className?: string
 }
 
 export const ProductLogoWrapper = styled.span<{
@@ -268,9 +281,11 @@ export const ProductLogo = ({
   heightMobile,
   href,
   external = false,
+  className,
 }: LogoProps) => {
   const themeMode = useTheme()
-  const logoForTheme = LOGOS[variant][customThemeMode || (themeMode.darkMode ? 'dark' : 'light')]
+  const selectedTheme = customThemeMode || (themeMode.darkMode ? 'dark' : 'light')
+  const logoForTheme = LOGOS[variant][selectedTheme] || LOGOS[variant]['light'] // Fallback to light theme if selected theme is not available
   const logoInfo = logoIconOnly && logoForTheme.logoIconOnly ? logoForTheme.logoIconOnly : logoForTheme.default
   const initialColor = overrideColor || logoInfo.color
 
@@ -284,6 +299,7 @@ export const ProductLogo = ({
 
   return (
     <ProductLogoWrapper
+      className={className}
       color={initialColor}
       hoverColor={overrideHoverColor || 'inherit'}
       height={height}

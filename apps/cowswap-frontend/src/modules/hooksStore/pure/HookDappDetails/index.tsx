@@ -1,32 +1,39 @@
 import { useMemo } from 'react'
 
+import { HookDappType, HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { Command } from '@cowprotocol/types'
 import { HelpTooltip } from '@cowprotocol/ui'
 
 import * as styled from './styled'
 
-import { HookDapp, HookDappType, HookDappWalletCompatibility } from '../../types/hooks'
+import { HookDapp } from '../../types/hooks'
 import { HookDetailHeader } from '../HookDetailHeader'
 
 interface HookDappDetailsProps {
   dapp: HookDapp
   onSelect: Command
+  walletType: HookDappWalletCompatibility
 }
 
-export function HookDappDetails({ dapp, onSelect }: HookDappDetailsProps) {
+export function HookDappDetails({ dapp, onSelect, walletType }: HookDappDetailsProps) {
   const tags = useMemo(() => {
-    const { version, website, type, walletCompatibility = [] } = dapp
+    const { version, website, type, conditions } = dapp
+    const walletCompatibility = conditions?.walletCompatibility || []
 
     const getWalletCompatibilityTooltip = () => {
-      const isSmartContract = walletCompatibility.includes(HookDappWalletCompatibility.SMART_CONTRACT)
-      const isEOA = walletCompatibility.includes(HookDappWalletCompatibility.EOA)
+      const supportedWallets = {
+        [HookDappWalletCompatibility.SMART_CONTRACT]: 'smart contracts (e.g. Safe)',
+        [HookDappWalletCompatibility.EOA]: 'EOA wallets',
+      }
+
+      if (walletCompatibility.length === 0) {
+        return 'No wallet compatibility information available.'
+      }
+
+      const supportedTypes = walletCompatibility.map((type) => supportedWallets[type]).filter(Boolean)
 
       return `This hook is compatible with ${
-        isSmartContract && isEOA
-          ? 'both smart contracts (e.g. Safe) and EOA wallets'
-          : isSmartContract
-            ? 'smart contracts (e.g. Safe)'
-            : 'EOA wallets'
+        supportedTypes.length > 1 ? `both ${supportedTypes.join(' and ')}` : supportedTypes[0]
       }.`
     }
 
@@ -58,7 +65,7 @@ export function HookDappDetails({ dapp, onSelect }: HookDappDetailsProps) {
 
   return (
     <styled.Wrapper>
-      <HookDetailHeader dapp={dapp} onSelect={onSelect} />
+      <HookDetailHeader dapp={dapp} onSelect={onSelect} walletType={walletType} />
       <styled.Body>
         <p>{dapp.description}</p>
       </styled.Body>

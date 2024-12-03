@@ -1,7 +1,7 @@
 import { atom, useAtom } from 'jotai'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
-import { cowprotocolTokenLogoUrl, NATIVE_CURRENCY_ADDRESS, TokenWithLogo } from '@cowprotocol/common-const'
+import { cowprotocolTokenLogoUrl, LpToken, NATIVE_CURRENCY_ADDRESS, TokenWithLogo } from '@cowprotocol/common-const'
 import { uriToHttp } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Media, UI } from '@cowprotocol/ui'
@@ -12,6 +12,7 @@ import styled, { css } from 'styled-components/macro'
 
 import { SingleLetterLogo } from './SingleLetterLogo'
 
+import { useTokensByAddressMap } from '../../hooks/tokens/useTokensByAddressMap'
 import { getTokenLogoUrls } from '../../utils/getTokenLogoUrls'
 
 const invalidUrlsAtom = atom<{ [url: string]: boolean }>({})
@@ -23,10 +24,12 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
   justify-content: center;
   background: var(${UI.COLOR_DARK_IMAGE_PAPER});
   color: var(${UI.COLOR_DARK_IMAGE_PAPER_TEXT});
-  border-radius: ${({ size }) => size ?? defaultSize}px;
-  width: ${({ size }) => size ?? defaultSize}px;
-  height: ${({ size }) => size ?? defaultSize}px;
-  font-size: ${({ size }) => size ?? defaultSize}px;
+  border-radius: ${({ size = defaultSize }) => size}px;
+  width: ${({ size = defaultSize }) => size}px;
+  height: ${({ size = defaultSize }) => size}px;
+  min-width: ${({ size = defaultSize }) => size}px;
+  min-height: ${({ size = defaultSize }) => size}px;
+  font-size: ${({ size = defaultSize }) => size}px;
   overflow: hidden;
 
   > img,
@@ -44,6 +47,8 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
             border-radius: ${sizeMobile}px;
             width: ${sizeMobile}px;
             height: ${sizeMobile}px;
+            min-width: ${sizeMobile}px;
+            min-height: ${sizeMobile}px;
             font-size: ${sizeMobile}px;
 
             > img,
@@ -55,18 +60,55 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
   }
 `
 
+const LpTokenWrapper = styled.div<{ size?: number }>`
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  > div {
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    position: absolute;
+  }
+
+  > div:last-child {
+    right: -1px;
+  }
+
+  > div:last-child > img,
+  > div:last-child > svg {
+    right: 100%;
+    position: relative;
+  }
+
+  > div > img,
+  > div > svg {
+    width: ${({ size = defaultSize }) => size}px;
+    height: ${({ size = defaultSize }) => size}px;
+    min-width: ${({ size = defaultSize }) => size}px;
+    min-height: ${({ size = defaultSize }) => size}px;
+  }
+`
+
 export interface TokenLogoProps {
-  token?: TokenWithLogo | Currency | null
+  token?: TokenWithLogo | LpToken | Currency | null
   logoURI?: string
   className?: string
   size?: number
   sizeMobile?: number
+  noWrap?: boolean
 }
 
-export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile }: TokenLogoProps) {
+export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, noWrap }: TokenLogoProps) {
+  const tokensByAddress = useTokensByAddressMap()
+
   const [invalidUrls, setInvalidUrls] = useAtom(invalidUrlsAtom)
+  const isLpToken = token instanceof LpToken
 
   const urls = useMemo(() => {
+    if (token instanceof LpToken) return
+
     // TODO: get rid of Currency usage and remove type casting
     if (token) {
       if (token instanceof NativeCurrency) {
@@ -79,25 +121,46 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile }: 
     return logoURI ? uriToHttp(logoURI) : []
   }, [logoURI, token])
 
-  const validUrls = useMemo(() => urls.filter((url) => !invalidUrls[url]), [urls, invalidUrls])
+  const validUrls = useMemo(() => urls && urls.filter((url) => !invalidUrls[url]), [urls, invalidUrls])
 
-  const currentUrl = validUrls[0]
+  const currentUrl = validUrls?.[0]
 
-  const onError = () => {
+  const onError = useCallback(() => {
+    if (!currentUrl) return
+
     setInvalidUrls((state) => ({ ...state, [currentUrl]: true }))
-  }
+  }, [currentUrl, setInvalidUrls])
 
   const initial = token?.symbol?.[0] || token?.name?.[0]
 
+  if (isLpToken) {
+    return (
+      <TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
+        <LpTokenWrapper size={size}>
+          <div>
+            <TokenLogo noWrap token={tokensByAddress[token.tokens?.[0]]} size={size} sizeMobile={sizeMobile} />
+          </div>
+          <div>
+            <TokenLogo noWrap token={tokensByAddress[token.tokens?.[1]]} size={size} sizeMobile={sizeMobile} />
+          </div>
+        </LpTokenWrapper>
+      </TokenLogoWrapper>
+    )
+  }
+
+  const content = currentUrl ? (
+    <img alt="token logo" src={currentUrl} onError={onError} />
+  ) : initial ? (
+    <SingleLetterLogo initial={initial} />
+  ) : (
+    <Slash />
+  )
+
+  if (noWrap) return content
+
   return (
     <TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
-      {currentUrl ? (
-        <img alt="token logo" src={currentUrl} onError={onError} />
-      ) : initial ? (
-        <SingleLetterLogo initial={initial} />
-      ) : (
-        <Slash />
-      )}
+      {content}
     </TokenLogoWrapper>
   )
 }

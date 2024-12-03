@@ -6,7 +6,6 @@ import { AccountDetails } from './index'
 const defaultProps = {
   pendingTransactions: [],
   confirmedTransactions: [],
-  toggleWalletModal: () => void 0,
   toggleAccountSelectorModal: () => void 0,
   handleCloseOrdersPanel: () => void 0,
 }

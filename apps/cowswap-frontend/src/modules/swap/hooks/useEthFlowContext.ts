@@ -1,49 +1,54 @@
 import { useSetAtom } from 'jotai'
-import { useMemo } from 'react'
 
-import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
+import useSWR from 'swr'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+import { useGetQuoteAndStatus } from 'legacy/state/price/hooks'
 
-import { FlowType, getFlowContext, useBaseFlowContextSetup } from 'modules/swap/hooks/useFlowContext'
-import { EthFlowContext } from 'modules/swap/services/types'
-import { addInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
+import { useAppData, useUploadAppData } from 'modules/appData'
 
 import { useEthFlowContract } from 'common/hooks/useContract'
 
 import { useCheckEthFlowOrderExists } from './useCheckEthFlowOrderExists'
+import { useDerivedSwapInfo } from './useSwapState'
+
+import { EthFlowContext } from '../services/types'
+import { addInFlightOrderIdAtom } from '../state/EthFlow/ethFlowInFlightOrderIdsAtom'
 
 export function useEthFlowContext(): EthFlowContext | null {
+  const { chainId } = useWalletInfo()
+  const { currenciesIds } = useDerivedSwapInfo()
+  const { quote } = useGetQuoteAndStatus({
+    token: currenciesIds.INPUT,
+    chainId,
+  })
   const contract = useEthFlowContract()
-  const baseProps = useBaseFlowContextSetup()
   const addTransaction = useTransactionAdder()
-
-  const sellToken = baseProps.chainId ? NATIVE_CURRENCIES[baseProps.chainId as SupportedChainId] : undefined
+  const uploadAppData = useUploadAppData()
+  const appData = useAppData()
 
   const addInFlightOrderId = useSetAtom(addInFlightOrderIdAtom)
 
   const checkEthFlowOrderExists = useCheckEthFlowOrderExists()
 
-  const baseContext = useMemo(
-    () =>
-      getFlowContext({
-        baseProps,
-        sellToken,
-        kind: OrderKind.SELL,
-      }),
-    [baseProps, sellToken]
+  return (
+    useSWR(
+      appData && contract
+        ? [quote, contract, addTransaction, checkEthFlowOrderExists, addInFlightOrderId, uploadAppData, appData]
+        : null,
+      ([quote, contract, addTransaction, checkEthFlowOrderExists, addInFlightOrderId, uploadAppData, appData]) => {
+        return {
+          quote,
+          contract,
+          addTransaction,
+          checkEthFlowOrderExists,
+          addInFlightOrderId,
+          uploadAppData,
+          appData,
+        }
+      },
+    ).data || null
   )
-
-  return useMemo(() => {
-    if (!baseContext || !contract || baseProps.flowType !== FlowType.EOA_ETH_FLOW) return null
-
-    return {
-      ...baseContext,
-      contract,
-      addTransaction,
-      checkEthFlowOrderExists,
-      addInFlightOrderId,
-    }
-  }, [baseContext, contract, addTransaction, checkEthFlowOrderExists, addInFlightOrderId, baseProps.flowType])
 }

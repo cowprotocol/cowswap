@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { ReactElement, useEffect, useRef, useState } from 'react'
 
 import {
   BackButton,
@@ -16,12 +16,16 @@ import ms from 'ms.macro'
 import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
+import type { AppDataInfo } from 'modules/appData'
+
+import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
 import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
 
 import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
 import * as styledEl from './styled'
 
+import { NoImpactWarning } from '../../containers/NoImpactWarning'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
 
@@ -34,6 +38,7 @@ export interface TradeConfirmationProps {
 
   account: string | undefined
   ensName: string | undefined
+  appData?: string | AppDataInfo
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   isConfirmDisabled: boolean
@@ -43,7 +48,7 @@ export interface TradeConfirmationProps {
   isPriceStatic?: boolean
   recipient?: string | null
   buttonText?: React.ReactNode
-  children?: JSX.Element
+  children?: (restContent: ReactElement) => ReactElement
 }
 
 export function TradeConfirmation(props: TradeConfirmationProps) {
@@ -70,6 +75,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     children,
     recipient,
     isPriceStatic,
+    appData,
   } = frozenProps || props
 
   /**
@@ -120,6 +126,16 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     onConfirm()
   }
 
+  const hookDetailsElement = (
+    <>
+      {appData && (
+        <OrderHooksDetails appData={appData} isTradeConfirmation>
+          {(hookChildren) => hookChildren}
+        </OrderHooksDetails>
+      )}
+    </>
+  )
+
   return (
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
       <styledEl.Header>
@@ -142,8 +158,13 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
             priceImpactParams={priceImpact}
           />
         </styledEl.AmountsPreviewContainer>
-        {children}
-        {/*Banners*/}
+        {children?.(
+          <>
+            {hookDetailsElement}
+            <NoImpactWarning withoutAccepting />
+          </>,
+        )}
+
         {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
         {isPriceChanged && !isPriceStatic && <PriceUpdatedBanner onClick={resetPriceChanged} />}
         <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>

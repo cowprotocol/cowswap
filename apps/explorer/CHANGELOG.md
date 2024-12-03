@@ -1,5 +1,41 @@
 # Changelog
 
+## [2.36.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.36.0...explorer-v2.36.1) (2024-11-06)
+
+
+### Bug Fixes
+
+* **explorer:** make sure txHash always has the 0x prefix ([#5061](https://github.com/cowprotocol/cowswap/issues/5061)) ([9054969](https://github.com/cowprotocol/cowswap/commit/9054969abcc4daceb16bbc04e186918fb092e3db))
+
+## [2.36.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.35.2...explorer-v2.36.0) (2024-10-18)
+
+
+### Features
+
+* **explorer:** update explorer graph images ([#5008](https://github.com/cowprotocol/cowswap/issues/5008)) ([8952e9f](https://github.com/cowprotocol/cowswap/commit/8952e9f7b29ff848fa3da3f811e3e6232eb92361))
+
+## [2.35.2](https://github.com/cowprotocol/cowswap/compare/explorer-v2.35.1...explorer-v2.35.2) (2024-10-18)
+
+
+### Bug Fixes
+
+* **explorer:** display hook details of unknown hook-dapp ([#4995](https://github.com/cowprotocol/cowswap/issues/4995)) ([eaa29f3](https://github.com/cowprotocol/cowswap/commit/eaa29f3ed421d92214b857bf1c57d75b0317cbba))
+
+## [2.35.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.35.0...explorer-v2.35.1) (2024-10-14)
+
+
+### Bug Fixes
+
+* **explorer:** do not crash when appData is not parsed ([#4983](https://github.com/cowprotocol/cowswap/issues/4983)) ([b960bde](https://github.com/cowprotocol/cowswap/commit/b960bde94570dba2a297ecb59a7a79cbbbfcefb8))
+
+## [2.35.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.34.1...explorer-v2.35.0) (2024-10-10)
+
+
+### Features
+
+* **explorer:** display order hooks details ([#4921](https://github.com/cowprotocol/cowswap/issues/4921)) ([9c364bd](https://github.com/cowprotocol/cowswap/commit/9c364bd81f2e392a8cece06f6470734ee3d7623c))
+* **hooks-store:** adjust hook details and rescue funds styles ([#4948](https://github.com/cowprotocol/cowswap/issues/4948)) ([aedc8d1](https://github.com/cowprotocol/cowswap/commit/aedc8d14c9b8dc3b25f964985b41b25229fd1547))
+
 ## [2.34.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.34.0...explorer-v2.34.1) (2024-09-30)
 
 

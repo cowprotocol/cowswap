@@ -1,5 +1,35 @@
 # Changelog
 
+## [1.9.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.8.0...widget-configurator-v1.9.0) (2024-10-29)
+
+
+### Features
+
+* setup vampire attack widget ([#4950](https://github.com/cowprotocol/cowswap/issues/4950)) ([99c4c42](https://github.com/cowprotocol/cowswap/commit/99c4c42aec60a734a37926935be5dca6cd4cf11c))
+
+## [1.8.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.7.2...widget-configurator-v1.8.0) (2024-10-18)
+
+
+### Features
+
+* **widget:** deadline widget param ([#4991](https://github.com/cowprotocol/cowswap/issues/4991)) ([ce3b5b8](https://github.com/cowprotocol/cowswap/commit/ce3b5b8adb5cc95a5ca3097d5cf2d45b249748c2))
+* **widget:** hide bridge info ([#4992](https://github.com/cowprotocol/cowswap/issues/4992)) ([9842afd](https://github.com/cowprotocol/cowswap/commit/9842afdb887497d235a01538663488b0b8852bb5))
+* **widget:** hide orders table ([#4993](https://github.com/cowprotocol/cowswap/issues/4993)) ([681fb20](https://github.com/cowprotocol/cowswap/commit/681fb20dab0b4155d50ad7f32c7a48cb95e084a3))
+
+## [1.7.2](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.7.1...widget-configurator-v1.7.2) (2024-10-08)
+
+
+### Bug Fixes
+
+* **widget-configurator:** update mainnet default partner fee recipient ([#4949](https://github.com/cowprotocol/cowswap/issues/4949)) ([173a0b3](https://github.com/cowprotocol/cowswap/commit/173a0b3c5e40e6e1679eaf052890b2395112b78b))
+
+## [1.7.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.7.0...widget-configurator-v1.7.1) (2024-10-07)
+
+
+### Bug Fixes
+
+* **widget-configurator:** use different default partner fee address per chain ([#4942](https://github.com/cowprotocol/cowswap/issues/4942)) ([f282b94](https://github.com/cowprotocol/cowswap/commit/f282b948d011022c563e4c6189af8da86f020754))
+
 ## [1.7.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.6.0...widget-configurator-v1.7.0) (2024-09-30)
 
 

@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.10.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.9.0...assets-v1.10.0) (2024-11-21)
+
+
+### Features
+
+* refactor badge component and experimental icon ([#5102](https://github.com/cowprotocol/cowswap/issues/5102)) ([f642ce5](https://github.com/cowprotocol/cowswap/commit/f642ce5d5a8f2f81dbc72cb1d8942eaa8905bb3b))
+
+## [1.9.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.8.0...assets-v1.9.0) (2024-10-29)
+
+
+### Features
+
+* add vampire attack banner ([#4981](https://github.com/cowprotocol/cowswap/issues/4981)) ([5246046](https://github.com/cowprotocol/cowswap/commit/52460461d6cc80635a25aefe5b119dbd7de1fb69))
+* **halloween:** add Halloween mode ([#5036](https://github.com/cowprotocol/cowswap/issues/5036)) ([791796d](https://github.com/cowprotocol/cowswap/commit/791796d139828f3dd0657222cbf98a5ce93ff321))
+
 ## [1.8.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.7.0...assets-v1.8.0) (2024-09-17)
 
 
