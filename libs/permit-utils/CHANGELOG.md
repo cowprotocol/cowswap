@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.4.0...permit-utils-v0.5.0) (2024-12-03)
+
+
+### Features
+
+* **base:** add base chain support ([#5044](https://github.com/cowprotocol/cowswap/issues/5044)) ([4cf0c91](https://github.com/cowprotocol/cowswap/commit/4cf0c91a300d6fcdc026364e74c45e5b2f729f2b))
+
 ## [0.4.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.3.1...permit-utils-v0.4.0) (2024-10-10)
 
 
