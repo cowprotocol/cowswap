@@ -36,6 +36,7 @@ export const upsertListsAtom = atom(null, (get, set, chainId: SupportedChainId, 
 export const addListAtom = atom(null, (get, set, state: ListState) => {
   const { chainId, widgetAppCode } = get(environmentAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
+  const userAddedTokenListsForChain = userAddedTokenLists[chainId] || []
 
   state.isEnabled = true
 
@@ -45,7 +46,7 @@ export const addListAtom = atom(null, (get, set, state: ListState) => {
 
   set(userAddedListsSourcesAtom, {
     ...userAddedTokenLists,
-    [chainId]: userAddedTokenLists[chainId].concat({
+    [chainId]: userAddedTokenListsForChain.concat({
       widgetAppCode: state.widgetAppCode,
       priority: state.priority,
       source: state.source,
@@ -58,10 +59,11 @@ export const addListAtom = atom(null, (get, set, state: ListState) => {
 export const removeListAtom = atom(null, (get, set, source: string) => {
   const { chainId } = get(environmentAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
+  const userAddedTokenListsForChain = userAddedTokenLists[chainId] || []
 
   set(userAddedListsSourcesAtom, {
     ...userAddedTokenLists,
-    [chainId]: userAddedTokenLists[chainId].filter((item) => item.source !== source),
+    [chainId]: userAddedTokenListsForChain.filter((item) => item.source !== source),
   })
 
   const stateCopy = { ...get(listsStatesByChainAtom) }

@@ -1,5 +1,4 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { LpTokenProvider, TokenInfo } from '@cowprotocol/types'
+import { LpTokenProvider, PersistentStateByChain, TokenInfo } from '@cowprotocol/types'
 import type { TokenList as UniTokenList } from '@uniswap/token-lists'
 
 export enum TokenListCategory {
@@ -19,7 +18,7 @@ export type ListSourceConfig = {
   source: string
 }
 
-export type ListsSourcesByNetwork = Record<SupportedChainId, Array<ListSourceConfig>>
+export type ListsSourcesByNetwork = PersistentStateByChain<Array<ListSourceConfig>>
 
 export type TokensMap = { [address: string]: TokenInfo }
 
@@ -34,4 +33,4 @@ export interface ListState extends Pick<ListSourceConfig, 'source' | 'priority' 
 
 export type TokenListsState = { [source: string]: ListState }
 
-export type TokenListsByChainState = Record<SupportedChainId, TokenListsState | undefined>
+export type TokenListsByChainState = PersistentStateByChain<TokenListsState>

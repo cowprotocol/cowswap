@@ -15,6 +15,7 @@ import {
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
 import { useUsdAmount } from 'modules/usdAmount'
+import { useVolumeFeeTooltip } from 'modules/volumeFee'
 
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 import { RateInfoParams } from 'common/pure/RateInfo'
@@ -50,6 +51,7 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
   }, [costsExceedFeeRaw, inputCurrency])
 
   const widgetParams = useInjectedWidgetParams()
+  const volumeFeeTooltip = useVolumeFeeTooltip()
   const networkFeeAmountUsd = useUsdAmount(networkFeeAmount).value
 
   const toggleAccordion = useCallback(() => {
@@ -88,6 +90,7 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
         withTimelineDot={false}
         networkCostsSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
         networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
+        volumeFeeTooltip={volumeFeeTooltip}
         alwaysRow
       />
       {slippage && (

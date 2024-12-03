@@ -34,6 +34,10 @@ const StyledTooltipContainer = styled(TooltipContainer)`
   border: 0;
   box-shadow: none;
   background: transparent;
+
+  > p {
+    margin: 0;
+  }
 `
 
 export interface InfoTooltipProps {
