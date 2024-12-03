@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/cowprotocol/cowswap/compare/core-v1.3.0...core-v1.4.0) (2024-12-03)
+
+
+### Features
+
+* **base:** add base chain support ([#5044](https://github.com/cowprotocol/cowswap/issues/5044)) ([4cf0c91](https://github.com/cowprotocol/cowswap/commit/4cf0c91a300d6fcdc026364e74c45e5b2f729f2b))
+
 ## [1.3.0](https://github.com/cowprotocol/cowswap/compare/core-v1.2.0...core-v1.3.0) (2024-08-27)
 
 

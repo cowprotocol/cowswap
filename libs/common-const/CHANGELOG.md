@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.10.1...common-const-v1.11.0) (2024-12-03)
+
+
+### Features
+
+* **base:** add base chain support ([#5044](https://github.com/cowprotocol/cowswap/issues/5044)) ([4cf0c91](https://github.com/cowprotocol/cowswap/commit/4cf0c91a300d6fcdc026364e74c45e5b2f729f2b))
+
 ## [1.10.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.10.0...common-const-v1.10.1) (2024-11-21)
 
 

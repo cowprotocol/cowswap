@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.7.2...common-utils-v1.8.0) (2024-12-03)
+
+
+### Features
+
+* **base:** add base chain support ([#5044](https://github.com/cowprotocol/cowswap/issues/5044)) ([4cf0c91](https://github.com/cowprotocol/cowswap/commit/4cf0c91a300d6fcdc026364e74c45e5b2f729f2b))
+* improve custom hook validation messages ([#5123](https://github.com/cowprotocol/cowswap/issues/5123)) ([91bab8d](https://github.com/cowprotocol/cowswap/commit/91bab8dc3b124a32790c3bb1955b01dd3a75ea7b))
+
 ## [1.7.2](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.7.1...common-utils-v1.7.2) (2024-09-30)
 
 

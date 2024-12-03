@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.91.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.90.0...cowswap-v1.91.0) (2024-12-03)
+
+
+### Features
+
+* allow adding networks without invalidating local-storage ([#5134](https://github.com/cowprotocol/cowswap/issues/5134)) ([995b4c0](https://github.com/cowprotocol/cowswap/commit/995b4c05da90356c6621a92dc58efbd6f37349ff))
+* **base:** add base chain support ([#5044](https://github.com/cowprotocol/cowswap/issues/5044)) ([4cf0c91](https://github.com/cowprotocol/cowswap/commit/4cf0c91a300d6fcdc026364e74c45e5b2f729f2b))
+* improve custom hook validation messages ([#5123](https://github.com/cowprotocol/cowswap/issues/5123)) ([91bab8d](https://github.com/cowprotocol/cowswap/commit/91bab8dc3b124a32790c3bb1955b01dd3a75ea7b))
+* **volume-fee:** add volume fee for Safe ([#5139](https://github.com/cowprotocol/cowswap/issues/5139)) ([bb14c6a](https://github.com/cowprotocol/cowswap/commit/bb14c6a6ecfaba7d1a9a1da5366fac054efb97aa))
+
+
+### Bug Fixes
+
+* display usd value for tokens with small prices ([#5137](https://github.com/cowprotocol/cowswap/issues/5137)) ([74c27fd](https://github.com/cowprotocol/cowswap/commit/74c27fd38e0280a5cf24575bf002a9598994ff95))
+* **hooks-store:** update hooks learn link ([#5126](https://github.com/cowprotocol/cowswap/issues/5126)) ([a3b378c](https://github.com/cowprotocol/cowswap/commit/a3b378cda5be4d33fc816e9b3b4c62efe7df5c39))
+* reset trade completely if default token is duplicated ([#5140](https://github.com/cowprotocol/cowswap/issues/5140)) ([32e1ca0](https://github.com/cowprotocol/cowswap/commit/32e1ca0108e8bf789d2bad01f8129d9343875bce))
+* **wallet:** remove change wallet feature ([#5136](https://github.com/cowprotocol/cowswap/issues/5136)) ([329c1df](https://github.com/cowprotocol/cowswap/commit/329c1df3aa2e2617b0bb15a94904b51c6063ff3d))
+
 ## [1.90.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.89.0...cowswap-v1.90.0) (2024-11-21)
 
 

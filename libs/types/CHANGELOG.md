@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/cowprotocol/cowswap/compare/types-v1.4.0...types-v1.5.0) (2024-12-03)
+
+
+### Features
+
+* allow adding networks without invalidating local-storage ([#5134](https://github.com/cowprotocol/cowswap/issues/5134)) ([995b4c0](https://github.com/cowprotocol/cowswap/commit/995b4c05da90356c6621a92dc58efbd6f37349ff))
+
 ## [1.4.0](https://github.com/cowprotocol/cowswap/compare/types-v1.3.0...types-v1.4.0) (2024-11-06)
 
 
