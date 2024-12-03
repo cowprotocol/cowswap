@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.14.0...ui-v1.15.0) (2024-12-03)
+
+
+### Features
+
+* **volume-fee:** add volume fee for Safe ([#5139](https://github.com/cowprotocol/cowswap/issues/5139)) ([bb14c6a](https://github.com/cowprotocol/cowswap/commit/bb14c6a6ecfaba7d1a9a1da5366fac054efb97aa))
+
 ## [1.14.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.13.0...ui-v1.14.0) (2024-11-21)
 
 

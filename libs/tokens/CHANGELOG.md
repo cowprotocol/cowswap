@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.12.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.11.0...tokens-v1.12.0) (2024-12-03)
+
+
+### Features
+
+* add default list for tokens in base ([#5141](https://github.com/cowprotocol/cowswap/issues/5141)) ([973b93a](https://github.com/cowprotocol/cowswap/commit/973b93a3bb11658bbfba51224a8062588655f5ef))
+* allow adding networks without invalidating local-storage ([#5134](https://github.com/cowprotocol/cowswap/issues/5134)) ([995b4c0](https://github.com/cowprotocol/cowswap/commit/995b4c05da90356c6621a92dc58efbd6f37349ff))
+* **base:** add base chain support ([#5044](https://github.com/cowprotocol/cowswap/issues/5044)) ([4cf0c91](https://github.com/cowprotocol/cowswap/commit/4cf0c91a300d6fcdc026364e74c45e5b2f729f2b))
+* improve custom hook validation messages ([#5123](https://github.com/cowprotocol/cowswap/issues/5123)) ([91bab8d](https://github.com/cowprotocol/cowswap/commit/91bab8dc3b124a32790c3bb1955b01dd3a75ea7b))
+
 ## [1.11.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.10.0...tokens-v1.11.0) (2024-11-06)
 
 

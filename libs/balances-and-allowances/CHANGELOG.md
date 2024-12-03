@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.1.1...balances-and-allowances-v1.2.0) (2024-12-03)
+
+
+### Features
+
+* allow adding networks without invalidating local-storage ([#5134](https://github.com/cowprotocol/cowswap/issues/5134)) ([995b4c0](https://github.com/cowprotocol/cowswap/commit/995b4c05da90356c6621a92dc58efbd6f37349ff))
+* improve custom hook validation messages ([#5123](https://github.com/cowprotocol/cowswap/issues/5123)) ([91bab8d](https://github.com/cowprotocol/cowswap/commit/91bab8dc3b124a32790c3bb1955b01dd3a75ea7b))
+
 ## [1.1.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.1.0...balances-and-allowances-v1.1.1) (2024-11-21)
 
 
