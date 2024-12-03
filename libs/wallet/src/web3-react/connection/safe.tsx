@@ -14,7 +14,7 @@ const [web3GnosisSafe, web3GnosisSafeHooks] = initializeConnector<AsyncConnector
             new m.GnosisSafe({
               actions,
               options: {
-                allowedDomains: [/^app\.safe\.global$/, /^(.+\.)?coinshift\.global$/, /^localhost:5173$/],
+                allowedDomains: [/app\.safe\.global$/, /(.+\.)?coinshift\.global$/, /localhost:5173$/],
               },
             }),
         ),
