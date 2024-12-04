@@ -91,5 +91,21 @@
       "smartContractWalletSupported": false,
       "supportedNetworks": [1, 100, 42161]
     }
+  },
+  "UNI_V2_WITHDRAW": {
+    "type": "IFRAME",
+    "name": "Withdraw Uniswap v2 Liquidity",
+    "descriptionShort": "Remove liquidity from a Uniswap v2 Weighted pool before the swap",
+    "description": "Reduce or withdraw Uniswap v2 from a pool before a token swap integrating the process directly into the transaction flow. By adjusting your liquidity ahead of time, you gain more control over your assets without any extra steps. Optimize your position in a pool, all in one seamless action — no need for multiple transactions or added complexity.",
+    "version": "0.0.1",
+    "website": "https://app.uniswap.org/pools/v2",
+    "image": "https://cow-hooks-dapps-withdraw-uniswap-v2.vercel.app/icon.png",
+    "url": "https://cow-hooks-dapps-withdraw-uniswap-v2.vercel.app/",
+    "conditions": {
+      "position": "pre",
+      "walletCompatibility": ["EOA"],
+      "smartContractWalletSupported": false,
+      "supportedNetworks": [1, 42161]
+    }
   }
 }
