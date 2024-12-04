@@ -29,28 +29,30 @@ export const Header = styled.div`
   font-weight: 500;
   width: 100%;
   color: inherit;
+
+  > span > i {
+    font-style: normal;
+    color: var(${UI.COLOR_TEXT});
+  }
 `
 
 export const MarketPriceButton = styled.button`
-  background: var(${UI.COLOR_PAPER});
   color: inherit;
   white-space: nowrap;
   border: none;
   font-weight: 500;
   cursor: pointer;
-  border-radius: 9px;
-  padding: 5px 8px;
   font-size: 11px;
-  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  background: transparent;
+  padding: 0;
+  color: var(${UI.COLOR_TEXT});
+  transition:
+    background var(${UI.ANIMATION_DURATION}) ease-in-out,
+    color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:disabled {
     cursor: default;
     opacity: 0.6;
-  }
-
-  &:not(:disabled):hover {
-    background: var(${UI.COLOR_PRIMARY});
-    color: var(${UI.COLOR_BUTTON_TEXT});
   }
 `
 
@@ -80,6 +82,7 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
 
 export const ActiveCurrency = styled.button`
   display: flex;
+  flex-flow: row wrap;
   align-items: center;
   justify-content: flex-end;
   border: none;
@@ -87,7 +90,6 @@ export const ActiveCurrency = styled.button`
   padding: 0;
   margin: 0 0 0 auto;
   gap: 8px;
-  max-width: 130px;
   width: auto;
   color: inherit;
   cursor: pointer;

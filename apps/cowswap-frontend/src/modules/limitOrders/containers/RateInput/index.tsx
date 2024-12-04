@@ -2,11 +2,11 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { formatInputAmount, getAddress, isFractionFalsy } from '@cowprotocol/common-utils'
+import { TokenLogo } from '@cowprotocol/tokens'
 import { HelpTooltip, Loader, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { RefreshCw } from 'react-feather'
-
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
@@ -84,7 +84,7 @@ export function RateInput() {
         isAlternativeOrderRate: false,
       })
     },
-    [isInverted, updateRate, updateLimitRateState]
+    [isInverted, updateRate, updateLimitRateState],
   )
 
   // Handle toggle primary field
@@ -146,9 +146,20 @@ export function RateInput() {
         <styledEl.Header>
           <HeadingText inputCurrency={inputCurrency} currency={primaryCurrency} rateImpact={rateImpact} />
 
-          <styledEl.MarketPriceButton disabled={isDisabledMPrice} onClick={handleSetMarketPrice}>
-            <span>Set to market</span>
-          </styledEl.MarketPriceButton>
+          {areBothCurrencies && (
+            <span>
+              <i>Market:</i>{' '}
+              <styledEl.MarketPriceButton disabled={isDisabledMPrice} onClick={handleSetMarketPrice}>
+                {isLoadingMarketRate ? (
+                  <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
+                ) : marketRate && !marketRate.equalTo(0) ? (
+                  formatInputAmount(isInverted ? marketRate.invert() : marketRate)
+                ) : (
+                  ''
+                )}
+              </styledEl.MarketPriceButton>
+            </span>
+          )}
         </styledEl.Header>
 
         <styledEl.Body>
@@ -165,6 +176,7 @@ export function RateInput() {
 
           <styledEl.ActiveCurrency onClick={handleToggle}>
             <styledEl.ActiveSymbol>
+              <TokenLogo token={secondaryCurrency} size={16} />
               <TokenSymbol token={secondaryCurrency} />
             </styledEl.ActiveSymbol>
             <styledEl.ActiveIcon>

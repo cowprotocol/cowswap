@@ -20,9 +20,8 @@ export const FooterBox = styled.div`
 `
 
 export const RateWrapper = styled.div`
-  display: grid;
-  grid-template-columns: auto 151px;
-  grid-template-rows: max-content;
+  display: flex;
+  width: 100%;
   max-width: 100%;
   gap: 6px;
   text-align: right;

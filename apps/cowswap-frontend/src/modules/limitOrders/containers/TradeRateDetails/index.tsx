@@ -2,6 +2,8 @@ import React, { useState, useCallback } from 'react'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { TradeTotalCostsDetails, PartnerFeeRow } from 'modules/trade'
+import { StyledRateInfo } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
+import { Box } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
 import { useUsdAmount } from 'modules/usdAmount'
 import { useVolumeFee, useVolumeFeeTooltip } from 'modules/volumeFee'
 
@@ -11,10 +13,11 @@ import { useLimitOrderPartnerFeeAmount } from '../../hooks/useLimitOrderPartnerF
 
 interface TradeRateDetailsProps {
   rateInfoParams?: RateInfoParams
+  alwaysExpanded?: boolean
 }
 
-export function TradeRateDetails({ rateInfoParams }: TradeRateDetailsProps) {
-  const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(false)
+export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: TradeRateDetailsProps) {
+  const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(alwaysExpanded)
   const widgetParams = useInjectedWidgetParams()
   const volumeFee = useVolumeFee()
   const partnerFeeAmount = useLimitOrderPartnerFeeAmount()
@@ -23,8 +26,9 @@ export function TradeRateDetails({ rateInfoParams }: TradeRateDetailsProps) {
   const partnerFeeBps = volumeFee?.bps
 
   const toggleAccordion = useCallback(() => {
+    if (alwaysExpanded) return
     setFeeDetailsOpen((prev) => !prev)
-  }, [])
+  }, [alwaysExpanded])
 
   const partnerFeeRow = (
     <PartnerFeeRow
@@ -40,6 +44,15 @@ export function TradeRateDetails({ rateInfoParams }: TradeRateDetailsProps) {
 
   if (!rateInfoParams) {
     return partnerFeeRow
+  }
+
+  if (alwaysExpanded) {
+    return (
+      <>
+        <StyledRateInfo label="Limit price" stylized={true} rateInfoParams={rateInfoParams} />
+        <Box noMargin>{partnerFeeRow}</Box>
+      </>
+    )
   }
 
   return (

@@ -194,17 +194,19 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
               </p>
             </InlineBanner>
           ))}
-        <styledEl.RateWrapper>
-          <RateInput />
-          <DeadlineInput />
-        </styledEl.RateWrapper>
       </>
+    ),
+    limitPriceInput: (
+      <styledEl.RateWrapper>
+        <RateInput />
+      </styledEl.RateWrapper>
     ),
     bottomContent(warnings) {
       return (
         <>
           <styledEl.FooterBox>
-            <TradeRateDetails rateInfoParams={rateInfoParams} />
+            <DeadlineInput />
+            <TradeRateDetails rateInfoParams={rateInfoParams} alwaysExpanded={true} />
           </styledEl.FooterBox>
 
           <LimitOrdersWarnings feeAmount={feeAmount} />
@@ -220,7 +222,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   }
 
   const params = {
-    compactView: false,
+    compactView: true,
     recipient,
     showRecipient,
     isTradePriceUpdating: isRateLoading,
