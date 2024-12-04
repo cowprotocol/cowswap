@@ -17,6 +17,7 @@ export interface LimitOrdersSettingsState {
   readonly partialFillsEnabled: boolean
   readonly deadlineMilliseconds: Milliseconds
   readonly customDeadlineTimestamp: Timestamp | null
+  readonly limitPricePosition: 'top' | 'between' | 'bottom'
 }
 
 export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
@@ -24,40 +25,41 @@ export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
   partialFillsEnabled: true,
   deadlineMilliseconds: defaultLimitOrderDeadline.value,
   customDeadlineTimestamp: null,
+  limitPricePosition: 'between',
 }
 
 // regular
 const regularLimitOrdersSettingsAtom = atomWithStorage<LimitOrdersSettingsState>(
   'limit-orders-settings-atom:v2',
   defaultLimitOrdersSettings,
-  getJotaiIsolatedStorage()
+  getJotaiIsolatedStorage(),
 )
 const regularUpdateLimitOrdersSettingsAtom = atom(
   null,
-  partialFillsOverrideSetterFactory(regularLimitOrdersSettingsAtom)
+  partialFillsOverrideSetterFactory(regularLimitOrdersSettingsAtom),
 )
 
 // alternative
 const alternativeLimitOrdersSettingsAtom = atom<LimitOrdersSettingsState>(defaultLimitOrdersSettings)
 const alternativeUpdateLimitOrdersSettingsAtom = atom(
   null,
-  partialFillsOverrideSetterFactory(alternativeLimitOrdersSettingsAtom)
+  partialFillsOverrideSetterFactory(alternativeLimitOrdersSettingsAtom),
 )
 
 // export
 export const limitOrdersSettingsAtom = alternativeOrderReadWriteAtomFactory(
   regularLimitOrdersSettingsAtom,
-  alternativeLimitOrdersSettingsAtom
+  alternativeLimitOrdersSettingsAtom,
 )
 export const updateLimitOrdersSettingsAtom = atom(
   null,
-  alternativeOrderAtomSetterFactory(regularUpdateLimitOrdersSettingsAtom, alternativeUpdateLimitOrdersSettingsAtom)
+  alternativeOrderAtomSetterFactory(regularUpdateLimitOrdersSettingsAtom, alternativeUpdateLimitOrdersSettingsAtom),
 )
 
 // utils
 
 function partialFillsOverrideSetterFactory(
-  atomToUpdate: typeof regularLimitOrdersSettingsAtom | typeof alternativeLimitOrdersSettingsAtom
+  atomToUpdate: typeof regularLimitOrdersSettingsAtom | typeof alternativeLimitOrdersSettingsAtom,
 ) {
   return (get: Getter, set: Setter, nextState: Partial<LimitOrdersSettingsState>) => {
     set(atomToUpdate, () => {

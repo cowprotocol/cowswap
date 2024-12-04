@@ -9,9 +9,7 @@ export const Wrapper = styled.div`
   background: var(${UI.COLOR_PAPER_DARKER});
   border-radius: 16px;
   padding: 10px 16px;
-  flex: 1 1 70%;
-  min-height: 80px;
-  justify-content: space-between;
+  max-width: 100%;
   display: flex;
   flex-flow: row wrap;
   color: inherit;
@@ -70,7 +68,7 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   align-items: center;
   background: none;
   border: none;
-  width: 100%;
+  width: max-content;
   text-align: left;
   color: inherit;
 
@@ -80,31 +78,71 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   }
 `
 
+export const CurrencyToggleGroup = styled.div`
+  display: flex;
+  align-items: center;
+  background: transparent;
+  overflow: hidden;
+`
+
 export const ActiveCurrency = styled.button<{ $active?: boolean }>`
   display: flex;
   align-items: center;
   gap: 6px;
-  background: ${({ theme }) => theme.grey1};
-  border: 1px solid ${({ theme, $active }) => ($active ? theme.blue : 'transparent')};
-  border-radius: 6px;
-  padding: 5px 8px;
+  font-size: 13px;
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
+  border: none;
   cursor: pointer;
-  transition: border-color 0.2s ease-in-out;
+  position: relative;
+  background: ${({ $active }) => ($active ? 'var(' + UI.COLOR_PAPER + ')' : 'var(' + UI.COLOR_PAPER_DARKEST + ')')};
+  color: ${({ $active }) => ($active ? 'var(' + UI.COLOR_TEXT + ')' : 'var(' + UI.COLOR_TEXT_OPACITY_70 + ')')};
+  transition: all 0.2s ease-in-out;
+
+  &:first-child {
+    padding-right: 16px;
+
+    ${({ $active }) =>
+      $active &&
+      `
+      &::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 12px;
+        background: var(${UI.COLOR_PAPER_DARKER});
+        transform: skew(-10deg);
+      }
+    `}
+  }
+
+  &:last-child {
+    padding-left: 16px;
+
+    ${({ $active }) =>
+      $active &&
+      `
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 12px;
+        background: var(${UI.COLOR_PAPER_DARKER});
+        transform: skew(-10deg);
+      }
+    `}
+  }
 
   &:hover {
-    border-color: ${({ theme }) => theme.blue};
+    color: var(${UI.COLOR_TEXT});
   }
 `
 
-export const CurrencyToggleGroup = styled.div`
-  display: flex;
-  gap: 8px;
-  align-items: center;
-`
-
 export const UsdButton = styled(ActiveCurrency)`
-  font-size: 16px;
-  font-weight: 600;
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
   min-width: 40px;
   justify-content: center;
 `
@@ -115,6 +153,8 @@ export const ActiveSymbol = styled.span`
   font-weight: 500;
   text-align: right;
   padding: 10px 0;
+  display: flex;
+  gap: 4px;
 `
 
 export const ActiveIcon = styled.div`

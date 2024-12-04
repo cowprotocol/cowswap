@@ -156,7 +156,16 @@ export function RateInput() {
     <>
       <styledEl.Wrapper>
         <styledEl.Header>
-          <HeadingText inputCurrency={inputCurrency} currency={primaryCurrency} rateImpact={rateImpact} />
+          <HeadingText
+            inputCurrency={inputCurrency}
+            currency={primaryCurrency}
+            rateImpact={rateImpact}
+            toggleIcon={
+              <styledEl.ActiveIcon onClick={handleToggle}>
+                <RefreshCw size={12} />
+              </styledEl.ActiveIcon>
+            }
+          />
 
           {areBothCurrencies && (
             <span>
@@ -192,9 +201,6 @@ export function RateInput() {
                 <TokenLogo token={secondaryCurrency} size={16} />
                 <TokenSymbol token={secondaryCurrency} />
               </styledEl.ActiveSymbol>
-              <styledEl.ActiveIcon>
-                <RefreshCw size={12} />
-              </styledEl.ActiveIcon>
             </styledEl.ActiveCurrency>
 
             <styledEl.UsdButton onClick={handleToggleUsdMode} $active={isUsdMode}>

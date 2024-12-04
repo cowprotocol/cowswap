@@ -10,6 +10,7 @@ type Props = {
   currency: Currency | null
   inputCurrency: Currency | null
   rateImpact: number
+  toggleIcon?: React.ReactNode
 }
 
 const Wrapper = styled.span`
@@ -29,13 +30,14 @@ const TokenWrapper = styled.div`
   font-weight: bold;
 `
 
-export function HeadingText({ inputCurrency, currency, rateImpact }: Props) {
+export function HeadingText({ inputCurrency, currency, rateImpact, toggleIcon }: Props) {
   if (!currency) {
     return <Wrapper>Select input and output</Wrapper>
   }
 
   return (
     <Wrapper>
+      {toggleIcon}
       When 1
       <TokenWrapper>
         <TokenLogo token={currency} size={16} />

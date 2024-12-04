@@ -91,7 +91,7 @@ export function LimitOrdersWidget() {
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
-    label: isSell ? 'Sell amount' : 'You sell at most',
+    label: isSell ? 'Sell' : 'You sell at most',
     currency: inputCurrency,
     amount: inputCurrencyAmount,
     isIndependent: isSell,
@@ -176,6 +176,12 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         handleUnlock={() => updateLimitOrdersState({ isUnlocked: true })}
       />
     ),
+    topContent:
+      props.settingsState.limitPricePosition === 'top' ? (
+        <styledEl.RateWrapper>
+          <RateInput />
+        </styledEl.RateWrapper>
+      ) : undefined,
     middleContent: (
       <>
         {!isWrapOrUnwrap &&
@@ -194,16 +200,21 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
               </p>
             </InlineBanner>
           ))}
+        {props.settingsState.limitPricePosition === 'between' && (
+          <styledEl.RateWrapper>
+            <RateInput />
+          </styledEl.RateWrapper>
+        )}
       </>
-    ),
-    limitPriceInput: (
-      <styledEl.RateWrapper>
-        <RateInput />
-      </styledEl.RateWrapper>
     ),
     bottomContent(warnings) {
       return (
         <>
+          {props.settingsState.limitPricePosition === 'bottom' && (
+            <styledEl.RateWrapper>
+              <RateInput />
+            </styledEl.RateWrapper>
+          )}
           <styledEl.FooterBox>
             <DeadlineInput />
             <TradeRateDetails rateInfoParams={rateInfoParams} alwaysExpanded={true} />
