@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks'
+import { renderHook, act } from '@testing-library/react'
 import { LocationDescriptorObject } from 'history'
 import { useSearchSubmit } from 'hooks/useSearchSubmit'
 import { MemoryRouter, useLocation } from 'react-router-dom'
@@ -22,7 +22,7 @@ function runHook(query: string) {
     },
     {
       wrapper: ({ children }) => wrapperMemoryRouter({ children }),
-    }
+    },
   )
 
   act(() => {
