@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.38.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.37.0...explorer-v2.38.0) (2024-12-04)
+
+
+### Features
+
+* upgrade react@19 and next@15 ([#5147](https://github.com/cowprotocol/cowswap/issues/5147)) ([a00b1b9](https://github.com/cowprotocol/cowswap/commit/a00b1b930602ab1e6b2f0b3cd148497f68bf4cb5))
+
 ## [2.37.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.36.1...explorer-v2.37.0) (2024-12-03)
 
 
