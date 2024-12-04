@@ -41,6 +41,7 @@ export function RateInput() {
   const updateLimitRateState = useSetAtom(updateLimitRateAtom)
   const executionPrice = useAtomValue(executionPriceAtom)
   const [isQuoteCurrencySet, setIsQuoteCurrencySet] = useState(false)
+  const [isUsdMode, setIsUsdMode] = useState(false)
 
   // Limit order state
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
@@ -87,10 +88,21 @@ export function RateInput() {
     [isInverted, updateRate, updateLimitRateState],
   )
 
+  // Handle toggle USD mode
+  const handleToggleUsdMode = useCallback(() => {
+    setIsUsdMode(!isUsdMode)
+  }, [isUsdMode])
+
   // Handle toggle primary field
   const handleToggle = useCallback(() => {
-    updateLimitRateState({ isInverted: !isInverted, isTypedValue: false })
-  }, [isInverted, updateLimitRateState])
+    if (isUsdMode) {
+      // When in USD mode, just switch to token mode without toggling tokens
+      setIsUsdMode(false)
+    } else {
+      // When already in token mode, toggle between tokens
+      updateLimitRateState({ isInverted: !isInverted, isTypedValue: false })
+    }
+  }, [isInverted, updateLimitRateState, isUsdMode])
 
   const isDisabledMPrice = useMemo(() => {
     if (isLoadingMarketRate) return true
@@ -174,15 +186,21 @@ export function RateInput() {
             />
           )}
 
-          <styledEl.ActiveCurrency onClick={handleToggle}>
-            <styledEl.ActiveSymbol>
-              <TokenLogo token={secondaryCurrency} size={16} />
-              <TokenSymbol token={secondaryCurrency} />
-            </styledEl.ActiveSymbol>
-            <styledEl.ActiveIcon>
-              <RefreshCw size={12} />
-            </styledEl.ActiveIcon>
-          </styledEl.ActiveCurrency>
+          <styledEl.CurrencyToggleGroup>
+            <styledEl.ActiveCurrency onClick={handleToggle} $active={!isUsdMode}>
+              <styledEl.ActiveSymbol>
+                <TokenLogo token={secondaryCurrency} size={16} />
+                <TokenSymbol token={secondaryCurrency} />
+              </styledEl.ActiveSymbol>
+              <styledEl.ActiveIcon>
+                <RefreshCw size={12} />
+              </styledEl.ActiveIcon>
+            </styledEl.ActiveCurrency>
+
+            <styledEl.UsdButton onClick={handleToggleUsdMode} $active={isUsdMode}>
+              $
+            </styledEl.UsdButton>
+          </styledEl.CurrencyToggleGroup>
         </styledEl.Body>
       </styledEl.Wrapper>
 

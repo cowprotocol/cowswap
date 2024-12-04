@@ -80,19 +80,33 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   }
 `
 
-export const ActiveCurrency = styled.button`
+export const ActiveCurrency = styled.button<{ $active?: boolean }>`
   display: flex;
-  flex-flow: row wrap;
   align-items: center;
-  justify-content: flex-end;
-  border: none;
-  background: none;
-  padding: 0;
-  margin: 0 0 0 auto;
-  gap: 8px;
-  width: auto;
-  color: inherit;
+  gap: 6px;
+  background: ${({ theme }) => theme.grey1};
+  border: 1px solid ${({ theme, $active }) => ($active ? theme.blue : 'transparent')};
+  border-radius: 6px;
+  padding: 5px 8px;
   cursor: pointer;
+  transition: border-color 0.2s ease-in-out;
+
+  &:hover {
+    border-color: ${({ theme }) => theme.blue};
+  }
+`
+
+export const CurrencyToggleGroup = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`
+
+export const UsdButton = styled(ActiveCurrency)`
+  font-size: 16px;
+  font-weight: 600;
+  min-width: 40px;
+  justify-content: center;
 `
 
 export const ActiveSymbol = styled.span`
