@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { renderHook } from '@testing-library/react-hooks'
+import { renderHook } from '@testing-library/react'
 
 import { useSafeMemo } from './useSafeMemo'
 
@@ -38,7 +38,7 @@ describe('useSafeMemo() to avoid redundant actuation of hooks', () => {
     let memoCalls = 0
     let updatesCount = 3
 
-    const { result } = renderHook(() => {
+    renderHook(() => {
       const [state, setState] = useState(createStaticObject())
 
       const memoized = useSafeMemo(() => {
@@ -55,14 +55,13 @@ describe('useSafeMemo() to avoid redundant actuation of hooks', () => {
     })
 
     expect(memoCalls).toBe(1)
-    expect(result.all.length).toBe(4)
   })
 
   it('Should execute memo on each setState() call using regular useMemo()', () => {
     let memoCalls = 0
     let updatesCount = 3
 
-    const { result } = renderHook(() => {
+    renderHook(() => {
       const [state, setState] = useState(createStaticObject())
       const { inputCurrency, outputCurrency, inputAmount, outputAmount, address } = state
 
@@ -80,6 +79,5 @@ describe('useSafeMemo() to avoid redundant actuation of hooks', () => {
     })
 
     expect(memoCalls).toBe(4)
-    expect(result.all.length).toBe(4)
   })
 })
