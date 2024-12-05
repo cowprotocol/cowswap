@@ -6,9 +6,11 @@ import styled from 'styled-components/macro'
 
 export const SettingsTitle = styled.h3`
   font-weight: 600;
-  font-size: 14px;
+  font-size: 18px;
   color: inherit;
-  margin: 0 0 12px 0;
+  margin: 0 auto 21px;
+  width: 100%;
+  text-align: center;
 `
 
 export const SettingsContainer = styled.div`

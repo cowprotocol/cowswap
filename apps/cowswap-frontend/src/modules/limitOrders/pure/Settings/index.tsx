@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 
-import { InfoTooltip } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
+import { HelpTooltip } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -9,11 +10,11 @@ import { SettingsBox, SettingsContainer, SettingsTitle } from 'modules/trade/pur
 import { LimitOrdersSettingsState } from '../../state/limitOrdersSettingsAtom'
 
 const DropdownButton = styled.button`
-  background: var(--color-background-2);
+  background: var(${UI.COLOR_PAPER_DARKER});
   color: inherit;
-  border: 1px solid var(--color-text);
-  border-radius: 6px;
-  padding: 8px 12px;
+  border: 1px solid var(${UI.COLOR_BORDER});
+  border-radius: 12px;
+  padding: 10px 34px 10px 12px;
   min-width: 140px;
   cursor: pointer;
   font-size: 14px;
@@ -21,48 +22,74 @@ const DropdownButton = styled.button`
   align-items: center;
   justify-content: space-between;
   position: relative;
+  transition: all 0.2s ease-in-out;
+
+  &::after {
+    content: '▼';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    transition: transform 0.2s ease-in-out;
+    color: var(${UI.COLOR_PRIMARY_OPACITY_50});
+  }
+
+  &:hover {
+    border-color: var(${UI.COLOR_PRIMARY_OPACITY_25});
+    background: var(${UI.COLOR_PRIMARY_OPACITY_10});
+  }
 
   &:focus {
     outline: none;
-    border-color: var(--color-text-hover);
   }
 `
 
 const DropdownList = styled.div<{ isOpen: boolean }>`
   display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
   position: absolute;
-  top: 100%;
+  top: calc(100% + 8px);
   right: 0;
-  margin-top: 4px;
-  background: var(--color-background-2);
-  border: 1px solid var(--color-text);
-  border-radius: 6px;
-  padding: 4px;
+  background: var(${UI.COLOR_PAPER});
+  border: 1px solid var(${UI.COLOR_BORDER});
+  border-radius: 12px;
+  padding: 6px;
   min-width: 140px;
   z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 `
 
 const DropdownItem = styled.div`
-  padding: 8px 12px;
-  border-radius: 4px;
+  padding: 10px 12px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
+  transition: all 0.15s ease-in-out;
+  color: inherit;
 
   &:hover {
-    background: var(--color-background-3);
+    background: var(${UI.COLOR_PRIMARY_OPACITY_10});
+    transform: translateX(2px);
+  }
+
+  &:active {
+    transform: translateX(2px) scale(0.98);
   }
 `
 
 const DropdownContainer = styled.div`
   position: relative;
+  user-select: none;
 `
 
 const SettingsRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
   gap: 15px;
+  font-weight: 400;
+  color: inherit;
+  font-size: 14px;
 `
 
 const SettingsLabel = styled.div`
@@ -102,7 +129,7 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
 
   return (
     <SettingsContainer>
-      <SettingsTitle>Interface Settings</SettingsTitle>
+      <SettingsTitle>Limit Order Settings</SettingsTitle>
 
       <SettingsBox
         title="Custom Recipient"
@@ -128,12 +155,10 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
         toggle={() => onStateChanged({ partialFillsEnabled: !partialFillsEnabled })}
       />
 
-      <SettingsTitle>Layout Settings</SettingsTitle>
-
       <SettingsRow>
         <SettingsLabel>
           Limit Price Position
-          <InfoTooltip content="Choose where to display the limit price input field in the interface." />
+          <HelpTooltip text="Choose where to display the limit price input field in the interface." />
         </SettingsLabel>
         <DropdownContainer>
           <DropdownButton onClick={toggleDropdown}>{POSITION_LABELS[limitPricePosition]}</DropdownButton>

@@ -1,5 +1,4 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import React from 'react'
 
 import { Menu, MenuItem } from '@reach/menu-button'
 
@@ -13,17 +12,15 @@ export function SettingsWidget() {
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
 
   return (
-    <>
-      <Menu>
-        <SettingsButton>
-          <SettingsIcon />
-        </SettingsButton>
-        <MenuContent>
-          <MenuItem disabled={true} onSelect={() => void 0}>
-            <Settings state={settingsState} onStateChanged={updateSettingsState} />
-          </MenuItem>
-        </MenuContent>
-      </Menu>
-    </>
+    <Menu>
+      <SettingsButton>
+        <SettingsIcon />
+      </SettingsButton>
+      <MenuContent>
+        <MenuItem disabled={true} onSelect={() => void 0}>
+          <Settings state={settingsState} onStateChanged={updateSettingsState} />
+        </MenuItem>
+      </MenuContent>
+    </Menu>
   )
 }

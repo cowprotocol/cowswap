@@ -5,7 +5,7 @@ import SwitchArrowsIcon from '@cowprotocol/assets/images/icon-switch-arrows.svg'
 import UsdIcon from '@cowprotocol/assets/images/icon-USD.svg'
 import { formatInputAmount, getAddress, isFractionFalsy } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { Loader, TokenSymbol, HelpTooltip } from '@cowprotocol/ui'
+import { TokenSymbol, HelpTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
@@ -206,7 +206,9 @@ export function RateInput() {
             <styledEl.RateLoader size="14px" />
           ) : executionPrice ? (
             <ExecutionPrice executionPrice={executionPrice} isInverted={isInverted} hideFiat />
-          ) : null}
+          ) : (
+            '-'
+          )}
         </b>
         <span>
           Estimated fill price
