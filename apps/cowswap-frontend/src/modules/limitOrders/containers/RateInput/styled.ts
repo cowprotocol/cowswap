@@ -65,6 +65,10 @@ export const MarketPriceButton = styled.button`
   text-underline-offset: 2px;
   text-decoration-color: var(${UI.COLOR_TEXT_OPACITY_70});
 
+  > svg {
+    margin: 0 0 -2px 7px;
+  }
+
   &:disabled {
     cursor: default;
     opacity: 0.7;
@@ -259,12 +263,13 @@ export const EstimatedRate = styled.div`
     font-weight: inherit;
     text-align: left;
     transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+    color: inherit;
   }
 
-  // TODO: Make the question helper icon transparent through a prop instead
   > b svg {
     opacity: 0.7;
     transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+    color: inherit;
 
     &:hover {
       opacity: 1;
@@ -283,6 +288,5 @@ export const EstimatedRate = styled.div`
     font-size: 13px;
     font-weight: 400;
     color: var(${UI.COLOR_TEXT_OPACITY_70});
-    text-align: right;
   }
 `

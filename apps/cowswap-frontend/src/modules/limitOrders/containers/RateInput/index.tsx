@@ -163,7 +163,7 @@ export function RateInput() {
               <i>Market:</i>{' '}
               <styledEl.MarketPriceButton disabled={isDisabledMPrice} onClick={handleSetMarketPrice}>
                 {isLoadingMarketRate ? (
-                  <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
+                  <styledEl.RateLoader size="14px" />
                 ) : marketRate && !marketRate.equalTo(0) ? (
                   formatInputAmount(isInverted ? marketRate.invert() : marketRate)
                 ) : (
@@ -203,7 +203,7 @@ export function RateInput() {
       <styledEl.EstimatedRate>
         <b>
           {isLoadingMarketRate ? (
-            <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
+            <styledEl.RateLoader size="14px" />
           ) : executionPrice ? (
             <ExecutionPrice executionPrice={executionPrice} isInverted={isInverted} hideFiat />
           ) : null}
