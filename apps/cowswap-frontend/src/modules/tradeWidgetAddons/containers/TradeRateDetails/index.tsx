@@ -2,7 +2,6 @@ import React, { useMemo, useState, useCallback, ReactElement } from 'react'
 
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import {
   getTotalCosts,
   TradeFeesAndCosts,
@@ -50,7 +49,6 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
     return CurrencyAmount.fromRawAmount(inputCurrency, costsExceedFeeRaw)
   }, [costsExceedFeeRaw, inputCurrency])
 
-  const widgetParams = useInjectedWidgetParams()
   const volumeFeeTooltip = useVolumeFeeTooltip()
   const networkFeeAmountUsd = useUsdAmount(networkFeeAmount).value
 
@@ -86,7 +84,6 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
     >
       <TradeFeesAndCosts
         receiveAmountInfo={receiveAmountInfo}
-        widgetParams={widgetParams}
         withTimelineDot={false}
         networkCostsSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
         networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
