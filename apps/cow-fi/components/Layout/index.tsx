@@ -6,7 +6,6 @@ import styled, { createGlobalStyle, css } from 'styled-components/macro'
 
 import { CONFIG } from '@/const/meta'
 import { CoWDAOFonts } from '@/styles/CoWDAOFonts'
-import getURL from '@/util/getURL'
 import { NAV_ADDITIONAL_BUTTONS, NAV_ITEMS, PAGE_MAX_WIDTH, PRODUCT_VARIANT } from './const'
 
 const LinkComponent = (props: PropsWithChildren<{ href: string }>) => {
@@ -55,10 +54,10 @@ export default function Layout({
       body {
         background: ${bgColor};
       }
-    `
+    `,
   )
 
-  const finalHost = host ?? getURL('')
+  const finalHost = host ?? process.env.NEXT_PUBLIC_SITE_URL!
 
   return (
     <>
