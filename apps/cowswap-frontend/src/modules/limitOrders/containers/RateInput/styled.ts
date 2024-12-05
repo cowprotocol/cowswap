@@ -191,8 +191,8 @@ export const UsdButton = styled(ActiveCurrency)`
   justify-content: center;
 
   > svg {
-    width: 7px;
-    height: 12px;
+    width: 10px;
+    height: 16px;
     color: inherit;
   }
 `
