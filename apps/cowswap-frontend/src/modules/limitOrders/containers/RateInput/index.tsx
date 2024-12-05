@@ -5,7 +5,7 @@ import SwitchArrowsIcon from '@cowprotocol/assets/images/icon-switch-arrows.svg'
 import UsdIcon from '@cowprotocol/assets/images/icon-USD.svg'
 import { formatInputAmount, getAddress, isFractionFalsy } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { Loader, TokenSymbol } from '@cowprotocol/ui'
+import { Loader, TokenSymbol, HelpTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
@@ -208,7 +208,10 @@ export function RateInput() {
             <ExecutionPrice executionPrice={executionPrice} isInverted={isInverted} hideFiat />
           ) : null}
         </b>
-        <span>Estimated fill price</span>
+        <span>
+          Estimated fill price
+          <HelpTooltip text="Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price." />
+        </span>
       </styledEl.EstimatedRate>
     </>
   )

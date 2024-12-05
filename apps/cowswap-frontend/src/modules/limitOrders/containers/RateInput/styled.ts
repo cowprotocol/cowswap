@@ -278,6 +278,8 @@ export const EstimatedRate = styled.div`
   }
 
   > span {
+    display: flex;
+    align-items: center;
     font-size: 13px;
     font-weight: 400;
     color: var(${UI.COLOR_TEXT_OPACITY_70});
