@@ -38,6 +38,7 @@ if (window.ethereum) {
 }
 
 function Main() {
+  console.log('TEST[] MAIN')
   return (
     <StrictMode>
       <Provider store={cowSwapStore}>

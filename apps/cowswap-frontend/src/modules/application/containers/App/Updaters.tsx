@@ -36,6 +36,7 @@ import { SentryUpdater } from 'common/updaters/SentryUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
 
 export function Updaters() {
+  console.log('TEST[] Updaters')
   const { chainId, account } = useWalletInfo()
   const { tokenLists, appCode, customTokens, standaloneMode } = useInjectedWidgetParams()
   const onTokenListAddingError = useOnTokenListAddingError()
