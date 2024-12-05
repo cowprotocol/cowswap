@@ -1,5 +1,4 @@
 import { Metadata, Viewport } from 'next'
-import GlobalStyles from '@/styles/global.styles'
 import { CONFIG } from '@/const/meta'
 import { Providers } from './providers'
 
@@ -47,7 +46,6 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <GlobalStyles />
       <body>
         <Providers>{children}</Providers>
       </body>
