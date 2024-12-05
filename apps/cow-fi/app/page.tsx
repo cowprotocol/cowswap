@@ -31,11 +31,8 @@ import IMG_ICON_GRANTS_CARTON from '@cowprotocol/assets/images/icon-grants-carto
 
 import { CHANNEL_LIST, PRODUCT_CONTAINERS } from '@/data/home/const'
 import { clickOnHome } from 'modules/analytics'
-import { useSetupPage } from '../hooks/useSetupPage'
 
 export default function Page() {
-  useSetupPage()
-
   return (
     <Layout bgColor={Color.neutral90}>
       <PageWrapper>

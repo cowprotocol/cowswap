@@ -61,11 +61,8 @@ import {
 
 import { CONFIG } from '@/const/meta'
 import { clickOnCowProtocol } from '../../modules/analytics'
-import { useSetupPage } from '../../hooks/useSetupPage'
 
 export default function Page() {
-  useSetupPage()
-
   return (
     <Layout
       bgColor={Color.neutral90}

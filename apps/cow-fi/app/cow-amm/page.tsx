@@ -43,11 +43,8 @@ import { FAQ_DATA, QUOTES, LVR_CONTENT, COW_AMM_CONTENT } from '@/data/cow-amm/c
 
 import { CONFIG } from '@/const/meta'
 import { clickOnCowAmm } from '../../modules/analytics'
-import { useSetupPage } from '../../hooks/useSetupPage'
 
 export default function Page() {
-  useSetupPage()
-
   return (
     <Layout
       bgColor={Color.neutral90}

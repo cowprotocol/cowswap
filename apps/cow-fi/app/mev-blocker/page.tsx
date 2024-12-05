@@ -58,7 +58,6 @@ import { FAQ_DATA, TRUSTED_BY_CONTENT, TESTIMONIAL_LIST, MEV_BLOCKER_LIST } from
 
 import { CONFIG } from '@/const/meta'
 import { clickOnMevBlocker } from '../../modules/analytics'
-import { useSetupPage } from '../../hooks/useSetupPage'
 
 // Configure chains and providers
 const { chains, publicClient } = configureChains([mainnet], [publicProvider()])
@@ -78,8 +77,6 @@ const wagmiClient = createConfig({
 })
 
 export default function Page() {
-  useSetupPage()
-
   const { share, message } = useWebShare()
 
   const handleShareClick = () => {

@@ -5,11 +5,8 @@ import Layout from '@/components/Layout'
 import { PRODUCT_CONTAINERS } from '@/data/home/const'
 
 import { PageWrapper, ContainerCard } from '@/styles/styled'
-import { useSetupPage } from '../../hooks/useSetupPage'
 
 export default function Page() {
-  useSetupPage()
-
   return (
     <Layout bgColor={Color.neutral90}>
       <PageWrapper>

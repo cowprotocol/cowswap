@@ -37,9 +37,7 @@ import { DAO_CONTENT as CONTENT } from '@/data/widget/const'
 
 import LazySVG from '@/components/LazySVG'
 
-import { CONFIG } from '@/const/meta'
 import { clickOnWidget } from '../../modules/analytics'
-import { useSetupPage } from '../../hooks/useSetupPage'
 
 const FEATURE_ITEMS = [
   'Live styling configurator',
@@ -52,10 +50,6 @@ const FEATURE_ITEMS = [
   'Feature-adaptive display',
 ]
 
-interface PageProps {
-  siteConfigData: typeof CONFIG
-}
-
 const widgetParams: CowSwapWidgetParams = {
   appCode: 'CoW Protocol: Widget Demo',
   theme: 'light',
@@ -64,8 +58,6 @@ const widgetParams: CowSwapWidgetParams = {
 }
 
 export default function Page() {
-  useSetupPage()
-
   return (
     <Layout
       bgColor={Color.neutral90}

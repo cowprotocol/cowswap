@@ -43,11 +43,8 @@ import { FAQ_DATA, TWEETS, COW_IS_DIFFERENT, ADVANCED_ORDER_TYPES, BETTER_UX } f
 import { CONFIG } from '@/const/meta'
 import LazyLoadTweet from '@/components/LazyLoadTweet'
 import { clickOnCowSwap } from '../../modules/analytics'
-import { useSetupPage } from '../../hooks/useSetupPage'
 
 export default function Page() {
-  useSetupPage()
-
   const tweetSectionRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {

@@ -47,11 +47,8 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, Navigation } from 'swiper/modules'
 
 import { clickOnDaos } from '../../modules/analytics'
-import { useSetupPage } from '../../hooks/useSetupPage'
 
 export default function Page() {
-  useSetupPage()
-
   return (
     <Layout
       bgColor={Color.neutral90}
