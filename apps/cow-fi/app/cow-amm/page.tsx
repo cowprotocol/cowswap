@@ -1,4 +1,5 @@
-import { GetStaticProps } from 'next'
+'use client'
+
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
@@ -40,14 +41,13 @@ import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
 import { FAQ_DATA, QUOTES, LVR_CONTENT, COW_AMM_CONTENT } from '@/data/cow-amm/const'
 
-import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnCowAmm } from 'modules/analytics'
-
-interface PageProps {
-  siteConfigData: typeof CONFIG
-}
+import { CONFIG } from '@/const/meta'
+import { clickOnCowAmm } from '../../modules/analytics'
+import { useSetupPage } from '../../hooks/useSetupPage'
 
 export default function Page() {
+  useSetupPage()
+
   return (
     <Layout
       bgColor={Color.neutral90}
@@ -368,15 +368,4 @@ export default function Page() {
       </PageWrapper>
     </Layout>
   )
-}
-
-export const getStaticProps: GetStaticProps<PageProps> = async () => {
-  const siteConfigData = CONFIG
-
-  return {
-    props: {
-      siteConfigData,
-    },
-    revalidate: DATA_CACHE_TIME_SECONDS,
-  }
 }
