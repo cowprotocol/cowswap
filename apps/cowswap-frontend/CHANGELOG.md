@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.92.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.92.1...cowswap-v1.92.2) (2024-12-05)
+
+
+### Bug Fixes
+
+* add safe apps fee in Base network ([#5161](https://github.com/cowprotocol/cowswap/issues/5161)) ([cefdb55](https://github.com/cowprotocol/cowswap/commit/cefdb55475f4989d745857fc9f8f2cfa77be5243))
+
 ## [1.92.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.92.0...cowswap-v1.92.1) (2024-12-05)
 
 
