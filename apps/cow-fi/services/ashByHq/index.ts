@@ -1,3 +1,5 @@
+'use server'
+
 import { CONFIG } from '@/const/meta'
 
 interface AshbyResponse {
