@@ -47,6 +47,11 @@ export const MarketPriceButton = styled.button`
   transition:
     background var(${UI.ANIMATION_DURATION}) ease-in-out,
     color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  text-decoration-color: var(${UI.COLOR_TEXT_OPACITY_70});
 
   &:disabled {
     cursor: default;
@@ -60,6 +65,7 @@ export const Body = styled.div`
   justify-content: space-between;
   width: 100%;
   gap: 8px;
+  padding: 12px 0 4px;
   color: inherit;
 `
 
@@ -86,20 +92,33 @@ export const CurrencyToggleGroup = styled.div`
 `
 
 export const ActiveCurrency = styled.button<{ $active?: boolean }>`
+  --height: 25px;
+  --skew-width: 6px;
+  --skew-offset: -3px;
+  --skew-angle: -10deg;
+  --padding: 16px;
+  --gap: 6px;
+  --font-size: 13px;
+  --border-radius: 8px;
+
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
+  gap: var(--gap);
+  font-size: var(--font-size);
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   border: none;
   cursor: pointer;
   position: relative;
+  height: var(--height);
+  border-radius: var(--border-radius);
+  transition: all 0.2s ease-in-out;
   background: ${({ $active }) => ($active ? 'var(' + UI.COLOR_PAPER + ')' : 'var(' + UI.COLOR_PAPER_DARKEST + ')')};
   color: ${({ $active }) => ($active ? 'var(' + UI.COLOR_TEXT + ')' : 'var(' + UI.COLOR_TEXT_OPACITY_70 + ')')};
-  transition: all 0.2s ease-in-out;
 
   &:first-child {
-    padding-right: 16px;
+    padding-right: var(--padding);
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
 
     ${({ $active }) =>
       $active &&
@@ -107,18 +126,21 @@ export const ActiveCurrency = styled.button<{ $active?: boolean }>`
       &::after {
         content: '';
         position: absolute;
-        right: 0;
+        right: var(--skew-offset);
         top: 0;
         bottom: 0;
-        width: 12px;
+        width: var(--skew-width);
         background: var(${UI.COLOR_PAPER_DARKER});
-        transform: skew(-10deg);
+        transform: skew(var(--skew-angle));
+        z-index: 5;
       }
     `}
   }
 
   &:last-child {
-    padding-left: 16px;
+    padding-left: var(--padding);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 
     ${({ $active }) =>
       $active &&
@@ -126,12 +148,13 @@ export const ActiveCurrency = styled.button<{ $active?: boolean }>`
       &::before {
         content: '';
         position: absolute;
-        left: 0;
+        left: var(--skew-offset);
         top: 0;
         bottom: 0;
-        width: 12px;
+        width: var(--skew-width);
         background: var(${UI.COLOR_PAPER_DARKER});
-        transform: skew(-10deg);
+        transform: skew(var(--skew-angle));
+        z-index: 5;
       }
     `}
   }
