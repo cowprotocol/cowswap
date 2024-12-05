@@ -25,7 +25,7 @@ export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
   partialFillsEnabled: true,
   deadlineMilliseconds: defaultLimitOrderDeadline.value,
   customDeadlineTimestamp: null,
-  limitPricePosition: 'between',
+  limitPricePosition: 'top',
 }
 
 // regular

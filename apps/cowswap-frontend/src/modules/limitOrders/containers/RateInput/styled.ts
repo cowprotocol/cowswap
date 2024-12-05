@@ -9,6 +9,7 @@ export const Wrapper = styled.div`
   background: var(${UI.COLOR_PAPER_DARKER});
   border-radius: 16px;
   padding: 10px 16px;
+  width: 100%;
   max-width: 100%;
   display: flex;
   flex-flow: row wrap;
@@ -64,6 +65,7 @@ export const Body = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  max-width: 100%;
   gap: 8px;
   padding: 12px 0 4px;
   color: inherit;
@@ -74,9 +76,11 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   align-items: center;
   background: none;
   border: none;
-  width: max-content;
   text-align: left;
   color: inherit;
+  font-size: 32px;
+  letter-spacing: -1.5px;
+  flex: 1 1 auto;
 
   &::placeholder {
     opacity: 0.7;

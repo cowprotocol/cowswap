@@ -2,8 +2,6 @@ import { Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { NumericalInput } from 'modules/limitOrders/containers/RateInput/styled'
-
 export const TradeButtonBox = styled.div`
   margin: 10px 0 0;
   display: flex;
@@ -30,9 +28,5 @@ export const RateWrapper = styled.div`
   ${Media.upToSmall()} {
     display: flex;
     flex-flow: column wrap;
-  }
-
-  ${NumericalInput} {
-    font-size: 21px;
   }
 `
