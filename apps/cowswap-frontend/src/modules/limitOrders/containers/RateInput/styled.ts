@@ -1,4 +1,4 @@
-import { Loader, Media } from '@cowprotocol/ui'
+import { Loader, Media, TokenSymbol } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -170,7 +170,7 @@ export const UsdButton = styled(ActiveCurrency)`
   justify-content: center;
 `
 
-export const ActiveSymbol = styled.span`
+export const ActiveSymbol = styled.span<{ $active?: boolean }>`
   color: inherit;
   font-size: 13px;
   font-weight: 500;
@@ -178,6 +178,18 @@ export const ActiveSymbol = styled.span`
   padding: 10px 0;
   display: flex;
   gap: 4px;
+
+  ${({ $active }) =>
+    !$active &&
+    `
+    > div > img {
+      opacity: 0.5;
+    }
+    
+    > ${TokenSymbol} {
+      color: var(${UI.COLOR_TEXT_OPACITY_50});
+    }
+  `}
 `
 
 export const ActiveIcon = styled.div`

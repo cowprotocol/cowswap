@@ -197,7 +197,7 @@ export function RateInput() {
 
           <styledEl.CurrencyToggleGroup>
             <styledEl.ActiveCurrency onClick={handleToggle} $active={!isUsdMode}>
-              <styledEl.ActiveSymbol>
+              <styledEl.ActiveSymbol $active={!isUsdMode}>
                 <TokenLogo token={secondaryCurrency} size={16} />
                 <TokenSymbol token={secondaryCurrency} />
               </styledEl.ActiveSymbol>
