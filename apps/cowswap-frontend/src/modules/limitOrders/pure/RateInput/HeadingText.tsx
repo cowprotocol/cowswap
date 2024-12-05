@@ -16,18 +16,22 @@ type Props = {
 const Wrapper = styled.span`
   display: flex;
   flex-flow: row wrap;
-  align-items: flex-start;
+  align-items: center;
   justify-content: flex-start;
   text-align: left;
   gap: 0 3px;
-  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  font-size: 13px;
+  font-weight: 400;
+  margin: auto 0;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
 `
 
 const TokenWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
-  font-weight: bold;
+  font-weight: 600;
+  color: var(${UI.COLOR_TEXT});
 `
 
 export function HeadingText({ inputCurrency, currency, rateImpact, toggleIcon }: Props) {
@@ -38,8 +42,9 @@ export function HeadingText({ inputCurrency, currency, rateImpact, toggleIcon }:
   return (
     <Wrapper>
       {toggleIcon}
-      When 1
+      When
       <TokenWrapper>
+        1
         <TokenLogo token={currency} size={16} />
         <TokenSymbol token={currency} />
       </TokenWrapper>

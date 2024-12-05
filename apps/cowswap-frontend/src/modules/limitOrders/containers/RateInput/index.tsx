@@ -1,12 +1,14 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import SwitchArrowsIcon from '@cowprotocol/assets/images/icon-switch-arrows.svg'
+import UsdIcon from '@cowprotocol/assets/images/icon-USD.svg'
 import { formatInputAmount, getAddress, isFractionFalsy } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { HelpTooltip, Loader, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { RefreshCw } from 'react-feather'
+import SVG from 'react-inlinesvg'
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
@@ -162,13 +164,13 @@ export function RateInput() {
             rateImpact={rateImpact}
             toggleIcon={
               <styledEl.ActiveIcon onClick={handleToggle}>
-                <RefreshCw size={12} />
+                <SVG src={SwitchArrowsIcon} width={12} height={10} />
               </styledEl.ActiveIcon>
             }
           />
 
           {areBothCurrencies && (
-            <span>
+            <styledEl.MarketRateWrapper>
               <i>Market:</i>{' '}
               <styledEl.MarketPriceButton disabled={isDisabledMPrice} onClick={handleSetMarketPrice}>
                 {isLoadingMarketRate ? (
@@ -179,7 +181,7 @@ export function RateInput() {
                   ''
                 )}
               </styledEl.MarketPriceButton>
-            </span>
+            </styledEl.MarketRateWrapper>
           )}
         </styledEl.Header>
 
@@ -204,7 +206,7 @@ export function RateInput() {
             </styledEl.ActiveCurrency>
 
             <styledEl.UsdButton onClick={handleToggleUsdMode} $active={isUsdMode}>
-              $
+              <SVG src={UsdIcon} />
             </styledEl.UsdButton>
           </styledEl.CurrencyToggleGroup>
         </styledEl.Body>

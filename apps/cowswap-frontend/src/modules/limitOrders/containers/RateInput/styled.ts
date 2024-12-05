@@ -8,7 +8,7 @@ import Input from 'legacy/components/NumericalInput'
 export const Wrapper = styled.div`
   background: var(${UI.COLOR_PAPER_DARKER});
   border-radius: 16px;
-  padding: 10px 16px;
+  padding: 16px;
   width: 100%;
   max-width: 100%;
   display: flex;
@@ -35,13 +35,26 @@ export const Header = styled.div`
   }
 `
 
+export const MarketRateWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 400;
+
+  > i {
+    font-style: normal;
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
+  }
+`
+
 export const MarketPriceButton = styled.button`
   color: inherit;
   white-space: nowrap;
   border: none;
   font-weight: 500;
   cursor: pointer;
-  font-size: 11px;
+  font-size: inherit;
   background: transparent;
   padding: 0;
   color: var(${UI.COLOR_TEXT});
@@ -56,7 +69,8 @@ export const MarketPriceButton = styled.button`
 
   &:disabled {
     cursor: default;
-    opacity: 0.6;
+    opacity: 0.7;
+    text-decoration: none;
   }
 `
 
@@ -100,7 +114,7 @@ export const ActiveCurrency = styled.button<{ $active?: boolean }>`
   --skew-width: 6px;
   --skew-offset: -3px;
   --skew-angle: -10deg;
-  --padding: 16px;
+  --padding: 10px;
   --gap: 6px;
   --font-size: 13px;
   --border-radius: 8px;
@@ -118,6 +132,7 @@ export const ActiveCurrency = styled.button<{ $active?: boolean }>`
   transition: all 0.2s ease-in-out;
   background: ${({ $active }) => ($active ? 'var(' + UI.COLOR_PAPER + ')' : 'var(' + UI.COLOR_PAPER_DARKEST + ')')};
   color: ${({ $active }) => ($active ? 'var(' + UI.COLOR_TEXT + ')' : 'var(' + UI.COLOR_TEXT_OPACITY_70 + ')')};
+  padding: 0 10px;
 
   &:first-child {
     padding-right: var(--padding);
@@ -172,6 +187,12 @@ export const UsdButton = styled(ActiveCurrency)`
   font-weight: var(${UI.FONT_WEIGHT_BOLD});
   min-width: 40px;
   justify-content: center;
+
+  > svg {
+    width: 7px;
+    height: 12px;
+    color: inherit;
+  }
 `
 
 export const ActiveSymbol = styled.span<{ $active?: boolean }>`
@@ -197,8 +218,7 @@ export const ActiveSymbol = styled.span<{ $active?: boolean }>`
 `
 
 export const ActiveIcon = styled.div`
-  --size: 20px;
-  background-color: var(${UI.COLOR_PAPER});
+  --size: 16px;
   color: inherit;
   width: var(--size);
   min-width: var(--size);
@@ -208,6 +228,13 @@ export const ActiveIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  margin: 0;
+  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    color: var(${UI.COLOR_TEXT});
+  }
 `
 
 export const RateLoader = styled(Loader)`
