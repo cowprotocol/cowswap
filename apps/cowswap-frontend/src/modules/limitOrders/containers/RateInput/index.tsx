@@ -5,7 +5,7 @@ import SwitchArrowsIcon from '@cowprotocol/assets/images/icon-switch-arrows.svg'
 import UsdIcon from '@cowprotocol/assets/images/icon-USD.svg'
 import { formatInputAmount, getAddress, isFractionFalsy } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { HelpTooltip, Loader, TokenSymbol } from '@cowprotocol/ui'
+import { Loader, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
@@ -13,13 +13,11 @@ import SVG from 'react-inlinesvg'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { useUpdateActiveRate } from 'modules/limitOrders/hooks/useUpdateActiveRate'
-import { ExecutionPriceTooltip } from 'modules/limitOrders/pure/ExecutionPriceTooltip'
 import { HeadingText } from 'modules/limitOrders/pure/RateInput/HeadingText'
 import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom'
 import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { toFraction } from 'modules/limitOrders/utils/toFraction'
 
-import { ordersTableFeatures } from 'common/constants/featureFlags'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { getQuoteCurrency, getQuoteCurrencyByStableCoin } from 'common/services/getQuoteCurrency'
 
@@ -28,17 +26,8 @@ import * as styledEl from './styled'
 export function RateInput() {
   const { chainId } = useWalletInfo()
   // Rate state
-  const {
-    isInverted,
-    activeRate,
-    isLoading,
-    marketRate,
-    feeAmount,
-    isLoadingMarketRate,
-    typedValue,
-    isTypedValue,
-    initialRate,
-  } = useAtomValue(limitRateAtom)
+  const { isInverted, activeRate, isLoading, marketRate, isLoadingMarketRate, typedValue, isTypedValue, initialRate } =
+    useAtomValue(limitRateAtom)
   const updateRate = useUpdateActiveRate()
   const updateLimitRateState = useSetAtom(updateLimitRateAtom)
   const executionPrice = useAtomValue(executionPriceAtom)
@@ -184,7 +173,6 @@ export function RateInput() {
             </styledEl.MarketRateWrapper>
           )}
         </styledEl.Header>
-
         <styledEl.Body>
           {isLoading && areBothCurrencies ? (
             <styledEl.RateLoader />
@@ -212,31 +200,16 @@ export function RateInput() {
         </styledEl.Body>
       </styledEl.Wrapper>
 
-      {ordersTableFeatures.DISPLAY_EST_EXECUTION_PRICE && (
-        <styledEl.EstimatedRate>
-          <b>
-            Order executes at{' '}
-            {isLoadingMarketRate ? (
-              <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
-            ) : executionPrice ? (
-              <HelpTooltip
-                text={
-                  <ExecutionPriceTooltip
-                    isInverted={isInverted}
-                    feeAmount={feeAmount}
-                    marketRate={marketRate}
-                    displayedRate={displayedRate}
-                    executionPrice={executionPrice}
-                  />
-                }
-              />
-            ) : null}
-          </b>
-          {!isLoadingMarketRate && executionPrice && (
-            <ExecutionPrice executionPrice={executionPrice} isInverted={isInverted} />
-          )}
-        </styledEl.EstimatedRate>
-      )}
+      <styledEl.EstimatedRate>
+        <b>
+          {isLoadingMarketRate ? (
+            <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
+          ) : executionPrice ? (
+            <ExecutionPrice executionPrice={executionPrice} isInverted={isInverted} hideFiat />
+          ) : null}
+        </b>
+        <span>Estimated fill price</span>
+      </styledEl.EstimatedRate>
     </>
   )
 }

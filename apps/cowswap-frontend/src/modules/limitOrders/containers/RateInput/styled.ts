@@ -6,9 +6,7 @@ import styled from 'styled-components/macro'
 import Input from 'legacy/components/NumericalInput'
 
 export const Wrapper = styled.div`
-  background: var(${UI.COLOR_PAPER_DARKER});
-  border-radius: 16px;
-  padding: 16px;
+  padding: 16px 16px 0;
   width: 100%;
   max-width: 100%;
   display: flex;
@@ -245,27 +243,22 @@ export const EstimatedRate = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-between;
-  min-height: 42px;
+  min-height: 36px;
   margin: 0;
   padding: 12px 10px 14px;
-  font-size: 13px;
+  font-size: 16px;
   border-radius: 0 0 16px 16px;
-  font-weight: 400;
+  font-weight: 500;
+  color: var(${UI.COLOR_TEXT});
   background: var(${UI.COLOR_PAPER});
   border: 2px solid var(${UI.COLOR_PAPER_DARKER});
-  background: red;
 
   > b {
     display: flex;
     flex-flow: row nowrap;
-    font-weight: normal;
+    font-weight: inherit;
     text-align: left;
-    opacity: 0.7;
     transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-    &:hover {
-      opacity: 1;
-    }
   }
 
   // TODO: Make the question helper icon transparent through a prop instead
@@ -282,5 +275,12 @@ export const EstimatedRate = styled.div`
     font-style: normal;
     color: inherit;
     opacity: 0.7;
+  }
+
+  > span {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
+    text-align: right;
   }
 `

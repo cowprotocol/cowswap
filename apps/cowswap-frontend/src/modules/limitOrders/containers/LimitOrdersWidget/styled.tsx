@@ -1,4 +1,4 @@
-import { Media } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -19,11 +19,14 @@ export const FooterBox = styled.div`
 
 export const RateWrapper = styled.div`
   display: flex;
+  flex-flow: column wrap;
   width: 100%;
   max-width: 100%;
   gap: 6px;
   text-align: right;
   color: inherit;
+  background: var(${UI.COLOR_PAPER_DARKER});
+  border-radius: 16px;
 
   ${Media.upToSmall()} {
     display: flex;
