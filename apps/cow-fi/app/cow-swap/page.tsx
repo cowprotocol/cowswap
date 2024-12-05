@@ -1,6 +1,7 @@
+'use client'
+
 import { useEffect, useRef } from 'react'
 
-import { GetStaticProps } from 'next'
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
 import IMG_ICON_UNICORN from '@cowprotocol/assets/images/icon-unicorn.svg'
@@ -39,16 +40,14 @@ import {
 import LazySVG from '@/components/LazySVG'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 import { FAQ_DATA, TWEETS, COW_IS_DIFFERENT, ADVANCED_ORDER_TYPES, BETTER_UX } from '@/data/cow-swap/const'
-import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
+import { CONFIG } from '@/const/meta'
 import LazyLoadTweet from '@/components/LazyLoadTweet'
-import { clickOnCowSwap } from 'modules/analytics'
+import { clickOnCowSwap } from '../../modules/analytics'
+import { useSetupPage } from '../../hooks/useSetupPage'
 
-interface PageProps {
-  siteConfigData: typeof CONFIG
-  tweets: string[]
-}
+export default function Page() {
+  useSetupPage()
 
-export default function Page({ tweets }: PageProps) {
   const tweetSectionRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -365,7 +364,7 @@ export default function Page({ tweets }: PageProps) {
             </SectionTitleWrapper>
 
             <TopicList columns={3} columnsTablet={2} maxWidth={1360}>
-              {tweets.map((tweet, index) => (
+              {TWEETS.map((tweet, index) => (
                 <TopicCard
                   bgColor={Color.neutral100}
                   padding="4px"
@@ -423,17 +422,4 @@ export default function Page({ tweets }: PageProps) {
       </PageWrapper>
     </Layout>
   )
-}
-
-export const getStaticProps: GetStaticProps<PageProps> = async () => {
-  const siteConfigData = CONFIG
-  const tweets = TWEETS
-
-  return {
-    props: {
-      siteConfigData,
-      tweets,
-    },
-    revalidate: DATA_CACHE_TIME_SECONDS,
-  }
 }

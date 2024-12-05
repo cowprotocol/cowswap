@@ -1,4 +1,5 @@
-import { GetStaticProps } from 'next'
+'use client'
+
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
@@ -21,51 +22,50 @@ import FAQ from '@/components/FAQ'
 import { Link, LinkType } from '@/components/Link'
 
 import {
-  PageWrapper,
   ContainerCard,
   ContainerCardSection,
-  TopicList,
-  TopicCard,
-  TopicImage,
-  TopicTitle,
-  TopicDescription,
-  SectionTitleWrapper,
-  SectionTitleIcon,
-  SectionTitleText,
-  SectionTitleDescription,
-  TopicCardInner,
   HeroContainer,
-  HeroImage,
-  HeroDescription,
   HeroContent,
-  HeroTitle,
+  HeroDescription,
+  HeroImage,
   HeroSubtitle,
+  HeroTitle,
   MetricsCard,
   MetricsItem,
+  PageWrapper,
   SectionImage,
+  SectionTitleDescription,
+  SectionTitleIcon,
+  SectionTitleText,
+  SectionTitleWrapper,
+  TopicCard,
+  TopicCardInner,
+  TopicDescription,
+  TopicImage,
+  TopicList,
+  TopicTitle,
 } from '@/styles/styled'
 
 import LazySVG from '@/components/LazySVG'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
 import {
+  ADVANCED_ORDER_TYPES,
+  ALL_LOGOS,
+  CASE_STUDIES,
+  COW_PROTOCOL_SECTIONS,
   FAQ_DATA,
   TOP_LOGOS,
-  CASE_STUDIES,
-  ALL_LOGOS,
-  ADVANCED_ORDER_TYPES,
   UNIQUE_TRADING_LOGIC,
-  COW_PROTOCOL_SECTIONS,
 } from '@/data/cow-protocol/const'
 
-import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnCowProtocol } from 'modules/analytics'
-
-interface PageProps {
-  siteConfigData: typeof CONFIG
-}
+import { CONFIG } from '@/const/meta'
+import { clickOnCowProtocol } from '../../modules/analytics'
+import { useSetupPage } from '../../hooks/useSetupPage'
 
 export default function Page() {
+  useSetupPage()
+
   return (
     <Layout
       bgColor={Color.neutral90}
@@ -576,15 +576,4 @@ export default function Page() {
       </PageWrapper>
     </Layout>
   )
-}
-
-export const getStaticProps: GetStaticProps<PageProps> = async () => {
-  const siteConfigData = CONFIG
-
-  return {
-    props: {
-      siteConfigData,
-    },
-    revalidate: DATA_CACHE_TIME_SECONDS,
-  }
 }

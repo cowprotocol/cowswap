@@ -1,4 +1,5 @@
-import { GetStaticProps } from 'next'
+'use client'
+
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
 
@@ -45,14 +46,12 @@ import 'swiper/css/navigation'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, Navigation } from 'swiper/modules'
 
-import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnDaos } from 'modules/analytics'
-
-interface PageProps {
-  siteConfigData: typeof CONFIG
-}
+import { clickOnDaos } from '../../modules/analytics'
+import { useSetupPage } from '../../hooks/useSetupPage'
 
 export default function Page() {
+  useSetupPage()
+
   return (
     <Layout
       bgColor={Color.neutral90}
@@ -343,15 +342,4 @@ export default function Page() {
       </PageWrapper>
     </Layout>
   )
-}
-
-export const getStaticProps: GetStaticProps<PageProps> = async () => {
-  const siteConfigData = CONFIG
-
-  return {
-    props: {
-      siteConfigData,
-    },
-    revalidate: DATA_CACHE_TIME_SECONDS,
-  }
 }

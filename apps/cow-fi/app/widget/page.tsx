@@ -1,4 +1,5 @@
-import { GetStaticProps } from 'next'
+'use client'
+
 import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
 import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
@@ -36,8 +37,9 @@ import { DAO_CONTENT as CONTENT } from '@/data/widget/const'
 
 import LazySVG from '@/components/LazySVG'
 
-import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnWidget } from 'modules/analytics'
+import { CONFIG } from '@/const/meta'
+import { clickOnWidget } from '../../modules/analytics'
+import { useSetupPage } from '../../hooks/useSetupPage'
 
 const FEATURE_ITEMS = [
   'Live styling configurator',
@@ -62,6 +64,8 @@ const widgetParams: CowSwapWidgetParams = {
 }
 
 export default function Page() {
+  useSetupPage()
+
   return (
     <Layout
       bgColor={Color.neutral90}
@@ -338,8 +342,8 @@ export default function Page() {
                 <b>* Important Disclaimer:</b> Use of this widget is subject to the laws and regulations of your
                 jurisdiction. You are solely responsible for ensuring compliance, and the provider is not liable for any
                 legal consequences or issues arising from your failure to adhere. Using the widget indicates acceptance
-                of the <a href="/widget/terms-and-conditions">Terms and Conditions;</a> if you do not agree, refrain
-                from using it.
+                of the <a href="/widget/widget.tsx/terms-and-conditions">Terms and Conditions;</a> if you do not agree,
+                refrain from using it.
               </SectionTitleDescription>
             </SectionTitleWrapper>
           </ContainerCardSection>
@@ -347,15 +351,4 @@ export default function Page() {
       </PageWrapper>
     </Layout>
   )
-}
-
-export const getStaticProps: GetStaticProps<PageProps> = async () => {
-  const siteConfigData = CONFIG
-
-  return {
-    props: {
-      siteConfigData,
-    },
-    revalidate: DATA_CACHE_TIME_SECONDS,
-  }
 }

@@ -1,3 +1,5 @@
+'use client'
+
 import Script from 'next/script'
 
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
@@ -7,7 +9,7 @@ import FAQ from '@/components/FAQ'
 import { AddRpcButton } from '@/components/AddRpcButton'
 import { Link, LinkType } from '@/components/Link'
 
-import useWebShare from '../hooks/useWebShare'
+import useWebShare from '../../hooks/useWebShare'
 
 import { WagmiConfig, createConfig, configureChains, mainnet } from 'wagmi'
 import { publicProvider } from 'wagmi/providers/public'
@@ -55,7 +57,8 @@ import LazySVG from '@/components/LazySVG'
 import { FAQ_DATA, TRUSTED_BY_CONTENT, TESTIMONIAL_LIST, MEV_BLOCKER_LIST } from '@/data/mev-blocker/const'
 
 import { CONFIG } from '@/const/meta'
-import { clickOnMevBlocker } from 'modules/analytics'
+import { clickOnMevBlocker } from '../../modules/analytics'
+import { useSetupPage } from '../../hooks/useSetupPage'
 
 // Configure chains and providers
 const { chains, publicClient } = configureChains([mainnet], [publicProvider()])
@@ -75,6 +78,8 @@ const wagmiClient = createConfig({
 })
 
 export default function Page() {
+  useSetupPage()
+
   const { share, message } = useWebShare()
 
   const handleShareClick = () => {
