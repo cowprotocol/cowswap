@@ -1,4 +1,3 @@
-import { GetStaticProps } from 'next'
 import Script from 'next/script'
 
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
@@ -55,7 +54,7 @@ import LazySVG from '@/components/LazySVG'
 
 import { FAQ_DATA, TRUSTED_BY_CONTENT, TESTIMONIAL_LIST, MEV_BLOCKER_LIST } from '@/data/mev-blocker/const'
 
-import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
+import { CONFIG } from '@/const/meta'
 import { clickOnMevBlocker } from 'modules/analytics'
 
 // Configure chains and providers
@@ -74,10 +73,6 @@ const wagmiClient = createConfig({
   connectors,
   publicClient,
 })
-
-interface PageProps {
-  siteConfigData: typeof CONFIG
-}
 
 export default function Page() {
   const { share, message } = useWebShare()
@@ -526,15 +521,4 @@ export default function Page() {
       </RainbowKitProvider>
     </WagmiConfig>
   )
-}
-
-export const getStaticProps: GetStaticProps<PageProps> = async () => {
-  const siteConfigData = CONFIG
-
-  return {
-    props: {
-      siteConfigData,
-    },
-    revalidate: DATA_CACHE_TIME_SECONDS,
-  }
 }

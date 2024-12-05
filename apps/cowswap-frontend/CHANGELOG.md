@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.92.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.91.0...cowswap-v1.92.0) (2024-12-04)
+
+
+### Features
+
+* upgrade react@19 and next@15 ([#5147](https://github.com/cowprotocol/cowswap/issues/5147)) ([a00b1b9](https://github.com/cowprotocol/cowswap/commit/a00b1b930602ab1e6b2f0b3cd148497f68bf4cb5))
+
 ## [1.91.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.90.0...cowswap-v1.91.0) (2024-12-03)
 
 

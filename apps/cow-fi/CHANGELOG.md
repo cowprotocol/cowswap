@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.17.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.16.0...cow-fi-v1.17.0) (2024-12-04)
+
+
+### Features
+
+* upgrade react@19 and next@15 ([#5147](https://github.com/cowprotocol/cowswap/issues/5147)) ([a00b1b9](https://github.com/cowprotocol/cowswap/commit/a00b1b930602ab1e6b2f0b3cd148497f68bf4cb5))
+
+
+### Bug Fixes
+
+* remove props from mevblocker page ([#5148](https://github.com/cowprotocol/cowswap/issues/5148)) ([a20de89](https://github.com/cowprotocol/cowswap/commit/a20de895471fbe957e223fad039f89a182b674bd))
+
 ## [1.16.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.15.0...cow-fi-v1.16.0) (2024-10-29)
 
 
