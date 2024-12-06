@@ -1,4 +1,5 @@
-import { GetStaticProps } from 'next'
+'use client'
+
 import { Color } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -6,14 +7,8 @@ import styled from 'styled-components/macro'
 import Layout from '@/components/Layout'
 import { Link } from '@/components/Link'
 
-import { ContainerCard, ArticleContent, Breadcrumbs, ArticleMainTitle, BodyContent } from '@/styles/styled'
-
-import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnLegal } from 'modules/analytics'
-
-interface PageProps {
-  siteConfigData: typeof CONFIG
-}
+import { ArticleContent, ArticleMainTitle, BodyContent, Breadcrumbs, ContainerCard } from '@/styles/styled'
+import { clickOnLegal } from '../../../modules/analytics'
 
 const Wrapper = styled.div`
   display: flex;
@@ -26,8 +21,8 @@ const Wrapper = styled.div`
   gap: 24px;
 `
 
-export default function Page({ siteConfigData }: PageProps) {
-  const { title } = siteConfigData
+export default function Page() {
+  const title = 'CoW Swap Widget & Partner Fee Program Terms and Conditions'
 
   return (
     <Layout
@@ -184,13 +179,11 @@ export default function Page({ siteConfigData }: PageProps) {
                 <li>the Widget, the Interface, the Protocol or its infrastructure;</li>
                 <li>Server(s) hosting the Widget, the Interface, the Protocol or its infrastructure;</li>
                 <li>
-                  Any computer or database connected to the Widget, the Interface, the Protocol or its
-                  infrastructure.
+                  Any computer or database connected to the Widget, the Interface, the Protocol or its infrastructure.
                 </li>
               </ul>
               <p>
-                You are prohibited from attacking the Widget, the Interface, the Protocol or its infrastructure
-                through:
+                You are prohibited from attacking the Widget, the Interface, the Protocol or its infrastructure through:
               </p>
               <ul>
                 <li>Denial-of-service attacks;</li>
@@ -382,17 +375,4 @@ export default function Page({ siteConfigData }: PageProps) {
       </Wrapper>
     </Layout>
   )
-}
-
-export const getStaticProps: GetStaticProps<PageProps> = async () => {
-  return {
-    props: {
-      siteConfigData: {
-        ...CONFIG,
-        title: 'CoW Swap Widget & Partner Fee Program Terms and Conditions',
-        descriptionShort: 'Terms and Conditions',
-      },
-    },
-    revalidate: DATA_CACHE_TIME_SECONDS,
-  }
 }

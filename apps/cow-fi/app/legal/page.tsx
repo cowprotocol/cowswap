@@ -1,4 +1,5 @@
-import { GetStaticProps } from 'next'
+'use client'
+
 import { Color } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -6,10 +7,8 @@ import styled from 'styled-components/macro'
 import Layout from '@/components/Layout'
 import { Link } from '@/components/Link'
 
-import { ContainerCard, ArticleContent, Breadcrumbs, ArticleMainTitle, BodyContent } from '@/styles/styled'
-
-import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnLegal } from 'modules/analytics'
+import { ArticleContent, ArticleMainTitle, BodyContent, Breadcrumbs, ContainerCard } from '@/styles/styled'
+import { clickOnLegal } from '../../modules/analytics'
 
 const LEGAL_LINKS = [
   {
@@ -30,10 +29,6 @@ const LEGAL_LINKS = [
   },
 ]
 
-interface PageProps {
-  siteConfigData: typeof CONFIG
-}
-
 const Wrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
@@ -45,11 +40,9 @@ const Wrapper = styled.div`
   gap: 24px;
 `
 
-export default function Page({ siteConfigData }: PageProps) {
-  const { title, descriptionShort } = siteConfigData
-
+export default function Page() {
   return (
-    <Layout bgColor={Color.neutral90} metaTitle="Legal - CoW DAO Legal Overview" metaDescription={descriptionShort}>
+    <Layout bgColor={Color.neutral90}>
       <Wrapper>
         <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
           <ArticleContent maxWidth="100%">
@@ -58,11 +51,11 @@ export default function Page({ siteConfigData }: PageProps) {
                 Home
               </Link>
 
-              <span>{title}</span>
+              <span>CoW DAO Legal Overview</span>
             </Breadcrumbs>
 
             <ArticleMainTitle margin={'0 0 62px'} fontSize={52}>
-              {title}
+              CoW DAO Legal Overview
             </ArticleMainTitle>
 
             <BodyContent>
@@ -83,18 +76,4 @@ export default function Page({ siteConfigData }: PageProps) {
       </Wrapper>
     </Layout>
   )
-}
-
-export const getStaticProps: GetStaticProps<PageProps> = async () => {
-  return {
-    props: {
-      siteConfigData: {
-        ...CONFIG,
-        title: 'CoW DAO Legal Overview',
-        descriptionShort:
-          'Legal overview of CoW DAO, including terms and conditions, privacy policy, and other documents.',
-      },
-    },
-    revalidate: DATA_CACHE_TIME_SECONDS,
-  }
 }

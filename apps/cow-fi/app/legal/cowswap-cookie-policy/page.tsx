@@ -1,4 +1,5 @@
-import { GetStaticProps } from 'next'
+'use client'
+
 import { Color } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -7,20 +8,14 @@ import Layout from '@/components/Layout'
 import { Link } from '@/components/Link'
 
 import {
-  ContainerCard,
   ArticleContent,
-  Breadcrumbs,
   ArticleMainTitle,
   BodyContent,
+  Breadcrumbs,
   ColorTableContainer,
+  ContainerCard,
 } from '@/styles/styled'
-
-import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnLegal } from 'modules/analytics'
-
-interface PageProps {
-  siteConfigData: typeof CONFIG
-}
+import { clickOnLegal } from '../../../modules/analytics'
 
 const Wrapper = styled.div`
   display: flex;
@@ -33,8 +28,8 @@ const Wrapper = styled.div`
   gap: 24px;
 `
 
-export default function Page({ siteConfigData }: PageProps) {
-  const { title } = siteConfigData
+export default function Page() {
+  const title = 'CoW Swap Cookie policy'
 
   return (
     <Layout bgColor={Color.neutral90} metaTitle="CoW Swap - Cookie policy" metaDescription="Cookie policy for CoW">
@@ -422,17 +417,4 @@ export default function Page({ siteConfigData }: PageProps) {
       </Wrapper>
     </Layout>
   )
-}
-
-export const getStaticProps: GetStaticProps<PageProps> = async () => {
-  return {
-    props: {
-      siteConfigData: {
-        ...CONFIG,
-        title: 'CoW Swap Cookie policy',
-        descriptionShort: 'Cookie policy',
-      },
-    },
-    revalidate: DATA_CACHE_TIME_SECONDS,
-  }
 }
