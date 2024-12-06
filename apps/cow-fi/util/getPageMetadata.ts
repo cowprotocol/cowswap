@@ -1,12 +1,6 @@
 import type { Metadata } from 'next'
 
-export async function getPageMetadata({
-  title,
-  description,
-}: {
-  title: string
-  description: string
-}): Promise<Metadata> {
+export function getPageMetadata({ title, description }: { title: string; description: string }): Metadata {
   return {
     title,
     description,

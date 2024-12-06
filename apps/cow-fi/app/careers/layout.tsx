@@ -1,21 +1,15 @@
 import { Metadata } from 'next'
 import Layout from '@/components/Layout'
+import { getPageMetadata } from '@/util/getPageMetadata'
 
 export const metadata: Metadata = {
-  title: {
-    default: 'Careers',
-    template: '%s - CoW DAO',
-  },
+  ...getPageMetadata({
+    title: 'Careers',
+    description:
+      'We are an ambitious, fast-growing and international team working at the forefront of DeFi. We believe that we can make markets more fair and more efficient by building the ultimate batch auction settlement layer across EVM-compatible blockchains.',
+  }),
 }
 
 export default function LayoutPage({ children }: { children: React.ReactNode }) {
-  return (
-    <Layout
-      bgColor={'#F0DEDE'}
-      metaTitle={`Careers - CoW DAO`}
-      metaDescription="We are an ambitious, fast-growing and international team working at the forefront of DeFi. We believe that we can make markets more fair and more efficient by building the ultimate batch auction settlement layer across EVM-compatible blockchains."
-    >
-      {children}
-    </Layout>
-  )
+  return <Layout bgColor={'#F0DEDE'}>{children}</Layout>
 }
