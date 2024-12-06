@@ -13,45 +13,38 @@ import FAQ from '@/components/FAQ'
 import { Link, LinkType } from '@/components/Link'
 
 import {
-  PageWrapper,
   ContainerCard,
   ContainerCardSection,
-  TopicList,
-  TopicCard,
-  TopicImage,
-  TopicTitle,
-  TopicDescription,
-  SectionTitleWrapper,
-  SectionTitleIcon,
-  SectionTitleText,
-  SectionTitleDescription,
-  TopicCardInner,
   HeroContainer,
-  HeroImage,
-  HeroDescription,
   HeroContent,
-  HeroTitle,
+  HeroDescription,
+  HeroImage,
   HeroSubtitle,
+  HeroTitle,
   MetricsCard,
   MetricsItem,
+  PageWrapper,
+  SectionTitleDescription,
+  SectionTitleIcon,
+  SectionTitleText,
+  SectionTitleWrapper,
+  TopicCard,
+  TopicCardInner,
+  TopicDescription,
+  TopicImage,
+  TopicList,
+  TopicTitle,
 } from '@/styles/styled'
 
 import LazySVG from '@/components/LazySVG'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
-import { FAQ_DATA, QUOTES, LVR_CONTENT, COW_AMM_CONTENT } from '@/data/cow-amm/const'
-
-import { CONFIG } from '@/const/meta'
+import { COW_AMM_CONTENT, FAQ_DATA, LVR_CONTENT, QUOTES } from '@/data/cow-amm/const'
 import { clickOnCowAmm } from '../../modules/analytics'
 
 export default function Page() {
   return (
-    <Layout
-      bgColor={Color.neutral90}
-      metaTitle="CoW AMM - The first MEV-capturing AMM, now live on Balancer"
-      metaDescription="CoW AMM protects LPs from LVR so they can provide liquidity with less risk and more return"
-      ogImage={CONFIG.ogImageCOWAMM}
-    >
+    <Layout bgColor={Color.neutral90}>
       <PageWrapper>
         <HeroContainer variant="secondary" maxWidth={1300}>
           <HeroContent variant="secondary">

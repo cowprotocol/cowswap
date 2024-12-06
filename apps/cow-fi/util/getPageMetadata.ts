@@ -1,6 +1,14 @@
 import type { Metadata } from 'next'
 
-export function getPageMetadata({ title, description }: { title: string; description: string }): Metadata {
+export function getPageMetadata({
+  title,
+  description,
+  image,
+}: {
+  title: string
+  description: string
+  image?: string
+}): Metadata {
   return {
     title,
     description,
@@ -8,11 +16,13 @@ export function getPageMetadata({ title, description }: { title: string; descrip
       card: 'summary_large_image',
       title,
       description,
+      images: image ? [image] : [],
     },
     openGraph: {
       type: 'website',
       title,
       description,
+      images: image ? [image] : [],
     },
   }
 }
