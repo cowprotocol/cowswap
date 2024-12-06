@@ -1,34 +1,25 @@
-import { Color, Font, Media } from '@cowprotocol/ui'
-import { GetStaticProps } from 'next'
+'use client'
 
-import styled from 'styled-components/macro'
-
-import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-
+import { useLazyLoadImages } from '../hooks/useLazyLoadImages'
 import Layout from '@/components/Layout'
-import { ArticleListResponse, getArticles, getCategories } from 'services/cms'
-
-import { ArrowButton } from '@/components/ArrowButton'
+import { CategoryLinks } from '@/components/CategoryLinks'
 import { SearchBar } from '@/components/SearchBar'
-
-import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
-
 import {
   ArticleCard,
   ArticleDescription,
   ArticleImage,
   ArticleList,
   ArticleTitle,
-  CTAButton,
-  CTAImage,
-  CTASectionWrapper,
-  CTASubtitle,
-  CTATitle,
   ContainerCard,
   ContainerCardInner,
   ContainerCardSection,
   ContainerCardSectionTop,
   ContainerCardSectionTopTitle,
+  CTAButton,
+  CTAImage,
+  CTASectionWrapper,
+  CTASubtitle,
+  CTATitle,
   LinkColumn,
   LinkItem,
   LinkSection,
@@ -37,12 +28,14 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-
-import { clickOnKnowledgeBase } from 'modules/analytics'
+import { ArrowButton } from '@/components/ArrowButton'
+import { clickOnKnowledgeBase } from '../modules/analytics'
+import { Color, Font, Media } from '@cowprotocol/ui'
 import LazySVG from '@/components/LazySVG'
-import { CategoryLinks } from '@/components/CategoryLinks'
-
-import { useLazyLoadImages } from 'hooks/useLazyLoadImages'
+import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
+import { ArticleListResponse } from '../services/cms'
+import styled from 'styled-components/macro'
+import { CONFIG } from '@/const/meta'
 
 const PODCASTS = [
   {
@@ -111,7 +104,6 @@ const MEDIA_COVERAGE = [
 ]
 
 interface PageProps {
-  siteConfigData: typeof CONFIG
   categories: {
     name: string
     slug: string
@@ -164,12 +156,11 @@ const Wrapper = styled.div`
   }
 `
 
-export default function Page({ siteConfigData, categories, articles, featuredArticles }: PageProps) {
-  const { title } = siteConfigData
+export function LearnPageComponent({ categories, articles, featuredArticles }: PageProps) {
   const { LazyImage } = useLazyLoadImages()
 
   return (
-    <Layout metaTitle={`Knowledge Base - ${title}`}>
+    <Layout metaTitle={`Knowledge Base - CoW DAO`}>
       <Wrapper>
         <h1>Learn - Knowledge Base</h1>
         <h2>Hi, how can we help?</h2>
@@ -317,51 +308,4 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
       </Wrapper>
     </Layout>
   )
-}
-
-export const getStaticProps: GetStaticProps<PageProps> = async () => {
-  const siteConfigData = CONFIG
-  const categoriesResponse = await getCategories()
-  const articlesResponse = await getArticles()
-
-  const featuredArticlesResponse = await getArticles({
-    filters: { featured: { $eq: true } },
-    pageSize: 6,
-  })
-
-  const categories =
-    categoriesResponse?.map((category: any) => {
-      const imageUrl = category?.attributes?.image?.data?.attributes?.url || ''
-
-      return {
-        name: category?.attributes?.name || '',
-        slug: category?.attributes?.slug || '',
-        description: category?.attributes?.description || '',
-        bgColor: category?.attributes?.backgroundColor || '#fff',
-        textColor: category?.attributes?.textColor || '#000',
-        link: `/learn/topic/${category?.attributes?.slug}`,
-        iconColor: '#fff',
-        imageUrl,
-      }
-    }) || []
-
-  const featuredArticles = featuredArticlesResponse.data.map((article) => {
-    const attributes = article.attributes
-    return {
-      title: attributes?.title || 'No title',
-      description: attributes?.description || 'No description',
-      link: `/learn/${attributes?.slug || 'no-slug'}`,
-      cover: attributes?.cover?.data?.attributes?.url || '',
-    }
-  })
-
-  return {
-    props: {
-      siteConfigData,
-      categories,
-      articles: articlesResponse.data,
-      featuredArticles,
-    },
-    revalidate: DATA_CACHE_TIME_SECONDS,
-  }
 }

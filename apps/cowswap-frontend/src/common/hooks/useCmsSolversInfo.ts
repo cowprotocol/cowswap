@@ -1,8 +1,7 @@
+import { CmsSolversInfo, getSolversInfo } from '@cowprotocol/core'
+
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
-
-import { CmsSolversInfo } from '../types'
-import { getSolversInfo } from '../utils'
 
 const SOLVERS_INFO_SWR_CONFIG: SWRConfiguration = {
   refreshInterval: ms`1hour`,

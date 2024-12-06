@@ -1,154 +1,55 @@
-import React, { useMemo } from 'react'
-import { GetStaticPaths, GetStaticProps } from 'next'
-import styled from 'styled-components/macro'
-import { Color, Media } from '@cowprotocol/ui'
+'use client'
 
+import { Article, SharedRichTextComponent } from '../services/cms'
+import { stripHtmlTags } from '@/util/stripHTMLTags'
+import useWebShare from '../hooks/useWebShare'
 import Layout from '@/components/Layout'
-import {
-  getArticles,
-  getArticleBySlug,
-  getAllArticleSlugs,
-  getCategories,
-  Article,
-  SharedRichTextComponent,
-} from 'services/cms'
-
-import ReactMarkdown from 'react-markdown'
-import rehypeRaw from 'rehype-raw'
-import { formatDate } from 'util/formatDate'
-import { stripHtmlTags } from 'util/stripHTMLTags'
+import { CategoryLinks } from '@/components/CategoryLinks'
 import { SearchBar } from '@/components/SearchBar'
-
 import {
+  ArticleCard,
+  ArticleContent,
+  ArticleImage,
+  ArticleList,
+  ArticleMainTitle,
+  ArticleSubtitleWrapper,
+  ArticleTitle,
+  BodyContent,
   Breadcrumbs,
+  CategoryTags,
   ContainerCard,
   ContainerCardSection,
   ContainerCardSectionTop,
-  ArticleList,
-  ArticleCard,
-  ArticleImage,
-  ArticleTitle,
   ContainerCardSectionTopTitle,
-  ArticleContent,
-  BodyContent,
-  ArticleMainTitle,
-  ArticleSubtitleWrapper,
-  CategoryTags,
-  StickyMenu,
   RelatedArticles,
   SectionTitleDescription,
+  StickyMenu,
 } from '@/styles/styled'
-import useWebShare from 'hooks/useWebShare'
-import { CategoryLinks } from '@/components/CategoryLinks'
+import { clickOnKnowledgeBase } from '../modules/analytics'
 import { Link, LinkType } from '@/components/Link'
-
-import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnKnowledgeBase } from 'modules/analytics'
-import { CmsImage } from '@cowprotocol/ui'
-import { useLazyLoadImages } from 'hooks/useLazyLoadImages'
+import { CmsImage, Color, Media } from '@cowprotocol/ui'
+import styled from 'styled-components/macro'
+import { formatDate } from '@/util/formatDate'
+import { useLazyLoadImages } from '../hooks/useLazyLoadImages'
+import { useMemo } from 'react'
+import ReactMarkdown from 'react-markdown'
+import rehypeRaw from 'rehype-raw'
 
 interface ArticlePageProps {
-  siteConfigData: typeof CONFIG
   article: Article
   articles: Article[]
-}
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  margin: 24px auto 0;
-  gap: 34px;
-  max-width: 1760px;
-
-  ${Media.upToMedium()} {
-    margin: 0 auto;
-    gap: 24px;
-  }
-`
-
-export function ArticleSubtitle({
-  dateIso,
-  content,
-  dateVisible,
-}: {
-  dateIso: string
-  content: string
-  dateVisible: boolean
-}) {
-  const date = new Date(dateIso)
-  const readTime = calculateReadTime(content)
-
-  return (
-    <ArticleSubtitleWrapper>
-      <div>
-        <span>{readTime}</span>
-      </div>
-
-      {dateVisible && (
-        <>
-          <div>·</div>
-          <div>
-            <span>Published {formatDate(date)}</span>
-          </div>
-        </>
-      )}
-    </ArticleSubtitleWrapper>
-  )
-}
-
-function calculateReadTime(text: string): string {
-  const wordsPerMinute = 200 // Average case.
-  const textLength = text.split(/\s+/).length // Split by words
-  const time = Math.ceil(textLength / wordsPerMinute)
-  return `${time} min read`
-}
-
-function isRichTextComponent(block: any): block is SharedRichTextComponent {
-  return block.body !== undefined
-}
-
-function getRandomArticles(articles: Article[], count: number): Article[] {
-  const shuffled = articles.sort(() => 0.5 - Math.random())
-  return shuffled.slice(0, count)
-}
-
-export function ArticleSharedRichTextComponent({ sharedRichText }: { sharedRichText: SharedRichTextComponent }) {
-  const { replaceImageUrls, LazyImage } = useLazyLoadImages()
-
-  const processedContent = useMemo(() => {
-    return sharedRichText.body ? replaceImageUrls(sharedRichText.body) : ''
-  }, [sharedRichText.body, replaceImageUrls])
-
-  return (
-    <ReactMarkdown
-      rehypePlugins={[rehypeRaw]}
-      components={{
-        img: ({ src, alt, ...props }) => {
-          if (!src) return null
-          return <LazyImage src={src} alt={alt || ''} {...props} width={725} height={400} />
-        },
-      }}
-    >
-      {processedContent}
-    </ReactMarkdown>
-  )
-}
-
-export default function ArticlePage({
-  siteConfigData,
-  article,
-  articles,
-  randomArticles,
-  featuredArticles,
-  allCategories,
-}: ArticlePageProps & {
   randomArticles: Article[]
   featuredArticles: Article[]
   allCategories: { name: string; slug: string }[]
-}) {
+}
+
+export function ArticlePageComponent({
+  articles,
+  article,
+  randomArticles,
+  featuredArticles,
+  allCategories,
+}: ArticlePageProps) {
   const attributes: {
     title?: string
     description?: string
@@ -159,13 +60,12 @@ export default function ArticlePage({
     categories?: any
     cover?: any
   } = article.attributes || {}
-  const { title, description, blocks, publishedAt, categories, cover } = attributes
+  const { title, blocks, publishedAt, categories } = attributes
   const publishDate = attributes.publishDate || null
   const publishDateVisible = attributes.publishDateVisible ?? true
   const content =
     blocks?.map((block: SharedRichTextComponent) => (isRichTextComponent(block) ? block.body : '')).join(' ') || ''
   const plainContent = stripHtmlTags(content)
-  const coverImageUrl = cover?.data?.attributes?.url
 
   const { share, message } = useWebShare()
 
@@ -177,15 +77,8 @@ export default function ArticlePage({
     })
   }
 
-  // Generate metaDescription
-  const metaDescription = description
-    ? stripHtmlTags(description)
-    : plainContent.length > 150
-      ? stripHtmlTags(plainContent.substring(0, 147)) + '...'
-      : stripHtmlTags(plainContent)
-
   return (
-    <Layout metaTitle={`${title} - ${siteConfigData.title}`} metaDescription={metaDescription} ogImage={coverImageUrl}>
+    <Layout>
       <Wrapper>
         <CategoryLinks allCategories={allCategories} />
 
@@ -193,25 +86,25 @@ export default function ArticlePage({
         <ContainerCard gap={62} gapMobile={42} margin="0 auto" centerContent>
           <ArticleContent>
             <Breadcrumbs>
-              <a href="/" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-home')}>
+              <Link href="/" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-home')}>
                 Home
-              </a>
-              <a href="/learn" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-knowledge-base')}>
+              </Link>
+              <Link href="/learn" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-knowledge-base')}>
                 Knowledge Base
-              </a>
+              </Link>
               <span>{title}</span>
             </Breadcrumbs>
 
             {categories && Array.isArray(categories.data) && categories.data.length > 0 && (
               <CategoryTags>
                 {categories.data.map((category: { id: string; attributes?: { slug?: string; name?: string } }) => (
-                  <a
+                  <Link
                     key={category.id}
                     href={`/learn/topic/${category.attributes?.slug ?? ''}`}
                     onClick={() => clickOnKnowledgeBase(`click-category-${category.attributes?.name}`)}
                   >
                     {category.attributes?.name ?? ''}
-                  </a>
+                  </Link>
                 ))}
               </CategoryTags>
             )}
@@ -256,12 +149,12 @@ export default function ArticlePage({
               <ul>
                 {featuredArticles.map((article) => (
                   <li key={article.id}>
-                    <a
+                    <Link
                       href={`/learn/${article.attributes?.slug}`}
                       onClick={() => clickOnKnowledgeBase(`click-related-article-${article.attributes?.title}`)}
                     >
                       {article.attributes?.title}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -308,53 +201,80 @@ export default function ArticlePage({
   )
 }
 
-export const getStaticProps: GetStaticProps<ArticlePageProps> = async ({ params }) => {
-  const siteConfigData = CONFIG
-  const articleSlug = params?.article as string
-  const article = await getArticleBySlug(articleSlug)
+const Wrapper = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 24px auto 0;
+  gap: 34px;
+  max-width: 1760px;
 
-  if (!article) {
-    return { notFound: true }
+  ${Media.upToMedium()} {
+    margin: 0 auto;
+    gap: 24px;
   }
+`
 
-  const articlesResponse = await getArticles()
-  const articles = articlesResponse.data
+function ArticleSubtitle({
+  dateIso,
+  content,
+  dateVisible,
+}: {
+  dateIso: string
+  content: string
+  dateVisible: boolean
+}) {
+  const date = new Date(dateIso)
+  const readTime = calculateReadTime(content)
 
-  // Fetch featured articles
-  const featuredArticlesResponse = await getArticles({
-    filters: {
-      featured: {
-        $eq: true,
-      },
-    },
-    pageSize: 7, // Limit to 7 articles
-  })
-  const featuredArticles = featuredArticlesResponse.data
+  return (
+    <ArticleSubtitleWrapper>
+      <div>
+        <span>{readTime}</span>
+      </div>
 
-  const randomArticles = getRandomArticles(articles, 3)
-  const categoriesResponse = await getCategories()
-  const allCategories =
-    categoriesResponse?.map((category: any) => ({
-      name: category?.attributes?.name || '',
-      slug: category?.attributes?.slug || '',
-    })) || []
-
-  return {
-    props: {
-      siteConfigData,
-      article,
-      articles,
-      randomArticles,
-      featuredArticles,
-      allCategories,
-    },
-    revalidate: DATA_CACHE_TIME_SECONDS,
-  }
+      {dateVisible && (
+        <>
+          <div>·</div>
+          <div>
+            <span>Published {formatDate(date)}</span>
+          </div>
+        </>
+      )}
+    </ArticleSubtitleWrapper>
+  )
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const slugs = await getAllArticleSlugs()
-  const paths = slugs.map((slug) => ({ params: { article: slug } }))
+function calculateReadTime(text: string): string {
+  const wordsPerMinute = 200 // Average case.
+  const textLength = text.split(/\s+/).length // Split by words
+  const time = Math.ceil(textLength / wordsPerMinute)
+  return `${time} min read`
+}
 
-  return { paths, fallback: 'blocking' }
+function isRichTextComponent(block: any): block is SharedRichTextComponent {
+  return block.body !== undefined
+}
+
+function ArticleSharedRichTextComponent({ sharedRichText }: { sharedRichText: SharedRichTextComponent }) {
+  const { replaceImageUrls, LazyImage } = useLazyLoadImages()
+
+  const processedContent = useMemo(() => {
+    return sharedRichText.body ? replaceImageUrls(sharedRichText.body) : ''
+  }, [sharedRichText.body, replaceImageUrls])
+
+  return (
+    <ReactMarkdown
+      rehypePlugins={[rehypeRaw]}
+      components={{
+        img: ({ src, alt, ...props }) => {
+          if (!src) return null
+          return <LazyImage src={src} alt={alt || ''} {...props} width={725} height={400} />
+        },
+      }}
+      children={processedContent}
+    />
+  )
 }

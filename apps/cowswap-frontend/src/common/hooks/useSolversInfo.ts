@@ -2,10 +2,8 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { isProdLike } from '@cowprotocol/common-utils'
+import { solversInfoAtom, SolverInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
-import { solversInfoAtom } from '../state'
-import { SolverInfo } from '../types'
 
 export function useSolversInfo(chainId: SupportedChainId): Record<string, SolverInfo> {
   const allSolversInfo = useAtomValue(solversInfoAtom)
@@ -17,7 +15,7 @@ export function useSolversInfo(chainId: SupportedChainId): Record<string, Solver
       if (
         info.solverNetworks.some(
           ({ env: solverEnv, chainId: solverChainId, active }) =>
-            solverEnv === env && solverChainId === chainId && active
+            solverEnv === env && solverChainId === chainId && active,
         )
       ) {
         acc[info.solverId] = info

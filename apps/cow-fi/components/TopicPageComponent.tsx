@@ -1,12 +1,11 @@
-import React from 'react'
-import { GetStaticPaths, GetStaticProps } from 'next'
+'use client'
+
 import styled from 'styled-components/macro'
-import { Font, Color, Media } from '@cowprotocol/ui'
+import { CmsImage, Color, Font, Media } from '@cowprotocol/ui'
 import Layout from '@/components/Layout'
-import { getCategoryBySlug, getAllCategorySlugs, getArticles, getCategories } from 'services/cms'
+import { CategoryLinks } from '@/components/CategoryLinks'
 import { SearchBar } from '@/components/SearchBar'
 import { ArrowButton } from '@/components/ArrowButton'
-
 import {
   Breadcrumbs,
   ContainerCard,
@@ -17,9 +16,9 @@ import {
   LinkColumn,
   LinkItem,
 } from '@/styles/styled'
-import { clickOnKnowledgeBase } from 'modules/analytics'
-import { CmsImage } from '@cowprotocol/ui'
-import { CategoryLinks } from '@/components/CategoryLinks'
+import { clickOnKnowledgeBase } from '../modules/analytics'
+import Link from 'next/link'
+
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -97,12 +96,12 @@ interface TopicPageProps {
   allCategories: { name: string; slug: string }[]
 }
 
-export default function TopicPage({ category, articles, allCategories }: TopicPageProps) {
+export function TopicPageComponent({ category, allCategories, articles }: TopicPageProps) {
   const { name, description, image } = category.attributes || {}
   const imageUrl = image?.data?.attributes?.url
 
   return (
-    <Layout metaTitle={`${name} - Knowledge Base`} metaDescription={description}>
+    <Layout>
       <Wrapper>
         <CategoryLinks allCategories={allCategories} />
 
@@ -111,15 +110,15 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
         <ContainerCard gap={42} gapMobile={24} minHeight="100vh" alignContent="flex-start" touchFooter>
           <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>
             <Breadcrumbs padding={'0'}>
-              <a href="/" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-home')}>
+              <Link href="/" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-home')}>
                 Home
-              </a>
-              <a href="/learn" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-knowledgebase')}>
+              </Link>
+              <Link href="/learn" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-knowledgebase')}>
                 Knowledge Base
-              </a>
-              <a href="/learn/topics/" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-topics')}>
+              </Link>
+              <Link href="/learn/topics" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-topics')}>
                 Topic
-              </a>
+              </Link>
               <span>{name}</span>
             </Breadcrumbs>
 
@@ -163,57 +162,4 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
       </Wrapper>
     </Layout>
   )
-}
-
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const slug = params?.topicSlug as string
-  const category = await getCategoryBySlug(slug)
-
-  if (!category) {
-    return {
-      notFound: true,
-    }
-  }
-
-  const articlesResponse = await getArticles({
-    page: 0,
-    pageSize: 50,
-    filters: {
-      categories: {
-        slug: {
-          $eq: slug,
-        },
-      },
-    },
-  })
-
-  const articles = articlesResponse.data
-
-  const categoriesResponse = await getCategories()
-  const allCategories =
-    categoriesResponse?.map((category: any) => ({
-      name: category?.attributes?.name || '',
-      slug: category?.attributes?.slug || '',
-    })) || []
-
-  return {
-    props: {
-      category,
-      articles,
-      allCategories,
-    },
-    revalidate: 5 * 60,
-  }
-}
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const categoriesResponse = await getAllCategorySlugs()
-  const paths = categoriesResponse.map((slug) => ({
-    params: { topicSlug: slug },
-  }))
-
-  return {
-    paths,
-    fallback: false,
-  }
 }

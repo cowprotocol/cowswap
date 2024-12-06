@@ -1,32 +1,25 @@
-import { GetStaticProps } from 'next'
-import { Font, Color, Media } from '@cowprotocol/ui'
-
-import styled from 'styled-components/macro'
+'use client'
 
 import Layout from '@/components/Layout'
-import { getCategories, getArticles, ArticleListResponse } from 'services/cms'
-
 import { SearchBar } from '@/components/SearchBar'
-import { ArrowButton } from '@/components/ArrowButton'
-
 import {
   ContainerCard,
-  ContainerCardSection,
   ContainerCardInner,
+  ContainerCardSection,
   ContainerCardSectionTop,
-  TopicList,
+  ContainerCardSectionTopTitle,
   TopicCard,
   TopicImage,
-  ContainerCardSectionTopTitle,
+  TopicList,
   TopicTitle,
 } from '@/styles/styled'
-
-import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnKnowledgeBase } from 'modules/analytics'
-import { CmsImage } from '@cowprotocol/ui'
+import { ArrowButton } from '@/components/ArrowButton'
+import { clickOnKnowledgeBase } from '../modules/analytics'
+import { CmsImage, Color, Font, Media } from '@cowprotocol/ui'
+import { ArticleListResponse } from '../services/cms'
+import styled from 'styled-components/macro'
 
 interface PageProps {
-  siteConfigData: typeof CONFIG
   categories: {
     name: string
     slug: string
@@ -71,11 +64,9 @@ const Wrapper = styled.div`
   }
 `
 
-export default function Page({ siteConfigData, categories, articles }: PageProps) {
-  const { title } = siteConfigData
-
+export function TopicsPageComponent({ articles, categories }: PageProps) {
   return (
-    <Layout metaTitle={`Knowledge Base topics - ${title}`} metaDescription="All knowledge base topics">
+    <Layout metaTitle={`Knowledge Base topics - CoW DAO`} metaDescription="All knowledge base topics">
       <Wrapper>
         <h1>Knowledge Base</h1>
         <h2>All Topics</h2>
@@ -124,35 +115,4 @@ export default function Page({ siteConfigData, categories, articles }: PageProps
       </Wrapper>
     </Layout>
   )
-}
-
-export const getStaticProps: GetStaticProps<PageProps> = async () => {
-  const siteConfigData = CONFIG
-  const categoriesResponse = await getCategories()
-  const articlesResponse = await getArticles()
-
-  const categories =
-    categoriesResponse?.map((category: any) => {
-      const imageUrl = category?.attributes?.image?.data?.attributes?.url || ''
-
-      return {
-        name: category?.attributes?.name || '',
-        slug: category?.attributes?.slug || '',
-        description: category?.attributes?.description || '',
-        bgColor: category?.attributes?.backgroundColor || '#fff',
-        textColor: category?.attributes?.textColor || '#000',
-        link: `/learn/topic/${category?.attributes?.slug}`,
-        iconColor: 'transparent',
-        imageUrl,
-      }
-    }) || []
-
-  return {
-    props: {
-      siteConfigData,
-      categories,
-      articles: articlesResponse.data,
-    },
-    revalidate: DATA_CACHE_TIME_SECONDS,
-  }
 }

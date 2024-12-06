@@ -12,14 +12,16 @@ import GlobalStyles from '@/styles/global.styles'
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <StyledComponentsRegistry>
-      <GlobalStyles />
-      <ApolloProvider client={apolloClient}>
-        <WithLDProvider>
-          <ThemeProvider>
-            <CowAnalyticsProvider cowAnalytics={cowAnalytics}>{children}</CowAnalyticsProvider>
-          </ThemeProvider>
-        </WithLDProvider>
-      </ApolloProvider>
+      <>
+        <GlobalStyles />
+        <ApolloProvider client={apolloClient}>
+          <WithLDProvider>
+            <ThemeProvider>
+              <CowAnalyticsProvider cowAnalytics={cowAnalytics}>{children}</CowAnalyticsProvider>
+            </ThemeProvider>
+          </WithLDProvider>
+        </ApolloProvider>
+      </>
     </StyledComponentsRegistry>
   )
 }

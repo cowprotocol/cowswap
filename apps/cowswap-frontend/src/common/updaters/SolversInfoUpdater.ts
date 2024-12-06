@@ -1,9 +1,9 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { useCmsSolversInfo } from '../hooks'
-import { solversInfoAtom } from '../state'
-import { mapCmsSolversInfoToSolversInfo } from '../utils'
+import { solversInfoAtom, mapCmsSolversInfoToSolversInfo } from '@cowprotocol/core'
+
+import { useCmsSolversInfo } from 'common/hooks/useCmsSolversInfo'
 
 export function SolversInfoUpdater() {
   const setSolversInfo = useSetAtom(solversInfoAtom)
