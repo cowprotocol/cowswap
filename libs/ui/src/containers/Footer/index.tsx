@@ -1,4 +1,4 @@
-import { useState, ReactNode, useEffect, useRef } from 'react'
+import { useState, ReactNode, useRef } from 'react'
 
 import { CowAnalytics, useCowAnalytics } from '@cowprotocol/analytics'
 import IMG_ICON_ARROW_RIGHT_CIRCULAR from '@cowprotocol/assets/images/arrow-right-circular.svg'
@@ -292,29 +292,21 @@ export const Footer = ({
   const cowAnalytics = useCowAnalytics()
   const [isFooterExpanded, setIsFooterExpanded] = useState(expanded)
   const footerRef = useRef<HTMLDivElement>(null)
-  const hasMounted = useRef(false)
-  const [rootDomain, setRootDomain] = useState(host || '')
 
   const theme = useTheme()
 
   const toggleFooter = () => {
-    setIsFooterExpanded(!isFooterExpanded)
-  }
-
-  useEffect(() => {
-    if (hasMounted.current) {
-      if (isFooterExpanded && footerRef.current) {
+    setIsFooterExpanded((state) => {
+      if (!state && footerRef.current) {
         setTimeout(() => {
+          console.log('WHHHHHHH')
           footerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
         }, 300) // Slight delay needed for correct scroll position calculation
       }
-    } else {
-      hasMounted.current = true
-    }
 
-    // Set the rootDomain on the client side
-    setRootDomain(host || window.location.host)
-  }, [isFooterExpanded, host])
+      return !state
+    })
+  }
 
   return (
     <FooterContainer ref={footerRef} expanded={isFooterExpanded} hasTouchFooter={hasTouchFooter}>
@@ -353,7 +345,7 @@ export const Footer = ({
                           label={child.label}
                           utmSource={child.utmSource}
                           utmContent={child.utmContent}
-                          rootDomain={rootDomain}
+                          rootDomain={host || window.location.host}
                           cowAnalytics={cowAnalytics}
                         />
                       </li>
