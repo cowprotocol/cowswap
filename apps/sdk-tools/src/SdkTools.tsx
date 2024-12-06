@@ -122,6 +122,29 @@ const Value = styled.span`
   color: #666;
 `
 
+const ErrorContainer = styled.div`
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #f00;
+  border-radius: 4px;
+  background-color: #fee;
+  width: 100%;
+`
+
+const ErrorTitle = styled.h3`
+  margin-bottom: 10px;
+  color: #f00;
+`
+
+const ErrorText = styled.div`
+  color: #f00;
+  word-break: break-all;
+`
+
+const ButtonContainer = styled.div`
+  margin-top: 20px;
+`
+
 function IsValid({ isValid }: { isValid: IsValidResult }) {
   if (isValid.isValid) {
     return <span style={{ color: 'green' }}>true</span>
@@ -141,16 +164,68 @@ export function SdkTools() {
     '0x000000000000000000000000cb444e90d8198415266c6a2724b7900fb12fc56e000000000000000000000000a0f8904ec48a2775b8a88b40e9c171f05f7d767300000000000000000000000042cedde51198d1773590311e2a340dc06b24cb370000000000000000000000000000000000000000000000004563918244f400000000000000000000000000000000000000000000000000006f30c3f95f913d84000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000057e400000000000000000000000000000000000000000000000000000000000000000b051c2da471b8bc8b993fd373b5e6ae8b9aaea1b7a781f0fd41f7f2af7c0bda1',
   )
   const [conditionalOrder, setConditionalOrder] = React.useState<ConditionalOrder<unknown, unknown> | undefined>()
+  const [error, setError] = React.useState<React.ReactNode | undefined>()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    setError(undefined)
+    setConditionalOrder(undefined)
+
     console.log('Handler:', handler)
     console.log('Salt:', salt)
     console.log('Static Input:', staticInput)
 
-    const conditionalOrder = ordersFactory.fromParams({ handler, salt, staticInput })
-    setConditionalOrder(conditionalOrder)
-    console.log('Conditional Order:', conditionalOrder)
+    try {
+      const conditionalOrder = ordersFactory.fromParams({ handler, salt, staticInput })
+
+      if (conditionalOrder) {
+        console.log('Conditional Order:', conditionalOrder)
+        setConditionalOrder(conditionalOrder)
+      } else {
+        setError(
+          <>
+            <p>
+              The SDK don't know how to handle this order. Please check the supported programmatic orders in the{' '}
+              <a
+                href="https://github.com/cowprotocol/cow-sdk/blob/main/src/composable/orderTypes/index.ts#L5"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Conditional Order Registry
+              </a>
+              .
+            </p>{' '}
+            <p>
+              If the SDK should know how to handle it, please{' '}
+              <a
+                href="https://github.com/cowprotocol/cow-sdk/tree/main/src/composable/orderTypes"
+                target="_blank"
+                rel="noreferrer"
+              >
+                consider adding it yourself
+              </a>
+              .
+            </p>
+            <p>
+              If the SDK don't support the order, it doesn't mean that is not handled by{' '}
+              <a href="https://github.com/cowprotocol/watch-tower" target="_blank" rel="noreferrer">
+                watch-tower
+              </a>
+              , but it means that the processing of the order might be more inefficient, and the logs will be harder to
+              debug.
+            </p>
+          </>,
+        )
+      }
+    } catch (e) {
+      console.error(e)
+      setError(
+        <>
+          <p>Error decoding the conditional order parameters</p>
+          {e.message && <p>{e.message}</p>}
+        </>,
+      )
+    }
   }
 
   return (
@@ -172,7 +247,17 @@ export function SdkTools() {
           Static Input:
           <Textarea value={staticInput} onChange={(e) => setStaticInput(e.target.value)} />
         </Label>
-        <Button type="submit">Submit</Button>
+
+        {error && (
+          <ErrorContainer>
+            <ErrorTitle>Error:</ErrorTitle>
+            <ErrorText>{error}</ErrorText>
+          </ErrorContainer>
+        )}
+
+        <ButtonContainer>
+          <Button type="submit">Submit</Button>
+        </ButtonContainer>
       </Form>
 
       {conditionalOrder && (
