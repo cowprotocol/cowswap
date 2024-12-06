@@ -1,13 +1,11 @@
-import Layout from '@/components/Layout'
-import { Color } from '@cowprotocol/ui'
-import styled from 'styled-components/macro'
-import { getTokensInfo } from 'services/tokens'
-import { TokenInfo } from 'types'
-import { GetStaticProps } from 'next'
-import { TokenList, TokenListProps } from '@/components/TokensList'
-import { CONFIG } from '@/const/meta'
+'use client'
 
-const DATA_CACHE_TIME_SECONDS = 10 * 60 // 10 minutes
+import { TokenInfo } from '../types'
+import { CONFIG } from '@/const/meta'
+import { Color } from '@cowprotocol/ui'
+import { TokenList } from '@/components/TokensList'
+import Layout from '@/components/Layout'
+import styled from 'styled-components/macro'
 
 const Wrapper = styled.div`
   display: flex;
@@ -21,7 +19,11 @@ const Wrapper = styled.div`
   font-size: 1.6rem;
 `
 
-export default function TokenListPage({ tokens }: { tokens: TokenInfo[] }) {
+interface TokensPageComponentProps {
+  tokens: TokenInfo[]
+}
+
+export function TokensPageComponent({ tokens }: TokensPageComponentProps) {
   return (
     <Layout
       metaTitle={`Tokens - ${CONFIG.title}`}
@@ -33,15 +35,4 @@ export default function TokenListPage({ tokens }: { tokens: TokenInfo[] }) {
       </Wrapper>
     </Layout>
   )
-}
-
-export const getStaticProps: GetStaticProps<TokenListProps> = async () => {
-  const tokens = await getTokensInfo()
-
-  return {
-    props: {
-      tokens,
-    },
-    revalidate: DATA_CACHE_TIME_SECONDS,
-  }
 }

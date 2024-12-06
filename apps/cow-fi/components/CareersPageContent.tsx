@@ -66,9 +66,9 @@ export function CareersPageContent({
               (department === 'All'
                 ? Object.keys(jobsData).map((deptName: string) => (
                     <>
-                      {jobsData[deptName].map(({ id, title, locationName }: any, index: number) => (
+                      {jobsData[deptName].map(({ id, title, locationName }: any) => (
                         <TopicCard
-                          key={index}
+                          key={id}
                           contentAlign={'left'}
                           bgColor={Color.neutral100}
                           padding={'32px'}

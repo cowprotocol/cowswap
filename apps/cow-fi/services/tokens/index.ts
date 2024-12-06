@@ -1,3 +1,5 @@
+'use server'
+
 import fs from 'fs'
 import path from 'path'
 import { PlatformData, Platforms, TokenDetails, TokenInfo } from 'types'
@@ -50,20 +52,6 @@ export async function getTokenDetails(coingeckoId: string): Promise<TokenDetails
   const tokensRaw = await _getAllTokensData()
   return tokensRaw.find(({ id: _id }) => _id === id) as TokenDetails
 }
-
-// Just a quick experiment. Not using for now
-// function getTokenSummaryUsingIA(description: string): Promise<string> {
-//   const options = {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       Authorization: `Bearer ${process.env.OPEN_IA_API_KEY}`,
-//     },
-//     body: JSON.stringify({ description }),
-//   }
-
-//   return fetch('https://api.openai.com/v1/engines/davinci/completions', options).then((response) => response.json())
-// }
 
 function _getDescriptionFilePaths(): string[] {
   return fs.readdirSync(DESCRIPTIONS_DIR_PATH, 'utf-8')
