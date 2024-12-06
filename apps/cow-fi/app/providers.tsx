@@ -7,24 +7,26 @@ import { CowAnalyticsProvider } from '@cowprotocol/analytics'
 import { cowAnalytics } from '../modules/analytics'
 import { ApolloProvider } from '@apollo/client'
 import GlobalStyles from '@/styles/global.styles'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components/macro'
 import { useServerInsertedHTML } from 'next/navigation'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <StyledComponentsRegistry>
-      <>
-        <GlobalStyles />
-        <ApolloProvider client={apolloClient}>
-          <WithLDProvider>
-            <ThemeProvider>
-              <CowAnalyticsProvider cowAnalytics={cowAnalytics}>{children}</CowAnalyticsProvider>
-            </ThemeProvider>
-          </WithLDProvider>
-        </ApolloProvider>
-      </>
-    </StyledComponentsRegistry>
+    <Suspense>
+      <StyledComponentsRegistry>
+        <>
+          <GlobalStyles />
+          <ApolloProvider client={apolloClient}>
+            <WithLDProvider>
+              <ThemeProvider>
+                <CowAnalyticsProvider cowAnalytics={cowAnalytics}>{children}</CowAnalyticsProvider>
+              </ThemeProvider>
+            </WithLDProvider>
+          </ApolloProvider>
+        </>
+      </StyledComponentsRegistry>
+    </Suspense>
   )
 }
 
