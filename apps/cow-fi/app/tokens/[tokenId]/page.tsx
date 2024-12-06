@@ -46,13 +46,11 @@ export async function generateStaticParams() {
 }
 
 export default async function Page({ params }: Props) {
-  // read route params
   const tokenId = (await params).tokenId
 
   if (!tokenId) return null
 
   const token = await getTokenDetails(tokenId)
-  const metaData = getTokenMetaData(token)
 
-  return <TokenPageComponent metaDescription={metaData.description} metaTitle={metaData.title} token={token} />
+  return <TokenPageComponent token={token} />
 }

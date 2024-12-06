@@ -160,7 +160,7 @@ export function LearnPageComponent({ categories, articles, featuredArticles }: P
   const { LazyImage } = useLazyLoadImages()
 
   return (
-    <Layout metaTitle={`Knowledge Base - CoW DAO`}>
+    <Layout>
       <Wrapper>
         <h1>Learn - Knowledge Base</h1>
         <h2>Hi, how can we help?</h2>

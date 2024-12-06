@@ -1,7 +1,6 @@
 'use client'
 
 import { TokenInfo } from '../types'
-import { CONFIG } from '@/const/meta'
 import { Color } from '@cowprotocol/ui'
 import { TokenList } from '@/components/TokensList'
 import Layout from '@/components/Layout'
@@ -25,11 +24,7 @@ interface TokensPageComponentProps {
 
 export function TokensPageComponent({ tokens }: TokensPageComponentProps) {
   return (
-    <Layout
-      metaTitle={`Tokens - ${CONFIG.title}`}
-      metaDescription="Track the latest tokens price, market cap, trading volume, and more with CoW DAO's live token price tracker."
-      bgColor={Color.neutral90}
-    >
+    <Layout bgColor={Color.neutral90}>
       <Wrapper>
         <TokenList tokens={tokens} />
       </Wrapper>

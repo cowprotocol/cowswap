@@ -50,11 +50,7 @@ import { clickOnDaos } from '../../modules/analytics'
 
 export default function Page() {
   return (
-    <Layout
-      bgColor={Color.neutral90}
-      metaTitle="DAOs - Savvy DAOs Choose CoW Swap"
-      metaDescription="The smartest DAOs trust CoW Swap with their most-important trades"
-    >
+    <Layout bgColor={Color.neutral90}>
       <PageWrapper>
         <HeroContainer variant="secondary">
           <HeroContent variant="secondary">

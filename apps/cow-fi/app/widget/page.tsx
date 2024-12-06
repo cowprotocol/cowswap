@@ -59,11 +59,7 @@ const widgetParams: CowSwapWidgetParams = {
 
 export default function Page() {
   return (
-    <Layout
-      bgColor={Color.neutral90}
-      metaTitle="Widget - Bring reliable, MEV-protected swaps to your users"
-      metaDescription="Integrate the CoW Swap widget to bring seamless, MEV-protected trading to your website or dApp."
-    >
+    <Layout bgColor={Color.neutral90}>
       <PageWrapper>
         <HeroContainer variant="secondary">
           <HeroContent variant="secondary">

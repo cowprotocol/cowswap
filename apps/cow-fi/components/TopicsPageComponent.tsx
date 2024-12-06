@@ -66,7 +66,7 @@ const Wrapper = styled.div`
 
 export function TopicsPageComponent({ articles, categories }: PageProps) {
   return (
-    <Layout metaTitle={`Knowledge Base topics - CoW DAO`} metaDescription="All knowledge base topics">
+    <Layout>
       <Wrapper>
         <h1>Knowledge Base</h1>
         <h2>All Topics</h2>

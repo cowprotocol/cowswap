@@ -19,14 +19,12 @@ const Wrapper = styled.div`
 `
 
 interface TokenPageComponentProps {
-  metaTitle: string
-  metaDescription: string
   token: TokenDetails
 }
 
-export function TokenPageComponent({ metaDescription, token, metaTitle }: TokenPageComponentProps) {
+export function TokenPageComponent({ token }: TokenPageComponentProps) {
   return (
-    <Layout metaTitle={metaTitle} metaDescription={metaDescription} bgColor={Color.neutral90}>
+    <Layout bgColor={Color.neutral90}>
       <Wrapper>
         <TokenDetailsPure token={token} />
       </Wrapper>

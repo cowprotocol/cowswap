@@ -90,12 +90,7 @@ export default function Page() {
   return (
     <WagmiConfig config={wagmiClient}>
       <RainbowKitProvider chains={chains}>
-        <Layout
-          bgColor={'#FEE7CF'}
-          metaTitle="Mev Blocker - The best MEV protection under the sun"
-          metaDescription="MEV Blocker is your personal protection from frontrunning and sandwich attacks for a broad spectrum of Ethereum transactions"
-          ogImage={CONFIG.ogImageMEVBLOCKER}
-        >
+        <Layout bgColor={'#FEE7CF'}>
           <PageWrapper>
             <HeroContainer variant="secondary">
               <HeroContent variant="secondary">

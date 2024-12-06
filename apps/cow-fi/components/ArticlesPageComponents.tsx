@@ -67,10 +67,7 @@ export function ArticlesPageComponents({ articles, totalArticles, currentPage, a
   const totalPages = Math.ceil(totalArticles / ITEMS_PER_PAGE)
 
   return (
-    <Layout
-      metaTitle={`All articles ${currentPage === 1 ? '' : `(${currentPage})`} - Knowledge Base`}
-      metaDescription="All knowledge base articles in the Cow DAO ecosystem"
-    >
+    <Layout>
       <Wrapper>
         <CategoryLinks allCategories={allCategories} />
         <SearchBar articles={articles} />

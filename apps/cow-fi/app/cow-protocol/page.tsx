@@ -58,18 +58,11 @@ import {
   TOP_LOGOS,
   UNIQUE_TRADING_LOGIC,
 } from '@/data/cow-protocol/const'
-
-import { CONFIG } from '@/const/meta'
 import { clickOnCowProtocol } from '../../modules/analytics'
 
 export default function Page() {
   return (
-    <Layout
-      bgColor={Color.neutral90}
-      metaTitle="CoW Protocol - Do what you want, build what you want"
-      metaDescription="CoW Protocol has the largest solver competition and the most advanced developer framework - so you can build any DEX-related action you can imagine"
-      ogImage={CONFIG.ogImageCOWPROTOCOL}
-    >
+    <Layout bgColor={Color.neutral90}>
       <PageWrapper>
         <HeroContainer variant="secondary">
           <HeroContent variant="secondary">

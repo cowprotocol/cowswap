@@ -71,12 +71,7 @@ export default function Page() {
   }, [])
 
   return (
-    <Layout
-      bgColor={Color.neutral90}
-      metaTitle="CoW Swap - Don't worry, trade happy"
-      metaDescription="CoW Swap protects traders from the dangers of DeFi, so you can do what you want without needing to worry"
-      ogImage={CONFIG.ogImageCOWSWAPP}
-    >
+    <Layout bgColor={Color.neutral90}>
       <PageWrapper>
         <HeroContainer variant="secondary">
           <HeroContent variant="secondary">

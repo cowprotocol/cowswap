@@ -25,7 +25,7 @@ export default function Page() {
   const title = 'CoW Swap Privacy policy'
 
   return (
-    <Layout bgColor={Color.neutral90} metaTitle="CoW Swap - Privacy policy" metaDescription="Privacy policy for CoW">
+    <Layout bgColor={Color.neutral90}>
       <Wrapper>
         <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
           <ArticleContent maxWidth="100%">
