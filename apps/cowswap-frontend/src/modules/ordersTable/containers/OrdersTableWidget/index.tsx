@@ -1,5 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Search } from 'react-feather'
 
 import { useTokensAllowances, useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -41,11 +42,22 @@ import { useGetAlternativeOrderModalContextCallback, useSelectReceiptOrder } fro
 const SearchInputContainer = styled.div`
   margin: 16px 0;
   padding: 0 16px;
+  position: relative;
+`
+
+const SearchIcon = styled(Search)`
+  position: absolute;
+  left: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: ${({ theme }) => theme.textSecondary};
+  width: 16px;
+  height: 16px;
 `
 
 const SearchInput = styled.input`
   width: 100%;
-  padding: 8px 12px;
+  padding: 8px 12px 8px 36px;
   border: 1px solid ${({ theme }) => theme.grey};
   border-radius: 8px;
   font-size: 14px;
@@ -248,9 +260,10 @@ export function OrdersTableWidget({
         {isOpenOrdersTab && orders.length && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />}
 
         <SearchInputContainer>
+          <SearchIcon />
           <SearchInput
             type="text"
-            placeholder="Search by token symbol, address"
+            placeholder="Token symbol, address"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
