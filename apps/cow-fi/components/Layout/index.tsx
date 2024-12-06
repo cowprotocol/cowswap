@@ -42,14 +42,7 @@ interface LayoutProps {
   host?: string
 }
 
-export default function Layout({
-  children,
-  bgColor,
-  metaTitle,
-  metaDescription,
-  ogImage,
-  host,
-}: Readonly<LayoutProps>) {
+export function Layout({ children, bgColor, metaTitle, metaDescription, ogImage, host }: Readonly<LayoutProps>) {
   useSetupPage()
 
   const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts)

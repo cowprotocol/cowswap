@@ -28,8 +28,8 @@ export function TokenList({ tokens }: TokenListProps) {
       tokens.filter(
         (token) =>
           token.name.toLowerCase().includes(search.toLowerCase()) ||
-          token.symbol.toLowerCase().includes(search.toLowerCase())
-      )
+          token.symbol.toLowerCase().includes(search.toLowerCase()),
+      ),
     )
   }, [search, tokens])
 

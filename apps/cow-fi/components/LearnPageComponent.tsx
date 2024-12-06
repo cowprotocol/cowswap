@@ -1,7 +1,6 @@
 'use client'
 
 import { useLazyLoadImages } from '../hooks/useLazyLoadImages'
-import Layout from '@/components/Layout'
 import { CategoryLinks } from '@/components/CategoryLinks'
 import { SearchBar } from '@/components/SearchBar'
 import {
@@ -35,7 +34,6 @@ import LazySVG from '@/components/LazySVG'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import { ArticleListResponse } from '../services/cms'
 import styled from 'styled-components/macro'
-import { CONFIG } from '@/const/meta'
 
 const PODCASTS = [
   {
@@ -160,152 +158,150 @@ export function LearnPageComponent({ categories, articles, featuredArticles }: P
   const { LazyImage } = useLazyLoadImages()
 
   return (
-    <Layout>
-      <Wrapper>
-        <h1>Learn - Knowledge Base</h1>
-        <h2>Hi, how can we help?</h2>
+    <Wrapper>
+      <h1>Learn - Knowledge Base</h1>
+      <h2>Hi, how can we help?</h2>
 
-        <CategoryLinks allCategories={categories} noDivider />
+      <CategoryLinks allCategories={categories} noDivider />
 
-        <SearchBar articles={articles} />
+      <SearchBar articles={articles} />
 
-        <ContainerCard marginMobile="0 auto 24px">
-          <ContainerCardInner maxWidth={1350}>
-            <ContainerCardSection>
-              <ContainerCardSectionTop alignMobile="center">
-                <ContainerCardSectionTopTitle>Featured articles</ContainerCardSectionTopTitle>
-                <ArrowButton link="/learn/articles" text="All articles" />
-              </ContainerCardSectionTop>
-              <ArticleList columnsTablet={2}>
-                {featuredArticles.map(({ title, description, cover, link }, index) => (
-                  <ArticleCard key={index} href={link} onClick={() => clickOnKnowledgeBase(`click-article-${title}`)}>
-                    <ArticleImage color="#000">
-                      {cover && <LazyImage src={cover} alt={title} width={700} height={200} />}
-                    </ArticleImage>
-                    <ArticleTitle>{title}</ArticleTitle>
-                    <ArticleDescription>{description}</ArticleDescription>
-                  </ArticleCard>
-                ))}
-              </ArticleList>
-            </ContainerCardSection>
+      <ContainerCard marginMobile="0 auto 24px">
+        <ContainerCardInner maxWidth={1350}>
+          <ContainerCardSection>
+            <ContainerCardSectionTop alignMobile="center">
+              <ContainerCardSectionTopTitle>Featured articles</ContainerCardSectionTopTitle>
+              <ArrowButton link="/learn/articles" text="All articles" />
+            </ContainerCardSectionTop>
+            <ArticleList columnsTablet={2}>
+              {featuredArticles.map(({ title, description, cover, link }, index) => (
+                <ArticleCard key={index} href={link} onClick={() => clickOnKnowledgeBase(`click-article-${title}`)}>
+                  <ArticleImage color="#000">
+                    {cover && <LazyImage src={cover} alt={title} width={700} height={200} />}
+                  </ArticleImage>
+                  <ArticleTitle>{title}</ArticleTitle>
+                  <ArticleDescription>{description}</ArticleDescription>
+                </ArticleCard>
+              ))}
+            </ArticleList>
+          </ContainerCardSection>
 
-            <ContainerCardSection>
-              <ContainerCardSectionTop>
-                <ContainerCardSectionTopTitle>Topics</ContainerCardSectionTopTitle>
-              </ContainerCardSectionTop>
-              <TopicList columns={3}>
-                {categories.map(({ name, bgColor, textColor, iconColor, link, imageUrl }, index) => {
-                  return (
-                    <TopicCard
-                      key={index}
-                      bgColor={bgColor}
-                      textColor={textColor}
-                      href={link}
-                      onClick={() => clickOnKnowledgeBase(`click-topic-${name}`)}
-                    >
-                      <TopicImage iconColor={iconColor} bgColor={bgColor} borderRadius={90} widthMobile={'auto'}>
-                        {imageUrl ? (
-                          <LazyImage
-                            src={imageUrl}
-                            alt={name}
-                            width={82}
-                            height={82}
-                            onError={(e) => {
-                              e.currentTarget.onerror = null
-                              e.currentTarget.style.display = 'none'
-                            }}
-                          />
-                        ) : (
-                          <span>{name.charAt(0)}</span>
-                        )}
-                      </TopicImage>
-                      <TopicTitle>{name}</TopicTitle>
-                    </TopicCard>
-                  )
-                })}
-              </TopicList>
-            </ContainerCardSection>
-
-            <ContainerCardSection>
-              <ContainerCardSectionTop>
-                <ContainerCardSectionTopTitle>Podcasts & Spaces</ContainerCardSectionTopTitle>
-              </ContainerCardSectionTop>
-              <LinkSection gap={56}>
-                <LinkColumn>
-                  <h5>Podcasts</h5>
-                  {PODCASTS.map((podcast, index) => (
-                    <LinkItem
-                      key={index}
-                      href={`${podcast.link}?utm_source=cow.fi&utm_medium=web&utm_content=podcast-${podcast.title}`}
-                      rel="noopener noreferrer nofollow"
-                      target="_blank"
-                      onClick={() => clickOnKnowledgeBase(`click-podcast-${podcast.title}`)}
-                    >
-                      {podcast.title}
-                      <span>→</span>
-                    </LinkItem>
-                  ))}
-                </LinkColumn>
-
-                <LinkColumn>
-                  <h5>Spaces</h5>
-                  {SPACES.map((space, index) => (
-                    <LinkItem
-                      key={index}
-                      href={`${space.link}?utm_source=cow.fi&utm_medium=web&utm_content=space-${space.title}`}
-                      rel="noopener noreferrer nofollow"
-                      target="_blank"
-                      onClick={() => clickOnKnowledgeBase(`click-space-${space.title}`)}
-                    >
-                      {space.title}
-                      <span>→</span>
-                    </LinkItem>
-                  ))}
-                </LinkColumn>
-              </LinkSection>
-            </ContainerCardSection>
-
-            <ContainerCardSection>
-              <ContainerCardSectionTop>
-                <ContainerCardSectionTopTitle>Media coverage</ContainerCardSectionTopTitle>
-              </ContainerCardSectionTop>
-              <ArticleList columns={4}>
-                {MEDIA_COVERAGE.map(({ image, title, publisher, link, linkExternal }, index) => (
-                  <ArticleCard
+          <ContainerCardSection>
+            <ContainerCardSectionTop>
+              <ContainerCardSectionTopTitle>Topics</ContainerCardSectionTopTitle>
+            </ContainerCardSectionTop>
+            <TopicList columns={3}>
+              {categories.map(({ name, bgColor, textColor, iconColor, link, imageUrl }, index) => {
+                return (
+                  <TopicCard
                     key={index}
-                    href={`${link}?utm_source=cow.fi&utm_medium=web&utm_content=media-${title}`}
-                    target={linkExternal ? '_blank' : '_self'}
-                    rel={linkExternal ? 'noopener' : ''}
-                    onClick={() => clickOnKnowledgeBase(`click-media-${title}`)}
+                    bgColor={bgColor}
+                    textColor={textColor}
+                    href={link}
+                    onClick={() => clickOnKnowledgeBase(`click-topic-${name}`)}
                   >
-                    <ArticleImage>{image && <LazyImage src={image} alt={title} />}</ArticleImage>
-                    <ArticleTitle fontSize={21}>{title}</ArticleTitle>
-                    <ArticleDescription>Published by {publisher}</ArticleDescription>
-                  </ArticleCard>
-                ))}
-              </ArticleList>
-            </ContainerCardSection>
-          </ContainerCardInner>
-        </ContainerCard>
+                    <TopicImage iconColor={iconColor} bgColor={bgColor} borderRadius={90} widthMobile={'auto'}>
+                      {imageUrl ? (
+                        <LazyImage
+                          src={imageUrl}
+                          alt={name}
+                          width={82}
+                          height={82}
+                          onError={(e) => {
+                            e.currentTarget.onerror = null
+                            e.currentTarget.style.display = 'none'
+                          }}
+                        />
+                      ) : (
+                        <span>{name.charAt(0)}</span>
+                      )}
+                    </TopicImage>
+                    <TopicTitle>{name}</TopicTitle>
+                  </TopicCard>
+                )
+              })}
+            </TopicList>
+          </ContainerCardSection>
 
-        <ContainerCard bgColor={Color.neutral98} padding="0" touchFooter>
-          <CTASectionWrapper>
-            <CTAImage color={'#00A1FF'}>
-              <LazySVG src={IMG_ICON_BULB_COW} />
-            </CTAImage>
-            <CTASubtitle>Explore, learn, integrate</CTASubtitle>
-            <CTATitle>CoW DAO documentation</CTATitle>
-            <CTAButton
-              href="https://docs.cow.fi/?utm_source=cow.fi&utm_medium=web&utm_content=cta-read-docs"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => clickOnKnowledgeBase('click-read-docs')}
-            >
-              Read the docs
-            </CTAButton>
-          </CTASectionWrapper>
-        </ContainerCard>
-      </Wrapper>
-    </Layout>
+          <ContainerCardSection>
+            <ContainerCardSectionTop>
+              <ContainerCardSectionTopTitle>Podcasts & Spaces</ContainerCardSectionTopTitle>
+            </ContainerCardSectionTop>
+            <LinkSection gap={56}>
+              <LinkColumn>
+                <h5>Podcasts</h5>
+                {PODCASTS.map((podcast, index) => (
+                  <LinkItem
+                    key={index}
+                    href={`${podcast.link}?utm_source=cow.fi&utm_medium=web&utm_content=podcast-${podcast.title}`}
+                    rel="noopener noreferrer nofollow"
+                    target="_blank"
+                    onClick={() => clickOnKnowledgeBase(`click-podcast-${podcast.title}`)}
+                  >
+                    {podcast.title}
+                    <span>→</span>
+                  </LinkItem>
+                ))}
+              </LinkColumn>
+
+              <LinkColumn>
+                <h5>Spaces</h5>
+                {SPACES.map((space, index) => (
+                  <LinkItem
+                    key={index}
+                    href={`${space.link}?utm_source=cow.fi&utm_medium=web&utm_content=space-${space.title}`}
+                    rel="noopener noreferrer nofollow"
+                    target="_blank"
+                    onClick={() => clickOnKnowledgeBase(`click-space-${space.title}`)}
+                  >
+                    {space.title}
+                    <span>→</span>
+                  </LinkItem>
+                ))}
+              </LinkColumn>
+            </LinkSection>
+          </ContainerCardSection>
+
+          <ContainerCardSection>
+            <ContainerCardSectionTop>
+              <ContainerCardSectionTopTitle>Media coverage</ContainerCardSectionTopTitle>
+            </ContainerCardSectionTop>
+            <ArticleList columns={4}>
+              {MEDIA_COVERAGE.map(({ image, title, publisher, link, linkExternal }, index) => (
+                <ArticleCard
+                  key={index}
+                  href={`${link}?utm_source=cow.fi&utm_medium=web&utm_content=media-${title}`}
+                  target={linkExternal ? '_blank' : '_self'}
+                  rel={linkExternal ? 'noopener' : ''}
+                  onClick={() => clickOnKnowledgeBase(`click-media-${title}`)}
+                >
+                  <ArticleImage>{image && <LazyImage src={image} alt={title} />}</ArticleImage>
+                  <ArticleTitle fontSize={21}>{title}</ArticleTitle>
+                  <ArticleDescription>Published by {publisher}</ArticleDescription>
+                </ArticleCard>
+              ))}
+            </ArticleList>
+          </ContainerCardSection>
+        </ContainerCardInner>
+      </ContainerCard>
+
+      <ContainerCard bgColor={Color.neutral98} padding="0" touchFooter>
+        <CTASectionWrapper>
+          <CTAImage color={'#00A1FF'}>
+            <LazySVG src={IMG_ICON_BULB_COW} />
+          </CTAImage>
+          <CTASubtitle>Explore, learn, integrate</CTASubtitle>
+          <CTATitle>CoW DAO documentation</CTATitle>
+          <CTAButton
+            href="https://docs.cow.fi/?utm_source=cow.fi&utm_medium=web&utm_content=cta-read-docs"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => clickOnKnowledgeBase('click-read-docs')}
+          >
+            Read the docs
+          </CTAButton>
+        </CTASectionWrapper>
+      </ContainerCard>
+    </Wrapper>
   )
 }

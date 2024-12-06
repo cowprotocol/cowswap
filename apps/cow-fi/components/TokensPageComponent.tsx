@@ -1,9 +1,7 @@
 'use client'
 
 import { TokenInfo } from '../types'
-import { Color } from '@cowprotocol/ui'
 import { TokenList } from '@/components/TokensList'
-import Layout from '@/components/Layout'
 import styled from 'styled-components/macro'
 
 const Wrapper = styled.div`
@@ -24,10 +22,8 @@ interface TokensPageComponentProps {
 
 export function TokensPageComponent({ tokens }: TokensPageComponentProps) {
   return (
-    <Layout bgColor={Color.neutral90}>
-      <Wrapper>
-        <TokenList tokens={tokens} />
-      </Wrapper>
-    </Layout>
+    <Wrapper>
+      <TokenList tokens={tokens} />
+    </Wrapper>
   )
 }

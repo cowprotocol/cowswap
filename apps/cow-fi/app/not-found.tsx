@@ -3,6 +3,7 @@
 import type { Metadata } from 'next'
 import { NotFoundPageComponent } from '@/components/NotFoundPageComponent'
 import { getPageMetadata } from '@/util/getPageMetadata'
+import { Layout } from '@/components/Layout'
 
 export async function generateMetadata(): Promise<Metadata> {
   return getPageMetadata({
@@ -13,5 +14,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Page() {
-  return <NotFoundPageComponent />
+  return (
+    <Layout bgColor="#F0DEDE">
+      <NotFoundPageComponent />
+    </Layout>
+  )
 }

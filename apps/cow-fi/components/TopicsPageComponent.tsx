@@ -1,6 +1,5 @@
 'use client'
 
-import Layout from '@/components/Layout'
 import { SearchBar } from '@/components/SearchBar'
 import {
   ContainerCard,
@@ -66,53 +65,51 @@ const Wrapper = styled.div`
 
 export function TopicsPageComponent({ articles, categories }: PageProps) {
   return (
-    <Layout>
-      <Wrapper>
-        <h1>Knowledge Base</h1>
-        <h2>All Topics</h2>
+    <Wrapper>
+      <h1>Knowledge Base</h1>
+      <h2>All Topics</h2>
 
-        <SearchBar articles={articles || []} />
+      <SearchBar articles={articles || []} />
 
-        <ContainerCard touchFooter>
-          <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>
-            <ContainerCardSection>
-              <ContainerCardSectionTop>
-                <ContainerCardSectionTopTitle>Topics</ContainerCardSectionTopTitle>
-                <ArrowButton link="/learn" text="Overview" />
-              </ContainerCardSectionTop>
-              <TopicList columns={3}>
-                {categories.map(({ name, bgColor, textColor, iconColor, link, imageUrl }, index) => (
-                  <TopicCard
-                    key={index}
-                    bgColor={bgColor}
-                    textColor={textColor}
-                    href={link}
-                    onClick={() => clickOnKnowledgeBase(`click-topic-${name}`)}
-                  >
-                    <TopicImage iconColor={iconColor}>
-                      {imageUrl ? (
-                        <CmsImage
-                          src={imageUrl}
-                          alt={name}
-                          width={82}
-                          height={82}
-                          onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-                            e.currentTarget.onerror = null
-                            e.currentTarget.style.display = 'none'
-                          }}
-                        />
-                      ) : (
-                        <span>{name.charAt(0)}</span>
-                      )}
-                    </TopicImage>
-                    <TopicTitle>{name}</TopicTitle>
-                  </TopicCard>
-                ))}
-              </TopicList>
-            </ContainerCardSection>
-          </ContainerCardInner>
-        </ContainerCard>
-      </Wrapper>
-    </Layout>
+      <ContainerCard touchFooter>
+        <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>
+          <ContainerCardSection>
+            <ContainerCardSectionTop>
+              <ContainerCardSectionTopTitle>Topics</ContainerCardSectionTopTitle>
+              <ArrowButton link="/learn" text="Overview" />
+            </ContainerCardSectionTop>
+            <TopicList columns={3}>
+              {categories.map(({ name, bgColor, textColor, iconColor, link, imageUrl }, index) => (
+                <TopicCard
+                  key={index}
+                  bgColor={bgColor}
+                  textColor={textColor}
+                  href={link}
+                  onClick={() => clickOnKnowledgeBase(`click-topic-${name}`)}
+                >
+                  <TopicImage iconColor={iconColor}>
+                    {imageUrl ? (
+                      <CmsImage
+                        src={imageUrl}
+                        alt={name}
+                        width={82}
+                        height={82}
+                        onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                          e.currentTarget.onerror = null
+                          e.currentTarget.style.display = 'none'
+                        }}
+                      />
+                    ) : (
+                      <span>{name.charAt(0)}</span>
+                    )}
+                  </TopicImage>
+                  <TopicTitle>{name}</TopicTitle>
+                </TopicCard>
+              ))}
+            </TopicList>
+          </ContainerCardSection>
+        </ContainerCardInner>
+      </ContainerCard>
+    </Wrapper>
   )
 }

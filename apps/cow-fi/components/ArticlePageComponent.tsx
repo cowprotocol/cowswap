@@ -3,7 +3,6 @@
 import { Article, SharedRichTextComponent } from '../services/cms'
 import { stripHtmlTags } from '@/util/stripHTMLTags'
 import useWebShare from '../hooks/useWebShare'
-import Layout from '@/components/Layout'
 import { CategoryLinks } from '@/components/CategoryLinks'
 import { SearchBar } from '@/components/SearchBar'
 import {
@@ -78,126 +77,120 @@ export function ArticlePageComponent({
   }
 
   return (
-    <Layout>
-      <Wrapper>
-        <CategoryLinks allCategories={allCategories} />
+    <Wrapper>
+      <CategoryLinks allCategories={allCategories} />
 
-        <SearchBar articles={articles} />
-        <ContainerCard gap={62} gapMobile={42} margin="0 auto" centerContent>
-          <ArticleContent>
-            <Breadcrumbs>
-              <Link href="/" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-home')}>
-                Home
-              </Link>
-              <Link href="/learn" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-knowledge-base')}>
-                Knowledge Base
-              </Link>
-              <span>{title}</span>
-            </Breadcrumbs>
+      <SearchBar articles={articles} />
+      <ContainerCard gap={62} gapMobile={42} margin="0 auto" centerContent>
+        <ArticleContent>
+          <Breadcrumbs>
+            <Link href="/" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-home')}>
+              Home
+            </Link>
+            <Link href="/learn" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-knowledge-base')}>
+              Knowledge Base
+            </Link>
+            <span>{title}</span>
+          </Breadcrumbs>
 
-            {categories && Array.isArray(categories.data) && categories.data.length > 0 && (
-              <CategoryTags>
-                {categories.data.map((category: { id: string; attributes?: { slug?: string; name?: string } }) => (
-                  <Link
-                    key={category.id}
-                    href={`/learn/topic/${category.attributes?.slug ?? ''}`}
-                    onClick={() => clickOnKnowledgeBase(`click-category-${category.attributes?.name}`)}
-                  >
-                    {category.attributes?.name ?? ''}
-                  </Link>
-                ))}
-              </CategoryTags>
-            )}
+          {categories && Array.isArray(categories.data) && categories.data.length > 0 && (
+            <CategoryTags>
+              {categories.data.map((category: { id: string; attributes?: { slug?: string; name?: string } }) => (
+                <Link
+                  key={category.id}
+                  href={`/learn/topic/${category.attributes?.slug ?? ''}`}
+                  onClick={() => clickOnKnowledgeBase(`click-category-${category.attributes?.name}`)}
+                >
+                  {category.attributes?.name ?? ''}
+                </Link>
+              ))}
+            </CategoryTags>
+          )}
 
-            <ArticleMainTitle>{title}</ArticleMainTitle>
+          <ArticleMainTitle>{title}</ArticleMainTitle>
 
-            <ArticleSubtitle
-              dateIso={(publishDate || publishedAt)!}
-              dateVisible={publishDateVisible}
-              content={content}
-            />
-            <BodyContent>
-              {blocks &&
-                blocks.map((block: SharedRichTextComponent) =>
-                  isRichTextComponent(block) ? (
-                    <ArticleSharedRichTextComponent key={block.id} sharedRichText={block} />
-                  ) : null,
-                )}
-
-              <br />
-              <Link
-                onClick={handleShareClick}
-                asButton
-                linkType={LinkType.SectionTitleButton}
-                color={Color.neutral98}
-                bgColor={Color.neutral10}
-              >
-                Share article
-              </Link>
-
-              {message && (
-                <SectionTitleDescription textAlign="left" margin="16px 0 0" fontSize={21}>
-                  {message}
-                </SectionTitleDescription>
+          <ArticleSubtitle dateIso={(publishDate || publishedAt)!} dateVisible={publishDateVisible} content={content} />
+          <BodyContent>
+            {blocks &&
+              blocks.map((block: SharedRichTextComponent) =>
+                isRichTextComponent(block) ? (
+                  <ArticleSharedRichTextComponent key={block.id} sharedRichText={block} />
+                ) : null,
               )}
-            </BodyContent>
-          </ArticleContent>
 
-          <StickyMenu>
-            <b>Featured Articles</b>
-            <RelatedArticles>
-              <ul>
-                {featuredArticles.map((article) => (
-                  <li key={article.id}>
-                    <Link
-                      href={`/learn/${article.attributes?.slug}`}
-                      onClick={() => clickOnKnowledgeBase(`click-related-article-${article.attributes?.title}`)}
-                    >
-                      {article.attributes?.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </RelatedArticles>
-          </StickyMenu>
-        </ContainerCard>
+            <br />
+            <Link
+              onClick={handleShareClick}
+              asButton
+              linkType={LinkType.SectionTitleButton}
+              color={Color.neutral98}
+              bgColor={Color.neutral10}
+            >
+              Share article
+            </Link>
 
-        {/* Read More Section */}
-        <ContainerCard bgColor={Color.neutral98} touchFooter>
-          <ContainerCardSection>
-            <ContainerCardSectionTop>
-              <ContainerCardSectionTopTitle>Read more</ContainerCardSectionTopTitle>
-            </ContainerCardSectionTop>
-            <ArticleList>
-              {randomArticles.map((article) => {
-                const coverData = article.attributes?.cover?.data
-                const imageUrl = coverData?.attributes?.url
+            {message && (
+              <SectionTitleDescription textAlign="left" margin="16px 0 0" fontSize={21}>
+                {message}
+              </SectionTitleDescription>
+            )}
+          </BodyContent>
+        </ArticleContent>
 
-                return (
-                  <ArticleCard
-                    key={article.id}
+        <StickyMenu>
+          <b>Featured Articles</b>
+          <RelatedArticles>
+            <ul>
+              {featuredArticles.map((article) => (
+                <li key={article.id}>
+                  <Link
                     href={`/learn/${article.attributes?.slug}`}
-                    onClick={() => clickOnKnowledgeBase(`click-read-more-${article.attributes?.title}`)}
+                    onClick={() => clickOnKnowledgeBase(`click-related-article-${article.attributes?.title}`)}
                   >
-                    {imageUrl && (
-                      <ArticleImage>
-                        <CmsImage
-                          src={imageUrl}
-                          alt={`Cover image for article: ${article.attributes?.title}`}
-                          width={700}
-                          height={200}
-                        />
-                      </ArticleImage>
-                    )}
-                    <ArticleTitle>{article.attributes?.title}</ArticleTitle>
-                  </ArticleCard>
-                )
-              })}
-            </ArticleList>
-          </ContainerCardSection>
-        </ContainerCard>
-      </Wrapper>
-    </Layout>
+                    {article.attributes?.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </RelatedArticles>
+        </StickyMenu>
+      </ContainerCard>
+
+      {/* Read More Section */}
+      <ContainerCard bgColor={Color.neutral98} touchFooter>
+        <ContainerCardSection>
+          <ContainerCardSectionTop>
+            <ContainerCardSectionTopTitle>Read more</ContainerCardSectionTopTitle>
+          </ContainerCardSectionTop>
+          <ArticleList>
+            {randomArticles.map((article) => {
+              const coverData = article.attributes?.cover?.data
+              const imageUrl = coverData?.attributes?.url
+
+              return (
+                <ArticleCard
+                  key={article.id}
+                  href={`/learn/${article.attributes?.slug}`}
+                  onClick={() => clickOnKnowledgeBase(`click-read-more-${article.attributes?.title}`)}
+                >
+                  {imageUrl && (
+                    <ArticleImage>
+                      <CmsImage
+                        src={imageUrl}
+                        alt={`Cover image for article: ${article.attributes?.title}`}
+                        width={700}
+                        height={200}
+                      />
+                    </ArticleImage>
+                  )}
+                  <ArticleTitle>{article.attributes?.title}</ArticleTitle>
+                </ArticleCard>
+              )
+            })}
+          </ArticleList>
+        </ContainerCardSection>
+      </ContainerCard>
+    </Wrapper>
   )
 }
 
