@@ -96,9 +96,8 @@ export const AmountItem = styled.div`
 export const CellElement = styled.div<{
   clickable?: boolean
   doubleRow?: boolean
-  hasBackground?: boolean
 }>`
-  padding: 0 ${({ hasBackground }) => (hasBackground ? '10px' : '0')};
+  padding: 0;
   font-size: 12px;
   font-weight: 500;
   gap: 5px;
@@ -107,8 +106,6 @@ export const CellElement = styled.div<{
   flex-direction: row;
   align-items: ${({ doubleRow }) => (doubleRow ? 'flex-start' : 'center')};
   text-align: left;
-  background: ${({ hasBackground }) =>
-    hasBackground ? `linear-gradient(90deg, var(${UI.COLOR_TEXT_OPACITY_10}) 0%, transparent 100%)` : 'transparent'};
   cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
 
   > b {
