@@ -176,13 +176,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         handleUnlock={() => updateLimitOrdersState({ isUnlocked: true })}
       />
     ),
-    topContent:
-      props.settingsState.limitPricePosition === 'top' ? (
-        <styledEl.RateWrapper>
-          <RateInput />
-        </styledEl.RateWrapper>
-      ) : undefined,
-    middleContent: (
+    topContent: (
       <>
         {!isWrapOrUnwrap &&
           ClosableBanner(ZERO_BANNER_STORAGE_KEY, (onClose) => (
@@ -200,6 +194,15 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
               </p>
             </InlineBanner>
           ))}
+        {props.settingsState.limitPricePosition === 'top' && (
+          <styledEl.RateWrapper>
+            <RateInput />
+          </styledEl.RateWrapper>
+        )}
+      </>
+    ),
+    middleContent: (
+      <>
         {props.settingsState.limitPricePosition === 'between' && (
           <styledEl.RateWrapper>
             <RateInput />

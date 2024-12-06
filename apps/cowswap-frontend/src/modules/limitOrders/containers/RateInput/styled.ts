@@ -220,7 +220,7 @@ export const ActiveSymbol = styled.span<{ $active?: boolean }>`
 `
 
 export const ActiveIcon = styled.div`
-  --size: 16px;
+  --size: 19px;
   color: inherit;
   width: var(--size);
   min-width: var(--size);
@@ -231,11 +231,17 @@ export const ActiveIcon = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  margin: 0;
-  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  margin: 0 2px 0 0;
+  transition:
+    color var(${UI.ANIMATION_DURATION}) ease-in-out,
+    background var(${UI.ANIMATION_DURATION}) ease-in-out;
+  background: transparent;
+  border: 1px solid var(${UI.COLOR_PAPER_DARKEST});
 
   &:hover {
     color: var(${UI.COLOR_TEXT});
+    background: var(${UI.COLOR_PAPER});
+    border-color: var(${UI.COLOR_PAPER});
   }
 `
 
@@ -288,5 +294,29 @@ export const EstimatedRate = styled.div`
     font-size: 13px;
     font-weight: 400;
     color: var(${UI.COLOR_TEXT_OPACITY_70});
+  }
+`
+
+export const LockIcon = styled.span`
+  --size: 19px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: inherit;
+  border-radius: var(--size);
+  width: var(--size);
+  min-width: var(--size);
+  height: var(--size);
+  border: 1px solid var(${UI.COLOR_PAPER_DARKEST});
+  cursor: pointer;
+  transition:
+    border-color var(${UI.ANIMATION_DURATION}) ease-in-out,
+    background var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    border-color: var(${UI.COLOR_PAPER});
+    background: var(${UI.COLOR_PAPER});
   }
 `

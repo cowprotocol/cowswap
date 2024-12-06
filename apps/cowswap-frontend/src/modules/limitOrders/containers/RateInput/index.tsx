@@ -1,11 +1,12 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import SwitchArrowsIcon from '@cowprotocol/assets/images/icon-switch-arrows.svg'
+import LockedIcon from '@cowprotocol/assets/images/icon-locked.svg'
+import UnlockedIcon from '@cowprotocol/assets/images/icon-unlocked.svg'
 import UsdIcon from '@cowprotocol/assets/images/icon-USD.svg'
 import { formatInputAmount, getAddress, isFractionFalsy } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { TokenSymbol, HelpTooltip } from '@cowprotocol/ui'
+import { TokenSymbol, HoverTooltip, HelpTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
@@ -15,6 +16,10 @@ import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { useUpdateActiveRate } from 'modules/limitOrders/hooks/useUpdateActiveRate'
 import { HeadingText } from 'modules/limitOrders/pure/RateInput/HeadingText'
 import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom'
+import {
+  limitOrdersSettingsAtom,
+  updateLimitOrdersSettingsAtom,
+} from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { toFraction } from 'modules/limitOrders/utils/toFraction'
 
@@ -33,6 +38,8 @@ export function RateInput() {
   const executionPrice = useAtomValue(executionPriceAtom)
   const [isQuoteCurrencySet, setIsQuoteCurrencySet] = useState(false)
   const [isUsdMode, setIsUsdMode] = useState(false)
+  const { limitPriceLocked } = useAtomValue(limitOrdersSettingsAtom)
+  const updateLimitOrdersSettings = useSetAtom(updateLimitOrdersSettingsAtom)
 
   // Limit order state
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
@@ -95,6 +102,15 @@ export function RateInput() {
     }
   }, [isInverted, updateLimitRateState, isUsdMode])
 
+  // Handle toggle price lock
+  const handleTogglePriceLock = useCallback(
+    (event: React.MouseEvent) => {
+      event.stopPropagation()
+      updateLimitOrdersSettings({ limitPriceLocked: !limitPriceLocked })
+    },
+    [limitPriceLocked, updateLimitOrdersSettings],
+  )
+
   const isDisabledMPrice = useMemo(() => {
     if (isLoadingMarketRate) return true
 
@@ -152,9 +168,14 @@ export function RateInput() {
             currency={primaryCurrency}
             rateImpact={rateImpact}
             toggleIcon={
-              <styledEl.ActiveIcon>
-                <SVG src={SwitchArrowsIcon} width={12} height={10} />
-              </styledEl.ActiveIcon>
+              <HoverTooltip
+                content="When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
+                wrapInContainer
+              >
+                <styledEl.LockIcon onClick={handleTogglePriceLock}>
+                  <SVG src={limitPriceLocked ? LockedIcon : UnlockedIcon} width={12} height={10} />
+                </styledEl.LockIcon>
+              </HoverTooltip>
             }
             onToggle={handleToggle}
           />

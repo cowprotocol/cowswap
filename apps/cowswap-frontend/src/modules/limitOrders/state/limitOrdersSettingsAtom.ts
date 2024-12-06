@@ -18,6 +18,7 @@ export interface LimitOrdersSettingsState {
   readonly deadlineMilliseconds: Milliseconds
   readonly customDeadlineTimestamp: Timestamp | null
   readonly limitPricePosition: 'top' | 'between' | 'bottom'
+  readonly limitPriceLocked: boolean
 }
 
 export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
@@ -26,6 +27,7 @@ export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
   deadlineMilliseconds: defaultLimitOrderDeadline.value,
   customDeadlineTimestamp: null,
   limitPricePosition: 'top',
+  limitPriceLocked: true,
 }
 
 // regular

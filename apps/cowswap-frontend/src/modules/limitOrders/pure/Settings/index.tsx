@@ -110,7 +110,7 @@ const POSITION_LABELS = {
 }
 
 export function Settings({ state, onStateChanged }: SettingsProps) {
-  const { showRecipient, partialFillsEnabled, limitPricePosition } = state
+  const { showRecipient, partialFillsEnabled, limitPricePosition, limitPriceLocked } = state
   const [isOpen, setIsOpen] = useState(false)
 
   const handleSelect = useCallback(
@@ -153,6 +153,13 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
         }
         value={partialFillsEnabled}
         toggle={() => onStateChanged({ partialFillsEnabled: !partialFillsEnabled })}
+      />
+
+      <SettingsBox
+        title="Lock Limit Price"
+        tooltip="When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
+        value={limitPriceLocked}
+        toggle={() => onStateChanged({ limitPriceLocked: !limitPriceLocked })}
       />
 
       <SettingsRow>
