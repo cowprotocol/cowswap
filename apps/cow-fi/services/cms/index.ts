@@ -1,4 +1,4 @@
-import { CmsClient, components } from '@cowprotocol/cms'
+import { components } from '@cowprotocol/cms'
 import { PaginationParam } from 'types'
 import qs from 'qs'
 
@@ -22,57 +22,13 @@ export type ArticleListResponse = {
   }
 }
 
-export type SharedMediaComponent = Schemas['SharedMediaComponent']
-export type SharedQuoteComponent = Schemas['SharedQuoteComponent']
 export type SharedRichTextComponent = Schemas['SharedRichTextComponent']
-export type SharedSliderComponent = Schemas['SharedSliderComponent']
-export type SharedVideoEmbedComponent = Schemas['SharedVideoEmbedComponent']
 export type Category = Schemas['CategoryListResponseDataItem']
-export type ArticleCover = Schemas['Article']['cover']
-export type ArticleBlocks = Schemas['Article']['blocks']
-
-export type ArticleBlock =
-  | SharedMediaComponent
-  | SharedQuoteComponent
-  | SharedRichTextComponent
-  | SharedSliderComponent
-  | SharedVideoEmbedComponent
-
-export function isSharedMediaComponent(component: ArticleBlock): component is SharedMediaComponent {
-  return component.__component === 'SharedMediaComponent'
-}
-
-export function isSharedQuoteComponent(component: ArticleBlock): component is SharedQuoteComponent {
-  return component.__component === 'SharedQuoteComponent'
-}
-
-export function isSharedRichTextComponent(component: ArticleBlock): component is SharedRichTextComponent {
-  return component.__component === 'shared.rich-text'
-}
-
-export function isSharedSliderComponent(component: ArticleBlock): component is SharedMediaComponent {
-  return component.__component === 'SharedSliderComponent'
-}
-
-export function isSharedVideoEmbedComponent(component: ArticleBlock): component is SharedVideoEmbedComponent {
-  return component.__component === 'SharedVideoEmbedComponent'
-}
 
 /**
  * Open API Fetch client. See docs for usage https://openapi-ts.pages.dev/openapi-fetch/
  */
 export const client = getCmsClient()
-
-/**
- * Returns the article slugs for the given page.
- *
- * @param params pagination params
- * @returns Slugs
- */
-async function getArticlesSlugs(params: PaginationParam = {}): Promise<string[]> {
-  const articlesResponse = await getArticles(params)
-  return articlesResponse.data.map((article: Article) => article.attributes!.slug!)
-}
 
 /**
  * Returns all article slugs.

@@ -1,3 +1,5 @@
+'use client'
+
 import React, { createContext, useContext, PropsWithChildren } from 'react'
 
 import { CowAnalytics } from '../CowAnalytics'

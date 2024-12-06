@@ -6,7 +6,10 @@ export const IMAGE_PATH = 'images/'
 export const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
 export const CONFIG = {
-  title: 'CoW DAO',
+  title: {
+    template: '%s - CoW DAO',
+    default: 'CoW DAO',
+  },
   metatitle_tokenDetail: 'Live Token Price Chart & Metrics',
   description: 'CoW DAO develops the most user-protective products in Ethereum - so you can do more with less worry.',
   descriptionShort: "Don't get milked!",

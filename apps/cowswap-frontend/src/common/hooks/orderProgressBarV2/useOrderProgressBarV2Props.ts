@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { SolverInfo, useSolversInfo } from '@cowprotocol/core'
+import { SolverInfo } from '@cowprotocol/core'
 import { CompetitionOrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { Command } from '@cowprotocol/types'
@@ -32,6 +32,7 @@ import {
 import { ApiSolverCompetition, OrderProgressBarState, OrderProgressBarStepName, SolverCompetition } from './types'
 
 import { useGetSurplusData } from '../useGetSurplusFiatValue'
+import { useSolversInfo } from '../useSolversInfo'
 
 export type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null

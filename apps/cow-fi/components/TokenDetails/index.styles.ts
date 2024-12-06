@@ -1,5 +1,6 @@
 import styled from 'styled-components/macro'
 import { Media, Color } from '@cowprotocol/ui'
+import Link from 'next/link'
 
 export const Wrapper = styled.div`
   display: grid;
@@ -64,7 +65,10 @@ export const SwapWidgetWrapper = styled.div`
   background: ${Color.neutral100};
   height: 26.2rem;
   width: 100%;
-  box-shadow: 0 0.2rem 1.2rem rgba(0, 0, 0, 0.03), 0 2rem 7rem rgba(0, 0, 0, 0.06), 0 0.2rem 0.4rem rgba(0, 0, 0, 0.02);
+  box-shadow:
+    0 0.2rem 1.2rem rgba(0, 0, 0, 0.03),
+    0 2rem 7rem rgba(0, 0, 0, 0.06),
+    0 0.2rem 0.4rem rgba(0, 0, 0, 0.02);
   border-radius: 1.6rem;
   margin: 0 0 2rem;
   padding: 1.2rem;
@@ -197,7 +201,7 @@ export const NetworkTable = styled.div`
   width: 100%;
 `
 
-export const TokenLink = styled.a`
+export const TokenLink = styled(Link)`
   display: flex;
   align-items: center;
   justify-content: flex-start;

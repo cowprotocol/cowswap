@@ -1,3 +1,5 @@
+import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
+
 const UTM_SOURCE_PARAM = 'utm_source'
 const UTM_MEDIUM_PARAM = 'utm_medium'
 const UTM_CAMPAIGN_PARAM = 'utm_campaign'
@@ -6,17 +8,15 @@ const UTM_TERM_PARAM = 'utm_term'
 
 const ALL_UTM_PARAMS = [UTM_SOURCE_PARAM, UTM_MEDIUM_PARAM, UTM_CAMPAIGN_PARAM, UTM_CONTENT_PARAM, UTM_TERM_PARAM]
 
-import { NextRouter } from 'next/router'
 import { UtmParams } from './types'
-import { ParsedUrlQuery } from 'querystring'
 import { CONFIG } from '@/const/meta'
 
-export function getUtmParams(query: ParsedUrlQuery): UtmParams {
-  const utmSource = (query[UTM_SOURCE_PARAM] as string) || undefined
-  const utmMedium = (query[UTM_MEDIUM_PARAM] as string) || undefined
-  const utmCampaign = (query[UTM_CAMPAIGN_PARAM] as string) || undefined
-  const utmContent = (query[UTM_CONTENT_PARAM] as string) || undefined
-  const utmTerm = (query[UTM_TERM_PARAM] as string) || undefined
+export function getUtmParams(query: URLSearchParams): UtmParams {
+  const utmSource = (query.get(UTM_SOURCE_PARAM) as string) || undefined
+  const utmMedium = (query.get(UTM_MEDIUM_PARAM) as string) || undefined
+  const utmCampaign = (query.get(UTM_CAMPAIGN_PARAM) as string) || undefined
+  const utmContent = (query.get(UTM_CONTENT_PARAM) as string) || undefined
+  const utmTerm = (query.get(UTM_TERM_PARAM) as string) || undefined
 
   return {
     utmSource,
@@ -27,18 +27,18 @@ export function getUtmParams(query: ParsedUrlQuery): UtmParams {
   }
 }
 
-export function cleanUpParams(router: NextRouter) {
+export function cleanUpParams(router: AppRouterInstance, pathname: string | null, query: URLSearchParams) {
   let cleanedParams = false
-  const { query } = router
+
   ALL_UTM_PARAMS.forEach((param) => {
-    if (query[param]) {
-      delete query[param]
+    if (query.get(param)) {
+      query.delete(param)
       cleanedParams = true
     }
   })
 
   if (cleanedParams) {
-    router.replace({ pathname: router.pathname, query })
+    router.replace((pathname || '/') + '?' + query.toString())
   }
 }
 
