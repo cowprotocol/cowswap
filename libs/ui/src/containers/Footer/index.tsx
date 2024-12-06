@@ -299,7 +299,6 @@ export const Footer = ({
     setIsFooterExpanded((state) => {
       if (!state && footerRef.current) {
         setTimeout(() => {
-          console.log('WHHHHHHH')
           footerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
         }, 300) // Slight delay needed for correct scroll position calculation
       }
