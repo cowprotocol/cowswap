@@ -173,7 +173,7 @@ export function OrderRow({
   }, [orderActions, order])
   const alternativeOrderModalContext = useMemo(
     () => orderActions.getAlternativeOrderModalContext(order),
-    [order, orderActions]
+    [order, orderActions],
   )
 
   const withAllowanceWarning = hasEnoughAllowance === false && hasValidPendingPermit === false
@@ -249,6 +249,33 @@ export function OrderRow({
         </styledEl.CurrencyAmountWrapper>
       </styledEl.CurrencyCell>
 
+      {/* Executes at */}
+      {isOpenOrdersTab && (
+        <styledEl.PriceElement onClick={toggleIsInverted}>
+          {/*// TODO: gray out the price when it was updated too long ago*/}
+          {prices && estimatedExecutionPrice ? (
+            <styledEl.ExecuteCellWrapper>
+              <EstimatedExecutionPrice
+                amount={executionPriceInverted}
+                tokenSymbol={executionPriceInverted?.quoteCurrency}
+                opacitySymbol
+                isInverted={isInverted}
+                percentageDifference={priceDiffs?.percentage}
+                amountDifference={priceDiffs?.amount}
+                percentageFee={feeDifference}
+                amountFee={feeAmount}
+                canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
+                isUnfillable={isUnfillable}
+              />
+            </styledEl.ExecuteCellWrapper>
+          ) : prices === null || !estimatedExecutionPrice || isOrderCreating ? (
+            '-'
+          ) : (
+            <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
+          )}
+        </styledEl.PriceElement>
+      )}
+
       {/* Limit price */}
       <styledEl.CellElement>
         <styledEl.RateValue>
@@ -290,33 +317,6 @@ export function OrderRow({
             />
           ) : (
             '-'
-          )}
-        </styledEl.PriceElement>
-      )}
-
-      {/* Executes at */}
-      {isOpenOrdersTab && (
-        <styledEl.PriceElement hasBackground onClick={toggleIsInverted}>
-          {/*// TODO: gray out the price when it was updated too long ago*/}
-          {prices && estimatedExecutionPrice ? (
-            <styledEl.ExecuteCellWrapper>
-              <EstimatedExecutionPrice
-                amount={executionPriceInverted}
-                tokenSymbol={executionPriceInverted?.quoteCurrency}
-                opacitySymbol
-                isInverted={isInverted}
-                percentageDifference={priceDiffs?.percentage}
-                amountDifference={priceDiffs?.amount}
-                percentageFee={feeDifference}
-                amountFee={feeAmount}
-                canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
-                isUnfillable={isUnfillable}
-              />
-            </styledEl.ExecuteCellWrapper>
-          ) : prices === null || !estimatedExecutionPrice || isOrderCreating ? (
-            '-'
-          ) : (
-            <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
           )}
         </styledEl.PriceElement>
       )}
@@ -401,7 +401,7 @@ export function OrderRow({
 function usePricesDifference(
   prices: OrderRowProps['prices'],
   spotPrice: OrderRowProps['spotPrice'],
-  isInverted: boolean
+  isInverted: boolean,
 ): PriceDifference {
   const { estimatedExecutionPrice } = prices || {}
 
@@ -415,13 +415,13 @@ function usePricesDifference(
  */
 function useFeeAmountDifference(
   { inputCurrencyAmount }: OrderRowProps['orderParams']['rateInfoParams'],
-  prices: OrderRowProps['prices']
+  prices: OrderRowProps['prices'],
 ): Percent | undefined {
   const { feeAmount } = prices || {}
 
   return useSafeMemo(
     () => calculatePercentageInRelationToReference({ value: feeAmount, reference: inputCurrencyAmount }),
-    [feeAmount, inputCurrencyAmount]
+    [feeAmount, inputCurrencyAmount],
   )
 }
 

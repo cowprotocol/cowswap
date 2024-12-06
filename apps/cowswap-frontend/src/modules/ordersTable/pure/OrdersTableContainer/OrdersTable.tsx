@@ -1,14 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import iconOrderExecution from '@cowprotocol/assets/cow-swap/orderExecution.svg'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Media, QuestionTooltipIconWrapper, UI } from '@cowprotocol/ui'
-import { HelpTooltip } from '@cowprotocol/ui'
 import { Currency, Price } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import { X } from 'react-feather'
-import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
@@ -17,7 +13,6 @@ import { OrdersPermitStatus } from 'modules/permit'
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
-import { OrderExecutionStatusList, RateTooltipHeader } from 'common/pure/OrderExecutionStatusList'
 import { InvertRateControl } from 'common/pure/RateInfo'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
@@ -42,11 +37,9 @@ import { OrdersTablePagination } from '../OrdersTablePagination'
 
 const TableBox = styled.div`
   display: block;
-  border-radius: 16px;
   border: none;
   padding: 0;
   position: relative;
-  overflow: hidden;
   background: var(${UI.COLOR_PAPER});
 
   ${Media.upToLargeAlt()} {
@@ -66,16 +59,14 @@ const TableInner = styled.div`
   ${({ theme }) => theme.colorScrollbar};
 `
 
-const HeaderElement = styled.div<{ doubleRow?: boolean; hasBackground?: boolean }>`
+const HeaderElement = styled.div<{ doubleRow?: boolean }>`
   height: 100%;
-  padding: 0 ${({ hasBackground }) => (hasBackground ? '10px' : '0')};
+  padding: 0;
   font-size: 12px;
   line-height: 1.1;
   font-weight: 500;
   display: flex;
   align-items: ${({ doubleRow }) => (doubleRow ? 'flex-start' : 'center')};
-  background: ${({ hasBackground }) =>
-    hasBackground ? `linear-gradient(90deg, var(${UI.COLOR_TEXT_OPACITY_10}) 0%, transparent 100%)` : 'transparent'};
 
   > span {
     display: flex;
@@ -131,64 +122,6 @@ const StyledInvertRateControl = styled(InvertRateControl)`
   margin-left: 5px;
 `
 
-const StyledCloseIcon = styled(X)`
-  height: 24px;
-  width: 24px;
-  opacity: 0.6;
-  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-  &:hover {
-    cursor: pointer;
-    opacity: 1;
-  }
-
-  > line {
-    stroke: var(${UI.COLOR_TEXT});
-  }
-`
-
-const OrdersExplainerBanner = styled.div`
-  display: grid;
-  background: ${`linear-gradient(90deg, var(${UI.COLOR_PAPER}) 0%, var(${UI.COLOR_PAPER_DARKER}) 100%)`};
-  width: 100%;
-  gap: 16px;
-  grid-template-columns: 6.2fr 5.5fr 24px;
-  grid-template-rows: minmax(90px, 1fr);
-  align-items: center;
-  border-top: 1px solid transparent;
-  border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
-  padding: 0 16px;
-  color: inherit;
-
-  ${Media.upToLargeAlt()} {
-    width: fit-content;
-    grid-template-columns: minmax(462px, 4fr) minmax(426px, 3.8fr) 24px;
-  }
-
-  /* 1st section */
-  > div {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: inherit;
-
-    > svg > path {
-      fill: currentColor;
-    }
-
-    > b {
-      font-size: 18px;
-      font-weight: 500;
-    }
-  }
-
-  /* 2nd section */
-  > span {
-    display: flex;
-    flex-flow: column wrap;
-  }
-`
-
 export interface OrdersTableProps {
   isOpenOrdersTab: boolean
   allowsOffchainSigning: boolean
@@ -234,31 +167,19 @@ export function OrdersTable({
   const selectedOrdersMap = useMemo(() => {
     if (!selectedOrders) return {}
 
-    return selectedOrders.reduce((acc, val) => {
-      acc[val.id] = true
+    return selectedOrders.reduce(
+      (acc, val) => {
+        acc[val.id] = true
 
-      return acc
-    }, {} as { [key: string]: true })
+        return acc
+      },
+      {} as { [key: string]: true },
+    )
   }, [selectedOrders])
-
-  // Explainer banner for orders
-  const [showOrdersExplainerBanner, setShowOrdersExplainerBanner] = useState(() => {
-    const item = localStorage.getItem('showOrdersExplainerBanner')
-    return item !== null ? item === 'true' : true
-  })
-
-  const closeOrdersExplainerBanner = (): void => {
-    setShowOrdersExplainerBanner(false)
-    localStorage.setItem('showOrdersExplainerBanner', 'false')
-  }
-
-  useEffect(() => {
-    localStorage.setItem('showOrdersExplainerBanner', showOrdersExplainerBanner.toString())
-  }, [showOrdersExplainerBanner])
 
   const cancellableOrders = useMemo(
     () => ordersPage.filter((item) => isOrderOffChainCancellable(getParsedOrderFromTableItem(item))),
-    [ordersPage]
+    [ordersPage],
   )
 
   const allOrdersSelected = useMemo(() => {
@@ -294,7 +215,7 @@ export function OrdersTable({
                     type="checkbox"
                     onChange={(event) =>
                       orderActions.toggleOrdersForCancellation(
-                        event.target.checked ? tableItemsToOrders(ordersPage) : []
+                        event.target.checked ? tableItemsToOrders(ordersPage) : [],
                       )
                     }
                   />
@@ -307,6 +228,14 @@ export function OrdersTable({
               <Trans>Sell &#x2192; Buy</Trans>
             </HeaderElement>
 
+            {isOpenOrdersTab && (
+              <HeaderElement>
+                <span>
+                  <Trans>Fills at</Trans>
+                </span>
+              </HeaderElement>
+            )}
+
             <HeaderElement>
               <span>
                 <Trans>Limit price</Trans>
@@ -317,9 +246,7 @@ export function OrdersTable({
             {isOpenOrdersTab && ordersTableFeatures.DISPLAY_EST_EXECUTION_PRICE && (
               <HeaderElement doubleRow>
                 <span>
-                  <Trans>
-                    Order executes at <HelpTooltip text={<RateTooltipHeader />} />
-                  </Trans>
+                  <Trans>Order executes at</Trans>
                 </span>
                 <i>
                   <Trans>Market price</Trans>
@@ -335,22 +262,10 @@ export function OrdersTable({
               </HeaderElement>
             )}
 
-            {isOpenOrdersTab && (
-              <HeaderElement hasBackground>
-                <span>
-                  <Trans>
-                    Executes at <HelpTooltip text={<RateTooltipHeader isOpenOrdersTab={isOpenOrdersTab} />} />
-                  </Trans>
-                </span>
-              </HeaderElement>
-            )}
-
             {!isOpenOrdersTab && (
               <HeaderElement>
                 <span>
-                  <Trans>
-                    Execution price <HelpTooltip text={<RateTooltipHeader />} />
-                  </Trans>
+                  <Trans>Execution price</Trans>
                 </span>
               </HeaderElement>
             )}
@@ -379,20 +294,6 @@ export function OrdersTable({
             </HeaderElement>
             <HeaderElement>{/*Cancel order column*/}</HeaderElement>
           </TableHeader>
-
-          {/* Show explainer modal if user hasn't closed it */}
-          {isOpenOrdersTab && showOrdersExplainerBanner && (
-            <OrdersExplainerBanner>
-              <div>
-                <SVG src={iconOrderExecution} width={36} height={36} />
-                <b>
-                  How close is my <br /> order to executing?
-                </b>
-              </div>
-              <span>{OrderExecutionStatusList()}</span>
-              <StyledCloseIcon onClick={closeOrdersExplainerBanner} />
-            </OrdersExplainerBanner>
-          )}
 
           <Rows>
             {ordersPage.map((item) => {

@@ -10,7 +10,6 @@ import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import { HIGH_FEE_WARNING_PERCENTAGE } from 'common/constants/common'
-import { calculateOrderExecutionStatus, ExecuteIndicator } from 'common/pure/OrderExecutionStatusList'
 
 import * as styledEl from './styled'
 
@@ -98,14 +97,13 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
   const absoluteDifferenceAmount = amountDifference?.lessThan(ZERO_FRACTION)
     ? amountDifference.multiply(MINUS_ONE_FRACTION)
     : amountDifference
-  const orderExecutionStatus = calculateOrderExecutionStatus(percentageDifferenceInverted)
+
   const feeWarning = canShowWarning && percentageFee?.greaterThan(HIGH_FEE_WARNING_PERCENTAGE)
   const isNegativeDifference = percentageDifferenceInverted?.lessThan(ZERO_FRACTION)
   const marketPriceNeedsToGoDown = isInverted ? !isNegativeDifference : isNegativeDifference
 
   const content = (
     <>
-      <ExecuteIndicator status={orderExecutionStatus} />
       <TokenAmount amount={amount} {...rest} />
     </>
   )

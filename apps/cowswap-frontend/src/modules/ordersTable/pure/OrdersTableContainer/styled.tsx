@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components/macro'
 import { RateWrapper } from 'common/pure/RateInfo'
 
 export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectable: boolean }>`
-  --height: 50px;
+  --height: 38px;
   --checkboxSize: 16px;
   --checkBoxBorderRadius: 3px;
   display: grid;
@@ -18,8 +18,9 @@ export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectabl
   grid-template-rows: minmax(var(--height), 1fr);
   align-items: center;
   border: none;
-  border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   padding: 0 12px;
+  border-radius: 6px;
+  background: var(${UI.COLOR_PAPER_DARKER});
 
   ${Media.upToLargeAlt()} {
     ${({ isRowSelectable, isOpenOrdersTab }) => css`
@@ -118,7 +119,9 @@ export const TableRowCheckbox = styled.input`
   background: transparent;
   border: 2px solid var(${UI.COLOR_TEXT});
   border-radius: var(--checkBoxBorderRadius);
-  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, opacity var(${UI.ANIMATION_DURATION}) ease-in-out,
+  transition:
+    background var(${UI.ANIMATION_DURATION}) ease-in-out,
+    opacity var(${UI.ANIMATION_DURATION}) ease-in-out,
     border-color var(${UI.ANIMATION_DURATION}) ease-in-out;
   appearance: none;
   margin: 0;

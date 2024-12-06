@@ -17,27 +17,11 @@ import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
 
 import { TabOrderTypes } from '../../types'
 
-const OrdersBox = styled.div`
-  background: ${({ theme }) => (theme.isInjectedWidgetMode ? `var(${UI.COLOR_PAPER})` : 'transparent')};
-  color: inherit;
-  border: none;
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
-  box-shadow: none;
-  position: relative;
-  padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '0')};
-  padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '0')};
-  min-height: 200px;
-  width: 100%;
-  margin: 0 0 76px;
-`
-
 const Content = styled.div`
   display: flex;
   flex-flow: column wrap;
   align-items: center;
   justify-content: center;
-  border-radius: 16px;
-  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   color: inherit;
   min-height: 490px;
   padding: 0;
@@ -113,14 +97,12 @@ const MeditatingCowImg = styled.img`
   padding: 16px;
 `
 
-const Header = styled.div`
-  display: grid;
-  grid-template-columns: 150px 1fr;
-  grid-template-rows: max-content;
+const TopContainer = styled.div`
+  display: flex;
   align-items: center;
-  gap: 3px;
+  justify-content: space-between;
   width: 100%;
-  margin: 0 0 24px;
+  gap: 3px;
 
   ${Media.upToMedium()} {
     display: block;
@@ -168,6 +150,12 @@ const ExternalArrow = styled.span`
     font-size: 11px;
   }
 `
+
+const RightContainer = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+`
+
 interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
   isWalletConnected: boolean
   isOpenOrdersTab: boolean
@@ -281,16 +269,15 @@ export function OrdersTableContainer({
   }
 
   return (
-    <OrdersBox>
-      <Header>
-        <h2 id={MY_ORDERS_ID}>Your Orders</h2>
+    <>
+      <TopContainer id={MY_ORDERS_ID}>
         <TabsContainer withSingleChild={!children}>
-          {children || <div></div>}
           <OrdersTabs tabs={tabs} />
         </TabsContainer>
-      </Header>
+        <RightContainer>{children || <div />}</RightContainer>
+      </TopContainer>
 
       {content()}
-    </OrdersBox>
+    </>
   )
 }

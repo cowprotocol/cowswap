@@ -8,18 +8,10 @@ import { OrderTab } from '../../const/tabs'
 import { useGetBuildOrdersTableUrl } from '../../hooks/useGetBuildOrdersTableUrl'
 
 const Tabs = styled.div`
-  display: inline-block;
-  border-radius: 9px;
-  overflow: hidden;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 4px;
   margin: 0;
-  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
-
-  ${Media.upToMedium()} {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: max-content;
-  }
 `
 
 const TabButton = styled(Link)<{ active: string }>`
@@ -27,13 +19,17 @@ const TabButton = styled(Link)<{ active: string }>`
   background: ${({ active }) => (active === 'true' ? `var(${UI.COLOR_TEXT_OPACITY_10})` : 'transparent')};
   color: ${({ active }) => (active === 'true' ? `var(${UI.COLOR_TEXT_PAPER})` : 'inherit')};
   font-weight: ${({ active }) => (active === 'true' ? '600' : '400')};
+  border-radius: 14px;
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   text-decoration: none;
   font-size: 13px;
-  padding: 10px 24px;
+  padding: 10px 14px;
   border: 0;
   outline: none;
   cursor: pointer;
-  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  transition:
+    background var(${UI.ANIMATION_DURATION}) ease-in-out,
+    color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   ${Media.upToMedium()} {
     text-align: center;
@@ -54,7 +50,7 @@ export function OrdersTabs({ tabs }: OrdersTabsProps) {
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
   const activeTabIndex = Math.max(
     tabs.findIndex((i) => i.isActive),
-    0
+    0,
   )
 
   return (
