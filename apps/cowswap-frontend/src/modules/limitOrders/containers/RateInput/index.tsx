@@ -152,10 +152,11 @@ export function RateInput() {
             currency={primaryCurrency}
             rateImpact={rateImpact}
             toggleIcon={
-              <styledEl.ActiveIcon onClick={handleToggle}>
+              <styledEl.ActiveIcon>
                 <SVG src={SwitchArrowsIcon} width={12} height={10} />
               </styledEl.ActiveIcon>
             }
+            onToggle={handleToggle}
           />
 
           {areBothCurrencies && (
