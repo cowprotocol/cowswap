@@ -171,6 +171,7 @@ export function RateInput() {
               <HoverTooltip
                 content="When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
                 wrapInContainer
+                placement="top-start"
               >
                 <styledEl.LockIcon onClick={handleTogglePriceLock}>
                   <SVG src={limitPriceLocked ? LockedIcon : UnlockedIcon} width={12} height={10} />

@@ -133,7 +133,7 @@ export const ActiveCurrency = styled.button<{ $active?: boolean }>`
   border-radius: var(--border-radius);
   transition: all 0.2s ease-in-out;
   background: ${({ $active }) => ($active ? 'var(' + UI.COLOR_PAPER + ')' : 'var(' + UI.COLOR_PAPER_DARKEST + ')')};
-  color: ${({ $active }) => ($active ? 'var(' + UI.COLOR_TEXT + ')' : 'var(' + UI.COLOR_TEXT_OPACITY_70 + ')')};
+  color: ${({ $active }) => ($active ? 'var(' + UI.COLOR_TEXT + ')' : 'var(' + UI.COLOR_TEXT_OPACITY_50 + ')')};
   padding: 0 10px;
 
   &:first-child {
@@ -209,6 +209,9 @@ export const ActiveSymbol = styled.span<{ $active?: boolean }>`
   ${({ $active }) =>
     !$active &&
     `
+    > div {
+    background: transparent;
+    }
     > div > img {
       opacity: 0.5;
     }
