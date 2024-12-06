@@ -63,7 +63,7 @@
   "resolutions": {
     "@safe-global/safe-apps-provider/**/@safe-global/safe-apps-sdk": "^9.1.0",
     "@web3-react/gnosis-safe/**/@safe-global/safe-apps-sdk": "^9.1.0",
-    "@types/react": "npm:types-react@19.0.0-rc.0",
+    "@types/react": "18.2.22",
     "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
   },
   "dependencies": {
@@ -274,7 +274,7 @@
     "@types/ms": "^0.7.31",
     "@types/ms.macro": "^2.0.0",
     "@types/node": "18.16.9",
-    "@types/react": "npm:types-react@19.0.0-rc.0",
+    "@types/react": "18.2.22",
     "@types/react-copy-to-clipboard": "^4.3.0",
     "@types/react-cytoscapejs": "^1.2.5",
     "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
@@ -286,7 +286,7 @@
     "@types/react-virtualized-auto-sizer": "^1.0.1",
     "@types/rebass": "^4.0.10",
     "@types/sortablejs": "^1.15.8",
-    "@types/styled-components": "5.1.34",
+    "@types/styled-components": "5.1.26",
     "@types/ua-parser-js": "^0.7.36",
     "@types/uuid": "^9.0.8",
     "@types/wcag-contrast": "^3.0.0",
