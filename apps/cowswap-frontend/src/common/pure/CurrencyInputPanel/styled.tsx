@@ -81,6 +81,7 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   font-size: 28px;
   font-weight: 500;
   color: inherit;
+  text-align: left;
 
   &::placeholder {
     opacity: 0.7;
@@ -150,7 +151,9 @@ export const SetMaxBtn = styled.button`
   border-radius: 6px;
   padding: 3px 4px;
   text-transform: uppercase;
-  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  transition:
+    background var(${UI.ANIMATION_DURATION}) ease-in-out,
+    color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     background: var(${UI.COLOR_PRIMARY});

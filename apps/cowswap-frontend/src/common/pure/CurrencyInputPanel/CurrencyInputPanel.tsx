@@ -164,6 +164,15 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         {topContent}
         <styledEl.CurrencyInputBox>
           <div>
+            {inputTooltip ? (
+              <HoverTooltip wrapInContainer content={inputTooltip}>
+                {numericalInput}
+              </HoverTooltip>
+            ) : (
+              numericalInput
+            )}
+          </div>
+          <div>
             <CurrencySelectButton
               onClick={onTokenSelectClick}
               currency={disabled ? undefined : currency || undefined}
@@ -173,33 +182,24 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
               customSelectTokenButton={customSelectTokenButton}
             />
           </div>
-          <div>
-            {inputTooltip ? (
-              <HoverTooltip wrapInContainer content={inputTooltip}>
-                {numericalInput}
-              </HoverTooltip>
-            ) : (
-              numericalInput
-            )}
-          </div>
         </styledEl.CurrencyInputBox>
 
         <styledEl.CurrencyInputBox>
-          <div>
-            {balance && !disabled && (
-              <styledEl.BalanceText>
-                <Trans>Balance</Trans>: <TokenAmount amount={balance} defaultValue="0" tokenSymbol={currency} />
-                {showSetMax && balance.greaterThan(0) && (
-                  <styledEl.SetMaxBtn onClick={handleMaxInput}>Max</styledEl.SetMaxBtn>
-                )}
-              </styledEl.BalanceText>
-            )}
-          </div>
           <div>
             {amount && (
               <styledEl.FiatAmountText>
                 <FiatValue priceImpactParams={priceImpactParams} fiatValue={fiatAmount} />
               </styledEl.FiatAmountText>
+            )}
+          </div>
+          <div>
+            {balance && !disabled && (
+              <styledEl.BalanceText>
+                <TokenAmount amount={balance} defaultValue="0" tokenSymbol={currency} />
+                {showSetMax && balance.greaterThan(0) && (
+                  <styledEl.SetMaxBtn onClick={handleMaxInput}>Max</styledEl.SetMaxBtn>
+                )}
+              </styledEl.BalanceText>
             )}
           </div>
         </styledEl.CurrencyInputBox>
