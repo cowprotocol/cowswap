@@ -17,14 +17,14 @@ export function useVampireAttackFirstTarget() {
     if (superiorAlternative) {
       return {
         target: superiorAlternative,
-        apyDiff: superiorAlternative.alternativePoolInfo.apy - superiorAlternative.tokenPoolInfo.apy,
+        aprDiff: superiorAlternative.alternativePoolInfo.apr - superiorAlternative.tokenPoolInfo.apr,
       }
     }
 
     if (alternative) {
       return {
         target: alternative,
-        apyDiff: undefined,
+        aprDiff: undefined,
       }
     }
 

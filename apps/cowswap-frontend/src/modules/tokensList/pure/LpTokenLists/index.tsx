@@ -102,7 +102,7 @@ export function LpTokenLists({
           <MobileCard key={token.address} data-address={token.address} onClick={() => onSelectToken(token)}>
             <MobileCardRow>{commonContent}</MobileCardRow>
             <MobileCardRowItem label="Balance" value={BalanceDisplay} />
-            <MobileCardRowItem label="APR" value={info?.apy ? `${info.apy}%` : ''} />
+            <MobileCardRowItem label="APR" value={info?.apr ? `${info.apr}%` : ''} />
             <MobileCardRowItem
               label="Details"
               value={
@@ -120,7 +120,7 @@ export function LpTokenLists({
         <ListItem key={token.address} data-address={token.address} onClick={() => onSelectToken(token)}>
           <LpTokenWrapper>{commonContent}</LpTokenWrapper>
           <LpTokenBalance>{BalanceDisplay}</LpTokenBalance>
-          <LpTokenYieldPercentage>{info?.apy ? `${info.apy}%` : ''}</LpTokenYieldPercentage>
+          <LpTokenYieldPercentage>{info?.apr ? `${info.apr}%` : ''}</LpTokenYieldPercentage>
           <LpTokenTooltip onClick={onInfoClick}>
             <Info size={18} />
           </LpTokenTooltip>

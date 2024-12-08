@@ -42,7 +42,7 @@ export function CoWAmmBannerContent({
 }: CoWAmmBannerContentProps) {
   const isMobile = useMediaQuery(upToSmall)
   const arrowBackgroundRef = useRef<HTMLDivElement>(null)
-  const { superiorAlternatives, cowAmmLpTokensCount, averageApyDiff, poolsAverageData } = vampireAttackContext
+  const { superiorAlternatives, cowAmmLpTokensCount, averageAprDiff, poolsAverageData } = vampireAttackContext
 
   const handleCTAMouseEnter = useCallback(() => {
     if (arrowBackgroundRef.current) {
@@ -59,9 +59,9 @@ export function CoWAmmBannerContent({
   }, [])
 
   const firstItemWithBetterCowAmm = superiorAlternatives?.[0]
-  const isCowAmmAverageBetter = !!averageApyDiff && averageApyDiff > 0
-  const betterAlternativeApyDiff = firstItemWithBetterCowAmm
-    ? firstItemWithBetterCowAmm.alternativePoolInfo.apy - firstItemWithBetterCowAmm.tokenPoolInfo.apy
+  const isCowAmmAverageBetter = !!averageAprDiff && averageAprDiff > 0
+  const betterAlternativeAprDiff = firstItemWithBetterCowAmm
+    ? firstItemWithBetterCowAmm.alternativePoolInfo.apr - firstItemWithBetterCowAmm.tokenPoolInfo.apr
     : undefined
 
   const worseThanCoWAmmProviders = useMemo(() => {
@@ -82,7 +82,7 @@ export function CoWAmmBannerContent({
 
       if (!aVal || !bVal) return 0
 
-      return bVal.apy - aVal.apy
+      return bVal - aVal
     }) as LpTokenProvider[]
   }, [poolsAverageData])
 
@@ -108,10 +108,10 @@ export function CoWAmmBannerContent({
           minFontSize={isTokenSelectorView ? 35 : isMobile ? 40 : isCowAmmAverageBetter ? 60 : 80}
           maxFontSize={isTokenSelectorView ? 65 : isMobile ? 50 : isCowAmmAverageBetter ? 60 : 80}
         >
-          {firstItemWithBetterCowAmm && betterAlternativeApyDiff && betterAlternativeApyDiff > 0
-            ? `+${betterAlternativeApyDiff.toFixed(1)}%`
+          {firstItemWithBetterCowAmm && betterAlternativeAprDiff && betterAlternativeAprDiff > 0
+            ? `+${betterAlternativeAprDiff.toFixed(1)}%`
             : isCowAmmAverageBetter
-              ? `+${averageApyDiff}%`
+              ? `+${averageAprDiff}%`
               : `${cowAmmLpTokensCount}+`}
         </TextFit>
       </h3>
