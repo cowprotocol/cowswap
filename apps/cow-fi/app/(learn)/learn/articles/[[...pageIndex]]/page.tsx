@@ -1,10 +1,12 @@
+'use server'
+
 import { Article, getArticles, getCategories } from '../../../../../services/cms'
 import { ArticlesPageComponents } from '@/components/ArticlesPageComponents'
 
 const ITEMS_PER_PAGE = 24
 
 type Props = {
-  params: Promise<{ page?: string }>
+  params: Promise<{ pageIndex?: string }>
 }
 
 export type ArticlesResponse = {
@@ -21,11 +23,11 @@ export async function generateStaticParams() {
   const totalArticles = articlesResponse.meta?.pagination?.total || 0
   const totalPages = Math.ceil(totalArticles / ITEMS_PER_PAGE)
 
-  return Array.from({ length: totalPages }, (_, i) => ({ page: [(i + 1).toString()] }))
+  return Array.from({ length: totalPages }, (_, i) => ({ pageIndex: [(i + 1).toString()] }))
 }
 
 export default async function Page({ params }: Props) {
-  const pageParam = (await params)?.page
+  const pageParam = (await params)?.pageIndex
   const page = pageParam && pageParam.length > 0 ? parseInt(pageParam[0], 10) : 1
 
   const articlesResponse = (await getArticles({ page, pageSize: ITEMS_PER_PAGE })) as ArticlesResponse

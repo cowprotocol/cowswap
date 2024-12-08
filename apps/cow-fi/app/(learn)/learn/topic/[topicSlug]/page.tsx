@@ -1,3 +1,5 @@
+'use server'
+
 import React from 'react'
 import { getAllCategorySlugs, getArticles, getCategories, getCategoryBySlug } from '../../../../../services/cms'
 import { TopicPageComponent } from '@/components/TopicPageComponent'

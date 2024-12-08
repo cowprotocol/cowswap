@@ -4,6 +4,7 @@ import fs from 'fs'
 import path from 'path'
 import { PlatformData, Platforms, TokenDetails, TokenInfo } from 'types'
 import { backOff } from 'exponential-backoff'
+import { DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
 const NETWORKS = ['ethereum', 'xdai']
 const COW_TOKEN_ID = 'cow-protocol'
@@ -60,8 +61,9 @@ function _getDescriptionFilePaths(): string[] {
 async function fetchWithBackoff(url: string) {
   return backOff(
     () => {
-      console.log(`Fetching ${url}`)
-      return fetch(url).then((res) => {
+      return fetch(url, {
+        next: { revalidate: DATA_CACHE_TIME_SECONDS },
+      }).then((res) => {
         if (!res.ok) {
           throw new Error(`Error fetching list ${url}: Error ${res.status}, ${res.statusText}`)
         }
