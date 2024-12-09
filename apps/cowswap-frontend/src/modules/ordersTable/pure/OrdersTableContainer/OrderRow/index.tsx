@@ -204,17 +204,6 @@ export function OrderRow({
     (status === OrderStatus.PENDING || status === OrderStatus.SCHEDULED)
   const isOrderScheduled = order.status === OrderStatus.SCHEDULED
 
-  console.log('Order warning debug:', {
-    orderId: order.id,
-    hasEnoughBalance,
-    hasEnoughAllowance,
-    hasValidPendingPermit,
-    status,
-    withAllowanceWarning,
-    withWarning,
-    isOrderScheduled,
-  })
-
   const isScheduledCreating = isOrderScheduled && Date.now() > creationTime.getTime()
   const expirationTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const creationTimeAgo = useTimeAgo(creationTime, TIME_AGO_UPDATE_INTERVAL)
