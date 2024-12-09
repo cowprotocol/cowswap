@@ -1,14 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import iconOrderExecution from '@cowprotocol/assets/cow-swap/orderExecution.svg'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Media, QuestionTooltipIconWrapper, UI } from '@cowprotocol/ui'
-import { HelpTooltip } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 import { Currency, Price } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
-import { X } from 'react-feather'
-import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
@@ -16,15 +11,13 @@ import { SpotPricesKeyParams } from 'modules/orders/state/spotPricesAtom'
 import { OrdersPermitStatus } from 'modules/permit'
 import { BalancesAndAllowances } from 'modules/tokens'
 
-import { ordersTableFeatures } from 'common/constants/featureFlags'
-import { OrderExecutionStatusList, RateTooltipHeader } from 'common/pure/OrderExecutionStatusList'
-import { InvertRateControl } from 'common/pure/RateInfo'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
 import { OrderRow } from './OrderRow'
 import { CheckboxCheckmark, TableHeader, TableRowCheckbox, TableRowCheckboxWrapper } from './styled'
 import { TableGroup } from './TableGroup'
+import { createTableHeaders } from './tableHeaders'
 import { OrderActions } from './types'
 
 import { ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
@@ -42,11 +35,9 @@ import { OrdersTablePagination } from '../OrdersTablePagination'
 
 const TableBox = styled.div`
   display: block;
-  border-radius: 16px;
   border: none;
   padding: 0;
   position: relative;
-  overflow: hidden;
   background: var(${UI.COLOR_PAPER});
 
   ${Media.upToLargeAlt()} {
@@ -66,16 +57,14 @@ const TableInner = styled.div`
   ${({ theme }) => theme.colorScrollbar};
 `
 
-const HeaderElement = styled.div<{ doubleRow?: boolean; hasBackground?: boolean }>`
+const HeaderElement = styled.div<{ doubleRow?: boolean }>`
   height: 100%;
-  padding: 0 ${({ hasBackground }) => (hasBackground ? '10px' : '0')};
+  padding: 0;
   font-size: 12px;
   line-height: 1.1;
   font-weight: 500;
   display: flex;
   align-items: ${({ doubleRow }) => (doubleRow ? 'flex-start' : 'center')};
-  background: ${({ hasBackground }) =>
-    hasBackground ? `linear-gradient(90deg, var(${UI.COLOR_TEXT_OPACITY_10}) 0%, transparent 100%)` : 'transparent'};
 
   > span {
     display: flex;
@@ -94,26 +83,6 @@ const HeaderElement = styled.div<{ doubleRow?: boolean; hasBackground?: boolean 
       opacity: 0.7;
     }
   `}
-
-  ${QuestionTooltipIconWrapper} {
-    opacity: 0.5;
-    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-    &:hover {
-      opacity: 1;
-    }
-  }
-
-  ${({ doubleRow }) =>
-    doubleRow &&
-    `
-    flex-flow: column wrap;
-    gap: 2px;
-
-    > i {
-      opacity: 0.7;
-    }
-  `}
 `
 
 const Rows = styled.div`
@@ -121,69 +90,6 @@ const Rows = styled.div`
   ${({ theme }) => theme.colorScrollbar};
 
   ${Media.upToLargeAlt()} {
-    display: flex;
-    flex-flow: column wrap;
-  }
-`
-
-const StyledInvertRateControl = styled(InvertRateControl)`
-  display: inline-flex;
-  margin-left: 5px;
-`
-
-const StyledCloseIcon = styled(X)`
-  height: 24px;
-  width: 24px;
-  opacity: 0.6;
-  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-  &:hover {
-    cursor: pointer;
-    opacity: 1;
-  }
-
-  > line {
-    stroke: var(${UI.COLOR_TEXT});
-  }
-`
-
-const OrdersExplainerBanner = styled.div`
-  display: grid;
-  background: ${`linear-gradient(90deg, var(${UI.COLOR_PAPER}) 0%, var(${UI.COLOR_PAPER_DARKER}) 100%)`};
-  width: 100%;
-  gap: 16px;
-  grid-template-columns: 6.2fr 5.5fr 24px;
-  grid-template-rows: minmax(90px, 1fr);
-  align-items: center;
-  border-top: 1px solid transparent;
-  border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
-  padding: 0 16px;
-  color: inherit;
-
-  ${Media.upToLargeAlt()} {
-    width: fit-content;
-    grid-template-columns: minmax(462px, 4fr) minmax(426px, 3.8fr) 24px;
-  }
-
-  /* 1st section */
-  > div {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: inherit;
-
-    > svg > path {
-      fill: currentColor;
-    }
-
-    > b {
-      font-size: 18px;
-      font-weight: 500;
-    }
-  }
-
-  /* 2nd section */
-  > span {
     display: flex;
     flex-flow: column wrap;
   }
@@ -217,7 +123,7 @@ export function OrdersTable({
   ordersPermitStatus,
 }: OrdersTableProps) {
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
-  const [isRateInverted, setIsRateInverted] = useState(false)
+  const [showLimitPrice, setShowLimitPrice] = useState(false)
   const checkboxRef = useRef<HTMLInputElement>(null)
 
   const step = currentPageNumber * ORDERS_TABLE_PAGE_SIZE
@@ -234,31 +140,19 @@ export function OrdersTable({
   const selectedOrdersMap = useMemo(() => {
     if (!selectedOrders) return {}
 
-    return selectedOrders.reduce((acc, val) => {
-      acc[val.id] = true
+    return selectedOrders.reduce(
+      (acc, val) => {
+        acc[val.id] = true
 
-      return acc
-    }, {} as { [key: string]: true })
+        return acc
+      },
+      {} as { [key: string]: true },
+    )
   }, [selectedOrders])
-
-  // Explainer banner for orders
-  const [showOrdersExplainerBanner, setShowOrdersExplainerBanner] = useState(() => {
-    const item = localStorage.getItem('showOrdersExplainerBanner')
-    return item !== null ? item === 'true' : true
-  })
-
-  const closeOrdersExplainerBanner = (): void => {
-    setShowOrdersExplainerBanner(false)
-    localStorage.setItem('showOrdersExplainerBanner', 'false')
-  }
-
-  useEffect(() => {
-    localStorage.setItem('showOrdersExplainerBanner', showOrdersExplainerBanner.toString())
-  }, [showOrdersExplainerBanner])
 
   const cancellableOrders = useMemo(
     () => ordersPage.filter((item) => isOrderOffChainCancellable(getParsedOrderFromTableItem(item))),
-    [ordersPage]
+    [ordersPage],
   )
 
   const allOrdersSelected = useMemo(() => {
@@ -280,119 +174,55 @@ export function OrdersTable({
     checkbox.checked = allOrdersSelected
   }, [allOrdersSelected, selectedOrders.length])
 
+  const tableHeaders = useMemo(() => createTableHeaders(showLimitPrice, setShowLimitPrice), [showLimitPrice])
+
+  const visibleHeaders = useMemo(() => {
+    return tableHeaders.filter((header) => {
+      if (isOpenOrdersTab) {
+        return header.showInOpenOrders
+      }
+      return header.showInClosedOrders
+    })
+  }, [tableHeaders, isOpenOrdersTab])
+
   return (
     <>
       <TableBox>
         <TableInner onScroll={onScroll}>
           <TableHeader isOpenOrdersTab={isOpenOrdersTab} isRowSelectable={isRowSelectable}>
-            {isRowSelectable && isOpenOrdersTab && (
-              <HeaderElement>
-                <TableRowCheckboxWrapper>
-                  <TableRowCheckbox
-                    ref={checkboxRef}
-                    disabled={cancellableOrders.length === 0}
-                    type="checkbox"
-                    onChange={(event) =>
-                      orderActions.toggleOrdersForCancellation(
-                        event.target.checked ? tableItemsToOrders(ordersPage) : []
-                      )
-                    }
-                  />
-                  <CheckboxCheckmark />
-                </TableRowCheckboxWrapper>
-              </HeaderElement>
-            )}
+            {visibleHeaders.map((header) => {
+              if (header.id === 'checkbox' && (!isRowSelectable || !isOpenOrdersTab)) {
+                return null
+              }
 
-            <HeaderElement>
-              <Trans>Sell &#x2192; Buy</Trans>
-            </HeaderElement>
+              if (header.id === 'checkbox') {
+                return (
+                  <HeaderElement key={header.id}>
+                    <TableRowCheckboxWrapper>
+                      <TableRowCheckbox
+                        ref={checkboxRef}
+                        disabled={cancellableOrders.length === 0}
+                        type="checkbox"
+                        onChange={(event) =>
+                          orderActions.toggleOrdersForCancellation(
+                            event.target.checked ? tableItemsToOrders(ordersPage) : [],
+                          )
+                        }
+                      />
+                      <CheckboxCheckmark />
+                    </TableRowCheckboxWrapper>
+                  </HeaderElement>
+                )
+              }
 
-            <HeaderElement>
-              <span>
-                <Trans>Limit price</Trans>
-              </span>
-              <StyledInvertRateControl onClick={() => setIsRateInverted(!isRateInverted)} />
-            </HeaderElement>
-
-            {isOpenOrdersTab && ordersTableFeatures.DISPLAY_EST_EXECUTION_PRICE && (
-              <HeaderElement doubleRow>
-                <span>
-                  <Trans>
-                    Order executes at <HelpTooltip text={<RateTooltipHeader />} />
-                  </Trans>
-                </span>
-                <i>
-                  <Trans>Market price</Trans>
-                </i>
-              </HeaderElement>
-            )}
-
-            {isOpenOrdersTab && (
-              <HeaderElement>
-                <span>
-                  <Trans>Market price</Trans>
-                </span>
-              </HeaderElement>
-            )}
-
-            {isOpenOrdersTab && (
-              <HeaderElement hasBackground>
-                <span>
-                  <Trans>
-                    Executes at <HelpTooltip text={<RateTooltipHeader isOpenOrdersTab={isOpenOrdersTab} />} />
-                  </Trans>
-                </span>
-              </HeaderElement>
-            )}
-
-            {!isOpenOrdersTab && (
-              <HeaderElement>
-                <span>
-                  <Trans>
-                    Execution price <HelpTooltip text={<RateTooltipHeader />} />
-                  </Trans>
-                </span>
-              </HeaderElement>
-            )}
-
-            {isOpenOrdersTab && (
-              <HeaderElement doubleRow>
-                <Trans>Expiration</Trans>
-                <i>
-                  <Trans>Creation</Trans>
-                </i>
-              </HeaderElement>
-            )}
-
-            {/* {!isOpenOrdersTab && ordersTableFeatures.DISPLAY_EXECUTION_TIME && (
-              <HeaderElement>
-                <Trans>Execution time</Trans>
-              </HeaderElement>
-            )} */}
-
-            <HeaderElement>
-              <Trans>Filled</Trans>
-            </HeaderElement>
-
-            <HeaderElement>
-              <Trans>Status</Trans>
-            </HeaderElement>
-            <HeaderElement>{/*Cancel order column*/}</HeaderElement>
+              return (
+                <HeaderElement key={header.id} doubleRow={header.doubleRow}>
+                  {header.content}
+                  {header.extraComponent}
+                </HeaderElement>
+              )
+            })}
           </TableHeader>
-
-          {/* Show explainer modal if user hasn't closed it */}
-          {isOpenOrdersTab && showOrdersExplainerBanner && (
-            <OrdersExplainerBanner>
-              <div>
-                <SVG src={iconOrderExecution} width={36} height={36} />
-                <b>
-                  How close is my <br /> order to executing?
-                </b>
-              </div>
-              <span>{OrderExecutionStatusList()}</span>
-              <StyledCloseIcon onClick={closeOrdersExplainerBanner} />
-            </OrdersExplainerBanner>
-          )}
 
           <Rows>
             {ordersPage.map((item) => {
@@ -420,7 +250,8 @@ export function OrdersTable({
                     spotPrice={spotPrice}
                     prices={pendingOrdersPrices[order.id]}
                     orderParams={orderParams}
-                    isRateInverted={isRateInverted}
+                    isRateInverted={false}
+                    showLimitPrice={showLimitPrice}
                     orderActions={orderActions}
                     onClick={() => orderActions.selectReceiptOrder(order)}
                     hasValidPendingPermit={hasValidPendingPermit}
@@ -438,7 +269,8 @@ export function OrdersTable({
                     isOpenOrdersTab={isOpenOrdersTab}
                     spotPrice={spotPrice}
                     prices={pendingOrdersPrices[item.parent.id]}
-                    isRateInverted={isRateInverted}
+                    isRateInverted={false}
+                    showLimitPrice={showLimitPrice}
                     orderActions={orderActions}
                   />
                 )

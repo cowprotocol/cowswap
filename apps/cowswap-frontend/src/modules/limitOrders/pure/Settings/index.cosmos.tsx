@@ -6,6 +6,8 @@ const defaultProps: SettingsProps = {
     partialFillsEnabled: true,
     deadlineMilliseconds: 200_000,
     customDeadlineTimestamp: null,
+    limitPricePosition: 'between',
+    limitPriceLocked: false,
   },
   onStateChanged(state) {
     console.log('Settings state changed: ', state)

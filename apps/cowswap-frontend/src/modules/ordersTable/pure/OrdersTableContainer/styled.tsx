@@ -6,27 +6,26 @@ import styled, { css } from 'styled-components/macro'
 import { RateWrapper } from 'common/pure/RateInfo'
 
 export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectable: boolean }>`
-  --height: 50px;
+  --height: 38px;
   --checkboxSize: 16px;
   --checkBoxBorderRadius: 3px;
   display: grid;
   gap: 14px;
   grid-template-columns: ${({ isOpenOrdersTab, isRowSelectable }) =>
-    `${isRowSelectable && isOpenOrdersTab ? 'var(--checkboxSize) 3fr' : '3.2fr'} repeat(2,2fr) ${
-      isOpenOrdersTab ? '2.5fr 1.4fr' : ''
-    } 0.7fr 108px 24px`};
+    `${isRowSelectable && isOpenOrdersTab ? 'var(--checkboxSize)' : ''} 3fr 2fr 1fr 1.4fr 1.4fr 0.7fr 108px 24px`};
   grid-template-rows: minmax(var(--height), 1fr);
   align-items: center;
   border: none;
-  border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   padding: 0 12px;
+  border-radius: 6px;
+  background: var(${UI.COLOR_PAPER_DARKER});
 
   ${Media.upToLargeAlt()} {
     ${({ isRowSelectable, isOpenOrdersTab }) => css`
       grid-template-columns: ${`${
         isRowSelectable && isOpenOrdersTab ? 'var(--checkboxSize) minmax(200px,2fr)' : 'minmax(200px,2fr)'
       } repeat(2,minmax(110px,2fr)) ${
-        isOpenOrdersTab ? 'minmax(140px,2.2fr) minmax(100px,1fr)' : ''
+        isOpenOrdersTab ? 'minmax(140px,2.2fr) minmax(100px,1fr) minmax(100px,1fr)' : 'minmax(110px,2fr)'
       } minmax(50px,1fr) 108px 24px`};
     `}
   }
@@ -118,7 +117,9 @@ export const TableRowCheckbox = styled.input`
   background: transparent;
   border: 2px solid var(${UI.COLOR_TEXT});
   border-radius: var(--checkBoxBorderRadius);
-  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, opacity var(${UI.ANIMATION_DURATION}) ease-in-out,
+  transition:
+    background var(${UI.ANIMATION_DURATION}) ease-in-out,
+    opacity var(${UI.ANIMATION_DURATION}) ease-in-out,
     border-color var(${UI.ANIMATION_DURATION}) ease-in-out;
   appearance: none;
   margin: 0;
