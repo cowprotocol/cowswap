@@ -1,13 +1,24 @@
 import { ReactNode } from 'react'
 
 import { Trans } from '@lingui/macro'
+import { Repeat } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { InvertRateControl } from 'common/pure/RateInfo'
-
-const StyledInvertRateControl = styled(InvertRateControl)`
+const StyledArrowControl = styled.div`
   display: inline-flex;
   margin-left: 5px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  > svg {
+    width: 14px;
+    height: 14px;
+  }
 `
 
 export interface TableHeaderConfig {
@@ -21,8 +32,8 @@ export interface TableHeaderConfig {
 }
 
 export const createTableHeaders = (
-  isRateInverted: boolean,
-  setIsRateInverted: (value: boolean) => void,
+  showLimitPrice: boolean,
+  setShowLimitPrice: (value: boolean) => void,
 ): TableHeaderConfig[] => [
   {
     id: 'checkbox',
@@ -37,30 +48,23 @@ export const createTableHeaders = (
   },
   {
     id: 'fillsAt',
-    content: <Trans>Fills at</Trans>,
+    content: showLimitPrice ? <Trans>Limit price</Trans> : <Trans>Fills at</Trans>,
+    showInOpenOrders: true,
+    extraComponent: (
+      <StyledArrowControl onClick={() => setShowLimitPrice(!showLimitPrice)}>
+        <Repeat size={14} />
+      </StyledArrowControl>
+    ),
+  },
+  {
+    id: 'distanceToMarket',
+    content: <Trans>Distance to market</Trans>,
     showInOpenOrders: true,
   },
   {
     id: 'limitPrice',
     content: <Trans>Limit price</Trans>,
-    showInOpenOrders: true,
     showInClosedOrders: true,
-    extraComponent: <StyledInvertRateControl onClick={() => setIsRateInverted(!isRateInverted)} />,
-  },
-  {
-    id: 'executesAt',
-    content: (
-      <>
-        <span>
-          <Trans>Order executes at</Trans>
-        </span>
-        <i>
-          <Trans>Market price</Trans>
-        </i>
-      </>
-    ),
-    doubleRow: true,
-    showInOpenOrders: true,
   },
   {
     id: 'marketPrice',

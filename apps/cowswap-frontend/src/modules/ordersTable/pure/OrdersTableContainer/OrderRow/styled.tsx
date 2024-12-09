@@ -324,3 +324,7 @@ export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
     transform: ${({ isCollapsed }) => (isCollapsed ? 'rotate(90deg)' : 'rotate(0deg)')};
   }
 `
+
+export const DistanceToMarket = styled.span<{ $color: string }>`
+  color: ${({ $color }: { $color: string }) => $color};
+`

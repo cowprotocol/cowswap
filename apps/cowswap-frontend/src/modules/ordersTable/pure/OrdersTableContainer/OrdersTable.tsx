@@ -123,7 +123,7 @@ export function OrdersTable({
   ordersPermitStatus,
 }: OrdersTableProps) {
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
-  const [isRateInverted, setIsRateInverted] = useState(false)
+  const [showLimitPrice, setShowLimitPrice] = useState(false)
   const checkboxRef = useRef<HTMLInputElement>(null)
 
   const step = currentPageNumber * ORDERS_TABLE_PAGE_SIZE
@@ -174,7 +174,7 @@ export function OrdersTable({
     checkbox.checked = allOrdersSelected
   }, [allOrdersSelected, selectedOrders.length])
 
-  const tableHeaders = useMemo(() => createTableHeaders(isRateInverted, setIsRateInverted), [isRateInverted])
+  const tableHeaders = useMemo(() => createTableHeaders(showLimitPrice, setShowLimitPrice), [showLimitPrice])
 
   const visibleHeaders = useMemo(() => {
     return tableHeaders.filter((header) => {
@@ -250,7 +250,8 @@ export function OrdersTable({
                     spotPrice={spotPrice}
                     prices={pendingOrdersPrices[order.id]}
                     orderParams={orderParams}
-                    isRateInverted={isRateInverted}
+                    isRateInverted={false}
+                    showLimitPrice={showLimitPrice}
                     orderActions={orderActions}
                     onClick={() => orderActions.selectReceiptOrder(order)}
                     hasValidPendingPermit={hasValidPendingPermit}
@@ -268,7 +269,8 @@ export function OrdersTable({
                     isOpenOrdersTab={isOpenOrdersTab}
                     spotPrice={spotPrice}
                     prices={pendingOrdersPrices[item.parent.id]}
-                    isRateInverted={isRateInverted}
+                    isRateInverted={false}
+                    showLimitPrice={showLimitPrice}
                     orderActions={orderActions}
                   />
                 )

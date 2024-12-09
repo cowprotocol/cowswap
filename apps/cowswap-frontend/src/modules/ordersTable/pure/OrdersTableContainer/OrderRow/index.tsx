@@ -38,7 +38,24 @@ import { OrderStatusBox } from '../../OrderStatusBox'
 import { CheckboxCheckmark, TableRow, TableRowCheckbox, TableRowCheckboxWrapper } from '../styled'
 import { OrderActions } from '../types'
 
+// Constants
 const TIME_AGO_UPDATE_INTERVAL = 3000
+const MIN_PERCENTAGE_TO_DISPLAY = 0.01 // Minimum percentage to display (show dash below this)
+const GOOD_PRICE_THRESHOLD = 1.0 // 1% or less difference - good price
+const FAIR_PRICE_THRESHOLD = 5.0 // 5% or less difference - fair price
+
+// Helper to determine the color based on percentage
+function getDistanceColor(percentage: number): string {
+  const absPercentage = Math.abs(percentage)
+
+  if (absPercentage <= GOOD_PRICE_THRESHOLD) {
+    return `var(${UI.COLOR_SUCCESS})` // Green - good price
+  } else if (absPercentage <= FAIR_PRICE_THRESHOLD) {
+    return `var(${UI.COLOR_PRIMARY})` // Blue - fair price
+  }
+
+  return 'inherit' // Default text color for larger differences
+}
 
 function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
   return (
@@ -136,6 +153,7 @@ export interface OrderRowProps {
   prices: PendingOrderPrices | undefined | null
   spotPrice: Price<Currency, Currency> | undefined | null
   isRateInverted: boolean
+  showLimitPrice: boolean
   isOpenOrdersTab: boolean
   isRowSelectable: boolean
   isRowSelected: boolean
@@ -150,6 +168,7 @@ export interface OrderRowProps {
 export function OrderRow({
   order,
   isRateInverted: isGloballyInverted,
+  showLimitPrice,
   isOpenOrdersTab,
   isRowSelectable,
   isRowSelected,
@@ -207,7 +226,7 @@ export function OrderRow({
   const executedPriceInverted = isInverted ? executedPrice?.invert() : executedPrice
   const spotPriceInverted = isInverted ? spotPrice?.invert() : spotPrice
 
-  const priceDiffs = usePricesDifference(prices, spotPrice, isInverted)
+  const priceDiffs = usePricesDifference(prices, spotPrice)
   const feeDifference = useFeeAmountDifference(rateInfoParams, prices)
 
   const isExecutedPriceZero = executedPriceInverted !== undefined && executedPriceInverted?.equalTo(ZERO_FRACTION)
@@ -249,53 +268,64 @@ export function OrderRow({
         </styledEl.CurrencyAmountWrapper>
       </styledEl.CurrencyCell>
 
-      {/* Executes at */}
+      {/* Fills at / Limit price */}
       {isOpenOrdersTab && (
         <styledEl.PriceElement onClick={toggleIsInverted}>
-          {/*// TODO: gray out the price when it was updated too long ago*/}
-          {prices && estimatedExecutionPrice ? (
-            <styledEl.ExecuteCellWrapper>
-              <EstimatedExecutionPrice
-                amount={executionPriceInverted}
-                tokenSymbol={executionPriceInverted?.quoteCurrency}
-                opacitySymbol
+          {showLimitPrice ? (
+            <styledEl.RateValue onClick={toggleIsInverted}>
+              <RateInfo
+                prependSymbol={false}
+                isInvertedState={[isInverted, setIsInverted]}
+                noLabel={true}
+                doNotUseSmartQuote
                 isInverted={isInverted}
-                percentageDifference={priceDiffs?.percentage}
-                amountDifference={priceDiffs?.amount}
-                percentageFee={feeDifference}
-                amountFee={feeAmount}
-                canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
-                isUnfillable={isUnfillable}
+                rateInfoParams={rateInfoParams}
+                opacitySymbol={true}
               />
-            </styledEl.ExecuteCellWrapper>
-          ) : prices === null || !estimatedExecutionPrice || isOrderCreating ? (
-            '-'
+            </styledEl.RateValue>
           ) : (
-            <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
+            <>
+              {prices && estimatedExecutionPrice ? (
+                <styledEl.ExecuteCellWrapper>
+                  <EstimatedExecutionPrice
+                    amount={executionPriceInverted}
+                    tokenSymbol={executionPriceInverted?.quoteCurrency}
+                    opacitySymbol
+                    isInverted={isInverted}
+                    percentageDifference={priceDiffs?.percentage}
+                    amountDifference={priceDiffs?.amount}
+                    percentageFee={feeDifference}
+                    amountFee={feeAmount}
+                    canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
+                    isUnfillable={isUnfillable}
+                  />
+                </styledEl.ExecuteCellWrapper>
+              ) : prices === null || !estimatedExecutionPrice || isOrderCreating ? (
+                '-'
+              ) : (
+                <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
+              )}
+            </>
           )}
         </styledEl.PriceElement>
       )}
 
-      {/* Limit price */}
-      <styledEl.CellElement>
-        <styledEl.RateValue>
-          <RateInfo
-            prependSymbol={false}
-            isInvertedState={[isInverted, setIsInverted]}
-            noLabel={true}
-            doNotUseSmartQuote
-            isInverted={isInverted}
-            rateInfoParams={rateInfoParams}
-            opacitySymbol={true}
-          />
-        </styledEl.RateValue>
-      </styledEl.CellElement>
+      {/* Distance to market */}
+      {isOpenOrdersTab && (
+        <styledEl.PriceElement>
+          {priceDiffs?.percentage && Number(priceDiffs.percentage.toFixed(4)) >= MIN_PERCENTAGE_TO_DISPLAY ? (
+            <styledEl.DistanceToMarket $color={getDistanceColor(Number(priceDiffs.percentage.toFixed(4)))}>
+              {priceDiffs.percentage.toSignificant(4)}%
+            </styledEl.DistanceToMarket>
+          ) : (
+            '-'
+          )}
+        </styledEl.PriceElement>
+      )}
 
       {/* Market price */}
-      {/* {isOpenOrdersTab && ordersTableFeatures.DISPLAY_EST_EXECUTION_PRICE && ( */}
       {isOpenOrdersTab && (
         <styledEl.PriceElement onClick={toggleIsInverted}>
-          {/*// TODO: gray out the price when it was updated too long ago*/}
           {spotPrice ? (
             <TokenAmount amount={spotPriceInverted} tokenSymbol={spotPriceInverted?.quoteCurrency} opacitySymbol />
           ) : spotPrice === null ? (
@@ -309,15 +339,17 @@ export function OrderRow({
       {/* Execution price */}
       {!isOpenOrdersTab && (
         <styledEl.PriceElement onClick={toggleIsInverted}>
-          {executedPriceInverted ? (
-            <TokenAmount
-              amount={executedPriceInverted}
-              tokenSymbol={executedPriceInverted?.quoteCurrency}
-              opacitySymbol
+          <styledEl.RateValue onClick={toggleIsInverted}>
+            <RateInfo
+              prependSymbol={false}
+              isInvertedState={[isInverted, setIsInverted]}
+              noLabel={true}
+              doNotUseSmartQuote
+              isInverted={isInverted}
+              rateInfoParams={rateInfoParams}
+              opacitySymbol={true}
             />
-          ) : (
-            '-'
-          )}
+          </styledEl.RateValue>
         </styledEl.PriceElement>
       )}
 
@@ -398,16 +430,20 @@ export function OrderRow({
 /**
  * Helper hook to prepare the parameters to calculate price difference
  */
-function usePricesDifference(
-  prices: OrderRowProps['prices'],
-  spotPrice: OrderRowProps['spotPrice'],
-  isInverted: boolean,
-): PriceDifference {
+function usePricesDifference(prices: OrderRowProps['prices'], spotPrice: OrderRowProps['spotPrice']): PriceDifference {
   const { estimatedExecutionPrice } = prices || {}
 
   return useSafeMemo(() => {
-    return calculatePriceDifference({ referencePrice: spotPrice, targetPrice: estimatedExecutionPrice, isInverted })
-  }, [estimatedExecutionPrice, spotPrice, isInverted])
+    if (!spotPrice || !estimatedExecutionPrice) return null
+
+    // Calculate price difference using original (non-inverted) prices
+    // The percentage should stay the same regardless of display inversion
+    return calculatePriceDifference({
+      referencePrice: spotPrice,
+      targetPrice: estimatedExecutionPrice,
+      isInverted: false,
+    })
+  }, [estimatedExecutionPrice, spotPrice]) // Remove isInverted from dependencies since it shouldn't affect the calculation
 }
 
 /**
