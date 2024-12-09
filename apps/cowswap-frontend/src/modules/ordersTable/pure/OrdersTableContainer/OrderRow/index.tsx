@@ -1,17 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
-import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { ButtonSecondary, Loader, TokenAmount, TokenSymbol, UI } from '@cowprotocol/ui'
+import { Loader, TokenAmount, UI } from '@cowprotocol/ui'
 import { PercentDisplay, percentIsAlmostHundred } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
-
-import SVG from 'react-inlinesvg'
 
 import { CREATING_STATES, OrderStatus } from 'legacy/state/orders/actions'
 
@@ -32,6 +29,7 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { EstimatedExecutionPrice } from './EstimatedExecutionPrice'
 import { OrderContextMenu } from './OrderContextMenu'
+import { WarningTooltip } from './OrderWarning'
 import * as styledEl from './styled'
 
 import { OrderParams } from '../../../utils/getOrderParams'
@@ -70,85 +68,6 @@ function CurrencySymbolItem({ amount }: { amount: CurrencyAmount<Currency> }) {
   return <TokenLogo token={amount.currency} size={28} />
 }
 
-function BalanceWarning(params: { symbol: string; isScheduled: boolean }) {
-  const { symbol, isScheduled } = params
-
-  return (
-    <styledEl.WarningParagraph>
-      <h3>Insufficient balance</h3>
-      <p>
-        Your wallet currently has insufficient{' '}
-        <strong>
-          <TokenSymbol token={{ symbol }} />
-        </strong>{' '}
-        balance to execute this order.
-        <br />
-        <br />
-        {isScheduled ? (
-          <>
-            If there are not enough funds for this order by creation time, this part won't be created. Top up your{' '}
-            <strong>
-              <TokenSymbol token={{ symbol }} />
-            </strong>{' '}
-            balance before then to have it created.
-          </>
-        ) : (
-          <>
-            The order is still open and will become executable when you top up your{' '}
-            <strong>
-              <TokenSymbol token={{ symbol }} />
-            </strong>{' '}
-            balance.
-          </>
-        )}
-      </p>
-    </styledEl.WarningParagraph>
-  )
-}
-function AllowanceWarning(params: { symbol: string; isScheduled: boolean; approve: Command }) {
-  const { symbol, isScheduled } = params
-
-  return (
-    <styledEl.WarningParagraph>
-      <h3>Insufficient approval for this order</h3>
-      <p>
-        {isScheduled ? (
-          <>
-            You haven't given CoW Swap sufficient allowance to spend{' '}
-            <strong>
-              <TokenSymbol token={{ symbol }} />
-            </strong>
-            .
-            <br />
-            If there's not enough allowance for this order by creation time, this part won't be created. Approve{' '}
-            <strong>
-              <TokenSymbol token={{ symbol }} />
-            </strong>{' '}
-            in your account token page before then to have it created.
-          </>
-        ) : (
-          <>
-            This order is still open and valid, but you haven't given CoW Swap sufficient allowance to spend{' '}
-            <strong>
-              <TokenSymbol token={{ symbol }} />
-            </strong>
-            .
-            <br />
-            The order will become executable when you approve{' '}
-            <strong>
-              <TokenSymbol token={{ symbol }} />
-            </strong>{' '}
-            in your account token page.
-          </>
-        )}
-      </p>
-      <styledEl.WarningActionBox>
-        <ButtonSecondary onClick={params.approve}>Approve</ButtonSecondary>
-      </styledEl.WarningActionBox>
-    </styledEl.WarningParagraph>
-  )
-}
-
 export interface OrderRowProps {
   order: ParsedOrder
   prices: PendingOrderPrices | undefined | null
@@ -163,7 +82,7 @@ export interface OrderRowProps {
   onClick: Command
   orderActions: OrderActions
   hasValidPendingPermit?: boolean | undefined
-  children?: JSX.Element
+  children?: React.ReactNode
 }
 
 export function OrderRow({
@@ -179,8 +98,8 @@ export function OrderRow({
   onClick,
   prices,
   spotPrice,
-  children,
   hasValidPendingPermit,
+  children,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
   const { creationTime, expirationTime, status } = order
@@ -238,6 +157,12 @@ export function OrderRow({
   const isOrderCreating = CREATING_STATES.includes(order.status)
 
   const inputTokenSymbol = order.inputToken.symbol || ''
+
+  const getWarningText = () => {
+    if (hasEnoughBalance === false) return 'Insufficient balance'
+    if (hasEnoughAllowance === false) return 'Insufficient allowance'
+    return 'Unfillable'
+  }
 
   return (
     <TableRow
@@ -302,7 +227,19 @@ export function OrderRow({
                     percentageFee={feeDifference}
                     amountFee={feeAmount}
                     canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
-                    isUnfillable={isUnfillable}
+                    isUnfillable={withWarning}
+                    warningText={getWarningText()}
+                    WarningTooltip={(props) => (
+                      <WarningTooltip
+                        hasEnoughBalance={hasEnoughBalance ?? false}
+                        hasEnoughAllowance={hasEnoughAllowance ?? false}
+                        hasValidPendingPermit={hasValidPendingPermit}
+                        inputTokenSymbol={inputTokenSymbol}
+                        isOrderScheduled={isOrderScheduled}
+                        onApprove={() => orderActions.approveOrderToken(order.inputToken)}
+                        {...props}
+                      />
+                    )}
                   />
                 </styledEl.ExecuteCellWrapper>
               ) : prices === null || !estimatedExecutionPrice || isOrderCreating ? (
@@ -409,39 +346,32 @@ export function OrderRow({
       {/* Status label */}
       <styledEl.CellElement>
         <styledEl.StatusBox>
-          {children ? (
-            children
-          ) : (
-            <>
-              <OrderStatusBox order={order} withWarning={withWarning} onClick={onClick} />
-              {withWarning && (
-                <styledEl.WarningIndicator>
-                  <styledEl.StyledQuestionHelper
-                    placement="bottom"
-                    bgColor={`var(${UI.COLOR_ALERT})`}
-                    color={`var(${UI.COLOR_ALERT_TEXT_DARKER})`}
-                    Icon={<SVG src={AlertTriangle} description="Alert" width="14" height="13" />}
-                    text={
-                      <styledEl.WarningContent>
-                        {hasEnoughBalance === false && (
-                          <BalanceWarning symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />
-                        )}
-                        {withAllowanceWarning && (
-                          <AllowanceWarning
-                            approve={() => orderActions.approveOrderToken(order.inputToken)}
-                            symbol={inputTokenSymbol}
-                            isScheduled={isOrderScheduled}
-                          />
-                        )}
-                      </styledEl.WarningContent>
-                    }
-                  />
-                </styledEl.WarningIndicator>
-              )}
-            </>
-          )}
+          <OrderStatusBox
+            order={order}
+            withWarning={withWarning}
+            onClick={onClick}
+            WarningTooltip={
+              withWarning
+                ? (props) => (
+                    <WarningTooltip
+                      hasEnoughBalance={hasEnoughBalance ?? false}
+                      hasEnoughAllowance={hasEnoughAllowance ?? false}
+                      hasValidPendingPermit={hasValidPendingPermit}
+                      inputTokenSymbol={inputTokenSymbol}
+                      isOrderScheduled={isOrderScheduled}
+                      onApprove={() => orderActions.approveOrderToken(order.inputToken)}
+                      showIcon={true}
+                      {...props}
+                    />
+                  )
+                : undefined
+            }
+          />
         </styledEl.StatusBox>
       </styledEl.CellElement>
+
+      {/* Children (e.g. ToggleExpandButton for parent orders) */}
+      {children}
 
       {/* Action content menu */}
       <styledEl.CellElement>
