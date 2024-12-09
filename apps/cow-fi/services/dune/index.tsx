@@ -1,4 +1,5 @@
 import { strict as assert } from 'node:assert'
+import { DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
 const DUNE_API_KEY = process.env.DUNE_API_KEY!
 assert(DUNE_API_KEY, 'DUNE_API_KEY environment var is required')
@@ -21,6 +22,7 @@ interface GetFromDuneResult<T> {
 
 export async function getFromDune<T>(queryId: number): Promise<GetFromDuneResult<T>> {
   const response = await fetch(`https://api.dune.com/api/v0/query/${queryId}/results`, {
+    next: { revalidate: DATA_CACHE_TIME_SECONDS },
     headers: {
       accept: 'application/json',
       'X-DUNE-API-KEY': DUNE_API_KEY,
@@ -47,7 +49,7 @@ export async function _getTotalCount(queryId: number): Promise<TotalCount> {
   // Expect one row
   assert(
     queryResut.rows.length === 1,
-    `Total Count Dune query (${queryId}) must return just one row. Returned ${queryResut.rows.length}`
+    `Total Count Dune query (${queryId}) must return just one row. Returned ${queryResut.rows.length}`,
   )
 
   return {
@@ -66,7 +68,7 @@ export const getTotalTrades = () => _getTotalCount(TOTAL_TRADES_COUNT_QUERY_ID)
  */
 export const getTotalSurplus = async (): Promise<TotalCount> => {
   const queryResut = await getFromDune<{ surplus_type: string; total_surplus_usd: number }>(
-    TOTAL_SURPLUS_COUNT_QUERY_ID
+    TOTAL_SURPLUS_COUNT_QUERY_ID,
   )
 
   const totalCount = queryResut.rows.reduce((totalSurplus, surplus) => {

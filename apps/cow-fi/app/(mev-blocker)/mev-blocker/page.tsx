@@ -55,8 +55,9 @@ import LazySVG from '@/components/LazySVG'
 
 import { FAQ_DATA, TRUSTED_BY_CONTENT, TESTIMONIAL_LIST, MEV_BLOCKER_LIST } from '@/data/mev-blocker/const'
 
-import { CONFIG } from '@/const/meta'
 import { clickOnMevBlocker } from '../../../modules/analytics'
+
+const isClient = typeof window === 'object'
 
 // Configure chains and providers
 const { chains, publicClient } = configureChains([mainnet], [publicProvider()])
@@ -70,7 +71,7 @@ const { connectors } = getDefaultWallets({
 
 // Create the Wagmi client
 const wagmiClient = createConfig({
-  autoConnect: true,
+  autoConnect: isClient,
   connectors,
   publicClient,
 })

@@ -1,6 +1,7 @@
 const { composePlugins, withNx } = require('@nx/next')
 
 const nextConfig = {
+  reactStrictMode: true,
   nx: {
     svgr: false,
   },
@@ -90,6 +91,20 @@ const nextConfig = {
   },
   images: {
     domains: ['celebrated-gift-f83e5c9419.media.strapiapp.com'],
+  },
+  async headers() {
+    return [
+      // Cache all pages for 60 seconds
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=60, stale-while-revalidate=600',
+          },
+        ],
+      },
+    ]
   },
 }
 
