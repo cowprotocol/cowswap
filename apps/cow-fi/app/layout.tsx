@@ -21,10 +21,11 @@ export const metadata: Metadata = {
       { url: '/favicon-dark-mode.png', type: 'image/png', media: '(prefers-color-scheme: no-preference)' },
     ],
     apple: '/apple-touch-icon.png',
-    // TODO: <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000" />
-    // TODO: <meta name="msapplication-TileColor" content="#000000" />
-    // TODO: <link rel="preconnect" href="https://strapiapp.com" crossOrigin="anonymous" />
-    // TODO: <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
+    other: {
+      rel: 'mask-icon',
+      url: '/safari-pinned-tab.svg',
+      color: '#000000',
+    },
   },
   twitter: {
     card: 'summary_large_image',
@@ -41,6 +42,9 @@ export const metadata: Metadata = {
     images: [{ url: `${CONFIG.url.root}/images/og-meta-cowdao.png` }],
   },
   manifest: '/site.webmanifest',
+  other: {
+    'msapplication-TileColor': '#000000',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
