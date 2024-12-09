@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.18.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.17.0...cow-fi-v1.18.0) (2024-12-09)
+
+
+### Features
+
+* **cow-fi:** cache data and pages ([#5169](https://github.com/cowprotocol/cowswap/issues/5169)) ([39c94cc](https://github.com/cowprotocol/cowswap/commit/39c94cca11db8a97d9add3ac05c1623755ecd2b3))
+
 ## [1.17.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.16.0...cow-fi-v1.17.0) (2024-12-04)
 
 
