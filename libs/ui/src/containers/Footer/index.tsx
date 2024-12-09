@@ -1,7 +1,6 @@
 import { useState, ReactNode, useRef } from 'react'
 
 import { CowAnalytics, useCowAnalytics } from '@cowprotocol/analytics'
-import { clickOnFooter } from '@cowprotocol/analytics'
 import IMG_ICON_ARROW_RIGHT_CIRCULAR from '@cowprotocol/assets/images/arrow-right-circular.svg'
 import IMG_ICON_SOCIAL_DISCORD from '@cowprotocol/assets/images/icon-social-discord.svg'
 import IMG_ICON_SOCIAL_FORUM from '@cowprotocol/assets/images/icon-social-forum.svg'
@@ -33,6 +32,7 @@ import {
   ToggleFooterButton,
 } from './styled'
 
+import { clickOnFooter } from '../../analytics/events'
 import { Color } from '../../consts'
 import { MenuItem } from '../../pure/MenuBar'
 import { ProductLogo, ProductVariant } from '../../pure/ProductLogo'

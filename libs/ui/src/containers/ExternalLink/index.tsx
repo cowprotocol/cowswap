@@ -1,11 +1,12 @@
 import React, { HTMLProps, PropsWithChildren } from 'react'
 
-import { CowAnalytics, useCowAnalytics, externalLinkAnalytics } from '@cowprotocol/analytics'
+import { CowAnalytics, useCowAnalytics } from '@cowprotocol/analytics'
 import { anonymizeLink } from '@cowprotocol/common-utils'
 
 import { ExternalLink as LinkIconFeather } from 'react-feather'
 import styled from 'styled-components/macro'
 
+import { externalLinkAnalytics } from '../../analytics/events'
 import { UI } from '../../enum'
 
 export const StyledLink = styled.a`

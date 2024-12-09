@@ -1,4 +1,5 @@
-import { useAnalyticsReporter } from '@cowprotocol/analytics'
+
+import { useAnalyticsReporter } from '@cowprotocol/ui'
 
 import { useNetworkId } from 'state/network'
 
