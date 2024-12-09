@@ -3,7 +3,7 @@ import { TokenInfo } from 'types'
 const API_BASE_URL = 'https://api.cow.fi'
 export const IMAGE_PATH = 'images/'
 
-export const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
+export const DATA_CACHE_TIME_SECONDS = 60 * 60 // Cache 1 hour
 
 export const CONFIG = {
   title: 'CoW DAO',
