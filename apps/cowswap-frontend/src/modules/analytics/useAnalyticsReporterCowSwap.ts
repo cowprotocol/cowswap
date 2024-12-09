@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 
-import { AnalyticsContext } from '@cowprotocol/analytics'
-import { useAnalyticsReporter } from '@cowprotocol/ui'
+import { AnalyticsContext, useAnalyticsReporter } from '@cowprotocol/analytics'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { cowAnalytics, pixelAnalytics, webVitalsAnalytics } from 'modules/analytics'

@@ -1,13 +1,15 @@
 import { useEffect } from 'react'
 
-import { AnalyticsContext, PixelEvent, CowAnalytics, PixelAnalytics, WebVitalsAnalytics } from '@cowprotocol/analytics'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { isMobile } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useLocation } from 'react-router-dom'
 
-import { serviceWorkerLoad } from './events'
+import { AnalyticsContext, CowAnalytics } from '../CowAnalytics'
+import { serviceWorkerLoad } from '../events'
+import { PixelEvent, PixelAnalytics } from '../pixels/PixelAnalytics'
+import { WebVitalsAnalytics } from '../webVitals/WebVitalsAnalytics'
 
 let initiatedPixel = false
 let initiated = false
