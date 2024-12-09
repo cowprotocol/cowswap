@@ -1,10 +1,11 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Search } from 'react-feather'
+
 
 import { useTokensAllowances, useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
+import { Search } from 'react-feather'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
 

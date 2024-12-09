@@ -6,7 +6,6 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount, HoverTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
 
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
