@@ -28,14 +28,6 @@ export interface TokenDetails extends TokenInfo {
   allTimeLow: string | null
 }
 
-export interface MetricsData {
-  totalVolume: string
-  tradesCount: string
-  tradesCountLastModified: string
-  totalSurplus: string
-  totalSurplusLastModified: string
-}
-
 export interface PaginationParam {
   page?: number
   pageSize?: number
