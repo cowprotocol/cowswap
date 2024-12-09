@@ -1,4 +1,4 @@
-import { CONFIG } from '@/const/meta'
+import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
 interface AshbyResponse {
   data: {
@@ -25,6 +25,7 @@ export async function getJobs() {
   try {
     console.log('Fetching data from Ashby HQ API...')
     const response = await fetch(ashbyHqApi, {
+      next: { revalidate: DATA_CACHE_TIME_SECONDS },
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
