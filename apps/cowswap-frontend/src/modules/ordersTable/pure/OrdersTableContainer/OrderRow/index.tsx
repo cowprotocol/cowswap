@@ -25,6 +25,7 @@ import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
 import { calculatePriceDifference, PriceDifference } from 'utils/orderUtils/calculatePriceDifference'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
+import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
@@ -195,7 +196,8 @@ export function OrderRow({
     [order, orderActions],
   )
 
-  const withAllowanceWarning = hasEnoughAllowance === false && hasValidPendingPermit === false
+  const withAllowanceWarning =
+    hasEnoughAllowance === false && (hasValidPendingPermit === false || hasValidPendingPermit === undefined)
   const withWarning =
     (hasEnoughBalance === false || withAllowanceWarning) &&
     // show the warning only for pending and scheduled orders
@@ -286,7 +288,9 @@ export function OrderRow({
             </styledEl.RateValue>
           ) : (
             <>
-              {prices && estimatedExecutionPrice ? (
+              {getIsFinalizedOrder(order) ? (
+                '-'
+              ) : prices && estimatedExecutionPrice ? (
                 <styledEl.ExecuteCellWrapper>
                   <EstimatedExecutionPrice
                     amount={executionPriceInverted}
@@ -316,7 +320,7 @@ export function OrderRow({
         <styledEl.PriceElement>
           {priceDiffs?.percentage && Number(priceDiffs.percentage.toFixed(4)) >= MIN_PERCENTAGE_TO_DISPLAY ? (
             <styledEl.DistanceToMarket $color={getDistanceColor(Number(priceDiffs.percentage.toFixed(4)))}>
-              {priceDiffs.percentage.toSignificant(4)}%
+              {priceDiffs.percentage.toFixed(2)}%
             </styledEl.DistanceToMarket>
           ) : (
             '-'

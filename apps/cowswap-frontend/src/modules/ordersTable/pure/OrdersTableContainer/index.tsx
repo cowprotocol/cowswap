@@ -1,9 +1,9 @@
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import cowMeditatingV2 from '@cowprotocol/assets/cow-swap/meditating-cow-v2.svg'
 import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { CowSwapSafeAppLink, ExternalLink, Media, MY_ORDERS_ID, UI } from '@cowprotocol/ui'
+import { CowSwapSafeAppLink, ExternalLink, Media, UI } from '@cowprotocol/ui'
 import type { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
 import { Trans } from '@lingui/macro'
@@ -12,10 +12,19 @@ import styled, { css } from 'styled-components/macro'
 
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
-import { OrdersTable, OrdersTableProps } from './OrdersTable'
-import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
+import { OrdersTable } from './OrdersTable'
+import { OrdersTabs } from './OrdersTabs'
+import { OrderActions } from './types'
 
+import { ALL_ORDERS_TAB, HISTORY_TAB, OPEN_TAB, UNFILLABLE_TAB } from '../../const/tabs'
 import { TabOrderTypes } from '../../types'
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  gap: 16px;
+  width: 100%;
+`
 
 const Content = styled.div`
   display: flex;
@@ -156,15 +165,25 @@ const RightContainer = styled.div`
   flex-flow: row wrap;
 `
 
-interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
+interface OrdersProps {
   isWalletConnected: boolean
-  isOpenOrdersTab: boolean
   isSafeViaWc: boolean
   displayOrdersOnlyForSafeApp: boolean
   pendingActivities: string[]
   children?: ReactNode
   orderType: TabOrderTypes
   injectedWidgetParams: Partial<CowSwapWidgetAppParams>
+  tabs: Array<{ id: string; title: string; count: number; isActive?: boolean }>
+  chainId: number
+  orders: any[]
+  selectedOrders: any[]
+  allowsOffchainSigning: boolean
+  balancesAndAllowances: any
+  orderActions: OrderActions
+  currentPageNumber: number
+  pendingOrdersPrices: any
+  getSpotPrice: any
+  ordersPermitStatus: any
 }
 
 export function OrdersTableContainer({
@@ -175,7 +194,6 @@ export function OrdersTableContainer({
   isSafeViaWc,
   displayOrdersOnlyForSafeApp,
   selectedOrders,
-  isOpenOrdersTab,
   allowsOffchainSigning,
   balancesAndAllowances,
   orderActions,
@@ -188,6 +206,11 @@ export function OrdersTableContainer({
   ordersPermitStatus,
   injectedWidgetParams,
 }: OrdersProps) {
+  const currentTab = useMemo(() => {
+    const activeTab = tabs.find((tab) => tab.isActive)
+    return activeTab?.id || ALL_ORDERS_TAB.id
+  }, [tabs])
+
   const content = () => {
     const emptyOrdersImage = injectedWidgetParams.images?.emptyOrders
 
@@ -227,17 +250,30 @@ export function OrdersTableContainer({
             )}
           </span>
           <h3>
-            <Trans>{isOpenOrdersTab ? 'No open orders' : 'No orders history'}</Trans>
+            <Trans>
+              {currentTab === ALL_ORDERS_TAB.id
+                ? 'No orders'
+                : currentTab === UNFILLABLE_TAB.id
+                  ? 'No unfillable orders'
+                  : currentTab === OPEN_TAB.id
+                    ? 'No open orders'
+                    : 'No orders history'}
+            </Trans>
           </h3>
           <p>
             {displayOrdersOnlyForSafeApp && isSafeViaWc ? (
               <Trans>
-                Use the <CowSwapSafeAppLink /> to see {isOpenOrdersTab ? 'open orders' : 'orders history'}
+                Use the <CowSwapSafeAppLink /> to see {currentTab === HISTORY_TAB.id ? 'orders history' : 'your orders'}
               </Trans>
             ) : (
               <>
-                <Trans>You don't have any {isOpenOrdersTab ? 'open' : ''} orders at the moment.</Trans> <br />
-                <Trans>Time to create a new one!</Trans> {/* TODO: add link for Advanced orders also */}
+                <Trans>
+                  You don't have any{' '}
+                  {currentTab === UNFILLABLE_TAB.id ? 'unfillable' : currentTab === OPEN_TAB.id ? 'open' : ''} orders at
+                  the moment.
+                </Trans>{' '}
+                <br />
+                <Trans>Time to create a new one!</Trans>{' '}
                 {orderType === TabOrderTypes.LIMIT ? (
                   <ExternalLinkStyled href="https://cow-protocol.medium.com/how-to-user-cow-swaps-surplus-capturing-limit-orders-24324326dc9e">
                     <Trans>Learn more</Trans>
@@ -252,32 +288,36 @@ export function OrdersTableContainer({
     }
 
     return (
-      <OrdersTable
-        isOpenOrdersTab={isOpenOrdersTab}
-        allowsOffchainSigning={allowsOffchainSigning}
-        selectedOrders={selectedOrders}
-        pendingOrdersPrices={pendingOrdersPrices}
-        currentPageNumber={currentPageNumber}
-        chainId={chainId}
-        orders={orders}
-        balancesAndAllowances={balancesAndAllowances}
-        getSpotPrice={getSpotPrice}
-        orderActions={orderActions}
-        ordersPermitStatus={ordersPermitStatus}
-      />
+      <>
+        <OrdersTable
+          currentTab={currentTab}
+          chainId={chainId}
+          orders={orders}
+          selectedOrders={selectedOrders}
+          allowsOffchainSigning={allowsOffchainSigning}
+          balancesAndAllowances={balancesAndAllowances}
+          orderActions={orderActions}
+          currentPageNumber={currentPageNumber}
+          pendingOrdersPrices={pendingOrdersPrices}
+          getSpotPrice={getSpotPrice}
+          ordersPermitStatus={ordersPermitStatus}
+        />
+      </>
     )
   }
 
   return (
-    <>
-      <TopContainer id={MY_ORDERS_ID}>
+    <Wrapper>
+      <TopContainer>
+        <h2>
+          <Trans>Orders</Trans>
+        </h2>
         <TabsContainer withSingleChild={!children}>
           <OrdersTabs tabs={tabs} />
+          {children && <RightContainer>{children}</RightContainer>}
         </TabsContainer>
-        <RightContainer>{children || <div />}</RightContainer>
       </TopContainer>
-
       {content()}
-    </>
+    </Wrapper>
   )
 }

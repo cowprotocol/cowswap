@@ -1,7 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-
 import { useTokensAllowances, useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -74,7 +73,18 @@ const SearchInput = styled.input`
 `
 
 function getOrdersListByIndex(ordersList: OrdersTableList, id: string): OrderTableItem[] {
-  return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
+  switch (id) {
+    case 'all':
+      return ordersList.all
+    case 'unfillable':
+      return ordersList.unfillable
+    case 'open':
+      return ordersList.pending
+    case 'history':
+      return ordersList.history
+    default:
+      return ordersList.pending
+  }
 }
 
 function toggleOrderInCancellationList(state: CancellableOrder[], order: CancellableOrder): CancellableOrder[] {
@@ -102,7 +112,6 @@ export function OrdersTableWidget({
   const location = useLocation()
   const navigate = useNavigate()
   const cancelOrder = useCancelOrder()
-  const ordersList = useOrdersTableList(allOrders, orderType)
   const { allowsOffchainSigning } = useWalletDetails()
   const pendingOrdersPrices = useAtomValue(pendingOrdersPricesAtom)
   const ordersToCancel = useAtomValue(ordersToCancelAtom)
@@ -113,6 +122,21 @@ export function OrdersTableWidget({
   const ordersPermitStatus = useGetOrdersPermitStatus()
   const injectedWidgetParams = useInjectedWidgetParams()
   const [searchTerm, setSearchTerm] = useState('')
+
+  const balancesState = useTokensBalances()
+  const allowancesState = useTokensAllowances()
+
+  const balancesAndAllowances: BalancesAndAllowances = useMemo(() => {
+    const { isLoading: balancesLoading, values: balances } = balancesState
+    const { isLoading: allowancesLoading, values: allowances } = allowancesState
+    return {
+      isLoading: balancesLoading || allowancesLoading,
+      balances,
+      allowances,
+    }
+  }, [balancesState, allowancesState])
+
+  const ordersList = useOrdersTableList(allOrders, orderType, chainId, balancesAndAllowances)
 
   const { currentTabId, currentPageNumber } = useMemo(() => {
     const params = parseOrdersTableUrl(location.search)
@@ -132,21 +156,6 @@ export function OrdersTableWidget({
       return { ...tab, isActive: tab.id === currentTabId, count: getOrdersListByIndex(ordersList, tab.id).length }
     })
   }, [currentTabId, ordersList])
-
-  const isOpenOrdersTab = useMemo(() => OPEN_TAB.id === currentTabId, [currentTabId])
-
-  const balancesState = useTokensBalances()
-  const allowancesState = useTokensAllowances()
-
-  const balancesAndAllowances: BalancesAndAllowances = useMemo(() => {
-    const { isLoading: balancesLoading, values: balances } = balancesState
-    const { isLoading: allowancesLoading, values: allowances } = allowancesState
-    return {
-      isLoading: balancesLoading || allowancesLoading,
-      balances,
-      allowances,
-    }
-  }, [balancesState, allowancesState])
 
   const { pendingActivity } = useCategorizeRecentActivity()
 
@@ -244,7 +253,6 @@ export function OrdersTableWidget({
         orders={filteredOrders}
         displayOrdersOnlyForSafeApp={displayOrdersOnlyForSafeApp}
         isSafeViaWc={isSafeViaWc}
-        isOpenOrdersTab={isOpenOrdersTab}
         currentPageNumber={currentPageNumber}
         pendingOrdersPrices={pendingOrdersPrices}
         balancesAndAllowances={balancesAndAllowances}
@@ -258,7 +266,9 @@ export function OrdersTableWidget({
         ordersPermitStatus={ordersPermitStatus}
         injectedWidgetParams={injectedWidgetParams}
       >
-        {isOpenOrdersTab && orders.length && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />}
+        {currentTabId === OPEN_TAB.id && orders.length > 0 && (
+          <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />
+        )}
 
         <SearchInputContainer>
           <SearchIcon />

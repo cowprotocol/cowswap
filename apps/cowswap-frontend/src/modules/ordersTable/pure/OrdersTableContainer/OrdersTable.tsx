@@ -20,7 +20,7 @@ import { TableGroup } from './TableGroup'
 import { createTableHeaders } from './tableHeaders'
 import { OrderActions } from './types'
 
-import { ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
+import { ALL_ORDERS_TAB, HISTORY_TAB, OPEN_TAB, UNFILLABLE_TAB, ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
 import { useGetBuildOrdersTableUrl } from '../../hooks/useGetBuildOrdersTableUrl'
 import { getOrderParams } from '../../utils/getOrderParams'
 import {
@@ -96,7 +96,7 @@ const Rows = styled.div`
 `
 
 export interface OrdersTableProps {
-  isOpenOrdersTab: boolean
+  currentTab: string
   allowsOffchainSigning: boolean
   currentPageNumber: number
   chainId: SupportedChainId
@@ -110,7 +110,7 @@ export interface OrdersTableProps {
 }
 
 export function OrdersTable({
-  isOpenOrdersTab,
+  currentTab,
   selectedOrders,
   allowsOffchainSigning,
   chainId,
@@ -143,7 +143,6 @@ export function OrdersTable({
     return selectedOrders.reduce(
       (acc, val) => {
         acc[val.id] = true
-
         return acc
       },
       {} as { [key: string]: true },
@@ -178,20 +177,20 @@ export function OrdersTable({
 
   const visibleHeaders = useMemo(() => {
     return tableHeaders.filter((header) => {
-      if (isOpenOrdersTab) {
+      if (currentTab === OPEN_TAB.id || currentTab === UNFILLABLE_TAB.id || currentTab === ALL_ORDERS_TAB.id) {
         return header.showInOpenOrders
       }
       return header.showInClosedOrders
     })
-  }, [tableHeaders, isOpenOrdersTab])
+  }, [tableHeaders, currentTab])
 
   return (
     <>
       <TableBox>
         <TableInner onScroll={onScroll}>
-          <TableHeader isOpenOrdersTab={isOpenOrdersTab} isRowSelectable={isRowSelectable}>
+          <TableHeader isOpenOrdersTab={currentTab !== HISTORY_TAB.id} isRowSelectable={isRowSelectable}>
             {visibleHeaders.map((header) => {
-              if (header.id === 'checkbox' && (!isRowSelectable || !isOpenOrdersTab)) {
+              if (header.id === 'checkbox' && (!isRowSelectable || currentTab === HISTORY_TAB.id)) {
                 return null
               }
 
@@ -245,7 +244,7 @@ export function OrdersTable({
                     key={order.id}
                     isRowSelectable={isRowSelectable}
                     isRowSelected={!!selectedOrdersMap[order.id]}
-                    isOpenOrdersTab={isOpenOrdersTab}
+                    isOpenOrdersTab={currentTab !== HISTORY_TAB.id}
                     order={order}
                     spotPrice={spotPrice}
                     prices={pendingOrdersPrices[order.id]}
@@ -266,7 +265,7 @@ export function OrdersTable({
                     key={item.parent.id}
                     isRowSelectable={isRowSelectable}
                     isRowSelected={!!selectedOrdersMap[item.parent.id]}
-                    isOpenOrdersTab={isOpenOrdersTab}
+                    isOpenOrdersTab={currentTab !== HISTORY_TAB.id}
                     spotPrice={spotPrice}
                     prices={pendingOrdersPrices[item.parent.id]}
                     isRateInverted={false}
