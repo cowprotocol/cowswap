@@ -77,34 +77,28 @@ export const createTableHeaders = (
     showInClosedOrders: true,
   },
   {
-    id: 'expiration',
-    content: (
-      <>
-        <Trans>Expiration</Trans>
-        <i>
-          <Trans>Creation</Trans>
-        </i>
-      </>
-    ),
-    doubleRow: true,
-    showInOpenOrders: true,
+    id: 'executionTime',
+    content: <Trans>Execution time</Trans>,
+    showInClosedOrders: true,
+  },
+  {
+    id: 'creationTime',
+    content: <Trans>Creation time</Trans>,
+    showInClosedOrders: true,
   },
   {
     id: 'filled',
     content: <Trans>Filled</Trans>,
-    showInOpenOrders: true,
     showInClosedOrders: true,
   },
   {
     id: 'status',
     content: <Trans>Status</Trans>,
-    showInOpenOrders: true,
     showInClosedOrders: true,
   },
   {
     id: 'actions',
     content: null,
-    showInOpenOrders: true,
     showInClosedOrders: true,
   },
 ]

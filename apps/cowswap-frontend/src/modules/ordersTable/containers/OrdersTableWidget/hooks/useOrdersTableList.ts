@@ -49,7 +49,7 @@ export function useOrdersTableList(allOrders: Order[], orderType: TabOrderTypes)
 
         return acc
       },
-      { pending: [], history: [] } as OrdersTableList
+      { pending: [], history: [] } as OrdersTableList,
     )
 
     return { pending: pending.slice(0, ORDERS_LIMIT), history: history.slice(0, ORDERS_LIMIT) }

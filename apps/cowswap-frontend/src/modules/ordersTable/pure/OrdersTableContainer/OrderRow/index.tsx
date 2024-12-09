@@ -205,9 +205,10 @@ export function OrderRow({
   const isScheduledCreating = isOrderScheduled && Date.now() > creationTime.getTime()
   const expirationTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const creationTimeAgo = useTimeAgo(creationTime, TIME_AGO_UPDATE_INTERVAL)
-
-  // TODO: set the real value when API returns it
-  // const executedTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
+  const fulfillmentTimeAgo = useTimeAgo(
+    order.fulfillmentTime ? new Date(order.fulfillmentTime) : undefined,
+    TIME_AGO_UPDATE_INTERVAL,
+  )
   const activityUrl = chainId ? getActivityUrl(chainId, order) : undefined
 
   const [isInverted, setIsInverted] = useState(() => {
@@ -353,8 +354,32 @@ export function OrderRow({
         </styledEl.PriceElement>
       )}
 
-      {/* Expires */}
-      {/* Created */}
+      {/* Execution price for closed orders */}
+      {!isOpenOrdersTab && (
+        <styledEl.PriceElement onClick={toggleIsInverted}>
+          {executedPriceInverted ? (
+            <TokenAmount
+              amount={executedPriceInverted}
+              tokenSymbol={executedPriceInverted?.quoteCurrency}
+              opacitySymbol
+            />
+          ) : (
+            '-'
+          )}
+        </styledEl.PriceElement>
+      )}
+
+      {/* Execution time for closed orders */}
+      {!isOpenOrdersTab && (
+        <styledEl.CellElement>
+          {order.status === OrderStatus.FULFILLED && fulfillmentTimeAgo ? fulfillmentTimeAgo : '-'}
+        </styledEl.CellElement>
+      )}
+
+      {/* Creation time for closed orders */}
+      {!isOpenOrdersTab && <styledEl.CellElement>{creationTimeAgo}</styledEl.CellElement>}
+
+      {/* Expires and Created for open orders */}
       {isOpenOrdersTab && (
         <styledEl.CellElement doubleRow>
           <b>{expirationTimeAgo}</b>
