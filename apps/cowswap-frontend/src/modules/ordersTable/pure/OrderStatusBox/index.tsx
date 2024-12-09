@@ -39,10 +39,17 @@ const Wrapper = styled.div<{
     left: 0;
     top: 0;
     background: var(--statusBackground);
-    /* opacity: 0.14; */
     z-index: 1;
     border-radius: ${({ withWarning }) => (withWarning ? '9px 0 0 9px' : '9px')};
   }
+`
+
+const StatusContent = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+  z-index: 2;
 `
 
 type OrderStatusBoxProps = {
@@ -50,10 +57,23 @@ type OrderStatusBoxProps = {
   widthAuto?: boolean
   withWarning?: boolean
   onClick?: Command
+  WarningTooltip?: React.ComponentType<{ children: React.ReactNode }>
 }
 
-export function OrderStatusBox({ order, widthAuto, withWarning, onClick }: OrderStatusBoxProps) {
+export function OrderStatusBox({ order, widthAuto, withWarning, onClick, WarningTooltip }: OrderStatusBoxProps) {
   const { title, color, background } = getOrderStatusTitleAndColor(order)
+
+  const content = (
+    <StatusContent>
+      {title}
+      {withWarning && WarningTooltip && (
+        <WarningTooltip>
+          <></>
+        </WarningTooltip>
+      )}
+    </StatusContent>
+  )
+
   return (
     <Wrapper
       color={color}
@@ -63,8 +83,7 @@ export function OrderStatusBox({ order, widthAuto, withWarning, onClick }: Order
       clickable={!!onClick}
       onClick={onClick}
     >
-      {/* Status overrides for special cases */}
-      {title}
+      {content}
     </Wrapper>
   )
 }

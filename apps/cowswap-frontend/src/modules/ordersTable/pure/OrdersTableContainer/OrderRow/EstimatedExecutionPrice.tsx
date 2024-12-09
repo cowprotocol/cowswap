@@ -74,6 +74,8 @@ export type EstimatedExecutionPriceProps = TokenAmountProps & {
   amountDifference?: CurrencyAmount<Currency>
   percentageFee?: Percent
   amountFee?: CurrencyAmount<Currency>
+  warningText?: string
+  WarningTooltip?: React.FC<{ children: React.ReactNode }>
 }
 
 export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
@@ -86,6 +88,8 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
     percentageFee,
     amountFee,
     amount,
+    warningText,
+    WarningTooltip,
     ...rest
   } = props
 
@@ -108,10 +112,16 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
     </>
   )
 
+  const unfillableLabel = <UnfillableLabel>{warningText || 'UNFILLABLE'}</UnfillableLabel>
+
   return (
     <EstimatedExecutionPriceWrapper hasWarning={!!feeWarning} showPointerCursor={!isUnfillable}>
       {isUnfillable ? (
-        <UnfillableLabel>UNFILLABLE</UnfillableLabel>
+        WarningTooltip ? (
+          <WarningTooltip>{unfillableLabel}</WarningTooltip>
+        ) : (
+          unfillableLabel
+        )
       ) : !absoluteDifferenceAmount ? (
         <span>{content}</span>
       ) : (
