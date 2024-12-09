@@ -80,6 +80,7 @@ const DAO_NAV_ITEMS: MenuItem[] = [
     hoverColor: '#F2CD16',
     hoverBgColor: '#EC4612',
     external: true,
+    utmContent: 'menubar-dao-nav-mevblocker',
   },
 ]
 
@@ -557,6 +558,14 @@ const appendUtmParams = (
   isExternal: boolean,
   label: string | undefined,
 ) => {
+  console.log('SSSS', {
+    href,
+    utmSource,
+    utmContent,
+    rootDomain,
+    isExternal,
+    label,
+  })
   const defaultUtm = {
     utmSource: rootDomain,
     utmMedium: 'web',
