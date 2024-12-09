@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Media, QuestionTooltipIconWrapper, UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 import { Currency, Price } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
@@ -12,14 +11,13 @@ import { SpotPricesKeyParams } from 'modules/orders/state/spotPricesAtom'
 import { OrdersPermitStatus } from 'modules/permit'
 import { BalancesAndAllowances } from 'modules/tokens'
 
-import { ordersTableFeatures } from 'common/constants/featureFlags'
-import { InvertRateControl } from 'common/pure/RateInfo'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
 import { OrderRow } from './OrderRow'
 import { CheckboxCheckmark, TableHeader, TableRowCheckbox, TableRowCheckboxWrapper } from './styled'
 import { TableGroup } from './TableGroup'
+import { createTableHeaders } from './tableHeaders'
 import { OrderActions } from './types'
 
 import { ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
@@ -85,26 +83,6 @@ const HeaderElement = styled.div<{ doubleRow?: boolean }>`
       opacity: 0.7;
     }
   `}
-
-  ${QuestionTooltipIconWrapper} {
-    opacity: 0.5;
-    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-    &:hover {
-      opacity: 1;
-    }
-  }
-
-  ${({ doubleRow }) =>
-    doubleRow &&
-    `
-    flex-flow: column wrap;
-    gap: 2px;
-
-    > i {
-      opacity: 0.7;
-    }
-  `}
 `
 
 const Rows = styled.div`
@@ -115,11 +93,6 @@ const Rows = styled.div`
     display: flex;
     flex-flow: column wrap;
   }
-`
-
-const StyledInvertRateControl = styled(InvertRateControl)`
-  display: inline-flex;
-  margin-left: 5px;
 `
 
 export interface OrdersTableProps {
@@ -201,98 +174,54 @@ export function OrdersTable({
     checkbox.checked = allOrdersSelected
   }, [allOrdersSelected, selectedOrders.length])
 
+  const tableHeaders = useMemo(() => createTableHeaders(isRateInverted, setIsRateInverted), [isRateInverted])
+
+  const visibleHeaders = useMemo(() => {
+    return tableHeaders.filter((header) => {
+      if (isOpenOrdersTab) {
+        return header.showInOpenOrders
+      }
+      return header.showInClosedOrders
+    })
+  }, [tableHeaders, isOpenOrdersTab])
+
   return (
     <>
       <TableBox>
         <TableInner onScroll={onScroll}>
           <TableHeader isOpenOrdersTab={isOpenOrdersTab} isRowSelectable={isRowSelectable}>
-            {isRowSelectable && isOpenOrdersTab && (
-              <HeaderElement>
-                <TableRowCheckboxWrapper>
-                  <TableRowCheckbox
-                    ref={checkboxRef}
-                    disabled={cancellableOrders.length === 0}
-                    type="checkbox"
-                    onChange={(event) =>
-                      orderActions.toggleOrdersForCancellation(
-                        event.target.checked ? tableItemsToOrders(ordersPage) : [],
-                      )
-                    }
-                  />
-                  <CheckboxCheckmark />
-                </TableRowCheckboxWrapper>
-              </HeaderElement>
-            )}
+            {visibleHeaders.map((header) => {
+              if (header.id === 'checkbox' && (!isRowSelectable || !isOpenOrdersTab)) {
+                return null
+              }
 
-            <HeaderElement>
-              <Trans>Sell &#x2192; Buy</Trans>
-            </HeaderElement>
+              if (header.id === 'checkbox') {
+                return (
+                  <HeaderElement key={header.id}>
+                    <TableRowCheckboxWrapper>
+                      <TableRowCheckbox
+                        ref={checkboxRef}
+                        disabled={cancellableOrders.length === 0}
+                        type="checkbox"
+                        onChange={(event) =>
+                          orderActions.toggleOrdersForCancellation(
+                            event.target.checked ? tableItemsToOrders(ordersPage) : [],
+                          )
+                        }
+                      />
+                      <CheckboxCheckmark />
+                    </TableRowCheckboxWrapper>
+                  </HeaderElement>
+                )
+              }
 
-            {isOpenOrdersTab && (
-              <HeaderElement>
-                <span>
-                  <Trans>Fills at</Trans>
-                </span>
-              </HeaderElement>
-            )}
-
-            <HeaderElement>
-              <span>
-                <Trans>Limit price</Trans>
-              </span>
-              <StyledInvertRateControl onClick={() => setIsRateInverted(!isRateInverted)} />
-            </HeaderElement>
-
-            {isOpenOrdersTab && ordersTableFeatures.DISPLAY_EST_EXECUTION_PRICE && (
-              <HeaderElement doubleRow>
-                <span>
-                  <Trans>Order executes at</Trans>
-                </span>
-                <i>
-                  <Trans>Market price</Trans>
-                </i>
-              </HeaderElement>
-            )}
-
-            {isOpenOrdersTab && (
-              <HeaderElement>
-                <span>
-                  <Trans>Market price</Trans>
-                </span>
-              </HeaderElement>
-            )}
-
-            {!isOpenOrdersTab && (
-              <HeaderElement>
-                <span>
-                  <Trans>Execution price</Trans>
-                </span>
-              </HeaderElement>
-            )}
-
-            {isOpenOrdersTab && (
-              <HeaderElement doubleRow>
-                <Trans>Expiration</Trans>
-                <i>
-                  <Trans>Creation</Trans>
-                </i>
-              </HeaderElement>
-            )}
-
-            {/* {!isOpenOrdersTab && ordersTableFeatures.DISPLAY_EXECUTION_TIME && (
-              <HeaderElement>
-                <Trans>Execution time</Trans>
-              </HeaderElement>
-            )} */}
-
-            <HeaderElement>
-              <Trans>Filled</Trans>
-            </HeaderElement>
-
-            <HeaderElement>
-              <Trans>Status</Trans>
-            </HeaderElement>
-            <HeaderElement>{/*Cancel order column*/}</HeaderElement>
+              return (
+                <HeaderElement key={header.id} doubleRow={header.doubleRow}>
+                  {header.content}
+                  {header.extraComponent}
+                </HeaderElement>
+              )
+            })}
           </TableHeader>
 
           <Rows>
