@@ -211,12 +211,29 @@ export function OrdersTableWidget({
 
     const searchTermLower = searchTerm.toLowerCase().trim()
 
+    // First try exact symbol matches (case-insensitive)
+    const exactMatches = orders.filter((order) => {
+      const parsedOrder = getParsedOrderFromTableItem(order)
+      const inputToken = parsedOrder.inputToken
+      const outputToken = parsedOrder.outputToken
+
+      return [inputToken.symbol, outputToken.symbol].some((symbol) => {
+        return symbol?.toLowerCase() === searchTermLower
+      })
+    })
+
+    // If we have exact matches, return those
+    if (exactMatches.length > 0) {
+      return exactMatches
+    }
+
+    // Otherwise, fall back to partial matches and address search
     return orders.filter((order) => {
       const parsedOrder = getParsedOrderFromTableItem(order)
       const inputToken = parsedOrder.inputToken
       const outputToken = parsedOrder.outputToken
 
-      // First check for token symbols (case-insensitive)
+      // Check for partial symbol matches (case-insensitive)
       const symbolMatch = [inputToken.symbol, outputToken.symbol].some((symbol) => {
         return symbol?.toLowerCase().includes(searchTermLower)
       })

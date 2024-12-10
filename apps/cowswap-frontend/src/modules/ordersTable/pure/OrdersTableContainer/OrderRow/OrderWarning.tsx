@@ -79,7 +79,7 @@ function AllowanceWarning({ symbol, isScheduled, approve }: AllowanceWarningProp
         )}
       </p>
       <styledEl.WarningActionBox>
-        <ButtonSecondary onClick={approve}>Set allowance</ButtonSecondary>
+        <ButtonSecondary onClick={approve}>Set approval</ButtonSecondary>
       </styledEl.WarningActionBox>
     </styledEl.WarningParagraph>
   )
