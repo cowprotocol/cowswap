@@ -13,12 +13,12 @@ export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: 
   gap: 14px;
   grid-template-columns: ${({ isHistoryTab, isRowSelectable }) =>
     !isHistoryTab
-      ? `${isRowSelectable ? 'var(--checkboxSize)' : ''} minmax(200px,2.5fr) minmax(110px,1fr) minmax(70px,0.5fr) minmax(110px,1fr) minmax(110px,1fr) minmax(80px,90px) minmax(80px,0.8fr) 40px`
+      ? `${isRowSelectable ? 'var(--checkboxSize)' : ''} minmax(200px,2.5fr) minmax(110px,1fr) minmax(70px,0.5fr) minmax(110px,1fr) minmax(110px,1fr) minmax(80px,90px) minmax(80px,0.8fr) 24px`
       : `minmax(200px, 2.5fr)  
-         repeat(3, minmax(110px, 1fr))
+         repeat(4, minmax(110px, 1fr))
          minmax(80px, 0.8fr)   
          minmax(100px, 1fr)  
-         40px               `};
+         24px               `};
   grid-template-rows: minmax(var(--height), 1fr);
   align-items: center;
   border: none;

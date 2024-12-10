@@ -286,6 +286,20 @@ export function OrderRow({
       ) : (
         <>
           {/* History tab columns */}
+          {/* Limit price */}
+          <styledEl.PriceElement onClick={toggleIsInverted}>
+            <RateInfo
+              prependSymbol={false}
+              isInvertedState={[isInverted, setIsInverted]}
+              noLabel={true}
+              doNotUseSmartQuote
+              isInverted={isInverted}
+              rateInfoParams={rateInfoParams}
+              opacitySymbol={true}
+            />
+          </styledEl.PriceElement>
+
+          {/* Execution price */}
           <styledEl.PriceElement onClick={toggleIsInverted}>
             {executedPriceInverted ? (
               <TokenAmount
