@@ -214,30 +214,35 @@ export function OrderRow({
                   '-'
                 ) : prices && estimatedExecutionPrice ? (
                   <styledEl.ExecuteCellWrapper>
-                    <EstimatedExecutionPrice
-                      amount={executionPriceInverted}
-                      tokenSymbol={executionPriceInverted?.quoteCurrency}
-                      opacitySymbol
-                      isInverted={isInverted}
-                      percentageDifference={priceDiffs?.percentage}
-                      amountDifference={priceDiffs?.amount}
-                      percentageFee={feeDifference}
-                      amountFee={feeAmount}
-                      canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
-                      isUnfillable={withWarning}
-                      warningText={getWarningText()}
-                      WarningTooltip={(props) => (
-                        <WarningTooltip
-                          hasEnoughBalance={hasEnoughBalance ?? false}
-                          hasEnoughAllowance={hasEnoughAllowance ?? false}
-                          hasValidPendingPermit={hasValidPendingPermit}
-                          inputTokenSymbol={inputTokenSymbol}
-                          isOrderScheduled={isOrderScheduled}
-                          onApprove={() => orderActions.approveOrderToken(order.inputToken)}
-                          {...props}
-                        />
-                      )}
-                    />
+                    {priceDiffs?.percentage &&
+                    Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= MIN_PERCENTAGE_TO_DISPLAY ? (
+                      <span>⚡️ Pending execution</span>
+                    ) : (
+                      <EstimatedExecutionPrice
+                        amount={executionPriceInverted}
+                        tokenSymbol={executionPriceInverted?.quoteCurrency}
+                        opacitySymbol
+                        isInverted={isInverted}
+                        percentageDifference={priceDiffs?.percentage}
+                        amountDifference={priceDiffs?.amount}
+                        percentageFee={feeDifference}
+                        amountFee={feeAmount}
+                        canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
+                        isUnfillable={withWarning}
+                        warningText={getWarningText()}
+                        WarningTooltip={(props) => (
+                          <WarningTooltip
+                            hasEnoughBalance={hasEnoughBalance ?? false}
+                            hasEnoughAllowance={hasEnoughAllowance ?? false}
+                            hasValidPendingPermit={hasValidPendingPermit}
+                            inputTokenSymbol={inputTokenSymbol}
+                            isOrderScheduled={isOrderScheduled}
+                            onApprove={() => orderActions.approveOrderToken(order.inputToken)}
+                            {...props}
+                          />
+                        )}
+                      />
+                    )}
                   </styledEl.ExecuteCellWrapper>
                 ) : prices === null || !estimatedExecutionPrice || isOrderCreating ? (
                   '-'
