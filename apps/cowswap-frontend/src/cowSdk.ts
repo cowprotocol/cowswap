@@ -1,5 +1,4 @@
 import { MetadataApi } from '@cowprotocol/app-data'
-import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { OrderBookApi } from '@cowprotocol/cow-sdk'
 
 const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
@@ -8,6 +7,5 @@ const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
 
 export const metadataApiSDK = new MetadataApi()
 export const orderBookApi = new OrderBookApi({
-  env: isBarnBackendEnv ? 'staging' : 'prod',
-  ...(prodBaseUrls ? { baseUrls: prodBaseUrls } : undefined),
+  env: 'prod',
 })
