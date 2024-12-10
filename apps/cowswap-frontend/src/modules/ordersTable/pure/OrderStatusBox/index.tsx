@@ -63,27 +63,25 @@ type OrderStatusBoxProps = {
 export function OrderStatusBox({ order, widthAuto, withWarning, onClick, WarningTooltip }: OrderStatusBoxProps) {
   const { title, color, background } = getOrderStatusTitleAndColor(order)
 
-  const content = (
-    <StatusContent>
-      {title}
+  const content = <StatusContent>{title}</StatusContent>
+
+  return (
+    <>
+      <Wrapper
+        color={color}
+        background={background}
+        widthAuto={widthAuto}
+        withWarning={withWarning}
+        clickable={!!onClick}
+        onClick={onClick}
+      >
+        {content}
+      </Wrapper>
       {withWarning && WarningTooltip && (
         <WarningTooltip>
           <></>
         </WarningTooltip>
       )}
-    </StatusContent>
-  )
-
-  return (
-    <Wrapper
-      color={color}
-      background={background}
-      widthAuto={widthAuto}
-      withWarning={withWarning}
-      clickable={!!onClick}
-      onClick={onClick}
-    >
-      {content}
-    </Wrapper>
+    </>
   )
 }

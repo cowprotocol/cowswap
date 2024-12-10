@@ -45,11 +45,6 @@ export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean }>`
     background: var(${UI.COLOR_PAPER_DARKER});
   }
 
-  > div {
-    display: flex;
-    align-items: center;
-  }
-
   > div:first-child {
     margin: 0;
 
