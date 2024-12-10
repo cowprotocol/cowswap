@@ -1,12 +1,14 @@
 import { atom } from 'jotai'
 
 import { STABLECOINS } from '@cowprotocol/common-const'
-import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getCurrencyAddress, isInjectedWidget } from '@cowprotocol/common-utils'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { walletDetailsAtom, walletInfoAtom } from '@cowprotocol/wallet'
 
-import { featureFlagsAtom } from '../../../common/state/featureFlagsState'
-import { derivedTradeStateAtom } from '../../trade'
+import { derivedTradeStateAtom } from 'modules/trade'
+
+import { featureFlagsAtom } from 'common/state/featureFlagsState'
+
 import { VolumeFee } from '../types'
 
 const SAFE_FEE_RECIPIENT = '0x63695Eee2c3141BDE314C5a6f89B98E62808d716'
@@ -39,9 +41,8 @@ export const safeAppFeeAtom = atom<VolumeFee | null>((get) => {
   const { isSafeAppFeeEnabled } = get(featureFlagsAtom)
   const { inputCurrency, outputCurrency, inputCurrencyFiatAmount, outputCurrencyFiatAmount, orderKind } =
     get(derivedTradeStateAtom) || {}
-  const isBaseNetwork = chainId === SupportedChainId.BASE
 
-  if (!isSafeApp || !isSafeAppFeeEnabled || isBaseNetwork) return null
+  if (!isSafeApp || !isSafeAppFeeEnabled || isInjectedWidget()) return null
 
   const fiatCurrencyValue = orderKind === OrderKind.SELL ? inputCurrencyFiatAmount : outputCurrencyFiatAmount
   const fiatAmount = fiatCurrencyValue ? +fiatCurrencyValue.toExact() : null
