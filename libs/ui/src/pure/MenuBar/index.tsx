@@ -558,14 +558,6 @@ const appendUtmParams = (
   isExternal: boolean,
   label: string | undefined,
 ) => {
-  console.log('SSSS', {
-    href,
-    utmSource,
-    utmContent,
-    rootDomain,
-    isExternal,
-    label,
-  })
   const defaultUtm = {
     utmSource: rootDomain,
     utmMedium: 'web',
