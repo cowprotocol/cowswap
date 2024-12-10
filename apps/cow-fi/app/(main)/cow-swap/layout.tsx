@@ -4,7 +4,7 @@ import { CONFIG } from '@/const/meta'
 
 export const metadata: Metadata = {
   ...getPageMetadata({
-    title: "CoW Swap - Don't worry, trade happy",
+    absoluteTitle: "CoW Swap - Don't worry, trade happy",
     description:
       'CoW Swap protects traders from the dangers of DeFi, so you can do what you want without needing to worry',
     image: CONFIG.ogImageCOWSWAPP,

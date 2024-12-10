@@ -2,11 +2,8 @@
 
 import { PropsWithChildren } from 'react'
 import Link from 'next/link'
-import Head from 'next/head'
 import { Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
 import styled, { createGlobalStyle, css } from 'styled-components/macro'
-
-import { CONFIG } from '@/const/meta'
 import { CoWDAOFonts } from '@/styles/CoWDAOFonts'
 import { NAV_ADDITIONAL_BUTTONS, NAV_ITEMS, PAGE_MAX_WIDTH, PRODUCT_VARIANT } from './const'
 import { useSetupPage } from '../../hooks/useSetupPage'
@@ -30,19 +27,13 @@ const Wrapper = styled.div`
   }
 `
 
-const metaTitleWithShortDescription = `${CONFIG.title} - ${CONFIG.descriptionShort}`
-const metaTitleWithDescription = `${CONFIG.title} - ${CONFIG.description}`
-
 interface LayoutProps {
   children: React.ReactNode
   bgColor?: string
-  metaTitle?: string
-  metaDescription?: string
-  ogImage?: string
   host?: string
 }
 
-export function Layout({ children, bgColor, metaTitle, metaDescription, ogImage, host }: Readonly<LayoutProps>) {
+export function Layout({ children, bgColor, host }: Readonly<LayoutProps>) {
   useSetupPage()
 
   const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts)
@@ -57,19 +48,6 @@ export function Layout({ children, bgColor, metaTitle, metaDescription, ogImage,
 
   return (
     <>
-      <Head>
-        <title key="title">{`${metaTitle ?? metaTitleWithDescription}`}</title>
-        <meta key="ogTitle" property="og:title" content={metaTitle ?? metaTitleWithDescription} />
-
-        <meta key="description" name="description" content={metaDescription ?? CONFIG.description} />
-        <meta key="ogDescription" property="og:description" content={metaDescription ?? CONFIG.description} />
-
-        <meta key="twitterTitle" name="twitter:title" content={`${metaTitle ?? metaTitleWithShortDescription}`} />
-        <meta key="twitterDescription" name="twitter:description" content={metaDescription ?? CONFIG.description} />
-
-        <meta key="ogImage" property="og:image" content={ogImage ?? CONFIG.ogImage} />
-        <meta key="twitterImage" name="twitter:image" content={ogImage ?? CONFIG.ogImage} />
-      </Head>
       <GlobalStyles />
       <LocalStyles />
       <MenuBar
