@@ -5,6 +5,18 @@ import styled from 'styled-components/macro'
 
 import { RateWrapper } from 'common/pure/RateInfo'
 
+export const TableWrapper = styled.div`
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+
+  ${Media.upToSmall()} {
+    margin: 0 -12px; /* Negative margin to allow full-width scrolling */
+    padding: 0 12px;
+    width: calc(100% + 24px);
+  }
+`
+
 export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: boolean }>`
   --header-height: 26px;
   --row-height: 41px;
@@ -14,12 +26,13 @@ export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: 
   gap: 14px;
   grid-template-columns: ${({ isHistoryTab, isRowSelectable }) =>
     !isHistoryTab
-      ? `${isRowSelectable ? 'var(--checkboxSize)' : ''} minmax(200px,2.5fr) minmax(140px,1fr) minmax(70px,0.5fr) minmax(110px,1fr) minmax(110px,1fr) minmax(80px,90px) minmax(80px,0.8fr) 24px`
+      ? `${isRowSelectable ? 'var(--checkboxSize)' : ''} 
+         minmax(200px,2.5fr) minmax(140px,1fr) minmax(70px,0.5fr) minmax(110px,1fr) minmax(110px,1fr) minmax(80px,90px) minmax(80px,0.8fr) 24px`
       : `minmax(200px, 2.5fr)  
          repeat(4, minmax(110px, 1fr))
          minmax(80px, 0.8fr)   
          minmax(100px, 1fr)  
-         24px               `};
+         24px    `};
   grid-template-rows: minmax(var(--header-height), 1fr);
   align-items: center;
   border: none;
@@ -30,6 +43,7 @@ export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: 
   border-left: none;
   border-image: initial;
   border-bottom: 1px solid var(--cow-color-text-opacity-10);
+  min-width: 888px; /* Minimum width to prevent too much squeezing */
 
   ${Media.upToSmall()} {
     --checkboxSize: 24px;
