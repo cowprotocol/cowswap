@@ -4,7 +4,7 @@ import { CONFIG } from '@/const/meta'
 
 export const metadata: Metadata = {
   ...getPageMetadata({
-    title: 'Tokens',
+    title: 'Tokens - CoW DAO',
     description:
       "Track the latest tokens price, market cap, trading volume, and more with CoW DAO's live token price tracker",
   }),

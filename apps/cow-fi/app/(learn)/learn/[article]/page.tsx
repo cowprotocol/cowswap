@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const plainContent = stripHtmlTags(content)
 
   return getPageMetadata({
-    title,
+    absoluteTitle: `${title} - CoW DAO`,
     description: description
       ? stripHtmlTags(description)
       : plainContent.length > 150
