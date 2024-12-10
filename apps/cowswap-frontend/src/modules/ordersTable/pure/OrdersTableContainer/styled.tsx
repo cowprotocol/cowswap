@@ -6,7 +6,7 @@ import styled from 'styled-components/macro'
 import { RateWrapper } from 'common/pure/RateInfo'
 
 export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: boolean }>`
-  --height: 38px;
+  --height: 51px;
   --checkboxSize: 16px;
   --checkBoxBorderRadius: 3px;
   display: grid;
