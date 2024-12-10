@@ -110,7 +110,9 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
           wrapInContainer={true}
           content={
             <styledEl.ExecuteInformationTooltip>
-              {!isNegativeDifference ? (
+              {isNegativeDifference && Math.abs(Number(percentageDifferenceInverted?.toFixed(4) ?? 0)) <= 0.01 ? (
+                <>Will execute soon!</>
+              ) : (
                 <>
                   Market price needs to go {marketPriceNeedsToGoDown ? 'down 📉' : 'up 📈'} by&nbsp;
                   <b>
@@ -122,8 +124,6 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
                   </span>
                   &nbsp;to execute your order.
                 </>
-              ) : (
-                <>Will execute soon!</>
               )}
             </styledEl.ExecuteInformationTooltip>
           }
