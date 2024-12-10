@@ -10,6 +10,7 @@ import { WithLDProvider } from '@/components/WithLDProvider'
 import { ThemeProvider } from '../theme'
 import { CowAnalyticsProvider } from '@cowprotocol/analytics'
 import { cowAnalytics } from 'modules/analytics'
+import CacheProvider from 'react-inlinesvg/provider'
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props
@@ -54,15 +55,17 @@ export default function App(props: AppProps) {
       </Head>
 
       <GlobalStyles />
-      <ApolloProvider client={apolloClient}>
-        <WithLDProvider>
-          <ThemeProvider>
-            <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
-              <Component {...pageProps} />
-            </CowAnalyticsProvider>
-          </ThemeProvider>
-        </WithLDProvider>
-      </ApolloProvider>
+      <CacheProvider>
+        <ApolloProvider client={apolloClient}>
+          <WithLDProvider>
+            <ThemeProvider>
+              <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+                <Component {...pageProps} />
+              </CowAnalyticsProvider>
+            </ThemeProvider>
+          </WithLDProvider>
+        </ApolloProvider>
+      </CacheProvider>
     </>
   )
 }

@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.92.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.92.1...cowswap-v1.92.2) (2024-12-05)
+
+
+### Bug Fixes
+
+* add safe apps fee in Base network ([#5161](https://github.com/cowprotocol/cowswap/issues/5161)) ([cefdb55](https://github.com/cowprotocol/cowswap/commit/cefdb55475f4989d745857fc9f8f2cfa77be5243))
+
+## [1.92.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.92.0...cowswap-v1.92.1) (2024-12-05)
+
+
+### Bug Fixes
+
+* **twap:** fix orders fetching ([#5157](https://github.com/cowprotocol/cowswap/issues/5157)) ([47195e2](https://github.com/cowprotocol/cowswap/commit/47195e2d326650a1fc11960077bd4861bdfcf418))
+* update safe fee tooltip label ([#5158](https://github.com/cowprotocol/cowswap/issues/5158)) ([d186042](https://github.com/cowprotocol/cowswap/commit/d186042fc75c79ccd95defe30f6b5e0d17792f17))
+
 ## [1.92.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.91.0...cowswap-v1.92.0) (2024-12-04)
 
 
