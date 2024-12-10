@@ -4,7 +4,6 @@ import qs from 'qs'
 
 import { toQueryParams } from 'util/queryParams'
 import { getCmsClient } from '@cowprotocol/core'
-import { DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
 const PAGE_SIZE = 50
 
@@ -31,11 +30,6 @@ export type Category = Schemas['CategoryListResponseDataItem']
  */
 export const client = getCmsClient()
 
-const clientAddons = {
-  // https://github.com/openapi-ts/openapi-typescript/issues/1569#issuecomment-1982247959
-  fetch: (request: unknown) => fetch(request as Request, { next: { revalidate: DATA_CACHE_TIME_SECONDS } }),
-}
-
 /**
  * Returns all article slugs.
  *
@@ -54,7 +48,6 @@ export async function getAllArticleSlugs(): Promise<string[]> {
       },
     },
     querySerializer,
-    ...clientAddons,
   })
 
   if (error) {
@@ -82,7 +75,6 @@ export async function getCategories(): Promise<Category[]> {
         },
         sort: 'name:asc',
       },
-      ...clientAddons,
     })
 
     if (error) {
@@ -138,7 +130,6 @@ export async function getArticles({
       },
     },
     querySerializer,
-    ...clientAddons,
   })
 
   if (error) {
@@ -176,7 +167,6 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
       },
     },
     querySerializer,
-    ...clientAddons,
   })
 
   if (error) {
@@ -269,7 +259,6 @@ async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles')
     params: {
       query,
     },
-    ...clientAddons,
   })
 
   if (error) {

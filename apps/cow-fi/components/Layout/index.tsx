@@ -1,3 +1,5 @@
+'use client'
+
 import { PropsWithChildren } from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
@@ -6,8 +8,8 @@ import styled, { createGlobalStyle, css } from 'styled-components/macro'
 
 import { CONFIG } from '@/const/meta'
 import { CoWDAOFonts } from '@/styles/CoWDAOFonts'
-import getURL from '@/util/getURL'
 import { NAV_ADDITIONAL_BUTTONS, NAV_ITEMS, PAGE_MAX_WIDTH, PRODUCT_VARIANT } from './const'
+import { useSetupPage } from '../../hooks/useSetupPage'
 
 const LinkComponent = (props: PropsWithChildren<{ href: string }>) => {
   const external = props.href.startsWith('http')
@@ -40,14 +42,9 @@ interface LayoutProps {
   host?: string
 }
 
-export default function Layout({
-  children,
-  bgColor,
-  metaTitle,
-  metaDescription,
-  ogImage,
-  host,
-}: Readonly<LayoutProps>) {
+export function Layout({ children, bgColor, metaTitle, metaDescription, ogImage, host }: Readonly<LayoutProps>) {
+  useSetupPage()
+
   const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts)
 
   const LocalStyles = createGlobalStyle(
@@ -55,10 +52,8 @@ export default function Layout({
       body {
         background: ${bgColor};
       }
-    `
+    `,
   )
-
-  const finalHost = host ?? getURL('')
 
   return (
     <>
@@ -86,7 +81,13 @@ export default function Layout({
         LinkComponent={LinkComponent}
       />
       <Wrapper>{children}</Wrapper>
-      <Footer maxWidth={PAGE_MAX_WIDTH} productVariant={PRODUCT_VARIANT} host={finalHost} expanded hasTouchFooter />
+      <Footer
+        maxWidth={PAGE_MAX_WIDTH}
+        productVariant={PRODUCT_VARIANT}
+        host={host ?? process.env.NEXT_PUBLIC_SITE_URL!}
+        expanded
+        hasTouchFooter
+      />
     </>
   )
 }

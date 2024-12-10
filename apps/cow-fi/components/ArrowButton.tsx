@@ -2,8 +2,9 @@ import styled from 'styled-components/macro'
 import { Color, Font } from '@cowprotocol/ui'
 import SVG from 'react-inlinesvg'
 import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'
+import Link from 'next/link'
 
-const Wrapper = styled.a`
+const Wrapper = styled(Link)`
   --size: 48px;
   min-height: var(--size);
   display: inline-flex;
@@ -17,7 +18,9 @@ const Wrapper = styled.a`
   text-decoration: none;
   color: ${Color.neutral0};
   background: ${Color.neutral100};
-  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+  transition:
+    background 0.2s ease-in-out,
+    color 0.2s ease-in-out;
 
   &:hover {
     background: ${Color.neutral98};
