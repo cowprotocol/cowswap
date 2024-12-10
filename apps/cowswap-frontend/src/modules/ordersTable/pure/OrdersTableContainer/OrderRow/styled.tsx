@@ -103,13 +103,15 @@ export const CellElement = styled.div<{
   gap: 5px;
   height: 100%;
   display: flex;
-  flex-direction: row;
+  flex-flow: row nowrap;
   align-items: ${({ doubleRow }) => (doubleRow ? 'flex-start' : 'center')};
   text-align: left;
   cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
 
   > b {
     font-weight: 500;
+    width: 100%;
+    text-align: left;
   }
 
   ${({ doubleRow }) =>
@@ -174,12 +176,10 @@ export const CurrencyAmountWrapper = styled.div<{ clickable?: boolean }>`
 `
 
 export const ProgressBarWrapper = styled.div`
-  width: 100%;
-  max-width: 50%;
+  flex: 1;
   align-items: center;
   flex-flow: row nowrap;
   gap: 8px;
-  flex-direction: row-reverse;
   padding: 0;
   font-size: 12px;
   font-weight: 500;
@@ -187,11 +187,7 @@ export const ProgressBarWrapper = styled.div`
   display: flex;
   text-align: left;
   background: transparent;
-  justify-content: center;
-
-  > b {
-    line-height: 1;
-  }
+  justify-content: flex-start;
 `
 
 export const ProgressBar = styled.div<{ value: string }>`
@@ -210,6 +206,14 @@ export const ProgressBar = styled.div<{ value: string }>`
     background: var(${UI.COLOR_SUCCESS});
     border-radius: 5px;
   }
+`
+
+export const FilledPercentageContainer = styled.div`
+  display: grid;
+  grid-template-columns: minmax(50px, auto) auto;
+  gap: 4px;
+  align-items: center;
+  width: 100%;
 `
 
 export const ExecuteCellWrapper = styled.div`

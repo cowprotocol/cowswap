@@ -308,10 +308,12 @@ export function OrderRow({
 
       {/* Filled % */}
       <styledEl.CellElement doubleRow clickable onClick={onClick}>
-        <b>
-          <PercentDisplay percent={filledPercentDisplay} />
-        </b>
-        <styledEl.ProgressBar value={filledPercentDisplay}></styledEl.ProgressBar>
+        <styledEl.FilledPercentageContainer>
+          <styledEl.ProgressBar value={filledPercentDisplay}></styledEl.ProgressBar>
+          <b>
+            <PercentDisplay percent={filledPercentDisplay} />
+          </b>
+        </styledEl.FilledPercentageContainer>
       </styledEl.CellElement>
 
       {/* Status label */}

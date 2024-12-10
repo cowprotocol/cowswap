@@ -13,7 +13,7 @@ export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: 
   gap: 14px;
   grid-template-columns: ${({ isHistoryTab, isRowSelectable }) =>
     !isHistoryTab
-      ? `${isRowSelectable ? 'var(--checkboxSize)' : ''} minmax(200px,2.5fr) minmax(110px,1fr) minmax(70px,0.5fr) minmax(110px,1fr) minmax(110px,1fr) minmax(70px,0.5fr) minmax(80px,0.8fr) 40px`
+      ? `${isRowSelectable ? 'var(--checkboxSize)' : ''} minmax(200px,2.5fr) minmax(110px,1fr) minmax(70px,0.5fr) minmax(110px,1fr) minmax(110px,1fr) minmax(80px,90px) minmax(80px,0.8fr) 40px`
       : `minmax(200px, 2.5fr)  
          repeat(3, minmax(110px, 1fr))
          minmax(80px, 0.8fr)   
