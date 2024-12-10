@@ -131,7 +131,8 @@ const TopContainer = styled.div`
 const TabsContainer = styled.div<{ withSingleChild: boolean }>`
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
+  width: 100%;
 
   ${Media.upToMedium()} {
     ${({ withSingleChild }) =>
@@ -309,9 +310,6 @@ export function OrdersTableContainer({
   return (
     <Wrapper>
       <TopContainer>
-        <h2>
-          <Trans>Orders</Trans>
-        </h2>
         <TabsContainer withSingleChild={!children}>
           <OrdersTabs tabs={tabs} />
           {children && <RightContainer>{children}</RightContainer>}

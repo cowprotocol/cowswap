@@ -40,8 +40,8 @@ import { OrdersReceiptModal } from '../OrdersReceiptModal'
 import { useGetAlternativeOrderModalContextCallback, useSelectReceiptOrder } from '../OrdersReceiptModal/hooks'
 
 const SearchInputContainer = styled.div`
-  margin: 16px 0;
-  padding: 0 16px;
+  margin: 0;
+  padding: 0 0 0 16px;
   position: relative;
 `
 
@@ -266,9 +266,8 @@ export function OrdersTableWidget({
         ordersPermitStatus={ordersPermitStatus}
         injectedWidgetParams={injectedWidgetParams}
       >
-        {currentTabId === OPEN_TAB.id && orders.length > 0 && (
-          <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />
-        )}
+        {(currentTabId === OPEN_TAB.id || currentTabId === 'all' || currentTabId === 'unfillable') &&
+          orders.length > 0 && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />}
 
         <SearchInputContainer>
           <SearchIcon />

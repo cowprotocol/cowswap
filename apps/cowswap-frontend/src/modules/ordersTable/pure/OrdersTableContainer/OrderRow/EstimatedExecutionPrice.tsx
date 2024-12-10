@@ -27,19 +27,6 @@ export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean;
     color: inherit;
   }
 
-  // Triangle warning icon override
-  ${styledEl.WarningIndicator} {
-    padding: 0 0 0 3px;
-
-    svg {
-      --size: 18px;
-      width: var(--size);
-      height: var(--size);
-      min-width: var(--size);
-      min-height: var(--size);
-    }
-  }
-
   // Popover container override
   > div > div,
   > span {
@@ -49,21 +36,15 @@ export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean;
 `
 
 const UnfillableLabel = styled.span`
-  width: 100%;
-  max-width: 90px;
-  background: var(${UI.COLOR_DANGER_BG});
-  color: var(${UI.COLOR_DANGER_TEXT});
+  width: auto;
+  color: var(${UI.COLOR_DANGER});
   position: relative;
-  border-radius: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 6px 2px;
-  margin: 0 4px 0 0;
-  letter-spacing: 0.2px;
-  text-transform: uppercase;
+  font-size: inherit;
+  font-weight: 500;
+  line-height: 1.1;
 `
 
 export type EstimatedExecutionPriceProps = TokenAmountProps & {

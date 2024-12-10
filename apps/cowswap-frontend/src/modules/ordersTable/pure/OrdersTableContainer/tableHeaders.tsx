@@ -21,12 +21,23 @@ const StyledArrowControl = styled.div`
   }
 `
 
+const HeaderElement = styled.div<{ doubleRow?: boolean }>`
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  i {
+    font-style: normal;
+    opacity: 0.7;
+    font-size: 0.85em;
+  }
+`
+
 export interface TableHeaderConfig {
   id: string
   content: ReactNode
   doubleRow?: boolean
-  showInOpenOrders?: boolean
-  showInClosedOrders?: boolean
+  showInHistory?: boolean
   width?: string
   extraComponent?: ReactNode
 }
@@ -38,18 +49,15 @@ export const createTableHeaders = (
   {
     id: 'checkbox',
     content: null,
-    showInOpenOrders: true,
   },
   {
     id: 'trade',
     content: <Trans>Sell &#x2192; Buy</Trans>,
-    showInOpenOrders: true,
-    showInClosedOrders: true,
   },
   {
     id: 'fillsAt',
     content: showLimitPrice ? <Trans>Limit price</Trans> : <Trans>Fills at</Trans>,
-    showInOpenOrders: true,
+    showInHistory: false,
     extraComponent: (
       <StyledArrowControl onClick={() => setShowLimitPrice(!showLimitPrice)}>
         <Repeat size={14} />
@@ -59,46 +67,56 @@ export const createTableHeaders = (
   {
     id: 'distanceToMarket',
     content: <Trans>Distance to market</Trans>,
-    showInOpenOrders: true,
+    showInHistory: false,
   },
   {
     id: 'limitPrice',
     content: <Trans>Limit price</Trans>,
-    showInClosedOrders: true,
+    showInHistory: true,
   },
   {
     id: 'marketPrice',
     content: <Trans>Market price</Trans>,
-    showInOpenOrders: true,
+    showInHistory: false,
+  },
+  {
+    id: 'expiration',
+    content: (
+      <HeaderElement doubleRow>
+        <Trans>Expiration</Trans>
+        <i>
+          <Trans>Creation</Trans>
+        </i>
+      </HeaderElement>
+    ),
+    showInHistory: false,
+    doubleRow: true,
   },
   {
     id: 'executionPrice',
     content: <Trans>Execution price</Trans>,
-    showInClosedOrders: true,
+    showInHistory: true,
   },
   {
     id: 'executionTime',
     content: <Trans>Execution time</Trans>,
-    showInClosedOrders: true,
+    showInHistory: true,
   },
   {
     id: 'creationTime',
     content: <Trans>Creation time</Trans>,
-    showInClosedOrders: true,
+    showInHistory: true,
   },
   {
     id: 'filled',
     content: <Trans>Filled</Trans>,
-    showInClosedOrders: true,
   },
   {
     id: 'status',
     content: <Trans>Status</Trans>,
-    showInClosedOrders: true,
   },
   {
     id: 'actions',
     content: null,
-    showInClosedOrders: true,
   },
 ]

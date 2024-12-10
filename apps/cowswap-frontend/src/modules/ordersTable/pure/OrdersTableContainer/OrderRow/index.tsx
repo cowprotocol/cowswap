@@ -74,7 +74,7 @@ export interface OrderRowProps {
   spotPrice: Price<Currency, Currency> | undefined | null
   isRateInverted: boolean
   showLimitPrice: boolean
-  isOpenOrdersTab: boolean
+  isHistoryTab: boolean
   isRowSelectable: boolean
   isRowSelected: boolean
   isChild?: boolean
@@ -89,7 +89,7 @@ export function OrderRow({
   order,
   isRateInverted: isGloballyInverted,
   showLimitPrice,
-  isOpenOrdersTab,
+  isHistoryTab,
   isRowSelectable,
   isRowSelected,
   isChild,
@@ -165,14 +165,9 @@ export function OrderRow({
   }
 
   return (
-    <TableRow
-      data-id={order.id}
-      isChildOrder={isChild}
-      isOpenOrdersTab={isOpenOrdersTab}
-      isRowSelectable={isRowSelectable}
-    >
+    <TableRow data-id={order.id} isChildOrder={isChild} isHistoryTab={isHistoryTab} isRowSelectable={isRowSelectable}>
       {/*Checkbox for multiple cancellation*/}
-      {isRowSelectable && isOpenOrdersTab && (
+      {isRowSelectable && !isHistoryTab && (
         <TableRowCheckboxWrapper>
           <TableRowCheckbox
             type="checkbox"
@@ -196,144 +191,115 @@ export function OrderRow({
         </styledEl.CurrencyAmountWrapper>
       </styledEl.CurrencyCell>
 
-      {/* Fills at / Limit price */}
-      {isOpenOrdersTab && (
-        <styledEl.PriceElement onClick={toggleIsInverted}>
-          {showLimitPrice ? (
-            <styledEl.RateValue onClick={toggleIsInverted}>
-              <RateInfo
-                prependSymbol={false}
-                isInvertedState={[isInverted, setIsInverted]}
-                noLabel={true}
-                doNotUseSmartQuote
-                isInverted={isInverted}
-                rateInfoParams={rateInfoParams}
-                opacitySymbol={true}
+      {/* Non-history tab columns */}
+      {!isHistoryTab ? (
+        <>
+          {/* Fills at / Limit price */}
+          <styledEl.PriceElement onClick={toggleIsInverted}>
+            {showLimitPrice ? (
+              <styledEl.RateValue onClick={toggleIsInverted}>
+                <RateInfo
+                  prependSymbol={false}
+                  isInvertedState={[isInverted, setIsInverted]}
+                  noLabel={true}
+                  doNotUseSmartQuote
+                  isInverted={isInverted}
+                  rateInfoParams={rateInfoParams}
+                  opacitySymbol={true}
+                />
+              </styledEl.RateValue>
+            ) : (
+              <>
+                {getIsFinalizedOrder(order) ? (
+                  '-'
+                ) : prices && estimatedExecutionPrice ? (
+                  <styledEl.ExecuteCellWrapper>
+                    <EstimatedExecutionPrice
+                      amount={executionPriceInverted}
+                      tokenSymbol={executionPriceInverted?.quoteCurrency}
+                      opacitySymbol
+                      isInverted={isInverted}
+                      percentageDifference={priceDiffs?.percentage}
+                      amountDifference={priceDiffs?.amount}
+                      percentageFee={feeDifference}
+                      amountFee={feeAmount}
+                      canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
+                      isUnfillable={withWarning}
+                      warningText={getWarningText()}
+                      WarningTooltip={(props) => (
+                        <WarningTooltip
+                          hasEnoughBalance={hasEnoughBalance ?? false}
+                          hasEnoughAllowance={hasEnoughAllowance ?? false}
+                          hasValidPendingPermit={hasValidPendingPermit}
+                          inputTokenSymbol={inputTokenSymbol}
+                          isOrderScheduled={isOrderScheduled}
+                          onApprove={() => orderActions.approveOrderToken(order.inputToken)}
+                          {...props}
+                        />
+                      )}
+                    />
+                  </styledEl.ExecuteCellWrapper>
+                ) : prices === null || !estimatedExecutionPrice || isOrderCreating ? (
+                  '-'
+                ) : (
+                  <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
+                )}
+              </>
+            )}
+          </styledEl.PriceElement>
+
+          {/* Distance to market */}
+          <styledEl.PriceElement>
+            {isUnfillable ? (
+              '-'
+            ) : priceDiffs?.percentage && Number(priceDiffs.percentage.toFixed(4)) >= MIN_PERCENTAGE_TO_DISPLAY ? (
+              <styledEl.DistanceToMarket $color={getDistanceColor(Number(priceDiffs.percentage.toFixed(4)))}>
+                {priceDiffs.percentage.toFixed(2)}%
+              </styledEl.DistanceToMarket>
+            ) : (
+              '-'
+            )}
+          </styledEl.PriceElement>
+
+          {/* Market price */}
+          <styledEl.PriceElement onClick={toggleIsInverted}>
+            {spotPrice ? (
+              <TokenAmount amount={spotPriceInverted} tokenSymbol={spotPriceInverted?.quoteCurrency} opacitySymbol />
+            ) : spotPrice === null ? (
+              '-'
+            ) : (
+              <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
+            )}
+          </styledEl.PriceElement>
+
+          {/* Expires and Created for open orders */}
+          <styledEl.CellElement doubleRow>
+            <b>{expirationTimeAgo}</b>
+            <i>{isScheduledCreating ? 'Creating...' : creationTimeAgo}</i>
+          </styledEl.CellElement>
+        </>
+      ) : (
+        <>
+          {/* History tab columns */}
+          <styledEl.PriceElement onClick={toggleIsInverted}>
+            {executedPriceInverted ? (
+              <TokenAmount
+                amount={executedPriceInverted}
+                tokenSymbol={executedPriceInverted?.quoteCurrency}
+                opacitySymbol
               />
-            </styledEl.RateValue>
-          ) : (
-            <>
-              {getIsFinalizedOrder(order) ? (
-                '-'
-              ) : prices && estimatedExecutionPrice ? (
-                <styledEl.ExecuteCellWrapper>
-                  <EstimatedExecutionPrice
-                    amount={executionPriceInverted}
-                    tokenSymbol={executionPriceInverted?.quoteCurrency}
-                    opacitySymbol
-                    isInverted={isInverted}
-                    percentageDifference={priceDiffs?.percentage}
-                    amountDifference={priceDiffs?.amount}
-                    percentageFee={feeDifference}
-                    amountFee={feeAmount}
-                    canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
-                    isUnfillable={withWarning}
-                    warningText={getWarningText()}
-                    WarningTooltip={(props) => (
-                      <WarningTooltip
-                        hasEnoughBalance={hasEnoughBalance ?? false}
-                        hasEnoughAllowance={hasEnoughAllowance ?? false}
-                        hasValidPendingPermit={hasValidPendingPermit}
-                        inputTokenSymbol={inputTokenSymbol}
-                        isOrderScheduled={isOrderScheduled}
-                        onApprove={() => orderActions.approveOrderToken(order.inputToken)}
-                        {...props}
-                      />
-                    )}
-                  />
-                </styledEl.ExecuteCellWrapper>
-              ) : prices === null || !estimatedExecutionPrice || isOrderCreating ? (
-                '-'
-              ) : (
-                <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
-              )}
-            </>
-          )}
-        </styledEl.PriceElement>
+            ) : (
+              '-'
+            )}
+          </styledEl.PriceElement>
+
+          <styledEl.CellElement>
+            {order.status === OrderStatus.FULFILLED && fulfillmentTimeAgo ? fulfillmentTimeAgo : '-'}
+          </styledEl.CellElement>
+
+          <styledEl.CellElement>{creationTimeAgo}</styledEl.CellElement>
+        </>
       )}
-
-      {/* Distance to market */}
-      {isOpenOrdersTab && (
-        <styledEl.PriceElement>
-          {priceDiffs?.percentage && Number(priceDiffs.percentage.toFixed(4)) >= MIN_PERCENTAGE_TO_DISPLAY ? (
-            <styledEl.DistanceToMarket $color={getDistanceColor(Number(priceDiffs.percentage.toFixed(4)))}>
-              {priceDiffs.percentage.toFixed(2)}%
-            </styledEl.DistanceToMarket>
-          ) : (
-            '-'
-          )}
-        </styledEl.PriceElement>
-      )}
-
-      {/* Market price */}
-      {isOpenOrdersTab && (
-        <styledEl.PriceElement onClick={toggleIsInverted}>
-          {spotPrice ? (
-            <TokenAmount amount={spotPriceInverted} tokenSymbol={spotPriceInverted?.quoteCurrency} opacitySymbol />
-          ) : spotPrice === null ? (
-            '-'
-          ) : (
-            <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
-          )}
-        </styledEl.PriceElement>
-      )}
-
-      {/* Execution price */}
-      {!isOpenOrdersTab && (
-        <styledEl.PriceElement onClick={toggleIsInverted}>
-          <styledEl.RateValue onClick={toggleIsInverted}>
-            <RateInfo
-              prependSymbol={false}
-              isInvertedState={[isInverted, setIsInverted]}
-              noLabel={true}
-              doNotUseSmartQuote
-              isInverted={isInverted}
-              rateInfoParams={rateInfoParams}
-              opacitySymbol={true}
-            />
-          </styledEl.RateValue>
-        </styledEl.PriceElement>
-      )}
-
-      {/* Execution price for closed orders */}
-      {!isOpenOrdersTab && (
-        <styledEl.PriceElement onClick={toggleIsInverted}>
-          {executedPriceInverted ? (
-            <TokenAmount
-              amount={executedPriceInverted}
-              tokenSymbol={executedPriceInverted?.quoteCurrency}
-              opacitySymbol
-            />
-          ) : (
-            '-'
-          )}
-        </styledEl.PriceElement>
-      )}
-
-      {/* Execution time for closed orders */}
-      {!isOpenOrdersTab && (
-        <styledEl.CellElement>
-          {order.status === OrderStatus.FULFILLED && fulfillmentTimeAgo ? fulfillmentTimeAgo : '-'}
-        </styledEl.CellElement>
-      )}
-
-      {/* Creation time for closed orders */}
-      {!isOpenOrdersTab && <styledEl.CellElement>{creationTimeAgo}</styledEl.CellElement>}
-
-      {/* Expires and Created for open orders */}
-      {isOpenOrdersTab && (
-        <styledEl.CellElement doubleRow>
-          <b>{expirationTimeAgo}</b>
-          <i>{isScheduledCreating ? 'Creating...' : creationTimeAgo}</i>
-        </styledEl.CellElement>
-      )}
-
-      {/* TODO: Enable once there is back-end support */}
-      {/* {!isOpenOrdersTab && ordersTableFeatures.DISPLAY_EXECUTION_TIME && (
-        <styledEl.CellElement>
-          <b>{order.status === OrderStatus.FULFILLED ? executedTimeAgo : '-'}</b>
-        </styledEl.CellElement>
-      )} */}
 
       {/* Filled % */}
       <styledEl.CellElement doubleRow clickable onClick={onClick}>

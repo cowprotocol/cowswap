@@ -23,7 +23,7 @@ const TabButton = styled(Link)<{ active: string }>`
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   text-decoration: none;
   font-size: 13px;
-  padding: 10px 14px;
+  padding: 10px;
   border: 0;
   outline: none;
   cursor: pointer;

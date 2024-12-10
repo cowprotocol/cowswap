@@ -1,34 +1,34 @@
 import { Media, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
-import styled, { css } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import { RateWrapper } from 'common/pure/RateInfo'
 
-export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectable: boolean }>`
+export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: boolean }>`
   --height: 38px;
   --checkboxSize: 16px;
   --checkBoxBorderRadius: 3px;
   display: grid;
   gap: 14px;
-  grid-template-columns: ${({ isOpenOrdersTab, isRowSelectable }) =>
-    `${isRowSelectable && isOpenOrdersTab ? 'var(--checkboxSize)' : ''} 3fr 2fr 1fr 1.4fr 1.4fr 0.7fr 108px 24px`};
+  grid-template-columns: ${({ isHistoryTab, isRowSelectable }) =>
+    !isHistoryTab
+      ? `${isRowSelectable ? 'var(--checkboxSize)' : ''} minmax(200px,2.5fr) minmax(110px,1fr) minmax(70px,0.5fr) minmax(110px,1fr) minmax(110px,1fr) minmax(70px,0.5fr) minmax(80px,0.8fr) 40px`
+      : `minmax(200px, 2.5fr)  
+         repeat(3, minmax(110px, 1fr))
+         minmax(80px, 0.8fr)   
+         minmax(100px, 1fr)  
+         40px               `};
   grid-template-rows: minmax(var(--height), 1fr);
   align-items: center;
   border: none;
   padding: 0 12px;
-  border-radius: 6px;
   background: var(${UI.COLOR_PAPER_DARKER});
-
-  ${Media.upToLargeAlt()} {
-    ${({ isRowSelectable, isOpenOrdersTab }) => css`
-      grid-template-columns: ${`${
-        isRowSelectable && isOpenOrdersTab ? 'var(--checkboxSize) minmax(200px,2fr)' : 'minmax(200px,2fr)'
-      } repeat(2,minmax(110px,2fr)) ${
-        isOpenOrdersTab ? 'minmax(140px,2.2fr) minmax(100px,1fr) minmax(100px,1fr)' : 'minmax(110px,2fr)'
-      } minmax(50px,1fr) 108px 24px`};
-    `}
-  }
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-image: initial;
+  border-bottom: 1px solid var(--cow-color-text-opacity-10);
 
   ${Media.upToSmall()} {
     --checkboxSize: 24px;
@@ -45,6 +45,11 @@ export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean }>`
     background: var(${UI.COLOR_PAPER_DARKER});
   }
 
+  > div {
+    display: flex;
+    align-items: center;
+  }
+
   > div:first-child {
     margin: 0;
 
@@ -54,21 +59,6 @@ export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean }>`
       content: '↳';
       text-decoration: none !important;
     }
-  }
-
-  > div:first-child {
-    margin-left: ${({ isChildOrder }) => (isChildOrder ? '5px' : '')};
-
-    &::before {
-      display: ${({ isChildOrder }) => (isChildOrder ? 'inline-block' : 'none')};
-      color: ${({ theme }) => transparentize(theme.info, 0.6)};
-      content: '↳';
-      text-decoration: none !important;
-    }
-  }
-
-  &:last-child {
-    border-bottom: 0;
   }
 
   ${RateWrapper} {
@@ -125,20 +115,24 @@ export const TableRowCheckbox = styled.input`
   margin: 0;
   outline: 0;
   opacity: 0.5;
+  z-index: 5;
 
   &:checked {
     border-color: var(${UI.COLOR_PRIMARY});
     background: var(${UI.COLOR_PRIMARY});
     opacity: 1;
+    z-index: 6;
   }
 
   &:checked + ${CheckboxCheckmark}::after {
     display: block;
+    z-index: 6;
   }
 
   &:indeterminate {
     background: var(${UI.COLOR_PRIMARY});
     border-color: var(${UI.COLOR_PRIMARY});
+    z-index: 6;
   }
 
   &:indeterminate + ${CheckboxCheckmark}::after {
@@ -147,15 +141,18 @@ export const TableRowCheckbox = styled.input`
     border-width: 2px 0 0 0;
     top: calc(50% + 3px);
     transform: none;
+    z-index: 6;
 
     ${Media.upToSmall()} {
       top: calc(50% + 4px);
     }
   }
 
-  &[disabled],
-  &[disabled] + ${CheckboxCheckmark} {
-    cursor: default;
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.1;
+    background: var(${UI.COLOR_TEXT});
+    z-index: 6;
   }
 `
 
@@ -172,10 +169,12 @@ export const TableRowCheckboxWrapper = styled.label`
     background: var(${UI.COLOR_PRIMARY});
     border-color: var(${UI.COLOR_PRIMARY});
     opacity: 0.5;
+    z-index: 6;
 
     + ${CheckboxCheckmark}::after {
       display: block;
       border-color: var(${UI.COLOR_BUTTON_TEXT});
+      z-index: 6;
     }
   }
 `
