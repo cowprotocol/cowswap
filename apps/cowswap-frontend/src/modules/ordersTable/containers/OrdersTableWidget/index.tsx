@@ -38,6 +38,7 @@ import { parseOrdersTableUrl } from '../../utils/parseOrdersTableUrl'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu'
 import { OrdersReceiptModal } from '../OrdersReceiptModal'
 import { useGetAlternativeOrderModalContextCallback, useSelectReceiptOrder } from '../OrdersReceiptModal/hooks'
+import { UI } from '@cowprotocol/ui'
 
 const SearchInputContainer = styled.div`
   margin: 0;
@@ -50,7 +51,7 @@ const SearchIcon = styled(Search)`
   left: 28px;
   top: 50%;
   transform: translateY(-50%);
-  color: ${({ theme }) => theme.textSecondary};
+  color: var(${UI.COLOR_TEXT_OPACITY_50});
   width: 16px;
   height: 16px;
 `
@@ -58,17 +59,18 @@ const SearchIcon = styled(Search)`
 const SearchInput = styled.input`
   width: 100%;
   padding: 8px 12px 8px 36px;
-  border: 1px solid ${({ theme }) => theme.grey};
+  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 500;
 
   &::placeholder {
-    color: ${({ theme }) => theme.textSecondary};
+    color: var(${UI.COLOR_TEXT_OPACITY_50});
   }
 
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.blue};
+    border-color: var(${UI.COLOR_TEXT});
   }
 `
 
@@ -214,32 +216,37 @@ export function OrdersTableWidget({
       const inputToken = parsedOrder.inputToken
       const outputToken = parsedOrder.outputToken
 
-      // Check symbols (case-insensitive)
-      if (
-        inputToken.symbol?.toLowerCase().includes(searchTermLower) ||
-        outputToken.symbol?.toLowerCase().includes(searchTermLower)
-      ) {
-        return true
-      }
+      // First check for token symbols (case-insensitive)
+      const symbolMatch = [inputToken.symbol, outputToken.symbol].some((symbol) => {
+        return symbol?.toLowerCase().includes(searchTermLower)
+      })
 
-      // Clean up the search term but preserve '0x' prefix
+      if (symbolMatch) return true
+
+      // If not a symbol match, check for address matches
+      // Clean up the search term but preserve '0x' prefix if present
       const hasPrefix = searchTermLower.startsWith('0x')
-      const cleanedSearch = searchTermLower.replace(/[^0-9a-fx]/g, '') // Allow 'x' for '0x'
+      const cleanedSearch = searchTermLower.replace(/[^0-9a-fx]/g, '')
 
       // For exact address matches (40 or 42 chars), do strict comparison
       if (cleanedSearch.length === 40 || cleanedSearch.length === 42) {
-        const searchTermNormalized = cleanedSearch.startsWith('0x') ? cleanedSearch : `0x${cleanedSearch}`
+        const searchTermNormalized = hasPrefix ? cleanedSearch : `0x${cleanedSearch}`
         return [inputToken.address, outputToken.address].some(
           (address) => address.toLowerCase() === searchTermNormalized.toLowerCase(),
         )
       }
 
-      // For partial address matches, allow includes
+      // For partial address matches
       const searchWithoutPrefix = hasPrefix ? cleanedSearch.slice(2) : cleanedSearch
-      return [inputToken.address, outputToken.address].some((address) => {
-        const addressWithoutPrefix = address.slice(2).toLowerCase()
-        return addressWithoutPrefix.includes(searchWithoutPrefix.toLowerCase())
-      })
+      if (searchWithoutPrefix.length >= 2) {
+        // Only search if we have at least 2 characters
+        return [inputToken.address, outputToken.address].some((address) => {
+          const addressWithoutPrefix = address.slice(2).toLowerCase()
+          return addressWithoutPrefix.includes(searchWithoutPrefix.toLowerCase())
+        })
+      }
+
+      return false
     })
   }, [orders, searchTerm])
 
@@ -265,6 +272,7 @@ export function OrdersTableWidget({
         pendingActivities={pendingActivity}
         ordersPermitStatus={ordersPermitStatus}
         injectedWidgetParams={injectedWidgetParams}
+        searchTerm={searchTerm}
       >
         {(currentTabId === OPEN_TAB.id || currentTabId === 'all' || currentTabId === 'unfillable') &&
           orders.length > 0 && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />}
@@ -273,7 +281,7 @@ export function OrdersTableWidget({
           <SearchIcon />
           <SearchInput
             type="text"
-            placeholder="Token symbol, address"
+            placeholder="token symbol, address"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />

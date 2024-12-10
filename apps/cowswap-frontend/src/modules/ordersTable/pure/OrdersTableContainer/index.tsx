@@ -185,6 +185,7 @@ interface OrdersProps {
   pendingOrdersPrices: any
   getSpotPrice: any
   ordersPermitStatus: any
+  searchTerm?: string
 }
 
 export function OrdersTableContainer({
@@ -206,6 +207,7 @@ export function OrdersTableContainer({
   pendingActivities,
   ordersPermitStatus,
   injectedWidgetParams,
+  searchTerm,
 }: OrdersProps) {
   const currentTab = useMemo(() => {
     const activeTab = tabs.find((tab) => tab.isActive)
@@ -252,13 +254,15 @@ export function OrdersTableContainer({
           </span>
           <h3>
             <Trans>
-              {currentTab === ALL_ORDERS_TAB.id
-                ? 'No orders'
-                : currentTab === UNFILLABLE_TAB.id
-                  ? 'No unfillable orders'
-                  : currentTab === OPEN_TAB.id
-                    ? 'No open orders'
-                    : 'No orders history'}
+              {searchTerm
+                ? 'No matching orders found'
+                : currentTab === ALL_ORDERS_TAB.id
+                  ? 'No orders'
+                  : currentTab === UNFILLABLE_TAB.id
+                    ? 'No unfillable orders'
+                    : currentTab === OPEN_TAB.id
+                      ? 'No open orders'
+                      : 'No order history'}
             </Trans>
           </h3>
           <p>
@@ -266,6 +270,8 @@ export function OrdersTableContainer({
               <Trans>
                 Use the <CowSwapSafeAppLink /> to see {currentTab === HISTORY_TAB.id ? 'orders history' : 'your orders'}
               </Trans>
+            ) : searchTerm ? (
+              <Trans>Try adjusting your search term or clearing the filter</Trans>
             ) : (
               <>
                 <Trans>
@@ -273,14 +279,18 @@ export function OrdersTableContainer({
                   {currentTab === UNFILLABLE_TAB.id ? 'unfillable' : currentTab === OPEN_TAB.id ? 'open' : ''} orders at
                   the moment.
                 </Trans>{' '}
-                <br />
-                <Trans>Time to create a new one!</Trans>{' '}
-                {orderType === TabOrderTypes.LIMIT ? (
-                  <ExternalLinkStyled href="https://cow-protocol.medium.com/how-to-user-cow-swaps-surplus-capturing-limit-orders-24324326dc9e">
-                    <Trans>Learn more</Trans>
-                    <ExternalArrow />
-                  </ExternalLinkStyled>
-                ) : null}
+                {(currentTab === OPEN_TAB.id || currentTab === ALL_ORDERS_TAB.id) && (
+                  <>
+                    <br />
+                    <Trans>Time to create a new one!</Trans>{' '}
+                    {orderType === TabOrderTypes.LIMIT ? (
+                      <ExternalLinkStyled href="https://cow-protocol.medium.com/how-to-user-cow-swaps-surplus-capturing-limit-orders-24324326dc9e">
+                        <Trans>Learn more</Trans>
+                        <ExternalArrow />
+                      </ExternalLinkStyled>
+                    ) : null}
+                  </>
+                )}
               </>
             )}
           </p>
