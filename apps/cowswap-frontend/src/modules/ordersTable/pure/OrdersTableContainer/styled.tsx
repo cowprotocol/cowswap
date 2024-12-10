@@ -62,14 +62,18 @@ export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean }>`
   }
 
   > div:first-child {
-    margin: 0;
+    margin-left: ${({ isChildOrder }) => (isChildOrder ? '5px' : '')};
 
     &::before {
       display: ${({ isChildOrder }) => (isChildOrder ? 'inline-block' : 'none')};
-      color: ${({ theme }) => transparentize(theme.text, 0.5)};
+      color: ${({ theme }) => transparentize(theme.info, 0.6)};
       content: '↳';
       text-decoration: none !important;
     }
+  }
+
+  &:last-child {
+    border-bottom: 0;
   }
 
   ${RateWrapper} {
