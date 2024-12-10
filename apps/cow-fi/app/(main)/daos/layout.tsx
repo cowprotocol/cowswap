@@ -4,7 +4,7 @@ import { CONFIG } from '@/const/meta'
 
 export const metadata: Metadata = {
   ...getPageMetadata({
-    title: 'DAOs - Savvy DAOs Choose CoW Swap',
+    absoluteTitle: 'DAOs - Savvy DAOs Choose CoW Swap',
     description: 'The smartest DAOs trust CoW Swap with their most-important trades',
   }),
 }

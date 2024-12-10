@@ -13,6 +13,7 @@ import { ArticlePageComponent } from '@/components/ArticlePageComponent'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { stripHtmlTags } from '@/util/stripHTMLTags'
+import { getPageMetadata } from '@/util/getPageMetadata'
 
 function isRichTextComponent(block: any): block is SharedRichTextComponent {
   return block.body !== undefined
@@ -36,17 +37,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     blocks?.map((block: SharedRichTextComponent) => (isRichTextComponent(block) ? block.body : '')).join(' ') || ''
   const plainContent = stripHtmlTags(content)
 
-  return {
+  return getPageMetadata({
     title,
     description: description
       ? stripHtmlTags(description)
       : plainContent.length > 150
         ? stripHtmlTags(plainContent.substring(0, 147)) + '...'
         : stripHtmlTags(plainContent),
-    openGraph: {
-      images: coverImageUrl ? [coverImageUrl] : [],
-    },
-  }
+    image: coverImageUrl,
+  })
 }
 
 export async function generateStaticParams() {

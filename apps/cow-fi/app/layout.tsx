@@ -1,6 +1,7 @@
 import { Metadata, Viewport } from 'next'
 import { CONFIG } from '@/const/meta'
 import { Providers } from './providers'
+import { getPageMetadata } from '@/util/getPageMetadata'
 
 export const viewport: Viewport = {
   themeColor: '#ffffff',
@@ -9,9 +10,10 @@ export const viewport: Viewport = {
   maximumScale: 1,
 }
 
+const defaultMetadata = getPageMetadata({ description: CONFIG.description })
+
 export const metadata: Metadata = {
-  title: CONFIG.title,
-  description: CONFIG.description,
+  ...defaultMetadata,
   metadataBase: new URL(CONFIG.url.root),
   alternates: { canonical: './' },
   icons: {
@@ -28,16 +30,14 @@ export const metadata: Metadata = {
     },
   },
   twitter: {
+    ...defaultMetadata.twitter,
     card: 'summary_large_image',
     site: CONFIG.social.twitter.account,
-    title: CONFIG.title,
-    description: CONFIG.description,
     images: [{ url: `${CONFIG.url.root}/images/og-meta-cowdao.png` }],
   },
   openGraph: {
+    ...defaultMetadata.openGraph,
     type: 'website',
-    title: CONFIG.title,
-    description: CONFIG.description,
     url: './',
     images: [{ url: `${CONFIG.url.root}/images/og-meta-cowdao.png` }],
   },
