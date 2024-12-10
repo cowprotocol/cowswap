@@ -34,7 +34,7 @@ export interface TableGroupProps {
   spotPrice: Price<Currency, Currency> | undefined | null
   isRateInverted: boolean
   showLimitPrice: boolean
-  isOpenOrdersTab: boolean
+  isHistoryTab: boolean
   isRowSelectable: boolean
   isRowSelected: boolean
   orderActions: OrderActions
@@ -49,7 +49,7 @@ export function TableGroup(props: TableGroupProps) {
     spotPrice,
     isRateInverted,
     showLimitPrice,
-    isOpenOrdersTab,
+    isHistoryTab,
     isRowSelectable,
     isRowSelected,
     orderActions,
@@ -70,7 +70,7 @@ export function TableGroup(props: TableGroupProps) {
 
   const commonProps = {
     isRowSelectable,
-    isOpenOrdersTab,
+    isHistoryTab,
     spotPrice,
     prices,
     isRateInverted,

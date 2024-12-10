@@ -22,7 +22,7 @@ const Wrapper = styled.div<{ hasSelectedItems: boolean }>`
   align-items: center;
   justify-content: space-between;
   gap: 6px;
-  margin: 0 10px 0 ${({ hasSelectedItems }) => (hasSelectedItems ? '' : 'auto')};
+  margin: 0 0 0 ${({ hasSelectedItems }) => (hasSelectedItems ? '' : 'auto')};
 
   ${Media.upToSmall()} {
     width: 100%;
@@ -38,7 +38,7 @@ const ActionButton = styled.button`
   font-weight: 600;
   text-decoration: none;
   font-size: 13px;
-  padding: 10px 15px;
+  padding: 7px 12px;
   margin: 0;
   gap: 5px;
   border: 0;
@@ -65,7 +65,7 @@ const TextButton = styled.button`
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   font-size: 12px;
   font-weight: 500;
-  padding: 5px 10px;
+  padding: 5px;
   cursor: pointer;
   background: none;
   outline: none;

@@ -1,5 +1,6 @@
 import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 import { SymbolElement, TokenAmount, TokenAmountProps } from '@cowprotocol/ui'
 import { HoverTooltip } from '@cowprotocol/ui'
@@ -27,19 +28,6 @@ export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean;
     color: inherit;
   }
 
-  // Triangle warning icon override
-  ${styledEl.WarningIndicator} {
-    padding: 0 0 0 3px;
-
-    svg {
-      --size: 18px;
-      width: var(--size);
-      height: var(--size);
-      min-width: var(--size);
-      min-height: var(--size);
-    }
-  }
-
   // Popover container override
   > div > div,
   > span {
@@ -49,21 +37,36 @@ export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean;
 `
 
 const UnfillableLabel = styled.span`
-  width: 100%;
-  max-width: 90px;
-  background: var(${UI.COLOR_DANGER_BG});
-  color: var(${UI.COLOR_DANGER_TEXT});
+  width: auto;
+  color: var(${UI.COLOR_DANGER});
   position: relative;
-  border-radius: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 6px 2px;
-  margin: 0 4px 0 0;
-  letter-spacing: 0.2px;
-  text-transform: uppercase;
+  font-size: inherit;
+  font-weight: 500;
+  line-height: 1.1;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 3px;
+`
+
+const ApprovalLink = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font-size: inherit;
+  color: inherit;
+  text-decoration: underline;
+  color: var(${UI.COLOR_PRIMARY});
+  font-weight: 500;
+
+  &:hover {
+    opacity: 1;
+  }
 `
 
 export type EstimatedExecutionPriceProps = TokenAmountProps & {
@@ -74,10 +77,15 @@ export type EstimatedExecutionPriceProps = TokenAmountProps & {
   amountDifference?: CurrencyAmount<Currency>
   percentageFee?: Percent
   amountFee?: CurrencyAmount<Currency>
+  warningText?: string
+  WarningTooltip?: React.FC<{ children: React.ReactNode; showIcon: boolean }>
+  onApprove?: Command
 }
 
 export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
   const {
+    amount,
+    tokenSymbol,
     isInverted,
     isUnfillable,
     canShowWarning,
@@ -85,7 +93,9 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
     amountDifference,
     percentageFee,
     amountFee,
-    amount,
+    warningText,
+    WarningTooltip,
+    onApprove,
     ...rest
   } = props
 
@@ -104,14 +114,24 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
 
   const content = (
     <>
-      <TokenAmount amount={amount} {...rest} />
+      <TokenAmount amount={amount} tokenSymbol={tokenSymbol} {...rest} />
     </>
+  )
+
+  const unfillableLabel = (
+    <UnfillableLabel>
+      {warningText}
+      {warningText === 'Insufficient allowance' && onApprove && (
+        <ApprovalLink onClick={onApprove}>Set approval</ApprovalLink>
+      )}
+      {WarningTooltip && <WarningTooltip showIcon>{null}</WarningTooltip>}
+    </UnfillableLabel>
   )
 
   return (
     <EstimatedExecutionPriceWrapper hasWarning={!!feeWarning} showPointerCursor={!isUnfillable}>
       {isUnfillable ? (
-        <UnfillableLabel>UNFILLABLE</UnfillableLabel>
+        <div>{unfillableLabel}</div>
       ) : !absoluteDifferenceAmount ? (
         <span>{content}</span>
       ) : (
@@ -119,7 +139,9 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
           wrapInContainer={true}
           content={
             <styledEl.ExecuteInformationTooltip>
-              {!isNegativeDifference ? (
+              {isNegativeDifference && Math.abs(Number(percentageDifferenceInverted?.toFixed(4) ?? 0)) <= 0.01 ? (
+                <>Will execute soon!</>
+              ) : (
                 <>
                   Market price needs to go {marketPriceNeedsToGoDown ? 'down 📉' : 'up 📈'} by&nbsp;
                   <b>
@@ -131,8 +153,6 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
                   </span>
                   &nbsp;to execute your order.
                 </>
-              ) : (
-                <>Will execute soon!</>
               )}
             </styledEl.ExecuteInformationTooltip>
           }

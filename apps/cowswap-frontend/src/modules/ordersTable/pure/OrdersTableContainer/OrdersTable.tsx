@@ -20,7 +20,7 @@ import { TableGroup } from './TableGroup'
 import { createTableHeaders } from './tableHeaders'
 import { OrderActions } from './types'
 
-import { ALL_ORDERS_TAB, HISTORY_TAB, OPEN_TAB, UNFILLABLE_TAB, ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
+import { HISTORY_TAB, ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
 import { useGetBuildOrdersTableUrl } from '../../hooks/useGetBuildOrdersTableUrl'
 import { getOrderParams } from '../../utils/getOrderParams'
 import {
@@ -176,11 +176,12 @@ export function OrdersTable({
   const tableHeaders = useMemo(() => createTableHeaders(showLimitPrice, setShowLimitPrice), [showLimitPrice])
 
   const visibleHeaders = useMemo(() => {
+    const isHistoryTab = currentTab === HISTORY_TAB.id
     return tableHeaders.filter((header) => {
-      if (currentTab === OPEN_TAB.id || currentTab === UNFILLABLE_TAB.id || currentTab === ALL_ORDERS_TAB.id) {
-        return header.showInOpenOrders
-      }
-      return header.showInClosedOrders
+      // If showInHistory is not defined, show the header in all tabs
+      if (header.showInHistory === undefined) return true
+      // Otherwise, show based on the showInHistory value
+      return header.showInHistory === isHistoryTab
     })
   }, [tableHeaders, currentTab])
 
@@ -188,7 +189,7 @@ export function OrdersTable({
     <>
       <TableBox>
         <TableInner onScroll={onScroll}>
-          <TableHeader isOpenOrdersTab={currentTab !== HISTORY_TAB.id} isRowSelectable={isRowSelectable}>
+          <TableHeader isHistoryTab={currentTab === HISTORY_TAB.id} isRowSelectable={isRowSelectable}>
             {visibleHeaders.map((header) => {
               if (header.id === 'checkbox' && (!isRowSelectable || currentTab === HISTORY_TAB.id)) {
                 return null
@@ -244,7 +245,7 @@ export function OrdersTable({
                     key={order.id}
                     isRowSelectable={isRowSelectable}
                     isRowSelected={!!selectedOrdersMap[order.id]}
-                    isOpenOrdersTab={currentTab !== HISTORY_TAB.id}
+                    isHistoryTab={currentTab === HISTORY_TAB.id}
                     order={order}
                     spotPrice={spotPrice}
                     prices={pendingOrdersPrices[order.id]}
@@ -265,7 +266,7 @@ export function OrdersTable({
                     key={item.parent.id}
                     isRowSelectable={isRowSelectable}
                     isRowSelected={!!selectedOrdersMap[item.parent.id]}
-                    isOpenOrdersTab={currentTab !== HISTORY_TAB.id}
+                    isHistoryTab={currentTab === HISTORY_TAB.id}
                     spotPrice={spotPrice}
                     prices={pendingOrdersPrices[item.parent.id]}
                     isRateInverted={false}
