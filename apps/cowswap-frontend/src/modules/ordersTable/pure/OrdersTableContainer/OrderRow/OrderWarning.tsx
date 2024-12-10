@@ -79,7 +79,7 @@ function AllowanceWarning({ symbol, isScheduled, approve }: AllowanceWarningProp
         )}
       </p>
       <styledEl.WarningActionBox>
-        <ButtonSecondary onClick={approve}>Approve</ButtonSecondary>
+        <ButtonSecondary onClick={approve}>Set allowance</ButtonSecondary>
       </styledEl.WarningActionBox>
     </styledEl.WarningParagraph>
   )
@@ -106,7 +106,8 @@ export function WarningTooltip({
   onApprove,
   showIcon = false,
 }: WarningTooltipProps) {
-  const withAllowanceWarning = hasEnoughAllowance === false && hasValidPendingPermit === false
+  const withAllowanceWarning =
+    hasEnoughAllowance === false && (hasValidPendingPermit === false || hasValidPendingPermit === undefined)
 
   const tooltipContent = (
     <styledEl.WarningContent>

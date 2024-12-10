@@ -210,7 +210,7 @@ export const ProgressBar = styled.div<{ value: string }>`
 
 export const FilledPercentageContainer = styled.div`
   display: grid;
-  grid-template-columns: minmax(50px, auto) auto;
+  grid-template-columns: 50px 36px;
   gap: 4px;
   align-items: center;
   width: 100%;

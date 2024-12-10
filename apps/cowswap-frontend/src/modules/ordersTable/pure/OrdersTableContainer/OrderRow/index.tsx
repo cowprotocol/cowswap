@@ -164,6 +164,19 @@ export function OrderRow({
     return 'Unfillable'
   }
 
+  const renderWarningTooltip = (showIcon?: boolean) => (props: { children: React.ReactNode }) => (
+    <WarningTooltip
+      hasEnoughBalance={hasEnoughBalance ?? false}
+      hasEnoughAllowance={hasEnoughAllowance ?? false}
+      hasValidPendingPermit={hasValidPendingPermit}
+      inputTokenSymbol={inputTokenSymbol}
+      isOrderScheduled={isOrderScheduled}
+      onApprove={() => orderActions.approveOrderToken(order.inputToken)}
+      showIcon={showIcon}
+      {...props}
+    />
+  )
+
   return (
     <TableRow data-id={order.id} isChildOrder={isChild} isHistoryTab={isHistoryTab} isRowSelectable={isRowSelectable}>
       {/*Checkbox for multiple cancellation*/}
@@ -230,17 +243,8 @@ export function OrderRow({
                         canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
                         isUnfillable={withWarning}
                         warningText={getWarningText()}
-                        WarningTooltip={(props) => (
-                          <WarningTooltip
-                            hasEnoughBalance={hasEnoughBalance ?? false}
-                            hasEnoughAllowance={hasEnoughAllowance ?? false}
-                            hasValidPendingPermit={hasValidPendingPermit}
-                            inputTokenSymbol={inputTokenSymbol}
-                            isOrderScheduled={isOrderScheduled}
-                            onApprove={() => orderActions.approveOrderToken(order.inputToken)}
-                            {...props}
-                          />
-                        )}
+                        onApprove={() => orderActions.approveOrderToken(order.inputToken)}
+                        WarningTooltip={renderWarningTooltip()}
                       />
                     )}
                   </styledEl.ExecuteCellWrapper>
@@ -337,22 +341,7 @@ export function OrderRow({
             order={order}
             withWarning={withWarning}
             onClick={onClick}
-            WarningTooltip={
-              withWarning
-                ? (props) => (
-                    <WarningTooltip
-                      hasEnoughBalance={hasEnoughBalance ?? false}
-                      hasEnoughAllowance={hasEnoughAllowance ?? false}
-                      hasValidPendingPermit={hasValidPendingPermit}
-                      inputTokenSymbol={inputTokenSymbol}
-                      isOrderScheduled={isOrderScheduled}
-                      onApprove={() => orderActions.approveOrderToken(order.inputToken)}
-                      showIcon={true}
-                      {...props}
-                    />
-                  )
-                : undefined
-            }
+            WarningTooltip={withWarning ? renderWarningTooltip(true) : undefined}
           />
         </styledEl.StatusBox>
       </styledEl.CellElement>

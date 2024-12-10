@@ -66,7 +66,12 @@ export const createTableHeaders = (
   },
   {
     id: 'distanceToMarket',
-    content: <Trans>Distance to market</Trans>,
+    content: (
+      <Trans>
+        Distance <br />
+        to market
+      </Trans>
+    ),
     showInHistory: false,
   },
   {

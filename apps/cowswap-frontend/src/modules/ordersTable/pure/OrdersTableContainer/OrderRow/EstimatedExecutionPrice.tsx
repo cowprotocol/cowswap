@@ -1,5 +1,6 @@
 import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 import { SymbolElement, TokenAmount, TokenAmountProps } from '@cowprotocol/ui'
 import { HoverTooltip } from '@cowprotocol/ui'
@@ -45,6 +46,27 @@ const UnfillableLabel = styled.span`
   font-size: inherit;
   font-weight: 500;
   line-height: 1.1;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 3px;
+`
+
+const ApprovalLink = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font-size: inherit;
+  color: inherit;
+  text-decoration: underline;
+  color: var(${UI.COLOR_PRIMARY});
+  font-weight: 500;
+
+  &:hover {
+    opacity: 1;
+  }
 `
 
 export type EstimatedExecutionPriceProps = TokenAmountProps & {
@@ -56,11 +78,14 @@ export type EstimatedExecutionPriceProps = TokenAmountProps & {
   percentageFee?: Percent
   amountFee?: CurrencyAmount<Currency>
   warningText?: string
-  WarningTooltip?: React.FC<{ children: React.ReactNode }>
+  WarningTooltip?: React.FC<{ children: React.ReactNode; showIcon: boolean }>
+  onApprove?: Command
 }
 
 export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
   const {
+    amount,
+    tokenSymbol,
     isInverted,
     isUnfillable,
     canShowWarning,
@@ -68,9 +93,9 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
     amountDifference,
     percentageFee,
     amountFee,
-    amount,
     warningText,
     WarningTooltip,
+    onApprove,
     ...rest
   } = props
 
@@ -89,20 +114,24 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
 
   const content = (
     <>
-      <TokenAmount amount={amount} {...rest} />
+      <TokenAmount amount={amount} tokenSymbol={tokenSymbol} {...rest} />
     </>
   )
 
-  const unfillableLabel = <UnfillableLabel>{warningText || 'UNFILLABLE'}</UnfillableLabel>
+  const unfillableLabel = (
+    <UnfillableLabel>
+      {warningText}
+      {warningText === 'Insufficient allowance' && onApprove && (
+        <ApprovalLink onClick={onApprove}>Set approval</ApprovalLink>
+      )}
+      {WarningTooltip && <WarningTooltip showIcon>{null}</WarningTooltip>}
+    </UnfillableLabel>
+  )
 
   return (
     <EstimatedExecutionPriceWrapper hasWarning={!!feeWarning} showPointerCursor={!isUnfillable}>
       {isUnfillable ? (
-        WarningTooltip ? (
-          <WarningTooltip>{unfillableLabel}</WarningTooltip>
-        ) : (
-          unfillableLabel
-        )
+        <div>{unfillableLabel}</div>
       ) : !absoluteDifferenceAmount ? (
         <span>{content}</span>
       ) : (

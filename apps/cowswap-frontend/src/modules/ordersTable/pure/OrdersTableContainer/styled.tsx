@@ -6,23 +6,24 @@ import styled from 'styled-components/macro'
 import { RateWrapper } from 'common/pure/RateInfo'
 
 export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: boolean }>`
-  --height: 51px;
+  --header-height: 26px;
+  --row-height: 41px;
   --checkboxSize: 16px;
   --checkBoxBorderRadius: 3px;
   display: grid;
   gap: 14px;
   grid-template-columns: ${({ isHistoryTab, isRowSelectable }) =>
     !isHistoryTab
-      ? `${isRowSelectable ? 'var(--checkboxSize)' : ''} minmax(200px,2.5fr) minmax(110px,1fr) minmax(70px,0.5fr) minmax(110px,1fr) minmax(110px,1fr) minmax(80px,90px) minmax(80px,0.8fr) 24px`
+      ? `${isRowSelectable ? 'var(--checkboxSize)' : ''} minmax(200px,2.5fr) minmax(140px,1fr) minmax(70px,0.5fr) minmax(110px,1fr) minmax(110px,1fr) minmax(80px,90px) minmax(80px,0.8fr) 24px`
       : `minmax(200px, 2.5fr)  
          repeat(4, minmax(110px, 1fr))
          minmax(80px, 0.8fr)   
          minmax(100px, 1fr)  
          24px               `};
-  grid-template-rows: minmax(var(--height), 1fr);
+  grid-template-rows: minmax(var(--header-height), 1fr);
   align-items: center;
   border: none;
-  padding: 0 12px;
+  padding: 5px 12px;
   background: var(${UI.COLOR_PAPER_DARKER});
   border-top: none;
   border-right: none;
@@ -37,6 +38,7 @@ export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: 
 `
 
 export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean }>`
+  grid-template-rows: minmax(var(--row-height), 1fr);
   background: ${({ isChildOrder }) => (isChildOrder ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
   display: grid;
