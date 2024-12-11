@@ -42,7 +42,7 @@ export const volumeFeeAtom = atom<VolumeFee | undefined>((get) => {
         })
 
         if (isTaxFreeTrade) {
-          console.debug('Tax free trade detected', { inputCurrencyAddress, outputCurrencyAddress })
+          console.debug('Tax free trade detected', { inputCurrency, outputCurrency })
           return undefined
         }
       }
