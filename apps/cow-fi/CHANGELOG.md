@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.19.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.18.0...cow-fi-v1.19.0) (2024-12-11)
+
+
+### Features
+
+* **cow-fi:** upgrade project structure to /app ([#5167](https://github.com/cowprotocol/cowswap/issues/5167)) ([ed152f7](https://github.com/cowprotocol/cowswap/commit/ed152f7ac0fa62ab2c0b9c93035a551c3b8cb4b6))
+
+
+### Bug Fixes
+
+* add Base to CoW Protocol FAQ on cow.fi ([#5179](https://github.com/cowprotocol/cowswap/issues/5179)) ([a38a3e5](https://github.com/cowprotocol/cowswap/commit/a38a3e5b0cb82d3ad1863f980cfa062d3e8d9954))
+
 ## [1.18.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.17.0...cow-fi-v1.18.0) (2024-12-09)
 
 

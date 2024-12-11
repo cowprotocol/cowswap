@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.3.0...hook-dapp-lib-v1.4.0) (2024-12-11)
+
+
+### Features
+
+* **hook-store:** add cow amm deposit hook dapp ([#5069](https://github.com/cowprotocol/cowswap/issues/5069)) ([4b9331c](https://github.com/cowprotocol/cowswap/commit/4b9331cbfab92fc113043c4e204e280b55d09f62))
+
 ## [1.3.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.2.0...hook-dapp-lib-v1.3.0) (2024-10-29)
 
 
