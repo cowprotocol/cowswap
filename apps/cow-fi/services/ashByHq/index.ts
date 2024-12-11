@@ -1,3 +1,5 @@
+'use server'
+
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
 interface AshbyResponse {

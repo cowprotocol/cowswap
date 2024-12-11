@@ -42,6 +42,7 @@ export async function tradeFlow(
   const { account, recipientAddressOrName, sellToken, buyToken, appData, isSafeWallet, inputAmount, outputAmount } =
     postOrderParams
   const marketLabel = [sellToken.symbol, buyToken.symbol].join(',')
+
   const swapFlowAnalyticsContext: TradeFlowAnalyticsContext = {
     account,
     recipient: recipientAddressOrName,

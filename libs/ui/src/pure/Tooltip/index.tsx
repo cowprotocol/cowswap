@@ -54,7 +54,7 @@ export function HoverTooltip(props: HoverTooltipProps) {
   // { text, className, ...rest }: TooltipProps
 
   const [show, setShow] = useState(false)
-  const cancelCloseRef = useRef<Command | null>()
+  const cancelCloseRef = useRef<Command | null>(null)
 
   const divRef = useRef<HTMLDivElement>(null)
   const open = useCallback(

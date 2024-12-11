@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components/macro'
 import { Font, Color, Media } from '@cowprotocol/ui'
 import { transparentize } from 'color2k'
 import { PAGE_MAX_WIDTH } from '@/components/Layout/const'
+import Link from 'next/link'
 
 export const PageWrapper = styled.div<{ margin?: string }>`
   display: flex;
@@ -132,7 +133,7 @@ export const ArticleList = styled.div<{ columns?: number; columnsTablet?: number
   }
 `
 
-export const ArticleCard = styled.a`
+export const ArticleCard = styled(Link)`
   display: flex;
   flex-direction: column;
   padding: 0;

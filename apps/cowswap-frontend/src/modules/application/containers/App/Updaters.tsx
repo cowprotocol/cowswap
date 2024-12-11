@@ -1,6 +1,5 @@
 import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { SolversInfoUpdater } from '@cowprotocol/core'
 import { TokensListsUpdater, UnsupportedTokensUpdater, WidgetTokensListsUpdater } from '@cowprotocol/tokens'
 import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
@@ -33,6 +32,7 @@ import {
 } from 'common/updaters/orders'
 import { SpotPricesUpdater } from 'common/updaters/orders/SpotPricesUpdater'
 import { SentryUpdater } from 'common/updaters/SentryUpdater'
+import { SolversInfoUpdater } from 'common/updaters/SolversInfoUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
 
 export function Updaters() {
