@@ -48,6 +48,7 @@ export function TaxFreeAssetsUpdater() {
           query: {
             fields: ['chainId', 'tokenIds'],
           },
+          pagination: { pageSize: 500 },
         },
       })
       const items = data.data as TaxFreeAssetItem[]
