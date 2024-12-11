@@ -1,8 +1,16 @@
 import { Metadata } from 'next'
+import { getPageMetadata } from '@/util/getPageMetadata'
+import { CONFIG } from '@/const/meta'
+
+const title = 'Knowledge Base - CoW DAO'
 
 export const metadata: Metadata = {
+  ...getPageMetadata({
+    title,
+    description: CONFIG.description,
+  }),
   title: {
-    default: 'Knowledge Base - CoW DAO',
+    default: title,
     template: '%s - CoW DAO',
   },
 }

@@ -5,6 +5,7 @@ import { getAllCategorySlugs, getArticles, getCategories, getCategoryBySlug } fr
 import { TopicPageComponent } from '@/components/TopicPageComponent'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { getPageMetadata } from '@/util/getPageMetadata'
 
 type Props = {
   params: Promise<{ topicSlug: string }>
@@ -16,12 +17,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!topicSlug) return {}
 
   const category = await getCategoryBySlug(topicSlug)
-  const { name, description } = category?.attributes || {}
+  const { name, description = '' } = category?.attributes || {}
 
-  return {
-    title: name,
+  return getPageMetadata({
+    absoluteTitle: `${name} - Knowledge base`,
     description,
-  }
+  })
 }
 
 export async function generateStaticParams() {
