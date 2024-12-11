@@ -15,12 +15,25 @@ import { taxFreeAssetsAtom } from './taxFreeAssetsAtom'
 import { VolumeFee } from '../types'
 
 export const volumeFeeAtom = atom<VolumeFee | undefined>((get) => {
-  const { chainId } = get(walletInfoAtom)
   const tradeState = get(derivedTradeStateAtom)
-  const taxFreeAssetsState = get(taxFreeAssetsAtom)
   const cowSwapFee = get(cowSwapFeeAtom)
   const widgetPartnerFee = get(widgetPartnerFeeAtom)
   const safeAppFee = get(safeAppFeeAtom)
+  const shouldSkipFee = get(shouldSkipFeeAtom)
+
+  if (!widgetPartnerFee && shouldSkipFee) {
+    console.debug('Tax free trade detected', tradeState)
+    return undefined
+  }
+
+  // CoW Swap Fee won't be enabled when in Widget mode, thus it takes precedence here
+  return safeAppFee || cowSwapFee || widgetPartnerFee
+})
+
+const shouldSkipFeeAtom = atom<boolean>((get) => {
+  const { chainId } = get(walletInfoAtom)
+  const tradeState = get(derivedTradeStateAtom)
+  const taxFreeAssetsState = get(taxFreeAssetsAtom)
 
   if (tradeState) {
     const taxFreeAssets = taxFreeAssetsState[chainId]
@@ -31,7 +44,7 @@ export const volumeFeeAtom = atom<VolumeFee | undefined>((get) => {
         const inputCurrencyAddress = getCurrencyAddress(inputCurrency).toLowerCase()
         const outputCurrencyAddress = getCurrencyAddress(outputCurrency).toLowerCase()
 
-        const isTaxFreeTrade = taxFreeAssets.some((assets) => {
+        return taxFreeAssets.some((assets) => {
           // If there is only one asset in the list, it means that it is a global tax free asset
           if (assets.length === 1) {
             return assets[0] === inputCurrencyAddress || assets[0] === outputCurrencyAddress
@@ -40,17 +53,11 @@ export const volumeFeeAtom = atom<VolumeFee | undefined>((get) => {
             return assets.includes(inputCurrencyAddress) && assets.includes(outputCurrencyAddress)
           }
         })
-
-        if (isTaxFreeTrade) {
-          console.debug('Tax free trade detected', { inputCurrency, outputCurrency })
-          return undefined
-        }
       }
     }
   }
 
-  // CoW Swap Fee won't be enabled when in Widget mode, thus it takes precedence here
-  return safeAppFee || cowSwapFee || widgetPartnerFee
+  return false
 })
 
 const widgetPartnerFeeAtom = atom<VolumeFee | undefined>((get) => {
