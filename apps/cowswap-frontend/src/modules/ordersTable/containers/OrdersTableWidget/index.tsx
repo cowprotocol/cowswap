@@ -11,6 +11,7 @@ import styled from 'styled-components/macro'
 import { Order } from 'legacy/state/orders/actions'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { pendingOrdersPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
 import { PendingPermitUpdater, useGetOrdersPermitStatus } from 'modules/permit'
@@ -30,6 +31,7 @@ import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 import { BalancesAndAllowances } from '../../../tokens'
 import { OPEN_TAB, ORDERS_TABLE_TABS } from '../../const/tabs'
 import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
+import { ColumnLayout } from '../../pure/OrdersTableContainer/tableHeaders'
 import { OrderActions } from '../../pure/OrdersTableContainer/types'
 import { TabOrderTypes } from '../../types'
 import { buildOrdersTableUrl } from '../../utils/buildOrdersTableUrl'
@@ -124,6 +126,19 @@ export function OrdersTableWidget({
   const ordersPermitStatus = useGetOrdersPermitStatus()
   const injectedWidgetParams = useInjectedWidgetParams()
   const [searchTerm, setSearchTerm] = useState('')
+  const limitOrdersSettings = useAtomValue(limitOrdersSettingsAtom)
+  const columnLayout = useMemo(() => {
+    switch (limitOrdersSettings.columnLayout) {
+      case 'DEFAULT':
+        return ColumnLayout.DEFAULT
+      case 'VIEW_2':
+        return ColumnLayout.VIEW_2
+      case 'VIEW_3':
+        return ColumnLayout.VIEW_3
+      default:
+        return ColumnLayout.DEFAULT
+    }
+  }, [limitOrdersSettings.columnLayout])
 
   const balancesState = useTokensBalances()
   const allowancesState = useTokensAllowances()
@@ -290,6 +305,7 @@ export function OrdersTableWidget({
         ordersPermitStatus={ordersPermitStatus}
         injectedWidgetParams={injectedWidgetParams}
         searchTerm={searchTerm}
+        columnLayout={columnLayout}
       >
         {(currentTabId === OPEN_TAB.id || currentTabId === 'all' || currentTabId === 'unfillable') &&
           orders.length > 0 && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />}

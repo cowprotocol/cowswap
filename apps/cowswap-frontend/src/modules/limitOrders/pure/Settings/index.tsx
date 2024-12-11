@@ -109,9 +109,16 @@ const POSITION_LABELS = {
   bottom: 'Bottom',
 }
 
+const COLUMN_LAYOUT_LABELS = {
+  DEFAULT: 'Default view',
+  VIEW_2: 'Limit price / Fills at / Distance',
+  VIEW_3: 'Limit price / Fills at + Distance / Market',
+}
+
 export function Settings({ state, onStateChanged }: SettingsProps) {
-  const { showRecipient, partialFillsEnabled, limitPricePosition, limitPriceLocked } = state
+  const { showRecipient, partialFillsEnabled, limitPricePosition, limitPriceLocked, columnLayout } = state
   const [isOpen, setIsOpen] = useState(false)
+  const [isColumnLayoutOpen, setIsColumnLayoutOpen] = useState(false)
 
   const handleSelect = useCallback(
     (value: LimitOrdersSettingsState['limitPricePosition']) => (e: React.MouseEvent) => {
@@ -122,9 +129,23 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
     [onStateChanged],
   )
 
+  const handleColumnLayoutSelect = useCallback(
+    (value: LimitOrdersSettingsState['columnLayout']) => (e: React.MouseEvent) => {
+      e.stopPropagation()
+      onStateChanged({ columnLayout: value })
+      setIsColumnLayoutOpen(false)
+    },
+    [onStateChanged],
+  )
+
   const toggleDropdown = (e: React.MouseEvent) => {
     e.stopPropagation()
     setIsOpen(!isOpen)
+  }
+
+  const toggleColumnLayoutDropdown = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setIsColumnLayoutOpen(!isColumnLayoutOpen)
   }
 
   return (
@@ -172,6 +193,26 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
           <DropdownList isOpen={isOpen}>
             {Object.entries(POSITION_LABELS).map(([value, label]) => (
               <DropdownItem key={value} onClick={handleSelect(value as LimitOrdersSettingsState['limitPricePosition'])}>
+                {label}
+              </DropdownItem>
+            ))}
+          </DropdownList>
+        </DropdownContainer>
+      </SettingsRow>
+
+      <SettingsRow>
+        <SettingsLabel>
+          Column Layout
+          <HelpTooltip text="Choose how to display the columns in the orders table." />
+        </SettingsLabel>
+        <DropdownContainer>
+          <DropdownButton onClick={toggleColumnLayoutDropdown}>{COLUMN_LAYOUT_LABELS[columnLayout]}</DropdownButton>
+          <DropdownList isOpen={isColumnLayoutOpen}>
+            {Object.entries(COLUMN_LAYOUT_LABELS).map(([value, label]) => (
+              <DropdownItem
+                key={value}
+                onClick={handleColumnLayoutSelect(value as LimitOrdersSettingsState['columnLayout'])}
+              >
                 {label}
               </DropdownItem>
             ))}

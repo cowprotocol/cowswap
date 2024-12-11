@@ -12,6 +12,8 @@ import {
   alternativeOrderReadWriteAtomFactory,
 } from 'modules/trade/state/alternativeOrder'
 
+export type ColumnLayoutType = 'DEFAULT' | 'VIEW_2' | 'VIEW_3'
+
 export interface LimitOrdersSettingsState {
   readonly showRecipient: boolean
   readonly partialFillsEnabled: boolean
@@ -19,6 +21,7 @@ export interface LimitOrdersSettingsState {
   readonly customDeadlineTimestamp: Timestamp | null
   readonly limitPricePosition: 'top' | 'between' | 'bottom'
   readonly limitPriceLocked: boolean
+  readonly columnLayout: ColumnLayoutType
 }
 
 export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
@@ -28,6 +31,7 @@ export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
   customDeadlineTimestamp: null,
   limitPricePosition: 'top',
   limitPriceLocked: true,
+  columnLayout: 'DEFAULT',
 }
 
 // regular

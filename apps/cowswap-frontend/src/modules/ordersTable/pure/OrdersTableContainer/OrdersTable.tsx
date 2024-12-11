@@ -17,7 +17,7 @@ import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancella
 import { OrderRow } from './OrderRow'
 import { CheckboxCheckmark, TableHeader, TableRowCheckbox, TableRowCheckboxWrapper } from './styled'
 import { TableGroup } from './TableGroup'
-import { createTableHeaders } from './tableHeaders'
+import { ColumnLayout, createTableHeaders } from './tableHeaders'
 import { OrderActions } from './types'
 
 import { HISTORY_TAB, ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
@@ -107,6 +107,7 @@ export interface OrdersTableProps {
   getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
   orderActions: OrderActions
   ordersPermitStatus: OrdersPermitStatus
+  columnLayout?: ColumnLayout
 }
 
 export function OrdersTable({
@@ -121,6 +122,7 @@ export function OrdersTable({
   orderActions,
   currentPageNumber,
   ordersPermitStatus,
+  columnLayout,
 }: OrdersTableProps) {
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
   const [showLimitPrice, setShowLimitPrice] = useState(false)
@@ -173,7 +175,10 @@ export function OrdersTable({
     checkbox.checked = allOrdersSelected
   }, [allOrdersSelected, selectedOrders.length])
 
-  const tableHeaders = useMemo(() => createTableHeaders(showLimitPrice, setShowLimitPrice), [showLimitPrice])
+  const tableHeaders = useMemo(
+    () => createTableHeaders(showLimitPrice, setShowLimitPrice, columnLayout),
+    [showLimitPrice, columnLayout],
+  )
 
   const visibleHeaders = useMemo(() => {
     const isHistoryTab = currentTab === HISTORY_TAB.id
@@ -189,7 +194,11 @@ export function OrdersTable({
     <>
       <TableBox>
         <TableInner onScroll={onScroll}>
-          <TableHeader isHistoryTab={currentTab === HISTORY_TAB.id} isRowSelectable={isRowSelectable}>
+          <TableHeader
+            isHistoryTab={currentTab === HISTORY_TAB.id}
+            isRowSelectable={isRowSelectable}
+            columnLayout={columnLayout}
+          >
             {visibleHeaders.map((header) => {
               if (header.id === 'checkbox' && (!isRowSelectable || currentTab === HISTORY_TAB.id)) {
                 return null
@@ -236,10 +245,6 @@ export function OrdersTable({
               if (isParsedOrder(item)) {
                 const order = item
 
-                const orderParams = getOrderParams(chainId, balancesAndAllowances, order)
-
-                const hasValidPendingPermit = ordersPermitStatus[order.id]
-
                 return (
                   <OrderRow
                     key={order.id}
@@ -249,12 +254,13 @@ export function OrdersTable({
                     order={order}
                     spotPrice={spotPrice}
                     prices={pendingOrdersPrices[order.id]}
-                    orderParams={orderParams}
                     isRateInverted={false}
                     showLimitPrice={showLimitPrice}
-                    orderActions={orderActions}
+                    orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
                     onClick={() => orderActions.selectReceiptOrder(order)}
-                    hasValidPendingPermit={hasValidPendingPermit}
+                    orderActions={orderActions}
+                    hasValidPendingPermit={ordersPermitStatus[order.id]}
+                    columnLayout={columnLayout}
                   />
                 )
               } else {
