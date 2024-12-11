@@ -6,8 +6,6 @@ console.log('NEXT_PUBLIC_LAUNCH_DARKLY_KEY', NEXT_PUBLIC_LAUNCH_DARKLY_KEY)
 
 import { withLDProvider } from 'launchdarkly-react-client-sdk'
 
-// TODO: remove duplicated component with app/cowswap-frontend/src/modules/application/containers/WithLDProvider
-
 function InnerWithLDProvider({ children }: PropsWithChildren) {
   return children
 }
