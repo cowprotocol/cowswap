@@ -63,6 +63,7 @@
   "resolutions": {
     "@safe-global/safe-apps-provider/**/@safe-global/safe-apps-sdk": "^9.1.0",
     "@web3-react/gnosis-safe/**/@safe-global/safe-apps-sdk": "^9.1.0",
+    "@types/react": "18.2.22",
     "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
   },
   "dependencies": {
@@ -183,7 +184,7 @@
     "mui-color-input": "^2.0.1",
     "multicodec": "^3.0.1",
     "multihashes": "^4.0.2",
-    "next": "15.0.3",
+    "next": "15.0.4",
     "next-sitemap": "^4.2.3",
     "node-cache": "^5.1.0",
     "polished": "^4.0.5",
@@ -201,7 +202,7 @@
     "react-ga4": "^1.4.1",
     "react-helmet": "^6.1.0",
     "react-icons": "^5.2.1",
-    "react-inlinesvg": "^3.0.1",
+    "react-inlinesvg": "^4.1.5",
     "react-intersection-observer": "^9.10.1",
     "react-is": "19.0.0-rc-66855b96-20241106",
     "react-markdown": "^9.0.0",
@@ -273,6 +274,7 @@
     "@types/ms": "^0.7.31",
     "@types/ms.macro": "^2.0.0",
     "@types/node": "18.16.9",
+    "@types/react": "18.2.22",
     "@types/react-copy-to-clipboard": "^4.3.0",
     "@types/react-cytoscapejs": "^1.2.5",
     "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",

@@ -105,7 +105,22 @@
       "position": "pre",
       "walletCompatibility": ["EOA"],
       "smartContractWalletSupported": false,
-      "supportedNetworks": [1, 42161, 11155111]
+      "supportedNetworks": [1, 42161, 11155111, 8453]
+    }
+  },
+  "COW_AMM_DEPOSIT": {
+    "name": "CoW AMM Deposit",
+    "type": "IFRAME",
+    "descriptionShort": "Add liquidity to any of the CoW AMM pools",
+    "description": "Easily increase your position in a liquidity pool, adding both tokens in the right ratio.\n\n Whether you're seeking to increase your exposure to specific tokens or maximize the returns from your assets, this tool offers a quick and efficient way to enhance your liquidity position after a token swap, all in a smooth, efficient process.",
+    "version": "0.0.1",
+    "website": "https://balancer.fi/pools/cow",
+    "image": "https://cow-hooks-dapps-cow-amm-deposit.vercel.app/icon.png",
+    "url": "https://cow-hooks-dapps-cow-amm-deposit.vercel.app/",
+    "conditions": {
+      "position": "post",
+      "walletCompatibility": ["EOA"],
+      "smartContractWalletSupported": false
     }
   }
 }

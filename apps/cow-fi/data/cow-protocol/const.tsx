@@ -402,7 +402,7 @@ export const FAQ_DATA = [
   },
   {
     question: 'What chains does CoW Protocol currently support?',
-    answer: 'CoW Protocol is currently deployed on Ethereum, Gnosis Chain, and Arbitrum One.',
+    answer: 'CoW Protocol is currently deployed on Ethereum, Gnosis Chain, Arbitrum One and Base.',
   },
   {
     question: 'How do I get support?',
