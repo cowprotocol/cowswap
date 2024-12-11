@@ -1,5 +1,5 @@
-import { DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 import { strict as assert } from 'node:assert'
+import { DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
 const DUNE_API_KEY = process.env.DUNE_API_KEY!
 assert(DUNE_API_KEY, 'DUNE_API_KEY environment var is required')

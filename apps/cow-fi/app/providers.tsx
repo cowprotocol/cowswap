@@ -10,22 +10,25 @@ import GlobalStyles from '@/styles/global.styles'
 import { Suspense, useState } from 'react'
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components/macro'
 import { useServerInsertedHTML } from 'next/navigation'
+import CacheProvider from 'react-inlinesvg/provider'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <Suspense>
-      <StyledComponentsRegistry>
-        <>
-          <GlobalStyles />
-          <ApolloProvider client={apolloClient}>
-            <WithLDProvider>
-              <ThemeProvider>
-                <CowAnalyticsProvider cowAnalytics={cowAnalytics}>{children}</CowAnalyticsProvider>
-              </ThemeProvider>
-            </WithLDProvider>
-          </ApolloProvider>
-        </>
-      </StyledComponentsRegistry>
+      <CacheProvider>
+        <StyledComponentsRegistry>
+          <>
+            <GlobalStyles />
+            <ApolloProvider client={apolloClient}>
+              <WithLDProvider>
+                <ThemeProvider>
+                  <CowAnalyticsProvider cowAnalytics={cowAnalytics}>{children}</CowAnalyticsProvider>
+                </ThemeProvider>
+              </WithLDProvider>
+            </ApolloProvider>
+          </>
+        </StyledComponentsRegistry>
+      </CacheProvider>
     </Suspense>
   )
 }

@@ -1,9 +1,7 @@
-import { TokenInfo } from 'types'
-
 const API_BASE_URL = 'https://api.cow.fi'
 export const IMAGE_PATH = 'images/'
 
-export const DATA_CACHE_TIME_SECONDS = 60 * 60 // Cache 1 hour
+export const DATA_CACHE_TIME_SECONDS = 60 * 60 // 1 hour
 
 export const CONFIG = {
   title: {
@@ -50,12 +48,3 @@ export const CONFIG = {
   tokenDisclaimer:
     'IMPORTANT DISCLAIMER: The information presented on the Interface, including hyperlinked sites, associated applications, forums, blogs, social media accounts, and other platforms, serves as general information sourced from third-party providers. We want to emphasise that we do not provide any warranties regarding the accuracy or up-to-dateness of the content. None of the content should be interpreted as financial, tax, legal, or any other type of advice. Your use or reliance on the content is entirely at your own discretion and risk. Before making any decisions, it is crucial that you undertake your own research, review, analysis, and verification of our content. Trading carries significant risks and can result in substantial losses, so it is advisable to consult your own legal, financial, tax, or other professional advisors prior to making any decisions. None of the content on the Interface is intended as a solicitation or offer.',
 }
-
-type TokenInfoExcluded = Omit<TokenInfo, 'id' | 'change24h' | 'marketCapRank' | 'image'>
-
-interface MetaTokenDetails extends TokenInfoExcluded {
-  changeDirection: string
-  change24hTrimmed: string
-}
-
-export type SiteConfig = typeof CONFIG

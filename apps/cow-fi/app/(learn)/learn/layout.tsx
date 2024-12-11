@@ -2,8 +2,8 @@ import { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: {
-    default: 'Knowledge Base',
-    template: '%s - Knowledge Base - CoW DAO',
+    default: 'Knowledge Base - CoW DAO',
+    template: '%s - CoW DAO',
   },
 }
 
