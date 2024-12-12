@@ -2,6 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useTokensAllowances, useTokensBalances } from '@cowprotocol/balances-and-allowances'
+import { UI } from '@cowprotocol/ui'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Search } from 'react-feather'
@@ -11,6 +12,7 @@ import styled from 'styled-components/macro'
 import { Order } from 'legacy/state/orders/actions'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { pendingOrdersPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
 import { PendingPermitUpdater, useGetOrdersPermitStatus } from 'modules/permit'
@@ -30,6 +32,7 @@ import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 import { BalancesAndAllowances } from '../../../tokens'
 import { OPEN_TAB, ORDERS_TABLE_TABS } from '../../const/tabs'
 import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
+import { ColumnLayout, LAYOUT_MAP } from '../../pure/OrdersTableContainer/tableHeaders'
 import { OrderActions } from '../../pure/OrdersTableContainer/types'
 import { TabOrderTypes } from '../../types'
 import { buildOrdersTableUrl } from '../../utils/buildOrdersTableUrl'
@@ -38,7 +41,6 @@ import { parseOrdersTableUrl } from '../../utils/parseOrdersTableUrl'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu'
 import { OrdersReceiptModal } from '../OrdersReceiptModal'
 import { useGetAlternativeOrderModalContextCallback, useSelectReceiptOrder } from '../OrdersReceiptModal/hooks'
-import { UI } from '@cowprotocol/ui'
 
 const SearchInputContainer = styled.div`
   margin: 0;
@@ -124,6 +126,11 @@ export function OrdersTableWidget({
   const ordersPermitStatus = useGetOrdersPermitStatus()
   const injectedWidgetParams = useInjectedWidgetParams()
   const [searchTerm, setSearchTerm] = useState('')
+  const limitOrdersSettings = useAtomValue(limitOrdersSettingsAtom)
+  const columnLayout = useMemo(
+    () => LAYOUT_MAP[limitOrdersSettings.columnLayout] || ColumnLayout.DEFAULT,
+    [limitOrdersSettings.columnLayout],
+  )
 
   const balancesState = useTokensBalances()
   const allowancesState = useTokensAllowances()
@@ -290,6 +297,7 @@ export function OrdersTableWidget({
         ordersPermitStatus={ordersPermitStatus}
         injectedWidgetParams={injectedWidgetParams}
         searchTerm={searchTerm}
+        columnLayout={columnLayout}
       >
         {(currentTabId === OPEN_TAB.id || currentTabId === 'all' || currentTabId === 'unfillable') &&
           orders.length > 0 && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />}

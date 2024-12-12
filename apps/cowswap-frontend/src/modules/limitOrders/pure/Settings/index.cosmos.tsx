@@ -8,6 +8,7 @@ const defaultProps: SettingsProps = {
     customDeadlineTimestamp: null,
     limitPricePosition: 'between',
     limitPriceLocked: false,
+    columnLayout: 'DEFAULT',
   },
   onStateChanged(state) {
     console.log('Settings state changed: ', state)

@@ -35,6 +35,7 @@ import * as styledEl from './styled'
 import { OrderParams } from '../../../utils/getOrderParams'
 import { OrderStatusBox } from '../../OrderStatusBox'
 import { CheckboxCheckmark, TableRow, TableRowCheckbox, TableRowCheckboxWrapper } from '../styled'
+import { ColumnLayout } from '../tableHeaders'
 import { OrderActions } from '../types'
 
 // Constants
@@ -83,6 +84,7 @@ export interface OrderRowProps {
   orderActions: OrderActions
   hasValidPendingPermit?: boolean | undefined
   children?: React.ReactNode
+  columnLayout?: ColumnLayout
 }
 
 export function OrderRow({
@@ -100,6 +102,7 @@ export function OrderRow({
   spotPrice,
   hasValidPendingPermit,
   children,
+  columnLayout = ColumnLayout.DEFAULT,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
   const { creationTime, expirationTime, status } = order
@@ -177,8 +180,111 @@ export function OrderRow({
     />
   )
 
+  const renderLimitPrice = () => (
+    <styledEl.RateValue onClick={toggleIsInverted}>
+      <RateInfo
+        prependSymbol={false}
+        isInvertedState={[isInverted, setIsInverted]}
+        noLabel={true}
+        doNotUseSmartQuote
+        isInverted={isInverted}
+        rateInfoParams={rateInfoParams}
+        opacitySymbol={true}
+      />
+    </styledEl.RateValue>
+  )
+
+  const renderFillsAt = () => (
+    <>
+      {getIsFinalizedOrder(order) ? (
+        '-'
+      ) : prices && estimatedExecutionPrice ? (
+        <styledEl.ExecuteCellWrapper>
+          {!isUnfillable &&
+          priceDiffs?.percentage &&
+          Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= MIN_PERCENTAGE_TO_DISPLAY ? (
+            <span>⚡️ Pending execution</span>
+          ) : (
+            <EstimatedExecutionPrice
+              amount={executionPriceInverted}
+              tokenSymbol={executionPriceInverted?.quoteCurrency}
+              opacitySymbol
+              isInverted={isInverted}
+              percentageDifference={priceDiffs?.percentage}
+              amountDifference={priceDiffs?.amount}
+              percentageFee={feeDifference}
+              amountFee={feeAmount}
+              canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
+              isUnfillable={withWarning}
+              warningText={getWarningText()}
+              onApprove={() => orderActions.approveOrderToken(order.inputToken)}
+              WarningTooltip={renderWarningTooltip()}
+            />
+          )}
+        </styledEl.ExecuteCellWrapper>
+      ) : prices === null || !estimatedExecutionPrice || isOrderCreating ? (
+        '-'
+      ) : (
+        <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
+      )}
+    </>
+  )
+
+  const renderFillsAtWithDistance = () => {
+    const fillsAtContent = renderFillsAt()
+    const distance =
+      !isUnfillable && priceDiffs?.percentage && Number(priceDiffs?.percentage.toFixed(4)) >= MIN_PERCENTAGE_TO_DISPLAY
+        ? `${priceDiffs?.percentage.toFixed(2)}%`
+        : '-'
+
+    return (
+      <styledEl.CellElement doubleRow>
+        <b>{fillsAtContent}</b>
+        <i
+          style={{
+            color: !isUnfillable ? getDistanceColor(Number(priceDiffs?.percentage?.toFixed(4) || '0')) : 'inherit',
+          }}
+        >
+          {distance}
+        </i>
+      </styledEl.CellElement>
+    )
+  }
+
+  const renderDistanceToMarket = () => (
+    <>
+      {isUnfillable ? (
+        '-'
+      ) : priceDiffs?.percentage && Number(priceDiffs.percentage.toFixed(4)) >= MIN_PERCENTAGE_TO_DISPLAY ? (
+        <styledEl.DistanceToMarket $color={getDistanceColor(Number(priceDiffs.percentage.toFixed(4)))}>
+          {priceDiffs.percentage.toFixed(2)}%
+        </styledEl.DistanceToMarket>
+      ) : (
+        '-'
+      )}
+    </>
+  )
+
+  const renderMarketPrice = () => (
+    <>
+      {spotPrice ? (
+        <TokenAmount amount={spotPriceInverted} tokenSymbol={spotPriceInverted?.quoteCurrency} opacitySymbol />
+      ) : spotPrice === null ? (
+        '-'
+      ) : (
+        <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
+      )}
+    </>
+  )
+
   return (
-    <TableRow data-id={order.id} isChildOrder={isChild} isHistoryTab={isHistoryTab} isRowSelectable={isRowSelectable}>
+    <TableRow
+      data-id={order.id}
+      isChildOrder={isChild}
+      isHistoryTab={isHistoryTab}
+      isRowSelectable={isRowSelectable}
+      columnLayout={columnLayout}
+    >
       {/*Checkbox for multiple cancellation*/}
       {isRowSelectable && !isHistoryTab && (
         <TableRowCheckboxWrapper>
@@ -207,79 +313,32 @@ export function OrderRow({
       {/* Non-history tab columns */}
       {!isHistoryTab ? (
         <>
-          {/* Fills at / Limit price */}
-          <styledEl.PriceElement onClick={toggleIsInverted}>
-            {showLimitPrice ? (
-              <styledEl.RateValue onClick={toggleIsInverted}>
-                <RateInfo
-                  prependSymbol={false}
-                  isInvertedState={[isInverted, setIsInverted]}
-                  noLabel={true}
-                  doNotUseSmartQuote
-                  isInverted={isInverted}
-                  rateInfoParams={rateInfoParams}
-                  opacitySymbol={true}
-                />
-              </styledEl.RateValue>
-            ) : (
-              <>
-                {getIsFinalizedOrder(order) ? (
-                  '-'
-                ) : prices && estimatedExecutionPrice ? (
-                  <styledEl.ExecuteCellWrapper>
-                    {priceDiffs?.percentage &&
-                    Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= MIN_PERCENTAGE_TO_DISPLAY ? (
-                      <span>⚡️ Pending execution</span>
-                    ) : (
-                      <EstimatedExecutionPrice
-                        amount={executionPriceInverted}
-                        tokenSymbol={executionPriceInverted?.quoteCurrency}
-                        opacitySymbol
-                        isInverted={isInverted}
-                        percentageDifference={priceDiffs?.percentage}
-                        amountDifference={priceDiffs?.amount}
-                        percentageFee={feeDifference}
-                        amountFee={feeAmount}
-                        canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
-                        isUnfillable={withWarning}
-                        warningText={getWarningText()}
-                        onApprove={() => orderActions.approveOrderToken(order.inputToken)}
-                        WarningTooltip={renderWarningTooltip()}
-                      />
-                    )}
-                  </styledEl.ExecuteCellWrapper>
-                ) : prices === null || !estimatedExecutionPrice || isOrderCreating ? (
-                  '-'
-                ) : (
-                  <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
-                )}
-              </>
-            )}
-          </styledEl.PriceElement>
+          {/* Price columns based on layout */}
+          {columnLayout === ColumnLayout.DEFAULT && (
+            <>
+              <styledEl.PriceElement onClick={toggleIsInverted}>
+                {showLimitPrice ? renderLimitPrice() : renderFillsAt()}
+              </styledEl.PriceElement>
+              <styledEl.PriceElement>{renderDistanceToMarket()}</styledEl.PriceElement>
+              <styledEl.PriceElement onClick={toggleIsInverted}>{renderMarketPrice()}</styledEl.PriceElement>
+            </>
+          )}
 
-          {/* Distance to market */}
-          <styledEl.PriceElement>
-            {isUnfillable ? (
-              '-'
-            ) : priceDiffs?.percentage && Number(priceDiffs.percentage.toFixed(4)) >= MIN_PERCENTAGE_TO_DISPLAY ? (
-              <styledEl.DistanceToMarket $color={getDistanceColor(Number(priceDiffs.percentage.toFixed(4)))}>
-                {priceDiffs.percentage.toFixed(2)}%
-              </styledEl.DistanceToMarket>
-            ) : (
-              '-'
-            )}
-          </styledEl.PriceElement>
+          {columnLayout === ColumnLayout.VIEW_2 && (
+            <>
+              <styledEl.PriceElement onClick={toggleIsInverted}>{renderLimitPrice()}</styledEl.PriceElement>
+              <styledEl.PriceElement onClick={toggleIsInverted}>{renderFillsAt()}</styledEl.PriceElement>
+              <styledEl.PriceElement>{renderDistanceToMarket()}</styledEl.PriceElement>
+            </>
+          )}
 
-          {/* Market price */}
-          <styledEl.PriceElement onClick={toggleIsInverted}>
-            {spotPrice ? (
-              <TokenAmount amount={spotPriceInverted} tokenSymbol={spotPriceInverted?.quoteCurrency} opacitySymbol />
-            ) : spotPrice === null ? (
-              '-'
-            ) : (
-              <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
-            )}
-          </styledEl.PriceElement>
+          {columnLayout === ColumnLayout.VIEW_3 && (
+            <>
+              <styledEl.PriceElement onClick={toggleIsInverted}>{renderLimitPrice()}</styledEl.PriceElement>
+              <styledEl.PriceElement onClick={toggleIsInverted}>{renderFillsAtWithDistance()}</styledEl.PriceElement>
+              <styledEl.PriceElement onClick={toggleIsInverted}>{renderMarketPrice()}</styledEl.PriceElement>
+            </>
+          )}
 
           {/* Expires and Created for open orders */}
           <styledEl.CellElement doubleRow>

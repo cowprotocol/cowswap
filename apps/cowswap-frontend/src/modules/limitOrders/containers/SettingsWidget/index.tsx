@@ -2,10 +2,10 @@ import { useAtomValue, useSetAtom } from 'jotai'
 
 import UsdIcon from '@cowprotocol/assets/images/icon-USD.svg'
 
-import { Menu, MenuItem } from '@reach/menu-button'
+import { Menu, MenuItem, MenuPopover, MenuItems } from '@reach/menu-button'
 import SVG from 'react-inlinesvg'
 
-import { ButtonsContainer, MenuContent, SettingsButton, SettingsIcon, UsdButton } from 'modules/trade/pure/Settings'
+import { ButtonsContainer, SettingsButton, SettingsIcon, UsdButton } from 'modules/trade/pure/Settings'
 
 import { Settings } from '../../pure/Settings'
 import { limitOrdersSettingsAtom, updateLimitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
@@ -25,11 +25,13 @@ export function SettingsWidget() {
           {/* TODO: add active state */}
           <SettingsIcon active={false} />
         </SettingsButton>
-        <MenuContent>
-          <MenuItem disabled={true} onSelect={() => void 0}>
-            <Settings state={settingsState} onStateChanged={updateSettingsState} />
-          </MenuItem>
-        </MenuContent>
+        <MenuPopover portal={false}>
+          <MenuItems>
+            <MenuItem disabled={true} onSelect={() => void 0}>
+              <Settings state={settingsState} onStateChanged={updateSettingsState} />
+            </MenuItem>
+          </MenuItems>
+        </MenuPopover>
       </Menu>
     </ButtonsContainer>
   )
