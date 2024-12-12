@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.8.0...analytics-v1.9.0) (2024-12-11)
+
+
+### Features
+
+* **cow-fi:** upgrade project structure to /app ([#5167](https://github.com/cowprotocol/cowswap/issues/5167)) ([ed152f7](https://github.com/cowprotocol/cowswap/commit/ed152f7ac0fa62ab2c0b9c93035a551c3b8cb4b6))
+
 ## [1.8.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.7.0...analytics-v1.8.0) (2024-09-30)
 
 

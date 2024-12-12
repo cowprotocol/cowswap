@@ -1,8 +1,11 @@
 import { Metadata } from 'next'
+import { getPageMetadata } from '@/util/getPageMetadata'
+import { CONFIG } from '@/const/meta'
 
-export const metadata: Metadata = {
-  title: { absolute: 'CoW Swap - Terms and Conditions' },
-}
+export const metadata: Metadata = getPageMetadata({
+  absoluteTitle: 'CoW Swap - Terms and Conditions',
+  description: CONFIG.description,
+})
 
 export default function LayoutPage({ children }: { children: React.ReactNode }) {
   return children
