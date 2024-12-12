@@ -322,6 +322,14 @@ export const USDC_SEPOLIA = new TokenWithLogo(
   'USDC',
   'USDC (test)',
 )
+export const USDT_SEPOLIA = new TokenWithLogo(
+  USDT.logoURI,
+  SupportedChainId.SEPOLIA,
+  '0x58eb19ef91e8a6327fed391b51ae1887b833cc91',
+  6,
+  'USDT',
+  'Tether USD',
+)
 
 export const USDC: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: USDC_MAINNET,
@@ -483,15 +491,21 @@ const BASE_STABLECOINS = [
   CGUSD_BASE.address,
   USD_PLUS_BASE.address,
   EUSD_BASE.address,
+  USDT_BASE.address,
 ].map((t) => t.toLowerCase())
+
+// Not used for fees
+const SEPOLIA_STABLECOINS = [USDC_SEPOLIA.address, USDT_SEPOLIA.address].map((t) => t.toLowerCase())
 
 export const STABLECOINS: Record<ChainId, Set<string>> = {
   [SupportedChainId.MAINNET]: new Set(MAINNET_STABLECOINS),
   [SupportedChainId.GNOSIS_CHAIN]: new Set(GNOSIS_CHAIN_STABLECOINS),
   [SupportedChainId.ARBITRUM_ONE]: new Set(ARBITRUM_ONE_STABLECOINS),
-  [SupportedChainId.SEPOLIA]: new Set([USDC_SEPOLIA.address]),
+  [SupportedChainId.SEPOLIA]: new Set(SEPOLIA_STABLECOINS),
   [SupportedChainId.BASE]: new Set(BASE_STABLECOINS),
 }
+
+console.debug('STABLECOINS', STABLECOINS)
 
 /**
  * Addresses related to COW vesting for Locked GNO
