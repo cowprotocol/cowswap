@@ -184,6 +184,8 @@ export const ProgressBarWrapper = styled.div`
   font-size: 12px;
   font-weight: 500;
   height: 100%;
+  width: 100%;
+  max-width: 190px;
   display: flex;
   text-align: left;
   background: transparent;

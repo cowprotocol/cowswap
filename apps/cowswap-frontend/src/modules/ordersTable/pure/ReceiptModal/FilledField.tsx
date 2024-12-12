@@ -23,10 +23,10 @@ export function FilledField({ order }: Props) {
     <styledEl.Value>
       <styledEl.InlineWrapper>
         <ProgressBarWrapper>
+          <ProgressBar value={filledPercentDisplay}></ProgressBar>
           <b>
             <PercentDisplay percent={filledPercentDisplay} />
           </b>
-          <ProgressBar value={filledPercentDisplay}></ProgressBar>
         </ProgressBarWrapper>
       </styledEl.InlineWrapper>
 
