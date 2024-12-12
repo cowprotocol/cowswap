@@ -182,8 +182,8 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
       />
 
       <SettingsBox
-        title="Left-Aligned Orders Table"
-        tooltip="When enabled, the orders table will be displayed on the left side. When disabled, it will be on the right side."
+        title="Desktop: Left-Aligned Orders Table"
+        tooltip="When enabled, the orders table will be displayed on the left side on desktop screens. On mobile, the orders table will always be stacked below."
         value={ordersTableOnLeft}
         toggle={() => onStateChanged({ ordersTableOnLeft: !ordersTableOnLeft })}
       />

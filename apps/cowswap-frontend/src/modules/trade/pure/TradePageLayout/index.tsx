@@ -8,17 +8,17 @@ export const PageWrapper = styled.div<{ isUnlocked: boolean; secondaryOnLeft?: b
   display: grid;
   max-width: 1500px;
   margin: 0 auto;
-  grid-template-columns: ${({ isUnlocked, secondaryOnLeft }) =>
-    isUnlocked ? (secondaryOnLeft ? '1fr ' + WIDGET_MAX_WIDTH.swap : WIDGET_MAX_WIDTH.swap + ' 1fr') : ''};
-  grid-template-rows: 1fr;
-  grid-template-areas: ${({ secondaryOnLeft }) => (secondaryOnLeft ? '"secondary primary"' : '"primary secondary"')};
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas: 'primary' 'secondary';
   grid-column-gap: 20px;
+  gap: 20px;
 
-  ${Media.upToLarge()} {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
-    grid-template-areas: ${({ secondaryOnLeft }) =>
-      secondaryOnLeft ? '"secondary" "primary"' : '"primary" "secondary"'};
+  ${Media.LargeAndUp()} {
+    grid-template-columns: ${({ isUnlocked, secondaryOnLeft }) =>
+      isUnlocked ? (secondaryOnLeft ? '1fr ' + WIDGET_MAX_WIDTH.swap : WIDGET_MAX_WIDTH.swap + ' 1fr') : ''};
+    grid-template-rows: 1fr;
+    grid-template-areas: ${({ secondaryOnLeft }) => (secondaryOnLeft ? '"secondary primary"' : '"primary secondary"')};
   }
 
   > div:last-child {
