@@ -1,10 +1,10 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { Menu, MenuItem } from '@reach/menu-button'
+import { Menu, MenuItem, MenuPopover, MenuItems } from '@reach/menu-button'
 
 import { Settings } from 'modules/advancedOrders/pure/Settings'
-import { MenuContent, SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
+import { SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
 
 import {
   advancedOrdersSettingsAtom,
@@ -20,7 +20,7 @@ export function AdvancedOrdersSettings() {
     (state: Partial<AdvancedOrdersSettingsState>) => {
       updateSettingsState(state)
     },
-    [updateSettingsState]
+    [updateSettingsState],
   )
 
   return (
@@ -28,11 +28,13 @@ export function AdvancedOrdersSettings() {
       <SettingsButton>
         <SettingsIcon />
       </SettingsButton>
-      <MenuContent>
-        <MenuItem disabled={true} onSelect={() => void 0}>
-          <Settings state={settingsState} onStateChanged={onStateChanged} />
-        </MenuItem>
-      </MenuContent>
+      <MenuPopover portal={false}>
+        <MenuItems>
+          <MenuItem disabled={true} onSelect={() => void 0}>
+            <Settings state={settingsState} onStateChanged={onStateChanged} />
+          </MenuItem>
+        </MenuItems>
+      </MenuPopover>
     </Menu>
   )
 }
