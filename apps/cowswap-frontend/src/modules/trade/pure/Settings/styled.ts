@@ -1,40 +1,50 @@
 import { UI } from '@cowprotocol/ui'
 
 import { MenuButton, MenuList } from '@reach/menu-button'
-import { transparentize } from 'color2k'
 import styled, { css } from 'styled-components/macro'
+
+export const SettingsContainer = styled.div`
+  --padding: 10px;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: var(--padding);
+  border-radius: 12px;
+  box-shadow: var(${UI.BOX_SHADOW_2});
+  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
+  background: var(${UI.COLOR_PAPER});
+  color: inherit;
+  gap: 10px;
+  position: absolute;
+  right: 9px;
+  margin: auto;
+  top: 42px;
+  z-index: 100;
+  min-width: 330px;
+  max-width: calc(100% - var(--padding) * 2);
+`
 
 export const SettingsTitle = styled.h3`
   font-weight: 600;
-  font-size: 18px;
+  font-size: 15px;
   color: inherit;
-  margin: 0 auto 21px;
   width: 100%;
-  text-align: center;
-`
-
-export const SettingsContainer = styled.div`
-  margin: 12px 0 0;
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: ${({ theme }) => theme.boxShadow2};
-  border: 1px solid ${({ theme }) => transparentize(theme.white, 0.95)};
-  background: var(${UI.COLOR_PAPER});
-  color: inherit;
+  text-align: left;
+  margin: 0;
 `
 
 export const SettingsBoxWrapper = styled.div<{ disabled: boolean }>`
   display: flex;
   justify-content: space-between;
-  margin: 0 0 10px;
+  margin: 0;
+  gap: 10px;
   color: inherit;
+  opacity: ${({ disabled }) => (disabled ? '0.7' : '1')};
+  pointer-events: ${({ disabled }) => (disabled ? 'none' : '')};
 
   :last-child {
     margin-bottom: 0;
   }
-
-  opacity: ${({ disabled }) => (disabled ? '0.7' : '1')};
-  pointer-events: ${({ disabled }) => (disabled ? 'none' : '')};
 `
 
 export const SettingsBoxTitle = styled.div`
@@ -43,8 +53,6 @@ export const SettingsBoxTitle = styled.div`
   font-weight: 400;
   color: inherit;
   font-size: 14px;
-  opacity: 0.85;
-  margin-right: 2rem;
 `
 
 export const SettingsButton = styled(MenuButton)`
