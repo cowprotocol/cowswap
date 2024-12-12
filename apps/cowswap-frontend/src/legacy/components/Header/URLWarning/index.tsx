@@ -1,6 +1,5 @@
 import { useFetchFile } from '@cowprotocol/common-hooks'
-import { hashCode } from '@cowprotocol/common-utils'
-import { environmentName } from '@cowprotocol/common-utils'
+import { environmentName, hashCode } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { ClosableBanner } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -12,7 +11,7 @@ import { GlobalWarning } from 'common/pure/GlobalWarning'
 import { markdownComponents } from '../../Markdown/components'
 
 // Announcement content: Modify this repository to edit the announcement
-const ANNOUNCEMENTS_MARKDOWN_BASE_URL = 'https://raw.githubusercontent.com/cowprotocol/cowswap-banner/main'
+const ANNOUNCEMENTS_MARKDOWN_BASE_URL = 'https://raw.githubusercontent.com/cowprotocol/cowswap-banner/feat/base-launch-announcement'
 
 const BANNER_STORAGE_KEY = 'announcementBannerClosed/'
 
