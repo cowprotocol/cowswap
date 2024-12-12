@@ -679,6 +679,44 @@ export default function Page() {
               modification to or deletion of a provision or part-provision under this clause shall not affect the
               validity and enforceability of the rest of these Terms.
             </p>{' '}
+            <h2 id="base-launch">COW Token Giveaway, Base Launch: Terms and Conditions</h2>
+            <h3 id="base-launch-introduction">1. Introduction</h3>
+            <p>By participating in the COW Token Giveaway, you agree to these Terms and Conditions.</p>
+            <h3 id="base-launch-eligibility">2. Eligibility</h3>
+            <p>
+              18+ years old. Not an employee or affiliate of the Organizer. Must have a valid compatible wallet. Must
+              follow CoW Protocol on X. Void where prohibited.
+            </p>
+            <h3 id="base-launch-giveaway-period">3. Giveaway Period</h3>
+            <p>12.12.2024 at the time of the post on the X Platform to December 31, 2023, at 11:59 PM UTC.</p>
+            <h3 id="base-launch-how-to-enter">4. How to Enter</h3>
+            <p>
+              Trade on Base using CoW Swap during the Giveaway Period. Quote Tweet the Giveaway announcement with your
+              trade's transaction hash. One entry per eligible transaction.
+            </p>
+            <h3 id="base-launch-prize">5. Prize</h3>
+            <p>
+              10,000 COW tokens distributed among randomly selected winners. The Organiser will determine the number of
+              winners and token allocation at its discretion.
+            </p>
+            <h3 id="base-launch-winner-selection">6. Winner Selection</h3>
+            <p>Random selection from eligible entries. Odds depend on the number of entries.</p>
+            <h3 id="base-launch-winner-notification">7. Winner Notification</h3>
+            <p>Winners announced on X within 15 days after the Giveaway Period.</p>
+            <h3 id="base-launch-publicblockchain">8. Public Blockchain</h3>
+            <p>
+              Blockchain transactions are public and immutable. Sharing your transaction hash may make your wallet and
+              transaction details public and related to your X account.
+            </p>
+            <h3 id="base-launch-general-conditions">9. General Conditions</h3>
+            <p>
+              Organisers can disqualify entries or modify/cancel the Giveaway. Not responsible for technical issues.
+              Subject to applicable laws. The organiser's decisions are final.
+            </p>
+            <h3 id="base-launch-limitation-of-liability">10. Limitation of Liability</h3>
+            <p>Organiser not liable for losses related to the Giveaway or prize. COW token value may fluctuate.</p>
+            <h3 id="base-launch-governing-law">11. Governing Law</h3>
+            <p>Governed by the laws of England and Wales</p>
           </BodyContent>
         </ArticleContent>
       </ContainerCard>
