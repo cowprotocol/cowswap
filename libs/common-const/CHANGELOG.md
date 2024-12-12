@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.12.0...common-const-v1.12.1) (2024-12-12)
+
+
+### Bug Fixes
+
+* **volume-fee:** control safe app fees for stablecoins with ff ([#5187](https://github.com/cowprotocol/cowswap/issues/5187)) ([e7bc7c5](https://github.com/cowprotocol/cowswap/commit/e7bc7c5df35e233da9af8da950973a4272f10365))
+
 ## [1.12.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.11.0...common-const-v1.12.0) (2024-12-11)
 
 
