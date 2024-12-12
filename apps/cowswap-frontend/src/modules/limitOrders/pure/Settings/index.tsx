@@ -129,14 +129,11 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
     [onStateChanged],
   )
 
-  const handleColumnLayoutSelect = useCallback(
-    (value: LimitOrdersSettingsState['columnLayout']) => (e: React.MouseEvent) => {
-      e.stopPropagation()
-      onStateChanged({ columnLayout: value })
-      setIsColumnLayoutOpen(false)
-    },
-    [onStateChanged],
-  )
+  const handleColumnLayoutSelect = (value: LimitOrdersSettingsState['columnLayout']) => (e: React.MouseEvent) => {
+    e.stopPropagation()
+    onStateChanged({ columnLayout: value })
+    setIsColumnLayoutOpen(false)
+  }
 
   const toggleDropdown = (e: React.MouseEvent) => {
     e.stopPropagation()
