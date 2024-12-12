@@ -1,6 +1,5 @@
 import { Metadata } from 'next'
 import { getPageMetadata } from '@/util/getPageMetadata'
-import { CONFIG } from '@/const/meta'
 
 export const metadata: Metadata = {
   ...getPageMetadata({

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.5.0...common-hooks-v1.6.0) (2024-12-11)
+
+
+### Features
+
+* **cow-fi:** upgrade project structure to /app ([#5167](https://github.com/cowprotocol/cowswap/issues/5167)) ([ed152f7](https://github.com/cowprotocol/cowswap/commit/ed152f7ac0fa62ab2c0b9c93035a551c3b8cb4b6))
+
 ## [1.5.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.4.0...common-hooks-v1.5.0) (2024-12-03)
 
 
