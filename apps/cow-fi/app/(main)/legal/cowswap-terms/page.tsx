@@ -42,7 +42,7 @@ export default function Page() {
 
           <BodyContent>
             <p>
-              <strong>Last updated: September 2024</strong>
+              <strong>Last updated: December 2024</strong>
             </p>
             <p>
               These Terms of Use (the &quot;Terms&quot;) govern your access to{' '}
