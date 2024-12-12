@@ -4,6 +4,7 @@ import {
   limitOrdersSettingsAtom,
   updateLimitOrdersSettingsAtom,
 } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { ORDERS_TABLE_SETTINGS } from 'modules/trade/const/common'
 import { SettingsBox, SettingsContainer, SettingsTitle } from 'modules/trade/pure/Settings'
 
 import { AdvancedOrdersSettingsState } from '../../state/advancedOrdersSettingsAtom'
@@ -30,8 +31,8 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
       />
 
       <SettingsBox
-        title="Desktop: Left-Aligned Orders Table"
-        tooltip="When enabled, the orders table will be displayed on the left side on desktop screens. On mobile, the orders table will always be stacked below."
+        title={ORDERS_TABLE_SETTINGS.LEFT_ALIGNED.title}
+        tooltip={ORDERS_TABLE_SETTINGS.LEFT_ALIGNED.tooltip}
         value={limitOrdersSettings.ordersTableOnLeft}
         toggle={() => updateLimitOrdersSettings({ ordersTableOnLeft: !limitOrdersSettings.ordersTableOnLeft })}
       />
