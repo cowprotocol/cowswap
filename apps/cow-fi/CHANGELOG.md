@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.19.0...cow-fi-v1.19.1) (2024-12-12)
+
+
+### Bug Fixes
+
+* **cow-fi:** add info about base launch ([#5194](https://github.com/cowprotocol/cowswap/issues/5194)) ([6bd2015](https://github.com/cowprotocol/cowswap/commit/6bd20155a2211bba95e5cdd8dab2e108b4783a13))
+
 ## [1.19.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.18.0...cow-fi-v1.19.0) (2024-12-11)
 
 
