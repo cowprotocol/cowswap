@@ -61,7 +61,9 @@ const SearchIcon = styled(Search)`
 const SearchInput = styled.input`
   width: 100%;
   padding: 8px 12px 8px 36px;
-  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  background: var(${UI.COLOR_PAPER});
+  color: var(${UI.COLOR_TEXT});
   border-radius: 8px;
   font-size: 13px;
   font-weight: 500;
@@ -72,7 +74,7 @@ const SearchInput = styled.input`
 
   &:focus {
     outline: none;
-    border-color: var(${UI.COLOR_TEXT});
+    border-color: var(${UI.COLOR_TEXT_OPACITY_50});
   }
 `
 
