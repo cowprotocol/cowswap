@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.2](https://github.com/cowprotocol/cowswap/compare/common-const-v1.12.1...common-const-v1.12.2) (2024-12-12)
+
+
+### Bug Fixes
+
+* add more stablecoins in fees logic ([#5192](https://github.com/cowprotocol/cowswap/issues/5192)) ([79afa5c](https://github.com/cowprotocol/cowswap/commit/79afa5cb8018cd263b7820bdcb922998a4d80527))
+
 ## [1.12.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.12.0...common-const-v1.12.1) (2024-12-12)
 
 
