@@ -688,7 +688,7 @@ export default function Page() {
               follow CoW Protocol on X. Void where prohibited.
             </p>
             <h3 id="base-launch-giveaway-period">3. Giveaway Period</h3>
-            <p>12.12.2024 at the time of the post on the X Platform to December 31, 2023, at 11:59 PM UTC.</p>
+            <p>From 2024-12-12 at the time of the post on the X Platform to 2024-12-31, at 11:59 PM UTC.</p>
             <h3 id="base-launch-how-to-enter">4. How to Enter</h3>
             <p>
               Trade on Base using CoW Swap during the Giveaway Period. Quote Tweet the Giveaway announcement with your
