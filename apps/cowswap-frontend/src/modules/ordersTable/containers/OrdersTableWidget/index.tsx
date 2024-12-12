@@ -30,7 +30,7 @@ import { useOrdersTableTokenApprove } from './hooks/useOrdersTableTokenApprove'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
 import { BalancesAndAllowances } from '../../../tokens'
-import { OPEN_TAB, ORDERS_TABLE_TABS, ALL_ORDERS_TAB, ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
+import { OPEN_TAB, ORDERS_TABLE_TABS, ALL_ORDERS_TAB } from '../../const/tabs'
 import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
 import { ColumnLayout, LAYOUT_MAP } from '../../pure/OrdersTableContainer/tableHeaders'
 import { OrderActions } from '../../pure/OrdersTableContainer/types'
