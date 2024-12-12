@@ -18,7 +18,7 @@ export const SettingsContainer = styled.div`
   position: absolute;
   right: 9px;
   margin: auto;
-  top: 42px;
+  top: 48px;
   z-index: 100;
   min-width: 330px;
   max-width: calc(100% - var(--padding) * 2);
@@ -113,6 +113,13 @@ export const MenuContent = styled(MenuList)`
 export const ButtonsContainer = styled.div`
   display: flex;
   gap: 4px;
+
+  [data-reach-menu-popover] {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+  }
 `
 
 export const UsdButton = styled.button<{ active?: boolean }>`
