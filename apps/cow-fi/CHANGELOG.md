@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.19.1...cow-fi-v1.19.2) (2024-12-12)
+
+
+### Bug Fixes
+
+* **cowfi:** reduce cms requests cache time to 5 min ([#5196](https://github.com/cowprotocol/cowswap/issues/5196)) ([8893f35](https://github.com/cowprotocol/cowswap/commit/8893f35e177f86eef15ad2790034b705cf91e349))
+
 ## [1.19.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.19.0...cow-fi-v1.19.1) (2024-12-12)
 
 
