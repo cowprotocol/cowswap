@@ -7,6 +7,7 @@ import {
   SetupAdvancedOrderAmountsFromUrlUpdater,
 } from 'modules/advancedOrders'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 import {
@@ -20,9 +21,11 @@ import {
 } from 'modules/twap'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
+const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
 export default function AdvancedOrdersPage() {
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
+  const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
 
   const allEmulatedOrders = useAllEmulatedOrders()
 
@@ -40,7 +43,11 @@ export default function AdvancedOrdersPage() {
     <>
       <FillAdvancedOrdersDerivedStateUpdater slippage={twapSlippage} />
       <SetupAdvancedOrderAmountsFromUrlUpdater />
-      <styledEl.PageWrapper isUnlocked={isUnlocked}>
+      <styledEl.PageWrapper
+        isUnlocked={isUnlocked}
+        maxWidth={ADVANCED_ORDERS_MAX_WIDTH}
+        secondaryOnLeft={ordersTableOnLeft}
+      >
         <styledEl.PrimaryWrapper>
           <AdvancedOrdersWidget
             updaters={<TwapUpdaters />}

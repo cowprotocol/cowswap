@@ -3,20 +3,25 @@ import { Media, UI } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 import { WIDGET_MAX_WIDTH } from 'theme'
 
-export const PageWrapper = styled.div<{ isUnlocked: boolean; secondaryOnLeft?: boolean }>`
+const DEFAULT_MAX_WIDTH = '1500px'
+
+export const PageWrapper = styled.div<{ isUnlocked: boolean; secondaryOnLeft?: boolean; maxWidth?: string }>`
   width: 100%;
   display: grid;
-  max-width: 1500px;
+  max-width: ${({ maxWidth = DEFAULT_MAX_WIDTH }) => maxWidth};
   margin: 0 auto;
   grid-template-columns: 1fr;
   grid-template-rows: auto auto;
   grid-template-areas: 'primary' 'secondary';
-  grid-column-gap: 20px;
   gap: 20px;
 
   ${Media.LargeAndUp()} {
     grid-template-columns: ${({ isUnlocked, secondaryOnLeft }) =>
-      isUnlocked ? (secondaryOnLeft ? '1fr ' + WIDGET_MAX_WIDTH.swap : WIDGET_MAX_WIDTH.swap + ' 1fr') : ''};
+      isUnlocked
+        ? secondaryOnLeft
+          ? '1fr minmax(auto, ' + WIDGET_MAX_WIDTH.swap.replace('px', '') + 'px)'
+          : 'minmax(auto, ' + WIDGET_MAX_WIDTH.swap.replace('px', '') + 'px) 1fr'
+        : '1fr'};
     grid-template-rows: 1fr;
     grid-template-areas: ${({ secondaryOnLeft }) => (secondaryOnLeft ? '"secondary primary"' : '"primary secondary"')};
   }

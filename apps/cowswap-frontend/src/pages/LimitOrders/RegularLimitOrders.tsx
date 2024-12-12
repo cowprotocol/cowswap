@@ -10,6 +10,8 @@ import { LimitOrdersWidget, useIsWidgetUnlocked, limitOrdersSettingsAtom } from 
 import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 
+const LIMIT_ORDERS_MAX_WIDTH = '1800px'
+
 export function RegularLimitOrders() {
   const isUnlocked = useIsWidgetUnlocked()
   const { chainId, account } = useWalletInfo()
@@ -18,7 +20,7 @@ export function RegularLimitOrders() {
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
 
   return (
-    <styledEl.PageWrapper isUnlocked={isUnlocked} secondaryOnLeft={ordersTableOnLeft}>
+    <styledEl.PageWrapper isUnlocked={isUnlocked} secondaryOnLeft={ordersTableOnLeft} maxWidth={LIMIT_ORDERS_MAX_WIDTH}>
       <styledEl.PrimaryWrapper>
         <LimitOrdersWidget />
       </styledEl.PrimaryWrapper>
