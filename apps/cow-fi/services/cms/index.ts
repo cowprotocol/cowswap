@@ -4,9 +4,9 @@ import qs from 'qs'
 
 import { toQueryParams } from 'util/queryParams'
 import { getCmsClient } from '@cowprotocol/core'
-import { DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
 const PAGE_SIZE = 50
+const CMS_CACHE_TIME = 5 * 60 // 5 min
 
 type Schemas = components['schemas']
 export type Article = Schemas['ArticleListResponseDataItem']
@@ -33,7 +33,7 @@ export const client = getCmsClient()
 
 const clientAddons = {
   // https://github.com/openapi-ts/openapi-typescript/issues/1569#issuecomment-1982247959
-  fetch: (request: unknown) => fetch(request as Request, { next: { revalidate: DATA_CACHE_TIME_SECONDS } }),
+  fetch: (request: unknown) => fetch(request as Request, { next: { revalidate: CMS_CACHE_TIME } }),
 }
 
 /**
