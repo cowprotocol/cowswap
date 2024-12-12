@@ -3,24 +3,29 @@ import { Media, UI } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 import { WIDGET_MAX_WIDTH } from 'theme'
 
-export const PageWrapper = styled.div<{ isUnlocked: boolean }>`
+export const PageWrapper = styled.div<{ isUnlocked: boolean; secondaryOnLeft?: boolean }>`
   width: 100%;
   display: grid;
   max-width: 1500px;
   margin: 0 auto;
-  grid-template-columns: ${({ isUnlocked }) => (isUnlocked ? WIDGET_MAX_WIDTH.swap : '')} 1fr;
-  grid-template-rows: max-content;
+  grid-template-columns: ${({ isUnlocked, secondaryOnLeft }) =>
+    isUnlocked ? (secondaryOnLeft ? '1fr ' + WIDGET_MAX_WIDTH.swap : WIDGET_MAX_WIDTH.swap + ' 1fr') : ''};
+  grid-template-rows: 1fr;
+  grid-template-areas: ${({ secondaryOnLeft }) => (secondaryOnLeft ? '"secondary primary"' : '"primary secondary"')};
   grid-column-gap: 20px;
 
   ${Media.upToLarge()} {
-    display: flex;
-    flex-flow: column wrap;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas: ${({ secondaryOnLeft }) =>
+      secondaryOnLeft ? '"secondary" "primary"' : '"primary" "secondary"'};
   }
 
   > div:last-child {
     display: ${({ isUnlocked }) => (isUnlocked ? '' : 'none')};
   }
 `
+
 // Form + banner
 export const PrimaryWrapper = styled.div`
   display: flex;
@@ -30,6 +35,7 @@ export const PrimaryWrapper = styled.div`
   max-width: ${WIDGET_MAX_WIDTH.swap};
   margin: 0 auto;
   color: inherit;
+  grid-area: primary;
 `
 
 // Graph + orders table
@@ -48,9 +54,10 @@ export const SecondaryWrapper = styled.div`
   min-height: 200px;
   width: 100%;
   margin: 0 0 76px;
+  grid-area: secondary;
 
   ${Media.upToLargeAlt()} {
     flex-flow: column wrap;
-    margin: 56px 0;
+    margin: 0 0 20px;
   }
 `

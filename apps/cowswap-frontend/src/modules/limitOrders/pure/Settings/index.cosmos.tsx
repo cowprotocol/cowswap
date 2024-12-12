@@ -9,6 +9,7 @@ const defaultProps: SettingsProps = {
     limitPricePosition: 'between',
     limitPriceLocked: false,
     columnLayout: 'DEFAULT',
+    ordersTableOnLeft: false,
   },
   onStateChanged(state) {
     console.log('Settings state changed: ', state)

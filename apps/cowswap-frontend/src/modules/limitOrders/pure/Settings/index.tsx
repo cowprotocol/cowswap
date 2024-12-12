@@ -116,7 +116,8 @@ const COLUMN_LAYOUT_LABELS = {
 }
 
 export function Settings({ state, onStateChanged }: SettingsProps) {
-  const { showRecipient, partialFillsEnabled, limitPricePosition, limitPriceLocked, columnLayout } = state
+  const { showRecipient, partialFillsEnabled, limitPricePosition, limitPriceLocked, columnLayout, ordersTableOnLeft } =
+    state
   const [isOpen, setIsOpen] = useState(false)
   const [isColumnLayoutOpen, setIsColumnLayoutOpen] = useState(false)
 
@@ -178,6 +179,13 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
         tooltip="When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
         value={limitPriceLocked}
         toggle={() => onStateChanged({ limitPriceLocked: !limitPriceLocked })}
+      />
+
+      <SettingsBox
+        title="Left-Aligned Orders Table"
+        tooltip="When enabled, the orders table will be displayed on the left side. When disabled, it will be on the right side."
+        value={ordersTableOnLeft}
+        toggle={() => onStateChanged({ ordersTableOnLeft: !ordersTableOnLeft })}
       />
 
       <SettingsRow>

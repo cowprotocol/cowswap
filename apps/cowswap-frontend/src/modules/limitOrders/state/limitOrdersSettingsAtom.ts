@@ -22,6 +22,7 @@ export interface LimitOrdersSettingsState {
   readonly limitPricePosition: 'top' | 'between' | 'bottom'
   readonly limitPriceLocked: boolean
   readonly columnLayout: ColumnLayoutType
+  readonly ordersTableOnLeft: boolean
 }
 
 export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
@@ -32,6 +33,7 @@ export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
   limitPricePosition: 'top',
   limitPriceLocked: true,
   columnLayout: 'DEFAULT',
+  ordersTableOnLeft: false,
 }
 
 // regular
