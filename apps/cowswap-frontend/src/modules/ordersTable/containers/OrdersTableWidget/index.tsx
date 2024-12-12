@@ -30,7 +30,7 @@ import { useOrdersTableTokenApprove } from './hooks/useOrdersTableTokenApprove'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
 import { BalancesAndAllowances } from '../../../tokens'
-import { OPEN_TAB, ORDERS_TABLE_TABS } from '../../const/tabs'
+import { OPEN_TAB, ORDERS_TABLE_TABS, ALL_ORDERS_TAB } from '../../const/tabs'
 import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
 import { ColumnLayout, LAYOUT_MAP } from '../../pure/OrdersTableContainer/tableHeaders'
 import { OrderActions } from '../../pure/OrdersTableContainer/types'
@@ -61,7 +61,9 @@ const SearchIcon = styled(Search)`
 const SearchInput = styled.input`
   width: 100%;
   padding: 8px 12px 8px 36px;
-  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  background: var(${UI.COLOR_PAPER});
+  color: var(${UI.COLOR_TEXT});
   border-radius: 8px;
   font-size: 13px;
   font-weight: 500;
@@ -72,7 +74,7 @@ const SearchInput = styled.input`
 
   &:focus {
     outline: none;
-    border-color: var(${UI.COLOR_TEXT});
+    border-color: var(${UI.COLOR_TEXT_OPACITY_50});
   }
 `
 
@@ -151,7 +153,7 @@ export function OrdersTableWidget({
     const params = parseOrdersTableUrl(location.search)
 
     return {
-      currentTabId: params.tabId || OPEN_TAB.id,
+      currentTabId: params.tabId || ALL_ORDERS_TAB.id,
       currentPageNumber: params.pageNumber || 1,
     }
   }, [location.search])

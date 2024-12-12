@@ -193,7 +193,8 @@ export const LightButton = styled.button`
   padding: 6px 14px;
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   background-color: var(${UI.COLOR_PAPER_DARKER});
-  transition: border var(${UI.ANIMATION_DURATION}) ease-in-out,
+  transition:
+    border var(${UI.ANIMATION_DURATION}) ease-in-out,
     background-color var(${UI.ANIMATION_DURATION}) ease-in-out;
   cursor: pointer;
   color: inherit;

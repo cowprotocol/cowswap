@@ -5,6 +5,7 @@ import { HelpTooltip } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
+import { ORDERS_TABLE_SETTINGS } from 'modules/trade/const/common'
 import { SettingsBox, SettingsContainer, SettingsTitle } from 'modules/trade/pure/Settings'
 
 import { LimitOrdersSettingsState } from '../../state/limitOrdersSettingsAtom'
@@ -116,7 +117,8 @@ const COLUMN_LAYOUT_LABELS = {
 }
 
 export function Settings({ state, onStateChanged }: SettingsProps) {
-  const { showRecipient, partialFillsEnabled, limitPricePosition, limitPriceLocked, columnLayout } = state
+  const { showRecipient, partialFillsEnabled, limitPricePosition, limitPriceLocked, columnLayout, ordersTableOnLeft } =
+    state
   const [isOpen, setIsOpen] = useState(false)
   const [isColumnLayoutOpen, setIsColumnLayoutOpen] = useState(false)
 
@@ -178,6 +180,13 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
         tooltip="When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
         value={limitPriceLocked}
         toggle={() => onStateChanged({ limitPriceLocked: !limitPriceLocked })}
+      />
+
+      <SettingsBox
+        title={ORDERS_TABLE_SETTINGS.LEFT_ALIGNED.title}
+        tooltip={ORDERS_TABLE_SETTINGS.LEFT_ALIGNED.tooltip}
+        value={ordersTableOnLeft}
+        toggle={() => onStateChanged({ ordersTableOnLeft: !ordersTableOnLeft })}
       />
 
       <SettingsRow>
