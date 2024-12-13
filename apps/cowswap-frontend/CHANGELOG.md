@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.93.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.93.1...cowswap-v1.93.2) (2024-12-13)
+
+
+### Bug Fixes
+
+* **twap:** cache fb handler verification for 10min ([#5200](https://github.com/cowprotocol/cowswap/issues/5200)) ([c09f073](https://github.com/cowprotocol/cowswap/commit/c09f07338868654a89ba570987a8bc9bec59141c))
+
 ## [1.93.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.93.0...cowswap-v1.93.1) (2024-12-12)
 
 
