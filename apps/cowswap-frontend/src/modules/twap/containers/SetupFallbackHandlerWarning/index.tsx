@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai/index'
 import { useEffect, useState } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
-import { ButtonPrimary, InlineBanner, Loader } from '@cowprotocol/ui'
+import { ButtonPrimary, InlineBanner, Loader, BannerOrientation, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
@@ -15,13 +15,47 @@ import { verifyExtensibleFallback } from '../../services/verifyExtensibleFallbac
 import { updateFallbackHandlerVerificationAtom } from '../../state/fallbackHandlerVerificationAtom'
 
 const Banner = styled(InlineBanner)`
-  margin-bottom: 20px;
+  /* TODO: Make all these part of the InlineBanner props */
+  position: relative;
+  font-size: 15px;
+
+  > span {
+    gap: 20px;
+  }
+
+  > span > span {
+    gap: 20px;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(${UI.COLOR_PAPER});
+    z-index: -1;
+    border-radius: inherit;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    z-index: -1;
+    border-radius: inherit;
+  }
 `
 
 const ActionButton = styled(ButtonPrimary)`
   display: inline-block;
-  width: auto;
-  font-size: 15px;
+  width: 100%;
+  font-size: 16px;
   padding: 16px 24px;
   min-height: auto;
 `
@@ -58,14 +92,23 @@ export function SetupFallbackHandlerWarning() {
   }, [txWasMined, account, extensibleFallbackContext, updateFallbackHandlerVerification])
 
   return (
-    <Banner bannerType="danger">
-      <p>
-        Your Safe fallback handler was changed after TWAP orders ware placed. All open TWAP orders are not getting
-        created because of that. Please, update the fallback handler in order to make the orders work again.
-      </p>
-      <ActionButton disabled={isTransactionPending} onClick={handleUpdateClick}>
-        {isTransactionPending ? <Loader /> : 'Update fallback handler'}
-      </ActionButton>
+    <Banner
+      bannerType="danger"
+      backDropBlur
+      orientation={BannerOrientation.Horizontal}
+      iconSize={46}
+      noWrapContent
+      padding="20px"
+    >
+      <span>
+        <p>
+          Your Safe fallback handler was changed after TWAP orders ware placed. All open TWAP orders are not getting
+          created because of that. Please, update the fallback handler in order to make the orders work again.
+        </p>
+        <ActionButton disabled={isTransactionPending} onClick={handleUpdateClick}>
+          {isTransactionPending ? <Loader /> : 'Update fallback handler'}
+        </ActionButton>
+      </span>
     </Banner>
   )
 }

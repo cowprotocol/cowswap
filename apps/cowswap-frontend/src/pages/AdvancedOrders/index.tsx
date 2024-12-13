@@ -44,6 +44,7 @@ export default function AdvancedOrdersPage() {
       <SetupAdvancedOrderAmountsFromUrlUpdater />
       <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
+          {isFallbackHandlerRequired && allEmulatedOrders.length > 0 && <SetupFallbackHandlerWarning />}
           <AdvancedOrdersWidget
             updaters={<TwapUpdaters />}
             confirmContent={<TwapConfirmModal />}
@@ -65,9 +66,7 @@ export default function AdvancedOrdersPage() {
               displayOrdersOnlyForSafeApp={true}
               orderType={TabOrderTypes.ADVANCED}
               orders={allEmulatedOrders}
-            >
-              {isFallbackHandlerRequired && allEmulatedOrders.length > 0 && <SetupFallbackHandlerWarning />}
-            </OrdersTableWidget>
+            />
           )}
         </styledEl.SecondaryWrapper>
       </styledEl.PageWrapper>
