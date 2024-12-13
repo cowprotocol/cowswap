@@ -24,7 +24,7 @@ type TaxFreeAssetItem = {
   }
 }
 
-const UPDATE_INTERVAL = ms`1h`
+const UPDATE_INTERVAL = ms`10m`
 
 const SWR_CONFIG: SWRConfiguration = {
   refreshInterval: UPDATE_INTERVAL,
