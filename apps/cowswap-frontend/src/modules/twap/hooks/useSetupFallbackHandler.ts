@@ -20,5 +20,7 @@ export function useSetupFallbackHandler() {
       hash: safeTxHash,
       summary: 'Setup TWAP fallback handler',
     })
+
+    return safeTxHash
   }
 }
