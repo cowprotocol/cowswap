@@ -35,29 +35,28 @@ const shouldSkipFeeAtom = atom<boolean>((get) => {
   const tradeState = get(derivedTradeStateAtom)
   const taxFreeAssetsState = get(taxFreeAssetsAtom)
 
-  if (tradeState) {
-    const taxFreeAssets = taxFreeAssetsState[chainId]
+  if (!tradeState) return false
 
-    if (taxFreeAssets) {
-      const { inputCurrency, outputCurrency } = tradeState
-      if (inputCurrency && outputCurrency) {
-        const inputCurrencyAddress = getCurrencyAddress(inputCurrency).toLowerCase()
-        const outputCurrencyAddress = getCurrencyAddress(outputCurrency).toLowerCase()
+  const taxFreeAssets = taxFreeAssetsState[chainId]
 
-        return taxFreeAssets.some((assets) => {
-          // If there is only one asset in the list, it means that it is a global tax free asset
-          if (assets.length === 1) {
-            return assets[0] === inputCurrencyAddress || assets[0] === outputCurrencyAddress
-            // If there are two assets in the list, it means that it is a pair tax free asset
-          } else {
-            return assets.includes(inputCurrencyAddress) && assets.includes(outputCurrencyAddress)
-          }
-        })
-      }
+  if (!taxFreeAssets) return false
+
+  const { inputCurrency, outputCurrency } = tradeState
+
+  if (!inputCurrency || !outputCurrency) return false
+
+  const inputCurrencyAddress = getCurrencyAddress(inputCurrency).toLowerCase()
+  const outputCurrencyAddress = getCurrencyAddress(outputCurrency).toLowerCase()
+
+  return taxFreeAssets.some((assets) => {
+    // If there is only one asset in the list, it means that it is a global tax free asset
+    if (assets.length === 1) {
+      return assets[0] === inputCurrencyAddress || assets[0] === outputCurrencyAddress
+      // If there are two assets in the list, it means that it is a pair tax free asset
+    } else {
+      return assets.includes(inputCurrencyAddress) && assets.includes(outputCurrencyAddress)
     }
-  }
-
-  return false
+  })
 })
 
 const widgetPartnerFeeAtom = atom<VolumeFee | undefined>((get) => {
