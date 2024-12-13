@@ -10,21 +10,23 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 import {
+  SetupFallbackHandlerWarning,
   TwapConfirmModal,
   TwapFormWidget,
   TwapUpdaters,
   useAllEmulatedOrders,
+  useIsFallbackHandlerRequired,
   useMapTwapCurrencyInfo,
   useTwapFormState,
   useTwapSlippage,
 } from 'modules/twap'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
-
 export default function AdvancedOrdersPage() {
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
 
   const allEmulatedOrders = useAllEmulatedOrders()
+  const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
 
   const twapFormValidation = useTwapFormState()
   const twapSlippage = useTwapSlippage()
@@ -63,7 +65,9 @@ export default function AdvancedOrdersPage() {
               displayOrdersOnlyForSafeApp={true}
               orderType={TabOrderTypes.ADVANCED}
               orders={allEmulatedOrders}
-            />
+            >
+              {isFallbackHandlerRequired && allEmulatedOrders.length > 0 && <SetupFallbackHandlerWarning />}
+            </OrdersTableWidget>
           )}
         </styledEl.SecondaryWrapper>
       </styledEl.PageWrapper>

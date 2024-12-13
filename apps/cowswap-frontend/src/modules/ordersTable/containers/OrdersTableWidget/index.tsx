@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo } from 'react'
 
 import { useTokensAllowances, useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -60,12 +60,14 @@ interface OrdersTableWidgetProps {
   displayOrdersOnlyForSafeApp: boolean
   orders: Order[]
   orderType: TabOrderTypes
+  children?: ReactNode
 }
 
 export function OrdersTableWidget({
   orders: allOrders,
   orderType,
   displayOrdersOnlyForSafeApp,
+  children,
 }: OrdersTableWidgetProps) {
   const { chainId, account } = useWalletInfo()
   const location = useLocation()
@@ -122,14 +124,14 @@ export function OrdersTableWidget({
     (orders: ParsedOrder[]) => {
       updateOrdersToCancel(orders)
     },
-    [updateOrdersToCancel]
+    [updateOrdersToCancel],
   )
 
   const toggleOrderForCancellation = useCallback(
     (order: ParsedOrder) => {
       updateOrdersToCancel(toggleOrderInCancellationList(ordersToCancel, order))
     },
-    [ordersToCancel, updateOrdersToCancel]
+    [ordersToCancel, updateOrdersToCancel],
   )
 
   const getShowCancellationModal = useCallback(
@@ -138,7 +140,7 @@ export function OrdersTableWidget({
 
       return rawOrder ? cancelOrder(rawOrder) : null
     },
-    [allOrders, cancelOrder]
+    [allOrders, cancelOrder],
   )
 
   const getAlternativeOrderModalContext = useGetAlternativeOrderModalContextCallback()
@@ -167,6 +169,7 @@ export function OrdersTableWidget({
     <>
       <PendingPermitUpdater orders={ordersToCheckPendingPermit} />
       <ContentWrapper>
+        {children}
         <OrdersTableContainer
           chainId={chainId}
           tabs={tabs}
