@@ -12,13 +12,16 @@ function useAnnouncements(chainId: SupportedChainId): Announcements {
     const env = isProdLike ? 'prod' : 'staging' // Should match what's set on CMS!
 
     return allAnnouncements.reduce<Announcements>((acc, announcement) => {
-      if (
-        announcement.chainIds.length === 0 ||
-        announcement.chainIds.some(
-          (announcementChain) =>
-            (announcement.envs.length === 0 || announcement.envs.includes(env)) && announcementChain === chainId,
-        )
-      ) {
+      const showForEveryChain = announcement.chainIds.length === 0
+      const showForEveryEnv = announcement.envs.length === 0
+
+      const matchesChainIdAndEnv = announcement.chainIds.some((announcementChain) => {
+        const matchesCurrentEnv = announcement.envs.includes(env)
+        const matchesCurrentChainId = announcementChain === chainId
+        return (showForEveryEnv || matchesCurrentEnv) && (showForEveryChain || matchesCurrentChainId)
+      })
+
+      if ((showForEveryChain && showForEveryEnv) || matchesChainIdAndEnv) {
         acc[chainId] = announcement
       }
 
