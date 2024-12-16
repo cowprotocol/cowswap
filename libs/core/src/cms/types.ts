@@ -18,3 +18,14 @@ export type SolverNetwork = {
   env: string
   active: boolean
 }
+
+export type CmsAnnouncements = components['schemas']['AnnouncementListResponseDataItem'][]
+
+export type Announcement = {
+  text: string
+  isCritical: boolean
+  chainIds: SupportedChainId[]
+  envs: string[] // prod and/or barn // TODO: are there types for this already?
+}
+
+export type Announcements = Announcement[]
