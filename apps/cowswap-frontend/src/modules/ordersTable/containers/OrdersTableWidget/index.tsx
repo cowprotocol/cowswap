@@ -12,6 +12,7 @@ import { Order } from 'legacy/state/orders/actions'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { pendingOrdersPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
+import { BalancesAndAllowances } from 'modules/tokens'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
@@ -19,11 +20,11 @@ import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMu
 import { useNavigate } from 'common/hooks/useNavigate'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
+
 import { OrdersTableList, useOrdersTableList } from './hooks/useOrdersTableList'
 import { useOrdersTableTokenApprove } from './hooks/useOrdersTableTokenApprove'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
-import { BalancesAndAllowances } from 'modules/tokens'
 import { OPEN_TAB, ORDERS_TABLE_TABS } from '../../const/tabs'
 import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
 import { OrderActions } from '../../pure/OrdersTableContainer/types'
