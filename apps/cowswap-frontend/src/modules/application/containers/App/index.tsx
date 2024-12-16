@@ -148,8 +148,8 @@ export function App() {
               activeBackgroundDark="#282854"
               hoverBackgroundDark={'#18193B'}
               LinkComponent={LinkComponent}
-              persistentAdditionalContent={isMobile ? null : persistentAdditionalContent}
-              additionalContent={null}
+              persistentAdditionalContent={isMobile ? null : persistentAdditionalContent} // This will stay at its original location
+              additionalContent={null} // On desktop renders inside the menu bar, on mobile renders inside the mobile menu
             />
           )}
 
