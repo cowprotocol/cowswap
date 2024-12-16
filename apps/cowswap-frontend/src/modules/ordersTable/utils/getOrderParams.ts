@@ -25,6 +25,7 @@ export function getOrderParams(
   balancesAndAllowances: BalancesAndAllowances,
   order: ParsedOrder,
 ): OrderParams {
+  const isOrderAtLeastOnceFilled = order.executionData.filledAmount.gt(0)
   const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
   const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount)
   const permitAmount = getOrderPermitAmount(chainId, order) || undefined
@@ -45,7 +46,8 @@ export function getOrderParams(
     partiallyFillable: order.partiallyFillable,
     sellAmount,
     balance,
-    allowance: getBiggerAmount(allowance, permitAmount),
+    // If the order has been filled at least once, we should not consider the permit amount
+    allowance: isOrderAtLeastOnceFilled ? getBiggerAmount(allowance, permitAmount) : allowance,
   })
 
   return {
