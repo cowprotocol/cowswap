@@ -40,8 +40,8 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
 
   return (
     <>
-      {isMetamaskInstalled && metaMaskSdkOption}
       {injectedOption}
+      {isMetamaskInstalled && metaMaskSdkOption}
       {!isMetamaskInstalled && metaMaskSdkOption}
       {walletConnectionV2Option}
       {coinbaseWalletOption}
