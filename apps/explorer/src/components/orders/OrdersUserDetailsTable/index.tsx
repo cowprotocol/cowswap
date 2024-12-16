@@ -21,10 +21,10 @@ import { Order, OrderStatus } from 'api/operator'
 import { getLimitPrice } from 'utils/getLimitPrice'
 
 import { OrderSurplusDisplayStyledByRow } from './OrderSurplusTooltipStyledByRow'
+import { ToggleFilter } from './ToggleFilter'
 
 import { SimpleTable, SimpleTableProps } from '../../common/SimpleTable'
 import { StatusLabel } from '../StatusLabel'
-import { ToggleFilter } from './ToggleFilter'
 import { UnsignedOrderWarning } from '../UnsignedOrderWarning'
 
 const EXPIRED_CANCELED_STATES: OrderStatus[] = ['cancelled', 'cancelling', 'expired']

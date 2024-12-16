@@ -1,5 +1,6 @@
 import { BannerOrientation, InlineBanner } from '@cowprotocol/ui'
-import styled from 'styled-components'
+
+import styled from 'styled-components/macro'
 
 const StyledInlineBanner = styled(InlineBanner)`
   --cow-color-danger-text: ${({ theme }): string => theme.alert2};

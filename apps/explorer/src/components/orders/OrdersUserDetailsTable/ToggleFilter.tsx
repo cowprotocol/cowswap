@@ -1,5 +1,6 @@
 import React from 'react'
-import styled from 'styled-components'
+
+import styled from 'styled-components/macro'
 
 interface BadgeProps {
   checked: boolean
