@@ -1,4 +1,4 @@
-import { MAINNET_PROVIDER } from '@cowprotocol/common-const'
+import { RPC_URLS } from '@cowprotocol/common-const'
 import {
   contenthashToUri,
   isAddress,
@@ -6,10 +6,14 @@ import {
   resolveENSContentHash,
   uriToHttp,
 } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { JsonRpcProvider } from '@ethersproject/providers'
 import { TokenList } from '@uniswap/token-lists'
 
 import { ListSourceConfig, ListState } from '../types'
 import { validateTokenList } from '../utils/validateTokenList'
+
+const MAINNET_PROVIDER = new JsonRpcProvider(RPC_URLS[SupportedChainId.MAINNET])
 
 /**
  * Refactored version of apps/cowswap-frontend/src/lib/hooks/useTokenList/fetchTokenList.ts
@@ -21,11 +25,7 @@ export function fetchTokenList(list: ListSourceConfig): Promise<ListState> {
 
 async function fetchTokenListByUrl(list: ListSourceConfig): Promise<ListState> {
   return _fetchTokenList(list.source, [list.source]).then((result) => {
-    return {
-      ...result,
-      priority: list.priority,
-      source: list.source,
-    }
+    return listStateFromSourceConfig(result, list)
   })
 }
 
@@ -35,11 +35,7 @@ async function fetchTokenListByEnsName(list: ListSourceConfig): Promise<ListStat
   const urls = uriToHttp(translatedUri)
 
   return _fetchTokenList(list.source, urls).then((result) => {
-    return {
-      ...result,
-      priority: list.priority,
-      source: list.source,
-    }
+    return listStateFromSourceConfig(result, list)
   })
 }
 
@@ -88,6 +84,15 @@ async function _fetchTokenList(source: string, urls: string[]): Promise<ListStat
   }
 
   throw new Error('Unrecognized list URL protocol.')
+}
+
+function listStateFromSourceConfig(result: ListState, list: ListSourceConfig): ListState {
+  return {
+    ...result,
+    priority: list.priority,
+    source: list.source,
+    lpTokenProvider: list.lpTokenProvider,
+  }
 }
 
 async function sanitizeList(list: TokenList): Promise<TokenList> {

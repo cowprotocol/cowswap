@@ -34,6 +34,7 @@ import {
 
 import { Color } from '../../consts'
 import { Media } from '../../consts'
+import { BadgeType } from '../../types'
 import { Badge } from '../Badge'
 import { ProductLogo, ProductVariant } from '../ProductLogo'
 
@@ -79,6 +80,7 @@ const DAO_NAV_ITEMS: MenuItem[] = [
     hoverColor: '#F2CD16',
     hoverBgColor: '#EC4612',
     external: true,
+    utmContent: 'menubar-dao-nav-mevblocker',
   },
 ]
 
@@ -87,7 +89,7 @@ type LinkComponentType = ComponentType<PropsWithChildren<{ href: string }>>
 export interface MenuItem {
   href?: string
   label?: string
-  badge?: string
+  badge?: string | JSX.Element
   children?: DropdownMenuItem[]
   productVariant?: ProductVariant
   icon?: string
@@ -102,6 +104,8 @@ export interface MenuItem {
   hasDivider?: boolean
   utmContent?: string
   utmSource?: string
+  badgeImage?: string
+  badgeType?: BadgeType
 }
 
 interface DropdownMenuItem {
@@ -109,7 +113,7 @@ interface DropdownMenuItem {
   external?: boolean
   label?: string
   icon?: string
-  badge?: string
+  badge?: string | JSX.Element
   description?: string
   isButton?: boolean
   children?: DropdownMenuItem[]
@@ -123,6 +127,8 @@ interface DropdownMenuItem {
   hasDivider?: boolean
   utmContent?: string
   utmSource?: string
+  badgeImage?: string
+  badgeType?: BadgeType
 }
 
 interface DropdownMenuContent {
@@ -414,7 +420,11 @@ const GenericDropdown: React.FC<DropdownProps> = ({
     <DropdownMenu {...interactionProps} mobileMode={mobileMode}>
       <RootNavItem as="button" aria-haspopup="true" aria-expanded={isOpen} isOpen={isOpen} mobileMode={mobileMode}>
         <span>{item.label}</span>
-        {item.badge && <Badge type="alert">{item.badge}</Badge>}
+        {(item.badge || item.badgeImage) && (
+          <Badge {...(item.badgeType && { type: item.badgeType })}>
+            {item.badgeImage ? <SVG src={item.badgeImage} /> : item.badge}
+          </Badge>
+        )}
         {item.children && <SVG src={IMG_ICON_CARRET_DOWN} />}
       </RootNavItem>
       {isOpen && (
@@ -485,7 +495,11 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
             <DropdownContentItemText>
               <DropdownContentItemTitle>
                 <span>{item.label}</span>
-                {item.badge && <Badge type="alert">{item.badge}</Badge>}
+                {(item.badge || item.badgeImage) && (
+                  <Badge {...(item.badgeType && { type: item.badgeType })}>
+                    {item.badgeImage ? <SVG src={item.badgeImage} /> : item.badge}
+                  </Badge>
+                )}
               </DropdownContentItemTitle>
               {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
             </DropdownContentItemText>

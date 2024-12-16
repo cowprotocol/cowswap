@@ -1,6 +1,5 @@
 {
   "BUILD_CUSTOM_HOOK": {
-    "id": "c768665aa144bcf18c14eea0249b6322050e5daeba046d7e94df743a2e504586",
     "type": "INTERNAL",
     "name": "Build your own hook",
     "descriptionShort": "Call any smart contract with your own parameters",
@@ -10,7 +9,6 @@
     "website": "https://docs.cow.fi/cow-protocol/tutorials/hook-dapp"
   },
   "CLAIM_GNO_FROM_VALIDATORS": {
-    "id": "ee4a6b1065cda592972b9ff7448ec111f29a566f137fef101ead7fbf8b01dd0b",
     "type": "INTERNAL",
     "name": "Claim GNO from validators",
     "descriptionShort": "Withdraw rewards from your Gnosis validators.",
@@ -24,7 +22,6 @@
     }
   },
   "PERMIT_TOKEN": {
-    "id": "1db4bacb661a90fb6b475fd5b585acba9745bc373573c65ecc3e8f5bfd5dee1f",
     "type": "INTERNAL",
     "name": "Permit a token",
     "descriptionShort": "Infinite permit an address to spend one token on your behalf.",
@@ -38,7 +35,6 @@
     }
   },
   "CLAIM_COW_AIRDROP": {
-    "id": "40ed08569519f3b58c410ba35a8e684612663a7c9b58025e0a9c3a54551fb0ff",
     "type": "INTERNAL",
     "name": "Claim COW Airdrop",
     "descriptionShort": "Retrieve COW tokens before or after a swap.",
@@ -50,8 +46,22 @@
       "supportedNetworks": [11155111]
     }
   },
+  "COW_AMM_WITHDRAW": {
+    "name": "CoW AMM Withdraw Liquidity",
+    "type": "IFRAME",
+    "descriptionShort": "Remove liquidity from a CoW AMM pool before the swap",
+    "description": "Reduce or withdraw liquidity from a pool before a token swap integrating the process directly into the transaction flow. By adjusting your liquidity ahead of time, you gain more control over your assets without any extra steps. Optimize your position in a pool, all in one seamless action — no need for multiple transactions or added complexity.",
+    "version": "0.0.1",
+    "website": "https://balancer.fi/pools/cow",
+    "image": "https://cow-hooks-dapps-withdraw-pool.vercel.app/icon.png",
+    "url": "https://cow-hooks-dapps-withdraw-pool.vercel.app/",
+    "conditions": {
+      "position": "pre",
+      "walletCompatibility": ["EOA"],
+      "smartContractWalletSupported": false
+    }
+  },
   "CLAIM_LLAMAPAY_VESTING": {
-    "id": "5d2c081d11a01ca0b76e2fafbc0d3c62a4c9945ce404706fb1e49e826c0f99eb",
     "type": "IFRAME",
     "name": "Claim LlamaPay Vesting Hook",
     "description": "The Claim LlamaPay Vesting Hook is a powerful and user-friendly feature designed to streamline the process of claiming funds from LlamaPay vesting contracts. This tool empowers users to easily access and manage their vested tokens, ensuring a smooth and efficient experience in handling time-locked assets.",
@@ -61,7 +71,40 @@
     "website": "https://github.com/bleu/cow-hooks-dapps",
     "url": "https://cow-hooks-dapps-claim-vesting.vercel.app",
     "conditions": {
+      "supportedNetworks": [1, 100, 42161],
+      "walletCompatibility": ["EOA"],
+      "smartContractWalletSupported": false
+    }
+  },
+  "CREATE_LLAMAPAY_VESTING": {
+    "type": "IFRAME",
+    "name": "Create LlamaPay Vesting",
+    "descriptionShort": "Create a LlamaPay vesting contract",
+    "description": "This hook allows you to easily set up vesting contracts with LlamaPay. Enter the recipient’s address or ENS name, then choose how much to transfer: the token buy will be automatically detected by the hook and the contracts will be linked to your LlamaPay dashboard for seamless tracking.",
+    "version": "0.1.0",
+    "website": "https://llamapay.io/vesting",
+    "image": "https://cow-hooks-dapps-create-vesting.vercel.app/llama-pay-icon.png",
+    "url": "https://cow-hooks-dapps-create-vesting.vercel.app",
+    "conditions": {
+      "position": "post",
+      "walletCompatibility": ["EOA"],
+      "smartContractWalletSupported": false,
       "supportedNetworks": [1, 100, 42161]
+    }
+  },
+  "COW_AMM_DEPOSIT": {
+    "name": "CoW AMM Deposit",
+    "type": "IFRAME",
+    "descriptionShort": "Add liquidity to any of the CoW AMM pools",
+    "description": "Easily increase your position in a liquidity pool, adding both tokens in the right ratio.\n\n Whether you're seeking to increase your exposure to specific tokens or maximize the returns from your assets, this tool offers a quick and efficient way to enhance your liquidity position after a token swap, all in a smooth, efficient process.",
+    "version": "0.0.1",
+    "website": "https://balancer.fi/pools/cow",
+    "image": "https://cow-hooks-dapps-cow-amm-deposit.vercel.app/icon.png",
+    "url": "https://cow-hooks-dapps-cow-amm-deposit.vercel.app/",
+    "conditions": {
+      "position": "post",
+      "walletCompatibility": ["EOA"],
+      "smartContractWalletSupported": false
     }
   }
 }

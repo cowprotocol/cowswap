@@ -1,0 +1,32 @@
+[
+  {
+    "priority": 100,
+    "lpTokenProvider": "COW_AMM",
+    "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/refs/heads/main/src/public/lp-tokens/cow-amm.json"
+  },
+  {
+    "priority": 101,
+    "lpTokenProvider": "UNIV2",
+    "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/refs/heads/main/src/public/lp-tokens/uniswapv2.json"
+  },
+  {
+    "priority": 102,
+    "lpTokenProvider": "CURVE",
+    "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/refs/heads/main/src/public/lp-tokens/curve.json"
+  },
+  {
+    "priority": 103,
+    "lpTokenProvider": "BALANCERV2",
+    "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/refs/heads/main/src/public/lp-tokens/balancerv2.json"
+  },
+  {
+    "priority": 104,
+    "lpTokenProvider": "SUSHI",
+    "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/refs/heads/main/src/public/lp-tokens/sushiswap.json"
+  },
+  {
+    "priority": 105,
+    "lpTokenProvider": "PANCAKE",
+    "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/refs/heads/main/src/public/lp-tokens/pancakeswap.json"
+  }
+]

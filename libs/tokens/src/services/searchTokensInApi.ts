@@ -5,7 +5,16 @@ import { gql, GraphQLClient } from 'graphql-request'
 
 type Address = `0x${string}`
 
-type Chain = 'ARBITRUM' | 'ETHEREUM' | 'ETHEREUM_SEPOLIA' | 'OPTIMISM' | 'POLYGON' | 'CELO' | 'BNB' | 'UNKNOWN_CHAIN'
+type Chain =
+  | 'ARBITRUM'
+  | 'ETHEREUM'
+  | 'ETHEREUM_SEPOLIA'
+  | 'OPTIMISM'
+  | 'POLYGON'
+  | 'CELO'
+  | 'BNB'
+  | 'BASE'
+  | 'UNKNOWN_CHAIN'
 
 interface FetchTokensResult {
   id: string
@@ -115,21 +124,25 @@ const GQL_CLIENT = new GraphQLClient(BASE_URL)
 const CHAIN_NAMES: Record<SupportedChainId, Chain | null> = {
   [SupportedChainId.MAINNET]: 'ETHEREUM',
   [SupportedChainId.ARBITRUM_ONE]: 'ARBITRUM',
-  [SupportedChainId.SEPOLIA]: null,
+  [SupportedChainId.BASE]: 'BASE',
+  [SupportedChainId.SEPOLIA]: 'ETHEREUM_SEPOLIA',
   [SupportedChainId.GNOSIS_CHAIN]: null,
 }
 
-const CHAIN_IDS = Object.entries(CHAIN_NAMES).reduce((acc, [supportedChainId, chain]) => {
-  if (chain) {
-    acc[chain] = parseInt(supportedChainId)
-  }
+const CHAIN_IDS = Object.entries(CHAIN_NAMES).reduce(
+  (acc, [supportedChainId, chain]) => {
+    if (chain) {
+      acc[chain] = parseInt(supportedChainId)
+    }
 
-  return acc
-}, {} as Record<Chain, SupportedChainId>)
+    return acc
+  },
+  {} as Record<Chain, SupportedChainId>,
+)
 
 export async function searchTokensInApi(
   chainId: SupportedChainId,
-  searchQuery: string
+  searchQuery: string,
 ): Promise<TokenSearchFromApiResult[]> {
   const chain = CHAIN_NAMES[chainId]
 

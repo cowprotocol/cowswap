@@ -7,8 +7,6 @@ import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
-import { useToggleWalletModal } from 'legacy/state/application/hooks'
-
 import { toggleAccountSelectorModalAtom } from 'modules/wallet/containers/AccountSelectorModal/state'
 
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
@@ -136,7 +134,6 @@ const Wrapper = styled.div`
 export function OrdersPanel() {
   const { active, account } = useWalletInfo()
   const { ensName } = useWalletDetails()
-  const toggleWalletModal = useToggleWalletModal()
   const toggleAccountSelectorModal = useSetAtom(toggleAccountSelectorModalAtom)
   const { isOpen } = useAccountModalState()
   const { pendingActivity, confirmedActivity } = useCategorizeRecentActivity()
@@ -163,7 +160,6 @@ export function OrdersPanel() {
             ENSName={ensName}
             pendingTransactions={pendingActivity}
             confirmedTransactions={confirmedActivity}
-            toggleWalletModal={toggleWalletModal}
             toggleAccountSelectorModal={toggleAccountSelectorModal}
             handleCloseOrdersPanel={handleCloseOrdersPanel}
           />

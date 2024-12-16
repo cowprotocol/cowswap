@@ -5,9 +5,9 @@ import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import {
-  ARBITRUM_ONE_TOKENS_LIST,
   DEFAULT_TOKENS_LISTS,
   GNOSIS_UNISWAP_TOKENS_LIST,
+  LP_TOKEN_LISTS,
   UNISWAP_TOKENS_LIST,
 } from '../../const/tokensLists'
 import {
@@ -22,7 +22,8 @@ import { environmentAtom } from '../environmentAtom'
 const UNISWAP_TOKEN_LIST_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: UNISWAP_TOKENS_LIST,
   [SupportedChainId.GNOSIS_CHAIN]: GNOSIS_UNISWAP_TOKENS_LIST,
-  [SupportedChainId.ARBITRUM_ONE]: ARBITRUM_ONE_TOKENS_LIST,
+  [SupportedChainId.ARBITRUM_ONE]: UNISWAP_TOKENS_LIST,
+  [SupportedChainId.BASE]: UNISWAP_TOKENS_LIST,
   [SupportedChainId.SEPOLIA]: UNISWAP_TOKENS_LIST,
 }
 
@@ -39,25 +40,28 @@ const curatedListSourceAtom = atom((get) => {
 export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>(
   'userAddedTokenListsAtom:v3',
   mapSupportedNetworks([]),
-  getJotaiMergerStorage()
+  getJotaiMergerStorage(),
 )
 
 export const allListsSourcesAtom = atom((get) => {
-  const { chainId, useCuratedListOnly } = get(environmentAtom)
+  const { chainId, useCuratedListOnly, isYieldEnabled } = get(environmentAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
+  const userAddedTokenListsForChain = userAddedTokenLists[chainId] || []
+
+  const lpLists = isYieldEnabled ? LP_TOKEN_LISTS : []
 
   if (useCuratedListOnly) {
-    return [get(curatedListSourceAtom), ...userAddedTokenLists[chainId]]
+    return [get(curatedListSourceAtom), ...lpLists, ...userAddedTokenListsForChain]
   }
 
-  return [...DEFAULT_TOKENS_LISTS[chainId], ...(userAddedTokenLists[chainId] || [])]
+  return [...(DEFAULT_TOKENS_LISTS[chainId] || []), ...lpLists, ...userAddedTokenListsForChain]
 })
 
 // Lists states
 export const listsStatesByChainAtom = atomWithStorage<TokenListsByChainState>(
-  'allTokenListsInfoAtom:v3',
+  'allTokenListsInfoAtom:v4',
   mapSupportedNetworks({}),
-  getJotaiMergerStorage()
+  getJotaiMergerStorage(),
 )
 
 export const tokenListsUpdatingAtom = atom<boolean>(false)
@@ -75,19 +79,25 @@ export const listsStatesMapAtom = atom((get) => {
   const allTokenListsInfo = get(listsStatesByChainAtom)
   const virtualListsState = get(virtualListsStateAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
+  const useeAddedTokenListsForChain = userAddedTokenLists[chainId] || []
 
   const currentNetworkLists = {
     ...allTokenListsInfo[chainId],
     ...virtualListsState,
   }
 
-  const userAddedListSources = userAddedTokenLists[chainId].reduce<{ [key: string]: boolean }>((acc, list) => {
+  const userAddedListSources = useeAddedTokenListsForChain.reduce<{ [key: string]: boolean }>((acc, list) => {
+    acc[list.source] = true
+    return acc
+  }, {})
+
+  const lpTokenListSources = LP_TOKEN_LISTS.reduce<{ [key: string]: boolean }>((acc, list) => {
     acc[list.source] = true
     return acc
   }, {})
 
   const listsSources = Object.keys(currentNetworkLists).filter((source) => {
-    return useCuratedListOnly ? userAddedListSources[source] : true
+    return useCuratedListOnly ? userAddedListSources[source] || lpTokenListSources[source] : true
   })
 
   const lists = useCuratedListOnly ? [get(curatedListSourceAtom).source, ...listsSources] : listsSources

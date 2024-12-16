@@ -30,6 +30,11 @@ export const LoadingRows = styled.div`
   }
 `
 
+export const LoadingRowSmall = styled.div`
+  width: 24px;
+  height: 10px !important;
+`
+
 export const loadingOpacityMixin = css<{ $loading: boolean }>`
   filter: ${({ $loading }) => ($loading ? 'grayscale(1)' : 'none')};
   opacity: ${({ $loading }) => ($loading ? '0.4' : '1')};

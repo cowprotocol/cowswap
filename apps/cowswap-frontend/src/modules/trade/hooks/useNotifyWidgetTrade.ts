@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { AtomsAndUnits, CowWidgetEvents, OnTradeParamsPayload } from '@cowprotocol/events'
@@ -15,17 +15,23 @@ import { TradeDerivedState } from '../types/TradeDerivedState'
 
 export function useNotifyWidgetTrade() {
   const state = useDerivedTradeState()
-  const isFirstLoad = useRef(true)
 
   useEffect(() => {
-    if (isFirstLoad.current && !!state) {
-      isFirstLoad.current = false
+    if (!state) return
+
+    /**
+     * There is no way to select both empty sell and buy currencies in the widget UI.
+     * The only way when it is possible is when the widget integrator set the state, but in this case it doesn't make sense to notify them.
+     *
+     * In practice, the state has both currencies empty only at the beginning, when the widget is not ready to trade.
+     * So we skip the notification in this case.
+     */
+    const stateIsNotReady = !state.inputCurrency && !state.outputCurrency
+
+    if (!state.tradeType || stateIsNotReady) {
       return
     }
 
-    if (!state?.tradeType) {
-      return
-    }
     WIDGET_EVENT_EMITTER.emit(
       CowWidgetEvents.ON_CHANGE_TRADE_PARAMS,
       getTradeParamsEventPayload(state.tradeType, state),

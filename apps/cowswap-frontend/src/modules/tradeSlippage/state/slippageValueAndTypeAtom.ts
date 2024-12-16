@@ -3,21 +3,25 @@ import { atomWithStorage } from 'jotai/utils'
 
 import { DEFAULT_SLIPPAGE_BPS, MINIMUM_ETH_FLOW_SLIPPAGE_BPS } from '@cowprotocol/common-const'
 import { bpsToPercent } from '@cowprotocol/common-utils'
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { PersistentStateByChain } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { isEoaEthFlowAtom } from 'modules/trade'
 
-type SlippageBpsPerNetwork = Record<SupportedChainId, number | null>
+type SlippageBpsPerNetwork = PersistentStateByChain<number>
 
 type SlippageType = 'smart' | 'default' | 'user'
 
 const normalTradeSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>(
   'swapSlippageAtom:v0',
-  mapSupportedNetworks(null),
+  mapSupportedNetworks(undefined),
 )
 
-const ethFlowSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>('ethFlowSlippageAtom:v0', mapSupportedNetworks(null))
+const ethFlowSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>(
+  'ethFlowSlippageAtom:v0',
+  mapSupportedNetworks(undefined),
+)
 
 export const smartTradeSlippageAtom = atom<number | null>(null)
 

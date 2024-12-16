@@ -12,7 +12,13 @@ import { useCloseModals } from 'legacy/state/application/hooks'
 import { useAppData, useAppDataHooks } from 'modules/appData'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
-import { useDerivedTradeState, useReceiveAmountInfo, useTradeConfirmActions, useTradeTypeInfo } from 'modules/trade'
+import {
+  useDerivedTradeState,
+  useIsHooksTradeType,
+  useReceiveAmountInfo,
+  useTradeConfirmActions,
+  useTradeTypeInfo,
+} from 'modules/trade'
 import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
@@ -34,12 +40,12 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const tradeTypeInfo = useTradeTypeInfo()
   const tradeType = tradeTypeInfo?.tradeType
   const uiOrderType = tradeType ? TradeTypeToUiOrderType[tradeType] : null
+  const isHooksTradeType = useIsHooksTradeType()
 
   const sellCurrency = derivedTradeState?.inputCurrency
-  const inputAmount = receiveAmountInfo?.afterNetworkCosts.sellAmount
+  const inputAmount = receiveAmountInfo?.afterSlippage.sellAmount
   const outputAmount = receiveAmountInfo?.afterSlippage.buyAmount
   const sellAmountBeforeFee = receiveAmountInfo?.afterNetworkCosts.sellAmount
-  const inputAmountWithSlippage = receiveAmountInfo?.afterSlippage.sellAmount
   const networkFee = receiveAmountInfo?.costs.networkFee.amountInSellCurrency
 
   const permitInfo = usePermitInfo(sellCurrency, tradeType)
@@ -56,7 +62,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId || SupportedChainId.MAINNET]
   const { enoughAllowance } = useEnoughBalanceAndAllowance({
     account,
-    amount: inputAmountWithSlippage,
+    amount: inputAmount,
     checkAllowanceAddress,
   })
 
@@ -75,7 +81,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
     useSWR(
       inputAmount &&
         outputAmount &&
-        inputAmountWithSlippage &&
         sellAmountBeforeFee &&
         networkFee &&
         sellToken &&
@@ -103,7 +108,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             enoughAllowance,
             generatePermitHook,
             inputAmount,
-            inputAmountWithSlippage,
             networkFee,
             outputAmount,
             permitInfo,
@@ -134,7 +138,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         enoughAllowance,
         generatePermitHook,
         inputAmount,
-        inputAmountWithSlippage,
         networkFee,
         outputAmount,
         permitInfo,
@@ -155,7 +158,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             chainId,
             inputAmount,
             outputAmount,
-            inputAmountWithSlippage,
+            inputAmountWithSlippage: inputAmount,
           },
           flags: {
             allowsOffchainSigning,
@@ -198,7 +201,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             allowsOffchainSigning,
             appData,
             class: OrderClass.MARKET,
-            partiallyFillable: false, // SWAP orders are always fill or kill - for now
+            partiallyFillable: isHooksTradeType,
             quoteId: quoteResponse.id,
             isSafeWallet,
           },

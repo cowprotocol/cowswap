@@ -1,7 +1,10 @@
+'use server'
+
 import fs from 'fs'
 import path from 'path'
 import { PlatformData, Platforms, TokenDetails, TokenInfo } from 'types'
 import { backOff } from 'exponential-backoff'
+import { DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
 const NETWORKS = ['ethereum', 'xdai']
 const COW_TOKEN_ID = 'cow-protocol'
@@ -51,20 +54,6 @@ export async function getTokenDetails(coingeckoId: string): Promise<TokenDetails
   return tokensRaw.find(({ id: _id }) => _id === id) as TokenDetails
 }
 
-// Just a quick experiment. Not using for now
-// function getTokenSummaryUsingIA(description: string): Promise<string> {
-//   const options = {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       Authorization: `Bearer ${process.env.OPEN_IA_API_KEY}`,
-//     },
-//     body: JSON.stringify({ description }),
-//   }
-
-//   return fetch('https://api.openai.com/v1/engines/davinci/completions', options).then((response) => response.json())
-// }
-
 function _getDescriptionFilePaths(): string[] {
   return fs.readdirSync(DESCRIPTIONS_DIR_PATH, 'utf-8')
 }
@@ -72,8 +61,9 @@ function _getDescriptionFilePaths(): string[] {
 async function fetchWithBackoff(url: string) {
   return backOff(
     () => {
-      console.log(`Fetching ${url}`)
-      return fetch(url).then((res) => {
+      return fetch(url, {
+        next: { revalidate: DATA_CACHE_TIME_SECONDS },
+      }).then((res) => {
         if (!res.ok) {
           throw new Error(`Error fetching list ${url}: Error ${res.status}, ${res.statusText}`)
         }

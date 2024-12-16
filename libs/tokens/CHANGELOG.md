@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.12.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.11.0...tokens-v1.12.0) (2024-12-03)
+
+
+### Features
+
+* add default list for tokens in base ([#5141](https://github.com/cowprotocol/cowswap/issues/5141)) ([973b93a](https://github.com/cowprotocol/cowswap/commit/973b93a3bb11658bbfba51224a8062588655f5ef))
+* allow adding networks without invalidating local-storage ([#5134](https://github.com/cowprotocol/cowswap/issues/5134)) ([995b4c0](https://github.com/cowprotocol/cowswap/commit/995b4c05da90356c6621a92dc58efbd6f37349ff))
+* **base:** add base chain support ([#5044](https://github.com/cowprotocol/cowswap/issues/5044)) ([4cf0c91](https://github.com/cowprotocol/cowswap/commit/4cf0c91a300d6fcdc026364e74c45e5b2f729f2b))
+* improve custom hook validation messages ([#5123](https://github.com/cowprotocol/cowswap/issues/5123)) ([91bab8d](https://github.com/cowprotocol/cowswap/commit/91bab8dc3b124a32790c3bb1955b01dd3a75ea7b))
+
+## [1.11.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.10.0...tokens-v1.11.0) (2024-11-06)
+
+
+### Features
+
+* **yield:** define token category by default for selection ([#5018](https://github.com/cowprotocol/cowswap/issues/5018)) ([7c18b7d](https://github.com/cowprotocol/cowswap/commit/7c18b7d85de6feac9c7e64740a93572f3af3c273))
+* **yield:** display cow amm banner conditionally ([#5035](https://github.com/cowprotocol/cowswap/issues/5035)) ([1a517a3](https://github.com/cowprotocol/cowswap/commit/1a517a3f21b94c10b8e59e68bc49a569c1be904b))
+* **yield:** display pools info in widget ([#5046](https://github.com/cowprotocol/cowswap/issues/5046)) ([562d020](https://github.com/cowprotocol/cowswap/commit/562d0207d1acf4e1735c4b3f629ff63dd65d3725))
+* **yield:** fetch balances for LP-tokens ([#5005](https://github.com/cowprotocol/cowswap/issues/5005)) ([2877df5](https://github.com/cowprotocol/cowswap/commit/2877df52be2fd519a20157a1cd91a2e18e954dae))
+* **yield:** use lp-token in widget ([#5013](https://github.com/cowprotocol/cowswap/issues/5013)) ([b66d206](https://github.com/cowprotocol/cowswap/commit/b66d2068a9f3bcaddc8da7df5499c17fc05f693f))
+
 ## [1.10.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.9.0...tokens-v1.10.0) (2024-10-10)
 
 

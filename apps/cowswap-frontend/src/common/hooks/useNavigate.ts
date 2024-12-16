@@ -18,6 +18,14 @@ export function useNavigate(): NavigateFunction {
         ...options,
       })
     },
-    [navigate, isWidget]
+    [navigate, isWidget],
   )
+}
+
+export function useNavigateBack(): () => void {
+  const navigate = useNavigateOriginal()
+
+  return useCallback(() => {
+    navigate(-1)
+  }, [navigate])
 }

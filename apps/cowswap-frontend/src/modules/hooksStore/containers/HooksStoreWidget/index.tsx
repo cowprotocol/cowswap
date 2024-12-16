@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
+import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { SwapWidget } from 'modules/swap'
-import { useIsSellNative } from 'modules/trade'
+import { useIsSellNative, useIsWrapOrUnwrap } from 'modules/trade'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-import { HooksTopActions, RescueFundsToggle, TradeWidgetWrapper } from './styled'
+import { TradeWidgetWrapper } from './styled'
 
 import { useSetRecipientOverride } from '../../hooks/useSetRecipientOverride'
 import { useSetupHooksStoreOrderParams } from '../../hooks/useSetupHooksStoreOrderParams'
@@ -17,20 +18,23 @@ import { IframeDappsManifestUpdater } from '../../updaters/iframeDappsManifestUp
 import { HookRegistryList } from '../HookRegistryList'
 import { PostHookButton } from '../PostHookButton'
 import { PreHookButton } from '../PreHookButton'
-import { RescueFundsFromProxy } from '../RescueFundsFromProxy'
 
 type HookPosition = 'pre' | 'post'
 
 console.log(ICON_HOOK)
 
 export function HooksStoreWidget() {
-  const { account, chainId } = useWalletInfo()
-  const [isRescueWidgetOpen, setRescueWidgetOpen] = useState<boolean>(false)
+  const { chainId } = useWalletInfo()
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)
   const [hookToEdit, setHookToEdit] = useState<string | undefined>(undefined)
 
   const isNativeSell = useIsSellNative()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
+
+  const walletType = useIsSmartContractWallet()
+    ? HookDappWalletCompatibility.SMART_CONTRACT
+    : HookDappWalletCompatibility.EOA
 
   const onDismiss = useCallback(() => {
     setSelectedHookPosition(null)
@@ -47,33 +51,19 @@ export function HooksStoreWidget() {
     setHookToEdit(uuid)
   }, [])
 
-  useEffect(() => {
-    if (!account) {
-      setRescueWidgetOpen(false)
-    }
-  }, [account])
-
   // Close all screens on network changes (including unsupported chain case)
-  useEffect(() => {
-    setRescueWidgetOpen(false)
-    onDismiss()
-  }, [chainId, isChainIdUnsupported, onDismiss])
+  useEffect(onDismiss, [chainId, isChainIdUnsupported, onDismiss])
 
   useSetupHooksStoreOrderParams()
   useSetRecipientOverride()
 
   const isHookSelectionOpen = !!(selectedHookPosition || hookToEdit)
-  const hideSwapWidget = isHookSelectionOpen || isRescueWidgetOpen
+  const hideSwapWidget = isHookSelectionOpen
 
   const shouldNotUseHooks = isNativeSell || isChainIdUnsupported
 
-  const TopContent = shouldNotUseHooks ? null : (
+  const TopContent = shouldNotUseHooks ? undefined : isWrapOrUnwrap ? undefined : (
     <>
-      {!isRescueWidgetOpen && account && (
-        <HooksTopActions>
-          <RescueFundsToggle onClick={() => setRescueWidgetOpen(true)}>Rescue funds</RescueFundsToggle>
-        </HooksTopActions>
-      )}
       <DismissableInlineBanner
         orientation={BannerOrientation.Horizontal}
         customIcon={ICON_HOOK}
@@ -82,21 +72,25 @@ export function HooksStoreWidget() {
       >
         <p>
           With hooks you can add specific actions <b>before</b> and <b>after</b> your swap.{' '}
-          <a
-            href="https://blog.cow.fi/cow-hooks-you-are-in-control-480ccb40044a"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href="https://cow.fi/learn/cow-hooks-you-are-in-control" target="_blank" rel="noopener noreferrer">
             Learn more.
           </a>
         </p>
       </DismissableInlineBanner>
-      <PreHookButton onOpen={() => setSelectedHookPosition('pre')} onEditHook={onPreHookEdit} />
+      <PreHookButton
+        onOpen={() => setSelectedHookPosition('pre')}
+        onEditHook={onPreHookEdit}
+        hideTooltip={isHookSelectionOpen}
+      />
     </>
   )
 
   const BottomContent = shouldNotUseHooks ? null : (
-    <PostHookButton onOpen={() => setSelectedHookPosition('post')} onEditHook={onPostHookEdit} />
+    <PostHookButton
+      onOpen={() => setSelectedHookPosition('post')}
+      onEditHook={onPostHookEdit}
+      hideTooltip={isHookSelectionOpen}
+    />
   )
 
   return (
@@ -106,9 +100,13 @@ export function HooksStoreWidget() {
       </TradeWidgetWrapper>
       <IframeDappsManifestUpdater />
       {isHookSelectionOpen && (
-        <HookRegistryList onDismiss={onDismiss} hookToEdit={hookToEdit} isPreHook={selectedHookPosition === 'pre'} />
+        <HookRegistryList
+          walletType={walletType}
+          onDismiss={onDismiss}
+          hookToEdit={hookToEdit}
+          isPreHook={selectedHookPosition === 'pre'}
+        />
       )}
-      {isRescueWidgetOpen && <RescueFundsFromProxy onDismiss={() => setRescueWidgetOpen(false)} />}
     </>
   )
 }

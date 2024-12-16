@@ -6,6 +6,7 @@ import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar, CowSwapTheme } from '@cowprotocol/ui'
 
+import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router-dom'
 import { ThemeProvider } from 'theme'
 
@@ -23,6 +24,7 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { parameterizeTradeRoute, useTradeRouteContext } from 'modules/trade'
 import { useInitializeUtm } from 'modules/utm'
 
+import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useMenuItems } from 'common/hooks/useMenuItems'
@@ -52,6 +54,7 @@ export function App() {
   useInitializeUtm()
 
   const featureFlags = useFeatureFlags()
+  const { isYieldEnabled } = featureFlags
 
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
@@ -77,7 +80,13 @@ export function App() {
         children: menuItems.map((item) => {
           const href = parameterizeTradeRoute(tradeContext, item.route, true)
 
-          return { href, label: item.label, description: item.description, badge: item.badge }
+          return {
+            href,
+            label: item.label,
+            description: item.description,
+            badge: item.badgeImage ? <SVG src={item.badgeImage} width={10} height={10} /> : item.badge,
+            badgeType: item.badgeType,
+          }
         }),
       },
       ...NAV_ITEMS,
@@ -138,10 +147,7 @@ export function App() {
             />
           )}
 
-          {/* CoW AMM banner */}
-          {/*{!isInjectedWidgetMode && account && !isChainIdUnsupported && (*/}
-          {/*  <CoWAmmBanner location={BannerLocation.Global} />*/}
-          {/*)}*/}
+          {isYieldEnabled && <CoWAmmBanner />}
 
           <styledEl.BodyWrapper customTheme={customTheme}>
             <TopLevelModals />

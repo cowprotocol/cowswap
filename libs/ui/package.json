@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/ui",
-  "version": "1.12.0",
+  "version": "1.15.0",
   "main": "./index.js",
   "types": "./index.d.ts",
   "exports": {

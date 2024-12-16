@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.11.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.10.0...assets-v1.11.0) (2024-12-03)
+
+
+### Features
+
+* **base:** add base chain support ([#5044](https://github.com/cowprotocol/cowswap/issues/5044)) ([4cf0c91](https://github.com/cowprotocol/cowswap/commit/4cf0c91a300d6fcdc026364e74c45e5b2f729f2b))
+
+## [1.10.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.9.0...assets-v1.10.0) (2024-11-21)
+
+
+### Features
+
+* refactor badge component and experimental icon ([#5102](https://github.com/cowprotocol/cowswap/issues/5102)) ([f642ce5](https://github.com/cowprotocol/cowswap/commit/f642ce5d5a8f2f81dbc72cb1d8942eaa8905bb3b))
+
 ## [1.9.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.8.0...assets-v1.9.0) (2024-10-29)
 
 

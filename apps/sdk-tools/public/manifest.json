@@ -1,0 +1,39 @@
+{
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "homepage_url": "https://swap.cow.fi",
+  "description": "SDK tools",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "orientation": "portrait",
+  "name": "SDK tools",
+  "short_name": "SDK tools",
+  "start_url": ".",
+  "theme_color": "#ffffff",
+  "cow_hook_dapp": {
+    "id": "75716a3cb48fdbb43ebdff58ce6c541f6a2c269be690513131355800367f2da2",
+    "name": "SDK tools",
+    "descriptionShort": "Bridge from Gnosis Chain to Mainnet",
+    "description": "The SDK tools provide some convenient tools for CoW Protocol developers",
+    "version": "0.0.1",
+    "website": "https://sdk-tools.cow.fi",
+    "image": "http://localhost:4317/apple-touch-icon.png",
+    "conditions": {
+      "position": "post",
+      "walletCompatibility": ["EOA"],
+      "supportedNetworks": [100]
+    }
+  }
+}

@@ -1,3 +1,5 @@
+'use client'
+
 import { createGlobalStyle } from 'styled-components/macro'
 import { Color, Media } from '@cowprotocol/ui'
 
@@ -17,7 +19,7 @@ const GlobalStyles = createGlobalStyle`
       input,
       textarea,
       button {
-          font-family: inherit; 
+          font-family: inherit;
       }
   }
 

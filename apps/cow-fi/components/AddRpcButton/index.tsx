@@ -6,14 +6,7 @@ import { clickOnMevBlocker } from 'modules/analytics'
 import { useAccount } from 'wagmi'
 
 import { Link, LinkType } from '@/components/Link'
-
-export type AddToWalletStateValues = 'unknown' | 'adding' | 'added' | 'error' | 'takingTooLong' | 'connecting'
-
-export interface AddToWalletState {
-  state: AddToWalletStateValues
-  errorMessage?: string
-  autoConnect: boolean
-}
+import { AddToWalletStateValues } from '../../types/addToWalletState'
 
 const Message = styled.p<{ state: AddToWalletStateValues }>`
   color: ${({ state }) => (state === 'added' ? darken(0.5, 'green') : 'orange')};
@@ -55,10 +48,10 @@ export function AddRpcButton() {
   const buttonLabel = isConnecting
     ? 'Connecting Wallet...'
     : isAdding
-    ? 'Adding to Wallet...'
-    : isConnected
-    ? 'Add MEV Blocker RPC'
-    : 'Get protected'
+      ? 'Adding to Wallet...'
+      : isConnected
+        ? 'Add MEV Blocker RPC'
+        : 'Get protected'
 
   return (
     <>

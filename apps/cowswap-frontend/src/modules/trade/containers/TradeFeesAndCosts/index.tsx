@@ -1,8 +1,7 @@
 import { ReactNode } from 'react'
 
-import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
-
 import { useUsdAmount } from 'modules/usdAmount'
+import { VolumeFeeTooltip } from 'modules/volumeFee'
 
 import { NetworkCostsRow } from '../../pure/NetworkCostsRow'
 import { PartnerFeeRow } from '../../pure/PartnerFeeRow'
@@ -11,21 +10,21 @@ import { getOrderTypeReceiveAmounts } from '../../utils/getReceiveAmountInfo'
 
 interface TradeFeesAndCostsProps {
   receiveAmountInfo: ReceiveAmountInfo | null
-  widgetParams: Partial<CowSwapWidgetAppParams>
   networkCostsSuffix?: ReactNode
   networkCostsTooltipSuffix?: ReactNode
   withTimelineDot?: boolean
   alwaysRow?: boolean
+  volumeFeeTooltip: VolumeFeeTooltip
 }
 
 export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
   const {
     receiveAmountInfo,
-    widgetParams,
     networkCostsSuffix,
     networkCostsTooltipSuffix,
     withTimelineDot = true,
     alwaysRow,
+    volumeFeeTooltip,
   } = props
 
   const networkFeeAmount = receiveAmountInfo && getOrderTypeReceiveAmounts(receiveAmountInfo).networkFeeAmount
@@ -45,7 +44,7 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
         partnerFeeUsd={partnerFeeUsd}
         partnerFeeAmount={partnerFeeAmount}
         partnerFeeBps={partnerFeeBps}
-        widgetContent={widgetParams.content}
+        volumeFeeTooltip={volumeFeeTooltip}
       />
 
       {/*Network cost*/}

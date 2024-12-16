@@ -13,37 +13,6 @@ import Swapr from '@cowprotocol/assets/cow-swap/ammslogo/swapr.png'
 import Symmetric from '@cowprotocol/assets/cow-swap/ammslogo/symmetric.png'
 import Uniswap from '@cowprotocol/assets/cow-swap/ammslogo/uniswap.png'
 import Gno from '@cowprotocol/assets/cow-swap/network-gnosis-chain-logo.svg'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
-import styled from 'styled-components/macro'
-
-import { animationDelay, crossFade, fadeInOut, imagesAnimationDelay, presentationTime } from './utils'
-
-export const Wrapper = styled.div<{ logosLength: number }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 100%;
-  box-shadow: 0px 0px 10px 2px ${({ theme }) => theme.paper};
-  background-color: ${({ theme }) => theme.white};
-  transform-style: preserve-3d;
-  position: absolute;
-  top: -4px;
-  right: 0px;
-
-  img {
-    position: absolute;
-    left: 0;
-    animation: ${(props) => fadeInOut(presentationTime, crossFade, props.logosLength)}
-      ${(props) => animationDelay * props.logosLength}s infinite;
-  }
-
-  ${(props) => imagesAnimationDelay(props.logosLength, animationDelay)}
-`
-
-type Image = { src: string; alt: string }
 
 const SushiImage = { src: Sushi, alt: 'AMMs Sushi' }
 const OneInchImage = { src: Oneinch, alt: 'AMMs 1inch' }
@@ -59,23 +28,6 @@ const ElkImage = { src: Elk, alt: 'AMMs Elk' }
 const LevinSwapImage = { src: Levinswap, alt: 'Levinswap 0x' }
 const SymmetricImage = { src: Symmetric, alt: 'Symmetric 0x' }
 const ZeroXImage = { src: ZeroX, alt: 'AMMs 0x' }
-
-const ETH_AMM_LOGOS = [SushiImage, OneInchImage, ParaSwapImage, UniswapImage, CurveImage, MatchaImage, ZeroXImage]
-
-const LogosPerNetwork: Record<SupportedChainId, Array<Image>> = {
-  [SupportedChainId.MAINNET]: ETH_AMM_LOGOS,
-  [SupportedChainId.SEPOLIA]: ETH_AMM_LOGOS,
-  [SupportedChainId.ARBITRUM_ONE]: ETH_AMM_LOGOS, // TODO: review actual AMMs on arbitrum
-  [SupportedChainId.GNOSIS_CHAIN]: [
-    SushiImage,
-    BaoSwapImage,
-    HoneySwapImage,
-    SwaprImage,
-    SymmetricImage,
-    ElkImage,
-    LevinSwapImage,
-  ],
-}
 
 export const AMM_LOGOS: Record<string, typeof SushiImage> = {
   baoswap: BaoSwapImage,
@@ -95,12 +47,3 @@ export const AMM_LOGOS: Record<string, typeof SushiImage> = {
   default: { src: Gno, alt: 'Default unknown AMM' },
 }
 
-export function AMMsLogo({ chainId }: { chainId: SupportedChainId }) {
-  return (
-    <Wrapper logosLength={LogosPerNetwork[chainId].length}>
-      {LogosPerNetwork[chainId].map(({ src, alt }, index) => (
-        <img key={index} src={src} alt={alt} />
-      ))}
-    </Wrapper>
-  )
-}

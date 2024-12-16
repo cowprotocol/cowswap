@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { RowWithCopyButton } from '../../components/common/RowWithCopyButton'
+import { Search } from '../components/common/Search'
 
 export const Wrapper = styled.div`
   padding: 1.6rem;
@@ -103,5 +104,14 @@ export const ContentCard = styled.div`
   p {
     line-height: ${({ theme }): string => theme.fontLineHeight};
     overflow-wrap: break-word;
+  }
+`
+
+export const StyledSearch = styled(Search)`
+  width: calc(100% - 3.2rem);
+  max-width: 60rem;
+
+  ${Media.upToMedium()} {
+    margin: 1.6rem;
   }
 `

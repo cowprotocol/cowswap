@@ -1,27 +1,24 @@
-import { hookDappsRegistry } from '@cowprotocol/hook-dapp-lib'
+import { HookDappBase, hookDappsRegistry } from '@cowprotocol/hook-dapp-lib'
 
 import { AirdropHookApp } from './dapps/AirdropHookApp'
 import { BuildHookApp } from './dapps/BuildHookApp'
 import { ClaimGnoHookApp } from './dapps/ClaimGnoHookApp'
 import { PermitHookApp } from './dapps/PermitHookApp'
-import { HookDapp } from './types/hooks'
+import { HookDapp, HookDappInternal } from './types/hooks'
 
-export const ALL_HOOK_DAPPS = [
-  {
-    ...hookDappsRegistry.BUILD_CUSTOM_HOOK,
-    component: (props) => <BuildHookApp {...props} />,
-  },
-  {
-    ...hookDappsRegistry.CLAIM_GNO_FROM_VALIDATORS,
-    component: (props) => <ClaimGnoHookApp {...props} />,
-  },
-  {
-    ...hookDappsRegistry.PERMIT_TOKEN,
-    component: (props) => <PermitHookApp {...props} />,
-  },
-  {
-    ...hookDappsRegistry.CLAIM_COW_AIRDROP,
-    component: (props) => <AirdropHookApp {...props} />,
-  },
-  hookDappsRegistry.CLAIM_LLAMAPAY_VESTING,
-] as HookDapp[]
+const HOOK_DAPPS_OVERRIDES: Record<string, Partial<HookDappInternal>> = {
+  BUILD_CUSTOM_HOOK: { component: (props) => <BuildHookApp {...props} /> },
+  CLAIM_GNO_FROM_VALIDATORS: { component: (props) => <ClaimGnoHookApp {...props} /> },
+  PERMIT_TOKEN: { component: (props) => <PermitHookApp {...props} /> },
+  CLAIM_COW_AIRDROP: { component: (props) => <AirdropHookApp {...props} /> },
+}
+
+export const ALL_HOOK_DAPPS = Object.keys(hookDappsRegistry).map((id) => {
+  const item = (hookDappsRegistry as Record<string, Omit<HookDappBase, 'id'>>)[id]
+
+  return {
+    ...item,
+    ...HOOK_DAPPS_OVERRIDES[id],
+    id,
+  }
+}) as HookDapp[]

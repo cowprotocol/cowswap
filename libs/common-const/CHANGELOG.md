@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.11.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.10.1...common-const-v1.11.0) (2024-12-03)
+
+
+### Features
+
+* **base:** add base chain support ([#5044](https://github.com/cowprotocol/cowswap/issues/5044)) ([4cf0c91](https://github.com/cowprotocol/cowswap/commit/4cf0c91a300d6fcdc026364e74c45e5b2f729f2b))
+
+## [1.10.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.10.0...common-const-v1.10.1) (2024-11-21)
+
+
+### Bug Fixes
+
+* **volume-fee:** do not add fee for USDC.e on arb ([#5119](https://github.com/cowprotocol/cowswap/issues/5119)) ([ba11c02](https://github.com/cowprotocol/cowswap/commit/ba11c02ccbd9631d15a1c3c898606a62cc636270))
+
+## [1.10.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.9.0...common-const-v1.10.0) (2024-11-06)
+
+
+### Features
+
+* **protocol-fees:** arb1 protocol fee ([#5055](https://github.com/cowprotocol/cowswap/issues/5055)) ([ed176c3](https://github.com/cowprotocol/cowswap/commit/ed176c3ab95fe51065a905e05ca184f3abf7e282))
+* **yield:** define token category by default for selection ([#5018](https://github.com/cowprotocol/cowswap/issues/5018)) ([7c18b7d](https://github.com/cowprotocol/cowswap/commit/7c18b7d85de6feac9c7e64740a93572f3af3c273))
+* **yield:** display cow amm banner conditionally ([#5035](https://github.com/cowprotocol/cowswap/issues/5035)) ([1a517a3](https://github.com/cowprotocol/cowswap/commit/1a517a3f21b94c10b8e59e68bc49a569c1be904b))
+
 ## [1.9.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.8.0...common-const-v1.9.0) (2024-10-29)
 
 

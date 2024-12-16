@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.15.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.14.0...ui-v1.15.0) (2024-12-03)
+
+
+### Features
+
+* **volume-fee:** add volume fee for Safe ([#5139](https://github.com/cowprotocol/cowswap/issues/5139)) ([bb14c6a](https://github.com/cowprotocol/cowswap/commit/bb14c6a6ecfaba7d1a9a1da5366fac054efb97aa))
+
+## [1.14.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.13.0...ui-v1.14.0) (2024-11-21)
+
+
+### Features
+
+* refactor badge component and experimental icon ([#5102](https://github.com/cowprotocol/cowswap/issues/5102)) ([f642ce5](https://github.com/cowprotocol/cowswap/commit/f642ce5d5a8f2f81dbc72cb1d8942eaa8905bb3b))
+* refactor trade container styles ([#5103](https://github.com/cowprotocol/cowswap/issues/5103)) ([29ab5c4](https://github.com/cowprotocol/cowswap/commit/29ab5c45971767716df2d048b87198ac1acb2c90))
+
+## [1.13.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.12.0...ui-v1.13.0) (2024-11-06)
+
+
+### Features
+
+* **yield:** display pools info in widget ([#5046](https://github.com/cowprotocol/cowswap/issues/5046)) ([562d020](https://github.com/cowprotocol/cowswap/commit/562d0207d1acf4e1735c4b3f629ff63dd65d3725))
+
 ## [1.12.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.11.0...ui-v1.12.0) (2024-10-29)
 
 

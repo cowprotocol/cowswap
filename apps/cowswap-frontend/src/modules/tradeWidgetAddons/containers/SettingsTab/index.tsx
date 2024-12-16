@@ -1,18 +1,21 @@
 import { useAtom } from 'jotai'
 import { ReactElement, RefObject, useCallback, useEffect, useRef } from 'react'
 
+import EXPERIMENT_ICON from '@cowprotocol/assets/cow-swap/experiment.svg'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { StatefulValue } from '@cowprotocol/types'
 import { HelpTooltip, RowBetween, RowFixed } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { Menu, useMenuButtonContext } from '@reach/menu-button'
+import SVG from 'react-inlinesvg'
 import { Text } from 'rebass'
 import { ThemedText } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
 import { Toggle } from 'legacy/components/Toggle'
 
-import { toggleRecipientAddressAnalytics } from 'modules/analytics'
+import { toggleHooksEnabledAnalytics, toggleRecipientAddressAnalytics } from 'modules/analytics'
 import { SettingsIcon } from 'modules/trade/pure/Settings'
 
 import * as styledEl from './styled'
@@ -23,10 +26,11 @@ import { TransactionSettings } from '../TransactionSettings'
 interface SettingsTabProps {
   className?: string
   recipientToggleState: StatefulValue<boolean>
+  hooksEnabledState?: StatefulValue<boolean>
   deadlineState: StatefulValue<number>
 }
 
-export function SettingsTab({ className, recipientToggleState, deadlineState }: SettingsTabProps) {
+export function SettingsTab({ className, recipientToggleState, hooksEnabledState, deadlineState }: SettingsTabProps) {
   const menuButtonRef = useRef<HTMLButtonElement>(null)
 
   const [recipientToggleVisible, toggleRecipientVisibilityAux] = recipientToggleState
@@ -37,6 +41,18 @@ export function SettingsTab({ className, recipientToggleState, deadlineState }: 
       toggleRecipientVisibilityAux(isVisible)
     },
     [toggleRecipientVisibilityAux, recipientToggleVisible],
+  )
+
+  const [hooksEnabled, toggleHooksEnabledAux] = hooksEnabledState || [null, null]
+  const toggleHooksEnabled = useCallback(
+    (value?: boolean) => {
+      if (hooksEnabled === null || toggleHooksEnabledAux === null) return
+
+      const isEnabled = value ?? !hooksEnabled
+      toggleHooksEnabledAnalytics(isEnabled)
+      toggleHooksEnabledAux(isEnabled)
+    },
+    [hooksEnabled, toggleHooksEnabledAux],
   )
 
   return (
@@ -75,6 +91,27 @@ export function SettingsTab({ className, recipientToggleState, deadlineState }: 
                   toggle={toggleRecipientVisibility}
                 />
               </RowBetween>
+
+              {!isInjectedWidget() && hooksEnabled !== null && (
+                <RowBetween>
+                  <RowFixed>
+                    <ThemedText.Black fontWeight={400} fontSize={14}>
+                      <Trans>Enable Hooks</Trans>
+                    </ThemedText.Black>
+                    <HelpTooltip
+                      text={
+                        <Trans>
+                          <b>
+                            <SVG src={EXPERIMENT_ICON} width={12} height={12} /> Experimental:
+                          </b>{' '}
+                          Add DeFI interactions before and after your trade
+                        </Trans>
+                      }
+                    />
+                  </RowFixed>
+                  <Toggle id="toggle-hooks-mode-button" isActive={hooksEnabled} toggle={toggleHooksEnabled} />
+                </RowBetween>
+              )}
             </AutoColumn>
           </styledEl.MenuFlyout>
         </styledEl.StyledMenu>
@@ -97,7 +134,7 @@ function SettingsTabController({ buttonRef, children }: SettingsTabControllerPro
 
   const toggleMenu = useCallback(() => {
     buttonRef.current?.dispatchEvent(new Event('mousedown', { bubbles: true }))
-  }, [buttonRef.current])
+  }, [buttonRef])
 
   useEffect(() => {
     if (settingsTabState.open) {

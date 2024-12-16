@@ -8,10 +8,10 @@ import { userAddedTokensAtom } from './userAddedTokensAtom'
 
 import { TokensMap } from '../../types'
 import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
+import { parseTokenInfo } from '../../utils/parseTokenInfo'
 import { tokenMapToListWithLogo } from '../../utils/tokenMapToListWithLogo'
 import { environmentAtom } from '../environmentAtom'
 import { listsEnabledStateAtom, listsStatesListAtom } from '../tokenLists/tokenListsStateAtom'
-
 
 export interface TokensByAddress {
   [address: string]: TokenWithLogo | undefined
@@ -21,18 +21,12 @@ export interface TokensBySymbol {
   [address: string]: TokenWithLogo[]
 }
 
-export interface TokensState {
+interface TokensState {
   activeTokens: TokensMap
   inactiveTokens: TokensMap
 }
 
-interface BridgeInfo {
-  [chainId: number]: {
-    tokenAddress: string
-  }
-}
-
-export const tokensStateAtom = atom<TokensState>((get) => {
+const tokensStateAtom = atom<TokensState>((get) => {
   const { chainId } = get(environmentAtom)
   const listsStatesList = get(listsStatesListAtom)
   const listsEnabledState = get(listsEnabledStateAtom)
@@ -40,19 +34,15 @@ export const tokensStateAtom = atom<TokensState>((get) => {
   return listsStatesList.reduce<TokensState>(
     (acc, list) => {
       const isListEnabled = listsEnabledState[list.source]
-
+      const lpTokenProvider = list.lpTokenProvider
       list.list.tokens.forEach((token) => {
-        const bridgeInfo = token.extensions?.['bridgeInfo'] as never as BridgeInfo | undefined
-        const currentChainInfo = bridgeInfo?.[chainId]
-        const bridgeAddress = currentChainInfo?.tokenAddress
+        const tokenInfo = parseTokenInfo(chainId, token)
+        const tokenAddressKey = tokenInfo?.address.toLowerCase()
 
-        if (token.chainId !== chainId && !bridgeAddress) return
+        if (!tokenInfo || !tokenAddressKey) return
 
-        const tokenAddress = bridgeAddress || token.address
-        const tokenAddressKey = tokenAddress.toLowerCase()
-        const tokenInfo: TokenInfo = {
-          ...token,
-          address: tokenAddress,
+        if (lpTokenProvider) {
+          tokenInfo.lpTokenProvider = lpTokenProvider
         }
 
         if (isListEnabled) {
@@ -68,7 +58,7 @@ export const tokensStateAtom = atom<TokensState>((get) => {
 
       return acc
     },
-    { activeTokens: {}, inactiveTokens: {} }
+    { activeTokens: {}, inactiveTokens: {} },
   )
 })
 
@@ -78,7 +68,7 @@ export const tokensStateAtom = atom<TokensState>((get) => {
  * Native token is always the first element in the list
  */
 export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
-  const { chainId } = get(environmentAtom)
+  const { chainId, enableLpTokensByDefault } = get(environmentAtom)
   const userAddedTokens = get(userAddedTokensAtom)
   const favoriteTokensState = get(favoriteTokensAtom)
 
@@ -89,10 +79,21 @@ export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
     {
       [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo,
       ...tokensMap.activeTokens,
-      ...lowerCaseTokensMap(userAddedTokens[chainId]),
+      ...lowerCaseTokensMap(userAddedTokens[chainId] || {}),
       ...lowerCaseTokensMap(favoriteTokensState[chainId]),
+      ...(enableLpTokensByDefault
+        ? Object.keys(tokensMap.inactiveTokens).reduce<TokensMap>((acc, key) => {
+            const token = tokensMap.inactiveTokens[key]
+
+            if (token.lpTokenProvider) {
+              acc[key] = token
+            }
+
+            return acc
+          }, {})
+        : null),
     },
-    chainId
+    chainId,
   )
 })
 

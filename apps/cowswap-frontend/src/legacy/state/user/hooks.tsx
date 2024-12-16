@@ -8,7 +8,13 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { shallowEqual } from 'react-redux'
 
-import { updateRecipientToggleVisible, updateUserDarkMode, updateUserDeadline, updateUserLocale } from './reducer'
+import {
+  updateHooksEnabled,
+  updateRecipientToggleVisible,
+  updateUserDarkMode,
+  updateUserDeadline,
+  updateUserLocale,
+} from './reducer'
 import { SerializedToken } from './types'
 
 import { useAppDispatch, useAppSelector } from '../hooks'
@@ -81,6 +87,21 @@ export function useRecipientToggleManager(): [boolean, (value: boolean) => void]
   )
 
   return [isVisible, toggleVisibility]
+}
+
+export function useHooksEnabled(): boolean {
+  return useAppSelector((state) => state.user.hooksEnabled)
+}
+
+export function useHooksEnabledManager(): [boolean, Command] {
+  const dispatch = useAppDispatch()
+  const hooksEnabled = useHooksEnabled()
+
+  const toggleHooksEnabled = useCallback(() => {
+    dispatch(updateHooksEnabled({ hooksEnabled: !hooksEnabled }))
+  }, [hooksEnabled, dispatch])
+
+  return [hooksEnabled, toggleHooksEnabled]
 }
 
 export function useUserTransactionTTL(): [number, (slippage: number) => void] {

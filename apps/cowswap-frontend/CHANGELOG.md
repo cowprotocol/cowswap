@@ -1,5 +1,97 @@
 # Changelog
 
+## [1.92.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.92.1...cowswap-v1.92.2) (2024-12-05)
+
+
+### Bug Fixes
+
+* add safe apps fee in Base network ([#5161](https://github.com/cowprotocol/cowswap/issues/5161)) ([cefdb55](https://github.com/cowprotocol/cowswap/commit/cefdb55475f4989d745857fc9f8f2cfa77be5243))
+
+## [1.92.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.92.0...cowswap-v1.92.1) (2024-12-05)
+
+
+### Bug Fixes
+
+* **twap:** fix orders fetching ([#5157](https://github.com/cowprotocol/cowswap/issues/5157)) ([47195e2](https://github.com/cowprotocol/cowswap/commit/47195e2d326650a1fc11960077bd4861bdfcf418))
+* update safe fee tooltip label ([#5158](https://github.com/cowprotocol/cowswap/issues/5158)) ([d186042](https://github.com/cowprotocol/cowswap/commit/d186042fc75c79ccd95defe30f6b5e0d17792f17))
+
+## [1.92.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.91.0...cowswap-v1.92.0) (2024-12-04)
+
+
+### Features
+
+* upgrade react@19 and next@15 ([#5147](https://github.com/cowprotocol/cowswap/issues/5147)) ([a00b1b9](https://github.com/cowprotocol/cowswap/commit/a00b1b930602ab1e6b2f0b3cd148497f68bf4cb5))
+
+## [1.91.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.90.0...cowswap-v1.91.0) (2024-12-03)
+
+
+### Features
+
+* allow adding networks without invalidating local-storage ([#5134](https://github.com/cowprotocol/cowswap/issues/5134)) ([995b4c0](https://github.com/cowprotocol/cowswap/commit/995b4c05da90356c6621a92dc58efbd6f37349ff))
+* **base:** add base chain support ([#5044](https://github.com/cowprotocol/cowswap/issues/5044)) ([4cf0c91](https://github.com/cowprotocol/cowswap/commit/4cf0c91a300d6fcdc026364e74c45e5b2f729f2b))
+* improve custom hook validation messages ([#5123](https://github.com/cowprotocol/cowswap/issues/5123)) ([91bab8d](https://github.com/cowprotocol/cowswap/commit/91bab8dc3b124a32790c3bb1955b01dd3a75ea7b))
+* **volume-fee:** add volume fee for Safe ([#5139](https://github.com/cowprotocol/cowswap/issues/5139)) ([bb14c6a](https://github.com/cowprotocol/cowswap/commit/bb14c6a6ecfaba7d1a9a1da5366fac054efb97aa))
+
+
+### Bug Fixes
+
+* display usd value for tokens with small prices ([#5137](https://github.com/cowprotocol/cowswap/issues/5137)) ([74c27fd](https://github.com/cowprotocol/cowswap/commit/74c27fd38e0280a5cf24575bf002a9598994ff95))
+* **hooks-store:** update hooks learn link ([#5126](https://github.com/cowprotocol/cowswap/issues/5126)) ([a3b378c](https://github.com/cowprotocol/cowswap/commit/a3b378cda5be4d33fc816e9b3b4c62efe7df5c39))
+* reset trade completely if default token is duplicated ([#5140](https://github.com/cowprotocol/cowswap/issues/5140)) ([32e1ca0](https://github.com/cowprotocol/cowswap/commit/32e1ca0108e8bf789d2bad01f8129d9343875bce))
+* **wallet:** remove change wallet feature ([#5136](https://github.com/cowprotocol/cowswap/issues/5136)) ([329c1df](https://github.com/cowprotocol/cowswap/commit/329c1df3aa2e2617b0bb15a94904b51c6063ff3d))
+
+## [1.90.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.89.0...cowswap-v1.90.0) (2024-11-21)
+
+
+### Features
+
+* **hooks-store:** add loading logo for hook-dapp ([#5112](https://github.com/cowprotocol/cowswap/issues/5112)) ([4b7267f](https://github.com/cowprotocol/cowswap/commit/4b7267fb6ea37c7bfcc896c7953b70fa8af2729d))
+* refactor badge component and experimental icon ([#5102](https://github.com/cowprotocol/cowswap/issues/5102)) ([f642ce5](https://github.com/cowprotocol/cowswap/commit/f642ce5d5a8f2f81dbc72cb1d8942eaa8905bb3b))
+* refactor trade container styles ([#5103](https://github.com/cowprotocol/cowswap/issues/5103)) ([29ab5c4](https://github.com/cowprotocol/cowswap/commit/29ab5c45971767716df2d048b87198ac1acb2c90))
+
+
+### Bug Fixes
+
+* **hooks-store:** fix custom hook alert title and trim slash from url ([#5117](https://github.com/cowprotocol/cowswap/issues/5117)) ([4858b7c](https://github.com/cowprotocol/cowswap/commit/4858b7c1cfd220b98d2f185682c6f71af2f8edfc))
+* **hooks-store:** log simulation only on trade simulation ([#5101](https://github.com/cowprotocol/cowswap/issues/5101)) ([84f5d5e](https://github.com/cowprotocol/cowswap/commit/84f5d5e3252f78564821be67ad738009426150f1))
+* **limit-orders:** do not crash when sell amount is giant ([#5120](https://github.com/cowprotocol/cowswap/issues/5120)) ([94d71f1](https://github.com/cowprotocol/cowswap/commit/94d71f1c785a682e608d00ad477f429ee4df4e9d))
+* **yield:** show green banner only when vampire attack is ready ([#5064](https://github.com/cowprotocol/cowswap/issues/5064)) ([cd9f2e1](https://github.com/cowprotocol/cowswap/commit/cd9f2e18b36a280d25c8727f730414c95ea90979))
+
+## [1.89.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.88.0...cowswap-v1.89.0) (2024-11-14)
+
+
+### Features
+
+* enable hooks using settings ([#5081](https://github.com/cowprotocol/cowswap/issues/5081)) ([20f543a](https://github.com/cowprotocol/cowswap/commit/20f543a4690e99e2df18a73995e476ce0efc4a6a))
+* make hooks use partially fillable by default ([#5086](https://github.com/cowprotocol/cowswap/issues/5086)) ([27a8d4d](https://github.com/cowprotocol/cowswap/commit/27a8d4d0f827495cefb16c09c228151fc9f89426))
+* misc hooks improvements ([#5079](https://github.com/cowprotocol/cowswap/issues/5079)) ([adec6fe](https://github.com/cowprotocol/cowswap/commit/adec6fecaed225531140ae947801be9d5ee52532))
+
+
+### Bug Fixes
+
+* add cow-shed page ([#5088](https://github.com/cowprotocol/cowswap/issues/5088)) ([a0bc92c](https://github.com/cowprotocol/cowswap/commit/a0bc92cf3ce8263c620ccd488cdf663028490324))
+* add cow-shed page ([#5089](https://github.com/cowprotocol/cowswap/issues/5089)) ([1102691](https://github.com/cowprotocol/cowswap/commit/1102691f8f8260dbbcae9f2fba2629ef59b4384d))
+* **combinedBalances:** Optimize balance diff calculations ([#5082](https://github.com/cowprotocol/cowswap/issues/5082)) ([38aae71](https://github.com/cowprotocol/cowswap/commit/38aae718e54fb50634706eafb973e8027d2b28df))
+
+## [1.88.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.87.0...cowswap-v1.88.0) (2024-11-06)
+
+
+### Features
+
+* **protocol-fees:** arb1 protocol fee ([#5055](https://github.com/cowprotocol/cowswap/issues/5055)) ([ed176c3](https://github.com/cowprotocol/cowswap/commit/ed176c3ab95fe51065a905e05ca184f3abf7e282))
+* **yield:** define token category by default for selection ([#5018](https://github.com/cowprotocol/cowswap/issues/5018)) ([7c18b7d](https://github.com/cowprotocol/cowswap/commit/7c18b7d85de6feac9c7e64740a93572f3af3c273))
+* **yield:** display cow amm banner conditionally ([#5035](https://github.com/cowprotocol/cowswap/issues/5035)) ([1a517a3](https://github.com/cowprotocol/cowswap/commit/1a517a3f21b94c10b8e59e68bc49a569c1be904b))
+* **yield:** display pools info in widget ([#5046](https://github.com/cowprotocol/cowswap/issues/5046)) ([562d020](https://github.com/cowprotocol/cowswap/commit/562d0207d1acf4e1735c4b3f629ff63dd65d3725))
+* **yield:** use lp-token in widget ([#5013](https://github.com/cowprotocol/cowswap/issues/5013)) ([b66d206](https://github.com/cowprotocol/cowswap/commit/b66d2068a9f3bcaddc8da7df5499c17fc05f693f))
+
+
+### Bug Fixes
+
+* **hooks:** support native currency rescuing from proxy ([#5062](https://github.com/cowprotocol/cowswap/issues/5062)) ([843e00b](https://github.com/cowprotocol/cowswap/commit/843e00b0e84e8060b9241c6d4767962df3de96eb))
+* remove isNotificationsFeedEnabled ([#5054](https://github.com/cowprotocol/cowswap/issues/5054)) ([0fbb9b5](https://github.com/cowprotocol/cowswap/commit/0fbb9b585c4beb0978309c8ebda7e8aa1f8bf57c))
+* **swap:** take slippage into account for buy orders ([#5067](https://github.com/cowprotocol/cowswap/issues/5067)) ([21f39fe](https://github.com/cowprotocol/cowswap/commit/21f39fe3811fb65d6f1a98bb2185321f378afdd4))
+* **widget:** remove irrelevant change trade params events ([#5060](https://github.com/cowprotocol/cowswap/issues/5060)) ([6ae8ca1](https://github.com/cowprotocol/cowswap/commit/6ae8ca1569d9248bb8f82bb3fea777eb03f12d49))
+
 ## [1.87.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.86.1...cowswap-v1.87.0) (2024-10-29)
 
 

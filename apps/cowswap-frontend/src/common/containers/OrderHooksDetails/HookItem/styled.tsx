@@ -146,3 +146,12 @@ export const ToggleIcon = styled.div<{ isOpen: boolean }>`
     }
   }
 `
+
+export const SimulationLink = styled.span<{ status: boolean }>`
+  color: var(${({ status }) => (status ? UI.COLOR_SUCCESS : UI.COLOR_DANGER)});
+  border-radius: 8px;
+
+  &:hover {
+    color: var(${({ status }) => (status ? UI.COLOR_SUCCESS_TEXT : UI.COLOR_DANGER_TEXT)});
+  }
+`
