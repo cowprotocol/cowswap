@@ -10,8 +10,10 @@ const ANNOUNCEMENTS_SWR_CONFIG: SWRConfiguration = {
   revalidateOnFocus: false,
 }
 
+const EMPTY_VALUE: CmsAnnouncements = []
+
 export function useCmsAnnouncements() {
   const { data } = useSWR<CmsAnnouncements, Error, string>('/announcements', getAnnouncements, ANNOUNCEMENTS_SWR_CONFIG)
 
-  return data || []
+  return data || EMPTY_VALUE
 }
