@@ -27,7 +27,6 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
 
   const isWidget = isInjectedWidget()
   const isInjectedMobileBrowser = getIsInjectedMobileBrowser()
-  const isMetamaskInstalled = multiInjectedProviders.some((provider) => provider.info.rdns.startsWith('io.metamask'))
 
   const connectionProps = { darkMode, selectedWallet, tryActivation }
 
@@ -41,8 +40,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   return (
     <>
       {injectedOption}
-      {isMetamaskInstalled && metaMaskSdkOption}
-      {!isMetamaskInstalled && metaMaskSdkOption}
+      {metaMaskSdkOption}
       {walletConnectionV2Option}
       {coinbaseWalletOption}
       {trezorOption}
