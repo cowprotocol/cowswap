@@ -1,5 +1,5 @@
 import { components } from '@cowprotocol/cms'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export type CmsSolversInfo = components['schemas']['SolverListResponseDataItem'][]
 
@@ -15,7 +15,7 @@ export type SolverInfo = {
 
 export type SolverNetwork = {
   chainId: SupportedChainId
-  env: string
+  env: CowEnv
   active: boolean
 }
 
@@ -25,7 +25,7 @@ export type Announcement = {
   text: string
   isCritical: boolean
   chainIds: SupportedChainId[]
-  envs: string[] // prod and/or barn // TODO: are there types for this already?
+  envs: CowEnv[]
 }
 
 export type Announcements = Announcement[]

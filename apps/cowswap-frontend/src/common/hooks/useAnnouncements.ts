@@ -9,7 +9,7 @@ function useAnnouncements(chainId: SupportedChainId): Announcements {
   const allAnnouncements = useAtomValue(announcementsAtom)
 
   return useMemo(() => {
-    const env = isProdLike ? 'prod' : 'barn' // Should match what's set on CMS!
+    const env = isProdLike ? 'prod' : 'staging' // Should match what's set on CMS!
 
     return allAnnouncements.reduce<Announcements>((acc, announcement) => {
       if (

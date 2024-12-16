@@ -1,3 +1,5 @@
+import { CowEnv } from '@cowprotocol/cow-sdk'
+
 import { Announcements, CmsAnnouncements } from '../types'
 
 export function mapCmsAnnouncementsToAnnouncements(cmsAnnouncements: CmsAnnouncements): Announcements {
@@ -14,9 +16,9 @@ export function mapCmsAnnouncementsToAnnouncements(cmsAnnouncements: CmsAnnounce
           return ids
         }, []) || []
       const envs =
-        environments?.data?.reduce<string[]>((envList, entry) => {
+        environments?.data?.reduce<CowEnv[]>((envList, entry) => {
           const env = entry?.attributes?.name
-          if (env !== undefined) envList.push(env)
+          if (env !== undefined) envList.push(env === 'barn' ? 'staging' : 'prod')
           return envList
         }, []) || []
 
