@@ -1,5 +1,7 @@
 import { useAtomValue } from 'jotai'
 
+import { PENDING_STATES } from 'legacy/state/orders/actions'
+
 import {
   advancedOrdersAtom,
   AdvancedOrdersWidget,
@@ -31,12 +33,11 @@ export default function AdvancedOrdersPage() {
   const twapFormValidation = useTwapFormState()
   const twapSlippage = useTwapSlippage()
   const mapTwapCurrencyInfo = useMapTwapCurrencyInfo()
+  const { hideOrdersTable } = useInjectedWidgetParams()
 
   const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
-
   const advancedWidgetParams = { disablePriceImpact }
-
-  const { hideOrdersTable } = useInjectedWidgetParams()
+  const pendingOrders = allEmulatedOrders.filter((order) => PENDING_STATES.includes(order.status))
 
   return (
     <>
@@ -44,7 +45,7 @@ export default function AdvancedOrdersPage() {
       <SetupAdvancedOrderAmountsFromUrlUpdater />
       <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
-          {isFallbackHandlerRequired && allEmulatedOrders.length > 0 && <SetupFallbackHandlerWarning />}
+          {isFallbackHandlerRequired && pendingOrders.length > 0 && <SetupFallbackHandlerWarning />}
           <AdvancedOrdersWidget
             updaters={<TwapUpdaters />}
             confirmContent={<TwapConfirmModal />}
