@@ -43,18 +43,23 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
 
   return (
     <>
-      <HighFeeWarning />
-      <BundleTxWrapBanner />
-      {isNativeSellInHooksStore && <SellNativeWarningBanner />}
+      {isNativeSellInHooksStore ? (
+        <SellNativeWarningBanner />
+      ) : (
+        <>
+          <HighFeeWarning />
+          <BundleTxWrapBanner />
 
-      {showTwapSuggestionBanner && !isNativeSellInHooksStore && (
-        <TwapSuggestionBanner
-          chainId={chainId}
-          priceImpact={priceImpact}
-          buyingFiatAmount={buyingFiatAmount}
-          tradeUrlParams={tradeUrlParams}
-          sellAmount={trade?.inputAmount.toExact()}
-        />
+          {showTwapSuggestionBanner && (
+            <TwapSuggestionBanner
+              chainId={chainId}
+              priceImpact={priceImpact}
+              buyingFiatAmount={buyingFiatAmount}
+              tradeUrlParams={tradeUrlParams}
+              sellAmount={trade?.inputAmount.toExact()}
+            />
+          )}
+        </>
       )}
     </>
   )
