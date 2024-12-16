@@ -6,6 +6,7 @@ import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
+import { getOrderPermitAmount } from 'utils/orderUtils/getOrderPermitAmount'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 export interface OrderParams {
@@ -26,6 +27,7 @@ export function getOrderParams(
 ): OrderParams {
   const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
   const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount)
+  const permitAmount = getOrderPermitAmount(chainId, order) || undefined
 
   const rateInfoParams: RateInfoParams = {
     chainId,
@@ -43,7 +45,7 @@ export function getOrderParams(
     partiallyFillable: order.partiallyFillable,
     sellAmount,
     balance,
-    allowance,
+    allowance: getBiggerAmount(allowance, permitAmount),
   })
 
   return {
@@ -72,4 +74,11 @@ function _hasEnoughBalanceAndAllowance(params: {
   const hasEnoughAllowance = isEnoughAmount(amount, allowance)
 
   return { hasEnoughBalance, hasEnoughAllowance }
+}
+
+function getBiggerAmount(a: BigNumber | undefined, b: BigNumber | undefined): BigNumber | undefined {
+  if (!a) return b
+  if (!b) return a
+
+  return a.gt(b) ? a : b
 }

@@ -143,7 +143,6 @@ export interface OrderRowProps {
   orderParams: OrderParams
   onClick: Command
   orderActions: OrderActions
-  hasValidPendingPermit?: boolean | undefined
   children?: JSX.Element
 }
 
@@ -160,7 +159,6 @@ export function OrderRow({
   prices,
   spotPrice,
   children,
-  hasValidPendingPermit,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
   const { creationTime, expirationTime, status } = order
@@ -176,7 +174,7 @@ export function OrderRow({
     [order, orderActions],
   )
 
-  const withAllowanceWarning = hasEnoughAllowance === false && hasValidPendingPermit !== true
+  const withAllowanceWarning = hasEnoughAllowance === false
   const withWarning =
     (hasEnoughBalance === false || withAllowanceWarning) &&
     // show the warning only for pending and scheduled orders
