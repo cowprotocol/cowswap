@@ -20,6 +20,7 @@ import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } f
 
 import { ProgressBarV2ExecutingOrdersUpdater } from 'common/hooks/orderProgressBarV2'
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
+import { AnnouncementsUpdater } from 'common/updaters/AnnouncementsUpdater'
 import { FeatureFlagsUpdater } from 'common/updaters/FeatureFlagsUpdater'
 import { FeesUpdater } from 'common/updaters/FeesUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
@@ -71,6 +72,7 @@ export function Updaters() {
       <OrdersNotificationsUpdater />
       <ProgressBarV2ExecutingOrdersUpdater />
       <SolversInfoUpdater />
+      <AnnouncementsUpdater />
 
       <TokensListsUpdater
         chainId={chainId}
