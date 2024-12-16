@@ -2,6 +2,7 @@
 
 import { Article, getArticles, getCategories } from '../../../../../services/cms'
 import { ArticlesPageComponents } from '@/components/ArticlesPageComponents'
+import { redirect } from 'next/navigation'
 
 const ITEMS_PER_PAGE = 24
 
@@ -28,7 +29,14 @@ export async function generateStaticParams() {
 
 export default async function Page({ params }: Props) {
   const pageParam = (await params)?.pageIndex
-  const page = pageParam && pageParam.length > 0 ? parseInt(pageParam[0], 10) : 1
+  const paramsAreSet = Boolean(pageParam && pageParam.length > 0)
+  const pageIndexIsValid = Boolean(pageParam && /^\d+$/.test(pageParam))
+
+  if (paramsAreSet && !pageIndexIsValid) {
+    return redirect('/learn/articles')
+  }
+
+  const page = pageParam && pageIndexIsValid ? parseInt(pageParam, 10) : 1
 
   const articlesResponse = (await getArticles({ page, pageSize: ITEMS_PER_PAGE })) as ArticlesResponse
 
