@@ -8,6 +8,7 @@ import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar, CowSwapTheme } from 
 
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router-dom'
+import Snowfall from 'react-snowfall'
 import { ThemeProvider } from 'theme'
 
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
@@ -100,8 +101,11 @@ export function App() {
     if (ACTIVE_CUSTOM_THEME === CustomTheme.HALLOWEEN && darkMode && featureFlags.isHalloweenEnabled) {
       return 'darkHalloween' as CowSwapTheme
     }
+    if (ACTIVE_CUSTOM_THEME === CustomTheme.CHRISTMAS && featureFlags.isChristmasEnabled) {
+      return darkMode ? ('darkChristmas' as CowSwapTheme) : ('lightChristmas' as CowSwapTheme)
+    }
     return undefined
-  }, [darkMode, featureFlags.isHalloweenEnabled])
+  }, [darkMode, featureFlags.isHalloweenEnabled, featureFlags.isChristmasEnabled])
 
   const persistentAdditionalContent = (
     <HeaderControls>
@@ -111,6 +115,8 @@ export function App() {
       </HeaderElement>
     </HeaderControls>
   )
+
+  const isChristmasTheme = ACTIVE_CUSTOM_THEME === CustomTheme.CHRISTMAS && featureFlags.isChristmasEnabled
 
   return (
     <ErrorBoundary>
@@ -142,8 +148,8 @@ export function App() {
               activeBackgroundDark="#282854"
               hoverBackgroundDark={'#18193B'}
               LinkComponent={LinkComponent}
-              persistentAdditionalContent={isMobile ? null : persistentAdditionalContent} // This will stay at its original location
-              additionalContent={null} // On desktop renders inside the menu bar, on mobile renders inside the mobile menu
+              persistentAdditionalContent={isMobile ? null : persistentAdditionalContent}
+              additionalContent={null}
             />
           )}
 
@@ -151,11 +157,27 @@ export function App() {
 
           <styledEl.BodyWrapper customTheme={customTheme}>
             <TopLevelModals />
-
             <RoutesApp />
-
             <styledEl.Marginer />
           </styledEl.BodyWrapper>
+
+          {!isInjectedWidgetMode && isChristmasTheme && (
+            <Snowfall
+              style={{
+                position: 'fixed',
+                width: '100vw',
+                height: '100vh',
+                zIndex: 3,
+                pointerEvents: 'none',
+                top: 0,
+                left: 0,
+              }}
+              snowflakeCount={isMobile ? 25 : darkMode ? 75 : 200}
+              radius={[0.5, 2.0]}
+              speed={[0.5, 2.0]}
+              wind={[-0.5, 1.0]}
+            />
+          )}
 
           {!isInjectedWidgetMode && (
             <Footer
