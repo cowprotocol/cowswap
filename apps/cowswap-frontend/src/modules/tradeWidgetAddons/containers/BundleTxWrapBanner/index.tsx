@@ -1,7 +1,7 @@
 import { InlineBanner } from '@cowprotocol/ui'
 import { useIsBundlingSupported, useIsSmartContractWallet } from '@cowprotocol/wallet'
 
-import { useIsNativeIn, useWrappedToken } from 'modules/trade'
+import { useIsHooksTradeType, useIsNativeIn, useWrappedToken } from 'modules/trade'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
@@ -9,10 +9,11 @@ export function BundleTxWrapBanner() {
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
   const wrappedCurrencySymbol = useWrappedToken().symbol || 'WETH'
 
+  const isHooksStore = useIsHooksTradeType()
   const isBundlingSupported = useIsBundlingSupported()
   const isNativeIn = useIsNativeIn()
   const isSmartContractWallet = useIsSmartContractWallet()
-  const showWrapBundlingBanner = Boolean(isNativeIn && isSmartContractWallet && isBundlingSupported)
+  const showWrapBundlingBanner = Boolean(isNativeIn && isSmartContractWallet && isBundlingSupported) && !isHooksStore
 
   if (!showWrapBundlingBanner) return null
 
