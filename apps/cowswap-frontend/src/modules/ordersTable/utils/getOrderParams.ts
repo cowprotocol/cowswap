@@ -22,7 +22,7 @@ const PERCENTAGE_FOR_PARTIAL_FILLS = new Percent(5, 10000) // 0.05%
 export function getOrderParams(
   chainId: SupportedChainId,
   balancesAndAllowances: BalancesAndAllowances,
-  order: ParsedOrder
+  order: ParsedOrder,
 ): OrderParams {
   const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
   const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount)
