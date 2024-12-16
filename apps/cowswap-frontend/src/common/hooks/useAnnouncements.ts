@@ -15,13 +15,10 @@ function useAnnouncements(chainId: SupportedChainId): Announcements {
       const showForEveryChain = announcement.chainIds.length === 0
       const showForEveryEnv = announcement.envs.length === 0
 
-      const matchesChainIdAndEnv = announcement.chainIds.some((announcementChain) => {
-        const matchesCurrentEnv = announcement.envs.includes(env)
-        const matchesCurrentChainId = announcementChain === chainId
-        return (showForEveryEnv || matchesCurrentEnv) && (showForEveryChain || matchesCurrentChainId)
-      })
+      const matchesChainId = announcement.chainIds.some((announcementChain) => announcementChain === chainId)
+      const matchesEnv = announcement.envs.some((announcementEnv) => announcementEnv === env)
 
-      if ((showForEveryChain && showForEveryEnv) || matchesChainIdAndEnv) {
+      if ((showForEveryChain || matchesChainId) && (showForEveryEnv || matchesEnv)) {
         acc[chainId] = announcement
       }
 
