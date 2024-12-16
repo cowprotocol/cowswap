@@ -69,6 +69,15 @@ const FilterRow = styled.tr`
   }
 `
 
+const NoOrdersContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 2rem;
+`
+
 const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted, showCanceledAndExpired, showPreSigning }) => {
   const { creationDate, buyToken, buyAmount, sellToken, sellAmount, kind, partiallyFilled, uid, filledPercentage } =
     order
@@ -228,10 +237,10 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
               />
             ))
           ) : (
-            <>
+            <NoOrdersContainer>
               <p>No orders found.</p>
               <p>You can toggle the filters to show the {orders.length} hidden orders.</p>
-            </>
+            </NoOrdersContainer>
           )}
         </>
       }
