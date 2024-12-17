@@ -27,7 +27,6 @@ const COWSWAP_VOLUME_FEES: Record<SupportedChainId, VolumeFee | null> = {
 
 export const cowSwapFeeAtom = atom((get) => {
   const { chainId, account } = get(walletInfoAtom)
-
   const volumeFee = COWSWAP_VOLUME_FEES[chainId]
 
   // Early exit if fee is not set for this network
