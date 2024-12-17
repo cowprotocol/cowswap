@@ -17,13 +17,26 @@ import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
 import { FormatAmountPrecision, formattedAmount } from 'utils'
 
-import { Order } from 'api/operator'
+import { Order, OrderStatus } from 'api/operator'
 import { getLimitPrice } from 'utils/getLimitPrice'
 
 import { OrderSurplusDisplayStyledByRow } from './OrderSurplusTooltipStyledByRow'
+import { ToggleFilter } from './ToggleFilter'
 
 import { SimpleTable, SimpleTableProps } from '../../common/SimpleTable'
 import { StatusLabel } from '../StatusLabel'
+import { UnsignedOrderWarning } from '../UnsignedOrderWarning'
+
+const EXPIRED_CANCELED_STATES: OrderStatus[] = ['cancelled', 'cancelling', 'expired']
+
+function isExpiredOrCanceled(order: Order): boolean {
+  const { executedSellAmount, executedBuyAmount, status } = order
+  // We don't consider an order expired or canceled if it was partially or fully filled
+  if (!executedSellAmount.isZero() || !executedBuyAmount.isZero()) return false
+
+  // Otherwise, return if the order is expired or canceled
+  return EXPIRED_CANCELED_STATES.includes(order.status)
+}
 
 const tooltip = {
   orderID: 'A unique identifier ID for this order.',
@@ -46,9 +59,35 @@ export type Props = SimpleTableProps & {
 interface RowProps {
   order: Order
   isPriceInverted: boolean
+
+  // TODO: Filter by state using the API. Not available for now, so filtering in the client
+  showCanceledAndExpired: boolean
+  showPreSigning: boolean
 }
 
-const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
+const FilterRow = styled.tr`
+  background-color: ${({ theme }) => theme.background};
+
+  th {
+    text-align: right;
+    padding-right: 10px;
+
+    & > * {
+      margin-left: 10px;
+    }
+  }
+`
+
+const NoOrdersContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 2rem;
+`
+
+const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted, showCanceledAndExpired, showPreSigning }) => {
   const { creationDate, buyToken, buyAmount, sellToken, sellAmount, kind, partiallyFilled, uid, filledPercentage } =
     order
   const [_isPriceInverted, setIsPriceInverted] = useState(isPriceInverted)
@@ -66,6 +105,10 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
   const renderSpinnerWhenNoValue = (textValue: string): React.ReactNode | void => {
     if (textValue === '-') return <Spinner spin size="1x" />
   }
+
+  // Hide the row if the order is canceled, expired or pre-signing
+  if (!showCanceledAndExpired && isExpiredOrCanceled(order)) return null
+  if (!showPreSigning && order.status === 'signing') return null
 
   return (
     <tr key={uid}>
@@ -118,6 +161,14 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
 const OrdersUserDetailsTable: React.FC<Props> = (props) => {
   const { orders, messageWhenEmpty } = props
   const [isPriceInverted, setIsPriceInverted] = useState(false)
+  const [showCanceledAndExpired, setShowCanceledAndExpired] = useState(false)
+  const [showPreSigning, setShowPreSigning] = useState(false)
+
+  const canceledAndExpiredCount = orders?.filter(isExpiredOrCanceled).length || 0
+  const preSigningCount = orders?.filter((order) => order.status === 'signing').length || 0
+  const showFilter = canceledAndExpiredCount > 0 || preSigningCount > 0
+  const allOrdersAreHidden =
+    orders?.length === (showPreSigning ? 0 : preSigningCount) + (showCanceledAndExpired ? 0 : canceledAndExpiredCount)
 
   const invertLimitPrice = (): void => {
     setIsPriceInverted((previousValue) => !previousValue)
@@ -130,30 +181,72 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
   return (
     <SimpleTable
       header={
-        <tr>
-          <th>
-            <span>
-              Order ID <HelpTooltip tooltip={tooltip.orderID} />
-            </span>
-          </th>
-          <th>Type</th>
-          <th>Sell amount</th>
-          <th>Buy amount</th>
-          <th>
-            <span>
-              Limit price <Icon icon={faExchangeAlt} onClick={invertLimitPrice} />
-            </span>
-          </th>
-          <th>Surplus</th>
-          <th>Created</th>
-          <th>Status</th>
-        </tr>
+        <>
+          {showFilter && (
+            <FilterRow>
+              <th colSpan={8}>
+                {canceledAndExpiredCount > 0 && (
+                  <ToggleFilter
+                    checked={showCanceledAndExpired}
+                    onChange={() => setShowCanceledAndExpired((previousValue) => !previousValue)}
+                    label={(showCanceledAndExpired ? 'Hide' : 'Show') + ' canceled/expired'}
+                    count={canceledAndExpiredCount}
+                  />
+                )}
+                {preSigningCount > 0 && (
+                  <>
+                    <ToggleFilter
+                      checked={showPreSigning}
+                      onChange={() => setShowPreSigning((previousValue) => !previousValue)}
+                      label={(showPreSigning ? 'Hide' : 'Show') + ' unsigned'}
+                      count={preSigningCount}
+                    />
+                    {showPreSigning && <UnsignedOrderWarning />}
+                  </>
+                )}
+              </th>
+            </FilterRow>
+          )}
+          {!allOrdersAreHidden && (
+            <tr>
+              <th>
+                <span>
+                  Order ID <HelpTooltip tooltip={tooltip.orderID} />
+                </span>
+              </th>
+              <th>Type</th>
+              <th>Sell amount</th>
+              <th>Buy amount</th>
+              <th>
+                <span>
+                  Limit price <Icon icon={faExchangeAlt} onClick={invertLimitPrice} />
+                </span>
+              </th>
+              <th>Surplus</th>
+              <th>Created</th>
+              <th>Status</th>
+            </tr>
+          )}
+        </>
       }
       body={
         <>
-          {orders.map((item) => (
-            <RowOrder key={item.uid} order={item} isPriceInverted={isPriceInverted} />
-          ))}
+          {!allOrdersAreHidden ? (
+            orders.map((item) => (
+              <RowOrder
+                key={item.uid}
+                order={item}
+                isPriceInverted={isPriceInverted}
+                showCanceledAndExpired={showCanceledAndExpired}
+                showPreSigning={showPreSigning}
+              />
+            ))
+          ) : (
+            <NoOrdersContainer>
+              <p>No orders found.</p>
+              <p>You can toggle the filters to show the {orders.length} hidden orders.</p>
+            </NoOrdersContainer>
+          )}
         </>
       }
     />
