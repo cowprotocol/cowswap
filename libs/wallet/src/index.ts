@@ -42,6 +42,8 @@ export { walletConnectConnectionV2 } from './web3-react/connection/walletConnect
 // Connect options
 export {
   InjectedOption,
+  InstallMetaMaskOption,
+  OpenMetaMaskMobileOption,
   Eip6963Option,
 } from './web3-react/connection/injectedOptions'
 
@@ -49,7 +51,6 @@ export { ConnectWalletOption } from './api/pure/ConnectWalletOption'
 export { TrezorOption } from './web3-react/connection/trezor'
 export { WalletConnectV2Option } from './web3-react/connection/walletConnectV2'
 export { CoinbaseWalletOption } from './web3-react/connection/coinbase'
-export { MetaMaskSdkOption } from './web3-react/connection/metaMaskSdk'
 
 // State
 // TODO: this export is discussable, however it's already used outside

@@ -6,6 +6,7 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
 
+import { SellNativeWarningBanner } from 'modules/trade/containers/SellNativeWarningBanner'
 import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 import { BundleTxWrapBanner, HighFeeWarning } from 'modules/tradeWidgetAddons'
@@ -19,6 +20,7 @@ export interface SwapWarningsTopProps {
   buyingFiatAmount: CurrencyAmount<Currency> | null
   priceImpact: Percent | undefined
   tradeUrlParams: TradeUrlParams
+  isNativeSellInHooksStore: boolean
 }
 
 export interface SwapWarningsBottomProps {
@@ -29,21 +31,35 @@ export interface SwapWarningsBottomProps {
 }
 
 export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps) {
-  const { chainId, trade, showTwapSuggestionBanner, buyingFiatAmount, priceImpact, tradeUrlParams } = props
+  const {
+    chainId,
+    trade,
+    showTwapSuggestionBanner,
+    buyingFiatAmount,
+    priceImpact,
+    tradeUrlParams,
+    isNativeSellInHooksStore,
+  } = props
 
   return (
     <>
-      <HighFeeWarning />
-      <BundleTxWrapBanner />
+      {isNativeSellInHooksStore ? (
+        <SellNativeWarningBanner />
+      ) : (
+        <>
+          <HighFeeWarning />
+          <BundleTxWrapBanner />
 
-      {showTwapSuggestionBanner && (
-        <TwapSuggestionBanner
-          chainId={chainId}
-          priceImpact={priceImpact}
-          buyingFiatAmount={buyingFiatAmount}
-          tradeUrlParams={tradeUrlParams}
-          sellAmount={trade?.inputAmount.toExact()}
-        />
+          {showTwapSuggestionBanner && (
+            <TwapSuggestionBanner
+              chainId={chainId}
+              priceImpact={priceImpact}
+              buyingFiatAmount={buyingFiatAmount}
+              tradeUrlParams={tradeUrlParams}
+              sellAmount={trade?.inputAmount.toExact()}
+            />
+          )}
+        </>
       )}
     </>
   )
