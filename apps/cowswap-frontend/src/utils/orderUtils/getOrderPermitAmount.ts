@@ -18,9 +18,16 @@ export function getOrderPermitAmount(chainId: SupportedChainId, order: ParsedOrd
     if (!preHooks) return null
 
     const permitData = preHooks
-      .map((hook) => erc20Interface.decodeFunctionData('permit', hook.callData))
+      .map((hook) => {
+        try {
+          return erc20Interface.decodeFunctionData('permit', hook.callData)
+        } catch {
+          return null
+        }
+      })
       .find((decoded) => {
         return (
+          decoded &&
           decoded.spender?.toLowerCase() === spenderAddress &&
           decoded.owner?.toLowerCase() === order.owner.toLowerCase() &&
           (decoded.deadline as BigNumber)?.toNumber() > Date.now() / 1000
