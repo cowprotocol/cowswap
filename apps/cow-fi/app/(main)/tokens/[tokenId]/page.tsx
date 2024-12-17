@@ -9,6 +9,7 @@ import { TokenPageComponent } from '@/components/TokenPageComponent'
 import type { Metadata } from 'next'
 import type { TokenDetails } from '../../../../types'
 import { getPageMetadata } from '@/util/getPageMetadata'
+import { redirect } from 'next/navigation'
 
 type Props = {
   params: Promise<{ tokenId: string }>
@@ -35,6 +36,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const token = await getTokenDetails(tokenId)
 
+  if (!token) return {}
+
   return getPageMetadata(getTokenMetaData(token))
 }
 
@@ -50,6 +53,8 @@ export default async function Page({ params }: Props) {
   if (!tokenId) return null
 
   const token = await getTokenDetails(tokenId)
+
+  if (!token) return redirect('/tokens')
 
   return <TokenPageComponent token={token} />
 }
