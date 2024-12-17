@@ -167,7 +167,7 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
   const canceledAndExpiredCount = orders?.filter(isExpiredOrCanceled).length || 0
   const preSigningCount = orders?.filter((order) => order.status === 'signing').length || 0
   const showFilter = canceledAndExpiredCount > 0 || preSigningCount > 0
-  const allOrdersAreHidden =
+  const areOrdersAllHidden =
     orders?.length === (showPreSigning ? 0 : preSigningCount) + (showCanceledAndExpired ? 0 : canceledAndExpiredCount)
 
   const invertLimitPrice = (): void => {
@@ -207,7 +207,7 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
               </th>
             </FilterRow>
           )}
-          {!allOrdersAreHidden && (
+          {!areOrdersAllHidden && (
             <tr>
               <th>
                 <span>
@@ -231,7 +231,7 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
       }
       body={
         <>
-          {!allOrdersAreHidden ? (
+          {!areOrdersAllHidden ? (
             orders.map((item) => (
               <RowOrder
                 key={item.uid}
