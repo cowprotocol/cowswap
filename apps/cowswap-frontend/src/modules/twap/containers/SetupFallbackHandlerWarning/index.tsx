@@ -1,5 +1,6 @@
+import { atom, useAtom } from 'jotai'
 import { useSetAtom } from 'jotai/index'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { ButtonPrimary, InlineBanner, Loader, BannerOrientation, UI } from '@cowprotocol/ui'
@@ -60,8 +61,10 @@ const ActionButton = styled(ButtonPrimary)`
   min-height: auto;
 `
 
+const pendingTxHashAtom = atom<string | null>(null)
+
 export function SetupFallbackHandlerWarning() {
-  const [pendingTxHash, setPendingTxHash] = useState<string | null>(null)
+  const [pendingTxHash, setPendingTxHash] = useAtom(pendingTxHashAtom)
 
   const { account } = useWalletInfo()
   const setupFallbackHandler = useSetupFallbackHandler()
@@ -84,12 +87,14 @@ export function SetupFallbackHandlerWarning() {
   useEffect(() => {
     if (!txWasMined) return
 
+    setPendingTxHash(null)
+
     if (!extensibleFallbackContext || !account) return
 
     verifyExtensibleFallback(extensibleFallbackContext).then((result) => {
       updateFallbackHandlerVerification({ [account]: result })
     })
-  }, [txWasMined, account, extensibleFallbackContext, updateFallbackHandlerVerification])
+  }, [txWasMined, account, extensibleFallbackContext, updateFallbackHandlerVerification, setPendingTxHash])
 
   return (
     <Banner
