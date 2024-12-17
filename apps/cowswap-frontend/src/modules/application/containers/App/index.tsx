@@ -4,7 +4,7 @@ import { ACTIVE_CUSTOM_THEME, CustomTheme } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar, CowSwapTheme } from '@cowprotocol/ui'
+import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router-dom'
