@@ -26,6 +26,8 @@ import { ToggleFilter } from './ToggleFilter'
 import { SimpleTable, SimpleTableProps } from '../../common/SimpleTable'
 import { StatusLabel } from '../StatusLabel'
 import { UnsignedOrderWarning } from '../UnsignedOrderWarning'
+import { TableState } from 'explorer/components/TokensTableWidget/useTable'
+import { Command } from '@cowprotocol/types'
 
 const EXPIRED_CANCELED_STATES: OrderStatus[] = ['cancelled', 'cancelling', 'expired']
 
@@ -53,6 +55,8 @@ const Wrapper = styled.div`
 
 export type Props = SimpleTableProps & {
   orders: Order[] | undefined
+  tableState: TableState
+  handleNextPage: Command
   messageWhenEmpty?: string | React.ReactNode
 }
 
@@ -85,6 +89,32 @@ const NoOrdersContainer = styled.div`
   justify-content: center;
   flex-direction: column;
   padding: 2rem;
+`
+
+const HiddenOrdersLegend = styled.tr`
+  p {
+    text-align: center;
+  }
+
+  &:hover,
+  td:hover {
+    background-color: ${({ theme }) => theme.paper};
+    color: ${({ theme }) => theme.textSecondary1};
+  }
+
+  td {
+    padding: 0;
+    font-size: 1.2rem;
+    color: ${({ theme }) => theme.textSecondary1};
+
+    a {
+      text-decoration: underline;
+    }
+
+    a:hover {
+      color: ${({ theme }) => theme.textSecondary2};
+    }
+  }
 `
 
 const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted, showCanceledAndExpired, showPreSigning }) => {
@@ -159,7 +189,7 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted, showCanceledAndE
 }
 
 const OrdersUserDetailsTable: React.FC<Props> = (props) => {
-  const { orders, messageWhenEmpty } = props
+  const { orders, messageWhenEmpty, tableState, handleNextPage } = props
   const [isPriceInverted, setIsPriceInverted] = useState(false)
   const [showCanceledAndExpired, setShowCanceledAndExpired] = useState(false)
   const [showPreSigning, setShowPreSigning] = useState(false)
@@ -167,8 +197,11 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
   const canceledAndExpiredCount = orders?.filter(isExpiredOrCanceled).length || 0
   const preSigningCount = orders?.filter((order) => order.status === 'signing').length || 0
   const showFilter = canceledAndExpiredCount > 0 || preSigningCount > 0
-  const areOrdersAllHidden =
-    orders?.length === (showPreSigning ? 0 : preSigningCount) + (showCanceledAndExpired ? 0 : canceledAndExpiredCount)
+
+  const hiddenOrdersCount =
+    (showPreSigning ? 0 : preSigningCount) + (showCanceledAndExpired ? 0 : canceledAndExpiredCount)
+
+  const areOrdersAllHidden = orders?.length === hiddenOrdersCount
 
   const invertLimitPrice = (): void => {
     setIsPriceInverted((previousValue) => !previousValue)
@@ -231,7 +264,7 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
       }
       body={
         <>
-          {!areOrdersAllHidden ? (
+          {!areOrdersAllHidden &&
             orders.map((item) => (
               <RowOrder
                 key={item.uid}
@@ -240,12 +273,24 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
                 showCanceledAndExpired={showCanceledAndExpired}
                 showPreSigning={showPreSigning}
               />
-            ))
-          ) : (
-            <NoOrdersContainer>
-              <p>No orders found.</p>
-              <p>You can toggle the filters to show the {orders.length} hidden orders.</p>
-            </NoOrdersContainer>
+            ))}
+
+          {hiddenOrdersCount > 0 && (
+            <HiddenOrdersLegend>
+              <td colSpan={8}>
+                <p>
+                  Showing {orders.length - hiddenOrdersCount} out of {orders.length}&nbsp; orders for the current page.
+                </p>
+                <p>
+                  {hiddenOrdersCount} orders are hidden, you can make them visible using the filters above
+                  {tableState.hasNextPage && (
+                    <span>
+                      , or go to&nbsp;<a onClick={handleNextPage}>next page</a>&nbsp;for more orders.
+                    </span>
+                  )}
+                </p>
+              </td>
+            </HiddenOrdersLegend>
           )}
         </>
       }
