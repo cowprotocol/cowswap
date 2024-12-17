@@ -54,8 +54,7 @@ export function App() {
   useAnalyticsReporterCowSwap()
   useInitializeUtm()
 
-  const featureFlags = useFeatureFlags()
-  const { isYieldEnabled } = featureFlags
+  const { isYieldEnabled, isChristmasEnabled, isHalloweenEnabled } = useFeatureFlags()
 
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
@@ -98,14 +97,14 @@ export function App() {
   const { pendingActivity } = useCategorizeRecentActivity()
   const isMobile = useMediaQuery(Media.upToMedium(false))
   const customTheme = useMemo(() => {
-    if (ACTIVE_CUSTOM_THEME === CustomTheme.HALLOWEEN && darkMode && featureFlags.isHalloweenEnabled) {
+    if (ACTIVE_CUSTOM_THEME === CustomTheme.HALLOWEEN && darkMode && isHalloweenEnabled) {
       return 'darkHalloween' as CowSwapTheme
     }
-    if (ACTIVE_CUSTOM_THEME === CustomTheme.CHRISTMAS && featureFlags.isChristmasEnabled) {
+    if (ACTIVE_CUSTOM_THEME === CustomTheme.CHRISTMAS && isChristmasEnabled) {
       return darkMode ? ('darkChristmas' as CowSwapTheme) : ('lightChristmas' as CowSwapTheme)
     }
     return undefined
-  }, [darkMode, featureFlags.isHalloweenEnabled, featureFlags.isChristmasEnabled])
+  }, [darkMode, isHalloweenEnabled, isChristmasEnabled])
 
   const persistentAdditionalContent = (
     <HeaderControls>
@@ -116,7 +115,7 @@ export function App() {
     </HeaderControls>
   )
 
-  const isChristmasTheme = ACTIVE_CUSTOM_THEME === CustomTheme.CHRISTMAS && featureFlags.isChristmasEnabled
+  const isChristmasTheme = ACTIVE_CUSTOM_THEME === CustomTheme.CHRISTMAS && isChristmasEnabled
 
   return (
     <ErrorBoundary>
