@@ -35,8 +35,7 @@ export function VampireAttackUpdater(): null {
   const { data: poolsAverageApr } = useSWR(
     [chainId, 'getPoolsAverageApr'],
     async ([chainId]) => {
-      // TODO: use BFF_BASE_URL
-      const result: Record<string, number> = await fetch(`${BFF_BASE_URL}/${chainId}/yield/getPoolsAverageApr`).then(
+      const result: Record<string, number> = await fetch(`${BFF_BASE_URL}/${chainId}/yield/pools-average-apr`).then(
         (res) => res.json(),
       )
 

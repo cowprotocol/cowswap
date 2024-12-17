@@ -49,7 +49,7 @@ export function PoolsInfoUpdater() {
   const { data: poolsAverageData } = useSWR(
     tokensKey || isYield ? [chainId, tokensToUpdate, 'getPoolsInfo'] : null,
     async ([chainId, tokensToUpdate]) => {
-      const results: PoolInfoDto[] = await fetch(`${BFF_BASE_URL}/${chainId}/yield/getPoolsInfo`, {
+      const results: PoolInfoDto[] = await fetch(`${BFF_BASE_URL}/${chainId}/yield/pools`, {
         method: 'post',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(tokensToUpdate),
