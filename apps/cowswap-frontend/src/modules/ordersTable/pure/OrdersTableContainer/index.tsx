@@ -197,7 +197,6 @@ export function OrdersTableContainer({
   children,
   orderType,
   pendingActivities,
-  ordersPermitStatus,
   injectedWidgetParams,
 }: OrdersProps) {
   const content = () => {
@@ -275,7 +274,6 @@ export function OrdersTableContainer({
         balancesAndAllowances={balancesAndAllowances}
         getSpotPrice={getSpotPrice}
         orderActions={orderActions}
-        ordersPermitStatus={ordersPermitStatus}
       />
     )
   }

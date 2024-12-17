@@ -143,7 +143,6 @@ export interface OrderRowProps {
   orderParams: OrderParams
   onClick: Command
   orderActions: OrderActions
-  hasValidPendingPermit?: boolean | undefined
   children?: JSX.Element
 }
 
@@ -160,7 +159,6 @@ export function OrderRow({
   prices,
   spotPrice,
   children,
-  hasValidPendingPermit,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
   const { creationTime, expirationTime, status } = order
@@ -173,10 +171,10 @@ export function OrderRow({
   }, [orderActions, order])
   const alternativeOrderModalContext = useMemo(
     () => orderActions.getAlternativeOrderModalContext(order),
-    [order, orderActions]
+    [order, orderActions],
   )
 
-  const withAllowanceWarning = hasEnoughAllowance === false && hasValidPendingPermit === false
+  const withAllowanceWarning = hasEnoughAllowance === false
   const withWarning =
     (hasEnoughBalance === false || withAllowanceWarning) &&
     // show the warning only for pending and scheduled orders
@@ -401,7 +399,7 @@ export function OrderRow({
 function usePricesDifference(
   prices: OrderRowProps['prices'],
   spotPrice: OrderRowProps['spotPrice'],
-  isInverted: boolean
+  isInverted: boolean,
 ): PriceDifference {
   const { estimatedExecutionPrice } = prices || {}
 
@@ -415,13 +413,13 @@ function usePricesDifference(
  */
 function useFeeAmountDifference(
   { inputCurrencyAmount }: OrderRowProps['orderParams']['rateInfoParams'],
-  prices: OrderRowProps['prices']
+  prices: OrderRowProps['prices'],
 ): Percent | undefined {
   const { feeAmount } = prices || {}
 
   return useSafeMemo(
     () => calculatePercentageInRelationToReference({ value: feeAmount, reference: inputCurrencyAmount }),
-    [feeAmount, inputCurrencyAmount]
+    [feeAmount, inputCurrencyAmount],
   )
 }
 
