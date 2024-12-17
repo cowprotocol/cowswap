@@ -839,7 +839,8 @@ function FinishedStep(props: OrderProgressBarV2Props) {
             {solvers.length > 1 && (
               <p>
                 <b>
-                  {solvers.length} out of {totalSolvers} solvers
+                  {solvers.length}
+                  {totalSolvers ? ` out of ${totalSolvers}` : ''} solvers
                 </b>{' '}
                 submitted a solution
               </p>
