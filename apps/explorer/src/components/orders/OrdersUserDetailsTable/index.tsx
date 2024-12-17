@@ -279,14 +279,16 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
             <HiddenOrdersLegend>
               <td colSpan={8}>
                 <p>
-                  Showing {orders.length - hiddenOrdersCount} out of {orders.length}&nbsp; orders for the current page.
+                  Showing {orders.length - hiddenOrdersCount} out of {orders.length} orders for the current page.
                 </p>
                 <p>
                   {hiddenOrdersCount} orders are hidden, you can make them visible using the filters above
-                  {tableState.hasNextPage && (
+                  {tableState.hasNextPage ? (
                     <span>
                       , or go to&nbsp;<a onClick={handleNextPage}>next page</a>&nbsp;for more orders.
                     </span>
+                  ) : (
+                    '.'
                   )}
                 </p>
               </td>
