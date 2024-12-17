@@ -48,12 +48,9 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme }>`
       const backgroundColor = theme.darkMode ? '#0E0F2D' : '#65D9FF'
       let backgroundImage
 
-      if (customTheme === ('darkHalloween' as CowSwapTheme)) {
+      if (customTheme === 'darkHalloween') {
         backgroundImage = `url(${IMAGE_BACKGROUND_DARK_HALLOWEEN})`
-      } else if (
-        customTheme === ('darkChristmas' as CowSwapTheme) ||
-        customTheme === ('lightChristmas' as CowSwapTheme)
-      ) {
+      } else if (customTheme === 'darkChristmas' || customTheme === 'lightChristmas') {
         backgroundImage = theme.darkMode
           ? `url(${IMAGE_BACKGROUND_DARK_CHRISTMAS})`
           : `url(${IMAGE_BACKGROUND_LIGHT_CHRISTMAS})`
@@ -72,13 +69,13 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme }>`
     background-size: auto;
 
     ${({ customTheme }) =>
-      customTheme === ('darkHalloween' as CowSwapTheme) &&
+      customTheme === 'darkHalloween' &&
       `
         background-image: url(${IMAGE_BACKGROUND_DARK_HALLOWEEN_MEDIUM});
       `}
 
     ${({ customTheme, theme }) =>
-      (customTheme === ('darkChristmas' as CowSwapTheme) || customTheme === ('lightChristmas' as CowSwapTheme)) &&
+      (customTheme === 'darkChristmas' || customTheme === 'lightChristmas') &&
       `
         background-image: url(${theme.darkMode ? IMAGE_BACKGROUND_DARK_CHRISTMAS_MEDIUM : IMAGE_BACKGROUND_LIGHT_CHRISTMAS_MEDIUM});
       `}
@@ -89,13 +86,13 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme }>`
     min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : 'calc(100vh - 100px)')};
 
     ${({ customTheme }) =>
-      customTheme === ('darkHalloween' as CowSwapTheme) &&
+      customTheme === 'darkHalloween' &&
       `
         background-image: url(${IMAGE_BACKGROUND_DARK_HALLOWEEN_SMALL});
       `}
 
     ${({ customTheme, theme }) =>
-      (customTheme === ('darkChristmas' as CowSwapTheme) || customTheme === ('lightChristmas' as CowSwapTheme)) &&
+      (customTheme === 'darkChristmas' || customTheme === 'lightChristmas') &&
       `
         background-image: url(${theme.darkMode ? IMAGE_BACKGROUND_DARK_CHRISTMAS_SMALL : IMAGE_BACKGROUND_LIGHT_CHRISTMAS_SMALL});
       `}

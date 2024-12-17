@@ -98,10 +98,10 @@ export function App() {
   const isMobile = useMediaQuery(Media.upToMedium(false))
   const customTheme = useMemo(() => {
     if (ACTIVE_CUSTOM_THEME === CustomTheme.HALLOWEEN && darkMode && isHalloweenEnabled) {
-      return 'darkHalloween' as CowSwapTheme
+      return 'darkHalloween'
     }
     if (ACTIVE_CUSTOM_THEME === CustomTheme.CHRISTMAS && isChristmasEnabled) {
-      return darkMode ? ('darkChristmas' as CowSwapTheme) : ('lightChristmas' as CowSwapTheme)
+      return darkMode ? 'darkChristmas' : 'lightChristmas'
     }
     return undefined
   }, [darkMode, isHalloweenEnabled, isChristmasEnabled])
