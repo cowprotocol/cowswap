@@ -29,6 +29,15 @@ import { UnsignedOrderWarning } from '../UnsignedOrderWarning'
 
 const EXPIRED_CANCELED_STATES: OrderStatus[] = ['cancelled', 'cancelling', 'expired']
 
+function isExpiredOrCanceled(order: Order): boolean {
+  const { executedSellAmount, executedBuyAmount, status } = order
+  // We don't consider an order expired or canceled if it was partially or fully filled
+  if (!executedSellAmount.isZero() || !executedBuyAmount.isZero()) return false
+
+  // Otherwise, return if the order is expired or canceled
+  return EXPIRED_CANCELED_STATES.includes(order.status)
+}
+
 const tooltip = {
   orderID: 'A unique identifier ID for this order.',
 }
@@ -98,7 +107,7 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted, showCanceledAndE
   }
 
   // Hide the row if the order is canceled, expired or pre-signing
-  if (!showCanceledAndExpired && EXPIRED_CANCELED_STATES.includes(order.status)) return null
+  if (!showCanceledAndExpired && isExpiredOrCanceled(order)) return null
   if (!showPreSigning && order.status === 'signing') return null
 
   return (
@@ -155,9 +164,7 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
   const [showCanceledAndExpired, setShowCanceledAndExpired] = useState(false)
   const [showPreSigning, setShowPreSigning] = useState(false)
 
-  const canceledAndExpiredCount = orders
-    ? orders.filter((order) => EXPIRED_CANCELED_STATES.includes(order.status)).length
-    : 0
+  const canceledAndExpiredCount = orders ? orders.filter(isExpiredOrCanceled).length : 0
   const preSigningCount = orders ? orders.filter((order) => order.status === 'signing').length : 0
   const showFilter = canceledAndExpiredCount > 0 || preSigningCount > 0
   const allOrdersAreHidden =
