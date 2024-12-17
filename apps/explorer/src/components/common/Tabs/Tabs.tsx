@@ -42,7 +42,7 @@ export interface Props {
   readonly tabTheme: TabTheme
   readonly selectedTab?: TabId
   readonly extra?: TabBarExtraContent
-  readonly extraPosition?: 'top' | 'bottom'
+  readonly extraPosition?: 'top' | 'bottom' | 'both'
   readonly updateSelectedTab?: (activeId: TabId) => void
 }
 
@@ -129,10 +129,10 @@ const Tabs: React.FC<Props> = (props) => {
             tabTheme={tabTheme}
           />
         ))}
-        {extraPosition === 'top' && <ExtraContent extra={tabBarExtraContent} />}
+        {['top', 'both'].includes(extraPosition) && <ExtraContent extra={tabBarExtraContent} />}
       </TabList>
       <TabContent tabItems={tabItems} activeTab={selectedTab} />
-      {extraPosition === 'bottom' && <ExtraContent extra={tabBarExtraContent} />}
+      {['bottom', 'both'].includes(extraPosition) && <ExtraContent extra={tabBarExtraContent} />}
     </Wrapper>
   )
 }

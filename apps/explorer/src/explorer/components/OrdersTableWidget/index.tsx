@@ -91,7 +91,7 @@ const OrdersTableWidget: React.FC<Props> = ({ ownerAddress, networkId }) => {
     >
       <ConnectionStatus />
       {error && <Notification type={error.type} message={error.message} />}
-      <StyledExplorerTabs tabItems={tabItems(isLoading)} extra={ExtraComponentNode} />
+      <StyledExplorerTabs tabItems={tabItems(isLoading)} extra={ExtraComponentNode} extraPosition="both" />
     </OrdersTableContext.Provider>
   )
 }
