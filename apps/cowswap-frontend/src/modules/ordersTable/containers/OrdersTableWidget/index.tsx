@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo } from 'react'
 
 import { useTokensAllowances, useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -58,12 +58,14 @@ interface OrdersTableWidgetProps {
   displayOrdersOnlyForSafeApp: boolean
   orders: Order[]
   orderType: TabOrderTypes
+  children?: ReactNode
 }
 
 export function OrdersTableWidget({
   orders: allOrders,
   orderType,
   displayOrdersOnlyForSafeApp,
+  children,
 }: OrdersTableWidgetProps) {
   const { chainId, account } = useWalletInfo()
   const location = useLocation()
@@ -161,6 +163,7 @@ export function OrdersTableWidget({
   return (
     <>
       <ContentWrapper>
+        {children}
         <OrdersTableContainer
           chainId={chainId}
           tabs={tabs}

@@ -4,10 +4,11 @@ import { ACTIVE_CUSTOM_THEME, CustomTheme } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar, CowSwapTheme } from '@cowprotocol/ui'
+import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router-dom'
+import Snowfall from 'react-snowfall'
 import { ThemeProvider } from 'theme'
 
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
@@ -53,8 +54,7 @@ export function App() {
   useAnalyticsReporterCowSwap()
   useInitializeUtm()
 
-  const featureFlags = useFeatureFlags()
-  const { isYieldEnabled } = featureFlags
+  const { isYieldEnabled, isChristmasEnabled, isHalloweenEnabled } = useFeatureFlags()
 
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
@@ -97,11 +97,14 @@ export function App() {
   const { pendingActivity } = useCategorizeRecentActivity()
   const isMobile = useMediaQuery(Media.upToMedium(false))
   const customTheme = useMemo(() => {
-    if (ACTIVE_CUSTOM_THEME === CustomTheme.HALLOWEEN && darkMode && featureFlags.isHalloweenEnabled) {
-      return 'darkHalloween' as CowSwapTheme
+    if (ACTIVE_CUSTOM_THEME === CustomTheme.HALLOWEEN && darkMode && isHalloweenEnabled) {
+      return 'darkHalloween'
+    }
+    if (ACTIVE_CUSTOM_THEME === CustomTheme.CHRISTMAS && isChristmasEnabled) {
+      return darkMode ? 'darkChristmas' : 'lightChristmas'
     }
     return undefined
-  }, [darkMode, featureFlags.isHalloweenEnabled])
+  }, [darkMode, isHalloweenEnabled, isChristmasEnabled])
 
   const persistentAdditionalContent = (
     <HeaderControls>
@@ -111,6 +114,8 @@ export function App() {
       </HeaderElement>
     </HeaderControls>
   )
+
+  const isChristmasTheme = ACTIVE_CUSTOM_THEME === CustomTheme.CHRISTMAS && isChristmasEnabled
 
   return (
     <ErrorBoundary>
@@ -151,11 +156,27 @@ export function App() {
 
           <styledEl.BodyWrapper customTheme={customTheme}>
             <TopLevelModals />
-
             <RoutesApp />
-
             <styledEl.Marginer />
           </styledEl.BodyWrapper>
+
+          {!isInjectedWidgetMode && isChristmasTheme && (
+            <Snowfall
+              style={{
+                position: 'fixed',
+                width: '100vw',
+                height: '100vh',
+                zIndex: 3,
+                pointerEvents: 'none',
+                top: 0,
+                left: 0,
+              }}
+              snowflakeCount={isMobile ? 25 : darkMode ? 75 : 200}
+              radius={[0.5, 2.0]}
+              speed={[0.5, 2.0]}
+              wind={[-0.5, 1.0]}
+            />
+          )}
 
           {!isInjectedWidgetMode && (
             <Footer

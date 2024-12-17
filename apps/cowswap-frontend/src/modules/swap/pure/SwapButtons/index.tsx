@@ -173,6 +173,17 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
     </ButtonError>
   ),
   [SwapButtonState.RegularEthFlowSwap]: (props: SwapButtonsContext) => <EthFlowSwapButton {...props} />,
+  [SwapButtonState.SellNativeInHooks]: (props: SwapButtonsContext) => {
+    const currency = props.inputAmount?.currency
+
+    return (
+      <ButtonError buttonSize={ButtonSize.BIG} disabled={true}>
+        <styledEl.SwapButtonBox>
+          <Trans>Selling {currency?.symbol} is not supported</Trans>
+        </styledEl.SwapButtonBox>
+      </ButtonError>
+    )
+  },
 }
 
 function EthFlowSwapButton(props: SwapButtonsContext) {

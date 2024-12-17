@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 
-// import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { currencyAmountToTokenAmount, getWrappedToken } from '@cowprotocol/common-utils'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import {
@@ -21,7 +20,13 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useTokenSupportsPermit } from 'modules/permit'
 import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { SwapButtonsContext } from 'modules/swap/pure/SwapButtons'
-import { TradeType, TradeWidgetActions, useTradeConfirmActions, useWrapNativeFlow } from 'modules/trade'
+import {
+  TradeType,
+  TradeWidgetActions,
+  useIsHooksTradeType,
+  useTradeConfirmActions,
+  useWrapNativeFlow,
+} from 'modules/trade'
 import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
 import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
@@ -57,6 +62,7 @@ export function useSwapButtonContext(input: SwapButtonInput, actions: TradeWidge
   const isBestQuoteLoading = useIsBestQuoteLoading()
   const tradeConfirmActions = useTradeConfirmActions()
   const { standaloneMode } = useInjectedWidgetParams()
+  const isHooksStore = useIsHooksTradeType()
 
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
@@ -118,6 +124,7 @@ export function useSwapButtonContext(input: SwapButtonInput, actions: TradeWidge
     isBestQuoteLoading,
     isPermitSupported,
     quoteDeadlineParams,
+    isHooksStore,
   })
 
   return useSafeMemo(

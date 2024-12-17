@@ -48,10 +48,10 @@ export async function getTokensInfo(): Promise<TokenInfo[]> {
  *
  * @returns token details for the given token id
  */
-export async function getTokenDetails(coingeckoId: string): Promise<TokenDetails> {
+export async function getTokenDetails(coingeckoId: string): Promise<TokenDetails | undefined> {
   const id = coingeckoId.toLowerCase()
   const tokensRaw = await _getAllTokensData()
-  return tokensRaw.find(({ id: _id }) => _id === id) as TokenDetails
+  return tokensRaw.find(({ id: _id }) => _id === id) as TokenDetails | undefined
 }
 
 function _getDescriptionFilePaths(): string[] {

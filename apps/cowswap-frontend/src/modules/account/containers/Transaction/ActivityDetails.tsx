@@ -35,6 +35,7 @@ import {
   useHideReceiverWalletBanner,
   useIsReceiverWalletBannerHidden,
 } from 'common/state/receiverWalletBannerVisibility'
+import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { StatusDetails } from './StatusDetails'
@@ -298,7 +299,7 @@ export function ActivityDetails(props: {
     outputToken = COW[chainId as SupportedChainId]
   }
 
-  const isCustomRecipient = Boolean(order?.receiver && order.owner !== order.receiver)
+  const isCustomRecipient = !!order && getIsCustomRecipient(order)
 
   return (
     <>
