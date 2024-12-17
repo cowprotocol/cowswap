@@ -163,8 +163,6 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
   const allOrdersAreHidden =
     orders?.length === (showPreSigning ? 0 : preSigningCount) + (showCanceledAndExpired ? 0 : canceledAndExpiredCount)
 
-  console.log('allOrdersAreHidden', { allOrdersAreHidden, preSigningCount, canceledAndExpiredCount })
-
   const invertLimitPrice = (): void => {
     setIsPriceInverted((previousValue) => !previousValue)
   }
