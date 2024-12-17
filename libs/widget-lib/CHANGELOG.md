@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.17.0...widget-lib-v0.18.0) (2024-12-03)
+
+
+### Features
+
+* **widget:** add maxHeight parameter for the widget ([#5127](https://github.com/cowprotocol/cowswap/issues/5127)) ([db8b509](https://github.com/cowprotocol/cowswap/commit/db8b509d2d46d1ef5e52a18347d20bbebe96dbbd))
+
 ## [0.17.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.16.0...widget-lib-v0.17.0) (2024-10-29)
 
 

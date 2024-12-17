@@ -55,6 +55,7 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { SWAP_QUOTE_CHECK_INTERVAL } from 'common/updaters/FeesUpdater'
 
+import { SwapButtonState } from '../../helpers/getSwapButtonState'
 import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from '../../hooks/useSwapState'
 import { useTradeQuoteStateFromLegacy } from '../../hooks/useTradeQuoteStateFromLegacy'
 import { ConfirmSwapModalSetup } from '../ConfirmSwapModalSetup'
@@ -198,6 +199,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     showCowSubsidyModal,
   }
   const showTwapSuggestionBanner = !enabledTradeTypes || enabledTradeTypes.includes(TradeType.ADVANCED)
+  const isNativeSellInHooksStore = swapButtonContext.swapButtonState === SwapButtonState.SellNativeInHooks
 
   const swapWarningsTopProps: SwapWarningsTopProps = useMemo(
     () => ({
@@ -207,8 +209,17 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
       buyingFiatAmount,
       priceImpact: priceImpactParams.priceImpact,
       tradeUrlParams,
+      isNativeSellInHooksStore,
     }),
-    [chainId, trade, showTwapSuggestionBanner, buyingFiatAmount, priceImpactParams.priceImpact, tradeUrlParams],
+    [
+      chainId,
+      trade,
+      showTwapSuggestionBanner,
+      buyingFiatAmount,
+      priceImpactParams.priceImpact,
+      tradeUrlParams,
+      isNativeSellInHooksStore,
+    ],
   )
 
   const swapWarningsBottomProps: SwapWarningsBottomProps = useMemo(

@@ -80,6 +80,7 @@ const DAO_NAV_ITEMS: MenuItem[] = [
     hoverColor: '#F2CD16',
     hoverBgColor: '#EC4612',
     external: true,
+    utmContent: 'menubar-dao-nav-mevblocker',
   },
 ]
 

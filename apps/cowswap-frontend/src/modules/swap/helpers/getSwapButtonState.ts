@@ -29,6 +29,7 @@ export enum SwapButtonState {
   SwapWithWrappedToken = 'SwapWithWrappedToken',
   RegularEthFlowSwap = 'EthFlowSwap',
   ApproveAndSwap = 'ApproveAndSwap',
+  SellNativeInHooks = 'SellNativeInHooks',
 
   WrapAndSwap = 'WrapAndSwap',
 }
@@ -53,6 +54,7 @@ export interface SwapButtonStateParams {
   isBestQuoteLoading: boolean
   wrappedToken: Token
   isPermitSupported: boolean
+  isHooksStore: boolean
   quoteDeadlineParams: QuoteDeadlineParams
 }
 
@@ -140,6 +142,10 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   }
 
   if (input.isNativeIn) {
+    if (input.isHooksStore) {
+      return SwapButtonState.SellNativeInHooks
+    }
+
     if (!input.isSmartContractWallet) {
       return SwapButtonState.RegularEthFlowSwap
     } else if (input.isBundlingSupported) {

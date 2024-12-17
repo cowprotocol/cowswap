@@ -25,12 +25,14 @@ export async function verifyExtensibleFallback(
   try {
     const domainVerifier = await signatureVerifierContract.callStatic.domainVerifiers(safeAddress, domainSeparator)
 
+    console.log('FALLBACK HANDLER CHECKED, domainVerifier: ', domainVerifier)
     if (domainVerifier.toLowerCase() === composableCowContractAddress.toLowerCase()) {
       return ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER
     }
 
     return ExtensibleFallbackVerification.HAS_EXTENSIBLE_FALLBACK
-  } catch {
+  } catch (e) {
+    console.log('FALLBACK HANDLER CHECKED, error: ', e)
     return ExtensibleFallbackVerification.HAS_NOTHING
   }
 }

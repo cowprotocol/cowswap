@@ -50,6 +50,51 @@ export const GNO_MAINNET = new TokenWithLogo(
   'Gnosis',
 )
 
+const FRAX_MAINNET = new TokenWithLogo(
+  'https://assets.coingecko.com/coins/images/13422/thumb/frax_logo.png?1608476506',
+  SupportedChainId.MAINNET,
+  '0x853d955aCEf822Db058eb8505911ED77F175b99e',
+  18,
+  'FRAX',
+  'Frax',
+)
+
+const GUSD_MAINNET = new TokenWithLogo(
+  'https://assets.coingecko.com/coins/images/5992/thumb/gemini-dollar-gusd.png?1536745278',
+  SupportedChainId.MAINNET,
+  '0x056Fd409E1d7A124BD7017459dFEa2F387b6d5Cd',
+  2,
+  'GUSD',
+  'Gemini Dollar',
+)
+
+const LUSD_MAINNET = new TokenWithLogo(
+  'https://assets.coingecko.com/coins/images/14666/thumb/Group_3.png?1617631327',
+  SupportedChainId.MAINNET,
+  '5f98805A4E8be255a32880FDeC7F6728C6568bA0',
+  18,
+  'LUSD',
+  'Liquity USD',
+)
+
+const PYUSD_MAINNET = new TokenWithLogo(
+  'https://assets.coingecko.com/coins/images/31212/large/PYUSD_Logo_%282%29.png?1691458314',
+  SupportedChainId.MAINNET,
+  '0x6c3ea9036406852006290770BEdFcAbA0e23A0e8',
+  6,
+  'PYUSD',
+  'PayPal USD',
+)
+
+const sUSD_MAINNET = new TokenWithLogo(
+  'https://assets.coingecko.com/coins/images/5013/thumb/sUSD.png?1616150765',
+  SupportedChainId.MAINNET,
+  '0x57Ab1ec28D129707052df4dF418D58a2D46d5f51',
+  18,
+  'sUSD',
+  'Synth sUSD',
+)
+
 // Gnosis chain
 export const XDAI_SYMBOL = 'XDAI'
 export const XDAI_NAME = 'xDai'
@@ -322,6 +367,14 @@ export const USDC_SEPOLIA = new TokenWithLogo(
   'USDC',
   'USDC (test)',
 )
+export const USDT_SEPOLIA = new TokenWithLogo(
+  USDT.logoURI,
+  SupportedChainId.SEPOLIA,
+  '0x58eb19ef91e8a6327fed391b51ae1887b833cc91',
+  6,
+  'USDT',
+  'Tether USD',
+)
 
 export const USDC: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: USDC_MAINNET,
@@ -447,7 +500,16 @@ const SDAI_GNOSIS_CHAIN_ADDRESS = '0xaf204776c7245bf4147c2612bf6e5972ee483701'
 const GBPE_GNOSIS_CHAIN_ADDRESS = '0x5cb9073902f2035222b9749f8fb0c9bfe5527108'
 
 // Not used for fees
-const MAINNET_STABLECOINS = [USDC_MAINNET.address, USDT.address, DAI.address].map((t) => t.toLowerCase())
+const MAINNET_STABLECOINS = [
+  USDC_MAINNET.address,
+  USDT.address,
+  DAI.address,
+  FRAX_MAINNET.address,
+  GUSD_MAINNET.address,
+  LUSD_MAINNET.address,
+  PYUSD_MAINNET.address,
+  sUSD_MAINNET.address,
+].map((t) => t.toLowerCase())
 
 // NOTE: whenever this list is updated, make sure to update the docs section regarding the volume fees
 // https://github.com/cowprotocol/docs/blob/main/docs/governance/fees/fees.md?plain=1#L40
@@ -483,15 +545,21 @@ const BASE_STABLECOINS = [
   CGUSD_BASE.address,
   USD_PLUS_BASE.address,
   EUSD_BASE.address,
+  USDT_BASE.address,
 ].map((t) => t.toLowerCase())
+
+// Not used for fees
+const SEPOLIA_STABLECOINS = [USDC_SEPOLIA.address, USDT_SEPOLIA.address].map((t) => t.toLowerCase())
 
 export const STABLECOINS: Record<ChainId, Set<string>> = {
   [SupportedChainId.MAINNET]: new Set(MAINNET_STABLECOINS),
   [SupportedChainId.GNOSIS_CHAIN]: new Set(GNOSIS_CHAIN_STABLECOINS),
   [SupportedChainId.ARBITRUM_ONE]: new Set(ARBITRUM_ONE_STABLECOINS),
-  [SupportedChainId.SEPOLIA]: new Set([USDC_SEPOLIA.address]),
+  [SupportedChainId.SEPOLIA]: new Set(SEPOLIA_STABLECOINS),
   [SupportedChainId.BASE]: new Set(BASE_STABLECOINS),
 }
+
+console.debug('STABLECOINS', STABLECOINS)
 
 /**
  * Addresses related to COW vesting for Locked GNO
