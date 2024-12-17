@@ -8,6 +8,8 @@ import { useSWROrdersRequest } from 'modules/orders/hooks/useSWROrdersRequest'
 
 import { getOrders } from './api'
 
+const emptyOrders: EnrichedOrder[] = []
+
 export function useOrdersFromOrderBook(): EnrichedOrder[] {
   const { chainId } = useWalletInfo()
 
@@ -17,8 +19,8 @@ export function useOrdersFromOrderBook(): EnrichedOrder[] {
   const { data: currentEnvOrders } = useSWR(
     requestParams && chainId ? ['orders', requestParams, chainId] : null,
     ([, params, _chainId]) => getOrders(params, { chainId: _chainId }),
-    { refreshInterval: ORDER_BOOK_API_UPDATE_INTERVAL }
+    { refreshInterval: ORDER_BOOK_API_UPDATE_INTERVAL, fallbackData: emptyOrders },
   )
 
-  return currentEnvOrders || []
+  return currentEnvOrders
 }

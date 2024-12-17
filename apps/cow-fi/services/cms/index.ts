@@ -1,4 +1,4 @@
-import { CmsClient, components } from '@cowprotocol/cms'
+import { components } from '@cowprotocol/cms'
 import { PaginationParam } from 'types'
 import qs from 'qs'
 
@@ -6,6 +6,7 @@ import { toQueryParams } from 'util/queryParams'
 import { getCmsClient } from '@cowprotocol/core'
 
 const PAGE_SIZE = 50
+const CMS_CACHE_TIME = 5 * 60 // 5 min
 
 type Schemas = components['schemas']
 export type Article = Schemas['ArticleListResponseDataItem']
@@ -22,56 +23,17 @@ export type ArticleListResponse = {
   }
 }
 
-export type SharedMediaComponent = Schemas['SharedMediaComponent']
-export type SharedQuoteComponent = Schemas['SharedQuoteComponent']
 export type SharedRichTextComponent = Schemas['SharedRichTextComponent']
-export type SharedSliderComponent = Schemas['SharedSliderComponent']
-export type SharedVideoEmbedComponent = Schemas['SharedVideoEmbedComponent']
 export type Category = Schemas['CategoryListResponseDataItem']
-export type ArticleCover = Schemas['Article']['cover']
-export type ArticleBlocks = Schemas['Article']['blocks']
-
-export type ArticleBlock =
-  | SharedMediaComponent
-  | SharedQuoteComponent
-  | SharedRichTextComponent
-  | SharedSliderComponent
-  | SharedVideoEmbedComponent
-
-export function isSharedMediaComponent(component: ArticleBlock): component is SharedMediaComponent {
-  return component.__component === 'SharedMediaComponent'
-}
-
-export function isSharedQuoteComponent(component: ArticleBlock): component is SharedQuoteComponent {
-  return component.__component === 'SharedQuoteComponent'
-}
-
-export function isSharedRichTextComponent(component: ArticleBlock): component is SharedRichTextComponent {
-  return component.__component === 'shared.rich-text'
-}
-
-export function isSharedSliderComponent(component: ArticleBlock): component is SharedMediaComponent {
-  return component.__component === 'SharedSliderComponent'
-}
-
-export function isSharedVideoEmbedComponent(component: ArticleBlock): component is SharedVideoEmbedComponent {
-  return component.__component === 'SharedVideoEmbedComponent'
-}
 
 /**
  * Open API Fetch client. See docs for usage https://openapi-ts.pages.dev/openapi-fetch/
  */
 export const client = getCmsClient()
 
-/**
- * Returns the article slugs for the given page.
- *
- * @param params pagination params
- * @returns Slugs
- */
-async function getArticlesSlugs(params: PaginationParam = {}): Promise<string[]> {
-  const articlesResponse = await getArticles(params)
-  return articlesResponse.data.map((article: Article) => article.attributes!.slug!)
+const clientAddons = {
+  // https://github.com/openapi-ts/openapi-typescript/issues/1569#issuecomment-1982247959
+  fetch: (request: unknown) => fetch(request as Request, { next: { revalidate: CMS_CACHE_TIME } }),
 }
 
 /**
@@ -92,6 +54,7 @@ export async function getAllArticleSlugs(): Promise<string[]> {
       },
     },
     querySerializer,
+    ...clientAddons,
   })
 
   if (error) {
@@ -119,6 +82,7 @@ export async function getCategories(): Promise<Category[]> {
         },
         sort: 'name:asc',
       },
+      ...clientAddons,
     })
 
     if (error) {
@@ -174,6 +138,7 @@ export async function getArticles({
       },
     },
     querySerializer,
+    ...clientAddons,
   })
 
   if (error) {
@@ -211,6 +176,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
       },
     },
     querySerializer,
+    ...clientAddons,
   })
 
   if (error) {
@@ -303,6 +269,7 @@ async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles')
     params: {
       query,
     },
+    ...clientAddons,
   })
 
   if (error) {

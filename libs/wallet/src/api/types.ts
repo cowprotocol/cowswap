@@ -8,6 +8,7 @@ export enum ConnectionType {
   INJECTED = 'INJECTED',
   WALLET_CONNECT_V2 = 'WALLET_CONNECT_V2',
   COINBASE_WALLET = 'COINBASE_WALLET',
+  METAMASK = 'METAMASK',
   GNOSIS_SAFE = 'GNOSIS_SAFE',
   TREZOR = 'TREZOR',
 }
@@ -27,12 +28,16 @@ export interface WalletDetails {
   walletName?: string
   icon?: string
   isSupportedWallet: boolean
+  isSafeApp: boolean
 
   // Feature Support
   allowsOffchainSigning: boolean
 }
 
-export type GnosisSafeInfo = Pick<SafeInfoResponse, 'address' | 'threshold' | 'owners' | 'nonce' > & { isReadOnly?: boolean, chainId: number }
+export type GnosisSafeInfo = Pick<SafeInfoResponse, 'address' | 'threshold' | 'owners' | 'nonce'> & {
+  isReadOnly?: boolean
+  chainId: number
+}
 
 export enum WalletType {
   SAFE,

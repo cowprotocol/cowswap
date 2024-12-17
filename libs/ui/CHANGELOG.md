@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.16.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.15.0...ui-v1.16.0) (2024-12-11)
+
+
+### Features
+
+* **cow-fi:** upgrade project structure to /app ([#5167](https://github.com/cowprotocol/cowswap/issues/5167)) ([ed152f7](https://github.com/cowprotocol/cowswap/commit/ed152f7ac0fa62ab2c0b9c93035a551c3b8cb4b6))
+
+## [1.15.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.14.0...ui-v1.15.0) (2024-12-03)
+
+
+### Features
+
+* **volume-fee:** add volume fee for Safe ([#5139](https://github.com/cowprotocol/cowswap/issues/5139)) ([bb14c6a](https://github.com/cowprotocol/cowswap/commit/bb14c6a6ecfaba7d1a9a1da5366fac054efb97aa))
+
 ## [1.14.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.13.0...ui-v1.14.0) (2024-11-21)
 
 

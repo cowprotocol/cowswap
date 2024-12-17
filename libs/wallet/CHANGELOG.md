@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.6.1...wallet-v1.7.0) (2024-12-03)
+
+
+### Features
+
+* **base:** add base chain support ([#5044](https://github.com/cowprotocol/cowswap/issues/5044)) ([4cf0c91](https://github.com/cowprotocol/cowswap/commit/4cf0c91a300d6fcdc026364e74c45e5b2f729f2b))
+* **volume-fee:** add volume fee for Safe ([#5139](https://github.com/cowprotocol/cowswap/issues/5139)) ([bb14c6a](https://github.com/cowprotocol/cowswap/commit/bb14c6a6ecfaba7d1a9a1da5366fac054efb97aa))
+
 ## [1.6.1](https://github.com/cowprotocol/cowswap/compare/wallet-v1.6.0...wallet-v1.6.1) (2024-10-18)
 
 

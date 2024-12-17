@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.10.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.9.0...widget-configurator-v1.10.0) (2024-12-03)
+
+
+### Features
+
+* **base:** add base chain support ([#5044](https://github.com/cowprotocol/cowswap/issues/5044)) ([4cf0c91](https://github.com/cowprotocol/cowswap/commit/4cf0c91a300d6fcdc026364e74c45e5b2f729f2b))
+* **widget:** add maxHeight parameter for the widget ([#5127](https://github.com/cowprotocol/cowswap/issues/5127)) ([db8b509](https://github.com/cowprotocol/cowswap/commit/db8b509d2d46d1ef5e52a18347d20bbebe96dbbd))
+
 ## [1.9.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.8.0...widget-configurator-v1.9.0) (2024-10-29)
 
 

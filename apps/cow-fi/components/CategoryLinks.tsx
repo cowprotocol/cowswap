@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components/macro'
 import { clickOnKnowledgeBase } from 'modules/analytics'
 import { Color, Media } from '@cowprotocol/ui'
+import Link from 'next/link'
 interface Category {
   name: string
   slug: string
@@ -91,18 +92,18 @@ const CategoryLinksWrapper = styled.ul<{ noDivider?: boolean }>`
 export const CategoryLinks: React.FC<CategoryLinksProps> = ({ allCategories, noDivider }) => (
   <CategoryLinksWrapper noDivider={noDivider}>
     <li>
-      <a href="/learn" onClick={() => clickOnKnowledgeBase('click-categories-home')}>
+      <Link href="/learn" onClick={() => clickOnKnowledgeBase('click-categories-home')}>
         Knowledge Base
-      </a>
+      </Link>
     </li>
     {allCategories.map((category) => (
       <li key={category.slug}>
-        <a
+        <Link
           href={`/learn/topic/${category.slug}`}
           onClick={() => clickOnKnowledgeBase(`click-categories-${category.name}`)}
         >
           {category.name}
-        </a>
+        </Link>
       </li>
     ))}
   </CategoryLinksWrapper>

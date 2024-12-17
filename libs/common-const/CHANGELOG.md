@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.12.2](https://github.com/cowprotocol/cowswap/compare/common-const-v1.12.1...common-const-v1.12.2) (2024-12-12)
+
+
+### Bug Fixes
+
+* add more stablecoins in fees logic ([#5192](https://github.com/cowprotocol/cowswap/issues/5192)) ([79afa5c](https://github.com/cowprotocol/cowswap/commit/79afa5cb8018cd263b7820bdcb922998a4d80527))
+
+## [1.12.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.12.0...common-const-v1.12.1) (2024-12-12)
+
+
+### Bug Fixes
+
+* **volume-fee:** control safe app fees for stablecoins with ff ([#5187](https://github.com/cowprotocol/cowswap/issues/5187)) ([e7bc7c5](https://github.com/cowprotocol/cowswap/commit/e7bc7c5df35e233da9af8da950973a4272f10365))
+
+## [1.12.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.11.0...common-const-v1.12.0) (2024-12-11)
+
+
+### Features
+
+* **cow-fi:** upgrade project structure to /app ([#5167](https://github.com/cowprotocol/cowswap/issues/5167)) ([ed152f7](https://github.com/cowprotocol/cowswap/commit/ed152f7ac0fa62ab2c0b9c93035a551c3b8cb4b6))
+
+## [1.11.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.10.1...common-const-v1.11.0) (2024-12-03)
+
+
+### Features
+
+* **base:** add base chain support ([#5044](https://github.com/cowprotocol/cowswap/issues/5044)) ([4cf0c91](https://github.com/cowprotocol/cowswap/commit/4cf0c91a300d6fcdc026364e74c45e5b2f729f2b))
+
 ## [1.10.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.10.0...common-const-v1.10.1) (2024-11-21)
 
 
