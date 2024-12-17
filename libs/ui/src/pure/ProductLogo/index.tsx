@@ -2,6 +2,8 @@ import LOGO_COWAMM from '@cowprotocol/assets/images/logo-cowamm.svg'
 import LOGO_COWDAO from '@cowprotocol/assets/images/logo-cowdao.svg'
 import LOGO_COWEXPLORER from '@cowprotocol/assets/images/logo-cowexplorer.svg'
 import LOGO_COWPROTOCOL from '@cowprotocol/assets/images/logo-cowprotocol.svg'
+import LOGO_COWSWAP_CHRISTMAS_DARK from '@cowprotocol/assets/images/logo-cowswap-christmas-dark.svg'
+import LOGO_COWSWAP_CHRISTMAS from '@cowprotocol/assets/images/logo-cowswap-christmas-light.svg'
 import LOGO_COWSWAP_HALLOWEEN from '@cowprotocol/assets/images/logo-cowswap-halloween.svg'
 import LOGO_COWSWAP from '@cowprotocol/assets/images/logo-cowswap.svg'
 import LOGO_ICON_COW from '@cowprotocol/assets/images/logo-icon-cow.svg'
@@ -29,12 +31,17 @@ interface LogoInfo {
   src: string
   alt: string
   color?: string // Optional color attribute for SVG
+  height?: string // Optional height for both desktop and mobile
+  heightMobile?: string // Optional height specifically for mobile
+  preserveOriginalColors?: boolean // If true, original SVG colors will be preserved
 }
 
 export type ThemedLogo = Partial<Record<CowSwapTheme, { default: LogoInfo; logoIconOnly?: LogoInfo }>> & {
   light: { default: LogoInfo; logoIconOnly?: LogoInfo }
   dark: { default: LogoInfo; logoIconOnly?: LogoInfo }
   darkHalloween?: { default: LogoInfo; logoIconOnly?: LogoInfo }
+  darkChristmas?: { default: LogoInfo }
+  lightChristmas?: { default: LogoInfo }
 }
 
 const LOGOS: Record<ProductVariant, ThemedLogo> = {
@@ -69,6 +76,26 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
         src: LOGO_COWSWAP_HALLOWEEN,
         alt: 'CoW Swap',
         color: '#65D9FF',
+      },
+    },
+    darkChristmas: {
+      default: {
+        src: LOGO_COWSWAP_CHRISTMAS_DARK,
+        alt: 'CoW Swap',
+        color: '#65D9FF',
+        height: '56px',
+        heightMobile: '50px',
+        preserveOriginalColors: true,
+      },
+    },
+    lightChristmas: {
+      default: {
+        src: LOGO_COWSWAP_CHRISTMAS,
+        alt: 'CoW Swap',
+        color: '#004293',
+        height: '56px',
+        heightMobile: '50px',
+        preserveOriginalColors: true,
       },
     },
   },
@@ -232,19 +259,24 @@ export const ProductLogoWrapper = styled.span<{
   hoverColor?: string
   height?: number | string
   heightMobile?: number | string
+  preserveOriginalColors?: boolean
 }>`
   --height: ${({ height }) => (typeof height === 'number' ? `${height}px` : height || '28px')};
   --heightMobile: ${({ heightMobile }) =>
     typeof heightMobile === 'number' ? `${heightMobile}px` : heightMobile || 'var(--height)'};
-  --color: ${({ color }) => color || 'inherit'};
-  --hoverColor: ${({ hoverColor }) => hoverColor || 'inherit'};
+  ${({ preserveOriginalColors, color, hoverColor }) =>
+    !preserveOriginalColors &&
+    `
+    --color: ${color || 'inherit'};
+    --hoverColor: ${hoverColor || 'inherit'};
+    color: var(--color);
+  `}
 
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   gap: 8px;
-  color: var(--color);
   height: var(--height);
   transition: color 0.2s ease-in-out;
 
@@ -257,17 +289,21 @@ export const ProductLogoWrapper = styled.span<{
   > svg {
     height: 100%;
     width: auto;
-    color: inherit;
-    fill: currentColor;
+    ${({ preserveOriginalColors }) =>
+      !preserveOriginalColors &&
+      `
+      color: inherit;
+      fill: currentColor;
+    `}
   }
 
   > a > svg path,
   > svg path {
-    fill: currentColor;
+    ${({ preserveOriginalColors }) => !preserveOriginalColors && `fill: currentColor;`}
   }
 
   &:hover {
-    color: var(--hoverColor);
+    ${({ preserveOriginalColors }) => !preserveOriginalColors && `color: var(--hoverColor);`}
   }
 `
 
@@ -287,7 +323,12 @@ export const ProductLogo = ({
   const selectedTheme = customThemeMode || (themeMode.darkMode ? 'dark' : 'light')
   const logoForTheme = LOGOS[variant][selectedTheme] || LOGOS[variant]['light'] // Fallback to light theme if selected theme is not available
   const logoInfo = logoIconOnly && logoForTheme.logoIconOnly ? logoForTheme.logoIconOnly : logoForTheme.default
-  const initialColor = overrideColor || logoInfo.color
+  const initialColor = logoInfo.preserveOriginalColors ? undefined : overrideColor || logoInfo.color
+
+  // First use logoInfo height, then prop height, then default
+  const logoHeight = logoInfo.height || height || '28px'
+  // First use logoInfo heightMobile, then prop heightMobile, then logoInfo height, then prop height, then default
+  const logoHeightMobile = logoInfo.heightMobile || heightMobile || logoInfo.height || height || logoHeight
 
   const getAccessibleAltText = () => {
     const baseAlt = logoInfo.alt
@@ -302,8 +343,9 @@ export const ProductLogo = ({
       className={className}
       color={initialColor}
       hoverColor={overrideHoverColor || 'inherit'}
-      height={height}
-      heightMobile={heightMobile}
+      height={logoHeight}
+      heightMobile={logoHeightMobile}
+      preserveOriginalColors={logoInfo.preserveOriginalColors}
     >
       {href ? (
         <a

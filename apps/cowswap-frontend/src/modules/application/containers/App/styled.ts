@@ -1,3 +1,9 @@
+import IMAGE_BACKGROUND_DARK_CHRISTMAS_MEDIUM from '@cowprotocol/assets/images/background-cowswap-christmas-dark-medium.svg'
+import IMAGE_BACKGROUND_DARK_CHRISTMAS_SMALL from '@cowprotocol/assets/images/background-cowswap-christmas-dark-small.svg'
+import IMAGE_BACKGROUND_DARK_CHRISTMAS from '@cowprotocol/assets/images/background-cowswap-christmas-dark.svg'
+import IMAGE_BACKGROUND_LIGHT_CHRISTMAS_MEDIUM from '@cowprotocol/assets/images/background-cowswap-christmas-light-medium.svg'
+import IMAGE_BACKGROUND_LIGHT_CHRISTMAS_SMALL from '@cowprotocol/assets/images/background-cowswap-christmas-light-small.svg'
+import IMAGE_BACKGROUND_LIGHT_CHRISTMAS from '@cowprotocol/assets/images/background-cowswap-christmas-light.svg'
 import IMAGE_BACKGROUND_DARK from '@cowprotocol/assets/images/background-cowswap-darkmode.svg'
 import IMAGE_BACKGROUND_DARK_HALLOWEEN_MEDIUM from '@cowprotocol/assets/images/background-cowswap-halloween-dark-medium.svg'
 import IMAGE_BACKGROUND_DARK_HALLOWEEN_SMALL from '@cowprotocol/assets/images/background-cowswap-halloween-dark-small.svg'
@@ -7,6 +13,14 @@ import { CowSwapTheme, Media } from '@cowprotocol/ui'
 
 import * as CSS from 'csstype'
 import styled from 'styled-components/macro'
+
+function isChristmasTheme(theme?: CowSwapTheme) {
+  if (!theme) {
+    return false
+  }
+
+  return ['darkChristmas', 'lightChristmas'].includes(theme)
+}
 
 export const AppWrapper = styled.div<Partial<CSS.Properties>>`
   display: flex;
@@ -42,8 +56,12 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme }>`
       const backgroundColor = theme.darkMode ? '#0E0F2D' : '#65D9FF'
       let backgroundImage
 
-      if (customTheme === ('darkHalloween' as CowSwapTheme)) {
+      if (customTheme === 'darkHalloween') {
         backgroundImage = `url(${IMAGE_BACKGROUND_DARK_HALLOWEEN})`
+      } else if (isChristmasTheme(customTheme)) {
+        backgroundImage = theme.darkMode
+          ? `url(${IMAGE_BACKGROUND_DARK_CHRISTMAS})`
+          : `url(${IMAGE_BACKGROUND_LIGHT_CHRISTMAS})`
       } else {
         backgroundImage = theme.darkMode ? `url(${IMAGE_BACKGROUND_DARK})` : `url(${IMAGE_BACKGROUND_LIGHT})`
       }
@@ -59,9 +77,15 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme }>`
     background-size: auto;
 
     ${({ customTheme }) =>
-      customTheme === ('darkHalloween' as CowSwapTheme) &&
+      customTheme === 'darkHalloween' &&
       `
         background-image: url(${IMAGE_BACKGROUND_DARK_HALLOWEEN_MEDIUM});
+      `}
+
+    ${({ customTheme, theme }) =>
+      isChristmasTheme(customTheme) &&
+      `
+        background-image: url(${theme.darkMode ? IMAGE_BACKGROUND_DARK_CHRISTMAS_MEDIUM : IMAGE_BACKGROUND_LIGHT_CHRISTMAS_MEDIUM});
       `}
   }
 
@@ -70,9 +94,15 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme }>`
     min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : 'calc(100vh - 100px)')};
 
     ${({ customTheme }) =>
-      customTheme === ('darkHalloween' as CowSwapTheme) &&
+      customTheme === 'darkHalloween' &&
       `
         background-image: url(${IMAGE_BACKGROUND_DARK_HALLOWEEN_SMALL});
+      `}
+
+    ${({ customTheme, theme }) =>
+      isChristmasTheme(customTheme) &&
+      `
+        background-image: url(${theme.darkMode ? IMAGE_BACKGROUND_DARK_CHRISTMAS_SMALL : IMAGE_BACKGROUND_LIGHT_CHRISTMAS_SMALL});
       `}
   }
 `

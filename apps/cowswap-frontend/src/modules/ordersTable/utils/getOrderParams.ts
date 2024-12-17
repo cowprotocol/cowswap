@@ -6,6 +6,7 @@ import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
+import { getOrderPermitAmount } from 'utils/orderUtils/getOrderPermitAmount'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 export interface OrderParams {
@@ -22,10 +23,12 @@ const PERCENTAGE_FOR_PARTIAL_FILLS = new Percent(5, 10000) // 0.05%
 export function getOrderParams(
   chainId: SupportedChainId,
   balancesAndAllowances: BalancesAndAllowances,
-  order: ParsedOrder
+  order: ParsedOrder,
 ): OrderParams {
+  const isOrderAtLeastOnceFilled = order.executionData.filledAmount.gt(0)
   const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
   const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount)
+  const permitAmount = getOrderPermitAmount(chainId, order) || undefined
 
   const rateInfoParams: RateInfoParams = {
     chainId,
@@ -43,7 +46,8 @@ export function getOrderParams(
     partiallyFillable: order.partiallyFillable,
     sellAmount,
     balance,
-    allowance,
+    // If the order has been filled at least once, we should not consider the permit amount
+    allowance: isOrderAtLeastOnceFilled ? getBiggerAmount(allowance, permitAmount) : allowance,
   })
 
   return {
@@ -72,4 +76,11 @@ function _hasEnoughBalanceAndAllowance(params: {
   const hasEnoughAllowance = isEnoughAmount(amount, allowance)
 
   return { hasEnoughBalance, hasEnoughAllowance }
+}
+
+function getBiggerAmount(a: BigNumber | undefined, b: BigNumber | undefined): BigNumber | undefined {
+  if (!a) return b
+  if (!b) return a
+
+  return a.gt(b) ? a : b
 }

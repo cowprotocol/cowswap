@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.3](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.19.2...cow-fi-v1.19.3) (2024-12-16)
+
+
+### Bug Fixes
+
+* **cowfi:** fix pages crashes ([#5206](https://github.com/cowprotocol/cowswap/issues/5206)) ([525d079](https://github.com/cowprotocol/cowswap/commit/525d0794c10e0950dc0036f2f9c2e8e728117969))
+
 ## [1.19.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.19.1...cow-fi-v1.19.2) (2024-12-12)
 
 

@@ -48,10 +48,6 @@
     },
     {
       "priority": 12,
-      "source": "t2crtokens.eth"
-    },
-    {
-      "priority": 13,
       "source": "https://curvefi.github.io/curve-assets/ethereum.json"
     }
   ],
