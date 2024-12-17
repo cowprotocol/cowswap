@@ -10,6 +10,3 @@ export const LP_TOKEN_LISTS = lpTokensList as Array<ListSourceConfig>
 export const DEFAULT_TOKENS_LISTS: ListsSourcesByNetwork = mapSupportedNetworks((chainId) => tokensList[chainId])
 
 export const UNISWAP_TOKENS_LIST = 'https://ipfs.io/ipns/tokens.uniswap.org'
-
-export const GNOSIS_UNISWAP_TOKENS_LIST =
-  'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/GnosisUniswapTokensList.json'
