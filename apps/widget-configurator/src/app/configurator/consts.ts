@@ -35,7 +35,6 @@ export const DEFAULT_TOKEN_LISTS: TokenListItem[] = [
   },
   { url: 'https://tokenlist.dharma.eth.link', enabled: false },
   { url: 'https://www.gemini.com/uniswap/manifest.json', enabled: false },
-  { url: 'https://t2crtokens.eth.link', enabled: false },
   { url: 'https://messari.io/tokenlist/messari-verified', enabled: false },
   { url: 'https://uniswap.mycryptoapi.com', enabled: false },
   { url: 'https://static.optimism.io/optimism.tokenlist.json', enabled: false },
