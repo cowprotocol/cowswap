@@ -15,14 +15,12 @@ import { taxFreeAssetsAtom } from './taxFreeAssetsAtom'
 import { VolumeFee } from '../types'
 
 export const volumeFeeAtom = atom<VolumeFee | undefined>((get) => {
-  const tradeState = get(derivedTradeStateAtom)
   const cowSwapFee = get(cowSwapFeeAtom)
   const widgetPartnerFee = get(widgetPartnerFeeAtom)
   const safeAppFee = get(safeAppFeeAtom)
   const shouldSkipFee = get(shouldSkipFeeAtom)
 
   if (!widgetPartnerFee && shouldSkipFee) {
-    console.debug('Tax free trade detected', tradeState)
     return undefined
   }
 
