@@ -164,8 +164,8 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
   const [showCanceledAndExpired, setShowCanceledAndExpired] = useState(false)
   const [showPreSigning, setShowPreSigning] = useState(false)
 
-  const canceledAndExpiredCount = orders ? orders.filter(isExpiredOrCanceled).length : 0
-  const preSigningCount = orders ? orders.filter((order) => order.status === 'signing').length : 0
+  const canceledAndExpiredCount = orders?.filter(isExpiredOrCanceled).length || 0
+  const preSigningCount = orders?.filter((order) => order.status === 'signing').length || 0
   const showFilter = canceledAndExpiredCount > 0 || preSigningCount > 0
   const allOrdersAreHidden =
     orders?.length === (showPreSigning ? 0 : preSigningCount) + (showCanceledAndExpired ? 0 : canceledAndExpiredCount)
