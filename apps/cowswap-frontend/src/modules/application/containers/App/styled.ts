@@ -14,6 +14,14 @@ import { CowSwapTheme, Media } from '@cowprotocol/ui'
 import * as CSS from 'csstype'
 import styled from 'styled-components/macro'
 
+function isChristmasTheme(theme?: CowSwapTheme) {
+  if (!theme) {
+    return false
+  }
+
+  return ['darkChristmas', 'lightChristmas'].includes(theme)
+}
+
 export const AppWrapper = styled.div<Partial<CSS.Properties>>`
   display: flex;
   flex-flow: column;
@@ -50,7 +58,7 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme }>`
 
       if (customTheme === 'darkHalloween') {
         backgroundImage = `url(${IMAGE_BACKGROUND_DARK_HALLOWEEN})`
-      } else if (customTheme === 'darkChristmas' || customTheme === 'lightChristmas') {
+      } else if (isChristmasTheme(customTheme)) {
         backgroundImage = theme.darkMode
           ? `url(${IMAGE_BACKGROUND_DARK_CHRISTMAS})`
           : `url(${IMAGE_BACKGROUND_LIGHT_CHRISTMAS})`
@@ -75,7 +83,7 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme }>`
       `}
 
     ${({ customTheme, theme }) =>
-      (customTheme === 'darkChristmas' || customTheme === 'lightChristmas') &&
+      isChristmasTheme(customTheme) &&
       `
         background-image: url(${theme.darkMode ? IMAGE_BACKGROUND_DARK_CHRISTMAS_MEDIUM : IMAGE_BACKGROUND_LIGHT_CHRISTMAS_MEDIUM});
       `}
@@ -92,7 +100,7 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme }>`
       `}
 
     ${({ customTheme, theme }) =>
-      (customTheme === 'darkChristmas' || customTheme === 'lightChristmas') &&
+      isChristmasTheme(customTheme) &&
       `
         background-image: url(${theme.darkMode ? IMAGE_BACKGROUND_DARK_CHRISTMAS_SMALL : IMAGE_BACKGROUND_LIGHT_CHRISTMAS_SMALL});
       `}
