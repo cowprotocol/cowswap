@@ -18,7 +18,7 @@ type Props = {
 }
 
 export const FillsTableWithData: React.FC<Props> = ({ areTokensLoaded, order, isPriceInverted, invertPrice }) => {
-  const { trades, tableState } = useContext(FillsTableContext)
+  const { data: trades, tableState } = useContext(FillsTableContext)
   const isFirstRender = useFirstRender()
 
   return isFirstRender || !areTokensLoaded ? (
