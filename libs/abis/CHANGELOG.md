@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/cowprotocol/cowswap/compare/cowswap-abis-v1.2.0...cowswap-abis-v1.2.1) (2024-12-18)
+
+
+### Bug Fixes
+
+* **orders-table:** display allowance warning in Safe ([#5207](https://github.com/cowprotocol/cowswap/issues/5207)) ([21e8c57](https://github.com/cowprotocol/cowswap/commit/21e8c57ddfbadb881e56295557a82ad5cb513664))
+
 ## [1.2.0](https://github.com/cowprotocol/cowswap/compare/cowswap-abis-v1.1.0...cowswap-abis-v1.2.0) (2024-10-10)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.16.0...ui-v1.17.0) (2024-12-18)
+
+
+### Features
+
+* add winter theme 🎅 ([#5213](https://github.com/cowprotocol/cowswap/issues/5213)) ([7db4b72](https://github.com/cowprotocol/cowswap/commit/7db4b72d54759394087e4c816dce9eeb6f282588))
+
 ## [1.16.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.15.0...ui-v1.16.0) (2024-12-11)
 
 
