@@ -26,7 +26,7 @@ import { ToggleFilter } from './ToggleFilter'
 import { SimpleTable, SimpleTableProps } from '../../common/SimpleTable'
 import { StatusLabel } from '../StatusLabel'
 import { UnsignedOrderWarning } from '../UnsignedOrderWarning'
-import { TableState } from 'explorer/components/TokensTableWidget/useTable'
+import { TableState } from '../../../explorer/components/TokensTableWidget/useTable'
 import { Command } from '@cowprotocol/types'
 
 const EXPIRED_CANCELED_STATES: OrderStatus[] = ['cancelled', 'cancelling', 'expired']
