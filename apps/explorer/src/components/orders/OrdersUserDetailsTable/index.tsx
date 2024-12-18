@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
+import { Command } from '@cowprotocol/types'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
@@ -23,11 +24,10 @@ import { getLimitPrice } from 'utils/getLimitPrice'
 import { OrderSurplusDisplayStyledByRow } from './OrderSurplusTooltipStyledByRow'
 import { ToggleFilter } from './ToggleFilter'
 
+import { TableState } from '../../../explorer/components/TokensTableWidget/useTable'
 import { SimpleTable, SimpleTableProps } from '../../common/SimpleTable'
 import { StatusLabel } from '../StatusLabel'
 import { UnsignedOrderWarning } from '../UnsignedOrderWarning'
-import { TableState } from '../../../explorer/components/TokensTableWidget/useTable'
-import { Command } from '@cowprotocol/types'
 
 const EXPIRED_CANCELED_STATES: OrderStatus[] = ['cancelled', 'cancelling', 'expired']
 
@@ -37,7 +37,7 @@ function isExpiredOrCanceled(order: Order): boolean {
   if (!executedSellAmount.isZero() || !executedBuyAmount.isZero()) return false
 
   // Otherwise, return if the order is expired or canceled
-  return EXPIRED_CANCELED_STATES.includes(order.status)
+  return EXPIRED_CANCELED_STATES.includes(status)
 }
 
 const tooltip = {
