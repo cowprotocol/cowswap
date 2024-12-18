@@ -13,7 +13,6 @@ import styled from 'styled-components/macro'
 
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { SpotPricesKeyParams } from 'modules/orders/state/spotPricesAtom'
-import { OrdersPermitStatus } from 'modules/permit'
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
@@ -200,7 +199,6 @@ export interface OrdersTableProps {
   balancesAndAllowances: BalancesAndAllowances
   getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
   orderActions: OrderActions
-  ordersPermitStatus: OrdersPermitStatus
 }
 
 export function OrdersTable({
@@ -214,7 +212,6 @@ export function OrdersTable({
   getSpotPrice,
   orderActions,
   currentPageNumber,
-  ordersPermitStatus,
 }: OrdersTableProps) {
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
   const [isRateInverted, setIsRateInverted] = useState(false)
@@ -234,11 +231,14 @@ export function OrdersTable({
   const selectedOrdersMap = useMemo(() => {
     if (!selectedOrders) return {}
 
-    return selectedOrders.reduce((acc, val) => {
-      acc[val.id] = true
+    return selectedOrders.reduce(
+      (acc, val) => {
+        acc[val.id] = true
 
-      return acc
-    }, {} as { [key: string]: true })
+        return acc
+      },
+      {} as { [key: string]: true },
+    )
   }, [selectedOrders])
 
   // Explainer banner for orders
@@ -258,7 +258,7 @@ export function OrdersTable({
 
   const cancellableOrders = useMemo(
     () => ordersPage.filter((item) => isOrderOffChainCancellable(getParsedOrderFromTableItem(item))),
-    [ordersPage]
+    [ordersPage],
   )
 
   const allOrdersSelected = useMemo(() => {
@@ -294,7 +294,7 @@ export function OrdersTable({
                     type="checkbox"
                     onChange={(event) =>
                       orderActions.toggleOrdersForCancellation(
-                        event.target.checked ? tableItemsToOrders(ordersPage) : []
+                        event.target.checked ? tableItemsToOrders(ordersPage) : [],
                       )
                     }
                   />
@@ -408,8 +408,6 @@ export function OrdersTable({
 
                 const orderParams = getOrderParams(chainId, balancesAndAllowances, order)
 
-                const hasValidPendingPermit = ordersPermitStatus[order.id]
-
                 return (
                   <OrderRow
                     key={order.id}
@@ -423,7 +421,6 @@ export function OrdersTable({
                     isRateInverted={isRateInverted}
                     orderActions={orderActions}
                     onClick={() => orderActions.selectReceiptOrder(order)}
-                    hasValidPendingPermit={hasValidPendingPermit}
                   />
                 )
               } else {

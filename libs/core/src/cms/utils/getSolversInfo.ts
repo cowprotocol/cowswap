@@ -1,13 +1,13 @@
 import { components } from '@cowprotocol/cms'
 
-import qs from 'qs'
+import { querySerializer } from './querySerializer'
 
 import { CmsSolversInfo } from '../types'
 import { getCmsClient } from '../utils'
 
-const cmsClient = getCmsClient()
-
 export async function getSolversInfo(): Promise<CmsSolversInfo> {
+  const cmsClient = getCmsClient()
+
   return cmsClient
     .GET('/solvers', {
       params: {
@@ -37,8 +37,4 @@ export async function getSolversInfo(): Promise<CmsSolversInfo> {
       console.error('Failed to fetch solvers', error)
       return []
     })
-}
-
-const querySerializer = (params: any) => {
-  return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
 }
