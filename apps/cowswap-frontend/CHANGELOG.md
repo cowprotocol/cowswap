@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.94.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.93.2...cowswap-v1.94.0) (2024-12-18)
+
+
+### Features
+
+* allow 1 year max deadline ([#5227](https://github.com/cowprotocol/cowswap/issues/5227)) ([64e3f40](https://github.com/cowprotocol/cowswap/commit/64e3f40a19da19ba7d44f4ebcb1b494fd4426882))
+
+
+### Bug Fixes
+
+* account for a bad CMS request ([#5221](https://github.com/cowprotocol/cowswap/issues/5221)) ([8d2edd7](https://github.com/cowprotocol/cowswap/commit/8d2edd7d87f0622fdc5885b45175b89b49eae1ec))
+
 ## [1.93.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.93.1...cowswap-v1.93.2) (2024-12-13)
 
 
