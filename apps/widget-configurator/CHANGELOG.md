@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.10.0...widget-configurator-v1.10.1) (2024-12-18)
+
+
+### Bug Fixes
+
+* remove Kleros token list because it's too big ([#5217](https://github.com/cowprotocol/cowswap/issues/5217)) ([745e17f](https://github.com/cowprotocol/cowswap/commit/745e17f1515024f67c162091a42f3fd2864f894e))
+
 ## [1.10.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.9.0...widget-configurator-v1.10.0) (2024-12-03)
 
 

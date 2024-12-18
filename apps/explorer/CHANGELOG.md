@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.40.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.40.0...explorer-v2.40.1) (2024-12-18)
+
+
+### Bug Fixes
+
+* fix lint issues ([#5229](https://github.com/cowprotocol/cowswap/issues/5229)) ([25d30bb](https://github.com/cowprotocol/cowswap/commit/25d30bb6496a1fa51719b639948cc4d7b8ec5f20))
+
+## [2.40.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.39.0...explorer-v2.40.0) (2024-12-18)
+
+
+### Features
+
+* improve orders table when hidden orders ([#5226](https://github.com/cowprotocol/cowswap/issues/5226)) ([a4aaff9](https://github.com/cowprotocol/cowswap/commit/a4aaff94980fad15030bb057bbc45baa20f8336c))
+
 ## [2.39.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.38.0...explorer-v2.39.0) (2024-12-17)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/cowprotocol/cowswap/compare/core-v1.5.0...core-v1.6.0) (2024-12-18)
+
+
+### Features
+
+* **announcements:** load announcements from cms ([#5212](https://github.com/cowprotocol/cowswap/issues/5212)) ([b70703c](https://github.com/cowprotocol/cowswap/commit/b70703c7a206d5e040bbd29439dcc7eeddf72f42))
+
 ## [1.5.0](https://github.com/cowprotocol/cowswap/compare/core-v1.4.0...core-v1.5.0) (2024-12-11)
 
 
