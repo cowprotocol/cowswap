@@ -177,7 +177,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
 
   const ExtraComponentNode: React.ReactNode = (
     <WrapperExtraComponents>
-      <>{tabViewSelected === TabView.FILLS && <TablePagination context={FillsTableContext} />}</>
+      {tabViewSelected === TabView.FILLS && <TablePagination context={FillsTableContext} />}
     </WrapperExtraComponents>
   )
 
