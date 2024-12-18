@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.95.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.94.0...cowswap-v1.95.0) (2024-12-18)
+
+
+### Features
+
+* force release to release, pleaseeee ([a59eb27](https://github.com/cowprotocol/cowswap/commit/a59eb275a96fb13c9521784a051f734d947a1b1f))
+
 ## [1.94.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.93.2...cowswap-v1.94.0) (2024-12-18)
 
 
