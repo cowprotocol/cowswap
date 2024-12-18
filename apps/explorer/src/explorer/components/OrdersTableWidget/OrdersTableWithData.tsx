@@ -12,6 +12,8 @@ export const OrdersTableWithData: React.FC = () => {
   const {
     data: orders,
     addressAccountParams: { ownerAddress, networkId },
+    tableState,
+    handleNextPage,
   } = useContext(OrdersTableContext)
   const isFirstRender = useFirstRender()
   const [isFirstLoading, setIsFirstLoading] = useState(true)
@@ -46,6 +48,8 @@ export const OrdersTableWithData: React.FC = () => {
   ) : (
     <OrdersTable
       orders={orders}
+      tableState={tableState}
+      handleNextPage={handleNextPage}
       messageWhenEmpty={
         <EmptyOrdersMessage
           isLoading={searchInAnotherNetworkState}
