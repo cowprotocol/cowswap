@@ -5,11 +5,7 @@ import { Media } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 import { DARK_COLOURS } from 'theme'
 
-import Tabs, {
-  getTabTheme,
-  Props as TabsProps,
-  IndicatorTabSize,
-} from '../../../../components/common/Tabs/Tabs'
+import Tabs, { getTabTheme, Props as TabsProps, IndicatorTabSize } from '../../../../components/common/Tabs/Tabs'
 
 const StyledTabs = styled.div`
   display: flex;
@@ -56,7 +52,7 @@ const tabCustomThemeConfig = getTabTheme({
   indicatorTabSize: IndicatorTabSize.big,
 })
 
-type ExplorerTabsProps = Omit<TabsProps, 'tabTheme'> & { extraPosition?: 'top' | 'bottom' }
+type ExplorerTabsProps = Omit<TabsProps, 'tabTheme'> & { extraPosition?: 'top' | 'bottom' | 'both' }
 
 const ExplorerTabs: React.FC<ExplorerTabsProps> = (props) => {
   return (
