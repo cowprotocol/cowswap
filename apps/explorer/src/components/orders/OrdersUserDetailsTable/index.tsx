@@ -72,48 +72,47 @@ interface RowProps {
 const FilterRow = styled.tr`
   background-color: ${({ theme }) => theme.background};
 
-  th {
+  @media (max-width: 1155px) {
+    div:first-child {
+      max-width: 90vw;
+    }
+  }
+
+  td {
+    padding: 2rem;
     text-align: right;
     padding-right: 10px;
-
+    max-width: 100%;
     & > * {
       margin-left: 10px;
     }
   }
+
+  p {
+    word-wrap: break-word;
+    white-space: normal;
+  }
 `
 
-const NoOrdersContainer = styled.div`
+const Filters = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
   justify-content: center;
-  flex-direction: column;
-  padding: 2rem;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 1rem;
 `
 
-const HiddenOrdersLegend = styled.tr`
+const HiddenOrdersLegend = styled.div`
   p {
     text-align: center;
   }
 
-  &:hover,
-  td:hover {
-    background-color: ${({ theme }) => theme.paper};
-    color: ${({ theme }) => theme.textSecondary1};
+  a {
+    text-decoration: underline;
   }
 
-  td {
-    padding: 0;
-    font-size: 1.2rem;
-    color: ${({ theme }) => theme.textSecondary1};
-
-    a {
-      text-decoration: underline;
-    }
-
-    a:hover {
-      color: ${({ theme }) => theme.textSecondary2};
-    }
+  a:hover {
+    color: ${({ theme }) => theme.textSecondary2};
   }
 `
 
@@ -215,31 +214,6 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
     <SimpleTable
       header={
         <>
-          {showFilter && (
-            <FilterRow>
-              <th colSpan={8}>
-                {canceledAndExpiredCount > 0 && (
-                  <ToggleFilter
-                    checked={showCanceledAndExpired}
-                    onChange={() => setShowCanceledAndExpired((previousValue) => !previousValue)}
-                    label={(showCanceledAndExpired ? 'Hide' : 'Show') + ' canceled/expired'}
-                    count={canceledAndExpiredCount}
-                  />
-                )}
-                {preSigningCount > 0 && (
-                  <>
-                    <ToggleFilter
-                      checked={showPreSigning}
-                      onChange={() => setShowPreSigning((previousValue) => !previousValue)}
-                      label={(showPreSigning ? 'Hide' : 'Show') + ' unsigned'}
-                      count={preSigningCount}
-                    />
-                    {showPreSigning && <UnsignedOrderWarning />}
-                  </>
-                )}
-              </th>
-            </FilterRow>
-          )}
           {!areOrdersAllHidden && (
             <tr>
               <th>
@@ -260,6 +234,15 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
               <th>Status</th>
             </tr>
           )}
+          {showPreSigning && (
+            <FilterRow>
+              <td colSpan={8}>
+                <div>
+                  <UnsignedOrderWarning />
+                </div>
+              </td>
+            </FilterRow>
+          )}
         </>
       }
       body={
@@ -275,24 +258,50 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
               />
             ))}
 
-          {hiddenOrdersCount > 0 && (
-            <HiddenOrdersLegend>
+          {showFilter && (
+            <FilterRow>
               <td colSpan={8}>
-                <p>
-                  Showing {orders.length - hiddenOrdersCount} out of {orders.length} orders for the current page.
-                </p>
-                <p>
-                  {hiddenOrdersCount} orders are hidden, you can make them visible using the filters above
-                  {tableState.hasNextPage ? (
-                    <span>
-                      , or go to&nbsp;<a onClick={handleNextPage}>next page</a>&nbsp;for more orders.
-                    </span>
-                  ) : (
-                    '.'
+                <div>
+                  {hiddenOrdersCount > 0 && (
+                    <HiddenOrdersLegend>
+                      <p>
+                        Showing {orders.length - hiddenOrdersCount} out of {orders.length} orders for the current page.
+                      </p>
+                      <p>
+                        {hiddenOrdersCount} orders are hidden, you can make them visible using the filters below
+                        {tableState.hasNextPage ? (
+                          <span>
+                            , or go to&nbsp;<a onClick={handleNextPage}>next page</a>&nbsp;for more orders.
+                          </span>
+                        ) : (
+                          '.'
+                        )}
+                      </p>
+                    </HiddenOrdersLegend>
                   )}
-                </p>
+                  <Filters>
+                    {canceledAndExpiredCount > 0 && (
+                      <ToggleFilter
+                        checked={showCanceledAndExpired}
+                        onChange={() => setShowCanceledAndExpired((previousValue) => !previousValue)}
+                        label={(showCanceledAndExpired ? 'Hide' : 'Show') + ' canceled/expired'}
+                        count={canceledAndExpiredCount}
+                      />
+                    )}
+                    {preSigningCount > 0 && (
+                      <>
+                        <ToggleFilter
+                          checked={showPreSigning}
+                          onChange={() => setShowPreSigning((previousValue) => !previousValue)}
+                          label={(showPreSigning ? 'Hide' : 'Show') + ' unsigned'}
+                          count={preSigningCount}
+                        />
+                      </>
+                    )}
+                  </Filters>
+                </div>
               </td>
-            </HiddenOrdersLegend>
+            </FilterRow>
           )}
         </>
       }
