@@ -262,23 +262,28 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
             <FilterRow>
               <td colSpan={8}>
                 <div>
-                  {hiddenOrdersCount > 0 && (
-                    <HiddenOrdersLegend>
-                      <p>
-                        Showing {orders.length - hiddenOrdersCount} out of {orders.length} orders for the current page.
-                      </p>
-                      <p>
-                        {hiddenOrdersCount} orders are hidden, you can make them visible using the filters below
-                        {tableState.hasNextPage ? (
-                          <span>
-                            , or go to&nbsp;<a onClick={handleNextPage}>next page</a>&nbsp;for more orders.
-                          </span>
-                        ) : (
-                          '.'
-                        )}
-                      </p>
-                    </HiddenOrdersLegend>
-                  )}
+                  <HiddenOrdersLegend>
+                    {hiddenOrdersCount > 0 ? (
+                      <>
+                        <p>
+                          Showing {orders.length - hiddenOrdersCount} out of {orders.length} orders for the current
+                          page.
+                        </p>
+                        <p>
+                          {hiddenOrdersCount} orders are hidden, you can make them visible using the filters below
+                          {tableState.hasNextPage ? (
+                            <span>
+                              , or go to&nbsp;<a onClick={handleNextPage}>next page</a>&nbsp;for more orders.
+                            </span>
+                          ) : (
+                            '.'
+                          )}
+                        </p>
+                      </>
+                    ) : (
+                      <p>Showing all {orders.length} orders for the current page.</p>
+                    )}
+                  </HiddenOrdersLegend>
                   <Filters>
                     {canceledAndExpiredCount > 0 && (
                       <ToggleFilter
