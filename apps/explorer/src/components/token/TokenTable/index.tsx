@@ -281,9 +281,9 @@ const TokenTable: React.FC<Props> = (props) => {
     } else {
       tableContent = (
         <>
-          <tr>
+          {/* <tr>
             <td>Sorted by Volume(24h): from highest to lowest</td>
-          </tr>
+          </tr> */}
           {items.map((item, i) => (
             <RowToken key={`${item.id}-${i}`} index={i + tableState.pageOffset} token={item} />
           ))}
