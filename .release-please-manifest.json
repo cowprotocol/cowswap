@@ -17,7 +17,7 @@
   "libs/tokens": "1.13.1",
   "libs/types": "1.5.0",
   "libs/ui": "1.17.0",
-  "libs/wallet": "1.8.0",
+  "libs/wallet": "1.8.1",
   "apps/cow-fi": "1.19.3",
   "libs/wallet-provider": "1.0.0",
   "libs/ui-utils": "1.1.0",
