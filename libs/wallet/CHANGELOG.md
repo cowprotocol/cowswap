@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.1](https://github.com/cowprotocol/cowswap/compare/wallet-v1.8.0...wallet-v1.8.1) (2024-12-19)
+
+
+### Bug Fixes
+
+* allow any safe-like apps ([26e68ab](https://github.com/cowprotocol/cowswap/commit/26e68ab1d75905e33cc0c44fec050697447377be))
+
 ## [1.8.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.7.0...wallet-v1.8.0) (2024-12-18)
 
 
