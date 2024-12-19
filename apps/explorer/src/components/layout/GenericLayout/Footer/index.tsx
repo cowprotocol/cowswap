@@ -16,23 +16,25 @@ const FooterStyled = styled.footer`
   align-items: center;
   box-sizing: border-box;
   font-size: 1.2rem;
-  flex: 1 1 auto;
   color: ${({ theme }): string => theme.textSecondary2};
   width: 100%;
   justify-content: space-around;
-  margin: auto auto 0;
-  height: auto;
   padding: 1rem;
-  max-height: 4rem;
+  height: 4rem;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 10;
 
   ${Media.upToMedium()} {
-    margin: 0 auto;
+    position: relative;
+    margin: 0;
     flex-flow: column wrap;
     padding: 1.6rem 1.6rem 4rem;
     justify-content: flex-start;
     gap: 1.6rem;
-    bottom: initial;
-    max-height: initial;
+    height: auto;
+    max-height: none;
   }
 
   > a {
