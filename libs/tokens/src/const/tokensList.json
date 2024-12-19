@@ -88,6 +88,10 @@
       "priority": 3,
       "enabledByDefault": true,
       "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.8453.json"
+    },
+    {
+      "priority": 4,
+      "source": "https://curvefi.github.io/curve-assets/base.json"
     }
   ]
 }
