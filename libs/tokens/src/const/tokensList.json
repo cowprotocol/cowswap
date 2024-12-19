@@ -92,6 +92,10 @@
     {
       "priority": 4,
       "source": "https://curvefi.github.io/curve-assets/base.json"
+    },
+    {
+      "priority": 5,
+      "source": "https://static.optimism.io/optimism.tokenlist.json"
     }
   ]
 }
