@@ -35,7 +35,6 @@ export const StaticGlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     overscroll-behavior-y: none;
     scroll-behavior: smooth;
-    overflow-x: hidden;
   }
 
   *, *:before, *:after {

@@ -8,9 +8,13 @@ function getSubgraphUrl(chainId: SupportedChainId, suffix: string): string | nul
  * When value is null, then Subgraph is not supported for the network
  */
 export const SUBGRAPH_URLS: Record<SupportedChainId, string | null> = {
-  [SupportedChainId.MAINNET]: getSubgraphUrl(SupportedChainId.MAINNET, 'MAINNET'),
-  [SupportedChainId.GNOSIS_CHAIN]: getSubgraphUrl(SupportedChainId.GNOSIS_CHAIN, 'GNOSIS_CHAIN'),
-  [SupportedChainId.ARBITRUM_ONE]: getSubgraphUrl(SupportedChainId.ARBITRUM_ONE, 'ARBITRUM_ONE'),
+  [SupportedChainId.MAINNET]:
+    'https://subgraph.satsuma-prod.com/a29a417e85ec/cow-nomev-labs-pt516811924/cow-subgraph-mainnet/api',
+  [SupportedChainId.GNOSIS_CHAIN]:
+    'https://subgraph.satsuma-prod.com/a29a417e85ec/cow-nomev-labs-pt516811924/cow-subgraphs-gnosis/api',
+  [SupportedChainId.ARBITRUM_ONE]:
+    'https://subgraph.satsuma-prod.com/a29a417e85ec/cow-nomev-labs-pt516811924/cow-subgraph-arb/api',
   [SupportedChainId.BASE]: getSubgraphUrl(SupportedChainId.BASE, 'BASE'),
-  [SupportedChainId.SEPOLIA]: getSubgraphUrl(SupportedChainId.SEPOLIA, 'SEPOLIA'),
+  [SupportedChainId.SEPOLIA]:
+    'https://subgraph.satsuma-prod.com/a29a417e85ec/cow-nomev-labs-pt516811924/cow-subgraph-sepolia/api',
 }
