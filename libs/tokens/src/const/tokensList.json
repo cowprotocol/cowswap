@@ -12,42 +12,6 @@
     },
     {
       "priority": 3,
-      "source": "https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json"
-    },
-    {
-      "priority": 4,
-      "source": "tokenlist.aave.eth"
-    },
-    {
-      "priority": 5,
-      "source": "synths.snx.eth"
-    },
-    {
-      "priority": 6,
-      "source": "wrapped.tokensoft.eth"
-    },
-    {
-      "priority": 7,
-      "source": "https://raw.githubusercontent.com/SetProtocol/uniswap-tokenlist/main/set.tokenlist.json"
-    },
-    {
-      "priority": 8,
-      "source": "https://raw.githubusercontent.com/opynfinance/opyn-tokenlist/master/opyn-squeeth-tokenlist.json"
-    },
-    {
-      "priority": 9,
-      "source": "https://app.tryroll.com/tokens.json"
-    },
-    {
-      "priority": 10,
-      "source": "defi.cmc.eth"
-    },
-    {
-      "priority": 11,
-      "source": "stablecoin.cmc.eth"
-    },
-    {
-      "priority": 12,
       "source": "https://curvefi.github.io/curve-assets/ethereum.json"
     }
   ],
@@ -124,6 +88,14 @@
       "priority": 3,
       "enabledByDefault": true,
       "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.8453.json"
+    },
+    {
+      "priority": 4,
+      "source": "https://curvefi.github.io/curve-assets/base.json"
+    },
+    {
+      "priority": 5,
+      "source": "https://static.optimism.io/optimism.tokenlist.json"
     }
   ]
 }
