@@ -17,11 +17,11 @@ import { Wrapper as WrapperMod } from '../styled'
 
 const Wrapper = styled(WrapperMod)`
   max-width: 100%;
-  height: calc(100vh - 10rem);
+  min-height: calc(100vh - 10rem);
   padding: 0;
 
   ${Media.upToMedium()} {
-    height: 50vh;
+    min-height: 50vh;
   }
 
   ${Media.upToSmall()} {

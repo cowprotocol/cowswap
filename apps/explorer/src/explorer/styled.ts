@@ -29,12 +29,9 @@ export const GlobalStyle = createGlobalStyle`
   html,
   body,
   #root {
-    display: block;
-    max-width: 100vw;
-    overflow-x: hidden;
-    margin: 0;
-    padding: 0;
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
     ${ScrollBarStyle}
   }
 

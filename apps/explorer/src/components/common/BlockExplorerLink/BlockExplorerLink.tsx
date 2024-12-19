@@ -1,9 +1,9 @@
-import React, { ReactElement } from 'react'
+import React from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { BlockExplorerLinkType, getBlockExplorerUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ExternalLink } from '@cowprotocol/ui'
+import { ExternalLink, TokenSymbol } from '@cowprotocol/ui'
 
 import LogoWrapper, { LOGO_MAP } from 'components/common/LogoWrapper'
 import { abbreviateString } from 'utils'
@@ -24,7 +24,7 @@ export interface Props {
   /**
    * label to replace textContent generated from identifier
    */
-  label?: string | ReactElement | void
+  label?: string | void
 
   /**
    * Use the URL as a label
@@ -58,7 +58,7 @@ export const BlockExplorerLink: React.FC<Props> = (props: Props) => {
 
   return (
     <ExternalLink href={url} target="_blank" rel="noopener noreferrer" className={className}>
-      <span>{label}</span>
+      <TokenSymbol token={{ symbol: label }} length={24} />
       {showLogo && <LogoWrapper title={`Open it on ${CHAIN_INFO[networkId].explorerTitle}`} src={LOGO_MAP.etherscan} />}
     </ExternalLink>
   )
