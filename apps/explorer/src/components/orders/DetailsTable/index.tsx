@@ -3,7 +3,7 @@ import React from 'react'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { Media } from '@cowprotocol/ui'
+import { Icon, Media, UI } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import { faFill, faGroupArrowsRotate, faHistory, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
@@ -31,6 +31,7 @@ import { Order } from 'api/operator'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
 import { OrderHooksDetails } from '../OrderHooksDetails'
+import { UnsignedOrderWarning } from '../UnsignedOrderWarning'
 
 const tooltip = {
   orderID: 'A unique identifier ID for this order.',
@@ -87,6 +88,8 @@ const tooltip = {
 }
 
 export const Wrapper = styled.div`
+  --cow-color-alert: ${({ theme }): string => theme.alert2};
+
   display: flex;
   flex-direction: row;
 
@@ -124,6 +127,10 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
   svg {
     margin-right: 0.5rem;
   }
+`
+
+const WarningRow = styled.tr`
+  background-color: ${({ theme }): string => theme.background};
 `
 
 export type Props = {
@@ -167,12 +174,20 @@ export function DetailsTable(props: Props): React.ReactNode | null {
   }
 
   const onCopy = (label: string): void => clickOnOrderDetails('Copy', label)
+  const isSigning = status === 'signing'
 
   return (
     <SimpleTable
       columnViewMobile
       body={
         <>
+          {isSigning && (
+            <WarningRow>
+              <td colSpan={2}>
+                <UnsignedOrderWarning />
+              </td>
+            </WarningRow>
+          )}
           <tr>
             <td>
               <span>
@@ -195,6 +210,12 @@ export function DetailsTable(props: Props): React.ReactNode | null {
             </td>
             <td>
               <Wrapper>
+                {isSigning && (
+                  <>
+                    <Icon image="ALERT" color={UI.COLOR_ALERT} />
+                    &nbsp;
+                  </>
+                )}
                 <RowWithCopyButton
                   textToCopy={owner}
                   onCopy={(): void => onCopy('ownerAddress')}

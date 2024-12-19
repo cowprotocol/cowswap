@@ -8,7 +8,7 @@
     {
       "priority": 2,
       "enabledByDefault": true,
-      "source": "https://files.cow.fi/tokens/CoinGecko.json"
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.1.json"
     },
     {
       "priority": 3,
@@ -48,10 +48,6 @@
     },
     {
       "priority": 12,
-      "source": "t2crtokens.eth"
-    },
-    {
-      "priority": 13,
       "source": "https://curvefi.github.io/curve-assets/ethereum.json"
     }
   ],
@@ -69,12 +65,12 @@
     {
       "priority": 3,
       "enabledByDefault": true,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/GnosisUniswapTokensList.json"
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.100.json"
     },
     {
       "priority": 4,
       "enabledByDefault": true,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/GnosisCoingeckoTokensList.json"
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.100.json"
     },
     {
       "priority": 5,
@@ -90,12 +86,12 @@
     {
       "priority": 2,
       "enabledByDefault": true,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/ArbitrumOneUniswapTokensList.json"
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.42161.json"
     },
     {
       "priority": 3,
       "enabledByDefault": true,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/ArbitrumOneCoingeckoTokensList.json"
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.42161.json"
     },
     {
       "priority": 4,
@@ -123,6 +119,11 @@
       "priority": 2,
       "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.8453.json",
       "enabledByDefault": true
+    },
+    {
+      "priority": 3,
+      "enabledByDefault": true,
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.8453.json"
     }
   ]
 }

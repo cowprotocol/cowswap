@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo } from 'react'
 
 import { useTokensAllowances, useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -12,7 +12,7 @@ import { Order } from 'legacy/state/orders/actions'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { pendingOrdersPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
-import { PendingPermitUpdater, useGetOrdersPermitStatus } from 'modules/permit'
+import { BalancesAndAllowances } from 'modules/tokens'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
@@ -21,12 +21,10 @@ import { useNavigate } from 'common/hooks/useNavigate'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import { useGetOrdersToCheckPendingPermit } from './hooks/useGetOrdersToCheckPendingPermit'
 import { OrdersTableList, useOrdersTableList } from './hooks/useOrdersTableList'
 import { useOrdersTableTokenApprove } from './hooks/useOrdersTableTokenApprove'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
-import { BalancesAndAllowances } from '../../../tokens'
 import { OPEN_TAB, ORDERS_TABLE_TABS } from '../../const/tabs'
 import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
 import { OrderActions } from '../../pure/OrdersTableContainer/types'
@@ -60,12 +58,14 @@ interface OrdersTableWidgetProps {
   displayOrdersOnlyForSafeApp: boolean
   orders: Order[]
   orderType: TabOrderTypes
+  children?: ReactNode
 }
 
 export function OrdersTableWidget({
   orders: allOrders,
   orderType,
   displayOrdersOnlyForSafeApp,
+  children,
 }: OrdersTableWidgetProps) {
   const { chainId, account } = useWalletInfo()
   const location = useLocation()
@@ -79,7 +79,6 @@ export function OrdersTableWidget({
   const getSpotPrice = useGetSpotPrice()
   const selectReceiptOrder = useSelectReceiptOrder()
   const isSafeViaWc = useIsSafeViaWc()
-  const ordersPermitStatus = useGetOrdersPermitStatus()
   const injectedWidgetParams = useInjectedWidgetParams()
 
   const { currentTabId, currentPageNumber } = useMemo(() => {
@@ -122,14 +121,14 @@ export function OrdersTableWidget({
     (orders: ParsedOrder[]) => {
       updateOrdersToCancel(orders)
     },
-    [updateOrdersToCancel]
+    [updateOrdersToCancel],
   )
 
   const toggleOrderForCancellation = useCallback(
     (order: ParsedOrder) => {
       updateOrdersToCancel(toggleOrderInCancellationList(ordersToCancel, order))
     },
-    [ordersToCancel, updateOrdersToCancel]
+    [ordersToCancel, updateOrdersToCancel],
   )
 
   const getShowCancellationModal = useCallback(
@@ -138,7 +137,7 @@ export function OrdersTableWidget({
 
       return rawOrder ? cancelOrder(rawOrder) : null
     },
-    [allOrders, cancelOrder]
+    [allOrders, cancelOrder],
   )
 
   const getAlternativeOrderModalContext = useGetAlternativeOrderModalContextCallback()
@@ -161,12 +160,10 @@ export function OrdersTableWidget({
 
   useValidatePageUrlParams(orders.length, currentTabId, currentPageNumber)
 
-  const ordersToCheckPendingPermit = useGetOrdersToCheckPendingPermit(ordersList, chainId, balancesAndAllowances)
-
   return (
     <>
-      <PendingPermitUpdater orders={ordersToCheckPendingPermit} />
       <ContentWrapper>
+        {children}
         <OrdersTableContainer
           chainId={chainId}
           tabs={tabs}
@@ -184,7 +181,6 @@ export function OrdersTableWidget({
           allowsOffchainSigning={allowsOffchainSigning}
           orderType={orderType}
           pendingActivities={pendingActivity}
-          ordersPermitStatus={ordersPermitStatus}
           injectedWidgetParams={injectedWidgetParams}
         >
           {isOpenOrdersTab && orders.length && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />}

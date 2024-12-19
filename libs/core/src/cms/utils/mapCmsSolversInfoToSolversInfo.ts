@@ -9,10 +9,12 @@ export function mapCmsSolversInfoToSolversInfo(cmsSolversInfo: CmsSolversInfo): 
         if (entry.attributes) {
           const { active, network, environment } = entry.attributes
           const chainId = network?.data?.attributes?.chainId
-          const env = environment?.data?.attributes?.name
+          const cmsEnv = environment?.data?.attributes?.name
 
           // Ignore the ones that are not active
-          if (chainId && env && active) {
+          if (chainId && cmsEnv && active) {
+            // Map to CowEnv
+            const env = cmsEnv === 'barn' ? 'staging' : 'prod'
             acc.push({
               chainId,
               env,

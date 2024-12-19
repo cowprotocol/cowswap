@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.12.2...common-const-v1.13.0) (2024-12-18)
+
+
+### Features
+
+* add winter theme 🎅 ([#5213](https://github.com/cowprotocol/cowswap/issues/5213)) ([7db4b72](https://github.com/cowprotocol/cowswap/commit/7db4b72d54759394087e4c816dce9eeb6f282588))
+
 ## [1.12.2](https://github.com/cowprotocol/cowswap/compare/common-const-v1.12.1...common-const-v1.12.2) (2024-12-12)
 
 

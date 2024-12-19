@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.7.0...wallet-v1.8.0) (2024-12-18)
+
+
+### Features
+
+* **wallets:** add coinshift to allowed domains ([#4931](https://github.com/cowprotocol/cowswap/issues/4931)) ([8be3a45](https://github.com/cowprotocol/cowswap/commit/8be3a458d7918bd79c3f2bb636620c77b560f3b2))
+* **wallets:** add metaMask SDK connector ([#5028](https://github.com/cowprotocol/cowswap/issues/5028)) ([fe8f376](https://github.com/cowprotocol/cowswap/commit/fe8f3767593684dc9d825d603a894c3b0934d894))
+
 ## [1.7.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.6.1...wallet-v1.7.0) (2024-12-03)
 
 
