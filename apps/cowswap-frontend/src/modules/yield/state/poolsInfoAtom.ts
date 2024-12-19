@@ -6,7 +6,7 @@ import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
 export interface PoolInfo {
-  apy: number
+  apr: number
   tvl: number
   feeTier: number
   volume24h: number
