@@ -5,7 +5,7 @@ import { Trade } from 'api/operator'
 import { TableState, TableStateSetters } from '../../../../explorer/components/TokensTableWidget/useTable'
 
 type CommonState = {
-  trades: Trade[]
+  data: Trade[]
   isLoading: boolean
   tableState: TableState
 } & TableStateSetters
