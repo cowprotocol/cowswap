@@ -3,21 +3,12 @@ import { useCallback } from 'react'
 import { injectedWalletConnection } from './injectedWallet'
 
 import { default as InjectedImage, default as InjectedImageDark } from '../../api/assets/arrow-right.svg'
-import { default as MetamaskImage } from '../../api/assets/metamask.png'
 import { useSelectedEip6963ProviderRdns, useSetEip6963Provider } from '../../api/hooks'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType, type EIP1193Provider, EIP6963ProviderDetail } from '../../api/types'
 import { getConnectionName } from '../../api/utils/connection'
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
 import { ConnectionOptionProps, TryActivation } from '../types'
-
-const METAMASK_DEEP_LINK = 'https://metamask.app.link/dapp/'
-
-const metamaskCommonOption = {
-  color: '#E8831D',
-  icon: MetamaskImage,
-  id: 'metamask',
-}
 
 const injectedCommon = {
   color: '#010101',
@@ -31,27 +22,6 @@ export const injectedOption = {
 export const injectedOptionDark = {
   ...injectedCommon,
   icon: InjectedImageDark,
-}
-
-export const metamaskInstallOption = {
-  ...metamaskCommonOption,
-  header: 'Install MetaMask',
-  link: 'https://metamask.io/',
-}
-
-export const metamaskInjectedOption = {
-  ...metamaskCommonOption,
-  header: 'MetaMask',
-}
-
-export function InstallMetaMaskOption() {
-  return <ConnectWalletOption {...metamaskInstallOption} />
-}
-
-export function OpenMetaMaskMobileOption() {
-  return (
-    <ConnectWalletOption {...metamaskInjectedOption} header="MetaMask" link={METAMASK_DEEP_LINK + window.location} />
-  )
 }
 
 export function InjectedOption({ darkMode, tryActivation, selectedWallet }: ConnectionOptionProps) {
