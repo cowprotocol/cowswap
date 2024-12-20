@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.95.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.95.0...cowswap-v1.95.1) (2024-12-20)
+
+
+### Bug Fixes
+
+* **eth-flow:** set chainId explicitly when sending ethFlow tx ([#5244](https://github.com/cowprotocol/cowswap/issues/5244)) ([983536d](https://github.com/cowprotocol/cowswap/commit/983536d300a17e84dff691eb55d645b46ad1437b))
+
 ## [1.95.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.94.0...cowswap-v1.95.0) (2024-12-18)
 
 
