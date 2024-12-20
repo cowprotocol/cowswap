@@ -72,7 +72,7 @@ export type Props = {
 
 export enum TabView {
   OVERVIEW = 1,
-  FILLS,
+  FILLS = 2,
 }
 
 const DEFAULT_TAB = TabView[1]
@@ -225,7 +225,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
       ))}
       <FillsTableContext.Provider
         value={{
-          trades,
+          data: trades,
           isLoading: areTradesLoading,
           tableState,
           setPageSize,

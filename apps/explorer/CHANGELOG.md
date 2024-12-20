@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.41.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.40.1...explorer-v2.41.0) (2024-12-19)
+
+
+### Features
+
+* fix pagination for fills ([#5228](https://github.com/cowprotocol/cowswap/issues/5228)) ([9563df4](https://github.com/cowprotocol/cowswap/commit/9563df4c55da2e985d303552cc16851cd5b9b533))
+
 ## [2.40.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.40.0...explorer-v2.40.1) (2024-12-18)
 
 
