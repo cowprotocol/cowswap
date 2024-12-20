@@ -33,7 +33,7 @@ export async function signEthFlowOrderStep(
   orderId: string,
   orderParams: PostOrderParams,
   ethFlowContract: CoWSwapEthFlow,
-  addInFlightOrderId: (orderId: string) => void
+  addInFlightOrderId: (orderId: string) => void,
 ): Promise<EthFlowResponse> {
   logTradeFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] - signing orderParams onchain', orderParams)
 
@@ -58,21 +58,29 @@ export async function signEthFlowOrderStep(
   }
 
   const ethTxOptions = { value: etherValue.quotient.toString() }
-  const estimatedGas = await ethFlowContract.estimateGas
-    .createOrder(ethOrderParams, { value: etherValue.quotient.toString() })
-    .catch((error) => {
-      logTradeFlowError(
-        'ETH FLOW',
-        '[EthFlow::SignEthFlowOrderStep] Error estimating createOrder gas. Using default ' + GAS_LIMIT_DEFAULT,
-        error
-      )
-      return GAS_LIMIT_DEFAULT
-    })
+  const estimatedGas = await ethFlowContract.estimateGas.createOrder(ethOrderParams, ethTxOptions).catch((error) => {
+    logTradeFlowError(
+      'ETH FLOW',
+      '[EthFlow::SignEthFlowOrderStep] Error estimating createOrder gas. Using default ' + GAS_LIMIT_DEFAULT,
+      error,
+    )
+    return GAS_LIMIT_DEFAULT
+  })
 
-  const txReceipt = await ethFlowContract.createOrder(ethOrderParams, {
+  // This used to be done with a higher level of abstraction like this:
+  // const txReceipt = await ethFlowContract.createOrder(ethOrderParams, {
+  //   ...ethTxOptions,
+  //   gasLimit: calculateGasMargin(estimatedGas),
+  // })
+  // However, to **try** to prevent wallet issues, we want to explicitly send along the chainId
+  // But that wrapper doesn't accept it.
+  // So we must build the tx first, then send it using the contract's signer
+  const tx = await ethFlowContract.populateTransaction.createOrder(ethOrderParams, {
     ...ethTxOptions,
     gasLimit: calculateGasMargin(estimatedGas),
   })
+  const txReceipt = await ethFlowContract.signer.sendTransaction({ ...tx, chainId: orderParams.chainId })
+
   addInFlightOrderId(orderId)
 
   logTradeFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] Sent transaction onchain', orderId, txReceipt)
