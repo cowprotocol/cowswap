@@ -22,7 +22,7 @@ const FooterStyled = styled.footer`
   justify-content: space-around;
   margin: auto auto 0;
   height: auto;
-  padding: 1rem;
+  padding: 3rem 1rem 4rem 1rem;
   max-height: 4rem;
 
   ${Media.upToMedium()} {
