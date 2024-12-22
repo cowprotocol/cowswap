@@ -36,22 +36,15 @@ export function useUpdateCurrencyAmount() {
       const isBuyAmountChange = field === Field.OUTPUT
 
       if (isBuyAmountChange) {
-        // When changing BUY amount
-        if (limitPriceLocked) {
-          // If price is locked, only update the output amount
-          const update: Partial<Writeable<LimitOrdersRawState>> = {
-            orderKind,
-            outputCurrencyAmount: FractionUtils.serializeFractionToJSON(amount),
-          }
-          updateLimitOrdersState(update)
-        } else {
-          // If price is unlocked, update the rate based on the new amounts
-          const update: Partial<Writeable<LimitOrdersRawState>> = {
-            orderKind,
-            outputCurrencyAmount: FractionUtils.serializeFractionToJSON(amount),
-          }
-          updateLimitOrdersState(update)
+        const update: Partial<Writeable<LimitOrdersRawState>> = {
+          orderKind,
+          outputCurrencyAmount: FractionUtils.serializeFractionToJSON(amount),
+        }
 
+        updateLimitOrdersState(update)
+
+        // If price is unlocked, update the rate based on the new amounts
+        if (!limitPriceLocked) {
           // Calculate and update the new rate
           if (amount && currentInputAmount) {
             const newRate = new Price(
