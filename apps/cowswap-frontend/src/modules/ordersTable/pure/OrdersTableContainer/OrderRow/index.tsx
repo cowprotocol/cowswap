@@ -168,7 +168,6 @@ export function OrderRow({
     <WarningTooltip
       hasEnoughBalance={hasEnoughBalance ?? false}
       hasEnoughAllowance={hasEnoughAllowance ?? false}
-      hasValidPendingPermit={hasValidPendingPermit}
       inputTokenSymbol={inputTokenSymbol}
       isOrderScheduled={isOrderScheduled}
       onApprove={() => orderActions.approveOrderToken(order.inputToken)}

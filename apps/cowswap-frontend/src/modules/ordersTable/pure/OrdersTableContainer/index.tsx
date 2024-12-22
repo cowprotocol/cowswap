@@ -185,7 +185,6 @@ interface OrdersProps {
   currentPageNumber: number
   pendingOrdersPrices: any
   getSpotPrice: any
-  ordersPermitStatus: any
   searchTerm?: string
   columnLayout?: ColumnLayout
 }

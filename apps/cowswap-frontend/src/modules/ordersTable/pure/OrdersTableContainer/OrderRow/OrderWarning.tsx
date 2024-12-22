@@ -89,7 +89,6 @@ interface WarningTooltipProps {
   children: React.ReactNode
   hasEnoughBalance: boolean
   hasEnoughAllowance: boolean
-  hasValidPendingPermit: boolean | undefined
   inputTokenSymbol: string
   isOrderScheduled: boolean
   onApprove: Command
@@ -100,14 +99,12 @@ export function WarningTooltip({
   children,
   hasEnoughBalance,
   hasEnoughAllowance,
-  hasValidPendingPermit,
   inputTokenSymbol,
   isOrderScheduled,
   onApprove,
   showIcon = false,
 }: WarningTooltipProps) {
-  const withAllowanceWarning =
-    hasEnoughAllowance === false && (hasValidPendingPermit === false || hasValidPendingPermit === undefined)
+  const withAllowanceWarning = hasEnoughAllowance === false
 
   const tooltipContent = (
     <styledEl.WarningContent>
