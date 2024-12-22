@@ -1,4 +1,4 @@
-import { MAINNET_PROVIDER } from '@cowprotocol/common-const'
+import { RPC_URLS } from '@cowprotocol/common-const'
 import {
   contenthashToUri,
   isAddress,
@@ -6,10 +6,14 @@ import {
   resolveENSContentHash,
   uriToHttp,
 } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { JsonRpcProvider } from '@ethersproject/providers'
 import { TokenList } from '@uniswap/token-lists'
 
 import { ListSourceConfig, ListState } from '../types'
 import { validateTokenList } from '../utils/validateTokenList'
+
+const MAINNET_PROVIDER = new JsonRpcProvider(RPC_URLS[SupportedChainId.MAINNET])
 
 /**
  * Refactored version of apps/cowswap-frontend/src/lib/hooks/useTokenList/fetchTokenList.ts

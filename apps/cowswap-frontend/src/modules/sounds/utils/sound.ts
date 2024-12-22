@@ -29,6 +29,7 @@ const THEMED_SOUNDS: Partial<Record<SoundType, ThemedSoundOptions>> = {
     halloweenSound: '/audio/halloween.mp3',
   },
   SUCCESS: {
+    winterSound: '/audio/success-winterTheme.mp3',
     halloweenSound: '/audio/halloween.mp3',
   },
 }
@@ -49,6 +50,7 @@ function getThemeBasedSound(type: SoundType): string {
   const featureFlags = jotaiStore.get(featureFlagsAtom) as Record<string, boolean>
   const defaultSound = DEFAULT_COW_SOUNDS[type]
   const themedOptions = THEMED_SOUNDS[type]
+
   const isInjectedWidgetMode = isInjectedWidget()
 
   // When in widget mode, always return default sounds

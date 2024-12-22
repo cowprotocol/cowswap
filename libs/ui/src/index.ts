@@ -1,3 +1,5 @@
+'use client'
+
 export * from './enum'
 export * from './types'
 export * from './consts'

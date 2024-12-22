@@ -1,5 +1,40 @@
 # Changelog
 
+## [2.41.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.40.1...explorer-v2.41.0) (2024-12-19)
+
+
+### Features
+
+* fix pagination for fills ([#5228](https://github.com/cowprotocol/cowswap/issues/5228)) ([9563df4](https://github.com/cowprotocol/cowswap/commit/9563df4c55da2e985d303552cc16851cd5b9b533))
+
+## [2.40.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.40.0...explorer-v2.40.1) (2024-12-18)
+
+
+### Bug Fixes
+
+* fix lint issues ([#5229](https://github.com/cowprotocol/cowswap/issues/5229)) ([25d30bb](https://github.com/cowprotocol/cowswap/commit/25d30bb6496a1fa51719b639948cc4d7b8ec5f20))
+
+## [2.40.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.39.0...explorer-v2.40.0) (2024-12-18)
+
+
+### Features
+
+* improve orders table when hidden orders ([#5226](https://github.com/cowprotocol/cowswap/issues/5226)) ([a4aaff9](https://github.com/cowprotocol/cowswap/commit/a4aaff94980fad15030bb057bbc45baa20f8336c))
+
+## [2.39.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.38.0...explorer-v2.39.0) (2024-12-17)
+
+
+### Features
+
+* warn about unsigned orders, and hide not relevant orders ([#5214](https://github.com/cowprotocol/cowswap/issues/5214)) ([0d19616](https://github.com/cowprotocol/cowswap/commit/0d196168076fda10e8e5d823d0288ce0ed1bd612))
+
+## [2.38.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.37.0...explorer-v2.38.0) (2024-12-04)
+
+
+### Features
+
+* upgrade react@19 and next@15 ([#5147](https://github.com/cowprotocol/cowswap/issues/5147)) ([a00b1b9](https://github.com/cowprotocol/cowswap/commit/a00b1b930602ab1e6b2f0b3cd148497f68bf4cb5))
+
 ## [2.37.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.36.1...explorer-v2.37.0) (2024-12-03)
 
 

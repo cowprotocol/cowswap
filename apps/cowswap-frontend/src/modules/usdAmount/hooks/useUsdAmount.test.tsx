@@ -4,7 +4,7 @@ import { ReactNode } from 'react'
 import { WETH_GNOSIS_CHAIN } from '@cowprotocol/common-const'
 import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
-import { renderHook } from '@testing-library/react-hooks'
+import { renderHook } from '@testing-library/react'
 import { JotaiTestProvider } from 'test-utils'
 
 import { useUsdAmount } from './useUsdAmount'
@@ -43,7 +43,7 @@ describe('useUsdAmount', () => {
       () => {
         return useUsdAmount(ONE_WETH)
       },
-      { wrapper: TestComponent }
+      { wrapper: TestComponent },
     )
 
     expect(result.current.value?.toExact()).toBe(WETH_RAW_PRICE_STATE?.price?.toFixed(0))

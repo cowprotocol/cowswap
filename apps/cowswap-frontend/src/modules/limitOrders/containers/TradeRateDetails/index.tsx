@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { TradeTotalCostsDetails, PartnerFeeRow } from 'modules/trade'
 import { StyledRateInfo } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
 import { Box } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
@@ -18,7 +17,6 @@ interface TradeRateDetailsProps {
 
 export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: TradeRateDetailsProps) {
   const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(alwaysExpanded)
-  const widgetParams = useInjectedWidgetParams()
   const volumeFee = useVolumeFee()
   const partnerFeeAmount = useLimitOrderPartnerFeeAmount()
   const volumeFeeTooltip = useVolumeFeeTooltip()
@@ -37,7 +35,6 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
       partnerFeeUsd={partnerFeeUsd}
       partnerFeeAmount={partnerFeeAmount}
       partnerFeeBps={partnerFeeBps}
-      widgetContent={widgetParams.content}
       volumeFeeTooltip={volumeFeeTooltip}
     />
   )

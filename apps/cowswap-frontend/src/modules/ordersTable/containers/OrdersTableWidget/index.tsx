@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useTokensAllowances, useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { UI } from '@cowprotocol/ui'
@@ -15,7 +15,7 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { pendingOrdersPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
-import { PendingPermitUpdater, useGetOrdersPermitStatus } from 'modules/permit'
+import { BalancesAndAllowances } from 'modules/tokens'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
@@ -24,12 +24,10 @@ import { useNavigate } from 'common/hooks/useNavigate'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import { useGetOrdersToCheckPendingPermit } from './hooks/useGetOrdersToCheckPendingPermit'
 import { OrdersTableList, useOrdersTableList } from './hooks/useOrdersTableList'
 import { useOrdersTableTokenApprove } from './hooks/useOrdersTableTokenApprove'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
-import { BalancesAndAllowances } from '../../../tokens'
 import { OPEN_TAB, ORDERS_TABLE_TABS, ALL_ORDERS_TAB } from '../../const/tabs'
 import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
 import { ColumnLayout, LAYOUT_MAP } from '../../pure/OrdersTableContainer/tableHeaders'
@@ -107,12 +105,14 @@ interface OrdersTableWidgetProps {
   displayOrdersOnlyForSafeApp: boolean
   orders: Order[]
   orderType: TabOrderTypes
+  children?: ReactNode
 }
 
 export function OrdersTableWidget({
   orders: allOrders,
   orderType,
   displayOrdersOnlyForSafeApp,
+  children,
 }: OrdersTableWidgetProps) {
   const { chainId, account } = useWalletInfo()
   const location = useLocation()
@@ -125,7 +125,6 @@ export function OrdersTableWidget({
   const getSpotPrice = useGetSpotPrice()
   const selectReceiptOrder = useSelectReceiptOrder()
   const isSafeViaWc = useIsSafeViaWc()
-  const ordersPermitStatus = useGetOrdersPermitStatus()
   const injectedWidgetParams = useInjectedWidgetParams()
   const [searchTerm, setSearchTerm] = useState('')
   const limitOrdersSettings = useAtomValue(limitOrdersSettingsAtom)
@@ -213,8 +212,6 @@ export function OrdersTableWidget({
 
   useValidatePageUrlParams(orders.length, currentTabId, currentPageNumber)
 
-  const ordersToCheckPendingPermit = useGetOrdersToCheckPendingPermit(ordersList, chainId, balancesAndAllowances)
-
   const filteredOrders = useMemo(() => {
     if (!searchTerm) return orders
 
@@ -278,8 +275,7 @@ export function OrdersTableWidget({
 
   return (
     <>
-      <PendingPermitUpdater orders={ordersToCheckPendingPermit} />
-
+      {children}
       <OrdersTableContainer
         chainId={chainId}
         tabs={tabs}
@@ -296,7 +292,6 @@ export function OrdersTableWidget({
         allowsOffchainSigning={allowsOffchainSigning}
         orderType={orderType}
         pendingActivities={pendingActivity}
-        ordersPermitStatus={ordersPermitStatus}
         injectedWidgetParams={injectedWidgetParams}
         searchTerm={searchTerm}
         columnLayout={columnLayout}

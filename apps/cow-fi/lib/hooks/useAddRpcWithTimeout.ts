@@ -3,7 +3,8 @@ import { useCallback } from 'react'
 import { ERROR_ADD_MANUALLY_MESSAGE } from '@/util/handleRpcError'
 import { useAddRpcEndpoint } from './useAddRpcEndpoint'
 import { WalletClient } from 'viem'
-import { AddToWalletStateValues } from '@/components/AddRpcButton'
+
+import { AddToWalletStateValues } from '../../types/addToWalletState'
 
 const TAKING_TOO_LONG_TIME = 15000 // 15s
 const TIMEOUT_TIME = 90000 // 1.5min
@@ -17,7 +18,7 @@ interface UseAddToWalletProps {
   handleError: (error: any) => void
   onTimeout: (
     errorMessage: string,
-    newState: AddToWalletStateValues
+    newState: AddToWalletStateValues,
     // event: AddRpcUrlActionType
   ) => void
 }
@@ -36,13 +37,13 @@ export function useAddRpcWithTimeout(props: UseAddToWalletProps) {
     const delayMessage = (
       errorMessage: string,
       newState: AddToWalletStateValues,
-      delay: number
+      delay: number,
       //   event: AddRpcUrlActionType
     ) =>
       setTimeout(() => {
         onTimeout(
           errorMessage,
-          newState
+          newState,
           // event
         )
       }, delay)
@@ -51,13 +52,13 @@ export function useAddRpcWithTimeout(props: UseAddToWalletProps) {
     const timeoutSlow = delayMessage(
       'Adding the new network to your wallet is taking too long. Please verify your wallet',
       'adding',
-      TAKING_TOO_LONG_TIME
+      TAKING_TOO_LONG_TIME,
       //   'adding_is_taking_too_long'
     )
     const timeoutTimeout = delayMessage(
       ERROR_ADD_MANUALLY_MESSAGE.errorMessage,
       'error',
-      TIMEOUT_TIME
+      TIMEOUT_TIME,
       //   'timeout_add_rpc'
     )
     const clearTimeouts = () => [timeoutSlow, timeoutTimeout].forEach(clearTimeout)

@@ -82,7 +82,6 @@ export interface OrderRowProps {
   orderParams: OrderParams
   onClick: Command
   orderActions: OrderActions
-  hasValidPendingPermit?: boolean | undefined
   children?: React.ReactNode
   columnLayout?: ColumnLayout
 }
@@ -100,7 +99,6 @@ export function OrderRow({
   onClick,
   prices,
   spotPrice,
-  hasValidPendingPermit,
   children,
   columnLayout = ColumnLayout.DEFAULT,
 }: OrderRowProps) {
@@ -118,8 +116,7 @@ export function OrderRow({
     [order, orderActions],
   )
 
-  const withAllowanceWarning =
-    hasEnoughAllowance === false && (hasValidPendingPermit === false || hasValidPendingPermit === undefined)
+  const withAllowanceWarning = hasEnoughAllowance === false
   const withWarning =
     (hasEnoughBalance === false || withAllowanceWarning) &&
     // show the warning only for pending and scheduled orders

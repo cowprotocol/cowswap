@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.13.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.13.0...tokens-v1.13.1) (2024-12-18)
+
+
+### Bug Fixes
+
+* remove Kleros token list because it's too big ([#5217](https://github.com/cowprotocol/cowswap/issues/5217)) ([745e17f](https://github.com/cowprotocol/cowswap/commit/745e17f1515024f67c162091a42f3fd2864f894e))
+
+## [1.13.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.12.0...tokens-v1.13.0) (2024-12-11)
+
+
+### Features
+
+* **cow-fi:** upgrade project structure to /app ([#5167](https://github.com/cowprotocol/cowswap/issues/5167)) ([ed152f7](https://github.com/cowprotocol/cowswap/commit/ed152f7ac0fa62ab2c0b9c93035a551c3b8cb4b6))
+
 ## [1.12.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.11.0...tokens-v1.12.0) (2024-12-03)
 
 

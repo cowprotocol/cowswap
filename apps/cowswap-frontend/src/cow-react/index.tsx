@@ -12,6 +12,7 @@ import { Web3Provider } from '@cowprotocol/wallet'
 
 import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
+import SvgCacheProvider from 'react-inlinesvg/provider'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
@@ -40,30 +41,32 @@ if (window.ethereum) {
 function Main() {
   return (
     <StrictMode>
-      <Provider store={cowSwapStore}>
-        <AtomProvider store={jotaiStore}>
-          <HashRouter>
-            <LanguageProvider>
-              <Web3ProviderInstance>
-                <ThemeProvider>
-                  <ThemedGlobalStyle />
-                  <BlockNumberProvider>
-                    <WithLDProvider>
-                      <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
-                        <WalletUnsupportedNetworkBanner />
-                        <Updaters />
+      <SvgCacheProvider>
+        <Provider store={cowSwapStore}>
+          <AtomProvider store={jotaiStore}>
+            <HashRouter>
+              <LanguageProvider>
+                <Web3ProviderInstance>
+                  <ThemeProvider>
+                    <ThemedGlobalStyle />
+                    <BlockNumberProvider>
+                      <WithLDProvider>
+                        <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+                          <WalletUnsupportedNetworkBanner />
+                          <Updaters />
 
-                        <Toasts />
-                        <App />
-                      </CowAnalyticsProvider>
-                    </WithLDProvider>
-                  </BlockNumberProvider>
-                </ThemeProvider>
-              </Web3ProviderInstance>
-            </LanguageProvider>
-          </HashRouter>
-        </AtomProvider>
-      </Provider>
+                          <Toasts />
+                          <App />
+                        </CowAnalyticsProvider>
+                      </WithLDProvider>
+                    </BlockNumberProvider>
+                  </ThemeProvider>
+                </Web3ProviderInstance>
+              </LanguageProvider>
+            </HashRouter>
+          </AtomProvider>
+        </Provider>
+      </SvgCacheProvider>
     </StrictMode>
   )
 }

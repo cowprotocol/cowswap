@@ -8,7 +8,6 @@ import styled from 'styled-components/macro'
 
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { SpotPricesKeyParams } from 'modules/orders/state/spotPricesAtom'
-import { OrdersPermitStatus } from 'modules/permit'
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
@@ -106,7 +105,6 @@ export interface OrdersTableProps {
   balancesAndAllowances: BalancesAndAllowances
   getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
   orderActions: OrderActions
-  ordersPermitStatus: OrdersPermitStatus
   columnLayout?: ColumnLayout
 }
 
@@ -121,7 +119,6 @@ export function OrdersTable({
   getSpotPrice,
   orderActions,
   currentPageNumber,
-  ordersPermitStatus,
   columnLayout,
 }: OrdersTableProps) {
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
@@ -259,7 +256,6 @@ export function OrdersTable({
                     orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
                     onClick={() => orderActions.selectReceiptOrder(order)}
                     orderActions={orderActions}
-                    hasValidPendingPermit={ordersPermitStatus[order.id]}
                     columnLayout={columnLayout}
                   />
                 )

@@ -207,7 +207,6 @@ export function OrdersTableContainer({
   children,
   orderType,
   pendingActivities,
-  ordersPermitStatus,
   injectedWidgetParams,
   searchTerm,
   columnLayout,
@@ -302,22 +301,19 @@ export function OrdersTableContainer({
     }
 
     return (
-      <>
-        <OrdersTable
-          currentTab={currentTab}
-          chainId={chainId}
-          orders={orders}
-          selectedOrders={selectedOrders}
-          allowsOffchainSigning={allowsOffchainSigning}
-          balancesAndAllowances={balancesAndAllowances}
-          orderActions={orderActions}
-          currentPageNumber={currentPageNumber}
-          pendingOrdersPrices={pendingOrdersPrices}
-          getSpotPrice={getSpotPrice}
-          ordersPermitStatus={ordersPermitStatus}
-          columnLayout={columnLayout}
-        />
-      </>
+      <OrdersTable
+        currentTab={currentTab}
+        chainId={chainId}
+        orders={orders}
+        selectedOrders={selectedOrders}
+        allowsOffchainSigning={allowsOffchainSigning}
+        balancesAndAllowances={balancesAndAllowances}
+        orderActions={orderActions}
+        currentPageNumber={currentPageNumber}
+        pendingOrdersPrices={pendingOrdersPrices}
+        getSpotPrice={getSpotPrice}
+        columnLayout={columnLayout}
+      />
     )
   }
 

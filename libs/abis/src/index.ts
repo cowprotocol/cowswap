@@ -55,6 +55,7 @@ export type {
 } from './generated/legacy'
 
 export type { Erc20Interface } from './generated/legacy/Erc20'
+export { Erc20__factory } from './generated/legacy/factories/Erc20__factory'
 
 // EthFlow
 export type { CoWSwapEthFlow } from './generated/ethflow'

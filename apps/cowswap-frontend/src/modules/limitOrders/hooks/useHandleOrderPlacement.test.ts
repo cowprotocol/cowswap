@@ -1,6 +1,6 @@
 import { useIsBundlingSupported } from '@cowprotocol/wallet'
 
-import { renderHook } from '@testing-library/react-hooks'
+import { renderHook } from '@testing-library/react'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
@@ -99,7 +99,7 @@ describe('useHandleOrderPlacement', () => {
 
         updateLimitOrdersState({ recipient })
       },
-      { wrapper: WithModalProvider }
+      { wrapper: WithModalProvider },
     )
 
     // Assert
@@ -111,7 +111,7 @@ describe('useHandleOrderPlacement', () => {
     // Act
     const { result } = renderHook(
       () => useHandleOrderPlacement(tradeContextMock, priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
-      { wrapper: WithModalProvider }
+      { wrapper: WithModalProvider },
     )
     await result.current()
 

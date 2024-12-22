@@ -1,5 +1,67 @@
 # Changelog
 
+## [1.95.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.94.0...cowswap-v1.95.0) (2024-12-18)
+
+
+### Features
+
+* force release to release, pleaseeee ([a59eb27](https://github.com/cowprotocol/cowswap/commit/a59eb275a96fb13c9521784a051f734d947a1b1f))
+
+## [1.94.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.93.2...cowswap-v1.94.0) (2024-12-18)
+
+
+### Features
+
+* allow 1 year max deadline ([#5227](https://github.com/cowprotocol/cowswap/issues/5227)) ([64e3f40](https://github.com/cowprotocol/cowswap/commit/64e3f40a19da19ba7d44f4ebcb1b494fd4426882))
+
+
+### Bug Fixes
+
+* account for a bad CMS request ([#5221](https://github.com/cowprotocol/cowswap/issues/5221)) ([8d2edd7](https://github.com/cowprotocol/cowswap/commit/8d2edd7d87f0622fdc5885b45175b89b49eae1ec))
+
+## [1.93.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.93.1...cowswap-v1.93.2) (2024-12-13)
+
+
+### Bug Fixes
+
+* **twap:** cache fb handler verification for 10min ([#5200](https://github.com/cowprotocol/cowswap/issues/5200)) ([c09f073](https://github.com/cowprotocol/cowswap/commit/c09f07338868654a89ba570987a8bc9bec59141c))
+
+## [1.93.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.93.0...cowswap-v1.93.1) (2024-12-12)
+
+
+### Bug Fixes
+
+* **volume-fee:** control safe app fees for stablecoins with ff ([#5187](https://github.com/cowprotocol/cowswap/issues/5187)) ([e7bc7c5](https://github.com/cowprotocol/cowswap/commit/e7bc7c5df35e233da9af8da950973a4272f10365))
+
+## [1.93.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.92.2...cowswap-v1.93.0) (2024-12-11)
+
+
+### Features
+
+* **cow-fi:** upgrade project structure to /app ([#5167](https://github.com/cowprotocol/cowswap/issues/5167)) ([ed152f7](https://github.com/cowprotocol/cowswap/commit/ed152f7ac0fa62ab2c0b9c93035a551c3b8cb4b6))
+
+## [1.92.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.92.1...cowswap-v1.92.2) (2024-12-05)
+
+
+### Bug Fixes
+
+* add safe apps fee in Base network ([#5161](https://github.com/cowprotocol/cowswap/issues/5161)) ([cefdb55](https://github.com/cowprotocol/cowswap/commit/cefdb55475f4989d745857fc9f8f2cfa77be5243))
+
+## [1.92.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.92.0...cowswap-v1.92.1) (2024-12-05)
+
+
+### Bug Fixes
+
+* **twap:** fix orders fetching ([#5157](https://github.com/cowprotocol/cowswap/issues/5157)) ([47195e2](https://github.com/cowprotocol/cowswap/commit/47195e2d326650a1fc11960077bd4861bdfcf418))
+* update safe fee tooltip label ([#5158](https://github.com/cowprotocol/cowswap/issues/5158)) ([d186042](https://github.com/cowprotocol/cowswap/commit/d186042fc75c79ccd95defe30f6b5e0d17792f17))
+
+## [1.92.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.91.0...cowswap-v1.92.0) (2024-12-04)
+
+
+### Features
+
+* upgrade react@19 and next@15 ([#5147](https://github.com/cowprotocol/cowswap/issues/5147)) ([a00b1b9](https://github.com/cowprotocol/cowswap/commit/a00b1b930602ab1e6b2f0b3cd148497f68bf4cb5))
+
 ## [1.91.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.90.0...cowswap-v1.91.0) (2024-12-03)
 
 

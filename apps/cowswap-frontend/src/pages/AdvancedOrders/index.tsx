@@ -1,5 +1,7 @@
 import { useAtomValue } from 'jotai'
 
+import { PENDING_STATES } from 'legacy/state/orders/actions'
+
 import {
   advancedOrdersAtom,
   AdvancedOrdersWidget,
@@ -11,10 +13,12 @@ import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSe
 import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 import {
+  SetupFallbackHandlerWarning,
   TwapConfirmModal,
   TwapFormWidget,
   TwapUpdaters,
   useAllEmulatedOrders,
+  useIsFallbackHandlerRequired,
   useMapTwapCurrencyInfo,
   useTwapFormState,
   useTwapSlippage,
@@ -28,16 +32,16 @@ export default function AdvancedOrdersPage() {
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
 
   const allEmulatedOrders = useAllEmulatedOrders()
+  const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
 
   const twapFormValidation = useTwapFormState()
   const twapSlippage = useTwapSlippage()
   const mapTwapCurrencyInfo = useMapTwapCurrencyInfo()
+  const { hideOrdersTable } = useInjectedWidgetParams()
 
   const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
-
   const advancedWidgetParams = { disablePriceImpact }
-
-  const { hideOrdersTable } = useInjectedWidgetParams()
+  const pendingOrders = allEmulatedOrders.filter((order) => PENDING_STATES.includes(order.status))
 
   return (
     <>
@@ -49,6 +53,7 @@ export default function AdvancedOrdersPage() {
         secondaryOnLeft={ordersTableOnLeft}
       >
         <styledEl.PrimaryWrapper>
+          {isFallbackHandlerRequired && pendingOrders.length > 0 && <SetupFallbackHandlerWarning />}
           <AdvancedOrdersWidget
             updaters={<TwapUpdaters />}
             confirmContent={<TwapConfirmModal />}

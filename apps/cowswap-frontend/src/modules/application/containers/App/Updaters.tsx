@@ -1,6 +1,5 @@
 import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { SolversInfoUpdater } from '@cowprotocol/core'
 import { TokensListsUpdater, UnsupportedTokensUpdater, WidgetTokensListsUpdater } from '@cowprotocol/tokens'
 import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
@@ -16,10 +15,12 @@ import { EthFlowDeadlineUpdater } from 'modules/swap/state/EthFlow/updaters'
 import { useOnTokenListAddingError } from 'modules/tokensList'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { UsdPricesUpdater } from 'modules/usdAmount'
+import { TaxFreeAssetsUpdater } from 'modules/volumeFee'
 import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield/shared'
 
 import { ProgressBarV2ExecutingOrdersUpdater } from 'common/hooks/orderProgressBarV2'
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
+import { AnnouncementsUpdater } from 'common/updaters/AnnouncementsUpdater'
 import { FeatureFlagsUpdater } from 'common/updaters/FeatureFlagsUpdater'
 import { FeesUpdater } from 'common/updaters/FeesUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
@@ -33,6 +34,7 @@ import {
 } from 'common/updaters/orders'
 import { SpotPricesUpdater } from 'common/updaters/orders/SpotPricesUpdater'
 import { SentryUpdater } from 'common/updaters/SentryUpdater'
+import { SolversInfoUpdater } from 'common/updaters/SolversInfoUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
 
 export function Updaters() {
@@ -70,6 +72,7 @@ export function Updaters() {
       <OrdersNotificationsUpdater />
       <ProgressBarV2ExecutingOrdersUpdater />
       <SolversInfoUpdater />
+      <AnnouncementsUpdater />
 
       <TokensListsUpdater
         chainId={chainId}
@@ -92,6 +95,7 @@ export function Updaters() {
       <LpTokensWithBalancesUpdater />
       <VampireAttackUpdater />
       <BalancesCombinedUpdater />
+      <TaxFreeAssetsUpdater />
     </>
   )
 }

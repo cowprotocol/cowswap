@@ -3,8 +3,8 @@ import { useConnect } from './useConnect'
 import { useDisconnect, useWalletClient } from 'wagmi'
 import { handleRpcError } from '@/util/handleRpcError'
 import { useAddRpcWithTimeout } from './useAddRpcWithTimeout'
-import { AddToWalletState, AddToWalletStateValues } from '@/components/AddRpcButton'
 import { clickOnMevBlocker } from '../../modules/analytics'
+import { AddToWalletState, AddToWalletStateValues } from '../../types/addToWalletState'
 
 const DEFAULT_STATE: AddToWalletState = { state: 'unknown', autoConnect: false }
 const ADDING_STATE: AddToWalletState = { state: 'adding', autoConnect: false }
@@ -38,7 +38,7 @@ export function useConnectAndAddToWallet(): UseConnectAndAddToWalletProps {
       }
       setAddRpcPromise(null)
     },
-    [setState]
+    [setState],
   )
 
   const addToWallet = useAddRpcWithTimeout({

@@ -4,12 +4,7 @@ import { atomWithStorage } from 'jotai/utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import {
-  DEFAULT_TOKENS_LISTS,
-  GNOSIS_UNISWAP_TOKENS_LIST,
-  LP_TOKEN_LISTS,
-  UNISWAP_TOKENS_LIST,
-} from '../../const/tokensLists'
+import { DEFAULT_TOKENS_LISTS, LP_TOKEN_LISTS, UNISWAP_TOKENS_LIST } from '../../const/tokensLists'
 import {
   ListSourceConfig,
   ListsSourcesByNetwork,
@@ -21,9 +16,12 @@ import { environmentAtom } from '../environmentAtom'
 
 const UNISWAP_TOKEN_LIST_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: UNISWAP_TOKENS_LIST,
-  [SupportedChainId.GNOSIS_CHAIN]: GNOSIS_UNISWAP_TOKENS_LIST,
-  [SupportedChainId.ARBITRUM_ONE]: UNISWAP_TOKENS_LIST,
-  [SupportedChainId.BASE]: UNISWAP_TOKENS_LIST,
+  [SupportedChainId.GNOSIS_CHAIN]:
+    'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.100.json',
+  [SupportedChainId.ARBITRUM_ONE]:
+    'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.42161.json',
+  [SupportedChainId.BASE]:
+    'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.8453.json',
   [SupportedChainId.SEPOLIA]: UNISWAP_TOKENS_LIST,
 }
 
@@ -59,7 +57,7 @@ export const allListsSourcesAtom = atom((get) => {
 
 // Lists states
 export const listsStatesByChainAtom = atomWithStorage<TokenListsByChainState>(
-  'allTokenListsInfoAtom:v4',
+  'allTokenListsInfoAtom:v5',
   mapSupportedNetworks({}),
   getJotaiMergerStorage(),
 )

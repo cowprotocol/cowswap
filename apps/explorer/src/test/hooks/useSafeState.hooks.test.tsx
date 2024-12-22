@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 
+import { act } from '@testing-library/react'
 import useSafeState from 'hooks/useSafeState'
 import ReactDOM from 'react-dom'
-import { act } from 'react-dom/test-utils'
-
+import { createRoot } from 'react-dom/client'
 
 interface TestComponentI {
   safeUpdate?: boolean
@@ -51,7 +51,10 @@ afterEach(() => {
 describe('Tests button click state change', () => {
   it('Renders and useSafeState works to change state', async () => {
     act(() => {
-      ReactDOM.render(<TestComponent safeUpdate />, container)
+      if (!container) return
+
+      const root = createRoot(container)
+      root.render(<TestComponent safeUpdate />)
     })
 
     const button = (container as HTMLDivElement).querySelector('#buttonTest')
