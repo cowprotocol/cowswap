@@ -1,4 +1,4 @@
-import { WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
+import { USDC, WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export interface TradeUrlParams {
@@ -30,7 +30,7 @@ export function getDefaultTradeRawState(chainId: SupportedChainId | null): Trade
   return {
     chainId,
     inputCurrencyId: chainId ? WETH[chainId]?.symbol || null : null,
-    outputCurrencyId: null,
+    outputCurrencyId: chainId ? USDC[chainId].symbol || null : null,
     recipient: null,
     recipientAddress: null,
   }
