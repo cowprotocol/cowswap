@@ -13,17 +13,16 @@ import { limitOrdersSettingsAtom, updateLimitOrdersSettingsAtom } from '../../st
 export function SettingsWidget() {
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
+  const isUsdValuesMode = settingsState.isUsdValuesMode
 
   return (
     <ButtonsContainer>
-      {/* TODO: add active state */}
-      <UsdButton active={false}>
+      <UsdButton onClick={() => updateSettingsState({ isUsdValuesMode: !isUsdValuesMode })} active={isUsdValuesMode}>
         <SVG src={UsdIcon} />
       </UsdButton>
       <Menu>
         <SettingsButton>
-          {/* TODO: add active state */}
-          <SettingsIcon active={false} />
+          <SettingsIcon />
         </SettingsButton>
         <MenuPopover portal={false}>
           <MenuItems>

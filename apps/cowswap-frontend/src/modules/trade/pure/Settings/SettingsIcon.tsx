@@ -4,9 +4,9 @@ import SVG from 'react-inlinesvg'
 
 import { SettingsButtonIcon } from './styled'
 
-export function SettingsIcon({ active }: { active?: boolean }) {
+export function SettingsIcon() {
   return (
-    <SettingsButtonIcon active={active}>
+    <SettingsButtonIcon>
       <SVG src={IMAGE_ICON_SETTINGS_ALT} />
     </SettingsButtonIcon>
   )

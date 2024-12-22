@@ -6,7 +6,7 @@ import UnlockedIcon from '@cowprotocol/assets/images/icon-unlocked.svg'
 import UsdIcon from '@cowprotocol/assets/images/icon-USD.svg'
 import { formatInputAmount, getAddress, isFractionFalsy, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { HelpTooltip, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
+import { FiatAmount, HelpTooltip, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
@@ -28,6 +28,7 @@ import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { getQuoteCurrency, getQuoteCurrencyByStableCoin } from 'common/services/getQuoteCurrency'
 
 import { useConvertUsdToTokenValue } from './hooks/useConvertUsdToTokenValue'
+import { useExecutionPriceUsdValue } from './hooks/useExecutionPriceUsdValue'
 import { useRateDisplayedValue } from './hooks/useRateDisplayedValue'
 import * as styledEl from './styled'
 
@@ -39,11 +40,14 @@ export function RateInput() {
   const updateRate = useUpdateActiveRate()
   const updateLimitRateState = useSetAtom(updateLimitRateAtom)
   const executionPrice = useAtomValue(executionPriceAtom)
+  const { limitPriceLocked, isUsdValuesMode } = useAtomValue(limitOrdersSettingsAtom)
+  const updateLimitOrdersSettings = useSetAtom(updateLimitOrdersSettingsAtom)
+
+  const executionPriceUsdValue = useExecutionPriceUsdValue(executionPrice)
+
   const [isQuoteCurrencySet, setIsQuoteCurrencySet] = useState(false)
   const [typedTrailingZeros, setTypedTrailingZeros] = useState('')
-  const [isUsdMode, setIsUsdMode] = useState(false)
-  const { limitPriceLocked } = useAtomValue(limitOrdersSettingsAtom)
-  const updateLimitOrdersSettings = useSetAtom(updateLimitOrdersSettingsAtom)
+  const [isUsdRateMode, setIsUsdRateMode] = useState(isUsdValuesMode)
 
   // Limit order state
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
@@ -62,9 +66,9 @@ export function RateInput() {
     marketRateRaw && secondaryCurrency ? tryParseCurrencyAmount(marketRateRaw, secondaryCurrency) : null,
   )
 
-  const marketRateDisplay = isUsdMode ? '$' + formatInputAmount(marketRateUsd) : marketRateRaw
+  const marketRateDisplay = isUsdRateMode ? '$' + formatInputAmount(marketRateUsd) : marketRateRaw
 
-  const displayedRate = useRateDisplayedValue(secondaryCurrency, isUsdMode)
+  const displayedRate = useRateDisplayedValue(secondaryCurrency, isUsdRateMode)
   const convertUsdToTokenValue = useConvertUsdToTokenValue(secondaryCurrency)
 
   // Handle rate input
@@ -83,7 +87,7 @@ export function RateInput() {
 
       setTypedTrailingZeros('')
 
-      const value = convertUsdToTokenValue(typedValue, isUsdMode)
+      const value = convertUsdToTokenValue(typedValue, isUsdRateMode)
 
       updateLimitRateState({ typedValue: value })
       updateRate({
@@ -93,7 +97,7 @@ export function RateInput() {
         isAlternativeOrderRate: false,
       })
     },
-    [isUsdMode, isInverted, updateRate, updateLimitRateState, displayedRate, convertUsdToTokenValue],
+    [isUsdRateMode, isInverted, updateRate, updateLimitRateState, displayedRate, convertUsdToTokenValue],
   )
 
   // Handle set market price
@@ -108,14 +112,14 @@ export function RateInput() {
 
   // Handle toggle primary field
   const handleToggle = useCallback(() => {
-    if (isUsdMode) {
+    if (isUsdRateMode) {
       // When in USD mode, just switch to token mode without toggling tokens
-      setIsUsdMode(false)
+      setIsUsdRateMode(false)
     } else {
       // When already in token mode, toggle between tokens
       updateLimitRateState({ isInverted: !isInverted, isTypedValue: false })
     }
-  }, [isInverted, updateLimitRateState, isUsdMode])
+  }, [isInverted, updateLimitRateState, isUsdRateMode])
 
   // Handle toggle price lock
   const handleTogglePriceLock = useCallback(
@@ -174,6 +178,11 @@ export function RateInput() {
     setIsQuoteCurrencySet(false)
   }, [inputCurrency, outputCurrency])
 
+  // Depend rate USD mode on settings
+  useEffect(() => {
+    setIsUsdRateMode(isUsdValuesMode)
+  }, [isUsdValuesMode])
+
   return (
     <>
       <styledEl.Wrapper>
@@ -195,11 +204,11 @@ export function RateInput() {
             }
             onToggle={handleToggle}
           />
-          {areBothCurrencies && (
+          {areBothCurrencies && (isLoadingMarketRate || marketRateDisplay) && (
             <styledEl.MarketRateWrapper>
               <i>Market:</i>{' '}
               <styledEl.MarketPriceButton disabled={isDisabledMPrice} onClick={handleSetMarketPrice}>
-                {isLoadingMarketRate ? <styledEl.RateLoader size="14px" /> : marketRateDisplay || ''}
+                {isLoadingMarketRate ? <styledEl.RateLoader size="14px" /> : marketRateDisplay}
               </styledEl.MarketPriceButton>
             </styledEl.MarketRateWrapper>
           )}
@@ -211,7 +220,7 @@ export function RateInput() {
             <styledEl.NumericalInput
               $loading={false}
               id="rate-limit-amount-input"
-              prependSymbol={isUsdMode ? '$' : ''}
+              prependSymbol={isUsdRateMode ? '$' : ''}
               value={displayedRate + typedTrailingZeros}
               onUserInput={handleUserInput}
             />
@@ -219,14 +228,14 @@ export function RateInput() {
 
           {secondaryCurrency && (
             <styledEl.CurrencyToggleGroup>
-              <styledEl.ActiveCurrency onClick={handleToggle} $active={!isUsdMode}>
-                <styledEl.ActiveSymbol $active={!isUsdMode}>
+              <styledEl.ActiveCurrency onClick={handleToggle} $active={!isUsdRateMode}>
+                <styledEl.ActiveSymbol $active={!isUsdRateMode}>
                   <TokenLogo token={secondaryCurrency} size={16} />
                   <TokenSymbol token={secondaryCurrency} />
                 </styledEl.ActiveSymbol>
               </styledEl.ActiveCurrency>
 
-              <styledEl.UsdButton onClick={() => setIsUsdMode((state) => !state)} $active={isUsdMode}>
+              <styledEl.UsdButton onClick={() => setIsUsdRateMode((state) => !state)} $active={isUsdRateMode}>
                 <SVG src={UsdIcon} />
               </styledEl.UsdButton>
             </styledEl.CurrencyToggleGroup>
@@ -239,7 +248,11 @@ export function RateInput() {
           {isLoadingMarketRate ? (
             <styledEl.RateLoader size="14px" />
           ) : executionPrice ? (
-            <ExecutionPrice executionPrice={executionPrice} isInverted={isInverted} hideFiat />
+            isUsdRateMode ? (
+              <FiatAmount amount={executionPriceUsdValue} />
+            ) : (
+              <ExecutionPrice executionPrice={executionPrice} isInverted={isInverted} hideFiat />
+            )
           ) : (
             '-'
           )}

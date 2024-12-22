@@ -23,6 +23,7 @@ export interface LimitOrdersSettingsState {
   readonly limitPriceLocked: boolean
   readonly columnLayout: ColumnLayoutType
   readonly ordersTableOnLeft: boolean
+  readonly isUsdValuesMode: boolean
 }
 
 export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
@@ -34,11 +35,12 @@ export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
   limitPriceLocked: true,
   columnLayout: 'DEFAULT',
   ordersTableOnLeft: false,
+  isUsdValuesMode: false,
 }
 
 // regular
 const regularLimitOrdersSettingsAtom = atomWithStorage<LimitOrdersSettingsState>(
-  'limit-orders-settings-atom:v2',
+  'limit-orders-settings-atom:v3',
   defaultLimitOrdersSettings,
   getJotaiIsolatedStorage(),
 )
