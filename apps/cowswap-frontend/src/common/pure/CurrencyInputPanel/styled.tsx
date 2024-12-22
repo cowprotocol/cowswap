@@ -72,6 +72,15 @@ export const CurrencyTopLabel = styled.div`
   }
 `
 
+export const TopRow = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+`
+
 export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   width: 100%;
   height: 100%;
@@ -107,7 +116,7 @@ export const TokenAmountStyled = styled(TokenAmount)`
 
 export const BalanceText = styled.span`
   font-weight: inherit;
-  font-size: inherit;
+  font-size: 13px;
   gap: 5px;
   display: flex;
   align-items: center;

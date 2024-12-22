@@ -78,7 +78,7 @@ export function LimitOrdersWidget() {
   const widgetActions = useLimitOrdersWidgetActions()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
-  const { showRecipient: showRecipientSetting } = settingsState
+  const { showRecipient: showRecipientSetting, isUsdValuesMode } = settingsState
   const showRecipient = showRecipientSetting || !!recipient
 
   const priceImpact = useTradePriceImpact()
@@ -98,6 +98,7 @@ export function LimitOrdersWidget() {
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
     receiveAmountInfo: null,
+    isUsdValuesMode,
   }
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
@@ -108,6 +109,7 @@ export function LimitOrdersWidget() {
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo: null,
+    isUsdValuesMode,
   }
 
   const props: LimitOrdersProps = {

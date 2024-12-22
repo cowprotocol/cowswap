@@ -6,19 +6,21 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount, HoverTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { Field } from 'legacy/state/types'
 
 import { setMaxSellTokensAnalytics } from 'modules/analytics'
 import { ReceiveAmount } from 'modules/swap/pure/ReceiveAmount'
+import { useUsdAmount } from 'modules/usdAmount'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 import { FiatValue } from 'common/pure/FiatValue'
 
 import * as styledEl from './styled'
+
+import { useConvertUsdToTokenValue } from '../../hooks/useConvertUsdToTokenValue'
 
 interface BuiltItProps {
   className: string
@@ -83,26 +85,47 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     customSelectTokenButton,
   } = props
 
-  const { field, currency, balance, fiatAmount, amount, isIndependent, receiveAmountInfo } = currencyInfo
+  const {
+    field,
+    currency,
+    balance,
+    fiatAmount,
+    amount,
+    isIndependent,
+    receiveAmountInfo,
+    isUsdValuesMode = false,
+  } = currencyInfo
   const disabled = !!props.disabled || isChainIdUnsupported
-  const viewAmount = formatInputAmount(amount, balance, isIndependent)
+
+  const { value: usdAmount } = useUsdAmount(amount)
+  const { value: maxBalanceUsdAmount } = useUsdAmount(maxBalance)
+  const { value: balanceUsdAmount } = useUsdAmount(balance)
+  const viewAmount = isUsdValuesMode ? formatInputAmount(usdAmount) : formatInputAmount(amount, balance, isIndependent)
   const [typedValue, setTypedValue] = useState(viewAmount)
+
+  const convertUsdToTokenValue = useConvertUsdToTokenValue(currency)
 
   const onUserInputDispatch = useCallback(
     (typedValue: string) => {
-      setTypedValue(typedValue)
-      onUserInput(field, typedValue)
+      const value = convertUsdToTokenValue(typedValue, isUsdValuesMode)
+
+      setTypedValue(value)
+      onUserInput(field, value)
     },
-    [onUserInput, field],
+    [onUserInput, field, viewAmount, convertUsdToTokenValue, isUsdValuesMode],
   )
   const handleMaxInput = useCallback(() => {
     if (!maxBalance) {
       return
     }
 
-    onUserInputDispatch(maxBalance.toExact())
-    setMaxSellTokensAnalytics()
-  }, [maxBalance, onUserInputDispatch])
+    const value = isUsdValuesMode ? maxBalanceUsdAmount : maxBalance
+
+    if (value) {
+      onUserInputDispatch(value.toExact())
+      setMaxSellTokensAnalytics()
+    }
+  }, [maxBalance, onUserInputDispatch, convertUsdToTokenValue, isUsdValuesMode, maxBalanceUsdAmount])
 
   useEffect(() => {
     const areValuesSame = parseFloat(viewAmount) === parseFloat(typedValue)
@@ -127,11 +150,29 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   const numericalInput = (
     <styledEl.NumericalInput
       className="token-amount-input"
-      value={isChainIdUnsupported ? '' : typedValue}
+      prependSymbol={isUsdValuesMode ? '$' : ''}
+      value={isChainIdUnsupported ? '' : isUsdValuesMode ? viewAmount : typedValue}
       readOnly={inputDisabled}
       onUserInput={onUserInputDispatch}
       $loading={areCurrenciesLoading}
     />
+  )
+
+  const balanceView = (
+    <div>
+      {balance && !disabled && (
+        <styledEl.BalanceText>
+          {isUsdValuesMode ? (
+            <FiatValue fiatValue={balanceUsdAmount} />
+          ) : (
+            <TokenAmount amount={balance} defaultValue="0" tokenSymbol={currency} />
+          )}
+          {showSetMax && balance.greaterThan(0) && (
+            <styledEl.SetMaxBtn onClick={handleMaxInput}>Max</styledEl.SetMaxBtn>
+          )}
+        </styledEl.BalanceText>
+      )}
+    </div>
   )
 
   const priceImpactParams: typeof _priceImpactParams = useMemo(() => {
@@ -158,7 +199,16 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         pointerDisabled={disabled}
         readOnly={inputDisabled}
       >
-        {topLabel && <styledEl.CurrencyTopLabel>{topLabel}</styledEl.CurrencyTopLabel>}
+        <styledEl.TopRow>
+          {topLabel && (
+            <styledEl.CurrencyTopLabel>
+              {topLabel}{' '}
+              {isUsdValuesMode ? <TokenAmount amount={amount} defaultValue="0" tokenSymbol={currency} /> : ''}
+            </styledEl.CurrencyTopLabel>
+          )}
+
+          {isUsdValuesMode && balanceView}
+        </styledEl.TopRow>
 
         {topContent}
         <styledEl.CurrencyInputBox>
@@ -185,22 +235,13 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
 
         <styledEl.CurrencyInputBox>
           <div>
-            {amount && (
+            {amount && !isUsdValuesMode && (
               <styledEl.FiatAmountText>
                 <FiatValue priceImpactParams={priceImpactParams} fiatValue={fiatAmount} />
               </styledEl.FiatAmountText>
             )}
           </div>
-          <div>
-            {balance && !disabled && (
-              <styledEl.BalanceText>
-                <TokenAmount amount={balance} defaultValue="0" tokenSymbol={currency} />
-                {showSetMax && balance.greaterThan(0) && (
-                  <styledEl.SetMaxBtn onClick={handleMaxInput}>Max</styledEl.SetMaxBtn>
-                )}
-              </styledEl.BalanceText>
-            )}
-          </div>
+          {!isUsdValuesMode && balanceView}
         </styledEl.CurrencyInputBox>
       </styledEl.Wrapper>
 

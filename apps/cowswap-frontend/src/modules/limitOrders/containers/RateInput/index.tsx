@@ -24,10 +24,10 @@ import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/li
 import { toFraction } from 'modules/limitOrders/utils/toFraction'
 import { useUsdAmount } from 'modules/usdAmount'
 
+import { useConvertUsdToTokenValue } from 'common/hooks/useConvertUsdToTokenValue'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { getQuoteCurrency, getQuoteCurrencyByStableCoin } from 'common/services/getQuoteCurrency'
 
-import { useConvertUsdToTokenValue } from './hooks/useConvertUsdToTokenValue'
 import { useExecutionPriceUsdValue } from './hooks/useExecutionPriceUsdValue'
 import { useRateDisplayedValue } from './hooks/useRateDisplayedValue'
 import * as styledEl from './styled'
@@ -75,7 +75,7 @@ export function RateInput() {
   const handleUserInput = useCallback(
     (typedValue: string) => {
       const trailing = typedValue.slice(displayedRate.length)
-      const onlyTrailingZeroAdded = /^0+$/.test(trailing)
+      const onlyTrailingZeroAdded = typedValue.includes('.') && /^0+$/.test(trailing)
 
       /**
        * Since we convert USD to token value, we need to handle trailing zeros separately, otherwise we will lose them
