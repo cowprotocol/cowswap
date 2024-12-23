@@ -47,7 +47,7 @@ export function getOrderParams(
     sellAmount,
     balance,
     // If the order has been filled at least once, we should not consider the permit amount
-    allowance: isOrderAtLeastOnceFilled ? getBiggerAmount(allowance, permitAmount) : allowance,
+    allowance: !isOrderAtLeastOnceFilled ? getBiggerAmount(allowance, permitAmount) : allowance,
   })
 
   return {
