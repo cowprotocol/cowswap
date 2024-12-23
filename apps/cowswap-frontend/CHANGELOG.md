@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.95.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.95.1...cowswap-v1.95.2) (2024-12-23)
+
+
+### Bug Fixes
+
+* **snackbars:** stick snackbars widget to header menu ([4582d67](https://github.com/cowprotocol/cowswap/commit/4582d67156364fe1866a40227f76c8101d11e1bd))
+* **widget:** do not display Christmas background ([6a4ae4c](https://github.com/cowprotocol/cowswap/commit/6a4ae4cc7bad90c9dc1fcb1ef71f8635415cd3cd))
+
+## [1.95.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.95.0...cowswap-v1.95.1) (2024-12-20)
+
+
+### Bug Fixes
+
+* **eth-flow:** set chainId explicitly when sending ethFlow tx ([#5244](https://github.com/cowprotocol/cowswap/issues/5244)) ([983536d](https://github.com/cowprotocol/cowswap/commit/983536d300a17e84dff691eb55d645b46ad1437b))
+
 ## [1.95.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.94.0...cowswap-v1.95.0) (2024-12-18)
 
 

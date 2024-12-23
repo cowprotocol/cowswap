@@ -9,6 +9,7 @@ import ms from 'ms.macro'
 import { AlertCircle, CheckCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
+import { useAnchorPosition } from '../../hooks/useAnchorPosition'
 import { SnackbarPopup } from '../../pure/SnackbarPopup'
 import { IconType, removeSnackbarAtom, snackbarsAtom } from '../../state/snackbarsAtom'
 
@@ -31,9 +32,9 @@ const List = styled.div`
   gap: 10px;
 `
 
-const Host = styled.div<{ hidden$: boolean }>`
+const Host = styled.div<{ hidden$: boolean; top$: number }>`
   position: fixed;
-  top: 80px;
+  top: ${({ top$ }) => top$ + 'px'};
   right: ${({ hidden$ }) => (hidden$ ? '-9999px' : '20px')};
   z-index: 6;
   min-width: 300px;
@@ -67,6 +68,8 @@ const icons: Record<IconType, ReactElement | undefined> = {
   custom: undefined,
 }
 
+const WIDGET_DEFAULT_TOP_POSITION = 80
+
 interface SnackbarsWidgetProps {
   /**
    * This prop might seem a bit hacky and this is true
@@ -76,12 +79,20 @@ interface SnackbarsWidgetProps {
    * Having this, we use this flag to artificially hide the widget
    */
   hidden?: boolean
+  /**
+   * Id of a DOM element to which the snackbars should be anchored (displayed under)
+   * In CoW Swap the element is the header menu
+   */
+  anchorElementId?: string
 }
 
-export function SnackbarsWidget({ hidden }: SnackbarsWidgetProps) {
+export function SnackbarsWidget({ hidden, anchorElementId }: SnackbarsWidgetProps) {
   const snackbarsState = useAtomValue(snackbarsAtom)
   const resetSnackbarsState = useResetAtom(snackbarsAtom)
   const removeSnackbar = useSetAtom(removeSnackbarAtom)
+
+  const { top, height } = useAnchorPosition(anchorElementId)
+  const widgetTop = top + height || WIDGET_DEFAULT_TOP_POSITION
 
   const snackbars = useMemo(() => {
     return Object.values(snackbarsState)
@@ -91,7 +102,7 @@ export function SnackbarsWidget({ hidden }: SnackbarsWidgetProps) {
     (id: string) => {
       removeSnackbar(id)
     },
-    [removeSnackbar]
+    [removeSnackbar],
   )
 
   const isUpToSmall = useMediaQuery(Media.upToSmall(false))
@@ -102,7 +113,7 @@ export function SnackbarsWidget({ hidden }: SnackbarsWidgetProps) {
   }, [isOverlayDisplayed])
 
   return (
-    <Host hidden$={!!hidden}>
+    <Host hidden$={!!hidden} top$={widgetTop}>
       <List>
         {snackbars.map((snackbar) => {
           const icon = snackbar.icon
