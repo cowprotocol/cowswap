@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.95.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.95.1...cowswap-v1.95.2) (2024-12-23)
+
+
+### Bug Fixes
+
+* **snackbars:** stick snackbars widget to header menu ([4582d67](https://github.com/cowprotocol/cowswap/commit/4582d67156364fe1866a40227f76c8101d11e1bd))
+* **widget:** do not display Christmas background ([6a4ae4c](https://github.com/cowprotocol/cowswap/commit/6a4ae4cc7bad90c9dc1fcb1ef71f8635415cd3cd))
+
 ## [1.95.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.95.0...cowswap-v1.95.1) (2024-12-20)
 
 
