@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.17.0...ui-v1.17.1) (2024-12-23)
+
+
+### Bug Fixes
+
+* **snackbars:** stick snackbars widget to header menu ([4582d67](https://github.com/cowprotocol/cowswap/commit/4582d67156364fe1866a40227f76c8101d11e1bd))
+
 ## [1.17.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.16.0...ui-v1.17.0) (2024-12-18)
 
 
