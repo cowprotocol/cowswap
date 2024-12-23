@@ -666,6 +666,7 @@ function _onDropdownItemClickFactory(item: MenuItem, postClick?: () => void) {
 }
 
 interface MenuBarProps {
+  id?: string
   navItems: MenuItem[]
   productVariant: ProductVariant
   LinkComponent: LinkComponentType
@@ -695,6 +696,7 @@ interface MenuBarProps {
 
 export const MenuBar = (props: MenuBarProps) => {
   const {
+    id,
     navItems,
     productVariant,
     persistentAdditionalContent,
@@ -775,6 +777,7 @@ export const MenuBar = (props: MenuBarProps) => {
 
   return (
     <MenuBarWrapper
+      id={id}
       ref={menuRef}
       bgColorLight={bgColorLight}
       bgColorDark={bgColorDark}
