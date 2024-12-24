@@ -38,6 +38,8 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { useHandleSwapOrEthFlow } from './useHandleSwapOrEthFlow'
 import { useDerivedSwapInfo, useSwapActionHandlers } from './useSwapState'
 
+import { usePartialApprove } from '../../../legacy/state/user/hooks'
+
 export interface SwapButtonInput {
   feeWarningAccepted: boolean
   impactWarningAccepted: boolean
@@ -63,6 +65,7 @@ export function useSwapButtonContext(input: SwapButtonInput, actions: TradeWidge
   const tradeConfirmActions = useTradeConfirmActions()
   const { standaloneMode } = useInjectedWidgetParams()
   const isHooksStore = useIsHooksTradeType()
+  const [isPartialApprove] = usePartialApprove()
 
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
@@ -143,6 +146,7 @@ export function useSwapButtonContext(input: SwapButtonInput, actions: TradeWidge
       onCurrencySelection,
       widgetStandaloneMode: standaloneMode,
       quoteDeadlineParams,
+      isPartialApprove,
     }),
     [
       swapButtonState,
@@ -159,6 +163,7 @@ export function useSwapButtonContext(input: SwapButtonInput, actions: TradeWidge
       onCurrencySelection,
       standaloneMode,
       quoteDeadlineParams,
+      isPartialApprove,
     ],
   )
 }
