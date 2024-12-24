@@ -96,23 +96,22 @@ export const AmountItem = styled.div`
 export const CellElement = styled.div<{
   clickable?: boolean
   doubleRow?: boolean
-  hasBackground?: boolean
 }>`
-  padding: 0 ${({ hasBackground }) => (hasBackground ? '10px' : '0')};
+  padding: 0;
   font-size: 12px;
   font-weight: 500;
   gap: 5px;
   height: 100%;
   display: flex;
-  flex-direction: row;
+  flex-flow: row nowrap;
   align-items: ${({ doubleRow }) => (doubleRow ? 'flex-start' : 'center')};
   text-align: left;
-  background: ${({ hasBackground }) =>
-    hasBackground ? `linear-gradient(90deg, var(${UI.COLOR_TEXT_OPACITY_10}) 0%, transparent 100%)` : 'transparent'};
   cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
 
   > b {
     font-weight: 500;
+    width: 100%;
+    text-align: left;
   }
 
   ${({ doubleRow }) =>
@@ -177,24 +176,20 @@ export const CurrencyAmountWrapper = styled.div<{ clickable?: boolean }>`
 `
 
 export const ProgressBarWrapper = styled.div`
-  width: 100%;
-  max-width: 50%;
+  flex: 1;
   align-items: center;
   flex-flow: row nowrap;
   gap: 8px;
-  flex-direction: row-reverse;
   padding: 0;
   font-size: 12px;
   font-weight: 500;
   height: 100%;
+  width: 100%;
+  max-width: 190px;
   display: flex;
   text-align: left;
   background: transparent;
-  justify-content: center;
-
-  > b {
-    line-height: 1;
-  }
+  justify-content: flex-start;
 `
 
 export const ProgressBar = styled.div<{ value: string }>`
@@ -213,6 +208,14 @@ export const ProgressBar = styled.div<{ value: string }>`
     background: var(${UI.COLOR_SUCCESS});
     border-radius: 5px;
   }
+`
+
+export const FilledPercentageContainer = styled.div`
+  display: grid;
+  grid-template-columns: 50px 36px;
+  gap: 4px;
+  align-items: center;
+  width: 100%;
 `
 
 export const ExecuteCellWrapper = styled.div`
@@ -326,4 +329,8 @@ export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
   > button::after {
     transform: ${({ isCollapsed }) => (isCollapsed ? 'rotate(90deg)' : 'rotate(0deg)')};
   }
+`
+
+export const DistanceToMarket = styled.span<{ $color: string }>`
+  color: ${({ $color }: { $color: string }) => $color};
 `

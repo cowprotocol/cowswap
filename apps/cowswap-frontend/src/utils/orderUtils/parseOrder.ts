@@ -47,6 +47,7 @@ export interface ParsedOrder {
   partiallyFillable: boolean
   creationTime: Date
   expirationTime: Date
+  fulfillmentTime: string | undefined
   composableCowInfo?: ComposableCowInfo
   fullAppData: Order['fullAppData']
   signingScheme: SigningScheme
@@ -62,6 +63,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
   const executedFeeAmount = order.apiAdditionalInfo?.executedFeeAmount
   const executedSurplusFee = order.apiAdditionalInfo?.executedSurplusFee || null
   const creationTime = new Date(order.creationTime)
+  const fulfillmentTime = order.fulfillmentTime
   const fullyFilled = isOrderFilled(order)
   const partiallyFilled = isPartiallyFilled(order)
   const filledPercentDisplay = filledPercentage.times(100).toString()
@@ -113,6 +115,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
     receiver: order.receiver || undefined,
     creationTime,
     expirationTime,
+    fulfillmentTime,
     fullAppData: order.fullAppData,
     executionData,
     signingScheme: order.signingScheme,

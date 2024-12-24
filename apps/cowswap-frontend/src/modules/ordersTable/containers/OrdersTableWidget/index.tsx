@@ -1,15 +1,18 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { ReactNode, useCallback, useEffect, useMemo } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useTokensAllowances, useTokensBalances } from '@cowprotocol/balances-and-allowances'
+import { UI } from '@cowprotocol/ui'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
+import { Search } from 'react-feather'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { pendingOrdersPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
 import { BalancesAndAllowances } from 'modules/tokens'
@@ -25,19 +28,67 @@ import { OrdersTableList, useOrdersTableList } from './hooks/useOrdersTableList'
 import { useOrdersTableTokenApprove } from './hooks/useOrdersTableTokenApprove'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
-import { OPEN_TAB, ORDERS_TABLE_TABS } from '../../const/tabs'
+import { OPEN_TAB, ORDERS_TABLE_TABS, ALL_ORDERS_TAB } from '../../const/tabs'
 import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
+import { ColumnLayout, LAYOUT_MAP } from '../../pure/OrdersTableContainer/tableHeaders'
 import { OrderActions } from '../../pure/OrdersTableContainer/types'
 import { TabOrderTypes } from '../../types'
 import { buildOrdersTableUrl } from '../../utils/buildOrdersTableUrl'
-import { OrderTableItem, tableItemsToOrders } from '../../utils/orderTableGroupUtils'
+import { OrderTableItem, tableItemsToOrders, getParsedOrderFromTableItem } from '../../utils/orderTableGroupUtils'
 import { parseOrdersTableUrl } from '../../utils/parseOrdersTableUrl'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu'
 import { OrdersReceiptModal } from '../OrdersReceiptModal'
 import { useGetAlternativeOrderModalContextCallback, useSelectReceiptOrder } from '../OrdersReceiptModal/hooks'
 
+const SearchInputContainer = styled.div`
+  margin: 0;
+  padding: 0 0 0 16px;
+  position: relative;
+`
+
+const SearchIcon = styled(Search)`
+  position: absolute;
+  left: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(${UI.COLOR_TEXT_OPACITY_50});
+  width: 16px;
+  height: 16px;
+`
+
+const SearchInput = styled.input`
+  width: 100%;
+  padding: 8px 12px 8px 36px;
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  background: var(${UI.COLOR_PAPER});
+  color: var(${UI.COLOR_TEXT});
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+
+  &::placeholder {
+    color: var(${UI.COLOR_TEXT_OPACITY_50});
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(${UI.COLOR_TEXT_OPACITY_50});
+  }
+`
+
 function getOrdersListByIndex(ordersList: OrdersTableList, id: string): OrderTableItem[] {
-  return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
+  switch (id) {
+    case 'all':
+      return ordersList.all
+    case 'unfillable':
+      return ordersList.unfillable
+    case 'open':
+      return ordersList.pending
+    case 'history':
+      return ordersList.history
+    default:
+      return ordersList.pending
+  }
 }
 
 function toggleOrderInCancellationList(state: CancellableOrder[], order: CancellableOrder): CancellableOrder[] {
@@ -49,10 +100,6 @@ function toggleOrderInCancellationList(state: CancellableOrder[], order: Cancell
 
   return [...state, order]
 }
-
-const ContentWrapper = styled.div`
-  width: 100%;
-`
 
 interface OrdersTableWidgetProps {
   displayOrdersOnlyForSafeApp: boolean
@@ -71,7 +118,6 @@ export function OrdersTableWidget({
   const location = useLocation()
   const navigate = useNavigate()
   const cancelOrder = useCancelOrder()
-  const ordersList = useOrdersTableList(allOrders, orderType)
   const { allowsOffchainSigning } = useWalletDetails()
   const pendingOrdersPrices = useAtomValue(pendingOrdersPricesAtom)
   const ordersToCancel = useAtomValue(ordersToCancelAtom)
@@ -80,27 +126,12 @@ export function OrdersTableWidget({
   const selectReceiptOrder = useSelectReceiptOrder()
   const isSafeViaWc = useIsSafeViaWc()
   const injectedWidgetParams = useInjectedWidgetParams()
-
-  const { currentTabId, currentPageNumber } = useMemo(() => {
-    const params = parseOrdersTableUrl(location.search)
-
-    return {
-      currentTabId: params.tabId || OPEN_TAB.id,
-      currentPageNumber: params.pageNumber || 1,
-    }
-  }, [location.search])
-
-  const orders = useMemo(() => {
-    return getOrdersListByIndex(ordersList, currentTabId)
-  }, [ordersList, currentTabId])
-
-  const tabs = useMemo(() => {
-    return ORDERS_TABLE_TABS.map((tab) => {
-      return { ...tab, isActive: tab.id === currentTabId, count: getOrdersListByIndex(ordersList, tab.id).length }
-    })
-  }, [currentTabId, ordersList])
-
-  const isOpenOrdersTab = useMemo(() => OPEN_TAB.id === currentTabId, [currentTabId])
+  const [searchTerm, setSearchTerm] = useState('')
+  const limitOrdersSettings = useAtomValue(limitOrdersSettingsAtom)
+  const columnLayout = useMemo(
+    () => LAYOUT_MAP[limitOrdersSettings.columnLayout] || ColumnLayout.DEFAULT,
+    [limitOrdersSettings.columnLayout],
+  )
 
   const balancesState = useTokensBalances()
   const allowancesState = useTokensAllowances()
@@ -114,6 +145,27 @@ export function OrdersTableWidget({
       allowances,
     }
   }, [balancesState, allowancesState])
+
+  const ordersList = useOrdersTableList(allOrders, orderType, chainId, balancesAndAllowances)
+
+  const { currentTabId, currentPageNumber } = useMemo(() => {
+    const params = parseOrdersTableUrl(location.search)
+
+    return {
+      currentTabId: params.tabId || ALL_ORDERS_TAB.id,
+      currentPageNumber: params.pageNumber || 1,
+    }
+  }, [location.search])
+
+  const orders = useMemo(() => {
+    return getOrdersListByIndex(ordersList, currentTabId)
+  }, [ordersList, currentTabId])
+
+  const tabs = useMemo(() => {
+    return ORDERS_TABLE_TABS.map((tab) => {
+      return { ...tab, isActive: tab.id === currentTabId, count: getOrdersListByIndex(ordersList, tab.id).length }
+    })
+  }, [currentTabId, ordersList])
 
   const { pendingActivity } = useCategorizeRecentActivity()
 
@@ -160,32 +212,104 @@ export function OrdersTableWidget({
 
   useValidatePageUrlParams(orders.length, currentTabId, currentPageNumber)
 
+  const filteredOrders = useMemo(() => {
+    if (!searchTerm) return orders
+
+    const searchTermLower = searchTerm.toLowerCase().trim()
+
+    // First try exact symbol matches (case-insensitive)
+    const exactMatches = orders.filter((order) => {
+      const parsedOrder = getParsedOrderFromTableItem(order)
+      const inputToken = parsedOrder.inputToken
+      const outputToken = parsedOrder.outputToken
+
+      return [inputToken.symbol, outputToken.symbol].some((symbol) => {
+        return symbol?.toLowerCase() === searchTermLower
+      })
+    })
+
+    // If we have exact matches, return those
+    if (exactMatches.length > 0) {
+      return exactMatches
+    }
+
+    // Otherwise, fall back to partial matches and address search
+    return orders.filter((order) => {
+      const parsedOrder = getParsedOrderFromTableItem(order)
+      const inputToken = parsedOrder.inputToken
+      const outputToken = parsedOrder.outputToken
+
+      // Check for partial symbol matches (case-insensitive)
+      const symbolMatch = [inputToken.symbol, outputToken.symbol].some((symbol) => {
+        return symbol?.toLowerCase().includes(searchTermLower)
+      })
+
+      if (symbolMatch) return true
+
+      // If not a symbol match, check for address matches
+      // Clean up the search term but preserve '0x' prefix if present
+      const hasPrefix = searchTermLower.startsWith('0x')
+      const cleanedSearch = searchTermLower.replace(/[^0-9a-fx]/g, '')
+
+      // For exact address matches (40 or 42 chars), do strict comparison
+      if (cleanedSearch.length === 40 || cleanedSearch.length === 42) {
+        const searchTermNormalized = hasPrefix ? cleanedSearch : `0x${cleanedSearch}`
+        return [inputToken.address, outputToken.address].some(
+          (address) => address.toLowerCase() === searchTermNormalized.toLowerCase(),
+        )
+      }
+
+      // For partial address matches
+      const searchWithoutPrefix = hasPrefix ? cleanedSearch.slice(2) : cleanedSearch
+      if (searchWithoutPrefix.length >= 2) {
+        // Only search if we have at least 2 characters
+        return [inputToken.address, outputToken.address].some((address) => {
+          const addressWithoutPrefix = address.slice(2).toLowerCase()
+          return addressWithoutPrefix.includes(searchWithoutPrefix.toLowerCase())
+        })
+      }
+
+      return false
+    })
+  }, [orders, searchTerm])
+
   return (
     <>
-      <ContentWrapper>
-        {children}
-        <OrdersTableContainer
-          chainId={chainId}
-          tabs={tabs}
-          orders={orders}
-          displayOrdersOnlyForSafeApp={displayOrdersOnlyForSafeApp}
-          isSafeViaWc={isSafeViaWc}
-          isOpenOrdersTab={isOpenOrdersTab}
-          currentPageNumber={currentPageNumber}
-          pendingOrdersPrices={pendingOrdersPrices}
-          balancesAndAllowances={balancesAndAllowances}
-          isWalletConnected={!!account}
-          orderActions={orderActions}
-          getSpotPrice={getSpotPrice}
-          selectedOrders={ordersToCancel}
-          allowsOffchainSigning={allowsOffchainSigning}
-          orderType={orderType}
-          pendingActivities={pendingActivity}
-          injectedWidgetParams={injectedWidgetParams}
-        >
-          {isOpenOrdersTab && orders.length && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />}
-        </OrdersTableContainer>
-      </ContentWrapper>
+      {children}
+      <OrdersTableContainer
+        chainId={chainId}
+        tabs={tabs}
+        orders={filteredOrders}
+        displayOrdersOnlyForSafeApp={displayOrdersOnlyForSafeApp}
+        isSafeViaWc={isSafeViaWc}
+        currentPageNumber={currentPageNumber}
+        pendingOrdersPrices={pendingOrdersPrices}
+        balancesAndAllowances={balancesAndAllowances}
+        isWalletConnected={!!account}
+        orderActions={orderActions}
+        getSpotPrice={getSpotPrice}
+        selectedOrders={ordersToCancel}
+        allowsOffchainSigning={allowsOffchainSigning}
+        orderType={orderType}
+        pendingActivities={pendingActivity}
+        injectedWidgetParams={injectedWidgetParams}
+        searchTerm={searchTerm}
+        columnLayout={columnLayout}
+      >
+        {(currentTabId === OPEN_TAB.id || currentTabId === 'all' || currentTabId === 'unfillable') &&
+          orders.length > 0 && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />}
+
+        <SearchInputContainer>
+          <SearchIcon />
+          <SearchInput
+            type="text"
+            placeholder="token symbol, address"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </SearchInputContainer>
+      </OrdersTableContainer>
+
       <OrdersReceiptModal pendingOrdersPrices={pendingOrdersPrices} />
     </>
   )
