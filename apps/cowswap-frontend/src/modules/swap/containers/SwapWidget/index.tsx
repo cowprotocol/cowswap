@@ -14,7 +14,12 @@ import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
-import { useHooksEnabledManager, useRecipientToggleManager, useUserTransactionTTL } from 'legacy/state/user/hooks'
+import {
+  useHooksEnabledManager,
+  usePartialApprove,
+  useRecipientToggleManager,
+  useUserTransactionTTL,
+} from 'legacy/state/user/hooks'
 
 import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -85,6 +90,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const recipientToggleState = useRecipientToggleManager()
   const hooksEnabledState = useHooksEnabledManager()
   const deadlineState = useUserTransactionTTL()
+  const partialApproveState = usePartialApprove()
   const isHookTradeType = useIsHooksTradeType()
 
   const isTradePriceUpdating = useTradePricesUpdate()
@@ -238,6 +244,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         recipientToggleState={recipientToggleState}
         hooksEnabledState={hooksEnabledState}
         deadlineState={deadlineState}
+        partialApproveState={partialApproveState}
       />
     ),
 
