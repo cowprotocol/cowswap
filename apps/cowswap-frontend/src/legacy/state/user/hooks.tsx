@@ -10,6 +10,7 @@ import { shallowEqual } from 'react-redux'
 
 import {
   updateHooksEnabled,
+  updatePartialApprove,
   updateRecipientToggleVisible,
   updateUserDarkMode,
   updateUserDeadline,
@@ -116,6 +117,20 @@ export function useUserTransactionTTL(): [number, (slippage: number) => void] {
   )
 
   return [deadline, setUserDeadline]
+}
+
+export function usePartialApprove(): [boolean, (value: boolean) => void] {
+  const dispatch = useAppDispatch()
+  const partialApprove = useAppSelector((state) => state.user.partialApprove)
+
+  const setPartialApprove = useCallback(
+    (partialApprove: boolean) => {
+      dispatch(updatePartialApprove({ partialApprove }))
+    },
+    [dispatch],
+  )
+
+  return [partialApprove, setPartialApprove]
 }
 
 export function useSelectedWallet(): string | undefined {

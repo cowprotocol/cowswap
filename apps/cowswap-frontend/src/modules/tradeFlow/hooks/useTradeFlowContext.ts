@@ -28,9 +28,10 @@ import { TradeFlowContext } from '../types/TradeFlowContext'
 
 export interface TradeFlowParams {
   deadline: number
+  isPartialApprove?: boolean
 }
 
-export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowContext | null {
+export function useTradeFlowContext({ deadline, isPartialApprove }: TradeFlowParams): TradeFlowContext | null {
   const { chainId, account } = useWalletInfo()
   const provider = useWalletProvider()
   const { allowsOffchainSigning } = useWalletDetails()
@@ -49,7 +50,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const networkFee = receiveAmountInfo?.costs.networkFee.amountInSellCurrency
 
   const permitInfo = usePermitInfo(sellCurrency, tradeType)
-  const generatePermitHook = useGeneratePermitHook()
+  const generatePermitHook = useGeneratePermitHook(isPartialApprove)
   const getCachedPermit = useGetCachedPermit()
   const closeModals = useCloseModals()
   const dispatch = useDispatch<AppDispatch>()

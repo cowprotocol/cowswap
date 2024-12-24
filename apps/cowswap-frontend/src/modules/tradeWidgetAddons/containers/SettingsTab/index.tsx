@@ -27,12 +27,20 @@ interface SettingsTabProps {
   className?: string
   recipientToggleState: StatefulValue<boolean>
   hooksEnabledState?: StatefulValue<boolean>
+  partialApproveState?: StatefulValue<boolean>
   deadlineState: StatefulValue<number>
 }
 
-export function SettingsTab({ className, recipientToggleState, hooksEnabledState, deadlineState }: SettingsTabProps) {
+export function SettingsTab({
+  className,
+  recipientToggleState,
+  hooksEnabledState,
+  deadlineState,
+  partialApproveState,
+}: SettingsTabProps) {
   const menuButtonRef = useRef<HTMLButtonElement>(null)
 
+  const [isPartialApprove, setPartialApprove] = partialApproveState || [null, null]
   const [recipientToggleVisible, toggleRecipientVisibilityAux] = recipientToggleState
   const toggleRecipientVisibility = useCallback(
     (value?: boolean) => {
@@ -110,6 +118,28 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
                     />
                   </RowFixed>
                   <Toggle id="toggle-hooks-mode-button" isActive={hooksEnabled} toggle={toggleHooksEnabled} />
+                </RowBetween>
+              )}
+
+              {isPartialApprove !== null && setPartialApprove && (
+                <RowBetween>
+                  <RowFixed>
+                    <ThemedText.Black fontWeight={400} fontSize={14}>
+                      <Trans>Partial Approve</Trans>
+                    </ThemedText.Black>
+                    <HelpTooltip
+                      text={
+                        <Trans>
+                          Allows you to approve a token for a specific amount, rather than the maximum amount
+                        </Trans>
+                      }
+                    />
+                  </RowFixed>
+                  <Toggle
+                    id="toggle-partial-approve"
+                    isActive={isPartialApprove}
+                    toggle={() => setPartialApprove(!isPartialApprove)}
+                  />
                 </RowBetween>
               )}
             </AutoColumn>

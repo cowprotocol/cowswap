@@ -26,6 +26,7 @@ export type PermitHookParams = {
   permitInfo: PermitInfo
   provider: JsonRpcProvider
   eip2162Utils: Eip2612PermitUtils
+  amount?: bigint
   account?: string | undefined
   nonce?: number | undefined
 }

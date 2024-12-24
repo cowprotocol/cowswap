@@ -19,13 +19,16 @@ export interface TradeApproveCallback {
   (params?: TradeApproveCallbackParams): Promise<TransactionResponse | undefined>
 }
 
-export function useTradeApproveCallback(amountToApprove?: CurrencyAmount<Currency>): TradeApproveCallback {
+export function useTradeApproveCallback(
+  amountToApprove?: CurrencyAmount<Currency>,
+  isPartialApprove?: boolean,
+): TradeApproveCallback {
   const updateTradeApproveState = useUpdateTradeApproveState()
   const spender = useTradeSpenderAddress()
   const currency = amountToApprove?.currency
   const symbol = currency?.symbol
 
-  const approveCallback = useApproveCallback(amountToApprove, spender)
+  const approveCallback = useApproveCallback(amountToApprove, spender, isPartialApprove)
 
   return useCallback(
     async ({ useModals = true }: TradeApproveCallbackParams = { useModals: true }) => {
@@ -58,6 +61,6 @@ export function useTradeApproveCallback(amountToApprove?: CurrencyAmount<Currenc
           return undefined
         })
     },
-    [symbol, approveCallback, updateTradeApproveState, currency]
+    [symbol, approveCallback, updateTradeApproveState, currency],
   )
 }

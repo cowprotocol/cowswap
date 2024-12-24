@@ -18,14 +18,18 @@ export async function estimateApprove(
   tokenContract: Erc20,
   spender: string,
   amountToApprove: CurrencyAmount<Currency>,
+  isPartialApprove?: boolean,
 ): Promise<{
   approveAmount: BigNumber | string
   gasLimit: BigNumber
 }> {
+  const approveAmount =
+    isPartialApprove && amountToApprove ? BigNumber.from(amountToApprove.quotient.toString()) : MaxUint256
+
   try {
     return {
-      approveAmount: MaxUint256,
-      gasLimit: await tokenContract.estimateGas.approve(spender, MaxUint256),
+      approveAmount,
+      gasLimit: await tokenContract.estimateGas.approve(spender, approveAmount),
     }
   } catch {
     // Fallback: Attempt to set an approval for the maximum wallet balance (instead of the MaxUint256).
@@ -45,7 +49,7 @@ export async function estimateApprove(
       )
 
       return {
-        approveAmount: MaxUint256,
+        approveAmount,
         gasLimit: GAS_LIMIT_DEFAULT,
       }
     }
@@ -55,6 +59,7 @@ export async function estimateApprove(
 export function useApproveCallback(
   amountToApprove?: CurrencyAmount<Currency>,
   spender?: string,
+  isPartialApprove?: boolean,
 ): (summary?: string) => Promise<TransactionResponse | undefined> {
   const { chainId } = useWalletInfo()
   const currency = amountToApprove?.currency
@@ -68,7 +73,7 @@ export function useApproveCallback(
       return
     }
 
-    const estimation = await estimateApprove(tokenContract, spender, amountToApprove)
+    const estimation = await estimateApprove(tokenContract, spender, amountToApprove, isPartialApprove)
     return tokenContract
       .approve(spender, estimation.approveAmount, {
         gasLimit: calculateGasMargin(estimation.gasLimit),
@@ -81,5 +86,5 @@ export function useApproveCallback(
         })
         return response
       })
-  }, [chainId, token, tokenContract, amountToApprove, spender, addTransaction])
+  }, [chainId, token, tokenContract, amountToApprove, spender, addTransaction, isPartialApprove])
 }
