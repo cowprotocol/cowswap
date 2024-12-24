@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.95.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.95.2...cowswap-v1.95.3) (2024-12-23)
+
+
+### Bug Fixes
+
+* fix order filled condition for permit check ([#5253](https://github.com/cowprotocol/cowswap/issues/5253)) ([b81842c](https://github.com/cowprotocol/cowswap/commit/b81842c8aed196f23a9cbcb42d637299f1e7708e))
+
 ## [1.95.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.95.1...cowswap-v1.95.2) (2024-12-23)
 
 
