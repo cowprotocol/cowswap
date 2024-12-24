@@ -14,6 +14,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useGetQuoteAndStatus, useIsBestQuoteLoading } from 'legacy/state/price/hooks'
 import { Field } from 'legacy/state/types'
+import { usePartialApprove } from 'legacy/state/user/hooks'
 
 import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -37,8 +38,6 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useHandleSwapOrEthFlow } from './useHandleSwapOrEthFlow'
 import { useDerivedSwapInfo, useSwapActionHandlers } from './useSwapState'
-
-import { usePartialApprove } from '../../../legacy/state/user/hooks'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean

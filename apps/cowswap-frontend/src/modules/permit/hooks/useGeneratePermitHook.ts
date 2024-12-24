@@ -19,7 +19,7 @@ import { GeneratePermitHook, GeneratePermitHookParams } from '../types'
 /**
  * Hook that returns callback to generate permit hook data
  */
-export function useGeneratePermitHook(): GeneratePermitHook {
+export function useGeneratePermitHook(isPartialApprove?: boolean): GeneratePermitHook {
   const { chainId } = useWalletInfo()
   const storePermit = useSetAtom(storePermitCacheAtom)
   const getCachedPermit = useGetCachedPermit()
@@ -36,7 +36,7 @@ export function useGeneratePermitHook(): GeneratePermitHook {
 
   return useCallback(
     async (params: GeneratePermitHookParams): Promise<PermitHookData | undefined> => {
-      const { inputToken, account, permitInfo, customSpender } = params
+      const { inputToken, account, permitInfo, customSpender, amount } = params
 
       if (!provider || !isSupportedPermitInfo(permitInfo)) {
         return
@@ -66,12 +66,13 @@ export function useGeneratePermitHook(): GeneratePermitHook {
         eip2162Utils,
         account,
         nonce,
+        amount: isPartialApprove ? amount : undefined,
       })
 
       hookData && storePermit({ ...permitParams, hookData, spender })
 
       return hookData
     },
-    [provider, chainId, getCachedPermit, storePermit],
+    [provider, chainId, getCachedPermit, storePermit, isPartialApprove],
   )
 }
