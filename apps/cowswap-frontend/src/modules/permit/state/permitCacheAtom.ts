@@ -1,6 +1,12 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+import { MaxUint256 } from '@ethersproject/constants'
+
+import { TradeType, tradeTypeAtom } from 'modules/trade'
+
+import { Routes } from 'common/constants/routes'
+
 import {
   CachedPermitData,
   GetPermitCacheParams,
@@ -54,6 +60,10 @@ export const getPermitCacheAtom = atom(null, (get, set, params: GetPermitCachePa
   const atomToUpdate = params.account ? userPermitCacheAtom : staticPermitCacheAtom
 
   const permitCache = get(atomToUpdate)
+  const tradeType = get(tradeTypeAtom)
+
+  const isSwap = tradeType?.tradeType === TradeType.SWAP && tradeType.route === Routes.SWAP
+
   const key = buildKey(params)
   const cachedData = permitCache[key]
 
@@ -76,6 +86,12 @@ export const getPermitCacheAtom = atom(null, (get, set, params: GetPermitCachePa
         set(atomToUpdate, removePermitCacheBuilder(key))
 
         return undefined
+      }
+
+      // Only Swap might create partial amount permits
+      // Because of that, we skip cached permits with partial amount in other widgets
+      if (!isSwap && amount && amount !== MaxUint256.toString()) {
+        return false
       }
 
       if (params.amount) {
