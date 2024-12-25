@@ -3,6 +3,7 @@ import { ReactElement, useEffect, useMemo, useState } from 'react'
 import { latest } from '@cowprotocol/app-data'
 import { CowHookDetails, HookToDappMatch, matchHooksToDappsRegistry } from '@cowprotocol/hook-dapp-lib'
 import { InfoTooltip } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { ChevronDown, ChevronUp } from 'react-feather'
 
@@ -14,6 +15,8 @@ import { HookItem } from './HookItem'
 import * as styledEl from './styled'
 import { CircleCount } from './styled'
 
+import { parsePermitData } from '../../utils/parsePermitData'
+
 interface OrderHooksDetailsProps {
   appData: string | AppDataInfo
   children: (content: ReactElement) => ReactElement
@@ -23,6 +26,7 @@ interface OrderHooksDetailsProps {
 
 export function OrderHooksDetails({ appData, children, margin, isTradeConfirmation }: OrderHooksDetailsProps) {
   const [isOpen, setOpen] = useState(false)
+  const { account } = useWalletInfo()
   const appDataDoc = useMemo(() => {
     return typeof appData === 'string' ? decodeAppData(appData) : appData.doc
   }, [appData])
@@ -41,9 +45,27 @@ export function OrderHooksDetails({ appData, children, margin, isTradeConfirmati
 
   const metadata = appDataDoc.metadata as latest.Metadata
 
+  /**
+   * AppData might include a hook with account agnostic permit which is used to fetch a quote.
+   * This hook should be ignored.
+   * Moreover, any hook with a permit which has owner !== current account will be excluded.
+   * We also remove the permit from appData before order signing (see filterPermitSignerPermit).
+   */
+  const preHooks = account
+    ? metadata.hooks?.pre?.filter((hook) => {
+        try {
+          const permitHookData = parsePermitData(hook.callData)
+
+          return permitHookData.owner.toLowerCase() === account.toLowerCase()
+        } catch {
+          return true
+        }
+      })
+    : metadata.hooks?.pre
+
   const hasSomeFailedSimulation = isTradeConfirmation && Object.values(data || {}).some((hook) => !hook.status)
 
-  const preHooksToDapp = matchHooksToDappsRegistry(metadata.hooks?.pre || [], preCustomHookDapps)
+  const preHooksToDapp = matchHooksToDappsRegistry(preHooks || [], preCustomHookDapps)
   const postHooksToDapp = matchHooksToDappsRegistry(metadata.hooks?.post || [], postCustomHookDapps)
 
   if (!preHooksToDapp.length && !postHooksToDapp.length) return null

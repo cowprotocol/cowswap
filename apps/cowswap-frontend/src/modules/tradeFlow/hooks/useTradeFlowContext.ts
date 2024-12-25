@@ -156,7 +156,6 @@ export function useTradeFlowContext({ deadline, isPartialApprove }: TradeFlowPar
         uiOrderType,
         isPartialApprove,
       ]) => {
-        console.log('CCCCC', isPartialApprove)
         return {
           context: {
             chainId,
