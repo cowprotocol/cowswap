@@ -67,19 +67,25 @@ export async function signEthFlowOrderStep(
     return GAS_LIMIT_DEFAULT
   })
 
-  // This used to be done with a higher level of abstraction like this:
+  // Ensure the Eth flow contract network matches the network where you place the transaction.
+  // There are multiple wallet implementations, and potential race conditions that can cause the chain of the wallet to be different,
+  // and therefore leaving the chainId implicit might lead the user to place an order in an unwanted chain.
+  // This is especially dangerous for Eth Flow orders, because the contract address is different for the distinct networks,
+  // and this can lead to loss of funds.
+  //
+  // Thus, we are not using a higher level of abstraction as it doesn't allow to explicitly set the chainId:
   // const txReceipt = await ethFlowContract.createOrder(ethOrderParams, {
   //   ...ethTxOptions,
   //   gasLimit: calculateGasMargin(estimatedGas),
   // })
-  // However, to **try** to prevent wallet issues, we want to explicitly send along the chainId
-  // But that wrapper doesn't accept it.
-  // So we must build the tx first, then send it using the contract's signer
+  //
+  // So we must build the tx first:
   const tx = await ethFlowContract.populateTransaction.createOrder(ethOrderParams, {
     ...ethTxOptions,
     gasLimit: calculateGasMargin(estimatedGas),
   })
-  const txReceipt = await ethFlowContract.signer.sendTransaction({ ...tx, chainId: orderParams.chainId })
+  // Then send the is using the contract's signer where the chainId is an acceptable parameter
+  const txReceipt = await ethFlowContract.signer.sendTransaction({ ...tx, chainId: network.chainId })
 
   addInFlightOrderId(orderId)
 
