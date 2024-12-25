@@ -91,11 +91,11 @@ export const getPermitCacheAtom = atom(null, (get, set, params: GetPermitCachePa
       // Only Swap might create partial amount permits
       // Because of that, we skip cached permits with partial amount in other widgets
       if (!isSwap && amount && amount !== MaxUint256.toString()) {
-        return false
+        return undefined
       }
 
-      if (params.amount) {
-        return params.amount.toString() === amount
+      if (params.amount && params.amount.toString() !== amount) {
+        return undefined
       }
     }
 
