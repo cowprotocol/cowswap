@@ -36,6 +36,7 @@ export const storePermitCacheAtom = atom(null, (get, set, params: StorePermitCac
   const dataToCache: CachedPermitData = {
     hookData: params.hookData,
     nonce: params.nonce,
+    amount: params.amount?.toString(),
   }
 
   set(atomToUpdate, (permitCache) => ({ ...permitCache, [key]: JSON.stringify(dataToCache) }))
@@ -61,7 +62,7 @@ export const getPermitCacheAtom = atom(null, (get, set, params: GetPermitCachePa
   }
 
   try {
-    const { hookData, nonce: storedNonce }: CachedPermitData = JSON.parse(cachedData)
+    const { hookData, nonce: storedNonce, amount }: CachedPermitData = JSON.parse(cachedData)
 
     if (params.account !== undefined) {
       // User type permit cache, check the nonce
@@ -75,6 +76,10 @@ export const getPermitCacheAtom = atom(null, (get, set, params: GetPermitCachePa
         set(atomToUpdate, removePermitCacheBuilder(key))
 
         return undefined
+      }
+
+      if (params.amount) {
+        return params.amount.toString() === amount
       }
     }
 
