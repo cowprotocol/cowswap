@@ -123,6 +123,7 @@ export function useTradeFlowContext({ deadline, isPartialApprove }: TradeFlowPar
             deadline,
             orderKind,
             uiOrderType,
+            isPartialApprove,
           ]
         : null,
       ([
@@ -153,7 +154,9 @@ export function useTradeFlowContext({ deadline, isPartialApprove }: TradeFlowPar
         deadline,
         orderKind,
         uiOrderType,
+        isPartialApprove,
       ]) => {
+        console.log('CCCCC', isPartialApprove)
         return {
           context: {
             chainId,
@@ -163,6 +166,7 @@ export function useTradeFlowContext({ deadline, isPartialApprove }: TradeFlowPar
           },
           flags: {
             allowsOffchainSigning,
+            isPartialApprove,
           },
           callbacks: {
             closeModals,
