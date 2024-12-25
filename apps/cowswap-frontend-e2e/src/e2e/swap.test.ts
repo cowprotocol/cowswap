@@ -68,7 +68,7 @@ describe('Swap (custom)', () => {
     })
 
     it('should accept buyAmount url param', () => {
-      cy.visit(`/#/${CHAIN_ID}/swap/${SELL_TOKEN}/${BUY_TOKEN}?buyAmount=0.5`)
+      cy.visit(`/#/${CHAIN_ID}/swap/${SELL_TOKEN}/${BUY_TOKEN}?buyAmount=0.5&orderKind=buy`)
       cy.get('#output-currency-input .token-amount-input').should('have.value', '0.5')
     })
 
