@@ -8,6 +8,8 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { shallowEqual } from 'react-redux'
 
+import { useIsHooksTradeType } from 'modules/trade'
+
 import {
   updateHooksEnabled,
   updatePartialApprove,
@@ -121,6 +123,7 @@ export function useUserTransactionTTL(): [number, (slippage: number) => void] {
 
 export function usePartialApprove(): [boolean, (value: boolean) => void] {
   const dispatch = useAppDispatch()
+  const isHookTradeType = useIsHooksTradeType()
   const partialApprove = useAppSelector((state) => state.user.partialApprove)
 
   const setPartialApprove = useCallback(
@@ -130,7 +133,8 @@ export function usePartialApprove(): [boolean, (value: boolean) => void] {
     [dispatch],
   )
 
-  return [partialApprove, setPartialApprove]
+  // Partial approve is disabled for Hooks store
+  return [isHookTradeType ? false : partialApprove, setPartialApprove]
 }
 
 export function useSelectedWallet(): string | undefined {
