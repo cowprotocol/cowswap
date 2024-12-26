@@ -4,6 +4,7 @@ import { latest } from '@cowprotocol/app-data'
 import { CowHookDetails, HookToDappMatch, matchHooksToDappsRegistry } from '@cowprotocol/hook-dapp-lib'
 import { InfoTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { ChevronDown, ChevronUp } from 'react-feather'
 
@@ -22,9 +23,18 @@ interface OrderHooksDetailsProps {
   children: (content: ReactElement) => ReactElement
   margin?: string
   isTradeConfirmation?: boolean
+  slippageAdjustedSellAmount?: CurrencyAmount<Currency>
+  isPartialApprove?: boolean
 }
 
-export function OrderHooksDetails({ appData, children, margin, isTradeConfirmation }: OrderHooksDetailsProps) {
+export function OrderHooksDetails({
+  appData,
+  children,
+  margin,
+  isTradeConfirmation,
+  slippageAdjustedSellAmount,
+  isPartialApprove,
+}: OrderHooksDetailsProps) {
   const [isOpen, setOpen] = useState(false)
   const { account } = useWalletInfo()
   const appDataDoc = useMemo(() => {
@@ -55,8 +65,13 @@ export function OrderHooksDetails({ appData, children, margin, isTradeConfirmati
     ? metadata.hooks?.pre?.filter((hook) => {
         try {
           const permitHookData = parsePermitData(hook.callData)
+          const isOwnerMatched = permitHookData.owner.toLowerCase() === account.toLowerCase()
 
-          return permitHookData.owner.toLowerCase() === account.toLowerCase()
+          // If the hook is a partial approve, we need to check if the value is equal to the slippageAdjustedSellAmount
+          // Because there might be a hook with an "infinite" permit from other widget
+          return isPartialApprove && slippageAdjustedSellAmount
+            ? isOwnerMatched && permitHookData.value.eq(slippageAdjustedSellAmount.quotient.toString())
+            : isOwnerMatched
         } catch {
           return true
         }
