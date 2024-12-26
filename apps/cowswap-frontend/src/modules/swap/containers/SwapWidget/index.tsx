@@ -244,7 +244,8 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         recipientToggleState={recipientToggleState}
         hooksEnabledState={hooksEnabledState}
         deadlineState={deadlineState}
-        partialApproveState={partialApproveState}
+        // Partial approve is disabled for Hooks store
+        partialApproveState={isHookTradeType ? undefined : partialApproveState}
       />
     ),
 
