@@ -130,7 +130,7 @@ export function SettingsTab({
                     <HelpTooltip
                       text={
                         <Trans>
-                          Allows you to approve a token for a specific amount, rather than the maximum amount
+                          Allows you to approve a token for a specific amount, rather than the maximum amount.
                         </Trans>
                       }
                     />
