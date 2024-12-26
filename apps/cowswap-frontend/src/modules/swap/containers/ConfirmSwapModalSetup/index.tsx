@@ -14,6 +14,7 @@ import {
   TradeConfirmation,
   TradeConfirmModal,
   useIsEoaEthFlow,
+  useIsHooksTradeType,
   useOrderSubmittedContent,
   useReceiveAmountInfo,
   useShouldPayGas,
@@ -71,6 +72,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const appData = useAppData()
   const [userDeadline] = useUserTransactionTTL()
   const [isPartialApprove] = usePartialApprove()
+  const isHooksTradeType = useIsHooksTradeType()
 
   const slippageAdjustedSellAmount = trade?.maximumAmountIn(allowedSlippage)
   const isExactIn = trade?.tradeType === TradeType.EXACT_INPUT
@@ -127,6 +129,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
         appData={appData || undefined}
         slippageAdjustedSellAmount={slippageAdjustedSellAmount}
         isPartialApprove={isPartialApprove}
+        displayHookDetails={isHooksTradeType}
       >
         {(restContent) => (
           <>

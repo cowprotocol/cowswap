@@ -52,6 +52,7 @@ export interface TradeConfirmationProps {
   children?: (restContent: ReactElement) => ReactElement
   slippageAdjustedSellAmount?: CurrencyAmount<Currency>
   isPartialApprove?: boolean
+  displayHookDetails?: boolean
 }
 
 export function TradeConfirmation(props: TradeConfirmationProps) {
@@ -81,6 +82,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     appData,
     isPartialApprove,
     slippageAdjustedSellAmount,
+    displayHookDetails,
   } = frozenProps || props
 
   /**
@@ -131,7 +133,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     onConfirm()
   }
 
-  const hookDetailsElement = (
+  const hookDetailsElement = displayHookDetails ? (
     <>
       {appData && (
         <OrderHooksDetails
@@ -144,7 +146,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         </OrderHooksDetails>
       )}
     </>
-  )
+  ) : null
 
   return (
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
