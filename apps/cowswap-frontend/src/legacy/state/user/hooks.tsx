@@ -8,7 +8,7 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { shallowEqual } from 'react-redux'
 
-import { useIsHooksTradeType } from 'modules/trade'
+import { useIsHooksTradeType } from 'modules/trade/hooks/useIsHooksTradeType'
 
 import {
   updateHooksEnabled,
