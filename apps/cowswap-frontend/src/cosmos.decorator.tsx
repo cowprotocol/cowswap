@@ -6,8 +6,7 @@ import { ReactNode, StrictMode, useCallback, useContext } from 'react'
 import { CowAnalyticsProvider } from '@cowprotocol/analytics'
 import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
 import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
-import { injectedWalletConnection, WalletUpdater } from '@cowprotocol/wallet'
-import { Web3ReactProvider } from '@web3-react/core'
+import { WalletProvider, WalletUpdater } from '@cowprotocol/wallet'
 
 import { LanguageProvider } from 'i18n'
 import SVG from 'react-inlinesvg'
@@ -88,9 +87,6 @@ export const DemoContainer = styled.div`
 
 const chainId = 5
 
-const { connector, hooks } = injectedWalletConnection
-connector.activate(chainId)
-
 const Fixture = ({ children }: { children: ReactNode }) => {
   return (
     <StrictMode>
@@ -99,7 +95,7 @@ const Fixture = ({ children }: { children: ReactNode }) => {
           <ThemeProvider>
             <ThemedGlobalStyle />
             <LanguageProvider>
-              <Web3ReactProvider connectors={[[connector, hooks]]} network={chainId}>
+              <WalletProvider>
                 <BlockNumberProvider>
                   <WalletUpdater />
                   <Wrapper>
@@ -110,7 +106,7 @@ const Fixture = ({ children }: { children: ReactNode }) => {
                     </CowAnalyticsProvider>
                   </Wrapper>
                 </BlockNumberProvider>
-              </Web3ReactProvider>
+              </WalletProvider>
             </LanguageProvider>
           </ThemeProvider>
         </HashRouter>

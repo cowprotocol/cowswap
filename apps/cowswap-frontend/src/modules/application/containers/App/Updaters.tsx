@@ -1,7 +1,7 @@
 import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { TokensListsUpdater, UnsupportedTokensUpdater, WidgetTokensListsUpdater } from '@cowprotocol/tokens'
-import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
+import { useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
 
@@ -39,7 +39,7 @@ import { UserUpdater } from 'common/updaters/UserUpdater'
 
 export function Updaters() {
   const { chainId, account } = useWalletInfo()
-  const { tokenLists, appCode, customTokens, standaloneMode } = useInjectedWidgetParams()
+  const { tokenLists, appCode, customTokens } = useInjectedWidgetParams()
   const onTokenListAddingError = useOnTokenListAddingError()
   const { isGeoBlockEnabled, isYieldEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
@@ -48,8 +48,7 @@ export function Updaters() {
   return (
     <>
       <FeatureFlagsUpdater />
-      <WalletUpdater standaloneMode={standaloneMode} />
-      <HwAccountIndexUpdater />
+      <WalletUpdater />
       <UserUpdater />
       <FinalizeTxUpdater />
       {/*<CancelReplaceTxUpdater />*/}

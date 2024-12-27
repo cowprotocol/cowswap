@@ -1,7 +1,7 @@
-import { useWeb3React } from '@web3-react/core'
+import { useAppKitNetwork } from '@reown/appkit/react'
 
 export function useWalletChainId(): number | undefined {
-  const { chainId } = useWeb3React()
+  const { chainId } = useAppKitNetwork()
 
-  return chainId
+  return chainId ? +chainId : undefined
 }

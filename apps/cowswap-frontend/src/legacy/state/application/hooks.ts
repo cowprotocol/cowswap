@@ -27,10 +27,6 @@ export function useCloseModal(_modal: ApplicationModal): Command {
   return useCallback(() => dispatch(setOpenModal(null)), [dispatch])
 }
 
-export function useToggleWalletModal(): Command {
-  return useToggleModal(ApplicationModal.WALLET)
-}
-
 // TODO: These two seem to be gone from original. Check whether they have been replaced
 export function useOpenModal(modal: ApplicationModal): Command {
   const dispatch = useAppDispatch()
