@@ -1,8 +1,6 @@
 import { useMemo } from 'react'
 
-import { useWalletDetails } from '@cowprotocol/wallet'
-
-import { useToggleWalletModal } from 'legacy/state/application/hooks'
+import { useOpenWalletConnectionModal, useWalletDetails } from '@cowprotocol/wallet'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useWrapNativeFlow } from 'modules/trade'
@@ -13,13 +11,13 @@ import { TradeFormButtonContext } from '../types'
 
 export function useTradeFormButtonContext(
   defaultText: string,
-  confirmTrade: () => void
+  confirmTrade: () => void,
 ): TradeFormButtonContext | null {
   const derivedState = useDerivedTradeState()
   const wrapNativeFlow = useWrapNativeFlow()
   const { isSupportedWallet } = useWalletDetails()
   const quote = useTradeQuote()
-  const toggleWalletModal = useToggleWalletModal()
+  const toggleWalletModal = useOpenWalletConnectionModal()
   const { standaloneMode } = useInjectedWidgetParams()
 
   return useMemo(() => {

@@ -2,13 +2,13 @@ import '@reach/dialog/styles.css'
 import 'inter-ui'
 import './sentry'
 import { Provider as AtomProvider } from 'jotai'
-import { ReactNode, StrictMode } from 'react'
+import { StrictMode } from 'react'
 
 import { CowAnalyticsProvider } from '@cowprotocol/analytics'
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
-import { Web3Provider } from '@cowprotocol/wallet'
+import { WalletProvider } from '@cowprotocol/wallet'
 
 import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
@@ -19,7 +19,6 @@ import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 import { ThemedGlobalStyle, ThemeProvider } from 'theme'
 
 import { cowSwapStore } from 'legacy/state'
-import { useAppSelector } from 'legacy/state/hooks'
 
 import { cowAnalytics } from 'modules/analytics'
 import { App } from 'modules/application/containers/App'
@@ -47,10 +46,10 @@ function Main() {
           <AtomProvider store={jotaiStore}>
             <HashRouter>
               <LanguageProvider>
-                <Web3ProviderInstance>
-                  <ThemeProvider>
-                    <ThemedGlobalStyle />
-                    <BlockNumberProvider>
+                <ThemeProvider>
+                  <ThemedGlobalStyle />
+                  <BlockNumberProvider>
+                    <WalletProvider>
                       <WithLDProvider>
                         <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
                           <WalletUnsupportedNetworkBanner />
@@ -60,26 +59,15 @@ function Main() {
                           <App />
                         </CowAnalyticsProvider>
                       </WithLDProvider>
-                    </BlockNumberProvider>
-                  </ThemeProvider>
-                </Web3ProviderInstance>
+                    </WalletProvider>
+                  </BlockNumberProvider>
+                </ThemeProvider>
               </LanguageProvider>
             </HashRouter>
           </AtomProvider>
         </Provider>
       </SvgCacheProvider>
     </StrictMode>
-  )
-}
-
-function Web3ProviderInstance({ children }: { children: ReactNode }) {
-  const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
-  const { standaloneMode } = useInjectedWidgetParams()
-
-  return (
-    <Web3Provider standaloneMode={standaloneMode} selectedWallet={selectedWallet}>
-      {children}
-    </Web3Provider>
   )
 }
 

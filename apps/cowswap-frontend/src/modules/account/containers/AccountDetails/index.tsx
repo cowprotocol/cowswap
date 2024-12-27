@@ -1,18 +1,16 @@
 import { Fragment } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { getEtherscanLink, getExplorerLabel, shortenAddress, getExplorerAddressLink } from '@cowprotocol/common-utils'
+import { getEtherscanLink, getExplorerLabel, getExplorerAddressLink, shortenAddress } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { ExternalLink } from '@cowprotocol/ui'
 import {
   useWalletInfo,
   useWalletDetails,
   useIsWalletConnect,
-  getIsHardWareWallet,
   useDisconnectWallet,
-  useConnectionType,
   getIsInjectedMobileBrowser,
-  ConnectionType,
+  useIsSafeApp,
 } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
@@ -23,8 +21,6 @@ import {
   groupActivitiesByDay,
   useMultipleActivityDescriptors,
 } from 'legacy/hooks/useRecentActivity'
-import { useAppDispatch } from 'legacy/state/hooks'
-import { updateSelectedWallet } from 'legacy/state/user/reducer'
 
 import Activity from 'modules/account/containers/Transaction'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -47,7 +43,6 @@ import {
   WalletActions,
   WalletName,
   WalletNameAddress,
-  WalletSelector,
   WalletSecondaryActions,
   WalletWrapper,
   Wrapper,
@@ -74,8 +69,6 @@ export interface AccountDetailsProps {
   pendingTransactions: string[]
   confirmedTransactions: string[]
   ENSName?: string
-  forceHardwareWallet?: boolean
-  toggleAccountSelectorModal: Command
   handleCloseOrdersPanel: Command
 }
 
@@ -83,14 +76,11 @@ export function AccountDetails({
   pendingTransactions = [],
   confirmedTransactions = [],
   ENSName,
-  toggleAccountSelectorModal,
   handleCloseOrdersPanel,
-  forceHardwareWallet,
 }: AccountDetailsProps) {
   const { account, chainId } = useWalletInfo()
-  const connectionType = useConnectionType()
+  const isSafeApp = useIsSafeApp()
   const walletDetails = useWalletDetails()
-  const dispatch = useAppDispatch()
   const disconnectWallet = useDisconnectWallet()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const { standaloneMode } = useInjectedWidgetParams()
@@ -125,11 +115,9 @@ export function AccountDetails({
   const handleDisconnectClick = () => {
     disconnectWallet()
     handleCloseOrdersPanel()
-    dispatch(updateSelectedWallet({ wallet: undefined }))
   }
 
   const networkLabel = CHAIN_INFO[chainId].label
-  const isHardWareWallet = forceHardwareWallet || getIsHardWareWallet(connectionType)
 
   return (
     <Wrapper>
@@ -137,20 +125,13 @@ export function AccountDetails({
         <AccountGroupingRow id="web3-account-identifier-row">
           <AccountControl>
             <WalletWrapper>
-              <WalletSelector
-                isHardWareWallet={isHardWareWallet}
-                onClick={() => {
-                  if (isHardWareWallet) {
-                    toggleAccountSelectorModal()
-                  }
-                }}
-              >
+              <div>
                 <AccountIcon size={24} account={account} />
 
                 {(ENSName || account) && (
                   <WalletNameAddress>{ENSName ? ENSName : account && shortenAddress(account)}</WalletNameAddress>
                 )}
-              </WalletSelector>
+              </div>
 
               {(ENSName || account) && <Copy toCopy={ENSName ? ENSName : account ? account : ''} />}
             </WalletWrapper>
@@ -177,7 +158,7 @@ export function AccountDetails({
                     </AddressLink>
                   )}
 
-                  {standaloneMode !== false && connectionType !== ConnectionType.GNOSIS_SAFE && (
+                  {standaloneMode !== false && !isSafeApp && (
                     <WalletAction onClick={handleDisconnectClick}>
                       <Trans>Disconnect</Trans>
                     </WalletAction>

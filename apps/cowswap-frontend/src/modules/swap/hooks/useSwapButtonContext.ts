@@ -6,12 +6,12 @@ import {
   useGnosisSafeInfo,
   useIsBundlingSupported,
   useIsSmartContractWallet,
+  useOpenWalletConnectionModal,
   useWalletDetails,
   useWalletInfo,
 } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useGetQuoteAndStatus, useIsBestQuoteLoading } from 'legacy/state/price/hooks'
 import { Field } from 'legacy/state/types'
 
@@ -57,7 +57,7 @@ export function useSwapButtonContext(input: SwapButtonInput, actions: TradeWidge
     currenciesIds,
     inputError: swapInputError,
   } = useDerivedSwapInfo()
-  const toggleWalletModal = useToggleWalletModal()
+  const toggleWalletModal = useOpenWalletConnectionModal()
   const { onCurrencySelection } = useSwapActionHandlers()
   const isBestQuoteLoading = useIsBestQuoteLoading()
   const tradeConfirmActions = useTradeConfirmActions()

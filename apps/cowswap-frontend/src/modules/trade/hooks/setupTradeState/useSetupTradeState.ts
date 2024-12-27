@@ -46,13 +46,16 @@ export function useSetupTradeState(): void {
 
   const switchNetworkInWallet = useCallback(
     (targetChainId: SupportedChainId) => {
-      switchNetwork(targetChainId).catch((error: Error) => {
+      try {
+        switchNetwork(targetChainId)
+      } catch (error) {
+        // TODO: check the case
         // We are ignoring Gnosis safe context error
         // Because it's a normal situation when we are not in Gnosis safe App
         if (error.name === 'NoSafeContext') return
 
         console.error('Network switching error: ', error)
-      })
+      }
     },
     [switchNetwork],
   )

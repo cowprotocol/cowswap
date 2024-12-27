@@ -118,10 +118,6 @@ export function useUserTransactionTTL(): [number, (slippage: number) => void] {
   return [deadline, setUserDeadline]
 }
 
-export function useSelectedWallet(): string | undefined {
-  return useAppSelector(({ user: { selectedWallet } }) => selectedWallet)
-}
-
 export function serializeToken(token: Currency | TokenWithLogo): SerializedToken {
   const address = getIsNativeToken(token) ? NATIVE_CURRENCIES[token.chainId as SupportedChainId].address : token.address
 

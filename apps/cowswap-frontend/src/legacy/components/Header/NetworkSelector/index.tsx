@@ -7,7 +7,6 @@ import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { UI } from '@cowprotocol/ui'
 import { Media } from '@cowprotocol/ui'
 import { useIsRabbyWallet, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Trans } from '@lingui/macro'
 import { darken, transparentize } from 'color2k'
@@ -155,7 +154,6 @@ const NetworkAlertLabel = styled.div`
 `
 
 export function NetworkSelector() {
-  const provider = useWalletProvider()
   const { chainId } = useWalletInfo()
   const node = useRef<HTMLDivElement>(null)
   const nodeMobile = useRef<HTMLDivElement>(null)
@@ -180,7 +178,7 @@ export function NetworkSelector() {
 
   const availableChains = useAvailableChains()
 
-  if (!provider || (isSmartContractWallet && !isRabbyWallet)) {
+  if (isSmartContractWallet && !isRabbyWallet) {
     return null
   }
 

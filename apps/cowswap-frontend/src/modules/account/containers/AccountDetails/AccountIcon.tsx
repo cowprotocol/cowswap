@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { HoverTooltip } from '@cowprotocol/ui'
-import { useConnectionType, useWalletDetails } from '@cowprotocol/wallet'
+import { useWalletDetails } from '@cowprotocol/wallet'
 
 import { StatusIcon } from 'modules/wallet/pure/StatusIcon'
 
@@ -14,7 +14,6 @@ interface AccountIconProps {
 
 export const AccountIcon = ({ size = 16, account }: AccountIconProps) => {
   const walletDetails = useWalletDetails()
-  const connectionType = useConnectionType()
   const [imageLoadError, setImageLoadError] = useState(false)
 
   const { icon, walletName } = walletDetails
@@ -23,7 +22,7 @@ export const AccountIcon = ({ size = 16, account }: AccountIconProps) => {
   if (imageLoadError || isIdenticon || !icon) {
     return (
       <IconWrapper size={size}>
-        <StatusIcon size={size} account={account} connectionType={connectionType} />
+        <StatusIcon size={size} account={account} />
       </IconWrapper>
     )
   }
@@ -40,7 +39,7 @@ export const AccountIcon = ({ size = 16, account }: AccountIconProps) => {
 
   return (
     <IconWrapper size={size}>
-      <img src={icon} alt={walletName || connectionType} onError={() => setImageLoadError(true)} />
+      <img src={icon} alt={walletName} onError={() => setImageLoadError(true)} />
     </IconWrapper>
   )
 }
