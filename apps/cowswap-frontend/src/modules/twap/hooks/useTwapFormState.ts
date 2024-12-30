@@ -1,7 +1,6 @@
 import { useAtomValue } from 'jotai'
-import { useMemo } from 'react'
 
-import { useIsSafeApp, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeApp, useIsWalletConnect, useWalletCapabilities, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useReceiveAmountInfo } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
@@ -23,15 +22,18 @@ export function useTwapFormState(): TwapFormState | null {
 
   const verification = useFallbackHandlerVerification()
   const isSafeApp = useIsSafeApp()
+  const isWalletConnect = useIsWalletConnect()
+  const walletCapabilities = useWalletCapabilities()
 
-  return useMemo(() => {
-    return getTwapFormState({
-      isSafeApp,
-      verification,
-      twapOrder,
-      sellAmountPartFiat,
-      chainId,
-      partTime,
-    })
-  }, [isSafeApp, verification, twapOrder, sellAmountPartFiat, chainId, partTime])
+  // TODO: fix the condition in order to check whether is it a Safe via WC
+  const isSafeWithBundlingTx = isSafeApp || Boolean(isWalletConnect && walletCapabilities?.atomicBatch?.supported)
+
+  return getTwapFormState({
+    isSafeWithBundlingTx,
+    verification,
+    twapOrder,
+    sellAmountPartFiat,
+    chainId,
+    partTime,
+  })
 }
