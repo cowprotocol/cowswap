@@ -107,7 +107,9 @@ export type OrderInfoApi = Pick<
   | 'executedSellAmount'
   | 'executedSellAmountBeforeFees'
   | 'executedFeeAmount'
-  | 'executedSurplusFee'
+  | 'executedFee'
+  | 'executedFeeToken'
+  | 'totalFee'
   | 'invalidated'
   | 'ethflowData'
   | 'onchainOrderData'
@@ -139,6 +141,7 @@ export interface AddPendingOrderParams {
   order: SerializedOrder
   isSafeWallet: boolean
 }
+
 export type ChangeOrderStatusParams = { id: UID; chainId: ChainId }
 export type SetOrderCancellationHashParams = ChangeOrderStatusParams & { hash: string }
 
@@ -177,11 +180,13 @@ export interface BatchOrdersUpdateParams {
 }
 
 export type PresignedOrdersParams = BatchOrdersUpdateParams
+
 export interface UpdatePresignGnosisSafeTxParams {
   orderId: UID
   chainId: ChainId
   safeTransaction: SafeMultisigTransactionResponse
 }
+
 export type ExpireOrdersBatchParams = BatchOrdersUpdateParams
 export type InvalidateOrdersBatchParams = BatchOrdersUpdateParams
 export type CancelOrdersBatchParams = BatchOrdersUpdateParams
@@ -196,7 +201,7 @@ export const fulfillOrdersBatch = createAction<FulfillOrdersBatchParams>('order/
 export const preSignOrders = createAction<PresignedOrdersParams>('order/presignOrders')
 
 export const updatePresignGnosisSafeTx = createAction<UpdatePresignGnosisSafeTxParams>(
-  'order/updatePresignGnosisSafeTx'
+  'order/updatePresignGnosisSafeTx',
 )
 
 export const expireOrdersBatch = createAction<ExpireOrdersBatchParams>('order/expireOrdersBatch')
@@ -214,7 +219,7 @@ export const deleteOrders = createAction<DeleteOrdersParams>('order/deleteOrders
 export const clearOrders = createAction<{ chainId: ChainId }>('order/clearOrders')
 
 export const updateLastCheckedBlock = createAction<{ chainId: ChainId; lastCheckedBlock: number }>(
-  'order/updateLastCheckedBlock'
+  'order/updateLastCheckedBlock',
 )
 
 export const clearOrdersStorage = createAction('order/clearOrdersStorage')
