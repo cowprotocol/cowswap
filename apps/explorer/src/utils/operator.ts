@@ -370,7 +370,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
     sellAmount,
     feeAmount,
     executedFeeAmount,
-    executedSurplusFee,
+    executedFee,
     totalFee,
     invalidated,
     ...rest
@@ -396,7 +396,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
     executedSellAmount,
     feeAmount: new BigNumber(feeAmount),
     executedFeeAmount: new BigNumber(executedFeeAmount),
-    executedSurplusFee: executedSurplusFee ? new BigNumber(executedSurplusFee) : null,
+    executedFee: executedFee ? new BigNumber(executedFee) : null,
     totalFee: new BigNumber(totalFee),
     cancelled: invalidated,
     status,
