@@ -1,20 +1,8 @@
-import { CowSwapSafeAppLink, ExternalLink, InlineBanner } from '@cowprotocol/ui'
+import { ExternalLink, InlineBanner } from '@cowprotocol/ui'
 
 import { UNSUPPORTED_WALLET_LINK } from 'modules/twap/const'
 
-export function UnsupportedWalletWarning({ isSafeViaWc }: { isSafeViaWc: boolean }) {
-  if (isSafeViaWc) {
-    return (
-      <InlineBanner bannerType="information">
-        <strong>Use Safe web app</strong>
-        <p>
-          Use the Safe web app for advanced trading. <br />
-          Only available in the <CowSwapSafeAppLink />
-        </p>
-      </InlineBanner>
-    )
-  }
-
+export function UnsupportedWalletWarning() {
   return (
     <InlineBanner bannerType="alert" iconSize={32}>
       <strong>Unsupported wallet detected</strong>

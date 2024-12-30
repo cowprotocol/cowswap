@@ -11,7 +11,7 @@ import { isPartTimeIntervalTooShort } from '../../utils/isPartTimeIntervalTooSho
 import { isSellAmountTooSmall } from '../../utils/isSellAmountTooSmall'
 
 export interface TwapFormStateParams {
-  isSafeApp: boolean
+  isTxBundlingSupported: boolean
   verification: ExtensibleFallbackVerification | null
   twapOrder: TWAPOrder | null
   sellAmountPartFiat: Nullish<CurrencyAmount<Currency>>
@@ -21,16 +21,16 @@ export interface TwapFormStateParams {
 
 export enum TwapFormState {
   LOADING_SAFE_INFO = 'LOADING_SAFE_INFO',
-  NOT_SAFE = 'NOT_SAFE',
+  NOT_TX_BUNDLE_SUPPORT = 'NOT_TX_BUNDLE_SUPPORT',
   SELL_AMOUNT_TOO_SMALL = 'SELL_AMOUNT_TOO_SMALL',
   PART_TIME_INTERVAL_TOO_SHORT = 'PART_TIME_INTERVAL_TOO_SHORT',
   PART_TIME_INTERVAL_TOO_LONG = 'PART_TIME_INTERVAL_TOO_LONG',
 }
 
 export function getTwapFormState(props: TwapFormStateParams): TwapFormState | null {
-  const { twapOrder, isSafeApp, verification, sellAmountPartFiat, chainId, partTime } = props
+  const { twapOrder, isTxBundlingSupported, verification, sellAmountPartFiat, chainId, partTime } = props
 
-  if (!isSafeApp) return TwapFormState.NOT_SAFE
+  if (!isTxBundlingSupported) return TwapFormState.NOT_TX_BUNDLE_SUPPORT
 
   if (verification === null) return TwapFormState.LOADING_SAFE_INFO
 

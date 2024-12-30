@@ -7,6 +7,8 @@ export * from './constants'
 
 // Hooks
 export * from './api/hooks'
+export { useWalletCapabilities } from './api/hooks/useWalletCapabilities'
+export { useSendBatchTransactions } from './api/hooks/useSendBatchTransactions'
 export * from './web3-react/hooks/useWalletMetadata'
 export * from './web3-react/hooks/useIsWalletConnect'
 export * from './web3-react/hooks/useSafeAppsSdk'
@@ -40,10 +42,7 @@ export { gnosisSafeConnection } from './web3-react/connection/safe'
 export { walletConnectConnectionV2 } from './web3-react/connection/walletConnectV2'
 
 // Connect options
-export {
-  InjectedOption,
-  Eip6963Option,
-} from './web3-react/connection/injectedOptions'
+export { InjectedOption, Eip6963Option } from './web3-react/connection/injectedOptions'
 
 export { ConnectWalletOption } from './api/pure/ConnectWalletOption'
 export { TrezorOption } from './web3-react/connection/trezor'

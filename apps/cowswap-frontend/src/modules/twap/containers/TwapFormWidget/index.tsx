@@ -121,7 +121,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
 
   useEffect(() => {
     if (account && verification) {
-      if (localFormValidation === TwapFormState.NOT_SAFE) {
+      if (localFormValidation === TwapFormState.NOT_TX_BUNDLE_SUPPORT) {
         twapWalletCompatibilityAnalytics('non-compatible')
       } else if (isFallbackHandlerRequired) {
         twapWalletCompatibilityAnalytics('safe-that-could-be-converted')

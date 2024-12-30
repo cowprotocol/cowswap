@@ -4,7 +4,7 @@ import { currencyAmountToTokenAmount, getWrappedToken } from '@cowprotocol/commo
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import {
   useGnosisSafeInfo,
-  useIsBundlingSupported,
+  useIsTxBundlingSupported,
   useIsSmartContractWallet,
   useWalletDetails,
   useWalletInfo,
@@ -91,7 +91,7 @@ export function useSwapButtonContext(input: SwapButtonInput, actions: TradeWidge
   const isReadonlyGnosisSafeUser = gnosisSafeInfo?.isReadOnly || false
   const isSwapUnsupported = useIsTradeUnsupported(currencyIn, currencyOut)
   const isSmartContractWallet = useIsSmartContractWallet()
-  const isBundlingSupported = useIsBundlingSupported()
+  const isBundlingSupported = useIsTxBundlingSupported()
   const isPermitSupported = useTokenSupportsPermit(currencyIn, TradeType.SWAP)
 
   const quoteDeadlineParams: QuoteDeadlineParams = useMemo(

@@ -1,5 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 
+import { useWalletCapabilities } from './hooks/useWalletCapabilities'
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletDisplayedAddress, walletInfoAtom } from './state'
 import {
   multiInjectedProvidersAtom,
@@ -10,7 +11,7 @@ import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from './typ
 
 import { METAMASK_RDNS, RABBY_RDNS, WATCH_ASSET_SUPPORED_WALLETS } from '../constants'
 import { useConnectionType } from '../web3-react/hooks/useConnectionType'
-import { useIsSafeApp } from '../web3-react/hooks/useWalletMetadata'
+import { useIsSafeApp, useIsSafeViaWc } from '../web3-react/hooks/useWalletMetadata'
 
 export function useWalletInfo(): WalletInfo {
   return useAtomValue(walletInfoAtom)
@@ -28,11 +29,14 @@ export function useGnosisSafeInfo(): GnosisSafeInfo | undefined {
   return useAtomValue(gnosisSafeInfoAtom)
 }
 
-export function useIsBundlingSupported(): boolean {
+// TODO: if you want to test TWAP with others EIP-5792 wallets - keep only atomicBatch.supported
+export function useIsTxBundlingSupported(): boolean {
+  const capabilities = useWalletCapabilities()
+
   // For now, bundling can only be performed while the App is loaded as a Safe App
   // Pending a custom RPC endpoint implementation on Safe side to allow
   // tx bundling via WalletConnect
-  return useIsSafeApp()
+  return useIsSafeApp() || (useIsSafeViaWc() && !!capabilities?.atomicBatch?.supported)
 }
 
 export function useMultiInjectedProviders() {
