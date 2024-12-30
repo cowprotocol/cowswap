@@ -7,6 +7,7 @@ export * from './assets'
 // Hooks
 export * from './api/hooks'
 export { useOpenWalletConnectionModal } from './api/hooks/useOpenWalletConnectionModal'
+export { useWalletCapabilities } from './api/hooks/useWalletCapabilities'
 export * from './reown/hooks/useWalletMetadata'
 export * from './reown/hooks/useIsWalletConnect'
 export * from './reown/hooks/useSafeAppsSdk'

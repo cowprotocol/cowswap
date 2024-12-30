@@ -1,5 +1,5 @@
 import { percentToBps } from '@cowprotocol/common-utils'
-import { useIsSafeApp, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
 import { AppDataUpdater } from 'modules/appData'
@@ -16,11 +16,11 @@ import { useTwapSlippage } from '../hooks/useTwapSlippage'
 
 export function TwapUpdaters() {
   const { chainId, account } = useWalletInfo()
-  const isSafeApp = useIsSafeApp()
+  const isSafeWallet = useIsSafeWallet()
   const composableCowContract = useComposableCowContract()
   const twapOrderSlippage = useTwapSlippage()
 
-  const shouldLoadTwapOrders = !!(isSafeApp && chainId && account && composableCowContract)
+  const shouldLoadTwapOrders = !!(isSafeWallet && chainId && account && composableCowContract)
 
   return (
     <>

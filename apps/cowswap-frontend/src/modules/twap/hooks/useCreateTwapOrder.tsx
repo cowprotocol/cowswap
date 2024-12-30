@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
-import { useSafeAppsSdk, useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
@@ -17,6 +17,7 @@ import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
+import { useSendSafeTransactions } from 'common/hooks/useSendSafeTransactions'
 
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
 import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
@@ -40,7 +41,7 @@ export function useCreateTwapOrder() {
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
 
   const appDataInfo = useAppData()
-  const safeAppsSdk = useSafeAppsSdk()
+  const sendSafeTransactions = useSendSafeTransactions()
   const twapOrderCreationContext = useTwapOrderCreationContext(inputCurrencyAmount as Nullish<CurrencyAmount<Token>>)
   const extensibleFallbackContext = useExtensibleFallbackContext()
 
@@ -60,7 +61,6 @@ export function useCreateTwapOrder() {
         !outputCurrencyAmount ||
         !twapOrderCreationContext ||
         !extensibleFallbackContext ||
-        !safeAppsSdk ||
         !appDataInfo ||
         !twapOrder
       )
@@ -101,7 +101,7 @@ export function useCreateTwapOrder() {
         // upload the app data here, as application might need it to decode the order info before it is being signed
         uploadAppData({ chainId, orderId, appData: appDataInfo })
         const createOrderTxs = createTwapOrderTxs(twapOrder, paramsStruct, twapOrderCreationContext)
-        const { safeTxHash } = await safeAppsSdk.txs.send({ txs: [...fallbackSetupTxs, ...createOrderTxs] })
+        const safeTxHash = await sendSafeTransactions([...fallbackSetupTxs, ...createOrderTxs])
 
         const orderItem: TwapOrderItem = {
           order: twapOrderToStruct(twapOrder),
@@ -150,7 +150,7 @@ export function useCreateTwapOrder() {
       outputCurrencyAmount,
       twapOrderCreationContext,
       extensibleFallbackContext,
-      safeAppsSdk,
+      sendSafeTransactions,
       appDataInfo,
       twapOrder,
       confirmPriceImpactWithoutFee,
@@ -159,6 +159,6 @@ export function useCreateTwapOrder() {
       addTwapOrderToList,
       uploadAppData,
       updateAdvancedOrdersState,
-    ]
+    ],
   )
 }
