@@ -1,6 +1,3 @@
-// TODO: Enable once API is ready
-// import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
-
 import { useMemo } from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
@@ -8,13 +5,13 @@ import { Nullish } from '@cowprotocol/ui'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
+import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
 import { ZERO_BIG_NUMBER } from 'const'
 import styled from 'styled-components/macro'
 import { formatSmartMaxPrecision, safeTokenName } from 'utils'
 
 import { Order } from 'api/operator'
 
-import { NumbersBreakdown } from '../NumbersBreakdown'
 
 const Wrapper = styled.div`
   > span {
