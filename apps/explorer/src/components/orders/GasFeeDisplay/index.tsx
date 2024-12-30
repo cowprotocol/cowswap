@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 
-import { isSellOrder } from '@cowprotocol/common-utils'
 import { Nullish } from '@cowprotocol/ui'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
@@ -11,7 +10,6 @@ import styled from 'styled-components/macro'
 import { formatSmartMaxPrecision, safeTokenName } from 'utils'
 
 import { Order } from 'api/operator'
-
 
 const Wrapper = styled.div`
   > span {
@@ -71,51 +69,53 @@ export function GasFeeDisplay({ order }: Props): React.ReactNode | null {
   )
 }
 
-function getFeeDisplayAmounts(order: Order) {
-  const {
-    kind,
-    networkCosts,
-    protocolFees,
-    sellToken,
-    sellTokenAddress,
-    buyToken,
-    buyTokenAddress,
-    totalFee,
-    feeAmount,
-  } = order
-
-  const isSell = isSellOrder(kind)
-
-  let quoteSymbol = ''
-  let formattedNetworkCosts = ''
-  let formattedProtocolFees = ''
-  let formattedExecutedFee = ''
-  let formattedTotalFee = ''
-
-  // When these 2 are set, for sure we have new style fees
-  if (networkCosts || protocolFees) {
-    if (isSell) {
-      quoteSymbol = buyToken ? safeTokenName(buyToken) : buyTokenAddress
-      formattedNetworkCosts = getFormattedAmount(networkCosts || ZERO_BIG_NUMBER, buyToken)
-      formattedProtocolFees = getFormattedAmount(protocolFees || ZERO_BIG_NUMBER, buyToken)
-      formattedExecutedFee = getFormattedAmount(totalFee, buyToken)
-      formattedTotalFee = getFormattedAmount(feeAmount, buyToken)
-    } else {
-      quoteSymbol = sellToken ? safeTokenName(sellToken) : sellTokenAddress
-      formattedNetworkCosts = getFormattedAmount(networkCosts || ZERO_BIG_NUMBER, sellToken)
-      formattedProtocolFees = getFormattedAmount(protocolFees || ZERO_BIG_NUMBER, sellToken)
-      formattedExecutedFee = getFormattedAmount(totalFee, sellToken)
-      formattedTotalFee = getFormattedAmount(feeAmount, sellToken)
-    }
-  } else {
-    // Otherwise, it can have no fees OR be old style fees, without the policies
-    // TODO: handle old and new styles, as the fee token will vary! (always sell for old vs surplus token for new)
-    quoteSymbol = sellToken ? safeTokenName(sellToken) : sellTokenAddress
-    formattedNetworkCosts = ''
-    formattedProtocolFees = ''
-    formattedExecutedFee = getFormattedAmount(totalFee, sellToken)
-    formattedTotalFee = getFormattedAmount(feeAmount, sellToken)
+function getFeeToken(order: Order) {
+  const { sellToken, buyToken } = order
+  const { executedFeeToken } = order
+  if (sellToken?.address.toLowerCase() === executedFeeToken?.toLowerCase()) {
+    return sellToken
   }
+  if (buyToken?.address.toLowerCase() === executedFeeToken?.toLowerCase()) {
+    return buyToken
+  }
+  return undefined
+}
+
+function getFeeDisplayAmounts(order: Order) {
+  const { networkCosts, protocolFees, totalFee, executedFeeToken, feeAmount } = order
+
+  const feeToken = getFeeToken(order)
+
+  const quoteSymbol = feeToken ? safeTokenName(feeToken) : executedFeeToken
+  const formattedNetworkCosts = getFormattedAmount(networkCosts || ZERO_BIG_NUMBER, feeToken)
+  const formattedProtocolFees = getFormattedAmount(protocolFees || ZERO_BIG_NUMBER, feeToken)
+  const formattedExecutedFee = getFormattedAmount(totalFee, feeToken)
+  const formattedTotalFee = getFormattedAmount(feeAmount, feeToken)
+  //
+  // // When these 2 are set, for sure we have new style fees
+  // if (networkCosts || protocolFees) {
+  //   if (isSell) {
+  //     quoteSymbol = feeToken ? safeTokenName(feeToken) : executedFeeToken
+  //     formattedNetworkCosts = getFormattedAmount(networkCosts || ZERO_BIG_NUMBER, feeToken)
+  //     formattedProtocolFees = getFormattedAmount(protocolFees || ZERO_BIG_NUMBER, feeToken)
+  //     formattedExecutedFee = getFormattedAmount(totalFee, feeToken)
+  //     formattedTotalFee = getFormattedAmount(feeAmount, feeToken)
+  //   } else {
+  //     quoteSymbol = feeToken ? safeTokenName(feeToken) : executedFeeToken
+  //     formattedNetworkCosts = getFormattedAmount(networkCosts || ZERO_BIG_NUMBER, feeToken)
+  //     formattedProtocolFees = getFormattedAmount(protocolFees || ZERO_BIG_NUMBER, feeToken)
+  //     formattedExecutedFee = getFormattedAmount(totalFee, feeToken)
+  //     formattedTotalFee = getFormattedAmount(feeAmount, feeToken)
+  //   }
+  // } else {
+  //   // Otherwise, it can have no fees OR be old style fees, without the policies
+  //   // TODO: handle old and new styles, as the fee token will vary! (always sell for old vs surplus token for new)
+  //   quoteSymbol = sellToken ? safeTokenName(sellToken) : sellTokenAddress
+  //   formattedNetworkCosts = ''
+  //   formattedProtocolFees = ''
+  //   formattedExecutedFee = getFormattedAmount(totalFee, sellToken)
+  //   formattedTotalFee = getFormattedAmount(feeAmount, sellToken)
+  // }
 
   return {
     quoteSymbol,
