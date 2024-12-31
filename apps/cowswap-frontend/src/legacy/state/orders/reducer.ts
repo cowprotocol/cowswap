@@ -121,7 +121,7 @@ export function getDefaultNetworkState(chainId: ChainId): OrdersStateNetwork {
 // makes sure there's always an object at state[chainId], state[chainId].pending | .fulfilled
 function prefillState(
   state: Writable<OrdersState>,
-  { payload: { chainId } }: PayloadAction<PrefillStateRequired>
+  { payload: { chainId } }: PayloadAction<PrefillStateRequired>,
 ): asserts state is Required<OrdersState> {
   const stateAtChainId = state[chainId]
 
@@ -174,7 +174,7 @@ function addOrderToState(
   id: string,
   status: OrderTypeKeys,
   order: SerializedOrder,
-  isSafeWallet: boolean
+  isSafeWallet: boolean,
 ): void {
   // Attempt to fix `TypeError: Cannot add property <x>, object is not extensible`
   // seen on https://user-images.githubusercontent.com/34510341/138450105-bb94a2d1-656e-4e15-ae99-df9fb33c8ca4.png
@@ -200,7 +200,7 @@ function cancelOrderInState(
   state: Required<OrdersState>,
   chainId: ChainId,
   orderObject: OrderObject,
-  isSafeWallet: boolean
+  isSafeWallet: boolean,
 ) {
   const id = orderObject.id
 
@@ -368,12 +368,13 @@ export default createReducer(initialState, (builder) =>
 
           orderObject.order.apiAdditionalInfo = {
             creationDate: order.creationDate,
-            availableBalance: order.availableBalance,
             executedBuyAmount: order.executedBuyAmount,
             executedSellAmount: order.executedSellAmount,
             executedSellAmountBeforeFees: order.executedSellAmountBeforeFees,
             executedFeeAmount: order.executedFeeAmount,
-            executedSurplusFee: order.executedSurplusFee,
+            executedFee: order.executedFee,
+            executedFeeToken: order.executedFeeToken,
+            totalFee: order.totalFee,
             invalidated: order.invalidated,
             ethflowData: order.ethflowData,
             onchainOrderData: order.onchainOrderData,
@@ -458,7 +459,7 @@ export default createReducer(initialState, (builder) =>
             const allOrdersMap = flatOrdersStateNetwork(state[chainId])
 
             const children = Object.values(allOrdersMap).filter(
-              (item) => item?.order.composableCowInfo?.parentId === id
+              (item) => item?.order.composableCowInfo?.parentId === id,
             )
 
             children.forEach((child) => {
@@ -544,12 +545,12 @@ export default createReducer(initialState, (builder) =>
           orderListByChain[status] = ordersCleaned
         })
       })
-    })
+    }),
 )
 
 function reClassifyOrder(
   newOrder: SerializedOrder,
-  existingOrder: OrderObject | undefined
+  existingOrder: OrderObject | undefined,
 ): { status: OrderStatus; isCancelling: boolean | undefined } {
   // Onchain cancellations are considered final
   // Still, the order classification at apps/cowswap-frontend/src/legacy/state/orders/utils.ts can't tell

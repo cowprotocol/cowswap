@@ -18,7 +18,15 @@ export type RawOrder = EnrichedOrder
  */
 export type Order = Pick<
   RawOrder,
-  'owner' | 'uid' | 'appData' | 'kind' | 'partiallyFillable' | 'signature' | 'class' | 'fullAppData'
+  | 'owner'
+  | 'uid'
+  | 'appData'
+  | 'kind'
+  | 'partiallyFillable'
+  | 'signature'
+  | 'class'
+  | 'fullAppData'
+  | 'executedFeeToken'
 > & {
   receiver: string
   txHash?: string
@@ -35,7 +43,7 @@ export type Order = Pick<
   executedSellAmount: BigNumber
   feeAmount: BigNumber
   executedFeeAmount: BigNumber
-  executedSurplusFee: BigNumber | null
+  executedFee: BigNumber | null
   totalFee: BigNumber
   cancelled: boolean
   status: OrderStatus
@@ -60,7 +68,7 @@ export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHas
   kind?: OrderKind
   buyAmount: BigNumber
   sellAmount: BigNumber
-  executedSurplusFee?: BigNumber
+  executedFee?: BigNumber
   sellAmountBeforeFees: BigNumber
   buyToken?: TokenErc20 | null
   buyTokenAddress: string
