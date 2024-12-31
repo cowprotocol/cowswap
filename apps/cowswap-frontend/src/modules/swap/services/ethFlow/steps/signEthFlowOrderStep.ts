@@ -79,7 +79,7 @@ export async function signEthFlowOrderStep(
     ...ethTxOptions,
     gasLimit: calculateGasMargin(estimatedGas),
   })
-  const txReceipt = await ethFlowContract.signer.sendTransaction({ ...tx, chainId: orderParams.chainId })
+  const txReceipt = await ethFlowContract.signer.sendTransaction({ ...tx, chainId: network.chainId })
 
   addInFlightOrderId(orderId)
 
