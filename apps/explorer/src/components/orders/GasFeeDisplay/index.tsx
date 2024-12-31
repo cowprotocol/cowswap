@@ -1,6 +1,10 @@
-// TODO: Enable once API is ready
-// import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
+import { useMemo } from 'react'
 
+import { Nullish } from '@cowprotocol/ui'
+
+import { TokenErc20 } from '@gnosis.pm/dex-js'
+import BigNumber from 'bignumber.js'
+import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
 import { ZERO_BIG_NUMBER } from 'const'
 import styled from 'styled-components/macro'
 import { formatSmartMaxPrecision, safeTokenName } from 'utils'
@@ -15,55 +19,11 @@ const Wrapper = styled.div`
 
 export type Props = { order: Order }
 
-// TODO: Enable once API is ready
-// const fetchFeeBreakdown = async (initialFee: string): Promise<any> => {
-//   // TODO: Simulating API call to fetch fee breakdown data
-//   return new Promise((resolve) => {
-//     resolve({
-//       networkCosts: 'TODO: Get network costs here',
-//       fee: 'TODO: Get fee here',
-//       total: initialFee,
-//     })
-//   })
-// }
+export function GasFeeDisplay({ order }: Props): React.ReactNode | null {
+  const { feeAmount, totalFee, fullyFilled } = order
 
-// TODO: Enable once API is ready
-// const renderFeeBreakdown = (data: any): React.ReactNode => {
-//   return (
-//     <table>
-//       <tbody>
-//         <tr>
-//           <td>Network Costs:</td>
-//           <td>{data.networkCosts}</td>
-//         </tr>
-//         <tr>
-//           <td>Fee:</td>
-//           <td>{data.fee}</td>
-//         </tr>
-//         <tr>
-//           <td>Total Costs & Fees:</td>
-//           <td>{data.total}</td>
-//         </tr>
-//       </tbody>
-//     </table>
-//   )
-// }
-
-export function GasFeeDisplay(props: Props): React.ReactNode | null {
-  const {
-    order: { feeAmount, sellToken, sellTokenAddress, fullyFilled, totalFee },
-  } = props
-
-  let formattedExecutedFee: string = totalFee.toString(10)
-  let formattedTotalFee: string = feeAmount.toString(10)
-  let quoteSymbol: string = sellTokenAddress
-
-  if (sellToken) {
-    formattedExecutedFee = formatSmartMaxPrecision(totalFee, sellToken)
-    formattedTotalFee = formatSmartMaxPrecision(feeAmount, sellToken)
-
-    quoteSymbol = safeTokenName(sellToken)
-  }
+  const { quoteSymbol, formattedNetworkCosts, formattedProtocolFees, formattedExecutedFee, formattedTotalFee } =
+    useMemo(() => getFeeDisplayAmounts(order), [order])
 
   const noFee = feeAmount.isZero() && totalFee.isZero()
 
@@ -83,11 +43,89 @@ export function GasFeeDisplay(props: Props): React.ReactNode | null {
   return (
     <Wrapper>
       {FeeElement}
-      {/*TODO: Enable once API is ready*/}
-      {/*<NumbersBreakdown*/}
-      {/*  fetchData={() => fetchFeeBreakdown(`${formattedExecutedFee} ${quoteSymbol}`)}*/}
-      {/*  renderContent={renderFeeBreakdown}*/}
-      {/*/>*/}
+      <NumbersBreakdown>
+        <table>
+          <tbody>
+            {formattedNetworkCosts && (
+              <tr>
+                <td>Network Costs:</td>
+                <td>{formattedNetworkCosts}</td>
+              </tr>
+            )}
+            {formattedProtocolFees && (
+              <tr>
+                <td>Fee:</td>
+                <td>{formattedProtocolFees}</td>
+              </tr>
+            )}
+            <tr>
+              <td>Total Costs & Fees:</td>
+              <td>{formattedExecutedFee}</td>
+            </tr>
+          </tbody>
+        </table>
+      </NumbersBreakdown>
     </Wrapper>
   )
+}
+
+function getFeeToken(order: Order) {
+  const { sellToken, buyToken } = order
+  const { executedFeeToken } = order
+  if (sellToken?.address.toLowerCase() === executedFeeToken?.toLowerCase()) {
+    return sellToken
+  }
+  if (buyToken?.address.toLowerCase() === executedFeeToken?.toLowerCase()) {
+    return buyToken
+  }
+  return undefined
+}
+
+function getFeeDisplayAmounts(order: Order) {
+  const { networkCosts, protocolFees, totalFee, executedFeeToken, feeAmount } = order
+
+  const feeToken = getFeeToken(order)
+
+  const quoteSymbol = feeToken ? safeTokenName(feeToken) : executedFeeToken
+  const formattedNetworkCosts = getFormattedAmount(networkCosts || ZERO_BIG_NUMBER, feeToken)
+  const formattedProtocolFees = getFormattedAmount(protocolFees || ZERO_BIG_NUMBER, feeToken)
+  const formattedExecutedFee = getFormattedAmount(totalFee, feeToken)
+  const formattedTotalFee = getFormattedAmount(feeAmount, feeToken)
+  //
+  // // When these 2 are set, for sure we have new style fees
+  // if (networkCosts || protocolFees) {
+  //   if (isSell) {
+  //     quoteSymbol = feeToken ? safeTokenName(feeToken) : executedFeeToken
+  //     formattedNetworkCosts = getFormattedAmount(networkCosts || ZERO_BIG_NUMBER, feeToken)
+  //     formattedProtocolFees = getFormattedAmount(protocolFees || ZERO_BIG_NUMBER, feeToken)
+  //     formattedExecutedFee = getFormattedAmount(totalFee, feeToken)
+  //     formattedTotalFee = getFormattedAmount(feeAmount, feeToken)
+  //   } else {
+  //     quoteSymbol = feeToken ? safeTokenName(feeToken) : executedFeeToken
+  //     formattedNetworkCosts = getFormattedAmount(networkCosts || ZERO_BIG_NUMBER, feeToken)
+  //     formattedProtocolFees = getFormattedAmount(protocolFees || ZERO_BIG_NUMBER, feeToken)
+  //     formattedExecutedFee = getFormattedAmount(totalFee, feeToken)
+  //     formattedTotalFee = getFormattedAmount(feeAmount, feeToken)
+  //   }
+  // } else {
+  //   // Otherwise, it can have no fees OR be old style fees, without the policies
+  //   // TODO: handle old and new styles, as the fee token will vary! (always sell for old vs surplus token for new)
+  //   quoteSymbol = sellToken ? safeTokenName(sellToken) : sellTokenAddress
+  //   formattedNetworkCosts = ''
+  //   formattedProtocolFees = ''
+  //   formattedExecutedFee = getFormattedAmount(totalFee, sellToken)
+  //   formattedTotalFee = getFormattedAmount(feeAmount, sellToken)
+  // }
+
+  return {
+    quoteSymbol,
+    formattedNetworkCosts,
+    formattedProtocolFees,
+    formattedExecutedFee,
+    formattedTotalFee,
+  }
+}
+
+function getFormattedAmount(amount: BigNumber, token: Nullish<TokenErc20>): string {
+  return token ? formatSmartMaxPrecision(amount, token) : amount.toString(10)
 }
