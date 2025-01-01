@@ -36,6 +36,7 @@ import { getQuoteValidFor } from 'utils/orderUtils/getQuoteValidFor'
 import { ApiErrorCodes } from './errors/OperatorError'
 import QuoteApiError, { mapOperatorErrorToQuoteError, QuoteApiErrorDetails } from './errors/QuoteError'
 import { getIsOrderBookTypedError } from './getIsOrderBookTypedError'
+export { getIsOrderBookTypedError } from './getIsOrderBookTypedError'
 
 function getProfileUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -154,7 +155,6 @@ function _getAppDataQuoteParams(params: FeeQuoteParams) {
 }
 
 export async function getQuote(params: FeeQuoteParams): Promise<OrderQuoteResponse> {
-  console.log(`ANXO: getQuote (${params.priceQuality})`, params)
   const { chainId } = params
   const quoteParams = _mapNewToLegacyParams(params)
   const { sellToken, buyToken } = quoteParams
