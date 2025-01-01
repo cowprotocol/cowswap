@@ -35,7 +35,14 @@ export async function safeBundleEthFlow(
     return false
   }
 
-  const { context, callbacks, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks } = tradeContext
+  const {
+    context,
+    callbacks,
+    swapFlowAnalyticsContext,
+    tradeConfirmActions,
+    typedHooks,
+    flags: { isPartialApprove },
+  } = tradeContext
 
   const { spender, settlementContract, safeAppsSdk, needsApproval, wrappedNativeContract } = safeBundleContext
 
@@ -73,6 +80,7 @@ export async function safeBundleEthFlow(
         erc20Contract: wrappedNativeContract as unknown as Erc20,
         spender,
         amountToApprove: inputAmount,
+        isPartialApprove,
       })
 
       txs.push({

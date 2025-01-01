@@ -37,7 +37,17 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
 }
 
 async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHookData> {
-  const { inputToken, spender, chainId, permitInfo, provider, account, eip2162Utils, nonce: preFetchedNonce } = params
+  const {
+    inputToken,
+    spender,
+    chainId,
+    permitInfo,
+    provider,
+    account,
+    eip2162Utils,
+    nonce: preFetchedNonce,
+    amount,
+  } = params
 
   const tokenAddress = inputToken.address
   // TODO: remove the need for `name` from input token. Should come from permitInfo instead
@@ -58,7 +68,7 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
   const nonce = preFetchedNonce === undefined ? await eip2162Utils.getTokenNonce(tokenAddress, owner) : preFetchedNonce
 
   const deadline = getPermitDeadline()
-  const value = DEFAULT_PERMIT_VALUE
+  const value = amount ? amount.toString() : DEFAULT_PERMIT_VALUE
 
   const callData =
     permitInfo.type === 'eip-2612'

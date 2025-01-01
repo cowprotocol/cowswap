@@ -14,6 +14,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useGetQuoteAndStatus, useIsBestQuoteLoading } from 'legacy/state/price/hooks'
 import { Field } from 'legacy/state/types'
+import { usePartialApprove } from 'legacy/state/user/hooks'
 
 import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -63,6 +64,7 @@ export function useSwapButtonContext(input: SwapButtonInput, actions: TradeWidge
   const tradeConfirmActions = useTradeConfirmActions()
   const { standaloneMode } = useInjectedWidgetParams()
   const isHooksStore = useIsHooksTradeType()
+  const [isPartialApprove] = usePartialApprove()
 
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
@@ -143,6 +145,7 @@ export function useSwapButtonContext(input: SwapButtonInput, actions: TradeWidge
       onCurrencySelection,
       widgetStandaloneMode: standaloneMode,
       quoteDeadlineParams,
+      isPartialApprove,
     }),
     [
       swapButtonState,
@@ -159,6 +162,7 @@ export function useSwapButtonContext(input: SwapButtonInput, actions: TradeWidge
       onCurrencySelection,
       standaloneMode,
       quoteDeadlineParams,
+      isPartialApprove,
     ],
   )
 }

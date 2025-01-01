@@ -26,6 +26,7 @@ const swapButtonsContext: SwapButtonsContext = {
   openSwapConfirm: () => void 0,
   toggleWalletModal: () => void 0,
   hasEnoughWrappedBalanceForSwap: true,
+  isPartialApprove: false,
   quoteDeadlineParams: {
     validFor: 0,
     quoteValidTo: 0,
