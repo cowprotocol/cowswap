@@ -3,27 +3,39 @@ import React from 'react'
 import { escapeRegExp } from '@cowprotocol/common-utils'
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import { autofocus } from 'common/utils/autofocus'
 
-const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`
+const textStyle = css<{ error?: boolean; fontSize?: string }>`
   color: ${({ error }) => (error ? `var(${UI.COLOR_DANGER})` : 'inherit')};
+  font-size: ${({ fontSize }) => fontSize ?? '28px'};
+  font-weight: 500;
+`
+
+const PrependSymbol = styled.span<{ error?: boolean; fontSize?: string }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  user-select: none;
+  ${textStyle}
+`
+
+const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`
+  ${textStyle}
   width: 0;
   position: relative;
-  font-weight: 500;
   outline: none;
   border: none;
   flex: 1 1 auto;
   background-color: var(${UI.COLOR_PAPER});
-  font-size: ${({ fontSize }) => fontSize ?? '28px'};
-  text-align: ${({ align }) => align && align};
+  text-align: ${({ align }) => align || 'right'};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 0px;
   appearance: textfield;
-  text-align: right;
 
   ::-webkit-search-decoration {
     -webkit-appearance: none;
@@ -70,41 +82,48 @@ export const Input = React.memo(function InnerInput({
   }
 
   return (
-    <StyledInput
-      {...rest}
-      value={prependSymbol && value ? prependSymbol + value : value}
-      readOnly={readOnly}
-      onFocus={(event) => {
-        autofocus(event)
-        onFocus?.(event)
-      }}
-      onChange={(event) => {
-        if (prependSymbol) {
-          const value = event.target.value
+    <>
+      {prependSymbol && (
+        <PrependSymbol error={rest.error} fontSize={rest.fontSize}>
+          {prependSymbol}
+        </PrependSymbol>
+      )}
+      <StyledInput
+        {...rest}
+        value={value}
+        readOnly={readOnly}
+        onFocus={(event) => {
+          autofocus(event)
+          onFocus?.(event)
+        }}
+        onChange={(event) => {
+          if (prependSymbol) {
+            const value = event.target.value
 
-          // cut off prepended symbol
-          const formattedValue = value.toString().includes(prependSymbol)
-            ? value.toString().slice(1, value.toString().length + 1)
-            : value
+            // cut off prepended symbol
+            const formattedValue = value.toString().includes(prependSymbol)
+              ? value.toString().slice(1, value.toString().length + 1)
+              : value
 
-          // replace commas with periods, because uniswap exclusively uses period as the decimal separator
-          enforcer(formattedValue.replace(/,/g, '.'))
-        } else {
-          enforcer(event.target.value.replace(/,/g, '.'))
-        }
-      }}
-      // universal input options
-      inputMode="decimal"
-      autoComplete="off"
-      autoCorrect="off"
-      // text-specific options
-      type={type || 'text'}
-      pattern="^[0-9]*[.,]?[0-9]*$"
-      placeholder={placeholder || '0.0'}
-      minLength={1}
-      maxLength={32}
-      spellCheck="false"
-    />
+            // replace commas with periods, because uniswap exclusively uses period as the decimal separator
+            enforcer(formattedValue.replace(/,/g, '.'))
+          } else {
+            enforcer(event.target.value.replace(/,/g, '.'))
+          }
+        }}
+        // universal input options
+        inputMode="decimal"
+        autoComplete="off"
+        autoCorrect="off"
+        // text-specific options
+        type={type || 'text'}
+        pattern="^[0-9]*[.,]?[0-9]*$"
+        placeholder={placeholder || '0.0'}
+        minLength={1}
+        maxLength={32}
+        spellCheck="false"
+      />
+    </>
   )
 })
 
