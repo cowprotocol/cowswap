@@ -117,8 +117,15 @@ const COLUMN_LAYOUT_LABELS = {
 }
 
 export function Settings({ state, onStateChanged }: SettingsProps) {
-  const { showRecipient, partialFillsEnabled, limitPricePosition, limitPriceLocked, columnLayout, ordersTableOnLeft } =
-    state
+  const {
+    showRecipient,
+    partialFillsEnabled,
+    limitPricePosition,
+    limitPriceLocked,
+    columnLayout,
+    ordersTableOnLeft,
+    isUsdValuesMode,
+  } = state
   const [isOpen, setIsOpen] = useState(false)
   const [isColumnLayoutOpen, setIsColumnLayoutOpen] = useState(false)
 
@@ -180,6 +187,13 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
         tooltip="When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
         value={limitPriceLocked}
         toggle={() => onStateChanged({ limitPriceLocked: !limitPriceLocked })}
+      />
+
+      <SettingsBox
+        title="Global USD Mode"
+        tooltip="When enabled, all prices will be displayed in USD by default."
+        value={isUsdValuesMode}
+        toggle={() => onStateChanged({ isUsdValuesMode: !isUsdValuesMode })}
       />
 
       <SettingsBox
