@@ -107,13 +107,20 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
 
   const onUserInputDispatch = useCallback(
     (typedValue: string) => {
-      const value = convertUsdToTokenValue(typedValue, isUsdValuesMode)
+      // Always pass through empty string to allow clearing
+      if (typedValue === '') {
+        setTypedValue('')
+        onUserInput(field, '')
+        return
+      }
 
-      setTypedValue(value)
+      const value = convertUsdToTokenValue(typedValue, isUsdValuesMode)
+      setTypedValue(typedValue)
       onUserInput(field, value)
     },
-    [onUserInput, field, viewAmount, convertUsdToTokenValue, isUsdValuesMode],
+    [onUserInput, field, convertUsdToTokenValue, isUsdValuesMode],
   )
+
   const handleMaxInput = useCallback(() => {
     if (!maxBalance) {
       return
@@ -125,16 +132,20 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
       onUserInputDispatch(value.toExact())
       setMaxSellTokensAnalytics()
     }
-  }, [maxBalance, onUserInputDispatch, convertUsdToTokenValue, isUsdValuesMode, maxBalanceUsdAmount])
+  }, [maxBalance, onUserInputDispatch, isUsdValuesMode, maxBalanceUsdAmount])
 
   useEffect(() => {
-    const areValuesSame = parseFloat(viewAmount) === parseFloat(typedValue)
+    // Compare the actual string values to preserve trailing decimals
+    if (viewAmount === typedValue) return
 
-    // Don't override typedValue when, for example: viewAmount = 5  and typedValue = 5.
-    if (areValuesSame) return
+    // Don't override empty input
+    if (viewAmount === '' && typedValue === '') return
 
-    // Don't override typedValue, when viewAmount from props and typedValue are zero (0 or 0. or 0.000)
-    if (!viewAmount && (!typedValue || parseFloat(typedValue) === 0)) return
+    // Don't override when typing a decimal
+    if (typedValue.endsWith('.')) return
+
+    // Don't override when the values are numerically equal (e.g., "5." and "5")
+    if (parseFloat(viewAmount || '0') === parseFloat(typedValue || '0')) return
 
     setTypedValue(viewAmount)
     // We don't need triggering from typedValue changes
@@ -151,7 +162,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     <styledEl.NumericalInput
       className="token-amount-input"
       prependSymbol={isUsdValuesMode ? '$' : ''}
-      value={isChainIdUnsupported ? '' : isUsdValuesMode ? viewAmount : typedValue}
+      value={isChainIdUnsupported ? '' : typedValue}
       readOnly={inputDisabled}
       onUserInput={onUserInputDispatch}
       $loading={areCurrenciesLoading}

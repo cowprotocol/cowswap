@@ -74,21 +74,52 @@ export function RateInput() {
   // Handle rate input
   const handleUserInput = useCallback(
     (typedValue: string) => {
+      // Always pass through empty string to allow clearing
+      if (typedValue === '') {
+        setTypedTrailingZeros('')
+        updateLimitRateState({ typedValue: '' })
+        updateRate({
+          activeRate: null,
+          isTypedValue: true,
+          isRateFromUrl: false,
+          isAlternativeOrderRate: false,
+        })
+        return
+      }
+
+      // Keep the trailing decimal point or zeros
       const trailing = typedValue.slice(displayedRate.length)
+      const hasTrailingDecimal = typedValue.endsWith('.')
       const onlyTrailingZeroAdded = typedValue.includes('.') && /^0+$/.test(trailing)
 
       /**
-       * Since we convert USD to token value, we need to handle trailing zeros separately, otherwise we will lose them
+       * Since we convert USD to token value, we need to handle trailing zeros and decimal points separately.
+       * If we don't, they will be lost during the conversion between USD and token values.
        */
-      if (onlyTrailingZeroAdded) {
+      if (hasTrailingDecimal || onlyTrailingZeroAdded) {
         setTypedTrailingZeros(trailing)
+
+        // For trailing decimal, we also need to update the base value
+        if (hasTrailingDecimal && !onlyTrailingZeroAdded) {
+          const baseValue = typedValue.slice(0, -1) // Remove the trailing decimal for conversion
+          const value = convertUsdToTokenValue(baseValue, isUsdRateMode)
+          updateLimitRateState({ typedValue: value })
+          updateRate({
+            activeRate: toFraction(value, isInverted),
+            isTypedValue: true,
+            isRateFromUrl: false,
+            isAlternativeOrderRate: false,
+          })
+        }
         return
       }
 
       setTypedTrailingZeros('')
 
+      // Convert to token value if in USD mode
       const value = convertUsdToTokenValue(typedValue, isUsdRateMode)
 
+      // Update the rate state with the new value
       updateLimitRateState({ typedValue: value })
       updateRate({
         activeRate: toFraction(value, isInverted),

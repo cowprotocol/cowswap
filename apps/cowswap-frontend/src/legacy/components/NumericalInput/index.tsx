@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { escapeRegExp } from '@cowprotocol/common-utils'
 import { UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
@@ -55,7 +54,8 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
   }
 `
 
-const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`) // match escaped "." characters via in a non-capturing group
+// Allow decimal point at any position, including at the end
+const inputRegex = /^(\d*\.?\d*)?$/
 
 export const Input = React.memo(function InnerInput({
   value,
@@ -63,7 +63,6 @@ export const Input = React.memo(function InnerInput({
   onUserInput,
   placeholder,
   prependSymbol,
-  type,
   onFocus,
   ...rest
 }: {
@@ -75,9 +74,38 @@ export const Input = React.memo(function InnerInput({
   align?: 'right' | 'left'
   prependSymbol?: string | undefined
 } & Omit<React.HTMLProps<HTMLInputElement>, 'ref' | 'onChange' | 'as'>) {
+  // Keep the input strictly as a string
+  const stringValue = typeof value === 'string' ? value : String(value)
+
   const enforcer = (nextUserInput: string) => {
-    if (nextUserInput === '' || inputRegex.test(escapeRegExp(nextUserInput))) {
-      onUserInput(nextUserInput)
+    // Always allow empty input
+    if (nextUserInput === '') {
+      onUserInput('')
+      return
+    }
+
+    // Convert commas to dots
+    const sanitizedValue = nextUserInput.replace(/,/g, '.')
+
+    // Allow the value if it matches our number format
+    if (inputRegex.test(sanitizedValue)) {
+      onUserInput(sanitizedValue)
+    }
+  }
+
+  const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
+    const pastedText = event.clipboardData.getData('text')
+
+    // Clean up pasted content - only allow numbers and single decimal
+    const cleanedText = pastedText
+      .replace(/,/g, '.') // Convert commas to dots
+      .replace(/[^\d.]/g, '') // Remove non-numeric/dot chars
+      .replace(/(\..*)\./g, '$1') // Keep only the first decimal point
+      .replace(/\.$/, '') // Remove trailing decimal point
+
+    if (inputRegex.test(cleanedText)) {
+      event.preventDefault()
+      enforcer(cleanedText)
     }
   }
 
@@ -90,37 +118,36 @@ export const Input = React.memo(function InnerInput({
       )}
       <StyledInput
         {...rest}
-        value={value}
+        value={stringValue}
         readOnly={readOnly}
         onFocus={(event) => {
           autofocus(event)
           onFocus?.(event)
         }}
         onChange={(event) => {
+          const rawValue = event.target.value
+
           if (prependSymbol) {
-            const value = event.target.value
-
-            // cut off prepended symbol
-            const formattedValue = value.toString().includes(prependSymbol)
-              ? value.toString().slice(1, value.toString().length + 1)
-              : value
-
-            // replace commas with periods, because uniswap exclusively uses period as the decimal separator
-            enforcer(formattedValue.replace(/,/g, '.'))
+            // Remove prepended symbol if it appears in rawValue
+            const formattedValue = rawValue.includes(prependSymbol) ? rawValue.slice(prependSymbol.length) : rawValue
+            enforcer(formattedValue)
           } else {
-            enforcer(event.target.value.replace(/,/g, '.'))
+            enforcer(rawValue)
           }
         }}
-        // universal input options
+        onPaste={handlePaste}
+        // Use text inputMode so decimals can be typed
         inputMode="decimal"
         autoComplete="off"
         autoCorrect="off"
-        // text-specific options
-        type={type || 'text'}
-        pattern="^[0-9]*[.,]?[0-9]*$"
-        placeholder={placeholder || '0.0'}
-        minLength={1}
-        maxLength={32}
+        // Keep type="text" to preserve trailing decimals
+        type="text"
+        // Remove pattern to prevent browser validation interference
+        pattern=""
+        placeholder={placeholder || '0'}
+        // minLength to 0 so empty strings are always valid
+        minLength={0}
+        maxLength={79}
         spellCheck="false"
       />
     </>
@@ -128,5 +155,3 @@ export const Input = React.memo(function InnerInput({
 })
 
 export default Input
-
-// const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`) // match escaped "." characters via in a non-capturing group
