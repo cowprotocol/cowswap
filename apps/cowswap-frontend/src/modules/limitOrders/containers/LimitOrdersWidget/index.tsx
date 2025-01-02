@@ -78,7 +78,7 @@ export function LimitOrdersWidget() {
   const widgetActions = useLimitOrdersWidgetActions()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
-  const { showRecipient: showRecipientSetting } = settingsState
+  const { showRecipient: showRecipientSetting, isUsdValuesMode } = settingsState
   const showRecipient = showRecipientSetting || !!recipient
 
   const priceImpact = useTradePriceImpact()
@@ -91,13 +91,14 @@ export function LimitOrdersWidget() {
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
-    label: isSell ? 'Sell amount' : 'You sell at most',
+    label: isSell ? 'Sell' : 'You sell at most',
     currency: inputCurrency,
     amount: inputCurrencyAmount,
     isIndependent: isSell,
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
     receiveAmountInfo: null,
+    isUsdValuesMode,
   }
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
@@ -108,6 +109,7 @@ export function LimitOrdersWidget() {
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo: null,
+    isUsdValuesMode,
   }
 
   const props: LimitOrdersProps = {
@@ -176,7 +178,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         handleUnlock={() => updateLimitOrdersState({ isUnlocked: true })}
       />
     ),
-    middleContent: (
+    topContent: (
       <>
         {!isWrapOrUnwrap &&
           ClosableBanner(ZERO_BANNER_STORAGE_KEY, (onClose) => (
@@ -194,17 +196,33 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
               </p>
             </InlineBanner>
           ))}
-        <styledEl.RateWrapper>
-          <RateInput />
-          <DeadlineInput />
-        </styledEl.RateWrapper>
+        {props.settingsState.limitPricePosition === 'top' && (
+          <styledEl.RateWrapper>
+            <RateInput />
+          </styledEl.RateWrapper>
+        )}
+      </>
+    ),
+    middleContent: (
+      <>
+        {props.settingsState.limitPricePosition === 'between' && (
+          <styledEl.RateWrapper>
+            <RateInput />
+          </styledEl.RateWrapper>
+        )}
       </>
     ),
     bottomContent(warnings) {
       return (
         <>
+          {props.settingsState.limitPricePosition === 'bottom' && (
+            <styledEl.RateWrapper>
+              <RateInput />
+            </styledEl.RateWrapper>
+          )}
           <styledEl.FooterBox>
-            <TradeRateDetails rateInfoParams={rateInfoParams} />
+            <DeadlineInput />
+            <TradeRateDetails rateInfoParams={rateInfoParams} alwaysExpanded={true} />
           </styledEl.FooterBox>
 
           <LimitOrdersWarnings feeAmount={feeAmount} />
@@ -220,7 +238,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   }
 
   const params = {
-    compactView: false,
+    compactView: true,
     recipient,
     showRecipient,
     isTradePriceUpdating: isRateLoading,

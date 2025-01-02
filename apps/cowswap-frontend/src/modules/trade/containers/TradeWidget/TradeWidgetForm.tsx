@@ -193,6 +193,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
               />
             </div>
             {!isWrapOrUnwrap && middleContent}
+
             <styledEl.CurrencySeparatorBox compactView={compactView}>
               <CurrencyArrowSeparator
                 isCollapsed={compactView}
@@ -220,6 +221,8 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 {...currencyInputCommonProps}
               />
             </div>
+            {slots.limitPriceInput}
+
             {withRecipient && <SetRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />}
 
             {isWrapOrUnwrap ? (

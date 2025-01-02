@@ -1,9 +1,9 @@
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import cowMeditatingV2 from '@cowprotocol/assets/cow-swap/meditating-cow-v2.svg'
 import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { CowSwapSafeAppLink, ExternalLink, Media, MY_ORDERS_ID, UI } from '@cowprotocol/ui'
+import { CowSwapSafeAppLink, ExternalLink, Media, UI } from '@cowprotocol/ui'
 import type { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
 import { Trans } from '@lingui/macro'
@@ -12,23 +12,19 @@ import styled, { css } from 'styled-components/macro'
 
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
-import { OrdersTable, OrdersTableProps } from './OrdersTable'
-import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
+import { OrdersTable } from './OrdersTable'
+import { OrdersTabs } from './OrdersTabs'
+import { ColumnLayout } from './tableHeaders'
+import { OrderActions } from './types'
 
+import { ALL_ORDERS_TAB, HISTORY_TAB, OPEN_TAB, UNFILLABLE_TAB } from '../../const/tabs'
 import { TabOrderTypes } from '../../types'
 
-const OrdersBox = styled.div`
-  background: ${({ theme }) => (theme.isInjectedWidgetMode ? `var(${UI.COLOR_PAPER})` : 'transparent')};
-  color: inherit;
-  border: none;
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
-  box-shadow: none;
-  position: relative;
-  padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '0')};
-  padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '0')};
-  min-height: 200px;
+const Wrapper = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  gap: 16px;
   width: 100%;
-  margin: 0 0 76px;
 `
 
 const Content = styled.div`
@@ -36,8 +32,6 @@ const Content = styled.div`
   flex-flow: column wrap;
   align-items: center;
   justify-content: center;
-  border-radius: 16px;
-  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   color: inherit;
   min-height: 490px;
   padding: 0;
@@ -113,14 +107,12 @@ const MeditatingCowImg = styled.img`
   padding: 16px;
 `
 
-const Header = styled.div`
-  display: grid;
-  grid-template-columns: 150px 1fr;
-  grid-template-rows: max-content;
+const TopContainer = styled.div`
+  display: flex;
   align-items: center;
-  gap: 3px;
+  justify-content: space-between;
   width: 100%;
-  margin: 0 0 24px;
+  gap: 3px;
 
   ${Media.upToMedium()} {
     display: block;
@@ -140,7 +132,8 @@ const Header = styled.div`
 const TabsContainer = styled.div<{ withSingleChild: boolean }>`
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
+  width: 100%;
 
   ${Media.upToMedium()} {
     ${({ withSingleChild }) =>
@@ -168,15 +161,32 @@ const ExternalArrow = styled.span`
     font-size: 11px;
   }
 `
-interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
+
+const RightContainer = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+`
+
+interface OrdersProps {
   isWalletConnected: boolean
-  isOpenOrdersTab: boolean
   isSafeViaWc: boolean
   displayOrdersOnlyForSafeApp: boolean
   pendingActivities: string[]
   children?: ReactNode
   orderType: TabOrderTypes
   injectedWidgetParams: Partial<CowSwapWidgetAppParams>
+  tabs: Array<{ id: string; title: string; count: number; isActive?: boolean }>
+  chainId: number
+  orders: any[]
+  selectedOrders: any[]
+  allowsOffchainSigning: boolean
+  balancesAndAllowances: any
+  orderActions: OrderActions
+  currentPageNumber: number
+  pendingOrdersPrices: any
+  getSpotPrice: any
+  searchTerm?: string
+  columnLayout?: ColumnLayout
 }
 
 export function OrdersTableContainer({
@@ -187,7 +197,6 @@ export function OrdersTableContainer({
   isSafeViaWc,
   displayOrdersOnlyForSafeApp,
   selectedOrders,
-  isOpenOrdersTab,
   allowsOffchainSigning,
   balancesAndAllowances,
   orderActions,
@@ -198,7 +207,14 @@ export function OrdersTableContainer({
   orderType,
   pendingActivities,
   injectedWidgetParams,
+  searchTerm,
+  columnLayout,
 }: OrdersProps) {
+  const currentTab = useMemo(() => {
+    const activeTab = tabs.find((tab) => tab.isActive)
+    return activeTab?.id || ALL_ORDERS_TAB.id
+  }, [tabs])
+
   const content = () => {
     const emptyOrdersImage = injectedWidgetParams.images?.emptyOrders
 
@@ -238,23 +254,44 @@ export function OrdersTableContainer({
             )}
           </span>
           <h3>
-            <Trans>{isOpenOrdersTab ? 'No open orders' : 'No orders history'}</Trans>
+            <Trans>
+              {searchTerm
+                ? 'No matching orders found'
+                : currentTab === ALL_ORDERS_TAB.id
+                  ? 'No orders'
+                  : currentTab === UNFILLABLE_TAB.id
+                    ? 'No unfillable orders'
+                    : currentTab === OPEN_TAB.id
+                      ? 'No open orders'
+                      : 'No order history'}
+            </Trans>
           </h3>
           <p>
             {displayOrdersOnlyForSafeApp && isSafeViaWc ? (
               <Trans>
-                Use the <CowSwapSafeAppLink /> to see {isOpenOrdersTab ? 'open orders' : 'orders history'}
+                Use the <CowSwapSafeAppLink /> to see {currentTab === HISTORY_TAB.id ? 'orders history' : 'your orders'}
               </Trans>
+            ) : searchTerm ? (
+              <Trans>Try adjusting your search term or clearing the filter</Trans>
             ) : (
               <>
-                <Trans>You don't have any {isOpenOrdersTab ? 'open' : ''} orders at the moment.</Trans> <br />
-                <Trans>Time to create a new one!</Trans> {/* TODO: add link for Advanced orders also */}
-                {orderType === TabOrderTypes.LIMIT ? (
-                  <ExternalLinkStyled href="https://cow-protocol.medium.com/how-to-user-cow-swaps-surplus-capturing-limit-orders-24324326dc9e">
-                    <Trans>Learn more</Trans>
-                    <ExternalArrow />
-                  </ExternalLinkStyled>
-                ) : null}
+                <Trans>
+                  You don't have any{' '}
+                  {currentTab === UNFILLABLE_TAB.id ? 'unfillable' : currentTab === OPEN_TAB.id ? 'open' : ''} orders at
+                  the moment.
+                </Trans>{' '}
+                {(currentTab === OPEN_TAB.id || currentTab === ALL_ORDERS_TAB.id) && (
+                  <>
+                    <br />
+                    <Trans>Time to create a new one!</Trans>{' '}
+                    {orderType === TabOrderTypes.LIMIT ? (
+                      <ExternalLinkStyled href="https://cow-protocol.medium.com/how-to-user-cow-swaps-surplus-capturing-limit-orders-24324326dc9e">
+                        <Trans>Learn more</Trans>
+                        <ExternalArrow />
+                      </ExternalLinkStyled>
+                    ) : null}
+                  </>
+                )}
               </>
             )}
           </p>
@@ -264,31 +301,30 @@ export function OrdersTableContainer({
 
     return (
       <OrdersTable
-        isOpenOrdersTab={isOpenOrdersTab}
-        allowsOffchainSigning={allowsOffchainSigning}
-        selectedOrders={selectedOrders}
-        pendingOrdersPrices={pendingOrdersPrices}
-        currentPageNumber={currentPageNumber}
+        currentTab={currentTab}
         chainId={chainId}
         orders={orders}
+        selectedOrders={selectedOrders}
+        allowsOffchainSigning={allowsOffchainSigning}
         balancesAndAllowances={balancesAndAllowances}
-        getSpotPrice={getSpotPrice}
         orderActions={orderActions}
+        currentPageNumber={currentPageNumber}
+        pendingOrdersPrices={pendingOrdersPrices}
+        getSpotPrice={getSpotPrice}
+        columnLayout={columnLayout}
       />
     )
   }
 
   return (
-    <OrdersBox>
-      <Header>
-        <h2 id={MY_ORDERS_ID}>Your Orders</h2>
+    <Wrapper>
+      <TopContainer>
         <TabsContainer withSingleChild={!children}>
-          {children || <div></div>}
           <OrdersTabs tabs={tabs} />
+          {children && <RightContainer>{children}</RightContainer>}
         </TabsContainer>
-      </Header>
-
+      </TopContainer>
       {content()}
-    </OrdersBox>
+    </Wrapper>
   )
 }

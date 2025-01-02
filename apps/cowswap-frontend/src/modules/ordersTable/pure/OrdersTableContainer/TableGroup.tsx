@@ -33,7 +33,8 @@ export interface TableGroupProps {
   prices: PendingOrderPrices | undefined | null
   spotPrice: Price<Currency, Currency> | undefined | null
   isRateInverted: boolean
-  isOpenOrdersTab: boolean
+  showLimitPrice: boolean
+  isHistoryTab: boolean
   isRowSelectable: boolean
   isRowSelected: boolean
   orderActions: OrderActions
@@ -47,7 +48,8 @@ export function TableGroup(props: TableGroupProps) {
     prices,
     spotPrice,
     isRateInverted,
-    isOpenOrdersTab,
+    showLimitPrice,
+    isHistoryTab,
     isRowSelectable,
     isRowSelected,
     orderActions,
@@ -68,10 +70,11 @@ export function TableGroup(props: TableGroupProps) {
 
   const commonProps = {
     isRowSelectable,
-    isOpenOrdersTab,
+    isHistoryTab,
     spotPrice,
     prices,
     isRateInverted,
+    showLimitPrice,
     orderActions,
   }
 
@@ -111,7 +114,6 @@ export function TableGroup(props: TableGroupProps) {
             />
           ))}
           {/* Only show pagination if more than 1 page available */}
-          {/*TODO: add styled to the paginator*/}
           {childrenLength > ORDERS_TABLE_PAGE_SIZE && (
             <Pagination
               pageSize={ORDERS_TABLE_PAGE_SIZE}
