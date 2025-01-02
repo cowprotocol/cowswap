@@ -106,5 +106,21 @@
       "walletCompatibility": ["EOA"],
       "smartContractWalletSupported": false
     }
+  },
+  "UNI_V2_DEPOSIT": {
+    "id": "8cae0a2bde1ca3242ece932ee31b24541ca5e6d1efc0d7be80bd85de0734e558",
+    "name": "Uniswap v2 Deposit",
+    "type": "IFRAME",
+    "descriptionShort": "Add liquidity to a Uniswap v2 pool after the swap",
+    "description": "Easily increase your position in a liquidity pool, adding both tokens in the right ratio.\n\n Whether you're seeking to increase your exposure to specific tokens or maximize the returns from your assets, this tool offers a quick and efficient way to enhance your liquidity position after a token swap, all in a smooth, efficient process.",
+    "version": "0.0.1",
+    "website": "https://app.uniswap.org/pools/v2",
+    "image": "https://cow-hooks-dapps-9zio.vercel.app/icon.png",
+    "url": "https://cow-hooks-dapps-9zio.vercel.app/",
+    "conditions": {
+      "position": "post",
+      "walletCompatibility": ["EOA"],
+      "supportedNetworks": [1, 42161, 11155111, 8453]
+    }
   }
 }
