@@ -30,7 +30,7 @@ export const FloatingWrapper = styled.div`
   }
 `
 
-const FloatingButton = css`
+export const FloatingButton = css`
   cursor: pointer;
   color: ${({ theme }): string => theme.white};
   height: 3rem;

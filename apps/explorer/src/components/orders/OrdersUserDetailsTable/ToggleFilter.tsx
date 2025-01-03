@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { FloatingButton } from 'explorer/components/TransanctionBatchGraph/styled'
 import styled from 'styled-components/macro'
 
 interface BadgeProps {
@@ -10,18 +11,16 @@ interface BadgeProps {
 }
 
 const Wrapper = styled.div<{ checked: boolean }>`
-  display: inline-block;
-  padding: 5px 10px;
-  border-radius: 20px;
-  background-color: ${({ checked }) => (checked ? '#007bff' : '#e0e0e0')};
-  color: ${({ checked }) => (checked ? '#fff' : '#000')};
-  cursor: pointer;
-  user-select: none;
-  font-size: 11px;
+  ${FloatingButton} {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    font-size: ${({ theme }): string => theme.fontSizeDefault};
+  }
 `
 
 const Label = styled.span`
-  margin-right: 10px;
+  margin-right: 8px;
 `
 
 const Count = styled.span`
