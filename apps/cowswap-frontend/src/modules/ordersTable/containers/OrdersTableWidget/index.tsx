@@ -162,7 +162,13 @@ export function OrdersTableWidget({
   }, [ordersList, currentTabId])
 
   const tabs = useMemo(() => {
-    return ORDERS_TABLE_TABS.map((tab) => {
+    return ORDERS_TABLE_TABS.filter((tab) => {
+      // Only include the unfillable tab if there are unfillable orders
+      if (tab.id === 'unfillable') {
+        return getOrdersListByIndex(ordersList, tab.id).length > 0
+      }
+      return true
+    }).map((tab) => {
       return { ...tab, isActive: tab.id === currentTabId, count: getOrdersListByIndex(ordersList, tab.id).length }
     })
   }, [currentTabId, ordersList])
