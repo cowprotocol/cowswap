@@ -48,7 +48,6 @@ export const CurrencyInputBox = styled.div`
 
   > div {
     display: flex;
-    flex-flow: row wrap;
     align-items: center;
     color: inherit;
   }

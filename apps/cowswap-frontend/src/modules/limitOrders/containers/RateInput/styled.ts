@@ -82,7 +82,7 @@ export const Body = styled.div`
   justify-content: space-between;
   width: 100%;
   max-width: 100%;
-  gap: 8px;
+  gap: 0;
   padding: 12px 0 4px;
   color: inherit;
 `
@@ -109,6 +109,7 @@ export const CurrencyToggleGroup = styled.div`
   align-items: center;
   background: transparent;
   overflow: hidden;
+  margin: 0 0 0 8px;
 `
 
 export const ActiveCurrency = styled.button<{ $active?: boolean }>`
