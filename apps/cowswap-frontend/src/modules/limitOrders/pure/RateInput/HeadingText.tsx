@@ -40,13 +40,16 @@ const TextWrapper = styled.span<{ clickable: boolean }>`
   align-items: center;
   gap: 4px;
   cursor: ${({ clickable }) => (clickable ? 'pointer' : 'default')};
-  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  transition:
+    opacity var(${UI.ANIMATION_DURATION}) ease-in-out,
+    text-decoration-color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  text-decoration-color: var(${UI.COLOR_TEXT_OPACITY_25});
 
   &:hover {
-    text-decoration: underline;
-    text-decoration-style: dashed;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 2px;
     text-decoration-color: var(${UI.COLOR_TEXT_OPACITY_70});
   }
 `
