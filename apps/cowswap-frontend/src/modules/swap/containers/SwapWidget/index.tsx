@@ -52,6 +52,7 @@ import {
 import { getQuoteTimeOffset } from 'modules/tradeQuote'
 import { useTradeSlippage } from 'modules/tradeSlippage'
 import { SettingsTab, TradeRateDetails, useHighFeeWarning } from 'modules/tradeWidgetAddons'
+import { useOpenSettingsTab } from 'modules/tradeWidgetAddons/state/settingsTabState'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
 import { Routes } from 'common/constants/routes'
@@ -60,7 +61,6 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { SWAP_QUOTE_CHECK_INTERVAL } from 'common/updaters/FeesUpdater'
 
-import { useOpenSettingsTab } from 'modules/tradeWidgetAddons/state/settingsTabState'
 import { SwapButtonState } from '../../helpers/getSwapButtonState'
 import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from '../../hooks/useSwapState'
 import { useTradeQuoteStateFromLegacy } from '../../hooks/useTradeQuoteStateFromLegacy'
@@ -209,6 +209,8 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const showTwapSuggestionBanner = !enabledTradeTypes || enabledTradeTypes.includes(TradeType.ADVANCED)
   const isNativeSellInHooksStore = swapButtonContext.swapButtonState === SwapButtonState.SellNativeInHooks
 
+  const isApprovalNeeded = !isHookTradeType && swapButtonContext.needsApproval
+
   const swapWarningsTopProps: SwapWarningsTopProps = useMemo(
     () => ({
       chainId,
@@ -218,7 +220,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
       priceImpact: priceImpactParams.priceImpact,
       tradeUrlParams,
       isNativeSellInHooksStore,
-      isApprovalNeeded: !isHookTradeType && swapButtonContext.needsApproval,
+      isApprovalNeeded,
       openSettings,
     }),
     [
@@ -229,6 +231,8 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
       priceImpactParams.priceImpact,
       tradeUrlParams,
       isNativeSellInHooksStore,
+      isApprovalNeeded,
+      openSettings,
     ],
   )
 
