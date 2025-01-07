@@ -53,6 +53,15 @@ export function getOrderStatusTitleAndColor(order: ParsedOrder): { title: string
     }
   }
 
+  // Handle unfillable orders
+  if (order.isUnfillable) {
+    return {
+      title: 'Unfillable',
+      color: `var(${UI.COLOR_DANGER_TEXT})`,
+      background: `var(${UI.COLOR_DANGER_BG})`,
+    }
+  }
+
   // Finally, map order status to their display version
   return {
     title: orderStatusTitleMap[order.status],

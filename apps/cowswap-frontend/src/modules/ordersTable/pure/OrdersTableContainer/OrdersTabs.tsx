@@ -1,6 +1,8 @@
+import alertCircle from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import { Media, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
+import SVG from 'react-inlinesvg'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
@@ -14,13 +16,20 @@ const Tabs = styled.div`
   margin: 0;
 `
 
-const TabButton = styled(Link)<{ active: string }>`
-  display: inline-block;
-  background: ${({ active }) => (active === 'true' ? `var(${UI.COLOR_TEXT_OPACITY_10})` : 'transparent')};
-  color: ${({ active }) => (active === 'true' ? `var(${UI.COLOR_TEXT_PAPER})` : 'inherit')};
+const TabButton = styled(Link)<{ active: string; isUnfillable?: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: ${({ active, isUnfillable }) =>
+    active === 'true'
+      ? isUnfillable
+        ? `var(${UI.COLOR_DANGER_BG})`
+        : `var(${UI.COLOR_TEXT_OPACITY_10})`
+      : 'transparent'};
+  color: ${({ active, isUnfillable }) =>
+    isUnfillable ? `var(${UI.COLOR_DANGER})` : active === 'true' ? `var(${UI.COLOR_TEXT_PAPER})` : 'inherit'};
   font-weight: ${({ active }) => (active === 'true' ? '600' : '400')};
   border-radius: 14px;
-  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   text-decoration: none;
   font-size: 13px;
   padding: 10px;
@@ -36,9 +45,23 @@ const TabButton = styled(Link)<{ active: string }>`
   }
 
   &:hover {
-    background: ${({ active }) =>
-      active === 'true' ? `var(${UI.COLOR_TEXT_OPACITY_10})` : `var(${UI.COLOR_TEXT_OPACITY_10})`};
-    color: inherit;
+    background: ${({ active, isUnfillable }) =>
+      active === 'true'
+        ? isUnfillable
+          ? `var(${UI.COLOR_DANGER_BG})`
+          : `var(${UI.COLOR_TEXT_OPACITY_10})`
+        : `var(${UI.COLOR_TEXT_OPACITY_10})`};
+    color: ${({ isUnfillable }) => (isUnfillable ? `var(${UI.COLOR_DANGER})` : 'inherit')};
+  }
+
+  > svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+
+  > svg > path {
+    fill: currentColor;
   }
 `
 
@@ -55,15 +78,20 @@ export function OrdersTabs({ tabs }: OrdersTabsProps) {
 
   return (
     <Tabs>
-      {tabs.map((tab, index) => (
-        <TabButton
-          key={index}
-          active={(index === activeTabIndex).toString()}
-          to={buildOrdersTableUrl({ tabId: tab.id, pageNumber: 1 })}
-        >
-          <Trans>{tab.title}</Trans> <span>({tab.count})</span>
-        </TabButton>
-      ))}
+      {tabs.map((tab, index) => {
+        const isUnfillable = tab.id === 'unfillable'
+        return (
+          <TabButton
+            key={index}
+            active={(index === activeTabIndex).toString()}
+            isUnfillable={isUnfillable}
+            to={buildOrdersTableUrl({ tabId: tab.id, pageNumber: 1 })}
+          >
+            {isUnfillable && <SVG src={alertCircle} description="warning" />}
+            <Trans>{tab.title}</Trans> <span>({tab.count})</span>
+          </TabButton>
+        )
+      })}
     </Tabs>
   )
 }

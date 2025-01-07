@@ -13,7 +13,7 @@ const Wrapper = styled.div<{
   widthAuto?: boolean
   clickable?: boolean
 }>`
-  --height: 28px;
+  --height: 26px;
   --statusColor: ${({ color }) => color};
   --statusBackground: ${({ background }) => background};
 
@@ -40,7 +40,7 @@ const Wrapper = styled.div<{
     top: 0;
     background: var(--statusBackground);
     z-index: 1;
-    border-radius: ${({ withWarning }) => (withWarning ? '9px 0 0 9px' : '9px')};
+    border-radius: 16px;
   }
 `
 
@@ -50,6 +50,12 @@ const StatusContent = styled.div`
   gap: 4px;
   position: relative;
   z-index: 2;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
 `
 
 type OrderStatusBoxProps = {
@@ -63,25 +69,23 @@ type OrderStatusBoxProps = {
 export function OrderStatusBox({ order, widthAuto, withWarning, onClick, WarningTooltip }: OrderStatusBoxProps) {
   const { title, color, background } = getOrderStatusTitleAndColor(order)
 
-  const content = <StatusContent>{title}</StatusContent>
+  const content = (
+    <StatusContent>
+      {withWarning && WarningTooltip && <WarningTooltip>{null}</WarningTooltip>}
+      {title}
+    </StatusContent>
+  )
 
   return (
-    <>
-      <Wrapper
-        color={color}
-        background={background}
-        widthAuto={widthAuto}
-        withWarning={withWarning}
-        clickable={!!onClick}
-        onClick={onClick}
-      >
-        {content}
-      </Wrapper>
-      {withWarning && WarningTooltip && (
-        <WarningTooltip>
-          <></>
-        </WarningTooltip>
-      )}
-    </>
+    <Wrapper
+      color={color}
+      background={background}
+      widthAuto={widthAuto}
+      withWarning={withWarning}
+      clickable={!!onClick}
+      onClick={onClick}
+    >
+      {content}
+    </Wrapper>
   )
 }

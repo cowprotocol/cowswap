@@ -35,6 +35,7 @@ export interface ParsedOrder {
   id: string
   owner: string
   isCancelling: boolean | undefined
+  isUnfillable?: boolean
   receiver: string | undefined
   inputToken: Token
   outputToken: Token
@@ -102,6 +103,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
     id: order.id,
     owner: order.owner,
     isCancelling: order.isCancelling,
+    isUnfillable: order.isUnfillable,
     inputToken: order.inputToken,
     outputToken: order.outputToken,
     kind: order.kind,

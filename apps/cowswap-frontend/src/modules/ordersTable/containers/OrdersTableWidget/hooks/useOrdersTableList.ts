@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { Order, PENDING_STATES } from 'legacy/state/orders/actions'
+import { useSetIsOrderUnfillable } from 'legacy/state/orders/hooks'
 
 import { getIsComposableCowOrder } from 'utils/orderUtils/getIsComposableCowOrder'
 import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
@@ -32,6 +33,8 @@ export function useOrdersTableList(
   chainId: number,
   balancesAndAllowances: any,
 ): OrdersTableList {
+  const setIsOrderUnfillable = useSetIsOrderUnfillable()
+
   const allSortedOrders = useMemo(() => {
     return groupOrdersTable(allOrders).sort(ordersSorter)
   }, [allOrders])
@@ -58,6 +61,11 @@ export function useOrdersTableList(
         const params = getOrderParams(chainId, balancesAndAllowances, order)
         const isUnfillable = params.hasEnoughBalance === false || params.hasEnoughAllowance === false
 
+        // Set the unfillable flag on the order if it's pending and unfillable
+        if (isPending && isUnfillable && order.isUnfillable !== isUnfillable) {
+          setIsOrderUnfillable({ chainId, id: order.id, isUnfillable })
+        }
+
         // Only add to unfillable if the order is both pending and unfillable
         if (isPending && isUnfillable) {
           acc.unfillable.push(item)
@@ -81,5 +89,5 @@ export function useOrdersTableList(
       unfillable: unfillable.slice(0, ORDERS_LIMIT),
       all: all.slice(0, ORDERS_LIMIT),
     }
-  }, [allSortedOrders, orderType, chainId, balancesAndAllowances])
+  }, [allSortedOrders, orderType, chainId, balancesAndAllowances, setIsOrderUnfillable])
 }

@@ -8,16 +8,17 @@ import { RateWrapper } from 'common/pure/RateInfo'
 export const WarningIndicator = styled.button<{ hasBackground?: boolean }>`
   --height: 28px;
   margin: 0;
-  background: ${({ hasBackground = true }) => (hasBackground ? `var(${UI.COLOR_ALERT_BG})` : 'transparent')};
-  color: var(${UI.COLOR_ALERT_TEXT});
+  background: ${({ hasBackground = true }) => (hasBackground ? `var(${UI.COLOR_DANGER_BG})` : 'transparent')};
+  color: var(${UI.COLOR_DANGER});
   line-height: 0;
   border: 0;
-  padding: 0 5px;
+  padding: 0;
   width: auto;
   height: var(--height);
   border-radius: 0 9px 9px 0;
 
   svg {
+    cursor: help;
     color: inherit;
   }
 

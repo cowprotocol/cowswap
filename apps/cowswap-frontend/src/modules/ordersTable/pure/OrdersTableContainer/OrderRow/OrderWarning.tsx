@@ -1,6 +1,6 @@
 import React from 'react'
 
-import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
+import alertCircle from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import { Command } from '@cowprotocol/types'
 import { ButtonSecondary, TokenSymbol, UI, HoverTooltip } from '@cowprotocol/ui'
 
@@ -117,13 +117,13 @@ export function WarningTooltip({
 
   if (showIcon) {
     return (
-      <styledEl.WarningIndicator>
+      <styledEl.WarningIndicator hasBackground={false}>
         <styledEl.StyledQuestionHelper
           text={tooltipContent}
           placement="bottom"
-          bgColor={`var(${UI.COLOR_ALERT})`}
-          color={`var(${UI.COLOR_ALERT_TEXT_DARKER})`}
-          Icon={<SVG src={AlertTriangle} description="Alert" width="14" height="13" />}
+          bgColor={`var(${UI.COLOR_DANGER_BG})`}
+          color={`var(${UI.COLOR_DANGER_TEXT})`}
+          Icon={<SVG src={alertCircle} description="warning" width="14" height="14" />}
         />
         {children}
       </styledEl.WarningIndicator>
@@ -134,8 +134,8 @@ export function WarningTooltip({
     <HoverTooltip
       content={tooltipContent}
       placement="bottom"
-      bgColor={`var(${UI.COLOR_ALERT})`}
-      color={`var(${UI.COLOR_ALERT_TEXT_DARKER})`}
+      bgColor={`var(${UI.COLOR_DANGER})`}
+      color={`var(${UI.COLOR_DANGER_TEXT})`}
     >
       {children}
     </HoverTooltip>
