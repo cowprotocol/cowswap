@@ -2,6 +2,7 @@ import ICON_TOKENS from '@cowprotocol/assets/svg/tokens.svg'
 import { Command } from '@cowprotocol/types'
 import { BannerOrientation, ClosableBanner, InlineBanner, UnderlinedLinkStyledButton } from '@cowprotocol/ui'
 
+import styled from 'styled-components/macro'
 import * as timeago from 'timeago.js'
 
 const BANNER_STORAGE_KEY = 'partialPermitBannerKey:v0'
@@ -27,11 +28,14 @@ export function PartialApprovalBanner({ isApprovalNeeded, openSettings }: Partia
       onClose={onClose}
     >
       <p>
-        <b>NEW: </b>You can now chose do only minimal approvals in the
-        <UnderlinedLinkStyledButton onClick={openSettings}>settings.</UnderlinedLinkStyledButton> When enabled, every
-        order placed that needs approval will request only the minimum necessary to trade. When disabled, you can enjoy
-        the same trusted experience CoW Swap has provided for the past {YEARS_SINCE_DEPLOYMENT}.
+        <b>NEW: </b>You can now choose to do only minimal approvals in the <Link onClick={openSettings}>settings</Link>.
+        When enabled, every order placed that needs approval will request only the minimum necessary to trade. When
+        disabled, you can enjoy the same trusted experience CoW Swap has provided for the past {YEARS_SINCE_DEPLOYMENT}.
       </p>
     </InlineBanner>
   ))
 }
+
+const Link = styled(UnderlinedLinkStyledButton)`
+  padding: 0;
+`
