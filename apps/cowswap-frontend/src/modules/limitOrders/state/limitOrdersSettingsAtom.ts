@@ -31,7 +31,7 @@ export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
   partialFillsEnabled: true,
   deadlineMilliseconds: defaultLimitOrderDeadline.value,
   customDeadlineTimestamp: null,
-  limitPricePosition: 'top',
+  limitPricePosition: 'bottom',
   limitPriceLocked: true,
   columnLayout: 'DEFAULT',
   ordersTableOnLeft: false,
