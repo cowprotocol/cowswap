@@ -33,7 +33,7 @@ import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { QuoteDeadlineParams } from 'modules/tradeQuote'
 
-import { useApproveState } from 'common/hooks/useApproveState'
+import { ApprovalState, useApproveState } from 'common/hooks/useApproveState'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useHandleSwapOrEthFlow } from './useHandleSwapOrEthFlow'
@@ -129,6 +129,10 @@ export function useSwapButtonContext(input: SwapButtonInput, actions: TradeWidge
     isHooksStore,
   })
 
+  const needsApproval =
+    (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING) &&
+    swapInputError === undefined
+
   return useSafeMemo(
     () => ({
       swapButtonState,
@@ -146,6 +150,7 @@ export function useSwapButtonContext(input: SwapButtonInput, actions: TradeWidge
       widgetStandaloneMode: standaloneMode,
       quoteDeadlineParams,
       isPartialApprove,
+      needsApproval,
     }),
     [
       swapButtonState,
@@ -163,6 +168,7 @@ export function useSwapButtonContext(input: SwapButtonInput, actions: TradeWidge
       standaloneMode,
       quoteDeadlineParams,
       isPartialApprove,
+      needsApproval,
     ],
   )
 }

@@ -41,6 +41,7 @@ export interface SwapButtonsContext {
   widgetStandaloneMode?: boolean
   quoteDeadlineParams: QuoteDeadlineParams
   isPartialApprove: boolean
+  needsApproval: boolean
 }
 
 const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext) => JSX.Element } = {
