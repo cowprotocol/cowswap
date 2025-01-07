@@ -4,6 +4,8 @@ import { isTruthy } from '@cowprotocol/common-utils'
 import { TokensByAddress } from '@cowprotocol/tokens'
 import { LpTokenProvider } from '@cowprotocol/types'
 
+import styled from 'styled-components/macro'
+
 import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { VampireAttackContext } from 'modules/yield/types'
@@ -16,6 +18,10 @@ import { TokenSelectorContent } from './TokenSelectorContent'
 import { CoWAmmBannerContext } from './types'
 
 import { useSafeMemoObject } from '../../hooks/useSafeMemo'
+
+const Wrapper = styled.div`
+  z-index: 100;
+`
 
 interface CoWAmmBannerContentProps {
   id: string
@@ -139,7 +145,7 @@ export function CoWAmmBannerContent({
   )
 
   return (
-    <div data-banner-id={id}>
+    <Wrapper data-banner-id={id}>
       {isTokenSelectorView ? (
         <TokenSelectorContent isDarkMode={isDarkMode} context={context}>
           {Content}
@@ -159,6 +165,6 @@ export function CoWAmmBannerContent({
           {Content}
         </GlobalContent>
       )}
-    </div>
+    </Wrapper>
   )
 }
