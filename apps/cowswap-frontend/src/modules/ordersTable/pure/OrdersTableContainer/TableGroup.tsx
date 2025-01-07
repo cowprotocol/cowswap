@@ -33,7 +33,6 @@ export interface TableGroupProps {
   prices: PendingOrderPrices | undefined | null
   spotPrice: Price<Currency, Currency> | undefined | null
   isRateInverted: boolean
-  showLimitPrice: boolean
   isHistoryTab: boolean
   isRowSelectable: boolean
   isRowSelected: boolean
@@ -48,7 +47,6 @@ export function TableGroup(props: TableGroupProps) {
     prices,
     spotPrice,
     isRateInverted,
-    showLimitPrice,
     isHistoryTab,
     isRowSelectable,
     isRowSelected,
@@ -74,7 +72,6 @@ export function TableGroup(props: TableGroupProps) {
     spotPrice,
     prices,
     isRateInverted,
-    showLimitPrice,
     orderActions,
   }
 

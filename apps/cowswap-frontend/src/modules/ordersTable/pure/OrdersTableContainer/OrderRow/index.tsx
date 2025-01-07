@@ -35,7 +35,6 @@ import * as styledEl from './styled'
 import { OrderParams } from '../../../utils/getOrderParams'
 import { OrderStatusBox } from '../../OrderStatusBox'
 import { CheckboxCheckmark, TableRow, TableRowCheckbox, TableRowCheckboxWrapper } from '../styled'
-import { ColumnLayout } from '../tableHeaders'
 import { OrderActions } from '../types'
 
 // Constants
@@ -74,7 +73,6 @@ export interface OrderRowProps {
   prices: PendingOrderPrices | undefined | null
   spotPrice: Price<Currency, Currency> | undefined | null
   isRateInverted: boolean
-  showLimitPrice: boolean
   isHistoryTab: boolean
   isRowSelectable: boolean
   isRowSelected: boolean
@@ -83,13 +81,11 @@ export interface OrderRowProps {
   onClick: Command
   orderActions: OrderActions
   children?: React.ReactNode
-  columnLayout?: ColumnLayout
 }
 
 export function OrderRow({
   order,
   isRateInverted: isGloballyInverted,
-  showLimitPrice,
   isHistoryTab,
   isRowSelectable,
   isRowSelected,
@@ -100,7 +96,6 @@ export function OrderRow({
   prices,
   spotPrice,
   children,
-  columnLayout = ColumnLayout.DEFAULT,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
   const { creationTime, expirationTime, status } = order
@@ -247,20 +242,6 @@ export function OrderRow({
     )
   }
 
-  const renderDistanceToMarket = () => (
-    <>
-      {isUnfillable ? (
-        '-'
-      ) : priceDiffs?.percentage && Number(priceDiffs.percentage.toFixed(4)) >= MIN_PERCENTAGE_TO_DISPLAY ? (
-        <styledEl.DistanceToMarket $color={getDistanceColor(Number(priceDiffs.percentage.toFixed(4)))}>
-          {priceDiffs.percentage.toFixed(2)}%
-        </styledEl.DistanceToMarket>
-      ) : (
-        '-'
-      )}
-    </>
-  )
-
   const renderMarketPrice = () => (
     <>
       {spotPrice ? (
@@ -274,13 +255,7 @@ export function OrderRow({
   )
 
   return (
-    <TableRow
-      data-id={order.id}
-      isChildOrder={isChild}
-      isHistoryTab={isHistoryTab}
-      isRowSelectable={isRowSelectable}
-      columnLayout={columnLayout}
-    >
+    <TableRow data-id={order.id} isChildOrder={isChild} isHistoryTab={isHistoryTab} isRowSelectable={isRowSelectable}>
       {/*Checkbox for multiple cancellation*/}
       {isRowSelectable && !isHistoryTab && (
         <TableRowCheckboxWrapper>
@@ -309,32 +284,9 @@ export function OrderRow({
       {/* Non-history tab columns */}
       {!isHistoryTab ? (
         <>
-          {/* Price columns based on layout */}
-          {columnLayout === ColumnLayout.DEFAULT && (
-            <>
-              <styledEl.PriceElement onClick={toggleIsInverted}>
-                {showLimitPrice ? renderLimitPrice() : renderFillsAt()}
-              </styledEl.PriceElement>
-              <styledEl.PriceElement>{renderDistanceToMarket()}</styledEl.PriceElement>
-              <styledEl.PriceElement onClick={toggleIsInverted}>{renderMarketPrice()}</styledEl.PriceElement>
-            </>
-          )}
-
-          {columnLayout === ColumnLayout.VIEW_2 && (
-            <>
-              <styledEl.PriceElement onClick={toggleIsInverted}>{renderLimitPrice()}</styledEl.PriceElement>
-              <styledEl.PriceElement onClick={toggleIsInverted}>{renderFillsAt()}</styledEl.PriceElement>
-              <styledEl.PriceElement>{renderDistanceToMarket()}</styledEl.PriceElement>
-            </>
-          )}
-
-          {columnLayout === ColumnLayout.VIEW_3 && (
-            <>
-              <styledEl.PriceElement onClick={toggleIsInverted}>{renderLimitPrice()}</styledEl.PriceElement>
-              <styledEl.PriceElement onClick={toggleIsInverted}>{renderFillsAtWithDistance()}</styledEl.PriceElement>
-              <styledEl.PriceElement onClick={toggleIsInverted}>{renderMarketPrice()}</styledEl.PriceElement>
-            </>
-          )}
+          <styledEl.PriceElement onClick={toggleIsInverted}>{renderLimitPrice()}</styledEl.PriceElement>
+          <styledEl.PriceElement onClick={toggleIsInverted}>{renderFillsAtWithDistance()}</styledEl.PriceElement>
+          <styledEl.PriceElement onClick={toggleIsInverted}>{renderMarketPrice()}</styledEl.PriceElement>
 
           {/* Expires and Created for open orders */}
           <styledEl.CellElement doubleRow>

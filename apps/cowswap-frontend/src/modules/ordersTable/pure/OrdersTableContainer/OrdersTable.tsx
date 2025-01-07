@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Media, UI } from '@cowprotocol/ui'
@@ -16,7 +16,7 @@ import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancella
 import { OrderRow } from './OrderRow'
 import { CheckboxCheckmark, TableHeader, TableRowCheckbox, TableRowCheckboxWrapper } from './styled'
 import { TableGroup } from './TableGroup'
-import { ColumnLayout, createTableHeaders } from './tableHeaders'
+import { createTableHeaders } from './tableHeaders'
 import { OrderActions } from './types'
 
 import { HISTORY_TAB, ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
@@ -97,7 +97,6 @@ const Rows = styled.div`
 export interface OrdersTableProps {
   currentTab: string
   allowsOffchainSigning: boolean
-  currentPageNumber: number
   chainId: SupportedChainId
   pendingOrdersPrices: PendingOrdersPrices
   orders: OrderTableItem[]
@@ -105,7 +104,7 @@ export interface OrdersTableProps {
   balancesAndAllowances: BalancesAndAllowances
   getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
   orderActions: OrderActions
-  columnLayout?: ColumnLayout
+  currentPageNumber: number
 }
 
 export function OrdersTable({
@@ -119,10 +118,8 @@ export function OrdersTable({
   getSpotPrice,
   orderActions,
   currentPageNumber,
-  columnLayout,
 }: OrdersTableProps) {
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
-  const [showLimitPrice, setShowLimitPrice] = useState(false)
   const checkboxRef = useRef<HTMLInputElement>(null)
 
   const step = currentPageNumber * ORDERS_TABLE_PAGE_SIZE
@@ -172,10 +169,7 @@ export function OrdersTable({
     checkbox.checked = allOrdersSelected
   }, [allOrdersSelected, selectedOrders.length])
 
-  const tableHeaders = useMemo(
-    () => createTableHeaders(showLimitPrice, setShowLimitPrice, columnLayout),
-    [showLimitPrice, columnLayout],
-  )
+  const tableHeaders = useMemo(() => createTableHeaders(), [])
 
   const visibleHeaders = useMemo(() => {
     const isHistoryTab = currentTab === HISTORY_TAB.id
@@ -191,11 +185,7 @@ export function OrdersTable({
     <>
       <TableBox>
         <TableInner onScroll={onScroll}>
-          <TableHeader
-            isHistoryTab={currentTab === HISTORY_TAB.id}
-            isRowSelectable={isRowSelectable}
-            columnLayout={columnLayout}
-          >
+          <TableHeader isHistoryTab={currentTab === HISTORY_TAB.id} isRowSelectable={isRowSelectable}>
             {visibleHeaders.map((header) => {
               if (header.id === 'checkbox' && (!isRowSelectable || currentTab === HISTORY_TAB.id)) {
                 return null
@@ -252,11 +242,9 @@ export function OrdersTable({
                     spotPrice={spotPrice}
                     prices={pendingOrdersPrices[order.id]}
                     isRateInverted={false}
-                    showLimitPrice={showLimitPrice}
                     orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
                     onClick={() => orderActions.selectReceiptOrder(order)}
                     orderActions={orderActions}
-                    columnLayout={columnLayout}
                   />
                 )
               } else {
@@ -272,7 +260,6 @@ export function OrdersTable({
                     spotPrice={spotPrice}
                     prices={pendingOrdersPrices[item.parent.id]}
                     isRateInverted={false}
-                    showLimitPrice={showLimitPrice}
                     orderActions={orderActions}
                   />
                 )

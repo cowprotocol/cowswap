@@ -14,7 +14,6 @@ import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
 import { OrdersTable } from './OrdersTable'
 import { OrdersTabs } from './OrdersTabs'
-import { ColumnLayout } from './tableHeaders'
 import { OrderActions } from './types'
 
 import { ALL_ORDERS_TAB, HISTORY_TAB, OPEN_TAB, UNFILLABLE_TAB } from '../../const/tabs'
@@ -186,7 +185,6 @@ interface OrdersProps {
   pendingOrdersPrices: any
   getSpotPrice: any
   searchTerm?: string
-  columnLayout?: ColumnLayout
 }
 
 export function OrdersTableContainer({
@@ -208,7 +206,6 @@ export function OrdersTableContainer({
   pendingActivities,
   injectedWidgetParams,
   searchTerm,
-  columnLayout,
 }: OrdersProps) {
   const currentTab = useMemo(() => {
     const activeTab = tabs.find((tab) => tab.isActive)
@@ -311,7 +308,6 @@ export function OrdersTableContainer({
         currentPageNumber={currentPageNumber}
         pendingOrdersPrices={pendingOrdersPrices}
         getSpotPrice={getSpotPrice}
-        columnLayout={columnLayout}
       />
     )
   }

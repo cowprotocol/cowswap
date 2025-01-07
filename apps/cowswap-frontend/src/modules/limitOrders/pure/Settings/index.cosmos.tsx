@@ -8,7 +8,6 @@ const defaultProps: SettingsProps = {
     customDeadlineTimestamp: null,
     limitPricePosition: 'between',
     limitPriceLocked: false,
-    columnLayout: 'DEFAULT',
     ordersTableOnLeft: false,
     isUsdValuesMode: false,
   },

@@ -1,11 +1,6 @@
 import { Media, UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
-
-import { RateWrapper } from 'common/pure/RateInfo'
-
-import { ColumnLayout } from './tableHeaders'
 
 export const SettingsContainer = styled.div`
   display: flex;
@@ -35,22 +30,6 @@ export const SettingsLabel = styled.span`
   opacity: 0.7;
 `
 
-export const LayoutSelector = styled.select`
-  background: var(${UI.COLOR_PAPER_DARKER});
-  color: inherit;
-  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
-  border-radius: 8px;
-  padding: 4px 8px;
-  font-size: 12px;
-  cursor: pointer;
-  margin-left: 8px;
-
-  &:focus {
-    outline: none;
-    border-color: var(${UI.COLOR_TEXT});
-  }
-`
-
 export const TableWrapper = styled.div`
   width: 100%;
   overflow-x: auto;
@@ -63,14 +42,14 @@ export const TableWrapper = styled.div`
   }
 `
 
-export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: boolean; columnLayout?: ColumnLayout }>`
+export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: boolean }>`
   --header-height: 26px;
   --row-height: 41px;
   --checkboxSize: 16px;
   --checkBoxBorderRadius: 3px;
   display: grid;
   gap: 14px;
-  grid-template-columns: ${({ isHistoryTab, isRowSelectable, columnLayout }) => {
+  grid-template-columns: ${({ isHistoryTab, isRowSelectable }) => {
     if (isHistoryTab) {
       return `minmax(200px, 2.5fr)  
               repeat(4, minmax(110px, 1fr))
@@ -80,16 +59,7 @@ export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: 
     }
 
     const checkboxColumn = isRowSelectable ? 'var(--checkboxSize)' : ''
-    const baseColumns = `${checkboxColumn}`
-
-    switch (columnLayout) {
-      case ColumnLayout.VIEW_2:
-        return `${baseColumns} minmax(180px,2fr) minmax(120px,1fr) minmax(120px,1fr) 60px minmax(120px,1fr) minmax(80px,90px) minmax(80px,0.8fr) 24px`
-      case ColumnLayout.VIEW_3:
-        return `${baseColumns} minmax(160px,2fr) minmax(120px,1fr) minmax(140px,1fr) minmax(120px,1fr) minmax(120px,1fr) minmax(80px,90px) minmax(80px,0.8fr) 24px`
-      default:
-        return `${baseColumns} minmax(200px, 2.5fr) minmax(140px,1fr) 60px minmax(110px,1fr)  minmax(110px,1fr) minmax(80px,90px) minmax(80px,0.8fr) 24px`
-    }
+    return `${checkboxColumn} minmax(160px,2fr) minmax(120px,1fr) minmax(140px,1fr) minmax(120px,1fr) minmax(120px,1fr) minmax(80px,90px) minmax(80px,0.8fr) 24px`
   }};
   grid-template-rows: minmax(var(--header-height), 1fr);
   align-items: center;
@@ -113,7 +83,6 @@ export const TableRow = styled(TableHeader)<{
   isChildOrder?: boolean
   isHistoryTab: boolean
   isRowSelectable: boolean
-  columnLayout?: ColumnLayout
 }>`
   grid-template-rows: minmax(var(--row-height), 1fr);
   background: ${({ isChildOrder }) => (isChildOrder ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
@@ -129,18 +98,15 @@ export const TableRow = styled(TableHeader)<{
 
     &::before {
       display: ${({ isChildOrder }) => (isChildOrder ? 'inline-block' : 'none')};
-      color: ${({ theme }) => transparentize(theme.info, 0.6)};
+      color: inherit;
       content: '↳';
       text-decoration: none !important;
+      opacity: 0.6;
     }
   }
 
   &:last-child {
     border-bottom: 0;
-  }
-
-  ${RateWrapper} {
-    text-align: left;
   }
 `
 
