@@ -395,7 +395,6 @@ export function OrderRow({
           <OrderStatusBox
             order={order}
             withWarning={withWarning}
-            widthAuto
             onClick={onClick}
             WarningTooltip={withWarning ? renderWarningTooltip(true) : undefined}
           />
