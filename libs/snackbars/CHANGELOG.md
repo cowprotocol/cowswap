@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/cowprotocol/cowswap/compare/snackbars-v1.1.0...snackbars-v1.1.1) (2024-12-23)
+
+
+### Bug Fixes
+
+* **snackbars:** stick snackbars widget to header menu ([4582d67](https://github.com/cowprotocol/cowswap/commit/4582d67156364fe1866a40227f76c8101d11e1bd))
+
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/snackbars-v1.0.1...snackbars-v1.1.0) (2024-06-24)
 
 
