@@ -60,6 +60,7 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { SWAP_QUOTE_CHECK_INTERVAL } from 'common/updaters/FeesUpdater'
 
+import { useOpenSettingsTab } from 'modules/tradeWidgetAddons/state/settingsTabState'
 import { SwapButtonState } from '../../helpers/getSwapButtonState'
 import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from '../../hooks/useSwapState'
 import { useTradeQuoteStateFromLegacy } from '../../hooks/useTradeQuoteStateFromLegacy'
@@ -92,6 +93,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const deadlineState = useUserTransactionTTL()
   const partialApproveState = usePartialApprove()
   const isHookTradeType = useIsHooksTradeType()
+  const openSettings = useOpenSettingsTab()
 
   const isTradePriceUpdating = useTradePricesUpdate()
 
@@ -216,6 +218,8 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
       priceImpact: priceImpactParams.priceImpact,
       tradeUrlParams,
       isNativeSellInHooksStore,
+      isApprovalNeeded: !isHookTradeType && swapButtonContext.needsApproval,
+      openSettings,
     }),
     [
       chainId,
