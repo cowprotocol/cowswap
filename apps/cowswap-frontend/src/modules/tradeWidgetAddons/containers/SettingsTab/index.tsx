@@ -125,13 +125,19 @@ export function SettingsTab({
                 <RowBetween>
                   <RowFixed>
                     <ThemedText.Black fontWeight={400} fontSize={14}>
-                      <Trans>Minimal Approve</Trans>
+                      <Trans>Minimal Approvals</Trans>
                     </ThemedText.Black>
                     <HelpTooltip
                       text={
                         <Trans>
-                          By default, token approvals & permits are for an unlimited amount, which ensures you don't pay gas for your trades.
-                          When this setting is enabled, approvals & permits will be for the minimum amount instead of unlimited. You may incur gas costs when you trade. Existing approvals must be revoked manually before you can re-approve.
+                          By default, token approvals & permits are for an unlimited amount, which ensures you don't pay extra for subsequent trades.
+                          <br />
+                          <br />
+                          When this setting is enabled, approvals & permits will be for the minimum amount instead of unlimited.
+                          This incurs additional costs at every trade.
+                          <br />
+                          <br />
+                          Existing approvals must be revoked manually before you can re-approve.
                         </Trans>
                       }
                     />
