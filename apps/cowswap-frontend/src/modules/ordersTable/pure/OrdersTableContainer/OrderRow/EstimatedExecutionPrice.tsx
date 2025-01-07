@@ -1,4 +1,5 @@
 import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
+import allowanceIcon from '@cowprotocol/assets/images/icon-allowance.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
@@ -50,6 +51,17 @@ const UnfillableLabel = styled.span`
   align-items: center;
   justify-content: flex-start;
   gap: 3px;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+
+  svg > path {
+    fill: currentColor;
+    stroke: none;
+  }
 `
 
 const ApprovalLink = styled.button`
@@ -120,6 +132,9 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
 
   const unfillableLabel = (
     <UnfillableLabel>
+      {(warningText === 'Insufficient allowance' || warningText === 'Insufficient balance') && (
+        <SVG src={allowanceIcon} />
+      )}
       {warningText}
       {warningText === 'Insufficient allowance' && onApprove && (
         <ApprovalLink onClick={onApprove}>Set approval</ApprovalLink>
