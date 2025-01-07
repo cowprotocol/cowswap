@@ -125,12 +125,13 @@ export function SettingsTab({
                 <RowBetween>
                   <RowFixed>
                     <ThemedText.Black fontWeight={400} fontSize={14}>
-                      <Trans>Partial Approve</Trans>
+                      <Trans>Minimal Approve</Trans>
                     </ThemedText.Black>
                     <HelpTooltip
                       text={
                         <Trans>
-                          Allows you to approve a token for a specific amount, rather than the maximum amount.
+                          By default, token approvals & permits are for an unlimited amount, which ensures you don't pay gas for your trades.
+                          When this setting is enabled, approvals & permits will be for the minimum amount instead of unlimited. You may incur gas costs when you trade. Existing approvals must be revoked manually before you can re-approve.
                         </Trans>
                       }
                     />
