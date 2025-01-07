@@ -24,7 +24,9 @@ export interface ParsedOrderExecutionData {
   surplusAmount: BigNumber
   surplusPercentage: BigNumber
   executedFeeAmount: string | undefined
-  executedSurplusFee: string | null
+  executedFee: string | null
+  executedFeeToken: string | null
+  totalFee: string | null
   filledPercentDisplay: string
   executedPrice: Price<Currency, Currency> | null
   activityId: string | undefined
@@ -62,7 +64,9 @@ export const parseOrder = (order: Order): ParsedOrder => {
   const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order)
   const expirationTime = new Date(Number(order.validTo) * 1000)
   const executedFeeAmount = order.apiAdditionalInfo?.executedFeeAmount
-  const executedSurplusFee = order.apiAdditionalInfo?.executedSurplusFee || null
+  const executedFee = order.apiAdditionalInfo?.executedFee || null
+  const executedFeeToken = order.apiAdditionalInfo?.executedFeeToken || null
+  const totalFee = order.apiAdditionalInfo?.totalFee || null
   const creationTime = new Date(order.creationTime)
   const fulfillmentTime = order.fulfillmentTime
   const fullyFilled = isOrderFilled(order)
@@ -83,6 +87,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
   const activityTitle = showCreationTxLink ? 'Creation transaction' : 'Order ID'
 
   const executionData: ParsedOrderExecutionData = {
+    executedFeeToken,
     executedBuyAmount,
     executedSellAmount,
     filledAmount,
@@ -91,7 +96,8 @@ export const parseOrder = (order: Order): ParsedOrder => {
     surplusAmount,
     surplusPercentage,
     executedFeeAmount,
-    executedSurplusFee,
+    executedFee,
+    totalFee,
     executedPrice,
     fullyFilled,
     partiallyFilled,

@@ -27,6 +27,7 @@ import { Updaters } from 'modules/application/containers/App/Updaters'
 import { WithLDProvider } from 'modules/application/containers/WithLDProvider'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
+import { APP_HEADER_ELEMENT_ID } from '../common/constants/common'
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 import { BlockNumberProvider } from '../common/hooks/useBlockNumber'
 
@@ -85,7 +86,7 @@ function Web3ProviderInstance({ children }: { children: ReactNode }) {
 function Toasts() {
   const { disableToastMessages = false } = useInjectedWidgetParams()
 
-  return <SnackbarsWidget hidden={disableToastMessages} />
+  return <SnackbarsWidget hidden={disableToastMessages} anchorElementId={APP_HEADER_ELEMENT_ID} />
 }
 
 const container = document.getElementById('root')
