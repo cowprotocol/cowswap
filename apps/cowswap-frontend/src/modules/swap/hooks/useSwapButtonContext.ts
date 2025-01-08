@@ -130,6 +130,7 @@ export function useSwapButtonContext(input: SwapButtonInput, actions: TradeWidge
   })
 
   const needsApproval =
+    !isNativeIn &&
     (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING) &&
     swapInputError === undefined
 
