@@ -134,7 +134,7 @@ export function SettingsTab({
                           <br />
                           <br />
                           When this setting is enabled, approvals & permits will be for the minimum amount instead of unlimited.
-                          This incurs additional costs at every trade.
+                          This incurs additional costs on every trade.
                           <br />
                           <br />
                           Existing approvals must be revoked manually before you can re-approve.
