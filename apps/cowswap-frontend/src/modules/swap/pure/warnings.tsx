@@ -55,7 +55,6 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
         <>
           <HighFeeWarning />
           <BundleTxWrapBanner />
-          <PartialApprovalBanner isApprovalNeeded={isApprovalNeeded} openSettings={openSettings} />
 
           {showTwapSuggestionBanner && (
             <TwapSuggestionBanner
@@ -66,6 +65,7 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
               sellAmount={trade?.inputAmount.toExact()}
             />
           )}
+          <PartialApprovalBanner isApprovalNeeded={isApprovalNeeded} openSettings={openSettings} />
         </>
       )}
     </>
