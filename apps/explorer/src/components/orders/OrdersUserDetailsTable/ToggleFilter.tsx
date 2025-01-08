@@ -17,7 +17,7 @@ const Wrapper = styled.div<{ checked: boolean }>`
   padding: 0 8px;
   font-size: ${({ theme }): string => theme.fontSizeDefault};
   cursor: pointer;
-  color: ${({ theme }): string => theme.white};
+  color: ${({ checked, theme }): string => (checked ? theme.textActive1 : theme.white)};
   height: 3rem;
   border: 1px solid ${({ theme }): string => theme.borderPrimary};
   border-radius: 0.5rem;
@@ -30,9 +30,6 @@ const Wrapper = styled.div<{ checked: boolean }>`
 
   @media ${MEDIA.mediumDown} {
     min-width: 3rem;
-    span {
-      display: none;
-    }
   }
 `
 

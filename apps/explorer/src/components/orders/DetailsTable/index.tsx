@@ -92,7 +92,10 @@ export const Wrapper = styled.div`
 
   display: flex;
   flex-direction: row;
-  align-items: center;
+
+  ${Media.MediumAndUp()} {
+    align-items: center;
+  }
 
   ${Media.upToSmall()} {
     flex-direction: column;
