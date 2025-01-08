@@ -2,7 +2,6 @@ import React from 'react'
 
 import { genericPropsChecker } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Command } from '@cowprotocol/types'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
@@ -12,7 +11,6 @@ import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssu
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 import { BundleTxWrapBanner, HighFeeWarning } from 'modules/tradeWidgetAddons'
 
-import { PartialApprovalBanner } from './banners/PartialApprovalBanner'
 import { TwapSuggestionBanner } from './banners/TwapSuggestionBanner'
 
 export interface SwapWarningsTopProps {
@@ -23,8 +21,6 @@ export interface SwapWarningsTopProps {
   priceImpact: Percent | undefined
   tradeUrlParams: TradeUrlParams
   isNativeSellInHooksStore: boolean
-  isApprovalNeeded: boolean
-  openSettings: Command
 }
 
 export interface SwapWarningsBottomProps {
@@ -43,8 +39,6 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     priceImpact,
     tradeUrlParams,
     isNativeSellInHooksStore,
-    isApprovalNeeded,
-    openSettings
   } = props
 
   return (
@@ -65,7 +59,6 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
               sellAmount={trade?.inputAmount.toExact()}
             />
           )}
-          <PartialApprovalBanner isApprovalNeeded={isApprovalNeeded} openSettings={openSettings} />
         </>
       )}
     </>

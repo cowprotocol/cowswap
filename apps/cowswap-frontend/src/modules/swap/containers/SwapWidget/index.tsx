@@ -52,7 +52,6 @@ import {
 import { getQuoteTimeOffset } from 'modules/tradeQuote'
 import { useTradeSlippage } from 'modules/tradeSlippage'
 import { SettingsTab, TradeRateDetails, useHighFeeWarning } from 'modules/tradeWidgetAddons'
-import { useOpenSettingsTab } from 'modules/tradeWidgetAddons/state/settingsTabState'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
 import { Routes } from 'common/constants/routes'
@@ -93,7 +92,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const deadlineState = useUserTransactionTTL()
   const partialApproveState = usePartialApprove()
   const isHookTradeType = useIsHooksTradeType()
-  const openSettings = useOpenSettingsTab()
 
   const isTradePriceUpdating = useTradePricesUpdate()
 
@@ -209,8 +207,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const showTwapSuggestionBanner = !enabledTradeTypes || enabledTradeTypes.includes(TradeType.ADVANCED)
   const isNativeSellInHooksStore = swapButtonContext.swapButtonState === SwapButtonState.SellNativeInHooks
 
-  const isApprovalNeeded = !isHookTradeType && swapButtonContext.needsApproval
-
   const swapWarningsTopProps: SwapWarningsTopProps = useMemo(
     () => ({
       chainId,
@@ -220,8 +216,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
       priceImpact: priceImpactParams.priceImpact,
       tradeUrlParams,
       isNativeSellInHooksStore,
-      isApprovalNeeded,
-      openSettings,
     }),
     [
       chainId,
@@ -231,8 +225,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
       priceImpactParams.priceImpact,
       tradeUrlParams,
       isNativeSellInHooksStore,
-      isApprovalNeeded,
-      openSettings,
     ],
   )
 
