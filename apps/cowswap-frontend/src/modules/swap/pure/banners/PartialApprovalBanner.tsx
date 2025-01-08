@@ -7,15 +7,10 @@ import styled from 'styled-components/macro'
 const BANNER_STORAGE_KEY = 'partialPermitBannerKey:v0'
 
 type PartialApprovalBannerProps = {
-  isApprovalNeeded?: boolean
   openSettings: Command
 }
 
-export function PartialApprovalBanner({ isApprovalNeeded, openSettings }: PartialApprovalBannerProps) {
-  if (!isApprovalNeeded) {
-    return null
-  }
-
+export function PartialApprovalBanner({ openSettings }: PartialApprovalBannerProps) {
   return ClosableBanner(BANNER_STORAGE_KEY, (onClose) => (
     <InlineBanner
       bannerType="success"
