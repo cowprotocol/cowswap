@@ -26,6 +26,7 @@ export interface TradeFlowContext {
   }
   flags: {
     allowsOffchainSigning: boolean
+    isPartialApprove?: boolean
   }
   callbacks: {
     closeModals: Command

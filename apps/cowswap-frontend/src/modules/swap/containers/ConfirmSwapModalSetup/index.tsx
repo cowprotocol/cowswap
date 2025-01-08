@@ -7,13 +7,14 @@ import { Percent, TradeType } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import TradeGp from 'legacy/state/swap/TradeGp'
-import { useUserTransactionTTL } from 'legacy/state/user/hooks'
+import { usePartialApprove, useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 import { useAppData } from 'modules/appData'
 import {
   TradeConfirmation,
   TradeConfirmModal,
   useIsEoaEthFlow,
+  useIsHooksTradeType,
   useOrderSubmittedContent,
   useReceiveAmountInfo,
   useShouldPayGas,
@@ -70,6 +71,8 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const nativeCurrency = useNativeCurrency()
   const appData = useAppData()
   const [userDeadline] = useUserTransactionTTL()
+  const [isPartialApprove] = usePartialApprove()
+  const isHooksTradeType = useIsHooksTradeType()
 
   const slippageAdjustedSellAmount = trade?.maximumAmountIn(allowedSlippage)
   const isExactIn = trade?.tradeType === TradeType.EXACT_INPUT
@@ -124,6 +127,9 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
         buttonText={buttonText}
         recipient={recipient}
         appData={appData || undefined}
+        slippageAdjustedSellAmount={slippageAdjustedSellAmount}
+        isPartialApprove={isPartialApprove}
+        displayHookDetails={isHooksTradeType}
       >
         {(restContent) => (
           <>
