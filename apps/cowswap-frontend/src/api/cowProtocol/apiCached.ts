@@ -1,9 +1,10 @@
-import ms from 'ms.macro'
-import * as api from './api'
-import QuickLRU from 'quick-lru'
 import { fetchWithCache } from '@cowprotocol/common-utils'
-
 import { NativePriceResponse, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+
+import ms from 'ms.macro'
+import QuickLRU from 'quick-lru'
+
+import * as api from './api'
 
 export * from './api'
 
