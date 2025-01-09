@@ -31,15 +31,26 @@ export const SettingsLabel = styled.span`
 `
 
 export const TableWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+`
+
+export const ScrollContainer = styled.div`
   width: 100%;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
+  display: block;
+  padding-bottom: 16px;
 
-  ${Media.upToSmall()} {
-    margin: 0 -12px; /* Negative margin to allow full-width scrolling */
-    padding: 0 12px;
-    width: calc(100% + 24px);
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  &::-webkit-scrollbar {
+    display: none;
   }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 `
 
 export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: boolean }>`
@@ -59,7 +70,7 @@ export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: 
     }
 
     const checkboxColumn = isRowSelectable ? 'var(--checkboxSize)' : ''
-    return `${checkboxColumn} minmax(160px,2fr) minmax(120px,1fr) minmax(140px,1fr) minmax(120px,1fr) minmax(120px,1fr) minmax(80px,90px) minmax(80px,0.8fr) 24px`
+    return `${checkboxColumn} minmax(160px,2fr) minmax(120px,1fr) minmax(140px,1fr) minmax(120px,1fr) minmax(120px,1fr) minmax(100px,110px) minmax(80px,0.8fr) 24px`
   }};
   grid-template-rows: minmax(var(--header-height), 1fr);
   align-items: center;
@@ -71,11 +82,11 @@ export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: 
   border-left: none;
   border-image: initial;
   border-bottom: 1px solid var(--cow-color-text-opacity-10);
-  min-width: 888px; /* Minimum width to prevent too much squeezing */
+  width: fit-content;
+  min-width: 100%;
 
   ${Media.upToSmall()} {
     --checkboxSize: 24px;
-    --checkBoxBorderRadius: 6px;
   }
 `
 
