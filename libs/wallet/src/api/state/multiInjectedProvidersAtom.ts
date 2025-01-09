@@ -26,7 +26,7 @@ window.addEventListener('eip6963:announceProvider', (event: Event) => {
 
   jotaiStore.set(multiInjectedProvidersAtom, (prev: EIP6963ProviderDetail[]) => {
     const newProvider = providerEvent.detail
-    const existingProvider = prev.find((p) => p.info.rdns === newProvider.info.uuid)
+    const existingProvider = prev.find((p) => p.info.rdns === newProvider.info.rdns)
 
     if (existingProvider) return prev
 
