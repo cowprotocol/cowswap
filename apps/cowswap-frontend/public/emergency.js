@@ -13,6 +13,46 @@ if (window.location.pathname !== '/') {
 }
 
 /**
+ * Removes deprecated token lists for a particular localStorage key: `allTokenListsInfoAtom:v5`
+ *
+ * A change introduced new token lists and removed old ones.
+ * This code removes the old token lists from the local storage to avoid duplication without resetting user added token lists.
+ */
+;(function () {
+  const key = 'allTokenListsInfoAtom:v5'
+  const tokenLists = JSON.parse(localStorage.getItem(key) || '[]')
+
+  const listsToSkip = new RegExp(
+    'CoingeckoTokensList\\.json$|' +
+      'UniswapTokensList\\.json$|' +
+      'CoinGecko\\.json$|' +
+      'compound\\.tokenlist\\.json$|' +
+      'set\\.tokenlist\\.json$|' +
+      'tokensoft\\.eth$|' +
+      'opyn-squeeth|' +
+      'tryroll\\.com|' +
+      'snx\\.eth$|' +
+      'aave\\.eth$|' +
+      'cmc\\.eth$',
+  )
+
+  const updatedTokenLists = Object.keys(tokenLists).reduce((acc, chainId) => {
+    acc[chainId] = Object.keys(tokenLists[chainId]).reduce((_acc, listPath) => {
+      if (!listsToSkip.test(listPath)) {
+        _acc[listPath] = tokenLists[chainId][listPath]
+      } else {
+        console.log('[Service worker] Skip token list', listPath)
+      }
+      return _acc
+    }, {})
+
+    return acc
+  }, {})
+
+  localStorage.setItem(key, JSON.stringify(updatedTokenLists))
+})()
+
+/**
  * Remove old versions of the local storage atom stores
  * We rely on the fact that store names are in the format {name}Atom:v{version}
  * Since outdated versions of the stores are not used anymore, we should remove them to not exceed the storage limit
