@@ -20,7 +20,12 @@ if (window.location.pathname !== '/') {
  */
 ;(function () {
   const key = 'allTokenListsInfoAtom:v5'
-  const tokenLists = JSON.parse(localStorage.getItem(key) || '[]')
+  const storageValue = localStorage.getItem(key)
+
+  // Exit early if the storage value is not set
+  if (!storageValue) return
+
+  const tokenLists = JSON.parse(storageValue)
 
   const listsToSkip = new RegExp(
     'CoingeckoTokensList\\.json$|' +
