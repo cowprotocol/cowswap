@@ -34,7 +34,7 @@ export function NetworksList(props: NetworksListProps) {
             <styledEl.Logo src={logoUrl} />
             <styledEl.NetworkLabel>{label}</styledEl.NetworkLabel>
             {isNewNetwork && (
-              <Badge type={BadgeTypes.ALERT} style={{ marginLeft: 'auto' }}>
+              <Badge type={BadgeTypes.ALERT2} style={isActive ? { marginRight: '10px' } : undefined}>
                 NEW
               </Badge>
             )}
