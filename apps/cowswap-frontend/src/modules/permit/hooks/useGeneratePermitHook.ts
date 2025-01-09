@@ -19,7 +19,7 @@ import { GeneratePermitHook, GeneratePermitHookParams } from '../types'
 /**
  * Hook that returns callback to generate permit hook data
  */
-export function useGeneratePermitHook(isPartialApprove?: boolean): GeneratePermitHook {
+export function useGeneratePermitHook(): GeneratePermitHook {
   const { chainId } = useWalletInfo()
   const storePermit = useSetAtom(storePermitCacheAtom)
   const getCachedPermit = useGetCachedPermit()
@@ -44,15 +44,14 @@ export function useGeneratePermitHook(isPartialApprove?: boolean): GeneratePermi
 
       const eip2162Utils = getPermitUtilsInstance(chainId, provider, account)
       const spender = customSpender || COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
-      const amount = isPartialApprove ? params.amount : undefined
 
       // Always get the nonce for the real account, to know whether the cache should be invalidated
       // Static account should never need to pre-check the nonce as it'll never change once cached
       const nonce = account ? await eip2162Utils.getTokenNonce(inputToken.address, account) : undefined
 
-      const permitParams = { chainId, tokenAddress: inputToken.address, account, nonce, amount }
+      const permitParams = { chainId, tokenAddress: inputToken.address, account, nonce }
 
-      const cachedPermit = await getCachedPermit(inputToken.address, spender, amount)
+      const cachedPermit = await getCachedPermit(inputToken.address, spender)
 
       if (cachedPermit) {
         return cachedPermit
@@ -67,13 +66,12 @@ export function useGeneratePermitHook(isPartialApprove?: boolean): GeneratePermi
         eip2162Utils,
         account,
         nonce,
-        amount,
       })
 
       hookData && storePermit({ ...permitParams, hookData, spender })
 
       return hookData
     },
-    [provider, chainId, getCachedPermit, storePermit, isPartialApprove],
+    [provider, chainId, getCachedPermit, storePermit],
   )
 }

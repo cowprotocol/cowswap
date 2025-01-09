@@ -68,7 +68,9 @@ export const ethFlowConfigs: {
   [EthFlowState.ApproveNeeded]: ({ wrappedSymbol }) => ({
     title: `Approve ${wrappedSymbol}`,
     buttonText: `Approve ${wrappedSymbol}`,
-    descriptions: [`It is required to do an approval of ${wrappedSymbol} via an on-chain ERC20 Approve transaction.`],
+    descriptions: [
+      `It is required to do a one-time approval of ${wrappedSymbol} via an on-chain ERC20 Approve transaction.`,
+    ],
   }),
   [EthFlowState.SwapReady]: ({ wrappedSymbol }) => ({
     title: `Continue swap with ${wrappedSymbol}`,

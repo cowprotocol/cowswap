@@ -14,7 +14,7 @@ export type AddPermitTokenParams = {
   permitInfo: PermitInfo
 }
 
-export type GeneratePermitHookParams = Pick<PermitHookParams, 'inputToken' | 'permitInfo' | 'account' | 'amount'> & {
+export type GeneratePermitHookParams = Pick<PermitHookParams, 'inputToken' | 'permitInfo' | 'account'> & {
   customSpender?: string
 }
 
@@ -33,7 +33,6 @@ export type PermitCache = Record<string, string>
 export type CachedPermitData = {
   hookData: PermitHookData
   nonce: number | undefined
-  amount: string | undefined
 }
 
 export type PermitCacheKeyParams = {
@@ -42,7 +41,6 @@ export type PermitCacheKeyParams = {
   account: string | undefined
   nonce: number | undefined
   spender: string
-  amount: bigint | undefined
 }
 
 export type StorePermitCacheParams = PermitCacheKeyParams & { hookData: PermitHookData }

@@ -1,3 +1,4 @@
+import { useSetAtom } from 'jotai'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
@@ -9,7 +10,7 @@ import styled from 'styled-components/macro'
 
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
 
-import { useOpenSettingsTab } from '../../../state/settingsTabState'
+import { settingsTabStateAtom } from '../../../state/settingsTabState'
 import { RowStyleProps, StyledInfoIcon, StyledRowBetween, TextWrapper, TransactionText } from '../styled'
 
 const DefaultSlippage = styled.span`
@@ -64,7 +65,9 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
     isSmartSlippageLoading,
   } = props
 
-  const openSettings = useOpenSettingsTab()
+  const setSettingTabState = useSetAtom(settingsTabStateAtom)
+
+  const openSettings = () => setSettingTabState({ open: true })
 
   const tooltipContent =
     slippageTooltip ||

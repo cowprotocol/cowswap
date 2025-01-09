@@ -22,16 +22,7 @@ import { ExplorerDataType, getExplorerLink, getRandomInt, isSellOrder, shortenAd
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
-import {
-  Confetti,
-  ExternalLink,
-  InfoTooltip,
-  ProductLogo,
-  ProductVariant,
-  TokenAmount,
-  UI,
-  UnderlinedLinkStyledButton,
-} from '@cowprotocol/ui'
+import { Confetti, ExternalLink, InfoTooltip, ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { AnimatePresence, motion } from 'framer-motion'
@@ -1132,14 +1123,14 @@ function ExpiredStep(props: OrderProgressBarV2Props) {
           <h3>The good news</h3>
           <p>
             Unlike on other exchanges, you won't be charged for this! Feel free to{' '}
-            <UnderlinedLinkStyledButton
+            <styledEl.Button
               onClick={() => {
                 props.navigateToNewOrder?.()
                 trackNewOrderClick()
               }}
             >
               place a new order
-            </UnderlinedLinkStyledButton>{' '}
+            </styledEl.Button>{' '}
             without worry.
           </p>
         </styledEl.InfoCard>

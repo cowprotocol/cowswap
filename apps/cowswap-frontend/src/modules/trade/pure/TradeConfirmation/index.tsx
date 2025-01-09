@@ -9,7 +9,6 @@ import {
   CustomRecipientWarningBanner,
   LongLoadText,
 } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import ms from 'ms.macro'
@@ -50,9 +49,6 @@ export interface TradeConfirmationProps {
   recipient?: string | null
   buttonText?: React.ReactNode
   children?: (restContent: ReactElement) => ReactElement
-  slippageAdjustedSellAmount?: CurrencyAmount<Currency>
-  isPartialApprove?: boolean
-  displayHookDetails?: boolean
 }
 
 export function TradeConfirmation(props: TradeConfirmationProps) {
@@ -80,9 +76,6 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     recipient,
     isPriceStatic,
     appData,
-    isPartialApprove,
-    slippageAdjustedSellAmount,
-    displayHookDetails,
   } = frozenProps || props
 
   /**
@@ -133,20 +126,15 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     onConfirm()
   }
 
-  const hookDetailsElement = displayHookDetails ? (
+  const hookDetailsElement = (
     <>
       {appData && (
-        <OrderHooksDetails
-          appData={appData}
-          slippageAdjustedSellAmount={slippageAdjustedSellAmount}
-          isPartialApprove={isPartialApprove}
-          isTradeConfirmation
-        >
+        <OrderHooksDetails appData={appData} isTradeConfirmation>
           {(hookChildren) => hookChildren}
         </OrderHooksDetails>
       )}
     </>
-  ) : null
+  )
 
   return (
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>

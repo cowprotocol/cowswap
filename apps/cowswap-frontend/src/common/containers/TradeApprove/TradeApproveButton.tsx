@@ -14,16 +14,15 @@ export interface TradeApproveButtonProps {
   amountToApprove: CurrencyAmount<Currency>
   children?: React.ReactNode
   isDisabled?: boolean
-  isPartialApprove?: boolean
 }
 
 export function TradeApproveButton(props: TradeApproveButtonProps) {
-  const { amountToApprove, children, isDisabled, isPartialApprove } = props
+  const { amountToApprove, children, isDisabled } = props
 
   const currency = amountToApprove.currency
 
   const { state: approvalState } = useApproveState(amountToApprove)
-  const tradeApproveCallback = useTradeApproveCallback(amountToApprove, isPartialApprove)
+  const tradeApproveCallback = useTradeApproveCallback(amountToApprove)
   const shouldZeroApprove = useShouldZeroApprove(amountToApprove)
   const zeroApprove = useZeroApprove(amountToApprove.currency)
 

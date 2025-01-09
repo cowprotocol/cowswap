@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'

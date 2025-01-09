@@ -24,7 +24,7 @@
   "PERMIT_TOKEN": {
     "type": "INTERNAL",
     "name": "Permit a token",
-    "descriptionShort": "Permit an address to spend one token on your behalf.",
+    "descriptionShort": "Infinite permit an address to spend one token on your behalf.",
     "description": "This hook allows you to permit an address to spend your tokens on your behalf. This is useful for allowing a smart contract to spend your tokens without needing to approve each transaction.",
     "image": "https://raw.githubusercontent.com/cowprotocol/cowswap/refs/heads/develop/apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/icon.png",
     "version": "v0.1.0",

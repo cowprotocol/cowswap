@@ -23,12 +23,3 @@ export const LinkStyledButton = styled.button<{ disabled?: boolean; bg?: boolean
     text-decoration: none;
   }
 `
-
-export const UnderlinedLinkStyledButton = styled(LinkStyledButton)`
-  font-size: 14px;
-  text-decoration: underline;
-
-  &:hover {
-    text-decoration: none;
-  }
-`

@@ -5,16 +5,13 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Navigate, useLocation, useParams } from 'react-router-dom'
 
 import { SwapUpdaters, SwapWidget } from 'modules/swap'
-import { PartialApprovalBanner } from 'modules/swap/pure/banners/PartialApprovalBanner'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
-import { useOpenSettingsTab } from 'modules/tradeWidgetAddons/state/settingsTabState'
 
 import { Routes } from 'common/constants/routes'
 
 export function SwapPage() {
   const params = useParams()
-  const openSettings = useOpenSettingsTab()
 
   if (!params.chainId) {
     return <SwapPageRedirect />
@@ -23,7 +20,7 @@ export function SwapPage() {
   return (
     <>
       <SwapUpdaters />
-      <SwapWidget topContent={<PartialApprovalBanner openSettings={openSettings} />} />
+      <SwapWidget />
     </>
   )
 }

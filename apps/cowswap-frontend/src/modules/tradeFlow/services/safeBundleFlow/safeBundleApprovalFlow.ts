@@ -33,15 +33,7 @@ export async function safeBundleApprovalFlow(
     return false
   }
 
-  const {
-    context,
-    callbacks,
-    orderParams,
-    swapFlowAnalyticsContext,
-    tradeConfirmActions,
-    typedHooks,
-    flags: { isPartialApprove },
-  } = tradeContext
+  const { context, callbacks, orderParams, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks } = tradeContext
 
   const { spender, settlementContract, safeAppsSdk, erc20Contract } = safeBundleContext
 
@@ -60,7 +52,6 @@ export async function safeBundleApprovalFlow(
       erc20Contract,
       spender,
       amountToApprove: context.inputAmount,
-      isPartialApprove,
     })
 
     orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)
