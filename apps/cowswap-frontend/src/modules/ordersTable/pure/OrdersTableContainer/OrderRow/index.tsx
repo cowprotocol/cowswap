@@ -10,7 +10,7 @@ import { Loader, TokenAmount, UI, HoverTooltip } from '@cowprotocol/ui'
 import { PercentDisplay, percentIsAlmostHundred } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
-import { Clock, Zap } from 'react-feather'
+import { Clock, Zap, Check } from 'react-feather'
 
 import { CREATING_STATES, OrderStatus } from 'legacy/state/orders/actions'
 
@@ -197,6 +197,11 @@ export function OrderRow({
             <Clock size={14} strokeWidth={2.5} />
             Order cancelled
           </styledEl.CancelledDisplay>
+        ) : order.status === OrderStatus.FULFILLED ? (
+          <styledEl.FilledDisplay>
+            <Check size={14} strokeWidth={3.5} />
+            Order {order.partiallyFillable && Number(filledPercentDisplay) < 100 ? 'partially ' : ''}filled
+          </styledEl.FilledDisplay>
         ) : isUnfillable ? (
           ''
         ) : (
@@ -259,6 +264,7 @@ export function OrderRow({
   const renderFillsAtWithDistance = () => {
     const fillsAtContent = renderFillsAt()
     const distance =
+      getIsFinalizedOrder(order) ||
       order.status === OrderStatus.CANCELLED ||
       isUnfillable ||
       (priceDiffs?.percentage &&
@@ -337,7 +343,7 @@ export function OrderRow({
 
           {/* Expires and Created for open orders */}
           <styledEl.CellElement doubleRow>
-            <b>{expirationTimeAgo}</b>
+            <b>{getIsFinalizedOrder(order) ? '-' : expirationTimeAgo}</b>
             <i>{isScheduledCreating ? 'Creating...' : creationTimeAgo}</i>
           </styledEl.CellElement>
         </>

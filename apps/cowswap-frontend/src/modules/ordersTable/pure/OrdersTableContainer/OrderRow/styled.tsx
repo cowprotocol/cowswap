@@ -340,7 +340,14 @@ export const CancelledDisplay = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
-  color: inherit;
+  color: var(${UI.COLOR_DANGER});
+`
+
+export const FilledDisplay = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(${UI.COLOR_SUCCESS});
 `
 
 export const PendingExecutionDisplay = styled.div`
