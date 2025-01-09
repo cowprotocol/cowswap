@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.8.1...wallet-v1.9.0) (2025-01-09)
+
+
+### Features
+
+* **wallets:** reapply "feat(wallets): add metaMask SDK connector ([#5028](https://github.com/cowprotocol/cowswap/issues/5028))" ([#5215](https://github.com/cowprotocol/cowswap/issues/5215)) ([#5223](https://github.com/cowprotocol/cowswap/issues/5223)) ([28fcda9](https://github.com/cowprotocol/cowswap/commit/28fcda95c7002a528c538917450bc38b67c0a5eb))
+
 ## [1.8.1](https://github.com/cowprotocol/cowswap/compare/wallet-v1.8.0...wallet-v1.8.1) (2024-12-19)
 
 
