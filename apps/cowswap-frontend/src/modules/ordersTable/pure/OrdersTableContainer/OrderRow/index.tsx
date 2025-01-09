@@ -262,6 +262,70 @@ export function OrderRow({
   )
 
   const renderFillsAtWithDistance = () => {
+    // For TWAP parent orders, show the next scheduled child order's fills at price
+    if (children) {
+      // Get the next scheduled order from the children prop
+      const childrenArray = React.Children.toArray(children) as React.ReactElement<{ order: ParsedOrder }>[]
+      const nextScheduledOrder = childrenArray
+        .map((child) => child.props.order)
+        .find((childOrder) => {
+          return childOrder && childOrder.status === OrderStatus.SCHEDULED && !getIsFinalizedOrder(childOrder)
+        })
+
+      if (nextScheduledOrder) {
+        // Get the execution price from the next scheduled order
+        const nextOrderExecutionPrice = nextScheduledOrder.executionData.executedPrice
+        const nextOrderPriceDiffs = calculatePriceDifference({
+          referencePrice: spotPrice,
+          targetPrice: nextOrderExecutionPrice,
+          isInverted: false,
+        })
+
+        // Show the execution price for the next scheduled order
+        let nextOrderFillsAtContent
+        if (nextScheduledOrder.status === OrderStatus.CANCELLED || nextScheduledOrder.isUnfillable) {
+          nextOrderFillsAtContent = ''
+        } else if (!nextOrderExecutionPrice || nextScheduledOrder.status === OrderStatus.CREATING) {
+          nextOrderFillsAtContent = '-'
+        } else {
+          nextOrderFillsAtContent = (
+            <TokenAmount
+              amount={nextOrderExecutionPrice}
+              tokenSymbol={nextOrderExecutionPrice?.quoteCurrency}
+              opacitySymbol
+            />
+          )
+        }
+
+        const nextOrderDistance = nextOrderPriceDiffs?.percentage
+          ? `${nextOrderPriceDiffs.percentage.toFixed(2)}%`
+          : '-'
+
+        return (
+          <styledEl.CellElement doubleRow>
+            <b>{nextOrderFillsAtContent}</b>
+            <i
+              style={{
+                color: !isUnfillable
+                  ? getDistanceColor(Number(nextOrderPriceDiffs?.percentage?.toFixed(4) || '0'))
+                  : 'inherit',
+              }}
+            >
+              {nextOrderDistance}
+            </i>
+          </styledEl.CellElement>
+        )
+      }
+
+      // If no scheduled orders found, show dash
+      return (
+        <styledEl.CellElement>
+          <b>-</b>
+        </styledEl.CellElement>
+      )
+    }
+
+    // Regular order display logic
     const fillsAtContent = renderFillsAt()
     const distance =
       getIsFinalizedOrder(order) ||
@@ -290,7 +354,9 @@ export function OrderRow({
 
   const renderMarketPrice = () => (
     <>
-      {order.status === OrderStatus.CANCELLED || withWarning ? (
+      {children ? (
+        '-'
+      ) : order.status === OrderStatus.CANCELLED || withWarning ? (
         '-'
       ) : spotPrice ? (
         <TokenAmount
@@ -396,16 +462,18 @@ export function OrderRow({
       </styledEl.CellElement>
 
       {/* Status label */}
-      <styledEl.CellElement>
-        <styledEl.StatusBox>
-          <OrderStatusBox
-            order={order}
-            withWarning={withWarning}
-            onClick={onClick}
-            WarningTooltip={withWarning ? renderWarningTooltip(true) : undefined}
-          />
-        </styledEl.StatusBox>
-      </styledEl.CellElement>
+      {!children && (
+        <styledEl.CellElement>
+          <styledEl.StatusBox>
+            <OrderStatusBox
+              order={order}
+              withWarning={withWarning}
+              onClick={onClick}
+              WarningTooltip={withWarning ? renderWarningTooltip(true) : undefined}
+            />
+          </styledEl.StatusBox>
+        </styledEl.CellElement>
+      )}
 
       {/* Children (e.g. ToggleExpandButton for parent orders) */}
       {children}
