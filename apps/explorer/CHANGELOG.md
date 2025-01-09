@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.42.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.41.0...explorer-v2.42.0) (2025-01-09)
+
+
+### Features
+
+* executedSurplusFee removal ([#5262](https://github.com/cowprotocol/cowswap/issues/5262)) ([3be8a65](https://github.com/cowprotocol/cowswap/commit/3be8a65309048d4082f2ce25f5b39624e092dbf2))
+
 ## [2.41.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.40.1...explorer-v2.41.0) (2024-12-19)
 
 

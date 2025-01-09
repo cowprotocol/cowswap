@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.6.0...common-hooks-v1.6.1) (2025-01-09)
+
+
+### Bug Fixes
+
+* **feature-flags:** remove isBaseEnabled feature flag ([#5234](https://github.com/cowprotocol/cowswap/issues/5234)) ([1626a04](https://github.com/cowprotocol/cowswap/commit/1626a04e2c0b530c2efae842776ba5af6014a1da))
+
 ## [1.6.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.5.0...common-hooks-v1.6.0) (2024-12-11)
 
 
