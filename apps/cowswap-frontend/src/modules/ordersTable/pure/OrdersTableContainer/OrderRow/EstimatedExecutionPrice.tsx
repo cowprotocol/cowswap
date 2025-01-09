@@ -126,7 +126,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
 
   const content = (
     <>
-      <TokenAmount amount={amount} tokenSymbol={tokenSymbol} {...rest} />
+      <TokenAmount amount={amount} tokenSymbol={tokenSymbol} clickable {...rest} />
     </>
   )
 
@@ -135,11 +135,11 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
       {(warningText === 'Insufficient allowance' || warningText === 'Insufficient balance') && (
         <SVG src={allowanceIcon} />
       )}
+      {WarningTooltip && <WarningTooltip showIcon>{null}</WarningTooltip>}
       {warningText}
       {warningText === 'Insufficient allowance' && onApprove && (
         <ApprovalLink onClick={onApprove}>Set approval</ApprovalLink>
       )}
-      {WarningTooltip && <WarningTooltip showIcon>{null}</WarningTooltip>}
     </UnfillableLabel>
   )
 

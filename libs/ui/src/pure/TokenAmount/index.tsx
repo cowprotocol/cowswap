@@ -7,11 +7,29 @@ import { UI } from '../../enum'
 import { FractionLike, Nullish } from '../../types'
 import { TokenNameAndSymbol, TokenSymbol } from '../TokenSymbol'
 
-export const Wrapper = styled.span<{ lowVolumeWarning?: boolean }>`
+export const Wrapper = styled.span<{ lowVolumeWarning?: boolean; clickable?: boolean }>`
   background: ${({ lowVolumeWarning }) => (lowVolumeWarning ? `var(${UI.COLOR_ALERT_BG})` : '')};
   color: ${({ lowVolumeWarning }) => (lowVolumeWarning ? `var(${UI.COLOR_ALERT_TEXT})` : 'inherit')};
   border-radius: 2px;
   word-break: break-word;
+
+  ${({ clickable }) =>
+    clickable &&
+    `
+    cursor: pointer;
+    transition:
+      opacity var(${UI.ANIMATION_DURATION}) ease-in-out,
+      text-decoration-color var(${UI.ANIMATION_DURATION}) ease-in-out;
+    text-decoration: underline;
+    text-decoration-style: dashed;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+    text-decoration-color: var(${UI.COLOR_TEXT_OPACITY_25});
+
+    &:hover {
+      text-decoration-color: var(${UI.COLOR_TEXT_OPACITY_70});
+    }
+  `}
 `
 
 export const SymbolElement = styled.span<{ opacitySymbol?: boolean }>`
@@ -27,6 +45,7 @@ export interface TokenAmountProps {
   hideTokenSymbol?: boolean
   round?: boolean
   opacitySymbol?: boolean
+  clickable?: boolean
 }
 
 export function TokenAmount({
@@ -37,6 +56,7 @@ export function TokenAmount({
   round,
   hideTokenSymbol,
   opacitySymbol,
+  clickable,
 }: TokenAmountProps) {
   const title = getTokenAmountTitle({ amount, tokenSymbol })
 
@@ -52,7 +72,7 @@ export function TokenAmount({
 
   const roundedAmount = round ? FractionUtils.round(amount) : amount
   return (
-    <Wrapper title={title} className={className}>
+    <Wrapper title={title} className={className} clickable={clickable}>
       {formatTokenAmount(roundedAmount) || defaultValue}
       <SymbolElement opacitySymbol={opacitySymbol}>{tokenSymbolElement}</SymbolElement>
     </Wrapper>

@@ -245,7 +245,12 @@ export function OrderRow({
   const renderMarketPrice = () => (
     <>
       {spotPrice ? (
-        <TokenAmount amount={spotPriceInverted} tokenSymbol={spotPriceInverted?.quoteCurrency} opacitySymbol />
+        <TokenAmount
+          amount={spotPriceInverted}
+          tokenSymbol={spotPriceInverted?.quoteCurrency}
+          opacitySymbol
+          clickable
+        />
       ) : spotPrice === null ? (
         '-'
       ) : (
@@ -317,6 +322,7 @@ export function OrderRow({
                 amount={executedPriceInverted}
                 tokenSymbol={executedPriceInverted?.quoteCurrency}
                 opacitySymbol
+                clickable
               />
             ) : (
               '-'

@@ -240,7 +240,12 @@ export function RateInfo({
                 1 <TokenSymbol token={rateInputCurrency} /> ={' '}
               </>
             )}
-            <TokenAmount amount={currentActiveRate} tokenSymbol={rateOutputCurrency} opacitySymbol={opacitySymbol} />
+            <TokenAmount
+              amount={currentActiveRate}
+              tokenSymbol={rateOutputCurrency}
+              opacitySymbol={opacitySymbol}
+              clickable
+            />
           </span>{' '}
           {!!fiatAmount && (
             <FiatRate>
