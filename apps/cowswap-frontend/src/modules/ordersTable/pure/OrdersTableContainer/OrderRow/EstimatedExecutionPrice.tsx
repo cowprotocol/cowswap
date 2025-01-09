@@ -2,9 +2,7 @@ import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
 import allowanceIcon from '@cowprotocol/assets/images/icon-allowance.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
-import { UI } from '@cowprotocol/ui'
-import { SymbolElement, TokenAmount, TokenAmountProps } from '@cowprotocol/ui'
-import { HoverTooltip } from '@cowprotocol/ui'
+import { UI, SymbolElement, TokenAmount, TokenAmountProps, HoverTooltip, ButtonSecondary } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Fraction, Percent } from '@uniswap/sdk-core'
 
 import { darken } from 'color2k'
@@ -62,6 +60,13 @@ const UnfillableLabel = styled.span`
     fill: currentColor;
     stroke: none;
   }
+`
+
+const WarningContent = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  cursor: help;
 `
 
 const ApprovalLink = styled.button`
@@ -132,13 +137,36 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
 
   const unfillableLabel = (
     <UnfillableLabel>
-      {(warningText === 'Insufficient allowance' || warningText === 'Insufficient balance') && (
-        <SVG src={allowanceIcon} />
-      )}
-      {WarningTooltip && <WarningTooltip showIcon>{null}</WarningTooltip>}
-      {warningText}
-      {warningText === 'Insufficient allowance' && onApprove && (
-        <ApprovalLink onClick={onApprove}>Set approval</ApprovalLink>
+      {(warningText === 'Insufficient allowance' || warningText === 'Insufficient balance') && WarningTooltip && (
+        <>
+          <HoverTooltip
+            content={
+              <styledEl.WarningContent>
+                <h3>{warningText}</h3>
+                <p>
+                  {warningText === 'Insufficient allowance'
+                    ? 'The order remains open. Execution requires adequate allowance. Approve the token to proceed.'
+                    : 'The order remains open. Execution requires sufficient balance.'}
+                </p>
+                {warningText === 'Insufficient allowance' && onApprove && (
+                  <styledEl.WarningActionBox>
+                    <ButtonSecondary onClick={onApprove}>Set approval</ButtonSecondary>
+                  </styledEl.WarningActionBox>
+                )}
+              </styledEl.WarningContent>
+            }
+            bgColor={`var(${UI.COLOR_DANGER_BG})`}
+            color={`var(${UI.COLOR_DANGER_TEXT})`}
+          >
+            <WarningContent>
+              <SVG src={allowanceIcon} />
+              {warningText}
+            </WarningContent>
+          </HoverTooltip>
+          {warningText === 'Insufficient allowance' && onApprove && (
+            <ApprovalLink onClick={onApprove}>Set approval</ApprovalLink>
+          )}
+        </>
       )}
     </UnfillableLabel>
   )

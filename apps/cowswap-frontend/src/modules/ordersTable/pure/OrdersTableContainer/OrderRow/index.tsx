@@ -188,7 +188,11 @@ export function OrderRow({
   const renderFillsAt = () => (
     <>
       {getIsFinalizedOrder(order) ? (
-        '-'
+        isUnfillable ? (
+          ''
+        ) : (
+          '-'
+        )
       ) : prices && estimatedExecutionPrice ? (
         <styledEl.ExecuteCellWrapper>
           {!isUnfillable &&
@@ -214,7 +218,11 @@ export function OrderRow({
           )}
         </styledEl.ExecuteCellWrapper>
       ) : prices === null || !estimatedExecutionPrice || isOrderCreating ? (
-        '-'
+        isUnfillable ? (
+          ''
+        ) : (
+          '-'
+        )
       ) : (
         <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
       )}
@@ -223,8 +231,9 @@ export function OrderRow({
 
   const renderFillsAtWithDistance = () => {
     const fillsAtContent = renderFillsAt()
-    const distance =
-      !isUnfillable && priceDiffs?.percentage && Number(priceDiffs?.percentage.toFixed(4)) >= MIN_PERCENTAGE_TO_DISPLAY
+    const distance = isUnfillable
+      ? ''
+      : priceDiffs?.percentage && Number(priceDiffs?.percentage.toFixed(4)) >= MIN_PERCENTAGE_TO_DISPLAY
         ? `${priceDiffs?.percentage.toFixed(2)}%`
         : '-'
 
