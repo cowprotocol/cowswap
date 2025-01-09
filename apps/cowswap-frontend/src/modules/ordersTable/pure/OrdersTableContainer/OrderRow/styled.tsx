@@ -335,3 +335,16 @@ export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
 export const DistanceToMarket = styled.span<{ $color: string }>`
   color: ${({ $color }: { $color: string }) => $color};
 `
+
+export const CancelledDisplay = styled.div`
+  --size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(${UI.COLOR_DANGER_TEXT});
+
+  svg {
+    width: var(--size);
+    height: var(--size);
+  }
+`

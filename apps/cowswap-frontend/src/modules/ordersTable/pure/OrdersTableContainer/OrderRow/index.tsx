@@ -10,6 +10,8 @@ import { Loader, TokenAmount, UI } from '@cowprotocol/ui'
 import { PercentDisplay, percentIsAlmostHundred } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
+import { Clock } from 'react-feather'
+
 import { CREATING_STATES, OrderStatus } from 'legacy/state/orders/actions'
 
 import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
@@ -188,7 +190,12 @@ export function OrderRow({
   const renderFillsAt = () => (
     <>
       {getIsFinalizedOrder(order) ? (
-        isUnfillable ? (
+        order.status === OrderStatus.CANCELLED ? (
+          <styledEl.CancelledDisplay>
+            <Clock size={14} />
+            Order cancelled
+          </styledEl.CancelledDisplay>
+        ) : isUnfillable ? (
           ''
         ) : (
           '-'
@@ -231,11 +238,14 @@ export function OrderRow({
 
   const renderFillsAtWithDistance = () => {
     const fillsAtContent = renderFillsAt()
-    const distance = isUnfillable
-      ? ''
-      : priceDiffs?.percentage && Number(priceDiffs?.percentage.toFixed(4)) >= MIN_PERCENTAGE_TO_DISPLAY
-        ? `${priceDiffs?.percentage.toFixed(2)}%`
-        : '-'
+    const distance =
+      order.status === OrderStatus.CANCELLED
+        ? ''
+        : isUnfillable
+          ? ''
+          : priceDiffs?.percentage && Number(priceDiffs?.percentage.toFixed(4)) >= MIN_PERCENTAGE_TO_DISPLAY
+            ? `${priceDiffs?.percentage.toFixed(2)}%`
+            : '-'
 
     return (
       <styledEl.CellElement doubleRow>
@@ -253,7 +263,9 @@ export function OrderRow({
 
   const renderMarketPrice = () => (
     <>
-      {spotPrice ? (
+      {order.status === OrderStatus.CANCELLED || withWarning ? (
+        '-'
+      ) : spotPrice ? (
         <TokenAmount
           amount={spotPriceInverted}
           tokenSymbol={spotPriceInverted?.quoteCurrency}
