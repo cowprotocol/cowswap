@@ -1,6 +1,6 @@
 import IMAGE_STAR_SHINE from '@cowprotocol/assets/cow-swap/star-shine.svg'
 import { SingleLetterLogoWrapper } from '@cowprotocol/tokens'
-import { ButtonPrimary, Font, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, Font, Media, UI } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
@@ -66,6 +66,7 @@ export const StepsContainer = styled.div<{ $height: number; $minHeight?: string;
   padding: 0;
 
   // implement a gradient to hide the bottom of the steps container using white to opacity white using pseudo element
+
   &::after {
     content: ${({ bottomGradient }) => (bottomGradient ? '""' : 'none')};
     position: absolute;
@@ -136,15 +137,6 @@ export const Link = styled.a<{ underline?: boolean }>`
 export const CancelButton = styled(CancelButtonOriginal)`
   font-size: 14px;
   padding: 1px 0;
-  text-decoration: underline;
-
-  &:hover {
-    text-decoration: none;
-  }
-`
-
-export const Button = styled(LinkStyledButton)`
-  font-size: 14px;
   text-decoration: underline;
 
   &:hover {

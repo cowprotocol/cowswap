@@ -1,11 +1,10 @@
-import { Erc20__factory } from '@cowprotocol/abis'
 import type { LatestAppDataDocVersion } from '@cowprotocol/app-data'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { ParsedOrder } from './parseOrder'
+import { parsePermitData } from 'common/utils/parsePermitData'
 
-const erc20Interface = Erc20__factory.createInterface()
+import { ParsedOrder } from './parseOrder'
 
 export function getOrderPermitAmount(chainId: SupportedChainId, order: ParsedOrder): BigNumber | null {
   if (!order.fullAppData) return null
@@ -20,7 +19,7 @@ export function getOrderPermitAmount(chainId: SupportedChainId, order: ParsedOrd
     const permitData = preHooks
       .map((hook) => {
         try {
-          return erc20Interface.decodeFunctionData('permit', hook.callData)
+          return parsePermitData(hook.callData)
         } catch {
           return null
         }
