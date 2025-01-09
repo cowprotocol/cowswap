@@ -1,12 +1,11 @@
 import { getChainInfo } from '@cowprotocol/common-const'
 import { getExplorerBaseUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Badge, BadgeTypes, Color, ExternalLink } from '@cowprotocol/ui'
+import { Badge, BadgeTypes, ExternalLink } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 
 import * as styledEl from './styled'
-import { AlertCircle } from 'react-feather'
 
 const NEW_NETWORK_ID = 8453
 
