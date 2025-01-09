@@ -30,7 +30,6 @@ import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
 import { OPEN_TAB, ORDERS_TABLE_TABS, ALL_ORDERS_TAB } from '../../const/tabs'
 import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
-
 import { OrderActions } from '../../pure/OrdersTableContainer/types'
 import { TabOrderTypes } from '../../types'
 import { buildOrdersTableUrl } from '../../utils/buildOrdersTableUrl'
@@ -127,7 +126,6 @@ export function OrdersTableWidget({
   const isSafeViaWc = useIsSafeViaWc()
   const injectedWidgetParams = useInjectedWidgetParams()
   const [searchTerm, setSearchTerm] = useState('')
-  const limitOrdersSettings = useAtomValue(limitOrdersSettingsAtom)
 
   const balancesState = useTokensBalances()
   const allowancesState = useTokensAllowances()
