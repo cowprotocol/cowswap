@@ -6,17 +6,22 @@ import { getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { Loader, TokenAmount, UI } from '@cowprotocol/ui'
+import { Loader, TokenAmount, UI, HoverTooltip } from '@cowprotocol/ui'
 import { PercentDisplay, percentIsAlmostHundred } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
-import { Clock } from 'react-feather'
+import { Clock, Zap } from 'react-feather'
 
 import { CREATING_STATES, OrderStatus } from 'legacy/state/orders/actions'
 
 import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 
+import {
+  PENDING_EXECUTION_THRESHOLD_PERCENTAGE,
+  GOOD_PRICE_THRESHOLD_PERCENTAGE,
+  FAIR_PRICE_THRESHOLD_PERCENTAGE,
+} from 'common/constants/common'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { RateInfo } from 'common/pure/RateInfo'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
@@ -41,17 +46,14 @@ import { OrderActions } from '../types'
 
 // Constants
 const TIME_AGO_UPDATE_INTERVAL = 3000
-const MIN_PERCENTAGE_TO_DISPLAY = 0.01 // Minimum percentage to display (show dash below this)
-const GOOD_PRICE_THRESHOLD = 1.0 // 1% or less difference - good price
-const FAIR_PRICE_THRESHOLD = 5.0 // 5% or less difference - fair price
 
 // Helper to determine the color based on percentage
 function getDistanceColor(percentage: number): string {
   const absPercentage = Math.abs(percentage)
 
-  if (absPercentage <= GOOD_PRICE_THRESHOLD) {
+  if (absPercentage <= GOOD_PRICE_THRESHOLD_PERCENTAGE) {
     return `var(${UI.COLOR_SUCCESS})` // Green - good price
-  } else if (absPercentage <= FAIR_PRICE_THRESHOLD) {
+  } else if (absPercentage <= FAIR_PRICE_THRESHOLD_PERCENTAGE) {
     return `var(${UI.COLOR_PRIMARY})` // Blue - fair price
   }
 
@@ -192,7 +194,7 @@ export function OrderRow({
       {getIsFinalizedOrder(order) ? (
         order.status === OrderStatus.CANCELLED ? (
           <styledEl.CancelledDisplay>
-            <Clock size={14} />
+            <Clock size={14} strokeWidth={2.5} />
             Order cancelled
           </styledEl.CancelledDisplay>
         ) : isUnfillable ? (
@@ -204,8 +206,26 @@ export function OrderRow({
         <styledEl.ExecuteCellWrapper>
           {!isUnfillable &&
           priceDiffs?.percentage &&
-          Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= MIN_PERCENTAGE_TO_DISPLAY ? (
-            <span>⚡️ Pending execution</span>
+          Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= PENDING_EXECUTION_THRESHOLD_PERCENTAGE ? (
+            <HoverTooltip
+              wrapInContainer={true}
+              content={
+                <div>
+                  The fill price of this order is close or at the market price (
+                  <b>
+                    fills at{' '}
+                    <TokenAmount amount={executionPriceInverted} tokenSymbol={executionPriceInverted?.quoteCurrency} />
+                  </b>
+                  , {priceDiffs.percentage.toFixed(2)}% from market) and is expected to{' '}
+                  {!percentIsAlmostHundred(filledPercentDisplay) ? 'partially' : ''} fill soon
+                </div>
+              }
+            >
+              <styledEl.PendingExecutionDisplay>
+                <Zap size={14} strokeWidth={2.5} />
+                Pending execution
+              </styledEl.PendingExecutionDisplay>
+            </HoverTooltip>
           ) : (
             <EstimatedExecutionPrice
               amount={executionPriceInverted}
@@ -239,13 +259,14 @@ export function OrderRow({
   const renderFillsAtWithDistance = () => {
     const fillsAtContent = renderFillsAt()
     const distance =
-      order.status === OrderStatus.CANCELLED
+      order.status === OrderStatus.CANCELLED ||
+      isUnfillable ||
+      (priceDiffs?.percentage &&
+        Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= PENDING_EXECUTION_THRESHOLD_PERCENTAGE)
         ? ''
-        : isUnfillable
-          ? ''
-          : priceDiffs?.percentage && Number(priceDiffs?.percentage.toFixed(4)) >= MIN_PERCENTAGE_TO_DISPLAY
-            ? `${priceDiffs?.percentage.toFixed(2)}%`
-            : '-'
+        : priceDiffs?.percentage
+          ? `${priceDiffs?.percentage.toFixed(2)}%`
+          : '-'
 
     return (
       <styledEl.CellElement doubleRow>

@@ -337,14 +337,15 @@ export const DistanceToMarket = styled.span<{ $color: string }>`
 `
 
 export const CancelledDisplay = styled.div`
-  --size: 13px;
   display: flex;
   align-items: center;
-  gap: 5px;
-  color: var(${UI.COLOR_DANGER_TEXT});
+  gap: 4px;
+  color: inherit;
+`
 
-  svg {
-    width: var(--size);
-    height: var(--size);
-  }
+export const PendingExecutionDisplay = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(${UI.COLOR_SUCCESS});
 `

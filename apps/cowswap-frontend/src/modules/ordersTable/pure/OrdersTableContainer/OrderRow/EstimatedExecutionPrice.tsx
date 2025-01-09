@@ -9,7 +9,7 @@ import { darken } from 'color2k'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { HIGH_FEE_WARNING_PERCENTAGE } from 'common/constants/common'
+import { PENDING_EXECUTION_THRESHOLD_PERCENTAGE, HIGH_FEE_WARNING_PERCENTAGE } from 'common/constants/common'
 
 import * as styledEl from './styled'
 
@@ -182,8 +182,10 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
           wrapInContainer={true}
           content={
             <styledEl.ExecuteInformationTooltip>
-              {isNegativeDifference && Math.abs(Number(percentageDifferenceInverted?.toFixed(4) ?? 0)) <= 0.01 ? (
-                <>Will execute soon!</>
+              {isNegativeDifference &&
+              Math.abs(Number(percentageDifferenceInverted?.toFixed(4) ?? 0)) <=
+                PENDING_EXECUTION_THRESHOLD_PERCENTAGE ? (
+                <>The fill price of this order is close or at the market price and is expected to fill soon</>
               ) : (
                 <>
                   Market price needs to go {marketPriceNeedsToGoDown ? 'down 📉' : 'up 📈'} by&nbsp;
