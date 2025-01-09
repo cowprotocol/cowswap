@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.96.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.96.0...cowswap-v1.96.1) (2025-01-09)
+
+
+### Bug Fixes
+
+* **token-lists:** remove old token lists from cache ([#5275](https://github.com/cowprotocol/cowswap/issues/5275)) ([1ca7211](https://github.com/cowprotocol/cowswap/commit/1ca7211729c552c1c834b12c2d343ce981b02cf1))
+
 ## [1.96.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.95.3...cowswap-v1.96.0) (2025-01-09)
 
 
