@@ -40,7 +40,7 @@ export function RateInput() {
   const updateRate = useUpdateActiveRate()
   const updateLimitRateState = useSetAtom(updateLimitRateAtom)
   const executionPrice = useAtomValue(executionPriceAtom)
-  const { limitPriceLocked, isUsdValuesMode } = useAtomValue(limitOrdersSettingsAtom)
+  const { limitPriceLocked, isUsdValuesMode, partialFillsEnabled } = useAtomValue(limitOrdersSettingsAtom)
   const updateLimitOrdersSettings = useSetAtom(updateLimitOrdersSettingsAtom)
 
   const executionPriceUsdValue = useExecutionPriceUsdValue(executionPrice)
@@ -289,7 +289,7 @@ export function RateInput() {
           )}
         </b>
         <span>
-          Estimated fill price
+          {partialFillsEnabled ? 'Est. partial fill price' : 'Estimated fill price'}
           <HelpTooltip text="Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price." />
         </span>
       </styledEl.EstimatedRate>
