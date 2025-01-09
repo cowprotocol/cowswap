@@ -23,9 +23,11 @@ const Wrapper = styled.div<{ checked: boolean }>`
   border-radius: 0.5rem;
   background: ${({ theme }): string => theme.bg2};
 
-  &:hover {
-    transition: all 0.2s ease-in-out;
-    color: ${({ theme }): string => theme.textActive1};
+  &media ${MEDIA.mediumUp} {
+    &:hover {
+      transition: all 0.2s ease-in-out;
+      color: ${({ theme }): string => theme.textActive1};
+    }
   }
 
   @media ${MEDIA.mediumDown} {
