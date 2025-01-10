@@ -62,6 +62,15 @@ export function getOrderStatusTitleAndColor(order: ParsedOrder): { title: string
     }
   }
 
+  // Handle signing state
+  if (order.status === OrderStatus.PRESIGNATURE_PENDING) {
+    return {
+      title: orderStatusTitleMap[OrderStatus.PRESIGNATURE_PENDING],
+      color: `var(${UI.COLOR_ALERT_TEXT})`,
+      background: `var(${UI.COLOR_ALERT_BG})`,
+    }
+  }
+
   // Finally, map order status to their display version
   return {
     title: orderStatusTitleMap[order.status],

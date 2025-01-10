@@ -80,6 +80,8 @@ function getOrdersListByIndex(ordersList: OrdersTableList, id: string): OrderTab
       return ordersList.all
     case 'unfillable':
       return ordersList.unfillable
+    case 'signing':
+      return ordersList.signing
     case 'open':
       return ordersList.pending
     case 'history':
@@ -158,6 +160,10 @@ export function OrdersTableWidget({
     return ORDERS_TABLE_TABS.filter((tab) => {
       // Only include the unfillable tab if there are unfillable orders
       if (tab.id === 'unfillable') {
+        return getOrdersListByIndex(ordersList, tab.id).length > 0
+      }
+      // Only include the signing tab if there are signing orders
+      if (tab.id === 'signing') {
         return getOrdersListByIndex(ordersList, tab.id).length > 0
       }
       return true

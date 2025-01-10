@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { Order, PENDING_STATES } from 'legacy/state/orders/actions'
+import { Order, PENDING_STATES, OrderStatus } from 'legacy/state/orders/actions'
 import { useSetIsOrderUnfillable } from 'legacy/state/orders/hooks'
 
 import { getIsComposableCowOrder } from 'utils/orderUtils/getIsComposableCowOrder'
@@ -15,6 +15,7 @@ export interface OrdersTableList {
   pending: OrderTableItem[]
   history: OrderTableItem[]
   unfillable: OrderTableItem[]
+  signing: OrderTableItem[]
   all: OrderTableItem[]
 }
 
@@ -40,7 +41,7 @@ export function useOrdersTableList(
   }, [allOrders])
 
   return useMemo(() => {
-    const { pending, history, unfillable, all } = allSortedOrders.reduce(
+    const { pending, history, unfillable, signing, all } = allSortedOrders.reduce(
       (acc, item) => {
         const order = isParsedOrder(item) ? item : item.parent
 
@@ -56,6 +57,7 @@ export function useOrdersTableList(
         acc.all.push(item)
 
         const isPending = PENDING_STATES.includes(order.status)
+        const isSigning = order.status === OrderStatus.PRESIGNATURE_PENDING
 
         // Check if order is unfillable (insufficient balance or allowance)
         const params = getOrderParams(chainId, balancesAndAllowances, order)
@@ -71,22 +73,34 @@ export function useOrdersTableList(
           acc.unfillable.push(item)
         }
 
+        // Add to signing if in presignature pending state
+        if (isSigning) {
+          acc.signing.push(item)
+        }
+
         // Add to pending or history based on status
-        if (isPending) {
+        if (isPending && !isSigning) {
           acc.pending.push(item)
-        } else {
+        } else if (!isPending) {
           acc.history.push(item)
         }
 
         return acc
       },
-      { pending: [], history: [], unfillable: [], all: [] } as OrdersTableList,
+      {
+        pending: [] as OrderTableItem[],
+        history: [] as OrderTableItem[],
+        unfillable: [] as OrderTableItem[],
+        signing: [] as OrderTableItem[],
+        all: [] as OrderTableItem[],
+      },
     )
 
     return {
       pending: pending.slice(0, ORDERS_LIMIT),
       history: history.slice(0, ORDERS_LIMIT),
       unfillable: unfillable.slice(0, ORDERS_LIMIT),
+      signing: signing.slice(0, ORDERS_LIMIT),
       all: all.slice(0, ORDERS_LIMIT),
     }
   }, [allSortedOrders, orderType, chainId, balancesAndAllowances, setIsOrderUnfillable])

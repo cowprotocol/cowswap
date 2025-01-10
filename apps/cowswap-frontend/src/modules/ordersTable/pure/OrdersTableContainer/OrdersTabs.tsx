@@ -1,4 +1,5 @@
 import alertCircle from '@cowprotocol/assets/cow-swap/alert-circle.svg'
+import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { Media, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -16,18 +17,26 @@ const Tabs = styled.div`
   margin: 0;
 `
 
-const TabButton = styled(Link)<{ active: string; isUnfillable?: boolean }>`
+const TabButton = styled(Link)<{ active: string; isUnfillable?: boolean; isSigning?: boolean }>`
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: ${({ active, isUnfillable }) =>
+  background: ${({ active, isUnfillable, isSigning }) =>
     active === 'true'
       ? isUnfillable
         ? `var(${UI.COLOR_DANGER_BG})`
-        : `var(${UI.COLOR_TEXT_OPACITY_10})`
+        : isSigning
+          ? `var(${UI.COLOR_ALERT_BG})`
+          : `var(${UI.COLOR_TEXT_OPACITY_10})`
       : 'transparent'};
-  color: ${({ active, isUnfillable }) =>
-    isUnfillable ? `var(${UI.COLOR_DANGER})` : active === 'true' ? `var(${UI.COLOR_TEXT_PAPER})` : 'inherit'};
+  color: ${({ active, isUnfillable, isSigning }) =>
+    isUnfillable
+      ? `var(${UI.COLOR_DANGER})`
+      : isSigning
+        ? `var(${UI.COLOR_ALERT_TEXT})`
+        : active === 'true'
+          ? `var(${UI.COLOR_TEXT_PAPER})`
+          : 'inherit'};
   font-weight: ${({ active }) => (active === 'true' ? '600' : '400')};
   border-radius: 14px;
   text-decoration: none;
@@ -45,13 +54,16 @@ const TabButton = styled(Link)<{ active: string; isUnfillable?: boolean }>`
   }
 
   &:hover {
-    background: ${({ active, isUnfillable }) =>
+    background: ${({ active, isUnfillable, isSigning }) =>
       active === 'true'
         ? isUnfillable
           ? `var(${UI.COLOR_DANGER_BG})`
-          : `var(${UI.COLOR_TEXT_OPACITY_10})`
+          : isSigning
+            ? `var(${UI.COLOR_ALERT_BG})`
+            : `var(${UI.COLOR_TEXT_OPACITY_10})`
         : `var(${UI.COLOR_TEXT_OPACITY_10})`};
-    color: ${({ isUnfillable }) => (isUnfillable ? `var(${UI.COLOR_DANGER})` : 'inherit')};
+    color: ${({ isUnfillable, isSigning }) =>
+      isUnfillable ? `var(${UI.COLOR_DANGER})` : isSigning ? `var(${UI.COLOR_ALERT_TEXT})` : 'inherit'};
   }
 
   > svg {
@@ -80,14 +92,17 @@ export function OrdersTabs({ tabs }: OrdersTabsProps) {
     <Tabs>
       {tabs.map((tab, index) => {
         const isUnfillable = tab.id === 'unfillable'
+        const isSigning = tab.id === 'signing'
         return (
           <TabButton
             key={index}
             active={(index === activeTabIndex).toString()}
             isUnfillable={isUnfillable}
+            isSigning={isSigning}
             to={buildOrdersTableUrl({ tabId: tab.id, pageNumber: 1 })}
           >
             {isUnfillable && <SVG src={alertCircle} description="warning" />}
+            {isSigning && <SVG src={orderPresignaturePending} description="signing" />}
             <Trans>{tab.title}</Trans> <span>({tab.count})</span>
           </TabButton>
         )

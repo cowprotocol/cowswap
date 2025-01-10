@@ -17,6 +17,12 @@ export const UNFILLABLE_TAB: OrderTab = {
   count: 0,
 }
 
+export const SIGNING_TAB: OrderTab = {
+  id: 'signing',
+  title: 'Signing',
+  count: 0,
+}
+
 export const OPEN_TAB: OrderTab = {
   id: 'open',
   title: 'Open',
@@ -29,7 +35,7 @@ export const HISTORY_TAB: OrderTab = {
   count: 0,
 }
 
-export const ORDERS_TABLE_TABS: OrderTab[] = [ALL_ORDERS_TAB, UNFILLABLE_TAB, OPEN_TAB, HISTORY_TAB]
+export const ORDERS_TABLE_TABS: OrderTab[] = [ALL_ORDERS_TAB, UNFILLABLE_TAB, SIGNING_TAB, OPEN_TAB, HISTORY_TAB]
 
 export const ORDERS_TABLE_PAGE_SIZE = 10
 

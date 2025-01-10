@@ -1,6 +1,10 @@
+import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { Command } from '@cowprotocol/types'
 
+import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
+
+import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -56,6 +60,10 @@ const StatusContent = styled.div`
     height: 14px;
     fill: currentColor;
   }
+
+  svg > path {
+    fill: currentColor;
+  }
 `
 
 type OrderStatusBoxProps = {
@@ -72,6 +80,9 @@ export function OrderStatusBox({ order, widthAuto, withWarning, onClick, Warning
   const content = (
     <StatusContent>
       {withWarning && WarningTooltip && <WarningTooltip>{null}</WarningTooltip>}
+      {order.status === OrderStatus.PRESIGNATURE_PENDING && (
+        <SVG src={orderPresignaturePending} description="signing" />
+      )}
       {title}
     </StatusContent>
   )
