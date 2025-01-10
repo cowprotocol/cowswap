@@ -350,40 +350,56 @@ export function clickOnHooks(event: string) {
   })
 }
 
+enum LimitOrderSettingsAction {
+  TOGGLE_SETTINGS = 'Toggle Limit Order Settings',
+  CUSTOM_RECIPIENT = 'Custom Recipient',
+  PARTIAL_EXECUTIONS = 'Enable Partial Executions',
+  PRICE_POSITION = 'Limit Price Position',
+  LOCK_PRICE = 'Lock Limit Price',
+  USD_MODE = 'Global USD Mode',
+  TABLE_POSITION = 'Orders Table Position',
+}
+
 function sendLimitOrderSettingsAnalytics(action: string, label?: string) {
   const event = {
     category: Category.LIMIT_ORDER_SETTINGS,
     action,
     ...(label && { label }),
   }
-
   cowAnalytics.sendEvent(event)
 }
 
+function sendToggleAnalytics(action: LimitOrderSettingsAction, enable: boolean, customLabels?: [string, string]) {
+  sendLimitOrderSettingsAnalytics(
+    action,
+    customLabels ? (enable ? customLabels[0] : customLabels[1]) : enable ? 'Enabled' : 'Disabled',
+  )
+}
+
 export function openLimitOrderSettingsAnalytics() {
-  sendLimitOrderSettingsAnalytics('Toggle Limit Order Settings')
+  sendLimitOrderSettingsAnalytics(LimitOrderSettingsAction.TOGGLE_SETTINGS)
 }
 
 export function toggleCustomRecipientAnalytics(enable: boolean) {
-  sendLimitOrderSettingsAnalytics('Custom Recipient', enable ? 'Enabled' : 'Disabled')
+  sendToggleAnalytics(LimitOrderSettingsAction.CUSTOM_RECIPIENT, enable)
 }
 
 export function togglePartialExecutionsAnalytics(enable: boolean) {
-  sendLimitOrderSettingsAnalytics('Enable Partial Executions', enable ? 'Enabled' : 'Disabled')
+  sendToggleAnalytics(LimitOrderSettingsAction.PARTIAL_EXECUTIONS, enable)
 }
 
 export function changeLimitPricePositionAnalytics(oldPosition: string, newPosition: string) {
-  sendLimitOrderSettingsAnalytics('Limit Price Position', `${oldPosition} -> ${newPosition}`)
+  sendLimitOrderSettingsAnalytics(LimitOrderSettingsAction.PRICE_POSITION, `${oldPosition} -> ${newPosition}`)
 }
 
 export function toggleLockLimitPriceAnalytics(enable: boolean) {
-  sendLimitOrderSettingsAnalytics('Lock Limit Price', enable ? 'Enabled' : 'Disabled')
+  sendToggleAnalytics(LimitOrderSettingsAction.LOCK_PRICE, enable)
 }
 
 export function toggleGlobalUsdModeAnalytics(enable: boolean) {
-  sendLimitOrderSettingsAnalytics('Global USD Mode', enable ? 'Enabled' : 'Disabled')
+  sendToggleAnalytics(LimitOrderSettingsAction.USD_MODE, enable)
 }
 
 export function toggleOrdersTablePositionAnalytics(enable: boolean) {
-  sendLimitOrderSettingsAnalytics('Orders Table Position', enable ? 'Left' : 'Right')
+  sendToggleAnalytics(LimitOrderSettingsAction.TABLE_POSITION, enable, ['Left', 'Right'])
 }
