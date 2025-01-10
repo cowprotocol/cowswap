@@ -353,6 +353,8 @@ export const CancelledDisplay = styled.div`
   align-items: center;
   gap: 4px;
   color: var(${UI.COLOR_DANGER});
+  font-weight: 500;
+  font-size: 12px;
 `
 
 export const ExpiredDisplay = styled.div`
@@ -373,5 +375,25 @@ export const PendingExecutionDisplay = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
-  color: var(${UI.COLOR_SUCCESS});
+  color: var(${UI.COLOR_TEXT});
+  font-weight: 500;
+  font-size: 12px;
+`
+
+export const SigningDisplay = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: help;
+  color: var(${UI.COLOR_ALERT_TEXT});
+
+  > svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+
+  svg > path {
+    fill: currentColor;
+  }
 `

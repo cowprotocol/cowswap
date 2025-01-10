@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
+import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { getAddress, getEtherscanLink, formatDateWithTimezone } from '@cowprotocol/common-utils'
@@ -8,11 +9,13 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { Loader, TokenAmount, UI, HoverTooltip } from '@cowprotocol/ui'
 import { PercentDisplay, percentIsAlmostHundred } from '@cowprotocol/ui'
+import { useIsSafeWallet } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import { Clock, Zap, Check, X } from 'react-feather'
+import SVG from 'react-inlinesvg'
 
-import { CREATING_STATES, OrderStatus } from 'legacy/state/orders/actions'
+import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
@@ -106,6 +109,7 @@ export function OrderRow({
   const { filledPercentDisplay, executedPrice } = order.executionData
   const { inputCurrencyAmount, outputCurrencyAmount } = rateInfoParams
   const { estimatedExecutionPrice, feeAmount } = prices || {}
+  const isSafeWallet = useIsSafeWallet()
 
   const showCancellationModal = useMemo(() => {
     return orderActions.getShowCancellationModal(order)
@@ -153,7 +157,6 @@ export function OrderRow({
   const isExecutedPriceZero = executedPriceInverted !== undefined && executedPriceInverted?.equalTo(ZERO_FRACTION)
 
   const isUnfillable = !percentIsAlmostHundred(filledPercentDisplay) && (isExecutedPriceZero || withWarning)
-  const isOrderCreating = CREATING_STATES.includes(order.status)
 
   const inputTokenSymbol = order.inputToken.symbol || ''
 
@@ -212,6 +215,22 @@ export function OrderRow({
         ) : (
           '-'
         )
+      ) : order.status === OrderStatus.PRESIGNATURE_PENDING ? (
+        <styledEl.ExecuteCellWrapper>
+          <HoverTooltip
+            wrapInContainer={true}
+            content={
+              <div>
+                This order needs to be signed and executed with your {isSafeWallet ? 'Safe' : 'Smart contract'} wallet
+              </div>
+            }
+          >
+            <styledEl.SigningDisplay>
+              <SVG src={orderPresignaturePending} description="signing" />
+              Please sign order
+            </styledEl.SigningDisplay>
+          </HoverTooltip>
+        </styledEl.ExecuteCellWrapper>
       ) : prices && estimatedExecutionPrice ? (
         <styledEl.ExecuteCellWrapper>
           {!isUnfillable &&
@@ -249,24 +268,23 @@ export function OrderRow({
               canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
               isUnfillable={withWarning}
               warningText={getWarningText()}
-              onApprove={() => orderActions.approveOrderToken(order.inputToken)}
-              WarningTooltip={renderWarningTooltip()}
+              WarningTooltip={renderWarningTooltip(true)}
+              onApprove={withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined}
             />
           )}
         </styledEl.ExecuteCellWrapper>
-      ) : prices === null || !estimatedExecutionPrice || isOrderCreating ? (
-        isUnfillable ? (
-          ''
-        ) : (
-          '-'
-        )
       ) : (
-        <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
+        '-'
       )}
     </>
   )
 
   const renderFillsAtWithDistance = () => {
+    // Special case for PRESIGNATURE_PENDING - return just the signing content
+    if (order.status === OrderStatus.PRESIGNATURE_PENDING) {
+      return renderFillsAt()
+    }
+
     // For TWAP parent orders, show the next scheduled child order's fills at price
     if (children) {
       // Get the next scheduled order from the children prop
@@ -361,7 +379,7 @@ export function OrderRow({
     <>
       {children ? (
         '-'
-      ) : order.status === OrderStatus.CANCELLED || withWarning ? (
+      ) : order.status === OrderStatus.CANCELLED || withWarning || order.status === OrderStatus.PRESIGNATURE_PENDING ? (
         '-'
       ) : spotPrice ? (
         <TokenAmount
