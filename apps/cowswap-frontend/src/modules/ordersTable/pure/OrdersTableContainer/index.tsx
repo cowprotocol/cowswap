@@ -55,8 +55,7 @@ const Content = styled.div`
       position: absolute;
       top: 0;
       left: 0;
-      background: var(${UI.COLOR_PRIMARY});
-      opacity: 0.16;
+      background: var(${UI.COLOR_PAPER_DARKER});
       width: var(--size);
       height: var(--size);
       border-radius: var(--size);
