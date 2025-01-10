@@ -30,31 +30,31 @@ const fetchRateLimited = fetchWithRateLimit({
 export async function getBffUsdPrice(currency: Token): Promise<Fraction | null> {
   const url = `${BFF_BASE_URL}/${currency.chainId}/tokens/${currency.address}/usdPrice`
 
-  return fetchRateLimited(url)
-    .then((res) => res.json())
-    .catch((error) => {
-      if (error.message === 'Price not found') {
-        // TODO: will a 404 response be caught here?
-        throw new UnknownCurrencyError({
-          cause: `BFF did not return a price for '${currency.address}' on chain '${currency.chainId}'`,
-        })
-      }
+  try {
+    const res = await fetchRateLimited(url)
 
-      return Promise.reject(error)
-    })
-    .then((res: BffResponse) => {
-      if (isErrorResponse(res)) {
-        if (res.message === 'Price not found') {
-          throw new UnknownCurrencyError({
-            cause: `BFF did not return a price for '${currency.address}' on chain '${currency.chainId}'`,
-          })
-        }
+    // Token not found
+    if (res.status === 404) {
+      throw new UnknownCurrencyError({
+        cause: `BFF did not return a price for '${currency.address}' on chain '${currency.chainId}'`,
+      })
+      // Unknown error case
+    } else if (res.status !== 200) {
+      throw new Error(`Unexpected response from BFF: ${res.status}`)
+    }
 
-        throw new Error(`Unexpected response from BFF: ${JSON.stringify(res)}`)
-      }
+    const data: BffResponse = await res.json()
 
-      return FractionUtils.fromNumber(res.price)
-    })
+    // 200 response with error message
+    if (isErrorResponse(data)) {
+      throw new Error(`Unexpected response from BFF: ${JSON.stringify(data)}`)
+    }
+
+    // Happy path
+    return FractionUtils.fromNumber(data.price)
+  } catch (error) {
+    return Promise.reject(error)
+  }
 }
 
 function isErrorResponse(response: BffResponse): response is BffUsdErrorResponse {
