@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
-import { getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
+import { getAddress, getEtherscanLink, formatDateWithTimezone } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
@@ -369,6 +369,7 @@ export function OrderRow({
           tokenSymbol={spotPriceInverted?.quoteCurrency}
           opacitySymbol
           clickable
+          noTitle
         />
       ) : spotPrice === null ? (
         '-'
@@ -414,8 +415,18 @@ export function OrderRow({
 
           {/* Expires and Created for open orders */}
           <styledEl.CellElement doubleRow>
-            <b>{getIsFinalizedOrder(order) && order.status !== OrderStatus.EXPIRED ? '-' : expirationTimeAgo}</b>
-            <i>{isScheduledCreating ? 'Creating...' : creationTimeAgo}</i>
+            <b
+              title={
+                expirationTime && !(getIsFinalizedOrder(order) && order.status !== OrderStatus.EXPIRED)
+                  ? formatDateWithTimezone(expirationTime)
+                  : undefined
+              }
+            >
+              {getIsFinalizedOrder(order) && order.status !== OrderStatus.EXPIRED ? '-' : expirationTimeAgo}
+            </b>
+            <i title={creationTime && !isScheduledCreating ? formatDateWithTimezone(creationTime) : undefined}>
+              {isScheduledCreating ? 'Creating...' : creationTimeAgo}
+            </i>
           </styledEl.CellElement>
         </>
       ) : (
@@ -442,6 +453,7 @@ export function OrderRow({
                 tokenSymbol={executedPriceInverted?.quoteCurrency}
                 opacitySymbol
                 clickable
+                noTitle
               />
             ) : (
               '-'
@@ -449,10 +461,18 @@ export function OrderRow({
           </styledEl.PriceElement>
 
           <styledEl.CellElement>
-            {order.status === OrderStatus.FULFILLED && fulfillmentTimeAgo ? fulfillmentTimeAgo : '-'}
+            {order.status === OrderStatus.FULFILLED && fulfillmentTimeAgo ? (
+              <span title={order.fulfillmentTime ? formatDateWithTimezone(new Date(order.fulfillmentTime)) : undefined}>
+                {fulfillmentTimeAgo}
+              </span>
+            ) : (
+              '-'
+            )}
           </styledEl.CellElement>
 
-          <styledEl.CellElement>{creationTimeAgo}</styledEl.CellElement>
+          <styledEl.CellElement>
+            <span title={creationTime ? formatDateWithTimezone(creationTime) : undefined}>{creationTimeAgo}</span>
+          </styledEl.CellElement>
         </>
       )}
 

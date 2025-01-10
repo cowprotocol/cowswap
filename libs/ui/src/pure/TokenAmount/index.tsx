@@ -46,6 +46,7 @@ export interface TokenAmountProps {
   round?: boolean
   opacitySymbol?: boolean
   clickable?: boolean
+  noTitle?: boolean
 }
 
 export function TokenAmount({
@@ -57,8 +58,9 @@ export function TokenAmount({
   hideTokenSymbol,
   opacitySymbol,
   clickable,
+  noTitle,
 }: TokenAmountProps) {
-  const title = getTokenAmountTitle({ amount, tokenSymbol })
+  const title = !noTitle ? getTokenAmountTitle({ amount, tokenSymbol }) : undefined
 
   if (!amount) return null
 

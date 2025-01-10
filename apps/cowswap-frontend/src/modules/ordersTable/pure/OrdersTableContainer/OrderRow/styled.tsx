@@ -113,6 +113,14 @@ export const CellElement = styled.div<{
     font-weight: 500;
     width: 100%;
     text-align: left;
+
+    &[title] {
+      cursor: help;
+    }
+  }
+
+  > span[title] {
+    cursor: help;
   }
 
   ${({ doubleRow }) =>
@@ -124,6 +132,10 @@ export const CellElement = styled.div<{
 
     > i {
       opacity: 0.7;
+      
+      &[title] {
+        cursor: help;
+      }
     }
   `}
   ${RateWrapper} {
