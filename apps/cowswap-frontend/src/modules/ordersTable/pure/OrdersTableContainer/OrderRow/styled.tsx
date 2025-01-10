@@ -343,6 +343,13 @@ export const CancelledDisplay = styled.div`
   color: var(${UI.COLOR_DANGER});
 `
 
+export const ExpiredDisplay = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(${UI.COLOR_ALERT_TEXT});
+`
+
 export const FilledDisplay = styled.div`
   display: flex;
   align-items: center;
