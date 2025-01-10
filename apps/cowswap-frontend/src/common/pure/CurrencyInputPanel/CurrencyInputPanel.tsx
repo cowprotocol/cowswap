@@ -106,7 +106,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   const convertUsdToTokenValue = useConvertUsdToTokenValue(currency)
 
   const onUserInputDispatch = useCallback(
-    (typedValue: string) => {
+    (typedValue: string, currencyValue?: string) => {
       // Always pass through empty string to allow clearing
       if (typedValue === '') {
         setTypedValue('')
@@ -114,8 +114,9 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         return
       }
 
-      const value = convertUsdToTokenValue(typedValue, isUsdValuesMode)
       setTypedValue(typedValue)
+      // Avoid converting from USD if currencyValue is already provided
+      const value = currencyValue || convertUsdToTokenValue(typedValue, isUsdValuesMode)
       onUserInput(field, value)
     },
     [onUserInput, field, convertUsdToTokenValue, isUsdValuesMode],
@@ -129,7 +130,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     const value = isUsdValuesMode ? maxBalanceUsdAmount : maxBalance
 
     if (value) {
-      onUserInputDispatch(value.toExact())
+      onUserInputDispatch(value.toExact(), isUsdValuesMode ? maxBalance.toExact() : undefined)
       setMaxSellTokensAnalytics()
     }
   }, [maxBalance, onUserInputDispatch, isUsdValuesMode, maxBalanceUsdAmount])

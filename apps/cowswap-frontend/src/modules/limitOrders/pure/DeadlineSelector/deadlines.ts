@@ -18,7 +18,7 @@ export enum LimitOrderDeadlinePreset {
   ONE_DAY = '1 Day',
   THREE_DAYS = '3 Days',
   ONE_MONTH = '1 Month',
-  SIX_MONTHS = '6 Months (max)',
+  SIX_MONTHS = '1 Year (max)',
 }
 
 const DEADLINE_VALUES: Record<LimitOrderDeadlinePreset, number> = {
