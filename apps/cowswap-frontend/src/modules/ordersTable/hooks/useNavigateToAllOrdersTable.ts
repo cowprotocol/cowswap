@@ -6,6 +6,10 @@ import { useGetBuildOrdersTableUrl } from './useGetBuildOrdersTableUrl'
 
 import { ALL_ORDERS_TAB } from '../const/tabs'
 
+/**
+ * Hook to navigate to the ALL ORDERS tab in the orders table
+ * Used by both limit orders and TWAP orders after placement
+ */
 export function useNavigateToAllOrdersTable() {
   const navigate = useNavigate()
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
