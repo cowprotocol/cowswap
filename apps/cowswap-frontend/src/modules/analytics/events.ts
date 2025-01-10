@@ -350,71 +350,40 @@ export function clickOnHooks(event: string) {
   })
 }
 
-export function openLimitOrderSettingsAnalytics() {
+function sendLimitOrderSettingsAnalytics(action: string, label?: string) {
   const event = {
     category: Category.LIMIT_ORDER_SETTINGS,
-    action: 'Toggle Limit Order Settings',
+    action,
+    ...(label && { label }),
   }
 
   cowAnalytics.sendEvent(event)
+}
+
+export function openLimitOrderSettingsAnalytics() {
+  sendLimitOrderSettingsAnalytics('Toggle Limit Order Settings')
 }
 
 export function toggleCustomRecipientAnalytics(enable: boolean) {
-  const event = {
-    category: Category.LIMIT_ORDER_SETTINGS,
-    action: 'Custom Recipient',
-    label: enable ? 'Enabled' : 'Disabled',
-  }
-
-  cowAnalytics.sendEvent(event)
+  sendLimitOrderSettingsAnalytics('Custom Recipient', enable ? 'Enabled' : 'Disabled')
 }
 
 export function togglePartialExecutionsAnalytics(enable: boolean) {
-  const event = {
-    category: Category.LIMIT_ORDER_SETTINGS,
-    action: 'Enable Partial Executions',
-    label: enable ? 'Enabled' : 'Disabled',
-  }
-
-  cowAnalytics.sendEvent(event)
+  sendLimitOrderSettingsAnalytics('Enable Partial Executions', enable ? 'Enabled' : 'Disabled')
 }
 
 export function changeLimitPricePositionAnalytics(oldPosition: string, newPosition: string) {
-  const event = {
-    category: Category.LIMIT_ORDER_SETTINGS,
-    action: 'Limit Price Position',
-    label: `${oldPosition} -> ${newPosition}`,
-  }
-
-  cowAnalytics.sendEvent(event)
+  sendLimitOrderSettingsAnalytics('Limit Price Position', `${oldPosition} -> ${newPosition}`)
 }
 
 export function toggleLockLimitPriceAnalytics(enable: boolean) {
-  const event = {
-    category: Category.LIMIT_ORDER_SETTINGS,
-    action: 'Lock Limit Price',
-    label: enable ? 'Enabled' : 'Disabled',
-  }
-
-  cowAnalytics.sendEvent(event)
+  sendLimitOrderSettingsAnalytics('Lock Limit Price', enable ? 'Enabled' : 'Disabled')
 }
 
 export function toggleGlobalUsdModeAnalytics(enable: boolean) {
-  const event = {
-    category: Category.LIMIT_ORDER_SETTINGS,
-    action: 'Global USD Mode',
-    label: enable ? 'Enabled' : 'Disabled',
-  }
-
-  cowAnalytics.sendEvent(event)
+  sendLimitOrderSettingsAnalytics('Global USD Mode', enable ? 'Enabled' : 'Disabled')
 }
 
 export function toggleOrdersTablePositionAnalytics(enable: boolean) {
-  const event = {
-    category: Category.LIMIT_ORDER_SETTINGS,
-    action: 'Orders Table Position',
-    label: enable ? 'Left' : 'Right',
-  }
-
-  cowAnalytics.sendEvent(event)
+  sendLimitOrderSettingsAnalytics('Orders Table Position', enable ? 'Left' : 'Right')
 }
