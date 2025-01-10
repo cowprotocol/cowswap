@@ -14,8 +14,6 @@ type BffUsdPriceResponse = {
 type BffUsdErrorResponse = { message: string }
 type BffResponse = BffUsdPriceResponse | BffUsdErrorResponse
 
-const BASE_URL = BFF_BASE_URL
-
 const fetchRateLimited = fetchWithRateLimit({
   // Allow 5 requests per second
   rateLimit: {
@@ -30,7 +28,7 @@ const fetchRateLimited = fetchWithRateLimit({
 })
 
 export async function getBffUsdPrice(currency: Token): Promise<Fraction | null> {
-  const url = `${BASE_URL}/${currency.chainId}/tokens/${currency.address}/usdPrice`
+  const url = `${BFF_BASE_URL}/${currency.chainId}/tokens/${currency.address}/usdPrice`
 
   return fetchRateLimited(url)
     .then((res) => res.json())
