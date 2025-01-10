@@ -26,6 +26,7 @@ export enum Category {
   SURPLUS_MODAL = 'Surplus Modal',
   PROGRESS_BAR = 'Progress Bar',
   NOTIFICATIONS = 'Notifications',
+  LIMIT_ORDER_SETTINGS = 'Limit Order Settings',
 }
 
 export function shareFortuneTwitterAnalytics() {
@@ -347,4 +348,73 @@ export function clickOnHooks(event: string) {
     category: Category.HOOKS,
     action: event,
   })
+}
+
+export function openLimitOrderSettingsAnalytics() {
+  const event = {
+    category: Category.LIMIT_ORDER_SETTINGS,
+    action: 'Toggle Limit Order Settings',
+  }
+
+  cowAnalytics.sendEvent(event)
+}
+
+export function toggleCustomRecipientAnalytics(enable: boolean) {
+  const event = {
+    category: Category.LIMIT_ORDER_SETTINGS,
+    action: 'Custom Recipient',
+    label: enable ? 'Enabled' : 'Disabled',
+  }
+
+  cowAnalytics.sendEvent(event)
+}
+
+export function togglePartialExecutionsAnalytics(enable: boolean) {
+  const event = {
+    category: Category.LIMIT_ORDER_SETTINGS,
+    action: 'Enable Partial Executions',
+    label: enable ? 'Enabled' : 'Disabled',
+  }
+
+  cowAnalytics.sendEvent(event)
+}
+
+export function changeLimitPricePositionAnalytics(oldPosition: string, newPosition: string) {
+  const event = {
+    category: Category.LIMIT_ORDER_SETTINGS,
+    action: 'Limit Price Position',
+    label: `${oldPosition} -> ${newPosition}`,
+  }
+
+  cowAnalytics.sendEvent(event)
+}
+
+export function toggleLockLimitPriceAnalytics(enable: boolean) {
+  const event = {
+    category: Category.LIMIT_ORDER_SETTINGS,
+    action: 'Lock Limit Price',
+    label: enable ? 'Enabled' : 'Disabled',
+  }
+
+  cowAnalytics.sendEvent(event)
+}
+
+export function toggleGlobalUsdModeAnalytics(enable: boolean) {
+  const event = {
+    category: Category.LIMIT_ORDER_SETTINGS,
+    action: 'Global USD Mode',
+    label: enable ? 'Enabled' : 'Disabled',
+  }
+
+  cowAnalytics.sendEvent(event)
+}
+
+export function toggleOrdersTablePositionAnalytics(enable: boolean) {
+  const event = {
+    category: Category.LIMIT_ORDER_SETTINGS,
+    action: 'Orders Table Position',
+    label: enable ? 'Left' : 'Right',
+  }
+
+  cowAnalytics.sendEvent(event)
 }

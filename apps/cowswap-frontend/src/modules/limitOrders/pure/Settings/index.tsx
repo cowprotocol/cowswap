@@ -5,6 +5,14 @@ import { HelpTooltip } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
+import {
+  toggleCustomRecipientAnalytics,
+  togglePartialExecutionsAnalytics,
+  changeLimitPricePositionAnalytics,
+  toggleLockLimitPriceAnalytics,
+  toggleOrdersTablePositionAnalytics,
+  toggleGlobalUsdModeAnalytics,
+} from 'modules/analytics'
 import { ORDERS_TABLE_SETTINGS } from 'modules/trade/const/common'
 import { SettingsBox, SettingsContainer, SettingsTitle } from 'modules/trade/pure/Settings'
 
@@ -124,16 +132,42 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
   const handleSelect = useCallback(
     (value: LimitOrdersSettingsState['limitPricePosition']) => (e: React.MouseEvent) => {
       e.stopPropagation()
+      changeLimitPricePositionAnalytics(limitPricePosition, value)
       onStateChanged({ limitPricePosition: value })
       setIsOpen(false)
     },
-    [onStateChanged],
+    [onStateChanged, limitPricePosition],
   )
 
   const toggleDropdown = (e: React.MouseEvent) => {
     e.stopPropagation()
     setIsOpen(!isOpen)
   }
+
+  const handleRecipientToggle = useCallback(() => {
+    toggleCustomRecipientAnalytics(!showRecipient)
+    onStateChanged({ showRecipient: !showRecipient })
+  }, [showRecipient, onStateChanged])
+
+  const handlePartialFillsToggle = useCallback(() => {
+    togglePartialExecutionsAnalytics(!partialFillsEnabled)
+    onStateChanged({ partialFillsEnabled: !partialFillsEnabled })
+  }, [partialFillsEnabled, onStateChanged])
+
+  const handleLimitPriceLockedToggle = useCallback(() => {
+    toggleLockLimitPriceAnalytics(!limitPriceLocked)
+    onStateChanged({ limitPriceLocked: !limitPriceLocked })
+  }, [limitPriceLocked, onStateChanged])
+
+  const handleOrdersTablePositionToggle = useCallback(() => {
+    toggleOrdersTablePositionAnalytics(!ordersTableOnLeft)
+    onStateChanged({ ordersTableOnLeft: !ordersTableOnLeft })
+  }, [ordersTableOnLeft, onStateChanged])
+
+  const handleUsdValuesModeToggle = useCallback(() => {
+    toggleGlobalUsdModeAnalytics(!isUsdValuesMode)
+    onStateChanged({ isUsdValuesMode: !isUsdValuesMode })
+  }, [isUsdValuesMode, onStateChanged])
 
   return (
     <SettingsContainer>
@@ -143,7 +177,7 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
         title="Custom Recipient"
         tooltip="Allows you to choose a destination address for the swap other than the connected one."
         value={showRecipient}
-        toggle={() => onStateChanged({ showRecipient: !showRecipient })}
+        toggle={handleRecipientToggle}
       />
 
       <SettingsBox
@@ -160,28 +194,28 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
           </>
         }
         value={partialFillsEnabled}
-        toggle={() => onStateChanged({ partialFillsEnabled: !partialFillsEnabled })}
+        toggle={handlePartialFillsToggle}
       />
 
       <SettingsBox
         title="Lock Limit Price"
         tooltip="When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
         value={limitPriceLocked}
-        toggle={() => onStateChanged({ limitPriceLocked: !limitPriceLocked })}
+        toggle={handleLimitPriceLockedToggle}
       />
 
       <SettingsBox
         title="Global USD Mode"
         tooltip="When enabled, all prices will be displayed in USD by default."
         value={isUsdValuesMode}
-        toggle={() => onStateChanged({ isUsdValuesMode: !isUsdValuesMode })}
+        toggle={handleUsdValuesModeToggle}
       />
 
       <SettingsBox
         title={ORDERS_TABLE_SETTINGS.LEFT_ALIGNED.title}
         tooltip={ORDERS_TABLE_SETTINGS.LEFT_ALIGNED.tooltip}
         value={ordersTableOnLeft}
-        toggle={() => onStateChanged({ ordersTableOnLeft: !ordersTableOnLeft })}
+        toggle={handleOrdersTablePositionToggle}
       />
 
       <SettingsRow>
