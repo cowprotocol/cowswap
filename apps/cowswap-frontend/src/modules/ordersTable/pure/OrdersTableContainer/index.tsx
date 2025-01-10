@@ -8,7 +8,7 @@ import type { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
-import styled, { css } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
@@ -128,20 +128,16 @@ const TopContainer = styled.div`
   }
 `
 
-const TabsContainer = styled.div<{ withSingleChild: boolean }>`
+const TabsContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
 
   ${Media.upToMedium()} {
-    ${({ withSingleChild }) =>
-      !withSingleChild &&
-      css`
-        flex-direction: column-reverse;
-        align-items: end;
-        gap: 10px;
-      `};
+    flex-direction: column;
+    align-items: end;
+    gap: 10px;
   }
 `
 
@@ -164,6 +160,12 @@ const ExternalArrow = styled.span`
 const RightContainer = styled.div`
   display: flex;
   flex-flow: row wrap;
+
+  ${Media.upToMedium()} {
+    width: 100%;
+    gap: 10px;
+    flex-flow: column-reverse wrap;
+  }
 `
 
 interface OrdersProps {
@@ -315,7 +317,7 @@ export function OrdersTableContainer({
   return (
     <Wrapper>
       <TopContainer>
-        <TabsContainer withSingleChild={!children}>
+        <TabsContainer>
           <OrdersTabs tabs={tabs} />
           {children && <RightContainer>{children}</RightContainer>}
         </TabsContainer>

@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useTokensAllowances, useTokensBalances } from '@cowprotocol/balances-and-allowances'
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Search } from 'react-feather'
@@ -42,6 +42,10 @@ const SearchInputContainer = styled.div`
   margin: 0;
   padding: 0 0 0 16px;
   position: relative;
+
+  ${Media.upToMedium()} {
+    padding: 0;
+  }
 `
 
 const SearchIcon = styled(Search)`
@@ -52,6 +56,10 @@ const SearchIcon = styled(Search)`
   color: var(${UI.COLOR_TEXT_OPACITY_50});
   width: 16px;
   height: 16px;
+
+  ${Media.upToMedium()} {
+    left: 10px;
+  }
 `
 
 const SearchInput = styled.input`
@@ -63,6 +71,12 @@ const SearchInput = styled.input`
   border-radius: 8px;
   font-size: 13px;
   font-weight: 500;
+  min-height: 36px;
+
+  ${Media.upToMedium()} {
+    padding: 8px 12px 8px 32px;
+    border-radius: 12px;
+  }
 
   &::placeholder {
     color: var(${UI.COLOR_TEXT_OPACITY_50});

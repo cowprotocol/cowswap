@@ -27,6 +27,11 @@ export const Header = styled.div`
   width: 100%;
   color: inherit;
 
+  ${Media.upToSmall()} {
+    flex-flow: row wrap;
+    gap: 14px;
+  }
+
   > span > i {
     font-style: normal;
     color: var(${UI.COLOR_TEXT});
