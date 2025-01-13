@@ -48,8 +48,8 @@ export function getOrderStatusTitleAndColor(order: ParsedOrder): { title: string
   if (order.isCancelling) {
     return {
       title: 'Cancelling...',
-      color: `var(${UI.COLOR_TEXT})`,
-      background: `var(${UI.COLOR_TEXT_OPACITY_10})`,
+      color: `var(${UI.COLOR_DANGER_TEXT})`,
+      background: `var(${UI.COLOR_DANGER_BG})`,
     }
   }
 
