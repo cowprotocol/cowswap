@@ -108,7 +108,6 @@
     }
   },
   "UNI_V2_DEPOSIT": {
-    "id": "8cae0a2bde1ca3242ece932ee31b24541ca5e6d1efc0d7be80bd85de0734e558",
     "name": "Uniswap v2 Deposit",
     "type": "IFRAME",
     "descriptionShort": "Add liquidity to a Uniswap v2 pool after the swap",
