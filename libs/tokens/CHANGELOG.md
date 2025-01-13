@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.13.1...tokens-v1.14.0) (2025-01-09)
+
+
+### Features
+
+* **token-lists:** remove outdated token lists ([#5233](https://github.com/cowprotocol/cowswap/issues/5233)) ([6f73dfc](https://github.com/cowprotocol/cowswap/commit/6f73dfc1c604393f4c4a54fe207893b698bba4a8))
+
 ## [1.13.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.13.0...tokens-v1.13.1) (2024-12-18)
 
 

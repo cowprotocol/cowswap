@@ -36,7 +36,7 @@ import { getQuoteValidFor } from 'utils/orderUtils/getQuoteValidFor'
 import { ApiErrorCodes } from './errors/OperatorError'
 import QuoteApiError, { mapOperatorErrorToQuoteError, QuoteApiErrorDetails } from './errors/QuoteError'
 import { getIsOrderBookTypedError } from './getIsOrderBookTypedError'
-
+export { getIsOrderBookTypedError } from './getIsOrderBookTypedError'
 
 function getProfileUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {

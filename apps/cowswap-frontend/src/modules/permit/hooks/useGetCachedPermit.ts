@@ -13,14 +13,13 @@ import { getPermitCacheAtom } from '../state/permitCacheAtom'
 export function useGetCachedPermit(): (
   tokenAddress: Nullish<string>,
   customSpender?: string,
-  amount?: bigint,
 ) => Promise<PermitHookData | undefined> {
   const { chainId, account } = useWalletInfo()
   const provider = useWalletProvider()
   const getCachedPermit = useSetAtom(getPermitCacheAtom)
 
   return useCallback(
-    async (tokenAddress: Nullish<string>, customSpender?: string, amount?: bigint) => {
+    async (tokenAddress: Nullish<string>, customSpender?: string) => {
       if (!provider || !account || !tokenAddress) {
         return
       }
@@ -33,7 +32,7 @@ export function useGetCachedPermit(): (
         // Static account should never need to pre-check the nonce as it'll never change once cached
         const nonce = account ? await eip2162Utils.getTokenNonce(tokenAddress, account) : undefined
 
-        const permitParams = { chainId, tokenAddress, account, nonce, spender, amount }
+        const permitParams = { chainId, tokenAddress, account, nonce, spender }
 
         return getCachedPermit(permitParams)
       } catch (e) {

@@ -1,12 +1,6 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { MaxUint256 } from '@ethersproject/constants'
-
-import { TradeType, tradeTypeAtom } from 'modules/trade'
-
-import { Routes } from 'common/constants/routes'
-
 import {
   CachedPermitData,
   GetPermitCacheParams,
@@ -20,14 +14,14 @@ import {
  * Should never change once it has been created.
  * Used exclusively for quote requests
  */
-export const staticPermitCacheAtom = atomWithStorage<PermitCache>('staticPermitCache:v4', {})
+export const staticPermitCacheAtom = atomWithStorage<PermitCache>('staticPermitCache:v3', {})
 
 /**
  * Atom that stores permit data for user permit requests.
  * Should be updated whenever the permit nonce is updated.
  * Used exclusively for order requests
  */
-export const userPermitCacheAtom = atomWithStorage<PermitCache>('userPermitCache:v2', {})
+export const userPermitCacheAtom = atomWithStorage<PermitCache>('userPermitCache:v1', {})
 
 /**
  * Atom to add/update permit cache data
@@ -42,7 +36,6 @@ export const storePermitCacheAtom = atom(null, (get, set, params: StorePermitCac
   const dataToCache: CachedPermitData = {
     hookData: params.hookData,
     nonce: params.nonce,
-    amount: params.amount?.toString(),
   }
 
   set(atomToUpdate, (permitCache) => ({ ...permitCache, [key]: JSON.stringify(dataToCache) }))
@@ -60,10 +53,6 @@ export const getPermitCacheAtom = atom(null, (get, set, params: GetPermitCachePa
   const atomToUpdate = params.account ? userPermitCacheAtom : staticPermitCacheAtom
 
   const permitCache = get(atomToUpdate)
-  const tradeType = get(tradeTypeAtom)
-
-  const isSwap = tradeType?.tradeType === TradeType.SWAP && tradeType.route === Routes.SWAP
-
   const key = buildKey(params)
   const cachedData = permitCache[key]
 
@@ -72,7 +61,7 @@ export const getPermitCacheAtom = atom(null, (get, set, params: GetPermitCachePa
   }
 
   try {
-    const { hookData, nonce: storedNonce, amount }: CachedPermitData = JSON.parse(cachedData)
+    const { hookData, nonce: storedNonce }: CachedPermitData = JSON.parse(cachedData)
 
     if (params.account !== undefined) {
       // User type permit cache, check the nonce
@@ -85,16 +74,6 @@ export const getPermitCacheAtom = atom(null, (get, set, params: GetPermitCachePa
         // Remove cache key
         set(atomToUpdate, removePermitCacheBuilder(key))
 
-        return undefined
-      }
-
-      // Only Swap might create partial amount permits
-      // Because of that, we skip cached permits with partial amount in other widgets
-      if (!isSwap && amount && amount !== MaxUint256.toString()) {
-        return undefined
-      }
-
-      if (params.amount && params.amount.toString() !== amount) {
         return undefined
       }
     }
@@ -112,8 +91,8 @@ export const getPermitCacheAtom = atom(null, (get, set, params: GetPermitCachePa
   }
 })
 
-function buildKey({ chainId, tokenAddress, account, spender, amount }: PermitCacheKeyParams) {
-  const base = `${chainId}-${tokenAddress.toLowerCase()}-${spender.toLowerCase()}-${amount ? amount.toString() : ''}`
+function buildKey({ chainId, tokenAddress, account, spender }: PermitCacheKeyParams) {
+  const base = `${chainId}-${tokenAddress.toLowerCase()}-${spender.toLowerCase()}`
 
   return account ? `${base}-${account.toLowerCase()}` : base
 }

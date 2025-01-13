@@ -18,7 +18,6 @@ export interface UserState {
   // TODO: mod, shouldn't be here
   recipientToggleVisible: boolean
   hooksEnabled: boolean
-  partialApprove: boolean
 
   // deadline set by user in minutes, used in all txns
   userDeadline: number
@@ -28,9 +27,9 @@ export const initialState: UserState = {
   selectedWallet: undefined,
   matchesDarkMode: false,
   userDarkMode: null,
+  // TODO: mod, shouldn't be here
   recipientToggleVisible: false,
   hooksEnabled: false,
-  partialApprove: false,
   userLocale: null,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
 }
@@ -57,9 +56,6 @@ const userSlice = createSlice({
     updateUserDeadline(state, action) {
       state.userDeadline = action.payload.userDeadline
     },
-    updatePartialApprove(state, action) {
-      state.partialApprove = action.payload.partialApprove
-    },
     updateRecipientToggleVisible(state, action) {
       state.recipientToggleVisible = action.payload.recipientToggleVisible
     },
@@ -74,6 +70,5 @@ export const {
   updateUserDeadline,
   updateUserLocale,
   updateRecipientToggleVisible,
-  updatePartialApprove,
 } = userSlice.actions
 export default userSlice.reducer

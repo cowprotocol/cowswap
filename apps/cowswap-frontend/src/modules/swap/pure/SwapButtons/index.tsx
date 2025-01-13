@@ -40,7 +40,6 @@ export interface SwapButtonsContext {
   onCurrencySelection: (field: Field, currency: Currency) => void
   widgetStandaloneMode?: boolean
   quoteDeadlineParams: QuoteDeadlineParams
-  isPartialApprove: boolean
 }
 
 const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext) => JSX.Element } = {
@@ -127,7 +126,7 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
     <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
       <AutoColumn style={{ width: '100%' }} gap="12px">
         {props.inputAmount && (
-          <TradeApproveButton amountToApprove={props.inputAmount} isPartialApprove={props.isPartialApprove}>
+          <TradeApproveButton amountToApprove={props.inputAmount}>
             <ButtonError disabled={true} buttonSize={ButtonSize.BIG}>
               <styledEl.SwapButtonBox>
                 <Trans>Swap</Trans>

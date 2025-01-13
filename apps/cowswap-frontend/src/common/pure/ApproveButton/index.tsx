@@ -50,6 +50,7 @@ export function ApproveButton(props: ApproveButtonProps) {
             content={
               <Trans>
                 You must give the CoW Protocol smart contracts permission to use your <TokenSymbol token={currency} />.
+                If you approve the default amount, you will only have to do this once per token.
               </Trans>
             }
           >

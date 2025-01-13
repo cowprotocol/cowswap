@@ -9,7 +9,6 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useSingleActivityDescriptor } from 'legacy/hooks/useRecentActivity'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
-import { usePartialApprove } from 'legacy/state/user/hooks'
 
 import { getDerivedEthFlowState } from 'modules/swap/containers/EthFlow/utils/getDerivedEthFlowState'
 import { EthFlowModalContent } from 'modules/swap/pure/EthFlow/EthFlowModalContent'
@@ -25,6 +24,7 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useEthFlowActions } from './hooks/useEthFlowActions'
 import useRemainingNativeTxsAndCosts from './hooks/useRemainingNativeTxsAndCosts'
 import { useSetupEthFlow } from './hooks/useSetupEthFlow'
+
 
 export interface EthFlowProps {
   nativeInput?: CurrencyAmount<Currency>
@@ -45,12 +45,10 @@ export function EthFlowModal({
   const native = useNativeCurrency()
   const wrapped = useWrappedToken()
   const { state: approvalState } = useApproveState(nativeInput || null)
-  const [isPartialApprove] = usePartialApprove()
 
   const ethFlowContext = useAtomValue(ethFlowContextAtom)
   const approveCallback = useTradeApproveCallback(
-    (nativeInput && currencyAmountToTokenAmount(nativeInput)) || undefined,
-    isPartialApprove,
+    (nativeInput && currencyAmountToTokenAmount(nativeInput)) || undefined
   )
   const ethFlowActions = useEthFlowActions({
     wrap: wrapCallback,
@@ -88,7 +86,7 @@ export function EthFlowModal({
     approvalState,
     approveActivity,
     wrapActivity,
-    onDismiss,
+    onDismiss
   })
 
   return (

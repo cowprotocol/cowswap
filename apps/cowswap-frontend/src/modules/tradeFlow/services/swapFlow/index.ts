@@ -59,7 +59,6 @@ export async function swapFlow(
       inputToken: inputCurrency,
       permitInfo,
       generatePermitHook,
-      amount: BigInt(inputAmount.quotient.toString()),
     })
 
     if (callDataContainsPermitSigner(orderParams.appData.fullAppData)) {

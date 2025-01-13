@@ -27,20 +27,12 @@ interface SettingsTabProps {
   className?: string
   recipientToggleState: StatefulValue<boolean>
   hooksEnabledState?: StatefulValue<boolean>
-  partialApproveState?: StatefulValue<boolean>
   deadlineState: StatefulValue<number>
 }
 
-export function SettingsTab({
-  className,
-  recipientToggleState,
-  hooksEnabledState,
-  deadlineState,
-  partialApproveState,
-}: SettingsTabProps) {
+export function SettingsTab({ className, recipientToggleState, hooksEnabledState, deadlineState }: SettingsTabProps) {
   const menuButtonRef = useRef<HTMLButtonElement>(null)
 
-  const [isPartialApprove, setPartialApprove] = partialApproveState || [null, null]
   const [recipientToggleVisible, toggleRecipientVisibilityAux] = recipientToggleState
   const toggleRecipientVisibility = useCallback(
     (value?: boolean) => {
@@ -112,41 +104,12 @@ export function SettingsTab({
                           <b>
                             <SVG src={EXPERIMENT_ICON} width={12} height={12} /> Experimental:
                           </b>{' '}
-                          Add DeFI interactions before and after your trade.
+                          Add DeFI interactions before and after your trade
                         </Trans>
                       }
                     />
                   </RowFixed>
                   <Toggle id="toggle-hooks-mode-button" isActive={hooksEnabled} toggle={toggleHooksEnabled} />
-                </RowBetween>
-              )}
-
-              {isPartialApprove !== null && setPartialApprove && (
-                <RowBetween>
-                  <RowFixed>
-                    <ThemedText.Black fontWeight={400} fontSize={14}>
-                      <Trans>Minimal Approvals</Trans>
-                    </ThemedText.Black>
-                    <HelpTooltip
-                      text={
-                        <Trans>
-                          By default, token approvals & permits are for an unlimited amount, which ensures you don't pay extra for subsequent trades.
-                          <br />
-                          <br />
-                          When this setting is enabled, approvals & permits will be for the minimum amount instead of unlimited.
-                          This incurs additional costs on every trade.
-                          <br />
-                          <br />
-                          Existing approvals must be revoked manually before you can re-approve.
-                        </Trans>
-                      }
-                    />
-                  </RowFixed>
-                  <Toggle
-                    id="toggle-partial-approve"
-                    isActive={isPartialApprove}
-                    toggle={() => setPartialApprove(!isPartialApprove)}
-                  />
                 </RowBetween>
               )}
             </AutoColumn>
