@@ -49,7 +49,6 @@ export async function requestPrice(
 
 // Fetches the INPUT and OUTPUT price and calculates initial Active rate
 // When return null it means we failed on price loading
-// TODO: rename it to useNativeBasedPrice
 export function useGetInitialPrice(): { price: Fraction | null; isLoading: boolean } {
   const { chainId } = useWalletInfo()
   const { inputCurrency, outputCurrency } = useLimitOrdersDerivedState()
@@ -58,13 +57,15 @@ export function useGetInitialPrice(): { price: Fraction | null; isLoading: boole
   const isWindowVisible = useIsWindowVisible()
 
   const price = useAsyncMemo(
-    () => {
+    async () => {
       setIsLoading(true)
 
       console.debug('[useGetInitialPrice] Fetching price')
-      return requestPrice(chainId, inputCurrency, outputCurrency).finally(() => {
+      try {
+        return await requestPrice(chainId, inputCurrency, outputCurrency)
+      } finally {
         setIsLoading(false)
-      })
+      }
     },
     [chainId, inputCurrency, outputCurrency, updateTimestamp],
     null,
