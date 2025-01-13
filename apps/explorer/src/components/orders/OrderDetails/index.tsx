@@ -28,6 +28,7 @@ import { FillsTableContext } from './context/FillsTableContext'
 import { FillsTableWithData } from './FillsTableWithData'
 
 import { FlexContainerVar } from '../../../explorer/pages/styled'
+import { useLocation } from 'react-router-dom'
 
 const TitleUid = styled(RowWithCopyButton)`
   color: ${({ theme }): string => theme.grey};
@@ -196,13 +197,14 @@ export const OrderDetails: React.FC<Props> = (props) => {
     const newTabViewName = TabView[tabId]
     if (!newTabViewName) return
 
+    updateQueryString(TAB_QUERY_PARAM_KEY, newTabViewName.toLowerCase())
     setTabViewSelected(TabView[newTabViewName])
   }, [])
 
-  useEffect(
-    () => updateQueryString(TAB_QUERY_PARAM_KEY, TabView[tabViewSelected].toLowerCase()),
-    [tabViewSelected, updateQueryString],
-  )
+  const location = useLocation()
+  useEffect(() => {
+    setTabViewSelected(TabView[tab])
+  }, [location])
 
   if (!chainId) {
     return null
