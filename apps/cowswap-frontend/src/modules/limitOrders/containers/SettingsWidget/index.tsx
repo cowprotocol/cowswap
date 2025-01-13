@@ -24,8 +24,14 @@ export function SettingsWidget() {
         </SettingsButton>
         <MenuPopover portal={false}>
           <MenuItems>
-            <MenuItem onSelect={() => {}}>
-              <Settings state={settingsState} onStateChanged={updateSettingsState} />
+            <MenuItem onSelect={() => null}>
+              <div
+                onClick={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+                onMouseUp={(e) => e.stopPropagation()}
+              >
+                <Settings state={settingsState} onStateChanged={updateSettingsState} />
+              </div>
             </MenuItem>
           </MenuItems>
         </MenuPopover>

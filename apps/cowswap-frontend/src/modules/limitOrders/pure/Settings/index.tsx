@@ -169,70 +169,79 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
     onStateChanged({ isUsdValuesMode: !isUsdValuesMode })
   }, [isUsdValuesMode, onStateChanged])
 
+  const handleContainerClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+  }
+
   return (
-    <SettingsContainer>
-      <SettingsTitle>Limit Order Settings</SettingsTitle>
+    <div onClick={handleContainerClick}>
+      <SettingsContainer>
+        <SettingsTitle>Limit Order Settings</SettingsTitle>
 
-      <SettingsBox
-        title="Custom Recipient"
-        tooltip="Allows you to choose a destination address for the swap other than the connected one."
-        value={showRecipient}
-        toggle={handleRecipientToggle}
-      />
+        <SettingsBox
+          title="Custom Recipient"
+          tooltip="Allows you to choose a destination address for the swap other than the connected one."
+          value={showRecipient}
+          toggle={handleRecipientToggle}
+        />
 
-      <SettingsBox
-        title="Enable Partial Executions"
-        tooltip={
-          <>
-            Allow you to chose whether your limit orders will be <i>Partially fillable</i> or <i>Fill or kill</i>.
-            <br />
-            <br />
-            <i>Fill or kill</i> orders will either be filled fully or not at all.
-            <br />
-            <i>Partially fillable</i> orders may be filled partially if there isn't enough liquidity to fill the full
-            amount.
-          </>
-        }
-        value={partialFillsEnabled}
-        toggle={handlePartialFillsToggle}
-      />
+        <SettingsBox
+          title="Enable Partial Executions"
+          tooltip={
+            <>
+              Allow you to chose whether your limit orders will be <i>Partially fillable</i> or <i>Fill or kill</i>.
+              <br />
+              <br />
+              <i>Fill or kill</i> orders will either be filled fully or not at all.
+              <br />
+              <i>Partially fillable</i> orders may be filled partially if there isn't enough liquidity to fill the full
+              amount.
+            </>
+          }
+          value={partialFillsEnabled}
+          toggle={handlePartialFillsToggle}
+        />
 
-      <SettingsBox
-        title="Lock Limit Price"
-        tooltip="When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
-        value={limitPriceLocked}
-        toggle={handleLimitPriceLockedToggle}
-      />
+        <SettingsBox
+          title="Lock Limit Price"
+          tooltip="When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
+          value={limitPriceLocked}
+          toggle={handleLimitPriceLockedToggle}
+        />
 
-      <SettingsBox
-        title="Global USD Mode"
-        tooltip="When enabled, all prices will be displayed in USD by default."
-        value={isUsdValuesMode}
-        toggle={handleUsdValuesModeToggle}
-      />
+        <SettingsBox
+          title="Global USD Mode"
+          tooltip="When enabled, all prices will be displayed in USD by default."
+          value={isUsdValuesMode}
+          toggle={handleUsdValuesModeToggle}
+        />
 
-      <SettingsBox
-        title={ORDERS_TABLE_SETTINGS.LEFT_ALIGNED.title}
-        tooltip={ORDERS_TABLE_SETTINGS.LEFT_ALIGNED.tooltip}
-        value={ordersTableOnLeft}
-        toggle={handleOrdersTablePositionToggle}
-      />
+        <SettingsBox
+          title={ORDERS_TABLE_SETTINGS.LEFT_ALIGNED.title}
+          tooltip={ORDERS_TABLE_SETTINGS.LEFT_ALIGNED.tooltip}
+          value={ordersTableOnLeft}
+          toggle={handleOrdersTablePositionToggle}
+        />
 
-      <SettingsRow>
-        <SettingsLabel>
-          Limit price position <HelpTooltip text="Choose where to display the limit price input." />
-        </SettingsLabel>
-        <DropdownContainer>
-          <DropdownButton onClick={toggleDropdown}>{POSITION_LABELS[limitPricePosition]}</DropdownButton>
-          <DropdownList isOpen={isOpen}>
-            {Object.entries(POSITION_LABELS).map(([value, label]) => (
-              <DropdownItem key={value} onClick={handleSelect(value as LimitOrdersSettingsState['limitPricePosition'])}>
-                {label}
-              </DropdownItem>
-            ))}
-          </DropdownList>
-        </DropdownContainer>
-      </SettingsRow>
-    </SettingsContainer>
+        <SettingsRow>
+          <SettingsLabel>
+            Limit price position <HelpTooltip text="Choose where to display the limit price input." />
+          </SettingsLabel>
+          <DropdownContainer>
+            <DropdownButton onClick={toggleDropdown}>{POSITION_LABELS[limitPricePosition]}</DropdownButton>
+            <DropdownList isOpen={isOpen}>
+              {Object.entries(POSITION_LABELS).map(([value, label]) => (
+                <DropdownItem
+                  key={value}
+                  onClick={handleSelect(value as LimitOrdersSettingsState['limitPricePosition'])}
+                >
+                  {label}
+                </DropdownItem>
+              ))}
+            </DropdownList>
+          </DropdownContainer>
+        </SettingsRow>
+      </SettingsContainer>
+    </div>
   )
 }
