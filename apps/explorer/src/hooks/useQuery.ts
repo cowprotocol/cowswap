@@ -28,6 +28,6 @@ export function useUpdateQueryString(): (key: string, value: string) => void {
 
       navigate({ search: query.toString() })
     },
-    [navigate, query],
+    [navigate, query]
   )
 }
