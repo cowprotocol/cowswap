@@ -21,8 +21,6 @@ export const FillsTableWithData: React.FC<Props> = ({ areTokensLoaded, order, is
   const { data: trades, tableState } = useContext(FillsTableContext)
   const isFirstRender = useFirstRender()
 
-  console.log({ isFirstRender, areTokensLoaded: !areTokensLoaded })
-
   return isFirstRender && !areTokensLoaded ? (
     <CowLoading />
   ) : (
