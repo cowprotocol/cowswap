@@ -7,7 +7,7 @@ import { getAddress, getEtherscanLink, formatDateWithTimezone } from '@cowprotoc
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { Loader, TokenAmount, UI, HoverTooltip } from '@cowprotocol/ui'
+import { UI, TokenAmount, Loader, HoverTooltip } from '@cowprotocol/ui'
 import { PercentDisplay, percentIsAlmostHundred } from '@cowprotocol/ui'
 import { useIsSafeWallet } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
@@ -435,12 +435,12 @@ export function OrderRow({
           <styledEl.CellElement doubleRow>
             <b
               title={
-                expirationTime && !(getIsFinalizedOrder(order) && order.status !== OrderStatus.EXPIRED)
+                expirationTime && !shouldShowDashForExpiration(order, children)
                   ? formatDateWithTimezone(expirationTime)
                   : undefined
               }
             >
-              {getIsFinalizedOrder(order) && order.status !== OrderStatus.EXPIRED ? '-' : expirationTimeAgo}
+              {shouldShowDashForExpiration(order, children) ? '-' : expirationTimeAgo}
             </b>
             <i title={creationTime && !isScheduledCreating ? formatDateWithTimezone(creationTime) : undefined}>
               {isScheduledCreating ? 'Creating...' : creationTimeAgo}
@@ -584,4 +584,29 @@ function getActivityUrl(chainId: SupportedChainId, order: ParsedOrder): string |
   }
 
   return chainId && activityId ? getEtherscanLink(chainId, 'transaction', activityId) : undefined
+}
+
+function shouldShowDashForExpiration(order: ParsedOrder, _children: React.ReactNode | undefined): boolean {
+  // Show dash for finalized orders that are not expired
+  if (getIsFinalizedOrder(order) && order.status !== OrderStatus.EXPIRED) {
+    return true
+  }
+
+  // For TWAP parent orders, show dash when all child orders are in a final state
+  if (getIsComposableCowParentOrder(order)) {
+    // If the parent order is fulfilled or cancelled, all child orders are finalized
+    if (order.status === OrderStatus.FULFILLED || order.status === OrderStatus.CANCELLED) {
+      return true
+    }
+
+    // For mixed states (some filled, some expired), check either condition:
+    // 1. fullyFilled: true when all non-expired parts are filled
+    // 2. status === EXPIRED: true when all remaining parts are expired
+    // Either condition indicates all child orders are in a final state
+    if (order.executionData.fullyFilled || order.status === OrderStatus.EXPIRED) {
+      return true
+    }
+  }
+
+  return false
 }
