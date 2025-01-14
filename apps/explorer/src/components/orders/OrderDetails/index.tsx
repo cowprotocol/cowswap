@@ -17,6 +17,7 @@ import TablePagination from 'explorer/components/common/TablePagination'
 import { useTable } from 'explorer/components/TokensTableWidget/useTable'
 import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
+import { useLocation } from 'react-router-dom'
 import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
 import { Errors } from 'types'
@@ -192,17 +193,21 @@ export const OrderDetails: React.FC<Props> = (props) => {
     return (): void => clearTimeout(timer)
   })
 
-  const onChangeTab = useCallback((tabId: number) => {
-    const newTabViewName = TabView[tabId]
-    if (!newTabViewName) return
+  const onChangeTab = useCallback(
+    (tabId: number) => {
+      const newTabViewName = TabView[tabId]
+      if (!newTabViewName) return
 
-    setTabViewSelected(TabView[newTabViewName])
-  }, [])
-
-  useEffect(
-    () => updateQueryString(TAB_QUERY_PARAM_KEY, TabView[tabViewSelected].toLowerCase()),
-    [tabViewSelected, updateQueryString],
+      updateQueryString(TAB_QUERY_PARAM_KEY, newTabViewName.toLowerCase())
+      setTabViewSelected(TabView[newTabViewName])
+    },
+    [updateQueryString],
   )
+
+  const location = useLocation()
+  useEffect(() => {
+    setTabViewSelected(TabView[tab])
+  }, [location, tab])
 
   if (!chainId) {
     return null
