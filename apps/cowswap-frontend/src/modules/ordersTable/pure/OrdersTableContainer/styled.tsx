@@ -102,9 +102,11 @@ export const TableRow = styled(TableHeader)<{
   isHistoryTab: boolean
   isRowSelectable: boolean
   isTwapTable?: boolean
+  isExpanded?: boolean
 }>`
   grid-template-rows: minmax(var(--row-height), 1fr);
-  background: ${({ isChildOrder }) => (isChildOrder ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
+  background: ${({ isChildOrder, isExpanded }) =>
+    isExpanded || isChildOrder ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent'};
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
   display: grid;
 
@@ -122,10 +124,6 @@ export const TableRow = styled(TableHeader)<{
       text-decoration: none !important;
       opacity: 0.6;
     }
-  }
-
-  &:last-child {
-    border-bottom: 0;
   }
 `
 

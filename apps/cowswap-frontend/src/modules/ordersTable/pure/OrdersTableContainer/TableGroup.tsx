@@ -12,6 +12,7 @@ import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { OrderRow } from './OrderRow'
+import { WarningTooltip } from './OrderRow/OrderWarning'
 import * as styledEl from './OrderRow/styled'
 import { OrderActions } from './types'
 
@@ -42,16 +43,53 @@ function TwapStatusAndToggle({
   isCollapsed,
   onToggle,
   onClick,
+  children,
 }: {
   parent: any
   childrenLength: number
   isCollapsed: boolean
   onToggle: () => void
   onClick: () => void
+  children: any[]
 }) {
+  // Check if any child has insufficient balance or allowance
+  const hasChildWithWarning = children.some(
+    (child) =>
+      (child.orderParams?.hasEnoughBalance === false || child.orderParams?.hasEnoughAllowance === false) &&
+      (child.order.status === OrderStatus.PENDING || child.order.status === OrderStatus.SCHEDULED),
+  )
+
+  // Get the first child with a warning to use its parameters
+  const childWithWarning = hasChildWithWarning
+    ? children.find(
+        (child) =>
+          (child.orderParams?.hasEnoughBalance === false || child.orderParams?.hasEnoughAllowance === false) &&
+          (child.order.status === OrderStatus.PENDING || child.order.status === OrderStatus.SCHEDULED),
+      )
+    : null
+
   return (
     <TwapStatusAndToggleWrapper>
-      <OrderStatusBox order={parent} onClick={onClick} />
+      <OrderStatusBox
+        order={parent}
+        onClick={onClick}
+        withWarning={hasChildWithWarning}
+        WarningTooltip={
+          hasChildWithWarning && childWithWarning
+            ? ({ children }) => (
+                <WarningTooltip
+                  children={children}
+                  hasEnoughBalance={childWithWarning.orderParams.hasEnoughBalance ?? false}
+                  hasEnoughAllowance={childWithWarning.orderParams.hasEnoughAllowance ?? false}
+                  inputTokenSymbol={childWithWarning.order.inputToken.symbol || ''}
+                  isOrderScheduled={childWithWarning.order.status === OrderStatus.SCHEDULED}
+                  onApprove={() => childWithWarning.orderActions.approveOrderToken(childWithWarning.order.inputToken)}
+                  showIcon={true}
+                />
+              )
+            : undefined
+        }
+      />
       <styledEl.ToggleExpandButton onClick={onToggle} isCollapsed={isCollapsed}>
         {childrenLength && (
           <i>
@@ -114,6 +152,13 @@ export function TableGroup(props: TableGroupProps) {
     isTwapTable,
   }
 
+  // Create an array of child order data with their orderParams
+  const childrenWithParams = children.map((child) => ({
+    order: child,
+    orderParams: getOrderParams(chainId, balancesAndAllowances, child),
+    orderActions,
+  }))
+
   return (
     <GroupBox>
       <OrderRow
@@ -123,6 +168,7 @@ export function TableGroup(props: TableGroupProps) {
         order={parent}
         orderParams={getOrderParams(chainId, balancesAndAllowances, parent)}
         onClick={() => orderActions.selectReceiptOrder(parent)}
+        isExpanded={!isCollapsed}
       >
         {isParentSigning ? undefined : (
           <TwapStatusAndToggle
@@ -131,6 +177,7 @@ export function TableGroup(props: TableGroupProps) {
             isCollapsed={isCollapsed}
             onToggle={() => setIsCollapsed((state) => !state)}
             onClick={() => orderActions.selectReceiptOrder(parent)}
+            children={childrenWithParams}
           />
         )}
       </OrderRow>

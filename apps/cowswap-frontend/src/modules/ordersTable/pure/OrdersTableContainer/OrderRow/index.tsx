@@ -83,6 +83,7 @@ export interface OrderRowProps {
   isRowSelectable: boolean
   isRowSelected: boolean
   isChild?: boolean
+  isExpanded?: boolean
   orderParams: OrderParams
   onClick: Command
   orderActions: OrderActions
@@ -97,6 +98,7 @@ export function OrderRow({
   isRowSelectable,
   isRowSelected,
   isChild,
+  isExpanded,
   orderActions,
   orderParams,
   onClick,
@@ -407,6 +409,7 @@ export function OrderRow({
       isHistoryTab={isHistoryTab}
       isRowSelectable={isRowSelectable}
       isTwapTable={isTwapTable}
+      isExpanded={isExpanded}
     >
       {/*Checkbox for multiple cancellation*/}
       {isRowSelectable && !isHistoryTab && (
