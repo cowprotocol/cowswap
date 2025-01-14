@@ -1,1 +1,1 @@
-export * from './apiCached'
+export * from './api'
