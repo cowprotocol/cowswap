@@ -63,8 +63,8 @@ export function useOrdersTableList(
         const params = getOrderParams(chainId, balancesAndAllowances, order)
         const isUnfillable = params.hasEnoughBalance === false || params.hasEnoughAllowance === false
 
-        // Set the unfillable flag on the order if it's pending and unfillable
-        if (isPending && isUnfillable && order.isUnfillable !== isUnfillable) {
+        // Update the unfillable flag whenever the state changes, not just when becoming unfillable
+        if (isPending && order.isUnfillable !== isUnfillable) {
           setIsOrderUnfillable({ chainId, id: order.id, isUnfillable })
         }
 
