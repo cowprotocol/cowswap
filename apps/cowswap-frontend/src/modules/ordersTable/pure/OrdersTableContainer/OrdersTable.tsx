@@ -12,6 +12,7 @@ import { BalancesAndAllowances } from 'modules/tokens'
 
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
+import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 
 import { OrderRow } from './OrderRow'
 import { CheckboxCheckmark, TableHeader, TableRowCheckbox, TableRowCheckboxWrapper } from './styled'
@@ -33,17 +34,13 @@ import { OrdersTablePagination } from '../OrdersTablePagination'
 // TODO: move elements to styled.jsx
 
 const TableBox = styled.div`
-  display: block;
+  display: flex;
+  flex-flow: column wrap;
   border: none;
   padding: 0;
   position: relative;
   background: var(${UI.COLOR_PAPER});
-
-  ${Media.upToLargeAlt()} {
-    width: 100%;
-    display: flex;
-    flex-flow: column wrap;
-  }
+  width: 100%;
 `
 
 const TableInner = styled.div`
@@ -181,11 +178,23 @@ export function OrdersTable({
     })
   }, [tableHeaders, currentTab])
 
+  // Determine if this is a TWAP table by checking if any order has composableCowInfo with a parentId
+  const isTwapTable = useMemo(() => {
+    return orders.some((item) => {
+      const order = getParsedOrderFromTableItem(item)
+      return getIsComposableCowParentOrder(order)
+    })
+  }, [orders])
+
   return (
     <>
       <TableBox>
         <TableInner onScroll={onScroll}>
-          <TableHeader isHistoryTab={currentTab === HISTORY_TAB.id} isRowSelectable={isRowSelectable}>
+          <TableHeader
+            isHistoryTab={currentTab === HISTORY_TAB.id}
+            isRowSelectable={isRowSelectable}
+            isTwapTable={isTwapTable}
+          >
             {visibleHeaders.map((header) => {
               if (header.id === 'checkbox' && (!isRowSelectable || currentTab === HISTORY_TAB.id)) {
                 return null
@@ -245,6 +254,7 @@ export function OrdersTable({
                     orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
                     onClick={() => orderActions.selectReceiptOrder(order)}
                     orderActions={orderActions}
+                    isTwapTable={isTwapTable}
                   />
                 )
               } else {
@@ -261,6 +271,7 @@ export function OrdersTable({
                     prices={pendingOrdersPrices[item.parent.id]}
                     isRateInverted={false}
                     orderActions={orderActions}
+                    isTwapTable={isTwapTable}
                   />
                 )
               }

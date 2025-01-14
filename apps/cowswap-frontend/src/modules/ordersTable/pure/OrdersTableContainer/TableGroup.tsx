@@ -19,6 +19,7 @@ import { ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
 import { getOrderParams } from '../../utils/getOrderParams'
 import { OrderTableGroup } from '../../utils/orderTableGroupUtils'
 import { OrdersTablePagination } from '../OrdersTablePagination'
+import { OrderStatusBox } from '../OrderStatusBox'
 
 const GroupBox = styled.div``
 
@@ -27,6 +28,41 @@ const Pagination = styled(OrdersTablePagination)`
   margin: 0;
   padding: 10px 0;
 `
+
+const TwapStatusAndToggleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+`
+
+function TwapStatusAndToggle({
+  parent,
+  childrenLength,
+  isCollapsed,
+  onToggle,
+  onClick,
+}: {
+  parent: any
+  childrenLength: number
+  isCollapsed: boolean
+  onToggle: () => void
+  onClick: () => void
+}) {
+  return (
+    <TwapStatusAndToggleWrapper>
+      <OrderStatusBox order={parent} onClick={onClick} />
+      <styledEl.ToggleExpandButton onClick={onToggle} isCollapsed={isCollapsed}>
+        {childrenLength && (
+          <i>
+            {childrenLength} part{childrenLength > 1 && 's'}
+          </i>
+        )}
+        <button />
+      </styledEl.ToggleExpandButton>
+    </TwapStatusAndToggleWrapper>
+  )
+}
 
 export interface TableGroupProps {
   item: OrderTableGroup
@@ -39,6 +75,7 @@ export interface TableGroupProps {
   orderActions: OrderActions
   chainId: SupportedChainId
   balancesAndAllowances: BalancesAndAllowances
+  isTwapTable?: boolean
 }
 
 export function TableGroup(props: TableGroupProps) {
@@ -53,6 +90,7 @@ export function TableGroup(props: TableGroupProps) {
     orderActions,
     chainId,
     balancesAndAllowances,
+    isTwapTable,
   } = props
 
   const { parent, children } = item
@@ -73,6 +111,7 @@ export function TableGroup(props: TableGroupProps) {
     prices,
     isRateInverted,
     orderActions,
+    isTwapTable,
   }
 
   return (
@@ -86,14 +125,13 @@ export function TableGroup(props: TableGroupProps) {
         onClick={() => orderActions.selectReceiptOrder(parent)}
       >
         {isParentSigning ? undefined : (
-          <styledEl.ToggleExpandButton onClick={() => setIsCollapsed((state) => !state)} isCollapsed={isCollapsed}>
-            {childrenLength && (
-              <i>
-                {childrenLength} part{childrenLength > 1 && 's'}
-              </i>
-            )}
-            <button />
-          </styledEl.ToggleExpandButton>
+          <TwapStatusAndToggle
+            parent={parent}
+            childrenLength={childrenLength}
+            isCollapsed={isCollapsed}
+            onToggle={() => setIsCollapsed((state) => !state)}
+            onClick={() => orderActions.selectReceiptOrder(parent)}
+          />
         )}
       </OrderRow>
 

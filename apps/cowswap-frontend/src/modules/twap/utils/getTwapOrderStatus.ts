@@ -1,3 +1,5 @@
+import { OrderStatus } from 'legacy/state/orders/actions'
+
 import { isTwapOrderFulfilled } from './isTwapOrderFulfilled'
 
 import { TwapOrdersExecution } from '../hooks/useTwapOrdersExecutions'
@@ -8,7 +10,7 @@ export function getTwapOrderStatus(
   isTransactionExecuted: boolean,
   executionDate: Date | null,
   auth: boolean | undefined,
-  { confirmedPartsCount, info: executionInfo }: TwapOrdersExecution
+  { confirmedPartsCount, info: executionInfo }: TwapOrdersExecution,
 ): TwapOrderStatus {
   const isFulfilled = isTwapOrderFulfilled(order, executionInfo.executedSellAmount)
   const isCancelled = auth === false
@@ -36,4 +38,54 @@ export function isTwapOrderExpired(order: TWAPOrderStruct, startDate: Date | nul
   const nowTimestamp = Math.ceil(Date.now() / 1000)
 
   return nowTimestamp > endTime
+}
+
+export function getTwapParentStatusFromChildren(
+  childrenOrders: { status: OrderStatus; isCancelling?: boolean }[],
+): TwapOrderStatus {
+  if (!childrenOrders.length) return TwapOrderStatus.Pending
+
+  const hasOpen = childrenOrders.some((order) => order.status === OrderStatus.PENDING)
+  const hasCancelling = childrenOrders.some((order) => order.isCancelling)
+  const hasFilled = childrenOrders.some((order) => order.status === OrderStatus.FULFILLED)
+  const hasCancelled = childrenOrders.some((order) => order.status === OrderStatus.CANCELLED)
+  const hasExpired = childrenOrders.some((order) => order.status === OrderStatus.EXPIRED)
+
+  // All parts filled
+  if (childrenOrders.every((order) => order.status === OrderStatus.FULFILLED)) {
+    return TwapOrderStatus.Fulfilled
+  }
+
+  // All parts cancelled
+  if (childrenOrders.every((order) => order.status === OrderStatus.CANCELLED)) {
+    return TwapOrderStatus.Cancelled
+  }
+
+  // All parts expired
+  if (childrenOrders.every((order) => order.status === OrderStatus.EXPIRED)) {
+    return TwapOrderStatus.Expired
+  }
+
+  // At least one part is open
+  if (hasOpen) {
+    return TwapOrderStatus.Pending
+  }
+
+  // One part is cancelling
+  if (hasCancelling) {
+    return TwapOrderStatus.Cancelling
+  }
+
+  // Some filled + some expired/cancelled
+  if (hasFilled && (hasExpired || hasCancelled)) {
+    return TwapOrderStatus.Fulfilled // Partially filled is considered Fulfilled for display
+  }
+
+  // Mixed cancelled & expired only (no fills)
+  if (hasCancelled && hasExpired && !hasFilled) {
+    return TwapOrderStatus.Cancelled
+  }
+
+  // Default to pending if no other conditions met
+  return TwapOrderStatus.Pending
 }
