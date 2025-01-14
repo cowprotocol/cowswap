@@ -11,13 +11,11 @@ import { JotaiTestProvider } from 'test-utils'
 
 import { UsdPricesUpdater } from './UsdPricesUpdater'
 
-import * as coingeckoApi from '../apis/getCoingeckoUsdPrice'
 import * as cowProtocolApi from '../apis/getCowProtocolUsdPrice'
 import * as defillamaApi from '../apis/getDefillamaUsdPrice'
 import * as services from '../services/fetchCurrencyUsdPrice'
 import { currenciesUsdPriceQueueAtom, UsdRawPrices, usdRawPricesAtom } from '../state/usdRawPricesAtom'
 
-const mockGetCoingeckoUsdPrice = jest.spyOn(coingeckoApi, 'getCoingeckoUsdPrice')
 const mockGetDefillamaUsdPrice = jest.spyOn(defillamaApi, 'getDefillamaUsdPrice')
 const mockGetCowProtocolUsdPrice = jest.spyOn(cowProtocolApi, 'getCowProtocolUsdPrice')
 const mockFetchCurrencyUsdPrice = jest.spyOn(services, 'fetchCurrencyUsdPrice')
@@ -54,7 +52,7 @@ function getWrapper() {
 
 async function performTest(
   priceMock: ((currency: Token) => Promise<number>) | null = null,
-  waitForResolvesCount = 0
+  waitForResolvesCount = 0,
 ): Promise<UsdRawPrices> {
   let resolvesCount = 0
 
