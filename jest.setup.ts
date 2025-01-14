@@ -1,7 +1,6 @@
 import { config } from 'dotenv'
 import 'jest-styled-components' // include style rules in snapshots
 import fetchMock from 'jest-fetch-mock' // Mocks `fetch` calls in unittests
-import QuickLRU from 'quick-lru'
 
 import { Readable } from 'stream'
 import { TextDecoder, TextEncoder } from 'util'
@@ -24,6 +23,10 @@ jest.mock('lottie-react', () => () => null)
 jest.mock('quick-lru', () => {
   return {
     __esModule: true,
-    default: QuickLRU,
+    default: class MockQuickLRU extends Map {
+      constructor() {
+        super()
+      }
+    },
   }
 })
