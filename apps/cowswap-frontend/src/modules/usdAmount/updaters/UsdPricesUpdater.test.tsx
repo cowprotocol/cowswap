@@ -2,8 +2,10 @@ import { createStore } from 'jotai/vanilla'
 import { ReactNode } from 'react'
 
 import { COW as COWS, USDC_MAINNET } from '@cowprotocol/common-const'
+import { FractionUtils } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
+import { Fraction } from '@uniswap/sdk-core'
 
 import { act, render, waitFor } from '@testing-library/react'
 import { SWRConfig } from 'swr'
@@ -51,7 +53,7 @@ function getWrapper() {
 }
 
 async function performTest(
-  priceMock: ((currency: Token) => Promise<number>) | null = null,
+  priceMock: ((currency: Token) => Promise<Fraction | null>) | null = null,
   waitForResolvesCount = 0,
 ): Promise<UsdRawPrices> {
   let resolvesCount = 0
@@ -103,8 +105,8 @@ describe('UsdPricesUpdater', () => {
   })
 
   it('Should set price value and isLoading=false on fetching success', async () => {
-    const usdcPrice = 1.0
-    const cowPrice = 0.5
+    const usdcPrice = FractionUtils.fromNumber(1.0)
+    const cowPrice = FractionUtils.fromNumber(0.5)
 
     const state = await performTest((currency: Token) => {
       // Always return prices
@@ -131,26 +133,22 @@ describe('UsdPricesUpdater', () => {
     })
   })
 
-  it('Should use Coingecko API by default', async () => {
+  it('Should use BFF API by default', async () => {
     const price = 3.5
-
-    mockGetCoingeckoUsdPrice.mockImplementation(() => Promise.resolve(price))
 
     const state = await performTest()
 
     expect(state[usdcAddress].price).toBe(price)
     expect(state[cowAddress].price).toBe(price)
 
-    expect(mockGetCoingeckoUsdPrice).toHaveBeenCalledTimes(2)
     expect(mockGetCowProtocolUsdPrice).toHaveBeenCalledTimes(0)
     expect(mockGetDefillamaUsdPrice).toHaveBeenCalledTimes(0)
   })
 
-  it('Should fallback to Defillama API when Coingecko is down', async () => {
+  it('Should fallback to Defillama API when BFF is down', async () => {
     const price = 7.22
 
-    mockGetDefillamaUsdPrice.mockImplementation(() => Promise.resolve(price))
-    mockGetCoingeckoUsdPrice.mockImplementation(() => Promise.reject(new Error('Server error')))
+    mockGetDefillamaUsdPrice.mockImplementation(() => Promise.resolve(FractionUtils.fromNumber(price)))
 
     const state = await performTest()
 
@@ -164,9 +162,8 @@ describe('UsdPricesUpdater', () => {
   it('Should fallback to CoW Protocol API when Coingecko and Defillama are down', async () => {
     const price = 7.22
 
-    mockGetCowProtocolUsdPrice.mockImplementation(() => Promise.resolve(price))
+    mockGetCowProtocolUsdPrice.mockImplementation(() => Promise.resolve(FractionUtils.fromNumber(price)))
     mockGetDefillamaUsdPrice.mockImplementation(() => Promise.reject(new Error('Server error')))
-    mockGetCoingeckoUsdPrice.mockImplementation(() => Promise.reject(new Error('Server error')))
 
     const state = await performTest()
 
