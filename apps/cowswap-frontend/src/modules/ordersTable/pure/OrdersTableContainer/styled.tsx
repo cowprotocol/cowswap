@@ -115,12 +115,17 @@ export const TableRow = styled(TableHeader)<{
 }>`
   grid-template-rows: minmax(var(--row-height), 1fr);
   background: ${({ isChildOrder, isExpanded }) =>
-    isExpanded || isChildOrder ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent'};
+    isExpanded && !isChildOrder
+      ? `var(${UI.COLOR_INFO_BG})`
+      : isChildOrder
+        ? `var(${UI.COLOR_PAPER_DARKER})`
+        : 'transparent'};
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
   display: grid;
 
   &:hover {
-    background: var(${UI.COLOR_PAPER_DARKER});
+    background: ${({ isExpanded, isChildOrder }) =>
+      isExpanded && !isChildOrder ? `var(${UI.COLOR_INFO_BG})` : `var(${UI.COLOR_PAPER_DARKER})`};
   }
 
   > div:first-child {
