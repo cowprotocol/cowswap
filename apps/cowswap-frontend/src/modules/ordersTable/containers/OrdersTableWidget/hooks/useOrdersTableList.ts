@@ -36,10 +36,12 @@ export function useOrdersTableList(
 ): OrdersTableList {
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
 
+  // First, group and sort all orders
   const allSortedOrders = useMemo(() => {
     return groupOrdersTable(allOrders).sort(ordersSorter)
   }, [allOrders])
 
+  // Then, categorize orders into their respective lists
   return useMemo(() => {
     const { pending, history, unfillable, signing, all } = allSortedOrders.reduce(
       (acc, item) => {
@@ -96,6 +98,7 @@ export function useOrdersTableList(
       },
     )
 
+    // Return sliced lists to respect ORDERS_LIMIT
     return {
       pending: pending.slice(0, ORDERS_LIMIT),
       history: history.slice(0, ORDERS_LIMIT),

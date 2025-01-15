@@ -160,11 +160,20 @@ export function OrdersTableWidget({
   const { currentTabId, currentPageNumber } = useMemo(() => {
     const params = parseOrdersTableUrl(location.search)
 
+    // If we're on the signing tab but there are no signing orders,
+    // default to the all orders tab
+    if (params.tabId === 'signing' && !ordersList.signing.length) {
+      return {
+        currentTabId: ALL_ORDERS_TAB.id,
+        currentPageNumber: params.pageNumber || 1,
+      }
+    }
+
     return {
       currentTabId: params.tabId || ALL_ORDERS_TAB.id,
       currentPageNumber: params.pageNumber || 1,
     }
-  }, [location.search])
+  }, [location.search, ordersList.signing.length])
 
   const orders = useMemo(() => {
     return getOrdersListByIndex(ordersList, currentTabId)
