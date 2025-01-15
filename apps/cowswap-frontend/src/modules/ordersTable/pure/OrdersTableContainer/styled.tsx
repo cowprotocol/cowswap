@@ -61,19 +61,28 @@ export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: 
   display: grid;
   gap: 14px;
   grid-template-columns: ${({ isHistoryTab, isRowSelectable, isTwapTable }) => {
+    const checkboxColumn = isRowSelectable ? 'var(--checkboxSize)' : ''
+
+    // TWAP table layout - applies to both history and non-history tabs
+    if (isTwapTable) {
+      if (isHistoryTab) {
+        return `minmax(200px, 2.5fr)  
+                repeat(4, minmax(110px, 1fr))
+                minmax(80px, 0.8fr)   
+                minmax(120px, 1fr)
+                minmax(100px, 0.8fr)  
+                24px`
+      }
+      return `${checkboxColumn} minmax(160px,2fr) minmax(120px,1fr) minmax(140px,1fr) minmax(120px,1fr) minmax(120px,1fr) minmax(100px,110px) minmax(120px,1fr) minmax(100px,0.8fr) 24px`
+    }
+
+    // Default layout for history tab
     if (isHistoryTab) {
       return `minmax(200px, 2.5fr)  
               repeat(4, minmax(110px, 1fr))
               minmax(80px, 0.8fr)   
               minmax(100px, 1fr)  
               24px`
-    }
-
-    const checkboxColumn = isRowSelectable ? 'var(--checkboxSize)' : ''
-
-    // TWAP table layout
-    if (isTwapTable) {
-      return `${checkboxColumn} minmax(160px,2fr) minmax(120px,1fr) minmax(140px,1fr) minmax(120px,1fr) minmax(120px,1fr) minmax(100px,110px) minmax(190px,1.6fr) 24px`
     }
 
     // Default/Limit orders layout
