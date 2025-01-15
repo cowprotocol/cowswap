@@ -19,3 +19,14 @@ fetchMock.dontMock()
 jest.mock('react-markdown', () => () => null)
 
 jest.mock('lottie-react', () => () => null)
+
+jest.mock('quick-lru', () => {
+  return {
+    __esModule: true,
+    default: class MockQuickLRU extends Map {
+      constructor() {
+        super()
+      }
+    },
+  }
+})
