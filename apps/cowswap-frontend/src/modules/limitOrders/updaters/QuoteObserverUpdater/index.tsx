@@ -22,24 +22,34 @@ export function QuoteObserverUpdater() {
   const inputToken = inputCurrency && getWrappedToken(inputCurrency)
   const outputToken = outputCurrency && getWrappedToken(outputCurrency)
 
-  const spotPrice = useSpotPrice(inputToken, outputToken)
+  const { price, isLoading } = useSpotPrice(inputToken, outputToken)
 
   useEffect(() => {
-    updateLimitRateState({ marketRate: spotPrice })
-  }, [spotPrice])
+    updateLimitRateState({ marketRate: price, isLoadingMarketRate: isLoading })
+  }, [price, isLoading])
 }
 
-function useSpotPrice(inputCurrency: Nullish<Token>, outputCurrency: Nullish<Token>): Fraction | null {
+function useSpotPrice(
+  inputCurrency: Nullish<Token>,
+  outputCurrency: Nullish<Token>,
+): {
+  price: Fraction | null
+  isLoading: boolean
+} {
   const inputUsdPrice = useUsdPrice(inputCurrency)
   const outputUsdPrice = useUsdPrice(outputCurrency)
 
   return useMemo(() => {
+    const isLoading = !!inputUsdPrice?.isLoading || !!outputUsdPrice?.isLoading
+
     if (!inputUsdPrice?.price || !outputUsdPrice?.price) {
-      return null
+      return { price: null, isLoading }
     }
     const inputFraction = FractionUtils.fractionLikeToFraction(inputUsdPrice.price)
     const outputFraction = FractionUtils.fractionLikeToFraction(outputUsdPrice.price)
 
-    return inputFraction.divide(outputFraction)
-  }, [inputUsdPrice?.price, outputUsdPrice?.price])
+    const price = inputFraction.divide(outputFraction)
+
+    return { price, isLoading }
+  }, [inputUsdPrice?.price, inputUsdPrice?.isLoading, outputUsdPrice?.price, outputUsdPrice?.isLoading])
 }
