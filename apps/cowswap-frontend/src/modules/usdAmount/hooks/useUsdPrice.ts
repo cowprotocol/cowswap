@@ -1,4 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
+import { useEffect, useMemo } from 'react'
 
 import { Token } from '@uniswap/sdk-core'
 
@@ -6,7 +7,6 @@ import { Nullish } from 'types'
 
 import { useSafeEffect } from 'common/hooks/useSafeMemo'
 
-import { useEffect, useMemo } from 'react'
 import { addCurrencyToUsdPriceQueue, removeCurrencyToUsdPriceFromQueue } from '../state/usdRawPricesAtom'
 import { UsdPriceState, usdTokenPricesAtom } from '../state/usdTokenPricesAtom'
 
@@ -69,7 +69,7 @@ function useSubscribeUsdPrices(currencies: Token[]): void {
         }
       })
     }
-  }, [currencies])
+  }, [currencies, addCurrencyToUsdPrice, removeCurrencyToUsdPrice])
 }
 
 /**

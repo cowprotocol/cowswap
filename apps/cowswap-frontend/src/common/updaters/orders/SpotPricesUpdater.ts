@@ -10,10 +10,10 @@ import { Token } from '@uniswap/sdk-core'
 import { useCombinedPendingOrders } from 'legacy/state/orders/hooks'
 
 import { updateSpotPricesAtom } from 'modules/orders/state/spotPricesAtom'
+import { useUsdPrices } from 'modules/usdAmount/hooks/useUsdPrice'
 
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
-import { useUsdPrices } from 'modules/usdAmount/hooks/useUsdPrice'
 import { useSafeMemo } from '../../hooks/useSafeMemo'
 import { getCanonicalMarketChainKey } from '../../utils/markets'
 
@@ -101,7 +101,7 @@ export function SpotPricesUpdater(): null {
         price,
       })
     })
-  }, [usdPrices, markets])
+  }, [usdPrices, markets, chainId, updateSpotPrices])
 
   return null
 }
