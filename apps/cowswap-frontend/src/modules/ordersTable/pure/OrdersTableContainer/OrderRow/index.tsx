@@ -536,6 +536,9 @@ export function OrderRow({
       {/* Add empty cell for child TWAP orders */}
       {isTwapTable && isChild && <styledEl.CellElement />}
 
+      {/* Add empty cell for signing orders */}
+      {order.status === OrderStatus.PRESIGNATURE_PENDING && <styledEl.CellElement />}
+
       {/* Action content menu */}
       <styledEl.CellElement>
         <OrderContextMenu
