@@ -1,16 +1,13 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { USDC } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Fraction, Token } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
 
-import { getCowProtocolNativePrice } from '../apis/getCowProtocolNativePrice'
 import { fetchCurrencyUsdPrice } from '../services/fetchCurrencyUsdPrice'
 import {
   currenciesUsdPriceQueueAtom,
@@ -19,6 +16,7 @@ import {
   usdRawPricesAtom,
   UsdRawPriceState,
 } from '../state/usdRawPricesAtom'
+import { usdcPriceLoader } from '../utils/usdcPriceLoader'
 
 const swrOptions: SWRConfiguration = {
   refreshInterval: ms`60s`,
@@ -64,19 +62,6 @@ export function UsdPricesUpdater() {
   }, [swrResponse, setUsdPrices])
 
   return null
-}
-
-function usdcPriceLoader(chainId: SupportedChainId): () => Promise<Fraction | null> {
-  let usdcPricePromise: Promise<Fraction | null> | null = null
-
-  return () => {
-    // Cache the result to avoid fetching it multiple times
-    if (!usdcPricePromise) {
-      usdcPricePromise = getCowProtocolNativePrice(USDC[chainId])
-    }
-
-    return usdcPricePromise
-  }
 }
 
 async function processQueue(queue: Token[], getUsdcPrice: () => Promise<Fraction | null>): Promise<UsdRawPrices> {

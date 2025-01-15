@@ -73,6 +73,6 @@ export function useUpdateActiveRate(): UpdateRateCallback {
       inputCurrencyAmount,
       outputCurrencyAmount,
       updateLimitOrdersState,
-    ]
+    ],
   )
 }

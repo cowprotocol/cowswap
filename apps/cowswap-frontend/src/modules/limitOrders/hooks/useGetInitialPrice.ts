@@ -1,87 +1,45 @@
 import { useEffect, useState } from 'react'
 
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
-import { getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
+import { getWrappedToken } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Fraction } from '@uniswap/sdk-core'
 
-import * as Sentry from '@sentry/browser'
 import ms from 'ms.macro'
 import { useAsyncMemo } from 'use-async-memo'
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
-import { parsePrice } from 'modules/limitOrders/utils/parsePrice'
 
-import { getNativePrice } from 'api/cowProtocol'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
-type PriceResult = number | Error | undefined
+import { fetchCurrencyUsdPrice, usdcPriceLoader } from '../../usdAmount'
 
 const PRICE_UPDATE_INTERVAL = ms`10sec`
-
-async function requestPriceForCurrency(chainId: number | undefined, currency: Currency | null): Promise<PriceResult> {
-  const currencyAddress = getAddress(currency)
-
-  if (!chainId || !currency) {
-    return
-  }
-
-  try {
-    if (getIsNativeToken(currency) || !currencyAddress) {
-      return parsePrice(1, currency)
-    }
-
-    const result = await getNativePrice(chainId, currencyAddress)
-
-    if (!result) {
-      throw new Error('No result from native_price endpoint')
-    }
-
-    const price = parsePrice(result.price || 0, currency)
-    if (!price) {
-      throw new Error("Couldn't parse native_price result")
-    }
-
-    return price
-  } catch (error: any) {
-    console.warn('[requestPriceForCurrency] Error fetching native_price', error)
-
-    const sentryError = Object.assign(error, {
-      message: error.message || 'Error fetching native_price ',
-      name: 'NativePriceFetchError',
-    })
-
-    const params = {
-      chainId,
-      tokenAddress: currencyAddress,
-      tokenName: currency?.name,
-      tokenSymbol: currency.symbol,
-    }
-
-    Sentry.captureException(sentryError, {
-      contexts: {
-        params,
-      },
-    })
-
-    return error
-  }
-}
 
 export async function requestPrice(
   chainId: number | undefined,
   inputCurrency: Currency | null,
-  outputCurrency: Currency | null
+  outputCurrency: Currency | null,
 ): Promise<Fraction | null> {
+  if (!chainId || !inputCurrency || !outputCurrency) {
+    return null
+  }
+
+  const inputToken = getWrappedToken(inputCurrency)
+  const outputToken = getWrappedToken(outputCurrency)
+
+  // Only needed for the fallback CoW price, which needs to know the USDC price
+  const getUsdPrice = usdcPriceLoader(chainId)
+
   return Promise.all([
-    requestPriceForCurrency(chainId, inputCurrency),
-    requestPriceForCurrency(chainId, outputCurrency),
+    fetchCurrencyUsdPrice(inputToken, getUsdPrice),
+    fetchCurrencyUsdPrice(outputToken, getUsdPrice),
   ]).then(([inputPrice, outputPrice]) => {
-    if (!inputPrice || !outputPrice || inputPrice instanceof Error || outputPrice instanceof Error) {
+    if (!inputPrice || !outputPrice) {
       return null
     }
 
-    const result = new Fraction(inputPrice, outputPrice)
+    const result = inputPrice.divide(outputPrice)
 
     console.debug('Updated limit orders initial price: ', result.toSignificant(18))
 
@@ -91,7 +49,6 @@ export async function requestPrice(
 
 // Fetches the INPUT and OUTPUT price and calculates initial Active rate
 // When return null it means we failed on price loading
-// TODO: rename it to useNativeBasedPrice
 export function useGetInitialPrice(): { price: Fraction | null; isLoading: boolean } {
   const { chainId } = useWalletInfo()
   const { inputCurrency, outputCurrency } = useLimitOrdersDerivedState()
@@ -100,16 +57,18 @@ export function useGetInitialPrice(): { price: Fraction | null; isLoading: boole
   const isWindowVisible = useIsWindowVisible()
 
   const price = useAsyncMemo(
-    () => {
+    async () => {
       setIsLoading(true)
 
       console.debug('[useGetInitialPrice] Fetching price')
-      return requestPrice(chainId, inputCurrency, outputCurrency).finally(() => {
+      try {
+        return await requestPrice(chainId, inputCurrency, outputCurrency)
+      } finally {
         setIsLoading(false)
-      })
+      }
     },
     [chainId, inputCurrency, outputCurrency, updateTimestamp],
-    null
+    null,
   )
 
   // Update initial price every 10 seconds
