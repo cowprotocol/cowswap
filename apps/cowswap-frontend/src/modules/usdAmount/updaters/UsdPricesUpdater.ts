@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { USDC } from '@cowprotocol/common-const'
-import { FractionUtils, getWrappedToken } from '@cowprotocol/common-utils'
+import { getWrappedToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Fraction, Token } from '@uniswap/sdk-core'
@@ -67,7 +67,7 @@ export function UsdPricesUpdater() {
 }
 
 function usdcPriceLoader(chainId: SupportedChainId): () => Promise<Fraction | null> {
-  let usdcPricePromise: Promise<number | null> | null = null
+  let usdcPricePromise: Promise<Fraction | null> | null = null
 
   return () => {
     // Cache the result to avoid fetching it multiple times
@@ -75,9 +75,7 @@ function usdcPriceLoader(chainId: SupportedChainId): () => Promise<Fraction | nu
       usdcPricePromise = getCowProtocolNativePrice(USDC[chainId])
     }
 
-    return usdcPricePromise.then((usdcPrice) =>
-      typeof usdcPrice === 'number' ? FractionUtils.fromNumber(usdcPrice) : null,
-    )
+    return usdcPricePromise
   }
 }
 
