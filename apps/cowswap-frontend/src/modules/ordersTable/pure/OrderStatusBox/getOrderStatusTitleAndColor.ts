@@ -53,21 +53,21 @@ export function getOrderStatusTitleAndColor(order: ParsedOrder): { title: string
     }
   }
 
-  // Handle unfillable orders
-  if (order.isUnfillable) {
-    return {
-      title: 'Unfillable',
-      color: `var(${UI.COLOR_DANGER_TEXT})`,
-      background: `var(${UI.COLOR_DANGER_BG})`,
-    }
-  }
-
   // Handle signing state
   if (order.status === OrderStatus.PRESIGNATURE_PENDING) {
     return {
       title: orderStatusTitleMap[OrderStatus.PRESIGNATURE_PENDING],
       color: `var(${UI.COLOR_ALERT_TEXT})`,
       background: `var(${UI.COLOR_ALERT_BG})`,
+    }
+  }
+
+  // Handle unfillable orders
+  if (order.isUnfillable) {
+    return {
+      title: 'Unfillable',
+      color: `var(${UI.COLOR_DANGER_TEXT})`,
+      background: `var(${UI.COLOR_DANGER_BG})`,
     }
   }
 

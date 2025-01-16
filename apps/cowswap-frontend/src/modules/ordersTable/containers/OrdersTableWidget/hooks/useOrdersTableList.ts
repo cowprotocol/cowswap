@@ -68,14 +68,14 @@ export function useOrdersTableList(
           setIsOrderUnfillable({ chainId, id: order.id, isUnfillable })
         }
 
-        // Only add to unfillable if the order is both pending and unfillable
-        if (isPending && isUnfillable) {
-          acc.unfillable.push(item)
-        }
-
         // Add to signing if in presignature pending state
         if (isSigning) {
           acc.signing.push(item)
+        }
+
+        // Add to unfillable only if pending, unfillable, and not in signing state
+        if (isPending && isUnfillable && !isSigning) {
+          acc.unfillable.push(item)
         }
 
         // Add to pending or history based on status

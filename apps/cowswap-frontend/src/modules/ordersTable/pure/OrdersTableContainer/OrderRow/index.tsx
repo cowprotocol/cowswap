@@ -125,7 +125,8 @@ export function OrderRow({
   const withAllowanceWarning = hasEnoughAllowance === false
   const withWarning =
     (hasEnoughBalance === false || withAllowanceWarning) &&
-    // show the warning only for pending and scheduled orders
+    // show the warning only for pending and scheduled orders, but not for presignature pending
+    status !== OrderStatus.PRESIGNATURE_PENDING &&
     (status === OrderStatus.PENDING || status === OrderStatus.SCHEDULED)
   const isOrderScheduled = order.status === OrderStatus.SCHEDULED
 
@@ -535,6 +536,9 @@ export function OrderRow({
 
       {/* Add empty cell for child TWAP orders */}
       {isTwapTable && isChild && <styledEl.CellElement />}
+
+      {/* Add empty cell for signing orders - only for TWAP */}
+      {isTwapTable && order.status === OrderStatus.PRESIGNATURE_PENDING && <styledEl.CellElement />}
 
       {/* Action content menu */}
       <styledEl.CellElement>
