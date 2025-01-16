@@ -51,6 +51,7 @@ export default function AdvancedOrdersPage() {
         isUnlocked={isUnlocked}
         maxWidth={ADVANCED_ORDERS_MAX_WIDTH}
         secondaryOnLeft={ordersTableOnLeft}
+        hideOrdersTable={hideOrdersTable}
       >
         <styledEl.PrimaryWrapper>
           {isFallbackHandlerRequired && pendingOrders.length > 0 && <SetupFallbackHandlerWarning />}
