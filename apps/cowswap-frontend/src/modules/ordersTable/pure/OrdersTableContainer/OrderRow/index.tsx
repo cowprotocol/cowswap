@@ -381,13 +381,32 @@ export function OrderRow({
     )
   }
 
-  const renderMarketPrice = () => (
-    <>
-      {children ? (
-        '-'
-      ) : order.status === OrderStatus.CANCELLED || withWarning || order.status === OrderStatus.PRESIGNATURE_PENDING ? (
-        '-'
-      ) : spotPrice ? (
+  const renderMarketPrice = () => {
+    // Early return for cancelled, warning, or presignature pending states
+    if (order.status === OrderStatus.CANCELLED || withWarning || order.status === OrderStatus.PRESIGNATURE_PENDING) {
+      return '-'
+    }
+
+    // Check children finalization status
+    if (children) {
+      const childrenArray = React.Children.toArray(children) as React.ReactElement<{ order: ParsedOrder }>[]
+      if (childrenArray.every((child) => child.props?.order && getIsFinalizedOrder(child.props.order))) {
+        return '-'
+      }
+    }
+
+    // Check if child and order is finalized
+    if (isChild && getIsFinalizedOrder(order)) {
+      return '-'
+    }
+
+    // Handle spot price cases
+    if (spotPrice === null) {
+      return '-'
+    }
+
+    if (spotPrice) {
+      return (
         <TokenAmount
           amount={spotPriceInverted}
           tokenSymbol={spotPriceInverted?.quoteCurrency}
@@ -395,13 +414,11 @@ export function OrderRow({
           clickable
           noTitle
         />
-      ) : spotPrice === null ? (
-        '-'
-      ) : (
-        <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
-      )}
-    </>
-  )
+      )
+    }
+
+    return <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
+  }
 
   return (
     <TableRow
