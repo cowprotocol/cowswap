@@ -45,7 +45,7 @@ const scrollToMyOrders = () => {
 
 export function TradeWidgetForm(props: TradeWidgetProps) {
   const isInjectedWidgetMode = isInjectedWidget()
-  const { standaloneMode, hideOrdersTable } = useInjectedWidgetParams()
+  const { standaloneMode, hideOrdersTable, hideNetworkSelector } = useInjectedWidgetParams()
   const isMobile = useMediaQuery(Media.upToSmall(false))
 
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
@@ -162,7 +162,11 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
         <styledEl.Header>
           {isAlternativeOrderModalVisible ? <div></div> : <TradeWidgetLinks isDropdown={showDropdown} />}
           {isInjectedWidgetMode && standaloneMode && (
-            <AccountElement standaloneMode pendingActivities={pendingActivity} />
+            <AccountElement
+              standaloneMode
+              pendingActivities={pendingActivity}
+              hideNetworkSelector={hideNetworkSelector}
+            />
           )}
 
           {shouldShowMyOrdersButton && (
