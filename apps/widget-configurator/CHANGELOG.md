@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.10.1...widget-configurator-v1.11.0) (2025-01-09)
+
+
+### Features
+
+* **token-lists:** remove outdated token lists ([#5233](https://github.com/cowprotocol/cowswap/issues/5233)) ([6f73dfc](https://github.com/cowprotocol/cowswap/commit/6f73dfc1c604393f4c4a54fe207893b698bba4a8))
+
 ## [1.10.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.10.0...widget-configurator-v1.10.1) (2024-12-18)
 
 
