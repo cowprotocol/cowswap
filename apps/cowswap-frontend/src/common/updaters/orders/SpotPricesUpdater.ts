@@ -1,18 +1,16 @@
 import { useSetAtom } from 'jotai'
-import { useCallback, useEffect, useRef } from 'react'
+import { useEffect, useMemo } from 'react'
 
-import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
 
-import { SPOT_PRICE_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useCombinedPendingOrders } from 'legacy/state/orders/hooks'
 
-import { requestPrice } from 'modules/limitOrders/hooks/useGetInitialPrice'
-import { UpdateSpotPriceAtom, updateSpotPricesAtom } from 'modules/orders/state/spotPricesAtom'
+import { updateSpotPricesAtom } from 'modules/orders/state/spotPricesAtom'
+import { useUsdPrices } from 'modules/usdAmount/hooks/useUsdPrice'
 
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
@@ -52,93 +50,60 @@ function useMarkets(chainId: SupportedChainId, account: string | undefined): Mar
 
         return acc
       },
-      {}
+      {},
     )
   }, [pending])
 }
 
-interface UseUpdatePendingProps {
-  isWindowVisibleRef: React.MutableRefObject<boolean>
-  isUpdating: React.MutableRefObject<boolean>
-  markets: MarketRecord
-  updateSpotPrices: (update: UpdateSpotPriceAtom) => void
-}
-
-function useUpdatePending(props: UseUpdatePendingProps) {
-  const { isWindowVisibleRef, isUpdating, markets, updateSpotPrices } = props
-
-  return useCallback(async () => {
-    if (isUpdating.current) {
-      return
-    }
-
-    if (!isWindowVisibleRef.current) {
-      return
-    }
-
-    // Lock updates
-    isUpdating.current = true
-
-    const promises = Object.keys(markets).map((key) => {
-      const { chainId, inputCurrency, outputCurrency } = markets[key]
-
-      return requestPrice(chainId, inputCurrency, outputCurrency)
-        .then((fraction) => {
-          if (!fraction) {
-            return
-          }
-
-          const price = FractionUtils.toPrice(fraction, inputCurrency, outputCurrency)
-
-          updateSpotPrices({
-            chainId,
-            sellTokenAddress: inputCurrency.address,
-            buyTokenAddress: outputCurrency.address,
-            price,
-          })
-        })
-        .catch((e) => {
-          console.debug(`[SpotPricesUpdater] Failed to get price for ${key}`, e)
-        })
-    })
-
-    // Wait everything to finish, regardless if failed or not
-    await Promise.allSettled(promises)
-
-    // Release update lock
-    isUpdating.current = false
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Object.keys(markets).sort().join(','), updateSpotPrices])
-}
-
 /**
- * TODO: move this updater to modules/orders
  * Spot Prices Updater
  *
  * Goes over all pending LIMIT orders and aggregates all markets
- * Queries the spot price for given markets at every SPOT_PRICE_CHECK_POLL_INTERVAL
+ * Fetches the spot prices for all markets based on USD prices from usdPricesAtom
  */
 export function SpotPricesUpdater(): null {
   const { chainId, account } = useWalletInfo()
 
-  const isWindowVisible = useIsWindowVisible()
-  const isWindowVisibleRef = useRef(isWindowVisible)
-
   const updateSpotPrices = useSetAtom(updateSpotPricesAtom)
   const markets = useMarkets(chainId, account)
-  const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
-  const updatePending = useUpdatePending({ isWindowVisibleRef, isUpdating, markets, updateSpotPrices })
 
-  isWindowVisibleRef.current = isWindowVisible
+  const marketTokens = useMemo(() => {
+    return Object.values(markets).reduce<Token[]>((acc, { inputCurrency, outputCurrency }) => {
+      acc.push(inputCurrency)
+      acc.push(outputCurrency)
+
+      return acc
+    }, [])
+  }, [markets])
+
+  const usdPrices = useUsdPrices(marketTokens)
 
   useEffect(() => {
-    updatePending()
+    Object.values(markets).forEach(({ inputCurrency, outputCurrency }) => {
+      const inputPrice = usdPrices[inputCurrency.address.toLowerCase()]
+      const outputPrice = usdPrices[outputCurrency.address.toLowerCase()]
 
-    const interval = setInterval(updatePending, SPOT_PRICE_CHECK_POLL_INTERVAL)
+      if (!inputPrice?.price || !outputPrice?.price || !inputPrice?.isLoading || !outputPrice?.isLoading) {
+        return
+      }
 
-    return () => clearInterval(interval)
-  }, [chainId, isWindowVisible, updatePending])
+      const inputFraction = FractionUtils.fractionLikeToFraction(inputPrice.price)
+      const outputFraction = FractionUtils.fractionLikeToFraction(outputPrice.price)
+      const fraction = inputFraction.divide(outputFraction)
+
+      if (!fraction) {
+        return
+      }
+      const price = FractionUtils.toPrice(fraction, inputCurrency, outputCurrency)
+
+      updateSpotPrices({
+        chainId,
+        sellTokenAddress: inputCurrency.address,
+        buyTokenAddress: outputCurrency.address,
+        price,
+      })
+    })
+  }, [usdPrices, markets, chainId, updateSpotPrices])
 
   return null
 }
