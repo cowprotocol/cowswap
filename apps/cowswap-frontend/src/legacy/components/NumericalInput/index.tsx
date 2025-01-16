@@ -64,6 +64,7 @@ export const Input = React.memo(function InnerInput({
   placeholder,
   prependSymbol,
   onFocus,
+  pattern: _pattern,
   ...rest
 }: {
   value: string | number
@@ -73,9 +74,19 @@ export const Input = React.memo(function InnerInput({
   fontSize?: string
   align?: 'right' | 'left'
   prependSymbol?: string | undefined
+  pattern?: string
 } & Omit<React.HTMLProps<HTMLInputElement>, 'ref' | 'onChange' | 'as'>) {
   // Keep the input strictly as a string
   const stringValue = typeof value === 'string' ? value : String(value)
+
+  const titleRef = React.useCallback(
+    (node: HTMLInputElement | null) => {
+      if (node) {
+        node.title = node.scrollWidth > node.clientWidth ? stringValue : ''
+      }
+    },
+    [stringValue],
+  )
 
   const enforcer = (nextUserInput: string) => {
     // Always allow empty input
@@ -118,6 +129,7 @@ export const Input = React.memo(function InnerInput({
       )}
       <StyledInput
         {...rest}
+        ref={titleRef}
         value={stringValue}
         readOnly={readOnly}
         onFocus={(event) => {
@@ -142,8 +154,6 @@ export const Input = React.memo(function InnerInput({
         autoCorrect="off"
         // Keep type="text" to preserve trailing decimals
         type="text"
-        // Remove pattern to prevent browser validation interference
-        pattern=""
         placeholder={placeholder || '0'}
         // minLength to 0 so empty strings are always valid
         minLength={0}
