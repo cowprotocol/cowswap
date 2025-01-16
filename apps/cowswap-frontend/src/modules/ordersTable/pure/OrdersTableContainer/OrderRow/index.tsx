@@ -3,16 +3,15 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
-import { getAddress, getEtherscanLink, formatDateWithTimezone } from '@cowprotocol/common-utils'
+import { formatDateWithTimezone, getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { Loader, TokenAmount, UI, HoverTooltip } from '@cowprotocol/ui'
-import { PercentDisplay, percentIsAlmostHundred } from '@cowprotocol/ui'
+import { HoverTooltip, Loader, PercentDisplay, percentIsAlmostHundred, TokenAmount, UI } from '@cowprotocol/ui'
 import { useIsSafeWallet } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
-import { Clock, Zap, Check, X } from 'react-feather'
+import { Check, Clock, X, Zap } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -21,9 +20,9 @@ import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 
 import {
-  PENDING_EXECUTION_THRESHOLD_PERCENTAGE,
-  GOOD_PRICE_THRESHOLD_PERCENTAGE,
   FAIR_PRICE_THRESHOLD_PERCENTAGE,
+  GOOD_PRICE_THRESHOLD_PERCENTAGE,
+  PENDING_EXECUTION_THRESHOLD_PERCENTAGE,
 } from 'common/constants/common'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { RateInfo } from 'common/pure/RateInfo'
@@ -166,17 +165,19 @@ export function OrderRow({
     return 'Unfillable'
   }
 
-  const renderWarningTooltip = (showIcon?: boolean) => (props: { children: React.ReactNode }) => (
-    <WarningTooltip
-      hasEnoughBalance={hasEnoughBalance ?? false}
-      hasEnoughAllowance={hasEnoughAllowance ?? false}
-      inputTokenSymbol={inputTokenSymbol}
-      isOrderScheduled={isOrderScheduled}
-      onApprove={() => orderActions.approveOrderToken(order.inputToken)}
-      showIcon={showIcon}
-      {...props}
-    />
-  )
+  const renderWarningTooltip =
+    (showIcon?: boolean) =>
+    ({ children }: { children: React.ReactNode }) => (
+      <WarningTooltip
+        hasEnoughBalance={hasEnoughBalance ?? false}
+        hasEnoughAllowance={hasEnoughAllowance ?? false}
+        inputTokenSymbol={inputTokenSymbol}
+        isOrderScheduled={isOrderScheduled}
+        onApprove={() => orderActions.approveOrderToken(order.inputToken)}
+        showIcon={showIcon}
+        children={children}
+      />
+    )
 
   const renderLimitPrice = () => (
     <styledEl.RateValue onClick={toggleIsInverted}>
@@ -435,12 +436,12 @@ export function OrderRow({
           <styledEl.CellElement doubleRow>
             <b
               title={
-                expirationTime && !(getIsFinalizedOrder(order) && order.status !== OrderStatus.EXPIRED)
+                expirationTime && !shouldShowDashForExpiration(order)
                   ? formatDateWithTimezone(expirationTime)
                   : undefined
               }
             >
-              {getIsFinalizedOrder(order) && order.status !== OrderStatus.EXPIRED ? '-' : expirationTimeAgo}
+              {shouldShowDashForExpiration(order) ? '-' : expirationTimeAgo}
             </b>
             <i title={creationTime && !isScheduledCreating ? formatDateWithTimezone(creationTime) : undefined}>
               {isScheduledCreating ? 'Creating...' : creationTimeAgo}
@@ -584,4 +585,29 @@ function getActivityUrl(chainId: SupportedChainId, order: ParsedOrder): string |
   }
 
   return chainId && activityId ? getEtherscanLink(chainId, 'transaction', activityId) : undefined
+}
+
+function shouldShowDashForExpiration(order: ParsedOrder): boolean {
+  // Show dash for finalized orders that are not expired
+  if (getIsFinalizedOrder(order) && order.status !== OrderStatus.EXPIRED) {
+    return true
+  }
+
+  // For TWAP parent orders, show dash when all child orders are in a final state
+  if (getIsComposableCowParentOrder(order)) {
+    // If the parent order is fulfilled or cancelled, all child orders are finalized
+    if (order.status === OrderStatus.FULFILLED || order.status === OrderStatus.CANCELLED) {
+      return true
+    }
+
+    // For mixed states (some filled, some expired), check either condition:
+    // 1. fullyFilled: true when all non-expired parts are filled
+    // 2. status === EXPIRED: true when all remaining parts are expired
+    // Either condition indicates all child orders are in a final state
+    if (order.executionData.fullyFilled || order.status === OrderStatus.EXPIRED) {
+      return true
+    }
+  }
+
+  return false
 }

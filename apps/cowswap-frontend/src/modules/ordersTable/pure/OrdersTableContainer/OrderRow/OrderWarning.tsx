@@ -2,7 +2,7 @@ import React from 'react'
 
 import alertCircle from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import { Command } from '@cowprotocol/types'
-import { ButtonSecondary, TokenSymbol, UI, HoverTooltip } from '@cowprotocol/ui'
+import { ButtonSecondary, HoverTooltip, TokenSymbol, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 
@@ -104,11 +104,11 @@ export function WarningTooltip({
   onApprove,
   showIcon = false,
 }: WarningTooltipProps) {
-  const withAllowanceWarning = hasEnoughAllowance === false
+  const withAllowanceWarning = !hasEnoughAllowance
 
   const tooltipContent = (
     <styledEl.WarningContent>
-      {hasEnoughBalance === false && <BalanceWarning symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />}
+      {!hasEnoughBalance && <BalanceWarning symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />}
       {withAllowanceWarning && (
         <AllowanceWarning approve={onApprove} symbol={inputTokenSymbol} isScheduled={isOrderScheduled} />
       )}
