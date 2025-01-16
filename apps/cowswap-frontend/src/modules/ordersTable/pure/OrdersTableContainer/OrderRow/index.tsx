@@ -380,8 +380,13 @@ export function OrderRow({
   }
 
   const renderMarketPrice = () => {
-    // Early return for cancelled, warning, or presignature pending states
-    if (order.status === OrderStatus.CANCELLED || withWarning || order.status === OrderStatus.PRESIGNATURE_PENDING) {
+    // Early return for warning states and non-active orders
+    if (
+      withWarning ||
+      order.status === OrderStatus.CREATING ||
+      order.status === OrderStatus.PRESIGNATURE_PENDING ||
+      getIsFinalizedOrder(order)
+    ) {
       return '-'
     }
 
@@ -391,11 +396,6 @@ export function OrderRow({
       if (childrenArray.every((child) => child.props?.order && getIsFinalizedOrder(child.props.order))) {
         return '-'
       }
-    }
-
-    // Check if child and order is finalized
-    if (isChild && getIsFinalizedOrder(order)) {
-      return '-'
     }
 
     // Handle spot price cases
