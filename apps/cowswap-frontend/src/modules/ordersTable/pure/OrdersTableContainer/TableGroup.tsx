@@ -162,6 +162,7 @@ export function TableGroup(props: TableGroupProps) {
         orderParams={getOrderParams(chainId, balancesAndAllowances, parent)}
         onClick={() => orderActions.selectReceiptOrder(parent)}
         isExpanded={!isCollapsed}
+        childOrders={children}
       >
         {isParentSigning ? undefined : (
           <TwapStatusAndToggle

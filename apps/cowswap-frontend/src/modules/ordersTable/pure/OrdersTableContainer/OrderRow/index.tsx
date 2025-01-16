@@ -200,19 +200,37 @@ export function OrderRow({
     </styledEl.RateValue>
   )
 
+  const areAllChildOrdersCancelled = (orders: ParsedOrder[] | undefined): boolean => {
+    if (!orders || orders.length === 0) return false
+    return orders.every((order) => order.status === OrderStatus.CANCELLED)
+  }
+
   const renderFillsAt = () => (
     <>
       {getIsFinalizedOrder(order) ? (
-        order.status === OrderStatus.CANCELLED ? (
-          <styledEl.CancelledDisplay>
-            <X size={14} strokeWidth={2.5} />
-            Order cancelled
-          </styledEl.CancelledDisplay>
-        ) : order.status === OrderStatus.FULFILLED ? (
+        order.executionData.partiallyFilled || order.status === OrderStatus.FULFILLED ? (
           <styledEl.FilledDisplay>
             <Check size={14} strokeWidth={3.5} />
             Order {order.partiallyFillable && Number(filledPercentDisplay) < 100 ? 'partially ' : ''}filled
           </styledEl.FilledDisplay>
+        ) : order.status === OrderStatus.CANCELLED ? (
+          // For TWAP parent orders, show cancelled only when ALL child orders are cancelled
+          children ? (
+            childOrders && areAllChildOrdersCancelled(childOrders) ? (
+              <styledEl.CancelledDisplay>
+                <X size={14} strokeWidth={2.5} />
+                Order cancelled
+              </styledEl.CancelledDisplay>
+            ) : (
+              '-'
+            )
+          ) : (
+            // For non-TWAP orders and TWAP child orders, show cancelled normally
+            <styledEl.CancelledDisplay>
+              <X size={14} strokeWidth={2.5} />
+              Order cancelled
+            </styledEl.CancelledDisplay>
+          )
         ) : order.status === OrderStatus.EXPIRED ? (
           <styledEl.ExpiredDisplay>
             <Clock size={14} strokeWidth={2.5} />
@@ -288,13 +306,60 @@ export function OrderRow({
   )
 
   const renderFillsAtWithDistance = () => {
+    console.log('Debug - Order:', {
+      id: order.id,
+      status: order.status,
+      hasChildren: !!children,
+      hasChildOrders: !!childOrders,
+      childOrdersLength: childOrders?.length,
+      childOrdersStatuses: childOrders?.map((o) => o.status),
+      areAllCancelled: childOrders && areAllChildOrdersCancelled(childOrders),
+    })
+
     // Special case for PRESIGNATURE_PENDING - return just the signing content
     if (order.status === OrderStatus.PRESIGNATURE_PENDING) {
+      console.log('Debug - Path: PRESIGNATURE_PENDING')
       return renderFillsAt()
     }
 
-    // For TWAP parent orders, show the next scheduled child order's fills at price
+    // Handle warning states first, regardless of order type
+    if (withWarning) {
+      console.log('Debug - Path: Warning state')
+      return (
+        <styledEl.ExecuteCellWrapper>
+          <EstimatedExecutionPrice
+            amount={undefined}
+            tokenSymbol={undefined}
+            isInverted={isInverted}
+            isUnfillable={withWarning}
+            canShowWarning={true}
+            warningText={getWarningText()}
+            WarningTooltip={renderWarningTooltip(true)}
+            onApprove={withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined}
+          />
+        </styledEl.ExecuteCellWrapper>
+      )
+    }
+
+    // For TWAP parent orders
     if (children && childOrders) {
+      console.log('Debug - Path: TWAP parent')
+      // Check if all child orders are cancelled first
+      if (areAllChildOrdersCancelled(childOrders)) {
+        console.log('Debug - All child orders are cancelled')
+        return (
+          <styledEl.CellElement doubleRow>
+            <b>
+              <styledEl.CancelledDisplay>
+                <X size={14} strokeWidth={2.5} />
+                Order cancelled
+              </styledEl.CancelledDisplay>
+            </b>
+            <i></i>
+          </styledEl.CellElement>
+        )
+      }
+
       const nextScheduledOrder = childOrders.find(
         (childOrder) => childOrder.status === OrderStatus.SCHEDULED && !getIsFinalizedOrder(childOrder),
       )
