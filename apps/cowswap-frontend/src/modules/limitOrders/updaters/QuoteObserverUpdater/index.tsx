@@ -1,17 +1,16 @@
 import { useSetAtom } from 'jotai'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
-import { FractionUtils } from '@cowprotocol/common-utils'
-import { CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
+import { FractionUtils, getWrappedToken } from '@cowprotocol/common-utils'
+import { Fraction, Token } from '@uniswap/sdk-core'
+
+import { Nullish } from 'types'
 
 import { updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
-import { useTradeQuote } from 'modules/tradeQuote'
-
-const LIMIT_ORDERS_PRICE_SLIPPAGE = new Percent(1, 10) // 0.1%
+import { useUsdPrice } from 'modules/usdAmount/hooks/useUsdPrice'
 
 export function QuoteObserverUpdater() {
-  const { response } = useTradeQuote()
   const state = useDerivedTradeState()
 
   const updateLimitRateState = useSetAtom(updateLimitRateAtom)
@@ -19,31 +18,39 @@ export function QuoteObserverUpdater() {
   const inputCurrency = state?.inputCurrency
   const outputCurrency = state?.outputCurrency
 
+  const inputToken = inputCurrency && getWrappedToken(inputCurrency)
+  const outputToken = outputCurrency && getWrappedToken(outputCurrency)
+
+  const { price, isLoading } = useSpotPrice(inputToken, outputToken)
+
   useEffect(() => {
-    if (!outputCurrency || !inputCurrency || !response) {
-      return
-    }
-
-    const { buyAmount: buyAmountRaw, sellAmount: sellAmountRaw, feeAmount: feeAmountRaw } = response.quote
-
-    const feeAmount = CurrencyAmount.fromRawAmount(inputCurrency, feeAmountRaw)
-    const sellAmount = CurrencyAmount.fromRawAmount(inputCurrency, sellAmountRaw)
-    const buyAmount = CurrencyAmount.fromRawAmount(outputCurrency, buyAmountRaw)
-
-    if (sellAmount.equalTo(0) || buyAmount.equalTo(0)) return
-
-    const price = FractionUtils.fractionLikeToFraction(new Price({ baseAmount: sellAmount, quoteAmount: buyAmount }))
-    const marketRate = price.subtract(price.multiply(LIMIT_ORDERS_PRICE_SLIPPAGE.divide(100)))
-
-    const biggestDecimal = Math.max(sellAmount.currency.decimals, buyAmount.currency.decimals)
-    /**
-     * In case when inputted sell amount is enormously big and the price is very small
-     * App crashes with "Invariant failed"
-     */
-    const isPriceInvalid = +marketRate.toFixed(biggestDecimal) === 0
-
-    updateLimitRateState({ marketRate: isPriceInvalid ? null : marketRate, feeAmount })
-  }, [response, inputCurrency, outputCurrency, updateLimitRateState])
+    updateLimitRateState({ marketRate: price, isLoadingMarketRate: isLoading })
+  }, [price, isLoading, updateLimitRateState])
 
   return null
+}
+
+function useSpotPrice(
+  inputCurrency: Nullish<Token>,
+  outputCurrency: Nullish<Token>,
+): {
+  price: Fraction | null
+  isLoading: boolean
+} {
+  const inputUsdPrice = useUsdPrice(inputCurrency)
+  const outputUsdPrice = useUsdPrice(outputCurrency)
+
+  return useMemo(() => {
+    const isLoading = !!inputUsdPrice?.isLoading || !!outputUsdPrice?.isLoading
+
+    if (!inputUsdPrice?.price || !outputUsdPrice?.price) {
+      return { price: null, isLoading }
+    }
+    const inputFraction = FractionUtils.fractionLikeToFraction(inputUsdPrice.price)
+    const outputFraction = FractionUtils.fractionLikeToFraction(outputUsdPrice.price)
+
+    const price = inputFraction.divide(outputFraction)
+
+    return { price, isLoading }
+  }, [inputUsdPrice?.price, inputUsdPrice?.isLoading, outputUsdPrice?.price, outputUsdPrice?.isLoading])
 }
