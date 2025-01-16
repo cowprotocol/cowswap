@@ -29,7 +29,7 @@ export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
   deadlineMilliseconds: defaultLimitOrderDeadline.value,
   customDeadlineTimestamp: null,
   limitPricePosition: 'bottom',
-  limitPriceLocked: false,
+  limitPriceLocked: true,
   ordersTableOnLeft: false,
   isUsdValuesMode: false,
 }
