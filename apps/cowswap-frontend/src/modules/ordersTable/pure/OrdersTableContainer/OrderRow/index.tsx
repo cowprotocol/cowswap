@@ -533,6 +533,9 @@ export function OrderRow({
       {/* Children (e.g. ToggleExpandButton for parent orders) */}
       {children}
 
+      {/* Add empty cell for child TWAP orders */}
+      {isTwapTable && isChild && <styledEl.CellElement />}
+
       {/* Action content menu */}
       <styledEl.CellElement>
         <OrderContextMenu

@@ -30,13 +30,6 @@ const Pagination = styled(OrdersTablePagination)`
   padding: 10px 0;
 `
 
-const TwapStatusAndToggleWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-`
-
 function TwapStatusAndToggle({
   parent,
   childrenLength,
@@ -69,7 +62,7 @@ function TwapStatusAndToggle({
     : null
 
   return (
-    <TwapStatusAndToggleWrapper>
+    <>
       <OrderStatusBox
         order={parent}
         onClick={onClick}
@@ -98,7 +91,7 @@ function TwapStatusAndToggle({
         )}
         <button />
       </styledEl.ToggleExpandButton>
-    </TwapStatusAndToggleWrapper>
+    </>
   )
 }
 
