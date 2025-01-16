@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 
 import { FractionUtils, isSellOrder } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
 import { Writeable } from 'types'
 
@@ -33,38 +33,7 @@ export function useUpdateCurrencyAmount() {
     (params: CurrencyAmountProps) => {
       const { activeRate, amount, orderKind } = params
       const field = isSellOrder(orderKind) ? Field.INPUT : Field.OUTPUT
-      const isBuyAmountChange = field === Field.OUTPUT
 
-      if (isBuyAmountChange) {
-        const update: Partial<Writeable<LimitOrdersRawState>> = {
-          orderKind,
-          outputCurrencyAmount: FractionUtils.serializeFractionToJSON(amount),
-        }
-
-        updateLimitOrdersState(update)
-
-        // If price is unlocked, update the rate based on the new amounts
-        if (!limitPriceLocked) {
-          // Calculate and update the new rate
-          if (amount && currentInputAmount) {
-            const newRate = new Price(
-              currentInputAmount.currency,
-              amount.currency,
-              currentInputAmount.quotient,
-              amount.quotient,
-            )
-            updateLimitRateState({
-              activeRate: FractionUtils.fractionLikeToFraction(newRate),
-              isTypedValue: false,
-              isRateFromUrl: false,
-              isAlternativeOrderRate: false,
-            })
-          }
-        }
-        return
-      }
-
-      // Normal flow for SELL amount changes
       const calculatedAmount = calculateAmountForRate({
         activeRate,
         amount,
