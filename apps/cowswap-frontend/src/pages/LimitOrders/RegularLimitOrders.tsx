@@ -20,20 +20,25 @@ export function RegularLimitOrders() {
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
 
   return (
-    <styledEl.PageWrapper isUnlocked={isUnlocked} secondaryOnLeft={ordersTableOnLeft} maxWidth={LIMIT_ORDERS_MAX_WIDTH}>
+    <styledEl.PageWrapper
+      isUnlocked={isUnlocked}
+      secondaryOnLeft={ordersTableOnLeft}
+      maxWidth={LIMIT_ORDERS_MAX_WIDTH}
+      hideOrdersTable={hideOrdersTable}
+    >
       <styledEl.PrimaryWrapper>
         <LimitOrdersWidget />
       </styledEl.PrimaryWrapper>
 
-      <styledEl.SecondaryWrapper>
-        {!hideOrdersTable && (
+      {!hideOrdersTable && (
+        <styledEl.SecondaryWrapper>
           <OrdersTableWidget
             displayOrdersOnlyForSafeApp={false}
             orderType={TabOrderTypes.LIMIT}
             orders={allLimitOrders}
           />
-        )}
-      </styledEl.SecondaryWrapper>
+        </styledEl.SecondaryWrapper>
+      )}
     </styledEl.PageWrapper>
   )
 }
