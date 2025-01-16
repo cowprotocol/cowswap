@@ -18,7 +18,7 @@ export enum LimitOrderDeadlinePreset {
   ONE_DAY = '1 Day',
   THREE_DAYS = '3 Days',
   ONE_MONTH = '1 Month',
-  SIX_MONTHS = '1 Year (max)',
+  ONE_YEAR = '1 Year (max)',
 }
 
 const DEADLINE_VALUES: Record<LimitOrderDeadlinePreset, number> = {
@@ -28,12 +28,12 @@ const DEADLINE_VALUES: Record<LimitOrderDeadlinePreset, number> = {
   [LimitOrderDeadlinePreset.ONE_DAY]: ms`1d`,
   [LimitOrderDeadlinePreset.THREE_DAYS]: ms`3d`,
   [LimitOrderDeadlinePreset.ONE_MONTH]: ms`30d`,
-  [LimitOrderDeadlinePreset.SIX_MONTHS]: MAX_CUSTOM_DEADLINE,
+  [LimitOrderDeadlinePreset.ONE_YEAR]: MAX_CUSTOM_DEADLINE,
 }
 
 export const defaultLimitOrderDeadline: LimitOrderDeadline = {
-  title: LimitOrderDeadlinePreset.SIX_MONTHS,
-  value: DEADLINE_VALUES[LimitOrderDeadlinePreset.SIX_MONTHS],
+  title: LimitOrderDeadlinePreset.ONE_YEAR,
+  value: DEADLINE_VALUES[LimitOrderDeadlinePreset.ONE_YEAR],
 }
 
 export const LIMIT_ORDERS_DEADLINES: LimitOrderDeadline[] = Object.entries(DEADLINE_VALUES).map(([title, value]) => ({
