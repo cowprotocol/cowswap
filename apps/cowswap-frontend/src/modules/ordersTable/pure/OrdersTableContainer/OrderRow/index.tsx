@@ -83,10 +83,12 @@ export interface OrderRowProps {
   isRowSelectable: boolean
   isRowSelected: boolean
   isChild?: boolean
+  isExpanded?: boolean
   orderParams: OrderParams
   onClick: Command
   orderActions: OrderActions
   children?: React.ReactNode
+  isTwapTable?: boolean
 }
 
 export function OrderRow({
@@ -96,12 +98,14 @@ export function OrderRow({
   isRowSelectable,
   isRowSelected,
   isChild,
+  isExpanded,
   orderActions,
   orderParams,
   onClick,
   prices,
   spotPrice,
   children,
+  isTwapTable,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
   const { creationTime, expirationTime, status } = order
@@ -399,7 +403,14 @@ export function OrderRow({
   )
 
   return (
-    <TableRow data-id={order.id} isChildOrder={isChild} isHistoryTab={isHistoryTab} isRowSelectable={isRowSelectable}>
+    <TableRow
+      data-id={order.id}
+      isChildOrder={isChild}
+      isHistoryTab={isHistoryTab}
+      isRowSelectable={isRowSelectable}
+      isTwapTable={isTwapTable}
+      isExpanded={isExpanded}
+    >
       {/*Checkbox for multiple cancellation*/}
       {isRowSelectable && !isHistoryTab && (
         <TableRowCheckboxWrapper>

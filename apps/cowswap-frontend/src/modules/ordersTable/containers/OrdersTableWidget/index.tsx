@@ -231,6 +231,11 @@ export function OrdersTableWidget({
 
   useValidatePageUrlParams(orders.length, currentTabId, currentPageNumber)
 
+  // Clear selection when changing tabs
+  useEffect(() => {
+    updateOrdersToCancel([])
+  }, [currentTabId, updateOrdersToCancel])
+
   const filteredOrders = useMemo(() => {
     if (!searchTerm) return orders
 

@@ -53,14 +53,14 @@ export const ScrollContainer = styled.div`
   scrollbar-width: none;
 `
 
-export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: boolean }>`
+export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: boolean; isTwapTable?: boolean }>`
   --header-height: 26px;
   --row-height: 41px;
   --checkboxSize: 16px;
   --checkBoxBorderRadius: 3px;
   display: grid;
   gap: 14px;
-  grid-template-columns: ${({ isHistoryTab, isRowSelectable }) => {
+  grid-template-columns: ${({ isHistoryTab, isRowSelectable, isTwapTable }) => {
     if (isHistoryTab) {
       return `minmax(200px, 2.5fr)  
               repeat(4, minmax(110px, 1fr))
@@ -70,6 +70,13 @@ export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: 
     }
 
     const checkboxColumn = isRowSelectable ? 'var(--checkboxSize)' : ''
+
+    // TWAP table layout
+    if (isTwapTable) {
+      return `${checkboxColumn} minmax(160px,2fr) minmax(120px,1fr) minmax(140px,1fr) minmax(120px,1fr) minmax(120px,1fr) minmax(100px,110px) minmax(190px,1.6fr) 24px`
+    }
+
+    // Default/Limit orders layout
     return `${checkboxColumn} minmax(160px,2fr) minmax(120px,1fr) minmax(140px,1fr) minmax(120px,1fr) minmax(120px,1fr) minmax(100px,110px) minmax(80px,0.8fr) 24px`
   }};
   grid-template-rows: minmax(var(--header-height), 1fr);
@@ -94,9 +101,12 @@ export const TableRow = styled(TableHeader)<{
   isChildOrder?: boolean
   isHistoryTab: boolean
   isRowSelectable: boolean
+  isTwapTable?: boolean
+  isExpanded?: boolean
 }>`
   grid-template-rows: minmax(var(--row-height), 1fr);
-  background: ${({ isChildOrder }) => (isChildOrder ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
+  background: ${({ isChildOrder, isExpanded }) =>
+    isExpanded || isChildOrder ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent'};
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
   display: grid;
 
@@ -114,10 +124,6 @@ export const TableRow = styled(TableHeader)<{
       text-decoration: none !important;
       opacity: 0.6;
     }
-  }
-
-  &:last-child {
-    border-bottom: 0;
   }
 `
 
