@@ -35,4 +35,5 @@ export interface ConfiguratorState {
   disableProgressBar: boolean
   hideBridgeInfo: boolean | undefined
   hideOrdersTable: boolean | undefined
+  hideNetworkSelector: boolean | undefined
 }
