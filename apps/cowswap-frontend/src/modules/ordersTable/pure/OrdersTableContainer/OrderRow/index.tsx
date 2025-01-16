@@ -3,16 +3,15 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
-import { getAddress, getEtherscanLink, formatDateWithTimezone } from '@cowprotocol/common-utils'
+import { formatDateWithTimezone, getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { UI, TokenAmount, Loader, HoverTooltip } from '@cowprotocol/ui'
-import { PercentDisplay, percentIsAlmostHundred } from '@cowprotocol/ui'
+import { HoverTooltip, Loader, PercentDisplay, percentIsAlmostHundred, TokenAmount, UI } from '@cowprotocol/ui'
 import { useIsSafeWallet } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
-import { Clock, Zap, Check, X } from 'react-feather'
+import { Check, Clock, X, Zap } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -21,9 +20,9 @@ import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 
 import {
-  PENDING_EXECUTION_THRESHOLD_PERCENTAGE,
-  GOOD_PRICE_THRESHOLD_PERCENTAGE,
   FAIR_PRICE_THRESHOLD_PERCENTAGE,
+  GOOD_PRICE_THRESHOLD_PERCENTAGE,
+  PENDING_EXECUTION_THRESHOLD_PERCENTAGE,
 } from 'common/constants/common'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { RateInfo } from 'common/pure/RateInfo'
@@ -435,12 +434,12 @@ export function OrderRow({
           <styledEl.CellElement doubleRow>
             <b
               title={
-                expirationTime && !shouldShowDashForExpiration(order, children)
+                expirationTime && !shouldShowDashForExpiration(order)
                   ? formatDateWithTimezone(expirationTime)
                   : undefined
               }
             >
-              {shouldShowDashForExpiration(order, children) ? '-' : expirationTimeAgo}
+              {shouldShowDashForExpiration(order) ? '-' : expirationTimeAgo}
             </b>
             <i title={creationTime && !isScheduledCreating ? formatDateWithTimezone(creationTime) : undefined}>
               {isScheduledCreating ? 'Creating...' : creationTimeAgo}
@@ -586,7 +585,7 @@ function getActivityUrl(chainId: SupportedChainId, order: ParsedOrder): string |
   return chainId && activityId ? getEtherscanLink(chainId, 'transaction', activityId) : undefined
 }
 
-function shouldShowDashForExpiration(order: ParsedOrder, _children: React.ReactNode | undefined): boolean {
+function shouldShowDashForExpiration(order: ParsedOrder): boolean {
   // Show dash for finalized orders that are not expired
   if (getIsFinalizedOrder(order) && order.status !== OrderStatus.EXPIRED) {
     return true
