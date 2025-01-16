@@ -4,14 +4,13 @@ import { useEffect, useMemo } from 'react'
 import { FractionUtils, getWrappedToken } from '@cowprotocol/common-utils'
 import { Fraction, Token } from '@uniswap/sdk-core'
 
-import { updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
-import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
-import { useTradeQuote } from 'modules/tradeQuote'
-import { useUsdPrice } from 'modules/usdAmount/hooks/useUsdPrice'
 import { Nullish } from 'types'
 
+import { updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
+import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { useUsdPrice } from 'modules/usdAmount/hooks/useUsdPrice'
+
 export function QuoteObserverUpdater() {
-  const { response } = useTradeQuote()
   const state = useDerivedTradeState()
 
   const updateLimitRateState = useSetAtom(updateLimitRateAtom)
@@ -26,7 +25,9 @@ export function QuoteObserverUpdater() {
 
   useEffect(() => {
     updateLimitRateState({ marketRate: price, isLoadingMarketRate: isLoading })
-  }, [price, isLoading])
+  }, [price, isLoading, updateLimitRateState])
+
+  return null
 }
 
 function useSpotPrice(
