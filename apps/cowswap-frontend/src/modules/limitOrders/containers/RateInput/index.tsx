@@ -224,7 +224,7 @@ export function RateInput() {
             rateImpact={rateImpact}
             toggleIcon={
               <HoverTooltip
-                content="When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
+                content="When locked, the limit price stays fixed when changing the amounts. When unlocked, the limit price will update based on the amount changes."
                 wrapInContainer
                 placement="top-start"
               >
