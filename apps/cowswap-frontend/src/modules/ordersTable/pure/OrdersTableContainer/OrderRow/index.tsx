@@ -88,6 +88,7 @@ export interface OrderRowProps {
   onClick: Command
   orderActions: OrderActions
   children?: React.ReactNode
+  childOrders?: ParsedOrder[]
   isTwapTable?: boolean
 }
 
@@ -105,6 +106,7 @@ export function OrderRow({
   prices,
   spotPrice,
   children,
+  childOrders,
   isTwapTable,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
@@ -292,14 +294,10 @@ export function OrderRow({
     }
 
     // For TWAP parent orders, show the next scheduled child order's fills at price
-    if (children) {
-      // Get the next scheduled order from the children prop
-      const childrenArray = React.Children.toArray(children) as React.ReactElement<{ order: ParsedOrder }>[]
-      const nextScheduledOrder = childrenArray
-        .map((child) => child.props.order)
-        .find((childOrder) => {
-          return childOrder && childOrder.status === OrderStatus.SCHEDULED && !getIsFinalizedOrder(childOrder)
-        })
+    if (children && childOrders) {
+      const nextScheduledOrder = childOrders.find(
+        (childOrder) => childOrder.status === OrderStatus.SCHEDULED && !getIsFinalizedOrder(childOrder),
+      )
 
       if (nextScheduledOrder) {
         // Get the execution price from the next scheduled order
