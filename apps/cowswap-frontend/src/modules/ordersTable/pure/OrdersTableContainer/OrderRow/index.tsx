@@ -165,17 +165,19 @@ export function OrderRow({
     return 'Unfillable'
   }
 
-  const renderWarningTooltip = (showIcon?: boolean) => (props: { children: React.ReactNode }) => (
-    <WarningTooltip
-      hasEnoughBalance={hasEnoughBalance ?? false}
-      hasEnoughAllowance={hasEnoughAllowance ?? false}
-      inputTokenSymbol={inputTokenSymbol}
-      isOrderScheduled={isOrderScheduled}
-      onApprove={() => orderActions.approveOrderToken(order.inputToken)}
-      showIcon={showIcon}
-      {...props}
-    />
-  )
+  const renderWarningTooltip =
+    (showIcon?: boolean) =>
+    ({ children }: { children: React.ReactNode }) => (
+      <WarningTooltip
+        hasEnoughBalance={hasEnoughBalance ?? false}
+        hasEnoughAllowance={hasEnoughAllowance ?? false}
+        inputTokenSymbol={inputTokenSymbol}
+        isOrderScheduled={isOrderScheduled}
+        onApprove={() => orderActions.approveOrderToken(order.inputToken)}
+        showIcon={showIcon}
+        children={children}
+      />
+    )
 
   const renderLimitPrice = () => (
     <styledEl.RateValue onClick={toggleIsInverted}>
