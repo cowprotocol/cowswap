@@ -69,15 +69,15 @@ export default function AdvancedOrdersPage() {
           </AdvancedOrdersWidget>
         </styledEl.PrimaryWrapper>
 
-        <styledEl.SecondaryWrapper>
-          {!hideOrdersTable && (
+        {!hideOrdersTable && (
+          <styledEl.SecondaryWrapper>
             <OrdersTableWidget
               displayOrdersOnlyForSafeApp={true}
               orderType={TabOrderTypes.ADVANCED}
               orders={allEmulatedOrders}
             />
-          )}
-        </styledEl.SecondaryWrapper>
+          </styledEl.SecondaryWrapper>
+        )}
       </styledEl.PageWrapper>
     </>
   )
