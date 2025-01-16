@@ -3,15 +3,16 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
-import { formatDateWithTimezone, getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
+import { getAddress, getEtherscanLink, formatDateWithTimezone } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { HoverTooltip, Loader, PercentDisplay, percentIsAlmostHundred, TokenAmount, UI } from '@cowprotocol/ui'
+import { UI, TokenAmount, Loader, HoverTooltip } from '@cowprotocol/ui'
+import { PercentDisplay, percentIsAlmostHundred } from '@cowprotocol/ui'
 import { useIsSafeWallet } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
-import { Check, Clock, X, Zap } from 'react-feather'
+import { Clock, Zap, Check, X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -20,9 +21,9 @@ import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 
 import {
-  FAIR_PRICE_THRESHOLD_PERCENTAGE,
-  GOOD_PRICE_THRESHOLD_PERCENTAGE,
   PENDING_EXECUTION_THRESHOLD_PERCENTAGE,
+  GOOD_PRICE_THRESHOLD_PERCENTAGE,
+  FAIR_PRICE_THRESHOLD_PERCENTAGE,
 } from 'common/constants/common'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { RateInfo } from 'common/pure/RateInfo'
@@ -172,19 +173,17 @@ export function OrderRow({
     return 'Unfillable'
   }
 
-  const renderWarningTooltip =
-    (showIcon?: boolean) =>
-    ({ children }: { children: React.ReactNode }) => (
-      <WarningTooltip
-        hasEnoughBalance={hasEnoughBalance ?? false}
-        hasEnoughAllowance={hasEnoughAllowance ?? false}
-        inputTokenSymbol={inputTokenSymbol}
-        isOrderScheduled={isOrderScheduled}
-        onApprove={() => orderActions.approveOrderToken(order.inputToken)}
-        showIcon={showIcon}
-        children={children}
-      />
-    )
+  const renderWarningTooltip = (showIcon?: boolean) => (props: { children: React.ReactNode }) => (
+    <WarningTooltip
+      hasEnoughBalance={hasEnoughBalance ?? false}
+      hasEnoughAllowance={hasEnoughAllowance ?? false}
+      inputTokenSymbol={inputTokenSymbol}
+      isOrderScheduled={isOrderScheduled}
+      onApprove={() => orderActions.approveOrderToken(order.inputToken)}
+      showIcon={showIcon}
+      {...props}
+    />
+  )
 
   const renderLimitPrice = () => (
     <styledEl.RateValue onClick={toggleIsInverted}>
@@ -306,25 +305,13 @@ export function OrderRow({
   )
 
   const renderFillsAtWithDistance = () => {
-    console.log('Debug - Order:', {
-      id: order.id,
-      status: order.status,
-      hasChildren: !!children,
-      hasChildOrders: !!childOrders,
-      childOrdersLength: childOrders?.length,
-      childOrdersStatuses: childOrders?.map((o) => o.status),
-      areAllCancelled: childOrders && areAllChildOrdersCancelled(childOrders),
-    })
-
     // Special case for PRESIGNATURE_PENDING - return just the signing content
     if (order.status === OrderStatus.PRESIGNATURE_PENDING) {
-      console.log('Debug - Path: PRESIGNATURE_PENDING')
       return renderFillsAt()
     }
 
     // Handle warning states first, regardless of order type
     if (withWarning) {
-      console.log('Debug - Path: Warning state')
       return (
         <styledEl.ExecuteCellWrapper>
           <EstimatedExecutionPrice
@@ -343,10 +330,8 @@ export function OrderRow({
 
     // For TWAP parent orders
     if (children && childOrders) {
-      console.log('Debug - Path: TWAP parent')
       // Check if all child orders are cancelled first
       if (areAllChildOrdersCancelled(childOrders)) {
-        console.log('Debug - All child orders are cancelled')
         return (
           <styledEl.CellElement doubleRow>
             <b>
@@ -365,13 +350,16 @@ export function OrderRow({
       )
 
       if (nextScheduledOrder) {
-        // Get the execution price from the next scheduled order
-        const nextOrderExecutionPrice = nextScheduledOrder.executionData.executedPrice
-        const nextOrderPriceDiffs = calculatePriceDifference({
-          referencePrice: spotPrice,
-          targetPrice: nextOrderExecutionPrice,
-          isInverted: false,
-        })
+        // For scheduled orders, use the execution price if available, otherwise use the estimated price from props
+        const nextOrderExecutionPrice =
+          nextScheduledOrder.executionData.executedPrice || prices?.estimatedExecutionPrice
+        const nextOrderPriceDiffs = nextOrderExecutionPrice
+          ? calculatePriceDifference({
+              referencePrice: spotPrice,
+              targetPrice: nextOrderExecutionPrice,
+              isInverted: false,
+            })
+          : null
 
         // Show the execution price for the next scheduled order
         let nextOrderFillsAtContent
@@ -382,7 +370,7 @@ export function OrderRow({
         } else {
           nextOrderFillsAtContent = (
             <TokenAmount
-              amount={nextOrderExecutionPrice}
+              amount={isInverted ? nextOrderExecutionPrice.invert() : nextOrderExecutionPrice}
               tokenSymbol={nextOrderExecutionPrice?.quoteCurrency}
               opacitySymbol
             />
@@ -456,9 +444,8 @@ export function OrderRow({
     }
 
     // Check children finalization status
-    if (children) {
-      const childrenArray = React.Children.toArray(children) as React.ReactElement<{ order: ParsedOrder }>[]
-      if (childrenArray.every((child) => child.props?.order && getIsFinalizedOrder(child.props.order))) {
+    if (children && childOrders) {
+      if (childOrders.every((childOrder) => getIsFinalizedOrder(childOrder))) {
         return '-'
       }
     }
