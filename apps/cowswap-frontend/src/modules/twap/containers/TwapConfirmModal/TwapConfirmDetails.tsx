@@ -12,7 +12,10 @@ import { useUsdAmount } from 'modules/usdAmount'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 
 const Wrapper = styled.div`
-  padding: 0 6px;
+  display: flex;
+  flex-flow: column wrap;
+  gap: 7px;
+  padding: 0 6px 6px;
   font-size: 13px;
 
   > b {

@@ -5,7 +5,7 @@ import styled from 'styled-components/macro'
 import { RateInfo } from 'common/pure/RateInfo'
 
 export const Wrapper = styled.div`
-  padding: 6px 6px 12px;
+  padding: 6px;
   font-size: 13px;
   display: flex;
   align-items: flex-start;

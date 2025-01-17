@@ -205,7 +205,28 @@ export function OrderRow({
   }
 
   const renderFillsAt = () => {
-    // For TWAP parent orders, check child states first
+    // Check for signing state first, regardless of order type
+    if (order.status === OrderStatus.PRESIGNATURE_PENDING) {
+      return (
+        <styledEl.ExecuteCellWrapper>
+          <HoverTooltip
+            wrapInContainer={true}
+            content={
+              <div>
+                This order needs to be signed and executed with your {isSafeWallet ? 'Safe' : 'Smart contract'} wallet
+              </div>
+            }
+          >
+            <styledEl.SigningDisplay>
+              <SVG src={orderPresignaturePending} description="signing" />
+              Please sign order
+            </styledEl.SigningDisplay>
+          </HoverTooltip>
+        </styledEl.ExecuteCellWrapper>
+      )
+    }
+
+    // For TWAP parent orders, check child states
     if (isTwapTable && !isChild && childOrders) {
       // Check if all child orders are filled (100%)
       const allChildrenFilled = childOrders.every((childOrder) => {
@@ -279,26 +300,6 @@ export function OrderRow({
     }
 
     // Regular order status handling
-    if (order.status === OrderStatus.PRESIGNATURE_PENDING) {
-      return (
-        <styledEl.ExecuteCellWrapper>
-          <HoverTooltip
-            wrapInContainer={true}
-            content={
-              <div>
-                This order needs to be signed and executed with your {isSafeWallet ? 'Safe' : 'Smart contract'} wallet
-              </div>
-            }
-          >
-            <styledEl.SigningDisplay>
-              <SVG src={orderPresignaturePending} description="signing" />
-              Please sign order
-            </styledEl.SigningDisplay>
-          </HoverTooltip>
-        </styledEl.ExecuteCellWrapper>
-      )
-    }
-
     if (getIsFinalizedOrder(order)) {
       // Check filled status first
       if (Number(filledPercentDisplay) > 0) {
@@ -525,9 +526,10 @@ export function OrderRow({
             <b>{nextOrderFillsAtContent}</b>
             <i
               style={{
-                color: !isUnfillable
-                  ? getDistanceColor(Number(nextOrderPriceDiffs?.percentage?.toFixed(4) || '0'))
-                  : 'inherit',
+                color:
+                  !isUnfillable && nextOrderPriceDiffs?.percentage
+                    ? getDistanceColor(Number(nextOrderPriceDiffs.percentage.toFixed(4)))
+                    : 'inherit',
               }}
             >
               {nextOrderDistance}
@@ -563,7 +565,10 @@ export function OrderRow({
         <b>{fillsAtContent}</b>
         <i
           style={{
-            color: !isUnfillable ? getDistanceColor(Number(priceDiffs?.percentage?.toFixed(4) || '0')) : 'inherit',
+            color:
+              !isUnfillable && priceDiffs?.percentage
+                ? getDistanceColor(Number(priceDiffs.percentage.toFixed(4)))
+                : 'inherit',
           }}
         >
           {distance}
