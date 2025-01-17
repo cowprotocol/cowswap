@@ -243,7 +243,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
 
         {isInjectedWidgetMode && <PoweredFooter />}
       </styledEl.ContainerBox>
-      <styledEl.OuterContentWrapper>{outerContent}</styledEl.OuterContentWrapper>
+      {outerContent && <styledEl.OuterContentWrapper>{outerContent}</styledEl.OuterContentWrapper>}
     </>
   )
 }

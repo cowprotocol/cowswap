@@ -65,6 +65,7 @@ export const SecondaryWrapper = styled.div.attrs(() => ({
   position: relative;
   padding: 10px;
   min-height: 200px;
+  height: 100%;
   width: 100%;
   margin: 0 0 76px;
   grid-area: secondary;
