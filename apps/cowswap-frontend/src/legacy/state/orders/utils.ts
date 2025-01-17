@@ -1,6 +1,6 @@
 import type { LatestAppDataDocVersion } from '@cowprotocol/app-data'
 import { ONE_HUNDRED_PERCENT, PENDING_ORDERS_BUFFER, ZERO_FRACTION } from '@cowprotocol/common-const'
-import { bpsToPercent, buildPriceFromCurrencyAmounts, isSellOrder } from '@cowprotocol/common-utils'
+import { bpsToPercent, buildPriceFromCurrencyAmounts, getWrappedToken, isSellOrder } from '@cowprotocol/common-utils'
 import { EnrichedOrder, OrderKind, OrderStatus } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { Currency, CurrencyAmount, Percent, Price, Token } from '@uniswap/sdk-core'
@@ -12,7 +12,6 @@ import { decodeAppData } from 'modules/appData/utils/decodeAppData'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getOrderSurplus } from 'utils/orderUtils/getOrderSurplus'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
-import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { Order, updateOrder, UpdateOrderParams as UpdateOrderParamsAction } from './actions'
 import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from './consts'
@@ -35,7 +34,10 @@ export type OrderTransitionStatus =
  * or all buyAmount has been bought, for buy orders
  */
 export function isOrderFulfilled(
-  order: Pick<EnrichedOrder, 'buyAmount' | 'sellAmount' | 'executedBuyAmount' | 'executedSellAmountBeforeFees' | 'kind'>
+  order: Pick<
+    EnrichedOrder,
+    'buyAmount' | 'sellAmount' | 'executedBuyAmount' | 'executedSellAmountBeforeFees' | 'kind'
+  >,
 ): boolean {
   const { buyAmount, sellAmount, executedBuyAmount, executedSellAmountBeforeFees, kind } = order
 
@@ -98,7 +100,7 @@ export function classifyOrder(
     | 'kind'
     | 'signingScheme'
     | 'status'
-  > | null
+  > | null,
 ): OrderTransitionStatus {
   if (!order) {
     console.debug(`[state::orders::classifyOrder] unknown order`)
@@ -133,7 +135,7 @@ export function classifyOrder(
 export function isOrderUnfillable(
   order: Order,
   orderPrice: Price<Currency, Currency>,
-  executionPrice: Price<Currency, Currency>
+  executionPrice: Price<Currency, Currency>,
 ): boolean {
   // Calculate the percentage of the current price in regards to the order price
   const percentageDifference = ONE_HUNDRED_PERCENT.subtract(executionPrice.divide(orderPrice))
@@ -143,7 +145,7 @@ export function isOrderUnfillable(
     orderPrice.toSignificant(10),
     executionPrice.toSignificant(10),
     `${percentageDifference.toFixed(4)}%`,
-    percentageDifference.greaterThan(OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE)
+    percentageDifference.greaterThan(OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE),
   )
 
   // Example. Consider the pair X-Y:
@@ -175,7 +177,7 @@ export function getOrderMarketPrice(order: Order, quotedAmount: string, feeAmoun
       order.outputToken,
       // For sell orders, the market price has the fee subtracted from the sell amount
       JSBI.subtract(JSBI.BigInt(remainingAmount), JSBI.BigInt(feeAmount)),
-      quotedAmount
+      quotedAmount,
     )
   }
 
@@ -222,31 +224,74 @@ const EXECUTION_PRICE_FEE_COEFFICIENT = new Percent(5, 100)
  * @param fee Estimated fee in inputToken atoms, as string
  */
 export function getEstimatedExecutionPrice(
+  order: undefined, // there's no order when calling this way
+  fillPrice: Price<Currency, Currency>,
+  fee: string,
+  inputAmount: CurrencyAmount<Currency>,
+  outputAmount: CurrencyAmount<Currency>,
+  kind: OrderKind,
+  fullAppData: EnrichedOrder['fullAppData'],
+): Price<Currency, Currency> | null
+export function getEstimatedExecutionPrice(
   order: Order,
   fillPrice: Price<Currency, Currency>,
-  fee: string
+  fee: string,
+): Price<Currency, Currency> | null
+export function getEstimatedExecutionPrice(
+  order: Order | undefined,
+  fillPrice: Price<Currency, Currency>,
+  fee: string,
+  inputAmount?: CurrencyAmount<Currency>,
+  outputAmount?: CurrencyAmount<Currency>,
+  kind?: OrderKind,
+  fullAppData?: EnrichedOrder['fullAppData'],
 ): Price<Currency, Currency> | null {
+  let inputToken: Token
+  let outputToken: Token
+  let limitPrice: Price<Currency, Currency>
+  let sellAmount: string
+
+  if (order) {
+    inputToken = order.inputToken
+    outputToken = order.outputToken
+    limitPrice = getOrderLimitPriceWithPartnerFee(order)
+
+    if (getUiOrderType(order) === UiOrderType.SWAP) {
+      return limitPrice
+    }
+
+    // Parent TWAP order, ignore
+    if (getIsComposableCowParentOrder(order)) {
+      return null
+    }
+
+    sellAmount = getRemainderAmountsWithoutSurplus(order).sellAmount
+  } else {
+    sellAmount = inputAmount!.quotient.toString()
+    inputToken = getWrappedToken(inputAmount!.currency)
+    outputToken = getWrappedToken(outputAmount!.currency)
+    limitPrice = getOrderLimitPriceWithPartnerFee({
+      inputToken,
+      outputToken,
+      sellAmount,
+      buyAmount: outputAmount!.quotient.toString(),
+      kind: kind as OrderKind,
+      fullAppData,
+    })
+  }
+
+  const feeAmount = CurrencyAmount.fromRawAmount(inputToken, fee)
+
   // Build CurrencyAmount and Price instances
-  const feeAmount = CurrencyAmount.fromRawAmount(order.inputToken, fee)
+  // const feeAmount = CurrencyAmount.fromRawAmount(order.inputToken, feeAmount)
   // Take partner fee into account when calculating the limit price
-  const limitPrice = getOrderLimitPriceWithPartnerFee(order)
-
-  if (getUiOrderType(order) === UiOrderType.SWAP) {
-    return limitPrice
-  }
-
-  // Parent TWAP order, ignore
-  if (getIsComposableCowParentOrder(order)) {
-    return null
-  }
 
   // Check what's left to sell, discounting the surplus, if any
-  const { sellAmount } = getRemainderAmountsWithoutSurplus(order)
-  const remainingSellAmount = CurrencyAmount.fromRawAmount(order.inputToken, sellAmount)
+  const remainingSellAmount = CurrencyAmount.fromRawAmount(inputToken, sellAmount)
 
   // When fee > amount, return 0 price
   if (!remainingSellAmount.greaterThan(ZERO_FRACTION)) {
-    return new Price(order.inputToken, order.outputToken, '0', '0')
+    return new Price(inputToken, outputToken, '0', '0')
   }
 
   const feeWithMargin = feeAmount.add(feeAmount.multiply(EXECUTION_PRICE_FEE_COEFFICIENT))
@@ -255,7 +300,7 @@ export function getEstimatedExecutionPrice(
 
   // Just in case when the denominator is <= 0 after subtraction the fee
   if (!denominator.greaterThan(ZERO_FRACTION)) {
-    return new Price(order.inputToken, order.outputToken, '0', '0')
+    return new Price(inputToken, outputToken, '0', '0')
   }
 
   /**
@@ -267,36 +312,10 @@ export function getEstimatedExecutionPrice(
    * Fee with margin: 0.002 + 5% = 0.0021 WETH
    * Executes at: 182000 / (100 - 0.0021) = 1820.038 USDC per 1 WETH
    */
-  const feasibleExecutionPrice = new Price(
-    order.inputToken,
-    order.outputToken,
-    denominator.quotient,
-    numerator.quotient
-  )
+  const feasibleExecutionPrice = new Price(inputToken, outputToken, denominator.quotient, numerator.quotient)
 
   // Pick the MAX between FEP and FP
   const estimatedExecutionPrice = fillPrice.greaterThan(feasibleExecutionPrice) ? fillPrice : feasibleExecutionPrice
-
-  // TODO: remove debug statement
-  console.debug(`getEstimatedExecutionPrice`, {
-    'Amount (A)':
-      remainingSellAmount.toFixed(remainingSellAmount.currency.decimals) + ' ' + remainingSellAmount.currency.symbol,
-    'Fee (F)': feeAmount.toFixed(feeAmount.currency.decimals) + ' ' + feeAmount.currency.symbol,
-    'Limit Price (LP)': `${limitPrice.toFixed(8)} ${limitPrice.quoteCurrency.symbol} per ${
-      limitPrice.baseCurrency.symbol
-    } (${limitPrice.numerator.toString()}/${limitPrice.denominator.toString()})`,
-    'Feasible Execution Price (FEP)': `${feasibleExecutionPrice.toFixed(18)} ${
-      feasibleExecutionPrice.quoteCurrency.symbol
-    } per ${feasibleExecutionPrice.baseCurrency.symbol}`,
-    'Fill Price (FP)': `${fillPrice.toFixed(8)} ${fillPrice.quoteCurrency.symbol} per ${
-      fillPrice.baseCurrency.symbol
-    } (${fillPrice.numerator.toString()}/${fillPrice.denominator.toString()})`,
-    'Est.Execution Price (EEP)': `${estimatedExecutionPrice.toFixed(8)} ${
-      estimatedExecutionPrice.quoteCurrency.symbol
-    } per ${estimatedExecutionPrice.baseCurrency.symbol}`,
-    id: order.id.slice(0, 8),
-    class: order.class,
-  })
 
   return estimatedExecutionPrice
 }
@@ -378,14 +397,16 @@ export function partialOrderUpdate({ chainId, order, isSafeWallet }: UpdateOrder
 }
 
 export function getOrderVolumeFee(
-  fullAppData: EnrichedOrder['fullAppData']
+  fullAppData: EnrichedOrder['fullAppData'],
 ): LatestAppDataDocVersion['metadata']['partnerFee'] | undefined {
   const appData = decodeAppData(fullAppData) as LatestAppDataDocVersion
 
   return appData?.metadata?.partnerFee
 }
 
-export function getOrderLimitPriceWithPartnerFee(order: Order | ParsedOrder): Price<Currency, Currency> {
+type LimitPriceOrder = Pick<Order, 'inputToken' | 'outputToken' | 'sellAmount' | 'buyAmount' | 'kind' | 'fullAppData'>
+
+export function getOrderLimitPriceWithPartnerFee(order: LimitPriceOrder): Price<Currency, Currency> {
   const inputAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
   const outputAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
 
@@ -393,7 +414,7 @@ export function getOrderLimitPriceWithPartnerFee(order: Order | ParsedOrder): Pr
     order.fullAppData,
     inputAmount,
     outputAmount,
-    isSellOrder(order.kind)
+    isSellOrder(order.kind),
   )
 
   return buildPriceFromCurrencyAmounts(inputCurrencyAmount, outputCurrencyAmount)
@@ -403,7 +424,7 @@ function getOrderAmountsWithPartnerFee(
   fullAppData: EnrichedOrder['fullAppData'],
   sellAmount: CurrencyAmount<Token>,
   buyAmount: CurrencyAmount<Token>,
-  isSellOrder: boolean
+  isSellOrder: boolean,
 ): { inputCurrencyAmount: CurrencyAmount<Token>; outputCurrencyAmount: CurrencyAmount<Token> } {
   const volumeFee = getOrderVolumeFee(fullAppData)
 
