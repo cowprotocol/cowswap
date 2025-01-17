@@ -86,6 +86,14 @@ const SearchInput = styled.input`
     outline: none;
     border-color: var(${UI.COLOR_TEXT_OPACITY_50});
   }
+
+  // iOS-specific zoom prevention
+  @supports (-webkit-touch-callout: none) {
+    &:hover,
+    &:active {
+      font-size: 16px;
+    }
+  }
 `
 
 function getOrdersListByIndex(ordersList: OrdersTableList, id: string): OrderTableItem[] {
