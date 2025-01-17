@@ -158,7 +158,7 @@ export function OrderRow({
   const executedPriceInverted = isInverted ? executedPrice?.invert() : executedPrice
   const spotPriceInverted = isInverted ? spotPrice?.invert() : spotPrice
 
-  const priceDiffs = usePricesDifference(prices, spotPrice)
+  const priceDiffs = usePricesDifference(prices, spotPrice, isInverted)
   const feeDifference = useFeeAmountDifference(rateInfoParams, prices)
 
   const isExecutedPriceZero = executedPriceInverted !== undefined && executedPriceInverted?.equalTo(ZERO_FRACTION)
@@ -623,20 +623,22 @@ export function OrderRow({
 /**
  * Helper hook to prepare the parameters to calculate price difference
  */
-function usePricesDifference(prices: OrderRowProps['prices'], spotPrice: OrderRowProps['spotPrice']): PriceDifference {
+function usePricesDifference(
+  prices: OrderRowProps['prices'],
+  spotPrice: OrderRowProps['spotPrice'],
+  isInverted: boolean,
+): PriceDifference {
   const { estimatedExecutionPrice } = prices || {}
 
-  return useSafeMemo(() => {
-    if (!spotPrice || !estimatedExecutionPrice) return null
-
-    // Calculate price difference using original (non-inverted) prices
-    // The percentage should stay the same regardless of display inversion
-    return calculatePriceDifference({
-      referencePrice: spotPrice,
-      targetPrice: estimatedExecutionPrice,
-      isInverted: false,
-    })
-  }, [estimatedExecutionPrice, spotPrice]) // Remove isInverted from dependencies since it shouldn't affect the calculation
+  return useSafeMemo(
+    () =>
+      calculatePriceDifference({
+        referencePrice: spotPrice,
+        targetPrice: estimatedExecutionPrice,
+        isInverted,
+      }),
+    [estimatedExecutionPrice, spotPrice, isInverted],
+  )
 }
 
 /**
