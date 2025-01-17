@@ -318,7 +318,7 @@ export function OrdersTableContainer({
       <TopContainer>
         <TabsContainer>
           <OrdersTabs tabs={tabs} />
-          {children && <RightContainer>{children}</RightContainer>}
+          <RightContainer>{children}</RightContainer>
         </TabsContainer>
       </TopContainer>
       {content()}

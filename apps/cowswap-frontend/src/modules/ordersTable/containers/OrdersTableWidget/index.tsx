@@ -166,6 +166,13 @@ export function OrdersTableWidget({
   const ordersList = useOrdersTableList(allOrders, orderType, chainId, balancesAndAllowances)
 
   const { currentTabId, currentPageNumber } = useMemo(() => {
+    if (!account) {
+      return {
+        currentTabId: ALL_ORDERS_TAB.id,
+        currentPageNumber: 1,
+      }
+    }
+
     const params = parseOrdersTableUrl(location.search)
 
     // If we're on a tab that becomes empty (signing or unfillable),
@@ -184,13 +191,18 @@ export function OrdersTableWidget({
       currentTabId: params.tabId || ALL_ORDERS_TAB.id,
       currentPageNumber: params.pageNumber || 1,
     }
-  }, [location.search, ordersList.signing.length, ordersList.unfillable.length])
+  }, [location.search, ordersList.signing.length, ordersList.unfillable.length, account])
 
   const orders = useMemo(() => {
     return getOrdersListByIndex(ordersList, currentTabId)
   }, [ordersList, currentTabId])
 
   const tabs = useMemo(() => {
+    // If no account, just return the ALL_ORDERS_TAB with count 0
+    if (!account) {
+      return [{ ...ALL_ORDERS_TAB, count: 0, isActive: true }]
+    }
+
     return ORDERS_TABLE_TABS.filter((tab) => {
       // Only include the unfillable tab if there are unfillable orders
       if (tab.id === 'unfillable') {
@@ -204,7 +216,7 @@ export function OrdersTableWidget({
     }).map((tab) => {
       return { ...tab, isActive: tab.id === currentTabId, count: getOrdersListByIndex(ordersList, tab.id).length }
     })
-  }, [currentTabId, ordersList])
+  }, [currentTabId, ordersList, account])
 
   const { pendingActivity } = useCategorizeRecentActivity()
 
@@ -342,15 +354,18 @@ export function OrdersTableWidget({
         {(currentTabId === OPEN_TAB.id || currentTabId === 'all' || currentTabId === 'unfillable') &&
           orders.length > 0 && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />}
 
-        <SearchInputContainer>
-          <SearchIcon />
-          <SearchInput
-            type="text"
-            placeholder="token symbol, address"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </SearchInputContainer>
+        {/* If account is not connected, don't show the search input */}
+        {!!account && filteredOrders.length > 0 && (
+          <SearchInputContainer>
+            <SearchIcon />
+            <SearchInput
+              type="text"
+              placeholder="token symbol, address"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </SearchInputContainer>
+        )}
       </OrdersTableContainer>
 
       <OrdersReceiptModal pendingOrdersPrices={pendingOrdersPrices} />
