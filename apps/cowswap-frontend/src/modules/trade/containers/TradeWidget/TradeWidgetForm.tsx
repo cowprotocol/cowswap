@@ -39,7 +39,8 @@ import { WrapFlowActionButton } from '../WrapFlowActionButton'
 const scrollToMyOrders = () => {
   const element = document.getElementById(MY_ORDERS_ID)
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth' })
+    const elementTop = element.getBoundingClientRect().top + window.scrollY - 76
+    window.scrollTo({ top: elementTop, behavior: 'smooth' })
   }
 }
 
