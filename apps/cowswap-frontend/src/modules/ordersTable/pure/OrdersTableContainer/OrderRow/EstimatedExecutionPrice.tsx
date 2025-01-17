@@ -41,12 +41,10 @@ const UnfillableLabel = styled.span`
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
   font-size: inherit;
   font-weight: 500;
   line-height: 1.1;
   flex-flow: row wrap;
-  align-items: center;
   justify-content: flex-start;
   gap: 3px;
 
