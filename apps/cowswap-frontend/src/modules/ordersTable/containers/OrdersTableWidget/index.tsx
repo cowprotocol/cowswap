@@ -37,6 +37,7 @@ import { parseOrdersTableUrl } from '../../utils/parseOrdersTableUrl'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu'
 import { OrdersReceiptModal } from '../OrdersReceiptModal'
 import { useGetAlternativeOrderModalContextCallback, useSelectReceiptOrder } from '../OrdersReceiptModal/hooks'
+import { CloseIcon } from 'common/pure/CloseIcon'
 
 const SearchInputContainer = styled.div`
   margin: 0;
@@ -62,9 +63,23 @@ const SearchIcon = styled(Search)`
   }
 `
 
+const StyledCloseIcon = styled(CloseIcon)`
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+
+  > svg {
+    width: 100%;
+    height: 100%;
+  }
+`
+
 const SearchInput = styled.input`
   width: 100%;
-  padding: 8px 12px 8px 36px;
+  padding: 8px 36px;
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT});
@@ -74,7 +89,7 @@ const SearchInput = styled.input`
   min-height: 36px;
 
   ${Media.upToMedium()} {
-    padding: 8px 12px 8px 32px;
+    padding: 8px 32px;
     border-radius: 12px;
   }
 
@@ -364,6 +379,7 @@ export function OrdersTableWidget({
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
+            {searchTerm && <StyledCloseIcon onClick={() => setSearchTerm('')} />}
           </SearchInputContainer>
         )}
       </OrdersTableContainer>
