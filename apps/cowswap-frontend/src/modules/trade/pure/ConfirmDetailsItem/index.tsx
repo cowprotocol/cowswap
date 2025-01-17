@@ -18,22 +18,13 @@ export type ConfirmDetailsItemProps = {
   fiatAmount?: string
   withTimelineDot?: boolean
   highlighted?: boolean
-  alwaysRow?: boolean
 }
 
 export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
-  const {
-    children,
-    label,
-    labelOpacity = false,
-    tooltip,
-    withArrow = false,
-    withTimelineDot = false,
-    alwaysRow = false,
-  } = props
+  const { children, label, labelOpacity = false, tooltip, withArrow = false, withTimelineDot = false } = props
 
   return (
-    <Wrapper alwaysRow={alwaysRow}>
+    <Wrapper>
       {withArrow && <CornerDownRight size={14} />}
       {withTimelineDot && <TimelineDot />}
       {label ? (

@@ -88,7 +88,6 @@ export function YieldConfirmModal(props: YieldConfirmModalProps) {
                 hideLimitPrice
                 hideUsdValues
                 withTimelineDot={false}
-                alwaysRow
               ></TradeBasicConfirmDetails>
             )}
             {restContent}

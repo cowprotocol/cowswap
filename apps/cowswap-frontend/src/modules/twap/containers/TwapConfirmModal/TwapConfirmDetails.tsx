@@ -28,7 +28,6 @@ const Wrapper = styled.div`
 const TWAPSplitTitle = styled.div`
   display: flex;
   width: 100%;
-  min-height: 24px;
   align-items: center;
   gap: 3px;
 

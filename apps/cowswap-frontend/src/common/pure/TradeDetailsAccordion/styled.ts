@@ -20,7 +20,7 @@ export const Details = styled.div`
   flex-flow: row wrap;
   align-items: center;
   width: 100%;
-  margin: 6px 0 0;
+  margin: 16px 0 0;
 `
 
 export const Summary = styled.div`
