@@ -15,13 +15,13 @@ import * as styledEl from './styled'
 
 const MINUS_ONE_FRACTION = new Fraction(-1)
 
-export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean; showPointerCursor: boolean }>`
+export const EstimatedExecutionPriceWrapper = styled.span<{ $hasWarning: boolean; $showPointerCursor: boolean }>`
   display: flex;
   width: 100%;
   align-items: center;
   justify-content: space-between;
-  color: ${({ hasWarning, theme }) => (hasWarning ? darken(theme.alert, theme.darkMode ? 0 : 0.15) : 'inherit')};
-  cursor: ${({ showPointerCursor }) => (showPointerCursor ? 'pointer' : 'default')};
+  color: ${({ $hasWarning, theme }) => ($hasWarning ? darken(theme.alert, theme.darkMode ? 0 : 0.15) : 'inherit')};
+  cursor: ${({ $showPointerCursor }) => ($showPointerCursor ? 'pointer' : 'default')};
 
   ${SymbolElement} {
     color: inherit;
@@ -172,7 +172,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
   )
 
   return (
-    <EstimatedExecutionPriceWrapper hasWarning={!!feeWarning} showPointerCursor={!isUnfillable}>
+    <EstimatedExecutionPriceWrapper $hasWarning={!!feeWarning} $showPointerCursor={!isUnfillable}>
       {isUnfillable ? (
         <div>{unfillableLabel}</div>
       ) : !absoluteDifferenceAmount ? (

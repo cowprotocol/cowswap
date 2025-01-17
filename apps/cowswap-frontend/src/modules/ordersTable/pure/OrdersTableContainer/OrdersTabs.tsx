@@ -79,22 +79,22 @@ const Select = styled.select`
   }
 `
 
-const TabButton = styled(Link)<{ active: string; isUnfillable?: boolean; isSigning?: boolean }>`
+const TabButton = styled(Link)<{ active: string; $isUnfillable?: boolean; $isSigning?: boolean }>`
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: ${({ active, isUnfillable, isSigning }) =>
+  background: ${({ active, $isUnfillable, $isSigning }) =>
     active === 'true'
-      ? isUnfillable
+      ? $isUnfillable
         ? `var(${UI.COLOR_DANGER_BG})`
-        : isSigning
+        : $isSigning
           ? `var(${UI.COLOR_ALERT_BG})`
           : `var(${UI.COLOR_TEXT_OPACITY_10})`
       : 'transparent'};
-  color: ${({ active, isUnfillable, isSigning }) =>
-    isUnfillable
+  color: ${({ active, $isUnfillable, $isSigning }) =>
+    $isUnfillable
       ? `var(${UI.COLOR_DANGER})`
-      : isSigning
+      : $isSigning
         ? `var(${UI.COLOR_ALERT_TEXT})`
         : active === 'true'
           ? `var(${UI.COLOR_TEXT_PAPER})`
@@ -116,16 +116,16 @@ const TabButton = styled(Link)<{ active: string; isUnfillable?: boolean; isSigni
   }
 
   &:hover {
-    background: ${({ active, isUnfillable, isSigning }) =>
+    background: ${({ active, $isUnfillable, $isSigning }) =>
       active === 'true'
-        ? isUnfillable
+        ? $isUnfillable
           ? `var(${UI.COLOR_DANGER_BG})`
-          : isSigning
+          : $isSigning
             ? `var(${UI.COLOR_ALERT_BG})`
             : `var(${UI.COLOR_TEXT_OPACITY_10})`
         : `var(${UI.COLOR_TEXT_OPACITY_10})`};
-    color: ${({ isUnfillable, isSigning }) =>
-      isUnfillable ? `var(${UI.COLOR_DANGER})` : isSigning ? `var(${UI.COLOR_ALERT_TEXT})` : 'inherit'};
+    color: ${({ $isUnfillable, $isSigning }) =>
+      $isUnfillable ? `var(${UI.COLOR_DANGER})` : $isSigning ? `var(${UI.COLOR_ALERT_TEXT})` : 'inherit'};
   }
 
   > svg {
@@ -182,8 +182,8 @@ export function OrdersTabs({ tabs }: OrdersTabsProps) {
             <TabButton
               key={index}
               active={(index === activeTabIndex).toString()}
-              isUnfillable={isUnfillable}
-              isSigning={isSigning}
+              $isUnfillable={isUnfillable}
+              $isSigning={isSigning}
               to={buildOrdersTableUrl({ tabId: tab.id, pageNumber: 1 })}
             >
               {isUnfillable && <SVG src={alertCircle} description="warning" />}
