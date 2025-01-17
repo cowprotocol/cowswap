@@ -225,7 +225,7 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
 
         <SettingsRow>
           <SettingsLabel>
-            Limit price position <HelpTooltip text="Choose where to display the limit price input." />
+            Limit Price Position <HelpTooltip text="Choose where to display the limit price input." />
           </SettingsLabel>
           <DropdownContainer>
             <DropdownButton onClick={toggleDropdown}>{POSITION_LABELS[limitPricePosition]}</DropdownButton>
