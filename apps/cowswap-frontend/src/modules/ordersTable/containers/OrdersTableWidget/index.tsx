@@ -355,12 +355,12 @@ export function OrdersTableWidget({
           orders.length > 0 && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />}
 
         {/* If account is not connected, don't show the search input */}
-        {!!account && filteredOrders.length > 0 && (
+        {!!account && orders.length > 0 && (
           <SearchInputContainer>
             <SearchIcon />
             <SearchInput
               type="text"
-              placeholder="token symbol, address"
+              placeholder="Token symbol, address"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
