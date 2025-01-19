@@ -19,7 +19,7 @@ import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-import { BalanceText, Wrapper } from './styled'
+import { BalanceText, Wrapper, LeftGroup } from './styled'
 
 import { NetworkSelector } from '../NetworkSelector'
 
@@ -54,25 +54,28 @@ export function AccountElement({ className, pendingActivities }: AccountElementP
 
   return (
     <>
-      <Wrapper className={className} active={!!account}>
-        {showEthBalance && (
-          <BalanceText>
-            <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeTokenSymbol }} />
-          </BalanceText>
-        )}
+      <Wrapper className={className}>
+        <LeftGroup active={!!account}>
+          {showEthBalance && (
+            <BalanceText>
+              <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeTokenSymbol }} />
+            </BalanceText>
+          )}
+          <Web3Status pendingActivities={pendingActivities} onClick={() => account && toggleAccountModal()} />
+          {account && (
+            <NotificationBell
+              unreadCount={unreadNotificationsCount}
+              onClick={() => {
+                clickNotifications(
+                  unreadNotificationsCount === 0 ? 'click-bell' : 'click-bell-with-pending-notifications',
+                )
+                setSidebarOpen(true)
+              }}
+            />
+          )}
+        </LeftGroup>
+
         {!hideNetworkSelector && <NetworkSelector />}
-        <Web3Status pendingActivities={pendingActivities} onClick={() => account && toggleAccountModal()} />
-        {account && (
-          <NotificationBell
-            unreadCount={unreadNotificationsCount}
-            onClick={() => {
-              clickNotifications(
-                unreadNotificationsCount === 0 ? 'click-bell' : 'click-bell-with-pending-notifications',
-              )
-              setSidebarOpen(true)
-            }}
-          />
-        )}
       </Wrapper>
 
       {ReactDOM.createPortal(

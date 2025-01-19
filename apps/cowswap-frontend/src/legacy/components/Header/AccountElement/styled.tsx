@@ -25,29 +25,27 @@ export const BalanceText = styled(Text)`
   }
 `
 
-export const Wrapper = styled.div<{ active: boolean }>`
+export const Wrapper = styled.div`
   display: flex;
-  flex-direction: row;
   align-items: center;
-  white-space: nowrap;
-  cursor: pointer;
+  gap: 16px;
+  position: relative;
+  width: 100%;
+  flex-direction: row-reverse;
+
+  ${Media.upToMedium()} {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+`
+
+export const LeftGroup = styled.div<{ active: boolean }>`
+  display: flex;
+  align-items: center;
   background: ${({ active }) => (active ? `var(${UI.COLOR_PAPER_DARKER})` : `var(${UI.COLOR_PAPER})`)};
   border-radius: 28px;
   border: none;
   transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
   pointer-events: auto;
-  width: auto;
-  height: 100%;
-
-  ${Media.upToMedium()} {
-    height: 100%;
-  }
-
-  ${({ theme }) =>
-    theme.isInjectedWidgetMode &&
-    `
-    background-color: transparent;
-    margin: 0 20px 0 auto!important;
-    border: 0!important;
-  `}
 `
