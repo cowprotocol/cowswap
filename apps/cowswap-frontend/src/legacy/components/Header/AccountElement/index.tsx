@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { useNativeCurrencyAmount } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -11,6 +12,7 @@ import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { useToggleAccountModal } from 'modules/account'
 import { clickNotifications } from 'modules/analytics'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { NotificationBell, NotificationSidebar } from 'modules/notifications'
 import { useUnreadNotifications } from 'modules/notifications/hooks/useUnreadNotifications'
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
@@ -23,18 +25,13 @@ import { NetworkSelector } from '../NetworkSelector'
 
 interface AccountElementProps {
   pendingActivities: string[]
-  standaloneMode?: boolean
   className?: string
-  hideNetworkSelector?: boolean
 }
 
-export function AccountElement({
-  className,
-  standaloneMode,
-  pendingActivities,
-  hideNetworkSelector,
-}: AccountElementProps) {
+export function AccountElement({ className, pendingActivities }: AccountElementProps) {
   const { account, chainId } = useWalletInfo()
+  const isInjectedWidgetMode = isInjectedWidget()
+  const { standaloneMode, hideNetworkSelector } = useInjectedWidgetParams()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const userEthBalance = useNativeCurrencyAmount(chainId, account)
   const toggleAccountModal = useToggleAccountModal()
@@ -46,20 +43,23 @@ export function AccountElement({
 
   const [isSidebarOpen, setSidebarOpen] = useState(false)
 
+  const showEthBalance =
+    account &&
+    chainId &&
+    !isChainIdUnsupported &&
+    standaloneMode !== false &&
+    !isInjectedWidgetMode &&
+    userEthBalance &&
+    !isUpToLarge
+
   return (
     <>
       <Wrapper className={className} active={!!account}>
-        {!!hideNetworkSelector &&
-          standaloneMode !== false &&
-          account &&
-          !isChainIdUnsupported &&
-          userEthBalance &&
-          chainId &&
-          !isUpToLarge && (
-            <BalanceText>
-              <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeTokenSymbol }} />
-            </BalanceText>
-          )}
+        {showEthBalance && (
+          <BalanceText>
+            <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeTokenSymbol }} />
+          </BalanceText>
+        )}
         {!hideNetworkSelector && <NetworkSelector />}
         <Web3Status pendingActivities={pendingActivities} onClick={() => account && toggleAccountModal()} />
         {account && (

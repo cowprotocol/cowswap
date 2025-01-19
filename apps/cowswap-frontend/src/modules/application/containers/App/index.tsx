@@ -12,7 +12,6 @@ import { ThemeProvider } from 'theme'
 
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
 import { AccountElement } from 'legacy/components/Header/AccountElement'
-import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
 import { HeaderControls, HeaderElement } from 'legacy/components/Header/styled'
 import { URLWarning } from 'legacy/components/Header/URLWarning'
 import TopLevelModals from 'legacy/components/TopLevelModals'
@@ -20,7 +19,6 @@ import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { OrdersPanel } from 'modules/account'
 import { useAnalyticsReporterCowSwap } from 'modules/analytics'
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { parameterizeTradeRoute, useTradeRouteContext } from 'modules/trade'
 import { useInitializeUtm } from 'modules/utm'
 
@@ -54,7 +52,7 @@ export function App() {
   useAnalyticsReporterCowSwap()
   useInitializeUtm()
 
-  const { isYieldEnabled, } = useFeatureFlags()
+  const { isYieldEnabled } = useFeatureFlags()
   // TODO: load them from feature flags when we want to enable again
   const isChristmasEnabled = false
   const isHalloweenEnabled = false
@@ -96,7 +94,6 @@ export function App() {
     ]
   }, [tradeContext, menuItems])
 
-  const { hideNetworkSelector } = useInjectedWidgetParams()
   const { pendingActivity } = useCategorizeRecentActivity()
   const isMobile = useMediaQuery(Media.upToMedium(false))
   const customTheme = useMemo(() => {
@@ -111,7 +108,6 @@ export function App() {
 
   const persistentAdditionalContent = (
     <HeaderControls>
-      {!hideNetworkSelector && <NetworkSelector />}
       <HeaderElement>
         <AccountElement pendingActivities={pendingActivity} />
       </HeaderElement>

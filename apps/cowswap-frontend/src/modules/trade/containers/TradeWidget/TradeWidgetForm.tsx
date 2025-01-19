@@ -161,13 +161,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
       <styledEl.ContainerBox>
         <styledEl.Header>
           {isAlternativeOrderModalVisible ? <div></div> : <TradeWidgetLinks isDropdown={showDropdown} />}
-          {isInjectedWidgetMode && standaloneMode && (
-            <AccountElement
-              standaloneMode
-              pendingActivities={pendingActivity}
-              hideNetworkSelector={hideNetworkSelector}
-            />
-          )}
+          {isInjectedWidgetMode && standaloneMode && <AccountElement pendingActivities={pendingActivity} />}
 
           {shouldShowMyOrdersButton && (
             <ButtonOutlined margin={'0 16px 0 auto'} onClick={handleMyOrdersClick}>
