@@ -53,7 +53,7 @@ export class FractionUtils {
 
   static fractionLikeToFraction(amount: FractionLike): Fraction {
     if (amount instanceof CurrencyAmount) return new Fraction(amount.quotient, amount.decimalScale)
-    if (amount instanceof Price) return amount.asFraction.multiply(amount.scalar)
+    if (amount instanceof Price) return FractionUtils.fromPrice(amount)
     return amount
   }
 
