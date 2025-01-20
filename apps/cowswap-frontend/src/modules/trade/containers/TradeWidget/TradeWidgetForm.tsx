@@ -45,7 +45,7 @@ const scrollToMyOrders = () => {
 
 export function TradeWidgetForm(props: TradeWidgetProps) {
   const isInjectedWidgetMode = isInjectedWidget()
-  const { standaloneMode, hideOrdersTable, hideNetworkSelector } = useInjectedWidgetParams()
+  const { standaloneMode, hideOrdersTable } = useInjectedWidgetParams()
   const isMobile = useMediaQuery(Media.upToSmall(false))
 
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
