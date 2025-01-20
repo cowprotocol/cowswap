@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { FractionUtils, getWrappedToken } from '@cowprotocol/common-utils'
+import { getWrappedToken } from '@cowprotocol/common-utils'
 import { Fraction, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
@@ -46,10 +46,8 @@ function useSpotPrice(
     if (!inputUsdPrice?.price || !outputUsdPrice?.price) {
       return { price: null, isLoading }
     }
-    const inputFraction = FractionUtils.fractionLikeToFraction(inputUsdPrice.price)
-    const outputFraction = FractionUtils.fractionLikeToFraction(outputUsdPrice.price)
 
-    const price = inputFraction.divide(outputFraction)
+    const price = inputUsdPrice.price.asFraction.divide(outputUsdPrice.price.asFraction)
 
     return { price, isLoading }
   }, [inputUsdPrice?.price, inputUsdPrice?.isLoading, outputUsdPrice?.price, outputUsdPrice?.isLoading])
