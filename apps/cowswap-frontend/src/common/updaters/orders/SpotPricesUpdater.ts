@@ -87,9 +87,7 @@ export function SpotPricesUpdater(): null {
         return
       }
 
-      const inputFraction = FractionUtils.fractionLikeToFraction(inputPrice.price)
-      const outputFraction = FractionUtils.fractionLikeToFraction(outputPrice.price)
-      const fraction = inputFraction.divide(outputFraction)
+      const fraction = inputPrice.price.asFraction.divide(outputPrice.price.asFraction)
 
       if (!fraction) {
         return
