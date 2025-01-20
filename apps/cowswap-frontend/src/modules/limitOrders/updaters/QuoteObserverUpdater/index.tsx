@@ -46,8 +46,8 @@ function useSpotPrice(
     if (!inputUsdPrice?.price || !outputUsdPrice?.price) {
       return { price: null, isLoading }
     }
-    const inputFraction = FractionUtils.fractionLikeToFraction(inputUsdPrice.price)
-    const outputFraction = FractionUtils.fractionLikeToFraction(outputUsdPrice.price)
+    const inputFraction = FractionUtils.fromPrice(inputUsdPrice.price)
+    const outputFraction = FractionUtils.fromPrice(outputUsdPrice.price)
 
     const price = inputFraction.divide(outputFraction)
 
