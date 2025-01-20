@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Media, UI } from '@cowprotocol/ui'
@@ -16,7 +16,7 @@ import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancella
 import { OrderRow } from './OrderRow'
 import { CheckboxCheckmark, TableHeader, TableRowCheckbox, TableRowCheckboxWrapper } from './styled'
 import { TableGroup } from './TableGroup'
-import { ColumnLayout, createTableHeaders } from './tableHeaders'
+import { createTableHeaders } from './tableHeaders'
 import { OrderActions } from './types'
 
 import { HISTORY_TAB, ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
@@ -33,17 +33,13 @@ import { OrdersTablePagination } from '../OrdersTablePagination'
 // TODO: move elements to styled.jsx
 
 const TableBox = styled.div`
-  display: block;
+  display: flex;
+  flex-flow: column wrap;
   border: none;
   padding: 0;
   position: relative;
   background: var(${UI.COLOR_PAPER});
-
-  ${Media.upToLargeAlt()} {
-    width: 100%;
-    display: flex;
-    flex-flow: column wrap;
-  }
+  width: 100%;
 `
 
 const TableInner = styled.div`
@@ -97,7 +93,6 @@ const Rows = styled.div`
 export interface OrdersTableProps {
   currentTab: string
   allowsOffchainSigning: boolean
-  currentPageNumber: number
   chainId: SupportedChainId
   pendingOrdersPrices: PendingOrdersPrices
   orders: OrderTableItem[]
@@ -105,7 +100,8 @@ export interface OrdersTableProps {
   balancesAndAllowances: BalancesAndAllowances
   getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
   orderActions: OrderActions
-  columnLayout?: ColumnLayout
+  currentPageNumber: number
+  isTwapTable: boolean
 }
 
 export function OrdersTable({
@@ -119,10 +115,9 @@ export function OrdersTable({
   getSpotPrice,
   orderActions,
   currentPageNumber,
-  columnLayout,
+  isTwapTable,
 }: OrdersTableProps) {
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
-  const [showLimitPrice, setShowLimitPrice] = useState(false)
   const checkboxRef = useRef<HTMLInputElement>(null)
 
   const step = currentPageNumber * ORDERS_TABLE_PAGE_SIZE
@@ -172,10 +167,7 @@ export function OrdersTable({
     checkbox.checked = allOrdersSelected
   }, [allOrdersSelected, selectedOrders.length])
 
-  const tableHeaders = useMemo(
-    () => createTableHeaders(showLimitPrice, setShowLimitPrice, columnLayout),
-    [showLimitPrice, columnLayout],
-  )
+  const tableHeaders = useMemo(() => createTableHeaders(), [])
 
   const visibleHeaders = useMemo(() => {
     const isHistoryTab = currentTab === HISTORY_TAB.id
@@ -194,7 +186,7 @@ export function OrdersTable({
           <TableHeader
             isHistoryTab={currentTab === HISTORY_TAB.id}
             isRowSelectable={isRowSelectable}
-            columnLayout={columnLayout}
+            isTwapTable={isTwapTable}
           >
             {visibleHeaders.map((header) => {
               if (header.id === 'checkbox' && (!isRowSelectable || currentTab === HISTORY_TAB.id)) {
@@ -252,11 +244,10 @@ export function OrdersTable({
                     spotPrice={spotPrice}
                     prices={pendingOrdersPrices[order.id]}
                     isRateInverted={false}
-                    showLimitPrice={showLimitPrice}
                     orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
                     onClick={() => orderActions.selectReceiptOrder(order)}
                     orderActions={orderActions}
-                    columnLayout={columnLayout}
+                    isTwapTable={isTwapTable}
                   />
                 )
               } else {
@@ -272,8 +263,8 @@ export function OrdersTable({
                     spotPrice={spotPrice}
                     prices={pendingOrdersPrices[item.parent.id]}
                     isRateInverted={false}
-                    showLimitPrice={showLimitPrice}
                     orderActions={orderActions}
+                    isTwapTable={isTwapTable}
                   />
                 )
               }

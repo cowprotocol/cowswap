@@ -1,20 +1,29 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
+import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
-import { getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
+import { formatDateWithTimezone, getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { Loader, TokenAmount, UI } from '@cowprotocol/ui'
-import { PercentDisplay, percentIsAlmostHundred } from '@cowprotocol/ui'
+import { HoverTooltip, Loader, PercentDisplay, percentIsAlmostHundred, TokenAmount, UI } from '@cowprotocol/ui'
+import { useIsSafeWallet } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
-import { CREATING_STATES, OrderStatus } from 'legacy/state/orders/actions'
+import { Check, Clock, X, Zap } from 'react-feather'
+import SVG from 'react-inlinesvg'
+
+import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 
+import {
+  FAIR_PRICE_THRESHOLD_PERCENTAGE,
+  GOOD_PRICE_THRESHOLD_PERCENTAGE,
+  PENDING_EXECUTION_THRESHOLD_PERCENTAGE,
+} from 'common/constants/common'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { RateInfo } from 'common/pure/RateInfo'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
@@ -35,22 +44,18 @@ import * as styledEl from './styled'
 import { OrderParams } from '../../../utils/getOrderParams'
 import { OrderStatusBox } from '../../OrderStatusBox'
 import { CheckboxCheckmark, TableRow, TableRowCheckbox, TableRowCheckboxWrapper } from '../styled'
-import { ColumnLayout } from '../tableHeaders'
 import { OrderActions } from '../types'
 
 // Constants
 const TIME_AGO_UPDATE_INTERVAL = 3000
-const MIN_PERCENTAGE_TO_DISPLAY = 0.01 // Minimum percentage to display (show dash below this)
-const GOOD_PRICE_THRESHOLD = 1.0 // 1% or less difference - good price
-const FAIR_PRICE_THRESHOLD = 5.0 // 5% or less difference - fair price
 
 // Helper to determine the color based on percentage
 function getDistanceColor(percentage: number): string {
   const absPercentage = Math.abs(percentage)
 
-  if (absPercentage <= GOOD_PRICE_THRESHOLD) {
+  if (absPercentage <= GOOD_PRICE_THRESHOLD_PERCENTAGE) {
     return `var(${UI.COLOR_SUCCESS})` // Green - good price
-  } else if (absPercentage <= FAIR_PRICE_THRESHOLD) {
+  } else if (absPercentage <= FAIR_PRICE_THRESHOLD_PERCENTAGE) {
     return `var(${UI.COLOR_PRIMARY})` // Blue - fair price
   }
 
@@ -74,39 +79,42 @@ export interface OrderRowProps {
   prices: PendingOrderPrices | undefined | null
   spotPrice: Price<Currency, Currency> | undefined | null
   isRateInverted: boolean
-  showLimitPrice: boolean
   isHistoryTab: boolean
   isRowSelectable: boolean
   isRowSelected: boolean
   isChild?: boolean
+  isExpanded?: boolean
   orderParams: OrderParams
   onClick: Command
   orderActions: OrderActions
   children?: React.ReactNode
-  columnLayout?: ColumnLayout
+  childOrders?: ParsedOrder[]
+  isTwapTable?: boolean
 }
 
 export function OrderRow({
   order,
   isRateInverted: isGloballyInverted,
-  showLimitPrice,
   isHistoryTab,
   isRowSelectable,
   isRowSelected,
   isChild,
+  isExpanded,
   orderActions,
   orderParams,
   onClick,
   prices,
   spotPrice,
   children,
-  columnLayout = ColumnLayout.DEFAULT,
+  childOrders,
+  isTwapTable,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
   const { creationTime, expirationTime, status } = order
   const { filledPercentDisplay, executedPrice } = order.executionData
   const { inputCurrencyAmount, outputCurrencyAmount } = rateInfoParams
   const { estimatedExecutionPrice, feeAmount } = prices || {}
+  const isSafeWallet = useIsSafeWallet()
 
   const showCancellationModal = useMemo(() => {
     return orderActions.getShowCancellationModal(order)
@@ -119,7 +127,8 @@ export function OrderRow({
   const withAllowanceWarning = hasEnoughAllowance === false
   const withWarning =
     (hasEnoughBalance === false || withAllowanceWarning) &&
-    // show the warning only for pending and scheduled orders
+    // show the warning only for pending and scheduled orders, but not for presignature pending
+    status !== OrderStatus.PRESIGNATURE_PENDING &&
     (status === OrderStatus.PENDING || status === OrderStatus.SCHEDULED)
   const isOrderScheduled = order.status === OrderStatus.SCHEDULED
 
@@ -148,13 +157,12 @@ export function OrderRow({
   const executedPriceInverted = isInverted ? executedPrice?.invert() : executedPrice
   const spotPriceInverted = isInverted ? spotPrice?.invert() : spotPrice
 
-  const priceDiffs = usePricesDifference(prices, spotPrice)
+  const priceDiffs = usePricesDifference(prices, spotPrice, isInverted)
   const feeDifference = useFeeAmountDifference(rateInfoParams, prices)
 
   const isExecutedPriceZero = executedPriceInverted !== undefined && executedPriceInverted?.equalTo(ZERO_FRACTION)
 
   const isUnfillable = !percentIsAlmostHundred(filledPercentDisplay) && (isExecutedPriceZero || withWarning)
-  const isOrderCreating = CREATING_STATES.includes(order.status)
 
   const inputTokenSymbol = order.inputToken.symbol || ''
 
@@ -190,16 +198,87 @@ export function OrderRow({
     </styledEl.RateValue>
   )
 
+  const areAllChildOrdersCancelled = (orders: ParsedOrder[] | undefined): boolean => {
+    if (!orders || orders.length === 0) return false
+    return orders.every((order) => order.status === OrderStatus.CANCELLED)
+  }
+
   const renderFillsAt = () => (
     <>
       {getIsFinalizedOrder(order) ? (
-        '-'
+        order.executionData.partiallyFilled || order.status === OrderStatus.FULFILLED ? (
+          <styledEl.FilledDisplay>
+            <Check size={14} strokeWidth={3.5} />
+            Order {order.partiallyFillable && Number(filledPercentDisplay) < 100 ? 'partially ' : ''}filled
+          </styledEl.FilledDisplay>
+        ) : order.status === OrderStatus.CANCELLED ? (
+          // For TWAP parent orders, show cancelled only when ALL child orders are cancelled
+          children ? (
+            childOrders && areAllChildOrdersCancelled(childOrders) ? (
+              <styledEl.CancelledDisplay>
+                <X size={14} strokeWidth={2.5} />
+                Order cancelled
+              </styledEl.CancelledDisplay>
+            ) : (
+              '-'
+            )
+          ) : (
+            // For non-TWAP orders and TWAP child orders, show cancelled normally
+            <styledEl.CancelledDisplay>
+              <X size={14} strokeWidth={2.5} />
+              Order cancelled
+            </styledEl.CancelledDisplay>
+          )
+        ) : order.status === OrderStatus.EXPIRED ? (
+          <styledEl.ExpiredDisplay>
+            <Clock size={14} strokeWidth={2.5} />
+            Order expired
+          </styledEl.ExpiredDisplay>
+        ) : isUnfillable ? (
+          ''
+        ) : (
+          '-'
+        )
+      ) : order.status === OrderStatus.PRESIGNATURE_PENDING ? (
+        <styledEl.ExecuteCellWrapper>
+          <HoverTooltip
+            wrapInContainer={true}
+            content={
+              <div>
+                This order needs to be signed and executed with your {isSafeWallet ? 'Safe' : 'Smart contract'} wallet
+              </div>
+            }
+          >
+            <styledEl.SigningDisplay>
+              <SVG src={orderPresignaturePending} description="signing" />
+              Please sign order
+            </styledEl.SigningDisplay>
+          </HoverTooltip>
+        </styledEl.ExecuteCellWrapper>
       ) : prices && estimatedExecutionPrice ? (
         <styledEl.ExecuteCellWrapper>
           {!isUnfillable &&
           priceDiffs?.percentage &&
-          Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= MIN_PERCENTAGE_TO_DISPLAY ? (
-            <span>⚡️ Pending execution</span>
+          Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= PENDING_EXECUTION_THRESHOLD_PERCENTAGE ? (
+            <HoverTooltip
+              wrapInContainer={true}
+              content={
+                <div>
+                  The fill price of this order is close or at the market price (
+                  <b>
+                    fills at{' '}
+                    <TokenAmount amount={executionPriceInverted} tokenSymbol={executionPriceInverted?.quoteCurrency} />
+                  </b>
+                  , {priceDiffs.percentage.toFixed(2)}% from market) and is expected to{' '}
+                  {!percentIsAlmostHundred(filledPercentDisplay) ? 'partially' : ''} fill soon
+                </div>
+              }
+            >
+              <styledEl.PendingExecutionDisplay>
+                <Zap size={14} strokeWidth={2.5} />
+                Pending execution
+              </styledEl.PendingExecutionDisplay>
+            </HoverTooltip>
           ) : (
             <EstimatedExecutionPrice
               amount={executionPriceInverted}
@@ -209,29 +288,136 @@ export function OrderRow({
               percentageDifference={priceDiffs?.percentage}
               amountDifference={priceDiffs?.amount}
               percentageFee={feeDifference}
+              marketPrice={spotPriceInverted}
+              executesAtPrice={executionPriceInverted}
               amountFee={feeAmount}
               canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
               isUnfillable={withWarning}
               warningText={getWarningText()}
-              onApprove={() => orderActions.approveOrderToken(order.inputToken)}
-              WarningTooltip={renderWarningTooltip()}
+              WarningTooltip={renderWarningTooltip(true)}
+              onApprove={withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined}
             />
           )}
         </styledEl.ExecuteCellWrapper>
-      ) : prices === null || !estimatedExecutionPrice || isOrderCreating ? (
-        '-'
       ) : (
-        <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
+        '-'
       )}
     </>
   )
 
   const renderFillsAtWithDistance = () => {
+    // Special case for PRESIGNATURE_PENDING - return just the signing content
+    if (order.status === OrderStatus.PRESIGNATURE_PENDING) {
+      return renderFillsAt()
+    }
+
+    // Handle warning states first, regardless of order type
+    if (withWarning) {
+      return (
+        <styledEl.ExecuteCellWrapper>
+          <EstimatedExecutionPrice
+            amount={undefined}
+            tokenSymbol={undefined}
+            isInverted={isInverted}
+            isUnfillable={withWarning}
+            canShowWarning={true}
+            warningText={getWarningText()}
+            WarningTooltip={renderWarningTooltip(true)}
+            onApprove={withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined}
+          />
+        </styledEl.ExecuteCellWrapper>
+      )
+    }
+
+    // For TWAP parent orders
+    if (children && childOrders) {
+      // Check if all child orders are cancelled first
+      if (areAllChildOrdersCancelled(childOrders)) {
+        return (
+          <styledEl.CellElement doubleRow>
+            <b>
+              <styledEl.CancelledDisplay>
+                <X size={14} strokeWidth={2.5} />
+                Order cancelled
+              </styledEl.CancelledDisplay>
+            </b>
+            <i></i>
+          </styledEl.CellElement>
+        )
+      }
+
+      const nextScheduledOrder = childOrders.find(
+        (childOrder) => childOrder.status === OrderStatus.SCHEDULED && !getIsFinalizedOrder(childOrder),
+      )
+
+      if (nextScheduledOrder) {
+        // For scheduled orders, use the execution price if available, otherwise use the estimated price from props
+        const nextOrderExecutionPrice =
+          nextScheduledOrder.executionData.executedPrice || prices?.estimatedExecutionPrice
+        const nextOrderPriceDiffs = nextOrderExecutionPrice
+          ? calculatePriceDifference({
+              referencePrice: spotPrice,
+              targetPrice: nextOrderExecutionPrice,
+              isInverted: false,
+            })
+          : null
+
+        // Show the execution price for the next scheduled order
+        let nextOrderFillsAtContent
+        if (nextScheduledOrder.status === OrderStatus.CANCELLED || nextScheduledOrder.isUnfillable) {
+          nextOrderFillsAtContent = ''
+        } else if (!nextOrderExecutionPrice || nextScheduledOrder.status === OrderStatus.CREATING) {
+          nextOrderFillsAtContent = '-'
+        } else {
+          nextOrderFillsAtContent = (
+            <TokenAmount
+              amount={isInverted ? nextOrderExecutionPrice.invert() : nextOrderExecutionPrice}
+              tokenSymbol={nextOrderExecutionPrice?.quoteCurrency}
+              opacitySymbol
+            />
+          )
+        }
+
+        const nextOrderDistance = nextOrderPriceDiffs?.percentage
+          ? `${nextOrderPriceDiffs.percentage.toFixed(2)}%`
+          : '-'
+
+        return (
+          <styledEl.CellElement doubleRow>
+            <b>{nextOrderFillsAtContent}</b>
+            <i
+              style={{
+                color: !isUnfillable
+                  ? getDistanceColor(Number(nextOrderPriceDiffs?.percentage?.toFixed(4) || '0'))
+                  : 'inherit',
+              }}
+            >
+              {nextOrderDistance}
+            </i>
+          </styledEl.CellElement>
+        )
+      }
+
+      // If no scheduled orders found, show dash
+      return (
+        <styledEl.CellElement>
+          <b>-</b>
+        </styledEl.CellElement>
+      )
+    }
+
+    // Regular order display logic
     const fillsAtContent = renderFillsAt()
     const distance =
-      !isUnfillable && priceDiffs?.percentage && Number(priceDiffs?.percentage.toFixed(4)) >= MIN_PERCENTAGE_TO_DISPLAY
-        ? `${priceDiffs?.percentage.toFixed(2)}%`
-        : '-'
+      getIsFinalizedOrder(order) ||
+      order.status === OrderStatus.CANCELLED ||
+      isUnfillable ||
+      (priceDiffs?.percentage &&
+        Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= PENDING_EXECUTION_THRESHOLD_PERCENTAGE)
+        ? ''
+        : priceDiffs?.percentage
+          ? `${priceDiffs?.percentage.toFixed(2)}%`
+          : '-'
 
     return (
       <styledEl.CellElement doubleRow>
@@ -247,31 +433,43 @@ export function OrderRow({
     )
   }
 
-  const renderDistanceToMarket = () => (
-    <>
-      {isUnfillable ? (
-        '-'
-      ) : priceDiffs?.percentage && Number(priceDiffs.percentage.toFixed(4)) >= MIN_PERCENTAGE_TO_DISPLAY ? (
-        <styledEl.DistanceToMarket $color={getDistanceColor(Number(priceDiffs.percentage.toFixed(4)))}>
-          {priceDiffs.percentage.toFixed(2)}%
-        </styledEl.DistanceToMarket>
-      ) : (
-        '-'
-      )}
-    </>
-  )
+  const renderMarketPrice = () => {
+    // Early return for warning states and non-active orders
+    if (
+      withWarning ||
+      order.status === OrderStatus.CREATING ||
+      order.status === OrderStatus.PRESIGNATURE_PENDING ||
+      getIsFinalizedOrder(order)
+    ) {
+      return '-'
+    }
 
-  const renderMarketPrice = () => (
-    <>
-      {spotPrice ? (
-        <TokenAmount amount={spotPriceInverted} tokenSymbol={spotPriceInverted?.quoteCurrency} opacitySymbol />
-      ) : spotPrice === null ? (
-        '-'
-      ) : (
-        <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
-      )}
-    </>
-  )
+    // Check children finalization status
+    if (children && childOrders) {
+      if (childOrders.every((childOrder) => getIsFinalizedOrder(childOrder))) {
+        return '-'
+      }
+    }
+
+    // Handle spot price cases
+    if (spotPrice === null) {
+      return '-'
+    }
+
+    if (spotPrice) {
+      return (
+        <TokenAmount
+          amount={spotPriceInverted}
+          tokenSymbol={spotPriceInverted?.quoteCurrency}
+          opacitySymbol
+          clickable
+          noTitle
+        />
+      )
+    }
+
+    return <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
+  }
 
   return (
     <TableRow
@@ -279,7 +477,8 @@ export function OrderRow({
       isChildOrder={isChild}
       isHistoryTab={isHistoryTab}
       isRowSelectable={isRowSelectable}
-      columnLayout={columnLayout}
+      isTwapTable={isTwapTable}
+      isExpanded={isExpanded}
     >
       {/*Checkbox for multiple cancellation*/}
       {isRowSelectable && !isHistoryTab && (
@@ -309,37 +508,24 @@ export function OrderRow({
       {/* Non-history tab columns */}
       {!isHistoryTab ? (
         <>
-          {/* Price columns based on layout */}
-          {columnLayout === ColumnLayout.DEFAULT && (
-            <>
-              <styledEl.PriceElement onClick={toggleIsInverted}>
-                {showLimitPrice ? renderLimitPrice() : renderFillsAt()}
-              </styledEl.PriceElement>
-              <styledEl.PriceElement>{renderDistanceToMarket()}</styledEl.PriceElement>
-              <styledEl.PriceElement onClick={toggleIsInverted}>{renderMarketPrice()}</styledEl.PriceElement>
-            </>
-          )}
-
-          {columnLayout === ColumnLayout.VIEW_2 && (
-            <>
-              <styledEl.PriceElement onClick={toggleIsInverted}>{renderLimitPrice()}</styledEl.PriceElement>
-              <styledEl.PriceElement onClick={toggleIsInverted}>{renderFillsAt()}</styledEl.PriceElement>
-              <styledEl.PriceElement>{renderDistanceToMarket()}</styledEl.PriceElement>
-            </>
-          )}
-
-          {columnLayout === ColumnLayout.VIEW_3 && (
-            <>
-              <styledEl.PriceElement onClick={toggleIsInverted}>{renderLimitPrice()}</styledEl.PriceElement>
-              <styledEl.PriceElement onClick={toggleIsInverted}>{renderFillsAtWithDistance()}</styledEl.PriceElement>
-              <styledEl.PriceElement onClick={toggleIsInverted}>{renderMarketPrice()}</styledEl.PriceElement>
-            </>
-          )}
+          <styledEl.PriceElement onClick={toggleIsInverted}>{renderLimitPrice()}</styledEl.PriceElement>
+          <styledEl.PriceElement onClick={toggleIsInverted}>{renderFillsAtWithDistance()}</styledEl.PriceElement>
+          <styledEl.PriceElement onClick={toggleIsInverted}>{renderMarketPrice()}</styledEl.PriceElement>
 
           {/* Expires and Created for open orders */}
           <styledEl.CellElement doubleRow>
-            <b>{expirationTimeAgo}</b>
-            <i>{isScheduledCreating ? 'Creating...' : creationTimeAgo}</i>
+            <b
+              title={
+                expirationTime && !shouldShowDashForExpiration(order)
+                  ? formatDateWithTimezone(expirationTime)
+                  : undefined
+              }
+            >
+              {shouldShowDashForExpiration(order) ? '-' : expirationTimeAgo}
+            </b>
+            <i title={creationTime && !isScheduledCreating ? formatDateWithTimezone(creationTime) : undefined}>
+              {isScheduledCreating ? 'Creating...' : creationTimeAgo}
+            </i>
           </styledEl.CellElement>
         </>
       ) : (
@@ -365,6 +551,8 @@ export function OrderRow({
                 amount={executedPriceInverted}
                 tokenSymbol={executedPriceInverted?.quoteCurrency}
                 opacitySymbol
+                clickable
+                noTitle
               />
             ) : (
               '-'
@@ -372,10 +560,18 @@ export function OrderRow({
           </styledEl.PriceElement>
 
           <styledEl.CellElement>
-            {order.status === OrderStatus.FULFILLED && fulfillmentTimeAgo ? fulfillmentTimeAgo : '-'}
+            {order.status === OrderStatus.FULFILLED && fulfillmentTimeAgo ? (
+              <span title={order.fulfillmentTime ? formatDateWithTimezone(new Date(order.fulfillmentTime)) : undefined}>
+                {fulfillmentTimeAgo}
+              </span>
+            ) : (
+              '-'
+            )}
           </styledEl.CellElement>
 
-          <styledEl.CellElement>{creationTimeAgo}</styledEl.CellElement>
+          <styledEl.CellElement>
+            <span title={creationTime ? formatDateWithTimezone(creationTime) : undefined}>{creationTimeAgo}</span>
+          </styledEl.CellElement>
         </>
       )}
 
@@ -390,19 +586,27 @@ export function OrderRow({
       </styledEl.CellElement>
 
       {/* Status label */}
-      <styledEl.CellElement>
-        <styledEl.StatusBox>
-          <OrderStatusBox
-            order={order}
-            withWarning={withWarning}
-            onClick={onClick}
-            WarningTooltip={withWarning ? renderWarningTooltip(true) : undefined}
-          />
-        </styledEl.StatusBox>
-      </styledEl.CellElement>
+      {!children && (
+        <styledEl.CellElement>
+          <styledEl.StatusBox>
+            <OrderStatusBox
+              order={order}
+              withWarning={withWarning}
+              onClick={onClick}
+              WarningTooltip={withWarning ? renderWarningTooltip(true) : undefined}
+            />
+          </styledEl.StatusBox>
+        </styledEl.CellElement>
+      )}
 
       {/* Children (e.g. ToggleExpandButton for parent orders) */}
       {children}
+
+      {/* Add empty cell for child TWAP orders */}
+      {isTwapTable && isChild && <styledEl.CellElement />}
+
+      {/* Add empty cell for signing orders - only for TWAP */}
+      {isTwapTable && order.status === OrderStatus.PRESIGNATURE_PENDING && <styledEl.CellElement />}
 
       {/* Action content menu */}
       <styledEl.CellElement>
@@ -420,20 +624,22 @@ export function OrderRow({
 /**
  * Helper hook to prepare the parameters to calculate price difference
  */
-function usePricesDifference(prices: OrderRowProps['prices'], spotPrice: OrderRowProps['spotPrice']): PriceDifference {
+function usePricesDifference(
+  prices: OrderRowProps['prices'],
+  spotPrice: OrderRowProps['spotPrice'],
+  isInverted: boolean,
+): PriceDifference {
   const { estimatedExecutionPrice } = prices || {}
 
-  return useSafeMemo(() => {
-    if (!spotPrice || !estimatedExecutionPrice) return null
-
-    // Calculate price difference using original (non-inverted) prices
-    // The percentage should stay the same regardless of display inversion
-    return calculatePriceDifference({
-      referencePrice: spotPrice,
-      targetPrice: estimatedExecutionPrice,
-      isInverted: false,
-    })
-  }, [estimatedExecutionPrice, spotPrice]) // Remove isInverted from dependencies since it shouldn't affect the calculation
+  return useSafeMemo(
+    () =>
+      calculatePriceDifference({
+        referencePrice: spotPrice,
+        targetPrice: estimatedExecutionPrice,
+        isInverted,
+      }),
+    [estimatedExecutionPrice, spotPrice, isInverted],
+  )
 }
 
 /**
@@ -467,4 +673,29 @@ function getActivityUrl(chainId: SupportedChainId, order: ParsedOrder): string |
   }
 
   return chainId && activityId ? getEtherscanLink(chainId, 'transaction', activityId) : undefined
+}
+
+function shouldShowDashForExpiration(order: ParsedOrder): boolean {
+  // Show dash for finalized orders that are not expired
+  if (getIsFinalizedOrder(order) && order.status !== OrderStatus.EXPIRED) {
+    return true
+  }
+
+  // For TWAP parent orders, show dash when all child orders are in a final state
+  if (getIsComposableCowParentOrder(order)) {
+    // If the parent order is fulfilled or cancelled, all child orders are finalized
+    if (order.status === OrderStatus.FULFILLED || order.status === OrderStatus.CANCELLED) {
+      return true
+    }
+
+    // For mixed states (some filled, some expired), check either condition:
+    // 1. fullyFilled: true when all non-expired parts are filled
+    // 2. status === EXPIRED: true when all remaining parts are expired
+    // Either condition indicates all child orders are in a final state
+    if (order.executionData.fullyFilled || order.status === OrderStatus.EXPIRED) {
+      return true
+    }
+  }
+
+  return false
 }

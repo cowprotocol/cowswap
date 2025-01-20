@@ -1,37 +1,7 @@
 import { ReactNode } from 'react'
 
 import { Trans } from '@lingui/macro'
-import { Repeat } from 'react-feather'
 import styled from 'styled-components/macro'
-
-export enum ColumnLayout {
-  DEFAULT = 'DEFAULT',
-  VIEW_2 = 'VIEW_2',
-  VIEW_3 = 'VIEW_3',
-}
-
-export const LAYOUT_MAP: Record<string, ColumnLayout> = {
-  DEFAULT: ColumnLayout.DEFAULT,
-  VIEW_2: ColumnLayout.VIEW_2,
-  VIEW_3: ColumnLayout.VIEW_3,
-} as const
-
-const StyledArrowControl = styled.div`
-  display: inline-flex;
-  margin-left: 5px;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: opacity 0.2s ease-in-out;
-
-  &:hover {
-    opacity: 1;
-  }
-
-  > svg {
-    width: 14px;
-    height: 14px;
-  }
-`
 
 const HeaderElement = styled.div<{ doubleRow?: boolean }>`
   display: flex;
@@ -69,92 +39,35 @@ const CORE_COLUMNS = {
   },
 }
 
-// Price-related columns for different layouts
-const PRICE_COLUMNS = {
-  DEFAULT: (showLimitPrice: boolean, setShowLimitPrice: (value: boolean) => void): TableHeaderConfig[] => [
-    {
-      id: 'fillsAt',
-      content: showLimitPrice ? <Trans>Limit price</Trans> : <Trans>Fills at</Trans>,
-      showInHistory: false,
-      order: 3,
-      extraComponent: (
-        <StyledArrowControl onClick={() => setShowLimitPrice(!showLimitPrice)}>
-          <Repeat size={14} />
-        </StyledArrowControl>
-      ),
-    },
-    {
-      id: 'distanceToMarket',
-      content: (
-        <Trans>
-          Distance <br />
-          to market
-        </Trans>
-      ),
-      showInHistory: false,
-      order: 4,
-    },
-    {
-      id: 'marketPrice',
-      content: <Trans>Market price</Trans>,
-      showInHistory: false,
-      order: 5,
-    },
-  ],
-  VIEW_2: (): TableHeaderConfig[] => [
-    {
-      id: 'limitPrice',
-      content: <Trans>Limit price</Trans>,
-      showInHistory: false,
-      order: 3,
-    },
-    {
-      id: 'fillsAt',
-      content: <Trans>Fills at</Trans>,
-      showInHistory: false,
-      order: 4,
-    },
-    {
-      id: 'distanceToMarket',
-      content: (
-        <Trans>
-          Distance <br />
-          to market
-        </Trans>
-      ),
-      showInHistory: false,
-      order: 5,
-    },
-  ],
-  VIEW_3: (): TableHeaderConfig[] => [
-    {
-      id: 'limitPrice',
-      content: <Trans>Limit price</Trans>,
-      showInHistory: false,
-      order: 3,
-    },
-    {
-      id: 'fillsAtWithDistance',
-      content: (
-        <HeaderElement doubleRow>
-          <Trans>Fills at</Trans>
-          <i>
-            <Trans>Distance to market</Trans>
-          </i>
-        </HeaderElement>
-      ),
-      showInHistory: false,
-      doubleRow: true,
-      order: 4,
-    },
-    {
-      id: 'marketPrice',
-      content: <Trans>Market price</Trans>,
-      showInHistory: false,
-      order: 5,
-    },
-  ],
-}
+// Price columns for the standard layout
+const PRICE_COLUMNS: TableHeaderConfig[] = [
+  {
+    id: 'limitPrice',
+    content: <Trans>Limit price</Trans>,
+    showInHistory: false,
+    order: 3,
+  },
+  {
+    id: 'fillsAtWithDistance',
+    content: (
+      <HeaderElement doubleRow>
+        <Trans>Fills at</Trans>
+        <i>
+          <Trans>Distance to market</Trans>
+        </i>
+      </HeaderElement>
+    ),
+    showInHistory: false,
+    doubleRow: true,
+    order: 4,
+  },
+  {
+    id: 'marketPrice',
+    content: <Trans>Market price</Trans>,
+    showInHistory: false,
+    order: 5,
+  },
+]
 
 // Columns that appear after price columns
 const DETAIL_COLUMNS: TableHeaderConfig[] = [
@@ -213,25 +126,9 @@ const DETAIL_COLUMNS: TableHeaderConfig[] = [
   },
 ]
 
-export const createTableHeaders = (
-  showLimitPrice: boolean,
-  setShowLimitPrice: (value: boolean) => void,
-  columnLayout: ColumnLayout = ColumnLayout.DEFAULT,
-): TableHeaderConfig[] => {
-  // Get the appropriate price columns based on layout
-  const priceColumns = (() => {
-    switch (columnLayout) {
-      case ColumnLayout.VIEW_2:
-        return PRICE_COLUMNS.VIEW_2()
-      case ColumnLayout.VIEW_3:
-        return PRICE_COLUMNS.VIEW_3()
-      default:
-        return PRICE_COLUMNS.DEFAULT(showLimitPrice, setShowLimitPrice)
-    }
-  })()
-
+export const createTableHeaders = (): TableHeaderConfig[] => {
   // Combine all columns and sort by order
-  return [CORE_COLUMNS.CHECKBOX, CORE_COLUMNS.TRADE, ...priceColumns, ...DETAIL_COLUMNS].sort(
+  return [CORE_COLUMNS.CHECKBOX, CORE_COLUMNS.TRADE, ...PRICE_COLUMNS, ...DETAIL_COLUMNS].sort(
     (a, b) => a.order - b.order,
   )
 }

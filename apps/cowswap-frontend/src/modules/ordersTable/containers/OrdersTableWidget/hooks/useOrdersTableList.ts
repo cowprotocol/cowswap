@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
-import { Order, PENDING_STATES } from 'legacy/state/orders/actions'
+import { Order, PENDING_STATES, OrderStatus } from 'legacy/state/orders/actions'
+import { useSetIsOrderUnfillable } from 'legacy/state/orders/hooks'
 
 import { getIsComposableCowOrder } from 'utils/orderUtils/getIsComposableCowOrder'
 import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
@@ -14,6 +15,7 @@ export interface OrdersTableList {
   pending: OrderTableItem[]
   history: OrderTableItem[]
   unfillable: OrderTableItem[]
+  signing: OrderTableItem[]
   all: OrderTableItem[]
 }
 
@@ -32,12 +34,16 @@ export function useOrdersTableList(
   chainId: number,
   balancesAndAllowances: any,
 ): OrdersTableList {
+  const setIsOrderUnfillable = useSetIsOrderUnfillable()
+
+  // First, group and sort all orders
   const allSortedOrders = useMemo(() => {
     return groupOrdersTable(allOrders).sort(ordersSorter)
   }, [allOrders])
 
+  // Then, categorize orders into their respective lists
   return useMemo(() => {
-    const { pending, history, unfillable, all } = allSortedOrders.reduce(
+    const { pending, history, unfillable, signing, all } = allSortedOrders.reduce<OrdersTableList>(
       (acc, item) => {
         const order = isParsedOrder(item) ? item : item.parent
 
@@ -53,33 +59,52 @@ export function useOrdersTableList(
         acc.all.push(item)
 
         const isPending = PENDING_STATES.includes(order.status)
+        const isSigning = order.status === OrderStatus.PRESIGNATURE_PENDING
 
         // Check if order is unfillable (insufficient balance or allowance)
         const params = getOrderParams(chainId, balancesAndAllowances, order)
         const isUnfillable = params.hasEnoughBalance === false || params.hasEnoughAllowance === false
 
-        // Only add to unfillable if the order is both pending and unfillable
-        if (isPending && isUnfillable) {
+        // Update the unfillable flag whenever the state changes, not just when becoming unfillable
+        if (isPending && order.isUnfillable !== isUnfillable) {
+          setIsOrderUnfillable({ chainId, id: order.id, isUnfillable })
+        }
+
+        // Add to signing if in presignature pending state
+        if (isSigning) {
+          acc.signing.push(item)
+        }
+
+        // Add to unfillable only if pending, unfillable, and not in signing state
+        if (isPending && isUnfillable && !isSigning) {
           acc.unfillable.push(item)
         }
 
         // Add to pending or history based on status
-        if (isPending) {
+        if (isPending && !isSigning) {
           acc.pending.push(item)
-        } else {
+        } else if (!isPending) {
           acc.history.push(item)
         }
 
         return acc
       },
-      { pending: [], history: [], unfillable: [], all: [] } as OrdersTableList,
+      {
+        pending: [],
+        history: [],
+        unfillable: [],
+        signing: [],
+        all: [],
+      },
     )
 
+    // Return sliced lists to respect ORDERS_LIMIT
     return {
       pending: pending.slice(0, ORDERS_LIMIT),
       history: history.slice(0, ORDERS_LIMIT),
       unfillable: unfillable.slice(0, ORDERS_LIMIT),
+      signing: signing.slice(0, ORDERS_LIMIT),
       all: all.slice(0, ORDERS_LIMIT),
     }
-  }, [allSortedOrders, orderType, chainId, balancesAndAllowances])
+  }, [allSortedOrders, orderType, chainId, balancesAndAllowances, setIsOrderUnfillable])
 }

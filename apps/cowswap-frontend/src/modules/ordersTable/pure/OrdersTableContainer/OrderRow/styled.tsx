@@ -1,6 +1,5 @@
 import { HelpTooltip, Media, UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { RateWrapper } from 'common/pure/RateInfo'
@@ -8,16 +7,17 @@ import { RateWrapper } from 'common/pure/RateInfo'
 export const WarningIndicator = styled.button<{ hasBackground?: boolean }>`
   --height: 28px;
   margin: 0;
-  background: ${({ hasBackground = true }) => (hasBackground ? `var(${UI.COLOR_ALERT_BG})` : 'transparent')};
-  color: var(${UI.COLOR_ALERT_TEXT});
+  background: ${({ hasBackground = true }) => (hasBackground ? `var(${UI.COLOR_DANGER_BG})` : 'transparent')};
+  color: var(${UI.COLOR_DANGER});
   line-height: 0;
   border: 0;
-  padding: 0 5px;
+  padding: 0;
   width: auto;
   height: var(--height);
   border-radius: 0 9px 9px 0;
 
   svg {
+    cursor: help;
     color: inherit;
   }
 
@@ -112,6 +112,14 @@ export const CellElement = styled.div<{
     font-weight: 500;
     width: 100%;
     text-align: left;
+
+    &[title] {
+      cursor: help;
+    }
+  }
+
+  > span[title] {
+    cursor: help;
   }
 
   ${({ doubleRow }) =>
@@ -123,6 +131,10 @@ export const CellElement = styled.div<{
 
     > i {
       opacity: 0.7;
+
+      &[title] {
+        cursor: help;
+      }
     }
   `}
   ${RateWrapper} {
@@ -232,105 +244,52 @@ export const ExecuteInformationTooltip = styled.div`
   margin: 0;
 `
 
-export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
+export const CancelledDisplay = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  border-radius: 9px;
-  width: 100%;
-  height: 28px;
-
-  background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(theme.paper, 0.7)} 100%);
-  background-size: 200% 100%;
-  background-position: 100% 0;
-
-  border: 1px solid ${({ theme }) => transparentize(theme.text, 0.8)};
-  padding: 0 6px 0 10px;
-  cursor: pointer;
-  transition: background 0.5s ease-in-out;
-
-  &:hover {
-    animation: gradientMove 3s linear infinite;
-  }
-
-  @keyframes gradientMove {
-    0% {
-      background-position: 100% 0;
-    }
-    50% {
-      background-position: 0 0;
-    }
-    100% {
-      background-position: 100% 0;
-    }
-  }
-
-  @keyframes changeOpacity {
-    0% {
-      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => theme.paper} 100%);
-    }
-    50% {
-      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(theme.paper, 0.1)} 100%);
-    }
-    100% {
-      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(theme.paper, 0.5)} 100%);
-    }
-  }
-
-  > i {
-    font-style: normal;
-    font-size: 12px;
-    font-weight: 600;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  > button {
-    --size: 17px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    border: 0;
-    padding: 0;
-    margin: 0 0 0 6px;
-    cursor: pointer;
-    outline: none;
-    color: inherit;
-    transition: color 0.2s ease-out;
-    position: relative;
-    height: var(--height);
-    transition: all 0.3s;
-    width: var(--size);
-    height: var(--size);
-    min-width: var(--size);
-    min-height: var(--size);
-    line-height: 1;
-    background: transparent;
-    border: 1px solid ${({ theme }) => transparentize(theme.text, 0.8)};
-    border-radius: 6px;
-    user-select: none;
-  }
-
-  > button::before,
-  > button::after {
-    content: '';
-    transform: rotate(0);
-    top: 7px;
-    inset-inline-end: 3px;
-    inset-inline-start: 3px;
-    height: 1px;
-    position: absolute;
-    background: currentcolor;
-    transition: transform 0.5s ease-in-out;
-  }
-
-  > button::after {
-    transform: ${({ isCollapsed }) => (isCollapsed ? 'rotate(90deg)' : 'rotate(0deg)')};
-  }
+  gap: 4px;
+  color: var(${UI.COLOR_DANGER});
+  font-weight: 500;
+  font-size: 12px;
 `
 
-export const DistanceToMarket = styled.span<{ $color: string }>`
-  color: ${({ $color }: { $color: string }) => $color};
+export const ExpiredDisplay = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(${UI.COLOR_ALERT_TEXT});
+`
+
+export const FilledDisplay = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(${UI.COLOR_SUCCESS});
+`
+
+export const PendingExecutionDisplay = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(${UI.COLOR_TEXT});
+  font-weight: 500;
+  font-size: 12px;
+`
+
+export const SigningDisplay = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: help;
+  color: var(${UI.COLOR_ALERT_TEXT});
+
+  > svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+
+  svg > path {
+    fill: currentColor;
+  }
 `

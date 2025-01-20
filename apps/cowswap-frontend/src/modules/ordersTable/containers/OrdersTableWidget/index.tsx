@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useTokensAllowances, useTokensBalances } from '@cowprotocol/balances-and-allowances'
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Search } from 'react-feather'
@@ -12,10 +12,9 @@ import styled from 'styled-components/macro'
 import { Order } from 'legacy/state/orders/actions'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { pendingOrdersPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
-import { BalancesAndAllowances } from 'modules/tokens'
+import type { BalancesAndAllowances } from 'modules/tokens'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
@@ -30,7 +29,6 @@ import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
 import { OPEN_TAB, ORDERS_TABLE_TABS, ALL_ORDERS_TAB } from '../../const/tabs'
 import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
-import { ColumnLayout, LAYOUT_MAP } from '../../pure/OrdersTableContainer/tableHeaders'
 import { OrderActions } from '../../pure/OrdersTableContainer/types'
 import { TabOrderTypes } from '../../types'
 import { buildOrdersTableUrl } from '../../utils/buildOrdersTableUrl'
@@ -44,6 +42,10 @@ const SearchInputContainer = styled.div`
   margin: 0;
   padding: 0 0 0 16px;
   position: relative;
+
+  ${Media.upToMedium()} {
+    padding: 0;
+  }
 `
 
 const SearchIcon = styled(Search)`
@@ -54,6 +56,10 @@ const SearchIcon = styled(Search)`
   color: var(${UI.COLOR_TEXT_OPACITY_50});
   width: 16px;
   height: 16px;
+
+  ${Media.upToMedium()} {
+    left: 10px;
+  }
 `
 
 const SearchInput = styled.input`
@@ -65,6 +71,12 @@ const SearchInput = styled.input`
   border-radius: 8px;
   font-size: 13px;
   font-weight: 500;
+  min-height: 36px;
+
+  ${Media.upToMedium()} {
+    padding: 8px 12px 8px 32px;
+    border-radius: 12px;
+  }
 
   &::placeholder {
     color: var(${UI.COLOR_TEXT_OPACITY_50});
@@ -82,6 +94,8 @@ function getOrdersListByIndex(ordersList: OrdersTableList, id: string): OrderTab
       return ordersList.all
     case 'unfillable':
       return ordersList.unfillable
+    case 'signing':
+      return ordersList.signing
     case 'open':
       return ordersList.pending
     case 'history':
@@ -102,17 +116,19 @@ function toggleOrderInCancellationList(state: CancellableOrder[], order: Cancell
 }
 
 interface OrdersTableWidgetProps {
-  displayOrdersOnlyForSafeApp: boolean
   orders: Order[]
   orderType: TabOrderTypes
+  isTwapTable?: boolean
+  displayOrdersOnlyForSafeApp?: boolean
   children?: ReactNode
 }
 
 export function OrdersTableWidget({
   orders: allOrders,
   orderType,
-  displayOrdersOnlyForSafeApp,
   children,
+  displayOrdersOnlyForSafeApp = false,
+  isTwapTable = false,
 }: OrdersTableWidgetProps) {
   const { chainId, account } = useWalletInfo()
   const location = useLocation()
@@ -127,11 +143,6 @@ export function OrdersTableWidget({
   const isSafeViaWc = useIsSafeViaWc()
   const injectedWidgetParams = useInjectedWidgetParams()
   const [searchTerm, setSearchTerm] = useState('')
-  const limitOrdersSettings = useAtomValue(limitOrdersSettingsAtom)
-  const columnLayout = useMemo(
-    () => LAYOUT_MAP[limitOrdersSettings.columnLayout] || ColumnLayout.DEFAULT,
-    [limitOrdersSettings.columnLayout],
-  )
 
   const balancesState = useTokensBalances()
   const allowancesState = useTokensAllowances()
@@ -151,18 +162,40 @@ export function OrdersTableWidget({
   const { currentTabId, currentPageNumber } = useMemo(() => {
     const params = parseOrdersTableUrl(location.search)
 
+    // If we're on a tab that becomes empty (signing or unfillable),
+    // default to the all orders tab
+    if (
+      (params.tabId === 'signing' && !ordersList.signing.length) ||
+      (params.tabId === 'unfillable' && !ordersList.unfillable.length)
+    ) {
+      return {
+        currentTabId: ALL_ORDERS_TAB.id,
+        currentPageNumber: params.pageNumber || 1,
+      }
+    }
+
     return {
       currentTabId: params.tabId || ALL_ORDERS_TAB.id,
       currentPageNumber: params.pageNumber || 1,
     }
-  }, [location.search])
+  }, [location.search, ordersList.signing.length, ordersList.unfillable.length])
 
   const orders = useMemo(() => {
     return getOrdersListByIndex(ordersList, currentTabId)
   }, [ordersList, currentTabId])
 
   const tabs = useMemo(() => {
-    return ORDERS_TABLE_TABS.map((tab) => {
+    return ORDERS_TABLE_TABS.filter((tab) => {
+      // Only include the unfillable tab if there are unfillable orders
+      if (tab.id === 'unfillable') {
+        return getOrdersListByIndex(ordersList, tab.id).length > 0
+      }
+      // Only include the signing tab if there are signing orders
+      if (tab.id === 'signing') {
+        return getOrdersListByIndex(ordersList, tab.id).length > 0
+      }
+      return true
+    }).map((tab) => {
       return { ...tab, isActive: tab.id === currentTabId, count: getOrdersListByIndex(ordersList, tab.id).length }
     })
   }, [currentTabId, ordersList])
@@ -211,6 +244,11 @@ export function OrdersTableWidget({
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useValidatePageUrlParams(orders.length, currentTabId, currentPageNumber)
+
+  // Clear selection when changing tabs
+  useEffect(() => {
+    updateOrdersToCancel([])
+  }, [currentTabId, updateOrdersToCancel])
 
   const filteredOrders = useMemo(() => {
     if (!searchTerm) return orders
@@ -294,7 +332,7 @@ export function OrdersTableWidget({
         pendingActivities={pendingActivity}
         injectedWidgetParams={injectedWidgetParams}
         searchTerm={searchTerm}
-        columnLayout={columnLayout}
+        isTwapTable={isTwapTable}
       >
         {(currentTabId === OPEN_TAB.id || currentTabId === 'all' || currentTabId === 'unfillable') &&
           orders.length > 0 && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />}

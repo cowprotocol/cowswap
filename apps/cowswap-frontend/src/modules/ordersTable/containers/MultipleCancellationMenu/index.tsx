@@ -26,8 +26,8 @@ const Wrapper = styled.div<{ hasSelectedItems: boolean }>`
 
   ${Media.upToSmall()} {
     width: 100%;
-    justify-content: center;
-    margin: 15px auto 0;
+    justify-content: flex-end;
+    margin: 10px auto 5px;
   }
 `
 
