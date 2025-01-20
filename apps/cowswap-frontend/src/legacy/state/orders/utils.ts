@@ -358,8 +358,12 @@ export function getEstimatedExecutionPrice(
     })
   }
 
+  // // Make the fill price a bit worse to account for the fee
+  const newFillPrice =
+    extrapolatePriceBasedOnFeeAmount(feeAmount, remainingSellAmount, fillPrice, inputToken, outputToken) || fillPrice
+
   // Pick the MAX between FEP and FP
-  return fillPrice.greaterThan(feasibleExecutionPrice) ? fillPrice : feasibleExecutionPrice
+  return newFillPrice.greaterThan(feasibleExecutionPrice) ? newFillPrice : feasibleExecutionPrice
 }
 
 /**
