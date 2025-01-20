@@ -288,20 +288,27 @@ export function getEstimatedExecutionPrice(
     sellAmount = getRemainderAmountsWithoutSurplus(order).sellAmount
     partiallyFillable = order.partiallyFillable
   } else {
+    if (!inputAmount || !outputAmount || !kind || inputAmount.equalTo(0) || outputAmount.equalTo(0)) {
+      return null
+    }
     // Always the full amount
-    sellAmount = inputAmount!.quotient.toString()
+    sellAmount = inputAmount.quotient.toString()
 
-    inputToken = getWrappedToken(inputAmount!.currency)
-    outputToken = getWrappedToken(outputAmount!.currency)
+    inputToken = getWrappedToken(inputAmount.currency)
+    outputToken = getWrappedToken(outputAmount.currency)
 
     limitPrice = getOrderLimitPriceWithPartnerFee({
       inputToken,
       outputToken,
       sellAmount,
-      buyAmount: outputAmount!.quotient.toString(),
+      buyAmount: outputAmount.quotient.toString(),
       kind: kind as OrderKind,
       fullAppData,
     })
+  }
+
+  if (!limitPrice) {
+    return null
   }
 
   const feeAmount = CurrencyAmount.fromRawAmount(inputToken, fee)
