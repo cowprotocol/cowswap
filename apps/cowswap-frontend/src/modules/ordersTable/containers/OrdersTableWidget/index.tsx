@@ -116,17 +116,19 @@ function toggleOrderInCancellationList(state: CancellableOrder[], order: Cancell
 }
 
 interface OrdersTableWidgetProps {
-  displayOrdersOnlyForSafeApp: boolean
   orders: Order[]
   orderType: TabOrderTypes
+  isTwapTable?: boolean
+  displayOrdersOnlyForSafeApp?: boolean
   children?: ReactNode
 }
 
 export function OrdersTableWidget({
   orders: allOrders,
   orderType,
-  displayOrdersOnlyForSafeApp,
   children,
+  displayOrdersOnlyForSafeApp = false,
+  isTwapTable = false,
 }: OrdersTableWidgetProps) {
   const { chainId, account } = useWalletInfo()
   const location = useLocation()
@@ -330,6 +332,7 @@ export function OrdersTableWidget({
         pendingActivities={pendingActivity}
         injectedWidgetParams={injectedWidgetParams}
         searchTerm={searchTerm}
+        isTwapTable={isTwapTable}
       >
         {(currentTabId === OPEN_TAB.id || currentTabId === 'all' || currentTabId === 'unfillable') &&
           orders.length > 0 && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />}

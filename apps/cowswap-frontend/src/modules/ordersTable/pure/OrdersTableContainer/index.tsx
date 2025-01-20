@@ -43,6 +43,7 @@ interface OrdersTableContainerProps {
   currentPageNumber: number
   pendingOrdersPrices: PendingOrdersPrices
   getSpotPrice: ReturnType<typeof useGetSpotPrice>
+  isTwapTable: boolean
   searchTerm?: string
 }
 
@@ -65,6 +66,7 @@ export function OrdersTableContainer({
   pendingActivities,
   injectedWidgetParams,
   searchTerm,
+  isTwapTable,
 }: OrdersTableContainerProps) {
   const currentTab = useMemo(() => {
     const activeTab = tabs.find((tab) => tab.isActive)
@@ -158,6 +160,7 @@ export function OrdersTableContainer({
     return (
       <OrdersTable
         currentTab={currentTab}
+        isTwapTable={isTwapTable}
         chainId={chainId}
         orders={orders}
         selectedOrders={selectedOrders}

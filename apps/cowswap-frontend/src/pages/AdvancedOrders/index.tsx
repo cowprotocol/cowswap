@@ -73,7 +73,8 @@ export default function AdvancedOrdersPage() {
         {!hideOrdersTable && (
           <styledEl.SecondaryWrapper>
             <OrdersTableWidget
-              displayOrdersOnlyForSafeApp={true}
+              isTwapTable
+              displayOrdersOnlyForSafeApp
               orderType={TabOrderTypes.ADVANCED}
               orders={allEmulatedOrders}
             />
