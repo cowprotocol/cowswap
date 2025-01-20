@@ -189,7 +189,40 @@ export function getOrderMarketPrice(order: Order, quotedAmount: string, feeAmoun
  * 5% to level out the fee amount changes
  */
 const EXECUTION_PRICE_FEE_COEFFICIENT = new Percent(5, 100)
+const FEE_AMOUNT_MULTIPLIER = 50
 
+/**
+ *
+ * @param order
+ * @param fillPrice
+ * @param fee
+ * @param inputAmount
+ * @param outputAmount
+ * @param kind
+ * @param fullAppData
+ * @param isPartiallyFillable
+ */
+export function getEstimatedExecutionPrice(
+  order: undefined, // there's no order when calling this way
+  fillPrice: Price<Currency, Currency>,
+  fee: string,
+  inputAmount: CurrencyAmount<Currency>,
+  outputAmount: CurrencyAmount<Currency>,
+  kind: OrderKind,
+  fullAppData: EnrichedOrder['fullAppData'],
+  isPartiallyFillable: boolean,
+): Price<Currency, Currency> | null
+/**
+ *
+ * @param order Tokens and amounts information, plus whether partially fillable
+ * @param fillPrice AKA MarketPrice
+ * @param fee Estimated fee in inputToken atoms, as string
+ */
+export function getEstimatedExecutionPrice(
+  order: Order,
+  fillPrice: Price<Currency, Currency>,
+  fee: string,
+): Price<Currency, Currency> | null
 /**
  * Get estimated execution price
  *
@@ -217,26 +250,7 @@ const EXECUTION_PRICE_FEE_COEFFICIENT = new Percent(5, 100)
  *
  * IF (Kind = Partial)
  *        EEP = MAX(FEP, FBOP)
- *
- *
- * @param order Tokens and amounts information, plus whether partially fillable
- * @param fillPrice AKA MarketPrice
- * @param fee Estimated fee in inputToken atoms, as string
  */
-export function getEstimatedExecutionPrice(
-  order: undefined, // there's no order when calling this way
-  fillPrice: Price<Currency, Currency>,
-  fee: string,
-  inputAmount: CurrencyAmount<Currency>,
-  outputAmount: CurrencyAmount<Currency>,
-  kind: OrderKind,
-  fullAppData: EnrichedOrder['fullAppData'],
-): Price<Currency, Currency> | null
-export function getEstimatedExecutionPrice(
-  order: Order,
-  fillPrice: Price<Currency, Currency>,
-  fee: string,
-): Price<Currency, Currency> | null
 export function getEstimatedExecutionPrice(
   order: Order | undefined,
   fillPrice: Price<Currency, Currency>,
@@ -245,15 +259,18 @@ export function getEstimatedExecutionPrice(
   outputAmount?: CurrencyAmount<Currency>,
   kind?: OrderKind,
   fullAppData?: EnrichedOrder['fullAppData'],
+  isPartiallyFillable?: boolean,
 ): Price<Currency, Currency> | null {
   let inputToken: Token
   let outputToken: Token
   let limitPrice: Price<Currency, Currency>
   let sellAmount: string
+  let partiallyFillable = isPartiallyFillable
 
   if (order) {
     inputToken = order.inputToken
     outputToken = order.outputToken
+    // Take partner fee into account when calculating the limit price
     limitPrice = getOrderLimitPriceWithPartnerFee(order)
 
     if (getUiOrderType(order) === UiOrderType.SWAP) {
@@ -265,11 +282,14 @@ export function getEstimatedExecutionPrice(
       return null
     }
 
+    // Check what's left to sell, discounting the surplus, if any
     sellAmount = getRemainderAmountsWithoutSurplus(order).sellAmount
+    partiallyFillable = order.partiallyFillable
   } else {
     sellAmount = inputAmount!.quotient.toString()
     inputToken = getWrappedToken(inputAmount!.currency)
     outputToken = getWrappedToken(outputAmount!.currency)
+
     limitPrice = getOrderLimitPriceWithPartnerFee({
       inputToken,
       outputToken,
@@ -284,9 +304,7 @@ export function getEstimatedExecutionPrice(
 
   // Build CurrencyAmount and Price instances
   // const feeAmount = CurrencyAmount.fromRawAmount(order.inputToken, feeAmount)
-  // Take partner fee into account when calculating the limit price
 
-  // Check what's left to sell, discounting the surplus, if any
   const remainingSellAmount = CurrencyAmount.fromRawAmount(inputToken, sellAmount)
 
   // When fee > amount, return 0 price
@@ -295,24 +313,60 @@ export function getEstimatedExecutionPrice(
   }
 
   const feeWithMargin = feeAmount.add(feeAmount.multiply(EXECUTION_PRICE_FEE_COEFFICIENT))
-  const numerator = remainingSellAmount.multiply(limitPrice)
-  const denominator = remainingSellAmount.subtract(feeWithMargin)
 
-  // Just in case when the denominator is <= 0 after subtraction the fee
-  if (!denominator.greaterThan(ZERO_FRACTION)) {
-    return new Price(inputToken, outputToken, '0', '0')
+  let feasibleExecutionPrice: Price<Currency, Currency> | undefined = undefined
+
+  if (partiallyFillable) {
+    // Use FEE_AMOUNT_MULTIPLIER times fee amount as the new sell amount
+    const newSellAmount = feeAmount.multiply(JSBI.BigInt(FEE_AMOUNT_MULTIPLIER))
+    // Only use this method if the new sell amount is smaller than the remaining sell amount
+    if (remainingSellAmount.greaterThan(newSellAmount)) {
+      // Quote the buy amount using the existing limit price
+      const buyAmount = limitPrice.quote(newSellAmount)
+      feasibleExecutionPrice = new Price(
+        inputToken,
+        outputToken,
+        newSellAmount.subtract(feeAmount).quotient, // TODO: should we use the fee with margin here?
+        buyAmount.quotient,
+      )
+      console.log(`getEstimatedExecutionPrice: partially fillable`, {
+        limitPrice: limitPrice.toSignificant(10),
+        feasibleExecutionPrice: feasibleExecutionPrice.toSignificant(10),
+        feeAmount: feeAmount.toSignificant(10),
+        sellAmount: remainingSellAmount.toSignificant(10),
+        newSellAmount: newSellAmount.toSignificant(10),
+      })
+    }
   }
 
-  /**
-   * Example:
-   * Order: 100 WETH -> 182000 USDC
-   * Fee: 0.002 WETH
-   * Limit price: 182000 / 100 = 1820 USDC per 1 WETH
-   *
-   * Fee with margin: 0.002 + 5% = 0.0021 WETH
-   * Executes at: 182000 / (100 - 0.0021) = 1820.038 USDC per 1 WETH
-   */
-  const feasibleExecutionPrice = new Price(inputToken, outputToken, denominator.quotient, numerator.quotient)
+  // Regular case, when the order is fill or kill OR the fill amount is smaller than the threshold set
+  if (feasibleExecutionPrice === undefined) {
+    const numerator = remainingSellAmount.multiply(limitPrice)
+    const denominator = remainingSellAmount.subtract(feeWithMargin)
+
+    // Just in case when the denominator is <= 0 after subtracting the fee
+    if (!denominator.greaterThan(ZERO_FRACTION)) {
+      return new Price(inputToken, outputToken, '0', '0')
+    }
+
+    /**
+     * Example:
+     * Order: 100 WETH -> 182000 USDC
+     * Fee: 0.002 WETH
+     * Limit price: 182000 / 100 = 1820 USDC per 1 WETH
+     *
+     * Fee with margin: 0.002 + 5% = 0.0021 WETH
+     * Executes at: 182000 / (100 - 0.0021) = 1820.038 USDC per 1 WETH
+     */
+    feasibleExecutionPrice = new Price(inputToken, outputToken, denominator.quotient, numerator.quotient)
+
+    console.log(`getEstimatedExecutionPrice: fill or kill`, {
+      limitPrice: limitPrice.toSignificant(10),
+      feasibleExecutionPrice: feasibleExecutionPrice.toSignificant(10),
+      feeAmount: feeAmount.toSignificant(10),
+      sellAmount: remainingSellAmount.toSignificant(10),
+    })
+  }
 
   // Pick the MAX between FEP and FP
   const estimatedExecutionPrice = fillPrice.greaterThan(feasibleExecutionPrice) ? fillPrice : feasibleExecutionPrice

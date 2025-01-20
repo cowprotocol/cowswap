@@ -11,9 +11,12 @@ import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 
 import { useSafeEffect } from 'common/hooks/useSafeMemo'
 
+import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
+
 export function ExecutionPriceUpdater() {
   const { marketRate, feeAmount } = useAtomValue(limitRateAtom)
   const { inputCurrencyAmount, outputCurrencyAmount, orderKind } = useLimitOrdersDerivedState()
+  const { partialFillsEnabled } = useAtomValue(limitOrdersSettingsAtom)
   const setExecutionPrice = useSetAtom(executionPriceAtom)
   const { fullAppData } = useAppData() || {}
 
@@ -36,6 +39,7 @@ export function ExecutionPriceUpdater() {
       outputCurrencyAmount,
       orderKind,
       fullAppData,
+      partialFillsEnabled,
     )
 
   useSafeEffect(() => {
