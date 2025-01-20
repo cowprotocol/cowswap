@@ -192,18 +192,19 @@ const EXECUTION_PRICE_FEE_COEFFICIENT = new Percent(5, 100)
 const FEE_AMOUNT_MULTIPLIER = 50
 
 /**
+ * Calculates the estimated execution price based on order params, before the order is placed
  *
- * @param order
- * @param fillPrice
- * @param fee
- * @param inputAmount
- * @param outputAmount
- * @param kind
- * @param fullAppData
- * @param isPartiallyFillable
+ * @param order undefined // there's no order when calling this way
+ * @param fillPrice The current market price
+ * @param fee The estimated fee in inputToken atoms, as string
+ * @param inputAmount The input amount
+ * @param outputAmount The output amount
+ * @param kind The order kind
+ * @param fullAppData The full app data (for calculating the partner fee)
+ * @param isPartiallyFillable Whether the order is partially fillable
  */
 export function getEstimatedExecutionPrice(
-  order: undefined, // there's no order when calling this way
+  order: undefined,
   fillPrice: Price<Currency, Currency>,
   fee: string,
   inputAmount: CurrencyAmount<Currency>,
@@ -213,6 +214,7 @@ export function getEstimatedExecutionPrice(
   isPartiallyFillable: boolean,
 ): Price<Currency, Currency> | null
 /**
+ * Calculates the estimated execution price for an order
  *
  * @param order Tokens and amounts information, plus whether partially fillable
  * @param fillPrice AKA MarketPrice
@@ -234,7 +236,7 @@ export function getEstimatedExecutionPrice(
  * * `Kind` Fill Type (FoC, Partial)
  *
  * And the Market conditions:
- * * `FP` Fill Price (Volume sensitive) (aka Market Price)
+ * * `FP` Fill Price (No longer volume sensitive) (aka Market Price, Spot price)
  * * `BOP` Best Offer Price (Non-volume sensitive) (aka Spot Price)
  * * `F` Fee to execute the order (in sell tokens)
  *
@@ -286,7 +288,9 @@ export function getEstimatedExecutionPrice(
     sellAmount = getRemainderAmountsWithoutSurplus(order).sellAmount
     partiallyFillable = order.partiallyFillable
   } else {
+    // Always the full amount
     sellAmount = inputAmount!.quotient.toString()
+
     inputToken = getWrappedToken(inputAmount!.currency)
     outputToken = getWrappedToken(outputAmount!.currency)
 
@@ -302,9 +306,6 @@ export function getEstimatedExecutionPrice(
 
   const feeAmount = CurrencyAmount.fromRawAmount(inputToken, fee)
 
-  // Build CurrencyAmount and Price instances
-  // const feeAmount = CurrencyAmount.fromRawAmount(order.inputToken, feeAmount)
-
   const remainingSellAmount = CurrencyAmount.fromRawAmount(inputToken, sellAmount)
 
   // When fee > amount, return 0 price
@@ -317,26 +318,15 @@ export function getEstimatedExecutionPrice(
   let feasibleExecutionPrice: Price<Currency, Currency> | undefined = undefined
 
   if (partiallyFillable) {
-    // Use FEE_AMOUNT_MULTIPLIER times fee amount as the new sell amount
-    const newSellAmount = feeAmount.multiply(JSBI.BigInt(FEE_AMOUNT_MULTIPLIER))
-    // Only use this method if the new sell amount is smaller than the remaining sell amount
-    if (remainingSellAmount.greaterThan(newSellAmount)) {
-      // Quote the buy amount using the existing limit price
-      const buyAmount = limitPrice.quote(newSellAmount)
-      feasibleExecutionPrice = new Price(
-        inputToken,
-        outputToken,
-        newSellAmount.subtract(feeAmount).quotient, // TODO: should we use the fee with margin here?
-        buyAmount.quotient,
-      )
-      console.log(`getEstimatedExecutionPrice: partially fillable`, {
-        limitPrice: limitPrice.toSignificant(10),
-        feasibleExecutionPrice: feasibleExecutionPrice.toSignificant(10),
-        feeAmount: feeAmount.toSignificant(10),
-        sellAmount: remainingSellAmount.toSignificant(10),
-        newSellAmount: newSellAmount.toSignificant(10),
-      })
-    }
+    // If the order is partially fillable, we need to extrapolate the price based on the fee amount
+    // So the estimated price remains fixed regardless of the order size
+    feasibleExecutionPrice = extrapolatePriceBasedOnFeeAmount(
+      feeAmount,
+      remainingSellAmount,
+      limitPrice,
+      inputToken,
+      outputToken,
+    )
   }
 
   // Regular case, when the order is fill or kill OR the fill amount is smaller than the threshold set
@@ -369,9 +359,7 @@ export function getEstimatedExecutionPrice(
   }
 
   // Pick the MAX between FEP and FP
-  const estimatedExecutionPrice = fillPrice.greaterThan(feasibleExecutionPrice) ? fillPrice : feasibleExecutionPrice
-
-  return estimatedExecutionPrice
+  return fillPrice.greaterThan(feasibleExecutionPrice) ? fillPrice : feasibleExecutionPrice
 }
 
 /**
@@ -435,6 +423,37 @@ export function getRemainderAmount(kind: OrderKind, order: Order): string {
   const executedAmount = JSBI.BigInt((isSellOrder(kind) ? executedSellAmountBeforeFees : executedBuyAmount) || 0)
 
   return JSBI.subtract(JSBI.BigInt(fullAmount), executedAmount).toString()
+}
+
+function extrapolatePriceBasedOnFeeAmount<T extends Currency>(
+  feeAmount: CurrencyAmount<T>,
+  remainingSellAmount: CurrencyAmount<T>,
+  limitPrice: Price<T, T>,
+  inputToken: Token,
+  outputToken: Token,
+): Price<Token, Token> | undefined {
+  // Use FEE_AMOUNT_MULTIPLIER times fee amount as the new sell amount
+  const newSellAmount = feeAmount.multiply(JSBI.BigInt(FEE_AMOUNT_MULTIPLIER))
+  // Only use this method if the new sell amount is smaller than the remaining sell amount
+  if (remainingSellAmount.greaterThan(newSellAmount)) {
+    // Quote the buy amount using the existing limit price
+    const buyAmount = limitPrice.quote(newSellAmount)
+    const feasibleExecutionPrice = new Price(
+      inputToken,
+      outputToken,
+      newSellAmount.subtract(feeAmount).quotient, // TODO: should we use the fee with margin here?
+      buyAmount.quotient,
+    )
+    console.log(`getEstimatedExecutionPrice: partially fillable`, {
+      limitPrice: limitPrice.toSignificant(10),
+      feasibleExecutionPrice: feasibleExecutionPrice.toSignificant(10),
+      feeAmount: feeAmount.toSignificant(10),
+      sellAmount: remainingSellAmount.toSignificant(10),
+      newSellAmount: newSellAmount.toSignificant(10),
+    })
+    return feasibleExecutionPrice
+  }
+  return undefined
 }
 
 export function partialOrderUpdate({ chainId, order, isSafeWallet }: UpdateOrderParams, dispatch: AppDispatch): void {
