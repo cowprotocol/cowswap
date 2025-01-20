@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { getWrappedToken } from '@cowprotocol/common-utils'
+import { FractionUtils, getWrappedToken } from '@cowprotocol/common-utils'
 import { Fraction } from '@uniswap/sdk-core'
 
 import { useAsyncMemo } from 'use-async-memo'
@@ -32,8 +32,9 @@ export function useGetInitialPrice(): { price: Fraction | null; isLoading: boole
       if (!inputUsdPrice?.price || !outputUsdPrice?.price) {
         return null
       }
-
-      return inputUsdPrice.price.asFraction.divide(outputUsdPrice.price.asFraction)
+      const inputFraction = FractionUtils.fractionLikeToFraction(inputUsdPrice.price)
+      const outputFraction = FractionUtils.fractionLikeToFraction(outputUsdPrice.price)
+      return inputFraction.divide(outputFraction)
     },
     [inputUsdPrice?.price, outputUsdPrice?.price],
     null,
