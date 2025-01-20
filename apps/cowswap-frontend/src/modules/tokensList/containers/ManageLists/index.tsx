@@ -20,7 +20,7 @@ interface ListSearchState {
 export interface ManageListsProps {
   lists: ListState[]
   listSearchResponse: ListSearchResponse
-  isListUrlValid: boolean
+  isListUrlValid?: boolean
 }
 
 export function ManageLists(props: ManageListsProps) {
