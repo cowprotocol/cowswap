@@ -3,12 +3,11 @@ import { ReactNode, useMemo } from 'react'
 import cowMeditatingV2 from '@cowprotocol/assets/cow-swap/meditating-cow-v2.svg'
 import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { CowSwapSafeAppLink, ExternalLink, Media, UI } from '@cowprotocol/ui'
+import { CowSwapSafeAppLink } from '@cowprotocol/ui'
 import type { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
 
 import type { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import type { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
@@ -18,6 +17,7 @@ import { Web3Status } from 'modules/wallet/containers/Web3Status'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 
 import { OrdersTable } from './OrdersTable'
+import * as styledEl from './OrdersTableContainer.styled'
 import { OrdersTabs } from './OrdersTabs'
 import { OrderActions } from './types'
 
@@ -25,155 +25,7 @@ import { ALL_ORDERS_TAB, HISTORY_TAB, OPEN_TAB, UNFILLABLE_TAB } from '../../con
 import { TabOrderTypes } from '../../types'
 import { OrderTableItem } from '../../utils/orderTableGroupUtils'
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  gap: 16px;
-  width: 100%;
-`
-
-const Content = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  align-items: center;
-  justify-content: center;
-  color: inherit;
-  min-height: 490px;
-  padding: 0;
-
-  > span {
-    --size: 130px;
-    width: var(--size);
-    height: var(--size);
-    border-radius: var(--size);
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    margin: 0 0 16px;
-    color: inherit;
-    transform: rotate(0);
-    transition: transform 5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      background: var(${UI.COLOR_PAPER_DARKER});
-      width: var(--size);
-      height: var(--size);
-      border-radius: var(--size);
-      z-index: -1;
-    }
-
-    &:hover {
-      transform: rotate(360deg);
-    }
-
-    > img,
-    > svg {
-      max-width: 100%;
-      max-height: 100%;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: inline;
-    }
-
-    > svg {
-      padding: 28px;
-      fill: currentColor;
-      opacity: 0.5;
-    }
-  }
-
-  > h3 {
-    font-size: 26px;
-    line-height: 1.2;
-    font-weight: 500;
-    margin: 0 auto 16px;
-    text-align: center;
-  }
-
-  > p {
-    font-size: 15px;
-    line-height: 1.4;
-    margin: 0 auto 21px;
-    font-weight: 400;
-    text-align: center;
-    color: inherit;
-  }
-`
-
-const MeditatingCowImg = styled.img`
-  padding: 16px;
-`
-
-const TopContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  gap: 3px;
-
-  ${Media.upToMedium()} {
-    display: block;
-    text-align: center;
-
-    > h2 {
-      margin-bottom: 15px !important;
-    }
-  }
-
-  > h2 {
-    font-size: 24px;
-    margin: 0;
-  }
-`
-
-const TabsContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-
-  ${Media.upToMedium()} {
-    flex-direction: column;
-    align-items: end;
-    gap: 10px;
-  }
-`
-
-const ExternalLinkStyled = styled(ExternalLink)`
-  text-decoration: underline;
-`
-
-// Todo: Makes this arrow default behavior of <ExternalLink />
-const ExternalArrow = styled.span`
-  display: inline-block;
-  &::after {
-    content: ' ↗';
-    display: inline-block;
-    padding: 0 0 0 1px;
-    font-weight: bold;
-    font-size: 11px;
-  }
-`
-
-const RightContainer = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-
-  ${Media.upToMedium()} {
-    width: 100%;
-    gap: 10px;
-    flex-flow: column-reverse wrap;
-  }
-`
-
-interface OrdersProps {
+interface OrdersTableContainerProps {
   isWalletConnected: boolean
   isSafeViaWc: boolean
   displayOrdersOnlyForSafeApp: boolean
@@ -213,7 +65,7 @@ export function OrdersTableContainer({
   pendingActivities,
   injectedWidgetParams,
   searchTerm,
-}: OrdersProps) {
+}: OrdersTableContainerProps) {
   const currentTab = useMemo(() => {
     const activeTab = tabs.find((tab) => tab.isActive)
     return activeTab?.id || ALL_ORDERS_TAB.id
@@ -224,7 +76,7 @@ export function OrdersTableContainer({
 
     if (!isWalletConnected) {
       return (
-        <Content>
+        <styledEl.Content>
           <span>
             <SVG src={imageConnectWallet} description="connect wallet" />
           </span>
@@ -243,18 +95,18 @@ export function OrdersTableContainer({
               <Web3Status pendingActivities={pendingActivities} />
             </>
           )}
-        </Content>
+        </styledEl.Content>
       )
     }
 
     if (orders.length === 0) {
       return (
-        <Content>
+        <styledEl.Content>
           <span>
             {emptyOrdersImage ? (
               <img src={emptyOrdersImage || cowMeditatingV2} alt="There are no orders" />
             ) : (
-              <MeditatingCowImg src={cowMeditatingV2} alt="Cow meditating ..." />
+              <styledEl.MeditatingCowImg src={cowMeditatingV2} alt="Cow meditating ..." />
             )}
           </span>
           <h3>
@@ -289,17 +141,17 @@ export function OrdersTableContainer({
                     <br />
                     <Trans>Time to create a new one!</Trans>{' '}
                     {orderType === TabOrderTypes.LIMIT ? (
-                      <ExternalLinkStyled href="https://cow-protocol.medium.com/how-to-user-cow-swaps-surplus-capturing-limit-orders-24324326dc9e">
+                      <styledEl.ExternalLinkStyled href="https://cow-protocol.medium.com/how-to-user-cow-swaps-surplus-capturing-limit-orders-24324326dc9e">
                         <Trans>Learn more</Trans>
-                        <ExternalArrow />
-                      </ExternalLinkStyled>
+                        <styledEl.ExternalArrow />
+                      </styledEl.ExternalLinkStyled>
                     ) : null}
                   </>
                 )}
               </>
             )}
           </p>
-        </Content>
+        </styledEl.Content>
       )
     }
 
@@ -320,14 +172,14 @@ export function OrdersTableContainer({
   }
 
   return (
-    <Wrapper>
-      <TopContainer>
-        <TabsContainer>
+    <styledEl.Wrapper>
+      <styledEl.TopContainer>
+        <styledEl.TabsContainer>
           <OrdersTabs tabs={tabs} />
-          {children && <RightContainer>{children}</RightContainer>}
-        </TabsContainer>
-      </TopContainer>
+          {children && <styledEl.RightContainer>{children}</styledEl.RightContainer>}
+        </styledEl.TabsContainer>
+      </styledEl.TopContainer>
       {content()}
-    </Wrapper>
+    </styledEl.Wrapper>
   )
 }
