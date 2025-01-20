@@ -20,10 +20,11 @@ interface ListSearchState {
 export interface ManageListsProps {
   lists: ListState[]
   listSearchResponse: ListSearchResponse
+  isListUrlValid: boolean
 }
 
 export function ManageLists(props: ManageListsProps) {
-  const { lists, listSearchResponse } = props
+  const { lists, listSearchResponse, isListUrlValid } = props
 
   const activeTokenListsIds = useListsEnabledState()
   const addListImport = useAddListImport()
@@ -34,6 +35,9 @@ export function ManageLists(props: ManageListsProps) {
 
   return (
     <styledEl.Wrapper>
+      {isListUrlValid && !listToImport?.list && !loading && (
+        <styledEl.InputError>Error importing token list</styledEl.InputError>
+      )}
       {loading && (
         <styledEl.LoaderWrapper>
           <Loader />

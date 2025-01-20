@@ -18,3 +18,10 @@ export const LoaderWrapper = styled.div`
 export const ImportListsContainer = styled.div`
   border-bottom: 1px solid var(${UI.COLOR_BORDER});
 `
+
+export const InputError = styled.div`
+  padding: 20px;
+  color: var(${UI.COLOR_DANGER});
+  font-weight: 500;
+  border-bottom: 1px solid var(${UI.COLOR_BORDER});
+`
