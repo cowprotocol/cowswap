@@ -82,7 +82,6 @@ export function TableGroup(props: TableGroupProps) {
   const childrenWithParams = children.map((child) => ({
     order: child,
     orderParams: getOrderParams(chainId, balancesAndAllowances, child),
-    orderActions,
   }))
 
   return (
@@ -99,12 +98,13 @@ export function TableGroup(props: TableGroupProps) {
       >
         {isParentSigning ? undefined : (
           <TwapStatusAndToggle
+            approveOrderToken={orderActions.approveOrderToken}
             parent={parent}
             childrenLength={childrenLength}
             isCollapsed={isCollapsed}
             onToggle={() => setIsCollapsed((state) => !state)}
             onClick={() => orderActions.selectReceiptOrder(parent)}
-            children={childrenWithParams}
+            childOrders={childrenWithParams}
           />
         )}
       </OrderRow>

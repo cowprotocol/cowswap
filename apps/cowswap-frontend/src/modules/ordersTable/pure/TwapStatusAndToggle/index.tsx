@@ -1,11 +1,32 @@
 import React from 'react'
 
+import type { Token } from '@uniswap/sdk-core'
+
 import { OrderStatus } from 'legacy/state/orders/actions'
+
+import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './styled'
 
 import { WarningTooltip } from '../OrdersTableContainer/OrderRow/OrderWarning'
 import { OrderStatusBox } from '../OrderStatusBox'
+
+import type { OrderParams } from '../../utils/getOrderParams'
+
+interface ChildOrderItems {
+  order: ParsedOrder
+  orderParams: OrderParams
+}
+
+interface TwapStatusAndToggleProps {
+  parent: ParsedOrder
+  childrenLength: number
+  isCollapsed: boolean
+  onToggle: () => void
+  onClick: () => void
+  childOrders: ChildOrderItems[]
+  approveOrderToken(token: Token): void
+}
 
 export function TwapStatusAndToggle({
   parent,
@@ -13,17 +34,11 @@ export function TwapStatusAndToggle({
   isCollapsed,
   onToggle,
   onClick,
-  children,
-}: {
-  parent: any
-  childrenLength: number
-  isCollapsed: boolean
-  onToggle: () => void
-  onClick: () => void
-  children: any[]
-}) {
+  childOrders,
+  approveOrderToken,
+}: TwapStatusAndToggleProps) {
   // Get the first child with a warning to use its parameters
-  const childWithWarning = children.find(
+  const childWithWarning = childOrders.find(
     (child) =>
       (child.orderParams?.hasEnoughBalance === false || child.orderParams?.hasEnoughAllowance === false) &&
       (child.order.status === OrderStatus.PENDING || child.order.status === OrderStatus.SCHEDULED),
@@ -46,8 +61,8 @@ export function TwapStatusAndToggle({
                   hasEnoughAllowance={childWithWarning.orderParams.hasEnoughAllowance ?? false}
                   inputTokenSymbol={childWithWarning.order.inputToken.symbol || ''}
                   isOrderScheduled={childWithWarning.order.status === OrderStatus.SCHEDULED}
-                  onApprove={() => childWithWarning.orderActions.approveOrderToken(childWithWarning.order.inputToken)}
-                  showIcon={true}
+                  onApprove={() => approveOrderToken(childWithWarning.order.inputToken)}
+                  showIcon
                 />
               )
             : undefined
