@@ -101,7 +101,7 @@ export function LimitOrdersWidget() {
   }
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
-    label: isSell ? 'Receive at least' : 'Buy exactly',
+    label: isSell ? 'Receive at least of tokens' : 'Buy exactly',
     currency: outputCurrency,
     amount: outputCurrencyAmount,
     isIndependent: !isSell,
