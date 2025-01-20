@@ -4,13 +4,14 @@ import { atomWithStorage } from 'jotai/utils'
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { parseUnits } from '@ethersproject/units'
 
 import {
   alternativeOrderAtomSetterFactory,
   alternativeOrderReadWriteAtomFactory,
 } from 'modules/trade/state/alternativeOrder'
 import { DEFAULT_TRADE_DERIVED_STATE, TradeDerivedState } from 'modules/trade/types/TradeDerivedState'
-import { ExtendedTradeRawState, getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
+import { ExtendedTradeRawState, getDefaultCurrencies, getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 
 export interface LimitOrdersDerivedState extends TradeDerivedState {
   readonly isUnlocked: boolean
@@ -21,9 +22,13 @@ export interface LimitOrdersRawState extends ExtendedTradeRawState {
 }
 
 export function getDefaultLimitOrdersState(chainId: SupportedChainId | null, isUnlocked = false): LimitOrdersRawState {
+  const defaultState = getDefaultTradeRawState(chainId)
+  const { inputCurrency } = getDefaultCurrencies(chainId)
+  const inputCurrencyAmount = inputCurrency ? parseUnits('1', inputCurrency.decimals).toString() : null // defaults to selling 1 unit of input currency
+
   return {
-    ...getDefaultTradeRawState(chainId),
-    inputCurrencyAmount: null,
+    ...defaultState,
+    inputCurrencyAmount,
     outputCurrencyAmount: null,
     orderKind: OrderKind.SELL,
     isUnlocked,
@@ -35,7 +40,7 @@ export function getDefaultLimitOrdersState(chainId: SupportedChainId | null, isU
 const regularRawStateAtom = atomWithStorage<LimitOrdersRawState>(
   'limit-orders-atom:v4',
   getDefaultLimitOrdersState(null),
-  getJotaiIsolatedStorage()
+  getJotaiIsolatedStorage(),
 )
 
 const { updateAtom: regularUpdateRawStateAtom } = atomWithPartialUpdate(regularRawStateAtom)
@@ -60,7 +65,7 @@ const alternativeDerivedStateAtom = atom<LimitOrdersDerivedState>({
 
 export const limitOrdersRawStateAtom = alternativeOrderReadWriteAtomFactory<LimitOrdersRawState>(
   regularRawStateAtom,
-  alternativeRawStateAtom
+  alternativeRawStateAtom,
 )
 
 export const updateLimitOrdersRawStateAtom = atom(
@@ -68,10 +73,10 @@ export const updateLimitOrdersRawStateAtom = atom(
   alternativeOrderAtomSetterFactory<
     null, // pass null to indicate there is no getter
     Partial<LimitOrdersRawState>
-  >(regularUpdateRawStateAtom, alternativeUpdateRawStateAtom)
+  >(regularUpdateRawStateAtom, alternativeUpdateRawStateAtom),
 )
 
 export const limitOrdersDerivedStateAtom = alternativeOrderReadWriteAtomFactory<LimitOrdersDerivedState>(
   regularDerivedStateAtom,
-  alternativeDerivedStateAtom
+  alternativeDerivedStateAtom,
 )
