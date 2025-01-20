@@ -45,6 +45,12 @@ export function ExecutionPriceUpdater() {
     )
 
   useSafeEffect(() => {
+    // Reset execution price when input or output token changes
+    setExecutionPrice(null)
+  }, [inputToken, outputToken, setExecutionPrice])
+
+  useSafeEffect(() => {
+    // Set execution price when price is calculated and it's valid
     price && price.greaterThan(0) && setExecutionPrice(price)
   }, [price, setExecutionPrice])
 
