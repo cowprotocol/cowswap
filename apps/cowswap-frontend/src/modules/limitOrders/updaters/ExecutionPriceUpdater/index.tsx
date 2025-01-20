@@ -31,6 +31,8 @@ export function ExecutionPriceUpdater() {
   const price =
     marketPrice &&
     fee &&
+    inputCurrencyAmount &&
+    outputCurrencyAmount &&
     getEstimatedExecutionPrice(
       undefined,
       marketPrice,
