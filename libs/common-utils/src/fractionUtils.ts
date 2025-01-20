@@ -74,7 +74,7 @@ export class FractionUtils {
   /**
    * Converts a Fraction (which has no units, therefore is not decimal aware) into a price of tokens (which it is)
    *
-   * Sice the price stores internally the amount in atoms, this method will take care of making sure the price is
+   * Since the price stores internally the amount in atoms, this method will take care of making sure the price is
    * decimal aware.
    *
    *
