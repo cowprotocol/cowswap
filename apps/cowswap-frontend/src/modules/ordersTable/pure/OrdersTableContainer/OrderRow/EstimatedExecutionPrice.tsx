@@ -133,6 +133,9 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
   const isNegativeDifference = percentageDifferenceInverted?.lessThan(ZERO_FRACTION)
   const marketPriceNeedsToGoDown = isInverted ? !isNegativeDifference : isNegativeDifference
 
+  const isMarketPriceReached =
+    Math.abs(Number(percentageDifferenceInverted?.toFixed(4) ?? 0)) <= PENDING_EXECUTION_THRESHOLD_PERCENTAGE
+
   const content = (
     <>
       <TokenAmount amount={amount} tokenSymbol={tokenSymbol} clickable {...rest} />
@@ -186,9 +189,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
           wrapInContainer={true}
           content={
             <styledEl.ExecuteInformationTooltip>
-              {isNegativeDifference &&
-              Math.abs(Number(percentageDifferenceInverted?.toFixed(4) ?? 0)) <=
-                PENDING_EXECUTION_THRESHOLD_PERCENTAGE ? (
+              {isNegativeDifference && isMarketPriceReached ? (
                 <>The fill price of this order is close or at the market price and is expected to fill soon</>
               ) : (
                 <>
