@@ -43,7 +43,7 @@ export function useOrdersTableList(
 
   // Then, categorize orders into their respective lists
   return useMemo(() => {
-    const { pending, history, unfillable, signing, all } = allSortedOrders.reduce(
+    const { pending, history, unfillable, signing, all } = allSortedOrders.reduce<OrdersTableList>(
       (acc, item) => {
         const order = isParsedOrder(item) ? item : item.parent
 
@@ -90,11 +90,11 @@ export function useOrdersTableList(
         return acc
       },
       {
-        pending: [] as OrderTableItem[],
-        history: [] as OrderTableItem[],
-        unfillable: [] as OrderTableItem[],
-        signing: [] as OrderTableItem[],
-        all: [] as OrderTableItem[],
+        pending: [],
+        history: [],
+        unfillable: [],
+        signing: [],
+        all: [],
       },
     )
 
