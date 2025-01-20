@@ -10,7 +10,12 @@ import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
+import type { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
+import type { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
+import type { BalancesAndAllowances } from 'modules/tokens'
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
+
+import { CancellableOrder } from 'common/utils/isOrderCancellable'
 
 import { OrdersTable } from './OrdersTable'
 import { OrdersTabs } from './OrdersTabs'
@@ -18,6 +23,7 @@ import { OrderActions } from './types'
 
 import { ALL_ORDERS_TAB, HISTORY_TAB, OPEN_TAB, UNFILLABLE_TAB } from '../../const/tabs'
 import { TabOrderTypes } from '../../types'
+import { OrderTableItem } from '../../utils/orderTableGroupUtils'
 
 const Wrapper = styled.div`
   display: flex;
@@ -177,14 +183,14 @@ interface OrdersProps {
   injectedWidgetParams: Partial<CowSwapWidgetAppParams>
   tabs: Array<{ id: string; title: string; count: number; isActive?: boolean }>
   chainId: number
-  orders: any[]
-  selectedOrders: any[]
+  orders: OrderTableItem[]
+  selectedOrders: CancellableOrder[]
   allowsOffchainSigning: boolean
-  balancesAndAllowances: any
+  balancesAndAllowances: BalancesAndAllowances
   orderActions: OrderActions
   currentPageNumber: number
-  pendingOrdersPrices: any
-  getSpotPrice: any
+  pendingOrdersPrices: PendingOrdersPrices
+  getSpotPrice: ReturnType<typeof useGetSpotPrice>
   searchTerm?: string
 }
 

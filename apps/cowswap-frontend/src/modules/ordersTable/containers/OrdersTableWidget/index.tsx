@@ -14,7 +14,7 @@ import { Order } from 'legacy/state/orders/actions'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { pendingOrdersPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
-import { BalancesAndAllowances } from 'modules/tokens'
+import type { BalancesAndAllowances } from 'modules/tokens'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
