@@ -367,6 +367,7 @@ export const TopicImage = styled.div<{
   left: ${({ left }) => (typeof left === 'number' ? `${left}px` : left || 'initial')};
   right: ${({ right }) => (typeof right === 'number' ? `${right}px` : right || 'initial')};
   bottom: ${({ bottom }) => (typeof bottom === 'number' ? `${bottom}px` : bottom || 'initial')};
+  line-height: normal;
 
   ${Media.upToLarge()} {
     order: ${({ orderReverseTablet }) => (orderReverseTablet ? -1 : 'initial')};
@@ -1191,6 +1192,7 @@ export const TrustedBy = styled.div`
     flex-flow: row nowrap;
     align-items: center;
     justify-content: center;
+    line-height: normal;
     height: 100%;
     width: 100%;
     font-size: 2.6rem;
