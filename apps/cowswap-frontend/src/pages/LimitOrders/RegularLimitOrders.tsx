@@ -32,11 +32,7 @@ export function RegularLimitOrders() {
 
       {!hideOrdersTable && (
         <styledEl.SecondaryWrapper>
-          <OrdersTableWidget
-            displayOrdersOnlyForSafeApp={false}
-            orderType={TabOrderTypes.LIMIT}
-            orders={allLimitOrders}
-          />
+          <OrdersTableWidget orderType={TabOrderTypes.LIMIT} orders={allLimitOrders} />
         </styledEl.SecondaryWrapper>
       )}
     </styledEl.PageWrapper>

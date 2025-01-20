@@ -9,50 +9,6 @@ export const SettingsContainer = styled.div`
   margin-right: 16px;
 `
 
-export const SettingsSelect = styled.select`
-  background: var(${UI.COLOR_PAPER_DARKER});
-  color: inherit;
-  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 13px;
-  cursor: pointer;
-
-  &:focus {
-    outline: none;
-    border-color: var(${UI.COLOR_TEXT});
-  }
-`
-
-export const SettingsLabel = styled.span`
-  font-size: 13px;
-  color: inherit;
-  opacity: 0.7;
-`
-
-export const TableWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-`
-
-export const ScrollContainer = styled.div`
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  display: block;
-  padding-bottom: 16px;
-
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Hide scrollbar for IE, Edge and Firefox */
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-`
-
 export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: boolean; isTwapTable?: boolean }>`
   --header-height: 26px;
   --row-height: 41px;
@@ -66,11 +22,11 @@ export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: 
     // TWAP table layout - applies to both history and non-history tabs
     if (isTwapTable) {
       if (isHistoryTab) {
-        return `minmax(200px, 2.5fr)  
+        return `minmax(200px, 2.5fr)
                 repeat(4, minmax(110px, 1fr))
-                minmax(80px, 0.8fr)   
+                minmax(80px, 0.8fr)
                 minmax(120px, 1fr)
-                minmax(100px, 0.8fr)  
+                minmax(100px, 0.8fr)
                 24px`
       }
       return `${checkboxColumn} minmax(160px,2fr) minmax(120px,1fr) minmax(140px,1fr) minmax(120px,1fr) minmax(120px,1fr) minmax(100px,110px) minmax(120px,1fr) minmax(100px,0.8fr) 24px`
@@ -78,10 +34,10 @@ export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: 
 
     // Default layout for history tab
     if (isHistoryTab) {
-      return `minmax(200px, 2.5fr)  
+      return `minmax(200px, 2.5fr)
               repeat(4, minmax(110px, 1fr))
-              minmax(80px, 0.8fr)   
-              minmax(100px, 1fr)  
+              minmax(80px, 0.8fr)
+              minmax(100px, 1fr)
               24px`
     }
 

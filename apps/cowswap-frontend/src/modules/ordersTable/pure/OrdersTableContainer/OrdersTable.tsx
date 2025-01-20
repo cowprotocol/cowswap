@@ -12,7 +12,6 @@ import { BalancesAndAllowances } from 'modules/tokens'
 
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
-import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 
 import { OrderRow } from './OrderRow'
 import { CheckboxCheckmark, TableHeader, TableRowCheckbox, TableRowCheckboxWrapper } from './styled'
@@ -102,6 +101,7 @@ export interface OrdersTableProps {
   getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
   orderActions: OrderActions
   currentPageNumber: number
+  isTwapTable: boolean
 }
 
 export function OrdersTable({
@@ -115,6 +115,7 @@ export function OrdersTable({
   getSpotPrice,
   orderActions,
   currentPageNumber,
+  isTwapTable,
 }: OrdersTableProps) {
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
   const checkboxRef = useRef<HTMLInputElement>(null)
@@ -177,14 +178,6 @@ export function OrdersTable({
       return header.showInHistory === isHistoryTab
     })
   }, [tableHeaders, currentTab])
-
-  // Determine if this is a TWAP table by checking if any order has composableCowInfo with a parentId
-  const isTwapTable = useMemo(() => {
-    return orders.some((item) => {
-      const order = getParsedOrderFromTableItem(item)
-      return getIsComposableCowParentOrder(order)
-    })
-  }, [orders])
 
   return (
     <>
