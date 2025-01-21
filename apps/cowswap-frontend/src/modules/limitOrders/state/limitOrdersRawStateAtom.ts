@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
+import { atomWithPartialUpdate, getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { parseUnits } from '@ethersproject/units'
@@ -39,7 +39,7 @@ export function getDefaultLimitOrdersState(chainId: SupportedChainId | null, isU
 
 const regularRawStateAtom = atomWithStorage<LimitOrdersRawState>(
   'limit-orders-atom:v4',
-  getDefaultLimitOrdersState(null),
+  getDefaultLimitOrdersState(getRawCurrentChainIdFromUrl()),
   getJotaiIsolatedStorage(),
 )
 
@@ -52,7 +52,9 @@ const regularDerivedStateAtom = atom<LimitOrdersDerivedState>({
 
 // Alternative state for recreating/editing existing orders
 
-const alternativeRawStateAtom = atom<LimitOrdersRawState>(getDefaultLimitOrdersState(null, true))
+const alternativeRawStateAtom = atom<LimitOrdersRawState>(
+  getDefaultLimitOrdersState(getRawCurrentChainIdFromUrl(), true),
+)
 
 const { updateAtom: alternativeUpdateRawStateAtom } = atomWithPartialUpdate(alternativeRawStateAtom)
 
