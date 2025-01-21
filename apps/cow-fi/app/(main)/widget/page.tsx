@@ -269,7 +269,7 @@ export default function Page() {
                     {isPng ? (
                       <img src={dao.icon} alt={dao.title} style={{ maxWidth: '100%' }} loading="lazy" />
                     ) : (
-                      <LazySVG src={dao.icon} loader={<div style={{ fontSize: '20px' }}>Loading SVG...</div>} />
+                      <LazySVG src={dao.icon} />
                     )}
                   </TopicImage>
                 </TopicCard>

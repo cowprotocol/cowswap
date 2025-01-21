@@ -392,6 +392,9 @@ export const TopicImage = styled.div<{
     width: inherit;
     color: inherit;
     max-width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   svg,
