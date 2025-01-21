@@ -46,37 +46,37 @@ function TwapStatusAndToggle({
   children: any[]
 }) {
   // Check if any child has insufficient balance or allowance
-  const hasChildWithWarning = children.some(
+  const childWithAllowanceWarning = children.find(
     (child) =>
-      (child.orderParams?.hasEnoughBalance === false || child.orderParams?.hasEnoughAllowance === false) &&
+      child.orderParams?.hasEnoughAllowance === false &&
       (child.order.status === OrderStatus.PENDING || child.order.status === OrderStatus.SCHEDULED),
   )
 
-  // Get the first child with a warning to use its parameters
-  const childWithWarning = hasChildWithWarning
-    ? children.find(
-        (child) =>
-          (child.orderParams?.hasEnoughBalance === false || child.orderParams?.hasEnoughAllowance === false) &&
-          (child.order.status === OrderStatus.PENDING || child.order.status === OrderStatus.SCHEDULED),
-      )
-    : null
+  const childWithBalanceWarning = children.find(
+    (child) =>
+      child.orderParams?.hasEnoughBalance === false &&
+      (child.order.status === OrderStatus.PENDING || child.order.status === OrderStatus.SCHEDULED),
+  )
+
+  const hasWarning = childWithAllowanceWarning || childWithBalanceWarning
+  const warningChild = childWithAllowanceWarning || childWithBalanceWarning
 
   return (
     <>
       <OrderStatusBox
         order={parent}
         onClick={onClick}
-        withWarning={hasChildWithWarning}
+        withWarning={!!hasWarning}
         WarningTooltip={
-          hasChildWithWarning && childWithWarning
+          hasWarning
             ? ({ children }) => (
                 <WarningTooltip
                   children={children}
-                  hasEnoughBalance={childWithWarning.orderParams.hasEnoughBalance ?? false}
-                  hasEnoughAllowance={childWithWarning.orderParams.hasEnoughAllowance ?? false}
-                  inputTokenSymbol={childWithWarning.order.inputToken.symbol || ''}
-                  isOrderScheduled={childWithWarning.order.status === OrderStatus.SCHEDULED}
-                  onApprove={() => childWithWarning.orderActions.approveOrderToken(childWithWarning.order.inputToken)}
+                  hasEnoughBalance={!childWithBalanceWarning}
+                  hasEnoughAllowance={!childWithAllowanceWarning}
+                  inputTokenSymbol={warningChild.order.inputToken.symbol || ''}
+                  isOrderScheduled={warningChild.order.status === OrderStatus.SCHEDULED}
+                  onApprove={() => warningChild.orderActions.approveOrderToken(warningChild.order.inputToken)}
                   showIcon={true}
                 />
               )
@@ -143,6 +143,8 @@ export function TableGroup(props: TableGroupProps) {
     isRateInverted,
     orderActions,
     isTwapTable,
+    chainId,
+    balancesAndAllowances,
   }
 
   // Create an array of child order data with their orderParams
