@@ -317,7 +317,7 @@ export function OrdersTableContainer({
     <Wrapper>
       <TopContainer>
         <TabsContainer>
-          <OrdersTabs tabs={tabs} />
+          <OrdersTabs tabs={tabs} isWalletConnected={isWalletConnected} />
           <RightContainer>{children}</RightContainer>
         </TabsContainer>
       </TopContainer>
