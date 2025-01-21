@@ -25,7 +25,7 @@ const DropdownButton = styled.button`
   border: 1px solid var(${UI.COLOR_BORDER});
   border-radius: 12px;
   padding: 10px 34px 10px 12px;
-  min-width: 140px;
+  width: 180px;
   cursor: pointer;
   font-size: 14px;
   display: flex;
@@ -64,7 +64,7 @@ const DropdownList = styled.div<{ isOpen: boolean }>`
   border: 1px solid var(${UI.COLOR_BORDER});
   border-radius: 12px;
   padding: 6px;
-  min-width: 140px;
+  width: 180px;
   z-index: 100;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 `
