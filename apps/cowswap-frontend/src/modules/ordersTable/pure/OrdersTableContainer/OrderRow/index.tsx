@@ -464,13 +464,13 @@ export function OrderRow({
         )
       }
 
-      // Check if all child orders are at least partially filled
-      const allChildrenPartiallyFilled = childOrders.every(
+      // Check if any child order is filled (partially or fully)
+      const hasFilledOrders = childOrders.some(
         (childOrder) =>
           childOrder.status === OrderStatus.FULFILLED && Number(childOrder.executionData.filledPercentDisplay) > 0,
       )
 
-      if (allChildrenPartiallyFilled) {
+      if (hasFilledOrders) {
         return (
           <styledEl.CellElement doubleRow>
             <b>
