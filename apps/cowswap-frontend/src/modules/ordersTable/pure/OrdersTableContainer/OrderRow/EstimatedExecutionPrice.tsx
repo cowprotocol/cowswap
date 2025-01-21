@@ -2,14 +2,15 @@ import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
 import allowanceIcon from '@cowprotocol/assets/images/icon-allowance.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
-import { UI, SymbolElement, TokenAmount, TokenAmountProps, HoverTooltip, ButtonSecondary } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount, Fraction, Percent } from '@uniswap/sdk-core'
+import { ButtonSecondary, HoverTooltip, SymbolElement, TokenAmount, TokenAmountProps, UI } from '@cowprotocol/ui'
+import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@uniswap/sdk-core'
 
 import { darken } from 'color2k'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
+import { Nullish } from 'types'
 
-import { PENDING_EXECUTION_THRESHOLD_PERCENTAGE, HIGH_FEE_WARNING_PERCENTAGE } from 'common/constants/common'
+import { HIGH_FEE_WARNING_PERCENTAGE, PENDING_EXECUTION_THRESHOLD_PERCENTAGE } from 'common/constants/common'
 
 import * as styledEl from './styled'
 
@@ -28,6 +29,7 @@ export const EstimatedExecutionPriceWrapper = styled.span<{ $hasWarning: boolean
   }
 
   // Popover container override
+
   > div > div,
   > span {
     display: flex;
@@ -41,12 +43,10 @@ const UnfillableLabel = styled.span`
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
   font-size: inherit;
   font-weight: 500;
   line-height: 1.1;
   flex-flow: row wrap;
-  align-items: center;
   justify-content: flex-start;
   gap: 3px;
 
@@ -94,6 +94,8 @@ export type EstimatedExecutionPriceProps = TokenAmountProps & {
   amountDifference?: CurrencyAmount<Currency>
   percentageFee?: Percent
   amountFee?: CurrencyAmount<Currency>
+  marketPrice?: Nullish<Price<Currency, Currency>>
+  executesAtPrice?: Nullish<Price<Currency, Currency>>
   warningText?: string
   WarningTooltip?: React.FC<{ children: React.ReactNode; showIcon: boolean }>
   onApprove?: Command
@@ -109,6 +111,8 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
     percentageDifference,
     amountDifference,
     percentageFee,
+    marketPrice,
+    executesAtPrice,
     amountFee,
     warningText,
     WarningTooltip,
@@ -128,6 +132,9 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
   const feeWarning = canShowWarning && percentageFee?.greaterThan(HIGH_FEE_WARNING_PERCENTAGE)
   const isNegativeDifference = percentageDifferenceInverted?.lessThan(ZERO_FRACTION)
   const marketPriceNeedsToGoDown = isInverted ? !isNegativeDifference : isNegativeDifference
+
+  const isMarketPriceReached =
+    Math.abs(Number(percentageDifferenceInverted?.toFixed(4) ?? 0)) <= PENDING_EXECUTION_THRESHOLD_PERCENTAGE
 
   const content = (
     <>
@@ -182,13 +189,15 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
           wrapInContainer={true}
           content={
             <styledEl.ExecuteInformationTooltip>
-              {isNegativeDifference &&
-              Math.abs(Number(percentageDifferenceInverted?.toFixed(4) ?? 0)) <=
-                PENDING_EXECUTION_THRESHOLD_PERCENTAGE ? (
+              {isNegativeDifference && isMarketPriceReached ? (
                 <>The fill price of this order is close or at the market price and is expected to fill soon</>
               ) : (
                 <>
-                  Market price needs to go {marketPriceNeedsToGoDown ? 'down 📉' : 'up 📈'} by&nbsp;
+                  Current market price is&nbsp;
+                  <b>
+                    <TokenAmount amount={marketPrice} {...rest} round={false} tokenSymbol={marketPrice?.baseCurrency} />
+                  </b>
+                  and needs to go {marketPriceNeedsToGoDown ? 'down 📉' : 'up 📈'} by&nbsp;
                   <b>
                     <TokenAmount {...rest} amount={absoluteDifferenceAmount} round={false} />
                   </b>
@@ -196,7 +205,16 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
                   <span>
                     (<i>{percentageDifferenceInverted?.toFixed(2)}%</i>)
                   </span>
-                  &nbsp;to execute your order.
+                  to execute your order at&nbsp;
+                  <b>
+                    <TokenAmount
+                      amount={executesAtPrice}
+                      {...rest}
+                      round={false}
+                      tokenSymbol={executesAtPrice?.baseCurrency}
+                    />
+                  </b>
+                  .
                 </>
               )}
             </styledEl.ExecuteInformationTooltip>

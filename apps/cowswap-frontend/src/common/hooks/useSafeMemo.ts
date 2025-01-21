@@ -1,6 +1,6 @@
 import { EffectCallback, useEffect, useMemo } from 'react'
 
-import { CurrencyAmount, NativeCurrency, Percent, Token } from '@uniswap/sdk-core'
+import { CurrencyAmount, NativeCurrency, Percent, Price, Token } from '@uniswap/sdk-core'
 
 export function useSafeDeps(deps: unknown[]): unknown[] {
   return deps.map((dep) => {
@@ -8,6 +8,7 @@ export function useSafeDeps(deps: unknown[]): unknown[] {
     if (dep instanceof Token) return dep.address.toLowerCase()
     if (dep instanceof CurrencyAmount) return dep.toExact() + dep.currency.symbol + dep.currency.chainId
     if (dep instanceof Percent) return dep.toFixed(6)
+    if (dep instanceof Price) return dep.toFixed(12) + dep.baseCurrency.symbol + dep.quoteCurrency.symbol
 
     return dep
   })
