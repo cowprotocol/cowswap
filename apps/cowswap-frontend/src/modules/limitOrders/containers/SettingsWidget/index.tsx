@@ -12,14 +12,10 @@ export function SettingsWidget() {
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
 
-  const handleClick = () => {
-    openLimitOrderSettingsAnalytics()
-  }
-
   return (
     <ButtonsContainer>
       <Menu>
-        <SettingsButton onClick={handleClick}>
+        <SettingsButton onClick={openLimitOrderSettingsAnalytics}>
           <SettingsIcon />
         </SettingsButton>
         <MenuPopover portal={false}>
