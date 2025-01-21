@@ -126,8 +126,10 @@ const TabButton = styled(Link)<{
   }
 
   &:hover {
-    background: ${({ $isDisabled }) => ($isDisabled ? 'transparent' : `var(${UI.COLOR_TEXT_OPACITY_10})`)};
-    color: ${({ $isDisabled }) => ($isDisabled ? `var(${UI.COLOR_TEXT_OPACITY_50})` : 'inherit')};
+    background: ${({ $isDisabled, $isUnfillable }) =>
+      $isDisabled ? 'transparent' : $isUnfillable ? `var(${UI.COLOR_DANGER_BG})` : `var(${UI.COLOR_TEXT_OPACITY_10})`};
+    color: ${({ $isDisabled, $isUnfillable }) =>
+      $isDisabled ? `var(${UI.COLOR_TEXT_OPACITY_50})` : $isUnfillable ? `var(${UI.COLOR_DANGER})` : 'inherit'};
   }
 
   > svg {
