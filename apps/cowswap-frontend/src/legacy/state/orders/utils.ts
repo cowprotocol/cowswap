@@ -5,6 +5,7 @@ import { EnrichedOrder, OrderKind, OrderStatus } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { Currency, CurrencyAmount, Percent, Price, Token } from '@uniswap/sdk-core'
 
+import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
 
 import { decodeAppData } from 'modules/appData/utils/decodeAppData'
@@ -17,6 +18,7 @@ import { Order, updateOrder, UpdateOrderParams as UpdateOrderParamsAction } from
 import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from './consts'
 import { UpdateOrderParams } from './hooks'
 
+import { ParsedOrder } from '../../../utils/orderUtils/parseOrder'
 import { AppDispatch } from '../index'
 import { serializeToken } from '../user/hooks'
 
@@ -221,7 +223,7 @@ export function getEstimatedExecutionPrice(
  * @param fee Estimated fee in inputToken atoms, as string
  */
 export function getEstimatedExecutionPrice(
-  order: Order,
+  order: Order | ParsedOrder,
   fillPrice: Price<Currency, Currency>,
   fee: string,
 ): Price<Currency, Currency> | null
@@ -254,7 +256,7 @@ export function getEstimatedExecutionPrice(
  *        EEP = MAX(FEP, FBOP)
  */
 export function getEstimatedExecutionPrice(
-  order: Order | undefined,
+  order: Order | ParsedOrder | undefined,
   fillPrice: Price<Currency, Currency>,
   fee: string,
   inputAmount?: CurrencyAmount<Currency>,
@@ -333,7 +335,17 @@ export function getEstimatedExecutionPrice(
       limitPrice,
       inputToken,
       outputToken,
+      order?.id.slice(0, 6),
     )
+    feasibleExecutionPrice &&
+      console.log(`getEstimatedExecutionPrice: partial fill`, {
+        limitPrice: limitPrice.toSignificant(10),
+        feasibleExecutionPrice: feasibleExecutionPrice.toSignificant(10),
+        fillPrice: fillPrice.toSignificant(10),
+        feeAmount: feeAmount.toSignificant(10),
+        sellAmount: remainingSellAmount.toSignificant(10),
+        order: order?.id.slice(0, 6) || 'form',
+      })
   }
 
   // Regular case, when the order is fill or kill OR the fill amount is smaller than the threshold set
@@ -360,14 +372,26 @@ export function getEstimatedExecutionPrice(
     console.log(`getEstimatedExecutionPrice: fill or kill`, {
       limitPrice: limitPrice.toSignificant(10),
       feasibleExecutionPrice: feasibleExecutionPrice.toSignificant(10),
+      fillPrice: fillPrice.toSignificant(10),
       feeAmount: feeAmount.toSignificant(10),
       sellAmount: remainingSellAmount.toSignificant(10),
+      order: order?.id.slice(0, 6) || 'form',
     })
   }
 
   // // Make the fill price a bit worse to account for the fee
   const newFillPrice =
-    extrapolatePriceBasedOnFeeAmount(feeAmount, remainingSellAmount, fillPrice, inputToken, outputToken) || fillPrice
+    extrapolatePriceBasedOnFeeAmount(feeAmount, remainingSellAmount, fillPrice, inputToken, outputToken, order?.id) ||
+    fillPrice
+  if (newFillPrice.greaterThan(feasibleExecutionPrice) && !newFillPrice.equalTo(fillPrice)) {
+    console.log(`getEstimatedExecutionPrice: new fill price`, {
+      limitPrice: limitPrice.toSignificant(10),
+      feasibleExecutionPrice: feasibleExecutionPrice.toSignificant(10),
+      fillPrice: fillPrice.toSignificant(10),
+      newFillPrice: newFillPrice.toSignificant(10),
+      order: order?.id.slice(0, 6) || 'form',
+    })
+  }
 
   // Pick the MAX between FEP and FP
   return newFillPrice.greaterThan(feasibleExecutionPrice) ? newFillPrice : feasibleExecutionPrice
@@ -388,11 +412,21 @@ export function getEstimatedExecutionPrice(
  * In both cases, the sell and buy remainders can be returned in full
  * @param order
  */
-export function getRemainderAmountsWithoutSurplus(order: Order): { buyAmount: string; sellAmount: string } {
+export function getRemainderAmountsWithoutSurplus(order: Order | ParsedOrder): {
+  buyAmount: string
+  sellAmount: string
+} {
   const sellRemainder = getRemainderAmount(OrderKind.SELL, order)
   const buyRemainder = getRemainderAmount(OrderKind.BUY, order)
 
-  const { amount: surplusAmountBigNumber } = getOrderSurplus(order)
+  let surplusAmountBigNumber: BigNumber
+  if ('executionData' in order) {
+    // ParsedOrder
+    surplusAmountBigNumber = order.executionData.surplusAmount
+  } else {
+    // Order
+    surplusAmountBigNumber = getOrderSurplus(order).amount
+  }
 
   if (surplusAmountBigNumber.isZero()) {
     return { sellAmount: sellRemainder, buyAmount: buyRemainder }
@@ -420,18 +454,31 @@ export function getRemainderAmountsWithoutSurplus(order: Order): { buyAmount: st
  * @param kind The kind of remainder
  * @param order The order object
  */
-export function getRemainderAmount(kind: OrderKind, order: Order): string {
-  const { sellAmountBeforeFee, buyAmount, apiAdditionalInfo } = order
+export function getRemainderAmount(kind: OrderKind, order: Order | ParsedOrder): string {
+  const buyAmount = order.buyAmount.toString()
+  let sellAmount: string
+  let executedSellAmount: string | undefined
+  let executedBuyAmount: string | undefined
 
-  const fullAmount = isSellOrder(kind) ? sellAmountBeforeFee.toString() : buyAmount.toString()
+  if ('executionData' in order) {
+    // ParsedOrder
+    sellAmount = order.sellAmount
+    executedSellAmount = order.executionData.executedSellAmount.toString()
+    executedBuyAmount = order.executionData.executedBuyAmount.toString()
+  } else {
+    // Order
+    sellAmount = order.sellAmountBeforeFee.toString()
+    executedSellAmount = order.apiAdditionalInfo?.executedSellAmountBeforeFees
+    executedBuyAmount = order.apiAdditionalInfo?.executedBuyAmount
+  }
 
-  if (!apiAdditionalInfo) {
+  const fullAmount = isSellOrder(kind) ? sellAmount : buyAmount
+
+  if (!executedSellAmount || !executedBuyAmount || executedSellAmount === '0' || executedBuyAmount === '0') {
     return fullAmount
   }
 
-  const { executedSellAmountBeforeFees, executedBuyAmount } = apiAdditionalInfo
-
-  const executedAmount = JSBI.BigInt((isSellOrder(kind) ? executedSellAmountBeforeFees : executedBuyAmount) || 0)
+  const executedAmount = JSBI.BigInt((isSellOrder(kind) ? executedSellAmount : executedBuyAmount) || 0)
 
   return JSBI.subtract(JSBI.BigInt(fullAmount), executedAmount).toString()
 }
@@ -442,6 +489,7 @@ function extrapolatePriceBasedOnFeeAmount<T extends Currency>(
   limitPrice: Price<T, T>,
   inputToken: Token,
   outputToken: Token,
+  id: string | undefined,
 ): Price<Token, Token> | undefined {
   // Use FEE_AMOUNT_MULTIPLIER times fee amount as the new sell amount
   const newSellAmount = feeAmount.multiply(JSBI.BigInt(FEE_AMOUNT_MULTIPLIER))
@@ -455,12 +503,13 @@ function extrapolatePriceBasedOnFeeAmount<T extends Currency>(
       newSellAmount.subtract(feeAmount).quotient, // TODO: should we use the fee with margin here?
       buyAmount.quotient,
     )
-    console.log(`getEstimatedExecutionPrice: partially fillable`, {
+    console.log(`getEstimatedExecutionPrice: extrapolatePriceBasedOnFeeAmount`, {
       limitPrice: limitPrice.toSignificant(10),
       feasibleExecutionPrice: feasibleExecutionPrice.toSignificant(10),
       feeAmount: feeAmount.toSignificant(10),
       sellAmount: remainingSellAmount.toSignificant(10),
       newSellAmount: newSellAmount.toSignificant(10),
+      order: id || 'form',
     })
     return feasibleExecutionPrice
   }

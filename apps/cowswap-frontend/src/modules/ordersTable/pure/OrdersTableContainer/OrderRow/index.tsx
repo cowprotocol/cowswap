@@ -41,6 +41,7 @@ import { OrderContextMenu } from './OrderContextMenu'
 import { WarningTooltip } from './OrderWarning'
 import * as styledEl from './styled'
 
+import { getEstimatedExecutionPrice } from '../../../../../legacy/state/orders/utils'
 import { OrderParams } from '../../../utils/getOrderParams'
 import { OrderStatusBox } from '../../OrderStatusBox'
 import { CheckboxCheckmark, TableRow, TableRowCheckbox, TableRowCheckboxWrapper } from '../styled'
@@ -113,7 +114,10 @@ export function OrderRow({
   const { creationTime, expirationTime, status } = order
   const { filledPercentDisplay, executedPrice } = order.executionData
   const { inputCurrencyAmount, outputCurrencyAmount } = rateInfoParams
-  const { estimatedExecutionPrice, feeAmount } = prices || {}
+  const { feeAmount } = prices || {}
+  const estimatedExecutionPrice = useSafeMemo(() => {
+    return spotPrice && feeAmount && getEstimatedExecutionPrice(order, spotPrice, feeAmount.quotient.toString())
+  }, [spotPrice, feeAmount, order])
   const isSafeWallet = useIsSafeWallet()
 
   const showCancellationModal = useMemo(() => {
