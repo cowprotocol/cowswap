@@ -13,7 +13,10 @@ import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWid
 import { useTradeQuote } from 'modules/tradeQuote'
 import { TWAP_LEARN_MORE_LINK } from 'modules/twap/const'
 
+import { SHOW_LIMIT_ORDERS_PROMO } from 'common/constants/featureFlags'
+import { LimitOrdersPromoBanner } from 'common/containers/LimitOrdersPromoBanner'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+import { limitOrdersPromoDismissedAtom } from 'common/state/limitOrdersPromoAtom'
 
 import { useUpdateAdvancedOrdersRawState } from '../../hooks/useAdvancedOrdersRawState'
 import { AdvancedOrdersSettings } from '../AdvancedOrdersSettings'
@@ -54,6 +57,7 @@ export function AdvancedOrdersWidget({
   mapCurrencyInfo,
 }: AdvancedOrdersWidgetProps) {
   const { disablePriceImpact } = params
+  const isDismissed = useAtomValue(limitOrdersPromoDismissedAtom)
 
   const {
     inputCurrency,
@@ -68,6 +72,7 @@ export function AdvancedOrdersWidget({
     orderKind,
     isUnlocked,
   } = useAdvancedOrdersDerivedState()
+
   const actions = useAdvancedOrdersActions()
   const { isLoading: isTradePriceUpdating } = useTradeQuote()
   const { showRecipient } = useAtomValue(advancedOrdersSettingsAtom)
@@ -103,7 +108,7 @@ export function AdvancedOrdersWidget({
       return children(warnings)
     },
     updaters,
-    lockScreen: isUnlocked ? undefined : (
+    lockScreen: !isUnlocked ? (
       <UnlockWidgetScreen
         id="advanced-orders"
         items={TWAP_BULLET_LIST_CONTENT}
@@ -114,7 +119,9 @@ export function AdvancedOrdersWidget({
         buttonText={UNLOCK_SCREEN.buttonText}
         handleUnlock={() => updateAdvancedOrdersState({ isUnlocked: true })}
       />
-    ),
+    ) : undefined,
+    topContent:
+      SHOW_LIMIT_ORDERS_PROMO && !isDismissed ? <LimitOrdersPromoBanner isLimitOrdersTab={false} /> : undefined,
   }
 
   const tradeWidgetParams = {

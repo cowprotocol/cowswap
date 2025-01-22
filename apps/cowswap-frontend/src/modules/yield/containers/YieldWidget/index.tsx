@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useMemo } from 'react'
 
 import { LpToken } from '@cowprotocol/common-const'
@@ -20,9 +21,12 @@ import { useHandleSwap } from 'modules/tradeFlow'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { SettingsTab, TradeRateDetails } from 'modules/tradeWidgetAddons'
 
+import { SHOW_LIMIT_ORDERS_PROMO } from 'common/constants/featureFlags'
+import { LimitOrdersPromoBanner } from 'common/containers/LimitOrdersPromoBanner'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+import { limitOrdersPromoDismissedAtom } from 'common/state/limitOrdersPromoAtom'
 
 import { CoWAmmInlineBanner, SelectAPoolButton } from './elements'
 
@@ -52,9 +56,10 @@ const YIELD_BULLET_LIST_CONTENT: BulletListItem[] = [
 const YIELD_UNLOCK_SCREEN = {
   id: 'yield-widget',
   title: 'Unlock Enhanced Yield Features',
-  subtitle: 'Boooost your current LP positions with CoW AMM’s pools.',
+  subtitle: "Boooost your current LP positions with CoW AMM's pools.",
   orderType: 'yield',
   buttonText: 'Start boooosting your yield!',
+  buttonLink: '#',
 }
 
 export function YieldWidget() {
@@ -71,6 +76,7 @@ export function YieldWidget() {
   const poolsInfo = usePoolsInfo()
   const vampireAttackContext = useVampireAttack()
   const vampireAttackTarget = useVampireAttackFirstTarget()
+  const isDismissed = useAtomValue(limitOrdersPromoDismissedAtom)
 
   const {
     inputCurrency,
@@ -166,13 +172,29 @@ export function YieldWidget() {
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
 
   const slots: TradeWidgetSlots = {
-    topContent: vampireAttackContext ? (
-      <CoWAmmInlineBanner token={vampireAttackTarget?.target.token} apyDiff={vampireAttackTarget?.apyDiff} />
-    ) : !account ? (
-      <CoWAmmInlineBanner token={undefined} apyDiff={undefined} />
-    ) : null,
     selectTokenWidget: <SelectTokenWidget displayLpTokenLists />,
     settingsWidget: <SettingsTab recipientToggleState={recipientToggleState} deadlineState={deadlineState} />,
+    lockScreen: !isUnlocked ? (
+      <UnlockWidgetScreen
+        id={YIELD_UNLOCK_SCREEN.id}
+        items={YIELD_BULLET_LIST_CONTENT}
+        buttonLink={YIELD_UNLOCK_SCREEN.buttonLink}
+        title={YIELD_UNLOCK_SCREEN.title}
+        subtitle={YIELD_UNLOCK_SCREEN.subtitle}
+        orderType={YIELD_UNLOCK_SCREEN.orderType}
+        buttonText={YIELD_UNLOCK_SCREEN.buttonText}
+        handleUnlock={() => setIsUnlocked(true)}
+      />
+    ) : undefined,
+    topContent:
+      SHOW_LIMIT_ORDERS_PROMO && !isDismissed ? (
+        <LimitOrdersPromoBanner isLimitOrdersTab={false} />
+      ) : vampireAttackContext ? (
+        <CoWAmmInlineBanner token={vampireAttackTarget?.target.token} apyDiff={vampireAttackTarget?.apyDiff} />
+      ) : !account ? (
+        <CoWAmmInlineBanner token={undefined} apyDiff={undefined} />
+      ) : null,
+    middleContent: <></>,
     bottomContent: useCallback(
       (tradeWarnings: ReactNode | null) => {
         return (
@@ -190,18 +212,6 @@ export function YieldWidget() {
       },
       [doTrade.contextIsReady, isRateLoading, rateInfoParams, deadlineState, isOutputLpToken],
     ),
-
-    lockScreen: !isUnlocked ? (
-      <UnlockWidgetScreen
-        id={YIELD_UNLOCK_SCREEN.id}
-        items={YIELD_BULLET_LIST_CONTENT}
-        handleUnlock={() => setIsUnlocked(true)}
-        title={YIELD_UNLOCK_SCREEN.title}
-        subtitle={YIELD_UNLOCK_SCREEN.subtitle}
-        orderType={YIELD_UNLOCK_SCREEN.orderType}
-        buttonText={YIELD_UNLOCK_SCREEN.buttonText}
-      />
-    ) : undefined,
   }
 
   const params = {
