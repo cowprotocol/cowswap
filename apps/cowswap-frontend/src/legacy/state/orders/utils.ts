@@ -191,7 +191,7 @@ export function getOrderMarketPrice(order: Order, quotedAmount: string, feeAmoun
  * 5% to level out the fee amount changes
  */
 const EXECUTION_PRICE_FEE_COEFFICIENT = new Percent(5, 100)
-const FEE_AMOUNT_MULTIPLIER = 50
+const FEE_AMOUNT_MULTIPLIER = 1_000
 
 /**
  * Calculates the estimated execution price based on order params, before the order is placed
