@@ -104,9 +104,12 @@ export function SpotPricesUpdater(): null {
           price,
         })
       } catch (e) {
-        console.error(
-          `Failed to update spot prices for ${inputCurrency.address} and ${outputCurrency.address}`,
-          { inputPrice, outputPrice },
+        console.debug(
+          `[SpotPricesUpdater] Failed to calculate spot price for ${inputCurrency.address} and ${outputCurrency.address}`,
+          inputPrice.price.numerator.toString(),
+          inputPrice.price.denominator.toString(),
+          outputPrice.price.numerator.toString(),
+          outputPrice.price.denominator.toString(),
           e,
         )
       }
