@@ -3,6 +3,8 @@ import { atom } from 'jotai'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import ms from 'ms.macro'
+
 import { advancedOrdersDerivedStateAtom } from 'modules/advancedOrders'
 import { getAppData } from 'modules/appData'
 import { appDataInfoAtom } from 'modules/appData/state/atoms'
@@ -12,6 +14,8 @@ import { twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
 
 import { TWAPOrder } from '../types'
 import { customDeadlineToSeconds } from '../utils/deadlinePartsDisplay'
+
+const MINIMUM_SPAN = ms`30min` / 1000
 
 export const twapDeadlineAtom = atom<number>((get) => {
   const { isCustomDeadline, customDeadline, deadline } = get(twapOrdersSettingsAtom)
@@ -38,6 +42,8 @@ export const twapOrderAtom = atom<TWAPOrder | null>((get) => {
 
   const { sellAmount, buyAmount } = receiveAmountInfo.afterSlippage
 
+  const span = timeInterval < MINIMUM_SPAN ? MINIMUM_SPAN : 0
+
   return {
     sellAmount: sellAmount as CurrencyAmount<Token>,
     buyAmount: buyAmount as CurrencyAmount<Token>,
@@ -45,7 +51,7 @@ export const twapOrderAtom = atom<TWAPOrder | null>((get) => {
     numOfParts: numberOfPartsValue,
     startTime: 0, // Will be set to a block timestamp value from CurrentBlockTimestampFactory
     timeInterval,
-    span: 0,
+    span,
     appData: appDataInfo?.appDataKeccak256 || getAppData().appDataKeccak256,
   }
 })
