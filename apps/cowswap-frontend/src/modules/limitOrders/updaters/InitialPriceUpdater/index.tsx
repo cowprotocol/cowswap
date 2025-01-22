@@ -51,7 +51,7 @@ export function InitialPriceUpdater() {
     updateLimitRateState({ isLoading })
   }, [isInitialPriceSet, updateLimitRateState, updateRate, price, isLoading, prevPrice])
 
-  // Reset initial price set flag when any token was changed
+  // Reset initial price set flag when any token or chain was changed
   useLayoutEffect(() => {
     setIsInitialPriceSet(false)
   }, [inputCurrencyId, outputCurrencyId, chainId])
