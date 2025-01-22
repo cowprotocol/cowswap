@@ -13,12 +13,12 @@ import { decodeAppData } from 'modules/appData/utils/decodeAppData'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getOrderSurplus } from 'utils/orderUtils/getOrderSurplus'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { Order, updateOrder, UpdateOrderParams as UpdateOrderParamsAction } from './actions'
 import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from './consts'
 import { UpdateOrderParams } from './hooks'
 
-import { ParsedOrder } from '../../../utils/orderUtils/parseOrder'
 import { AppDispatch } from '../index'
 import { serializeToken } from '../user/hooks'
 
