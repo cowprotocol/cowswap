@@ -3,16 +3,15 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
-import { getAddress, getEtherscanLink, formatDateWithTimezone } from '@cowprotocol/common-utils'
+import { formatDateWithTimezone, getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { UI, TokenAmount, Loader, HoverTooltip } from '@cowprotocol/ui'
-import { PercentDisplay, percentIsAlmostHundred } from '@cowprotocol/ui'
+import { HoverTooltip, Loader, PercentDisplay, percentIsAlmostHundred, TokenAmount, UI } from '@cowprotocol/ui'
 import { useIsSafeWallet } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
-import { Clock, Zap, Check, X } from 'react-feather'
+import { Check, Clock, X, Zap } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -22,9 +21,9 @@ import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import {
-  PENDING_EXECUTION_THRESHOLD_PERCENTAGE,
-  GOOD_PRICE_THRESHOLD_PERCENTAGE,
   FAIR_PRICE_THRESHOLD_PERCENTAGE,
+  GOOD_PRICE_THRESHOLD_PERCENTAGE,
+  PENDING_EXECUTION_THRESHOLD_PERCENTAGE,
 } from 'common/constants/common'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { RateInfo } from 'common/pure/RateInfo'
@@ -164,7 +163,7 @@ export function OrderRow({
   const executedPriceInverted = isInverted ? executedPrice?.invert() : executedPrice
   const spotPriceInverted = isInverted ? spotPrice?.invert() : spotPrice
 
-  const priceDiffs = usePricesDifference(prices, spotPrice)
+  const priceDiffs = usePricesDifference(prices, spotPrice, isInverted)
   const feeDifference = useFeeAmountDifference(rateInfoParams, prices)
 
   const isExecutedPriceZero = executedPriceInverted !== undefined && executedPriceInverted?.equalTo(ZERO_FRACTION)
@@ -433,6 +432,8 @@ export function OrderRow({
               percentageDifference={priceDiffs?.percentage}
               amountDifference={priceDiffs?.amount}
               percentageFee={feeDifference}
+              marketPrice={spotPriceInverted}
+              executesAtPrice={executionPriceInverted}
               amountFee={feeAmount}
               canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
               isUnfillable={withWarning}
@@ -890,20 +891,22 @@ export function OrderRow({
 /**
  * Helper hook to prepare the parameters to calculate price difference
  */
-function usePricesDifference(prices: OrderRowProps['prices'], spotPrice: OrderRowProps['spotPrice']): PriceDifference {
+function usePricesDifference(
+  prices: OrderRowProps['prices'],
+  spotPrice: OrderRowProps['spotPrice'],
+  isInverted: boolean,
+): PriceDifference {
   const { estimatedExecutionPrice } = prices || {}
 
-  return useSafeMemo(() => {
-    if (!spotPrice || !estimatedExecutionPrice) return null
-
-    // Calculate price difference using original (non-inverted) prices
-    // The percentage should stay the same regardless of display inversion
-    return calculatePriceDifference({
-      referencePrice: spotPrice,
-      targetPrice: estimatedExecutionPrice,
-      isInverted: false,
-    })
-  }, [estimatedExecutionPrice, spotPrice]) // Remove isInverted from dependencies since it shouldn't affect the calculation
+  return useSafeMemo(
+    () =>
+      calculatePriceDifference({
+        referencePrice: spotPrice,
+        targetPrice: estimatedExecutionPrice,
+        isInverted,
+      }),
+    [estimatedExecutionPrice, spotPrice, isInverted],
+  )
 }
 
 /**

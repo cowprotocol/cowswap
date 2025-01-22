@@ -79,26 +79,35 @@ const Select = styled.select`
   }
 `
 
-const TabButton = styled(Link)<{ active: string; $isUnfillable?: boolean; $isSigning?: boolean }>`
+const TabButton = styled(Link)<{
+  active: string
+  $isUnfillable?: boolean
+  $isSigning?: boolean
+  $isDisabled?: boolean
+}>`
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: ${({ active, $isUnfillable, $isSigning }) =>
-    active === 'true'
-      ? $isUnfillable
-        ? `var(${UI.COLOR_DANGER_BG})`
+  background: ${({ active, $isUnfillable, $isSigning, $isDisabled }) =>
+    $isDisabled
+      ? 'transparent'
+      : active === 'true'
+        ? $isUnfillable
+          ? `var(${UI.COLOR_DANGER_BG})`
+          : $isSigning
+            ? `var(${UI.COLOR_ALERT_BG})`
+            : `var(${UI.COLOR_TEXT_OPACITY_10})`
+        : 'transparent'};
+  color: ${({ active, $isUnfillable, $isSigning, $isDisabled }) =>
+    $isDisabled
+      ? `var(${UI.COLOR_TEXT_OPACITY_50})`
+      : $isUnfillable
+        ? `var(${UI.COLOR_DANGER})`
         : $isSigning
-          ? `var(${UI.COLOR_ALERT_BG})`
-          : `var(${UI.COLOR_TEXT_OPACITY_10})`
-      : 'transparent'};
-  color: ${({ active, $isUnfillable, $isSigning }) =>
-    $isUnfillable
-      ? `var(${UI.COLOR_DANGER})`
-      : $isSigning
-        ? `var(${UI.COLOR_ALERT_TEXT})`
-        : active === 'true'
-          ? `var(${UI.COLOR_TEXT_PAPER})`
-          : 'inherit'};
+          ? `var(${UI.COLOR_ALERT_TEXT})`
+          : active === 'true'
+            ? `var(${UI.COLOR_TEXT_PAPER})`
+            : 'inherit'};
   font-weight: ${({ active }) => (active === 'true' ? '600' : '400')};
   border-radius: 14px;
   text-decoration: none;
@@ -106,26 +115,21 @@ const TabButton = styled(Link)<{ active: string; $isUnfillable?: boolean; $isSig
   padding: 10px;
   border: 0;
   outline: none;
-  cursor: pointer;
+  cursor: ${({ $isDisabled }) => ($isDisabled ? 'default' : 'pointer')};
   transition:
     background var(${UI.ANIMATION_DURATION}) ease-in-out,
     color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  pointer-events: ${({ $isDisabled }) => ($isDisabled ? 'none' : 'auto')};
 
   ${Media.upToMedium()} {
     text-align: center;
   }
 
   &:hover {
-    background: ${({ active, $isUnfillable, $isSigning }) =>
-      active === 'true'
-        ? $isUnfillable
-          ? `var(${UI.COLOR_DANGER_BG})`
-          : $isSigning
-            ? `var(${UI.COLOR_ALERT_BG})`
-            : `var(${UI.COLOR_TEXT_OPACITY_10})`
-        : `var(${UI.COLOR_TEXT_OPACITY_10})`};
-    color: ${({ $isUnfillable, $isSigning }) =>
-      $isUnfillable ? `var(${UI.COLOR_DANGER})` : $isSigning ? `var(${UI.COLOR_ALERT_TEXT})` : 'inherit'};
+    background: ${({ $isDisabled, $isUnfillable }) =>
+      $isDisabled ? 'transparent' : $isUnfillable ? `var(${UI.COLOR_DANGER_BG})` : `var(${UI.COLOR_TEXT_OPACITY_10})`};
+    color: ${({ $isDisabled, $isUnfillable }) =>
+      $isDisabled ? `var(${UI.COLOR_TEXT_OPACITY_50})` : $isUnfillable ? `var(${UI.COLOR_DANGER})` : 'inherit'};
   }
 
   > svg {
@@ -141,9 +145,10 @@ const TabButton = styled(Link)<{ active: string; $isUnfillable?: boolean; $isSig
 
 export interface OrdersTabsProps {
   tabs: OrderTab[]
+  isWalletConnected?: boolean
 }
 
-export function OrdersTabs({ tabs }: OrdersTabsProps) {
+export function OrdersTabs({ tabs, isWalletConnected = true }: OrdersTabsProps) {
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
   const navigate = useNavigate()
   const activeTabIndex = Math.max(
@@ -167,7 +172,7 @@ export function OrdersTabs({ tabs }: OrdersTabsProps) {
               <option key={index} value={tab.id}>
                 {isUnfillable && '⚠️ '}
                 {isSigning && '⏳ '}
-                {tab.title} ({tab.count})
+                {tab.title} {isWalletConnected && `(${tab.count})`}
               </option>
             )
           })}
@@ -184,11 +189,12 @@ export function OrdersTabs({ tabs }: OrdersTabsProps) {
               active={(index === activeTabIndex).toString()}
               $isUnfillable={isUnfillable}
               $isSigning={isSigning}
+              $isDisabled={!isWalletConnected}
               to={buildOrdersTableUrl({ tabId: tab.id, pageNumber: 1 })}
             >
               {isUnfillable && <SVG src={alertCircle} description="warning" />}
               {isSigning && <SVG src={orderPresignaturePending} description="signing" />}
-              <Trans>{tab.title}</Trans> <span>({tab.count})</span>
+              <Trans>{tab.title}</Trans> {isWalletConnected && <span>({tab.count})</span>}
             </TabButton>
           )
         })}

@@ -8,19 +8,17 @@ import styled from 'styled-components/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
-import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
-import { BalancesAndAllowances } from 'modules/tokens'
+import type { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
+import type { BalancesAndAllowances } from 'modules/tokens'
 
 import { OrderRow } from './OrderRow'
-import { WarningTooltip } from './OrderRow/OrderWarning'
-import * as styledEl from './OrderRow/styled'
 import { OrderActions } from './types'
 
 import { ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
 import { getOrderParams } from '../../utils/getOrderParams'
 import { OrderTableGroup } from '../../utils/orderTableGroupUtils'
 import { OrdersTablePagination } from '../OrdersTablePagination'
-import { OrderStatusBox } from '../OrderStatusBox'
+import { TwapStatusAndToggle } from '../TwapStatusAndToggle'
 
 const GroupBox = styled.div``
 
@@ -29,71 +27,6 @@ const Pagination = styled(OrdersTablePagination)`
   margin: 0;
   padding: 10px 0;
 `
-
-function TwapStatusAndToggle({
-  parent,
-  childrenLength,
-  isCollapsed,
-  onToggle,
-  onClick,
-  children,
-}: {
-  parent: any
-  childrenLength: number
-  isCollapsed: boolean
-  onToggle: () => void
-  onClick: () => void
-  children: any[]
-}) {
-  // Check if any child has insufficient balance or allowance
-  const childWithAllowanceWarning = children.find(
-    (child) =>
-      child.orderParams?.hasEnoughAllowance === false &&
-      (child.order.status === OrderStatus.PENDING || child.order.status === OrderStatus.SCHEDULED),
-  )
-
-  const childWithBalanceWarning = children.find(
-    (child) =>
-      child.orderParams?.hasEnoughBalance === false &&
-      (child.order.status === OrderStatus.PENDING || child.order.status === OrderStatus.SCHEDULED),
-  )
-
-  const hasWarning = childWithAllowanceWarning || childWithBalanceWarning
-  const warningChild = childWithAllowanceWarning || childWithBalanceWarning
-
-  return (
-    <>
-      <OrderStatusBox
-        order={parent}
-        onClick={onClick}
-        withWarning={!!hasWarning}
-        WarningTooltip={
-          hasWarning
-            ? ({ children }) => (
-                <WarningTooltip
-                  children={children}
-                  hasEnoughBalance={!childWithBalanceWarning}
-                  hasEnoughAllowance={!childWithAllowanceWarning}
-                  inputTokenSymbol={warningChild.order.inputToken.symbol || ''}
-                  isOrderScheduled={warningChild.order.status === OrderStatus.SCHEDULED}
-                  onApprove={() => warningChild.orderActions.approveOrderToken(warningChild.order.inputToken)}
-                  showIcon={true}
-                />
-              )
-            : undefined
-        }
-      />
-      <styledEl.ToggleExpandButton onClick={onToggle} isCollapsed={isCollapsed}>
-        {childrenLength && (
-          <i>
-            {childrenLength} part{childrenLength > 1 && 's'}
-          </i>
-        )}
-        <button />
-      </styledEl.ToggleExpandButton>
-    </>
-  )
-}
 
 export interface TableGroupProps {
   item: OrderTableGroup
@@ -151,7 +84,6 @@ export function TableGroup(props: TableGroupProps) {
   const childrenWithParams = children.map((child) => ({
     order: child,
     orderParams: getOrderParams(chainId, balancesAndAllowances, child),
-    orderActions,
   }))
 
   return (
@@ -168,12 +100,13 @@ export function TableGroup(props: TableGroupProps) {
       >
         {isParentSigning ? undefined : (
           <TwapStatusAndToggle
+            approveOrderToken={orderActions.approveOrderToken}
             parent={parent}
             childrenLength={childrenLength}
             isCollapsed={isCollapsed}
             onToggle={() => setIsCollapsed((state) => !state)}
             onClick={() => orderActions.selectReceiptOrder(parent)}
-            children={childrenWithParams}
+            childOrders={childrenWithParams}
           />
         )}
       </OrderRow>

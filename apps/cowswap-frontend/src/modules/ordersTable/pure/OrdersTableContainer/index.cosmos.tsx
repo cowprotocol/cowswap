@@ -74,5 +74,6 @@ export default (
     orderActions={orderActions}
     orderType={TabOrderTypes.LIMIT}
     injectedWidgetParams={{}}
+    isTwapTable={false}
   />
 )
