@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { getEtherscanLink, getExplorerLabel, shortenAddress, getExplorerAddressLink } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { ExternalLink } from '@cowprotocol/ui'
@@ -18,6 +19,8 @@ import {
 import { Trans } from '@lingui/macro'
 
 import Copy from 'legacy/components/Copy'
+import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
+import { upToSmall } from 'legacy/hooks/useMediaQuery'
 import {
   ActivityDescriptors,
   groupActivitiesByDay,
@@ -44,7 +47,7 @@ import {
   TransactionListWrapper,
   UnsupportedWalletBox,
   WalletAction,
-  WalletActions,
+  WalletActionsWrapper,
   WalletName,
   WalletNameAddress,
   WalletSelector,
@@ -155,11 +158,11 @@ export function AccountDetails({
               {(ENSName || account) && <Copy toCopy={ENSName ? ENSName : account ? account : ''} />}
             </WalletWrapper>
 
-            <WalletActions>
-              {' '}
-              {!isChainIdUnsupported && <NetworkCard title={networkLabel}>{networkLabel}</NetworkCard>}{' '}
-              {formatConnectorName()}
-            </WalletActions>
+            <WalletActions
+              isChainIdUnsupported={isChainIdUnsupported}
+              networkLabel={networkLabel}
+              formatConnectorName={formatConnectorName}
+            />
           </AccountControl>
         </AccountGroupingRow>
         <AccountGroupingRow>
@@ -226,5 +229,33 @@ export function AccountDetails({
         </>
       )}
     </Wrapper>
+  )
+}
+
+const WalletActions = ({
+  isChainIdUnsupported,
+  networkLabel,
+  formatConnectorName,
+}: {
+  isChainIdUnsupported: boolean
+  networkLabel: string
+  formatConnectorName: () => React.ReactNode
+}) => {
+  const isMobile = useMediaQuery(upToSmall)
+
+  const wallet = isMobile ? (
+    <NetworkSelector />
+  ) : !isChainIdUnsupported ? (
+    <>
+      <NetworkCard title={networkLabel}>{networkLabel}</NetworkCard>{' '}
+    </>
+  ) : null
+
+  return (
+    <WalletActionsWrapper>
+      {' '}
+      {wallet}
+      {formatConnectorName()}
+    </WalletActionsWrapper>
   )
 }

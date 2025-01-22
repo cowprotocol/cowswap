@@ -8,7 +8,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ReactDOM from 'react-dom'
 
-import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+import { upToLargeAlt, upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { useToggleAccountModal } from 'modules/account'
 import { clickNotifications } from 'modules/analytics'
@@ -19,7 +19,7 @@ import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-import { BalanceText, Wrapper, LeftGroup } from './styled'
+import { BalanceText, Wrapper, AccountGroup } from './styled'
 
 import { NetworkSelector } from '../NetworkSelector'
 
@@ -31,12 +31,13 @@ interface AccountElementProps {
 export function AccountElement({ className, pendingActivities }: AccountElementProps) {
   const { account, chainId } = useWalletInfo()
   const isInjectedWidgetMode = isInjectedWidget()
-  const { standaloneMode, hideNetworkSelector } = useInjectedWidgetParams()
+  const { standaloneMode } = useInjectedWidgetParams()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const userEthBalance = useNativeCurrencyAmount(chainId, account)
   const toggleAccountModal = useToggleAccountModal()
   const nativeTokenSymbol = NATIVE_CURRENCIES[chainId].symbol
-  const isUpToLarge = useMediaQuery(upToLarge)
+  const isUpToLargeAlt = useMediaQuery(upToLargeAlt)
+  const isUpToSmall = useMediaQuery(upToSmall)
 
   const unreadNotifications = useUnreadNotifications()
   const unreadNotificationsCount = Object.keys(unreadNotifications).length
@@ -50,18 +51,20 @@ export function AccountElement({ className, pendingActivities }: AccountElementP
     standaloneMode !== false &&
     !isInjectedWidgetMode &&
     userEthBalance &&
-    !isUpToLarge
+    !isUpToLargeAlt
 
   return (
     <>
       <Wrapper className={className}>
-        <LeftGroup active={!!account}>
+        {!isInjectedWidgetMode && !isUpToSmall && <NetworkSelector />}
+        <AccountGroup active={!!account}>
           {showEthBalance && (
             <BalanceText>
               <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeTokenSymbol }} />
             </BalanceText>
           )}
           <Web3Status pendingActivities={pendingActivities} onClick={() => account && toggleAccountModal()} />
+
           {account && (
             <NotificationBell
               unreadCount={unreadNotificationsCount}
@@ -73,9 +76,7 @@ export function AccountElement({ className, pendingActivities }: AccountElementP
               }}
             />
           )}
-        </LeftGroup>
-
-        {!hideNetworkSelector && <NetworkSelector />}
+        </AccountGroup>
       </Wrapper>
 
       {ReactDOM.createPortal(

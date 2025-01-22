@@ -1,4 +1,5 @@
 import { SettingsBox, SettingsContainer, SettingsTitle } from 'modules/trade/pure/Settings'
+import { ChangeNetworkWidget } from 'modules/tradeWidgetAddons/containers/SettingsTab'
 
 import { LimitOrdersSettingsState } from '../../state/limitOrdersSettingsAtom'
 
@@ -12,6 +13,7 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
 
   return (
     <SettingsContainer>
+      <ChangeNetworkWidget />
       <SettingsTitle>Interface Settings</SettingsTitle>
 
       <SettingsBox

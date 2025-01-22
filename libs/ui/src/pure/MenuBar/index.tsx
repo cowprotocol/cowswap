@@ -589,10 +589,11 @@ interface GlobalSettingsDropdownProps {
   closeDropdown: () => void
   rootDomain: string
   LinkComponent: LinkComponentType
+  topContent?: React.ReactNode
 }
 
 const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdownProps>((props, ref) => {
-  const { mobileMode, settingsNavItems, isOpen, closeDropdown, rootDomain, LinkComponent } = props
+  const { mobileMode, settingsNavItems, isOpen, closeDropdown, rootDomain, LinkComponent, topContent } = props
 
   if (!settingsNavItems || settingsNavItems.length === 0) {
     return null
@@ -604,12 +605,48 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
         (mobileMode ? (
           <MobileDropdownContainer mobileMode={mobileMode} ref={ref as React.RefObject<HTMLDivElement>}>
             <DropdownContent isOpen={true} alignRight={true} mobileMode={mobileMode}>
+              <>
+                {topContent}
+                {settingsNavItems.map((item, index) => {
+                  const to = item.external
+                    ? appendUtmParams(
+                        item.href!,
+                        item.utmSource,
+                        item.utmContent,
+                        rootDomain,
+                        item.external,
+                        item.label,
+                      )
+                    : item.href
+                      ? `${new URL(item.href, `https://${rootDomain}`).pathname}`
+                      : undefined
+
+                  const content = (
+                    <>
+                      <DropdownContentItemText>
+                        <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
+                      </DropdownContentItemText>
+                      <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />
+                    </>
+                  )
+
+                  return (
+                    <StyledDropdownContentItem key={index} onClick={_onDropdownItemClickFactory(item, closeDropdown)}>
+                      {to ? <LinkComponent href={to}>{content}</LinkComponent> : <div>{content}</div>}
+                    </StyledDropdownContentItem>
+                  )
+                })}
+              </>
+            </DropdownContent>
+          </MobileDropdownContainer>
+        ) : (
+          <DropdownContent isOpen={true} ref={ref} alignRight={true} mobileMode={mobileMode}>
+            <>
+              {topContent}
               {settingsNavItems.map((item, index) => {
                 const to = item.external
                   ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
                   : item.href
-                    ? `${new URL(item.href, `https://${rootDomain}`).pathname}`
-                    : undefined
 
                 const content = (
                   <>
@@ -626,30 +663,7 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
                   </StyledDropdownContentItem>
                 )
               })}
-            </DropdownContent>
-          </MobileDropdownContainer>
-        ) : (
-          <DropdownContent isOpen={true} ref={ref} alignRight={true} mobileMode={mobileMode}>
-            {settingsNavItems.map((item, index) => {
-              const to = item.external
-                ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
-                : item.href
-
-              const content = (
-                <>
-                  <DropdownContentItemText>
-                    <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
-                  </DropdownContentItemText>
-                  <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />
-                </>
-              )
-
-              return (
-                <StyledDropdownContentItem key={index} onClick={_onDropdownItemClickFactory(item, closeDropdown)}>
-                  {to ? <LinkComponent href={to}>{content}</LinkComponent> : <div>{content}</div>}
-                </StyledDropdownContentItem>
-              )
-            })}
+            </>
           </DropdownContent>
         ))}
     </>
@@ -674,6 +688,7 @@ interface MenuBarProps {
   additionalContent?: React.ReactNode
   showGlobalSettings?: boolean
   settingsNavItems?: MenuItem[]
+  settingsTopContent?: React.ReactNode
   additionalNavButtons?: MenuItem[]
   bgColorLight?: string
   bgColorDark?: string
@@ -704,6 +719,7 @@ export const MenuBar = (props: MenuBarProps) => {
     showGlobalSettings,
     additionalNavButtons,
     settingsNavItems,
+    settingsTopContent,
     bgColorLight,
     bgColorDark,
     bgDropdownColorLight,
@@ -847,6 +863,7 @@ export const MenuBar = (props: MenuBarProps) => {
                   mobileMode={isMedium}
                   as={item.isButton ? 'button' : 'div'}
                 >
+                  {settingsTopContent}
                   <LinkComponent href={href}>
                     <DropdownContentItemText>
                       <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
@@ -863,6 +880,7 @@ export const MenuBar = (props: MenuBarProps) => {
               </GlobalSettingsButton>
               {isSettingsOpen && (
                 <GlobalSettingsDropdown
+                  topContent={settingsTopContent}
                   mobileMode={isMedium}
                   settingsNavItems={settingsNavItems}
                   isOpen={isSettingsOpen}
@@ -884,58 +902,60 @@ export const MenuBar = (props: MenuBarProps) => {
       </MenuBarInner>
 
       {isMobile && isMobileMenuOpen && (
-        <NavItems mobileMode={isMobile} ref={mobileMenuRef}>
-          <div>
-            {navItems.map((item, index) => (
-              <NavItem
-                key={index}
-                item={item}
-                mobileMode={isMobile}
-                openDropdown={openDropdown}
-                closeDropdown={() => {
-                  setIsMobileMenuOpen(false)
-                  setOpenDropdown(null)
-                }}
-                setOpenDropdown={setOpenDropdown}
-                rootDomain={rootDomain}
-                LinkComponent={LinkComponent}
-              />
-            ))}
-            <RightAligned mobileMode={isMobile}>
-              {additionalContent} {/* Add additional content here */}
-              {additionalNavButtons &&
-                additionalNavButtons.map((item, index) => (
-                  <DropdownContentItemButton
-                    key={index}
-                    bgColor={item.bgColor}
-                    color={item.color}
-                    hoverBgColor={item.hoverBgColor}
-                    hoverColor={item.hoverColor}
-                    as={item.isButton ? 'button' : 'div'}
-                  >
-                    <LinkComponent
-                      href={appendUtmParams(
-                        item.href!,
-                        item.utmSource,
-                        item.utmContent,
-                        rootDomain,
-                        !!item.external,
-                        item.label,
-                      )}
+        <>
+          <NavItems mobileMode={isMobile} ref={mobileMenuRef}>
+            <div>
+              {navItems.map((item, index) => (
+                <NavItem
+                  key={index}
+                  item={item}
+                  mobileMode={isMobile}
+                  openDropdown={openDropdown}
+                  closeDropdown={() => {
+                    setIsMobileMenuOpen(false)
+                    setOpenDropdown(null)
+                  }}
+                  setOpenDropdown={setOpenDropdown}
+                  rootDomain={rootDomain}
+                  LinkComponent={LinkComponent}
+                />
+              ))}
+              <RightAligned mobileMode={isMobile}>
+                {additionalContent} {/* Add additional content here */}
+                {additionalNavButtons &&
+                  additionalNavButtons.map((item, index) => (
+                    <DropdownContentItemButton
+                      key={index}
+                      bgColor={item.bgColor}
+                      color={item.color}
+                      hoverBgColor={item.hoverBgColor}
+                      hoverColor={item.hoverColor}
+                      as={item.isButton ? 'button' : 'div'}
                     >
-                      <DropdownContentItemText>
-                        <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
-                      </DropdownContentItemText>
-                      <SVG
-                        src={IMG_ICON_ARROW_RIGHT}
-                        className={`arrow-icon-right ${item.external ? 'external' : ''}`}
-                      />
-                    </LinkComponent>
-                  </DropdownContentItemButton>
-                ))}
-            </RightAligned>
-          </div>
-        </NavItems>
+                      <LinkComponent
+                        href={appendUtmParams(
+                          item.href!,
+                          item.utmSource,
+                          item.utmContent,
+                          rootDomain,
+                          !!item.external,
+                          item.label,
+                        )}
+                      >
+                        <DropdownContentItemText>
+                          <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
+                        </DropdownContentItemText>
+                        <SVG
+                          src={IMG_ICON_ARROW_RIGHT}
+                          className={`arrow-icon-right ${item.external ? 'external' : ''}`}
+                        />
+                      </LinkComponent>
+                    </DropdownContentItemButton>
+                  ))}
+              </RightAligned>
+            </div>
+          </NavItems>
+        </>
       )}
     </MenuBarWrapper>
   )

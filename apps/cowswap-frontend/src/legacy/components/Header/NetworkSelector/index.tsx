@@ -123,6 +123,10 @@ const SelectorWrapper = styled.div`
   ${Media.MediumAndUp()} {
     position: relative;
   }
+
+  ${Media.upToSmall()} {
+    font-size: 14px;
+  }
 `
 const StyledChevronDown = styled(ChevronDown)`
   width: 21px;
