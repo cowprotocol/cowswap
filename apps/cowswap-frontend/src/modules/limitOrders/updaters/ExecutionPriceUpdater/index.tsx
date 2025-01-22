@@ -24,7 +24,11 @@ export function ExecutionPriceUpdater() {
   const outputToken = outputCurrencyAmount?.currency && getWrappedToken(outputCurrencyAmount.currency)
 
   const marketPrice =
-    marketRate && inputToken && outputToken && FractionUtils.toPrice(marketRate, inputToken, outputToken)
+    marketRate &&
+    !marketRate.equalTo('0') &&
+    inputToken &&
+    outputToken &&
+    FractionUtils.toPrice(marketRate, inputToken, outputToken)
 
   const fee = feeAmount?.quotient.toString()
 
