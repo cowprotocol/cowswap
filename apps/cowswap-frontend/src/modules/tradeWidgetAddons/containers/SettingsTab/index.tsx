@@ -17,6 +17,7 @@ import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
 import { Toggle } from 'legacy/components/Toggle'
 
 import { toggleHooksEnabledAnalytics, toggleRecipientAddressAnalytics } from 'modules/analytics'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { SettingsIcon } from 'modules/trade/pure/Settings'
 
 import * as styledEl from './styled'
@@ -56,7 +57,6 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
     [hooksEnabled, toggleHooksEnabledAux],
   )
 
-  // const isMobile = useMediaQuery(Media.upToMedium(false))
   const isInjectedWidgetMode = isInjectedWidget()
 
   return (
@@ -68,23 +68,9 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
           </styledEl.StyledMenuButton>
           <styledEl.MenuFlyout portal={false}>
             <AutoColumn gap="md" style={{ padding: '1rem' }}>
-              {isInjectedWidgetMode && (
-                <>
-                  <Text fontWeight={600} fontSize={14}>
-                    <Trans>Settings</Trans>
-                  </Text>
-                  <RowBetween>
-                    <RowFixed>
-                      <ThemedText.Black fontWeight={400} fontSize={14}>
-                        <Trans>Network</Trans>
-                      </ThemedText.Black>
-                    </RowFixed>
-                    <NetworkSelector />
-                  </RowBetween>
-                </>
-              )}
+              <ChangeNetworkWidget />
 
-              <Text fontWeight={600} fontSize={14} style={{ marginTop: '1rem' }}>
+              <Text fontWeight={600} fontSize={14}>
                 <Trans>Transaction Settings</Trans>
               </Text>
               <TransactionSettings deadlineState={deadlineState} />
@@ -170,4 +156,28 @@ function SettingsTabController({ buttonRef, children }: SettingsTabControllerPro
   }, [settingsTabState.open, isExpanded, toggleMenu, setSettingsTabState])
 
   return children
+}
+
+export function ChangeNetworkWidget() {
+  const isInjectedWidgetMode = isInjectedWidget()
+  const { standaloneMode } = useInjectedWidgetParams()
+
+  if (!isInjectedWidgetMode || !standaloneMode) {
+    return null
+  }
+  return (
+    <>
+      <Text fontWeight={600} fontSize={14}>
+        <Trans>Settings</Trans>
+      </Text>
+      <RowBetween style={{ marginBottom: '1rem' }}>
+        <RowFixed>
+          <ThemedText.Black fontWeight={400} fontSize={14}>
+            <Trans>Network</Trans>
+          </ThemedText.Black>
+        </RowFixed>
+        <NetworkSelector />
+      </RowBetween>
+    </>
+  )
 }

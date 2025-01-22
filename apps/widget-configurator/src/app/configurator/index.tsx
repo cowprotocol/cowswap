@@ -145,9 +145,6 @@ export function Configurator({ title }: { title: string }) {
   const [disableProgressBar, setDisableProgressBar] = useState<boolean>(false)
   const toggleDisableProgressBar = useCallback(() => setDisableProgressBar((curr) => !curr), [])
 
-  const [hideNetworkSelector, setHideNetworkSelector] = useState<boolean>(true)
-  const toggleHideNetworkSelector = useCallback(() => setHideNetworkSelector((curr) => !curr), [])
-
   const [hideBridgeInfo, setHideBridgeInfo] = useState<boolean | undefined>(false)
   const toggleHideBridgeInfo = useCallback(() => setHideBridgeInfo((curr) => !curr), [])
 
@@ -187,7 +184,6 @@ export function Configurator({ title }: { title: string }) {
     standaloneMode,
     disableToastMessages,
     disableProgressBar,
-    hideNetworkSelector,
     hideBridgeInfo,
     hideOrdersTable,
   }
@@ -336,20 +332,6 @@ export function Configurator({ title }: { title: string }) {
           >
             <FormControlLabel value="false" control={<Radio />} label="Self-contain in Widget" />
             <FormControlLabel value="true" control={<Radio />} label="Dapp mode" />
-          </RadioGroup>
-        </FormControl>
-
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Network selector:</FormLabel>
-          <RadioGroup
-            row
-            aria-label="mode"
-            name="mode"
-            value={hideNetworkSelector}
-            onChange={toggleHideNetworkSelector}
-          >
-            <FormControlLabel value="false" control={<Radio />} label="Show network selector" />
-            <FormControlLabel value="true" control={<Radio />} label="Hide network selector" />
           </RadioGroup>
         </FormControl>
 

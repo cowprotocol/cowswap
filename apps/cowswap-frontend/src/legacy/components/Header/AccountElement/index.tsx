@@ -19,7 +19,7 @@ import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-import { BalanceText, Wrapper, LeftGroup } from './styled'
+import { BalanceText, Wrapper, AccountGroup } from './styled'
 
 import { NetworkSelector } from '../NetworkSelector'
 
@@ -31,7 +31,7 @@ interface AccountElementProps {
 export function AccountElement({ className, pendingActivities }: AccountElementProps) {
   const { account, chainId } = useWalletInfo()
   const isInjectedWidgetMode = isInjectedWidget()
-  const { standaloneMode, hideNetworkSelector } = useInjectedWidgetParams()
+  const { standaloneMode } = useInjectedWidgetParams()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const userEthBalance = useNativeCurrencyAmount(chainId, account)
   const toggleAccountModal = useToggleAccountModal()
@@ -53,13 +53,11 @@ export function AccountElement({ className, pendingActivities }: AccountElementP
     userEthBalance &&
     !isUpToLargeAlt
 
-  // const showNetworkSelector = !isInjectedWidgetMode && !hideNetworkSelector
-
   return (
     <>
       <Wrapper className={className}>
         {!isInjectedWidgetMode && !isUpToSmall && <NetworkSelector />}
-        <LeftGroup active={!!account}>
+        <AccountGroup active={!!account}>
           {showEthBalance && (
             <BalanceText>
               <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeTokenSymbol }} />
@@ -78,7 +76,7 @@ export function AccountElement({ className, pendingActivities }: AccountElementP
               }}
             />
           )}
-        </LeftGroup>
+        </AccountGroup>
       </Wrapper>
 
       {ReactDOM.createPortal(

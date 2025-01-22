@@ -34,7 +34,7 @@ export const Wrapper = styled.div`
   flex-direction: row;
 `
 
-export const LeftGroup = styled.div<{ active: boolean }>`
+export const AccountGroup = styled.div<{ active: boolean }>`
   display: flex;
   align-items: center;
   background: ${({ active }) => (active ? `var(${UI.COLOR_PAPER_DARKER})` : `var(${UI.COLOR_PAPER})`)};
@@ -42,5 +42,5 @@ export const LeftGroup = styled.div<{ active: boolean }>`
   border: none;
   transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
   pointer-events: auto;
-  margin: 0px 20px 0px auto;
+  margin: 0 auto;
 `

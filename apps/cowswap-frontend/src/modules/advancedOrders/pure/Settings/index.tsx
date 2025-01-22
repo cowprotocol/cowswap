@@ -1,5 +1,6 @@
 import { AdvancedOrdersSettingsState } from 'modules/advancedOrders/state/advancedOrdersSettingsAtom'
 import { SettingsBox, SettingsContainer, SettingsTitle } from 'modules/trade/pure/Settings'
+import { ChangeNetworkWidget } from 'modules/tradeWidgetAddons/containers/SettingsTab'
 
 export interface SettingsProps {
   state: AdvancedOrdersSettingsState
@@ -11,6 +12,7 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
 
   return (
     <SettingsContainer>
+      <ChangeNetworkWidget />
       <SettingsTitle>Interface Settings</SettingsTitle>
 
       <SettingsBox
