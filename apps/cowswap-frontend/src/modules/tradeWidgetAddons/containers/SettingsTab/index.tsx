@@ -13,6 +13,7 @@ import { Text } from 'rebass'
 import { ThemedText } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
+import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
 import { Toggle } from 'legacy/components/Toggle'
 
 import { toggleHooksEnabledAnalytics, toggleRecipientAddressAnalytics } from 'modules/analytics'
@@ -55,6 +56,9 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
     [hooksEnabled, toggleHooksEnabledAux],
   )
 
+  // const isMobile = useMediaQuery(Media.upToMedium(false))
+  const isInjectedWidgetMode = isInjectedWidget()
+
   return (
     <Menu>
       <SettingsTabController buttonRef={menuButtonRef}>
@@ -64,7 +68,23 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
           </styledEl.StyledMenuButton>
           <styledEl.MenuFlyout portal={false}>
             <AutoColumn gap="md" style={{ padding: '1rem' }}>
-              <Text fontWeight={600} fontSize={14}>
+              {isInjectedWidgetMode && (
+                <>
+                  <Text fontWeight={600} fontSize={14}>
+                    <Trans>Settings</Trans>
+                  </Text>
+                  <RowBetween>
+                    <RowFixed>
+                      <ThemedText.Black fontWeight={400} fontSize={14}>
+                        <Trans>Network</Trans>
+                      </ThemedText.Black>
+                    </RowFixed>
+                    <NetworkSelector />
+                  </RowBetween>
+                </>
+              )}
+
+              <Text fontWeight={600} fontSize={14} style={{ marginTop: '1rem' }}>
                 <Trans>Transaction Settings</Trans>
               </Text>
               <TransactionSettings deadlineState={deadlineState} />
@@ -92,7 +112,7 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
                 />
               </RowBetween>
 
-              {!isInjectedWidget() && hooksEnabled !== null && (
+              {!isInjectedWidgetMode && hooksEnabled !== null && (
                 <RowBetween>
                   <RowFixed>
                     <ThemedText.Black fontWeight={400} fontSize={14}>

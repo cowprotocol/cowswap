@@ -31,13 +31,7 @@ export const Wrapper = styled.div`
   gap: 16px;
   position: relative;
   width: 100%;
-  flex-direction: row-reverse;
-
-  ${Media.upToMedium()} {
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
-  }
+  flex-direction: row;
 `
 
 export const LeftGroup = styled.div<{ active: boolean }>`
@@ -48,4 +42,5 @@ export const LeftGroup = styled.div<{ active: boolean }>`
   border: none;
   transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
   pointer-events: auto;
+  margin: 0px 20px 0px auto;
 `

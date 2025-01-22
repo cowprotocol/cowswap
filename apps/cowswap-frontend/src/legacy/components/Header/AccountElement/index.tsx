@@ -8,7 +8,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ReactDOM from 'react-dom'
 
-import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+import { upToLargeAlt, upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { useToggleAccountModal } from 'modules/account'
 import { clickNotifications } from 'modules/analytics'
@@ -36,7 +36,8 @@ export function AccountElement({ className, pendingActivities }: AccountElementP
   const userEthBalance = useNativeCurrencyAmount(chainId, account)
   const toggleAccountModal = useToggleAccountModal()
   const nativeTokenSymbol = NATIVE_CURRENCIES[chainId].symbol
-  const isUpToLarge = useMediaQuery(upToLarge)
+  const isUpToLargeAlt = useMediaQuery(upToLargeAlt)
+  const isUpToSmall = useMediaQuery(upToSmall)
 
   const unreadNotifications = useUnreadNotifications()
   const unreadNotificationsCount = Object.keys(unreadNotifications).length
@@ -50,11 +51,14 @@ export function AccountElement({ className, pendingActivities }: AccountElementP
     standaloneMode !== false &&
     !isInjectedWidgetMode &&
     userEthBalance &&
-    !isUpToLarge
+    !isUpToLargeAlt
+
+  // const showNetworkSelector = !isInjectedWidgetMode && !hideNetworkSelector
 
   return (
     <>
       <Wrapper className={className}>
+        {!isInjectedWidgetMode && !isUpToSmall && <NetworkSelector />}
         <LeftGroup active={!!account}>
           {showEthBalance && (
             <BalanceText>
@@ -62,6 +66,7 @@ export function AccountElement({ className, pendingActivities }: AccountElementP
             </BalanceText>
           )}
           <Web3Status pendingActivities={pendingActivities} onClick={() => account && toggleAccountModal()} />
+
           {account && (
             <NotificationBell
               unreadCount={unreadNotificationsCount}
@@ -74,8 +79,6 @@ export function AccountElement({ className, pendingActivities }: AccountElementP
             />
           )}
         </LeftGroup>
-
-        {!hideNetworkSelector && <NetworkSelector />}
       </Wrapper>
 
       {ReactDOM.createPortal(

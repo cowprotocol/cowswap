@@ -10,6 +10,9 @@ export const ActiveRowWrapper = styled.div`
   cursor: pointer;
   width: 100%;
   padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `
 
 export const ActiveRowLinkList = styled.div`

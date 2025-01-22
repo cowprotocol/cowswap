@@ -137,6 +137,7 @@ export function App() {
               productVariant={PRODUCT_VARIANT}
               customTheme={customTheme}
               settingsNavItems={settingsNavItems}
+              // settingsTopContent={isMobile ? <SettingsTopContentMobile /> : null}
               showGlobalSettings
               bgColorDark={'rgb(222 227 230 / 7%)'}
               colorDark={'#DEE3E6'}
@@ -147,7 +148,7 @@ export function App() {
               activeBackgroundDark="#282854"
               hoverBackgroundDark={'#18193B'}
               LinkComponent={LinkComponent}
-              persistentAdditionalContent={isMobile ? null : persistentAdditionalContent} // This will stay at its original location
+              persistentAdditionalContent={persistentAdditionalContent} // This will stay at its original location
               additionalContent={null} // On desktop renders inside the menu bar, on mobile renders inside the mobile menu
             />
           )}
@@ -185,11 +186,16 @@ export function App() {
               hasTouchFooter
             />
           )}
-
-          {/* Render MobileHeaderControls outside of MenuBar on mobile */}
-          {isMobile && !isInjectedWidgetMode && persistentAdditionalContent}
         </styledEl.AppWrapper>
       </Suspense>
     </ErrorBoundary>
   )
 }
+
+// const SettingsTopContentMobile = () => {
+//   return (
+//     <styledEl.SettingsTopContentMobile>
+//       <NetworkSelector />
+//     </styledEl.SettingsTopContentMobile>
+//   )
+// }

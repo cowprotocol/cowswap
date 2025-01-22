@@ -71,7 +71,7 @@ export const WalletAction = styled(ButtonSecondary)`
   }
 `
 
-export const WalletActions = styled.div`
+export const WalletActionsWrapper = styled.div`
   display: flex;
   margin: 10px 0 0;
   flex-flow: column wrap;
@@ -147,7 +147,9 @@ export const Wrapper = styled.div`
   ${WalletAction} {
     color: inherit;
     opacity: 0.85;
-    transition: color var(${UI.ANIMATION_DURATION}) ease-in-out, opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+    transition:
+      color var(${UI.ANIMATION_DURATION}) ease-in-out,
+      opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
     margin: auto;
     padding: 0;
     border: 0;
@@ -223,7 +225,7 @@ export const Wrapper = styled.div`
     }
   }
 
-  ${AccountControl} ${WalletActions} {
+  ${AccountControl} ${WalletActionsWrapper} {
     ${Media.upToSmall()} {
       width: 100%;
       flex-flow: row wrap;

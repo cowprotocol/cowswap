@@ -27,4 +27,5 @@ export const isMediumOnly = `(min-width: ${MEDIA_WIDTHS.upToSmall + 1}px) and (m
 export const upToMedium = `(max-width: ${MEDIA_WIDTHS.upToMedium}px)`
 export const isLargeOnly = `(min-width: ${MEDIA_WIDTHS.upToMedium + 1}px) and (max-width: ${MEDIA_WIDTHS.upToLarge}px)`
 export const upToLarge = `(max-width: ${MEDIA_WIDTHS.upToLarge}px)`
+export const upToLargeAlt = `(max-width: ${MEDIA_WIDTHS.upToLargeAlt}px)`
 export const LargeAndUp = `(min-width: ${MEDIA_WIDTHS.upToLarge + 1}px)`

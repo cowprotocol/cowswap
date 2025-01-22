@@ -108,3 +108,12 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme }>`
       `}
   }
 `
+
+export const SettingsTopContentMobile = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 16px;
+`
