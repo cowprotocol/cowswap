@@ -37,8 +37,8 @@ export function useUpdateCurrencyAmount() {
         outputCurrency,
       })
 
-      const newInputAmount = (field as Field) === Field.INPUT ? amount : calculatedAmount
-      const newOutputAmount = (field as Field) === Field.OUTPUT ? amount : calculatedAmount
+      const newInputAmount = field === Field.INPUT ? amount : calculatedAmount
+      const newOutputAmount = field === Field.OUTPUT ? amount : calculatedAmount
 
       const update: Partial<Writeable<LimitOrdersRawState>> = {
         orderKind,
