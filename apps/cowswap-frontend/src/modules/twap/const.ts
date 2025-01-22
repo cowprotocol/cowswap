@@ -38,14 +38,14 @@ export const TWAP_PENDING_STATUSES = [TwapOrderStatus.WaitSigning, TwapOrderStat
 export const TWAP_FINAL_STATUSES = [TwapOrderStatus.Fulfilled, TwapOrderStatus.Expired, TwapOrderStatus.Cancelled]
 
 export const MINIMUM_PART_SELL_AMOUNT_FIAT: Record<SupportedChainId, CurrencyAmount<Currency>> = {
-  [SupportedChainId.MAINNET]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.MAINNET], 1_000e6), // 1k
-  [SupportedChainId.GNOSIS_CHAIN]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.GNOSIS_CHAIN], 5e6), // 5
-  [SupportedChainId.ARBITRUM_ONE]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.ARBITRUM_ONE], 5e6), // 5
-  [SupportedChainId.BASE]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.BASE], 5e6), // 5
+  [SupportedChainId.MAINNET]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.MAINNET], 1_000e6), // $1k
+  [SupportedChainId.GNOSIS_CHAIN]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.GNOSIS_CHAIN], 1e5), // $0.1
+  [SupportedChainId.ARBITRUM_ONE]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.ARBITRUM_ONE], 1e6), // $1
+  [SupportedChainId.BASE]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.BASE], 1e6), // $1
   [SupportedChainId.SEPOLIA]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.SEPOLIA], 100e18), // 100
 }
 
-export const MINIMUM_PART_TIME = ms`5min` / 1000 // in seconds
+export const MINIMUM_PART_TIME = 15 // 15s
 export const MAX_PART_TIME = MAX_ORDER_DEADLINE / 1000 // in seconds
 
 export const DEFAULT_TWAP_EXECUTION_INFO: TwapOrderExecutionInfo = {
