@@ -12,6 +12,7 @@ import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/Limi
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
 import { TradeWidget, TradeWidgetSlots, useIsWrapOrUnwrap, useTradePriceImpact } from 'modules/trade'
 import { useTradeConfirmState } from 'modules/trade'
+import { useLimitOrdersPromoBanner } from 'modules/trade/hooks/useLimitOrdersPromoBanner'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
@@ -163,21 +164,22 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     label: outputCurrencyInfo.label,
   }
 
+  const { isVisible: isPromoBannerVisible } = useLimitOrdersPromoBanner()
+
   const slots: TradeWidgetSlots = {
     settingsWidget: <SettingsWidget />,
-    lockScreen:
-      isUnlocked || SHOW_LIMIT_ORDERS_PROMO ? undefined : (
-        <UnlockWidgetScreen
-          id="limit-orders"
-          items={LIMIT_BULLET_LIST_CONTENT}
-          buttonLink={UNLOCK_SCREEN.buttonLink}
-          title={UNLOCK_SCREEN.title}
-          subtitle={UNLOCK_SCREEN.subtitle}
-          orderType={UNLOCK_SCREEN.orderType}
-          buttonText={UNLOCK_SCREEN.buttonText}
-          handleUnlock={() => updateLimitOrdersState({ isUnlocked: true })}
-        />
-      ),
+    lockScreen: SHOW_LIMIT_ORDERS_PROMO ? undefined : isUnlocked ? undefined : (
+      <UnlockWidgetScreen
+        id="limit-orders"
+        items={LIMIT_BULLET_LIST_CONTENT}
+        buttonLink={UNLOCK_SCREEN.buttonLink}
+        title={UNLOCK_SCREEN.title}
+        subtitle={UNLOCK_SCREEN.subtitle}
+        orderType={UNLOCK_SCREEN.orderType}
+        buttonText={UNLOCK_SCREEN.buttonText}
+        handleUnlock={() => updateLimitOrdersState({ isUnlocked: true })}
+      />
+    ),
     middleContent: (
       <>
         {!isWrapOrUnwrap &&
@@ -218,7 +220,13 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         </>
       )
     },
-    outerContent: <>{isUnlocked && <InfoBanner />}</>,
+    outerContent: (
+      <>
+        {((!SHOW_LIMIT_ORDERS_PROMO && isUnlocked) || (SHOW_LIMIT_ORDERS_PROMO && !isPromoBannerVisible)) && (
+          <InfoBanner />
+        )}
+      </>
+    ),
   }
 
   const params = {

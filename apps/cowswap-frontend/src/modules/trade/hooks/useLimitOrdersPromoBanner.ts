@@ -1,6 +1,8 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
 
 import { useMatch } from 'react-router-dom'
+import { useAtom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
@@ -11,35 +13,21 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 const STORAGE_KEY = 'limitOrdersPromoBanner:v0'
 
+const promoBannerAtom = atomWithStorage<boolean>(STORAGE_KEY, true)
+
 export function useLimitOrdersPromoBanner() {
   const isLimitOrdersTab = !!(useMatch(Routes.LIMIT_ORDER) || useMatch(Routes.LONG_LIMIT_ORDER))
-  const [isVisible, setIsVisible] = useState(false)
   const { standaloneMode } = useInjectedWidgetParams()
+  const [isVisible, setIsVisible] = useAtom(promoBannerAtom)
 
-  // Effect to handle feature flag changes
-  useEffect(() => {
-    // Never show the banner in widget mode (standalone or injected)
-    if (standaloneMode || isInjectedWidget()) {
-      setIsVisible(false)
-      return
-    }
-
-    if (!SHOW_LIMIT_ORDERS_PROMO) {
-      setIsVisible(false)
-      return
-    }
-
-    const storedValue = localStorage.getItem(STORAGE_KEY)
-    setIsVisible(storedValue === null)
-  }, [SHOW_LIMIT_ORDERS_PROMO, standaloneMode])
+  const shouldBeVisible = !standaloneMode && !isInjectedWidget() && SHOW_LIMIT_ORDERS_PROMO && isVisible
 
   const onDismiss = useCallback(() => {
-    localStorage.setItem(STORAGE_KEY, 'dismissed')
     setIsVisible(false)
-  }, [])
+  }, [setIsVisible])
 
   return {
-    isVisible,
+    isVisible: shouldBeVisible,
     onDismiss,
     isLimitOrdersTab,
   }
