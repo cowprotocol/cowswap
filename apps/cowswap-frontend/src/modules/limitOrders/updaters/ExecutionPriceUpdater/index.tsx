@@ -29,10 +29,8 @@ export function ExecutionPriceUpdater() {
         return FractionUtils.toPrice(marketRate, inputToken, outputToken)
       }
     } catch (e) {
-      console.debug(
-        `Failed to parse the market price for`,
-        inputToken?.address,
-        outputToken?.address,
+      console.error(
+        `[ExecutionPriceUpdater] Failed to parse the market price for ${inputToken?.address} and ${outputToken?.address}`,
         marketRate?.numerator.toString(),
         marketRate?.denominator.toString(),
         e,
