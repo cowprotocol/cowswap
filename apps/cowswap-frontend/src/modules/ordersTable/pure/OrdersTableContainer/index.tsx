@@ -178,7 +178,7 @@ export function OrdersTableContainer({
     <styledEl.Wrapper>
       <styledEl.TopContainer>
         <styledEl.TabsContainer>
-          <OrdersTabs tabs={tabs} />
+          <OrdersTabs tabs={tabs} isWalletConnected={isWalletConnected} />
           {children && <styledEl.RightContainer>{children}</styledEl.RightContainer>}
         </styledEl.TabsContainer>
       </styledEl.TopContainer>

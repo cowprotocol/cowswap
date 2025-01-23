@@ -30,7 +30,6 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
 
   const partnerFeeRow = (
     <PartnerFeeRow
-      alwaysRow
       withTimelineDot={false}
       partnerFeeUsd={partnerFeeUsd}
       partnerFeeAmount={partnerFeeAmount}
@@ -46,7 +45,7 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
   if (alwaysExpanded) {
     return (
       <>
-        <StyledRateInfo label="Limit price" stylized={true} rateInfoParams={rateInfoParams} />
+        <StyledRateInfo label="Limit price" stylized={true} rateInfoParams={rateInfoParams} rightAlign />
         <Box noMargin>{partnerFeeRow}</Box>
       </>
     )

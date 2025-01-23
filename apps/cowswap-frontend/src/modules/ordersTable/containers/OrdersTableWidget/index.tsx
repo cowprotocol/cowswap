@@ -20,6 +20,7 @@ import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { useNavigate } from 'common/hooks/useNavigate'
+import { CloseIcon } from 'common/pure/CloseIcon'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -62,9 +63,23 @@ const SearchIcon = styled(Search)`
   }
 `
 
+const StyledCloseIcon = styled(CloseIcon)`
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+
+  > svg {
+    width: 100%;
+    height: 100%;
+  }
+`
+
 const SearchInput = styled.input`
   width: 100%;
-  padding: 8px 12px 8px 36px;
+  padding: 8px 36px;
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT});
@@ -74,7 +89,7 @@ const SearchInput = styled.input`
   min-height: 36px;
 
   ${Media.upToMedium()} {
-    padding: 8px 12px 8px 32px;
+    padding: 8px 32px;
     border-radius: 12px;
   }
 
@@ -85,6 +100,14 @@ const SearchInput = styled.input`
   &:focus {
     outline: none;
     border-color: var(${UI.COLOR_TEXT_OPACITY_50});
+  }
+
+  // iOS-specific zoom prevention
+  @supports (-webkit-touch-callout: none) {
+    &:hover,
+    &:active {
+      font-size: 16px;
+    }
   }
 `
 
@@ -160,6 +183,13 @@ export function OrdersTableWidget({
   const ordersList = useOrdersTableList(allOrders, orderType, chainId, balancesAndAllowances)
 
   const { currentTabId, currentPageNumber } = useMemo(() => {
+    if (!account) {
+      return {
+        currentTabId: ALL_ORDERS_TAB.id,
+        currentPageNumber: 1,
+      }
+    }
+
     const params = parseOrdersTableUrl(location.search)
 
     // If we're on a tab that becomes empty (signing or unfillable),
@@ -178,13 +208,18 @@ export function OrdersTableWidget({
       currentTabId: params.tabId || ALL_ORDERS_TAB.id,
       currentPageNumber: params.pageNumber || 1,
     }
-  }, [location.search, ordersList.signing.length, ordersList.unfillable.length])
+  }, [location.search, ordersList.signing.length, ordersList.unfillable.length, account])
 
   const orders = useMemo(() => {
     return getOrdersListByIndex(ordersList, currentTabId)
   }, [ordersList, currentTabId])
 
   const tabs = useMemo(() => {
+    // If no account, just return the ALL_ORDERS_TAB with count 0
+    if (!account) {
+      return [{ ...ALL_ORDERS_TAB, count: 0, isActive: true }]
+    }
+
     return ORDERS_TABLE_TABS.filter((tab) => {
       // Only include the unfillable tab if there are unfillable orders
       if (tab.id === 'unfillable') {
@@ -198,7 +233,7 @@ export function OrdersTableWidget({
     }).map((tab) => {
       return { ...tab, isActive: tab.id === currentTabId, count: getOrdersListByIndex(ordersList, tab.id).length }
     })
-  }, [currentTabId, ordersList])
+  }, [currentTabId, ordersList, account])
 
   const { pendingActivity } = useCategorizeRecentActivity()
 
@@ -337,15 +372,19 @@ export function OrdersTableWidget({
         {(currentTabId === OPEN_TAB.id || currentTabId === 'all' || currentTabId === 'unfillable') &&
           orders.length > 0 && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />}
 
-        <SearchInputContainer>
-          <SearchIcon />
-          <SearchInput
-            type="text"
-            placeholder="token symbol, address"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </SearchInputContainer>
+        {/* If account is not connected, don't show the search input */}
+        {!!account && orders.length > 0 && (
+          <SearchInputContainer>
+            <SearchIcon />
+            <SearchInput
+              type="text"
+              placeholder="Token symbol, address"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            {searchTerm && <StyledCloseIcon onClick={() => setSearchTerm('')} />}
+          </SearchInputContainer>
+        )}
       </OrdersTableContainer>
 
       <OrdersReceiptModal pendingOrdersPrices={pendingOrdersPrices} />

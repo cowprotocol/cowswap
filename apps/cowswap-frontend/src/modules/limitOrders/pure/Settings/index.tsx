@@ -11,7 +11,8 @@ import {
   changeLimitPricePositionAnalytics,
   toggleLockLimitPriceAnalytics,
   toggleOrdersTablePositionAnalytics,
-  toggleGlobalUsdModeAnalytics,
+  // TODO: Temporarily disabled along with Global USD Mode feature
+  // toggleGlobalUsdModeAnalytics,
 } from 'modules/analytics'
 import { ORDERS_TABLE_SETTINGS } from 'modules/trade/const/common'
 import { SettingsBox, SettingsContainer, SettingsTitle } from 'modules/trade/pure/Settings'
@@ -125,7 +126,8 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
     limitPricePosition,
     limitPriceLocked,
     ordersTableOnLeft,
-    isUsdValuesMode,
+    // TODO: Temporarily disabled along with Global USD Mode feature
+    // isUsdValuesMode,
   } = state
   const [isOpen, setIsOpen] = useState(false)
 
@@ -164,10 +166,12 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
     onStateChanged({ ordersTableOnLeft: !ordersTableOnLeft })
   }, [ordersTableOnLeft, onStateChanged])
 
+  /* TODO: Temporarily disabled along with Global USD Mode feature
   const handleUsdValuesModeToggle = useCallback(() => {
     toggleGlobalUsdModeAnalytics(!isUsdValuesMode)
     onStateChanged({ isUsdValuesMode: !isUsdValuesMode })
   }, [isUsdValuesMode, onStateChanged])
+  */
 
   const handleContainerClick = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -209,12 +213,13 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
           toggle={handleLimitPriceLockedToggle}
         />
 
+        {/* TODO: Global USD Mode feature is temporarily disabled while we iterate on the functionality
         <SettingsBox
           title="Global USD Mode"
           tooltip="When enabled, all prices will be displayed in USD by default."
           value={isUsdValuesMode}
           toggle={handleUsdValuesModeToggle}
-        />
+        /> */}
 
         <SettingsBox
           title={ORDERS_TABLE_SETTINGS.LEFT_ALIGNED.title}
@@ -225,7 +230,7 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
 
         <SettingsRow>
           <SettingsLabel>
-            Limit price position <HelpTooltip text="Choose where to display the limit price input." />
+            Limit Price Position <HelpTooltip text="Choose where to display the limit price input." />
           </SettingsLabel>
           <DropdownContainer>
             <DropdownButton onClick={toggleDropdown}>{POSITION_LABELS[limitPricePosition]}</DropdownButton>

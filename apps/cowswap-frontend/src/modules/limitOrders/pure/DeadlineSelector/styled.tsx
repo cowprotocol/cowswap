@@ -14,7 +14,6 @@ export const Wrapper = styled.div`
   width: 100%;
   font-size: 13px;
   font-weight: inherit;
-  min-height: 24px;
 `
 
 export const Label = styled.span`

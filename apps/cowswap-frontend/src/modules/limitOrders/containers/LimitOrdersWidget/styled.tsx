@@ -13,8 +13,8 @@ export const FooterBox = styled.div`
   display: flex;
   flex-flow: column wrap;
   max-width: 100%;
-  margin: 0 4px;
-  padding: 0;
+  padding: 0 6px;
+  gap: 7px;
 `
 
 export const RateWrapper = styled.div`

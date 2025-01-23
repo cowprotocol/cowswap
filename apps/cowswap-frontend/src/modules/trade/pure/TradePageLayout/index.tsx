@@ -1,4 +1,4 @@
-import { Media, UI } from '@cowprotocol/ui'
+import { Media, UI, MY_ORDERS_ID } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 import { WIDGET_MAX_WIDTH } from 'theme'
@@ -50,7 +50,9 @@ export const PrimaryWrapper = styled.div`
 `
 
 // Graph + orders table
-export const SecondaryWrapper = styled.div`
+export const SecondaryWrapper = styled.div.attrs({
+  id: MY_ORDERS_ID,
+})`
   display: flex;
   flex-flow: column wrap;
   width: 100%;
@@ -63,6 +65,7 @@ export const SecondaryWrapper = styled.div`
   position: relative;
   padding: 10px;
   min-height: 200px;
+  height: 100%;
   width: 100%;
   margin: 0 0 76px;
   grid-area: secondary;

@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
-import { ButtonOutlined, Media, MY_ORDERS_ID } from '@cowprotocol/ui'
+import { ButtonOutlined, Media, MY_ORDERS_ID, SWAP_HEADER_OFFSET } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
@@ -39,7 +39,8 @@ import { WrapFlowActionButton } from '../WrapFlowActionButton'
 const scrollToMyOrders = () => {
   const element = document.getElementById(MY_ORDERS_ID)
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth' })
+    const elementTop = element.getBoundingClientRect().top + window.scrollY - SWAP_HEADER_OFFSET
+    window.scrollTo({ top: elementTop, behavior: 'smooth' })
   }
 }
 
@@ -242,7 +243,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
 
         {isInjectedWidgetMode && <PoweredFooter />}
       </styledEl.ContainerBox>
-      <styledEl.OuterContentWrapper>{outerContent}</styledEl.OuterContentWrapper>
+      {outerContent && <styledEl.OuterContentWrapper>{outerContent}</styledEl.OuterContentWrapper>}
     </>
   )
 }

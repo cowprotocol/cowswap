@@ -36,6 +36,7 @@ export interface RateInfoProps {
   rateInfoParams: RateInfoParams
   opacitySymbol?: boolean
   noFiat?: boolean
+  rightAlign?: boolean
 }
 
 const Wrapper = styled.div<{ stylized: boolean }>`
@@ -45,6 +46,7 @@ const Wrapper = styled.div<{ stylized: boolean }>`
   align-items: center;
   font-size: 14px;
   font-weight: 400;
+  gap: 10px;
 `
 
 const RateLabel = styled.div`
@@ -109,7 +111,7 @@ const InvertIcon = styled.div`
   }
 `
 
-export const RateWrapper = styled.button`
+export const RateWrapper = styled.button<{ rightAlign?: boolean }>`
   display: inline;
   background: none;
   border: 0;
@@ -120,7 +122,7 @@ export const RateWrapper = styled.button`
   color: inherit;
   font-size: 13px;
   letter-spacing: -0.1px;
-  text-align: left;
+  text-align: ${({ rightAlign }) => (rightAlign ? 'right' : 'left')};
   font-weight: 500;
   width: 100%;
 `
@@ -154,6 +156,7 @@ export function RateInfo({
   isInvertedState,
   opacitySymbol = false,
   noFiat = false,
+  rightAlign = false,
 }: RateInfoProps) {
   const { chainId, inputCurrencyAmount, outputCurrencyAmount, activeRateFiatAmount, invertedActiveRateFiatAmount } =
     rateInfoParams
@@ -227,7 +230,7 @@ export function RateInfo({
         </RateLabel>
       )}
       <div>
-        <RateWrapper onClick={() => setCurrentIsInverted((state) => !state)}>
+        <RateWrapper onClick={() => setCurrentIsInverted((state) => !state)} rightAlign={rightAlign}>
           <span
             title={
               currentActiveRate.toFixed(rateOutputCurrency.decimals || DEFAULT_DECIMALS) +
