@@ -180,6 +180,8 @@ export class FractionUtils {
   }
 }
 
+const ZERO = JSBI.BigInt(0)
+
 /**
  * Use GCD to reduce the fraction to the smallest possible
  *
@@ -188,15 +190,15 @@ export class FractionUtils {
  * @param fraction
  */
 function reduce(fraction: Fraction): Fraction {
-  let a = fraction.numerator
-  let b = fraction.denominator
-  let c: JSBI
-  while (JSBI.notEqual(b, JSBI.BigInt(0))) {
-    c = JSBI.remainder(a, b)
-    a = b
-    b = c
+  let numerator = fraction.numerator
+  let denominator = fraction.denominator
+  let rest: JSBI
+  while (JSBI.notEqual(denominator, ZERO)) {
+    rest = JSBI.remainder(numerator, denominator)
+    numerator = denominator
+    denominator = rest
   }
-  return new Fraction(JSBI.divide(fraction.numerator, a), JSBI.divide(fraction.denominator, a))
+  return new Fraction(JSBI.divide(fraction.numerator, numerator), JSBI.divide(fraction.denominator, numerator))
 }
 
 /**
