@@ -94,8 +94,8 @@ export function useOrdersTableList(
             acc.unfillable.push(item)
           }
 
-          // Add to pending if in a pending state and not unfillable
-          if (isPending && !isUnfillable && !isSigning) {
+          // Add to pending if in a pending state and not in signing state
+          if (isPending && !isSigning) {
             acc.pending.push(item)
           }
 
