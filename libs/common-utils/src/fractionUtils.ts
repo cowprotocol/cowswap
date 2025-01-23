@@ -107,11 +107,16 @@ export class FractionUtils {
    * @returns
    */
   static fromPrice(price: Price<Currency, Currency>): Fraction {
-    return FractionUtils.adjustDecimalsAtoms(
-      new Fraction(price.numerator, price.denominator),
+    // Simplify the input fraction
+    const simplifiedPrice = FractionUtils.simplify(price)
+    // Adjust the fraction to consider the decimals
+    const decimalAdjustedFraction = FractionUtils.adjustDecimalsAtoms(
+      new Fraction(simplifiedPrice.numerator, simplifiedPrice.denominator),
       price.quoteCurrency.decimals,
       price.baseCurrency.decimals,
     )
+    // Simplify the output fraction
+    return FractionUtils.simplify(decimalAdjustedFraction)
   }
 
   /**
@@ -169,4 +174,45 @@ export class FractionUtils {
 
     return amount.equalTo(0) ? CurrencyAmount.fromRawAmount(amount.currency, 1) : amount
   }
+
+  static simplify(fraction: Fraction): Fraction {
+    return reduce(trimZeros(fraction))
+  }
+}
+
+const ZERO = JSBI.BigInt(0)
+
+/**
+ * Use GCD to reduce the fraction to the smallest possible
+ *
+ * From https://stackoverflow.com/a/65927538
+ *
+ * @param fraction
+ */
+function reduce(fraction: Fraction): Fraction {
+  let numerator = fraction.numerator
+  let denominator = fraction.denominator
+  let rest: JSBI
+  while (JSBI.notEqual(denominator, ZERO)) {
+    rest = JSBI.remainder(numerator, denominator)
+    numerator = denominator
+    denominator = rest
+  }
+  return new Fraction(JSBI.divide(fraction.numerator, numerator), JSBI.divide(fraction.denominator, numerator))
+}
+
+/**
+ * Remove trailing zeros from a fraction
+ * @param fraction
+ */
+function trimZeros(fraction: Fraction): Fraction {
+  const numerator = fraction.numerator.toString()
+  const denominator = fraction.denominator.toString()
+
+  const numeratorZeros = numerator.match(/0+$/)?.[0].length || 0
+  const denominatorZeros = denominator.match(/0+$/)?.[0].length || 0
+
+  const zeros = Math.min(numeratorZeros, denominatorZeros)
+
+  return new Fraction(numerator.slice(0, numerator.length - zeros), denominator.slice(0, denominator.length - zeros))
 }

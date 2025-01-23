@@ -1,3 +1,5 @@
+import { Fraction } from '@uniswap/sdk-core'
+
 import JSBI from 'jsbi'
 
 import { FractionUtils } from './fractionUtils'
@@ -40,6 +42,39 @@ describe('Fraction utils', () => {
       const fraction = FractionUtils.fromNumber(1e-5)
       expect(JSBI.toNumber(fraction.numerator)).toBe(1)
       expect(JSBI.toNumber(fraction.denominator)).toBe(100000)
+    })
+  })
+
+  describe('simplify', () => {
+    it('should simplify a small fraction', () => {
+      const fraction = FractionUtils.fromNumber(15)
+      const simplified = FractionUtils.simplify(fraction)
+      expect(JSBI.toNumber(simplified.numerator)).toBe(15)
+      expect(JSBI.toNumber(simplified.denominator)).toBe(1)
+    })
+    it('should simplify a large fraction with zeros', () => {
+      const fraction = new Fraction(JSBI.BigInt(3000000), JSBI.BigInt(2000000))
+      const simplified = FractionUtils.simplify(fraction)
+      expect(JSBI.toNumber(simplified.numerator)).toBe(3)
+      expect(JSBI.toNumber(simplified.denominator)).toBe(2)
+    })
+    it('should not simplify a fraction with large denominator already in the simplest form', () => {
+      const fraction = new Fraction(JSBI.BigInt(1), JSBI.BigInt(1000000))
+      const simplified = FractionUtils.simplify(fraction)
+      expect(JSBI.toNumber(simplified.numerator)).toBe(1)
+      expect(JSBI.toNumber(simplified.denominator)).toBe(1000000)
+    })
+    it('should not simplify a fraction with a large numerator already in the simplest form', () => {
+      const fraction = new Fraction(JSBI.BigInt(1000000), JSBI.BigInt(1))
+      const simplified = FractionUtils.simplify(fraction)
+      expect(JSBI.toNumber(simplified.numerator)).toBe(1000000)
+      expect(JSBI.toNumber(simplified.denominator)).toBe(1)
+    })
+    it('should simplify a fraction with zeros and that can be further simplified', () => {
+      const fraction = new Fraction(JSBI.BigInt(3000000), JSBI.BigInt(9000000))
+      const simplified = FractionUtils.simplify(fraction)
+      expect(JSBI.toNumber(simplified.numerator)).toBe(1)
+      expect(JSBI.toNumber(simplified.denominator)).toBe(3)
     })
   })
 })
