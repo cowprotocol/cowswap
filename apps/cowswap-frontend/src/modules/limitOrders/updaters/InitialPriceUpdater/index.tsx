@@ -12,7 +12,7 @@ import { limitRateAtom, LimitRateState, updateLimitRateAtom } from '../../state/
 
 // Fetch and update initial price for the selected token pair
 export function InitialPriceUpdater() {
-  const { inputCurrencyId, outputCurrencyId } = useLimitOrdersRawState()
+  const { inputCurrencyId, outputCurrencyId, chainId } = useLimitOrdersRawState()
   const { isTypedValue } = useAtomValue(limitRateAtom)
   const updateLimitRateState = useSetAtom(updateLimitRateAtom)
   const updateRate = useUpdateActiveRate()
@@ -51,10 +51,10 @@ export function InitialPriceUpdater() {
     updateLimitRateState({ isLoading })
   }, [isInitialPriceSet, updateLimitRateState, updateRate, price, isLoading, prevPrice])
 
-  // Reset initial price set flag when any token was changed
+  // Reset initial price set flag when any token or chain was changed
   useLayoutEffect(() => {
     setIsInitialPriceSet(false)
-  }, [inputCurrencyId, outputCurrencyId])
+  }, [inputCurrencyId, outputCurrencyId, chainId])
 
   return null
 }

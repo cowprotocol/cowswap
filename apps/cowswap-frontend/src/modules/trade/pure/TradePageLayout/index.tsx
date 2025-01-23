@@ -50,9 +50,9 @@ export const PrimaryWrapper = styled.div`
 `
 
 // Graph + orders table
-export const SecondaryWrapper = styled.div.attrs(() => ({
+export const SecondaryWrapper = styled.div.attrs({
   id: MY_ORDERS_ID,
-}))`
+})`
   display: flex;
   flex-flow: column wrap;
   width: 100%;

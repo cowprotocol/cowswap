@@ -13,8 +13,10 @@ import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import { Check, Clock, X, Zap } from 'react-feather'
 import SVG from 'react-inlinesvg'
+import { Nullish } from 'types'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
+import { getEstimatedExecutionPrice } from 'legacy/state/orders/utils'
 
 import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
@@ -119,7 +121,10 @@ export function OrderRow({
   const { creationTime, expirationTime, status } = order
   const { filledPercentDisplay, executedPrice } = order.executionData
   const { inputCurrencyAmount, outputCurrencyAmount } = rateInfoParams
-  const { estimatedExecutionPrice, feeAmount } = prices || {}
+  const { feeAmount } = prices || {}
+  const estimatedExecutionPrice = useSafeMemo(() => {
+    return spotPrice && feeAmount && getEstimatedExecutionPrice(order, spotPrice, feeAmount.quotient.toString())
+  }, [spotPrice, feeAmount, order])
   const isSafeWallet = useIsSafeWallet()
 
   const showCancellationModal = useMemo(() => {
@@ -163,7 +168,7 @@ export function OrderRow({
   const executedPriceInverted = isInverted ? executedPrice?.invert() : executedPrice
   const spotPriceInverted = isInverted ? spotPrice?.invert() : spotPrice
 
-  const priceDiffs = usePricesDifference(prices, spotPrice, isInverted)
+  const priceDiffs = usePricesDifference(estimatedExecutionPrice, spotPrice, isInverted)
   const feeDifference = useFeeAmountDifference(rateInfoParams, prices)
 
   const isExecutedPriceZero = executedPriceInverted !== undefined && executedPriceInverted?.equalTo(ZERO_FRACTION)
@@ -412,7 +417,7 @@ export function OrderRow({
       return '-'
     }
 
-    if (prices && estimatedExecutionPrice) {
+    if (estimatedExecutionPrice && !estimatedExecutionPrice.equalTo(ZERO_FRACTION)) {
       return (
         <styledEl.ExecuteCellWrapper>
           {!isUnfillable &&
@@ -568,8 +573,7 @@ export function OrderRow({
 
       if (nextScheduledOrder) {
         // For scheduled orders, use the execution price if available, otherwise use the estimated price from props
-        const nextOrderExecutionPrice =
-          nextScheduledOrder.executionData.executedPrice || prices?.estimatedExecutionPrice
+        const nextOrderExecutionPrice = nextScheduledOrder.executionData.executedPrice || estimatedExecutionPrice
         const nextOrderPriceDiffs = nextOrderExecutionPrice
           ? calculatePriceDifference({
               referencePrice: spotPrice,
@@ -654,10 +658,8 @@ export function OrderRow({
       getIsFinalizedOrder(order) ||
       order.status === OrderStatus.CANCELLED ||
       isUnfillable ||
-      (!priceDiffs
-        ? ''
-        : priceDiffs.percentage &&
-          Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= PENDING_EXECUTION_THRESHOLD_PERCENTAGE)
+      (priceDiffs?.percentage &&
+        Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= PENDING_EXECUTION_THRESHOLD_PERCENTAGE)
         ? ''
         : priceDiffs?.percentage
           ? `${priceDiffs?.percentage.toFixed(2)}%`
@@ -872,12 +874,10 @@ export function OrderRow({
  * Helper hook to prepare the parameters to calculate price difference
  */
 function usePricesDifference(
-  prices: OrderRowProps['prices'],
+  estimatedExecutionPrice: Nullish<Price<Currency, Currency>>,
   spotPrice: OrderRowProps['spotPrice'],
   isInverted: boolean,
 ): PriceDifference {
-  const { estimatedExecutionPrice } = prices || {}
-
   return useSafeMemo(
     () =>
       calculatePriceDifference({

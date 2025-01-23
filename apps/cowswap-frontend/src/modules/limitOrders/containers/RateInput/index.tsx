@@ -142,7 +142,11 @@ export function RateInput() {
   }, [marketRate, initialRate, updateRate])
 
   // Handle toggle primary field
-  const handleToggle = useCallback(() => {
+  const toggleInvertPrice = useCallback(() => {
+    updateLimitRateState({ isInverted: !isInverted, isTypedValue: false })
+  }, [isInverted, updateLimitRateState])
+
+  const toggleSwitchUsdDisplay = useCallback(() => {
     if (isUsdRateMode) {
       // When in USD mode, just switch to token mode without toggling tokens
       setIsUsdRateMode(false)
@@ -233,7 +237,7 @@ export function RateInput() {
                 </styledEl.LockIcon>
               </HoverTooltip>
             }
-            onToggle={handleToggle}
+            onToggle={toggleInvertPrice}
           />
           {areBothCurrencies && (isLoadingMarketRate || marketRateDisplay) && (
             <styledEl.MarketRateWrapper>
@@ -259,7 +263,7 @@ export function RateInput() {
 
           {secondaryCurrency && (
             <styledEl.CurrencyToggleGroup>
-              <styledEl.ActiveCurrency onClick={handleToggle} $active={!isUsdRateMode}>
+              <styledEl.ActiveCurrency onClick={toggleSwitchUsdDisplay} $active={!isUsdRateMode}>
                 <styledEl.ActiveSymbol $active={!isUsdRateMode}>
                   <TokenLogo token={secondaryCurrency} size={16} />
                   <TokenSymbol token={secondaryCurrency} />
