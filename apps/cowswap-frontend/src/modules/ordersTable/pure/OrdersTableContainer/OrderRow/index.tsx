@@ -497,7 +497,7 @@ export function OrderRow({
       if (nextScheduledOrder) {
         // For scheduled orders, use the execution price if available, otherwise use the estimated price from props
         const nextOrderExecutionPrice =
-          nextScheduledOrder.executionData.executedPrice || prices?.estimatedExecutionPrice
+          nextScheduledOrder.executionData.executedPrice || estimatedExecutionPrice
         const nextOrderPriceDiffs = nextOrderExecutionPrice
           ? calculatePriceDifference({
             referencePrice: spotPrice,
