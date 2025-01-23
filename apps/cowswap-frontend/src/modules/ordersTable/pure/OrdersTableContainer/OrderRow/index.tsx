@@ -13,6 +13,7 @@ import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import { Check, Clock, X, Zap } from 'react-feather'
 import SVG from 'react-inlinesvg'
+import { Nullish } from 'types'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
@@ -161,7 +162,7 @@ export function OrderRow({
   const executedPriceInverted = isInverted ? executedPrice?.invert() : executedPrice
   const spotPriceInverted = isInverted ? spotPrice?.invert() : spotPrice
 
-  const priceDiffs = usePricesDifference(prices, spotPrice, isInverted)
+  const priceDiffs = usePricesDifference(estimatedExecutionPrice, spotPrice, isInverted)
   const feeDifference = useFeeAmountDifference(rateInfoParams, prices)
 
   const isExecutedPriceZero = executedPriceInverted !== undefined && executedPriceInverted?.equalTo(ZERO_FRACTION)
@@ -343,8 +344,8 @@ export function OrderRow({
       return (
         <styledEl.ExecuteCellWrapper>
           {!isUnfillable &&
-          priceDiffs?.percentage &&
-          Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= PENDING_EXECUTION_THRESHOLD_PERCENTAGE ? (
+            priceDiffs?.percentage &&
+            Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= PENDING_EXECUTION_THRESHOLD_PERCENTAGE ? (
             <HoverTooltip
               wrapInContainer={true}
               content={
@@ -499,10 +500,10 @@ export function OrderRow({
           nextScheduledOrder.executionData.executedPrice || prices?.estimatedExecutionPrice
         const nextOrderPriceDiffs = nextOrderExecutionPrice
           ? calculatePriceDifference({
-              referencePrice: spotPrice,
-              targetPrice: nextOrderExecutionPrice,
-              isInverted: false,
-            })
+            referencePrice: spotPrice,
+            targetPrice: nextOrderExecutionPrice,
+            isInverted: false,
+          })
           : null
 
         // Show the execution price for the next scheduled order
@@ -554,10 +555,10 @@ export function OrderRow({
     const fillsAtContent = renderFillsAt()
     const distance =
       getIsFinalizedOrder(order) ||
-      order.status === OrderStatus.CANCELLED ||
-      isUnfillable ||
-      (priceDiffs?.percentage &&
-        Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= PENDING_EXECUTION_THRESHOLD_PERCENTAGE)
+        order.status === OrderStatus.CANCELLED ||
+        isUnfillable ||
+        (priceDiffs?.percentage &&
+          Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= PENDING_EXECUTION_THRESHOLD_PERCENTAGE)
         ? ''
         : priceDiffs?.percentage
           ? `${priceDiffs?.percentage.toFixed(2)}%`
@@ -769,11 +770,10 @@ export function OrderRow({
  * Helper hook to prepare the parameters to calculate price difference
  */
 function usePricesDifference(
-  prices: OrderRowProps['prices'],
+  estimatedExecutionPrice: Nullish<Price<Currency, Currency>>,
   spotPrice: OrderRowProps['spotPrice'],
   isInverted: boolean,
 ): PriceDifference {
-  const { estimatedExecutionPrice } = prices || {}
 
   return useSafeMemo(
     () =>
