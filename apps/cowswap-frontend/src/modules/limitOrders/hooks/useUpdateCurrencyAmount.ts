@@ -1,3 +1,4 @@
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { FractionUtils, isSellOrder } from '@cowprotocol/common-utils'
@@ -13,6 +14,10 @@ import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimit
 import { LimitOrdersRawState } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
 
 import { calculateAmountForRate } from 'utils/orderUtils/calculateAmountForRate'
+import { calculateRateForAmount } from 'utils/orderUtils/calculateRateForAmount'
+
+import { limitOrdersSettingsAtom } from '..'
+import { updateLimitRateAtom } from '../state/limitRateAtom'
 
 type CurrencyAmountProps = {
   activeRate: Fraction | null
@@ -22,36 +27,71 @@ type CurrencyAmountProps = {
 
 export function useUpdateCurrencyAmount() {
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
-  const { inputCurrency, outputCurrency } = useLimitOrdersDerivedState()
+  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
+  const updateLimitRateState = useSetAtom(updateLimitRateAtom)
+  const { limitPriceLocked } = useAtomValue(limitOrdersSettingsAtom)
 
   return useCallback(
     (params: CurrencyAmountProps) => {
       const { activeRate, amount, orderKind } = params
       const field = isSellOrder(orderKind) ? Field.INPUT : Field.OUTPUT
+      const isBuyAmountChange = field === Field.OUTPUT
 
-      const calculatedAmount = calculateAmountForRate({
-        activeRate,
-        amount,
-        field,
-        inputCurrency,
-        outputCurrency,
-      })
+      if (!limitPriceLocked) {
+        // Limit price is unlocked, we should not update the opposite amount, only the price!
+        const update: Partial<Writeable<LimitOrdersRawState>> = {
+          orderKind,
+          [isBuyAmountChange ? 'outputCurrencyAmount' : 'inputCurrencyAmount']:
+            FractionUtils.serializeFractionToJSON(amount),
+        }
 
-      const newInputAmount = field === Field.INPUT ? amount : calculatedAmount
-      const newOutputAmount = field === Field.OUTPUT ? amount : calculatedAmount
+        // Update the state right away, but only the amount that was changed
+        updateLimitOrdersState(update)
 
-      const update: Partial<Writeable<LimitOrdersRawState>> = {
-        orderKind,
-        ...(newInputAmount
-          ? { inputCurrencyAmount: FractionUtils.serializeFractionToJSON(newInputAmount) }
-          : undefined),
-        ...(newOutputAmount
-          ? { outputCurrencyAmount: FractionUtils.serializeFractionToJSON(newOutputAmount) }
-          : undefined),
+        const newRate = calculateRateForAmount(isBuyAmountChange, amount, inputCurrencyAmount, outputCurrencyAmount)
+
+        newRate &&
+          updateLimitRateState({
+            activeRate: FractionUtils.fractionLikeToFraction(newRate),
+            isTypedValue: false,
+            isRateFromUrl: false,
+            isAlternativeOrderRate: false,
+          })
+      } else {
+        // Price is locked, we should update the opposite amount
+
+        const calculatedAmount = calculateAmountForRate({
+          activeRate,
+          amount,
+          field,
+          inputCurrency,
+          outputCurrency,
+        })
+
+        const newInputAmount = field === Field.INPUT ? amount : calculatedAmount
+        const newOutputAmount = field === Field.OUTPUT ? amount : calculatedAmount
+
+        const update: Partial<Writeable<LimitOrdersRawState>> = {
+          orderKind,
+          ...(newInputAmount
+            ? { inputCurrencyAmount: FractionUtils.serializeFractionToJSON(newInputAmount) }
+            : undefined),
+          ...(newOutputAmount
+            ? { outputCurrencyAmount: FractionUtils.serializeFractionToJSON(newOutputAmount) }
+            : undefined),
+        }
+
+        updateLimitOrdersState(update)
       }
-
-      updateLimitOrdersState(update)
     },
-    [inputCurrency, outputCurrency, updateLimitOrdersState],
+    [
+      inputCurrency,
+      outputCurrency,
+      updateLimitOrdersState,
+      inputCurrencyAmount,
+      outputCurrencyAmount,
+      limitPriceLocked,
+      updateLimitRateState,
+    ],
   )
 }
