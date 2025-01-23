@@ -335,17 +335,7 @@ export function getEstimatedExecutionPrice(
       limitPrice,
       inputToken,
       outputToken,
-      order?.id.slice(0, 6),
     )
-    feasibleExecutionPrice &&
-      console.log(`getEstimatedExecutionPrice: partial fill`, {
-        limitPrice: limitPrice.toSignificant(10),
-        feasibleExecutionPrice: feasibleExecutionPrice.toSignificant(10),
-        fillPrice: fillPrice.toSignificant(10),
-        feeAmount: feeAmount.toSignificant(10),
-        sellAmount: remainingSellAmount.toSignificant(10),
-        order: order?.id.slice(0, 6) || 'form',
-      })
   }
 
   // Regular case, when the order is fill or kill OR the fill amount is smaller than the threshold set
@@ -370,30 +360,11 @@ export function getEstimatedExecutionPrice(
      * Executes at: 182000 / (100 - 0.0021) = 1820.038 USDC per 1 WETH
      */
     feasibleExecutionPrice = new Price(inputToken, outputToken, denominator.quotient, numerator.quotient)
-
-    console.log(`getEstimatedExecutionPrice: fill or kill`, {
-      limitPrice: limitPrice.toSignificant(10),
-      feasibleExecutionPrice: feasibleExecutionPrice.toSignificant(10),
-      fillPrice: fillPrice.toSignificant(10),
-      feeAmount: feeAmount.toSignificant(10),
-      sellAmount: remainingSellAmount.toSignificant(10),
-      order: order?.id.slice(0, 6) || 'form',
-    })
   }
 
   // // Make the fill price a bit worse to account for the fee
   const newFillPrice =
-    extrapolatePriceBasedOnFeeAmount(feeAmount, remainingSellAmount, fillPrice, inputToken, outputToken, order?.id) ||
-    fillPrice
-  if (newFillPrice.greaterThan(feasibleExecutionPrice) && !newFillPrice.equalTo(fillPrice)) {
-    console.log(`getEstimatedExecutionPrice: new fill price`, {
-      limitPrice: limitPrice.toSignificant(10),
-      feasibleExecutionPrice: feasibleExecutionPrice.toSignificant(10),
-      fillPrice: fillPrice.toSignificant(10),
-      newFillPrice: newFillPrice.toSignificant(10),
-      order: order?.id.slice(0, 6) || 'form',
-    })
-  }
+    extrapolatePriceBasedOnFeeAmount(feeAmount, remainingSellAmount, fillPrice, inputToken, outputToken) || fillPrice
 
   // Pick the MAX between FEP and FP
   return newFillPrice.greaterThan(feasibleExecutionPrice) ? newFillPrice : feasibleExecutionPrice
@@ -491,7 +462,6 @@ function extrapolatePriceBasedOnFeeAmount<T extends Currency>(
   limitPrice: Price<T, T>,
   inputToken: Token,
   outputToken: Token,
-  id: string | undefined,
 ): Price<Token, Token> | undefined {
   // Use FEE_AMOUNT_MULTIPLIER times fee amount as the new sell amount
   const newSellAmount = feeAmount.multiply(JSBI.BigInt(FEE_AMOUNT_MULTIPLIER))
@@ -499,21 +469,12 @@ function extrapolatePriceBasedOnFeeAmount<T extends Currency>(
   if (remainingSellAmount.greaterThan(newSellAmount)) {
     // Quote the buy amount using the existing limit price
     const buyAmount = limitPrice.quote(newSellAmount)
-    const feasibleExecutionPrice = new Price(
+    return new Price(
       inputToken,
       outputToken,
       newSellAmount.subtract(feeAmount).quotient, // TODO: should we use the fee with margin here?
       buyAmount.quotient,
     )
-    console.log(`getEstimatedExecutionPrice: extrapolatePriceBasedOnFeeAmount`, {
-      limitPrice: limitPrice.toSignificant(10),
-      feasibleExecutionPrice: feasibleExecutionPrice.toSignificant(10),
-      feeAmount: feeAmount.toSignificant(10),
-      sellAmount: remainingSellAmount.toSignificant(10),
-      newSellAmount: newSellAmount.toSignificant(10),
-      order: id || 'form',
-    })
-    return feasibleExecutionPrice
   }
   return undefined
 }
