@@ -209,6 +209,54 @@ export function OrderRow({
     return orders.every((order) => order.status === OrderStatus.CANCELLED)
   }
 
+  const findWarningChildWithParams = () => {
+    if (!isTwapTable || isChild || !childOrders) return null
+
+    for (const childOrder of childOrders) {
+      if (
+        childOrder.status !== OrderStatus.FULFILLED &&
+        (childOrder.status === OrderStatus.SCHEDULED || childOrder.status === OrderStatus.PENDING)
+      ) {
+        const childParams = getOrderParams(chainId, balancesAndAllowances, childOrder)
+        if (childParams?.hasEnoughBalance === false || childParams?.hasEnoughAllowance === false) {
+          return { order: childOrder, params: childParams }
+        }
+      }
+    }
+    return null
+  }
+
+  const renderWarningEstimatedPrice = (warningChildWithParams: ReturnType<typeof findWarningChildWithParams>) => {
+    return (
+      <styledEl.ExecuteCellWrapper>
+        <EstimatedExecutionPrice
+          amount={undefined}
+          tokenSymbol={undefined}
+          isInverted={isInverted}
+          isUnfillable={true}
+          canShowWarning={true}
+          warningText={
+            warningChildWithParams?.params
+              ? warningChildWithParams.params.hasEnoughAllowance === false
+                ? 'Insufficient allowance'
+                : warningChildWithParams.params.hasEnoughBalance === false
+                  ? 'Insufficient balance'
+                  : 'Unfillable'
+              : getWarningText()
+          }
+          WarningTooltip={renderWarningTooltip(true)}
+          onApprove={
+            warningChildWithParams?.params?.hasEnoughAllowance === false
+              ? () => orderActions.approveOrderToken(warningChildWithParams.order.inputToken)
+              : withAllowanceWarning
+                ? () => orderActions.approveOrderToken(order.inputToken)
+                : undefined
+          }
+        />
+      </styledEl.ExecuteCellWrapper>
+    )
+  }
+
   const renderFillsAt = () => {
     // Check for signing state first, regardless of order type
     if (order.status === OrderStatus.PRESIGNATURE_PENDING) {
@@ -234,44 +282,10 @@ export function OrderRow({
     // For TWAP parent orders
     if (isTwapTable && !isChild && childOrders) {
       // First priority: Check for warnings - MUST check child orders first
-      const warningChild = childOrders.find(
-        (childOrder) =>
-          childOrder.status !== OrderStatus.FULFILLED &&
-          (childOrder.status === OrderStatus.SCHEDULED || childOrder.status === OrderStatus.PENDING) &&
-          (getOrderParams(chainId, balancesAndAllowances, childOrder)?.hasEnoughBalance === false ||
-            getOrderParams(chainId, balancesAndAllowances, childOrder)?.hasEnoughAllowance === false),
-      )
+      const warningChildWithParams = findWarningChildWithParams()
 
-      if (warningChild || withWarning) {
-        const childParams = warningChild ? getOrderParams(chainId, balancesAndAllowances, warningChild) : null
-        return (
-          <styledEl.ExecuteCellWrapper>
-            <EstimatedExecutionPrice
-              amount={undefined}
-              tokenSymbol={undefined}
-              isInverted={isInverted}
-              isUnfillable={true}
-              canShowWarning={true}
-              warningText={
-                warningChild
-                  ? childParams?.hasEnoughAllowance === false
-                    ? 'Insufficient allowance'
-                    : childParams?.hasEnoughBalance === false
-                      ? 'Insufficient balance'
-                      : 'Unfillable'
-                  : getWarningText()
-              }
-              WarningTooltip={renderWarningTooltip(true)}
-              onApprove={
-                warningChild && childParams?.hasEnoughAllowance === false
-                  ? () => orderActions.approveOrderToken(warningChild.inputToken)
-                  : withAllowanceWarning
-                    ? () => orderActions.approveOrderToken(order.inputToken)
-                    : undefined
-              }
-            />
-          </styledEl.ExecuteCellWrapper>
-        )
+      if (warningChildWithParams || withWarning) {
+        return renderWarningEstimatedPrice(warningChildWithParams)
       }
 
       // Second priority: Check for cancelled state
@@ -458,44 +472,10 @@ export function OrderRow({
     // For TWAP parent orders
     if (isTwapTable && !isChild && childOrders) {
       // First priority: Check for warnings - MUST check child orders first
-      const warningChild = childOrders.find(
-        (childOrder) =>
-          childOrder.status !== OrderStatus.FULFILLED &&
-          (childOrder.status === OrderStatus.SCHEDULED || childOrder.status === OrderStatus.PENDING) &&
-          (getOrderParams(chainId, balancesAndAllowances, childOrder)?.hasEnoughBalance === false ||
-            getOrderParams(chainId, balancesAndAllowances, childOrder)?.hasEnoughAllowance === false),
-      )
+      const warningChildWithParams = findWarningChildWithParams()
 
-      if (warningChild || withWarning) {
-        const childParams = warningChild ? getOrderParams(chainId, balancesAndAllowances, warningChild) : null
-        return (
-          <styledEl.ExecuteCellWrapper>
-            <EstimatedExecutionPrice
-              amount={undefined}
-              tokenSymbol={undefined}
-              isInverted={isInverted}
-              isUnfillable={true}
-              canShowWarning={true}
-              warningText={
-                warningChild
-                  ? childParams?.hasEnoughAllowance === false
-                    ? 'Insufficient allowance'
-                    : childParams?.hasEnoughBalance === false
-                      ? 'Insufficient balance'
-                      : 'Unfillable'
-                  : getWarningText()
-              }
-              WarningTooltip={renderWarningTooltip(true)}
-              onApprove={
-                warningChild && childParams?.hasEnoughAllowance === false
-                  ? () => orderActions.approveOrderToken(warningChild.inputToken)
-                  : withAllowanceWarning
-                    ? () => orderActions.approveOrderToken(order.inputToken)
-                    : undefined
-              }
-            />
-          </styledEl.ExecuteCellWrapper>
-        )
+      if (warningChildWithParams || withWarning) {
+        return renderWarningEstimatedPrice(warningChildWithParams)
       }
 
       // Second priority: Check for cancelled state
