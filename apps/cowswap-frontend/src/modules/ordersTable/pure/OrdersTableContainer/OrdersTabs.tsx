@@ -145,7 +145,7 @@ const TabButton = styled(Link)<{
 
 export interface OrdersTabsProps {
   tabs: OrderTab[]
-  isWalletConnected?: boolean
+  isWalletConnected: boolean
 }
 
 export function OrdersTabs({ tabs, isWalletConnected = true }: OrdersTabsProps) {

@@ -53,8 +53,6 @@ export const PrimaryWrapper = styled.div`
 export const SecondaryWrapper = styled.div.attrs({
   id: MY_ORDERS_ID,
 })`
-  id: MY_ORDERS_ID,
-}))`
   display: flex;
   flex-flow: column wrap;
   width: 100%;
