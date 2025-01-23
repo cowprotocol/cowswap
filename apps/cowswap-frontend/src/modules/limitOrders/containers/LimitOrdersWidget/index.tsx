@@ -4,11 +4,9 @@ import React, { useMemo } from 'react'
 import ICON_TOKENS from '@cowprotocol/assets/svg/tokens.svg'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { BannerOrientation, ClosableBanner, InlineBanner } from '@cowprotocol/ui'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget/hooks/useInjectedWidgetParams'
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
@@ -83,8 +81,6 @@ export function LimitOrdersWidget() {
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const widgetActions = useLimitOrdersWidgetActions()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
-  const { chainId: _chainId, account: _account } = useWalletInfo()
-  const { hideOrdersTable: _hideOrdersTable } = useInjectedWidgetParams()
   const isUnlocked = useIsWidgetUnlocked() || SHOW_LIMIT_ORDERS_PROMO
 
   const { showRecipient: showRecipientSetting } = settingsState
