@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react'
 
 import iconCompleted from '@cowprotocol/assets/cow-swap/check.svg'
+import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
+
+import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { ArrowBackground } from 'common/pure/ArrowBackground'
 
@@ -31,6 +34,7 @@ export function LimitOrdersPromoBanner({
   const [isHovered, setIsHovered] = useState(false)
   const [arrowRef, setArrowRef] = useState<HTMLDivElement | null>(null)
   const [arrowsReady, setArrowsReady] = useState(false)
+  const darkMode = useIsDarkMode()
 
   useEffect(() => {
     // First make arrows visible but transparent
@@ -52,7 +56,13 @@ export function LimitOrdersPromoBanner({
 
   return (
     <styledEl.BannerWrapper>
-      <ArrowBackground ref={setArrowRef} count={20} className={arrowsReady ? 'visible' : ''} maxOpacity={0.3} />
+      <ArrowBackground
+        ref={setArrowRef}
+        count={20}
+        className={arrowsReady ? 'visible' : ''}
+        maxOpacity={0.3}
+        color={darkMode ? `var(${UI.COLOR_COWAMM_LIGHT_GREEN})` : `var(${UI.COLOR_COWAMM_DARK_GREEN})`}
+      />
       <styledEl.CloseButton size={24} onClick={onDismiss} />
       <styledEl.TitleSection>
         <h3>
