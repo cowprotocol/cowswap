@@ -16,15 +16,12 @@ import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWid
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
 import { SHOW_LIMIT_ORDERS_PROMO } from 'common/constants/featureFlags'
-import { LimitOrdersPromoBanner } from 'common/containers/LimitOrdersPromoBanner'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { limitOrdersPromoDismissedAtom } from 'common/state/limitOrdersPromoAtom'
 
 import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
 import * as styledEl from './styled'
 
-import { useIsWidgetUnlocked } from '../../hooks/useIsWidgetUnlocked'
 import { useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
 import { LimitOrdersFormState, useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 import { useUpdateLimitOrdersRawState } from '../../hooks/useLimitOrdersRawState'
@@ -71,7 +68,7 @@ export function LimitOrdersWidget() {
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
     recipient,
-    isUnlocked: _derivedIsUnlocked,
+    isUnlocked,
     orderKind,
   } = useLimitOrdersDerivedState()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
@@ -81,7 +78,6 @@ export function LimitOrdersWidget() {
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const widgetActions = useLimitOrdersWidgetActions()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
-  const isUnlocked = useIsWidgetUnlocked() || SHOW_LIMIT_ORDERS_PROMO
 
   const { showRecipient: showRecipientSetting } = settingsState
   const showRecipient = showRecipientSetting || !!recipient
@@ -128,7 +124,6 @@ export function LimitOrdersWidget() {
     feeAmount,
     widgetActions,
     isWrapOrUnwrap,
-    showLimitOrdersPromo: SHOW_LIMIT_ORDERS_PROMO,
   }
 
   return <LimitOrders {...props} />
@@ -147,10 +142,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     priceImpact,
     feeAmount,
     isWrapOrUnwrap,
-    showLimitOrdersPromo,
   } = props
-
-  const isDismissed = useAtomValue(limitOrdersPromoDismissedAtom)
 
   const tradeContext = useTradeFlowContext()
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
@@ -173,21 +165,19 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
   const slots: TradeWidgetSlots = {
     settingsWidget: <SettingsWidget />,
-    lockScreen: !isUnlocked ? (
-      <UnlockWidgetScreen
-        id="limit-orders"
-        items={LIMIT_BULLET_LIST_CONTENT}
-        buttonLink={UNLOCK_SCREEN.buttonLink}
-        title={UNLOCK_SCREEN.title}
-        subtitle={UNLOCK_SCREEN.subtitle}
-        orderType={UNLOCK_SCREEN.orderType}
-        buttonText={UNLOCK_SCREEN.buttonText}
-        handleUnlock={() => {
-          updateLimitOrdersState({ isUnlocked: true })
-        }}
-      />
-    ) : undefined,
-    topContent: showLimitOrdersPromo && !isDismissed ? <LimitOrdersPromoBanner isLimitOrdersTab={true} /> : undefined,
+    lockScreen:
+      isUnlocked || SHOW_LIMIT_ORDERS_PROMO ? undefined : (
+        <UnlockWidgetScreen
+          id="limit-orders"
+          items={LIMIT_BULLET_LIST_CONTENT}
+          buttonLink={UNLOCK_SCREEN.buttonLink}
+          title={UNLOCK_SCREEN.title}
+          subtitle={UNLOCK_SCREEN.subtitle}
+          orderType={UNLOCK_SCREEN.orderType}
+          buttonText={UNLOCK_SCREEN.buttonText}
+          handleUnlock={() => updateLimitOrdersState({ isUnlocked: true })}
+        />
+      ),
     middleContent: (
       <>
         {!isWrapOrUnwrap &&
@@ -228,7 +218,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         </>
       )
     },
-    outerContent: <>{isUnlocked && !(showLimitOrdersPromo && !isDismissed) && <InfoBanner />}</>,
+    outerContent: <>{isUnlocked && <InfoBanner />}</>,
   }
 
   const params = {

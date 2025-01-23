@@ -24,14 +24,8 @@ import {
 } from 'modules/twap'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
-import { SHOW_LIMIT_ORDERS_PROMO } from 'common/constants/featureFlags'
-import { limitOrdersPromoDismissedAtom } from 'common/state/limitOrdersPromoAtom'
-
 export default function AdvancedOrdersPage() {
-  const { isUnlocked: isWidgetUnlocked } = useAtomValue(advancedOrdersAtom)
-  const isDismissed = useAtomValue(limitOrdersPromoDismissedAtom)
-  const shouldShowPromo = SHOW_LIMIT_ORDERS_PROMO && !isDismissed
-  const isUnlocked = isWidgetUnlocked || SHOW_LIMIT_ORDERS_PROMO
+  const { isUnlocked } = useAtomValue(advancedOrdersAtom)
 
   const allEmulatedOrders = useAllEmulatedOrders()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
@@ -49,7 +43,7 @@ export default function AdvancedOrdersPage() {
     <>
       <FillAdvancedOrdersDerivedStateUpdater slippage={twapSlippage} />
       <SetupAdvancedOrderAmountsFromUrlUpdater />
-      <styledEl.PageWrapper isUnlocked={isUnlocked && (!shouldShowPromo || isDismissed)}>
+      <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
           {isFallbackHandlerRequired && pendingOrders.length > 0 && <SetupFallbackHandlerWarning />}
           <AdvancedOrdersWidget
@@ -60,6 +54,7 @@ export default function AdvancedOrdersPage() {
           >
             {(tradeWarnings) => (
               <>
+                {/*TODO: conditionally display a widget for current advanced order type*/}
                 <TwapFormWidget tradeWarnings={tradeWarnings} />
               </>
             )}
@@ -67,7 +62,7 @@ export default function AdvancedOrdersPage() {
         </styledEl.PrimaryWrapper>
 
         <styledEl.SecondaryWrapper>
-          {!hideOrdersTable && !shouldShowPromo && (
+          {!hideOrdersTable && (
             <OrdersTableWidget
               displayOrdersOnlyForSafeApp={true}
               orderType={TabOrderTypes.ADVANCED}

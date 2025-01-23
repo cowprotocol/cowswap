@@ -1,29 +1,27 @@
 import { useState, useEffect } from 'react'
 
 import iconCompleted from '@cowprotocol/assets/cow-swap/check.svg'
-import { Command } from '@cowprotocol/types'
-import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 
+import { ArrowBackground } from 'common/pure/ArrowBackground'
+
 import * as styledEl from './styled'
 
-import { ArrowBackground } from '../ArrowBackground'
+const BULLET_POINTS = [
+  'Locked limits - lock or unlock prices for finer control, the order does the rest',
+  'Easily set and manage your orders in USD',
+  'Try before you buy - see the potential fill price before you hit trade',
+  'Longer limit orders - place orders for up to a year.',
+  'Trade your way - personalize the interface and customize your limit orders',
+  'More spacious, and enhanced design!',
+]
 
 interface LimitOrdersPromoBannerProps {
-  onCtaClick: Command
-  onDismiss: Command
+  onCtaClick: () => void
+  onDismiss: () => void
   isLimitOrdersTab?: boolean
 }
-
-const BULLET_POINTS = [
-  'Set your limit price and lock it so the token amounts change accordingly for more intuitive trades.',
-  'Enter Buy/Sell amounts, and the limit price adjusts automatically.',
-  'Easily set and manage your limit orders in dollar terms for precision.',
-  'See realistic fill price expectations before placing your order.',
-  'Limit orders now stay active for up to 1 year—trade with confidence!',
-  'Arrange fields to reflect your trading style and preferences.',
-]
 
 export function LimitOrdersPromoBanner({
   onCtaClick,
@@ -54,17 +52,16 @@ export function LimitOrdersPromoBanner({
 
   return (
     <styledEl.BannerWrapper>
-      <ArrowBackground
-        ref={setArrowRef}
-        count={20}
-        color={`var(${UI.COLOR_SUCCESS})`}
-        className={arrowsReady ? 'visible' : ''}
-        maxOpacity={0.3}
-      />
+      <ArrowBackground ref={setArrowRef} count={20} className={arrowsReady ? 'visible' : ''} maxOpacity={0.3} />
       <styledEl.CloseButton size={24} onClick={onDismiss} />
       <styledEl.TitleSection>
-        <h3>Level Up Your Trading with Smarter Limit Orders!</h3>
-        <strong>Discover the smarter way to trade with these exciting new features:</strong>
+        <h3>
+          Limit orders, but <span>s-moooo-ther</span> than ever
+        </h3>
+        <strong>
+          Limit orders are now easier to use. <br />
+          Give them a try
+        </strong>
       </styledEl.TitleSection>
 
       <styledEl.List>
@@ -72,7 +69,7 @@ export function LimitOrdersPromoBanner({
           <li key={index}>
             <span>
               <SVG src={iconCompleted} />
-            </span>{' '}
+            </span>
             {point}
           </li>
         ))}
@@ -84,7 +81,7 @@ export function LimitOrdersPromoBanner({
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
-          <styledEl.ButtonText $hover={isHovered}>Place your limit order!</styledEl.ButtonText>
+          <styledEl.ButtonText $hover={isHovered}>Try new limit orders now</styledEl.ButtonText>
           <styledEl.Shimmer />
         </styledEl.CTAButton>
         {!isLimitOrdersTab && <styledEl.DismissLink onClick={onDismiss}>Maybe next time</styledEl.DismissLink>}

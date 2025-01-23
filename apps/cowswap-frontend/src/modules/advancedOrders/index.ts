@@ -1,6 +1,7 @@
 export * from './containers/AdvancedOrdersWidget'
 export * from './hooks/useAdvancedOrdersRawState'
 export * from './hooks/useAdvancedOrdersDerivedState'
+export * from './hooks/useIsWidgetUnlocked'
 export * from './state/advancedOrdersAtom'
 export * from './updaters/FillAdvancedOrdersDerivedStateUpdater'
 export * from './updaters/SetupAdvancedOrderAmountsFromUrlUpdater'

@@ -57,22 +57,26 @@ export const TitleSection = styled.div`
   text-align: center;
   color: inherit;
   margin: 18px auto;
-  width: 90%;
+  width: 95%;
 
   > h3 {
-    font-size: 26px;
+    font-size: 32px;
     font-weight: 600;
-    margin: 0 0 24px;
+    margin: 0 auto 24px;
     color: inherit;
 
     ${Media.upToSmall()} {
-      font-size: 20px;
+      font-size: 24px;
+    }
+
+    > span {
+      white-space: nowrap;
     }
   }
 
   > strong {
     font-weight: 400;
-    font-size: 16px;
+    font-size: 19px;
     margin: 0;
     opacity: 0.7;
   }
