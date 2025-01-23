@@ -340,7 +340,7 @@ export function OrderRow({
       return '-'
     }
 
-    if (prices && estimatedExecutionPrice) {
+    if (estimatedExecutionPrice && !estimatedExecutionPrice.equalTo(ZERO_FRACTION)) {
       return (
         <styledEl.ExecuteCellWrapper>
           {!isUnfillable &&
