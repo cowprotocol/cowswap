@@ -14,9 +14,11 @@ import {
 } from '@cowprotocol/abis'
 import {
   COWSWAP_ETHFLOW_CONTRACT_ADDRESS,
+  OLD_COWSWAP_ETHFLOW_CONTRACT_ADDRESS,
   V_COW_CONTRACT_ADDRESS,
   WRAPPED_NATIVE_CURRENCIES,
 } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getContract, isEns, isProd, isStaging } from '@cowprotocol/common-utils'
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -29,7 +31,6 @@ const WETH_CONTRACT_ADDRESS_MAP = Object.fromEntries(
 )
 
 const contractEnv = isProd || isStaging || isEns ? 'prod' : 'barn'
-export const COWSWAP_ETHFLOW_CONTRACT_ADDRESS_MAP = COWSWAP_ETHFLOW_CONTRACT_ADDRESS[contractEnv]
 
 export type UseContractResult<T extends Contract = Contract> = {
   contract: T | null
@@ -103,7 +104,12 @@ export function useWethContract(withSignerIfPossible?: boolean) {
 }
 
 export function useEthFlowContract(): UseContractResult<CoWSwapEthFlow> {
-  return useContract<CoWSwapEthFlow>(COWSWAP_ETHFLOW_CONTRACT_ADDRESS_MAP, CoWSwapEthFlowAbi, true)
+  const { useNewEthFlowContracts = false } = useFeatureFlags()
+  const contractAddresses = useNewEthFlowContracts
+    ? COWSWAP_ETHFLOW_CONTRACT_ADDRESS[contractEnv]
+    : OLD_COWSWAP_ETHFLOW_CONTRACT_ADDRESS[contractEnv]
+
+  return useContract<CoWSwapEthFlow>(contractAddresses, CoWSwapEthFlowAbi, true)
 }
 
 export function useGP2SettlementContract(): UseContractResult<GPv2Settlement> {

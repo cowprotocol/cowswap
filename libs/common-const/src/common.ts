@@ -41,7 +41,12 @@ export const APP_TITLE = 'CoW Swap | The smartest way to trade cryptocurrencies'
 
 type Env = 'barn' | 'prod'
 
-export const COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Record<Env, Record<SupportedChainId, string>> = {
+export const COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Record<Env, string> = {
+  prod: '0xba3cb449bd2b4adddbc894d8697f5170800eadec',
+  barn: '0x04501b9b1d52e67f6862d157e00d13419d2d6e95',
+}
+
+export const OLD_COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Record<Env, Record<SupportedChainId, string>> = {
   prod: mapSupportedNetworks((chain) => EthFlowProd[chain].address),
   barn: mapSupportedNetworks((chain) => EthFlowBarn[chain].address),
 }
