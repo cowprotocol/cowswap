@@ -4,7 +4,7 @@ import { CurrencyAmount, NativeCurrency, Percent, Price, Token } from '@uniswap/
 
 export function useSafeDeps(deps: unknown[]): unknown[] {
   return deps.map((dep) => {
-    if (dep instanceof NativeCurrency) return dep.symbol || '' + dep.chainId
+    if (dep instanceof NativeCurrency) return (dep.symbol || '') + dep.chainId
     if (dep instanceof Token) return dep.address.toLowerCase() + dep.chainId
     if (dep instanceof CurrencyAmount) return dep.toExact() + dep.currency.symbol + dep.currency.chainId
     if (dep instanceof Percent) return dep.toFixed(6)
