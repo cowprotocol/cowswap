@@ -193,6 +193,11 @@ function reduce(fraction: Fraction): Fraction {
   let numerator = fraction.numerator
   let denominator = fraction.denominator
   let rest: JSBI
+
+  if (JSBI.equal(denominator, ZERO)) {
+    return new Fraction(JSBI.BigInt(0), JSBI.BigInt(1))
+  }
+
   while (JSBI.notEqual(denominator, ZERO)) {
     rest = JSBI.remainder(numerator, denominator)
     numerator = denominator
