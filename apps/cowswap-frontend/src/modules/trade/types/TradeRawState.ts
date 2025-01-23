@@ -1,4 +1,4 @@
-import { USDC, WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
+import { TokenWithLogo, USDC, WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export interface TradeUrlParams {
@@ -25,12 +25,25 @@ export interface ExtendedTradeRawState extends TradeRawState {
 }
 
 export type TradeCurrenciesIds = Pick<TradeRawState, 'inputCurrencyId' | 'outputCurrencyId'>
+export type TradeCurrencies = {
+  inputCurrency: TokenWithLogo | null
+  outputCurrency: TokenWithLogo | null
+}
+
+export function getDefaultCurrencies(chainId: SupportedChainId | null): TradeCurrencies {
+  return {
+    inputCurrency: chainId ? WETH[chainId] || null : null,
+    outputCurrency: chainId ? USDC[chainId] || null : null,
+  }
+}
 
 export function getDefaultTradeRawState(chainId: SupportedChainId | null): TradeRawState {
+  const { inputCurrency, outputCurrency } = getDefaultCurrencies(chainId)
+
   return {
     chainId,
-    inputCurrencyId: chainId ? WETH[chainId]?.symbol || null : null,
-    outputCurrencyId: chainId ? USDC[chainId].symbol || null : null,
+    inputCurrencyId: inputCurrency?.symbol || null,
+    outputCurrencyId: outputCurrency?.symbol || null,
     recipient: null,
     recipientAddress: null,
   }
