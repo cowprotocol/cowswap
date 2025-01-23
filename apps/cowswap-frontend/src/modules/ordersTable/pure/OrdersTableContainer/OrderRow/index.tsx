@@ -203,43 +203,83 @@ export function OrderRow({
     return orders.every((order) => order.status === OrderStatus.CANCELLED)
   }
 
-  const renderFillsAt = () => (
-    <>
-      {getIsFinalizedOrder(order) ? (
-        order.executionData.partiallyFilled || order.status === OrderStatus.FULFILLED ? (
+  const renderFillsAt = () => {
+    // For TWAP parent orders, check child states first
+    if (isTwapTable && !isChild && childOrders) {
+      // Check if all child orders are filled (100%)
+      const allChildrenFilled = childOrders.every((childOrder) => {
+        const isFullyFilled =
+          childOrder.status === OrderStatus.FULFILLED &&
+          (percentIsAlmostHundred(childOrder.executionData.filledPercentDisplay) ||
+            Number(childOrder.executionData.filledPercentDisplay) >= 99.99)
+        console.debug('Child order fill status:', {
+          orderId: childOrder.id,
+          status: childOrder.status,
+          fillPercent: childOrder.executionData.filledPercentDisplay,
+          isFullyFilled,
+        })
+        return isFullyFilled
+      })
+
+      if (allChildrenFilled) {
+        return (
+          <styledEl.CellElement doubleRow>
+            <b>
+              <styledEl.FilledDisplay>
+                <Check size={14} strokeWidth={3.5} />
+                Order filled
+              </styledEl.FilledDisplay>
+            </b>
+            <i></i>
+          </styledEl.CellElement>
+        )
+      }
+
+      // Check if all child orders are at least partially filled
+      const allChildrenPartiallyFilled = childOrders.every(
+        (childOrder) =>
+          childOrder.status === OrderStatus.FULFILLED && Number(childOrder.executionData.filledPercentDisplay) > 0,
+      )
+
+      if (allChildrenPartiallyFilled) {
+        return (
           <styledEl.FilledDisplay>
             <Check size={14} strokeWidth={3.5} />
-            Order {order.partiallyFillable && Number(filledPercentDisplay) < 100 ? 'partially ' : ''}filled
+            Order partially filled
           </styledEl.FilledDisplay>
-        ) : order.status === OrderStatus.CANCELLED ? (
-          // For TWAP parent orders, show cancelled only when ALL child orders are cancelled
-          children ? (
-            childOrders && areAllChildOrdersCancelled(childOrders) ? (
-              <styledEl.CancelledDisplay>
-                <X size={14} strokeWidth={2.5} />
-                Order cancelled
-              </styledEl.CancelledDisplay>
-            ) : (
-              '-'
-            )
-          ) : (
-            // For non-TWAP orders and TWAP child orders, show cancelled normally
-            <styledEl.CancelledDisplay>
-              <X size={14} strokeWidth={2.5} />
-              Order cancelled
-            </styledEl.CancelledDisplay>
-          )
-        ) : order.status === OrderStatus.EXPIRED ? (
-          <styledEl.ExpiredDisplay>
-            <Clock size={14} strokeWidth={2.5} />
-            Order expired
-          </styledEl.ExpiredDisplay>
-        ) : isUnfillable ? (
-          ''
-        ) : (
-          '-'
         )
-      ) : order.status === OrderStatus.PRESIGNATURE_PENDING ? (
+      }
+
+      // Check for cancelled and expired
+      if (childOrders.every((childOrder) => childOrder.status === OrderStatus.CANCELLED)) {
+        return (
+          <styledEl.CancelledDisplay>
+            <X size={14} strokeWidth={2.5} />
+            Order cancelled
+          </styledEl.CancelledDisplay>
+        )
+      }
+
+      if (childOrders.every((childOrder) => childOrder.status === OrderStatus.EXPIRED)) {
+        return (
+          <styledEl.CellElement doubleRow>
+            <b>
+              <styledEl.ExpiredDisplay>
+                <Clock size={14} strokeWidth={2.5} />
+                Order expired
+              </styledEl.ExpiredDisplay>
+            </b>
+            <i></i>
+          </styledEl.CellElement>
+        )
+      }
+
+      return '-'
+    }
+
+    // Regular order status handling
+    if (order.status === OrderStatus.PRESIGNATURE_PENDING) {
+      return (
         <styledEl.ExecuteCellWrapper>
           <HoverTooltip
             wrapInContainer={true}
@@ -255,7 +295,48 @@ export function OrderRow({
             </styledEl.SigningDisplay>
           </HoverTooltip>
         </styledEl.ExecuteCellWrapper>
-      ) : prices && estimatedExecutionPrice ? (
+      )
+    }
+
+    if (getIsFinalizedOrder(order)) {
+      // Check filled status first
+      if (Number(filledPercentDisplay) > 0) {
+        return (
+          <styledEl.FilledDisplay>
+            <Check size={14} strokeWidth={3.5} />
+            Order {Number(filledPercentDisplay) < 100 ? 'partially ' : ''}filled
+          </styledEl.FilledDisplay>
+        )
+      }
+
+      // Then check cancelled status
+      if (order.status === OrderStatus.CANCELLED) {
+        return (
+          <styledEl.CancelledDisplay>
+            <X size={14} strokeWidth={2.5} />
+            Order cancelled
+          </styledEl.CancelledDisplay>
+        )
+      }
+
+      if (order.status === OrderStatus.EXPIRED) {
+        return (
+          <styledEl.ExpiredDisplay>
+            <Clock size={14} strokeWidth={2.5} />
+            Order expired
+          </styledEl.ExpiredDisplay>
+        )
+      }
+
+      if (isUnfillable) {
+        return ''
+      }
+
+      return '-'
+    }
+
+    if (prices && estimatedExecutionPrice) {
+      return (
         <styledEl.ExecuteCellWrapper>
           {!isUnfillable &&
           priceDiffs?.percentage &&
@@ -299,11 +380,11 @@ export function OrderRow({
             />
           )}
         </styledEl.ExecuteCellWrapper>
-      ) : (
-        '-'
-      )}
-    </>
-  )
+      )
+    }
+
+    return '-'
+  }
 
   const renderFillsAtWithDistance = () => {
     // Special case for PRESIGNATURE_PENDING - return just the signing content
@@ -330,8 +411,8 @@ export function OrderRow({
     }
 
     // For TWAP parent orders
-    if (children && childOrders) {
-      // Check if all child orders are cancelled first
+    if (isTwapTable && !isChild && childOrders) {
+      // Check all child order states
       if (areAllChildOrdersCancelled(childOrders)) {
         return (
           <styledEl.CellElement doubleRow>
@@ -346,6 +427,64 @@ export function OrderRow({
         )
       }
 
+      // Check if all child orders are expired
+      const allChildrenExpired = childOrders.every((childOrder) => childOrder.status === OrderStatus.EXPIRED)
+
+      if (allChildrenExpired) {
+        return (
+          <styledEl.CellElement doubleRow>
+            <b>
+              <styledEl.ExpiredDisplay>
+                <Clock size={14} strokeWidth={2.5} />
+                Order expired
+              </styledEl.ExpiredDisplay>
+            </b>
+            <i></i>
+          </styledEl.CellElement>
+        )
+      }
+
+      // Check if all child orders are filled (100%)
+      const allChildrenFilled = childOrders.every(
+        (childOrder) =>
+          childOrder.status === OrderStatus.FULFILLED && Number(childOrder.executionData.filledPercentDisplay) >= 99.99,
+      )
+
+      if (allChildrenFilled) {
+        return (
+          <styledEl.CellElement doubleRow>
+            <b>
+              <styledEl.FilledDisplay>
+                <Check size={14} strokeWidth={3.5} />
+                Order filled
+              </styledEl.FilledDisplay>
+            </b>
+            <i></i>
+          </styledEl.CellElement>
+        )
+      }
+
+      // Check if all child orders are at least partially filled
+      const allChildrenPartiallyFilled = childOrders.every(
+        (childOrder) =>
+          childOrder.status === OrderStatus.FULFILLED && Number(childOrder.executionData.filledPercentDisplay) > 0,
+      )
+
+      if (allChildrenPartiallyFilled) {
+        return (
+          <styledEl.CellElement doubleRow>
+            <b>
+              <styledEl.FilledDisplay>
+                <Check size={14} strokeWidth={3.5} />
+                Order partially filled
+              </styledEl.FilledDisplay>
+            </b>
+            <i></i>
+          </styledEl.CellElement>
+        )
+      }
+
+      // If no aggregate state, check for next scheduled order
       const nextScheduledOrder = childOrders.find(
         (childOrder) => childOrder.status === OrderStatus.SCHEDULED && !getIsFinalizedOrder(childOrder),
       )
@@ -400,8 +539,9 @@ export function OrderRow({
 
       // If no scheduled orders found, show dash
       return (
-        <styledEl.CellElement>
+        <styledEl.CellElement doubleRow>
           <b>-</b>
+          <i></i>
         </styledEl.CellElement>
       )
     }
@@ -445,7 +585,7 @@ export function OrderRow({
     }
 
     // Check children finalization status
-    if (children && childOrders) {
+    if (isTwapTable && !isChild && childOrders) {
       if (childOrders.every((childOrder) => getIsFinalizedOrder(childOrder))) {
         return '-'
       }

@@ -87,21 +87,29 @@ export function SpotPricesUpdater(): null {
         return
       }
 
-      const inputFraction = FractionUtils.fromPrice(inputPrice.price)
-      const outputFraction = FractionUtils.fromPrice(outputPrice.price)
-      const fraction = inputFraction.divide(outputFraction)
+      try {
+        const inputFraction = FractionUtils.fromPrice(inputPrice.price)
+        const outputFraction = FractionUtils.fromPrice(outputPrice.price)
+        const fraction = inputFraction.divide(outputFraction)
 
-      if (!fraction) {
-        return
+        if (!fraction) {
+          return
+        }
+        const price = FractionUtils.toPrice(fraction, inputCurrency, outputCurrency)
+
+        updateSpotPrices({
+          chainId,
+          sellTokenAddress: inputCurrency.address,
+          buyTokenAddress: outputCurrency.address,
+          price,
+        })
+      } catch (e) {
+        console.error(
+          `Failed to update spot prices for ${inputCurrency.address} and ${outputCurrency.address}`,
+          { inputPrice, outputPrice },
+          e,
+        )
       }
-      const price = FractionUtils.toPrice(fraction, inputCurrency, outputCurrency)
-
-      updateSpotPrices({
-        chainId,
-        sellTokenAddress: inputCurrency.address,
-        buyTokenAddress: outputCurrency.address,
-        price,
-      })
     })
   }, [usdPrices, markets, chainId, updateSpotPrices])
 
