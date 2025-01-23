@@ -319,7 +319,7 @@ export function getEstimatedExecutionPrice(
 
   // When fee > amount, return 0 price
   if (!remainingSellAmount.greaterThan(ZERO_FRACTION)) {
-    return new Price(inputToken, outputToken, '0', '0')
+    return new Price(inputToken, outputToken, '1', '0')
   }
 
   const feeWithMargin = feeAmount.add(feeAmount.multiply(EXECUTION_PRICE_FEE_COEFFICIENT))
@@ -355,7 +355,9 @@ export function getEstimatedExecutionPrice(
 
     // Just in case when the denominator is <= 0 after subtracting the fee
     if (!denominator.greaterThan(ZERO_FRACTION)) {
-      return new Price(inputToken, outputToken, '0', '0')
+      // numerator and denominator are inverted!!!
+      // https://github.com/Uniswap/sdk-core/blob/9997e88/src/entities/fractions/price.ts#L26
+      return new Price(inputToken, outputToken, '1', '0')
     }
 
     /**

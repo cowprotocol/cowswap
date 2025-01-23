@@ -9,7 +9,7 @@ import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOr
 import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom'
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 
-import { useSafeEffect } from 'common/hooks/useSafeMemo'
+import { useSafeEffect, useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 
@@ -23,12 +23,21 @@ export function ExecutionPriceUpdater() {
   const inputToken = inputCurrencyAmount?.currency && getWrappedToken(inputCurrencyAmount.currency)
   const outputToken = outputCurrencyAmount?.currency && getWrappedToken(outputCurrencyAmount.currency)
 
-  const marketPrice =
-    marketRate &&
-    !marketRate.equalTo('0') &&
-    inputToken &&
-    outputToken &&
-    FractionUtils.toPrice(marketRate, inputToken, outputToken)
+  const marketPrice = useSafeMemo(() => {
+    try {
+      if (marketRate && !marketRate.equalTo('0') && inputToken && outputToken) {
+        return FractionUtils.toPrice(marketRate, inputToken, outputToken)
+      }
+    } catch (e) {
+      console.error(
+        `[ExecutionPriceUpdater] Failed to parse the market price for ${inputToken?.address} and ${outputToken?.address}`,
+        marketRate?.numerator.toString(),
+        marketRate?.denominator.toString(),
+        e,
+      )
+    }
+    return null
+  }, [marketRate, inputToken, outputToken])
 
   const fee = feeAmount?.quotient.toString()
 
