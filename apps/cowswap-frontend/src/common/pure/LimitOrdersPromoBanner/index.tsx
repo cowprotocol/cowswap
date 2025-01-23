@@ -1,9 +1,14 @@
+import { useState, useEffect } from 'react'
+
 import iconCompleted from '@cowprotocol/assets/cow-swap/check.svg'
 import { Command } from '@cowprotocol/types'
+import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 
 import * as styledEl from './styled'
+
+import { ArrowBackground } from '../ArrowBackground'
 
 interface LimitOrdersPromoBannerProps {
   onCtaClick: Command
@@ -25,8 +30,37 @@ export function LimitOrdersPromoBanner({
   onDismiss,
   isLimitOrdersTab = false,
 }: LimitOrdersPromoBannerProps) {
+  const [isHovered, setIsHovered] = useState(false)
+  const [arrowRef, setArrowRef] = useState<HTMLDivElement | null>(null)
+  const [arrowsReady, setArrowsReady] = useState(false)
+
+  useEffect(() => {
+    // First make arrows visible but transparent
+    setArrowsReady(true)
+
+    // Wait for animations to be ready before showing
+    const timer = setTimeout(() => {
+      if (arrowRef) {
+        arrowRef.classList.add('show')
+      }
+    }, 1000)
+
+    return () => {
+      if (timer) {
+        clearTimeout(timer)
+      }
+    }
+  }, [arrowRef])
+
   return (
     <styledEl.BannerWrapper>
+      <ArrowBackground
+        ref={setArrowRef}
+        count={20}
+        color={`var(${UI.COLOR_SUCCESS})`}
+        className={arrowsReady ? 'visible' : ''}
+        maxOpacity={0.3}
+      />
       <styledEl.CloseButton size={24} onClick={onDismiss} />
       <styledEl.TitleSection>
         <h3>Level Up Your Trading with Smarter Limit Orders!</h3>
@@ -45,7 +79,14 @@ export function LimitOrdersPromoBanner({
       </styledEl.List>
 
       <styledEl.ControlSection>
-        <styledEl.CTAButton onClick={onCtaClick}>Place your limit order!</styledEl.CTAButton>
+        <styledEl.CTAButton
+          onClick={onCtaClick}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <styledEl.ButtonText $hover={isHovered}>Place your limit order!</styledEl.ButtonText>
+          <styledEl.Shimmer />
+        </styledEl.CTAButton>
         {!isLimitOrdersTab && <styledEl.DismissLink onClick={onDismiss}>Maybe next time</styledEl.DismissLink>}
       </styledEl.ControlSection>
     </styledEl.BannerWrapper>
