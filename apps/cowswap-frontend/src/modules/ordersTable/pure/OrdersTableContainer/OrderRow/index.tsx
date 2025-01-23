@@ -16,6 +16,7 @@ import SVG from 'react-inlinesvg'
 import { Nullish } from 'types'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
+import { getEstimatedExecutionPrice } from 'legacy/state/orders/utils'
 
 import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
@@ -42,7 +43,6 @@ import { OrderContextMenu } from './OrderContextMenu'
 import { WarningTooltip } from './OrderWarning'
 import * as styledEl from './styled'
 
-import { getEstimatedExecutionPrice } from '../../../../../legacy/state/orders/utils'
 import { OrderParams } from '../../../utils/getOrderParams'
 import { OrderStatusBox } from '../../OrderStatusBox'
 import { CheckboxCheckmark, TableRow, TableRowCheckbox, TableRowCheckboxWrapper } from '../styled'
