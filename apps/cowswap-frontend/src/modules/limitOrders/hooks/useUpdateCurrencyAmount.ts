@@ -23,6 +23,7 @@ type CurrencyAmountProps = {
   activeRate: Fraction | null
   amount: CurrencyAmount<Currency> | null
   orderKind: OrderKind
+  isPriceUpdate?: boolean
 }
 
 export function useUpdateCurrencyAmount() {
@@ -33,11 +34,11 @@ export function useUpdateCurrencyAmount() {
 
   return useCallback(
     (params: CurrencyAmountProps) => {
-      const { activeRate, amount, orderKind } = params
+      const { activeRate, amount, orderKind, isPriceUpdate } = params
       const field = isSellOrder(orderKind) ? Field.INPUT : Field.OUTPUT
       const isBuyAmountChange = field === Field.OUTPUT
 
-      if (!limitPriceLocked) {
+      if (!limitPriceLocked && !isPriceUpdate) {
         // Limit price is unlocked, we should not update the opposite amount, only the price!
         const update: Partial<Writeable<LimitOrdersRawState>> = {
           orderKind,
@@ -50,39 +51,40 @@ export function useUpdateCurrencyAmount() {
 
         const newRate = calculateRateForAmount(isBuyAmountChange, amount, inputCurrencyAmount, outputCurrencyAmount)
 
-        newRate &&
+        if (newRate) {
           updateLimitRateState({
             activeRate: FractionUtils.fractionLikeToFraction(newRate),
             isTypedValue: false,
             isRateFromUrl: false,
             isAlternativeOrderRate: false,
           })
-      } else {
-        // Price is locked, we should update the opposite amount
-
-        const calculatedAmount = calculateAmountForRate({
-          activeRate,
-          amount,
-          field,
-          inputCurrency,
-          outputCurrency,
-        })
-
-        const newInputAmount = field === Field.INPUT ? amount : calculatedAmount
-        const newOutputAmount = field === Field.OUTPUT ? amount : calculatedAmount
-
-        const update: Partial<Writeable<LimitOrdersRawState>> = {
-          orderKind,
-          ...(newInputAmount
-            ? { inputCurrencyAmount: FractionUtils.serializeFractionToJSON(newInputAmount) }
-            : undefined),
-          ...(newOutputAmount
-            ? { outputCurrencyAmount: FractionUtils.serializeFractionToJSON(newOutputAmount) }
-            : undefined),
+          return
         }
-
-        updateLimitOrdersState(update)
       }
+      // Price is locked, we should update the opposite amount
+
+      const calculatedAmount = calculateAmountForRate({
+        activeRate,
+        amount,
+        field,
+        inputCurrency,
+        outputCurrency,
+      })
+
+      const newInputAmount = field === Field.INPUT ? amount : calculatedAmount
+      const newOutputAmount = field === Field.OUTPUT ? amount : calculatedAmount
+
+      const update: Partial<Writeable<LimitOrdersRawState>> = {
+        orderKind,
+        ...(newInputAmount
+          ? { inputCurrencyAmount: FractionUtils.serializeFractionToJSON(newInputAmount) }
+          : undefined),
+        ...(newOutputAmount
+          ? { outputCurrencyAmount: FractionUtils.serializeFractionToJSON(newOutputAmount) }
+          : undefined),
+      }
+
+      updateLimitOrdersState(update)
     },
     [
       inputCurrency,
