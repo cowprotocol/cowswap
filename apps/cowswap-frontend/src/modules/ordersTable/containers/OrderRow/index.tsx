@@ -128,7 +128,7 @@ export function OrderRow({
     return getAddress(quoteCurrency) === getAddress(inputCurrencyAmount?.currency)
   })
   const [isInverted, setIsInverted] = isInvertedState
-  const toggleIsInverted = useCallback(() => setIsInverted((curr) => !curr), [])
+  const toggleIsInverted = useCallback(() => setIsInverted((curr) => !curr), [setIsInverted])
 
   // Toggle isInverted whenever isGloballyInverted changes
   useEffect(() => {
