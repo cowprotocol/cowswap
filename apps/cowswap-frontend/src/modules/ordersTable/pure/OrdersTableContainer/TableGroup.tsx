@@ -76,6 +76,8 @@ export function TableGroup(props: TableGroupProps) {
     isRateInverted,
     orderActions,
     isTwapTable,
+    chainId,
+    balancesAndAllowances,
   }
 
   // Create an array of child order data with their orderParams

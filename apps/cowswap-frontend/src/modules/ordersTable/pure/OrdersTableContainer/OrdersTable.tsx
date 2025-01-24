@@ -248,6 +248,8 @@ export function OrdersTable({
                     onClick={() => orderActions.selectReceiptOrder(order)}
                     orderActions={orderActions}
                     isTwapTable={isTwapTable}
+                    chainId={chainId}
+                    balancesAndAllowances={balancesAndAllowances}
                   />
                 )
               } else {

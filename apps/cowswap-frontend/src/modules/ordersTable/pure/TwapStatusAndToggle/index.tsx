@@ -37,32 +37,38 @@ export function TwapStatusAndToggle({
   childOrders,
   approveOrderToken,
 }: TwapStatusAndToggleProps) {
-  // Get the first child with a warning to use its parameters
-  const childWithWarning = childOrders.find(
+  // Check if any child has insufficient balance or allowance
+  const childWithAllowanceWarning = childOrders.find(
     (child) =>
-      (child.orderParams?.hasEnoughBalance === false || child.orderParams?.hasEnoughAllowance === false) &&
+      child.orderParams?.hasEnoughAllowance === false &&
       (child.order.status === OrderStatus.PENDING || child.order.status === OrderStatus.SCHEDULED),
   )
 
-  const hasChildWithWarning = !!childWithWarning
+  const childWithBalanceWarning = childOrders.find(
+    (child) =>
+      child.orderParams?.hasEnoughBalance === false &&
+      (child.order.status === OrderStatus.PENDING || child.order.status === OrderStatus.SCHEDULED),
+  )
+
+  const warningChild = childWithAllowanceWarning || childWithBalanceWarning
 
   return (
     <>
       <OrderStatusBox
         order={parent}
         onClick={onClick}
-        withWarning={hasChildWithWarning}
+        withWarning={!!warningChild}
         WarningTooltip={
-          hasChildWithWarning && childWithWarning
+          warningChild
             ? ({ children }) => (
                 <WarningTooltip
                   children={children}
-                  hasEnoughBalance={childWithWarning.orderParams.hasEnoughBalance ?? false}
-                  hasEnoughAllowance={childWithWarning.orderParams.hasEnoughAllowance ?? false}
-                  inputTokenSymbol={childWithWarning.order.inputToken.symbol || ''}
-                  isOrderScheduled={childWithWarning.order.status === OrderStatus.SCHEDULED}
-                  onApprove={() => approveOrderToken(childWithWarning.order.inputToken)}
-                  showIcon
+                  hasEnoughBalance={!childWithBalanceWarning}
+                  hasEnoughAllowance={!childWithAllowanceWarning}
+                  inputTokenSymbol={warningChild.order.inputToken.symbol || ''}
+                  isOrderScheduled={warningChild.order.status === OrderStatus.SCHEDULED}
+                  onApprove={() => approveOrderToken(warningChild.order.inputToken)}
+                  showIcon={true}
                 />
               )
             : undefined

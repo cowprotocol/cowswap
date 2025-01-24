@@ -20,6 +20,7 @@ import { getEstimatedExecutionPrice } from 'legacy/state/orders/utils'
 
 import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
+import { BalancesAndAllowances } from 'modules/tokens'
 
 import {
   FAIR_PRICE_THRESHOLD_PERCENTAGE,
@@ -44,6 +45,7 @@ import { WarningTooltip } from './OrderWarning'
 import * as styledEl from './styled'
 
 import { OrderParams } from '../../../utils/getOrderParams'
+import { getOrderParams } from '../../../utils/getOrderParams'
 import { OrderStatusBox } from '../../OrderStatusBox'
 import { CheckboxCheckmark, TableRow, TableRowCheckbox, TableRowCheckboxWrapper } from '../styled'
 import { OrderActions } from '../types'
@@ -92,6 +94,8 @@ export interface OrderRowProps {
   children?: React.ReactNode
   childOrders?: ParsedOrder[]
   isTwapTable?: boolean
+  chainId: SupportedChainId
+  balancesAndAllowances: BalancesAndAllowances
 }
 
 export function OrderRow({
@@ -110,8 +114,10 @@ export function OrderRow({
   children,
   childOrders,
   isTwapTable,
+  chainId,
+  balancesAndAllowances,
 }: OrderRowProps) {
-  const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
+  const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance } = orderParams
   const { creationTime, expirationTime, status } = order
   const { filledPercentDisplay, executedPrice } = order.executionData
   const { inputCurrencyAmount, outputCurrencyAmount } = rateInfoParams
@@ -208,6 +214,54 @@ export function OrderRow({
     return orders.every((order) => order.status === OrderStatus.CANCELLED)
   }
 
+  const findWarningChildWithParams = () => {
+    if (!isTwapTable || isChild || !childOrders) return null
+
+    for (const childOrder of childOrders) {
+      if (
+        childOrder.status !== OrderStatus.FULFILLED &&
+        (childOrder.status === OrderStatus.SCHEDULED || childOrder.status === OrderStatus.PENDING)
+      ) {
+        const childParams = getOrderParams(chainId, balancesAndAllowances, childOrder)
+        if (childParams?.hasEnoughBalance === false || childParams?.hasEnoughAllowance === false) {
+          return { order: childOrder, params: childParams }
+        }
+      }
+    }
+    return null
+  }
+
+  const renderWarningEstimatedPrice = (warningChildWithParams: ReturnType<typeof findWarningChildWithParams>) => {
+    return (
+      <styledEl.ExecuteCellWrapper>
+        <EstimatedExecutionPrice
+          amount={undefined}
+          tokenSymbol={undefined}
+          isInverted={isInverted}
+          isUnfillable={true}
+          canShowWarning={true}
+          warningText={
+            warningChildWithParams?.params
+              ? warningChildWithParams.params.hasEnoughAllowance === false
+                ? 'Insufficient allowance'
+                : warningChildWithParams.params.hasEnoughBalance === false
+                  ? 'Insufficient balance'
+                  : 'Unfillable'
+              : getWarningText()
+          }
+          WarningTooltip={renderWarningTooltip(true)}
+          onApprove={
+            warningChildWithParams?.params?.hasEnoughAllowance === false
+              ? () => orderActions.approveOrderToken(warningChildWithParams.order.inputToken)
+              : withAllowanceWarning
+                ? () => orderActions.approveOrderToken(order.inputToken)
+                : undefined
+          }
+        />
+      </styledEl.ExecuteCellWrapper>
+    )
+  }
+
   const renderFillsAt = () => {
     // Check for signing state first, regardless of order type
     if (order.status === OrderStatus.PRESIGNATURE_PENDING) {
@@ -230,22 +284,47 @@ export function OrderRow({
       )
     }
 
-    // For TWAP parent orders, check child states
+    // For TWAP parent orders
     if (isTwapTable && !isChild && childOrders) {
-      // Check if all child orders are filled (100%)
-      const allChildrenFilled = childOrders.every((childOrder) => {
-        const isFullyFilled =
-          childOrder.status === OrderStatus.FULFILLED &&
-          (percentIsAlmostHundred(childOrder.executionData.filledPercentDisplay) ||
-            Number(childOrder.executionData.filledPercentDisplay) >= 99.99)
-        console.debug('Child order fill status:', {
-          orderId: childOrder.id,
-          status: childOrder.status,
-          fillPercent: childOrder.executionData.filledPercentDisplay,
-          isFullyFilled,
-        })
-        return isFullyFilled
-      })
+      // First priority: Check for warnings - MUST check child orders first
+      const warningChildWithParams = findWarningChildWithParams()
+
+      if (warningChildWithParams || withWarning) {
+        return renderWarningEstimatedPrice(warningChildWithParams)
+      }
+
+      // Second priority: Check for cancelled state
+      if (areAllChildOrdersCancelled(childOrders)) {
+        return (
+          <styledEl.CellElement doubleRow>
+            <b>
+              <styledEl.CancelledDisplay>
+                <X size={14} strokeWidth={2.5} />
+                Order cancelled
+              </styledEl.CancelledDisplay>
+            </b>
+            <i></i>
+          </styledEl.CellElement>
+        )
+      }
+
+      // Third priority: Check for scheduled orders
+      const hasScheduledOrder = childOrders.some((childOrder) => childOrder.status === OrderStatus.SCHEDULED)
+
+      if (hasScheduledOrder) {
+        return (
+          <styledEl.CellElement doubleRow>
+            <b>-</b>
+            <i></i>
+          </styledEl.CellElement>
+        )
+      }
+
+      // Fourth priority: Check for filled states
+      const allChildrenFilled = childOrders.every(
+        (childOrder) =>
+          childOrder.status === OrderStatus.FULFILLED && Number(childOrder.executionData.filledPercentDisplay) >= 99.99,
+      )
 
       if (allChildrenFilled) {
         return (
@@ -261,32 +340,29 @@ export function OrderRow({
         )
       }
 
-      // Check if all child orders are at least partially filled
-      const allChildrenPartiallyFilled = childOrders.every(
+      const hasFilledOrders = childOrders.some(
         (childOrder) =>
           childOrder.status === OrderStatus.FULFILLED && Number(childOrder.executionData.filledPercentDisplay) > 0,
       )
 
-      if (allChildrenPartiallyFilled) {
+      if (hasFilledOrders) {
         return (
-          <styledEl.FilledDisplay>
-            <Check size={14} strokeWidth={3.5} />
-            Order partially filled
-          </styledEl.FilledDisplay>
+          <styledEl.CellElement doubleRow>
+            <b>
+              <styledEl.FilledDisplay>
+                <Check size={14} strokeWidth={3.5} />
+                Order partially filled
+              </styledEl.FilledDisplay>
+            </b>
+            <i></i>
+          </styledEl.CellElement>
         )
       }
 
-      // Check for cancelled and expired
-      if (childOrders.every((childOrder) => childOrder.status === OrderStatus.CANCELLED)) {
-        return (
-          <styledEl.CancelledDisplay>
-            <X size={14} strokeWidth={2.5} />
-            Order cancelled
-          </styledEl.CancelledDisplay>
-        )
-      }
+      // Fifth priority: Check for expired state
+      const allChildrenExpired = childOrders.every((childOrder) => childOrder.status === OrderStatus.EXPIRED)
 
-      if (childOrders.every((childOrder) => childOrder.status === OrderStatus.EXPIRED)) {
+      if (allChildrenExpired || order.status === OrderStatus.EXPIRED) {
         return (
           <styledEl.CellElement doubleRow>
             <b>
@@ -345,8 +421,8 @@ export function OrderRow({
       return (
         <styledEl.ExecuteCellWrapper>
           {!isUnfillable &&
-            priceDiffs?.percentage &&
-            Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= PENDING_EXECUTION_THRESHOLD_PERCENTAGE ? (
+          priceDiffs?.percentage &&
+          Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= PENDING_EXECUTION_THRESHOLD_PERCENTAGE ? (
             <HoverTooltip
               wrapInContainer={true}
               content={
@@ -398,27 +474,16 @@ export function OrderRow({
       return renderFillsAt()
     }
 
-    // Handle warning states first, regardless of order type
-    if (withWarning) {
-      return (
-        <styledEl.ExecuteCellWrapper>
-          <EstimatedExecutionPrice
-            amount={undefined}
-            tokenSymbol={undefined}
-            isInverted={isInverted}
-            isUnfillable={withWarning}
-            canShowWarning={true}
-            warningText={getWarningText()}
-            WarningTooltip={renderWarningTooltip(true)}
-            onApprove={withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined}
-          />
-        </styledEl.ExecuteCellWrapper>
-      )
-    }
-
     // For TWAP parent orders
     if (isTwapTable && !isChild && childOrders) {
-      // Check all child order states
+      // First priority: Check for warnings - MUST check child orders first
+      const warningChildWithParams = findWarningChildWithParams()
+
+      if (warningChildWithParams || withWarning) {
+        return renderWarningEstimatedPrice(warningChildWithParams)
+      }
+
+      // Second priority: Check for cancelled state
       if (areAllChildOrdersCancelled(childOrders)) {
         return (
           <styledEl.CellElement doubleRow>
@@ -433,24 +498,19 @@ export function OrderRow({
         )
       }
 
-      // Check if all child orders are expired
-      const allChildrenExpired = childOrders.every((childOrder) => childOrder.status === OrderStatus.EXPIRED)
+      // Third priority: Check for scheduled orders
+      const hasScheduledOrder = childOrders.some((childOrder) => childOrder.status === OrderStatus.SCHEDULED)
 
-      if (allChildrenExpired) {
+      if (hasScheduledOrder) {
         return (
           <styledEl.CellElement doubleRow>
-            <b>
-              <styledEl.ExpiredDisplay>
-                <Clock size={14} strokeWidth={2.5} />
-                Order expired
-              </styledEl.ExpiredDisplay>
-            </b>
+            <b>-</b>
             <i></i>
           </styledEl.CellElement>
         )
       }
 
-      // Check if all child orders are filled (100%)
+      // Fourth priority: Check for filled states
       const allChildrenFilled = childOrders.every(
         (childOrder) =>
           childOrder.status === OrderStatus.FULFILLED && Number(childOrder.executionData.filledPercentDisplay) >= 99.99,
@@ -470,13 +530,12 @@ export function OrderRow({
         )
       }
 
-      // Check if all child orders are at least partially filled
-      const allChildrenPartiallyFilled = childOrders.every(
+      const hasFilledOrders = childOrders.some(
         (childOrder) =>
           childOrder.status === OrderStatus.FULFILLED && Number(childOrder.executionData.filledPercentDisplay) > 0,
       )
 
-      if (allChildrenPartiallyFilled) {
+      if (hasFilledOrders) {
         return (
           <styledEl.CellElement doubleRow>
             <b>
@@ -490,6 +549,23 @@ export function OrderRow({
         )
       }
 
+      // Fifth priority: Check for expired state
+      const allChildrenExpired = childOrders.every((childOrder) => childOrder.status === OrderStatus.EXPIRED)
+
+      if (allChildrenExpired || order.status === OrderStatus.EXPIRED) {
+        return (
+          <styledEl.CellElement doubleRow>
+            <b>
+              <styledEl.ExpiredDisplay>
+                <Clock size={14} strokeWidth={2.5} />
+                Order expired
+              </styledEl.ExpiredDisplay>
+            </b>
+            <i></i>
+          </styledEl.CellElement>
+        )
+      }
+
       // If no aggregate state, check for next scheduled order
       const nextScheduledOrder = childOrders.find(
         (childOrder) => childOrder.status === OrderStatus.SCHEDULED && !getIsFinalizedOrder(childOrder),
@@ -497,14 +573,13 @@ export function OrderRow({
 
       if (nextScheduledOrder) {
         // For scheduled orders, use the execution price if available, otherwise use the estimated price from props
-        const nextOrderExecutionPrice =
-          nextScheduledOrder.executionData.executedPrice || estimatedExecutionPrice
+        const nextOrderExecutionPrice = nextScheduledOrder.executionData.executedPrice || estimatedExecutionPrice
         const nextOrderPriceDiffs = nextOrderExecutionPrice
           ? calculatePriceDifference({
-            referencePrice: spotPrice,
-            targetPrice: nextOrderExecutionPrice,
-            isInverted: false,
-          })
+              referencePrice: spotPrice,
+              targetPrice: nextOrderExecutionPrice,
+              isInverted: false,
+            })
           : null
 
         // Show the execution price for the next scheduled order
@@ -553,14 +628,38 @@ export function OrderRow({
       )
     }
 
+    // Regular order display logic (including child orders)
+    if (withWarning || isUnfillable) {
+      return (
+        <styledEl.ExecuteCellWrapper>
+          <EstimatedExecutionPrice
+            amount={undefined}
+            tokenSymbol={undefined}
+            isInverted={isInverted}
+            isUnfillable={true}
+            canShowWarning={true}
+            warningText={
+              hasEnoughBalance === false
+                ? 'Insufficient balance'
+                : hasEnoughAllowance === false
+                  ? 'Insufficient allowance'
+                  : 'Unfillable'
+            }
+            WarningTooltip={renderWarningTooltip(true)}
+            onApprove={withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined}
+          />
+        </styledEl.ExecuteCellWrapper>
+      )
+    }
+
     // Regular order display logic
     const fillsAtContent = renderFillsAt()
     const distance =
       getIsFinalizedOrder(order) ||
-        order.status === OrderStatus.CANCELLED ||
-        isUnfillable ||
-        (priceDiffs?.percentage &&
-          Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= PENDING_EXECUTION_THRESHOLD_PERCENTAGE)
+      order.status === OrderStatus.CANCELLED ||
+      isUnfillable ||
+      (priceDiffs?.percentage &&
+        Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= PENDING_EXECUTION_THRESHOLD_PERCENTAGE)
         ? ''
         : priceDiffs?.percentage
           ? `${priceDiffs?.percentage.toFixed(2)}%`
@@ -779,7 +878,6 @@ function usePricesDifference(
   spotPrice: OrderRowProps['spotPrice'],
   isInverted: boolean,
 ): PriceDifference {
-
   return useSafeMemo(
     () =>
       calculatePriceDifference({
