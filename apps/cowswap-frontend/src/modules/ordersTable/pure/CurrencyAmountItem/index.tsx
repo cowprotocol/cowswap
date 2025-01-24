@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Media, TokenAmount, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
