@@ -9,11 +9,10 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { HoverTooltip, Loader, PercentDisplay, percentIsAlmostHundred, TokenAmount } from '@cowprotocol/ui'
 import { useIsSafeWallet } from '@cowprotocol/wallet'
-import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { Check, Clock, X, Zap } from 'react-feather'
 import SVG from 'react-inlinesvg'
-import { Nullish } from 'types'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { getEstimatedExecutionPrice } from 'legacy/state/orders/utils'
@@ -27,8 +26,7 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { RateInfo } from 'common/pure/RateInfo'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
-import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
-import { calculatePriceDifference, PriceDifference } from 'utils/orderUtils/calculatePriceDifference'
+import { calculatePriceDifference } from 'utils/orderUtils/calculatePriceDifference'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
@@ -40,6 +38,8 @@ import { WarningTooltip } from './OrderWarning'
 import * as styledEl from './styled'
 import { getActivityUrl, getDistanceColor, shouldShowDashForExpiration } from './utils'
 
+import { useFeeAmountDifference } from '../../hooks/useFeeAmountDifference'
+import { usePricesDifference } from '../../hooks/usePricesDifference'
 import {
   CheckboxCheckmark,
   TableRow,
@@ -850,39 +850,5 @@ export function OrderRow({
         />
       </styledEl.CellElement>
     </TableRow>
-  )
-}
-
-/**
- * Helper hook to prepare the parameters to calculate price difference
- */
-function usePricesDifference(
-  estimatedExecutionPrice: Nullish<Price<Currency, Currency>>,
-  spotPrice: OrderRowProps['spotPrice'],
-  isInverted: boolean,
-): PriceDifference {
-  return useSafeMemo(
-    () =>
-      calculatePriceDifference({
-        referencePrice: spotPrice,
-        targetPrice: estimatedExecutionPrice,
-        isInverted,
-      }),
-    [estimatedExecutionPrice, spotPrice, isInverted],
-  )
-}
-
-/**
- * Helper hook to calculate fee amount percentage
- */
-function useFeeAmountDifference(
-  { inputCurrencyAmount }: OrderRowProps['orderParams']['rateInfoParams'],
-  prices: OrderRowProps['prices'],
-): Percent | undefined {
-  const { feeAmount } = prices || {}
-
-  return useSafeMemo(
-    () => calculatePercentageInRelationToReference({ value: feeAmount, reference: inputCurrencyAmount }),
-    [feeAmount, inputCurrencyAmount],
   )
 }
