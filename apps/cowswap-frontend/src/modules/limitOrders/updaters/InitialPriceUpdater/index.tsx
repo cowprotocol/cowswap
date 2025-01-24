@@ -13,13 +13,14 @@ import { limitRateAtom, LimitRateState, updateLimitRateAtom } from '../../state/
 // Fetch and update initial price for the selected token pair
 export function InitialPriceUpdater() {
   const { inputCurrencyId, outputCurrencyId, chainId } = useLimitOrdersRawState()
-  const { isTypedValue } = useAtomValue(limitRateAtom)
+  const { isTypedValue, activeRate } = useAtomValue(limitRateAtom)
   const updateLimitRateState = useSetAtom(updateLimitRateAtom)
   const updateRate = useUpdateActiveRate()
 
   const [isInitialPriceSet, setIsInitialPriceSet] = useState(isTypedValue)
   const { price, isLoading } = useGetInitialPrice()
   const prevPrice = usePrevious(price)
+  const hasActivePrice = !!activeRate
 
   useEffect(() => {
     setIsInitialPriceSet(isTypedValue)
@@ -37,7 +38,14 @@ export function InitialPriceUpdater() {
 
   // Set initial price once
   useLayoutEffect(() => {
-    if (!price || isInitialPriceSet || isLoading || prevPrice?.equalTo(price)) return
+    /**
+     * When price is already set as activeRate
+     * And another price update give the same value
+     * Then skip price update
+     */
+    const shouldSkipPriceUpdate = Boolean(hasActivePrice && price && prevPrice?.equalTo(price))
+
+    if (!price || isInitialPriceSet || isLoading || shouldSkipPriceUpdate) return
 
     setIsInitialPriceSet(true)
 
@@ -49,7 +57,7 @@ export function InitialPriceUpdater() {
       isAlternativeOrderRate: false,
     })
     updateLimitRateState({ isLoading })
-  }, [isInitialPriceSet, updateLimitRateState, updateRate, price, isLoading, prevPrice])
+  }, [isInitialPriceSet, updateLimitRateState, updateRate, price, isLoading, prevPrice, hasActivePrice])
 
   // Reset initial price set flag when any token or chain was changed
   useLayoutEffect(() => {
