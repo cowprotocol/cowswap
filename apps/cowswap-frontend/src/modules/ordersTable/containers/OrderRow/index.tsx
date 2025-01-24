@@ -7,7 +7,7 @@ import { formatDateWithTimezone, getAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { HoverTooltip, Loader, PercentDisplay, percentIsAlmostHundred, TokenAmount } from '@cowprotocol/ui'
+import { HoverTooltip, PercentDisplay, percentIsAlmostHundred, TokenAmount } from '@cowprotocol/ui'
 import { useIsSafeWallet } from '@cowprotocol/wallet'
 import { Currency, Price } from '@uniswap/sdk-core'
 
@@ -41,6 +41,7 @@ import { getActivityUrl, getDistanceColor, shouldShowDashForExpiration } from '.
 import { useFeeAmountDifference } from '../../hooks/useFeeAmountDifference'
 import { usePricesDifference } from '../../hooks/usePricesDifference'
 import { CurrencyAmountItem } from '../../pure/CurrencyAmountItem'
+import { OrderMarketPrice } from '../../pure/OrderMarketPrice'
 import {
   CheckboxCheckmark,
   TableRow,
@@ -644,44 +645,6 @@ export function OrderRow({
     )
   }
 
-  const renderMarketPrice = () => {
-    // Early return for warning states and non-active orders
-    if (
-      withWarning ||
-      order.status === OrderStatus.CREATING ||
-      order.status === OrderStatus.PRESIGNATURE_PENDING ||
-      getIsFinalizedOrder(order)
-    ) {
-      return '-'
-    }
-
-    // Check children finalization status
-    if (isTwapTable && !isChild && childOrders) {
-      if (childOrders.every((childOrder) => getIsFinalizedOrder(childOrder))) {
-        return '-'
-      }
-    }
-
-    // Handle spot price cases
-    if (spotPrice === null) {
-      return '-'
-    }
-
-    if (spotPrice) {
-      return (
-        <TokenAmount
-          amount={spotPriceInverted}
-          tokenSymbol={spotPriceInverted?.quoteCurrency}
-          opacitySymbol
-          clickable
-          noTitle
-        />
-      )
-    }
-
-    return <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
-  }
-
   return (
     <TableRow
       data-id={order.id}
@@ -733,7 +696,17 @@ export function OrderRow({
       {!isHistoryTab ? (
         <>
           <styledEl.PriceElement onClick={toggleIsInverted}>{renderFillsAtWithDistance()}</styledEl.PriceElement>
-          <styledEl.PriceElement onClick={toggleIsInverted}>{renderMarketPrice()}</styledEl.PriceElement>
+          <styledEl.PriceElement onClick={toggleIsInverted}>
+            <OrderMarketPrice
+              order={order}
+              withWarning={withWarning}
+              childOrders={childOrders}
+              isTwapTable={isTwapTable}
+              spotPrice={spotPrice}
+              isChild={isChild}
+              isInverted={isInverted}
+            />
+          </styledEl.PriceElement>
 
           {/* Expires and Created for open orders */}
           <styledEl.CellElement doubleRow>
