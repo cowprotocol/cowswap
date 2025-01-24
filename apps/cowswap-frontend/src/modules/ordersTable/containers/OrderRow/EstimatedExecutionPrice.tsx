@@ -97,7 +97,6 @@ export type EstimatedExecutionPriceProps = TokenAmountProps & {
   marketPrice?: Nullish<Price<Currency, Currency>>
   executesAtPrice?: Nullish<Price<Currency, Currency>>
   warningText?: string
-  WarningTooltip?: React.FC<{ children: React.ReactNode; showIcon: boolean }>
   onApprove?: Command
 }
 
@@ -115,7 +114,6 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
     executesAtPrice,
     amountFee,
     warningText,
-    WarningTooltip,
     onApprove,
     ...rest
   } = props
@@ -144,7 +142,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
 
   const unfillableLabel = (
     <UnfillableLabel>
-      {(warningText === 'Insufficient allowance' || warningText === 'Insufficient balance') && WarningTooltip && (
+      {(warningText === 'Insufficient allowance' || warningText === 'Insufficient balance') && (
         <>
           <HoverTooltip
             content={

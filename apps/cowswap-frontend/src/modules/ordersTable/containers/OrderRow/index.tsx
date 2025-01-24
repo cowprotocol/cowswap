@@ -50,7 +50,8 @@ import {
 } from '../../pure/OrdersTableContainer/styled'
 import { OrderActions } from '../../pure/OrdersTableContainer/types'
 import { OrderStatusBox } from '../../pure/OrderStatusBox'
-import { getOrderParams, OrderParams } from '../../utils/getOrderParams'
+import { WarningEstimatedPrice } from '../../pure/WarningEstimatedPrice'
+import { OrderParams } from '../../utils/getOrderParams'
 
 // Constants
 const TIME_AGO_UPDATE_INTERVAL = 3000
@@ -161,68 +162,37 @@ export function OrderRow({
         ? 'Insufficient allowance'
         : 'Unfillable'
 
-  const renderWarningTooltip = () => (props: { children: React.ReactNode }) => (
-    <WarningTooltip
-      hasEnoughBalance={hasEnoughBalance ?? false}
-      hasEnoughAllowance={hasEnoughAllowance ?? false}
-      inputTokenSymbol={inputTokenSymbol}
-      isOrderScheduled={isOrderScheduled}
-      onApprove={() => orderActions.approveOrderToken(order.inputToken)}
-      {...props}
+  const estimatedPriceWarning = (
+    <WarningEstimatedPrice
+      order={order}
+      approveOrderToken={orderActions.approveOrderToken}
+      isInverted={isInverted}
+      balancesAndAllowances={balancesAndAllowances}
+      chainId={chainId}
+      withAllowanceWarning={withAllowanceWarning}
+      isChild={isChild}
+      childOrders={childOrders}
+      isTwapTable={isTwapTable}
     />
   )
+
+  const renderWarningTooltip =
+    () =>
+    ({ children }: { children: React.ReactNode }) => (
+      <WarningTooltip
+        hasEnoughBalance={hasEnoughBalance ?? false}
+        hasEnoughAllowance={hasEnoughAllowance ?? false}
+        inputTokenSymbol={inputTokenSymbol}
+        isOrderScheduled={isOrderScheduled}
+        onApprove={() => orderActions.approveOrderToken(order.inputToken)}
+      >
+        {children}
+      </WarningTooltip>
+    )
 
   const areAllChildOrdersCancelled = (orders: ParsedOrder[] | undefined): boolean => {
     if (!orders || orders.length === 0) return false
     return orders.every((order) => order.status === OrderStatus.CANCELLED)
-  }
-
-  const findWarningChildWithParams = () => {
-    if (!isTwapTable || isChild || !childOrders) return null
-
-    for (const childOrder of childOrders) {
-      if (
-        childOrder.status !== OrderStatus.FULFILLED &&
-        (childOrder.status === OrderStatus.SCHEDULED || childOrder.status === OrderStatus.PENDING)
-      ) {
-        const childParams = getOrderParams(chainId, balancesAndAllowances, childOrder)
-        if (childParams?.hasEnoughBalance === false || childParams?.hasEnoughAllowance === false) {
-          return { order: childOrder, params: childParams }
-        }
-      }
-    }
-    return null
-  }
-
-  const renderWarningEstimatedPrice = (warningChildWithParams: ReturnType<typeof findWarningChildWithParams>) => {
-    return (
-      <styledEl.ExecuteCellWrapper>
-        <EstimatedExecutionPrice
-          amount={undefined}
-          tokenSymbol={undefined}
-          isInverted={isInverted}
-          isUnfillable={true}
-          canShowWarning={true}
-          warningText={
-            warningChildWithParams?.params
-              ? warningChildWithParams.params.hasEnoughAllowance === false
-                ? 'Insufficient allowance'
-                : warningChildWithParams.params.hasEnoughBalance === false
-                  ? 'Insufficient balance'
-                  : 'Unfillable'
-              : warningText
-          }
-          WarningTooltip={renderWarningTooltip()}
-          onApprove={
-            warningChildWithParams?.params?.hasEnoughAllowance === false
-              ? () => orderActions.approveOrderToken(warningChildWithParams.order.inputToken)
-              : withAllowanceWarning
-                ? () => orderActions.approveOrderToken(order.inputToken)
-                : undefined
-          }
-        />
-      </styledEl.ExecuteCellWrapper>
-    )
   }
 
   const renderFillsAt = () => {
@@ -249,11 +219,8 @@ export function OrderRow({
 
     // For TWAP parent orders
     if (isTwapTable && !isChild && childOrders) {
-      // First priority: Check for warnings - MUST check child orders first
-      const warningChildWithParams = findWarningChildWithParams()
-
-      if (warningChildWithParams || withWarning) {
-        return renderWarningEstimatedPrice(warningChildWithParams)
+      if (withWarning) {
+        return estimatedPriceWarning
       }
 
       // Second priority: Check for cancelled state
@@ -420,7 +387,6 @@ export function OrderRow({
               canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
               isUnfillable={withWarning}
               warningText={warningText}
-              WarningTooltip={renderWarningTooltip()}
               onApprove={withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined}
             />
           )}
@@ -439,11 +405,8 @@ export function OrderRow({
 
     // For TWAP parent orders
     if (isTwapTable && !isChild && childOrders) {
-      // First priority: Check for warnings - MUST check child orders first
-      const warningChildWithParams = findWarningChildWithParams()
-
-      if (warningChildWithParams || withWarning) {
-        return renderWarningEstimatedPrice(warningChildWithParams)
+      if (withWarning) {
+        return estimatedPriceWarning
       }
 
       // Second priority: Check for cancelled state
@@ -608,7 +571,6 @@ export function OrderRow({
                   ? 'Insufficient allowance'
                   : 'Unfillable'
             }
-            WarningTooltip={renderWarningTooltip()}
             onApprove={withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined}
           />
         </styledEl.ExecuteCellWrapper>
