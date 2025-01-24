@@ -176,10 +176,7 @@ export function OrderRow({
     />
   )
 
-  const areAllChildOrdersCancelled = (orders: ParsedOrder[] | undefined): boolean => {
-    if (!orders || orders.length === 0) return false
-    return orders.every((order) => order.status === OrderStatus.CANCELLED)
-  }
+  const areAllChildOrdersCancelled = !!childOrders?.every((order) => order.status === OrderStatus.CANCELLED)
 
   const renderFillsAt = () => {
     // Check for signing state first, regardless of order type
@@ -210,7 +207,7 @@ export function OrderRow({
       }
 
       // Second priority: Check for cancelled state
-      if (areAllChildOrdersCancelled(childOrders)) {
+      if (areAllChildOrdersCancelled) {
         return (
           <styledEl.CellElement doubleRow>
             <b>
@@ -396,7 +393,7 @@ export function OrderRow({
       }
 
       // Second priority: Check for cancelled state
-      if (areAllChildOrdersCancelled(childOrders)) {
+      if (areAllChildOrdersCancelled) {
         return (
           <styledEl.CellElement doubleRow>
             <b>
