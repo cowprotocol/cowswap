@@ -1,10 +1,6 @@
-
 import { useAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { useCallback } from 'react'
-
-
-
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
@@ -20,7 +16,7 @@ const STORAGE_KEY = 'limitOrdersPromoBanner:v0'
 const promoBannerAtom = atomWithStorage<boolean>(STORAGE_KEY, true)
 
 export function useLimitOrdersPromoBanner() {
-  const isLimitOrdersTab = !!(useMatch(Routes.LIMIT_ORDER) || useMatch(Routes.LONG_LIMIT_ORDER))
+  const isLimitOrdersTab = !!useMatch(Routes.LIMIT_ORDER)
   const { standaloneMode } = useInjectedWidgetParams()
   const [isVisible, setIsVisible] = useAtom(promoBannerAtom)
   const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
