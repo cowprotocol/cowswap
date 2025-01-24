@@ -104,7 +104,7 @@ type OrderStatusBoxProps = {
   widthAuto?: boolean
   withWarning?: boolean
   onClick?: Command
-  WarningTooltip: ReactNode
+  WarningTooltip?: ReactNode
 }
 
 export function OrderStatusBox({ order, widthAuto, withWarning, onClick, WarningTooltip }: OrderStatusBoxProps) {
