@@ -59,18 +59,15 @@ export function TwapStatusAndToggle({
         onClick={onClick}
         withWarning={!!warningChild}
         WarningTooltip={
-          warningChild
-            ? ({ children }) => (
-                <WarningTooltip
-                  children={children}
-                  hasEnoughBalance={!childWithBalanceWarning}
-                  hasEnoughAllowance={!childWithAllowanceWarning}
-                  inputTokenSymbol={warningChild.order.inputToken.symbol || ''}
-                  isOrderScheduled={warningChild.order.status === OrderStatus.SCHEDULED}
-                  onApprove={() => approveOrderToken(warningChild.order.inputToken)}
-                />
-              )
-            : undefined
+          warningChild ? (
+            <WarningTooltip
+              hasEnoughBalance={!childWithBalanceWarning}
+              hasEnoughAllowance={!childWithAllowanceWarning}
+              inputTokenSymbol={warningChild.order.inputToken.symbol || ''}
+              isOrderScheduled={warningChild.order.status === OrderStatus.SCHEDULED}
+              onApprove={() => approveOrderToken(warningChild.order.inputToken)}
+            />
+          ) : null
         }
       />
       <styledEl.ToggleExpandButton onClick={onToggle} isCollapsed={isCollapsed}>

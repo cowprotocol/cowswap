@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { Command } from '@cowprotocol/types'
 
@@ -102,7 +104,7 @@ type OrderStatusBoxProps = {
   widthAuto?: boolean
   withWarning?: boolean
   onClick?: Command
-  WarningTooltip?: React.ComponentType<{ children: React.ReactNode }>
+  WarningTooltip?: ReactNode
 }
 
 export function OrderStatusBox({ order, widthAuto, withWarning, onClick, WarningTooltip }: OrderStatusBoxProps) {
@@ -110,7 +112,7 @@ export function OrderStatusBox({ order, widthAuto, withWarning, onClick, Warning
 
   const content = (
     <StatusContent>
-      {withWarning && WarningTooltip && <WarningTooltip>{null}</WarningTooltip>}
+      {withWarning && WarningTooltip}
       {order.status === OrderStatus.PRESIGNATURE_PENDING && (
         <SVG src={orderPresignaturePending} description="signing" />
       )}

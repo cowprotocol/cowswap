@@ -7,7 +7,7 @@ import { formatDateWithTimezone, getAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { HoverTooltip, Loader, PercentDisplay, percentIsAlmostHundred, TokenAmount } from '@cowprotocol/ui'
+import { HoverTooltip, PercentDisplay, percentIsAlmostHundred, TokenAmount } from '@cowprotocol/ui'
 import { useIsSafeWallet } from '@cowprotocol/wallet'
 import { Currency, Price } from '@uniswap/sdk-core'
 
@@ -41,6 +41,7 @@ import { getActivityUrl, getDistanceColor, shouldShowDashForExpiration } from '.
 import { useFeeAmountDifference } from '../../hooks/useFeeAmountDifference'
 import { usePricesDifference } from '../../hooks/usePricesDifference'
 import { CurrencyAmountItem } from '../../pure/CurrencyAmountItem'
+import { OrderMarketPrice } from '../../pure/OrderMarketPrice'
 import {
   CheckboxCheckmark,
   TableRow,
@@ -49,7 +50,8 @@ import {
 } from '../../pure/OrdersTableContainer/styled'
 import { OrderActions } from '../../pure/OrdersTableContainer/types'
 import { OrderStatusBox } from '../../pure/OrderStatusBox'
-import { getOrderParams, OrderParams } from '../../utils/getOrderParams'
+import { WarningEstimatedPrice } from '../../pure/WarningEstimatedPrice'
+import { OrderParams } from '../../utils/getOrderParams'
 
 // Constants
 const TIME_AGO_UPDATE_INTERVAL = 3000
@@ -153,74 +155,30 @@ export function OrderRow({
 
   const inputTokenSymbol = order.inputToken.symbol || ''
 
-  const getWarningText = () => {
-    if (hasEnoughBalance === false) return 'Insufficient balance'
-    if (hasEnoughAllowance === false) return 'Insufficient allowance'
-    return 'Unfillable'
-  }
+  const warningText =
+    hasEnoughBalance === false
+      ? 'Insufficient balance'
+      : hasEnoughAllowance === false
+        ? 'Insufficient allowance'
+        : 'Unfillable'
 
-  const renderWarningTooltip = () => (props: { children: React.ReactNode }) => (
-    <WarningTooltip
-      hasEnoughBalance={hasEnoughBalance ?? false}
-      hasEnoughAllowance={hasEnoughAllowance ?? false}
-      inputTokenSymbol={inputTokenSymbol}
-      isOrderScheduled={isOrderScheduled}
-      onApprove={() => orderActions.approveOrderToken(order.inputToken)}
-      {...props}
+  const estimatedPriceWarning = (
+    <WarningEstimatedPrice
+      order={order}
+      approveOrderToken={orderActions.approveOrderToken}
+      isInverted={isInverted}
+      balancesAndAllowances={balancesAndAllowances}
+      chainId={chainId}
+      withAllowanceWarning={withAllowanceWarning}
+      isChild={isChild}
+      childOrders={childOrders}
+      isTwapTable={isTwapTable}
     />
   )
 
   const areAllChildOrdersCancelled = (orders: ParsedOrder[] | undefined): boolean => {
     if (!orders || orders.length === 0) return false
     return orders.every((order) => order.status === OrderStatus.CANCELLED)
-  }
-
-  const findWarningChildWithParams = () => {
-    if (!isTwapTable || isChild || !childOrders) return null
-
-    for (const childOrder of childOrders) {
-      if (
-        childOrder.status !== OrderStatus.FULFILLED &&
-        (childOrder.status === OrderStatus.SCHEDULED || childOrder.status === OrderStatus.PENDING)
-      ) {
-        const childParams = getOrderParams(chainId, balancesAndAllowances, childOrder)
-        if (childParams?.hasEnoughBalance === false || childParams?.hasEnoughAllowance === false) {
-          return { order: childOrder, params: childParams }
-        }
-      }
-    }
-    return null
-  }
-
-  const renderWarningEstimatedPrice = (warningChildWithParams: ReturnType<typeof findWarningChildWithParams>) => {
-    return (
-      <styledEl.ExecuteCellWrapper>
-        <EstimatedExecutionPrice
-          amount={undefined}
-          tokenSymbol={undefined}
-          isInverted={isInverted}
-          isUnfillable={true}
-          canShowWarning={true}
-          warningText={
-            warningChildWithParams?.params
-              ? warningChildWithParams.params.hasEnoughAllowance === false
-                ? 'Insufficient allowance'
-                : warningChildWithParams.params.hasEnoughBalance === false
-                  ? 'Insufficient balance'
-                  : 'Unfillable'
-              : getWarningText()
-          }
-          WarningTooltip={renderWarningTooltip()}
-          onApprove={
-            warningChildWithParams?.params?.hasEnoughAllowance === false
-              ? () => orderActions.approveOrderToken(warningChildWithParams.order.inputToken)
-              : withAllowanceWarning
-                ? () => orderActions.approveOrderToken(order.inputToken)
-                : undefined
-          }
-        />
-      </styledEl.ExecuteCellWrapper>
-    )
   }
 
   const renderFillsAt = () => {
@@ -247,11 +205,8 @@ export function OrderRow({
 
     // For TWAP parent orders
     if (isTwapTable && !isChild && childOrders) {
-      // First priority: Check for warnings - MUST check child orders first
-      const warningChildWithParams = findWarningChildWithParams()
-
-      if (warningChildWithParams || withWarning) {
-        return renderWarningEstimatedPrice(warningChildWithParams)
+      if (withWarning) {
+        return estimatedPriceWarning
       }
 
       // Second priority: Check for cancelled state
@@ -417,8 +372,7 @@ export function OrderRow({
               amountFee={feeAmount}
               canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
               isUnfillable={withWarning}
-              warningText={getWarningText()}
-              WarningTooltip={renderWarningTooltip()}
+              warningText={warningText}
               onApprove={withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined}
             />
           )}
@@ -437,11 +391,8 @@ export function OrderRow({
 
     // For TWAP parent orders
     if (isTwapTable && !isChild && childOrders) {
-      // First priority: Check for warnings - MUST check child orders first
-      const warningChildWithParams = findWarningChildWithParams()
-
-      if (warningChildWithParams || withWarning) {
-        return renderWarningEstimatedPrice(warningChildWithParams)
+      if (withWarning) {
+        return estimatedPriceWarning
       }
 
       // Second priority: Check for cancelled state
@@ -606,7 +557,6 @@ export function OrderRow({
                   ? 'Insufficient allowance'
                   : 'Unfillable'
             }
-            WarningTooltip={renderWarningTooltip()}
             onApprove={withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined}
           />
         </styledEl.ExecuteCellWrapper>
@@ -641,44 +591,6 @@ export function OrderRow({
         </i>
       </styledEl.CellElement>
     )
-  }
-
-  const renderMarketPrice = () => {
-    // Early return for warning states and non-active orders
-    if (
-      withWarning ||
-      order.status === OrderStatus.CREATING ||
-      order.status === OrderStatus.PRESIGNATURE_PENDING ||
-      getIsFinalizedOrder(order)
-    ) {
-      return '-'
-    }
-
-    // Check children finalization status
-    if (isTwapTable && !isChild && childOrders) {
-      if (childOrders.every((childOrder) => getIsFinalizedOrder(childOrder))) {
-        return '-'
-      }
-    }
-
-    // Handle spot price cases
-    if (spotPrice === null) {
-      return '-'
-    }
-
-    if (spotPrice) {
-      return (
-        <TokenAmount
-          amount={spotPriceInverted}
-          tokenSymbol={spotPriceInverted?.quoteCurrency}
-          opacitySymbol
-          clickable
-          noTitle
-        />
-      )
-    }
-
-    return <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
   }
 
   return (
@@ -732,7 +644,17 @@ export function OrderRow({
       {!isHistoryTab ? (
         <>
           <styledEl.PriceElement onClick={toggleIsInverted}>{renderFillsAtWithDistance()}</styledEl.PriceElement>
-          <styledEl.PriceElement onClick={toggleIsInverted}>{renderMarketPrice()}</styledEl.PriceElement>
+          <styledEl.PriceElement onClick={toggleIsInverted}>
+            <OrderMarketPrice
+              order={order}
+              withWarning={withWarning}
+              childOrders={childOrders}
+              isTwapTable={isTwapTable}
+              spotPrice={spotPrice}
+              isChild={isChild}
+              isInverted={isInverted}
+            />
+          </styledEl.PriceElement>
 
           {/* Expires and Created for open orders */}
           <styledEl.CellElement doubleRow>
@@ -803,7 +725,15 @@ export function OrderRow({
               order={order}
               withWarning={withWarning}
               onClick={onClick}
-              WarningTooltip={withWarning ? renderWarningTooltip() : undefined}
+              WarningTooltip={
+                <WarningTooltip
+                  hasEnoughBalance={hasEnoughBalance ?? false}
+                  hasEnoughAllowance={hasEnoughAllowance ?? false}
+                  inputTokenSymbol={inputTokenSymbol}
+                  isOrderScheduled={isOrderScheduled}
+                  onApprove={() => orderActions.approveOrderToken(order.inputToken)}
+                />
+              }
             />
           </styledEl.StatusBox>
         </styledEl.CellElement>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import alertCircle from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import { Command } from '@cowprotocol/types'
@@ -86,7 +86,7 @@ function AllowanceWarning({ symbol, isScheduled, approve }: AllowanceWarningProp
 }
 
 interface WarningTooltipProps {
-  children: React.ReactNode
+  children?: ReactNode
   hasEnoughBalance: boolean
   hasEnoughAllowance: boolean
   inputTokenSymbol: string
