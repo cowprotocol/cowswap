@@ -1,3 +1,4 @@
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { FractionUtils, isSellOrder } from '@cowprotocol/common-utils'
@@ -13,21 +14,54 @@ import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimit
 import { LimitOrdersRawState } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
 
 import { calculateAmountForRate } from 'utils/orderUtils/calculateAmountForRate'
+import { calculateRateForAmount } from 'utils/orderUtils/calculateRateForAmount'
+
+import { limitOrdersSettingsAtom } from '..'
+import { updateLimitRateAtom } from '../state/limitRateAtom'
 
 type CurrencyAmountProps = {
   activeRate: Fraction | null
   amount: CurrencyAmount<Currency> | null
   orderKind: OrderKind
+  isPriceUpdate?: boolean
 }
 
 export function useUpdateCurrencyAmount() {
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
-  const { inputCurrency, outputCurrency } = useLimitOrdersDerivedState()
+  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
+  const updateLimitRateState = useSetAtom(updateLimitRateAtom)
+  const { limitPriceLocked } = useAtomValue(limitOrdersSettingsAtom)
 
   return useCallback(
     (params: CurrencyAmountProps) => {
-      const { activeRate, amount, orderKind } = params
+      const { activeRate, amount, orderKind, isPriceUpdate } = params
       const field = isSellOrder(orderKind) ? Field.INPUT : Field.OUTPUT
+      const isBuyAmountChange = field === Field.OUTPUT
+
+      if (!limitPriceLocked && !isPriceUpdate) {
+        // Limit price is unlocked, we should not update the opposite amount, only the price!
+        const update: Partial<Writeable<LimitOrdersRawState>> = {
+          orderKind,
+          [isBuyAmountChange ? 'outputCurrencyAmount' : 'inputCurrencyAmount']:
+            FractionUtils.serializeFractionToJSON(amount),
+        }
+
+        // Update the state right away, but only the amount that was changed
+        updateLimitOrdersState(update)
+
+        const newRate = calculateRateForAmount(isBuyAmountChange, amount, inputCurrencyAmount, outputCurrencyAmount)
+
+        if (newRate) {
+          updateLimitRateState({
+            activeRate: FractionUtils.fractionLikeToFraction(newRate),
+            isTypedValue: false,
+            isRateFromUrl: false,
+            isAlternativeOrderRate: false,
+          })
+          return
+        }
+      }
+      // Price is locked, we should update the opposite amount
 
       const calculatedAmount = calculateAmountForRate({
         activeRate,
@@ -52,6 +86,14 @@ export function useUpdateCurrencyAmount() {
 
       updateLimitOrdersState(update)
     },
-    [inputCurrency, outputCurrency, updateLimitOrdersState],
+    [
+      inputCurrency,
+      outputCurrency,
+      updateLimitOrdersState,
+      inputCurrencyAmount,
+      outputCurrencyAmount,
+      limitPriceLocked,
+      updateLimitRateState,
+    ],
   )
 }
