@@ -221,16 +221,18 @@ export function RateInfo({
 
   if (!rateInputCurrency || !rateOutputCurrency || !currentActiveRate) return null
 
+  const toggleInverted = () => setCurrentIsInverted((state) => !state)
+
   return (
     <Wrapper stylized={stylized} className={className}>
       {!noLabel && (
         <RateLabel>
           <Trans>{label}</Trans>
-          <InvertRateControl onClick={() => setCurrentIsInverted((state) => !state)} />
+          <InvertRateControl onClick={toggleInverted} />
         </RateLabel>
       )}
       <div>
-        <RateWrapper onClick={() => setCurrentIsInverted((state) => !state)} rightAlign={rightAlign}>
+        <RateWrapper onClick={toggleInverted} rightAlign={rightAlign}>
           <span
             title={
               currentActiveRate.toFixed(rateOutputCurrency.decimals || DEFAULT_DECIMALS) +
