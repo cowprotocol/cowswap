@@ -5,7 +5,7 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-const ArrowBackgroundWrapper = styled.div`
+const ArrowBackgroundWrapper = styled.div<{ $maxOpacity: number }>`
   position: absolute;
   top: 0;
   left: 0;
@@ -14,7 +14,15 @@ const ArrowBackgroundWrapper = styled.div`
   pointer-events: none;
   visibility: hidden;
   opacity: 0;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity 1s ease-in-out;
+
+  &.visible {
+    visibility: visible;
+  }
+
+  &.show {
+    opacity: ${({ $maxOpacity }) => $maxOpacity};
+  }
 `
 
 const MIN_FONT_SIZE = 18
@@ -26,6 +34,7 @@ const Arrow = styled.div<{ delay: number; color: string; fontSize: number }>`
   color: ${({ color }) => color};
   animation: float 2s infinite linear;
   animation-delay: ${({ delay }) => delay}s;
+  opacity: 0;
 
   @keyframes float {
     0% {
@@ -33,12 +42,15 @@ const Arrow = styled.div<{ delay: number; color: string; fontSize: number }>`
       opacity: 0;
     }
     10% {
+      transform: translateY(80%);
       opacity: 0.3;
     }
     50% {
+      transform: translateY(0);
       opacity: 0.3;
     }
     90% {
+      transform: translateY(-80%);
       opacity: 0.2;
     }
     100% {
@@ -51,11 +63,13 @@ const Arrow = styled.div<{ delay: number; color: string; fontSize: number }>`
 export interface ArrowBackgroundProps {
   count?: number
   color?: string
+  className?: string
+  maxOpacity?: number
 }
 
 export const ArrowBackground = memo(
   forwardRef<HTMLDivElement, ArrowBackgroundProps>(
-    ({ count = 36, color = `var(${UI.COLOR_COWAMM_LIGHT_GREEN})` }, ref) => {
+    ({ count = 36, color = `var(${UI.COLOR_COWAMM_LIGHT_GREEN})`, className = '', maxOpacity = 0.25 }, ref) => {
       const arrows = useMemo(() => {
         return Array.from({ length: count }, (_, index) => ({
           delay: (index / count) * 4,
@@ -66,7 +80,7 @@ export const ArrowBackground = memo(
       }, [count])
 
       return (
-        <ArrowBackgroundWrapper ref={ref}>
+        <ArrowBackgroundWrapper ref={ref} className={className} $maxOpacity={maxOpacity}>
           {arrows.map((arrow, index) => (
             <Arrow
               key={index}

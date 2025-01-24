@@ -1,17 +1,25 @@
 import { useAtomValue } from 'jotai'
-import React, { useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 
 import ICON_TOKENS from '@cowprotocol/assets/svg/tokens.svg'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { BannerOrientation, ClosableBanner, InlineBanner } from '@cowprotocol/ui'
+
+import { useLocation } from 'react-router-dom'
 
 import { Field } from 'legacy/state/types'
 
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
-import { TradeWidget, TradeWidgetSlots, useIsWrapOrUnwrap, useTradePriceImpact } from 'modules/trade'
-import { useTradeConfirmState } from 'modules/trade'
+import {
+  TradeWidget,
+  TradeWidgetSlots,
+  useIsWrapOrUnwrap,
+  useTradeConfirmState,
+  useTradePriceImpact,
+} from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
@@ -147,6 +155,19 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
   const localFormValidation = useLimitOrdersFormState()
   const { isOpen: isConfirmOpen } = useTradeConfirmState()
+  const { search } = useLocation()
+  const handleUnlock = useCallback(() => updateLimitOrdersState({ isUnlocked: true }), [updateLimitOrdersState])
+  const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
+
+  useEffect(() => {
+    const skipLockScreen = search.includes('skipLockScreen')
+
+    if (skipLockScreen) {
+      handleUnlock()
+    }
+  }, [search, handleUnlock])
+
+  const isTradeContextReady = !!tradeContext
 
   const inputCurrencyPreviewInfo = {
     amount: inputCurrencyInfo.amount,
@@ -164,18 +185,19 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
   const slots: TradeWidgetSlots = {
     settingsWidget: <SettingsWidget />,
-    lockScreen: isUnlocked ? undefined : (
-      <UnlockWidgetScreen
-        id="limit-orders"
-        items={LIMIT_BULLET_LIST_CONTENT}
-        buttonLink={UNLOCK_SCREEN.buttonLink}
-        title={UNLOCK_SCREEN.title}
-        subtitle={UNLOCK_SCREEN.subtitle}
-        orderType={UNLOCK_SCREEN.orderType}
-        buttonText={UNLOCK_SCREEN.buttonText}
-        handleUnlock={() => updateLimitOrdersState({ isUnlocked: true })}
-      />
-    ),
+    lockScreen:
+      !isUnlocked && !isLimitOrdersUpgradeBannerEnabled ? (
+        <UnlockWidgetScreen
+          id="limit-orders"
+          items={LIMIT_BULLET_LIST_CONTENT}
+          buttonLink={UNLOCK_SCREEN.buttonLink}
+          title={UNLOCK_SCREEN.title}
+          subtitle={UNLOCK_SCREEN.subtitle}
+          orderType={UNLOCK_SCREEN.orderType}
+          buttonText={UNLOCK_SCREEN.buttonText}
+          handleUnlock={handleUnlock}
+        />
+      ) : undefined,
     middleContent: (
       <>
         {!isWrapOrUnwrap &&
@@ -211,7 +233,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           {warnings}
 
           <styledEl.TradeButtonBox>
-            <TradeButtons isTradeContextReady={!!tradeContext} />
+            <TradeButtons isTradeContextReady={isTradeContextReady} />
           </styledEl.TradeButtonBox>
         </>
       )
