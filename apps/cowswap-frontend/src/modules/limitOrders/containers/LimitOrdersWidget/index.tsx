@@ -1,17 +1,14 @@
 import { useAtomValue } from 'jotai'
 import React, { useMemo } from 'react'
 
-import ICON_TOKENS from '@cowprotocol/assets/svg/tokens.svg'
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { BannerOrientation, ClosableBanner, InlineBanner } from '@cowprotocol/ui'
 
 import { Field } from 'legacy/state/types'
 
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
-import { TradeWidget, TradeWidgetSlots, useIsWrapOrUnwrap, useTradePriceImpact } from 'modules/trade'
-import { useTradeConfirmState } from 'modules/trade'
+import { TradeWidget, TradeWidgetSlots, useTradeConfirmState, useTradePriceImpact } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
@@ -54,8 +51,6 @@ const UNLOCK_SCREEN = {
     'https://medium.com/@cow-protocol/cow-swap-improves-the-limit-order-experience-with-partially-fillable-limit-orders-45f19143e87d',
 }
 
-const ZERO_BANNER_STORAGE_KEY = 'limitOrdersZeroBalanceBanner:v0'
-
 export function LimitOrdersWidget() {
   const {
     inputCurrency,
@@ -76,7 +71,6 @@ export function LimitOrdersWidget() {
   const { isLoading: isRateLoading } = useTradeQuote()
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const widgetActions = useLimitOrdersWidgetActions()
-  const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const { showRecipient: showRecipientSetting, isUsdValuesMode } = settingsState
   const showRecipient = showRecipientSetting || !!recipient
@@ -124,7 +118,6 @@ export function LimitOrdersWidget() {
     settingsState,
     feeAmount,
     widgetActions,
-    isWrapOrUnwrap,
   }
 
   return <LimitOrders {...props} />
@@ -142,7 +135,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     rateInfoParams,
     priceImpact,
     feeAmount,
-    isWrapOrUnwrap,
   } = props
 
   const tradeContext = useTradeFlowContext()
@@ -180,22 +172,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     ),
     topContent: (
       <>
-        {!isWrapOrUnwrap &&
-          ClosableBanner(ZERO_BANNER_STORAGE_KEY, (onClose) => (
-            <InlineBanner
-              bannerType="success"
-              orientation={BannerOrientation.Horizontal}
-              customIcon={ICON_TOKENS}
-              iconSize={32}
-              onClose={onClose}
-            >
-              <p>
-                <b>NEW: </b>You can now place limit orders for amounts larger than your wallet balance. Partial fill
-                orders will execute until you run out of sell tokens. Fill-or-kill orders will become active once you
-                top up your balance.
-              </p>
-            </InlineBanner>
-          ))}
         {props.settingsState.limitPricePosition === 'top' && (
           <styledEl.RateWrapper>
             <RateInput />
