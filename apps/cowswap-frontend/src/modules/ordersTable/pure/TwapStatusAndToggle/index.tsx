@@ -8,7 +8,7 @@ import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './styled'
 
-import { WarningTooltip } from '../OrdersTableContainer/OrderRow/OrderWarning'
+import { WarningTooltip } from '../../containers/OrderRow/OrderWarning'
 import { OrderStatusBox } from '../OrderStatusBox'
 
 import type { OrderParams } from '../../utils/getOrderParams'

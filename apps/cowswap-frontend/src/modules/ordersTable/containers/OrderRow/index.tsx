@@ -40,10 +40,15 @@ import { WarningTooltip } from './OrderWarning'
 import * as styledEl from './styled'
 import { getActivityUrl, getDistanceColor, shouldShowDashForExpiration } from './utils'
 
-import { getOrderParams, OrderParams } from '../../../utils/getOrderParams'
-import { OrderStatusBox } from '../../OrderStatusBox'
-import { CheckboxCheckmark, TableRow, TableRowCheckbox, TableRowCheckboxWrapper } from '../styled'
-import { OrderActions } from '../types'
+import {
+  CheckboxCheckmark,
+  TableRow,
+  TableRowCheckbox,
+  TableRowCheckboxWrapper,
+} from '../../pure/OrdersTableContainer/styled'
+import { OrderActions } from '../../pure/OrdersTableContainer/types'
+import { OrderStatusBox } from '../../pure/OrderStatusBox'
+import { getOrderParams, OrderParams } from '../../utils/getOrderParams'
 
 // Constants
 const TIME_AGO_UPDATE_INTERVAL = 3000

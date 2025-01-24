@@ -4,14 +4,10 @@ import { UI } from '@cowprotocol/ui'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
+import { FAIR_PRICE_THRESHOLD_PERCENTAGE, GOOD_PRICE_THRESHOLD_PERCENTAGE } from 'common/constants/common'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
-
-import {
-  FAIR_PRICE_THRESHOLD_PERCENTAGE,
-  GOOD_PRICE_THRESHOLD_PERCENTAGE,
-} from '../../../../../common/constants/common'
 
 export function getActivityUrl(chainId: SupportedChainId, order: ParsedOrder): string | undefined {
   const { activityId } = order.executionData

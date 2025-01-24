@@ -13,13 +13,13 @@ import { BalancesAndAllowances } from 'modules/tokens'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
-import { OrderRow } from './OrderRow'
 import { CheckboxCheckmark, TableHeader, TableRowCheckbox, TableRowCheckboxWrapper } from './styled'
 import { TableGroup } from './TableGroup'
 import { createTableHeaders } from './tableHeaders'
 import { OrderActions } from './types'
 
 import { HISTORY_TAB, ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
+import { OrderRow } from '../../containers/OrderRow'
 import { useGetBuildOrdersTableUrl } from '../../hooks/useGetBuildOrdersTableUrl'
 import { getOrderParams } from '../../utils/getOrderParams'
 import {

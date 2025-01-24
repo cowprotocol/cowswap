@@ -11,10 +11,10 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 import type { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import type { BalancesAndAllowances } from 'modules/tokens'
 
-import { OrderRow } from './OrderRow'
 import { OrderActions } from './types'
 
 import { ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
+import { OrderRow } from '../../containers/OrderRow'
 import { getOrderParams } from '../../utils/getOrderParams'
 import { OrderTableGroup } from '../../utils/orderTableGroupUtils'
 import { OrdersTablePagination } from '../OrdersTablePagination'
