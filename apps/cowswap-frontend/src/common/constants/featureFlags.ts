@@ -4,4 +4,4 @@ export const ordersTableFeatures = {
   DISPLAY_EXECUTION_TIME: false,
 }
 
-export const SHOW_LIMIT_ORDERS_PROMO = true // Feature flag for the limit orders promotion banner
+export const SHOW_LIMIT_ORDERS_PROMO = false // Feature flag for the limit orders promotion banner
