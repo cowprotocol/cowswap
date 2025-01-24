@@ -56,10 +56,6 @@ function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
   )
 }
 
-function CurrencySymbolItem({ amount }: { amount: CurrencyAmount<Currency> }) {
-  return <TokenLogo token={amount.currency} size={28} />
-}
-
 export interface OrderRowProps {
   order: ParsedOrder
   prices: PendingOrderPrices | undefined | null
@@ -727,8 +723,8 @@ export function OrderRow({
       {/* Order sell/buy tokens */}
       <styledEl.CurrencyCell>
         <styledEl.CurrencyLogoPair clickable onClick={onClick}>
-          <CurrencySymbolItem amount={getSellAmountWithFee(order)} />
-          <CurrencySymbolItem amount={buyAmount} />
+          <TokenLogo token={order.inputToken} size={28} />
+          <TokenLogo token={buyAmount.currency} size={28} />
         </styledEl.CurrencyLogoPair>
         <styledEl.CurrencyAmountWrapper clickable onClick={onClick}>
           <CurrencyAmountItem amount={getSellAmountWithFee(order)} />
