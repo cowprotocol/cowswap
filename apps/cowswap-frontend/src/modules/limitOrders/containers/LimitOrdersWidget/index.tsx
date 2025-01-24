@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import React, { useMemo } from 'react'
 
 import ICON_TOKENS from '@cowprotocol/assets/svg/tokens.svg'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { BannerOrientation, ClosableBanner, InlineBanner } from '@cowprotocol/ui'
 
@@ -10,13 +11,11 @@ import { Field } from 'legacy/state/types'
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
-import { TradeWidget, TradeWidgetSlots, useIsWrapOrUnwrap, useTradePriceImpact } from 'modules/trade'
-import { useTradeConfirmState } from 'modules/trade'
+import { TradeWidget, TradeWidgetSlots, useIsWrapOrUnwrap, useTradeConfirmState, useTradePriceImpact } from 'modules/trade'
 import { useLimitOrdersPromoBanner } from 'modules/trade/hooks/useLimitOrdersPromoBanner'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
-import { SHOW_LIMIT_ORDERS_PROMO } from 'common/constants/featureFlags'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
@@ -79,6 +78,7 @@ export function LimitOrdersWidget() {
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const widgetActions = useLimitOrdersWidgetActions()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
+  const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
 
   const { showRecipient: showRecipientSetting } = settingsState
   const showRecipient = showRecipientSetting || !!recipient
@@ -125,6 +125,7 @@ export function LimitOrdersWidget() {
     feeAmount,
     widgetActions,
     isWrapOrUnwrap,
+    isLimitOrdersUpgradeBannerEnabled
   }
 
   return <LimitOrders {...props} />
@@ -143,6 +144,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     priceImpact,
     feeAmount,
     isWrapOrUnwrap,
+    isLimitOrdersUpgradeBannerEnabled
   } = props
 
   const tradeContext = useTradeFlowContext()
@@ -168,7 +170,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
   const slots: TradeWidgetSlots = {
     settingsWidget: <SettingsWidget />,
-    lockScreen: SHOW_LIMIT_ORDERS_PROMO ? undefined : isUnlocked ? undefined : (
+    lockScreen: isLimitOrdersUpgradeBannerEnabled ? undefined : isUnlocked ? undefined : (
       <UnlockWidgetScreen
         id="limit-orders"
         items={LIMIT_BULLET_LIST_CONTENT}
@@ -222,7 +224,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     },
     outerContent: (
       <>
-        {((!SHOW_LIMIT_ORDERS_PROMO && isUnlocked) || (SHOW_LIMIT_ORDERS_PROMO && !isPromoBannerVisible)) && (
+        {((!isLimitOrdersUpgradeBannerEnabled && isUnlocked) || (isLimitOrdersUpgradeBannerEnabled && !isPromoBannerVisible)) && (
           <InfoBanner />
         )}
       </>
