@@ -1,4 +1,4 @@
-import { HelpTooltip, Media, UI } from '@cowprotocol/ui'
+import { HelpTooltip, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -64,33 +64,6 @@ export const StatusBox = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-`
-
-export const AmountItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  white-space: nowrap;
-
-  ${Media.upToSmall()} {
-    white-space: normal;
-  }
-
-  > div {
-    display: flex;
-    align-items: center;
-  }
-
-  > span {
-    white-space: normal;
-    word-break: break-all;
-    max-width: 150px;
-    display: inline;
-  }
-
-  > span > span {
-    color: var(${UI.COLOR_TEXT_OPACITY_70});
-  }
 `
 
 export const CellElement = styled.div<{

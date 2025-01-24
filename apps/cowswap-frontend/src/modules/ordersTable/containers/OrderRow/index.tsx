@@ -9,7 +9,7 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { HoverTooltip, Loader, PercentDisplay, percentIsAlmostHundred, TokenAmount } from '@cowprotocol/ui'
 import { useIsSafeWallet } from '@cowprotocol/wallet'
-import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
+import { Currency, Price } from '@uniswap/sdk-core'
 
 import { Check, Clock, X, Zap } from 'react-feather'
 import SVG from 'react-inlinesvg'
@@ -40,6 +40,7 @@ import { getActivityUrl, getDistanceColor, shouldShowDashForExpiration } from '.
 
 import { useFeeAmountDifference } from '../../hooks/useFeeAmountDifference'
 import { usePricesDifference } from '../../hooks/usePricesDifference'
+import { CurrencyAmountItem } from '../../pure/CurrencyAmountItem'
 import {
   CheckboxCheckmark,
   TableRow,
@@ -52,14 +53,6 @@ import { getOrderParams, OrderParams } from '../../utils/getOrderParams'
 
 // Constants
 const TIME_AGO_UPDATE_INTERVAL = 3000
-
-function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
-  return (
-    <styledEl.AmountItem title={amount.toExact() + ' ' + amount.currency.symbol}>
-      <TokenAmount amount={amount} tokenSymbol={amount.currency} />
-    </styledEl.AmountItem>
-  )
-}
 
 export interface OrderRowProps {
   order: ParsedOrder
