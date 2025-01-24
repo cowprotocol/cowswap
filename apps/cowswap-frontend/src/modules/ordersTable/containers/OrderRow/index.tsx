@@ -716,22 +716,22 @@ export function OrderRow({
         </styledEl.CurrencyAmountWrapper>
       </styledEl.CurrencyCell>
 
+      {/* Limit price */}
+      <styledEl.PriceElement onClick={toggleIsInverted}>
+        <RateInfo
+          prependSymbol={false}
+          isInvertedState={[isInverted, setIsInverted]}
+          noLabel={true}
+          doNotUseSmartQuote
+          isInverted={isInverted}
+          rateInfoParams={rateInfoParams}
+          opacitySymbol={true}
+        />
+      </styledEl.PriceElement>
+
       {/* Non-history tab columns */}
       {!isHistoryTab ? (
         <>
-          <styledEl.PriceElement onClick={toggleIsInverted}>
-            <styledEl.RateValue onClick={toggleIsInverted}>
-              <RateInfo
-                prependSymbol={false}
-                isInvertedState={[isInverted, setIsInverted]}
-                noLabel={true}
-                doNotUseSmartQuote
-                isInverted={isInverted}
-                rateInfoParams={rateInfoParams}
-                opacitySymbol={true}
-              />
-            </styledEl.RateValue>
-          </styledEl.PriceElement>
           <styledEl.PriceElement onClick={toggleIsInverted}>{renderFillsAtWithDistance()}</styledEl.PriceElement>
           <styledEl.PriceElement onClick={toggleIsInverted}>{renderMarketPrice()}</styledEl.PriceElement>
 
@@ -754,18 +754,6 @@ export function OrderRow({
       ) : (
         <>
           {/* History tab columns */}
-          {/* Limit price */}
-          <styledEl.PriceElement onClick={toggleIsInverted}>
-            <RateInfo
-              prependSymbol={false}
-              isInvertedState={[isInverted, setIsInverted]}
-              noLabel={true}
-              doNotUseSmartQuote
-              isInverted={isInverted}
-              rateInfoParams={rateInfoParams}
-              opacitySymbol={true}
-            />
-          </styledEl.PriceElement>
 
           {/* Execution price */}
           <styledEl.PriceElement onClick={toggleIsInverted}>
