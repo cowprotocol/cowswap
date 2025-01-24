@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import React, { useCallback, useEffect, useMemo } from 'react'
 
 import ICON_TOKENS from '@cowprotocol/assets/svg/tokens.svg'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { BannerOrientation, ClosableBanner, InlineBanner } from '@cowprotocol/ui'
 
@@ -156,6 +157,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const { isOpen: isConfirmOpen } = useTradeConfirmState()
   const { search } = useLocation()
   const handleUnlock = useCallback(() => updateLimitOrdersState({ isUnlocked: true }), [updateLimitOrdersState])
+  const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
 
   useEffect(() => {
     const skipLockScreen = search.includes('skipLockScreen')
@@ -183,18 +185,19 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
   const slots: TradeWidgetSlots = {
     settingsWidget: <SettingsWidget />,
-    lockScreen: isUnlocked ? undefined : (
-      <UnlockWidgetScreen
-        id="limit-orders"
-        items={LIMIT_BULLET_LIST_CONTENT}
-        buttonLink={UNLOCK_SCREEN.buttonLink}
-        title={UNLOCK_SCREEN.title}
-        subtitle={UNLOCK_SCREEN.subtitle}
-        orderType={UNLOCK_SCREEN.orderType}
-        buttonText={UNLOCK_SCREEN.buttonText}
-        handleUnlock={handleUnlock}
-      />
-    ),
+    lockScreen:
+      !isUnlocked && !isLimitOrdersUpgradeBannerEnabled ? (
+        <UnlockWidgetScreen
+          id="limit-orders"
+          items={LIMIT_BULLET_LIST_CONTENT}
+          buttonLink={UNLOCK_SCREEN.buttonLink}
+          title={UNLOCK_SCREEN.title}
+          subtitle={UNLOCK_SCREEN.subtitle}
+          orderType={UNLOCK_SCREEN.orderType}
+          buttonText={UNLOCK_SCREEN.buttonText}
+          handleUnlock={handleUnlock}
+        />
+      ) : undefined,
     middleContent: (
       <>
         {!isWrapOrUnwrap &&

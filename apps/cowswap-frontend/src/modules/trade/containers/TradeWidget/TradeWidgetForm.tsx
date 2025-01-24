@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
 import { ButtonOutlined, Media, MY_ORDERS_ID } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -93,6 +94,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const alternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const primaryFormValidation = useGetTradeFormValidation()
   const { isVisible: isLimitOrdersPromoBannerVisible } = useLimitOrdersPromoBanner()
+  const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
 
   const areCurrenciesLoading = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
   const bothCurrenciesSet = !!inputCurrencyInfo.currency && !!outputCurrencyInfo.currency
@@ -248,7 +250,9 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
           </>
         </LimitOrdersPromoBannerWrapper>
       </styledEl.ContainerBox>
-      {!isLimitOrdersPromoBannerVisible && <styledEl.OuterContentWrapper>{outerContent}</styledEl.OuterContentWrapper>}
+      {!isLimitOrdersPromoBannerVisible && !isLimitOrdersUpgradeBannerEnabled && (
+        <styledEl.OuterContentWrapper>{outerContent}</styledEl.OuterContentWrapper>
+      )}
     </>
   )
 }
