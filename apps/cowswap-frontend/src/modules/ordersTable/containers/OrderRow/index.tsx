@@ -3,17 +3,16 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
-import { formatDateWithTimezone, getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
+import { formatDateWithTimezone, getAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { HoverTooltip, Loader, PercentDisplay, percentIsAlmostHundred, TokenAmount, UI } from '@cowprotocol/ui'
+import { HoverTooltip, Loader, PercentDisplay, percentIsAlmostHundred, TokenAmount } from '@cowprotocol/ui'
 import { useIsSafeWallet } from '@cowprotocol/wallet'
-import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
+import { Currency, Price } from '@uniswap/sdk-core'
 
 import { Check, Clock, X, Zap } from 'react-feather'
 import SVG from 'react-inlinesvg'
-import { Nullish } from 'types'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { getEstimatedExecutionPrice } from 'legacy/state/orders/utils'
@@ -22,18 +21,12 @@ import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 import { BalancesAndAllowances } from 'modules/tokens'
 
-import {
-  FAIR_PRICE_THRESHOLD_PERCENTAGE,
-  GOOD_PRICE_THRESHOLD_PERCENTAGE,
-  PENDING_EXECUTION_THRESHOLD_PERCENTAGE,
-} from 'common/constants/common'
+import { PENDING_EXECUTION_THRESHOLD_PERCENTAGE } from 'common/constants/common'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { RateInfo } from 'common/pure/RateInfo'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
-import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
-import { calculatePriceDifference, PriceDifference } from 'utils/orderUtils/calculatePriceDifference'
-import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
+import { calculatePriceDifference } from 'utils/orderUtils/calculatePriceDifference'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
@@ -43,40 +36,23 @@ import { EstimatedExecutionPrice } from './EstimatedExecutionPrice'
 import { OrderContextMenu } from './OrderContextMenu'
 import { WarningTooltip } from './OrderWarning'
 import * as styledEl from './styled'
+import { getActivityUrl, getDistanceColor, shouldShowDashForExpiration } from './utils'
 
-import { OrderParams } from '../../../utils/getOrderParams'
-import { getOrderParams } from '../../../utils/getOrderParams'
-import { OrderStatusBox } from '../../OrderStatusBox'
-import { CheckboxCheckmark, TableRow, TableRowCheckbox, TableRowCheckboxWrapper } from '../styled'
-import { OrderActions } from '../types'
+import { useFeeAmountDifference } from '../../hooks/useFeeAmountDifference'
+import { usePricesDifference } from '../../hooks/usePricesDifference'
+import { CurrencyAmountItem } from '../../pure/CurrencyAmountItem'
+import {
+  CheckboxCheckmark,
+  TableRow,
+  TableRowCheckbox,
+  TableRowCheckboxWrapper,
+} from '../../pure/OrdersTableContainer/styled'
+import { OrderActions } from '../../pure/OrdersTableContainer/types'
+import { OrderStatusBox } from '../../pure/OrderStatusBox'
+import { getOrderParams, OrderParams } from '../../utils/getOrderParams'
 
 // Constants
 const TIME_AGO_UPDATE_INTERVAL = 3000
-
-// Helper to determine the color based on percentage
-function getDistanceColor(percentage: number): string {
-  const absPercentage = Math.abs(percentage)
-
-  if (absPercentage <= GOOD_PRICE_THRESHOLD_PERCENTAGE) {
-    return `var(${UI.COLOR_SUCCESS})` // Green - good price
-  } else if (absPercentage <= FAIR_PRICE_THRESHOLD_PERCENTAGE) {
-    return `var(${UI.COLOR_PRIMARY})` // Blue - fair price
-  }
-
-  return 'inherit' // Default text color for larger differences
-}
-
-function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
-  return (
-    <styledEl.AmountItem title={amount.toExact() + ' ' + amount.currency.symbol}>
-      <TokenAmount amount={amount} tokenSymbol={amount.currency} />
-    </styledEl.AmountItem>
-  )
-}
-
-function CurrencySymbolItem({ amount }: { amount: CurrencyAmount<Currency> }) {
-  return <TokenLogo token={amount.currency} size={28} />
-}
 
 export interface OrderRowProps {
   order: ParsedOrder
@@ -183,30 +159,15 @@ export function OrderRow({
     return 'Unfillable'
   }
 
-  const renderWarningTooltip = (showIcon?: boolean) => (props: { children: React.ReactNode }) => (
+  const renderWarningTooltip = () => (props: { children: React.ReactNode }) => (
     <WarningTooltip
       hasEnoughBalance={hasEnoughBalance ?? false}
       hasEnoughAllowance={hasEnoughAllowance ?? false}
       inputTokenSymbol={inputTokenSymbol}
       isOrderScheduled={isOrderScheduled}
       onApprove={() => orderActions.approveOrderToken(order.inputToken)}
-      showIcon={showIcon}
       {...props}
     />
-  )
-
-  const renderLimitPrice = () => (
-    <styledEl.RateValue onClick={toggleIsInverted}>
-      <RateInfo
-        prependSymbol={false}
-        isInvertedState={[isInverted, setIsInverted]}
-        noLabel={true}
-        doNotUseSmartQuote
-        isInverted={isInverted}
-        rateInfoParams={rateInfoParams}
-        opacitySymbol={true}
-      />
-    </styledEl.RateValue>
   )
 
   const areAllChildOrdersCancelled = (orders: ParsedOrder[] | undefined): boolean => {
@@ -249,7 +210,7 @@ export function OrderRow({
                   : 'Unfillable'
               : getWarningText()
           }
-          WarningTooltip={renderWarningTooltip(true)}
+          WarningTooltip={renderWarningTooltip()}
           onApprove={
             warningChildWithParams?.params?.hasEnoughAllowance === false
               ? () => orderActions.approveOrderToken(warningChildWithParams.order.inputToken)
@@ -457,7 +418,7 @@ export function OrderRow({
               canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
               isUnfillable={withWarning}
               warningText={getWarningText()}
-              WarningTooltip={renderWarningTooltip(true)}
+              WarningTooltip={renderWarningTooltip()}
               onApprove={withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined}
             />
           )}
@@ -645,7 +606,7 @@ export function OrderRow({
                   ? 'Insufficient allowance'
                   : 'Unfillable'
             }
-            WarningTooltip={renderWarningTooltip(true)}
+            WarningTooltip={renderWarningTooltip()}
             onApprove={withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined}
           />
         </styledEl.ExecuteCellWrapper>
@@ -745,8 +706,8 @@ export function OrderRow({
       {/* Order sell/buy tokens */}
       <styledEl.CurrencyCell>
         <styledEl.CurrencyLogoPair clickable onClick={onClick}>
-          <CurrencySymbolItem amount={getSellAmountWithFee(order)} />
-          <CurrencySymbolItem amount={buyAmount} />
+          <TokenLogo token={order.inputToken} size={28} />
+          <TokenLogo token={buyAmount.currency} size={28} />
         </styledEl.CurrencyLogoPair>
         <styledEl.CurrencyAmountWrapper clickable onClick={onClick}>
           <CurrencyAmountItem amount={getSellAmountWithFee(order)} />
@@ -754,10 +715,22 @@ export function OrderRow({
         </styledEl.CurrencyAmountWrapper>
       </styledEl.CurrencyCell>
 
+      {/* Limit price */}
+      <styledEl.PriceElement onClick={toggleIsInverted}>
+        <RateInfo
+          prependSymbol={false}
+          isInvertedState={[isInverted, setIsInverted]}
+          noLabel={true}
+          doNotUseSmartQuote
+          isInverted={isInverted}
+          rateInfoParams={rateInfoParams}
+          opacitySymbol={true}
+        />
+      </styledEl.PriceElement>
+
       {/* Non-history tab columns */}
       {!isHistoryTab ? (
         <>
-          <styledEl.PriceElement onClick={toggleIsInverted}>{renderLimitPrice()}</styledEl.PriceElement>
           <styledEl.PriceElement onClick={toggleIsInverted}>{renderFillsAtWithDistance()}</styledEl.PriceElement>
           <styledEl.PriceElement onClick={toggleIsInverted}>{renderMarketPrice()}</styledEl.PriceElement>
 
@@ -780,18 +753,6 @@ export function OrderRow({
       ) : (
         <>
           {/* History tab columns */}
-          {/* Limit price */}
-          <styledEl.PriceElement onClick={toggleIsInverted}>
-            <RateInfo
-              prependSymbol={false}
-              isInvertedState={[isInverted, setIsInverted]}
-              noLabel={true}
-              doNotUseSmartQuote
-              isInverted={isInverted}
-              rateInfoParams={rateInfoParams}
-              opacitySymbol={true}
-            />
-          </styledEl.PriceElement>
 
           {/* Execution price */}
           <styledEl.PriceElement onClick={toggleIsInverted}>
@@ -842,7 +803,7 @@ export function OrderRow({
               order={order}
               withWarning={withWarning}
               onClick={onClick}
-              WarningTooltip={withWarning ? renderWarningTooltip(true) : undefined}
+              WarningTooltip={withWarning ? renderWarningTooltip() : undefined}
             />
           </styledEl.StatusBox>
         </styledEl.CellElement>
@@ -868,81 +829,4 @@ export function OrderRow({
       </styledEl.CellElement>
     </TableRow>
   )
-}
-
-/**
- * Helper hook to prepare the parameters to calculate price difference
- */
-function usePricesDifference(
-  estimatedExecutionPrice: Nullish<Price<Currency, Currency>>,
-  spotPrice: OrderRowProps['spotPrice'],
-  isInverted: boolean,
-): PriceDifference {
-  return useSafeMemo(
-    () =>
-      calculatePriceDifference({
-        referencePrice: spotPrice,
-        targetPrice: estimatedExecutionPrice,
-        isInverted,
-      }),
-    [estimatedExecutionPrice, spotPrice, isInverted],
-  )
-}
-
-/**
- * Helper hook to calculate fee amount percentage
- */
-function useFeeAmountDifference(
-  { inputCurrencyAmount }: OrderRowProps['orderParams']['rateInfoParams'],
-  prices: OrderRowProps['prices'],
-): Percent | undefined {
-  const { feeAmount } = prices || {}
-
-  return useSafeMemo(
-    () => calculatePercentageInRelationToReference({ value: feeAmount, reference: inputCurrencyAmount }),
-    [feeAmount, inputCurrencyAmount],
-  )
-}
-
-function getActivityUrl(chainId: SupportedChainId, order: ParsedOrder): string | undefined {
-  const { activityId } = order.executionData
-
-  if (getIsComposableCowParentOrder(order)) {
-    return undefined
-  }
-
-  if (order.composableCowInfo?.isVirtualPart) {
-    return undefined
-  }
-
-  if (order.status === OrderStatus.SCHEDULED) {
-    return undefined
-  }
-
-  return chainId && activityId ? getEtherscanLink(chainId, 'transaction', activityId) : undefined
-}
-
-function shouldShowDashForExpiration(order: ParsedOrder): boolean {
-  // Show dash for finalized orders that are not expired
-  if (getIsFinalizedOrder(order) && order.status !== OrderStatus.EXPIRED) {
-    return true
-  }
-
-  // For TWAP parent orders, show dash when all child orders are in a final state
-  if (getIsComposableCowParentOrder(order)) {
-    // If the parent order is fulfilled or cancelled, all child orders are finalized
-    if (order.status === OrderStatus.FULFILLED || order.status === OrderStatus.CANCELLED) {
-      return true
-    }
-
-    // For mixed states (some filled, some expired), check either condition:
-    // 1. fullyFilled: true when all non-expired parts are filled
-    // 2. status === EXPIRED: true when all remaining parts are expired
-    // Either condition indicates all child orders are in a final state
-    if (order.executionData.fullyFilled || order.status === OrderStatus.EXPIRED) {
-      return true
-    }
-  }
-
-  return false
 }

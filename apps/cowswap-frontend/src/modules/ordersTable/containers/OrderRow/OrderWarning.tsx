@@ -2,7 +2,7 @@ import React from 'react'
 
 import alertCircle from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import { Command } from '@cowprotocol/types'
-import { ButtonSecondary, HoverTooltip, TokenSymbol, UI } from '@cowprotocol/ui'
+import { ButtonSecondary, TokenSymbol, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 
@@ -92,7 +92,6 @@ interface WarningTooltipProps {
   inputTokenSymbol: string
   isOrderScheduled: boolean
   onApprove: Command
-  showIcon?: boolean
 }
 
 export function WarningTooltip({
@@ -102,7 +101,6 @@ export function WarningTooltip({
   inputTokenSymbol,
   isOrderScheduled,
   onApprove,
-  showIcon = false,
 }: WarningTooltipProps) {
   const withAllowanceWarning = !hasEnoughAllowance
 
@@ -115,29 +113,16 @@ export function WarningTooltip({
     </styledEl.WarningContent>
   )
 
-  if (showIcon) {
-    return (
-      <styledEl.WarningIndicator hasBackground={false}>
-        <styledEl.StyledQuestionHelper
-          text={tooltipContent}
-          placement="bottom"
-          bgColor={`var(${UI.COLOR_DANGER_BG})`}
-          color={`var(${UI.COLOR_DANGER_TEXT})`}
-          Icon={<SVG src={alertCircle} description="warning" width="14" height="14" />}
-        />
-        {children}
-      </styledEl.WarningIndicator>
-    )
-  }
-
   return (
-    <HoverTooltip
-      content={tooltipContent}
-      placement="bottom"
-      bgColor={`var(${UI.COLOR_DANGER})`}
-      color={`var(${UI.COLOR_DANGER_TEXT})`}
-    >
+    <styledEl.WarningIndicator hasBackground={false}>
+      <styledEl.StyledQuestionHelper
+        text={tooltipContent}
+        placement="bottom"
+        bgColor={`var(${UI.COLOR_DANGER_BG})`}
+        color={`var(${UI.COLOR_DANGER_TEXT})`}
+        Icon={<SVG src={alertCircle} description="warning" width="14" height="14" />}
+      />
       {children}
-    </HoverTooltip>
+    </styledEl.WarningIndicator>
   )
 }

@@ -8,7 +8,7 @@ import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './styled'
 
-import { WarningTooltip } from '../OrdersTableContainer/OrderRow/OrderWarning'
+import { WarningTooltip } from '../../containers/OrderRow/OrderWarning'
 import { OrderStatusBox } from '../OrderStatusBox'
 
 import type { OrderParams } from '../../utils/getOrderParams'
@@ -68,7 +68,6 @@ export function TwapStatusAndToggle({
                   inputTokenSymbol={warningChild.order.inputToken.symbol || ''}
                   isOrderScheduled={warningChild.order.status === OrderStatus.SCHEDULED}
                   onApprove={() => approveOrderToken(warningChild.order.inputToken)}
-                  showIcon={true}
                 />
               )
             : undefined
