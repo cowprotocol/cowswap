@@ -153,11 +153,12 @@ export function OrderRow({
 
   const inputTokenSymbol = order.inputToken.symbol || ''
 
-  const getWarningText = () => {
-    if (hasEnoughBalance === false) return 'Insufficient balance'
-    if (hasEnoughAllowance === false) return 'Insufficient allowance'
-    return 'Unfillable'
-  }
+  const warningText =
+    hasEnoughBalance === false
+      ? 'Insufficient balance'
+      : hasEnoughAllowance === false
+        ? 'Insufficient allowance'
+        : 'Unfillable'
 
   const renderWarningTooltip = () => (props: { children: React.ReactNode }) => (
     <WarningTooltip
@@ -208,7 +209,7 @@ export function OrderRow({
                 : warningChildWithParams.params.hasEnoughBalance === false
                   ? 'Insufficient balance'
                   : 'Unfillable'
-              : getWarningText()
+              : warningText
           }
           WarningTooltip={renderWarningTooltip()}
           onApprove={
@@ -417,7 +418,7 @@ export function OrderRow({
               amountFee={feeAmount}
               canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
               isUnfillable={withWarning}
-              warningText={getWarningText()}
+              warningText={warningText}
               WarningTooltip={renderWarningTooltip()}
               onApprove={withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined}
             />
