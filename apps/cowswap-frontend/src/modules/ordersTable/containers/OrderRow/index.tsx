@@ -171,20 +171,6 @@ export function OrderRow({
     />
   )
 
-  const renderLimitPrice = () => (
-    <styledEl.RateValue onClick={toggleIsInverted}>
-      <RateInfo
-        prependSymbol={false}
-        isInvertedState={[isInverted, setIsInverted]}
-        noLabel={true}
-        doNotUseSmartQuote
-        isInverted={isInverted}
-        rateInfoParams={rateInfoParams}
-        opacitySymbol={true}
-      />
-    </styledEl.RateValue>
-  )
-
   const areAllChildOrdersCancelled = (orders: ParsedOrder[] | undefined): boolean => {
     if (!orders || orders.length === 0) return false
     return orders.every((order) => order.status === OrderStatus.CANCELLED)
@@ -733,7 +719,19 @@ export function OrderRow({
       {/* Non-history tab columns */}
       {!isHistoryTab ? (
         <>
-          <styledEl.PriceElement onClick={toggleIsInverted}>{renderLimitPrice()}</styledEl.PriceElement>
+          <styledEl.PriceElement onClick={toggleIsInverted}>
+            <styledEl.RateValue onClick={toggleIsInverted}>
+              <RateInfo
+                prependSymbol={false}
+                isInvertedState={[isInverted, setIsInverted]}
+                noLabel={true}
+                doNotUseSmartQuote
+                isInverted={isInverted}
+                rateInfoParams={rateInfoParams}
+                opacitySymbol={true}
+              />
+            </styledEl.RateValue>
+          </styledEl.PriceElement>
           <styledEl.PriceElement onClick={toggleIsInverted}>{renderFillsAtWithDistance()}</styledEl.PriceElement>
           <styledEl.PriceElement onClick={toggleIsInverted}>{renderMarketPrice()}</styledEl.PriceElement>
 
