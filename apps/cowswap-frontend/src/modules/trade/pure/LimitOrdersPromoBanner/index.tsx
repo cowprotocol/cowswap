@@ -17,7 +17,7 @@ const BULLET_POINTS = [
   'Try before you buy - see the potential fill price before you hit trade',
   'Longer limit orders - place orders for up to a year.',
   'Trade your way - personalize the interface and customize your limit orders',
-  'More spacious, and enhanced design!',
+  'More intuitive UI and improved design',
 ]
 
 interface LimitOrdersPromoBannerProps {
