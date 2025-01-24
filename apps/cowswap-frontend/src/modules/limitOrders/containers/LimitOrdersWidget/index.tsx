@@ -1,18 +1,24 @@
 import { useAtomValue } from 'jotai'
-import React, { useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 
 import ICON_TOKENS from '@cowprotocol/assets/svg/tokens.svg'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { BannerOrientation, ClosableBanner, InlineBanner } from '@cowprotocol/ui'
+
+import { useLocation } from 'react-router-dom'
 
 import { Field } from 'legacy/state/types'
 
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
-import { TradeWidget, TradeWidgetSlots, useIsWrapOrUnwrap, useTradeConfirmState, useTradePriceImpact } from 'modules/trade'
-import { useLimitOrdersPromoBanner } from 'modules/trade/hooks/useLimitOrdersPromoBanner'
+import {
+  TradeWidget,
+  TradeWidgetSlots,
+  useIsWrapOrUnwrap,
+  useTradeConfirmState,
+  useTradePriceImpact,
+} from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
@@ -78,7 +84,6 @@ export function LimitOrdersWidget() {
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const widgetActions = useLimitOrdersWidgetActions()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
-  const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
 
   const { showRecipient: showRecipientSetting } = settingsState
   const showRecipient = showRecipientSetting || !!recipient
@@ -125,7 +130,6 @@ export function LimitOrdersWidget() {
     feeAmount,
     widgetActions,
     isWrapOrUnwrap,
-    isLimitOrdersUpgradeBannerEnabled
   }
 
   return <LimitOrders {...props} />
@@ -144,13 +148,24 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     priceImpact,
     feeAmount,
     isWrapOrUnwrap,
-    isLimitOrdersUpgradeBannerEnabled
   } = props
 
   const tradeContext = useTradeFlowContext()
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
   const localFormValidation = useLimitOrdersFormState()
   const { isOpen: isConfirmOpen } = useTradeConfirmState()
+  const { search } = useLocation()
+  const handleUnlock = useCallback(() => updateLimitOrdersState({ isUnlocked: true }), [updateLimitOrdersState])
+
+  useEffect(() => {
+    const skipLockScreen = search.includes('skipLockScreen')
+
+    if (skipLockScreen) {
+      handleUnlock()
+    }
+  }, [search, handleUnlock])
+
+  const isTradeContextReady = !!tradeContext
 
   const inputCurrencyPreviewInfo = {
     amount: inputCurrencyInfo.amount,
@@ -166,11 +181,9 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     label: outputCurrencyInfo.label,
   }
 
-  const { isVisible: isPromoBannerVisible } = useLimitOrdersPromoBanner()
-
   const slots: TradeWidgetSlots = {
     settingsWidget: <SettingsWidget />,
-    lockScreen: isLimitOrdersUpgradeBannerEnabled ? undefined : isUnlocked ? undefined : (
+    lockScreen: isUnlocked ? undefined : (
       <UnlockWidgetScreen
         id="limit-orders"
         items={LIMIT_BULLET_LIST_CONTENT}
@@ -179,7 +192,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         subtitle={UNLOCK_SCREEN.subtitle}
         orderType={UNLOCK_SCREEN.orderType}
         buttonText={UNLOCK_SCREEN.buttonText}
-        handleUnlock={() => updateLimitOrdersState({ isUnlocked: true })}
+        handleUnlock={handleUnlock}
       />
     ),
     middleContent: (
@@ -206,7 +219,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         </styledEl.RateWrapper>
       </>
     ),
-    bottomContent(warnings, isTradeContextReady = false) {
+    bottomContent(warnings) {
       return (
         <>
           <styledEl.FooterBox>
@@ -222,13 +235,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         </>
       )
     },
-    outerContent: (
-      <>
-        {((!isLimitOrdersUpgradeBannerEnabled && isUnlocked) || (isLimitOrdersUpgradeBannerEnabled && !isPromoBannerVisible)) && (
-          <InfoBanner />
-        )}
-      </>
-    ),
+    outerContent: <>{isUnlocked && <InfoBanner />}</>,
   }
 
   const params = {

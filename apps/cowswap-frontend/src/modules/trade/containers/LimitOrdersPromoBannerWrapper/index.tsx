@@ -1,10 +1,12 @@
+import { ReactNode } from 'react'
+
 import { useNavigate } from 'common/hooks/useNavigate'
 
 import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner'
 import { LimitOrdersPromoBanner } from '../../pure/LimitOrdersPromoBanner'
 
 interface LimitOrdersPromoBannerWrapperProps {
-  children?: React.ReactNode
+  children?: ReactNode
 }
 
 export function LimitOrdersPromoBannerWrapper({ children }: LimitOrdersPromoBannerWrapperProps) {
@@ -15,23 +17,16 @@ export function LimitOrdersPromoBannerWrapper({ children }: LimitOrdersPromoBann
     // First dismiss the banner
     onDismiss()
     // Navigate to limit orders
-    navigate('/limit')
+    navigate('/limit?skipLockScreen')
   }
 
   // If banner is not visible and we have children, render them
-  if (!isVisible && children) {
-    return <>{children}</>
-  }
-
-  // If banner is not visible and we don't have children, render nothing
   if (!isVisible) {
-    return null
+    return children || null
   }
 
   // When banner is visible, render it with optional children
   return (
-    <LimitOrdersPromoBanner onCtaClick={handleCtaClick} onDismiss={onDismiss} isLimitOrdersTab={isLimitOrdersTab}>
-      {children}
-    </LimitOrdersPromoBanner>
+    <LimitOrdersPromoBanner onCtaClick={handleCtaClick} onDismiss={onDismiss} isLimitOrdersTab={isLimitOrdersTab} />
   )
 }

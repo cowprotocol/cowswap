@@ -4,10 +4,6 @@ import { TradeWidgetModals } from './TradeWidgetModals'
 import { TradeWidgetUpdaters } from './TradeWidgetUpdaters'
 import { TradeWidgetProps } from './types'
 
-import { useTradeFlowContext } from '../../../limitOrders/hooks/useTradeFlowContext'
-import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner'
-import { LimitOrdersPromoBannerWrapper } from '../LimitOrdersPromoBannerWrapper'
-
 export const TradeWidgetContainer = styledEl.Container
 
 export function TradeWidget(props: TradeWidgetProps) {
@@ -19,22 +15,6 @@ export function TradeWidget(props: TradeWidgetProps) {
     enableSmartSlippage,
   } = params
   const modals = TradeWidgetModals({ confirmModal, genericModal, selectTokenWidget: slots.selectTokenWidget })
-  const { isVisible } = useLimitOrdersPromoBanner()
-  const tradeContext = useTradeFlowContext()
-
-  // Inject the banner into the slots and use it as lockScreen when visible
-  const slotsWithBanner = {
-    ...slots,
-    topContent: <>{isVisible ? <LimitOrdersPromoBannerWrapper /> : slots.topContent}</>,
-    // TODO: Refactor to pass lockScreen as children to LimitOrdersPromoBannerWrapper instead of conditional rendering
-    // i.e.: <LimitOrdersPromoBannerWrapper>{slots.lockScreen}</LimitOrdersPromoBannerWrapper>
-    lockScreen: isVisible ? <LimitOrdersPromoBannerWrapper /> : slots.lockScreen,
-    // Pass trade context to bottomContent
-    bottomContent: (warnings: React.ReactNode | null) => {
-      if (!slots.bottomContent) return null
-      return slots.bottomContent(warnings, !!tradeContext)
-    },
-  }
 
   return (
     <>
@@ -49,9 +29,8 @@ export function TradeWidget(props: TradeWidgetProps) {
           {slots.updaters}
         </TradeWidgetUpdaters>
 
-        <styledEl.Container>{modals || <TradeWidgetForm {...props} slots={slotsWithBanner} />}</styledEl.Container>
+        <styledEl.Container>{modals || <TradeWidgetForm {...props} slots={slots} />}</styledEl.Container>
       </styledEl.Container>
-      {!isVisible && <styledEl.OuterContentWrapper>{slots.outerContent}</styledEl.OuterContentWrapper>}
     </>
   )
 }

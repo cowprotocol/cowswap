@@ -38,7 +38,7 @@ export interface TradeWidgetSlots {
   lockScreen?: ReactNode
   topContent?: ReactNode
   middleContent?: ReactNode
-  bottomContent?(warnings: ReactNode | null, isTradeContextReady?: boolean): ReactNode
+  bottomContent?(warnings: ReactNode | null): ReactNode
   outerContent?: ReactNode
   updaters?: ReactNode
   selectTokenWidget?: ReactNode

@@ -24,14 +24,12 @@ interface LimitOrdersPromoBannerProps {
   onCtaClick: () => void
   onDismiss: () => void
   isLimitOrdersTab?: boolean
-  children?: React.ReactNode
 }
 
 export function LimitOrdersPromoBanner({
   onCtaClick,
   onDismiss,
   isLimitOrdersTab = false,
-  children,
 }: LimitOrdersPromoBannerProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [arrowRef, setArrowRef] = useState<HTMLDivElement | null>(null)
@@ -98,7 +96,6 @@ export function LimitOrdersPromoBanner({
         </styledEl.CTAButton>
         {!isLimitOrdersTab && <styledEl.DismissLink onClick={onDismiss}>Maybe next time</styledEl.DismissLink>}
       </styledEl.ControlSection>
-      {children}
     </styledEl.BannerWrapper>
   )
 }
