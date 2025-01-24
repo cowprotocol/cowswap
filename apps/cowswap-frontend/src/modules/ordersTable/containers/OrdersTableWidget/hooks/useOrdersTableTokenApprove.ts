@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 import { MaxUint256 } from '@ethersproject/constants'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { useTradeApproveCallback } from 'common/containers/TradeApprove'
+import { useApproveCurrency } from 'common/hooks/useApproveCurrency'
 import { useSafeEffect } from 'common/hooks/useSafeMemo'
 
 export function useOrdersTableTokenApprove(): Dispatch<SetStateAction<Token | undefined>> {
@@ -14,7 +14,7 @@ export function useOrdersTableTokenApprove(): Dispatch<SetStateAction<Token | un
     return tokenToApprove ? CurrencyAmount.fromRawAmount(tokenToApprove, MaxUint256.toString()) : undefined
   }, [tokenToApprove])
 
-  const tradeApproveCallback = useTradeApproveCallback(amountToApprove)
+  const tradeApproveCallback = useApproveCurrency(amountToApprove)
 
   // Trigger approve flow once amountToApprove is set
   useSafeEffect(() => {
