@@ -37,21 +37,18 @@ export function TradeWidget(props: TradeWidgetProps) {
   }
 
   return (
-    <>
-      <styledEl.Container id={id}>
-        <TradeWidgetUpdaters
-          disableQuotePolling={disableQuotePolling}
-          disableNativeSelling={disableNativeSelling}
-          tradeQuoteStateOverride={tradeQuoteStateOverride}
-          enableSmartSlippage={enableSmartSlippage}
-          onChangeRecipient={props.actions.onChangeRecipient}
-        >
-          {slots.updaters}
-        </TradeWidgetUpdaters>
+    <styledEl.Container id={id}>
+      <TradeWidgetUpdaters
+        disableQuotePolling={disableQuotePolling}
+        disableNativeSelling={disableNativeSelling}
+        tradeQuoteStateOverride={tradeQuoteStateOverride}
+        enableSmartSlippage={enableSmartSlippage}
+        onChangeRecipient={props.actions.onChangeRecipient}
+      >
+        {slots.updaters}
+      </TradeWidgetUpdaters>
 
-        <styledEl.Container>{modals || <TradeWidgetForm {...props} slots={slotsWithBanner} />}</styledEl.Container>
-      </styledEl.Container>
-      {!isVisible && <styledEl.OuterContentWrapper>{slots.outerContent}</styledEl.OuterContentWrapper>}
-    </>
+      <styledEl.Container>{modals || <TradeWidgetForm {...props} slots={slotsWithBanner} />}</styledEl.Container>
+    </styledEl.Container>
   )
 }
