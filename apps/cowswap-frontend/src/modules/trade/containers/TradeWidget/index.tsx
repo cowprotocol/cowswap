@@ -1,5 +1,3 @@
-import { useNavigate } from 'common/hooks/useNavigate'
-
 import * as styledEl from './styled'
 import { TradeWidgetForm } from './TradeWidgetForm'
 import { TradeWidgetModals } from './TradeWidgetModals'
@@ -7,7 +5,7 @@ import { TradeWidgetUpdaters } from './TradeWidgetUpdaters'
 import { TradeWidgetProps } from './types'
 
 import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner'
-import { LimitOrdersPromoBanner } from '../../pure/LimitOrdersPromoBanner'
+import { LimitOrdersPromoBannerWrapper } from '../LimitOrdersPromoBannerWrapper'
 
 export const TradeWidgetContainer = styledEl.Container
 
@@ -20,38 +18,19 @@ export function TradeWidget(props: TradeWidgetProps) {
     enableSmartSlippage,
   } = params
   const modals = TradeWidgetModals({ confirmModal, genericModal, selectTokenWidget: slots.selectTokenWidget })
-
-  const { isVisible, onDismiss, isLimitOrdersTab } = useLimitOrdersPromoBanner()
-  const navigate = useNavigate()
-
-  const handleCtaClick = () => {
-    // First dismiss the banner
-    onDismiss()
-    // Navigate to limit orders
-    navigate('/limit')
-  }
+  const { isVisible } = useLimitOrdersPromoBanner()
 
   // Inject the banner into the slots and use it as lockScreen when visible
   const slotsWithBanner = {
     ...slots,
     topContent: (
       <>
-        {isVisible && (
-          <LimitOrdersPromoBanner
-            onCtaClick={handleCtaClick}
-            onDismiss={onDismiss}
-            isLimitOrdersTab={isLimitOrdersTab}
-          />
-        )}
+        <LimitOrdersPromoBannerWrapper />
         {slots.topContent}
       </>
     ),
-    // When banner is visible, use it as lockScreen to hide the rest of the content
-    lockScreen: isVisible ? (
-      <LimitOrdersPromoBanner onCtaClick={handleCtaClick} onDismiss={onDismiss} isLimitOrdersTab={isLimitOrdersTab} />
-    ) : (
-      slots.lockScreen
-    ),
+    // Only use banner as lockScreen when it's visible, otherwise use original lockScreen
+    lockScreen: isVisible ? <LimitOrdersPromoBannerWrapper /> : slots.lockScreen,
   }
 
   return (
