@@ -206,7 +206,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         </styledEl.RateWrapper>
       </>
     ),
-    bottomContent(warnings) {
+    bottomContent(warnings, isTradeContextReady = false) {
       return (
         <>
           <styledEl.FooterBox>
@@ -217,7 +217,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           {warnings}
 
           <styledEl.TradeButtonBox>
-            <TradeButtons isTradeContextReady={!!tradeContext} />
+            <TradeButtons isTradeContextReady={isTradeContextReady} />
           </styledEl.TradeButtonBox>
         </>
       )

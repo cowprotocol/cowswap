@@ -4,6 +4,7 @@ import { TradeWidgetModals } from './TradeWidgetModals'
 import { TradeWidgetUpdaters } from './TradeWidgetUpdaters'
 import { TradeWidgetProps } from './types'
 
+import { useTradeFlowContext } from '../../../limitOrders/hooks/useTradeFlowContext'
 import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner'
 import { LimitOrdersPromoBannerWrapper } from '../LimitOrdersPromoBannerWrapper'
 
@@ -19,18 +20,20 @@ export function TradeWidget(props: TradeWidgetProps) {
   } = params
   const modals = TradeWidgetModals({ confirmModal, genericModal, selectTokenWidget: slots.selectTokenWidget })
   const { isVisible } = useLimitOrdersPromoBanner()
+  const tradeContext = useTradeFlowContext()
 
   // Inject the banner into the slots and use it as lockScreen when visible
   const slotsWithBanner = {
     ...slots,
-    topContent: (
-      <>
-        <LimitOrdersPromoBannerWrapper />
-        {slots.topContent}
-      </>
-    ),
-    // Only use banner as lockScreen when it's visible, otherwise use original lockScreen
+    topContent: <>{isVisible ? <LimitOrdersPromoBannerWrapper /> : slots.topContent}</>,
+    // TODO: Refactor to pass lockScreen as children to LimitOrdersPromoBannerWrapper instead of conditional rendering
+    // i.e.: <LimitOrdersPromoBannerWrapper>{slots.lockScreen}</LimitOrdersPromoBannerWrapper>
     lockScreen: isVisible ? <LimitOrdersPromoBannerWrapper /> : slots.lockScreen,
+    // Pass trade context to bottomContent
+    bottomContent: (warnings: React.ReactNode | null) => {
+      if (!slots.bottomContent) return null
+      return slots.bottomContent(warnings, !!tradeContext)
+    },
   }
 
   return (
@@ -48,6 +51,7 @@ export function TradeWidget(props: TradeWidgetProps) {
 
         <styledEl.Container>{modals || <TradeWidgetForm {...props} slots={slotsWithBanner} />}</styledEl.Container>
       </styledEl.Container>
+      {!isVisible && <styledEl.OuterContentWrapper>{slots.outerContent}</styledEl.OuterContentWrapper>}
     </>
   )
 }

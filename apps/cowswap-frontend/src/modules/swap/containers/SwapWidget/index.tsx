@@ -44,6 +44,7 @@ import {
   useTradeRouteContext,
   useUnknownImpactWarning,
 } from 'modules/trade'
+import { useLimitOrdersPromoBanner } from 'modules/trade/hooks/useLimitOrdersPromoBanner'
 import { getQuoteTimeOffset } from 'modules/tradeQuote'
 import { useTradeSlippage } from 'modules/tradeSlippage'
 import { SettingsTab, TradeRateDetails, useHighFeeWarning } from 'modules/tradeWidgetAddons'
@@ -302,6 +303,8 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     [chainId],
   )
 
+  const { isVisible } = useLimitOrdersPromoBanner()
+
   return (
     <>
       <SwapModals {...swapModalsProps} />
@@ -329,7 +332,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
           genericModal={showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
         />
 
-        {!isHookTradeType && <NetworkAlert />}
+        {!isHookTradeType && !isVisible && <NetworkAlert />}
         {isHookTradeType && !!account && (
           <InlineBanner
             bannerType="information"
