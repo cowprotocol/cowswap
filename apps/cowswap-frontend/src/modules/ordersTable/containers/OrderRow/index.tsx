@@ -122,11 +122,12 @@ export function OrderRow({
   )
   const activityUrl = chainId ? getActivityUrl(chainId, order) : undefined
 
-  const [isInverted, setIsInverted] = useState(() => {
+  const isInvertedState = useState(() => {
     // On mount, apply smart quote selection
     const quoteCurrency = getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
     return getAddress(quoteCurrency) === getAddress(inputCurrencyAmount?.currency)
   })
+  const [isInverted, setIsInverted] = isInvertedState
   const toggleIsInverted = useCallback(() => setIsInverted((curr) => !curr), [])
 
   // Toggle isInverted whenever isGloballyInverted changes
@@ -223,10 +224,10 @@ export function OrderRow({
       </styledEl.CurrencyCell>
 
       {/* Limit price */}
-      <styledEl.PriceElement onClick={toggleIsInverted}>
+      <styledEl.PriceElement>
         <RateInfo
           prependSymbol={false}
-          isInvertedState={[isInverted, setIsInverted]}
+          isInvertedState={isInvertedState}
           noLabel={true}
           doNotUseSmartQuote
           isInverted={isInverted}
