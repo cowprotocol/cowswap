@@ -68,7 +68,6 @@ export function TwapStatusAndToggle({
                   inputTokenSymbol={warningChild.order.inputToken.symbol || ''}
                   isOrderScheduled={warningChild.order.status === OrderStatus.SCHEDULED}
                   onApprove={() => approveOrderToken(warningChild.order.inputToken)}
-                  showIcon={true}
                 />
               )
             : undefined

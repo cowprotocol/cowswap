@@ -159,14 +159,13 @@ export function OrderRow({
     return 'Unfillable'
   }
 
-  const renderWarningTooltip = (showIcon?: boolean) => (props: { children: React.ReactNode }) => (
+  const renderWarningTooltip = () => (props: { children: React.ReactNode }) => (
     <WarningTooltip
       hasEnoughBalance={hasEnoughBalance ?? false}
       hasEnoughAllowance={hasEnoughAllowance ?? false}
       inputTokenSymbol={inputTokenSymbol}
       isOrderScheduled={isOrderScheduled}
       onApprove={() => orderActions.approveOrderToken(order.inputToken)}
-      showIcon={showIcon}
       {...props}
     />
   )
@@ -211,7 +210,7 @@ export function OrderRow({
                   : 'Unfillable'
               : getWarningText()
           }
-          WarningTooltip={renderWarningTooltip(true)}
+          WarningTooltip={renderWarningTooltip()}
           onApprove={
             warningChildWithParams?.params?.hasEnoughAllowance === false
               ? () => orderActions.approveOrderToken(warningChildWithParams.order.inputToken)
@@ -419,7 +418,7 @@ export function OrderRow({
               canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
               isUnfillable={withWarning}
               warningText={getWarningText()}
-              WarningTooltip={renderWarningTooltip(true)}
+              WarningTooltip={renderWarningTooltip()}
               onApprove={withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined}
             />
           )}
@@ -607,7 +606,7 @@ export function OrderRow({
                   ? 'Insufficient allowance'
                   : 'Unfillable'
             }
-            WarningTooltip={renderWarningTooltip(true)}
+            WarningTooltip={renderWarningTooltip()}
             onApprove={withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined}
           />
         </styledEl.ExecuteCellWrapper>
@@ -804,7 +803,7 @@ export function OrderRow({
               order={order}
               withWarning={withWarning}
               onClick={onClick}
-              WarningTooltip={withWarning ? renderWarningTooltip(true) : undefined}
+              WarningTooltip={withWarning ? renderWarningTooltip() : undefined}
             />
           </styledEl.StatusBox>
         </styledEl.CellElement>
