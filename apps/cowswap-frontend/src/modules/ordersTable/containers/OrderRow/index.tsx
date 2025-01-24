@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
@@ -17,24 +17,22 @@ import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 import { BalancesAndAllowances } from 'modules/tokens'
 
-import { PENDING_EXECUTION_THRESHOLD_PERCENTAGE } from 'common/constants/common'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { RateInfo } from 'common/pure/RateInfo'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
-import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import { EstimatedExecutionPrice } from './EstimatedExecutionPrice'
 import { OrderContextMenu } from './OrderContextMenu'
 import { WarningTooltip } from './OrderWarning'
 import * as styledEl from './styled'
-import { getActivityUrl, getDistanceColor, shouldShowDashForExpiration } from './utils'
+import { getActivityUrl, shouldShowDashForExpiration } from './utils'
 
 import { usePricesDifference } from '../../hooks/usePricesDifference'
 import { CurrencyAmountItem } from '../../pure/CurrencyAmountItem'
 import { OrderFillsAt } from '../../pure/OrderFillsAt'
+import { OrderFillsAtWithDistance } from '../../pure/OrderFillsAtWithDistance'
 import { OrderMarketPrice } from '../../pure/OrderMarketPrice'
 import {
   CheckboxCheckmark,
@@ -44,8 +42,6 @@ import {
 } from '../../pure/OrdersTableContainer/styled'
 import { OrderActions } from '../../pure/OrdersTableContainer/types'
 import { OrderStatusBox } from '../../pure/OrderStatusBox'
-import { TwapOrderStatus } from '../../pure/TwapOrderStatus'
-import { TwapScheduledOrderStatus } from '../../pure/TwapScheduledOrderStatus'
 import { WarningEstimatedPrice } from '../../pure/WarningEstimatedPrice'
 import { OrderParams } from '../../utils/getOrderParams'
 
@@ -155,6 +151,8 @@ export function OrderRow({
         ? 'Insufficient allowance'
         : 'Unfillable'
 
+  const onApprove = withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined
+
   const estimatedPriceWarning = withWarning ? (
     <WarningEstimatedPrice
       order={order}
@@ -174,7 +172,7 @@ export function OrderRow({
       order={order}
       withWarning={withWarning}
       warningText={warningText}
-      onApprove={withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined}
+      onApprove={onApprove}
       isInverted={isInverted}
       isUnfillable={isUnfillable}
       estimatedExecutionPrice={estimatedExecutionPrice}
@@ -189,77 +187,6 @@ export function OrderRow({
       rateInfoParams={rateInfoParams}
     />
   )
-
-  const renderFillsAtWithDistance = () => {
-    // Special case for PRESIGNATURE_PENDING - return just the signing content
-    if (order.status === OrderStatus.PRESIGNATURE_PENDING) {
-      return orderFillsAt
-    }
-
-    // For TWAP parent orders
-    if (isTwapTable && !isChild && childOrders) {
-      return (
-        estimatedPriceWarning || (
-          <styledEl.CellElement doubleRow>
-            <TwapOrderStatus orderStatus={order.status} childOrders={childOrders}>
-              <TwapScheduledOrderStatus
-                childOrders={childOrders}
-                isInverted={isInverted}
-                isUnfillable={isUnfillable}
-                estimatedExecutionPrice={estimatedExecutionPrice}
-                spotPrice={spotPrice}
-              />
-            </TwapOrderStatus>
-          </styledEl.CellElement>
-        )
-      )
-    }
-
-    // Regular order display logic (including child orders)
-    if (withWarning || isUnfillable) {
-      return (
-        <styledEl.ExecuteCellWrapper>
-          <EstimatedExecutionPrice
-            amount={undefined}
-            tokenSymbol={undefined}
-            isInverted={isInverted}
-            isUnfillable={true}
-            canShowWarning={true}
-            warningText={warningText}
-            onApprove={withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined}
-          />
-        </styledEl.ExecuteCellWrapper>
-      )
-    }
-
-    // Regular order display logic
-    const distance =
-      getIsFinalizedOrder(order) ||
-      order.status === OrderStatus.CANCELLED ||
-      isUnfillable ||
-      (priceDiffs?.percentage &&
-        Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= PENDING_EXECUTION_THRESHOLD_PERCENTAGE)
-        ? ''
-        : priceDiffs?.percentage
-          ? `${priceDiffs?.percentage.toFixed(2)}%`
-          : '-'
-
-    return (
-      <styledEl.CellElement doubleRow>
-        <b>{orderFillsAt}</b>
-        <i
-          style={{
-            color:
-              !isUnfillable && priceDiffs?.percentage
-                ? getDistanceColor(Number(priceDiffs.percentage.toFixed(4)))
-                : 'inherit',
-          }}
-        >
-          {distance}
-        </i>
-      </styledEl.CellElement>
-    )
-  }
 
   return (
     <TableRow
@@ -311,7 +238,29 @@ export function OrderRow({
       {/* Non-history tab columns */}
       {!isHistoryTab ? (
         <>
-          <styledEl.PriceElement onClick={toggleIsInverted}>{renderFillsAtWithDistance()}</styledEl.PriceElement>
+          <styledEl.PriceElement onClick={toggleIsInverted}>
+            {/*Special case for PRESIGNATURE_PENDING - return just the signing content*/}
+            {order.status === OrderStatus.PRESIGNATURE_PENDING ? (
+              orderFillsAt
+            ) : (
+              <OrderFillsAtWithDistance
+                order={order}
+                withWarning={withWarning}
+                warningText={warningText}
+                onApprove={onApprove}
+                isInverted={isInverted}
+                isUnfillable={isUnfillable}
+                estimatedExecutionPrice={estimatedExecutionPrice}
+                spotPrice={spotPrice}
+                estimatedPriceWarning={estimatedPriceWarning}
+                priceDiffs={priceDiffs}
+                childOrders={childOrders}
+                isTwapTable={isTwapTable}
+                isChild={isChild}
+                orderFillsAt={orderFillsAt}
+              />
+            )}
+          </styledEl.PriceElement>
           <styledEl.PriceElement onClick={toggleIsInverted}>
             <OrderMarketPrice
               order={order}
