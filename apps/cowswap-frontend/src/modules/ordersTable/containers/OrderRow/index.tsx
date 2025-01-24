@@ -26,7 +26,6 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { RateInfo } from 'common/pure/RateInfo'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
-import { calculatePriceDifference } from 'utils/orderUtils/calculatePriceDifference'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
@@ -50,6 +49,8 @@ import {
 } from '../../pure/OrdersTableContainer/styled'
 import { OrderActions } from '../../pure/OrdersTableContainer/types'
 import { OrderStatusBox } from '../../pure/OrderStatusBox'
+import { TwapOrderStatus } from '../../pure/TwapOrderStatus'
+import { TwapScheduledOrderStatus } from '../../pure/TwapScheduledOrderStatus'
 import { WarningEstimatedPrice } from '../../pure/WarningEstimatedPrice'
 import { OrderParams } from '../../utils/getOrderParams'
 
@@ -162,7 +163,7 @@ export function OrderRow({
         ? 'Insufficient allowance'
         : 'Unfillable'
 
-  const estimatedPriceWarning = (
+  const estimatedPriceWarning = withWarning ? (
     <WarningEstimatedPrice
       order={order}
       approveOrderToken={orderActions.approveOrderToken}
@@ -174,9 +175,7 @@ export function OrderRow({
       childOrders={childOrders}
       isTwapTable={isTwapTable}
     />
-  )
-
-  const areAllChildOrdersCancelled = !!childOrders?.every((order) => order.status === OrderStatus.CANCELLED)
+  ) : undefined
 
   const renderFillsAt = () => {
     // Check for signing state first, regardless of order type
@@ -202,94 +201,15 @@ export function OrderRow({
 
     // For TWAP parent orders
     if (isTwapTable && !isChild && childOrders) {
-      if (withWarning) {
-        return estimatedPriceWarning
-      }
-
-      // Second priority: Check for cancelled state
-      if (areAllChildOrdersCancelled) {
-        return (
+      return (
+        estimatedPriceWarning || (
           <styledEl.CellElement doubleRow>
-            <b>
-              <styledEl.CancelledDisplay>
-                <X size={14} strokeWidth={2.5} />
-                Order cancelled
-              </styledEl.CancelledDisplay>
-            </b>
-            <i></i>
+            <TwapOrderStatus orderStatus={order.status} childOrders={childOrders}>
+              -
+            </TwapOrderStatus>
           </styledEl.CellElement>
         )
-      }
-
-      // Third priority: Check for scheduled orders
-      const hasScheduledOrder = childOrders.some((childOrder) => childOrder.status === OrderStatus.SCHEDULED)
-
-      if (hasScheduledOrder) {
-        return (
-          <styledEl.CellElement doubleRow>
-            <b>-</b>
-            <i></i>
-          </styledEl.CellElement>
-        )
-      }
-
-      // Fourth priority: Check for filled states
-      const allChildrenFilled = childOrders.every(
-        (childOrder) =>
-          childOrder.status === OrderStatus.FULFILLED && Number(childOrder.executionData.filledPercentDisplay) >= 99.99,
       )
-
-      if (allChildrenFilled) {
-        return (
-          <styledEl.CellElement doubleRow>
-            <b>
-              <styledEl.FilledDisplay>
-                <Check size={14} strokeWidth={3.5} />
-                Order filled
-              </styledEl.FilledDisplay>
-            </b>
-            <i></i>
-          </styledEl.CellElement>
-        )
-      }
-
-      const hasFilledOrders = childOrders.some(
-        (childOrder) =>
-          childOrder.status === OrderStatus.FULFILLED && Number(childOrder.executionData.filledPercentDisplay) > 0,
-      )
-
-      if (hasFilledOrders) {
-        return (
-          <styledEl.CellElement doubleRow>
-            <b>
-              <styledEl.FilledDisplay>
-                <Check size={14} strokeWidth={3.5} />
-                Order partially filled
-              </styledEl.FilledDisplay>
-            </b>
-            <i></i>
-          </styledEl.CellElement>
-        )
-      }
-
-      // Fifth priority: Check for expired state
-      const allChildrenExpired = childOrders.every((childOrder) => childOrder.status === OrderStatus.EXPIRED)
-
-      if (allChildrenExpired || order.status === OrderStatus.EXPIRED) {
-        return (
-          <styledEl.CellElement doubleRow>
-            <b>
-              <styledEl.ExpiredDisplay>
-                <Clock size={14} strokeWidth={2.5} />
-                Order expired
-              </styledEl.ExpiredDisplay>
-            </b>
-            <i></i>
-          </styledEl.CellElement>
-        )
-      }
-
-      return '-'
     }
 
     // Regular order status handling
@@ -388,152 +308,20 @@ export function OrderRow({
 
     // For TWAP parent orders
     if (isTwapTable && !isChild && childOrders) {
-      if (withWarning) {
-        return estimatedPriceWarning
-      }
-
-      // Second priority: Check for cancelled state
-      if (areAllChildOrdersCancelled) {
-        return (
-          <styledEl.CellElement doubleRow>
-            <b>
-              <styledEl.CancelledDisplay>
-                <X size={14} strokeWidth={2.5} />
-                Order cancelled
-              </styledEl.CancelledDisplay>
-            </b>
-            <i></i>
-          </styledEl.CellElement>
-        )
-      }
-
-      // Third priority: Check for scheduled orders
-      const hasScheduledOrder = childOrders.some((childOrder) => childOrder.status === OrderStatus.SCHEDULED)
-
-      if (hasScheduledOrder) {
-        return (
-          <styledEl.CellElement doubleRow>
-            <b>-</b>
-            <i></i>
-          </styledEl.CellElement>
-        )
-      }
-
-      // Fourth priority: Check for filled states
-      const allChildrenFilled = childOrders.every(
-        (childOrder) =>
-          childOrder.status === OrderStatus.FULFILLED && Number(childOrder.executionData.filledPercentDisplay) >= 99.99,
-      )
-
-      if (allChildrenFilled) {
-        return (
-          <styledEl.CellElement doubleRow>
-            <b>
-              <styledEl.FilledDisplay>
-                <Check size={14} strokeWidth={3.5} />
-                Order filled
-              </styledEl.FilledDisplay>
-            </b>
-            <i></i>
-          </styledEl.CellElement>
-        )
-      }
-
-      const hasFilledOrders = childOrders.some(
-        (childOrder) =>
-          childOrder.status === OrderStatus.FULFILLED && Number(childOrder.executionData.filledPercentDisplay) > 0,
-      )
-
-      if (hasFilledOrders) {
-        return (
-          <styledEl.CellElement doubleRow>
-            <b>
-              <styledEl.FilledDisplay>
-                <Check size={14} strokeWidth={3.5} />
-                Order partially filled
-              </styledEl.FilledDisplay>
-            </b>
-            <i></i>
-          </styledEl.CellElement>
-        )
-      }
-
-      // Fifth priority: Check for expired state
-      const allChildrenExpired = childOrders.every((childOrder) => childOrder.status === OrderStatus.EXPIRED)
-
-      if (allChildrenExpired || order.status === OrderStatus.EXPIRED) {
-        return (
-          <styledEl.CellElement doubleRow>
-            <b>
-              <styledEl.ExpiredDisplay>
-                <Clock size={14} strokeWidth={2.5} />
-                Order expired
-              </styledEl.ExpiredDisplay>
-            </b>
-            <i></i>
-          </styledEl.CellElement>
-        )
-      }
-
-      // If no aggregate state, check for next scheduled order
-      const nextScheduledOrder = childOrders.find(
-        (childOrder) => childOrder.status === OrderStatus.SCHEDULED && !getIsFinalizedOrder(childOrder),
-      )
-
-      if (nextScheduledOrder) {
-        // For scheduled orders, use the execution price if available, otherwise use the estimated price from props
-        const nextOrderExecutionPrice = nextScheduledOrder.executionData.executedPrice || estimatedExecutionPrice
-        const nextOrderPriceDiffs = nextOrderExecutionPrice
-          ? calculatePriceDifference({
-              referencePrice: spotPrice,
-              targetPrice: nextOrderExecutionPrice,
-              isInverted: false,
-            })
-          : null
-
-        // Show the execution price for the next scheduled order
-        let nextOrderFillsAtContent
-        if (nextScheduledOrder.status === OrderStatus.CANCELLED || nextScheduledOrder.isUnfillable) {
-          nextOrderFillsAtContent = ''
-        } else if (!nextOrderExecutionPrice || nextScheduledOrder.status === OrderStatus.CREATING) {
-          nextOrderFillsAtContent = '-'
-        } else {
-          nextOrderFillsAtContent = (
-            <TokenAmount
-              amount={isInverted ? nextOrderExecutionPrice.invert() : nextOrderExecutionPrice}
-              tokenSymbol={nextOrderExecutionPrice?.quoteCurrency}
-              opacitySymbol
-            />
-          )
-        }
-
-        const nextOrderDistance = nextOrderPriceDiffs?.percentage
-          ? `${nextOrderPriceDiffs.percentage.toFixed(2)}%`
-          : '-'
-
-        return (
-          <styledEl.CellElement doubleRow>
-            <b>{nextOrderFillsAtContent}</b>
-            <i
-              style={{
-                color:
-                  !isUnfillable && nextOrderPriceDiffs?.percentage
-                    ? getDistanceColor(Number(nextOrderPriceDiffs.percentage.toFixed(4)))
-                    : 'inherit',
-              }}
-            >
-              {nextOrderDistance}
-            </i>
-          </styledEl.CellElement>
-        )
-      }
-
-      // If no scheduled orders found, show dash
       return (
-        <styledEl.CellElement doubleRow>
-          <b>-</b>
-          <i></i>
-        </styledEl.CellElement>
+        estimatedPriceWarning || (
+          <styledEl.CellElement doubleRow>
+            <TwapOrderStatus orderStatus={order.status} childOrders={childOrders}>
+              <TwapScheduledOrderStatus
+                childOrders={childOrders}
+                isInverted={isInverted}
+                isUnfillable={isUnfillable}
+                estimatedExecutionPrice={estimatedExecutionPrice}
+                spotPrice={spotPrice}
+              />
+            </TwapOrderStatus>
+          </styledEl.CellElement>
+        )
       )
     }
 
