@@ -176,20 +176,6 @@ export function OrderRow({
     />
   )
 
-  const renderWarningTooltip =
-    () =>
-    ({ children }: { children: React.ReactNode }) => (
-      <WarningTooltip
-        hasEnoughBalance={hasEnoughBalance ?? false}
-        hasEnoughAllowance={hasEnoughAllowance ?? false}
-        inputTokenSymbol={inputTokenSymbol}
-        isOrderScheduled={isOrderScheduled}
-        onApprove={() => orderActions.approveOrderToken(order.inputToken)}
-      >
-        {children}
-      </WarningTooltip>
-    )
-
   const areAllChildOrdersCancelled = (orders: ParsedOrder[] | undefined): boolean => {
     if (!orders || orders.length === 0) return false
     return orders.every((order) => order.status === OrderStatus.CANCELLED)
@@ -739,7 +725,15 @@ export function OrderRow({
               order={order}
               withWarning={withWarning}
               onClick={onClick}
-              WarningTooltip={withWarning ? renderWarningTooltip() : undefined}
+              WarningTooltip={
+                <WarningTooltip
+                  hasEnoughBalance={hasEnoughBalance ?? false}
+                  hasEnoughAllowance={hasEnoughAllowance ?? false}
+                  inputTokenSymbol={inputTokenSymbol}
+                  isOrderScheduled={isOrderScheduled}
+                  onApprove={() => orderActions.approveOrderToken(order.inputToken)}
+                />
+              }
             />
           </styledEl.StatusBox>
         </styledEl.CellElement>
