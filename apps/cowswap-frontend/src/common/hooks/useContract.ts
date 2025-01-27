@@ -29,7 +29,7 @@ const WETH_CONTRACT_ADDRESS_MAP = Object.fromEntries(
 )
 
 const contractEnv = isProd || isStaging || isEns ? 'prod' : 'barn'
-const COWSWAP_ETHFLOW_CONTRACT_ADDRESS_MAP = COWSWAP_ETHFLOW_CONTRACT_ADDRESS[contractEnv]
+export const COWSWAP_ETHFLOW_CONTRACT_ADDRESS_MAP = COWSWAP_ETHFLOW_CONTRACT_ADDRESS[contractEnv]
 
 export type UseContractResult<T extends Contract = Contract> = {
   contract: T | null
