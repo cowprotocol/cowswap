@@ -103,15 +103,24 @@ const fetchAddressIsEligible = async ({
   return airDropData[0]
 }
 
-export const useClaimData = (selectedAirdrop?: IAirdrop) => {
+export const useClaimData = (tokenToClaimData?: IAirdrop) => {
   const { account } = useWalletInfo()
-  const airdropContract = useContract<Airdrop>(selectedAirdrop?.address, AirdropAbi)
+  const { contract: airdropContract, chainId: airdropChainId } = useContract<Airdrop>(
+    tokenToClaimData?.address,
+    AirdropAbi,
+  )
 
   const fetchPreviewClaimableTokens = useCallback(
     async ({ dataBaseUrl, address }: PreviewClaimableTokensParams): Promise<IClaimData> => {
       const isEligibleData = await fetchAddressIsEligible({ dataBaseUrl, address })
-      if (!isEligibleData || !airdropContract || !isEligibleData.index || !selectedAirdrop || !account)
+      if (!isEligibleData || !airdropContract || !isEligibleData.index || !tokenToClaimData || !account) {
         throw new Error(AIRDROP_PREVIEW_ERRORS.ERROR_FETCHING_DATA)
+      }
+
+      const { chainId: tokenToClaimChainId, token: tokenToClaim } = tokenToClaimData
+      if (airdropChainId !== tokenToClaimChainId) {
+        throw new Error('Airdrop token and airdrop contract are not on the same chain')
+      }
 
       const isClaimed = await airdropContract?.isClaimed(isEligibleData.index)
 
@@ -122,27 +131,26 @@ export const useClaimData = (selectedAirdrop?: IAirdrop) => {
         isEligibleData.proof, //merkleProof
       ])
 
-      const token = selectedAirdrop.token
       const formattedAmount = isEligibleData.amount
-        ? `${formatTokenAmount(new Fraction(isEligibleData.amount, 10 ** token.decimals))} ${token.symbol}`
-        : `0,0 ${token.symbol}`
+        ? `${formatTokenAmount(new Fraction(isEligibleData.amount, 10 ** tokenToClaim.decimals))} ${tokenToClaim.symbol}`
+        : `0,0 ${tokenToClaim.symbol}`
 
       return {
         ...isEligibleData,
         isClaimed,
         callData,
         contract: airdropContract,
-        token,
+        token: tokenToClaim,
         formattedAmount,
       }
     },
-    [account, airdropContract, selectedAirdrop],
+    [account, airdropContract, tokenToClaimData],
   )
 
   return useSWR<IClaimData | undefined, Error>(
-    selectedAirdrop && account
+    tokenToClaimData && account
       ? {
-          dataBaseUrl: selectedAirdrop.dataBaseUrl,
+          dataBaseUrl: tokenToClaimData.dataBaseUrl,
           address: account.toLowerCase(),
         }
       : null,

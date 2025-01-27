@@ -59,13 +59,13 @@ export const useCowFromLockedGnoBalances = () => {
     .multiply(Math.min(Date.now() - LOCKED_GNO_VESTING_START_TIME, LOCKED_GNO_VESTING_DURATION))
     .divide(LOCKED_GNO_VESTING_DURATION)
 
-  const tokenDistro = useTokenDistroContract()
+  const { contract: tokenDistro } = useTokenDistroContract()
 
   const { data, isLoading } = useSWR(
     account && tokenDistro && allocated?.greaterThan(0)
       ? ['useCowFromLockedGnoBalances', account, allocated, tokenDistro]
       : null,
-    async ([, _account, , _tokenDistro]) => _tokenDistro.balances(_account)
+    async ([, _account, , _tokenDistro]) => _tokenDistro.balances(_account),
   )
 
   const claimed = useMemo(() => CurrencyAmount.fromRawAmount(_COW, data ? data.claimed.toString() : 0), [data])
@@ -77,7 +77,7 @@ export const useCowFromLockedGnoBalances = () => {
       claimed,
       loading: isLoading,
     }),
-    [allocated, vested, claimed, isLoading]
+    [allocated, vested, claimed, isLoading],
   )
 }
 
@@ -92,9 +92,9 @@ export function useClaimCowFromLockedGnoCallback({
   closeModal,
   isFirstClaim,
 }: ClaimCallbackParams): () => Promise<ContractTransaction> {
-  const { chainId, account } = useWalletInfo()
-  const merkleDrop = useMerkleDropContract()
-  const tokenDistro = useTokenDistroContract()
+  const { account } = useWalletInfo()
+  const { contract: merkleDrop, chainId: merkleDropChainId } = useMerkleDropContract()
+  const { contract: tokenDistro, chainId: tokenDistroChainId } = useTokenDistroContract()
 
   const addTransaction = useTransactionAdder()
 
@@ -102,14 +102,16 @@ export function useClaimCowFromLockedGnoCallback({
     if (!account) {
       throw new Error('Not connected')
     }
-    if (!chainId) {
-      throw new Error('No chainId')
-    }
+
     if (!merkleDrop || !tokenDistro) {
-      throw new Error('Contract not present')
+      throw new Error('Contract not present or not connected to any supported chain')
     }
 
-    const claim = await fetchClaim(account, chainId)
+    if (merkleDropChainId !== tokenDistroChainId) {
+      throw new Error('Contract and chainId are not on the same chain')
+    }
+
+    const claim = await fetchClaim(account, tokenDistroChainId)
     if (!claim) throw new Error('Trying to claim without claim data')
 
     const { index, proof, amount } = claim
@@ -130,5 +132,5 @@ export function useClaimCowFromLockedGnoCallback({
         return tx
       })
       .finally(closeModal)
-  }, [account, addTransaction, chainId, closeModal, openModal, isFirstClaim, merkleDrop, tokenDistro])
+  }, [account, addTransaction, tokenDistroChainId, closeModal, openModal, isFirstClaim, merkleDrop, tokenDistro])
 }
