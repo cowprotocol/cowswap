@@ -11,12 +11,15 @@ export function useApproveCurrency(amountToApprove: CurrencyAmount<Currency> | u
   const tradeApproveCallback = useTradeApproveCallback(amountToApprove)
   const shouldZeroApprove = useShouldZeroApprove(amountToApprove)
   const zeroApprove = useZeroApprove(amountToApprove?.currency)
-
-  return useCallback(async () => {
+  const callback = useCallback(async () => {
     if (shouldZeroApprove) {
       await zeroApprove()
     }
 
     await tradeApproveCallback()
   }, [tradeApproveCallback, zeroApprove, shouldZeroApprove])
+
+  if (shouldZeroApprove === null) return undefined
+
+  return callback
 }

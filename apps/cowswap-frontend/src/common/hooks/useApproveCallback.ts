@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 
 import { Erc20 } from '@cowprotocol/abis'
 import { calculateGasMargin, getIsNativeToken } from '@cowprotocol/common-utils'
-import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
@@ -56,15 +55,16 @@ export function useApproveCallback(
   amountToApprove?: CurrencyAmount<Currency>,
   spender?: string,
 ): (summary?: string) => Promise<TransactionResponse | undefined> {
-  const { chainId } = useWalletInfo()
   const currency = amountToApprove?.currency
   const token = currency && !getIsNativeToken(currency) ? currency : undefined
   const tokenContract = useTokenContract(token?.address)
   const addTransaction = useTransactionAdder()
+  const summary = amountToApprove?.greaterThan('0') ? `Approve ${token?.symbol}` : `Revoke ${token?.symbol} approval`
+  const amountToApproveStr = '0x' + amountToApprove?.quotient.toString(16)
 
   return useCallback(async () => {
-    if (!chainId || !token || !tokenContract || !amountToApprove || !spender) {
-      console.error('Wrong input for approve: ', { chainId, token, tokenContract, amountToApprove, spender })
+    if (!token || !tokenContract || !amountToApprove || !spender) {
+      console.error('Wrong input for approve: ', { token, tokenContract, amountToApprove, spender })
       return
     }
 
@@ -76,10 +76,10 @@ export function useApproveCallback(
       .then((response: TransactionResponse) => {
         addTransaction({
           hash: response.hash,
-          summary: amountToApprove.greaterThan('0') ? `Approve ${token.symbol}` : `Revoke ${token.symbol} approval`,
-          approval: { tokenAddress: token.address, spender, amount: '0x' + amountToApprove.quotient.toString(16) },
+          summary,
+          approval: { tokenAddress: token.address, spender, amount: amountToApproveStr },
         })
         return response
       })
-  }, [chainId, token, tokenContract, amountToApprove, spender, addTransaction])
+  }, [token, tokenContract, spender, addTransaction, summary, amountToApproveStr])
 }
