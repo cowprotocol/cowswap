@@ -8,7 +8,6 @@ import { useOrdersById } from 'legacy/state/orders/hooks'
 
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
-import { DEFAULT_TWAP_EXECUTION_INFO } from '../const'
 import { twapPartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderExecutionInfo, TwapOrderInfo } from '../types'
 
@@ -36,7 +35,7 @@ export function useTwapOrdersExecutions(allOrdersInfo: TwapOrderInfo[]): TwapOrd
 
         return acc
       },
-      { sets: {}, ids: [] }
+      { sets: {}, ids: [] },
     )
   }, [twapPartOrders])
 
@@ -66,7 +65,14 @@ export function useTwapOrdersExecutions(allOrdersInfo: TwapOrderInfo[]): TwapOrd
           confirmedPartsCount,
         }
       } else {
-        acc[id] = { info: DEFAULT_TWAP_EXECUTION_INFO, confirmedPartsCount: 0 }
+        acc[id] = {
+          info: {
+            executedSellAmount: '',
+            executedBuyAmount: '',
+            executedFeeAmount: '',
+          },
+          confirmedPartsCount: 0,
+        }
       }
 
       return acc
@@ -122,7 +128,7 @@ function getConfirmedPartsCount(twapOrderInfo: TwapOrderInfo, discreteOrders: Or
   const finalizedDiscreteOrders = discreteOrders.filter((order) => getIsFinalizedOrder(order))
   const lastOrderValidTo = finalizedDiscreteOrders.reduce(
     (maxValidTo, { validTo }) => (validTo > maxValidTo ? validTo : maxValidTo),
-    0
+    0,
   )
 
   if (!lastOrderValidTo) return partsPassed

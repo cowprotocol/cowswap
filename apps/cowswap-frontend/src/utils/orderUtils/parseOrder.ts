@@ -31,6 +31,7 @@ export interface ParsedOrderExecutionData {
   executedPrice: Price<Currency, Currency> | null
   activityId: string | undefined
   activityTitle: string
+  hasApiAdditionalInfo: boolean
 }
 
 export interface ParsedOrder {
@@ -59,9 +60,11 @@ export interface ParsedOrder {
 }
 
 export const parseOrder = (order: Order): ParsedOrder => {
-  const { amount: filledAmount, percentage: filledPercentage } = getOrderFilledAmount(order)
-  const { amount: surplusAmount, percentage: surplusPercentage } = getOrderSurplus(order)
-  const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order)
+  const unknownExecutionAmounts = order.apiAdditionalInfo?.executedSellAmount === ''
+
+  const { amount: filledAmount, percentage: filledPercentage } = getOrderFilledAmount(order, unknownExecutionAmounts)
+  const { amount: surplusAmount, percentage: surplusPercentage } = getOrderSurplus(order, unknownExecutionAmounts)
+  const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order, unknownExecutionAmounts)
   const expirationTime = new Date(Number(order.validTo) * 1000)
   const executedFeeAmount = order.apiAdditionalInfo?.executedFeeAmount
   const executedFee = order.apiAdditionalInfo?.executedFee || null
@@ -87,6 +90,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
   const activityTitle = showCreationTxLink ? 'Creation transaction' : 'Order ID'
 
   const executionData: ParsedOrderExecutionData = {
+    hasApiAdditionalInfo: !!order.apiAdditionalInfo && !unknownExecutionAmounts,
     executedFeeToken,
     executedBuyAmount,
     executedSellAmount,

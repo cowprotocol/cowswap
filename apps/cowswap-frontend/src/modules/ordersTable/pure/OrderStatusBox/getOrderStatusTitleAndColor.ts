@@ -17,6 +17,14 @@ const orderStatusTitleMap: { [key in OrderStatus]: string } = {
 }
 
 export function getOrderStatusTitleAndColor(order: ParsedOrder): { title: string; color: string; background: string } {
+  if (!order.executionData.hasApiAdditionalInfo) {
+    return {
+      title: 'Loading...',
+      color: `var(${UI.COLOR_INFO})`,
+      background: `var(${UI.COLOR_INFO_BG})`,
+    }
+  }
+
   // We consider the order fully filled for display purposes even if not 100% filled
   // For this reason we use the flag to override the order status
   if (order.executionData.fullyFilled || order.status === OrderStatus.FULFILLED) {

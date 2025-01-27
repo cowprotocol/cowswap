@@ -16,16 +16,16 @@ interface FilledAmountResult {
   percentage: BigNumber
 }
 
-export function getOrderFilledAmount(order: Order): FilledAmountResult {
+export function getOrderFilledAmount(order: Order, unknownExecutionAmounts: boolean): FilledAmountResult {
   let executedAmount, totalAmount
 
-  if (!order.apiAdditionalInfo) {
+  if (!order.apiAdditionalInfo || unknownExecutionAmounts) {
     return { amount: ZERO_BIG_NUMBER, percentage: ZERO_BIG_NUMBER }
   }
 
   if (isSellOrder(order.kind)) {
     executedAmount = new BigNumber(order.apiAdditionalInfo.executedSellAmount).minus(
-      order.apiAdditionalInfo?.executedFeeAmount
+      order.apiAdditionalInfo?.executedFeeAmount,
     )
     totalAmount = new BigNumber(order.sellAmount.toString())
   } else {

@@ -6,7 +6,7 @@ import ms from 'ms.macro'
 
 import { MAX_ORDER_DEADLINE } from 'common/constants/common'
 
-import { TwapOrderExecutionInfo, TwapOrderStatus } from './types'
+import { TwapOrderStatus } from './types'
 
 export const DEFAULT_TWAP_SLIPPAGE = new Percent(10, 100) // 10%
 
@@ -47,12 +47,6 @@ export const MINIMUM_PART_SELL_AMOUNT_FIAT: Record<SupportedChainId, CurrencyAmo
 
 export const MINIMUM_PART_TIME = ms`5min` / 1000 // in seconds
 export const MAX_PART_TIME = MAX_ORDER_DEADLINE / 1000 // in seconds
-
-export const DEFAULT_TWAP_EXECUTION_INFO: TwapOrderExecutionInfo = {
-  executedSellAmount: '0',
-  executedBuyAmount: '0',
-  executedFeeAmount: '0',
-}
 
 export const UNSUPPORTED_SAFE_LINK =
   'https://blog.cow.fi/all-you-need-to-know-about-cow-swaps-new-safe-fallback-handler-8ef0439925d1'
