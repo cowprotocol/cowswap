@@ -32,6 +32,7 @@ export interface WrapDescription {
   operationMessage: string
   summary: string
 }
+
 export interface WrapUnwrapContext {
   chainId: SupportedChainId
   wethContract: Contract
@@ -43,7 +44,7 @@ export interface WrapUnwrapContext {
 
 export async function wrapUnwrapCallback(
   context: WrapUnwrapContext,
-  params: WrapUnwrapCallbackParams = { useModals: true }
+  params: WrapUnwrapCallbackParams = { useModals: true },
 ): Promise<TransactionResponse | null> {
   const { chainId, amount, wethContract, addTransaction, openTransactionConfirmationModal, closeModals } = context
   const isNativeIn = getIsNativeToken(amount.currency)
@@ -57,7 +58,7 @@ export async function wrapUnwrapCallback(
     wrapAnalytics('Send', operationMessage)
 
     const wrapUnwrap = isNativeIn ? wrapContractCall : unwrapContractCall
-    const txReceipt = await wrapUnwrap(wethContract, amountHex)
+    const txReceipt = await wrapUnwrap(wethContract, amountHex, chainId)
     wrapAnalytics('Sign', operationMessage)
 
     addTransaction({
@@ -88,7 +89,7 @@ export async function wrapUnwrapCallback(
 function getWrapDescription(
   chainId: SupportedChainId,
   isWrap: boolean,
-  inputAmount: CurrencyAmount<Currency>
+  inputAmount: CurrencyAmount<Currency>,
 ): WrapDescription {
   const { native, wrapped } = getChainCurrencySymbols(chainId)
   const baseSummarySuffix = isWrap ? `${native} to ${wrapped}` : `${wrapped} to ${native}`
@@ -104,24 +105,47 @@ function getWrapDescription(
   }
 }
 
-async function wrapContractCall(wethContract: Contract, amountHex: string): Promise<TransactionResponse> {
+async function wrapContractCall(
+  wethContract: Contract,
+  amountHex: string,
+  chainId: SupportedChainId,
+): Promise<TransactionResponse> {
   const estimatedGas = await wethContract.estimateGas.deposit({ value: amountHex }).catch(_handleGasEstimateError)
   const gasLimit = calculateGasMargin(estimatedGas)
 
-  return wethContract.deposit({ value: amountHex, gasLimit })
+  const network = await wethContract.provider.getNetwork()
+  if (network.chainId !== chainId) {
+    throw new Error('Wallet chain differs from order params.')
+  }
+
+  const tx = await wethContract.populateTransaction.deposit({ value: amountHex, gasLimit })
+
+  return wethContract.signer.sendTransaction({ ...tx, chainId: network.chainId })
 }
 
-async function unwrapContractCall(wethContract: Contract, amountHex: string): Promise<TransactionResponse> {
+async function unwrapContractCall(
+  wethContract: Contract,
+  amountHex: string,
+  chainId: SupportedChainId,
+): Promise<TransactionResponse> {
   const estimatedGas = await wethContract.estimateGas.withdraw(amountHex).catch(_handleGasEstimateError)
   const gasLimit = calculateGasMargin(estimatedGas)
-  return wethContract.withdraw(amountHex, { gasLimit })
+
+  const tx = await wethContract.populateTransaction.withdraw(amountHex, { gasLimit })
+
+  const network = await wethContract.provider.getNetwork()
+  if (network.chainId !== chainId) {
+    throw new Error('Wallet chain differs from order params.')
+  }
+
+  return wethContract.signer.sendTransaction({ ...tx, chainId: network.chainId })
 }
 
 function _handleGasEstimateError(error: any): BigNumber {
   console.log(
     '[useWrapCallback] Error estimating gas for wrap/unwrap. Using default gas limit ' +
       WRAP_UNWRAP_GAS_LIMIT_DEFAULT.toString(),
-    error
+    error,
   )
   return WRAP_UNWRAP_GAS_LIMIT_DEFAULT
 }
