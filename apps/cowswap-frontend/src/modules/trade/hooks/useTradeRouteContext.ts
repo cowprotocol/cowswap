@@ -14,6 +14,7 @@ export function useTradeRouteContext(): TradeUrlParams {
   const prevContextRef = useRef<TradeUrlParams>()
 
   const { orderKind, inputCurrencyAmount, outputCurrencyAmount } = derivedState || {}
+  const isStateExists = !!state
   const targetChainId = state?.chainId || walletChainId
   const { inputCurrencyId, outputCurrencyId } = state || getDefaultTradeRawState(targetChainId)
 
@@ -28,21 +29,26 @@ export function useTradeRouteContext(): TradeUrlParams {
       outputCurrencyId: outputCurrencyId || undefined,
       inputCurrencyAmount: inputCurrencyAmountStr,
       outputCurrencyAmount: outputCurrencyAmountStr,
-      chainId: targetChainId?.toString(),
+      chainId: targetChainId.toString(),
       orderKind,
     }),
-    [orderKind, inputCurrencyId, outputCurrencyId, targetChainId, inputCurrencyAmountStr, outputCurrencyAmountStr]
+    [orderKind, inputCurrencyId, outputCurrencyId, targetChainId, inputCurrencyAmountStr, outputCurrencyAmountStr],
   )
 
   useEffect(() => {
-    if (state) {
+    if (isStateExists) {
       prevContextRef.current = context
     }
-  }, [state, context])
+  }, [isStateExists, context])
 
   /**
    * If there is no state, it means that current page is not a trade widget page. For example: account page.
    * In this case, we should take the previous context to keep the trade widget state.
+   * ChainId should be always up to date, so we mix up targetChainId to the result.
    */
-  return !state && prevContext ? prevContext : context
+  return useMemo(() => {
+    const targetState = !isStateExists && prevContext ? prevContext : context
+
+    return { ...targetState, chainId: targetChainId.toString() }
+  }, [isStateExists, prevContext, context, targetChainId])
 }
