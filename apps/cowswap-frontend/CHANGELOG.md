@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.96.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.96.1...cowswap-v1.96.2) (2025-01-27)
+
+
+### Bug Fixes
+
+* **wrap/unwrap:** enforce chainId when wrapping/unwrapping ([#5349](https://github.com/cowprotocol/cowswap/issues/5349)) ([7023f6e](https://github.com/cowprotocol/cowswap/commit/7023f6e449924eafc7afa0154844c78b315c6b37))
+
 ## [1.96.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.96.0...cowswap-v1.96.1) (2025-01-09)
 
 
