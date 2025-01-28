@@ -99,9 +99,7 @@ export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: b
 }
 
 export function useWethContract(withSignerIfPossible?: boolean) {
-  const contract = useContract<Weth>(WETH_CONTRACT_ADDRESS_MAP, WethAbi, withSignerIfPossible)
-
-  return contract
+  return useContract<Weth>(WETH_CONTRACT_ADDRESS_MAP, WethAbi, withSignerIfPossible)
 }
 
 export function useEthFlowContract(): UseContractResult<CoWSwapEthFlow> {
