@@ -51,6 +51,14 @@ export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Pro
         },
       }
     },
-    [composableCowContract, settlementContract, safeAppsSdk, twapPartOrders, setTwapOrderStatus],
+    [
+      composableCowContract,
+      settlementContract,
+      safeAppsSdk,
+      twapPartOrders,
+      setTwapOrderStatus,
+      composableCowChainId,
+      settlementChainId,
+    ],
   )
 }

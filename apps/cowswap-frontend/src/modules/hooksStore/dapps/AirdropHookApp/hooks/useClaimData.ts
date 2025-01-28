@@ -144,7 +144,7 @@ export const useClaimData = (tokenToClaimData?: IAirdrop) => {
         formattedAmount,
       }
     },
-    [account, airdropContract, tokenToClaimData],
+    [account, airdropContract, tokenToClaimData, airdropChainId],
   )
 
   return useSWR<IClaimData | undefined, Error>(

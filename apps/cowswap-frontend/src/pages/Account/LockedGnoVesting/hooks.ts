@@ -132,5 +132,15 @@ export function useClaimCowFromLockedGnoCallback({
         return tx
       })
       .finally(closeModal)
-  }, [account, addTransaction, tokenDistroChainId, closeModal, openModal, isFirstClaim, merkleDrop, tokenDistro])
+  }, [
+    account,
+    addTransaction,
+    closeModal,
+    openModal,
+    isFirstClaim,
+    merkleDrop,
+    tokenDistro,
+    merkleDropChainId,
+    tokenDistroChainId,
+  ])
 }
