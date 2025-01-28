@@ -21,7 +21,7 @@ export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCa
 
   return useCallback(
     (order: Order) => {
-      if (!ethFlowChainId || !settlementChainId) {
+      if (!ethFlowChainId || !settlementChainId || ethFlowChainId !== settlementChainId) {
         throw new Error('Chain Id from contracts should match (ethFlow, settlement)')
       }
 
