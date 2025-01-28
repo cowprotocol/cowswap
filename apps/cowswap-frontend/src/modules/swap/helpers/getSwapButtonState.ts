@@ -32,6 +32,7 @@ export enum SwapButtonState {
   SellNativeInHooks = 'SellNativeInHooks',
 
   WrapAndSwap = 'WrapAndSwap',
+  WrapDisable = 'WrapDisable',
 }
 
 export interface SwapButtonStateParams {

@@ -14,6 +14,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     approvalState,
     isBundlingSupported,
     isWrapUnwrap,
+    isWrapDisabled,
     isSupportedWallet,
     isSafeReadonlyUser,
     isSwapUnsupported,
@@ -29,7 +30,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     ? BigInt(inputCurrencyBalance.quotient.toString()) > BigInt(0)
     : false
   const canPlaceOrderWithoutBalance = isBalanceGreaterThan1Atom && isInsufficientBalanceOrderAllowed && !isWrapUnwrap
-  const isNativeIn = inputCurrency && getIsNativeToken(inputCurrency) && !isWrapUnwrap
+  const isNativeIn = inputCurrency && getIsNativeToken(inputCurrency)
 
   const approvalRequired =
     !isPermitSupported && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
@@ -56,7 +57,11 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     return TradeFormValidation.CurrencyNotSet
   }
 
-  if (isNativeIn) {
+  if (isNativeIn && isWrapDisabled) {
+    return TradeFormValidation.WrapDisabled
+  }
+
+  if (isNativeIn && !isWrapUnwrap) {
     return TradeFormValidation.SellNativeToken
   }
 

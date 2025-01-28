@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
-import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
+import { getIsNativeToken, isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
 import { ButtonOutlined, Media, MY_ORDERS_ID } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
@@ -17,6 +17,8 @@ import { useToggleAccountModal } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { SetRecipient } from 'modules/swap/containers/SetRecipient'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
+import { useIsWrapDisabled } from 'modules/trade/hooks/useIsWrapDisabled'
+import { WrapDisabledWarning } from 'modules/trade/pure/WrapDisabledWarning'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 
@@ -25,6 +27,7 @@ import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetwo
 import { useThrottleFn } from 'common/hooks/useThrottleFn'
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import { CurrencyInputPanel } from 'common/pure/CurrencyInputPanel'
+import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { PoweredFooter } from 'common/pure/PoweredFooter'
 
 import * as styledEl from './styled'
@@ -103,7 +106,8 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     !!params.disablePriceImpact ||
     primaryFormValidation === TradeFormValidation.QuoteErrors ||
     primaryFormValidation === TradeFormValidation.CurrencyNotSupported ||
-    primaryFormValidation === TradeFormValidation.WrapUnwrapFlow
+    primaryFormValidation === TradeFormValidation.WrapUnwrapFlow ||
+    primaryFormValidation === TradeFormValidation.WrapDisabled
 
   // Disable too frequent tokens switching
   const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
@@ -223,7 +227,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
             {withRecipient && <SetRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />}
 
             {isWrapOrUnwrap ? (
-              <WrapFlowActionButton />
+              <WrapFlowButtonWithWarnings inputCurrencyInfo={inputCurrencyInfo} />
             ) : (
               bottomContent?.(
                 hideTradeWarnings ? null : (
@@ -240,6 +244,18 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
         {isInjectedWidgetMode && <PoweredFooter />}
       </styledEl.ContainerBox>
       <styledEl.OuterContentWrapper>{outerContent}</styledEl.OuterContentWrapper>
+    </>
+  )
+}
+
+function WrapFlowButtonWithWarnings({ inputCurrencyInfo }: { inputCurrencyInfo: CurrencyInfo }) {
+  const isNativeSell = inputCurrencyInfo.currency ? getIsNativeToken(inputCurrencyInfo.currency) : false
+  const isWrapDisabled = useIsWrapDisabled()
+  const disabledWrap = isNativeSell && isWrapDisabled
+  return (
+    <>
+      <WrapFlowActionButton />
+      {disabledWrap && <WrapDisabledWarning nativeCurrency={inputCurrencyInfo.currency?.symbol || ''} />}
     </>
   )
 }

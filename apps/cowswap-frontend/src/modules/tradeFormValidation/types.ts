@@ -6,6 +6,9 @@ import { TradeQuoteState } from 'modules/tradeQuote'
 import { ApprovalState } from 'common/hooks/useApproveState'
 
 export enum TradeFormValidation {
+  // Wrap is disabled
+  WrapDisabled,
+
   // Wrap/unwrap
   WrapUnwrapFlow,
 
@@ -52,6 +55,7 @@ export interface TradeFormValidationCommonContext {
   isSafeReadonlyUser: boolean
   isPermitSupported: boolean
   isInsufficientBalanceOrderAllowed: boolean
+  isWrapDisabled: boolean
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}

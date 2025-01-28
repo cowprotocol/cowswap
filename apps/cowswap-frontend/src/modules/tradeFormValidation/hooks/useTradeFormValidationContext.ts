@@ -14,6 +14,7 @@ import { useApproveState } from 'common/hooks/useApproveState'
 
 import { TradeType } from '../../trade'
 import { TradeFormValidationCommonContext } from '../types'
+import { useIsWrapDisabled } from 'modules/trade/hooks/useIsWrapDisabled'
 
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
   const { account } = useWalletInfo()
@@ -34,6 +35,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly === true
 
   const isPermitSupported = useTokenSupportsPermit(inputCurrency, tradeType)
+  const isWrapDisabled = useIsWrapDisabled()
 
   const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
 
@@ -49,6 +51,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     tradeQuote,
     isPermitSupported,
     isInsufficientBalanceOrderAllowed,
+    isWrapDisabled,
   }
 
   return useMemo(() => {

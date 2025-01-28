@@ -55,6 +55,15 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       </Text>
     </ButtonError>
   ),
+
+  [SwapButtonState.WrapDisable]: () => (
+    <ButtonError buttonSize={ButtonSize.BIG} disabled={true}>
+      <Text fontSize={20} fontWeight={500}>
+        <Trans>Temporary disabled</Trans>
+      </Text>
+    </ButtonError>
+  ),
+
   [SwapButtonState.SwapWithWrappedToken]: (props: SwapButtonsContext) => (
     <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onEthFlow}>
       <styledEl.SwapButtonBox>
