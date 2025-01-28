@@ -119,7 +119,9 @@ export const useClaimData = (tokenToClaimData?: IAirdrop) => {
 
       const { chainId: tokenToClaimChainId, token: tokenToClaim } = tokenToClaimData
       if (airdropChainId !== tokenToClaimChainId) {
-        throw new Error('Airdrop token and airdrop contract are not on the same chain')
+        throw new Error(
+          `Airdrop token chain (${tokenToClaimChainId}) and airdrop contract chain (${airdropChainId}) should match`,
+        )
       }
 
       const isClaimed = await airdropContract?.isClaimed(isEligibleData.index)
