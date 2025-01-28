@@ -5,6 +5,7 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useGasLimit } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonPrimary } from '@cowprotocol/ui'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Token } from '@uniswap/sdk-core'
 
 import { HookDappProps } from 'modules/hooksStore/types/hooks'
@@ -27,7 +28,8 @@ const COW_AIRDROP = {
 
 export function AirdropHookApp({ context }: HookDappProps) {
   const { data: claimData, isValidating, error } = useClaimData(COW_AIRDROP)
-  const { data: gasLimit } = useGasLimit({ to: claimData?.contract.address, data: claimData?.callData })
+  const provider = useWalletProvider()
+  const { data: gasLimit } = useGasLimit(provider, { to: claimData?.contract.address, data: claimData?.callData })
 
   const clickOnAddHook = useCallback(async () => {
     if (!context || !claimData || !gasLimit) return

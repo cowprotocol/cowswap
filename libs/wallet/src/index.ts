@@ -1,57 +1,25 @@
 import './types.d.ts'
-
+export { reownAppKit } from './reown/init'
 export * from './api/types'
-export * from './web3-react/types'
+export * from './api/utils'
 export * from './assets'
-export * from './constants'
 
 // Hooks
 export * from './api/hooks'
-export * from './web3-react/hooks/useWalletMetadata'
-export * from './web3-react/hooks/useIsWalletConnect'
-export * from './web3-react/hooks/useSafeAppsSdk'
-export * from './web3-react/hooks/useIsSmartContractWallet'
-export * from './web3-react/hooks/useActivateConnector'
-export * from './web3-react/hooks/useDisconnectWallet'
-export * from './web3-react/hooks/useSwitchNetwork'
-export * from './web3-react/hooks/useConnectionType'
+export { useOpenWalletConnectionModal } from './api/hooks/useOpenWalletConnectionModal'
+export * from './reown/hooks/useWalletMetadata'
+export * from './reown/hooks/useIsWalletConnect'
+export * from './reown/hooks/useSafeAppsSdk'
+export * from './reown/hooks/useIsSmartContractWallet'
+export * from './reown/hooks/useDisconnectWallet'
+export * from './reown/hooks/useSwitchNetwork'
 
-// Updater
-export * from './web3-react/updater'
-export * from './web3-react/updaters/HwAccountIndexUpdater'
+// Updaters and Providers
+export * from './reown/updaters/WalletUpdater'
+export { WalletProvider } from './api/container/WalletProvider'
 
 // Components
 export * from './api/container/Identicon'
-export * from './web3-react/pure/AccountIndexSelect'
-
-// Utils
-export * from './api/utils/connection'
-export * from './web3-react/utils/getIsHardWareWallet'
-export { accountsLoaders } from './api/utils/accountsLoaders'
-export { isChainAllowed } from './web3-react/utils/isChainAllowed'
-export { getWeb3ReactConnection } from './web3-react/utils/getWeb3ReactConnection'
-export { switchChain } from './web3-react/utils/switchChain'
-
-// Connectors
-export { Web3Provider } from './web3-react/Web3Provider'
-export { injectedWalletConnection } from './web3-react/connection/injectedWallet'
-export { networkConnection } from './web3-react/connection/network'
-export { gnosisSafeConnection } from './web3-react/connection/safe'
-export { walletConnectConnectionV2 } from './web3-react/connection/walletConnectV2'
-
-// Connect options
-export {
-  InjectedOption,
-  Eip6963Option,
-} from './web3-react/connection/injectedOptions'
-
-export { ConnectWalletOption } from './api/pure/ConnectWalletOption'
-export { TrezorOption } from './web3-react/connection/trezor'
-export { WalletConnectV2Option } from './web3-react/connection/walletConnectV2'
-export { CoinbaseWalletOption } from './web3-react/connection/coinbase'
-export { MetaMaskSdkOption } from './web3-react/connection/metaMaskSdk'
 
 // State
-// TODO: this export is discussable, however it's already used outside
-export * from './api/state'
 export * from './api/state'

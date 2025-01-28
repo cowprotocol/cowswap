@@ -1,17 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { SafeInfoResponse } from '@safe-global/api-kit'
-
-export * from './eip6963-types'
-
-export enum ConnectionType {
-  NETWORK = 'NETWORK',
-  INJECTED = 'INJECTED',
-  WALLET_CONNECT_V2 = 'WALLET_CONNECT_V2',
-  COINBASE_WALLET = 'COINBASE_WALLET',
-  METAMASK = 'METAMASK',
-  GNOSIS_SAFE = 'GNOSIS_SAFE',
-  TREZOR = 'TREZOR',
-}
+import type { SafeInfoResponse } from '@safe-global/api-kit'
 
 export interface WalletInfo {
   chainId: SupportedChainId
@@ -37,10 +25,4 @@ export interface WalletDetails {
 export type GnosisSafeInfo = Pick<SafeInfoResponse, 'address' | 'threshold' | 'owners' | 'nonce'> & {
   isReadOnly?: boolean
   chainId: number
-}
-
-export enum WalletType {
-  SAFE,
-  SC,
-  EOA,
 }

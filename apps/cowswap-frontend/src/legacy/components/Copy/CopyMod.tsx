@@ -10,7 +10,6 @@ import { LinkStyledButton } from 'theme'
 
 import { TransactionStatusText } from 'legacy/components/Copy/index'
 
-// MOD imports
 export const CopyIcon = styled(LinkStyledButton)`
   --iconSize: var(${UI.ICON_SIZE_NORMAL});
   color: inherit;
@@ -32,13 +31,6 @@ export const CopyIcon = styled(LinkStyledButton)`
     color: inherit;
   }
 `
-
-/* const TransactionStatusText = styled.span`
-  margin-left: 0.25rem;
-  font-size: 0.825rem;
-  ${({ theme }) => theme.flexRowNoWrap};
-  align-items: center;
-` */
 
 export default function CopyHelper(props: { toCopy: string; children?: React.ReactNode; clickableLink?: boolean }) {
   const { toCopy, children, clickableLink } = props
