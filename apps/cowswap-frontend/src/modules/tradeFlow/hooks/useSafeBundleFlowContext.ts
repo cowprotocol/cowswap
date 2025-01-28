@@ -27,27 +27,28 @@ export function useSafeBundleFlowContext(): SafeBundleFlowContext | null {
     return inputAmountWithSlippage ? getCurrencyAddress(inputAmountWithSlippage.currency) : undefined
   }, [inputAmountWithSlippage])
   const { contract: erc20Contract, chainId: erc20ChainId } = useTokenContract(inputCurrencyAddress)
-  const key =
-    settlementChainId === erc20ChainId &&
-    settlementChainId === wrappedNativeChainId &&
-    settlementContract &&
-    spender &&
-    safeAppsSdk &&
-    wrappedNativeContract &&
-    erc20Contract
-      ? [settlementContract, spender, safeAppsSdk, wrappedNativeContract, needsApproval, erc20Contract]
-      : null
 
   return (
-    useSWR(key, ([settlementContract, spender, safeAppsSdk, wrappedNativeContract, needsApproval, erc20Contract]) => {
-      return {
-        settlementContract,
-        spender,
-        safeAppsSdk,
-        wrappedNativeContract,
-        needsApproval,
-        erc20Contract,
-      }
-    }).data || null
+    useSWR(
+      settlementChainId === erc20ChainId &&
+        settlementChainId === wrappedNativeChainId &&
+        settlementContract &&
+        spender &&
+        safeAppsSdk &&
+        wrappedNativeContract &&
+        erc20Contract
+        ? [settlementContract, spender, safeAppsSdk, wrappedNativeContract, needsApproval, erc20Contract]
+        : null,
+      ([settlementContract, spender, safeAppsSdk, wrappedNativeContract, needsApproval, erc20Contract]) => {
+        return {
+          settlementContract,
+          spender,
+          safeAppsSdk,
+          wrappedNativeContract,
+          needsApproval,
+          erc20Contract,
+        }
+      },
+    ).data || null
   )
 }
