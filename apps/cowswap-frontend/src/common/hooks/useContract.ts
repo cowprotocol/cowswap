@@ -50,7 +50,7 @@ export function useContract<T extends Contract = Contract>(
   const provider = customProvider || defaultProvider
 
   return useMemo(() => {
-    if (!addressOrAddressMap || !ABI || !provider || !chainId) {
+    if (!addressOrAddressMap || !ABI || !provider) {
       // Loading, waiting for chain or some basic information to instantiate the contract
       return {
         contract: null,
