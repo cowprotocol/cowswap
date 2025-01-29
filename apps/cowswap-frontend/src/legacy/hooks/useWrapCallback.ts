@@ -2,6 +2,7 @@ import { getChainCurrencySymbols, RADIX_HEX } from '@cowprotocol/common-const'
 import {
   calculateGasMargin,
   formatTokenAmount,
+  getChainIdImmediately,
   getIsNativeToken,
   isRejectRequestProviderError,
 } from '@cowprotocol/common-utils'
@@ -113,9 +114,9 @@ async function wrapContractCall(
   const estimatedGas = await wethContract.estimateGas.deposit({ value: amountHex }).catch(_handleGasEstimateError)
   const gasLimit = calculateGasMargin(estimatedGas)
 
-  const network = await (wethContract.provider as JsonRpcProvider).send('eth_chainId', [])
-  if (+network !== chainId) {
-    throw new Error(`Wallet chainId differs from app chainId. Wallet: ${+network}, App: ${chainId}`)
+  const network = await getChainIdImmediately(wethContract.provider as JsonRpcProvider)
+  if (network !== chainId) {
+    throw new Error(`Wallet chainId differs from app chainId. Wallet: ${network}, App: ${chainId}`)
   }
 
   const tx = await wethContract.populateTransaction.deposit({ value: amountHex, gasLimit })
@@ -133,9 +134,9 @@ async function unwrapContractCall(
 
   const tx = await wethContract.populateTransaction.withdraw(amountHex, { gasLimit })
 
-  const network = await (wethContract.provider as JsonRpcProvider).send('eth_chainId', [])
-  if (+network !== chainId) {
-    throw new Error(`Wallet chainId differs from app chainId. Wallet: ${+network}, App: ${chainId}`)
+  const network = await getChainIdImmediately(wethContract.provider as JsonRpcProvider)
+  if (network !== chainId) {
+    throw new Error(`Wallet chainId differs from app chainId. Wallet: ${network}, App: ${chainId}`)
   }
 
   return wethContract.signer.sendTransaction({ ...tx, chainId: network })
