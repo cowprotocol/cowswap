@@ -53,17 +53,17 @@ function useParseVCowResult(result: BigNumber | undefined) {
  * Hook that fetches the needed vCow data and returns it in VCowData type
  */
 export function useVCowData(): VCowData {
-  const vCowContract = useVCowContract()
+  const { contract: vCowContract } = useVCowContract()
   const { account } = useWalletInfo()
 
   const { data: vestedResult, isLoading: isVestedLoading } = useSWR(
     account && vCowContract ? ['useVCowData.swappableBalanceOf', account, vCowContract] : null,
-    async ([, _account, contract]) => contract.swappableBalanceOf(_account)
+    async ([, _account, contract]) => contract.swappableBalanceOf(_account),
   )
 
   const { data: totalResult, isLoading: isTotalLoading } = useSWR(
     account && vCowContract ? ['useVCowData.balanceOf', account, vCowContract] : null,
-    async ([, _account, contract]) => contract.balanceOf(_account)
+    async ([, _account, contract]) => contract.balanceOf(_account),
   )
 
   const vested = useParseVCowResult(vestedResult)
@@ -91,8 +91,8 @@ export function useVCowData(): VCowData {
  * Hook used to swap vCow to Cow token
  */
 export function useSwapVCowCallback({ openModal, closeModal }: SwapVCowCallbackParams) {
-  const { chainId, account } = useWalletInfo()
-  const vCowContract = useVCowContract()
+  const { account } = useWalletInfo()
+  const { contract: vCowContract, chainId } = useVCowContract()
 
   const addTransaction = useTransactionAdder()
   const vCowToken = chainId ? V_COW[chainId] : undefined
@@ -117,7 +117,7 @@ export function useSwapVCowCallback({ openModal, closeModal }: SwapVCowCallbackP
         console.log(
           '[useSwapVCowCallback] Error estimating gas for swapAll. Using default gas limit ' +
             GAS_LIMIT_DEFAULT.toString(),
-          error
+          error,
         )
         return GAS_LIMIT_DEFAULT
       })

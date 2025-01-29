@@ -28,7 +28,7 @@ export function useRecoverFundsFromProxy(
   const provider = useWalletProvider()
   const { account } = useWalletInfo()
   const cowShedHooks = useCowShedHooks()
-  const cowShedContract = useContract<CowShedContract>(COW_SHED_FACTORY, CowShedContractAbi)
+  const { contract: cowShedContract } = useContract<CowShedContract>(COW_SHED_FACTORY, CowShedContractAbi)
 
   const proxyAddress = useMemo(() => {
     if (!account || !cowShedHooks) return

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { ComposableCoW, Erc20 } from '@cowprotocol/abis'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
@@ -21,21 +21,30 @@ export interface TwapOrderCreationContext {
   spender: string
   currentBlockFactoryAddress: string
   erc20Contract: Erc20
+  chainId: SupportedChainId
 }
 
 export function useTwapOrderCreationContext(
-  inputAmount: Nullish<CurrencyAmount<Token>>
+  inputAmount: Nullish<CurrencyAmount<Token>>,
 ): TwapOrderCreationContext | null {
-  const { chainId } = useWalletInfo()
-  const composableCowContract = useComposableCowContract()
+  const { contract: composableCowContract, chainId: composableCowChainId } = useComposableCowContract()
   const needsApproval = useNeedsApproval(inputAmount)
-  const erc20Contract = useTokenContract(inputAmount?.currency.address)
+  const { contract: erc20Contract, chainId: erc20ChainId } = useTokenContract(inputAmount?.currency.address)
   const spender = useTradeSpenderAddress()
   const needsZeroApproval = useNeedsZeroApproval(erc20Contract, spender, inputAmount)
-  const currentBlockFactoryAddress = chainId ? CURRENT_BLOCK_FACTORY_ADDRESS[chainId] : null
+  const currentBlockFactoryAddress = composableCowChainId ? CURRENT_BLOCK_FACTORY_ADDRESS[composableCowChainId] : null
 
   return useMemo(() => {
-    if (!composableCowContract || !erc20Contract || !spender || !currentBlockFactoryAddress) return null
+    if (
+      // check for missing dependencies
+      !composableCowContract ||
+      !erc20Contract ||
+      !spender ||
+      !currentBlockFactoryAddress ||
+      // Ensure token and composable cow contracts are on the same chain
+      composableCowChainId !== erc20ChainId
+    )
+      return null
 
     return {
       composableCowContract,
@@ -44,6 +53,16 @@ export function useTwapOrderCreationContext(
       needsZeroApproval,
       spender,
       currentBlockFactoryAddress,
+      chainId: composableCowChainId,
     }
-  }, [composableCowContract, erc20Contract, spender, currentBlockFactoryAddress, needsApproval, needsZeroApproval])
+  }, [
+    composableCowContract,
+    erc20Contract,
+    spender,
+    currentBlockFactoryAddress,
+    needsApproval,
+    needsZeroApproval,
+    composableCowChainId,
+    erc20ChainId,
+  ])
 }

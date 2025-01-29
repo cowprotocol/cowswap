@@ -1,7 +1,8 @@
 import { CoWSwapEthFlow } from '@cowprotocol/abis'
-import { calculateGasMargin } from '@cowprotocol/common-utils'
+import { calculateGasMargin, getChainIdImmediately } from '@cowprotocol/common-utils'
 import { OrderClass, SigningScheme, UnsignedOrder } from '@cowprotocol/cow-sdk'
 import { ContractTransaction } from '@ethersproject/contracts'
+import { JsonRpcProvider } from '@ethersproject/providers'
 import { NativeCurrency } from '@uniswap/sdk-core'
 
 import { Order } from 'legacy/state/orders/actions'
@@ -44,9 +45,11 @@ export async function signEthFlowOrderStep(
     throw new Error('[EthFlow::SignEthFlowOrderStep] No quoteId passed')
   }
 
-  const network = await ethFlowContract.provider.getNetwork()
-  if (network.chainId !== orderParams.chainId) {
-    throw new Error('Wallet chain differs from order params.')
+  const network = await getChainIdImmediately(ethFlowContract.provider as JsonRpcProvider)
+  if (network !== orderParams.chainId) {
+    throw new Error(
+      `Wallet chainId differs from order params chainId. Wallet: ${network}, Order: ${orderParams.chainId}`,
+    )
   }
 
   const ethOrderParams: EthFlowCreateOrderParams = {
@@ -85,7 +88,7 @@ export async function signEthFlowOrderStep(
     gasLimit: calculateGasMargin(estimatedGas),
   })
   // Then send the is using the contract's signer where the chainId is an acceptable parameter
-  const txReceipt = await ethFlowContract.signer.sendTransaction({ ...tx, chainId: network.chainId })
+  const txReceipt = await ethFlowContract.signer.sendTransaction({ ...tx, chainId: network })
 
   addInFlightOrderId(orderId)
 
