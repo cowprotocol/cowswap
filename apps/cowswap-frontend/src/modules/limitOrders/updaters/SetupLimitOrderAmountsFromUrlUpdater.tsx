@@ -27,11 +27,9 @@ export function SetupLimitOrderAmountsFromUrlUpdater() {
    * So, we reset isRateFromUrl flag when at least one of the tokens is changed
    */
   useEffect(() => {
-    if (!tokensPair || !prevTokensPair) return
+    if (!tokensPair || !prevTokensPair || tokensPair === prevTokensPair) return
 
-    if (tokensPair !== prevTokensPair) {
-      updateRateState({ isRateFromUrl: false })
-    }
+    updateRateState({ isRateFromUrl: false })
   }, [tokensPair, prevTokensPair, updateRateState])
 
   const params = useMemo(() => {
