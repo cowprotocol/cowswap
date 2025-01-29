@@ -47,7 +47,9 @@ export async function signEthFlowOrderStep(
 
   const network = await (ethFlowContract.provider as JsonRpcProvider).send('eth_chainId', [])
   if (+network !== orderParams.chainId) {
-    throw new Error('Wallet chain differs from order params.')
+    throw new Error(
+      `Wallet chainId differs from order params chainId. Wallet: ${+network}, Order: ${orderParams.chainId}`,
+    )
   }
 
   const ethOrderParams: EthFlowCreateOrderParams = {

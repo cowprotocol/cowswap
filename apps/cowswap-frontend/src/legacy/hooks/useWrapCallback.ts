@@ -115,7 +115,7 @@ async function wrapContractCall(
 
   const network = await (wethContract.provider as JsonRpcProvider).send('eth_chainId', [])
   if (+network !== chainId) {
-    throw new Error('Wallet chain differs from order params.')
+    throw new Error(`Wallet chainId differs from app chainId. Wallet: ${+network}, App: ${chainId}`)
   }
 
   const tx = await wethContract.populateTransaction.deposit({ value: amountHex, gasLimit })
@@ -135,7 +135,7 @@ async function unwrapContractCall(
 
   const network = await (wethContract.provider as JsonRpcProvider).send('eth_chainId', [])
   if (+network !== chainId) {
-    throw new Error('Wallet chain differs from order params.')
+    throw new Error(`Wallet chainId differs from app chainId. Wallet: ${+network}, App: ${chainId}`)
   }
 
   return wethContract.signer.sendTransaction({ ...tx, chainId: network })
