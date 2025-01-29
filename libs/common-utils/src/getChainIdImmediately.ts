@@ -1,6 +1,11 @@
-import { JsonRpcProvider } from '@ethersproject/providers'
+import { JsonRpcProvider, Provider } from '@ethersproject/providers'
 
-export async function getChainIdImmediately(provider: JsonRpcProvider): Promise<number | undefined> {
+export async function getChainIdImmediately(provider: JsonRpcProvider | Provider): Promise<number | undefined> {
+  if (!isJsonRpcProvider(provider)) {
+    console.error('Provider is not a JsonRpcProvider')
+    return undefined
+  }
+
   try {
     const chainId = await provider.send('eth_chainId', [])
 
@@ -9,4 +14,8 @@ export async function getChainIdImmediately(provider: JsonRpcProvider): Promise<
     console.error('Failed to get chainId from provider', error)
     return undefined
   }
+}
+
+function isJsonRpcProvider(provider: JsonRpcProvider | Provider): provider is JsonRpcProvider {
+  return (provider as JsonRpcProvider).send !== undefined
 }

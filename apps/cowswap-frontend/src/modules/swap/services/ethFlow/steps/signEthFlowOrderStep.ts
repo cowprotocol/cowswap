@@ -2,7 +2,6 @@ import { CoWSwapEthFlow } from '@cowprotocol/abis'
 import { calculateGasMargin, getChainIdImmediately } from '@cowprotocol/common-utils'
 import { OrderClass, SigningScheme, UnsignedOrder } from '@cowprotocol/cow-sdk'
 import { ContractTransaction } from '@ethersproject/contracts'
-import { JsonRpcProvider } from '@ethersproject/providers'
 import { NativeCurrency } from '@uniswap/sdk-core'
 
 import { Order } from 'legacy/state/orders/actions'
@@ -45,7 +44,7 @@ export async function signEthFlowOrderStep(
     throw new Error('[EthFlow::SignEthFlowOrderStep] No quoteId passed')
   }
 
-  const network = await getChainIdImmediately(ethFlowContract.provider as JsonRpcProvider)
+  const network = await getChainIdImmediately(ethFlowContract.provider)
   if (network !== orderParams.chainId) {
     throw new Error(
       `Wallet chainId differs from order params chainId. Wallet: ${network}, Order: ${orderParams.chainId}`,

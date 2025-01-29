@@ -10,7 +10,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers'
+import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
@@ -114,7 +114,7 @@ async function wrapContractCall(
   const estimatedGas = await wethContract.estimateGas.deposit({ value: amountHex }).catch(_handleGasEstimateError)
   const gasLimit = calculateGasMargin(estimatedGas)
 
-  const network = await getChainIdImmediately(wethContract.provider as JsonRpcProvider)
+  const network = await getChainIdImmediately(wethContract.provider)
   if (network !== chainId) {
     throw new Error(`Wallet chainId differs from app chainId. Wallet: ${network}, App: ${chainId}`)
   }
@@ -134,7 +134,7 @@ async function unwrapContractCall(
 
   const tx = await wethContract.populateTransaction.withdraw(amountHex, { gasLimit })
 
-  const network = await getChainIdImmediately(wethContract.provider as JsonRpcProvider)
+  const network = await getChainIdImmediately(wethContract.provider)
   if (network !== chainId) {
     throw new Error(`Wallet chainId differs from app chainId. Wallet: ${network}, App: ${chainId}`)
   }
