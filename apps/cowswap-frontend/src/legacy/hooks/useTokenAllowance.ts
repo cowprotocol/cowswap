@@ -16,19 +16,19 @@ const ALLOWANCES_SWR_CONFIG = { refreshInterval: ms`10s` }
 export function useTokenAllowance(
   token: Nullish<Token>,
   owner?: string,
-  spender?: string
+  spender?: string,
 ): CurrencyAmount<Token> | undefined {
   const tokenAddress = token?.address
-  const contract = useTokenContract(tokenAddress, false)
+  const { contract: tokenContract } = useTokenContract(tokenAddress, false)
 
   const { data: allowance } = useSWR(
-    owner && spender && contract ? ['useTokenAllowance', tokenAddress, owner, spender, contract] : null,
+    owner && spender && tokenContract ? ['useTokenAllowance', tokenAddress, owner, spender, tokenContract] : null,
     async ([, , _owner, _spender, _contract]) => _contract?.callStatic.allowance(_owner, _spender),
-    ALLOWANCES_SWR_CONFIG
+    ALLOWANCES_SWR_CONFIG,
   )
 
   return useMemo(
     () => (token && allowance ? CurrencyAmount.fromRawAmount(token, allowance.toString()) : undefined),
-    [token, allowance]
+    [token, allowance],
   )
 }
