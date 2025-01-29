@@ -143,8 +143,7 @@ export class TrezorConnector extends Connector {
 
     this.customProvider = customProvider
 
-    const network = await customProvider.send('eth_chainId', [])
-    const { chainId } = network
+    const chainId = await customProvider.send('eth_chainId', [])
 
     trezorConnect.on('DEVICE_EVENT', (event) => {
       if (event.type === 'device-disconnect') {
