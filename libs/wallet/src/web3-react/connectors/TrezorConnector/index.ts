@@ -48,7 +48,7 @@ export class TrezorConnector extends Connector {
 
   async activate(
     chainId: SupportedChainId | { chainId: SupportedChainId } = defaultChainId,
-    indexChanged = false
+    indexChanged = false,
   ): Promise<void> {
     const desiredChainId = typeof chainId === 'object' ? chainId.chainId : chainId
 
@@ -110,7 +110,7 @@ export class TrezorConnector extends Connector {
     this.accountsOffset = offset
 
     const accounts = await import('./getAccountsList').then((module) =>
-      module.getAccountsList(this.trezorConnect!, offset, ACCOUNTS_LIMIT)
+      module.getAccountsList(this.trezorConnect!, offset, ACCOUNTS_LIMIT),
     )
 
     this.accounts = (this.accounts || []).concat(accounts || [])
@@ -134,7 +134,7 @@ export class TrezorConnector extends Connector {
   private async installProvider(
     url: string,
     trezorConnect: TrezorConnect,
-    _transformTypedData: typeof transformTypedData
+    _transformTypedData: typeof transformTypedData,
   ) {
     await this.loadAccounts(0)
 
@@ -143,7 +143,7 @@ export class TrezorConnector extends Connector {
 
     this.customProvider = customProvider
 
-    const network = await customProvider.getNetwork()
+    const network = await customProvider.send('eth_chainId', [])
     const { chainId } = network
 
     trezorConnect.on('DEVICE_EVENT', (event) => {
