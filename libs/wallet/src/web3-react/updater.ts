@@ -1,7 +1,5 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState } from 'react'
-
-import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { getSafeInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENSName } from '@cowprotocol/ens'
@@ -38,7 +36,7 @@ function _useWalletInfo(): WalletInfo {
 
   return useMemo(
     () => ({
-      chainId: isChainIdUnsupported || !chainId ? getCurrentChainIdFromUrl() : chainId,
+      chainId: SupportedChainId.BASE, //isChainIdUnsupported || !chainId ? getCurrentChainIdFromUrl() : chainId,
       active,
       account,
     }),

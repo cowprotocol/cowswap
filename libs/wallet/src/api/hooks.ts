@@ -1,5 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletDisplayedAddress, walletInfoAtom } from './state'
 import {
   multiInjectedProvidersAtom,
@@ -13,7 +15,9 @@ import { useConnectionType } from '../web3-react/hooks/useConnectionType'
 import { useIsSafeApp } from '../web3-react/hooks/useWalletMetadata'
 
 export function useWalletInfo(): WalletInfo {
-  return useAtomValue(walletInfoAtom)
+  const v = useAtomValue(walletInfoAtom)
+
+  return { ...v, chainId: SupportedChainId.BASE }
 }
 
 export function useWalletDetails(): WalletDetails {
