@@ -113,14 +113,15 @@ async function wrapContractCall(
   const estimatedGas = await wethContract.estimateGas.deposit({ value: amountHex }).catch(_handleGasEstimateError)
   const gasLimit = calculateGasMargin(estimatedGas)
 
-  const network = await wethContract.provider.getNetwork()
-  if (network.chainId !== chainId) {
-    throw new Error('Wallet chain differs from order params.')
-  }
+  // const network = await wethContract.provider.getNetwork()
+  // if (network.chainId !== chainId) {
+  //   throw new Error('Wallet chain differs from order params.')
+  // }
 
   const tx = await wethContract.populateTransaction.deposit({ value: amountHex, gasLimit })
 
-  return wethContract.signer.sendTransaction({ ...tx, chainId: network.chainId })
+  console.log('wrapContractCall', tx, chainId, amountHex)
+  return wethContract.signer.sendTransaction({ ...tx, chainId })
 }
 
 async function unwrapContractCall(
