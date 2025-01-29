@@ -2,6 +2,7 @@ import { getChainCurrencySymbols, RADIX_HEX } from '@cowprotocol/common-const'
 import {
   calculateGasMargin,
   formatTokenAmount,
+  getChainIdImmediately,
   getIsNativeToken,
   isRejectRequestProviderError,
 } from '@cowprotocol/common-utils'
@@ -9,7 +10,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { TransactionResponse } from '@ethersproject/providers'
+import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
@@ -113,14 +114,14 @@ async function wrapContractCall(
   const estimatedGas = await wethContract.estimateGas.deposit({ value: amountHex }).catch(_handleGasEstimateError)
   const gasLimit = calculateGasMargin(estimatedGas)
 
-  const network = await wethContract.provider.getNetwork()
-  if (network.chainId !== chainId) {
-    throw new Error('Wallet chain differs from order params.')
+  const network = await getChainIdImmediately(wethContract.provider as JsonRpcProvider)
+  if (network !== chainId) {
+    throw new Error(`Wallet chainId differs from app chainId. Wallet: ${network}, App: ${chainId}`)
   }
 
   const tx = await wethContract.populateTransaction.deposit({ value: amountHex, gasLimit })
 
-  return wethContract.signer.sendTransaction({ ...tx, chainId: network.chainId })
+  return wethContract.signer.sendTransaction({ ...tx, chainId: network })
 }
 
 async function unwrapContractCall(
@@ -133,12 +134,12 @@ async function unwrapContractCall(
 
   const tx = await wethContract.populateTransaction.withdraw(amountHex, { gasLimit })
 
-  const network = await wethContract.provider.getNetwork()
-  if (network.chainId !== chainId) {
-    throw new Error('Wallet chain differs from order params.')
+  const network = await getChainIdImmediately(wethContract.provider as JsonRpcProvider)
+  if (network !== chainId) {
+    throw new Error(`Wallet chainId differs from app chainId. Wallet: ${network}, App: ${chainId}`)
   }
 
-  return wethContract.signer.sendTransaction({ ...tx, chainId: network.chainId })
+  return wethContract.signer.sendTransaction({ ...tx, chainId: network })
 }
 
 function _handleGasEstimateError(error: any): BigNumber {
