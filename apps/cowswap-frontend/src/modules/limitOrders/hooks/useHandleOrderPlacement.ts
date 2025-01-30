@@ -18,6 +18,7 @@ import { useCloseReceiptModal } from 'modules/ordersTable/containers/OrdersRecei
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
 import { useAlternativeOrder, useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
+import { useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import OperatorError from 'api/cowProtocol/errors/OperatorError'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
@@ -57,6 +58,7 @@ export function useHandleOrderPlacement(
   const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
   const alternativeModalAnalytics = useAlternativeModalAnalytics()
   const tradeFlowFn = useTradeFlow()
+  const analytics = useTradeFlowAnalytics()
 
   const beforePermit = useCallback(async () => {
     if (!tradeContext) return
@@ -92,6 +94,7 @@ export function useHandleOrderPlacement(
         priceImpact,
         settingsState,
         confirmPriceImpactWithoutFee,
+        analytics,
         beforeTrade,
       )
     }
@@ -118,6 +121,7 @@ export function useHandleOrderPlacement(
     settingsState,
     tradeContext,
     tradeFlowFn,
+    analytics,
   ])
 
   return useCallback(() => {

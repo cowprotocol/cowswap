@@ -11,18 +11,27 @@ import { EthFlowContext } from 'modules/swap/services/types'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-import { tradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import { TradeFlowContext } from 'modules/tradeFlow'
 import { isQuoteExpired } from 'modules/tradeQuote'
 
 import { calculateUniqueOrderId } from './steps/calculateUniqueOrderId'
 
-export async function ethFlow(
-  tradeContext: TradeFlowContext,
-  ethFlowContext: EthFlowContext,
-  priceImpactParams: PriceImpact,
-  confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
-): Promise<void | boolean> {
+export interface EthFlowParams {
+  tradeContext: TradeFlowContext
+  ethFlowContext: EthFlowContext
+  priceImpactParams: PriceImpact
+  confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
+  analytics: TradeFlowAnalytics
+}
+
+export async function ethFlow({
+  tradeContext,
+  ethFlowContext,
+  priceImpactParams,
+  confirmPriceImpactWithoutFee,
+  analytics,
+}: EthFlowParams): Promise<void | boolean> {
   const {
     tradeConfirmActions,
     swapFlowAnalyticsContext,
@@ -46,8 +55,7 @@ export async function ethFlow(
   orderParamsOriginal.appData = await removePermitHookFromAppData(orderParamsOriginal.appData, typedHooks)
 
   logTradeFlow('ETH FLOW', 'STEP 2: send transaction')
-  // TODO: check if we need own eth flow analytics or more generic
-  tradeFlowAnalytics.trade(swapFlowAnalyticsContext)
+  analytics.trade(swapFlowAnalyticsContext)
   tradeConfirmActions.onSign(tradeAmounts)
 
   logTradeFlow('ETH FLOW', 'STEP 3: Get Unique Order Id (prevent collisions)')
@@ -111,14 +119,14 @@ export async function ethFlow(
 
     logTradeFlow('ETH FLOW', 'STEP 7: show UI of the successfully sent transaction', orderId)
     tradeConfirmActions.onSuccess(orderId)
-    tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
+    analytics.sign(swapFlowAnalyticsContext)
 
     return true
   } catch (error: any) {
     logTradeFlow('ETH FLOW', 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
-    tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
+    analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
     tradeConfirmActions.onError(swapErrorMessage)
   }

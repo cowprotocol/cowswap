@@ -40,6 +40,7 @@ export function UnfillableOrdersUpdater(): null {
   const { chainId, account } = useWalletInfo()
   const updatePendingOrderPrices = useSetAtom(updatePendingOrderPricesAtom)
   const isWindowVisible = useIsWindowVisible()
+  const cowAnalytics = useCowAnalytics()
 
   const pending = useOnlyPendingOrders(chainId)
 
@@ -52,6 +53,17 @@ export function UnfillableOrdersUpdater(): null {
   const pendingRef = useRef(pending)
   pendingRef.current = pending
   const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
+
+  const priceOutOfRangeAnalytics = useCallback(
+    (label: string) => {
+      cowAnalytics.sendEvent({
+        category: Category.TRADE,
+        action: 'Price out of range',
+        label,
+      })
+    },
+    [cowAnalytics],
+  )
 
   const updateOrderMarketPriceCallback = useCallback(
     (
@@ -105,7 +117,7 @@ export function UnfillableOrdersUpdater(): null {
 
       updateOrderMarketPriceCallback(order, fee, marketPrice, estimatedExecutionPrice)
     },
-    [setIsOrderUnfillable, updateOrderMarketPriceCallback],
+    [setIsOrderUnfillable, updateOrderMarketPriceCallback, priceOutOfRangeAnalytics],
   )
 
   const balancesRef = useRef(balances)
@@ -229,13 +241,4 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: PriceStr
   } catch {
     return null
   }
-}
-
-const cowAnalytics = useCowAnalytics()
-const priceOutOfRangeAnalytics = (label: string) => {
-  cowAnalytics.sendEvent({
-    category: Category.TRADE,
-    action: 'Price out of range',
-    label,
-  })
 }
