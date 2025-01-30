@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
 
+import { Category, useCowAnalytics } from '@cowprotocol/analytics'
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { Category, useCowAnalytics } from '@cowprotocol/analytics'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useIsWrapOrUnwrap } from './useIsWrapOrUnwrap'

@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 
+import { useCowAnalytics, Category } from '@cowprotocol/analytics'
 import { errorToString, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -8,7 +9,6 @@ import { useApproveCallback } from 'common/hooks/useApproveCallback'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
 import { useUpdateTradeApproveState } from '../../hooks/useUpdateTradeApproveState'
-import { useCowAnalytics, Category } from '@cowprotocol/analytics'
 
 interface TradeApproveCallbackParams {
   useModals: boolean

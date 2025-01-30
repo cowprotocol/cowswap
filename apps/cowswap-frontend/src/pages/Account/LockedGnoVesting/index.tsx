@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import { useCowAnalytics, Category } from '@cowprotocol/analytics'
 import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
 import cowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import {
@@ -30,7 +31,6 @@ import { HelpCircle } from 'common/pure/HelpCircle'
 import { BalanceDisplay, Card, CardActions, ConvertWrapper, ExtLink, VestingBreakdown } from 'pages/Account/styled'
 
 import { useClaimCowFromLockedGnoCallback } from './hooks'
-import { useCowAnalytics, Category } from '@cowprotocol/analytics'
 
 enum ClaimStatus {
   INITIAL,
