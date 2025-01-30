@@ -17,6 +17,22 @@ const nextConfig = {
       }
     }
 
+    // Add source-map-loader configuration
+    config.module.rules.unshift({
+      test: /\.(js|mjs|jsx|ts|tsx)$/,
+      use: [
+        {
+          loader: require.resolve('source-map-loader'),
+          options: {
+            filterSourceMappingUrl: (url, resourcePath) => {
+              return !resourcePath.includes('node_modules')
+            },
+          },
+        },
+      ],
+      enforce: 'pre',
+    })
+
     config.module.rules.push(
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
