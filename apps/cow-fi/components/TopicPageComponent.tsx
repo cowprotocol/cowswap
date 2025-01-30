@@ -93,21 +93,9 @@ const CategoryDescription = styled.div`
 `
 
 interface TopicPageProps {
-  category: {
-    attributes?: {
-      name: string
-      description: string
-      image?: {
-        data?: {
-          attributes?: {
-            url: string
-          }
-        }
-      }
-    }
-  }
-  articles: Article[]
-  allCategories: Array<{ name: string; slug: string }>
+  category: any
+  articles: any[]
+  allCategories: { name: string; slug: string }[]
 }
 
 export function TopicPageComponent({ category, allCategories, articles }: TopicPageProps) {
