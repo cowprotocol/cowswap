@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.9.0...common-utils-v1.9.1) (2025-01-30)
+
+
+### Bug Fixes
+
+* type guard to make sure provider is a JsonRpcProvider ([#5357](https://github.com/cowprotocol/cowswap/issues/5357)) ([6a2e030](https://github.com/cowprotocol/cowswap/commit/6a2e030aa7f88ef207fad8910750b18dcf719503))
+
 ## [1.9.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.8.0...common-utils-v1.9.0) (2025-01-29)
 
 
