@@ -15,7 +15,7 @@ export async function assertProviderNetwork(
   const network = await getChainIdImmediately(provider)
   if (network !== chainId) {
     throw new Error(
-      `Wallet chainId differs from order params chainId. Wallet: ${network}, App: ${chainId}. Action: ${description}`,
+      `Wallet chainId differs from app chainId. Wallet: ${network}, App: ${chainId}. Action: ${description}`,
     )
   }
 
