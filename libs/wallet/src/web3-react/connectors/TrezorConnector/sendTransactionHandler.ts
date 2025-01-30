@@ -14,7 +14,7 @@ export async function sendTransactionHandler(
   provider: JsonRpcProvider,
   trezorConnect: TrezorConnect,
 ) {
-  const chainId = await provider.send('eth_chainId', [])
+  const chainId = +(await provider.send('eth_chainId', []))
   const nonce = await provider.send('eth_getTransactionCount', [account, 'latest'])
 
   const originalTx = params[0]
