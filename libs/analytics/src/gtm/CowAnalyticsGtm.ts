@@ -3,6 +3,7 @@ import { debounce } from '@cowprotocol/common-utils'
 import { isValidGtmClickEvent } from './types'
 
 import { AnalyticsContext, CowAnalytics, EventOptions, OutboundLinkParams } from '../CowAnalytics'
+import { GtmEvent } from '../types'
 
 interface DataLayerEvent extends Record<string, unknown> {
   event: string
@@ -80,7 +81,8 @@ export class CowAnalyticsGtm implements CowAnalytics {
       event: 'page_view',
       page_path: path,
       page_title: title,
-      dimensions: this.getDimensions(),
+      page_params: params,
+      ...this.getDimensions(),
     })
   }
 
@@ -89,13 +91,26 @@ export class CowAnalyticsGtm implements CowAnalytics {
       typeof event === 'string'
         ? { event, ...(params as Record<string, unknown>) }
         : {
-            event: 'custom_event',
-            eventCategory: event.category,
-            eventAction: event.action,
-            eventLabel: event.label,
-            eventValue: event.value,
-            nonInteraction: event.nonInteraction,
-            dimensions: this.getDimensions(),
+            // Create specific event name from category and action
+            event: `${event.category.toLowerCase()}_${event.action.toLowerCase().replace(/\s+/g, '_')}`,
+
+            // Core parameters at root level
+            category: event.category,
+            action: event.action,
+            label: event.label,
+            value: event.value,
+
+            // Non-interaction flag
+            non_interaction: event.nonInteraction,
+
+            // Spread dimensions at root level
+            ...this.getDimensions(),
+
+            // Include additional dynamic properties if present
+            ...((event as GtmEvent).orderId && { order_id: (event as GtmEvent).orderId }),
+            ...((event as GtmEvent).orderType && { order_type: (event as GtmEvent).orderType }),
+            ...((event as GtmEvent).tokenSymbol && { token_symbol: (event as GtmEvent).tokenSymbol }),
+            ...((event as GtmEvent).chainId && { chain_id: (event as GtmEvent).chainId }),
           }
 
     this.pushToDataLayer(eventData)
@@ -104,28 +119,28 @@ export class CowAnalyticsGtm implements CowAnalytics {
   sendTiming(timingCategory: string, timingVar: string, timingValue: number, timingLabel: string): void {
     this.pushToDataLayer({
       event: 'timing_complete',
-      timingCategory,
-      timingVar,
-      timingValue,
-      timingLabel,
-      dimensions: this.getDimensions(),
+      timing_category: timingCategory,
+      timing_variable: timingVar,
+      timing_value: timingValue,
+      timing_label: timingLabel,
+      ...this.getDimensions(),
     })
   }
 
   sendError(error: Error, errorInfo?: string): void {
     this.pushToDataLayer({
       event: 'exception',
-      exDescription: error.toString() + (errorInfo ? ': ' + errorInfo : ''),
-      exFatal: true,
-      dimensions: this.getDimensions(),
+      error_description: error.toString() + (errorInfo ? ': ' + errorInfo : ''),
+      error_fatal: true,
+      ...this.getDimensions(),
     })
   }
 
   outboundLink({ label, hitCallback }: OutboundLinkParams): void {
     this.pushToDataLayer({
       event: 'outbound_link',
-      outboundLabel: label,
-      dimensions: this.getDimensions(),
+      outbound_label: label,
+      ...this.getDimensions(),
     })
 
     // Execute callback after pushing to dataLayer
@@ -145,6 +160,13 @@ export class CowAnalyticsGtm implements CowAnalytics {
   // Helper to push to dataLayer with proper typing
   private pushToDataLayer(data: DataLayerEvent): void {
     if (typeof window !== 'undefined') {
+      // TODO: TEMPORARY - Remove after debugging
+      console.log('🔍 Analytics Event:', {
+        ...data,
+        timestamp: new Date().toISOString(),
+        stack: new Error().stack?.split('\n').slice(2).join('\n'), // Capture call stack but skip the first 2 lines (Error and this function)
+      })
+
       this.dataLayer.push(data)
     }
   }
