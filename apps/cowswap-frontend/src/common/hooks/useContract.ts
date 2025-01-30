@@ -13,13 +13,13 @@ import {
   WethAbi,
 } from '@cowprotocol/abis'
 import {
-  COWSWAP_ETHFLOW_CONTRACT_ADDRESS,
-  OLD_COWSWAP_ETHFLOW_CONTRACT_ADDRESS,
+  getEthFlowContractAddresses,
   V_COW_CONTRACT_ADDRESS,
   WRAPPED_NATIVE_CURRENCIES,
 } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { getContract, isEns, isProd, isStaging } from '@cowprotocol/common-utils'
+import { getContract } from '@cowprotocol/common-utils'
+import { isEns, isProd, isStaging } from '@cowprotocol/common-utils'
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -30,7 +30,7 @@ const WETH_CONTRACT_ADDRESS_MAP = Object.fromEntries(
   Object.entries(WRAPPED_NATIVE_CURRENCIES).map(([chainId, token]) => [chainId, token.address]),
 )
 
-const contractEnv = isProd || isStaging || isEns ? 'prod' : 'barn'
+export const ethFlowEnv = isProd || isStaging || isEns ? 'prod' : 'barn'
 
 export type UseContractResult<T extends Contract = Contract> = {
   contract: T | null
@@ -103,13 +103,17 @@ export function useWethContract(withSignerIfPossible?: boolean) {
   return useContract<Weth>(WETH_CONTRACT_ADDRESS_MAP, WethAbi, withSignerIfPossible)
 }
 
-export function useEthFlowContract(): UseContractResult<CoWSwapEthFlow> {
+export function useEthFlowContract(): {
+  result: UseContractResult<CoWSwapEthFlow>
+  useNewEthFlowContracts: boolean
+} {
   const { useNewEthFlowContracts = false } = useFeatureFlags()
-  const contractAddresses = useNewEthFlowContracts
-    ? COWSWAP_ETHFLOW_CONTRACT_ADDRESS[contractEnv]
-    : OLD_COWSWAP_ETHFLOW_CONTRACT_ADDRESS[contractEnv]
+  const contractAddress = getEthFlowContractAddresses(ethFlowEnv, useNewEthFlowContracts)
 
-  return useContract<CoWSwapEthFlow>(contractAddresses, CoWSwapEthFlowAbi, true)
+  return {
+    result: useContract<CoWSwapEthFlow>(contractAddress, CoWSwapEthFlowAbi, true),
+    useNewEthFlowContracts,
+  }
 }
 
 export function useGP2SettlementContract(): UseContractResult<GPv2Settlement> {
