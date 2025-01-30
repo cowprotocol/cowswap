@@ -1,5 +1,5 @@
 import { CoWSwapEthFlow } from '@cowprotocol/abis'
-import { calculateGasMargin, getChainIdImmediately } from '@cowprotocol/common-utils'
+import { calculateGasMargin } from '@cowprotocol/common-utils'
 import { OrderClass, SigningScheme, UnsignedOrder } from '@cowprotocol/cow-sdk'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { NativeCurrency } from '@uniswap/sdk-core'
@@ -10,6 +10,7 @@ import { getSignOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'le
 import { logTradeFlow, logTradeFlowError } from 'modules/trade/utils/logger'
 
 import { GAS_LIMIT_DEFAULT } from 'common/constants/common'
+import { assertProviderNetwork } from 'common/utils/assertProviderNetwork'
 
 type EthFlowOrderParams = Omit<PostOrderParams, 'sellToken'> & {
   sellToken: NativeCurrency
@@ -44,12 +45,7 @@ export async function signEthFlowOrderStep(
     throw new Error('[EthFlow::SignEthFlowOrderStep] No quoteId passed')
   }
 
-  const network = await getChainIdImmediately(ethFlowContract.provider)
-  if (network !== orderParams.chainId) {
-    throw new Error(
-      `Wallet chainId differs from order params chainId. Wallet: ${network}, Order: ${orderParams.chainId}`,
-    )
-  }
+  const network = await assertProviderNetwork(orderParams.chainId, ethFlowContract.provider, 'eth-flow')
 
   const ethOrderParams: EthFlowCreateOrderParams = {
     ...order,
