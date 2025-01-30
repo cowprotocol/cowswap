@@ -5,8 +5,6 @@ export * from './types'
 export * from './consts'
 export * from './theme'
 
-export { useAnalyticsReporter } from './analytics/useAnalyticsReporter'
-
 export * from './pure/ButtonSecondaryAlt'
 export * from './pure/Button'
 export * from './pure/CenteredDots'

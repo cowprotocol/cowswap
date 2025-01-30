@@ -31,7 +31,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Navigation, Pagination } from 'swiper/modules'
 
 import { Link, LinkType } from '@/components/Link'
-import { clickOnDaos } from '../modules/analytics'
+import { Category, initGtm } from '@cowprotocol/analytics'
 
 import 'swiper/css'
 import 'swiper/css/pagination'
@@ -41,6 +41,8 @@ import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
 import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
+
+const analytics = initGtm()
 
 export function DaosPageComponent() {
   return (
@@ -154,7 +156,13 @@ export function DaosPageComponent() {
                     href="https://github.com/charlesndalton/milkman"
                     external
                     utmContent="link-to-milkman"
-                    onClick={() => clickOnDaos('click-milkman')}
+                    onClick={() =>
+                      analytics.sendEvent({
+                        category: Category.DAOS,
+                        action: 'Click Milkman',
+                        label: 'link-to-milkman',
+                      })
+                    }
                   >
                     Milkman bot
                   </Link>
@@ -213,7 +221,13 @@ export function DaosPageComponent() {
                     href="https://dump.services/"
                     external
                     utmContent="link-to-dump-services"
-                    onClick={() => clickOnDaos('click-dump-services')}
+                    onClick={() =>
+                      analytics.sendEvent({
+                        category: Category.DAOS,
+                        action: 'Click Dump Services',
+                        label: 'link-to-dump-services',
+                      })
+                    }
                   >
                     Dump.services
                   </Link>
@@ -243,7 +257,13 @@ export function DaosPageComponent() {
             utmContent="link-to-advanced-order-types"
             margin="24px auto 0"
             external
-            onClick={() => clickOnDaos('click-advanced-order-types')}
+            onClick={() =>
+              analytics.sendEvent({
+                category: Category.DAOS,
+                action: 'Click Advanced Order Types',
+                label: 'link-to-advanced-order-types',
+              })
+            }
           >
             Explore advanced order types
           </Link>
@@ -288,7 +308,13 @@ export function DaosPageComponent() {
                       href={dao.link}
                       utmContent={`dao-${dao.title.toLowerCase().replace(/\s/g, '-')}`}
                       external
-                      onClick={() => clickOnDaos(`click-${dao.title.toLowerCase()}`)}
+                      onClick={() =>
+                        analytics.sendEvent({
+                          category: Category.DAOS,
+                          action: 'Click Learn More',
+                          label: `dao-${dao.title.toLowerCase().replace(/\s/g, '-')}`,
+                        })
+                      }
                     >
                       Learn more
                     </Link>
@@ -303,7 +329,13 @@ export function DaosPageComponent() {
                   href={`${dao.link}?utm_source=cow.fi&utm_medium=web&utm_content=dao-${dao.title}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => clickOnDaos(`click-${dao.title.toLowerCase()}`)}
+                  onClick={() =>
+                    analytics.sendEvent({
+                      category: Category.DAOS,
+                      action: 'Click Learn More',
+                      label: `dao-${dao.title.toLowerCase().replace(/\s/g, '-')}`,
+                    })
+                  }
                 >
                   <TopicImage
                     iconColor={Color.neutral0}

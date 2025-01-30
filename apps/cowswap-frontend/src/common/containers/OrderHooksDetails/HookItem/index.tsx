@@ -1,26 +1,30 @@
 import { useState } from 'react'
 
+import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import { CowHookDetails, HookToDappMatch } from '@cowprotocol/hook-dapp-lib'
 
 import { ChevronDown, ChevronUp } from 'react-feather'
 
-import { clickOnHooks } from 'modules/analytics'
 import { useSimulationData } from 'modules/tenderly/hooks/useSimulationData'
 
 import * as styledEl from './styled'
 
 export function HookItem({ details, item, index }: { details?: CowHookDetails; item: HookToDappMatch; index: number }) {
   const [isOpen, setIsOpen] = useState(false)
-
   const simulationData = useSimulationData(details?.uuid)
 
-  const handleLinkClick = () => {
-    clickOnHooks(item.dapp?.name || 'Unknown hook dapp')
-  }
+  const dappName = item.dapp?.name || 'Unknown Hook'
 
   return (
     <styledEl.HookItemWrapper as="li">
-      <styledEl.HookItemHeader onClick={() => setIsOpen(!isOpen)}>
+      <styledEl.HookItemHeader
+        onClick={() => setIsOpen(!isOpen)}
+        data-click-event={toGtmEvent({
+          category: Category.HOOKS,
+          action: 'Click Hook Details',
+          label: `${dappName} - ${isOpen ? 'Collapse' : 'Expand'}`,
+        })}
+      >
         <styledEl.HookItemInfo>
           <styledEl.HookNumber>{index + 1}</styledEl.HookNumber>
           {item.dapp ? (
@@ -44,7 +48,16 @@ export function HookItem({ details, item, index }: { details?: CowHookDetails; i
                 <p>
                   <b>Simulation:</b>
                   <styledEl.SimulationLink status={simulationData.status}>
-                    <a href={simulationData.link} target="_blank" rel="noopener noreferrer">
+                    <a
+                      href={simulationData.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-click-event={toGtmEvent({
+                        category: Category.HOOKS,
+                        action: 'Click Simulation',
+                        label: `${dappName} - ${simulationData.status ? 'Success' : 'Failed'}`,
+                      })}
+                    >
                       {simulationData.status ? 'Simulation successful' : 'Simulation failed'}
                     </a>
                   </styledEl.SimulationLink>
@@ -58,7 +71,16 @@ export function HookItem({ details, item, index }: { details?: CowHookDetails; i
               </p>
               <p>
                 <b>Website:</b>{' '}
-                <a href={item.dapp.website} target="_blank" rel="noopener noreferrer" onClick={handleLinkClick}>
+                <a
+                  href={item.dapp.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-click-event={toGtmEvent({
+                    category: Category.HOOKS,
+                    action: 'Click Website',
+                    label: `${dappName} - ${new URL(item.dapp.website).hostname}`,
+                  })}
+                >
                   {item.dapp.website}
                 </a>
               </p>

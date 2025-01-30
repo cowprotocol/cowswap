@@ -1,5 +1,6 @@
 import { ReactElement, useCallback, useState } from 'react'
 
+import { Category, toGtmEvent, useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { getTokenLogoUrls } from '@cowprotocol/tokens'
@@ -7,8 +8,6 @@ import { Command } from '@cowprotocol/types'
 import { useIsAssetWatchingSupported, useWalletDetails } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Currency } from '@uniswap/sdk-core'
-
-import { watchAssetInWalletAnalytics } from 'modules/analytics'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
@@ -28,6 +27,7 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
   const provider = useWalletProvider()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isAssetWatchingSupported = useIsAssetWatchingSupported()
+  const cowAnalytics = useCowAnalytics()
 
   const [success, setSuccess] = useState<boolean | undefined>()
 
@@ -48,12 +48,22 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
         },
       } as never)
       .then(() => {
-        watchAssetInWalletAnalytics('Succeeded', token.symbol)
+        // Track success event
+        cowAnalytics.sendEvent({
+          category: Category.WALLET,
+          action: 'Watch Asset',
+          label: `Succeeded: ${token.symbol}`,
+        })
         setSuccess(true)
       })
       .catch((error) => {
         console.error('Can not add an asset to wallet', error)
-        watchAssetInWalletAnalytics('Failed', token.symbol)
+        // Track failure event
+        cowAnalytics.sendEvent({
+          category: Category.WALLET,
+          action: 'Watch Asset',
+          label: `Failed: ${token.symbol}`,
+        })
         setSuccess(false)
       })
   }, [provider, logoURL, token])
@@ -71,6 +81,10 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
       addToken={addToken}
       currency={currency}
       shortLabel={shortLabel}
+      data-click-event={toGtmEvent({
+        category: Category.WALLET,
+        action: 'Click Watch Asset',
+      })}
     />
   )
 }

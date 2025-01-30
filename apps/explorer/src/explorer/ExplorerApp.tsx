@@ -1,12 +1,16 @@
 import React from 'react'
 
-import { CowAnalyticsProvider } from '@cowprotocol/analytics'
+import {
+  CowAnalyticsProvider,
+  useAnalyticsReporter,
+  WebVitalsAnalytics,
+  initGtm,
+  initPixelAnalytics,
+} from '@cowprotocol/analytics'
 import { CHAIN_INFO_ARRAY } from '@cowprotocol/common-const'
 
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
-import { cowAnalytics } from 'analytics'
-import { useAnalyticsReporterExplorer } from 'analytics/useAnalyticsReporterExplorer'
 import { BrowserRouter, HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 
 import { WithLDProvider } from './components/common/WithLDProvider'
@@ -17,9 +21,14 @@ import { GlobalStyle, MainWrapper } from './styled'
 import { version } from '../../package.json'
 import { GenericLayout } from '../components/layout'
 import { withGlobalContext } from '../hooks/useGlobalState'
-import { RedirectMainnet, RedirectXdai } from '../state/network'
+import { RedirectMainnet, RedirectXdai, useNetworkId } from '../state/network'
 import { NetworkUpdater } from '../state/network/NetworkUpdater'
 import { environmentName } from '../utils/env'
+
+// Initialize analytics instances
+const cowAnalytics = initGtm()
+const pixelAnalytics = initPixelAnalytics()
+const webVitalsAnalytics = new WebVitalsAnalytics(cowAnalytics)
 
 const SENTRY_DSN = process.env.REACT_APP_EXPLORER_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
@@ -38,7 +47,6 @@ if (SENTRY_DSN) {
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Router: typeof BrowserRouter & typeof HashRouter = (window as any).IS_IPFS ? HashRouter : BrowserRouter
 
 const NotFound = React.lazy(
@@ -46,7 +54,7 @@ const NotFound = React.lazy(
     import(
       /* webpackChunkName: "Extra_routes_chunk"*/
       './pages/NotFound'
-    )
+    ),
 )
 
 const AppDataDetails = React.lazy(
@@ -54,7 +62,7 @@ const AppDataDetails = React.lazy(
     import(
       /* webpackChunkName: "Metadata_chunk"*/
       './pages/AppData'
-    )
+    ),
 )
 
 const SearchNotFound = React.lazy(
@@ -62,7 +70,7 @@ const SearchNotFound = React.lazy(
     import(
       /* webpackChunkName: "SearchNotFound_chunk"*/
       './pages/SearchNotFound'
-    )
+    ),
 )
 
 const Home = React.lazy(
@@ -70,7 +78,7 @@ const Home = React.lazy(
     import(
       /* webpackChunkName: "Trade_chunk"*/
       './pages/Home'
-    )
+    ),
 )
 
 const Order = React.lazy(
@@ -78,7 +86,7 @@ const Order = React.lazy(
     import(
       /* webpackChunkName: "Order_chunk"*/
       './pages/Order'
-    )
+    ),
 )
 
 const UserDetails = React.lazy(
@@ -86,7 +94,7 @@ const UserDetails = React.lazy(
     import(
       /* webpackChunkName: "UserDetails_chunk"*/
       './pages/UserDetails'
-    )
+    ),
 )
 
 const TransactionDetails = React.lazy(
@@ -94,7 +102,7 @@ const TransactionDetails = React.lazy(
     import(
       /* webpackChunkName: "TransactionDetails_chunk"*/
       './pages/TransactionDetails'
-    )
+    ),
 )
 
 /**
@@ -109,7 +117,15 @@ const networkPrefixes = CHAIN_INFO_ARRAY.map((info) => info.urlAlias)
 /** App content */
 
 const AppContent = (): React.ReactNode => {
-  useAnalyticsReporterExplorer()
+  const chainId = useNetworkId()
+  useAnalyticsReporter({
+    account: undefined, // Explorer doesn't have wallet functionality
+    walletName: undefined, // Explorer doesn't have wallet functionality
+    chainId: chainId || undefined,
+    cowAnalytics,
+    pixelAnalytics,
+    webVitalsAnalytics,
+  })
 
   const location = useLocation()
   const { pathname: path } = location
@@ -163,5 +179,5 @@ export default withGlobalContext(
   ExplorerApp,
   // Initial State
   INITIAL_STATE,
-  rootReducer
+  rootReducer,
 )

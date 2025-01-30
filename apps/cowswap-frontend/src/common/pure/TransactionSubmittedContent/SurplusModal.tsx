@@ -1,3 +1,4 @@
+import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import CheckSingular from '@cowprotocol/assets/cow-swap/check-singular.svg'
 import SurplusCow from '@cowprotocol/assets/cow-swap/surplus-cow.svg'
 import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
@@ -9,8 +10,6 @@ import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import { Order } from 'legacy/state/orders/actions'
-
-import { shareSurplusOnTwitter } from 'modules/analytics'
 
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 
@@ -179,12 +178,15 @@ export function SurplusModal(props: SurplusModalProps) {
       {showFiatValue && <FiatAmount amount={surplusFiatValue} accurate={false} />}
       {surplusAmount && surplusToken && (
         <StyledExternalLink
-          onClickOptional={shareSurplusOnTwitter}
           href={`https://twitter.com/intent/tweet?text=${getTwitterText(
             surplusAmount.toSignificant(),
             surplusToken.symbol || 'Unknown token',
-            order.kind
+            order.kind,
           )}`}
+          data-click-event={toGtmEvent({
+            category: Category.SURPLUS_MODAL,
+            action: 'Share on Twitter',
+          })}
         >
           <SVG src={twitterImage} description="Twitter" />
           <span>Share this win!</span>
@@ -204,6 +206,6 @@ function getTwitterText(surplusAmount: string, surplusToken: string, orderKind: 
   const actionWord = isSellOrder(orderKind) ? SELL_SURPLUS_WORD : BUY_SURPLUS_WORD
   const surplus = `${surplusAmount} ${surplusToken}`
   return encodeURIComponent(
-    `Hey, I just ${actionWord} an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`
+    `Hey, I just ${actionWord} an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`,
   )
 }

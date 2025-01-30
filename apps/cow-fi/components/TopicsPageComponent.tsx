@@ -13,10 +13,12 @@ import {
   TopicTitle,
 } from '@/styles/styled'
 import { ArrowButton } from '@/components/ArrowButton'
-import { clickOnKnowledgeBase } from '../modules/analytics'
+import { Category, initGtm } from '@cowprotocol/analytics'
 import { CmsImage, Color, Font, Media } from '@cowprotocol/ui'
 import { ArticleListResponse } from '../services/cms'
 import styled from 'styled-components/macro'
+
+const analytics = initGtm()
 
 interface PageProps {
   categories: {
@@ -85,7 +87,13 @@ export function TopicsPageComponent({ articles, categories }: PageProps) {
                   bgColor={bgColor}
                   textColor={textColor}
                   href={link}
-                  onClick={() => clickOnKnowledgeBase(`click-topic-${name}`)}
+                  onClick={() =>
+                    analytics.sendEvent({
+                      category: Category.KNOWLEDGEBASE,
+                      action: 'Click topic',
+                      label: name,
+                    })
+                  }
                 >
                   <TopicImage iconColor={iconColor}>
                     {imageUrl ? (

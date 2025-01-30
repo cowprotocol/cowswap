@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { Category, initGtm } from '@cowprotocol/analytics'
 
 import IMG_ICON_UNICORN from '@cowprotocol/assets/images/icon-unicorn.svg'
 import IMG_ICON_FLOWER_COW from '@cowprotocol/assets/images/icon-flower-cow.svg'
@@ -39,7 +40,8 @@ import LazySVG from '@/components/LazySVG'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 import { ADVANCED_ORDER_TYPES, BETTER_UX, COW_IS_DIFFERENT, FAQ_DATA, TWEETS } from '@/data/cow-swap/const'
 import LazyLoadTweet from '@/components/LazyLoadTweet'
-import { clickOnCowSwap } from '../../../modules/analytics'
+
+const analytics = initGtm()
 
 export default function Page() {
   const tweetSectionRef = useRef<HTMLDivElement>(null)
@@ -86,7 +88,12 @@ export default function Page() {
             external
             linkType={LinkType.HeroButton}
             utmContent="cow-swap-launch-app-button"
-            onClick={() => clickOnCowSwap('click-launch-app')}
+            onClick={() =>
+              analytics.sendEvent({
+                category: Category.COWSWAP,
+                action: 'click-launch-app',
+              })
+            }
           >
             Launch app
           </Link>
@@ -119,7 +126,12 @@ export default function Page() {
           external
           linkType={LinkType.SectionTitleButton}
           utmContent="cow-swap-metrics-link"
-          onClick={() => clickOnCowSwap('click-metrics-link')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWSWAP,
+              action: 'click-metrics-link',
+            })
+          }
         >
           View all metrics on DUNE &#8599;
         </Link>
@@ -180,7 +192,12 @@ export default function Page() {
               color="#012F7A"
               href="/cow-protocol"
               linkType={LinkType.SectionTitleButton}
-              onClick={() => clickOnCowSwap('click-learn-about-cow-protocol')}
+              onClick={() =>
+                analytics.sendEvent({
+                  category: Category.COWSWAP,
+                  action: 'click-learn-about-cow-protocol',
+                })
+              }
             >
               Learn about CoW Protocol
             </Link>
@@ -393,7 +410,12 @@ export default function Page() {
               external
               linkType={LinkType.SectionTitleButton}
               utmContent="cow-swap-launch-app-button"
-              onClick={() => clickOnCowSwap('click-launch-app')}
+              onClick={() =>
+                analytics.sendEvent({
+                  category: Category.COWSWAP,
+                  action: 'click-launch-app',
+                })
+              }
             >
               Launch app
             </Link>

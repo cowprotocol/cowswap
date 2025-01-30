@@ -30,7 +30,9 @@ import IMG_SMARTORDERS from '@cowprotocol/assets/images/image-smartorders.svg'
 import IMG_LOGO_NEXUS from '@cowprotocol/assets/images/logo-nexus-icon.svg'
 import IMG_LOGO_ENS from '@cowprotocol/assets/images/logo-ens-icon.svg'
 import IMG_LOGO_AAVE from '@cowprotocol/assets/images/logo-aave-icon.svg'
-import { clickOnCowProtocol } from 'modules/analytics'
+import { Category, initGtm } from '@cowprotocol/analytics'
+
+const analytics = initGtm()
 
 export const ADVANCED_ORDER_TYPES = [
   {
@@ -147,7 +149,13 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
           external
           utmContent="cow-protocol-introduction-intents"
-          onClick={() => clickOnCowProtocol('click-introduction-intents')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWPROTOCOL,
+              action: 'Click Introduction',
+              label: 'intents',
+            })
+          }
         >
           intents
         </Link>
@@ -156,7 +164,13 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => clickOnCowProtocol('click-introduction-solvers')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWPROTOCOL,
+              action: 'Click Introduction',
+              label: 'solvers',
+            })
+          }
         >
           solvers
         </Link>
@@ -165,7 +179,13 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
           external
           utmContent="cow-protocol-introduction-batch-auctions"
-          onClick={() => clickOnCowProtocol('click-introduction-batch-auctions')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWPROTOCOL,
+              action: 'Click Introduction',
+              label: 'batch-auctions',
+            })
+          }
         >
           batch auctions
         </Link>{' '}
@@ -182,7 +202,13 @@ export const FAQ_DATA = [
           href="https://swap.cow.fi/"
           external
           utmContent="cow-protocol-cow-swap"
-          onClick={() => clickOnCowProtocol('click-cow-swap')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWPROTOCOL,
+              action: 'Click Link',
+              label: 'cow-swap',
+            })
+          }
         >
           CoW Swap
         </Link>{' '}
@@ -197,7 +223,7 @@ export const FAQ_DATA = [
     question: 'How does CoW Protocol provide better prices for trades?',
     answer: (
       <>
-        CoW Protocol’s unique architecture allows it to give users comprehensive MEV protection as well as better prices
+        CoW Protocol's unique architecture allows it to give users comprehensive MEV protection as well as better prices
         for their trades. While most other DEX aggregators simply compare quotes from various DEXs and execute orders
         against whichever DEX is lowest at the time of quoting, CoW Protocol seeks to find the best execution price.
         <br />
@@ -206,7 +232,13 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => clickOnCowProtocol('click-introduction-solvers')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWPROTOCOL,
+              action: 'Click Introduction',
+              label: 'solvers',
+            })
+          }
         >
           solvers
         </Link>{' '}
@@ -227,7 +259,13 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => clickOnCowProtocol('click-introduction-solvers')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWPROTOCOL,
+              action: 'Click Introduction',
+              label: 'solvers',
+            })
+          }
         >
           solvers
         </Link>{' '}
@@ -237,7 +275,13 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/how-it-works/coincidence-of-wants"
           external
           utmContent="cow-protocol-coincidence-of-wants"
-          onClick={() => clickOnCowProtocol('click-coincidence-of-wants')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWPROTOCOL,
+              action: 'Click Concept',
+              label: 'coincidence-of-wants',
+            })
+          }
         >
           Coincidences of Wants
         </Link>{' '}
@@ -266,18 +310,30 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
           external
           utmContent="cow-protocol-introduction-intents"
-          onClick={() => clickOnCowProtocol('click-introduction-intents')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWPROTOCOL,
+              action: 'Click Introduction',
+              label: 'intents',
+            })
+          }
         >
           intent
         </Link>{' '}
         is a signed message that a user submits through their wallet which specifies an action they want to take — such
         as trading a token, minting an NFT, entering or exiting a LP position etc. These intents can then be executed by
-        third parties, such as CoW Protocol’s{' '}
+        third parties, such as CoW Protocol's{' '}
         <Link
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => clickOnCowProtocol('click-introduction-solvers')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWPROTOCOL,
+              action: 'Click Introduction',
+              label: 'solvers',
+            })
+          }
         >
           solvers
         </Link>
@@ -288,7 +344,13 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => clickOnCowProtocol('click-introduction-solvers')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWPROTOCOL,
+              action: 'Click Introduction',
+              label: 'solvers',
+            })
+          }
         >
           solver
         </Link>{' '}
@@ -304,7 +366,13 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => clickOnCowProtocol('click-introduction-solvers')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWPROTOCOL,
+              action: 'Click Introduction',
+              label: 'solvers',
+            })
+          }
         >
           Solvers
         </Link>{' '}
@@ -313,7 +381,13 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
           external
           utmContent="cow-protocol-introduction-intents"
-          onClick={() => clickOnCowProtocol('click-introduction-intents')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWPROTOCOL,
+              action: 'Click Introduction',
+              label: 'intents',
+            })
+          }
         >
           intent to trade message
         </Link>
@@ -322,7 +396,13 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
           external
           utmContent="cow-protocol-introduction-batch-auctions"
-          onClick={() => clickOnCowProtocol('click-introduction-batch-auctions')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWPROTOCOL,
+              action: 'Click Introduction',
+              label: 'batch-auctions',
+            })
+          }
         >
           batch
         </Link>
@@ -332,7 +412,13 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/benefits/price-improvement"
           external
           utmContent="cow-protocol-price-improvement"
-          onClick={() => clickOnCowProtocol('click-price-improvement')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWPROTOCOL,
+              action: 'Click Introduction',
+              label: 'price-improvement',
+            })
+          }
         >
           surplus
         </Link>{' '}
@@ -343,7 +429,13 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/tutorials/solvers"
           external
           utmContent="cow-protocol-tutorials-solvers"
-          onClick={() => clickOnCowProtocol('click-tutorials-solvers')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWPROTOCOL,
+              action: 'Click Link',
+              label: 'tutorials-solvers',
+            })
+          }
         >
           CoW Protocol documentation
         </Link>
@@ -360,7 +452,13 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
           external
           utmContent="cow-protocol-introduction-intents"
-          onClick={() => clickOnCowProtocol('click-introduction-intents')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWPROTOCOL,
+              action: 'Click Introduction',
+              label: 'intents',
+            })
+          }
         >
           intent to trade
         </Link>{' '}
@@ -369,7 +467,13 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => clickOnCowProtocol('click-introduction-solvers')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWPROTOCOL,
+              action: 'Click Introduction',
+              label: 'solvers',
+            })
+          }
         >
           solvers
         </Link>
@@ -380,7 +484,13 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
           external
           utmContent="cow-protocol-introduction-batch-auctions"
-          onClick={() => clickOnCowProtocol('click-introduction-batch-auctions')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWPROTOCOL,
+              action: 'Click Introduction',
+              label: 'batch-auctions',
+            })
+          }
         >
           batch auction
         </Link>
@@ -392,7 +502,13 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/benefits/mev-protection"
           external
           utmContent="cow-protocol-mev-protection"
-          onClick={() => clickOnCowProtocol('click-mev-protection')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWPROTOCOL,
+              action: 'Click Introduction',
+              label: 'mev-protection',
+            })
+          }
         >
           prevents MEV
         </Link>
@@ -418,7 +534,13 @@ export const FAQ_DATA = [
           href="https://discord.gg/cowprotocol"
           external
           utmContent="cow-discord"
-          onClick={() => clickOnCowProtocol('click-discord')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWPROTOCOL,
+              action: 'Click Link',
+              label: 'discord',
+            })
+          }
         >
           https://discord.gg/cowprotocol
         </Link>

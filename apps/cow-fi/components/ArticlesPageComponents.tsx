@@ -12,12 +12,14 @@ import {
   LinkSection,
   Pagination,
 } from '@/styles/styled'
-import { clickOnKnowledgeBase } from '../modules/analytics'
+import { Category, initGtm } from '@cowprotocol/analytics'
 import { ArticlesList } from '@/components/ArticlesList'
 import { Article } from '../services/cms'
 import styled from 'styled-components/macro'
 import { Color, Font, Media } from '@cowprotocol/ui'
 import Link from 'next/link'
+
+const analytics = initGtm()
 
 const LEARN_PATH = '/learn/'
 const ARTICLES_PATH = `${LEARN_PATH}articles/`
@@ -73,7 +75,16 @@ export function ArticlesPageComponents({ articles, totalArticles, currentPage, a
         <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>
           <ContainerCardSectionTop>
             <Breadcrumbs padding="0">
-              <Link href="/learn" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-home')}>
+              <Link
+                href="/learn"
+                onClick={() =>
+                  analytics.sendEvent({
+                    category: Category.KNOWLEDGEBASE,
+                    action: 'Click breadcrumb',
+                    label: 'home',
+                  })
+                }
+              >
                 Knowledge Base
               </Link>
               <h1>All articles</h1>
@@ -94,7 +105,13 @@ export function ArticlesPageComponents({ articles, totalArticles, currentPage, a
                 key={i}
                 href={`${ARTICLES_PATH}${i + 1}`}
                 className={i + 1 === currentPage ? 'active' : ''}
-                onClick={() => clickOnKnowledgeBase(`click-pagination-${i + 1}`)}
+                onClick={() =>
+                  analytics.sendEvent({
+                    category: Category.KNOWLEDGEBASE,
+                    action: 'Click pagination',
+                    label: `page-${i + 1}`,
+                  })
+                }
               >
                 {i + 1}
               </Link>

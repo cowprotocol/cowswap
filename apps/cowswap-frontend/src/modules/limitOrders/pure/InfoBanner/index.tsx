@@ -1,3 +1,4 @@
+import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import AlertIcon from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import { ClosableBanner } from '@cowprotocol/ui'
 
@@ -19,12 +20,25 @@ export function InfoBanner() {
             </div>
             <div className="content">
               Your order may not fill exactly when the market price reaches your limit price.{' '}
-              <HashLink target="_blank" to="/faq/limit-order#how-do-fees-work">
+              <HashLink
+                target="_blank"
+                to="/faq/limit-order#how-do-fees-work"
+                data-click-event={toGtmEvent({
+                  category: Category.TRADE,
+                  action: 'Click limit order fees FAQ link',
+                })}
+              >
                 Learn more
               </HashLink>
             </div>
 
-            <styledEl.CloseIcon onClick={close} />
+            <styledEl.CloseIcon
+              onClick={close}
+              data-click-event={toGtmEvent({
+                category: Category.TRADE,
+                action: 'Close limit order info banner',
+              })}
+            />
           </styledEl.InfoPopup>
         )
       })}

@@ -1,5 +1,6 @@
-import React, { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 
+import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 
 import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
@@ -17,6 +18,7 @@ interface NotificationSidebarProps {
 export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const sidebarRef = useRef<HTMLDivElement>(null)
+  const isMobile = useMediaQuery(upToSmall)
 
   const onDismiss = useCallback(() => {
     onClose()
@@ -29,8 +31,6 @@ export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProp
     setIsSettingsOpen((prev) => !prev)
   }, [])
 
-  const isMobile = useMediaQuery(upToSmall)
-
   if (!isOpen) return null
 
   return (
@@ -39,7 +39,13 @@ export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProp
         <NotificationSettings>
           <SidebarHeader isArrowNav>
             <span>
-              <ArrowLeft onClick={toggleSettingsOpen} />
+              <ArrowLeft
+                onClick={toggleSettingsOpen}
+                data-click-event={toGtmEvent({
+                  category: Category.NOTIFICATIONS,
+                  action: 'Close notification settings',
+                })}
+              />
             </span>
             <h3>Settings</h3>
           </SidebarHeader>
@@ -48,10 +54,26 @@ export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProp
         <NotificationsList>
           <SidebarHeader>
             <span>
-              {!isMobile && <DoubleArrowRightIcon onClick={onDismiss} />}
-              {isMobile && <CloseIcon onClick={onDismiss} />}
-              {/*TODO: uncomment this once we have Telegram integration done*/}
-              {/*<SettingsIcon onClick={toggleSettingsOpen} />*/}
+              {!isMobile && (
+                <DoubleArrowRightIcon
+                  onClick={onDismiss}
+                  data-click-event={toGtmEvent({
+                    category: Category.NOTIFICATIONS,
+                    action: 'Close notifications panel',
+                    label: 'desktop',
+                  })}
+                />
+              )}
+              {isMobile && (
+                <CloseIcon
+                  onClick={onDismiss}
+                  data-click-event={toGtmEvent({
+                    category: Category.NOTIFICATIONS,
+                    action: 'Close notifications panel',
+                    label: 'mobile',
+                  })}
+                />
+              )}
             </span>
             <h3>Notifications</h3>
           </SidebarHeader>

@@ -1,3 +1,4 @@
+import { useCowAnalytics, Category } from '@cowprotocol/analytics'
 import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { TokensListsUpdater, UnsupportedTokensUpdater, WidgetTokensListsUpdater } from '@cowprotocol/tokens'
@@ -5,7 +6,6 @@ import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotoco
 
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
 
-import { addListAnalytics, removeListAnalytics } from 'modules/analytics'
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances/updater/BalancesCombinedUpdater'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -44,6 +44,7 @@ export function Updaters() {
   const { isGeoBlockEnabled, isYieldEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
   const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
+  const cowAnalytics = useCowAnalytics()
 
   return (
     <>
@@ -85,8 +86,20 @@ export function Updaters() {
         customTokens={customTokens}
         appCode={appCode}
         onTokenListAddingError={onTokenListAddingError}
-        onAddList={(source) => addListAnalytics('Success', source)}
-        onRemoveList={(source) => removeListAnalytics('Confirm', source)}
+        onAddList={(source) => {
+          cowAnalytics.sendEvent({
+            category: Category.LIST,
+            action: 'Add List Success',
+            label: source,
+          })
+        }}
+        onRemoveList={(source) => {
+          cowAnalytics.sendEvent({
+            category: Category.LIST,
+            action: 'Remove List',
+            label: source,
+          })
+        }}
       />
       <UnsupportedTokensUpdater />
       <BalancesAndAllowancesUpdater chainId={chainId} account={account} />

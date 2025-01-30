@@ -55,7 +55,7 @@ import LazySVG from '@/components/LazySVG'
 
 import { FAQ_DATA, TRUSTED_BY_CONTENT, TESTIMONIAL_LIST, MEV_BLOCKER_LIST } from '@/data/mev-blocker/const'
 
-import { clickOnMevBlocker } from '../../../modules/analytics'
+import { Category, toGtmEvent } from '@cowprotocol/analytics'
 
 const isClient = typeof window === 'object'
 
@@ -113,7 +113,10 @@ export default function Page() {
                 bgColor={'#EC4612'}
                 color={'#FEE7CF'}
                 href="#rpc"
-                onClick={() => clickOnMevBlocker('click-get-protected-heroSection')}
+                data-click-event={toGtmEvent({
+                  category: Category.MEVBLOCKER,
+                  action: 'Click Get Protected',
+                })}
               >
                 Get protected
               </Link>
@@ -146,7 +149,10 @@ export default function Page() {
               external
               linkType={LinkType.SectionTitleButton}
               utmContent="mev-blocker-metrics-link"
-              onClick={() => clickOnMevBlocker('click-metrics-dune')}
+              data-click-event={toGtmEvent({
+                category: Category.MEVBLOCKER,
+                action: 'Click Metrics',
+              })}
             >
               View all metrics on DUNE &#8599;
             </Link>
@@ -165,7 +171,10 @@ export default function Page() {
                     href="https://dune.com/queries/2259793/3703605"
                     external
                     utmContent="mev-blocker-dune-link"
-                    onClick={() => clickOnMevBlocker('click-dune-link')}
+                    data-click-event={toGtmEvent({
+                      category: Category.MEVBLOCKER,
+                      action: 'Click Metrics',
+                    })}
                   >
                     $1.38 billion
                   </Link>{' '}
@@ -196,7 +205,10 @@ export default function Page() {
                     href="https://www.mevscanner.com/"
                     external
                     utmContent="mev-blocker-mev-scanner-link"
-                    onClick={() => clickOnMevBlocker('click-mev-scanner-link')}
+                    data-click-event={toGtmEvent({
+                      category: Category.MEVBLOCKER,
+                      action: 'Click MEV Scanner',
+                    })}
                   >
                     Use MEV Scanner
                   </Link>{' '}
@@ -343,10 +355,13 @@ export default function Page() {
                 <SectionTitleDescription color={Color.neutral50}>
                   To learn more about each of the endpoints MEV Blocker has to offer,{' '}
                   <Link
-                    href="https://docs.cow.fi/mevblocker"
+                    href="https://docs.cow.fi/mev-blocker"
                     external
                     utmContent="mev-blocker-docs-link"
-                    onClick={() => clickOnMevBlocker('click-mev-blocker-docs-link')}
+                    data-click-event={toGtmEvent({
+                      category: Category.MEVBLOCKER,
+                      action: 'Click Docs',
+                    })}
                   >
                     read the MEV Blocker docs
                   </Link>
@@ -428,7 +443,10 @@ export default function Page() {
                   external
                   linkType={LinkType.SectionTitleButton}
                   utmContent="mev-blocker-learn-more"
-                  onClick={() => clickOnMevBlocker('click-mev-blocker-learn-more')}
+                  data-click-event={toGtmEvent({
+                    category: Category.MEVBLOCKER,
+                    action: 'Click Learn More',
+                  })}
                 >
                   Learn more
                 </Link>
@@ -455,7 +473,10 @@ export default function Page() {
                     href={item.href}
                     rel={'noopener noreferrer nofollow'}
                     target="_blank"
-                    onClick={() => clickOnMevBlocker(`click-trusted-by-${item.href}`)}
+                    data-click-event={toGtmEvent({
+                      category: Category.MEVBLOCKER,
+                      action: `Click Trusted By - ${item.href}`,
+                    })}
                   >
                     <TopicImage
                       iconColor={Color.neutral20}
@@ -499,6 +520,10 @@ export default function Page() {
                   color={'#FEE7CF'}
                   onClick={handleShareClick}
                   asButton
+                  data-click-event={toGtmEvent({
+                    category: Category.MEVBLOCKER,
+                    action: 'Click Share',
+                  })}
                 >
                   Share MEV Blocker
                 </Link>

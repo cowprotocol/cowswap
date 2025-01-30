@@ -1,15 +1,15 @@
 import { useAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { useCowAnalytics, Category } from '@cowprotocol/analytics'
 import { getAddress } from '@cowprotocol/common-utils'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { alternativeModalAnalytics } from 'modules/analytics'
 import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
 import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundleFlowContext'
 import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
-import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
+import { useTradeFlow } from 'modules/limitOrders/services/tradeFlow'
 import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
@@ -24,11 +24,26 @@ import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImp
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { TradeAmounts } from 'common/types'
 
+function useAlternativeModalAnalytics() {
+  const analytics = useCowAnalytics()
+
+  return useCallback(
+    (wasPlaced: boolean) => {
+      analytics.sendEvent({
+        category: Category.TRADE,
+        action: 'alternative_modal_completion',
+        label: wasPlaced ? 'placed' : 'not-placed',
+      })
+    },
+    [analytics],
+  )
+}
+
 export function useHandleOrderPlacement(
   tradeContext: TradeFlowContext,
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,
-  tradeConfirmActions: TradeConfirmActions
+  tradeConfirmActions: TradeConfirmActions,
 ): () => Promise<void> {
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
@@ -40,6 +55,8 @@ export function useHandleOrderPlacement(
   // tx bundling stuff
   const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)
   const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
+  const alternativeModalAnalytics = useAlternativeModalAnalytics()
+  const tradeFlowFn = useTradeFlow()
 
   const beforePermit = useCallback(async () => {
     if (!tradeContext) return
@@ -75,14 +92,21 @@ export function useHandleOrderPlacement(
         priceImpact,
         settingsState,
         confirmPriceImpactWithoutFee,
-        beforeTrade
+        beforeTrade,
       )
     }
 
     tradeContext.postOrderParams.partiallyFillable =
       partiallyFillableOverride ?? tradeContext.postOrderParams.partiallyFillable
 
-    return tradeFlow(tradeContext, priceImpact, settingsState, confirmPriceImpactWithoutFee, beforePermit, beforeTrade)
+    return tradeFlowFn(
+      tradeContext,
+      priceImpact,
+      settingsState,
+      confirmPriceImpactWithoutFee,
+      beforePermit,
+      beforeTrade,
+    )
   }, [
     beforePermit,
     beforeTrade,
@@ -93,6 +117,7 @@ export function useHandleOrderPlacement(
     safeBundleFlowContext,
     settingsState,
     tradeContext,
+    tradeFlowFn,
   ])
 
   return useCallback(() => {
@@ -112,7 +137,7 @@ export function useHandleOrderPlacement(
 
         // Analytics event to track alternative modal usage, only if was using alternative modal
         if (isAlternativeOrderEdit !== undefined) {
-          alternativeModalAnalytics(isAlternativeOrderEdit, 'placed')
+          alternativeModalAnalytics(isAlternativeOrderEdit)
         }
       })
       .catch((error) => {
@@ -133,6 +158,7 @@ export function useHandleOrderPlacement(
     navigateToOpenOrdersTable,
     closeReceiptModal,
     hideAlternativeOrderModal,
+    alternativeModalAnalytics,
   ])
 }
 

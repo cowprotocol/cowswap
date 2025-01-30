@@ -18,6 +18,7 @@ import IMG_COW_BITS from '@cowprotocol/assets/images/image-cow-bits.svg'
 import IMG_LEADING from '@cowprotocol/assets/images/image-leading.svg'
 import FAQ from '@/components/FAQ'
 import { Link, LinkType } from '@/components/Link'
+import { Category, toGtmEvent } from '@cowprotocol/analytics'
 
 import {
   ContainerCard,
@@ -52,13 +53,14 @@ import {
   ALL_LOGOS,
   CASE_STUDIES,
   COW_PROTOCOL_SECTIONS,
-  FAQ_DATA,
+  useFaqData,
   TOP_LOGOS,
   UNIQUE_TRADING_LOGIC,
 } from '@/data/cow-protocol/const'
-import { clickOnCowProtocol } from '../../../modules/analytics'
 
 export default function Page() {
+  const faqData = useFaqData()
+
   return (
     <PageWrapper>
       <HeroContainer variant="secondary">
@@ -75,7 +77,10 @@ export default function Page() {
             href="https://docs.cow.fi/category/tutorials"
             external
             linkType={LinkType.HeroButton}
-            onClick={() => clickOnCowProtocol('click-hero-start-building')}
+            data-click-event={toGtmEvent({
+              category: Category.COWPROTOCOL,
+              action: 'Start Building Tutorial Navigation',
+            })}
           >
             Start building
           </Link>
@@ -109,7 +114,10 @@ export default function Page() {
           external
           linkType={LinkType.SectionTitleButton}
           utmContent="cow-protocol-metrics"
-          onClick={() => clickOnCowProtocol('click-metrics-view-all')}
+          data-click-event={toGtmEvent({
+            category: Category.COWPROTOCOL,
+            action: 'View Metrics On Dune',
+          })}
         >
           View all metrics on DUNE &#8599;
         </Link>
@@ -158,7 +166,10 @@ export default function Page() {
                   bgColor="#66018E"
                   color="#F996EE"
                   href="/learn"
-                  onClick={() => clickOnCowProtocol('click-intents-learn-more')}
+                  data-click-event={toGtmEvent({
+                    category: Category.COWPROTOCOL,
+                    action: 'Open Intents Documentation',
+                  })}
                   linkType={LinkType.TopicButton}
                 >
                   Learn more
@@ -201,7 +212,10 @@ export default function Page() {
                   bgColor="#66018E"
                   color="#F996EE"
                   href="/learn"
-                  onClick={() => clickOnCowProtocol('click-solvers-learn-more')}
+                  data-click-event={toGtmEvent({
+                    category: Category.COWPROTOCOL,
+                    action: 'Open Solvers Documentation',
+                  })}
                   linkType={LinkType.TopicButton}
                 >
                   Learn more
@@ -224,8 +238,11 @@ export default function Page() {
                   bgColor="#66018E"
                   color="#F996EE"
                   href="/learn"
+                  data-click-event={toGtmEvent({
+                    category: Category.COWPROTOCOL,
+                    action: 'Open Batch Auctions Documentation',
+                  })}
                   linkType={LinkType.TopicButton}
-                  onClick={() => clickOnCowProtocol('click-batch-auctions-learn-more')}
                 >
                   Learn more
                 </Link>
@@ -353,7 +370,7 @@ export default function Page() {
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={Color.neutral100}>Adding security to sensitive transactions</TopicTitle>
                 <TopicDescription fontSize={21} color="#F996EE">
-                  Lido leverages programmatic orders as the backbone of “stonks” - a set of smart contracts that they
+                  Lido leverages programmatic orders as the backbone of "stonks" - a set of smart contracts that they
                   use to manage treasury ops smoothly and securely without taking custody of funds. Stonks allows Lido
                   DAO to "set and forget" complex trade intents without compromising the prices they receive on future
                   swaps - minimizing time spent and human error
@@ -399,7 +416,10 @@ export default function Page() {
                 href={`${logo.url}?utm_source=cow.fi&utm_medium=web&utm_content=cow-protocol-logos`}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
-                onClick={() => clickOnCowProtocol(`click-logo-${logo.alt}`)}
+                data-click-event={toGtmEvent({
+                  category: Category.COWPROTOCOL,
+                  action: `Visit Partner ${logo.alt}`,
+                })}
               >
                 <TopicImage
                   iconColor={Color.neutral20}
@@ -429,7 +449,10 @@ export default function Page() {
                     external
                     linkType={LinkType.TopicButton}
                     utmContent={`cow-protocol-case-study-${study.title}`}
-                    onClick={() => clickOnCowProtocol(`click-case-study-${study.title}`)}
+                    data-click-event={toGtmEvent({
+                      category: Category.COWPROTOCOL,
+                      action: `Read Case Study ${study.title}`,
+                    })}
                   >
                     Read more
                   </Link>
@@ -448,7 +471,10 @@ export default function Page() {
                 href={`${logo.url}?utm_source=cow.fi&utm_medium=web&utm_content=cow-protocol-logos`}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
-                onClick={() => clickOnCowProtocol(`click-logo-${logo.alt}`)}
+                data-click-event={toGtmEvent({
+                  category: Category.COWPROTOCOL,
+                  action: `Visit Partner ${logo.alt}`,
+                })}
               >
                 <TopicImage iconColor={Color.neutral20} bgColor={'transparent'} width={90} height={90} margin={'auto'}>
                   <LazySVG src={logo.src} title={logo.alt} />
@@ -490,7 +516,10 @@ export default function Page() {
                     fontSizeMobile={24}
                     href={topic.linkHref}
                     linkType={LinkType.TopicButton}
-                    onClick={() => clickOnCowProtocol(topic.linkEvent)}
+                    data-click-event={toGtmEvent({
+                      category: Category.COWPROTOCOL,
+                      action: topic.linkEvent,
+                    })}
                     utmContent={topic.linkUtmContent}
                     external={topic.linkHref.startsWith('http')}
                   >
@@ -533,7 +562,10 @@ export default function Page() {
               linkType={LinkType.SectionTitleButton}
               utmContent="cow-protocol-solvers"
               margin="28px 0 0"
-              onClick={() => clickOnCowProtocol(`click-solvers-read-docs`)}
+              data-click-event={toGtmEvent({
+                category: Category.COWPROTOCOL,
+                action: 'Open Solver Development Documentation',
+              })}
             >
               Read the docs
             </Link>
@@ -550,7 +582,7 @@ export default function Page() {
             <SectionTitleText>FAQs</SectionTitleText>
           </SectionTitleWrapper>
 
-          <FAQ faqs={FAQ_DATA} />
+          <FAQ faqs={faqData} />
         </ContainerCardSection>
       </ContainerCard>
     </PageWrapper>

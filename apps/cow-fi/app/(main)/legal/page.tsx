@@ -1,12 +1,12 @@
 'use client'
 
 import { Color } from '@cowprotocol/ui'
-
+import { Category, initGtm } from '@cowprotocol/analytics'
 import styled from 'styled-components/macro'
 import { Link } from '@/components/Link'
-
 import { ArticleContent, ArticleMainTitle, BodyContent, Breadcrumbs, ContainerCard } from '@/styles/styled'
-import { clickOnLegal } from '../../../modules/analytics'
+
+const analytics = initGtm()
 
 const LEGAL_LINKS = [
   {
@@ -44,7 +44,16 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
         <ArticleContent maxWidth="100%">
           <Breadcrumbs>
-            <Link href="/" onClick={() => clickOnLegal('click-legal-breadcrumbs')}>
+            <Link
+              href="/"
+              onClick={() =>
+                analytics.sendEvent({
+                  category: Category.LEGAL,
+                  action: 'Click Breadcrumb',
+                  label: 'home',
+                })
+              }
+            >
               Home
             </Link>
 
@@ -61,7 +70,16 @@ export default function Page() {
             <ul>
               {LEGAL_LINKS.map((link, index) => (
                 <li key={index}>
-                  <Link href={link.href} onClick={() => clickOnLegal(`click-${link.title}`)}>
+                  <Link
+                    href={link.href}
+                    onClick={() =>
+                      analytics.sendEvent({
+                        category: Category.LEGAL,
+                        action: 'Click Document',
+                        label: link.title,
+                      })
+                    }
+                  >
                     {link.title}
                   </Link>
                 </li>

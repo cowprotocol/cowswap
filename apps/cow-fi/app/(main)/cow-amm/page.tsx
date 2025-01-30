@@ -9,6 +9,7 @@ import IMG_COWAMM_PASSIVE from '@cowprotocol/assets/images/image-cowamm-passive.
 import IMG_COWAMM_REKT from '@cowprotocol/assets/images/image-cowamm-rekt.svg'
 import FAQ from '@/components/FAQ'
 import { Link, LinkType } from '@/components/Link'
+import { Category, initGtm } from '@cowprotocol/analytics'
 
 import {
   ContainerCard,
@@ -38,7 +39,8 @@ import LazySVG from '@/components/LazySVG'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
 import { COW_AMM_CONTENT, FAQ_DATA, LVR_CONTENT, QUOTES } from '@/data/cow-amm/const'
-import { clickOnCowAmm } from '../../../modules/analytics'
+
+const analytics = initGtm()
 
 export default function Page() {
   return (
@@ -57,7 +59,13 @@ export default function Page() {
             external
             linkType={LinkType.HeroButton}
             utmContent={'cow-amm-hero-button-lp-on-cow-amm'}
-            onClick={() => clickOnCowAmm('click-lp-on-cow-amm')}
+            onClick={() =>
+              analytics.sendEvent({
+                category: Category.COWAMM,
+                action: 'Click LP on CoW AMM',
+                label: 'hero-button',
+              })
+            }
           >
             LP on CoW AMM ↗
           </Link>
@@ -90,7 +98,13 @@ export default function Page() {
           external
           linkType={LinkType.SectionTitleButton}
           utmContent={'cow-amm-metrics-button-view-all'}
-          onClick={() => clickOnCowAmm('click-view-all-metrics')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.COWAMM,
+              action: 'Click View All Metrics',
+              label: 'dune-analytics',
+            })
+          }
         >
           View all metrics on DUNE &#8599;
         </Link>

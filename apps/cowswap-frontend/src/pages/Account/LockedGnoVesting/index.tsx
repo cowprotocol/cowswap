@@ -26,12 +26,11 @@ import SVG from 'react-inlinesvg'
 import CopyHelper from 'legacy/components/Copy'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 
-import { claimAnalytics } from 'modules/analytics'
-
 import { HelpCircle } from 'common/pure/HelpCircle'
 import { BalanceDisplay, Card, CardActions, ConvertWrapper, ExtLink, VestingBreakdown } from 'pages/Account/styled'
 
 import { useClaimCowFromLockedGnoCallback } from './hooks'
+import { useCowAnalytics, Category } from '@cowprotocol/analytics'
 
 enum ClaimStatus {
   INITIAL,
@@ -77,6 +76,15 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
     ? MERKLE_DROP_CONTRACT_ADDRESSES[chainId]
     : TOKEN_DISTRO_CONTRACT_ADDRESSES[chainId]
 
+  const cowAnalytics = useCowAnalytics()
+  const claimAnalytics = (action: string) => {
+    cowAnalytics.sendEvent({
+      category: Category.CLAIM_COW_FOR_LOCKED_GNO,
+      action,
+      label: 'GNO',
+    })
+  }
+
   const handleClaim = useCallback(async () => {
     handleCloseError()
     if (!claimCallback) {
@@ -85,7 +93,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
 
     setStatus(ClaimStatus.ATTEMPTING)
 
-    claimAnalytics('Send')
+    claimAnalytics('Claim')
     claimCallback()
       .then((tx) => {
         claimAnalytics('Sign')
@@ -115,7 +123,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
         }
         console.error('[Profile::LockedGnoVesting::index::claimCallback]::error', errorMessage)
         setStatus(ClaimStatus.INITIAL)
-        claimAnalytics(isRejected ? 'Reject' : 'Error', errorCode)
+        claimAnalytics(isRejected ? 'Reject' : 'Error')
         handleSetError(errorMessage)
       })
   }, [handleCloseError, handleSetError, claimCallback])

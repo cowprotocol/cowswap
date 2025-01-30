@@ -1,13 +1,15 @@
 'use client'
 
 import { Color } from '@cowprotocol/ui'
+import { Category, initGtm } from '@cowprotocol/analytics'
 
 import styled from 'styled-components/macro'
 
 import { Link } from '@/components/Link'
 
 import { ArticleContent, ArticleMainTitle, BodyContent, Breadcrumbs, ContainerCard } from '@/styles/styled'
-import { clickOnLegal } from '../../../../modules/analytics'
+
+const analytics = initGtm()
 
 const Wrapper = styled.div`
   display: flex;
@@ -28,10 +30,26 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
         <ArticleContent maxWidth="100%">
           <Breadcrumbs>
-            <Link href="/" onClick={() => clickOnLegal('click-legal-breadcrumbs')}>
+            <Link
+              href="/"
+              onClick={() =>
+                analytics.sendEvent({
+                  category: Category.LEGAL,
+                  action: 'click-legal-breadcrumbs',
+                })
+              }
+            >
               Home
             </Link>
-            <Link href="/legal" onClick={() => clickOnLegal('click-legal-breadcrumbs')}>
+            <Link
+              href="/legal"
+              onClick={() =>
+                analytics.sendEvent({
+                  category: Category.LEGAL,
+                  action: 'click-legal-breadcrumbs',
+                })
+              }
+            >
               Legal
             </Link>
             <span>{title}</span>
@@ -136,7 +154,7 @@ export default function Page() {
                 Terms &amp; Conditions
               </a>{' '}
               for the use of the Interface apply to the Widget. It is your duty to ensure that all persons who access
-              the Widget through your website are aware of the Interface’s{' '}
+              the Widget through your website are aware of the Interface's{' '}
               <a target="_blank" rel="noreferrer" href="https://cow.fi/legal/cowswap-terms">
                 Terms &amp; Conditions
               </a>{' '}
@@ -217,7 +235,7 @@ export default function Page() {
               .
             </p>
             <p>The Provider reserves the right to adjust the Service Fee charged to the Partner with prior notice.</p>
-            <h3>Partner Fee Payment at the Provider’s Discretion</h3>
+            <h3>Partner Fee Payment at the Provider's Discretion</h3>
             <p>
               The Provider retains sole and absolute discretion in determining whether the transactions on the Widget
               are eligible for Partner Fee. The Provider may choose not to issue Partner Fees for any reason, including

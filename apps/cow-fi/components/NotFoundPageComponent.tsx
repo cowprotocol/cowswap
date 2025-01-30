@@ -2,7 +2,9 @@
 
 import { ArticleContent, ArticleMainTitle, BodyContent, ContainerCard, PageWrapper } from '@/styles/styled'
 import { Link } from '@/components/Link'
-import { clickOnError404GoHome } from '../modules/analytics'
+import { Category, initGtm } from '@cowprotocol/analytics'
+
+const analytics = initGtm()
 
 export function NotFoundPageComponent() {
   return (
@@ -16,7 +18,16 @@ export function NotFoundPageComponent() {
           <BodyContent>
             <p>
               This page could not be found. Please go back to the{' '}
-              <Link href="/" onClick={clickOnError404GoHome}>
+              <Link
+                href="/"
+                onClick={() =>
+                  analytics.sendEvent({
+                    category: Category.ERROR404,
+                    action: 'Click Home',
+                    label: '404-page',
+                  })
+                }
+              >
                 homepage
               </Link>{' '}
               or use the navigation menu to find what you are looking for.

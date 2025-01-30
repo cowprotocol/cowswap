@@ -1,6 +1,6 @@
+import { Category, initGtm } from '@cowprotocol/analytics'
 import { UiOrderType } from '@cowprotocol/types'
 
-import { signTradeAnalytics, tradeAnalytics } from 'modules/analytics'
 import { USER_SWAP_REJECTED_ERROR } from 'modules/trade/utils/swapErrorHelper'
 
 export interface TradeFlowAnalyticsContext {
@@ -11,38 +11,48 @@ export interface TradeFlowAnalyticsContext {
   orderType: UiOrderType
 }
 
+// Get analytics instance
+const analytics = initGtm()
+
+// Helper to create consistent trade analytics events
+const sendTradeAnalytics = (action: string, orderType: UiOrderType, marketLabel?: string, value?: number) => {
+  analytics.sendEvent({
+    category: Category.TRADE,
+    action,
+    label: `${orderType}|${marketLabel}`,
+    ...(value !== undefined && { value }),
+  })
+}
+
 export const tradeFlowAnalytics = {
   trade(context: TradeFlowAnalyticsContext) {
-    tradeAnalytics('Send', context.orderType, context.marketLabel)
+    sendTradeAnalytics('Send', context.orderType, context.marketLabel)
   },
   sign(context: TradeFlowAnalyticsContext) {
     const { marketLabel, orderType } = context
-    signTradeAnalytics(orderType, marketLabel)
+    sendTradeAnalytics('Sign', orderType, marketLabel)
   },
   approveAndPresign(context: TradeFlowAnalyticsContext) {
     const { marketLabel, orderType } = context
-    tradeAnalytics('Bundle Approve and Swap', orderType, marketLabel)
+    sendTradeAnalytics('Bundle Approve and Swap', orderType, marketLabel)
   },
   placeAdvancedOrder(context: TradeFlowAnalyticsContext) {
     const { marketLabel, orderType } = context
-    tradeAnalytics('Place Advanced Order', orderType, marketLabel)
+    sendTradeAnalytics('Place Advanced Order', orderType, marketLabel)
   },
   wrapApproveAndPresign(context: TradeFlowAnalyticsContext) {
     const { marketLabel, orderType } = context
-    tradeAnalytics('Bundled Eth Flow', orderType, marketLabel)
+    sendTradeAnalytics('Bundled Eth Flow', orderType, marketLabel)
   },
-  error(error: any, errorMessage: string, context: TradeFlowAnalyticsContext) {
+  error(error: Error & { code?: number }, errorMessage: string, context: TradeFlowAnalyticsContext) {
     const { marketLabel, orderType } = context
 
     if (errorMessage === USER_SWAP_REJECTED_ERROR) {
-      tradeAnalytics('Reject', orderType, marketLabel)
+      sendTradeAnalytics('Reject', orderType, marketLabel)
     } else {
-      tradeAnalytics(
-        'Error',
-        orderType,
-        marketLabel,
-        error.code && typeof error.code === 'number' ? error.code : undefined
-      )
+      sendTradeAnalytics('Error', orderType, marketLabel, error.code)
     }
   },
 }
+
+export const useTradeFlowAnalytics = () => tradeFlowAnalytics

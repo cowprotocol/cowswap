@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from 'react'
 
+import { createDebouncedTradeAmountAnalytics, useCowAnalytics } from '@cowprotocol/analytics'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
 
-import { changeSwapAmountAnalytics } from 'modules/analytics'
 import { useNavigateOnCurrencySelection, useSwitchTokensPlaces, useUpdateCurrencyAmount } from 'modules/trade'
 import { useResetTradeQuote } from 'modules/tradeQuote'
 
@@ -18,6 +18,8 @@ export function useAdvancedOrdersActions() {
   const naviageOnCurrencySelection = useNavigateOnCurrencySelection()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const resetTradeQuote = useResetTradeQuote()
+  const cowAnalytics = useCowAnalytics()
+  const debouncedTradeAmountAnalytics = useMemo(() => createDebouncedTradeAmountAnalytics(cowAnalytics), [cowAnalytics])
 
   const updateAdvancedOrdersState = useUpdateAdvancedOrdersRawState()
 
@@ -33,26 +35,26 @@ export function useAdvancedOrdersActions() {
       naviageOnCurrencySelection(field, currency)
       resetTradeQuote()
     },
-    [naviageOnCurrencySelection, updateCurrencyAmount, resetTradeQuote]
+    [naviageOnCurrencySelection, updateCurrencyAmount, resetTradeQuote],
   )
 
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
-      changeSwapAmountAnalytics(field, Number(typedValue))
+      debouncedTradeAmountAnalytics([field, Number(typedValue)])
       updateCurrencyAmount({
         amount: { isTyped: true, value: typedValue },
         currency: inputCurrency,
         field,
       })
     },
-    [inputCurrency, updateCurrencyAmount]
+    [inputCurrency, updateCurrencyAmount, debouncedTradeAmountAnalytics],
   )
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
       updateAdvancedOrdersState({ recipient })
     },
-    [updateAdvancedOrdersState]
+    [updateAdvancedOrdersState],
   )
 
   const onSwitchTokensDefault = useSwitchTokensPlaces({
@@ -71,6 +73,6 @@ export function useAdvancedOrdersActions() {
       onChangeRecipient,
       onSwitchTokens,
     }),
-    [onCurrencySelection, onUserInput, onChangeRecipient, onSwitchTokens]
+    [onCurrencySelection, onUserInput, onChangeRecipient, onSwitchTokens],
   )
 }

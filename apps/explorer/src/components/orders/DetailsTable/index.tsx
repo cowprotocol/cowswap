@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { Category, useCowAnalytics } from '@cowprotocol/analytics'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
@@ -8,7 +9,6 @@ import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import { faFill, faGroupArrowsRotate, faHistory, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { clickOnOrderDetails } from 'analytics'
 import DecodeAppData from 'components/AppData/DecodeAppData'
 import { DateDisplay } from 'components/common/DateDisplay'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
@@ -149,6 +149,7 @@ export type Props = {
 
 export function DetailsTable(props: Props): React.ReactNode | null {
   const { chainId, order, areTradesLoading, showFillsButton, viewFills, isPriceInverted, invertPrice } = props
+  const cowAnalytics = useCowAnalytics()
   const {
     uid,
     owner,
@@ -177,7 +178,13 @@ export function DetailsTable(props: Props): React.ReactNode | null {
     return null
   }
 
-  const onCopy = (label: string): void => clickOnOrderDetails('Copy', label)
+  const onCopy = (label: string): void => {
+    cowAnalytics.sendEvent({
+      category: Category.ORDER_DETAILS,
+      action: 'Copy',
+      label,
+    })
+  }
   const isSigning = status === 'signing'
 
   return (

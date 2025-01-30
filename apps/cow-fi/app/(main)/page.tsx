@@ -4,6 +4,7 @@ import { Color, Font } from '@cowprotocol/ui'
 import IMG_ICON_GOVERNANCE from '@cowprotocol/assets/images/icon-governance.svg'
 import VIDEO_HERO_HOME from '@cowprotocol/assets/video/cow-dao-hero-animation.mp4'
 import { Link, LinkType } from '@/components/Link'
+import { Category, initGtm } from '@cowprotocol/analytics'
 
 import {
   ContainerCard,
@@ -28,9 +29,17 @@ import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import IMG_ICON_GRANTS_CARTON from '@cowprotocol/assets/images/icon-grants-carton.svg'
 
 import { CHANNEL_LIST, PRODUCT_CONTAINERS } from '@/data/home/const'
-import { clickOnHome } from '../../modules/analytics'
+
+const cowAnalytics = initGtm()
 
 export default function Page() {
+  const sendHomeEvent = (action: string) => {
+    cowAnalytics.sendEvent({
+      category: Category.HOME,
+      action,
+    })
+  }
+
   return (
     <PageWrapper>
       <HeroContainer minHeight="700px" maxWidth={'100%'} margin="-76px auto -48px" padding="142px 20px 56px">
@@ -41,7 +50,7 @@ export default function Page() {
         </HeroBackground>
         <HeroContent flex={'0 1 0'}>
           <HeroTitle fontSize={148} fontSizeMobile={80}>
-            Don’t get milked!
+            Don't get milked!
           </HeroTitle>
         </HeroContent>
       </HeroContainer>
@@ -64,7 +73,7 @@ export default function Page() {
             <Link
               linkType={LinkType.SectionTitleButton}
               href="/learn"
-              onClick={() => clickOnHome('click-cow-knowledge-base-learn-more')}
+              onClick={() => sendHomeEvent('click-cow-knowledge-base-learn-more')}
             >
               Learn more
             </Link>
@@ -83,7 +92,7 @@ export default function Page() {
               Anyone can join CoW DAO by holding{' '}
               <Link
                 href="https://swap.cow.fi/#/1/swap/USDC/COW"
-                onClick={() => clickOnHome('click-cow-tokens')}
+                onClick={() => sendHomeEvent('click-cow-tokens')}
                 external
               >
                 COW tokens
@@ -102,7 +111,7 @@ export default function Page() {
                 href={social.href}
                 rel="noopener noreferrer"
                 target="_blank"
-                onClick={() => clickOnHome(social.linkEvent)}
+                onClick={() => sendHomeEvent(social.linkEvent)}
               >
                 <TopicImage iconColor="transparent" maxWidth={290} maxHeight={290} height={290} width={290}>
                   <LazySVG src={social.iconImage} title={social.title} />
@@ -130,7 +139,7 @@ export default function Page() {
               linkType={LinkType.SectionTitleButton}
               utmContent="home-page-apply-for-a-grant"
               href="https://grants.cow.fi/"
-              onClick={() => clickOnHome('click-apply-for-a-grant')}
+              onClick={() => sendHomeEvent('click-apply-for-a-grant')}
             >
               Explore grants
             </Link>

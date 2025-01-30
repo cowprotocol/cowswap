@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
 
+import { Category, useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import {
@@ -19,7 +20,6 @@ import styled from 'styled-components/macro'
 
 import { Field } from 'legacy/state/types'
 
-import { addListAnalytics } from 'modules/analytics'
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { usePermitCompatibleTokens } from 'modules/permit'
 import { useLpTokensWithBalances } from 'modules/yield/shared'
@@ -72,7 +72,14 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
   const { account } = useWalletInfo()
 
-  const addCustomTokenLists = useAddList((source) => addListAnalytics('Success', source))
+  const cowAnalytics = useCowAnalytics()
+  const addCustomTokenLists = useAddList((source) => {
+    cowAnalytics.sendEvent({
+      category: Category.LIST,
+      action: 'Add List Success',
+      label: source,
+    })
+  })
   const importTokenCallback = useAddUserToken()
 
   const allTokens = useAllActiveTokens()
@@ -128,7 +135,11 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
   const importListAndBack = (list: ListState) => {
     try {
       addCustomTokenLists(list)
-      addListAnalytics('Success', list.source)
+      cowAnalytics.sendEvent({
+        category: Category.LIST,
+        action: 'Add List Success',
+        label: list.source,
+      })
     } catch (error) {
       onDismiss()
       onTokenListAddingError(error)

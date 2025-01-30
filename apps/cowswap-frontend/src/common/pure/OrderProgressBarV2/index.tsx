@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { Category, toGtmEvent, useCowAnalytics } from '@cowprotocol/analytics'
 import PROGRESS_BAR_BAD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-bad-news.svg'
 import PROGRESSBAR_COW_SURPLUS_1 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-1.svg'
 import PROGRESSBAR_COW_SURPLUS_2 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-2.svg'
@@ -34,8 +35,6 @@ import { Textfit } from 'react-textfit'
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
-
-import { Category, cowAnalytics } from 'modules/analytics'
 
 import {
   OrderProgressBarStepName,
@@ -238,14 +237,6 @@ function OrderIntent({ order }: { order?: Order }) {
 
 const FINAL_STATES: OrderProgressBarStepName[] = ['expired', 'finished', 'cancelled', 'cancellationFailed']
 
-const trackLearnMoreClick = (stepName: string) => {
-  cowAnalytics.sendEvent({
-    category: Category.PROGRESS_BAR,
-    action: 'Click Learn More',
-    label: stepName,
-  })
-}
-
 interface CircularCountdownProps {
   countdown: number
 }
@@ -275,6 +266,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
   const { stepName = 'initial', debugMode = IS_DEBUG_MODE } = props
   const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
   const currentStep = debugMode ? debugStep : stepName
+  const analytics = useCowAnalytics()
 
   const startTimeRef = useRef<number | null>(null)
   const initialStepTriggeredRef = useRef<boolean>(false)
@@ -288,14 +280,14 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
     if (currentStep === 'initial' && !initialStepTriggeredRef.current) {
       startTimeRef.current = Date.now()
       initialStepTriggeredRef.current = true
-      cowAnalytics.sendEvent({
+      analytics.sendEvent({
         category: Category.PROGRESS_BAR,
         action: 'Step Triggered',
         label: currentStep,
         value: 0, // This remains 0 for the initial step
       })
     }
-  }, [currentStep])
+  }, [currentStep, analytics])
 
   // useEffect for other steps
   useEffect(() => {
@@ -307,7 +299,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
     if (duration !== null) {
       const durationInSeconds = duration / 1000
 
-      cowAnalytics.sendEvent({
+      analytics.sendEvent({
         category: Category.PROGRESS_BAR,
         action: 'Step Triggered',
         label: currentStep,
@@ -315,7 +307,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
       })
 
       if (isFinalState) {
-        cowAnalytics.sendEvent({
+        analytics.sendEvent({
           category: Category.PROGRESS_BAR,
           action: 'Order Completed',
           label: currentStep,
@@ -325,7 +317,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
         initialStepTriggeredRef.current = false // Reset the initial step trigger flag
       }
     }
-  }, [currentStep, getDuration])
+  }, [currentStep, getDuration, analytics])
 
   // Ensure StepComponent will be a valid React component or null
   let StepComponent: React.ComponentType<OrderProgressBarV2Props> | null
@@ -602,7 +594,11 @@ function InitialStep(props: OrderProgressBarV2Props) {
             <styledEl.Link
               href="https://cow.fi/learn/understanding-batch-auctions"
               target="_blank"
-              onClick={() => trackLearnMoreClick('Initial')}
+              data-click-event={toGtmEvent({
+                category: Category.PROGRESS_BAR,
+                action: 'Click Learn More',
+                label: 'Initial',
+              })}
             >
               batched together
             </styledEl.Link>{' '}
@@ -712,15 +708,6 @@ function FinishedStep(props: OrderProgressBarV2Props) {
     return showAllSolvers ? solvers : solvers?.slice(0, 3)
   }, [showAllSolvers, solvers])
 
-  const toggleSolvers = useCallback(() => {
-    setShowAllSolvers((prev) => !prev)
-    cowAnalytics.sendEvent({
-      category: Category.PROGRESS_BAR,
-      action: 'Click Toggle Solvers',
-      label: showAllSolvers ? 'Collapse' : 'View More',
-    })
-  }, [showAllSolvers])
-
   const isSell = order && isSellOrder(order.kind)
   const isCustomRecipient = order && getIsCustomRecipient(order)
   const receiver = order?.receiver || order?.owner
@@ -742,14 +729,6 @@ function FinishedStep(props: OrderProgressBarV2Props) {
       : getTwitterShareUrlForBenefit(randomBenefit)
     window.open(twitterUrl, '_blank', 'noopener,noreferrer')
   }, [shouldShowSurplus, surplusData, order, randomBenefit])
-
-  const trackShareClick = useCallback(() => {
-    cowAnalytics.sendEvent({
-      category: Category.PROGRESS_BAR,
-      action: 'Click Share Button',
-      label: shouldShowSurplus ? 'Surplus' : 'Benefit',
-    })
-  }, [shouldShowSurplus])
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | undefined
@@ -887,7 +866,14 @@ function FinishedStep(props: OrderProgressBarV2Props) {
             </styledEl.SolverTable>
 
             {solvers.length > 3 && (
-              <styledEl.ViewMoreButton onClick={toggleSolvers}>
+              <styledEl.ViewMoreButton
+                data-click-event={toGtmEvent({
+                  category: Category.PROGRESS_BAR,
+                  action: 'Click Toggle Solvers',
+                  label: showAllSolvers ? 'Hide' : 'Show',
+                })}
+                onClick={() => setShowAllSolvers((prev) => !prev)}
+              >
                 {showAllSolvers ? (
                   <>
                     Collapse <PiCaretUp />
@@ -905,10 +891,12 @@ function FinishedStep(props: OrderProgressBarV2Props) {
 
       <RenderProgressTopSection {...props} />
       <styledEl.ShareButton
-        onClick={() => {
-          shareOnTwitter()
-          trackShareClick()
-        }}
+        data-click-event={toGtmEvent({
+          category: Category.PROGRESS_BAR,
+          action: 'Click Share Button',
+          label: shouldShowSurplus ? 'Surplus' : 'Tip',
+        })}
+        onClick={shareOnTwitter}
       >
         <SVG src={ICON_SOCIAL_X} />
         <span>Share this {shouldShowSurplus ? 'win' : 'tip'}!</span>
@@ -931,21 +919,11 @@ function SolvingStep(props: OrderProgressBarV2Props) {
   const isSubmissionFailed = stepName === 'submissionFailed'
   const isSolved = stepName === 'solved'
 
-  const trackCancelClick = () => {
-    cowAnalytics.sendEvent({
-      category: Category.PROGRESS_BAR,
-      action: 'Click Cancel Order',
-      label: isUnfillable ? 'Unfillable Step' : isDelayed ? 'Delayed Step' : isSolved ? 'Solved Step' : 'Solving Step',
-    })
-  }
-
-  const trackLearnMoreClick = (label: string) => {
-    cowAnalytics.sendEvent({
-      category: Category.PROGRESS_BAR,
-      action: 'Click Learn More',
-      label,
-    })
-  }
+  const cancelEventData = toGtmEvent({
+    category: Category.PROGRESS_BAR,
+    action: 'Click Cancel Order',
+    label: isUnfillable ? 'Unfillable Step' : isDelayed ? 'Delayed Step' : isSolved ? 'Solved Step' : 'Solving Step',
+  })
 
   return (
     <styledEl.ProgressContainer>
@@ -976,12 +954,7 @@ function SolvingStep(props: OrderProgressBarV2Props) {
                   <>
                     {' '}
                     or{' '}
-                    <styledEl.CancelButton
-                      onClick={() => {
-                        showCancellationModal && showCancellationModal()
-                        trackCancelClick()
-                      }}
-                    >
+                    <styledEl.CancelButton data-click-event={cancelEventData} onClick={showCancellationModal}>
                       cancel the order
                     </styledEl.CancelButton>
                   </>
@@ -996,12 +969,7 @@ function SolvingStep(props: OrderProgressBarV2Props) {
                   <>
                     {' '}
                     or{' '}
-                    <styledEl.CancelButton
-                      onClick={() => {
-                        showCancellationModal && showCancellationModal()
-                        trackCancelClick()
-                      }}
-                    >
+                    <styledEl.CancelButton data-click-event={cancelEventData} onClick={showCancellationModal}>
                       cancel your order
                     </styledEl.CancelButton>
                   </>
@@ -1014,7 +982,11 @@ function SolvingStep(props: OrderProgressBarV2Props) {
                 <styledEl.Link
                   href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
                   target="_blank"
-                  onClick={() => trackLearnMoreClick('Submission Failed')}
+                  data-click-event={toGtmEvent({
+                    category: Category.PROGRESS_BAR,
+                    action: 'Click Learn More',
+                    label: 'Submission Failed',
+                  })}
                 >
                   CoW Swap solvers
                 </styledEl.Link>{' '}
@@ -1030,7 +1002,11 @@ function SolvingStep(props: OrderProgressBarV2Props) {
                 <styledEl.Link
                   href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
                   target="_blank"
-                  onClick={() => trackLearnMoreClick('Solving')}
+                  data-click-event={toGtmEvent({
+                    category: Category.PROGRESS_BAR,
+                    action: 'Click Learn More',
+                    label: 'Solving',
+                  })}
                 >
                   CoW Swap solvers
                 </styledEl.Link>{' '}
@@ -1079,30 +1055,6 @@ function CancelledStep(props: OrderProgressBarV2Props) {
 }
 
 function ExpiredStep(props: OrderProgressBarV2Props) {
-  const trackNewOrderClick = () => {
-    cowAnalytics.sendEvent({
-      category: Category.PROGRESS_BAR,
-      action: 'Click Place New Order',
-      label: 'Expired Step',
-    })
-  }
-
-  const trackDiscordClick = () => {
-    cowAnalytics.sendEvent({
-      category: Category.PROGRESS_BAR,
-      action: 'Click Discord Link',
-      label: 'Expired Step',
-    })
-  }
-
-  const trackEmailClick = () => {
-    cowAnalytics.sendEvent({
-      category: Category.PROGRESS_BAR,
-      action: 'Click Email Link',
-      label: 'Expired Step',
-    })
-  }
-
   return (
     <styledEl.ProgressContainer>
       <RenderProgressTopSection {...props} />
@@ -1124,10 +1076,12 @@ function ExpiredStep(props: OrderProgressBarV2Props) {
           <p>
             Unlike on other exchanges, you won't be charged for this! Feel free to{' '}
             <styledEl.Button
-              onClick={() => {
-                props.navigateToNewOrder?.()
-                trackNewOrderClick()
-              }}
+              data-click-event={toGtmEvent({
+                category: Category.PROGRESS_BAR,
+                action: 'Click Place New Order',
+                label: 'Expired Step',
+              })}
+              onClick={props.navigateToNewOrder}
             >
               place a new order
             </styledEl.Button>{' '}
@@ -1138,11 +1092,27 @@ function ExpiredStep(props: OrderProgressBarV2Props) {
 
       <styledEl.Description center margin="10px 0">
         If your orders often expire, consider increasing your slippage or contact us on{' '}
-        <styledEl.Link href="https://discord.com/invite/cowprotocol" target="_blank" onClick={trackDiscordClick}>
+        <styledEl.Link
+          href="https://discord.com/invite/cowprotocol"
+          target="_blank"
+          data-click-event={toGtmEvent({
+            category: Category.PROGRESS_BAR,
+            action: 'Click Discord Link',
+            label: 'Expired Step',
+          })}
+        >
           Discord
         </styledEl.Link>{' '}
         or send us an email at{' '}
-        <styledEl.Link href="mailto:help@cow.fi" target="_blank" onClick={trackEmailClick}>
+        <styledEl.Link
+          href="mailto:help@cow.fi"
+          target="_blank"
+          data-click-event={toGtmEvent({
+            category: Category.PROGRESS_BAR,
+            action: 'Click Email Link',
+            label: 'Expired Step',
+          })}
+        >
           help@cow.fi
         </styledEl.Link>{' '}
         so we can investigate the problem.

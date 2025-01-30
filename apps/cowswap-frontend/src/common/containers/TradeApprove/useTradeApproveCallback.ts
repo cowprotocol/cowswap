@@ -4,12 +4,11 @@ import { errorToString, isRejectRequestProviderError } from '@cowprotocol/common
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { approvalAnalytics } from 'modules/analytics'
-
 import { useApproveCallback } from 'common/hooks/useApproveCallback'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
 import { useUpdateTradeApproveState } from '../../hooks/useUpdateTradeApproveState'
+import { useCowAnalytics, Category } from '@cowprotocol/analytics'
 
 interface TradeApproveCallbackParams {
   useModals: boolean
@@ -26,6 +25,16 @@ export function useTradeApproveCallback(amountToApprove?: CurrencyAmount<Currenc
   const symbol = currency?.symbol
 
   const approveCallback = useApproveCallback(amountToApprove, spender)
+
+  const approvalAnalytics = (action: string, symbol?: string, errorCode?: number | null) => {
+    const cowAnalytics = useCowAnalytics()
+    cowAnalytics.sendEvent({
+      category: Category.TRADE,
+      action,
+      label: symbol,
+      ...(errorCode && { value: errorCode }),
+    })
+  }
 
   return useCallback(
     async ({ useModals = true }: TradeApproveCallbackParams = { useModals: true }) => {
@@ -58,6 +67,6 @@ export function useTradeApproveCallback(amountToApprove?: CurrencyAmount<Currenc
           return undefined
         })
     },
-    [symbol, approveCallback, updateTradeApproveState, currency]
+    [symbol, approveCallback, updateTradeApproveState, currency],
   )
 }

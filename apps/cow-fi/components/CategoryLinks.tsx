@@ -1,15 +1,18 @@
 import React from 'react'
 import styled from 'styled-components/macro'
-import { clickOnKnowledgeBase } from 'modules/analytics'
+import { Category, initGtm } from '@cowprotocol/analytics'
 import { Color, Media } from '@cowprotocol/ui'
 import Link from 'next/link'
-interface Category {
+
+const analytics = initGtm()
+
+interface CategoryItem {
   name: string
   slug: string
 }
 
 interface CategoryLinksProps {
-  allCategories: Category[]
+  allCategories: CategoryItem[]
   noDivider?: boolean
 }
 
@@ -92,7 +95,16 @@ const CategoryLinksWrapper = styled.ul<{ noDivider?: boolean }>`
 export const CategoryLinks: React.FC<CategoryLinksProps> = ({ allCategories, noDivider }) => (
   <CategoryLinksWrapper noDivider={noDivider}>
     <li>
-      <Link href="/learn" onClick={() => clickOnKnowledgeBase('click-categories-home')}>
+      <Link
+        href="/learn"
+        onClick={() =>
+          analytics.sendEvent({
+            category: Category.KNOWLEDGEBASE,
+            action: 'Click category',
+            label: 'home',
+          })
+        }
+      >
         Knowledge Base
       </Link>
     </li>
@@ -100,7 +112,13 @@ export const CategoryLinks: React.FC<CategoryLinksProps> = ({ allCategories, noD
       <li key={category.slug}>
         <Link
           href={`/learn/topic/${category.slug}`}
-          onClick={() => clickOnKnowledgeBase(`click-categories-${category.name}`)}
+          onClick={() =>
+            analytics.sendEvent({
+              category: Category.KNOWLEDGEBASE,
+              action: 'Click category',
+              label: category.name,
+            })
+          }
         >
           {category.name}
         </Link>

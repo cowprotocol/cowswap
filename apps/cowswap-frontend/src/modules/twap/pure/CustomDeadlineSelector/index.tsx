@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import { Category, toGtmEvent, useCowAnalytics } from '@cowprotocol/analytics'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
@@ -22,6 +23,7 @@ interface CustomDeadlineSelectorProps {
 export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
   const { isOpen, onDismiss, customDeadline, selectCustomDeadline } = props
   const { hours = 0, minutes = 0 } = customDeadline
+  const { sendEvent } = useCowAnalytics()
 
   const [hoursValue, setHoursValue] = useState(hours)
   const [minutesValue, setMinutesValue] = useState(minutes)
@@ -35,6 +37,11 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
   const isDisabled = !hoursValue && !minutesValue
 
   const onApply = () => {
+    sendEvent({
+      category: Category.TWAP,
+      action: 'Apply custom deadline',
+      label: `${hoursValue}h ${minutesValue}m`,
+    })
     onDismiss()
     selectCustomDeadline({
       hours: hoursValue,
@@ -55,7 +62,13 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
           <h3>
             <Trans>Define custom total time</Trans>
           </h3>
-          <styledEl.CloseIcon onClick={_onDismiss} />
+          <styledEl.CloseIcon
+            onClick={_onDismiss}
+            data-click-event={toGtmEvent({
+              category: Category.TWAP,
+              action: 'Close custom deadline selector',
+            })}
+          />
         </styledEl.ModalHeader>
 
         <styledEl.ModalContent>
@@ -78,7 +91,13 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
         </styledEl.ModalContent>
 
         <styledEl.ModalFooter>
-          <styledEl.CancelButton onClick={_onDismiss}>
+          <styledEl.CancelButton
+            onClick={_onDismiss}
+            data-click-event={toGtmEvent({
+              category: Category.TWAP,
+              action: 'Cancel custom deadline selection',
+            })}
+          >
             <Trans>Cancel</Trans>
           </styledEl.CancelButton>
           <ButtonPrimary disabled={isDisabled} onClick={onApply}>

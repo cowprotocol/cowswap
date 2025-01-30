@@ -1,12 +1,12 @@
 import React from 'react'
 
+import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import ICON_NOTIFICATION from '@cowprotocol/assets/images/notification.svg'
 import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
-
 
 const Icon = styled.div<{ hasNotification?: boolean }>`
   --size: 18px;
@@ -63,7 +63,15 @@ interface NotificationBellProps {
 
 export function NotificationBell({ onClick, unreadCount }: NotificationBellProps) {
   return (
-    <Icon hasNotification={unreadCount > 0} onClick={onClick}>
+    <Icon
+      hasNotification={unreadCount > 0}
+      onClick={onClick}
+      data-click-event={toGtmEvent({
+        category: Category.NOTIFICATIONS,
+        action: 'Toggle notifications panel',
+        label: `Unread count: ${unreadCount}`,
+      })}
+    >
       <SVG src={ICON_NOTIFICATION} />
     </Icon>
   )

@@ -1,12 +1,11 @@
 'use client'
 
 import { Color } from '@cowprotocol/ui'
-
+import { Category, initGtm } from '@cowprotocol/analytics'
 import styled from 'styled-components/macro'
-
 import { ContainerCard, ArticleContent, Breadcrumbs, ArticleMainTitle, BodyContent } from '@/styles/styled'
 
-import { clickOnCareers } from '../../../../modules/analytics'
+const analytics = initGtm()
 
 const Wrapper = styled.div`
   display: flex;
@@ -25,7 +24,16 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
         <ArticleContent maxWidth="100%">
           <Breadcrumbs>
-            <a href="/careers" onClick={() => clickOnCareers('click-breadcrumb-careers')}>
+            <a
+              href="/careers"
+              onClick={() =>
+                analytics.sendEvent({
+                  category: Category.CAREERS,
+                  action: 'Click Breadcrumb',
+                  label: 'careers',
+                })
+              }
+            >
               Careers
             </a>
             <span>Refer-to-Earn</span>

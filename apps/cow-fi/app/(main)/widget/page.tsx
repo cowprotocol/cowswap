@@ -1,6 +1,7 @@
 'use client'
 
 import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { Category, initGtm } from '@cowprotocol/analytics'
 
 import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
 import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
@@ -36,7 +37,7 @@ import { DAO_CONTENT as CONTENT } from '@/data/widget/const'
 
 import LazySVG from '@/components/LazySVG'
 
-import { clickOnWidget } from '../../../modules/analytics'
+const analytics = initGtm()
 
 const FEATURE_ITEMS = [
   'Live styling configurator',
@@ -76,7 +77,12 @@ export default function Page() {
               utmContent="widget-page-configure-widget-cta-hero"
               external
               linkType={LinkType.HeroButton}
-              onClick={() => clickOnWidget('click-config-widget')}
+              onClick={() =>
+                analytics.sendEvent({
+                  category: Category.WIDGET,
+                  action: 'click-config-widget',
+                })
+              }
             >
               {' '}
               Configure widget{' '}
@@ -89,7 +95,12 @@ export default function Page() {
               utmContent="widget-page-readdocs-cta-hero"
               external
               linkType={LinkType.HeroButton}
-              onClick={() => clickOnWidget('click-read-docs')}
+              onClick={() =>
+                analytics.sendEvent({
+                  category: Category.WIDGET,
+                  action: 'click-read-docs',
+                })
+              }
             >
               {' '}
               Read docs
@@ -163,7 +174,7 @@ export default function Page() {
             <SectionTitleText fontSize={62}>Every Bell, Whistle, and Moo</SectionTitleText>
             <SectionTitleDescription fontSize={24} color={Color.neutral40}>
               With the CoW Swap widget, you can offer your users everything you know and love about CoW Swap, and more.
-              Oh, and yes… it does come with the “moo”.
+              Oh, and yes… it does come with the "moo".
             </SectionTitleDescription>
           </SectionTitleWrapper>
 
@@ -292,7 +303,12 @@ export default function Page() {
                 utmContent="widget-page-configure-widget-cta-hero"
                 external
                 linkType={LinkType.HeroButton}
-                onClick={() => clickOnWidget('click-config-widget')}
+                onClick={() =>
+                  analytics.sendEvent({
+                    category: Category.WIDGET,
+                    action: 'click-config-widget',
+                  })
+                }
               >
                 {' '}
                 Configure widget{' '}
@@ -305,7 +321,12 @@ export default function Page() {
                 utmContent="widget-page-readdocs-cta-hero"
                 external
                 linkType={LinkType.HeroButton}
-                onClick={() => clickOnWidget('click-read-docs')}
+                onClick={() =>
+                  analytics.sendEvent({
+                    category: Category.WIDGET,
+                    action: 'click-read-docs',
+                  })
+                }
               >
                 {' '}
                 Read docs

@@ -1,13 +1,15 @@
 import { useEffect } from 'react'
 
-import { AnalyticsContext, PixelEvent, CowAnalytics, PixelAnalytics, WebVitalsAnalytics } from '@cowprotocol/analytics'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { isMobile } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useLocation } from 'react-router-dom'
 
-import { serviceWorkerLoad } from './events'
+import { AnalyticsContext, CowAnalytics } from '../CowAnalytics'
+import { PixelEvent, PixelAnalytics } from '../pixels/PixelAnalytics'
+import { Category } from '../types'
+import { WebVitalsAnalytics } from '../webVitals/WebVitalsAnalytics'
 
 let initiatedPixel = false
 let initiated = false
@@ -19,6 +21,8 @@ interface UseAnalyticsReporterProps {
   cowAnalytics: CowAnalytics
   pixelAnalytics?: PixelAnalytics
   webVitalsAnalytics?: WebVitalsAnalytics
+  marketDimension?: string
+  injectedWidgetAppId?: string
 }
 
 /**
@@ -52,7 +56,13 @@ export function useAnalyticsReporter(props: UseAnalyticsReporterProps) {
     if (typeof window !== 'undefined') {
       const installed = Boolean(window.navigator.serviceWorker?.controller)
       const hit = Boolean((window as any).__isDocumentCached)
-      serviceWorkerLoad(cowAnalytics, installed, hit)
+      const action = installed ? (hit ? 'Cache hit' : 'Cache miss') : 'Not installed'
+
+      cowAnalytics.sendEvent({
+        category: Category.SERVICE_WORKER,
+        action,
+        nonInteraction: true,
+      })
     }
   }, [webVitalsAnalytics, cowAnalytics])
 
@@ -91,4 +101,12 @@ export function useAnalyticsReporter(props: UseAnalyticsReporterProps) {
       initiatedPixel = true
     }
   }, [pixelAnalytics])
+
+  useEffect(() => {
+    cowAnalytics.setContext(AnalyticsContext.market, props.marketDimension || undefined)
+  }, [props.marketDimension, cowAnalytics])
+
+  useEffect(() => {
+    cowAnalytics.setContext(AnalyticsContext.injectedWidgetAppId, props.injectedWidgetAppId)
+  }, [props.injectedWidgetAppId, cowAnalytics])
 }

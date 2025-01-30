@@ -44,7 +44,7 @@ export const ToggleElement = styled.span<{ isActive?: boolean; bgColor?: string;
     ${({ isActive, isInitialToggleLoad }) => (isInitialToggleLoad ? 'none' : isActive ? turnOnToggle : turnOffToggle)}
     ease-in;
   background: ${({ bgColor, isActive }) =>
-    isActive ? bgColor ?? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PAPER_DARKER})`};
+    isActive ? (bgColor ?? `var(${UI.COLOR_PRIMARY})`) : `var(${UI.COLOR_PAPER_DARKER})`};
   border-radius: 50%;
   height: 24px;
   :hover {
@@ -96,9 +96,18 @@ export interface ToggleProps extends WithClassName {
   isActive: boolean
   toggle: Command
   isDisabled?: boolean // Mod
+  'data-click-event'?: string
 }
 
-export function Toggle({ id, bgColor, isActive, toggle, className, isDisabled }: ToggleProps) {
+export function Toggle({
+  id,
+  bgColor,
+  isActive,
+  toggle,
+  className,
+  isDisabled,
+  'data-click-event': dataClickEvent,
+}: ToggleProps) {
   const [isInitialToggleLoad, setIsInitialToggleLoad] = useState(true)
 
   const switchToggle = () => {
@@ -107,7 +116,7 @@ export function Toggle({ id, bgColor, isActive, toggle, className, isDisabled }:
   }
 
   return (
-    <Wrapper id={id} isActive={isActive} onClick={switchToggle} className={className}>
+    <Wrapper id={id} isActive={isActive} onClick={switchToggle} className={className} data-click-event={dataClickEvent}>
       <ToggleElement isActive={isActive} bgColor={bgColor} isInitialToggleLoad={isInitialToggleLoad} />
     </Wrapper>
   )

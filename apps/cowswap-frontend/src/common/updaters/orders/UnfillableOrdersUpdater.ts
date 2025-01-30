@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
 
+import { useCowAnalytics, Category } from '@cowprotocol/analytics'
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCY_ADDRESS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
@@ -21,12 +22,11 @@ import {
   getEstimatedExecutionPrice,
   getOrderMarketPrice,
   getRemainderAmount,
-  isOrderUnfillable
+  isOrderUnfillable,
 } from 'legacy/state/orders/utils'
 import type { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 import { getBestQuote } from 'legacy/utils/price'
 
-import { priceOutOfRangeAnalytics } from 'modules/analytics'
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
@@ -99,7 +99,7 @@ export function UnfillableOrdersUpdater(): null {
         // order.isUnfillable by default is undefined, so we don't want to dispatch this in that case
         if (typeof order.isUnfillable !== 'undefined') {
           const label = `${order.inputToken.symbol}, ${order.outputToken.symbol}`
-          priceOutOfRangeAnalytics(isUnfillable, label)
+          priceOutOfRangeAnalytics(label)
         }
       }
 
@@ -229,4 +229,13 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: PriceStr
   } catch {
     return null
   }
+}
+
+const cowAnalytics = useCowAnalytics()
+const priceOutOfRangeAnalytics = (label: string) => {
+  cowAnalytics.sendEvent({
+    category: Category.TRADE,
+    action: 'Price out of range',
+    label,
+  })
 }

@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 
+import { useCowAnalytics, Category } from '@cowprotocol/analytics'
 import { CowGame } from '@cowprotocol/cow-runner-game'
 
 import styled from 'styled-components/macro'
 
-import { gameAnalytics } from 'modules/analytics'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'
 
@@ -35,9 +35,14 @@ const Wrapper = styled(Page)`
 `
 
 export default function CowRunnerPage() {
+  const cowAnalytics = useCowAnalytics()
+
   useEffect(() => {
-    gameAnalytics('CoW Runner')
-  }, [])
+    cowAnalytics.sendEvent({
+      category: Category.GAMES,
+      action: 'Playing CoW Runner game',
+    })
+  }, [cowAnalytics])
 
   return (
     <Wrapper>

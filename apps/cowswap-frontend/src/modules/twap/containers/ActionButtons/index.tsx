@@ -1,4 +1,5 @@
-import { twapConversionAnalytics } from 'modules/analytics'
+import { useCowAnalytics, Category } from '@cowprotocol/analytics'
+
 import { useTradeConfirmActions } from 'modules/trade'
 import { TradeFormButtons, TradeFormValidation, useTradeFormButtonContext } from 'modules/tradeFormValidation'
 
@@ -49,4 +50,13 @@ export function ActionButtons({
       isDisabled={!areWarningsAccepted}
     />
   )
+}
+
+const twapConversionAnalytics = (status: string, fallbackHandlerIsNotSet: boolean) => {
+  const cowAnalytics = useCowAnalytics()
+  cowAnalytics.sendEvent({
+    category: Category.TWAP,
+    action: 'Conversion',
+    label: `${status}|${fallbackHandlerIsNotSet ? 'no-handler' : 'handler-set'}`,
+  })
 }

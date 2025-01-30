@@ -1,3 +1,6 @@
+import { useCallback, useMemo } from 'react'
+
+import { Category, toGtmEvent, GtmClickEvent } from '@cowprotocol/analytics'
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { Loader, RowBetween } from '@cowprotocol/ui'
@@ -28,6 +31,20 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
   const isUpToExtraSmall = useMediaQuery(upToExtraSmall)
   const isUpToTiny = useMediaQuery(upToTiny)
 
+  const connectWalletEvent = useMemo(
+    (): Partial<GtmClickEvent> => ({
+      category: Category.WALLET,
+      action: 'Connect wallet button click',
+      label: `${connectionType}${ensName ? ' (ENS)' : ''}`,
+      value: pendingCount,
+    }),
+    [connectionType, ensName, pendingCount],
+  )
+
+  const handleConnect = useCallback(() => {
+    connectWallet()
+  }, [connectWallet])
+
   if (account) {
     return (
       <Web3StatusConnected id="web3-status-connected" pending={hasPendingTransactions}>
@@ -47,7 +64,12 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
   }
 
   return (
-    <Web3StatusConnect id="connect-wallet" onClick={connectWallet} faded={!account}>
+    <Web3StatusConnect
+      id="connect-wallet"
+      onClick={handleConnect}
+      data-click-event={toGtmEvent(connectWalletEvent)}
+      faded={!account}
+    >
       <Text>
         <Trans>Connect wallet</Trans>
       </Text>

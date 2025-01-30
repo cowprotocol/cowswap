@@ -1,9 +1,9 @@
+import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import ninjaCowImg from '@cowprotocol/assets/cow-swap/ninja-cow.png'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { gameAnalytics } from 'modules/analytics'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'
 
@@ -44,7 +44,6 @@ const Wrapper = styled(Page)`
 
 function openGame() {
   window?.open(GAME_URL, '_blank')?.focus()
-  gameAnalytics('MEV Slicer')
 }
 
 export default function MevSlicer() {
@@ -66,7 +65,15 @@ export default function MevSlicer() {
         <img src={ninjaCowImg} alt="Ninja Cow" />
       </p>
 
-      <ButtonPrimary padding="8px" $borderRadius="8px" onClick={openGame}>
+      <ButtonPrimary
+        padding="8px"
+        $borderRadius="8px"
+        onClick={openGame}
+        data-click-event={toGtmEvent({
+          category: Category.GAMES,
+          action: 'Playing MEV Slicer game',
+        })}
+      >
         Play MEV Slicer
       </ButtonPrimary>
 

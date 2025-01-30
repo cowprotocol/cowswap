@@ -12,7 +12,7 @@ import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { Field } from 'legacy/state/types'
 
-import { setMaxSellTokensAnalytics } from 'modules/analytics'
+import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import { ReceiveAmount } from 'modules/swap/pure/ReceiveAmount'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
@@ -102,7 +102,6 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     }
 
     onUserInputDispatch(maxBalance.toExact())
-    setMaxSellTokensAnalytics()
   }, [maxBalance, onUserInputDispatch])
 
   useEffect(() => {
@@ -190,7 +189,15 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
               <styledEl.BalanceText>
                 <Trans>Balance</Trans>: <TokenAmount amount={balance} defaultValue="0" tokenSymbol={currency} />
                 {showSetMax && balance.greaterThan(0) && (
-                  <styledEl.SetMaxBtn onClick={handleMaxInput}>Max</styledEl.SetMaxBtn>
+                  <styledEl.SetMaxBtn
+                    data-click-event={toGtmEvent({
+                      category: Category.TRADE,
+                      action: 'Set Maximum Sell Tokens',
+                    })}
+                    onClick={handleMaxInput}
+                  >
+                    MAX
+                  </styledEl.SetMaxBtn>
                 )}
               </styledEl.BalanceText>
             )}

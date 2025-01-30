@@ -1,9 +1,8 @@
 import { useMemo } from 'react'
 
+import { Category, toGtmEvent, useCowAnalytics } from '@cowprotocol/analytics'
 import { ListSearchResponse, ListState, useListsEnabledState, useRemoveList, useToggleList } from '@cowprotocol/tokens'
 import { Loader } from '@cowprotocol/ui'
-
-import { removeListAnalytics, toggleListAnalytics } from 'modules/analytics'
 
 import * as styledEl from './styled'
 
@@ -28,8 +27,23 @@ export function ManageLists(props: ManageListsProps) {
 
   const activeTokenListsIds = useListsEnabledState()
   const addListImport = useAddListImport()
-  const removeList = useRemoveList((source) => removeListAnalytics('Confirm', source))
-  const toggleList = useToggleList((enabled, source) => toggleListAnalytics(enabled, source))
+  const cowAnalytics = useCowAnalytics()
+
+  const removeList = useRemoveList((source) => {
+    cowAnalytics.sendEvent({
+      category: Category.LIST,
+      action: 'Remove List',
+      label: source,
+    })
+  })
+
+  const toggleList = useToggleList((enable, source) => {
+    cowAnalytics.sendEvent({
+      category: Category.LIST,
+      action: `${enable ? 'Enable' : 'Disable'} List`,
+      label: source,
+    })
+  })
 
   const { source, listToImport, loading } = useListSearchResponse(listSearchResponse)
 
@@ -48,7 +62,16 @@ export function ManageLists(props: ManageListsProps) {
           <ImportTokenListItem
             source={source}
             list={listToImport}
-            importList={() => listToImport && addListImport(listToImport)}
+            data-click-event={toGtmEvent({
+              category: Category.LIST,
+              action: 'Import List',
+              label: listToImport.source,
+            })}
+            importList={() => {
+              if (listToImport) {
+                addListImport(listToImport)
+              }
+            }}
           />
         </styledEl.ImportListsContainer>
       )}

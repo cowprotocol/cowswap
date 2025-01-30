@@ -1,5 +1,6 @@
-import React from 'react'
+import { useMemo } from 'react'
 
+import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
@@ -64,12 +65,22 @@ export type WatchAssetInWalletProps = {
   success?: boolean
   className?: string
 }
+
 export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
   const { className, walletIcon, walletName, currency, shortLabel, addToken, success } = props
   const theme = useTheme()
 
+  const analyticsEvent = useMemo(
+    () => ({
+      category: Category.WALLET,
+      action: 'Add Token To Wallet',
+      label: currency ? `${currency.symbol}|${walletName}` : 'unknown',
+    }),
+    [currency, walletName],
+  )
+
   return (
-    <ButtonCustom className={className} onClick={addToken}>
+    <ButtonCustom className={className} onClick={addToken} data-click-event={toGtmEvent(analyticsEvent)}>
       {!success ? (
         <RowFixed>
           <StyledIcon src={walletIcon} />{' '}

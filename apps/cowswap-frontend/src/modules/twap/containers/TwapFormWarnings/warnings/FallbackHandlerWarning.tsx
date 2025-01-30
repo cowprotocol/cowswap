@@ -1,3 +1,4 @@
+import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import { ExternalLink, InlineBanner } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -65,6 +66,11 @@ export function FallbackHandlerWarning({
         type="checkbox"
         checked={isFallbackHandlerSetupAccepted}
         onChange={(event) => toggleFallbackHandlerSetupFlag(event.currentTarget.checked)}
+        data-click-event={toGtmEvent({
+          category: Category.TWAP,
+          action: 'Modify safe handler checkbox',
+          label: isFallbackHandlerSetupAccepted ? 'enabled' : 'disabled',
+        })}
       />
       <span>Make the modification when placing order</span>
     </WarningCheckbox>
