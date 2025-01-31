@@ -4,7 +4,6 @@ interface ThemeProperties {
   mode: string
   primary: string
   background: string
-  // Add other theme properties that are used in your components
 }
 
 // Augment the DefaultTheme interface
