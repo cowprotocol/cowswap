@@ -16,8 +16,8 @@ export interface ExtensibleFallbackContext {
 }
 
 export function useExtensibleFallbackContext(): ExtensibleFallbackContext | null {
-  const { chainId, account } = useWalletInfo()
-  const settlementContract = useGP2SettlementContract()
+  const { account } = useWalletInfo()
+  const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
   const provider = useWalletProvider()
 
   return useMemo(() => {
@@ -25,6 +25,6 @@ export function useExtensibleFallbackContext(): ExtensibleFallbackContext | null
       return null
     }
 
-    return { settlementContract, provider, chainId, safeAddress: account }
-  }, [account, settlementContract, provider, chainId])
+    return { settlementContract, provider, chainId: settlementChainId, safeAddress: account }
+  }, [account, settlementContract, provider, settlementChainId])
 }

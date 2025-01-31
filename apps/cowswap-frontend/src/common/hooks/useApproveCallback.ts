@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 
 import { Erc20 } from '@cowprotocol/abis'
 import { calculateGasMargin, getIsNativeToken } from '@cowprotocol/common-utils'
-import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
@@ -56,15 +55,14 @@ export function useApproveCallback(
   amountToApprove?: CurrencyAmount<Currency>,
   spender?: string,
 ): (summary?: string) => Promise<TransactionResponse | undefined> {
-  const { chainId } = useWalletInfo()
   const currency = amountToApprove?.currency
   const token = currency && !getIsNativeToken(currency) ? currency : undefined
-  const tokenContract = useTokenContract(token?.address)
+  const { contract: tokenContract, chainId: tokenChainId } = useTokenContract(token?.address)
   const addTransaction = useTransactionAdder()
 
   return useCallback(async () => {
-    if (!chainId || !token || !tokenContract || !amountToApprove || !spender) {
-      console.error('Wrong input for approve: ', { chainId, token, tokenContract, amountToApprove, spender })
+    if (!tokenChainId || !token || !tokenContract || !amountToApprove || !spender) {
+      console.error('Wrong input for approve: ', { tokenChainId, token, tokenContract, amountToApprove, spender })
       return
     }
 
@@ -81,5 +79,5 @@ export function useApproveCallback(
         })
         return response
       })
-  }, [chainId, token, tokenContract, amountToApprove, spender, addTransaction])
+  }, [tokenChainId, token, tokenContract, amountToApprove, spender, addTransaction])
 }
