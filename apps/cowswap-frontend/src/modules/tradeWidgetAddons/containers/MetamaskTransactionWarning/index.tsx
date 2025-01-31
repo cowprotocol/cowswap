@@ -10,6 +10,11 @@ import { Currency } from '@uniswap/sdk-core'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
+const Banner = styled(InlineBanner)`
+  font-size: 14px;
+  text-align: center;
+`
+
 const NetworkInfo = styled.div`
   display: flex;
   align-items: center;
@@ -27,12 +32,12 @@ export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency 
   const chainInfo = CHAIN_INFO[sellToken.chainId as SupportedChainId]
 
   return (
-    <InlineBanner bannerType="danger" orientation={BannerOrientation.Horizontal} iconSize={32}>
-      Metamask may not process transactions correctly. Be careful when signing them and check all the details carefully!
-      Be sure to check that the transaction will be sent to the network:{' '}
+    <Banner bannerType="danger" orientation={BannerOrientation.Vertical} iconSize={32}>
+      Be careful when signing transactions in Metamask and check all the details carefully! Make sure that the
+      transaction will be sent to the network:{' '}
       <NetworkInfo>
         <SVG src={chainInfo.logo.light} height={24} /> <span>{chainInfo.label}</span>
       </NetworkInfo>
-    </InlineBanner>
+    </Banner>
   )
 }
