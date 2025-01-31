@@ -10,6 +10,7 @@ import { SellNativeWarningBanner } from 'modules/trade/containers/SellNativeWarn
 import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 import { BundleTxWrapBanner, HighFeeWarning } from 'modules/tradeWidgetAddons'
+import { MetamaskTransactionWarning } from 'modules/tradeWidgetAddons'
 
 import { TwapSuggestionBanner } from './banners/TwapSuggestionBanner'
 
@@ -40,9 +41,11 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     tradeUrlParams,
     isNativeSellInHooksStore,
   } = props
+  const sellToken = trade?.inputAmount.currency
 
   return (
     <>
+      {sellToken && !isNativeSellInHooksStore && <MetamaskTransactionWarning sellToken={sellToken} />}
       {isNativeSellInHooksStore ? (
         <SellNativeWarningBanner />
       ) : (
@@ -56,7 +59,7 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
               priceImpact={priceImpact}
               buyingFiatAmount={buyingFiatAmount}
               tradeUrlParams={tradeUrlParams}
-              sellAmount={trade?.inputAmount.toExact()}
+              sellAmount={trade?.inputAmount}
             />
           )}
         </>
