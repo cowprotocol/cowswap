@@ -1,31 +1,26 @@
 'use client'
 
-import { createContext, useContext } from 'react'
+import styled from 'styled-components/macro'
 
-import styled, { ThemeContext as StyledThemeContext } from 'styled-components/macro'
+import type { DefaultTheme } from 'styled-components/macro'
 
-import type { Theme } from './theme'
+import '@cowprotocol/types'
 
-// Create our own theme context with the correct type
-const ThemeContext = createContext<Theme | null>(null)
+// Re-export the theme hook with proper typing
+export function useTheme(): DefaultTheme {
+  // SSR-safe check
+  const isServer = typeof window === 'undefined'
 
-// Export the context for the provider
-export { ThemeContext }
-
-// Re-export the styled object for consistency
-export { styled }
-
-export function useTheme(): Theme {
-  // Try our custom context first
-  const customTheme = useContext(ThemeContext)
-  // Fallback to styled-components theme context
-  const styledTheme = useContext(StyledThemeContext)
-
-  const theme = customTheme || styledTheme
-
-  if (!theme) {
-    throw new Error('useTheme must be used within a ThemeProvider')
+  if (isServer) {
+    // For SSR environments (Next.js)
+    const { useTheme: serverUseTheme } = require('styled-components')
+    return serverUseTheme()
+  } else {
+    // For client-side environments (Vite)
+    const { useTheme: clientUseTheme } = require('styled-components/macro')
+    return clientUseTheme()
   }
-
-  return theme as Theme
 }
+
+// Re-export styled for convenience
+export { styled }

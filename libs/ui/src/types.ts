@@ -1,3 +1,4 @@
+import type { CowSwapTheme } from '@cowprotocol/types'
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 
 export type Nullish<T> = T | null | undefined
@@ -21,4 +22,4 @@ export const BadgeTypes = {
 
 export type BadgeType = (typeof BadgeTypes)[keyof typeof BadgeTypes]
 
-export type CowSwapTheme = 'dark' | 'light' | 'darkHalloween' | 'lightChristmas' | 'darkChristmas'
+export { CowSwapTheme }
