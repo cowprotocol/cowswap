@@ -31,8 +31,8 @@ export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency 
 
   return (
     <Banner bannerType="danger" orientation={BannerOrientation.Vertical} iconSize={32}>
-      Be careful when signing transactions in Metamask and check all the details carefully! Make sure that the
-      transaction will be sent to the network:{' '}
+      Issues have been reported with Metamask sending transactions to the wrong chain. 
+      Before you sign, please check in your wallet that the transaction is being sent to the network:{' '}
       <NetworkInfo>
         <SVG src={chainInfo.logo.light} height={24} /> <span>{chainInfo.label}</span>
       </NetworkInfo>
