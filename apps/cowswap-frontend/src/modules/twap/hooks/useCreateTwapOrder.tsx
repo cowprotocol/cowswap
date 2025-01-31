@@ -56,7 +56,7 @@ export function useCreateTwapOrder() {
 
   return useCallback(
     async (fallbackHandlerIsNotSet: boolean) => {
-      if (!chainId || !account) return
+      if (!chainId || !account || chainId !== twapOrderCreationContext?.chainId) return
       if (
         !inputCurrencyAmount ||
         !outputCurrencyAmount ||

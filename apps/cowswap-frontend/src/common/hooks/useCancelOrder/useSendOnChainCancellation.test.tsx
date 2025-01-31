@@ -82,20 +82,30 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
     ethFlowInvalidationMock.mockResolvedValue({ hash: ethFlowCancellationTxHash })
 
     mockUseEthFlowContract.mockReturnValue({
-      estimateGas: {
-        invalidateOrder: () => Promise.resolve(BigNumber.from(100)),
-      },
-      invalidateOrder: ethFlowInvalidationMock,
-    } as any)
+      contract: {
+        estimateGas: {
+          invalidateOrder: () => Promise.resolve(BigNumber.from(100)),
+        },
+        invalidateOrder: ethFlowInvalidationMock,
+      } as any,
+      chainId,
+      error: null,
+      loading: false,
+    })
 
     settlementInvalidationMock.mockResolvedValue({ hash: settlementCancellationTxHash })
 
     mockUseGP2SettlementContract.mockReturnValue({
-      estimateGas: {
-        invalidateOrder: () => Promise.resolve(BigNumber.from(200)),
-      },
-      invalidateOrder: settlementInvalidationMock,
-    } as any)
+      contract: {
+        estimateGas: {
+          invalidateOrder: () => Promise.resolve(BigNumber.from(200)),
+        },
+        invalidateOrder: settlementInvalidationMock,
+      } as any,
+      chainId,
+      error: null,
+      loading: false,
+    })
   })
 
   afterEach(() => {

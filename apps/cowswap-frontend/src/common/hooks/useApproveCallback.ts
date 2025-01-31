@@ -57,14 +57,14 @@ export function useApproveCallback(
 ): (summary?: string) => Promise<TransactionResponse | undefined> {
   const currency = amountToApprove?.currency
   const token = currency && !getIsNativeToken(currency) ? currency : undefined
-  const tokenContract = useTokenContract(token?.address)
+  const { contract: tokenContract, chainId: tokenChainId } = useTokenContract(token?.address)
   const addTransaction = useTransactionAdder()
   const summary = amountToApprove?.greaterThan('0') ? `Approve ${token?.symbol}` : `Revoke ${token?.symbol} approval`
   const amountToApproveStr = '0x' + amountToApprove?.quotient.toString(16)
 
   return useCallback(async () => {
-    if (!token || !tokenContract || !amountToApprove || !spender) {
-      console.error('Wrong input for approve: ', { token, tokenContract, amountToApprove, spender })
+    if (!tokenChainId || !token || !tokenContract || !amountToApprove || !spender) {
+      console.error('Wrong input for approve: ', { tokenChainId, token, tokenContract, amountToApprove, spender })
       return
     }
 
@@ -81,5 +81,5 @@ export function useApproveCallback(
         })
         return response
       })
-  }, [token, tokenContract, spender, addTransaction, summary, amountToApproveStr])
+  }, [tokenChainId, token, tokenContract, spender, addTransaction, summary, amountToApproveStr])
 }
