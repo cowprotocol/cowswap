@@ -1,5 +1,31 @@
 # Changelog
 
+## [1.97.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.97.0...cowswap-v1.97.1) (2025-01-30)
+
+
+### Bug Fixes
+
+* type guard to make sure provider is a JsonRpcProvider ([#5357](https://github.com/cowprotocol/cowswap/issues/5357)) ([6a2e030](https://github.com/cowprotocol/cowswap/commit/6a2e030aa7f88ef207fad8910750b18dcf719503))
+
+## [1.97.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.96.2...cowswap-v1.97.0) (2025-01-29)
+
+
+### Features
+
+* make useContract chainId aware and handle errors and loading state ([#5352](https://github.com/cowprotocol/cowswap/issues/5352)) ([d66e8ff](https://github.com/cowprotocol/cowswap/commit/d66e8ffc8668ad7563130228fb9bec28ae1d7e7e))
+
+
+### Bug Fixes
+
+* use provider.send('eth_chainId',[]) to avoid cached values ([#5354](https://github.com/cowprotocol/cowswap/issues/5354)) ([ad34521](https://github.com/cowprotocol/cowswap/commit/ad3452181287acb151b22d541feb156d208db482))
+
+## [1.96.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.96.1...cowswap-v1.96.2) (2025-01-27)
+
+
+### Bug Fixes
+
+* **wrap/unwrap:** enforce chainId when wrapping/unwrapping ([#5349](https://github.com/cowprotocol/cowswap/issues/5349)) ([7023f6e](https://github.com/cowprotocol/cowswap/commit/7023f6e449924eafc7afa0154844c78b315c6b37))
+
 ## [1.96.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.96.0...cowswap-v1.96.1) (2025-01-09)
 
 

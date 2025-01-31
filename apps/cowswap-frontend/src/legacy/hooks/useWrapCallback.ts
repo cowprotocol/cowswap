@@ -15,6 +15,8 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
+import { assertProviderNetwork } from 'common/utils/assertProviderNetwork'
+
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')
 
@@ -75,7 +77,7 @@ export async function wrapUnwrapCallback(
     sendWrapEvent(analytics, 'Send', operationMessage, amount)
 
     const wrapUnwrap = isNativeIn ? wrapContractCall : unwrapContractCall
-    const txReceipt = await wrapUnwrap(wethContract, amountHex)
+    const txReceipt = await wrapUnwrap(wethContract, amountHex, chainId)
     sendWrapEvent(analytics, 'Sign', operationMessage, amount)
 
     addTransaction({
@@ -122,17 +124,34 @@ function getWrapDescription(
   }
 }
 
-async function wrapContractCall(wethContract: Contract, amountHex: string): Promise<TransactionResponse> {
+async function wrapContractCall(
+  wethContract: Contract,
+  amountHex: string,
+  chainId: SupportedChainId,
+): Promise<TransactionResponse> {
   const estimatedGas = await wethContract.estimateGas.deposit({ value: amountHex }).catch(_handleGasEstimateError)
   const gasLimit = calculateGasMargin(estimatedGas)
 
-  return wethContract.deposit({ value: amountHex, gasLimit })
+  const network = await assertProviderNetwork(chainId, wethContract.provider, 'wrap')
+
+  const tx = await wethContract.populateTransaction.deposit({ value: amountHex, gasLimit })
+
+  return wethContract.signer.sendTransaction({ ...tx, chainId: network })
 }
 
-async function unwrapContractCall(wethContract: Contract, amountHex: string): Promise<TransactionResponse> {
+async function unwrapContractCall(
+  wethContract: Contract,
+  amountHex: string,
+  chainId: SupportedChainId,
+): Promise<TransactionResponse> {
   const estimatedGas = await wethContract.estimateGas.withdraw(amountHex).catch(_handleGasEstimateError)
   const gasLimit = calculateGasMargin(estimatedGas)
-  return wethContract.withdraw(amountHex, { gasLimit })
+
+  const tx = await wethContract.populateTransaction.withdraw(amountHex, { gasLimit })
+
+  const network = await assertProviderNetwork(chainId, wethContract.provider, 'unwrap')
+
+  return wethContract.signer.sendTransaction({ ...tx, chainId: network })
 }
 
 function _handleGasEstimateError(error: any): BigNumber {

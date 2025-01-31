@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
@@ -14,7 +13,7 @@ import {
 } from 'legacy/hooks/useWrapCallback'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { useWETHContract } from 'common/hooks/useContract'
+import { useWethContract } from 'common/hooks/useContract'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useWrapNativeScreenState } from './useWrapNativeScreenState'
@@ -34,19 +33,18 @@ export function useWrapNativeFlow(): WrapUnwrapCallback {
 }
 
 function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUnwrapContext | null {
-  const { chainId } = useWalletInfo()
-  const wethContract = useWETHContract()
+  const { contract: wethContract, chainId: wethChainId } = useWethContract()
   const addTransaction = useTransactionAdder()
   const [, setWrapNativeState] = useWrapNativeScreenState()
   const analytics = useCowAnalytics()
 
   return useMemo(() => {
-    if (!wethContract || !chainId || !amount) {
+    if (!wethContract || !amount) {
       return null
     }
 
     return {
-      chainId,
+      chainId: wethChainId,
       wethContract,
       amount,
       addTransaction,
@@ -58,7 +56,7 @@ function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUn
         setWrapNativeState({ isOpen: true })
       },
     }
-  }, [chainId, wethContract, amount, addTransaction, setWrapNativeState, analytics])
+  }, [wethChainId, wethContract, amount, addTransaction, setWrapNativeState, analytics])
 }
 
 function useWrapNativeCallback(inputAmount: Nullish<CurrencyAmount<Currency>>): WrapUnwrapCallback | null {

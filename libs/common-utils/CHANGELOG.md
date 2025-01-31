@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.9.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.9.0...common-utils-v1.9.1) (2025-01-30)
+
+
+### Bug Fixes
+
+* type guard to make sure provider is a JsonRpcProvider ([#5357](https://github.com/cowprotocol/cowswap/issues/5357)) ([6a2e030](https://github.com/cowprotocol/cowswap/commit/6a2e030aa7f88ef207fad8910750b18dcf719503))
+
+## [1.9.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.8.0...common-utils-v1.9.0) (2025-01-29)
+
+
+### Features
+
+* make useContract chainId aware and handle errors and loading state ([#5352](https://github.com/cowprotocol/cowswap/issues/5352)) ([d66e8ff](https://github.com/cowprotocol/cowswap/commit/d66e8ffc8668ad7563130228fb9bec28ae1d7e7e))
+
+
+### Bug Fixes
+
+* use provider.send('eth_chainId',[]) to avoid cached values ([#5354](https://github.com/cowprotocol/cowswap/issues/5354)) ([ad34521](https://github.com/cowprotocol/cowswap/commit/ad3452181287acb151b22d541feb156d208db482))
+
 ## [1.8.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.7.2...common-utils-v1.8.0) (2024-12-03)
 
 

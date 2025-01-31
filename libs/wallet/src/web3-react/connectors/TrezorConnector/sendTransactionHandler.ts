@@ -12,9 +12,9 @@ export async function sendTransactionHandler(
   params: [{ to: string; value: string | undefined; data: string | undefined }],
   account: string,
   provider: JsonRpcProvider,
-  trezorConnect: TrezorConnect
+  trezorConnect: TrezorConnect,
 ) {
-  const { chainId } = await provider.getNetwork()
+  const chainId = +(await provider.send('eth_chainId', []))
   const nonce = await provider.send('eth_getTransactionCount', [account, 'latest'])
 
   const originalTx = params[0]
@@ -46,7 +46,7 @@ export async function sendTransactionHandler(
     {
       ...payload,
       v: +payload.v,
-    }
+    },
   )
 
   return provider.send('eth_sendRawTransaction', [serialized])
