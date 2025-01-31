@@ -25,11 +25,11 @@ import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
 export function useTradeFlowContext(): TradeFlowContext | null {
   const provider = useWalletProvider()
-  const { chainId, account } = useWalletInfo()
+  const { account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const state = useLimitOrdersDerivedState()
   const isSafeWallet = useIsSafeWallet()
-  const settlementContract = useGP2SettlementContract()
+  const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
   const dispatch = useDispatch<AppDispatch>()
   const appData = useAppData()
   const quoteState = useTradeQuote()
@@ -37,7 +37,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const permitInfo = usePermitInfo(state.inputCurrency, TradeType.LIMIT_ORDER)
 
-  const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
+  const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[settlementChainId]
   const { enoughAllowance } = useEnoughBalanceAndAllowance({
     account,
     amount: state.slippageAdjustedSellAmount || undefined,
@@ -73,7 +73,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     const feeAmount = CurrencyAmount.fromRawAmount(state.inputCurrency, 0)
 
     return {
-      chainId,
+      chainId: settlementChainId,
       settlementContract,
       allowsOffchainSigning,
       dispatch,
@@ -87,7 +87,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
         class: OrderClass.LIMIT,
         kind: state.orderKind,
         account,
-        chainId,
+        chainId: settlementChainId,
         sellToken,
         buyToken,
         recipient,
@@ -114,7 +114,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     settlementContract,
     isQuoteReady,
     appData,
-    chainId,
+    settlementChainId,
     settlementContract,
     allowsOffchainSigning,
     dispatch,

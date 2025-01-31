@@ -7,7 +7,6 @@ import { useNativeTokenBalance } from '@cowprotocol/balances-and-allowances'
 import { getCurrencyAddress, getEtherscanLink, getIsNativeToken } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary, ExternalLink, Loader, TokenAmount } from '@cowprotocol/ui'
-import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
@@ -110,10 +109,9 @@ export function RecoverFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
   const hasBalance = !!tokenBalance?.greaterThan(0)
   const isNativeToken = !!selectedCurrency && getIsNativeToken(selectedCurrency)
 
-  const { chainId } = useWalletInfo()
   const { ErrorModal, handleSetError } = useErrorModal()
   const addTransaction = useTransactionAdder()
-  const erc20Contract = useTokenContract(selectedTokenAddress)
+  const { contract: erc20Contract, chainId: erc20ChainId } = useTokenContract(selectedTokenAddress)
   const onSelectToken = useOpenTokenSelectWidget()
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
   const { open: isSelectTokenWidgetOpen } = useSelectTokenWidgetState()
@@ -171,7 +169,7 @@ export function RecoverFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
     onSelectToken(selectedTokenAddress, undefined, undefined, setSelectedCurrency)
   }, [onSelectToken, selectedTokenAddress, setSelectedCurrency])
 
-  const explorerLink = proxyAddress ? getEtherscanLink(chainId, 'address', proxyAddress) : undefined
+  const explorerLink = proxyAddress ? getEtherscanLink(erc20ChainId, 'address', proxyAddress) : undefined
 
   return (
     <Wrapper>

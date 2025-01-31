@@ -22,7 +22,7 @@ function toApprovalState(
   amountToApprove: Nullish<CurrencyAmount<Currency>>,
   spender: string | undefined,
   currentAllowance?: CurrencyAmount<Token>,
-  pendingApproval?: boolean
+  pendingApproval?: boolean,
 ): ApprovalState {
   // Unknown amount or spender
   if (!amountToApprove || !spender) {
@@ -50,7 +50,7 @@ function toApprovalState(
 export function useApprovalStateForSpender(
   amountToApprove: Nullish<CurrencyAmount<Currency>>,
   spender: string | undefined,
-  useIsPendingApproval: (token?: Token, spender?: string) => boolean
+  useIsPendingApproval: (token?: Token, spender?: string) => boolean,
 ): ApprovalStateForSpenderResult {
   const { account } = useWalletInfo()
   const currency = amountToApprove?.currency
@@ -68,19 +68,18 @@ export function useApprovalStateForSpender(
 export function useApproval(
   amountToApprove: CurrencyAmount<Currency> | undefined,
   spender: string | undefined,
-  useIsPendingApproval: (token?: Token, spender?: string) => boolean
+  useIsPendingApproval: (token?: Token, spender?: string) => boolean,
 ): [
   ApprovalState,
-  () => Promise<{ response: TransactionResponse; tokenAddress: string; spenderAddress: string } | undefined>
+  () => Promise<{ response: TransactionResponse; tokenAddress: string; spenderAddress: string } | undefined>,
 ] {
-  const { chainId } = useWalletInfo()
   const currency = amountToApprove?.currency
   const token = currency && !getIsNativeToken(currency) ? currency : undefined
 
   // check the current approval status
   const approvalState = useApprovalStateForSpender(amountToApprove, spender, useIsPendingApproval).approvalState
 
-  const tokenContract = useTokenContract(token?.address)
+  const { contract: tokenContract, chainId: tokenChainId } = useTokenContract(token?.address)
 
   const approve = useCallback(async () => {
     function logFailure(error: Error | string): undefined {
@@ -91,7 +90,7 @@ export function useApproval(
     // Bail early if there is an issue.
     if (approvalState !== ApprovalState.NOT_APPROVED) {
       return logFailure('approve was called unnecessarily')
-    } else if (!chainId) {
+    } else if (!tokenChainId) {
       return logFailure('no chainId')
     } else if (!token) {
       return logFailure('no token')
@@ -123,7 +122,7 @@ export function useApproval(
         logFailure(error)
         throw error
       })
-  }, [approvalState, token, tokenContract, amountToApprove, spender, chainId])
+  }, [approvalState, token, tokenContract, amountToApprove, spender, tokenChainId])
 
   return [approvalState, approve]
 }
