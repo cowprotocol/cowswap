@@ -57,8 +57,12 @@ function colors(darkMode: boolean): Colors {
     text4: darkMode ? 'rgba(197, 218, 239, 0.7)' : '#000000b8',
 
     // ****** backgrounds ******
+    bg3: darkMode ? '#1a3c6b' : '#D0E3EC',
     bg5: darkMode ? '#1d4373' : '#D5E9F0',
     bg8: darkMode ? blueDark4 : '#152943',
+
+    // ****** greys ******
+    grey1: darkMode ? '#40587F' : '#8FA3BF',
 
     // ****** other ******
     blue1: '#3F77FF',

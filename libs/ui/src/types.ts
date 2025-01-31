@@ -22,4 +22,4 @@ export const BadgeTypes = {
 
 export type BadgeType = (typeof BadgeTypes)[keyof typeof BadgeTypes]
 
-export { CowSwapTheme }
+export type { CowSwapTheme }
