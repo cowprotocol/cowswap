@@ -142,11 +142,11 @@ function _getPartialFillBuySurplus(order: Order): Surplus | null {
 
 const ZERO_SURPLUS: Surplus = { amount: ZERO_BIG_NUMBER, percentage: ZERO_BIG_NUMBER }
 
-export function getOrderSurplus(order: Order): Surplus {
+export function getOrderSurplus(order: Order, unknownExecutionAmounts: boolean): Surplus {
   const { kind } = order
 
   // `executedSellAmount` already has `executedFeeAmount` discounted
-  const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order)
+  const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order, unknownExecutionAmounts)
 
   if (JSBI.EQ(executedBuyAmount, 0) || JSBI.EQ(executedSellAmount, 0)) {
     return ZERO_SURPLUS
