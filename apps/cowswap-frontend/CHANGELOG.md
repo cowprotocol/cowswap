@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.98.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.97.1...cowswap-v1.98.0) (2025-01-31)
+
+
+### Features
+
+* warn users about metamask transactions ([#5362](https://github.com/cowprotocol/cowswap/issues/5362)) ([55e71b0](https://github.com/cowprotocol/cowswap/commit/55e71b09d512771185c75c80f291098796411689))
+
 ## [1.97.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.97.0...cowswap-v1.97.1) (2025-01-30)
 
 
