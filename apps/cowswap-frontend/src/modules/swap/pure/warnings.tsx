@@ -56,7 +56,7 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
               priceImpact={priceImpact}
               buyingFiatAmount={buyingFiatAmount}
               tradeUrlParams={tradeUrlParams}
-              sellAmount={trade?.inputAmount.toExact()}
+              sellAmount={trade?.inputAmount}
             />
           )}
         </>
