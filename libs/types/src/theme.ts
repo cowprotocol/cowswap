@@ -59,7 +59,14 @@ export interface ThemeUtils {
   flexRowNoWrap: FlattenSimpleInterpolation
 }
 
-export interface CowProtocolTheme extends Colors, ThemeUtils {
+export interface WidgetThemeMode {
+  isInjectedWidgetMode: boolean
+  isStandalone: boolean
+  isWidget: boolean
+  isIframe: boolean
+}
+
+export interface CowProtocolTheme extends Colors, ThemeUtils, WidgetThemeMode {
   mode: CowSwapTheme
 }
 
