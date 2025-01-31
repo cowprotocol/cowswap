@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.98.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.98.0...cowswap-v1.98.1) (2025-01-31)
+
+
+### Bug Fixes
+
+* css for Metamask warning banner ([#5365](https://github.com/cowprotocol/cowswap/issues/5365)) ([753899d](https://github.com/cowprotocol/cowswap/commit/753899d1ec9b0b613a6602e35b24cbe2024c30b3))
+
 ## [1.98.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.97.1...cowswap-v1.98.0) (2025-01-31)
 
 
