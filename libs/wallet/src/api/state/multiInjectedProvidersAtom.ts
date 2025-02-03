@@ -2,8 +2,7 @@ import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 import { getJotaiIsolatedStorage, jotaiStore } from '@cowprotocol/core'
-
-import { EIP6963AnnounceProviderEvent, EIP6963ProviderDetail } from '../eip6963-types'
+import { EIP6963AnnounceProviderEvent, EIP6963ProviderDetail } from '@cowprotocol/types'
 
 export const multiInjectedProvidersAtom = atom<EIP6963ProviderDetail[]>([])
 
@@ -11,7 +10,7 @@ export const multiInjectedProvidersAtom = atom<EIP6963ProviderDetail[]>([])
 export const selectedEip6963ProviderRdnsAtom = atomWithStorage<string | null>(
   'selectedEip6963ProviderAtom:v0',
   null,
-  getJotaiIsolatedStorage()
+  getJotaiIsolatedStorage(),
 )
 
 export const selectedEip6963ProviderAtom = atom((get) => {
