@@ -88,5 +88,5 @@ function useIsMetamaskMobileInjectedWallet(): boolean {
   const walletProvider = useWalletProvider()
   const rawProvider = walletProvider?.provider as any
 
-  return Boolean(rawProvider?.isMetaMask && rawProvider._metamask)
+  return Boolean(rawProvider?.isMetaMask && rawProvider._metamask && !rawProvider.isRabby)
 }
