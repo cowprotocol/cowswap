@@ -3,6 +3,7 @@ import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InlineBanner } from '@cowprotocol/ui'
 import { useIsMetamaskBrowserExtensionWallet, useWalletDetails } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Currency } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
@@ -25,9 +26,11 @@ const NetworkInfo = styled.div`
 export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency }) {
   const walletDetails = useWalletDetails()
   const isMetamaskBrowserExtension = useIsMetamaskBrowserExtensionWallet()
+
+  const isMetamaskMobileInjectedBrowser = useIsMetamaskMobileInjectedWallet()
   const isMetamaskViaWalletConnect = walletDetails.walletName === METAMASK_WALLET_NAME
 
-  const isMetamask = isMetamaskBrowserExtension || isMetamaskViaWalletConnect
+  const isMetamask = isMetamaskBrowserExtension || isMetamaskViaWalletConnect || isMetamaskMobileInjectedBrowser
   const isNativeSellToken = getIsNativeToken(sellToken)
 
   if (!isMetamask || !isNativeSellToken) return null
@@ -43,4 +46,15 @@ export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency 
       </NetworkInfo>
     </Banner>
   )
+}
+
+/**
+ * This is hacky way to detect if the wallet is metamask mobile injected wallet
+ * Many injected wallet browsers emulate isMetaMask, but only metamask mobile has _metamask
+ */
+function useIsMetamaskMobileInjectedWallet(): boolean {
+  const walletProvider = useWalletProvider()
+  const rawProvider = walletProvider?.provider as any
+
+  return Boolean(rawProvider?.isMetaMask && rawProvider._metamask)
 }
