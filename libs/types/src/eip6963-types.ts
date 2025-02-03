@@ -1,6 +1,6 @@
-import type { Command } from '@cowprotocol/types'
 import type { RequestArguments } from '@web3-react/types'
 
+import type { Command } from './common'
 import type EventEmitter from 'eventemitter3'
 
 export interface EIP6963ProviderInfo {

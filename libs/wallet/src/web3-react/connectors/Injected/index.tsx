@@ -1,9 +1,8 @@
 import { isInjectedWidget, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 import { Command } from '@cowprotocol/types'
+import type { EIP1193Provider } from '@cowprotocol/types'
 import { Actions, AddEthereumChainParameter, Connector, ProviderConnectInfo, ProviderRpcError } from '@web3-react/types'
-
-import type { EIP1193Provider } from '../../../api/eip6963-types'
 
 interface injectedWalletConstructorArgs {
   actions: Actions
