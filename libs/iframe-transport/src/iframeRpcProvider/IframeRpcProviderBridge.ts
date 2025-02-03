@@ -1,13 +1,22 @@
+import { EIP6963AnnounceProviderEvent, EIP6963ProviderDetail } from '@cowprotocol/types'
+
 import {
   IframeRpcProviderEvents,
   iframeRpcProviderTransport,
   ProviderRpcResponsePayload,
   ProviderRpcRequestPayload,
 } from './iframeRpcProviderEvents'
+import { getEip6963ProviderInfo, getProviderWcMetadata } from './utils'
 
 import { EthereumProvider, JsonRpcRequestMessage } from '../types'
 
 const EVENTS_TO_FORWARD_TO_IFRAME = ['connect', 'disconnect', 'close', 'chainChanged', 'accountsChanged']
+const eip6963Providers: EIP6963ProviderDetail[] = []
+
+window.addEventListener('eip6963:announceProvider', (event: Event) => {
+  const providerEvent = event as EIP6963AnnounceProviderEvent
+  eip6963Providers.push(providerEvent.detail)
+})
 
 /**
  * Handles JSON-RPC request comming from an iFrame by delegating to a given Ethereum provider.
@@ -43,6 +52,12 @@ export class IframeRpcProviderBridge {
       IframeRpcProviderEvents.PROVIDER_RPC_REQUEST,
       this.processRpcCallFromWindow,
     )
+
+    iframeRpcProviderTransport.stopListeningToMessageFromWindow(
+      window,
+      IframeRpcProviderEvents.REQUEST_PROVIDER_META_INFO,
+      this.processProviderMetaInfoRequest,
+    )
   }
 
   /**
@@ -72,6 +87,13 @@ export class IframeRpcProviderBridge {
     EVENTS_TO_FORWARD_TO_IFRAME.forEach((event) => {
       newProvider.on(event, (params: unknown) => this.onProviderEvent(event, params))
     })
+
+    // Listen for provider meta info request
+    iframeRpcProviderTransport.listenToMessageFromWindow(
+      window,
+      IframeRpcProviderEvents.REQUEST_PROVIDER_META_INFO,
+      this.processProviderMetaInfoRequest,
+    )
   }
 
   private processPendingRequests() {
@@ -120,6 +142,19 @@ export class IframeRpcProviderBridge {
     }
 
     this.processRpcRequest(rpcRequest)
+  }
+
+  private processProviderMetaInfoRequest = (): void => {
+    if (!this.ethereumProvider) return
+    // We assume, that all EIP-6963 providers are already announced
+    const providerEip6963Info = getEip6963ProviderInfo(this.ethereumProvider, eip6963Providers)
+    const providerWcMetadata = getProviderWcMetadata(this.ethereumProvider)
+
+    // Send the provider meta info to the iFrame window
+    iframeRpcProviderTransport.postMessageToWindow(this.iframeWidow, IframeRpcProviderEvents.SEND_PROVIDER_META_INFO, {
+      providerEip6963Info,
+      providerWcMetadata,
+    })
   }
 
   private onProviderEvent(event: string, params: unknown): void {
