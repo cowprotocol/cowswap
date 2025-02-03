@@ -12,7 +12,7 @@ import { Currency } from '@uniswap/sdk-core'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-const METAMASK_WALLET_NAME = 'MetaMask Wallet'
+const METAMASK_WALLET_NAME_REGEX = /metamask/i
 
 const Banner = styled(InlineBanner)`
   font-size: 14px;
@@ -34,11 +34,13 @@ export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency 
   const isMetamaskBrowserExtension = useIsMetamaskBrowserExtensionWallet()
 
   const isMetamaskMobileInjectedBrowser = useIsMetamaskMobileInjectedWallet()
-  const isMetamaskViaWalletConnect = walletDetails.walletName === METAMASK_WALLET_NAME
+  const isMetamaskViaWalletConnect = METAMASK_WALLET_NAME_REGEX.test(walletDetails.walletName || '')
 
   const rawProvider = provider?.provider as unknown
   const isWidgetMetamaskBrowserExtension = widgetProviderMetaInfo?.providerEip6963Info?.rdns === METAMASK_RDNS
-  const isWidgetMetamaskViaWalletConnect = widgetProviderMetaInfo?.providerWcMetadata?.name === METAMASK_WALLET_NAME
+  const isWidgetMetamaskViaWalletConnect = METAMASK_WALLET_NAME_REGEX.test(
+    widgetProviderMetaInfo?.providerWcMetadata?.name || '',
+  )
 
   const isMetamask =
     isMetamaskBrowserExtension ||
