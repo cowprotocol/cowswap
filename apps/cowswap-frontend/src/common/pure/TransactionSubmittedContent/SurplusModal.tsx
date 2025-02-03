@@ -1,4 +1,3 @@
-import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import CheckSingular from '@cowprotocol/assets/cow-swap/check-singular.svg'
 import SurplusCow from '@cowprotocol/assets/cow-swap/surplus-cow.svg'
 import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
@@ -11,6 +10,7 @@ import styled from 'styled-components/macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
+import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 
 const SELL_SURPLUS_WORD = 'got'
@@ -183,8 +183,8 @@ export function SurplusModal(props: SurplusModalProps) {
             surplusToken.symbol || 'Unknown token',
             order.kind,
           )}`}
-          data-click-event={toGtmEvent({
-            category: Category.SURPLUS_MODAL,
+          data-click-event={toCowSwapGtmEvent({
+            category: CowSwapCategory.SURPLUS_MODAL,
             action: 'Share on Twitter',
           })}
         >

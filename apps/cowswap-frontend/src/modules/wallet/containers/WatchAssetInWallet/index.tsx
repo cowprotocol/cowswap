@@ -1,6 +1,6 @@
 import { ReactElement, useCallback, useState } from 'react'
 
-import { Category, toGtmEvent, useCowAnalytics } from '@cowprotocol/analytics'
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { getTokenLogoUrls } from '@cowprotocol/tokens'
@@ -9,6 +9,7 @@ import { useIsAssetWatchingSupported, useWalletDetails } from '@cowprotocol/wall
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Currency } from '@uniswap/sdk-core'
 
+import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { WatchAssetInWallet as WatchAssetInWalletPure } from '../../pure/WatchAssetInWallet'
@@ -50,7 +51,7 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
       .then(() => {
         // Track success event
         cowAnalytics.sendEvent({
-          category: Category.WALLET,
+          category: CowSwapCategory.WALLET,
           action: 'Watch Asset',
           label: `Succeeded: ${token.symbol}`,
         })
@@ -60,13 +61,13 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
         console.error('Can not add an asset to wallet', error)
         // Track failure event
         cowAnalytics.sendEvent({
-          category: Category.WALLET,
+          category: CowSwapCategory.WALLET,
           action: 'Watch Asset',
           label: `Failed: ${token.symbol}`,
         })
         setSuccess(false)
       })
-  }, [provider, logoURL, token])
+  }, [provider, logoURL, token, cowAnalytics])
 
   if (!currency || !icon || !walletName || isProviderNetworkUnsupported || !isAssetWatchingSupported) {
     return fallback || null
@@ -81,8 +82,8 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
       addToken={addToken}
       currency={currency}
       shortLabel={shortLabel}
-      data-click-event={toGtmEvent({
-        category: Category.WALLET,
+      data-click-event={toCowSwapGtmEvent({
+        category: CowSwapCategory.WALLET,
         action: 'Click Watch Asset',
       })}
     />

@@ -1,6 +1,5 @@
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
-import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { formatInputAmount, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -15,6 +14,7 @@ import { Field } from 'legacy/state/types'
 
 import { ReceiveAmount } from 'modules/swap/pure/ReceiveAmount'
 
+import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 import { FiatValue } from 'common/pure/FiatValue'
@@ -190,8 +190,8 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
                 <Trans>Balance</Trans>: <TokenAmount amount={balance} defaultValue="0" tokenSymbol={currency} />
                 {showSetMax && balance.greaterThan(0) && (
                   <styledEl.SetMaxBtn
-                    data-click-event={toGtmEvent({
-                      category: Category.TRADE,
+                    data-click-event={toCowSwapGtmEvent({
+                      category: CowSwapCategory.TRADE,
                       action: 'Set Maximum Sell Tokens',
                     })}
                     onClick={handleMaxInput}

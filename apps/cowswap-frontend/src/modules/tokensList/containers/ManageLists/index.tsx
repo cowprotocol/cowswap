@@ -1,8 +1,10 @@
 import { useMemo } from 'react'
 
-import { Category, toGtmEvent, useCowAnalytics } from '@cowprotocol/analytics'
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { ListSearchResponse, ListState, useListsEnabledState, useRemoveList, useToggleList } from '@cowprotocol/tokens'
 import { Loader } from '@cowprotocol/ui'
+
+import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import * as styledEl from './styled'
 
@@ -31,7 +33,7 @@ export function ManageLists(props: ManageListsProps) {
 
   const removeList = useRemoveList((source) => {
     cowAnalytics.sendEvent({
-      category: Category.LIST,
+      category: CowSwapCategory.LIST,
       action: 'Remove List',
       label: source,
     })
@@ -39,7 +41,7 @@ export function ManageLists(props: ManageListsProps) {
 
   const toggleList = useToggleList((enable, source) => {
     cowAnalytics.sendEvent({
-      category: Category.LIST,
+      category: CowSwapCategory.LIST,
       action: `${enable ? 'Enable' : 'Disable'} List`,
       label: source,
     })
@@ -62,8 +64,8 @@ export function ManageLists(props: ManageListsProps) {
           <ImportTokenListItem
             source={source}
             list={listToImport}
-            data-click-event={toGtmEvent({
-              category: Category.LIST,
+            data-click-event={toCowSwapGtmEvent({
+              category: CowSwapCategory.LIST,
               action: 'Import List',
               label: listToImport.source,
             })}

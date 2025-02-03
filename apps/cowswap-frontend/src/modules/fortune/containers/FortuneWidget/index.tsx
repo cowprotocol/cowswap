@@ -2,7 +2,6 @@ import { useAtom, useAtomValue } from 'jotai'
 import { useSetAtom } from 'jotai'
 import { useCallback, useRef, useState, useMemo } from 'react'
 
-import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
 import IMAGE_ICON_FORTUNE_COOKIE from '@cowprotocol/assets/images/icon-fortune-cookie.svg'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
@@ -23,6 +22,8 @@ import {
   isFortunesFeatureDisabledAtom,
   updateOpenFortuneAtom,
 } from 'modules/fortune/state/fortuneStateAtom'
+
+import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import { SuccessBanner } from './styled'
 
@@ -349,8 +350,8 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
                 <StyledExternalLink
                   onClickOptional={onTweetShare}
                   href={`https://twitter.com/intent/tweet?text=${twitterText}`}
-                  data-click-event={toGtmEvent({
-                    category: Category.COW_FORTUNE,
+                  data-click-event={toCowSwapGtmEvent({
+                    category: CowSwapCategory.COW_FORTUNE,
                     action: 'Share on Twitter',
                   })}
                 >
@@ -381,8 +382,8 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
       <FortuneButton
         isDailyFortuneChecked={isDailyFortuneChecked}
         onClick={openFortuneModal}
-        data-click-event={toGtmEvent({
-          category: Category.COW_FORTUNE,
+        data-click-event={toCowSwapGtmEvent({
+          category: CowSwapCategory.COW_FORTUNE,
           action: 'Open Fortune Cookie',
         })}
       >

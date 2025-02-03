@@ -3,7 +3,7 @@ import { debounce } from '@cowprotocol/common-utils'
 import { isValidGtmClickEvent } from './types'
 
 import { AnalyticsContext, CowAnalytics, EventOptions, OutboundLinkParams } from '../CowAnalytics'
-import { GtmEvent } from '../types'
+import { GtmEvent, Category } from '../types'
 
 interface DataLayerEvent extends Record<string, unknown> {
   event: string
@@ -107,10 +107,12 @@ export class CowAnalyticsGtm implements CowAnalytics {
             ...this.getDimensions(),
 
             // Include additional dynamic properties if present
-            ...((event as GtmEvent).orderId && { order_id: (event as GtmEvent).orderId }),
-            ...((event as GtmEvent).orderType && { order_type: (event as GtmEvent).orderType }),
-            ...((event as GtmEvent).tokenSymbol && { token_symbol: (event as GtmEvent).tokenSymbol }),
-            ...((event as GtmEvent).chainId && { chain_id: (event as GtmEvent).chainId }),
+            ...((event as GtmEvent<Category>).orderId && { order_id: (event as GtmEvent<Category>).orderId }),
+            ...((event as GtmEvent<Category>).orderType && { order_type: (event as GtmEvent<Category>).orderType }),
+            ...((event as GtmEvent<Category>).tokenSymbol && {
+              token_symbol: (event as GtmEvent<Category>).tokenSymbol,
+            }),
+            ...((event as GtmEvent<Category>).chainId && { chain_id: (event as GtmEvent<Category>).chainId }),
           }
 
     this.pushToDataLayer(eventData)

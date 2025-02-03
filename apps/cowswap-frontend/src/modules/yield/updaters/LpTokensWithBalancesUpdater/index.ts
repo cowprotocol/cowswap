@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
-import { TokenListCategory, useAllLpTokens } from '@cowprotocol/tokens'
+import { useAllLpTokens, TokenListCategory } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { LP_TOKENS_WITH_BALANCES_DEFAULT_STATE, lpTokensWithBalancesAtom } from '../../state/lpTokensWithBalancesAtom'

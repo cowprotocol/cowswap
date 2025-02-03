@@ -1,6 +1,6 @@
 import { ChangeEvent, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
-import { Category, useCowAnalytics } from '@cowprotocol/analytics'
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { CowSwapWidgetParams, TokenInfo, TradeType } from '@cowprotocol/widget-lib'
@@ -53,6 +53,7 @@ import { useWidgetParams } from './hooks/useWidgetParamsAndSettings'
 import { ContentStyled, DrawerStyled, WalletConnectionWrapper, WrapperStyled } from './styled'
 import { ConfiguratorState, TokenListItem } from './types'
 
+import { WidgetCategory } from '../../common/analytics/types'
 import { ColorModeContext } from '../../theme/ColorModeContext'
 import { EmbedDialog } from '../embedDialog'
 
@@ -225,7 +226,7 @@ export function Configurator({ title }: { title: string }) {
   useEffect(() => {
     if (isConnected) {
       cowAnalytics.sendEvent({
-        category: Category.WIDGET_CONFIGURATOR,
+        category: WidgetCategory.WIDGET_CONFIGURATOR,
         action: 'Connect wallet',
       })
     }

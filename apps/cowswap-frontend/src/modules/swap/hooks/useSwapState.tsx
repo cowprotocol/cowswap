@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
-import { Category, createDebouncedTradeAmountAnalytics, useCowAnalytics } from '@cowprotocol/analytics'
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { formatSymbol, getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { useENS } from '@cowprotocol/ens'
 import { useAreThereTokensWithSameSymbol, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
@@ -25,6 +25,8 @@ import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useTradeSlippage } from 'modules/tradeSlippage'
 import { useVolumeFee } from 'modules/volumeFee'
 
+import { CowSwapCategory } from 'common/analytics/types'
+import { createDebouncedTradeAmountAnalytics } from 'common/analytics/utils'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
@@ -75,7 +77,7 @@ export function useSwapActionHandlers(): TradeWidgetActions {
     navigate(chainId, { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId })
     dispatch(switchCurrencies())
     cowAnalytics.sendEvent({
-      category: Category.TRADE,
+      category: CowSwapCategory.TRADE,
       action: 'Switch INPUT/OUTPUT tokens',
     })
   }, [swapState, navigate, chainId, dispatch, cowAnalytics])

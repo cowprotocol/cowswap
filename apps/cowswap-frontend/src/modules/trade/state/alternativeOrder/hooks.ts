@@ -1,10 +1,11 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { useCowAnalytics, Category } from '@cowprotocol/analytics'
+import { useCowAnalytics } from '@cowprotocol/analytics'
 
 import { Order } from 'legacy/state/orders/actions'
 
+import { CowSwapCategory } from 'common/analytics/types'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { alternativeOrderAtom, isAlternativeOrderModalVisibleAtom } from './atoms'
@@ -15,7 +16,7 @@ function useAlternativeModalAnalytics() {
   return useCallback(
     (action: string) => {
       cowAnalytics.sendEvent({
-        category: Category.TRADE,
+        category: CowSwapCategory.TRADE,
         action,
       })
     },

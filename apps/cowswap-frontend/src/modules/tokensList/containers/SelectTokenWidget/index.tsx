@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 
-import { Category, useCowAnalytics } from '@cowprotocol/analytics'
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import {
@@ -23,6 +23,8 @@ import { Field } from 'legacy/state/types'
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { usePermitCompatibleTokens } from 'modules/permit'
 import { useLpTokensWithBalances } from 'modules/yield/shared'
+
+import { CowSwapCategory } from 'common/analytics/types'
 
 import { getDefaultTokenListCategories } from './getDefaultTokenListCategories'
 
@@ -75,7 +77,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
   const cowAnalytics = useCowAnalytics()
   const addCustomTokenLists = useAddList((source) => {
     cowAnalytics.sendEvent({
-      category: Category.LIST,
+      category: CowSwapCategory.LIST,
       action: 'Add List Success',
       label: source,
     })
@@ -136,7 +138,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
     try {
       addCustomTokenLists(list)
       cowAnalytics.sendEvent({
-        category: Category.LIST,
+        category: CowSwapCategory.LIST,
         action: 'Add List Success',
         label: list.source,
       })

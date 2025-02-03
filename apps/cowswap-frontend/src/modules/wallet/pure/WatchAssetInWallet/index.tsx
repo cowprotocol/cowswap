@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 
-import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
@@ -9,6 +8,8 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { CheckCircle } from 'react-feather'
 import styled from 'styled-components/macro'
+
+import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 export const ButtonCustom = styled.button`
   display: flex;
@@ -72,7 +73,7 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
 
   const analyticsEvent = useMemo(
     () => ({
-      category: Category.WALLET,
+      category: CowSwapCategory.WALLET,
       action: 'Add Token To Wallet',
       label: currency ? `${currency.symbol}|${walletName}` : 'unknown',
     }),
@@ -80,7 +81,7 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
   )
 
   return (
-    <ButtonCustom className={className} onClick={addToken} data-click-event={toGtmEvent(analyticsEvent)}>
+    <ButtonCustom className={className} onClick={addToken} data-click-event={toCowSwapGtmEvent(analyticsEvent)}>
       {!success ? (
         <RowFixed>
           <StyledIcon src={walletIcon} />{' '}

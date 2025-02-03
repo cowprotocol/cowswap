@@ -1,9 +1,10 @@
 import { useCallback, useRef, useState } from 'react'
 
-import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 
 import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+
+import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import { Sidebar, SidebarHeader, DoubleArrowRightIcon, CloseIcon, ArrowLeft } from './styled'
 
@@ -41,8 +42,8 @@ export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProp
             <span>
               <ArrowLeft
                 onClick={toggleSettingsOpen}
-                data-click-event={toGtmEvent({
-                  category: Category.NOTIFICATIONS,
+                data-click-event={toCowSwapGtmEvent({
+                  category: CowSwapCategory.NOTIFICATIONS,
                   action: 'Close notification settings',
                 })}
               />
@@ -57,8 +58,8 @@ export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProp
               {!isMobile && (
                 <DoubleArrowRightIcon
                   onClick={onDismiss}
-                  data-click-event={toGtmEvent({
-                    category: Category.NOTIFICATIONS,
+                  data-click-event={toCowSwapGtmEvent({
+                    category: CowSwapCategory.NOTIFICATIONS,
                     action: 'Close notifications panel',
                     label: 'desktop',
                   })}
@@ -67,8 +68,8 @@ export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProp
               {isMobile && (
                 <CloseIcon
                   onClick={onDismiss}
-                  data-click-event={toGtmEvent({
-                    category: Category.NOTIFICATIONS,
+                  data-click-event={toCowSwapGtmEvent({
+                    category: CowSwapCategory.NOTIFICATIONS,
                     action: 'Close notifications panel',
                     label: 'mobile',
                   })}

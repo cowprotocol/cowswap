@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import { useNativeCurrencyAmount } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { TokenAmount } from '@cowprotocol/ui'
@@ -15,13 +14,14 @@ import { NotificationBell, NotificationSidebar } from 'modules/notifications'
 import { useUnreadNotifications } from 'modules/notifications/hooks/useUnreadNotifications'
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
+import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { BalanceText, Wrapper } from './styled'
 
 function createNotificationClickEventData(event: string): string {
-  return toGtmEvent({
-    category: Category.NOTIFICATIONS,
+  return toCowSwapGtmEvent({
+    category: CowSwapCategory.NOTIFICATIONS,
     action: event,
   })
 }

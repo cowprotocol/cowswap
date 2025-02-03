@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { Category, toGtmEvent, useCowAnalytics } from '@cowprotocol/analytics'
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
@@ -8,6 +8,7 @@ import { Trans } from '@lingui/macro'
 
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 
+import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { CowModal as Modal } from 'common/pure/Modal'
 
 import * as styledEl from './styled'
@@ -38,7 +39,7 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
 
   const onApply = () => {
     sendEvent({
-      category: Category.TWAP,
+      category: CowSwapCategory.TWAP,
       action: 'Apply custom deadline',
       label: `${hoursValue}h ${minutesValue}m`,
     })
@@ -64,8 +65,8 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
           </h3>
           <styledEl.CloseIcon
             onClick={_onDismiss}
-            data-click-event={toGtmEvent({
-              category: Category.TWAP,
+            data-click-event={toCowSwapGtmEvent({
+              category: CowSwapCategory.TWAP,
               action: 'Close custom deadline selector',
             })}
           />
@@ -93,8 +94,8 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
         <styledEl.ModalFooter>
           <styledEl.CancelButton
             onClick={_onDismiss}
-            data-click-event={toGtmEvent({
-              category: Category.TWAP,
+            data-click-event={toCowSwapGtmEvent({
+              category: CowSwapCategory.TWAP,
               action: 'Cancel custom deadline selection',
             })}
           >

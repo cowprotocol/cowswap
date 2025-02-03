@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 
-import { Category, useCowAnalytics } from '@cowprotocol/analytics'
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import {
   DEFAULT_DEADLINE_FROM_NOW,
   HIGH_ETH_FLOW_SLIPPAGE_BPS,
@@ -38,6 +38,7 @@ import {
   useTradeSlippage,
 } from 'modules/tradeSlippage'
 
+import { CowSwapCategory } from 'common/analytics/types'
 import {
   getNativeOrderDeadlineTooltip,
   getNativeSlippageTooltip,
@@ -67,13 +68,13 @@ type SlippageAnalyticsAction = 'Default' | 'Custom'
 type DeadlineAnalyticsAction = 'Default' | 'Custom'
 
 interface SlippageAnalyticsEvent {
-  category: Category.TRADE
+  category: CowSwapCategory.TRADE
   action: `${SlippageAnalyticsAction} Slippage Tolerance`
   value: number
 }
 
 interface DeadlineAnalyticsEvent {
-  category: Category.TRADE
+  category: CowSwapCategory.TRADE
   action: `${DeadlineAnalyticsAction} Order Expiration Time`
   value: number
 }
@@ -114,7 +115,7 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
   const sendSlippageAnalytics = useCallback(
     (action: SlippageAnalyticsAction, value: string | number) => {
       const analyticsEvent: SlippageAnalyticsEvent = {
-        category: Category.TRADE,
+        category: CowSwapCategory.TRADE,
         action: `${action} Slippage Tolerance`,
         value: typeof value === 'string' ? parseFloat(value) : value,
       }
@@ -126,7 +127,7 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
   const sendDeadlineAnalytics = useCallback(
     (action: DeadlineAnalyticsAction, value: number) => {
       const analyticsEvent: DeadlineAnalyticsEvent = {
-        category: Category.TRADE,
+        category: CowSwapCategory.TRADE,
         action: `${action} Order Expiration Time`,
         value,
       }

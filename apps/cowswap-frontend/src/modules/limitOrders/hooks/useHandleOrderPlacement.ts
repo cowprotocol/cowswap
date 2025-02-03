@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { useCowAnalytics, Category } from '@cowprotocol/analytics'
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { getAddress } from '@cowprotocol/common-utils'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -21,6 +21,7 @@ import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import OperatorError from 'api/cowProtocol/errors/OperatorError'
+import { CowSwapCategory } from 'common/analytics/types'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { TradeAmounts } from 'common/types'
@@ -31,7 +32,7 @@ function useAlternativeModalAnalytics() {
   return useCallback(
     (wasPlaced: boolean) => {
       analytics.sendEvent({
-        category: Category.TRADE,
+        category: CowSwapCategory.TRADE,
         action: 'alternative_modal_completion',
         label: wasPlaced ? 'placed' : 'not-placed',
       })

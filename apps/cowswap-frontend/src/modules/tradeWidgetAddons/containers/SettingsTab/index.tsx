@@ -1,7 +1,6 @@
 import { useAtom } from 'jotai'
 import { ReactElement, RefObject, useCallback, useEffect, useRef } from 'react'
 
-import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import EXPERIMENT_ICON from '@cowprotocol/assets/cow-swap/experiment.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { StatefulValue } from '@cowprotocol/types'
@@ -17,6 +16,8 @@ import { AutoColumn } from 'legacy/components/Column'
 import { Toggle } from 'legacy/components/Toggle'
 
 import { SettingsIcon } from 'modules/trade/pure/Settings'
+
+import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import * as styledEl from './styled'
 
@@ -87,8 +88,8 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
                   id="toggle-recipient-mode-button"
                   isActive={recipientToggleVisible}
                   toggle={toggleRecipientVisibility}
-                  data-click-event={toGtmEvent({
-                    category: Category.RECIPIENT_ADDRESS,
+                  data-click-event={toCowSwapGtmEvent({
+                    category: CowSwapCategory.RECIPIENT_ADDRESS,
                     action: 'Toggle Recipient Address',
                     label: recipientToggleVisible ? 'Enabled' : 'Disabled',
                   })}
@@ -116,8 +117,8 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
                     id="toggle-hooks-mode-button"
                     isActive={hooksEnabled}
                     toggle={toggleHooksEnabled}
-                    data-click-event={toGtmEvent({
-                      category: Category.HOOKS,
+                    data-click-event={toCowSwapGtmEvent({
+                      category: CowSwapCategory.HOOKS,
                       action: 'Toggle Hooks Enabled',
                       label: hooksEnabled ? 'Enabled' : 'Disabled',
                     })}
