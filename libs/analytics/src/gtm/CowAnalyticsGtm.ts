@@ -151,8 +151,14 @@ export class CowAnalyticsGtm implements CowAnalytics {
     }
   }
 
+  /**
+   * Sets an analytics dimension value.
+   * @param key - The dimension key to set
+   * @param value - The dimension value. Any value (including falsy values like '0' or '') will be stored,
+   *               except undefined which will remove the dimension.
+   */
   setContext(key: AnalyticsContext, value?: string): void {
-    if (value) {
+    if (typeof value !== 'undefined') {
       this.dimensions[key] = value
     } else {
       delete this.dimensions[key]
@@ -177,7 +183,8 @@ export class CowAnalyticsGtm implements CowAnalytics {
   private getDimensions(): Record<string, string> {
     return Object.entries(this.dimensions).reduce(
       (acc, [key, value]) => {
-        if (value) {
+        // Include all values that are not undefined
+        if (typeof value !== 'undefined') {
           acc[`dimension_${key}`] = value
         }
         return acc
