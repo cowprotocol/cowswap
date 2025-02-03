@@ -1,8 +1,12 @@
+import { useEffect, useState } from 'react'
+
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ProviderMetaInfoPayload, WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 import { InlineBanner } from '@cowprotocol/ui'
-import { useIsMetamaskBrowserExtensionWallet, useWalletDetails } from '@cowprotocol/wallet'
+import { METAMASK_RDNS, useIsMetamaskBrowserExtensionWallet, useWalletDetails } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Currency } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
@@ -23,12 +27,31 @@ const NetworkInfo = styled.div`
 `
 
 export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency }) {
+  const [widgetProviderMetaInfo, setWidgetProviderMetaInfo] = useState<ProviderMetaInfoPayload | null>(null)
+
+  const provider = useWalletProvider()
   const walletDetails = useWalletDetails()
   const isMetamaskBrowserExtension = useIsMetamaskBrowserExtensionWallet()
   const isMetamaskViaWalletConnect = walletDetails.walletName === METAMASK_WALLET_NAME
 
-  const isMetamask = isMetamaskBrowserExtension || isMetamaskViaWalletConnect
+  const rawProvider = provider?.provider as unknown
+  const isWidgetMetamaskBrowserExtension = widgetProviderMetaInfo?.providerEip6963Info?.rdns === METAMASK_RDNS
+  const isWidgetMetamaskViaWalletConnect = widgetProviderMetaInfo?.providerWcMetadata?.name === METAMASK_WALLET_NAME
+
+  const isMetamask =
+    isMetamaskBrowserExtension ||
+    isMetamaskViaWalletConnect ||
+    isWidgetMetamaskBrowserExtension ||
+    isWidgetMetamaskViaWalletConnect
   const isNativeSellToken = getIsNativeToken(sellToken)
+
+  useEffect(() => {
+    const isWidgetEthereumProvider = rawProvider instanceof WidgetEthereumProvider
+
+    if (!isWidgetEthereumProvider) return
+
+    rawProvider.onProviderMetaInfo(setWidgetProviderMetaInfo)
+  }, [rawProvider])
 
   if (!isMetamask || !isNativeSellToken) return null
 
