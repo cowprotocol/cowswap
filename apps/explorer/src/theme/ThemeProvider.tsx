@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, useMemo } from 'react'
 
-import { useWidgetMode } from '@cowprotocol/common-hooks'
+import { isIframe, isInjectedWidget } from '@cowprotocol/common-utils'
 import { baseTheme } from '@cowprotocol/ui'
 
 // eslint-disable-next-line no-restricted-imports
@@ -11,9 +11,18 @@ import { getFonts, getThemePalette } from './styles'
 
 import { useThemeMode } from '../hooks/useThemeManager'
 
+// These values are static and don't change during runtime
+const isWidget = isInjectedWidget()
+const widgetMode = {
+  isWidget,
+  isIframe: isIframe(),
+  // TODO: isInjectedWidgetMode is deprecated, use isWidget instead
+  // This alias is kept for backward compatibility with styled components
+  isInjectedWidgetMode: isWidget,
+}
+
 export const ThemeProvider = ({ children }: PropsWithChildren) => {
   const mode = useThemeMode()
-  const widgetMode = useWidgetMode()
 
   const themeObject = useMemo(() => {
     const themePalette = getThemePalette(mode)
@@ -29,7 +38,7 @@ export const ThemeProvider = ({ children }: PropsWithChildren) => {
     }
 
     return computedTheme
-  }, [mode, widgetMode])
+  }, [mode])
 
   // We want to pass the ThemeProvider theme to all children implicitly, no need to manually pass it
   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>

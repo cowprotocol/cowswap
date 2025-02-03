@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 
-import { useWidgetMode } from '@cowprotocol/common-hooks'
+import { isIframe, isInjectedWidget } from '@cowprotocol/common-utils'
 import { baseTheme } from '@cowprotocol/ui'
 
 import { CowSwapDefaultTheme } from 'styled-components'
@@ -14,21 +14,30 @@ import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 
 import { mapWidgetTheme } from './mapWidgetTheme'
 
-export function getCowswapTheme(darkmode: boolean, isInjectedWidgetMode: boolean): CowSwapDefaultTheme {
+// These values are static and don't change during runtime
+const isWidget = isInjectedWidget()
+const widgetMode = {
+  isWidget,
+  isIframe: isIframe(),
+  // TODO: isInjectedWidgetMode is deprecated, use isWidget instead
+  // This alias is kept for backward compatibility with styled components
+  isInjectedWidgetMode: isWidget,
+}
+
+export function getCowswapTheme(darkmode: boolean, isWidget: boolean): CowSwapDefaultTheme {
   return {
     ...baseTheme(darkmode ? 'dark' : 'light'),
-    isInjectedWidgetMode,
+    isWidget,
   }
 }
 
 export function ThemeProvider({ children }: { children?: React.ReactNode }) {
   const darkMode = useIsDarkMode()
   const injectedWidgetTheme = useInjectedWidgetPalette()
-  const widgetMode = useWidgetMode()
 
   const themeObject = useMemo(() => {
     const defaultTheme = {
-      ...getCowswapTheme(darkMode, widgetMode.isInjectedWidgetMode),
+      ...getCowswapTheme(darkMode, widgetMode.isWidget),
       ...widgetMode,
     }
 
@@ -37,7 +46,7 @@ export function ThemeProvider({ children }: { children?: React.ReactNode }) {
     }
 
     return defaultTheme
-  }, [darkMode, injectedWidgetTheme, widgetMode])
+  }, [darkMode, injectedWidgetTheme])
 
   return (
     <>

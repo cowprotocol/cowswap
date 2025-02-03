@@ -28,9 +28,9 @@ const MockedI18nProvider = ({ children }: any) => <I18nProvider i18n={i18n}>{chi
 
 const MockThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const darkMode = useIsDarkMode()
-  const isInjectedWidgetMode = isInjectedWidget()
+  const isWidget = isInjectedWidget()
 
-  const themeObject = useMemo(() => getCowswapTheme(darkMode, isInjectedWidgetMode), [darkMode, isInjectedWidgetMode])
+  const themeObject = useMemo(() => getCowswapTheme(darkMode, isWidget), [darkMode, isWidget])
 
   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }
@@ -65,7 +65,7 @@ class MockedConnector extends Connector {
 }
 
 export const [mockedConnector, mockedConnectorHooks] = initializeConnector<MockedConnector>(
-  (actions) => new MockedConnector(actions)
+  (actions) => new MockedConnector(actions),
 )
 
 export function WithMockedWeb3({ children, location }: { children?: ReactNode; location?: LocationDescriptorObject }) {
