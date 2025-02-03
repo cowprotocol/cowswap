@@ -36,9 +36,7 @@ export function useTradeRouteContext(): TradeUrlParams {
   )
 
   useEffect(() => {
-    if (hasState) {
-      prevContextRef.current = context
-    }
+    prevContextRef.current = hasState ? context : undefined
   }, [hasState, context])
 
   /**
