@@ -3,7 +3,6 @@ import { useHydrateAtoms } from 'jotai/utils'
 import { createStore } from 'jotai/vanilla'
 import { ReactElement, ReactNode, useMemo } from 'react'
 
-import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Web3Provider } from '@cowprotocol/wallet'
 import { initializeConnector, Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
@@ -28,9 +27,8 @@ const MockedI18nProvider = ({ children }: any) => <I18nProvider i18n={i18n}>{chi
 
 const MockThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const darkMode = useIsDarkMode()
-  const isWidget = isInjectedWidget()
 
-  const themeObject = useMemo(() => getCowswapTheme(darkMode, isWidget), [darkMode, isWidget])
+  const themeObject = useMemo(() => getCowswapTheme(darkMode), [darkMode])
 
   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }

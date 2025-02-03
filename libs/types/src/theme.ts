@@ -62,8 +62,6 @@ export interface ThemeUtils {
 export interface WidgetThemeMode {
   isWidget: boolean
   isIframe: boolean
-  /** @deprecated Use isWidget instead */
-  isInjectedWidgetMode: boolean
 }
 
 export interface CowProtocolTheme extends Colors, ThemeUtils, WidgetThemeMode {

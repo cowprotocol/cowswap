@@ -24,10 +24,10 @@ const widgetMode = {
   isInjectedWidgetMode: isWidget,
 }
 
-export function getCowswapTheme(darkmode: boolean, isWidget: boolean): CowSwapDefaultTheme {
+export function getCowswapTheme(darkmode: boolean): CowSwapDefaultTheme {
   return {
     ...baseTheme(darkmode ? 'dark' : 'light'),
-    isWidget,
+    ...widgetMode,
   }
 }
 
@@ -36,10 +36,7 @@ export function ThemeProvider({ children }: { children?: React.ReactNode }) {
   const injectedWidgetTheme = useInjectedWidgetPalette()
 
   const themeObject = useMemo(() => {
-    const defaultTheme = {
-      ...getCowswapTheme(darkMode, widgetMode.isWidget),
-      ...widgetMode,
-    }
+    const defaultTheme = getCowswapTheme(darkMode)
 
     if (widgetMode.isWidget) {
       return mapWidgetTheme(injectedWidgetTheme, defaultTheme)
