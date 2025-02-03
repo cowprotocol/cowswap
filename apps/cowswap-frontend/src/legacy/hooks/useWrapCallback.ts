@@ -1,4 +1,4 @@
-import { useCowAnalytics, Category } from '@cowprotocol/analytics'
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { getChainCurrencySymbols, RADIX_HEX } from '@cowprotocol/common-const'
 import {
   calculateGasMargin,
@@ -15,6 +15,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
+import { CowSwapCategory } from 'common/analytics/types'
 import { assertProviderNetwork } from 'common/utils/assertProviderNetwork'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
@@ -53,7 +54,7 @@ function sendWrapEvent(
   amount: CurrencyAmount<Currency>,
 ) {
   analytics.sendEvent({
-    category: Category.WRAP_NATIVE_TOKEN,
+    category: CowSwapCategory.WRAP_NATIVE_TOKEN,
     action,
     label: operationMessage,
     value: Number(amount.toSignificant(6)),

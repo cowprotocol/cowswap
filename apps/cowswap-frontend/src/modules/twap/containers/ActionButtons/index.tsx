@@ -1,7 +1,11 @@
-import { useCowAnalytics, Category } from '@cowprotocol/analytics'
+import { useCallback } from 'react'
+
+import { useCowAnalytics } from '@cowprotocol/analytics'
 
 import { useTradeConfirmActions } from 'modules/trade'
 import { TradeFormButtons, TradeFormValidation, useTradeFormButtonContext } from 'modules/tradeFormValidation'
+
+import { CowSwapCategory } from 'common/analytics/types'
 
 import { useAreWarningsAccepted } from '../../hooks/useAreWarningsAccepted'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
@@ -21,11 +25,23 @@ export function ActionButtons({
 }: ActionButtonsProps) {
   const tradeConfirmActions = useTradeConfirmActions()
   const { walletIsNotConnected } = useTwapWarningsContext()
+  const cowAnalytics = useCowAnalytics()
 
-  const confirmTrade = () => {
+  const twapConversionAnalytics = useCallback(
+    (status: string, fallbackHandlerIsNotSet: boolean) => {
+      cowAnalytics.sendEvent({
+        category: CowSwapCategory.TWAP,
+        action: 'Conversion',
+        label: `${status}|${fallbackHandlerIsNotSet ? 'no-handler' : 'handler-set'}`,
+      })
+    },
+    [cowAnalytics],
+  )
+
+  const confirmTrade = useCallback(() => {
     tradeConfirmActions.onOpen()
     twapConversionAnalytics('initiated', fallbackHandlerIsNotSet)
-  }
+  }, [tradeConfirmActions, twapConversionAnalytics, fallbackHandlerIsNotSet])
 
   const areWarningsAccepted = useAreWarningsAccepted()
 
@@ -50,13 +66,4 @@ export function ActionButtons({
       isDisabled={!areWarningsAccepted}
     />
   )
-}
-
-const twapConversionAnalytics = (status: string, fallbackHandlerIsNotSet: boolean) => {
-  const cowAnalytics = useCowAnalytics()
-  cowAnalytics.sendEvent({
-    category: Category.TWAP,
-    action: 'Conversion',
-    label: `${status}|${fallbackHandlerIsNotSet ? 'no-handler' : 'handler-set'}`,
-  })
 }

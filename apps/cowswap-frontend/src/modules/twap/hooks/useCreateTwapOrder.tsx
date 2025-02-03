@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { Category, useCowAnalytics } from '@cowprotocol/analytics'
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useSafeAppsSdk, useWalletInfo } from '@cowprotocol/wallet'
@@ -16,6 +16,7 @@ import { getCowSoundSend } from 'modules/sounds'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeFlowAnalyticsContext, useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
+import { CowSwapCategory } from 'common/analytics/types'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
@@ -33,7 +34,7 @@ import { getErrorMessage } from '../utils/parseTwapError'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
 
 interface TwapAnalyticsEvent {
-  category: Category.TWAP
+  category: CowSwapCategory.TWAP
   action: string
   label: string
 }
@@ -74,7 +75,7 @@ export function useCreateTwapOrder() {
   const sendOrderAnalytics = useCallback(
     (action: string, context: string) => {
       const analyticsEvent: TwapOrderEvent = {
-        category: Category.TWAP,
+        category: CowSwapCategory.TWAP,
         action: 'Place Order',
         label: `${UiOrderType.TWAP}|${context}`,
       }
@@ -86,7 +87,7 @@ export function useCreateTwapOrder() {
   const sendTwapConversionAnalytics = useCallback(
     (status: string, fallbackHandlerIsNotSet: boolean) => {
       const analyticsEvent: TwapConversionEvent = {
-        category: Category.TWAP,
+        category: CowSwapCategory.TWAP,
         action: 'Conversion',
         label: `${status}|${fallbackHandlerIsNotSet ? 'no-handler' : 'handler-set'}`,
       }
@@ -204,6 +205,7 @@ export function useCreateTwapOrder() {
       updateAdvancedOrdersState,
       sendOrderAnalytics,
       sendTwapConversionAnalytics,
+      tradeFlowAnalytics,
     ],
   )
 }

@@ -1,4 +1,4 @@
-import { useCowAnalytics, Category } from '@cowprotocol/analytics'
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { TokensListsUpdater, UnsupportedTokensUpdater, WidgetTokensListsUpdater } from '@cowprotocol/tokens'
@@ -18,6 +18,7 @@ import { UsdPricesUpdater } from 'modules/usdAmount'
 import { TaxFreeAssetsUpdater } from 'modules/volumeFee'
 import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield/shared'
 
+import { CowSwapCategory } from 'common/analytics/types'
 import { ProgressBarV2ExecutingOrdersUpdater } from 'common/hooks/orderProgressBarV2'
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { AnnouncementsUpdater } from 'common/updaters/AnnouncementsUpdater'
@@ -88,14 +89,14 @@ export function Updaters() {
         onTokenListAddingError={onTokenListAddingError}
         onAddList={(source) => {
           cowAnalytics.sendEvent({
-            category: Category.LIST,
+            category: CowSwapCategory.LIST,
             action: 'Add List Success',
             label: source,
           })
         }}
         onRemoveList={(source) => {
           cowAnalytics.sendEvent({
-            category: Category.LIST,
+            category: CowSwapCategory.LIST,
             action: 'Remove List',
             label: source,
           })

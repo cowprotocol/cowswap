@@ -13,7 +13,5 @@ export { useAnalyticsReporter } from './hooks/useAnalyticsReporter'
 
 // Core types and categories
 export { Category } from './types'
-export type { AnalyticsContext } from './CowAnalytics'
-
-// Utilities
-export * from './utils'
+export type { AnalyticsCategory, BaseGtmEvent, GtmEvent } from './types'
+export type { AnalyticsContext, CowAnalytics } from './CowAnalytics'

@@ -1,9 +1,10 @@
-import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import AlertIcon from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import { ClosableBanner } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import { HashLink } from 'react-router-hash-link'
+
+import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import * as styledEl from './styled'
 
@@ -23,8 +24,8 @@ export function InfoBanner() {
               <HashLink
                 target="_blank"
                 to="/faq/limit-order#how-do-fees-work"
-                data-click-event={toGtmEvent({
-                  category: Category.TRADE,
+                data-click-event={toCowSwapGtmEvent({
+                  category: CowSwapCategory.TRADE,
                   action: 'Click limit order fees FAQ link',
                 })}
               >
@@ -34,8 +35,8 @@ export function InfoBanner() {
 
             <styledEl.CloseIcon
               onClick={close}
-              data-click-event={toGtmEvent({
-                category: Category.TRADE,
+              data-click-event={toCowSwapGtmEvent({
+                category: CowSwapCategory.TRADE,
                 action: 'Close limit order info banner',
               })}
             />

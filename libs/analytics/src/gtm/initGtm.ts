@@ -1,6 +1,7 @@
 /**
  * GTM initialization module
  * Provides type-safe initialization of Google Tag Manager
+ * Ensures single initialization of GTM instance
  */
 
 import { CowAnalyticsGtm } from './CowAnalyticsGtm'
@@ -15,20 +16,46 @@ declare global {
 
 const DEFAULT_GTM_ID = 'GTM-TBX4BV5M'
 
+// Module-level singleton state
+const analytics = {
+  instance: null as CowAnalytics | null,
+  isInitializing: false,
+  gtmId: DEFAULT_GTM_ID,
+}
+
 /**
  * Initialize GTM and return a CowAnalytics instance
+ * This function ensures GTM is initialized only once
  * @param gtmId - Optional GTM container ID
  * @returns CowAnalytics instance backed by GTM
+ * @throws Error if attempting to initialize with different GTM ID
  */
 export function initGtm(gtmId: string = DEFAULT_GTM_ID): CowAnalytics {
+  // Early return for SSR
   if (typeof window === 'undefined') {
     return new CowAnalyticsGtm()
   }
 
-  // Initialize dataLayer
-  window.dataLayer = window.dataLayer || []
+  // Return existing instance if already initialized
+  if (analytics.instance) {
+    if (gtmId !== analytics.gtmId) {
+      throw new Error('GTM already initialized with different ID')
+    }
+    return analytics.instance
+  }
+
+  // Prevent concurrent initializations
+  if (analytics.isInitializing) {
+    throw new Error('GTM initialization already in progress')
+  }
+
+  analytics.isInitializing = true
+  analytics.gtmId = gtmId
 
   try {
+    // Initialize dataLayer
+    window.dataLayer = window.dataLayer || []
+
     // Add script to head
     const script = document.createElement('script')
     script.innerHTML = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -48,10 +75,23 @@ export function initGtm(gtmId: string = DEFAULT_GTM_ID): CowAnalytics {
     iframe.style.visibility = 'hidden'
     noscript.appendChild(iframe)
     document.body.insertBefore(noscript, document.body.firstChild)
+
+    // Create and store singleton instance
+    analytics.instance = new CowAnalyticsGtm()
+    return analytics.instance
   } catch (error) {
     console.error('Failed to initialize GTM:', error)
+    throw error
+  } finally {
+    analytics.isInitializing = false
   }
+}
 
-  // Return GTM analytics instance
-  return new CowAnalyticsGtm()
+// For testing purposes only
+export function __resetGtmInstance() {
+  if (process.env.NODE_ENV === 'test') {
+    analytics.instance = null
+    analytics.isInitializing = false
+    analytics.gtmId = DEFAULT_GTM_ID
+  }
 }

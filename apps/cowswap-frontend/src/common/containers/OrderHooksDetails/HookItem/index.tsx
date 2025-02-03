@@ -1,11 +1,12 @@
 import { useState } from 'react'
 
-import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import { CowHookDetails, HookToDappMatch } from '@cowprotocol/hook-dapp-lib'
 
 import { ChevronDown, ChevronUp } from 'react-feather'
 
 import { useSimulationData } from 'modules/tenderly/hooks/useSimulationData'
+
+import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import * as styledEl from './styled'
 
@@ -19,8 +20,8 @@ export function HookItem({ details, item, index }: { details?: CowHookDetails; i
     <styledEl.HookItemWrapper as="li">
       <styledEl.HookItemHeader
         onClick={() => setIsOpen(!isOpen)}
-        data-click-event={toGtmEvent({
-          category: Category.HOOKS,
+        data-click-event={toCowSwapGtmEvent({
+          category: CowSwapCategory.HOOKS,
           action: 'Click Hook Details',
           label: `${dappName} - ${isOpen ? 'Collapse' : 'Expand'}`,
         })}
@@ -52,8 +53,8 @@ export function HookItem({ details, item, index }: { details?: CowHookDetails; i
                       href={simulationData.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      data-click-event={toGtmEvent({
-                        category: Category.HOOKS,
+                      data-click-event={toCowSwapGtmEvent({
+                        category: CowSwapCategory.HOOKS,
                         action: 'Click Simulation',
                         label: `${dappName} - ${simulationData.status ? 'Success' : 'Failed'}`,
                       })}
@@ -75,8 +76,8 @@ export function HookItem({ details, item, index }: { details?: CowHookDetails; i
                   href={item.dapp.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  data-click-event={toGtmEvent({
-                    category: Category.HOOKS,
+                  data-click-event={toCowSwapGtmEvent({
+                    category: CowSwapCategory.HOOKS,
                     action: 'Click Website',
                     label: `${dappName} - ${new URL(item.dapp.website).hostname}`,
                   })}

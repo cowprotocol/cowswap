@@ -1,4 +1,3 @@
-import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import { SupportedChainId, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { BackButton } from '@cowprotocol/ui'
@@ -14,6 +13,8 @@ import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { GnosisSafeTxDetails } from 'modules/account/containers/Transaction/ActivityDetails'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
+
+import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import * as styledEl from './styled'
 
@@ -81,8 +82,8 @@ export function TransactionSubmittedContent({
         <styledEl.Header>
           <BackButton
             onClick={onDismiss}
-            data-click-event={toGtmEvent({
-              category: Category.PROGRESS_BAR,
+            data-click-event={toCowSwapGtmEvent({
+              category: CowSwapCategory.PROGRESS_BAR,
               action: 'Click Back Arrow Button',
             })}
           />
@@ -90,8 +91,8 @@ export function TransactionSubmittedContent({
             {showCancellationButton && (
               <CancelButton
                 onClick={showCancellationModal}
-                data-click-event={toGtmEvent({
-                  category: Category.PROGRESS_BAR,
+                data-click-event={toCowSwapGtmEvent({
+                  category: CowSwapCategory.PROGRESS_BAR,
                   action: 'Click Cancel Order',
                 })}
               >
@@ -101,8 +102,8 @@ export function TransactionSubmittedContent({
             <DisplayLink
               id={hash}
               chainId={chainId}
-              data-click-event={toGtmEvent({
-                category: Category.PROGRESS_BAR,
+              data-click-event={toCowSwapGtmEvent({
+                category: CowSwapCategory.PROGRESS_BAR,
                 action: 'Click Transaction Link',
               })}
             />
@@ -123,8 +124,8 @@ export function TransactionSubmittedContent({
             <WatchAssetInWallet
               shortLabel
               currency={currencyToAdd}
-              data-click-event={toGtmEvent({
-                category: Category.PROGRESS_BAR,
+              data-click-event={toCowSwapGtmEvent({
+                category: CowSwapCategory.PROGRESS_BAR,
                 action: 'Click Watch Asset',
               })}
             />
@@ -132,8 +133,8 @@ export function TransactionSubmittedContent({
             {activityDerivedState?.status === ActivityStatus.PENDING && !isProgressBarSetup && (
               <styledEl.ButtonCustom
                 onClick={onDismiss}
-                data-click-event={toGtmEvent({
-                  category: Category.PROGRESS_BAR,
+                data-click-event={toCowSwapGtmEvent({
+                  category: CowSwapCategory.PROGRESS_BAR,
                   action: 'Click Close',
                 })}
               >
@@ -144,8 +145,8 @@ export function TransactionSubmittedContent({
             {isFinished && (
               <styledEl.ButtonSecondary
                 onClick={onDismiss}
-                data-click-event={toGtmEvent({
-                  category: Category.PROGRESS_BAR,
+                data-click-event={toCowSwapGtmEvent({
+                  category: CowSwapCategory.PROGRESS_BAR,
                   action: 'Click Close',
                 })}
               >

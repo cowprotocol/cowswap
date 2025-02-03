@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 
-import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
@@ -15,6 +14,8 @@ import { useTradeNavigate } from 'modules/trade'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useYieldRawState } from 'modules/yield'
 import { useVampireAttack, useVampireAttackFirstTarget } from 'modules/yield/shared'
+
+import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import { Routes } from '../../constants/routes'
 import { useIsProviderNetworkUnsupported } from '../../hooks/useIsProviderNetworkUnsupported'
@@ -61,12 +62,12 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
     }
 
     cowAnalytics.sendEvent({
-      category: Category.COWSWAP,
+      category: CowSwapCategory.COWSWAP,
       action: `CoW AMM Banner [${key}] CTA Clicked`,
     })
 
     tradeNavigate(chainId, targetTrade, targetTradeParams, Routes.YIELD)
-  }, [key, chainId, yieldState, vampireAttackFirstTarget, tradeNavigate])
+  }, [key, chainId, yieldState, vampireAttackFirstTarget, tradeNavigate, cowAnalytics])
 
   if (isInjectedWidgetMode || !account || isChainIdUnsupported || !vampireAttackContext) return null
 
@@ -86,8 +87,8 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
         close()
       }}
       onClose={close}
-      data-click-event={toGtmEvent({
-        category: Category.COWSWAP,
+      data-click-event={toCowSwapGtmEvent({
+        category: CowSwapCategory.COWSWAP,
         action: `CoW AMM Banner [${key}] Close`,
       })}
     />

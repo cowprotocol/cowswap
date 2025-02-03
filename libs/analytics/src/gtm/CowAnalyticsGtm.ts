@@ -3,7 +3,7 @@ import { debounce } from '@cowprotocol/common-utils'
 import { isValidGtmClickEvent } from './types'
 
 import { AnalyticsContext, CowAnalytics, EventOptions, OutboundLinkParams } from '../CowAnalytics'
-import { GtmEvent } from '../types'
+import { GtmEvent, Category } from '../types'
 
 interface DataLayerEvent extends Record<string, unknown> {
   event: string
@@ -107,10 +107,12 @@ export class CowAnalyticsGtm implements CowAnalytics {
             ...this.getDimensions(),
 
             // Include additional dynamic properties if present
-            ...((event as GtmEvent).orderId && { order_id: (event as GtmEvent).orderId }),
-            ...((event as GtmEvent).orderType && { order_type: (event as GtmEvent).orderType }),
-            ...((event as GtmEvent).tokenSymbol && { token_symbol: (event as GtmEvent).tokenSymbol }),
-            ...((event as GtmEvent).chainId && { chain_id: (event as GtmEvent).chainId }),
+            ...((event as GtmEvent<Category>).orderId && { order_id: (event as GtmEvent<Category>).orderId }),
+            ...((event as GtmEvent<Category>).orderType && { order_type: (event as GtmEvent<Category>).orderType }),
+            ...((event as GtmEvent<Category>).tokenSymbol && {
+              token_symbol: (event as GtmEvent<Category>).tokenSymbol,
+            }),
+            ...((event as GtmEvent<Category>).chainId && { chain_id: (event as GtmEvent<Category>).chainId }),
           }
 
     this.pushToDataLayer(eventData)
@@ -149,8 +151,14 @@ export class CowAnalyticsGtm implements CowAnalytics {
     }
   }
 
+  /**
+   * Sets an analytics dimension value.
+   * @param key - The dimension key to set
+   * @param value - The dimension value. Any value (including falsy values like '0' or '') will be stored,
+   *               except undefined which will remove the dimension.
+   */
   setContext(key: AnalyticsContext, value?: string): void {
-    if (value) {
+    if (typeof value !== 'undefined') {
       this.dimensions[key] = value
     } else {
       delete this.dimensions[key]
@@ -175,7 +183,8 @@ export class CowAnalyticsGtm implements CowAnalytics {
   private getDimensions(): Record<string, string> {
     return Object.entries(this.dimensions).reduce(
       (acc, [key, value]) => {
-        if (value) {
+        // Include all values that are not undefined
+        if (typeof value !== 'undefined') {
           acc[`dimension_${key}`] = value
         }
         return acc

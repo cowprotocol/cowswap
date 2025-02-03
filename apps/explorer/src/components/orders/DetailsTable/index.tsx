@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Category, useCowAnalytics } from '@cowprotocol/analytics'
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
@@ -28,6 +28,7 @@ import styled from 'styled-components/macro'
 import { capitalize } from 'utils'
 
 import { Order } from 'api/operator'
+import { ExplorerCategory } from 'common/analytics/types'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
 import { OrderHooksDetails } from '../OrderHooksDetails'
@@ -180,7 +181,7 @@ export function DetailsTable(props: Props): React.ReactNode | null {
 
   const onCopy = (label: string): void => {
     cowAnalytics.sendEvent({
-      category: Category.ORDER_DETAILS,
+      category: ExplorerCategory.ORDER_DETAILS,
       action: 'Copy',
       label,
     })

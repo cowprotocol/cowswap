@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useEffect, useLayoutEffect, useMemo, useState } from 'react'
 
-import { Category, useCowAnalytics } from '@cowprotocol/analytics'
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { renderTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
@@ -17,6 +17,7 @@ import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
+import { CowSwapCategory } from 'common/analytics/types'
 import { usePrice } from 'common/hooks/usePrice'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
@@ -118,32 +119,31 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
   useEffect(() => {
     updateSettingsState({ isFallbackHandlerSetupAccepted: false })
     cowAnalytics.sendEvent({
-      category: Category.TWAP,
+      category: CowSwapCategory.TWAP,
       action: 'Open Advanced Orders Tab',
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [updateSettingsState, cowAnalytics])
 
   useEffect(() => {
     if (account && verification) {
       if (localFormValidation === TwapFormState.NOT_SAFE) {
         cowAnalytics.sendEvent({
-          category: Category.TWAP,
+          category: CowSwapCategory.TWAP,
           action: 'non-compatible',
         })
       } else if (isFallbackHandlerRequired) {
         cowAnalytics.sendEvent({
-          category: Category.TWAP,
+          category: CowSwapCategory.TWAP,
           action: 'safe-that-could-be-converted',
         })
       } else if (isFallbackHandlerCompatible) {
         cowAnalytics.sendEvent({
-          category: Category.TWAP,
+          category: CowSwapCategory.TWAP,
           action: 'compatible',
         })
       }
     }
-  }, [account, isFallbackHandlerRequired, isFallbackHandlerCompatible, localFormValidation, verification])
+  }, [account, isFallbackHandlerRequired, isFallbackHandlerCompatible, localFormValidation, verification, cowAnalytics])
 
   // Reset output amount when quote params are changed
   useLayoutEffect(() => {

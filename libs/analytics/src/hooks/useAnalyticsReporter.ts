@@ -30,7 +30,16 @@ interface UseAnalyticsReporterProps {
  * @param props
  */
 export function useAnalyticsReporter(props: UseAnalyticsReporterProps) {
-  const { account, walletName, chainId, cowAnalytics, pixelAnalytics, webVitalsAnalytics } = props
+  const {
+    account,
+    walletName,
+    chainId,
+    cowAnalytics,
+    pixelAnalytics,
+    webVitalsAnalytics,
+    marketDimension,
+    injectedWidgetAppId,
+  } = props
   const { pathname, search } = useLocation()
 
   const prevAccount = usePrevious(account)
@@ -103,10 +112,10 @@ export function useAnalyticsReporter(props: UseAnalyticsReporterProps) {
   }, [pixelAnalytics])
 
   useEffect(() => {
-    cowAnalytics.setContext(AnalyticsContext.market, props.marketDimension || undefined)
-  }, [props.marketDimension, cowAnalytics])
+    cowAnalytics.setContext(AnalyticsContext.market, marketDimension || undefined)
+  }, [marketDimension, cowAnalytics])
 
   useEffect(() => {
-    cowAnalytics.setContext(AnalyticsContext.injectedWidgetAppId, props.injectedWidgetAppId)
-  }, [props.injectedWidgetAppId, cowAnalytics])
+    cowAnalytics.setContext(AnalyticsContext.injectedWidgetAppId, injectedWidgetAppId)
+  }, [injectedWidgetAppId, cowAnalytics])
 }

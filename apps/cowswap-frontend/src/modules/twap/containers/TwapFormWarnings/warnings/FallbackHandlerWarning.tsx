@@ -1,9 +1,10 @@
-import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import { ExternalLink, InlineBanner } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
 import { UNSUPPORTED_SAFE_LINK } from 'modules/twap/const'
+
+import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 const Wrapper = styled.div`
   display: flex;
@@ -66,8 +67,8 @@ export function FallbackHandlerWarning({
         type="checkbox"
         checked={isFallbackHandlerSetupAccepted}
         onChange={(event) => toggleFallbackHandlerSetupFlag(event.currentTarget.checked)}
-        data-click-event={toGtmEvent({
-          category: Category.TWAP,
+        data-click-event={toCowSwapGtmEvent({
+          category: CowSwapCategory.TWAP,
           action: 'Modify safe handler checkbox',
           label: isFallbackHandlerSetupAccepted ? 'enabled' : 'disabled',
         })}

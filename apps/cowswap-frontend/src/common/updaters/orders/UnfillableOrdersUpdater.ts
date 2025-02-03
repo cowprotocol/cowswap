@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
 
-import { useCowAnalytics, Category } from '@cowprotocol/analytics'
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCY_ADDRESS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
@@ -29,6 +29,7 @@ import { getBestQuote } from 'legacy/utils/price'
 
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 
+import { CowSwapCategory } from 'common/analytics/types'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { PRICE_QUOTE_VALID_TO_TIME } from '../../constants/quote'
@@ -57,7 +58,7 @@ export function UnfillableOrdersUpdater(): null {
   const priceOutOfRangeAnalytics = useCallback(
     (label: string) => {
       cowAnalytics.sendEvent({
-        category: Category.TRADE,
+        category: CowSwapCategory.TRADE,
         action: 'Price out of range',
         label,
       })

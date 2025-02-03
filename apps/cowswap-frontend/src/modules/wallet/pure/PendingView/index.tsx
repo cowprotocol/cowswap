@@ -1,4 +1,3 @@
-import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import { Command } from '@cowprotocol/types'
 import { ButtonEmpty, ButtonPrimary, Loader } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
@@ -6,6 +5,8 @@ import { UI } from '@cowprotocol/ui'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
+
+import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 const PendingSection = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};
@@ -86,8 +87,8 @@ export function PendingView({
                 $borderRadius="12px"
                 padding="12px"
                 onClick={tryConnection}
-                data-click-event={toGtmEvent({
-                  category: Category.WALLET,
+                data-click-event={toCowSwapGtmEvent({
+                  category: CowSwapCategory.WALLET,
                   action: 'Try connection again',
                   label: error,
                 })}
@@ -98,8 +99,8 @@ export function PendingView({
                 <ThemedText.Link
                   fontSize={12}
                   onClick={openOptions}
-                  data-click-event={toGtmEvent({
-                    category: Category.WALLET,
+                  data-click-event={toCowSwapGtmEvent({
+                    category: CowSwapCategory.WALLET,
                     action: 'Back to wallet selection',
                   })}
                 >

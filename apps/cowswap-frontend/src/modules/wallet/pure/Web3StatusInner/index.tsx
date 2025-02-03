@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react'
 
-import { Category, toGtmEvent, GtmClickEvent } from '@cowprotocol/analytics'
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { Loader, RowBetween } from '@cowprotocol/ui'
@@ -11,6 +10,8 @@ import ICON_WALLET from 'assets/icon/wallet.svg'
 import SVG from 'react-inlinesvg'
 
 import { upToExtraSmall, upToTiny, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+
+import { CowSwapCategory, toCowSwapGtmEvent, CowSwapGtmEvent } from 'common/analytics/types'
 
 import { Text, Web3StatusConnect, Web3StatusConnected } from './styled'
 
@@ -32,8 +33,8 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
   const isUpToTiny = useMediaQuery(upToTiny)
 
   const connectWalletEvent = useMemo(
-    (): Partial<GtmClickEvent> => ({
-      category: Category.WALLET,
+    (): CowSwapGtmEvent => ({
+      category: CowSwapCategory.WALLET,
       action: 'Connect wallet button click',
       label: `${connectionType}${ensName ? ' (ENS)' : ''}`,
       value: pendingCount,
@@ -67,7 +68,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
     <Web3StatusConnect
       id="connect-wallet"
       onClick={handleConnect}
-      data-click-event={toGtmEvent(connectWalletEvent)}
+      data-click-event={toCowSwapGtmEvent(connectWalletEvent)}
       faded={!account}
     >
       <Text>

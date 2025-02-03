@@ -1,12 +1,14 @@
 import { useEffect } from 'react'
 
-import { useCowAnalytics, Category } from '@cowprotocol/analytics'
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { CowGame } from '@cowprotocol/cow-runner-game'
 
 import styled from 'styled-components/macro'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'
+
+import { CowSwapCategory } from 'common/analytics/types'
 
 const Wrapper = styled(Page)`
   min-height: initial;
@@ -39,7 +41,7 @@ export default function CowRunnerPage() {
 
   useEffect(() => {
     cowAnalytics.sendEvent({
-      category: Category.GAMES,
+      category: CowSwapCategory.GAMES,
       action: 'Playing CoW Runner game',
     })
   }, [cowAnalytics])

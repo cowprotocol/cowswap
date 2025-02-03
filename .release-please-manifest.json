@@ -1,5 +1,5 @@
 {
-  "apps/cowswap-frontend": "1.97.1",
+  "apps/cowswap-frontend": "1.98.2",
   "apps/explorer": "2.42.0",
   "libs/permit-utils": "0.6.0",
   "libs/widget-lib": "0.18.0",
@@ -15,15 +15,15 @@
   "libs/events": "1.5.0",
   "libs/snackbars": "1.1.1",
   "libs/tokens": "1.14.0",
-  "libs/types": "1.5.0",
+  "libs/types": "1.5.1",
   "libs/ui": "1.18.0",
-  "libs/wallet": "1.9.2",
+  "libs/wallet": "1.9.3",
   "apps/cow-fi": "1.19.3",
   "libs/wallet-provider": "1.0.0",
   "libs/ui-utils": "1.1.0",
   "libs/abis": "1.2.1",
   "libs/balances-and-allowances": "1.2.0",
-  "libs/iframe-transport": "1.0.0",
+  "libs/iframe-transport": "1.0.1",
   "libs/hook-dapp-lib": "1.5.0",
   "libs/multicall": "1.0.0"
 }

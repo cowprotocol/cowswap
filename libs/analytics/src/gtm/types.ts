@@ -3,10 +3,12 @@
  */
 
 import { AnalyticsContext } from '../CowAnalytics'
-import { GtmCategory, GtmEvent } from '../types'
+import { Category, GtmEvent } from '../types'
 
-export type { GtmCategory }
-export interface GtmClickEvent extends GtmEvent {
+// Re-export Category as GtmCategory for backward compatibility
+export type GtmCategory = Category
+
+export interface GtmClickEvent extends GtmEvent<Category> {
   context?: AnalyticsContext
 }
 

@@ -1,4 +1,3 @@
-import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import ninjaCowImg from '@cowprotocol/assets/cow-swap/ninja-cow.png'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
@@ -6,6 +5,8 @@ import styled from 'styled-components/macro'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'
+
+import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 const GAME_URL = 'https://mevslicer.netlify.app/'
 
@@ -69,8 +70,8 @@ export default function MevSlicer() {
         padding="8px"
         $borderRadius="8px"
         onClick={openGame}
-        data-click-event={toGtmEvent({
-          category: Category.GAMES,
+        data-click-event={toCowSwapGtmEvent({
+          category: CowSwapCategory.GAMES,
           action: 'Playing MEV Slicer game',
         })}
       >

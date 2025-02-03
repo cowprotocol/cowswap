@@ -1,6 +1,9 @@
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
 
 import { Middleware, isAnyOf } from '@reduxjs/toolkit'
+
+import { CowSwapCategory } from 'common/analytics/types'
+
 
 import * as PriceActions from './actions'
 
@@ -17,7 +20,7 @@ export const priceMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     if (!state.price.initialQuoteLoaded) {
       // Send an event only on the first price load
       cowAnalytics.sendEvent({
-        category: Category.TRADE,
+        category: CowSwapCategory.TRADE,
         action: 'Initial Price estimation',
         nonInteraction: true,
       })
