@@ -13,11 +13,13 @@ import {
   WethAbi,
 } from '@cowprotocol/abis'
 import {
-  COWSWAP_ETHFLOW_CONTRACT_ADDRESS,
+  getEthFlowContractAddresses,
   V_COW_CONTRACT_ADDRESS,
   WRAPPED_NATIVE_CURRENCIES,
 } from '@cowprotocol/common-const'
-import { getContract, isEns, isProd, isStaging } from '@cowprotocol/common-utils'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { getContract } from '@cowprotocol/common-utils'
+import { isEns, isProd, isStaging } from '@cowprotocol/common-utils'
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -28,8 +30,7 @@ const WETH_CONTRACT_ADDRESS_MAP = Object.fromEntries(
   Object.entries(WRAPPED_NATIVE_CURRENCIES).map(([chainId, token]) => [chainId, token.address]),
 )
 
-const contractEnv = isProd || isStaging || isEns ? 'prod' : 'barn'
-export const COWSWAP_ETHFLOW_CONTRACT_ADDRESS_MAP = COWSWAP_ETHFLOW_CONTRACT_ADDRESS[contractEnv]
+export const ethFlowEnv = isProd || isStaging || isEns ? 'prod' : 'barn'
 
 export type UseContractResult<T extends Contract = Contract> = {
   contract: T | null
@@ -102,8 +103,17 @@ export function useWethContract(withSignerIfPossible?: boolean) {
   return useContract<Weth>(WETH_CONTRACT_ADDRESS_MAP, WethAbi, withSignerIfPossible)
 }
 
-export function useEthFlowContract(): UseContractResult<CoWSwapEthFlow> {
-  return useContract<CoWSwapEthFlow>(COWSWAP_ETHFLOW_CONTRACT_ADDRESS_MAP, CoWSwapEthFlowAbi, true)
+export function useEthFlowContract(): {
+  result: UseContractResult<CoWSwapEthFlow>
+  useNewEthFlowContracts: boolean
+} {
+  const { useNewEthFlowContracts = false } = useFeatureFlags()
+  const contractAddress = getEthFlowContractAddresses(ethFlowEnv, useNewEthFlowContracts)
+
+  return {
+    result: useContract<CoWSwapEthFlow>(contractAddress, CoWSwapEthFlowAbi, true),
+    useNewEthFlowContracts,
+  }
 }
 
 export function useGP2SettlementContract(): UseContractResult<GPv2Settlement> {
