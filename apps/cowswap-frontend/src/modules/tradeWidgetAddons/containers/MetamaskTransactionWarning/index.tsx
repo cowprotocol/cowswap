@@ -1,15 +1,18 @@
+import { useEffect, useState } from 'react'
+
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ProviderMetaInfoPayload, WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 import { InlineBanner } from '@cowprotocol/ui'
-import { useIsMetamaskBrowserExtensionWallet, useWalletDetails } from '@cowprotocol/wallet'
+import { METAMASK_RDNS, useIsMetamaskBrowserExtensionWallet, useWalletDetails } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Currency } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-const METAMASK_WALLET_NAME = 'MetaMask Wallet'
+const METAMASK_WALLET_NAME_REGEX = /metamask/i
 
 const Banner = styled(InlineBanner)`
   font-size: 14px;
@@ -27,10 +30,22 @@ export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency 
   const walletDetails = useWalletDetails()
   const isMetamaskBrowserExtension = useIsMetamaskBrowserExtensionWallet()
 
+  const widgetProviderMetaInfo = useWidgetProviderMetaInfo()
   const isMetamaskMobileInjectedBrowser = useIsMetamaskMobileInjectedWallet()
-  const isMetamaskViaWalletConnect = walletDetails.walletName === METAMASK_WALLET_NAME
 
-  const isMetamask = isMetamaskBrowserExtension || isMetamaskViaWalletConnect || isMetamaskMobileInjectedBrowser
+  const isMetamaskViaWalletConnect = METAMASK_WALLET_NAME_REGEX.test(walletDetails.walletName || '')
+
+  const isWidgetMetamaskBrowserExtension = widgetProviderMetaInfo?.providerEip6963Info?.rdns === METAMASK_RDNS
+  const isWidgetMetamaskViaWalletConnect = METAMASK_WALLET_NAME_REGEX.test(
+    widgetProviderMetaInfo?.providerWcMetadata?.name || '',
+  )
+
+  const isMetamask =
+    isMetamaskBrowserExtension ||
+    isMetamaskViaWalletConnect ||
+    isMetamaskMobileInjectedBrowser ||
+    isWidgetMetamaskBrowserExtension ||
+    isWidgetMetamaskViaWalletConnect
   const isNativeSellToken = getIsNativeToken(sellToken)
 
   if (!isMetamask || !isNativeSellToken) return null
@@ -48,6 +63,23 @@ export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency 
   )
 }
 
+function useWidgetProviderMetaInfo() {
+  const provider = useWalletProvider()
+  const [widgetProviderMetaInfo, setWidgetProviderMetaInfo] = useState<ProviderMetaInfoPayload | null>(null)
+
+  const rawProvider = provider?.provider as unknown
+
+  useEffect(() => {
+    const isWidgetEthereumProvider = rawProvider instanceof WidgetEthereumProvider
+
+    if (!isWidgetEthereumProvider) return
+
+    rawProvider.onProviderMetaInfo(setWidgetProviderMetaInfo)
+  }, [rawProvider])
+
+  return widgetProviderMetaInfo
+}
+
 /**
  * This is hacky way to detect if the wallet is metamask mobile injected wallet
  * Many injected wallet browsers emulate isMetaMask, but only metamask mobile has _metamask
@@ -56,5 +88,5 @@ function useIsMetamaskMobileInjectedWallet(): boolean {
   const walletProvider = useWalletProvider()
   const rawProvider = walletProvider?.provider as any
 
-  return Boolean(rawProvider?.isMetaMask && rawProvider._metamask)
+  return Boolean(rawProvider?.isMetaMask && rawProvider._metamask && !rawProvider.isRabby)
 }
