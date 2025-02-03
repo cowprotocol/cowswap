@@ -27,16 +27,14 @@ const NetworkInfo = styled.div`
 `
 
 export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency }) {
-  const [widgetProviderMetaInfo, setWidgetProviderMetaInfo] = useState<ProviderMetaInfoPayload | null>(null)
-
-  const provider = useWalletProvider()
   const walletDetails = useWalletDetails()
   const isMetamaskBrowserExtension = useIsMetamaskBrowserExtensionWallet()
 
+  const widgetProviderMetaInfo = useWidgetProviderMetaInfo()
   const isMetamaskMobileInjectedBrowser = useIsMetamaskMobileInjectedWallet()
+
   const isMetamaskViaWalletConnect = METAMASK_WALLET_NAME_REGEX.test(walletDetails.walletName || '')
 
-  const rawProvider = provider?.provider as unknown
   const isWidgetMetamaskBrowserExtension = widgetProviderMetaInfo?.providerEip6963Info?.rdns === METAMASK_RDNS
   const isWidgetMetamaskViaWalletConnect = METAMASK_WALLET_NAME_REGEX.test(
     widgetProviderMetaInfo?.providerWcMetadata?.name || '',
@@ -49,14 +47,6 @@ export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency 
     isWidgetMetamaskBrowserExtension ||
     isWidgetMetamaskViaWalletConnect
   const isNativeSellToken = getIsNativeToken(sellToken)
-
-  useEffect(() => {
-    const isWidgetEthereumProvider = rawProvider instanceof WidgetEthereumProvider
-
-    if (!isWidgetEthereumProvider) return
-
-    rawProvider.onProviderMetaInfo(setWidgetProviderMetaInfo)
-  }, [rawProvider])
 
   if (!isMetamask || !isNativeSellToken) return null
 
@@ -71,6 +61,23 @@ export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency 
       </NetworkInfo>
     </Banner>
   )
+}
+
+function useWidgetProviderMetaInfo() {
+  const provider = useWalletProvider()
+  const [widgetProviderMetaInfo, setWidgetProviderMetaInfo] = useState<ProviderMetaInfoPayload | null>(null)
+
+  const rawProvider = provider?.provider as unknown
+
+  useEffect(() => {
+    const isWidgetEthereumProvider = rawProvider instanceof WidgetEthereumProvider
+
+    if (!isWidgetEthereumProvider) return
+
+    rawProvider.onProviderMetaInfo(setWidgetProviderMetaInfo)
+  }, [rawProvider])
+
+  return widgetProviderMetaInfo
 }
 
 /**
