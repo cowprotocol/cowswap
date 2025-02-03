@@ -2,11 +2,13 @@ import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InlineBanner } from '@cowprotocol/ui'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
+import { useIsMetamaskBrowserExtensionWallet, useWalletDetails } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
+
+const METAMASK_WALLET_NAME = 'MetaMask Wallet'
 
 const Banner = styled(InlineBanner)`
   font-size: 14px;
@@ -21,9 +23,11 @@ const NetworkInfo = styled.div`
 `
 
 export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency }) {
-  const provider = useWalletProvider()
-  const ethereumProvider = (provider as unknown as { provider: typeof window.ethereum })?.provider
-  const isMetamask = !!ethereumProvider?.isMetaMask && !ethereumProvider.isRabby
+  const walletDetails = useWalletDetails()
+  const isMetamaskBrowserExtension = useIsMetamaskBrowserExtensionWallet()
+  const isMetamaskViaWalletConnect = walletDetails.walletName === METAMASK_WALLET_NAME
+
+  const isMetamask = isMetamaskBrowserExtension || isMetamaskViaWalletConnect
   const isNativeSellToken = getIsNativeToken(sellToken)
 
   if (!isMetamask || !isNativeSellToken) return null
