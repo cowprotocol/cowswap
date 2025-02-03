@@ -1,5 +1,6 @@
 import { Link } from '@/components/Link'
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import IMG_COWAMM_LVR from '@cowprotocol/assets/images/image-cowamm-lvr.svg'
 import IMG_COWAMM_LP_1 from '@cowprotocol/assets/images/image-cowamm-lp-1.svg'
 import IMG_COWAMM_LP_2 from '@cowprotocol/assets/images/image-cowamm-lp-2.svg'
@@ -183,7 +184,7 @@ export const FAQ_DATA = [
           utmContent="cow-amm-pool-creator"
           onClick={() =>
             analytics.sendEvent({
-              category: Category.COWAMM,
+              category: CowFiCategory.COWAMM,
               action: 'Content link click - FAQ:Contact us',
             })
           }
@@ -197,7 +198,7 @@ export const FAQ_DATA = [
           utmContent="cow-amm-deployer"
           onClick={() =>
             analytics.sendEvent({
-              category: Category.COWAMM,
+              category: CowFiCategory.COWAMM,
               action: 'Content link click - FAQ:Deploy a pool',
             })
           }
@@ -219,7 +220,7 @@ export const FAQ_DATA = [
           utmContent="cow-amm-balancer-pools"
           onClick={() =>
             analytics.sendEvent({
-              category: Category.COWAMM,
+              category: CowFiCategory.COWAMM,
               action: 'Content link click - FAQ:Balancer pools',
             })
           }

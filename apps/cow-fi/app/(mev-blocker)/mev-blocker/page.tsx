@@ -55,7 +55,7 @@ import LazySVG from '@/components/LazySVG'
 
 import { FAQ_DATA, TRUSTED_BY_CONTENT, TESTIMONIAL_LIST, MEV_BLOCKER_LIST } from '@/data/mev-blocker/const'
 
-import { Category, toGtmEvent } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 const isClient = typeof window === 'object'
 
@@ -113,8 +113,8 @@ export default function Page() {
                 bgColor={'#EC4612'}
                 color={'#FEE7CF'}
                 href="#rpc"
-                data-click-event={toGtmEvent({
-                  category: Category.MEVBLOCKER,
+                data-click-event={toCowFiGtmEvent({
+                  category: CowFiCategory.MEVBLOCKER,
                   action: 'Click Get Protected',
                 })}
               >
@@ -149,8 +149,8 @@ export default function Page() {
               external
               linkType={LinkType.SectionTitleButton}
               utmContent="mev-blocker-metrics-link"
-              data-click-event={toGtmEvent({
-                category: Category.MEVBLOCKER,
+              data-click-event={toCowFiGtmEvent({
+                category: CowFiCategory.MEVBLOCKER,
                 action: 'Click Metrics',
               })}
             >
@@ -171,8 +171,8 @@ export default function Page() {
                     href="https://dune.com/queries/2259793/3703605"
                     external
                     utmContent="mev-blocker-dune-link"
-                    data-click-event={toGtmEvent({
-                      category: Category.MEVBLOCKER,
+                    data-click-event={toCowFiGtmEvent({
+                      category: CowFiCategory.MEVBLOCKER,
                       action: 'Click Metrics',
                     })}
                   >
@@ -205,8 +205,8 @@ export default function Page() {
                     href="https://www.mevscanner.com/"
                     external
                     utmContent="mev-blocker-mev-scanner-link"
-                    data-click-event={toGtmEvent({
-                      category: Category.MEVBLOCKER,
+                    data-click-event={toCowFiGtmEvent({
+                      category: CowFiCategory.MEVBLOCKER,
                       action: 'Click MEV Scanner',
                     })}
                   >
@@ -358,8 +358,8 @@ export default function Page() {
                     href="https://docs.cow.fi/mev-blocker"
                     external
                     utmContent="mev-blocker-docs-link"
-                    data-click-event={toGtmEvent({
-                      category: Category.MEVBLOCKER,
+                    data-click-event={toCowFiGtmEvent({
+                      category: CowFiCategory.MEVBLOCKER,
                       action: 'Click Docs',
                     })}
                   >
@@ -443,8 +443,8 @@ export default function Page() {
                   external
                   linkType={LinkType.SectionTitleButton}
                   utmContent="mev-blocker-learn-more"
-                  data-click-event={toGtmEvent({
-                    category: Category.MEVBLOCKER,
+                  data-click-event={toCowFiGtmEvent({
+                    category: CowFiCategory.MEVBLOCKER,
                     action: 'Click Learn More',
                   })}
                 >
@@ -473,8 +473,8 @@ export default function Page() {
                     href={item.href}
                     rel={'noopener noreferrer nofollow'}
                     target="_blank"
-                    data-click-event={toGtmEvent({
-                      category: Category.MEVBLOCKER,
+                    data-click-event={toCowFiGtmEvent({
+                      category: CowFiCategory.MEVBLOCKER,
                       action: `Click Trusted By - ${item.href}`,
                     })}
                   >
@@ -520,8 +520,8 @@ export default function Page() {
                   color={'#FEE7CF'}
                   onClick={handleShareClick}
                   asButton
-                  data-click-event={toGtmEvent({
-                    category: Category.MEVBLOCKER,
+                  data-click-event={toCowFiGtmEvent({
+                    category: CowFiCategory.MEVBLOCKER,
                     action: 'Click Share',
                   })}
                 >

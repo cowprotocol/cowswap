@@ -13,7 +13,8 @@ import {
   TopicTitle,
 } from '@/styles/styled'
 import { ArrowButton } from '@/components/ArrowButton'
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import { CmsImage, Color, Font, Media } from '@cowprotocol/ui'
 import { ArticleListResponse } from '../services/cms'
 import styled from 'styled-components/macro'
@@ -89,7 +90,7 @@ export function TopicsPageComponent({ articles, categories }: PageProps) {
                   href={link}
                   onClick={() =>
                     analytics.sendEvent({
-                      category: Category.KNOWLEDGEBASE,
+                      category: CowFiCategory.KNOWLEDGEBASE,
                       action: 'Click topic',
                       label: name,
                     })

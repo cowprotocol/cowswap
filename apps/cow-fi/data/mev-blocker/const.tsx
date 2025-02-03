@@ -1,6 +1,6 @@
 import { Link } from '@/components/Link'
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
-import { Category, toGtmEvent } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
 import IMG_LOGO_KARPATKEY from '@cowprotocol/assets/images/logo-karpatkey.svg'
@@ -165,8 +165,8 @@ export const FAQ_DATA = [
         <Link
           href="https://t.me/+yonLSGoFPRI0YTFk"
           external
-          data-click-event={toGtmEvent({
-            category: Category.MEVBLOCKER,
+          data-click-event={toCowFiGtmEvent({
+            category: CowFiCategory.MEVBLOCKER,
             action: 'Click Contact',
           })}
         >
@@ -211,8 +211,8 @@ export const FAQ_DATA = [
         <Link
           href="https://swap.cow.fi/"
           external
-          data-click-event={toGtmEvent({
-            category: Category.MEVBLOCKER,
+          data-click-event={toCowFiGtmEvent({
+            category: CowFiCategory.MEVBLOCKER,
             action: 'Click CoW Swap',
           })}
         >
@@ -245,8 +245,8 @@ export const FAQ_DATA = [
         following the instructions{' '}
         <Link
           href="#rpc"
-          data-click-event={toGtmEvent({
-            category: Category.MEVBLOCKER,
+          data-click-event={toCowFiGtmEvent({
+            category: CowFiCategory.MEVBLOCKER,
             action: 'Click RPC',
           })}
         >
@@ -303,8 +303,8 @@ export const FAQ_DATA = [
         <Link
           href="https://rpc.mevblocker.io/noreverts"
           external
-          data-click-event={toGtmEvent({
-            category: Category.MEVBLOCKER,
+          data-click-event={toCowFiGtmEvent({
+            category: CowFiCategory.MEVBLOCKER,
             action: 'Click No Reverts',
           })}
         >
@@ -323,8 +323,8 @@ export const FAQ_DATA = [
         <Link
           href="https://rpc.mevblocker.io/norefunds"
           external
-          data-click-event={toGtmEvent({
-            category: Category.MEVBLOCKER,
+          data-click-event={toCowFiGtmEvent({
+            category: CowFiCategory.MEVBLOCKER,
             action: 'Click No Refunds',
           })}
         >
@@ -362,8 +362,8 @@ export const FAQ_DATA = [
           href="https://cow.fi/"
           external
           utmContent="mev-blocker-cow-protocol"
-          data-click-event={toGtmEvent({
-            category: Category.MEVBLOCKER,
+          data-click-event={toCowFiGtmEvent({
+            category: CowFiCategory.MEVBLOCKER,
             action: 'Click CoW Protocol',
           })}
         >
@@ -374,8 +374,8 @@ export const FAQ_DATA = [
           href="https://agnostic.relayer.services"
           external
           utmContent="mev-blocker-agnostic"
-          data-click-event={toGtmEvent({
-            category: Category.MEVBLOCKER,
+          data-click-event={toCowFiGtmEvent({
+            category: CowFiCategory.MEVBLOCKER,
             action: 'Click Agnostic',
           })}
         >
@@ -386,8 +386,8 @@ export const FAQ_DATA = [
           href="https://beaver.rip"
           external
           utmContent="mev-blocker-beaver"
-          data-click-event={toGtmEvent({
-            category: Category.MEVBLOCKER,
+          data-click-event={toCowFiGtmEvent({
+            category: CowFiCategory.MEVBLOCKER,
             action: 'Click Beaver',
           })}
         >
@@ -410,8 +410,8 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/mev-blocker"
           external
           utmContent="mev-blocker-docs"
-          data-click-event={toGtmEvent({
-            category: Category.MEVBLOCKER,
+          data-click-event={toCowFiGtmEvent({
+            category: CowFiCategory.MEVBLOCKER,
             action: 'Click Docs',
           })}
         >
@@ -422,8 +422,8 @@ export const FAQ_DATA = [
           href="https://t.me/+yonLSGoFPRI0YTFk"
           external
           utmContent="mev-blocker-telegram"
-          data-click-event={toGtmEvent({
-            category: Category.MEVBLOCKER,
+          data-click-event={toCowFiGtmEvent({
+            category: CowFiCategory.MEVBLOCKER,
             action: 'Click Telegram',
           })}
         >
@@ -442,8 +442,8 @@ export const FAQ_DATA = [
         <Link
           href="https://t.me/+yonLSGoFPRI0YTFk"
           external
-          data-click-event={toGtmEvent({
-            category: Category.MEVBLOCKER,
+          data-click-event={toCowFiGtmEvent({
+            category: CowFiCategory.MEVBLOCKER,
             action: 'Click Telegram',
           })}
         >

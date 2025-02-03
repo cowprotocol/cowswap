@@ -1,7 +1,8 @@
 'use client'
 
 import { Color } from '@cowprotocol/ui'
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 import styled from 'styled-components/macro'
 
@@ -34,7 +35,7 @@ export default function Page() {
               href="/"
               onClick={() =>
                 analytics.sendEvent({
-                  category: Category.LEGAL,
+                  category: CowFiCategory.LEGAL,
                   action: 'click-legal-breadcrumbs',
                 })
               }
@@ -45,7 +46,7 @@ export default function Page() {
               href="/legal"
               onClick={() =>
                 analytics.sendEvent({
-                  category: Category.LEGAL,
+                  category: CowFiCategory.LEGAL,
                   action: 'click-legal-breadcrumbs',
                 })
               }

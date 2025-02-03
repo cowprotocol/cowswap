@@ -1,7 +1,8 @@
 'use client'
 
 import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
 import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
@@ -79,7 +80,7 @@ export default function Page() {
               linkType={LinkType.HeroButton}
               onClick={() =>
                 analytics.sendEvent({
-                  category: Category.WIDGET,
+                  category: CowFiCategory.WIDGET,
                   action: 'click-config-widget',
                 })
               }
@@ -97,7 +98,7 @@ export default function Page() {
               linkType={LinkType.HeroButton}
               onClick={() =>
                 analytics.sendEvent({
-                  category: Category.WIDGET,
+                  category: CowFiCategory.WIDGET,
                   action: 'click-read-docs',
                 })
               }
@@ -305,7 +306,7 @@ export default function Page() {
                 linkType={LinkType.HeroButton}
                 onClick={() =>
                   analytics.sendEvent({
-                    category: Category.WIDGET,
+                    category: CowFiCategory.WIDGET,
                     action: 'click-config-widget',
                   })
                 }
@@ -323,7 +324,7 @@ export default function Page() {
                 linkType={LinkType.HeroButton}
                 onClick={() =>
                   analytics.sendEvent({
-                    category: Category.WIDGET,
+                    category: CowFiCategory.WIDGET,
                     action: 'click-read-docs',
                   })
                 }

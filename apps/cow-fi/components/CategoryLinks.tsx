@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components/macro'
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import { Color, Media } from '@cowprotocol/ui'
 import Link from 'next/link'
 
@@ -99,7 +100,7 @@ export const CategoryLinks: React.FC<CategoryLinksProps> = ({ allCategories, noD
         href="/learn"
         onClick={() =>
           analytics.sendEvent({
-            category: Category.KNOWLEDGEBASE,
+            category: CowFiCategory.KNOWLEDGEBASE,
             action: 'Click category',
             label: 'home',
           })
@@ -114,7 +115,7 @@ export const CategoryLinks: React.FC<CategoryLinksProps> = ({ allCategories, noD
           href={`/learn/topic/${category.slug}`}
           onClick={() =>
             analytics.sendEvent({
-              category: Category.KNOWLEDGEBASE,
+              category: CowFiCategory.KNOWLEDGEBASE,
               action: 'Click category',
               label: category.name,
             })

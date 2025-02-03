@@ -1,5 +1,6 @@
 import React from 'react'
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import { LinkItem, LinkColumn } from '@/styles/styled'
 import { Article } from 'services/cms'
 
@@ -24,7 +25,7 @@ export const ArticlesList: React.FC<ArticlesListProps> = ({ articles }) => (
           href={`${ARTICLES_PATH}${slug}`}
           onClick={() =>
             analytics.sendEvent({
-              category: Category.KNOWLEDGEBASE,
+              category: CowFiCategory.KNOWLEDGEBASE,
               action: 'Click article',
               label: title,
             })

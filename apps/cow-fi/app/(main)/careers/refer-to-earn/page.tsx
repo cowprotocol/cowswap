@@ -1,7 +1,8 @@
 'use client'
 
 import { Color } from '@cowprotocol/ui'
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import styled from 'styled-components/macro'
 import { ContainerCard, ArticleContent, Breadcrumbs, ArticleMainTitle, BodyContent } from '@/styles/styled'
 
@@ -28,7 +29,7 @@ export default function Page() {
               href="/careers"
               onClick={() =>
                 analytics.sendEvent({
-                  category: Category.CAREERS,
+                  category: CowFiCategory.CAREERS,
                   action: 'Click Breadcrumb',
                   label: 'careers',
                 })

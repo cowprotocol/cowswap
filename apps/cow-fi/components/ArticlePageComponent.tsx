@@ -24,7 +24,8 @@ import {
   SectionTitleDescription,
   StickyMenu,
 } from '@/styles/styled'
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import { Link, LinkType } from '@/components/Link'
 import { CmsImage, Color, Media } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
@@ -72,7 +73,7 @@ export function ArticlePageComponent({
 
   const handleShareClick = () => {
     analytics.sendEvent({
-      category: Category.KNOWLEDGEBASE,
+      category: CowFiCategory.KNOWLEDGEBASE,
       action: 'Share article',
       label: title,
     })
@@ -95,7 +96,7 @@ export function ArticlePageComponent({
               href="/"
               onClick={() =>
                 analytics.sendEvent({
-                  category: Category.KNOWLEDGEBASE,
+                  category: CowFiCategory.KNOWLEDGEBASE,
                   action: 'Click breadcrumb',
                   label: 'home',
                 })
@@ -107,7 +108,7 @@ export function ArticlePageComponent({
               href="/learn"
               onClick={() =>
                 analytics.sendEvent({
-                  category: Category.KNOWLEDGEBASE,
+                  category: CowFiCategory.KNOWLEDGEBASE,
                   action: 'Click breadcrumb',
                   label: 'knowledge-base',
                 })
@@ -130,7 +131,7 @@ export function ArticlePageComponent({
                     href={`/learn/topic/${category.attributes?.slug ?? ''}`}
                     onClick={() =>
                       analytics.sendEvent({
-                        category: Category.KNOWLEDGEBASE,
+                        category: CowFiCategory.KNOWLEDGEBASE,
                         action: 'Click category',
                         label: categoryName,
                       })
@@ -187,7 +188,7 @@ export function ArticlePageComponent({
                       href={`/learn/${article.attributes?.slug}`}
                       onClick={() =>
                         analytics.sendEvent({
-                          category: Category.KNOWLEDGEBASE,
+                          category: CowFiCategory.KNOWLEDGEBASE,
                           action: 'Click featured article',
                           label: articleTitle,
                         })
@@ -222,7 +223,7 @@ export function ArticlePageComponent({
                   href={`/learn/${attrs.slug}`}
                   onClick={() =>
                     analytics.sendEvent({
-                      category: Category.KNOWLEDGEBASE,
+                      category: CowFiCategory.KNOWLEDGEBASE,
                       action: 'Click read more',
                       label: attrs.title,
                     })

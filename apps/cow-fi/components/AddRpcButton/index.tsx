@@ -1,4 +1,4 @@
-import { Category, toGtmEvent, initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import { Confetti } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 import { darken, transparentize } from 'polished'
@@ -7,6 +7,7 @@ import { useAccount } from 'wagmi'
 
 import { Link, LinkType } from '@/components/Link'
 import { AddToWalletStateValues } from '../../types/addToWalletState'
+import { initGtm } from '@cowprotocol/analytics'
 
 const cowAnalytics = initGtm()
 
@@ -41,7 +42,7 @@ export function AddRpcButton() {
     } catch (error) {
       // Use direct analytics for error tracking to include more context
       cowAnalytics.sendEvent({
-        category: Category.MEVBLOCKER,
+        category: CowFiCategory.MEVBLOCKER,
         action: 'Error Add RPC',
         label: error instanceof Error ? error.message : 'Unknown error',
       })
@@ -77,8 +78,8 @@ export function AddRpcButton() {
             onClick={handleClick}
             disabled={disabledButton}
             asButton
-            data-click-event={toGtmEvent({
-              category: Category.MEVBLOCKER,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.MEVBLOCKER,
               action: 'Click Add RPC',
               label: isConnected ? 'Add MEV Blocker RPC' : 'Get Protected',
             })}
@@ -94,8 +95,8 @@ export function AddRpcButton() {
               bgColor="#333"
               onClick={disconnectWallet}
               asButton
-              data-click-event={toGtmEvent({
-                category: Category.MEVBLOCKER,
+              data-click-event={toCowFiGtmEvent({
+                category: CowFiCategory.MEVBLOCKER,
                 action: 'Click Disconnect',
               })}
             >

@@ -1,5 +1,6 @@
 import { Link } from '@/components/Link'
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 import IMG_COWSWAP_COINS from '@cowprotocol/assets/images/image-coins.svg'
 import IMG_COWSWAP_MEV from '@cowprotocol/assets/images/image-cowswap-mev.svg'
@@ -105,7 +106,7 @@ export const FAQ_DATA = [
           utmContent="cow-protocol-introduction-intents"
           onClick={() =>
             analytics.sendEvent({
-              category: Category.COWSWAP,
+              category: CowFiCategory.COWSWAP,
               action: 'click-introduction-intents',
             })
           }
@@ -119,7 +120,7 @@ export const FAQ_DATA = [
           utmContent="cow-protocol-introduction-batch-auctions"
           onClick={() =>
             analytics.sendEvent({
-              category: Category.COWSWAP,
+              category: CowFiCategory.COWSWAP,
               action: 'click-introduction-batch-auctions',
             })
           }
@@ -135,7 +136,7 @@ export const FAQ_DATA = [
           utmContent="cow-protocol-introduction-solvers"
           onClick={() =>
             analytics.sendEvent({
-              category: Category.COWSWAP,
+              category: CowFiCategory.COWSWAP,
               action: 'click-introduction-solvers',
             })
           }
@@ -149,7 +150,7 @@ export const FAQ_DATA = [
           utmContent="cow-protocol-introduction-intents"
           onClick={() =>
             analytics.sendEvent({
-              category: Category.COWSWAP,
+              category: CowFiCategory.COWSWAP,
               action: 'click-introduction-intents',
             })
           }
@@ -163,7 +164,7 @@ export const FAQ_DATA = [
           utmContent="cow-protocol-coincidence-of-wants"
           onClick={() =>
             analytics.sendEvent({
-              category: Category.COWSWAP,
+              category: CowFiCategory.COWSWAP,
               action: 'click-coincidence-of-wants',
             })
           }
@@ -197,7 +198,7 @@ export const FAQ_DATA = [
           utmContent="cow-protocol-coincidence-of-wants"
           onClick={() =>
             analytics.sendEvent({
-              category: Category.COWSWAP,
+              category: CowFiCategory.COWSWAP,
               action: 'click-coincidence-of-wants',
             })
           }
@@ -214,7 +215,7 @@ export const FAQ_DATA = [
           utmContent="cow-protocol-introduction-batch-auctions"
           onClick={() =>
             analytics.sendEvent({
-              category: Category.COWSWAP,
+              category: CowFiCategory.COWSWAP,
               action: 'click-introduction-batch-auctions',
             })
           }
@@ -241,7 +242,7 @@ export const FAQ_DATA = [
           utmContent="cow-protocol-introduction-solvers"
           onClick={() =>
             analytics.sendEvent({
-              category: Category.COWSWAP,
+              category: CowFiCategory.COWSWAP,
               action: 'click-introduction-solvers',
             })
           }
@@ -282,7 +283,7 @@ export const FAQ_DATA = [
           utmContent="cow-protocol-introduction-batch-auctions"
           onClick={() =>
             analytics.sendEvent({
-              category: Category.COWSWAP,
+              category: CowFiCategory.COWSWAP,
               action: 'click-introduction-batch-auctions',
             })
           }
@@ -308,7 +309,7 @@ export const FAQ_DATA = [
           utmContent="cow-website"
           onClick={() =>
             analytics.sendEvent({
-              category: Category.COWSWAP,
+              category: CowFiCategory.COWSWAP,
               action: 'click-website',
             })
           }
@@ -327,7 +328,7 @@ export const FAQ_DATA = [
           utmContent="cow-twitter"
           onClick={() =>
             analytics.sendEvent({
-              category: Category.COWSWAP,
+              category: CowFiCategory.COWSWAP,
               action: 'click-twitter',
             })
           }
@@ -342,7 +343,7 @@ export const FAQ_DATA = [
           utmContent="cow-discord"
           onClick={() =>
             analytics.sendEvent({
-              category: Category.COWSWAP,
+              category: CowFiCategory.COWSWAP,
               action: 'click-discord',
             })
           }
@@ -357,7 +358,7 @@ export const FAQ_DATA = [
           utmContent="cow-forum"
           onClick={() =>
             analytics.sendEvent({
-              category: Category.COWSWAP,
+              category: CowFiCategory.COWSWAP,
               action: 'click-forum',
             })
           }
@@ -372,7 +373,7 @@ export const FAQ_DATA = [
           utmContent="cow-snapshot"
           onClick={() =>
             analytics.sendEvent({
-              category: Category.COWSWAP,
+              category: CowFiCategory.COWSWAP,
               action: 'click-snapshot',
             })
           }
@@ -387,7 +388,7 @@ export const FAQ_DATA = [
           utmContent="cow-github"
           onClick={() =>
             analytics.sendEvent({
-              category: Category.COWSWAP,
+              category: CowFiCategory.COWSWAP,
               action: 'click-github',
             })
           }
@@ -417,7 +418,7 @@ export const FAQ_DATA = [
           utmContent="cow-discord"
           onClick={() =>
             analytics.sendEvent({
-              category: Category.COWSWAP,
+              category: CowFiCategory.COWSWAP,
               action: 'click-discord',
             })
           }

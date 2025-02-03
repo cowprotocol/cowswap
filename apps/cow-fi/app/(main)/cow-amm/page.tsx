@@ -9,7 +9,8 @@ import IMG_COWAMM_PASSIVE from '@cowprotocol/assets/images/image-cowamm-passive.
 import IMG_COWAMM_REKT from '@cowprotocol/assets/images/image-cowamm-rekt.svg'
 import FAQ from '@/components/FAQ'
 import { Link, LinkType } from '@/components/Link'
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 import {
   ContainerCard,
@@ -61,7 +62,7 @@ export default function Page() {
             utmContent={'cow-amm-hero-button-lp-on-cow-amm'}
             onClick={() =>
               analytics.sendEvent({
-                category: Category.COWAMM,
+                category: CowFiCategory.COWAMM,
                 action: 'Click LP on CoW AMM',
                 label: 'hero-button',
               })
@@ -100,7 +101,7 @@ export default function Page() {
           utmContent={'cow-amm-metrics-button-view-all'}
           onClick={() =>
             analytics.sendEvent({
-              category: Category.COWAMM,
+              category: CowFiCategory.COWAMM,
               action: 'Click View All Metrics',
               label: 'dune-analytics',
             })

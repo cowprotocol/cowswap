@@ -16,7 +16,8 @@ import {
 } from '@/styles/styled'
 import { Color, Font, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import { Link, LinkType } from '@/components/Link'
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import { CONFIG } from '@/const/meta'
 
 const analytics = initGtm()
@@ -95,7 +96,7 @@ export function CareersPageContent({
                               marginTablet="auto auto 0"
                               onClick={() =>
                                 analytics.sendEvent({
-                                  category: Category.CAREERS,
+                                  category: CowFiCategory.CAREERS,
                                   action: 'Click job',
                                   label: `job-${title}`,
                                 })
@@ -132,7 +133,7 @@ export function CareersPageContent({
                               utmContent={`job-${title}`}
                               onClick={() =>
                                 analytics.sendEvent({
-                                  category: Category.CAREERS,
+                                  category: CowFiCategory.CAREERS,
                                   action: 'Click job',
                                   label: `job-${title}`,
                                 })
@@ -169,7 +170,7 @@ export function CareersPageContent({
                   href="/careers/refer-to-earn"
                   onClick={() =>
                     analytics.sendEvent({
-                      category: Category.CAREERS,
+                      category: CowFiCategory.CAREERS,
                       action: 'Click referral',
                       label: 'refer-to-earn',
                     })
