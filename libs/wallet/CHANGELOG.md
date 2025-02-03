@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.3](https://github.com/cowprotocol/cowswap/compare/wallet-v1.9.2...wallet-v1.9.3) (2025-02-03)
+
+
+### Bug Fixes
+
+* display Metamask warning only for extension/mobile wallets ([#5370](https://github.com/cowprotocol/cowswap/issues/5370)) ([abb5683](https://github.com/cowprotocol/cowswap/commit/abb56834b1e21029ca66362f3b721cd47e080547))
+
 ## [1.9.2](https://github.com/cowprotocol/cowswap/compare/wallet-v1.9.1...wallet-v1.9.2) (2025-01-30)
 
 

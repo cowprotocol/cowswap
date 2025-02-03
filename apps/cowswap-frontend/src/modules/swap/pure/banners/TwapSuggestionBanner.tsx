@@ -1,3 +1,4 @@
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InlineBanner } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
@@ -26,7 +27,7 @@ export interface TwapSuggestionBannerProps {
   priceImpact: Percent | undefined
   buyingFiatAmount: CurrencyAmount<Currency> | null
   tradeUrlParams: TradeUrlParams
-  sellAmount: string | undefined
+  sellAmount: CurrencyAmount<Currency> | undefined
 }
 
 const PRICE_IMPACT_LIMIT = 1 // 1%
@@ -47,8 +48,11 @@ export function TwapSuggestionBanner({
 }: TwapSuggestionBannerProps) {
   if (!priceImpact || priceImpact.lessThan(0)) return null
 
-  const shouldSuggestTwap =
-    +priceImpact.toFixed(2) > PRICE_IMPACT_LIMIT && +(buyingFiatAmount?.toExact() || 0) > AMOUNT_LIMIT[chainId]
+  const isSellNative = !!sellAmount?.currency && getIsNativeToken(sellAmount?.currency)
+  const priceImpactIsHighEnough = +priceImpact.toFixed(2) > PRICE_IMPACT_LIMIT
+  const buyAmountIsBigEnough = +(buyingFiatAmount?.toExact() || 0) > AMOUNT_LIMIT[chainId]
+
+  const shouldSuggestTwap = !isSellNative && priceImpactIsHighEnough && buyAmountIsBigEnough
 
   if (!shouldSuggestTwap) return null
 
@@ -56,7 +60,7 @@ export function TwapSuggestionBanner({
     parameterizeTradeRoute(tradeUrlParams, Routes.ADVANCED_ORDERS) +
     '?' +
     parameterizeTradeSearch('', {
-      amount: sellAmount,
+      amount: sellAmount?.toExact(),
       kind: OrderKind.SELL,
     })
 
