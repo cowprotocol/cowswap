@@ -1,0 +1,51 @@
+name: 'Deploy: files.cow.fi'
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/cow-files/public/**'
+  pull_request:
+    paths:
+      - 'apps/cow-files/public/**'
+  workflow_dispatch: # Manual trigger
+
+# Required for authenticating with AWS IAM
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  NODE_VERSION: lts/gallium
+
+jobs:
+  deploy:
+    name: Deploy to files.cow.fi
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          # TODO: Replace this role with a new one specific for cow-files
+          # Current role is specific to token-lists and might not have correct permissions
+          role-to-assume: arn:aws:iam::693696263829:role/token-list-github-action-role
+          role-session-name: githubactionsession
+          aws-region: eu-central-1
+
+      - name: Upload to S3
+        run: |
+          aws s3 sync apps/cow-files/public/ s3://files.cow.fi/cow-files/ \
+            --delete \
+            --exclude ".DS_Store" \
+            --exclude "*.tmp" \
+            --exclude "*.temp"
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.DISTRIBUTION }} \
+            --paths "/cow-files/*"

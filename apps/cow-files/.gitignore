@@ -1,0 +1,14 @@
+# System files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*~
+
+# IDE files
+.idea/
+.vscode/
+*.sublime-* 
