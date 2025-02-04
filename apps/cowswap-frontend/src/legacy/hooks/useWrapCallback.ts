@@ -3,6 +3,7 @@ import {
   calculateGasMargin,
   formatTokenAmount,
   getIsNativeToken,
+  getRawCurrentChainIdFromUrl,
   isRejectRequestProviderError,
 } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -16,6 +17,7 @@ import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { wrapAnalytics } from 'modules/analytics'
 
+import { EthSendingTransactionInfo } from 'common/hooks/useLogEthSendingTransaction'
 import { assertProviderNetwork } from 'common/utils/assertProviderNetwork'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
@@ -37,18 +39,29 @@ export interface WrapDescription {
 
 export interface WrapUnwrapContext {
   chainId: SupportedChainId
+  account: string
   wethContract: Contract
   amount: CurrencyAmount<Currency>
   addTransaction: TransactionAdder
   closeModals: Command
   openTransactionConfirmationModal: Command
+  logEthSendingTransaction: (info: EthSendingTransactionInfo) => void
 }
 
 export async function wrapUnwrapCallback(
   context: WrapUnwrapContext,
   params: WrapUnwrapCallbackParams = { useModals: true },
 ): Promise<TransactionResponse | null> {
-  const { chainId, amount, wethContract, addTransaction, openTransactionConfirmationModal, closeModals } = context
+  const {
+    chainId,
+    account,
+    amount,
+    wethContract,
+    addTransaction,
+    openTransactionConfirmationModal,
+    closeModals,
+    logEthSendingTransaction,
+  } = context
   const isNativeIn = getIsNativeToken(amount.currency)
   const amountHex = `0x${amount.quotient.toString(RADIX_HEX)}`
 
@@ -61,7 +74,15 @@ export async function wrapUnwrapCallback(
 
     const wrapUnwrap = isNativeIn ? wrapContractCall : unwrapContractCall
     const txReceipt = await wrapUnwrap(wethContract, amountHex, chainId)
+
     wrapAnalytics('Sign', operationMessage)
+    logEthSendingTransaction({
+      chainId,
+      txHash: txReceipt.hash,
+      amount: amount.quotient.toString(),
+      urlChainId: getRawCurrentChainIdFromUrl(),
+      account,
+    })
 
     addTransaction({
       hash: txReceipt.hash,
