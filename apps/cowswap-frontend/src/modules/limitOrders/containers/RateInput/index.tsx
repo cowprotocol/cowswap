@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import LockedIcon from '@cowprotocol/assets/images/icon-locked.svg'
@@ -31,6 +31,7 @@ import { getQuoteCurrency, getQuoteCurrencyByStableCoin } from 'common/services/
 import { useExecutionPriceUsdValue } from './hooks/useExecutionPriceUsdValue'
 import { useRateDisplayedValue } from './hooks/useRateDisplayedValue'
 import * as styledEl from './styled'
+import { isLocalUsdRateModeAtom } from './atoms'
 
 export function RateInput() {
   const { chainId } = useWalletInfo()
@@ -40,14 +41,14 @@ export function RateInput() {
   const updateRate = useUpdateActiveRate()
   const updateLimitRateState = useSetAtom(updateLimitRateAtom)
   const executionPrice = useAtomValue(executionPriceAtom)
-  const { limitPriceLocked, isUsdValuesMode, partialFillsEnabled } = useAtomValue(limitOrdersSettingsAtom)
+  const { limitPriceLocked, partialFillsEnabled } = useAtomValue(limitOrdersSettingsAtom)
   const updateLimitOrdersSettings = useSetAtom(updateLimitOrdersSettingsAtom)
 
   const executionPriceUsdValue = useExecutionPriceUsdValue(executionPrice)
 
   const [isQuoteCurrencySet, setIsQuoteCurrencySet] = useState(false)
   const [typedTrailingZeros, setTypedTrailingZeros] = useState('')
-  const [isUsdRateMode, setIsUsdRateMode] = useState(isUsdValuesMode)
+  const [isUsdRateMode, setIsUsdRateMode] = useAtom(isLocalUsdRateModeAtom)
 
   // Limit order state
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
@@ -212,11 +213,6 @@ export function RateInput() {
   useEffect(() => {
     setIsQuoteCurrencySet(false)
   }, [inputCurrency, outputCurrency])
-
-  // Depend rate USD mode on settings
-  useEffect(() => {
-    setIsUsdRateMode(isUsdValuesMode)
-  }, [isUsdValuesMode])
 
   return (
     <>
