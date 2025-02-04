@@ -28,7 +28,8 @@ export function useLimitOrdersPromoBanner() {
   }, [setIsVisible])
 
   return {
-    isVisible: shouldBeVisible,
+    isVisible,
+    shouldBeVisible,
     onDismiss,
     isLimitOrdersTab,
   }

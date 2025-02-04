@@ -93,7 +93,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const tradeStateFromUrl = useTradeStateFromUrl()
   const alternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const primaryFormValidation = useGetTradeFormValidation()
-  const { isVisible: isLimitOrdersPromoBannerVisible } = useLimitOrdersPromoBanner()
+  const { shouldBeVisible: isLimitOrdersPromoBannerVisible } = useLimitOrdersPromoBanner()
   const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
 
   const sellToken = inputCurrencyInfo.currency
