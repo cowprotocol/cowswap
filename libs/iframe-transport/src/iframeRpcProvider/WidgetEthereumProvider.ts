@@ -15,6 +15,7 @@ import { EventEmitter } from 'eventemitter3'
 import {
   IframeRpcProviderEvents,
   iframeRpcProviderTransport,
+  ProviderMetaInfoPayload,
   ProviderOnEventPayload,
   ProviderRpcResponsePayload,
 } from './iframeRpcProviderEvents'
@@ -167,6 +168,8 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
   private readonly completers: {
     [id: string]: PromiseCompleter<any, any>
   } = {}
+  private providerMetaInfo: ProviderMetaInfoPayload | null = null
+  private providerMetaInfoCallback?: (data: ProviderMetaInfoPayload) => void
 
   public constructor({
     timeoutMilliseconds = DEFAULT_TIMEOUT_MILLISECONDS,
@@ -193,6 +196,18 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
       IframeRpcProviderEvents.PROVIDER_ON_EVENT,
       (message) => {
         this.handleOnEvent(message)
+      },
+    )
+
+    iframeRpcProviderTransport.listenToMessageFromWindow(
+      this.eventSource,
+      IframeRpcProviderEvents.SEND_PROVIDER_META_INFO,
+      (message) => {
+        this.providerMetaInfo = message
+
+        if (this.providerMetaInfoCallback) {
+          this.providerMetaInfoCallback(this.providerMetaInfo)
+        }
       },
     )
   }
@@ -292,6 +307,24 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
       callback(null, result)
     } catch (error) {
       callback(error, null)
+    }
+  }
+
+  /**
+   * Subscribe to provider meta info
+   * @param callback
+   */
+  public onProviderMetaInfo(callback: (data: ProviderMetaInfoPayload) => void) {
+    if (this.providerMetaInfo) {
+      callback(this.providerMetaInfo)
+    } else {
+      this.providerMetaInfoCallback = callback
+
+      iframeRpcProviderTransport.postMessageToWindow(
+        this.eventTarget,
+        IframeRpcProviderEvents.REQUEST_PROVIDER_META_INFO,
+        null,
+      )
     }
   }
 

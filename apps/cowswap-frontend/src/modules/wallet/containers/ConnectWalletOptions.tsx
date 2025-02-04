@@ -1,5 +1,6 @@
 import { useTheme } from '@cowprotocol/common-hooks'
 import { isMobile, isInjectedWidget } from '@cowprotocol/common-utils'
+import { EIP6963ProviderDetail } from '@cowprotocol/types'
 import {
   CoinbaseWalletOption,
   InjectedOption as DefaultInjectedOption,
@@ -12,11 +13,9 @@ import {
   Eip6963Option,
   COINBASE_WALLET_RDNS,
   getIsInjectedMobileBrowser,
-  EIP6963ProviderDetail,
 } from '@cowprotocol/wallet'
 
 import { useSelectedWallet } from 'legacy/state/user/hooks'
-
 
 export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActivation }) {
   const selectedWallet = useSelectedWallet()
@@ -35,7 +34,11 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const walletConnectionV2Option =
     ((!isInjectedMobileBrowser || isWidget) && <WalletConnectV2Option {...connectionProps} />) ?? null
   const trezorOption = (!isInjectedMobileBrowser && !isMobile && <TrezorOption {...connectionProps} />) ?? null
-  const injectedOption = (getIsInjected() && <InjectedOptions connectionProps={connectionProps} multiInjectedProviders={multiInjectedProviders} />) ?? null
+  const injectedOption =
+    (getIsInjected() && (
+      <InjectedOptions connectionProps={connectionProps} multiInjectedProviders={multiInjectedProviders} />
+    )) ??
+    null
 
   return (
     <>

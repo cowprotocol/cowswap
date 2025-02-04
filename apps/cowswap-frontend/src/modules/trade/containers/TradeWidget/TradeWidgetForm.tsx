@@ -93,11 +93,12 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const tradeStateFromUrl = useTradeStateFromUrl()
   const alternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const primaryFormValidation = useGetTradeFormValidation()
-  const { isVisible: isLimitOrdersPromoBannerVisible } = useLimitOrdersPromoBanner()
+  const { shouldBeVisible: isLimitOrdersPromoBannerVisible } = useLimitOrdersPromoBanner()
   const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
 
-  const areCurrenciesLoading = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
-  const bothCurrenciesSet = !!inputCurrencyInfo.currency && !!outputCurrencyInfo.currency
+  const sellToken = inputCurrencyInfo.currency
+  const areCurrenciesLoading = !sellToken && !outputCurrencyInfo.currency
+  const bothCurrenciesSet = !!sellToken && !!outputCurrencyInfo.currency
 
   const hasRecipientInUrl = !!tradeStateFromUrl?.recipient
   const withRecipient = !isWrapOrUnwrap && (showRecipient || hasRecipientInUrl)
@@ -146,9 +147,9 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
 
   const openBuyTokenSelect = useCallback(
     (selectedToken: string | undefined, field: Field | undefined, onSelectToken: (currency: Currency) => void) => {
-      openTokenSelectWidget(selectedToken, field, inputCurrencyInfo.currency || undefined, onSelectToken)
+      openTokenSelectWidget(selectedToken, field, sellToken || undefined, onSelectToken)
     },
-    [openTokenSelectWidget, inputCurrencyInfo.currency],
+    [openTokenSelectWidget, sellToken],
   )
 
   const toggleAccountModal = useToggleAccountModal()
@@ -205,9 +206,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                     isCollapsed={compactView}
                     hasSeparatorLine={!compactView}
                     onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
-                    isLoading={Boolean(
-                      inputCurrencyInfo.currency && outputCurrencyInfo.currency && isTradePriceUpdating,
-                    )}
+                    isLoading={Boolean(sellToken && outputCurrencyInfo.currency && isTradePriceUpdating)}
                     disabled={isAlternativeOrderModalVisible}
                   />
                 </styledEl.CurrencySeparatorBox>
@@ -232,7 +231,9 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 {withRecipient && <SetRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />}
 
                 {isWrapOrUnwrap ? (
-                  <WrapFlowActionButton />
+                  sellToken ? (
+                    <WrapFlowActionButton sellToken={sellToken} />
+                  ) : null
                 ) : (
                   bottomContent?.(
                     hideTradeWarnings ? null : (

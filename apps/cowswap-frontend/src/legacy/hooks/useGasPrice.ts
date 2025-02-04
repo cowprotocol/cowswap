@@ -22,10 +22,10 @@ const CHAIN_DATA_ABI = [
  */
 export default function useGasPrice(): JSBI | undefined {
   const { address } = useENSAddress('fast-gas-gwei.data.eth')
-  const contract = useContract(address ?? undefined, CHAIN_DATA_ABI, false)
+  const { contract } = useContract(address ?? undefined, CHAIN_DATA_ABI, false)
 
   const { data: result } = useSWR(contract ? ['useGasPrice', contract] : null, async ([, _contract]) =>
-    _contract.callStatic.latestAnswer()
+    _contract.callStatic.latestAnswer(),
   )
   const resultStr = result?.toString()
 

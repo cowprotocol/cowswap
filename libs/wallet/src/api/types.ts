@@ -1,8 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { SafeInfoResponse } from '@safe-global/api-kit'
 
-export * from './eip6963-types'
-
 export enum ConnectionType {
   NETWORK = 'NETWORK',
   INJECTED = 'INJECTED',
