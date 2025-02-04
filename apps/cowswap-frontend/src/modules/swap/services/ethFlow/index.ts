@@ -34,8 +34,16 @@ export async function ethFlow(
     orderParams: orderParamsOriginal,
     typedHooks,
   } = tradeContext
-  const { contract, appData, uploadAppData, addTransaction, checkEthFlowOrderExists, addInFlightOrderId, quote } =
-    ethFlowContext
+  const {
+    contract,
+    appData,
+    uploadAppData,
+    addTransaction,
+    checkEthFlowOrderExists,
+    addInFlightOrderId,
+    logEthSendingTransaction,
+    quote,
+  } = ethFlowContext
 
   const { chainId, inputAmount, outputAmount } = context
   const tradeAmounts = { inputAmount, outputAmount }
@@ -77,11 +85,16 @@ export async function ethFlow(
     }
 
     logTradeFlow('ETH FLOW', 'STEP 4: sign order')
-    const { order, txReceipt } = await signEthFlowOrderStep(orderId, orderParams, contract, addInFlightOrderId).finally(
-      () => {
-        callbacks.closeModals()
-      },
-    )
+    const { order, txReceipt } = await signEthFlowOrderStep(
+      orderId,
+      orderParams,
+      contract,
+      addInFlightOrderId,
+      logEthSendingTransaction,
+      tradeContext,
+    ).finally(() => {
+      callbacks.closeModals()
+    })
 
     emitPostedOrderEvent({
       chainId,

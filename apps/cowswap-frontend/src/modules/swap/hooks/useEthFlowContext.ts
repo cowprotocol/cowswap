@@ -8,6 +8,7 @@ import { useGetQuoteAndStatus } from 'legacy/state/price/hooks'
 import { useAppData, useUploadAppData } from 'modules/appData'
 
 import { useEthFlowContract } from 'common/hooks/useContract'
+import { useLogEthSendingTransaction } from 'common/hooks/useLogEthSendingTransaction'
 
 import { useCheckEthFlowOrderExists } from './useCheckEthFlowOrderExists'
 import { useDerivedSwapInfo } from './useSwapState'
@@ -26,6 +27,7 @@ export function useEthFlowContext(): EthFlowContext | null {
   const addTransaction = useTransactionAdder()
   const uploadAppData = useUploadAppData()
   const appData = useAppData()
+  const logEthSendingTransaction = useLogEthSendingTransaction()
 
   const addInFlightOrderId = useSetAtom(addInFlightOrderIdAtom)
 
@@ -34,15 +36,34 @@ export function useEthFlowContext(): EthFlowContext | null {
   return (
     useSWR(
       appData && ethFlowContract
-        ? [quote, ethFlowContract, addTransaction, checkEthFlowOrderExists, addInFlightOrderId, uploadAppData, appData]
+        ? [
+            quote,
+            ethFlowContract,
+            addTransaction,
+            checkEthFlowOrderExists,
+            addInFlightOrderId,
+            logEthSendingTransaction,
+            uploadAppData,
+            appData,
+          ]
         : null,
-      ([quote, contract, addTransaction, checkEthFlowOrderExists, addInFlightOrderId, uploadAppData, appData]) => {
+      ([
+        quote,
+        contract,
+        addTransaction,
+        checkEthFlowOrderExists,
+        addInFlightOrderId,
+        logEthSendingTransaction,
+        uploadAppData,
+        appData,
+      ]) => {
         return {
           quote,
           contract,
           addTransaction,
           checkEthFlowOrderExists,
           addInFlightOrderId,
+          logEthSendingTransaction,
           uploadAppData,
           appData,
         }
