@@ -39,14 +39,5 @@ export function useTradeRouteContext(): TradeUrlParams {
     prevContextRef.current = hasState ? context : undefined
   }, [hasState, context])
 
-  /**
-   * If there is no state, it means that current page is not a trade widget page. For example: account page.
-   * In this case, we should take the previous context to keep the trade widget state.
-   * ChainId should be always up to date, so we mix up targetChainId to the result.
-   */
-  return useMemo(() => {
-    const targetState = !hasState && prevContext ? prevContext : context
-
-    return { ...targetState, chainId: targetChainId.toString() }
-  }, [hasState, prevContext, context, targetChainId])
+  return !state && prevContext ? prevContext : context
 }
