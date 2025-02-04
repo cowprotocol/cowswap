@@ -1,5 +1,6 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import {
   DEFAULT_DEADLINE_FROM_NOW,
   HIGH_ETH_FLOW_SLIPPAGE_BPS,
@@ -26,7 +27,6 @@ import { ThemedText } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
 
-import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from 'modules/analytics'
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
 import { useIsEoaEthFlow } from 'modules/trade'
 import {
@@ -38,6 +38,7 @@ import {
   useTradeSlippage,
 } from 'modules/tradeSlippage'
 
+import { CowSwapCategory } from 'common/analytics/types'
 import {
   getNativeOrderDeadlineTooltip,
   getNativeSlippageTooltip,
@@ -63,9 +64,25 @@ interface TransactionSettingsProps {
   deadlineState: StatefulValue<number>
 }
 
+type SlippageAnalyticsAction = 'Default' | 'Custom'
+type DeadlineAnalyticsAction = 'Default' | 'Custom'
+
+interface SlippageAnalyticsEvent {
+  category: CowSwapCategory.TRADE
+  action: `${SlippageAnalyticsAction} Slippage Tolerance`
+  value: number
+}
+
+interface DeadlineAnalyticsEvent {
+  category: CowSwapCategory.TRADE
+  action: `${DeadlineAnalyticsAction} Order Expiration Time`
+  value: number
+}
+
 export function TransactionSettings({ deadlineState }: TransactionSettingsProps) {
   const { chainId } = useWalletInfo()
   const theme = useContext(ThemeContext)
+  const analytics = useCowAnalytics()
 
   const isSmartContractWallet = useIsSmartContractWallet()
   const isEoaEthFlow = useIsEoaEthFlow()
@@ -95,6 +112,30 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
 
   const placeholderSlippage = isSlippageModified ? defaultSwapSlippage : swapSlippage
 
+  const sendSlippageAnalytics = useCallback(
+    (action: SlippageAnalyticsAction, value: string | number) => {
+      const analyticsEvent: SlippageAnalyticsEvent = {
+        category: CowSwapCategory.TRADE,
+        action: `${action} Slippage Tolerance`,
+        value: typeof value === 'string' ? parseFloat(value) : value,
+      }
+      analytics.sendEvent(analyticsEvent)
+    },
+    [analytics],
+  )
+
+  const sendDeadlineAnalytics = useCallback(
+    (action: DeadlineAnalyticsAction, value: number) => {
+      const analyticsEvent: DeadlineAnalyticsEvent = {
+        category: CowSwapCategory.TRADE,
+        action: `${action} Order Expiration Time`,
+        value,
+      }
+      analytics.sendEvent(analyticsEvent)
+    },
+    [analytics],
+  )
+
   const parseSlippageInput = useCallback(
     (value: string) => {
       // populate what the user typed and clear the error
@@ -102,7 +143,7 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
       setSlippageError(false)
 
       if (value.length === 0) {
-        slippageToleranceAnalytics('Default', placeholderSlippage.toFixed(2))
+        sendSlippageAnalytics('Default', placeholderSlippage.toFixed(2))
         setSwapSlippage(isEoaEthFlow ? percentToBps(minEthFlowSlippage) : null)
       } else {
         let v = value
@@ -127,11 +168,18 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
           }
         }
 
-        slippageToleranceAnalytics('Custom', parsed)
+        sendSlippageAnalytics('Custom', parsed)
         setSwapSlippage(percentToBps(new Percent(parsed, 10_000)))
       }
     },
-    [placeholderSlippage, isEoaEthFlow, minEthFlowSlippage, minEthFlowSlippageBps, setSwapSlippage],
+    [
+      placeholderSlippage,
+      isEoaEthFlow,
+      minEthFlowSlippage,
+      minEthFlowSlippageBps,
+      setSwapSlippage,
+      sendSlippageAnalytics,
+    ],
   )
 
   const tooLow = swapSlippage.lessThan(new Percent(isEoaEthFlow ? minEthFlowSlippageBps : LOW_SLIPPAGE_BPS, 10_000))
@@ -152,7 +200,7 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
       setDeadlineError(false)
 
       if (value.length === 0) {
-        orderExpirationTimeAnalytics('Default', DEFAULT_DEADLINE_FROM_NOW)
+        sendDeadlineAnalytics('Default', DEFAULT_DEADLINE_FROM_NOW)
         setDeadline(DEFAULT_DEADLINE_FROM_NOW)
       } else {
         try {
@@ -164,7 +212,7 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
           ) {
             setDeadlineError(DeadlineError.InvalidInput)
           } else {
-            orderExpirationTimeAnalytics('Custom', parsed)
+            sendDeadlineAnalytics('Custom', parsed)
             setDeadline(parsed)
           }
         } catch (error: any) {
@@ -173,7 +221,7 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
         }
       }
     },
-    [minDeadline, maxDeadline, setDeadline],
+    [minDeadline, maxDeadline, setDeadline, sendDeadlineAnalytics],
   )
 
   useEffect(() => {
@@ -197,13 +245,13 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
 
   const onSlippageInputBlur = useCallback(() => {
     if (slippageError) {
-      slippageToleranceAnalytics('Default', placeholderSlippage.toFixed(2))
+      sendSlippageAnalytics('Default', placeholderSlippage.toFixed(2))
       setSwapSlippage(null)
       setSlippageError(false)
     }
 
     setSlippageInput('')
-  }, [slippageError, placeholderSlippage, setSwapSlippage])
+  }, [slippageError, placeholderSlippage, setSwapSlippage, sendSlippageAnalytics])
 
   const wrapperRef = useRef(null)
 

@@ -1,3 +1,4 @@
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { getChainCurrencySymbols, RADIX_HEX } from '@cowprotocol/common-const'
 import {
   calculateGasMargin,
@@ -14,8 +15,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { wrapAnalytics } from 'modules/analytics'
-
+import { CowSwapCategory } from 'common/analytics/types'
 import { assertProviderNetwork } from 'common/utils/assertProviderNetwork'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
@@ -42,13 +42,31 @@ export interface WrapUnwrapContext {
   addTransaction: TransactionAdder
   closeModals: Command
   openTransactionConfirmationModal: Command
+  analytics: ReturnType<typeof useCowAnalytics>
+}
+
+type WrapAction = 'Send' | 'Sign' | 'Reject' | 'Error'
+
+function sendWrapEvent(
+  analytics: WrapUnwrapContext['analytics'],
+  action: WrapAction,
+  operationMessage: string,
+  amount: CurrencyAmount<Currency>,
+) {
+  analytics.sendEvent({
+    category: CowSwapCategory.WRAP_NATIVE_TOKEN,
+    action,
+    label: operationMessage,
+    value: Number(amount.toSignificant(6)),
+  })
 }
 
 export async function wrapUnwrapCallback(
   context: WrapUnwrapContext,
   params: WrapUnwrapCallbackParams = { useModals: true },
 ): Promise<TransactionResponse | null> {
-  const { chainId, amount, wethContract, addTransaction, openTransactionConfirmationModal, closeModals } = context
+  const { chainId, amount, wethContract, addTransaction, openTransactionConfirmationModal, closeModals, analytics } =
+    context
   const isNativeIn = getIsNativeToken(amount.currency)
   const amountHex = `0x${amount.quotient.toString(RADIX_HEX)}`
 
@@ -57,11 +75,11 @@ export async function wrapUnwrapCallback(
 
   try {
     useModals && openTransactionConfirmationModal()
-    wrapAnalytics('Send', operationMessage)
+    sendWrapEvent(analytics, 'Send', operationMessage, amount)
 
     const wrapUnwrap = isNativeIn ? wrapContractCall : unwrapContractCall
     const txReceipt = await wrapUnwrap(wethContract, amountHex, chainId)
-    wrapAnalytics('Sign', operationMessage)
+    sendWrapEvent(analytics, 'Sign', operationMessage, amount)
 
     addTransaction({
       hash: txReceipt.hash,
@@ -75,7 +93,7 @@ export async function wrapUnwrapCallback(
 
     const isRejected = isRejectRequestProviderError(error)
     const action = isRejected ? 'Reject' : 'Error'
-    wrapAnalytics(action, operationMessage)
+    sendWrapEvent(analytics, action as WrapAction, operationMessage, amount)
 
     const errorMessage = (isRejected ? 'Reject' : 'Error') + ' Signing transaction'
     console.error(errorMessage, error)

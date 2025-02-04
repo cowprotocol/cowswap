@@ -1,7 +1,10 @@
 import React from 'react'
-import { clickOnKnowledgeBase } from 'modules/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import { LinkItem, LinkColumn } from '@/styles/styled'
 import { Article } from 'services/cms'
+
+const analytics = initGtm()
 
 interface ArticlesListProps {
   articles: Article[]
@@ -20,7 +23,13 @@ export const ArticlesList: React.FC<ArticlesListProps> = ({ articles }) => (
         <LinkItem
           key={article.id}
           href={`${ARTICLES_PATH}${slug}`}
-          onClick={() => clickOnKnowledgeBase(`click-article-${title}`)}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.KNOWLEDGEBASE,
+              action: 'Click article',
+              label: title,
+            })
+          }
         >
           {title}
           <span>→</span>

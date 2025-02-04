@@ -7,6 +7,8 @@ import { Settings } from 'react-feather'
 
 import { Toggle } from 'legacy/components/Toggle'
 
+import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+
 import * as styledEl from './styled'
 
 import { TokenListDetails } from '../TokenListDetails'
@@ -20,12 +22,15 @@ export interface TokenListItemProps {
 
 export function ListItem(props: TokenListItemProps) {
   const { list, removeList, toggleList, enabled } = props
-
   const [isActive, setIsActive] = useState(enabled)
 
   const toggle = () => {
     toggleList(list, enabled)
     setIsActive((state) => !state)
+  }
+
+  const handleRemove = () => {
+    removeList(list)
   }
 
   const { major, minor, patch } = list.list.version
@@ -45,19 +50,44 @@ export function ListItem(props: TokenListItemProps) {
             </MenuItem>
             <MenuItem onSelect={() => void 0}>
               <styledEl.SettingsAction>
-                <a target="_blank" href={getTokenListViewLink(list.source)} rel="noreferrer">
+                <a
+                  target="_blank"
+                  href={getTokenListViewLink(list.source)}
+                  rel="noreferrer"
+                  data-click-event={toCowSwapGtmEvent({
+                    category: CowSwapCategory.LIST,
+                    action: 'View List',
+                    label: list.source,
+                  })}
+                >
                   View List
                 </a>
               </styledEl.SettingsAction>
             </MenuItem>
-            <MenuItem onSelect={() => removeList(list)}>
-              <styledEl.SettingsAction>Remove list</styledEl.SettingsAction>
+            <MenuItem onSelect={handleRemove}>
+              <styledEl.SettingsAction
+                data-click-event={toCowSwapGtmEvent({
+                  category: CowSwapCategory.LIST,
+                  action: 'Remove List',
+                  label: list.source,
+                })}
+              >
+                Remove list
+              </styledEl.SettingsAction>
             </MenuItem>
           </styledEl.SettingsContainer>
         </Menu>
       </TokenListDetails>
       <div>
-        <Toggle isActive={isActive} toggle={toggle} />
+        <Toggle
+          isActive={isActive}
+          toggle={toggle}
+          data-click-event={toCowSwapGtmEvent({
+            category: CowSwapCategory.LIST,
+            action: `${enabled ? 'Disable' : 'Enable'} List`,
+            label: list.source,
+          })}
+        />
       </div>
     </styledEl.Wrapper>
   )

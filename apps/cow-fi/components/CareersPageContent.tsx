@@ -16,8 +16,11 @@ import {
 } from '@/styles/styled'
 import { Color, Font, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import { Link, LinkType } from '@/components/Link'
-import { clickOnCareers } from '../modules/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import { CONFIG } from '@/const/meta'
+
+const analytics = initGtm()
 
 interface CareersPageContentProps {
   department: string
@@ -91,7 +94,13 @@ export function CareersPageContent({
                               utmContent={`job-${title}`}
                               margin="auto auto 0 0"
                               marginTablet="auto auto 0"
-                              onClick={() => clickOnCareers(`click-job-${title}`)}
+                              onClick={() =>
+                                analytics.sendEvent({
+                                  category: CowFiCategory.CAREERS,
+                                  action: 'Click job',
+                                  label: `job-${title}`,
+                                })
+                              }
                             >
                               Apply
                             </Link>
@@ -122,7 +131,13 @@ export function CareersPageContent({
                               linkType={LinkType.TopicButton}
                               href={`https://jobs.ashbyhq.com/cow-dao/${id}`}
                               utmContent={`job-${title}`}
-                              onClick={() => clickOnCareers(`click-job-${title}`)}
+                              onClick={() =>
+                                analytics.sendEvent({
+                                  category: CowFiCategory.CAREERS,
+                                  action: 'Click job',
+                                  label: `job-${title}`,
+                                })
+                              }
                             >
                               Apply
                             </Link>
@@ -153,7 +168,13 @@ export function CareersPageContent({
                   bgColor="#194D05"
                   color="#BCEC79"
                   href="/careers/refer-to-earn"
-                  onClick={() => clickOnCareers(`click-refer-to-earn`)}
+                  onClick={() =>
+                    analytics.sendEvent({
+                      category: CowFiCategory.CAREERS,
+                      action: 'Click referral',
+                      label: 'refer-to-earn',
+                    })
+                  }
                 >
                   Refer-to-Earn details
                 </Link>

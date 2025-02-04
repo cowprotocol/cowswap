@@ -1,12 +1,15 @@
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import { Confetti } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 import { darken, transparentize } from 'polished'
 import { useConnectAndAddToWallet } from '../../lib/hooks/useConnectAndAddToWallet'
-import { clickOnMevBlocker } from 'modules/analytics'
 import { useAccount } from 'wagmi'
 
 import { Link, LinkType } from '@/components/Link'
 import { AddToWalletStateValues } from '../../types/addToWalletState'
+import { initGtm } from '@cowprotocol/analytics'
+
+const cowAnalytics = initGtm()
 
 const Message = styled.p<{ state: AddToWalletStateValues }>`
   color: ${({ state }) => (state === 'added' ? darken(0.5, 'green') : 'orange')};
@@ -25,7 +28,7 @@ export function AddRpcButton() {
   const { isConnected } = useAccount()
 
   const handleClick = async () => {
-    clickOnMevBlocker('click-add-rpc-to-wallet')
+    // We keep direct analytics for error tracking as it needs more context
     try {
       if (connectAndAddToWallet) {
         // Start the connection process
@@ -37,7 +40,12 @@ export function AddRpcButton() {
         throw new Error('connectAndAddToWallet is not defined')
       }
     } catch (error) {
-      clickOnMevBlocker('click-add-rpc-to-wallet-error')
+      // Use direct analytics for error tracking to include more context
+      cowAnalytics.sendEvent({
+        category: CowFiCategory.MEVBLOCKER,
+        action: 'Error Add RPC',
+        label: error instanceof Error ? error.message : 'Unknown error',
+      })
     }
   }
 
@@ -70,6 +78,11 @@ export function AddRpcButton() {
             onClick={handleClick}
             disabled={disabledButton}
             asButton
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.MEVBLOCKER,
+              action: 'Click Add RPC',
+              label: isConnected ? 'Add MEV Blocker RPC' : 'Get Protected',
+            })}
           >
             {buttonLabel}
           </Link>
@@ -82,6 +95,10 @@ export function AddRpcButton() {
               bgColor="#333"
               onClick={disconnectWallet}
               asButton
+              data-click-event={toCowFiGtmEvent({
+                category: CowFiCategory.MEVBLOCKER,
+                action: 'Click Disconnect',
+              })}
             >
               Disconnect
             </Link>
