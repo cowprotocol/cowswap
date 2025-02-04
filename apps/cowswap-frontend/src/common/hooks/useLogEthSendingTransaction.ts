@@ -1,3 +1,5 @@
+import { captureEvent } from '@sentry/browser'
+
 export interface EthSendingTransactionInfo {
   txHash: string
   chainId: number
@@ -6,9 +8,20 @@ export interface EthSendingTransactionInfo {
   account: string
 }
 
-// TODO: add logging to Sentry
+function logEthSendingTransaction(info: EthSendingTransactionInfo) {
+  captureEvent({
+    message: 'Native token sending transaction',
+    level: 'log',
+    extra: {
+      txHash: info.txHash,
+      chainId: info.chainId.toString(),
+      urlChainId: String(info.urlChainId),
+      amount: info.amount,
+      account: info.account,
+    },
+  })
+}
+
 export function useLogEthSendingTransaction() {
-  return (info: EthSendingTransactionInfo) => {
-    console.log('useLogEthSendingTransaction', info)
-  }
+  return logEthSendingTransaction
 }
