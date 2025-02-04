@@ -2,7 +2,6 @@ import { CoWSwapEthFlow } from '@cowprotocol/abis'
 import { calculateGasMargin } from '@cowprotocol/common-utils'
 import { OrderClass, SigningScheme, UnsignedOrder } from '@cowprotocol/cow-sdk'
 import { ContractTransaction } from '@ethersproject/contracts'
-import { NativeCurrency } from '@uniswap/sdk-core'
 
 import { Order } from 'legacy/state/orders/actions'
 import { getSignOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'legacy/utils/trade'
@@ -12,23 +11,17 @@ import { logTradeFlow, logTradeFlowError } from 'modules/trade/utils/logger'
 import { GAS_LIMIT_DEFAULT } from 'common/constants/common'
 import { assertProviderNetwork } from 'common/utils/assertProviderNetwork'
 
-type EthFlowOrderParams = Omit<PostOrderParams, 'sellToken'> & {
-  sellToken: NativeCurrency
-}
-
-export type EthFlowCreateOrderParams = Omit<UnsignedOrder, 'quoteId' | 'appData' | 'validTo' | 'orderId'> & {
+type EthFlowCreateOrderParams = Omit<UnsignedOrder, 'quoteId' | 'appData' | 'validTo' | 'orderId'> & {
   quoteId: number
   appData: string
   validTo: string
   summary: string
 }
 
-export type EthFlowResponse = {
+type EthFlowResponse = {
   txReceipt: ContractTransaction
   order: Order
 }
-
-export type EthFlowSwapCallback = (orderParams: EthFlowOrderParams) => Promise<EthFlowResponse>
 
 export async function signEthFlowOrderStep(
   orderId: string,
