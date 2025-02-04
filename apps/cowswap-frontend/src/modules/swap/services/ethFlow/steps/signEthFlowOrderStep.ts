@@ -1,5 +1,5 @@
 import { CoWSwapEthFlow } from '@cowprotocol/abis'
-import { calculateGasMargin } from '@cowprotocol/common-utils'
+import { calculateGasMargin, getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { OrderClass, SigningScheme, UnsignedOrder } from '@cowprotocol/cow-sdk'
 import { ContractTransaction } from '@ethersproject/contracts'
 
@@ -7,8 +7,10 @@ import { Order } from 'legacy/state/orders/actions'
 import { getSignOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'legacy/utils/trade'
 
 import { logTradeFlow, logTradeFlowError } from 'modules/trade/utils/logger'
+import { TradeFlowContext } from 'modules/tradeFlow'
 
 import { GAS_LIMIT_DEFAULT } from 'common/constants/common'
+import { EthSendingTransactionInfo } from 'common/hooks/useLogEthSendingTransaction'
 import { assertProviderNetwork } from 'common/utils/assertProviderNetwork'
 
 type EthFlowCreateOrderParams = Omit<UnsignedOrder, 'quoteId' | 'appData' | 'validTo' | 'orderId'> & {
@@ -28,6 +30,8 @@ export async function signEthFlowOrderStep(
   orderParams: PostOrderParams,
   ethFlowContract: CoWSwapEthFlow,
   addInFlightOrderId: (orderId: string) => void,
+  logEthSendingTransaction: (info: EthSendingTransactionInfo) => void,
+  tradeFlowContext: TradeFlowContext,
 ): Promise<EthFlowResponse> {
   logTradeFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] - signing orderParams onchain', orderParams)
 
@@ -77,6 +81,14 @@ export async function signEthFlowOrderStep(
   })
   // Then send the is using the contract's signer where the chainId is an acceptable parameter
   const txReceipt = await ethFlowContract.signer.sendTransaction({ ...tx, chainId: network })
+
+  logEthSendingTransaction({
+    txHash: txReceipt.hash,
+    chainId: tradeFlowContext.context.chainId,
+    urlChainId: getRawCurrentChainIdFromUrl(),
+    amount: tradeFlowContext.context.inputAmount.quotient.toString(),
+    account: tradeFlowContext.orderParams.account,
+  })
 
   addInFlightOrderId(orderId)
 

@@ -1,8 +1,9 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
 export interface EthSendingTransactionInfo {
   txHash: string
-  uiChainId: SupportedChainId
+  chainId: number
+  urlChainId: number | null
+  amount: string
+  account: string
 }
 
 // TODO: add logging to Sentry
