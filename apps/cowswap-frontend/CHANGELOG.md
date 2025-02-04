@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.98.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.98.1...cowswap-v1.98.2) (2025-02-03)
+
+
+### Bug Fixes
+
+* display Metamask warning only for extension/mobile wallets ([#5370](https://github.com/cowprotocol/cowswap/issues/5370)) ([abb5683](https://github.com/cowprotocol/cowswap/commit/abb56834b1e21029ca66362f3b721cd47e080547))
+
+## [1.98.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.98.0...cowswap-v1.98.1) (2025-01-31)
+
+
+### Bug Fixes
+
+* css for Metamask warning banner ([#5365](https://github.com/cowprotocol/cowswap/issues/5365)) ([753899d](https://github.com/cowprotocol/cowswap/commit/753899d1ec9b0b613a6602e35b24cbe2024c30b3))
+
+## [1.98.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.97.1...cowswap-v1.98.0) (2025-01-31)
+
+
+### Features
+
+* warn users about metamask transactions ([#5362](https://github.com/cowprotocol/cowswap/issues/5362)) ([55e71b0](https://github.com/cowprotocol/cowswap/commit/55e71b09d512771185c75c80f291098796411689))
+
+## [1.97.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.97.0...cowswap-v1.97.1) (2025-01-30)
+
+
+### Bug Fixes
+
+* type guard to make sure provider is a JsonRpcProvider ([#5357](https://github.com/cowprotocol/cowswap/issues/5357)) ([6a2e030](https://github.com/cowprotocol/cowswap/commit/6a2e030aa7f88ef207fad8910750b18dcf719503))
+
 ## [1.97.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.96.2...cowswap-v1.97.0) (2025-01-29)
 
 

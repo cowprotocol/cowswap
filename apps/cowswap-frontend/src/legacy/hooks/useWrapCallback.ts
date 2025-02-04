@@ -2,7 +2,6 @@ import { getChainCurrencySymbols, RADIX_HEX } from '@cowprotocol/common-const'
 import {
   calculateGasMargin,
   formatTokenAmount,
-  getChainIdImmediately,
   getIsNativeToken,
   isRejectRequestProviderError,
 } from '@cowprotocol/common-utils'
@@ -10,12 +9,14 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers'
+import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { wrapAnalytics } from 'modules/analytics'
+
+import { assertProviderNetwork } from 'common/utils/assertProviderNetwork'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')
@@ -114,10 +115,7 @@ async function wrapContractCall(
   const estimatedGas = await wethContract.estimateGas.deposit({ value: amountHex }).catch(_handleGasEstimateError)
   const gasLimit = calculateGasMargin(estimatedGas)
 
-  const network = await getChainIdImmediately(wethContract.provider as JsonRpcProvider)
-  if (network !== chainId) {
-    throw new Error(`Wallet chainId differs from app chainId. Wallet: ${network}, App: ${chainId}`)
-  }
+  const network = await assertProviderNetwork(chainId, wethContract.provider, 'wrap')
 
   const tx = await wethContract.populateTransaction.deposit({ value: amountHex, gasLimit })
 
@@ -134,10 +132,7 @@ async function unwrapContractCall(
 
   const tx = await wethContract.populateTransaction.withdraw(amountHex, { gasLimit })
 
-  const network = await getChainIdImmediately(wethContract.provider as JsonRpcProvider)
-  if (network !== chainId) {
-    throw new Error(`Wallet chainId differs from app chainId. Wallet: ${network}, App: ${chainId}`)
-  }
+  const network = await assertProviderNetwork(chainId, wethContract.provider, 'unwrap')
 
   return wethContract.signer.sendTransaction({ ...tx, chainId: network })
 }

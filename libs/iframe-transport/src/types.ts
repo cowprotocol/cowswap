@@ -58,3 +58,22 @@ export interface EthereumProvider {
 }
 
 export type WindowListener = (event: MessageEvent<unknown>) => void
+
+export interface ProviderWcMetadata {
+  name: string
+  description: string
+  url: string
+  icons: string[]
+  verifyUrl?: string
+  redirect?: {
+    native?: string
+    universal?: string
+  }
+}
+
+export interface EIP6963ProviderInfo {
+  uuid: string
+  name: string
+  icon: string
+  rdns: string
+}
