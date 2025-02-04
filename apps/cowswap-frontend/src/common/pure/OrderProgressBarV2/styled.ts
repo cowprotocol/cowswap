@@ -772,8 +772,8 @@ export const CancellationFailedBanner = styled.div`
 export const NumberedElement = styled.div<{
   status: string
   customColor?: string
-  isUnfillable?: boolean
-  isCancelling?: boolean
+  $isUnfillable?: boolean
+  $isCancelling?: boolean
 }>`
   --size: 28px;
   width: var(--size);
@@ -786,10 +786,10 @@ export const NumberedElement = styled.div<{
   color: ${({ status }) => (status === 'active' ? `var(${UI.COLOR_PAPER})` : `var(${UI.COLOR_PAPER})`)};
   font-weight: bold;
   font-size: 16px;
-  background-color: ${({ status, customColor, isUnfillable, isCancelling }) =>
-    isCancelling
+  background-color: ${({ status, customColor, $isUnfillable, $isCancelling }) =>
+    $isCancelling
       ? `var(${UI.COLOR_DANGER_BG})`
-      : isUnfillable
+      : $isUnfillable
         ? '#996815'
         : customColor || (status === 'active' ? '#2196F3' : `var(${UI.COLOR_TEXT})`)};
   border-radius: 50%;

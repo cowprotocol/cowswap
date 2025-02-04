@@ -22,10 +22,25 @@ export const List = styled.div`
   padding-top: 10px;
 
   ${Media.upToSmall()} {
+    width: 0;
+    min-width: 100%;
     flex-wrap: nowrap;
     overflow-x: scroll;
-    padding-bottom: 10px;
-    ${({ theme }) => theme.colorScrollbar};
+    overflow-y: hidden;
+
+    padding: 10px 0;
+    -webkit-overflow-scrolling: touch;
+
+    @media (hover: hover) {
+      ${({ theme }) => theme.colorScrollbar};
+    }
+
+    @media (hover: none) {
+      scrollbar-width: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
   }
 `
 
@@ -47,6 +62,11 @@ export const TokensItem = styled.button`
   background: ${({ disabled }) => disabled && `var(${UI.COLOR_PAPER_DARKER})`};
   opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
   transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
+  white-space: nowrap;
+
+  ${Media.upToSmall()} {
+    flex: 0 0 auto;
+  }
 
   :hover {
     border: 1px solid ${({ disabled }) => (disabled ? `var(${UI.COLOR_PAPER_DARKER})` : `var(${UI.COLOR_PRIMARY})`)};

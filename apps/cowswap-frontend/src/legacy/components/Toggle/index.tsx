@@ -110,7 +110,9 @@ export function Toggle({
 }: ToggleProps) {
   const [isInitialToggleLoad, setIsInitialToggleLoad] = useState(true)
 
-  const switchToggle = () => {
+  const switchToggle = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    e.preventDefault()
     toggle()
     if (!isDisabled && isInitialToggleLoad) setIsInitialToggleLoad(false)
   }

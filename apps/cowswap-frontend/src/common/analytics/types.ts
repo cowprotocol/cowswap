@@ -23,6 +23,7 @@ export enum CowSwapCategory {
   TWAP = 'TWAP',
   SURPLUS_MODAL = 'Surplus Modal',
   COWSWAP = 'CoWSwap',
+  LIMIT_ORDER_SETTINGS = 'Limit Order Settings',
 
   // UI Categories
   THEME = 'Theme',

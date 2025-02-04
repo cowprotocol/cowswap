@@ -3,7 +3,7 @@ import React, { useCallback, useMemo } from 'react'
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
-import { ButtonOutlined, Media, MY_ORDERS_ID } from '@cowprotocol/ui'
+import { ButtonOutlined, Media, MY_ORDERS_ID, SWAP_HEADER_OFFSET } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
@@ -42,7 +42,8 @@ import { WrapFlowActionButton } from '../WrapFlowActionButton'
 const scrollToMyOrders = () => {
   const element = document.getElementById(MY_ORDERS_ID)
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth' })
+    const elementTop = element.getBoundingClientRect().top + window.scrollY - SWAP_HEADER_OFFSET
+    window.scrollTo({ top: elementTop, behavior: 'smooth' })
   }
 }
 
@@ -93,7 +94,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const tradeStateFromUrl = useTradeStateFromUrl()
   const alternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const primaryFormValidation = useGetTradeFormValidation()
-  const { isVisible: isLimitOrdersPromoBannerVisible } = useLimitOrdersPromoBanner()
+  const { shouldBeVisible: isLimitOrdersPromoBannerVisible } = useLimitOrdersPromoBanner()
   const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
 
   const sellToken = inputCurrencyInfo.currency
@@ -201,6 +202,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                   />
                 </div>
                 {!isWrapOrUnwrap && middleContent}
+
                 <styledEl.CurrencySeparatorBox compactView={compactView}>
                   <CurrencyArrowSeparator
                     isCollapsed={compactView}
@@ -228,6 +230,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                     {...currencyInputCommonProps}
                   />
                 </div>
+                {slots.limitPriceInput}
                 {withRecipient && <SetRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />}
 
                 {isWrapOrUnwrap ? (
@@ -251,7 +254,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
           </>
         </LimitOrdersPromoBannerWrapper>
       </styledEl.ContainerBox>
-      {!isLimitOrdersPromoBannerVisible && !isLimitOrdersUpgradeBannerEnabled && (
+      {!isLimitOrdersPromoBannerVisible && !isLimitOrdersUpgradeBannerEnabled && outerContent && (
         <styledEl.OuterContentWrapper>{outerContent}</styledEl.OuterContentWrapper>
       )}
     </>

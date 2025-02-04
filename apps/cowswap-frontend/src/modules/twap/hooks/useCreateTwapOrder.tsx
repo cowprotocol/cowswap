@@ -12,6 +12,7 @@ import { Nullish } from 'types'
 import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { useAppData, useUploadAppData } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
+import { useNavigateToAllOrdersTable } from 'modules/ordersTable/hooks/useNavigateToAllOrdersTable'
 import { getCowSoundSend } from 'modules/sounds'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeFlowAnalyticsContext, useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
@@ -53,6 +54,7 @@ export function useCreateTwapOrder() {
   const { chainId, account } = useWalletInfo()
   const twapOrder = useAtomValue(twapOrderAtom)
   const addTwapOrderToList = useSetAtom(addTwapOrderToListAtom)
+  const navigateToAllOrdersTable = useNavigateToAllOrdersTable()
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
 
@@ -179,6 +181,9 @@ export function useCreateTwapOrder() {
         tradeConfirmActions.onSuccess(safeTxHash)
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
         sendTwapConversionAnalytics('signed', fallbackHandlerIsNotSet)
+
+        // Navigate to all orders after successful placement
+        navigateToAllOrdersTable()
       } catch (error) {
         console.error('[useCreateTwapOrder] error', error)
         const errorMessage = getErrorMessage(error)
@@ -206,6 +211,7 @@ export function useCreateTwapOrder() {
       sendOrderAnalytics,
       sendTwapConversionAnalytics,
       tradeFlowAnalytics,
+      navigateToAllOrdersTable,
     ],
   )
 }

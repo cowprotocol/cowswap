@@ -13,7 +13,7 @@ import { useTradeFlow } from 'modules/limitOrders/services/tradeFlow'
 import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
-import { useNavigateToOpenOrdersTable } from 'modules/ordersTable'
+import { useNavigateToAllOrdersTable } from 'modules/ordersTable'
 import { useCloseReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal/hooks'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
 import { useAlternativeOrder, useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
@@ -52,7 +52,7 @@ export function useHandleOrderPlacement(
   const hideAlternativeOrderModal = useHideAlternativeOrderModal()
   const { isEdit: isAlternativeOrderEdit } = useAlternativeOrder() || {}
   const closeReceiptModal = useCloseReceiptModal()
-  const navigateToOpenOrdersTable = useNavigateToOpenOrdersTable()
+  const navigateToAllOrdersTable = useNavigateToAllOrdersTable()
   const [partiallyFillableOverride, setPartiallyFillableOverride] = useAtom(partiallyFillableOverrideAtom)
   // tx bundling stuff
   const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)
@@ -135,8 +135,8 @@ export function useHandleOrderPlacement(
         setPartiallyFillableOverride(undefined)
         // Reset alternative mode if any
         hideAlternativeOrderModal()
-        // Navigate to open orders
-        navigateToOpenOrdersTable()
+        // Navigate to all orders
+        navigateToAllOrdersTable()
         // Close receipt modal
         closeReceiptModal()
 
@@ -160,7 +160,7 @@ export function useHandleOrderPlacement(
     updateLimitOrdersState,
     setPartiallyFillableOverride,
     isAlternativeOrderEdit,
-    navigateToOpenOrdersTable,
+    navigateToAllOrdersTable,
     closeReceiptModal,
     hideAlternativeOrderModal,
     alternativeModalAnalytics,

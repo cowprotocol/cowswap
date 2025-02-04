@@ -194,6 +194,7 @@ export function UnfillableOrdersUpdater(): null {
 async function _getOrderPrice(chainId: ChainId, order: Order, strategy: PriceStrategy) {
   let baseToken, quoteToken
 
+  // TODO: consider a fixed amount in case of partial fills
   const amount = getRemainderAmount(order.kind, order)
 
   // Don't quote if there's nothing left to match in this order

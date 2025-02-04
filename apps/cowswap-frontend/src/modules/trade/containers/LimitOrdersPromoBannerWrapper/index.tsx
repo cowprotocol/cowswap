@@ -10,7 +10,7 @@ interface LimitOrdersPromoBannerWrapperProps {
 }
 
 export function LimitOrdersPromoBannerWrapper({ children }: LimitOrdersPromoBannerWrapperProps) {
-  const { isVisible, onDismiss, isLimitOrdersTab } = useLimitOrdersPromoBanner()
+  const { shouldBeVisible, onDismiss, isLimitOrdersTab } = useLimitOrdersPromoBanner()
   const navigate = useNavigate()
 
   const handleCtaClick = () => {
@@ -21,7 +21,7 @@ export function LimitOrdersPromoBannerWrapper({ children }: LimitOrdersPromoBann
   }
 
   // If banner is not visible and we have children, render them
-  if (!isVisible) {
+  if (!shouldBeVisible) {
     return children || null
   }
 
