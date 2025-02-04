@@ -1,8 +1,18 @@
+import { useEffect, useState } from 'react'
+
 import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
 import allowanceIcon from '@cowprotocol/assets/images/icon-allowance.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
-import { ButtonSecondary, HoverTooltip, SymbolElement, TokenAmount, TokenAmountProps, UI } from '@cowprotocol/ui'
+import {
+  ButtonSecondary,
+  HoverTooltip,
+  Loader,
+  SymbolElement,
+  TokenAmount,
+  TokenAmountProps,
+  UI,
+} from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@uniswap/sdk-core'
 
 import { darken } from 'color2k'
@@ -86,6 +96,11 @@ const ApprovalLink = styled.button`
   }
 `
 
+const ApproveLoaderWrapper = styled.div`
+  text-align: center;
+  width: 100%;
+`
+
 export type EstimatedExecutionPriceProps = TokenAmountProps & {
   isInverted: boolean
   isUnfillable: boolean
@@ -118,6 +133,14 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
     ...rest
   } = props
 
+  const [approveClicked, setApproveClicked] = useState(true)
+  const handleApproveClick =
+    onApprove &&
+    (() => {
+      onApprove()
+      setApproveClicked(true)
+    })
+
   const percentageDifferenceInverted = isInverted
     ? percentageDifference?.multiply(MINUS_ONE_FRACTION)
     : percentageDifference
@@ -140,6 +163,17 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
     </>
   )
 
+  // Reset approveClicked state after 3 seconds
+  useEffect(() => {
+    if (!approveClicked) return
+
+    const timeout = setTimeout(() => {
+      setApproveClicked(false)
+    }, 3_000)
+
+    return () => clearTimeout(timeout)
+  }, [approveClicked])
+
   const unfillableLabel = (
     <UnfillableLabel>
       {(warningText === 'Insufficient allowance' || warningText === 'Insufficient balance') && (
@@ -153,9 +187,15 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
                     ? 'The order remains open. Execution requires adequate allowance. Approve the token to proceed.'
                     : 'The order remains open. Execution requires sufficient balance.'}
                 </p>
-                {warningText === 'Insufficient allowance' && onApprove && (
+                {warningText === 'Insufficient allowance' && handleApproveClick && (
                   <styledEl.WarningActionBox>
-                    <ButtonSecondary onClick={onApprove}>Set approval</ButtonSecondary>
+                    {approveClicked ? (
+                      <ApproveLoaderWrapper>
+                        <Loader />
+                      </ApproveLoaderWrapper>
+                    ) : (
+                      <ButtonSecondary onClick={handleApproveClick}>Set approval</ButtonSecondary>
+                    )}
                   </styledEl.WarningActionBox>
                 )}
               </styledEl.WarningContent>
@@ -168,9 +208,9 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
               {warningText}
             </WarningContent>
           </HoverTooltip>
-          {warningText === 'Insufficient allowance' && onApprove && (
-            <ApprovalLink onClick={onApprove}>Set approval</ApprovalLink>
-          )}
+          {warningText === 'Insufficient allowance' &&
+            handleApproveClick &&
+            (approveClicked ? <Loader /> : <ApprovalLink onClick={handleApproveClick}>Set approval</ApprovalLink>)}
         </>
       )}
     </UnfillableLabel>

@@ -5,9 +5,11 @@ export const StyledSVG = styled.svg<{ size: string; stroke?: string }>`
   height: ${({ size }) => size};
   width: ${({ size }) => size};
   opacity: 0.7;
+  fill: none !important;
 
   > path {
-    stroke: ${({ stroke }) => stroke ?? 'currentColor'};
+    fill: none !important;
+    stroke: ${({ stroke }) => stroke ?? 'currentColor'}!important;
   }
 
   @keyframes rotate {

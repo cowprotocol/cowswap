@@ -59,6 +59,8 @@ export function useApproveCallback(
   const token = currency && !getIsNativeToken(currency) ? currency : undefined
   const { contract: tokenContract, chainId: tokenChainId } = useTokenContract(token?.address)
   const addTransaction = useTransactionAdder()
+  const summary = amountToApprove?.greaterThan('0') ? `Approve ${token?.symbol}` : `Revoke ${token?.symbol} approval`
+  const amountToApproveStr = '0x' + amountToApprove?.quotient.toString(16)
 
   return useCallback(async () => {
     if (!tokenChainId || !token || !tokenContract || !amountToApprove || !spender) {
@@ -74,10 +76,10 @@ export function useApproveCallback(
       .then((response: TransactionResponse) => {
         addTransaction({
           hash: response.hash,
-          summary: amountToApprove.greaterThan('0') ? `Approve ${token.symbol}` : `Revoke ${token.symbol} approval`,
-          approval: { tokenAddress: token.address, spender, amount: '0x' + amountToApprove.quotient.toString(16) },
+          summary,
+          approval: { tokenAddress: token.address, spender, amount: amountToApproveStr },
         })
         return response
       })
-  }, [tokenChainId, token, tokenContract, amountToApprove, spender, addTransaction])
+  }, [tokenChainId, token, tokenContract, spender, addTransaction, summary, amountToApproveStr])
 }
