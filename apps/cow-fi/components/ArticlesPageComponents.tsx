@@ -12,7 +12,8 @@ import {
   LinkSection,
   Pagination,
 } from '@/styles/styled'
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import { ArticlesList } from '@/components/ArticlesList'
 import { Article } from '../services/cms'
 import styled from 'styled-components/macro'
@@ -79,7 +80,7 @@ export function ArticlesPageComponents({ articles, totalArticles, currentPage, a
                 href="/learn"
                 onClick={() =>
                   analytics.sendEvent({
-                    category: Category.KNOWLEDGEBASE,
+                    category: CowFiCategory.KNOWLEDGEBASE,
                     action: 'Click breadcrumb',
                     label: 'home',
                   })
@@ -107,7 +108,7 @@ export function ArticlesPageComponents({ articles, totalArticles, currentPage, a
                 className={i + 1 === currentPage ? 'active' : ''}
                 onClick={() =>
                   analytics.sendEvent({
-                    category: Category.KNOWLEDGEBASE,
+                    category: CowFiCategory.KNOWLEDGEBASE,
                     action: 'Click pagination',
                     label: `page-${i + 1}`,
                   })

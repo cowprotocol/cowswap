@@ -3,7 +3,8 @@
 import { useEffect, useRef } from 'react'
 
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 import IMG_ICON_UNICORN from '@cowprotocol/assets/images/icon-unicorn.svg'
 import IMG_ICON_FLOWER_COW from '@cowprotocol/assets/images/icon-flower-cow.svg'
@@ -90,7 +91,7 @@ export default function Page() {
             utmContent="cow-swap-launch-app-button"
             onClick={() =>
               analytics.sendEvent({
-                category: Category.COWSWAP,
+                category: CowFiCategory.COWSWAP,
                 action: 'click-launch-app',
               })
             }
@@ -128,7 +129,7 @@ export default function Page() {
           utmContent="cow-swap-metrics-link"
           onClick={() =>
             analytics.sendEvent({
-              category: Category.COWSWAP,
+              category: CowFiCategory.COWSWAP,
               action: 'click-metrics-link',
             })
           }
@@ -194,7 +195,7 @@ export default function Page() {
               linkType={LinkType.SectionTitleButton}
               onClick={() =>
                 analytics.sendEvent({
-                  category: Category.COWSWAP,
+                  category: CowFiCategory.COWSWAP,
                   action: 'click-learn-about-cow-protocol',
                 })
               }
@@ -412,7 +413,7 @@ export default function Page() {
               utmContent="cow-swap-launch-app-button"
               onClick={() =>
                 analytics.sendEvent({
-                  category: Category.COWSWAP,
+                  category: CowFiCategory.COWSWAP,
                   action: 'click-launch-app',
                 })
               }

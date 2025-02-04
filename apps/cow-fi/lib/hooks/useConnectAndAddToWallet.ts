@@ -4,7 +4,8 @@ import { useDisconnect, useWalletClient } from 'wagmi'
 import { handleRpcError } from '@/util/handleRpcError'
 import { useAddRpcWithTimeout } from './useAddRpcWithTimeout'
 import { AddToWalletState, AddToWalletStateValues } from '../../types/addToWalletState'
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 const cowAnalytics = initGtm()
 
@@ -31,14 +32,14 @@ export function useConnectAndAddToWallet(): UseConnectAndAddToWalletProps {
       const { errorMessage: message, isError, isUserRejection } = handleRpcError(error)
       if (isUserRejection) {
         cowAnalytics.sendEvent({
-          category: Category.MEVBLOCKER,
+          category: CowFiCategory.MEVBLOCKER,
           action: 'Add RPC Error',
           label: 'User Rejected',
         })
         setState({ state: 'unknown', errorMessage: 'User rejected the request', autoConnect: false })
       } else if (isError) {
         cowAnalytics.sendEvent({
-          category: Category.MEVBLOCKER,
+          category: CowFiCategory.MEVBLOCKER,
           action: 'Add RPC Error',
           label: error instanceof Error ? error.message : 'Unknown error',
         })
@@ -57,7 +58,7 @@ export function useConnectAndAddToWallet(): UseConnectAndAddToWalletProps {
     onAdding(newAddRpcPromise) {
       console.debug('[connectAndAddToWallet] Adding RPC...')
       cowAnalytics.sendEvent({
-        category: Category.MEVBLOCKER,
+        category: CowFiCategory.MEVBLOCKER,
         action: 'Add RPC',
         label: 'Adding',
       })
@@ -67,7 +68,7 @@ export function useConnectAndAddToWallet(): UseConnectAndAddToWalletProps {
     onAdded() {
       console.debug('[connectAndAddToWallet] 🎉 RPC has been added!')
       cowAnalytics.sendEvent({
-        category: Category.MEVBLOCKER,
+        category: CowFiCategory.MEVBLOCKER,
         action: 'Add RPC',
         label: 'Success',
       })
@@ -77,7 +78,7 @@ export function useConnectAndAddToWallet(): UseConnectAndAddToWalletProps {
     onTimeout(errorMessage: string, newState: AddToWalletStateValues) {
       console.debug(`[connectAndAddToWallet] New State: ${newState}. Message`, errorMessage)
       cowAnalytics.sendEvent({
-        category: Category.MEVBLOCKER,
+        category: CowFiCategory.MEVBLOCKER,
         action: 'Add RPC Error',
         label: 'Timeout',
         value: errorMessage ? 1 : 0,
@@ -101,7 +102,7 @@ export function useConnectAndAddToWallet(): UseConnectAndAddToWalletProps {
       if (!isConnected) {
         console.debug('[useConnectAndAddToWallet] Connecting...')
         cowAnalytics.sendEvent({
-          category: Category.MEVBLOCKER,
+          category: CowFiCategory.MEVBLOCKER,
           action: 'Wallet Connected',
         })
         connect()
@@ -109,7 +110,7 @@ export function useConnectAndAddToWallet(): UseConnectAndAddToWalletProps {
             if (result) {
               console.debug('[useConnectAndAddToWallet] 🔌 Connected!')
               cowAnalytics.sendEvent({
-                category: Category.MEVBLOCKER,
+                category: CowFiCategory.MEVBLOCKER,
                 action: 'Wallet Connected',
               })
               addToWallet()
@@ -127,7 +128,7 @@ export function useConnectAndAddToWallet(): UseConnectAndAddToWalletProps {
       } else {
         console.debug('[useConnectAndAddToWallet] Already connected. Adding RPC endpoint...')
         cowAnalytics.sendEvent({
-          category: Category.MEVBLOCKER,
+          category: CowFiCategory.MEVBLOCKER,
           action: 'Wallet Connected',
         })
         addToWallet()
@@ -138,7 +139,7 @@ export function useConnectAndAddToWallet(): UseConnectAndAddToWalletProps {
 
   const disconnectWallet = useCallback(() => {
     cowAnalytics.sendEvent({
-      category: Category.MEVBLOCKER,
+      category: CowFiCategory.MEVBLOCKER,
       action: 'Wallet Disconnected',
     })
     disconnect()

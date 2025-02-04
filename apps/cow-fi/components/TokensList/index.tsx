@@ -3,7 +3,7 @@ import { TokenLink } from '@/components/TokenDetails/index.styles'
 import { getPriceChangeColor } from 'util/getPriceChangeColor'
 import { formatUSDPrice } from 'util/formatUSDPrice'
 import { TokenInfo } from 'types'
-import { Category, toGtmEvent } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import {
   HeaderItem,
   ListItem,
@@ -43,8 +43,8 @@ export function TokenList({ tokens }: TokenListProps) {
         placeholder="Search tokens..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        data-click-event={toGtmEvent({
-          category: Category.TOKENS,
+        data-click-event={toCowFiGtmEvent({
+          category: CowFiCategory.TOKENS,
           action: 'Search Tokens',
           label: search || 'Empty Search',
         })}
@@ -81,8 +81,8 @@ function TokenItem({ token, index }: TokenItemProps) {
 
       <TokenLink
         href={`/tokens/${id}`}
-        data-click-event={toGtmEvent({
-          category: Category.TOKENS,
+        data-click-event={toCowFiGtmEvent({
+          category: CowFiCategory.TOKENS,
           action: 'Click Token',
           label: `${name} (${symbol})`,
         })}

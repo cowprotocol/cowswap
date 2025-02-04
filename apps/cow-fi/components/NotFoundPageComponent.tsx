@@ -2,7 +2,8 @@
 
 import { ArticleContent, ArticleMainTitle, BodyContent, ContainerCard, PageWrapper } from '@/styles/styled'
 import { Link } from '@/components/Link'
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 const analytics = initGtm()
 
@@ -22,7 +23,7 @@ export function NotFoundPageComponent() {
                 href="/"
                 onClick={() =>
                   analytics.sendEvent({
-                    category: Category.ERROR404,
+                    category: CowFiCategory.ERROR404,
                     action: 'Click Home',
                     label: '404-page',
                   })

@@ -28,7 +28,8 @@ import {
   TopicTitle,
 } from '@/styles/styled'
 import { ArrowButton } from '@/components/ArrowButton'
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import { Color, Font, Media } from '@cowprotocol/ui'
 import LazySVG from '@/components/LazySVG'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
@@ -182,7 +183,7 @@ export function LearnPageComponent({ categories, articles, featuredArticles }: P
                   href={link}
                   onClick={() =>
                     analytics.sendEvent({
-                      category: Category.KNOWLEDGEBASE,
+                      category: CowFiCategory.KNOWLEDGEBASE,
                       action: `Click Article ${title}`,
                     })
                   }
@@ -211,7 +212,7 @@ export function LearnPageComponent({ categories, articles, featuredArticles }: P
                     href={link}
                     onClick={() =>
                       analytics.sendEvent({
-                        category: Category.KNOWLEDGEBASE,
+                        category: CowFiCategory.KNOWLEDGEBASE,
                         action: `Click Topic ${name}`,
                       })
                     }
@@ -254,7 +255,7 @@ export function LearnPageComponent({ categories, articles, featuredArticles }: P
                     target="_blank"
                     onClick={() =>
                       analytics.sendEvent({
-                        category: Category.KNOWLEDGEBASE,
+                        category: CowFiCategory.KNOWLEDGEBASE,
                         action: `Click Podcast ${podcast.title}`,
                       })
                     }
@@ -275,7 +276,7 @@ export function LearnPageComponent({ categories, articles, featuredArticles }: P
                     target="_blank"
                     onClick={() =>
                       analytics.sendEvent({
-                        category: Category.KNOWLEDGEBASE,
+                        category: CowFiCategory.KNOWLEDGEBASE,
                         action: `Click Space ${space.title}`,
                       })
                     }
@@ -301,7 +302,7 @@ export function LearnPageComponent({ categories, articles, featuredArticles }: P
                   rel={linkExternal ? 'noopener' : ''}
                   onClick={() =>
                     analytics.sendEvent({
-                      category: Category.KNOWLEDGEBASE,
+                      category: CowFiCategory.KNOWLEDGEBASE,
                       action: `Click Media ${title}`,
                     })
                   }
@@ -329,7 +330,7 @@ export function LearnPageComponent({ categories, articles, featuredArticles }: P
             rel="noopener noreferrer"
             onClick={() =>
               analytics.sendEvent({
-                category: Category.KNOWLEDGEBASE,
+                category: CowFiCategory.KNOWLEDGEBASE,
                 action: 'Click Read Docs',
               })
             }

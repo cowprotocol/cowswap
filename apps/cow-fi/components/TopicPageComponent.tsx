@@ -2,7 +2,8 @@
 
 import styled from 'styled-components/macro'
 import { CmsImage, Color, Font, Media } from '@cowprotocol/ui'
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import { CategoryLinks } from '@/components/CategoryLinks'
 import { SearchBar } from '@/components/SearchBar'
 import { ArrowButton } from '@/components/ArrowButton'
@@ -115,7 +116,7 @@ export function TopicPageComponent({ category, allCategories, articles }: TopicP
               href="/"
               onClick={() =>
                 analytics.sendEvent({
-                  category: Category.KNOWLEDGEBASE,
+                  category: CowFiCategory.KNOWLEDGEBASE,
                   action: 'Click breadcrumb',
                   label: 'home',
                 })
@@ -127,7 +128,7 @@ export function TopicPageComponent({ category, allCategories, articles }: TopicP
               href="/learn"
               onClick={() =>
                 analytics.sendEvent({
-                  category: Category.KNOWLEDGEBASE,
+                  category: CowFiCategory.KNOWLEDGEBASE,
                   action: 'Click breadcrumb',
                   label: 'knowledge-base',
                 })
@@ -139,7 +140,7 @@ export function TopicPageComponent({ category, allCategories, articles }: TopicP
               href="/learn/topics"
               onClick={() =>
                 analytics.sendEvent({
-                  category: Category.KNOWLEDGEBASE,
+                  category: CowFiCategory.KNOWLEDGEBASE,
                   action: 'Click breadcrumb',
                   label: 'topics',
                 })
@@ -180,7 +181,7 @@ export function TopicPageComponent({ category, allCategories, articles }: TopicP
                       href={`/learn/${attrs.slug}`}
                       onClick={() =>
                         analytics.sendEvent({
-                          category: Category.KNOWLEDGEBASE,
+                          category: CowFiCategory.KNOWLEDGEBASE,
                           action: 'Click article',
                           label: attrs.title,
                         })

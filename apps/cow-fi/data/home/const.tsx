@@ -1,5 +1,6 @@
 import { Color, ProductVariant } from '@cowprotocol/ui'
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 import IMG_GREEN_WAVES from '@cowprotocol/assets/images/image-green-waves.svg'
 import IMG_COINS from '@cowprotocol/assets/images/image-coins.svg'
@@ -146,7 +147,7 @@ export const PRODUCT_CONTAINERS = (
                 linkType={LinkType.TopicButton}
                 onClick={() =>
                   analytics.sendEvent({
-                    category: Category.HOME,
+                    category: CowFiCategory.HOME,
                     action: topic.linkEvent,
                   })
                 }

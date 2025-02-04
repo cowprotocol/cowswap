@@ -2,7 +2,8 @@ import { useAccount, useConnect as useConnectWagmi } from 'wagmi'
 import { useCallback, useEffect, useState } from 'react'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { ConnectResult, PublicClient } from '@wagmi/core'
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 const cowAnalytics = initGtm()
 
@@ -20,7 +21,7 @@ export function useConnect() {
     if (isConnected && connectionPromise) {
       // Track successful connection
       cowAnalytics.sendEvent({
-        category: Category.MEVBLOCKER,
+        category: CowFiCategory.MEVBLOCKER,
         action: 'Wallet Connected',
       })
       setConnectionPromise(null)

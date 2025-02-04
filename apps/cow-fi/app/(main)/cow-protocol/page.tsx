@@ -18,7 +18,7 @@ import IMG_COW_BITS from '@cowprotocol/assets/images/image-cow-bits.svg'
 import IMG_LEADING from '@cowprotocol/assets/images/image-leading.svg'
 import FAQ from '@/components/FAQ'
 import { Link, LinkType } from '@/components/Link'
-import { Category, toGtmEvent } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 import {
   ContainerCard,
@@ -77,8 +77,8 @@ export default function Page() {
             href="https://docs.cow.fi/category/tutorials"
             external
             linkType={LinkType.HeroButton}
-            data-click-event={toGtmEvent({
-              category: Category.COWPROTOCOL,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
               action: 'Start Building Tutorial Navigation',
             })}
           >
@@ -114,8 +114,8 @@ export default function Page() {
           external
           linkType={LinkType.SectionTitleButton}
           utmContent="cow-protocol-metrics"
-          data-click-event={toGtmEvent({
-            category: Category.COWPROTOCOL,
+          data-click-event={toCowFiGtmEvent({
+            category: CowFiCategory.COWPROTOCOL,
             action: 'View Metrics On Dune',
           })}
         >
@@ -166,8 +166,8 @@ export default function Page() {
                   bgColor="#66018E"
                   color="#F996EE"
                   href="/learn"
-                  data-click-event={toGtmEvent({
-                    category: Category.COWPROTOCOL,
+                  data-click-event={toCowFiGtmEvent({
+                    category: CowFiCategory.COWPROTOCOL,
                     action: 'Open Intents Documentation',
                   })}
                   linkType={LinkType.TopicButton}
@@ -212,8 +212,8 @@ export default function Page() {
                   bgColor="#66018E"
                   color="#F996EE"
                   href="/learn"
-                  data-click-event={toGtmEvent({
-                    category: Category.COWPROTOCOL,
+                  data-click-event={toCowFiGtmEvent({
+                    category: CowFiCategory.COWPROTOCOL,
                     action: 'Open Solvers Documentation',
                   })}
                   linkType={LinkType.TopicButton}
@@ -238,8 +238,8 @@ export default function Page() {
                   bgColor="#66018E"
                   color="#F996EE"
                   href="/learn"
-                  data-click-event={toGtmEvent({
-                    category: Category.COWPROTOCOL,
+                  data-click-event={toCowFiGtmEvent({
+                    category: CowFiCategory.COWPROTOCOL,
                     action: 'Open Batch Auctions Documentation',
                   })}
                   linkType={LinkType.TopicButton}
@@ -416,8 +416,8 @@ export default function Page() {
                 href={`${logo.url}?utm_source=cow.fi&utm_medium=web&utm_content=cow-protocol-logos`}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
-                data-click-event={toGtmEvent({
-                  category: Category.COWPROTOCOL,
+                data-click-event={toCowFiGtmEvent({
+                  category: CowFiCategory.COWPROTOCOL,
                   action: `Visit Partner ${logo.alt}`,
                 })}
               >
@@ -449,8 +449,8 @@ export default function Page() {
                     external
                     linkType={LinkType.TopicButton}
                     utmContent={`cow-protocol-case-study-${study.title}`}
-                    data-click-event={toGtmEvent({
-                      category: Category.COWPROTOCOL,
+                    data-click-event={toCowFiGtmEvent({
+                      category: CowFiCategory.COWPROTOCOL,
                       action: `Read Case Study ${study.title}`,
                     })}
                   >
@@ -471,8 +471,8 @@ export default function Page() {
                 href={`${logo.url}?utm_source=cow.fi&utm_medium=web&utm_content=cow-protocol-logos`}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
-                data-click-event={toGtmEvent({
-                  category: Category.COWPROTOCOL,
+                data-click-event={toCowFiGtmEvent({
+                  category: CowFiCategory.COWPROTOCOL,
                   action: `Visit Partner ${logo.alt}`,
                 })}
               >
@@ -516,8 +516,8 @@ export default function Page() {
                     fontSizeMobile={24}
                     href={topic.linkHref}
                     linkType={LinkType.TopicButton}
-                    data-click-event={toGtmEvent({
-                      category: Category.COWPROTOCOL,
+                    data-click-event={toCowFiGtmEvent({
+                      category: CowFiCategory.COWPROTOCOL,
                       action: topic.linkEvent,
                     })}
                     utmContent={topic.linkUtmContent}
@@ -562,8 +562,8 @@ export default function Page() {
               linkType={LinkType.SectionTitleButton}
               utmContent="cow-protocol-solvers"
               margin="28px 0 0"
-              data-click-event={toGtmEvent({
-                category: Category.COWPROTOCOL,
+              data-click-event={toCowFiGtmEvent({
+                category: CowFiCategory.COWPROTOCOL,
                 action: 'Open Solver Development Documentation',
               })}
             >

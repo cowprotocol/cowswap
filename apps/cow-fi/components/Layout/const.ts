@@ -1,5 +1,6 @@
 import { MenuItem, ProductVariant } from '@cowprotocol/ui'
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 const analytics = initGtm()
 
@@ -98,7 +99,7 @@ export const NAV_ADDITIONAL_BUTTONS = [
     utmContent: 'menubar-nav-button-lp-on-cow-amm',
     onClick: () =>
       analytics.sendEvent({
-        category: Category.NAVIGATION,
+        category: CowFiCategory.NAVIGATION,
         action: 'Click LP on CoW AMM',
         label: 'menubar-nav-button',
       }),
@@ -113,7 +114,7 @@ export const NAV_ADDITIONAL_BUTTONS = [
     utmContent: 'menubar-nav-button-trade-on-cow-swap',
     onClick: () =>
       analytics.sendEvent({
-        category: Category.NAVIGATION,
+        category: CowFiCategory.NAVIGATION,
         action: 'Click Trade on CoW Swap',
         label: 'menubar-nav-button',
       }),

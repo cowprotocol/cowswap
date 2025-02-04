@@ -31,7 +31,8 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Navigation, Pagination } from 'swiper/modules'
 
 import { Link, LinkType } from '@/components/Link'
-import { Category, initGtm } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 import 'swiper/css'
 import 'swiper/css/pagination'
@@ -158,7 +159,7 @@ export function DaosPageComponent() {
                     utmContent="link-to-milkman"
                     onClick={() =>
                       analytics.sendEvent({
-                        category: Category.DAOS,
+                        category: CowFiCategory.DAOS,
                         action: 'Click Milkman',
                         label: 'link-to-milkman',
                       })
@@ -223,7 +224,7 @@ export function DaosPageComponent() {
                     utmContent="link-to-dump-services"
                     onClick={() =>
                       analytics.sendEvent({
-                        category: Category.DAOS,
+                        category: CowFiCategory.DAOS,
                         action: 'Click Dump Services',
                         label: 'link-to-dump-services',
                       })
@@ -259,7 +260,7 @@ export function DaosPageComponent() {
             external
             onClick={() =>
               analytics.sendEvent({
-                category: Category.DAOS,
+                category: CowFiCategory.DAOS,
                 action: 'Click Advanced Order Types',
                 label: 'link-to-advanced-order-types',
               })
@@ -310,7 +311,7 @@ export function DaosPageComponent() {
                       external
                       onClick={() =>
                         analytics.sendEvent({
-                          category: Category.DAOS,
+                          category: CowFiCategory.DAOS,
                           action: 'Click Learn More',
                           label: `dao-${dao.title.toLowerCase().replace(/\s/g, '-')}`,
                         })
@@ -331,7 +332,7 @@ export function DaosPageComponent() {
                   rel="noopener noreferrer"
                   onClick={() =>
                     analytics.sendEvent({
-                      category: Category.DAOS,
+                      category: CowFiCategory.DAOS,
                       action: 'Click Learn More',
                       label: `dao-${dao.title.toLowerCase().replace(/\s/g, '-')}`,
                     })

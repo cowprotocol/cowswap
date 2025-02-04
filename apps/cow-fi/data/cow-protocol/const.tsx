@@ -30,8 +30,9 @@ import IMG_SMARTORDERS from '@cowprotocol/assets/images/image-smartorders.svg'
 import IMG_LOGO_NEXUS from '@cowprotocol/assets/images/logo-nexus-icon.svg'
 import IMG_LOGO_ENS from '@cowprotocol/assets/images/logo-ens-icon.svg'
 import IMG_LOGO_AAVE from '@cowprotocol/assets/images/logo-aave-icon.svg'
-import { Category, useCowAnalytics, toGtmEvent } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import { ReactNode } from 'react'
+import { useCowAnalytics } from '@cowprotocol/analytics'
 
 export interface FaqItem {
   question: string
@@ -51,8 +52,8 @@ export function useFaqData(): FaqItem[] {
             href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
             external
             utmContent="cow-protocol-introduction-intents"
-            data-click-event={toGtmEvent({
-              category: Category.COWPROTOCOL,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
               action: 'Click Introduction',
               label: 'intents',
             })}
@@ -64,8 +65,8 @@ export function useFaqData(): FaqItem[] {
             href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
             external
             utmContent="cow-protocol-introduction-solvers"
-            data-click-event={toGtmEvent({
-              category: Category.COWPROTOCOL,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
               action: 'Click Introduction',
               label: 'solvers',
             })}
@@ -77,8 +78,8 @@ export function useFaqData(): FaqItem[] {
             href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
             external
             utmContent="cow-protocol-introduction-batch-auctions"
-            data-click-event={toGtmEvent({
-              category: Category.COWPROTOCOL,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
               action: 'Click Introduction',
               label: 'batch-auctions',
             })}
@@ -98,8 +99,8 @@ export function useFaqData(): FaqItem[] {
             href="https://swap.cow.fi/"
             external
             utmContent="cow-protocol-cow-swap"
-            data-click-event={toGtmEvent({
-              category: Category.COWPROTOCOL,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
               action: 'Click Link',
               label: 'cow-swap',
             })}
@@ -127,8 +128,8 @@ export function useFaqData(): FaqItem[] {
             href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
             external
             utmContent="cow-protocol-introduction-solvers"
-            data-click-event={toGtmEvent({
-              category: Category.COWPROTOCOL,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
               action: 'Click Introduction',
               label: 'solvers',
             })}
@@ -152,8 +153,8 @@ export function useFaqData(): FaqItem[] {
             href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
             external
             utmContent="cow-protocol-introduction-solvers"
-            data-click-event={toGtmEvent({
-              category: Category.COWPROTOCOL,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
               action: 'Click Introduction',
               label: 'solvers',
             })}
@@ -166,8 +167,8 @@ export function useFaqData(): FaqItem[] {
             href="https://docs.cow.fi/cow-protocol/concepts/how-it-works/coincidence-of-wants"
             external
             utmContent="cow-protocol-coincidence-of-wants"
-            data-click-event={toGtmEvent({
-              category: Category.COWPROTOCOL,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
               action: 'Click Concept',
               label: 'coincidence-of-wants',
             })}
@@ -199,8 +200,8 @@ export function useFaqData(): FaqItem[] {
             href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
             external
             utmContent="cow-protocol-introduction-intents"
-            data-click-event={toGtmEvent({
-              category: Category.COWPROTOCOL,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
               action: 'Click Introduction',
               label: 'intents',
             })}
@@ -214,8 +215,8 @@ export function useFaqData(): FaqItem[] {
             href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
             external
             utmContent="cow-protocol-introduction-solvers"
-            data-click-event={toGtmEvent({
-              category: Category.COWPROTOCOL,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
               action: 'Click Introduction',
               label: 'solvers',
             })}
@@ -229,8 +230,8 @@ export function useFaqData(): FaqItem[] {
             href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
             external
             utmContent="cow-protocol-introduction-solvers"
-            data-click-event={toGtmEvent({
-              category: Category.COWPROTOCOL,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
               action: 'Click Introduction',
               label: 'solvers',
             })}
@@ -249,8 +250,8 @@ export function useFaqData(): FaqItem[] {
             href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
             external
             utmContent="cow-protocol-introduction-solvers"
-            data-click-event={toGtmEvent({
-              category: Category.COWPROTOCOL,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
               action: 'Click Introduction',
               label: 'solvers',
             })}
@@ -262,8 +263,8 @@ export function useFaqData(): FaqItem[] {
             href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
             external
             utmContent="cow-protocol-introduction-intents"
-            data-click-event={toGtmEvent({
-              category: Category.COWPROTOCOL,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
               action: 'Click Introduction',
               label: 'intents',
             })}
@@ -275,8 +276,8 @@ export function useFaqData(): FaqItem[] {
             href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
             external
             utmContent="cow-protocol-introduction-batch-auctions"
-            data-click-event={toGtmEvent({
-              category: Category.COWPROTOCOL,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
               action: 'Click Introduction',
               label: 'batch-auctions',
             })}
@@ -289,8 +290,8 @@ export function useFaqData(): FaqItem[] {
             href="https://docs.cow.fi/cow-protocol/concepts/benefits/price-improvement"
             external
             utmContent="cow-protocol-price-improvement"
-            data-click-event={toGtmEvent({
-              category: Category.COWPROTOCOL,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
               action: 'Click Introduction',
               label: 'price-improvement',
             })}
@@ -304,8 +305,8 @@ export function useFaqData(): FaqItem[] {
             href="https://docs.cow.fi/cow-protocol/tutorials/solvers"
             external
             utmContent="cow-protocol-tutorials-solvers"
-            data-click-event={toGtmEvent({
-              category: Category.COWPROTOCOL,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
               action: 'Click Link',
               label: 'tutorials-solvers',
             })}
@@ -325,8 +326,8 @@ export function useFaqData(): FaqItem[] {
             href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
             external
             utmContent="cow-protocol-introduction-intents"
-            data-click-event={toGtmEvent({
-              category: Category.COWPROTOCOL,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
               action: 'Click Introduction',
               label: 'intents',
             })}
@@ -338,8 +339,8 @@ export function useFaqData(): FaqItem[] {
             href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
             external
             utmContent="cow-protocol-introduction-solvers"
-            data-click-event={toGtmEvent({
-              category: Category.COWPROTOCOL,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
               action: 'Click Introduction',
               label: 'solvers',
             })}
@@ -353,8 +354,8 @@ export function useFaqData(): FaqItem[] {
             href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
             external
             utmContent="cow-protocol-introduction-batch-auctions"
-            data-click-event={toGtmEvent({
-              category: Category.COWPROTOCOL,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
               action: 'Click Introduction',
               label: 'batch-auctions',
             })}
@@ -369,8 +370,8 @@ export function useFaqData(): FaqItem[] {
             href="https://docs.cow.fi/cow-protocol/concepts/benefits/mev-protection"
             external
             utmContent="cow-protocol-mev-protection"
-            data-click-event={toGtmEvent({
-              category: Category.COWPROTOCOL,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
               action: 'Click Introduction',
               label: 'mev-protection',
             })}
@@ -399,8 +400,8 @@ export function useFaqData(): FaqItem[] {
             href="https://discord.gg/cowprotocol"
             external
             utmContent="cow-discord"
-            data-click-event={toGtmEvent({
-              category: Category.COWPROTOCOL,
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
               action: 'Click Link',
               label: 'discord',
             })}
