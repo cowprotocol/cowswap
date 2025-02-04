@@ -35,7 +35,7 @@ export function getDefaultLimitOrdersState(chainId: SupportedChainId | null, isU
 const regularRawStateAtom = atomWithStorage<LimitOrdersRawState>(
   'limit-orders-atom:v4',
   getDefaultLimitOrdersState(null),
-  getJotaiIsolatedStorage()
+  getJotaiIsolatedStorage(),
 )
 
 const { updateAtom: regularUpdateRawStateAtom } = atomWithPartialUpdate(regularRawStateAtom)
@@ -60,7 +60,7 @@ const alternativeDerivedStateAtom = atom<LimitOrdersDerivedState>({
 
 export const limitOrdersRawStateAtom = alternativeOrderReadWriteAtomFactory<LimitOrdersRawState>(
   regularRawStateAtom,
-  alternativeRawStateAtom
+  alternativeRawStateAtom,
 )
 
 export const updateLimitOrdersRawStateAtom = atom(
@@ -68,10 +68,10 @@ export const updateLimitOrdersRawStateAtom = atom(
   alternativeOrderAtomSetterFactory<
     null, // pass null to indicate there is no getter
     Partial<LimitOrdersRawState>
-  >(regularUpdateRawStateAtom, alternativeUpdateRawStateAtom)
+  >(regularUpdateRawStateAtom, alternativeUpdateRawStateAtom),
 )
 
 export const limitOrdersDerivedStateAtom = alternativeOrderReadWriteAtomFactory<LimitOrdersDerivedState>(
   regularDerivedStateAtom,
-  alternativeDerivedStateAtom
+  alternativeDerivedStateAtom,
 )

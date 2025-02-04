@@ -31,14 +31,14 @@ async function waitForSafeTransactionExecution({
     (transaction: SafeMultisigTransactionResponse | null) => {
       return transaction ? !transaction.isExecuted : true
     },
-    1000
+    1000,
   )
 }
 
-export function useZeroApprove(currency: Currency) {
+export function useZeroApprove(currency: Currency | undefined) {
   const setZeroApprovalState = useSetAtom(zeroApprovalState)
   const spender = useTradeSpenderAddress()
-  const amountToApprove = CurrencyAmount.fromRawAmount(currency, 0)
+  const amountToApprove = currency ? CurrencyAmount.fromRawAmount(currency, 0) : undefined
   const approveCallback = useApproveCallback(amountToApprove, spender)
   const safeApiKit = useSafeApiKit()
   const isWalletConnect = useIsWalletConnect()

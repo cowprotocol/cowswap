@@ -70,3 +70,6 @@ export const Color = {
   neutral10: '#23191A',
   neutral0: '#000000',
 }
+
+// Header offset in pixels (used in swap.cow.fi)
+export const SWAP_HEADER_OFFSET = 76

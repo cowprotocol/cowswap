@@ -38,7 +38,7 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps) {
   }, [tokenInput])
 
   const isListUrlValid = useMemo(() => {
-    if (!listInput) return true
+    if (!listInput) return false
 
     return uriToHttp(listInput).length > 0 || Boolean(parseENSAddress(listInput))
   }, [listInput])
@@ -75,11 +75,11 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps) {
           onChange={(e) => setInputValue(e.target.value)}
           placeholder={isListsTab ? listsInputPlaceholder : tokensInputPlaceholder}
         />
-        {!isListUrlValid && <styledEl.InputError>Enter valid list location</styledEl.InputError>}
+        {!isListUrlValid && listInput && <styledEl.InputError>Enter valid list location</styledEl.InputError>}
         {!isTokenAddressValid && <styledEl.InputError>Enter valid token address</styledEl.InputError>}
       </styledEl.PrimaryInputBox>
       {currentTab === 'lists' ? (
-        <ManageLists listSearchResponse={listSearchResponse} lists={lists} />
+        <ManageLists listSearchResponse={listSearchResponse} lists={lists} isListUrlValid={isListUrlValid} />
       ) : (
         <ManageTokens tokenSearchResponse={tokenSearchResponse} tokens={customTokens} />
       )}

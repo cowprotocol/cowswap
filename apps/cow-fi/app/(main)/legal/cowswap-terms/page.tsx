@@ -233,8 +233,8 @@ export default function Page() {
             </p>
             <p>
               For more details on how to use the Interface please refer to our{' '}
-              <a href="https://swap.cow.fi/#/faq" target="_blank" rel="nofollow noopener">
-                &quot;FAQ&quot;
+              <a href="https://cow.fi/learn" target="_blank" rel="nofollow noopener">
+                &quot;Knowledge Base&quot;
               </a>
               .
             </p>

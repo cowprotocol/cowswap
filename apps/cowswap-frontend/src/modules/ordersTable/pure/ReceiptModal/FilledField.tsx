@@ -1,11 +1,11 @@
 import { PercentDisplay, TokenAmount } from '@cowprotocol/ui'
 
-import { ProgressBar, ProgressBarWrapper } from 'modules/ordersTable/pure/OrdersTableContainer/OrderRow/styled'
-
 import { getFilledAmounts } from 'utils/orderUtils/getFilledAmounts'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './styled'
+
+import { ProgressBar, ProgressBarWrapper } from '../../containers/OrderRow/styled'
 
 interface Props {
   order: ParsedOrder
@@ -23,10 +23,10 @@ export function FilledField({ order }: Props) {
     <styledEl.Value>
       <styledEl.InlineWrapper>
         <ProgressBarWrapper>
+          <ProgressBar value={filledPercentDisplay}></ProgressBar>
           <b>
             <PercentDisplay percent={filledPercentDisplay} />
           </b>
-          <ProgressBar value={filledPercentDisplay}></ProgressBar>
         </ProgressBarWrapper>
       </styledEl.InlineWrapper>
 

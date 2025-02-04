@@ -64,7 +64,7 @@ export function DaosPageComponent() {
               ({ icon, title, volume }, index) =>
                 volume && (
                   <li key={index}>
-                    <LazySVG src={icon} title={title} />
+                    <LazySVG src={icon} title={title} height={40} />
                     <small>with</small>
                     <strong>{volume}</strong>
                   </li>

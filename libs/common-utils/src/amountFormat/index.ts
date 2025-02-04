@@ -1,11 +1,9 @@
-
-
 import {
   AMOUNT_PRECISION,
   FIAT_PRECISION,
+  INTL_NUMBER_FORMAT,
   PERCENTAGE_PRECISION,
   ZERO_FRACTION,
-  INTL_NUMBER_FORMAT,
 } from '@cowprotocol/common-const'
 import { Currency, CurrencyAmount, Percent, Rounding } from '@uniswap/sdk-core'
 
@@ -33,7 +31,7 @@ export function formatPercent(percent: Nullish<Percent>): string {
 export function formatAmountWithPrecision(
   amount: Nullish<FractionLike>,
   precision: number,
-  numberFormat = INTL_NUMBER_FORMAT
+  numberFormat = INTL_NUMBER_FORMAT,
 ): string {
   if (!amount) return ''
 
@@ -59,7 +57,7 @@ export function formatAmountWithPrecision(
   // Apply the language formatting for the amount
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
   const formattedQuotient = numberFormat.format(
-    BigInt(trimTrailingZeros(adjustedQuotient.toString(), decimalsSeparator))
+    BigInt(trimTrailingZeros(adjustedQuotient.toString(), decimalsSeparator)),
   )
 
   // Remove trailing zeros
@@ -80,7 +78,7 @@ export function formatAmountWithPrecision(
 export function formatInputAmount(
   amount: Nullish<FractionLike>,
   balance: Nullish<CurrencyAmount<Currency>> = null,
-  isIndependentField = false
+  isIndependentField = false,
 ): string {
   if (!amount) return ''
 
@@ -92,7 +90,7 @@ export function formatInputAmount(
   }
 
   const precision = getPrecisionForAmount(amount)
-  const result = amount.toFixed(precision)
+  const result = amount.toFixed(precision, undefined, Rounding.ROUND_HALF_UP)
 
   return trimTrailingZeros(+result === 0 ? amount.toSignificant(AMOUNT_PRECISION) : result)
 }

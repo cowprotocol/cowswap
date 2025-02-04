@@ -20,7 +20,7 @@ export interface ExecutionPriceParams {
  */
 export function convertAmountToCurrency(
   amount: CurrencyAmount<Currency>,
-  targetCurrency: Currency
+  targetCurrency: Currency,
 ): CurrencyAmount<Currency> {
   const { numerator, denominator } = amount
 
@@ -34,12 +34,12 @@ export function convertAmountToCurrency(
   const decimalsDiff = Math.abs(inputDecimals - outputDecimals)
   const decimalsDiffAmount = rawToTokenAmount(1, decimalsDiff)
 
-  const fixedNumenator =
+  const fixedNumerator =
     inputDecimals < outputDecimals
       ? JSBI.multiply(numerator, decimalsDiffAmount)
       : JSBI.divide(numerator, decimalsDiffAmount)
 
-  return CurrencyAmount.fromFractionalAmount(targetCurrency, fixedNumenator, denominator)
+  return CurrencyAmount.fromFractionalAmount(targetCurrency, fixedNumerator, denominator)
 }
 
 export function calculateExecutionPrice(params: ExecutionPriceParams): Price<Currency, Currency> | null {
@@ -62,7 +62,7 @@ export function calculateExecutionPrice(params: ExecutionPriceParams): Price<Cur
     baseAmount: inputCurrencyAmount,
     quoteAmount: convertAmountToCurrency(
       inputCurrencyAmount.subtract(feeAmount).multiply(marketRateFixed),
-      outputCurrencyAmount.currency
+      outputCurrencyAmount.currency,
     ),
   })
   const marketPrice = isInverted ? marketPriceRaw.invert() : marketPriceRaw

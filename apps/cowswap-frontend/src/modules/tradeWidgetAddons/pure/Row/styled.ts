@@ -1,5 +1,5 @@
-import { Media, UI } from '@cowprotocol/ui'
-import { RowBetween, RowFixed } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
+import { RowBetween } from '@cowprotocol/ui'
 import { HoverTooltip } from '@cowprotocol/ui'
 
 import { Info } from 'react-feather'
@@ -18,22 +18,12 @@ export const TextWrapper = styled(Text)<{ success?: boolean }>`
 `
 
 export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
-  flex-flow: row wrap;
-  min-height: 24px;
-  gap: 3px;
+  flex-flow: row nowrap;
+  gap: 16px;
   color: inherit;
 
   // if prop alignContentRight is true, then set justify-content to flex-end
   justify-content: ${({ alignContentRight }) => (alignContentRight ? 'flex-end' : 'space-between')};
-
-  ${RowFixed} {
-    gap: 4px;
-    min-width: 150px;
-
-    ${Media.upToSmall()} {
-      min-width: max-content;
-    }
-  }
 
   ${TextWrapper} {
     font-size: ${({ fontSize = 13 }) => fontSize}px;

@@ -1,5 +1,5 @@
 import { FractionUtils } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
 
@@ -28,15 +28,16 @@ export function calculateAmountForRate({
   const parsedValue = FractionUtils.adjustDecimalsAtoms(
     amount,
     field === Field.INPUT ? inputDecimals : outputDecimals,
-    field === Field.INPUT ? outputDecimals : inputDecimals
+    field === Field.INPUT ? outputDecimals : inputDecimals,
   )
+  const activeRateAsFraction = activeRate instanceof Price ? FractionUtils.fromPrice(activeRate) : activeRate
 
   if (field === Field.INPUT) {
-    return CurrencyAmount.fromRawAmount(outputCurrency, parsedValue.multiply(activeRate).quotient)
+    return CurrencyAmount.fromRawAmount(outputCurrency, parsedValue.multiply(activeRateAsFraction).quotient)
   }
 
   if (field === Field.OUTPUT) {
-    return CurrencyAmount.fromRawAmount(inputCurrency, parsedValue.divide(activeRate).quotient)
+    return CurrencyAmount.fromRawAmount(inputCurrency, parsedValue.divide(activeRateAsFraction).quotient)
   }
 
   return null

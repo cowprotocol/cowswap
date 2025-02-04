@@ -1,8 +1,6 @@
-import { Media } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-
-import { NumericalInput } from 'modules/limitOrders/containers/RateInput/styled'
 
 export const TradeButtonBox = styled.div`
   margin: 10px 0 0;
@@ -15,25 +13,23 @@ export const FooterBox = styled.div`
   display: flex;
   flex-flow: column wrap;
   max-width: 100%;
-  margin: 0 4px;
-  padding: 0;
+  padding: 0 6px;
+  gap: 7px;
 `
 
 export const RateWrapper = styled.div`
-  display: grid;
-  grid-template-columns: auto 151px;
-  grid-template-rows: max-content;
+  display: flex;
+  flex-flow: column wrap;
+  width: 100%;
   max-width: 100%;
   gap: 6px;
   text-align: right;
   color: inherit;
+  background: var(${UI.COLOR_PAPER_DARKER});
+  border-radius: 16px;
 
   ${Media.upToSmall()} {
     display: flex;
     flex-flow: column wrap;
-  }
-
-  ${NumericalInput} {
-    font-size: 21px;
   }
 `

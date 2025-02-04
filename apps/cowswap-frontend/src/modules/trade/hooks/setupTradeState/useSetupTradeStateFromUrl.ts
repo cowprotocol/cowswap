@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useEffect, useRef } from 'react'
+import { useMemo, useRef } from 'react'
 
 import { useLocation, useParams } from 'react-router-dom'
 
@@ -23,7 +23,12 @@ export function useSetupTradeStateFromUrl(): null {
   const tradeStateRef = useRef(state)
   tradeStateRef.current = state
 
-  useEffect(() => {
+  /**
+   * useEffect() runs after the render completes and useMemo() runs during rendering.
+   * In order to update tradeStateFromUrlAtom faster we use useMemo() here.
+   * We need this, because useSetupTradeState() depends on the atom value and needs it to be udpated ASAP.
+   */
+  useMemo(() => {
     const searchParams = new URLSearchParams(location.search)
     const recipient = searchParams.get('recipient')
     const recipientAddress = searchParams.get('recipientAddress')

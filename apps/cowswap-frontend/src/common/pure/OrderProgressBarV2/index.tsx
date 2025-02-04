@@ -173,8 +173,8 @@ function StepComponent({
       <styledEl.NumberedElement
         status={status}
         customColor={customColor}
-        isUnfillable={isUnfillable}
-        isCancelling={isCancelling}
+        $isUnfillable={isUnfillable}
+        $isCancelling={isCancelling}
       >
         {status === 'cancelling' ? (
           <Lottie

@@ -67,7 +67,6 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
           withTimelineDot={false}
           amountSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
           tooltipSuffix={<NetworkCostsTooltipSuffix />}
-          alwaysRow
         />
       </div>
     )
@@ -88,7 +87,6 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
         networkCostsSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
         networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
         volumeFeeTooltip={volumeFeeTooltip}
-        alwaysRow
       />
       {slippage && (
         <RowSlippage

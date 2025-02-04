@@ -14,7 +14,7 @@ import { ApprovalState } from '../../hooks/useApproveState'
 export interface ApproveButtonProps {
   currency: Currency | undefined | null
   state: ApprovalState
-  onClick: Command
+  onClick?: Command
   isDisabled?: boolean
 }
 
@@ -65,7 +65,7 @@ export function ApproveButton(props: ApproveButtonProps) {
     <ButtonConfirmed
       buttonSize={ButtonSize.BIG}
       onClick={onClick}
-      disabled={disabled}
+      disabled={disabled || !onClick}
       width="100%"
       marginBottom={10}
       altDisabledStyle={isPending} // show solid button while waiting

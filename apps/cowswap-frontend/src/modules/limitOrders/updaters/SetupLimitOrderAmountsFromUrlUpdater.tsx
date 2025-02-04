@@ -1,15 +1,36 @@
-import { useMemo } from 'react'
+import { useSetAtom } from 'jotai/index'
+import { useEffect, useMemo } from 'react'
 
+import { usePrevious } from '@cowprotocol/common-hooks'
 import { Price } from '@uniswap/sdk-core'
 
 import { useSetupTradeAmountsFromUrl } from 'modules/trade'
 
 import { TradeAmounts } from 'common/types'
 
+import { useLimitOrdersRawState } from '../hooks/useLimitOrdersRawState'
 import { useUpdateActiveRate } from '../hooks/useUpdateActiveRate'
+import { updateLimitRateAtom } from '../state/limitRateAtom'
 
 export function SetupLimitOrderAmountsFromUrlUpdater() {
   const updateRate = useUpdateActiveRate()
+  const updateRateState = useSetAtom(updateLimitRateAtom)
+
+  const { inputCurrencyId, outputCurrencyId } = useLimitOrdersRawState()
+  const tokensPair = `${inputCurrencyId || ''}${outputCurrencyId || ''}`
+  const prevTokensPair = usePrevious(tokensPair)
+
+  /**
+   * In useUpdateActiveRate() we have a logic which depends on isRateFromUrl flag
+   * Mainly, it serves for keeping amounts static after coming from another trade widget
+   * But we should not prevent amounts and price update when we change tokens
+   * So, we reset isRateFromUrl flag when at least one of the tokens is changed
+   */
+  useEffect(() => {
+    if (!tokensPair || !prevTokensPair || tokensPair === prevTokensPair) return
+
+    updateRateState({ isRateFromUrl: false })
+  }, [tokensPair, prevTokensPair, updateRateState])
 
   const params = useMemo(() => {
     return {

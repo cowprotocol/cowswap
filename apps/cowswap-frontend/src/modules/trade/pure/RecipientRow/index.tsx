@@ -12,7 +12,6 @@ const Row = styled.div`
   justify-content: space-between;
   align-items: center;
   text-align: right;
-  min-height: 24px;
   gap: 3px;
 `
 

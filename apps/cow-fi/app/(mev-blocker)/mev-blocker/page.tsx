@@ -324,7 +324,7 @@ export default function Page() {
                       <ColorTableCell className="protected">Protected</ColorTableCell>
                     </tr>
                     <tr>
-                      <ColorTableCell>/maxbackrun</ColorTableCell>
+                      <ColorTableCell>/maxbackruns</ColorTableCell>
                       <ColorTableCell className="protected">Protected</ColorTableCell>
                       <ColorTableCell className="refund">Refund</ColorTableCell>
                       <ColorTableCell className="protected">Protected</ColorTableCell>

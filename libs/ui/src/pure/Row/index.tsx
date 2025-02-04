@@ -35,7 +35,10 @@ export const AutoRow = styled(Row)<{ gap?: string; justify?: string }>`
   }
 `
 
-export const RowFixed = styled(Row)<{ gap?: string; justify?: string }>`
+export const RowFixed = styled(Row)<{ gap?: number; justify?: string }>`
   width: fit-content;
-  margin: ${({ gap }) => gap && `-${gap}`};
+  min-width: initial;
+  gap: ${({ gap = 4 }) => gap}px;
+  align-items: center;
+  justify-content: center;
 `

@@ -13,7 +13,7 @@ interface TradeFeesAndCostsProps {
   networkCostsSuffix?: ReactNode
   networkCostsTooltipSuffix?: ReactNode
   withTimelineDot?: boolean
-  alwaysRow?: boolean
+
   volumeFeeTooltip: VolumeFeeTooltip
 }
 
@@ -23,7 +23,7 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
     networkCostsSuffix,
     networkCostsTooltipSuffix,
     withTimelineDot = true,
-    alwaysRow,
+
     volumeFeeTooltip,
   } = props
 
@@ -39,7 +39,6 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
     <>
       {/*Partner fee*/}
       <PartnerFeeRow
-        alwaysRow={alwaysRow}
         withTimelineDot={withTimelineDot}
         partnerFeeUsd={partnerFeeUsd}
         partnerFeeAmount={partnerFeeAmount}
@@ -53,7 +52,6 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
           networkFeeAmount={networkFeeAmount}
           networkFeeAmountUsd={networkFeeAmountUsd}
           withTimelineDot={withTimelineDot}
-          alwaysRow={alwaysRow}
           amountSuffix={networkCostsSuffix}
           tooltipSuffix={networkCostsTooltipSuffix}
         />

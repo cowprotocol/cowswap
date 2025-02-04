@@ -26,7 +26,7 @@ export function useUpdateQueryString(): (key: string, value: string) => void {
     (key: string, value: string) => {
       query.set(key, value)
 
-      navigate({ search: query.toString() }, { replace: true })
+      navigate({ search: query.toString() })
     },
     [navigate, query]
   )

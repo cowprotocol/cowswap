@@ -36,7 +36,10 @@ export function useSearchList(input: string | null): ListSearchResponse {
 
       return fetchTokenList({ source: input })
     },
-    {}
+    {
+      errorRetryCount: 0,
+      revalidateOnFocus: false,
+    },
   )
 
   return existingList ? { source: 'existing', response: existingList } : { source: 'external', response }

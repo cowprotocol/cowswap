@@ -44,7 +44,7 @@ export const ToggleElement = styled.span<{ isActive?: boolean; bgColor?: string;
     ${({ isActive, isInitialToggleLoad }) => (isInitialToggleLoad ? 'none' : isActive ? turnOnToggle : turnOffToggle)}
     ease-in;
   background: ${({ bgColor, isActive }) =>
-    isActive ? bgColor ?? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PAPER_DARKER})`};
+    isActive ? (bgColor ?? `var(${UI.COLOR_PRIMARY})`) : `var(${UI.COLOR_PAPER_DARKER})`};
   border-radius: 50%;
   height: 24px;
   :hover {
@@ -101,7 +101,9 @@ export interface ToggleProps extends WithClassName {
 export function Toggle({ id, bgColor, isActive, toggle, className, isDisabled }: ToggleProps) {
   const [isInitialToggleLoad, setIsInitialToggleLoad] = useState(true)
 
-  const switchToggle = () => {
+  const switchToggle = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    e.preventDefault()
     toggle()
     if (!isDisabled && isInitialToggleLoad) setIsInitialToggleLoad(false)
   }

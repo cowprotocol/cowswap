@@ -14,7 +14,6 @@ interface PartnerFeeRowProps {
   partnerFeeUsd: Nullish<CurrencyAmount<Currency>>
   partnerFeeBps: number | undefined
   withTimelineDot: boolean
-  alwaysRow?: boolean
   volumeFeeTooltip: VolumeFeeTooltip
 }
 
@@ -23,7 +22,6 @@ export function PartnerFeeRow({
   partnerFeeUsd,
   partnerFeeBps,
   withTimelineDot,
-  alwaysRow,
   volumeFeeTooltip,
 }: PartnerFeeRowProps) {
   const feeAsPercent = partnerFeeBps ? formatPercent(bpsToPercent(partnerFeeBps)) : null
@@ -36,7 +34,6 @@ export function PartnerFeeRow({
           withTimelineDot={withTimelineDot}
           amount={minPartnerFeeAmount}
           fiatAmount={partnerFeeUsd}
-          alwaysRow={alwaysRow}
           tooltip={
             volumeFeeTooltip.content ? (
               <WidgetMarkdownContent>{volumeFeeTooltip.content}</WidgetMarkdownContent>
@@ -52,12 +49,7 @@ export function PartnerFeeRow({
           label={`${volumeFeeTooltip.label} (${feeAsPercent}%)`}
         />
       ) : (
-        <ReviewOrderModalAmountRow
-          withTimelineDot={withTimelineDot}
-          alwaysRow={alwaysRow}
-          tooltip="No fee for order placement!"
-          label="Fee"
-        >
+        <ReviewOrderModalAmountRow withTimelineDot={withTimelineDot} tooltip="No fee for order placement!" label="Fee">
           <styledEl.GreenText>FREE</styledEl.GreenText>
         </ReviewOrderModalAmountRow>
       )}

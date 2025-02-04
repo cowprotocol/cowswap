@@ -4,13 +4,13 @@ import { WETH_SEPOLIA } from '@cowprotocol/common-const'
 
 import { renderHook } from '@testing-library/react'
 
-import { useTradeApproveCallback } from 'common/containers/TradeApprove'
+import { useApproveCurrency } from 'common/hooks/useApproveCurrency'
 
 import { useOrdersTableTokenApprove } from './useOrdersTableTokenApprove'
 
-jest.mock('common/containers/TradeApprove')
+jest.mock('common/hooks/useApproveCurrency')
 
-const mockUseTradeApproveCallback = useTradeApproveCallback as jest.MockedFunction<typeof useTradeApproveCallback>
+const mockUseTradeApproveCallback = useApproveCurrency as jest.MockedFunction<typeof useApproveCurrency>
 const tradeApproveCallbackMock = jest.fn().mockImplementation(() => Promise.resolve(undefined))
 
 describe('useOrdersTableTokenApprove()', () => {

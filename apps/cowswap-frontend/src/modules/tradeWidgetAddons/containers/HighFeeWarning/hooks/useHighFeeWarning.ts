@@ -8,6 +8,7 @@ import { useReceiveAmountInfo } from 'modules/trade'
 import { useSafeEffect, useSafeMemo } from 'common/hooks/useSafeMemo'
 
 const feeWarningAcceptedAtom = atom(false)
+const DEFAULT_FEE_STATE: [boolean, undefined] = [false, undefined]
 
 /**
  * useHighFeeWarning
@@ -21,7 +22,7 @@ export function useHighFeeWarning() {
 
   // only considers inputAmount vs fee (fee is in input token)
   const [isHighFee, feePercentage] = useMemo(() => {
-    if (!receiveAmountInfo) return [false, undefined]
+    if (!receiveAmountInfo) return DEFAULT_FEE_STATE
 
     const {
       isSell,
@@ -41,6 +42,9 @@ export function useHighFeeWarning() {
 
     const totalFeeAmount = volumeFeeAmount ? feeAsCurrency.add(volumeFeeAmount) : feeAsCurrency
     const targetAmount = isSell ? outputAmountWithoutFee : inputAmountAfterFees
+
+    if (targetAmount.equalTo(0)) return DEFAULT_FEE_STATE
+
     const feePercentage = totalFeeAmount.divide(targetAmount).multiply(100).asFraction
 
     return [feePercentage.greaterThan(FEE_SIZE_THRESHOLD), feePercentage]

@@ -30,8 +30,6 @@ describe('Limit orders', () => {
 
     navigate('')
 
-    cy.pickToken('USDC', 'output')
-
     getInputToken().type(inputAmount.toString())
     cy.get('#rate-limit-amount-input').should('be.enabled').clear().type(rate.toString(), { force: true })
     getOutputToken().should('have.value', outputAmount.toString())
@@ -59,7 +57,7 @@ describe('Limit orders', () => {
     })
 
     it('should not accept buyAmount when there is no buy token', () => {
-      navigate(`?buyAmount=0.1`)
+      navigate(`/${SELL_TOKEN}?buyAmount=0.1`)
       getOutputToken().should('have.value', '')
     })
 
@@ -69,9 +67,9 @@ describe('Limit orders', () => {
       getOutputToken().should('have.value', '0.2')
     })
 
-    it('should ignore invalid sellAmount and buyAmount url params', () => {
-      navigate(`/${SELL_TOKEN}/${BUY_TOKEN}?sellAmount=rwe&buyAmount=aaa`)
-      getInputToken().should('have.value', '')
+    it('sell amount should be 1 by default', () => {
+      navigate(`/${SELL_TOKEN}/${BUY_TOKEN}`)
+      getInputToken().should('have.value', '1')
       getOutputToken().should('have.value', '')
     })
   })

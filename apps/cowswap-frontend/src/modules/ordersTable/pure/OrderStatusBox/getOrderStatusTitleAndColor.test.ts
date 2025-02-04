@@ -42,8 +42,8 @@ describe('getOrderStatusTitleAndColor()', () => {
       when(orderMock.isCancelling).thenReturn(true)
       const result = getResult()
       expect(result.title).toBe('Cancelling...')
-      expect(result.color).toBe(`var(${UI.COLOR_TEXT})`)
-      expect(result.background).toBe(`var(${UI.COLOR_TEXT_OPACITY_10})`)
+      expect(result.color).toBe(`var(${UI.COLOR_DANGER_TEXT})`)
+      expect(result.background).toBe(`var(${UI.COLOR_DANGER_BG})`)
     })
 
     it('should return correct title and colors for a cancelled order', () => {

@@ -8,17 +8,17 @@ import styled from 'styled-components/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
-import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
-import { BalancesAndAllowances } from 'modules/tokens'
+import type { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
+import type { BalancesAndAllowances } from 'modules/tokens'
 
-import { OrderRow } from './OrderRow'
-import * as styledEl from './OrderRow/styled'
 import { OrderActions } from './types'
 
 import { ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
+import { OrderRow } from '../../containers/OrderRow'
 import { getOrderParams } from '../../utils/getOrderParams'
 import { OrderTableGroup } from '../../utils/orderTableGroupUtils'
 import { OrdersTablePagination } from '../OrdersTablePagination'
+import { TwapStatusAndToggle } from '../TwapStatusAndToggle'
 
 const GroupBox = styled.div``
 
@@ -33,12 +33,13 @@ export interface TableGroupProps {
   prices: PendingOrderPrices | undefined | null
   spotPrice: Price<Currency, Currency> | undefined | null
   isRateInverted: boolean
-  isOpenOrdersTab: boolean
+  isHistoryTab: boolean
   isRowSelectable: boolean
   isRowSelected: boolean
   orderActions: OrderActions
   chainId: SupportedChainId
   balancesAndAllowances: BalancesAndAllowances
+  isTwapTable?: boolean
 }
 
 export function TableGroup(props: TableGroupProps) {
@@ -47,12 +48,13 @@ export function TableGroup(props: TableGroupProps) {
     prices,
     spotPrice,
     isRateInverted,
-    isOpenOrdersTab,
+    isHistoryTab,
     isRowSelectable,
     isRowSelected,
     orderActions,
     chainId,
     balancesAndAllowances,
+    isTwapTable,
   } = props
 
   const { parent, children } = item
@@ -68,12 +70,21 @@ export function TableGroup(props: TableGroupProps) {
 
   const commonProps = {
     isRowSelectable,
-    isOpenOrdersTab,
+    isHistoryTab,
     spotPrice,
     prices,
     isRateInverted,
     orderActions,
+    isTwapTable,
+    chainId,
+    balancesAndAllowances,
   }
+
+  // Create an array of child order data with their orderParams
+  const childrenWithParams = children.map((child) => ({
+    order: child,
+    orderParams: getOrderParams(chainId, balancesAndAllowances, child),
+  }))
 
   return (
     <GroupBox>
@@ -84,16 +95,19 @@ export function TableGroup(props: TableGroupProps) {
         order={parent}
         orderParams={getOrderParams(chainId, balancesAndAllowances, parent)}
         onClick={() => orderActions.selectReceiptOrder(parent)}
+        isExpanded={!isCollapsed}
+        childOrders={children}
       >
         {isParentSigning ? undefined : (
-          <styledEl.ToggleExpandButton onClick={() => setIsCollapsed((state) => !state)} isCollapsed={isCollapsed}>
-            {childrenLength && (
-              <i>
-                {childrenLength} part{childrenLength > 1 && 's'}
-              </i>
-            )}
-            <button />
-          </styledEl.ToggleExpandButton>
+          <TwapStatusAndToggle
+            approveOrderToken={orderActions.approveOrderToken}
+            parent={parent}
+            childrenLength={childrenLength}
+            isCollapsed={isCollapsed}
+            onToggle={() => setIsCollapsed((state) => !state)}
+            onClick={() => orderActions.selectReceiptOrder(parent)}
+            childOrders={childrenWithParams}
+          />
         )}
       </OrderRow>
 
@@ -111,7 +125,6 @@ export function TableGroup(props: TableGroupProps) {
             />
           ))}
           {/* Only show pagination if more than 1 page available */}
-          {/*TODO: add styled to the paginator*/}
           {childrenLength > ORDERS_TABLE_PAGE_SIZE && (
             <Pagination
               pageSize={ORDERS_TABLE_PAGE_SIZE}

@@ -14,6 +14,7 @@ export function useTradeRouteContext(): TradeUrlParams {
   const prevContextRef = useRef<TradeUrlParams>()
 
   const { orderKind, inputCurrencyAmount, outputCurrencyAmount } = derivedState || {}
+  const hasState = !!state
   const targetChainId = state?.chainId || walletChainId
   const { inputCurrencyId, outputCurrencyId } = state || getDefaultTradeRawState(targetChainId)
 
@@ -28,17 +29,15 @@ export function useTradeRouteContext(): TradeUrlParams {
       outputCurrencyId: outputCurrencyId || undefined,
       inputCurrencyAmount: inputCurrencyAmountStr,
       outputCurrencyAmount: outputCurrencyAmountStr,
-      chainId: targetChainId?.toString(),
+      chainId: targetChainId.toString(),
       orderKind,
     }),
-    [orderKind, inputCurrencyId, outputCurrencyId, targetChainId, inputCurrencyAmountStr, outputCurrencyAmountStr]
+    [orderKind, inputCurrencyId, outputCurrencyId, targetChainId, inputCurrencyAmountStr, outputCurrencyAmountStr],
   )
 
   useEffect(() => {
-    if (state) {
-      prevContextRef.current = context
-    }
-  }, [state, context])
+    prevContextRef.current = hasState ? context : undefined
+  }, [hasState, context])
 
   /**
    * If there is no state, it means that current page is not a trade widget page. For example: account page.

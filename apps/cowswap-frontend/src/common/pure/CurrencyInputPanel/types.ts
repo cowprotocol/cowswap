@@ -16,4 +16,5 @@ export interface CurrencyInfo {
   balance: CurrencyAmount<Currency> | null
   fiatAmount: CurrencyAmount<Currency> | null
   topContent?: ReactNode
+  isUsdValuesMode?: boolean
 }

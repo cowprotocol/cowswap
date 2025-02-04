@@ -4,7 +4,6 @@ import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
-import { RateTooltipHeader } from 'common/pure/OrderExecutionStatusList'
 import { convertAmountToCurrency } from 'utils/orderUtils/calculateExecutionPrice'
 
 import * as styledEl from './styled'
@@ -30,13 +29,13 @@ function formatFeeAmount({
   return !isInverted && invertedFee && currency && feeAmount
     ? convertAmountToCurrency(
         CurrencyAmount.fromFractionalAmount(feeAmount.currency, invertedFee.numerator, invertedFee.denominator),
-        currency
+        currency,
       )
     : feeAmount
 }
 
 export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
-  const { isInverted, displayedRate, executionPrice, isOpenOrdersTab } = props
+  const { isInverted, displayedRate, executionPrice } = props
 
   const currentCurrency = isInverted ? executionPrice?.baseCurrency : executionPrice?.quoteCurrency
   const formattedFeeAmount = formatFeeAmount(props)
@@ -45,8 +44,6 @@ export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
 
   return (
     <styledEl.FeeTooltipWrapper>
-      <RateTooltipHeader isOpenOrdersTab={isOpenOrdersTab} />
-
       <styledEl.FeeItem borderTop>
         <span>
           <p>Limit price</p>

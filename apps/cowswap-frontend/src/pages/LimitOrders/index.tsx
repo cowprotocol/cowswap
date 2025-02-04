@@ -10,12 +10,12 @@ import {
   QuoteObserverUpdater,
   SetupLimitOrderAmountsFromUrlUpdater,
   TriggerAppziLimitOrdersSurveyUpdater,
+  PromoBannerUpdater,
 } from 'modules/limitOrders'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 
 import { AlternativeLimitOrder } from './AlternativeLimitOrder'
 import { RegularLimitOrders } from './RegularLimitOrders'
-
 export default function LimitOrderPage() {
   const isAlternative = useIsAlternativeOrderModalVisible()
 
@@ -25,6 +25,7 @@ export default function LimitOrderPage() {
       <QuoteObserverUpdater />
       <FillLimitOrdersDerivedStateUpdater />
       <ExecutionPriceUpdater />
+      <PromoBannerUpdater />
       {isAlternative ? (
         <>
           <AlternativeLimitOrderUpdater />

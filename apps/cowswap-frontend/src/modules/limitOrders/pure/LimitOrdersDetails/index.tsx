@@ -3,7 +3,7 @@ import React, { ReactNode, useMemo, useState } from 'react'
 import ArrowDownImage from '@cowprotocol/assets/cow-swap/arrowDownRight.svg'
 import { DEFAULT_DATE_FORMAT } from '@cowprotocol/common-const'
 import { formatInputAmount } from '@cowprotocol/common-utils'
-import { InfoTooltip, HelpTooltip } from '@cowprotocol/ui'
+import { InfoTooltip, HelpTooltip, RowFixed } from '@cowprotocol/ui'
 import { Currency, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
@@ -29,7 +29,9 @@ const Wrapper = styled.div`
   font-weight: 400;
   color: inherit;
   padding: 8px;
-  gap: 10px;
+  gap: 7px;
+  display: flex;
+  flex-flow: column wrap;
 `
 
 const ArrowDownRight = styled.div`
@@ -111,19 +113,17 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
       )}
 
       <styledEl.DetailsRow>
-        <div>
-          <span>
-            <p>Order expires</p>
-          </span>
+        <RowFixed>
+          <p>Order expires</p>
+
           <InfoTooltip
             content={
               "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!"
             }
           />
-        </div>
-        <div>
-          <span>{expiryDate.toLocaleString(undefined, DEFAULT_DATE_FORMAT)}</span>
-        </div>
+        </RowFixed>
+
+        <span>{expiryDate.toLocaleString(undefined, DEFAULT_DATE_FORMAT)}</span>
       </styledEl.DetailsRow>
       <OrderType isPartiallyFillable={partiallyFillable} partiallyFillableOverride={partiallyFillableOverride} />
       <RecipientRow chainId={tradeContext.chainId} recipient={recipientAddressOrName || recipient} account={account} />

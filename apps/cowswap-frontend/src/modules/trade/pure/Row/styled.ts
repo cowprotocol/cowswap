@@ -7,7 +7,7 @@ export const DividerHorizontal = styled.hr`
   border-bottom: 1px solid var(${UI.COLOR_TEXT});
   display: flex;
   width: 100%;
-  margin: 10px auto;
+  margin: 4px auto;
   opacity: 0.1;
 `
 

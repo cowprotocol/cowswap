@@ -2,6 +2,8 @@ import React from 'react'
 
 import styled from 'styled-components/macro'
 
+import { MEDIA } from '../../../const'
+
 interface BadgeProps {
   checked: boolean
   onChange: () => void
@@ -10,18 +12,31 @@ interface BadgeProps {
 }
 
 const Wrapper = styled.div<{ checked: boolean }>`
-  display: inline-block;
-  padding: 5px 10px;
-  border-radius: 20px;
-  background-color: ${({ checked }) => (checked ? '#007bff' : '#e0e0e0')};
-  color: ${({ checked }) => (checked ? '#fff' : '#000')};
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  font-size: ${({ theme }): string => theme.fontSizeDefault};
   cursor: pointer;
-  user-select: none;
-  font-size: 11px;
+  color: ${({ checked, theme }): string => (checked ? theme.textActive1 : theme.white)};
+  height: 3rem;
+  border: 1px solid ${({ theme }): string => theme.borderPrimary};
+  border-radius: 0.5rem;
+  background: ${({ theme }): string => theme.bg2};
+
+  &media ${MEDIA.mediumUp} {
+    &:hover {
+      transition: all 0.2s ease-in-out;
+      color: ${({ theme }): string => theme.textActive1};
+    }
+  }
+
+  @media ${MEDIA.mediumDown} {
+    min-width: 3rem;
+  }
 `
 
 const Label = styled.span`
-  margin-right: 10px;
+  margin-right: 8px;
 `
 
 const Count = styled.span`

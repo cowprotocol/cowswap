@@ -10,7 +10,7 @@ describe('Swap (mod)', () => {
     cy.get('#input-currency-input .token-amount-input').should('not.have.value')
     cy.get('#input-currency-input .token-symbol-container').should('contain.text', 'WETH')
     cy.get('#output-currency-input .token-amount-input').should('not.have.value')
-    cy.get('#output-currency-input .token-symbol-container').should('contain.text', 'Select a token')
+    cy.get('#output-currency-input .token-symbol-container').should('contain.text', 'USDC')
   })
 
   it('can enter an amount into input', () => {
@@ -64,7 +64,7 @@ describe('Swap (mod)', () => {
     cy.swapEnterInputAmount(ETH, '0.5', true)
     cy.swapSelectOutput(COW)
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
-    cy.get('#swap-button > button').should('contain.text', 'Swap').click()
+    cy.get('#swap-button > button').should('contain.text', 'Swap').click({ timeout: 10000 })
     cy.get('#trade-confirmation > button').should('contain', 'Confirm Swap')
   })
 

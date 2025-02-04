@@ -10,7 +10,7 @@ import { shouldZeroApprove as shouldZeroApproveFn } from './useShouldZeroApprove
 export function useNeedsZeroApproval(
   erc20Contract: Nullish<Erc20>,
   spender: Nullish<string>,
-  sellAmount: Nullish<CurrencyAmount<Token>>
+  sellAmount: Nullish<CurrencyAmount<Token>>,
 ): boolean {
   const [shouldZeroApprove, setShouldZeroApprove] = useState(false)
 
@@ -22,7 +22,9 @@ export function useNeedsZeroApproval(
       spender: spender,
       amountToApprove: sellAmount,
       isBundle: true,
-    }).then(setShouldZeroApprove)
+    }).then((res) => {
+      setShouldZeroApprove(!!res)
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [erc20Contract?.address, sellAmount?.quotient?.toString(), spender])
 

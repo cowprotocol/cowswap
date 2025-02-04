@@ -43,7 +43,6 @@ export const Tab = styled.button<{ active$: boolean }>`
 export const PrimaryInputBox = styled.div`
   margin: 10px 0 0 0;
   padding: 0 20px 20px 20px;
-  border-bottom: 1px solid var(${UI.COLOR_PAPER_DARKEST});
 `
 
 export const PrimaryInput = styled.input`

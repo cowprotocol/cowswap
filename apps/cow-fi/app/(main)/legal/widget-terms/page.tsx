@@ -75,7 +75,7 @@ export default function Page() {
             <p>
               You are also responsible for ensuring that all persons who access the Widget through your website are
               aware of the{' '}
-              <a target="_blank" rel="noreferrer" href="https://swap.cow.fi/#/terms-and-conditions">
+              <a target="_blank" rel="noreferrer" href="https://cow.fi/legal/cowswap-terms">
                 Terms &amp; Conditions
               </a>{' '}
               of{' '}
@@ -132,12 +132,12 @@ export default function Page() {
             </p>
             <p>
               The{' '}
-              <a target="_blank" rel="noreferrer" href="https://swap.cow.fi/#/terms-and-conditions#welcometohttpscowfi">
+              <a target="_blank" rel="noreferrer" href="https://cow.fi/legal/cowswap-terms">
                 Terms &amp; Conditions
               </a>{' '}
               for the use of the Interface apply to the Widget. It is your duty to ensure that all persons who access
               the Widget through your website are aware of the Interface’s{' '}
-              <a target="_blank" rel="noreferrer" href="https://swap.cow.fi/#/terms-and-conditions">
+              <a target="_blank" rel="noreferrer" href="https://cow.fi/legal/cowswap-terms">
                 Terms &amp; Conditions
               </a>{' '}
               and that they comply with them.

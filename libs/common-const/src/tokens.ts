@@ -559,8 +559,6 @@ export const STABLECOINS: Record<ChainId, Set<string>> = {
   [SupportedChainId.BASE]: new Set(BASE_STABLECOINS),
 }
 
-console.debug('STABLECOINS', STABLECOINS)
-
 /**
  * Addresses related to COW vesting for Locked GNO
  * These are used in src/custom/pages/Account/LockedGnoVesting hooks and index files
