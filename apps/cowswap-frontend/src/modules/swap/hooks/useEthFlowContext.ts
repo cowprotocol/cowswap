@@ -8,11 +8,11 @@ import { useGetQuoteAndStatus } from 'legacy/state/price/hooks'
 import { useAppData, useUploadAppData } from 'modules/appData'
 
 import { useEthFlowContract } from 'common/hooks/useContract'
+import { useLogEthSendingTransaction } from 'common/hooks/useLogEthSendingTransaction'
 
 import { useCheckEthFlowOrderExists } from './useCheckEthFlowOrderExists'
 import { useDerivedSwapInfo } from './useSwapState'
 
-import { useLogEthSendingTransaction } from '../../../common/hooks/useLogEthSendingTransaction'
 import { EthFlowContext } from '../services/types'
 import { addInFlightOrderIdAtom } from '../state/EthFlow/ethFlowInFlightOrderIdsAtom'
 

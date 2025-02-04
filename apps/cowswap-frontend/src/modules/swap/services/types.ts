@@ -5,7 +5,8 @@ import type { QuoteInformationObject } from 'legacy/state/price/reducer'
 
 import { AppDataInfo, UploadAppDataParams } from 'modules/appData'
 
-import { EthSendingTransactionInfo } from '../../../common/hooks/useLogEthSendingTransaction'
+import { EthSendingTransactionInfo } from 'common/hooks/useLogEthSendingTransaction'
+
 import { EthFlowOrderExistsCallback } from '../hooks/useCheckEthFlowOrderExists'
 
 export type EthFlowContext = {
