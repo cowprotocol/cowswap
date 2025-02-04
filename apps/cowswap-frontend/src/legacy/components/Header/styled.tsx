@@ -31,6 +31,7 @@ export const HeaderElement = styled.div`
   align-items: center;
   gap: 0;
   height: 100%;
+  width: 100%;
 `
 
 export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
@@ -47,8 +48,8 @@ export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
 
   ${Media.upToLarge()} {
     ${({ isMobileMenuOpen }) =>
-    isMobileMenuOpen &&
-    css`
+      isMobileMenuOpen &&
+      css`
         height: 34px;
         width: auto;
       `}
