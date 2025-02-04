@@ -76,5 +76,11 @@ describe('Fraction utils', () => {
       expect(JSBI.toNumber(simplified.numerator)).toBe(1)
       expect(JSBI.toNumber(simplified.denominator)).toBe(3)
     })
+    it('should avoid division by 0', () => {
+      const fraction = new Fraction(JSBI.BigInt(0), JSBI.BigInt(0))
+      const simplified = FractionUtils.simplify(fraction)
+      expect(JSBI.toNumber(simplified.numerator)).toBe(0)
+      expect(JSBI.toNumber(simplified.denominator)).toBe(1)
+    })
   })
 })

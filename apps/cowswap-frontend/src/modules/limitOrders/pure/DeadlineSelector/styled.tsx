@@ -1,56 +1,35 @@
-import { Media, UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { MenuButton, MenuItem, MenuList } from '@reach/menu-button'
 import { transparentize } from 'color2k'
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'
 
-export const Wrapper = styled.div<{ inline?: boolean; minHeight?: string }>`
-  background: var(${UI.COLOR_PAPER_DARKER});
+export const Wrapper = styled.div`
   color: inherit;
-  border-radius: 16px;
-  padding: 10px 16px;
-  min-height: ${({ minHeight }) => minHeight || '80px'};
+  padding: 0;
   justify-content: space-between;
   display: flex;
   flex-flow: row wrap;
-
-  ${({ inline }) =>
-    inline &&
-    `
-    justify-content: space-between;
-
-    > span {
-      flex: 1;
-    }
-
-    > button {
-      width: auto;
-    }
-  `}
+  width: 100%;
+  font-size: 13px;
+  font-weight: inherit;
 `
 
 export const Label = styled.span`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 13px;
-  font-weight: 500;
-  width: 100%;
+  font-size: inherit;
+  font-weight: inherit;
   color: inherit;
-  opacity: 0.7;
-  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-  &:hover {
-    opacity: 1;
-  }
+  align-self: center;
+  justify-self: center;
 `
 
 export const Current = styled(MenuButton)<{ $custom?: boolean }>`
   color: inherit;
   font-size: ${({ $custom }) => ($custom ? '12px' : '100%')};
   letter-spacing: ${({ $custom }) => ($custom ? '-0.3px' : '0')};
-  font-weight: 500;
+  font-weight: inherit;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -61,13 +40,8 @@ export const Current = styled(MenuButton)<{ $custom?: boolean }>`
   padding: 0;
   white-space: nowrap;
   cursor: pointer;
-  width: 100%;
   text-overflow: ellipsis;
   overflow: hidden;
-
-  ${Media.upToSmall()} {
-    font-size: 21px;
-  }
 
   &:hover {
     text-decoration: underline;
