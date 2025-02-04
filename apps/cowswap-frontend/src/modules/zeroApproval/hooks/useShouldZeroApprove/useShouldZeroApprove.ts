@@ -34,7 +34,10 @@ export function useShouldZeroApprove(amountToApprove: Nullish<CurrencyAmount<Cur
         spender,
       })
 
-      if (result === null) return
+      if (result === null) {
+        if (shouldZeroApprove) setShouldZeroApprove(false)
+        return
+      }
 
       if (!isStale) {
         setShouldZeroApprove(result)
