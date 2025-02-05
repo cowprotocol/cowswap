@@ -62,6 +62,7 @@ export async function signEthFlowOrderStep(
     return GAS_LIMIT_DEFAULT
   })
 
+  const gasLimit = calculateGasMargin(estimatedGas)
   // Ensure the Eth flow contract network matches the network where you place the transaction.
   // There are multiple wallet implementations, and potential race conditions that can cause the chain of the wallet to be different,
   // and therefore leaving the chainId implicit might lead the user to place an order in an unwanted chain.
@@ -77,7 +78,7 @@ export async function signEthFlowOrderStep(
   // So we must build the tx first:
   const tx = await ethFlowContract.populateTransaction.createOrder(ethOrderParams, {
     ...ethTxOptions,
-    gasLimit: calculateGasMargin(estimatedGas),
+    gasLimit,
   })
   // Then send the is using the contract's signer where the chainId is an acceptable parameter
   const txReceipt = await ethFlowContract.signer.sendTransaction({ ...tx, chainId: network })
@@ -88,6 +89,7 @@ export async function signEthFlowOrderStep(
     urlChainId: getRawCurrentChainIdFromUrl(),
     amount: tradeFlowContext.context.inputAmount.quotient.toString(),
     account: tradeFlowContext.orderParams.account,
+    tx,
   })
 
   addInFlightOrderId(orderId)
