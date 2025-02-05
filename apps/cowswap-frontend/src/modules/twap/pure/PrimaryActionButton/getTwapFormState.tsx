@@ -11,7 +11,7 @@ import { isPartTimeIntervalTooShort } from '../../utils/isPartTimeIntervalTooSho
 import { isSellAmountTooSmall } from '../../utils/isSellAmountTooSmall'
 
 export interface TwapFormStateParams {
-  isSafeApp: boolean
+  isSafeWallet: boolean
   verification: ExtensibleFallbackVerification | null
   twapOrder: TWAPOrder | null
   sellAmountPartFiat: Nullish<CurrencyAmount<Currency>>
@@ -28,9 +28,9 @@ export enum TwapFormState {
 }
 
 export function getTwapFormState(props: TwapFormStateParams): TwapFormState | null {
-  const { twapOrder, isSafeApp, verification, sellAmountPartFiat, chainId, partTime } = props
+  const { twapOrder, isSafeWallet, verification, sellAmountPartFiat, chainId, partTime } = props
 
-  if (!isSafeApp) return TwapFormState.NOT_SAFE
+  if (!isSafeWallet) return TwapFormState.NOT_SAFE
 
   if (verification === null) return TwapFormState.LOADING_SAFE_INFO
 

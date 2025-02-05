@@ -75,7 +75,9 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
     <>
       {(() => {
         if (localFormValidation === TwapFormState.NOT_SAFE) {
-          return <UnsupportedWalletWarning isSafeViaWc={isSafeViaWc} />
+          return (
+            <UnsupportedWalletWarning isSafeViaWc={isSafeViaWc} isFallbackHandlerRequired={isFallbackHandlerRequired} />
+          )
         }
 
         if (primaryFormValidation === TradeFormValidation.SellNativeToken) {

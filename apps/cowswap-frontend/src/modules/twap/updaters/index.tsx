@@ -1,5 +1,5 @@
 import { percentToBps } from '@cowprotocol/common-utils'
-import { useIsSafeApp, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
 import { AppDataUpdater } from 'modules/appData'
@@ -16,11 +16,11 @@ import { useTwapSlippage } from '../hooks/useTwapSlippage'
 
 export function TwapUpdaters() {
   const { account } = useWalletInfo()
-  const isSafeApp = useIsSafeApp()
+  const isSafeWallet = useIsSafeWallet()
   const { contract: composableCowContract, chainId: composableCowChainId } = useComposableCowContract()
   const twapOrderSlippage = useTwapSlippage()
 
-  const shouldLoadTwapOrders = !!(isSafeApp && account && composableCowContract)
+  const shouldLoadTwapOrders = !!(isSafeWallet && account && composableCowContract)
 
   return (
     <>
@@ -32,6 +32,7 @@ export function TwapUpdaters() {
         <>
           <FullAmountQuoteUpdater />
           <FallbackHandlerVerificationUpdater />
+          {/*<FallbackHandlerVerificationUpdater2 />*/}
           <PartOrdersUpdater />
           <TwapOrdersUpdater
             composableCowContract={composableCowContract}

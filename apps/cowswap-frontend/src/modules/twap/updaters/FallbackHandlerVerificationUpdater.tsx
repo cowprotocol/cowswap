@@ -18,7 +18,7 @@ export function FallbackHandlerVerificationUpdater() {
   const { account } = useWalletInfo()
   const update = useSetAtom(updateFallbackHandlerVerificationAtom)
   const verification = useFallbackHandlerVerification()
-  const isFallbackHandlerRequired = verification !== ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER
+  const isFallbackHandlerRequired = !verification || verification !== ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER
 
   const fallbackHandlerUpdateTime = localStorage.getItem(FB_UPDATE_TIME_KEY)
   const isCacheOutdated = !fallbackHandlerUpdateTime || Date.now() - +fallbackHandlerUpdateTime > FB_CACHE_TIME

@@ -28,12 +28,12 @@ import { OrdersTableList, useOrdersTableList } from './hooks/useOrdersTableList'
 import { useOrdersTableTokenApprove } from './hooks/useOrdersTableTokenApprove'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
-import { OPEN_TAB, ORDERS_TABLE_TABS, ALL_ORDERS_TAB } from '../../const/tabs'
+import { ALL_ORDERS_TAB, OPEN_TAB, ORDERS_TABLE_TABS } from '../../const/tabs'
 import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
 import { OrderActions } from '../../pure/OrdersTableContainer/types'
 import { TabOrderTypes } from '../../types'
 import { buildOrdersTableUrl } from '../../utils/buildOrdersTableUrl'
-import { OrderTableItem, tableItemsToOrders, getParsedOrderFromTableItem } from '../../utils/orderTableGroupUtils'
+import { getParsedOrderFromTableItem, OrderTableItem, tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 import { parseOrdersTableUrl } from '../../utils/parseOrdersTableUrl'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu'
 import { OrdersReceiptModal } from '../OrdersReceiptModal'
@@ -142,7 +142,6 @@ interface OrdersTableWidgetProps {
   orders: Order[]
   orderType: TabOrderTypes
   isTwapTable?: boolean
-  displayOrdersOnlyForSafeApp?: boolean
   children?: ReactNode
 }
 
@@ -150,7 +149,6 @@ export function OrdersTableWidget({
   orders: allOrders,
   orderType,
   children,
-  displayOrdersOnlyForSafeApp = false,
   isTwapTable = false,
 }: OrdersTableWidgetProps) {
   const { chainId, account } = useWalletInfo()
@@ -353,8 +351,6 @@ export function OrdersTableWidget({
         chainId={chainId}
         tabs={tabs}
         orders={filteredOrders}
-        displayOrdersOnlyForSafeApp={displayOrdersOnlyForSafeApp}
-        isSafeViaWc={isSafeViaWc}
         currentPageNumber={currentPageNumber}
         pendingOrdersPrices={pendingOrdersPrices}
         balancesAndAllowances={balancesAndAllowances}

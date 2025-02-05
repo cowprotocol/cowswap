@@ -3,7 +3,6 @@ import { ReactNode, useMemo } from 'react'
 import cowMeditatingV2 from '@cowprotocol/assets/cow-swap/meditating-cow-v2.svg'
 import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { CowSwapSafeAppLink } from '@cowprotocol/ui'
 import type { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
 import { Trans } from '@lingui/macro'
@@ -21,14 +20,12 @@ import * as styledEl from './OrdersTableContainer.styled'
 import { OrdersTabs } from './OrdersTabs'
 import { OrderActions } from './types'
 
-import { ALL_ORDERS_TAB, HISTORY_TAB, OPEN_TAB, UNFILLABLE_TAB } from '../../const/tabs'
+import { ALL_ORDERS_TAB, OPEN_TAB, UNFILLABLE_TAB } from '../../const/tabs'
 import { TabOrderTypes } from '../../types'
 import { OrderTableItem } from '../../utils/orderTableGroupUtils'
 
 interface OrdersTableContainerProps {
   isWalletConnected: boolean
-  isSafeViaWc: boolean
-  displayOrdersOnlyForSafeApp: boolean
   pendingActivities: string[]
   children?: ReactNode
   orderType: TabOrderTypes
@@ -52,8 +49,6 @@ export function OrdersTableContainer({
   orders,
   tabs,
   isWalletConnected,
-  isSafeViaWc,
-  displayOrdersOnlyForSafeApp,
   selectedOrders,
   allowsOffchainSigning,
   balancesAndAllowances,
@@ -125,11 +120,7 @@ export function OrdersTableContainer({
             </Trans>
           </h3>
           <p>
-            {displayOrdersOnlyForSafeApp && isSafeViaWc ? (
-              <Trans>
-                Use the <CowSwapSafeAppLink /> to see {currentTab === HISTORY_TAB.id ? 'orders history' : 'your orders'}
-              </Trans>
-            ) : searchTerm ? (
+            {searchTerm ? (
               <Trans>Try adjusting your search term or clearing the filter</Trans>
             ) : (
               <>
