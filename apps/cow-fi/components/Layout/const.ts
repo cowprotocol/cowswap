@@ -2,7 +2,7 @@ import { MenuItem, ProductVariant } from '@cowprotocol/ui'
 import { clickOnNavigation } from 'modules/analytics'
 
 export const PAGE_MAX_WIDTH = 1760
-export const THEME_MODE = 'dark'
+export const THEME_MODE = 'light'
 export const PRODUCT_VARIANT = ProductVariant.CowDao
 
 export const NAV_ITEMS: MenuItem[] = [

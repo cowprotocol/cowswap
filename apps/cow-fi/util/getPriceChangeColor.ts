@@ -1,8 +1,11 @@
 import { Color } from 'styles/variables'
+import type { CowProtocolTheme } from 'styled-components'
 
-export function getPriceChangeColor(value: any) {
+export function getPriceChangeColor(value: string | null, theme: CowProtocolTheme): string {
   if (!value) return Color.text1
-  if (Number(value) > 0) return Color.success
-  else if (Number(value) < 0) return Color.danger
+  const numericValue = parseFloat(value)
+  if (isNaN(numericValue)) return Color.text1
+  if (numericValue > 0) return theme.success
+  if (numericValue < 0) return theme.danger
   return Color.text1
 }

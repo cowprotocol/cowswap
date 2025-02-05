@@ -14,6 +14,13 @@ import {
   NoTokensText,
 } from './index.style'
 import { clickOnToken } from 'modules/analytics'
+import type { CowProtocolTheme } from 'styled-components'
+import { useTheme } from 'styled-components/macro'
+
+// Utility function for consistent value formatting
+const formatValue = <T,>(value: T | null | undefined, formatter: (val: T) => string): string => {
+  return value ? formatter(value) : '-'
+}
 
 export interface TokenListProps {
   tokens: TokenInfo[]
@@ -69,6 +76,7 @@ interface TokenItemProps {
 }
 
 function TokenItem({ token, index }: TokenItemProps) {
+  const theme = useTheme() as CowProtocolTheme
   const { id, name, symbol, change24h, priceUsd, marketCap, volume, image } = token
   return (
     <ListItem key={id}>
@@ -85,12 +93,12 @@ function TokenItem({ token, index }: TokenItemProps) {
         </span>
       </TokenLink>
 
-      <ListItemValue>{priceUsd ? `$${priceUsd}` : '-'}</ListItemValue>
-      <ListItemValue color={getPriceChangeColor(change24h)}>
-        {change24h ? `${Number(change24h).toFixed(2)}%` : '-'}
+      <ListItemValue>{formatValue(priceUsd, (price) => `$${price}`)}</ListItemValue>
+      <ListItemValue color={getPriceChangeColor(change24h, theme)}>
+        {formatValue(change24h, (change) => `${Number(change).toFixed(2)}%`)}
       </ListItemValue>
-      <ListItemValue>{marketCap ? `${formatUSDPrice(marketCap)}` : '-'}</ListItemValue>
-      <ListItemValue>{volume ? `${formatUSDPrice(volume)}` : '-'}</ListItemValue>
+      <ListItemValue>{formatValue(marketCap, formatUSDPrice)}</ListItemValue>
+      <ListItemValue>{formatValue(volume, formatUSDPrice)}</ListItemValue>
     </ListItem>
   )
 }

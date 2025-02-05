@@ -37,11 +37,11 @@ export const MissingPriceCaption = styled.div`
 `
 
 export const StyledUpArrow = styled((props) => <ArrowUpRight {...props} />)`
-  color: ${Color.success};
+  color: ${({ theme }) => theme.success};
 `
 
 export const StyledDownArrow = styled((props) => <ArrowDownRight {...props} />)`
-  color: ${Color.danger};
+  color: ${({ theme }) => theme.danger};
 `
 
 export const TokenPriceWrapper = styled.div`

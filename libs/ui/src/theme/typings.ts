@@ -25,8 +25,6 @@ export interface Colors {
   yellow3: ColorValue
   blue1: ColorValue
   bg8: ColorValue
-  purple: ColorValue
-  yellow: ColorValue
   blueShade: ColorValue
   blueShade3: ColorValue
   blue2: ColorValue

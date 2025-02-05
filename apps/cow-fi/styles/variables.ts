@@ -2,7 +2,6 @@ import { transparentize } from 'polished'
 import { css, keyframes } from 'styled-components/macro'
 
 export const Color = {
-  white: '#FFFFFF',
   black: '#000000',
   orange: '#ED6834',
   border: transparentize(0.75, '#979797'),
@@ -11,7 +10,6 @@ export const Color = {
   darkBlue2: '#0D3673',
   darkBlue3: '#042a63',
   darkBlue4: '#042456',
-  lightBlue: '#CAE9FF',
   lightBlue2: 'rgb(176 194 255)',
   lightBlue3: 'rgb(118 167 230)',
   grey: 'rgb(236, 241, 248)',
@@ -19,11 +17,6 @@ export const Color = {
   grey3: '#737b96',
   text1: '#405A82',
   text2: '#95BAEF',
-  danger: '#D41300',
-  warning: '#D94719',
-  alert: '#DB971E',
-  information: '#0d5ed9',
-  success: '#007B28',
   gradient: 'linear-gradient(45deg,#FFE7E0 0%,#F8DBF4 20%,#C4DDFF 60%,#CAE9FF 100%)',
   gradient2: 'linear-gradient(0deg, #071B3B 0%, #052B65 100%)',
   gradientMesh: css`

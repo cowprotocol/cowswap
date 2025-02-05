@@ -21,7 +21,9 @@ const Tab = styled.div<TabProps>`
   padding: 1.6rem 0;
   background: none;
   color: ${({ active }) => (active ? Color.darkBlue : transparentize(0.5, Color.darkBlue))};
-  transition: color 0.2s ease-in-out, border-bottom 0.2s ease-in-out;
+  transition:
+    color 0.2s ease-in-out,
+    border-bottom 0.2s ease-in-out;
   border-bottom: ${({ active }) =>
     active ? `0.2rem solid ${Color.darkBlue}` : `0.1rem solid ${transparentize(0.8, Color.darkBlue)}`};
   display: flex;
@@ -159,7 +161,7 @@ const DropdownOption = styled.div`
   font-weight: 500;
 
   &:hover {
-    background-color: ${Color.white};
+    background-color: ${({ theme }) => theme.white};
     border-radius: 1rem;
   }
 
