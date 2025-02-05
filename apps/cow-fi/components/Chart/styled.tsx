@@ -1,7 +1,6 @@
 import styled from 'styled-components/macro'
 import { ArrowDownRight, ArrowUpRight } from 'react-feather'
-import { TransitionDuration } from 'styles/variables'
-import { textFadeIn } from 'styles/variables'
+import { TransitionDuration, textFadeIn } from '@cowprotocol/ui'
 
 export const ChartHeader = styled.div`
   position: absolute;
