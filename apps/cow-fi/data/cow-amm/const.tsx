@@ -1,4 +1,6 @@
 import { Link } from '@/components/Link'
+import { DefaultTheme } from 'styled-components'
+
 import IMG_COWAMM_LVR from '@cowprotocol/assets/images/image-cowamm-lvr.svg'
 import IMG_COWAMM_LP_1 from '@cowprotocol/assets/images/image-cowamm-lp-1.svg'
 import IMG_COWAMM_LP_2 from '@cowprotocol/assets/images/image-cowamm-lp-2.svg'
@@ -9,8 +11,7 @@ import { clickOnCowAmm } from 'modules/analytics'
 
 export const QUOTES = [
   {
-    title:
-      '"When LPs bleed money to LVR, users pay for it with bigger spreads. If we want DeFi to rival the CEX experience, solving LVR will be key."',
+    title: `"When LPs bleed money to LVR, users pay for it with bigger spreads. If we want DeFi to rival the CEX experience, solving LVR will be key."`,
     description: (
       <>
         <b>- Hasu</b>
@@ -18,12 +19,11 @@ export const QUOTES = [
         <i>Strategy Lead at Flashbots</i>
       </>
     ),
-    bgColor: '#BCEC79',
-    textColor: '#194D05',
+    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_green,
+    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_dark_green,
   },
   {
-    title:
-      '"Impermanent loss is a big worry for many of our clients. If LPs could deposit liquidity into surplus-rebalancing pools and not worry about LVR, we’d deposit more funds into passive investment strategies."',
+    title: `"Impermanent loss is a big worry for many of our clients. If LPs could deposit liquidity into surplus-rebalancing pools and not worry about LVR, we'd deposit more funds into passive investment strategies."`,
     description: (
       <>
         <b>- Marcelo</b>
@@ -31,12 +31,11 @@ export const QUOTES = [
         <i>Co-founder at Karpatkey</i>
       </>
     ),
-    bgColor: '#BCEC79',
-    textColor: '#194D05',
+    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_green,
+    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_dark_green,
   },
   {
-    title:
-      '"LVR is the main reason for the current concentration in the block builder market. CoW AMM is not only great for LPs, it\'s important for Ethereum overall."',
+    title: `"LVR is the main reason for the current concentration in the block builder market. CoW AMM is not only great for LPs, it's important for Ethereum overall."`,
     description: (
       <>
         <b>- Josojo</b>
@@ -44,8 +43,8 @@ export const QUOTES = [
         <i>Crypto Researcher</i>
       </>
     ),
-    bgColor: '#BCEC79',
-    textColor: '#194D05',
+    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_green,
+    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_dark_green,
   },
 ]
 
@@ -53,26 +52,26 @@ export const COW_AMM_CONTENT = [
   {
     description:
       'Liquidity providers deposit tokens into protected CoW AMM liquidity pools, where traders can access the liquidity',
-    bgColor: '#224D22',
-    textColor: '#DCF8A7',
+    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_dark_green2,
+    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_light_green,
     image: IMG_COWAMM_LP_1,
   },
   {
     description: 'Solvers bid to rebalance CoW AMM pools whenever there is an arbitrage opportunity',
-    bgColor: '#224D22',
-    textColor: '#DCF8A7',
+    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_dark_green2,
+    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_light_green,
     image: IMG_COWAMM_LP_2,
   },
   {
     description: 'The solver that offers the most surplus to the pool wins the right to rebalance the pool',
-    bgColor: '#224D22',
-    textColor: '#DCF8A7',
+    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_dark_green2,
+    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_light_green,
     image: IMG_COWAMM_LP_3,
   },
   {
     description: 'CoW AMM eliminates LVR by capturing arbitrage value for LPs and shielding it from MEV bots',
-    bgColor: '#224D22',
-    textColor: '#DCF8A7',
+    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_dark_green2,
+    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_light_green,
     image: IMG_COWAMM_LP_4,
   },
 ]
@@ -131,8 +130,8 @@ export const FAQ_DATA = [
     question: 'What is a CF-AMM?',
     answer: (
       <>
-        The most basic types of AMMs are examples of “Constant Function” AMMs. CF-AMMs use the constant product function
-        “x*y=k” to calculate the prices of the two assets in any given liquidity pool. As the supply of one asset is
+        The most basic types of AMMs are examples of "Constant Function" AMMs. CF-AMMs use the constant product function
+        "x*y=k" to calculate the prices of the two assets in any given liquidity pool. As the supply of one asset is
         depleted, its price increases and vice versa. Thus, all trades on a CF-AMM can be mapped as trades that fit on
         the constant product function.
         <br />
@@ -156,7 +155,7 @@ export const FAQ_DATA = [
   {
     question: 'What is an FM-AMM?',
     answer: `
-        The “Function-Maximizing” AMM is a novel AMM mechanism that tackles the shortcomings of the CF-AMM design and eliminates LVR. The FM-AMM batches trades together, executing all the orders in a batch at the same uniform clearing price. This price is such that the AMM “moves up the curve” with each trade. Since anyone can submit trades to the FM-AMM while its batch is open, competition between arbitrageurs guarantees that FM-AMM always trades at the correct, equilibrium price also in case of a rebalancing.
+        The "Function-Maximizing" AMM is a novel AMM mechanism that tackles the shortcomings of the CF-AMM design and eliminates LVR. The FM-AMM batches trades together, executing all the orders in a batch at the same uniform clearing price. This price is such that the AMM "moves up the curve" with each trade. Since anyone can submit trades to the FM-AMM while its batch is open, competition between arbitrageurs guarantees that FM-AMM always trades at the correct, equilibrium price also in case of a rebalancing.
       `,
   },
   {

@@ -42,8 +42,12 @@ function colors(darkMode: boolean): Colors {
   const cowfi_darkBlue2 = '#0D3673'
   const cowfi_darkBlue3 = '#042a63'
   const cowfi_darkBlue4 = '#042456'
+  const cowfi_darkBlue5 = '#005EB7'
+  const cowfi_lightBlue1 = '#CCF8FF'
   const cowfi_lightBlue2 = 'rgb(176 194 255)'
   const cowfi_lightBlue3 = 'rgb(118 167 230)'
+  const cowfi_lightBlue4 = '#99ECFF'
+  const cowfi_white2 = '#FFF8F7'
   const cowfi_grey = 'rgb(236, 241, 248)'
   const cowfi_grey2 = 'rgb(201 211 226)'
   const cowfi_grey3 = '#737b96'
@@ -69,6 +73,12 @@ function colors(darkMode: boolean): Colors {
       radial-gradient(at 32% 81%, hsla(204, 100%, 89%, 1) 0px, transparent 50%),
       radial-gradient(at 19% 39%, hsla(204, 100%, 89%, 1) 0px, transparent 50%);
   `
+
+  // CoW AMM Colors
+  const cowamm_green = '#BCEC79'
+  const cowamm_dark_green = '#194D05'
+  const cowamm_dark_green2 = '#224D22'
+  const cowamm_light_green = '#DCF8A7'
 
   return {
     darkMode,
@@ -99,8 +109,12 @@ function colors(darkMode: boolean): Colors {
     cowfi_darkBlue2,
     cowfi_darkBlue3,
     cowfi_darkBlue4,
+    cowfi_darkBlue5,
+    cowfi_lightBlue1,
     cowfi_lightBlue2,
     cowfi_lightBlue3,
+    cowfi_lightBlue4,
+    cowfi_white2,
     cowfi_grey,
     cowfi_grey2,
     cowfi_grey3,
@@ -117,6 +131,12 @@ function colors(darkMode: boolean): Colors {
     cowfi_wordtag_orange_bg,
     cowfi_wordtag_purple_text,
     cowfi_wordtag_purple_bg,
+
+    // CoW AMM Colors
+    cowamm_green,
+    cowamm_dark_green,
+    cowamm_dark_green2,
+    cowamm_light_green,
 
     // ****** backgrounds ******
     bg5: darkMode ? '#1d4373' : '#D5E9F0',

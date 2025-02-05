@@ -53,8 +53,12 @@ export interface Colors {
   cowfi_darkBlue2: ColorValue
   cowfi_darkBlue3: ColorValue
   cowfi_darkBlue4: ColorValue
+  cowfi_darkBlue5: ColorValue
+  cowfi_lightBlue1: ColorValue
   cowfi_lightBlue2: ColorValue
   cowfi_lightBlue3: ColorValue
+  cowfi_lightBlue4: ColorValue
+  cowfi_white2: ColorValue
   cowfi_grey: ColorValue
   cowfi_grey2: ColorValue
   cowfi_grey3: ColorValue
@@ -71,6 +75,12 @@ export interface Colors {
   cowfi_wordtag_orange_bg: ColorValue
   cowfi_wordtag_purple_text: ColorValue
   cowfi_wordtag_purple_bg: ColorValue
+
+  // CoW AMM Colors
+  cowamm_green: ColorValue
+  cowamm_dark_green: ColorValue
+  cowamm_dark_green2: ColorValue
+  cowamm_light_green: ColorValue
 }
 
 export interface ThemeUtils {

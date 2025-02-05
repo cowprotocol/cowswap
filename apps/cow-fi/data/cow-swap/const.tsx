@@ -1,4 +1,5 @@
 import { Link } from '@/components/Link'
+import styled, { DefaultTheme } from 'styled-components'
 
 import IMG_COWSWAP_COINS from '@cowprotocol/assets/images/image-coins.svg'
 import IMG_COWSWAP_MEV from '@cowprotocol/assets/images/image-cowswap-mev.svg'
@@ -13,23 +14,23 @@ import { clickOnCowSwap } from 'modules/analytics'
 
 export const COW_IS_DIFFERENT = [
   {
-    bgColor: '#65D9FF',
+    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_wordtag_blue_bg,
     fontSize: 28,
-    color: '#012F7A',
+    color: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_wordtag_blue_text,
     description: "By aligning incentives between solvers and users, CoW Swap finds surplus you won't get anywhere else",
     imgSrc: IMG_COWSWAP_COINS,
   },
   {
-    bgColor: '#012F7A',
+    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_darkBlue,
     fontSize: 28,
-    color: '#CCF8FF',
+    color: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_lightBlue1,
     description: 'MEV is a $1.3+ billion problem that you never have to worry about on CoW Swap',
     imgSrc: IMG_COWSWAP_MEV,
   },
   {
-    bgColor: '#CCF8FF',
+    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_lightBlue1,
     fontSize: 28,
-    color: '#012F7A',
+    color: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_wordtag_blue_text,
     description: "CoW Swap's unique architecture enables advanced order types and seamless UX",
     imgSrc: IMG_COWSWAP_UX,
   },
@@ -37,26 +38,26 @@ export const COW_IS_DIFFERENT = [
 
 export const ADVANCED_ORDER_TYPES = [
   {
-    bgColor: '#012F7A',
-    textColor: '#CCF8FF',
-    titleColor: '#FFF8F7',
+    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_darkBlue,
+    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_lightBlue1,
+    titleColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_white2,
     title: 'Market orders (aka swaps)',
     description: 'CoW Swap market orders maximize surplus and minimize MEV',
     imgSrc: IMG_COWSWAP_SWAPS,
   },
   {
-    bgColor: '#CCF8FF',
-    textColor: '#004293',
-    titleColor: '#012F7A',
+    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_lightBlue1,
+    textColor: ({ theme }: { theme: DefaultTheme }) => theme.blueDark2,
+    titleColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_wordtag_blue_text,
     title: 'Limit orders',
     description:
       'Placing a limit order is like setting a trap for a price for your trade. CoW Swap is the only DEX that offers surplus on limit orders – and one of the only DEXs that offers limit orders at all',
     imgSrc: IMG_COWSWAP_LIMIT,
   },
   {
-    bgColor: '#99ECFF',
-    textColor: '#005EB7',
-    titleColor: '#012F7A',
+    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_lightBlue4,
+    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_darkBlue5,
+    titleColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_wordtag_blue_text,
     title: 'TWAP orders',
     description:
       'Time-weighted average price (TWAP) orders minimize price impact and volatility risk by letting you trade assets at fixed intervals over a period of time',
@@ -66,25 +67,25 @@ export const ADVANCED_ORDER_TYPES = [
 
 export const BETTER_UX = [
   {
-    bgColor: '#99ECFF',
-    textColor: '#005EB7',
-    titleColor: '#012F7A',
+    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_lightBlue4,
+    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_darkBlue5,
+    titleColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_wordtag_blue_text,
     title: 'Gasless trading',
     description: 'All gas fees are paid in the sell token - so you can save your precious ETH',
     imgSrc: IMG_COWSWAP_GASLESS,
   },
   {
-    bgColor: '#012F7A',
-    textColor: '#CCF8FF',
-    titleColor: '#FFF8F7',
+    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_darkBlue,
+    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_lightBlue1,
+    titleColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_white2,
     title: 'No fees for failed transactions',
     description: "You shouldn't pay for what didn't work, so failed transactions are always free",
     imgSrc: IMG_COWSWAP_NOFEES,
   },
   {
-    bgColor: '#CCF8FF',
-    textColor: '#005EB7',
-    titleColor: '#012F7A',
+    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_lightBlue1,
+    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_darkBlue5,
+    titleColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_wordtag_blue_text,
     title: 'Execute multiple trades at once',
     description: 'With intent-based trading, you can place as many orders as you want simultaneously',
     imgSrc: IMG_COWSWAP_MULTIPLE,
@@ -149,10 +150,10 @@ export const FAQ_DATA = [
     ),
   },
   {
-    question: 'What is a “meta” DEX aggregator?',
+    question: 'What is a "meta" DEX aggregator?',
     answer: (
       <>
-        A “meta” DEX aggregator is an aggregator of aggregators, meaning that it’s a single trading venue that sources
+        A "meta" DEX aggregator is an aggregator of aggregators, meaning that it's a single trading venue that sources
         liquidity from other aggregators as well as from individual DEXs. CoW Swap is a meta DEX aggregator because
         solvers source liquidity for users from AMMs like Uniswap, DEX aggregators like 1inch, private market makers,
         and directly from users via Coincidence of Wants.
@@ -160,10 +161,10 @@ export const FAQ_DATA = [
     ),
   },
   {
-    question: 'What is a “CoW”?',
+    question: 'What is a "CoW"?',
     answer: (
       <>
-        “CoW” stands for{' '}
+        "CoW" stands for{' '}
         <Link
           href="https://docs.cow.fi/cow-protocol/concepts/how-it-works/coincidence-of-wants"
           external
@@ -185,7 +186,7 @@ export const FAQ_DATA = [
           batching mechanism
         </Link>
         , users can make peer-to-peer swaps in cases where they're trading the same assets. CoWs allow users to bypass
-        liquidity provider (LP) fees and also reduce gas costs since those orders only interact with CoW Protocol’s
+        liquidity provider (LP) fees and also reduce gas costs since those orders only interact with CoW Protocol's
         smart contracts.
       </>
     ),
@@ -194,7 +195,7 @@ export const FAQ_DATA = [
     question: 'How is CoW Swap better than other DEX aggregators?',
     answer: (
       <>
-        CoW Swap’s unique architecture allows it to give users comprehensive MEV protection as well as better prices for
+        CoW Swap's unique architecture allows it to give users comprehensive MEV protection as well as better prices for
         their trades. While most other DEX aggregators simply compare quotes from various DEXs and execute orders
         against whichever DEX is lowest at the time of quoting, CoW Swap seeks to find the best execution price. CoW
         Swap groups user orders into batches and auctions them off to bonded third parties known as{' '}
@@ -218,11 +219,11 @@ export const FAQ_DATA = [
     question: 'What is MEV?',
     answer: (
       <>
-        MEV, or maximal extractable value, is a form of price exploitation that acts as a “hidden tax” on Ethereum
-        transactions. To date, MEV has caused over a billion dollars in losses for everyday traders, many of whom don’t
-        even know they’ve been exploited. By default, Ethereum transactions are publicly exposed, meaning that
+        MEV, or maximal extractable value, is a form of price exploitation that acts as a "hidden tax" on Ethereum
+        transactions. To date, MEV has caused over a billion dollars in losses for everyday traders, many of whom don't
+        even know they've been exploited. By default, Ethereum transactions are publicly exposed, meaning that
         sophisticated traders can take advantage of public trading details to exploit user positions. For example, if a
-        user is about to make a large trade moving the price of an asset, sophisticated traders running “MEV bots” can
+        user is about to make a large trade moving the price of an asset, sophisticated traders running "MEV bots" can
         anticipate this trade and manipulate the price of the asset to their advantage. There are several types of MEV
         including frontrunning, backrunning, sandwich attacks, and loss-versus-rebalancing. Thanks to its unique
         architecture, CoW Swap protects users from all types of malicious MEV.
@@ -242,10 +243,10 @@ export const FAQ_DATA = [
         >
           batch auctions
         </Link>{' '}
-        mimic Ethereum’s block mechanism, meaning that trades are settled periodically. Sometimes, especially in the
+        mimic Ethereum's block mechanism, meaning that trades are settled periodically. Sometimes, especially in the
         case of more-exotic assets, it might take a solver a few blocks to win the auction and settle a transaction.
         Settling transactions through intent-based batch auctions may, in some cases, be slower than settling
-        transactions directly onchain. However, CoW Swap’s unique architecture enables a slew of benefits that
+        transactions directly onchain. However, CoW Swap's unique architecture enables a slew of benefits that
         traditional DEXs cannot achieve – from gasless trading to MEV protection and surplus.
       </>
     ),
