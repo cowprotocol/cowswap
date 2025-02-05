@@ -18,10 +18,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <CacheProvider>
         <StyledComponentsRegistry>
           <>
-            <GlobalStyles />
             <ApolloProvider client={apolloClient}>
               <WithLDProvider>
                 <ThemeProvider>
+                  <GlobalStyles />
                   <CowAnalyticsProvider cowAnalytics={cowAnalytics}>{children}</CowAnalyticsProvider>
                 </ThemeProvider>
               </WithLDProvider>

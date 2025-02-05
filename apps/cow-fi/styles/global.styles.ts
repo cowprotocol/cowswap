@@ -1,9 +1,10 @@
 'use client'
 
 import { createGlobalStyle } from 'styled-components/macro'
+import { CowProtocolTheme } from 'styled-components'
 import { Color, Media } from '@cowprotocol/ui'
 
-const GlobalStyles = createGlobalStyle`
+const GlobalStyles = createGlobalStyle<{ theme: CowProtocolTheme }>`
 
   html, body {
     width: 100%;
@@ -158,19 +159,18 @@ span[class^='wordtag-'] {
   }
 
   .wordtag-blue {
-    color: #012f7a;
-    background: #65d9ff;
+    color: ${({ theme }) => theme.cowfi_wordtag_blue_text};
+    background: ${({ theme }) => theme.cowfi_wordtag_blue_bg};
   }
 
   .wordtag-orange {
-    color: #ec4612;
-    background: #fee7cf;
+    color: ${({ theme }) => theme.cowfi_wordtag_orange_text};
+    background: ${({ theme }) => theme.cowfi_wordtag_orange_bg};
   }
 
   .wordtag-purple {
-    color: #f996ee;
-    background: #490072;
+    color: ${({ theme }) => theme.cowfi_wordtag_purple_text};
+    background: ${({ theme }) => theme.cowfi_wordtag_purple_bg};
   }
 `
-
 export default GlobalStyles

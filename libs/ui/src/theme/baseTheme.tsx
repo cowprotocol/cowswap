@@ -53,6 +53,12 @@ function colors(darkMode: boolean): Colors {
   const cowfi_borderGradient = `linear-gradient(to bottom, ${transparentize('0.75', '#979797')}, ${transparentize('1.0', '#979797')})`
   const cowfi_gradient = 'linear-gradient(45deg,#FFE7E0 0%,#F8DBF4 20%,#C4DDFF 60%,#CAE9FF 100%)'
   const cowfi_gradient2 = `linear-gradient(0deg, #071B3B 0%, ${cowfi_darkBlue} 100%)`
+  const cowfi_wordtag_blue_text = '#012f7a'
+  const cowfi_wordtag_blue_bg = '#65d9ff'
+  const cowfi_wordtag_orange_text = '#ec4612'
+  const cowfi_wordtag_orange_bg = '#fee7cf'
+  const cowfi_wordtag_purple_text = '#f996ee'
+  const cowfi_wordtag_purple_bg = '#490072'
   const cowfi_gradientMesh = css`
     background-color: hsla(142, 0%, 100%, 1);
     background-image: radial-gradient(at 5% 70%, hsla(204, 100%, 89%, 1) 0px, transparent 50%),
@@ -105,6 +111,12 @@ function colors(darkMode: boolean): Colors {
     cowfi_gradient,
     cowfi_gradient2,
     cowfi_gradientMesh,
+    cowfi_wordtag_blue_text,
+    cowfi_wordtag_blue_bg,
+    cowfi_wordtag_orange_text,
+    cowfi_wordtag_orange_bg,
+    cowfi_wordtag_purple_text,
+    cowfi_wordtag_purple_bg,
 
     // ****** backgrounds ******
     bg5: darkMode ? '#1d4373' : '#D5E9F0',
