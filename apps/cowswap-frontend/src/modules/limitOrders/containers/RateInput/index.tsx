@@ -28,10 +28,10 @@ import { useConvertUsdToTokenValue } from 'common/hooks/useConvertUsdToTokenValu
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { getQuoteCurrency, getQuoteCurrencyByStableCoin } from 'common/services/getQuoteCurrency'
 
+import { isLocalUsdRateModeAtom } from './atoms'
 import { useExecutionPriceUsdValue } from './hooks/useExecutionPriceUsdValue'
 import { useRateDisplayedValue } from './hooks/useRateDisplayedValue'
 import * as styledEl from './styled'
-import { isLocalUsdRateModeAtom } from './atoms'
 
 export function RateInput() {
   const { chainId } = useWalletInfo()
@@ -155,7 +155,7 @@ export function RateInput() {
       // When already in token mode, toggle between tokens
       updateLimitRateState({ isInverted: !isInverted, isTypedValue: false })
     }
-  }, [isInverted, updateLimitRateState, isUsdRateMode])
+  }, [isInverted, updateLimitRateState, isUsdRateMode, setIsUsdRateMode])
 
   // Handle toggle price lock
   const handleTogglePriceLock = useCallback(
