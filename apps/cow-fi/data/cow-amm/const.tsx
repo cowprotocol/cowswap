@@ -9,6 +9,8 @@ import IMG_COWAMM_LP_4 from '@cowprotocol/assets/images/image-cowamm-lp-4.svg'
 
 import { clickOnCowAmm } from 'modules/analytics'
 
+type ThemeProps = { theme: DefaultTheme }
+
 export const QUOTES = [
   {
     title: `"When LPs bleed money to LVR, users pay for it with bigger spreads. If we want DeFi to rival the CEX experience, solving LVR will be key."`,
@@ -19,8 +21,8 @@ export const QUOTES = [
         <i>Strategy Lead at Flashbots</i>
       </>
     ),
-    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_green,
-    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_dark_green,
+    bgColor: ({ theme }: ThemeProps) => theme.cowamm_green,
+    textColor: ({ theme }: ThemeProps) => theme.cowamm_dark_green,
   },
   {
     title: `"Impermanent loss is a big worry for many of our clients. If LPs could deposit liquidity into surplus-rebalancing pools and not worry about LVR, we'd deposit more funds into passive investment strategies."`,
@@ -31,8 +33,8 @@ export const QUOTES = [
         <i>Co-founder at Karpatkey</i>
       </>
     ),
-    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_green,
-    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_dark_green,
+    bgColor: ({ theme }: ThemeProps) => theme.cowamm_green,
+    textColor: ({ theme }: ThemeProps) => theme.cowamm_dark_green,
   },
   {
     title: `"LVR is the main reason for the current concentration in the block builder market. CoW AMM is not only great for LPs, it's important for Ethereum overall."`,
@@ -43,8 +45,8 @@ export const QUOTES = [
         <i>Crypto Researcher</i>
       </>
     ),
-    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_green,
-    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_dark_green,
+    bgColor: ({ theme }: ThemeProps) => theme.cowamm_green,
+    textColor: ({ theme }: ThemeProps) => theme.cowamm_dark_green,
   },
 ]
 
@@ -52,26 +54,26 @@ export const COW_AMM_CONTENT = [
   {
     description:
       'Liquidity providers deposit tokens into protected CoW AMM liquidity pools, where traders can access the liquidity',
-    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_dark_green2,
-    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_light_green,
+    bgColor: ({ theme }: ThemeProps) => theme.cowamm_dark_green2,
+    textColor: ({ theme }: ThemeProps) => theme.cowamm_light_green,
     image: IMG_COWAMM_LP_1,
   },
   {
     description: 'Solvers bid to rebalance CoW AMM pools whenever there is an arbitrage opportunity',
-    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_dark_green2,
-    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_light_green,
+    bgColor: ({ theme }: ThemeProps) => theme.cowamm_dark_green2,
+    textColor: ({ theme }: ThemeProps) => theme.cowamm_light_green,
     image: IMG_COWAMM_LP_2,
   },
   {
     description: 'The solver that offers the most surplus to the pool wins the right to rebalance the pool',
-    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_dark_green2,
-    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_light_green,
+    bgColor: ({ theme }: ThemeProps) => theme.cowamm_dark_green2,
+    textColor: ({ theme }: ThemeProps) => theme.cowamm_light_green,
     image: IMG_COWAMM_LP_3,
   },
   {
     description: 'CoW AMM eliminates LVR by capturing arbitrage value for LPs and shielding it from MEV bots',
-    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_dark_green2,
-    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowamm_light_green,
+    bgColor: ({ theme }: ThemeProps) => theme.cowamm_dark_green2,
+    textColor: ({ theme }: ThemeProps) => theme.cowamm_light_green,
     image: IMG_COWAMM_LP_4,
   },
 ]

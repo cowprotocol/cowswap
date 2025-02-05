@@ -80,6 +80,12 @@ function colors(darkMode: boolean): Colors {
   const cowamm_dark_green2 = '#224D22'
   const cowamm_light_green = '#DCF8A7'
 
+  const cowfi_purple1 = '#8702AA'
+  const cowfi_purple2 = '#FCCAF2'
+  const cowfi_purple3 = '#66018E'
+  const cowfi_discord_pink = '#FDADA3'
+  const cowfi_snapshot_red = '#710408'
+
   return {
     darkMode,
     primary: darkMode ? buttonTextCustom : blueDark2,
@@ -165,6 +171,11 @@ function colors(darkMode: boolean): Colors {
     boxShadow1: darkMode ? '0 24px 32px rgba(0, 0, 0, 0.06)' : '0 12px 12px rgba(5, 43, 101, 0.06)',
     boxShadow2: '0 4px 12px 0 rgb(0 0 0 / 15%)',
     shadow1: darkMode ? '#000' : '#2F80ED',
+    cowfi_purple1,
+    cowfi_purple2,
+    cowfi_purple3,
+    cowfi_discord_pink,
+    cowfi_snapshot_red,
   }
 }
 

@@ -12,25 +12,27 @@ import IMG_COWSWAP_NOFEES from '@cowprotocol/assets/images/image-cowswap-nofees.
 import IMG_COWSWAP_MULTIPLE from '@cowprotocol/assets/images/image-cowswap-multiple.svg'
 import { clickOnCowSwap } from 'modules/analytics'
 
+type ThemeProps = { theme: DefaultTheme }
+
 export const COW_IS_DIFFERENT = [
   {
-    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_wordtag_blue_bg,
+    bgColor: ({ theme }: ThemeProps) => theme.cowfi_wordtag_blue_bg,
     fontSize: 28,
-    color: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_wordtag_blue_text,
+    color: ({ theme }: ThemeProps) => theme.cowfi_wordtag_blue_text,
     description: "By aligning incentives between solvers and users, CoW Swap finds surplus you won't get anywhere else",
     imgSrc: IMG_COWSWAP_COINS,
   },
   {
-    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_darkBlue,
+    bgColor: ({ theme }: ThemeProps) => theme.cowfi_darkBlue,
     fontSize: 28,
-    color: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_lightBlue1,
+    color: ({ theme }: ThemeProps) => theme.cowfi_lightBlue1,
     description: 'MEV is a $1.3+ billion problem that you never have to worry about on CoW Swap',
     imgSrc: IMG_COWSWAP_MEV,
   },
   {
-    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_lightBlue1,
+    bgColor: ({ theme }: ThemeProps) => theme.cowfi_lightBlue1,
     fontSize: 28,
-    color: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_wordtag_blue_text,
+    color: ({ theme }: ThemeProps) => theme.cowfi_wordtag_blue_text,
     description: "CoW Swap's unique architecture enables advanced order types and seamless UX",
     imgSrc: IMG_COWSWAP_UX,
   },
@@ -38,26 +40,26 @@ export const COW_IS_DIFFERENT = [
 
 export const ADVANCED_ORDER_TYPES = [
   {
-    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_darkBlue,
-    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_lightBlue1,
-    titleColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_white2,
+    bgColor: ({ theme }: ThemeProps) => theme.cowfi_darkBlue,
+    textColor: ({ theme }: ThemeProps) => theme.cowfi_lightBlue1,
+    titleColor: ({ theme }: ThemeProps) => theme.cowfi_white2,
     title: 'Market orders (aka swaps)',
     description: 'CoW Swap market orders maximize surplus and minimize MEV',
     imgSrc: IMG_COWSWAP_SWAPS,
   },
   {
-    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_lightBlue1,
-    textColor: ({ theme }: { theme: DefaultTheme }) => theme.blueDark2,
-    titleColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_wordtag_blue_text,
+    bgColor: ({ theme }: ThemeProps) => theme.cowfi_lightBlue1,
+    textColor: ({ theme }: ThemeProps) => theme.blueDark2,
+    titleColor: ({ theme }: ThemeProps) => theme.cowfi_wordtag_blue_text,
     title: 'Limit orders',
     description:
       'Placing a limit order is like setting a trap for a price for your trade. CoW Swap is the only DEX that offers surplus on limit orders – and one of the only DEXs that offers limit orders at all',
     imgSrc: IMG_COWSWAP_LIMIT,
   },
   {
-    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_lightBlue4,
-    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_darkBlue5,
-    titleColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_wordtag_blue_text,
+    bgColor: ({ theme }: ThemeProps) => theme.cowfi_lightBlue4,
+    textColor: ({ theme }: ThemeProps) => theme.cowfi_darkBlue5,
+    titleColor: ({ theme }: ThemeProps) => theme.cowfi_wordtag_blue_text,
     title: 'TWAP orders',
     description:
       'Time-weighted average price (TWAP) orders minimize price impact and volatility risk by letting you trade assets at fixed intervals over a period of time',
@@ -67,25 +69,25 @@ export const ADVANCED_ORDER_TYPES = [
 
 export const BETTER_UX = [
   {
-    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_lightBlue4,
-    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_darkBlue5,
-    titleColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_wordtag_blue_text,
+    bgColor: ({ theme }: ThemeProps) => theme.cowfi_lightBlue4,
+    textColor: ({ theme }: ThemeProps) => theme.cowfi_darkBlue5,
+    titleColor: ({ theme }: ThemeProps) => theme.cowfi_wordtag_blue_text,
     title: 'Gasless trading',
     description: 'All gas fees are paid in the sell token - so you can save your precious ETH',
     imgSrc: IMG_COWSWAP_GASLESS,
   },
   {
-    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_darkBlue,
-    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_lightBlue1,
-    titleColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_white2,
+    bgColor: ({ theme }: ThemeProps) => theme.cowfi_darkBlue,
+    textColor: ({ theme }: ThemeProps) => theme.cowfi_lightBlue1,
+    titleColor: ({ theme }: ThemeProps) => theme.cowfi_white2,
     title: 'No fees for failed transactions',
     description: "You shouldn't pay for what didn't work, so failed transactions are always free",
     imgSrc: IMG_COWSWAP_NOFEES,
   },
   {
-    bgColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_lightBlue1,
-    textColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_darkBlue5,
-    titleColor: ({ theme }: { theme: DefaultTheme }) => theme.cowfi_wordtag_blue_text,
+    bgColor: ({ theme }: ThemeProps) => theme.cowfi_lightBlue1,
+    textColor: ({ theme }: ThemeProps) => theme.cowfi_darkBlue5,
+    titleColor: ({ theme }: ThemeProps) => theme.cowfi_wordtag_blue_text,
     title: 'Execute multiple trades at once',
     description: 'With intent-based trading, you can place as many orders as you want simultaneously',
     imgSrc: IMG_COWSWAP_MULTIPLE,

@@ -1,4 +1,5 @@
 import { Color, ProductVariant } from '@cowprotocol/ui'
+import { DefaultTheme } from 'styled-components'
 
 import IMG_GREEN_WAVES from '@cowprotocol/assets/images/image-green-waves.svg'
 import IMG_COINS from '@cowprotocol/assets/images/image-coins.svg'
@@ -23,6 +24,8 @@ import {
 import { Link, LinkType } from '@/components/Link'
 import SVG from 'react-inlinesvg'
 import { clickOnHome } from 'modules/analytics'
+
+type ThemeProps = { theme: DefaultTheme }
 
 export const PRODUCT_LIST = [
   {
@@ -90,24 +93,24 @@ export const CHANNEL_LIST = [
     title: 'Discord',
     href: 'https://discord.com/invite/cowprotocol?utm_source=cow.fi&utm_medium=web&utm_content=link',
     linkEvent: 'click-discord',
-    iconColor: '#FDADA3',
-    textColor: '#23191A',
+    iconColor: ({ theme }: ThemeProps) => theme.cowfi_discord_pink,
+    textColor: Color.neutral10,
     iconImage: IMG_DISCORD,
   },
   {
     title: 'Forum',
     href: 'https://forum.cow.fi/?utm_source=cow.fi&utm_medium=web&utm_content=link',
     linkEvent: 'click-forum',
-    iconColor: '#1E5C06',
-    textColor: '#FFF8F7',
+    iconColor: ({ theme }: ThemeProps) => theme.cowamm_dark_green,
+    textColor: ({ theme }: ThemeProps) => theme.cowfi_white2,
     iconImage: IMG_FORUM,
   },
   {
     title: 'Snapshot',
     href: 'https://snapshot.org/#/cow.eth?utm_source=cow.fi&utm_medium=web&utm_content=link',
     linkEvent: 'click-snapshot',
-    iconColor: '#710408',
-    textColor: '#FFF8F7',
+    iconColor: ({ theme }: ThemeProps) => theme.cowfi_snapshot_red,
+    textColor: ({ theme }: ThemeProps) => theme.cowfi_white2,
     iconImage: IMG_SNAPSHOT,
   },
 ]

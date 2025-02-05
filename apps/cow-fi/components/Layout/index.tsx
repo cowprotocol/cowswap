@@ -63,13 +63,16 @@ export function Layout({ children, bgColor, host }: Readonly<LayoutProps>) {
         />
       </ThemeProvider>
       <Wrapper>{children}</Wrapper>
-      <Footer
-        maxWidth={PAGE_MAX_WIDTH}
-        productVariant={PRODUCT_VARIANT}
-        host={host ?? process.env.NEXT_PUBLIC_SITE_URL!}
-        expanded
-        hasTouchFooter
-      />
+      {/* Override global light theme to force dark mode for Footer only */}
+      <ThemeProvider theme={baseTheme('dark')}>
+        <Footer
+          maxWidth={PAGE_MAX_WIDTH}
+          productVariant={PRODUCT_VARIANT}
+          host={host ?? process.env.NEXT_PUBLIC_SITE_URL!}
+          expanded
+          hasTouchFooter
+        />
+      </ThemeProvider>
     </>
   )
 }
