@@ -81,7 +81,7 @@ const ORDER_INDEXED_STATUSES: OrderStatus[] = [OrderStatus.PENDING, OrderStatus.
 function mapOrderToEthFlowStepperState(
   order: Order | undefined,
   creationTx: EnhancedTransactionDetails | undefined,
-  cancellationTx: EnhancedTransactionDetails | undefined
+  cancellationTx: EnhancedTransactionDetails | undefined,
 ): SmartOrderStatus | undefined {
   if (order) {
     const { status } = order
@@ -124,6 +124,9 @@ function didRefundFail(order: Order): boolean | undefined {
 }
 
 // TODO: move this somewhere else?
+/**
+ * @deprecated use getIsNativeToken() instead
+ */
 export function getIsEthFlowOrder(inputTokenAddress: string): boolean {
   return inputTokenAddress === NATIVE_CURRENCY_ADDRESS
 }

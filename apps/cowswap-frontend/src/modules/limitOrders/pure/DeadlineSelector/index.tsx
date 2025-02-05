@@ -126,7 +126,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
   return (
     <styledEl.Wrapper>
       <styledEl.Label>
-        <Trans>Expiry</Trans>
+        <Trans>Order expires in</Trans>
       </styledEl.Label>
 
       {isDeadlineDisabled ? (

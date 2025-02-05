@@ -1,4 +1,5 @@
-import { UI } from '@cowprotocol/ui'
+import { TokenLogo } from '@cowprotocol/tokens'
+import { TokenSymbol, UI } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
@@ -9,33 +10,68 @@ type Props = {
   currency: Currency | null
   inputCurrency: Currency | null
   rateImpact: number
+  toggleIcon?: React.ReactNode
+  onToggle?: () => void
 }
 
 const Wrapper = styled.span`
   display: flex;
   flex-flow: row wrap;
-  align-items: flex-start;
+  align-items: center;
   justify-content: flex-start;
   text-align: left;
   gap: 0 3px;
-  opacity: 0.7;
-  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  font-size: 13px;
+  font-weight: 400;
+  margin: auto 0;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+`
+
+const TokenWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  color: var(${UI.COLOR_TEXT});
+`
+
+const TextWrapper = styled.span<{ clickable: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: ${({ clickable }) => (clickable ? 'pointer' : 'default')};
+  transition:
+    opacity var(${UI.ANIMATION_DURATION}) ease-in-out,
+    text-decoration-color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  text-decoration-color: var(${UI.COLOR_TEXT_OPACITY_25});
 
   &:hover {
-    opacity: 1;
+    text-decoration-color: var(${UI.COLOR_TEXT_OPACITY_70});
   }
 `
 
-export function HeadingText({ inputCurrency, currency, rateImpact }: Props) {
+export function HeadingText({ inputCurrency, currency, rateImpact, toggleIcon, onToggle }: Props) {
   if (!currency) {
     return <Wrapper>Select input and output</Wrapper>
   }
 
   return (
     <Wrapper>
-      {/* Price of <TokenSymbol token={currency} /> */}
-      Limit price
-      {<RateImpactIndicator inputCurrency={inputCurrency} rateImpact={rateImpact} />}
+      {toggleIcon}
+      <TextWrapper clickable={!!onToggle} onClick={onToggle}>
+        When
+        <TokenWrapper>
+          1
+          <TokenLogo token={currency} size={16} />
+          <TokenSymbol token={currency} />
+        </TokenWrapper>
+        is worth
+        {<RateImpactIndicator inputCurrency={inputCurrency} rateImpact={rateImpact} />}
+      </TextWrapper>
     </Wrapper>
   )
 }

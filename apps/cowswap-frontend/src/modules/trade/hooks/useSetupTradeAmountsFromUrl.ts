@@ -38,7 +38,8 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
   const params = useMemo(() => new URLSearchParams(search), [search])
   const { updateState } = useTradeState()
   const state = useDerivedTradeState()
-  const { inputCurrency, outputCurrency } = state || {}
+  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = state || {}
+  const isAtLeastOneAmountIsSet = Boolean(inputCurrencyAmount || outputCurrencyAmount)
 
   const cleanParams = useCallback(() => {
     if (!search) return
@@ -82,6 +83,12 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
 
     const hasUpdates = Object.keys(update).length > 0
 
+    // When both sell and buy amount are not set
+    // Then set 1 unit to sell by default
+    if (!isAtLeastOneAmountIsSet && !update.inputCurrencyAmount && inputCurrency) {
+      update.inputCurrencyAmount = FractionUtils.serializeFractionToJSON(tryParseCurrencyAmount('1', inputCurrency))
+    }
+
     if (hasUpdates) {
       // Clean params only when an update was applied or currencies are loaded
       if (inputCurrency || outputCurrency) {
@@ -95,5 +102,5 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
       }
     }
     // Trigger only when URL or assets are changed
-  }, [params, inputCurrency, outputCurrency, onlySell])
+  }, [params, inputCurrency, outputCurrency, onlySell, isAtLeastOneAmountIsSet])
 }

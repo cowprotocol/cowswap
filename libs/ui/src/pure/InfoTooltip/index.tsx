@@ -7,8 +7,9 @@ import { UI } from '../../enum'
 import { HoverTooltip, TooltipContainer } from '../Tooltip'
 
 const StyledIcon = styled.div<{ size: number }>`
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: center;
   color: inherit;
   opacity: 0.6;
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;

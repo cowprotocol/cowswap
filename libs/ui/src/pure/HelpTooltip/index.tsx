@@ -49,17 +49,12 @@ export interface HelpTooltipProps extends Omit<HoverTooltipProps, 'QuestionMark'
 
 export function HelpTooltip({ text, Icon, className, ...props }: HelpTooltipProps) {
   const tooltip = renderTooltip(text, props)
-
   const content = <div>{tooltip}</div>
-
-  const HelpIcon = () => Icon || DefaultQuestionIcon
 
   return (
     <HelpTooltipContainer className={className}>
       <HoverTooltip {...props} content={content} wrapInContainer>
-        <QuestionTooltipIconWrapper>
-          <HelpIcon />
-        </QuestionTooltipIconWrapper>
+        <QuestionTooltipIconWrapper>{Icon || DefaultQuestionIcon}</QuestionTooltipIconWrapper>
       </HoverTooltip>
     </HelpTooltipContainer>
   )

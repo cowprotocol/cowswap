@@ -10,11 +10,10 @@ interface NetworkCostsRowProps {
   withTimelineDot?: boolean
   amountSuffix?: ReactNode
   tooltipSuffix?: ReactNode
-  alwaysRow?: boolean
 }
 export function NetworkCostsRow({
   withTimelineDot,
-  alwaysRow,
+
   networkFeeAmount,
   networkFeeAmountUsd,
   amountSuffix,
@@ -22,7 +21,6 @@ export function NetworkCostsRow({
 }: NetworkCostsRowProps) {
   return (
     <ReviewOrderModalAmountRow
-      alwaysRow={alwaysRow}
       withTimelineDot={withTimelineDot}
       amount={networkFeeAmount}
       fiatAmount={networkFeeAmountUsd}
