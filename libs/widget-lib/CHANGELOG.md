@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.18.0...widget-lib-v0.18.1) (2025-02-05)
+
+
+### Bug Fixes
+
+* **safe-app:** remove approval+order placement bundling banner ([#5393](https://github.com/cowprotocol/cowswap/issues/5393)) ([571029d](https://github.com/cowprotocol/cowswap/commit/571029d11f7c2d1afe608f8dd3481c404e0efea0))
+
 ## [0.18.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.17.0...widget-lib-v0.18.0) (2024-12-03)
 
 
