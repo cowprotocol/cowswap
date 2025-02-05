@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.9.1...common-utils-v1.10.0) (2025-02-05)
+
+
+### Features
+
+* **limit-orders:** upgrade and redesign ([#5249](https://github.com/cowprotocol/cowswap/issues/5249)) ([5c868bb](https://github.com/cowprotocol/cowswap/commit/5c868bb794d648363afb88371178ddc35deaf7a7))
+
 ## [1.9.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.9.0...common-utils-v1.9.1) (2025-01-30)
 
 
