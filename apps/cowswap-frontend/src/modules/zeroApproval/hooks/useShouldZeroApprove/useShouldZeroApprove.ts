@@ -34,7 +34,10 @@ export function useShouldZeroApprove(amountToApprove: Nullish<CurrencyAmount<Cur
         spender,
       })
 
-      if (result === null) return
+      if (result === null) {
+        if (shouldZeroApprove) setShouldZeroApprove(false)
+        return
+      }
 
       if (!isStale) {
         setShouldZeroApprove(result)
@@ -44,7 +47,7 @@ export function useShouldZeroApprove(amountToApprove: Nullish<CurrencyAmount<Cur
     return () => {
       isStale = true
     }
-  }, [tokenContract, spender, amountToApprove, approvalState])
+  }, [tokenContract, spender, amountToApprove, approvalState, shouldZeroApprove])
 
   return shouldZeroApprove
 }

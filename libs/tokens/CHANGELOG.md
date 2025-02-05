@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.14.0...tokens-v1.14.1) (2025-02-05)
+
+
+### Bug Fixes
+
+* display error message for token import ([#5312](https://github.com/cowprotocol/cowswap/issues/5312)) ([3991be9](https://github.com/cowprotocol/cowswap/commit/3991be9d3f343612a96cced47abfd75da5741aa1))
+
 ## [1.14.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.13.1...tokens-v1.14.0) (2025-01-09)
 
 
