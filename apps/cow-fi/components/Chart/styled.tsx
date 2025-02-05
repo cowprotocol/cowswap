@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { ArrowDownRight, ArrowUpRight } from 'react-feather'
-import { Color, TransitionDuration } from 'styles/variables'
+import { TransitionDuration } from 'styles/variables'
 import { textFadeIn } from 'styles/variables'
 
 export const ChartHeader = styled.div`
@@ -17,7 +17,7 @@ export const TokenPrice = styled.span`
 export const MissingPrice = styled(TokenPrice)`
   font-size: 24px;
   line-height: 44px;
-  color: ${Color.grey3};
+  color: ${({ theme }) => theme.cowfi_grey3};
 `
 
 export const DeltaContainer = styled.div`
@@ -33,7 +33,7 @@ export const ArrowCell = styled.div`
 `
 
 export const MissingPriceCaption = styled.div`
-  color: ${Color.grey3};
+  color: ${({ theme }) => theme.cowfi_grey3};
 `
 
 export const StyledUpArrow = styled((props) => <ArrowUpRight {...props} />)`

@@ -1,5 +1,4 @@
 import styled from 'styled-components/macro'
-import { Color } from 'styles/variables'
 
 export const ChartContainer = styled.div`
   display: flex;
@@ -11,6 +10,7 @@ export const ChartContainer = styled.div`
   overflow: hidden;
   padding-right: 100px;
 `
+
 const LoadingChartContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -36,14 +36,19 @@ const ChartAnimation = styled.div`
     }
   }
 `
+
 const Space = styled.div<{ heightSize: number }>`
   height: ${({ heightSize }) => `${heightSize}px`};
+`
+
+const StyledPath = styled.path`
+  stroke: ${({ theme }) => theme.cowfi_grey2};
 `
 
 function Wave() {
   return (
     <svg width="416" height="160" xmlns="http://www.w3.org/2000/svg">
-      <path d="M 0 80 Q 104 10, 208 80 T 416 80" stroke={Color.grey2} fill="transparent" strokeWidth="2" />
+      <StyledPath d="M 0 80 Q 104 10, 208 80 T 416 80" fill="transparent" strokeWidth="2" />
     </svg>
   )
 }

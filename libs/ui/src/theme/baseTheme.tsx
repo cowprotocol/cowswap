@@ -1,4 +1,5 @@
-import { transparentize, darken } from 'color2k'
+import { darken } from 'color2k'
+import { transparentize } from 'polished'
 // eslint-disable-next-line no-restricted-imports
 import { CowProtocolTheme } from 'styled-components'
 import { css } from 'styled-components/macro'
@@ -18,6 +19,9 @@ export function baseTheme<T extends CowProtocolTheme>(theme: CowSwapTheme): CowP
 }
 
 function colors(darkMode: boolean): Colors {
+  // TODO(theme-cleanup): These colors were migrated from apps/cow-fi/styles/variables.ts
+  // They should be reviewed and potentially consolidated with the existing color system.
+  // The cowfi_ prefix helps identify their origin and marks them for future cleanup.
   const buttonTextCustom = '#65D9FF'
   const blueDark2 = '#004293'
   const blueDark3 = '#0d5ed9'
@@ -33,6 +37,32 @@ function colors(darkMode: boolean): Colors {
   const background = darkMode ? black : '#ECF1F8'
   const alert = darkMode ? '#FFCA4A' : '#DB971E'
   const success = darkMode ? '#00D897' : '#007B28'
+  const cowfi_orange = '#ED6834'
+  const cowfi_darkBlue = '#052B65'
+  const cowfi_darkBlue2 = '#0D3673'
+  const cowfi_darkBlue3 = '#042a63'
+  const cowfi_darkBlue4 = '#042456'
+  const cowfi_lightBlue2 = 'rgb(176 194 255)'
+  const cowfi_lightBlue3 = 'rgb(118 167 230)'
+  const cowfi_grey = 'rgb(236, 241, 248)'
+  const cowfi_grey2 = 'rgb(201 211 226)'
+  const cowfi_grey3 = '#737b96'
+  const cowfi_text1 = '#405A82'
+  const cowfi_text2 = '#95BAEF'
+  const cowfi_border = transparentize('0.75', '#979797')
+  const cowfi_borderGradient = `linear-gradient(to bottom, ${transparentize('0.75', '#979797')}, ${transparentize('1.0', '#979797')})`
+  const cowfi_gradient = 'linear-gradient(45deg,#FFE7E0 0%,#F8DBF4 20%,#C4DDFF 60%,#CAE9FF 100%)'
+  const cowfi_gradient2 = `linear-gradient(0deg, #071B3B 0%, ${cowfi_darkBlue} 100%)`
+  const cowfi_gradientMesh = css`
+    background-color: hsla(142, 0%, 100%, 1);
+    background-image: radial-gradient(at 5% 70%, hsla(204, 100%, 89%, 1) 0px, transparent 50%),
+      radial-gradient(at 47% 40%, hsla(214, 100%, 88%, 1) 0px, transparent 50%),
+      radial-gradient(at 73% 3%, hsla(308, 67%, 91%, 1) 0px, transparent 50%),
+      radial-gradient(at 44% 13%, hsla(13, 100%, 93%, 1) 0px, transparent 50%),
+      radial-gradient(at 61% 70%, hsla(204, 100%, 89%, 1) 0px, transparent 50%),
+      radial-gradient(at 32% 81%, hsla(204, 100%, 89%, 1) 0px, transparent 50%),
+      radial-gradient(at 19% 39%, hsla(204, 100%, 89%, 1) 0px, transparent 50%);
+  `
 
   return {
     darkMode,
@@ -58,6 +88,23 @@ function colors(darkMode: boolean): Colors {
     alert2: '#F8D06B',
     error: darkMode ? '#EB3030' : error,
     text4: darkMode ? 'rgba(197, 218, 239, 0.7)' : '#000000b8',
+    cowfi_orange,
+    cowfi_darkBlue,
+    cowfi_darkBlue2,
+    cowfi_darkBlue3,
+    cowfi_darkBlue4,
+    cowfi_lightBlue2,
+    cowfi_lightBlue3,
+    cowfi_grey,
+    cowfi_grey2,
+    cowfi_grey3,
+    cowfi_text1,
+    cowfi_text2,
+    cowfi_border,
+    cowfi_borderGradient,
+    cowfi_gradient,
+    cowfi_gradient2,
+    cowfi_gradientMesh,
 
     // ****** backgrounds ******
     bg5: darkMode ? '#1d4373' : '#D5E9F0',
@@ -79,10 +126,10 @@ function colors(darkMode: boolean): Colors {
     green1: darkMode ? '#27AE60' : '#007D35',
     yellow3: '#F3B71E',
     gradient1: `linear-gradient(145deg, ${paper}, ${background})`,
-    gradient2: `linear-gradient(250deg, ${transparentize(alert, 0.92)} 10%, ${transparentize(
-      success,
+    gradient2: `linear-gradient(250deg, ${transparentize(0.92, alert)} 10%, ${transparentize(
       0.92,
-    )} 50%, ${transparentize(success, 0.92)} 100%);`,
+      success,
+    )} 50%, ${transparentize(0.92, success)} 100%);`,
     boxShadow1: darkMode ? '0 24px 32px rgba(0, 0, 0, 0.06)' : '0 12px 12px rgba(5, 43, 101, 0.06)',
     boxShadow2: '0 4px 12px 0 rgb(0 0 0 / 15%)',
     shadow1: darkMode ? '#000' : '#2F80ED',

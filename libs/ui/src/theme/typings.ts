@@ -45,6 +45,26 @@ export interface Colors {
   boxShadow1: ColorValue
   boxShadow2: ColorValue
   shadow1: ColorValue
+
+  // TODO: Colors migrated from cow-fi
+  // TODO: Remove these once we've migrated all the colors
+  cowfi_orange: ColorValue
+  cowfi_darkBlue: ColorValue
+  cowfi_darkBlue2: ColorValue
+  cowfi_darkBlue3: ColorValue
+  cowfi_darkBlue4: ColorValue
+  cowfi_lightBlue2: ColorValue
+  cowfi_lightBlue3: ColorValue
+  cowfi_grey: ColorValue
+  cowfi_grey2: ColorValue
+  cowfi_grey3: ColorValue
+  cowfi_text1: ColorValue
+  cowfi_text2: ColorValue
+  cowfi_border: ColorValue
+  cowfi_borderGradient: ColorValue
+  cowfi_gradient: ColorValue
+  cowfi_gradient2: ColorValue
+  cowfi_gradientMesh: StyledFlattenSimpleInterpolation
 }
 
 export interface ThemeUtils {
@@ -60,5 +80,7 @@ declare module 'styled-components' {
     mode: CowSwapTheme
   }
 
-  export interface DefaultTheme extends CowProtocolTheme {}
+  export interface DefaultTheme extends CowProtocolTheme {
+    // No additional properties needed
+  }
 }
