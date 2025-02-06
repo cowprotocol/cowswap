@@ -1,4 +1,4 @@
-import type { CowProtocolTheme } from '@cowprotocol/types'
+import type { CowProtocolTheme } from '@cowprotocol/ui'
 
 declare module 'styled-components' {
   export interface CowSwapDefaultTheme extends CowProtocolTheme {

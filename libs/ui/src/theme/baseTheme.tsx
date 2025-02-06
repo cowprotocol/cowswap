@@ -1,9 +1,10 @@
-import type { Colors, CowProtocolTheme, CowSwapTheme } from '@cowprotocol/types'
-
 import { transparentize, darken } from 'color2k'
 import { css } from 'styled-components/macro'
 
+import { Colors, CowProtocolTheme } from './typings'
+
 import { UI } from '../enum'
+import { CowSwapTheme } from '../types'
 
 export function baseTheme<T extends CowProtocolTheme>(theme: CowSwapTheme): CowProtocolTheme {
   const darkMode = theme === 'dark'
