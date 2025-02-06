@@ -32,8 +32,8 @@ export function DateDisplay({ date, showIcon, tooltipPlacement = 'top' }: Readon
 
       <span className="d-flex">
         {showIcon ? (
-          <span>
-            <span {...targetProps}>
+          <span {...targetProps}>
+            <span>
               <IconWrapper icon={faClock} />
             </span>
             &nbsp;{previewDate}
