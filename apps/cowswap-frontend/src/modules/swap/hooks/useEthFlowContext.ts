@@ -16,7 +16,10 @@ import { EthFlowContext } from '../services/types'
 import { addInFlightOrderIdAtom } from '../state/EthFlow/ethFlowInFlightOrderIdsAtom'
 
 export function useEthFlowContext(): EthFlowContext | null {
-  const { contract: ethFlowContract, chainId: ethFlowChainId } = useEthFlowContract()
+  const {
+    result: { contract: ethFlowContract, chainId: ethFlowChainId },
+    useNewEthFlowContracts,
+  } = useEthFlowContract()
   const { currenciesIds } = useDerivedSwapInfo()
   const { quote } = useGetQuoteAndStatus({
     token: currenciesIds.INPUT,
@@ -34,12 +37,31 @@ export function useEthFlowContext(): EthFlowContext | null {
   return (
     useSWR(
       appData && ethFlowContract
-        ? [quote, ethFlowContract, addTransaction, checkEthFlowOrderExists, addInFlightOrderId, uploadAppData, appData]
+        ? [
+            quote,
+            ethFlowContract,
+            useNewEthFlowContracts,
+            addTransaction,
+            checkEthFlowOrderExists,
+            addInFlightOrderId,
+            uploadAppData,
+            appData,
+          ]
         : null,
-      ([quote, contract, addTransaction, checkEthFlowOrderExists, addInFlightOrderId, uploadAppData, appData]) => {
+      ([
+        quote,
+        contract,
+        useNewEthFlowContracts,
+        addTransaction,
+        checkEthFlowOrderExists,
+        addInFlightOrderId,
+        uploadAppData,
+        appData,
+      ]) => {
         return {
           quote,
           contract,
+          useNewEthFlowContracts,
           addTransaction,
           checkEthFlowOrderExists,
           addInFlightOrderId,
