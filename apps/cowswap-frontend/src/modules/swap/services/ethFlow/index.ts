@@ -80,8 +80,17 @@ export async function ethFlow(
       throw new Error('Quote expired. Please refresh.')
     }
 
-    if (contract.address !== getEthFlowContractAddresses(ethFlowEnv, useNewEthFlowContracts, chainId)) {
-      throw new Error('EthFlow contract address mismatch. Please refresh the page and try again.')
+    // Last check before signing the order of the actual eth flow contract address (sending ETH to the wrong contract could lead to loss of funds)
+    const actualContractAddress = contract.address.toLowerCase()
+    const expectedContractAddress = getEthFlowContractAddresses(
+      ethFlowEnv,
+      useNewEthFlowContracts,
+      chainId,
+    ).toLowerCase()
+    if (actualContractAddress !== expectedContractAddress) {
+      throw new Error(
+        `EthFlow contract (${actualContractAddress}) address don't match the expected address for chain ${chainId} (${expectedContractAddress}). Please refresh the page and try again.`,
+      )
     }
 
     logTradeFlow('ETH FLOW', 'STEP 4: sign order')
