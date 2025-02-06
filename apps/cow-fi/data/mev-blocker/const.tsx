@@ -371,7 +371,7 @@ export const FAQ_DATA = [
         </Link>
         ,{' '}
         <Link
-          href="https://agnostic.relayer.services"
+          href="https://agnostic-relay.net/"
           external
           utmContent="mev-blocker-agnostic"
           data-click-event={toCowFiGtmEvent({
@@ -383,7 +383,7 @@ export const FAQ_DATA = [
         </Link>
         , and{' '}
         <Link
-          href="https://beaver.rip"
+          href="https://beaverbuild.org/"
           external
           utmContent="mev-blocker-beaver"
           data-click-event={toCowFiGtmEvent({
@@ -407,7 +407,7 @@ export const FAQ_DATA = [
       <>
         If you are a searcher that is interested in collaborating with MEV Blocker RPC, please check out the{' '}
         <Link
-          href="https://docs.cow.fi/mev-blocker"
+          href="https://docs.cow.fi/mevblocker"
           external
           utmContent="mev-blocker-docs"
           data-click-event={toCowFiGtmEvent({
