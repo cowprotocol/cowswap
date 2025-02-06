@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.100.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.99.0...cowswap-v1.100.0) (2025-02-06)
+
+
+### Features
+
+* use new deterministic ethflow contracts ([#5334](https://github.com/cowprotocol/cowswap/issues/5334)) ([f11fb61](https://github.com/cowprotocol/cowswap/commit/f11fb613b02825aa6c571ffdc3414086557b48e9))
+
 ## [1.99.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.98.2...cowswap-v1.99.0) (2025-02-05)
 
 
