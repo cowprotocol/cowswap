@@ -1,3 +1,4 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { MaxUint256 } from '@ethersproject/constants'
 import { Wallet } from '@ethersproject/wallet'
 
@@ -16,3 +17,14 @@ export const DEFAULT_PERMIT_GAS_LIMIT = '80000'
 export const DEFAULT_PERMIT_VALUE = MaxUint256.toString()
 
 export const DEFAULT_PERMIT_DURATION = ms`5 years`
+
+export const TOKEN_PERMIT_BLACKLISTED_ERROR = 'Token is blacklisted for permit'
+
+/**
+ * Tokens that are known to not support permit
+ */
+export const PERMIT_TOKENS_BLACKLIST: Partial<Record<SupportedChainId, string[]>> = {
+  [SupportedChainId.ARBITRUM_ONE]: [
+    '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9', // USDT
+  ],
+}

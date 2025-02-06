@@ -1,10 +1,17 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 
 import { DAI_LIKE_PERMIT_TYPEHASH, Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 
 import { getPermitUtilsInstance } from './getPermitUtilsInstance'
 
-import { DEFAULT_MIN_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_SIGNER } from '../const'
+import {
+  DEFAULT_MIN_GAS_LIMIT,
+  DEFAULT_PERMIT_VALUE,
+  PERMIT_SIGNER,
+  PERMIT_TOKENS_BLACKLIST,
+  TOKEN_PERMIT_BLACKLISTED_ERROR,
+} from '../const'
 import { GetTokenPermitInfoParams, GetTokenPermitIntoResult, PermitInfo, PermitType } from '../types'
 import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from '../utils/buildPermitCallData'
 import { Eip712Domain, getEip712Domain } from '../utils/getEip712Domain'
@@ -48,6 +55,10 @@ export async function getTokenPermitInfo(params: GetTokenPermitInfoParams): Prom
 
 async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams): Promise<GetTokenPermitIntoResult> {
   const { spender, tokenAddress, chainId, provider, minGasLimit } = params
+
+  const isBlackListed = PERMIT_TOKENS_BLACKLIST[chainId as SupportedChainId]?.includes(tokenAddress.toLowerCase())
+
+  if (isBlackListed) return { error: TOKEN_PERMIT_BLACKLISTED_ERROR }
 
   const eip2612PermitUtils = getPermitUtilsInstance(chainId, provider)
 
