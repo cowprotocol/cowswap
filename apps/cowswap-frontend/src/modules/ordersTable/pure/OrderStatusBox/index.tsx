@@ -38,7 +38,6 @@ const Wrapper = styled.div<{
   align-items: center;
   justify-content: center;
   color: var(--statusColor);
-  padding: 0 10px;
   position: relative;
   z-index: 2;
   font-size: 12px;
