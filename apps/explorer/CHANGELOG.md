@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.42.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.42.0...explorer-v2.42.1) (2025-02-05)
+
+
+### Bug Fixes
+
+* **explorer:** fix navigation between tabs is not working using browser arrows ([#5280](https://github.com/cowprotocol/cowswap/issues/5280)) ([3e1bcfe](https://github.com/cowprotocol/cowswap/commit/3e1bcfe153986f91fa5cd06ee0f3625c8419bba8))
+* **explorer:** ui Adjustment ([#5268](https://github.com/cowprotocol/cowswap/issues/5268)) ([7d3242c](https://github.com/cowprotocol/cowswap/commit/7d3242c19f50993babcc71bf988e089c3962f61d))
+
 ## [2.42.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.41.0...explorer-v2.42.0) (2025-01-09)
 
 

@@ -11,7 +11,13 @@ import { Field } from 'legacy/state/types'
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
-import { TradeWidget, TradeWidgetSlots, useTradeConfirmState, useTradePriceImpact } from 'modules/trade'
+import {
+  TradeWidget,
+  TradeWidgetSlots,
+  useIsWrapOrUnwrap,
+  useTradeConfirmState,
+  useTradePriceImpact,
+} from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
@@ -147,6 +153,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const { search } = useLocation()
   const handleUnlock = useCallback(() => updateLimitOrdersState({ isUnlocked: true }), [updateLimitOrdersState])
   const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
+  const isWrapUnwrap = useIsWrapOrUnwrap()
 
   useEffect(() => {
     const skipLockScreen = search.includes('skipLockScreen')
@@ -172,6 +179,12 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     label: outputCurrencyInfo.label,
   }
 
+  const rateInput = isWrapUnwrap ? null : (
+    <styledEl.RateWrapper>
+      <RateInput />
+    </styledEl.RateWrapper>
+  )
+
   const slots: TradeWidgetSlots = {
     settingsWidget: <SettingsWidget />,
     lockScreen:
@@ -187,32 +200,12 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           handleUnlock={handleUnlock}
         />
       ) : undefined,
-    topContent: (
-      <>
-        {props.settingsState.limitPricePosition === 'top' && (
-          <styledEl.RateWrapper>
-            <RateInput />
-          </styledEl.RateWrapper>
-        )}
-      </>
-    ),
-    middleContent: (
-      <>
-        {props.settingsState.limitPricePosition === 'between' && (
-          <styledEl.RateWrapper>
-            <RateInput />
-          </styledEl.RateWrapper>
-        )}
-      </>
-    ),
+    topContent: props.settingsState.limitPricePosition === 'top' ? rateInput : undefined,
+    middleContent: props.settingsState.limitPricePosition === 'between' ? rateInput : undefined,
     bottomContent(warnings) {
       return (
         <>
-          {props.settingsState.limitPricePosition === 'bottom' && (
-            <styledEl.RateWrapper>
-              <RateInput />
-            </styledEl.RateWrapper>
-          )}
+          {props.settingsState.limitPricePosition === 'bottom' && rateInput}
           <styledEl.FooterBox>
             <DeadlineInput />
             <TradeRateDetails rateInfoParams={rateInfoParams} alwaysExpanded={true} />

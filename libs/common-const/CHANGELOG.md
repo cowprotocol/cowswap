@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.13.0...common-const-v1.14.0) (2025-02-05)
+
+
+### Features
+
+* **limit-orders:** upgrade and redesign ([#5249](https://github.com/cowprotocol/cowswap/issues/5249)) ([5c868bb](https://github.com/cowprotocol/cowswap/commit/5c868bb794d648363afb88371178ddc35deaf7a7))
+
 ## [1.13.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.12.2...common-const-v1.13.0) (2024-12-18)
 
 
