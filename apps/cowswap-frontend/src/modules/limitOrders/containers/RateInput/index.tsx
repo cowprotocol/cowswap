@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import LockedIcon from '@cowprotocol/assets/images/icon-locked.svg'
@@ -28,6 +28,7 @@ import { useConvertUsdToTokenValue } from 'common/hooks/useConvertUsdToTokenValu
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { getQuoteCurrency, getQuoteCurrencyByStableCoin } from 'common/services/getQuoteCurrency'
 
+import { isLocalUsdRateModeAtom } from './atoms'
 import { useExecutionPriceUsdValue } from './hooks/useExecutionPriceUsdValue'
 import { useRateDisplayedValue } from './hooks/useRateDisplayedValue'
 import * as styledEl from './styled'
@@ -40,14 +41,14 @@ export function RateInput() {
   const updateRate = useUpdateActiveRate()
   const updateLimitRateState = useSetAtom(updateLimitRateAtom)
   const executionPrice = useAtomValue(executionPriceAtom)
-  const { limitPriceLocked, isUsdValuesMode, partialFillsEnabled } = useAtomValue(limitOrdersSettingsAtom)
+  const { limitPriceLocked, partialFillsEnabled } = useAtomValue(limitOrdersSettingsAtom)
   const updateLimitOrdersSettings = useSetAtom(updateLimitOrdersSettingsAtom)
 
   const executionPriceUsdValue = useExecutionPriceUsdValue(executionPrice)
 
   const [isQuoteCurrencySet, setIsQuoteCurrencySet] = useState(false)
   const [typedTrailingZeros, setTypedTrailingZeros] = useState('')
-  const [isUsdRateMode, setIsUsdRateMode] = useState(isUsdValuesMode)
+  const [isUsdRateMode, setIsUsdRateMode] = useAtom(isLocalUsdRateModeAtom)
 
   // Limit order state
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
@@ -154,7 +155,7 @@ export function RateInput() {
       // When already in token mode, toggle between tokens
       updateLimitRateState({ isInverted: !isInverted, isTypedValue: false })
     }
-  }, [isInverted, updateLimitRateState, isUsdRateMode])
+  }, [isInverted, updateLimitRateState, isUsdRateMode, setIsUsdRateMode])
 
   // Handle toggle price lock
   const handleTogglePriceLock = useCallback(
@@ -212,11 +213,6 @@ export function RateInput() {
   useEffect(() => {
     setIsQuoteCurrencySet(false)
   }, [inputCurrency, outputCurrency])
-
-  // Depend rate USD mode on settings
-  useEffect(() => {
-    setIsUsdRateMode(isUsdValuesMode)
-  }, [isUsdValuesMode])
 
   return (
     <>

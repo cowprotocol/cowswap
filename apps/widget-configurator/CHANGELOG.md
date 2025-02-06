@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.11.0...widget-configurator-v1.12.0) (2025-02-05)
+
+
+### Features
+
+* remove mock ([#5265](https://github.com/cowprotocol/cowswap/issues/5265)) ([a5ce229](https://github.com/cowprotocol/cowswap/commit/a5ce22972d4704d5d2ed110388eb77f0dfd35ecf))
+
 ## [1.11.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.10.1...widget-configurator-v1.11.0) (2025-01-09)
 
 
