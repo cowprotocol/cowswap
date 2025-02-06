@@ -355,7 +355,7 @@ export default function Page() {
                 <SectionTitleDescription color={Color.neutral50}>
                   To learn more about each of the endpoints MEV Blocker has to offer,{' '}
                   <Link
-                    href="https://docs.cow.fi/mev-blocker"
+                    href="https://docs.cow.fi/mevblocker"
                     external
                     utmContent="mev-blocker-docs-link"
                     data-click-event={toCowFiGtmEvent({
