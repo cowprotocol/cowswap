@@ -10,6 +10,7 @@ import { getSignOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'le
 import { logTradeFlow, logTradeFlowError } from 'modules/trade/utils/logger'
 
 import { GAS_LIMIT_DEFAULT } from 'common/constants/common'
+import { assertProviderNetwork } from 'common/utils/assertProviderNetwork'
 
 type EthFlowOrderParams = Omit<PostOrderParams, 'sellToken'> & {
   sellToken: NativeCurrency
@@ -33,7 +34,7 @@ export async function signEthFlowOrderStep(
   orderId: string,
   orderParams: PostOrderParams,
   ethFlowContract: CoWSwapEthFlow,
-  addInFlightOrderId: (orderId: string) => void
+  addInFlightOrderId: (orderId: string) => void,
 ): Promise<EthFlowResponse> {
   logTradeFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] - signing orderParams onchain', orderParams)
 
@@ -44,10 +45,7 @@ export async function signEthFlowOrderStep(
     throw new Error('[EthFlow::SignEthFlowOrderStep] No quoteId passed')
   }
 
-  const network = await ethFlowContract.provider.getNetwork()
-  if (network.chainId !== orderParams.chainId) {
-    throw new Error('Wallet chain differs from order params.')
-  }
+  const network = await assertProviderNetwork(orderParams.chainId, ethFlowContract.provider, 'eth-flow')
 
   const ethOrderParams: EthFlowCreateOrderParams = {
     ...order,
@@ -58,21 +56,35 @@ export async function signEthFlowOrderStep(
   }
 
   const ethTxOptions = { value: etherValue.quotient.toString() }
-  const estimatedGas = await ethFlowContract.estimateGas
-    .createOrder(ethOrderParams, { value: etherValue.quotient.toString() })
-    .catch((error) => {
-      logTradeFlowError(
-        'ETH FLOW',
-        '[EthFlow::SignEthFlowOrderStep] Error estimating createOrder gas. Using default ' + GAS_LIMIT_DEFAULT,
-        error
-      )
-      return GAS_LIMIT_DEFAULT
-    })
+  const estimatedGas = await ethFlowContract.estimateGas.createOrder(ethOrderParams, ethTxOptions).catch((error) => {
+    logTradeFlowError(
+      'ETH FLOW',
+      '[EthFlow::SignEthFlowOrderStep] Error estimating createOrder gas. Using default ' + GAS_LIMIT_DEFAULT,
+      error,
+    )
+    return GAS_LIMIT_DEFAULT
+  })
 
-  const txReceipt = await ethFlowContract.createOrder(ethOrderParams, {
+  // Ensure the Eth flow contract network matches the network where you place the transaction.
+  // There are multiple wallet implementations, and potential race conditions that can cause the chain of the wallet to be different,
+  // and therefore leaving the chainId implicit might lead the user to place an order in an unwanted chain.
+  // This is especially dangerous for Eth Flow orders, because the contract address is different for the distinct networks,
+  // and this can lead to loss of funds.
+  //
+  // Thus, we are not using a higher level of abstraction as it doesn't allow to explicitly set the chainId:
+  // const txReceipt = await ethFlowContract.createOrder(ethOrderParams, {
+  //   ...ethTxOptions,
+  //   gasLimit: calculateGasMargin(estimatedGas),
+  // })
+  //
+  // So we must build the tx first:
+  const tx = await ethFlowContract.populateTransaction.createOrder(ethOrderParams, {
     ...ethTxOptions,
     gasLimit: calculateGasMargin(estimatedGas),
   })
+  // Then send the is using the contract's signer where the chainId is an acceptable parameter
+  const txReceipt = await ethFlowContract.signer.sendTransaction({ ...tx, chainId: network })
+
   addInFlightOrderId(orderId)
 
   logTradeFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] Sent transaction onchain', orderId, txReceipt)

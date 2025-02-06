@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.6.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.5.0...hook-dapp-lib-v1.6.0) (2025-02-05)
+
+
+### Features
+
+* **hook-store:** add Uniswap v2 withdraw hook dapp ([#5155](https://github.com/cowprotocol/cowswap/issues/5155)) ([2abaf53](https://github.com/cowprotocol/cowswap/commit/2abaf53a5f87c91521ed8dd94e2cd8aa5ecb8aec))
+
+## [1.5.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.4.0...hook-dapp-lib-v1.5.0) (2025-01-09)
+
+
+### Features
+
+* **swap:** partial approve ([#5256](https://github.com/cowprotocol/cowswap/issues/5256)) ([f080ffd](https://github.com/cowprotocol/cowswap/commit/f080ffdb098612e729f3a3f829410ce78697979f))
+
 ## [1.4.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.3.0...hook-dapp-lib-v1.4.0) (2024-12-11)
 
 

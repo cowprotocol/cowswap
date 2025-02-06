@@ -5,7 +5,7 @@ import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button'
 import { Edit, FileText, Link2, MoreVertical, Repeat, Trash2 } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { AlternativeOrderModalContext } from '../../../containers/OrdersReceiptModal/hooks'
+import { AlternativeOrderModalContext } from '../OrdersReceiptModal/hooks'
 
 export const ContextMenuButton = styled(MenuButton)`
   background: none;

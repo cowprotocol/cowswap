@@ -1,13 +1,10 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useShouldZeroApprove, useZeroApprove } from 'modules/zeroApproval'
-
 import { ApproveButton } from 'common/pure/ApproveButton'
 
-import { useTradeApproveCallback } from './useTradeApproveCallback'
-
+import { useApproveCurrency } from '../../hooks/useApproveCurrency'
 import { useApproveState } from '../../hooks/useApproveState'
 
 export interface TradeApproveButtonProps {
@@ -22,17 +19,8 @@ export function TradeApproveButton(props: TradeApproveButtonProps) {
   const currency = amountToApprove.currency
 
   const { state: approvalState } = useApproveState(amountToApprove)
-  const tradeApproveCallback = useTradeApproveCallback(amountToApprove)
-  const shouldZeroApprove = useShouldZeroApprove(amountToApprove)
-  const zeroApprove = useZeroApprove(amountToApprove.currency)
 
-  const handleApprove = useCallback(async () => {
-    if (shouldZeroApprove) {
-      await zeroApprove()
-    }
-
-    await tradeApproveCallback()
-  }, [tradeApproveCallback, zeroApprove, shouldZeroApprove])
+  const handleApprove = useApproveCurrency(amountToApprove)
 
   return (
     <>

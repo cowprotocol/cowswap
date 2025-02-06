@@ -95,7 +95,6 @@ export const AccountControl = styled.div`
   justify-content: space-between;
   min-width: 0;
   width: 100%;
-
   font-weight: 500;
   font-size: 1.25rem;
 
@@ -147,7 +146,9 @@ export const Wrapper = styled.div`
   ${WalletAction} {
     color: inherit;
     opacity: 0.85;
-    transition: color var(${UI.ANIMATION_DURATION}) ease-in-out, opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+    transition:
+      color var(${UI.ANIMATION_DURATION}) ease-in-out,
+      opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
     margin: auto;
     padding: 0;
     border: 0;

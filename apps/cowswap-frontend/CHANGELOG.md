@@ -1,5 +1,106 @@
 # Changelog
 
+## [1.99.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.98.2...cowswap-v1.99.0) (2025-02-05)
+
+
+### Features
+
+* **limit-orders:** upgrade and redesign ([#5249](https://github.com/cowprotocol/cowswap/issues/5249)) ([5c868bb](https://github.com/cowprotocol/cowswap/commit/5c868bb794d648363afb88371178ddc35deaf7a7))
+
+
+### Bug Fixes
+
+* **limit-orders:** do not display rate input when wrap/unwrap ([#5385](https://github.com/cowprotocol/cowswap/issues/5385)) ([d174a31](https://github.com/cowprotocol/cowswap/commit/d174a3128ec9569be4986738172076e2605e4283))
+* **orders-table:** prevent excessive transactions on approvals ([#5390](https://github.com/cowprotocol/cowswap/issues/5390)) ([fce1931](https://github.com/cowprotocol/cowswap/commit/fce1931db0d07b33d7d1d03c291c2ff1528956fd))
+* reset zero approval state ([#5387](https://github.com/cowprotocol/cowswap/issues/5387)) ([d9cd435](https://github.com/cowprotocol/cowswap/commit/d9cd43589a96084b84195df43d8fde729de66b17))
+* **safe-app:** remove approval+order placement bundling banner ([#5393](https://github.com/cowprotocol/cowswap/issues/5393)) ([571029d](https://github.com/cowprotocol/cowswap/commit/571029d11f7c2d1afe608f8dd3481c404e0efea0))
+* update chainId in TradeRouteContext from Account page ([#5348](https://github.com/cowprotocol/cowswap/issues/5348)) ([47a2787](https://github.com/cowprotocol/cowswap/commit/47a2787afe8d8b594327741fcca94433ba354baf))
+* **usd-rate-input:** keep track of usd toggle in the rate input on limit form ([#5391](https://github.com/cowprotocol/cowswap/issues/5391)) ([95c2e22](https://github.com/cowprotocol/cowswap/commit/95c2e22a5f0e6b54906b5a43ab2d94264be660ae))
+
+## [1.98.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.98.1...cowswap-v1.98.2) (2025-02-03)
+
+
+### Bug Fixes
+
+* display Metamask warning only for extension/mobile wallets ([#5370](https://github.com/cowprotocol/cowswap/issues/5370)) ([abb5683](https://github.com/cowprotocol/cowswap/commit/abb56834b1e21029ca66362f3b721cd47e080547))
+
+## [1.98.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.98.0...cowswap-v1.98.1) (2025-01-31)
+
+
+### Bug Fixes
+
+* css for Metamask warning banner ([#5365](https://github.com/cowprotocol/cowswap/issues/5365)) ([753899d](https://github.com/cowprotocol/cowswap/commit/753899d1ec9b0b613a6602e35b24cbe2024c30b3))
+
+## [1.98.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.97.1...cowswap-v1.98.0) (2025-01-31)
+
+
+### Features
+
+* warn users about metamask transactions ([#5362](https://github.com/cowprotocol/cowswap/issues/5362)) ([55e71b0](https://github.com/cowprotocol/cowswap/commit/55e71b09d512771185c75c80f291098796411689))
+
+## [1.97.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.97.0...cowswap-v1.97.1) (2025-01-30)
+
+
+### Bug Fixes
+
+* type guard to make sure provider is a JsonRpcProvider ([#5357](https://github.com/cowprotocol/cowswap/issues/5357)) ([6a2e030](https://github.com/cowprotocol/cowswap/commit/6a2e030aa7f88ef207fad8910750b18dcf719503))
+
+## [1.97.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.96.2...cowswap-v1.97.0) (2025-01-29)
+
+
+### Features
+
+* make useContract chainId aware and handle errors and loading state ([#5352](https://github.com/cowprotocol/cowswap/issues/5352)) ([d66e8ff](https://github.com/cowprotocol/cowswap/commit/d66e8ffc8668ad7563130228fb9bec28ae1d7e7e))
+
+
+### Bug Fixes
+
+* use provider.send('eth_chainId',[]) to avoid cached values ([#5354](https://github.com/cowprotocol/cowswap/issues/5354)) ([ad34521](https://github.com/cowprotocol/cowswap/commit/ad3452181287acb151b22d541feb156d208db482))
+
+## [1.96.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.96.1...cowswap-v1.96.2) (2025-01-27)
+
+
+### Bug Fixes
+
+* **wrap/unwrap:** enforce chainId when wrapping/unwrapping ([#5349](https://github.com/cowprotocol/cowswap/issues/5349)) ([7023f6e](https://github.com/cowprotocol/cowswap/commit/7023f6e449924eafc7afa0154844c78b315c6b37))
+
+## [1.96.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.96.0...cowswap-v1.96.1) (2025-01-09)
+
+
+### Bug Fixes
+
+* **token-lists:** remove old token lists from cache ([#5275](https://github.com/cowprotocol/cowswap/issues/5275)) ([1ca7211](https://github.com/cowprotocol/cowswap/commit/1ca7211729c552c1c834b12c2d343ce981b02cf1))
+
+## [1.96.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.95.3...cowswap-v1.96.0) (2025-01-09)
+
+
+### Features
+
+* executedSurplusFee removal ([#5262](https://github.com/cowprotocol/cowswap/issues/5262)) ([3be8a65](https://github.com/cowprotocol/cowswap/commit/3be8a65309048d4082f2ce25f5b39624e092dbf2))
+* **swap:** partial approve ([#5256](https://github.com/cowprotocol/cowswap/issues/5256)) ([f080ffd](https://github.com/cowprotocol/cowswap/commit/f080ffdb098612e729f3a3f829410ce78697979f))
+
+## [1.95.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.95.2...cowswap-v1.95.3) (2024-12-23)
+
+
+### Bug Fixes
+
+* fix order filled condition for permit check ([#5253](https://github.com/cowprotocol/cowswap/issues/5253)) ([b81842c](https://github.com/cowprotocol/cowswap/commit/b81842c8aed196f23a9cbcb42d637299f1e7708e))
+
+## [1.95.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.95.1...cowswap-v1.95.2) (2024-12-23)
+
+
+### Bug Fixes
+
+* **snackbars:** stick snackbars widget to header menu ([4582d67](https://github.com/cowprotocol/cowswap/commit/4582d67156364fe1866a40227f76c8101d11e1bd))
+* **widget:** do not display Christmas background ([6a4ae4c](https://github.com/cowprotocol/cowswap/commit/6a4ae4cc7bad90c9dc1fcb1ef71f8635415cd3cd))
+
+## [1.95.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.95.0...cowswap-v1.95.1) (2024-12-20)
+
+
+### Bug Fixes
+
+* **eth-flow:** set chainId explicitly when sending ethFlow tx ([#5244](https://github.com/cowprotocol/cowswap/issues/5244)) ([983536d](https://github.com/cowprotocol/cowswap/commit/983536d300a17e84dff691eb55d645b46ad1437b))
+
 ## [1.95.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.94.0...cowswap-v1.95.0) (2024-12-18)
 
 

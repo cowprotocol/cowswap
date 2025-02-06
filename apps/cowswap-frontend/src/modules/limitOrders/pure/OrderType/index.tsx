@@ -1,5 +1,5 @@
 import IMAGE_CARET_DOWN from '@cowprotocol/assets/cow-swap/carret-down.svg'
-import {InfoTooltip} from '@cowprotocol/ui'
+import { InfoTooltip, RowFixed } from '@cowprotocol/ui'
 
 import { Menu } from '@reach/menu-button'
 
@@ -21,18 +21,16 @@ export function OrderType(props: OrderTypeProps) {
     partiallyFillableOverride: [override],
   } = props
   const textContent =
-    override ?? isPartiallyFillable
+    (override ?? isPartiallyFillable)
       ? 'This order can be partially filled'
       : 'This order will either be filled completely or not filled.'
 
   return (
     <DetailsRow className={className}>
-      <div>
-        <span>
-          <p>Order type</p>
-        </span>{' '}
+      <RowFixed>
+        <p>Order type</p>
         <InfoTooltip content={textContent} />
-      </div>
+      </RowFixed>
       <OrderTypePicker {...props} />
     </DetailsRow>
   )

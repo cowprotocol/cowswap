@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 
 import { Erc20 } from '@cowprotocol/abis'
 import { calculateGasMargin, getIsNativeToken } from '@cowprotocol/common-utils'
-import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
@@ -17,7 +16,7 @@ import { GAS_LIMIT_DEFAULT } from '../constants/common'
 export async function estimateApprove(
   tokenContract: Erc20,
   spender: string,
-  amountToApprove: CurrencyAmount<Currency>,
+  amountToApprove: string,
 ): Promise<{
   approveAmount: BigNumber | string
   gasLimit: BigNumber
@@ -31,7 +30,7 @@ export async function estimateApprove(
     // Fallback: Attempt to set an approval for the maximum wallet balance (instead of the MaxUint256).
     // Some tokens revert if you try to use more than what you have.
     try {
-      const approveAmount = amountToApprove.quotient.toString()
+      const approveAmount = BigInt(amountToApprove).toString()
 
       return {
         approveAmount,
@@ -56,19 +55,20 @@ export function useApproveCallback(
   amountToApprove?: CurrencyAmount<Currency>,
   spender?: string,
 ): (summary?: string) => Promise<TransactionResponse | undefined> {
-  const { chainId } = useWalletInfo()
   const currency = amountToApprove?.currency
   const token = currency && !getIsNativeToken(currency) ? currency : undefined
-  const tokenContract = useTokenContract(token?.address)
+  const { contract: tokenContract, chainId: tokenChainId } = useTokenContract(token?.address)
   const addTransaction = useTransactionAdder()
+  const summary = amountToApprove?.greaterThan('0') ? `Approve ${token?.symbol}` : `Revoke ${token?.symbol} approval`
+  const amountToApproveStr = amountToApprove ? '0x' + amountToApprove?.quotient.toString(16) : undefined
 
   return useCallback(async () => {
-    if (!chainId || !token || !tokenContract || !amountToApprove || !spender) {
-      console.error('Wrong input for approve: ', { chainId, token, tokenContract, amountToApprove, spender })
+    if (!tokenChainId || !token || !tokenContract || !amountToApproveStr || !spender) {
+      console.error('Wrong input for approve: ', { tokenChainId, token, tokenContract, amountToApproveStr, spender })
       return
     }
 
-    const estimation = await estimateApprove(tokenContract, spender, amountToApprove)
+    const estimation = await estimateApprove(tokenContract, spender, amountToApproveStr)
     return tokenContract
       .approve(spender, estimation.approveAmount, {
         gasLimit: calculateGasMargin(estimation.gasLimit),
@@ -76,10 +76,10 @@ export function useApproveCallback(
       .then((response: TransactionResponse) => {
         addTransaction({
           hash: response.hash,
-          summary: amountToApprove.greaterThan('0') ? `Approve ${token.symbol}` : `Revoke ${token.symbol} approval`,
-          approval: { tokenAddress: token.address, spender, amount: '0x' + amountToApprove.quotient.toString(16) },
+          summary,
+          approval: { tokenAddress: token.address, spender, amount: amountToApproveStr },
         })
         return response
       })
-  }, [chainId, token, tokenContract, amountToApprove, spender, addTransaction])
+  }, [tokenChainId, token, tokenContract, spender, addTransaction, summary, amountToApproveStr])
 }

@@ -1,8 +1,7 @@
 import { lazy, PropsWithChildren, Suspense, useMemo } from 'react'
 
 import { ACTIVE_CUSTOM_THEME, CustomTheme } from '@cowprotocol/common-const'
-import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
 
@@ -25,6 +24,7 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { parameterizeTradeRoute, useTradeRouteContext } from 'modules/trade'
 import { useInitializeUtm } from 'modules/utm'
 
+import { APP_HEADER_ELEMENT_ID } from 'common/constants/common'
 import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
@@ -54,7 +54,10 @@ export function App() {
   useAnalyticsReporterCowSwap()
   useInitializeUtm()
 
-  const { isYieldEnabled, isChristmasEnabled, isHalloweenEnabled } = useFeatureFlags()
+  const { isYieldEnabled, } = useFeatureFlags()
+  // TODO: load them from feature flags when we want to enable again
+  const isChristmasEnabled = false
+  const isHalloweenEnabled = false
 
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
@@ -133,6 +136,7 @@ export function App() {
           {!isInjectedWidgetMode && (
             // TODO: Move hard-coded colors to theme
             <MenuBar
+              id={APP_HEADER_ELEMENT_ID}
               navItems={navItems}
               productVariant={PRODUCT_VARIANT}
               customTheme={customTheme}

@@ -19,13 +19,17 @@ export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Pro
   const twapPartOrders = useAtomValue(twapPartOrdersAtom)
   const setTwapOrderStatus = useSetAtom(setTwapOrderStatusAtom)
   const safeAppsSdk = useSafeAppsSdk()
-  const settlementContract = useGP2SettlementContract()
-  const composableCowContract = useComposableCowContract()
+  const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
+  const { contract: composableCowContract, chainId: composableCowChainId } = useComposableCowContract()
 
   return useCallback(
     async (twapOrderId: string, order: Order) => {
       if (!composableCowContract || !settlementContract || !safeAppsSdk) {
         throw new Error('Context is not full to cancel TWAP order')
+      }
+
+      if (composableCowChainId !== settlementChainId) {
+        throw new Error('Composable Cow and Settlement contracts are not on the same chain')
       }
 
       const partOrder = twapPartOrders[twapOrderId]?.sort((a, b) => a.order.validTo - b.order.validTo)[0]
@@ -47,6 +51,14 @@ export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Pro
         },
       }
     },
-    [composableCowContract, settlementContract, safeAppsSdk, twapPartOrders, setTwapOrderStatus]
+    [
+      composableCowContract,
+      settlementContract,
+      safeAppsSdk,
+      twapPartOrders,
+      setTwapOrderStatus,
+      composableCowChainId,
+      settlementChainId,
+    ],
   )
 }

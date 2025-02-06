@@ -12,12 +12,16 @@ import { useApprovalStateForSpender } from 'lib/hooks/useApproval'
 import { shouldZeroApprove as shouldZeroApproveFn } from './shouldZeroApprove'
 
 // TODO: Handle tokens that don't allow approvals larger than the balance of the wallet
-export function useShouldZeroApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>): boolean {
-  const [shouldZeroApprove, setShouldZeroApprove] = useState(false)
+/**
+ * Return null when decision is not taken yet
+ * @param amountToApprove
+ */
+export function useShouldZeroApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>): boolean | null {
+  const [shouldZeroApprove, setShouldZeroApprove] = useState<boolean | null>(null)
   const spender = useTradeSpenderAddress()
   const currency = amountToApprove?.currency
   const token = currency && !getIsNativeToken(currency) ? currency : undefined
-  const tokenContract = useTokenContract(token?.address)
+  const { contract: tokenContract } = useTokenContract(token?.address)
   const approvalState = useApprovalStateForSpender(amountToApprove, spender, () => false) // ignore approval pending state
 
   useEffect(() => {
@@ -30,6 +34,11 @@ export function useShouldZeroApprove(amountToApprove: Nullish<CurrencyAmount<Cur
         spender,
       })
 
+      if (result === null) {
+        if (shouldZeroApprove) setShouldZeroApprove(false)
+        return
+      }
+
       if (!isStale) {
         setShouldZeroApprove(result)
       }
@@ -38,7 +47,7 @@ export function useShouldZeroApprove(amountToApprove: Nullish<CurrencyAmount<Cur
     return () => {
       isStale = true
     }
-  }, [tokenContract, spender, amountToApprove, approvalState])
+  }, [tokenContract, spender, amountToApprove, approvalState, shouldZeroApprove])
 
   return shouldZeroApprove
 }

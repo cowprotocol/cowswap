@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/cowprotocol/cowswap/compare/types-v1.5.0...types-v1.5.1) (2025-02-03)
+
+
+### Bug Fixes
+
+* display Metamask warning only for extension/mobile wallets ([#5370](https://github.com/cowprotocol/cowswap/issues/5370)) ([abb5683](https://github.com/cowprotocol/cowswap/commit/abb56834b1e21029ca66362f3b721cd47e080547))
+
 ## [1.5.0](https://github.com/cowprotocol/cowswap/compare/types-v1.4.0...types-v1.5.0) (2024-12-03)
 
 

@@ -84,6 +84,7 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme }>`
 
     ${({ customTheme, theme }) =>
       isChristmasTheme(customTheme) &&
+      !theme.isInjectedWidgetMode &&
       `
         background-image: url(${theme.darkMode ? IMAGE_BACKGROUND_DARK_CHRISTMAS_MEDIUM : IMAGE_BACKGROUND_LIGHT_CHRISTMAS_MEDIUM});
       `}
@@ -101,6 +102,7 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme }>`
 
     ${({ customTheme, theme }) =>
       isChristmasTheme(customTheme) &&
+      !theme.isInjectedWidgetMode &&
       `
         background-image: url(${theme.darkMode ? IMAGE_BACKGROUND_DARK_CHRISTMAS_SMALL : IMAGE_BACKGROUND_LIGHT_CHRISTMAS_SMALL});
       `}
