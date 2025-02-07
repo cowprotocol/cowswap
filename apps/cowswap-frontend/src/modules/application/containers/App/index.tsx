@@ -43,6 +43,9 @@ const RoutesApp = lazy(() => import('./RoutesApp').then((module) => ({ default: 
 
 const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts, 'transparent')
 
+// Initialize static analytics instance
+const pixel = initPixelAnalytics()
+
 const LinkComponent = ({ href, children }: PropsWithChildren<{ href: string }>) => {
   const external = href.startsWith('http')
 
@@ -57,7 +60,6 @@ export function App() {
   const { chainId, account } = useWalletInfo()
   const { walletName } = useWalletDetails()
   const cowAnalytics = useCowAnalytics()
-  const pixel = initPixelAnalytics()
   const webVitals = new WebVitalsAnalytics(cowAnalytics)
 
   useAnalyticsReporter({
