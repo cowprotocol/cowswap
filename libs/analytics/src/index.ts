@@ -5,7 +5,7 @@ export { WebVitalsAnalytics } from './webVitals/WebVitalsAnalytics'
 
 // GTM tracking
 export type { GtmClickEvent, GtmCategory } from './gtm/types'
-export { isValidGtmClickEvent, toGtmEvent } from './gtm/types'
+export { toGtmEvent } from './gtm/types'
 
 // Analytics context and hooks
 export { CowAnalyticsProvider, useCowAnalytics } from './context/CowAnalyticsContext'
