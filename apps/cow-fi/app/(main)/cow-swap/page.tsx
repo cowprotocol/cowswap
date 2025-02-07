@@ -176,8 +176,8 @@ export default function Page() {
               variety of DeFi purposes
             </SectionTitleDescription>
             <Link
-              bgColor={Color.cowfi_blue_dark}
-              color={Color.cowfi_blue_lighter}
+              bgColor={Color.cowfi_blue_lighter}
+              color={Color.cowfi_blue_dark}
               href="/cow-protocol"
               linkType={LinkType.SectionTitleButton}
               onClick={() => clickOnCowSwap('click-learn-about-cow-protocol')}
