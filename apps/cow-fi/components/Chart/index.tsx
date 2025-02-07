@@ -29,6 +29,7 @@ import {
   TokenPriceWrapper,
 } from './styled'
 import { formatUSDPrice } from 'util/formatUSDPrice'
+import { Color } from '@cowprotocol/ui'
 
 export type PricePoint = { timestamp: number; value: number }
 
@@ -232,7 +233,7 @@ export function Chart({ prices, height, width, timePeriod }: ChartProps) {
     setDisplayPrice(endingPrice)
   }, [setCrosshair, setDisplayPrice, endingPrice])
 
-  const mainColor = theme.cowfi_lightBlue3
+  const mainColor = Color.cowfi_lightBlue3
 
   return (
     <>
@@ -267,23 +268,23 @@ export function Chart({ prices, height, width, timePeriod }: ChartProps) {
             marginTop={margin.top}
             curve={curve}
             strokeWidth={2}
-            color={mainColor}
+            color={Color.cowfi_text1}
           />
 
           {crosshair !== null ? (
             <g>
               <AxisBottom
                 scale={timeScale}
-                stroke={theme.cowfi_text1}
+                stroke={Color.cowfi_text1}
                 tickFormat={tickFormatter}
-                tickStroke={theme.cowfi_text1}
+                tickStroke={Color.cowfi_text1}
                 tickLength={4}
                 hideTicks={true}
                 tickTransform="translate(0 -5)"
                 tickValues={updatedTicks}
                 top={height - 1}
                 tickLabelProps={() => ({
-                  fill: theme.cowfi_text1,
+                  fill: Color.cowfi_text1,
                   fontSize: 11,
                   textAnchor: 'middle',
                   transform: 'translate(0 -24)',
@@ -294,14 +295,14 @@ export function Chart({ prices, height, width, timePeriod }: ChartProps) {
                 y={margin.crosshair + 10}
                 textAnchor={crosshairAtEdge ? 'end' : 'start'}
                 fontSize={15}
-                fill={theme.cowfi_text1}
+                fill={Color.cowfi_text1}
               >
                 {crosshairDateFormatter(displayPrice.timestamp)}
               </text>
               <Line
                 from={{ x: crosshair, y: margin.crosshair }}
                 to={{ x: crosshair, y: height }}
-                stroke={theme.cowfi_text1}
+                stroke={Color.cowfi_text1}
                 strokeWidth={1}
                 pointerEvents="none"
                 strokeDasharray="4,4"
@@ -316,7 +317,7 @@ export function Chart({ prices, height, width, timePeriod }: ChartProps) {
               />
             </g>
           ) : (
-            <AxisBottom hideAxisLine={true} scale={timeScale} stroke={theme.cowfi_text1} top={height - 1} hideTicks />
+            <AxisBottom hideAxisLine={true} scale={timeScale} stroke={Color.cowfi_text1} top={height - 1} hideTicks />
           )}
           <rect
             x={0}

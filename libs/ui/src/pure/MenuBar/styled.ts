@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components/macro'
 
-import { Color, Font } from '../../consts'
+import { Color } from '../../colors'
+import { Font } from '../../consts'
 import { CowSwapTheme } from '../../types'
 import { ProductLogoWrapper } from '../ProductLogo'
 

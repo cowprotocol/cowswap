@@ -1,11 +1,12 @@
 import styled from 'styled-components/macro'
 import { ArrowDownRight, ArrowUpRight } from 'react-feather'
-import { TransitionDuration, textFadeIn } from '@cowprotocol/ui'
+import { TransitionDuration, textFadeIn, Color } from '@cowprotocol/ui'
 
 export const ChartHeader = styled.div`
   position: absolute;
   ${textFadeIn};
   animation-duration: ${TransitionDuration.medium};
+  color: ${Color.cowfi_grey3};
 `
 
 export const TokenPrice = styled.span`
@@ -16,7 +17,7 @@ export const TokenPrice = styled.span`
 export const MissingPrice = styled(TokenPrice)`
   font-size: 24px;
   line-height: 44px;
-  color: ${({ theme }) => theme.cowfi_grey3};
+  color: ${Color.cowfi_grey3};
 `
 
 export const DeltaContainer = styled.div`
@@ -32,7 +33,7 @@ export const ArrowCell = styled.div`
 `
 
 export const MissingPriceCaption = styled.div`
-  color: ${({ theme }) => theme.cowfi_grey3};
+  color: ${Color.cowfi_grey3};
 `
 
 export const StyledUpArrow = styled((props) => <ArrowUpRight {...props} />)`
@@ -47,4 +48,5 @@ export const TokenPriceWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  color: ${Color.neutral10};
 `

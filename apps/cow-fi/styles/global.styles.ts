@@ -2,7 +2,7 @@
 
 import { createGlobalStyle } from 'styled-components/macro'
 import { CowProtocolTheme } from 'styled-components'
-import { Color, Media } from '@cowprotocol/ui'
+import { Color, Media, WordTags } from '@cowprotocol/ui'
 
 const GlobalStyles = createGlobalStyle<{ theme: CowProtocolTheme }>`
 
@@ -159,18 +159,18 @@ span[class^='wordtag-'] {
   }
 
   .wordtag-blue {
-    color: ${({ theme }) => theme.cowfi_wordtag_blue_text};
-    background: ${({ theme }) => theme.cowfi_wordtag_blue_bg};
+    color: ${WordTags.blue.text};
+    background: ${WordTags.blue.background};
   }
 
   .wordtag-orange {
-    color: ${({ theme }) => theme.cowfi_wordtag_orange_text};
-    background: ${({ theme }) => theme.cowfi_wordtag_orange_bg};
+    color: ${WordTags.orange.text};
+    background: ${WordTags.orange.background};
   }
 
   .wordtag-purple {
-    color: ${({ theme }) => theme.cowfi_wordtag_purple_text};
-    background: ${({ theme }) => theme.cowfi_wordtag_purple_bg};
+    color: ${WordTags.purple.text};
+    background: ${WordTags.purple.background};
   }
 `
 export default GlobalStyles

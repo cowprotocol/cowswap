@@ -1,5 +1,4 @@
-import { Color, ProductVariant } from '@cowprotocol/ui'
-import { DefaultTheme } from 'styled-components'
+import { Color, ProductVariant, WordTags } from '@cowprotocol/ui'
 
 import IMG_GREEN_WAVES from '@cowprotocol/assets/images/image-green-waves.svg'
 import IMG_COINS from '@cowprotocol/assets/images/image-coins.svg'
@@ -25,8 +24,6 @@ import { Link, LinkType } from '@/components/Link'
 import SVG from 'react-inlinesvg'
 import { clickOnHome } from 'modules/analytics'
 
-type ThemeProps = { theme: DefaultTheme }
-
 export const PRODUCT_LIST = [
   {
     title: 'CoW Protocol',
@@ -34,11 +31,11 @@ export const PRODUCT_LIST = [
     linkHref: '/cow-protocol',
     linkText: 'Start building',
     linkEvent: 'click-start-building',
-    bgColor: '#490072',
-    textColor: '#F996EE',
-    descriptionColor: '#F996EE',
-    linkBgColor: '#F996EE',
-    linkColor: '#490072',
+    bgColor: WordTags.purple.background,
+    textColor: WordTags.purple.text,
+    descriptionColor: WordTags.purple.text,
+    linkBgColor: WordTags.purple.text,
+    linkColor: WordTags.purple.background,
     productVariant: ProductVariant.CowDao,
     iconImage: IMG_BITS,
   },
@@ -50,11 +47,11 @@ export const PRODUCT_LIST = [
     linkEvent: 'click-trade-on-cow-swap',
     linkExternal: true,
     linkUtmContent: 'home-page-trade-on-cow-swap',
-    bgColor: '#65D9FF',
-    textColor: '#012F7A',
-    descriptionColor: '#012F7A',
-    linkBgColor: '#012F7A',
-    linkColor: '#65D9FF',
+    bgColor: WordTags.blue.background,
+    textColor: WordTags.blue.text,
+    descriptionColor: WordTags.blue.text,
+    linkBgColor: WordTags.blue.text,
+    linkColor: WordTags.blue.background,
     productVariant: ProductVariant.CowDao,
     iconImage: IMG_COINS,
   },
@@ -64,11 +61,11 @@ export const PRODUCT_LIST = [
     linkHref: '/cow-amm',
     linkText: 'Deposit liquidity',
     linkEvent: 'click-deploy-liquidity',
-    bgColor: '#194D06',
-    textColor: '#BCEC79',
-    descriptionColor: '#BCEC79',
-    linkBgColor: '#BCEC79',
-    linkColor: '#194D06',
+    bgColor: Color.cowamm_dark_green,
+    textColor: Color.cowamm_green,
+    descriptionColor: Color.cowamm_green,
+    linkBgColor: Color.cowamm_green,
+    linkColor: Color.cowamm_dark_green,
     productVariant: ProductVariant.CowDao,
     iconImage: IMG_GREEN_WAVES,
   },
@@ -78,11 +75,11 @@ export const PRODUCT_LIST = [
     linkHref: '/mev-blocker',
     linkText: 'Get protected',
     linkEvent: 'click-get-protected',
-    bgColor: '#FEE7CF',
-    textColor: '#EC4612',
-    descriptionColor: '#EC4612',
-    linkBgColor: '#EC4612',
-    linkColor: '#FEE7CF',
+    bgColor: WordTags.orange.background,
+    textColor: WordTags.orange.text,
+    descriptionColor: WordTags.orange.text,
+    linkBgColor: WordTags.orange.text,
+    linkColor: WordTags.orange.background,
     productVariant: ProductVariant.MevBlocker,
     iconImage: IMG_TUBE,
   },
@@ -93,7 +90,7 @@ export const CHANNEL_LIST = [
     title: 'Discord',
     href: 'https://discord.com/invite/cowprotocol?utm_source=cow.fi&utm_medium=web&utm_content=link',
     linkEvent: 'click-discord',
-    iconColor: ({ theme }: ThemeProps) => theme.cowfi_discord_pink,
+    iconColor: Color.cowfi_discord_pink,
     textColor: Color.neutral10,
     iconImage: IMG_DISCORD,
   },
@@ -101,16 +98,16 @@ export const CHANNEL_LIST = [
     title: 'Forum',
     href: 'https://forum.cow.fi/?utm_source=cow.fi&utm_medium=web&utm_content=link',
     linkEvent: 'click-forum',
-    iconColor: ({ theme }: ThemeProps) => theme.cowamm_dark_green,
-    textColor: ({ theme }: ThemeProps) => theme.cowfi_white2,
+    iconColor: Color.cowamm_dark_green,
+    textColor: Color.cowfi_white2,
     iconImage: IMG_FORUM,
   },
   {
     title: 'Snapshot',
     href: 'https://snapshot.org/#/cow.eth?utm_source=cow.fi&utm_medium=web&utm_content=link',
     linkEvent: 'click-snapshot',
-    iconColor: ({ theme }: ThemeProps) => theme.cowfi_snapshot_red,
-    textColor: ({ theme }: ThemeProps) => theme.cowfi_white2,
+    iconColor: Color.cowfi_snapshot_red,
+    textColor: Color.cowfi_white2,
     iconImage: IMG_SNAPSHOT,
   },
 ]

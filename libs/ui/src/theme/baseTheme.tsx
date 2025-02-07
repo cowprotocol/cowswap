@@ -6,6 +6,7 @@ import { css } from 'styled-components/macro'
 
 import { Colors } from './typings'
 
+import { Color, Gradients, WordTags } from '../colors'
 import { UI } from '../enum'
 import { CowSwapTheme } from '../types'
 
@@ -21,7 +22,6 @@ export function baseTheme<T extends CowProtocolTheme>(theme: CowSwapTheme): CowP
 function colors(darkMode: boolean): Colors {
   // TODO(theme-cleanup): These colors were migrated from apps/cow-fi/styles/variables.ts
   // They should be reviewed and potentially consolidated with the existing color system.
-  // The cowfi_ prefix helps identify their origin and marks them for future cleanup.
   const buttonTextCustom = '#65D9FF'
   const blueDark2 = '#004293'
   const blueDark3 = '#0d5ed9'
@@ -37,54 +37,6 @@ function colors(darkMode: boolean): Colors {
   const background = darkMode ? black : '#ECF1F8'
   const alert = darkMode ? '#FFCA4A' : '#DB971E'
   const success = darkMode ? '#00D897' : '#007B28'
-  const cowfi_orange = '#ED6834'
-  const cowfi_darkBlue = '#052B65'
-  const cowfi_darkBlue2 = '#0D3673'
-  const cowfi_darkBlue3 = '#042a63'
-  const cowfi_darkBlue4 = '#042456'
-  const cowfi_darkBlue5 = '#005EB7'
-  const cowfi_lightBlue1 = '#CCF8FF'
-  const cowfi_lightBlue2 = 'rgb(176 194 255)'
-  const cowfi_lightBlue3 = 'rgb(118 167 230)'
-  const cowfi_lightBlue4 = '#99ECFF'
-  const cowfi_white2 = '#FFF8F7'
-  const cowfi_grey = 'rgb(236, 241, 248)'
-  const cowfi_grey2 = 'rgb(201 211 226)'
-  const cowfi_grey3 = '#737b96'
-  const cowfi_text1 = '#405A82'
-  const cowfi_text2 = '#95BAEF'
-  const cowfi_border = transparentize('0.75', '#979797')
-  const cowfi_borderGradient = `linear-gradient(to bottom, ${transparentize('0.75', '#979797')}, ${transparentize('1.0', '#979797')})`
-  const cowfi_gradient = 'linear-gradient(45deg,#FFE7E0 0%,#F8DBF4 20%,#C4DDFF 60%,#CAE9FF 100%)'
-  const cowfi_gradient2 = `linear-gradient(0deg, #071B3B 0%, ${cowfi_darkBlue} 100%)`
-  const cowfi_wordtag_blue_text = '#012f7a'
-  const cowfi_wordtag_blue_bg = '#65d9ff'
-  const cowfi_wordtag_orange_text = '#ec4612'
-  const cowfi_wordtag_orange_bg = '#fee7cf'
-  const cowfi_wordtag_purple_text = '#f996ee'
-  const cowfi_wordtag_purple_bg = '#490072'
-  const cowfi_gradientMesh = css`
-    background-color: hsla(142, 0%, 100%, 1);
-    background-image: radial-gradient(at 5% 70%, hsla(204, 100%, 89%, 1) 0px, transparent 50%),
-      radial-gradient(at 47% 40%, hsla(214, 100%, 88%, 1) 0px, transparent 50%),
-      radial-gradient(at 73% 3%, hsla(308, 67%, 91%, 1) 0px, transparent 50%),
-      radial-gradient(at 44% 13%, hsla(13, 100%, 93%, 1) 0px, transparent 50%),
-      radial-gradient(at 61% 70%, hsla(204, 100%, 89%, 1) 0px, transparent 50%),
-      radial-gradient(at 32% 81%, hsla(204, 100%, 89%, 1) 0px, transparent 50%),
-      radial-gradient(at 19% 39%, hsla(204, 100%, 89%, 1) 0px, transparent 50%);
-  `
-
-  // CoW AMM Colors
-  const cowamm_green = '#BCEC79'
-  const cowamm_dark_green = '#194D05'
-  const cowamm_dark_green2 = '#224D22'
-  const cowamm_light_green = '#DCF8A7'
-
-  const cowfi_purple1 = '#8702AA'
-  const cowfi_purple2 = '#FCCAF2'
-  const cowfi_purple3 = '#66018E'
-  const cowfi_discord_pink = '#FDADA3'
-  const cowfi_snapshot_red = '#710408'
 
   return {
     darkMode,
@@ -98,69 +50,28 @@ function colors(darkMode: boolean): Colors {
     text: darkMode ? '#DEE3E6' : '#00234E',
     disabledText: darkMode ? '#86B2DC' : '#506B93',
     danger: darkMode ? '#f44336' : error,
+    // Theme-specific colors
+    error: darkMode ? '#EB3030' : error,
     alert,
+    alert2: '#F8D06B',
     warning: darkMode ? '#ED6237' : '#D94719',
     info: darkMode ? '#428dff' : blueDark3,
     success,
     white: darkMode ? blueLight1 : white,
     black,
-    blueDark2,
-    bg2: darkMode ? blueDark3 : blueDark2,
     text1: darkMode ? blueLight1 : blueDark2,
-    alert2: '#F8D06B',
-    error: darkMode ? '#EB3030' : error,
     text4: darkMode ? 'rgba(197, 218, 239, 0.7)' : '#000000b8',
-    cowfi_orange,
-    cowfi_darkBlue,
-    cowfi_darkBlue2,
-    cowfi_darkBlue3,
-    cowfi_darkBlue4,
-    cowfi_darkBlue5,
-    cowfi_lightBlue1,
-    cowfi_lightBlue2,
-    cowfi_lightBlue3,
-    cowfi_lightBlue4,
-    cowfi_white2,
-    cowfi_grey,
-    cowfi_grey2,
-    cowfi_grey3,
-    cowfi_text1,
-    cowfi_text2,
-    cowfi_border,
-    cowfi_borderGradient,
-    cowfi_gradient,
-    cowfi_gradient2,
-    cowfi_gradientMesh,
-    cowfi_wordtag_blue_text,
-    cowfi_wordtag_blue_bg,
-    cowfi_wordtag_orange_text,
-    cowfi_wordtag_orange_bg,
-    cowfi_wordtag_purple_text,
-    cowfi_wordtag_purple_bg,
-
-    // CoW AMM Colors
-    cowamm_green,
-    cowamm_dark_green,
-    cowamm_dark_green2,
-    cowamm_light_green,
-
-    // ****** backgrounds ******
+    bg2: darkMode ? blueDark3 : blueDark2,
     bg5: darkMode ? '#1d4373' : '#D5E9F0',
     bg8: darkMode ? blueDark4 : '#152943',
-
-    // ****** other ******
     blue1: '#3F77FF',
     blue2: darkMode ? '#a3beff' : '#0c40bf',
     orange: '#FF784A',
     blueShade: '#0f2644',
     blueShade3: darkMode ? '#1c416e' : '#bdd6e1',
-
-    // ****** other ******
     border: darkMode ? blueDark4 : '#000000',
     border2: darkMode ? '#254F83' : blueLight2,
-
     disabled: darkMode ? 'rgba(197, 218, 239, 0.4)' : blueLight2,
-
     green1: darkMode ? '#27AE60' : '#007D35',
     yellow3: '#F3B71E',
     gradient1: `linear-gradient(145deg, ${paper}, ${background})`,
@@ -171,11 +82,18 @@ function colors(darkMode: boolean): Colors {
     boxShadow1: darkMode ? '0 24px 32px rgba(0, 0, 0, 0.06)' : '0 12px 12px rgba(5, 43, 101, 0.06)',
     boxShadow2: '0 4px 12px 0 rgb(0 0 0 / 15%)',
     shadow1: darkMode ? '#000' : '#2F80ED',
-    cowfi_purple1,
-    cowfi_purple2,
-    cowfi_purple3,
-    cowfi_discord_pink,
-    cowfi_snapshot_red,
+    blueDark2,
+    // Import all static colors from Color
+    ...Color,
+    // Add dynamic colors from Gradients
+    ...Gradients,
+    // Add wordtag colors
+    cowfi_wordtag_blue_text: WordTags.blue.text,
+    cowfi_wordtag_blue_bg: WordTags.blue.background,
+    cowfi_wordtag_orange_text: WordTags.orange.text,
+    cowfi_wordtag_orange_bg: WordTags.orange.background,
+    cowfi_wordtag_purple_text: WordTags.purple.text,
+    cowfi_wordtag_purple_bg: WordTags.purple.background,
   }
 }
 

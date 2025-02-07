@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro'
+import { Color } from '@cowprotocol/ui'
 
 export const ChartContainer = styled.div`
   display: flex;
@@ -42,7 +43,7 @@ const Space = styled.div<{ heightSize: number }>`
 `
 
 const StyledPath = styled.path`
-  stroke: ${({ theme }) => theme.cowfi_grey2};
+  stroke: ${Color.cowfi_grey2};
 `
 
 function Wave() {

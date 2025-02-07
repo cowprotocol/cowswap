@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import styled from 'styled-components/macro'
 import { TrendingUp } from 'react-feather'
-import { CowProtocolTheme } from 'styled-components'
+import { Color } from '@cowprotocol/ui'
 
 const StyledMissingChart = styled.svg`
   text {
@@ -11,7 +11,7 @@ const StyledMissingChart = styled.svg`
 `
 
 const StyledPath = styled.path`
-  stroke: ${({ theme }) => theme.cowfi_grey2};
+  stroke: ${Color.cowfi_grey2};
 `
 
 const StyledText = styled.text`
