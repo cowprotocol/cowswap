@@ -1,6 +1,6 @@
 'use client'
 
-import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { Color, ProductLogo, ProductVariant, WordTags } from '@cowprotocol/ui'
 import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import IMG_ICON_BUILD_WITH_COW from '@cowprotocol/assets/images/icon-build-with-cow.svg'
@@ -63,15 +63,15 @@ export default function Page() {
     <PageWrapper>
       <HeroContainer variant="secondary">
         <HeroContent variant="secondary">
-          <HeroSubtitle color={'#66018E'}>CoW Protocol</HeroSubtitle>
+          <HeroSubtitle color={Color.cowfi_purple3}>CoW Protocol</HeroSubtitle>
           <HeroTitle maxWidth={520}>Do what you want, build what you want</HeroTitle>
           <HeroDescription>
             CoW Protocol has the largest solver competition and the most advanced developer framework - so you can build
             any DeFi-related action you can imagine
           </HeroDescription>
           <Link
-            bgColor={'#66018E'}
-            color={'#F996EE'}
+            bgColor={Color.cowfi_purple3}
+            color={WordTags.purple.text}
             href="https://docs.cow.fi/category/tutorials"
             external
             linkType={LinkType.HeroButton}
@@ -80,17 +80,17 @@ export default function Page() {
             Start building
           </Link>
         </HeroContent>
-        <HeroImage width={470} height={470} color={'#66018E'}>
+        <HeroImage width={470} height={470} color={Color.cowfi_purple3}>
           <LazySVG src={IMG_COW_BITS} />
         </HeroImage>
       </HeroContainer>
 
-      <MetricsCard bgColor="#F996EE" color="#66018E" columns={3} touchFooter>
-        <MetricsItem dividerColor="#ED60E9">
+      <MetricsCard bgColor={WordTags.purple.text} color={Color.cowfi_purple3} columns={3} touchFooter>
+        <MetricsItem dividerColor={Color.cowfi_purple4}>
           <h2>23</h2>
           <p>active solvers settling batches</p>
         </MetricsItem>
-        <MetricsItem dividerColor="#ED60E9">
+        <MetricsItem dividerColor={Color.cowfi_purple4}>
           <h2>#1</h2>
           <p>intent-based DEX protocol by volume</p>
         </MetricsItem>
@@ -102,7 +102,7 @@ export default function Page() {
 
         <Link
           bgColor="transparent"
-          color="#66018E"
+          color={Color.cowfi_purple3}
           margin="24px auto 0"
           gridFullWidth
           href="https://dune.com/cowprotocol/cowswap"
@@ -155,8 +155,8 @@ export default function Page() {
                   (like on Uniswap). This lets solvers trade on behalf of the user.
                 </TopicDescription>
                 <Link
-                  bgColor="#66018E"
-                  color="#F996EE"
+                  bgColor={Color.cowfi_purple3}
+                  color={WordTags.purple.text}
                   href="/learn"
                   onClick={() => clickOnCowProtocol('click-intents-learn-more')}
                   linkType={LinkType.TopicButton}
@@ -198,8 +198,8 @@ export default function Page() {
                   public and private liquidity sources - finding better prices than most users could find on their own.
                 </TopicDescription>
                 <Link
-                  bgColor="#66018E"
-                  color="#F996EE"
+                  bgColor={Color.cowfi_purple3}
+                  color={WordTags.purple.text}
                   href="/learn"
                   onClick={() => clickOnCowProtocol('click-solvers-learn-more')}
                   linkType={LinkType.TopicButton}
@@ -221,8 +221,8 @@ export default function Page() {
                   you win.
                 </TopicDescription>
                 <Link
-                  bgColor="#66018E"
-                  color="#F996EE"
+                  bgColor={Color.cowfi_purple3}
+                  color={WordTags.purple.text}
                   href="/learn"
                   linkType={LinkType.TopicButton}
                   onClick={() => clickOnCowProtocol('click-batch-auctions-learn-more')}
@@ -332,13 +332,19 @@ export default function Page() {
           </SectionTitleWrapper>
 
           <TopicList columns={3} columnsTablet={2}>
-            <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-              <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
+            <TopicCard
+              contentAlign={'left'}
+              bgColor={Color.cowfi_purple3}
+              textColor={WordTags.purple.text}
+              padding={'32px'}
+              asProp="div"
+            >
+              <TopicImage iconColor={Color.cowfi_purple1} bgColor="transparent" height={96} width={'auto'}>
                 <LazySVG src={IMG_LOGO_CURVE} />
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={Color.neutral100}>Automating advanced treasury tasks</TopicTitle>
-                <TopicDescription fontSize={21} color="#F996EE">
+                <TopicDescription fontSize={21} color={WordTags.purple.text}>
                   Curve uses programmatic orders from CoW Protocol to streamline their fee burning processes. With the
                   integration in place, Curve can take fees in any token and convert them automatically to CRV, while
                   generating surplus and protecting themselves from MEV
@@ -346,14 +352,20 @@ export default function Page() {
               </TopicCardInner>
             </TopicCard>
 
-            <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-              <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
+            <TopicCard
+              contentAlign={'left'}
+              bgColor={Color.cowfi_purple3}
+              textColor={WordTags.purple.text}
+              padding={'32px'}
+              asProp="div"
+            >
+              <TopicImage iconColor={Color.cowfi_purple1} bgColor="transparent" height={96} width={'auto'}>
                 <LazySVG src={IMG_LOGO_LIDO} />
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={Color.neutral100}>Adding security to sensitive transactions</TopicTitle>
-                <TopicDescription fontSize={21} color="#F996EE">
-                  Lido leverages programmatic orders as the backbone of “stonks” - a set of smart contracts that they
+                <TopicDescription fontSize={21} color={WordTags.purple.text}>
+                  Lido leverages programmatic orders as the backbone of "stonks" - a set of smart contracts that they
                   use to manage treasury ops smoothly and securely without taking custody of funds. Stonks allows Lido
                   DAO to "set and forget" complex trade intents without compromising the prices they receive on future
                   swaps - minimizing time spent and human error
@@ -361,13 +373,19 @@ export default function Page() {
               </TopicCardInner>
             </TopicCard>
 
-            <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-              <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
+            <TopicCard
+              contentAlign={'left'}
+              bgColor={Color.cowfi_purple3}
+              textColor={WordTags.purple.text}
+              padding={'32px'}
+              asProp="div"
+            >
+              <TopicImage iconColor={Color.cowfi_purple1} bgColor="transparent" height={96} width={'auto'}>
                 <LazySVG src={IMG_LOGO_SAFE} />
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={Color.neutral100}>Powering native swaps</TopicTitle>
-                <TopicDescription fontSize={21} color="#F996EE">
+                <TopicDescription fontSize={21} color={WordTags.purple.text}>
                   Safe chose CoW Protocol to power native swaps on the Safe app. The team chose to build on top of the
                   CoW widget (the simplest way to integrate CoW Protocol) and is now earning revenue by offering
                   MEV-protected swaps to its users
@@ -422,8 +440,8 @@ export default function Page() {
                   <TopicTitle fontSize={38}>{study.title}</TopicTitle>
                   <TopicDescription fontSize={21}>{study.description}</TopicDescription>
                   <Link
-                    bgColor="#490072"
-                    color="#F996EE"
+                    bgColor={Color.cowfi_purple3}
+                    color={WordTags.purple.text}
                     fontSize={27}
                     href={study.link}
                     external
@@ -526,8 +544,8 @@ export default function Page() {
             </SectionTitleDescription>
 
             <Link
-              bgColor="#66018E"
-              color="#F996EE"
+              bgColor={Color.cowfi_purple3}
+              color={WordTags.purple.text}
               href="https://docs.cow.fi/cow-protocol/tutorials/solvers"
               external
               linkType={LinkType.SectionTitleButton}

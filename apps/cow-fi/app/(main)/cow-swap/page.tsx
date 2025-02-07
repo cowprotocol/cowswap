@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 
-import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { Color, ProductLogo, ProductVariant, WordTags } from '@cowprotocol/ui'
 
 import IMG_ICON_UNICORN from '@cowprotocol/assets/images/icon-unicorn.svg'
 import IMG_ICON_FLOWER_COW from '@cowprotocol/assets/images/icon-flower-cow.svg'
@@ -71,7 +71,7 @@ export default function Page() {
     <PageWrapper>
       <HeroContainer variant="secondary">
         <HeroContent variant="secondary">
-          <HeroSubtitle color={'#012F7A'}>CoW Swap</HeroSubtitle>
+          <HeroSubtitle color={WordTags.blue.text}>CoW Swap</HeroSubtitle>
           <HeroTitle>
             Don't worry,
             <br /> trade happy
@@ -80,8 +80,8 @@ export default function Page() {
             CoW Swap protects traders from the dangers of DeFi, so you can do what you want without needing to worry
           </HeroDescription>
           <Link
-            bgColor={'#012F7A'}
-            color={'#65D9FF'}
+            bgColor={WordTags.blue.text}
+            color={WordTags.blue.background}
             href="https://swap.cow.fi/"
             external
             linkType={LinkType.HeroButton}
@@ -91,17 +91,17 @@ export default function Page() {
             Launch app
           </Link>
         </HeroContent>
-        <HeroImage width={470} height={470} color={'#012F7A'} marginMobile="24px auto 56px">
+        <HeroImage width={470} height={470} color={WordTags.blue.text} marginMobile="24px auto 56px">
           <LazySVG src={IMG_COWSWAP_HERO} />
         </HeroImage>
       </HeroContainer>
 
-      <MetricsCard bgColor="#65D9FF" color="#012F7A" columns={3} touchFooter>
-        <MetricsItem dividerColor="#005EB7">
+      <MetricsCard bgColor={WordTags.blue.background} color={WordTags.blue.text} columns={3} touchFooter>
+        <MetricsItem dividerColor={Color.cowfi_darkBlue5}>
           <h2>#1</h2>
           <p>retention rate of all major DEXs</p>
         </MetricsItem>
-        <MetricsItem dividerColor="#005EB7">
+        <MetricsItem dividerColor={Color.cowfi_darkBlue5}>
           <h2>$44B+</h2>
           <p>total volume traded</p>
         </MetricsItem>
@@ -112,7 +112,7 @@ export default function Page() {
 
         <Link
           bgColor="transparent"
-          color="#012F7A"
+          color={WordTags.blue.text}
           margin="24px auto 0"
           gridFullWidth
           href="https://dune.com/cowprotocol/cowswap"
@@ -176,8 +176,8 @@ export default function Page() {
               variety of DeFi purposes
             </SectionTitleDescription>
             <Link
-              bgColor="#65D9FF"
-              color="#012F7A"
+              bgColor={WordTags.blue.background}
+              color={WordTags.blue.text}
               href="/cow-protocol"
               linkType={LinkType.SectionTitleButton}
               onClick={() => clickOnCowSwap('click-learn-about-cow-protocol')}
@@ -276,7 +276,7 @@ export default function Page() {
           <TopicList columns={4} columnsTablet={2}>
             <TopicCard
               contentAlign={'left'}
-              bgColor="#012F7A"
+              bgColor={WordTags.blue.text}
               textColor={Color.neutral100}
               padding={'32px'}
               asProp="div"
@@ -285,7 +285,7 @@ export default function Page() {
                 <TopicTitle color={Color.neutral100} fontSize={51}>
                   $2,500
                 </TopicTitle>
-                <TopicDescription fontSize={21} color="#65D9FF">
+                <TopicDescription fontSize={21} color={WordTags.blue.background}>
                   Average trade size (more than 2x Uniswap&apos;s)
                 </TopicDescription>
               </TopicCardInner>
@@ -293,7 +293,7 @@ export default function Page() {
 
             <TopicCard
               contentAlign={'left'}
-              bgColor="#012F7A"
+              bgColor={WordTags.blue.text}
               textColor={Color.neutral100}
               padding={'32px'}
               asProp="div"
@@ -302,7 +302,7 @@ export default function Page() {
                 <TopicTitle color={Color.neutral100} fontSize={51}>
                   39%
                 </TopicTitle>
-                <TopicDescription fontSize={21} color="#65D9FF">
+                <TopicDescription fontSize={21} color={WordTags.blue.background}>
                   Market share among smart contract wallets
                 </TopicDescription>
               </TopicCardInner>
@@ -310,7 +310,7 @@ export default function Page() {
 
             <TopicCard
               contentAlign={'left'}
-              bgColor="#012F7A"
+              bgColor={WordTags.blue.text}
               textColor={Color.neutral100}
               padding={'32px'}
               asProp="div"
@@ -319,7 +319,7 @@ export default function Page() {
                 <TopicTitle color={Color.neutral100} fontSize={51}>
                   42%
                 </TopicTitle>
-                <TopicDescription fontSize={21} color="#65D9FF">
+                <TopicDescription fontSize={21} color={WordTags.blue.background}>
                   Monthly user retention rate – the highest in DeFi
                 </TopicDescription>
               </TopicCardInner>
@@ -327,7 +327,7 @@ export default function Page() {
 
             <TopicCard
               contentAlign={'left'}
-              bgColor="#012F7A"
+              bgColor={WordTags.blue.text}
               textColor={Color.neutral100}
               padding={'32px'}
               asProp="div"
@@ -336,7 +336,7 @@ export default function Page() {
                 <TopicTitle color={Color.neutral100} fontSize={51}>
                   #1
                 </TopicTitle>
-                <TopicDescription fontSize={21} color="#65D9FF">
+                <TopicDescription fontSize={21} color={WordTags.blue.background}>
                   Intents-based trading platform
                 </TopicDescription>
               </TopicCardInner>
@@ -387,8 +387,8 @@ export default function Page() {
               Trade seamlessly, with the most user-protective DEX in DeFi
             </SectionTitleDescription>
             <Link
-              bgColor="#65D9FF"
-              color="#012F7A"
+              bgColor={WordTags.blue.background}
+              color={WordTags.blue.text}
               href="https://swap.cow.fi/"
               external
               linkType={LinkType.SectionTitleButton}

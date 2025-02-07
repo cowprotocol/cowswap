@@ -1,6 +1,7 @@
 'use server'
 
 import { getArticles, getCategories } from '../../../services/cms'
+import { Color } from '@cowprotocol/ui'
 
 import { LearnPageComponent } from '@/components/LearnPageComponent'
 
@@ -21,10 +22,10 @@ export default async function Page() {
         name: category?.attributes?.name || '',
         slug: category?.attributes?.slug || '',
         description: category?.attributes?.description || '',
-        bgColor: category?.attributes?.backgroundColor || '#fff',
-        textColor: category?.attributes?.textColor || '#000',
+        bgColor: category?.attributes?.backgroundColor || Color.neutral100,
+        textColor: category?.attributes?.textColor || Color.neutral0,
         link: `/learn/topic/${category?.attributes?.slug}`,
-        iconColor: '#fff',
+        iconColor: Color.neutral100,
         imageUrl,
       }
     }) || []

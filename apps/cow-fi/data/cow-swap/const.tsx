@@ -24,7 +24,7 @@ export const COW_IS_DIFFERENT = [
     imgSrc: IMG_COWSWAP_COINS,
   },
   {
-    bgColor: Color.cowfi_darkBlue,
+    bgColor: WordTags.blue.text,
     fontSize: 28,
     color: Color.cowfi_lightBlue1,
     description: 'MEV is a $1.3+ billion problem that you never have to worry about on CoW Swap',
@@ -41,7 +41,7 @@ export const COW_IS_DIFFERENT = [
 
 export const ADVANCED_ORDER_TYPES = [
   {
-    bgColor: Color.cowfi_darkBlue,
+    bgColor: WordTags.blue.text,
     textColor: Color.cowfi_lightBlue1,
     titleColor: Color.cowfi_white2,
     title: 'Market orders (aka swaps)',
@@ -78,7 +78,7 @@ export const BETTER_UX = [
     imgSrc: IMG_COWSWAP_GASLESS,
   },
   {
-    bgColor: Color.cowfi_darkBlue,
+    bgColor: WordTags.blue.text,
     textColor: Color.cowfi_lightBlue1,
     titleColor: Color.cowfi_white2,
     title: 'No fees for failed transactions',

@@ -30,6 +30,7 @@ export const Color = {
   cowfi_purple1: '#8702AA',
   cowfi_purple2: '#FCCAF2',
   cowfi_purple3: '#66018E',
+  cowfi_purple4: '#ED60E9',
   cowfi_discord_pink: '#FDADA3',
   cowfi_snapshot_red: '#710408',
   cowfi_green: '#2b6f0b',
@@ -51,6 +52,7 @@ export const Color = {
 
   // CoW AMM Colors
   cowamm_green: '#BCEC79',
+  cowamm_green_light: '#9BD955',
   cowamm_dark_green: '#194D05',
   cowamm_dark_green2: '#224D22',
   cowamm_light_green: '#DCF8A7',
