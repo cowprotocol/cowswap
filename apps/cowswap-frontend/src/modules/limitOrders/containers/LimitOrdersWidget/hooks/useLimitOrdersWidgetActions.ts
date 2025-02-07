@@ -15,8 +15,7 @@ import { TradeWidgetActions } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useOnCurrencySelection } from 'modules/trade/hooks/useOnCurrencySelection'
 import { useSwitchTokensPlaces } from 'modules/trade/hooks/useSwitchTokensPlaces'
-
-import { createDebouncedTradeAmountAnalytics } from 'common/analytics/utils'
+import { createDebouncedTradeAmountAnalytics } from 'modules/trade/utils/analytics'
 
 export function useLimitOrdersWidgetActions(): TradeWidgetActions {
   const { inputCurrency, outputCurrency, orderKind } = useLimitOrdersDerivedState()

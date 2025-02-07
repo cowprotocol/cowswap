@@ -3,7 +3,7 @@ import { debounce } from '@cowprotocol/common-utils'
 
 import { Field } from 'legacy/state/types'
 
-import { CowSwapAnalyticsCategory } from './types'
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 /**
  * Creates a debounced function that sends analytics events for trade amount changes

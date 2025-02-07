@@ -6,9 +6,8 @@ import { Currency } from '@uniswap/sdk-core'
 import { Field } from 'legacy/state/types'
 
 import { useNavigateOnCurrencySelection, useSwitchTokensPlaces, useUpdateCurrencyAmount } from 'modules/trade'
+import { createDebouncedTradeAmountAnalytics } from 'modules/trade/utils/analytics'
 import { useResetTradeQuote } from 'modules/tradeQuote'
-
-import { createDebouncedTradeAmountAnalytics } from 'common/analytics/utils'
 
 import { useAdvancedOrdersDerivedState } from './useAdvancedOrdersDerivedState'
 import { useUpdateAdvancedOrdersRawState } from './useAdvancedOrdersRawState'

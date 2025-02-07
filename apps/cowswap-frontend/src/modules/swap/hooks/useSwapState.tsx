@@ -22,11 +22,11 @@ import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
 import type { TradeWidgetActions } from 'modules/trade'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
+import { createDebouncedTradeAmountAnalytics } from 'modules/trade/utils/analytics'
 import { useTradeSlippage } from 'modules/tradeSlippage'
 import { useVolumeFee } from 'modules/volumeFee'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
-import { createDebouncedTradeAmountAnalytics } from 'common/analytics/utils'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
