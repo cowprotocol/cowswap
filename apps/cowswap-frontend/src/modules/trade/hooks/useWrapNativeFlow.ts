@@ -14,7 +14,6 @@ import {
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { useWethContract } from 'common/hooks/useContract'
-import { useLogEthSendingTransaction } from 'common/hooks/useLogEthSendingTransaction'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useWrapNativeScreenState } from './useWrapNativeScreenState'
@@ -37,7 +36,6 @@ function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUn
   const { account } = useWalletInfo()
   const { contract: wethContract, chainId: wethChainId } = useWethContract()
   const addTransaction = useTransactionAdder()
-  const logEthSendingTransaction = useLogEthSendingTransaction()
   const [, setWrapNativeState] = useWrapNativeScreenState()
 
   return useMemo(() => {
@@ -51,7 +49,6 @@ function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUn
       wethContract,
       amount,
       addTransaction,
-      logEthSendingTransaction,
       closeModals() {
         setWrapNativeState({ isOpen: false })
       },
@@ -59,7 +56,7 @@ function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUn
         setWrapNativeState({ isOpen: true })
       },
     }
-  }, [wethChainId, wethContract, amount, addTransaction, setWrapNativeState, logEthSendingTransaction, account])
+  }, [wethChainId, wethContract, amount, addTransaction, setWrapNativeState, account])
 }
 
 function useWrapNativeCallback(inputAmount: Nullish<CurrencyAmount<Currency>>): WrapUnwrapCallback | null {

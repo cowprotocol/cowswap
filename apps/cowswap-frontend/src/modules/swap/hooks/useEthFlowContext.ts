@@ -8,7 +8,6 @@ import { useGetQuoteAndStatus } from 'legacy/state/price/hooks'
 import { useAppData, useUploadAppData } from 'modules/appData'
 
 import { useEthFlowContract } from 'common/hooks/useContract'
-import { useLogEthSendingTransaction } from 'common/hooks/useLogEthSendingTransaction'
 
 import { useCheckEthFlowOrderExists } from './useCheckEthFlowOrderExists'
 import { useDerivedSwapInfo } from './useSwapState'
@@ -30,7 +29,6 @@ export function useEthFlowContext(): EthFlowContext | null {
   const addTransaction = useTransactionAdder()
   const uploadAppData = useUploadAppData()
   const appData = useAppData()
-  const logEthSendingTransaction = useLogEthSendingTransaction()
 
   const addInFlightOrderId = useSetAtom(addInFlightOrderIdAtom)
 
@@ -46,7 +44,6 @@ export function useEthFlowContext(): EthFlowContext | null {
             addTransaction,
             checkEthFlowOrderExists,
             addInFlightOrderId,
-            logEthSendingTransaction,
             uploadAppData,
             appData,
           ]
@@ -58,7 +55,6 @@ export function useEthFlowContext(): EthFlowContext | null {
         addTransaction,
         checkEthFlowOrderExists,
         addInFlightOrderId,
-         logEthSendingTransaction,
         uploadAppData,
         appData,
       ]) => {
@@ -69,7 +65,6 @@ export function useEthFlowContext(): EthFlowContext | null {
           addTransaction,
           checkEthFlowOrderExists,
           addInFlightOrderId,
-          logEthSendingTransaction,
           uploadAppData,
           appData,
         }

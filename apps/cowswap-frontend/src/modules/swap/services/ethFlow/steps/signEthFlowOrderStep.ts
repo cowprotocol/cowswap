@@ -10,7 +10,7 @@ import { logTradeFlow, logTradeFlowError } from 'modules/trade/utils/logger'
 import { TradeFlowContext } from 'modules/tradeFlow'
 
 import { GAS_LIMIT_DEFAULT } from 'common/constants/common'
-import { EthSendingTransactionInfo } from 'common/hooks/useLogEthSendingTransaction'
+import { logEthSendingTransaction } from 'common/services/logEthSendingTransaction'
 import { assertProviderNetwork } from 'common/utils/assertProviderNetwork'
 
 type EthFlowCreateOrderParams = Omit<UnsignedOrder, 'quoteId' | 'appData' | 'validTo' | 'orderId'> & {
@@ -30,7 +30,6 @@ export async function signEthFlowOrderStep(
   orderParams: PostOrderParams,
   ethFlowContract: CoWSwapEthFlow,
   addInFlightOrderId: (orderId: string) => void,
-  logEthSendingTransaction: (info: EthSendingTransactionInfo) => void,
   tradeFlowContext: TradeFlowContext,
 ): Promise<EthFlowResponse> {
   logTradeFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] - signing orderParams onchain', orderParams)

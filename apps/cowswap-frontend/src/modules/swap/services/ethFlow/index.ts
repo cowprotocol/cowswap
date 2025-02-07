@@ -42,7 +42,6 @@ export async function ethFlow(
     addTransaction,
     checkEthFlowOrderExists,
     addInFlightOrderId,
-    logEthSendingTransaction,
     quote,
   } = ethFlowContext
 
@@ -91,7 +90,6 @@ export async function ethFlow(
       orderParams,
       contract,
       addInFlightOrderId,
-      logEthSendingTransaction,
       tradeContext,
     ).finally(() => {
       callbacks.closeModals()

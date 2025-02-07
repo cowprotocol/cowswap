@@ -11,7 +11,7 @@ export interface EthSendingTransactionInfo {
   tx: PopulatedTransaction
 }
 
-function logEthSendingTransaction(info: EthSendingTransactionInfo) {
+export function logEthSendingTransaction(info: EthSendingTransactionInfo) {
   captureEvent({
     message: 'Native token sending transaction',
     level: 'log',
@@ -30,8 +30,4 @@ function logEthSendingTransaction(info: EthSendingTransactionInfo) {
       txType: info.tx.type?.toString(),
     },
   })
-}
-
-export function useLogEthSendingTransaction() {
-  return logEthSendingTransaction
 }

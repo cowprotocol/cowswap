@@ -17,7 +17,7 @@ import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { wrapAnalytics } from 'modules/analytics'
 
-import { EthSendingTransactionInfo } from 'common/hooks/useLogEthSendingTransaction'
+import { logEthSendingTransaction } from 'common/services/logEthSendingTransaction'
 import { assertProviderNetwork } from 'common/utils/assertProviderNetwork'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
@@ -45,7 +45,6 @@ export interface WrapUnwrapContext {
   addTransaction: TransactionAdder
   closeModals: Command
   openTransactionConfirmationModal: Command
-  logEthSendingTransaction: (info: EthSendingTransactionInfo) => void
 }
 
 interface WrapUnwrapTxData {
@@ -57,16 +56,8 @@ export async function wrapUnwrapCallback(
   context: WrapUnwrapContext,
   params: WrapUnwrapCallbackParams = { useModals: true },
 ): Promise<TransactionResponse | null> {
-  const {
-    chainId,
-    account,
-    amount,
-    wethContract,
-    addTransaction,
-    openTransactionConfirmationModal,
-    closeModals,
-    logEthSendingTransaction,
-  } = context
+  const { chainId, account, amount, wethContract, addTransaction, openTransactionConfirmationModal, closeModals } =
+    context
   const isNativeIn = getIsNativeToken(amount.currency)
   const amountHex = `0x${amount.quotient.toString(RADIX_HEX)}`
 
