@@ -26,7 +26,7 @@ import {
 } from '@/styles/styled'
 import LazySVG from '@/components/LazySVG'
 import { DAO_CONTENT as CONTENT } from '@/data/widget/const'
-import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { Color, ProductLogo, ProductVariant, WordTags } from '@cowprotocol/ui'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Navigation, Pagination } from 'swiper/modules'
 
@@ -47,16 +47,16 @@ export function DaosPageComponent() {
     <PageWrapper>
       <HeroContainer variant="secondary">
         <HeroContent variant="secondary">
-          <HeroSubtitle color={'#66018E'}>DAOs</HeroSubtitle>
+          <HeroSubtitle color={Color.cowfi_purple3}>DAOs</HeroSubtitle>
           <HeroTitle maxWidth={470}>Savvy DAOs Choose CoW Swap</HeroTitle>
           <HeroDescription>The smartest DAOs trust CoW Swap with their most-important trades</HeroDescription>
         </HeroContent>
-        <HeroImage width={470} height={400} color={'#66018E'}>
+        <HeroImage width={470} height={400} color={Color.cowfi_purple3}>
           <LazySVG src={IMG_ICON_BULB_COW} />
         </HeroImage>
       </HeroContainer>
 
-      <MetricsCard bgColor="#F996EE" color="#66018E" columns={1} touchFooter>
+      <MetricsCard bgColor={WordTags.purple.text} color={Color.cowfi_purple3} columns={1} touchFooter>
         <TrustedBy>
           <p>Trusted by</p>
           <ul>
