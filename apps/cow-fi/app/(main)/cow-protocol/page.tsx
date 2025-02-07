@@ -126,7 +126,7 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral98}>
         <ContainerCardSection>
           <SectionTitleWrapper color={Color.neutral0} maxWidth={700} gap={56}>
-            <SectionTitleIcon size={82}>
+            <SectionTitleIcon $size={82}>
               <LazySVG src={IMG_ICON_CROWN_COW} />
             </SectionTitleIcon>
             <SectionTitleText>The leading intents-based DEX aggregation protocol</SectionTitleText>
@@ -144,7 +144,7 @@ export default function Page() {
       <ContainerCard bgColor={'transparent'}>
         <ContainerCardSection>
           <SectionTitleWrapper>
-            <SectionTitleIcon size={132}>
+            <SectionTitleIcon $size={132}>
               <LazySVG src={IMG_COW_LENS} />
             </SectionTitleIcon>
             <SectionTitleText>How it works</SectionTitleText>
@@ -342,7 +342,7 @@ export default function Page() {
       <ContainerCard bgColor={'transparent'}>
         <ContainerCardSection>
           <SectionTitleWrapper maxWidth={878} color={Color.neutral10}>
-            <SectionTitleIcon size={128}>
+            <SectionTitleIcon $size={128}>
               <LazySVG src={IMG_ICON_BULB_COW} />
             </SectionTitleIcon>
             <SectionTitleText textAlign="center">Powering innovation across DeFi</SectionTitleText>
@@ -398,7 +398,7 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 0">
-            <SectionTitleIcon multiple size={60}>
+            <SectionTitleIcon $multiple $size={60}>
               <LazySVG src={IMG_ICON_OWL} />
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
               <LazySVG src={IMG_ICON_GHOST} />
@@ -488,7 +488,7 @@ export default function Page() {
       <ContainerCard bgColor={'transparent'}>
         <ContainerCardSection>
           <SectionTitleWrapper color={Color.neutral10} maxWidth={1100}>
-            <SectionTitleIcon size={78}>
+            <SectionTitleIcon $size={78}>
               <LazySVG src={IMG_ICON_BUILD_WITH_COW} />
             </SectionTitleIcon>
             <SectionTitleText>Build with CoW Protocol</SectionTitleText>
@@ -538,7 +538,7 @@ export default function Page() {
       <ContainerCard bgColor={'transparent'}>
         <ContainerCardSection>
           <SectionTitleWrapper maxWidth={1000}>
-            <SectionTitleIcon size={100}>
+            <SectionTitleIcon $size={100}>
               <LazySVG src={IMG_ICON_SECURE} />
             </SectionTitleIcon>
             <SectionTitleText textAlign="center">Want to build a solver?</SectionTitleText>
@@ -576,7 +576,7 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} touchFooter>
         <ContainerCardSection>
           <SectionTitleWrapper>
-            <SectionTitleIcon size={62}>
+            <SectionTitleIcon $size={62}>
               <LazySVG src={IMG_ICON_FAQ} />
             </SectionTitleIcon>
             <SectionTitleText>FAQs</SectionTitleText>
