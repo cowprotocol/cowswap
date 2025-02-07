@@ -507,7 +507,7 @@ export const LinkSection = styled.div<{
   border-radius: 2.8rem;
   padding: ${({ padding }) => padding || '2.4rem'};
   width: 100%;
-  gap: ${({ gap }) => gap || 2.4}rem;
+  gap: ${({ gap }) => gap || 24}px;
 
   ${Media.upToMedium()} {
     grid-template-columns: ${({ columnsMobile }) => `repeat(${columnsMobile || 1}, 1fr)`};
