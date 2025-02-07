@@ -9,7 +9,7 @@ import { Currency } from '@uniswap/sdk-core'
 import { CheckCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 export const ButtonCustom = styled.button`
   display: flex;
@@ -73,7 +73,7 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
 
   const analyticsEvent = useMemo(
     () => ({
-      category: CowSwapCategory.WALLET,
+      category: CowSwapAnalyticsCategory.WALLET,
       action: 'Add Token To Wallet',
       label: currency ? `${currency.symbol}|${walletName}` : 'unknown',
     }),

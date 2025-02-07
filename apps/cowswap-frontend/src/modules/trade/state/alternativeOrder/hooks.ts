@@ -5,7 +5,7 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { CowSwapCategory } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { alternativeOrderAtom, isAlternativeOrderModalVisibleAtom } from './atoms'
@@ -16,7 +16,7 @@ function useAlternativeModalAnalytics() {
   return useCallback(
     (action: string) => {
       cowAnalytics.sendEvent({
-        category: CowSwapCategory.TRADE,
+        category: CowSwapAnalyticsCategory.TRADE,
         action,
       })
     },

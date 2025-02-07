@@ -5,7 +5,7 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useTradeConfirmActions } from 'modules/trade'
 import { TradeFormButtons, TradeFormValidation, useTradeFormButtonContext } from 'modules/tradeFormValidation'
 
-import { CowSwapCategory } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import { useAreWarningsAccepted } from '../../hooks/useAreWarningsAccepted'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
@@ -30,7 +30,7 @@ export function ActionButtons({
   const twapConversionAnalytics = useCallback(
     (status: string, fallbackHandlerIsNotSet: boolean) => {
       cowAnalytics.sendEvent({
-        category: CowSwapCategory.TWAP,
+        category: CowSwapAnalyticsCategory.TWAP,
         action: 'Conversion',
         label: `${status}|${fallbackHandlerIsNotSet ? 'no-handler' : 'handler-set'}`,
       })

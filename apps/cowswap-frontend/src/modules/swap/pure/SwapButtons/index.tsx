@@ -19,7 +19,7 @@ import { EthFlowBanner } from 'modules/swap/containers/EthFlow/EthFlowBanner'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { QuoteDeadlineParams } from 'modules/tradeQuote'
 
-import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { TradeApproveButton } from 'common/containers/TradeApprove/TradeApproveButton'
 
 import { SafeReadOnlyButton } from './SafeReadOnlyButton'
@@ -61,7 +61,7 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       buttonSize={ButtonSize.BIG}
       onClick={props.onEthFlow}
       data-click-event={toCowSwapGtmEvent({
-        category: CowSwapCategory.TRADE,
+        category: CowSwapAnalyticsCategory.TRADE,
         action: 'Open Swap Confirm',
         label: 'Swap with Wrapped Token',
       })}
@@ -121,7 +121,7 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       onClick={props.toggleWalletModal}
       disabled={props.widgetStandaloneMode === false}
       data-click-event={toCowSwapGtmEvent({
-        category: CowSwapCategory.WALLET,
+        category: CowSwapAnalyticsCategory.WALLET,
         action: 'Connect Wallet',
         label: 'Swap Button',
       })}
@@ -166,7 +166,7 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       buttonSize={ButtonSize.BIG}
       onClick={props.openSwapConfirm}
       data-click-event={toCowSwapGtmEvent({
-        category: CowSwapCategory.TRADE,
+        category: CowSwapAnalyticsCategory.TRADE,
         action: 'Open Swap Confirm',
         label: 'Regular Swap',
       })}
@@ -181,7 +181,7 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       buttonSize={ButtonSize.BIG}
       onClick={props.openSwapConfirm}
       data-click-event={toCowSwapGtmEvent({
-        category: CowSwapCategory.TRADE,
+        category: CowSwapAnalyticsCategory.TRADE,
         action: 'Open Swap Confirm',
         label: 'Approve and Swap',
       })}
@@ -200,7 +200,7 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       buttonSize={ButtonSize.BIG}
       onClick={props.openSwapConfirm}
       data-click-event={toCowSwapGtmEvent({
-        category: CowSwapCategory.TRADE,
+        category: CowSwapAnalyticsCategory.TRADE,
         action: 'Open Swap Confirm',
         label: 'Wrap and Swap',
       })}
@@ -231,7 +231,7 @@ function EthFlowSwapButton(props: SwapButtonsContext) {
         buttonSize={ButtonSize.BIG}
         onClick={props.openSwapConfirm}
         data-click-event={toCowSwapGtmEvent({
-          category: CowSwapCategory.TRADE,
+          category: CowSwapAnalyticsCategory.TRADE,
           action: 'Open Swap Confirm',
           label: 'ETH Flow Swap',
         })}

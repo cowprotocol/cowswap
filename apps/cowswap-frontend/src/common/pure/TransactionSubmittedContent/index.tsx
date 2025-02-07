@@ -14,7 +14,7 @@ import { GnosisSafeTxDetails } from 'modules/account/containers/Transaction/Acti
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
 
-import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import * as styledEl from './styled'
 
@@ -83,7 +83,7 @@ export function TransactionSubmittedContent({
           <BackButton
             onClick={onDismiss}
             data-click-event={toCowSwapGtmEvent({
-              category: CowSwapCategory.PROGRESS_BAR,
+              category: CowSwapAnalyticsCategory.PROGRESS_BAR,
               action: 'Click Back Arrow Button',
             })}
           />
@@ -92,7 +92,7 @@ export function TransactionSubmittedContent({
               <CancelButton
                 onClick={showCancellationModal}
                 data-click-event={toCowSwapGtmEvent({
-                  category: CowSwapCategory.PROGRESS_BAR,
+                  category: CowSwapAnalyticsCategory.PROGRESS_BAR,
                   action: 'Click Cancel Order',
                 })}
               >
@@ -103,7 +103,7 @@ export function TransactionSubmittedContent({
               id={hash}
               chainId={chainId}
               data-click-event={toCowSwapGtmEvent({
-                category: CowSwapCategory.PROGRESS_BAR,
+                category: CowSwapAnalyticsCategory.PROGRESS_BAR,
                 action: 'Click Transaction Link',
               })}
             />
@@ -125,7 +125,7 @@ export function TransactionSubmittedContent({
               shortLabel
               currency={currencyToAdd}
               data-click-event={toCowSwapGtmEvent({
-                category: CowSwapCategory.PROGRESS_BAR,
+                category: CowSwapAnalyticsCategory.PROGRESS_BAR,
                 action: 'Click Watch Asset',
               })}
             />
@@ -134,7 +134,7 @@ export function TransactionSubmittedContent({
               <styledEl.ButtonCustom
                 onClick={onDismiss}
                 data-click-event={toCowSwapGtmEvent({
-                  category: CowSwapCategory.PROGRESS_BAR,
+                  category: CowSwapAnalyticsCategory.PROGRESS_BAR,
                   action: 'Click Close',
                 })}
               >
@@ -146,7 +146,7 @@ export function TransactionSubmittedContent({
               <styledEl.ButtonSecondary
                 onClick={onDismiss}
                 data-click-event={toCowSwapGtmEvent({
-                  category: CowSwapCategory.PROGRESS_BAR,
+                  category: CowSwapAnalyticsCategory.PROGRESS_BAR,
                   action: 'Click Close',
                 })}
               >

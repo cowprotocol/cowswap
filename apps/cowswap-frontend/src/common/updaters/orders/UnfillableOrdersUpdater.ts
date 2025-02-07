@@ -29,7 +29,7 @@ import { getBestQuote } from 'legacy/utils/price'
 
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 
-import { CowSwapCategory } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { PRICE_QUOTE_VALID_TO_TIME } from '../../constants/quote'
@@ -58,7 +58,7 @@ export function UnfillableOrdersUpdater(): null {
   const priceOutOfRangeAnalytics = useCallback(
     (label: string) => {
       cowAnalytics.sendEvent({
-        category: CowSwapCategory.TRADE,
+        category: CowSwapAnalyticsCategory.TRADE,
         action: 'Price out of range',
         label,
       })

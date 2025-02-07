@@ -6,7 +6,7 @@ import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 
-import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 const PendingSection = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};
@@ -88,7 +88,7 @@ export function PendingView({
                 padding="12px"
                 onClick={tryConnection}
                 data-click-event={toCowSwapGtmEvent({
-                  category: CowSwapCategory.WALLET,
+                  category: CowSwapAnalyticsCategory.WALLET,
                   action: 'Try connection again',
                   label: error,
                 })}
@@ -100,7 +100,7 @@ export function PendingView({
                   fontSize={12}
                   onClick={openOptions}
                   data-click-event={toCowSwapGtmEvent({
-                    category: CowSwapCategory.WALLET,
+                    category: CowSwapAnalyticsCategory.WALLET,
                     action: 'Back to wallet selection',
                   })}
                 >

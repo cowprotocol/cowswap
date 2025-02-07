@@ -21,7 +21,7 @@ import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import OperatorError from 'api/cowProtocol/errors/OperatorError'
-import { CowSwapCategory } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { TradeAmounts } from 'common/types'
@@ -32,7 +32,7 @@ function useAlternativeModalAnalytics() {
   return useCallback(
     (wasPlaced: boolean) => {
       analytics.sendEvent({
-        category: CowSwapCategory.TRADE,
+        category: CowSwapAnalyticsCategory.TRADE,
         action: 'alternative_modal_completion',
         label: wasPlaced ? 'placed' : 'not-placed',
       })

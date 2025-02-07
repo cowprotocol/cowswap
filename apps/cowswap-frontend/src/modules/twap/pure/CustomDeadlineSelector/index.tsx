@@ -8,7 +8,7 @@ import { Trans } from '@lingui/macro'
 
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 
-import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { CowModal as Modal } from 'common/pure/Modal'
 
 import * as styledEl from './styled'
@@ -39,7 +39,7 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
 
   const onApply = () => {
     sendEvent({
-      category: CowSwapCategory.TWAP,
+      category: CowSwapAnalyticsCategory.TWAP,
       action: 'Apply custom deadline',
       label: `${hoursValue}h ${minutesValue}m`,
     })
@@ -66,7 +66,7 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
           <styledEl.CloseIcon
             onClick={_onDismiss}
             data-click-event={toCowSwapGtmEvent({
-              category: CowSwapCategory.TWAP,
+              category: CowSwapAnalyticsCategory.TWAP,
               action: 'Close custom deadline selector',
             })}
           />
@@ -95,7 +95,7 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
           <styledEl.CancelButton
             onClick={_onDismiss}
             data-click-event={toCowSwapGtmEvent({
-              category: CowSwapCategory.TWAP,
+              category: CowSwapAnalyticsCategory.TWAP,
               action: 'Cancel custom deadline selection',
             })}
           >

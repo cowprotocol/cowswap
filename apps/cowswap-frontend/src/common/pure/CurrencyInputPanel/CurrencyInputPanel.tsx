@@ -13,7 +13,7 @@ import { Field } from 'legacy/state/types'
 import { ReceiveAmount } from 'modules/swap/pure/ReceiveAmount'
 import { useUsdAmount } from 'modules/usdAmount'
 
-import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 import { FiatValue } from 'common/pure/FiatValue'
@@ -181,7 +181,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
           {showSetMax && balance.greaterThan(0) && (
             <styledEl.SetMaxBtn
               data-click-event={toCowSwapGtmEvent({
-                category: CowSwapCategory.TRADE,
+                category: CowSwapAnalyticsCategory.TRADE,
                 action: 'Set Maximum Sell Tokens',
               })}
               onClick={handleMaxInput}

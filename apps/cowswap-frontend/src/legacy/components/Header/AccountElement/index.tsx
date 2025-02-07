@@ -14,14 +14,14 @@ import { NotificationBell, NotificationSidebar } from 'modules/notifications'
 import { useUnreadNotifications } from 'modules/notifications/hooks/useUnreadNotifications'
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
-import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { BalanceText, Wrapper } from './styled'
 
 function createNotificationClickEventData(event: string): string {
   return toCowSwapGtmEvent({
-    category: CowSwapCategory.NOTIFICATIONS,
+    category: CowSwapAnalyticsCategory.NOTIFICATIONS,
     action: event,
   })
 }

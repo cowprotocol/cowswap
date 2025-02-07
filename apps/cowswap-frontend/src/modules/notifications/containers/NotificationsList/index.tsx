@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai/index'
 import React, { ReactNode, useEffect, useMemo } from 'react'
 
-import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import { ListWrapper, NoNotifications, NotificationCard, NotificationsListWrapper, NotificationThumb } from './styled'
 
@@ -53,7 +53,7 @@ export function NotificationsList({ children }: { children: ReactNode }) {
                     noImage={!thumbnail}
                     rel={target === '_blank' ? 'noopener noreferrer' : ''}
                     data-click-event={toCowSwapGtmEvent({
-                      category: CowSwapCategory.NOTIFICATIONS,
+                      category: CowSwapAnalyticsCategory.NOTIFICATIONS,
                       action: 'Click Notification Card',
                       label: title,
                       value: id,

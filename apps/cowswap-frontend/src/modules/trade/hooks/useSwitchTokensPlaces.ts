@@ -4,7 +4,7 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { CowSwapCategory } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useIsWrapOrUnwrap } from './useIsWrapOrUnwrap'
@@ -34,7 +34,7 @@ export function useSwitchTokensPlaces(stateOverride: Partial<ExtendedTradeRawSta
 
     if (!isWrapOrUnwrap) {
       cowAnalytics.sendEvent({
-        category: CowSwapCategory.TRADE,
+        category: CowSwapAnalyticsCategory.TRADE,
         action: 'Switch INPUT/OUTPUT tokens',
       })
       updateState({

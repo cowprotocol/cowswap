@@ -24,7 +24,7 @@ import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { usePermitCompatibleTokens } from 'modules/permit'
 import { useLpTokensWithBalances } from 'modules/yield/shared'
 
-import { CowSwapCategory } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import { getDefaultTokenListCategories } from './getDefaultTokenListCategories'
 
@@ -77,7 +77,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
   const cowAnalytics = useCowAnalytics()
   const addCustomTokenLists = useAddList((source) => {
     cowAnalytics.sendEvent({
-      category: CowSwapCategory.LIST,
+      category: CowSwapAnalyticsCategory.LIST,
       action: 'Add List Success',
       label: source,
     })
@@ -138,7 +138,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
     try {
       addCustomTokenLists(list)
       cowAnalytics.sendEvent({
-        category: CowSwapCategory.LIST,
+        category: CowSwapAnalyticsCategory.LIST,
         action: 'Add List Success',
         label: list.source,
       })

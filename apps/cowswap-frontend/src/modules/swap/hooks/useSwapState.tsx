@@ -25,7 +25,7 @@ import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useTradeSlippage } from 'modules/tradeSlippage'
 import { useVolumeFee } from 'modules/volumeFee'
 
-import { CowSwapCategory } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { createDebouncedTradeAmountAnalytics } from 'common/analytics/utils'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
@@ -77,7 +77,7 @@ export function useSwapActionHandlers(): TradeWidgetActions {
     navigate(chainId, { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId })
     dispatch(switchCurrencies())
     cowAnalytics.sendEvent({
-      category: CowSwapCategory.TRADE,
+      category: CowSwapAnalyticsCategory.TRADE,
       action: 'Switch INPUT/OUTPUT tokens',
     })
   }, [swapState, navigate, chainId, dispatch, cowAnalytics])

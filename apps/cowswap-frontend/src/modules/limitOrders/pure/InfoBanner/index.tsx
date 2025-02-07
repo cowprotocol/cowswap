@@ -4,7 +4,7 @@ import { ClosableBanner } from '@cowprotocol/ui'
 import SVG from 'react-inlinesvg'
 import { HashLink } from 'react-router-hash-link'
 
-import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import * as styledEl from './styled'
 
@@ -25,7 +25,7 @@ export function InfoBanner() {
                 target="_blank"
                 to="/faq/limit-order#how-do-fees-work"
                 data-click-event={toCowSwapGtmEvent({
-                  category: CowSwapCategory.TRADE,
+                  category: CowSwapAnalyticsCategory.TRADE,
                   action: 'Click limit order fees FAQ link',
                 })}
               >
@@ -36,7 +36,7 @@ export function InfoBanner() {
             <styledEl.CloseIcon
               onClick={close}
               data-click-event={toCowSwapGtmEvent({
-                category: CowSwapCategory.TRADE,
+                category: CowSwapAnalyticsCategory.TRADE,
                 action: 'Close limit order info banner',
               })}
             />

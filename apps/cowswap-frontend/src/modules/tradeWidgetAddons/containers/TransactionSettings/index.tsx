@@ -38,7 +38,7 @@ import {
   useTradeSlippage,
 } from 'modules/tradeSlippage'
 
-import { CowSwapCategory } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import {
   getNativeOrderDeadlineTooltip,
   getNativeSlippageTooltip,
@@ -67,13 +67,13 @@ interface TransactionSettingsProps {
 type TxSettingAction = 'Default' | 'Custom'
 
 interface SlippageAnalyticsEvent {
-  category: CowSwapCategory.TRADE
+  category: CowSwapAnalyticsCategory.TRADE
   action: `${TxSettingAction} Slippage Tolerance`
   value: number
 }
 
 interface DeadlineAnalyticsEvent {
-  category: CowSwapCategory.TRADE
+  category: CowSwapAnalyticsCategory.TRADE
   action: `${TxSettingAction} Order Expiration Time`
   value: number
 }
@@ -114,7 +114,7 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
   const sendSlippageAnalytics = useCallback(
     (action: TxSettingAction, value: string | number) => {
       const analyticsEvent: SlippageAnalyticsEvent = {
-        category: CowSwapCategory.TRADE,
+        category: CowSwapAnalyticsCategory.TRADE,
         action: `${action} Slippage Tolerance`,
         value: typeof value === 'string' ? parseFloat(value) : value,
       }
@@ -126,7 +126,7 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
   const sendDeadlineAnalytics = useCallback(
     (action: TxSettingAction, value: number) => {
       const analyticsEvent: DeadlineAnalyticsEvent = {
-        category: CowSwapCategory.TRADE,
+        category: CowSwapAnalyticsCategory.TRADE,
         action: `${action} Order Expiration Time`,
         value,
       }

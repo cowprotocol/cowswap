@@ -15,7 +15,7 @@ import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useYieldRawState } from 'modules/yield'
 import { useVampireAttack, useVampireAttackFirstTarget } from 'modules/yield/shared'
 
-import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import { Routes } from '../../constants/routes'
 import { useIsProviderNetworkUnsupported } from '../../hooks/useIsProviderNetworkUnsupported'
@@ -62,7 +62,7 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
     }
 
     cowAnalytics.sendEvent({
-      category: CowSwapCategory.COWSWAP,
+      category: CowSwapAnalyticsCategory.COWSWAP,
       action: `CoW AMM Banner [${key}] CTA Clicked`,
     })
 
@@ -88,7 +88,7 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
       }}
       onClose={close}
       data-click-event={toCowSwapGtmEvent({
-        category: CowSwapCategory.COWSWAP,
+        category: CowSwapAnalyticsCategory.COWSWAP,
         action: `CoW AMM Banner [${key}] Close`,
       })}
     />

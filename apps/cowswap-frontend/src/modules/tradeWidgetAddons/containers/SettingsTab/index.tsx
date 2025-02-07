@@ -17,7 +17,7 @@ import { Toggle } from 'legacy/components/Toggle'
 
 import { SettingsIcon } from 'modules/trade/pure/Settings'
 
-import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import * as styledEl from './styled'
 
@@ -89,7 +89,7 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
                   isActive={recipientToggleVisible}
                   toggle={toggleRecipientVisibility}
                   data-click-event={toCowSwapGtmEvent({
-                    category: CowSwapCategory.RECIPIENT_ADDRESS,
+                    category: CowSwapAnalyticsCategory.RECIPIENT_ADDRESS,
                     action: 'Toggle Recipient Address',
                     label: recipientToggleVisible ? 'Enabled' : 'Disabled',
                   })}
@@ -118,7 +118,7 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
                     isActive={hooksEnabled}
                     toggle={toggleHooksEnabled}
                     data-click-event={toCowSwapGtmEvent({
-                      category: CowSwapCategory.HOOKS,
+                      category: CowSwapAnalyticsCategory.HOOKS,
                       action: 'Toggle Hooks Enabled',
                       label: hooksEnabled ? 'Enabled' : 'Disabled',
                     })}

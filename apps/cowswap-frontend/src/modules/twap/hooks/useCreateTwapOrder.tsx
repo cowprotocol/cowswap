@@ -17,7 +17,7 @@ import { getCowSoundSend } from 'modules/sounds'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeFlowAnalyticsContext, useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
-import { CowSwapCategory } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
@@ -35,7 +35,7 @@ import { getErrorMessage } from '../utils/parseTwapError'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
 
 interface TwapAnalyticsEvent {
-  category: CowSwapCategory.TWAP
+  category: CowSwapAnalyticsCategory.TWAP
   action: string
   label: string
 }
@@ -77,7 +77,7 @@ export function useCreateTwapOrder() {
   const sendOrderAnalytics = useCallback(
     (action: string, context: string) => {
       const analyticsEvent: TwapOrderEvent = {
-        category: CowSwapCategory.TWAP,
+        category: CowSwapAnalyticsCategory.TWAP,
         action: 'Place Order',
         label: `${UiOrderType.TWAP}|${context}`,
       }
@@ -89,7 +89,7 @@ export function useCreateTwapOrder() {
   const sendTwapConversionAnalytics = useCallback(
     (status: string, fallbackHandlerIsNotSet: boolean) => {
       const analyticsEvent: TwapConversionEvent = {
-        category: CowSwapCategory.TWAP,
+        category: CowSwapAnalyticsCategory.TWAP,
         action: 'Conversion',
         label: `${status}|${fallbackHandlerIsNotSet ? 'no-handler' : 'handler-set'}`,
       }

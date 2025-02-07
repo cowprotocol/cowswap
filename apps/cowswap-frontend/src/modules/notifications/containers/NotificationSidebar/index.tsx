@@ -4,7 +4,7 @@ import { useOnClickOutside } from '@cowprotocol/common-hooks'
 
 import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
-import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import { Sidebar, SidebarHeader, DoubleArrowRightIcon, CloseIcon, ArrowLeft } from './styled'
 
@@ -43,7 +43,7 @@ export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProp
               <ArrowLeft
                 onClick={toggleSettingsOpen}
                 data-click-event={toCowSwapGtmEvent({
-                  category: CowSwapCategory.NOTIFICATIONS,
+                  category: CowSwapAnalyticsCategory.NOTIFICATIONS,
                   action: 'Close notification settings',
                 })}
               />
@@ -59,7 +59,7 @@ export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProp
                 <DoubleArrowRightIcon
                   onClick={onDismiss}
                   data-click-event={toCowSwapGtmEvent({
-                    category: CowSwapCategory.NOTIFICATIONS,
+                    category: CowSwapAnalyticsCategory.NOTIFICATIONS,
                     action: 'Close notifications panel',
                     label: 'desktop',
                   })}
@@ -69,7 +69,7 @@ export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProp
                 <CloseIcon
                   onClick={onDismiss}
                   data-click-event={toCowSwapGtmEvent({
-                    category: CowSwapCategory.NOTIFICATIONS,
+                    category: CowSwapAnalyticsCategory.NOTIFICATIONS,
                     action: 'Close notifications panel',
                     label: 'mobile',
                   })}

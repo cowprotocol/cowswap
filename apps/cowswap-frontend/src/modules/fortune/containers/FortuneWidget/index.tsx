@@ -23,7 +23,7 @@ import {
   updateOpenFortuneAtom,
 } from 'modules/fortune/state/fortuneStateAtom'
 
-import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import { SuccessBanner } from './styled'
 
@@ -351,7 +351,7 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
                   onClickOptional={onTweetShare}
                   href={`https://twitter.com/intent/tweet?text=${twitterText}`}
                   data-click-event={toCowSwapGtmEvent({
-                    category: CowSwapCategory.COW_FORTUNE,
+                    category: CowSwapAnalyticsCategory.COW_FORTUNE,
                     action: 'Share on Twitter',
                   })}
                 >
@@ -383,7 +383,7 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
         isDailyFortuneChecked={isDailyFortuneChecked}
         onClick={openFortuneModal}
         data-click-event={toCowSwapGtmEvent({
-          category: CowSwapCategory.COW_FORTUNE,
+          category: CowSwapAnalyticsCategory.COW_FORTUNE,
           action: 'Open Fortune Cookie',
         })}
       >

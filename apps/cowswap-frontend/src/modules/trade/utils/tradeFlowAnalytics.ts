@@ -3,7 +3,7 @@ import { UiOrderType } from '@cowprotocol/types'
 
 import { USER_SWAP_REJECTED_ERROR } from 'modules/trade/utils/swapErrorHelper'
 
-import { CowSwapCategory } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 export interface TradeFlowAnalyticsContext {
   account: string | null
@@ -27,7 +27,7 @@ export function useTradeFlowAnalytics(): TradeFlowAnalytics {
 
   const sendTradeAnalytics = (action: string, orderType: UiOrderType, marketLabel?: string, value?: number) => {
     analytics.sendEvent({
-      category: CowSwapCategory.TRADE,
+      category: CowSwapAnalyticsCategory.TRADE,
       action,
       label: `${orderType}|${marketLabel}`,
       ...(value !== undefined && { value }),

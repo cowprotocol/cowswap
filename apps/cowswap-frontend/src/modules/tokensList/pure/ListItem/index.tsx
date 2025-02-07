@@ -7,7 +7,7 @@ import { Settings } from 'react-feather'
 
 import { Toggle } from 'legacy/components/Toggle'
 
-import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import * as styledEl from './styled'
 
@@ -55,7 +55,7 @@ export function ListItem(props: TokenListItemProps) {
                   href={getTokenListViewLink(list.source)}
                   rel="noreferrer"
                   data-click-event={toCowSwapGtmEvent({
-                    category: CowSwapCategory.LIST,
+                    category: CowSwapAnalyticsCategory.LIST,
                     action: 'View List',
                     label: list.source,
                   })}
@@ -67,7 +67,7 @@ export function ListItem(props: TokenListItemProps) {
             <MenuItem onSelect={handleRemove}>
               <styledEl.SettingsAction
                 data-click-event={toCowSwapGtmEvent({
-                  category: CowSwapCategory.LIST,
+                  category: CowSwapAnalyticsCategory.LIST,
                   action: 'Remove List',
                   label: list.source,
                 })}
@@ -83,7 +83,7 @@ export function ListItem(props: TokenListItemProps) {
           isActive={isActive}
           toggle={toggle}
           data-click-event={toCowSwapGtmEvent({
-            category: CowSwapCategory.LIST,
+            category: CowSwapAnalyticsCategory.LIST,
             action: `${enabled ? 'Disable' : 'Enable'} List`,
             label: list.source,
           })}

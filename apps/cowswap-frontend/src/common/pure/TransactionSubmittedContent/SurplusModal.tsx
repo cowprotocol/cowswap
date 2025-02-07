@@ -10,7 +10,7 @@ import styled from 'styled-components/macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 
 const SELL_SURPLUS_WORD = 'got'
@@ -184,7 +184,7 @@ export function SurplusModal(props: SurplusModalProps) {
             order.kind,
           )}`}
           data-click-event={toCowSwapGtmEvent({
-            category: CowSwapCategory.SURPLUS_MODAL,
+            category: CowSwapAnalyticsCategory.SURPLUS_MODAL,
             action: 'Share on Twitter',
           })}
         >

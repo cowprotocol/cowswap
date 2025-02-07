@@ -9,7 +9,7 @@ import { useIsAssetWatchingSupported, useWalletDetails } from '@cowprotocol/wall
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Currency } from '@uniswap/sdk-core'
 
-import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { WatchAssetInWallet as WatchAssetInWalletPure } from '../../pure/WatchAssetInWallet'
@@ -51,7 +51,7 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
       .then(() => {
         // Track success event
         cowAnalytics.sendEvent({
-          category: CowSwapCategory.WALLET,
+          category: CowSwapAnalyticsCategory.WALLET,
           action: 'Watch Asset',
           label: `Succeeded: ${token.symbol}`,
         })
@@ -61,7 +61,7 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
         console.error('Can not add an asset to wallet', error)
         // Track failure event
         cowAnalytics.sendEvent({
-          category: CowSwapCategory.WALLET,
+          category: CowSwapAnalyticsCategory.WALLET,
           action: 'Watch Asset',
           label: `Failed: ${token.symbol}`,
         })
@@ -83,7 +83,7 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
       currency={currency}
       shortLabel={shortLabel}
       data-click-event={toCowSwapGtmEvent({
-        category: CowSwapCategory.WALLET,
+        category: CowSwapAnalyticsCategory.WALLET,
         action: 'Click Watch Asset',
       })}
     />

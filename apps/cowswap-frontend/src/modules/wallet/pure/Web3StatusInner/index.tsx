@@ -11,7 +11,7 @@ import SVG from 'react-inlinesvg'
 
 import { upToExtraSmall, upToTiny, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
-import { CowSwapCategory, toCowSwapGtmEvent, CowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent, CowSwapGtmEvent } from 'common/analytics/types'
 
 import { Text, Web3StatusConnect, Web3StatusConnected } from './styled'
 
@@ -34,7 +34,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
 
   const connectWalletEvent = useMemo(
     (): CowSwapGtmEvent => ({
-      category: CowSwapCategory.WALLET,
+      category: CowSwapAnalyticsCategory.WALLET,
       action: 'Connect wallet button click',
       label: `${connectionType}${ensName ? ' (ENS)' : ''}`,
       value: pendingCount,

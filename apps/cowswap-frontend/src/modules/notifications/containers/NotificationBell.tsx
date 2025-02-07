@@ -7,7 +7,7 @@ import { UI } from '@cowprotocol/ui'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 const Icon = styled.div<{ hasNotification?: boolean }>`
   --size: 18px;
@@ -68,7 +68,7 @@ export function NotificationBell({ onClick, unreadCount }: NotificationBellProps
       hasNotification={unreadCount > 0}
       onClick={onClick}
       data-click-event={toCowSwapGtmEvent({
-        category: CowSwapCategory.NOTIFICATIONS,
+        category: CowSwapAnalyticsCategory.NOTIFICATIONS,
         action: 'Toggle notifications panel',
         label: `Unread count: ${unreadCount}`,
       })}

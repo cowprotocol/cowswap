@@ -4,7 +4,7 @@ import { AnalyticsCategory, Category, GtmEvent, toGtmEvent } from '@cowprotocol/
  * CowSwap-specific analytics categories
  * Extends the base Category enum with CowSwap-specific values
  */
-export enum CowSwapCategory {
+export enum CowSwapAnalyticsCategory {
   // Base Category values (must match exactly)
   SERVICE_WORKER = Category.SERVICE_WORKER,
   FOOTER = Category.FOOTER,
@@ -35,19 +35,18 @@ export enum CowSwapCategory {
   COW_FORTUNE = 'CoWFortune',
 }
 
-// Type assertion to ensure CowSwapCategory extends AnalyticsCategory
-const _assertType: AnalyticsCategory = CowSwapCategory.SERVICE_WORKER
-
 /**
  * CowSwap-specific GTM event type
  */
-export type CowSwapGtmEvent = GtmEvent<CowSwapCategory>
+export type CowSwapGtmEvent = GtmEvent<CowSwapAnalyticsCategory>
 
 /**
  * Helper function to create GTM events with CowSwap categories
  */
-export function toCowSwapGtmEvent(event: Omit<CowSwapGtmEvent, 'category'> & { category: CowSwapCategory }): string {
-  // Since CowSwapCategory values are string literals that match the expected format,
+export function toCowSwapGtmEvent(
+  event: Omit<CowSwapGtmEvent, 'category'> & { category: CowSwapAnalyticsCategory },
+): string {
+  // Since CowSwapAnalyticsCategory values are string literals that match the expected format,
   // we can safely cast through unknown to GtmEvent
   return toGtmEvent({
     ...event,

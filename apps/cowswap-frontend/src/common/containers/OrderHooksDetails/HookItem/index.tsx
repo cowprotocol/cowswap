@@ -6,7 +6,7 @@ import { ChevronDown, ChevronUp } from 'react-feather'
 
 import { useSimulationData } from 'modules/tenderly/hooks/useSimulationData'
 
-import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import * as styledEl from './styled'
 
@@ -21,7 +21,7 @@ export function HookItem({ details, item, index }: { details?: CowHookDetails; i
       <styledEl.HookItemHeader
         onClick={() => setIsOpen(!isOpen)}
         data-click-event={toCowSwapGtmEvent({
-          category: CowSwapCategory.HOOKS,
+          category: CowSwapAnalyticsCategory.HOOKS,
           action: 'Click Hook Details',
           label: `${dappName} - ${isOpen ? 'Collapse' : 'Expand'}`,
         })}
@@ -54,7 +54,7 @@ export function HookItem({ details, item, index }: { details?: CowHookDetails; i
                       target="_blank"
                       rel="noopener noreferrer"
                       data-click-event={toCowSwapGtmEvent({
-                        category: CowSwapCategory.HOOKS,
+                        category: CowSwapAnalyticsCategory.HOOKS,
                         action: 'Click Simulation',
                         label: `${dappName} - ${simulationData.status ? 'Success' : 'Failed'}`,
                       })}
@@ -77,7 +77,7 @@ export function HookItem({ details, item, index }: { details?: CowHookDetails; i
                   target="_blank"
                   rel="noopener noreferrer"
                   data-click-event={toCowSwapGtmEvent({
-                    category: CowSwapCategory.HOOKS,
+                    category: CowSwapAnalyticsCategory.HOOKS,
                     action: 'Click Website',
                     label: `${dappName} - ${new URL(item.dapp.website).hostname}`,
                   })}

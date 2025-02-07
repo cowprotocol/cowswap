@@ -36,7 +36,7 @@ import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
-import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import {
   OrderProgressBarStepName,
   PROGRESS_BAR_TIMER_DURATION,
@@ -282,7 +282,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
       startTimeRef.current = Date.now()
       initialStepTriggeredRef.current = true
       analytics.sendEvent({
-        category: CowSwapCategory.PROGRESS_BAR,
+        category: CowSwapAnalyticsCategory.PROGRESS_BAR,
         action: 'Step Triggered',
         label: currentStep,
         value: 0, // This remains 0 for the initial step
@@ -301,7 +301,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
       const durationInSeconds = duration / 1000
 
       analytics.sendEvent({
-        category: CowSwapCategory.PROGRESS_BAR,
+        category: CowSwapAnalyticsCategory.PROGRESS_BAR,
         action: 'Step Triggered',
         label: currentStep,
         value: parseFloat(durationInSeconds.toFixed(2)),
@@ -309,7 +309,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
 
       if (isFinalState) {
         analytics.sendEvent({
-          category: CowSwapCategory.PROGRESS_BAR,
+          category: CowSwapAnalyticsCategory.PROGRESS_BAR,
           action: 'Order Completed',
           label: currentStep,
           value: parseFloat(durationInSeconds.toFixed(2)),
@@ -596,7 +596,7 @@ function InitialStep(props: OrderProgressBarV2Props) {
               href="https://cow.fi/learn/understanding-batch-auctions"
               target="_blank"
               data-click-event={toCowSwapGtmEvent({
-                category: CowSwapCategory.PROGRESS_BAR,
+                category: CowSwapAnalyticsCategory.PROGRESS_BAR,
                 action: 'Click Learn More',
                 label: 'Initial',
               })}
@@ -869,7 +869,7 @@ function FinishedStep(props: OrderProgressBarV2Props) {
             {solvers.length > 3 && (
               <styledEl.ViewMoreButton
                 data-click-event={toCowSwapGtmEvent({
-                  category: CowSwapCategory.PROGRESS_BAR,
+                  category: CowSwapAnalyticsCategory.PROGRESS_BAR,
                   action: 'Click Toggle Solvers',
                   label: showAllSolvers ? 'Hide' : 'Show',
                 })}
@@ -893,7 +893,7 @@ function FinishedStep(props: OrderProgressBarV2Props) {
       <RenderProgressTopSection {...props} />
       <styledEl.ShareButton
         data-click-event={toCowSwapGtmEvent({
-          category: CowSwapCategory.PROGRESS_BAR,
+          category: CowSwapAnalyticsCategory.PROGRESS_BAR,
           action: 'Click Share Button',
           label: shouldShowSurplus ? 'Surplus' : 'Tip',
         })}
@@ -921,7 +921,7 @@ function SolvingStep(props: OrderProgressBarV2Props) {
   const isSolved = stepName === 'solved'
 
   const cancelEventData = toCowSwapGtmEvent({
-    category: CowSwapCategory.PROGRESS_BAR,
+    category: CowSwapAnalyticsCategory.PROGRESS_BAR,
     action: 'Click Cancel Order',
     label: isSolved ? 'Solved' : 'Solving',
   })
@@ -984,7 +984,7 @@ function SolvingStep(props: OrderProgressBarV2Props) {
                   href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
                   target="_blank"
                   data-click-event={toCowSwapGtmEvent({
-                    category: CowSwapCategory.PROGRESS_BAR,
+                    category: CowSwapAnalyticsCategory.PROGRESS_BAR,
                     action: 'Click Learn More',
                     label: 'Submission Failed',
                   })}
@@ -1004,7 +1004,7 @@ function SolvingStep(props: OrderProgressBarV2Props) {
                   href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
                   target="_blank"
                   data-click-event={toCowSwapGtmEvent({
-                    category: CowSwapCategory.PROGRESS_BAR,
+                    category: CowSwapAnalyticsCategory.PROGRESS_BAR,
                     action: 'Click Learn More',
                     label: 'Solving',
                   })}
@@ -1078,7 +1078,7 @@ function ExpiredStep(props: OrderProgressBarV2Props) {
             Unlike on other exchanges, you won't be charged for this! Feel free to{' '}
             <styledEl.Button
               data-click-event={toCowSwapGtmEvent({
-                category: CowSwapCategory.PROGRESS_BAR,
+                category: CowSwapAnalyticsCategory.PROGRESS_BAR,
                 action: 'Click Place New Order',
                 label: 'Expired Step',
               })}
@@ -1097,7 +1097,7 @@ function ExpiredStep(props: OrderProgressBarV2Props) {
           href="https://discord.com/invite/cowprotocol"
           target="_blank"
           data-click-event={toCowSwapGtmEvent({
-            category: CowSwapCategory.PROGRESS_BAR,
+            category: CowSwapAnalyticsCategory.PROGRESS_BAR,
             action: 'Click Discord Link',
             label: 'Expired Step',
           })}
@@ -1109,7 +1109,7 @@ function ExpiredStep(props: OrderProgressBarV2Props) {
           href="mailto:help@cow.fi"
           target="_blank"
           data-click-event={toCowSwapGtmEvent({
-            category: CowSwapCategory.PROGRESS_BAR,
+            category: CowSwapAnalyticsCategory.PROGRESS_BAR,
             action: 'Click Email Link',
             label: 'Expired Step',
           })}

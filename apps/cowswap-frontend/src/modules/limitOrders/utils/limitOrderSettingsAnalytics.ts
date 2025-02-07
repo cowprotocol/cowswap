@@ -1,6 +1,6 @@
 import { useCowAnalytics } from '@cowprotocol/analytics'
 
-import { CowSwapCategory } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 export enum LimitOrderSettingsAction {
   TOGGLE_SETTINGS = 'Toggle Limit Order Settings',
@@ -17,7 +17,7 @@ export function useLimitOrderSettingsAnalytics() {
 
   const sendLimitOrderSettingsAnalytics = (action: string, label?: string) => {
     analytics.sendEvent({
-      category: CowSwapCategory.LIMIT_ORDER_SETTINGS,
+      category: CowSwapAnalyticsCategory.LIMIT_ORDER_SETTINGS,
       action,
       ...(label && { label }),
     })

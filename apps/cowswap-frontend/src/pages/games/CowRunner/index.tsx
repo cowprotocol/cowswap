@@ -8,7 +8,7 @@ import styled from 'styled-components/macro'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'
 
-import { CowSwapCategory } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 const Wrapper = styled(Page)`
   min-height: initial;
@@ -41,7 +41,7 @@ export default function CowRunnerPage() {
 
   useEffect(() => {
     cowAnalytics.sendEvent({
-      category: CowSwapCategory.GAMES,
+      category: CowSwapAnalyticsCategory.GAMES,
       action: 'Playing CoW Runner game',
     })
   }, [cowAnalytics])

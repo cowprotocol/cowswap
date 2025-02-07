@@ -17,7 +17,7 @@ import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
-import { CowSwapCategory } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { usePrice } from 'common/hooks/usePrice'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
@@ -119,7 +119,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
   useEffect(() => {
     updateSettingsState({ isFallbackHandlerSetupAccepted: false })
     cowAnalytics.sendEvent({
-      category: CowSwapCategory.TWAP,
+      category: CowSwapAnalyticsCategory.TWAP,
       action: 'Open Advanced Orders Tab',
     })
   }, [updateSettingsState, cowAnalytics])
@@ -128,17 +128,17 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
     if (account && verification) {
       if (localFormValidation === TwapFormState.NOT_SAFE) {
         cowAnalytics.sendEvent({
-          category: CowSwapCategory.TWAP,
+          category: CowSwapAnalyticsCategory.TWAP,
           action: 'non-compatible',
         })
       } else if (isFallbackHandlerRequired) {
         cowAnalytics.sendEvent({
-          category: CowSwapCategory.TWAP,
+          category: CowSwapAnalyticsCategory.TWAP,
           action: 'safe-that-could-be-converted',
         })
       } else if (isFallbackHandlerCompatible) {
         cowAnalytics.sendEvent({
-          category: CowSwapCategory.TWAP,
+          category: CowSwapAnalyticsCategory.TWAP,
           action: 'compatible',
         })
       }

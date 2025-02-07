@@ -4,7 +4,7 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { ListSearchResponse, ListState, useListsEnabledState, useRemoveList, useToggleList } from '@cowprotocol/tokens'
 import { Loader } from '@cowprotocol/ui'
 
-import { CowSwapCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import * as styledEl from './styled'
 
@@ -33,7 +33,7 @@ export function ManageLists(props: ManageListsProps) {
 
   const removeList = useRemoveList((source) => {
     cowAnalytics.sendEvent({
-      category: CowSwapCategory.LIST,
+      category: CowSwapAnalyticsCategory.LIST,
       action: 'Remove List',
       label: source,
     })
@@ -41,7 +41,7 @@ export function ManageLists(props: ManageListsProps) {
 
   const toggleList = useToggleList((enable, source) => {
     cowAnalytics.sendEvent({
-      category: CowSwapCategory.LIST,
+      category: CowSwapAnalyticsCategory.LIST,
       action: `${enable ? 'Enable' : 'Disable'} List`,
       label: source,
     })
@@ -65,7 +65,7 @@ export function ManageLists(props: ManageListsProps) {
             source={source}
             list={listToImport}
             data-click-event={toCowSwapGtmEvent({
-              category: CowSwapCategory.LIST,
+              category: CowSwapAnalyticsCategory.LIST,
               action: 'Import List',
               label: listToImport.source,
             })}

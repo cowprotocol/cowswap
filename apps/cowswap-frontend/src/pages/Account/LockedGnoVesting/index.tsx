@@ -27,7 +27,7 @@ import SVG from 'react-inlinesvg'
 import CopyHelper from 'legacy/components/Copy'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 
-import { CowSwapCategory } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { HelpCircle } from 'common/pure/HelpCircle'
 import { BalanceDisplay, Card, CardActions, ConvertWrapper, ExtLink, VestingBreakdown } from 'pages/Account/styled'
 
@@ -81,7 +81,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
   const claimAnalytics = useCallback(
     (action: string) => {
       cowAnalytics.sendEvent({
-        category: CowSwapCategory.CLAIM_COW_FOR_LOCKED_GNO,
+        category: CowSwapAnalyticsCategory.CLAIM_COW_FOR_LOCKED_GNO,
         action,
         label: 'GNO',
       })
