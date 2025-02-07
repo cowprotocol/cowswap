@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components/macro'
-import { Font, Color, Media, WordTags } from '@cowprotocol/ui'
+import { Font, Color, Media } from '@cowprotocol/ui'
 import { transparentize } from 'color2k'
 import { PAGE_MAX_WIDTH } from '@/components/Layout/const'
 import Link from 'next/link'
@@ -1551,7 +1551,7 @@ export const BodyContent = styled.div<{ color?: string }>`
     display: block;
     font-weight: ${Font.weight.bold};
     font-style: normal;
-    background: ${WordTags.orange.background};
+    background: ${Color.cowfi_orange_pale};
     padding: 0.8rem;
     border-radius: 0.8rem;
   }
@@ -1821,8 +1821,8 @@ export const ColorTableContainer = styled.div`
 
 export const ColorTable = styled.table`
   --green: ${Color.cowfi_green};
-  --red: ${WordTags.orange.text};
-  --neutral: ${WordTags.orange.background};
+  --red: ${Color.cowfi_orange_bright};
+  --neutral: ${Color.cowfi_orange_pale};
   --border: ${Color.neutral10};
   width: 100%;
   border-collapse: collapse;

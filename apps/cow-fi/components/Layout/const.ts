@@ -1,4 +1,4 @@
-import { MenuItem, ProductVariant, Color, WordTags } from '@cowprotocol/ui'
+import { MenuItem, ProductVariant, Color } from '@cowprotocol/ui'
 import { clickOnNavigation } from 'modules/analytics'
 
 export const PAGE_MAX_WIDTH = 1760
@@ -98,7 +98,7 @@ export const NAV_ADDITIONAL_BUTTONS = [
     onClick: () => clickOnNavigation('click-trade-on-cow-swap'),
     external: true,
     isButton: true,
-    bgColor: WordTags.blue.background,
-    color: WordTags.blue.text,
+    bgColor: Color.cowfi_blue_lighter,
+    color: Color.cowfi_blue_dark,
   },
 ]

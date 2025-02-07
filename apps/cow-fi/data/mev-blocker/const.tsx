@@ -1,5 +1,5 @@
 import { Link } from '@/components/Link'
-import { Color, ProductLogo, ProductVariant, WordTags } from '@cowprotocol/ui'
+import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
 import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
 import IMG_LOGO_KARPATKEY from '@cowprotocol/assets/images/logo-karpatkey.svg'
@@ -27,22 +27,22 @@ export const MEV_BLOCKER_LIST = [
     id: 'fullprotection',
     description: 'Protection from frontrunning and sandwich attacks on all types of transactions',
     iconImage: IMAGE_FULLPROTECTION,
-    bgColor: WordTags.orange.text,
-    textColor: WordTags.orange.background,
+    bgColor: Color.cowfi_orange_bright,
+    textColor: Color.cowfi_orange_pale,
   },
   {
     id: 'profit',
     description: 'Profit from any backrunning opportunities your transactions create',
     iconImage: IMAGE_PROFIT,
     bgColor: Color.cowfi_peach,
-    textColor: WordTags.orange.text,
+    textColor: Color.cowfi_orange_bright,
   },
   {
     id: 'fastfree',
     description: 'A fast, free, censorship-resistant solution open to all searchers and builders',
     iconImage: IMGAGE_FASTFREE,
     bgColor: Color.cowfi_lightBlue4,
-    textColor: WordTags.blue.text,
+    textColor: Color.cowfi_blue_dark,
   },
 ]
 
@@ -96,35 +96,35 @@ export const TESTIMONIAL_LIST = [
   {
     title: "If I'd known about MEV Blocker sooner, I could've had a lambo by now",
     description: '– Anon',
-    bgColor: WordTags.orange.text,
-    textColor: WordTags.orange.background,
+    bgColor: Color.cowfi_orange_bright,
+    textColor: Color.cowfi_orange_pale,
     iconImage: IMAGE_MEVBLOCKER_REVIEW_2,
   },
   {
     title: 'I was tired of getting rekt, so I started using MEV Blocker',
     description: '– Anon',
     bgColor: Color.neutral100,
-    textColor: WordTags.orange.text,
+    textColor: Color.cowfi_orange_bright,
     iconImage: IMAGE_MEVBLOCKER_REVIEW_3,
   },
   {
     title: 'Robots should work for me, not against me',
     description: '– Anon',
     bgColor: Color.neutral100,
-    textColor: WordTags.orange.text,
+    textColor: Color.cowfi_orange_bright,
     iconImage: IMAGE_MEVBLOCKER_REVIEW_4,
   },
   {
     title: "Nobody's stolen my lunch money since I started using MEV Blocker",
     description: '– Anon',
     bgColor: Color.cowfi_yellow,
-    textColor: WordTags.orange.text,
+    textColor: Color.cowfi_orange_bright,
     iconImage: IMAGE_MEVBLOCKER_REVIEW_5,
   },
   {
     title: 'I used MEV Blocker and I instantly went up a tax bracket',
     description: '– Anon',
-    bgColor: WordTags.orange.text,
+    bgColor: Color.cowfi_orange_bright,
     textColor: Color.cowfi_yellow,
     iconImage: IMAGE_MEVBLOCKER_REVIEW_6,
   },

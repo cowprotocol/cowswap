@@ -1,8 +1,8 @@
 'use client'
 
-import { WordTags } from '@cowprotocol/ui'
+import { Color } from '@cowprotocol/ui'
 import { Layout } from '@/components/Layout'
 
 export default function LayoutPage({ children }: { children: React.ReactNode }) {
-  return <Layout bgColor={WordTags.orange.background}>{children}</Layout>
+  return <Layout bgColor={Color.cowfi_orange_pale}>{children}</Layout>
 }

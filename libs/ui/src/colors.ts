@@ -23,14 +23,20 @@ export const Color = {
   // CoW Protocol Colors
   cowfi_orange: '#ED6834',
   cowfi_orange_light: '#F9A36F',
+  cowfi_orange_bright: '#ec4612',
+  cowfi_orange_pale: '#fee7cf',
   cowfi_peach: '#FDC99F',
   cowfi_blue: '#00A1FF',
   cowfi_blue_bright: '#3FC4FF',
+  cowfi_blue_dark: '#012f7a',
+  cowfi_blue_lighter: '#65d9ff',
   cowfi_yellow: '#F2CD16',
   cowfi_purple1: '#8702AA',
   cowfi_purple2: '#FCCAF2',
   cowfi_purple3: '#66018E',
   cowfi_purple4: '#ED60E9',
+  cowfi_purple_bright: '#f996ee',
+  cowfi_purple_dark: '#490072',
   cowfi_discord_pink: '#FDADA3',
   cowfi_snapshot_red: '#710408',
   cowfi_green: '#2b6f0b',
@@ -74,20 +80,4 @@ export const Gradients = {
       radial-gradient(at 32% 81%, hsla(204, 100%, 89%, 1) 0px, transparent 50%),
       radial-gradient(at 19% 39%, hsla(204, 100%, 89%, 1) 0px, transparent 50%);
   `,
-} as const
-
-// Word tag colors
-export const WordTags = {
-  blue: {
-    text: '#012f7a',
-    background: '#65d9ff',
-  },
-  orange: {
-    text: '#ec4612',
-    background: '#fee7cf',
-  },
-  purple: {
-    text: '#f996ee',
-    background: '#490072',
-  },
 } as const

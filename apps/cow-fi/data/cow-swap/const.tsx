@@ -1,6 +1,6 @@
 import { Link } from '@/components/Link'
 import styled, { DefaultTheme } from 'styled-components'
-import { Color, WordTags } from '@cowprotocol/ui'
+import { Color } from '@cowprotocol/ui'
 
 import IMG_COWSWAP_COINS from '@cowprotocol/assets/images/image-coins.svg'
 import IMG_COWSWAP_MEV from '@cowprotocol/assets/images/image-cowswap-mev.svg'
@@ -17,14 +17,14 @@ type ThemeProps = { theme: DefaultTheme }
 
 export const COW_IS_DIFFERENT = [
   {
-    bgColor: WordTags.blue.background,
+    bgColor: Color.cowfi_blue_lighter,
     fontSize: 28,
-    color: WordTags.blue.text,
+    color: Color.cowfi_blue_dark,
     description: "By aligning incentives between solvers and users, CoW Swap finds surplus you won't get anywhere else",
     imgSrc: IMG_COWSWAP_COINS,
   },
   {
-    bgColor: WordTags.blue.text,
+    bgColor: Color.cowfi_blue_dark,
     fontSize: 28,
     color: Color.cowfi_lightBlue1,
     description: 'MEV is a $1.3+ billion problem that you never have to worry about on CoW Swap',
@@ -33,7 +33,7 @@ export const COW_IS_DIFFERENT = [
   {
     bgColor: Color.cowfi_lightBlue1,
     fontSize: 28,
-    color: WordTags.blue.text,
+    color: Color.cowfi_blue_dark,
     description: "CoW Swap's unique architecture enables advanced order types and seamless UX",
     imgSrc: IMG_COWSWAP_UX,
   },
@@ -41,7 +41,7 @@ export const COW_IS_DIFFERENT = [
 
 export const ADVANCED_ORDER_TYPES = [
   {
-    bgColor: WordTags.blue.text,
+    bgColor: Color.cowfi_blue_dark,
     textColor: Color.cowfi_lightBlue1,
     titleColor: Color.cowfi_white2,
     title: 'Market orders (aka swaps)',
@@ -50,8 +50,8 @@ export const ADVANCED_ORDER_TYPES = [
   },
   {
     bgColor: Color.cowfi_lightBlue1,
-    textColor: WordTags.blue.text,
-    titleColor: WordTags.blue.text,
+    textColor: Color.cowfi_blue_dark,
+    titleColor: Color.cowfi_blue_dark,
     title: 'Limit orders',
     description:
       'Placing a limit order is like setting a trap for a price for your trade. CoW Swap is the only DEX that offers surplus on limit orders – and one of the only DEXs that offers limit orders at all',
@@ -60,7 +60,7 @@ export const ADVANCED_ORDER_TYPES = [
   {
     bgColor: Color.cowfi_lightBlue4,
     textColor: Color.cowfi_darkBlue5,
-    titleColor: WordTags.blue.text,
+    titleColor: Color.cowfi_blue_dark,
     title: 'TWAP orders',
     description:
       'Time-weighted average price (TWAP) orders minimize price impact and volatility risk by letting you trade assets at fixed intervals over a period of time',
@@ -72,13 +72,13 @@ export const BETTER_UX = [
   {
     bgColor: Color.cowfi_lightBlue4,
     textColor: Color.cowfi_darkBlue5,
-    titleColor: WordTags.blue.text,
+    titleColor: Color.cowfi_blue_dark,
     title: 'Gasless trading',
     description: 'All gas fees are paid in the sell token - so you can save your precious ETH',
     imgSrc: IMG_COWSWAP_GASLESS,
   },
   {
-    bgColor: WordTags.blue.text,
+    bgColor: Color.cowfi_blue_dark,
     textColor: Color.cowfi_lightBlue1,
     titleColor: Color.cowfi_white2,
     title: 'No fees for failed transactions',
@@ -88,7 +88,7 @@ export const BETTER_UX = [
   {
     bgColor: Color.cowfi_lightBlue1,
     textColor: Color.cowfi_darkBlue5,
-    titleColor: WordTags.blue.text,
+    titleColor: Color.cowfi_blue_dark,
     title: 'Execute multiple trades at once',
     description: 'With intent-based trading, you can place as many orders as you want simultaneously',
     imgSrc: IMG_COWSWAP_MULTIPLE,

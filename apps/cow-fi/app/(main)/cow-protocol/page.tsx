@@ -1,6 +1,6 @@
 'use client'
 
-import { Color, ProductLogo, ProductVariant, WordTags } from '@cowprotocol/ui'
+import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import IMG_ICON_BUILD_WITH_COW from '@cowprotocol/assets/images/icon-build-with-cow.svg'
@@ -71,7 +71,7 @@ export default function Page() {
           </HeroDescription>
           <Link
             bgColor={Color.cowfi_purple3}
-            color={WordTags.purple.text}
+            color={Color.cowfi_purple_bright}
             href="https://docs.cow.fi/category/tutorials"
             external
             linkType={LinkType.HeroButton}
@@ -85,7 +85,7 @@ export default function Page() {
         </HeroImage>
       </HeroContainer>
 
-      <MetricsCard bgColor={WordTags.purple.text} color={Color.cowfi_purple3} columns={3} touchFooter>
+      <MetricsCard bgColor={Color.cowfi_purple_bright} color={Color.cowfi_purple3} columns={3} touchFooter>
         <MetricsItem dividerColor={Color.cowfi_purple4}>
           <h2>23</h2>
           <p>active solvers settling batches</p>
@@ -156,7 +156,7 @@ export default function Page() {
                 </TopicDescription>
                 <Link
                   bgColor={Color.cowfi_purple3}
-                  color={WordTags.purple.text}
+                  color={Color.cowfi_purple_bright}
                   href="/learn"
                   onClick={() => clickOnCowProtocol('click-intents-learn-more')}
                   linkType={LinkType.TopicButton}
@@ -199,7 +199,7 @@ export default function Page() {
                 </TopicDescription>
                 <Link
                   bgColor={Color.cowfi_purple3}
-                  color={WordTags.purple.text}
+                  color={Color.cowfi_purple_bright}
                   href="/learn"
                   onClick={() => clickOnCowProtocol('click-solvers-learn-more')}
                   linkType={LinkType.TopicButton}
@@ -222,7 +222,7 @@ export default function Page() {
                 </TopicDescription>
                 <Link
                   bgColor={Color.cowfi_purple3}
-                  color={WordTags.purple.text}
+                  color={Color.cowfi_purple_bright}
                   href="/learn"
                   linkType={LinkType.TopicButton}
                   onClick={() => clickOnCowProtocol('click-batch-auctions-learn-more')}
@@ -335,7 +335,7 @@ export default function Page() {
             <TopicCard
               contentAlign={'left'}
               bgColor={Color.cowfi_purple3}
-              textColor={WordTags.purple.text}
+              textColor={Color.cowfi_purple_bright}
               padding={'32px'}
               asProp="div"
             >
@@ -344,7 +344,7 @@ export default function Page() {
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={Color.neutral100}>Automating advanced treasury tasks</TopicTitle>
-                <TopicDescription fontSize={21} color={WordTags.purple.text}>
+                <TopicDescription fontSize={21} color={Color.cowfi_purple_bright}>
                   Curve uses programmatic orders from CoW Protocol to streamline their fee burning processes. With the
                   integration in place, Curve can take fees in any token and convert them automatically to CRV, while
                   generating surplus and protecting themselves from MEV
@@ -355,7 +355,7 @@ export default function Page() {
             <TopicCard
               contentAlign={'left'}
               bgColor={Color.cowfi_purple3}
-              textColor={WordTags.purple.text}
+              textColor={Color.cowfi_purple_bright}
               padding={'32px'}
               asProp="div"
             >
@@ -364,7 +364,7 @@ export default function Page() {
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={Color.neutral100}>Adding security to sensitive transactions</TopicTitle>
-                <TopicDescription fontSize={21} color={WordTags.purple.text}>
+                <TopicDescription fontSize={21} color={Color.cowfi_purple_bright}>
                   Lido leverages programmatic orders as the backbone of "stonks" - a set of smart contracts that they
                   use to manage treasury ops smoothly and securely without taking custody of funds. Stonks allows Lido
                   DAO to "set and forget" complex trade intents without compromising the prices they receive on future
@@ -376,7 +376,7 @@ export default function Page() {
             <TopicCard
               contentAlign={'left'}
               bgColor={Color.cowfi_purple3}
-              textColor={WordTags.purple.text}
+              textColor={Color.cowfi_purple_bright}
               padding={'32px'}
               asProp="div"
             >
@@ -385,7 +385,7 @@ export default function Page() {
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={Color.neutral100}>Powering native swaps</TopicTitle>
-                <TopicDescription fontSize={21} color={WordTags.purple.text}>
+                <TopicDescription fontSize={21} color={Color.cowfi_purple_bright}>
                   Safe chose CoW Protocol to power native swaps on the Safe app. The team chose to build on top of the
                   CoW widget (the simplest way to integrate CoW Protocol) and is now earning revenue by offering
                   MEV-protected swaps to its users
@@ -441,7 +441,7 @@ export default function Page() {
                   <TopicDescription fontSize={21}>{study.description}</TopicDescription>
                   <Link
                     bgColor={Color.cowfi_purple3}
-                    color={WordTags.purple.text}
+                    color={Color.cowfi_purple_bright}
                     fontSize={27}
                     href={study.link}
                     external
@@ -545,7 +545,7 @@ export default function Page() {
 
             <Link
               bgColor={Color.cowfi_purple3}
-              color={WordTags.purple.text}
+              color={Color.cowfi_purple_bright}
               href="https://docs.cow.fi/cow-protocol/tutorials/solvers"
               external
               linkType={LinkType.SectionTitleButton}

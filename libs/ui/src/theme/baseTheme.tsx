@@ -6,7 +6,7 @@ import { css } from 'styled-components/macro'
 
 import { Colors } from './typings'
 
-import { Color, Gradients, WordTags } from '../colors'
+import { Color, Gradients } from '../colors'
 import { UI } from '../enum'
 import { CowSwapTheme } from '../types'
 
@@ -87,13 +87,6 @@ function colors(darkMode: boolean): Colors {
     ...Color,
     // Add dynamic colors from Gradients
     ...Gradients,
-    // Add wordtag colors
-    cowfi_wordtag_blue_text: WordTags.blue.text,
-    cowfi_wordtag_blue_bg: WordTags.blue.background,
-    cowfi_wordtag_orange_text: WordTags.orange.text,
-    cowfi_wordtag_orange_bg: WordTags.orange.background,
-    cowfi_wordtag_purple_text: WordTags.purple.text,
-    cowfi_wordtag_purple_bg: WordTags.purple.background,
   }
 }
 

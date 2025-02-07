@@ -2,7 +2,7 @@
 
 import Script from 'next/script'
 
-import { Color, ProductLogo, ProductVariant, WordTags } from '@cowprotocol/ui'
+import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
 import FAQ from '@/components/FAQ'
 import { AddRpcButton } from '@/components/AddRpcButton'
@@ -93,7 +93,7 @@ export default function Page() {
         <PageWrapper>
           <HeroContainer variant="secondary">
             <HeroContent variant="secondary">
-              <HeroSubtitle color={WordTags.orange.text}>MEV Blocker</HeroSubtitle>
+              <HeroSubtitle color={Color.cowfi_orange_bright}>MEV Blocker</HeroSubtitle>
               <HeroTitle>The best MEV protection under the sun</HeroTitle>
               <HeroDescription fontSize={21}>
                 MEV Blocker is your personal protection from frontrunning and sandwich attacks for a broad spectrum of
@@ -110,20 +110,20 @@ export default function Page() {
 
               <Link
                 linkType={LinkType.HeroButton}
-                bgColor={WordTags.orange.text}
-                color={WordTags.orange.background}
+                bgColor={Color.cowfi_orange_bright}
+                color={Color.cowfi_orange_pale}
                 href="#rpc"
                 onClick={() => clickOnMevBlocker('click-get-protected-heroSection')}
               >
                 Get protected
               </Link>
             </HeroContent>
-            <HeroImage width={470} height={'auto'} color={WordTags.orange.text}>
+            <HeroImage width={470} height={'auto'} color={Color.cowfi_orange_bright}>
               <LazySVG src={IMAGE_SANDWICH_GUY} />
             </HeroImage>
           </HeroContainer>
 
-          <MetricsCard bgColor={WordTags.orange.text} color={WordTags.orange.background} columns={3} touchFooter>
+          <MetricsCard bgColor={Color.cowfi_orange_bright} color={Color.cowfi_orange_pale} columns={3} touchFooter>
             <MetricsItem dividerColor={Color.cowfi_orange_light}>
               <h2>$84B+</h2>
               <p>volume protected from MEV, across 20M+ transactions</p>
@@ -139,7 +139,7 @@ export default function Page() {
 
             <Link
               bgColor="transparent"
-              color={WordTags.orange.background}
+              color={Color.cowfi_orange_pale}
               margin="24px auto 0"
               gridFullWidth
               href="https://dune.com/cowprotocol/mev-blocker"
@@ -422,8 +422,8 @@ export default function Page() {
                 </SectionTitleDescription>
 
                 <Link
-                  bgColor={WordTags.orange.text}
-                  color={WordTags.orange.background}
+                  bgColor={Color.cowfi_orange_bright}
+                  color={Color.cowfi_orange_pale}
                   href="https://docs.cow.fi/category/searchers"
                   external
                   linkType={LinkType.SectionTitleButton}
@@ -485,7 +485,7 @@ export default function Page() {
             </ContainerCardSection>
           </ContainerCard>
 
-          <ContainerCard bgColor={WordTags.orange.background} touchFooter>
+          <ContainerCard bgColor={Color.cowfi_orange_pale} touchFooter>
             <ContainerCardSection>
               <SectionTitleWrapper padding="72px 0" maxWidth={640}>
                 <SectionTitleIcon>
@@ -495,8 +495,8 @@ export default function Page() {
 
                 <Link
                   linkType={LinkType.SectionTitleButton}
-                  bgColor={WordTags.orange.text}
-                  color={WordTags.orange.background}
+                  bgColor={Color.cowfi_orange_bright}
+                  color={Color.cowfi_orange_pale}
                   onClick={handleShareClick}
                   asButton
                 >

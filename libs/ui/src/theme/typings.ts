@@ -69,12 +69,6 @@ export interface Colors {
   cowfi_gradient: ColorValue
   cowfi_gradient2: ColorValue
   cowfi_gradientMesh: StyledFlattenSimpleInterpolation
-  cowfi_wordtag_blue_text: ColorValue
-  cowfi_wordtag_blue_bg: ColorValue
-  cowfi_wordtag_orange_text: ColorValue
-  cowfi_wordtag_orange_bg: ColorValue
-  cowfi_wordtag_purple_text: ColorValue
-  cowfi_wordtag_purple_bg: ColorValue
   cowfi_purple1: ColorValue
   cowfi_purple2: ColorValue
   cowfi_purple3: ColorValue

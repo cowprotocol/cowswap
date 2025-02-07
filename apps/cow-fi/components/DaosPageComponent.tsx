@@ -26,7 +26,7 @@ import {
 } from '@/styles/styled'
 import LazySVG from '@/components/LazySVG'
 import { DAO_CONTENT as CONTENT } from '@/data/widget/const'
-import { Color, ProductLogo, ProductVariant, WordTags } from '@cowprotocol/ui'
+import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Navigation, Pagination } from 'swiper/modules'
 
@@ -56,7 +56,7 @@ export function DaosPageComponent() {
         </HeroImage>
       </HeroContainer>
 
-      <MetricsCard bgColor={WordTags.purple.text} color={Color.cowfi_purple3} columns={1} touchFooter>
+      <MetricsCard bgColor={Color.cowfi_purple_bright} color={Color.cowfi_purple3} columns={1} touchFooter>
         <TrustedBy>
           <p>Trusted by</p>
           <ul>

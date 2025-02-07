@@ -32,7 +32,7 @@ import IMG_LOGO_ENS from '@cowprotocol/assets/images/logo-ens-icon.svg'
 import IMG_LOGO_AAVE from '@cowprotocol/assets/images/logo-aave-icon.svg'
 import { clickOnCowProtocol } from 'modules/analytics'
 import { DefaultTheme } from 'styled-components'
-import { Color, WordTags } from '@cowprotocol/ui'
+import { Color } from '@cowprotocol/ui'
 
 export const ADVANCED_ORDER_TYPES = [
   {
@@ -48,17 +48,17 @@ export const ADVANCED_ORDER_TYPES = [
     title: 'TWAP orders',
     description:
       'Time-weighted average price (TWAP) orders minimize price impact and volatility risk by letting you trade assets at fixed intervals over a period of time',
-    bgColor: WordTags.purple.text,
+    bgColor: Color.cowfi_purple_bright,
     textColor: Color.cowfi_purple1,
-    titleColor: WordTags.purple.background,
+    titleColor: Color.cowfi_purple_dark,
     imageSrc: IMG_TWAP,
   },
   {
     title: 'Milkman orders',
     description:
       "Created with our friends at Yearn.fi, Milkman orders let you prep a trade today to be executed in the future - with the help of a price oracle so you don't get rekt",
-    bgColor: WordTags.purple.background,
-    textColor: WordTags.purple.text,
+    bgColor: Color.cowfi_purple_dark,
+    textColor: Color.cowfi_purple_bright,
     titleColor: Color.cowfi_white2,
     imageSrc: IMG_MILKMAN,
   },
@@ -70,14 +70,14 @@ export const UNIQUE_TRADING_LOGIC = [
     description: 'ERC-1271 smart orders let you custom code any trading logic into your smart contract',
     bgColor: Color.cowfi_purple2,
     textColor: Color.cowfi_purple1,
-    titleColor: WordTags.purple.background,
+    titleColor: Color.cowfi_purple_dark,
     imageSrc: IMG_SMARTORDERS,
   },
   {
     title: 'Programmatic orders',
     description: 'Easily deploy conditional orders that trigger when specified on-chain conditions are met',
-    bgColor: WordTags.purple.background,
-    textColor: WordTags.purple.text,
+    bgColor: Color.cowfi_purple_dark,
+    textColor: Color.cowfi_purple_bright,
     titleColor: Color.cowfi_white2,
     imageSrc: IMG_PROGRAMMATIC_ORDERS,
   },
@@ -86,7 +86,7 @@ export const UNIQUE_TRADING_LOGIC = [
     description:
       'Add pre- and post- hooks to tie your trade to any other DeFi activity (bridging, staking, depositing, etc.)',
     bgColor: Color.cowfi_purple3,
-    textColor: WordTags.purple.text,
+    textColor: Color.cowfi_purple_bright,
     titleColor: Color.cowfi_white2,
     imageSrc: IMG_HOOKS,
   },
@@ -435,7 +435,7 @@ export const COW_PROTOCOL_SECTIONS = [
     description:
       'CoW Protocol is open-source and permissionless. Thanks to comprehensive documentation and live coding tutorials, integrating the protocol is easy.',
     bgColor: Color.cowfi_purple3,
-    textColor: WordTags.purple.text,
+    textColor: Color.cowfi_purple_bright,
     titleColor: Color.cowfi_white2,
     linkHref: 'https://docs.cow.fi/',
     linkText: 'Read the docs',
@@ -447,8 +447,8 @@ export const COW_PROTOCOL_SECTIONS = [
     title: 'For DeFi projects',
     description:
       "Don't need overly custom trading logic? The CoW Swap widget is the easiest way to integrate swaps, TWAPs, and limit orders directly into your project site.",
-    bgColor: WordTags.purple.background,
-    textColor: WordTags.purple.text,
+    bgColor: Color.cowfi_purple_dark,
+    textColor: Color.cowfi_purple_bright,
     titleColor: Color.cowfi_white2,
     linkHref: '/widget',
     linkText: 'Integrate the widget',
@@ -459,9 +459,9 @@ export const COW_PROTOCOL_SECTIONS = [
     title: 'For anyone',
     description:
       'The CoW DAO Grants program has awarded over $100,000 in grants to innovators that build public DeFi applications with CoW Protocol.',
-    bgColor: WordTags.purple.text,
+    bgColor: Color.cowfi_purple_bright,
     textColor: Color.cowfi_purple3,
-    titleColor: WordTags.purple.background,
+    titleColor: Color.cowfi_purple_dark,
     linkHref: 'https://grants.cow.fi/',
     linkText: 'Apply for a grant',
     linkEvent: 'click-apply-for-a-grant',
