@@ -4,9 +4,9 @@ import { Menu, MenuItem, MenuPopover, MenuItems } from '@reach/menu-button'
 
 import { ButtonsContainer, SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
 
+import { useLimitOrderSettingsAnalytics } from '../../hooks/useLimitOrderSettingsAnalytics'
 import { Settings } from '../../pure/Settings'
 import { limitOrdersSettingsAtom, updateLimitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
-import { useLimitOrderSettingsAnalytics } from '../../utils/limitOrderSettingsAnalytics'
 
 export function SettingsWidget() {
   const settingsState = useAtomValue(limitOrdersSettingsAtom)

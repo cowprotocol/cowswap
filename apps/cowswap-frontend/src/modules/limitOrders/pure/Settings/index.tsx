@@ -8,8 +8,8 @@ import styled from 'styled-components/macro'
 import { ORDERS_TABLE_SETTINGS } from 'modules/trade/const/common'
 import { SettingsBox, SettingsContainer, SettingsTitle } from 'modules/trade/pure/Settings'
 
+import { useLimitOrderSettingsAnalytics } from '../../hooks/useLimitOrderSettingsAnalytics'
 import { LimitOrdersSettingsState } from '../../state/limitOrdersSettingsAtom'
-import { useLimitOrderSettingsAnalytics } from '../../utils/limitOrderSettingsAnalytics'
 
 const DropdownButton = styled.button`
   background: var(${UI.COLOR_PAPER_DARKER});
