@@ -42,8 +42,8 @@ export function getDefaultTradeRawState(chainId: SupportedChainId | null): Trade
 
   return {
     chainId,
-    inputCurrencyId: inputCurrency?.symbol || null,
-    outputCurrencyId: outputCurrency?.symbol || null,
+    inputCurrencyId: inputCurrency?.address || null,
+    outputCurrencyId: outputCurrency?.address || null,
     recipient: null,
     recipientAddress: null,
   }
