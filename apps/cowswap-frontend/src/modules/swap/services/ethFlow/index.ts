@@ -1,5 +1,5 @@
+import { getEthFlowContractAddresses } from '@cowprotocol/common-const'
 import { reportPlaceOrderWithExpiredQuote } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -16,7 +16,7 @@ import { tradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import { TradeFlowContext } from 'modules/tradeFlow'
 import { isQuoteExpired } from 'modules/tradeQuote'
 
-import { COWSWAP_ETHFLOW_CONTRACT_ADDRESS_MAP } from 'common/hooks/useContract'
+import { ethFlowEnv } from 'common/hooks/useContract'
 
 import { calculateUniqueOrderId } from './steps/calculateUniqueOrderId'
 
@@ -36,6 +36,7 @@ export async function ethFlow(
   } = tradeContext
   const {
     contract,
+    useNewEthFlowContracts,
     appData,
     uploadAppData,
     addTransaction,
@@ -80,7 +81,7 @@ export async function ethFlow(
       throw new Error('Quote expired. Please refresh.')
     }
 
-    if (contract.address !== COWSWAP_ETHFLOW_CONTRACT_ADDRESS_MAP[chainId as SupportedChainId]) {
+    if (contract.address !== getEthFlowContractAddresses(ethFlowEnv, useNewEthFlowContracts, chainId)) {
       throw new Error('EthFlow contract address mismatch. Please refresh the page and try again.')
     }
 

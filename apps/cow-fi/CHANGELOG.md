@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.19.4](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.19.3...cow-fi-v1.19.4) (2025-02-05)
+
+
+### Bug Fixes
+
+* **cow-fi:** add loading effect for widget and daos page ([#5319](https://github.com/cowprotocol/cowswap/issues/5319)) ([94a6e44](https://github.com/cowprotocol/cowswap/commit/94a6e441544a66db2b2857217b5129ff3d856780))
+* **legal:** update legal page links ([#5259](https://github.com/cowprotocol/cowswap/issues/5259)) ([94b4437](https://github.com/cowprotocol/cowswap/commit/94b4437a36e7dbf3667b6e1bdd461ba46716392c))
+* **mev-blocker:** fix typo on /maxbackruns endpoint ([#5377](https://github.com/cowprotocol/cowswap/issues/5377)) ([c7c9d9e](https://github.com/cowprotocol/cowswap/commit/c7c9d9e861607df0325bec80030109e0cb4d7d50))
+
 ## [1.19.3](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.19.2...cow-fi-v1.19.3) (2024-12-16)
 
 

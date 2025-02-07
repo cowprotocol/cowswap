@@ -15,7 +15,9 @@ import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableC
 import { getIsTheLastTwapPart } from 'utils/orderUtils/getIsTheLastTwapPart'
 
 export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCancellation> {
-  const { contract: ethFlowContract, chainId: ethFlowChainId } = useEthFlowContract()
+  const {
+    result: { contract: ethFlowContract, chainId: ethFlowChainId },
+  } = useEthFlowContract()
   const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
   const cancelTwapOrder = useCancelTwapOrder()
 
