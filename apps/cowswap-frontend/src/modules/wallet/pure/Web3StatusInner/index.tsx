@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
@@ -42,10 +42,6 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
     [connectionType, ensName, pendingCount],
   )
 
-  const handleConnect = useCallback(() => {
-    connectWallet()
-  }, [connectWallet])
-
   if (account) {
     return (
       <Web3StatusConnected id="web3-status-connected" pending={hasPendingTransactions}>
@@ -67,7 +63,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
   return (
     <Web3StatusConnect
       id="connect-wallet"
-      onClick={handleConnect}
+      onClick={connectWallet}
       data-click-event={toCowSwapGtmEvent(connectWalletEvent)}
       faded={!account}
     >
