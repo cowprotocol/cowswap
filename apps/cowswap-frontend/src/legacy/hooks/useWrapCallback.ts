@@ -9,7 +9,7 @@ import {
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Contract, PopulatedTransaction } from '@ethersproject/contracts'
+import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -17,7 +17,7 @@ import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { wrapAnalytics } from 'modules/analytics'
 
-import { logEthSendingTransaction } from 'common/services/logEthSendingTransaction'
+import { logEthSendingIntention, logEthSendingTransaction } from 'common/services/logEthSendingTransaction'
 import { assertProviderNetwork } from 'common/utils/assertProviderNetwork'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
@@ -49,7 +49,6 @@ export interface WrapUnwrapContext {
 
 interface WrapUnwrapTxData {
   txResponse: TransactionResponse
-  tx: PopulatedTransaction
 }
 
 export async function wrapUnwrapCallback(
@@ -69,17 +68,9 @@ export async function wrapUnwrapCallback(
     wrapAnalytics('Send', operationMessage)
 
     const wrapUnwrap = isNativeIn ? wrapContractCall : unwrapContractCall
-    const { txResponse, tx } = await wrapUnwrap(wethContract, amountHex, chainId)
+    const { txResponse } = await wrapUnwrap(wethContract, amountHex, chainId, account)
 
     wrapAnalytics('Sign', operationMessage)
-    logEthSendingTransaction({
-      chainId,
-      txHash: txResponse.hash,
-      amount: amount.quotient.toString(),
-      urlChainId: getRawCurrentChainIdFromUrl(),
-      account,
-      tx,
-    })
 
     addTransaction({
       hash: txResponse.hash,
@@ -129,6 +120,7 @@ async function wrapContractCall(
   wethContract: Contract,
   amountHex: string,
   chainId: SupportedChainId,
+  account: string,
 ): Promise<WrapUnwrapTxData> {
   const estimatedGas = await wethContract.estimateGas.deposit({ value: amountHex }).catch(_handleGasEstimateError)
   const gasLimit = calculateGasMargin(estimatedGas)
@@ -137,11 +129,20 @@ async function wrapContractCall(
 
   const tx = await wethContract.populateTransaction.deposit({ value: amountHex, gasLimit })
 
+  const intentionEventId = logEthSendingIntention({
+    chainId,
+    amount: amountHex,
+    urlChainId: getRawCurrentChainIdFromUrl(),
+    account,
+    tx,
+  })
+
   const txResponse = await wethContract.signer.sendTransaction({ ...tx, chainId: network })
+
+  logEthSendingTransaction({ txHash: txResponse.hash, intentionEventId })
 
   return {
     txResponse,
-    tx,
   }
 }
 
@@ -149,6 +150,7 @@ async function unwrapContractCall(
   wethContract: Contract,
   amountHex: string,
   chainId: SupportedChainId,
+  account: string,
 ): Promise<WrapUnwrapTxData> {
   const estimatedGas = await wethContract.estimateGas.withdraw(amountHex).catch(_handleGasEstimateError)
   const gasLimit = calculateGasMargin(estimatedGas)
@@ -157,11 +159,20 @@ async function unwrapContractCall(
 
   const network = await assertProviderNetwork(chainId, wethContract.provider, 'unwrap')
 
+  const intentionEventId = logEthSendingIntention({
+    chainId,
+    amount: amountHex,
+    urlChainId: getRawCurrentChainIdFromUrl(),
+    account,
+    tx,
+  })
+
   const txResponse = await wethContract.signer.sendTransaction({ ...tx, chainId: network })
+
+  logEthSendingTransaction({ txHash: txResponse.hash, intentionEventId })
 
   return {
     txResponse,
-    tx,
   }
 }
 

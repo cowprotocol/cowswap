@@ -10,7 +10,7 @@ import { logTradeFlow, logTradeFlowError } from 'modules/trade/utils/logger'
 import { TradeFlowContext } from 'modules/tradeFlow'
 
 import { GAS_LIMIT_DEFAULT } from 'common/constants/common'
-import { logEthSendingTransaction } from 'common/services/logEthSendingTransaction'
+import { logEthSendingIntention, logEthSendingTransaction } from 'common/services/logEthSendingTransaction'
 import { assertProviderNetwork } from 'common/utils/assertProviderNetwork'
 
 type EthFlowCreateOrderParams = Omit<UnsignedOrder, 'quoteId' | 'appData' | 'validTo' | 'orderId'> & {
@@ -79,17 +79,18 @@ export async function signEthFlowOrderStep(
     ...ethTxOptions,
     gasLimit,
   })
-  // Then send the is using the contract's signer where the chainId is an acceptable parameter
-  const txReceipt = await ethFlowContract.signer.sendTransaction({ ...tx, chainId: network })
 
-  logEthSendingTransaction({
-    txHash: txReceipt.hash,
+  const intentionEventId = logEthSendingIntention({
     chainId: tradeFlowContext.context.chainId,
     urlChainId: getRawCurrentChainIdFromUrl(),
     amount: tradeFlowContext.context.inputAmount.quotient.toString(),
     account: tradeFlowContext.orderParams.account,
     tx,
   })
+  // Then send the is using the contract's signer where the chainId is an acceptable parameter
+  const txReceipt = await ethFlowContract.signer.sendTransaction({ ...tx, chainId: network })
+
+  logEthSendingTransaction({ txHash: txReceipt.hash, intentionEventId })
 
   addInFlightOrderId(orderId)
 

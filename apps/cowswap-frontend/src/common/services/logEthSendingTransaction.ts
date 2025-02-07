@@ -2,8 +2,7 @@ import type { PopulatedTransaction } from '@ethersproject/contracts'
 
 import { captureEvent } from '@sentry/browser'
 
-export interface EthSendingTransactionInfo {
-  txHash: string
+export interface EthSendingIntentionInfo {
   chainId: number
   urlChainId: number | null
   amount: string
@@ -11,12 +10,11 @@ export interface EthSendingTransactionInfo {
   tx: PopulatedTransaction
 }
 
-export function logEthSendingTransaction(info: EthSendingTransactionInfo) {
-  captureEvent({
-    message: 'Native token sending transaction',
+export function logEthSendingIntention(info: EthSendingIntentionInfo): string {
+  return captureEvent({
+    message: 'Native token sending intention',
     level: 'log',
     extra: {
-      txHash: info.txHash,
       chainId: info.chainId.toString(),
       urlChainId: String(info.urlChainId),
       amount: info.amount,
@@ -29,5 +27,13 @@ export function logEthSendingTransaction(info: EthSendingTransactionInfo) {
       txGasPrice: info.tx.gasPrice?.toString(),
       txType: info.tx.type?.toString(),
     },
+  })
+}
+
+export function logEthSendingTransaction(extra: { txHash: string; intentionEventId: string }): string {
+  return captureEvent({
+    message: 'Native token sending transaction',
+    level: 'log',
+    extra,
   })
 }
