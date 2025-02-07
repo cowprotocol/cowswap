@@ -30,7 +30,7 @@ export function DateDisplay({ date, showIcon, tooltipPlacement = 'top' }: Readon
         {distance} - {fullLocaleBased}
       </Tooltip>
 
-      <span className="d-flex">
+      <span>
         {showIcon ? (
           <span {...targetProps}>
             <span>
