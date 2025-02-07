@@ -19,7 +19,6 @@ const DEFAULT_GTM_ID = 'GTM-TBX4BV5M'
 // Module-level singleton state
 const analytics = {
   instance: null as CowAnalytics | null,
-  isInitializing: false,
   gtmId: DEFAULT_GTM_ID,
 }
 
@@ -44,12 +43,6 @@ export function initGtm(gtmId: string = DEFAULT_GTM_ID): CowAnalytics {
     return analytics.instance
   }
 
-  // Prevent concurrent initializations
-  if (analytics.isInitializing) {
-    throw new Error('GTM initialization already in progress')
-  }
-
-  analytics.isInitializing = true
   analytics.gtmId = gtmId
 
   try {
@@ -82,8 +75,6 @@ export function initGtm(gtmId: string = DEFAULT_GTM_ID): CowAnalytics {
   } catch (error) {
     console.error('Failed to initialize GTM:', error)
     throw error
-  } finally {
-    analytics.isInitializing = false
   }
 }
 
@@ -91,7 +82,6 @@ export function initGtm(gtmId: string = DEFAULT_GTM_ID): CowAnalytics {
 export function __resetGtmInstance() {
   if (process.env.NODE_ENV === 'test') {
     analytics.instance = null
-    analytics.isInitializing = false
     analytics.gtmId = DEFAULT_GTM_ID
   }
 }
