@@ -22,6 +22,7 @@ export const Color = {
 
   // CoW Protocol Colors
   cowfi_orange: '#ED6834',
+  cowfi_orange_light: '#F9A36F',
   cowfi_blue: '#00A1FF',
   cowfi_green: '#2b6f0b',
   cowfi_darkBlue: '#052B65',

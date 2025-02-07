@@ -2,7 +2,7 @@
 
 import Script from 'next/script'
 
-import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { Color, ProductLogo, ProductVariant, WordTags } from '@cowprotocol/ui'
 
 import FAQ from '@/components/FAQ'
 import { AddRpcButton } from '@/components/AddRpcButton'
@@ -93,7 +93,7 @@ export default function Page() {
         <PageWrapper>
           <HeroContainer variant="secondary">
             <HeroContent variant="secondary">
-              <HeroSubtitle color={'#EC4612'}>MEV Blocker</HeroSubtitle>
+              <HeroSubtitle color={WordTags.orange.text}>MEV Blocker</HeroSubtitle>
               <HeroTitle>The best MEV protection under the sun</HeroTitle>
               <HeroDescription fontSize={21}>
                 MEV Blocker is your personal protection from frontrunning and sandwich attacks for a broad spectrum of
@@ -110,25 +110,25 @@ export default function Page() {
 
               <Link
                 linkType={LinkType.HeroButton}
-                bgColor={'#EC4612'}
-                color={'#FEE7CF'}
+                bgColor={WordTags.orange.text}
+                color={WordTags.orange.background}
                 href="#rpc"
                 onClick={() => clickOnMevBlocker('click-get-protected-heroSection')}
               >
                 Get protected
               </Link>
             </HeroContent>
-            <HeroImage width={470} height={'auto'} color={'#EC4612'}>
+            <HeroImage width={470} height={'auto'} color={WordTags.orange.text}>
               <LazySVG src={IMAGE_SANDWICH_GUY} />
             </HeroImage>
           </HeroContainer>
 
-          <MetricsCard bgColor="#EC4612" color="#FEE7CF" columns={3} touchFooter>
-            <MetricsItem dividerColor="#F9A36F">
+          <MetricsCard bgColor={WordTags.orange.text} color={WordTags.orange.background} columns={3} touchFooter>
+            <MetricsItem dividerColor={Color.cowfi_orange_light}>
               <h2>$84B+</h2>
               <p>volume protected from MEV, across 20M+ transactions</p>
             </MetricsItem>
-            <MetricsItem dividerColor="#F9A36F">
+            <MetricsItem dividerColor={Color.cowfi_orange_light}>
               <h2>2.2K+</h2>
               <p>ETH rebated to users</p>
             </MetricsItem>

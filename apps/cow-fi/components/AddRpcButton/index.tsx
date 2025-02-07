@@ -1,4 +1,4 @@
-import { Confetti } from '@cowprotocol/ui'
+import { Confetti, Color, WordTags } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 import { darken, transparentize } from 'polished'
 import { useConnectAndAddToWallet } from '../../lib/hooks/useConnectAndAddToWallet'
@@ -9,11 +9,12 @@ import { Link, LinkType } from '@/components/Link'
 import { AddToWalletStateValues } from '../../types/addToWalletState'
 
 const Message = styled.p<{ state: AddToWalletStateValues }>`
-  color: ${({ state }) => (state === 'added' ? darken(0.5, 'green') : 'orange')};
+  color: ${({ state }) => (state === 'added' ? darken(0.5, Color.cowfi_green) : WordTags.orange.text)};
   font-weight: bold;
   width: 100%;
   margin: 2.4rem 0 0;
-  background: ${({ state }) => (state === 'added' ? transparentize(0.8, 'green') : transparentize(0.9, 'orange'))};
+  background: ${({ state }) =>
+    state === 'added' ? transparentize(0.8, Color.cowfi_green) : transparentize(0.9, WordTags.orange.text)};
   padding: 1rem;
   border-radius: 1.2rem;
   text-align: center;
@@ -65,8 +66,8 @@ export function AddRpcButton() {
           <Link
             linkType={LinkType.TopicButton}
             fontSize={21}
-            color={'#FEE7CF'}
-            bgColor="#EC4612"
+            color={WordTags.orange.background}
+            bgColor={WordTags.orange.text}
             onClick={handleClick}
             disabled={disabledButton}
             asButton
@@ -78,8 +79,8 @@ export function AddRpcButton() {
             <Link
               linkType={LinkType.TopicButton}
               fontSize={21}
-              color={'#FEE7CF'}
-              bgColor="#333"
+              color={WordTags.orange.background}
+              bgColor={Color.neutral20}
               onClick={disconnectWallet}
               asButton
             >
