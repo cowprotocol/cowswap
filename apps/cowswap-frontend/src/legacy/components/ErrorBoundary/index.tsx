@@ -98,9 +98,7 @@ class ErrorBoundaryComponent extends React.Component<ErrorBoundaryProps, ErrorBo
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    if (this.props.onError) {
-      this.props.onError(error, errorInfo)
-    }
+    this.props.onError?.(error, errorInfo)
   }
 
   render() {
