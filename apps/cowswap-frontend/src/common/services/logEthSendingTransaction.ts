@@ -1,6 +1,7 @@
 import type { PopulatedTransaction } from '@ethersproject/contracts'
 
 import { captureEvent } from '@sentry/browser'
+import { SentryEvents } from 'cow-react/sentry/events'
 
 export interface EthSendingIntentionInfo {
   chainId: number
@@ -12,7 +13,7 @@ export interface EthSendingIntentionInfo {
 
 export function logEthSendingIntention(info: EthSendingIntentionInfo): string {
   return captureEvent({
-    message: 'Native token sending intention',
+    message: SentryEvents.NATIVE_TOKEN_SENDING_INTENTION,
     level: 'log',
     extra: {
       chainId: info.chainId.toString(),
@@ -32,7 +33,7 @@ export function logEthSendingIntention(info: EthSendingIntentionInfo): string {
 
 export function logEthSendingTransaction(extra: { txHash: string; intentionEventId: string }): string {
   return captureEvent({
-    message: 'Native token sending transaction',
+    message: SentryEvents.NATIVE_TOKEN_SENDING_TRANSACTION,
     level: 'log',
     extra,
   })
