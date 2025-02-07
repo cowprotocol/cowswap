@@ -60,19 +60,8 @@ export function isValidGtmClickEvent(data: unknown): data is GtmClickEvent {
  * @returns JSON string of GA4-compatible event
  */
 export function toGtmEvent(event: Partial<GtmClickEvent>): string {
-  // Log original event
-  console.group('🔍 Analytics Event')
-  console.log('Original Event:', {
-    ...event,
-    timestamp: new Date().toISOString(),
-    location: window.location.href,
-  })
-
   const ga4Event: GA4Event = {
-    // Use the action directly as the event name - no transformation needed
-    event: event.action || '', // This will keep the nice readable format like 'Toggle Hooks Enabled'
-
-    // Keep the rest of the metadata
+    event: event.action || '',
     ...(event.category && { event_category: event.category }),
     ...(event.label && { event_label: event.label }),
     ...(event.value !== undefined && { event_value: event.value }),
@@ -87,16 +76,6 @@ export function toGtmEvent(event: Partial<GtmClickEvent>): string {
       )
       .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {}),
   }
-
-  // Log transformed GA4 event
-  console.log('GA4 Event:', {
-    ...ga4Event,
-    stack: new Error().stack
-      ?.split('\n')
-      .slice(2)
-      .map((line) => line.trim()),
-  })
-  console.groupEnd()
 
   return JSON.stringify(ga4Event)
 }
