@@ -64,18 +64,17 @@ interface TransactionSettingsProps {
   deadlineState: StatefulValue<number>
 }
 
-type SlippageAnalyticsAction = 'Default' | 'Custom'
-type DeadlineAnalyticsAction = 'Default' | 'Custom'
+type TxSettingAction = 'Default' | 'Custom'
 
 interface SlippageAnalyticsEvent {
   category: CowSwapCategory.TRADE
-  action: `${SlippageAnalyticsAction} Slippage Tolerance`
+  action: `${TxSettingAction} Slippage Tolerance`
   value: number
 }
 
 interface DeadlineAnalyticsEvent {
   category: CowSwapCategory.TRADE
-  action: `${DeadlineAnalyticsAction} Order Expiration Time`
+  action: `${TxSettingAction} Order Expiration Time`
   value: number
 }
 
@@ -113,7 +112,7 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
   const placeholderSlippage = isSlippageModified ? defaultSwapSlippage : swapSlippage
 
   const sendSlippageAnalytics = useCallback(
-    (action: SlippageAnalyticsAction, value: string | number) => {
+    (action: TxSettingAction, value: string | number) => {
       const analyticsEvent: SlippageAnalyticsEvent = {
         category: CowSwapCategory.TRADE,
         action: `${action} Slippage Tolerance`,
@@ -125,7 +124,7 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
   )
 
   const sendDeadlineAnalytics = useCallback(
-    (action: DeadlineAnalyticsAction, value: number) => {
+    (action: TxSettingAction, value: number) => {
       const analyticsEvent: DeadlineAnalyticsEvent = {
         category: CowSwapCategory.TRADE,
         action: `${action} Order Expiration Time`,
