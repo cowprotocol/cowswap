@@ -150,7 +150,7 @@ async function unwrapContractCall(
   wethContract: Contract,
   amountHex: string,
   chainId: SupportedChainId,
-  account: string,
+  _account: string,
 ): Promise<WrapUnwrapTxData> {
   const estimatedGas = await wethContract.estimateGas.withdraw(amountHex).catch(_handleGasEstimateError)
   const gasLimit = calculateGasMargin(estimatedGas)
@@ -159,17 +159,7 @@ async function unwrapContractCall(
 
   const network = await assertProviderNetwork(chainId, wethContract.provider, 'unwrap')
 
-  const intentionEventId = logEthSendingIntention({
-    chainId,
-    amount: amountHex,
-    urlChainId: getRawCurrentChainIdFromUrl(),
-    account,
-    tx,
-  })
-
   const txResponse = await wethContract.signer.sendTransaction({ ...tx, chainId: network })
-
-  logEthSendingTransaction({ txHash: txResponse.hash, intentionEventId })
 
   return {
     txResponse,
