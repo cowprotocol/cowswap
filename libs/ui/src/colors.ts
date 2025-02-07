@@ -23,7 +23,15 @@ export const Color = {
   // CoW Protocol Colors
   cowfi_orange: '#ED6834',
   cowfi_orange_light: '#F9A36F',
+  cowfi_peach: '#FDC99F',
   cowfi_blue: '#00A1FF',
+  cowfi_blue_bright: '#3FC4FF',
+  cowfi_yellow: '#F2CD16',
+  cowfi_purple1: '#8702AA',
+  cowfi_purple2: '#FCCAF2',
+  cowfi_purple3: '#66018E',
+  cowfi_discord_pink: '#FDADA3',
+  cowfi_snapshot_red: '#710408',
   cowfi_green: '#2b6f0b',
   cowfi_darkBlue: '#052B65',
   cowfi_darkBlue2: '#0D3673',
@@ -46,13 +54,6 @@ export const Color = {
   cowamm_dark_green: '#194D05',
   cowamm_dark_green2: '#224D22',
   cowamm_light_green: '#DCF8A7',
-
-  // Social/Brand Colors
-  cowfi_purple1: '#8702AA',
-  cowfi_purple2: '#FCCAF2',
-  cowfi_purple3: '#66018E',
-  cowfi_discord_pink: '#FDADA3',
-  cowfi_snapshot_red: '#710408',
 } as const
 
 // Gradients and special effects

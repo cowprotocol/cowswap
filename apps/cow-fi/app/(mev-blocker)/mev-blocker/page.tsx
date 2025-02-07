@@ -139,7 +139,7 @@ export default function Page() {
 
             <Link
               bgColor="transparent"
-              color="#FEE7CF"
+              color={WordTags.orange.background}
               margin="24px auto 0"
               gridFullWidth
               href="https://dune.com/cowprotocol/mev-blocker"
@@ -422,8 +422,8 @@ export default function Page() {
                 </SectionTitleDescription>
 
                 <Link
-                  bgColor="#EC4612"
-                  color={Color.neutral98}
+                  bgColor={WordTags.orange.text}
+                  color={WordTags.orange.background}
                   href="https://docs.cow.fi/category/searchers"
                   external
                   linkType={LinkType.SectionTitleButton}
@@ -485,7 +485,7 @@ export default function Page() {
             </ContainerCardSection>
           </ContainerCard>
 
-          <ContainerCard bgColor="#FEE7CF" touchFooter>
+          <ContainerCard bgColor={WordTags.orange.background} touchFooter>
             <ContainerCardSection>
               <SectionTitleWrapper padding="72px 0" maxWidth={640}>
                 <SectionTitleIcon>
@@ -495,8 +495,8 @@ export default function Page() {
 
                 <Link
                   linkType={LinkType.SectionTitleButton}
-                  bgColor={'#EC4612'}
-                  color={'#FEE7CF'}
+                  bgColor={WordTags.orange.text}
+                  color={WordTags.orange.background}
                   onClick={handleShareClick}
                   asButton
                 >

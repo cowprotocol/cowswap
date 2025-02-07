@@ -1551,7 +1551,7 @@ export const BodyContent = styled.div<{ color?: string }>`
     display: block;
     font-weight: ${Font.weight.bold};
     font-style: normal;
-    background: #fee7cf;
+    background: ${WordTags.orange.background};
     padding: 0.8rem;
     border-radius: 0.8rem;
   }
