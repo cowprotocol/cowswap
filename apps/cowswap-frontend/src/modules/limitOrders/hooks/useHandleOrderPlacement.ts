@@ -15,10 +15,10 @@ import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersS
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { useNavigateToAllOrdersTable } from 'modules/ordersTable'
 import { useCloseReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal/hooks'
+import { useTradeFlowAnalytics } from 'modules/trade'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
 import { useAlternativeOrder, useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-import { useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import OperatorError from 'api/cowProtocol/errors/OperatorError'
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
