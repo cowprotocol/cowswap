@@ -1,8 +1,8 @@
 import { GtmEvent } from '@cowprotocol/analytics'
 
-export enum WidgetCategory {
+export enum AnalyticsCategory {
   WIDGET_CONFIGURATOR = 'Widget Configurator',
   WIDGET = 'Widget',
 }
 
-export type WidgetGtmEvent = GtmEvent<WidgetCategory>
+export type WidgetGtmEvent = GtmEvent<AnalyticsCategory>
