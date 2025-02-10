@@ -94,11 +94,15 @@ export async function ethFlow(
     }
 
     logTradeFlow('ETH FLOW', 'STEP 4: sign order')
-    const { order, txReceipt } = await signEthFlowOrderStep(orderId, orderParams, contract, addInFlightOrderId).finally(
-      () => {
-        callbacks.closeModals()
-      },
-    )
+    const { order, txReceipt } = await signEthFlowOrderStep(
+      orderId,
+      orderParams,
+      contract,
+      addInFlightOrderId,
+      tradeContext,
+    ).finally(() => {
+      callbacks.closeModals()
+    })
 
     emitPostedOrderEvent({
       chainId,
