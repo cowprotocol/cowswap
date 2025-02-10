@@ -12,15 +12,13 @@ import {
   LinkSection,
   Pagination,
 } from '@/styles/styled'
-import { initGtm } from '@cowprotocol/analytics'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+import { CowFiCategory } from 'src/common/analytics/types'
 import { ArticlesList } from '@/components/ArticlesList'
 import { Article } from '../services/cms'
 import styled from 'styled-components/macro'
 import { Color, Font, Media } from '@cowprotocol/ui'
 import Link from 'next/link'
-
-const analytics = initGtm()
+import { useCowAnalytics } from '@cowprotocol/analytics'
 
 const LEARN_PATH = '/learn/'
 const ARTICLES_PATH = `${LEARN_PATH}articles/`
@@ -66,6 +64,7 @@ interface ArticlesPageProps {
 }
 
 export function ArticlesPageComponents({ articles, totalArticles, currentPage, allCategories }: ArticlesPageProps) {
+  const analytics = useCowAnalytics()
   const totalPages = Math.ceil(totalArticles / ITEMS_PER_PAGE)
 
   return (

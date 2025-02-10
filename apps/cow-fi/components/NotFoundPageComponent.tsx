@@ -2,12 +2,12 @@
 
 import { ArticleContent, ArticleMainTitle, BodyContent, ContainerCard, PageWrapper } from '@/styles/styled'
 import { Link } from '@/components/Link'
-import { initGtm } from '@cowprotocol/analytics'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
-
-const analytics = initGtm()
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 export function NotFoundPageComponent() {
+  const analytics = useCowAnalytics()
+
   return (
     <PageWrapper>
       <ContainerCard bgColor={'transparent'} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>

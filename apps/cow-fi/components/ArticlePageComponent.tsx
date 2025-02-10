@@ -24,8 +24,7 @@ import {
   SectionTitleDescription,
   StickyMenu,
 } from '@/styles/styled'
-import { initGtm } from '@cowprotocol/analytics'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+import { CowFiCategory } from 'src/common/analytics/types'
 import { Link, LinkType } from '@/components/Link'
 import { CmsImage, Color, Media } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
@@ -34,8 +33,7 @@ import { useLazyLoadImages } from '../hooks/useLazyLoadImages'
 import { useMemo } from 'react'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
-
-const analytics = initGtm()
+import { useCowAnalytics } from '@cowprotocol/analytics'
 
 interface ArticlePageProps {
   article: Article
@@ -69,6 +67,7 @@ export function ArticlePageComponent({
     blocks?.map((block: SharedRichTextComponent) => (isRichTextComponent(block) ? block.body : '')).join(' ') || ''
   const plainContent = stripHtmlTags(content)
 
+  const analytics = useCowAnalytics()
   const { share, message } = useWebShare()
 
   const handleShareClick = () => {

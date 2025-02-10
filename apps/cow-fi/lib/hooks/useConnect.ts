@@ -2,15 +2,14 @@ import { useAccount, useConnect as useConnectWagmi } from 'wagmi'
 import { useCallback, useEffect, useState } from 'react'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { ConnectResult, PublicClient } from '@wagmi/core'
-import { initGtm } from '@cowprotocol/analytics'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
-
-const cowAnalytics = initGtm()
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 export function useConnect() {
   const { isConnected } = useAccount()
   const { openConnectModal } = useConnectModal()
   const { connectAsync, connectors } = useConnectWagmi()
+  const cowAnalytics = useCowAnalytics()
   const [connectionPromise, setConnectionPromise] = useState<Promise<ConnectResult<PublicClient> | undefined> | null>(
     null,
   )
@@ -26,7 +25,7 @@ export function useConnect() {
       })
       setConnectionPromise(null)
     }
-  }, [isConnected, connectionPromise])
+  }, [isConnected, connectionPromise, cowAnalytics])
 
   const connect = useCallback((): Promise<ConnectResult<PublicClient> | undefined> => {
     console.debug('[useConnect] Initiating connection')

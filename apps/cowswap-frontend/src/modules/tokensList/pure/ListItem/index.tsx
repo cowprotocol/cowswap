@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { getTokenListViewLink, ListState } from '@cowprotocol/tokens'
 
 import { Menu, MenuItem } from '@reach/menu-button'
@@ -23,10 +24,18 @@ export interface TokenListItemProps {
 export function ListItem(props: TokenListItemProps) {
   const { list, removeList, toggleList, enabled } = props
   const [isActive, setIsActive] = useState(enabled)
+  const cowAnalytics = useCowAnalytics()
 
   const toggle = () => {
     toggleList(list, enabled)
     setIsActive((state) => !state)
+    // Track the actual state change
+    const newState = !enabled
+    cowAnalytics.sendEvent({
+      category: CowSwapAnalyticsCategory.LIST,
+      action: `List ${newState ? 'Enabled' : 'Disabled'}`,
+      label: list.source,
+    })
   }
 
   const handleRemove = () => {

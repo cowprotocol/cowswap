@@ -16,11 +16,9 @@ import {
 } from '@/styles/styled'
 import { Color, Font, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import { Link, LinkType } from '@/components/Link'
-import { initGtm } from '@cowprotocol/analytics'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+import { CowFiCategory } from 'src/common/analytics/types'
 import { CONFIG } from '@/const/meta'
-
-const analytics = initGtm()
+import { useCowAnalytics } from '@cowprotocol/analytics'
 
 interface CareersPageContentProps {
   department: string
@@ -35,6 +33,8 @@ export function CareersPageContent({
   jobsCountForDepartment,
   jobsCount,
 }: CareersPageContentProps) {
+  const analytics = useCowAnalytics()
+
   return (
     <PageWrapper>
       <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} touchFooter>

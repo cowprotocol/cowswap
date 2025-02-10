@@ -1,11 +1,9 @@
 import React from 'react'
 import styled from 'styled-components/macro'
-import { initGtm } from '@cowprotocol/analytics'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 import { Color, Media } from '@cowprotocol/ui'
 import Link from 'next/link'
-
-const analytics = initGtm()
 
 interface CategoryItem {
   name: string
@@ -93,37 +91,41 @@ const CategoryLinksWrapper = styled.ul<{ noDivider?: boolean }>`
   }
 `
 
-export const CategoryLinks: React.FC<CategoryLinksProps> = ({ allCategories, noDivider }) => (
-  <CategoryLinksWrapper noDivider={noDivider}>
-    <li>
-      <Link
-        href="/learn"
-        onClick={() =>
-          analytics.sendEvent({
-            category: CowFiCategory.KNOWLEDGEBASE,
-            action: 'Click category',
-            label: 'home',
-          })
-        }
-      >
-        Knowledge Base
-      </Link>
-    </li>
-    {allCategories.map((category) => (
-      <li key={category.slug}>
+export const CategoryLinks: React.FC<CategoryLinksProps> = ({ allCategories, noDivider }) => {
+  const analytics = useCowAnalytics()
+
+  return (
+    <CategoryLinksWrapper noDivider={noDivider}>
+      <li>
         <Link
-          href={`/learn/topic/${category.slug}`}
+          href="/learn"
           onClick={() =>
             analytics.sendEvent({
               category: CowFiCategory.KNOWLEDGEBASE,
               action: 'Click category',
-              label: category.name,
+              label: 'home',
             })
           }
         >
-          {category.name}
+          Knowledge Base
         </Link>
       </li>
-    ))}
-  </CategoryLinksWrapper>
-)
+      {allCategories.map((category) => (
+        <li key={category.slug}>
+          <Link
+            href={`/learn/topic/${category.slug}`}
+            onClick={() =>
+              analytics.sendEvent({
+                category: CowFiCategory.KNOWLEDGEBASE,
+                action: 'Click category',
+                label: category.name,
+              })
+            }
+          >
+            {category.name}
+          </Link>
+        </li>
+      ))}
+    </CategoryLinksWrapper>
+  )
+}

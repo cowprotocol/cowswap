@@ -2,8 +2,8 @@
 
 import styled from 'styled-components/macro'
 import { CmsImage, Color, Font, Media } from '@cowprotocol/ui'
-import { initGtm } from '@cowprotocol/analytics'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 import { CategoryLinks } from '@/components/CategoryLinks'
 import { SearchBar } from '@/components/SearchBar'
 import { ArrowButton } from '@/components/ArrowButton'
@@ -18,9 +18,6 @@ import {
   LinkSection,
 } from '@/styles/styled'
 import Link from 'next/link'
-import { Article } from '../services/cms'
-
-const analytics = initGtm()
 
 const Wrapper = styled.div`
   display: flex;
@@ -102,6 +99,7 @@ interface TopicPageProps {
 export function TopicPageComponent({ category, allCategories, articles }: TopicPageProps) {
   const { name, description, image } = category.attributes || {}
   const imageUrl = image?.data?.attributes?.url
+  const analytics = useCowAnalytics()
 
   return (
     <Wrapper>

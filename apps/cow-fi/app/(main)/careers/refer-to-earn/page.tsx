@@ -1,12 +1,10 @@
 'use client'
 
 import { Color } from '@cowprotocol/ui'
-import { initGtm } from '@cowprotocol/analytics'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 import styled from 'styled-components/macro'
 import { ContainerCard, ArticleContent, Breadcrumbs, ArticleMainTitle, BodyContent } from '@/styles/styled'
-
-const analytics = initGtm()
 
 const Wrapper = styled.div`
   display: flex;
@@ -20,6 +18,8 @@ const Wrapper = styled.div`
 `
 
 export default function Page() {
+  const analytics = useCowAnalytics()
+
   return (
     <Wrapper>
       <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>

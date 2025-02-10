@@ -3,8 +3,8 @@
 import { useEffect, useRef } from 'react'
 
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
-import { initGtm } from '@cowprotocol/analytics'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 import IMG_ICON_UNICORN from '@cowprotocol/assets/images/icon-unicorn.svg'
 import IMG_ICON_FLOWER_COW from '@cowprotocol/assets/images/icon-flower-cow.svg'
@@ -42,9 +42,8 @@ import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 import { ADVANCED_ORDER_TYPES, BETTER_UX, COW_IS_DIFFERENT, FAQ_DATA, TWEETS } from '@/data/cow-swap/const'
 import LazyLoadTweet from '@/components/LazyLoadTweet'
 
-const analytics = initGtm()
-
 export default function Page() {
+  const analytics = useCowAnalytics()
   const tweetSectionRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {

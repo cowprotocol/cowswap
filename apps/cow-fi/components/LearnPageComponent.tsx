@@ -28,15 +28,14 @@ import {
   TopicTitle,
 } from '@/styles/styled'
 import { ArrowButton } from '@/components/ArrowButton'
-import { initGtm } from '@cowprotocol/analytics'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+
+import { CowFiCategory } from 'src/common/analytics/types'
 import { Color, Font, Media } from '@cowprotocol/ui'
 import LazySVG from '@/components/LazySVG'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import { ArticleListResponse } from '../services/cms'
 import styled from 'styled-components/macro'
-
-const analytics = initGtm()
+import { useCowAnalytics } from '@cowprotocol/analytics'
 
 const PODCASTS = [
   {
@@ -159,6 +158,7 @@ const Wrapper = styled.div`
 
 export function LearnPageComponent({ categories, articles, featuredArticles }: PageProps) {
   const { LazyImage } = useLazyLoadImages()
+  const analytics = useCowAnalytics()
 
   return (
     <Wrapper>

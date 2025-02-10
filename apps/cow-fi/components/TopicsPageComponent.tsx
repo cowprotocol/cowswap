@@ -13,13 +13,11 @@ import {
   TopicTitle,
 } from '@/styles/styled'
 import { ArrowButton } from '@/components/ArrowButton'
-import { initGtm } from '@cowprotocol/analytics'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 import { CmsImage, Color, Font, Media } from '@cowprotocol/ui'
 import { ArticleListResponse } from '../services/cms'
 import styled from 'styled-components/macro'
-
-const analytics = initGtm()
 
 interface PageProps {
   categories: {
@@ -67,6 +65,8 @@ const Wrapper = styled.div`
 `
 
 export function TopicsPageComponent({ articles, categories }: PageProps) {
+  const analytics = useCowAnalytics()
+
   return (
     <Wrapper>
       <h1>Knowledge Base</h1>
