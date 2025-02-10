@@ -19,6 +19,8 @@ export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefi
       return provider
         .send('wallet_getCapabilities', [account])
         .then((result: { [chainIdHex: string]: WalletCapabilities }) => {
+          if (!result) return undefined
+
           const chainIdHex = '0x' + (+chainId).toString(16)
 
           return result[chainIdHex]
