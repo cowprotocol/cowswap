@@ -9,8 +9,8 @@ import IMG_COWAMM_PASSIVE from '@cowprotocol/assets/images/image-cowamm-passive.
 import IMG_COWAMM_REKT from '@cowprotocol/assets/images/image-cowamm-rekt.svg'
 import FAQ from '@/components/FAQ'
 import { Link, LinkType } from '@/components/Link'
-import { initGtm } from '@cowprotocol/analytics'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 import {
   ContainerCard,
@@ -41,9 +41,9 @@ import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
 import { COW_AMM_CONTENT, FAQ_DATA, LVR_CONTENT, QUOTES } from '@/data/cow-amm/const'
 
-const analytics = initGtm()
-
 export default function Page() {
+  const analytics = useCowAnalytics()
+
   return (
     <PageWrapper>
       <HeroContainer variant="secondary" maxWidth={1300}>

@@ -1,8 +1,8 @@
 'use client'
 
 import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
-import { initGtm } from '@cowprotocol/analytics'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
 import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
@@ -38,8 +38,6 @@ import { DAO_CONTENT as CONTENT } from '@/data/widget/const'
 
 import LazySVG from '@/components/LazySVG'
 
-const analytics = initGtm()
-
 const FEATURE_ITEMS = [
   'Live styling configurator',
   'Easy install with a snippet of code',
@@ -59,6 +57,8 @@ const widgetParams: CowSwapWidgetParams = {
 }
 
 export default function Page() {
+  const analytics = useCowAnalytics()
+
   return (
     <PageWrapper>
       <HeroContainer variant="secondary">

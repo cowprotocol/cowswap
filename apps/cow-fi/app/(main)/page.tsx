@@ -4,8 +4,8 @@ import { Color, Font } from '@cowprotocol/ui'
 import IMG_ICON_GOVERNANCE from '@cowprotocol/assets/images/icon-governance.svg'
 import VIDEO_HERO_HOME from '@cowprotocol/assets/video/cow-dao-hero-animation.mp4'
 import { Link, LinkType } from '@/components/Link'
-import { initGtm } from '@cowprotocol/analytics'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 import {
   ContainerCard,
@@ -31,9 +31,9 @@ import IMG_ICON_GRANTS_CARTON from '@cowprotocol/assets/images/icon-grants-carto
 
 import { CHANNEL_LIST, PRODUCT_CONTAINERS } from '@/data/home/const'
 
-const cowAnalytics = initGtm()
-
 export default function Page() {
+  const cowAnalytics = useCowAnalytics()
+
   const sendHomeEvent = (action: string) => {
     cowAnalytics.sendEvent({
       category: CowFiCategory.HOME,

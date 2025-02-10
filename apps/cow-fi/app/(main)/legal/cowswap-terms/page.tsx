@@ -1,15 +1,13 @@
 'use client'
 
 import { Color } from '@cowprotocol/ui'
-import { initGtm } from '@cowprotocol/analytics'
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { CowFiCategory } from 'src/common/analytics/types'
 
 import styled from 'styled-components/macro'
 import { Link } from '@/components/Link'
 
 import { ArticleContent, ArticleMainTitle, BodyContent, Breadcrumbs, ContainerCard } from '@/styles/styled'
-
-const analytics = initGtm()
 
 const Wrapper = styled.div`
   display: flex;
@@ -23,6 +21,7 @@ const Wrapper = styled.div`
 `
 
 export default function Page() {
+  const analytics = useCowAnalytics()
   const title = 'CoW Swap Terms and Conditions'
 
   return (

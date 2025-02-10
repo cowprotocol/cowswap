@@ -1,6 +1,6 @@
 import { MenuItem, ProductVariant } from '@cowprotocol/ui'
 import { initGtm } from '@cowprotocol/analytics'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 const analytics = initGtm()
 
@@ -84,15 +84,6 @@ export const NAV_ITEMS: MenuItem[] = [
 ]
 
 export const NAV_ADDITIONAL_BUTTONS = [
-  // {
-  //   label: 'Use MEV Blocker',
-  //   href: 'https://cow.fi/mev-blocker',
-  //   utmContent: 'menubar-nav-button-use-mev-blocker',
-  //   external: true,
-  //   isButton: true,
-  //   bgColor: '#EC4612',
-  //   color: '#FEE7CF',
-  // },
   {
     label: 'LP on CoW AMM',
     href: 'https://balancer.fi/pools/cow',
