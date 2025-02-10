@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 
 import { modifySafeHandlerAnalytics } from 'modules/analytics'
 import { SellNativeWarningBanner } from 'modules/trade/containers/SellNativeWarningBanner'
@@ -42,11 +42,12 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   const swapAmountDifference = useAtomValue(swapAmountDifferenceAtom)
   const primaryFormValidation = useGetTradeFormValidation()
 
-  const { chainId } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
   const tradeQuoteFeeFiatAmount = useTradeQuoteFeeFiatAmount()
   const { canTrade, walletIsNotConnected } = useTwapWarningsContext()
   const tradeUrlParams = useTradeRouteContext()
+  const isSafeViaWc = useIsSafeViaWc()
 
   const toggleFallbackHandlerSetupFlag = useCallback(
     (isFallbackHandlerSetupAccepted: boolean) => {
@@ -74,7 +75,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
     <>
       {(() => {
         if (localFormValidation === TwapFormState.NOT_TX_BUNDLE_SUPPORT) {
-          return <UnsupportedWalletWarning />
+          return <UnsupportedWalletWarning isSafeViaWc={isSafeViaWc} chainId={chainId} account={account} />
         }
 
         if (primaryFormValidation === TradeFormValidation.SellNativeToken) {
