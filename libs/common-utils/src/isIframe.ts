@@ -3,5 +3,5 @@
  * by comparing window.self with window.top
  */
 export function isIframe(): boolean {
-  return window.self !== window.top
+  return typeof window !== 'undefined' && window.self !== window.top
 }
