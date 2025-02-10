@@ -102,7 +102,7 @@ export function useConnectAndAddToWallet(): UseConnectAndAddToWalletProps {
         console.debug('[useConnectAndAddToWallet] Connecting...')
         cowAnalytics.sendEvent({
           category: CowFiCategory.MEVBLOCKER,
-          action: 'Wallet Connected',
+          action: 'Attempt Connect Wallet',
         })
         connect()
           .then((result) => {
@@ -111,6 +111,10 @@ export function useConnectAndAddToWallet(): UseConnectAndAddToWalletProps {
               cowAnalytics.sendEvent({
                 category: CowFiCategory.MEVBLOCKER,
                 action: 'Wallet Connected',
+              })
+              cowAnalytics.sendEvent({
+                category: CowFiCategory.MEVBLOCKER,
+                action: 'Attempt Add RPC',
               })
               addToWallet()
               resolve()
@@ -128,7 +132,7 @@ export function useConnectAndAddToWallet(): UseConnectAndAddToWalletProps {
         console.debug('[useConnectAndAddToWallet] Already connected. Adding RPC endpoint...')
         cowAnalytics.sendEvent({
           category: CowFiCategory.MEVBLOCKER,
-          action: 'Wallet Connected',
+          action: 'Attempt Add RPC',
         })
         addToWallet()
         resolve()
