@@ -32,7 +32,7 @@ jest.mock('@cowprotocol/wallet', () => {
   return new Proxy(actual, {
     get: (target, property) => {
       switch (property) {
-        case 'useIsBundlingSupported': {
+        case 'useIsTxBundlingSupported': {
           return jest.fn()
         }
         default: {
