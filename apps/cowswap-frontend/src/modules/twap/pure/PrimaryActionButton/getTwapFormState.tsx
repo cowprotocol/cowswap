@@ -30,9 +30,9 @@ export enum TwapFormState {
 export function getTwapFormState(props: TwapFormStateParams): TwapFormState | null {
   const { twapOrder, isTxBundlingSupported, verification, sellAmountPartFiat, chainId, partTime } = props
 
-  if (verification === null || isTxBundlingSupported === null) return TwapFormState.LOADING_SAFE_INFO
+  if (isTxBundlingSupported === false) return TwapFormState.NOT_TX_BUNDLE_SUPPORT
 
-  if (!isTxBundlingSupported) return TwapFormState.NOT_TX_BUNDLE_SUPPORT
+  if (verification === null || isTxBundlingSupported === null) return TwapFormState.LOADING_SAFE_INFO
 
   if (!isFractionFalsy(twapOrder?.buyAmount) && isSellAmountTooSmall(sellAmountPartFiat, chainId)) {
     return TwapFormState.SELL_AMOUNT_TOO_SMALL
