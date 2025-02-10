@@ -10,7 +10,7 @@ export function useSendBatchTransactions(): (txs: MetaTransactionData[]) => Prom
   const safeAppsSdk = useSafeAppsSdk()
   const provider = useWalletProvider()
   const { chainId, account } = useWalletInfo()
-  const capabilities = useWalletCapabilities()
+  const { data: capabilities } = useWalletCapabilities()
   const isAtomicBatchSupported = !!capabilities?.atomicBatch?.supported
 
   return async (txs: MetaTransactionData[]) => {

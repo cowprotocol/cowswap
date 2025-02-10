@@ -9,5 +9,5 @@ export function useIsSafeApprovalBundle(amount: Nullish<CurrencyAmount<Currency>
   const needsApproval = useNeedsApproval(amount)
   const isBundlingSupported = useIsTxBundlingSupported()
 
-  return isBundlingSupported && needsApproval
+  return Boolean(isBundlingSupported && needsApproval)
 }

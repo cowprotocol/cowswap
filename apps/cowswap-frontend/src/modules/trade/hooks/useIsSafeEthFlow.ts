@@ -6,5 +6,5 @@ export function useIsSafeEthFlow(): boolean {
   const isSwapEth = useIsSwapEth()
   const isBundlingSupported = useIsTxBundlingSupported()
 
-  return isBundlingSupported && isSwapEth
+  return Boolean(isBundlingSupported && isSwapEth)
 }

@@ -11,7 +11,7 @@ import { isPartTimeIntervalTooShort } from '../../utils/isPartTimeIntervalTooSho
 import { isSellAmountTooSmall } from '../../utils/isSellAmountTooSmall'
 
 export interface TwapFormStateParams {
-  isTxBundlingSupported: boolean
+  isTxBundlingSupported: boolean | null
   verification: ExtensibleFallbackVerification | null
   twapOrder: TWAPOrder | null
   sellAmountPartFiat: Nullish<CurrencyAmount<Currency>>
@@ -30,9 +30,9 @@ export enum TwapFormState {
 export function getTwapFormState(props: TwapFormStateParams): TwapFormState | null {
   const { twapOrder, isTxBundlingSupported, verification, sellAmountPartFiat, chainId, partTime } = props
 
-  if (!isTxBundlingSupported) return TwapFormState.NOT_TX_BUNDLE_SUPPORT
+  if (verification === null || isTxBundlingSupported === null) return TwapFormState.LOADING_SAFE_INFO
 
-  if (verification === null) return TwapFormState.LOADING_SAFE_INFO
+  if (!isTxBundlingSupported) return TwapFormState.NOT_TX_BUNDLE_SUPPORT
 
   if (!isFractionFalsy(twapOrder?.buyAmount) && isSellAmountTooSmall(sellAmountPartFiat, chainId)) {
     return TwapFormState.SELL_AMOUNT_TOO_SMALL

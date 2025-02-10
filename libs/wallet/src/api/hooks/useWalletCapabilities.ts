@@ -1,7 +1,7 @@
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
-import useSWR from 'swr'
+import useSWR, { SWRResponse } from 'swr'
 
 import { useWalletInfo } from '../hooks'
 
@@ -9,7 +9,7 @@ export type WalletCapabilities = {
   atomicBatch?: { supported: boolean }
 }
 
-export function useWalletCapabilities(): WalletCapabilities | undefined {
+export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefined> {
   const provider = useWalletProvider()
   const { chainId, account } = useWalletInfo()
 
@@ -30,5 +30,5 @@ export function useWalletCapabilities(): WalletCapabilities | undefined {
         })
     },
     SWR_NO_REFRESH_OPTIONS,
-  ).data
+  )
 }

@@ -108,7 +108,7 @@ export function useSwapButtonContext(input: SwapButtonInput, actions: TradeWidge
     isSupportedWallet,
     isSmartContractWallet,
     isReadonlyGnosisSafeUser,
-    isBundlingSupported,
+    isBundlingSupported: !!isBundlingSupported,
     isSwapUnsupported,
     isNativeIn: isNativeInSwap,
     wrappedToken,

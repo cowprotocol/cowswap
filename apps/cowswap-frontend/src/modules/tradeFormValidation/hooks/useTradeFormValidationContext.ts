@@ -40,7 +40,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const commonContext = {
     account,
     isWrapUnwrap,
-    isBundlingSupported,
+    isBundlingSupported: !!isBundlingSupported,
     isSupportedWallet,
     isSwapUnsupported,
     isSafeReadonlyUser,

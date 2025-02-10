@@ -30,13 +30,14 @@ export function useGnosisSafeInfo(): GnosisSafeInfo | undefined {
 }
 
 // TODO: if you want to test TWAP with others EIP-5792 wallets - keep only atomicBatch.supported
-export function useIsTxBundlingSupported(): boolean {
-  const capabilities = useWalletCapabilities()
+export function useIsTxBundlingSupported(): boolean | null {
+  const { data: capabilities, isLoading: isCapabilitiesLoading } = useWalletCapabilities()
+  const isSafeApp = useIsSafeApp()
+  const isSafeViaWc = useIsSafeViaWc()
 
-  // For now, bundling can only be performed while the App is loaded as a Safe App
-  // Pending a custom RPC endpoint implementation on Safe side to allow
-  // tx bundling via WalletConnect
-  return useIsSafeApp() || (useIsSafeViaWc() && !!capabilities?.atomicBatch?.supported)
+  if (isCapabilitiesLoading) return null
+
+  return isSafeApp || (isSafeViaWc && !!capabilities?.atomicBatch?.supported)
 }
 
 export function useMultiInjectedProviders() {
