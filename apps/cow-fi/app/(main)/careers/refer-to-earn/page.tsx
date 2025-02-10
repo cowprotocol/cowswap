@@ -2,7 +2,7 @@
 
 import { Color } from '@cowprotocol/ui'
 import { initGtm } from '@cowprotocol/analytics'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+import { CowFiCategory } from 'src/common/analytics/types'
 import styled from 'styled-components/macro'
 import { ContainerCard, ArticleContent, Breadcrumbs, ArticleMainTitle, BodyContent } from '@/styles/styled'
 

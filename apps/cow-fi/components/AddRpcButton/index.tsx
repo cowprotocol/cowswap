@@ -4,12 +4,10 @@ import styled from 'styled-components/macro'
 import { darken, transparentize } from 'polished'
 import { useConnectAndAddToWallet } from '../../lib/hooks/useConnectAndAddToWallet'
 import { useAccount } from 'wagmi'
+import { useCowAnalytics } from '@cowprotocol/analytics'
 
 import { Link, LinkType } from '@/components/Link'
 import { AddToWalletStateValues } from '../../types/addToWalletState'
-import { initGtm } from '@cowprotocol/analytics'
-
-const cowAnalytics = initGtm()
 
 const Message = styled.p<{ state: AddToWalletStateValues }>`
   color: ${({ state }) => (state === 'added' ? darken(0.5, 'green') : 'orange')};
@@ -26,6 +24,7 @@ export function AddRpcButton() {
   const { addWalletState, connectAndAddToWallet, disconnectWallet } = useConnectAndAddToWallet()
   const { errorMessage, state } = addWalletState
   const { isConnected } = useAccount()
+  const cowAnalytics = useCowAnalytics()
 
   const handleClick = async () => {
     // We keep direct analytics for error tracking as it needs more context
