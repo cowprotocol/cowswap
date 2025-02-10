@@ -25,9 +25,7 @@ export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefi
 
           return result[chainIdHex]
         })
-        .catch((error) => {
-          console.error('Error fetching wallet capabilities', error)
-
+        .catch(() => {
           return undefined
         })
     },
