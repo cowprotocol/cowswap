@@ -33,6 +33,7 @@ import {
   TokenSearchInput,
 } from './styled'
 
+import Delegate from '../Delegate'
 import { CardsLoader, CardsSpinner } from '../styled'
 
 export enum PageViewKeys {
@@ -122,7 +123,9 @@ export default function TokensOverview() {
         setPage={setPage}
         balances={balances}
         tokensData={tokensData}
-      />
+      >
+        <Delegate />
+      </TokensTable>
     )
   }, [balances, debouncedQuery, favoriteTokens, formattedTokens, page, prevQuery, provider, query, selectedView])
 

@@ -1,6 +1,5 @@
 import { Media, UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'color2k'
 import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -138,25 +137,6 @@ export const Overview = styled.div`
   ${Media.upToMedium()} {
     display: flex;
     flex-flow: column wrap;
-
-    &::after {
-      content: '';
-      display: block;
-      background: linear-gradient(
-        to left,
-        ${({ theme }) => theme.paper} 0%,
-        ${({ theme }) => transparentize(theme.paper, 1)} 100%
-      );
-      pointer-events: none;
-      height: 100%;
-      width: 80px;
-      position: absolute;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      margin: auto;
-      z-index: 1;
-    }
   }
 `
 

@@ -25,7 +25,7 @@ export default function Delegate() {
           to vote?
         </BannerCardTitle>
         <small>
-          Delegate your <img src={CowImage} alt="Cow Balance" height="16" width="16" /> COW
+          Delegate your <img src={CowImage} alt="Cow Balance" height="16" width="16" /> (v)COW
         </small>
         <ButtonPrimary as="a" href={delegateUrl.toString()} target="_blank" rel="noopener nofollow">
           Delegate Now ↗

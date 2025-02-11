@@ -27,6 +27,7 @@ import {
   Table,
   TableHeader,
   Wrapper,
+  DelegateRow,
 } from './styled'
 import { TokensTableRow } from './TokensTableRow'
 
@@ -46,6 +47,7 @@ type TokenTableParams = {
   query: string
   prevQuery: string
   debouncedQuery: string
+  children?: React.ReactNode
 }
 
 export default function TokenTable({
@@ -57,6 +59,7 @@ export default function TokenTable({
   query,
   prevQuery,
   debouncedQuery,
+  children,
 }: TokenTableParams) {
   const toggleWalletModal = useToggleWalletModal()
   const tableRef = useRef<HTMLTableElement | null>(null)
@@ -104,30 +107,30 @@ export default function TokenTable({
   const sortedTokens = useMemo(() => {
     return tokensData
       ? tokensData
-        .filter((x) => !!x)
-        .sort((tokenA, tokenB) => {
-          if (!sortField) {
-            // If there is no sort field selected (default)
-            return tokenComparator(tokenA, tokenB)
-          } else if (sortField === SORT_FIELD.BALANCE) {
-            // If the sort field is Balance
-            if (!balances) return 0
+          .filter((x) => !!x)
+          .sort((tokenA, tokenB) => {
+            if (!sortField) {
+              // If there is no sort field selected (default)
+              return tokenComparator(tokenA, tokenB)
+            } else if (sortField === SORT_FIELD.BALANCE) {
+              // If the sort field is Balance
+              if (!balances) return 0
 
-            const balanceA = balances[tokenA.address.toLowerCase()]
-            const balanceB = balances[tokenB.address.toLowerCase()]
-            const balanceComp = balanceComparator(balanceA, balanceB)
+              const balanceA = balances[tokenA.address.toLowerCase()]
+              const balanceB = balances[tokenB.address.toLowerCase()]
+              const balanceComp = balanceComparator(balanceA, balanceB)
 
-            return applyDirection(balanceComp > 0, sortDirection)
-          } else {
-            // If the sort field is something else
-            const sortA = tokenA[sortField]
-            const sortB = tokenB[sortField]
+              return applyDirection(balanceComp > 0, sortDirection)
+            } else {
+              // If the sort field is something else
+              const sortA = tokenA[sortField]
+              const sortB = tokenB[sortField]
 
-            if (!sortA || !sortB) return 0
-            return applyDirection(sortA > sortB, sortDirection)
-          }
-        })
-        .slice(maxItems * (page - 1), page * maxItems)
+              if (!sortA || !sortB) return 0
+              return applyDirection(sortA > sortB, sortDirection)
+            }
+          })
+          .slice(maxItems * (page - 1), page * maxItems)
       : []
   }, [tokensData, maxItems, page, sortField, tokenComparator, balances, applyDirection, sortDirection])
 
@@ -154,14 +157,14 @@ export default function TokenTable({
       setSortField(newField)
       setSortDirection(newDirection)
     },
-    [sortDirection, sortField]
+    [sortDirection, sortField],
   )
 
   const arrow = useCallback(
     (field: SORT_FIELD) => {
       return sortField === field ? (!sortDirection ? '↑' : '↓') : ''
     },
-    [sortDirection, sortField]
+    [sortDirection, sortField],
   )
 
   useEffect(() => {
@@ -201,6 +204,8 @@ export default function TokenTable({
             <Label>Value</Label>
             <Label>Actions</Label>
           </TableHeader>
+
+          {children && <DelegateRow>{children}</DelegateRow>}
 
           {tokensData && sortedTokens.length !== 0 ? (
             sortedTokens.map((data, i) => {
