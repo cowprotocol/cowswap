@@ -254,9 +254,12 @@ export const CardActions = styled.div<{ content?: string }>`
   margin: auto 0 0;
   align-content: ${({ content }) => content ?? 'unset'};
   color: inherit;
+  gap: 12px;
 
   ${Media.upToMedium()} {
     justify-content: center;
+    flex-flow: column;
+    gap: 24px;
   }
 
   > a,

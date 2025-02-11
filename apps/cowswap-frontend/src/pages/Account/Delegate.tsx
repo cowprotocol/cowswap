@@ -4,16 +4,10 @@ import { ButtonPrimary } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 
+import { DELEGATE_URL } from './constants'
 import { BannerCard, BannerCardContent, BannerCardIcon, BannerCardTitle } from './styled'
 
 export default function Delegate() {
-  const delegateUrl = new URL(
-    'https://forum.cow.fi/t/recognised-delegates-scheme/2688#p-5670-current-list-of-recognised-delegates-2',
-  )
-  delegateUrl.searchParams.set('utm_source', 'cowswap')
-  delegateUrl.searchParams.set('utm_medium', 'account_page')
-  delegateUrl.searchParams.set('utm_campaign', 'delegate')
-
   return (
     <BannerCard>
       <BannerCardIcon width={159}>
@@ -27,7 +21,7 @@ export default function Delegate() {
         <small>
           Delegate your <img src={CowImage} alt="Cow Balance" height="16" width="16" /> (v)COW
         </small>
-        <ButtonPrimary as="a" href={delegateUrl.toString()} target="_blank" rel="noopener nofollow">
+        <ButtonPrimary as="a" href={DELEGATE_URL()} target="_blank" rel="noopener nofollow">
           Delegate Now ↗
         </ButtonPrimary>
       </BannerCardContent>
