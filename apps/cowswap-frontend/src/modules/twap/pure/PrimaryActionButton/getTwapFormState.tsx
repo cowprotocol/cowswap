@@ -21,7 +21,7 @@ export interface TwapFormStateParams {
 
 export enum TwapFormState {
   LOADING_SAFE_INFO = 'LOADING_SAFE_INFO',
-  NOT_TX_BUNDLE_SUPPORT = 'NOT_TX_BUNDLE_SUPPORT',
+  TX_BUNDLING_NOT_SUPPORTED = 'TX_BUNDLING_NOT_SUPPORTED',
   SELL_AMOUNT_TOO_SMALL = 'SELL_AMOUNT_TOO_SMALL',
   PART_TIME_INTERVAL_TOO_SHORT = 'PART_TIME_INTERVAL_TOO_SHORT',
   PART_TIME_INTERVAL_TOO_LONG = 'PART_TIME_INTERVAL_TOO_LONG',
@@ -30,7 +30,7 @@ export enum TwapFormState {
 export function getTwapFormState(props: TwapFormStateParams): TwapFormState | null {
   const { twapOrder, isTxBundlingSupported, verification, sellAmountPartFiat, chainId, partTime } = props
 
-  if (isTxBundlingSupported === false) return TwapFormState.NOT_TX_BUNDLE_SUPPORT
+  if (isTxBundlingSupported === false) return TwapFormState.TX_BUNDLING_NOT_SUPPORTED
 
   if (verification === null || isTxBundlingSupported === null) return TwapFormState.LOADING_SAFE_INFO
 
