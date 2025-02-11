@@ -68,7 +68,7 @@ export const MenuItem = styled.div<{ active: boolean }>`
 
 export const Wrapper = styled.div`
   display: grid;
-  grid-template-columns: 120px minmax(auto, 950px);
+  grid-template-columns: 120px minmax(auto, 1140px);
   grid-template-rows: max-content;
   margin: 0;
   width: 100%;
@@ -190,7 +190,9 @@ export const TokenSearchInput = styled.input`
   background: var(${UI.COLOR_PAPER_DARKER});
   border: 1px solid var(${UI.COLOR_BORDER});
   border-radius: 21px;
-  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, max-width var(${UI.ANIMATION_DURATION}) ease-in-out;
+  transition:
+    background var(${UI.ANIMATION_DURATION}) ease-in-out,
+    max-width var(${UI.ANIMATION_DURATION}) ease-in-out;
   appearance: none;
   height: 44px;
   padding: 0 16px;

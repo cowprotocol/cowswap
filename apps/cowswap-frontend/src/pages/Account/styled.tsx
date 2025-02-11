@@ -66,32 +66,15 @@ export const StyledWatchAssetInWallet = styled(WatchAssetInWallet)`
 `
 
 export const CardsWrapper = styled.div`
-  display: flex;
-  flex-flow: row wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 16px;
-  margin: 16px 0 16px 0;
+  margin: 0;
   padding: 0;
   z-index: 2;
 
-  > div {
-    flex: 1 1 300px;
-  }
-
-  > div:last-child:nth-child(odd) {
-    flex: 1 1 100%;
-  }
-
-  ${Media.upToSmall()} {
-    display: flex;
-    flex-flow: column wrap;
-
-    > div {
-      flex: 1 1 100%;
-    }
-
-    > div:last-child:nth-child(odd) {
-      flex: 1 1 100%;
-    }
+  ${Media.upToMedium()} {
+    grid-template-columns: 1fr;
   }
 `
 
@@ -101,7 +84,7 @@ export const Card = styled.div<{ showLoader?: boolean }>`
   flex: 1;
   min-height: 192px;
   margin: 0;
-  background: ${({ theme }) => theme.paper};
+  background: var(${UI.COLOR_PAPER});
   box-shadow: none;
   padding: 24px;
   gap: 24px 0;
@@ -121,7 +104,7 @@ export const Card = styled.div<{ showLoader?: boolean }>`
         bottom: 0;
         left: 0;
         transform: translateX(-100%);
-        ${theme.shimmer}; // shimmer effect
+        ${theme.shimmer};
         content: '';
       }
     `}
@@ -155,176 +138,33 @@ export const Card = styled.div<{ showLoader?: boolean }>`
   }
 `
 
-const BannerExplainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  height: 130px;
-  border-radius: 12px;
-  padding: 0 24px 0 20%;
-  background: ${({ theme }) => theme.bg8};
+export const BannerCard = styled.div`
   position: relative;
-  overflow: hidden;
+  width: 100%;
   border: 4px solid transparent;
   transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-  ${Media.upToSmall()} {
-    padding: 24px;
-    height: auto;
-  }
-
-  > span {
-    display: flex;
-    flex-flow: column wrap;
-    height: 100%;
-    flex: 1 1 auto;
-    align-items: flex-end;
-    justify-content: center;
-
-    ${Media.upToSmall()} {
-      align-items: center;
-    }
-  }
-
-  > span > b {
-    text-align: right;
-    font-size: 32px;
-    font-weight: 600;
-    margin: 0 0 6px;
-
-    ${Media.upToSmall()} {
-      font-size: 19px;
-      text-align: center;
-    }
-  }
-
-  > span > small {
-    color: ${({ theme }) => theme.white};
-    font-size: 16px;
-    font-weight: 400;
-    text-align: right;
-    padding: 0 0 0 20%;
-
-    ${Media.upToSmall()} {
-      text-align: center;
-      padding: 0;
-    }
-  }
-
-  > span > small > a {
-    color: inherit;
-  }
-
-  > svg {
-    width: auto;
-    height: 168%;
-    position: absolute;
-    left: -16%;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    mix-blend-mode: hard-light;
-
-    ${Media.upToSmall()} {
-      display: none;
-    }
-  }
-
-  > svg {
-    .stop1 {
-      stop-color: ${({ theme }) => theme.white};
-    }
-    .stop2 {
-      stop-color: ${({ theme }) => theme.white};
-      stop-opacity: 0.8;
-    }
-    .stop3 {
-      stop-color: ${({ theme }) => theme.white};
-      stop-opacity: 0;
-    }
-  }
-`
-
-export const BannerCard = styled(BannerExplainer)`
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  justify-content: flex-start;
   min-height: 192px;
   border-radius: 16px;
-  background: ${({ theme }) => theme.paper};
+  background: var(${UI.COLOR_PAPER});
   border: none;
-  padding: 0 24px;
-  gap: 16px;
+  padding: 24px;
+  gap: 24px;
   flex: 1;
   overflow: hidden;
-  height: auto;
 
-  ${Media.upToSmall()} {
+  ${Media.upToMedium()} {
     text-align: center;
     padding: 24px 16px;
-    flex-flow: column wrap;
+    flex-flow: column;
     align-items: center;
     justify-content: center;
   }
 
   &:hover {
-  }
-
-  > span {
-    align-items: flex-start;
-    justify-content: space-between;
-    height: 100%;
-    padding: 24px 0;
-    color: ${({ theme }) => theme.text1};
-
-    ${Media.upToSmall()} {
-      padding: 0;
-    }
-
-    > b {
-      font-size: 24px;
-
-      ${Media.upToSmall()} {
-        text-align: center;
-        margin: 0 auto;
-      }
-    }
-
-    > small {
-      color: ${({ theme }) => theme.text1};
-      font-size: 14px;
-      line-height: 1.5;
-      text-align: left;
-      padding: 0;
-      margin: 0;
-
-      ${Media.upToSmall()} {
-        text-align: center;
-        margin: 16px auto;
-      }
-    }
-
-    > span {
-      display: flex;
-      margin: 8px 0 0;
-      gap: 0 16px;
-      width: 100%;
-
-      ${Media.upToSmall()} {
-        flex-flow: column wrap;
-        gap: 16px 0;
-        justify-content: center;
-        margin: 24px 0 12px;
-      }
-    }
-
-    > span > a,
-    > span > a:link {
-      font-size: 15px;
-      color: ${({ theme }) => theme.text1};
-
-      &:hover {
-        color: ${({ theme }) => theme.info};
-      }
-    }
   }
 
   > svg {
@@ -337,24 +177,79 @@ export const BannerCard = styled(BannerExplainer)`
 
   > svg {
     .stop1 {
-      stop-color: ${({ theme }) => theme.text1};
+      stop-color: var(${UI.COLOR_TEXT});
     }
     .stop2 {
-      stop-color: ${({ theme }) => theme.text1};
+      stop-color: var(${UI.COLOR_TEXT});
       stop-opacity: 0.8;
     }
     .stop3 {
-      stop-color: ${({ theme }) => theme.text1};
+      stop-color: var(${UI.COLOR_TEXT});
       stop-opacity: 0;
     }
   }
 `
 
-export const CardActions = styled.div<{ justify?: string; content?: string }>`
+export const BannerCardContent = styled.span<{ fontSize?: string }>`
+  z-index: 2;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  gap: 24px;
+  height: 100%;
+  width: 100%;
+  flex: 1 1 auto;
+  color: var(${UI.COLOR_TEXT});
+  font-size: ${({ fontSize }) => fontSize ?? '16px'};
+
+  ${Media.upToMedium()} {
+    justify-content: center;
+    align-items: center;
+  }
+
+  > b {
+    font-size: 24px;
+  }
+
+  > small {
+    color: var(${UI.COLOR_TEXT});
+    font-size: inherit;
+    line-height: 1.2;
+    text-align: left;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    ${Media.upToSmall()} {
+      text-align: center;
+    }
+  }
+`
+
+export const BannerCardTitle = styled.h3<{ fontSize?: number }>`
+  font-size: ${({ fontSize }) => fontSize ?? 40}px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(${UI.COLOR_TEXT});
+  margin: 0;
+`
+
+export const BannerCardIcon = styled.div<{ width?: string | number; height?: string | number }>`
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: ${({ width }) => (typeof width === 'number' ? `${width}px` : (width ?? '100%'))};
+  height: ${({ height }) => (typeof height === 'number' ? `${height}px` : (height ?? '100%'))};
+`
+
+export const CardActions = styled.div<{ content?: string }>`
   width: 100%;
   display: flex;
   flex-flow: row wrap;
-  justify-content: ${({ justify }) => justify ?? 'space-between'};
+  justify-content: space-between;
   align-items: flex-end;
   margin: auto 0 0;
   align-content: ${({ content }) => content ?? 'unset'};
@@ -362,14 +257,6 @@ export const CardActions = styled.div<{ justify?: string; content?: string }>`
 
   ${Media.upToMedium()} {
     justify-content: center;
-    align-items: center;
-    flex-flow: column wrap;
-    gap: 32px 0;
-    margin: 12px 0;
-  }
-
-  ${Media.upToSmall()} {
-    align-content: center;
   }
 
   > a,
@@ -435,7 +322,7 @@ export const BalanceDisplay = styled.div<{ titleSize?: number; altColor?: boolea
     display: flex;
     align-items: center;
     gap: 0 6px;
-    color: ${({ theme, altColor }) => (altColor ? theme.info : `var(${UI.COLOR_TEXT})`)};
+    color: ${({ altColor }) => (altColor ? `var(${UI.COLOR_INFO})` : `var(${UI.COLOR_TEXT})`)};
     font-size: ${({ titleSize }) => (titleSize ? `${titleSize}px` : '21px')};
 
     ${Media.upToMedium()} {
@@ -462,7 +349,7 @@ export const ConvertWrapper = styled.div`
   grid-template-columns: 1fr 200px;
   grid-template-rows: max-content;
   align-items: center;
-  background: ${({ theme }) => theme.grey1};
+  background: var(${UI.COLOR_PAPER_DARKER});
   border-radius: 16px;
   padding: 16px;
   width: 100%;
@@ -505,30 +392,8 @@ export const VestingBreakdown = styled.div`
   }
 
   > span:last-of-type > p {
-    color: ${({ theme }) => theme.text1};
+    color: var(${UI.COLOR_TEXT});
   }
-`
-
-export const BannerCardContent = styled.span`
-  z-index: 2;
-
-  > b {
-    text-align: left;
-  }
-
-  a:last-child {
-    margin-left: 15px;
-  }
-
-  ${Media.upToSmall()} {
-    a:last-child {
-      margin-left: auto;
-    }
-  }
-`
-
-export const BannerCardIcon = styled.div`
-  z-index: 1;
 `
 
 export const CardsLoader = styled.div`
@@ -542,6 +407,6 @@ export const CardsSpinner = styled(SpinnerLoader)`
   margin: auto;
 
   & path {
-    stroke: ${({ theme }) => theme.text1};
+    stroke: var(${UI.COLOR_TEXT});
   }
 `
