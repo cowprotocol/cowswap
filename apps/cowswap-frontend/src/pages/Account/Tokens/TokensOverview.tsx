@@ -124,7 +124,7 @@ export default function TokensOverview() {
         balances={balances}
         tokensData={tokensData}
       >
-        <Delegate />
+        <Delegate dismissable />
       </TokensTable>
     )
   }, [balances, debouncedQuery, favoriteTokens, formattedTokens, page, prevQuery, provider, query, selectedView])

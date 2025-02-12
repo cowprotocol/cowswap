@@ -1,8 +1,10 @@
+import { useAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFilterTokens, usePrevious } from '@cowprotocol/common-hooks'
+import { closableBannersStateAtom } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -10,6 +12,7 @@ import { Trans } from '@lingui/macro'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
+import { BANNER_IDS } from 'common/constants/banners'
 import { usePendingApprovalModal } from 'common/hooks/usePendingApprovalModal'
 import { CowModal } from 'common/pure/Modal'
 
@@ -63,6 +66,8 @@ export default function TokenTable({
 }: TokenTableParams) {
   const toggleWalletModal = useToggleWalletModal()
   const tableRef = useRef<HTMLTableElement | null>(null)
+  const [bannerState] = useAtom(closableBannersStateAtom)
+  const isDelegateBannerDismissed = bannerState[BANNER_IDS.DELEGATE]
 
   // reset pagination when user is in a page > 1, searching and deletes query
   useEffect(() => {
@@ -205,7 +210,7 @@ export default function TokenTable({
             <Label>Actions</Label>
           </TableHeader>
 
-          {children && <DelegateRow>{children}</DelegateRow>}
+          {children && !isDelegateBannerDismissed && <DelegateRow>{children}</DelegateRow>}
 
           {tokensData && sortedTokens.length !== 0 ? (
             sortedTokens.map((data, i) => {

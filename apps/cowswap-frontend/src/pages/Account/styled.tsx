@@ -1,5 +1,6 @@
 import { UI, ExternalLink, Loader as SpinnerLoader, ButtonPrimary, Media } from '@cowprotocol/ui'
 
+import { X } from 'react-feather'
 import styled, { css } from 'styled-components/macro'
 
 import { CopyIcon as ClickToCopy } from 'legacy/components/Copy'
@@ -162,31 +163,6 @@ export const BannerCard = styled.div`
     flex-flow: column;
     align-items: center;
     justify-content: center;
-  }
-
-  &:hover {
-  }
-
-  > svg {
-    left: initial;
-    right: -190px;
-    transform: scale(-1, 1); // flip mirror
-    opacity: 0.25;
-    mix-blend-mode: initial;
-  }
-
-  > svg {
-    .stop1 {
-      stop-color: var(${UI.COLOR_TEXT});
-    }
-    .stop2 {
-      stop-color: var(${UI.COLOR_TEXT});
-      stop-opacity: 0.8;
-    }
-    .stop3 {
-      stop-color: var(${UI.COLOR_TEXT});
-      stop-opacity: 0;
-    }
   }
 `
 
@@ -411,5 +387,24 @@ export const CardsSpinner = styled(SpinnerLoader)`
 
   & path {
     stroke: var(${UI.COLOR_TEXT});
+  }
+`
+
+export const CloseButton = styled(X)`
+  --size: 24px;
+  cursor: pointer;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  stroke-width: 2px;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  height: var(--size);
+  width: var(--size);
+  opacity: 0.6;
+  z-index: 2;
+  color: var(${UI.COLOR_TEXT});
+
+  &:hover {
+    opacity: 1;
   }
 `

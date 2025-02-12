@@ -5,14 +5,11 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ReactMarkdown, { Components } from 'react-markdown'
 
+import { BANNER_IDS } from 'common/constants/banners'
 import { useCriticalAnnouncements, useNonCriticalAnnouncements } from 'common/hooks/useAnnouncements'
 import { GlobalWarning } from 'common/pure/GlobalWarning'
 
 import { markdownComponents } from '../../Markdown/components'
-
-
-const BANNER_STORAGE_KEY = 'announcementBannerClosed/'
-
 
 function useGetCmsAnnouncement(chainId: number): string | undefined {
   const critical = useCriticalAnnouncements(chainId)
@@ -42,7 +39,7 @@ export function URLWarning() {
     return null
   }
 
-  return ClosableBanner(BANNER_STORAGE_KEY + contentHash, (close) => (
+  return ClosableBanner(BANNER_IDS.ANNOUNCEMENT + contentHash, (close) => (
     <GlobalWarning onClose={close}>
       <ReactMarkdown components={markdownComponents as Components}>{announcementText}</ReactMarkdown>
     </GlobalWarning>

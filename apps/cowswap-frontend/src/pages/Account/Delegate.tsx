@@ -1,15 +1,22 @@
 import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import DelegateCowIcon from '@cowprotocol/assets/cow-swap/delegate-cow.svg'
-import { ButtonPrimary } from '@cowprotocol/ui'
+import { ClosableBanner, ButtonPrimary } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 
-import { DELEGATE_URL } from './constants'
-import { BannerCard, BannerCardContent, BannerCardIcon, BannerCardTitle } from './styled'
+import { BANNER_IDS } from 'common/constants/banners'
 
-export default function Delegate() {
-  return (
+import { DELEGATE_URL } from './constants'
+import { BannerCard, BannerCardIcon, BannerCardContent, BannerCardTitle, CloseButton } from './styled'
+
+interface DelegateProps {
+  dismissable?: boolean
+}
+
+export default function Delegate({ dismissable = false }: DelegateProps) {
+  const renderContent = (onClose?: () => void) => (
     <BannerCard>
+      {dismissable && onClose && <CloseButton onClick={onClose} />}
       <BannerCardIcon width={159}>
         <SVG src={DelegateCowIcon} title="Delegate" />
       </BannerCardIcon>
@@ -27,4 +34,6 @@ export default function Delegate() {
       </BannerCardContent>
     </BannerCard>
   )
+
+  return dismissable ? ClosableBanner(BANNER_IDS.DELEGATE, (onClose) => renderContent(onClose)) : renderContent()
 }
