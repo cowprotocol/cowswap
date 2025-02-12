@@ -36,7 +36,7 @@ export async function safeBundleApprovalFlow(
 
   const { context, callbacks, orderParams, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks } = tradeContext
 
-  const { spender, settlementContract, safeAppsSdk, erc20Contract } = safeBundleContext
+  const { spender, settlementContract, sendBatchTransactions, erc20Contract } = safeBundleContext
 
   const { chainId } = context
   const { account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount, kind } = orderParams
@@ -105,12 +105,12 @@ export async function safeBundleApprovalFlow(
       })
     }
 
-    const safeTx = await safeAppsSdk.txs.send({ txs: safeTransactionData })
+    const safeTxHash = await sendBatchTransactions(safeTransactionData)
 
     emitPostedOrderEvent({
       chainId,
       id: orderId,
-      orderCreationHash: safeTx.safeTxHash,
+      orderCreationHash: safeTxHash,
       kind,
       receiver: recipientAddressOrName,
       inputAmount,
@@ -125,7 +125,7 @@ export async function safeBundleApprovalFlow(
         chainId: context.chainId,
         order: {
           id: order.id,
-          presignGnosisSafeTxHash: safeTx.safeTxHash,
+          presignGnosisSafeTxHash: safeTxHash,
           isHidden: false,
         },
         isSafeWallet,

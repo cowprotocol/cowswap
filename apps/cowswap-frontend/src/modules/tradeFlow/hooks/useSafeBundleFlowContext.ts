@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { useSafeAppsSdk } from '@cowprotocol/wallet'
+import { useSendBatchTransactions } from '@cowprotocol/wallet'
 
 import useSWR from 'swr'
 
@@ -17,7 +17,7 @@ export function useSafeBundleFlowContext(): SafeBundleFlowContext | null {
   const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
   const spender = useTradeSpenderAddress()
 
-  const safeAppsSdk = useSafeAppsSdk()
+  const sendBatchTransactions = useSendBatchTransactions()
   const { contract: wrappedNativeContract, chainId: wrappedNativeChainId } = useWethContract()
 
   const receiveAmountInfo = useReceiveAmountInfo()
@@ -34,16 +34,15 @@ export function useSafeBundleFlowContext(): SafeBundleFlowContext | null {
         settlementChainId === wrappedNativeChainId &&
         settlementContract &&
         spender &&
-        safeAppsSdk &&
         wrappedNativeContract &&
         erc20Contract
-        ? [settlementContract, spender, safeAppsSdk, wrappedNativeContract, needsApproval, erc20Contract]
+        ? [settlementContract, spender, sendBatchTransactions, wrappedNativeContract, needsApproval, erc20Contract]
         : null,
-      ([settlementContract, spender, safeAppsSdk, wrappedNativeContract, needsApproval, erc20Contract]) => {
+      ([settlementContract, spender, sendBatchTransactions, wrappedNativeContract, needsApproval, erc20Contract]) => {
         return {
           settlementContract,
           spender,
-          safeAppsSdk,
+          sendBatchTransactions,
           wrappedNativeContract,
           needsApproval,
           erc20Contract,

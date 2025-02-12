@@ -55,8 +55,16 @@ export async function safeBundleFlow(
   analytics.approveAndPresign(swapFlowAnalyticsContext)
   beforeTrade?.()
 
-  const { chainId, postOrderParams, provider, erc20Contract, spender, dispatch, settlementContract, safeAppsSdk } =
-    params
+  const {
+    chainId,
+    postOrderParams,
+    provider,
+    erc20Contract,
+    spender,
+    dispatch,
+    settlementContract,
+    sendBatchTransactions,
+  } = params
 
   const validTo = calculateLimitOrdersDeadline(settingsState, params.quoteState)
 
@@ -121,8 +129,7 @@ export async function safeBundleFlow(
       })
     }
 
-    const safeTx = await safeAppsSdk.txs.send({ txs: safeTransactionData })
-    const safeTxHash = safeTx.safeTxHash
+    const safeTxHash = await sendBatchTransactions(safeTransactionData)
 
     emitPostedOrderEvent({
       chainId,
@@ -142,7 +149,7 @@ export async function safeBundleFlow(
         chainId: chainId,
         order: {
           id: order.id,
-          presignGnosisSafeTxHash: safeTx.safeTxHash,
+          presignGnosisSafeTxHash: safeTxHash,
           isHidden: false,
         },
         isSafeWallet,

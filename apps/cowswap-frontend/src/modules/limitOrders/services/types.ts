@@ -1,7 +1,7 @@
 import { Erc20, GPv2Settlement } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { SendBatchTxCallback } from '@cowprotocol/wallet'
 import { Web3Provider } from '@ethersproject/providers'
-import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 
 import { AppDispatch } from 'legacy/state'
 import { PostOrderParams } from 'legacy/utils/trade'
@@ -30,7 +30,7 @@ export interface TradeFlowContext {
 export interface SafeBundleFlowContext extends TradeFlowContext {
   erc20Contract: Erc20
   spender: string
-  safeAppsSdk: SafeAppsSDK
+  sendBatchTransactions: SendBatchTxCallback
 }
 
 export class PriceImpactDeclineError extends Error {}

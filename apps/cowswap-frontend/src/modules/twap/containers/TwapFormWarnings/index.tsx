@@ -41,12 +41,12 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   const swapAmountDifference = useAtomValue(swapAmountDifferenceAtom)
   const primaryFormValidation = useGetTradeFormValidation()
 
-  const { chainId } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
-  const isSafeViaWc = useIsSafeViaWc()
   const tradeQuoteFeeFiatAmount = useTradeQuoteFeeFiatAmount()
   const { canTrade, walletIsNotConnected } = useTwapWarningsContext()
   const tradeUrlParams = useTradeRouteContext()
+  const isSafeViaWc = useIsSafeViaWc()
 
   const toggleFallbackHandlerSetupFlag = useCallback(
     (isFallbackHandlerSetupAccepted: boolean) => {
@@ -72,8 +72,8 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   return (
     <>
       {(() => {
-        if (localFormValidation === TwapFormState.NOT_SAFE) {
-          return <UnsupportedWalletWarning isSafeViaWc={isSafeViaWc} />
+        if (localFormValidation === TwapFormState.TX_BUNDLING_NOT_SUPPORTED) {
+          return <UnsupportedWalletWarning isSafeViaWc={isSafeViaWc} chainId={chainId} account={account} />
         }
 
         if (primaryFormValidation === TradeFormValidation.SellNativeToken) {

@@ -126,7 +126,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
 
   useEffect(() => {
     if (account && verification) {
-      if (localFormValidation === TwapFormState.NOT_SAFE) {
+      if (localFormValidation === TwapFormState.TX_BUNDLING_NOT_SUPPORTED) {
         cowAnalytics.sendEvent({
           category: CowSwapAnalyticsCategory.TWAP,
           action: 'non-compatible',
