@@ -3,6 +3,7 @@ import {
   calculateGasMargin,
   formatTokenAmount,
   getIsNativeToken,
+  getRawCurrentChainIdFromUrl,
   isRejectRequestProviderError,
 } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -16,6 +17,7 @@ import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { wrapAnalytics } from 'modules/analytics'
 
+import { logEthSendingIntention, logEthSendingTransaction } from 'common/services/logEthSendingTransaction'
 import { assertProviderNetwork } from 'common/utils/assertProviderNetwork'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
@@ -37,6 +39,7 @@ export interface WrapDescription {
 
 export interface WrapUnwrapContext {
   chainId: SupportedChainId
+  account: string
   wethContract: Contract
   amount: CurrencyAmount<Currency>
   addTransaction: TransactionAdder
@@ -44,11 +47,16 @@ export interface WrapUnwrapContext {
   openTransactionConfirmationModal: Command
 }
 
+interface WrapUnwrapTxData {
+  txResponse: TransactionResponse
+}
+
 export async function wrapUnwrapCallback(
   context: WrapUnwrapContext,
   params: WrapUnwrapCallbackParams = { useModals: true },
 ): Promise<TransactionResponse | null> {
-  const { chainId, amount, wethContract, addTransaction, openTransactionConfirmationModal, closeModals } = context
+  const { chainId, account, amount, wethContract, addTransaction, openTransactionConfirmationModal, closeModals } =
+    context
   const isNativeIn = getIsNativeToken(amount.currency)
   const amountHex = `0x${amount.quotient.toString(RADIX_HEX)}`
 
@@ -60,16 +68,17 @@ export async function wrapUnwrapCallback(
     wrapAnalytics('Send', operationMessage)
 
     const wrapUnwrap = isNativeIn ? wrapContractCall : unwrapContractCall
-    const txReceipt = await wrapUnwrap(wethContract, amountHex, chainId)
+    const { txResponse } = await wrapUnwrap(wethContract, amountHex, chainId, account)
+
     wrapAnalytics('Sign', operationMessage)
 
     addTransaction({
-      hash: txReceipt.hash,
+      hash: txResponse.hash,
       summary,
     })
     useModals && closeModals()
 
-    return txReceipt
+    return txResponse
   } catch (error: any) {
     useModals && closeModals()
 
@@ -111,7 +120,8 @@ async function wrapContractCall(
   wethContract: Contract,
   amountHex: string,
   chainId: SupportedChainId,
-): Promise<TransactionResponse> {
+  account: string,
+): Promise<WrapUnwrapTxData> {
   const estimatedGas = await wethContract.estimateGas.deposit({ value: amountHex }).catch(_handleGasEstimateError)
   const gasLimit = calculateGasMargin(estimatedGas)
 
@@ -119,14 +129,29 @@ async function wrapContractCall(
 
   const tx = await wethContract.populateTransaction.deposit({ value: amountHex, gasLimit })
 
-  return wethContract.signer.sendTransaction({ ...tx, chainId: network })
+  const intentionEventId = logEthSendingIntention({
+    chainId,
+    amount: amountHex,
+    urlChainId: getRawCurrentChainIdFromUrl(),
+    account,
+    tx,
+  })
+
+  const txResponse = await wethContract.signer.sendTransaction({ ...tx, chainId: network })
+
+  logEthSendingTransaction({ txHash: txResponse.hash, intentionEventId })
+
+  return {
+    txResponse,
+  }
 }
 
 async function unwrapContractCall(
   wethContract: Contract,
   amountHex: string,
   chainId: SupportedChainId,
-): Promise<TransactionResponse> {
+  _account: string,
+): Promise<WrapUnwrapTxData> {
   const estimatedGas = await wethContract.estimateGas.withdraw(amountHex).catch(_handleGasEstimateError)
   const gasLimit = calculateGasMargin(estimatedGas)
 
@@ -134,7 +159,11 @@ async function unwrapContractCall(
 
   const network = await assertProviderNetwork(chainId, wethContract.provider, 'unwrap')
 
-  return wethContract.signer.sendTransaction({ ...tx, chainId: network })
+  const txResponse = await wethContract.signer.sendTransaction({ ...tx, chainId: network })
+
+  return {
+    txResponse,
+  }
 }
 
 function _handleGasEstimateError(error: any): BigNumber {

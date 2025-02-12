@@ -1,5 +1,5 @@
+import { getEthFlowContractAddresses } from '@cowprotocol/common-const'
 import { reportPlaceOrderWithExpiredQuote } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -16,7 +16,7 @@ import { tradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import { TradeFlowContext } from 'modules/tradeFlow'
 import { isQuoteExpired } from 'modules/tradeQuote'
 
-import { COWSWAP_ETHFLOW_CONTRACT_ADDRESS_MAP } from 'common/hooks/useContract'
+import { ethFlowEnv } from 'common/hooks/useContract'
 
 import { calculateUniqueOrderId } from './steps/calculateUniqueOrderId'
 
@@ -34,8 +34,16 @@ export async function ethFlow(
     orderParams: orderParamsOriginal,
     typedHooks,
   } = tradeContext
-  const { contract, appData, uploadAppData, addTransaction, checkEthFlowOrderExists, addInFlightOrderId, quote } =
-    ethFlowContext
+  const {
+    contract,
+    useNewEthFlowContracts,
+    appData,
+    uploadAppData,
+    addTransaction,
+    checkEthFlowOrderExists,
+    addInFlightOrderId,
+    quote,
+  } = ethFlowContext
 
   const { chainId, inputAmount, outputAmount } = context
   const tradeAmounts = { inputAmount, outputAmount }
@@ -72,16 +80,29 @@ export async function ethFlow(
       throw new Error('Quote expired. Please refresh.')
     }
 
-    if (contract.address !== COWSWAP_ETHFLOW_CONTRACT_ADDRESS_MAP[chainId as SupportedChainId]) {
-      throw new Error('EthFlow contract address mismatch. Please refresh the page and try again.')
+    // Last check before signing the order of the actual eth flow contract address (sending ETH to the wrong contract could lead to loss of funds)
+    const actualContractAddress = contract.address.toLowerCase()
+    const expectedContractAddress = getEthFlowContractAddresses(
+      ethFlowEnv,
+      useNewEthFlowContracts,
+      chainId,
+    ).toLowerCase()
+    if (actualContractAddress !== expectedContractAddress) {
+      throw new Error(
+        `EthFlow contract (${actualContractAddress}) address don't match the expected address for chain ${chainId} (${expectedContractAddress}). Please refresh the page and try again.`,
+      )
     }
 
     logTradeFlow('ETH FLOW', 'STEP 4: sign order')
-    const { order, txReceipt } = await signEthFlowOrderStep(orderId, orderParams, contract, addInFlightOrderId).finally(
-      () => {
-        callbacks.closeModals()
-      },
-    )
+    const { order, txReceipt } = await signEthFlowOrderStep(
+      orderId,
+      orderParams,
+      contract,
+      addInFlightOrderId,
+      tradeContext,
+    ).finally(() => {
+      callbacks.closeModals()
+    })
 
     emitPostedOrderEvent({
       chainId,

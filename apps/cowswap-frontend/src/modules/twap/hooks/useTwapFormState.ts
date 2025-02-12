@@ -1,7 +1,6 @@
 import { useAtomValue } from 'jotai'
-import { useMemo } from 'react'
 
-import { useIsSafeApp, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsTxBundlingSupported, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useReceiveAmountInfo } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
@@ -22,16 +21,14 @@ export function useTwapFormState(): TwapFormState | null {
   const partTime = useAtomValue(twapTimeIntervalAtom)
 
   const verification = useFallbackHandlerVerification()
-  const isSafeApp = useIsSafeApp()
+  const isTxBundlingSupported = useIsTxBundlingSupported()
 
-  return useMemo(() => {
-    return getTwapFormState({
-      isSafeApp,
-      verification,
-      twapOrder,
-      sellAmountPartFiat,
-      chainId,
-      partTime,
-    })
-  }, [isSafeApp, verification, twapOrder, sellAmountPartFiat, chainId, partTime])
+  return getTwapFormState({
+    isTxBundlingSupported,
+    verification,
+    twapOrder,
+    sellAmountPartFiat,
+    chainId,
+    partTime,
+  })
 }
