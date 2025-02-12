@@ -1,10 +1,10 @@
-import { useIsBundlingSupported } from '@cowprotocol/wallet'
+import { useIsTxBundlingSupported } from '@cowprotocol/wallet'
 
 import { useIsSwapEth } from './useIsSwapEth'
 
 export function useIsSafeEthFlow(): boolean {
   const isSwapEth = useIsSwapEth()
-  const isBundlingSupported = useIsBundlingSupported()
+  const isBundlingSupported = useIsTxBundlingSupported()
 
-  return isBundlingSupported && isSwapEth
+  return Boolean(isBundlingSupported && isSwapEth)
 }

@@ -1,6 +1,6 @@
-import { Erc20, GPv2Settlement, Weth } from '@cowprotocol/abis'
+import type { Erc20, GPv2Settlement, Weth } from '@cowprotocol/abis'
 import type { Command } from '@cowprotocol/types'
-import type SafeAppsSDK from '@safe-global/safe-apps-sdk'
+import type { SendBatchTxCallback } from '@cowprotocol/wallet'
 import type { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import type { AppDispatch } from 'legacy/state'
@@ -44,7 +44,7 @@ export interface TradeFlowContext {
 export interface SafeBundleFlowContext {
   settlementContract: GPv2Settlement
   spender: string
-  safeAppsSdk: SafeAppsSDK
+  sendBatchTransactions: SendBatchTxCallback
   wrappedNativeContract: Weth
   needsApproval: boolean
   erc20Contract: Erc20
