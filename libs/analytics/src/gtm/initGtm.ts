@@ -29,9 +29,18 @@ const analytics = {
  * This function ensures GTM is initialized only once and properly cached in both server and browser environments
  * @param gtmId - Optional GTM container ID
  * @returns CowAnalytics instance backed by GTM
- * @throws Error if attempting to initialize with different GTM ID
+ * @throws Error if attempting to initialize with different GTM ID or if GTM ID format is invalid
  */
 export function initGtm(gtmId: string = DEFAULT_GTM_ID): CowAnalytics {
+  // Validate GTM ID format (GTM-XXXXXXXX or longer)
+  if (!/^GTM-[A-Z0-9]{7,}$/.test(gtmId)) {
+    const error = new Error(
+      'Invalid GTM ID format. Expected format: GTM-XXXXXXX... (GTM- followed by 7 or more alphanumeric characters)',
+    )
+    console.error('[Analytics] GTM initialization failed:', error)
+    throw error
+  }
+
   // Check for cached instance first - this applies to both server and browser environments
   // This ensures we maintain a singleton instance regardless of environment
   if (analytics.instance) {
@@ -60,9 +69,10 @@ export function initGtm(gtmId: string = DEFAULT_GTM_ID): CowAnalytics {
     window.dataLayer = window.dataLayer || []
     window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' })
 
-    // Add script to head - ensure it's as early as possible
+    // Add script to head with performance optimizations
     const script = document.createElement('script')
     script.async = true
+    script.setAttribute('importance', 'low')
     script.src = `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(gtmId)}`
     document.head.insertBefore(script, document.head.firstChild)
 
