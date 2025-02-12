@@ -75,6 +75,12 @@ export function getSafeWebUrl(chainId: SupportedChainId, safeAddress: string, sa
   return `${SAFE_BASE_URL}/${chainShortName}:${safeAddress}/transactions/tx?id=multisig_${safeAddress}_${safeTxHash}`
 }
 
+export function getSafeAccountUrl(chainId: SupportedChainId, safeAddress: string): string {
+  const chainShortName = CHAIN_INFO[chainId].addressPrefix
+
+  return `${SAFE_BASE_URL}/${chainShortName}:${safeAddress}`
+}
+
 export function getSafeTransaction(
   chainId: number,
   safeTxHash: string,

@@ -233,7 +233,12 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
                 <>
                   Current market price is&nbsp;
                   <b>
-                    <TokenAmount amount={marketPrice} {...rest} round={false} tokenSymbol={marketPrice?.baseCurrency} />
+                    <TokenAmount
+                      amount={marketPrice}
+                      {...rest}
+                      round={false}
+                      tokenSymbol={marketPrice?.quoteCurrency}
+                    />
                   </b>
                   and needs to go {marketPriceNeedsToGoDown ? 'down 📉' : 'up 📈'} by&nbsp;
                   <b>
@@ -249,7 +254,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
                       amount={executesAtPrice}
                       {...rest}
                       round={false}
-                      tokenSymbol={executesAtPrice?.baseCurrency}
+                      tokenSymbol={executesAtPrice?.quoteCurrency}
                     />
                   </b>
                   .
