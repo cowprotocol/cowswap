@@ -28,7 +28,7 @@ import { jsExample } from './utils/jsExample'
 import { reactTsExample } from './utils/reactTsExample'
 import { tsExample } from './utils/tsExample'
 
-import { WidgetCategory } from '../../common/analytics/types'
+import { AnalyticsCategory } from '../../common/analytics/types'
 import { ColorPalette } from '../configurator/types'
 
 interface TabInfo {
@@ -99,7 +99,7 @@ export function EmbedDialog({ params, open, handleClose, defaultPalette }: Embed
   const handleCopyClick = () => {
     navigator.clipboard.writeText(code)
     cowAnalytics.sendEvent({
-      category: WidgetCategory.WIDGET_CONFIGURATOR,
+      category: AnalyticsCategory.WIDGET_CONFIGURATOR,
       action: 'Copy code',
     })
     setSnackbarOpen(true)
@@ -116,7 +116,7 @@ export function EmbedDialog({ params, open, handleClose, defaultPalette }: Embed
     if (open) {
       setScroll('paper')
       cowAnalytics.sendEvent({
-        category: WidgetCategory.WIDGET_CONFIGURATOR,
+        category: AnalyticsCategory.WIDGET_CONFIGURATOR,
         action: 'View code',
       })
       const { current: descriptionElement } = descriptionElementRef
