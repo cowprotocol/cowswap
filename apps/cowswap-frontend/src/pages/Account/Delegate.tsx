@@ -11,11 +11,12 @@ import { BannerCard, BannerCardIcon, BannerCardContent, BannerCardTitle, CloseBu
 
 interface DelegateProps {
   dismissable?: boolean
+  rowOnMobile?: boolean
 }
 
-export default function Delegate({ dismissable = false }: DelegateProps) {
+export default function Delegate({ dismissable = false, rowOnMobile }: DelegateProps) {
   const renderContent = (onClose?: () => void) => (
-    <BannerCard>
+    <BannerCard rowOnMobile={rowOnMobile}>
       {dismissable && onClose && <CloseButton onClick={onClose} />}
       <BannerCardIcon width={159}>
         <SVG src={DelegateCowIcon} title="Delegate" />

@@ -152,9 +152,6 @@ export const Row = styled.div`
   background: transparent;
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
 
-  ${Media.upToMedium()} {
-  }
-
   &:hover {
     background: var(${UI.COLOR_PAPER_DARKER});
   }
@@ -178,7 +175,9 @@ export const DelegateRow = styled(Row)`
 `
 
 export const TableHeader = styled(Row)`
-  border-bottom: 1px solid ${({ theme }) => theme.grey1};
+  border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  z-index: 2;
+  background: var(${UI.COLOR_PAPER});
 
   &:hover {
     background: transparent;
@@ -364,6 +363,7 @@ export const Table = styled.div`
 
   ${Media.upToSmall()} {
     min-height: 250px;
+    display: table;
   }
 `
 

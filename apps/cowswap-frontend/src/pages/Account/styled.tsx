@@ -139,7 +139,7 @@ export const Card = styled.div<{ showLoader?: boolean }>`
   }
 `
 
-export const BannerCard = styled.div`
+export const BannerCard = styled.div<{ rowOnMobile?: boolean }>`
   position: relative;
   width: 100%;
   border: 4px solid transparent;
@@ -160,7 +160,7 @@ export const BannerCard = styled.div`
   ${Media.upToMedium()} {
     text-align: center;
     padding: 24px 16px;
-    flex-flow: column;
+    flex-flow: ${({ rowOnMobile }) => (rowOnMobile ? 'row' : 'column')};
     align-items: center;
     justify-content: center;
   }
