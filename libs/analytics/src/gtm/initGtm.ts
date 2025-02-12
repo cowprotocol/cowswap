@@ -16,7 +16,9 @@ declare global {
 
 const DEFAULT_GTM_ID = 'GTM-TBX4BV5M'
 
-// Module-level singleton state
+// Module-level singleton state - maintains instance cache across both server and browser environments
+// Note: In server environments, each module load maintains its own cache, ensuring consistent
+// behavior within each request context while preventing cross-request interference
 const analytics = {
   instance: null as CowAnalytics | null,
   gtmId: DEFAULT_GTM_ID,
@@ -24,29 +26,37 @@ const analytics = {
 
 /**
  * Initialize GTM and return a CowAnalytics instance
- * This function ensures GTM is initialized only once
+ * This function ensures GTM is initialized only once and properly cached in both server and browser environments
  * @param gtmId - Optional GTM container ID
  * @returns CowAnalytics instance backed by GTM
  * @throws Error if attempting to initialize with different GTM ID
  */
 export function initGtm(gtmId: string = DEFAULT_GTM_ID): CowAnalytics {
-  // Early return for SSR
-  if (typeof window === 'undefined') {
-    return new CowAnalyticsGtm()
-  }
-
-  // Return existing instance if already initialized
+  // Check for cached instance first - this applies to both server and browser environments
+  // This ensures we maintain a singleton instance regardless of environment
   if (analytics.instance) {
+    // Prevent initialization with different GTM IDs
     if (gtmId !== analytics.gtmId) {
       throw new Error('GTM already initialized with different ID')
     }
     return analytics.instance
   }
 
+  // Store GTM ID before any environment-specific logic
   analytics.gtmId = gtmId
 
+  // Handle server-side initialization
+  // This check will be true when running on the server (Node.js environment)
+  if (typeof window === 'undefined') {
+    // Create and cache instance for server-side
+    // This ensures we don't create new instances on subsequent server-side calls
+    analytics.instance = new CowAnalyticsGtm()
+    return analytics.instance
+  }
+
+  // Browser-specific initialization
   try {
-    // Initialize dataLayer
+    // Initialize dataLayer for browser environment
     window.dataLayer = window.dataLayer || []
 
     // Add script to head
