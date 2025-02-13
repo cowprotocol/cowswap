@@ -7,20 +7,12 @@ import ms from 'ms.macro'
 import qs from 'qs'
 import useSWR, { SWRConfiguration } from 'swr'
 
-import { taxFreeAssetsAtom } from '../state/taxFreeAssetsAtom'
+import { CorrelatedTokens, correlatedTokensAtom } from '../state/correlatedTokensAtom'
 
-type TokenId = string
-
-type TaxFreeAssetItem = {
+type CorrelatedTokenItem = {
   attributes: {
-    tokenIds: string
-    chainId: {
-      data: {
-        attributes: {
-          chainId: number
-        }
-      }
-    }
+    tokens: Record<string, string>
+    network: { data: { attributes: { chainId: number } } }
   }
 }
 
@@ -31,7 +23,7 @@ const SWR_CONFIG: SWRConfiguration = {
   revalidateOnFocus: false,
 }
 
-const UPDATE_TIME_KEY = 'taxFreeAssetsUpdateTime'
+const UPDATE_TIME_KEY = 'correlatedTokensUpdateTime'
 
 const cmsClient = getCmsClient()
 
@@ -39,12 +31,12 @@ const querySerializer = (params: any) => {
   return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
 }
 
-export function TaxFreeAssetsUpdater() {
-  const setTaxFreeAssets = useSetAtom(taxFreeAssetsAtom)
+export function CorrelatedTokensUpdater() {
+  const correlatedTokens = useSetAtom(correlatedTokensAtom)
 
   useSWR(
-    ['/tax-free-assets', setTaxFreeAssets],
-    async ([method, setTaxFreeAssets]) => {
+    ['/correlated-tokens', correlatedTokens],
+    async ([method, setCorrelatedTokens]) => {
       const lastUpdateTime = localStorage.getItem(UPDATE_TIME_KEY)
 
       // Update only once per interval in order to not load the CMS
@@ -52,15 +44,15 @@ export function TaxFreeAssetsUpdater() {
         return
       }
 
-      let items: TaxFreeAssetItem[] | null = null
+      let items: CorrelatedTokenItem[] | null = null
 
       try {
         const { data, error } = await cmsClient.GET(method, {
           params: {
             query: {
-              fields: ['tokenIds'],
+              fields: ['assets'],
               populate: {
-                chainId: {
+                network: {
                   fields: ['chainId'],
                 },
               },
@@ -70,16 +62,16 @@ export function TaxFreeAssetsUpdater() {
           querySerializer,
         })
 
-        items = data.data as TaxFreeAssetItem[]
+        items = data.data as CorrelatedTokenItem[]
 
         if (error) {
           localStorage.removeItem(UPDATE_TIME_KEY)
-          console.error('Failed to fetch tax free assets', error)
+          console.error('Failed to fetch correlated tokens', error)
           return undefined
         }
       } catch (e) {
         localStorage.removeItem(UPDATE_TIME_KEY)
-        console.error('Failed to fetch tax free assets', e)
+        console.error('Failed to fetch correlated tokens', e)
       }
 
       if (!items) return
@@ -88,16 +80,15 @@ export function TaxFreeAssetsUpdater() {
 
       const state = items.reduce(
         (acc, item) => {
-          const chainId = item.attributes.chainId.data.attributes.chainId as SupportedChainId
-          const tokenIds = item.attributes.tokenIds.toLowerCase().split(',')
+          const chainId = item.attributes.network.data.attributes.chainId as SupportedChainId
 
-          acc[chainId].push(tokenIds)
+          acc[chainId].push(item.attributes.tokens)
           return acc
         },
-        mapSupportedNetworks<TokenId[][]>(() => []),
+        mapSupportedNetworks<CorrelatedTokens[]>(() => []),
       )
 
-      setTaxFreeAssets(state)
+      setCorrelatedTokens(state)
     },
     SWR_CONFIG,
   )
