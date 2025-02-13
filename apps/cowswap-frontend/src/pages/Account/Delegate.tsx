@@ -29,7 +29,7 @@ export default function Delegate({ dismissable = false, rowOnMobile }: DelegateP
         <small>
           Delegate your <img src={CowImage} alt="Cow Balance" height="16" width="16" /> (v)COW
         </small>
-        <ButtonPrimary as="a" href={DELEGATE_URL()} target="_blank" rel="noopener nofollow">
+        <ButtonPrimary as="a" href={DELEGATE_URL} target="_blank" rel="noopener nofollow">
           Delegate Now ↗
         </ButtonPrimary>
       </BannerCardContent>

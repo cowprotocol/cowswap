@@ -11,7 +11,7 @@ export default function Governance() {
           {' '}
           <ExtLink href={'https://snapshot.org/#/cow.eth'}>View proposals ↗</ExtLink>
           <ExtLink href={'https://forum.cow.fi/'}>CoW forum ↗</ExtLink>
-          <ExtLink href={DELEGATE_URL()}>Delegate (v)COW ↗</ExtLink>
+          <ExtLink href={DELEGATE_URL}>Delegate (v)COW ↗</ExtLink>
         </CardActions>
       </BannerCardContent>
     </BannerCard>
