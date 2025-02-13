@@ -137,11 +137,6 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
   const importListAndBack = (list: ListState) => {
     try {
       addCustomTokenLists(list)
-      cowAnalytics.sendEvent({
-        category: CowSwapAnalyticsCategory.LIST,
-        action: 'Add List Success',
-        label: list.source,
-      })
     } catch (error) {
       onDismiss()
       onTokenListAddingError(error)

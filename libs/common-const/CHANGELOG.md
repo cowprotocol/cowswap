@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.15.0...common-const-v1.15.1) (2025-02-07)
+
+
+### Bug Fixes
+
+* use address for default buy token ([#5410](https://github.com/cowprotocol/cowswap/issues/5410)) ([92c3a96](https://github.com/cowprotocol/cowswap/commit/92c3a96972b92807aa81709f08d84f9101264381))
+
 ## [1.15.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.14.0...common-const-v1.15.0) (2025-02-06)
 
 

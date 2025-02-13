@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.100.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.100.0...cowswap-v1.100.1) (2025-02-07)
+
+
+### Bug Fixes
+
+* use address for default buy token ([#5410](https://github.com/cowprotocol/cowswap/issues/5410)) ([92c3a96](https://github.com/cowprotocol/cowswap/commit/92c3a96972b92807aa81709f08d84f9101264381))
+
 ## [1.100.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.99.0...cowswap-v1.100.0) (2025-02-06)
 
 

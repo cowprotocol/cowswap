@@ -53,7 +53,7 @@ import { useWidgetParams } from './hooks/useWidgetParamsAndSettings'
 import { ContentStyled, DrawerStyled, WalletConnectionWrapper, WrapperStyled } from './styled'
 import { ConfiguratorState, TokenListItem } from './types'
 
-import { WidgetCategory } from '../../common/analytics/types'
+import { AnalyticsCategory } from '../../common/analytics/types'
 import { ColorModeContext } from '../../theme/ColorModeContext'
 import { EmbedDialog } from '../embedDialog'
 
@@ -226,7 +226,7 @@ export function Configurator({ title }: { title: string }) {
   useEffect(() => {
     if (isConnected) {
       cowAnalytics.sendEvent({
-        category: WidgetCategory.WIDGET_CONFIGURATOR,
+        category: AnalyticsCategory.WIDGET_CONFIGURATOR,
         action: 'Connect wallet',
       })
     }
