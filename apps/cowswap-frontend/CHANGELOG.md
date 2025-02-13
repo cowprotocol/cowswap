@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.101.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.100.1...cowswap-v1.101.0) (2025-02-12)
+
+
+### Features
+
+* support EIP-5792 batch tx for Safe via WC ([#5417](https://github.com/cowprotocol/cowswap/issues/5417)) ([8aa612f](https://github.com/cowprotocol/cowswap/commit/8aa612f7b93a40d69efa364a10634863bc743e95))
+
+
+### Bug Fixes
+
+* use quote currency on fill at tooltip ([#5421](https://github.com/cowprotocol/cowswap/issues/5421)) ([24920e8](https://github.com/cowprotocol/cowswap/commit/24920e804b636baf715335a8cabb18d4762036e1))
+
+## [1.100.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.100.0...cowswap-v1.100.1) (2025-02-07)
+
+
+### Bug Fixes
+
+* use address for default buy token ([#5410](https://github.com/cowprotocol/cowswap/issues/5410)) ([92c3a96](https://github.com/cowprotocol/cowswap/commit/92c3a96972b92807aa81709f08d84f9101264381))
+
 ## [1.100.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.99.0...cowswap-v1.100.0) (2025-02-06)
 
 
