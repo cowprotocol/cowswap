@@ -2,20 +2,21 @@ import { useAtomValue, useSetAtom } from 'jotai'
 
 import { Menu, MenuItem, MenuPopover, MenuItems } from '@reach/menu-button'
 
-import { openLimitOrderSettingsAnalytics } from 'modules/analytics'
 import { ButtonsContainer, SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
 
+import { useLimitOrderSettingsAnalytics } from '../../hooks/useLimitOrderSettingsAnalytics'
 import { Settings } from '../../pure/Settings'
 import { limitOrdersSettingsAtom, updateLimitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 
 export function SettingsWidget() {
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
+  const analytics = useLimitOrderSettingsAnalytics()
 
   return (
     <ButtonsContainer>
       <Menu>
-        <SettingsButton onClick={openLimitOrderSettingsAnalytics}>
+        <SettingsButton onClick={() => analytics.openSettings()}>
           <SettingsIcon />
         </SettingsButton>
         <MenuPopover portal={false}>

@@ -1,5 +1,6 @@
 import React from 'react'
-import { clickOnKnowledgeBase } from 'modules/analytics'
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 import { LinkItem, LinkColumn } from '@/styles/styled'
 import { Article } from 'services/cms'
 
@@ -9,23 +10,33 @@ interface ArticlesListProps {
 
 const ARTICLES_PATH = '/learn/'
 
-export const ArticlesList: React.FC<ArticlesListProps> = ({ articles }) => (
-  <LinkColumn>
-    {articles.map((article) => {
-      if (!article.attributes) return null
+export const ArticlesList: React.FC<ArticlesListProps> = ({ articles }) => {
+  const analytics = useCowAnalytics()
 
-      const { slug, title } = article.attributes
+  return (
+    <LinkColumn>
+      {articles.map((article) => {
+        if (!article.attributes) return null
 
-      return (
-        <LinkItem
-          key={article.id}
-          href={`${ARTICLES_PATH}${slug}`}
-          onClick={() => clickOnKnowledgeBase(`click-article-${title}`)}
-        >
-          {title}
-          <span>→</span>
-        </LinkItem>
-      )
-    })}
-  </LinkColumn>
-)
+        const { slug, title } = article.attributes
+
+        return (
+          <LinkItem
+            key={article.id}
+            href={`${ARTICLES_PATH}${slug}`}
+            onClick={() =>
+              analytics.sendEvent({
+                category: CowFiCategory.KNOWLEDGEBASE,
+                action: 'Click article',
+                label: title,
+              })
+            }
+          >
+            {title}
+            <span>→</span>
+          </LinkItem>
+        )
+      })}
+    </LinkColumn>
+  )
+}

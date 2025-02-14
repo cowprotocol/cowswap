@@ -1,5 +1,6 @@
 import { ChangeEvent, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { CowSwapWidgetParams, TokenInfo, TradeType } from '@cowprotocol/widget-lib'
@@ -52,8 +53,8 @@ import { useWidgetParams } from './hooks/useWidgetParamsAndSettings'
 import { ContentStyled, DrawerStyled, WalletConnectionWrapper, WrapperStyled } from './styled'
 import { ConfiguratorState, TokenListItem } from './types'
 
+import { AnalyticsCategory } from '../../common/analytics/types'
 import { ColorModeContext } from '../../theme/ColorModeContext'
-import { connectWalletToConfiguratorGA } from '../analytics'
 import { EmbedDialog } from '../embedDialog'
 
 declare global {
@@ -77,6 +78,7 @@ export function Configurator({ title }: { title: string }) {
   const { setThemeMode } = useWeb3ModalTheme()
   const { chainId: walletChainId, isConnected } = useWeb3ModalAccount()
   const provider = useProvider()
+  const cowAnalytics = useCowAnalytics()
 
   const [listeners, setListeners] = useState<CowWidgetEventListeners>(COW_LISTENERS)
   const { mode } = useContext(ColorModeContext)
@@ -223,9 +225,12 @@ export function Configurator({ title }: { title: string }) {
   // Fire an event to GA when user connect a wallet
   useEffect(() => {
     if (isConnected) {
-      connectWalletToConfiguratorGA()
+      cowAnalytics.sendEvent({
+        category: AnalyticsCategory.WIDGET_CONFIGURATOR,
+        action: 'Connect wallet',
+      })
     }
-  }, [isConnected])
+  }, [isConnected, cowAnalytics])
 
   useSyncWidgetNetwork(chainId, setNetworkControlState, standaloneMode)
 

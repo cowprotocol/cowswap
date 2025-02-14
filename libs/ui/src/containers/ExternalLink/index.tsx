@@ -1,12 +1,11 @@
 import React, { HTMLProps, PropsWithChildren } from 'react'
 
-import { CowAnalytics, useCowAnalytics } from '@cowprotocol/analytics'
+import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import { anonymizeLink } from '@cowprotocol/common-utils'
 
 import { ExternalLink as LinkIconFeather } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { externalLinkAnalytics } from '../../analytics/events'
 import { UI } from '../../enum'
 
 export const StyledLink = styled.a`
@@ -52,45 +51,33 @@ export function ExternalLink({
   onClickOptional,
   ...rest
 }: ExternalLinkProps) {
-  const cowAnalytics = useCowAnalytics()
+  const anonymizedHref = anonymizeLink(href)
+  const isNewTab = target === '_blank'
+
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (onClickOptional) onClickOptional(event)
+
+    // don't prevent default, don't redirect if it's a new tab
+    if (!isNewTab && !event.ctrlKey && !event.metaKey) {
+      event.preventDefault()
+      window.location.href = anonymizedHref
+    }
+  }
+
   return (
     <StyledLink
       target={target}
       rel={rel}
       href={href}
-      onClick={(event) => {
-        if (onClickOptional) onClickOptional(event)
-        handleClickExternalLink(cowAnalytics, event)
-        externalLinkAnalytics(cowAnalytics, href)
-      }}
+      onClick={handleClick}
+      data-click-event={toGtmEvent({
+        category: Category.EXTERNAL_LINK,
+        action: 'Click external link',
+        label: anonymizedHref,
+      })}
       {...rest}
     >
       {children}
     </StyledLink>
   )
-}
-
-function handleClickExternalLink(cowAnalytics: CowAnalytics, event: React.MouseEvent<HTMLAnchorElement>): void {
-  const { target, href } = event.currentTarget
-
-  const anonymizedHref = anonymizeLink(href)
-
-  const isNewTab = target === '_blank' || event.ctrlKey || event.metaKey
-
-  // don't prevent default, don't redirect if it's a new tab
-  if (!isNewTab) {
-    event.preventDefault()
-  }
-
-  cowAnalytics.outboundLink({
-    label: anonymizedHref,
-    hitCallback: () => {
-      if (isNewTab) {
-        console.debug('Fired outbound link event', anonymizedHref)
-      } else {
-        // send a ReactGA event and then trigger a location change
-        window.location.href = anonymizedHref
-      }
-    },
-  })
 }

@@ -12,7 +12,7 @@ import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-import { tradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { presignOrderStep } from './steps/presignOrderStep'
 
@@ -22,6 +22,7 @@ export async function swapFlow(
   input: TradeFlowContext,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
+  analytics: TradeFlowAnalytics,
 ): Promise<void | boolean> {
   const {
     tradeConfirmActions,
@@ -66,7 +67,7 @@ export async function swapFlow(
     }
 
     logTradeFlow('SWAP FLOW', 'STEP 3: send transaction')
-    tradeFlowAnalytics.trade(swapFlowAnalyticsContext)
+    analytics.trade(swapFlowAnalyticsContext)
 
     tradeConfirmActions.onSign(tradeAmounts)
 
@@ -122,14 +123,14 @@ export async function swapFlow(
 
     logTradeFlow('SWAP FLOW', 'STEP 7: show UI of the successfully sent transaction', orderUid)
     tradeConfirmActions.onSuccess(orderUid)
-    tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
+    analytics.sign(swapFlowAnalyticsContext)
 
     return true
   } catch (error: any) {
     logTradeFlow('SWAP FLOW', 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
-    tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
+    analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
     tradeConfirmActions.onError(swapErrorMessage)
   }

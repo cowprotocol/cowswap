@@ -1,4 +1,6 @@
 import { Link } from '@/components/Link'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 import IMG_COWSWAP_COINS from '@cowprotocol/assets/images/image-coins.svg'
 import IMG_COWSWAP_MEV from '@cowprotocol/assets/images/image-cowswap-mev.svg'
@@ -9,7 +11,8 @@ import IMG_COWSWAP_TWAP from '@cowprotocol/assets/images/image-cowswap-twap.svg'
 import IMG_COWSWAP_GASLESS from '@cowprotocol/assets/images/image-cowswap-gasless.svg'
 import IMG_COWSWAP_NOFEES from '@cowprotocol/assets/images/image-cowswap-nofees.svg'
 import IMG_COWSWAP_MULTIPLE from '@cowprotocol/assets/images/image-cowswap-multiple.svg'
-import { clickOnCowSwap } from 'modules/analytics'
+
+const analytics = initGtm()
 
 export const COW_IS_DIFFERENT = [
   {
@@ -101,7 +104,12 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
           external
           utmContent="cow-protocol-introduction-intents"
-          onClick={() => clickOnCowSwap('click-introduction-intents')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWSWAP,
+              action: 'click-introduction-intents',
+            })
+          }
         >
           intents
         </Link>{' '}
@@ -110,7 +118,12 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
           external
           utmContent="cow-protocol-introduction-batch-auctions"
-          onClick={() => clickOnCowSwap('click-introduction-batch-auctions')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWSWAP,
+              action: 'click-introduction-batch-auctions',
+            })
+          }
         >
           batch auctions{' '}
         </Link>
@@ -121,7 +134,12 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => clickOnCowSwap('click-introduction-solvers')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWSWAP,
+              action: 'click-introduction-solvers',
+            })
+          }
         >
           solvers
         </Link>{' '}
@@ -130,7 +148,12 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
           external
           utmContent="cow-protocol-introduction-intents"
-          onClick={() => clickOnCowSwap('click-introduction-intents')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWSWAP,
+              action: 'click-introduction-intents',
+            })
+          }
         >
           trade intent
         </Link>{' '}
@@ -139,7 +162,12 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/how-it-works/coincidence-of-wants"
           external
           utmContent="cow-protocol-coincidence-of-wants"
-          onClick={() => clickOnCowSwap('click-coincidence-of-wants')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWSWAP,
+              action: 'click-coincidence-of-wants',
+            })
+          }
         >
           Coincidences of Wants
         </Link>{' '}
@@ -149,10 +177,10 @@ export const FAQ_DATA = [
     ),
   },
   {
-    question: 'What is a “meta” DEX aggregator?',
+    question: 'What is a "meta" DEX aggregator?',
     answer: (
       <>
-        A “meta” DEX aggregator is an aggregator of aggregators, meaning that it’s a single trading venue that sources
+        A "meta" DEX aggregator is an aggregator of aggregators, meaning that it's a single trading venue that sources
         liquidity from other aggregators as well as from individual DEXs. CoW Swap is a meta DEX aggregator because
         solvers source liquidity for users from AMMs like Uniswap, DEX aggregators like 1inch, private market makers,
         and directly from users via Coincidence of Wants.
@@ -160,15 +188,20 @@ export const FAQ_DATA = [
     ),
   },
   {
-    question: 'What is a “CoW”?',
+    question: 'What is a "CoW"?',
     answer: (
       <>
-        “CoW” stands for{' '}
+        "CoW" stands for{' '}
         <Link
           href="https://docs.cow.fi/cow-protocol/concepts/how-it-works/coincidence-of-wants"
           external
           utmContent="cow-protocol-coincidence-of-wants"
-          onClick={() => clickOnCowSwap('click-coincidence-of-wants')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWSWAP,
+              action: 'click-coincidence-of-wants',
+            })
+          }
         >
           Coincidence of Wants
         </Link>
@@ -180,12 +213,17 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
           external
           utmContent="cow-protocol-introduction-batch-auctions"
-          onClick={() => clickOnCowSwap('click-introduction-batch-auctions')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWSWAP,
+              action: 'click-introduction-batch-auctions',
+            })
+          }
         >
           batching mechanism
         </Link>
         , users can make peer-to-peer swaps in cases where they're trading the same assets. CoWs allow users to bypass
-        liquidity provider (LP) fees and also reduce gas costs since those orders only interact with CoW Protocol’s
+        liquidity provider (LP) fees and also reduce gas costs since those orders only interact with CoW Protocol's
         smart contracts.
       </>
     ),
@@ -194,7 +232,7 @@ export const FAQ_DATA = [
     question: 'How is CoW Swap better than other DEX aggregators?',
     answer: (
       <>
-        CoW Swap’s unique architecture allows it to give users comprehensive MEV protection as well as better prices for
+        CoW Swap's unique architecture allows it to give users comprehensive MEV protection as well as better prices for
         their trades. While most other DEX aggregators simply compare quotes from various DEXs and execute orders
         against whichever DEX is lowest at the time of quoting, CoW Swap seeks to find the best execution price. CoW
         Swap groups user orders into batches and auctions them off to bonded third parties known as{' '}
@@ -202,7 +240,12 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => clickOnCowSwap('click-introduction-solvers')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWSWAP,
+              action: 'click-introduction-solvers',
+            })
+          }
         >
           solvers
         </Link>{' '}
@@ -218,11 +261,11 @@ export const FAQ_DATA = [
     question: 'What is MEV?',
     answer: (
       <>
-        MEV, or maximal extractable value, is a form of price exploitation that acts as a “hidden tax” on Ethereum
-        transactions. To date, MEV has caused over a billion dollars in losses for everyday traders, many of whom don’t
-        even know they’ve been exploited. By default, Ethereum transactions are publicly exposed, meaning that
+        MEV, or maximal extractable value, is a form of price exploitation that acts as a "hidden tax" on Ethereum
+        transactions. To date, MEV has caused over a billion dollars in losses for everyday traders, many of whom don't
+        even know they've been exploited. By default, Ethereum transactions are publicly exposed, meaning that
         sophisticated traders can take advantage of public trading details to exploit user positions. For example, if a
-        user is about to make a large trade moving the price of an asset, sophisticated traders running “MEV bots” can
+        user is about to make a large trade moving the price of an asset, sophisticated traders running "MEV bots" can
         anticipate this trade and manipulate the price of the asset to their advantage. There are several types of MEV
         including frontrunning, backrunning, sandwich attacks, and loss-versus-rebalancing. Thanks to its unique
         architecture, CoW Swap protects users from all types of malicious MEV.
@@ -238,14 +281,19 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
           external
           utmContent="cow-protocol-introduction-batch-auctions"
-          onClick={() => clickOnCowSwap('click-introduction-batch-auctions')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWSWAP,
+              action: 'click-introduction-batch-auctions',
+            })
+          }
         >
           batch auctions
         </Link>{' '}
-        mimic Ethereum’s block mechanism, meaning that trades are settled periodically. Sometimes, especially in the
+        mimic Ethereum's block mechanism, meaning that trades are settled periodically. Sometimes, especially in the
         case of more-exotic assets, it might take a solver a few blocks to win the auction and settle a transaction.
         Settling transactions through intent-based batch auctions may, in some cases, be slower than settling
-        transactions directly onchain. However, CoW Swap’s unique architecture enables a slew of benefits that
+        transactions directly onchain. However, CoW Swap's unique architecture enables a slew of benefits that
         traditional DEXs cannot achieve – from gasless trading to MEV protection and surplus.
       </>
     ),
@@ -256,7 +304,16 @@ export const FAQ_DATA = [
       <>
         Please beware of fake links and phishing scams. The official CoW DAO channels can be found at the footer of all
         our pages on{' '}
-        <Link href="https://www.cow.fi" utmContent="cow-website" onClick={() => clickOnCowSwap('click-website')}>
+        <Link
+          href="https://www.cow.fi"
+          utmContent="cow-website"
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWSWAP,
+              action: 'click-website',
+            })
+          }
+        >
           www.cow.fi
         </Link>
         .
@@ -269,7 +326,12 @@ export const FAQ_DATA = [
           href="https://x.com/CoWSwap"
           external
           utmContent="cow-twitter"
-          onClick={() => clickOnCowSwap('click-twitter')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWSWAP,
+              action: 'click-twitter',
+            })
+          }
         >
           https://x.com/CoWSwap
         </Link>
@@ -279,7 +341,12 @@ export const FAQ_DATA = [
           href="https://discord.gg/cowprotocol"
           external
           utmContent="cow-discord"
-          onClick={() => clickOnCowSwap('click-discord')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWSWAP,
+              action: 'click-discord',
+            })
+          }
         >
           https://discord.gg/cowprotocol
         </Link>
@@ -289,7 +356,12 @@ export const FAQ_DATA = [
           href="https://forum.cow.fi/"
           external
           utmContent="cow-forum"
-          onClick={() => clickOnCowSwap('click-forum')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWSWAP,
+              action: 'click-forum',
+            })
+          }
         >
           https://forum.cow.fi/
         </Link>
@@ -299,7 +371,12 @@ export const FAQ_DATA = [
           href="https://snapshot.org/#/cow.eth"
           external
           utmContent="cow-snapshot"
-          onClick={() => clickOnCowSwap('click-snapshot')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWSWAP,
+              action: 'click-snapshot',
+            })
+          }
         >
           https://snapshot.org/#/cow.eth
         </Link>
@@ -309,7 +386,12 @@ export const FAQ_DATA = [
           href="https://github.com/cowprotocol/"
           external
           utmContent="cow-github"
-          onClick={() => clickOnCowSwap('click-github')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWSWAP,
+              action: 'click-github',
+            })
+          }
         >
           https://github.com/cowprotocol/
         </Link>
@@ -334,7 +416,12 @@ export const FAQ_DATA = [
           href="https://discord.gg/cowprotocol"
           external
           utmContent="cow-discord"
-          onClick={() => clickOnCowSwap('click-discord')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWSWAP,
+              action: 'click-discord',
+            })
+          }
         >
           https://discord.gg/cowprotocol
         </Link>

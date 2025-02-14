@@ -1,5 +1,5 @@
-declare module 'styled-components' {
-  export interface CowFiDefaultTheme extends CowProtocolTheme {}
+import type { CowProtocolTheme } from '@cowprotocol/ui'
 
-  export interface DefaultTheme extends CowFiDefaultTheme {}
+declare module 'styled-components' {
+  export interface DefaultTheme extends CowProtocolTheme {}
 }

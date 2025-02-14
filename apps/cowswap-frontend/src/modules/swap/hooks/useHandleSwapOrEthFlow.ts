@@ -5,6 +5,7 @@ import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 import { TradeWidgetActions, useTradePriceImpact } from 'modules/trade'
 import { logTradeFlow } from 'modules/trade/utils/logger'
+import { useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import { useHandleSwap, useTradeFlowType } from 'modules/tradeFlow'
 import { FlowType } from 'modules/tradeFlow'
 
@@ -23,6 +24,7 @@ export function useHandleSwapOrEthFlow(actions: TradeWidgetActions) {
   const tradeFlowType = useTradeFlowType()
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
   const { onUserInput, onChangeRecipient } = actions
+  const analytics = useTradeFlowAnalytics()
 
   const [deadline] = useUserTransactionTTL()
   const { callback: handleSwap, contextIsReady } = useHandleSwap(useSafeMemoObject({ deadline }), actions)
@@ -34,7 +36,13 @@ export function useHandleSwapOrEthFlow(actions: TradeWidgetActions) {
       if (!ethFlowContext) throw new Error('Eth flow context is not ready')
 
       logTradeFlow('ETH FLOW', 'Start eth flow')
-      const result = await ethFlow(swapFlowContext, ethFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
+      const result = await ethFlow({
+        tradeContext: swapFlowContext,
+        ethFlowContext,
+        priceImpactParams,
+        confirmPriceImpactWithoutFee,
+        analytics,
+      })
 
       // Clean up form fields after successful swap
       if (result === true) {
@@ -55,6 +63,7 @@ export function useHandleSwapOrEthFlow(actions: TradeWidgetActions) {
     confirmPriceImpactWithoutFee,
     onUserInput,
     onChangeRecipient,
+    analytics,
   ])
 
   return { callback, contextIsReady }

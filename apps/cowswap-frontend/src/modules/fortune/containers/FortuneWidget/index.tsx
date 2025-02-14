@@ -1,6 +1,6 @@
 import { useAtom, useAtomValue } from 'jotai'
 import { useSetAtom } from 'jotai'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useRef, useState, useMemo } from 'react'
 
 import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
 import IMAGE_ICON_FORTUNE_COOKIE from '@cowprotocol/assets/images/icon-fortune-cookie.svg'
@@ -15,7 +15,6 @@ import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { openFortuneCookieAnalytics, shareFortuneTwitterAnalytics } from 'modules/analytics'
 import { useOpenRandomFortune } from 'modules/fortune/hooks/useOpenRandomFortune'
 import { lastCheckedFortuneAtom } from 'modules/fortune/state/checkedFortunesListAtom'
 import {
@@ -23,6 +22,8 @@ import {
   isFortunesFeatureDisabledAtom,
   updateOpenFortuneAtom,
 } from 'modules/fortune/state/fortuneStateAtom'
+
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import { SuccessBanner } from './styled'
 
@@ -280,9 +281,8 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
   const [isFortunedShared, setIsFortunedShared] = useState(false)
   const checkboxRef = useRef<HTMLInputElement>(null)
 
-  // TODO: add text
   const twitterText = openFortune
-    ? encodeURIComponent(`My CoW fortune cookie 🐮💬: “${openFortune.text}” \n\n Get yours at swap.cow.fi @CoWSwap`)
+    ? encodeURIComponent(`My CoW fortune cookie 🐮💬: "${openFortune.text}" \n\n Get yours at swap.cow.fi @CoWSwap`)
     : ''
 
   const isDailyFortuneChecked = useMemo(() => {
@@ -302,7 +302,6 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
     updateOpenFortune(null)
     setIsNewFortuneOpen(false)
 
-    // only remove body class if isMobileMenuOpen is false
     if (!isMobileMenuOpen) {
       removeBodyClass('noScroll')
     }
@@ -314,10 +313,6 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
 
   const openFortuneModal = useCallback(() => {
     setIsFortunedShared(false)
-    openFortuneCookieAnalytics()
-
-    // Add the 'noScroll' class on body, whenever the fortune modal is opened/closed.
-    // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
     addBodyClass('noScroll')
 
     if (isDailyFortuneChecked && lastCheckedFortune) {
@@ -332,7 +327,6 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
   const onTweetShare = useCallback(() => {
     setIsFortunesFeatureDisabled(true)
     setIsFortunedShared(true)
-    shareFortuneTwitterAnalytics()
   }, [setIsFortunesFeatureDisabled])
 
   if (isFortunesFeatureDisabled && isDailyFortuneChecked && !openFortune) return null
@@ -356,6 +350,10 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
                 <StyledExternalLink
                   onClickOptional={onTweetShare}
                   href={`https://twitter.com/intent/tweet?text=${twitterText}`}
+                  data-click-event={toCowSwapGtmEvent({
+                    category: CowSwapAnalyticsCategory.COW_FORTUNE,
+                    action: 'Share on Twitter',
+                  })}
                 >
                   <SuccessBanner type={'Twitter'}>
                     <Trans>Share on Twitter</Trans>
@@ -381,7 +379,14 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
 
   return (
     <>
-      <FortuneButton isDailyFortuneChecked={isDailyFortuneChecked} onClick={openFortuneModal}>
+      <FortuneButton
+        isDailyFortuneChecked={isDailyFortuneChecked}
+        onClick={openFortuneModal}
+        data-click-event={toCowSwapGtmEvent({
+          category: CowSwapAnalyticsCategory.COW_FORTUNE,
+          action: 'Open Fortune Cookie',
+        })}
+      >
         <SVG src={IMAGE_ICON_FORTUNE_COOKIE} description="Fortune Cookie" />
         {menuTitle && <span>{menuTitle}</span>}
       </FortuneButton>
