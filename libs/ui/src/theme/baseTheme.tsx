@@ -18,21 +18,21 @@ export function baseTheme<T extends CowProtocolTheme>(theme: CowSwapTheme): CowP
 }
 
 function colors(darkMode: boolean): Colors {
-  const buttonTextCustom = '#65D9FF'
-  const blueDark2 = '#004293'
-  const blueDark3 = '#0d5ed9'
-  const blueDark4 = '#021E34'
-  const blueLight1 = '#CAE9FF'
-  const blueLight2 = '#afcbda'
-  const black = '#07162D'
+  const buttonTextCustom = '#DC70FA'
+  const blueDark2 = '#880194'
+  const blueDark3 = '#A40DDB'
+  const blueDark4 = '#2E0236'
+  const blueLight1 = '#E9CBFF'
+  const blueLight2 = '#CAAFDC'
+  const black = '#22072F'
   const white = '#FFFFFF'
-  const darkerDark = '#090A20'
-  const darkerLight = '#090A20'
-  const error = '#D41300'
-  const paper = darkMode ? '#18193B' : white
-  const background = darkMode ? black : '#ECF1F8'
-  const alert = darkMode ? '#FFCA4A' : '#DB971E'
-  const success = darkMode ? '#00D897' : '#007B28'
+  const darkerDark = '#1D0923'
+  const darkerLight = '#1D0923'
+  const error = '#0E00D7'
+  const paper = darkMode ? '#39183E' : white
+  const background = darkMode ? black : '#F2EBFA'
+  const alert = darkMode ? '#70FF4C' : '#1F4EDC'
+  const success = darkMode ? '#02D725' : '#00737D'
 
   return {
     darkMode,
@@ -43,51 +43,51 @@ function colors(darkMode: boolean): Colors {
     paperDarkerCustom: darkMode ? darkerDark : darkerLight,
     paperDarkestCustom: darkMode ? darken(darkerDark, 0.05) : darken(darkerLight, 0.1),
     buttonTextCustom,
-    text: darkMode ? '#DEE3E6' : '#00234E',
-    disabledText: darkMode ? '#86B2DC' : '#506B93',
-    danger: darkMode ? '#f44336' : error,
+    text: darkMode ? '#E3DEE8' : '#300050',
+    disabledText: darkMode ? '#C485DE' : '#745095',
+    danger: darkMode ? '#5F2B27' : error,
     alert,
-    warning: darkMode ? '#ED6237' : '#D94719',
-    info: darkMode ? '#428dff' : blueDark3,
+    warning: darkMode ? '#C86D51' : '#9E2A06',
+    info: darkMode ? '#C866FE' : blueDark3,
     success,
     white: darkMode ? blueLight1 : white,
     black,
     blueDark2,
     bg2: darkMode ? blueDark3 : blueDark2,
     text1: darkMode ? blueLight1 : blueDark2,
-    alert2: '#F8D06B',
-    error: darkMode ? '#EB3030' : error,
-    text4: darkMode ? 'rgba(197, 218, 239, 0.7)' : '#000000b8',
+    alert2: '#F96BAD',
+    error: darkMode ? '#EE3068' : error,
+    text4: darkMode ? 'rgba(227, 197, 239, 0.7)' : '#000000b8',
 
     // ****** backgrounds ******
-    bg5: darkMode ? '#1d4373' : '#D5E9F0',
-    bg8: darkMode ? blueDark4 : '#152943',
+    bg5: darkMode ? '#741D75' : '#ECD6F1',
+    bg8: darkMode ? blueDark4 : '#3F1545',
 
     // ****** other ******
-    blue1: '#3F77FF',
-    blue2: darkMode ? '#a3beff' : '#0c40bf',
-    purple: '#8958FF',
+    blue1: '#B640FF',
+    blue2: darkMode ? '#D0A4FF' : '#9A0BC1',
+    purple: '#577EFF',
     yellow: '#fff6dc',
     orange: '#FF784A',
     blueShade: '#0f2644',
-    blueShade3: darkMode ? '#1c416e' : '#bdd6e1',
+    blueShade3: darkMode ? '##581C70' : '#DABDE2',
 
     // ****** other ******
-    border: darkMode ? blueDark4 : '#000000',
-    border2: darkMode ? '#254F83' : blueLight2,
+    border: darkMode ? blueDark4 : '#030003',
+    border2: darkMode ? '#4A2585' : blueLight2,
 
-    disabled: darkMode ? 'rgba(197, 218, 239, 0.4)' : blueLight2,
+    disabled: darkMode ? 'rgba(224, 197, 239, 0.4)' : blueLight2,
 
-    green1: darkMode ? '#27AE60' : '#007D35',
+    green1: darkMode ? '#27B0B0' : '#007F6E',
     yellow3: '#F3B71E',
     gradient1: `linear-gradient(145deg, ${paper}, ${background})`,
     gradient2: `linear-gradient(250deg, ${transparentize(alert, 0.92)} 10%, ${transparentize(
       success,
       0.92,
     )} 50%, ${transparentize(success, 0.92)} 100%);`,
-    boxShadow1: darkMode ? '0 24px 32px rgba(0, 0, 0, 0.06)' : '0 12px 12px rgba(5, 43, 101, 0.06)',
+    boxShadow1: darkMode ? '0 24px 32px rgba(0, 0, 0, 0.06)' : '0 12px 12px rgba(63, 5, 101, 0.06)',
     boxShadow2: '0 4px 12px 0 rgb(0 0 0 / 15%)',
-    shadow1: darkMode ? '#000' : '#2F80ED',
+    shadow1: darkMode ? '#030003' : '#C52FEF',
   }
 }
 

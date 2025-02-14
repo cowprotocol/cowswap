@@ -1,3 +1,4 @@
+import LOGO_CHAMELEONSWAP from '@cowprotocol/assets/images/Chameleon Swap header.svg'
 import LOGO_COWAMM from '@cowprotocol/assets/images/logo-cowamm.svg'
 import LOGO_COWDAO from '@cowprotocol/assets/images/logo-cowdao.svg'
 import LOGO_COWEXPLORER from '@cowprotocol/assets/images/logo-cowexplorer.svg'
@@ -49,7 +50,7 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
   [ProductVariant.CowSwap]: {
     light: {
       default: {
-        src: LOGO_COWSWAP,
+        src: LOGO_CHAMELEONSWAP,
         alt: 'CoW Swap',
         color: '#004293',
       },
@@ -61,7 +62,7 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
     },
     dark: {
       default: {
-        src: LOGO_COWSWAP,
+        src: LOGO_CHAMELEONSWAP,
         alt: 'CoW Swap',
         color: '#65D9FF',
       },
