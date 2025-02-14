@@ -125,11 +125,11 @@ export default function Page() {
 
           <MetricsCard bgColor="#EC4612" color="#FEE7CF" columns={3} touchFooter>
             <MetricsItem dividerColor="#F9A36F">
-              <h2>$84B+</h2>
-              <p>volume protected from MEV, across 20M+ transactions</p>
+              <h2>$207B+</h2>
+              <p>volume protected from MEV, across 46M+ transactions</p>
             </MetricsItem>
             <MetricsItem dividerColor="#F9A36F">
-              <h2>2.2K+</h2>
+              <h2>4.6K+</h2>
               <p>ETH rebated to users</p>
             </MetricsItem>
             <MetricsItem>
