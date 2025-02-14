@@ -1,27 +1,9 @@
-import { useCallback, useMemo } from 'react'
+import { Theme } from 'theme/types'
 
-import { ThemeState, updateTheme } from 'state/theme'
-import { Theme } from 'theme'
-
-import useGlobalState from './useGlobalState'
-
-
-export function useThemeMode<State extends { theme: ThemeState }>(): Theme {
-  const [state] = useGlobalState<State>()
-
-  return useMemo(() => state.theme || Theme.DARK, [state.theme])
+export function useThemeMode(): Theme {
+  return Theme.DARK
 }
 
-export function useThemeManager<State extends { theme: ThemeState }>(): [Theme, (newTheme: Theme) => void] {
-  const [, dispatch] = useGlobalState<State>()
-  const theme = useThemeMode<State>()
-
-  const setNewTheme = useCallback(
-    (newTheme: Theme) => {
-      dispatch(updateTheme(newTheme))
-    },
-    [dispatch],
-  )
-
-  return [theme, setNewTheme]
+export function useThemeManager(): [Theme, (newTheme: Theme) => void] {
+  return [Theme.DARK, () => {}] // No-op setter since we only use dark mode
 }

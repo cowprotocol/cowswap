@@ -2,10 +2,9 @@ import { Fonts } from './styles'
 
 export enum Theme {
   DARK = 'dark',
-  LIGHT = 'light',
 }
 
-type ThemeMode = 'light' | 'dark'
+type ThemeMode = 'dark'
 
 declare module 'styled-components' {
   export interface ExplorerTheme extends Fonts {
