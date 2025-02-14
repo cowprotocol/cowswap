@@ -3,7 +3,7 @@ import React from 'react'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { Icon, Media, UI } from '@cowprotocol/ui'
+import { Icon, Media, UI, Color } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import { faFill, faGroupArrowsRotate, faHistory, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
@@ -88,7 +88,7 @@ const tooltip = {
 }
 
 export const Wrapper = styled.div`
-  --cow-color-alert: ${({ theme }): string => theme.alert2};
+  --cow-color-alert: ${() => Color.explorer_red1};
 
   display: flex;
   flex-direction: row;
@@ -109,9 +109,9 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
   text-align: center;
   font-weight: ${({ theme }): string => theme.fontBold};
   font-size: 1.3rem;
-  color: ${({ theme }): string => theme.orange1};
-  border: 1px solid ${({ theme }): string => theme.orange1};
-  background-color: ${({ theme }): string => theme.orangeOpacity};
+  color: ${() => Color.explorer_orange1};
+  border: 1px solid ${() => Color.explorer_orange1};
+  background-color: ${Color.explorer_orangeOpacity};
   border-radius: 0.4rem;
   padding: 0.8rem 1.5rem;
   margin: 0 0 0 2rem;
@@ -124,7 +124,7 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
 
   &:hover {
     opacity: 0.8;
-    color: ${({ theme }): string => theme.white};
+    color: ${() => Color.neutral100};
     text-decoration: none;
   }
 
@@ -134,7 +134,7 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
 `
 
 const WarningRow = styled.tr`
-  background-color: ${({ theme }): string => theme.background};
+  background-color: ${Color.explorer_bg};
 `
 
 export type Props = {

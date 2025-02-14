@@ -1,8 +1,9 @@
 import React from 'react'
 
+import { Color } from '@cowprotocol/ui'
+
 import { Meta, Story } from '@storybook/react/types-6-0'
 import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
-import { DARK_COLOURS } from 'theme'
 
 import Tabs, { getTabTheme, Props as TabsProps } from './Tabs'
 
@@ -54,9 +55,9 @@ const tabCustomThemeConfig = getTabTheme({
   activeBg: 'var(--color-transparent)',
   activeBgAlt: 'initial',
   inactiveBg: 'var(--color-transparent)',
-  activeText: DARK_COLOURS.textPrimary1,
+  activeText: Color.explorer_textPrimary,
   inactiveText: 'var(--color-text-secondary2)',
-  activeBorder: DARK_COLOURS.orange,
+  activeBorder: Color.cowfi_orange,
   inactiveBorder: 'none',
   fontSize: 'var(--font-size-large)',
   fontWeight: 'var(--font-weight-bold)',

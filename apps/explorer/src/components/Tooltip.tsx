@@ -1,5 +1,7 @@
 import React, { ReactNode, CSSProperties, useCallback, PropsWithChildren } from 'react'
 
+import { Color } from '@cowprotocol/ui'
+
 import { State, Placement } from '@popperjs/core'
 import questionImg from 'assets/img/question.svg'
 import Portal from 'components/Portal'
@@ -10,7 +12,7 @@ import styled from 'styled-components/macro'
 const CustomSvgIcon = styled(SVG)`
   width: 1.4rem;
   height: 1.4rem;
-  fill: ${({ theme }): string => theme.grey};
+  fill: ${Color.explorer_grey};
   opacity: 0.7;
   transition: opacity 0.2s ease-in-out;
 
@@ -23,6 +25,7 @@ const CustomSvgIcon = styled(SVG)`
 const TooltipOuter = styled.div<Pick<TooltipBaseProps, 'isShown'>>`
   visibility: ${(props): 'hidden' | false => !props.isShown && 'hidden'};
 `
+
 // can style anything but TOOLTIP_OFFSET fields, position and transform: rotate
 const TooltipArrow = styled.div<{ $bgColor?: string }>`
   &,
@@ -36,13 +39,13 @@ const TooltipArrow = styled.div<{ $bgColor?: string }>`
   ::before {
     content: '';
     transform: rotate(45deg);
-    background: ${({ theme }): string => theme.shade};
+    background: ${Color.explorer_shade};
   }
 `
 
 const TooltipInner = styled.div<{ $bgColor?: string }>`
-  background: ${({ theme }): string => theme.shade};
-  color: var(--color-text-primary);
+  background: ${Color.explorer_shade};
+  color: ${Color.explorer_textPrimary};
   font-weight: var(--font-weight-normal);
   padding: 1rem;
   font-size: 1.3rem;
@@ -51,9 +54,8 @@ const TooltipInner = styled.div<{ $bgColor?: string }>`
   z-index: 9999;
   margin: 0;
   line-height: 1.4;
-  border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
-  box-sizing: border-box;
-  box-shadow: 0 0.4rem 0.4rem ${({ theme }): string => theme.boxShadow};
+  border: 0.1rem solid ${Color.explorer_border};
+  box-shadow: 0 0.25rem 0.5rem ${Color.explorer_boxShadow};
   max-width: 40rem;
 
   &[data-popper-placement^='top'] > ${TooltipArrow} {
@@ -80,7 +82,7 @@ interface TooltipBaseProps {
 
 const TooltipBase: React.ForwardRefRenderFunction<HTMLDivElement, TooltipBaseProps> = (
   { children, isShown, state }: PropsWithChildren<TooltipBaseProps>,
-  ref
+  ref,
 ) => {
   const { placement, styles = {} } = state
 
@@ -136,7 +138,7 @@ export const BaseIconTooltipOnClick: React.FC<BaseTooltipsProps> = ({
       e.stopPropagation()
       onClick()
     },
-    [onClick]
+    [onClick],
   )
 
   return (

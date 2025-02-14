@@ -6,7 +6,7 @@ import { baseTheme } from '@cowprotocol/ui'
 import { DefaultTheme } from 'styled-components'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 
-import { getFonts, getThemePalette } from './styles'
+import { getFonts } from './styles'
 
 import { useThemeMode } from '../hooks/useThemeManager'
 
@@ -14,13 +14,11 @@ export const ThemeProvider = ({ children }: PropsWithChildren) => {
   const mode = useThemeMode()
 
   const themeObject = useMemo(() => {
-    const themePalette = getThemePalette(mode)
     const fontPalette = getFonts(mode)
 
     const computedTheme: DefaultTheme = {
       ...baseTheme(mode),
-      // Compute the app colour pallette using the passed in themeMode
-      ...themePalette,
+      mode,
       ...fontPalette,
     }
 
