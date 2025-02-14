@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import { PENDING_STATES } from 'legacy/state/orders/actions'
+import { OrderStatus } from 'legacy/state/orders/actions'
 
 import {
   advancedOrdersAtom,
@@ -41,7 +41,7 @@ export default function AdvancedOrdersPage() {
 
   const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
   const advancedWidgetParams = { disablePriceImpact }
-  const pendingOrders = allEmulatedOrders.filter((order) => PENDING_STATES.includes(order.status))
+  const pendingOrders = allEmulatedOrders.filter((order) => order.status === OrderStatus.PENDING)
 
   return (
     <>
