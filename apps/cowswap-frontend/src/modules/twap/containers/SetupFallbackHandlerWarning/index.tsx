@@ -1,6 +1,6 @@
 import { atom, useAtom } from 'jotai'
 import { useSetAtom } from 'jotai/index'
-import { useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { ButtonPrimary, InlineBanner, Loader, BannerOrientation, UI } from '@cowprotocol/ui'
@@ -65,6 +65,8 @@ const pendingTxHashAtom = atom<string | null>(null)
 
 export function SetupFallbackHandlerWarning() {
   const [pendingTxHash, setPendingTxHash] = useAtom(pendingTxHashAtom)
+  const [fbHandlerCheckInProgress, setFbHandlerCheckInProgress] = useState(false)
+  const [isFbHandlerInitiallyChecked, setIsFbHandlerInitiallyChecked] = useState(false)
 
   const { account } = useWalletInfo()
   const setupFallbackHandler = useSetupFallbackHandler()
@@ -84,37 +86,73 @@ export function SetupFallbackHandlerWarning() {
     }
   }
 
+  const checkFallbackHandler = useCallback(() => {
+    if (!extensibleFallbackContext || !account) return Promise.resolve()
+
+    setFbHandlerCheckInProgress(true)
+
+    return verifyExtensibleFallback(extensibleFallbackContext)
+      .then((result) => {
+        updateFallbackHandlerVerification({ [account.toLowerCase()]: result })
+      })
+      .finally(() => {
+        setFbHandlerCheckInProgress(false)
+      })
+  }, [extensibleFallbackContext, account, updateFallbackHandlerVerification])
+
+  /**
+   * Once the transaction is mined, we need to verify the fallback handler
+   */
   useEffect(() => {
     if (!txWasMined) return
 
     setPendingTxHash(null)
 
-    if (!extensibleFallbackContext || !account) return
+    checkFallbackHandler()
+  }, [txWasMined, setPendingTxHash, checkFallbackHandler])
 
-    verifyExtensibleFallback(extensibleFallbackContext).then((result) => {
-      updateFallbackHandlerVerification({ [account]: result })
-    })
-  }, [txWasMined, account, extensibleFallbackContext, updateFallbackHandlerVerification, setPendingTxHash])
+  /**
+   * Check the fallback handler once the component is mounted
+   * This check is needed for the case when the first TWAP order with fallback handler setup is created
+   */
+  useEffect(() => {
+    if (fbHandlerCheckInProgress) return
+
+    const timeout = setTimeout(() => {
+      checkFallbackHandler().finally(() => {
+        setIsFbHandlerInitiallyChecked(true)
+      })
+    }, 500)
+
+    return () => clearTimeout(timeout)
+  }, [checkFallbackHandler, fbHandlerCheckInProgress])
+
+  /**
+   * Don't render the banner until the fallback handler is checked at least once
+   */
+  if (!isFbHandlerInitiallyChecked) return null
 
   return (
-    <Banner
-      bannerType="danger"
-      backDropBlur
-      orientation={BannerOrientation.Vertical}
-      iconSize={46}
-      noWrapContent
-      padding="20px"
-    >
-      <span>
-        <p>
-          Your Safe fallback handler was changed after TWAP orders were placed. All open TWAP orders are not getting
-          created because of that. Please, update the fallback handler in order to make the orders work again.
-        </p>
-        <ActionButton disabled={isTransactionPending} onClick={handleUpdateClick}>
-          {isTransactionPending ? <Loader /> : 'Update fallback handler'}
-        </ActionButton>
-      </span>
-    </Banner>
+    <div>
+      <Banner
+        bannerType="danger"
+        backDropBlur
+        orientation={BannerOrientation.Vertical}
+        iconSize={46}
+        noWrapContent
+        padding="20px"
+      >
+        <span>
+          <p>
+            Your Safe fallback handler was changed after TWAP orders were placed. All open TWAP orders are not getting
+            created because of that. Please, update the fallback handler in order to make the orders work again.
+          </p>
+          <ActionButton disabled={isTransactionPending} onClick={handleUpdateClick}>
+            {isTransactionPending ? <Loader /> : 'Update fallback handler'}
+          </ActionButton>
+        </span>
+      </Banner>
+    </div>
   )
 }
 
