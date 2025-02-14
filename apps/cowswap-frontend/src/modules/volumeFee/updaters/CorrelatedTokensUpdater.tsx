@@ -81,7 +81,14 @@ export function CorrelatedTokensUpdater() {
           }
           const chainId = item.attributes.network.data.attributes.chainId as SupportedChainId
 
-          acc[chainId].push(item.attributes.tokens as CorrelatedTokens)
+          // It's possible checksummed token addresses were manually added
+          const tokens = item.attributes.tokens as CorrelatedTokens
+          const lowerCasedTokens = Object.keys(tokens).reduce<CorrelatedTokens>((acc, address) => {
+            acc[address.toLowerCase()] = tokens[address]
+            return acc
+          }, {})
+
+          acc[chainId].push(lowerCasedTokens)
           return acc
         },
         mapSupportedNetworks<CorrelatedTokens[]>(() => []),
