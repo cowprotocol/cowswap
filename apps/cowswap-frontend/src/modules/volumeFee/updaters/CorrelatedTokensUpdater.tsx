@@ -46,7 +46,7 @@ export function CorrelatedTokensUpdater() {
         const { data, error } = await cmsClient.GET(method, {
           params: {
             query: {
-              fields: ['assets'],
+              fields: ['tokens'],
               populate: {
                 network: {
                   fields: ['chainId'],
