@@ -102,7 +102,7 @@ export function STYLESHEET(): Stylesheet[] {
       selector: 'node[label]',
       style: {
         label: 'data(label)',
-        color: Color.explorer_textSecondary,
+        color: Color.neutral100,
         height: 50,
         width: 50,
         'background-color': Color.explorer_bg2,

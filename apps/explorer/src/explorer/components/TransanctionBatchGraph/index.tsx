@@ -41,8 +41,8 @@ const WrapperCytoscape = styled(CytoscapeComponent)`
   background-color: ${Color.explorer_bg};
   font-weight: ${({ theme }): string => theme.fontMedium};
   border-radius: 0.6rem;
-
   padding-top: 3rem;
+
   ${Media.upToMedium()} {
     border: 0.1rem solid ${Color.explorer_border};
     margin: 1.6rem 0;
