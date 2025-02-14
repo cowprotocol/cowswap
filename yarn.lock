@@ -2425,10 +2425,10 @@
     json-stringify-deterministic "^1.0.8"
     multiformats "^9.6.4"
 
-"@cowprotocol/cms@^0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cms/-/cms-0.9.0.tgz#f668256f7cc8ebe344cbfef018a82a2b9c8eb9dd"
-  integrity sha512-9cB7gJw32Re5YKy8CeYo9VBWnkbyyMTnAi7I/Wc728YDPk32rrq0JaMI7texKmawKQ8VoE3OKcQW6Zbe2fo5OA==
+"@cowprotocol/cms@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cms/-/cms-0.11.0.tgz#a355b07b84b362c1a01dc046acd8367d3d641235"
+  integrity sha512-QpvqGf3RyZHD9eF12ISbb33uByYVGlCq49KNUNr8bxuMl9qhdZU50s/VOEA5X6FsXWFePXA2Zp71SUuMsEbXFg==
   dependencies:
     openapi-fetch "^0.9.3"
 

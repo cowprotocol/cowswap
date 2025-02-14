@@ -15,7 +15,7 @@ import { EthFlowDeadlineUpdater } from 'modules/swap/state/EthFlow/updaters'
 import { useOnTokenListAddingError } from 'modules/tokensList'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { UsdPricesUpdater } from 'modules/usdAmount'
-import { TaxFreeAssetsUpdater } from 'modules/volumeFee'
+import { CorrelatedTokensUpdater } from 'modules/volumeFee'
 import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield/shared'
 
 import { ProgressBarV2ExecutingOrdersUpdater } from 'common/hooks/orderProgressBarV2'
@@ -95,7 +95,7 @@ export function Updaters() {
       <LpTokensWithBalancesUpdater />
       <VampireAttackUpdater />
       <BalancesCombinedUpdater />
-      <TaxFreeAssetsUpdater />
+      <CorrelatedTokensUpdater />
     </>
   )
 }
