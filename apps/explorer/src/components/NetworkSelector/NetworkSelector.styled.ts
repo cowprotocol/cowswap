@@ -1,4 +1,4 @@
-import { Media } from '@cowprotocol/ui'
+import { Media, Color } from '@cowprotocol/ui'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ArrowIconCSS } from 'components/icons/cssIcons'
@@ -14,6 +14,7 @@ export const SelectorContainer = styled.div`
   }
 
   ${ArrowIconCSS}
+  color: ${() => Color.explorer_orange1};
 `
 
 export const OptionsContainer = styled.div<{ width: number }>`
@@ -23,7 +24,7 @@ export const OptionsContainer = styled.div<{ width: number }>`
   width: ${(props: { width: number }): string => `${184 + props.width}px`};
   left: 15px;
   top: 54px;
-  background: ${({ theme }): string => theme.paper};
+  background: ${Color.neutral0};
   border: 1px solid rgba(141, 141, 169, 0.3);
   box-sizing: border-box;
   border-radius: 6px;
@@ -41,19 +42,19 @@ export const Option = styled(NavLink)<{ color: string }>`
   text-decoration: none;
 
   &:hover {
-    backdrop-filter: contrast(0.9);
+    background: ${Color.explorer_bg};
     text-decoration: none;
 
     .name {
-      color: ${({ theme }): string => theme.white};
+      color: ${Color.explorer_textSecondary1};
     }
   }
 
   .name {
-    color: ${({ theme }): string => theme.grey};
+    color: ${Color.explorer_textSecondary2};
 
     &.selected {
-      color: ${({ theme }): string => theme.white};
+      color: ${Color.explorer_textSecondary1};
     }
   }
 
@@ -77,12 +78,12 @@ export const NetworkLabel = styled.span<{ color: string }>`
   font-weight: ${({ theme }): string => theme.fontBold};
   letter-spacing: 0.1rem;
 
-  background: ${({ color }) => color};
-  color: ${({ theme }): string => theme.textSecondary1};
+  background: ${Color.explorer_networkBackground};
+  color: ${() => Color.neutral100};
 `
 
 export const StyledFAIcon = styled(FontAwesomeIcon)`
-  color: ${({ theme }): string => theme.orange};
+  color: ${() => Color.explorer_orange1};
   position: absolute;
   right: 10px;
   font-size: 14px;

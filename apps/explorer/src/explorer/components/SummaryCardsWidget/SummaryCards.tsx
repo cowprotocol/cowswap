@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { Media } from '@cowprotocol/ui'
+import { Color, Media } from '@cowprotocol/ui'
 
 import { formatDistanceToNowStrict } from 'date-fns'
 import styled, { css } from 'styled-components/macro'
@@ -27,7 +27,7 @@ const WrapperColumnChart = styled(Card)`
   background: transparent;
   & > div:first-child {
     all: unset;
-    border: 1px solid ${({ theme }): string => theme.borderPrimary};
+    border: 1px solid ${Color.explorer_borderPrimary};
     border-radius: 0.4rem;
     overflow: hidden;
   }

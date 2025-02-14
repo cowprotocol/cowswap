@@ -14,8 +14,8 @@ import { useTheme } from '@cowprotocol/common-hooks'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
+import { Color } from '../../colors'
 import { Media } from '../../consts'
-import { Color } from '../../consts'
 import { CowSwapTheme } from '../../types'
 
 export enum ProductVariant {

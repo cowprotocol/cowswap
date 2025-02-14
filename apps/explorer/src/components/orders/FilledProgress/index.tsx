@@ -2,7 +2,7 @@ import React from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
-import { Media } from '@cowprotocol/ui'
+import { Color, Media } from '@cowprotocol/ui'
 import { PercentDisplay } from '@cowprotocol/ui/pure/PercentDisplay'
 
 import { ProgressBar } from 'components/common/ProgressBar'
@@ -34,7 +34,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  color: ${({ theme }): string => theme.textPrimary1};
+  color: ${Color.explorer_textPrimary};
 
   ${Media.upToSmall()} {
     gap: 1rem;
@@ -77,7 +77,7 @@ const TableHeading = styled.div`
     font-weight: normal;
     font-size: 1.1rem;
     letter-spacing: 0.1rem;
-    color: ${({ theme }): string => theme.grey};
+    color: ${Color.explorer_grey};
     margin: 0;
     line-height: 1;
   }
@@ -89,7 +89,7 @@ const TableHeading = styled.div`
     line-height: 1;
     letter-spacing: -0.2rem;
     font-weight: ${({ theme }): string => theme.fontMedium};
-    color: ${({ theme }): string => theme.green};
+    color: ${Color.explorer_green};
 
     ${Media.upToSmall()} {
       font-size: 2.8rem;
@@ -117,11 +117,11 @@ const TableHeading = styled.div`
     > span {
       line-height: 1.2;
       flex-flow: row wrap;
-      color: ${({ theme }): string => theme.grey};
+      color: ${Color.explorer_grey};
     }
 
     > span > span:first-child {
-      color: ${({ theme }): string => theme.textPrimary1};
+      color: ${Color.explorer_textPrimary};
     }
   }
 `
@@ -133,7 +133,7 @@ const TableHeadingContent = styled.div`
   align-items: flex-start;
   gap: 1.4rem;
   border-radius: 0.6rem;
-  background: ${({ theme }): string => theme.tableRowBorder};
+  background: ${Color.explorer_tableRowBorder};
   padding: 2rem 1.8rem;
 
   ${Media.upToSmall()} {

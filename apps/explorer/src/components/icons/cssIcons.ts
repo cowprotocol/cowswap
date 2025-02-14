@@ -1,3 +1,5 @@
+import { Color } from '@cowprotocol/ui'
+
 import { css } from 'styled-components/macro'
 
 export const ArrowIconCSS = css`
@@ -6,7 +8,7 @@ export const ArrowIconCSS = css`
     height: 0;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-bottom: ${({ theme }): string => `5px solid ${theme.grey}`};
+    border-bottom: ${`5px solid ${Color.explorer_grey}`};
     transform: rotate(180deg);
     transition: transform 0.1s linear;
     &.open {

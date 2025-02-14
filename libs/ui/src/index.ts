@@ -4,6 +4,8 @@ export * from './enum'
 export * from './types'
 export * from './consts'
 export * from './theme'
+export * from './styles'
+export * from './colors'
 
 export { useAnalyticsReporter } from './analytics/useAnalyticsReporter'
 

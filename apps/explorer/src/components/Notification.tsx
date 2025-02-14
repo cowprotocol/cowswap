@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 
-import { Media } from '@cowprotocol/ui'
+import { Media, Color } from '@cowprotocol/ui'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
-import { BASE_COLOURS } from 'theme'
 
 import { faCircleCheck, faExclamationEllipsis, faExclamationTriangle } from './icons'
 
@@ -19,12 +18,12 @@ export interface NotificationProps {
 export const NotificationWrap = styled.p<{ isActive?: boolean; type: string }>`
   border-radius: 6px;
   padding: 10px 16px;
-  background-color: ${({ theme, type }): string =>
+  background-color: ${({ type }): string =>
     type === 'error'
-      ? transparentize(0.8, theme.red4)
+      ? transparentize(0.8, Color.explorer_buttonDanger)
       : type === 'warn'
-      ? transparentize(0.8, theme.orange)
-      : transparentize(0.8, theme.green1)};
+        ? transparentize(0.8, Color.explorer_buttonWarning)
+        : transparentize(0.8, Color.explorer_buttonSuccess)};
   font-size: 12px;
   display: ${({ isActive }): string => (isActive ? 'flex' : 'none')};
   align-items: center;
@@ -39,13 +38,17 @@ export const NotificationWrap = styled.p<{ isActive?: boolean; type: string }>`
       max-width: none;
     }
     a {
-      color: ${BASE_COLOURS.orange1};
+      color: ${Color.cowfi_orange};
     }
   }
 
   .svg-inline--fa {
-    color: ${({ theme, type }): string =>
-      type === 'error' ? theme.red4 : type === 'warn' ? theme.orange : theme.green1};
+    color: ${({ type }): string =>
+      type === 'error'
+        ? Color.explorer_buttonDanger
+        : type === 'warn'
+          ? Color.explorer_buttonWarning
+          : Color.explorer_buttonSuccess};
     width: 16px;
     height: 16px;
   }
@@ -73,7 +76,7 @@ const CloseButton = styled.button`
     display: block;
     width: 20px;
     height: 2px;
-    background-color: ${({ theme }): string => theme.textPrimary1};
+    background-color: ${Color.neutral100};
     position: absolute;
   }
   &:after {

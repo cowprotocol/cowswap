@@ -33,7 +33,7 @@ import {
 } from './styled'
 
 import { clickOnFooter } from '../../analytics/events'
-import { Color } from '../../consts'
+import { Color } from '../../colors'
 import { MenuItem } from '../../pure/MenuBar'
 import { ProductLogo, ProductVariant } from '../../pure/ProductLogo'
 

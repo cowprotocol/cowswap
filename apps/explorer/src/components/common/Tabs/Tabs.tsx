@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { Media } from '@cowprotocol/ui'
+import { Media, Color } from '@cowprotocol/ui'
 
 import TabContent from 'components/common/Tabs/TabContent'
 import TabItem from 'components/common/Tabs/TabItem'
@@ -24,17 +24,17 @@ export interface TabItemInterface {
 
 export interface TabTheme {
   readonly activeBg: string
-  readonly activeBgAlt: string
+  readonly activeBgAlt?: string | undefined
   readonly inactiveBg: string
-  readonly activeText: string
-  readonly inactiveText: string
-  readonly activeBorder: string
+  readonly activeText: string | ((props: { theme: any }) => string)
+  readonly inactiveText: string | ((props: { theme: any }) => string)
+  readonly activeBorder: string | ((props: { theme: any }) => string)
   readonly inactiveBorder: string
-  readonly letterSpacing: string
-  readonly fontWeight: string
+  readonly indicatorTabSize: number
   readonly fontSize: string
+  readonly fontWeight: string
+  readonly letterSpacing: string
   readonly borderRadius: boolean
-  readonly indicatorTabSize: IndicatorTabSize
 }
 export interface Props {
   readonly className?: string
@@ -54,12 +54,12 @@ const Wrapper = styled.div`
 export const TabList = styled.div`
   position: sticky;
   top: 0;
-  background: #16171f;
+  background: ${Color.explorer_bg};
   z-index: 2;
   max-width: 100%;
   display: flex;
   justify-content: flex-start;
-  border-bottom: ${({ theme }): string => `1px solid ${theme.borderPrimary}`};
+  border-bottom: 1px solid ${Color.explorer_border};
   box-sizing: border-box;
   flex-flow: row wrap;
 
@@ -77,18 +77,18 @@ export const TabList = styled.div`
 `
 
 export const DEFAULT_TAB_THEME: TabTheme = {
-  activeBg: 'var(--color-transparent)',
-  activeBgAlt: 'initial',
-  inactiveBg: 'var(--color-transparent)',
-  activeText: 'var(--color-text-primary)',
-  inactiveText: 'var(--color-text-secondary2)',
-  activeBorder: 'var(--color-text-primary)',
-  inactiveBorder: 'none',
-  fontSize: 'var(--font-size-default)',
-  fontWeight: 'var(--font-weight-normal)',
-  letterSpacing: 'initial',
+  activeBg: 'transparent',
+  activeBgAlt: undefined,
+  inactiveBg: 'transparent',
+  activeText: Color.explorer_textPrimary,
+  inactiveText: Color.explorer_textSecondary2,
+  activeBorder: Color.explorer_textPrimary,
+  inactiveBorder: 'transparent',
+  indicatorTabSize: 0.2,
+  fontSize: '1.4rem',
+  fontWeight: '500',
+  letterSpacing: '0',
   borderRadius: false,
-  indicatorTabSize: IndicatorTabSize.small,
 }
 
 interface ExtraContentProps {

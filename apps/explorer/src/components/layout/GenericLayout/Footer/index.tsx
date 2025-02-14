@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/cow-sdk'
-import { Media } from '@cowprotocol/ui'
+import { Color, Media } from '@cowprotocol/ui'
 
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import LogoWrapper, { LOGO_MAP } from 'components/common/LogoWrapper'
@@ -17,7 +17,7 @@ const FooterStyled = styled.footer`
   box-sizing: border-box;
   font-size: 1.2rem;
   flex: 1 1 auto;
-  color: ${({ theme }): string => theme.textSecondary2};
+  color: ${Color.explorer_textSecondary2};
   width: 100%;
   justify-content: space-around;
   margin: auto auto 0;
