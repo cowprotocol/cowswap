@@ -133,24 +133,26 @@ export function SetupFallbackHandlerWarning() {
   if (!isFbHandlerInitiallyChecked) return null
 
   return (
-    <Banner
-      bannerType="danger"
-      backDropBlur
-      orientation={BannerOrientation.Vertical}
-      iconSize={46}
-      noWrapContent
-      padding="20px"
-    >
-      <span>
-        <p>
-          Your Safe fallback handler was changed after TWAP orders were placed. All open TWAP orders are not getting
-          created because of that. Please, update the fallback handler in order to make the orders work again.
-        </p>
-        <ActionButton disabled={isTransactionPending} onClick={handleUpdateClick}>
-          {isTransactionPending ? <Loader /> : 'Update fallback handler'}
-        </ActionButton>
-      </span>
-    </Banner>
+    <div>
+      <Banner
+        bannerType="danger"
+        backDropBlur
+        orientation={BannerOrientation.Vertical}
+        iconSize={46}
+        noWrapContent
+        padding="20px"
+      >
+        <span>
+          <p>
+            Your Safe fallback handler was changed after TWAP orders were placed. All open TWAP orders are not getting
+            created because of that. Please, update the fallback handler in order to make the orders work again.
+          </p>
+          <ActionButton disabled={isTransactionPending} onClick={handleUpdateClick}>
+            {isTransactionPending ? <Loader /> : 'Update fallback handler'}
+          </ActionButton>
+        </span>
+      </Banner>
+    </div>
   )
 }
 
