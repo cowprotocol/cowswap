@@ -80,7 +80,7 @@ export function DaosPageComponent() {
       <ContainerCard bgColor={Color.neutral10}>
         <ContainerCardSection>
           <SectionTitleWrapper color={Color.neutral100} maxWidth={1100} gap={56}>
-            <SectionTitleIcon size={98}>
+            <SectionTitleIcon $size={98}>
               <LazySVG src={IMG_ICON_CROWN_COW} />
             </SectionTitleIcon>
             <SectionTitleText>Expert trading for expert DAOs</SectionTitleText>
@@ -134,7 +134,7 @@ export function DaosPageComponent() {
       <ContainerCard bgColor={'transparent'} color={Color.neutral10}>
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 0" maxWidth={800}>
-            <SectionTitleIcon size={60}>
+            <SectionTitleIcon $size={60}>
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
             </SectionTitleIcon>
             <SectionTitleText>Advanced order types</SectionTitleText>
@@ -274,7 +274,7 @@ export function DaosPageComponent() {
       <ContainerCard bgColor={Color.neutral10} color={Color.neutral98} touchFooter>
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 0">
-            <SectionTitleIcon multiple>
+            <SectionTitleIcon $multiple>
               <LazySVG src={IMG_ICON_OWL} />
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
               <LazySVG src={IMG_ICON_GHOST} />

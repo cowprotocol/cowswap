@@ -16,6 +16,19 @@ export enum Category {
 // Re-export the legacy category as GtmCategory for backward compatibility
 export type GtmCategory = Category
 
+/**
+ * GA4-compatible event format
+ * See: https://developers.google.com/analytics/devguides/collection/ga4/reference/events
+ */
+export interface GA4Event {
+  event: string // The event name
+  [key: string]: any // Additional parameters
+}
+
+/**
+ * Base GTM event format - maintained for backward compatibility
+ * Will be transformed into GA4 format before sending to dataLayer
+ */
 export interface BaseGtmEvent<T extends string = Category> {
   category: T
   action: string
@@ -25,6 +38,7 @@ export interface BaseGtmEvent<T extends string = Category> {
   orderType?: string
   tokenSymbol?: string
   chainId?: number
+  [key: string]: any // Allow additional custom parameters
 }
 
 // Base type for creating application-specific category enums

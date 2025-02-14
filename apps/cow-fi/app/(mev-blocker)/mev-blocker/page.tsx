@@ -161,7 +161,7 @@ export default function Page() {
           <ContainerCard bgColor={Color.neutral100}>
             <ContainerCardSection gap={60}>
               <SectionTitleWrapper color={Color.neutral10} maxWidth={1300} gap={56}>
-                <SectionTitleIcon multiple size={82}>
+                <SectionTitleIcon $multiple $size={82}>
                   <LazySVG src={IMAGE_ICON_MEVBLOCKER_PROTECT} />
                 </SectionTitleIcon>
                 <SectionTitleText maxWidth={500}>Broad spectrum MEV defense</SectionTitleText>
@@ -221,7 +221,7 @@ export default function Page() {
           <ContainerCard bgColor="transparent" color={Color.neutral10} id="rpc">
             <ContainerCardSection>
               <SectionTitleWrapper maxWidth={850} gap={56} margin="24px auto">
-                <SectionTitleIcon multiple size={82}>
+                <SectionTitleIcon $multiple $size={82}>
                   <LazySVG src={IMAGE_ICON_MEVBLOCKER_PROTECT2} />
                 </SectionTitleIcon>
                 <SectionTitleText>Get Protected</SectionTitleText>
@@ -457,7 +457,7 @@ export default function Page() {
           <ContainerCard bgColor="transparent">
             <ContainerCardSection>
               <SectionTitleWrapper>
-                <SectionTitleIcon size={90}>
+                <SectionTitleIcon $size={90}>
                   <LazySVG src={IMAGE_ICON_MEVBLOCKER_TRUST} />
                 </SectionTitleIcon>
                 <SectionTitleText>Trusted by the best</SectionTitleText>

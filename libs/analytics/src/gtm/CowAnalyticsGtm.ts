@@ -1,7 +1,5 @@
 import { debounce } from '@cowprotocol/common-utils'
 
-import { isValidGtmClickEvent } from './types'
-
 import { AnalyticsContext, CowAnalytics, EventOptions, OutboundLinkParams } from '../CowAnalytics'
 import { GtmEvent, Category } from '../types'
 
@@ -14,53 +12,95 @@ type DataLayer = DataLayerEvent[]
 declare global {
   interface Window {
     dataLayer: unknown[]
+    cowAnalyticsInstance?: CowAnalyticsGtm // For singleton pattern
   }
 }
 
 /**
  * GTM Analytics Provider implementing the CowAnalytics interface
- * Maintains compatibility with existing analytics while using GTM's dataLayer
+ *
+ * IMPORTANT: This implementation relies on Google Tag Manager (GTM) for click tracking.
+ *
+ * === GTM SETUP INSTRUCTIONS ===
+ *
+ * 1. Create a new GTM Trigger:
+ *    - Trigger Type: "All Elements"
+ *    - This trigger fires on: "Click"
+ *    - Fire on: "Some Clicks"
+ *    - Condition: "Click Element" matches CSS selector "[data-click-event]"
+ *
+ * 2. Create GTM Variables to extract data-click-event contents:
+ *    - Variable Type: "Custom JavaScript"
+ *    - Function should parse the data-click-event attribute:
+ *    ```javascript
+ *    function() {
+ *      var clickElement = {{Click Element}};
+ *      if (!clickElement) return;
+ *
+ *      var eventData = clickElement.getAttribute('data-click-event');
+ *      if (!eventData) return;
+ *
+ *      try {
+ *        return JSON.parse(eventData);
+ *      } catch(e) {
+ *        console.error('Failed to parse click event data:', e);
+ *        return null;
+ *      }
+ *    }
+ *    ```
+ *
+ * 3. Create GTM Tag:
+ *    - Tag Type: "Google Analytics: GA4 Event"
+ *    - Event Name: {{ClickEvent.action}} (using the variable created above)
+ *    - Parameters to include:
+ *      - event_category: {{ClickEvent.category}}
+ *      - event_label: {{ClickEvent.label}}
+ *      - event_value: {{ClickEvent.value}}
+ *      - order_id: {{ClickEvent.orderId}}
+ *      - order_type: {{ClickEvent.orderType}}
+ *      - token_symbol: {{ClickEvent.tokenSymbol}}
+ *      - chain_id: {{ClickEvent.chainId}}
+ *
+ * === USAGE IN CODE ===
+ *
+ * Add data-click-event attribute to elements you want to track:
+ * ```tsx
+ * <button
+ *   data-click-event={toCowSwapGtmEvent({
+ *     category: CowSwapAnalyticsCategory.WALLET,
+ *     action: 'Connect wallet button click',
+ *     label: connectionType
+ *   })}
+ * >
+ *   Connect Wallet
+ * </button>
+ * ```
+ *
+ * The data-click-event attribute will be automatically picked up by GTM
+ * when a user clicks the element. No additional JavaScript handling is needed.
  */
 export class CowAnalyticsGtm implements CowAnalytics {
   private dimensions: Record<string, string> = {}
-  private debouncedPageView: (path?: string, params?: string[], title?: string) => void
-  private dataLayer: DataLayer
+  private debouncedPageView = debounce((path?: string, params?: string[], title?: string) => {
+    this._sendPageView(path, params, title)
+  }, 1000)
+  private dataLayer: DataLayer = []
 
   constructor() {
-    // Initialize dataLayer
     if (typeof window !== 'undefined') {
+      // Implement singleton pattern
+      if (window.cowAnalyticsInstance) {
+        console.warn('CowAnalyticsGtm instance already exists. Reusing existing instance.')
+        return window.cowAnalyticsInstance
+      }
+      window.cowAnalyticsInstance = this
       window.dataLayer = window.dataLayer || []
       this.dataLayer = window.dataLayer as DataLayer
 
-      // Add global click listener for data attributes
-      window.addEventListener('click', this.handleDataAttributeClick.bind(this), true)
-    } else {
-      this.dataLayer = []
-    }
-
-    // Initialize debounced page view
-    this.debouncedPageView = debounce((path?: string, params?: string[], title?: string) => {
-      setTimeout(() => this._sendPageView(path, params, title), 1000)
-    })
-  }
-
-  // Handle clicks on elements with data-click-event attribute
-  private handleDataAttributeClick(event: MouseEvent): void {
-    const target = event.target as HTMLElement
-    const clickEventElement = target.closest('[data-click-event]')
-
-    if (!clickEventElement) return
-
-    const eventData = clickEventElement.getAttribute('data-click-event')
-    if (!eventData) return
-
-    try {
-      const parsedEvent = JSON.parse(eventData)
-      if (isValidGtmClickEvent(parsedEvent)) {
-        this.sendEvent(parsedEvent)
-      }
-    } catch (error) {
-      console.warn('Failed to parse GTM click event:', error)
+      // Clean up on page unload
+      window.addEventListener('unload', () => {
+        delete window.cowAnalyticsInstance
+      })
     }
   }
 
@@ -91,22 +131,13 @@ export class CowAnalyticsGtm implements CowAnalytics {
       typeof event === 'string'
         ? { event, ...(params as Record<string, unknown>) }
         : {
-            // Create specific event name from category and action
-            event: `${event.category.toLowerCase()}_${event.action.toLowerCase().replace(/\s+/g, '_')}`,
-
-            // Core parameters at root level
+            event: event.action,
             category: event.category,
             action: event.action,
             label: event.label,
             value: event.value,
-
-            // Non-interaction flag
             non_interaction: event.nonInteraction,
-
-            // Spread dimensions at root level
             ...this.getDimensions(),
-
-            // Include additional dynamic properties if present
             ...((event as GtmEvent<Category>).orderId && { order_id: (event as GtmEvent<Category>).orderId }),
             ...((event as GtmEvent<Category>).orderType && { order_type: (event as GtmEvent<Category>).orderType }),
             ...((event as GtmEvent<Category>).tokenSymbol && {
@@ -145,18 +176,11 @@ export class CowAnalyticsGtm implements CowAnalytics {
       ...this.getDimensions(),
     })
 
-    // Execute callback after pushing to dataLayer
     if (hitCallback) {
       setTimeout(hitCallback, 0)
     }
   }
 
-  /**
-   * Sets an analytics dimension value.
-   * @param key - The dimension key to set
-   * @param value - The dimension value. Any value (including falsy values like '0' or '') will be stored,
-   *               except undefined which will remove the dimension.
-   */
   setContext(key: AnalyticsContext, value?: string): void {
     if (typeof value !== 'undefined') {
       this.dimensions[key] = value
@@ -165,25 +189,15 @@ export class CowAnalyticsGtm implements CowAnalytics {
     }
   }
 
-  // Helper to push to dataLayer with proper typing
   private pushToDataLayer(data: DataLayerEvent): void {
     if (typeof window !== 'undefined') {
-      // TODO: TEMPORARY - Remove after debugging
-      console.log('🔍 Analytics Event:', {
-        ...data,
-        timestamp: new Date().toISOString(),
-        stack: new Error().stack?.split('\n').slice(2).join('\n'), // Capture call stack but skip the first 2 lines (Error and this function)
-      })
-
       this.dataLayer.push(data)
     }
   }
 
-  // Get current dimensions as GTM-compatible object
   private getDimensions(): Record<string, string> {
     return Object.entries(this.dimensions).reduce(
       (acc, [key, value]) => {
-        // Include all values that are not undefined
         if (typeof value !== 'undefined') {
           acc[`dimension_${key}`] = value
         }
