@@ -1,5 +1,6 @@
 import { useSetAtom } from 'jotai'
 
+import { components } from '@cowprotocol/cms'
 import { getCmsClient } from '@cowprotocol/core'
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -9,12 +10,7 @@ import useSWR, { SWRConfiguration } from 'swr'
 
 import { CorrelatedTokens, correlatedTokensAtom } from '../state/correlatedTokensAtom'
 
-type CorrelatedTokenItem = {
-  attributes: {
-    tokens: Record<string, string>
-    network: { data: { attributes: { chainId: number } } }
-  }
-}
+type CorrelatedTokenItem = components['schemas']['CorrelatedTokenListResponseDataItem']
 
 const UPDATE_INTERVAL = ms`10m`
 
@@ -80,9 +76,12 @@ export function CorrelatedTokensUpdater() {
 
       const state = items.reduce(
         (acc, item) => {
+          if (!item.attributes?.network?.data?.attributes?.chainId || !item.attributes?.tokens) {
+            return acc
+          }
           const chainId = item.attributes.network.data.attributes.chainId as SupportedChainId
 
-          acc[chainId].push(item.attributes.tokens)
+          acc[chainId].push(item.attributes.tokens as CorrelatedTokens)
           return acc
         },
         mapSupportedNetworks<CorrelatedTokens[]>(() => []),
