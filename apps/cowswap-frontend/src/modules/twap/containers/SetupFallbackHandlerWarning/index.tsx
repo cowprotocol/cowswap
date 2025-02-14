@@ -93,7 +93,7 @@ export function SetupFallbackHandlerWarning() {
 
     return verifyExtensibleFallback(extensibleFallbackContext)
       .then((result) => {
-        updateFallbackHandlerVerification({ [account]: result })
+        updateFallbackHandlerVerification({ [account.toLowerCase()]: result })
       })
       .finally(() => {
         setFbHandlerCheckInProgress(false)
