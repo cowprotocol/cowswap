@@ -15,7 +15,7 @@ import { AutoColumn } from 'legacy/components/Column'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { Field } from 'legacy/state/types'
 
-import { EthFlowBanner } from 'modules/swap/containers/EthFlow/EthFlowBanner'
+import { EthFlowBanner } from 'modules/ethFlow'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { QuoteDeadlineParams } from 'modules/tradeQuote'
 
