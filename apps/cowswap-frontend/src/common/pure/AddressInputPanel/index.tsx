@@ -16,8 +16,8 @@ import styled from 'styled-components/macro'
 import { AutoColumn } from 'legacy/components/Column'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
-import ChainPrefixWarning from 'common/pure/ChainPrefixWarning'
-import { autofocus } from 'common/utils/autofocus'
+import { autofocus } from '../../utils/autofocus'
+import ChainPrefixWarning from '../ChainPrefixWarning'
 
 const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
@@ -126,7 +126,7 @@ export function AddressInputPanel({
 
       onChange(value)
     },
-    [onChange, addressPrefix]
+    [onChange, addressPrefix],
   )
 
   // clear warning if chainId changes and we are now on the right network
