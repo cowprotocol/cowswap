@@ -2,7 +2,7 @@ import { AutoRow } from '@cowprotocol/ui'
 
 import { ArrowDown } from 'react-feather'
 
-import { AddressInputPanel } from 'legacy/components/AddressInputPanel'
+import { AddressInputPanel } from 'common/pure/AddressInputPanel'
 
 export interface SetRecipientProps {
   recipient: string
