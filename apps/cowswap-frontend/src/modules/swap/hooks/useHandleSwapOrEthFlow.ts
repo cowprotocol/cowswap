@@ -3,6 +3,7 @@ import { useCallback } from 'react'
 import { Field } from 'legacy/state/types'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
+import { useEthFlowContext, ethFlow } from 'modules/ethFlow'
 import { TradeWidgetActions, useTradePriceImpact } from 'modules/trade'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
@@ -12,10 +13,7 @@ import { FlowType } from 'modules/tradeFlow'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
-import { useEthFlowContext } from './useEthFlowContext'
 import { useSwapFlowContext } from './useSwapFlowContext'
-
-import { ethFlow } from '../services/ethFlow'
 
 export function useHandleSwapOrEthFlow(actions: TradeWidgetActions) {
   const priceImpactParams = useTradePriceImpact()

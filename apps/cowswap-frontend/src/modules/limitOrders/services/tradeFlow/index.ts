@@ -17,10 +17,11 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
-import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 import { presignOrderStep } from 'modules/tradeFlow/services/swapFlow/steps/presignOrderStep'
+
+import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 export function useTradeFlow() {
   const analytics = useTradeFlowAnalytics()
