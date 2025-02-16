@@ -81,7 +81,7 @@ export default function Page() {
           </HeroDescription>
           <Link
             bgColor={'#012F7A'}
-            color={'#65D9FF'}
+            color={'#ff65ff'}
             href="https://swap.cow.fi/"
             external
             linkType={LinkType.HeroButton}
@@ -96,7 +96,7 @@ export default function Page() {
         </HeroImage>
       </HeroContainer>
 
-      <MetricsCard bgColor="#65D9FF" color="#012F7A" columns={3} touchFooter>
+      <MetricsCard bgColor="#ff65ff" color="#012F7A" columns={3} touchFooter>
         <MetricsItem dividerColor="#005EB7">
           <h2>#1</h2>
           <p>retention rate of all major DEXs</p>
@@ -176,7 +176,7 @@ export default function Page() {
               variety of DeFi purposes
             </SectionTitleDescription>
             <Link
-              bgColor="#65D9FF"
+              bgColor="#ff65ff"
               color="#012F7A"
               href="/cow-protocol"
               linkType={LinkType.SectionTitleButton}
@@ -285,7 +285,7 @@ export default function Page() {
                 <TopicTitle color={Color.neutral100} fontSize={51}>
                   $2,500
                 </TopicTitle>
-                <TopicDescription fontSize={21} color="#65D9FF">
+                <TopicDescription fontSize={21} color="#ff65ff">
                   Average trade size (more than 2x Uniswap&apos;s)
                 </TopicDescription>
               </TopicCardInner>
@@ -302,7 +302,7 @@ export default function Page() {
                 <TopicTitle color={Color.neutral100} fontSize={51}>
                   39%
                 </TopicTitle>
-                <TopicDescription fontSize={21} color="#65D9FF">
+                <TopicDescription fontSize={21} color="#ff65ff">
                   Market share among smart contract wallets
                 </TopicDescription>
               </TopicCardInner>
@@ -319,7 +319,7 @@ export default function Page() {
                 <TopicTitle color={Color.neutral100} fontSize={51}>
                   42%
                 </TopicTitle>
-                <TopicDescription fontSize={21} color="#65D9FF">
+                <TopicDescription fontSize={21} color="#ff65ff">
                   Monthly user retention rate – the highest in DeFi
                 </TopicDescription>
               </TopicCardInner>
@@ -336,7 +336,7 @@ export default function Page() {
                 <TopicTitle color={Color.neutral100} fontSize={51}>
                   #1
                 </TopicTitle>
-                <TopicDescription fontSize={21} color="#65D9FF">
+                <TopicDescription fontSize={21} color="#ff65ff">
                   Intents-based trading platform
                 </TopicDescription>
               </TopicCardInner>
@@ -387,7 +387,7 @@ export default function Page() {
               Trade seamlessly, with the most user-protective DEX in DeFi
             </SectionTitleDescription>
             <Link
-              bgColor="#65D9FF"
+              bgColor="#ff65ff"
               color="#012F7A"
               href="https://swap.cow.fi/"
               external

@@ -11,7 +11,7 @@ export interface ColorModeParams {
 }
 
 export const ColorModeContext = createContext<ColorModeParams>({
-  mode: 'light' as PaletteMode,
+  mode: 'dark' as PaletteMode,
   toggleColorMode: () => {},
   setAutoMode: () => {},
   setMode: () => {},

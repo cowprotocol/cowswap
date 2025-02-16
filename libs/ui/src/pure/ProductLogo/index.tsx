@@ -10,6 +10,7 @@ import LOGO_COWSWAP from '@cowprotocol/assets/images/logo-cowswap.svg'
 import LOGO_ICON_COW from '@cowprotocol/assets/images/logo-icon-cow.svg'
 import LOGO_ICON_MEVBLOCKER from '@cowprotocol/assets/images/logo-icon-mevblocker.svg'
 import LOGO_MEVBLOCKER from '@cowprotocol/assets/images/logo-mevblocker.svg'
+import LOGO_ICON_CHAMELEON from '@cowprotocol/assets/images/logo_icon_chameleonswap.svg'
 import { useTheme } from '@cowprotocol/common-hooks'
 
 import SVG from 'react-inlinesvg'
@@ -52,38 +53,38 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
       default: {
         src: LOGO_CHAMELEONSWAP,
         alt: 'CoW Swap',
-        color: '#004293',
+        color: ' #760093',
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: LOGO_ICON_CHAMELEON,
         alt: 'CoW Swap',
-        color: '#004293',
+        color: ' #760093',
       },
     },
     dark: {
       default: {
         src: LOGO_CHAMELEONSWAP,
-        alt: 'CoW Swap',
-        color: '#65D9FF',
+        alt: ' CoW Swap',
+        color: ' #c165ff',
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: LOGO_ICON_CHAMELEON,
         alt: 'CoW Swap',
-        color: '#65D9FF',
+        color: ' #c165ff',
       },
     },
     darkHalloween: {
       default: {
         src: LOGO_COWSWAP_HALLOWEEN,
         alt: 'CoW Swap',
-        color: '#65D9FF',
+        color: ' #ff65ff',
       },
     },
     darkChristmas: {
       default: {
         src: LOGO_COWSWAP_CHRISTMAS_DARK,
         alt: 'CoW Swap',
-        color: '#65D9FF',
+        color: ' #ff65ff',
         height: '56px',
         heightMobile: '50px',
         preserveOriginalColors: true,
@@ -93,7 +94,7 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
       default: {
         src: LOGO_COWSWAP_CHRISTMAS,
         alt: 'CoW Swap',
-        color: '#004293',
+        color: ' #004293',
         height: '56px',
         heightMobile: '50px',
         preserveOriginalColors: true,
@@ -110,7 +111,7 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
         color: Color.neutral0,
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: LOGO_ICON_CHAMELEON,
         alt: 'CoW Explorer',
         color: Color.neutral0,
       },
@@ -122,7 +123,7 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
         color: Color.neutral100,
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: LOGO_ICON_CHAMELEON,
         alt: 'CoW Explorer',
         color: Color.neutral100,
       },
@@ -138,7 +139,7 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
         color: Color.neutral0,
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: LOGO_ICON_CHAMELEON,
         alt: 'CoW DAO',
         color: Color.neutral0,
       },
@@ -150,7 +151,7 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
         color: Color.neutral100,
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: LOGO_ICON_CHAMELEON,
         alt: 'CoW DAO',
         color: Color.neutral100,
       },
@@ -166,7 +167,7 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
         color: Color.neutral0,
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: LOGO_ICON_CHAMELEON,
         alt: 'CoW Protocol',
         color: Color.neutral0,
       },
@@ -178,7 +179,7 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
         color: Color.neutral100,
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: LOGO_ICON_CHAMELEON,
         alt: 'CoW Protocol',
         color: Color.neutral100,
       },
@@ -222,7 +223,7 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
         color: '#012F7A',
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: LOGO_ICON_CHAMELEON,
         alt: 'CoW AMM',
         color: '#012F7A',
       },
@@ -234,7 +235,7 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
         color: '#007CDB',
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: LOGO_ICON_CHAMELEON,
         alt: 'CoW AMM',
         color: '#007CDB',
       },

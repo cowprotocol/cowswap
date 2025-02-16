@@ -13,7 +13,7 @@ import { clickOnCowSwap } from 'modules/analytics'
 
 export const COW_IS_DIFFERENT = [
   {
-    bgColor: '#65D9FF',
+    bgColor: '#ff65ff',
     fontSize: 28,
     color: '#012F7A',
     description: "By aligning incentives between solvers and users, CoW Swap finds surplus you won't get anywhere else",

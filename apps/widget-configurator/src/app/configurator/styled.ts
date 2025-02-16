@@ -15,7 +15,7 @@ export const DrawerStyled = (theme: Theme) => ({
     height: '100%',
     border: 0,
     background: theme.palette.background.paper,
-    boxShadow: 'rgba(5, 43, 101, 0.06) 0 1.2rem 1.2rem',
+    boxShadow: 'rgba(74, 5, 101, 0.06) 0 1.2rem 1.2rem',
     padding: '1.6rem',
   },
 })

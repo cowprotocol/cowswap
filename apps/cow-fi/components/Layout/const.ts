@@ -107,7 +107,7 @@ export const NAV_ADDITIONAL_BUTTONS = [
     onClick: () => clickOnNavigation('click-trade-on-cow-swap'),
     external: true,
     isButton: true,
-    bgColor: '#65D9FF',
+    bgColor: '#ff65ff',
     color: '#012F7A',
   },
 ]

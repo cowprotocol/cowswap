@@ -56,8 +56,8 @@ export interface Colors {
 
 export const BASE_COLOURS = {
   // base
-  white: '#FFF',
-  black: '#000',
+  white: ' #FFF',
+  black: ' #000',
   red1: '#FF305B',
   red4: '#d83265',
   green1: '#00C46E',
@@ -65,43 +65,43 @@ export const BASE_COLOURS = {
   green3: '#a9ffcd',
   yellow2: '#f1851d',
   yellow4: '#f6c343',
-  blue1: '#2172E5',
-  blue2: '#3F77FF',
-  orange1: '#D96D49',
+  blue1: '#a721e5',
+  blue2: '#c93fff',
+  orange1: '#d96d49',
 }
 
 export const LIGHT_COLOURS = {
   //base
-  grey: '#657795',
+  grey: 'rgb(115, 101, 149)',
   greyShade: 'rgb(141 141 169 / 70%)',
   greyOpacity: 'rgb(141 141 169 / 10%)',
-  green: '#1E9B75',
+  green: 'rgb(30, 88, 155)',
   greenOpacity: 'rgb(30 155 117 / 10%)',
-  orange: '#DB843A',
+  orange: '#db843a',
   orangeOpacity: 'rgb(219 132 58 / 20%)',
 
   // text
-  textPrimary1: '#2B3658',
+  textPrimary1: '#4b2b58',
   textSecondary1: '#EDEDED',
-  textSecondary2: '#9797B8',
+  textSecondary2: '#938296',
   textActive1: '#D96D49',
-  textDisabled: '#31323E',
+  textDisabled: '#3c313e',
 
   // backgrounds / greys
-  paper: '#F7F8FA',
-  bg2: '#F7F8FA',
-  background: '#232432',
-  paperCustom: '#0e0f14',
-  shade: '#2E2F3B',
-  boxShadow: 'rgba(0, 0, 0, 0.16)',
+  paper: '#f9f7fa',
+  bg2: '#f9f7fa',
+  background: '#302332',
+  paperCustom: '#130e14',
+  shade: '#382e3b',
+  boxShadow: '#000000',
 
   // gradients
-  gradient1: '#8958FF',
-  gradient2: '#3F77FF',
+  gradient1: 'rgb(166, 88, 255)',
+  gradient2: 'rgb(223, 63, 255)',
 
   // labels
-  labelTextOpen: '#77838F',
-  labelBgOpen: '#77838F1A',
+  labelTextOpen: 'rgb(128, 119, 143)',
+  labelBgOpen: 'rgba(128, 119, 143, 0.1)',
 
   // table & borders
   borderPrimary: 'rgb(151 151 184 / 30%)',
@@ -119,28 +119,28 @@ export const DARK_COLOURS = {
   orangeOpacity: 'rgb(217 109 73 / 10%)',
 
   // text
-  textPrimary1: '#FFF',
+  textPrimary1: ' #FFF',
   textSecondary1: '#EDEDED',
   textSecondary2: '#9797B8',
   textActive1: '#D96D49',
   textDisabled: '#31323E',
 
   // backgrounds / greys
-  paper: '#16171F',
-  bg2: '#2C2D3F',
-  background: '#232432',
-  paperCustom: '#0e0f14',
+  paper: '#1e161f',
+  bg2: '#3c2c3f',
+  background: '#2d2332',
+  paperCustom: '#120e14',
   bgDisabled: '#ffffff80',
-  shade: '#2E2F3B',
-  boxShadow: 'rgba(0, 0, 0, 0.16)',
+  shade: '#382e3b',
+  boxShadow: '#000000',
 
   // gradients
-  gradient1: '#21222E',
-  gradient2: '#2C2D3F',
+  gradient1: '#2b212e',
+  gradient2: '#3d2c3f',
 
   // labels
   labelTextOpen: '#FFFFFF',
-  labelBgOpen: '#9797B84D',
+  labelBgOpen: '#af97b8',
 
   // table & borders
   borderPrimary: 'rgb(151 151 184 / 30%)',

@@ -9,7 +9,7 @@ import { UI } from '../enum'
 import { CowSwapTheme } from '../types'
 
 export function baseTheme<T extends CowProtocolTheme>(theme: CowSwapTheme): CowProtocolTheme {
-  const darkMode = theme === 'dark'
+  const darkMode = theme === 'purple'
 
   return {
     ...colors(darkMode),
@@ -57,10 +57,10 @@ function colors(darkMode: boolean): Colors {
     text1: darkMode ? blueLight1 : blueDark2,
     alert2: '#F96BAD',
     error: darkMode ? '#EE3068' : error,
-    text4: darkMode ? 'rgba(227, 197, 239, 0.7)' : '#000000b8',
+    text4: darkMode ? '#e3c5ef' : '#000000b8',
 
     // ****** backgrounds ******
-    bg5: darkMode ? '#741D75' : '#ECD6F1',
+    bg5: darkMode ? ' #741D75' : ' #ECD6F1',
     bg8: darkMode ? blueDark4 : '#3F1545',
 
     // ****** other ******
@@ -76,7 +76,7 @@ function colors(darkMode: boolean): Colors {
     border: darkMode ? blueDark4 : '#030003',
     border2: darkMode ? '#4A2585' : blueLight2,
 
-    disabled: darkMode ? 'rgba(224, 197, 239, 0.4)' : blueLight2,
+    disabled: darkMode ? '#e0c5ef' : blueLight2,
 
     green1: darkMode ? '#27B0B0' : '#007F6E',
     yellow3: '#F3B71E',
@@ -87,7 +87,7 @@ function colors(darkMode: boolean): Colors {
     )} 50%, ${transparentize(success, 0.92)} 100%);`,
     boxShadow1: darkMode ? '0 24px 32px rgba(0, 0, 0, 0.06)' : '0 12px 12px rgba(63, 5, 101, 0.06)',
     boxShadow2: '0 4px 12px 0 rgb(0 0 0 / 15%)',
-    shadow1: darkMode ? '#030003' : '#C52FEF',
+    shadow1: darkMode ? ' #030003' : ' #C52FEF',
   }
 }
 

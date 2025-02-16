@@ -53,7 +53,7 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme }>`
     if (theme.isInjectedWidgetMode) {
       return 'transparent'
     } else {
-      const backgroundColor = theme.darkMode ? '#0E0F2D' : '#65D9FF'
+      const backgroundColor = theme.darkMode ? '#280e2d' : '#ff65ff'
       let backgroundImage
 
       if (customTheme === 'darkHalloween') {

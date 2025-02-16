@@ -377,7 +377,7 @@ function AnimatedTokens({
         <ProductLogo
           variant={ProductVariant.CowSwap}
           theme={'dark'}
-          overrideHoverColor={'#65D9FF'}
+          overrideHoverColor={'#ff65ff'}
           height={58}
           heightMobile={32}
           logoIconOnly
@@ -414,7 +414,7 @@ function RenderProgressTopSection({
       case 'initial':
         return (
           <>
-            <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'24px'}>
+            <styledEl.ProgressImageWrapper bgColor={'#ff65ff'} padding={'24px'}>
               <AnimatedTokens sellToken={order?.inputToken} buyToken={order?.outputToken} />
             </styledEl.ProgressImageWrapper>
           </>
@@ -431,7 +431,7 @@ function RenderProgressTopSection({
                 ? '#FFDB9C'
                 : stepName === 'delayed' || stepName === 'submissionFailed' || stepName === 'solved'
                   ? '#FFB3B3'
-                  : '#65D9FF'
+                  : '#ff65ff'
             }
             padding={stepName === 'unfillable' ? '20px 0 0' : stepName === 'solving' ? '16px' : '0'}
             height={
@@ -470,7 +470,7 @@ function RenderProgressTopSection({
       case 'cancellationFailed':
         return (
           <styledEl.ProgressTopSection>
-            <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'10px'} gap={'10px'}>
+            <styledEl.ProgressImageWrapper bgColor={'#ff65ff'} padding={'10px'} gap={'10px'}>
               <styledEl.CowImage>
                 <SVG src={randomImage} />
               </styledEl.CowImage>
