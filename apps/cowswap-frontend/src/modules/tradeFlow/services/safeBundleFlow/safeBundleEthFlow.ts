@@ -37,7 +37,7 @@ export async function safeBundleEthFlow(
 
   const { context, callbacks, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks } = tradeContext
 
-  const { spender, settlementContract, safeAppsSdk, needsApproval, wrappedNativeContract } = safeBundleContext
+  const { spender, settlementContract, sendBatchTransactions, needsApproval, wrappedNativeContract } = safeBundleContext
 
   const { chainId, inputAmount, outputAmount } = context
 
@@ -117,7 +117,7 @@ export async function safeBundleEthFlow(
 
     logTradeFlow(LOG_PREFIX, 'STEP 6: send safe tx')
 
-    const safeTx = await safeAppsSdk.txs.send({ txs })
+    const safeTxHash = await sendBatchTransactions(txs)
 
     emitPostedOrderEvent({
       chainId,
@@ -137,7 +137,7 @@ export async function safeBundleEthFlow(
         order: {
           id: order.id,
           // Add Safe tx hash
-          presignGnosisSafeTxHash: safeTx.safeTxHash,
+          presignGnosisSafeTxHash: safeTxHash,
           // Unhide the order
           isHidden: false,
         },

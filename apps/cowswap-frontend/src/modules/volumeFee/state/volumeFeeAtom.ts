@@ -8,9 +8,9 @@ import { injectedWidgetPartnerFeeAtom } from 'modules/injectedWidget'
 import { derivedTradeStateAtom, tradeTypeAtom } from 'modules/trade'
 import { TradeType } from 'modules/trade/types/TradeType'
 
+import { correlatedTokensAtom } from './correlatedTokensAtom'
 import { cowSwapFeeAtom } from './cowswapFeeAtom'
 import { safeAppFeeAtom } from './safeAppFeeAtom'
-import { taxFreeAssetsAtom } from './taxFreeAssetsAtom'
 
 import { VolumeFee } from '../types'
 
@@ -31,13 +31,13 @@ export const volumeFeeAtom = atom<VolumeFee | undefined>((get) => {
 const shouldSkipFeeAtom = atom<boolean>((get) => {
   const { chainId } = get(walletInfoAtom)
   const tradeState = get(derivedTradeStateAtom)
-  const taxFreeAssetsState = get(taxFreeAssetsAtom)
+  const correlatedTokensState = get(correlatedTokensAtom)
 
   if (!tradeState) return false
 
-  const taxFreeAssets = taxFreeAssetsState[chainId]
+  const correlatedTokens = correlatedTokensState[chainId]
 
-  if (!taxFreeAssets) return false
+  if (!correlatedTokens) return false
 
   const { inputCurrency, outputCurrency } = tradeState
 
@@ -46,13 +46,14 @@ const shouldSkipFeeAtom = atom<boolean>((get) => {
   const inputCurrencyAddress = getCurrencyAddress(inputCurrency).toLowerCase()
   const outputCurrencyAddress = getCurrencyAddress(outputCurrency).toLowerCase()
 
-  return taxFreeAssets.some((assets) => {
-    // If there is only one asset in the list, it means that it is a global tax free asset
-    if (assets.length === 1) {
-      return assets[0] === inputCurrencyAddress || assets[0] === outputCurrencyAddress
-      // If there are two assets in the list, it means that it is a pair tax free asset
+  return correlatedTokens.some((tokens) => {
+    // If there is only one asset in the list, it means that it is a global correlated token
+    const addresses = Object.keys(tokens)
+    if (addresses.length === 1) {
+      return addresses[0] === inputCurrencyAddress || addresses[0] === outputCurrencyAddress
+      // If there are two tokens in the list, it means that it is a pair correlated token
     } else {
-      return assets.includes(inputCurrencyAddress) && assets.includes(outputCurrencyAddress)
+      return tokens[inputCurrencyAddress] && tokens[outputCurrencyAddress]
     }
   })
 })

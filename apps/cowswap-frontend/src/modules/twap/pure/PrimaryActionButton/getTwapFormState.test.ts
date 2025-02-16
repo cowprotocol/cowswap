@@ -24,7 +24,7 @@ describe('getTwapFormState()', () => {
   describe('When sell fiat amount is under threshold', () => {
     it('And order has buy amount, then should return SELL_AMOUNT_TOO_SMALL', () => {
       const result = getTwapFormState({
-        isSafeApp: true,
+        isTxBundlingSupported: true,
         verification: ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER,
         twapOrder: { ...twapOrder },
         sellAmountPartFiat: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10000000),
@@ -37,7 +37,7 @@ describe('getTwapFormState()', () => {
 
     it('And order does NOT have buy amount, then should return null', () => {
       const result = getTwapFormState({
-        isSafeApp: true,
+        isTxBundlingSupported: true,
         verification: ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER,
         twapOrder: { ...twapOrder, buyAmount: CurrencyAmount.fromRawAmount(COW_SEPOLIA, 0) },
         sellAmountPartFiat: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10000000),
