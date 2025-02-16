@@ -94,7 +94,7 @@ const PRODUCT_LOGO_LINKS: {
   utmContent: string
 }[] = [
   {
-    href: 'https://swap.cow.fi/',
+    href: 'https://chameleon.exchange/',
     label: 'Chameleaon swap',
     productVariant: ProductVariant.CowSwap,
     external: true,

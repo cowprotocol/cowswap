@@ -8,7 +8,7 @@ providing MEV protection.
 
 | **Platform**          | **Link**                                                                                                      |
 | --------------------- | ------------------------------------------------------------------------------------------------------------- |
-| 🐮 **Chameleaon swap** 🐮    | [swap.cow.fi](https://swap.cow.fi/)                                                                           |
+| 🐮 **Chameleaon swap** 🐮    | [swap.cow.fi](https://chameleon.exchange/)                                                                           |
 | Chameleaon swap (IPFS)       | Every release is deployed automatically to IPFS ([Releases](https://github.com/cowprotocol/cowswap/releases)) |
 | Chameleaon swap (ENS)        | [ens://cowswap.eth](ens://cowswap.eth) or ([cowswap.eth.limo](https://cowswap.eth.limo))                      |
 | CoW Protocol          | [cow.fi](https://cow.fi)                                                                                      |

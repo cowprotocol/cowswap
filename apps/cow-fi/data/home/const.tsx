@@ -42,7 +42,7 @@ export const PRODUCT_LIST = [
   {
     title: 'Chameleaon swap',
     description: 'The DEX that lets you do what you want',
-    linkHref: 'https://swap.cow.fi/#/1/swap/USDC/COW',
+    linkHref: 'https://chameleon.exchange/#/1/swap/USDC/COW',
     linkText: 'Start trading',
     linkEvent: 'click-trade-on-cow-swap',
     linkExternal: true,

@@ -182,13 +182,13 @@ export function App() {
             />
           )}
 
-          {!isInjectedWidgetMode && (
+          {/* {!isInjectedWidgetMode && (
             <Footer
               productVariant={PRODUCT_VARIANT}
               additionalFooterContent={ADDITIONAL_FOOTER_CONTENT}
               hasTouchFooter
             />
-          )}
+          )} */}
 
           {/* Render MobileHeaderControls outside of MenuBar on mobile */}
           {isMobile && !isInjectedWidgetMode && persistentAdditionalContent}

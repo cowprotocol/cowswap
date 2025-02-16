@@ -24,7 +24,7 @@ const [web3MetaMask, web3MetaMaskHooks] = initializeConnector<MetaMaskSDK>(
       options: {
         dappMetadata: {
           name: 'Chameleaon swap',
-          url: 'https://swap.cow.fi',
+          url: 'https://chameleon.exchange',
         },
         readonlyRPCMap: Object.fromEntries(
           Object.entries(RPC_URLS).map(([chainId, url]) => [`0x${Number(chainId).toString(16)}`, url]),

@@ -11,8 +11,8 @@ const projectId = WC_PROJECT_ID || WC_DEFAULT_PROJECT_ID
 const metadata = {
   name: 'CoW Widget Configurator',
   description: 'Injectable UI of CoWSwap',
-  url: 'https://swap.cow.fi',
-  icons: ['https://swap.cow.fi/favicon.png'],
+  url: 'https://chameleon.exchange',
+  icons: ['https://chameleon.exchange/favicon.png'],
 }
 
 const ethersConfig = defaultConfig({

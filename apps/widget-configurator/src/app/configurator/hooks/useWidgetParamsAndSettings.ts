@@ -15,7 +15,7 @@ const getBaseUrl = (): string => {
     return `https://swap-dev-git-${prKey}-cowswap.vercel.app`
   }
 
-  return 'https://swap.cow.fi'
+  return 'https://chameleon.exchange'
 }
 
 const DEFAULT_BASE_URL = getBaseUrl()

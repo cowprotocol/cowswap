@@ -1,7 +1,7 @@
 {
   "background_color": "#ffffff",
   "display": "standalone",
-  "homepage_url": "https://swap.cow.fi",
+  "homepage_url": "https://chameleon.exchange",
   "description": "Chameleaon swap finds the lowest prices from all decentralized exchanges and DEX aggregators & saves you more with p2p trading and protection from MEV",
   "icons": [
     {

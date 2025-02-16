@@ -22,7 +22,7 @@ export const metadata: Metadata = {
       { url: '/favicon-dark-mode.png', type: 'image/png', media: '(prefers-color-scheme: dark)' },
       { url: '/favicon-dark-mode.png', type: 'image/png', media: '(prefers-color-scheme: no-preference)' },
     ],
-    apple: '/apple-touch-icon.png',
+    apple: '/chameleon-2.png',
     other: {
       rel: 'mask-icon',
       url: '/safari-pinned-tab.svg',

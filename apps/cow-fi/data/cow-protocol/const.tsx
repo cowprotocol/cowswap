@@ -179,7 +179,7 @@ export const FAQ_DATA = [
       <>
         CoW Protocol is the decentralized, permissionless DeFi protocol that powers{' '}
         <Link
-          href="https://swap.cow.fi/"
+          href="https://chameleon.exchange/"
           external
           utmContent="cow-protocol-cow-swap"
           onClick={() => clickOnCowProtocol('click-cow-swap')}

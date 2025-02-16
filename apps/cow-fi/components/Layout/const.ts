@@ -102,7 +102,7 @@ export const NAV_ADDITIONAL_BUTTONS = [
   },
   {
     label: 'Trade on Chameleaon swap',
-    href: 'https://swap.cow.fi/#/1/swap/USDC/COW',
+    href: 'https://chameleon.exchange/#/1/swap/USDC/COW',
     utmContent: 'menubar-nav-button-trade-on-cow-swap',
     onClick: () => clickOnNavigation('click-trade-on-cow-swap'),
     external: true,

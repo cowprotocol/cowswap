@@ -1,7 +1,7 @@
 {
   "background_color": "#ffffff",
   "display": "standalone",
-  "homepage_url": "https://swap.cow.fi",
+  "homepage_url": "https://chameleon.exchange",
   "description": "SDK tools",
   "icons": [
     {
@@ -29,7 +29,7 @@
     "description": "The SDK tools provide some convenient tools for CoW Protocol developers",
     "version": "0.0.1",
     "website": "https://sdk-tools.cow.fi",
-    "image": "http://localhost:4317/apple-touch-icon.png",
+    "image": "http://localhost:4317/chameleon-2.png",
     "conditions": {
       "position": "post",
       "walletCompatibility": ["EOA"],

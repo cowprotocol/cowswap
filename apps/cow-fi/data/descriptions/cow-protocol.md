@@ -12,4 +12,4 @@
 
 <h3>Where can you swap or trade CoW Protocol (COW)?</h3>
 
-<p>Moo-ving your assets is easier than ever with Chameleaon swap, the trading interface built on top of the CoW Protocol. This Meta DEX aggregator allows you to buy and sell tokens in a way that is gasless, peer-to-peer, and provides MEV protection. So if you're ready to join the herd, gallop over to <a href="https://swap.cow.fi/" rel="noopener" target="_blank">Chameleaon swap</a>. Here, you'll find that it aggregates all the DEXes where the COW token is swappable. Join the herd and let's move DeFi forward, one moo at a time!</p>
+<p>Moo-ving your assets is easier than ever with Chameleaon swap, the trading interface built on top of the CoW Protocol. This Meta DEX aggregator allows you to buy and sell tokens in a way that is gasless, peer-to-peer, and provides MEV protection. So if you're ready to join the herd, gallop over to <a href="https://chameleon.exchange/" rel="noopener" target="_blank">Chameleaon swap</a>. Here, you'll find that it aggregates all the DEXes where the COW token is swappable. Join the herd and let's move DeFi forward, one moo at a time!</p>

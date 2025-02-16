@@ -117,8 +117,8 @@ export default function Page() {
             <h2>The Widget</h2>
             <p>
               The Widget is an iframe solution mirroring the web-hosted user interface (the "Interface") published at{' '}
-              <a target="_blank" rel="noreferrer" href="https://swap.cow.fi/">
-                https://swap.cow.fi/
+              <a target="_blank" rel="noreferrer" href="https://chameleon.exchange/">
+                https://chameleon.exchange/
               </a>{' '}
               and providing access to CoW Protocol and allowing users to submit orders into the Interface and exchange
               compatible tokens using the unique features of the Protocol.

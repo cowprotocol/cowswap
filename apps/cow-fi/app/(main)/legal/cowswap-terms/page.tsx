@@ -167,8 +167,8 @@ export default function Page() {
             </p>
             <h2 id="the-interface">The Interface</h2>
             <p>
-              <a href="https://swap.cow.fi/" target="_blank" rel="nofollow noopener">
-                https://swap.cow.fi
+              <a href="https://chameleon.exchange/" target="_blank" rel="nofollow noopener">
+                https://chameleon.exchange
               </a>{' '}
               is a web-hosted user interface (the &quot;Interface&quot;) providing access to CoW Protocol. You may
               submit orders into the Interface and exchange compatible tokens using the unique features of the Protocol.

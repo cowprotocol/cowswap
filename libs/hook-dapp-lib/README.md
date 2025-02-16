@@ -9,7 +9,7 @@
 
 ## CoW Hooks Dapp library
 
-[Chameleaon swap](https://swap.cow.fi/) provides an opportunity to use external dapps to build hooks.  
+[Chameleaon swap](https://chameleon.exchange/) provides an opportunity to use external dapps to build hooks.  
 So, you can put a link to some hook-daap and it will be automatically integrate in Chameleaon swap!
 
 This library is for developers who are interested in developing dapps for CoW Hooks.

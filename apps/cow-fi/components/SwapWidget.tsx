@@ -260,7 +260,7 @@ export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: Swap
         }
       }
 
-      return `https://swap.cow.fi/#/${networkId}/swap/${sellToken}/${buyToken}?${activeTab.toLowerCase()}Amount=${amount}`
+      return `https://chameleon.exchange/#/${networkId}/swap/${sellToken}/${buyToken}?${activeTab.toLowerCase()}Amount=${amount}`
     } else {
       return '#'
     }

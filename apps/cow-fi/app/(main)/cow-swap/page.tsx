@@ -82,7 +82,7 @@ export default function Page() {
           <Link
             bgColor={'#012F7A'}
             color={'#ff65ff'}
-            href="https://swap.cow.fi/"
+            href="https://chameleon.exchange/"
             external
             linkType={LinkType.HeroButton}
             utmContent="cow-swap-launch-app-button"
@@ -389,7 +389,7 @@ export default function Page() {
             <Link
               bgColor="#ff65ff"
               color="#012F7A"
-              href="https://swap.cow.fi/"
+              href="https://chameleon.exchange/"
               external
               linkType={LinkType.SectionTitleButton}
               utmContent="cow-swap-launch-app-button"
