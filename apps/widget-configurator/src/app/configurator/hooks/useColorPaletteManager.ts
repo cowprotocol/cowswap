@@ -5,6 +5,14 @@ import { PaletteMode } from '@mui/material'
 import { DEFAULT_DARK_PALETTE, DEFAULT_LIGHT_PALETTE } from '../consts'
 import { ColorPalette } from '../types'
 
+const LOCAL_STORAGE_KEY_NAME = 'COW_WIDGET_PALETTE_'
+
+const getCachedPalette = (mode: PaletteMode) => {
+  const cache = localStorage.getItem(`${LOCAL_STORAGE_KEY_NAME}${mode}`)
+
+  return cache ? JSON.parse(cache) : null
+}
+
 export interface ColorPaletteManager {
   defaultPalette: ColorPalette
   colorPalette: ColorPalette
@@ -17,23 +25,34 @@ export function useColorPaletteManager(mode: PaletteMode): ColorPaletteManager {
     return mode === 'dark' ? DEFAULT_DARK_PALETTE : DEFAULT_LIGHT_PALETTE
   }, [mode])
 
-  const [colorPalette, updateColorPalette] = useState<ColorPalette>(defaultPalette)
+  const [colorPalette, updateColorPalette] = useState<ColorPalette>(getCachedPalette(mode) || defaultPalette)
+
+  const persistPalette = useCallback(
+    (colorPalette: ColorPalette) => {
+      localStorage.setItem(`${LOCAL_STORAGE_KEY_NAME}${mode}`, JSON.stringify(colorPalette))
+    },
+    [mode]
+  )
 
   const setColorPalette = useCallback(
     (palette: ColorPalette | ((prevState: ColorPalette) => ColorPalette)) => {
       const newPalette = typeof palette === 'function' ? palette(colorPalette) : palette
+
       updateColorPalette(newPalette)
+      persistPalette(newPalette)
     },
-    [colorPalette]
+    [colorPalette, persistPalette]
   )
 
   const resetColorPalette = useCallback(() => {
     setColorPalette(defaultPalette)
   }, [defaultPalette, setColorPalette])
 
-  // Reset palette when mode changes
+  // Restore palette from localStorage when mode changes
   useEffect(() => {
-    updateColorPalette(defaultPalette)
+    const newPalette = getCachedPalette(mode)
+
+    updateColorPalette(newPalette || defaultPalette)
   }, [mode, defaultPalette])
 
   return useMemo(

@@ -31,10 +31,10 @@ const CONFIRM_MODAL_CONFIG = {
     <>
       <p>
         Since TWAP orders consist of multiple parts, prices are expected to fluctuate. However, to protect you against
-        bad prices, CoW Swap will not execute your TWAP if the price dips below this percentage.
+        bad prices, Chameleaon swap will not execute your TWAP if the price dips below this percentage.
       </p>
       <p>
-        This percentage only applies to dips; if prices are better than this percentage, CoW Swap will still execute
+        This percentage only applies to dips; if prices are better than this percentage, Chameleaon swap will still execute
         your order.
       </p>
     </>
@@ -42,8 +42,8 @@ const CONFIRM_MODAL_CONFIG = {
   limitPriceLabel: 'Limit price (incl. costs)',
   limitPriceTooltip: (
     <>
-      If CoW Swap cannot get this price or better (taking into account fees and price protection tolerance), your TWAP
-      will not execute. CoW Swap will <strong>always</strong> improve on this price if possible.
+      If Chameleaon swap cannot get this price or better (taking into account fees and price protection tolerance), your TWAP
+      will not execute. Chameleaon swap will <strong>always</strong> improve on this price if possible.
     </>
   ),
   minReceivedLabel: 'Minimum receive',

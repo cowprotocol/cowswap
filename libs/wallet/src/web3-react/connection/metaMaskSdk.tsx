@@ -23,7 +23,7 @@ const [web3MetaMask, web3MetaMaskHooks] = initializeConnector<MetaMaskSDK>(
       actions,
       options: {
         dappMetadata: {
-          name: 'CoW Swap',
+          name: 'Chameleaon swap',
           url: 'https://swap.cow.fi',
         },
         readonlyRPCMap: Object.fromEntries(

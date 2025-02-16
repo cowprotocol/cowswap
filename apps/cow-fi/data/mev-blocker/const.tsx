@@ -212,7 +212,7 @@ export const FAQ_DATA = [
           utmContent="mev-blocker-cow-swap"
           onClick={() => clickOnMevBlocker('click-cow-swap')}
         >
-          CoW Swap
+          Chameleaon swap
         </Link>{' '}
         offer MEV protection for your DeFi trades, most DeFi venues and NFT marketplaces do not provide any type of MEV
         protection.

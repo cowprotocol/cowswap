@@ -110,7 +110,7 @@ export default class TradeGp {
   readonly executionPrice: Price<Currency, Currency>
 
   /**
-   * The id returned by CoW Swap's quote backend, if any
+   * The id returned by Chameleaon swap's quote backend, if any
    *
    * Note that it won't be set for fast quotes, nor for quotes from other sources (paraswap, 0x, etc)
    */

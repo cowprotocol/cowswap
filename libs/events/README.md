@@ -1,3 +1,3 @@
 # Events
 
-Typescript events used in CoW Swap.
+Typescript events used in Chameleaon swap.

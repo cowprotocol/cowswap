@@ -9,7 +9,7 @@ import { UI } from '../enum'
 import { CowSwapTheme } from '../types'
 
 export function baseTheme<T extends CowProtocolTheme>(theme: CowSwapTheme): CowProtocolTheme {
-  const darkMode = theme === 'purple'
+  const darkMode = theme === 'dark'
 
   return {
     ...colors(darkMode),

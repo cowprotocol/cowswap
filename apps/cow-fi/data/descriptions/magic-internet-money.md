@@ -10,4 +10,4 @@
 
 <h3>Where Can You Swap or Trade Magic Internet Money (MIM)?</h3>
 
-<p>Wondering where to start your MIM journey? Look no further than <a href="https://swap.cow.fi/" rel="noopener" target="_blank">CoW Swap</a>! Built on the cutting-edge CoW Protocol, CoW Swap is a Meta DEX aggregator that provides you with the best prices for trades from a variety of on-chain liquidity sources. Whether you're looking to swap or trade, CoW Swap has you covered. Plus, it comes with MEV protection to guard against any potential MEV-related risks. Just remember, always use your magic responsibly!</p>
+<p>Wondering where to start your MIM journey? Look no further than <a href="https://swap.cow.fi/" rel="noopener" target="_blank">Chameleaon swap</a>! Built on the cutting-edge CoW Protocol, Chameleaon swap is a Meta DEX aggregator that provides you with the best prices for trades from a variety of on-chain liquidity sources. Whether you're looking to swap or trade, Chameleaon swap has you covered. Plus, it comes with MEV protection to guard against any potential MEV-related risks. Just remember, always use your magic responsibly!</p>

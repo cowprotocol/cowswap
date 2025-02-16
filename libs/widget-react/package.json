@@ -2,7 +2,7 @@
   "name": "@cowprotocol/widget-react",
   "version": "0.13.0",
   "type": "commonjs",
-  "description": "CoW Swap Widget Library. Allows you to easily embed a CoW Swap widget on your React application.",
+  "description": "Chameleaon swap Widget Library. Allows you to easily embed a Chameleaon swap widget on your React application.",
   "main": "index.js",
   "exports": {
     "import": "./index.js",

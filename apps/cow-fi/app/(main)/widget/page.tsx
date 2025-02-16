@@ -66,7 +66,7 @@ export default function Page() {
             Bring reliable, MEV-protected swaps to your users
           </HeroTitle>
           <HeroDescription color={Color.neutral30}>
-            Integrate the CoW Swap widget to bring seamless, MEV-protected trading to your website or dApp. Delight your
+            Integrate the Chameleaon swap widget to bring seamless, MEV-protected trading to your website or dApp. Delight your
             users while adding an extra revenue stream for your project - it's a win-win.
           </HeroDescription>
 
@@ -127,7 +127,7 @@ export default function Page() {
                 </TopicDescription>
               </TopicCardInner>
               <TopicImage width={400} height={400} heightMobile={300} orderReverseMobile bgColor="transparent">
-                <img src="images/eth-circles.svg" alt="Make Money with CoW Swap" width="340" height="214" />
+                <img src="images/eth-circles.svg" alt="Make Money with Chameleaon swap" width="340" height="214" />
               </TopicImage>
             </TopicCard>
 
@@ -145,7 +145,7 @@ export default function Page() {
               <TopicCardInner contentAlign="left">
                 <TopicTitle fontSize={67}>Integrate With Ease</TopicTitle>
                 <TopicDescription fontSize={24} color={Color.neutral80}>
-                  The CoW Swap widget is quick to install and easy to customize. Add the widget to your site in under 5
+                  The Chameleaon swap widget is quick to install and easy to customize. Add the widget to your site in under 5
                   minutes by copy-pasting a few lines of code. Contact our team for implementation details.
                 </TopicDescription>
               </TopicCardInner>
@@ -162,7 +162,7 @@ export default function Page() {
             </SectionTitleIcon>
             <SectionTitleText fontSize={62}>Every Bell, Whistle, and Moo</SectionTitleText>
             <SectionTitleDescription fontSize={24} color={Color.neutral40}>
-              With the CoW Swap widget, you can offer your users everything you know and love about CoW Swap, and more.
+              With the Chameleaon swap widget, you can offer your users everything you know and love about Chameleaon swap, and more.
               Oh, and yes… it does come with the “moo”.
             </SectionTitleDescription>
           </SectionTitleWrapper>
@@ -175,7 +175,7 @@ export default function Page() {
               <TopicCardInner contentAlign="left">
                 <TopicTitle>Full protection from MEV</TopicTitle>
                 <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
-                  CoW Swap offers the best MEV protection in the land. Thanks to a delegated trading model that relies
+                  Chameleaon swap offers the best MEV protection in the land. Thanks to a delegated trading model that relies
                   on experts to execute swaps, traders can rest assured that they're safe from the MEV bots.
                 </TopicDescription>
               </TopicCardInner>

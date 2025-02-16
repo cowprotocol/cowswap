@@ -1,3 +1,3 @@
 # Events
 
-Communication between window and iframe used in CoW Swap.
+Communication between window and iframe used in Chameleaon swap.

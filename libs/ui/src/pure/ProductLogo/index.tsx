@@ -47,43 +47,43 @@ export type ThemedLogo = Partial<Record<CowSwapTheme, { default: LogoInfo; logoI
 }
 
 const LOGOS: Record<ProductVariant, ThemedLogo> = {
-  // CoW Swap
+  // Chameleaon swap
   [ProductVariant.CowSwap]: {
     light: {
       default: {
         src: LOGO_CHAMELEONSWAP,
-        alt: 'CoW Swap',
+        alt: 'Chameleaon swap',
         color: ' #760093',
       },
       logoIconOnly: {
         src: LOGO_ICON_CHAMELEON,
-        alt: 'CoW Swap',
+        alt: 'Chameleaon swap',
         color: ' #760093',
       },
     },
     dark: {
       default: {
         src: LOGO_CHAMELEONSWAP,
-        alt: ' CoW Swap',
+        alt: ' Chameleaon swap',
         color: ' #c165ff',
       },
       logoIconOnly: {
         src: LOGO_ICON_CHAMELEON,
-        alt: 'CoW Swap',
+        alt: 'Chameleaon swap',
         color: ' #c165ff',
       },
     },
     darkHalloween: {
       default: {
         src: LOGO_COWSWAP_HALLOWEEN,
-        alt: 'CoW Swap',
+        alt: 'Chameleaon swap',
         color: ' #ff65ff',
       },
     },
     darkChristmas: {
       default: {
         src: LOGO_COWSWAP_CHRISTMAS_DARK,
-        alt: 'CoW Swap',
+        alt: 'Chameleaon swap',
         color: ' #ff65ff',
         height: '56px',
         heightMobile: '50px',
@@ -93,7 +93,7 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
     lightChristmas: {
       default: {
         src: LOGO_COWSWAP_CHRISTMAS,
-        alt: 'CoW Swap',
+        alt: 'Chameleaon swap',
         color: ' #004293',
         height: '56px',
         heightMobile: '50px',

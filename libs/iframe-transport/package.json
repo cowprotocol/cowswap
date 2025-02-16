@@ -2,7 +2,7 @@
   "name": "@cowprotocol/iframe-transport",
   "version": "1.0.1",
   "type": "commonjs",
-  "description": "CoW Swap iframe-transport",
+  "description": "Chameleaon swap iframe-transport",
   "main": "index.js",
   "exports": {
     "import": "./index.js",

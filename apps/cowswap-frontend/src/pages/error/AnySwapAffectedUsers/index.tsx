@@ -85,7 +85,7 @@ export default function AnySwapAffectedUsers() {
       <Title>Your account is affected by the AnySwap Hack</Title>
       <Content>
         <Container>
-          <img src={cow404IMG} alt="CoW Swap 404 not found" />
+          <img src={cow404IMG} alt="Chameleaon swap 404 not found" />
           <h2>Read how to prevent losing funds</h2>
         </Container>
         <p>

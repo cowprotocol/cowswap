@@ -24,7 +24,7 @@ export const NAV_ITEMS: MenuItem[] = [
     children: [
       {
         href: 'https://cow.fi/cow-swap',
-        label: 'About CoW Swap',
+        label: 'About Chameleaon swap',
         external: true,
       },
       { href: 'https://cow.fi/learn', label: 'FAQs', external: true },

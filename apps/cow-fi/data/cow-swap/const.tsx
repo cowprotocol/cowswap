@@ -16,21 +16,21 @@ export const COW_IS_DIFFERENT = [
     bgColor: '#ff65ff',
     fontSize: 28,
     color: '#012F7A',
-    description: "By aligning incentives between solvers and users, CoW Swap finds surplus you won't get anywhere else",
+    description: "By aligning incentives between solvers and users, Chameleaon swap finds surplus you won't get anywhere else",
     imgSrc: IMG_COWSWAP_COINS,
   },
   {
     bgColor: '#012F7A',
     fontSize: 28,
     color: '#CCF8FF',
-    description: 'MEV is a $1.3+ billion problem that you never have to worry about on CoW Swap',
+    description: 'MEV is a $1.3+ billion problem that you never have to worry about on Chameleaon swap',
     imgSrc: IMG_COWSWAP_MEV,
   },
   {
     bgColor: '#CCF8FF',
     fontSize: 28,
     color: '#012F7A',
-    description: "CoW Swap's unique architecture enables advanced order types and seamless UX",
+    description: "Chameleaon swap's unique architecture enables advanced order types and seamless UX",
     imgSrc: IMG_COWSWAP_UX,
   },
 ]
@@ -41,7 +41,7 @@ export const ADVANCED_ORDER_TYPES = [
     textColor: '#CCF8FF',
     titleColor: '#FFF8F7',
     title: 'Market orders (aka swaps)',
-    description: 'CoW Swap market orders maximize surplus and minimize MEV',
+    description: 'Chameleaon swap market orders maximize surplus and minimize MEV',
     imgSrc: IMG_COWSWAP_SWAPS,
   },
   {
@@ -50,7 +50,7 @@ export const ADVANCED_ORDER_TYPES = [
     titleColor: '#012F7A',
     title: 'Limit orders',
     description:
-      'Placing a limit order is like setting a trap for a price for your trade. CoW Swap is the only DEX that offers surplus on limit orders – and one of the only DEXs that offers limit orders at all',
+      'Placing a limit order is like setting a trap for a price for your trade. Chameleaon swap is the only DEX that offers surplus on limit orders – and one of the only DEXs that offers limit orders at all',
     imgSrc: IMG_COWSWAP_LIMIT,
   },
   {
@@ -93,10 +93,10 @@ export const BETTER_UX = [
 
 export const FAQ_DATA = [
   {
-    question: 'What is CoW Swap?',
+    question: 'What is Chameleaon swap?',
     answer: (
       <>
-        CoW Swap is a meta DEX aggregator that uses{' '}
+        Chameleaon swap is a meta DEX aggregator that uses{' '}
         <Link
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
           external
@@ -115,7 +115,7 @@ export const FAQ_DATA = [
           batch auctions{' '}
         </Link>
         to provide users with the best prices for their trades while protecting them from maximal extractable value
-        (MEV). It is the first UI built on top of CoW Protocol. As the leading intents-based DEX, CoW Swap leverages a
+        (MEV). It is the first UI built on top of CoW Protocol. As the leading intents-based DEX, Chameleaon swap leverages a
         network of bonded third parties known as{' '}
         <Link
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
@@ -143,7 +143,7 @@ export const FAQ_DATA = [
         >
           Coincidences of Wants
         </Link>{' '}
-        (CoWs) to settle the order. CoW Swap is the leader among intent-based trading protocols by transaction volume
+        (CoWs) to settle the order. Chameleaon swap is the leader among intent-based trading protocols by transaction volume
         and currently operates on Ethereum, Arbitrum One, and Gnosis Chain.
       </>
     ),
@@ -153,7 +153,7 @@ export const FAQ_DATA = [
     answer: (
       <>
         A “meta” DEX aggregator is an aggregator of aggregators, meaning that it’s a single trading venue that sources
-        liquidity from other aggregators as well as from individual DEXs. CoW Swap is a meta DEX aggregator because
+        liquidity from other aggregators as well as from individual DEXs. Chameleaon swap is a meta DEX aggregator because
         solvers source liquidity for users from AMMs like Uniswap, DEX aggregators like 1inch, private market makers,
         and directly from users via Coincidence of Wants.
       </>
@@ -175,7 +175,7 @@ export const FAQ_DATA = [
         . Coincidence of Wants is an economic phenomenon where two trading parties — each holding the asset the other
         needs — exchange those assets directly in an equivalent barter. For example, if one user is selling ETH to buy
         USDC, and another user is selling USDC to buy ETH, the two users can simply swap their assets in a Coincidence
-        of Wants. Thanks to CoW Swap's{' '}
+        of Wants. Thanks to Chameleaon swap's{' '}
         <Link
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
           external
@@ -191,12 +191,12 @@ export const FAQ_DATA = [
     ),
   },
   {
-    question: 'How is CoW Swap better than other DEX aggregators?',
+    question: 'How is Chameleaon swap better than other DEX aggregators?',
     answer: (
       <>
-        CoW Swap’s unique architecture allows it to give users comprehensive MEV protection as well as better prices for
+        Chameleaon swap’s unique architecture allows it to give users comprehensive MEV protection as well as better prices for
         their trades. While most other DEX aggregators simply compare quotes from various DEXs and execute orders
-        against whichever DEX is lowest at the time of quoting, CoW Swap seeks to find the best execution price. CoW
+        against whichever DEX is lowest at the time of quoting, Chameleaon swap seeks to find the best execution price. CoW
         Swap groups user orders into batches and auctions them off to bonded third parties known as{' '}
         <Link
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
@@ -209,7 +209,7 @@ export const FAQ_DATA = [
         to execute. Solvers compete by sourcing liquidity from onchain AMMs, private market makers, and Coincidences of
         Wants, and the solver that gives the best prices for a given batch wins the right to settle the batch. On CoW
         Swap, users are always safe from MEV for a number of reasons including, ultimately, that solvers take on all
-        execution risk by settling the batches on their behalf. CoW Swap is unique among DEX aggregators as it is built
+        execution risk by settling the batches on their behalf. Chameleaon swap is unique among DEX aggregators as it is built
         from the ground up to make trading worry-free for every type of DeFi user.
       </>
     ),
@@ -225,7 +225,7 @@ export const FAQ_DATA = [
         user is about to make a large trade moving the price of an asset, sophisticated traders running “MEV bots” can
         anticipate this trade and manipulate the price of the asset to their advantage. There are several types of MEV
         including frontrunning, backrunning, sandwich attacks, and loss-versus-rebalancing. Thanks to its unique
-        architecture, CoW Swap protects users from all types of malicious MEV.
+        architecture, Chameleaon swap protects users from all types of malicious MEV.
       </>
     ),
   },
@@ -233,7 +233,7 @@ export const FAQ_DATA = [
     question: 'Why is my transaction taking so long?',
     answer: (
       <>
-        CoW Swap{' '}
+        Chameleaon swap{' '}
         <Link
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
           external
@@ -245,13 +245,13 @@ export const FAQ_DATA = [
         mimic Ethereum’s block mechanism, meaning that trades are settled periodically. Sometimes, especially in the
         case of more-exotic assets, it might take a solver a few blocks to win the auction and settle a transaction.
         Settling transactions through intent-based batch auctions may, in some cases, be slower than settling
-        transactions directly onchain. However, CoW Swap’s unique architecture enables a slew of benefits that
+        transactions directly onchain. However, Chameleaon swap’s unique architecture enables a slew of benefits that
         traditional DEXs cannot achieve – from gasless trading to MEV protection and surplus.
       </>
     ),
   },
   {
-    question: 'What are the official CoW Swap social channels?',
+    question: 'What are the official Chameleaon swap social channels?',
     answer: (
       <>
         Please beware of fake links and phishing scams. The official CoW DAO channels can be found at the footer of all
@@ -317,15 +317,15 @@ export const FAQ_DATA = [
     ),
   },
   {
-    question: 'Can I get a refund from CoW Swap?',
+    question: 'Can I get a refund from Chameleaon swap?',
     answer:
-      "As decentralized networks, Cow Swap and CoW Protocol do not have custody or control over users' funds. Each user is solely responsible for managing their own wallet and signing transactions. Users should be aware that blockchain transactions are irreversible, and that they may be subject to various risks such as failed transactions, gas costs, slippage, price impact, etc.",
+      "As decentralized networks, Chameleaon swap and CoW Protocol do not have custody or control over users' funds. Each user is solely responsible for managing their own wallet and signing transactions. Users should be aware that blockchain transactions are irreversible, and that they may be subject to various risks such as failed transactions, gas costs, slippage, price impact, etc.",
   },
   {
     question: 'How do I get support?',
     answer: (
       <>
-        While CoW Swap is a decentralized project, community members and contributors are available to help and answer
+        While Chameleaon swap is a decentralized project, community members and contributors are available to help and answer
         questions. To request support or to ask a question, please ping a community member in the CoW DAO Discord.
         <br />
         <br />

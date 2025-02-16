@@ -1,6 +1,6 @@
 [![Tests](https://github.com/cowprotocol/cowswap/workflows/CI/badge.svg)](https://github.com/cowprotocol/cowswap/actions/workflows/ci.yml?query=workflow%3ACI)
 
-CoW Swap is the first trading interface built on top of CoW Protocol.
+Chameleaon swap is the first trading interface built on top of CoW Protocol.
 
 It allows you to buy and sell tokens using gasless orders that are settled
 peer-to-peer among its users or into any on-chain liquidity source while
@@ -8,9 +8,9 @@ providing MEV protection.
 
 | **Platform**          | **Link**                                                                                                      |
 | --------------------- | ------------------------------------------------------------------------------------------------------------- |
-| 🐮 **CoW Swap** 🐮    | [swap.cow.fi](https://swap.cow.fi/)                                                                           |
-| CoW Swap (IPFS)       | Every release is deployed automatically to IPFS ([Releases](https://github.com/cowprotocol/cowswap/releases)) |
-| CoW Swap (ENS)        | [ens://cowswap.eth](ens://cowswap.eth) or ([cowswap.eth.limo](https://cowswap.eth.limo))                      |
+| 🐮 **Chameleaon swap** 🐮    | [swap.cow.fi](https://swap.cow.fi/)                                                                           |
+| Chameleaon swap (IPFS)       | Every release is deployed automatically to IPFS ([Releases](https://github.com/cowprotocol/cowswap/releases)) |
+| Chameleaon swap (ENS)        | [ens://cowswap.eth](ens://cowswap.eth) or ([cowswap.eth.limo](https://cowswap.eth.limo))                      |
 | CoW Protocol          | [cow.fi](https://cow.fi)                                                                                      |
 | Docs                  | [docs.cow.fi](https://docs.cow.fi)                                                                            |
 | Governance (Snapshot) | [snapshot.org/#/cow.eth](https://snapshot.org/#/cow.eth)                                                      |
@@ -19,7 +19,7 @@ providing MEV protection.
 | Discord               | [discord.com/invite/cowprotocol](https://discord.com/invite/cowprotocol)                                      |
 | Forum                 | [forum.cow.fi](https://forum.cow.fi)                                                                          |
 
-# 🐮 Run CoW Swap
+# 🐮 Run Chameleaon swap
 
 First install Dependencies:
 
@@ -29,7 +29,7 @@ yarn
 
 ## Run
 
-Start CoW Swap on `http://localhost:3000`
+Start Chameleaon swap on `http://localhost:3000`
 
 ```bash
 yarn start
@@ -137,7 +137,7 @@ yarn cypress
 
 ## Build/test UI Library
 
-CoW Swap has a library of reusable components.
+Chameleaon swap has a library of reusable components.
 
 ```bash
 yarn ui:build
@@ -150,7 +150,7 @@ yarn ui:test
 yarn build
 ```
 
-Analyze CoW Swap bundle:
+Analyze Chameleaon swap bundle:
 
 ```bash
 # Use one of the following templates: "sunburst" | "treemap" | "network" | "raw-data" | "list";
@@ -203,7 +203,7 @@ REACT_APP_ORDER_BOOK_URLS='{"1":"https://YOUR_HOST","100":"https://YOUR_HOST","5
 
 The BFF API is a helper API that provides some additional data to the frontend.
 It is a API that is used to enhance the frontend experience enabling some
-features. It is not consider a required API for CoW Swap core functionality, the
+features. It is not consider a required API for Chameleaon swap core functionality, the
 app will still allow the user to place order and will have some fallback logics
 in case this API is not available.
 
@@ -221,7 +221,7 @@ REACT_APP_BFF_BASE_URL=https://bff.cow.fi
 
 The CMS API is a helper API that provides some additional content to the frontend.
 
-It is not considered a required API for CoW Swap core functionality, the
+It is not considered a required API for Chameleaon swap core functionality, the
 app will still allow the user to place orders and will have some fallback logic
 in case this API is not available.
 
@@ -237,7 +237,7 @@ REACT_APP_CMS_BASE_URL=https://cms.cow.fi/api
 
 ## Price feeds
 
-CoW Swap tries to find the best price available on-chain using some price feeds.
+Chameleaon swap tries to find the best price available on-chain using some price feeds.
 
 All price feeds are enabled by default, but they can be individually disabled by
 using an environment variable:

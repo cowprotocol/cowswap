@@ -6,7 +6,7 @@ import { MuiColorInput } from 'mui-color-input'
 import { ColorPaletteManager } from '../hooks/useColorPaletteManager'
 import { ColorPalette } from '../types'
 
-const visibleColorKeys: Array<keyof ColorPalette> = ['primary','background', 'paper', 'text']
+const visibleColorKeys: Array<keyof ColorPalette> = ['primary', 'paper', 'text']
 
 export function PaletteControl({ paletteManager }: { paletteManager: ColorPaletteManager }) {
   const { colorPalette, resetColorPalette } = paletteManager

@@ -21,7 +21,7 @@ export function BundleTxWrapBanner() {
     <InlineBanner bannerType="information" iconSize={32}>
       <strong>Token wrapping bundling</strong>
       <p>
-        For your convenience, CoW Swap will bundle all the necessary actions for this trade into a single transaction.
+        For your convenience, Chameleaon swap will bundle all the necessary actions for this trade into a single transaction.
         This includes the&nbsp;{nativeCurrencySymbol}&nbsp;wrapping and, if needed,&nbsp;{wrappedCurrencySymbol}
         &nbsp;approval. Even if the trade fails, your wrapping and approval will be done!
       </p>

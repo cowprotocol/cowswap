@@ -95,7 +95,7 @@ const PRODUCT_LOGO_LINKS: {
 }[] = [
   {
     href: 'https://swap.cow.fi/',
-    label: 'CoW Swap',
+    label: 'Chameleaon swap',
     productVariant: ProductVariant.CowSwap,
     external: true,
     utmContent: 'product-cow-swap',
@@ -157,7 +157,7 @@ const GLOBAL_FOOTER_NAV_ITEMS: MenuItem[] = [
     label: 'Products',
     children: [
       {
-        label: 'CoW Swap',
+        label: 'Chameleaon swap',
         href: 'https://cow.fi/cow-swap',
         external: true,
         utmContent: 'footer-products-cow-swap',

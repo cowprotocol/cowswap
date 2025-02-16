@@ -25,7 +25,7 @@ export const CompatibilityIssuesWarning = memo((props: CompatibilityIssuesWarnin
         showDetailsText="Read more about unsupported wallets"
         detailsText={
           <>
-            <p>CoW Swap requires offline signatures, which is currently not supported by some wallets.</p>
+            <p>Chameleaon swap requires offline signatures, which is currently not supported by some wallets.</p>
             <p>
               Read more in the{' '}
               <HashLink target="_blank" to="/faq/protocol#wallet-not-supported">

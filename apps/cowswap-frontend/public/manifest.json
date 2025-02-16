@@ -2,7 +2,7 @@
   "background_color": "#ffffff",
   "display": "standalone",
   "homepage_url": "https://swap.cow.fi",
-  "description": "CoW Swap finds the lowest prices from all decentralized exchanges and DEX aggregators & saves you more with p2p trading and protection from MEV",
+  "description": "Chameleaon swap finds the lowest prices from all decentralized exchanges and DEX aggregators & saves you more with p2p trading and protection from MEV",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
@@ -18,8 +18,8 @@
     }
   ],
   "orientation": "portrait",
-  "name": "CoW Swap",
-  "short_name": "CoW Swap",
+  "name": "Chameleaon swap",
+  "short_name": "Chameleaon swap",
   "start_url": ".",
   "theme_color": "#ffffff"
 }

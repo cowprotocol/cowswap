@@ -53,7 +53,7 @@ export function PermitModal(props: PermitModalProps) {
       step === 'approve' ? (
         <>
           Approve spending <TokenSymbol token={inputAmount?.currency} /> <br />
-          on CoW Swap
+          on Chameleaon swap
         </>
       ) : (
         `Confirm ${orderType}`

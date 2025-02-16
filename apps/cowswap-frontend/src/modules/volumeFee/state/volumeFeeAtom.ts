@@ -24,7 +24,7 @@ export const volumeFeeAtom = atom<VolumeFee | undefined>((get) => {
     return undefined
   }
 
-  // CoW Swap Fee won't be enabled when in Widget mode, thus it takes precedence here
+  // Chameleaon swap Fee won't be enabled when in Widget mode, thus it takes precedence here
   return safeAppFee || cowSwapFee || widgetPartnerFee
 })
 

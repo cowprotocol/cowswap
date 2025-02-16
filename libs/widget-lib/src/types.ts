@@ -143,19 +143,19 @@ export type CowSwapWidgetPalette = { baseTheme: CowSwapTheme } & CowSwapWidgetPa
 
 export interface CowSwapWidgetSounds {
   /**
-   * The sound to play when the order is executed. Defaults to world wide famous CoW Swap moooooooooo!
+   * The sound to play when the order is executed. Defaults to world wide famous Chameleaon swap moooooooooo!
    * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
    */
   postOrder?: string | null
 
   /**
-   * The sound to play when the order is executed. Defaults to world wide famous CoW Swap happy moooooooooo!
+   * The sound to play when the order is executed. Defaults to world wide famous Chameleaon swap happy moooooooooo!
    * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
    */
   orderExecuted?: string | null
 
   /**
-   * The sound to play when the order is executed. Defaults to world wide famous CoW Swap unhappy moooooooooo!
+   * The sound to play when the order is executed. Defaults to world wide famous Chameleaon swap unhappy moooooooooo!
    * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
    */
   orderError?: string | null

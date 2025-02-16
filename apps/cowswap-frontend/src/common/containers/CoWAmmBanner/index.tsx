@@ -58,7 +58,7 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
     }
 
     cowAnalytics.sendEvent({
-      category: 'CoW Swap',
+      category: 'Chameleaon swap',
       action: `CoW AMM Banner [${key}] CTA Clicked`,
     })
 
@@ -67,7 +67,7 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
 
   const handleClose = useCallback(() => {
     cowAnalytics.sendEvent({
-      category: 'CoW Swap',
+      category: 'Chameleaon swap',
       action: `CoW AMM Banner [${key}] Closed`,
     })
   }, [key])

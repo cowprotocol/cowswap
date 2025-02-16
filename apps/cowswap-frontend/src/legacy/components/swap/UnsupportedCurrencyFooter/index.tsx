@@ -11,7 +11,7 @@ import UnsupportedCurrencyFooterMod, {
 
 const DEFAULT_DETAILS_TEXT = (
   <div>
-    CoW Swap does not support all tokens. Some tokens implement similar, but logically different ERC20 contract methods
+    Chameleaon swap does not support all tokens. Some tokens implement similar, but logically different ERC20 contract methods
     which do not operate optimally with CoW Protocol.
     <p>
       For more information, please refer to the{' '}

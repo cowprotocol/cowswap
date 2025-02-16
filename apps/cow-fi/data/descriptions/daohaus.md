@@ -12,4 +12,4 @@
 
 <h3>Where can you swap or trade HausDAO (HAUS)?</h3>
 
-<p>Ready to add some HAUS to your herd? You can swap or trade HAUS over at <a href="https://swap.cow.fi/" target="_blank" rel="noopener">CoW Swap</a>, the Meta DEX aggregator that always gets you the best deals from various DEXes. It's a cozy, efficient spot in the pasture for all your crypto trading needs. Plus, with Maximal Extractable Value (MEV) protection, you can trade with confidence knowing you're getting the fairest and most transparent transactions. So, join us in the pasture and start your HAUS journey today!</p>
+<p>Ready to add some HAUS to your herd? You can swap or trade HAUS over at <a href="https://swap.cow.fi/" target="_blank" rel="noopener">Chameleaon swap</a>, the Meta DEX aggregator that always gets you the best deals from various DEXes. It's a cozy, efficient spot in the pasture for all your crypto trading needs. Plus, with Maximal Extractable Value (MEV) protection, you can trade with confidence knowing you're getting the fairest and most transparent transactions. So, join us in the pasture and start your HAUS journey today!</p>

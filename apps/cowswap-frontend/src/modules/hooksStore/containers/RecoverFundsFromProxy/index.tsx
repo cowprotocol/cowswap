@@ -49,7 +49,7 @@ function FAQ({ explorerLink }: { explorerLink: string | undefined }) {
       answer: (
         <>
           <ExternalLink href="https://github.com/cowdao-grants/cow-shed">CoW Shed</ExternalLink> is a helper contract
-          that enhances user experience inside CoW Swap for features like{' '}
+          that enhances user experience inside Chameleaon swap for features like{' '}
           <ExternalLink href="https://docs.cow.fi/cow-protocol/reference/core/intents/hooks">CoW Hooks</ExternalLink>
           .
           <br />

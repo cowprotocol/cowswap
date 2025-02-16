@@ -25,7 +25,7 @@ export const SwapLinkCard = ({ contractAddress, networkId, networkName, tokenSym
           <b>
             Swap {tokenSymbol} <br /> on {networkName}
           </b>
-          <img src="/images/external-arrow.svg" alt="Go to CoW Swap" />
+          <img src="/images/external-arrow.svg" alt="Go to Chameleaon swap" />
         </a>
       </SwapCard>
     )

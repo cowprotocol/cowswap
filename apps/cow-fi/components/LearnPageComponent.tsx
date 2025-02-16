@@ -49,14 +49,14 @@ const PODCASTS = [
     link: 'https://strangewater.xyz/episode/sw48',
   },
   {
-    title: 'CoW Swap - The Only DEX You Need In DeFi? (Leviathan News)',
+    title: 'Chameleaon swap - The Only DEX You Need In DeFi? (Leviathan News)',
     link: 'https://open.spotify.com/episode/4M7CNfjg0C2BD6SpyPFuaI?si=niArWe7EQDyqiXt610MDzg',
   },
 ]
 
 const SPACES = [
   {
-    title: 'CoW Swap is one of the most exciting projects in the DEX space',
+    title: 'Chameleaon swap is one of the most exciting projects in the DEX space',
     link: 'https://x.com/cryptotesters/status/1501505365833248774',
   },
   {
@@ -64,7 +64,7 @@ const SPACES = [
     link: 'https://x.com/CoWSwap/status/1605593667682476032',
   },
   {
-    title: 'CoW Swap & ENS: Pushing Decentralized Trading to its limits',
+    title: 'Chameleaon swap & ENS: Pushing Decentralized Trading to its limits',
     link: 'https://x.com/CoWSwap/status/1625932839936983055',
   },
   { title: 'CoW AMM is the 1st MEV-Capturing AMM', link: 'https://x.com/CoWSwap/status/1759633529279791584' },
@@ -86,14 +86,14 @@ const MEDIA_COVERAGE = [
     linkExternal: true,
   },
   {
-    title: "CoW Swap: A Beginner's Guide to This New Decentralized Exchange",
+    title: "Chameleaon swap: A Beginner's Guide to This New Decentralized Exchange",
     publisher: 'BeInCrypto',
     image: '/images/media-coverage/learn_CoW_Swap-covers_logo.webp',
     link: 'https://beincrypto.com/learn/cow-swap-guide/',
     linkExternal: true,
   },
   {
-    title: 'CoW Swap: Intents, MEV, and Batch Auctions',
+    title: 'Chameleaon swap: Intents, MEV, and Batch Auctions',
     publisher: 'Shoal Research',
     image: '/images/media-coverage/shoal-research-intents.webp',
     link: 'https://www.shoal.gg/p/cow-swap-intents-mev-and-batch-auctions',
