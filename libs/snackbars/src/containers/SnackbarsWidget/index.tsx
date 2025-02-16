@@ -81,7 +81,7 @@ interface SnackbarsWidgetProps {
   hidden?: boolean
   /**
    * Id of a DOM element to which the snackbars should be anchored (displayed under)
-   * In CoW Swap the element is the header menu
+   * In Chameleaon swap the element is the header menu
    */
   anchorElementId?: string
 }

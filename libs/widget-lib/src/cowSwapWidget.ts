@@ -26,7 +26,7 @@ const DEFAULT_WIDTH = '450px'
 const HEIGHT_THRESHOLD = 20
 
 /**
- * Callback function signature for updating the CoW Swap Widget.
+ * Callback function signature for updating the Chameleaon swap Widget.
  */
 export interface CowSwapWidgetHandler {
   updateParams: (params: CowSwapWidgetParams) => void
@@ -36,7 +36,7 @@ export interface CowSwapWidgetHandler {
 }
 
 /**
- * Generates and injects a CoW Swap Widget into the provided container.
+ * Generates and injects a Chameleaon swap Widget into the provided container.
  * @param container - The HTML element to inject the widget into.
  * @param params - Parameters for configuring the widget.
  * @returns A callback function to update the widget with new settings.
@@ -143,7 +143,7 @@ function updateProvider(
 }
 
 /**
- * Creates an iframe element for the CoW Swap Widget based on provided parameters and settings.
+ * Creates an iframe element for the Chameleaon swap Widget based on provided parameters and settings.
  * @param params - Parameters for the widget.
  * @returns The generated HTMLIFrameElement.
  */
@@ -162,7 +162,7 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
 }
 
 /**
- * Updates the CoW Swap Widget based on the new settings provided.
+ * Updates the Chameleaon swap Widget based on the new settings provided.
  * @param params - New params for the widget.
  * @param contentWindow - Window object of the widget's iframe.
  */

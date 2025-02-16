@@ -39,7 +39,7 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
           icon: 'alert',
           content: (
             <>
-              Failed to switch networks from the CoW Swap Interface. In order to use CoW Swap on{' '}
+              Failed to switch networks from the Chameleaon swap Interface. In order to use Chameleaon swap on{' '}
               {getChainInfo(targetChain)?.label}, you must change the network in your wallet.
             </>
           ),

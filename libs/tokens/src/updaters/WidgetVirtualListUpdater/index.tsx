@@ -17,7 +17,7 @@ export interface WidgetVirtualListUpdaterProps {
 
 /**
  * The updater converts custom tokens provided by widget integrator to a virtual list
- * This list will be used by CoW Swap as a regular list, but it will not be displayed in the token lists settings
+ * This list will be used by Chameleaon swap as a regular list, but it will not be displayed in the token lists settings
  */
 export function WidgetVirtualListUpdater({ customTokens, appCode }: WidgetVirtualListUpdaterProps) {
   const setVirtualListsState = useSetAtom(virtualListsStateAtom)

@@ -71,18 +71,18 @@ export default function Page() {
     <PageWrapper>
       <HeroContainer variant="secondary">
         <HeroContent variant="secondary">
-          <HeroSubtitle color={'#012F7A'}>CoW Swap</HeroSubtitle>
+          <HeroSubtitle color={'#012F7A'}>Chameleaon swap</HeroSubtitle>
           <HeroTitle>
             Don't worry,
             <br /> trade happy
           </HeroTitle>
           <HeroDescription>
-            CoW Swap protects traders from the dangers of DeFi, so you can do what you want without needing to worry
+            Chameleaon swap protects traders from the dangers of DeFi, so you can do what you want without needing to worry
           </HeroDescription>
           <Link
             bgColor={'#012F7A'}
-            color={'#65D9FF'}
-            href="https://swap.cow.fi/"
+            color={'#ff65ff'}
+            href="https://chameleon.exchange/"
             external
             linkType={LinkType.HeroButton}
             utmContent="cow-swap-launch-app-button"
@@ -96,7 +96,7 @@ export default function Page() {
         </HeroImage>
       </HeroContainer>
 
-      <MetricsCard bgColor="#65D9FF" color="#012F7A" columns={3} touchFooter>
+      <MetricsCard bgColor="#ff65ff" color="#012F7A" columns={3} touchFooter>
         <MetricsItem dividerColor="#005EB7">
           <h2>#1</h2>
           <p>retention rate of all major DEXs</p>
@@ -134,9 +134,9 @@ export default function Page() {
               <LazySVG src={IMG_ICON_UNICORN} className="image-reverse" />
             </SectionTitleIcon>
 
-            <SectionTitleText>CoW Swap is different</SectionTitleText>
+            <SectionTitleText>Chameleaon swap is different</SectionTitleText>
             <SectionTitleDescription maxWidth={900} color={Color.neutral50}>
-              Unlike other exchanges, CoW Swap is built around frequent batch auctions, which are designed to find the
+              Unlike other exchanges, Chameleaon swap is built around frequent batch auctions, which are designed to find the
               best liquidity at any point in time and protect you from MEV
             </SectionTitleDescription>
           </SectionTitleWrapper>
@@ -170,13 +170,13 @@ export default function Page() {
             <SectionTitleIcon size={126}>
               <LazySVG src={ICON_BULB} />
             </SectionTitleIcon>
-            <SectionTitleText>CoW Swap is the first user interface built on top of CoW Protocol</SectionTitleText>
+            <SectionTitleText>Chameleaon swap is the first user interface built on top of CoW Protocol</SectionTitleText>
             <SectionTitleDescription color={Color.neutral50}>
               A powerful, open-source, and permissionless DEX aggregation protocol that anyone can integrate for a
               variety of DeFi purposes
             </SectionTitleDescription>
             <Link
-              bgColor="#65D9FF"
+              bgColor="#ff65ff"
               color="#012F7A"
               href="/cow-protocol"
               linkType={LinkType.SectionTitleButton}
@@ -196,7 +196,7 @@ export default function Page() {
             </SectionTitleIcon>
             <SectionTitleText>S-moooo-th trading</SectionTitleText>
             <SectionTitleDescription color={Color.neutral60}>
-              CoW Swap features the smoothest trading experiences in DeFi, allowing you to worry less and do more.
+              Chameleaon swap features the smoothest trading experiences in DeFi, allowing you to worry less and do more.
             </SectionTitleDescription>
           </SectionTitleWrapper>
 
@@ -285,7 +285,7 @@ export default function Page() {
                 <TopicTitle color={Color.neutral100} fontSize={51}>
                   $2,500
                 </TopicTitle>
-                <TopicDescription fontSize={21} color="#65D9FF">
+                <TopicDescription fontSize={21} color="#ff65ff">
                   Average trade size (more than 2x Uniswap&apos;s)
                 </TopicDescription>
               </TopicCardInner>
@@ -302,7 +302,7 @@ export default function Page() {
                 <TopicTitle color={Color.neutral100} fontSize={51}>
                   39%
                 </TopicTitle>
-                <TopicDescription fontSize={21} color="#65D9FF">
+                <TopicDescription fontSize={21} color="#ff65ff">
                   Market share among smart contract wallets
                 </TopicDescription>
               </TopicCardInner>
@@ -319,7 +319,7 @@ export default function Page() {
                 <TopicTitle color={Color.neutral100} fontSize={51}>
                   42%
                 </TopicTitle>
-                <TopicDescription fontSize={21} color="#65D9FF">
+                <TopicDescription fontSize={21} color="#ff65ff">
                   Monthly user retention rate – the highest in DeFi
                 </TopicDescription>
               </TopicCardInner>
@@ -336,7 +336,7 @@ export default function Page() {
                 <TopicTitle color={Color.neutral100} fontSize={51}>
                   #1
                 </TopicTitle>
-                <TopicDescription fontSize={21} color="#65D9FF">
+                <TopicDescription fontSize={21} color="#ff65ff">
                   Intents-based trading platform
                 </TopicDescription>
               </TopicCardInner>
@@ -387,9 +387,9 @@ export default function Page() {
               Trade seamlessly, with the most user-protective DEX in DeFi
             </SectionTitleDescription>
             <Link
-              bgColor="#65D9FF"
+              bgColor="#ff65ff"
               color="#012F7A"
-              href="https://swap.cow.fi/"
+              href="https://chameleon.exchange/"
               external
               linkType={LinkType.SectionTitleButton}
               utmContent="cow-swap-launch-app-button"

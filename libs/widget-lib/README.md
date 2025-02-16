@@ -1,4 +1,4 @@
-# CoW Swap Widget Library
+# Chameleaon swap Widget Library
 
 Integrate the power of `CowSwap` into your product!
 With the widget, you can create an incredible trading interface. Specify the required pair of currencies, customize the

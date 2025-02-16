@@ -2,7 +2,7 @@
   "name": "@cowprotocol/hook-dapp-lib",
   "version": "1.6.0",
   "type": "commonjs",
-  "description": "CoW Swap Hook Dapp Library. Allows you to develop pre/post hooks dapps for CoW Protocol.",
+  "description": "Chameleaon swap Hook Dapp Library. Allows you to develop pre/post hooks dapps for CoW Protocol.",
   "main": "index.js",
   "exports": {
     "import": "./index.js",

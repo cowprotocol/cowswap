@@ -7,7 +7,7 @@ export class WalletConnectV2Connector extends WalletConnect {
     await super.activate(isNetworkSwitching ? desiredChainId : undefined)
 
     /**
-     * In CoW Swap we have "change wallet" functionality.
+     * In Chameleaon swap we have "change wallet" functionality.
      * When user changes wallet from WC to another one and back to WC, we need to update the state.
      * Because in `WalletConnect.activate()` they don't update the state if the session is the same.
      */

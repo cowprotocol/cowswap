@@ -191,7 +191,7 @@ export function SurplusModal(props: SurplusModalProps) {
         </StyledExternalLink>
       )}
       <p>
-        CoW Swap is the only token exchange that gets you extra tokens.{' '}
+        Chameleaon swap is the only token exchange that gets you extra tokens.{' '}
         <ExternalLink href={'https://blog.cow.fi/announcing-cow-swap-surplus-notifications-f679c77702ea'}>
           Learn how ↗
         </ExternalLink>

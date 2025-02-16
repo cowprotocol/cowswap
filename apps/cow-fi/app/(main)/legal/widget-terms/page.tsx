@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 `
 
 export default function Page() {
-  const title = 'CoW Swap Widget & Partner Fee Program Terms and Conditions'
+  const title = 'Chameleaon swap Widget & Partner Fee Program Terms and Conditions'
 
   return (
     <Wrapper>
@@ -43,7 +43,7 @@ export default function Page() {
 
           <BodyContent>
             <p>
-              These Terms and Conditions (the "Terms") govern the integration of the CoW Swap Widget (the "Widget"). The
+              These Terms and Conditions (the "Terms") govern the integration of the Chameleaon swap Widget (the "Widget"). The
               Widget is provided to you ("you", the "Partner") by CoW DAO (the "Provider", "we", "our", or "us").
             </p>
             <p>
@@ -117,8 +117,8 @@ export default function Page() {
             <h2>The Widget</h2>
             <p>
               The Widget is an iframe solution mirroring the web-hosted user interface (the "Interface") published at{' '}
-              <a target="_blank" rel="noreferrer" href="https://swap.cow.fi/">
-                https://swap.cow.fi/
+              <a target="_blank" rel="noreferrer" href="https://chameleon.exchange/">
+                https://chameleon.exchange/
               </a>{' '}
               and providing access to CoW Protocol and allowing users to submit orders into the Interface and exchange
               compatible tokens using the unique features of the Protocol.

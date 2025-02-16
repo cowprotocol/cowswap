@@ -48,8 +48,8 @@ export function DaosPageComponent() {
       <HeroContainer variant="secondary">
         <HeroContent variant="secondary">
           <HeroSubtitle color={'#66018E'}>DAOs</HeroSubtitle>
-          <HeroTitle maxWidth={470}>Savvy DAOs Choose CoW Swap</HeroTitle>
-          <HeroDescription>The smartest DAOs trust CoW Swap with their most-important trades</HeroDescription>
+          <HeroTitle maxWidth={470}>Savvy DAOs Choose Chameleaon swap</HeroTitle>
+          <HeroDescription>The smartest DAOs trust Chameleaon swap with their most-important trades</HeroDescription>
         </HeroContent>
         <HeroImage width={470} height={400} color={'#66018E'}>
           <LazySVG src={IMG_ICON_BULB_COW} />
@@ -82,7 +82,7 @@ export function DaosPageComponent() {
             </SectionTitleIcon>
             <SectionTitleText>Expert trading for expert DAOs</SectionTitleText>
             <SectionTitleDescription maxWidth={900}>
-              CoW Swap is the only DEX built to solve the unique challenges faced by DAOs
+              Chameleaon swap is the only DEX built to solve the unique challenges faced by DAOs
             </SectionTitleDescription>
           </SectionTitleWrapper>
 
@@ -136,7 +136,7 @@ export function DaosPageComponent() {
             </SectionTitleIcon>
             <SectionTitleText>Advanced order types</SectionTitleText>
             <SectionTitleDescription fontSize={24} color={Color.neutral40}>
-              CoW Swap's many order types help you get better prices for your trades, manage token launches, facilitate
+              Chameleaon swap's many order types help you get better prices for your trades, manage token launches, facilitate
               buybacks, and much more
             </SectionTitleDescription>
           </SectionTitleWrapper>
@@ -183,7 +183,7 @@ export function DaosPageComponent() {
               <TopicCardInner contentAlign="left">
                 <TopicTitle>Limit Orders</TopicTitle>
                 <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
-                  CoW Swap's surplus-capturing limit orders allow you to set a price and sit back while your order gets
+                  Chameleaon swap's surplus-capturing limit orders allow you to set a price and sit back while your order gets
                   filled over time - perfect for token buybacks and other large trades.
                 </TopicDescription>
               </TopicCardInner>
@@ -196,7 +196,7 @@ export function DaosPageComponent() {
               <TopicCardInner contentAlign="left">
                 <TopicTitle>Price Walls</TopicTitle>
                 <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
-                  Pick an asset, define a threshold price, and CoW Swap will automatically sell above the threshold, and
+                  Pick an asset, define a threshold price, and Chameleaon swap will automatically sell above the threshold, and
                   buy below it.
                 </TopicDescription>
               </TopicCardInner>
@@ -217,7 +217,7 @@ export function DaosPageComponent() {
                   >
                     Dump.services
                   </Link>
-                  , a collaboration between CoW Swap and Yearn, allows DAOs and traders to sell multiple tokens in a
+                  , a collaboration between Chameleaon swap and Yearn, allows DAOs and traders to sell multiple tokens in a
                   single transaction.
                 </TopicDescription>
               </TopicCardInner>

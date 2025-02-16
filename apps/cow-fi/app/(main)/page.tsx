@@ -82,7 +82,7 @@ export default function Page() {
             <SectionTitleDescription color={Color.neutral60} fontWeight={Font.weight.regular} textAlign="center">
               Anyone can join CoW DAO by holding{' '}
               <Link
-                href="https://swap.cow.fi/#/1/swap/USDC/COW"
+                href="https://chameleon.exchange/#/1/swap/USDC/COW"
                 onClick={() => clickOnHome('click-cow-tokens')}
                 external
               >

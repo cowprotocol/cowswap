@@ -1,7 +1,7 @@
 {
   "name": "@cowprotocol/explorer",
   "version": "2.42.1",
-  "description": "CoW Swap Explorer",
+  "description": "Chameleaon swap Explorer",
   "main": "src/main.tsx",
   "author": "",
   "license": "ISC",

@@ -2,8 +2,8 @@
 
 See also:
 
-- [CoW Swap Architecture](../../../docs/architecture-overview.md)
-- [Broader CoW Swap Architecture](https://github.com/cowprotocol/cowswap-diagrams)
+- [Chameleaon swap Architecture](../../../docs/architecture-overview.md)
+- [Broader Chameleaon swap Architecture](https://github.com/cowprotocol/cowswap-diagrams)
 
 ![appData module](./appData-module.drawio.svg)
 

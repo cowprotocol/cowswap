@@ -16,6 +16,7 @@ import { Wrapper, AccountPageWrapper } from './Tokens/styled'
 // Account pages
 const Balances = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Balances'))
 const Governance = lazy(() => import(/* webpackChunkName: "governance" */ 'pages/Account/Governance'))
+const Delegate = lazy(() => import(/* webpackChunkName: "delegate" */ 'pages/Account/Delegate'))
 
 function _getPropsFromRoute(route: string) {
   switch (route) {
@@ -39,6 +40,7 @@ export const AccountOverview = () => {
         <CardsWrapper>
           <Balances />
           <Governance />
+          <Delegate />
         </CardsWrapper>
       </Container>
     </>

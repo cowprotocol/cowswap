@@ -32,7 +32,7 @@ export function HighSuggestedSlippageWarning(props: HighSuggestedSlippageWarning
       Slippage adjusted to {`${slippageBps / 100}`}% to ensure quick execution
       <InfoTooltip
         size={24}
-        content="CoW Swap dynamically adjusts your slippage tolerance based on current gas prices and trade size. You can set a custom slippage using the settings icon above."
+        content="Chameleaon swap dynamically adjusts your slippage tolerance based on current gas prices and trade size. You can set a custom slippage using the settings icon above."
       />
     </StyledInlineBanner>
   )

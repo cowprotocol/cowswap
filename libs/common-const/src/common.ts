@@ -34,10 +34,10 @@ export const SHORT_LOAD_THRESHOLD = 500
 export const LONG_LOAD_THRESHOLD = 2000
 
 export const AVG_APPROVE_COST_GWEI = '50000'
-export const DEFAULT_APP_CODE = 'CoW Swap'
+export const DEFAULT_APP_CODE = 'Chameleaon swap'
 export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
 
-export const APP_TITLE = 'CoW Swap | The smartest way to trade cryptocurrencies'
+export const APP_TITLE = 'Chameleaon swap | The smartest way to trade cryptocurrencies'
 
 type Env = 'barn' | 'prod'
 

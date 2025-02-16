@@ -5,10 +5,10 @@ import { CowSwapWidgetPaletteParams, TokenInfo, TradeType } from '@cowprotocol/w
 import { TokenListItem } from './types'
 
 // CoW DAO addresses
-const GNOSIS_DEFAULT_PARTNER_FEE_RECIPIENT = '0x6b3214fd11dc91de14718dee98ef59bcbfcfb432'
-const MAINNET_DEFAULT_PARTNER_FEE_RECIPIENT = '0xB64963f95215FDe6510657e719bd832BB8bb941B'
-const ARB1_DEFAULT_PARTNER_FEE_RECIPIENT = '0x451100Ffc88884bde4ce87adC8bB6c7Df7fACccd'
-const BASE_DEFAULT_PARTNER_FEE_RECIPIENT = '0x3c4DBcCf8d80D3d92B0d82197aebf52574ED1F3B'
+const GNOSIS_DEFAULT_PARTNER_FEE_RECIPIENT = '0xc8C5D1237D4c705df1c13421f7952438959Aa844'
+const MAINNET_DEFAULT_PARTNER_FEE_RECIPIENT = '0xc8C5D1237D4c705df1c13421f7952438959Aa844'
+const ARB1_DEFAULT_PARTNER_FEE_RECIPIENT = '0xc8C5D1237D4c705df1c13421f7952438959Aa844'
+const BASE_DEFAULT_PARTNER_FEE_RECIPIENT = '0xc8C5D1237D4c705df1c13421f7952438959Aa844'
 export const DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: MAINNET_DEFAULT_PARTNER_FEE_RECIPIENT,
   [SupportedChainId.GNOSIS_CHAIN]: GNOSIS_DEFAULT_PARTNER_FEE_RECIPIENT,
@@ -32,27 +32,27 @@ export const DEFAULT_TOKEN_LISTS: TokenListItem[] = [
 // TODO: Move default palette to a new lib that only exposes the palette colors.
 // This way it can be consumed by both the configurator and the widget.
 export const DEFAULT_LIGHT_PALETTE: CowSwapWidgetPaletteParams = {
-  primary: '#052b65',
-  background: '#FFFFFF',
-  paper: '#FFFFFF',
-  text: '#052B65',
-  danger: '#D41300',
-  warning: '#F8D06B',
-  alert: '#DB971E',
-  info: '#0d5ed9',
-  success: '#007B28',
+  primary: 'rgb(82, 5, 101)',
+  background: 'rgb(255, 255, 255)',
+  paper: 'rgb(255, 255, 255)',
+  text: 'rgb(71, 5, 101)',
+  danger: ' #D41300',
+  warning: ' #F8D06B',
+  alert: ' #DB971E',
+  info: 'rgb(183, 13, 217)',
+  success: 'rgb(115, 123, 0)',
 }
 
 export const DEFAULT_DARK_PALETTE: CowSwapWidgetPaletteParams = {
-  primary: '#0d5ed9',
-  background: '#303030',
-  paper: '#0c264b',
-  text: '#CAE9FF',
-  danger: '#f44336',
-  warning: '#F8D06B',
-  alert: '#DB971E',
-  info: '#428dff',
-  success: '#00D897',
+  primary: 'rgb(183, 13, 217)',
+  background: 'rgb(48, 48, 48)',
+  paper: 'rgb(68, 12, 75)',
+  text: 'rgb(240, 202, 255)',
+  danger: ' #f44336',
+  warning: 'rgb(206, 248, 107)',
+  alert: 'rgb(206, 219, 30)',
+  info: 'rgb(164, 66, 255)',
+  success: 'rgb(202, 216, 0)',
 }
 
 export const COW_LISTENERS: CowWidgetEventListeners = [

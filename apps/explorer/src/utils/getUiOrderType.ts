@@ -7,9 +7,9 @@ import { decodeFullAppData } from 'utils/decodeFullAppData'
 /**
  * UiOrderType based on appData, falling back to backend order class.
  *
- * Similar to CoW Swap, but not exactly like it.
+ * Similar to Chameleaon swap, but not exactly like it.
  *
- * Here, MARKET remains as MARKET, while on CoW Swap it's translated to SWAP.
+ * Here, MARKET remains as MARKET, while on Chameleaon swap it's translated to SWAP.
  * Also, we keep the LIQUIDITY order type as it, while there it's translated to LIMIT.
  *
  * In summary, it matches 1:1 appData.metadata.orderClass.orderClass enum

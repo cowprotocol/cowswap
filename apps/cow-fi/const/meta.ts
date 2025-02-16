@@ -18,7 +18,7 @@ export const CONFIG = {
   ogImageCOWPROTOCOL: 'https://cow.fi/images/og-meta-cowprotocol.png',
   url: {
     root: 'https://cow.fi',
-    swap: 'https://swap.cow.fi/#/1/swap/DAI/COW?sellAmount=500',
+    swap: 'https://chameleon.exchange/#/1/swap/DAI/COW?sellAmount=500',
     docs: 'https://docs.cow.fi',
     api: API_BASE_URL + '/mainnet',
     apiDocs: API_BASE_URL + '/docs',

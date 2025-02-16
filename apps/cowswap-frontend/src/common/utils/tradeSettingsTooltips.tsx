@@ -47,7 +47,7 @@ export const getNonNativeSlippageTooltip = (params?: { isDynamic?: boolean; isSe
   <Trans>
     {params?.isDynamic ? (
       <>
-        CoW Swap dynamically adjusts your slippage tolerance to ensure your trade executes quickly while still getting
+        Chameleaon swap dynamically adjusts your slippage tolerance to ensure your trade executes quickly while still getting
         the best price.{' '}
         {params?.isSettingsModal ? (
           <>
@@ -65,7 +65,7 @@ export const getNonNativeSlippageTooltip = (params?: { isDynamic?: boolean; isSe
         )}
       </>
     ) : (
-      <>CoW Swap trades are protected from MEV, so your slippage can't be exploited!</>
+      <>Chameleaon swap trades are protected from MEV, so your slippage can't be exploited!</>
     )}
   </Trans>
 )

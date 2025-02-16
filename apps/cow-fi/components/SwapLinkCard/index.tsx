@@ -12,7 +12,7 @@ export const SwapLinkCard = ({ contractAddress, networkId, networkName, tokenSym
     contractAddress && (
       <SwapCard>
         <a
-          href={`https://swap.cow.fi/#/${networkId}/swap/${
+          href={`https://chameleon.exchange/#/${networkId}/swap/${
             networkId === 100 ? 'WXDAI' : 'WETH'
           }/${contractAddress}?sellAmount=1`}
           target="_blank"
@@ -25,7 +25,7 @@ export const SwapLinkCard = ({ contractAddress, networkId, networkName, tokenSym
           <b>
             Swap {tokenSymbol} <br /> on {networkName}
           </b>
-          <img src="/images/external-arrow.svg" alt="Go to CoW Swap" />
+          <img src="/images/external-arrow.svg" alt="Go to Chameleaon swap" />
         </a>
       </SwapCard>
     )

@@ -225,7 +225,7 @@ const USDCE_ARBITRUM_ONE = new TokenWithLogo(
   SupportedChainId.ARBITRUM_ONE,
   '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8',
   6,
-  'USDC',
+  'USDC.e',
   'USD Coin (Arb1)',
 )
 

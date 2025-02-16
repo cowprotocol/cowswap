@@ -36,7 +36,7 @@ export const ADVANCED_ORDER_TYPES = [
   {
     title: 'Limit orders',
     description:
-      'Placing a limit order is like setting a trap for a price for your trade. CoW Swap is the only DEX that offers surplus on limit orders - and one of the only DEXs that offers limit orders at all',
+      'Placing a limit order is like setting a trap for a price for your trade. Chameleaon swap is the only DEX that offers surplus on limit orders - and one of the only DEXs that offers limit orders at all',
     bgColor: '#8702AA',
     textColor: '#FCCAF2',
     titleColor: '#FFF8F7',
@@ -99,20 +99,20 @@ export const TOP_LOGOS = [
 export const CASE_STUDIES = [
   {
     title: 'Aave',
-    description: 'Aave DAO used CoW Swap to swap over $4 million directly into a Balancer liquidity pool',
+    description: 'Aave DAO used Chameleaon swap to swap over $4 million directly into a Balancer liquidity pool',
     link: '/learn/aave-trade-breakdown',
     logo: IMG_LOGO_AAVE,
   },
   {
     title: 'ENS',
-    description: 'ENS DAO traded a whopping 10,000 ETH for USDC through CoW Swap',
+    description: 'ENS DAO traded a whopping 10,000 ETH for USDC through Chameleaon swap',
     link: '/learn/ens-trade-breakdown',
     logo: IMG_LOGO_ENS,
   },
   {
     title: 'Nexus Mutual',
     description:
-      'In the largest DAO trade ever, Nexus Mutual relied on CoW Swap to trade 14,400 ETH for rETH, a liquid staking token',
+      'In the largest DAO trade ever, Nexus Mutual relied on Chameleaon swap to trade 14,400 ETH for rETH, a liquid staking token',
     link: '/learn/nexus-mutual-trade-breakdown',
     logo: IMG_LOGO_NEXUS,
   },
@@ -174,19 +174,19 @@ export const FAQ_DATA = [
     ),
   },
   {
-    question: 'How is CoW Protocol different from CoW Swap?',
+    question: 'How is CoW Protocol different from Chameleaon swap?',
     answer: (
       <>
         CoW Protocol is the decentralized, permissionless DeFi protocol that powers{' '}
         <Link
-          href="https://swap.cow.fi/"
+          href="https://chameleon.exchange/"
           external
           utmContent="cow-protocol-cow-swap"
           onClick={() => clickOnCowProtocol('click-cow-swap')}
         >
-          CoW Swap
+          Chameleaon swap
         </Link>{' '}
-        and other DEX UIs. While CoW Swap is available as a trading venue for retail and institutional users, CoW
+        and other DEX UIs. While Chameleaon swap is available as a trading venue for retail and institutional users, CoW
         Protocol is DeFi infrastructure that can be integrated by dApps, decentralized protocols, centralized exchange
         venues, and more. CoW Protocol also enables complex trading logic through the programmatic order framework, CoW
         Hooks, and other API-only interactions.
@@ -444,7 +444,7 @@ export const COW_PROTOCOL_SECTIONS = [
   {
     title: 'For DeFi projects',
     description:
-      "Don't need overly custom trading logic? The CoW Swap widget is the easiest way to integrate swaps, TWAPs, and limit orders directly into your project site.",
+      "Don't need overly custom trading logic? The Chameleaon swap widget is the easiest way to integrate swaps, TWAPs, and limit orders directly into your project site.",
     bgColor: '#490072',
     textColor: '#F996EE',
     titleColor: '#FFF8F7',

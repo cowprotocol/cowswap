@@ -125,7 +125,7 @@ export const listsMock: ListState[] = [
 export const importListsMock: ListState = {
   source: 'https://files.cow.fi/tokens/CowSwap.json',
   list: {
-    name: 'CoW Swap',
+    name: 'Chameleaon swap',
     logoURI: 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/list-logo.png',
     tokens: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] as any[],
     version: { major: 1, minor: 0, patch: 5 },

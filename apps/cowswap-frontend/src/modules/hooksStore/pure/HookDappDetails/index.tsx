@@ -48,7 +48,7 @@ export function HookDappDetails({ dapp, onSelect, walletType }: HookDappDetailsP
         value: typeLabel,
         tooltip: `${typeLabel} hooks are ${
           isInternal
-            ? 'integrated code and part of the CoW Swap codebase'
+            ? 'integrated code and part of the Chameleaon swap codebase'
             : 'externally hosted code which needs to be independently verified by the user'
         }.`,
       },

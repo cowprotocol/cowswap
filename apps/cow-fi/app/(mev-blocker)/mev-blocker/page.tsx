@@ -485,7 +485,7 @@ export default function Page() {
             </ContainerCardSection>
           </ContainerCard>
 
-          <ContainerCard bgColor="#FEE7CF" touchFooter>
+          <ContainerCard bgColor=" #FEE7CF" touchFooter>
             <ContainerCardSection>
               <SectionTitleWrapper padding="72px 0" maxWidth={640}>
                 <SectionTitleIcon>
@@ -495,8 +495,8 @@ export default function Page() {
 
                 <Link
                   linkType={LinkType.SectionTitleButton}
-                  bgColor={'#EC4612'}
-                  color={'#FEE7CF'}
+                  bgColor={' #EC4612'}
+                  color={' #FEE7CF'}
                   onClick={handleShareClick}
                   asButton
                 >

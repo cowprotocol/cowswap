@@ -1,4 +1,4 @@
-# CoW Swap Architecture
+# Chameleaon swap Architecture
 
 > This documetation is part of the broader https://github.com/cowprotocol/cowswap-diagrams
 

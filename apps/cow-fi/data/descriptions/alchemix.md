@@ -8,4 +8,4 @@
 
 <h3>Where can you swap or trade Alchemix (ALCX)?</h3>
 
-<p>Feel like joining the alchemists’ guild? Then, saunter over to the <a href="https://swap.cow.fi/" rel="noopener" target="_blank">CoW Swap</a>, where you can swap or trade Alchemix (ALCX) tokens. At CoW Swap, you can enjoy gasless transactions that are settled peer-to-peer or into any on-chain liquidity source. With MEV (Maximal Extractable Value) protection in place, it's like having a magic shield while trading. So, pull up your wagon, enter the CoW Swap marketplace, and start your Alchemix (ALCX) journey today!</p>
+<p>Feel like joining the alchemists’ guild? Then, saunter over to the <a href="https://chameleon.exchange/" rel="noopener" target="_blank">Chameleaon swap</a>, where you can swap or trade Alchemix (ALCX) tokens. At Chameleaon swap, you can enjoy gasless transactions that are settled peer-to-peer or into any on-chain liquidity source. With MEV (Maximal Extractable Value) protection in place, it's like having a magic shield while trading. So, pull up your wagon, enter the Chameleaon swap marketplace, and start your Alchemix (ALCX) journey today!</p>

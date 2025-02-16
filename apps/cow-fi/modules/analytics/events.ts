@@ -8,7 +8,7 @@ export enum Category {
   NAVIGATION = 'Navigation',
   WIDGET = 'Widget',
   COWAMM = 'CoW AMM',
-  COWSWAP = 'CoW Swap',
+  COWSWAP = 'Chameleaon swap',
   COWPROTOCOL = 'CoW Protocol',
   MEVBLOCKER = 'MEV Blocker',
   DAOS = 'DAOs',

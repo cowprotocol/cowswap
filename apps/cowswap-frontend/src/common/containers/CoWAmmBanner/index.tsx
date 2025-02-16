@@ -15,9 +15,10 @@ import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useYieldRawState } from 'modules/yield'
 import { useVampireAttack, useVampireAttackFirstTarget } from 'modules/yield/shared'
 
-import { Routes } from '../../constants/routes'
-import { useIsProviderNetworkUnsupported } from '../../hooks/useIsProviderNetworkUnsupported'
-import { CoWAmmBannerContent } from '../../pure/CoWAmmBannerContent'
+import { BANNER_IDS } from 'common/constants/banners'
+import { Routes } from 'common/constants/routes'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { CoWAmmBannerContent } from 'common/pure/CoWAmmBannerContent'
 
 interface BannerProps {
   isTokenSelectorView?: boolean
@@ -58,7 +59,7 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
     }
 
     cowAnalytics.sendEvent({
-      category: 'CoW Swap',
+      category: 'Chameleaon swap',
       action: `CoW AMM Banner [${key}] CTA Clicked`,
     })
 
@@ -67,14 +68,14 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
 
   const handleClose = useCallback(() => {
     cowAnalytics.sendEvent({
-      category: 'CoW Swap',
+      category: 'Chameleaon swap',
       action: `CoW AMM Banner [${key}] Closed`,
     })
   }, [key])
 
   if (isInjectedWidgetMode || !account || isChainIdUnsupported || !vampireAttackContext) return null
 
-  const bannerId = `cow_amm_banner_2024_va_${key}${isTokenSelectorView ? account : ''}`
+  const bannerId = `${BANNER_IDS.COW_AMM}_${key}${isTokenSelectorView ? account : ''}`
 
   return ClosableBanner(bannerId, (close) => (
     <CoWAmmBannerContent

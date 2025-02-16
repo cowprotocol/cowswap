@@ -4,11 +4,11 @@ import IMAGE_BACKGROUND_DARK_CHRISTMAS from '@cowprotocol/assets/images/backgrou
 import IMAGE_BACKGROUND_LIGHT_CHRISTMAS_MEDIUM from '@cowprotocol/assets/images/background-cowswap-christmas-light-medium.svg'
 import IMAGE_BACKGROUND_LIGHT_CHRISTMAS_SMALL from '@cowprotocol/assets/images/background-cowswap-christmas-light-small.svg'
 import IMAGE_BACKGROUND_LIGHT_CHRISTMAS from '@cowprotocol/assets/images/background-cowswap-christmas-light.svg'
-import IMAGE_BACKGROUND_DARK from '@cowprotocol/assets/images/background-cowswap-darkmode.svg'
 import IMAGE_BACKGROUND_DARK_HALLOWEEN_MEDIUM from '@cowprotocol/assets/images/background-cowswap-halloween-dark-medium.svg'
 import IMAGE_BACKGROUND_DARK_HALLOWEEN_SMALL from '@cowprotocol/assets/images/background-cowswap-halloween-dark-small.svg'
 import IMAGE_BACKGROUND_DARK_HALLOWEEN from '@cowprotocol/assets/images/background-cowswap-halloween-dark.svg'
-import IMAGE_BACKGROUND_LIGHT from '@cowprotocol/assets/images/background-cowswap-lightmode.svg'
+import IMAGE_BACKGROUND1_DARK from '@cowprotocol/assets/images/Chameleon dark.svg'
+import IMAGE_BACKGROUND1_LIGHT from '@cowprotocol/assets/images/Chameleon light.svg'
 import { CowSwapTheme, Media } from '@cowprotocol/ui'
 
 import * as CSS from 'csstype'
@@ -53,7 +53,7 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme }>`
     if (theme.isInjectedWidgetMode) {
       return 'transparent'
     } else {
-      const backgroundColor = theme.darkMode ? '#0E0F2D' : '#65D9FF'
+      const backgroundColor = theme.darkMode ? '#280e2d' : '#ff65ff'
       let backgroundImage
 
       if (customTheme === 'darkHalloween') {
@@ -63,7 +63,7 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme }>`
           ? `url(${IMAGE_BACKGROUND_DARK_CHRISTMAS})`
           : `url(${IMAGE_BACKGROUND_LIGHT_CHRISTMAS})`
       } else {
-        backgroundImage = theme.darkMode ? `url(${IMAGE_BACKGROUND_DARK})` : `url(${IMAGE_BACKGROUND_LIGHT})`
+        backgroundImage = theme.darkMode ? `url(${IMAGE_BACKGROUND1_DARK})` : `url(${IMAGE_BACKGROUND1_LIGHT})`
       }
 
       return `${backgroundColor} ${backgroundImage} no-repeat bottom -1px center / contain`

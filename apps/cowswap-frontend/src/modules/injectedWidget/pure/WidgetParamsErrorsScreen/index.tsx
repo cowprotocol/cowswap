@@ -23,7 +23,7 @@ export function WidgetParamsErrorsScreen({ errors }: { errors: WidgetParamsError
 
   return (
     <Container>
-      <h3>The are some errors with CoW Swap widget configuration</h3>
+      <h3>The are some errors with Chameleaon swap widget configuration</h3>
       <Code value={JSON.stringify(errors, null, 4)}></Code>
     </Container>
   )

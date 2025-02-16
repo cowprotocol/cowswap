@@ -60,7 +60,7 @@ export const TRUSTED_BY_CONTENT = [
     src: IMG_LOGO_CRYPTO_COM,
   },
   {
-    href: 'https://swap.cow.fi/',
+    href: 'https://chameleon.exchange/',
     component: <ProductLogo variant={ProductVariant.CowSwap} theme="dark" />,
   },
   {
@@ -207,12 +207,12 @@ export const FAQ_DATA = [
         <br />
         While some DEXs like{' '}
         <Link
-          href="https://swap.cow.fi/"
+          href="https://chameleon.exchange/"
           external
           utmContent="mev-blocker-cow-swap"
           onClick={() => clickOnMevBlocker('click-cow-swap')}
         >
-          CoW Swap
+          Chameleaon swap
         </Link>{' '}
         offer MEV protection for your DeFi trades, most DeFi venues and NFT marketplaces do not provide any type of MEV
         protection.

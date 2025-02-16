@@ -27,7 +27,7 @@ const Wrapper = styled.div`
 `
 
 export default function Page() {
-  const title = 'CoW Swap Cookie policy'
+  const title = 'Chameleaon swap Cookie policy'
 
   return (
     <Wrapper>

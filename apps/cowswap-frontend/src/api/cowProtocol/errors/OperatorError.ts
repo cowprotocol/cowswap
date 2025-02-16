@@ -85,7 +85,7 @@ export enum ApiErrorCodeDetails {
   UnsupportedOrderType = 'Order type unsupported. Please try again with a different order type.',
   UnsupportedSellTokenSource = 'Sell token source is unsupported. Please try again with a different source.',
   UnsupportedToken = 'One of the tokens you are trading is unsupported. Please read the FAQ for more info.',
-  WrongOwner = "The signature is invalid.\n\nIt's likely that the signing method provided by your wallet doesn't comply with the standards required by CoW Swap.\n\nCheck whether your Wallet app supports off-chain signing (EIP-712 or ETHSIGN).",
+  WrongOwner = "The signature is invalid.\n\nIt's likely that the signing method provided by your wallet doesn't comply with the standards required by Chameleaon swap.\n\nCheck whether your Wallet app supports off-chain signing (EIP-712 or ETHSIGN).",
   ZeroAmount = 'Order amount cannot be zero.',
   UNHANDLED_GET_ERROR = 'Order fetch failed. This may be due to a server or network connectivity issue. Please try again later.',
   UNHANDLED_CREATE_ERROR = 'The order was not accepted by the network.',

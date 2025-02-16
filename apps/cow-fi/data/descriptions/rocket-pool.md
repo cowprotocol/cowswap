@@ -10,4 +10,4 @@
 
 <h3>Where can you swap or trade Rocket Pool (RPL)?</h3>
 
-<p>You can trade or swap your Rocket Pool tokens in the bustling bazaar of <a href="https://swap.cow.fi/" rel="noopener" target="_blank">CoW Swap</a>, a Meta DEX aggregator built on top of CoW Protocol. CoW Swap provides MEV protection, keeping those nasty MEV bots at bay. It combines multiple DEXes where Rocket Pool tokens are swappable, all under one digital roof. So, whether you're a cow, a bull, or a calf in the world of crypto, Rocket Pool, with the assistance of CoW Swap, makes staking as fun as a barn dance!</p>
+<p>You can trade or swap your Rocket Pool tokens in the bustling bazaar of <a href="https://chameleon.exchange/" rel="noopener" target="_blank">Chameleaon swap</a>, a Meta DEX aggregator built on top of CoW Protocol. Chameleaon swap provides MEV protection, keeping those nasty MEV bots at bay. It combines multiple DEXes where Rocket Pool tokens are swappable, all under one digital roof. So, whether you're a cow, a bull, or a calf in the world of crypto, Rocket Pool, with the assistance of Chameleaon swap, makes staking as fun as a barn dance!</p>

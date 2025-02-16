@@ -8,4 +8,4 @@
 
 <h3>Where can you swap or trade Giveth (GIV)?</h3>
 
-<p>You can swap or trade GIV tokens on <a href="https://swap.cow.fi/" rel="noopener" target="_blank">CoW Swap</a>, the first trading interface built on top of the CoW Protocol. As a Meta DEX aggregator, CoW Swap enables the exchange of tokens via gasless orders settled among users or into any on-chain liquidity source, offering MEV (Maximal Extractable Value) protection. Remember, your transaction doesn't have to be a game of 'Cow and Mouse'; with CoW Swap, trading GIV is as easy as saying 'Moo'.</p>
+<p>You can swap or trade GIV tokens on <a href="https://chameleon.exchange/" rel="noopener" target="_blank">Chameleaon swap</a>, the first trading interface built on top of the CoW Protocol. As a Meta DEX aggregator, Chameleaon swap enables the exchange of tokens via gasless orders settled among users or into any on-chain liquidity source, offering MEV (Maximal Extractable Value) protection. Remember, your transaction doesn't have to be a game of 'Cow and Mouse'; with Chameleaon swap, trading GIV is as easy as saying 'Moo'.</p>

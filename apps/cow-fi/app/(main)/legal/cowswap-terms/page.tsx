@@ -20,7 +20,7 @@ const Wrapper = styled.div`
 `
 
 export default function Page() {
-  const title = 'CoW Swap Terms and Conditions'
+  const title = 'Chameleaon swap Terms and Conditions'
 
   return (
     <Wrapper>
@@ -167,8 +167,8 @@ export default function Page() {
             </p>
             <h2 id="the-interface">The Interface</h2>
             <p>
-              <a href="https://swap.cow.fi/" target="_blank" rel="nofollow noopener">
-                https://swap.cow.fi
+              <a href="https://chameleon.exchange/" target="_blank" rel="nofollow noopener">
+                https://chameleon.exchange
               </a>{' '}
               is a web-hosted user interface (the &quot;Interface&quot;) providing access to CoW Protocol. You may
               submit orders into the Interface and exchange compatible tokens using the unique features of the Protocol.
@@ -691,7 +691,7 @@ export default function Page() {
             <p>From 2024-12-12 at the time of the post on the X Platform to 2024-12-31, at 11:59 PM UTC.</p>
             <h3 id="base-launch-how-to-enter">4. How to Enter</h3>
             <p>
-              Trade on Base using CoW Swap during the Giveaway Period. Quote Tweet the Giveaway announcement with your
+              Trade on Base using Chameleaon swap during the Giveaway Period. Quote Tweet the Giveaway announcement with your
               trade's transaction hash. One entry per eligible transaction.
             </p>
             <h3 id="base-launch-prize">5. Prize</h3>

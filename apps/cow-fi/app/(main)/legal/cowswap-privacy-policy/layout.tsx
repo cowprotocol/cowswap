@@ -3,7 +3,7 @@ import { getPageMetadata } from '@/util/getPageMetadata'
 import { CONFIG } from '@/const/meta'
 
 export const metadata: Metadata = getPageMetadata({
-  absoluteTitle: 'CoW Swap - Privacy policy',
+  absoluteTitle: 'Chameleaon swap - Privacy policy',
   description: CONFIG.description,
 })
 
