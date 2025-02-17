@@ -87,7 +87,7 @@ export default function Page() {
 
       <MetricsCard bgColor="#F996EE" color="#66018E" columns={3} touchFooter>
         <MetricsItem dividerColor="#ED60E9">
-          <h2>35</h2>
+          <h2>29</h2>
           <p>active solvers settling batches</p>
         </MetricsItem>
         <MetricsItem dividerColor="#ED60E9">
