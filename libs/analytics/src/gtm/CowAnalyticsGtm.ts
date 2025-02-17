@@ -90,7 +90,6 @@ export class CowAnalyticsGtm implements CowAnalytics {
     if (typeof window !== 'undefined') {
       // Implement singleton pattern
       if (window.cowAnalyticsInstance) {
-        console.warn('CowAnalyticsGtm instance already exists. Reusing existing instance.')
         return window.cowAnalyticsInstance
       }
       window.cowAnalyticsInstance = this
