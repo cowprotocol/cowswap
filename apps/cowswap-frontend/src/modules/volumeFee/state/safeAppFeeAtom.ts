@@ -38,7 +38,7 @@ const FEE_PERCENTAGE_BPS = {
 export const safeAppFeeAtom = atom<VolumeFee | null>((get) => {
   const { chainId } = get(walletInfoAtom)
   const { isSafeApp } = get(walletDetailsAtom)
-  const { isSafeAppFeeEnabled, isSafeAppStableCoinsFeeEnabled } = get(featureFlagsAtom)
+  const { isSafeAppFeeEnabled } = get(featureFlagsAtom)
   const { inputCurrency, outputCurrency, inputCurrencyFiatAmount, outputCurrencyFiatAmount, orderKind } =
     get(derivedTradeStateAtom) || {}
 
@@ -53,8 +53,6 @@ export const safeAppFeeAtom = atom<VolumeFee | null>((get) => {
   const isInputStableCoin = !!inputCurrency && stablecoins.has(getCurrencyAddress(inputCurrency).toLowerCase())
   const isOutputStableCoin = !!outputCurrency && stablecoins.has(getCurrencyAddress(outputCurrency).toLowerCase())
   const isStableCoinTrade = isInputStableCoin && isOutputStableCoin
-
-  if (isStableCoinTrade && !isSafeAppStableCoinsFeeEnabled) return null
 
   const bps = (() => {
     if (fiatAmount < FEE_TIERS.TIER_1) {
