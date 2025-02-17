@@ -1,8 +1,21 @@
 import { transparentize } from 'polished'
 import { css } from 'styled-components/macro'
 
+/**
+ * Central color system for CoW Protocol applications
+ *
+ * Colors are organized into several categories:
+ * 1. Neutral colors (neutral0-100): Base grayscale palette
+ * 2. CoW Protocol colors (cowfi_): Brand-specific colors
+ * 3. CoW AMM colors (cowamm_): AMM-specific colors
+ * 4. Explorer colors (explorer_): Explorer-specific colors
+ *
+ * Usage:
+ * import { Color } from '@cowprotocol/ui'
+ * color: ${Color.neutral100}
+ */
 export const Color = {
-  // Neutral colors
+  // Neutral colors - Base grayscale palette from black (0) to white (100)
   neutral100: '#FFFFFF',
   neutral98: '#FFF8F7',
   neutral95: '#FFEDEC',

@@ -10,6 +10,21 @@ import { Color, Gradients } from '../colors'
 import { UI } from '../enum'
 import { CowSwapTheme } from '../types'
 
+/**
+ * Base theme implementation for CoW Protocol applications
+ *
+ * The base theme provides:
+ * 1. Dark mode color variations
+ * 2. Utility functions for styling
+ * 3. Integration of static colors with theme context
+ *
+ * Usage:
+ * const theme = baseTheme('dark')
+ * <ThemeProvider theme={theme}>
+ *
+ * @param theme - Theme mode ('dark' | 'light')
+ * @returns Complete theme object with colors and utilities
+ */
 export function baseTheme<T extends CowProtocolTheme>(theme: CowSwapTheme): CowProtocolTheme {
   const darkMode = theme === 'dark'
 
@@ -19,6 +34,13 @@ export function baseTheme<T extends CowProtocolTheme>(theme: CowSwapTheme): CowP
   } as T
 }
 
+/**
+ * Generates the complete color palette based on theme mode
+ * Combines:
+ * 1. Dynamic theme-aware colors
+ * 2. Static colors from Color enum
+ * 3. Gradient definitions
+ */
 function colors(darkMode: boolean): Colors {
   // TODO(theme-cleanup): These colors were migrated from apps/cow-fi/styles/variables.ts
   // They should be reviewed and potentially consolidated with the existing color system.
