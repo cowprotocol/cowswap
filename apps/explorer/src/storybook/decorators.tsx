@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Network } from '@cowprotocol/cow-sdk'
+import { Color } from '@cowprotocol/ui'
 
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 // eslint-disable-next-line no-restricted-imports
@@ -13,7 +14,6 @@ import { combineReducers } from 'redux'
 import { GLOBAL_INITIAL_STATE, globalRootReducer } from 'state'
 import { networkReducer } from 'state/network'
 import { ThemeProvider, getThemePalette, StaticGlobalStyle, Theme, ThemedGlobalStyle } from 'theme'
-import { Color } from '@cowprotocol/ui'
 
 export const GlobalStyles = (DecoratedStory: () => StoryFnReactReturnType): React.ReactNode => (
   <>
