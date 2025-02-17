@@ -86,6 +86,10 @@ export class CowAnalyticsGtm implements CowAnalytics {
   }, 1000)
   private dataLayer: DataLayer = []
 
+  private cleanup = () => {
+    window.cowAnalyticsInstance = undefined
+  }
+
   constructor() {
     if (typeof window !== 'undefined') {
       if (window.cowAnalyticsInstance) {
@@ -96,9 +100,13 @@ export class CowAnalyticsGtm implements CowAnalytics {
       window.dataLayer = window.dataLayer || []
       this.dataLayer = window.dataLayer as DataLayer
 
-      window.addEventListener('unload', () => {
-        window.cowAnalyticsInstance = undefined
-      })
+      window.addEventListener('unload', this.cleanup)
+    }
+  }
+
+  destroy() {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('unload', this.cleanup)
     }
   }
 
