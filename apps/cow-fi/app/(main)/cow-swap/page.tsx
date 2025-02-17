@@ -300,7 +300,7 @@ export default function Page() {
             >
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={Color.neutral100} fontSize={51}>
-                  39%
+                  50%
                 </TopicTitle>
                 <TopicDescription fontSize={21} color="#65D9FF">
                   Market share among smart contract wallets
