@@ -72,26 +72,12 @@ export const LayoutButton = styled.span`
 
 export const DropdownWrapper = styled(Dropdown)`
   &.dropdown-container {
-    ${ArrowIconCSS} {
-      width: 100%;
-      height: 100%;
+    ${ArrowIconCSS}
+
+    div:first-child {
       display: flex;
       align-items: center;
-
-      & div:first-child {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-        @media ${MEDIA.mediumDown} {
-          justify-content: center;
-        }
-      }
-
-      > .dropdown-options {
-        min-width: 7rem;
-      }
+      gap: 0.6rem;
     }
   }
 `
