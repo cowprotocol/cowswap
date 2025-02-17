@@ -14,6 +14,7 @@ export const Wrapper = styled.div`
   background: var(${UI.COLOR_PAPER});
   border-radius: 16px;
   display: grid;
+  overflow-x: auto;
 `
 
 export const LinkWrapper = styled(Link)`
@@ -143,7 +144,7 @@ export const Row = styled.div`
   width: 100%;
   display: grid;
   grid-gap: 16px;
-  grid-template-columns: 62px 430px repeat(2, 100px) 1fr;
+  grid-template-columns: 50px minmax(200px, 4fr) repeat(3, minmax(120px, 1fr));
   grid-template-rows: max-content;
   padding: 16px;
   justify-content: flex-start;
@@ -151,18 +152,32 @@ export const Row = styled.div`
   background: transparent;
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
 
-  ${Media.upToMedium()} {
-    width: auto;
-    grid-template-columns: 62px 330px repeat(2, 150px) 200px;
-  }
-
   &:hover {
     background: var(${UI.COLOR_PAPER_DARKER});
   }
 `
 
+export const DelegateRow = styled(Row)`
+  display: block;
+  padding: 20px 20px 10px;
+  width: 100%;
+  margin: 0;
+
+  > div {
+    width: 100%;
+    background: var(${UI.COLOR_PAPER_DARKER});
+    border-radius: 16px;
+  }
+
+  &:hover {
+    background: transparent;
+  }
+`
+
 export const TableHeader = styled(Row)`
-  border-bottom: 1px solid ${({ theme }) => theme.grey1};
+  border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  z-index: 2;
+  background: var(${UI.COLOR_PAPER});
 
   &:hover {
     background: transparent;
@@ -277,7 +292,9 @@ export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boole
   padding: 0;
   width: auto;
   font-weight: 400;
-  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out, opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  transition:
+    color var(${UI.ANIMATION_DURATION}) ease-in-out,
+    opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   background: transparent;
   color: ${({ color }) => color || 'inherit'};
   white-space: nowrap;
@@ -333,6 +350,7 @@ export const Table = styled.div`
   overflow-y: auto; // fallback for 'overlay'
   overflow-y: overlay;
   width: 100%;
+  min-width: 100%;
   min-height: 400px;
   font-size: 14px;
   align-items: center;
@@ -345,6 +363,7 @@ export const Table = styled.div`
 
   ${Media.upToSmall()} {
     min-height: 250px;
+    display: table;
   }
 `
 
