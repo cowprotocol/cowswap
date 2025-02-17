@@ -34,6 +34,17 @@ export function isValidGtmClickEvent(data: unknown): data is GtmClickEvent {
   return true
 }
 
+const EXCLUDED_GTM_KEYS = [
+  'category',
+  'action',
+  'label',
+  'value',
+  'orderId',
+  'orderType',
+  'tokenSymbol',
+  'chainId',
+] as const
+
 /**
  * Converts events to GA4-compatible format for Google Tag Manager
  *
@@ -70,10 +81,7 @@ export function toGtmEvent(event: Partial<GtmClickEvent>): string {
     ...(event.tokenSymbol && { token_symbol: event.tokenSymbol }),
     ...(event.chainId && { chain_id: event.chainId }),
     ...Object.entries(event)
-      .filter(
-        ([key]) =>
-          !['category', 'action', 'label', 'value', 'orderId', 'orderType', 'tokenSymbol', 'chainId'].includes(key),
-      )
+      .filter(([key]) => !EXCLUDED_GTM_KEYS.includes(key as (typeof EXCLUDED_GTM_KEYS)[number]))
       .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {}),
   }
 
