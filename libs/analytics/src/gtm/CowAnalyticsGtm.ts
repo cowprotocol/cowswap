@@ -88,17 +88,16 @@ export class CowAnalyticsGtm implements CowAnalytics {
 
   constructor() {
     if (typeof window !== 'undefined') {
-      // Implement singleton pattern
       if (window.cowAnalyticsInstance) {
-        return window.cowAnalyticsInstance
+        throw new Error('CowAnalyticsGtm instance already exists - use initGtm() instead')
       }
+
       window.cowAnalyticsInstance = this
       window.dataLayer = window.dataLayer || []
       this.dataLayer = window.dataLayer as DataLayer
 
-      // Clean up on page unload
       window.addEventListener('unload', () => {
-        delete window.cowAnalyticsInstance
+        window.cowAnalyticsInstance = undefined
       })
     }
   }
