@@ -25,8 +25,10 @@ jest.mock('@cowprotocol/wallet', () => {
   return {
     ...jest.requireActual('@cowprotocol/wallet'),
     useWalletInfo: jest.fn().mockReturnValue({ chainId }),
+    useSendBatchTransactions: jest.fn().mockResolvedValue('0x01'),
   }
 })
+
 jest.mock('common/hooks/useContract', () => {
   return {
     ...jest.requireActual('common/hooks/useContract'),
