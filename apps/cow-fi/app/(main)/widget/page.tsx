@@ -117,7 +117,7 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral10} color={Color.neutral100}>
         <ContainerCardSection>
           <SectionTitleWrapper>
-            <SectionTitleIcon size={100}>
+            <SectionTitleIcon $size={100}>
               <ProductLogo variant={ProductVariant.CowProtocol} theme="light" logoIconOnly />
             </SectionTitleIcon>
             <SectionTitleText>Integrate now</SectionTitleText>
@@ -169,7 +169,7 @@ export default function Page() {
       <ContainerCard bgColor={'transparent'} color={Color.neutral10}>
         <ContainerCardSection>
           <SectionTitleWrapper maxWidth={900}>
-            <SectionTitleIcon size={60}>
+            <SectionTitleIcon $size={60}>
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
             </SectionTitleIcon>
             <SectionTitleText fontSize={62}>Every Bell, Whistle, and Moo</SectionTitleText>
@@ -225,7 +225,7 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral100} color={Color.neutral10}>
         <ContainerCardSection>
           <SectionTitleWrapper maxWidth={900}>
-            <SectionTitleIcon size={60}>
+            <SectionTitleIcon $size={60}>
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
             </SectionTitleIcon>
             <SectionTitleText fontSize={62}>Everything You'd Want in a Widget</SectionTitleText>
@@ -258,7 +258,7 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
         <ContainerCardSection>
           <SectionTitleWrapper>
-            <SectionTitleIcon multiple>
+            <SectionTitleIcon $multiple>
               <LazySVG src={IMG_ICON_OWL} />
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
               <LazySVG src={IMG_ICON_GHOST} />

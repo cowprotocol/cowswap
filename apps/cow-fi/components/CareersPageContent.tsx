@@ -40,7 +40,7 @@ export function CareersPageContent({
       <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} touchFooter>
         <ContainerCardSection>
           <SectionTitleWrapper maxWidth={900} margin="0 auto 56px" marginMobile="0 auto 56px">
-            <SectionTitleIcon size={60}>
+            <SectionTitleIcon $size={60}>
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
             </SectionTitleIcon>
             <SectionTitleText fontSize={62}>Want to build the future of decentralized trading?</SectionTitleText>

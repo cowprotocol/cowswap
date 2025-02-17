@@ -16,7 +16,7 @@ export enum CowSwapAnalyticsCategory {
   HOOKS = 'Hooks',
   CURRENCY_SELECT = 'Currency Select',
   RECIPIENT_ADDRESS = 'Recipient address',
-  ORDER_SLIPAGE_TOLERANCE = 'Order Slippage Tolerance',
+  ORDER_SLIPPAGE_TOLERANCE = 'Order Slippage Tolerance',
   ORDER_EXPIRATION_TIME = 'Order Expiration Time',
   WRAP_NATIVE_TOKEN = 'Wrapped Native Token',
   CLAIM_COW_FOR_LOCKED_GNO = 'Claim COW for Locked GNO',

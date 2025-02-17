@@ -114,7 +114,7 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral10}>
         <ContainerCardSection>
           <SectionTitleWrapper color={Color.neutral100} maxWidth={1100} gap={56}>
-            <SectionTitleIcon size={98}>
+            <SectionTitleIcon $size={98}>
               <LazySVG src={IMG_ICON_CROWN_COW} />
             </SectionTitleIcon>
             <SectionTitleText>AMMs don&apos;t want you to know about LVR</SectionTitleText>
@@ -160,7 +160,7 @@ export default function Page() {
       <ContainerCard bgColor={'transparent'}>
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 0" marginMobile="0 auto" maxWidth={1170} color={Color.neutral10}>
-            <SectionTitleIcon size={128}>
+            <SectionTitleIcon $size={128}>
               <LazySVG src={IMG_ICON_BULB_COW} />
             </SectionTitleIcon>
             <SectionTitleText textAlign="center">Finally, an AMM designed with LPs in mind</SectionTitleText>
@@ -205,7 +205,7 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral100}>
         <ContainerCardSection>
           <SectionTitleWrapper color={Color.neutral10} maxWidth={1100} gap={56}>
-            <SectionTitleIcon size={98}>
+            <SectionTitleIcon $size={98}>
               <LazySVG src={IMG_ICON_CROWN_COW} />
             </SectionTitleIcon>
             <SectionTitleText>
@@ -251,7 +251,7 @@ export default function Page() {
       <ContainerCard bgColor={'transparent'}>
         <ContainerCardSection>
           <SectionTitleWrapper color={Color.neutral10} maxWidth={1100} gap={56}>
-            <SectionTitleIcon size={128}>
+            <SectionTitleIcon $size={128}>
               <LazySVG src={IMG_ICON_BULB_COW} />
             </SectionTitleIcon>
             <SectionTitleText>CoW AMM benefits LPs of all types</SectionTitleText>
@@ -325,7 +325,7 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 56px">
-            <SectionTitleIcon size={82}>
+            <SectionTitleIcon $size={82}>
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
             </SectionTitleIcon>
             <SectionTitleText>Trust the experts</SectionTitleText>
@@ -356,7 +356,7 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} touchFooter>
         <ContainerCardSection padding={'0 0 100px'}>
           <SectionTitleWrapper>
-            <SectionTitleIcon size={62}>
+            <SectionTitleIcon $size={62}>
               <LazySVG src={IMG_ICON_FAQ} />
             </SectionTitleIcon>
             <SectionTitleText>FAQs</SectionTitleText>
