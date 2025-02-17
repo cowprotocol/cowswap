@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.102.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.101.0...cowswap-v1.102.0) (2025-02-17)
+
+
+### Features
+
+* **correlated-tokens:** use new CMS model Correlated Tokens ([#5427](https://github.com/cowprotocol/cowswap/issues/5427)) ([6ed415a](https://github.com/cowprotocol/cowswap/commit/6ed415a05c6a7f228fda704ea27c664d6c8d3321))
+
+
+### Bug Fixes
+
+* do not check capabilities in mobile wc ([#5429](https://github.com/cowprotocol/cowswap/issues/5429)) ([26b907d](https://github.com/cowprotocol/cowswap/commit/26b907dad4c7310bdc3e560e5592fdeb3db11b95))
+* **twap:** do not show FallbackHandler warning after first order ([#5418](https://github.com/cowprotocol/cowswap/issues/5418)) ([337795a](https://github.com/cowprotocol/cowswap/commit/337795a4746e7a36c5144b0ff590c35bcad88a3f))
+
 ## [1.101.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.100.1...cowswap-v1.101.0) (2025-02-12)
 
 
