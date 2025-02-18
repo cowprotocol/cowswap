@@ -4,15 +4,15 @@ import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
-import { isUnsupportedTokenInQuote } from 'modules/limitOrders/utils/isUnsupportedTokenInQuote'
 import { useTokenSupportsPermit } from 'modules/permit'
+import { TradeType } from 'modules/trade'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
-import { useTradeQuote } from 'modules/tradeQuote'
+import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
+import { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { useApproveState } from 'common/hooks/useApproveState'
 
-import { TradeType } from '../../trade'
 import { TradeFormValidationCommonContext } from '../types'
 
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
@@ -60,4 +60,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...Object.values(commonContext), derivedTradeState])
+}
+
+function isUnsupportedTokenInQuote(state: TradeQuoteState): boolean {
+  return state.error?.type === QuoteApiErrorCodes.UnsupportedToken
 }
