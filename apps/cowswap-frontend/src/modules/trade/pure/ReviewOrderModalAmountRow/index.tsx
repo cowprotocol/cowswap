@@ -54,8 +54,9 @@ export function ReviewOrderModalAmountRow({
         <>
           <ReceiveAmountTitle>
             <Row gap="6px">
-              <span>{label}</span>
-              {tooltip && <InfoTooltip content={tooltip} />}
+              <span>
+                {label} {tooltip && <InfoTooltip content={tooltip} />}
+              </span>
             </Row>
           </ReceiveAmountTitle>
           <span>{Amount}</span>
