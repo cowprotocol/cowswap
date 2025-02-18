@@ -7,7 +7,6 @@ import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
 import { CowModal } from 'common/pure/Modal'
 
-import { EthFlowActionContext } from '../../../state/EthFlow/ethFlowContextAtom'
 import { getEthFlowModalContentProps } from '../../services/ethFlow/mocks'
 import {
   ApproveErrorTxHashMock,
@@ -19,6 +18,7 @@ import {
   WrapSuccessfulTxHashMock,
 } from '../../services/ethFlow/transactionsMocks'
 import { EthFlowState } from '../../services/ethFlow/types'
+import { EthFlowActionContext } from '../../state/ethFlowContextAtom'
 
 import { EthFlowModalContent } from './index'
 

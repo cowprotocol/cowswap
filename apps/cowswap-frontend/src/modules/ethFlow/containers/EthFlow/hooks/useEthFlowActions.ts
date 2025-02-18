@@ -12,7 +12,7 @@ import { useOnCurrencySelection, useTradeConfirmActions } from 'modules/trade'
 
 import { TradeApproveCallback } from 'common/containers/TradeApprove'
 
-import { updateEthFlowContextAtom } from '../../../../state/EthFlow/ethFlowContextAtom'
+import { updateEthFlowContextAtom } from '../../../state/ethFlowContextAtom'
 
 export interface EthFlowActionCallbacks {
   approve: TradeApproveCallback

@@ -16,11 +16,10 @@ import { useBlockNumber } from 'common/hooks/useBlockNumber'
 import { useGetReceipt } from 'common/hooks/useGetReceipt'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import { removeInFlightOrderIdAtom } from '../../../../state/EthFlow/ethFlowInFlightOrderIdsAtom'
+import { removeInFlightOrderIdAtom } from '../../../../ethFlow/state/ethFlowInFlightOrderIdsAtom'
 import { CheckEthereumTransactions } from '../types'
 
-// TODO: rename to usePendingTransactionsContext
-export function useCheckEthereumTransactions(): CheckEthereumTransactions | null {
+export function usePendingTransactionsContext(): CheckEthereumTransactions | null {
   const provider = useWalletProvider()
   const { chainId, account } = useWalletInfo()
   const safeInfo = useGnosisSafeInfo()
@@ -33,6 +32,7 @@ export function useCheckEthereumTransactions(): CheckEthereumTransactions | null
   const getTxSafeInfo = useGetSafeTxInfo()
   const addPriorityAllowance = useAddPriorityAllowance()
   const getTwapOrderById = useGetTwapOrderById()
+  // TODO: fix dependency on modules/ethFlow
   const removeInFlightOrderId = useSetAtom(removeInFlightOrderIdAtom)
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
 

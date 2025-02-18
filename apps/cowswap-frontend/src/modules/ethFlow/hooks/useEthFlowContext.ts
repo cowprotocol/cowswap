@@ -10,7 +10,7 @@ import { useEthFlowContract } from 'common/hooks/useContract'
 
 import { useCheckEthFlowOrderExists } from './useCheckEthFlowOrderExists'
 
-import { addInFlightOrderIdAtom } from '../../state/EthFlow/ethFlowInFlightOrderIdsAtom'
+import { addInFlightOrderIdAtom } from '../state/ethFlowInFlightOrderIdsAtom'
 import { EthFlowContext } from '../types'
 
 export function useEthFlowContext(): EthFlowContext | null {

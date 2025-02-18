@@ -5,7 +5,7 @@ import { ZERO_ADDRESS } from '@cowprotocol/common-const'
 
 import { useEthFlowContract } from 'common/hooks/useContract'
 
-import { ethFlowInFlightOrderIdsAtom } from '../../state/EthFlow/ethFlowInFlightOrderIdsAtom'
+import { ethFlowInFlightOrderIdsAtom } from '../state/ethFlowInFlightOrderIdsAtom'
 
 export interface EthFlowOrderExistsCallback {
   (orderId: string, orderDigest: string): Promise<boolean>

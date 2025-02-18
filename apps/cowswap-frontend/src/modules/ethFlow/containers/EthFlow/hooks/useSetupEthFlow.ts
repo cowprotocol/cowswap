@@ -9,7 +9,7 @@ import { ApprovalState } from 'common/hooks/useApproveState'
 
 import { useHandleChainChange } from './useHandleChainChange'
 
-import { resetEthFlowContextAtom, updateEthFlowContextAtom } from '../../../../state/EthFlow/ethFlowContextAtom'
+import { resetEthFlowContextAtom, updateEthFlowContextAtom } from '../../../state/ethFlowContextAtom'
 
 interface EthFlowSetupParams {
   approvalState: ApprovalState

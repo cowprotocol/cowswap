@@ -21,9 +21,9 @@ import useRemainingNativeTxsAndCosts from './hooks/useRemainingNativeTxsAndCosts
 import { useSetupEthFlow } from './hooks/useSetupEthFlow'
 import { getDerivedEthFlowState } from './utils/getDerivedEthFlowState'
 
-import { ethFlowContextAtom } from '../../../state/EthFlow/ethFlowContextAtom'
 import { EthFlowModalContent } from '../../pure/EthFlowModalContent'
 import { WrappingPreviewProps } from '../../pure/WrappingPreview'
+import { ethFlowContextAtom } from '../../state/ethFlowContextAtom'
 
 export interface EthFlowProps {
   nativeInput?: CurrencyAmount<Currency>

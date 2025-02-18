@@ -7,9 +7,9 @@ import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { SimpleAccountDetails } from 'modules/account/containers/SimpleAccountDetails'
 import { TradeFormBlankButton } from 'modules/tradeFormValidation'
 
-import { EthFlowContext } from '../../../state/EthFlow/ethFlowContextAtom'
 import { EthFlowActions } from '../../containers/EthFlow/hooks/useEthFlowActions'
 import { EthFlowState } from '../../services/ethFlow/types'
+import { EthFlowContext } from '../../state/ethFlowContextAtom'
 import { WrappingPreview, WrappingPreviewProps } from '../WrappingPreview'
 
 async function runEthFlowAction(state: EthFlowState, ethFlowActions: EthFlowActions): Promise<void> {
