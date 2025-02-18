@@ -43,6 +43,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       standaloneMode,
       disableToastMessages,
       disableProgressBar,
+      hideNetworkSelector,
       hideBridgeInfo,
       hideOrdersTable,
     } = configuratorState
@@ -90,6 +91,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       standaloneMode,
       disableToastMessages,
       disableProgressBar,
+      hideNetworkSelector,
 
       partnerFee:
         partnerFeeBps > 0
