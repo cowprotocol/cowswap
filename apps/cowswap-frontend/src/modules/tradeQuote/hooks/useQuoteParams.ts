@@ -9,7 +9,7 @@ import ms from 'ms.macro'
 import { useAppData } from 'modules/appData'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
-import { FeeQuoteParams } from '../types'
+import { FeeQuoteParams } from 'common/types'
 
 const DEFAULT_QUOTE_TTL = ms`30m` / 1000
 
