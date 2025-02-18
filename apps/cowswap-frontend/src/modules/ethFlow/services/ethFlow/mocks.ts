@@ -4,11 +4,11 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { EthFlowState } from './types'
 
-import { defaultEthFlowContext, EthFlowActionContext } from '../../../state/EthFlow/ethFlowContextAtom'
 import { EthFlowActions } from '../../containers/EthFlow/hooks/useEthFlowActions'
 import { EthFlowModalContentProps } from '../../pure/EthFlowModalContent'
 import { BalanceChecks } from '../../pure/EthFlowModalContent/EthFlowModalTopContent'
 import { WrappingPreviewProps } from '../../pure/WrappingPreview'
+import { defaultEthFlowContext, EthFlowActionContext } from '../../state/ethFlowContextAtom'
 
 const native = NATIVE_CURRENCIES[SupportedChainId.SEPOLIA]
 const wrapped = WETH[SupportedChainId.SEPOLIA]
