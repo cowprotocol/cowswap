@@ -152,15 +152,13 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
       inputCurrencyInfo={inputCurrencyInfo}
       outputCurrencyInfo={outputCurrencyInfo}
       confirmModal={
-        doTrade.contextIsReady ? (
-          <SwapConfirmModal
-            doTrade={doTrade.callback}
-            recipient={recipient}
-            priceImpact={priceImpact}
-            inputCurrencyInfo={inputCurrencyPreviewInfo}
-            outputCurrencyInfo={outputCurrencyPreviewInfo}
-          />
-        ) : null
+        <SwapConfirmModal
+          doTrade={doTrade.callback}
+          recipient={recipient}
+          priceImpact={priceImpact}
+          inputCurrencyInfo={inputCurrencyPreviewInfo}
+          outputCurrencyInfo={outputCurrencyPreviewInfo}
+        />
       }
       genericModal={showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
     />
