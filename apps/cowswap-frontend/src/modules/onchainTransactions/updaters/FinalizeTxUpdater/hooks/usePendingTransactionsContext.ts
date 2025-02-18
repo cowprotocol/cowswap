@@ -1,5 +1,3 @@
-import { useSetAtom } from 'jotai/index'
-
 import { useAddPriorityAllowance } from '@cowprotocol/balances-and-allowances'
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -16,7 +14,6 @@ import { useBlockNumber } from 'common/hooks/useBlockNumber'
 import { useGetReceipt } from 'common/hooks/useGetReceipt'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import { removeInFlightOrderIdAtom } from '../../../../ethFlow/state/ethFlowInFlightOrderIdsAtom'
 import { CheckEthereumTransactions } from '../types'
 
 export function usePendingTransactionsContext(): CheckEthereumTransactions | null {
@@ -32,8 +29,6 @@ export function usePendingTransactionsContext(): CheckEthereumTransactions | nul
   const getTxSafeInfo = useGetSafeTxInfo()
   const addPriorityAllowance = useAddPriorityAllowance()
   const getTwapOrderById = useGetTwapOrderById()
-  // TODO: fix dependency on modules/ethFlow
-  const removeInFlightOrderId = useSetAtom(removeInFlightOrderIdAtom)
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
 
   return useAsyncMemo(
@@ -49,7 +44,6 @@ export function usePendingTransactionsContext(): CheckEthereumTransactions | nul
         getReceipt,
         getTxSafeInfo,
         dispatch,
-        removeInFlightOrderId,
         nativeCurrencySymbol,
         cancelOrdersBatch,
         addPriorityAllowance,
@@ -70,7 +64,6 @@ export function usePendingTransactionsContext(): CheckEthereumTransactions | nul
       dispatch,
       getReceipt,
       getTxSafeInfo,
-      removeInFlightOrderId,
       nativeCurrencySymbol,
       cancelOrdersBatch,
       addPriorityAllowance,
