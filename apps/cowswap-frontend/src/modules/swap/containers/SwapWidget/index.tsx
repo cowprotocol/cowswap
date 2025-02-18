@@ -19,18 +19,6 @@ import { useHooksEnabledManager, useRecipientToggleManager, useUserTransactionTT
 import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
 import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
-import { useShowRecipientControls } from 'modules/swap/hooks/useShowRecipientControls'
-import { useSwapButtonContext } from 'modules/swap/hooks/useSwapButtonContext'
-import { useSwapCurrenciesAmounts } from 'modules/swap/hooks/useSwapCurrenciesAmounts'
-import { useTradePricesUpdate } from 'modules/swap/hooks/useTradePricesUpdate'
-import { SwapButtons } from 'modules/swap/pure/SwapButtons'
-import {
-  SwapWarningsBottom,
-  SwapWarningsBottomProps,
-  SwapWarningsTop,
-  SwapWarningsTopProps,
-} from 'modules/swap/pure/warnings'
 import {
   parameterizeTradeRoute,
   TradeWidget,
@@ -56,9 +44,16 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { SWAP_QUOTE_CHECK_INTERVAL } from 'common/updaters/FeesUpdater'
 
 import { SwapButtonState } from '../../helpers/getSwapButtonState'
+import { useShowRecipientControls } from '../../hooks/useShowRecipientControls'
+import { useSwapButtonContext } from '../../hooks/useSwapButtonContext'
+import { useSwapCurrenciesAmounts } from '../../hooks/useSwapCurrenciesAmounts'
 import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from '../../hooks/useSwapState'
+import { useTradePricesUpdate } from '../../hooks/useTradePricesUpdate'
 import { useTradeQuoteStateFromLegacy } from '../../hooks/useTradeQuoteStateFromLegacy'
+import { SwapButtons } from '../../pure/SwapButtons'
+import { SwapWarningsBottom, SwapWarningsBottomProps, SwapWarningsTop, SwapWarningsTopProps } from '../../pure/warnings'
 import { ConfirmSwapModalSetup } from '../ConfirmSwapModalSetup'
+import { SwapModals, SwapModalsProps } from '../SwapModals'
 
 export interface SwapWidgetProps {
   topContent?: ReactNode
