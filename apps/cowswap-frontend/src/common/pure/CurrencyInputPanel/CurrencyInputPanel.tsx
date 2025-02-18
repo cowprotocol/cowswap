@@ -10,7 +10,6 @@ import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { Field } from 'legacy/state/types'
 
-import { ReceiveAmount } from 'modules/swap/pure/ReceiveAmount'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
@@ -21,6 +20,7 @@ import { FiatValue } from 'common/pure/FiatValue'
 import * as styledEl from './styled'
 
 import { useConvertUsdToTokenValue } from '../../hooks/useConvertUsdToTokenValue'
+import { ReceiveAmount } from '../ReceiveAmount'
 
 interface BuiltItProps {
   className: string
