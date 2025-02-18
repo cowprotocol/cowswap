@@ -5,12 +5,12 @@ import { Trans } from '@lingui/macro'
 
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
-import { ReceiveAmountInfoTooltip } from 'modules/swap/pure/ReceiveAmountInfo'
 import { getOrderTypeReceiveAmounts } from 'modules/trade'
 import { ReceiveAmountInfo } from 'modules/trade/types'
 
 import * as styledEl from './styled'
 
+import { ReceiveAmountInfoTooltip } from '../ReceiveAmountInfo'
 export interface ReceiveAmountProps {
   receiveAmountInfo: ReceiveAmountInfo
   currency: Currency
