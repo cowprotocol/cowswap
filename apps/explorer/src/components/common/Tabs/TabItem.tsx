@@ -36,7 +36,6 @@ const TabItemWrapper = styled(TabItemBase)<TabItemWrapperProps>`
   font-weight: ${({ tabTheme }): string => tabTheme.fontWeight};
   font-size: ${({ tabTheme }): string => tabTheme.fontSize};
   letter-spacing: ${({ tabTheme }): string => tabTheme.letterSpacing};
-
   border-bottom: ${({ isActive, tabTheme }): string =>
     `${tabTheme.indicatorTabSize}rem solid ${isActive ? Color.explorer_orange1 : 'transparent'}`};
 
@@ -53,6 +52,10 @@ const TabItemWrapper = styled(TabItemBase)<TabItemWrapperProps>`
     border-bottom-right-radius: ${({ tabTheme }): string =>
       `${!tabTheme.borderRadius ? '0' : 'var(--border-radius-default)'}`};
     ${({ isActive }): string | false => isActive && `background: ${Color.explorer_bg2}`};
+  }
+
+  &:hover {
+    background: ${Color.explorer_bg2};
   }
 `
 

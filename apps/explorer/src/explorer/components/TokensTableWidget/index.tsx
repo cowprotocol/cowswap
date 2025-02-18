@@ -50,10 +50,12 @@ const ExplorerCustomTab = styled(ExplorerTabs)`
       border-bottom: none;
     }
   }
+
   ${TabList} > button {
     border-bottom: none;
     font-size: 1.8rem;
     margin: 0 0.5rem 0 1rem;
+
     ${Media.upToSmall()} {
       font-size: 1.5rem;
       margin: 0;
