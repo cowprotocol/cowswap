@@ -167,7 +167,7 @@ export default function Page() {
                     utmContent="mev-blocker-dune-link"
                     onClick={() => clickOnMevBlocker('click-dune-link')}
                   >
-                    $1.38 billion
+                    $1.43 billion
                   </Link>{' '}
                   from well-meaning Ethereum users across a variety of use cases (trading, providing liquidity, minting
                   NFTs, etc). MEV Blocker is an RPC endpoint that supports these users by offering:
