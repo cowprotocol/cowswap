@@ -3,8 +3,7 @@ import { atom } from 'jotai'
 import { OrderQuoteResponse, PriceQuality } from '@cowprotocol/cow-sdk'
 
 import QuoteApiError from 'api/cowProtocol/errors/QuoteError'
-
-import { FeeQuoteParams } from '../types'
+import { FeeQuoteParams } from 'common/types'
 
 export interface TradeQuoteState {
   response: OrderQuoteResponse | null
