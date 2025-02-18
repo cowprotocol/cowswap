@@ -26,6 +26,7 @@ import { EthFlowStepper } from 'modules/ethFlow'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
+import { useAddOrderToSurplusQueue } from 'common/containers/SurplusModalSetup/surplusModal'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
@@ -51,8 +52,6 @@ import {
   TextAlert,
   TransactionInnerDetail,
 } from './styled'
-
-import { useAddOrderToSurplusQueue } from '../../../swap/state/surplusModal'
 
 import { ActivityDerivedState } from './index'
 
