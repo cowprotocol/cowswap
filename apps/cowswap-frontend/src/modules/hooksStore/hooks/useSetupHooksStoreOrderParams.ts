@@ -2,9 +2,9 @@ import { useEffect } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 
-import { useSetOrderParams } from './useSetOrderParams'
+import { useSwapFlowContext } from 'modules/swap2'
 
-import { useSwapFlowContext } from '../../swap/hooks/useSwapFlowContext'
+import { useSetOrderParams } from './useSetOrderParams'
 
 export function useSetupHooksStoreOrderParams() {
   const tradeFlowContext = useSwapFlowContext()

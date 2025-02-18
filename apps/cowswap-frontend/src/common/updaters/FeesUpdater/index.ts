@@ -26,6 +26,7 @@ import { quoteUsingSameParameters } from './quoteUsingSameParameters'
 export const TYPED_VALUE_DEBOUNCE_TIME = 350
 export const SWAP_QUOTE_CHECK_INTERVAL = ms`30s` // Every 30s
 
+// TODO: delete this
 export function FeesUpdater(): null {
   const { chainId, account } = useWalletInfo()
 

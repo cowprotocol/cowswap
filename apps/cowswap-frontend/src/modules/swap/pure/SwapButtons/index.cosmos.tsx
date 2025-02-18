@@ -5,7 +5,7 @@ import { useSelect } from 'react-cosmos/client'
 
 import { Field } from 'legacy/state/types'
 
-import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
+import { SwapButtonState } from '../../helpers/getSwapButtonState'
 
 import { SwapButtons, SwapButtonsContext } from './index'
 

@@ -18,8 +18,6 @@ import { Field } from 'legacy/state/types'
 import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useTokenSupportsPermit } from 'modules/permit'
-import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
-import { SwapButtonsContext } from 'modules/swap/pure/SwapButtons'
 import {
   TradeType,
   TradeWidgetActions,
@@ -37,6 +35,9 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useHandleSwapOrEthFlow } from './useHandleSwapOrEthFlow'
 import { useDerivedSwapInfo, useSwapActionHandlers } from './useSwapState'
+
+import { getSwapButtonState } from '../helpers/getSwapButtonState'
+import { SwapButtonsContext } from '../pure/SwapButtons'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean

@@ -16,7 +16,6 @@ import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { Field } from 'legacy/state/types'
 
 import { EthFlowBanner } from 'modules/ethFlow'
-import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { QuoteDeadlineParams } from 'modules/tradeQuote'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
@@ -24,6 +23,8 @@ import { TradeApproveButton } from 'common/containers/TradeApprove/TradeApproveB
 
 import { SafeReadOnlyButton } from './SafeReadOnlyButton'
 import * as styledEl from './styled'
+
+import { SwapButtonState } from '../../helpers/getSwapButtonState'
 
 export type HandleSwapCallback = Command
 export interface SwapButtonsContext {

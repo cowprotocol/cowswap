@@ -2,6 +2,7 @@ import { ReactNode, useCallback, useState } from 'react'
 
 import { Field } from 'legacy/state/types'
 
+import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
 import {
   TradeWidget,
   TradeWidgetSlots,
@@ -18,14 +19,13 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
+import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrappedBalanceForSwap'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapDeadlineState, useSwapRecipientToggleState, useSwapSettings } from '../../hooks/useSwapSettings'
 import { useSwapWidgetActions } from '../../hooks/useSwapWidgetActions'
 import { SwapConfirmModal } from '../SwapConfirmModal'
 import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
-import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
-import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrappedBalanceForSwap'
 
 export interface SwapWidgetProps {
   topContent?: ReactNode
