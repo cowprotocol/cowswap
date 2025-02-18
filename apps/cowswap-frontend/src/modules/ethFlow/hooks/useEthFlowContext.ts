@@ -1,13 +1,10 @@
 import { useSetAtom } from 'jotai'
-
-import useSWR from 'swr'
+import { useMemo } from 'react'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-import { useGetQuoteAndStatus } from 'legacy/state/price/hooks'
 
 import { useAppData, useUploadAppData } from 'modules/appData'
-// TODO: get rid of swap dependencies
-import { useDerivedSwapInfo } from 'modules/swap/hooks/useSwapState'
+import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useEthFlowContract } from 'common/hooks/useContract'
 
@@ -18,14 +15,10 @@ import { EthFlowContext } from '../types'
 
 export function useEthFlowContext(): EthFlowContext | null {
   const {
-    result: { contract: ethFlowContract, chainId: ethFlowChainId },
-    useNewEthFlowContracts,
+    result: { contract },
   } = useEthFlowContract()
-  const { currenciesIds } = useDerivedSwapInfo()
-  const { quote } = useGetQuoteAndStatus({
-    token: currenciesIds.INPUT,
-    chainId: ethFlowChainId,
-  })
+  // TODO: bind Swap module to tradeQuote module
+  const quote = useTradeQuote()
 
   const addTransaction = useTransactionAdder()
   const uploadAppData = useUploadAppData()
@@ -35,41 +28,17 @@ export function useEthFlowContext(): EthFlowContext | null {
 
   const checkEthFlowOrderExists = useCheckEthFlowOrderExists()
 
-  return (
-    useSWR(
-      appData && ethFlowContract
-        ? [
-            quote,
-            ethFlowContract,
-            useNewEthFlowContracts,
-            addTransaction,
-            checkEthFlowOrderExists,
-            addInFlightOrderId,
-            uploadAppData,
-            appData,
-          ]
-        : null,
-      ([
-        quote,
-        contract,
-        useNewEthFlowContracts,
-        addTransaction,
-        checkEthFlowOrderExists,
-        addInFlightOrderId,
-        uploadAppData,
-        appData,
-      ]) => {
-        return {
+  return useMemo(() => {
+    return appData && contract
+      ? {
           quote,
           contract,
-          useNewEthFlowContracts,
           addTransaction,
           checkEthFlowOrderExists,
           addInFlightOrderId,
           uploadAppData,
           appData,
         }
-      },
-    ).data || null
-  )
+      : null
+  }, [appData, contract, quote, addTransaction, checkEthFlowOrderExists, addInFlightOrderId, uploadAppData])
 }
