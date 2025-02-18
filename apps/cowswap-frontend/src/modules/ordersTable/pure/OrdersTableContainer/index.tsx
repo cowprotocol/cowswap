@@ -143,7 +143,7 @@ export function OrdersTableContainer({
                     <br />
                     <Trans>Time to create a new one!</Trans>{' '}
                     {orderType === TabOrderTypes.LIMIT ? (
-                      <styledEl.ExternalLinkStyled href="https://cow-protocol.medium.com/how-to-user-cow-swaps-surplus-capturing-limit-orders-24324326dc9e">
+                      <styledEl.ExternalLinkStyled href="https://cow.fi/learn/limit-orders-explained">
                         <Trans>Learn more</Trans>
                         <styledEl.ExternalArrow />
                       </styledEl.ExternalLinkStyled>
