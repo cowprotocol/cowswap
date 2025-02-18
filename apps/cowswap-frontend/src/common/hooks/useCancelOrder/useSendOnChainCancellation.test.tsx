@@ -95,7 +95,6 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
         error: null,
         loading: false,
       },
-      useNewEthFlowContracts: false,
     })
 
     settlementInvalidationMock.mockResolvedValue({ hash: settlementCancellationTxHash })

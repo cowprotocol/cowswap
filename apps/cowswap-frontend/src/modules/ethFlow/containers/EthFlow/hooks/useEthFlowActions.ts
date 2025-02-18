@@ -8,10 +8,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { Field } from 'legacy/state/types'
 
-// TODO: get rid of swap dependencies
-import { useDerivedSwapInfo, useSwapActionHandlers } from 'modules/swap/hooks/useSwapState'
-import { HandleSwapCallback } from 'modules/swap/pure/SwapButtons'
-import { useTradeConfirmActions } from 'modules/trade'
+import { useOnCurrencySelection, useTradeConfirmActions } from 'modules/trade'
 
 import { TradeApproveCallback } from 'common/containers/TradeApprove'
 
@@ -20,7 +17,7 @@ import { updateEthFlowContextAtom } from '../../../../state/EthFlow/ethFlowConte
 export interface EthFlowActionCallbacks {
   approve: TradeApproveCallback
   wrap: WrapUnwrapCallback | null
-  directSwap: HandleSwapCallback
+  directSwap: Command
   dismiss: Command
 }
 
@@ -36,11 +33,10 @@ export interface EthFlowActions {
 
 export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowActions {
   const { chainId } = useWalletInfo()
-  const { trade } = useDerivedSwapInfo()
 
   const updateEthFlowContext = useSetAtom(updateEthFlowContextAtom)
 
-  const { onCurrencySelection } = useSwapActionHandlers()
+  const onCurrencySelection = useOnCurrencySelection()
   const { onOpen: openSwapConfirmModal } = useTradeConfirmActions()
 
   return useMemo(() => {
@@ -63,8 +59,6 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
     }
 
     const swap = async () => {
-      if (!chainId || !trade) return
-
       callbacks.dismiss()
       onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCIES[chainId])
       openSwapConfirmModal()
@@ -85,8 +79,6 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
     }
 
     const directSwap = () => {
-      if (!chainId || !trade) return
-
       callbacks.dismiss()
       onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCIES[chainId])
       callbacks.directSwap()
@@ -98,5 +90,5 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
       wrap,
       directSwap,
     }
-  }, [callbacks, chainId, trade, updateEthFlowContext, onCurrencySelection, openSwapConfirmModal])
+  }, [callbacks, chainId, updateEthFlowContext, onCurrencySelection, openSwapConfirmModal])
 }

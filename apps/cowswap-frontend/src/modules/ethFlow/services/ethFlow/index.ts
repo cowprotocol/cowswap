@@ -44,16 +44,8 @@ export async function ethFlow({
     orderParams: orderParamsOriginal,
     typedHooks,
   } = tradeContext
-  const {
-    contract,
-    useNewEthFlowContracts,
-    appData,
-    uploadAppData,
-    addTransaction,
-    checkEthFlowOrderExists,
-    addInFlightOrderId,
-    quote,
-  } = ethFlowContext
+  const { contract, appData, uploadAppData, addTransaction, checkEthFlowOrderExists, addInFlightOrderId, quote } =
+    ethFlowContext
 
   const { chainId, inputAmount, outputAmount } = context
   const tradeAmounts = { inputAmount, outputAmount }
@@ -76,26 +68,23 @@ export async function ethFlow({
   try {
     // Do not proceed if fee is expired
     if (
+      quote &&
       isQuoteExpired({
-        expirationDate: quote?.fee?.expirationDate,
+        expirationDate: quote.response?.expiration,
         deadlineParams: {
-          validFor: quote?.validFor,
-          quoteValidTo: quote?.quoteValidTo,
-          localQuoteTimestamp: quote?.localQuoteTimestamp,
+          validFor: quote.quoteParams?.validFor,
+          quoteValidTo: quote.response?.quote.validTo,
+          localQuoteTimestamp: quote.localQuoteTimestamp,
         },
       })
     ) {
-      reportPlaceOrderWithExpiredQuote({ ...orderParamsOriginal, fee: quote?.fee })
+      reportPlaceOrderWithExpiredQuote({ ...orderParamsOriginal, fee: quote.response?.quote.feeAmount })
       throw new Error('Quote expired. Please refresh.')
     }
 
     // Last check before signing the order of the actual eth flow contract address (sending ETH to the wrong contract could lead to loss of funds)
     const actualContractAddress = contract.address.toLowerCase()
-    const expectedContractAddress = getEthFlowContractAddresses(
-      ethFlowEnv,
-      useNewEthFlowContracts,
-      chainId,
-    ).toLowerCase()
+    const expectedContractAddress = getEthFlowContractAddresses(ethFlowEnv).toLowerCase()
     if (actualContractAddress !== expectedContractAddress) {
       throw new Error(
         `EthFlow contract (${actualContractAddress}) address don't match the expected address for chain ${chainId} (${expectedContractAddress}). Please refresh the page and try again.`,
