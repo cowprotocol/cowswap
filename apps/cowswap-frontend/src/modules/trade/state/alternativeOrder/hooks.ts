@@ -1,13 +1,28 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
+
 import { Order } from 'legacy/state/orders/actions'
 
-import { alternativeModalAnalytics } from 'modules/analytics'
-
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { alternativeOrderAtom, isAlternativeOrderModalVisibleAtom } from './atoms'
+
+// Simple hook for analytics events
+function useAlternativeModalAnalytics() {
+  const cowAnalytics = useCowAnalytics()
+  return useCallback(
+    (action: string) => {
+      cowAnalytics.sendEvent({
+        category: CowSwapAnalyticsCategory.TRADE,
+        action,
+      })
+    },
+    [cowAnalytics],
+  )
+}
 
 export function useIsAlternativeOrderModalVisible() {
   return useAtomValue(isAlternativeOrderModalVisibleAtom)
@@ -25,14 +40,14 @@ export function useAlternativeOrder() {
 
 export function useSetAlternativeOrder() {
   const setAlternativeOrder = useSetAtom(alternativeOrderAtom)
+  const sendAnalytics = useAlternativeModalAnalytics()
 
   return useCallback(
     (order: Order | ParsedOrder, isEdit = false) => {
-      alternativeModalAnalytics(isEdit, 'clicked')
-
+      sendAnalytics(isEdit ? 'Edit opened' : 'Create opened')
       return setAlternativeOrder({ order, isEdit })
     },
-    [setAlternativeOrder]
+    [setAlternativeOrder, sendAnalytics],
   )
 }
 

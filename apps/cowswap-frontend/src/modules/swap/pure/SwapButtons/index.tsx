@@ -19,6 +19,7 @@ import { EthFlowBanner } from 'modules/swap/containers/EthFlow/EthFlowBanner'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { QuoteDeadlineParams } from 'modules/tradeQuote'
 
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { TradeApproveButton } from 'common/containers/TradeApprove/TradeApproveButton'
 
 import { SafeReadOnlyButton } from './SafeReadOnlyButton'
@@ -56,7 +57,15 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
     </ButtonError>
   ),
   [SwapButtonState.SwapWithWrappedToken]: (props: SwapButtonsContext) => (
-    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onEthFlow}>
+    <ButtonError
+      buttonSize={ButtonSize.BIG}
+      onClick={props.onEthFlow}
+      data-click-event={toCowSwapGtmEvent({
+        category: CowSwapAnalyticsCategory.TRADE,
+        action: 'Open Swap Confirm',
+        label: 'Swap with Wrapped Token',
+      })}
+    >
       <styledEl.SwapButtonBox>
         <Trans>Swap with {props.wrappedToken.symbol}</Trans>
       </styledEl.SwapButtonBox>
@@ -111,6 +120,11 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       buttonSize={ButtonSize.BIG}
       onClick={props.toggleWalletModal}
       disabled={props.widgetStandaloneMode === false}
+      data-click-event={toCowSwapGtmEvent({
+        category: CowSwapAnalyticsCategory.WALLET,
+        action: 'Connect Wallet',
+        label: 'Swap Button',
+      })}
     >
       <styledEl.SwapButtonBox>Connect Wallet</styledEl.SwapButtonBox>
     </ButtonPrimary>
@@ -148,14 +162,30 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
     </ButtonError>
   ),
   [SwapButtonState.RegularSwap]: (props: SwapButtonsContext) => (
-    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm}>
+    <ButtonError
+      buttonSize={ButtonSize.BIG}
+      onClick={props.openSwapConfirm}
+      data-click-event={toCowSwapGtmEvent({
+        category: CowSwapAnalyticsCategory.TRADE,
+        action: 'Open Swap Confirm',
+        label: 'Regular Swap',
+      })}
+    >
       <styledEl.SwapButtonBox>
         <Trans>Swap</Trans>
       </styledEl.SwapButtonBox>
     </ButtonError>
   ),
   [SwapButtonState.ApproveAndSwap]: (props: SwapButtonsContext) => (
-    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm}>
+    <ButtonError
+      buttonSize={ButtonSize.BIG}
+      onClick={props.openSwapConfirm}
+      data-click-event={toCowSwapGtmEvent({
+        category: CowSwapAnalyticsCategory.TRADE,
+        action: 'Open Swap Confirm',
+        label: 'Approve and Swap',
+      })}
+    >
       <styledEl.SwapButtonBox>
         <Trans>
           Approve{' '}
@@ -166,7 +196,15 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
     </ButtonError>
   ),
   [SwapButtonState.WrapAndSwap]: (props: SwapButtonsContext) => (
-    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm}>
+    <ButtonError
+      buttonSize={ButtonSize.BIG}
+      onClick={props.openSwapConfirm}
+      data-click-event={toCowSwapGtmEvent({
+        category: CowSwapAnalyticsCategory.TRADE,
+        action: 'Open Swap Confirm',
+        label: 'Wrap and Swap',
+      })}
+    >
       <styledEl.SwapButtonBox>
         <Trans>Wrap&nbsp;{<TokenSymbol token={props.inputAmount?.currency} length={6} />}&nbsp;and Swap</Trans>
       </styledEl.SwapButtonBox>
@@ -189,7 +227,15 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
 function EthFlowSwapButton(props: SwapButtonsContext) {
   return (
     <>
-      <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm}>
+      <ButtonError
+        buttonSize={ButtonSize.BIG}
+        onClick={props.openSwapConfirm}
+        data-click-event={toCowSwapGtmEvent({
+          category: CowSwapAnalyticsCategory.TRADE,
+          action: 'Open Swap Confirm',
+          label: 'ETH Flow Swap',
+        })}
+      >
         <styledEl.SwapButtonBox>
           <Trans>Swap</Trans>
         </styledEl.SwapButtonBox>

@@ -107,7 +107,7 @@ export const Title = styled.h3<{ customColor?: string }>`
   font-size: 21px;
 `
 
-export const Description = styled.p<{ center?: boolean; margin?: string }>`
+export const Description = styled.div<{ center?: boolean; margin?: string }>`
   margin: ${({ margin }) => margin || '8px 0 0'};
   font-size: 14px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});

@@ -1,4 +1,6 @@
 import { Color, ProductVariant } from '@cowprotocol/ui'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 import IMG_GREEN_WAVES from '@cowprotocol/assets/images/image-green-waves.svg'
 import IMG_COINS from '@cowprotocol/assets/images/image-coins.svg'
@@ -22,7 +24,8 @@ import {
 } from '@/styles/styled'
 import { Link, LinkType } from '@/components/Link'
 import SVG from 'react-inlinesvg'
-import { clickOnHome } from 'modules/analytics'
+
+const analytics = initGtm()
 
 export const PRODUCT_LIST = [
   {
@@ -142,7 +145,12 @@ export const PRODUCT_CONTAINERS = (
                 color={topic.linkColor}
                 href={topic.linkHref}
                 linkType={LinkType.TopicButton}
-                onClick={() => clickOnHome(topic.linkEvent)}
+                onClick={() =>
+                  analytics.sendEvent({
+                    category: CowFiCategory.HOME,
+                    action: topic.linkEvent,
+                  })
+                }
                 external={topic.linkExternal}
                 utmContent={topic.linkUtmContent}
               >

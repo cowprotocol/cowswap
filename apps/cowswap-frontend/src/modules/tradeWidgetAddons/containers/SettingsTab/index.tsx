@@ -15,8 +15,9 @@ import { ThemedText } from 'theme'
 import { AutoColumn } from 'legacy/components/Column'
 import { Toggle } from 'legacy/components/Toggle'
 
-import { toggleHooksEnabledAnalytics, toggleRecipientAddressAnalytics } from 'modules/analytics'
 import { SettingsIcon } from 'modules/trade/pure/Settings'
+
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import * as styledEl from './styled'
 
@@ -37,7 +38,6 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
   const toggleRecipientVisibility = useCallback(
     (value?: boolean) => {
       const isVisible = value ?? !recipientToggleVisible
-      toggleRecipientAddressAnalytics(isVisible)
       toggleRecipientVisibilityAux(isVisible)
     },
     [toggleRecipientVisibilityAux, recipientToggleVisible],
@@ -49,7 +49,6 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
       if (hooksEnabled === null || toggleHooksEnabledAux === null) return
 
       const isEnabled = value ?? !hooksEnabled
-      toggleHooksEnabledAnalytics(isEnabled)
       toggleHooksEnabledAux(isEnabled)
     },
     [hooksEnabled, toggleHooksEnabledAux],
@@ -89,6 +88,11 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
                   id="toggle-recipient-mode-button"
                   isActive={recipientToggleVisible}
                   toggle={toggleRecipientVisibility}
+                  data-click-event={toCowSwapGtmEvent({
+                    category: CowSwapAnalyticsCategory.RECIPIENT_ADDRESS,
+                    action: 'Toggle Recipient Address',
+                    label: recipientToggleVisible ? 'Enabled' : 'Disabled',
+                  })}
                 />
               </RowBetween>
 
@@ -109,7 +113,16 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
                       }
                     />
                   </RowFixed>
-                  <Toggle id="toggle-hooks-mode-button" isActive={hooksEnabled} toggle={toggleHooksEnabled} />
+                  <Toggle
+                    id="toggle-hooks-mode-button"
+                    isActive={hooksEnabled}
+                    toggle={toggleHooksEnabled}
+                    data-click-event={toCowSwapGtmEvent({
+                      category: CowSwapAnalyticsCategory.HOOKS,
+                      action: 'Toggle Hooks Enabled',
+                      label: hooksEnabled ? 'Enabled' : 'Disabled',
+                    })}
+                  />
                 </RowBetween>
               )}
             </AutoColumn>

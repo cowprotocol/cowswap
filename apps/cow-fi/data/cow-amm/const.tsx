@@ -1,11 +1,13 @@
 import { Link } from '@/components/Link'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import IMG_COWAMM_LVR from '@cowprotocol/assets/images/image-cowamm-lvr.svg'
 import IMG_COWAMM_LP_1 from '@cowprotocol/assets/images/image-cowamm-lp-1.svg'
 import IMG_COWAMM_LP_2 from '@cowprotocol/assets/images/image-cowamm-lp-2.svg'
 import IMG_COWAMM_LP_3 from '@cowprotocol/assets/images/image-cowamm-lp-3.svg'
 import IMG_COWAMM_LP_4 from '@cowprotocol/assets/images/image-cowamm-lp-4.svg'
 
-import { clickOnCowAmm } from 'modules/analytics'
+const analytics = initGtm()
 
 export const QUOTES = [
   {
@@ -131,8 +133,8 @@ export const FAQ_DATA = [
     question: 'What is a CF-AMM?',
     answer: (
       <>
-        The most basic types of AMMs are examples of “Constant Function” AMMs. CF-AMMs use the constant product function
-        “x*y=k” to calculate the prices of the two assets in any given liquidity pool. As the supply of one asset is
+        The most basic types of AMMs are examples of "Constant Function" AMMs. CF-AMMs use the constant product function
+        "x*y=k" to calculate the prices of the two assets in any given liquidity pool. As the supply of one asset is
         depleted, its price increases and vice versa. Thus, all trades on a CF-AMM can be mapped as trades that fit on
         the constant product function.
         <br />
@@ -156,7 +158,7 @@ export const FAQ_DATA = [
   {
     question: 'What is an FM-AMM?',
     answer: `
-        The “Function-Maximizing” AMM is a novel AMM mechanism that tackles the shortcomings of the CF-AMM design and eliminates LVR. The FM-AMM batches trades together, executing all the orders in a batch at the same uniform clearing price. This price is such that the AMM “moves up the curve” with each trade. Since anyone can submit trades to the FM-AMM while its batch is open, competition between arbitrageurs guarantees that FM-AMM always trades at the correct, equilibrium price also in case of a rebalancing.
+        The "Function-Maximizing" AMM is a novel AMM mechanism that tackles the shortcomings of the CF-AMM design and eliminates LVR. The FM-AMM batches trades together, executing all the orders in a batch at the same uniform clearing price. This price is such that the AMM "moves up the curve" with each trade. Since anyone can submit trades to the FM-AMM while its batch is open, competition between arbitrageurs guarantees that FM-AMM always trades at the correct, equilibrium price also in case of a rebalancing.
       `,
   },
   {
@@ -180,7 +182,12 @@ export const FAQ_DATA = [
           href="https://pool-creator.balancer.fi/cow"
           external
           utmContent="cow-amm-pool-creator"
-          onClick={() => clickOnCowAmm('Content link click - FAQ:Contact us')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWAMM,
+              action: 'Content link click - FAQ:Contact us',
+            })
+          }
         >
           CoW AMM pool creator
         </Link>
@@ -189,7 +196,12 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-amm/tutorials/cow-amm-deployer"
           external
           utmContent="cow-amm-deployer"
-          onClick={() => clickOnCowAmm('Content link click - FAQ:Deploy a pool')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWAMM,
+              action: 'Content link click - FAQ:Deploy a pool',
+            })
+          }
         >
           follow these instructions in the CoW AMM docs
         </Link>{' '}
@@ -206,7 +218,12 @@ export const FAQ_DATA = [
           href="http://balancer.fi/pools/cow"
           external
           utmContent="cow-amm-balancer-pools"
-          onClick={() => clickOnCowAmm('Content link click - FAQ:Balancer pools')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWAMM,
+              action: 'Content link click - FAQ:Balancer pools',
+            })
+          }
         >
           balancer.fi/pools/cow
         </Link>

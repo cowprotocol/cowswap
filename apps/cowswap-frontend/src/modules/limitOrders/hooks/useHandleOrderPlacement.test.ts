@@ -42,7 +42,6 @@ jest.mock('@cowprotocol/wallet', () => {
     },
   })
 })
-jest.mock('modules/analytics/useAnalyticsReporterCowSwap')
 
 const mockTradeFlow = tradeFlow as jest.MockedFunction<typeof tradeFlow>
 const mockSafeBundleFlow = safeBundleFlow as jest.MockedFunction<typeof safeBundleFlow>

@@ -4,6 +4,8 @@ import styled from 'styled-components/macro'
 
 import { UNSUPPORTED_SAFE_LINK } from 'modules/twap/const'
 
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+
 const Wrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
@@ -65,6 +67,11 @@ export function FallbackHandlerWarning({
         type="checkbox"
         checked={isFallbackHandlerSetupAccepted}
         onChange={(event) => toggleFallbackHandlerSetupFlag(event.currentTarget.checked)}
+        data-click-event={toCowSwapGtmEvent({
+          category: CowSwapAnalyticsCategory.TWAP,
+          action: 'Modify safe handler checkbox',
+          label: isFallbackHandlerSetupAccepted ? 'enabled' : 'disabled',
+        })}
       />
       <span>Make the modification when placing order</span>
     </WarningCheckbox>

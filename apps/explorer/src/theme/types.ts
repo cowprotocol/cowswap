@@ -1,3 +1,5 @@
+import type { CowProtocolTheme } from '@cowprotocol/ui'
+
 import { Colors, Fonts } from './styles'
 
 export enum Theme {
