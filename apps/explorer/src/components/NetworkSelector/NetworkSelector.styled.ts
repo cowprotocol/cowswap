@@ -77,8 +77,7 @@ export const NetworkLabel = styled.span<{ color: string }>`
   text-transform: uppercase;
   font-weight: ${({ theme }): string => theme.fontBold};
   letter-spacing: 0.1rem;
-
-  background: ${Color.explorer_networkBackground};
+  background: ${({ color }) => color};
   color: ${() => Color.neutral100};
 `
 
