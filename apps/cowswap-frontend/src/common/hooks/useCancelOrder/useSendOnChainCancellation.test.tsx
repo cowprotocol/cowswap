@@ -37,7 +37,6 @@ jest.mock('common/hooks/useContract', () => {
   }
 })
 jest.mock('legacy/state/enhancedTransactions/hooks')
-jest.mock('modules/analytics/useAnalyticsReporterCowSwap')
 
 const orderMock = {
   id: 'xx1',
