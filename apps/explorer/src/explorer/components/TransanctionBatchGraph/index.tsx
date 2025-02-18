@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 
-import { Media } from '@cowprotocol/ui'
+import { Media, Color } from '@cowprotocol/ui'
 
 import {
   faDiceFive,
@@ -18,7 +18,7 @@ import klay from 'cytoscape-klay'
 import noOverlap from 'cytoscape-no-overlap'
 import popper from 'cytoscape-popper'
 import CytoscapeComponent from 'react-cytoscapejs'
-import styled, { useTheme } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import { useCytoscape, useTxBatchData, useVisualization } from './hooks'
 import { LAYOUTS } from './layouts'
@@ -38,13 +38,13 @@ Cytoscape.use(fcose)
 Cytoscape.use(klay)
 
 const WrapperCytoscape = styled(CytoscapeComponent)`
-  background-color: ${({ theme }): string => theme.paper};
+  background-color: ${Color.explorer_bg};
   font-weight: ${({ theme }): string => theme.fontMedium};
   border-radius: 0.6rem;
-
   padding-top: 3rem;
+
   ${Media.upToMedium()} {
-    border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
+    border: 0.1rem solid ${Color.explorer_border};
     margin: 1.6rem 0;
   }
 `
@@ -108,12 +108,11 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): React.ReactNo
     if (visualizationChanged) setResetZoom(true)
   }, [setResetZoom, visualizationChanged])
 
-  const theme = useTheme()
   const currentLayoutIndex = Object.keys(LayoutNames).findIndex((nameLayout) => nameLayout === layout.name)
 
   const stylesheet = useMemo(() => {
-    return STYLESHEET(theme).concat(tokensStylesheets)
-  }, [tokensStylesheets, theme])
+    return STYLESHEET().concat(tokensStylesheets)
+  }, [tokensStylesheets])
 
   if (isLoading) {
     return <CowLoading />

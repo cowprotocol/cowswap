@@ -1,4 +1,4 @@
-import { Media } from '@cowprotocol/ui'
+import { Media, Color } from '@cowprotocol/ui'
 
 import InternalExternalMenuLink from 'components/common/MenuDropdown/InternalExternalLink'
 import Icon from 'components/Icon'
@@ -10,7 +10,7 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   display: flex;
   justify-content: flex-end;
   .mobile-menu {
-    background: ${({ theme }): string => theme.paperCustom};
+    background: ${Color.explorer_paperCustom};
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -85,24 +85,29 @@ export const MenuItemCSS = css`
   padding: 1.3rem 1.2rem;
   cursor: pointer;
   background: transparent;
-  transition: background 0.15s ease-in-out 0s, color 0.15s ease-in-out 0s;
-  color: ${({ theme }): string => theme.textSecondary2};
+  transition:
+    background 0.15s ease-in-out 0s,
+    color 0.15s ease-in-out 0s;
+  color: ${Color.explorer_textSecondary2};
+
   :visited,
   :link {
-    color: ${({ theme }): string => theme.textSecondary2};
+    color: ${Color.explorer_textSecondary2};
   }
 
   :hover {
-    background: ${({ theme }): string => theme.bg2};
+    background: ${Color.explorer_bg2};
     text-decoration: none;
-    color: ${({ theme }): string => theme.textSecondary1};
+    color: ${Color.explorer_textSecondary1};
   }
+
   ${Media.upToSmall()} {
     width: 100%;
-    border-bottom: 0.1rem solid ${({ theme }): string => theme.background};
+    border-bottom: 0.1rem solid ${Color.explorer_bg};
     border-radius: 0;
     padding: 2.8rem 1rem;
     font-size: 1.8rem;
+
     :hover {
       background: none;
     }
@@ -120,7 +125,7 @@ export const ButtonMenuItem = styled.button`
 
   ${Media.upToSmall()} {
     width: 100%;
-    border-bottom: 0.1rem solid ${({ theme }): string => theme.background};
+    border-bottom: 0.1rem solid ${Color.explorer_bg};
     border-radius: 0;
     padding: 2.8rem 1rem;
     font-size: 1.8rem;
@@ -131,8 +136,8 @@ export const ButtonMenuItem = styled.button`
   }
 
   &:hover {
-    background: ${({ theme }): string => theme.bg2};
-    color: ${({ theme }): string => theme.textSecondary1};
+    background: ${Color.explorer_bg2};
+    color: ${Color.explorer_textSecondary1};
     ${Media.upToSmall()} {
       background: none;
     }
@@ -164,10 +169,10 @@ export const ButtonMenuItem = styled.button`
   }
 
   svg > path {
-    fill: ${({ theme }): string => theme.textSecondary2};
+    fill: ${Color.explorer_textSecondary2};
   }
   :hover > svg > path {
-    fill: ${({ theme }): string => theme.textSecondary1};
+    fill: ${Color.explorer_textSecondary1};
   }
 `
 
@@ -191,8 +196,8 @@ export const Content = styled.div`
   top: 100%;
   right: 0;
   border-radius: 1.6rem;
-  background: ${({ theme }): string => theme.paperCustom};
-  box-shadow: 0 1.2rem 1.8rem ${({ theme }): string => theme.background};
+  background: ${Color.neutral0};
+  box-shadow: 0 1.2rem 1.8rem ${Color.explorer_bg};
   padding: 3.2rem;
   gap: 6.2rem;
   margin: 1.2rem 0 0;
@@ -225,7 +230,7 @@ export const MenuTitle = styled.b`
   letter-spacing: 0.2rem;
   display: flex;
   margin: 0 0 0.6rem;
-  color: ${({ theme }): string => theme.textSecondary2};
+  color: ${Color.neutral100};
   ${Media.upToSmall()} {
     display: none;
   }
@@ -240,6 +245,7 @@ export const MenuSection = styled.div`
   justify-items: flex-start;
   margin: 0;
   gap: 2.4rem;
+
   ${Media.upToSmall()} {
     gap: 3.6rem;
     opacity: 0.7;
@@ -258,18 +264,17 @@ export const MenuSection = styled.div`
     font-weight: 500;
     margin: 0;
     padding: 0;
-    color: ${({ theme }): string => theme.textSecondary1};
+    color: ${Color.neutral100};
     gap: 1.2rem;
     align-items: center;
 
     &:hover {
-      text-decoration: underline;
-      font-weight: 500;
-      background: transparent;
+      color: ${Color.neutral100};
     }
 
     &.ACTIVE {
       font-weight: bold;
+      color: ${Color.neutral100};
     }
   }
 
@@ -277,10 +282,14 @@ export const MenuSection = styled.div`
     width: 1.8rem;
     height: 1.8rem;
     object-fit: contain;
+    color: inherit;
   }
 
-  a > svg > path {
-    fill: white;
+  a > svg > path,
+  a > svg > g {
+    fill: currentColor;
+    stroke: currentColor;
+    stroke-width: 0;
   }
 `
 

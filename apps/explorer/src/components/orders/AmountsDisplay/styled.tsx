@@ -1,4 +1,4 @@
-import { Media } from '@cowprotocol/ui'
+import { Color, Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -30,7 +30,7 @@ export const RowTitle = styled.span`
   &::before {
     content: '▶';
     margin-right: 0.5rem;
-    color: ${({ theme }): string => theme.grey};
+    color: ${Color.explorer_grey};
     font-size: 0.75rem;
   }
 `

@@ -32,7 +32,7 @@ import {
   StyledDropdownContentItem,
 } from './styled'
 
-import { Color } from '../../consts'
+import { Color } from '../../colors'
 import { Media } from '../../consts'
 import { BadgeType } from '../../types'
 import { Badge } from '../Badge'

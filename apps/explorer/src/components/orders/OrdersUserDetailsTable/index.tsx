@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
+import { Color } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
@@ -70,7 +71,7 @@ interface RowProps {
 }
 
 const FilterRow = styled.tr`
-  background-color: ${({ theme }) => theme.background};
+  background: ${Color.explorer_background};
 
   @media (max-width: 1155px) {
     div:first-child {
@@ -112,7 +113,7 @@ const HiddenOrdersLegend = styled.div`
   }
 
   a:hover {
-    color: ${({ theme }) => theme.textSecondary2};
+    color: ${Color.explorer_textSecondary1};
   }
 `
 

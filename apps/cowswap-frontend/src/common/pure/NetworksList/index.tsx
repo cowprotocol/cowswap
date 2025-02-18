@@ -32,7 +32,7 @@ export function NetworksList(props: NetworksListProps) {
         const rowContent = (
           <styledEl.FlyoutRow key={targetChainId} onClick={() => onSelectChain(targetChainId)} active={isActive}>
             <styledEl.Logo src={logoUrl} />
-            <styledEl.NetworkLabel>{label}</styledEl.NetworkLabel>
+            <styledEl.NetworkLabel color={info.color}>{label}</styledEl.NetworkLabel>
             {isNewNetwork && (
               <Badge type={BadgeTypes.ALERT2} style={isActive ? { marginRight: '10px' } : undefined}>
                 NEW

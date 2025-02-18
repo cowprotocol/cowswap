@@ -1,4 +1,4 @@
-import { Media } from '@cowprotocol/ui'
+import { Media, Color } from '@cowprotocol/ui'
 
 import styled, { keyframes } from 'styled-components/macro'
 
@@ -13,15 +13,15 @@ const frameAnimation = keyframes`
 export const ChartSkeleton = styled.div<{ backgroundColor?: 'grey' | 'orange' }>`
   height: 100%;
   min-height: 21.6rem;
-  border: 1px solid ${({ theme }): string => theme.borderPrimary};
+  border: 1px solid ${Color.explorer_border};
   border-radius: 0.4rem;
   overflow: hidden;
   display: flex;
   justify-content: center;
   align-content: center;
   background: url(${GraphSkeleton}) no-repeat bottom/contain
-    ${({ theme, backgroundColor = 'grey' }): string =>
-      backgroundColor === 'grey' ? theme.greyOpacity : theme.orangeOpacity};
+    ${({ backgroundColor = 'grey' }): string =>
+      backgroundColor === 'grey' ? Color.explorer_greyOpacity : Color.explorer_orangeOpacity};
   opacity: 0.35;
 
   h2 {
@@ -29,7 +29,8 @@ export const ChartSkeleton = styled.div<{ backgroundColor?: 'grey' | 'orange' }>
   }
 
   /* shimmering */
-  mask: linear-gradient(-60deg, #000 30%, #0005, #000 70%) right/300% 100%;
+  mask: linear-gradient(-60deg, ${Color.neutral0} 30%, ${Color.explorer_bgOpaque}, ${Color.neutral0} 70%) right/300%
+    100%;
   background-repeat: no-repeat;
   animation: shimmer 1.5s infinite;
   animation-name: ${frameAnimation};
@@ -47,7 +48,7 @@ export const WrapperChart = styled.div`
     padding: 0;
     overflow: hidden;
     font-size: small;
-    color: ${({ theme }): string => theme.grey};
+    color: ${Color.explorer_grey};
     z-index: 3;
   }
 
@@ -58,7 +59,7 @@ export const WrapperChart = styled.div`
     display: none;
     box-sizing: border-box;
     font-size: 12px;
-    color: #20262e;
+    color: ${Color.explorer_textPrimary};
     background-color: rgba(255, 255, 255, 0.23);
     text-align: center;
     z-index: 1;
@@ -91,7 +92,7 @@ export const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'g
   left: 1rem;
   z-index: 3;
   > h3 {
-    color: ${({ theme }): string => theme.grey};
+    color: ${Color.explorer_grey};
     font-size: small;
     font-weight: ${({ theme }): string => theme.fontMedium};
     margin: 0;
@@ -112,16 +113,21 @@ export const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'g
     align-items: center;
 
     > p {
-      color: ${({ theme }): string => theme.white};
+      color: ${Color.explorer_textPrimary};
       font-size: large;
       font-weight: ${({ theme }): string => theme.fontBold};
       &.caption {
         font-size: 1.1rem;
-        color: ${({ theme, captionColor }): string => (captionColor ? theme[captionColor] : theme.grey)};
+        color: ${({ captionColor }): string => {
+          if (!captionColor) return Color.explorer_grey
+          if (captionColor === 'green') return Color.explorer_green1
+          if (captionColor === 'red1') return Color.explorer_red1
+          return Color.explorer_grey
+        }};
       }
       &.date {
         margin: -1rem 0;
-        color: ${({ theme }): string => theme.grey};
+        color: ${Color.explorer_grey};
         font-size: 1.1rem;
       }
       ${Media.upToSmall()} {
@@ -130,6 +136,7 @@ export const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'g
     }
   }
 `
+
 export const WrapperPeriodButton = styled.button<{ active: boolean }>`
   outline: inherit;
   cursor: pointer;
@@ -137,9 +144,9 @@ export const WrapperPeriodButton = styled.button<{ active: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ theme, active }): string => (active ? theme.orange : theme.white)};
-  background-color: ${({ theme, active }): string => (active ? theme.orangeOpacity : theme.paper)};
-  border: 1px solid ${({ theme, active }): string => (active ? theme.orange : theme.bg2)};
+  color: ${({ active }): string => (active ? Color.explorer_orange1 : Color.explorer_textPrimary)};
+  background-color: ${({ active }): string => (active ? Color.explorer_orangeOpacity : Color.explorer_bg2)};
+  border: 1px solid ${({ active }): string => (active ? Color.explorer_orange1 : Color.explorer_bg2)};
   padding: 0;
   border-radius: 0.6rem;
   margin: 0 0.5rem;
@@ -154,19 +161,20 @@ export const WrapperPeriodButton = styled.button<{ active: boolean }>`
   }
 
   &:hover {
-    color: ${({ theme }): string => theme.orange};
-    background-color: ${({ theme, active }): string => (active ? theme.paper : theme.orangeOpacity)};
+    color: ${Color.explorer_orange1};
+    background-color: ${({ active }): string => (active ? Color.explorer_bg2 : Color.explorer_orangeOpacity)};
   }
 `
+
 export const StyledShimmerBar = styled(ShimmerBar)`
   margin: 1.2rem 0;
   min-width: 10rem;
 `
 
 export const WrapperTooltipPrice = styled.div<{ left: number; top: number; height?: number; width?: number }>`
-  color: ${({ theme }): string => theme.white};
-  background-color: ${({ theme }): string => theme.paper};
-  border: 1px solid ${({ theme }): string => theme.bg2};
+  color: ${Color.explorer_textPrimary};
+  background-color: ${Color.explorer_bg2};
+  border: 1px solid ${Color.explorer_border};
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   margin: 0;
@@ -181,11 +189,11 @@ export const WrapperTooltipPrice = styled.div<{ left: number; top: number; heigh
     font-size: 1.5rem;
     font-weight: ${({ theme }): string => theme.fontMedium};
     margin: 1rem 0;
-    color: ${({ theme }): string => theme.white};
+    color: ${Color.explorer_textPrimary};
   }
 
   > p {
-    color: ${({ theme }): string => theme.grey};
+    color: ${Color.explorer_grey};
     font-size: 1.1rem;
     padding: 0;
   }

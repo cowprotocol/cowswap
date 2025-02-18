@@ -1,21 +1,19 @@
-import React, { useMemo } from 'react'
+import React from 'react'
+
+import { Network } from '@cowprotocol/cow-sdk'
+import { Color } from '@cowprotocol/ui'
 
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
-import { faLightbulb, faMoon } from '@fortawesome/free-regular-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // eslint-disable-next-line no-restricted-imports
 import { StoryFnReactReturnType } from '@storybook/react/dist/ts3.9/client/preview/types'
-import combineReducers from 'combine-reducers'
-import { ThemeToggle } from 'components/common/Button'
 import { Frame } from 'components/common/Frame'
 import { withGlobalContext } from 'hooks/useGlobalState'
-import { useThemeManager } from 'hooks/useThemeManager'
 import { FormProvider, useForm, UseFormOptions } from 'react-hook-form'
 import { MemoryRouter } from 'react-router'
+import { combineReducers } from 'redux'
 import { GLOBAL_INITIAL_STATE, globalRootReducer } from 'state'
-import { reducer as networkReducer } from 'state/network'
+import { networkReducer } from 'state/network'
 import { ThemeProvider, getThemePalette, StaticGlobalStyle, Theme, ThemedGlobalStyle } from 'theme'
-import { Network } from 'types'
 
 export const GlobalStyles = (DecoratedStory: () => StoryFnReactReturnType): React.ReactNode => (
   <>
@@ -28,21 +26,14 @@ export const GlobalStyles = (DecoratedStory: () => StoryFnReactReturnType): Reac
 )
 
 const ThemeTogglerUnwrapped: React.FC = ({ children }) => {
-  const [themeMode, setThemeMode] = useThemeManager()
-  const [themePalette, isDarkMode] = useMemo(() => [getThemePalette(themeMode), themeMode === Theme.DARK], [themeMode])
-
-  const handleDarkMode = (): void => setThemeMode(themeMode === Theme.DARK ? Theme.LIGHT : Theme.DARK)
+  const themePalette = getThemePalette(Theme.DARK)
 
   return (
     <>
       <Frame style={{ background: themePalette.bg1 }}>{children}</Frame>
-      {/* Cheeky use of ButtonBase here :P */}
-      <ThemeToggle onClick={handleDarkMode} mode={isDarkMode}>
-        <FontAwesomeIcon icon={isDarkMode ? faMoon : faLightbulb} />
-      </ThemeToggle>
       <br />
       <br />
-      <code style={{ fontSize: '12px' }}>Current theme: {themeMode.toUpperCase()}</code>
+      <code style={{ fontSize: '12px' }}>Theme: DARK</code>
     </>
   )
 }
@@ -57,7 +48,7 @@ export function NetworkDecorator(DecoratedStory: () => React.ReactNode): React.R
   const Component = withGlobalContext(
     DecoratedStory,
     () => ({ networkId: Network.MAINNET }),
-    combineReducers({ networkId: networkReducer })
+    combineReducers({ networkId: networkReducer }),
   )
   return <Component />
 }
@@ -68,7 +59,7 @@ export const Router = (DecoratedStory: () => React.ReactNode): React.ReactNode =
 
 export const CenteredAndFramed = (DecoratedStory: () => StoryFnReactReturnType): React.ReactNode => (
   <div style={{ textAlign: 'center' }}>
-    <Frame style={{ display: 'inline-block' }}>{DecoratedStory()}</Frame>
+    <Frame style={{ display: 'inline-block', background: Color.explorer_bg1 }}>{DecoratedStory()}</Frame>
   </div>
 )
 

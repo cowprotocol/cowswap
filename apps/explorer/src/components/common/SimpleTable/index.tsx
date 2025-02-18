@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Media } from '@cowprotocol/ui'
+import { Media, Color } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
 
@@ -33,7 +33,7 @@ const Table = styled.table<{ $numColumns?: number; columnViewMobile?: boolean }>
   font-weight: 400;
   line-height: 1;
   background: transparent;
-  color: ${({ theme }): string => theme.textPrimary1};
+  color: ${Color.explorer_textPrimary};
   position: relative;
   padding: 0 0 2rem;
 
@@ -51,7 +51,7 @@ const Table = styled.table<{ $numColumns?: number; columnViewMobile?: boolean }>
     line-height: inherit;
 
     &:hover {
-      background-color: ${({ theme }): string => theme.background};
+      background-color: ${Color.explorer_background};
     }
 
     ${({ columnViewMobile }) =>
@@ -73,7 +73,7 @@ const Table = styled.table<{ $numColumns?: number; columnViewMobile?: boolean }>
 
   thead tr:not(:last-of-type),
   tbody tr:not(:last-of-type) {
-    border-bottom: 0.1rem solid rgba(151, 151, 184, 0.1);
+    border-bottom: 1px solid ${Color.explorer_tableRowBorder};
   }
 
   thead th,
@@ -116,12 +116,12 @@ const Table = styled.table<{ $numColumns?: number; columnViewMobile?: boolean }>
     }
 
     &.long {
-      border-left: 0.2rem solid var(--color-long);
+      border-left: 0.2rem solid ${Color.explorer_green1};
     }
 
     &.short {
-      color: var(--color-short);
-      border-left: 0.2rem solid var(--color-short);
+      color: ${Color.explorer_red1};
+      border-left: 0.2rem solid ${Color.explorer_red1};
     }
   }
 

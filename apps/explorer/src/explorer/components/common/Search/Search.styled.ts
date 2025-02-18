@@ -1,4 +1,4 @@
-import { Media } from '@cowprotocol/ui'
+import { Color, Media } from '@cowprotocol/ui'
 
 import * as CSS from 'csstype'
 import SVG from 'react-inlinesvg'
@@ -23,7 +23,7 @@ export const Wrapper = styled.form`
 export const Input = styled.input`
   height: 5rem;
   flex: 1 1 auto;
-  background: ${({ theme }): string => theme.greyOpacity};
+  background: ${Color.explorer_greyOpacity};
   font-weight: ${({ theme }): string => theme.fontMedium};
   font-size: 1.6rem;
   border-radius: 0.6rem;
@@ -32,14 +32,14 @@ export const Input = styled.input`
   outline: 0;
   appearance: none;
   align-items: center;
-  color: ${({ theme }): string => theme.greyShade};
+  color: ${Color.explorer_textSecondary2};
   padding: 1.6rem 1.6rem 1.6rem 5rem;
   box-sizing: border-box;
   border: 0.1rem solid transparent;
   transition: border 0.2s ease-in-out;
 
   &:focus {
-    border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
+    border: 0.1rem solid ${Color.explorer_borderPrimary};
   }
 
   &::placeholder {
@@ -75,7 +75,7 @@ export const Button = styled.button`
 `
 
 export const SearchIcon = styled(SVG)`
-  fill: ${({ theme }): string => theme.grey};
+  fill: ${Color.explorer_textSecondary2};
   opacity: 0.7;
   transition: opacity 0.2s ease-in-out;
   width: 100%;
@@ -84,7 +84,7 @@ export const SearchIcon = styled(SVG)`
   > path {
     height: 100%;
     width: 100%;
-    fill: ${({ theme }): string => theme.grey};
+    fill: ${Color.explorer_textSecondary2};
   }
 
   &:hover {
@@ -100,7 +100,7 @@ export const Placeholder = styled.span<Partial<CSS.Properties & { isActive: bool
   display: none;
   font-size: 1.6rem;
   line-height: 1;
-  color: ${({ theme }): string => theme.greyShade};
+  color: ${Color.explorer_textSecondary2};
   transition: all 0.2s ease-in-out;
   position: absolute;
   top: 50%;

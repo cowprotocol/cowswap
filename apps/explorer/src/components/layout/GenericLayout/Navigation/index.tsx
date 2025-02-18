@@ -1,4 +1,5 @@
 import { Media } from '@cowprotocol/ui'
+import { Color } from '@cowprotocol/ui'
 
 import * as CSS from 'csstype'
 import styled from 'styled-components/macro'
@@ -19,18 +20,18 @@ export const Navigation = styled.ol<Partial<CSS.Properties & { isActive: boolean
     width: 100%;
     top: 100%;
     max-width: 260px;
-    border: 1px solid var(--color-border);
+    border: 1px solid ${Color.explorer_border};
     border-radius: 0.4rem;
     transition: right 0.07s ease-in-out;
     left: auto;
     right: 15px;
-    background-color: var(--color-primary);
+    background-color: ${Color.explorer_bg};
     opacity: ${({ isActive }): string => (isActive ? '1' : '0')};
     z-index: ${({ isActive }): string => (isActive ? '99' : '-1')};
   }
 
   ${Media.upToExtraSmall()} {
-    border-right: 1px solid var(--color-border);
+    border-right: 1px solid ${Color.explorer_border};
     max-width: 100%;
     top: 0;
     bottom: 0;
@@ -43,9 +44,11 @@ export const Navigation = styled.ol<Partial<CSS.Properties & { isActive: boolean
 
   > li {
     font-size: var(--font-size-larger);
-    color: var(--color-text-secondary2);
+    color: ${Color.explorer_textSecondary2};
     background-color: transparent;
-    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    transition:
+      background-color 0.2s ease-in-out,
+      color 0.2s ease-in-out;
     border-radius: 0.75rem;
     position: relative;
     flex-flow: row;
@@ -60,7 +63,7 @@ export const Navigation = styled.ol<Partial<CSS.Properties & { isActive: boolean
       bottom: 0;
       height: 100%;
       width: 1px;
-      background-color: var(--color-text-secondary2);
+      background-color: ${Color.explorer_textSecondary2};
       opacity: 0.6;
     }
 
@@ -75,7 +78,7 @@ export const Navigation = styled.ol<Partial<CSS.Properties & { isActive: boolean
         width: calc(100% - 30px);
         transform: translateX(-50%);
         height: 1px;
-        background-color: var(--color-text-secondary2);
+        background-color: ${Color.explorer_textSecondary2};
         opacity: 0.2;
       }
     }
@@ -84,7 +87,7 @@ export const Navigation = styled.ol<Partial<CSS.Properties & { isActive: boolean
   > li.active,
   > li:hover {
     background-color: transparent;
-    color: var(--color-text-primary);
+    color: ${Color.explorer_textPrimary};
     font-weight: var(--font-weight-medium);
   }
 
@@ -111,6 +114,8 @@ export const Navigation = styled.ol<Partial<CSS.Properties & { isActive: boolean
 
   > li > div > a > i,
   > li > a {
-    transition: width 0.3s ease-in-out, background 0.3s ease-in-out;
+    transition:
+      width 0.3s ease-in-out,
+      background 0.3s ease-in-out;
   }
 `

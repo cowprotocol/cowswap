@@ -1,3 +1,5 @@
+import { Color } from '@cowprotocol/ui'
+
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import TokenImg from 'components/common/TokenImg'
@@ -15,7 +17,7 @@ const Wrapper = styled.div`
 `
 
 const NativeWrapper = styled.span`
-  color: ${({ theme }): string => theme.textPrimary1};
+  color: ${Color.explorer_textPrimary};
 `
 
 const StyledImg = styled(TokenImg)`

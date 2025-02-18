@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { Color } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { MEDIA } from '../../../const'
@@ -17,16 +19,16 @@ const Wrapper = styled.div<{ checked: boolean }>`
   padding: 0 8px;
   font-size: ${({ theme }): string => theme.fontSizeDefault};
   cursor: pointer;
-  color: ${({ checked, theme }): string => (checked ? theme.textActive1 : theme.white)};
+  color: ${({ checked }): string => (checked ? Color.explorer_textActive : Color.neutral100)};
   height: 3rem;
-  border: 1px solid ${({ theme }): string => theme.borderPrimary};
+  border: 1px solid ${Color.explorer_border};
   border-radius: 0.5rem;
-  background: ${({ theme }): string => theme.bg2};
+  background: ${Color.explorer_bg2};
 
   &media ${MEDIA.mediumUp} {
     &:hover {
       transition: all 0.2s ease-in-out;
-      color: ${({ theme }): string => theme.textActive1};
+      color: ${Color.explorer_textActive};
     }
   }
 

@@ -14,7 +14,6 @@ import { Line } from '@visx/shape'
 import { GlyphCircle } from '@visx/glyph'
 import { localPoint } from '@visx/event'
 import { EventType } from '@visx/event/lib/types'
-import { Color } from 'styles/variables'
 import { MissingPriceChart } from './MissingChart'
 import {
   ArrowCell,
@@ -28,6 +27,7 @@ import {
   TokenPriceWrapper,
 } from './styled'
 import { formatUSDPrice } from 'util/formatUSDPrice'
+import { Color } from '@cowprotocol/ui'
 
 export type PricePoint = { timestamp: number; value: number }
 
@@ -107,13 +107,13 @@ export function Chart({ prices, height, width, timePeriod }: ChartProps) {
       scaleLinear()
         .domain(getPriceBounds(prices ?? []))
         .range([graphInnerHeight, 0]),
-    [prices, graphInnerHeight]
+    [prices, graphInnerHeight],
   )
 
   // x scale
   const timeScale = useMemo(
     () => scaleLinear().domain([startingPrice.timestamp, endingPrice.timestamp]).range([0, width]),
-    [startingPrice, endingPrice, width]
+    [startingPrice, endingPrice, width],
   )
 
   const getX = useMemo(() => (p: PricePoint) => timeScale(p.timestamp), [timeScale])
@@ -129,7 +129,7 @@ export function Chart({ prices, height, width, timePeriod }: ChartProps) {
 
   function tickFormat(
     timePeriod: TimePeriod,
-    locale: string
+    locale: string,
   ): [TickFormatter<NumberValue>, (v: number) => string, NumberValue[]] {
     const offsetTime = (endingPrice.timestamp.valueOf() - startingPrice.timestamp.valueOf()) / 24
     const startDateWithOffset = new Date((startingPrice.timestamp.valueOf() + offsetTime) * 1000)
@@ -205,7 +205,7 @@ export function Chart({ prices, height, width, timePeriod }: ChartProps) {
       const index = bisect(
         prices.map((x: { timestamp: number }) => x.timestamp),
         x0,
-        1
+        1,
       )
 
       const d0 = prices[index - 1]
@@ -222,7 +222,7 @@ export function Chart({ prices, height, width, timePeriod }: ChartProps) {
         setDisplayPrice(pricePoint)
       }
     },
-    [timeScale, prices]
+    [timeScale, prices],
   )
 
   const resetDisplay = useCallback(() => {
@@ -230,7 +230,7 @@ export function Chart({ prices, height, width, timePeriod }: ChartProps) {
     setDisplayPrice(endingPrice)
   }, [setCrosshair, setDisplayPrice, endingPrice])
 
-  const mainColor = Color.lightBlue3
+  const mainColor = Color.cowfi_lightBlue3
 
   return (
     <>
@@ -265,23 +265,23 @@ export function Chart({ prices, height, width, timePeriod }: ChartProps) {
             marginTop={margin.top}
             curve={curve}
             strokeWidth={2}
-            color={mainColor}
+            color={Color.cowfi_text1}
           />
 
           {crosshair !== null ? (
             <g>
               <AxisBottom
                 scale={timeScale}
-                stroke={Color.text1}
+                stroke={Color.cowfi_text1}
                 tickFormat={tickFormatter}
-                tickStroke={Color.text1}
+                tickStroke={Color.cowfi_text1}
                 tickLength={4}
                 hideTicks={true}
                 tickTransform="translate(0 -5)"
                 tickValues={updatedTicks}
                 top={height - 1}
                 tickLabelProps={() => ({
-                  fill: Color.text1,
+                  fill: Color.cowfi_text1,
                   fontSize: 11,
                   textAnchor: 'middle',
                   transform: 'translate(0 -24)',
@@ -292,14 +292,14 @@ export function Chart({ prices, height, width, timePeriod }: ChartProps) {
                 y={margin.crosshair + 10}
                 textAnchor={crosshairAtEdge ? 'end' : 'start'}
                 fontSize={15}
-                fill={Color.text1}
+                fill={Color.cowfi_text1}
               >
                 {crosshairDateFormatter(displayPrice.timestamp)}
               </text>
               <Line
                 from={{ x: crosshair, y: margin.crosshair }}
                 to={{ x: crosshair, y: height }}
-                stroke={Color.text1}
+                stroke={Color.cowfi_text1}
                 strokeWidth={1}
                 pointerEvents="none"
                 strokeDasharray="4,4"
@@ -314,7 +314,7 @@ export function Chart({ prices, height, width, timePeriod }: ChartProps) {
               />
             </g>
           ) : (
-            <AxisBottom hideAxisLine={true} scale={timeScale} stroke={Color.text1} top={height - 1} hideTicks />
+            <AxisBottom hideAxisLine={true} scale={timeScale} stroke={Color.cowfi_text1} top={height - 1} hideTicks />
           )}
           <rect
             x={0}

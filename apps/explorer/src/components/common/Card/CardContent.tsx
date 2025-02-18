@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Media } from '@cowprotocol/ui'
+import { Media, Color } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -49,7 +49,7 @@ const CardBody = styled.div<{
       margin: 0;
       margin-right: ${({ variant, direction }): string =>
         variant === 'double' && direction === 'row' ? '0.5rem' : '0'};
-      color: ${({ theme }): string => theme.grey};
+      color: ${Color.explorer_grey};
       display: flex;
       align-items: center;
       justify-content: ${({ variant, direction }): string =>
@@ -79,10 +79,20 @@ const CardBody = styled.div<{
         font-size: 11px;
         margin-left: ${({ variant }): string => (variant === '2row' ? '0.5rem' : '0')};
         margin-top: ${({ variant }): string => (variant === '2row' ? '0' : '6px')};
-        color: ${({ theme, captionColor }): string => captionColor && theme[captionColor]};
+        color: ${({ captionColor }): string => {
+          if (!captionColor) return 'inherit'
+          if (captionColor === 'green') return Color.explorer_green1
+          if (captionColor === 'red1') return Color.explorer_red1
+          return Color.explorer_grey
+        }};
         > span {
           margin-left: 0.25rem;
-          color: ${({ theme, hintColor }): string => hintColor && theme[hintColor]};
+          color: ${({ hintColor }): string => {
+            if (!hintColor) return 'inherit'
+            if (hintColor === 'green') return Color.explorer_green1
+            if (hintColor === 'red1') return Color.explorer_red1
+            return Color.explorer_grey
+          }};
         }
       }
     }

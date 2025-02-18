@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { Color } from '@cowprotocol/ui'
 import { PercentDisplay } from '@cowprotocol/ui/pure/PercentDisplay'
 
 import styled from 'styled-components/macro'
@@ -19,7 +20,7 @@ const Wrapper = styled.div<Props>`
     height: 0.6rem;
     position: relative;
     border-radius: 16rem;
-    background: ${({ theme }): string => theme.borderPrimary};
+    background: ${Color.explorer_borderPrimary};
   }
 
   > div > span {
@@ -29,12 +30,12 @@ const Wrapper = styled.div<Props>`
     position: absolute;
     left: 0;
     top: 0;
-    background-color: ${({ activeColor, theme }): string => (activeColor ? activeColor : theme.green)};
+    background-color: ${({ activeColor }): string => (activeColor ? activeColor : Color.explorer_green)};
     border-radius: 16rem;
   }
 
   > b {
-    color: ${({ activeColor, theme }): string => (activeColor ? activeColor : theme.green)};
+    color: ${({ activeColor }): string => (activeColor ? activeColor : Color.explorer_green)};
     margin: 0 0 0 0.7rem;
   }
 `
