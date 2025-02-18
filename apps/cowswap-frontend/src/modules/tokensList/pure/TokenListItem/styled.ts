@@ -43,7 +43,7 @@ export const TokenItem = styled.button`
 `
 
 export const TokenBalance = styled.span`
-  flex: 1 1 auto;
+  flex: 1 1 0;
   display: flex;
   justify-content: flex-end;
 
