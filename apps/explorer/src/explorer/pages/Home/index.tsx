@@ -17,22 +17,26 @@ import { Wrapper as WrapperMod } from '../styled'
 
 const Wrapper = styled(WrapperMod)`
   max-width: 100%;
-  height: calc(100vh - 10rem);
-  flex-flow: column wrap;
-  justify-content: center;
-  display: flex;
+  min-height: calc(100vh - 10rem);
   padding: 0;
 
   ${Media.upToMedium()} {
-    height: 50vh;
+    min-height: 50vh;
   }
 
   ${Media.upToSmall()} {
     padding: 0 1.6rem;
   }
+`
+
+const SearchWrapper = styled.div`
+  flex-flow: column wrap;
+  justify-content: center;
+  display: flex;
 
   > h1 {
     justify-content: center;
+    text-align: center;
     padding: 2.4rem 0 0.75rem;
     margin: 0 0 2.4rem;
     font-size: 2.4rem;
@@ -82,8 +86,10 @@ export const Home: React.FC = () => {
       <Helmet>
         <title>{APP_TITLE}</title>
       </Helmet>
-      <h1>Search on CoW Protocol Explorer</h1>
-      <Search className="home" />
+      <SearchWrapper>
+        <h1>Search on CoW Protocol Explorer</h1>
+        <Search className="home" />
+      </SearchWrapper>
       <SummaryWrapper>
         {showCharts && (
           <>
