@@ -4,6 +4,7 @@ import { transparentize } from 'polished'
 import { Button } from '@/components/Button'
 import { CONFIG } from '@/const/meta'
 import { LinkWithUtmComponent } from 'modules/utm'
+import { Color } from '@cowprotocol/ui'
 
 type TabProps = {
   active: boolean
@@ -19,12 +20,12 @@ const Tab = styled.div<TabProps>`
   cursor: pointer;
   padding: 1.6rem 0;
   background: none;
-  color: ${({ active, theme }) => (active ? theme.cowfi_darkBlue : transparentize(0.5, theme.cowfi_darkBlue))};
+  color: ${({ active }) => (active ? Color.cowfi_darkBlue : transparentize(0.5, Color.cowfi_darkBlue))};
   transition:
     color 0.2s ease-in-out,
     border-bottom 0.2s ease-in-out;
-  border-bottom: ${({ active, theme }) =>
-    active ? `0.2rem solid ${theme.cowfi_darkBlue}` : `0.1rem solid ${transparentize(0.8, theme.cowfi_darkBlue)}`};
+  border-bottom: ${({ active }) =>
+    active ? `0.2rem solid ${Color.cowfi_darkBlue}` : `0.1rem solid ${transparentize(0.8, Color.cowfi_darkBlue)}`};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -72,7 +73,7 @@ const InputLabel = styled.div`
   flex-flow: column wrap;
   justify-content: space-between;
   border-radius: 0.8rem;
-  background: ${({ theme }) => theme.cowfi_grey};
+  background: ${Color.cowfi_grey};
   padding: 1.2rem;
   font-size: 1.4rem;
   margin: 0 0 1rem;
@@ -143,7 +144,7 @@ const DropdownBody = styled.div`
   top: calc(100% + 1rem);
   left: 0;
   width: 100%;
-  background-color: ${({ theme }) => theme.cowfi_grey};
+  background-color: ${Color.cowfi_grey};
   border-radius: 1.6rem;
   padding: 0.6rem;
   display: flex;
@@ -160,7 +161,7 @@ const DropdownOption = styled.div`
   font-weight: 500;
 
   &:hover {
-    background-color: ${({ theme }) => theme.white};
+    background-color: ${Color.neutral100};
     border-radius: 1rem;
   }
 

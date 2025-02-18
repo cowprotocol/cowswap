@@ -14,8 +14,6 @@ import { Line } from '@visx/shape'
 import { GlyphCircle } from '@visx/glyph'
 import { localPoint } from '@visx/event'
 import { EventType } from '@visx/event/lib/types'
-import { useTheme } from 'styled-components/macro'
-import type { CowProtocolTheme } from 'styled-components'
 import { MissingPriceChart } from './MissingChart'
 import {
   ArrowCell,
@@ -81,7 +79,6 @@ export function formatDelta(delta: number | null | undefined) {
 }
 
 export function Chart({ prices, height, width, timePeriod }: ChartProps) {
-  const theme = useTheme() as CowProtocolTheme
   const chartAvailable = !!prices && prices.length > 0
 
   const missingPricesMessage = !chartAvailable ? (

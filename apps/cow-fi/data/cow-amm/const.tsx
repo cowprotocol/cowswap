@@ -1,5 +1,4 @@
 import { Link } from '@/components/Link'
-import { DefaultTheme } from 'styled-components'
 import { Color } from '@cowprotocol/ui'
 
 import IMG_COWAMM_LVR from '@cowprotocol/assets/images/image-cowamm-lvr.svg'
@@ -9,8 +8,6 @@ import IMG_COWAMM_LP_3 from '@cowprotocol/assets/images/image-cowamm-lp-3.svg'
 import IMG_COWAMM_LP_4 from '@cowprotocol/assets/images/image-cowamm-lp-4.svg'
 
 import { clickOnCowAmm } from 'modules/analytics'
-
-type ThemeProps = { theme: DefaultTheme }
 
 export const QUOTES = [
   {
