@@ -1,19 +1,19 @@
 import { useMemo } from 'react'
 
-import { getAddress, getCurrencyAddress } from '@cowprotocol/common-utils'
+import { getCurrencyAddress, getWrappedToken } from '@cowprotocol/common-utils'
 import { PriceQuality } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 
-import { LegacyFeeQuoteParams } from 'legacy/state/price/types'
-
 import { useAppData } from 'modules/appData'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
+import { FeeQuoteParams } from '../types'
+
 const DEFAULT_QUOTE_TTL = ms`30m` / 1000
 
-export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | undefined {
+export function useQuoteParams(amount: string | null): FeeQuoteParams | undefined {
   const { chainId, account } = useWalletInfo()
   const appData = useAppData()
 
@@ -21,7 +21,7 @@ export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | un
 
   const { inputCurrency, outputCurrency, orderKind } = state || {}
 
-  const sellToken = getAddress(inputCurrency)
+  const sellToken = inputCurrency ? getWrappedToken(inputCurrency).address : undefined
   const buyToken = outputCurrency ? getCurrencyAddress(outputCurrency) : undefined
   const fromDecimals = inputCurrency?.decimals
   const toDecimals = outputCurrency?.decimals
@@ -29,7 +29,7 @@ export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | un
   return useMemo(() => {
     if (!sellToken || !buyToken || !amount || !orderKind) return
 
-    const params: LegacyFeeQuoteParams = {
+    const params: FeeQuoteParams = {
       sellToken,
       buyToken,
       amount,
