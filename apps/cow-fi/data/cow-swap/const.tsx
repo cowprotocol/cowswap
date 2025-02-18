@@ -1,7 +1,4 @@
-import { Link } from '@/components/Link'
-import styled, { DefaultTheme } from 'styled-components'
 import { Color } from '@cowprotocol/ui'
-
 import IMG_COWSWAP_COINS from '@cowprotocol/assets/images/image-coins.svg'
 import IMG_COWSWAP_MEV from '@cowprotocol/assets/images/image-cowswap-mev.svg'
 import IMG_COWSWAP_UX from '@cowprotocol/assets/images/image-cowswap-ux.svg'
@@ -11,9 +8,9 @@ import IMG_COWSWAP_TWAP from '@cowprotocol/assets/images/image-cowswap-twap.svg'
 import IMG_COWSWAP_GASLESS from '@cowprotocol/assets/images/image-cowswap-gasless.svg'
 import IMG_COWSWAP_NOFEES from '@cowprotocol/assets/images/image-cowswap-nofees.svg'
 import IMG_COWSWAP_MULTIPLE from '@cowprotocol/assets/images/image-cowswap-multiple.svg'
-import { clickOnCowSwap } from 'modules/analytics'
 
-type ThemeProps = { theme: DefaultTheme }
+import { Link } from '@/components/Link'
+import { clickOnCowSwap } from 'modules/analytics'
 
 export const COW_IS_DIFFERENT = [
   {
