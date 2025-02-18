@@ -6,13 +6,12 @@ import { useOrder } from 'legacy/state/orders/hooks'
 
 import { useTradeConfirmState, useNavigateToNewOrderCallback } from 'modules/trade'
 
-import { useOrderProgressBarV2Props } from 'common/hooks/orderProgressBarV2'
-import { CowModal } from 'common/pure/Modal'
-import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
+import { useOrderIdForSurplusModal, useRemoveOrderFromSurplusQueue } from './surplusModal'
 
-import { useOrderIdForSurplusModal, useRemoveOrderFromSurplusQueue } from '../../state/surplusModal'
+import { useOrderProgressBarV2Props } from '../../hooks/orderProgressBarV2'
+import { CowModal } from '../../pure/Modal'
+import { TransactionSubmittedContent } from '../../pure/TransactionSubmittedContent'
 
-// TODO: rename?
 export function SurplusModalSetup() {
   const orderId = useOrderIdForSurplusModal()
   const removeOrderId = useRemoveOrderFromSurplusQueue()
