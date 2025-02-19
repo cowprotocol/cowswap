@@ -27,12 +27,16 @@ const getFastQuote = onlyResolvesLast<OrderQuoteResponse>(getQuote)
 const getOptimalQuote = onlyResolvesLast<OrderQuoteResponse>(getQuote)
 
 export function useTradeQuotePolling() {
-  const { amount, fastQuote } = useAtomValue(tradeQuoteParamsAtom)
-  const amountStr = useDebounce(
-    useMemo(() => amount?.quotient.toString() || null, [amount]),
+  const { amount, fastQuote, orderKind } = useAtomValue(tradeQuoteParamsAtom)
+
+  /**
+   * It's important to keep amount and orderKind together in order to have consistent quoteParams
+   */
+  const quoteInputDebounced = useDebounce(
+    useMemo(() => ({ amount: amount?.quotient.toString() || null, orderKind }), [amount, orderKind]),
     AMOUNT_CHANGE_DEBOUNCE_TIME,
   )
-  const quoteParams = useQuoteParams(amountStr)
+  const quoteParams = useQuoteParams(quoteInputDebounced.amount, quoteInputDebounced.orderKind)
 
   const updateQuoteState = useUpdateTradeQuote()
   const updateCurrencyAmount = useUpdateCurrencyAmount()

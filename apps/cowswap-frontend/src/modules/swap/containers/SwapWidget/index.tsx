@@ -24,7 +24,6 @@ import {
   TradeWidget,
   TradeWidgetContainer,
   TradeWidgetSlots,
-  useIsEoaEthFlow,
   useIsHooksTradeType,
   useIsNoImpactWarningAccepted,
   useReceiveAmountInfo,
@@ -71,7 +70,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const swapState = useSwapState()
   const { independentField, recipient } = swapState
   const showRecipientControls = useShowRecipientControls(recipient)
-  const isEoaEthFlow = useIsEoaEthFlow()
   const widgetParams = useInjectedWidgetParams()
   const { enabledTradeTypes } = widgetParams
   const priceImpactParams = useTradePriceImpact()
@@ -267,7 +265,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   }
 
   const params = {
-    isEoaEthFlow,
     compactView: true,
     enableSmartSlippage: true,
     isMarketOrderWidget: true,

@@ -31,6 +31,7 @@ import * as styledEl from './styled'
 import { TradeWidgetProps } from './types'
 
 import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateFromUrl'
+import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner'
 import { SetRecipient } from '../../pure/SetRecipient'
@@ -64,7 +65,6 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     compactView,
     showRecipient,
     isTradePriceUpdating,
-    isEoaEthFlow = false,
     priceImpact,
     recipient,
     hideTradeWarnings,
@@ -96,6 +96,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const primaryFormValidation = useGetTradeFormValidation()
   const { shouldBeVisible: isLimitOrdersPromoBannerVisible } = useLimitOrdersPromoBanner()
   const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
+  const isEoaEthFlow = useIsEoaEthFlow()
 
   const sellToken = inputCurrencyInfo.currency
   const areCurrenciesLoading = !sellToken && !outputCurrencyInfo.currency

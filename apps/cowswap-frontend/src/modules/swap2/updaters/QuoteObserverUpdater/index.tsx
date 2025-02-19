@@ -1,40 +1,57 @@
-import { useEffect, useLayoutEffect } from 'react'
+import { useEffect } from 'react'
 
-import { CurrencyAmount } from '@uniswap/sdk-core'
-
-import { Field } from 'legacy/state/types'
+import { FractionUtils, isSellOrder } from '@cowprotocol/common-utils'
 
 import { useReceiveAmountInfo, useDerivedTradeState } from 'modules/trade'
+import { useTradeQuote } from 'modules/tradeQuote'
 
-import { useUpdateCurrencyAmount } from '../../hooks/useUpdateCurrencyAmount'
+import { useSafeEffect } from 'common/hooks/useSafeMemo'
+
+import { useUpdateSwapRawState } from '../../hooks/useUpdateSwapRawState'
 
 export function QuoteObserverUpdater() {
   const state = useDerivedTradeState()
   const receiveAmountInfo = useReceiveAmountInfo()
-  const { beforeNetworkCosts } = receiveAmountInfo || {}
+  const updateSwapState = useUpdateSwapRawState()
+  const tradeQuote = useTradeQuote()
 
-  const updateCurrencyAmount = useUpdateCurrencyAmount()
+  /**
+   * Only when quote update because some params (input amount) changed
+   */
+  const isQuoteUpdating = tradeQuote.isLoading && tradeQuote.hasParamsChanged
+  const { beforeNetworkCosts, isSell } = receiveAmountInfo || {}
 
+  const amountToUpdate = isSell ? beforeNetworkCosts?.buyAmount : beforeNetworkCosts?.sellAmount
+
+  const orderKind = state?.orderKind
   const inputCurrency = state?.inputCurrency
   const outputCurrency = state?.outputCurrency
 
-  // Set the output amount from quote response (receiveAmountInfo is a derived state from tradeQuote state)
-  useLayoutEffect(() => {
-    if (!outputCurrency || !inputCurrency || !beforeNetworkCosts?.buyAmount) {
+  // Set the amount from quote response (receiveAmountInfo is a derived state from tradeQuote state)
+  useSafeEffect(() => {
+    if (!outputCurrency || !inputCurrency || !amountToUpdate) {
       return
     }
 
-    updateCurrencyAmount(Field.OUTPUT, beforeNetworkCosts.buyAmount)
-  }, [beforeNetworkCosts, inputCurrency, outputCurrency, updateCurrencyAmount])
+    const fieldToUpdate = isSell ? 'outputCurrencyAmount' : 'inputCurrencyAmount'
 
-  // Reset the output amount when the input amount changes
+    updateSwapState({
+      [fieldToUpdate]: FractionUtils.serializeFractionToJSON(amountToUpdate),
+    })
+  }, [amountToUpdate, inputCurrency, outputCurrency, updateSwapState, isSell])
+
+  /**
+   * Reset the opposite field when the quote is updating
+   */
   useEffect(() => {
-    if (!outputCurrency) {
-      return
-    }
+    if (!isQuoteUpdating || !orderKind) return
 
-    updateCurrencyAmount(Field.OUTPUT, CurrencyAmount.fromRawAmount(outputCurrency, 0))
-  }, [state?.inputCurrencyAmount, state?.inputCurrency, updateCurrencyAmount, outputCurrency])
+    const fieldToReset = isSellOrder(orderKind) ? 'outputCurrencyAmount' : 'inputCurrencyAmount'
+
+    updateSwapState({
+      [fieldToReset]: null,
+    })
+  }, [isQuoteUpdating, updateSwapState, orderKind])
 
   return null
 }
