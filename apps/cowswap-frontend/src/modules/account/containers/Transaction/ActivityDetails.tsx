@@ -6,15 +6,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { UiOrderType } from '@cowprotocol/types'
-import {
-  BannerOrientation,
-  CustomRecipientWarningBanner,
-  ExternalLink,
-  Icon,
-  IconType,
-  TokenAmount,
-  UI,
-} from '@cowprotocol/ui'
+import { BannerOrientation, ExternalLink, Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
@@ -30,6 +22,7 @@ import { useAddOrderToSurplusQueue } from 'common/containers/SurplusModalSetup/s
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
 import {
