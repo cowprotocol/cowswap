@@ -58,4 +58,15 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
       />
     </Wrapper>
   ),
+  [SwapFormState.SellNativeInHooks]: (props: SwapTradeButtonsContext) => {
+    const currency = props.inputCurrency
+
+    return (
+      <ButtonError buttonSize={ButtonSize.BIG} disabled={true}>
+        <div>
+          <Trans>Selling {currency?.symbol} is not supported</Trans>
+        </div>
+      </ButtonError>
+    )
+  },
 }
