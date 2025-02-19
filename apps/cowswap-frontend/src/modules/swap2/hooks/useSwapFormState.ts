@@ -3,8 +3,9 @@ import { useMemo } from 'react'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { useIsSmartContractWallet, useIsTxBundlingSupported } from '@cowprotocol/wallet'
 
+import { useIsHooksTradeType } from 'modules/trade'
+
 import { useSwapDerivedState } from './useSwapDerivedState'
-import { useIsHooksTradeType } from '../../trade'
 
 export enum SwapFormState {
   SwapWithWrappedToken = 'SwapWithWrappedToken',
@@ -33,5 +34,5 @@ export function useSwapFormState(): SwapFormState | null {
     }
 
     return null
-  }, [state, isSmartContractWallet, isBundlingSupported])
+  }, [state, isSmartContractWallet, isBundlingSupported, isHooksStore])
 }
