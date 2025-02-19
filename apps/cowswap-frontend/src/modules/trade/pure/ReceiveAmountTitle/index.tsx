@@ -62,9 +62,7 @@ export function ReceiveAmountTitle({ className, children }: ReceiveAmountTitlePr
       <EqualSign>
         <SVG src={EqualIcon} />
       </EqualSign>{' '}
-      <Text>
-        <b>{children}</b>
-      </Text>
+      {children}
     </Wrapper>
   )
 }
