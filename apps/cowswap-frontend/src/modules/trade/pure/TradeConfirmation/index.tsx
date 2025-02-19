@@ -1,14 +1,6 @@
 import { ReactElement, useEffect, useRef, useState } from 'react'
 
-import {
-  BackButton,
-  BannerOrientation,
-  ButtonPrimary,
-  ButtonSize,
-  CenteredDots,
-  CustomRecipientWarningBanner,
-  LongLoadText,
-} from '@cowprotocol/ui'
+import { BackButton, BannerOrientation, ButtonPrimary, ButtonSize, CenteredDots, LongLoadText } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import ms from 'ms.macro'
@@ -20,6 +12,7 @@ import type { AppDataInfo } from 'modules/appData'
 
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
 import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
+import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
 
 import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
