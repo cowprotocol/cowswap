@@ -43,11 +43,20 @@ export const TokenItem = styled.button`
 `
 
 export const TokenBalance = styled.span`
-  flex: 1 1 0;
+  flex: 1 1 auto;
   display: flex;
   justify-content: flex-end;
 
   > span {
     text-align: right;
   }
+`
+
+export const TokenMetadata = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  justify-content: flex-end;
 `
