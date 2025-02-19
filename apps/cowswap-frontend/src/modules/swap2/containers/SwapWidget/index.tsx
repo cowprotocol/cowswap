@@ -26,6 +26,7 @@ import { useSwapWidgetActions } from '../../hooks/useSwapWidgetActions'
 import { SwapConfirmModal } from '../SwapConfirmModal'
 import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
+import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 
 export interface SwapWidgetProps {
   topContent?: ReactNode
@@ -36,6 +37,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const { showRecipient } = useSwapSettings()
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
+  const hooksEnabledState = useHooksEnabledManager()
   const { isLoading: isRateLoading } = useTradeQuote()
   const priceImpact = useTradePriceImpact()
   const { isOpen: isConfirmOpen } = useTradeConfirmState()
@@ -107,7 +109,13 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
 
   const slots: TradeWidgetSlots = {
     topContent,
-    settingsWidget: <SettingsTab recipientToggleState={recipientToggleState} deadlineState={deadlineState} />,
+    settingsWidget: (
+      <SettingsTab
+        recipientToggleState={recipientToggleState}
+        hooksEnabledState={hooksEnabledState}
+        deadlineState={deadlineState}
+      />
+    ),
     bottomContent: useCallback(
       (tradeWarnings: ReactNode | null) => {
         return (
