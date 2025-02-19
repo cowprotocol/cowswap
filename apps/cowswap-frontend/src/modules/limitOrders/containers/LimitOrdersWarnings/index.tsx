@@ -2,7 +2,6 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useEffect } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
-import { SmallVolumeWarningBanner } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
@@ -24,6 +23,7 @@ import { HIGH_FEE_WARNING_PERCENTAGE } from 'common/constants/common'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
 
 import { RateImpactWarning } from '../../pure/RateImpactWarning'
+import { SmallVolumeWarningBanner } from '../../pure/SmallVolumeWarningBanner'
 
 const FORM_STATES_TO_SHOW_BUNDLE_BANNER = [TradeFormValidation.ApproveAndSwap]
 
@@ -97,7 +97,6 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
         />
       )}
 
-      {/*// TODO: must be replaced by <NotificationBanner>*/}
       {showHighFeeWarning && <SmallVolumeWarningBanner feeAmount={feeAmount} feePercentage={feePercentage} />}
       {showNativeSellWarning && <SellNativeWarningBanner />}
     </Wrapper>

@@ -38,6 +38,5 @@ export * from './pure/Badge'
 
 export * from './containers/CowSwapSafeAppLink'
 export * from './containers/InlineBanner'
-export * from './containers/InlineBanner/banners'
 export * from './containers/Footer'
 export * from './containers/ExternalLink'

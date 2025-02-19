@@ -1,14 +1,5 @@
+import { InlineBanner, Nullish, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
-
-import { TokenAmount } from '../../pure/TokenAmount'
-import { Nullish } from '../../types'
-
-import { InlineBanner } from './index'
-
-export enum BannerOrientation {
-  Horizontal = 'horizontal',
-  Vertical = 'vertical',
-}
 
 export type SmallVolumeWarningBannerProps = {
   feePercentage: Nullish<Percent>
