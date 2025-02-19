@@ -6,9 +6,7 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
-import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
-import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
-import { parameterizeTradeSearch } from 'modules/trade/utils/parameterizeTradeSearch'
+import { parameterizeTradeRoute, parameterizeTradeSearch, TradeUrlParams } from 'modules/trade'
 
 import { Routes } from 'common/constants/routes'
 
@@ -27,7 +25,7 @@ export interface TwapSuggestionBannerProps {
   priceImpact: Percent | undefined
   buyingFiatAmount: CurrencyAmount<Currency> | null
   tradeUrlParams: TradeUrlParams
-  sellAmount: CurrencyAmount<Currency> | undefined
+  sellAmount: CurrencyAmount<Currency> | undefined | null
 }
 
 const PRICE_IMPACT_LIMIT = 1 // 1%
