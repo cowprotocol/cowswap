@@ -21,16 +21,9 @@ export function getDefaultSwapState(chainId: SupportedChainId | null): SwapRawSt
   }
 }
 
-const rawState = atomWithPartialUpdate(
+export const { atom: swapRawStateAtom, updateAtom: updateSwapRawStateAtom } = atomWithPartialUpdate(
   atomWithStorage<SwapRawState>('swapStateAtom:v1', getDefaultSwapState(null), getJotaiIsolatedStorage()),
 )
-
-export const swapRawStateAtom = atom((get) => ({
-  ...get(rawState.atom),
-  orderKind: OrderKind.SELL,
-}))
-
-export const updateSwapRawStateAtom = rawState.updateAtom
 
 export const swapDerivedStateAtom = atom<SwapDerivedState>({
   ...DEFAULT_TRADE_DERIVED_STATE,

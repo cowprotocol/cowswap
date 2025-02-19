@@ -27,6 +27,7 @@ import { SwapConfirmModal } from '../SwapConfirmModal'
 import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
+import { isSellOrder } from '@cowprotocol/common-utils'
 
 export interface SwapWidgetProps {
   topContent?: ReactNode
@@ -60,12 +61,12 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
     recipient,
+    orderKind,
   } = useSwapDerivedState()
   const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }), widgetActions)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()
 
-  // TODO: implement buy orders
-  const isSellTrade = true
+  const isSellTrade = isSellOrder(orderKind)
 
   const ethFlowProps: EthFlowProps = useSafeMemoObject({
     nativeInput: inputCurrencyAmount || undefined,
@@ -82,7 +83,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     isIndependent: isSellTrade,
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
-    receiveAmountInfo: null,
+    receiveAmountInfo: !isSellTrade ? receiveAmountInfo : null,
   }
 
   const outputCurrencyInfo: CurrencyInfo = {
@@ -92,20 +93,20 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     isIndependent: !isSellTrade,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
-    receiveAmountInfo,
+    receiveAmountInfo: isSellTrade ? receiveAmountInfo : null,
   }
   const inputCurrencyPreviewInfo = {
     amount: inputCurrencyInfo.amount,
     fiatAmount: inputCurrencyInfo.fiatAmount,
     balance: inputCurrencyInfo.balance,
-    label: 'Sell amount',
+    label: isSellTrade ? 'Sell amount' : 'Expected sell amount',
   }
 
   const outputCurrencyPreviewInfo = {
     amount: outputCurrencyInfo.amount,
     fiatAmount: outputCurrencyInfo.fiatAmount,
     balance: outputCurrencyInfo.balance,
-    label: 'Receive (before fees)',
+    label: isSellTrade ? 'Receive (before fees)' : 'Buy exactly',
   }
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
@@ -161,7 +162,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
 
   return (
     <TradeWidget
-      disableOutput
       slots={slots}
       actions={widgetActions}
       params={params}

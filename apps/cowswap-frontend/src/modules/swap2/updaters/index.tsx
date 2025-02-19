@@ -1,5 +1,5 @@
 import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from '@cowprotocol/common-const'
-import { percentToBps } from '@cowprotocol/common-utils'
+import { isSellOrder, percentToBps } from '@cowprotocol/common-utils'
 
 import { AppDataUpdater } from 'modules/appData'
 import { useSetTradeQuoteParams } from 'modules/tradeQuote'
@@ -10,10 +10,10 @@ import { SetupSwapAmountsFromUrlUpdater } from './SetupSwapAmountsFromUrlUpdater
 import { useFillSwapDerivedState, useSwapDerivedState } from '../hooks/useSwapDerivedState'
 
 export function SwapUpdaters() {
-  const { inputCurrencyAmount } = useSwapDerivedState()
+  const { orderKind, inputCurrencyAmount, outputCurrencyAmount } = useSwapDerivedState()
 
   useFillSwapDerivedState()
-  useSetTradeQuoteParams(inputCurrencyAmount, true)
+  useSetTradeQuoteParams(isSellOrder(orderKind) ? inputCurrencyAmount : outputCurrencyAmount, orderKind, true)
 
   return (
     <>

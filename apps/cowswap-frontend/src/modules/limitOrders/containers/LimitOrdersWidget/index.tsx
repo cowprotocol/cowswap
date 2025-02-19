@@ -90,7 +90,7 @@ export function LimitOrdersWidget() {
     [isSell, inputCurrencyAmount, outputCurrencyAmount],
   )
 
-  useSetTradeQuoteParams(quoteAmount)
+  useSetTradeQuoteParams(quoteAmount, orderKind)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,

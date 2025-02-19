@@ -17,7 +17,6 @@ export interface TradeWidgetActions {
 
 interface TradeWidgetParams {
   recipient?: string | null
-  isEoaEthFlow?: boolean
   compactView: boolean
   showRecipient: boolean
   isTradePriceUpdating: boolean
