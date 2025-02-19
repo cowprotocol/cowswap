@@ -43,6 +43,7 @@ export { useIsNoImpactWarningAccepted } from './containers/NoImpactWarning/index
 export * from './utils/getReceiveAmountInfo'
 export * from './utils/parameterizeTradeRoute'
 export * from './utils/tradeFlowAnalytics'
+export * from './utils/parameterizeTradeSearch'
 export * from './state/receiveAmountInfoAtom'
 export * from './state/tradeTypeAtom'
 export * from './state/derivedTradeStateAtom'

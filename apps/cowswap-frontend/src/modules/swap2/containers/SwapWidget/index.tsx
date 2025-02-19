@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useState } from 'react'
+import { ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { Field } from 'legacy/state/types'
 
@@ -64,6 +64,9 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }), widgetActions)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()
 
+  // TODO: implement buy orders
+  const isSellTrade = true
+
   const ethFlowProps: EthFlowProps = useSafeMemoObject({
     nativeInput: inputCurrencyAmount || undefined,
     onDismiss: dismissNativeWrapModal,
@@ -76,7 +79,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     field: Field.INPUT,
     currency: inputCurrency,
     amount: inputCurrencyAmount,
-    isIndependent: true, // TODO
+    isIndependent: isSellTrade,
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
     receiveAmountInfo: null,
@@ -86,7 +89,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     field: Field.OUTPUT,
     currency: outputCurrency,
     amount: outputCurrencyAmount,
-    isIndependent: false, // TODO
+    isIndependent: !isSellTrade,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo,
@@ -107,6 +110,11 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
 
+  const buyingFiatAmount = useMemo(
+    () => (isSellTrade ? outputCurrencyInfo.fiatAmount : inputCurrencyInfo.fiatAmount),
+    [isSellTrade, outputCurrencyInfo.fiatAmount, inputCurrencyInfo.fiatAmount],
+  )
+
   const slots: TradeWidgetSlots = {
     topContent,
     settingsWidget: (
@@ -126,7 +134,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
               rateInfoParams={rateInfoParams}
               deadline={deadlineState[0]}
             />
-            <Warnings />
+            <Warnings buyingFiatAmount={buyingFiatAmount} />
             {tradeWarnings}
             <TradeButtons
               isTradeContextReady={doTrade.contextIsReady}

@@ -11,7 +11,7 @@ import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 import { BundleTxWrapBanner, HighFeeWarning } from 'modules/tradeWidgetAddons'
 import { MetamaskTransactionWarning, SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
 
-import { TwapSuggestionBanner } from './banners/TwapSuggestionBanner'
+import { TwapSuggestionBanner } from '../../swap2/pure/TwapSuggestionBanner'
 
 export interface SwapWarningsTopProps {
   chainId: SupportedChainId
