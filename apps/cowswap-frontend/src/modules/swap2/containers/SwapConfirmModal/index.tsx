@@ -2,6 +2,8 @@ import React, { useMemo } from 'react'
 
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
+import ms from 'ms.macro'
+
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useAppData } from 'modules/appData'
@@ -17,16 +19,13 @@ import { HighFeeWarning } from 'modules/tradeWidgetAddons'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
-import { getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
+
+import { useLabelsAndTooltips } from './useLabelsAndTooltips'
 
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 
-const CONFIRM_TITLE = 'Confirm order'
-
-const labelsAndTooltips = {
-  // TODO: pass parameters
-  slippageTooltip: getNonNativeSlippageTooltip(),
-}
+const CONFIRM_TITLE = 'Swap'
+const PRICE_UPDATE_INTERVAL = ms`30s`
 
 export interface SwapConfirmModalProps {
   doTrade(): Promise<false | void>
@@ -57,6 +56,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
   const submittedContent = useOrderSubmittedContent(chainId)
+  const labelsAndTooltips = useLabelsAndTooltips()
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
@@ -73,7 +73,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
         buttonText="Confirm Swap"
         recipient={recipient}
         appData={appData || undefined}
-        isPriceStatic={true}
+        refreshInterval={PRICE_UPDATE_INTERVAL}
       >
         {(restContent) => (
           <>

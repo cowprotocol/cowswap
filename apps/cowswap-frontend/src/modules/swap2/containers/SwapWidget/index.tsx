@@ -1,6 +1,9 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
+import { isSellOrder } from '@cowprotocol/common-utils'
+
 import { Field } from 'legacy/state/types'
+import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 
 import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
 import {
@@ -26,8 +29,6 @@ import { useSwapWidgetActions } from '../../hooks/useSwapWidgetActions'
 import { SwapConfirmModal } from '../SwapConfirmModal'
 import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
-import { useHooksEnabledManager } from 'legacy/state/user/hooks'
-import { isSellOrder } from '@cowprotocol/common-utils'
 
 export interface SwapWidgetProps {
   topContent?: ReactNode
@@ -145,7 +146,16 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
           </>
         )
       },
-      [doTrade.contextIsReady, isRateLoading, rateInfoParams, deadlineState],
+      [
+        doTrade.contextIsReady,
+        isRateLoading,
+        rateInfoParams,
+        deadlineState,
+        bottomContent,
+        buyingFiatAmount,
+        hasEnoughWrappedBalanceForSwap,
+        openNativeWrapModal,
+      ],
     ),
   }
 

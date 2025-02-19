@@ -20,7 +20,7 @@ export function useFillSwapDerivedState() {
     updateDerivedState({
       ...derivedState,
       slippage: INITIAL_ALLOWED_SLIPPAGE_PERCENT,
-      tradeType: TradeType.YIELD,
+      tradeType: TradeType.SWAP,
     })
   }, [derivedState, updateDerivedState])
 }
