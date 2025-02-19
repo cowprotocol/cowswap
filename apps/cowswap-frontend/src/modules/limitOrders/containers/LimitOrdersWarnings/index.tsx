@@ -14,10 +14,10 @@ import {
   limitOrdersWarningsAtom,
   updateLimitOrdersWarningsAtom,
 } from 'modules/limitOrders/state/limitOrdersWarningsAtom'
-import { SellNativeWarningBanner } from 'modules/trade/containers/SellNativeWarningBanner'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { TradeFormValidation } from 'modules/tradeFormValidation/types'
 import { useTradeQuote } from 'modules/tradeQuote'
+import { SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
 
 import { HIGH_FEE_WARNING_PERCENTAGE } from 'common/constants/common'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'

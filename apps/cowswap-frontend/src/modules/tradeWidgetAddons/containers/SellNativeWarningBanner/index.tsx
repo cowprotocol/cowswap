@@ -5,11 +5,9 @@ import styled from 'styled-components/macro'
 
 import { Field } from 'legacy/state/types'
 
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { useDerivedTradeState, useNavigateOnCurrencySelection, useWrappedToken } from 'modules/trade'
 
-import { useDerivedTradeState } from '../../hooks/useDerivedTradeState'
-import { useNavigateOnCurrencySelection } from '../../hooks/useNavigateOnCurrencySelection'
-import { useWrappedToken } from '../../hooks/useWrappedToken'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 const Button = styled(LinkStyledButton)`
   text-decoration: underline;

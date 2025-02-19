@@ -6,11 +6,10 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
 
-import { SellNativeWarningBanner } from 'modules/trade/containers/SellNativeWarningBanner'
 import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 import { BundleTxWrapBanner, HighFeeWarning } from 'modules/tradeWidgetAddons'
-import { MetamaskTransactionWarning } from 'modules/tradeWidgetAddons'
+import { MetamaskTransactionWarning, SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
 
 import { TwapSuggestionBanner } from './banners/TwapSuggestionBanner'
 
