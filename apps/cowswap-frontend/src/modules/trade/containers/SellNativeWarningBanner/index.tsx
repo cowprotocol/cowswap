@@ -1,5 +1,7 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { SellNativeWarningBanner as Pure } from '@cowprotocol/ui'
+import { InlineBanner, LinkStyledButton } from '@cowprotocol/ui'
+
+import styled from 'styled-components/macro'
 
 import { Field } from 'legacy/state/types'
 
@@ -8,6 +10,10 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useDerivedTradeState } from '../../hooks/useDerivedTradeState'
 import { useNavigateOnCurrencySelection } from '../../hooks/useNavigateOnCurrencySelection'
 import { useWrappedToken } from '../../hooks/useWrappedToken'
+
+const Button = styled(LinkStyledButton)`
+  text-decoration: underline;
+`
 
 export function SellNativeWarningBanner() {
   const native = useNativeCurrency()
@@ -23,12 +29,23 @@ export function SellNativeWarningBanner() {
       }
     : undefined
 
+  const nativeSymbol = native.symbol || 'native'
+  const wrappedNativeSymbol = wrapped.symbol || 'wrapped native'
+
   return (
-    <Pure
-      nativeSymbol={native.symbol}
-      wrappedNativeSymbol={wrapped.symbol}
-      sellWrapped={() => navigateOnCurrencySelection(Field.INPUT, wrapped)}
-      wrapNative={() => navigateOnCurrencySelection(Field.OUTPUT, wrapped, undefined, queryParams)}
-    />
+    <InlineBanner bannerType="alert" iconSize={32}>
+      <strong>Cannot sell {nativeSymbol}</strong>
+      <p>Selling {nativeSymbol} is only supported on SWAP orders.</p>
+      <p>
+        <Button onClick={() => navigateOnCurrencySelection(Field.INPUT, wrapped)}>
+          Switch to {wrappedNativeSymbol}
+        </Button>
+        or
+        <Button onClick={() => navigateOnCurrencySelection(Field.OUTPUT, wrapped, undefined, queryParams)}>
+          Wrap {nativeSymbol} to {wrappedNativeSymbol}
+        </Button>
+        first.
+      </p>
+    </InlineBanner>
   )
 }

@@ -4,7 +4,6 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import styled from 'styled-components/macro'
 
 import { ButtonSecondaryAlt } from '../../pure/ButtonSecondaryAlt'
-import { LinkStyledButton } from '../../pure/LinkStyledButton'
 import { TokenAmount } from '../../pure/TokenAmount'
 import { Nullish } from '../../types'
 
@@ -81,38 +80,6 @@ export function CustomRecipientWarningBanner({
           </ButtonSecondaryAlt>
         )}
       </RecipientBannerContent>
-    </InlineBanner>
-  )
-}
-
-export type SellNativeWarningBannerProps = {
-  sellWrapped: Command
-  wrapNative: Command
-  nativeSymbol: string | undefined
-  wrappedNativeSymbol: string | undefined
-}
-
-const Button = styled(LinkStyledButton)`
-  text-decoration: underline;
-`
-
-export function SellNativeWarningBanner({
-  sellWrapped,
-  wrapNative,
-  nativeSymbol = 'native',
-  wrappedNativeSymbol = 'wrapped native',
-}: SellNativeWarningBannerProps) {
-  return (
-    <InlineBanner bannerType="alert" iconSize={32}>
-      <strong>Cannot sell {nativeSymbol}</strong>
-      <p>Selling {nativeSymbol} is only supported on SWAP orders.</p>
-      <p>
-        <Button onClick={sellWrapped}>Switch to {wrappedNativeSymbol}</Button>or
-        <Button onClick={wrapNative}>
-          Wrap {nativeSymbol} to {wrappedNativeSymbol}
-        </Button>
-        first.
-      </p>
     </InlineBanner>
   )
 }
