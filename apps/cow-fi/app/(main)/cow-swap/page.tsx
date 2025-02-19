@@ -102,11 +102,11 @@ export default function Page() {
           <p>retention rate of all major DEXs</p>
         </MetricsItem>
         <MetricsItem dividerColor="#005EB7">
-          <h2>$44B+</h2>
+          <h2>$83B+</h2>
           <p>total volume traded</p>
         </MetricsItem>
         <MetricsItem>
-          <h2>$238M+</h2>
+          <h2>$441M+</h2>
           <p>surplus found for users</p>
         </MetricsItem>
 
@@ -300,7 +300,7 @@ export default function Page() {
             >
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={Color.neutral100} fontSize={51}>
-                  39%
+                  50%
                 </TopicTitle>
                 <TopicDescription fontSize={21} color="#65D9FF">
                   Market share among smart contract wallets
