@@ -1,5 +1,3 @@
-import { useMemo } from 'react'
-
 import { getCurrencyAddress, getWrappedToken } from '@cowprotocol/common-utils'
 import { PriceQuality } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -9,6 +7,7 @@ import ms from 'ms.macro'
 import { useAppData } from 'modules/appData'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { FeeQuoteParams } from 'common/types'
 
 const DEFAULT_QUOTE_TTL = ms`30m` / 1000
@@ -21,12 +20,12 @@ export function useQuoteParams(amount: string | null): FeeQuoteParams | undefine
 
   const { inputCurrency, outputCurrency, orderKind } = state || {}
 
-  const sellToken = inputCurrency ? getWrappedToken(inputCurrency).address : undefined
-  const buyToken = outputCurrency ? getCurrencyAddress(outputCurrency) : undefined
-  const fromDecimals = inputCurrency?.decimals
-  const toDecimals = outputCurrency?.decimals
+  return useSafeMemo(() => {
+    const sellToken = inputCurrency ? getWrappedToken(inputCurrency).address : undefined
+    const buyToken = outputCurrency ? getCurrencyAddress(outputCurrency) : undefined
+    const fromDecimals = inputCurrency?.decimals
+    const toDecimals = outputCurrency?.decimals
 
-  return useMemo(() => {
     if (!sellToken || !buyToken || !amount || !orderKind) return
 
     const params: FeeQuoteParams = {
@@ -48,14 +47,12 @@ export function useQuoteParams(amount: string | null): FeeQuoteParams | undefine
 
     return params
   }, [
-    sellToken,
-    buyToken,
+    inputCurrency,
+    outputCurrency,
     amount,
     orderKind,
     chainId,
     account,
-    toDecimals,
-    fromDecimals,
     appData?.fullAppData,
     appData?.appDataKeccak256,
   ])
