@@ -9,7 +9,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
 import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundleFlowContext'
 import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
-import { useTradeFlow } from 'modules/limitOrders/services/tradeFlow'
+import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
 import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
@@ -58,7 +58,6 @@ export function useHandleOrderPlacement(
   const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)
   const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
   const alternativeModalAnalytics = useAlternativeModalAnalytics()
-  const tradeFlowFn = useTradeFlow()
   const analytics = useTradeFlowAnalytics()
 
   const beforePermit = useCallback(async () => {
@@ -103,10 +102,11 @@ export function useHandleOrderPlacement(
     tradeContext.postOrderParams.partiallyFillable =
       partiallyFillableOverride ?? tradeContext.postOrderParams.partiallyFillable
 
-    return tradeFlowFn(
+    return tradeFlow(
       tradeContext,
       priceImpact,
       settingsState,
+      analytics,
       confirmPriceImpactWithoutFee,
       beforePermit,
       beforeTrade,
@@ -121,7 +121,6 @@ export function useHandleOrderPlacement(
     safeBundleFlowContext,
     settingsState,
     tradeContext,
-    tradeFlowFn,
     analytics,
   ])
 
