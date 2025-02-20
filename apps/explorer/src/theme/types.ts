@@ -1,5 +1,7 @@
 import { Fonts } from './styles'
 
+import type { CowProtocolTheme } from 'styled-components/macro'
+
 export enum Theme {
   DARK = 'dark',
 }

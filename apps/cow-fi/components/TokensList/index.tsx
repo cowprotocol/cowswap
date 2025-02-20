@@ -14,7 +14,7 @@ import {
   Wrapper,
   NoTokensText,
 } from './index.style'
-import type { CowProtocolTheme } from '@cowprotocol/ui'
+import type { CowProtocolTheme } from 'styled-components'
 import { useTheme } from 'styled-components/macro'
 
 // Utility function for consistent value formatting
