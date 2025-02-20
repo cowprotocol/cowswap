@@ -10,7 +10,6 @@ import { TradeType } from '@cowprotocol/widget-lib'
 
 import { Link } from 'react-router-dom'
 
-import { NetworkBridgeBanner } from 'legacy/components/NetworkBridgeBanner/NetworkBridgeBanner'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
@@ -42,6 +41,7 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { SWAP_QUOTE_CHECK_INTERVAL } from 'common/updaters/FeesUpdater'
 
+import { NetworkBridgeBanner } from '../../../swap2/containers/NetworkBridgeBanner/NetworkBridgeBanner'
 import { SwapButtonState } from '../../helpers/getSwapButtonState'
 import { useShowRecipientControls } from '../../hooks/useShowRecipientControls'
 import { useSwapButtonContext } from '../../hooks/useSwapButtonContext'
