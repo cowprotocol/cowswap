@@ -14,7 +14,6 @@ import { useRefetchQuoteCallback } from 'legacy/hooks/useRefetchPriceCallback'
 import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from 'legacy/state/price/hooks'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
-import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 import { useAppData } from 'modules/appData'
 import { useDerivedSwapInfo, useSwapState } from 'modules/swap/hooks/useSwapState'
@@ -61,7 +60,7 @@ export function FeesUpdater(): null {
 
   const isWindowVisible = useIsWindowVisible()
   const isOnline = useIsOnline()
-  const [deadline] = useUserTransactionTTL()
+  const deadline = 0
 
   // prevents things like "USDC" being used as an address
   const sellTokenAddressInvalid = sellCurrency && !getIsNativeToken(sellCurrency) && !isAddress(sellCurrencyId)

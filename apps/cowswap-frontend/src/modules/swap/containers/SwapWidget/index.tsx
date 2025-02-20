@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
-import { useHooksEnabledManager, useRecipientToggleManager, useUserTransactionTTL } from 'legacy/state/user/hooks'
+import { useHooksEnabledManager, useRecipientToggleManager } from 'legacy/state/user/hooks'
 
 import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
 import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
@@ -59,6 +59,8 @@ export interface SwapWidgetProps {
   bottomContent?: ReactNode
 }
 
+const deadlineState = [0, () => void 0] as any
+
 export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const { chainId, account } = useWalletInfo()
   const { currencies, trade } = useDerivedSwapInfo()
@@ -77,7 +79,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const receiveAmountInfo = useReceiveAmountInfo()
   const recipientToggleState = useRecipientToggleManager()
   const hooksEnabledState = useHooksEnabledManager()
-  const deadlineState = useUserTransactionTTL()
   const isHookTradeType = useIsHooksTradeType()
 
   const isTradePriceUpdating = useTradePricesUpdate()

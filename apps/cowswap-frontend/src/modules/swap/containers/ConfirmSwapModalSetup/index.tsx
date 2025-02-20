@@ -7,7 +7,6 @@ import { Percent, TradeType } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import TradeGp from 'legacy/state/swap/TradeGp'
-import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 import { useAppData } from 'modules/appData'
 import {
@@ -69,7 +68,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
   const appData = useAppData()
-  const [userDeadline] = useUserTransactionTTL()
+  const userDeadline = 0
 
   const slippageAdjustedSellAmount = trade?.maximumAmountIn(allowedSlippage)
   const isExactIn = trade?.tradeType === TradeType.EXACT_INPUT

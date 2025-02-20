@@ -28,7 +28,6 @@ import QuoteApiError, {
 } from 'api/cowProtocol/errors/QuoteError'
 
 import { PRICE_QUOTE_VALID_TO_TIME } from '../../common/constants/quote'
-import { useUserTransactionTTL } from '../state/user/hooks'
 
 interface HandleQuoteErrorParams {
   quoteData: QuoteInformationObject | LegacyFeeQuoteParams
@@ -128,7 +127,7 @@ export function useRefetchQuoteCallback() {
   const addUnsupportedToken = useAddUnsupportedToken()
   const removeGpUnsupportedToken = useRemoveUnsupportedToken()
   const strategy = useGetGpPriceStrategy()
-  const [deadline] = useUserTransactionTTL()
+  const deadline = 0
   const isEoaEthFlow = useIsEoaEthFlow()
 
   return useCallback(

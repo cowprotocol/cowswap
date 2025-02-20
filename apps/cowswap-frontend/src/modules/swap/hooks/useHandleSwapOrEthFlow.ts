@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 
 import { Field } from 'legacy/state/types'
-import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 import { useEthFlowContext, ethFlow } from 'modules/ethFlow'
 import { TradeWidgetActions, useTradePriceImpact } from 'modules/trade'
@@ -24,7 +23,7 @@ export function useHandleSwapOrEthFlow(actions: TradeWidgetActions) {
   const { onUserInput, onChangeRecipient } = actions
   const analytics = useTradeFlowAnalytics()
 
-  const [deadline] = useUserTransactionTTL()
+  const deadline = 0
   const { callback: handleSwap, contextIsReady } = useHandleSwap(useSafeMemoObject({ deadline }), actions)
 
   const callback = useCallback(async () => {
