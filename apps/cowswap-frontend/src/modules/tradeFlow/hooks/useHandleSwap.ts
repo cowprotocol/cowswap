@@ -4,6 +4,7 @@ import { Field } from 'legacy/state/types'
 
 import { TradeWidgetActions, useTradePriceImpact } from 'modules/trade'
 import { logTradeFlow } from 'modules/trade/utils/logger'
+import { useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 
@@ -22,6 +23,7 @@ export function useHandleSwap(params: TradeFlowParams, actions: TradeWidgetActio
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
   const priceImpactParams = useTradePriceImpact()
   const { onUserInput, onChangeRecipient } = actions
+  const analytics = useTradeFlowAnalytics()
 
   const contextIsReady =
     Boolean(
@@ -43,6 +45,7 @@ export function useHandleSwap(params: TradeFlowParams, actions: TradeWidgetActio
           safeBundleFlowContext,
           priceImpactParams,
           confirmPriceImpactWithoutFee,
+          analytics,
         )
       }
       if (tradeFlowType === FlowType.SAFE_BUNDLE_ETH) {
@@ -54,11 +57,12 @@ export function useHandleSwap(params: TradeFlowParams, actions: TradeWidgetActio
           safeBundleFlowContext,
           priceImpactParams,
           confirmPriceImpactWithoutFee,
+          analytics,
         )
       }
 
       logTradeFlow('SWAP FLOW', 'Start swap flow')
-      return swapFlow(tradeFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
+      return swapFlow(tradeFlowContext, priceImpactParams, confirmPriceImpactWithoutFee, analytics)
     })()
 
     // Clean up form fields after successful swap
@@ -74,6 +78,7 @@ export function useHandleSwap(params: TradeFlowParams, actions: TradeWidgetActio
     confirmPriceImpactWithoutFee,
     onChangeRecipient,
     onUserInput,
+    analytics,
   ])
 
   return { callback, contextIsReady }

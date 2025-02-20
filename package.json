@@ -202,7 +202,6 @@
     "react-device-detect": "^1.6.2",
     "react-dom": "19.0.0-rc-66855b96-20241106",
     "react-feather": "^2.0.10",
-    "react-ga4": "^1.4.1",
     "react-helmet": "^6.1.0",
     "react-icons": "^5.2.1",
     "react-inlinesvg": "^4.1.5",

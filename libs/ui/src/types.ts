@@ -1,5 +1,8 @@
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 
+import type { CowSwapTheme } from './theme/typings'
+
+export type { CowSwapTheme }
 export type Nullish<T> = T | null | undefined
 
 export type FractionLike = Fraction | Price<Currency, Currency> | CurrencyAmount<Currency>
@@ -20,5 +23,3 @@ export const BadgeTypes = {
 } as const
 
 export type BadgeType = (typeof BadgeTypes)[keyof typeof BadgeTypes]
-
-export type CowSwapTheme = 'dark' | 'light' | 'darkHalloween' | 'lightChristmas' | 'darkChristmas'
