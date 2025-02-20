@@ -255,7 +255,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
       },
       [
         bottomContent,
-        deadlineState,
         isTradePriceUpdating,
         rateInfoParams,
         swapButtonContext,
