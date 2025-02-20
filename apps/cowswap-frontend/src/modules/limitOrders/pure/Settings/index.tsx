@@ -5,18 +5,10 @@ import { HelpTooltip } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import {
-  toggleCustomRecipientAnalytics,
-  togglePartialExecutionsAnalytics,
-  changeLimitPricePositionAnalytics,
-  toggleLockLimitPriceAnalytics,
-  toggleOrdersTablePositionAnalytics,
-  // TODO: Temporarily disabled along with Global USD Mode feature
-  // toggleGlobalUsdModeAnalytics,
-} from 'modules/analytics'
 import { ORDERS_TABLE_SETTINGS } from 'modules/trade/const/common'
 import { SettingsBox, SettingsContainer, SettingsTitle } from 'modules/trade/pure/Settings'
 
+import { useLimitOrderSettingsAnalytics } from '../../hooks/useLimitOrderSettingsAnalytics'
 import { LimitOrdersSettingsState } from '../../state/limitOrdersSettingsAtom'
 
 const DropdownButton = styled.button`
@@ -110,7 +102,7 @@ const SettingsLabel = styled.div`
 
 export interface SettingsProps {
   state: LimitOrdersSettingsState
-  onStateChanged: (state: Partial<LimitOrdersSettingsState>) => void
+  onStateChanged: (state: LimitOrdersSettingsState) => void
 }
 
 const POSITION_LABELS = {
@@ -120,58 +112,56 @@ const POSITION_LABELS = {
 }
 
 export function Settings({ state, onStateChanged }: SettingsProps) {
+  const analytics = useLimitOrderSettingsAnalytics()
+  const [isOpen, setIsOpen] = useState(false)
   const {
     showRecipient,
     partialFillsEnabled,
     limitPricePosition,
     limitPriceLocked,
     ordersTableOnLeft,
-    // TODO: Temporarily disabled along with Global USD Mode feature
+    // TODO: Temporarily disabled - Global USD Mode feature
     // isUsdValuesMode,
   } = state
-  const [isOpen, setIsOpen] = useState(false)
+
+  const handleRecipientToggle = useCallback(() => {
+    const newValue = !showRecipient
+    analytics.toggleCustomRecipient(newValue)
+    onStateChanged({ ...state, showRecipient: newValue })
+  }, [analytics, onStateChanged, state, showRecipient])
+
+  const handlePartialFillsToggle = useCallback(() => {
+    const newValue = !partialFillsEnabled
+    analytics.togglePartialExecutions(newValue)
+    onStateChanged({ ...state, partialFillsEnabled: newValue })
+  }, [analytics, onStateChanged, state, partialFillsEnabled])
 
   const handleSelect = useCallback(
     (value: LimitOrdersSettingsState['limitPricePosition']) => (e: React.MouseEvent) => {
       e.stopPropagation()
-      changeLimitPricePositionAnalytics(limitPricePosition, value)
-      onStateChanged({ limitPricePosition: value })
+      analytics.changeLimitPricePosition(limitPricePosition, value)
+      onStateChanged({ ...state, limitPricePosition: value })
       setIsOpen(false)
     },
-    [onStateChanged, limitPricePosition],
+    [analytics, onStateChanged, state, limitPricePosition],
   )
+
+  const handleLimitPriceLockedToggle = useCallback(() => {
+    const newValue = !limitPriceLocked
+    analytics.toggleLockLimitPrice(newValue)
+    onStateChanged({ ...state, limitPriceLocked: newValue })
+  }, [analytics, onStateChanged, state, limitPriceLocked])
+
+  const handleOrdersTablePositionToggle = useCallback(() => {
+    const newValue = !ordersTableOnLeft
+    analytics.toggleOrdersTablePosition(newValue)
+    onStateChanged({ ...state, ordersTableOnLeft: newValue })
+  }, [analytics, onStateChanged, state, ordersTableOnLeft])
 
   const toggleDropdown = (e: React.MouseEvent) => {
     e.stopPropagation()
     setIsOpen(!isOpen)
   }
-
-  const handleRecipientToggle = useCallback(() => {
-    toggleCustomRecipientAnalytics(!showRecipient)
-    onStateChanged({ showRecipient: !showRecipient })
-  }, [showRecipient, onStateChanged])
-
-  const handlePartialFillsToggle = useCallback(() => {
-    togglePartialExecutionsAnalytics(!partialFillsEnabled)
-    onStateChanged({ partialFillsEnabled: !partialFillsEnabled })
-  }, [partialFillsEnabled, onStateChanged])
-
-  const handleLimitPriceLockedToggle = useCallback(() => {
-    toggleLockLimitPriceAnalytics(!limitPriceLocked)
-    onStateChanged({ limitPriceLocked: !limitPriceLocked })
-  }, [limitPriceLocked, onStateChanged])
-
-  const handleOrdersTablePositionToggle = useCallback(() => {
-    toggleOrdersTablePositionAnalytics(!ordersTableOnLeft)
-    onStateChanged({ ordersTableOnLeft: !ordersTableOnLeft })
-  }, [ordersTableOnLeft, onStateChanged])
-
-  /* TODO: Temporarily disabled along with Global USD Mode feature
-  const handleUsdValuesModeToggle = useCallback(() => {
-    toggleGlobalUsdModeAnalytics(!isUsdValuesMode)
-    onStateChanged({ isUsdValuesMode: !isUsdValuesMode })
-  }, [isUsdValuesMode, onStateChanged])
-  */
 
   const handleContainerClick = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -213,7 +203,7 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
           toggle={handleLimitPriceLockedToggle}
         />
 
-        {/* TODO: Global USD Mode feature is temporarily disabled while we iterate on the functionality
+        {/* TODO: Temporarily disabled - Global USD Mode feature and isUsdValuesMode
         <SettingsBox
           title="Global USD Mode"
           tooltip="When enabled, all prices will be displayed in USD by default."

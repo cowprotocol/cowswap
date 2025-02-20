@@ -30,3 +30,16 @@ jest.mock('quick-lru', () => {
     },
   }
 })
+
+jest.mock('@cowprotocol/analytics', () => ({
+  ...jest.requireActual('@cowprotocol/analytics'),
+  initGtm: jest.fn().mockImplementation(() => ({
+    sendEvent: jest.fn(),
+  })),
+  __resetGtmInstance: jest.fn(),
+}))
+
+beforeEach(() => {
+  const { __resetGtmInstance } = require('@cowprotocol/analytics')
+  __resetGtmInstance()
+})

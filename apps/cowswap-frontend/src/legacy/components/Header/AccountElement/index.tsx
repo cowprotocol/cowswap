@@ -7,19 +7,24 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ReactDOM from 'react-dom'
 
-
-
 import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { useToggleAccountModal } from 'modules/account'
-import { clickNotifications } from 'modules/analytics'
 import { NotificationBell, NotificationSidebar } from 'modules/notifications'
 import { useUnreadNotifications } from 'modules/notifications/hooks/useUnreadNotifications'
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { BalanceText, Wrapper } from './styled'
+
+function createNotificationClickEventData(event: string): string {
+  return toCowSwapGtmEvent({
+    category: CowSwapAnalyticsCategory.NOTIFICATIONS,
+    action: event,
+  })
+}
 
 interface AccountElementProps {
   pendingActivities: string[]
@@ -34,7 +39,6 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
   const toggleAccountModal = useToggleAccountModal()
   const nativeTokenSymbol = NATIVE_CURRENCIES[chainId].symbol
   const isUpToLarge = useMediaQuery(upToLarge)
-
 
   const unreadNotifications = useUnreadNotifications()
   const unreadNotificationsCount = Object.keys(unreadNotifications).length
@@ -53,19 +57,17 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
         {account && (
           <NotificationBell
             unreadCount={unreadNotificationsCount}
-            onClick={() => {
-              clickNotifications(
-                unreadNotificationsCount === 0 ? 'click-bell' : 'click-bell-with-pending-notifications'
-              )
-              setSidebarOpen(true)
-            }}
+            data-click-event={createNotificationClickEventData(
+              unreadNotificationsCount === 0 ? 'click-bell' : 'click-bell-with-pending-notifications',
+            )}
+            onClick={() => setSidebarOpen(true)}
           />
         )}
       </Wrapper>
 
       {ReactDOM.createPortal(
         <NotificationSidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />,
-        document.body
+        document.body,
       )}
     </>
   )

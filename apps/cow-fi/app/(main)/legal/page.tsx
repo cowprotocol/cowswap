@@ -1,12 +1,11 @@
 'use client'
 
 import { Color } from '@cowprotocol/ui'
-
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 import styled from 'styled-components/macro'
 import { Link } from '@/components/Link'
-
 import { ArticleContent, ArticleMainTitle, BodyContent, Breadcrumbs, ContainerCard } from '@/styles/styled'
-import { clickOnLegal } from '../../../modules/analytics'
 
 const LEGAL_LINKS = [
   {
@@ -39,12 +38,23 @@ const Wrapper = styled.div`
 `
 
 export default function Page() {
+  const analytics = useCowAnalytics()
+
   return (
     <Wrapper>
       <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
         <ArticleContent maxWidth="100%">
           <Breadcrumbs>
-            <Link href="/" onClick={() => clickOnLegal('click-legal-breadcrumbs')}>
+            <Link
+              href="/"
+              onClick={() =>
+                analytics.sendEvent({
+                  category: CowFiCategory.LEGAL,
+                  action: 'Click Breadcrumb',
+                  label: 'home',
+                })
+              }
+            >
               Home
             </Link>
 
@@ -61,7 +71,16 @@ export default function Page() {
             <ul>
               {LEGAL_LINKS.map((link, index) => (
                 <li key={index}>
-                  <Link href={link.href} onClick={() => clickOnLegal(`click-${link.title}`)}>
+                  <Link
+                    href={link.href}
+                    onClick={() =>
+                      analytics.sendEvent({
+                        category: CowFiCategory.LEGAL,
+                        action: 'Click Document',
+                        label: link.title,
+                      })
+                    }
+                  >
                     {link.title}
                   </Link>
                 </li>

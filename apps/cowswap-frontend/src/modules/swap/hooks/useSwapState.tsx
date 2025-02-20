@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { formatSymbol, getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { useENS } from '@cowprotocol/ens'
 import { useAreThereTokensWithSameSymbol, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
@@ -17,14 +18,15 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
 
-import { changeSwapAmountAnalytics, switchTokensAnalytics } from 'modules/analytics'
 import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
 import type { TradeWidgetActions } from 'modules/trade'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
+import { createDebouncedTradeAmountAnalytics } from 'modules/trade/utils/analytics'
 import { useTradeSlippage } from 'modules/tradeSlippage'
 import { useVolumeFee } from 'modules/volumeFee'
 
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
@@ -36,7 +38,6 @@ export const BAD_RECIPIENT_ADDRESSES: { [address: string]: true } = {
 
 export function useSwapState(): AppState['swap'] {
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
-
   const state = useAppSelector((state) => state.swap)
 
   return useMemo(() => {
@@ -66,6 +67,8 @@ export function useSwapActionHandlers(): TradeWidgetActions {
   const onCurrencySelection = useNavigateOnCurrencySelection()
   const navigate = useTradeNavigate()
   const swapState = useSwapState()
+  const cowAnalytics = useCowAnalytics()
+  const debouncedTradeAmountAnalytics = useMemo(() => createDebouncedTradeAmountAnalytics(cowAnalytics), [cowAnalytics])
 
   const onSwitchTokens = useCallback(() => {
     const inputCurrencyId = swapState.INPUT.currencyId || null
@@ -73,15 +76,18 @@ export function useSwapActionHandlers(): TradeWidgetActions {
 
     navigate(chainId, { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId })
     dispatch(switchCurrencies())
-    switchTokensAnalytics()
-  }, [swapState, navigate, chainId, dispatch])
+    cowAnalytics.sendEvent({
+      category: CowSwapAnalyticsCategory.TRADE,
+      action: 'Switch INPUT/OUTPUT tokens',
+    })
+  }, [swapState, navigate, chainId, dispatch, cowAnalytics])
 
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
-      changeSwapAmountAnalytics(field, Number(typedValue))
+      debouncedTradeAmountAnalytics([field, Number(typedValue)])
       dispatch(typeInput({ field, typedValue }))
     },
-    [dispatch],
+    [dispatch, debouncedTradeAmountAnalytics],
   )
 
   const onChangeRecipient = useCallback(

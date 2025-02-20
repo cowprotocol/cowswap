@@ -7,6 +7,7 @@ import { UI } from '@cowprotocol/ui'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 const Icon = styled.div<{ hasNotification?: boolean }>`
   --size: 18px;
@@ -63,7 +64,15 @@ interface NotificationBellProps {
 
 export function NotificationBell({ onClick, unreadCount }: NotificationBellProps) {
   return (
-    <Icon hasNotification={unreadCount > 0} onClick={onClick}>
+    <Icon
+      hasNotification={unreadCount > 0}
+      onClick={onClick}
+      data-click-event={toCowSwapGtmEvent({
+        category: CowSwapAnalyticsCategory.NOTIFICATIONS,
+        action: 'Toggle notifications panel',
+        label: `Unread count: ${unreadCount}`,
+      })}
+    >
       <SVG src={ICON_NOTIFICATION} />
     </Icon>
   )
