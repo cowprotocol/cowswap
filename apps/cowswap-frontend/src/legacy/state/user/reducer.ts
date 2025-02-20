@@ -14,9 +14,6 @@ export interface UserState {
 
   userDarkMode: boolean | null // the user's choice for dark mode or light mode
   userLocale: SupportedLocale | null
-
-  // TODO: mod, shouldn't be here
-  recipientToggleVisible: boolean
   hooksEnabled: boolean
 
   // deadline set by user in minutes, used in all txns
@@ -28,7 +25,6 @@ export const initialState: UserState = {
   matchesDarkMode: false,
   userDarkMode: null,
   // TODO: mod, shouldn't be here
-  recipientToggleVisible: false,
   hooksEnabled: false,
   userLocale: null,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
@@ -56,9 +52,6 @@ const userSlice = createSlice({
     updateUserDeadline(state, action) {
       state.userDeadline = action.payload.userDeadline
     },
-    updateRecipientToggleVisible(state, action) {
-      state.recipientToggleVisible = action.payload.recipientToggleVisible
-    },
   },
 })
 
@@ -69,6 +62,5 @@ export const {
   updateHooksEnabled,
   updateUserDeadline,
   updateUserLocale,
-  updateRecipientToggleVisible,
 } = userSlice.actions
 export default userSlice.reducer

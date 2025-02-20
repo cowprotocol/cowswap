@@ -10,13 +10,11 @@ import { appziMiddleware, soundMiddleware } from './orders/middleware'
 import orders from './orders/reducer'
 import { priceMiddleware } from './price/middleware'
 import price from './price/reducer'
-import swap from './swap/reducer'
 import user from './user/reducer'
 
 const reducers = {
   application,
   user,
-  swap,
   transactions: enhancedTransactions, // replace transactions state by "enhancedTransactions"
   orders,
   price,

@@ -1,13 +1,19 @@
 import { formatSymbol, formatTokenAmount, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import JSBI from 'jsbi'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
-import { stringToCurrency } from 'legacy/state/swap/extension'
 
 import { getOrder } from 'api/cowProtocol'
 import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
 import { getUiOrderType, ORDER_UI_TYPE_TITLES, UiOrderTypeParams } from 'utils/orderUtils/getUiOrderType'
+
+function stringToCurrency(amount: string, currency: Currency) {
+  return CurrencyAmount.fromRawAmount(currency, JSBI.BigInt(amount))
+}
 
 export function computeOrderSummary({
   orderFromStore,
