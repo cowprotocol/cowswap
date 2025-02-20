@@ -10,7 +10,7 @@ import { TradeType } from '@cowprotocol/widget-lib'
 
 import { Link } from 'react-router-dom'
 
-import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
+import { NetworkBridgeBanner } from 'legacy/components/NetworkBridgeBanner/NetworkBridgeBanner'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
@@ -321,7 +321,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
           genericModal={showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
         />
 
-        {!isHookTradeType && <NetworkAlert />}
+        {!isHookTradeType && <NetworkBridgeBanner />}
         {isHookTradeType && !!account && (
           <InlineBanner
             bannerType="information"
