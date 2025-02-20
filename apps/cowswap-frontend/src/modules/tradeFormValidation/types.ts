@@ -58,7 +58,8 @@ export interface TradeFormValidationContext extends TradeFormValidationCommonCon
 
 export interface TradeFormButtonContext {
   defaultText: string
-  receiveAmountInfo: ReceiveAmountInfo
+  receiveAmountInfo: ReceiveAmountInfo | null
+  derivedState: TradeDerivedState
   quote: TradeQuoteState
   isSupportedWallet: boolean
   widgetStandaloneMode?: boolean

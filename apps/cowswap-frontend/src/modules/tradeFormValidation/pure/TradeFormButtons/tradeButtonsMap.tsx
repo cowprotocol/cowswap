@@ -38,13 +38,8 @@ const quoteErrorTexts: Record<QuoteApiErrorCodes, string> = {
 }
 
 const unsupportedTokenButton = (context: TradeFormButtonContext) => {
-  const { receiveAmountInfo, isSupportedWallet } = context
-  const {
-    afterSlippage: {
-      sellAmount: { currency: inputCurrency },
-      buyAmount: { currency: outputCurrency },
-    },
-  } = receiveAmountInfo
+  const { derivedState, isSupportedWallet } = context
+  const { inputCurrency, outputCurrency } = derivedState
 
   return inputCurrency && outputCurrency ? (
     <>
@@ -64,12 +59,7 @@ const unsupportedTokenButton = (context: TradeFormButtonContext) => {
 
 export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonCallback> = {
   [TradeFormValidation.WrapUnwrapFlow]: (context) => {
-    const {
-      afterSlippage: {
-        sellAmount: { currency: inputCurrency },
-      },
-    } = context.receiveAmountInfo
-    const isNativeIn = !!inputCurrency && getIsNativeToken(inputCurrency)
+    const isNativeIn = !!context.derivedState.inputCurrency && getIsNativeToken(context.derivedState.inputCurrency)
 
     return (
       <TradeFormBlankButton onClick={() => context.wrapNativeFlow()}>
@@ -138,11 +128,8 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     text: "Couldn't load balances",
   },
   [TradeFormValidation.BalanceInsufficient]: (context) => {
-    const {
-      afterSlippage: {
-        sellAmount: { currency: inputCurrency },
-      },
-    } = context.receiveAmountInfo
+    const inputCurrency = context.derivedState.inputCurrency
+
     return (
       <TradeFormBlankButton disabled={true}>
         <Trans>Insufficient&nbsp;{<TokenSymbol token={inputCurrency} />}&nbsp;balance</Trans>
@@ -150,11 +137,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     )
   },
   [TradeFormValidation.ApproveAndSwap]: (context, isDisabled = false) => {
-    const {
-      afterSlippage: {
-        sellAmount: { currency: inputCurrency },
-      },
-    } = context.receiveAmountInfo
+    const inputCurrency = context.derivedState.inputCurrency
     const tokenToApprove = inputCurrency && getWrappedToken(inputCurrency)
 
     return (
@@ -166,6 +149,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     )
   },
   [TradeFormValidation.ApproveRequired]: (context) => {
+    if (!context.receiveAmountInfo) return null
     const { maximumSendSellAmount } = getOrderTypeReceiveAmounts(context.receiveAmountInfo)
 
     return (
@@ -177,11 +161,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     )
   },
   [TradeFormValidation.SellNativeToken]: (context) => {
-    const {
-      afterSlippage: {
-        sellAmount: { currency: inputCurrency },
-      },
-    } = context.receiveAmountInfo
+    const inputCurrency = context.derivedState.inputCurrency
     const isNativeIn = !!inputCurrency && getIsNativeToken(inputCurrency)
 
     if (!isNativeIn) return null
