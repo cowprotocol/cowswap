@@ -231,7 +231,6 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                     {...currencyInputCommonProps}
                   />
                 </div>
-                {slots.limitPriceInput}
                 {withRecipient && <SetRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />}
 
                 {isWrapOrUnwrap ? (
