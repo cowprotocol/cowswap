@@ -1,3 +1,1 @@
-declare module 'styled-components' {
-  export interface DefaultTheme extends CowProtocolTheme {}
-}
+// This file can be empty as the types are now declared in @cowprotocol/ui

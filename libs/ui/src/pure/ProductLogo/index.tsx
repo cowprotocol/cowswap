@@ -18,6 +18,8 @@ import { Color } from '../../colors'
 import { Media } from '../../consts'
 import { CowSwapTheme } from '../../types'
 
+import type { CowProtocolTheme } from '../../theme/typings'
+
 export enum ProductVariant {
   CowSwap = 'cowSwap',
   CowExplorer = 'cowExplorer',
@@ -319,7 +321,7 @@ export const ProductLogo = ({
   external = false,
   className,
 }: LogoProps) => {
-  const themeMode = useTheme()
+  const themeMode = useTheme() as CowProtocolTheme
   const selectedTheme = customThemeMode || (themeMode.darkMode ? 'dark' : 'light')
   const logoForTheme = LOGOS[variant][selectedTheme] || LOGOS[variant]['light'] // Fallback to light theme if selected theme is not available
   const logoInfo = logoIconOnly && logoForTheme.logoIconOnly ? logoForTheme.logoIconOnly : logoForTheme.default

@@ -1,3 +1,5 @@
+import { CowProtocolTheme } from '@cowprotocol/ui'
+
 declare module 'styled-components' {
   /**
    * CoWSwap-specific theme extension that adds widget functionality

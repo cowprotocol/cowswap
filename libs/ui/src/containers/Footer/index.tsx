@@ -36,6 +36,8 @@ import { Color } from '../../colors'
 import { MenuItem } from '../../pure/MenuBar'
 import { ProductLogo, ProductVariant } from '../../pure/ProductLogo'
 
+import type { CowProtocolTheme } from '../../theme/typings'
+
 export interface FooterProps {
   description?: string
   navItems?: MenuItem[]
@@ -294,7 +296,7 @@ export const Footer = ({
   const [isFooterExpanded, setIsFooterExpanded] = useState(expanded)
   const footerRef = useRef<HTMLDivElement>(null)
 
-  const theme = useTheme()
+  const theme = useTheme() as CowProtocolTheme
 
   const toggleFooter = () => {
     setIsFooterExpanded((state) => {

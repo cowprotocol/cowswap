@@ -14,7 +14,6 @@ import {
   Wrapper,
   NoTokensText,
 } from './index.style'
-import type { CowProtocolTheme } from 'styled-components'
 import { useTheme } from 'styled-components/macro'
 
 // Utility function for consistent value formatting
@@ -81,7 +80,7 @@ interface TokenItemProps {
 }
 
 function TokenItem({ token, index }: TokenItemProps) {
-  const theme = useTheme() as CowProtocolTheme
+  const theme = useTheme()
   const { id, name, symbol, change24h, priceUsd, marketCap, volume, image } = token
   return (
     <ListItem key={id}>

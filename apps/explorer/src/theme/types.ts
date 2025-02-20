@@ -1,6 +1,6 @@
-import { Fonts } from './styles'
+import { CowProtocolTheme } from '@cowprotocol/ui'
 
-import type { CowProtocolTheme } from 'styled-components/macro'
+import { Fonts } from './styles'
 
 export enum Theme {
   DARK = 'dark',

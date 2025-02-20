@@ -20,7 +20,9 @@ export interface Colors {
   text1: ColorValue
   text4: ColorValue
   bg2: ColorValue
+  bg3: ColorValue
   bg5: ColorValue
+  grey1: ColorValue
   green1: ColorValue
   yellow3: ColorValue
   blue1: ColorValue
@@ -90,11 +92,12 @@ export interface ThemeUtils {
   flexRowNoWrap: StyledFlattenSimpleInterpolation
 }
 
-declare module 'styled-components' {
-  export interface CowProtocolTheme extends Colors, ThemeUtils {
-    mode: CowSwapTheme
-  }
+// Export the theme interface for external use
+export interface CowProtocolTheme extends Colors, ThemeUtils {
+  mode: CowSwapTheme
+}
 
+declare module 'styled-components' {
   export interface DefaultTheme extends CowProtocolTheme {
     // No additional properties needed
   }
