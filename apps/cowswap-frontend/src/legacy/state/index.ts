@@ -8,8 +8,6 @@ import enhancedTransactions from './enhancedTransactions/reducer'
 import gas from './gas/reducer'
 import { appziMiddleware, soundMiddleware } from './orders/middleware'
 import orders from './orders/reducer'
-import { priceMiddleware } from './price/middleware'
-import price from './price/reducer'
 import user from './user/reducer'
 
 const reducers = {
@@ -17,7 +15,6 @@ const reducers = {
   user,
   transactions: enhancedTransactions, // replace transactions state by "enhancedTransactions"
   orders,
-  price,
   gas,
   cowToken,
 }
@@ -31,13 +28,9 @@ export const cowSwapStore = configureStore({
       .concat(save({ states: PERSISTED_KEYS, debounce: 1000 }))
       .concat(cowTokenMiddleware)
       .concat(soundMiddleware)
-      .concat(appziMiddleware)
-      .concat(priceMiddleware),
+      .concat(appziMiddleware),
   preloadedState: load({ states: PERSISTED_KEYS, disableWarnings: process.env.NODE_ENV === 'test' }),
 })
-
-// TODO: this is new, should we enable it?
-// setupListeners(store.dispatch)
 
 export type AppState = StateFromReducersMapObject<typeof reducers>
 export type AppDispatch = typeof cowSwapStore.dispatch
