@@ -2,11 +2,11 @@ import { useEffect, useRef } from 'react'
 
 import { MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from '@cowprotocol/common-const'
 import { loadJsonFromLocalStorage, setJsonToLocalStorage } from '@cowprotocol/common-utils'
+import { StatefulValue } from '@cowprotocol/types'
 
 import { useIsEoaEthFlow } from 'modules/trade'
 
 import { DeadlineSettings } from './types'
-import { StatefulValue } from '@cowprotocol/types'
 
 const LOCAL_STORAGE_KEY = 'UserDeadlineSettings'
 
