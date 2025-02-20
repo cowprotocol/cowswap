@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 
-import { useSwapFlowContext } from 'modules/swap2'
+import { useSwapFlowContext } from 'modules/swap'
 
 import { useSetOrderParams } from './useSetOrderParams'
 

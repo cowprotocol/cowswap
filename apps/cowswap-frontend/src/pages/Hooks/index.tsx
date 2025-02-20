@@ -1,5 +1,5 @@
 import { HooksStoreWidget } from 'modules/hooksStore'
-import { SwapUpdaters } from 'modules/swap2'
+import { SwapUpdaters } from 'modules/swap'
 
 export function HooksPage() {
   return (

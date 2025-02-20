@@ -13,7 +13,7 @@ At the same time, strike a balance between code cohesion and solution scalabilit
 
 ## Concept of TradeWidget
 
-1. Each trade widget: [SwapWidget](../../../modules/swap2/containers/SwapWidget/index.tsx), [LimitOrdersWidget](../../../modules/limitOrders/containers/LimitOrdersWidget/index.tsx), [AdvancedOrdersWidget](../../../modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx) uses [TradeWidget](../../../modules/trade/containers/TradeWidget/index.tsx) as a skeleton to get out of the box:
+1. Each trade widget: [SwapWidget](../../swap/containers/SwapWidget/index.tsx), [LimitOrdersWidget](../../../modules/limitOrders/containers/LimitOrdersWidget/index.tsx), [AdvancedOrdersWidget](../../../modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx) uses [TradeWidget](../../../modules/trade/containers/TradeWidget/index.tsx) as a skeleton to get out of the box:
    1. State persistence with URL
    2. Tokens selection and `setMax` functionality
    3. Recipient input
