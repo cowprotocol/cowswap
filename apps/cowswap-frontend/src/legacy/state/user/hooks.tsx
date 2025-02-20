@@ -12,7 +12,6 @@ import {
   updateHooksEnabled,
   updateRecipientToggleVisible,
   updateUserDarkMode,
-  updateUserDeadline,
   updateUserLocale,
 } from './reducer'
 import { SerializedToken } from './types'
@@ -102,20 +101,6 @@ export function useHooksEnabledManager(): [boolean, Command] {
   }, [hooksEnabled, dispatch])
 
   return [hooksEnabled, toggleHooksEnabled]
-}
-
-export function useUserTransactionTTL(): [number, (slippage: number) => void] {
-  const dispatch = useAppDispatch()
-  const deadline = useAppSelector((state) => state.user.userDeadline)
-
-  const setUserDeadline = useCallback(
-    (userDeadline: number) => {
-      dispatch(updateUserDeadline({ userDeadline }))
-    },
-    [dispatch],
-  )
-
-  return [deadline, setUserDeadline]
 }
 
 export function useSelectedWallet(): string | undefined {

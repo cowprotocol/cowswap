@@ -3,10 +3,6 @@ import { ConnectionType } from '@cowprotocol/wallet'
 
 import { createSlice } from '@reduxjs/toolkit'
 
-import { userWalletMigration } from './userWalletMigration'
-
-userWalletMigration()
-
 export interface UserState {
   selectedWallet?: ConnectionType
 
@@ -53,9 +49,6 @@ const userSlice = createSlice({
     updateUserLocale(state, action) {
       state.userLocale = action.payload.userLocale
     },
-    updateUserDeadline(state, action) {
-      state.userDeadline = action.payload.userDeadline
-    },
     updateRecipientToggleVisible(state, action) {
       state.recipientToggleVisible = action.payload.recipientToggleVisible
     },
@@ -67,7 +60,6 @@ export const {
   updateMatchesDarkMode,
   updateUserDarkMode,
   updateHooksEnabled,
-  updateUserDeadline,
   updateUserLocale,
   updateRecipientToggleVisible,
 } = userSlice.actions

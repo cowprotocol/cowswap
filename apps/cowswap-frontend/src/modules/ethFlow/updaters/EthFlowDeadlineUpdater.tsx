@@ -3,17 +3,20 @@ import { useEffect, useRef } from 'react'
 import { MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from '@cowprotocol/common-const'
 import { loadJsonFromLocalStorage, setJsonToLocalStorage } from '@cowprotocol/common-utils'
 
-import { useUserTransactionTTL } from 'legacy/state/user/hooks'
-
 import { useIsEoaEthFlow } from 'modules/trade'
 
 import { DeadlineSettings } from './types'
+import { StatefulValue } from '@cowprotocol/types'
 
 const LOCAL_STORAGE_KEY = 'UserDeadlineSettings'
 
-export function EthFlowDeadlineUpdater() {
+interface EthFlowDeadlineUpdaterProps {
+  deadlineState: StatefulValue<number>
+}
+
+export function EthFlowDeadlineUpdater({ deadlineState }: EthFlowDeadlineUpdaterProps) {
   // user deadline (in seconds)
-  const [userDeadline, setUserDeadline] = useUserTransactionTTL()
+  const [userDeadline, setUserDeadline] = deadlineState
   const isEoaEthFlow = useIsEoaEthFlow()
 
   // On updater mount, load previous deadline from localStorage and set it
