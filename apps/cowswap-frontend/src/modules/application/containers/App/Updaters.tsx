@@ -4,8 +4,6 @@ import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { TokensListsUpdater, UnsupportedTokensUpdater, WidgetTokensListsUpdater } from '@cowprotocol/tokens'
 import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
-import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
-
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances/updater/BalancesCombinedUpdater'
 import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
@@ -60,7 +58,6 @@ export function Updaters() {
       <UnfillableOrdersUpdater />
       <OrdersFromApiUpdater />
       <GasUpdater />
-      <GasPriceStrategyUpdater />
       <SentryUpdater />
       <UploadToIpfsUpdater />
       <InFlightOrderFinalizeUpdater />
