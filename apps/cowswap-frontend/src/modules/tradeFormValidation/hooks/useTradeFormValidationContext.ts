@@ -5,9 +5,7 @@ import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useTokenSupportsPermit } from 'modules/permit'
-import { TradeType } from 'modules/trade'
-import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
-import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { TradeType, useDerivedTradeState, useIsWrapOrUnwrap, useReceiveAmounts } from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 import { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
@@ -20,8 +18,9 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
 
-  const { inputCurrency, outputCurrency, slippageAdjustedSellAmount, recipient, tradeType } = derivedTradeState || {}
-  const { state: approvalState } = useApproveState(slippageAdjustedSellAmount)
+  const { inputCurrency, outputCurrency, recipient, tradeType } = derivedTradeState || {}
+  const receiveAmounts = useReceiveAmounts()
+  const { state: approvalState } = useApproveState(receiveAmounts?.maximumSendSellAmount)
   const { address: recipientEnsAddress } = useENSAddress(recipient)
   const isSwapUnsupported =
     useIsTradeUnsupported(inputCurrency, outputCurrency) || isUnsupportedTokenInQuote(tradeQuote)

@@ -1,6 +1,6 @@
 import { Command } from '@cowprotocol/types'
 
-import { TradeDerivedState } from 'modules/trade'
+import { ReceiveAmountInfo, TradeDerivedState } from 'modules/trade'
 import { TradeQuoteState } from 'modules/tradeQuote'
 
 import { ApprovalState } from 'common/hooks/useApproveState'
@@ -58,7 +58,7 @@ export interface TradeFormValidationContext extends TradeFormValidationCommonCon
 
 export interface TradeFormButtonContext {
   defaultText: string
-  derivedState: TradeDerivedState
+  receiveAmountInfo: ReceiveAmountInfo
   quote: TradeQuoteState
   isSupportedWallet: boolean
   widgetStandaloneMode?: boolean
