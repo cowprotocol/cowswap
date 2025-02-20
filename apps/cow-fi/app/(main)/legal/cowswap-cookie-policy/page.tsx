@@ -1,7 +1,8 @@
 'use client'
 
 import { Color } from '@cowprotocol/ui'
-
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 import styled from 'styled-components/macro'
 import { Link } from '@/components/Link'
 
@@ -13,7 +14,6 @@ import {
   ColorTableContainer,
   ContainerCard,
 } from '@/styles/styled'
-import { clickOnLegal } from '../../../../modules/analytics'
 
 const Wrapper = styled.div`
   display: flex;
@@ -27,6 +27,7 @@ const Wrapper = styled.div`
 `
 
 export default function Page() {
+  const analytics = useCowAnalytics()
   const title = 'CoW Swap Cookie policy'
 
   return (
@@ -34,10 +35,28 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
         <ArticleContent maxWidth="100%">
           <Breadcrumbs>
-            <Link href="/ " onClick={() => clickOnLegal('click-legal-breadcrumbs')}>
+            <Link
+              href="/ "
+              onClick={() =>
+                analytics.sendEvent({
+                  category: CowFiCategory.LEGAL,
+                  action: 'Click Breadcrumb',
+                  label: 'home',
+                })
+              }
+            >
               Home
             </Link>
-            <Link href="/legal" onClick={() => clickOnLegal('click-legal-breadcrumbs')}>
+            <Link
+              href="/legal"
+              onClick={() =>
+                analytics.sendEvent({
+                  category: CowFiCategory.LEGAL,
+                  action: 'Click Breadcrumb',
+                  label: 'legal',
+                })
+              }
+            >
               Legal
             </Link>
             <span>{title}</span>
@@ -60,7 +79,7 @@ export default function Page() {
             <p>
               This Cookie Policy sets out some further detail on how and why we use these technologies on our website or
               websites we may host on behalf of clients. The terms &quot;Nomev&quot;, &quot;we&quot;, &quot;us&quot;,
-              and &quot;our&quot; include Nomev Labs, Lda and affiliates. The terms “you” and “your” include our
+              and &quot;our&quot; include Nomev Labs, Lda and affiliates. The terms "you" and "your" include our
               clients, business partners and users of this website. By using our website, you consent to storage and
               access to cookies and other technologies on your device, in accordance with this Cookie Policy.
             </p>
@@ -116,10 +135,10 @@ export default function Page() {
             <p>
               In general, we use cookies and other technologies (such as web server logs) on our website to enhance your
               experience and to collect information about how our website is used. This information is put together
-              (‘aggregated’) and provides general and not individually specific information. None of this information is
-              therefore associated with you as an individual and the cookie-related information is not used to identify
-              you personally. It is therefore anonymized and ‘de-identified’. The pattern data is fully under our
-              control and these cookies are not used for any purpose other than those described here.
+              (&#39;aggregated&#39;) and provides general and not individually specific information. None of this
+              information is therefore associated with you as an individual and the cookie-related information is not
+              used to identify you personally. It is therefore anonymized and &#39;de-identified&#39;. The pattern data
+              is fully under our control and these cookies are not used for any purpose other than those described here.
             </p>
             <p>
               We will retain and evaluate information on your recent visits to our website and how you move around
@@ -180,8 +199,8 @@ export default function Page() {
             </ul>
             <p>
               We may also use other services, such as{' '}
-              <a href="https://www.google.com/analytics/" target="_blank" rel="nofollow noopener">
-                Google Analytics
+              <a href="https://tagmanager.google.com/" target="_blank" rel="nofollow noopener">
+                Google Tag Manager
               </a>{' '}
               (described below) or other third-party cookies, to assist with analysing performance on our website. As
               part of providing these services, these service providers may use cookies and the technologies described
@@ -189,17 +208,17 @@ export default function Page() {
               on each page of our website, links clicked and conversion information, IP address, browser, mobile network
               information, and type of operating system used.
             </p>
-            <h2 id="6-google-analytics-cookies">6. Google Analytics Cookies</h2>
+            <h2 id="6-google-tag-manager-cookies">6. Google Tag Manager Cookies</h2>
             <p>
               This website uses{' '}
-              <a href="https://www.google.com/analytics/" target="_blank" rel="nofollow noopener">
-                Google Analytics
+              <a href="https://tagmanager.google.com/" target="_blank" rel="nofollow noopener">
+                Google Tag Manager
               </a>
-              , a web analytics service provided by Google, Inc. (&quot;Google&quot;).
+              , a tag management system provided by Google, Inc. (&quot;Google&quot;).
             </p>
             <p>
-              We use Google Analytics to track your preferences and also to identify popular sections of our website.
-              Use of Google Analytics in this way, enables us to adapt the content of our website more specifically to
+              We use Google Tag Manager to track your preferences and also to identify popular sections of our website.
+              Use of Google Tag Manager in this way, enables us to adapt the content of our website more specifically to
               your needs and thereby improve what we can offer to you.
             </p>
             <p>
@@ -209,7 +228,7 @@ export default function Page() {
               or where such third parties process the information on Google&#39;s behalf. Google will not associate your
               IP address with any other data held by Google.
             </p>
-            <p>In particular Google Analytics tells us:</p>
+            <p>In particular Google Tag Manager tells us:</p>
             <ul>
               <li>your IP address (last 3 digits are masked);</li>
               <li>the number of pages visited;</li>
@@ -230,34 +249,26 @@ export default function Page() {
             </p>
             <p>
               By using this website, you consent to the processing of data about you by Google in the manner and for the
-              purposes set out above. Google Analytics, its purpose and function is further explained on the{' '}
-              <a href="https://www.google.com/analytics/" target="_blank" rel="nofollow noopener">
-                Google Analytics website
+              purposes set out above. Google Tag Manager, its purpose and function is further explained on the{' '}
+              <a href="https://tagmanager.google.com/" target="_blank" rel="nofollow noopener">
+                Google Tag Manager website
               </a>
               .
             </p>
             <p>
-              For more information about Google Analytics cookies, please see Google&#39;s help pages and privacy
+              For more information about Google Tag Manager cookies, please see Google&#39;s help pages and privacy
               policy:{' '}
               <a href="https://www.google.com/intl/en/policies/privacy/" target="_blank" rel="nofollow noopener">
                 Google&#39;s Privacy Policy
               </a>{' '}
               and{' '}
-              <a
-                href="https://developers.google.com/analytics/devguides/collection/analyticsjs/cookie-usage"
-                target="_blank"
-                rel="nofollow noopener"
-              >
-                Google Analytics Help pages
-              </a>
-              . For further information about the use of these cookies by Google{' '}
-              <a href="https://support.google.com/analytics/answer/6004245" target="_blank" rel="nofollow noopener">
-                click here
+              <a href="https://support.google.com/tagmanager/answer/6102821" target="_blank" rel="nofollow noopener">
+                Google Tag Manager Help
               </a>
               .
             </p>
             <h2 id="7-what-if-you-don-t-agree-with-us-monitoring-your-use-of-our-website-even-if-we-don-t-collect-your-personal-data-">
-              7. What if you don’t agree with us monitoring your use of our website (even if we don’t collect your
+              7. What if you don't agree with us monitoring your use of our website (even if we don't collect your
               personal data)?
             </h2>
             <p>
@@ -267,7 +278,7 @@ export default function Page() {
             </p>
             <p>
               Most browsers are initially set to accept cookies. If you prefer, you can set your browser to refuse
-              cookies and control and/or delete cookies as you wish – for details, see{' '}
+              cookies and control and/or delete cookies as you wish - for details, see{' '}
               <a href="https://www.aboutcookies.org/" target="_blank" rel="nofollow noopener">
                 aboutcookies.org
               </a>
@@ -282,7 +293,7 @@ export default function Page() {
             </p>
             <p>
               If you have any further questions regarding disabling cookies you should consult with your preferred
-              browser’s provider or manufacturer.
+              browser's provider or manufacturer.
             </p>
             <p>
               In order to implement your objection it may be necessary to install an opt-out cookie on your browser.
@@ -292,8 +303,8 @@ export default function Page() {
               again.
             </p>
             <p>
-              To opt out of being tracked by Google Analytics across all websites, Google has developed the Google
-              Analytics opt-out browser add-on. If you would like to opt out of Google Analytics, you have the option of
+              To opt out of being tracked by Google Tag Manager across all websites, Google has developed the Google Tag
+              Manager opt-out browser add-on. If you would like to opt out of Google Tag Manager, you have the option of
               downloading and installing this browser add-on which can be found under the link:{' '}
               <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="nofollow noopener">
                 https://tools.google.com/dlpage/gaoptout
@@ -304,7 +315,7 @@ export default function Page() {
             <p>
               We may modify this Cookie Policy from time to time. If we make changes to this Cookie Policy, we will
               provide notice of such changes, such as by sending an email notification, providing notice through our
-              website or updating the ‘Last Updated’ date at the beginning of this Cookie Policy. The amended Cookie
+              website or updating the 'Last Updated' date at the beginning of this Cookie Policy. The amended Cookie
               Policy will be effective immediately after the date it is posted. By continuing to access or use our
               website after the effective date, you confirm your acceptance of the revised Cookie Policy and all of the
               terms incorporated therein by reference. We encourage you to review our Privacy Policy and our Cookie
@@ -343,7 +354,7 @@ export default function Page() {
                     <td>__cookielawinfo_checkbox_performance</td>
                     <td>
                       Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
-                      category “performance”.
+                      category "performance".
                     </td>
                     <td>1 year from set/update</td>
                     <td>User activity won&#39;t be tracked</td>
@@ -352,7 +363,7 @@ export default function Page() {
                     <td>__cookielawinfo_checkbox_other</td>
                     <td>
                       Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
-                      category “other”.
+                      category "other".
                     </td>
                     <td>1 year from set/update</td>
                     <td>User activity won&#39;t be tracked</td>
@@ -361,7 +372,7 @@ export default function Page() {
                     <td>__cookielawinfo_checkbox_necessary</td>
                     <td>
                       Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
-                      category “necessary”.
+                      category "necessary".
                     </td>
                     <td>1 year from set/update</td>
                     <td>User activity won&#39;t be tracked</td>
@@ -370,7 +381,7 @@ export default function Page() {
                     <td>__cookielawinfo_checkbox_functional</td>
                     <td>
                       Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
-                      category “functional”.
+                      category "functional".
                     </td>
                     <td>1 year from set/update</td>
                     <td>User activity won&#39;t be tracked</td>
@@ -379,7 +390,7 @@ export default function Page() {
                     <td>__cookielawinfo_checkbox_analytics</td>
                     <td>
                       Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
-                      category “analytics”.
+                      category "analytics".
                     </td>
                     <td>1 year from set/update</td>
                     <td>User activity won&#39;t be tracked</td>
@@ -388,7 +399,7 @@ export default function Page() {
                     <td>__cookielawinfo_checkbox_advertisement</td>
                     <td>
                       Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
-                      category “advertisement”.
+                      category "advertisement".
                     </td>
                     <td>1 year from set/update</td>
                     <td>User activity won&#39;t be tracked</td>
@@ -397,7 +408,7 @@ export default function Page() {
                     <td>CookieLawInfoConsent</td>
                     <td>
                       Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
-                      category “LawInfoConsent”.
+                      category "LawInfoConsent".
                     </td>
                     <td>1 year from set/update</td>
                     <td>User activity won&#39;t be tracked</td>

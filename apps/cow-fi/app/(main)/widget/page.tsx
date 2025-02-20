@@ -1,6 +1,8 @@
 'use client'
 
 import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
 import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
@@ -36,8 +38,6 @@ import { DAO_CONTENT as CONTENT } from '@/data/widget/const'
 
 import LazySVG from '@/components/LazySVG'
 
-import { clickOnWidget } from '../../../modules/analytics'
-
 const FEATURE_ITEMS = [
   'Live styling configurator',
   'Easy install with a snippet of code',
@@ -57,6 +57,8 @@ const widgetParams: CowSwapWidgetParams = {
 }
 
 export default function Page() {
+  const analytics = useCowAnalytics()
+
   return (
     <PageWrapper>
       <HeroContainer variant="secondary">
@@ -76,7 +78,12 @@ export default function Page() {
               utmContent="widget-page-configure-widget-cta-hero"
               external
               linkType={LinkType.HeroButton}
-              onClick={() => clickOnWidget('click-config-widget')}
+              onClick={() =>
+                analytics.sendEvent({
+                  category: CowFiCategory.WIDGET,
+                  action: 'click-config-widget',
+                })
+              }
             >
               {' '}
               Configure widget{' '}
@@ -89,7 +96,12 @@ export default function Page() {
               utmContent="widget-page-readdocs-cta-hero"
               external
               linkType={LinkType.HeroButton}
-              onClick={() => clickOnWidget('click-read-docs')}
+              onClick={() =>
+                analytics.sendEvent({
+                  category: CowFiCategory.WIDGET,
+                  action: 'click-read-docs',
+                })
+              }
             >
               {' '}
               Read docs
@@ -105,7 +117,7 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral10} color={Color.neutral100}>
         <ContainerCardSection>
           <SectionTitleWrapper>
-            <SectionTitleIcon size={100}>
+            <SectionTitleIcon $size={100}>
               <ProductLogo variant={ProductVariant.CowProtocol} theme="light" logoIconOnly />
             </SectionTitleIcon>
             <SectionTitleText>Integrate now</SectionTitleText>
@@ -157,13 +169,13 @@ export default function Page() {
       <ContainerCard bgColor={'transparent'} color={Color.neutral10}>
         <ContainerCardSection>
           <SectionTitleWrapper maxWidth={900}>
-            <SectionTitleIcon size={60}>
+            <SectionTitleIcon $size={60}>
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
             </SectionTitleIcon>
             <SectionTitleText fontSize={62}>Every Bell, Whistle, and Moo</SectionTitleText>
             <SectionTitleDescription fontSize={24} color={Color.neutral40}>
               With the CoW Swap widget, you can offer your users everything you know and love about CoW Swap, and more.
-              Oh, and yes… it does come with the “moo”.
+              Oh, and yes… it does come with the "moo".
             </SectionTitleDescription>
           </SectionTitleWrapper>
 
@@ -213,7 +225,7 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral100} color={Color.neutral10}>
         <ContainerCardSection>
           <SectionTitleWrapper maxWidth={900}>
-            <SectionTitleIcon size={60}>
+            <SectionTitleIcon $size={60}>
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
             </SectionTitleIcon>
             <SectionTitleText fontSize={62}>Everything You'd Want in a Widget</SectionTitleText>
@@ -246,7 +258,7 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
         <ContainerCardSection>
           <SectionTitleWrapper>
-            <SectionTitleIcon multiple>
+            <SectionTitleIcon $multiple>
               <LazySVG src={IMG_ICON_OWL} />
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
               <LazySVG src={IMG_ICON_GHOST} />
@@ -292,7 +304,12 @@ export default function Page() {
                 utmContent="widget-page-configure-widget-cta-hero"
                 external
                 linkType={LinkType.HeroButton}
-                onClick={() => clickOnWidget('click-config-widget')}
+                onClick={() =>
+                  analytics.sendEvent({
+                    category: CowFiCategory.WIDGET,
+                    action: 'click-config-widget',
+                  })
+                }
               >
                 {' '}
                 Configure widget{' '}
@@ -305,7 +322,12 @@ export default function Page() {
                 utmContent="widget-page-readdocs-cta-hero"
                 external
                 linkType={LinkType.HeroButton}
-                onClick={() => clickOnWidget('click-read-docs')}
+                onClick={() =>
+                  analytics.sendEvent({
+                    category: CowFiCategory.WIDGET,
+                    action: 'click-read-docs',
+                  })
+                }
               >
                 {' '}
                 Read docs

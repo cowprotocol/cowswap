@@ -18,7 +18,7 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-import { TradeFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import { TradeFlowAnalytics, TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
 
 const LOG_PREFIX = 'LIMIT ORDER SAFE BUNDLE FLOW'
@@ -28,6 +28,7 @@ export async function safeBundleFlow(
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
+  analytics: TradeFlowAnalytics,
   beforeTrade?: Command,
 ): Promise<string> {
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
@@ -51,7 +52,7 @@ export async function safeBundleFlow(
   }
 
   logTradeFlow(LOG_PREFIX, 'STEP 2: send transaction')
-  tradeFlowAnalytics.approveAndPresign(swapFlowAnalyticsContext)
+  analytics.approveAndPresign(swapFlowAnalyticsContext)
   beforeTrade?.()
 
   const {
@@ -155,14 +156,14 @@ export async function safeBundleFlow(
       },
       dispatch,
     )
-    tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
+    analytics.sign(swapFlowAnalyticsContext)
 
     return orderId
   } catch (error: any) {
     logTradeFlow(LOG_PREFIX, 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
-    tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
+    analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
     throw error
   }

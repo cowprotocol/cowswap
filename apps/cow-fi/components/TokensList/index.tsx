@@ -3,6 +3,7 @@ import { TokenLink } from '@/components/TokenDetails/index.styles'
 import { getPriceChangeColor } from 'util/getPriceChangeColor'
 import { formatUSDPrice } from 'util/formatUSDPrice'
 import { TokenInfo } from 'types'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import {
   HeaderItem,
   ListItem,
@@ -13,8 +14,7 @@ import {
   Wrapper,
   NoTokensText,
 } from './index.style'
-import { clickOnToken } from 'modules/analytics'
-import type { CowProtocolTheme } from 'styled-components'
+import type { CowProtocolTheme } from '@cowprotocol/ui'
 import { useTheme } from 'styled-components/macro'
 
 // Utility function for consistent value formatting
@@ -50,6 +50,11 @@ export function TokenList({ tokens }: TokenListProps) {
         placeholder="Search tokens..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
+        data-click-event={toCowFiGtmEvent({
+          category: CowFiCategory.TOKENS,
+          action: 'Search Tokens',
+          label: search || 'Empty Search',
+        })}
       />
       <TokenTable>
         <HeaderItem>
@@ -82,7 +87,14 @@ function TokenItem({ token, index }: TokenItemProps) {
     <ListItem key={id}>
       <span>{index + 1}</span>
 
-      <TokenLink href={`/tokens/${id}`} onClick={() => clickOnToken(name)}>
+      <TokenLink
+        href={`/tokens/${id}`}
+        data-click-event={toCowFiGtmEvent({
+          category: CowFiCategory.TOKENS,
+          action: 'Click Token',
+          label: `${name} (${symbol})`,
+        })}
+      >
         {image.large && image.large !== 'missing_large.png' ? (
           <img src={image.large} alt={name} />
         ) : (

@@ -24,7 +24,7 @@ import {
   SectionTitleDescription,
   StickyMenu,
 } from '@/styles/styled'
-import { clickOnKnowledgeBase } from '../modules/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 import { Link, LinkType } from '@/components/Link'
 import { CmsImage, Color, Media } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
@@ -33,6 +33,7 @@ import { useLazyLoadImages } from '../hooks/useLazyLoadImages'
 import { useMemo } from 'react'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
+import { useCowAnalytics } from '@cowprotocol/analytics'
 
 interface ArticlePageProps {
   article: Article
@@ -66,9 +67,15 @@ export function ArticlePageComponent({
     blocks?.map((block: SharedRichTextComponent) => (isRichTextComponent(block) ? block.body : '')).join(' ') || ''
   const plainContent = stripHtmlTags(content)
 
+  const analytics = useCowAnalytics()
   const { share, message } = useWebShare()
 
   const handleShareClick = () => {
+    analytics.sendEvent({
+      category: CowFiCategory.KNOWLEDGEBASE,
+      action: 'Share article',
+      label: title,
+    })
     share({
       title: title || 'CoW DAO Article',
       text: plainContent.split(' ').slice(0, 50).join(' ') + '...',
@@ -84,10 +91,28 @@ export function ArticlePageComponent({
       <ContainerCard gap={62} gapMobile={42} margin="0 auto" centerContent>
         <ArticleContent>
           <Breadcrumbs>
-            <Link href="/" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-home')}>
+            <Link
+              href="/"
+              onClick={() =>
+                analytics.sendEvent({
+                  category: CowFiCategory.KNOWLEDGEBASE,
+                  action: 'Click breadcrumb',
+                  label: 'home',
+                })
+              }
+            >
               Home
             </Link>
-            <Link href="/learn" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-knowledge-base')}>
+            <Link
+              href="/learn"
+              onClick={() =>
+                analytics.sendEvent({
+                  category: CowFiCategory.KNOWLEDGEBASE,
+                  action: 'Click breadcrumb',
+                  label: 'knowledge-base',
+                })
+              }
+            >
               Knowledge Base
             </Link>
             <span>{title}</span>
@@ -95,15 +120,26 @@ export function ArticlePageComponent({
 
           {categories && Array.isArray(categories.data) && categories.data.length > 0 && (
             <CategoryTags>
-              {categories.data.map((category: { id: string; attributes?: { slug?: string; name?: string } }) => (
-                <Link
-                  key={category.id}
-                  href={`/learn/topic/${category.attributes?.slug ?? ''}`}
-                  onClick={() => clickOnKnowledgeBase(`click-category-${category.attributes?.name}`)}
-                >
-                  {category.attributes?.name ?? ''}
-                </Link>
-              ))}
+              {categories.data.map((category: { id: string; attributes?: { slug?: string; name?: string } }) => {
+                const categoryName = category.attributes?.name
+                if (!categoryName) return null
+
+                return (
+                  <Link
+                    key={category.id}
+                    href={`/learn/topic/${category.attributes?.slug ?? ''}`}
+                    onClick={() =>
+                      analytics.sendEvent({
+                        category: CowFiCategory.KNOWLEDGEBASE,
+                        action: 'Click category',
+                        label: categoryName,
+                      })
+                    }
+                  >
+                    {categoryName}
+                  </Link>
+                )
+              })}
             </CategoryTags>
           )}
 
@@ -141,16 +177,27 @@ export function ArticlePageComponent({
           <b>Featured Articles</b>
           <RelatedArticles>
             <ul>
-              {featuredArticles.map((article) => (
-                <li key={article.id}>
-                  <Link
-                    href={`/learn/${article.attributes?.slug}`}
-                    onClick={() => clickOnKnowledgeBase(`click-related-article-${article.attributes?.title}`)}
-                  >
-                    {article.attributes?.title}
-                  </Link>
-                </li>
-              ))}
+              {featuredArticles.map((article) => {
+                const articleTitle = article.attributes?.title
+                if (!articleTitle) return null
+
+                return (
+                  <li key={article.id}>
+                    <Link
+                      href={`/learn/${article.attributes?.slug}`}
+                      onClick={() =>
+                        analytics.sendEvent({
+                          category: CowFiCategory.KNOWLEDGEBASE,
+                          action: 'Click featured article',
+                          label: articleTitle,
+                        })
+                      }
+                    >
+                      {articleTitle}
+                    </Link>
+                  </li>
+                )
+              })}
             </ul>
           </RelatedArticles>
         </StickyMenu>
@@ -164,26 +211,34 @@ export function ArticlePageComponent({
           </ContainerCardSectionTop>
           <ArticleList>
             {randomArticles.map((article) => {
-              const coverData = article.attributes?.cover?.data
+              const attrs = article.attributes
+              if (!attrs?.title || !attrs?.slug) return null
+              const coverData = attrs.cover?.data
               const imageUrl = coverData?.attributes?.url
 
               return (
                 <ArticleCard
                   key={article.id}
-                  href={`/learn/${article.attributes?.slug}`}
-                  onClick={() => clickOnKnowledgeBase(`click-read-more-${article.attributes?.title}`)}
+                  href={`/learn/${attrs.slug}`}
+                  onClick={() =>
+                    analytics.sendEvent({
+                      category: CowFiCategory.KNOWLEDGEBASE,
+                      action: 'Click read more',
+                      label: attrs.title,
+                    })
+                  }
                 >
                   {imageUrl && (
                     <ArticleImage>
                       <CmsImage
                         src={imageUrl}
-                        alt={`Cover image for article: ${article.attributes?.title}`}
+                        alt={`Cover image for article: ${attrs.title}`}
                         width={700}
                         height={200}
                       />
                     </ArticleImage>
                   )}
-                  <ArticleTitle>{article.attributes?.title}</ArticleTitle>
+                  <ArticleTitle>{attrs.title}</ArticleTitle>
                 </ArticleCard>
               )
             })}

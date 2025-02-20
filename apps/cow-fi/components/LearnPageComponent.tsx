@@ -28,12 +28,14 @@ import {
   TopicTitle,
 } from '@/styles/styled'
 import { ArrowButton } from '@/components/ArrowButton'
-import { clickOnKnowledgeBase } from '../modules/analytics'
+
+import { CowFiCategory } from 'src/common/analytics/types'
 import { Color, Font, Media } from '@cowprotocol/ui'
 import LazySVG from '@/components/LazySVG'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import { ArticleListResponse } from '../services/cms'
 import styled from 'styled-components/macro'
+import { useCowAnalytics } from '@cowprotocol/analytics'
 
 const PODCASTS = [
   {
@@ -156,6 +158,7 @@ const Wrapper = styled.div`
 
 export function LearnPageComponent({ categories, articles, featuredArticles }: PageProps) {
   const { LazyImage } = useLazyLoadImages()
+  const analytics = useCowAnalytics()
 
   return (
     <Wrapper>
@@ -175,7 +178,16 @@ export function LearnPageComponent({ categories, articles, featuredArticles }: P
             </ContainerCardSectionTop>
             <ArticleList columnsTablet={2}>
               {featuredArticles.map(({ title, description, cover, link }, index) => (
-                <ArticleCard key={index} href={link} onClick={() => clickOnKnowledgeBase(`click-article-${title}`)}>
+                <ArticleCard
+                  key={index}
+                  href={link}
+                  onClick={() =>
+                    analytics.sendEvent({
+                      category: CowFiCategory.KNOWLEDGEBASE,
+                      action: `Click Article ${title}`,
+                    })
+                  }
+                >
                   <ArticleImage color={Color.neutral0}>
                     {cover && <LazyImage src={cover} alt={title} width={700} height={200} />}
                   </ArticleImage>
@@ -198,7 +210,12 @@ export function LearnPageComponent({ categories, articles, featuredArticles }: P
                     bgColor={bgColor}
                     textColor={textColor}
                     href={link}
-                    onClick={() => clickOnKnowledgeBase(`click-topic-${name}`)}
+                    onClick={() =>
+                      analytics.sendEvent({
+                        category: CowFiCategory.KNOWLEDGEBASE,
+                        action: `Click Topic ${name}`,
+                      })
+                    }
                   >
                     <TopicImage iconColor={iconColor} bgColor={bgColor} borderRadius={90} widthMobile={'auto'}>
                       {imageUrl ? (
@@ -236,7 +253,12 @@ export function LearnPageComponent({ categories, articles, featuredArticles }: P
                     href={`${podcast.link}?utm_source=cow.fi&utm_medium=web&utm_content=podcast-${podcast.title}`}
                     rel="noopener noreferrer nofollow"
                     target="_blank"
-                    onClick={() => clickOnKnowledgeBase(`click-podcast-${podcast.title}`)}
+                    onClick={() =>
+                      analytics.sendEvent({
+                        category: CowFiCategory.KNOWLEDGEBASE,
+                        action: `Click Podcast ${podcast.title}`,
+                      })
+                    }
                   >
                     {podcast.title}
                     <span>→</span>
@@ -252,7 +274,12 @@ export function LearnPageComponent({ categories, articles, featuredArticles }: P
                     href={`${space.link}?utm_source=cow.fi&utm_medium=web&utm_content=space-${space.title}`}
                     rel="noopener noreferrer nofollow"
                     target="_blank"
-                    onClick={() => clickOnKnowledgeBase(`click-space-${space.title}`)}
+                    onClick={() =>
+                      analytics.sendEvent({
+                        category: CowFiCategory.KNOWLEDGEBASE,
+                        action: `Click Space ${space.title}`,
+                      })
+                    }
                   >
                     {space.title}
                     <span>→</span>
@@ -273,7 +300,12 @@ export function LearnPageComponent({ categories, articles, featuredArticles }: P
                   href={`${link}?utm_source=cow.fi&utm_medium=web&utm_content=media-${title}`}
                   target={linkExternal ? '_blank' : '_self'}
                   rel={linkExternal ? 'noopener' : ''}
-                  onClick={() => clickOnKnowledgeBase(`click-media-${title}`)}
+                  onClick={() =>
+                    analytics.sendEvent({
+                      category: CowFiCategory.KNOWLEDGEBASE,
+                      action: `Click Media ${title}`,
+                    })
+                  }
                 >
                   <ArticleImage>{image && <LazyImage src={image} alt={title} />}</ArticleImage>
                   <ArticleTitle fontSize={21}>{title}</ArticleTitle>
@@ -296,7 +328,12 @@ export function LearnPageComponent({ categories, articles, featuredArticles }: P
             href="https://docs.cow.fi/?utm_source=cow.fi&utm_medium=web&utm_content=cta-read-docs"
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => clickOnKnowledgeBase('click-read-docs')}
+            onClick={() =>
+              analytics.sendEvent({
+                category: CowFiCategory.KNOWLEDGEBASE,
+                action: 'Click Read Docs',
+              })
+            }
           >
             Read the docs
           </CTAButton>

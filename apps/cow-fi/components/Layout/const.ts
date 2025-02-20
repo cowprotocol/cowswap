@@ -1,5 +1,8 @@
 import { MenuItem, ProductVariant, Color } from '@cowprotocol/ui'
-import { clickOnNavigation } from 'modules/analytics'
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
+
+const analytics = initGtm()
 
 export const PAGE_MAX_WIDTH = 1760
 export const THEME_MODE = 'light'
@@ -85,7 +88,12 @@ export const NAV_ADDITIONAL_BUTTONS = [
     label: 'LP on CoW AMM',
     href: 'https://balancer.fi/pools/cow',
     utmContent: 'menubar-nav-button-lp-on-cow-amm',
-    onClick: () => clickOnNavigation('click-lp-on-cow-amm'),
+    onClick: () =>
+      analytics.sendEvent({
+        category: CowFiCategory.NAVIGATION,
+        action: 'Click LP on CoW AMM',
+        label: 'menubar-nav-button',
+      }),
     external: true,
     isButton: true,
     bgColor: Color.cowamm_dark_green,
@@ -95,7 +103,12 @@ export const NAV_ADDITIONAL_BUTTONS = [
     label: 'Trade on CoW Swap',
     href: 'https://swap.cow.fi/#/1/swap/USDC/COW',
     utmContent: 'menubar-nav-button-trade-on-cow-swap',
-    onClick: () => clickOnNavigation('click-trade-on-cow-swap'),
+    onClick: () =>
+      analytics.sendEvent({
+        category: CowFiCategory.NAVIGATION,
+        action: 'Click Trade on CoW Swap',
+        label: 'menubar-nav-button',
+      }),
     external: true,
     isButton: true,
     bgColor: Color.cowfi_blue_lighter,

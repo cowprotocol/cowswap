@@ -3,8 +3,6 @@ import { parse } from 'qs'
 import { queryParametersToSwapState } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
 
-jest.mock('modules/analytics/useAnalyticsReporterCowSwap')
-
 describe('hooks', () => {
   describe('#queryParametersToSwapState', () => {
     test('ETH to DAI', () => {
@@ -12,11 +10,11 @@ describe('hooks', () => {
         queryParametersToSwapState(
           parse(
             '?inputCurrency=ETH&outputCurrency=0x6b175474e89094c44da98b954eedeac495271d0f&exactAmount=20.5&exactField=output',
-            { parseArrays: false, ignoreQueryPrefix: true }
+            { parseArrays: false, ignoreQueryPrefix: true },
           ),
           '',
-          null
-        )
+          null,
+        ),
       ).toEqual({
         [Field.OUTPUT]: { currencyId: '0x6B175474E89094C44Da98b954EedeAC495271d0F' },
         [Field.INPUT]: { currencyId: 'ETH' },
@@ -33,8 +31,8 @@ describe('hooks', () => {
         queryParametersToSwapState(
           parse('?outputCurrency=invalid', { parseArrays: false, ignoreQueryPrefix: true }),
           'ETH',
-          null
-        )
+          null,
+        ),
       ).toEqual({
         [Field.INPUT]: { currencyId: 'ETH' },
         [Field.OUTPUT]: { currencyId: null },
@@ -51,8 +49,8 @@ describe('hooks', () => {
         queryParametersToSwapState(
           parse('?outputCurrency=eth&exactAmount=20.5', { parseArrays: false, ignoreQueryPrefix: true }),
           '',
-          null
-        )
+          null,
+        ),
       ).toEqual({
         [Field.OUTPUT]: { currencyId: 'ETH' },
         [Field.INPUT]: { currencyId: null },
@@ -69,8 +67,8 @@ describe('hooks', () => {
         queryParametersToSwapState(
           parse('?outputCurrency=eth&exactAmount=20.5&recipient=abc', { parseArrays: false, ignoreQueryPrefix: true }),
           '',
-          null
-        )
+          null,
+        ),
       ).toEqual({
         [Field.OUTPUT]: { currencyId: 'ETH' },
         [Field.INPUT]: { currencyId: null },
@@ -90,8 +88,8 @@ describe('hooks', () => {
             ignoreQueryPrefix: true,
           }),
           '',
-          null
-        )
+          null,
+        ),
       ).toEqual({
         [Field.OUTPUT]: { currencyId: 'ETH' },
         [Field.INPUT]: { currencyId: null },
@@ -110,8 +108,8 @@ describe('hooks', () => {
             ignoreQueryPrefix: true,
           }),
           '',
-          null
-        )
+          null,
+        ),
       ).toEqual({
         [Field.OUTPUT]: { currencyId: 'ETH' },
         [Field.INPUT]: { currencyId: null },

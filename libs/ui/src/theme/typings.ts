@@ -1,6 +1,6 @@
-import { CowSwapTheme } from '../types'
-
 import type { FlattenSimpleInterpolation as StyledFlattenSimpleInterpolation } from 'styled-components/macro'
+
+export type CowSwapTheme = 'dark' | 'light' | 'darkHalloween' | 'lightChristmas' | 'darkChristmas'
 
 type ColorValue = string
 
@@ -20,7 +20,9 @@ export interface Colors {
   text1: ColorValue
   text4: ColorValue
   bg2: ColorValue
+  bg3: ColorValue
   bg5: ColorValue
+  grey1: ColorValue
   green1: ColorValue
   yellow3: ColorValue
   blue1: ColorValue
@@ -90,12 +92,10 @@ export interface ThemeUtils {
   flexRowNoWrap: StyledFlattenSimpleInterpolation
 }
 
-declare module 'styled-components' {
-  export interface CowProtocolTheme extends Colors, ThemeUtils {
-    mode: CowSwapTheme
-  }
+export interface CowProtocolTheme extends Colors, ThemeUtils {
+  mode: CowSwapTheme
+}
 
-  export interface DefaultTheme extends CowProtocolTheme {
-    // No additional properties needed
-  }
+export interface DefaultTheme extends CowProtocolTheme {
+  // No additional properties needed
 }

@@ -7,8 +7,6 @@ export * from './theme'
 export * from './styles'
 export * from './colors'
 
-export { useAnalyticsReporter } from './analytics/useAnalyticsReporter'
-
 export * from './pure/ButtonSecondaryAlt'
 export * from './pure/Button'
 export * from './pure/CenteredDots'

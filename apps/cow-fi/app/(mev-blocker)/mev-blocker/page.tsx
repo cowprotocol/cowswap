@@ -55,7 +55,7 @@ import LazySVG from '@/components/LazySVG'
 
 import { FAQ_DATA, TRUSTED_BY_CONTENT, TESTIMONIAL_LIST, MEV_BLOCKER_LIST } from '@/data/mev-blocker/const'
 
-import { clickOnMevBlocker } from '../../../modules/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 const isClient = typeof window === 'object'
 
@@ -113,7 +113,10 @@ export default function Page() {
                 bgColor={Color.cowfi_orange_bright}
                 color={Color.cowfi_orange_pale}
                 href="#rpc"
-                onClick={() => clickOnMevBlocker('click-get-protected-heroSection')}
+                data-click-event={toCowFiGtmEvent({
+                  category: CowFiCategory.MEVBLOCKER,
+                  action: 'Click Get Protected',
+                })}
               >
                 Get protected
               </Link>
@@ -146,7 +149,10 @@ export default function Page() {
               external
               linkType={LinkType.SectionTitleButton}
               utmContent="mev-blocker-metrics-link"
-              onClick={() => clickOnMevBlocker('click-metrics-dune')}
+              data-click-event={toCowFiGtmEvent({
+                category: CowFiCategory.MEVBLOCKER,
+                action: 'Click Metrics',
+              })}
             >
               View all metrics on DUNE &#8599;
             </Link>
@@ -155,7 +161,7 @@ export default function Page() {
           <ContainerCard bgColor={Color.neutral100}>
             <ContainerCardSection gap={60}>
               <SectionTitleWrapper color={Color.neutral10} maxWidth={1300} gap={56}>
-                <SectionTitleIcon multiple size={82}>
+                <SectionTitleIcon $multiple $size={82}>
                   <LazySVG src={IMAGE_ICON_MEVBLOCKER_PROTECT} />
                 </SectionTitleIcon>
                 <SectionTitleText maxWidth={500}>Broad spectrum MEV defense</SectionTitleText>
@@ -165,7 +171,10 @@ export default function Page() {
                     href="https://dune.com/queries/2259793/3703605"
                     external
                     utmContent="mev-blocker-dune-link"
-                    onClick={() => clickOnMevBlocker('click-dune-link')}
+                    data-click-event={toCowFiGtmEvent({
+                      category: CowFiCategory.MEVBLOCKER,
+                      action: 'Click Metrics',
+                    })}
                   >
                     $1.43 billion
                   </Link>{' '}
@@ -196,7 +205,10 @@ export default function Page() {
                     href="https://www.mevscanner.com/"
                     external
                     utmContent="mev-blocker-mev-scanner-link"
-                    onClick={() => clickOnMevBlocker('click-mev-scanner-link')}
+                    data-click-event={toCowFiGtmEvent({
+                      category: CowFiCategory.MEVBLOCKER,
+                      action: 'Click MEV Scanner',
+                    })}
                   >
                     Use MEV Scanner
                   </Link>{' '}
@@ -209,7 +221,7 @@ export default function Page() {
           <ContainerCard bgColor="transparent" color={Color.neutral10} id="rpc">
             <ContainerCardSection>
               <SectionTitleWrapper maxWidth={850} gap={56} margin="24px auto">
-                <SectionTitleIcon multiple size={82}>
+                <SectionTitleIcon $multiple $size={82}>
                   <LazySVG src={IMAGE_ICON_MEVBLOCKER_PROTECT2} />
                 </SectionTitleIcon>
                 <SectionTitleText>Get Protected</SectionTitleText>
@@ -346,7 +358,10 @@ export default function Page() {
                     href="https://docs.cow.fi/mevblocker"
                     external
                     utmContent="mev-blocker-docs-link"
-                    onClick={() => clickOnMevBlocker('click-mev-blocker-docs-link')}
+                    data-click-event={toCowFiGtmEvent({
+                      category: CowFiCategory.MEVBLOCKER,
+                      action: 'Click Docs',
+                    })}
                   >
                     read the MEV Blocker docs
                   </Link>
@@ -428,7 +443,10 @@ export default function Page() {
                   external
                   linkType={LinkType.SectionTitleButton}
                   utmContent="mev-blocker-learn-more"
-                  onClick={() => clickOnMevBlocker('click-mev-blocker-learn-more')}
+                  data-click-event={toCowFiGtmEvent({
+                    category: CowFiCategory.MEVBLOCKER,
+                    action: 'Click Learn More',
+                  })}
                 >
                   Learn more
                 </Link>
@@ -439,7 +457,7 @@ export default function Page() {
           <ContainerCard bgColor="transparent">
             <ContainerCardSection>
               <SectionTitleWrapper>
-                <SectionTitleIcon size={90}>
+                <SectionTitleIcon $size={90}>
                   <LazySVG src={IMAGE_ICON_MEVBLOCKER_TRUST} />
                 </SectionTitleIcon>
                 <SectionTitleText>Trusted by the best</SectionTitleText>
@@ -455,7 +473,10 @@ export default function Page() {
                     href={item.href}
                     rel={'noopener noreferrer nofollow'}
                     target="_blank"
-                    onClick={() => clickOnMevBlocker(`click-trusted-by-${item.href}`)}
+                    data-click-event={toCowFiGtmEvent({
+                      category: CowFiCategory.MEVBLOCKER,
+                      action: `Click Trusted By - ${item.href}`,
+                    })}
                   >
                     <TopicImage
                       iconColor={Color.neutral20}
@@ -499,6 +520,10 @@ export default function Page() {
                   color={Color.cowfi_orange_pale}
                   onClick={handleShareClick}
                   asButton
+                  data-click-event={toCowFiGtmEvent({
+                    category: CowFiCategory.MEVBLOCKER,
+                    action: 'Click Share',
+                  })}
                 >
                   Share MEV Blocker
                 </Link>

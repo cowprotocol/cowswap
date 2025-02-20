@@ -1,15 +1,17 @@
 import React from 'react'
 import styled from 'styled-components/macro'
-import { clickOnKnowledgeBase } from 'modules/analytics'
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 import { Color, Media } from '@cowprotocol/ui'
 import Link from 'next/link'
-interface Category {
+
+interface CategoryItem {
   name: string
   slug: string
 }
 
 interface CategoryLinksProps {
-  allCategories: Category[]
+  allCategories: CategoryItem[]
   noDivider?: boolean
 }
 
@@ -89,22 +91,41 @@ const CategoryLinksWrapper = styled.ul<{ noDivider?: boolean }>`
   }
 `
 
-export const CategoryLinks: React.FC<CategoryLinksProps> = ({ allCategories, noDivider }) => (
-  <CategoryLinksWrapper noDivider={noDivider}>
-    <li>
-      <Link href="/learn" onClick={() => clickOnKnowledgeBase('click-categories-home')}>
-        Knowledge Base
-      </Link>
-    </li>
-    {allCategories.map((category) => (
-      <li key={category.slug}>
+export const CategoryLinks: React.FC<CategoryLinksProps> = ({ allCategories, noDivider }) => {
+  const analytics = useCowAnalytics()
+
+  return (
+    <CategoryLinksWrapper noDivider={noDivider}>
+      <li>
         <Link
-          href={`/learn/topic/${category.slug}`}
-          onClick={() => clickOnKnowledgeBase(`click-categories-${category.name}`)}
+          href="/learn"
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.KNOWLEDGEBASE,
+              action: 'Click category',
+              label: 'home',
+            })
+          }
         >
-          {category.name}
+          Knowledge Base
         </Link>
       </li>
-    ))}
-  </CategoryLinksWrapper>
-)
+      {allCategories.map((category) => (
+        <li key={category.slug}>
+          <Link
+            href={`/learn/topic/${category.slug}`}
+            onClick={() =>
+              analytics.sendEvent({
+                category: CowFiCategory.KNOWLEDGEBASE,
+                action: 'Click category',
+                label: category.name,
+              })
+            }
+          >
+            {category.name}
+          </Link>
+        </li>
+      ))}
+    </CategoryLinksWrapper>
+  )
+}

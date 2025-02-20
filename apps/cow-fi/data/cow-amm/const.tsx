@@ -1,13 +1,15 @@
 import { Link } from '@/components/Link'
 import { Color } from '@cowprotocol/ui'
 
+import { initGtm } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 import IMG_COWAMM_LVR from '@cowprotocol/assets/images/image-cowamm-lvr.svg'
 import IMG_COWAMM_LP_1 from '@cowprotocol/assets/images/image-cowamm-lp-1.svg'
 import IMG_COWAMM_LP_2 from '@cowprotocol/assets/images/image-cowamm-lp-2.svg'
 import IMG_COWAMM_LP_3 from '@cowprotocol/assets/images/image-cowamm-lp-3.svg'
 import IMG_COWAMM_LP_4 from '@cowprotocol/assets/images/image-cowamm-lp-4.svg'
 
-import { clickOnCowAmm } from 'modules/analytics'
+const analytics = initGtm()
 
 export const QUOTES = [
   {
@@ -179,7 +181,12 @@ export const FAQ_DATA = [
           href="https://pool-creator.balancer.fi/cow"
           external
           utmContent="cow-amm-pool-creator"
-          onClick={() => clickOnCowAmm('Content link click - FAQ:Contact us')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWAMM,
+              action: 'Content link click - FAQ:Contact us',
+            })
+          }
         >
           CoW AMM pool creator
         </Link>
@@ -188,7 +195,12 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-amm/tutorials/cow-amm-deployer"
           external
           utmContent="cow-amm-deployer"
-          onClick={() => clickOnCowAmm('Content link click - FAQ:Deploy a pool')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWAMM,
+              action: 'Content link click - FAQ:Deploy a pool',
+            })
+          }
         >
           follow these instructions in the CoW AMM docs
         </Link>{' '}
@@ -205,7 +217,12 @@ export const FAQ_DATA = [
           href="http://balancer.fi/pools/cow"
           external
           utmContent="cow-amm-balancer-pools"
-          onClick={() => clickOnCowAmm('Content link click - FAQ:Balancer pools')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWAMM,
+              action: 'Content link click - FAQ:Balancer pools',
+            })
+          }
         >
           balancer.fi/pools/cow
         </Link>

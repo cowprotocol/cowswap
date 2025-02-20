@@ -3,6 +3,8 @@
 import { useEffect, useRef } from 'react'
 
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 import IMG_ICON_UNICORN from '@cowprotocol/assets/images/icon-unicorn.svg'
 import IMG_ICON_FLOWER_COW from '@cowprotocol/assets/images/icon-flower-cow.svg'
@@ -39,9 +41,9 @@ import LazySVG from '@/components/LazySVG'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 import { ADVANCED_ORDER_TYPES, BETTER_UX, COW_IS_DIFFERENT, FAQ_DATA, TWEETS } from '@/data/cow-swap/const'
 import LazyLoadTweet from '@/components/LazyLoadTweet'
-import { clickOnCowSwap } from '../../../modules/analytics'
 
 export default function Page() {
+  const analytics = useCowAnalytics()
   const tweetSectionRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -86,7 +88,12 @@ export default function Page() {
             external
             linkType={LinkType.HeroButton}
             utmContent="cow-swap-launch-app-button"
-            onClick={() => clickOnCowSwap('click-launch-app')}
+            onClick={() =>
+              analytics.sendEvent({
+                category: CowFiCategory.COWSWAP,
+                action: 'click-launch-app',
+              })
+            }
           >
             Launch app
           </Link>
@@ -119,7 +126,12 @@ export default function Page() {
           external
           linkType={LinkType.SectionTitleButton}
           utmContent="cow-swap-metrics-link"
-          onClick={() => clickOnCowSwap('click-metrics-link')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWSWAP,
+              action: 'click-metrics-link',
+            })
+          }
         >
           View all metrics on DUNE &#8599;
         </Link>
@@ -128,7 +140,7 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral100}>
         <ContainerCardSection gap={90}>
           <SectionTitleWrapper color={Color.neutral10} maxWidth={1100} gap={56}>
-            <SectionTitleIcon multiple size={82}>
+            <SectionTitleIcon $multiple $size={82}>
               <LazySVG src={IMG_ICON_UNICORN} />
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
               <LazySVG src={IMG_ICON_UNICORN} className="image-reverse" />
@@ -167,7 +179,7 @@ export default function Page() {
       <ContainerCard bgColor={'transparent'}>
         <ContainerCardSection>
           <SectionTitleWrapper maxWidth={800}>
-            <SectionTitleIcon size={126}>
+            <SectionTitleIcon $size={126}>
               <LazySVG src={ICON_BULB} />
             </SectionTitleIcon>
             <SectionTitleText>CoW Swap is the first user interface built on top of CoW Protocol</SectionTitleText>
@@ -180,7 +192,12 @@ export default function Page() {
               color={Color.cowfi_blue_dark}
               href="/cow-protocol"
               linkType={LinkType.SectionTitleButton}
-              onClick={() => clickOnCowSwap('click-learn-about-cow-protocol')}
+              onClick={() =>
+                analytics.sendEvent({
+                  category: CowFiCategory.COWSWAP,
+                  action: 'click-learn-about-cow-protocol',
+                })
+              }
             >
               Learn about CoW Protocol
             </Link>
@@ -191,7 +208,7 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 0" maxWidth={900}>
-            <SectionTitleIcon size={140}>
+            <SectionTitleIcon $size={140}>
               <LazySVG src={IMG_ICON_FLOWER_COW} />
             </SectionTitleIcon>
             <SectionTitleText>S-moooo-th trading</SectionTitleText>
@@ -267,7 +284,7 @@ export default function Page() {
       <ContainerCard bgColor={'transparent'}>
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 0" maxWidth={1300}>
-            <SectionTitleIcon size={82}>
+            <SectionTitleIcon $size={82}>
               <ProductLogo variant={ProductVariant.CowProtocol} theme="light" logoIconOnly />
             </SectionTitleIcon>
             <SectionTitleText textAlign="center">The DEX of choice for crypto whales and pros</SectionTitleText>
@@ -366,7 +383,7 @@ export default function Page() {
       <ContainerCard bgColor={'transparent'} color={Color.neutral10}>
         <ContainerCardSection>
           <SectionTitleWrapper>
-            <SectionTitleIcon size={62}>
+            <SectionTitleIcon $size={62}>
               <LazySVG src={IMG_ICON_FAQ} />
             </SectionTitleIcon>
             <SectionTitleText>FAQs</SectionTitleText>
@@ -393,7 +410,12 @@ export default function Page() {
               external
               linkType={LinkType.SectionTitleButton}
               utmContent="cow-swap-launch-app-button"
-              onClick={() => clickOnCowSwap('click-launch-app')}
+              onClick={() =>
+                analytics.sendEvent({
+                  category: CowFiCategory.COWSWAP,
+                  action: 'click-launch-app',
+                })
+              }
             >
               Launch app
             </Link>

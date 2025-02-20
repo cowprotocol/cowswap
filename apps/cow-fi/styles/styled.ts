@@ -834,8 +834,8 @@ export const SectionTitleDescription = styled.p<{
   }
 `
 
-export const SectionTitleIcon = styled.div<{ size?: number; multiple?: boolean }>`
-  --size: ${({ size }) => (size ? `${size}px` : '8.2rem')};
+export const SectionTitleIcon = styled.div<{ $size?: number; $multiple?: boolean }>`
+  --size: ${({ $size }) => ($size ? `${$size}px` : '8.2rem')};
   width: 100%;
   height: var(--size);
   object-fit: contain;
@@ -847,12 +847,12 @@ export const SectionTitleIcon = styled.div<{ size?: number; multiple?: boolean }
 
   > span {
     height: var(--size);
-    width: ${({ multiple }) => (multiple ? 'auto' : '100%')};
+    width: ${({ $multiple = false }) => ($multiple ? 'auto' : '100%')};
     color: inherit;
   }
 
   svg {
-    width: ${({ multiple }) => (multiple ? 'auto' : '100%')};
+    width: ${({ $multiple = false }) => ($multiple ? 'auto' : '100%')};
     height: 100%;
     max-height: var(--size);
     fill: currentColor;
