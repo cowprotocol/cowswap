@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { COW, WETH_SEPOLIA, ZERO_ADDRESS } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { WalletInfo, walletInfoAtom } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -16,7 +16,7 @@ import { DEFAULT_TRADE_DERIVED_STATE, TradeType } from 'modules/trade'
 import { useTradeQuotePolling } from './useTradeQuotePolling'
 
 import { tradeTypeAtom } from '../../trade/state/tradeTypeAtom'
-import { tradeQuoteParamsAtom } from '../state/tradeQuoteParamsAtom'
+import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
 
 jest.mock('modules/zeroApproval/hooks/useZeroApprovalState')
 jest.mock('common/hooks/useGetMarketDimension')
@@ -43,19 +43,18 @@ const limitOrdersDerivedStateMock: LimitOrdersDerivedState = {
 }
 
 const jotaiMock = [
-  [tradeQuoteParamsAtom, { amount: inputCurrencyAmount }],
+  [tradeQuoteInputAtom, { amount: inputCurrencyAmount, orderKind: OrderKind.SELL }],
   [limitOrdersDerivedStateAtom, limitOrdersDerivedStateMock],
   [tradeTypeAtom, { tradeType: TradeType.LIMIT_ORDER, route: '' }],
 ]
 
 const Wrapper =
   (mocks: any) =>
-  ({ children }: { children: ReactNode }) =>
-    (
-      <WithMockedWeb3 location={{ pathname: '/5/limit' }}>
-        <JotaiTestProvider initialValues={mocks}>{children}</JotaiTestProvider>
-      </WithMockedWeb3>
-    )
+  ({ children }: { children: ReactNode }) => (
+    <WithMockedWeb3 location={{ pathname: '/5/limit' }}>
+      <JotaiTestProvider initialValues={mocks}>{children}</JotaiTestProvider>
+    </WithMockedWeb3>
+  )
 
 describe('useTradeQuotePolling()', () => {
   beforeEach(() => {
