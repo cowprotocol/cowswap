@@ -22,10 +22,13 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
+import { Container } from './styled'
+
 import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrappedBalanceForSwap'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapDeadlineState, useSwapRecipientToggleState, useSwapSettings } from '../../hooks/useSwapSettings'
 import { useSwapWidgetActions } from '../../hooks/useSwapWidgetActions'
+import { BottomBanners } from '../BottomBanners'
 import { SwapConfirmModal } from '../SwapConfirmModal'
 import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
@@ -171,22 +174,25 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   }
 
   return (
-    <TradeWidget
-      slots={slots}
-      actions={widgetActions}
-      params={params}
-      inputCurrencyInfo={inputCurrencyInfo}
-      outputCurrencyInfo={outputCurrencyInfo}
-      confirmModal={
-        <SwapConfirmModal
-          doTrade={doTrade.callback}
-          recipient={recipient}
-          priceImpact={priceImpact}
-          inputCurrencyInfo={inputCurrencyPreviewInfo}
-          outputCurrencyInfo={outputCurrencyPreviewInfo}
-        />
-      }
-      genericModal={showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
-    />
+    <Container>
+      <TradeWidget
+        slots={slots}
+        actions={widgetActions}
+        params={params}
+        inputCurrencyInfo={inputCurrencyInfo}
+        outputCurrencyInfo={outputCurrencyInfo}
+        confirmModal={
+          <SwapConfirmModal
+            doTrade={doTrade.callback}
+            recipient={recipient}
+            priceImpact={priceImpact}
+            inputCurrencyInfo={inputCurrencyPreviewInfo}
+            outputCurrencyInfo={outputCurrencyPreviewInfo}
+          />
+        }
+        genericModal={showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
+      />
+      <BottomBanners />
+    </Container>
   )
 }
