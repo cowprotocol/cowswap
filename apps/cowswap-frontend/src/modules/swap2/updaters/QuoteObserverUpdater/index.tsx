@@ -24,21 +24,18 @@ export function QuoteObserverUpdater() {
   const amountToUpdate = isSell ? beforeNetworkCosts?.buyAmount : beforeNetworkCosts?.sellAmount
 
   const orderKind = state?.orderKind
-  const inputCurrency = state?.inputCurrency
-  const outputCurrency = state?.outputCurrency
 
   // Set the amount from quote response (receiveAmountInfo is a derived state from tradeQuote state)
+  // Important! Do not remove isQuoteUpdating check, otherwise the amount won't be updated after resetting
   useSafeEffect(() => {
-    if (!outputCurrency || !inputCurrency || !amountToUpdate) {
-      return
-    }
+    if (!amountToUpdate || isQuoteUpdating) return
 
     const fieldToUpdate = isSell ? 'outputCurrencyAmount' : 'inputCurrencyAmount'
 
     updateSwapState({
       [fieldToUpdate]: FractionUtils.serializeFractionToJSON(amountToUpdate),
     })
-  }, [amountToUpdate, inputCurrency, outputCurrency, updateSwapState, isSell])
+  }, [amountToUpdate, updateSwapState, isSell, isQuoteUpdating])
 
   /**
    * Reset the opposite field when the quote is updating
