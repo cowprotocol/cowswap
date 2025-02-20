@@ -1,6 +1,7 @@
 import { Link } from '@/components/Link'
 import { initGtm } from '@cowprotocol/analytics'
 import { CowFiCategory } from 'src/common/analytics/types'
+import { Color } from '@cowprotocol/ui'
 
 import IMG_COWSWAP_COINS from '@cowprotocol/assets/images/image-coins.svg'
 import IMG_COWSWAP_MEV from '@cowprotocol/assets/images/image-cowswap-mev.svg'
@@ -11,13 +12,12 @@ import IMG_COWSWAP_TWAP from '@cowprotocol/assets/images/image-cowswap-twap.svg'
 import IMG_COWSWAP_GASLESS from '@cowprotocol/assets/images/image-cowswap-gasless.svg'
 import IMG_COWSWAP_NOFEES from '@cowprotocol/assets/images/image-cowswap-nofees.svg'
 import IMG_COWSWAP_MULTIPLE from '@cowprotocol/assets/images/image-cowswap-multiple.svg'
-import { Color } from '@cowprotocol/ui'
 
 const analytics = initGtm()
 
 export const COW_IS_DIFFERENT = [
   {
-    bgColor: Color.cowfi_blue_bright,
+    bgColor: Color.cowfi_blue_lighter,
     fontSize: 28,
     color: Color.cowfi_blue_dark,
     description: "By aligning incentives between solvers and users, CoW Swap finds surplus you won't get anywhere else",
@@ -26,12 +26,12 @@ export const COW_IS_DIFFERENT = [
   {
     bgColor: Color.cowfi_blue_dark,
     fontSize: 28,
-    color: Color.cowfi_blue_bright,
+    color: Color.cowfi_lightBlue1,
     description: 'MEV is a $1.3+ billion problem that you never have to worry about on CoW Swap',
     imgSrc: IMG_COWSWAP_MEV,
   },
   {
-    bgColor: Color.cowfi_blue_bright,
+    bgColor: Color.cowfi_lightBlue1,
     fontSize: 28,
     color: Color.cowfi_blue_dark,
     description: "CoW Swap's unique architecture enables advanced order types and seamless UX",
@@ -42,15 +42,15 @@ export const COW_IS_DIFFERENT = [
 export const ADVANCED_ORDER_TYPES = [
   {
     bgColor: Color.cowfi_blue_dark,
-    textColor: Color.cowfi_blue_bright,
-    titleColor: Color.cowfi_blue_bright,
+    textColor: Color.cowfi_lightBlue1,
+    titleColor: Color.cowfi_white2,
     title: 'Market orders (aka swaps)',
     description: 'CoW Swap market orders maximize surplus and minimize MEV',
     imgSrc: IMG_COWSWAP_SWAPS,
   },
   {
-    bgColor: Color.cowfi_blue_bright,
-    textColor: Color.cowfi_blue_dark,
+    bgColor: Color.cowfi_lightBlue1,
+    textColor: Color.cowfi_darkBlue,
     titleColor: Color.cowfi_blue_dark,
     title: 'Limit orders',
     description:
@@ -58,8 +58,8 @@ export const ADVANCED_ORDER_TYPES = [
     imgSrc: IMG_COWSWAP_LIMIT,
   },
   {
-    bgColor: Color.cowfi_blue_bright,
-    textColor: Color.cowfi_blue_dark,
+    bgColor: Color.cowfi_lightBlue4,
+    textColor: Color.cowfi_darkBlue5,
     titleColor: Color.cowfi_blue_dark,
     title: 'TWAP orders',
     description:
@@ -70,8 +70,8 @@ export const ADVANCED_ORDER_TYPES = [
 
 export const BETTER_UX = [
   {
-    bgColor: Color.cowfi_blue_bright,
-    textColor: Color.cowfi_blue_dark,
+    bgColor: Color.cowfi_lightBlue4,
+    textColor: Color.cowfi_darkBlue5,
     titleColor: Color.cowfi_blue_dark,
     title: 'Gasless trading',
     description: 'All gas fees are paid in the sell token - so you can save your precious ETH',
@@ -79,15 +79,15 @@ export const BETTER_UX = [
   },
   {
     bgColor: Color.cowfi_blue_dark,
-    textColor: Color.cowfi_blue_bright,
-    titleColor: Color.cowfi_blue_bright,
+    textColor: Color.cowfi_lightBlue1,
+    titleColor: Color.cowfi_white2,
     title: 'No fees for failed transactions',
     description: "You shouldn't pay for what didn't work, so failed transactions are always free",
     imgSrc: IMG_COWSWAP_NOFEES,
   },
   {
-    bgColor: Color.cowfi_blue_bright,
-    textColor: Color.cowfi_blue_dark,
+    bgColor: Color.cowfi_lightBlue1,
+    textColor: Color.cowfi_darkBlue5,
     titleColor: Color.cowfi_blue_dark,
     title: 'Execute multiple trades at once',
     description: 'With intent-based trading, you can place as many orders as you want simultaneously',
