@@ -17,7 +17,7 @@ import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenErr
 import { useQuoteParams } from './useQuoteParams'
 import { useUpdateTradeQuote } from './useUpdateTradeQuote'
 
-import { tradeQuoteParamsAtom } from '../state/tradeQuoteParamsAtom'
+import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
 
 export const PRICE_UPDATE_INTERVAL = ms`30s`
 const AMOUNT_CHANGE_DEBOUNCE_TIME = ms`300`
@@ -27,7 +27,7 @@ const getFastQuote = onlyResolvesLast<OrderQuoteResponse>(getQuote)
 const getOptimalQuote = onlyResolvesLast<OrderQuoteResponse>(getQuote)
 
 export function useTradeQuotePolling() {
-  const { amount, fastQuote, orderKind } = useAtomValue(tradeQuoteParamsAtom)
+  const { amount, fastQuote, orderKind } = useAtomValue(tradeQuoteInputAtom)
 
   /**
    * It's important to keep amount and orderKind together in order to have consistent quoteParams

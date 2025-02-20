@@ -10,7 +10,7 @@ import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
 import { useUpdateTradeQuote } from './useUpdateTradeQuote'
 
-import { tradeQuoteParamsAtom } from '../state/tradeQuoteParamsAtom'
+import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
 
 export function useSetTradeQuoteParams(
   amount: Nullish<CurrencyAmount<Currency>>,
@@ -18,7 +18,7 @@ export function useSetTradeQuoteParams(
   fastQuote?: boolean,
 ) {
   const updateTradeQuote = useUpdateTradeQuote()
-  const updateState = useSetAtom(tradeQuoteParamsAtom)
+  const updateState = useSetAtom(tradeQuoteInputAtom)
 
   const context = useSafeMemoObject({ amount, orderKind, fastQuote, updateTradeQuote, updateState })
 
