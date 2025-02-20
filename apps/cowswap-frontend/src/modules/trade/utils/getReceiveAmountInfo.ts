@@ -18,6 +18,8 @@ export function getOrderTypeReceiveAmounts(info: ReceiveAmountInfo): OrderTypeRe
     amountAfterFees: isSell ? afterPartnerFees.buyAmount : afterPartnerFees.sellAmount,
     amountAfterSlippage: isSell ? afterSlippage.buyAmount : afterSlippage.sellAmount,
     networkFeeAmount: isSell ? networkFee.amountInBuyCurrency : networkFee.amountInSellCurrency,
+    maximumSendSellAmount: isSell ? afterSlippage.sellAmount : beforeNetworkCosts.sellAmount,
+    minimumReceiveBuyAmount: isSell ? beforeNetworkCosts.buyAmount : afterSlippage.buyAmount,
   }
 }
 
@@ -37,7 +39,7 @@ export function getReceiveAmountInfo(
   inputCurrency: Currency,
   outputCurrency: Currency,
   slippagePercent: Percent,
-  _partnerFeeBps: number | undefined
+  _partnerFeeBps: number | undefined,
 ): AmountsAndCosts & { quotePrice: Price<Currency, Currency> } {
   const partnerFeeBps = _partnerFeeBps ?? 0
   const currencies = { inputCurrency, outputCurrency }
@@ -65,17 +67,17 @@ export function getReceiveAmountInfo(
       networkFee: {
         amountInSellCurrency: CurrencyAmount.fromRawAmount(
           inputCurrency,
-          result.costs.networkFee.amountInSellCurrency.toString()
+          result.costs.networkFee.amountInSellCurrency.toString(),
         ),
         amountInBuyCurrency: CurrencyAmount.fromRawAmount(
           outputCurrency,
-          result.costs.networkFee.amountInBuyCurrency.toString()
+          result.costs.networkFee.amountInBuyCurrency.toString(),
         ),
       },
       partnerFee: {
         amount: CurrencyAmount.fromRawAmount(
           isSell ? outputCurrency : inputCurrency,
-          result.costs.partnerFee.amount.toString()
+          result.costs.partnerFee.amount.toString(),
         ),
         bps: result.costs.partnerFee.bps,
       },
@@ -89,7 +91,7 @@ export function getReceiveAmountInfo(
 
 function mapBigIntAmounts(
   amounts: { sellAmount: bigint; buyAmount: bigint },
-  currencies: { inputCurrency: Currency; outputCurrency: Currency }
+  currencies: { inputCurrency: Currency; outputCurrency: Currency },
 ): {
   sellAmount: CurrencyAmount<Currency>
   buyAmount: CurrencyAmount<Currency>

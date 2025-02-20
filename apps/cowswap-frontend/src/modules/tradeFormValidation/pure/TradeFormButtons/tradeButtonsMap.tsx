@@ -4,7 +4,7 @@ import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
+import { getOrderTypeReceiveAmounts, CompatibilityIssuesWarning } from 'modules/trade'
 
 import { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { TradeApproveButton } from 'common/containers/TradeApprove'
@@ -38,8 +38,13 @@ const quoteErrorTexts: Record<QuoteApiErrorCodes, string> = {
 }
 
 const unsupportedTokenButton = (context: TradeFormButtonContext) => {
-  const { derivedState, isSupportedWallet } = context
-  const { inputCurrency, outputCurrency } = derivedState
+  const { receiveAmountInfo, isSupportedWallet } = context
+  const {
+    afterSlippage: {
+      sellAmount: { currency: inputCurrency },
+      buyAmount: { currency: outputCurrency },
+    },
+  } = receiveAmountInfo
 
   return inputCurrency && outputCurrency ? (
     <>
@@ -59,7 +64,12 @@ const unsupportedTokenButton = (context: TradeFormButtonContext) => {
 
 export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonCallback> = {
   [TradeFormValidation.WrapUnwrapFlow]: (context) => {
-    const isNativeIn = !!context.derivedState.inputCurrency && getIsNativeToken(context.derivedState.inputCurrency)
+    const {
+      afterSlippage: {
+        sellAmount: { currency: inputCurrency },
+      },
+    } = context.receiveAmountInfo
+    const isNativeIn = !!inputCurrency && getIsNativeToken(inputCurrency)
 
     return (
       <TradeFormBlankButton onClick={() => context.wrapNativeFlow()}>
@@ -128,15 +138,24 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     text: "Couldn't load balances",
   },
   [TradeFormValidation.BalanceInsufficient]: (context) => {
+    const {
+      afterSlippage: {
+        sellAmount: { currency: inputCurrency },
+      },
+    } = context.receiveAmountInfo
     return (
       <TradeFormBlankButton disabled={true}>
-        <Trans>Insufficient&nbsp;{<TokenSymbol token={context.derivedState.inputCurrency} />}&nbsp;balance</Trans>
+        <Trans>Insufficient&nbsp;{<TokenSymbol token={inputCurrency} />}&nbsp;balance</Trans>
       </TradeFormBlankButton>
     )
   },
   [TradeFormValidation.ApproveAndSwap]: (context, isDisabled = false) => {
-    const currency = context.derivedState.slippageAdjustedSellAmount?.currency
-    const tokenToApprove = currency && getWrappedToken(currency)
+    const {
+      afterSlippage: {
+        sellAmount: { currency: inputCurrency },
+      },
+    } = context.receiveAmountInfo
+    const tokenToApprove = inputCurrency && getWrappedToken(inputCurrency)
 
     return (
       <TradeFormBlankButton disabled={isDisabled} onClick={context.confirmTrade}>
@@ -147,12 +166,10 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     )
   },
   [TradeFormValidation.ApproveRequired]: (context) => {
-    const amountToApprove = context.derivedState.slippageAdjustedSellAmount
-
-    if (!amountToApprove) return null
+    const { maximumSendSellAmount } = getOrderTypeReceiveAmounts(context.receiveAmountInfo)
 
     return (
-      <TradeApproveButton amountToApprove={amountToApprove}>
+      <TradeApproveButton amountToApprove={maximumSendSellAmount}>
         <TradeFormBlankButton disabled={true}>
           <Trans>{context.defaultText}</Trans>
         </TradeFormBlankButton>
@@ -160,14 +177,18 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     )
   },
   [TradeFormValidation.SellNativeToken]: (context) => {
-    const currency = context.derivedState.inputCurrency
-    const isNativeIn = !!currency && getIsNativeToken(currency)
+    const {
+      afterSlippage: {
+        sellAmount: { currency: inputCurrency },
+      },
+    } = context.receiveAmountInfo
+    const isNativeIn = !!inputCurrency && getIsNativeToken(inputCurrency)
 
     if (!isNativeIn) return null
 
     return (
       <TradeFormBlankButton disabled>
-        <Trans>Selling {currency.symbol} is not supported</Trans>
+        <Trans>Selling {inputCurrency.symbol} is not supported</Trans>
       </TradeFormBlankButton>
     )
   },
