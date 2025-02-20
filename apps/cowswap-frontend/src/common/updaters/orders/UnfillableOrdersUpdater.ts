@@ -239,6 +239,7 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: PriceStr
   legacyFeeQuoteParams.validFor = Math.round(PRICE_QUOTE_VALID_TO_TIME / 1000)
 
   try {
+    // TODO: use getQuote() from `src/api/cowProtocol/api.ts` instead
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
   } catch {
     return null
