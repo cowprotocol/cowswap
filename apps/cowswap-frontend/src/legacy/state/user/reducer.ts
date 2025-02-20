@@ -1,23 +1,14 @@
-import { DEFAULT_DEADLINE_FROM_NOW, SupportedLocale } from '@cowprotocol/common-const'
+import { SupportedLocale } from '@cowprotocol/common-const'
 import { ConnectionType } from '@cowprotocol/wallet'
 
 import { createSlice } from '@reduxjs/toolkit'
 
-import { userWalletMigration } from './userWalletMigration'
-
-userWalletMigration()
-
 export interface UserState {
   selectedWallet?: ConnectionType
-
   matchesDarkMode: boolean // whether the dark mode media query matches
-
   userDarkMode: boolean | null // the user's choice for dark mode or light mode
   userLocale: SupportedLocale | null
   hooksEnabled: boolean
-
-  // deadline set by user in minutes, used in all txns
-  userDeadline: number
 }
 
 export const initialState: UserState = {
@@ -27,7 +18,6 @@ export const initialState: UserState = {
   // TODO: mod, shouldn't be here
   hooksEnabled: false,
   userLocale: null,
-  userDeadline: DEFAULT_DEADLINE_FROM_NOW,
 }
 
 const userSlice = createSlice({
@@ -49,18 +39,9 @@ const userSlice = createSlice({
     updateUserLocale(state, action) {
       state.userLocale = action.payload.userLocale
     },
-    updateUserDeadline(state, action) {
-      state.userDeadline = action.payload.userDeadline
-    },
   },
 })
 
-export const {
-  updateSelectedWallet,
-  updateMatchesDarkMode,
-  updateUserDarkMode,
-  updateHooksEnabled,
-  updateUserDeadline,
-  updateUserLocale,
-} = userSlice.actions
+export const { updateSelectedWallet, updateMatchesDarkMode, updateUserDarkMode, updateHooksEnabled, updateUserLocale } =
+  userSlice.actions
 export default userSlice.reducer

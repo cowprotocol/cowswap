@@ -8,7 +8,7 @@ import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-upd
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances/updater/BalancesCombinedUpdater'
-import { EthFlowDeadlineUpdater, InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
+import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
 import { FinalizeTxUpdater } from 'modules/onchainTransactions'
 import { OrdersNotificationsUpdater } from 'modules/orders'
@@ -63,8 +63,6 @@ export function Updaters() {
       <GasPriceStrategyUpdater />
       <SentryUpdater />
       <UploadToIpfsUpdater />
-      {/*TODO: move the eth-flow updater to the widget where they are actually in use*/}
-      <EthFlowDeadlineUpdater />
       <InFlightOrderFinalizeUpdater />
       <SpotPricesUpdater />
       <InjectedWidgetUpdater />
