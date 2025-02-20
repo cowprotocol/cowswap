@@ -4,7 +4,6 @@ import EqualIcon from '@cowprotocol/assets/cow-swap/equal.svg'
 import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
-import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
 const EqualSign = styled.div<{ size?: number }>`
