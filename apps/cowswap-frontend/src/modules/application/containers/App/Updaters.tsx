@@ -23,7 +23,6 @@ import { ProgressBarV2ExecutingOrdersUpdater } from 'common/hooks/orderProgressB
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { AnnouncementsUpdater } from 'common/updaters/AnnouncementsUpdater'
 import { FeatureFlagsUpdater } from 'common/updaters/FeatureFlagsUpdater'
-import { FeesUpdater } from 'common/updaters/FeesUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
 import { LpBalancesAndAllowancesUpdater } from 'common/updaters/LpBalancesAndAllowancesUpdater'
 import {
@@ -58,7 +57,6 @@ export function Updaters() {
       <PendingOrdersUpdater />
       <CancelledOrdersUpdater />
       <ExpiredOrdersUpdater />
-      <FeesUpdater />
       <UnfillableOrdersUpdater />
       <OrdersFromApiUpdater />
       <GasUpdater />
