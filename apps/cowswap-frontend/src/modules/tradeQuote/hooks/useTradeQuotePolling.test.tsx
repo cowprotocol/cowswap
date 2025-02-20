@@ -9,7 +9,7 @@ import { renderHook } from '@testing-library/react'
 import { orderBookApi } from 'cowSdk'
 import { JotaiTestProvider, WithMockedWeb3 } from 'test-utils'
 
-import { LimitOrdersDerivedState, limitOrdersDerivedStateAtom } from 'modules/limitOrders'
+import { LimitOrdersDerivedState, limitOrdersDerivedStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
 import * as tokensModule from 'modules/tokens'
 import { DEFAULT_TRADE_DERIVED_STATE, TradeType } from 'modules/trade'
 
