@@ -1,5 +1,3 @@
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-
 import { createAction } from '@reduxjs/toolkit'
 
 import { QuoteInformationObject } from './reducer'
@@ -7,13 +5,8 @@ import { LegacyFeeQuoteParams } from './types'
 
 export type UpdateQuoteParams = Omit<QuoteInformationObject, 'lastCheck'>
 
-export interface ClearQuoteParams {
-  token: string // token address,
-  chainId: ChainId
-}
-
 export type GetQuoteParams = LegacyFeeQuoteParams
-export type RefreshQuoteParams = Pick<GetQuoteParams, 'sellToken' | 'chainId'>
+export type RefreshQuoteParams = { sellToken: string; chainId: number }
 
 export type QuoteError =
   | 'fetch-quote-error'
