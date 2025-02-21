@@ -36,8 +36,6 @@ import { Color } from '../../colors'
 import { MenuItem } from '../../pure/MenuBar'
 import { ProductLogo, ProductVariant } from '../../pure/ProductLogo'
 
-import type { CowProtocolTheme } from '../../theme/typings'
-
 export interface FooterProps {
   description?: string
   navItems?: MenuItem[]
