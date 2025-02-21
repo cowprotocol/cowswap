@@ -28,6 +28,13 @@ export interface CardContentProps {
   loading?: boolean
 }
 
+const resolveCardColor = (colorType: string | undefined): string => {
+  if (!colorType) return 'inherit'
+  if (colorType === 'green') return Color.explorer_green1
+  if (colorType === 'red1') return Color.explorer_red1
+  return Color.explorer_grey
+}
+
 const CardBody = styled.div<{
   variant: string
   valueSize?: number
@@ -79,20 +86,10 @@ const CardBody = styled.div<{
         font-size: 11px;
         margin-left: ${({ variant }): string => (variant === '2row' ? '0.5rem' : '0')};
         margin-top: ${({ variant }): string => (variant === '2row' ? '0' : '6px')};
-        color: ${({ captionColor }): string => {
-          if (!captionColor) return 'inherit'
-          if (captionColor === 'green') return Color.explorer_green1
-          if (captionColor === 'red1') return Color.explorer_red1
-          return Color.explorer_grey
-        }};
+        color: ${({ captionColor }): string => resolveCardColor(captionColor)};
         > span {
           margin-left: 0.25rem;
-          color: ${({ hintColor }): string => {
-            if (!hintColor) return 'inherit'
-            if (hintColor === 'green') return Color.explorer_green1
-            if (hintColor === 'red1') return Color.explorer_red1
-            return Color.explorer_grey
-          }};
+          color: ${({ hintColor }): string => resolveCardColor(hintColor)};
         }
       }
     }
