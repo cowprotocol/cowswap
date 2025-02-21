@@ -35,7 +35,7 @@ export function useLimitOrdersWidgetActions(): TradeWidgetActions {
 
       if (!currency) return
 
-      const value = tryParseCurrencyAmount(typedValue, currency) || null
+      const value = tryParseCurrencyAmount(typedValue, currency)
 
       debouncedTradeAmountAnalytics([field, Number(typedValue)])
 
