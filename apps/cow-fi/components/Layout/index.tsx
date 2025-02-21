@@ -9,6 +9,8 @@ import { NAV_ADDITIONAL_BUTTONS, NAV_ITEMS, PAGE_MAX_WIDTH, PRODUCT_VARIANT } fr
 import { useSetupPage } from '../../hooks/useSetupPage'
 import { baseTheme } from '@cowprotocol/ui'
 
+const darkTheme = baseTheme('dark')
+
 const LinkComponent = (props: PropsWithChildren<{ href: string }>) => {
   const external = props.href.startsWith('http')
 
@@ -52,7 +54,7 @@ export function Layout({ children, bgColor, host }: Readonly<LayoutProps>) {
       <GlobalStyles />
       <LocalStyles />
       {/* Override global light theme to force dark mode for MenuBar only */}
-      <ThemeProvider theme={baseTheme('dark')}>
+      <ThemeProvider theme={darkTheme}>
         <MenuBar
           navItems={NAV_ITEMS}
           productVariant={PRODUCT_VARIANT}
@@ -64,7 +66,7 @@ export function Layout({ children, bgColor, host }: Readonly<LayoutProps>) {
       </ThemeProvider>
       <Wrapper>{children}</Wrapper>
       {/* Override global light theme to force dark mode for Footer only */}
-      <ThemeProvider theme={baseTheme('dark')}>
+      <ThemeProvider theme={darkTheme}>
         <Footer
           maxWidth={PAGE_MAX_WIDTH}
           productVariant={PRODUCT_VARIANT}
