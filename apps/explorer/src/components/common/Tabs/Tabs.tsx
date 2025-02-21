@@ -4,6 +4,7 @@ import { Media, Color } from '@cowprotocol/ui'
 
 import TabContent from 'components/common/Tabs/TabContent'
 import TabItem from 'components/common/Tabs/TabItem'
+import { DefaultTheme } from 'styled-components/macro'
 import styled from 'styled-components/macro'
 
 // Components
@@ -26,9 +27,9 @@ export interface TabTheme {
   readonly activeBg: string
   readonly activeBgAlt?: string | undefined
   readonly inactiveBg: string
-  readonly activeText: string | ((props: { theme: any }) => string)
-  readonly inactiveText: string | ((props: { theme: any }) => string)
-  readonly activeBorder: string | ((props: { theme: any }) => string)
+  readonly activeText: string | ((props: { theme: DefaultTheme }) => string)
+  readonly inactiveText: string | ((props: { theme: DefaultTheme }) => string)
+  readonly activeBorder: string | ((props: { theme: DefaultTheme }) => string)
   readonly inactiveBorder: string
   readonly indicatorTabSize: number
   readonly fontSize: string
