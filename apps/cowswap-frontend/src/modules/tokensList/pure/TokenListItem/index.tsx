@@ -39,12 +39,12 @@ export function TokenListItem(props: TokenListItemProps) {
     >
       <TokenInfo token={token} />
       {isWalletConnected && (
-        <>
+        <styledEl.TokenMetadata>
           <styledEl.TokenBalance>
             {balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement}
           </styledEl.TokenBalance>
           <TokenTags isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} />
-        </>
+        </styledEl.TokenMetadata>
       )}
     </styledEl.TokenItem>
   )

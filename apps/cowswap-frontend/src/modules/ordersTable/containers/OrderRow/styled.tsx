@@ -137,7 +137,7 @@ export const CurrencyLogoPair = styled.div<{ clickable?: boolean }>`
 
 export const CurrencyCell = styled.div<{ clickable?: boolean }>`
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row;
   align-items: center;
   gap: 6px;
   font-size: 12px;

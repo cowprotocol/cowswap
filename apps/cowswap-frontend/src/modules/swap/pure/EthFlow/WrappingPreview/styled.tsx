@@ -59,7 +59,7 @@ export const WrappingPreviewContainer = styled.div`
       font-size: 13px;
       opacity: 0.8;
       display: inline-block;
-      text-align: center;
+      word-break: break-word;
     }
   }
 
