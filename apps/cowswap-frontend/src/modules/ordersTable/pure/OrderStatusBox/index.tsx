@@ -87,6 +87,7 @@ const StatusContent = styled.div`
   gap: 4px;
   position: relative;
   z-index: 2;
+  white-space: nowrap;
 
   svg {
     width: 14px;

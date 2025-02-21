@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, PropsWithChildren } from 'react'
+import { createContext, useContext, PropsWithChildren } from 'react'
 
 import { CowAnalytics } from '../CowAnalytics'
 
@@ -8,17 +8,19 @@ interface AnalyticsContextType {
   cowAnalytics: CowAnalytics
 }
 
-const AnalyticsContext = createContext<AnalyticsContextType | undefined>(undefined)
+export const CowAnalyticsContext = createContext<AnalyticsContextType | undefined>(undefined)
 
 export const CowAnalyticsProvider = ({
   children,
   cowAnalytics: analyticsInstance,
 }: PropsWithChildren<AnalyticsContextType>) => {
-  return <AnalyticsContext.Provider value={{ cowAnalytics: analyticsInstance }}>{children}</AnalyticsContext.Provider>
+  return (
+    <CowAnalyticsContext.Provider value={{ cowAnalytics: analyticsInstance }}>{children}</CowAnalyticsContext.Provider>
+  )
 }
 
 export const useCowAnalytics = () => {
-  const context = useContext(AnalyticsContext)
+  const context = useContext(CowAnalyticsContext)
   if (!context) {
     throw new Error('required CowAnalyticsProvider')
   }

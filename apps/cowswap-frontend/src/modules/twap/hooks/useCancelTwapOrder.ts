@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { useSafeAppsSdk } from '@cowprotocol/wallet'
+import { useSendBatchTransactions } from '@cowprotocol/wallet'
 
 import { Order } from 'legacy/state/orders/actions'
 
@@ -18,13 +18,13 @@ import { TwapOrderStatus } from '../types'
 export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Promise<OnChainCancellation> {
   const twapPartOrders = useAtomValue(twapPartOrdersAtom)
   const setTwapOrderStatus = useSetAtom(setTwapOrderStatusAtom)
-  const safeAppsSdk = useSafeAppsSdk()
+  const sendBatchTransactions = useSendBatchTransactions()
   const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
   const { contract: composableCowContract, chainId: composableCowChainId } = useComposableCowContract()
 
   return useCallback(
     async (twapOrderId: string, order: Order) => {
-      if (!composableCowContract || !settlementContract || !safeAppsSdk) {
+      if (!composableCowContract || !settlementContract) {
         throw new Error('Context is not full to cancel TWAP order')
       }
 
@@ -40,8 +40,7 @@ export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Pro
       return {
         estimatedGas: await estimateCancelTwapOrderTxs(context),
         sendTransaction: (processCancelledOrder) => {
-          return safeAppsSdk.txs.send({ txs: cancelTwapOrderTxs(context) }).then((res) => {
-            const txHash = res.safeTxHash
+          return sendBatchTransactions(cancelTwapOrderTxs(context)).then((txHash) => {
             const sellTokenAddress = order.inputToken.address
             const sellTokenSymbol = order.inputToken.symbol
 
@@ -54,7 +53,7 @@ export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Pro
     [
       composableCowContract,
       settlementContract,
-      safeAppsSdk,
+      sendBatchTransactions,
       twapPartOrders,
       setTwapOrderStatus,
       composableCowChainId,

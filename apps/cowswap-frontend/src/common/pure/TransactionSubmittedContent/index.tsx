@@ -11,9 +11,10 @@ import type { Order } from 'legacy/state/orders/actions'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { GnosisSafeTxDetails } from 'modules/account/containers/Transaction/ActivityDetails'
-import { Category, cowAnalytics } from 'modules/analytics'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
+
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import * as styledEl from './styled'
 
@@ -41,7 +42,6 @@ function getTitleStatus(activityDerivedState: ActivityDerivedState | null): stri
 
 export interface TransactionSubmittedContentProps {
   onDismiss(): void
-
   hash: string | undefined
   chainId: ChainId
   activityDerivedState: ActivityDerivedState | null
@@ -81,23 +81,32 @@ export function TransactionSubmittedContent({
       <styledEl.Section>
         <styledEl.Header>
           <BackButton
-            onClick={() => {
-              onDismiss()
-              trackBackClick()
-            }}
+            onClick={onDismiss}
+            data-click-event={toCowSwapGtmEvent({
+              category: CowSwapAnalyticsCategory.PROGRESS_BAR,
+              action: 'Click Back Arrow Button',
+            })}
           />
           <styledEl.ActionsWrapper>
             {showCancellationButton && (
               <CancelButton
-                onClick={() => {
-                  showCancellationModal()
-                  trackCancelClick()
-                }}
+                onClick={showCancellationModal}
+                data-click-event={toCowSwapGtmEvent({
+                  category: CowSwapAnalyticsCategory.PROGRESS_BAR,
+                  action: 'Click Cancel Order',
+                })}
               >
                 Cancel
               </CancelButton>
             )}
-            <DisplayLink id={hash} chainId={chainId} onClick={trackDisplayLinkClick} />
+            <DisplayLink
+              id={hash}
+              chainId={chainId}
+              data-click-event={toCowSwapGtmEvent({
+                category: CowSwapAnalyticsCategory.PROGRESS_BAR,
+                action: 'Click Transaction Link',
+              })}
+            />
           </styledEl.ActionsWrapper>
         </styledEl.Header>
         <>
@@ -112,14 +121,22 @@ export function TransactionSubmittedContent({
             />
           )}
           <styledEl.ButtonGroup>
-            <WatchAssetInWallet shortLabel currency={currencyToAdd} onClick={trackWatchAssetClick} />
+            <WatchAssetInWallet
+              shortLabel
+              currency={currencyToAdd}
+              data-click-event={toCowSwapGtmEvent({
+                category: CowSwapAnalyticsCategory.PROGRESS_BAR,
+                action: 'Click Watch Asset',
+              })}
+            />
 
             {activityDerivedState?.status === ActivityStatus.PENDING && !isProgressBarSetup && (
               <styledEl.ButtonCustom
-                onClick={() => {
-                  onDismiss()
-                  trackCloseClick()
-                }}
+                onClick={onDismiss}
+                data-click-event={toCowSwapGtmEvent({
+                  category: CowSwapAnalyticsCategory.PROGRESS_BAR,
+                  action: 'Click Close',
+                })}
               >
                 Close
               </styledEl.ButtonCustom>
@@ -127,10 +144,11 @@ export function TransactionSubmittedContent({
 
             {isFinished && (
               <styledEl.ButtonSecondary
-                onClick={() => {
-                  onDismiss()
-                  trackCloseClick()
-                }}
+                onClick={onDismiss}
+                data-click-event={toCowSwapGtmEvent({
+                  category: CowSwapAnalyticsCategory.PROGRESS_BAR,
+                  action: 'Click Close',
+                })}
               >
                 Close
               </styledEl.ButtonSecondary>
@@ -140,39 +158,4 @@ export function TransactionSubmittedContent({
       </styledEl.Section>
     </styledEl.Wrapper>
   )
-}
-
-const trackCancelClick = () => {
-  cowAnalytics.sendEvent({
-    category: Category.PROGRESS_BAR,
-    action: 'Click Cancel Order',
-  })
-}
-
-const trackCloseClick = () => {
-  cowAnalytics.sendEvent({
-    category: Category.PROGRESS_BAR,
-    action: 'Click Close',
-  })
-}
-
-const trackBackClick = () => {
-  cowAnalytics.sendEvent({
-    category: Category.PROGRESS_BAR,
-    action: 'Click Back Arrow Button',
-  })
-}
-
-const trackDisplayLinkClick = () => {
-  cowAnalytics.sendEvent({
-    category: Category.PROGRESS_BAR,
-    action: 'Click Transaction Link',
-  })
-}
-
-const trackWatchAssetClick = () => {
-  cowAnalytics.sendEvent({
-    category: Category.PROGRESS_BAR,
-    action: 'Click Watch Asset',
-  })
 }

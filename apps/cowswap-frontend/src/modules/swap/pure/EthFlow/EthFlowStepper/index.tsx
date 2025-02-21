@@ -132,16 +132,18 @@ export const Progress = styled.div<ProgressProps>`
     left: 0;
     top: 0;
     height: inherit;
-    transition: width var(${UI.ANIMATION_DURATION}) ease-in-out, background var(${UI.ANIMATION_DURATION}) ease-in-out;
+    transition:
+      width var(${UI.ANIMATION_DURATION}) ease-in-out,
+      background var(${UI.ANIMATION_DURATION}) ease-in-out;
     width: ${({ value }) => (value ? `${value}%` : '0%')};
     background: ${({ status }) =>
       status === 'error'
         ? `var(${UI.COLOR_DANGER})`
         : status === 'success'
-        ? `var(${UI.COLOR_SUCCESS})`
-        : status === 'pending'
-        ? `var(${UI.COLOR_PRIMARY})`
-        : `var(${UI.COLOR_TEXT_OPACITY_25})`};
+          ? `var(${UI.COLOR_SUCCESS})`
+          : status === 'pending'
+            ? `var(${UI.COLOR_PRIMARY})`
+            : `var(${UI.COLOR_TEXT_OPACITY_25})`};
     border-radius: var(--height);
 
     ${Media.upToSmall()} {

@@ -7,11 +7,11 @@ import { useConfirmationRequest } from 'common/hooks/useConfirmationRequest'
 
 function getDescription(priceImpactWithoutFee: Percent) {
   if (!priceImpactWithoutFee.lessThan(PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN)) {
-    return `This swap has a price impact of at least ${PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN.toFixed(0)}%.`
+    return `This swap has a price impact of at least ${priceImpactWithoutFee.toFixed(0)}%.`
   }
 
   if (!priceImpactWithoutFee.lessThan(ALLOWED_PRICE_IMPACT_HIGH)) {
-    return `This swap has a price impact of at least ${ALLOWED_PRICE_IMPACT_HIGH.toFixed(0)}%.`
+    return `This swap has a price impact of at least ${priceImpactWithoutFee.toFixed(0)}%.`
   }
 
   return undefined
@@ -57,7 +57,7 @@ export function useConfirmPriceImpactWithoutFee() {
         return true
       }
     },
-    [triggerConfirmation]
+    [triggerConfirmation],
   )
 
   return useMemo(
@@ -65,6 +65,6 @@ export function useConfirmPriceImpactWithoutFee() {
       confirmPriceImpactWithoutFee,
       isConfirmed,
     }),
-    [confirmPriceImpactWithoutFee, isConfirmed]
+    [confirmPriceImpactWithoutFee, isConfirmed],
   )
 }

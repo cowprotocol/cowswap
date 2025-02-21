@@ -1,8 +1,10 @@
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { getChainCurrencySymbols, RADIX_HEX } from '@cowprotocol/common-const'
 import {
   calculateGasMargin,
   formatTokenAmount,
   getIsNativeToken,
+  getRawCurrentChainIdFromUrl,
   isRejectRequestProviderError,
 } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -14,8 +16,8 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { wrapAnalytics } from 'modules/analytics'
-
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
+import { logEthSendingIntention, logEthSendingTransaction } from 'common/services/logEthSendingTransaction'
 import { assertProviderNetwork } from 'common/utils/assertProviderNetwork'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
@@ -37,18 +39,49 @@ export interface WrapDescription {
 
 export interface WrapUnwrapContext {
   chainId: SupportedChainId
+  account: string
   wethContract: Contract
   amount: CurrencyAmount<Currency>
   addTransaction: TransactionAdder
   closeModals: Command
   openTransactionConfirmationModal: Command
+  analytics: ReturnType<typeof useCowAnalytics>
+}
+
+type WrapAction = 'Send' | 'Sign' | 'Reject' | 'Error'
+
+function sendWrapEvent(
+  analytics: WrapUnwrapContext['analytics'],
+  action: WrapAction,
+  operationMessage: string,
+  amount: CurrencyAmount<Currency>,
+) {
+  analytics.sendEvent({
+    category: CowSwapAnalyticsCategory.WRAP_NATIVE_TOKEN,
+    action,
+    label: operationMessage,
+    value: Number(amount.toSignificant(6)),
+  })
+}
+
+interface WrapUnwrapTxData {
+  txResponse: TransactionResponse
 }
 
 export async function wrapUnwrapCallback(
   context: WrapUnwrapContext,
   params: WrapUnwrapCallbackParams = { useModals: true },
 ): Promise<TransactionResponse | null> {
-  const { chainId, amount, wethContract, addTransaction, openTransactionConfirmationModal, closeModals } = context
+  const {
+    chainId,
+    account,
+    amount,
+    wethContract,
+    addTransaction,
+    openTransactionConfirmationModal,
+    closeModals,
+    analytics,
+  } = context
   const isNativeIn = getIsNativeToken(amount.currency)
   const amountHex = `0x${amount.quotient.toString(RADIX_HEX)}`
 
@@ -57,25 +90,26 @@ export async function wrapUnwrapCallback(
 
   try {
     useModals && openTransactionConfirmationModal()
-    wrapAnalytics('Send', operationMessage)
+    sendWrapEvent(analytics, 'Send', operationMessage, amount)
 
     const wrapUnwrap = isNativeIn ? wrapContractCall : unwrapContractCall
-    const txReceipt = await wrapUnwrap(wethContract, amountHex, chainId)
-    wrapAnalytics('Sign', operationMessage)
+    const { txResponse } = await wrapUnwrap(wethContract, amountHex, chainId, account)
+
+    sendWrapEvent(analytics, 'Sign', operationMessage, amount)
 
     addTransaction({
-      hash: txReceipt.hash,
+      hash: txResponse.hash,
       summary,
     })
     useModals && closeModals()
 
-    return txReceipt
+    return txResponse
   } catch (error: any) {
     useModals && closeModals()
 
     const isRejected = isRejectRequestProviderError(error)
     const action = isRejected ? 'Reject' : 'Error'
-    wrapAnalytics(action, operationMessage)
+    sendWrapEvent(analytics, action as WrapAction, operationMessage, amount)
 
     const errorMessage = (isRejected ? 'Reject' : 'Error') + ' Signing transaction'
     console.error(errorMessage, error)
@@ -111,7 +145,8 @@ async function wrapContractCall(
   wethContract: Contract,
   amountHex: string,
   chainId: SupportedChainId,
-): Promise<TransactionResponse> {
+  account: string,
+): Promise<WrapUnwrapTxData> {
   const estimatedGas = await wethContract.estimateGas.deposit({ value: amountHex }).catch(_handleGasEstimateError)
   const gasLimit = calculateGasMargin(estimatedGas)
 
@@ -119,14 +154,29 @@ async function wrapContractCall(
 
   const tx = await wethContract.populateTransaction.deposit({ value: amountHex, gasLimit })
 
-  return wethContract.signer.sendTransaction({ ...tx, chainId: network })
+  const intentionEventId = logEthSendingIntention({
+    chainId,
+    amount: amountHex,
+    urlChainId: getRawCurrentChainIdFromUrl(),
+    account,
+    tx,
+  })
+
+  const txResponse = await wethContract.signer.sendTransaction({ ...tx, chainId: network })
+
+  logEthSendingTransaction({ txHash: txResponse.hash, intentionEventId })
+
+  return {
+    txResponse,
+  }
 }
 
 async function unwrapContractCall(
   wethContract: Contract,
   amountHex: string,
   chainId: SupportedChainId,
-): Promise<TransactionResponse> {
+  _account: string,
+): Promise<WrapUnwrapTxData> {
   const estimatedGas = await wethContract.estimateGas.withdraw(amountHex).catch(_handleGasEstimateError)
   const gasLimit = calculateGasMargin(estimatedGas)
 
@@ -134,7 +184,11 @@ async function unwrapContractCall(
 
   const network = await assertProviderNetwork(chainId, wethContract.provider, 'unwrap')
 
-  return wethContract.signer.sendTransaction({ ...tx, chainId: network })
+  const txResponse = await wethContract.signer.sendTransaction({ ...tx, chainId: network })
+
+  return {
+    txResponse,
+  }
 }
 
 function _handleGasEstimateError(error: any): BigNumber {

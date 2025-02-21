@@ -1,12 +1,12 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useEffect, useLayoutEffect, useMemo, useState } from 'react'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { renderTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { openAdvancedOrdersTabAnalytics, twapWalletCompatibilityAnalytics } from 'modules/analytics'
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
 import { useReceiveAmountInfo } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
@@ -17,6 +17,7 @@ import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { usePrice } from 'common/hooks/usePrice'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
@@ -83,6 +84,8 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
 
   const widgetDeadline = useInjectedWidgetDeadline(TradeType.ADVANCED)
 
+  const cowAnalytics = useCowAnalytics()
+
   useEffect(() => {
     if (widgetDeadline) {
       // Ensure min part duration
@@ -115,21 +118,32 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
   // Reset warnings flags once on start
   useEffect(() => {
     updateSettingsState({ isFallbackHandlerSetupAccepted: false })
-    openAdvancedOrdersTabAnalytics()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    cowAnalytics.sendEvent({
+      category: CowSwapAnalyticsCategory.TWAP,
+      action: 'Open Advanced Orders Tab',
+    })
+  }, [updateSettingsState, cowAnalytics])
 
   useEffect(() => {
     if (account && verification) {
-      if (localFormValidation === TwapFormState.NOT_SAFE) {
-        twapWalletCompatibilityAnalytics('non-compatible')
+      if (localFormValidation === TwapFormState.TX_BUNDLING_NOT_SUPPORTED) {
+        cowAnalytics.sendEvent({
+          category: CowSwapAnalyticsCategory.TWAP,
+          action: 'non-compatible',
+        })
       } else if (isFallbackHandlerRequired) {
-        twapWalletCompatibilityAnalytics('safe-that-could-be-converted')
+        cowAnalytics.sendEvent({
+          category: CowSwapAnalyticsCategory.TWAP,
+          action: 'safe-that-could-be-converted',
+        })
       } else if (isFallbackHandlerCompatible) {
-        twapWalletCompatibilityAnalytics('compatible')
+        cowAnalytics.sendEvent({
+          category: CowSwapAnalyticsCategory.TWAP,
+          action: 'compatible',
+        })
       }
     }
-  }, [account, isFallbackHandlerRequired, isFallbackHandlerCompatible, localFormValidation, verification])
+  }, [account, isFallbackHandlerRequired, isFallbackHandlerCompatible, localFormValidation, verification, cowAnalytics])
 
   // Reset output amount when quote params are changed
   useLayoutEffect(() => {

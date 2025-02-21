@@ -1,22 +1,23 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
-import { useSafeAppsSdk, useWalletInfo } from '@cowprotocol/wallet'
+import { useSendBatchTransactions, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
 import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
-import { orderAnalytics, twapConversionAnalytics } from 'modules/analytics'
 import { useAppData, useUploadAppData } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { useNavigateToAllOrdersTable } from 'modules/ordersTable/hooks/useNavigateToAllOrdersTable'
 import { getCowSoundSend } from 'modules/sounds'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
-import { TradeFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import { TradeFlowAnalyticsContext, useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
@@ -33,6 +34,22 @@ import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { getErrorMessage } from '../utils/parseTwapError'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
 
+interface TwapAnalyticsEvent {
+  category: CowSwapAnalyticsCategory.TWAP
+  action: string
+  label: string
+}
+
+interface TwapConversionEvent extends TwapAnalyticsEvent {
+  action: 'Conversion'
+  label: `${string}|${'no-handler' | 'handler-set'}`
+}
+
+interface TwapOrderEvent extends TwapAnalyticsEvent {
+  action: 'Place Order'
+  label: `${UiOrderType.TWAP}|${string}`
+}
+
 export function useCreateTwapOrder() {
   const { chainId, account } = useWalletInfo()
   const twapOrder = useAtomValue(twapOrderAtom)
@@ -42,7 +59,7 @@ export function useCreateTwapOrder() {
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
 
   const appDataInfo = useAppData()
-  const safeAppsSdk = useSafeAppsSdk()
+  const sendSafeTransactions = useSendBatchTransactions()
   const twapOrderCreationContext = useTwapOrderCreationContext(inputCurrencyAmount as Nullish<CurrencyAmount<Token>>)
   const extensibleFallbackContext = useExtensibleFallbackContext()
 
@@ -54,6 +71,33 @@ export function useCreateTwapOrder() {
   const { priceImpact } = useTradePriceImpact()
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
 
+  const analytics = useCowAnalytics()
+  const tradeFlowAnalytics = useTradeFlowAnalytics()
+
+  const sendOrderAnalytics = useCallback(
+    (action: string, context: string) => {
+      const analyticsEvent: TwapOrderEvent = {
+        category: CowSwapAnalyticsCategory.TWAP,
+        action: 'Place Order',
+        label: `${UiOrderType.TWAP}|${context}`,
+      }
+      analytics.sendEvent(analyticsEvent)
+    },
+    [analytics],
+  )
+
+  const sendTwapConversionAnalytics = useCallback(
+    (status: string, fallbackHandlerIsNotSet: boolean) => {
+      const analyticsEvent: TwapConversionEvent = {
+        category: CowSwapAnalyticsCategory.TWAP,
+        action: 'Conversion',
+        label: `${status}|${fallbackHandlerIsNotSet ? 'no-handler' : 'handler-set'}`,
+      }
+      analytics.sendEvent(analyticsEvent)
+    },
+    [analytics],
+  )
+
   return useCallback(
     async (fallbackHandlerIsNotSet: boolean) => {
       if (!chainId || !account || chainId !== twapOrderCreationContext?.chainId) return
@@ -62,7 +106,6 @@ export function useCreateTwapOrder() {
         !outputCurrencyAmount ||
         !twapOrderCreationContext ||
         !extensibleFallbackContext ||
-        !safeAppsSdk ||
         !appDataInfo ||
         !twapOrder
       )
@@ -94,7 +137,7 @@ export function useCreateTwapOrder() {
 
         tradeConfirmActions.onSign(pendingTrade)
         tradeFlowAnalytics.placeAdvancedOrder(twapFlowAnalyticsContext)
-        twapConversionAnalytics('posted', fallbackHandlerIsNotSet)
+        sendTwapConversionAnalytics('posted', fallbackHandlerIsNotSet)
 
         const fallbackSetupTxs = fallbackHandlerIsNotSet
           ? await extensibleFallbackSetupTxs(extensibleFallbackContext)
@@ -103,7 +146,7 @@ export function useCreateTwapOrder() {
         // upload the app data here, as application might need it to decode the order info before it is being signed
         uploadAppData({ chainId, orderId, appData: appDataInfo })
         const createOrderTxs = createTwapOrderTxs(twapOrder, paramsStruct, twapOrderCreationContext)
-        const { safeTxHash } = await safeAppsSdk.txs.send({ txs: [...fallbackSetupTxs, ...createOrderTxs] })
+        const safeTxHash = await sendSafeTransactions([...fallbackSetupTxs, ...createOrderTxs])
 
         const orderItem: TwapOrderItem = {
           order: twapOrderToStruct(twapOrder),
@@ -131,12 +174,12 @@ export function useCreateTwapOrder() {
           uiOrderType: orderType,
         })
 
-        orderAnalytics('Posted', orderType, 'Presign')
+        sendOrderAnalytics('Place Order', `${orderType}|${twapFlowAnalyticsContext.marketLabel}`)
 
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
         tradeConfirmActions.onSuccess(safeTxHash)
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
-        twapConversionAnalytics('signed', fallbackHandlerIsNotSet)
+        sendTwapConversionAnalytics('signed', fallbackHandlerIsNotSet)
 
         // Navigate to all orders after successful placement
         navigateToAllOrdersTable()
@@ -145,7 +188,7 @@ export function useCreateTwapOrder() {
         const errorMessage = getErrorMessage(error)
         tradeConfirmActions.onError(errorMessage)
         tradeFlowAnalytics.error(error, errorMessage, twapFlowAnalyticsContext)
-        twapConversionAnalytics('rejected', fallbackHandlerIsNotSet)
+        sendTwapConversionAnalytics('rejected', fallbackHandlerIsNotSet)
       }
     },
     [
@@ -155,7 +198,7 @@ export function useCreateTwapOrder() {
       outputCurrencyAmount,
       twapOrderCreationContext,
       extensibleFallbackContext,
-      safeAppsSdk,
+      sendSafeTransactions,
       appDataInfo,
       twapOrder,
       confirmPriceImpactWithoutFee,
@@ -164,6 +207,9 @@ export function useCreateTwapOrder() {
       addTwapOrderToList,
       uploadAppData,
       updateAdvancedOrdersState,
+      sendOrderAnalytics,
+      sendTwapConversionAnalytics,
+      tradeFlowAnalytics,
       navigateToAllOrdersTable,
     ],
   )

@@ -14,7 +14,7 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-import { tradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
 
 import { SafeBundleFlowContext, TradeFlowContext } from '../../types/TradeFlowContext'
@@ -26,6 +26,7 @@ export async function safeBundleApprovalFlow(
   safeBundleContext: SafeBundleFlowContext,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
+  analytics: TradeFlowAnalytics,
 ): Promise<void | boolean> {
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
 
@@ -35,13 +36,13 @@ export async function safeBundleApprovalFlow(
 
   const { context, callbacks, orderParams, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks } = tradeContext
 
-  const { spender, settlementContract, safeAppsSdk, erc20Contract } = safeBundleContext
+  const { spender, settlementContract, sendBatchTransactions, erc20Contract } = safeBundleContext
 
   const { chainId } = context
   const { account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount, kind } = orderParams
   const tradeAmounts = { inputAmount, outputAmount }
 
-  tradeFlowAnalytics.approveAndPresign(swapFlowAnalyticsContext)
+  analytics.approveAndPresign(swapFlowAnalyticsContext)
   tradeConfirmActions.onSign(tradeAmounts)
 
   try {
@@ -104,12 +105,12 @@ export async function safeBundleApprovalFlow(
       })
     }
 
-    const safeTx = await safeAppsSdk.txs.send({ txs: safeTransactionData })
+    const safeTxHash = await sendBatchTransactions(safeTransactionData)
 
     emitPostedOrderEvent({
       chainId,
       id: orderId,
-      orderCreationHash: safeTx.safeTxHash,
+      orderCreationHash: safeTxHash,
       kind,
       receiver: recipientAddressOrName,
       inputAmount,
@@ -124,14 +125,14 @@ export async function safeBundleApprovalFlow(
         chainId: context.chainId,
         order: {
           id: order.id,
-          presignGnosisSafeTxHash: safeTx.safeTxHash,
+          presignGnosisSafeTxHash: safeTxHash,
           isHidden: false,
         },
         isSafeWallet,
       },
       callbacks.dispatch,
     )
-    tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
+    analytics.sign(swapFlowAnalyticsContext)
 
     logTradeFlow(LOG_PREFIX, 'STEP 7: show UI of the successfully sent transaction')
     tradeConfirmActions.onSuccess(orderId)
@@ -141,7 +142,7 @@ export async function safeBundleApprovalFlow(
     logTradeFlow(LOG_PREFIX, 'STEP 8: error', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
-    tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
+    analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
     tradeConfirmActions.onError(swapErrorMessage)
   }

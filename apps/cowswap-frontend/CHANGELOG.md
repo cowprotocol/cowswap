@@ -1,5 +1,61 @@
 # Changelog
 
+## [1.102.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.101.0...cowswap-v1.102.0) (2025-02-17)
+
+
+### Features
+
+* **correlated-tokens:** use new CMS model Correlated Tokens ([#5427](https://github.com/cowprotocol/cowswap/issues/5427)) ([6ed415a](https://github.com/cowprotocol/cowswap/commit/6ed415a05c6a7f228fda704ea27c664d6c8d3321))
+
+
+### Bug Fixes
+
+* do not check capabilities in mobile wc ([#5429](https://github.com/cowprotocol/cowswap/issues/5429)) ([26b907d](https://github.com/cowprotocol/cowswap/commit/26b907dad4c7310bdc3e560e5592fdeb3db11b95))
+* **twap:** do not show FallbackHandler warning after first order ([#5418](https://github.com/cowprotocol/cowswap/issues/5418)) ([337795a](https://github.com/cowprotocol/cowswap/commit/337795a4746e7a36c5144b0ff590c35bcad88a3f))
+
+## [1.101.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.100.1...cowswap-v1.101.0) (2025-02-12)
+
+
+### Features
+
+* support EIP-5792 batch tx for Safe via WC ([#5417](https://github.com/cowprotocol/cowswap/issues/5417)) ([8aa612f](https://github.com/cowprotocol/cowswap/commit/8aa612f7b93a40d69efa364a10634863bc743e95))
+
+
+### Bug Fixes
+
+* use quote currency on fill at tooltip ([#5421](https://github.com/cowprotocol/cowswap/issues/5421)) ([24920e8](https://github.com/cowprotocol/cowswap/commit/24920e804b636baf715335a8cabb18d4762036e1))
+
+## [1.100.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.100.0...cowswap-v1.100.1) (2025-02-07)
+
+
+### Bug Fixes
+
+* use address for default buy token ([#5410](https://github.com/cowprotocol/cowswap/issues/5410)) ([92c3a96](https://github.com/cowprotocol/cowswap/commit/92c3a96972b92807aa81709f08d84f9101264381))
+
+## [1.100.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.99.0...cowswap-v1.100.0) (2025-02-06)
+
+
+### Features
+
+* use new deterministic ethflow contracts ([#5334](https://github.com/cowprotocol/cowswap/issues/5334)) ([f11fb61](https://github.com/cowprotocol/cowswap/commit/f11fb613b02825aa6c571ffdc3414086557b48e9))
+
+## [1.99.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.98.2...cowswap-v1.99.0) (2025-02-05)
+
+
+### Features
+
+* **limit-orders:** upgrade and redesign ([#5249](https://github.com/cowprotocol/cowswap/issues/5249)) ([5c868bb](https://github.com/cowprotocol/cowswap/commit/5c868bb794d648363afb88371178ddc35deaf7a7))
+
+
+### Bug Fixes
+
+* **limit-orders:** do not display rate input when wrap/unwrap ([#5385](https://github.com/cowprotocol/cowswap/issues/5385)) ([d174a31](https://github.com/cowprotocol/cowswap/commit/d174a3128ec9569be4986738172076e2605e4283))
+* **orders-table:** prevent excessive transactions on approvals ([#5390](https://github.com/cowprotocol/cowswap/issues/5390)) ([fce1931](https://github.com/cowprotocol/cowswap/commit/fce1931db0d07b33d7d1d03c291c2ff1528956fd))
+* reset zero approval state ([#5387](https://github.com/cowprotocol/cowswap/issues/5387)) ([d9cd435](https://github.com/cowprotocol/cowswap/commit/d9cd43589a96084b84195df43d8fde729de66b17))
+* **safe-app:** remove approval+order placement bundling banner ([#5393](https://github.com/cowprotocol/cowswap/issues/5393)) ([571029d](https://github.com/cowprotocol/cowswap/commit/571029d11f7c2d1afe608f8dd3481c404e0efea0))
+* update chainId in TradeRouteContext from Account page ([#5348](https://github.com/cowprotocol/cowswap/issues/5348)) ([47a2787](https://github.com/cowprotocol/cowswap/commit/47a2787afe8d8b594327741fcca94433ba354baf))
+* **usd-rate-input:** keep track of usd toggle in the rate input on limit form ([#5391](https://github.com/cowprotocol/cowswap/issues/5391)) ([95c2e22](https://github.com/cowprotocol/cowswap/commit/95c2e22a5f0e6b54906b5a43ab2d94264be660ae))
+
 ## [1.98.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.98.1...cowswap-v1.98.2) (2025-02-03)
 
 

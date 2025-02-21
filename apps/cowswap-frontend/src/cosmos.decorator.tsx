@@ -3,7 +3,7 @@ import './polyfills'
 
 import { ReactNode, StrictMode, useCallback, useContext } from 'react'
 
-import { CowAnalyticsProvider } from '@cowprotocol/analytics'
+import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
 import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
 import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
 import { injectedWalletConnection, WalletUpdater } from '@cowprotocol/wallet'
@@ -19,8 +19,6 @@ import { ThemedGlobalStyle, ThemeProvider, WIDGET_MAX_WIDTH } from 'theme'
 
 import { cowSwapStore } from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
-
-import { cowAnalytics } from 'modules/analytics'
 
 import { BlockNumberProvider } from './common/hooks/useBlockNumber'
 
@@ -90,6 +88,9 @@ const chainId = 5
 
 const { connector, hooks } = injectedWalletConnection
 connector.activate(chainId)
+
+// Initialize analytics for cosmos
+const cowAnalytics = initGtm()
 
 const Fixture = ({ children }: { children: ReactNode }) => {
   return (

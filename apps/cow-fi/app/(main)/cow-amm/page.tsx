@@ -9,6 +9,8 @@ import IMG_COWAMM_PASSIVE from '@cowprotocol/assets/images/image-cowamm-passive.
 import IMG_COWAMM_REKT from '@cowprotocol/assets/images/image-cowamm-rekt.svg'
 import FAQ from '@/components/FAQ'
 import { Link, LinkType } from '@/components/Link'
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 import {
   ContainerCard,
@@ -38,9 +40,10 @@ import LazySVG from '@/components/LazySVG'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
 import { COW_AMM_CONTENT, FAQ_DATA, LVR_CONTENT, QUOTES } from '@/data/cow-amm/const'
-import { clickOnCowAmm } from '../../../modules/analytics'
 
 export default function Page() {
+  const analytics = useCowAnalytics()
+
   return (
     <PageWrapper>
       <HeroContainer variant="secondary" maxWidth={1300}>
@@ -57,7 +60,13 @@ export default function Page() {
             external
             linkType={LinkType.HeroButton}
             utmContent={'cow-amm-hero-button-lp-on-cow-amm'}
-            onClick={() => clickOnCowAmm('click-lp-on-cow-amm')}
+            onClick={() =>
+              analytics.sendEvent({
+                category: CowFiCategory.COWAMM,
+                action: 'Click LP on CoW AMM',
+                label: 'hero-button',
+              })
+            }
           >
             LP on CoW AMM ↗
           </Link>
@@ -73,11 +82,11 @@ export default function Page() {
           <p>more TVL achieved than reference pool (beta phase)</p>
         </MetricsItem>
         <MetricsItem dividerColor="#9BD955">
-          <h2>$11M+</h2>
+          <h2>$18M+</h2>
           <p>liquidity protected from LVR</p>
         </MetricsItem>
         <MetricsItem>
-          <h2>$90K+</h2>
+          <h2>$1.2M+</h2>
           <p>surplus captured for LPs (beta phase)</p>
         </MetricsItem>
 
@@ -90,7 +99,13 @@ export default function Page() {
           external
           linkType={LinkType.SectionTitleButton}
           utmContent={'cow-amm-metrics-button-view-all'}
-          onClick={() => clickOnCowAmm('click-view-all-metrics')}
+          onClick={() =>
+            analytics.sendEvent({
+              category: CowFiCategory.COWAMM,
+              action: 'Click View All Metrics',
+              label: 'dune-analytics',
+            })
+          }
         >
           View all metrics on DUNE &#8599;
         </Link>
@@ -99,7 +114,7 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral10}>
         <ContainerCardSection>
           <SectionTitleWrapper color={Color.neutral100} maxWidth={1100} gap={56}>
-            <SectionTitleIcon size={98}>
+            <SectionTitleIcon $size={98}>
               <LazySVG src={IMG_ICON_CROWN_COW} />
             </SectionTitleIcon>
             <SectionTitleText>AMMs don&apos;t want you to know about LVR</SectionTitleText>
@@ -145,7 +160,7 @@ export default function Page() {
       <ContainerCard bgColor={'transparent'}>
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 0" marginMobile="0 auto" maxWidth={1170} color={Color.neutral10}>
-            <SectionTitleIcon size={128}>
+            <SectionTitleIcon $size={128}>
               <LazySVG src={IMG_ICON_BULB_COW} />
             </SectionTitleIcon>
             <SectionTitleText textAlign="center">Finally, an AMM designed with LPs in mind</SectionTitleText>
@@ -190,7 +205,7 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral100}>
         <ContainerCardSection>
           <SectionTitleWrapper color={Color.neutral10} maxWidth={1100} gap={56}>
-            <SectionTitleIcon size={98}>
+            <SectionTitleIcon $size={98}>
               <LazySVG src={IMG_ICON_CROWN_COW} />
             </SectionTitleIcon>
             <SectionTitleText>
@@ -236,7 +251,7 @@ export default function Page() {
       <ContainerCard bgColor={'transparent'}>
         <ContainerCardSection>
           <SectionTitleWrapper color={Color.neutral10} maxWidth={1100} gap={56}>
-            <SectionTitleIcon size={128}>
+            <SectionTitleIcon $size={128}>
               <LazySVG src={IMG_ICON_BULB_COW} />
             </SectionTitleIcon>
             <SectionTitleText>CoW AMM benefits LPs of all types</SectionTitleText>
@@ -310,7 +325,7 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 56px">
-            <SectionTitleIcon size={82}>
+            <SectionTitleIcon $size={82}>
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
             </SectionTitleIcon>
             <SectionTitleText>Trust the experts</SectionTitleText>
@@ -341,7 +356,7 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} touchFooter>
         <ContainerCardSection padding={'0 0 100px'}>
           <SectionTitleWrapper>
-            <SectionTitleIcon size={62}>
+            <SectionTitleIcon $size={62}>
               <LazySVG src={IMG_ICON_FAQ} />
             </SectionTitleIcon>
             <SectionTitleText>FAQs</SectionTitleText>
