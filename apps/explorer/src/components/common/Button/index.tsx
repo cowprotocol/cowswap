@@ -156,9 +156,3 @@ export const ButtonBase = styled.button<ButtonBaseProps>`
     margin: 0 0.5rem 0 0;
   }
 `
-
-export const Button: React.FC<ButtonBaseProps> = ({ children, ...restProps }) => (
-  <ButtonBase {...restProps}>{children}</ButtonBase>
-)
-
-export default Button
