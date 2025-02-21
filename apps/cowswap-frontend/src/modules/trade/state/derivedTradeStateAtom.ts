@@ -7,7 +7,7 @@ import { atom } from 'jotai'
  */
 import { advancedOrdersDerivedStateAtom } from 'modules/advancedOrders/state/advancedOrdersAtom'
 import { limitOrdersDerivedStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
-import { swapDerivedStateAtom } from 'modules/swap2/state/swapRawStateAtom'
+import { swapDerivedStateAtom } from 'modules/swap/state/swapRawStateAtom'
 import { yieldDerivedStateAtom } from 'modules/yield/state/yieldRawStateAtom'
 
 import { tradeTypeAtom } from './tradeTypeAtom'

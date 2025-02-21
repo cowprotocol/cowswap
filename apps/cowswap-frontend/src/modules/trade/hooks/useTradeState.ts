@@ -5,8 +5,8 @@ import {
   useUpdateAdvancedOrdersRawState,
 } from 'modules/advancedOrders/hooks/useAdvancedOrdersRawState'
 import { useLimitOrdersRawState, useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
-import { useSwapRawState } from 'modules/swap2/hooks/useSwapRawState'
-import { useUpdateSwapRawState } from 'modules/swap2/hooks/useUpdateSwapRawState'
+import { useSwapRawState } from 'modules/swap/hooks/useSwapRawState'
+import { useUpdateSwapRawState } from 'modules/swap/hooks/useUpdateSwapRawState'
 import { ExtendedTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
 import { useUpdateYieldRawState, useYieldRawState } from 'modules/yield'
 

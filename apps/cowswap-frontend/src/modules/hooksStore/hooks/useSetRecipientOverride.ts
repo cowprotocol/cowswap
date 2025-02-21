@@ -1,6 +1,6 @@
 import { useLayoutEffect } from 'react'
 
-import { useSwapWidgetActions } from 'modules/swap2/hooks/useSwapWidgetActions'
+import { useSwapWidgetActions } from 'modules/swap/hooks/useSwapWidgetActions'
 import { useIsHooksTradeType, useIsNativeIn } from 'modules/trade'
 
 import { usePostHooksRecipientOverride } from './usePostHooksRecipientOverride'

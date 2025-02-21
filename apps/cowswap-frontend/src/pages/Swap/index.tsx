@@ -3,7 +3,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Navigate, useLocation, useParams } from 'react-router-dom'
 
-import { SwapUpdaters, SwapWidget } from 'modules/swap2'
+import { SwapUpdaters, SwapWidget } from 'modules/swap'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
