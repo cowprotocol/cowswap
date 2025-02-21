@@ -56,7 +56,7 @@ export function TradeButtons({
 
   if (!tradeFormButtonContext) return null
 
-  if (localFormValidation) {
+  if (localFormValidation && !primaryFormValidation) {
     return swapTradeButtonsMap[localFormValidation](context)
   }
 

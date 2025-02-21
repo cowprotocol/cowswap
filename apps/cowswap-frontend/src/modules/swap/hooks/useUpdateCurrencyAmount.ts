@@ -52,6 +52,11 @@ function calculateOppositeAmount(
   outputAmount: CurrencyAmount<Currency> | null,
 ): CurrencyAmount<Currency> | null {
   if (!inputAmount || !outputAmount) return null
+
+  if (value.equalTo(0) || inputAmount.equalTo(0) || outputAmount.equalTo(0)) {
+    return CurrencyAmount.fromRawAmount((isInputAmountChanged ? outputAmount : inputAmount).currency, 0)
+  }
+
   const price = new Price({ baseAmount: inputAmount, quoteAmount: outputAmount })
 
   return isInputAmountChanged ? price.quote(value) : price.invert().quote(value)

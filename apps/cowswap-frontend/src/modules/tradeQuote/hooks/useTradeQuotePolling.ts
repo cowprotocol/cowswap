@@ -44,7 +44,7 @@ export function useTradeQuotePolling() {
   const processUnsupportedTokenError = useProcessUnsupportedTokenError()
 
   useLayoutEffect(() => {
-    if (!quoteParams) {
+    if (!quoteParams || quoteParams.amount === '0') {
       updateQuoteState({ response: null, isLoading: false })
       return
     }

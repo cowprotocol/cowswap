@@ -23,7 +23,7 @@ export function useSwapWidgetActions(): TradeWidgetActions {
 
       if (!currency) return
 
-      const value = tryParseCurrencyAmount(typedValue, currency) || null
+      const value = tryParseCurrencyAmount(typedValue, currency)
 
       updateCurrencyAmount(field, value)
     },
