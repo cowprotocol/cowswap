@@ -1,3 +1,5 @@
+import { TokenSymbol } from '@cowprotocol/ui'
+
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import TokenImg from 'components/common/TokenImg'
@@ -51,7 +53,9 @@ export function TokenDisplay(props: Readonly<Props>): React.ReactNode {
       <StyledImg address={imageAddress} network={network} />
       {isNativeToken(erc20.address) ? (
         // There's nowhere to link when it's a native token, so, only display the symbol
-        <NativeWrapper>{erc20.symbol}</NativeWrapper>
+        <NativeWrapper>
+          <TokenSymbol length={24} token={erc20} />
+        </NativeWrapper>
       ) : (
         <BlockExplorerLink identifier={erc20.address} type="token" label={tokenLabel} networkId={network} />
       )}
