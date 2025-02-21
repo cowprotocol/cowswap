@@ -295,8 +295,7 @@ export const Footer = ({
 }: FooterProps) => {
   const [isFooterExpanded, setIsFooterExpanded] = useState(expanded)
   const footerRef = useRef<HTMLDivElement>(null)
-
-  const theme = useTheme() as CowProtocolTheme
+  const theme = useTheme()
 
   const toggleFooter = () => {
     setIsFooterExpanded((state) => {

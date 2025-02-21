@@ -222,9 +222,7 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
       <td>
         {handleLoadingState(
           lastDayUsdVolume,
-          <HeaderValue
-            captionColor={lastDayPricePercentageDifference ? getColorBySign(lastDayPricePercentageDifference) : 'grey'}
-          >
+          <HeaderValue>
             <TextWithTooltip
               textInTooltip={
                 <TooltipWrapper>
