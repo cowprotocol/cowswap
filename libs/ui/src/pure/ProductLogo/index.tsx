@@ -18,8 +18,6 @@ import { Color } from '../../colors'
 import { Media } from '../../consts'
 import { CowSwapTheme } from '../../types'
 
-import type { CowProtocolTheme } from '../../theme/typings'
-
 export enum ProductVariant {
   CowSwap = 'cowSwap',
   CowExplorer = 'cowExplorer',
