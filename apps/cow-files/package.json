@@ -1,9 +1,0 @@
-{
-    "name": "@cowprotocol/cow-files",
-    "version": "0.0.1",
-    "private": true,
-    "description": "Static file hosting for files.cow.fi",
-    "scripts": {
-        "build": "echo 'No build step required - static files only'"
-    }
-}
