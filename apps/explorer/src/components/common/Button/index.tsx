@@ -1,28 +1,9 @@
 import React from 'react'
 
-import styled, { css } from 'styled-components/macro'
-import { ThemeValue, variants } from 'styled-theming'
-import { BASE_STYLES, COLOURS } from 'styles'
-import { ThemeProvider, Theme } from 'theme'
+import { Color } from '@cowprotocol/ui'
 
-const {
-  white,
-  whiteDark,
-  blue,
-  blueDark,
-  successLight,
-  successDark,
-  warningLight,
-  warningDark,
-  dangerLight,
-  dangerDark,
-  bgLight,
-  bgDark,
-  mainGradient,
-  mainGradientDarker,
-  disabledLight,
-  disabledLightOpaque,
-} = COLOURS
+import styled, { css } from 'styled-components/macro'
+import { BASE_STYLES } from 'styles'
 
 const { borderRadius, buttonBorder, buttonFontSize } = BASE_STYLES
 
@@ -31,8 +12,6 @@ export interface ButtonBaseProps extends React.ButtonHTMLAttributes<Element> {
   size?: ButtonSizeVariations
 }
 
-// Used in stories
-// Good to keep around altough not required
 export type ButtonVariations =
   | 'default'
   | 'primary'
@@ -46,205 +25,120 @@ export type ButtonVariations =
 
 export type ButtonSizeVariations = 'default' | 'small' | 'big'
 
-// Create our variated Button Theme
-// 'kind' refers to a prop on button
-// <ButtonBase kind="danger" />
-export const ButtonTheme = variants('mode', 'variant', {
-  default: {
-    [Theme.LIGHT]: css`
-      color: ${white};
-      background: ${mainGradient};
+// Pre-computed button variant styles
+const BUTTON_VARIANT_STYLES = {
+  default: css`
+    color: ${Color.neutral100};
+    background: ${Color.explorer_textActive};
 
-      &:hover {
-        background: ${mainGradientDarker};
-      }
-    `,
-    [Theme.DARK]: css`
-      color: ${white};
-      background: ${mainGradient};
+    &:hover {
+      background: ${Color.explorer_bgButtonHover};
+    }
+  `,
+  primary: css`
+    color: ${Color.neutral100};
+    background: ${Color.explorer_textActive};
 
-      &:hover {
-        background: ${mainGradientDarker};
-      }
-    `,
-  },
-  get primary() {
-    return this.default
-  },
-  secondary: {
-    [Theme.LIGHT]: css`
-      color: ${blue};
-      background: ${bgLight};
-      border-color: ${blue};
+    &:hover {
+      background: ${Color.explorer_bgButtonHover};
+    }
+  `,
+  theme: css`
+    color: ${Color.neutral100};
+    background: ${Color.explorer_textActive};
 
-      &:hover {
-        background: ${bgDark};
-      }
-    `,
-    [Theme.DARK]: css`
-      color: ${blue};
-      background: ${bgDark};
-      border-color: ${blue};
+    &:hover {
+      background: ${Color.explorer_bgButtonHover};
+    }
+  `,
+  secondary: css`
+    color: ${Color.neutral100};
+    background: ${Color.explorer_bgInput};
+    border-color: ${Color.explorer_textActive};
 
-      &:hover {
-        color: ${white};
-        background: ${blue};
-      }
-    `,
-  },
-  success: {
-    [Theme.LIGHT]: css`
-      color: ${white};
-      background: ${successLight};
+    &:hover {
+      color: ${Color.neutral100};
+      background: ${Color.explorer_bgButtonHover};
+    }
+  `,
+  success: css`
+    color: ${Color.neutral100};
+    background: ${Color.explorer_buttonSuccess};
 
-      &:hover {
-        background: ${successDark};
-        border-color: ${successDark};
-      }
-    `,
-    [Theme.DARK]: css`
-      color: ${white};
-      background: ${successDark};
+    &:hover {
+      background: ${Color.explorer_buttonSuccess};
+      border-color: ${Color.explorer_buttonSuccess};
+    }
+  `,
+  danger: css`
+    color: ${Color.neutral100};
+    background: ${Color.explorer_buttonDanger};
 
-      &:hover {
-        background: ${successLight};
-        border-color: ${successLight};
-      }
-    `,
-  },
-  danger: {
-    [Theme.LIGHT]: css`
-      color: ${white};
-      background: ${dangerLight};
+    &:hover {
+      background: ${Color.explorer_buttonDanger};
+      border-color: ${Color.explorer_buttonDanger};
+    }
+  `,
+  warning: css`
+    color: ${Color.neutral100};
+    background: ${Color.explorer_buttonWarning};
 
-      &:hover {
-        background: ${dangerDark};
-        border-color: ${dangerDark};
-      }
-    `,
-    [Theme.DARK]: css`
-      color: ${white};
-      background: ${dangerDark};
+    &:hover {
+      background: ${Color.explorer_buttonWarning};
+      border-color: ${Color.explorer_buttonWarning};
+    }
+  `,
+  cancel: css`
+    color: ${Color.neutral100};
+    background: transparent;
 
-      &:hover {
-        background: ${dangerLight};
-        border-color: ${dangerLight};
-      }
-    `,
-  },
-  warning: {
-    [Theme.LIGHT]: css`
-      color: ${white};
-      background: ${warningLight};
+    &:hover {
+      color: ${Color.explorer_textButtonHover};
+      background: ${Color.explorer_bgButtonHover};
+    }
+  `,
+  disabled: css`
+    color: ${Color.neutral70};
+    background: ${Color.explorer_buttonDisabled};
+  `,
+} as const
 
-      &:hover {
-        background: ${warningDark};
-        border-color: ${warningDark};
-      }
-    `,
-    [Theme.DARK]: css`
-      color: ${white};
-      background: ${warningDark};
+// Pre-computed button size styles
+const BUTTON_SIZE_STYLES = {
+  small: css`
+    font-size: 0.6rem;
+    padding: 0.3rem 0.5rem;
+  `,
+  big: css`
+    font-size: 1.4rem;
+    padding: 0.65rem 1rem;
+  `,
+  default: css``,
+} as const
 
-      &:hover {
-        background: ${warningLight};
-        border-color: ${warningLight};
-      }
-    `,
-  },
-  cancel: {
-    [Theme.LIGHT]: css`
-      color: ${white};
-      background: transparent;
+const getButtonVariantStyles = (variant: ButtonVariations = 'default') => {
+  return BUTTON_VARIANT_STYLES[variant]
+}
 
-      &:hover {
-        background: ${blueDark};
-      }
-    `,
-    [Theme.DARK]: css`
-      color: ${blue};
-      background: transparent;
+const getButtonSizeStyles = (size: ButtonSizeVariations = 'default') => {
+  return BUTTON_SIZE_STYLES[size]
+}
 
-      &:hover {
-        color: ${whiteDark};
-        background: ${blueDark};
-      }
-    `,
-  },
-  disabled: {
-    [Theme.DARK]: css`
-      color: ${disabledLightOpaque};
-      background: ${disabledLight};
-    `,
-    get light(): ThemeValue {
-      return this[Theme.DARK]
-    },
-  },
-  theme: {
-    [Theme.LIGHT]: css`
-      color: ${white};
-      background: lightsalmon;
-
-      &:hover {
-        color: ghostwhite;
-        background: darkorange;
-      }
-    `,
-    [Theme.DARK]: css`
-      color: ghostwhite;
-      background: purple;
-
-      &:hover {
-        color: ${white};
-        background: darkpurple;
-      }
-    `,
-  },
-})
-
-// Created a 'size' prop on buttons, default | small | big
-const ButtonSizes = variants('componentKey', 'size', {
-  default: {
-    button: '',
-  },
-  small: {
-    button: css`
-      font-size: 0.6rem;
-      padding: 0.3rem 0.5rem;
-    `,
-  },
-  big: {
-    button: css`
-      font-size: 1.4rem;
-      padding: 0.65rem 1rem;
-    `,
-  },
-})
-
-const ColouredButtonBase = styled.button`
+export const ButtonBase = styled.button<ButtonBaseProps>`
   border: ${buttonBorder};
-  /* Fold in theme css above */
-  ${ButtonTheme}
-`
-
-const ColouredAndSizedButtonBase = styled(ColouredButtonBase)`
-  font-size: ${buttonFontSize};
-  ${ButtonSizes}
-`
-// Wrap ColouredAndSizedButtonsBase in it's own ThemeProvider which takes the toplevel app theme
-// ThemeProvider and interpolate over it's props
-const ThemeWrappedButtonBase: React.FC<React.ButtonHTMLAttributes<Element>> = ({ children, ...restProps }) => (
-  <ThemeProvider>
-    <ColouredAndSizedButtonBase {...restProps}>{children}</ColouredAndSizedButtonBase>
-  </ThemeProvider>
-)
-
-export const ButtonBase = styled(ThemeWrappedButtonBase)<ButtonBaseProps>`
   border-radius: ${borderRadius};
-  cursor: pointer;
+  font-size: ${buttonFontSize};
+  padding: 0.5rem 1rem;
+  cursor: ${({ disabled }): string => (disabled ? 'not-allowed' : 'pointer')};
   font-weight: bold;
   outline: 0;
-  padding: 0.5rem 1rem;
+  text-decoration: none;
+  text-align: center;
+  letter-spacing: 0.1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
 
   transition-duration: 0.2s;
   transition-timing-function: ease-in-out;
@@ -253,5 +147,12 @@ export const ButtonBase = styled(ThemeWrappedButtonBase)<ButtonBaseProps>`
   &:disabled,
   &[disabled] {
     pointer-events: none;
+  }
+
+  ${({ variant }) => getButtonVariantStyles(variant)}
+  ${({ size }) => getButtonSizeStyles(size)}
+
+  > svg {
+    margin: 0 0.5rem 0 0;
   }
 `

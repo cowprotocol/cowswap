@@ -227,7 +227,6 @@
     "sortablejs": "^1.15.3",
     "styled-components": "5.3.6",
     "styled-jsx": "5.1.2",
-    "styled-theming": "^2.2.0",
     "swiper": "^11.1.1",
     "swr": "^2.2.0",
     "text-encoding-polyfill": "^0.6.7",

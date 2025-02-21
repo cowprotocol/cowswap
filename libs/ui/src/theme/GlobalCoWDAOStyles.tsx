@@ -1,6 +1,7 @@
 import { createGlobalStyle, css } from 'styled-components/macro'
 
-import { Color, Font } from '../consts'
+import { Color } from '../colors'
+import { Font } from '../consts'
 import { UI } from '../enum'
 
 type GlobalFontConfig =

@@ -1,6 +1,7 @@
 import React, { DOMAttributes, useState, useCallback, createRef, ReactElement } from 'react'
 
 import { Command } from '@cowprotocol/types'
+import { Color } from '@cowprotocol/ui'
 
 import styled, { FlattenSimpleInterpolation } from 'styled-components/macro'
 
@@ -71,10 +72,10 @@ const Items = styled(BaseCard)<{
   fullWidth?: boolean
   isOpen: boolean
 }>`
-  background: ${({ theme }): string => theme.paper};
+  background: ${Color.explorer_bg};
   border-radius: 0.6rem;
-  border: 1px solid ${({ theme }): string => theme.borderPrimary};
-  box-shadow: ${({ theme }): string => theme.boxShadow};
+  border: 1px solid ${Color.explorer_border};
+  box-shadow: ${Color.explorer_boxShadow};
   display: ${(props): string => (props.isOpen ? 'block' : 'none')};
   min-width: 160px;
   position: absolute;
@@ -125,7 +126,7 @@ export const Dropdown: React.FC<DropdownProps> = (props) => {
       setIsOpen(!isOpen)
       callback && callback()
     },
-    [callback, disabled, isOpen]
+    [callback, disabled, isOpen],
   )
 
   return (
