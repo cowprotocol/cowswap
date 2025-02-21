@@ -25,93 +25,103 @@ export type ButtonVariations =
 
 export type ButtonSizeVariations = 'default' | 'small' | 'big'
 
+// Pre-computed button variant styles
+const BUTTON_VARIANT_STYLES = {
+  default: css`
+    color: ${Color.neutral100};
+    background: ${Color.explorer_textActive};
+
+    &:hover {
+      background: ${Color.explorer_bgButtonHover};
+    }
+  `,
+  primary: css`
+    color: ${Color.neutral100};
+    background: ${Color.explorer_textActive};
+
+    &:hover {
+      background: ${Color.explorer_bgButtonHover};
+    }
+  `,
+  theme: css`
+    color: ${Color.neutral100};
+    background: ${Color.explorer_textActive};
+
+    &:hover {
+      background: ${Color.explorer_bgButtonHover};
+    }
+  `,
+  secondary: css`
+    color: ${Color.neutral100};
+    background: ${Color.explorer_bgInput};
+    border-color: ${Color.explorer_textActive};
+
+    &:hover {
+      color: ${Color.neutral100};
+      background: ${Color.explorer_bgButtonHover};
+    }
+  `,
+  success: css`
+    color: ${Color.neutral100};
+    background: ${Color.explorer_buttonSuccess};
+
+    &:hover {
+      background: ${Color.explorer_buttonSuccess};
+      border-color: ${Color.explorer_buttonSuccess};
+    }
+  `,
+  danger: css`
+    color: ${Color.neutral100};
+    background: ${Color.explorer_buttonDanger};
+
+    &:hover {
+      background: ${Color.explorer_buttonDanger};
+      border-color: ${Color.explorer_buttonDanger};
+    }
+  `,
+  warning: css`
+    color: ${Color.neutral100};
+    background: ${Color.explorer_buttonWarning};
+
+    &:hover {
+      background: ${Color.explorer_buttonWarning};
+      border-color: ${Color.explorer_buttonWarning};
+    }
+  `,
+  cancel: css`
+    color: ${Color.neutral100};
+    background: transparent;
+
+    &:hover {
+      color: ${Color.explorer_textButtonHover};
+      background: ${Color.explorer_bgButtonHover};
+    }
+  `,
+  disabled: css`
+    color: ${Color.neutral70};
+    background: ${Color.explorer_buttonDisabled};
+  `,
+} as const
+
+// Pre-computed button size styles
+const BUTTON_SIZE_STYLES = {
+  small: css`
+    font-size: 0.6rem;
+    padding: 0.3rem 0.5rem;
+  `,
+  big: css`
+    font-size: 1.4rem;
+    padding: 0.65rem 1rem;
+  `,
+  default: css``,
+} as const
+
 const getButtonVariantStyles = (variant: ButtonVariations = 'default') => {
-  switch (variant) {
-    case 'default':
-    case 'primary':
-    case 'theme':
-      return css`
-        color: ${Color.neutral100};
-        background: ${Color.explorer_textActive};
-
-        &:hover {
-          background: ${Color.explorer_bgButtonHover};
-        }
-      `
-    case 'secondary':
-      return css`
-        color: ${Color.neutral100};
-        background: ${Color.explorer_bgInput};
-        border-color: ${Color.explorer_textActive};
-
-        &:hover {
-          color: ${Color.neutral100};
-          background: ${Color.explorer_bgButtonHover};
-        }
-      `
-    case 'success':
-      return css`
-        color: ${Color.neutral100};
-        background: ${Color.explorer_buttonSuccess};
-
-        &:hover {
-          background: ${Color.explorer_buttonSuccess};
-          border-color: ${Color.explorer_buttonSuccess};
-        }
-      `
-    case 'danger':
-      return css`
-        color: ${Color.neutral100};
-        background: ${Color.explorer_buttonDanger};
-
-        &:hover {
-          background: ${Color.explorer_buttonDanger};
-          border-color: ${Color.explorer_buttonDanger};
-        }
-      `
-    case 'warning':
-      return css`
-        color: ${Color.neutral100};
-        background: ${Color.explorer_buttonWarning};
-
-        &:hover {
-          background: ${Color.explorer_buttonWarning};
-          border-color: ${Color.explorer_buttonWarning};
-        }
-      `
-    case 'cancel':
-      return css`
-        color: ${Color.neutral100};
-        background: transparent;
-
-        &:hover {
-          color: ${Color.explorer_textButtonHover};
-          background: ${Color.explorer_bgButtonHover};
-        }
-      `
-    case 'disabled':
-      return css`
-        color: ${Color.neutral70};
-        background: ${Color.explorer_buttonDisabled};
-      `
-  }
+  return BUTTON_VARIANT_STYLES[variant]
 }
 
 const getButtonSizeStyles = (size: ButtonSizeVariations = 'default') => {
-  switch (size) {
-    case 'small':
-      return css`
-        font-size: 0.6rem;
-        padding: 0.3rem 0.5rem;
-      `
-    case 'big':
-      return css`
-        font-size: 1.4rem;
-        padding: 0.65rem 1rem;
-      `
-    default:
-      return css``
-  }
+  return BUTTON_SIZE_STYLES[size]
 }
 
 export const ButtonBase = styled.button<ButtonBaseProps>`
