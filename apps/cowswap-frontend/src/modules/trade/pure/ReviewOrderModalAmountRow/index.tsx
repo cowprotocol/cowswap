@@ -1,11 +1,11 @@
 import { ReactNode } from 'react'
 
-import { FiatAmount, InfoTooltip, Row, TokenAmount } from '@cowprotocol/ui'
+import { FiatAmount, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { Content } from 'modules/trade/pure/ConfirmDetailsItem/styled'
+import { Content, Label } from 'modules/trade/pure/ConfirmDetailsItem/styled'
 
 import { ConfirmDetailsItem } from '../ConfirmDetailsItem'
 import { ReceiveAmountTitle } from '../ReceiveAmountTitle'
@@ -53,10 +53,11 @@ export function ReviewOrderModalAmountRow({
       {highlighted ? (
         <>
           <ReceiveAmountTitle>
-            <Row gap="6px">
-              <span>{label}</span>
-              {tooltip && <InfoTooltip content={tooltip} />}
-            </Row>
+            <Label>
+              <b>
+                {label} {tooltip && <InfoTooltip className="info-tooltip" content={tooltip} />}
+              </b>
+            </Label>
           </ReceiveAmountTitle>
           <span>{Amount}</span>
         </>

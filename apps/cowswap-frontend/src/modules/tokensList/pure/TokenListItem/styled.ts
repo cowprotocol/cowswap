@@ -51,3 +51,12 @@ export const TokenBalance = styled.span`
     text-align: right;
   }
 `
+
+export const TokenMetadata = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  justify-content: flex-end;
+`
