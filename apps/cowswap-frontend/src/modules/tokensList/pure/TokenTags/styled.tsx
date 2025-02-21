@@ -19,14 +19,14 @@ export const Tag = styled.div<{ tag?: { id: string } }>`
     tag?.id === '0'
       ? `var(${UI.COLOR_DANGER_BG})`
       : tag?.id === '1'
-      ? `var(${UI.COLOR_SUCCESS_BG})`
-      : `var(${UI.COLOR_PAPER_DARKER})`};
+        ? `var(${UI.COLOR_SUCCESS_BG})`
+        : `var(${UI.COLOR_PAPER_DARKER})`};
   color: ${({ tag }) =>
     tag?.id === '0'
       ? `var(${UI.COLOR_DANGER_TEXT})`
       : tag?.id === '1'
-      ? `var(${UI.COLOR_SUCCESS_TEXT})`
-      : `var(${UI.COLOR_TEXT})`};
+        ? `var(${UI.COLOR_SUCCESS_TEXT})`
+        : `var(${UI.COLOR_TEXT})`};
   font-size: 12px;
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   border-radius: 4px;
@@ -35,7 +35,6 @@ export const Tag = styled.div<{ tag?: { id: string } }>`
   text-overflow: ellipsis;
   white-space: nowrap;
   justify-self: flex-end;
-  margin: 0 4px 0 0;
 
   ${Media.upToSmall()} {
     margin: 0;

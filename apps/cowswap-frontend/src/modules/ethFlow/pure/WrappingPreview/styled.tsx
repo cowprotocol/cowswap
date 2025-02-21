@@ -54,6 +54,8 @@ export const WrappingPreviewContainer = styled.div`
       margin: 0;
       font-size: 13px;
       opacity: 0.8;
+      display: inline-block;
+      word-break: break-word;
     }
   }
 
