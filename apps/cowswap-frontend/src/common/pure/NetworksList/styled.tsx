@@ -74,5 +74,4 @@ export const Logo = styled.img`
 export const NetworkLabel = styled.div<{ color: string }>`
   flex: 1 1 auto;
   margin: 0 auto 0 8px;
-  background: ${({ color }) => color};
 `
