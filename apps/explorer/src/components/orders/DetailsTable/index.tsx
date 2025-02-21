@@ -110,7 +110,7 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
   text-align: center;
   font-weight: ${({ theme }): string => theme.fontBold};
   font-size: 1.3rem;
-  color: ${() => Color.explorer_orange1};
+  color: ${Color.explorer_orange1};
   border: 1px solid ${() => Color.explorer_orange1};
   background-color: ${Color.explorer_orangeOpacity};
   border-radius: 0.4rem;
@@ -125,7 +125,7 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
 
   &:hover {
     opacity: 0.8;
-    color: ${() => Color.neutral100};
+    color: ${Color.neutral100};
     text-decoration: none;
   }
 

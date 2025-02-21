@@ -14,7 +14,7 @@ export const SelectorContainer = styled.div`
   }
 
   ${ArrowIconCSS}
-  color: ${() => Color.explorer_orange1};
+  color: ${Color.explorer_orange1};
 `
 
 export const OptionsContainer = styled.div<{ width: number }>`
@@ -78,11 +78,11 @@ export const NetworkLabel = styled.span<{ color: string }>`
   font-weight: ${({ theme }): string => theme.fontBold};
   letter-spacing: 0.1rem;
   background: ${({ color }) => color};
-  color: ${() => Color.neutral100};
+  color: ${Color.neutral100};
 `
 
 export const StyledFAIcon = styled(FontAwesomeIcon)`
-  color: ${() => Color.explorer_orange1};
+  color: ${Color.explorer_orange1};
   position: absolute;
   right: 10px;
   font-size: 14px;
