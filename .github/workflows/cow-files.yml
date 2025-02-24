@@ -30,8 +30,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          # TODO: Replace this role with a new one specific for cow-files
-          role-to-assume: arn:aws:iam::693696263829:role/token-list-github-action-role
+          role-to-assume: arn:aws:iam::693696263829:role/cow-files-github-action-role
           role-session-name: githubactionsession
           aws-region: eu-central-1
 
