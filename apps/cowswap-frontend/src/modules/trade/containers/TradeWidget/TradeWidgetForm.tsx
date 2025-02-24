@@ -71,6 +71,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     enableSmartSlippage,
     displayTokenName = false,
     isMarketOrderWidget = false,
+    isSellingEthSupported = false,
   } = params
 
   const inputCurrencyInfo = useMemo(
@@ -216,9 +217,9 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 <div>
                   <CurrencyInputPanel
                     id="output-currency-input"
-                    inputDisabled={isEoaEthFlow || isWrapOrUnwrap || disableOutput}
+                    inputDisabled={isSellingEthSupported && (isEoaEthFlow || isWrapOrUnwrap || disableOutput)}
                     inputTooltip={
-                      isEoaEthFlow
+                      isSellingEthSupported && isEoaEthFlow
                         ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
                         : undefined
                     }

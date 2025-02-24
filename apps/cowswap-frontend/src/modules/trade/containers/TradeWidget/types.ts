@@ -20,6 +20,7 @@ interface TradeWidgetParams {
   compactView: boolean
   showRecipient: boolean
   isTradePriceUpdating: boolean
+  isSellingEthSupported?: boolean
   priceImpact: PriceImpact
   tradeQuoteStateOverride?: TradeQuoteState | null
   disableQuotePolling?: boolean

@@ -166,6 +166,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     compactView: true,
     enableSmartSlippage: true,
     isMarketOrderWidget: true,
+    isSellingEthSupported: true,
     recipient,
     showRecipient,
     isTradePriceUpdating: isRateLoading,
