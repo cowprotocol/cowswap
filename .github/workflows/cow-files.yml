@@ -31,7 +31,6 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v2
         with:
           # TODO: Replace this role with a new one specific for cow-files
-          # Current role is specific to token-lists and might not have correct permissions
           role-to-assume: arn:aws:iam::693696263829:role/token-list-github-action-role
           role-session-name: githubactionsession
           aws-region: eu-central-1
@@ -47,5 +46,5 @@ jobs:
       - name: Invalidate CloudFront cache
         run: |
           aws cloudfront create-invalidation \
-            --distribution-id ${{ secrets.DISTRIBUTION }} \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/cow-files/*"
