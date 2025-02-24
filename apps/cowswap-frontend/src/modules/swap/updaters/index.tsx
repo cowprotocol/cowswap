@@ -1,4 +1,3 @@
-import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from '@cowprotocol/common-const'
 import { isSellOrder, percentToBps } from '@cowprotocol/common-utils'
 
 import { AppDataUpdater } from 'modules/appData'
@@ -13,7 +12,7 @@ import { useFillSwapDerivedState, useSwapDerivedState } from '../hooks/useSwapDe
 import { useSwapDeadlineState } from '../hooks/useSwapSettings'
 
 export function SwapUpdaters() {
-  const { orderKind, inputCurrencyAmount, outputCurrencyAmount } = useSwapDerivedState()
+  const { orderKind, inputCurrencyAmount, outputCurrencyAmount, slippage } = useSwapDerivedState()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
   const swapDeadlineState = useSwapDeadlineState()
 
@@ -25,11 +24,13 @@ export function SwapUpdaters() {
       <EthFlowDeadlineUpdater deadlineState={swapDeadlineState} />
       <SetupSwapAmountsFromUrlUpdater />
       <QuoteObserverUpdater />
-      <AppDataUpdater
-        orderClass="market"
-        slippageBips={percentToBps(INITIAL_ALLOWED_SLIPPAGE_PERCENT)}
-        isSmartSlippage={isSmartSlippageApplied}
-      />
+      {slippage && (
+        <AppDataUpdater
+          orderClass="market"
+          slippageBips={percentToBps(slippage)}
+          isSmartSlippage={isSmartSlippageApplied}
+        />
+      )}
     </>
   )
 }

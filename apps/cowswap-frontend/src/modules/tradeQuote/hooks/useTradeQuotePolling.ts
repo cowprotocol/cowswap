@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useLayoutEffect, useMemo } from 'react'
+import { useLayoutEffect, useMemo, useRef } from 'react'
 
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
@@ -15,9 +15,11 @@ import QuoteApiError, { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteE
 
 import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenError'
 import { useQuoteParams } from './useQuoteParams'
+import { useTradeQuote } from './useTradeQuote'
 import { useUpdateTradeQuote } from './useUpdateTradeQuote'
 
 import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
+import { quoteUsingSameParameters } from '../utils/isAppDataEqualWithoutQuote'
 
 export const PRICE_UPDATE_INTERVAL = ms`30s`
 const AMOUNT_CHANGE_DEBOUNCE_TIME = ms`300`
@@ -28,6 +30,9 @@ const getOptimalQuote = onlyResolvesLast<OrderQuoteResponse>(getQuote)
 
 export function useTradeQuotePolling() {
   const { amount, fastQuote, orderKind } = useAtomValue(tradeQuoteInputAtom)
+  const { quoteParams: currentQuoteParams } = useTradeQuote()
+  const currentQuoteParamsRef = useRef(currentQuoteParams)
+  currentQuoteParamsRef.current = currentQuoteParams
 
   /**
    * It's important to keep amount and orderKind together in order to have consistent quoteParams
@@ -53,6 +58,12 @@ export function useTradeQuotePolling() {
 
     // Don't fetch quote if token is not supported
     if (isUnsupportedTokens) {
+      return
+    }
+
+    // Don't fetch quote if the parameters are the same
+    // Also avoid quote refresh when only appData.quote (contains slippage) is changed
+    if (currentQuoteParamsRef.current && quoteUsingSameParameters(currentQuoteParamsRef.current, quoteParams)) {
       return
     }
 

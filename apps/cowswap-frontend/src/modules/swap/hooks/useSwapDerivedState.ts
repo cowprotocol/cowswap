@@ -2,9 +2,8 @@ import { useAtomValue } from 'jotai'
 import { useSetAtom } from 'jotai/index'
 import { useEffect } from 'react'
 
-import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from '@cowprotocol/common-const'
-
 import { TradeType, useBuildTradeDerivedState } from 'modules/trade'
+import { useTradeSlippage } from 'modules/tradeSlippage'
 
 import { swapDerivedStateAtom, swapRawStateAtom } from '../state/swapRawStateAtom'
 
@@ -15,12 +14,13 @@ export function useSwapDerivedState() {
 export function useFillSwapDerivedState() {
   const updateDerivedState = useSetAtom(swapDerivedStateAtom)
   const derivedState = useBuildTradeDerivedState(swapRawStateAtom)
+  const slippage = useTradeSlippage()
 
   useEffect(() => {
     updateDerivedState({
       ...derivedState,
-      slippage: INITIAL_ALLOWED_SLIPPAGE_PERCENT,
+      slippage,
       tradeType: TradeType.SWAP,
     })
-  }, [derivedState, updateDerivedState])
+  }, [derivedState, slippage, updateDerivedState])
 }
