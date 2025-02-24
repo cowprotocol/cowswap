@@ -20,6 +20,7 @@ export function quoteUsingSameParameters(currentParams: FeeQuoteParams, nextPara
     currentParams.validFor === nextParams.validFor &&
     currentParams.fromDecimals === nextParams.fromDecimals &&
     currentParams.toDecimals === nextParams.toDecimals &&
+    currentParams.isEthFlow === nextParams.isEthFlow &&
     currentParams.chainId === nextParams.chainId
   )
 }

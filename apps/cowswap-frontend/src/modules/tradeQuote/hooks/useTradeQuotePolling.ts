@@ -19,7 +19,7 @@ import { useTradeQuote } from './useTradeQuote'
 import { useUpdateTradeQuote } from './useUpdateTradeQuote'
 
 import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
-import { quoteUsingSameParameters } from '../utils/isAppDataEqualWithoutQuote'
+import { quoteUsingSameParameters } from '../utils/quoteUsingSameParameters'
 
 export const PRICE_UPDATE_INTERVAL = ms`30s`
 const AMOUNT_CHANGE_DEBOUNCE_TIME = ms`300`
