@@ -1,5 +1,6 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { InlineBanner, LinkStyledButton } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 
@@ -14,6 +15,7 @@ const Button = styled(LinkStyledButton)`
 `
 
 export function SellNativeWarningBanner() {
+  const { account } = useWalletInfo()
   const native = useNativeCurrency()
   const wrapped = useWrappedToken()
   const navigateOnCurrencySelection = useNavigateOnCurrencySelection()
@@ -29,6 +31,8 @@ export function SellNativeWarningBanner() {
 
   const nativeSymbol = native.symbol || 'native'
   const wrappedNativeSymbol = wrapped.symbol || 'wrapped native'
+
+  if (!account) return null
 
   return (
     <InlineBanner bannerType="alert" iconSize={32}>
