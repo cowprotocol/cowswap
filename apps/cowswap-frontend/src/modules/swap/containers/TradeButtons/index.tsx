@@ -6,7 +6,12 @@ import {
   useTradeConfirmActions,
   useWrappedToken,
 } from 'modules/trade'
-import { TradeFormButtons, useGetTradeFormValidation, useTradeFormButtonContext } from 'modules/tradeFormValidation'
+import {
+  TradeFormButtons,
+  TradeFormValidation,
+  useGetTradeFormValidation,
+  useTradeFormButtonContext,
+} from 'modules/tradeFormValidation'
 import { useHighFeeWarning } from 'modules/tradeWidgetAddons'
 
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
@@ -52,11 +57,14 @@ export function TradeButtons({
     onCurrencySelection,
   })
 
+  // Selling ETH is allowed in Swap
+  const isPrimaryValidationPassed =
+    !primaryFormValidation || primaryFormValidation === TradeFormValidation.SellNativeToken
   const isDisabled = !isTradeContextReady || !feeWarningAccepted || !isNoImpactWarningAccepted
 
   if (!tradeFormButtonContext) return null
 
-  if (localFormValidation && !primaryFormValidation) {
+  if (localFormValidation && isPrimaryValidationPassed) {
     return swapTradeButtonsMap[localFormValidation](context)
   }
 
