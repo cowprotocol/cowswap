@@ -33,6 +33,7 @@ import IMG_LOGO_AAVE from '@cowprotocol/assets/images/logo-aave-icon.svg'
 import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import { ReactNode } from 'react'
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { Color } from '@cowprotocol/ui'
 
 export interface FaqItem {
   question: string
@@ -419,27 +420,27 @@ export const ADVANCED_ORDER_TYPES = [
     title: 'Limit orders',
     description:
       'Placing a limit order is like setting a trap for a price for your trade. CoW Swap is the only DEX that offers surplus on limit orders - and one of the only DEXs that offers limit orders at all',
-    bgColor: '#8702AA',
-    textColor: '#FCCAF2',
-    titleColor: '#FFF8F7',
+    bgColor: Color.cowfi_purple1,
+    textColor: Color.cowfi_purple2,
+    titleColor: Color.cowfi_white2,
     imageSrc: IMG_SURPLUS,
   },
   {
     title: 'TWAP orders',
     description:
       'Time-weighted average price (TWAP) orders minimize price impact and volatility risk by letting you trade assets at fixed intervals over a period of time',
-    bgColor: '#F996EE',
-    textColor: '#8702AA',
-    titleColor: '#490072',
+    bgColor: Color.cowfi_purple_bright,
+    textColor: Color.cowfi_purple1,
+    titleColor: Color.cowfi_purple_dark,
     imageSrc: IMG_TWAP,
   },
   {
     title: 'Milkman orders',
     description:
       "Created with our friends at Yearn.fi, Milkman orders let you prep a trade today to be executed in the future - with the help of a price oracle so you don't get rekt",
-    bgColor: '#490072',
-    textColor: '#F996EE',
-    titleColor: '#FFF8F7',
+    bgColor: Color.cowfi_purple_dark,
+    textColor: Color.cowfi_purple_bright,
+    titleColor: Color.cowfi_white2,
     imageSrc: IMG_MILKMAN,
   },
 ]
@@ -448,26 +449,26 @@ export const UNIQUE_TRADING_LOGIC = [
   {
     title: 'Smart orders',
     description: 'ERC-1271 smart orders let you custom code any trading logic into your smart contract',
-    bgColor: '#FCCAF2',
-    textColor: '#8702AA',
-    titleColor: '#490072',
+    bgColor: Color.cowfi_purple2,
+    textColor: Color.cowfi_purple1,
+    titleColor: Color.cowfi_purple_dark,
     imageSrc: IMG_SMARTORDERS,
   },
   {
     title: 'Programmatic orders',
     description: 'Easily deploy conditional orders that trigger when specified on-chain conditions are met',
-    bgColor: '#490072',
-    textColor: '#F996EE',
-    titleColor: '#FFF8F7',
+    bgColor: Color.cowfi_purple_dark,
+    textColor: Color.cowfi_purple_bright,
+    titleColor: Color.cowfi_white2,
     imageSrc: IMG_PROGRAMMATIC_ORDERS,
   },
   {
     title: 'Hooks',
     description:
       'Add pre- and post- hooks to tie your trade to any other DeFi activity (bridging, staking, depositing, etc.)',
-    bgColor: '#66018E',
-    textColor: '#F996EE',
-    titleColor: '#FFF8F7',
+    bgColor: Color.cowfi_purple3,
+    textColor: Color.cowfi_purple_bright,
+    titleColor: Color.cowfi_white2,
     imageSrc: IMG_HOOKS,
   },
 ]
@@ -524,9 +525,9 @@ export const COW_PROTOCOL_SECTIONS = [
     title: 'For developers',
     description:
       'CoW Protocol is open-source and permissionless. Thanks to comprehensive documentation and live coding tutorials, integrating the protocol is easy.',
-    bgColor: '#66018E',
-    textColor: '#F996EE',
-    titleColor: '#FFF8F7',
+    bgColor: Color.cowfi_purple3,
+    textColor: Color.cowfi_purple_bright,
+    titleColor: Color.cowfi_white2,
     linkHref: 'https://docs.cow.fi/',
     linkText: 'Read the docs',
     linkEvent: 'click-docs',
@@ -537,9 +538,9 @@ export const COW_PROTOCOL_SECTIONS = [
     title: 'For DeFi projects',
     description:
       "Don't need overly custom trading logic? The CoW Swap widget is the easiest way to integrate swaps, TWAPs, and limit orders directly into your project site.",
-    bgColor: '#490072',
-    textColor: '#F996EE',
-    titleColor: '#FFF8F7',
+    bgColor: Color.cowfi_purple_dark,
+    textColor: Color.cowfi_purple_bright,
+    titleColor: Color.cowfi_white2,
     linkHref: '/widget',
     linkText: 'Integrate the widget',
     linkEvent: 'click-integrate-widget',
@@ -549,9 +550,9 @@ export const COW_PROTOCOL_SECTIONS = [
     title: 'For anyone',
     description:
       'The CoW DAO Grants program has awarded over $100,000 in grants to innovators that build public DeFi applications with CoW Protocol.',
-    bgColor: '#F996EE',
-    textColor: '#66018E',
-    titleColor: '#490072',
+    bgColor: Color.cowfi_purple_bright,
+    textColor: Color.cowfi_purple3,
+    titleColor: Color.cowfi_purple_dark,
     linkHref: 'https://grants.cow.fi/',
     linkText: 'Apply for a grant',
     linkEvent: 'click-apply-for-a-grant',

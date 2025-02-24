@@ -1,19 +1,20 @@
 import combineReducers from 'combine-reducers'
 
-import { GLOBAL_INITIAL_STATE, globalRootReducer, GlobalState } from '../state'
 import { reducer as networkReducer } from '../state/network'
+import { Theme } from '../theme/types'
 import { Network } from '../types'
 
-export type ExplorerAppState = GlobalState & {
+export type ExplorerAppState = {
+  theme: Theme
   networkId: Network | null
 }
 
 export const INITIAL_STATE = (): ExplorerAppState => ({
-  ...GLOBAL_INITIAL_STATE(),
+  theme: Theme.DARK,
   networkId: null,
 })
 
 export const rootReducer = combineReducers({
-  ...globalRootReducer,
+  theme: (state = Theme.DARK) => state,
   networkId: networkReducer,
 })

@@ -19,8 +19,8 @@ const ModalMessage = styled.div`
     margin-top: 2rem;
   }
 
-  > p {
-    margin: 0 0 16px;
+  > span {
+    margin: 0 0 8px;
   }
 `
 
@@ -54,9 +54,9 @@ export function EthFlowModalTopContent({ descriptions, state, balanceChecks, nat
       {!!descriptions?.length && (
         <ModalMessage>
           {descriptions.map((description, index) => (
-            <p key={index}>
+            <span key={index}>
               <Trans>{description}</Trans>
-            </p>
+            </span>
           ))}
         </ModalMessage>
       )}

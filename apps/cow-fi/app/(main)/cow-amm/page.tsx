@@ -48,14 +48,14 @@ export default function Page() {
     <PageWrapper>
       <HeroContainer variant="secondary" maxWidth={1300}>
         <HeroContent variant="secondary">
-          <HeroSubtitle color={'#194D05'}>CoW AMM</HeroSubtitle>
+          <HeroSubtitle color={Color.cowamm_dark_green}>CoW AMM</HeroSubtitle>
           <HeroTitle>The first MEV-capturing AMM, now live on Balancer</HeroTitle>
           <HeroDescription>
             CoW AMM protects LPs from LVR so they can provide liquidity with less risk and more return
           </HeroDescription>
           <Link
-            bgColor={'#194D05'}
-            color={'#BCEC79'}
+            bgColor={Color.cowamm_dark_green}
+            color={Color.cowamm_green}
             href="https://balancer.fi/pools/cow"
             external
             linkType={LinkType.HeroButton}
@@ -71,17 +71,17 @@ export default function Page() {
             LP on CoW AMM ↗
           </Link>
         </HeroContent>
-        <HeroImage width={470} height={470} color={'#194D05'} marginMobile="24px auto 56px">
+        <HeroImage width={470} height={470} color={Color.cowamm_dark_green} marginMobile="24px auto 56px">
           <LazySVG src={IMG_COWAMM_HERO} />
         </HeroImage>
       </HeroContainer>
 
-      <MetricsCard bgColor={Color.neutral100} color="#194D05" columns={3} touchFooter>
-        <MetricsItem dividerColor="#9BD955">
+      <MetricsCard bgColor={Color.neutral100} color={Color.cowamm_dark_green} columns={3} touchFooter>
+        <MetricsItem dividerColor={Color.cowamm_green_light}>
           <h2>4.75%</h2>
           <p>more TVL achieved than reference pool (beta phase)</p>
         </MetricsItem>
-        <MetricsItem dividerColor="#9BD955">
+        <MetricsItem dividerColor={Color.cowamm_green_light}>
           <h2>$18M+</h2>
           <p>liquidity protected from LVR</p>
         </MetricsItem>
@@ -92,7 +92,7 @@ export default function Page() {
 
         <Link
           bgColor="transparent"
-          color="#194D05"
+          color={Color.cowamm_dark_green}
           margin="56px auto 0"
           gridFullWidth
           href="https://dune.com/cowprotocol/cow-amms-v2"

@@ -5,7 +5,7 @@ import IMG_FLYING_WINK_COW_DARK from '@cowprotocol/assets/images/flying-wink-cow
 import SVG from 'react-inlinesvg'
 import styled, { keyframes } from 'styled-components/macro'
 
-import { Color } from '../../consts'
+import { Color } from '../../colors'
 
 const scrollHorizontal = keyframes`
   0% {

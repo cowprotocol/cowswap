@@ -1,6 +1,7 @@
 import { Link } from '@/components/Link'
 import { initGtm } from '@cowprotocol/analytics'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+import { CowFiCategory } from 'src/common/analytics/types'
+import { Color } from '@cowprotocol/ui'
 
 import IMG_COWSWAP_COINS from '@cowprotocol/assets/images/image-coins.svg'
 import IMG_COWSWAP_MEV from '@cowprotocol/assets/images/image-cowswap-mev.svg'
@@ -16,23 +17,23 @@ const analytics = initGtm()
 
 export const COW_IS_DIFFERENT = [
   {
-    bgColor: '#65D9FF',
+    bgColor: Color.cowfi_blue_lighter,
     fontSize: 28,
-    color: '#012F7A',
+    color: Color.cowfi_blue_dark,
     description: "By aligning incentives between solvers and users, CoW Swap finds surplus you won't get anywhere else",
     imgSrc: IMG_COWSWAP_COINS,
   },
   {
-    bgColor: '#012F7A',
+    bgColor: Color.cowfi_blue_dark,
     fontSize: 28,
-    color: '#CCF8FF',
+    color: Color.cowfi_lightBlue1,
     description: 'MEV is a $1.3+ billion problem that you never have to worry about on CoW Swap',
     imgSrc: IMG_COWSWAP_MEV,
   },
   {
-    bgColor: '#CCF8FF',
+    bgColor: Color.cowfi_lightBlue1,
     fontSize: 28,
-    color: '#012F7A',
+    color: Color.cowfi_blue_dark,
     description: "CoW Swap's unique architecture enables advanced order types and seamless UX",
     imgSrc: IMG_COWSWAP_UX,
   },
@@ -40,26 +41,26 @@ export const COW_IS_DIFFERENT = [
 
 export const ADVANCED_ORDER_TYPES = [
   {
-    bgColor: '#012F7A',
-    textColor: '#CCF8FF',
-    titleColor: '#FFF8F7',
+    bgColor: Color.cowfi_blue_dark,
+    textColor: Color.cowfi_lightBlue1,
+    titleColor: Color.cowfi_white2,
     title: 'Market orders (aka swaps)',
     description: 'CoW Swap market orders maximize surplus and minimize MEV',
     imgSrc: IMG_COWSWAP_SWAPS,
   },
   {
-    bgColor: '#CCF8FF',
-    textColor: '#004293',
-    titleColor: '#012F7A',
+    bgColor: Color.cowfi_lightBlue1,
+    textColor: Color.cowfi_darkBlue,
+    titleColor: Color.cowfi_blue_dark,
     title: 'Limit orders',
     description:
       'Placing a limit order is like setting a trap for a price for your trade. CoW Swap is the only DEX that offers surplus on limit orders – and one of the only DEXs that offers limit orders at all',
     imgSrc: IMG_COWSWAP_LIMIT,
   },
   {
-    bgColor: '#99ECFF',
-    textColor: '#005EB7',
-    titleColor: '#012F7A',
+    bgColor: Color.cowfi_lightBlue4,
+    textColor: Color.cowfi_darkBlue5,
+    titleColor: Color.cowfi_blue_dark,
     title: 'TWAP orders',
     description:
       'Time-weighted average price (TWAP) orders minimize price impact and volatility risk by letting you trade assets at fixed intervals over a period of time',
@@ -69,25 +70,25 @@ export const ADVANCED_ORDER_TYPES = [
 
 export const BETTER_UX = [
   {
-    bgColor: '#99ECFF',
-    textColor: '#005EB7',
-    titleColor: '#012F7A',
+    bgColor: Color.cowfi_lightBlue4,
+    textColor: Color.cowfi_darkBlue5,
+    titleColor: Color.cowfi_blue_dark,
     title: 'Gasless trading',
     description: 'All gas fees are paid in the sell token - so you can save your precious ETH',
     imgSrc: IMG_COWSWAP_GASLESS,
   },
   {
-    bgColor: '#012F7A',
-    textColor: '#CCF8FF',
-    titleColor: '#FFF8F7',
+    bgColor: Color.cowfi_blue_dark,
+    textColor: Color.cowfi_lightBlue1,
+    titleColor: Color.cowfi_white2,
     title: 'No fees for failed transactions',
     description: "You shouldn't pay for what didn't work, so failed transactions are always free",
     imgSrc: IMG_COWSWAP_NOFEES,
   },
   {
-    bgColor: '#CCF8FF',
-    textColor: '#005EB7',
-    titleColor: '#012F7A',
+    bgColor: Color.cowfi_lightBlue1,
+    textColor: Color.cowfi_darkBlue5,
+    titleColor: Color.cowfi_blue_dark,
     title: 'Execute multiple trades at once',
     description: 'With intent-based trading, you can place as many orders as you want simultaneously',
     imgSrc: IMG_COWSWAP_MULTIPLE,

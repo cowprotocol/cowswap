@@ -363,7 +363,7 @@ export const Table = styled.div`
 
   ${Media.upToSmall()} {
     min-height: 250px;
-    display: table;
+    display: grid;
   }
 `
 

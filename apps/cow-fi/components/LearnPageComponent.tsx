@@ -188,7 +188,7 @@ export function LearnPageComponent({ categories, articles, featuredArticles }: P
                     })
                   }
                 >
-                  <ArticleImage color="#000">
+                  <ArticleImage color={Color.neutral0}>
                     {cover && <LazyImage src={cover} alt={title} width={700} height={200} />}
                   </ArticleImage>
                   <ArticleTitle>{title}</ArticleTitle>
@@ -319,7 +319,7 @@ export function LearnPageComponent({ categories, articles, featuredArticles }: P
 
       <ContainerCard bgColor={Color.neutral98} padding="0" touchFooter>
         <CTASectionWrapper>
-          <CTAImage color={'#00A1FF'}>
+          <CTAImage color={Color.cowfi_blue}>
             <LazySVG src={IMG_ICON_BULB_COW} />
           </CTAImage>
           <CTASubtitle>Explore, learn, integrate</CTASubtitle>

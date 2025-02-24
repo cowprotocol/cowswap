@@ -1,3 +1,5 @@
+import { Color } from '@cowprotocol/ui'
+
 import styled, { keyframes } from 'styled-components/macro'
 
 const ShimmerKeyframe = keyframes`
@@ -16,15 +18,22 @@ const ShimmerBar = styled.div<{ height?: number }>`
   width: 100%;
   height: ${({ height = 1.2 }): string => `${height}rem`};
   border-radius: 2px;
-  color: white;
-  background: ${({ theme }): string =>
-    `${theme.greyOpacity} -webkit-gradient(linear, 100% 0, 0 0, from(${theme.greyOpacity}), color-stop(0.5, ${theme.borderPrimary}), to(${theme.gradient1}))`};
+  color: ${Color.neutral100};
+  background: ${Color.explorer_greyOpacity}
+    gradient(
+      linear,
+      100% 0,
+      0 0,
+      from(${Color.explorer_greyOpacity}),
+      color-stop(0.5, ${Color.explorer_borderPrimary}),
+      to(${Color.explorer_gradient1})
+    );
   background-position: -5rem top;
   background-repeat: no-repeat;
-  -webkit-animation-name: ${ShimmerKeyframe};
-  -webkit-animation-duration: 1.3s;
-  -webkit-animation-iteration-count: infinite;
-  -webkit-background-size: 5rem 100%;
+  animation-name: ${ShimmerKeyframe};
+  animation-duration: 1.3s;
+  animation-iteration-count: infinite;
+  background-size: 5rem 100%;
 `
 
 export default ShimmerBar

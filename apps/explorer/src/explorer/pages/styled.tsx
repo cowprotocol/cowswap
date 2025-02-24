@@ -1,4 +1,4 @@
-import { Media } from '@cowprotocol/ui'
+import { Media, Color } from '@cowprotocol/ui'
 
 import * as CSS from 'csstype'
 import { Link } from 'react-router-dom'
@@ -70,7 +70,7 @@ export const FlexWrap = styled.div<Partial<CSS.Properties & { grow?: number }>>`
 
 export const StyledLink = styled(Link)`
   height: 5rem;
-  border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
+  border: 0.1rem solid ${Color.explorer_border};
   border-radius: 0.6rem;
   width: 16rem;
   display: flex;
@@ -78,10 +78,10 @@ export const StyledLink = styled(Link)`
   justify-content: center;
   flex: 0 1 auto;
   cursor: pointer;
-  color: ${({ theme }): string => theme.white} !important;
+  color: ${(): string => Color.neutral100} !important;
 
   :hover {
-    background-color: ${({ theme }): string => theme.greyOpacity};
+    background-color: ${Color.explorer_greyOpacity};
     text-decoration: none;
   }
 `
@@ -93,7 +93,7 @@ export const Title = styled.h1`
 
 export const ContentCard = styled.div`
   font-size: 1.6rem;
-  border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
+  border: 0.1rem solid ${Color.explorer_border};
   padding: 20px;
   border-radius: 0.4rem;
   min-height: 23rem;

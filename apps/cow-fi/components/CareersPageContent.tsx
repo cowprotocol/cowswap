@@ -148,8 +148,8 @@ export function CareersPageContent({
                   ))}
 
             <TopicCard
-              bgColor={'#BCEC79'}
-              textColor="#194D05"
+              bgColor={Color.cowamm_green}
+              textColor={Color.cowamm_dark_green}
               padding={'32px'}
               gap={16}
               asProp="div"
@@ -165,8 +165,8 @@ export function CareersPageContent({
                 </TopicDescription>
                 <Link
                   linkType={LinkType.TopicButton}
-                  bgColor="#194D05"
-                  color="#BCEC79"
+                  bgColor={Color.cowamm_dark_green}
+                  color={Color.cowamm_green}
                   href="/careers/refer-to-earn"
                   onClick={() =>
                     analytics.sendEvent({

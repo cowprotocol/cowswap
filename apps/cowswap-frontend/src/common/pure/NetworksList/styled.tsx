@@ -71,7 +71,7 @@ export const Logo = styled.img`
   height: 24px;
   margin-right: 8px;
 `
-export const NetworkLabel = styled.div`
+export const NetworkLabel = styled.div<{ color: string }>`
   flex: 1 1 auto;
   margin: 0 auto 0 8px;
 `

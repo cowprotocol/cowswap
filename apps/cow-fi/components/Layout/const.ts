@@ -1,11 +1,11 @@
-import { MenuItem, ProductVariant } from '@cowprotocol/ui'
+import { MenuItem, ProductVariant, Color } from '@cowprotocol/ui'
 import { initGtm } from '@cowprotocol/analytics'
 import { CowFiCategory } from 'src/common/analytics/types'
 
 const analytics = initGtm()
 
 export const PAGE_MAX_WIDTH = 1760
-export const THEME_MODE = 'dark'
+export const THEME_MODE = 'light'
 export const PRODUCT_VARIANT = ProductVariant.CowDao
 
 export const NAV_ITEMS: MenuItem[] = [
@@ -96,8 +96,8 @@ export const NAV_ADDITIONAL_BUTTONS = [
       }),
     external: true,
     isButton: true,
-    bgColor: '#194D05',
-    color: '#BCEC79',
+    bgColor: Color.cowamm_dark_green,
+    color: Color.cowamm_green,
   },
   {
     label: 'Trade on CoW Swap',
@@ -111,7 +111,7 @@ export const NAV_ADDITIONAL_BUTTONS = [
       }),
     external: true,
     isButton: true,
-    bgColor: '#65D9FF',
-    color: '#012F7A',
+    bgColor: Color.cowfi_blue_lighter,
+    color: Color.cowfi_blue_dark,
   },
 ]
