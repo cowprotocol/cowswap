@@ -1,18 +1,19 @@
 import { useCallback, useMemo } from 'react'
 
-import { isSellOrder, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeWidgetActions, useOnCurrencySelection, useSwitchTokensPlaces } from 'modules/trade'
+import { TradeWidgetActions } from 'modules/trade'
 
+import { useOnCurrencySelection } from './useOnCurrencySelection'
+import { useOnSwitchTokens } from './useOnSwitchTokens'
 import { useSwapDerivedState } from './useSwapDerivedState'
 import { useUpdateCurrencyAmount } from './useUpdateCurrencyAmount'
 import { useUpdateSwapRawState } from './useUpdateSwapRawState'
 
 export function useSwapWidgetActions(): TradeWidgetActions {
-  const { inputCurrency, outputCurrency, orderKind } = useSwapDerivedState()
+  const { inputCurrency, outputCurrency } = useSwapDerivedState()
   const updateSwapState = useUpdateSwapRawState()
   const onCurrencySelection = useOnCurrencySelection()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
@@ -30,9 +31,7 @@ export function useSwapWidgetActions(): TradeWidgetActions {
     [updateCurrencyAmount, inputCurrency, outputCurrency],
   )
 
-  const onSwitchTokens = useSwitchTokensPlaces({
-    orderKind: isSellOrder(orderKind) ? OrderKind.BUY : OrderKind.SELL,
-  })
+  const onSwitchTokens = useOnSwitchTokens()
 
   const onChangeRecipient = useCallback((recipient: string | null) => updateSwapState({ recipient }), [updateSwapState])
 

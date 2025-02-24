@@ -65,11 +65,14 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
     const sellCurrencyAmount = isSellAmountValid ? tryParseCurrencyAmount(sellAmount, inputCurrency) : null
     const buyCurrencyAmount = isBuyAmountValid ? tryParseCurrencyAmount(buyAmount, outputCurrency) : null
 
-    if (!isFractionFalsy(buyCurrencyAmount)) {
+    const hasSellAmount = !isFractionFalsy(sellCurrencyAmount)
+    const hasBuyAmount = !isFractionFalsy(buyCurrencyAmount)
+
+    if (hasBuyAmount) {
       update.outputCurrencyAmount = FractionUtils.serializeFractionToJSON(buyCurrencyAmount)
     }
 
-    if (!isFractionFalsy(sellCurrencyAmount)) {
+    if (hasSellAmount) {
       update.inputCurrencyAmount = FractionUtils.serializeFractionToJSON(sellCurrencyAmount)
     }
 
@@ -78,7 +81,13 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
 
       update.orderKind = OrderKind.SELL
     } else {
-      update.orderKind = orderKind || (!buyCurrencyAmount ? OrderKind.SELL : OrderKind.BUY)
+      if (hasSellAmount || hasBuyAmount) {
+        const orderKindUpdated = !buyCurrencyAmount ? OrderKind.SELL : OrderKind.BUY
+
+        if (orderKind !== orderKindUpdated) {
+          update.orderKind = orderKindUpdated
+        }
+      }
     }
 
     const hasUpdates = Object.keys(update).length > 0

@@ -1,6 +1,6 @@
 import { useSetupTradeAmountsFromUrl } from 'modules/trade'
 
-const params = { onlySell: true }
+const params = {}
 
 export function SetupSwapAmountsFromUrlUpdater() {
   useSetupTradeAmountsFromUrl(params)

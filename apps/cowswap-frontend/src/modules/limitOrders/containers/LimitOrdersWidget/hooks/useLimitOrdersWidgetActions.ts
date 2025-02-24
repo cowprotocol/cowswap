@@ -48,9 +48,14 @@ export function useLimitOrdersWidgetActions(): TradeWidgetActions {
     [updateCurrencyAmount, isWrapOrUnwrap, inputCurrency, outputCurrency, activeRate, debouncedTradeAmountAnalytics],
   )
 
-  const onSwitchTokens = useSwitchTokensPlaces({
-    orderKind: isSellOrder(orderKind) ? OrderKind.BUY : OrderKind.SELL,
-  })
+  const stateOverride = useMemo(
+    () => ({
+      orderKind: isSellOrder(orderKind) ? OrderKind.BUY : OrderKind.SELL,
+    }),
+    [orderKind],
+  )
+
+  const onSwitchTokens = useSwitchTokensPlaces(stateOverride)
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => updateLimitOrdersState({ recipient }),

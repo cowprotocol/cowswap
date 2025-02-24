@@ -30,9 +30,14 @@ export function useYieldWidgetActions(): TradeWidgetActions {
     [updateCurrencyAmount, inputCurrency, outputCurrency],
   )
 
-  const onSwitchTokens = useSwitchTokensPlaces({
-    orderKind: isSellOrder(orderKind) ? OrderKind.BUY : OrderKind.SELL,
-  })
+  const stateOverride = useMemo(
+    () => ({
+      orderKind: isSellOrder(orderKind) ? OrderKind.BUY : OrderKind.SELL,
+    }),
+    [orderKind],
+  )
+
+  const onSwitchTokens = useSwitchTokensPlaces(stateOverride)
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => updateYieldState({ recipient }),
