@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.19.0...ui-v1.20.0) (2025-02-25)
+
+
+### Features
+
+* **analytics:** migrate to GTM-based analytics ([#5360](https://github.com/cowprotocol/cowswap/issues/5360)) ([f404d02](https://github.com/cowprotocol/cowswap/commit/f404d0280d9d1d86cc249d70852a5c0ec9827475))
+
 ## [1.19.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.18.0...ui-v1.19.0) (2025-02-05)
 
 

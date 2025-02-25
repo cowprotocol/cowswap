@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.20.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.19.4...cow-fi-v1.20.0) (2025-02-25)
+
+
+### Features
+
+* **analytics:** migrate to GTM-based analytics ([#5360](https://github.com/cowprotocol/cowswap/issues/5360)) ([f404d02](https://github.com/cowprotocol/cowswap/commit/f404d0280d9d1d86cc249d70852a5c0ec9827475))
+
+
+### Bug Fixes
+
+* update email contact from people@cow.fi to jobs@cow.fi ([#5438](https://github.com/cowprotocol/cowswap/issues/5438)) ([297c2f4](https://github.com/cowprotocol/cowswap/commit/297c2f406c83bc4f8554dcd33b2d8e913c5455d9))
+* update some stats on Cow.fi pages ([#5441](https://github.com/cowprotocol/cowswap/issues/5441)) ([4ec735f](https://github.com/cowprotocol/cowswap/commit/4ec735fdf0f9620422b24d585f3eccb8fb27aa1a))
+
 ## [1.19.4](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.19.3...cow-fi-v1.19.4) (2025-02-05)
 
 
