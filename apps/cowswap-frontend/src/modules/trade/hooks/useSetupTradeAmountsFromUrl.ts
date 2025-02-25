@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 
 import { FractionUtils, getIntOrFloat, isFractionFalsy, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
@@ -39,7 +39,9 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
   const { updateState } = useTradeState()
   const state = useDerivedTradeState()
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = state || {}
-  const isAtLeastOneAmountIsSet = Boolean(inputCurrencyAmount || outputCurrencyAmount)
+
+  const isAtLeastOneAmountIsSetRef = useRef(false)
+  isAtLeastOneAmountIsSetRef.current = Boolean(inputCurrencyAmount || outputCurrencyAmount)
 
   const cleanParams = useCallback(() => {
     if (!search) return
@@ -88,7 +90,7 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
 
     // When both sell and buy amount are not set
     // Then set 1 unit to sell by default
-    if (!isAtLeastOneAmountIsSet && !update.inputCurrencyAmount && inputCurrency) {
+    if (!isAtLeastOneAmountIsSetRef.current && !update.inputCurrencyAmount && inputCurrency) {
       update.inputCurrencyAmount = FractionUtils.serializeFractionToJSON(tryParseCurrencyAmount('1', inputCurrency))
     }
 
@@ -105,5 +107,5 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
       }
     }
     // Trigger only when URL or assets are changed
-  }, [params, inputCurrency, outputCurrency, onlySell, isAtLeastOneAmountIsSet])
+  }, [params, inputCurrency, outputCurrency, onlySell])
 }
