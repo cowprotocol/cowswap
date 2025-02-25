@@ -19,7 +19,7 @@ export function useUpdateCurrencyAmount() {
   outputCurrencyAmountRef.current = outputCurrencyAmount
 
   return useCallback(
-    (field: Field, value: CurrencyAmount<Currency>) => {
+    (field: Field, value: CurrencyAmount<Currency> | undefined) => {
       const isInputAmountChanged = field === Field.INPUT
       const targetField = isInputAmountChanged ? 'inputCurrencyAmount' : 'outputCurrencyAmount'
       const oppositeField = !isInputAmountChanged ? 'inputCurrencyAmount' : 'outputCurrencyAmount'
@@ -47,13 +47,13 @@ export function useUpdateCurrencyAmount() {
  */
 function calculateOppositeAmount(
   isInputAmountChanged: boolean,
-  value: CurrencyAmount<Currency>,
+  value: CurrencyAmount<Currency> | undefined,
   inputAmount: CurrencyAmount<Currency> | null,
   outputAmount: CurrencyAmount<Currency> | null,
 ): CurrencyAmount<Currency> | null {
   if (!inputAmount || !outputAmount) return null
 
-  if (value.equalTo(0) || inputAmount.equalTo(0) || outputAmount.equalTo(0)) {
+  if (!value || value.equalTo(0) || inputAmount.equalTo(0) || outputAmount.equalTo(0)) {
     return CurrencyAmount.fromRawAmount((isInputAmountChanged ? outputAmount : inputAmount).currency, 0)
   }
 

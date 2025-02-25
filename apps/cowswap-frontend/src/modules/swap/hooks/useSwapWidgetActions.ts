@@ -19,7 +19,7 @@ export function useSwapWidgetActions(): TradeWidgetActions {
   const updateCurrencyAmount = useUpdateCurrencyAmount()
 
   const onUserInput = useCallback(
-    (field: Field, typedValue: string) => {
+    (field: Field, typedValue: string | undefined) => {
       const currency = field === Field.INPUT ? inputCurrency : outputCurrency
 
       if (!currency) return
