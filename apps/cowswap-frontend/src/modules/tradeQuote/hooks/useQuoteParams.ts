@@ -8,6 +8,7 @@ import { useAppData } from 'modules/appData'
 import { useIsWrapOrUnwrap } from 'modules/trade'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { FeeQuoteParams } from 'common/types'
 
@@ -17,13 +18,14 @@ export function useQuoteParams(amount: string | null, orderKind: OrderKind): Fee
   const { chainId, account } = useWalletInfo()
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
 
   const state = useDerivedTradeState()
 
   const { inputCurrency, outputCurrency } = state || {}
 
   return useSafeMemo(() => {
-    if (isWrapOrUnwrap) return
+    if (isWrapOrUnwrap || isProviderNetworkUnsupported) return
     if (!inputCurrency || !outputCurrency || !amount || !orderKind) return
 
     const sellToken = getWrappedToken(inputCurrency).address
@@ -59,5 +61,6 @@ export function useQuoteParams(amount: string | null, orderKind: OrderKind): Fee
     appData?.fullAppData,
     appData?.appDataKeccak256,
     isWrapOrUnwrap,
+    isProviderNetworkUnsupported,
   ])
 }

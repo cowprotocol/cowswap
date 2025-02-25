@@ -30,6 +30,7 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { PRICE_QUOTE_VALID_TO_TIME } from '../../constants/quote'
+import { useIsProviderNetworkUnsupported } from '../../hooks/useIsProviderNetworkUnsupported'
 import { FeeQuoteParams } from '../../types'
 
 /**
@@ -40,6 +41,7 @@ export function UnfillableOrdersUpdater(): null {
   const updatePendingOrderPrices = useSetAtom(updatePendingOrderPricesAtom)
   const isWindowVisible = useIsWindowVisible()
   const cowAnalytics = useCowAnalytics()
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
 
   const pending = useOnlyPendingOrders(chainId)
 
@@ -169,14 +171,14 @@ export function UnfillableOrdersUpdater(): null {
   updatePendingRef.current = updatePending
 
   useEffect(() => {
-    if (!chainId || !account || !isWindowVisible) {
+    if (!chainId || !account || !isWindowVisible || isProviderNetworkUnsupported) {
       return
     }
 
     updatePendingRef.current()
     const interval = setInterval(() => updatePendingRef.current(), PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL)
     return () => clearInterval(interval)
-  }, [chainId, account, isWindowVisible])
+  }, [chainId, account, isWindowVisible, isProviderNetworkUnsupported])
 
   return null
 }

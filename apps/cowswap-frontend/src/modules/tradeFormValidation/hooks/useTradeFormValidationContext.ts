@@ -10,6 +10,7 @@ import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 import { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { useApproveState } from 'common/hooks/useApproveState'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { TradeFormValidationCommonContext } from '../types'
 
@@ -17,6 +18,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const { account } = useWalletInfo()
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
 
   const { inputCurrency, outputCurrency, recipient, tradeType } = derivedTradeState || {}
   const receiveAmounts = useReceiveAmounts()
@@ -48,6 +50,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     tradeQuote,
     isPermitSupported,
     isInsufficientBalanceOrderAllowed,
+    isProviderNetworkUnsupported,
   }
 
   return useMemo(() => {

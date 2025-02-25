@@ -105,6 +105,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.WalletNotSupported]: {
     text: 'Wallet Unsupported',
   },
+  [TradeFormValidation.NetworkNotSupported]: {
+    text: 'Unsupported Network',
+  },
   [TradeFormValidation.SafeReadonlyUser]: {
     text: (
       <>
