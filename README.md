@@ -244,7 +244,7 @@ using an environment variable:
 
 | Name      | Environment variable                 | Type                         | Description                                                                          |
 | --------- | ------------------------------------ | ---------------------------- | ------------------------------------------------------------------------------------ |
-| **1inch** | `REACT_APP_PRICE_FEED_1INCH_ENABLED` | `boolean` (default = `true`) | [Paraswap](https://1inch.exchange) price estimation. Used for all price estimations. |
+| **1inch** | `REACT_APP_PRICE_FEED_1INCH_ENABLED` | `boolean` (default = `true`) | [1inch](https://1inch.io) price estimation. Used for all price estimations. |
 | **0x**    | `REACT_APP_PRICE_FEED_0X_ENABLED`    | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.               |
 
 ## Metadata attached to orders (AppData)
