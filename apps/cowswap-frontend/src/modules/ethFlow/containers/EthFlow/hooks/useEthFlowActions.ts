@@ -61,7 +61,9 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
     const swap = async () => {
       callbacks.dismiss()
       onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCIES[chainId])
-      openSwapConfirmModal()
+      // Pass true in order to force user to confirm the price before placing an order
+      // Because we change slippage after wrapping
+      openSwapConfirmModal(true)
     }
 
     const approve = (useModals?: boolean) => {

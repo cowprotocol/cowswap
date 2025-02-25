@@ -26,9 +26,7 @@ const ONE_SEC = ms`1s`
 
 export interface TradeConfirmationProps {
   onConfirm(): void
-
   onDismiss(): void
-
   account: string | undefined
   ensName: string | undefined
   appData?: string | AppDataInfo
@@ -45,7 +43,7 @@ export interface TradeConfirmationProps {
 }
 
 export function TradeConfirmation(props: TradeConfirmationProps) {
-  const { pendingTrade } = useTradeConfirmState()
+  const { pendingTrade, forcePriceConfirmation } = useTradeConfirmState()
 
   const propsRef = useRef(props)
   propsRef.current = props
@@ -86,7 +84,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
   const inputAmount = inputCurrencyInfo.amount?.toExact()
   const outputAmount = outputCurrencyInfo.amount?.toExact()
 
-  const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(inputAmount, outputAmount)
+  const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(inputAmount, outputAmount, forcePriceConfirmation)
 
   const isButtonDisabled = isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade
 
