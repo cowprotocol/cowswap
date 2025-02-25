@@ -20,6 +20,11 @@ export interface LimitOrdersRawState extends ExtendedTradeRawState {
   readonly isUnlocked: boolean
 }
 
+export const DEFAULT_LIMIT_DERIVED_STATE: LimitOrdersDerivedState = {
+  ...DEFAULT_TRADE_DERIVED_STATE,
+  isUnlocked: true,
+}
+
 export function getDefaultLimitOrdersState(chainId: SupportedChainId | null, isUnlocked = false): LimitOrdersRawState {
   return {
     ...getDefaultTradeRawState(chainId),
@@ -51,10 +56,7 @@ const alternativeRawStateAtom = atom<LimitOrdersRawState>(getDefaultLimitOrdersS
 
 const { updateAtom: alternativeUpdateRawStateAtom } = atomWithPartialUpdate(alternativeRawStateAtom)
 
-const alternativeDerivedStateAtom = atom<LimitOrdersDerivedState>({
-  ...DEFAULT_TRADE_DERIVED_STATE,
-  isUnlocked: true,
-})
+const alternativeDerivedStateAtom = atom<LimitOrdersDerivedState>(DEFAULT_LIMIT_DERIVED_STATE)
 
 // Pick atom according to type of form displayed
 
