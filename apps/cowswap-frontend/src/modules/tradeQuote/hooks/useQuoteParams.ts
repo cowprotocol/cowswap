@@ -5,6 +5,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import ms from 'ms.macro'
 
 import { useAppData } from 'modules/appData'
+import { useIsWrapOrUnwrap } from 'modules/trade'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
@@ -15,12 +16,14 @@ const DEFAULT_QUOTE_TTL = ms`30m` / 1000
 export function useQuoteParams(amount: string | null, orderKind: OrderKind): FeeQuoteParams | undefined {
   const { chainId, account } = useWalletInfo()
   const appData = useAppData()
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const state = useDerivedTradeState()
 
   const { inputCurrency, outputCurrency } = state || {}
 
   return useSafeMemo(() => {
+    if (isWrapOrUnwrap) return
     if (!inputCurrency || !outputCurrency || !amount || !orderKind) return
 
     const sellToken = getWrappedToken(inputCurrency).address
@@ -55,5 +58,6 @@ export function useQuoteParams(amount: string | null, orderKind: OrderKind): Fee
     account,
     appData?.fullAppData,
     appData?.appDataKeccak256,
+    isWrapOrUnwrap,
   ])
 }
