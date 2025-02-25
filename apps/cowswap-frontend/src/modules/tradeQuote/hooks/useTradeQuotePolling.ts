@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useLayoutEffect, useMemo, useRef } from 'react'
 
-import { useDebounce } from '@cowprotocol/common-hooks'
+import { useDebounce, useIsOnline } from '@cowprotocol/common-hooks'
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import { OrderQuoteResponse, PriceQuality } from '@cowprotocol/cow-sdk'
 import { useAreUnsupportedTokens } from '@cowprotocol/tokens'
@@ -47,6 +47,9 @@ export function useTradeQuotePolling() {
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const getIsUnsupportedTokens = useAreUnsupportedTokens()
   const processUnsupportedTokenError = useProcessUnsupportedTokenError()
+  const isOnline = useIsOnline()
+  const isOnlineRef = useRef(isOnline)
+  isOnlineRef.current = isOnline
 
   useLayoutEffect(() => {
     if (!quoteParams || quoteParams.amount === '0') {
@@ -64,6 +67,11 @@ export function useTradeQuotePolling() {
     // Don't fetch quote if the parameters are the same
     // Also avoid quote refresh when only appData.quote (contains slippage) is changed
     if (currentQuoteParamsRef.current && quoteUsingSameParameters(currentQuoteParamsRef.current, quoteParams)) {
+      return
+    }
+
+    // When browser is offline do no poll
+    if (!isOnlineRef.current) {
       return
     }
 

@@ -13,12 +13,14 @@ import { useApproveState } from 'common/hooks/useApproveState'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { TradeFormValidationCommonContext } from '../types'
+import { useIsOnline } from '@cowprotocol/common-hooks'
 
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
   const { account } = useWalletInfo()
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isOnline = useIsOnline()
 
   const { inputCurrency, outputCurrency, recipient, tradeType } = derivedTradeState || {}
   const receiveAmounts = useReceiveAmounts()
@@ -51,6 +53,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     isPermitSupported,
     isInsufficientBalanceOrderAllowed,
     isProviderNetworkUnsupported,
+    isOnline,
+    derivedTradeState,
   }
 
   return useMemo(() => {

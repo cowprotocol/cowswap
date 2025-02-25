@@ -23,6 +23,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isPermitSupported,
     isInsufficientBalanceOrderAllowed,
     isProviderNetworkUnsupported,
+    isOnline,
   } = context
 
   const { inputCurrency, outputCurrency, inputCurrencyAmount, inputCurrencyBalance, recipient } = derivedTradeState
@@ -67,6 +68,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (inputAmountIsNotSet) {
     return TradeFormValidation.InputAmountNotSet
+  }
+
+  if (!isOnline) {
+    return TradeFormValidation.BrowserOffline
   }
 
   if (!isWrapUnwrap) {

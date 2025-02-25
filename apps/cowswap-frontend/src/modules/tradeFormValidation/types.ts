@@ -23,6 +23,7 @@ export enum TradeFormValidation {
   InputAmountNotSet,
   RecipientInvalid,
   NetworkNotSupported,
+  BrowserOffline,
 
   // Quote loading indicator
   QuoteLoading,
@@ -54,6 +55,7 @@ export interface TradeFormValidationCommonContext {
   isPermitSupported: boolean
   isInsufficientBalanceOrderAllowed: boolean
   isProviderNetworkUnsupported: boolean
+  isOnline: boolean
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}

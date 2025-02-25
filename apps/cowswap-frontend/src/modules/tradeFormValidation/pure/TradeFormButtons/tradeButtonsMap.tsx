@@ -74,6 +74,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.InputAmountNotSet]: {
     text: 'Enter an amount',
   },
+  [TradeFormValidation.BrowserOffline]: {
+    text: 'Error loading price. You are currently offline.',
+  },
   [TradeFormValidation.RecipientInvalid]: {
     text: 'Enter a valid recipient',
   },
