@@ -6,10 +6,6 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
-
-import { useUpdateTradeQuote } from './useUpdateTradeQuote'
-
 import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
 
 export function useSetTradeQuoteParams(
@@ -17,13 +13,9 @@ export function useSetTradeQuoteParams(
   orderKind: OrderKind,
   fastQuote?: boolean,
 ) {
-  const updateTradeQuote = useUpdateTradeQuote()
   const updateState = useSetAtom(tradeQuoteInputAtom)
 
-  const context = useSafeMemoObject({ amount, orderKind, fastQuote, updateTradeQuote, updateState })
-
   useEffect(() => {
-    context.updateTradeQuote({ response: null, error: null })
-    context.updateState({ amount: context.amount || null, orderKind: context.orderKind, fastQuote: context.fastQuote })
-  }, [context])
+    updateState({ amount: amount || null, orderKind, fastQuote })
+  }, [updateState, amount, orderKind, fastQuote])
 }
