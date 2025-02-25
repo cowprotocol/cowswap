@@ -1,5 +1,6 @@
 import React, { SyntheticEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import HTMLIcon from '@cowprotocol/assets/cow-swap/html.svg'
 import JSIcon from '@cowprotocol/assets/cow-swap/js.svg'
 import ReactIcon from '@cowprotocol/assets/cow-swap/react.svg'
@@ -27,7 +28,7 @@ import { jsExample } from './utils/jsExample'
 import { reactTsExample } from './utils/reactTsExample'
 import { tsExample } from './utils/tsExample'
 
-import { copyEmbedCodeGA, viewEmbedCodeGA } from '../analytics'
+import { AnalyticsCategory } from '../../common/analytics/types'
 import { ColorPalette } from '../configurator/types'
 
 interface TabInfo {
@@ -92,11 +93,15 @@ export function EmbedDialog({ params, open, handleClose, defaultPalette }: Embed
   const [tabInfo, setCurrentTabInfo] = useState<TabInfo>(TABS[0])
   const { id, language, snippetFromParams } = tabInfo
   const descriptionElementRef = useRef<HTMLElement>(null)
+  const cowAnalytics = useCowAnalytics()
 
   const [snackbarOpen, setSnackbarOpen] = useState(false)
-  const handleCopy = () => {
+  const handleCopyClick = () => {
     navigator.clipboard.writeText(code)
-    copyEmbedCodeGA()
+    cowAnalytics.sendEvent({
+      category: AnalyticsCategory.WIDGET_CONFIGURATOR,
+      action: 'Copy code',
+    })
     setSnackbarOpen(true)
   }
 
@@ -110,13 +115,16 @@ export function EmbedDialog({ params, open, handleClose, defaultPalette }: Embed
   useEffect(() => {
     if (open) {
       setScroll('paper')
-      viewEmbedCodeGA()
+      cowAnalytics.sendEvent({
+        category: AnalyticsCategory.WIDGET_CONFIGURATOR,
+        action: 'View code',
+      })
       const { current: descriptionElement } = descriptionElementRef
       if (descriptionElement !== null) {
         descriptionElement.focus()
       }
     }
-  }, [open])
+  }, [open, cowAnalytics])
 
   const code = useMemo(() => {
     return snippetFromParams(params, defaultPalette)
@@ -180,7 +188,7 @@ export function EmbedDialog({ params, open, handleClose, defaultPalette }: Embed
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleCopy}>Copy</Button>
+          <Button onClick={handleCopyClick}>Copy</Button>
         </DialogActions>
       </Dialog>
 

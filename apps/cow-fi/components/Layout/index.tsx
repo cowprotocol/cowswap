@@ -3,10 +3,13 @@
 import { PropsWithChildren } from 'react'
 import Link from 'next/link'
 import { Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
-import styled, { createGlobalStyle, css } from 'styled-components/macro'
+import styled, { createGlobalStyle, css, ThemeProvider } from 'styled-components/macro'
 import { CoWDAOFonts } from '@/styles/CoWDAOFonts'
 import { NAV_ADDITIONAL_BUTTONS, NAV_ITEMS, PAGE_MAX_WIDTH, PRODUCT_VARIANT } from './const'
 import { useSetupPage } from '../../hooks/useSetupPage'
+import { baseTheme } from '@cowprotocol/ui'
+
+const darkTheme = baseTheme('dark')
 
 const LinkComponent = (props: PropsWithChildren<{ href: string }>) => {
   const external = props.href.startsWith('http')
@@ -50,22 +53,28 @@ export function Layout({ children, bgColor, host }: Readonly<LayoutProps>) {
     <>
       <GlobalStyles />
       <LocalStyles />
-      <MenuBar
-        navItems={NAV_ITEMS}
-        productVariant={PRODUCT_VARIANT}
-        additionalNavButtons={NAV_ADDITIONAL_BUTTONS}
-        padding="10px 60px"
-        maxWidth={PAGE_MAX_WIDTH}
-        LinkComponent={LinkComponent}
-      />
+      {/* Override global light theme to force dark mode for MenuBar only */}
+      <ThemeProvider theme={darkTheme}>
+        <MenuBar
+          navItems={NAV_ITEMS}
+          productVariant={PRODUCT_VARIANT}
+          additionalNavButtons={NAV_ADDITIONAL_BUTTONS}
+          padding="10px 60px"
+          maxWidth={PAGE_MAX_WIDTH}
+          LinkComponent={LinkComponent}
+        />
+      </ThemeProvider>
       <Wrapper>{children}</Wrapper>
-      <Footer
-        maxWidth={PAGE_MAX_WIDTH}
-        productVariant={PRODUCT_VARIANT}
-        host={host ?? process.env.NEXT_PUBLIC_SITE_URL!}
-        expanded
-        hasTouchFooter
-      />
+      {/* Override global light theme to force dark mode for Footer only */}
+      <ThemeProvider theme={darkTheme}>
+        <Footer
+          maxWidth={PAGE_MAX_WIDTH}
+          productVariant={PRODUCT_VARIANT}
+          host={host ?? process.env.NEXT_PUBLIC_SITE_URL!}
+          expanded
+          hasTouchFooter
+        />
+      </ThemeProvider>
     </>
   )
 }

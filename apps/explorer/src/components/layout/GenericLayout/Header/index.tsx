@@ -51,7 +51,7 @@ const Logo = styled(Link)`
     display: flex;
     align-content: center;
     justify-content: center;
-    color: ${({ theme }): string => theme.textPrimary1};
+    color: ${Color.explorer_textPrimary};
   }
 
   ${Media.upToExtraSmall()} {

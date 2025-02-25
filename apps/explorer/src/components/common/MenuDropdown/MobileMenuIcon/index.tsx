@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { Media } from '@cowprotocol/ui'
+import { Media, Color } from '@cowprotocol/ui'
 
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
 
@@ -19,7 +19,7 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   }
 
   span {
-    background-color: ${({ theme }): string => theme.textSecondary1};
+    background-color: ${Color.explorer_textSecondary};
     border-radius: 0.3rem;
     height: 0.2rem;
     position: absolute;

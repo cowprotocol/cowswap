@@ -13,7 +13,8 @@ import {
   TopicTitle,
 } from '@/styles/styled'
 import { ArrowButton } from '@/components/ArrowButton'
-import { clickOnKnowledgeBase } from '../modules/analytics'
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 import { CmsImage, Color, Font, Media } from '@cowprotocol/ui'
 import { ArticleListResponse } from '../services/cms'
 import styled from 'styled-components/macro'
@@ -64,6 +65,8 @@ const Wrapper = styled.div`
 `
 
 export function TopicsPageComponent({ articles, categories }: PageProps) {
+  const analytics = useCowAnalytics()
+
   return (
     <Wrapper>
       <h1>Knowledge Base</h1>
@@ -85,7 +88,13 @@ export function TopicsPageComponent({ articles, categories }: PageProps) {
                   bgColor={bgColor}
                   textColor={textColor}
                   href={link}
-                  onClick={() => clickOnKnowledgeBase(`click-topic-${name}`)}
+                  onClick={() =>
+                    analytics.sendEvent({
+                      category: CowFiCategory.KNOWLEDGEBASE,
+                      action: 'Click topic',
+                      label: name,
+                    })
+                  }
                 >
                   <TopicImage iconColor={iconColor}>
                     {imageUrl ? (

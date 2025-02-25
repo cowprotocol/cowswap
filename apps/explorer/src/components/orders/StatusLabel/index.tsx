@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { Color } from '@cowprotocol/ui'
+
 import {
   faCheckCircle,
   faCircleNotch,
@@ -23,7 +25,6 @@ function canBePartiallyFilled(status: string): status is OrderStatus {
 }
 
 function setStatusColors({
-  theme,
   status,
 }: {
   theme: DefaultTheme
@@ -35,21 +36,21 @@ function setStatusColors({
     case 'expired':
     case 'cancelled':
     case 'cancelling':
-      text = theme.orange
-      background = theme.orangeOpacity
+      text = Color.explorer_orange1
+      background = Color.explorer_orangeOpacity
       break
     case 'filled':
-      text = theme.green
-      background = theme.greenOpacity
+      text = Color.explorer_green1
+      background = Color.explorer_greenOpacity
       break
     case 'open':
     case 'signing':
-      text = theme.labelTextOpen
-      background = theme.labelBgOpen
+      text = Color.explorer_textPrimary
+      background = Color.explorer_bgInput
       break
     case 'partially filled':
-      text = theme.green
-      background = theme.greenOpacity
+      text = Color.explorer_green1
+      background = Color.explorer_greenOpacity
   }
 
   return `
@@ -74,7 +75,7 @@ const PartiallyTagLabel = css<PartiallyTagProps>`
             font-weight: ${theme.fontMedium};
             font-size: 0.71em; /* Intentional use of "em" to be relative to parent's font size */
             min-height: 1.35rem;
-            border: solid 0.1rem ${theme.greyOpacity};
+            border: solid 0.1rem ${Color.explorer_greyOpacity};
             white-space: nowrap;
             ${tagPosition === 'bottom'
               ? `
@@ -87,7 +88,7 @@ const PartiallyTagLabel = css<PartiallyTagProps>`
               border-radius: 0 0.4rem 0.4rem 0;
               padding: 0 0.6rem;
               font-size: 0.84em;
-              color: ${theme.textSecondary1};
+              color: ${Color.explorer_textSecondary};
             `}
           `
         : null}

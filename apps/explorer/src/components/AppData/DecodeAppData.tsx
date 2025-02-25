@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import { Color } from '@cowprotocol/ui'
+
 import AppDataWrapper from 'components/common/AppDataWrapper'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import Spinner from 'components/common/Spinner'
@@ -83,7 +85,7 @@ const ShowMoreButton = styled.button`
   margin-top: 0.5rem;
   border: none;
   background: none;
-  color: ${({ theme }): string => theme.textActive1};
+  color: ${Color.explorer_textActive};
   align-self: flex-start;
   padding: 0;
 

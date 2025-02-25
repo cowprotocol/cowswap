@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Media } from '@cowprotocol/ui'
+import { Media, Color } from '@cowprotocol/ui'
 
 import searchImg from 'assets/img/search2.svg'
 import styled from 'styled-components/macro'
@@ -41,7 +41,7 @@ const SearchWrapped = styled(Wrapper)`
     }
 
     &::placeholder {
-      color: ${({ theme }): string => theme.greyShade};
+      color: ${Color.explorer_greyShade};
       transition: all 0.2s ease-in-out;
 
       ${Media.upToSmall()} {
