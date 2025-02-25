@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { useIsOnline } from '@cowprotocol/common-hooks'
 import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -13,7 +14,6 @@ import { useApproveState } from 'common/hooks/useApproveState'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { TradeFormValidationCommonContext } from '../types'
-import { useIsOnline } from '@cowprotocol/common-hooks'
 
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
   const { account } = useWalletInfo()
