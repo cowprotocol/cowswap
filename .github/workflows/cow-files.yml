@@ -6,9 +6,6 @@ on:
       - main
     paths:
       - 'static-files/public/**'
-  pull_request:
-    paths:
-      - 'static-files/public/**'
   workflow_dispatch: # Manual trigger
 
 # Required for authenticating with AWS IAM
