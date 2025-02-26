@@ -91,14 +91,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       derivedTradeState.tradeType !== TradeType.LIMIT_ORDER &&
       !tradeQuote.isLoading &&
       tradeQuote.quoteParams?.priceQuality !== PriceQuality.FAST &&
-      isQuoteExpired({
-        expirationDate: tradeQuote.response?.expiration,
-        deadlineParams: {
-          validFor: tradeQuote.quoteParams?.validFor,
-          quoteValidTo: tradeQuote.response.quote.validTo,
-          localQuoteTimestamp: tradeQuote.localQuoteTimestamp,
-        },
-      })
+      isQuoteExpired(tradeQuote)
     ) {
       return TradeFormValidation.QuoteExpired
     }
