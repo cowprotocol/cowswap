@@ -5,7 +5,7 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import ms from 'ms.macro'
 import useSWR, { SWRResponse } from 'swr'
 
-import { useIsWalletConnect } from '../../web3-react/hooks/useIsWalletConnect'
+import { useIsWalletConnect } from '../../reown/hooks/useIsWalletConnect'
 import { useWalletInfo } from '../hooks'
 
 export type WalletCapabilities = {

@@ -3,6 +3,7 @@ export { reownAppKit } from './reown/init'
 export * from './api/types'
 export * from './api/utils'
 export * from './assets'
+export * from './constants'
 
 // Hooks
 export * from './api/hooks'

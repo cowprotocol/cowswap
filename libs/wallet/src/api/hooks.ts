@@ -7,7 +7,7 @@ import { gnosisSafeInfoAtom, walletDetailsAtom, walletDisplayedAddress, walletIn
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
 
 import { METAMASK_RDNS, RABBY_RDNS, WATCH_ASSET_SUPPORED_WALLETS } from '../constants'
-import { useIsSafeApp } from '../reown/hooks/useWalletMetadata'
+import { useIsSafeApp, useIsSafeViaWc } from '../reown/hooks/useWalletMetadata'
 
 export function useWalletInfo(): WalletInfo {
   return useAtomValue(walletInfoAtom)

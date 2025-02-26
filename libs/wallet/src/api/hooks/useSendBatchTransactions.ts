@@ -5,7 +5,7 @@ import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 
 import { useWalletCapabilities } from './useWalletCapabilities'
 
-import { useSafeAppsSdk } from '../../web3-react/hooks/useSafeAppsSdk'
+import { useSafeAppsSdk } from '../../reown/hooks/useSafeAppsSdk'
 import { useWalletInfo } from '../hooks'
 
 export type SendBatchTxCallback = (txs: MetaTransactionData[]) => Promise<string>

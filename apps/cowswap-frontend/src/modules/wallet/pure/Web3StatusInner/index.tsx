@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { Loader, RowBetween } from '@cowprotocol/ui'
+import { useWalletMetaData } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
 import ICON_WALLET from 'assets/icon/wallet.svg'
@@ -29,15 +30,16 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
   const hasPendingTransactions = !!pendingCount
   const isUpToExtraSmall = useMediaQuery(upToExtraSmall)
   const isUpToTiny = useMediaQuery(upToTiny)
+  const { walletName } = useWalletMetaData()
 
   const connectWalletEvent = useMemo(
     (): CowSwapGtmEvent => ({
       category: CowSwapAnalyticsCategory.WALLET,
       action: 'Connect wallet button click',
-      label: `${connectionType}${ensName ? ' (ENS)' : ''}`,
+      label: `${walletName}${ensName ? ' (ENS)' : ''}`,
       value: pendingCount,
     }),
-    [connectionType, ensName, pendingCount],
+    [walletName, ensName, pendingCount],
   )
 
   if (account) {
