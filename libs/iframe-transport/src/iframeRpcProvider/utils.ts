@@ -1,6 +1,6 @@
-import type { EIP6963ProviderDetail } from '@cowprotocol/types'
-
 import { EIP6963ProviderInfo, ProviderWcMetadata } from '../types'
+
+import type { EIP6963ProviderDetail } from './types'
 
 export function getProviderWcMetadata(provider: any): ProviderWcMetadata | undefined {
   if (!provider.isWalletConnect) return

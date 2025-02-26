@@ -1,11 +1,10 @@
-import { EIP6963AnnounceProviderEvent, EIP6963ProviderDetail } from '@cowprotocol/types'
-
 import {
   IframeRpcProviderEvents,
   iframeRpcProviderTransport,
   ProviderRpcResponsePayload,
   ProviderRpcRequestPayload,
 } from './iframeRpcProviderEvents'
+import { EIP6963AnnounceProviderEvent, EIP6963ProviderDetail } from './types'
 import { getEip6963ProviderInfo, getProviderWcMetadata } from './utils'
 
 import { EthereumProvider, JsonRpcRequestMessage } from '../types'
