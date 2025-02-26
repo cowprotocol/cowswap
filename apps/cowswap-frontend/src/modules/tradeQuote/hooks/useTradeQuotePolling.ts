@@ -19,9 +19,11 @@ import { useTradeQuote } from './useTradeQuote'
 import { useUpdateTradeQuote } from './useUpdateTradeQuote'
 
 import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
+import { isQuoteExpired } from '../utils/quoteDeadline'
 import { quoteUsingSameParameters } from '../utils/quoteUsingSameParameters'
 
 export const PRICE_UPDATE_INTERVAL = ms`30s`
+const QUOTE_EXPIRATION_CHECK_INTERVAL = ms`2s`
 const AMOUNT_CHANGE_DEBOUNCE_TIME = ms`300`
 
 // Solves the problem of multiple requests
@@ -30,9 +32,9 @@ const getOptimalQuote = onlyResolvesLast<OrderQuoteResponse>(getQuote)
 
 export function useTradeQuotePolling() {
   const { amount, fastQuote, orderKind } = useAtomValue(tradeQuoteInputAtom)
-  const { quoteParams: currentQuoteParams } = useTradeQuote()
-  const currentQuoteParamsRef = useRef(currentQuoteParams)
-  currentQuoteParamsRef.current = currentQuoteParams
+  const tradeQuote = useTradeQuote()
+  const tradeQuoteRef = useRef(tradeQuote)
+  tradeQuoteRef.current = tradeQuote
 
   /**
    * It's important to keep amount and orderKind together in order to have consistent quoteParams
@@ -64,14 +66,10 @@ export function useTradeQuotePolling() {
       return
     }
 
+    const currentQuoteParams = tradeQuoteRef.current.quoteParams
     // Don't fetch quote if the parameters are the same
     // Also avoid quote refresh when only appData.quote (contains slippage) is changed
-    if (currentQuoteParamsRef.current && quoteUsingSameParameters(currentQuoteParamsRef.current, quoteParams)) {
-      return
-    }
-
-    // When browser is offline do no poll
-    if (!isOnlineRef.current) {
+    if (currentQuoteParams && quoteUsingSameParameters(currentQuoteParams, quoteParams)) {
       return
     }
 
@@ -109,17 +107,48 @@ export function useTradeQuotePolling() {
         })
     }
 
-    const fetchStartTimestamp = Date.now()
-    if (fastQuote) fetchQuote(true, PriceQuality.FAST, fetchStartTimestamp)
-    fetchQuote(true, PriceQuality.OPTIMAL, fetchStartTimestamp)
+    function fetchAndUpdateQuote(paramsChanged: boolean) {
+      // When browser is offline do no fetch
+      if (!isOnlineRef.current) {
+        return
+      }
 
-    const intervalId = setInterval(() => {
       const fetchStartTimestamp = Date.now()
-      if (fastQuote) fetchQuote(false, PriceQuality.FAST, fetchStartTimestamp)
-      fetchQuote(false, PriceQuality.OPTIMAL, fetchStartTimestamp)
+      if (fastQuote) fetchQuote(paramsChanged, PriceQuality.FAST, fetchStartTimestamp)
+      fetchQuote(paramsChanged, PriceQuality.OPTIMAL, fetchStartTimestamp)
+    }
+
+    /**
+     * Fetch the quote instantly once the quote params are changed
+     */
+    fetchAndUpdateQuote(true)
+
+    /**
+     * Start polling for the quote
+     */
+    const pollingIntervalId = setInterval(() => {
+      fetchAndUpdateQuote(false)
     }, PRICE_UPDATE_INTERVAL)
 
-    return () => clearInterval(intervalId)
+    /**
+     * Periodically check if the quote has expired and refetch it
+     */
+    const quoteExpirationInterval = setInterval(() => {
+      const currentQuote = tradeQuoteRef.current
+
+      if (currentQuote.response && isQuoteExpired(currentQuote)) {
+        /**
+         * Reset the quote state in order to not trigger the quote expiration check again
+         */
+        updateQuoteState({ response: null, isLoading: false })
+        fetchAndUpdateQuote(false)
+      }
+    }, QUOTE_EXPIRATION_CHECK_INTERVAL)
+
+    return () => {
+      clearInterval(pollingIntervalId)
+      clearInterval(quoteExpirationInterval)
+    }
   }, [
     fastQuote,
     quoteParams,
