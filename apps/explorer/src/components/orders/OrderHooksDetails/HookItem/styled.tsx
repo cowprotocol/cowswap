@@ -1,3 +1,5 @@
+import { Color } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 export const Item = styled.li`
@@ -15,6 +17,7 @@ export const Wrapper = styled.div`
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    flex-wrap: wrap;
   }
 
   > p > i {
@@ -31,7 +34,7 @@ export const Wrapper = styled.div`
 export const ToggleButton = styled.button`
   background: none;
   border: none;
-  color: ${({ theme }) => theme.textActive1};
+  color: ${Color.explorer_textActive};
   cursor: pointer;
   font-size: 1.4rem;
   padding: 0.5rem 0;
@@ -47,9 +50,9 @@ export const Details = styled.div`
   word-break: break-all;
   line-height: 1.5;
   overflow: auto;
-  border: 0.1rem solid rgb(151 151 184 / 10%);
+  border: 0.1rem solid ${Color.explorer_tableRowBorder};
   padding: 1.4rem;
-  background: rgb(151 151 184 / 10%);
+  background: ${Color.explorer_tableRowBorder};
   border-radius: 0.5rem;
   white-space: pre-wrap;
 

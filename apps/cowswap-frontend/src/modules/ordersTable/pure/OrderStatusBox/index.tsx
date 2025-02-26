@@ -1,10 +1,25 @@
+import { ReactNode } from 'react'
+
+import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { Command } from '@cowprotocol/types'
 
-import styled from 'styled-components/macro'
+import SVG from 'react-inlinesvg'
+import styled, { css, keyframes } from 'styled-components/macro'
+
+import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { getOrderStatusTitleAndColor } from './getOrderStatusTitleAndColor'
+
+const shimmerAnimation = keyframes`
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+`
 
 const Wrapper = styled.div<{
   color: string
@@ -12,8 +27,10 @@ const Wrapper = styled.div<{
   withWarning?: boolean
   widthAuto?: boolean
   clickable?: boolean
+  isCancelling?: boolean
+  isSigning?: boolean
 }>`
-  --height: 28px;
+  --height: 26px;
   --statusColor: ${({ color }) => color};
   --statusBackground: ${({ background }) => background};
 
@@ -39,9 +56,47 @@ const Wrapper = styled.div<{
     left: 0;
     top: 0;
     background: var(--statusBackground);
-    /* opacity: 0.14; */
     z-index: 1;
-    border-radius: ${({ withWarning }) => (withWarning ? '9px 0 0 9px' : '9px')};
+    border-radius: 16px;
+  }
+
+  ${({ isCancelling, isSigning }) =>
+    (isCancelling || isSigning) &&
+    css`
+      overflow: hidden;
+      border-radius: 16px;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+        animation: ${shimmerAnimation} 1.5s infinite;
+        z-index: 2;
+        border-radius: 16px;
+      }
+    `}
+`
+
+const StatusContent = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+  z-index: 2;
+  white-space: nowrap;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+
+  svg > path {
+    fill: currentColor;
   }
 `
 
@@ -50,10 +105,22 @@ type OrderStatusBoxProps = {
   widthAuto?: boolean
   withWarning?: boolean
   onClick?: Command
+  WarningTooltip?: ReactNode
 }
 
-export function OrderStatusBox({ order, widthAuto, withWarning, onClick }: OrderStatusBoxProps) {
+export function OrderStatusBox({ order, widthAuto, withWarning, onClick, WarningTooltip }: OrderStatusBoxProps) {
   const { title, color, background } = getOrderStatusTitleAndColor(order)
+
+  const content = (
+    <StatusContent>
+      {withWarning && WarningTooltip}
+      {order.status === OrderStatus.PRESIGNATURE_PENDING && (
+        <SVG src={orderPresignaturePending} description="signing" />
+      )}
+      {title}
+    </StatusContent>
+  )
+
   return (
     <Wrapper
       color={color}
@@ -62,9 +129,10 @@ export function OrderStatusBox({ order, widthAuto, withWarning, onClick }: Order
       withWarning={withWarning}
       clickable={!!onClick}
       onClick={onClick}
+      isCancelling={order.isCancelling && !order.executionData.fullyFilled}
+      isSigning={order.status === OrderStatus.PRESIGNATURE_PENDING}
     >
-      {/* Status overrides for special cases */}
-      {title}
+      {content}
     </Wrapper>
   )
 }

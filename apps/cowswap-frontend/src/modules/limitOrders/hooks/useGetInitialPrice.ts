@@ -1,131 +1,44 @@
 import { useEffect, useState } from 'react'
 
-import { useIsWindowVisible } from '@cowprotocol/common-hooks'
-import { getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
-import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency, Fraction } from '@uniswap/sdk-core'
+import { FractionUtils, getWrappedToken } from '@cowprotocol/common-utils'
+import { Fraction } from '@uniswap/sdk-core'
 
-import * as Sentry from '@sentry/browser'
-import ms from 'ms.macro'
 import { useAsyncMemo } from 'use-async-memo'
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
-import { parsePrice } from 'modules/limitOrders/utils/parsePrice'
 
-import { getNativePrice } from 'api/cowProtocol'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
-type PriceResult = number | Error | undefined
-
-const PRICE_UPDATE_INTERVAL = ms`10sec`
-
-async function requestPriceForCurrency(chainId: number | undefined, currency: Currency | null): Promise<PriceResult> {
-  const currencyAddress = getAddress(currency)
-
-  if (!chainId || !currency) {
-    return
-  }
-
-  try {
-    if (getIsNativeToken(currency) || !currencyAddress) {
-      return parsePrice(1, currency)
-    }
-
-    const result = await getNativePrice(chainId, currencyAddress)
-
-    if (!result) {
-      throw new Error('No result from native_price endpoint')
-    }
-
-    const price = parsePrice(result.price || 0, currency)
-    if (!price) {
-      throw new Error("Couldn't parse native_price result")
-    }
-
-    return price
-  } catch (error: any) {
-    console.warn('[requestPriceForCurrency] Error fetching native_price', error)
-
-    const sentryError = Object.assign(error, {
-      message: error.message || 'Error fetching native_price ',
-      name: 'NativePriceFetchError',
-    })
-
-    const params = {
-      chainId,
-      tokenAddress: currencyAddress,
-      tokenName: currency?.name,
-      tokenSymbol: currency.symbol,
-    }
-
-    Sentry.captureException(sentryError, {
-      contexts: {
-        params,
-      },
-    })
-
-    return error
-  }
-}
-
-export async function requestPrice(
-  chainId: number | undefined,
-  inputCurrency: Currency | null,
-  outputCurrency: Currency | null
-): Promise<Fraction | null> {
-  return Promise.all([
-    requestPriceForCurrency(chainId, inputCurrency),
-    requestPriceForCurrency(chainId, outputCurrency),
-  ]).then(([inputPrice, outputPrice]) => {
-    if (!inputPrice || !outputPrice || inputPrice instanceof Error || outputPrice instanceof Error) {
-      return null
-    }
-
-    const result = new Fraction(inputPrice, outputPrice)
-
-    console.debug('Updated limit orders initial price: ', result.toSignificant(18))
-
-    return result
-  })
-}
+import { useUsdPrice } from '../../usdAmount'
 
 // Fetches the INPUT and OUTPUT price and calculates initial Active rate
 // When return null it means we failed on price loading
-// TODO: rename it to useNativeBasedPrice
 export function useGetInitialPrice(): { price: Fraction | null; isLoading: boolean } {
-  const { chainId } = useWalletInfo()
   const { inputCurrency, outputCurrency } = useLimitOrdersDerivedState()
   const [isLoading, setIsLoading] = useState(false)
-  const [updateTimestamp, setUpdateTimestamp] = useState(Date.now())
-  const isWindowVisible = useIsWindowVisible()
+
+  const inputToken = inputCurrency && getWrappedToken(inputCurrency)
+  const outputToken = outputCurrency && getWrappedToken(outputCurrency)
+  const inputUsdPrice = useUsdPrice(inputToken)
+  const outputUsdPrice = useUsdPrice(outputToken)
+
+  useEffect(() => {
+    setIsLoading(!!inputUsdPrice?.isLoading || !!outputUsdPrice?.isLoading)
+  }, [inputUsdPrice?.isLoading, outputUsdPrice?.isLoading])
 
   const price = useAsyncMemo(
-    () => {
-      setIsLoading(true)
-
+    async () => {
       console.debug('[useGetInitialPrice] Fetching price')
-      return requestPrice(chainId, inputCurrency, outputCurrency).finally(() => {
-        setIsLoading(false)
-      })
+      if (!inputUsdPrice?.price || !outputUsdPrice?.price) {
+        return null
+      }
+      const inputFraction = FractionUtils.fromPrice(inputUsdPrice.price)
+      const outputFraction = FractionUtils.fromPrice(outputUsdPrice.price)
+      return inputFraction.divide(outputFraction)
     },
-    [chainId, inputCurrency, outputCurrency, updateTimestamp],
-    null
+    [inputUsdPrice?.price, outputUsdPrice?.price],
+    null,
   )
-
-  // Update initial price every 10 seconds
-  useEffect(() => {
-    if (!isWindowVisible) {
-      console.debug('[useGetInitialPrice] No need to fetch quotes')
-      return
-    }
-
-    console.debug('[useGetInitialPrice] Periodically fetch price')
-    const interval = setInterval(() => {
-      setUpdateTimestamp(Date.now())
-    }, PRICE_UPDATE_INTERVAL)
-
-    return () => clearInterval(interval)
-  }, [isWindowVisible])
 
   return useSafeMemo(() => ({ price, isLoading }), [price, isLoading])
 }

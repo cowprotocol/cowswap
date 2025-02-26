@@ -53,6 +53,7 @@ export function useUpdateActiveRate(): UpdateRateCallback {
           activeRate,
           amount: isSell ? inputCurrencyAmount : outputCurrencyAmount,
           orderKind,
+          isPriceUpdate: true,
         })
       }
 
@@ -73,6 +74,6 @@ export function useUpdateActiveRate(): UpdateRateCallback {
       inputCurrencyAmount,
       outputCurrencyAmount,
       updateLimitOrdersState,
-    ]
+    ],
   )
 }

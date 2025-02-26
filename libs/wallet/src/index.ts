@@ -6,6 +6,9 @@ export * from './assets'
 
 // Hooks
 export * from './api/hooks'
+export { useWalletCapabilities } from './api/hooks/useWalletCapabilities'
+export { useSendBatchTransactions } from './api/hooks/useSendBatchTransactions'
+export type { SendBatchTxCallback } from './api/hooks/useSendBatchTransactions'
 export { useOpenWalletConnectionModal } from './api/hooks/useOpenWalletConnectionModal'
 export * from './reown/hooks/useWalletMetadata'
 export * from './reown/hooks/useIsWalletConnect'

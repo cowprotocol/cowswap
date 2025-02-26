@@ -225,7 +225,7 @@ const USDCE_ARBITRUM_ONE = new TokenWithLogo(
   SupportedChainId.ARBITRUM_ONE,
   '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8',
   6,
-  'USDC',
+  'USDC.e',
   'USD Coin (Arb1)',
 )
 
@@ -558,8 +558,6 @@ export const STABLECOINS: Record<ChainId, Set<string>> = {
   [SupportedChainId.SEPOLIA]: new Set(SEPOLIA_STABLECOINS),
   [SupportedChainId.BASE]: new Set(BASE_STABLECOINS),
 }
-
-console.debug('STABLECOINS', STABLECOINS)
 
 /**
  * Addresses related to COW vesting for Locked GNO

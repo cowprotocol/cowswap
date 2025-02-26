@@ -1,6 +1,5 @@
 import { Media, UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'color2k'
 import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -68,7 +67,7 @@ export const MenuItem = styled.div<{ active: boolean }>`
 
 export const Wrapper = styled.div`
   display: grid;
-  grid-template-columns: 120px minmax(auto, 950px);
+  grid-template-columns: 120px minmax(auto, 1140px);
   grid-template-rows: max-content;
   margin: 0;
   width: 100%;
@@ -138,25 +137,6 @@ export const Overview = styled.div`
   ${Media.upToMedium()} {
     display: flex;
     flex-flow: column wrap;
-
-    &::after {
-      content: '';
-      display: block;
-      background: linear-gradient(
-        to left,
-        ${({ theme }) => theme.paper} 0%,
-        ${({ theme }) => transparentize(theme.paper, 1)} 100%
-      );
-      pointer-events: none;
-      height: 100%;
-      width: 80px;
-      position: absolute;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      margin: auto;
-      z-index: 1;
-    }
   }
 `
 
@@ -190,7 +170,9 @@ export const TokenSearchInput = styled.input`
   background: var(${UI.COLOR_PAPER_DARKER});
   border: 1px solid var(${UI.COLOR_BORDER});
   border-radius: 21px;
-  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, max-width var(${UI.ANIMATION_DURATION}) ease-in-out;
+  transition:
+    background var(${UI.ANIMATION_DURATION}) ease-in-out,
+    max-width var(${UI.ANIMATION_DURATION}) ease-in-out;
   appearance: none;
   height: 44px;
   padding: 0 16px;

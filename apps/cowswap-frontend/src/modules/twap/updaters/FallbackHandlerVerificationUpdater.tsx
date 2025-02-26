@@ -36,7 +36,7 @@ export function FallbackHandlerVerificationUpdater() {
   useEffect(() => {
     if (!account || fallbackHandlerVerification === null) return
 
-    update({ [account]: fallbackHandlerVerification })
+    update({ [account.toLowerCase()]: fallbackHandlerVerification })
     localStorage.setItem(FB_UPDATE_TIME_KEY, Date.now().toString())
   }, [fallbackHandlerVerification, update, account])
 

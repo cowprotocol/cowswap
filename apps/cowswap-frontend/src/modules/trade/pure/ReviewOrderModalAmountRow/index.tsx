@@ -1,11 +1,11 @@
 import { ReactNode } from 'react'
 
-import { FiatAmount, InfoTooltip, Row, TokenAmount } from '@cowprotocol/ui'
+import { FiatAmount, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { Content } from 'modules/trade/pure/ConfirmDetailsItem/styled'
+import { Content, Label } from 'modules/trade/pure/ConfirmDetailsItem/styled'
 
 import { ConfirmDetailsItem } from '../ConfirmDetailsItem'
 import { ReceiveAmountTitle } from '../ReceiveAmountTitle'
@@ -20,7 +20,6 @@ export type ReviewOrderAmountRowProps = {
   isAmountAccurate?: boolean
   withTimelineDot?: boolean
   highlighted?: boolean
-  alwaysRow?: boolean
 }
 
 export function ReviewOrderModalAmountRow({
@@ -33,7 +32,6 @@ export function ReviewOrderModalAmountRow({
   isAmountAccurate = true,
   withTimelineDot = false,
   highlighted = false,
-  alwaysRow = false,
 }: ReviewOrderAmountRowProps) {
   const Amount = (
     <Content highlighted={highlighted}>
@@ -51,19 +49,15 @@ export function ReviewOrderModalAmountRow({
   )
 
   return (
-    <ConfirmDetailsItem
-      tooltip={tooltip}
-      label={highlighted ? undefined : label}
-      alwaysRow={alwaysRow}
-      withTimelineDot={withTimelineDot}
-    >
+    <ConfirmDetailsItem tooltip={tooltip} label={highlighted ? undefined : label} withTimelineDot={withTimelineDot}>
       {highlighted ? (
         <>
           <ReceiveAmountTitle>
-            <Row gap="6px">
-              <span>{label}</span>
-              {tooltip && <InfoTooltip content={tooltip} />}
-            </Row>
+            <Label>
+              <b>
+                {label} {tooltip && <InfoTooltip className="info-tooltip" content={tooltip} />}
+              </b>
+            </Label>
           </ReceiveAmountTitle>
           <span>{Amount}</span>
         </>

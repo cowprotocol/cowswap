@@ -138,7 +138,6 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
                 hideLimitPrice
                 hideUsdValues
                 withTimelineDot={false}
-                alwaysRow
               >
                 <RowDeadline deadline={userDeadline} />
               </TradeBasicConfirmDetails>

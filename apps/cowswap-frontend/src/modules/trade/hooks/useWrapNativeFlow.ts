@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -13,7 +14,7 @@ import {
 } from 'legacy/hooks/useWrapCallback'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { useWETHContract } from 'common/hooks/useContract'
+import { useWethContract } from 'common/hooks/useContract'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useWrapNativeScreenState } from './useWrapNativeScreenState'
@@ -28,26 +29,29 @@ export function useWrapNativeFlow(): WrapUnwrapCallback {
 
       return wrapCallback(params)
     },
-    [wrapCallback]
+    [wrapCallback],
   )
 }
 
 function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUnwrapContext | null {
-  const { chainId } = useWalletInfo()
-  const wethContract = useWETHContract()
+  const { account } = useWalletInfo()
+  const { contract: wethContract, chainId: wethChainId } = useWethContract()
   const addTransaction = useTransactionAdder()
   const [, setWrapNativeState] = useWrapNativeScreenState()
+  const analytics = useCowAnalytics()
 
   return useMemo(() => {
-    if (!wethContract || !chainId || !amount) {
+    if (!wethContract || !amount || !account) {
       return null
     }
 
     return {
-      chainId,
+      chainId: wethChainId,
+      account,
       wethContract,
       amount,
       addTransaction,
+      analytics,
       closeModals() {
         setWrapNativeState({ isOpen: false })
       },
@@ -55,7 +59,7 @@ function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUn
         setWrapNativeState({ isOpen: true })
       },
     }
-  }, [chainId, wethContract, amount, addTransaction, setWrapNativeState])
+  }, [wethChainId, wethContract, amount, addTransaction, setWrapNativeState, account, analytics])
 }
 
 function useWrapNativeCallback(inputAmount: Nullish<CurrencyAmount<Currency>>): WrapUnwrapCallback | null {

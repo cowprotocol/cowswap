@@ -13,7 +13,9 @@ export interface EthFlowOrderExistsCallback {
 
 export function useCheckEthFlowOrderExists(): EthFlowOrderExistsCallback {
   const ethFlowInFlightOrderIds = useAtomValue(ethFlowInFlightOrderIdsAtom)
-  const ethFlowContract = useEthFlowContract()
+  const {
+    result: { contract: ethFlowContract },
+  } = useEthFlowContract()
 
   return useCallback(
     async (orderId: string, orderDigest: string) => {
@@ -35,6 +37,6 @@ export function useCheckEthFlowOrderExists(): EthFlowOrderExistsCallback {
 
       return false
     },
-    [ethFlowInFlightOrderIds, ethFlowContract]
+    [ethFlowInFlightOrderIds, ethFlowContract],
   )
 }

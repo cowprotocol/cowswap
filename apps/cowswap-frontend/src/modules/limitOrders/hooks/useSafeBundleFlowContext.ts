@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { useSafeAppsSdk } from '@cowprotocol/wallet'
+import { useSendBatchTransactions } from '@cowprotocol/wallet'
 
 import { SafeBundleFlowContext, TradeFlowContext } from 'modules/limitOrders/services/types'
 
@@ -9,15 +9,15 @@ import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
 export function useSafeBundleFlowContext(tradeContext: TradeFlowContext | null): SafeBundleFlowContext | null {
   const sellToken = tradeContext?.postOrderParams.sellToken
-  const erc20Contract = useTokenContract(sellToken?.address)
+  const { contract: erc20Contract } = useTokenContract(sellToken?.address)
   const spender = useTradeSpenderAddress()
-  const safeAppsSdk = useSafeAppsSdk()
+  const sendBatchTransactions = useSendBatchTransactions()
 
   return useMemo(() => {
-    if (!tradeContext || !erc20Contract || !spender || !safeAppsSdk) {
+    if (!tradeContext || !erc20Contract || !spender) {
       return null
     }
 
-    return { ...tradeContext, erc20Contract, spender, safeAppsSdk }
-  }, [tradeContext, erc20Contract, spender, safeAppsSdk])
+    return { ...tradeContext, erc20Contract, spender, sendBatchTransactions }
+  }, [tradeContext, erc20Contract, spender, sendBatchTransactions])
 }

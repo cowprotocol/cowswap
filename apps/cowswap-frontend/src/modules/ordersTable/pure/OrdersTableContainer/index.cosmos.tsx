@@ -67,7 +67,6 @@ export default (
     tabs={tabs}
     isSafeViaWc={false}
     allowsOffchainSigning={true}
-    isOpenOrdersTab={true}
     isWalletConnected={true}
     selectedOrders={[]}
     balancesAndAllowances={balancesAndAllowances}
@@ -75,5 +74,6 @@ export default (
     orderActions={orderActions}
     orderType={TabOrderTypes.LIMIT}
     injectedWidgetParams={{}}
+    isTwapTable={false}
   />
 )

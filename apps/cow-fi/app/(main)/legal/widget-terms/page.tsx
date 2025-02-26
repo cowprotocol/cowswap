@@ -1,13 +1,14 @@
 'use client'
 
 import { Color } from '@cowprotocol/ui'
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 import styled from 'styled-components/macro'
 
 import { Link } from '@/components/Link'
 
 import { ArticleContent, ArticleMainTitle, BodyContent, Breadcrumbs, ContainerCard } from '@/styles/styled'
-import { clickOnLegal } from '../../../../modules/analytics'
 
 const Wrapper = styled.div`
   display: flex;
@@ -21,6 +22,7 @@ const Wrapper = styled.div`
 `
 
 export default function Page() {
+  const analytics = useCowAnalytics()
   const title = 'CoW Swap Widget & Partner Fee Program Terms and Conditions'
 
   return (
@@ -28,10 +30,26 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
         <ArticleContent maxWidth="100%">
           <Breadcrumbs>
-            <Link href="/" onClick={() => clickOnLegal('click-legal-breadcrumbs')}>
+            <Link
+              href="/"
+              onClick={() =>
+                analytics.sendEvent({
+                  category: CowFiCategory.LEGAL,
+                  action: 'click-legal-breadcrumbs',
+                })
+              }
+            >
               Home
             </Link>
-            <Link href="/legal" onClick={() => clickOnLegal('click-legal-breadcrumbs')}>
+            <Link
+              href="/legal"
+              onClick={() =>
+                analytics.sendEvent({
+                  category: CowFiCategory.LEGAL,
+                  action: 'click-legal-breadcrumbs',
+                })
+              }
+            >
               Legal
             </Link>
             <span>{title}</span>
@@ -75,7 +93,7 @@ export default function Page() {
             <p>
               You are also responsible for ensuring that all persons who access the Widget through your website are
               aware of the{' '}
-              <a target="_blank" rel="noreferrer" href="https://swap.cow.fi/#/terms-and-conditions">
+              <a target="_blank" rel="noreferrer" href="https://cow.fi/legal/cowswap-terms">
                 Terms &amp; Conditions
               </a>{' '}
               of{' '}
@@ -132,12 +150,12 @@ export default function Page() {
             </p>
             <p>
               The{' '}
-              <a target="_blank" rel="noreferrer" href="https://swap.cow.fi/#/terms-and-conditions#welcometohttpscowfi">
+              <a target="_blank" rel="noreferrer" href="https://cow.fi/legal/cowswap-terms">
                 Terms &amp; Conditions
               </a>{' '}
               for the use of the Interface apply to the Widget. It is your duty to ensure that all persons who access
-              the Widget through your website are aware of the Interface’s{' '}
-              <a target="_blank" rel="noreferrer" href="https://swap.cow.fi/#/terms-and-conditions">
+              the Widget through your website are aware of the Interface's{' '}
+              <a target="_blank" rel="noreferrer" href="https://cow.fi/legal/cowswap-terms">
                 Terms &amp; Conditions
               </a>{' '}
               and that they comply with them.
@@ -217,7 +235,7 @@ export default function Page() {
               .
             </p>
             <p>The Provider reserves the right to adjust the Service Fee charged to the Partner with prior notice.</p>
-            <h3>Partner Fee Payment at the Provider’s Discretion</h3>
+            <h3>Partner Fee Payment at the Provider's Discretion</h3>
             <p>
               The Provider retains sole and absolute discretion in determining whether the transactions on the Widget
               are eligible for Partner Fee. The Provider may choose not to issue Partner Fees for any reason, including

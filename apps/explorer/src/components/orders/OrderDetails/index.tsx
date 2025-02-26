@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { Media } from '@cowprotocol/ui'
+import { Color, Media } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import CowLoading from 'components/common/CowLoading'
@@ -17,6 +17,7 @@ import TablePagination from 'explorer/components/common/TablePagination'
 import { useTable } from 'explorer/components/TokensTableWidget/useTable'
 import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
+import { useLocation } from 'react-router-dom'
 import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
 import { Errors } from 'types'
@@ -30,9 +31,9 @@ import { FillsTableWithData } from './FillsTableWithData'
 import { FlexContainerVar } from '../../../explorer/pages/styled'
 
 const TitleUid = styled(RowWithCopyButton)`
-  color: ${({ theme }): string => theme.grey};
-  font-size: ${({ theme }): string => theme.fontSizeDefault};
-  font-weight: ${({ theme }): string => theme.fontNormal};
+  color: ${Color.explorer_grey};
+  font-size: var(--font-size-default);
+  font-weight: var(--font-weight-normal);
   margin: 0 0 0 1rem;
   display: flex;
   align-items: center;
@@ -192,17 +193,21 @@ export const OrderDetails: React.FC<Props> = (props) => {
     return (): void => clearTimeout(timer)
   })
 
-  const onChangeTab = useCallback((tabId: number) => {
-    const newTabViewName = TabView[tabId]
-    if (!newTabViewName) return
+  const onChangeTab = useCallback(
+    (tabId: number) => {
+      const newTabViewName = TabView[tabId]
+      if (!newTabViewName) return
 
-    setTabViewSelected(TabView[newTabViewName])
-  }, [])
-
-  useEffect(
-    () => updateQueryString(TAB_QUERY_PARAM_KEY, TabView[tabViewSelected].toLowerCase()),
-    [tabViewSelected, updateQueryString],
+      updateQueryString(TAB_QUERY_PARAM_KEY, newTabViewName.toLowerCase())
+      setTabViewSelected(TabView[newTabViewName])
+    },
+    [updateQueryString],
   )
+
+  const location = useLocation()
+  useEffect(() => {
+    setTabViewSelected(TabView[tab])
+  }, [location, tab])
 
   if (!chainId) {
     return null

@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.19.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.18.0...ui-v1.19.0) (2025-02-05)
+
+
+### Features
+
+* **limit-orders:** upgrade and redesign ([#5249](https://github.com/cowprotocol/cowswap/issues/5249)) ([5c868bb](https://github.com/cowprotocol/cowswap/commit/5c868bb794d648363afb88371178ddc35deaf7a7))
+
+
+### Bug Fixes
+
+* **ui:** get rid of flickering in HelpTooltip ([#5324](https://github.com/cowprotocol/cowswap/issues/5324)) ([bd7cb03](https://github.com/cowprotocol/cowswap/commit/bd7cb032cf623f527cc042cf1cccc2315f3d6169))
+
+## [1.18.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.17.1...ui-v1.18.0) (2025-01-09)
+
+
+### Features
+
+* **swap:** partial approve ([#5256](https://github.com/cowprotocol/cowswap/issues/5256)) ([f080ffd](https://github.com/cowprotocol/cowswap/commit/f080ffdb098612e729f3a3f829410ce78697979f))
+
 ## [1.17.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.17.0...ui-v1.17.1) (2024-12-23)
 
 

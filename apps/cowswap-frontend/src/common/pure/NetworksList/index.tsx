@@ -1,11 +1,13 @@
 import { getChainInfo } from '@cowprotocol/common-const'
 import { getExplorerBaseUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ExternalLink } from '@cowprotocol/ui'
+import { Badge, BadgeTypes, ExternalLink } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 
 import * as styledEl from './styled'
+
+const NEW_NETWORK_ID = 8453
 
 export interface NetworksListProps {
   currentChainId: SupportedChainId | null
@@ -25,11 +27,17 @@ export function NetworksList(props: NetworksListProps) {
 
         const isActive = targetChainId === currentChainId
         const logoUrl = getLogo(isDarkMode, isActive, logo.dark, logo.light)
+        const isNewNetwork = targetChainId === NEW_NETWORK_ID
 
         const rowContent = (
           <styledEl.FlyoutRow key={targetChainId} onClick={() => onSelectChain(targetChainId)} active={isActive}>
             <styledEl.Logo src={logoUrl} />
-            <styledEl.NetworkLabel>{label}</styledEl.NetworkLabel>
+            <styledEl.NetworkLabel color={info.color}>{label}</styledEl.NetworkLabel>
+            {isNewNetwork && (
+              <Badge type={BadgeTypes.ALERT2} style={isActive ? { marginRight: '10px' } : undefined}>
+                NEW
+              </Badge>
+            )}
             {isActive && <styledEl.FlyoutRowActiveIndicator active />}
           </styledEl.FlyoutRow>
         )

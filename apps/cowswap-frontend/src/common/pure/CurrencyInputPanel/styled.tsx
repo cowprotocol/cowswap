@@ -48,7 +48,6 @@ export const CurrencyInputBox = styled.div`
 
   > div {
     display: flex;
-    flex-flow: row wrap;
     align-items: center;
     color: inherit;
   }
@@ -72,6 +71,15 @@ export const CurrencyTopLabel = styled.div`
   }
 `
 
+export const TopRow = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+`
+
 export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   width: 100%;
   height: 100%;
@@ -81,6 +89,7 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   font-size: 28px;
   font-weight: 500;
   color: inherit;
+  text-align: left;
 
   &::placeholder {
     opacity: 0.7;
@@ -106,7 +115,7 @@ export const TokenAmountStyled = styled(TokenAmount)`
 
 export const BalanceText = styled.span`
   font-weight: inherit;
-  font-size: inherit;
+  font-size: 13px;
   gap: 5px;
   display: flex;
   align-items: center;
@@ -150,7 +159,10 @@ export const SetMaxBtn = styled.button`
   border-radius: 6px;
   padding: 3px 4px;
   text-transform: uppercase;
-  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  white-space: nowrap;
+  transition:
+    background var(${UI.ANIMATION_DURATION}) ease-in-out,
+    color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     background: var(${UI.COLOR_PRIMARY});

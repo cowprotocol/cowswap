@@ -18,6 +18,7 @@ import IMG_COW_BITS from '@cowprotocol/assets/images/image-cow-bits.svg'
 import IMG_LEADING from '@cowprotocol/assets/images/image-leading.svg'
 import FAQ from '@/components/FAQ'
 import { Link, LinkType } from '@/components/Link'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 import {
   ContainerCard,
@@ -52,64 +53,71 @@ import {
   ALL_LOGOS,
   CASE_STUDIES,
   COW_PROTOCOL_SECTIONS,
-  FAQ_DATA,
+  useFaqData,
   TOP_LOGOS,
   UNIQUE_TRADING_LOGIC,
 } from '@/data/cow-protocol/const'
-import { clickOnCowProtocol } from '../../../modules/analytics'
 
 export default function Page() {
+  const faqData = useFaqData()
+
   return (
     <PageWrapper>
       <HeroContainer variant="secondary">
         <HeroContent variant="secondary">
-          <HeroSubtitle color={'#66018E'}>CoW Protocol</HeroSubtitle>
+          <HeroSubtitle color={Color.cowfi_purple3}>CoW Protocol</HeroSubtitle>
           <HeroTitle maxWidth={520}>Do what you want, build what you want</HeroTitle>
           <HeroDescription>
             CoW Protocol has the largest solver competition and the most advanced developer framework - so you can build
             any DeFi-related action you can imagine
           </HeroDescription>
           <Link
-            bgColor={'#66018E'}
-            color={'#F996EE'}
+            bgColor={Color.cowfi_purple3}
+            color={Color.cowfi_purple_bright}
             href="https://docs.cow.fi/category/tutorials"
             external
             linkType={LinkType.HeroButton}
-            onClick={() => clickOnCowProtocol('click-hero-start-building')}
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.COWPROTOCOL,
+              action: 'Start Building Tutorial Navigation',
+            })}
           >
             Start building
           </Link>
         </HeroContent>
-        <HeroImage width={470} height={470} color={'#66018E'}>
+        <HeroImage width={470} height={470} color={Color.cowfi_purple3}>
           <LazySVG src={IMG_COW_BITS} />
         </HeroImage>
       </HeroContainer>
 
-      <MetricsCard bgColor="#F996EE" color="#66018E" columns={3} touchFooter>
-        <MetricsItem dividerColor="#ED60E9">
-          <h2>23</h2>
+      <MetricsCard bgColor={Color.cowfi_purple_bright} color={Color.cowfi_purple3} columns={3} touchFooter>
+        <MetricsItem dividerColor={Color.cowfi_purple4}>
+          <h2>29</h2>
           <p>active solvers settling batches</p>
         </MetricsItem>
-        <MetricsItem dividerColor="#ED60E9">
+        <MetricsItem dividerColor={Color.cowfi_purple4}>
           <h2>#1</h2>
           <p>intent-based DEX protocol by volume</p>
         </MetricsItem>
 
         <MetricsItem>
-          <h2>1.2B+</h2>
+          <h2>2.1B+</h2>
           <p>all time transactions</p>
         </MetricsItem>
 
         <Link
           bgColor="transparent"
-          color="#66018E"
+          color={Color.cowfi_purple3}
           margin="24px auto 0"
           gridFullWidth
           href="https://dune.com/cowprotocol/cowswap"
           external
           linkType={LinkType.SectionTitleButton}
           utmContent="cow-protocol-metrics"
-          onClick={() => clickOnCowProtocol('click-metrics-view-all')}
+          data-click-event={toCowFiGtmEvent({
+            category: CowFiCategory.COWPROTOCOL,
+            action: 'View Metrics On Dune',
+          })}
         >
           View all metrics on DUNE &#8599;
         </Link>
@@ -118,7 +126,7 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral98}>
         <ContainerCardSection>
           <SectionTitleWrapper color={Color.neutral0} maxWidth={700} gap={56}>
-            <SectionTitleIcon size={82}>
+            <SectionTitleIcon $size={82}>
               <LazySVG src={IMG_ICON_CROWN_COW} />
             </SectionTitleIcon>
             <SectionTitleText>The leading intents-based DEX aggregation protocol</SectionTitleText>
@@ -136,7 +144,7 @@ export default function Page() {
       <ContainerCard bgColor={'transparent'}>
         <ContainerCardSection>
           <SectionTitleWrapper>
-            <SectionTitleIcon size={132}>
+            <SectionTitleIcon $size={132}>
               <LazySVG src={IMG_COW_LENS} />
             </SectionTitleIcon>
             <SectionTitleText>How it works</SectionTitleText>
@@ -155,10 +163,13 @@ export default function Page() {
                   (like on Uniswap). This lets solvers trade on behalf of the user.
                 </TopicDescription>
                 <Link
-                  bgColor="#66018E"
-                  color="#F996EE"
+                  bgColor={Color.cowfi_purple3}
+                  color={Color.cowfi_purple_bright}
                   href="/learn"
-                  onClick={() => clickOnCowProtocol('click-intents-learn-more')}
+                  data-click-event={toCowFiGtmEvent({
+                    category: CowFiCategory.COWPROTOCOL,
+                    action: 'Open Intents Documentation',
+                  })}
                   linkType={LinkType.TopicButton}
                 >
                   Learn more
@@ -198,10 +209,13 @@ export default function Page() {
                   public and private liquidity sources - finding better prices than most users could find on their own.
                 </TopicDescription>
                 <Link
-                  bgColor="#66018E"
-                  color="#F996EE"
+                  bgColor={Color.cowfi_purple3}
+                  color={Color.cowfi_purple_bright}
                   href="/learn"
-                  onClick={() => clickOnCowProtocol('click-solvers-learn-more')}
+                  data-click-event={toCowFiGtmEvent({
+                    category: CowFiCategory.COWPROTOCOL,
+                    action: 'Open Solvers Documentation',
+                  })}
                   linkType={LinkType.TopicButton}
                 >
                   Learn more
@@ -221,11 +235,14 @@ export default function Page() {
                   you win.
                 </TopicDescription>
                 <Link
-                  bgColor="#66018E"
-                  color="#F996EE"
+                  bgColor={Color.cowfi_purple3}
+                  color={Color.cowfi_purple_bright}
                   href="/learn"
+                  data-click-event={toCowFiGtmEvent({
+                    category: CowFiCategory.COWPROTOCOL,
+                    action: 'Open Batch Auctions Documentation',
+                  })}
                   linkType={LinkType.TopicButton}
-                  onClick={() => clickOnCowProtocol('click-batch-auctions-learn-more')}
                 >
                   Learn more
                 </Link>
@@ -325,20 +342,26 @@ export default function Page() {
       <ContainerCard bgColor={'transparent'}>
         <ContainerCardSection>
           <SectionTitleWrapper maxWidth={878} color={Color.neutral10}>
-            <SectionTitleIcon size={128}>
+            <SectionTitleIcon $size={128}>
               <LazySVG src={IMG_ICON_BULB_COW} />
             </SectionTitleIcon>
             <SectionTitleText textAlign="center">Powering innovation across DeFi</SectionTitleText>
           </SectionTitleWrapper>
 
           <TopicList columns={3} columnsTablet={2}>
-            <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-              <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
+            <TopicCard
+              contentAlign={'left'}
+              bgColor={Color.cowfi_purple3}
+              textColor={Color.cowfi_purple_bright}
+              padding={'32px'}
+              asProp="div"
+            >
+              <TopicImage iconColor={Color.cowfi_purple1} bgColor="transparent" height={96} width={'auto'}>
                 <LazySVG src={IMG_LOGO_CURVE} />
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={Color.neutral100}>Automating advanced treasury tasks</TopicTitle>
-                <TopicDescription fontSize={21} color="#F996EE">
+                <TopicDescription fontSize={21} color={Color.cowfi_purple_bright}>
                   Curve uses programmatic orders from CoW Protocol to streamline their fee burning processes. With the
                   integration in place, Curve can take fees in any token and convert them automatically to CRV, while
                   generating surplus and protecting themselves from MEV
@@ -346,14 +369,20 @@ export default function Page() {
               </TopicCardInner>
             </TopicCard>
 
-            <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-              <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
+            <TopicCard
+              contentAlign={'left'}
+              bgColor={Color.cowfi_purple3}
+              textColor={Color.cowfi_purple_bright}
+              padding={'32px'}
+              asProp="div"
+            >
+              <TopicImage iconColor={Color.cowfi_purple1} bgColor="transparent" height={96} width={'auto'}>
                 <LazySVG src={IMG_LOGO_LIDO} />
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={Color.neutral100}>Adding security to sensitive transactions</TopicTitle>
-                <TopicDescription fontSize={21} color="#F996EE">
-                  Lido leverages programmatic orders as the backbone of “stonks” - a set of smart contracts that they
+                <TopicDescription fontSize={21} color={Color.cowfi_purple_bright}>
+                  Lido leverages programmatic orders as the backbone of "stonks" - a set of smart contracts that they
                   use to manage treasury ops smoothly and securely without taking custody of funds. Stonks allows Lido
                   DAO to "set and forget" complex trade intents without compromising the prices they receive on future
                   swaps - minimizing time spent and human error
@@ -361,13 +390,19 @@ export default function Page() {
               </TopicCardInner>
             </TopicCard>
 
-            <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-              <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
+            <TopicCard
+              contentAlign={'left'}
+              bgColor={Color.cowfi_purple3}
+              textColor={Color.cowfi_purple_bright}
+              padding={'32px'}
+              asProp="div"
+            >
+              <TopicImage iconColor={Color.cowfi_purple1} bgColor="transparent" height={96} width={'auto'}>
                 <LazySVG src={IMG_LOGO_SAFE} />
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={Color.neutral100}>Powering native swaps</TopicTitle>
-                <TopicDescription fontSize={21} color="#F996EE">
+                <TopicDescription fontSize={21} color={Color.cowfi_purple_bright}>
                   Safe chose CoW Protocol to power native swaps on the Safe app. The team chose to build on top of the
                   CoW widget (the simplest way to integrate CoW Protocol) and is now earning revenue by offering
                   MEV-protected swaps to its users
@@ -381,7 +416,7 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 0">
-            <SectionTitleIcon multiple size={60}>
+            <SectionTitleIcon $multiple $size={60}>
               <LazySVG src={IMG_ICON_OWL} />
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
               <LazySVG src={IMG_ICON_GHOST} />
@@ -399,7 +434,10 @@ export default function Page() {
                 href={`${logo.url}?utm_source=cow.fi&utm_medium=web&utm_content=cow-protocol-logos`}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
-                onClick={() => clickOnCowProtocol(`click-logo-${logo.alt}`)}
+                data-click-event={toCowFiGtmEvent({
+                  category: CowFiCategory.COWPROTOCOL,
+                  action: `Visit Partner ${logo.alt}`,
+                })}
               >
                 <TopicImage
                   iconColor={Color.neutral20}
@@ -415,21 +453,24 @@ export default function Page() {
 
             {CASE_STUDIES.map((study) => (
               <TopicCard key={study.link} bgColor={Color.neutral100} padding={'52px'} gap={16} asProp="div">
-                <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
+                <TopicImage iconColor={Color.cowfi_purple3} bgColor="transparent" height={96} width={'auto'}>
                   <LazySVG src={study.logo} />
                 </TopicImage>
                 <TopicCardInner>
                   <TopicTitle fontSize={38}>{study.title}</TopicTitle>
                   <TopicDescription fontSize={21}>{study.description}</TopicDescription>
                   <Link
-                    bgColor="#490072"
-                    color="#F996EE"
+                    bgColor={Color.cowfi_purple3}
+                    color={Color.cowfi_purple_bright}
                     fontSize={27}
                     href={study.link}
                     external
                     linkType={LinkType.TopicButton}
                     utmContent={`cow-protocol-case-study-${study.title}`}
-                    onClick={() => clickOnCowProtocol(`click-case-study-${study.title}`)}
+                    data-click-event={toCowFiGtmEvent({
+                      category: CowFiCategory.COWPROTOCOL,
+                      action: `Read Case Study ${study.title}`,
+                    })}
                   >
                     Read more
                   </Link>
@@ -448,7 +489,10 @@ export default function Page() {
                 href={`${logo.url}?utm_source=cow.fi&utm_medium=web&utm_content=cow-protocol-logos`}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
-                onClick={() => clickOnCowProtocol(`click-logo-${logo.alt}`)}
+                data-click-event={toCowFiGtmEvent({
+                  category: CowFiCategory.COWPROTOCOL,
+                  action: `Visit Partner ${logo.alt}`,
+                })}
               >
                 <TopicImage iconColor={Color.neutral20} bgColor={'transparent'} width={90} height={90} margin={'auto'}>
                   <LazySVG src={logo.src} title={logo.alt} />
@@ -462,7 +506,7 @@ export default function Page() {
       <ContainerCard bgColor={'transparent'}>
         <ContainerCardSection>
           <SectionTitleWrapper color={Color.neutral10} maxWidth={1100}>
-            <SectionTitleIcon size={78}>
+            <SectionTitleIcon $size={78}>
               <LazySVG src={IMG_ICON_BUILD_WITH_COW} />
             </SectionTitleIcon>
             <SectionTitleText>Build with CoW Protocol</SectionTitleText>
@@ -490,14 +534,23 @@ export default function Page() {
                     fontSizeMobile={24}
                     href={topic.linkHref}
                     linkType={LinkType.TopicButton}
-                    onClick={() => clickOnCowProtocol(topic.linkEvent)}
+                    data-click-event={toCowFiGtmEvent({
+                      category: CowFiCategory.COWPROTOCOL,
+                      action: topic.linkEvent,
+                    })}
                     utmContent={topic.linkUtmContent}
                     external={topic.linkHref.startsWith('http')}
                   >
                     {topic.linkText}
                   </Link>
                 </TopicCardInner>
-                <TopicImage iconColor="#8702AA" bgColor="transparent" margin="0 0 0 auto" height={187} width="auto">
+                <TopicImage
+                  iconColor={Color.cowfi_purple3}
+                  bgColor="transparent"
+                  margin="0 0 0 auto"
+                  height={187}
+                  width="auto"
+                >
                   <LazySVG src={topic.imageSrc} />
                 </TopicImage>
               </TopicCard>
@@ -509,7 +562,7 @@ export default function Page() {
       <ContainerCard bgColor={'transparent'}>
         <ContainerCardSection>
           <SectionTitleWrapper maxWidth={1000}>
-            <SectionTitleIcon size={100}>
+            <SectionTitleIcon $size={100}>
               <LazySVG src={IMG_ICON_SECURE} />
             </SectionTitleIcon>
             <SectionTitleText textAlign="center">Want to build a solver?</SectionTitleText>
@@ -526,14 +579,17 @@ export default function Page() {
             </SectionTitleDescription>
 
             <Link
-              bgColor="#66018E"
-              color="#F996EE"
+              bgColor={Color.cowfi_purple3}
+              color={Color.cowfi_purple_bright}
               href="https://docs.cow.fi/cow-protocol/tutorials/solvers"
               external
               linkType={LinkType.SectionTitleButton}
               utmContent="cow-protocol-solvers"
               margin="28px 0 0"
-              onClick={() => clickOnCowProtocol(`click-solvers-read-docs`)}
+              data-click-event={toCowFiGtmEvent({
+                category: CowFiCategory.COWPROTOCOL,
+                action: 'Open Solver Development Documentation',
+              })}
             >
               Read the docs
             </Link>
@@ -544,13 +600,13 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} touchFooter>
         <ContainerCardSection>
           <SectionTitleWrapper>
-            <SectionTitleIcon size={62}>
+            <SectionTitleIcon $size={62}>
               <LazySVG src={IMG_ICON_FAQ} />
             </SectionTitleIcon>
             <SectionTitleText>FAQs</SectionTitleText>
           </SectionTitleWrapper>
 
-          <FAQ faqs={FAQ_DATA} />
+          <FAQ faqs={faqData} />
         </ContainerCardSection>
       </ContainerCard>
     </PageWrapper>

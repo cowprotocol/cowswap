@@ -2,10 +2,11 @@ import { useAtomValue } from 'jotai'
 
 import { useWalletInfo as useReOwnWalletInfo } from '@reown/appkit/react'
 
+import { useWalletCapabilities } from './hooks/useWalletCapabilities'
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletDisplayedAddress, walletInfoAtom } from './state'
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
 
-import { RABBY_RDNS, WATCH_ASSET_SUPPORED_WALLETS } from '../constants'
+import { METAMASK_RDNS, RABBY_RDNS, WATCH_ASSET_SUPPORED_WALLETS } from '../constants'
 import { useIsSafeApp } from '../reown/hooks/useWalletMetadata'
 
 export function useWalletInfo(): WalletInfo {
@@ -24,11 +25,15 @@ export function useGnosisSafeInfo(): GnosisSafeInfo | undefined {
   return useAtomValue(gnosisSafeInfoAtom)
 }
 
-export function useIsBundlingSupported(): boolean {
-  // For now, bundling can only be performed while the App is loaded as a Safe App
-  // Pending a custom RPC endpoint implementation on Safe side to allow
-  // tx bundling via WalletConnect
-  return useIsSafeApp()
+// TODO: if you want to test TWAP with others EIP-5792 wallets - keep only atomicBatch.supported
+export function useIsTxBundlingSupported(): boolean | null {
+  const { data: capabilities, isLoading: isCapabilitiesLoading } = useWalletCapabilities()
+  const isSafeApp = useIsSafeApp()
+  const isSafeViaWc = useIsSafeViaWc()
+
+  if (isCapabilitiesLoading) return null
+
+  return isSafeApp || (isSafeViaWc && !!capabilities?.atomicBatch?.supported)
 }
 
 export function useIsAssetWatchingSupported(): boolean {
@@ -43,4 +48,11 @@ export function useIsRabbyWallet(): boolean {
   const { walletInfo } = useReOwnWalletInfo()
 
   return walletInfo?.rdns === RABBY_RDNS
+}
+
+// TODO: check if it works properly
+export function useIsMetamaskBrowserExtensionWallet(): boolean {
+  const { walletInfo } = useReOwnWalletInfo()
+
+  return METAMASK_RDNS === walletInfo?.rdns
 }

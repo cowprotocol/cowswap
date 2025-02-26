@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 
-import { RowFixed } from '@cowprotocol/ui'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { CornerDownRight } from 'react-feather'
@@ -18,30 +17,26 @@ export type ConfirmDetailsItemProps = {
   fiatAmount?: string
   withTimelineDot?: boolean
   highlighted?: boolean
-  alwaysRow?: boolean
 }
 
 export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
-  const {
-    children,
-    label,
-    labelOpacity = false,
-    tooltip,
-    withArrow = false,
-    withTimelineDot = false,
-    alwaysRow = false,
-  } = props
+  const { children, label, labelOpacity = false, tooltip, withArrow = false, withTimelineDot = false } = props
 
   return (
-    <Wrapper alwaysRow={alwaysRow}>
+    <Wrapper>
       {withArrow && <CornerDownRight size={14} />}
       {withTimelineDot && <TimelineDot />}
       {label ? (
         <Row>
-          <RowFixed>
-            {label && <Label labelOpacity={labelOpacity}>{label}</Label>}
-            {tooltip && <InfoTooltip content={tooltip} />}
-          </RowFixed>
+          <div>
+            {label && (
+              <Label labelOpacity={labelOpacity}>
+                <p>
+                  {label} {tooltip && <InfoTooltip className="info-tooltip" content={tooltip} />}
+                </p>
+              </Label>
+            )}
+          </div>
 
           <Content>{children}</Content>
         </Row>

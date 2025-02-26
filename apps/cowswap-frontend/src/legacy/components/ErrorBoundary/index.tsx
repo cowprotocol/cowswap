@@ -1,5 +1,6 @@
 import React, { ErrorInfo, PropsWithChildren } from 'react'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { MEDIA_WIDTHS } from '@cowprotocol/ui'
 
@@ -10,7 +11,6 @@ import { ChunkLoadError } from 'legacy/components/ErrorBoundary/ChunkLoadError'
 import { ErrorWithStackTrace } from 'legacy/components/ErrorBoundary/ErrorWithStackTrace'
 import { HeaderRow, LogoImage, UniIcon } from 'legacy/components/Header/styled'
 
-import { cowAnalytics } from 'modules/analytics'
 import { Page } from 'modules/application/pure/Page'
 
 import { Routes } from 'common/constants/routes'
@@ -65,8 +65,12 @@ async function updateServiceWorker(): Promise<ServiceWorkerRegistration> {
   return (await ready.update()) as unknown as Promise<ServiceWorkerRegistration>
 }
 
-export default class ErrorBoundary extends React.Component<PropsWithChildren, ErrorBoundaryState> {
-  constructor(props: PropsWithChildren) {
+interface ErrorBoundaryProps extends PropsWithChildren {
+  onError?: (error: Error, errorInfo: ErrorInfo) => void
+}
+
+class ErrorBoundaryComponent extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
     super(props)
     this.state = { error: null }
   }
@@ -94,7 +98,7 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, Er
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    cowAnalytics.sendError(error, errorInfo.toString())
+    this.props.onError?.(error, errorInfo)
   }
 
   render() {
@@ -132,4 +136,15 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, Er
       </Sentry.ErrorBoundary>
     )
   }
+}
+
+// HOC to inject analytics into error boundary
+export default function ErrorBoundary(props: PropsWithChildren) {
+  const cowAnalytics = useCowAnalytics()
+
+  const handleError = (error: Error, errorInfo: ErrorInfo) => {
+    cowAnalytics.sendError(error, errorInfo.toString())
+  }
+
+  return <ErrorBoundaryComponent {...props} onError={handleError} />
 }

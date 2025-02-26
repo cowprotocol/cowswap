@@ -55,7 +55,7 @@ import LazySVG from '@/components/LazySVG'
 
 import { FAQ_DATA, TRUSTED_BY_CONTENT, TESTIMONIAL_LIST, MEV_BLOCKER_LIST } from '@/data/mev-blocker/const'
 
-import { clickOnMevBlocker } from '../../../modules/analytics'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 const isClient = typeof window === 'object'
 
@@ -93,7 +93,7 @@ export default function Page() {
         <PageWrapper>
           <HeroContainer variant="secondary">
             <HeroContent variant="secondary">
-              <HeroSubtitle color={'#EC4612'}>MEV Blocker</HeroSubtitle>
+              <HeroSubtitle color={Color.cowfi_orange_bright}>MEV Blocker</HeroSubtitle>
               <HeroTitle>The best MEV protection under the sun</HeroTitle>
               <HeroDescription fontSize={21}>
                 MEV Blocker is your personal protection from frontrunning and sandwich attacks for a broad spectrum of
@@ -110,26 +110,29 @@ export default function Page() {
 
               <Link
                 linkType={LinkType.HeroButton}
-                bgColor={'#EC4612'}
-                color={'#FEE7CF'}
+                bgColor={Color.cowfi_orange_bright}
+                color={Color.cowfi_orange_pale}
                 href="#rpc"
-                onClick={() => clickOnMevBlocker('click-get-protected-heroSection')}
+                data-click-event={toCowFiGtmEvent({
+                  category: CowFiCategory.MEVBLOCKER,
+                  action: 'Click Get Protected',
+                })}
               >
                 Get protected
               </Link>
             </HeroContent>
-            <HeroImage width={470} height={'auto'} color={'#EC4612'}>
+            <HeroImage width={470} height={'auto'} color={Color.cowfi_orange_bright}>
               <LazySVG src={IMAGE_SANDWICH_GUY} />
             </HeroImage>
           </HeroContainer>
 
-          <MetricsCard bgColor="#EC4612" color="#FEE7CF" columns={3} touchFooter>
-            <MetricsItem dividerColor="#F9A36F">
-              <h2>$84B+</h2>
+          <MetricsCard bgColor={Color.cowfi_orange_bright} color={Color.cowfi_orange_pale} columns={3} touchFooter>
+            <MetricsItem dividerColor={Color.cowfi_orange_light}>
+              <h2>$208B+</h2>
               <p>volume protected from MEV, across 20M+ transactions</p>
             </MetricsItem>
-            <MetricsItem dividerColor="#F9A36F">
-              <h2>2.2K+</h2>
+            <MetricsItem dividerColor={Color.cowfi_orange_light}>
+              <h2>4.6K+</h2>
               <p>ETH rebated to users</p>
             </MetricsItem>
             <MetricsItem>
@@ -139,14 +142,17 @@ export default function Page() {
 
             <Link
               bgColor="transparent"
-              color="#FEE7CF"
+              color={Color.cowfi_orange_pale}
               margin="24px auto 0"
               gridFullWidth
               href="https://dune.com/cowprotocol/mev-blocker"
               external
               linkType={LinkType.SectionTitleButton}
               utmContent="mev-blocker-metrics-link"
-              onClick={() => clickOnMevBlocker('click-metrics-dune')}
+              data-click-event={toCowFiGtmEvent({
+                category: CowFiCategory.MEVBLOCKER,
+                action: 'Click Metrics',
+              })}
             >
               View all metrics on DUNE &#8599;
             </Link>
@@ -155,7 +161,7 @@ export default function Page() {
           <ContainerCard bgColor={Color.neutral100}>
             <ContainerCardSection gap={60}>
               <SectionTitleWrapper color={Color.neutral10} maxWidth={1300} gap={56}>
-                <SectionTitleIcon multiple size={82}>
+                <SectionTitleIcon $multiple $size={82}>
                   <LazySVG src={IMAGE_ICON_MEVBLOCKER_PROTECT} />
                 </SectionTitleIcon>
                 <SectionTitleText maxWidth={500}>Broad spectrum MEV defense</SectionTitleText>
@@ -165,9 +171,12 @@ export default function Page() {
                     href="https://dune.com/queries/2259793/3703605"
                     external
                     utmContent="mev-blocker-dune-link"
-                    onClick={() => clickOnMevBlocker('click-dune-link')}
+                    data-click-event={toCowFiGtmEvent({
+                      category: CowFiCategory.MEVBLOCKER,
+                      action: 'Click Metrics',
+                    })}
                   >
-                    $1.38 billion
+                    $1.43 billion
                   </Link>{' '}
                   from well-meaning Ethereum users across a variety of use cases (trading, providing liquidity, minting
                   NFTs, etc). MEV Blocker is an RPC endpoint that supports these users by offering:
@@ -196,7 +205,10 @@ export default function Page() {
                     href="https://www.mevscanner.com/"
                     external
                     utmContent="mev-blocker-mev-scanner-link"
-                    onClick={() => clickOnMevBlocker('click-mev-scanner-link')}
+                    data-click-event={toCowFiGtmEvent({
+                      category: CowFiCategory.MEVBLOCKER,
+                      action: 'Click MEV Scanner',
+                    })}
                   >
                     Use MEV Scanner
                   </Link>{' '}
@@ -209,7 +221,7 @@ export default function Page() {
           <ContainerCard bgColor="transparent" color={Color.neutral10} id="rpc">
             <ContainerCardSection>
               <SectionTitleWrapper maxWidth={850} gap={56} margin="24px auto">
-                <SectionTitleIcon multiple size={82}>
+                <SectionTitleIcon $multiple $size={82}>
                   <LazySVG src={IMAGE_ICON_MEVBLOCKER_PROTECT2} />
                 </SectionTitleIcon>
                 <SectionTitleText>Get Protected</SectionTitleText>
@@ -324,7 +336,7 @@ export default function Page() {
                       <ColorTableCell className="protected">Protected</ColorTableCell>
                     </tr>
                     <tr>
-                      <ColorTableCell>/maxbackrun</ColorTableCell>
+                      <ColorTableCell>/maxbackruns</ColorTableCell>
                       <ColorTableCell className="protected">Protected</ColorTableCell>
                       <ColorTableCell className="refund">Refund</ColorTableCell>
                       <ColorTableCell className="protected">Protected</ColorTableCell>
@@ -346,7 +358,10 @@ export default function Page() {
                     href="https://docs.cow.fi/mevblocker"
                     external
                     utmContent="mev-blocker-docs-link"
-                    onClick={() => clickOnMevBlocker('click-mev-blocker-docs-link')}
+                    data-click-event={toCowFiGtmEvent({
+                      category: CowFiCategory.MEVBLOCKER,
+                      action: 'Click Docs',
+                    })}
                   >
                     read the MEV Blocker docs
                   </Link>
@@ -422,13 +437,16 @@ export default function Page() {
                 </SectionTitleDescription>
 
                 <Link
-                  bgColor="#EC4612"
-                  color={Color.neutral98}
+                  bgColor={Color.cowfi_orange_bright}
+                  color={Color.cowfi_orange_pale}
                   href="https://docs.cow.fi/category/searchers"
                   external
                   linkType={LinkType.SectionTitleButton}
                   utmContent="mev-blocker-learn-more"
-                  onClick={() => clickOnMevBlocker('click-mev-blocker-learn-more')}
+                  data-click-event={toCowFiGtmEvent({
+                    category: CowFiCategory.MEVBLOCKER,
+                    action: 'Click Learn More',
+                  })}
                 >
                   Learn more
                 </Link>
@@ -439,7 +457,7 @@ export default function Page() {
           <ContainerCard bgColor="transparent">
             <ContainerCardSection>
               <SectionTitleWrapper>
-                <SectionTitleIcon size={90}>
+                <SectionTitleIcon $size={90}>
                   <LazySVG src={IMAGE_ICON_MEVBLOCKER_TRUST} />
                 </SectionTitleIcon>
                 <SectionTitleText>Trusted by the best</SectionTitleText>
@@ -455,7 +473,10 @@ export default function Page() {
                     href={item.href}
                     rel={'noopener noreferrer nofollow'}
                     target="_blank"
-                    onClick={() => clickOnMevBlocker(`click-trusted-by-${item.href}`)}
+                    data-click-event={toCowFiGtmEvent({
+                      category: CowFiCategory.MEVBLOCKER,
+                      action: `Click Trusted By - ${item.href}`,
+                    })}
                   >
                     <TopicImage
                       iconColor={Color.neutral20}
@@ -485,7 +506,7 @@ export default function Page() {
             </ContainerCardSection>
           </ContainerCard>
 
-          <ContainerCard bgColor="#FEE7CF" touchFooter>
+          <ContainerCard bgColor={Color.cowfi_orange_pale} touchFooter>
             <ContainerCardSection>
               <SectionTitleWrapper padding="72px 0" maxWidth={640}>
                 <SectionTitleIcon>
@@ -495,10 +516,14 @@ export default function Page() {
 
                 <Link
                   linkType={LinkType.SectionTitleButton}
-                  bgColor={'#EC4612'}
-                  color={'#FEE7CF'}
+                  bgColor={Color.cowfi_orange_bright}
+                  color={Color.cowfi_orange_pale}
                   onClick={handleShareClick}
                   asButton
+                  data-click-event={toCowFiGtmEvent({
+                    category: CowFiCategory.MEVBLOCKER,
+                    action: 'Click Share',
+                  })}
                 >
                   Share MEV Blocker
                 </Link>

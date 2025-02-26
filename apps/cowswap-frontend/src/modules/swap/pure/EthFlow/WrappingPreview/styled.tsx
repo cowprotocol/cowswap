@@ -5,7 +5,7 @@ import styled from 'styled-components/macro'
 export const WrapCardWrapper = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   flex: 1;
   padding: 16px;
 
@@ -21,9 +21,13 @@ export const BalanceLabel = styled.p<{ background?: string }>`
   margin: 0 0 6px;
   font-size: 15px;
   width: 100%;
-  word-break: break-all;
-  text-align: center;
   padding: 0 10px;
+  flex-wrap: wrap;
+  gap: 0;
+
+  > span {
+    display: inline;
+  }
 `
 
 export const WrappingPreviewContainer = styled.div`
@@ -54,6 +58,8 @@ export const WrappingPreviewContainer = styled.div`
       margin: 0;
       font-size: 13px;
       opacity: 0.8;
+      display: inline-block;
+      word-break: break-word;
     }
   }
 

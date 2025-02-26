@@ -94,7 +94,6 @@ export const AccountControl = styled.div`
   justify-content: space-between;
   min-width: 0;
   width: 100%;
-
   font-weight: 500;
   font-size: 1.25rem;
 

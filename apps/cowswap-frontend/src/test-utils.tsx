@@ -26,9 +26,8 @@ const MockedI18nProvider = ({ children }: any) => <I18nProvider i18n={i18n}>{chi
 
 const MockThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const darkMode = useIsDarkMode()
-  const isInjectedWidgetMode = isInjectedWidget()
 
-  const themeObject = useMemo(() => getCowswapTheme(darkMode, isInjectedWidgetMode), [darkMode, isInjectedWidgetMode])
+  const themeObject = useMemo(() => getCowswapTheme(darkMode), [darkMode])
 
   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }

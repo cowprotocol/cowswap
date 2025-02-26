@@ -1,8 +1,10 @@
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { getChainCurrencySymbols, RADIX_HEX } from '@cowprotocol/common-const'
 import {
   calculateGasMargin,
   formatTokenAmount,
   getIsNativeToken,
+  getRawCurrentChainIdFromUrl,
   isRejectRequestProviderError,
 } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -14,7 +16,9 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { wrapAnalytics } from 'modules/analytics'
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
+import { logEthSendingIntention, logEthSendingTransaction } from 'common/services/logEthSendingTransaction'
+import { assertProviderNetwork } from 'common/utils/assertProviderNetwork'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')
@@ -32,20 +36,52 @@ export interface WrapDescription {
   operationMessage: string
   summary: string
 }
+
 export interface WrapUnwrapContext {
   chainId: SupportedChainId
+  account: string
   wethContract: Contract
   amount: CurrencyAmount<Currency>
   addTransaction: TransactionAdder
   closeModals: Command
   openTransactionConfirmationModal: Command
+  analytics: ReturnType<typeof useCowAnalytics>
+}
+
+type WrapAction = 'Send' | 'Sign' | 'Reject' | 'Error'
+
+function sendWrapEvent(
+  analytics: WrapUnwrapContext['analytics'],
+  action: WrapAction,
+  operationMessage: string,
+  amount: CurrencyAmount<Currency>,
+) {
+  analytics.sendEvent({
+    category: CowSwapAnalyticsCategory.WRAP_NATIVE_TOKEN,
+    action,
+    label: operationMessage,
+    value: Number(amount.toSignificant(6)),
+  })
+}
+
+interface WrapUnwrapTxData {
+  txResponse: TransactionResponse
 }
 
 export async function wrapUnwrapCallback(
   context: WrapUnwrapContext,
-  params: WrapUnwrapCallbackParams = { useModals: true }
+  params: WrapUnwrapCallbackParams = { useModals: true },
 ): Promise<TransactionResponse | null> {
-  const { chainId, amount, wethContract, addTransaction, openTransactionConfirmationModal, closeModals } = context
+  const {
+    chainId,
+    account,
+    amount,
+    wethContract,
+    addTransaction,
+    openTransactionConfirmationModal,
+    closeModals,
+    analytics,
+  } = context
   const isNativeIn = getIsNativeToken(amount.currency)
   const amountHex = `0x${amount.quotient.toString(RADIX_HEX)}`
 
@@ -54,25 +90,26 @@ export async function wrapUnwrapCallback(
 
   try {
     useModals && openTransactionConfirmationModal()
-    wrapAnalytics('Send', operationMessage)
+    sendWrapEvent(analytics, 'Send', operationMessage, amount)
 
     const wrapUnwrap = isNativeIn ? wrapContractCall : unwrapContractCall
-    const txReceipt = await wrapUnwrap(wethContract, amountHex)
-    wrapAnalytics('Sign', operationMessage)
+    const { txResponse } = await wrapUnwrap(wethContract, amountHex, chainId, account)
+
+    sendWrapEvent(analytics, 'Sign', operationMessage, amount)
 
     addTransaction({
-      hash: txReceipt.hash,
+      hash: txResponse.hash,
       summary,
     })
     useModals && closeModals()
 
-    return txReceipt
+    return txResponse
   } catch (error: any) {
     useModals && closeModals()
 
     const isRejected = isRejectRequestProviderError(error)
     const action = isRejected ? 'Reject' : 'Error'
-    wrapAnalytics(action, operationMessage)
+    sendWrapEvent(analytics, action as WrapAction, operationMessage, amount)
 
     const errorMessage = (isRejected ? 'Reject' : 'Error') + ' Signing transaction'
     console.error(errorMessage, error)
@@ -88,7 +125,7 @@ export async function wrapUnwrapCallback(
 function getWrapDescription(
   chainId: SupportedChainId,
   isWrap: boolean,
-  inputAmount: CurrencyAmount<Currency>
+  inputAmount: CurrencyAmount<Currency>,
 ): WrapDescription {
   const { native, wrapped } = getChainCurrencySymbols(chainId)
   const baseSummarySuffix = isWrap ? `${native} to ${wrapped}` : `${wrapped} to ${native}`
@@ -104,24 +141,61 @@ function getWrapDescription(
   }
 }
 
-async function wrapContractCall(wethContract: Contract, amountHex: string): Promise<TransactionResponse> {
+async function wrapContractCall(
+  wethContract: Contract,
+  amountHex: string,
+  chainId: SupportedChainId,
+  account: string,
+): Promise<WrapUnwrapTxData> {
   const estimatedGas = await wethContract.estimateGas.deposit({ value: amountHex }).catch(_handleGasEstimateError)
   const gasLimit = calculateGasMargin(estimatedGas)
 
-  return wethContract.deposit({ value: amountHex, gasLimit })
+  const network = await assertProviderNetwork(chainId, wethContract.provider, 'wrap')
+
+  const tx = await wethContract.populateTransaction.deposit({ value: amountHex, gasLimit })
+
+  const intentionEventId = logEthSendingIntention({
+    chainId,
+    amount: amountHex,
+    urlChainId: getRawCurrentChainIdFromUrl(),
+    account,
+    tx,
+  })
+
+  const txResponse = await wethContract.signer.sendTransaction({ ...tx, chainId: network })
+
+  logEthSendingTransaction({ txHash: txResponse.hash, intentionEventId })
+
+  return {
+    txResponse,
+  }
 }
 
-async function unwrapContractCall(wethContract: Contract, amountHex: string): Promise<TransactionResponse> {
+async function unwrapContractCall(
+  wethContract: Contract,
+  amountHex: string,
+  chainId: SupportedChainId,
+  _account: string,
+): Promise<WrapUnwrapTxData> {
   const estimatedGas = await wethContract.estimateGas.withdraw(amountHex).catch(_handleGasEstimateError)
   const gasLimit = calculateGasMargin(estimatedGas)
-  return wethContract.withdraw(amountHex, { gasLimit })
+
+  const tx = await wethContract.populateTransaction.withdraw(amountHex, { gasLimit })
+
+  const network = await assertProviderNetwork(chainId, wethContract.provider, 'unwrap')
+
+  const txResponse = await wethContract.signer.sendTransaction({ ...tx, chainId: network })
+
+  return {
+    txResponse,
+  }
 }
 
 function _handleGasEstimateError(error: any): BigNumber {
   console.log(
     '[useWrapCallback] Error estimating gas for wrap/unwrap. Using default gas limit ' +
       WRAP_UNWRAP_GAS_LIMIT_DEFAULT.toString(),
-    error
+    error,
   )
   return WRAP_UNWRAP_GAS_LIMIT_DEFAULT
 }

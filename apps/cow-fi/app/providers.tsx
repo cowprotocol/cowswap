@@ -3,8 +3,7 @@
 import { apolloClient } from '../services/uniswap-price/apollo-client'
 import { WithLDProvider } from '@/components/WithLDProvider'
 import { ThemeProvider } from '../theme'
-import { CowAnalyticsProvider } from '@cowprotocol/analytics'
-import { cowAnalytics } from '../modules/analytics'
+import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
 import { ApolloProvider } from '@apollo/client'
 import GlobalStyles from '@/styles/global.styles'
 import { Suspense, useState } from 'react'
@@ -12,16 +11,18 @@ import { ServerStyleSheet, StyleSheetManager } from 'styled-components/macro'
 import { useServerInsertedHTML } from 'next/navigation'
 import CacheProvider from 'react-inlinesvg/provider'
 
+const cowAnalytics = initGtm()
+
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <Suspense>
       <CacheProvider>
         <StyledComponentsRegistry>
           <>
-            <GlobalStyles />
             <ApolloProvider client={apolloClient}>
               <WithLDProvider>
                 <ThemeProvider>
+                  <GlobalStyles />
                   <CowAnalyticsProvider cowAnalytics={cowAnalytics}>{children}</CowAnalyticsProvider>
                 </ThemeProvider>
               </WithLDProvider>

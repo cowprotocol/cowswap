@@ -1,39 +1,36 @@
 import { CoWSwapEthFlow } from '@cowprotocol/abis'
-import { calculateGasMargin } from '@cowprotocol/common-utils'
+import { calculateGasMargin, getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { OrderClass, SigningScheme, UnsignedOrder } from '@cowprotocol/cow-sdk'
 import { ContractTransaction } from '@ethersproject/contracts'
-import { NativeCurrency } from '@uniswap/sdk-core'
 
 import { Order } from 'legacy/state/orders/actions'
 import { getSignOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'legacy/utils/trade'
 
 import { logTradeFlow, logTradeFlowError } from 'modules/trade/utils/logger'
+import { TradeFlowContext } from 'modules/tradeFlow'
 
 import { GAS_LIMIT_DEFAULT } from 'common/constants/common'
+import { logEthSendingIntention, logEthSendingTransaction } from 'common/services/logEthSendingTransaction'
+import { assertProviderNetwork } from 'common/utils/assertProviderNetwork'
 
-type EthFlowOrderParams = Omit<PostOrderParams, 'sellToken'> & {
-  sellToken: NativeCurrency
-}
-
-export type EthFlowCreateOrderParams = Omit<UnsignedOrder, 'quoteId' | 'appData' | 'validTo' | 'orderId'> & {
+type EthFlowCreateOrderParams = Omit<UnsignedOrder, 'quoteId' | 'appData' | 'validTo' | 'orderId'> & {
   quoteId: number
   appData: string
   validTo: string
   summary: string
 }
 
-export type EthFlowResponse = {
+type EthFlowResponse = {
   txReceipt: ContractTransaction
   order: Order
 }
-
-export type EthFlowSwapCallback = (orderParams: EthFlowOrderParams) => Promise<EthFlowResponse>
 
 export async function signEthFlowOrderStep(
   orderId: string,
   orderParams: PostOrderParams,
   ethFlowContract: CoWSwapEthFlow,
   addInFlightOrderId: (orderId: string) => void,
+  tradeFlowContext: TradeFlowContext,
 ): Promise<EthFlowResponse> {
   logTradeFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] - signing orderParams onchain', orderParams)
 
@@ -44,10 +41,7 @@ export async function signEthFlowOrderStep(
     throw new Error('[EthFlow::SignEthFlowOrderStep] No quoteId passed')
   }
 
-  const network = await ethFlowContract.provider.getNetwork()
-  if (network.chainId !== orderParams.chainId) {
-    throw new Error('Wallet chain differs from order params.')
-  }
+  const network = await assertProviderNetwork(orderParams.chainId, ethFlowContract.provider, 'eth-flow')
 
   const ethOrderParams: EthFlowCreateOrderParams = {
     ...order,
@@ -67,19 +61,36 @@ export async function signEthFlowOrderStep(
     return GAS_LIMIT_DEFAULT
   })
 
-  // This used to be done with a higher level of abstraction like this:
+  const gasLimit = calculateGasMargin(estimatedGas)
+  // Ensure the Eth flow contract network matches the network where you place the transaction.
+  // There are multiple wallet implementations, and potential race conditions that can cause the chain of the wallet to be different,
+  // and therefore leaving the chainId implicit might lead the user to place an order in an unwanted chain.
+  // This is especially dangerous for Eth Flow orders, because the contract address is different for the distinct networks,
+  // and this can lead to loss of funds.
+  //
+  // Thus, we are not using a higher level of abstraction as it doesn't allow to explicitly set the chainId:
   // const txReceipt = await ethFlowContract.createOrder(ethOrderParams, {
   //   ...ethTxOptions,
   //   gasLimit: calculateGasMargin(estimatedGas),
   // })
-  // However, to **try** to prevent wallet issues, we want to explicitly send along the chainId
-  // But that wrapper doesn't accept it.
-  // So we must build the tx first, then send it using the contract's signer
+  //
+  // So we must build the tx first:
   const tx = await ethFlowContract.populateTransaction.createOrder(ethOrderParams, {
     ...ethTxOptions,
-    gasLimit: calculateGasMargin(estimatedGas),
+    gasLimit,
   })
-  const txReceipt = await ethFlowContract.signer.sendTransaction({ ...tx, chainId: orderParams.chainId })
+
+  const intentionEventId = logEthSendingIntention({
+    chainId: tradeFlowContext.context.chainId,
+    urlChainId: getRawCurrentChainIdFromUrl(),
+    amount: tradeFlowContext.context.inputAmount.quotient.toString(),
+    account: tradeFlowContext.orderParams.account,
+    tx,
+  })
+  // Then send the is using the contract's signer where the chainId is an acceptable parameter
+  const txReceipt = await ethFlowContract.signer.sendTransaction({ ...tx, chainId: network })
+
+  logEthSendingTransaction({ txHash: txReceipt.hash, intentionEventId })
 
   addInFlightOrderId(orderId)
 

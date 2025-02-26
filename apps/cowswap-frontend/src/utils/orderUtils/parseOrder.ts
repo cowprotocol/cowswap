@@ -24,7 +24,9 @@ export interface ParsedOrderExecutionData {
   surplusAmount: BigNumber
   surplusPercentage: BigNumber
   executedFeeAmount: string | undefined
-  executedSurplusFee: string | null
+  executedFee: string | null
+  executedFeeToken: string | null
+  totalFee: string | null
   filledPercentDisplay: string
   executedPrice: Price<Currency, Currency> | null
   activityId: string | undefined
@@ -35,6 +37,7 @@ export interface ParsedOrder {
   id: string
   owner: string
   isCancelling: boolean | undefined
+  isUnfillable?: boolean
   receiver: string | undefined
   inputToken: Token
   outputToken: Token
@@ -47,6 +50,7 @@ export interface ParsedOrder {
   partiallyFillable: boolean
   creationTime: Date
   expirationTime: Date
+  fulfillmentTime: string | undefined
   composableCowInfo?: ComposableCowInfo
   fullAppData: Order['fullAppData']
   signingScheme: SigningScheme
@@ -60,8 +64,11 @@ export const parseOrder = (order: Order): ParsedOrder => {
   const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order)
   const expirationTime = new Date(Number(order.validTo) * 1000)
   const executedFeeAmount = order.apiAdditionalInfo?.executedFeeAmount
-  const executedSurplusFee = order.apiAdditionalInfo?.executedSurplusFee || null
+  const executedFee = order.apiAdditionalInfo?.executedFee || null
+  const executedFeeToken = order.apiAdditionalInfo?.executedFeeToken || null
+  const totalFee = order.apiAdditionalInfo?.totalFee || null
   const creationTime = new Date(order.creationTime)
+  const fulfillmentTime = order.fulfillmentTime
   const fullyFilled = isOrderFilled(order)
   const partiallyFilled = isPartiallyFilled(order)
   const filledPercentDisplay = filledPercentage.times(100).toString()
@@ -80,6 +87,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
   const activityTitle = showCreationTxLink ? 'Creation transaction' : 'Order ID'
 
   const executionData: ParsedOrderExecutionData = {
+    executedFeeToken,
     executedBuyAmount,
     executedSellAmount,
     filledAmount,
@@ -88,7 +96,8 @@ export const parseOrder = (order: Order): ParsedOrder => {
     surplusAmount,
     surplusPercentage,
     executedFeeAmount,
-    executedSurplusFee,
+    executedFee,
+    totalFee,
     executedPrice,
     fullyFilled,
     partiallyFilled,
@@ -100,6 +109,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
     id: order.id,
     owner: order.owner,
     isCancelling: order.isCancelling,
+    isUnfillable: order.isUnfillable,
     inputToken: order.inputToken,
     outputToken: order.outputToken,
     kind: order.kind,
@@ -113,6 +123,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
     receiver: order.receiver || undefined,
     creationTime,
     expirationTime,
+    fulfillmentTime,
     fullAppData: order.fullAppData,
     executionData,
     signingScheme: order.signingScheme,

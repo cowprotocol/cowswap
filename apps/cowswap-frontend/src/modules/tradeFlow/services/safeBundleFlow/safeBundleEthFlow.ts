@@ -17,7 +17,7 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-import { tradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { SafeBundleFlowContext, TradeFlowContext } from '../../types/TradeFlowContext'
 
@@ -28,6 +28,7 @@ export async function safeBundleEthFlow(
   safeBundleContext: SafeBundleFlowContext,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
+  analytics: TradeFlowAnalytics,
 ): Promise<void | boolean> {
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
 
@@ -37,7 +38,7 @@ export async function safeBundleEthFlow(
 
   const { context, callbacks, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks } = tradeContext
 
-  const { spender, settlementContract, safeAppsSdk, needsApproval, wrappedNativeContract } = safeBundleContext
+  const { spender, settlementContract, sendBatchTransactions, needsApproval, wrappedNativeContract } = safeBundleContext
 
   const { chainId, inputAmount, outputAmount } = context
 
@@ -48,7 +49,7 @@ export async function safeBundleEthFlow(
 
   const { account, recipientAddressOrName, kind } = orderParams
 
-  tradeFlowAnalytics.wrapApproveAndPresign(swapFlowAnalyticsContext)
+  analytics.wrapApproveAndPresign(swapFlowAnalyticsContext)
   const nativeAmountInWei = inputAmount.quotient.toString()
   const tradeAmounts = { inputAmount, outputAmount }
 
@@ -117,7 +118,7 @@ export async function safeBundleEthFlow(
 
     logTradeFlow(LOG_PREFIX, 'STEP 6: send safe tx')
 
-    const safeTx = await safeAppsSdk.txs.send({ txs })
+    const safeTxHash = await sendBatchTransactions(txs)
 
     emitPostedOrderEvent({
       chainId,
@@ -137,7 +138,7 @@ export async function safeBundleEthFlow(
         order: {
           id: order.id,
           // Add Safe tx hash
-          presignGnosisSafeTxHash: safeTx.safeTxHash,
+          presignGnosisSafeTxHash: safeTxHash,
           // Unhide the order
           isHidden: false,
         },
@@ -145,7 +146,7 @@ export async function safeBundleEthFlow(
       },
       callbacks.dispatch,
     )
-    tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
+    analytics.sign(swapFlowAnalyticsContext)
 
     logTradeFlow(LOG_PREFIX, 'STEP 8: show UI of the successfully sent transaction')
     tradeConfirmActions.onSuccess(orderId)
@@ -155,7 +156,7 @@ export async function safeBundleEthFlow(
     logTradeFlow(LOG_PREFIX, 'STEP 9: error', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
-    tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
+    analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
     tradeConfirmActions.onError(swapErrorMessage)
   }

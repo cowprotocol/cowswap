@@ -31,7 +31,7 @@ export interface TradeFlowParams {
 }
 
 export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowContext | null {
-  const { chainId, account } = useWalletInfo()
+  const { account } = useWalletInfo()
   const provider = useWalletProvider()
   const { allowsOffchainSigning } = useWalletDetails()
   const isSafeWallet = useIsSafeWallet()
@@ -54,12 +54,12 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const closeModals = useCloseModals()
   const dispatch = useDispatch<AppDispatch>()
   const tradeConfirmActions = useTradeConfirmActions()
-  const settlementContract = useGP2SettlementContract()
+  const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
   const appData = useAppData()
   const typedHooks = useAppDataHooks()
   const tradeQuote = useTradeQuote()
 
-  const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId || SupportedChainId.MAINNET]
+  const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[settlementChainId || SupportedChainId.MAINNET]
   const { enoughAllowance } = useEnoughBalanceAndAllowance({
     account,
     amount: inputAmount,
@@ -102,7 +102,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             quoteResponse,
             localQuoteTimestamp,
             buyToken,
-            chainId,
+            settlementChainId,
             closeModals,
             dispatch,
             enoughAllowance,

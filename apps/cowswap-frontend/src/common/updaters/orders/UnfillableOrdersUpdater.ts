@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCY_ADDRESS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
@@ -21,14 +22,14 @@ import {
   getEstimatedExecutionPrice,
   getOrderMarketPrice,
   getRemainderAmount,
-  isOrderUnfillable
+  isOrderUnfillable,
 } from 'legacy/state/orders/utils'
 import type { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 import { getBestQuote } from 'legacy/utils/price'
 
-import { priceOutOfRangeAnalytics } from 'modules/analytics'
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { PRICE_QUOTE_VALID_TO_TIME } from '../../constants/quote'
@@ -40,6 +41,7 @@ export function UnfillableOrdersUpdater(): null {
   const { chainId, account } = useWalletInfo()
   const updatePendingOrderPrices = useSetAtom(updatePendingOrderPricesAtom)
   const isWindowVisible = useIsWindowVisible()
+  const cowAnalytics = useCowAnalytics()
 
   const pending = useOnlyPendingOrders(chainId)
 
@@ -52,6 +54,17 @@ export function UnfillableOrdersUpdater(): null {
   const pendingRef = useRef(pending)
   pendingRef.current = pending
   const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
+
+  const priceOutOfRangeAnalytics = useCallback(
+    (label: string) => {
+      cowAnalytics.sendEvent({
+        category: CowSwapAnalyticsCategory.TRADE,
+        action: 'Price out of range',
+        label,
+      })
+    },
+    [cowAnalytics],
+  )
 
   const updateOrderMarketPriceCallback = useCallback(
     (
@@ -99,13 +112,13 @@ export function UnfillableOrdersUpdater(): null {
         // order.isUnfillable by default is undefined, so we don't want to dispatch this in that case
         if (typeof order.isUnfillable !== 'undefined') {
           const label = `${order.inputToken.symbol}, ${order.outputToken.symbol}`
-          priceOutOfRangeAnalytics(isUnfillable, label)
+          priceOutOfRangeAnalytics(label)
         }
       }
 
       updateOrderMarketPriceCallback(order, fee, marketPrice, estimatedExecutionPrice)
     },
-    [setIsOrderUnfillable, updateOrderMarketPriceCallback],
+    [setIsOrderUnfillable, updateOrderMarketPriceCallback, priceOutOfRangeAnalytics],
   )
 
   const balancesRef = useRef(balances)
@@ -181,6 +194,7 @@ export function UnfillableOrdersUpdater(): null {
 async function _getOrderPrice(chainId: ChainId, order: Order, strategy: PriceStrategy) {
   let baseToken, quoteToken
 
+  // TODO: consider a fixed amount in case of partial fills
   const amount = getRemainderAmount(order.kind, order)
 
   // Don't quote if there's nothing left to match in this order

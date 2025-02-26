@@ -31,7 +31,8 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Navigation, Pagination } from 'swiper/modules'
 
 import { Link, LinkType } from '@/components/Link'
-import { clickOnDaos } from '../modules/analytics'
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 import 'swiper/css'
 import 'swiper/css/pagination'
@@ -43,20 +44,22 @@ import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
 import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
 
 export function DaosPageComponent() {
+  const analytics = useCowAnalytics()
+
   return (
     <PageWrapper>
       <HeroContainer variant="secondary">
         <HeroContent variant="secondary">
-          <HeroSubtitle color={'#66018E'}>DAOs</HeroSubtitle>
+          <HeroSubtitle color={Color.cowfi_purple3}>DAOs</HeroSubtitle>
           <HeroTitle maxWidth={470}>Savvy DAOs Choose CoW Swap</HeroTitle>
           <HeroDescription>The smartest DAOs trust CoW Swap with their most-important trades</HeroDescription>
         </HeroContent>
-        <HeroImage width={470} height={400} color={'#66018E'}>
+        <HeroImage width={470} height={400} color={Color.cowfi_purple3}>
           <LazySVG src={IMG_ICON_BULB_COW} />
         </HeroImage>
       </HeroContainer>
 
-      <MetricsCard bgColor="#F996EE" color="#66018E" columns={1} touchFooter>
+      <MetricsCard bgColor={Color.cowfi_purple_bright} color={Color.cowfi_purple3} columns={1} touchFooter>
         <TrustedBy>
           <p>Trusted by</p>
           <ul>
@@ -64,7 +67,7 @@ export function DaosPageComponent() {
               ({ icon, title, volume }, index) =>
                 volume && (
                   <li key={index}>
-                    <LazySVG src={icon} title={title} />
+                    <LazySVG src={icon} title={title} height={40} />
                     <small>with</small>
                     <strong>{volume}</strong>
                   </li>
@@ -77,7 +80,7 @@ export function DaosPageComponent() {
       <ContainerCard bgColor={Color.neutral10}>
         <ContainerCardSection>
           <SectionTitleWrapper color={Color.neutral100} maxWidth={1100} gap={56}>
-            <SectionTitleIcon size={98}>
+            <SectionTitleIcon $size={98}>
               <LazySVG src={IMG_ICON_CROWN_COW} />
             </SectionTitleIcon>
             <SectionTitleText>Expert trading for expert DAOs</SectionTitleText>
@@ -131,7 +134,7 @@ export function DaosPageComponent() {
       <ContainerCard bgColor={'transparent'} color={Color.neutral10}>
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 0" maxWidth={800}>
-            <SectionTitleIcon size={60}>
+            <SectionTitleIcon $size={60}>
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
             </SectionTitleIcon>
             <SectionTitleText>Advanced order types</SectionTitleText>
@@ -154,7 +157,13 @@ export function DaosPageComponent() {
                     href="https://github.com/charlesndalton/milkman"
                     external
                     utmContent="link-to-milkman"
-                    onClick={() => clickOnDaos('click-milkman')}
+                    onClick={() =>
+                      analytics.sendEvent({
+                        category: CowFiCategory.DAOS,
+                        action: 'Click Milkman',
+                        label: 'link-to-milkman',
+                      })
+                    }
                   >
                     Milkman bot
                   </Link>
@@ -213,7 +222,13 @@ export function DaosPageComponent() {
                     href="https://dump.services/"
                     external
                     utmContent="link-to-dump-services"
-                    onClick={() => clickOnDaos('click-dump-services')}
+                    onClick={() =>
+                      analytics.sendEvent({
+                        category: CowFiCategory.DAOS,
+                        action: 'Click Dump Services',
+                        label: 'link-to-dump-services',
+                      })
+                    }
                   >
                     Dump.services
                   </Link>
@@ -243,7 +258,13 @@ export function DaosPageComponent() {
             utmContent="link-to-advanced-order-types"
             margin="24px auto 0"
             external
-            onClick={() => clickOnDaos('click-advanced-order-types')}
+            onClick={() =>
+              analytics.sendEvent({
+                category: CowFiCategory.DAOS,
+                action: 'Click Advanced Order Types',
+                label: 'link-to-advanced-order-types',
+              })
+            }
           >
             Explore advanced order types
           </Link>
@@ -253,7 +274,7 @@ export function DaosPageComponent() {
       <ContainerCard bgColor={Color.neutral10} color={Color.neutral98} touchFooter>
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 0">
-            <SectionTitleIcon multiple>
+            <SectionTitleIcon $multiple>
               <LazySVG src={IMG_ICON_OWL} />
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
               <LazySVG src={IMG_ICON_GHOST} />
@@ -288,7 +309,13 @@ export function DaosPageComponent() {
                       href={dao.link}
                       utmContent={`dao-${dao.title.toLowerCase().replace(/\s/g, '-')}`}
                       external
-                      onClick={() => clickOnDaos(`click-${dao.title.toLowerCase()}`)}
+                      onClick={() =>
+                        analytics.sendEvent({
+                          category: CowFiCategory.DAOS,
+                          action: 'Click Learn More',
+                          label: `dao-${dao.title.toLowerCase().replace(/\s/g, '-')}`,
+                        })
+                      }
                     >
                       Learn more
                     </Link>
@@ -303,7 +330,13 @@ export function DaosPageComponent() {
                   href={`${dao.link}?utm_source=cow.fi&utm_medium=web&utm_content=dao-${dao.title}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => clickOnDaos(`click-${dao.title.toLowerCase()}`)}
+                  onClick={() =>
+                    analytics.sendEvent({
+                      category: CowFiCategory.DAOS,
+                      action: 'Click Learn More',
+                      label: `dao-${dao.title.toLowerCase().replace(/\s/g, '-')}`,
+                    })
+                  }
                 >
                   <TopicImage
                     iconColor={Color.neutral0}

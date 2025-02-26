@@ -55,18 +55,5 @@ export const Font = {
   },
 }
 
-export const Color = {
-  neutral100: '#FFFFFF',
-  neutral98: '#FFF8F7',
-  neutral95: '#FFEDEC',
-  neutral90: '#F0DEDE',
-  neutral80: '#D4C3C2',
-  neutral70: '#B8A7A7',
-  neutral60: '#9C8D8D',
-  neutral50: '#827474',
-  neutral40: '#685B5B',
-  neutral30: '#504444',
-  neutral20: '#382E2E',
-  neutral10: '#23191A',
-  neutral0: '#000000',
-}
+// Header offset in pixels (used in swap.cow.fi)
+export const SWAP_HEADER_OFFSET = 76

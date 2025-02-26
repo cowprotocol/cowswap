@@ -1,7 +1,5 @@
 import { useSetAtom } from 'jotai'
 
-import { useWalletInfo } from '@cowprotocol/wallet'
-
 import useSWR from 'swr'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
@@ -18,13 +16,16 @@ import { EthFlowContext } from '../services/types'
 import { addInFlightOrderIdAtom } from '../state/EthFlow/ethFlowInFlightOrderIdsAtom'
 
 export function useEthFlowContext(): EthFlowContext | null {
-  const { chainId } = useWalletInfo()
+  const {
+    result: { contract: ethFlowContract, chainId: ethFlowChainId },
+    useNewEthFlowContracts,
+  } = useEthFlowContract()
   const { currenciesIds } = useDerivedSwapInfo()
   const { quote } = useGetQuoteAndStatus({
     token: currenciesIds.INPUT,
-    chainId,
+    chainId: ethFlowChainId,
   })
-  const contract = useEthFlowContract()
+
   const addTransaction = useTransactionAdder()
   const uploadAppData = useUploadAppData()
   const appData = useAppData()
@@ -35,13 +36,32 @@ export function useEthFlowContext(): EthFlowContext | null {
 
   return (
     useSWR(
-      appData && contract
-        ? [quote, contract, addTransaction, checkEthFlowOrderExists, addInFlightOrderId, uploadAppData, appData]
+      appData && ethFlowContract
+        ? [
+            quote,
+            ethFlowContract,
+            useNewEthFlowContracts,
+            addTransaction,
+            checkEthFlowOrderExists,
+            addInFlightOrderId,
+            uploadAppData,
+            appData,
+          ]
         : null,
-      ([quote, contract, addTransaction, checkEthFlowOrderExists, addInFlightOrderId, uploadAppData, appData]) => {
+      ([
+        quote,
+        contract,
+        useNewEthFlowContracts,
+        addTransaction,
+        checkEthFlowOrderExists,
+        addInFlightOrderId,
+        uploadAppData,
+        appData,
+      ]) => {
         return {
           quote,
           contract,
+          useNewEthFlowContracts,
           addTransaction,
           checkEthFlowOrderExists,
           addInFlightOrderId,

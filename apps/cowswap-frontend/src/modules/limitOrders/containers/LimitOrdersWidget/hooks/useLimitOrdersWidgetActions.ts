@@ -1,12 +1,12 @@
 import { useAtomValue } from 'jotai'
 import { useCallback, useMemo } from 'react'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { isSellOrder, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
 import { Field } from 'legacy/state/types'
 
-import { changeSwapAmountAnalytics } from 'modules/analytics'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
 import { useUpdateCurrencyAmount } from 'modules/limitOrders/hooks/useUpdateCurrencyAmount'
@@ -15,12 +15,15 @@ import { TradeWidgetActions } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useOnCurrencySelection } from 'modules/trade/hooks/useOnCurrencySelection'
 import { useSwitchTokensPlaces } from 'modules/trade/hooks/useSwitchTokensPlaces'
+import { createDebouncedTradeAmountAnalytics } from 'modules/trade/utils/analytics'
 
 export function useLimitOrdersWidgetActions(): TradeWidgetActions {
   const { inputCurrency, outputCurrency, orderKind } = useLimitOrdersDerivedState()
   const { activeRate } = useAtomValue(limitRateAtom)
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
+  const cowAnalytics = useCowAnalytics()
+  const debouncedTradeAmountAnalytics = useMemo(() => createDebouncedTradeAmountAnalytics(cowAnalytics), [cowAnalytics])
 
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
 
@@ -34,7 +37,7 @@ export function useLimitOrdersWidgetActions(): TradeWidgetActions {
 
       const value = tryParseCurrencyAmount(typedValue, currency) || null
 
-      changeSwapAmountAnalytics(field, Number(typedValue))
+      debouncedTradeAmountAnalytics([field, Number(typedValue)])
 
       updateCurrencyAmount({
         activeRate,
@@ -42,7 +45,7 @@ export function useLimitOrdersWidgetActions(): TradeWidgetActions {
         orderKind: isWrapOrUnwrap || field === Field.INPUT ? OrderKind.SELL : OrderKind.BUY,
       })
     },
-    [updateCurrencyAmount, isWrapOrUnwrap, inputCurrency, outputCurrency, activeRate]
+    [updateCurrencyAmount, isWrapOrUnwrap, inputCurrency, outputCurrency, activeRate, debouncedTradeAmountAnalytics],
   )
 
   const onSwitchTokens = useSwitchTokensPlaces({
@@ -51,11 +54,11 @@ export function useLimitOrdersWidgetActions(): TradeWidgetActions {
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => updateLimitOrdersState({ recipient }),
-    [updateLimitOrdersState]
+    [updateLimitOrdersState],
   )
 
   return useMemo(
     () => ({ onUserInput, onSwitchTokens, onChangeRecipient, onCurrencySelection }),
-    [onUserInput, onSwitchTokens, onChangeRecipient, onCurrencySelection]
+    [onUserInput, onSwitchTokens, onChangeRecipient, onCurrencySelection],
   )
 }

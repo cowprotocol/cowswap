@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import { PENDING_STATES } from 'legacy/state/orders/actions'
+import { OrderStatus } from 'legacy/state/orders/actions'
 
 import {
   advancedOrdersAtom,
@@ -9,6 +9,7 @@ import {
   SetupAdvancedOrderAmountsFromUrlUpdater,
 } from 'modules/advancedOrders'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 import {
@@ -24,8 +25,11 @@ import {
 } from 'modules/twap'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
+const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
+
 export default function AdvancedOrdersPage() {
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
+  const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
 
   const allEmulatedOrders = useAllEmulatedOrders()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
@@ -37,13 +41,18 @@ export default function AdvancedOrdersPage() {
 
   const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
   const advancedWidgetParams = { disablePriceImpact }
-  const pendingOrders = allEmulatedOrders.filter((order) => PENDING_STATES.includes(order.status))
+  const pendingOrders = allEmulatedOrders.filter((order) => order.status === OrderStatus.PENDING)
 
   return (
     <>
       <FillAdvancedOrdersDerivedStateUpdater slippage={twapSlippage} />
       <SetupAdvancedOrderAmountsFromUrlUpdater />
-      <styledEl.PageWrapper isUnlocked={isUnlocked}>
+      <styledEl.PageWrapper
+        isUnlocked={isUnlocked}
+        maxWidth={ADVANCED_ORDERS_MAX_WIDTH}
+        secondaryOnLeft={ordersTableOnLeft}
+        hideOrdersTable={hideOrdersTable}
+      >
         <styledEl.PrimaryWrapper>
           {isFallbackHandlerRequired && pendingOrders.length > 0 && <SetupFallbackHandlerWarning />}
           <AdvancedOrdersWidget
@@ -61,15 +70,16 @@ export default function AdvancedOrdersPage() {
           </AdvancedOrdersWidget>
         </styledEl.PrimaryWrapper>
 
-        <styledEl.SecondaryWrapper>
-          {!hideOrdersTable && (
+        {!hideOrdersTable && (
+          <styledEl.SecondaryWrapper>
             <OrdersTableWidget
-              displayOrdersOnlyForSafeApp={true}
+              isTwapTable
+              displayOrdersOnlyForSafeApp
               orderType={TabOrderTypes.ADVANCED}
               orders={allEmulatedOrders}
             />
-          )}
-        </styledEl.SecondaryWrapper>
+          </styledEl.SecondaryWrapper>
+        )}
       </styledEl.PageWrapper>
     </>
   )

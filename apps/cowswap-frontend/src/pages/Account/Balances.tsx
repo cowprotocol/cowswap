@@ -77,7 +77,7 @@ export default function Profile() {
   const isSwapInitial = swapVCowStatus === SwapVCowStatus.INITIAL
   const isSwapConfirmed = swapVCowStatus === SwapVCowStatus.CONFIRMED
   const isSwapDisabled = Boolean(
-    !hasVestedBalance || !isSwapInitial || isSwapPending || isSwapConfirmed || shouldUpdate
+    !hasVestedBalance || !isSwapInitial || isSwapPending || isSwapConfirmed || shouldUpdate,
   )
 
   const isCardsLoading = useMemo(() => {

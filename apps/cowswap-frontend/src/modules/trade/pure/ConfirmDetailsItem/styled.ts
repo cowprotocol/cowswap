@@ -1,45 +1,21 @@
 import { Media, UI } from '@cowprotocol/ui'
 
-import styled, { css } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import { StyledRowBetween } from 'modules/tradeWidgetAddons/pure/Row/styled'
 
-export const Wrapper = styled.div<{ alwaysRow: boolean }>`
+export const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 24px;
   gap: 6px;
   width: 100%;
   font-size: 13px;
-
-  ${Media.upToSmall()} {
-    ${({ alwaysRow }) =>
-      !alwaysRow &&
-      css`
-        width: 100%;
-        flex-flow: column wrap;
-        align-items: flex-start;
-        margin: 0 0 10px;
-      `}
-  }
 
   > svg:first-child {
     margin: 0 4px 0 0;
     color: inherit;
     opacity: 0.5;
-  }
-
-  ${StyledRowBetween} {
-    ${Media.upToSmall()} {
-      ${({ alwaysRow }) =>
-        !alwaysRow &&
-        css`
-          flex-flow: column wrap;
-          gap: 2px;
-          align-items: flex-start;
-        `}
-    }
   }
 `
 
@@ -78,17 +54,37 @@ export const Content = styled.div<{ highlighted?: boolean }>`
 
 export const Label = styled.span<{ labelOpacity?: boolean }>`
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   font-weight: 400;
-  gap: 5px;
   text-align: left;
   opacity: ${({ labelOpacity }) => (labelOpacity ? 0.7 : 1)};
   transition:
     color var(${UI.ANIMATION_DURATION}) ease-in-out,
     opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   color: inherit;
+  display: inline;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.2;
 
   &:hover {
     opacity: 1;
+  }
+
+  // Label text
+  > p,
+  > b {
+    margin: 0 4px 0 0;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: inherit;
+  }
+
+  // Tooltip
+  > div,
+  > b > div,
+  > p > div {
+    display: inline-block;
+    vertical-align: middle;
   }
 `

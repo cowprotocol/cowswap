@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { Media, Color } from '@cowprotocol/ui'
+import { Media, Color, UI } from '@cowprotocol/ui'
 import Link from 'next/link'
 
 export const Wrapper = styled.div`
@@ -292,7 +292,7 @@ export const SwapCard = styled.div`
 `
 
 export const CopyMessage = styled.span`
-  color: #007b28;
+  color: var(${UI.COLOR_SUCCESS_TEXT});
   font-size: 1.3rem;
   margin: 0 0 0 0.2rem;
 `

@@ -25,8 +25,10 @@ jest.mock('@cowprotocol/wallet', () => {
   return {
     ...jest.requireActual('@cowprotocol/wallet'),
     useWalletInfo: jest.fn().mockReturnValue({ chainId }),
+    useSendBatchTransactions: jest.fn().mockResolvedValue('0x01'),
   }
 })
+
 jest.mock('common/hooks/useContract', () => {
   return {
     ...jest.requireActual('common/hooks/useContract'),
@@ -35,7 +37,6 @@ jest.mock('common/hooks/useContract', () => {
   }
 })
 jest.mock('legacy/state/enhancedTransactions/hooks')
-jest.mock('modules/analytics/useAnalyticsReporterCowSwap')
 
 const orderMock = {
   id: 'xx1',
@@ -82,20 +83,33 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
     ethFlowInvalidationMock.mockResolvedValue({ hash: ethFlowCancellationTxHash })
 
     mockUseEthFlowContract.mockReturnValue({
-      estimateGas: {
-        invalidateOrder: () => Promise.resolve(BigNumber.from(100)),
+      result: {
+        contract: {
+          estimateGas: {
+            invalidateOrder: () => Promise.resolve(BigNumber.from(100)),
+          },
+          invalidateOrder: ethFlowInvalidationMock,
+        } as any,
+        chainId,
+        error: null,
+        loading: false,
       },
-      invalidateOrder: ethFlowInvalidationMock,
-    } as any)
+      useNewEthFlowContracts: false,
+    })
 
     settlementInvalidationMock.mockResolvedValue({ hash: settlementCancellationTxHash })
 
     mockUseGP2SettlementContract.mockReturnValue({
-      estimateGas: {
-        invalidateOrder: () => Promise.resolve(BigNumber.from(200)),
-      },
-      invalidateOrder: settlementInvalidationMock,
-    } as any)
+      contract: {
+        estimateGas: {
+          invalidateOrder: () => Promise.resolve(BigNumber.from(200)),
+        },
+        invalidateOrder: settlementInvalidationMock,
+      } as any,
+      chainId,
+      error: null,
+      loading: false,
+    })
   })
 
   afterEach(() => {
