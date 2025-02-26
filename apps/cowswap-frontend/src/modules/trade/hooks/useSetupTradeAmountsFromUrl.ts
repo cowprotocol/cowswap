@@ -83,7 +83,11 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
 
       update.orderKind = OrderKind.SELL
     } else {
-      update.orderKind = orderKind || (!hasSellAmount && hasBuyAmount ? OrderKind.BUY : OrderKind.SELL)
+      if (orderKind) {
+        update.orderKind = orderKind
+      } else if (hasSellAmount || hasBuyAmount) {
+        update.orderKind = !hasSellAmount && hasBuyAmount ? OrderKind.BUY : OrderKind.SELL
+      }
     }
 
     const hasUpdates = Object.keys(update).length > 0

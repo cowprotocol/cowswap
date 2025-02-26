@@ -14,6 +14,7 @@ export function quoteUsingSameParameters(currentParams: FeeQuoteParams, nextPara
     hasSameAppData &&
     currentParams.sellToken === nextParams.sellToken &&
     currentParams.buyToken === nextParams.buyToken &&
+    currentParams.kind === nextParams.kind &&
     currentParams.amount === nextParams.amount &&
     currentParams.userAddress === nextParams.userAddress &&
     currentParams.receiver === nextParams.receiver &&
