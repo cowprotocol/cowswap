@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useLayoutEffect, useMemo, useRef } from 'react'
 
-import { useDebounce, useIsOnline } from '@cowprotocol/common-hooks'
+import { useDebounce, useIsOnline, useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import { OrderQuoteResponse, PriceQuality } from '@cowprotocol/cow-sdk'
 import { useAreUnsupportedTokens } from '@cowprotocol/tokens'
@@ -49,6 +49,11 @@ export function useTradeQuotePolling() {
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const getIsUnsupportedTokens = useAreUnsupportedTokens()
   const processUnsupportedTokenError = useProcessUnsupportedTokenError()
+
+  const isWindowVisible = useIsWindowVisible()
+  const isWindowVisibleRef = useRef(isWindowVisible)
+  isWindowVisibleRef.current = isWindowVisible
+
   const isOnline = useIsOnline()
   const isOnlineRef = useRef(isOnline)
   isOnlineRef.current = isOnline
@@ -108,8 +113,8 @@ export function useTradeQuotePolling() {
     }
 
     function fetchAndUpdateQuote(paramsChanged: boolean) {
-      // When browser is offline do no fetch
-      if (!isOnlineRef.current) {
+      // When browser is offline or the tab is not active do no fetch
+      if (!isOnlineRef.current || !isWindowVisibleRef.current) {
         return
       }
 
