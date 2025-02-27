@@ -231,7 +231,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
     if (query.trim()) {
       const searchTerm = query.toLowerCase()
 
-      // Simplified and more robust search algorithm
       const filtered = (articles || []).filter((article) => {
         const title = article.attributes?.title?.toLowerCase() || ''
         const description = article.attributes?.description?.toLowerCase() || ''
