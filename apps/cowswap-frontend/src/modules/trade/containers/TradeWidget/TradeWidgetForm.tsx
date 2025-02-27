@@ -217,7 +217,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 <div>
                   <CurrencyInputPanel
                     id="output-currency-input"
-                    inputDisabled={isSellingEthSupported && (isEoaEthFlow || isWrapOrUnwrap || disableOutput)}
+                    inputDisabled={(isSellingEthSupported && isEoaEthFlow) || isWrapOrUnwrap || disableOutput}
                     inputTooltip={
                       isSellingEthSupported && isEoaEthFlow
                         ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
