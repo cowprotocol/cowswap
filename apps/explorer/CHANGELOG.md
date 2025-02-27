@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.43.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.42.2...explorer-v2.43.0) (2025-02-25)
+
+
+### Features
+
+* **analytics:** migrate to GTM-based analytics ([#5360](https://github.com/cowprotocol/cowswap/issues/5360)) ([f404d02](https://github.com/cowprotocol/cowswap/commit/f404d0280d9d1d86cc249d70852a5c0ec9827475))
+
 ## [2.42.2](https://github.com/cowprotocol/cowswap/compare/explorer-v2.42.1...explorer-v2.42.2) (2025-02-12)
 
 
