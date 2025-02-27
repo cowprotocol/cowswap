@@ -1,4 +1,4 @@
-import { Media } from '@cowprotocol/ui'
+import { Color, Media } from '@cowprotocol/ui'
 
 import styled, { createGlobalStyle, css } from 'styled-components/macro'
 
@@ -36,6 +36,11 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0;
     position: relative;
     ${ScrollBarStyle}
+  }
+
+  // TODO: remove this once we have a proper way to set global CSS variables for all apps
+  :root {
+    --cow-color-alert-text: ${Color.explorer_yellow4};
   }
 
   .hover {

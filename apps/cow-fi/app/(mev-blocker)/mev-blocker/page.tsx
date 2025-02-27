@@ -129,7 +129,7 @@ export default function Page() {
           <MetricsCard bgColor={Color.cowfi_orange_bright} color={Color.cowfi_orange_pale} columns={3} touchFooter>
             <MetricsItem dividerColor={Color.cowfi_orange_light}>
               <h2>$208B+</h2>
-              <p>volume protected from MEV, across 20M+ transactions</p>
+              <p>volume protected from MEV, across 46M+ transactions</p>
             </MetricsItem>
             <MetricsItem dividerColor={Color.cowfi_orange_light}>
               <h2>4.6K+</h2>
