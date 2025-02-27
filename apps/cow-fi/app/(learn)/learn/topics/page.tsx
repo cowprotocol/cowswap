@@ -6,7 +6,7 @@ import { TopicsPageComponent } from '@/components/TopicsPageComponent'
 
 export default async function Page() {
   const categoriesResponse = await getCategories()
-  const articlesResponse = await getArticles({ pageSize: 200 })
+  const articlesResponse = await getArticles({ pageSize: 200, fetchAll: true })
 
   const categories =
     categoriesResponse?.map((category: any) => {

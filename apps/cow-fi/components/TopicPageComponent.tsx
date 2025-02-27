@@ -18,6 +18,7 @@ import {
   LinkSection,
 } from '@/styles/styled'
 import Link from 'next/link'
+import { Article } from '../services/cms'
 
 const Wrapper = styled.div`
   display: flex;
@@ -92,9 +93,9 @@ const CategoryDescription = styled.div`
 
 interface TopicPageProps {
   category: any
-  articles: any[]
+  articles: Article[]
   allCategories: { name: string; slug: string }[]
-  allArticles?: any[]
+  allArticles?: Article[]
 }
 
 export function TopicPageComponent({ category, allCategories, articles, allArticles }: TopicPageProps) {

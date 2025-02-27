@@ -5,6 +5,7 @@ import { Article } from 'services/cms'
 import SVG from 'react-inlinesvg'
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 import IMG_ICON_SEARCH from '@cowprotocol/assets/images/icon-search.svg'
+import { highlightQuery } from '../util/textHighlighting'
 
 const SearchBarContainer = styled.div`
   width: 100%;
@@ -128,13 +129,15 @@ const ResultDescription = styled.div`
   white-space: pre-wrap;
   overflow: hidden;
   line-height: 1.5;
+
+  /* Add prefixed properties for broader browser support */
   display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+
+  /* Standard properties for future browser support */
   line-clamp: 2;
   box-orient: vertical;
-`
-
-const HighlightedText = styled.span`
-  background: yellow;
 `
 
 const SearchResultsInfo = styled.div`
@@ -189,6 +192,24 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   const [isFocused, setIsFocused] = useState(false)
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
   const inputRef = useRef<HTMLInputElement>(null)
+  // Cache for memoized phrases to avoid recomputation
+  const phrasesCache = useRef<Record<string, string[]>>({})
+
+  // Constants for optimization
+  const MAX_PHRASE_LENGTH = 4 // Limit phrases to 4 words maximum
+  const DEBOUNCE_DELAY = 150 // ms
+
+  // Debounced query state for performance
+  const [debouncedQuery, setDebouncedQuery] = useState('')
+
+  // Debounce the search input to reduce processing frequency
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(query)
+    }, DEBOUNCE_DELAY)
+
+    return () => clearTimeout(timer)
+  }, [query])
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -229,9 +250,15 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   }, [isFocused, highlightedIndex, filteredArticles])
 
   useEffect(() => {
-    if (query.trim()) {
-      const searchTerm = query.toLowerCase()
+    if (debouncedQuery.trim()) {
+      const searchTerm = debouncedQuery.toLowerCase()
 
+      // TODO: Performance consideration
+      // This multi-criteria search implementation works well for moderate datasets,
+      // but may become expensive for large article collections.
+      // If scaling is anticipated, consider implementing:
+      // 1. An indexing-based approach (e.g., Elasticlunr, Fuse.js)
+      // 2. Server-side search with pagination
       const filtered = (articles || []).filter((article) => {
         const title = article.attributes?.title?.toLowerCase() || ''
         const description = article.attributes?.description?.toLowerCase() || ''
@@ -278,11 +305,22 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
               return true
             }
           }
+        }
 
-          // 4. Check if the entire search term is a prefix of any phrase in the content
-          const titlePhrases = findPhrases(title)
-          const descriptionPhrases = findPhrases(description)
-          const slugPhrases = findPhrases(slug)
+        // 4. Check if the entire search term is a prefix of any phrase in the content
+        // Only perform expensive phrase checking if other checks fail and the content is not too long
+        if (
+          !title.includes(searchTerm) &&
+          !description.includes(searchTerm) &&
+          !slug.includes(searchTerm) &&
+          !titleWords.some((word) => word.startsWith(searchTerm)) &&
+          !descriptionWords.some((word) => word.startsWith(searchTerm)) &&
+          !slugWords.some((word) => word.startsWith(searchTerm))
+        ) {
+          // Lazy evaluation - only generate phrases if needed
+          const titlePhrases = title.length < 1000 ? findPhrases(title) : []
+          const descriptionPhrases = description.length < 1000 ? findPhrases(description) : []
+          const slugPhrases = findPhrases(slug) // Slugs are typically short
 
           if (
             titlePhrases.some((phrase) => phrase.startsWith(searchTerm)) ||
@@ -300,123 +338,38 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
     } else {
       setFilteredArticles([])
     }
-  }, [query, articles])
+  }, [debouncedQuery, articles])
 
-  // Helper function to find all possible phrases in a text
+  // Optimized helper function to find phrases in a text
   const findPhrases = (text: string): string[] => {
-    const words = text.split(/\s+/)
+    // Return empty array for empty text
+    if (!text || text.length === 0) return []
+
+    // Check cache first
+    if (phrasesCache.current[text]) {
+      return phrasesCache.current[text]
+    }
+
+    const words = text.split(/\s+/).filter(Boolean)
     const phrases: string[] = []
 
-    // Generate all possible phrases (combinations of consecutive words)
+    // Generate phrases with limited length
     for (let i = 0; i < words.length; i++) {
       let phrase = words[i]
       phrases.push(phrase)
 
-      for (let j = i + 1; j < words.length; j++) {
+      // Limit to MAX_PHRASE_LENGTH consecutive words
+      const maxJ = Math.min(i + MAX_PHRASE_LENGTH - 1, words.length - 1)
+      for (let j = i + 1; j <= maxJ; j++) {
         phrase += ' ' + words[j]
         phrases.push(phrase)
       }
     }
 
+    // Store in cache for future use
+    phrasesCache.current[text] = phrases
+
     return phrases
-  }
-
-  const highlightQuery = (text: string, query: string) => {
-    if (!query.trim()) return text
-
-    const searchTerm = query.toLowerCase()
-    const textLower = text.toLowerCase()
-
-    // For multi-word searches, we need to handle each word separately
-    const searchWords = searchTerm.split(/\s+/).filter(Boolean)
-
-    // If it's a multi-word search
-    if (searchWords.length > 1) {
-      // Check if the entire search term exists in the text
-      if (textLower.includes(searchTerm)) {
-        const pos = textLower.indexOf(searchTerm)
-        return (
-          <>
-            {text.substring(0, pos)}
-            <HighlightedText>{text.substring(pos, pos + searchTerm.length)}</HighlightedText>
-            {text.substring(pos + searchTerm.length)}
-          </>
-        )
-      }
-
-      // Handle the last word as a prefix match
-      const lastWord = searchWords[searchWords.length - 1]
-      const words = text.split(/(\s+)/) // Split by whitespace but keep the separators
-
-      return words.map((word, index) => {
-        const lowerWord = word.toLowerCase()
-
-        // If it's just whitespace, return it as is
-        if (word.trim() === '') {
-          return <span key={index}>{word}</span>
-        }
-
-        // Check if the word starts with the last search word
-        if (lowerWord.startsWith(lastWord)) {
-          return (
-            <span key={index}>
-              <HighlightedText>{word.substring(0, lastWord.length)}</HighlightedText>
-              {word.substring(lastWord.length)}
-            </span>
-          )
-        }
-
-        // Check if any of the previous words match exactly
-        for (let i = 0; i < searchWords.length - 1; i++) {
-          if (lowerWord === searchWords[i]) {
-            return <HighlightedText key={index}>{word}</HighlightedText>
-          }
-        }
-
-        // Return the word as is if it doesn't match
-        return <span key={index}>{word}</span>
-      })
-    }
-
-    // For single-word searches (original logic)
-    const words = text.split(/(\s+)/) // Split by whitespace but keep the separators
-
-    return words.map((word, index) => {
-      const lowerWord = word.toLowerCase()
-
-      // If it's just whitespace, return it as is
-      if (word.trim() === '') {
-        return <span key={index}>{word}</span>
-      }
-
-      // If the word includes the search term or starts with it
-      if (lowerWord.includes(searchTerm) || lowerWord.startsWith(searchTerm)) {
-        // Find the position of the search term
-        const pos = lowerWord.indexOf(searchTerm)
-
-        if (pos === 0) {
-          // If the word starts with the search term
-          return (
-            <span key={index}>
-              <HighlightedText>{word.substring(0, searchTerm.length)}</HighlightedText>
-              {word.substring(searchTerm.length)}
-            </span>
-          )
-        } else {
-          // If the search term is in the middle of the word
-          return (
-            <span key={index}>
-              {word.substring(0, pos)}
-              <HighlightedText>{word.substring(pos, pos + searchTerm.length)}</HighlightedText>
-              {word.substring(pos + searchTerm.length)}
-            </span>
-          )
-        }
-      }
-
-      // Return the word as is if it doesn't match
-      return <span key={index}>{word}</span>
-    })
   }
 
   const handleClear = () => {
