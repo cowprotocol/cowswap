@@ -243,6 +243,17 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   const inputRef = useRef<HTMLInputElement>(null)
   // Cache for memoized phrases to avoid recomputation
   const phrasesCache = useRef<Record<string, string[]>>({})
+  const MAX_CACHE_ENTRIES = 100 // Limit cache size
+
+  // Helper to manage cache size
+  const addToCache = (key: string, value: string[]) => {
+    // If cache is full, remove oldest entry
+    const cacheKeys = Object.keys(phrasesCache.current)
+    if (cacheKeys.length >= MAX_CACHE_ENTRIES) {
+      delete phrasesCache.current[cacheKeys[0]]
+    }
+    phrasesCache.current[key] = value
+  }
 
   // Constants for optimization
   const MAX_PHRASE_LENGTH = 4 // Limit phrases to 4 words maximum
@@ -313,8 +324,12 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
         const description = article.attributes?.description?.toLowerCase() || ''
         const slug = article.attributes?.slug?.toLowerCase() || ''
 
+        // Track if we've found a match to avoid redundant checks
+        let foundMatch = false
+
         // 1. Check if the entire search term is contained in the title, description, or slug
         if (title.includes(searchTerm) || description.includes(searchTerm) || slug.includes(searchTerm)) {
+          foundMatch = true
           return true
         }
 
@@ -328,6 +343,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
           descriptionWords.some((word) => word.startsWith(searchTerm)) ||
           slugWords.some((word) => word.startsWith(searchTerm))
         ) {
+          foundMatch = true
           return true
         }
 
@@ -351,6 +367,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
               slugWords.some((word) => word.startsWith(lastWord))
 
             if (lastWordIsPrefix) {
+              foundMatch = true
               return true
             }
           }
@@ -358,14 +375,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
 
         // 4. Check if the entire search term is a prefix of any phrase in the content
         // Only perform expensive phrase checking if other checks fail and the content is not too long
-        if (
-          !title.includes(searchTerm) &&
-          !description.includes(searchTerm) &&
-          !slug.includes(searchTerm) &&
-          !titleWords.some((word) => word.startsWith(searchTerm)) &&
-          !descriptionWords.some((word) => word.startsWith(searchTerm)) &&
-          !slugWords.some((word) => word.startsWith(searchTerm))
-        ) {
+        if (!foundMatch) {
           // Lazy evaluation - only generate phrases if needed
           const titlePhrases = title.length < 1000 ? findPhrases(title) : []
           const descriptionPhrases = description.length < 1000 ? findPhrases(description) : []
@@ -416,7 +426,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
     }
 
     // Store in cache for future use
-    phrasesCache.current[text] = phrases
+    addToCache(text, phrases)
 
     return phrases
   }
