@@ -96,10 +96,9 @@ const SearchResultsInner = styled.div`
 
 const ResultItem = styled.a<{ isSelected: boolean }>`
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   justify-content: flex-start;
-  flex-flow: row wrap;
-  white-space: pre;
   text-decoration: none;
   color: ${Color.neutral0};
   line-height: 1.2;
@@ -115,6 +114,22 @@ const ResultItem = styled.a<{ isSelected: boolean }>`
   &:active {
     color: ${Color.neutral0};
   }
+`
+
+const ResultTitle = styled.div`
+  font-weight: ${Font.weight.medium};
+  margin-bottom: 4px;
+  white-space: pre-wrap;
+`
+
+const ResultDescription = styled.div`
+  font-size: 12px;
+  color: ${Color.neutral40};
+  white-space: pre-wrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 `
 
 const HighlightedText = styled.span`
@@ -214,24 +229,194 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
 
   useEffect(() => {
     if (query.trim()) {
-      const filtered = (articles || []).filter((article) =>
-        article.attributes?.title?.toLowerCase().includes(query.toLowerCase()),
-      )
+      const searchTerm = query.toLowerCase()
+
+      // Simplified and more robust search algorithm
+      const filtered = (articles || []).filter((article) => {
+        const title = article.attributes?.title?.toLowerCase() || ''
+        const description = article.attributes?.description?.toLowerCase() || ''
+        const slug = article.attributes?.slug?.toLowerCase() || ''
+
+        // 1. Check if the entire search term is contained in the title, description, or slug
+        if (title.includes(searchTerm) || description.includes(searchTerm) || slug.includes(searchTerm)) {
+          return true
+        }
+
+        // 2. Check if the search term is a prefix of any word in the title, description, or slug
+        const titleWords = title.split(/\s+/).filter(Boolean)
+        const descriptionWords = description.split(/\s+/).filter(Boolean)
+        const slugWords = slug.split(/[-\s]+/).filter(Boolean)
+
+        if (
+          titleWords.some((word) => word.startsWith(searchTerm)) ||
+          descriptionWords.some((word) => word.startsWith(searchTerm)) ||
+          slugWords.some((word) => word.startsWith(searchTerm))
+        ) {
+          return true
+        }
+
+        // 3. For multi-word search terms, check if all words except the last one are found,
+        // and the last word is a prefix of any word
+        const searchWords = searchTerm.split(/\s+/).filter(Boolean)
+        if (searchWords.length > 1) {
+          const lastWord = searchWords[searchWords.length - 1]
+          const previousWords = searchWords.slice(0, -1)
+
+          // Check if all previous words are found in the content
+          const allPreviousWordsFound = previousWords.every(
+            (word) => title.includes(word) || description.includes(word) || slug.includes(word),
+          )
+
+          if (allPreviousWordsFound && lastWord.length > 0) {
+            // Check if the last word is a prefix of any word
+            const lastWordIsPrefix =
+              titleWords.some((word) => word.startsWith(lastWord)) ||
+              descriptionWords.some((word) => word.startsWith(lastWord)) ||
+              slugWords.some((word) => word.startsWith(lastWord))
+
+            if (lastWordIsPrefix) {
+              return true
+            }
+          }
+
+          // 4. Check if the entire search term is a prefix of any phrase in the content
+          const titlePhrases = findPhrases(title)
+          const descriptionPhrases = findPhrases(description)
+          const slugPhrases = findPhrases(slug)
+
+          if (
+            titlePhrases.some((phrase) => phrase.startsWith(searchTerm)) ||
+            descriptionPhrases.some((phrase) => phrase.startsWith(searchTerm)) ||
+            slugPhrases.some((phrase) => phrase.startsWith(searchTerm))
+          ) {
+            return true
+          }
+        }
+
+        return false
+      })
+
       setFilteredArticles(filtered)
     } else {
       setFilteredArticles([])
     }
   }, [query, articles])
 
+  // Helper function to find all possible phrases in a text
+  const findPhrases = (text: string): string[] => {
+    const words = text.split(/\s+/)
+    const phrases: string[] = []
+
+    // Generate all possible phrases (combinations of consecutive words)
+    for (let i = 0; i < words.length; i++) {
+      let phrase = words[i]
+      phrases.push(phrase)
+
+      for (let j = i + 1; j < words.length; j++) {
+        phrase += ' ' + words[j]
+        phrases.push(phrase)
+      }
+    }
+
+    return phrases
+  }
+
   const highlightQuery = (text: string, query: string) => {
-    const parts = text.split(new RegExp(`(${query})`, 'gi'))
-    return parts.map((part, index) =>
-      part.toLowerCase() === query.toLowerCase() ? (
-        <HighlightedText key={index}>{part}</HighlightedText>
-      ) : (
-        <span key={index}>{part}</span>
-      ),
-    )
+    if (!query.trim()) return text
+
+    const searchTerm = query.toLowerCase()
+    const textLower = text.toLowerCase()
+
+    // For multi-word searches, we need to handle each word separately
+    const searchWords = searchTerm.split(/\s+/).filter(Boolean)
+
+    // If it's a multi-word search
+    if (searchWords.length > 1) {
+      // Check if the entire search term exists in the text
+      if (textLower.includes(searchTerm)) {
+        const pos = textLower.indexOf(searchTerm)
+        return (
+          <>
+            {text.substring(0, pos)}
+            <HighlightedText>{text.substring(pos, pos + searchTerm.length)}</HighlightedText>
+            {text.substring(pos + searchTerm.length)}
+          </>
+        )
+      }
+
+      // Handle the last word as a prefix match
+      const lastWord = searchWords[searchWords.length - 1]
+      const words = text.split(/(\s+)/) // Split by whitespace but keep the separators
+
+      return words.map((word, index) => {
+        const lowerWord = word.toLowerCase()
+
+        // If it's just whitespace, return it as is
+        if (word.trim() === '') {
+          return <span key={index}>{word}</span>
+        }
+
+        // Check if the word starts with the last search word
+        if (lowerWord.startsWith(lastWord)) {
+          return (
+            <span key={index}>
+              <HighlightedText>{word.substring(0, lastWord.length)}</HighlightedText>
+              {word.substring(lastWord.length)}
+            </span>
+          )
+        }
+
+        // Check if any of the previous words match exactly
+        for (let i = 0; i < searchWords.length - 1; i++) {
+          if (lowerWord === searchWords[i]) {
+            return <HighlightedText key={index}>{word}</HighlightedText>
+          }
+        }
+
+        // Return the word as is if it doesn't match
+        return <span key={index}>{word}</span>
+      })
+    }
+
+    // For single-word searches (original logic)
+    const words = text.split(/(\s+)/) // Split by whitespace but keep the separators
+
+    return words.map((word, index) => {
+      const lowerWord = word.toLowerCase()
+
+      // If it's just whitespace, return it as is
+      if (word.trim() === '') {
+        return <span key={index}>{word}</span>
+      }
+
+      // If the word includes the search term or starts with it
+      if (lowerWord.includes(searchTerm) || lowerWord.startsWith(searchTerm)) {
+        // Find the position of the search term
+        const pos = lowerWord.indexOf(searchTerm)
+
+        if (pos === 0) {
+          // If the word starts with the search term
+          return (
+            <span key={index}>
+              <HighlightedText>{word.substring(0, searchTerm.length)}</HighlightedText>
+              {word.substring(searchTerm.length)}
+            </span>
+          )
+        } else {
+          // If the search term is in the middle of the word
+          return (
+            <span key={index}>
+              {word.substring(0, pos)}
+              <HighlightedText>{word.substring(pos, pos + searchTerm.length)}</HighlightedText>
+              {word.substring(pos + searchTerm.length)}
+            </span>
+          )
+        }
+      }
+
+      // Return the word as is if it doesn't match
+      return <span key={index}>{word}</span>
+    })
   }
 
   const handleClear = () => {
@@ -273,7 +458,10 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
                 href={`/learn/${article.attributes?.slug}`}
                 isSelected={index === highlightedIndex}
               >
-                {highlightQuery(article.attributes?.title || '', query)}
+                <ResultTitle>{highlightQuery(article.attributes?.title || '', query)}</ResultTitle>
+                {article.attributes?.description && (
+                  <ResultDescription>{highlightQuery(article.attributes?.description || '', query)}</ResultDescription>
+                )}
               </ResultItem>
             ))}
           </SearchResultsInner>

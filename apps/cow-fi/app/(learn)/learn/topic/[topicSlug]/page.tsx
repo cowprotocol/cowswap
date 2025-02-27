@@ -40,7 +40,8 @@ export default async function TopicPage({ params }: Props) {
     return notFound()
   }
 
-  const articlesResponse = await getArticles({
+  // Fetch articles for this specific topic
+  const topicArticlesResponse = await getArticles({
     page: 0,
     pageSize: 50,
     filters: {
@@ -52,7 +53,13 @@ export default async function TopicPage({ params }: Props) {
     },
   })
 
-  const articles = articlesResponse.data
+  // Fetch all articles for search functionality
+  const allArticlesResponse = await getArticles({
+    fetchAll: true,
+  })
+
+  const topicArticles = topicArticlesResponse.data
+  const allArticles = allArticlesResponse.data
 
   const categoriesResponse = await getCategories()
   const allCategories =
@@ -61,5 +68,12 @@ export default async function TopicPage({ params }: Props) {
       slug: category?.attributes?.slug || '',
     })) || []
 
-  return <TopicPageComponent category={category} allCategories={allCategories} articles={articles} />
+  return (
+    <TopicPageComponent
+      category={category}
+      allCategories={allCategories}
+      articles={topicArticles}
+      allArticles={allArticles}
+    />
+  )
 }

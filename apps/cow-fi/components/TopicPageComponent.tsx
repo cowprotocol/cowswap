@@ -94,9 +94,10 @@ interface TopicPageProps {
   category: any
   articles: any[]
   allCategories: { name: string; slug: string }[]
+  allArticles?: any[]
 }
 
-export function TopicPageComponent({ category, allCategories, articles }: TopicPageProps) {
+export function TopicPageComponent({ category, allCategories, articles, allArticles }: TopicPageProps) {
   const { name, description, image } = category.attributes || {}
   const imageUrl = image?.data?.attributes?.url
   const analytics = useCowAnalytics()
@@ -105,7 +106,7 @@ export function TopicPageComponent({ category, allCategories, articles }: TopicP
     <Wrapper>
       <CategoryLinks allCategories={allCategories} />
 
-      <SearchBar articles={articles} />
+      <SearchBar articles={allArticles || articles} />
 
       <ContainerCard gap={42} gapMobile={24} minHeight="100vh" alignContent="flex-start" touchFooter>
         <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>

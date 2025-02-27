@@ -5,7 +5,7 @@ import qs from 'qs'
 import { toQueryParams } from 'util/queryParams'
 import { getCmsClient } from '@cowprotocol/core'
 
-const PAGE_SIZE = 50
+const PAGE_SIZE = 100
 const CMS_CACHE_TIME = 5 * 60 // 5 min
 
 type Schemas = components['schemas']
@@ -117,7 +117,8 @@ export async function getArticles({
   page = 0,
   pageSize = PAGE_SIZE,
   filters = {},
-}: PaginationParam & { filters?: any } = {}): Promise<ArticleListResponse> {
+  fetchAll = false,
+}: PaginationParam & { filters?: any; fetchAll?: boolean } = {}): Promise<ArticleListResponse> {
   const querySerializer = (params: any) => {
     return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
   }
@@ -144,6 +145,28 @@ export async function getArticles({
   if (error) {
     console.error(`Error ${response.status} getting articles: ${response.url}. Page ${page}`, error)
     throw error
+  }
+
+  // If fetchAll is true and there are more pages, recursively fetch them
+  if (fetchAll && data.meta.pagination.page < data.meta.pagination.pageCount) {
+    const nextPageResponse = await getArticles({
+      page: page + 1,
+      pageSize,
+      filters,
+      fetchAll: true,
+    })
+
+    // Combine the current page with subsequent pages
+    return {
+      data: [...data.data, ...nextPageResponse.data],
+      meta: {
+        pagination: {
+          ...data.meta.pagination,
+          // Update total to reflect the actual number of articles fetched
+          total: data.meta.pagination.total,
+        },
+      },
+    }
   }
 
   return { data: data.data, meta: data.meta }
