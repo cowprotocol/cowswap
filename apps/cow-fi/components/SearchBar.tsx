@@ -437,6 +437,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
     setHighlightedIndex(-1)
   }
 
+  // Keep results visible if there's a query, even when input loses focus
+  const shouldShowResults = (query.trim() && filteredArticles.length > 0) || (isFocused && filteredArticles.length > 0)
+
   return (
     <SearchBarContainer>
       <InputContainer>
@@ -450,7 +453,12 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsFocused(true)}
-          onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+          onBlur={() => {
+            // Don't hide results when input loses focus if there's a query
+            if (!query.trim()) {
+              setTimeout(() => setIsFocused(false), 200)
+            }
+          }}
         />
         {query && (
           <CloseIcon onClick={handleClear}>
@@ -458,7 +466,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
           </CloseIcon>
         )}
       </InputContainer>
-      {isFocused && filteredArticles.length > 0 && (
+      {shouldShowResults && (
         <SearchResults>
           <SearchResultsInfo>
             {filteredArticles.length} result{filteredArticles.length > 1 ? 's' : ''}
