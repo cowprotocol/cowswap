@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.12.0...widget-configurator-v1.13.0) (2025-02-25)
+
+
+### Features
+
+* **analytics:** migrate to GTM-based analytics ([#5360](https://github.com/cowprotocol/cowswap/issues/5360)) ([f404d02](https://github.com/cowprotocol/cowswap/commit/f404d0280d9d1d86cc249d70852a5c0ec9827475))
+
 ## [1.12.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.11.0...widget-configurator-v1.12.0) (2025-02-05)
 
 

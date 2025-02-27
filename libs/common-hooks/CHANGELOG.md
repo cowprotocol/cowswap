@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.6.1...common-hooks-v1.7.0) (2025-02-25)
+
+
+### Features
+
+* **analytics:** migrate to GTM-based analytics ([#5360](https://github.com/cowprotocol/cowswap/issues/5360)) ([f404d02](https://github.com/cowprotocol/cowswap/commit/f404d0280d9d1d86cc249d70852a5c0ec9827475))
+
 ## [1.6.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.6.0...common-hooks-v1.6.1) (2025-01-09)
 
 
