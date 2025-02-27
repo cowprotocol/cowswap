@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.103.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.0...cowswap-v1.103.1) (2025-02-27)
+
+
+### Bug Fixes
+
+* **twap:** migrate to new Safe api for orders history ([#5456](https://github.com/cowprotocol/cowswap/issues/5456)) ([03c89fe](https://github.com/cowprotocol/cowswap/commit/03c89fe227c65c3f9f2c0852ff69c5f8170dde40))
+
+## [1.103.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.102.0...cowswap-v1.103.0) (2025-02-25)
+
+
+### Features
+
+* **analytics:** migrate to GTM-based analytics ([#5360](https://github.com/cowprotocol/cowswap/issues/5360)) ([f404d02](https://github.com/cowprotocol/cowswap/commit/f404d0280d9d1d86cc249d70852a5c0ec9827475))
+
+
+### Bug Fixes
+
+* Orders table: 'Learn more' link update ([#5440](https://github.com/cowprotocol/cowswap/issues/5440)) ([49f4a26](https://github.com/cowprotocol/cowswap/commit/49f4a262a2262f56615f95e8e15d239a09a2ff81))
+* **ui:** minor layout and styling tweaks across components ([#5437](https://github.com/cowprotocol/cowswap/issues/5437)) ([2602d1c](https://github.com/cowprotocol/cowswap/commit/2602d1ca0848571d09ef94a4ee6ff7024cdc736c))
+* **volume-fee:** remove hardcoded stablecoins check for Safe fee ([#5436](https://github.com/cowprotocol/cowswap/issues/5436)) ([ce77355](https://github.com/cowprotocol/cowswap/commit/ce773552fe29fbca1571a17b9d0177522a847183))
+
 ## [1.102.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.101.0...cowswap-v1.102.0) (2025-02-17)
 
 
