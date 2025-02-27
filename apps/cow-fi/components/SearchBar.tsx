@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components/macro'
 import { Font, Color, Media } from '@cowprotocol/ui'
+import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 import { Article } from 'services/cms'
 import SVG from 'react-inlinesvg'
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
@@ -241,9 +242,10 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   const [isFocused, setIsFocused] = useState(false)
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
   const inputRef = useRef<HTMLInputElement>(null)
-  // Cache for memoized phrases to avoid recomputation
+  const searchContainerRef = useRef<HTMLDivElement>(null)
   const phrasesCache = useRef<Record<string, string[]>>({})
   const MAX_CACHE_ENTRIES = 100 // Limit cache size
+  const isMediumUp = !useMediaQuery(Media.upToMedium(false))
 
   // Helper to manage cache size
   const addToCache = (key: string, value: string[]) => {
@@ -440,8 +442,21 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   // Keep results visible if there's a query, even when input loses focus
   const shouldShowResults = (query.trim() && filteredArticles.length > 0) || (isFocused && filteredArticles.length > 0)
 
+  // Handle clicks outside using the useOnClickOutside hook
+  const handleClickOutside = () => {
+    if (isMediumUp && shouldShowResults) {
+      // Close search results when clicking outside on medium screens and up
+      setIsFocused(false)
+      // Also clear the query to ensure results are hidden
+      setQuery('')
+      setFilteredArticles([])
+    }
+  }
+
+  useOnClickOutside([searchContainerRef], isMediumUp ? handleClickOutside : undefined)
+
   return (
-    <SearchBarContainer>
+    <SearchBarContainer ref={searchContainerRef}>
       <InputContainer>
         <SearchIcon>
           <SVG src={IMG_ICON_SEARCH} title="Search" />
