@@ -92,7 +92,7 @@ const SearchResults = styled.div`
 const SearchResultsInner = styled.div`
   max-height: 280px;
   overflow-y: auto;
-  padding-right: 10px;
+  padding: 0 10px 54px 0;
 `
 
 const ResultItem = styled.a<{ isSelected: boolean }>`
