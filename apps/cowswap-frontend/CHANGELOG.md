@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.103.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.0...cowswap-v1.103.1) (2025-02-27)
+
+
+### Bug Fixes
+
+* **twap:** migrate to new Safe api for orders history ([#5456](https://github.com/cowprotocol/cowswap/issues/5456)) ([03c89fe](https://github.com/cowprotocol/cowswap/commit/03c89fe227c65c3f9f2c0852ff69c5f8170dde40))
+
 ## [1.103.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.102.0...cowswap-v1.103.0) (2025-02-25)
 
 
