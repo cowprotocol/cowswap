@@ -1,9 +1,8 @@
 import React from 'react'
 
-import { Media } from '@cowprotocol/ui'
+import { Color, Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-import { DARK_COLOURS } from 'theme'
 
 import Tabs, { getTabTheme, Props as TabsProps, IndicatorTabSize } from '../../../../components/common/Tabs/Tabs'
 
@@ -11,7 +10,7 @@ const StyledTabs = styled.div`
   display: flex;
   width: 100%;
   padding: 0;
-  border: ${({ theme }): string => `1px solid ${theme.borderPrimary}`};
+  border: 1px solid ${Color.explorer_border};
   border-radius: 4px;
 
   .tab-content {
@@ -38,12 +37,12 @@ const StyledTabs = styled.div`
   }
 `
 const tabCustomThemeConfig = getTabTheme({
-  activeBg: 'var(--color-transparent)',
+  activeBg: 'transparent',
   activeBgAlt: 'initial',
-  inactiveBg: 'var(--color-transparent)',
-  activeText: DARK_COLOURS.textPrimary1,
-  inactiveText: 'var(--color-text-secondary2)',
-  activeBorder: DARK_COLOURS.orange,
+  inactiveBg: 'transparent',
+  activeText: Color.neutral100,
+  inactiveText: Color.explorer_textSecondary2,
+  activeBorder: Color.cowfi_orange,
   inactiveBorder: 'none',
   fontSize: 'var(--font-size-large)',
   fontWeight: 'var(--font-weight-bold)',

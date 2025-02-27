@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Media } from '@cowprotocol/ui'
+import { Media, Color } from '@cowprotocol/ui'
 
 import { faCopy } from '@fortawesome/free-regular-svg-icons'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
@@ -17,7 +17,7 @@ import { DISPLAY_TEXT_COPIED_CHECK } from '../../../explorer/const'
 // "Warning: Received `false` for a non-boolean attribute `copied`"
 //   Effectively though, it's treated as a boolean, thus the value doesn't matter
 const Icon = styled(FontAwesomeIcon)<{ copied?: string; height?: number }>`
-  color: ${({ theme, copied }): string => (copied ? theme.green : theme.grey)};
+  color: ${({ copied }): string => (copied ? Color.explorer_green1 : Color.explorer_grey)};
   transition: color 0.1s ease-in;
   cursor: ${({ copied }): string => (copied ? 'reset' : 'pointer')};
   vertical-align: baseline;
@@ -31,16 +31,16 @@ const Icon = styled(FontAwesomeIcon)<{ copied?: string; height?: number }>`
     `}
 
   &:hover {
-    color: ${({ theme, copied }): string => (copied ? theme.green : theme.white)};
+    color: ${({ copied }): string => (copied ? Color.explorer_green1 : Color.neutral100)};
   }
 
   + span {
-    color: ${({ theme }): string => theme.green};
+    color: ${(): string => Color.explorer_green1};
     font-weight: ${({ theme }): string => theme.fontMedium};
     font-size: 1.2rem;
     position: absolute;
-    border: 1px solid ${({ theme }): string => theme.green};
-    background-color: ${({ theme }): string => theme.green2};
+    border: 1px solid ${(): string => Color.explorer_green1};
+    background-color: ${(): string => Color.explorer_green2};
     padding: 0.5rem;
     border-radius: 0.4rem;
     margin-top: -3rem;

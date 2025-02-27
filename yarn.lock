@@ -28916,11 +28916,6 @@ styled-system@^5.0.0, styled-system@^5.1.5:
     "@styled-system/variant" "^5.1.5"
     object-assign "^4.1.1"
 
-styled-theming@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/styled-theming/-/styled-theming-2.2.0.tgz#3084e43d40eaab4bc11ebafd3de04e3622fee37e"
-  integrity sha512-5nqUoCR/BJ6ziJ39xN/K5nmrzMn37BgPc693vgeQlO0hMaat/hJvJ0/u0vtm1ZQxU82sdltEbynqjkoYYMVwaA==
-
 stylehacks@^5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/stylehacks/-/stylehacks-5.1.1.tgz#7934a34eb59d7152149fa69d6e9e56f2fc34bcc9"

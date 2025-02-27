@@ -158,19 +158,18 @@ span[class^='wordtag-'] {
   }
 
   .wordtag-blue {
-    color: #012f7a;
-    background: #65d9ff;
+    color: ${Color.cowfi_blue_dark};
+    background: ${Color.cowfi_blue_lighter};
   }
 
   .wordtag-orange {
-    color: #ec4612;
-    background: #fee7cf;
+    color: ${Color.cowfi_orange_bright};
+    background: ${Color.cowfi_orange_pale};
   }
 
   .wordtag-purple {
-    color: #f996ee;
-    background: #490072;
+    color: ${Color.cowfi_purple_bright};
+    background: ${Color.cowfi_purple_dark};
   }
 `
-
 export default GlobalStyles

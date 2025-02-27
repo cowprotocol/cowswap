@@ -32,7 +32,7 @@ import {
   ToggleFooterButton,
 } from './styled'
 
-import { Color } from '../../consts'
+import { Color } from '../../colors'
 import { MenuItem } from '../../pure/MenuBar'
 import { ProductLogo, ProductVariant } from '../../pure/ProductLogo'
 
@@ -293,7 +293,6 @@ export const Footer = ({
 }: FooterProps) => {
   const [isFooterExpanded, setIsFooterExpanded] = useState(expanded)
   const footerRef = useRef<HTMLDivElement>(null)
-
   const theme = useTheme()
 
   const toggleFooter = () => {

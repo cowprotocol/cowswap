@@ -159,6 +159,7 @@ export const SetMaxBtn = styled.button`
   border-radius: 6px;
   padding: 3px 4px;
   text-transform: uppercase;
+  white-space: nowrap;
   transition:
     background var(${UI.ANIMATION_DURATION}) ease-in-out,
     color var(${UI.ANIMATION_DURATION}) ease-in-out;

@@ -1,6 +1,7 @@
 import styled from 'styled-components/macro'
 
-import { Color, Media } from '../../consts'
+import { Color } from '../../colors'
+import { Media } from '../../consts'
 
 export const FooterContainer = styled.footer<{ expanded: boolean; hasTouchFooter: boolean }>`
   --bgColor: ${({ theme }) => (theme.darkMode ? Color.neutral0 : Color.neutral10)};
@@ -22,10 +23,10 @@ export const FooterContainer = styled.footer<{ expanded: boolean; hasTouchFooter
       !expanded && hasTouchFooter
         ? '120px 0 0'
         : expanded && hasTouchFooter
-        ? '120px 0 0'
-        : expanded
-        ? '54px 0 0'
-        : '0'};
+          ? '120px 0 0'
+          : expanded
+            ? '54px 0 0'
+            : '0'};
   }
 `
 
@@ -231,7 +232,9 @@ export const ToggleFooterButton = styled.button<{ expanded: boolean }>`
   cursor: pointer;
   font-size: 16px;
   padding: 0;
-  transition: transform 0.5s ease-in-out, color 0.2s ease-in-out;
+  transition:
+    transform 0.5s ease-in-out,
+    color 0.2s ease-in-out;
   transform: ${({ expanded }) => (expanded ? 'rotate(-90deg)' : 'rotate(0deg)')};
 
   &:hover {

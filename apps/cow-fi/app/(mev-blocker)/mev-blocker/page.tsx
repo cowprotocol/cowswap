@@ -93,7 +93,7 @@ export default function Page() {
         <PageWrapper>
           <HeroContainer variant="secondary">
             <HeroContent variant="secondary">
-              <HeroSubtitle color={'#EC4612'}>MEV Blocker</HeroSubtitle>
+              <HeroSubtitle color={Color.cowfi_orange_bright}>MEV Blocker</HeroSubtitle>
               <HeroTitle>The best MEV protection under the sun</HeroTitle>
               <HeroDescription fontSize={21}>
                 MEV Blocker is your personal protection from frontrunning and sandwich attacks for a broad spectrum of
@@ -110,8 +110,8 @@ export default function Page() {
 
               <Link
                 linkType={LinkType.HeroButton}
-                bgColor={'#EC4612'}
-                color={'#FEE7CF'}
+                bgColor={Color.cowfi_orange_bright}
+                color={Color.cowfi_orange_pale}
                 href="#rpc"
                 data-click-event={toCowFiGtmEvent({
                   category: CowFiCategory.MEVBLOCKER,
@@ -121,17 +121,17 @@ export default function Page() {
                 Get protected
               </Link>
             </HeroContent>
-            <HeroImage width={470} height={'auto'} color={'#EC4612'}>
+            <HeroImage width={470} height={'auto'} color={Color.cowfi_orange_bright}>
               <LazySVG src={IMAGE_SANDWICH_GUY} />
             </HeroImage>
           </HeroContainer>
 
-          <MetricsCard bgColor="#EC4612" color="#FEE7CF" columns={3} touchFooter>
-            <MetricsItem dividerColor="#F9A36F">
+          <MetricsCard bgColor={Color.cowfi_orange_bright} color={Color.cowfi_orange_pale} columns={3} touchFooter>
+            <MetricsItem dividerColor={Color.cowfi_orange_light}>
               <h2>$208B+</h2>
               <p>volume protected from MEV, across 46M+ transactions</p>
             </MetricsItem>
-            <MetricsItem dividerColor="#F9A36F">
+            <MetricsItem dividerColor={Color.cowfi_orange_light}>
               <h2>4.6K+</h2>
               <p>ETH rebated to users</p>
             </MetricsItem>
@@ -142,7 +142,7 @@ export default function Page() {
 
             <Link
               bgColor="transparent"
-              color="#FEE7CF"
+              color={Color.cowfi_orange_pale}
               margin="24px auto 0"
               gridFullWidth
               href="https://dune.com/cowprotocol/mev-blocker"
@@ -437,8 +437,8 @@ export default function Page() {
                 </SectionTitleDescription>
 
                 <Link
-                  bgColor="#EC4612"
-                  color={Color.neutral98}
+                  bgColor={Color.cowfi_orange_bright}
+                  color={Color.cowfi_orange_pale}
                   href="https://docs.cow.fi/category/searchers"
                   external
                   linkType={LinkType.SectionTitleButton}
@@ -506,7 +506,7 @@ export default function Page() {
             </ContainerCardSection>
           </ContainerCard>
 
-          <ContainerCard bgColor="#FEE7CF" touchFooter>
+          <ContainerCard bgColor={Color.cowfi_orange_pale} touchFooter>
             <ContainerCardSection>
               <SectionTitleWrapper padding="72px 0" maxWidth={640}>
                 <SectionTitleIcon>
@@ -516,8 +516,8 @@ export default function Page() {
 
                 <Link
                   linkType={LinkType.SectionTitleButton}
-                  bgColor={'#EC4612'}
-                  color={'#FEE7CF'}
+                  bgColor={Color.cowfi_orange_bright}
+                  color={Color.cowfi_orange_pale}
                   onClick={handleShareClick}
                   asButton
                   data-click-event={toCowFiGtmEvent({

@@ -1,6 +1,8 @@
 import { Link } from '@/components/Link'
+import { Color } from '@cowprotocol/ui'
+
 import { initGtm } from '@cowprotocol/analytics'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+import { CowFiCategory } from 'src/common/analytics/types'
 import IMG_COWAMM_LVR from '@cowprotocol/assets/images/image-cowamm-lvr.svg'
 import IMG_COWAMM_LP_1 from '@cowprotocol/assets/images/image-cowamm-lp-1.svg'
 import IMG_COWAMM_LP_2 from '@cowprotocol/assets/images/image-cowamm-lp-2.svg'
@@ -11,8 +13,7 @@ const analytics = initGtm()
 
 export const QUOTES = [
   {
-    title:
-      '"When LPs bleed money to LVR, users pay for it with bigger spreads. If we want DeFi to rival the CEX experience, solving LVR will be key."',
+    title: `"When LPs bleed money to LVR, users pay for it with bigger spreads. If we want DeFi to rival the CEX experience, solving LVR will be key."`,
     description: (
       <>
         <b>- Hasu</b>
@@ -20,12 +21,11 @@ export const QUOTES = [
         <i>Strategy Lead at Flashbots</i>
       </>
     ),
-    bgColor: '#BCEC79',
-    textColor: '#194D05',
+    bgColor: Color.cowamm_green,
+    textColor: Color.cowamm_dark_green,
   },
   {
-    title:
-      '"Impermanent loss is a big worry for many of our clients. If LPs could deposit liquidity into surplus-rebalancing pools and not worry about LVR, we’d deposit more funds into passive investment strategies."',
+    title: `"Impermanent loss is a big worry for many of our clients. If LPs could deposit liquidity into surplus-rebalancing pools and not worry about LVR, we'd deposit more funds into passive investment strategies."`,
     description: (
       <>
         <b>- Marcelo</b>
@@ -33,12 +33,11 @@ export const QUOTES = [
         <i>Co-founder at Karpatkey</i>
       </>
     ),
-    bgColor: '#BCEC79',
-    textColor: '#194D05',
+    bgColor: Color.cowamm_green,
+    textColor: Color.cowamm_dark_green,
   },
   {
-    title:
-      '"LVR is the main reason for the current concentration in the block builder market. CoW AMM is not only great for LPs, it\'s important for Ethereum overall."',
+    title: `"LVR is the main reason for the current concentration in the block builder market. CoW AMM is not only great for LPs, it's important for Ethereum overall."`,
     description: (
       <>
         <b>- Josojo</b>
@@ -46,8 +45,8 @@ export const QUOTES = [
         <i>Crypto Researcher</i>
       </>
     ),
-    bgColor: '#BCEC79',
-    textColor: '#194D05',
+    bgColor: Color.cowamm_green,
+    textColor: Color.cowamm_dark_green,
   },
 ]
 
@@ -55,26 +54,26 @@ export const COW_AMM_CONTENT = [
   {
     description:
       'Liquidity providers deposit tokens into protected CoW AMM liquidity pools, where traders can access the liquidity',
-    bgColor: '#224D22',
-    textColor: '#DCF8A7',
+    bgColor: Color.cowamm_dark_green2,
+    textColor: Color.cowamm_light_green,
     image: IMG_COWAMM_LP_1,
   },
   {
     description: 'Solvers bid to rebalance CoW AMM pools whenever there is an arbitrage opportunity',
-    bgColor: '#224D22',
-    textColor: '#DCF8A7',
+    bgColor: Color.cowamm_dark_green2,
+    textColor: Color.cowamm_light_green,
     image: IMG_COWAMM_LP_2,
   },
   {
     description: 'The solver that offers the most surplus to the pool wins the right to rebalance the pool',
-    bgColor: '#224D22',
-    textColor: '#DCF8A7',
+    bgColor: Color.cowamm_dark_green2,
+    textColor: Color.cowamm_light_green,
     image: IMG_COWAMM_LP_3,
   },
   {
     description: 'CoW AMM eliminates LVR by capturing arbitrage value for LPs and shielding it from MEV bots',
-    bgColor: '#224D22',
-    textColor: '#DCF8A7',
+    bgColor: Color.cowamm_dark_green2,
+    textColor: Color.cowamm_light_green,
     image: IMG_COWAMM_LP_4,
   },
 ]
