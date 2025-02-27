@@ -57,7 +57,6 @@ export default function Page() {
           <ArticleMainTitle margin={'0 0 62px'} fontSize={52}>
             {title}
           </ArticleMainTitle>
-
           <BodyContent>
             <p>
               <strong>Last updated: February 2025</strong>
