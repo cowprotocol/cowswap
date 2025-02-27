@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.44.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.43.0...explorer-v2.44.0) (2025-02-27)
+
+
+### Features
+
+* add dummy change to force release ([0a5a954](https://github.com/cowprotocol/cowswap/commit/0a5a9547bdfe9f3bec4fd73dc11ffd0035501d90))
+
 ## [2.43.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.42.2...explorer-v2.43.0) (2025-02-25)
 
 
