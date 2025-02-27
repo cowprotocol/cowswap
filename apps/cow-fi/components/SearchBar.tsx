@@ -126,10 +126,11 @@ const ResultDescription = styled.div`
   font-size: 12px;
   color: ${Color.neutral40};
   white-space: pre-wrap;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
   overflow: hidden;
+  line-height: 1.5;
+  display: -webkit-box;
+  line-clamp: 2;
+  box-orient: vertical;
 `
 
 const HighlightedText = styled.span`
