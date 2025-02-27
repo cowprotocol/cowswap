@@ -74,13 +74,6 @@ export function useTradeQuotePolling() {
     const currentQuote = tradeQuoteRef.current
     const currentQuoteParams = currentQuote.quoteParams
 
-    // Don't fetch quote if the parameters are the same
-    // Also avoid quote refresh when only appData.quote (contains slippage) is changed
-    //Important! We should skip quote updateing only if there is no quote response
-    if (currentQuote.response && currentQuoteParams && quoteUsingSameParameters(currentQuoteParams, quoteParams)) {
-      return
-    }
-
     const fetchQuote = (hasParamsChanged: boolean, priceQuality: PriceQuality, fetchStartTimestamp: number) => {
       updateQuoteState({ isLoading: true, hasParamsChanged })
 
@@ -116,6 +109,18 @@ export function useTradeQuotePolling() {
     }
 
     function fetchAndUpdateQuote(paramsChanged: boolean) {
+      // Don't fetch quote if the parameters are the same
+      // Also avoid quote refresh when only appData.quote (contains slippage) is changed
+      // Important! We should skip quote updateing only if there is no quote response
+      if (
+        currentQuote.response &&
+        quoteParams &&
+        currentQuoteParams &&
+        quoteUsingSameParameters(currentQuoteParams, quoteParams)
+      ) {
+        return
+      }
+
       // When browser is offline or the tab is not active do no fetch
       if (!isOnlineRef.current || !isWindowVisibleRef.current) {
         return
