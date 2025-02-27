@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.21.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.20.0...cow-fi-v1.21.0) (2025-02-27)
+
+
+### Features
+
+* **cow-fi:** update base token reward T&C ([#5460](https://github.com/cowprotocol/cowswap/issues/5460)) ([485f2b4](https://github.com/cowprotocol/cowswap/commit/485f2b494848aaf8816854fe0c604d8bda84ac5b))
+
+
+### Bug Fixes
+
+* TX amount change on MEV blocker page ([#5453](https://github.com/cowprotocol/cowswap/issues/5453)) ([9ee3d08](https://github.com/cowprotocol/cowswap/commit/9ee3d088a0e2d21c60ac7d632c18170ca44aa50a))
+
 ## [1.20.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.19.4...cow-fi-v1.20.0) (2025-02-25)
 
 
