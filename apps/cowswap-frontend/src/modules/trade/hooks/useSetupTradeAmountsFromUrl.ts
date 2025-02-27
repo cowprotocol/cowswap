@@ -90,13 +90,13 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
       }
     }
 
-    const hasUpdates = Object.keys(update).length > 0
-
     // When both sell and buy amount are not set
     // Then set 1 unit to sell by default
     if (!isAtLeastOneAmountIsSetRef.current && !update.inputCurrencyAmount && inputCurrency) {
       update.inputCurrencyAmount = FractionUtils.serializeFractionToJSON(tryParseCurrencyAmount('1', inputCurrency))
     }
+
+    const hasUpdates = Object.keys(update).length > 0
 
     if (hasUpdates) {
       // Clean params only when an update was applied or currencies are loaded
