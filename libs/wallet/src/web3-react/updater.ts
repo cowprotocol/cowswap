@@ -2,9 +2,9 @@ import { useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState } from 'react'
 
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
-import { getSafeInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENSName } from '@cowprotocol/ens'
+import { getSafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useWeb3React } from '@web3-react/core'
 
 import ms from 'ms.macro'
@@ -98,14 +98,19 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
       } else {
         if (chainId && account && provider) {
           try {
-            const _safeInfo = await getSafeInfo(chainId, account, provider)
-            const { address, threshold, owners, nonce } = _safeInfo
+            const _safeInfo = await getSafeInfo(chainId.toString(), account)
+            const {
+              address: { value: address },
+              threshold,
+              owners,
+              nonce,
+            } = _safeInfo
             setSafeInfo((prevSafeInfo) => ({
               ...prevSafeInfo,
               chainId,
               address,
               threshold,
-              owners,
+              owners: owners.map((i) => i.value),
               nonce,
               isReadOnly: false,
             }))

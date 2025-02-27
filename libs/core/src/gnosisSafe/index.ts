@@ -1,7 +1,7 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { JsonRpcFetchFunc, Web3Provider } from '@ethersproject/providers'
-import SafeApiKit, { SafeInfoResponse } from '@safe-global/api-kit'
+import SafeApiKit from '@safe-global/api-kit'
 import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 
@@ -90,15 +90,4 @@ export function getSafeTransaction(
   const client = _getClientOrThrow(chainId, library)
 
   return client.getTransaction(safeTxHash)
-}
-
-export function getSafeInfo(chainId: number, safeAddress: string, library: Web3Provider): Promise<SafeInfoResponse> {
-  console.log('[api/gnosisSafe] getSafeInfo', chainId, safeAddress)
-  try {
-    const client = _getClientOrThrow(chainId, library)
-
-    return client.getSafeInfo(safeAddress)
-  } catch (error) {
-    return Promise.reject(error)
-  }
 }
