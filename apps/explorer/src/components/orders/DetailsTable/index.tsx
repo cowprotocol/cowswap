@@ -89,8 +89,6 @@ const tooltip = {
 }
 
 export const Wrapper = styled.div`
-  --cow-color-alert: ${() => Color.explorer_red1};
-
   display: flex;
   flex-direction: row;
 
@@ -224,7 +222,7 @@ export function DetailsTable(props: Props): React.ReactNode | null {
               <Wrapper>
                 {isSigning && (
                   <>
-                    <Icon image="ALERT" color={UI.COLOR_ALERT} />
+                    <Icon image="ALERT" color={UI.COLOR_ALERT_TEXT} />
                     &nbsp;
                   </>
                 )}
