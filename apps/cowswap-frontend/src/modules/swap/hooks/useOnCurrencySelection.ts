@@ -5,7 +5,7 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
 
-import { useOnCurrencySelection as useTradeOnCurrencySelection } from 'modules/trade'
+import { useNavigateOnCurrencySelection, useOnCurrencySelection as useTradeOnCurrencySelection } from 'modules/trade'
 
 import { useSwapDerivedState } from './useSwapDerivedState'
 import { useUpdateSwapRawState } from './useUpdateSwapRawState'
@@ -16,17 +16,20 @@ export function useOnCurrencySelection() {
   const { orderKind } = useSwapDerivedState()
   const tradeOnCurrencySelection = useTradeOnCurrencySelection()
   const updateSwapState = useUpdateSwapRawState()
+  const navigateOnCurrencySelection = useNavigateOnCurrencySelection()
 
   return useCallback(
     (field: Field, currency: Currency | null) => {
       // Same logic as in getEthFlowOverridesOnSwitch()
       if (!isSellOrder(orderKind) && currency && getIsNativeToken(currency)) {
-        updateSwapState(SELL_ETH_RESET_STATE)
+        navigateOnCurrencySelection(field, currency, () => {
+          updateSwapState(SELL_ETH_RESET_STATE)
+        })
         return
       }
 
       return tradeOnCurrencySelection(field, currency)
     },
-    [tradeOnCurrencySelection, orderKind, updateSwapState],
+    [tradeOnCurrencySelection, navigateOnCurrencySelection, orderKind, updateSwapState],
   )
 }
