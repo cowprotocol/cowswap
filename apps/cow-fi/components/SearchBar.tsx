@@ -93,6 +93,55 @@ const SearchResultsInner = styled.div`
   max-height: 280px;
   overflow-y: auto;
   padding: 0 10px 54px 0;
+
+  /* Firefox scrollbar styling */
+  @supports (scrollbar-width: thin) {
+    scrollbar-width: thin;
+    scrollbar-color: ${Color.neutral70} ${Color.neutral90};
+  }
+
+  @supports (-webkit-appearance: none) {
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: ${Color.neutral90};
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: ${Color.neutral70};
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: ${Color.neutral50};
+    }
+
+    &::-webkit-scrollbar-button {
+      display: none;
+    }
+
+    &::-webkit-scrollbar-corner {
+      background-color: transparent;
+    }
+  }
+
+  @supports (-webkit-overflow-scrolling: touch) {
+    -webkit-overflow-scrolling: touch; /* Enables momentum scrolling on iOS */
+
+    &::-webkit-scrollbar {
+      -webkit-appearance: none;
+      width: 7px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      background-color: ${Color.neutral70};
+      -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+    }
+  }
 `
 
 const ResultItem = styled.a<{ isSelected: boolean }>`
