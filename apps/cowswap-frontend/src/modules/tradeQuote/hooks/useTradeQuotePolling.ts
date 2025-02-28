@@ -8,7 +8,7 @@ import { useAreUnsupportedTokens } from '@cowprotocol/tokens'
 
 import ms from 'ms.macro'
 
-import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
+import { useUpdateCurrencyAmount } from 'modules/trade'
 
 import { getQuote } from 'api/cowProtocol/api'
 import QuoteApiError, { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'

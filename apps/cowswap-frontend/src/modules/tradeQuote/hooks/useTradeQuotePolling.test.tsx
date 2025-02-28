@@ -20,6 +20,10 @@ import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
 
 jest.mock('modules/zeroApproval/hooks/useZeroApprovalState')
 jest.mock('common/hooks/useGetMarketDimension')
+jest.mock('@cowprotocol/common-hooks', () => ({
+  ...jest.requireActual('@cowprotocol/common-hooks'),
+  useIsWindowVisible: jest.fn().mockReturnValue(true),
+}))
 
 const getQuoteMock = jest.spyOn(orderBookApi, 'getQuote')
 const useEnoughBalanceAndAllowanceMock = jest.spyOn(tokensModule, 'useEnoughBalanceAndAllowance')
@@ -70,7 +74,12 @@ describe('useTradeQuotePolling()', () => {
       const mocks = [...jotaiMock, [walletInfoAtom, walletInfoMock]]
 
       // Act
-      renderHook(() => useTradeQuotePolling(), { wrapper: Wrapper(mocks) })
+      renderHook(
+        () => {
+          return useTradeQuotePolling()
+        },
+        { wrapper: Wrapper(mocks) },
+      )
 
       // Assert
       const callParams = getQuoteMock.mock.calls[0][0]
