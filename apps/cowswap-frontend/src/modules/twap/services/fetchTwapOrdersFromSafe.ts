@@ -1,8 +1,17 @@
 import { ComposableCoW } from '@cowprotocol/abis'
 import { delay, isTruthy } from '@cowprotocol/common-utils'
-import type SafeApiKit from '@safe-global/api-kit'
-import type { AllTransactionsListResponse } from '@safe-global/api-kit'
-import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import {
+  getMultisigTransactions,
+  getTransactionDetails,
+  TwapOrder,
+  MultisigExecutionDetails,
+  MultisigTransaction,
+  SafeMultisigTransactionsResponse,
+  Transaction,
+  type TransactionDetails,
+  TransactionInfoType,
+} from '@safe-global/safe-gateway-typescript-sdk'
 
 import ms from 'ms.macro'
 
@@ -19,7 +28,7 @@ const SAFE_TX_REQUEST_DELAY = ms`100ms`
 
 export async function fetchTwapOrdersFromSafe(
   safeAddress: string,
-  safeApiKit: SafeApiKit,
+  chainId: SupportedChainId,
   composableCowContract: ComposableCoW,
   /**
    * Example of the second chunk url:
@@ -28,10 +37,10 @@ export async function fetchTwapOrdersFromSafe(
   nextUrl?: string,
   accumulator: TwapOrdersSafeData[][] = [],
 ): Promise<TwapOrdersSafeData[]> {
-  const response = await fetchSafeTransactionsChunk(safeAddress, safeApiKit, nextUrl)
+  const response = await fetchSafeTransactionsChunk(safeAddress, chainId, nextUrl)
 
   const results = response?.results || []
-  const parsedResults = parseSafeTranasctionsResult(safeAddress, composableCowContract, results)
+  const parsedResults = await parseSafeTranasctionsResult(chainId, composableCowContract, results)
 
   accumulator.push(parsedResults)
 
@@ -40,66 +49,65 @@ export async function fetchTwapOrdersFromSafe(
     return accumulator.flat()
   }
 
-  return fetchTwapOrdersFromSafe(safeAddress, safeApiKit, composableCowContract, response.next, accumulator)
+  return fetchTwapOrdersFromSafe(safeAddress, chainId, composableCowContract, response.next, accumulator)
 }
 
 async function fetchSafeTransactionsChunk(
   safeAddress: string,
-  safeApiKit: SafeApiKit,
+  chainId: SupportedChainId,
   nextUrl?: string,
-): Promise<AllTransactionsListResponse> {
-  if (nextUrl) {
-    try {
-      const response: AllTransactionsListResponse = await fetch(nextUrl).then((res) => res.json())
+): Promise<SafeMultisigTransactionsResponse> {
+  const result = await getMultisigTransactions(chainId.toString(), safeAddress, undefined, nextUrl)
 
-      await delay(SAFE_TX_REQUEST_DELAY)
+  await delay(SAFE_TX_REQUEST_DELAY)
 
-      return response
-    } catch (error) {
-      console.error('Error fetching Safe transactions', { safeAddress, nextUrl }, error)
-
-      return { results: [], count: 0 }
-    }
-  }
-
-  return safeApiKit.getAllTransactions(safeAddress)
+  return result
 }
 
-function parseSafeTranasctionsResult(
-  safeAddress: string,
+async function parseSafeTranasctionsResult(
+  chainId: SupportedChainId,
   composableCowContract: ComposableCoW,
-  results: AllTransactionsListResponse['results'],
-): TwapOrdersSafeData[] {
-  return results
-    .map<TwapOrdersSafeData | null>((result) => {
-      if (!result.data || !isSafeMultisigTransactionListResponse(result)) return null
+  results: MultisigTransaction[],
+): Promise<TwapOrdersSafeData[]> {
+  const twapTransactions = results.filter((result) => {
+    const txInfo = result.transaction.txInfo as unknown as TwapOrder
 
-      const selectorIndex = result.data.indexOf(CREATE_COMPOSABLE_ORDER_SELECTOR)
+    return txInfo.type === TransactionInfoType.TWAP_ORDER
+  }) as Transaction[]
 
-      if (selectorIndex < 0) return null
+  return Promise.all(
+    twapTransactions.map((tx) => {
+      return getTransactionDetails(chainId.toString(), tx.transaction.id)
+    }),
+  ).then((details) => {
+    return details
+      .map((data) => {
+        const hexData = data.txData?.hexData
 
-      const callData = '0x' + result.data.substring(selectorIndex)
+        if (!hexData) return null
 
-      const conditionalOrderParams = parseConditionalOrderParams(safeAddress, composableCowContract, callData)
+        const selectorIndex = hexData.indexOf(CREATE_COMPOSABLE_ORDER_SELECTOR)
 
-      if (!conditionalOrderParams) return null
+        if (selectorIndex < 0) return null
 
-      const safeTxParams = getSafeTransactionParams(result)
+        const callData = '0x' + hexData.substring(selectorIndex)
 
-      return {
-        conditionalOrderParams,
-        safeTxParams,
-      }
-    })
-    .filter(isTruthy)
-}
+        const conditionalOrderParams = parseConditionalOrderParams(composableCowContract, callData)
 
-function isSafeMultisigTransactionListResponse(response: any): response is SafeMultisigTransactionResponse {
-  return !!response.data && !!response.submissionDate
+        if (!conditionalOrderParams) return null
+
+        const safeTxParams = getSafeTransactionParams(data)
+
+        return {
+          conditionalOrderParams,
+          safeTxParams,
+        }
+      })
+      .filter(isTruthy)
+  })
 }
 
 function parseConditionalOrderParams(
-  safeAddress: string,
   composableCowContract: ComposableCoW,
   callData: string,
 ): ConditionalOrderParams | null {
@@ -113,14 +121,18 @@ function parseConditionalOrderParams(
   }
 }
 
-function getSafeTransactionParams(result: SafeMultisigTransactionResponse): SafeTransactionParams {
-  const { isExecuted, submissionDate, executionDate, nonce, confirmationsRequired, confirmations, safeTxHash } = result
+function getSafeTransactionParams(result: TransactionDetails): SafeTransactionParams {
+  const { executedAt } = result
+
+  const detailedExecutionInfo = result.detailedExecutionInfo as MultisigExecutionDetails
+
+  const { safeTxHash, submittedAt, confirmationsRequired, confirmations, nonce } = detailedExecutionInfo
 
   return {
-    isExecuted,
-    submissionDate,
-    executionDate,
-    confirmationsRequired,
+    isExecuted: !!executedAt,
+    submissionDate: new Date(submittedAt).toISOString(),
+    executionDate: executedAt ? new Date(executedAt).toISOString() : null,
+    confirmationsRequired: confirmationsRequired,
     confirmations: confirmations?.length || 0,
     safeTxHash,
     nonce,
