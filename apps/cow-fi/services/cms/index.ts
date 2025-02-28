@@ -195,7 +195,6 @@ export async function searchArticles({
   page?: number
   pageSize?: number
 }): Promise<ArticleListResponse> {
-  // Trim the search term to remove leading and trailing whitespace
   const trimmedSearchTerm = searchTerm.trim()
 
   if (!trimmedSearchTerm) {
@@ -203,36 +202,64 @@ export async function searchArticles({
   }
 
   try {
-    const articlesResponse = await getArticles({ page, pageSize })
+    // 1. Log the raw search term
+    console.log('Searching for:', JSON.stringify(trimmedSearchTerm))
 
-    // Filter articles using the trimmed search term
-    const filteredArticles = articlesResponse.data.filter((article) => {
-      const attrs = article.attributes
-      if (!attrs) return false
+    // 2. Explicit filter structure with indices
+    const filters = {
+      $or: [
+        { title: { $startsWithi: trimmedSearchTerm } },
+        { title: { $containsi: trimmedSearchTerm } },
+        { description: { $containsi: trimmedSearchTerm } },
+      ],
+    }
 
-      const title = attrs.title?.toLowerCase() || ''
-      const description = attrs.description?.toLowerCase() || ''
-      const slug = attrs.slug?.toLowerCase() || ''
+    // 3. Build query parameters with explicit array indices
+    const queryParams = {
+      'filters[$or][0][title][$startsWithi]': trimmedSearchTerm,
+      'filters[$or][1][title][$containsi]': trimmedSearchTerm,
+      'filters[$or][2][description][$containsi]': trimmedSearchTerm,
+      'pagination[page]': page,
+      'pagination[pageSize]': pageSize,
+      'sort[0]': 'title:asc',
+      'populate[0]': 'cover',
+      'populate[1]': 'blocks',
+      'populate[2]': 'seo',
+      'populate[3]': 'authorsBio',
+      publicationState: 'live', // Ensure published content
+    }
 
-      const searchTermLower = trimmedSearchTerm.toLowerCase()
-
-      return title.includes(searchTermLower) || description.includes(searchTermLower) || slug.includes(searchTermLower)
+    // 4. Manual query string construction for absolute clarity
+    const queryString = qs.stringify(queryParams, {
+      encodeValuesOnly: true,
+      arrayFormat: 'brackets',
+      encode: false,
     })
 
-    return {
-      data: filteredArticles,
-      meta: {
-        pagination: {
-          page,
-          pageSize,
-          pageCount: Math.ceil(filteredArticles.length / pageSize),
-          total: filteredArticles.length,
-        },
-      },
+    // 5. Debug output
+    console.log('Final query string:', decodeURIComponent(queryString))
+    console.log('Full URL:', `/articles?${queryString}`)
+
+    const url = `/articles?${queryString}`
+    const { data, error, response } = await client.GET(url, clientAddons)
+
+    // 6. Response inspection
+    console.log('API response status:', response.status)
+    console.log('API response data:', JSON.stringify(data, null, 2))
+
+    if (error) {
+      console.error(`Search failed (${response.status}):`, error)
+      throw new Error(`Search failed: ${error.message}`)
     }
+
+    // 7. Result validation
+    const foundIds = data.data.map((article) => article.id)
+    console.log('Found article IDs:', foundIds)
+
+    return { data: data.data, meta: data.meta }
   } catch (error) {
-    console.error('Error in searchArticles:', error)
-    throw error
+    console.error('Search error:', error)
+    throw new Error('Unable to complete search. Please try again.')
   }
 }
 
