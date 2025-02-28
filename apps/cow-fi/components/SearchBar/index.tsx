@@ -87,7 +87,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   const inputRef = useRef<HTMLInputElement>(null)
   const searchContainerRef = useRef<HTMLDivElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
-  const isMediumUp = !useMediaQuery(Media.upToMedium(false))
+  const isMediumUp = useMediaQuery(Media.MediumAndUp(false))
 
   // Use custom debounce hook
   const debouncedQuery = useDebounce(query, DEBOUNCE_DELAY)
