@@ -7,6 +7,7 @@ import { getCmsClient } from '@cowprotocol/core'
 
 const PAGE_SIZE = 100
 const CMS_CACHE_TIME = 5 * 60 // 5 min
+const ARTICLES_FETCHING_PAGE_LIMIT = 10 // Maximum number of pages to fetch recursively
 
 type Schemas = components['schemas']
 export type Article = Schemas['ArticleListResponseDataItem']
@@ -148,7 +149,11 @@ export async function getArticles({
   }
 
   // If fetchAll is true and there are more pages, recursively fetch them
-  if (fetchAll && data.meta.pagination.page < data.meta.pagination.pageCount) {
+  if (
+    fetchAll &&
+    data.meta.pagination.page < data.meta.pagination.pageCount &&
+    data.meta.pagination.page < ARTICLES_FETCHING_PAGE_LIMIT
+  ) {
     const nextPageResponse = await getArticles({
       page: page + 1,
       pageSize,
