@@ -24,13 +24,27 @@ import {
   PAGE_SIZE,
 } from './styled'
 import { Media } from '@cowprotocol/ui'
+import { useRouter } from 'next/navigation'
 
-// Custom hook for keyboard navigation
+// Minimum query length before triggering backend search
+const MIN_SEARCH_LENGTH = 2
+
+// Navigation helper functions
+const getNextIndex = (currentIndex: number, itemsLength: number, direction: 'up' | 'down'): number => {
+  if (direction === 'down') {
+    return (currentIndex + 1) % Math.max(1, itemsLength)
+  } else {
+    return (currentIndex - 1 + itemsLength) % Math.max(1, itemsLength)
+  }
+}
+
+// Custom hook for keyboard navigation with improved focus management
 const useKeyboardNavigation = (
   isActive: boolean,
   itemsLength: number,
   onSelect: (index: number) => void,
   onEscape: () => void,
+  containerRef: React.RefObject<HTMLDivElement>,
 ) => {
   const [selectedIndex, setSelectedIndex] = useState(-1)
 
@@ -41,14 +55,15 @@ const useKeyboardNavigation = (
     }
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (!containerRef.current?.contains(document.activeElement)) {
+        return
+      }
+
       switch (e.key) {
         case 'ArrowDown':
-          e.preventDefault()
-          setSelectedIndex((prevIndex) => (prevIndex + 1) % Math.max(1, itemsLength))
-          break
         case 'ArrowUp':
           e.preventDefault()
-          setSelectedIndex((prevIndex) => (prevIndex - 1 + itemsLength) % Math.max(1, itemsLength))
+          setSelectedIndex((prevIndex) => getNextIndex(prevIndex, itemsLength, e.key === 'ArrowDown' ? 'down' : 'up'))
           break
         case 'Enter':
           if (selectedIndex >= 0 && selectedIndex < itemsLength) {
@@ -58,6 +73,13 @@ const useKeyboardNavigation = (
         case 'Escape':
           onEscape()
           break
+        case 'Tab':
+          // Allow normal tab navigation but keep track of selected item
+          if (itemsLength > 0) {
+            e.preventDefault()
+            setSelectedIndex((prevIndex) => getNextIndex(prevIndex, itemsLength, e.shiftKey ? 'up' : 'down'))
+          }
+          break
       }
     }
 
@@ -65,7 +87,7 @@ const useKeyboardNavigation = (
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [isActive, itemsLength, onSelect, onEscape])
+  }, [isActive, itemsLength, onSelect, onEscape, containerRef])
 
   return selectedIndex
 }
@@ -84,10 +106,12 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   const [hasMoreResults, setHasMoreResults] = useState(false)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showMinLengthMessage, setShowMinLengthMessage] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const searchContainerRef = useRef<HTMLDivElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
   const isMediumUp = useMediaQuery(Media.MediumAndUp(false))
+  const router = useRouter()
 
   // Use custom debounce hook
   const debouncedQuery = useDebounce(query, DEBOUNCE_DELAY)
@@ -96,7 +120,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   const handleSelect = (index: number) => {
     if (index >= 0 && index < filteredArticles.length) {
       const selectedArticle = filteredArticles[index]
-      window.location.href = `/learn/${selectedArticle.attributes?.slug}?ref=learn_search`
+      router.push(`/learn/${selectedArticle.attributes?.slug}?ref=learn_search`)
     }
   }
 
@@ -108,18 +132,37 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
     inputRef.current?.blur()
   }
 
-  // Use custom keyboard navigation hook
-  const highlightedIndex = useKeyboardNavigation(isFocused, filteredArticles.length, handleSelect, handleEscape)
+  // Use custom keyboard navigation hook with improved focus management
+  const highlightedIndex = useKeyboardNavigation(
+    isFocused,
+    filteredArticles.length,
+    handleSelect,
+    handleEscape,
+    searchContainerRef,
+  )
 
   // Server-side search using the searchArticlesAction
   useEffect(() => {
-    if (debouncedQuery.trim()) {
+    const trimmedQuery = debouncedQuery.trim()
+
+    if (trimmedQuery.length > 0 && trimmedQuery.length < MIN_SEARCH_LENGTH) {
+      setShowMinLengthMessage(true)
+      setFilteredArticles([])
+      setTotalResults(0)
+      setHasMoreResults(false)
+      setError(null)
+      return
+    }
+
+    setShowMinLengthMessage(false)
+
+    if (trimmedQuery.length >= MIN_SEARCH_LENGTH) {
       setCurrentPage(0) // Reset to first page on new search
       setError(null) // Clear any previous errors
 
       startTransition(async () => {
         try {
-          const result = await searchArticlesAction(debouncedQuery, 0, PAGE_SIZE)
+          const result = await searchArticlesAction(trimmedQuery, 0, PAGE_SIZE)
           if (result.success && result.data) {
             setFilteredArticles(result.data.data)
             setTotalResults(result.data.meta.pagination.total)
@@ -149,7 +192,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
 
   // Function to load more results
   const loadMoreResults = async () => {
-    if (debouncedQuery.trim() && hasMoreResults && !isLoadingMore) {
+    if (debouncedQuery.trim().length >= MIN_SEARCH_LENGTH && hasMoreResults && !isLoadingMore) {
       const nextPage = currentPage + 1
       setIsLoadingMore(true)
 
@@ -171,12 +214,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
     }
   }
 
-  // Scroll to highlighted result
+  // Scroll to highlighted result and ensure it's visible
   useEffect(() => {
     if (highlightedIndex >= 0 && resultsRef.current) {
       const highlightedElement = resultsRef.current.children[highlightedIndex + 1] as HTMLElement
       if (highlightedElement) {
         highlightedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+        highlightedElement.focus() // Ensure the highlighted item receives focus for screen readers
       }
     }
   }, [highlightedIndex])
@@ -187,6 +231,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
     setTotalResults(0)
     setHasMoreResults(false)
     setError(null)
+    setShowMinLengthMessage(false)
     // Refocus input after clearing
     inputRef.current?.focus()
   }
@@ -203,8 +248,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
 
   // Keep results visible if there's a query, even when input loses focus
   const shouldShowResults =
-    (isFocused && (filteredArticles.length > 0 || isPending || error)) ||
-    (!isMediumUp && query.trim() && filteredArticles.length > 0)
+    (isFocused && (filteredArticles.length > 0 || isPending || error || showMinLengthMessage)) ||
+    (!isMediumUp && query.trim() && (filteredArticles.length > 0 || showMinLengthMessage))
 
   return (
     <SearchBarContainer ref={searchContainerRef}>
@@ -251,6 +296,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
               <LoadingIndicator>Searching...</LoadingIndicator>
             ) : error ? (
               <ErrorMessage role="alert">{error}</ErrorMessage>
+            ) : showMinLengthMessage ? (
+              <SearchResultsInfo>Please enter at least {MIN_SEARCH_LENGTH} characters to search</SearchResultsInfo>
             ) : filteredArticles.length === 0 ? (
               <SearchResultsInfo>No results found</SearchResultsInfo>
             ) : (
@@ -266,6 +313,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
                     id={`result-${index}`}
                     role="option"
                     aria-selected={index === highlightedIndex}
+                    tabIndex={index === highlightedIndex ? 0 : -1}
                   >
                     <ResultTitle>{highlightQuery(article.attributes?.title || 'No title', debouncedQuery)}</ResultTitle>
                     <ResultDescription>
@@ -283,6 +331,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
                     role="option"
                     aria-selected={filteredArticles.length === highlightedIndex}
                     disabled={isLoadingMore}
+                    tabIndex={filteredArticles.length === highlightedIndex ? 0 : -1}
                   >
                     {isLoadingMore ? (
                       <ResultTitle>Loading more results...</ResultTitle>
