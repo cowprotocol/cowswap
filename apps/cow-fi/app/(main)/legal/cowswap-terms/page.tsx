@@ -711,8 +711,8 @@ export default function Page() {
               Must be a real user who conducted trades on CoW Swap on the Base Network during February 2025 and must:
             </p>
             <ul>
-              <li>be minimum 18 years of age.</li>
-              <li>Not be an employee, affiliate, or immediate family member of the Organizer.</li>
+              <li>be minimum 18 years of age;</li>
+              <li>not be an employee, affiliate, or immediate family member of the Organizer.</li>
             </ul>
             <h3 id="base-token-reward-period">3. Reward Period</h3>
             <p>
@@ -734,7 +734,7 @@ export default function Page() {
                 Each of the three (3) selected users will receive a reward of <strong>1000 COW tokens.</strong>
               </li>
               <li>
-                The reward will be sent to the wallet address used to trade on CoW Swap on base during the Period.
+                The reward will be sent to the wallet address used to trade on CoW Swap on Base during the Period.
               </li>
             </ul>
             <h3 id="base-token-winner-selection">5. Winner Selection Process</h3>
