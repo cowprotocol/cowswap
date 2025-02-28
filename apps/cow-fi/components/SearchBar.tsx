@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useTransition } from 'react'
 import styled from 'styled-components/macro'
 import { Font, Color, Media } from '@cowprotocol/ui'
-import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
+import { useMediaQuery, useOnClickOutside, useDebounce } from '@cowprotocol/common-hooks'
 import { Article } from 'services/cms'
 import SVG from 'react-inlinesvg'
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
@@ -264,23 +264,12 @@ const CloseIcon = styled.div`
   }
 `
 
+// Constants for optimization
+const DEBOUNCE_DELAY = 300 // ms
+const PAGE_SIZE = 100 // Number of results per page
+
 interface SearchBarProps {
   articles: Article[] // This is still needed for initial rendering
-}
-
-// Custom hook for debounced value
-const useDebounce = <T,>(value: T, delay: number): T => {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value)
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedValue(value)
-    }, delay)
-
-    return () => clearTimeout(timer)
-  }, [value, delay])
-
-  return debouncedValue
 }
 
 // Custom hook for keyboard navigation
@@ -342,10 +331,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   const searchContainerRef = useRef<HTMLDivElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
   const isMediumUp = !useMediaQuery(Media.upToMedium(false))
-
-  // Constants for optimization
-  const DEBOUNCE_DELAY = 300 // ms
-  const PAGE_SIZE = 100 // Number of results per page
 
   // Use custom debounce hook
   const debouncedQuery = useDebounce(query, DEBOUNCE_DELAY)
