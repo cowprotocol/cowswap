@@ -354,7 +354,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   const handleSelect = (index: number) => {
     if (index >= 0 && index < filteredArticles.length) {
       const selectedArticle = filteredArticles[index]
-      window.location.href = `/learn/${selectedArticle.attributes?.slug}`
+      window.location.href = `/learn/${selectedArticle.attributes?.slug}?ref=learn_search`
     }
   }
 
@@ -519,7 +519,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
                 {filteredArticles.map((article, index) => (
                   <ResultItem
                     key={article.id}
-                    href={`/learn/${article.attributes?.slug}`}
+                    href={`/learn/${article.attributes?.slug}?ref=learn_search`}
                     isSelected={index === highlightedIndex}
                     id={`result-${index}`}
                     role="option"
