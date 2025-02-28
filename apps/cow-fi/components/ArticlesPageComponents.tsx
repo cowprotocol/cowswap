@@ -61,7 +61,7 @@ interface ArticlesPageProps {
   totalArticles: number
   currentPage: number
   allCategories: { name: string; slug: string }[]
-  allArticles?: Article[]
+  allArticles: Article[]
 }
 
 export function ArticlesPageComponents({
