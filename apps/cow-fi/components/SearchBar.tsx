@@ -363,11 +363,12 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   }
 
   // Keep results visible if there's a query, even when input loses focus
-  const shouldShowResults = (query.trim() && filteredArticles.length > 0) || (isFocused && filteredArticles.length > 0)
+  const shouldShowResults =
+    (isFocused && filteredArticles.length > 0) || (!isMediumUp && query.trim() && filteredArticles.length > 0)
 
   // Handle clicks outside using the useOnClickOutside hook
   const handleClickOutside = () => {
-    if (isMediumUp && shouldShowResults) {
+    if (isMediumUp) {
       // Close search results when clicking outside on medium screens and up
       setIsFocused(false)
     }
