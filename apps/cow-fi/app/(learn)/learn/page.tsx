@@ -5,8 +5,9 @@ import { getArticles, getCategories } from '../../../services/cms'
 import { LearnPageComponent } from '@/components/LearnPageComponent'
 
 export default async function LearnPage() {
-  // Fetch all articles with the fetchAll parameter to ensure we get everything
-  const articlesResponse = await getArticles({ pageSize: 200, fetchAll: true })
+  // Fetch articles with pagination instead of fetchAll
+  // Using a larger pageSize to get more articles at once, but not all
+  const articlesResponse = await getArticles({ pageSize: 200 })
   const articles = articlesResponse.data
 
   // Fetch featured articles

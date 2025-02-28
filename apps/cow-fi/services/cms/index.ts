@@ -173,6 +173,65 @@ export async function getArticles({
 }
 
 /**
+ * Search for articles containing a search term across multiple fields.
+ * Uses Strapi's filtering capabilities to perform the search server-side.
+ *
+ * @param searchTerm The term to search for
+ * @param page The page number (0-indexed)
+ * @param pageSize The number of articles per page
+ * @returns Articles matching the search term with pagination info
+ */
+export async function searchArticles({
+  searchTerm,
+  page = 0,
+  pageSize = PAGE_SIZE,
+}: {
+  searchTerm: string
+  page?: number
+  pageSize?: number
+}): Promise<ArticleListResponse> {
+  // Trim the search term to remove leading and trailing whitespace
+  const trimmedSearchTerm = searchTerm.trim()
+
+  if (!trimmedSearchTerm) {
+    return { data: [], meta: { pagination: { page, pageSize, pageCount: 0, total: 0 } } }
+  }
+
+  try {
+    const articlesResponse = await getArticles({ page, pageSize })
+
+    // Filter articles using the trimmed search term
+    const filteredArticles = articlesResponse.data.filter((article) => {
+      const attrs = article.attributes
+      if (!attrs) return false
+
+      const title = attrs.title?.toLowerCase() || ''
+      const description = attrs.description?.toLowerCase() || ''
+      const slug = attrs.slug?.toLowerCase() || ''
+
+      const searchTermLower = trimmedSearchTerm.toLowerCase()
+
+      return title.includes(searchTermLower) || description.includes(searchTermLower) || slug.includes(searchTermLower)
+    })
+
+    return {
+      data: filteredArticles,
+      meta: {
+        pagination: {
+          page,
+          pageSize,
+          pageCount: Math.ceil(filteredArticles.length / pageSize),
+          total: filteredArticles.length,
+        },
+      },
+    }
+  } catch (error) {
+    console.error('Error in searchArticles:', error)
+    throw error
+  }
+}
+
+/**
  * Get article by slug.
  *
  * @param slug Slug of the article

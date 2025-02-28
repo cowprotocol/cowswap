@@ -41,8 +41,8 @@ export default async function Page({ params }: Props) {
   // Fetch paginated articles for display
   const articlesResponse = (await getArticles({ page, pageSize: ITEMS_PER_PAGE })) as ArticlesResponse
 
-  // Fetch all articles for search functionality
-  const allArticlesResponse = await getArticles({ fetchAll: true })
+  // Get all articles for search functionality with pagination instead of fetchAll
+  const allArticlesResponse = await getArticles({ pageSize: 100 })
   const allArticles = allArticlesResponse.data
 
   const totalArticles = articlesResponse.meta?.pagination?.total || 0

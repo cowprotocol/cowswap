@@ -31,46 +31,57 @@ export async function generateStaticParams() {
   return categoriesResponse.map((topicSlug) => ({ topicSlug }))
 }
 
-export default async function TopicPage({ params }: Props) {
-  const slug = (await params).topicSlug
-
-  const category = await getCategoryBySlug(slug)
+export default async function TopicPage({ params }: { params: { topicSlug: string } }) {
+  // Get the category
+  const category = await getCategoryBySlug(params.topicSlug)
 
   if (!category) {
-    return notFound()
+    notFound()
   }
 
-  // Fetch articles for this specific topic
+  // Format the category for the component
+  const formattedCategory = {
+    name: category.attributes?.name || '',
+    slug: category.attributes?.slug || '',
+    description: category.attributes?.description || '',
+    bgColor: category.attributes?.backgroundColor || '#FFFFFF',
+    textColor: category.attributes?.textColor || '#000000',
+    imageUrl: category.attributes?.image?.data?.attributes?.url || '',
+  }
+
+  // Get articles for this topic
   const topicArticlesResponse = await getArticles({
-    page: 0,
-    pageSize: 50,
     filters: {
       categories: {
         slug: {
-          $eq: slug,
+          $eq: params.topicSlug,
         },
       },
     },
+    pageSize: 100,
   })
 
-  // Fetch all articles for search functionality
+  // Get articles for search functionality (limited to 100 instead of fetchAll)
   const allArticlesResponse = await getArticles({
-    fetchAll: true,
+    pageSize: 100,
   })
 
   const topicArticles = topicArticlesResponse.data
   const allArticles = allArticlesResponse.data
 
   const categoriesResponse = await getCategories()
+  // Format categories for the component
   const allCategories =
-    categoriesResponse?.map((category: any) => ({
-      name: category?.attributes?.name || '',
-      slug: category?.attributes?.slug || '',
-    })) || []
+    categoriesResponse?.map((category: any) => {
+      return {
+        name: category.attributes?.name || '',
+        slug: category.attributes?.slug || '',
+      }
+    }) || []
 
   return (
     <TopicPageComponent
-      category={category}
+      category={formattedCategory}
       allCategories={allCategories}
       articles={topicArticles}
       allArticles={allArticles}

@@ -99,8 +99,6 @@ interface TopicPageProps {
 }
 
 export function TopicPageComponent({ category, allCategories, articles, allArticles }: TopicPageProps) {
-  const { name, description, image } = category.attributes || {}
-  const imageUrl = image?.data?.attributes?.url
   const analytics = useCowAnalytics()
 
   return (
@@ -148,24 +146,24 @@ export function TopicPageComponent({ category, allCategories, articles, allArtic
             >
               Topic
             </Link>
-            <span>{name}</span>
+            <span>{category.name}</span>
           </Breadcrumbs>
 
           <ContainerCardSectionTop>
             <CategoryTitle>
-              {imageUrl && name && (
+              {category.imageUrl && (
                 <CategoryImageWrapper>
-                  <CategoryImage src={imageUrl} alt={name} width={82} height={82} />
+                  <CategoryImage src={category.imageUrl} alt={category.name} width={82} height={82} />
                 </CategoryImageWrapper>
               )}
-              <h1>{name}</h1>
+              <h1>{category.name}</h1>
             </CategoryTitle>
             <ArrowButton link="/learn/topics" text="All topics" />
           </ContainerCardSectionTop>
 
           <ContainerCardSection>
             <CategoryDescription>
-              <p>{description}</p>
+              <p>{category.description}</p>
               <i>{articles.length} articles</i>
             </CategoryDescription>
 

@@ -4,10 +4,11 @@ import { getArticles, getCategories } from '../../../../services/cms'
 import { Color } from '@cowprotocol/ui'
 import { TopicsPageComponent } from '@/components/TopicsPageComponent'
 
-export default async function Page() {
-  const categoriesResponse = await getCategories()
-  const articlesResponse = await getArticles({ pageSize: 200, fetchAll: true })
+export default async function TopicsPage() {
+  const articlesResponse = await getArticles({ pageSize: 200 })
+  const articles = articlesResponse.data
 
+  const categoriesResponse = await getCategories()
   const categories =
     categoriesResponse?.map((category: any) => {
       const imageUrl = category?.attributes?.image?.data?.attributes?.url || ''
@@ -24,5 +25,5 @@ export default async function Page() {
       }
     }) || []
 
-  return <TopicsPageComponent categories={categories} articles={articlesResponse.data} />
+  return <TopicsPageComponent articles={articles} categories={categories} />
 }

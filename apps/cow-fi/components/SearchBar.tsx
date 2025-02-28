@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useTransition } from 'react'
 import styled from 'styled-components/macro'
 import { Font, Color, Media } from '@cowprotocol/ui'
 import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
@@ -7,6 +7,7 @@ import SVG from 'react-inlinesvg'
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 import IMG_ICON_SEARCH from '@cowprotocol/assets/images/icon-search.svg'
 import { highlightQuery } from '../util/textHighlighting'
+import { searchArticlesAction } from '../app/actions'
 
 const SearchBarContainer = styled.div`
   width: 100%;
@@ -233,7 +234,7 @@ const CloseIcon = styled.div`
 `
 
 interface SearchBarProps {
-  articles: Article[]
+  articles: Article[] // This is still needed for initial rendering
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
@@ -241,25 +242,17 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   const [filteredArticles, setFilteredArticles] = useState<Article[]>([])
   const [isFocused, setIsFocused] = useState(false)
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
+  const [isPending, startTransition] = useTransition()
+  const [totalResults, setTotalResults] = useState(0)
+  const [currentPage, setCurrentPage] = useState(0)
+  const [hasMoreResults, setHasMoreResults] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const searchContainerRef = useRef<HTMLDivElement>(null)
-  const phrasesCache = useRef<Record<string, string[]>>({})
-  const MAX_CACHE_ENTRIES = 100 // Limit cache size
   const isMediumUp = !useMediaQuery(Media.upToMedium(false))
 
-  // Helper to manage cache size
-  const addToCache = (key: string, value: string[]) => {
-    // If cache is full, remove oldest entry
-    const cacheKeys = Object.keys(phrasesCache.current)
-    if (cacheKeys.length >= MAX_CACHE_ENTRIES) {
-      delete phrasesCache.current[cacheKeys[0]]
-    }
-    phrasesCache.current[key] = value
-  }
-
   // Constants for optimization
-  const MAX_PHRASE_LENGTH = 4 // Limit phrases to 4 words maximum
-  const DEBOUNCE_DELAY = 150 // ms
+  const DEBOUNCE_DELAY = 300 // ms
+  const PAGE_SIZE = 100 // Number of results per page
 
   // Debounced query state for performance
   const [debouncedQuery, setDebouncedQuery] = useState('')
@@ -311,132 +304,62 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
     }
   }, [isFocused, highlightedIndex, filteredArticles])
 
+  // Server-side search using the searchArticlesAction
   useEffect(() => {
     if (debouncedQuery.trim()) {
-      const searchTerm = debouncedQuery.toLowerCase()
-
-      // TODO: Performance consideration
-      // This multi-criteria search implementation works well for moderate datasets,
-      // but may become expensive for large article collections.
-      // If scaling is anticipated, consider implementing:
-      // 1. An indexing-based approach (e.g., Elasticlunr, Fuse.js)
-      // 2. Server-side search with pagination
-      const filtered = (articles || []).filter((article) => {
-        const title = article.attributes?.title?.toLowerCase() || ''
-        const description = article.attributes?.description?.toLowerCase() || ''
-        const slug = article.attributes?.slug?.toLowerCase() || ''
-
-        // Track if we've found a match to avoid redundant checks
-        let foundMatch = false
-
-        // 1. Check if the entire search term is contained in the title, description, or slug
-        if (title.includes(searchTerm) || description.includes(searchTerm) || slug.includes(searchTerm)) {
-          foundMatch = true
-          return true
-        }
-
-        // 2. Check if the search term is a prefix of any word in the title, description, or slug
-        const titleWords = title.split(/\s+/).filter(Boolean)
-        const descriptionWords = description.split(/\s+/).filter(Boolean)
-        const slugWords = slug.split(/[-\s]+/).filter(Boolean)
-
-        if (
-          titleWords.some((word) => word.startsWith(searchTerm)) ||
-          descriptionWords.some((word) => word.startsWith(searchTerm)) ||
-          slugWords.some((word) => word.startsWith(searchTerm))
-        ) {
-          foundMatch = true
-          return true
-        }
-
-        // 3. For multi-word search terms, check if all words except the last one are found,
-        // and the last word is a prefix of any word
-        const searchWords = searchTerm.split(/\s+/).filter(Boolean)
-        if (searchWords.length > 1) {
-          const lastWord = searchWords[searchWords.length - 1]
-          const previousWords = searchWords.slice(0, -1)
-
-          // Check if all previous words are found in the content
-          const allPreviousWordsFound = previousWords.every(
-            (word) => title.includes(word) || description.includes(word) || slug.includes(word),
-          )
-
-          if (allPreviousWordsFound && lastWord.length > 0) {
-            // Check if the last word is a prefix of any word
-            const lastWordIsPrefix =
-              titleWords.some((word) => word.startsWith(lastWord)) ||
-              descriptionWords.some((word) => word.startsWith(lastWord)) ||
-              slugWords.some((word) => word.startsWith(lastWord))
-
-            if (lastWordIsPrefix) {
-              foundMatch = true
-              return true
-            }
+      setCurrentPage(0) // Reset to first page on new search
+      startTransition(async () => {
+        try {
+          const result = await searchArticlesAction(debouncedQuery, 0, PAGE_SIZE)
+          if (result.success && result.data) {
+            setFilteredArticles(result.data.data)
+            setTotalResults(result.data.meta.pagination.total)
+            setHasMoreResults(result.data.meta.pagination.pageCount > 1)
+          } else {
+            console.error('Search failed:', result.error)
+            setFilteredArticles([])
+            setTotalResults(0)
+            setHasMoreResults(false)
           }
+        } catch (error) {
+          console.error('Error searching articles:', error)
+          setFilteredArticles([])
+          setTotalResults(0)
+          setHasMoreResults(false)
         }
-
-        // 4. Check if the entire search term is a prefix of any phrase in the content
-        // Only perform expensive phrase checking if other checks fail and the content is not too long
-        if (!foundMatch) {
-          // Lazy evaluation - only generate phrases if needed
-          const titlePhrases = title.length < 1000 ? findPhrases(title) : []
-          const descriptionPhrases = description.length < 1000 ? findPhrases(description) : []
-          const slugPhrases = findPhrases(slug) // Slugs are typically short
-
-          if (
-            titlePhrases.some((phrase) => phrase.startsWith(searchTerm)) ||
-            descriptionPhrases.some((phrase) => phrase.startsWith(searchTerm)) ||
-            slugPhrases.some((phrase) => phrase.startsWith(searchTerm))
-          ) {
-            return true
-          }
-        }
-
-        return false
       })
-
-      setFilteredArticles(filtered)
     } else {
       setFilteredArticles([])
+      setTotalResults(0)
+      setHasMoreResults(false)
     }
-  }, [debouncedQuery, articles])
+  }, [debouncedQuery])
 
-  // Optimized helper function to find phrases in a text
-  const findPhrases = (text: string): string[] => {
-    // Return empty array for empty text
-    if (!text || text.length === 0) return []
-
-    // Check cache first
-    if (phrasesCache.current[text]) {
-      return phrasesCache.current[text]
+  // Function to load more results
+  const loadMoreResults = async () => {
+    if (debouncedQuery.trim() && hasMoreResults) {
+      const nextPage = currentPage + 1
+      startTransition(async () => {
+        try {
+          const result = await searchArticlesAction(debouncedQuery, nextPage, PAGE_SIZE)
+          if (result.success && result.data) {
+            setFilteredArticles((prevArticles) => [...prevArticles, ...result.data.data])
+            setCurrentPage(nextPage)
+            setHasMoreResults(nextPage < result.data.meta.pagination.pageCount - 1)
+          }
+        } catch (error) {
+          console.error('Error loading more results:', error)
+        }
+      })
     }
-
-    const words = text.split(/\s+/).filter(Boolean)
-    const phrases: string[] = []
-
-    // Generate phrases with limited length
-    for (let i = 0; i < words.length; i++) {
-      let phrase = words[i]
-      phrases.push(phrase)
-
-      // Limit to MAX_PHRASE_LENGTH consecutive words
-      const maxJ = Math.min(i + MAX_PHRASE_LENGTH - 1, words.length - 1)
-      for (let j = i + 1; j <= maxJ; j++) {
-        phrase += ' ' + words[j]
-        phrases.push(phrase)
-      }
-    }
-
-    // Store in cache for future use
-    addToCache(text, phrases)
-
-    return phrases
   }
 
   const handleClear = () => {
     setQuery('')
     setFilteredArticles([])
     setHighlightedIndex(-1)
+    setTotalResults(0)
+    setHasMoreResults(false)
   }
 
   // Keep results visible if there's a query, even when input loses focus
@@ -447,19 +370,16 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
     if (isMediumUp && shouldShowResults) {
       // Close search results when clicking outside on medium screens and up
       setIsFocused(false)
-      // Also clear the query to ensure results are hidden
-      setQuery('')
-      setFilteredArticles([])
     }
   }
 
-  useOnClickOutside([searchContainerRef], isMediumUp ? handleClickOutside : undefined)
+  useOnClickOutside([searchContainerRef], handleClickOutside)
 
   return (
     <SearchBarContainer ref={searchContainerRef}>
       <InputContainer>
         <SearchIcon>
-          <SVG src={IMG_ICON_SEARCH} title="Search" />
+          <SVG src={IMG_ICON_SEARCH} />
         </SearchIcon>
         <Input
           ref={inputRef}
@@ -468,37 +388,51 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsFocused(true)}
-          onBlur={() => {
-            // Don't hide results when input loses focus if there's a query
-            if (!query.trim()) {
-              setTimeout(() => setIsFocused(false), 200)
-            }
-          }}
+          aria-label="Search articles"
         />
         {query && (
           <CloseIcon onClick={handleClear}>
-            <SVG src={IMG_ICON_X} title="Close search" />
+            <SVG src={IMG_ICON_X} />
           </CloseIcon>
         )}
       </InputContainer>
+
       {shouldShowResults && (
         <SearchResults>
-          <SearchResultsInfo>
-            {filteredArticles.length} result{filteredArticles.length > 1 ? 's' : ''}
-          </SearchResultsInfo>
           <SearchResultsInner>
-            {filteredArticles.map((article, index) => (
-              <ResultItem
-                key={article.id}
-                href={`/learn/${article.attributes?.slug}`}
-                isSelected={index === highlightedIndex}
-              >
-                <ResultTitle>{highlightQuery(article.attributes?.title || '', query)}</ResultTitle>
-                {article.attributes?.description && (
-                  <ResultDescription>{highlightQuery(article.attributes?.description || '', query)}</ResultDescription>
+            {isPending ? (
+              <SearchResultsInfo>Searching...</SearchResultsInfo>
+            ) : filteredArticles.length === 0 ? (
+              <SearchResultsInfo>No results found</SearchResultsInfo>
+            ) : (
+              <>
+                <SearchResultsInfo>
+                  {totalResults > 0 ? `Found ${totalResults} results` : 'Search results'}
+                </SearchResultsInfo>
+                {filteredArticles.map((article, index) => (
+                  <ResultItem
+                    key={article.id}
+                    href={`/learn/${article.attributes?.slug}`}
+                    isSelected={index === highlightedIndex}
+                  >
+                    <ResultTitle>{highlightQuery(article.attributes?.title || 'No title', debouncedQuery)}</ResultTitle>
+                    <ResultDescription>
+                      {highlightQuery(article.attributes?.description || 'No description', debouncedQuery)}
+                    </ResultDescription>
+                  </ResultItem>
+                ))}
+                {hasMoreResults && (
+                  <ResultItem
+                    as="button"
+                    onClick={loadMoreResults}
+                    isSelected={false}
+                    style={{ width: '100%', cursor: 'pointer', border: 'none', textAlign: 'center' }}
+                  >
+                    <ResultTitle>Load more results</ResultTitle>
+                  </ResultItem>
                 )}
-              </ResultItem>
-            ))}
+              </>
+            )}
           </SearchResultsInner>
         </SearchResults>
       )}
