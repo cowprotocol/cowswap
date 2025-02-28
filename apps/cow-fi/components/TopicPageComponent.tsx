@@ -95,7 +95,7 @@ interface TopicPageProps {
   category: any
   articles: Article[]
   allCategories: { name: string; slug: string }[]
-  allArticles?: Article[]
+  allArticles: Article[]
 }
 
 export function TopicPageComponent({ category, allCategories, articles, allArticles }: TopicPageProps) {
