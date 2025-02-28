@@ -205,14 +205,7 @@ export async function searchArticles({
     // 1. Log the raw search term
     console.log('Searching for:', JSON.stringify(trimmedSearchTerm))
 
-    // 2. Explicit filter structure with indices
-    const filters = {
-      $or: [
-        { title: { $startsWithi: trimmedSearchTerm } },
-        { title: { $containsi: trimmedSearchTerm } },
-        { description: { $containsi: trimmedSearchTerm } },
-      ],
-    }
+    // 2. Removed unused filters declaration
 
     // 3. Build query parameters with explicit array indices
     const queryParams = {
@@ -253,7 +246,7 @@ export async function searchArticles({
     }
 
     // 7. Result validation
-    const foundIds = data.data.map((article) => article.id)
+    const foundIds = data.data.map((article: Article) => article.id)
     console.log('Found article IDs:', foundIds)
 
     return { data: data.data, meta: data.meta }
