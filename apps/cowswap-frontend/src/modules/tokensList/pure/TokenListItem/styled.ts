@@ -42,6 +42,7 @@ export const TokenItem = styled.button`
 
   &:hover {
     color: inherit;
+    background: var(${UI.COLOR_PAPER_DARKER});
   }
 
   &.token-item-selected:hover {

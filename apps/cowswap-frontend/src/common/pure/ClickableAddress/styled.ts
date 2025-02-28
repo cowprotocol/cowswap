@@ -6,8 +6,12 @@ export const Wrapper = styled.div`
   flex-direction: row;
   align-items: center;
 
+  > button {
+    opacity: 0;
+  }
+
   &:hover {
-    .clickable-address-copy-to-clipboard {
+    > button {
       opacity: 0.9;
     }
   }
