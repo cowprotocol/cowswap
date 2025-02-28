@@ -200,6 +200,37 @@ const SearchResultsInfo = styled.div`
   padding: 10px;
 `
 
+// Added loading indicator styles
+const LoadingIndicator = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${Color.neutral50};
+  padding: 10px;
+
+  &::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+    border: 2px solid ${Color.neutral80};
+    border-top-color: ${Color.neutral50};
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`
+
+// Added error message styles
+const ErrorMessage = styled(SearchResultsInfo)`
+  color: #e74c3c;
+`
+
 const CloseIcon = styled.div`
   --size: 32px;
   position: absolute;
@@ -237,64 +268,54 @@ interface SearchBarProps {
   articles: Article[] // This is still needed for initial rendering
 }
 
-export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
-  const [query, setQuery] = useState('')
-  const [filteredArticles, setFilteredArticles] = useState<Article[]>([])
-  const [isFocused, setIsFocused] = useState(false)
-  const [highlightedIndex, setHighlightedIndex] = useState(-1)
-  const [isPending, startTransition] = useTransition()
-  const [totalResults, setTotalResults] = useState(0)
-  const [currentPage, setCurrentPage] = useState(0)
-  const [hasMoreResults, setHasMoreResults] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const searchContainerRef = useRef<HTMLDivElement>(null)
-  const isMediumUp = !useMediaQuery(Media.upToMedium(false))
+// Custom hook for debounced value
+const useDebounce = <T,>(value: T, delay: number): T => {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value)
 
-  // Constants for optimization
-  const DEBOUNCE_DELAY = 300 // ms
-  const PAGE_SIZE = 100 // Number of results per page
-
-  // Debounced query state for performance
-  const [debouncedQuery, setDebouncedQuery] = useState('')
-
-  // Debounce the search input to reduce processing frequency
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedQuery(query)
-    }, DEBOUNCE_DELAY)
+      setDebouncedValue(value)
+    }, delay)
 
     return () => clearTimeout(timer)
-  }, [query])
+  }, [value, delay])
+
+  return debouncedValue
+}
+
+// Custom hook for keyboard navigation
+const useKeyboardNavigation = (
+  isActive: boolean,
+  itemsLength: number,
+  onSelect: (index: number) => void,
+  onEscape: () => void,
+) => {
+  const [selectedIndex, setSelectedIndex] = useState(-1)
 
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setIsFocused(false)
-        setQuery('')
-        setFilteredArticles([])
-        inputRef.current?.blur() // Remove focus from the input
-      }
+    if (!isActive) {
+      setSelectedIndex(-1)
+      return
     }
 
-    document.addEventListener('keydown', handleEscape)
-    return () => {
-      document.removeEventListener('keydown', handleEscape)
-    }
-  }, [])
-
-  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (isFocused) {
-        if (e.key === 'ArrowDown') {
-          setHighlightedIndex((prevIndex) => (prevIndex + 1) % filteredArticles.length)
-        } else if (e.key === 'ArrowUp') {
-          setHighlightedIndex((prevIndex) => (prevIndex - 1 + filteredArticles.length) % filteredArticles.length)
-        } else if (e.key === 'Enter') {
-          if (highlightedIndex >= 0 && highlightedIndex < filteredArticles.length) {
-            const selectedArticle = filteredArticles[highlightedIndex]
-            window.location.href = `/learn/${selectedArticle.attributes?.slug}`
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault()
+          setSelectedIndex((prevIndex) => (prevIndex + 1) % Math.max(1, itemsLength))
+          break
+        case 'ArrowUp':
+          e.preventDefault()
+          setSelectedIndex((prevIndex) => (prevIndex - 1 + itemsLength) % Math.max(1, itemsLength))
+          break
+        case 'Enter':
+          if (selectedIndex >= 0 && selectedIndex < itemsLength) {
+            onSelect(selectedIndex)
           }
-        }
+          break
+        case 'Escape':
+          onEscape()
+          break
       }
     }
 
@@ -302,12 +323,58 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [isFocused, highlightedIndex, filteredArticles])
+  }, [isActive, itemsLength, onSelect, onEscape])
+
+  return selectedIndex
+}
+
+export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
+  const [query, setQuery] = useState('')
+  const [filteredArticles, setFilteredArticles] = useState<Article[]>([])
+  const [isFocused, setIsFocused] = useState(false)
+  const [isPending, startTransition] = useTransition()
+  const [totalResults, setTotalResults] = useState(0)
+  const [currentPage, setCurrentPage] = useState(0)
+  const [hasMoreResults, setHasMoreResults] = useState(false)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const searchContainerRef = useRef<HTMLDivElement>(null)
+  const resultsRef = useRef<HTMLDivElement>(null)
+  const isMediumUp = !useMediaQuery(Media.upToMedium(false))
+
+  // Constants for optimization
+  const DEBOUNCE_DELAY = 300 // ms
+  const PAGE_SIZE = 100 // Number of results per page
+
+  // Use custom debounce hook
+  const debouncedQuery = useDebounce(query, DEBOUNCE_DELAY)
+
+  // Handle selection for keyboard navigation
+  const handleSelect = (index: number) => {
+    if (index >= 0 && index < filteredArticles.length) {
+      const selectedArticle = filteredArticles[index]
+      window.location.href = `/learn/${selectedArticle.attributes?.slug}`
+    }
+  }
+
+  // Handle escape key
+  const handleEscape = () => {
+    setIsFocused(false)
+    setQuery('')
+    setFilteredArticles([])
+    inputRef.current?.blur()
+  }
+
+  // Use custom keyboard navigation hook
+  const highlightedIndex = useKeyboardNavigation(isFocused, filteredArticles.length, handleSelect, handleEscape)
 
   // Server-side search using the searchArticlesAction
   useEffect(() => {
     if (debouncedQuery.trim()) {
       setCurrentPage(0) // Reset to first page on new search
+      setError(null) // Clear any previous errors
+
       startTransition(async () => {
         try {
           const result = await searchArticlesAction(debouncedQuery, 0, PAGE_SIZE)
@@ -317,12 +384,14 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
             setHasMoreResults(result.data.meta.pagination.pageCount > 1)
           } else {
             console.error('Search failed:', result.error)
+            setError('Unable to complete search. Please try again.')
             setFilteredArticles([])
             setTotalResults(0)
             setHasMoreResults(false)
           }
         } catch (error) {
           console.error('Error searching articles:', error)
+          setError('An error occurred while searching. Please try again.')
           setFilteredArticles([])
           setTotalResults(0)
           setHasMoreResults(false)
@@ -332,39 +401,53 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
       setFilteredArticles([])
       setTotalResults(0)
       setHasMoreResults(false)
+      setError(null)
     }
   }, [debouncedQuery])
 
   // Function to load more results
   const loadMoreResults = async () => {
-    if (debouncedQuery.trim() && hasMoreResults) {
+    if (debouncedQuery.trim() && hasMoreResults && !isLoadingMore) {
       const nextPage = currentPage + 1
-      startTransition(async () => {
-        try {
-          const result = await searchArticlesAction(debouncedQuery, nextPage, PAGE_SIZE)
-          if (result.success && result.data) {
-            setFilteredArticles((prevArticles) => [...prevArticles, ...result.data.data])
-            setCurrentPage(nextPage)
-            setHasMoreResults(nextPage < result.data.meta.pagination.pageCount - 1)
-          }
-        } catch (error) {
-          console.error('Error loading more results:', error)
+      setIsLoadingMore(true)
+
+      try {
+        const result = await searchArticlesAction(debouncedQuery, nextPage, PAGE_SIZE)
+        if (result.success && result.data) {
+          setFilteredArticles((prevArticles) => [...prevArticles, ...result.data.data])
+          setCurrentPage(nextPage)
+          setHasMoreResults(nextPage < result.data.meta.pagination.pageCount - 1)
+        } else {
+          setError('Unable to load more results. Please try again.')
         }
-      })
+      } catch (error) {
+        console.error('Error loading more results:', error)
+        setError('Failed to load additional results. Please try again.')
+      } finally {
+        setIsLoadingMore(false)
+      }
     }
   }
+
+  // Scroll to highlighted result
+  useEffect(() => {
+    if (highlightedIndex >= 0 && resultsRef.current) {
+      const highlightedElement = resultsRef.current.children[highlightedIndex + 1] as HTMLElement
+      if (highlightedElement) {
+        highlightedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      }
+    }
+  }, [highlightedIndex])
 
   const handleClear = () => {
     setQuery('')
     setFilteredArticles([])
-    setHighlightedIndex(-1)
     setTotalResults(0)
     setHasMoreResults(false)
+    setError(null)
+    // Refocus input after clearing
+    inputRef.current?.focus()
   }
-
-  // Keep results visible if there's a query, even when input loses focus
-  const shouldShowResults =
-    (isFocused && filteredArticles.length > 0) || (!isMediumUp && query.trim() && filteredArticles.length > 0)
 
   // Handle clicks outside using the useOnClickOutside hook
   const handleClickOutside = () => {
@@ -375,6 +458,11 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   }
 
   useOnClickOutside([searchContainerRef], handleClickOutside)
+
+  // Keep results visible if there's a query, even when input loses focus
+  const shouldShowResults =
+    (isFocused && (filteredArticles.length > 0 || isPending || error)) ||
+    (!isMediumUp && query.trim() && filteredArticles.length > 0)
 
   return (
     <SearchBarContainer ref={searchContainerRef}>
@@ -390,19 +478,37 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsFocused(true)}
           aria-label="Search articles"
+          aria-controls="search-results"
+          aria-expanded={!!shouldShowResults}
+          aria-autocomplete="list"
+          aria-activedescendant={highlightedIndex >= 0 ? `result-${highlightedIndex}` : undefined}
+          role="combobox"
         />
         {query && (
-          <CloseIcon onClick={handleClear}>
+          <CloseIcon
+            onClick={handleClear}
+            aria-label="Clear search"
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                handleClear()
+              }
+            }}
+          >
             <SVG src={IMG_ICON_X} />
           </CloseIcon>
         )}
       </InputContainer>
 
       {shouldShowResults && (
-        <SearchResults>
-          <SearchResultsInner>
+        <SearchResults id="search-results" role="listbox" aria-label="Search results">
+          <SearchResultsInner ref={resultsRef}>
             {isPending ? (
-              <SearchResultsInfo>Searching...</SearchResultsInfo>
+              <LoadingIndicator>Searching...</LoadingIndicator>
+            ) : error ? (
+              <ErrorMessage role="alert">{error}</ErrorMessage>
             ) : filteredArticles.length === 0 ? (
               <SearchResultsInfo>No results found</SearchResultsInfo>
             ) : (
@@ -415,6 +521,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
                     key={article.id}
                     href={`/learn/${article.attributes?.slug}`}
                     isSelected={index === highlightedIndex}
+                    id={`result-${index}`}
+                    role="option"
+                    aria-selected={index === highlightedIndex}
                   >
                     <ResultTitle>{highlightQuery(article.attributes?.title || 'No title', debouncedQuery)}</ResultTitle>
                     <ResultDescription>
@@ -426,10 +535,18 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
                   <ResultItem
                     as="button"
                     onClick={loadMoreResults}
-                    isSelected={false}
+                    isSelected={filteredArticles.length === highlightedIndex}
                     style={{ width: '100%', cursor: 'pointer', border: 'none', textAlign: 'center' }}
+                    id={`result-${filteredArticles.length}`}
+                    role="option"
+                    aria-selected={filteredArticles.length === highlightedIndex}
+                    disabled={isLoadingMore}
                   >
-                    <ResultTitle>Load more results</ResultTitle>
+                    {isLoadingMore ? (
+                      <ResultTitle>Loading more results...</ResultTitle>
+                    ) : (
+                      <ResultTitle>Load more results</ResultTitle>
+                    )}
                   </ResultItem>
                 )}
               </>
