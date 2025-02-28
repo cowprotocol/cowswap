@@ -17,7 +17,7 @@ export function SwapUpdaters() {
   const swapDeadlineState = useSwapDeadlineState()
 
   useFillSwapDerivedState()
-  useSetTradeQuoteParams(isSellOrder(orderKind) ? inputCurrencyAmount : outputCurrencyAmount, orderKind, true)
+  useSetTradeQuoteParams(isSellOrder(orderKind) ? inputCurrencyAmount : outputCurrencyAmount, true)
 
   return (
     <>

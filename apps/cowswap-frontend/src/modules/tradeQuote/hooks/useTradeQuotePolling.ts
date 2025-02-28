@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
-import { useLayoutEffect, useMemo, useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 
-import { useDebounce, useIsOnline, useIsWindowVisible } from '@cowprotocol/common-hooks'
+import { useIsOnline, useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import { OrderQuoteResponse, PriceQuality } from '@cowprotocol/cow-sdk'
 import { useAreUnsupportedTokens } from '@cowprotocol/tokens'
@@ -24,26 +24,18 @@ import { quoteUsingSameParameters } from '../utils/quoteUsingSameParameters'
 
 export const PRICE_UPDATE_INTERVAL = ms`30s`
 const QUOTE_EXPIRATION_CHECK_INTERVAL = ms`2s`
-const AMOUNT_CHANGE_DEBOUNCE_TIME = ms`300`
 
 // Solves the problem of multiple requests
 const getFastQuote = onlyResolvesLast<OrderQuoteResponse>(getQuote)
 const getOptimalQuote = onlyResolvesLast<OrderQuoteResponse>(getQuote)
 
 export function useTradeQuotePolling() {
-  const { amount, fastQuote, orderKind } = useAtomValue(tradeQuoteInputAtom)
+  const { amount, fastQuote } = useAtomValue(tradeQuoteInputAtom)
   const tradeQuote = useTradeQuote()
   const tradeQuoteRef = useRef(tradeQuote)
   tradeQuoteRef.current = tradeQuote
 
-  /**
-   * It's important to keep amount and orderKind together in order to have consistent quoteParams
-   */
-  const quoteInputDebounced = useDebounce(
-    useMemo(() => ({ amount: amount?.quotient.toString() || null, orderKind }), [amount, orderKind]),
-    AMOUNT_CHANGE_DEBOUNCE_TIME,
-  )
-  const quoteParams = useQuoteParams(quoteInputDebounced.amount, quoteInputDebounced.orderKind)
+  const quoteParams = useQuoteParams(amount?.quotient.toString())
 
   const updateQuoteState = useUpdateTradeQuote()
   const updateCurrencyAmount = useUpdateCurrencyAmount()

@@ -1,7 +1,5 @@
 import { useAtomValue } from 'jotai'
 
-import { OrderKind } from '@cowprotocol/cow-sdk'
-
 import { useSetTradeQuoteParams } from 'modules/tradeQuote'
 
 import { useAdvancedOrdersDerivedState } from '../../advancedOrders'
@@ -19,7 +17,7 @@ export function QuoteParamsUpdater() {
 
   const inputPartAmount = inputCurrencyAmount?.divide(numberOfPartsValue)
 
-  useSetTradeQuoteParams(inputPartAmount, OrderKind.SELL)
+  useSetTradeQuoteParams(inputPartAmount)
 
   return null
 }

@@ -1,6 +1,5 @@
 import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from '@cowprotocol/common-const'
 import { percentToBps } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/cow-sdk'
 
 import { AppDataUpdater } from 'modules/appData'
 import { useSetTradeQuoteParams } from 'modules/tradeQuote'
@@ -14,7 +13,7 @@ export function YieldUpdaters() {
   const { inputCurrencyAmount } = useYieldDerivedState()
 
   useFillYieldDerivedState()
-  useSetTradeQuoteParams(inputCurrencyAmount, OrderKind.SELL, true)
+  useSetTradeQuoteParams(inputCurrencyAmount, true)
 
   return (
     <>

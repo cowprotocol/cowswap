@@ -1,8 +1,10 @@
+import { useDebounce } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress, getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
-import { OrderKind, PriceQuality } from '@cowprotocol/cow-sdk'
+import { PriceQuality } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
+import { Nullish } from 'types'
 
 import { useAppData } from 'modules/appData'
 import { useIsWrapOrUnwrap } from 'modules/trade'
@@ -13,8 +15,9 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { FeeQuoteParams } from 'common/types'
 
 const DEFAULT_QUOTE_TTL = ms`30m` / 1000
+const AMOUNT_CHANGE_DEBOUNCE_TIME = ms`350ms`
 
-export function useQuoteParams(amount: string | null, orderKind: OrderKind): FeeQuoteParams | undefined {
+export function useQuoteParams(amount: Nullish<string>): FeeQuoteParams | undefined {
   const { chainId, account } = useWalletInfo()
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
@@ -22,9 +25,9 @@ export function useQuoteParams(amount: string | null, orderKind: OrderKind): Fee
 
   const state = useDerivedTradeState()
 
-  const { inputCurrency, outputCurrency } = state || {}
+  const { inputCurrency, outputCurrency, orderKind } = state || {}
 
-  return useSafeMemo(() => {
+  const params = useSafeMemo(() => {
     if (isWrapOrUnwrap || isProviderNetworkUnsupported) return
     if (!inputCurrency || !outputCurrency || !amount || !orderKind) return
 
@@ -63,4 +66,6 @@ export function useQuoteParams(amount: string | null, orderKind: OrderKind): Fee
     isWrapOrUnwrap,
     isProviderNetworkUnsupported,
   ])
+
+  return useDebounce(params, AMOUNT_CHANGE_DEBOUNCE_TIME)
 }
