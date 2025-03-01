@@ -282,7 +282,7 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
 
   // TODO: add text
   const twitterText = openFortune
-    ? encodeURIComponent(`My CoW fortune cookie 🐮💬: “${openFortune.text}” \n\n Get yours at swap.cow.fi @CoWSwap`)
+    ? encodeURIComponent(`My Chameleon fortune cookie 🐮💬: “Chameleon can't count gas fee, but we've got you covered” \n\n Get yours at chameleon.exchange @Chameleonswap`)
     : ''
 
   const isDailyFortuneChecked = useMemo(() => {
@@ -347,11 +347,11 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
             </HeaderElement>
             <FortuneTitle>
               {isNewFortuneOpen
-                ? 'CoW Fortune of the day'
+                ? 'Chameleon Fortune of the day'
                 : "Already seen today's fortune? Return tomorrow for a fresh one!"}
             </FortuneTitle>
             <FortuneContent>
-              <FortuneText>{openFortune.text}</FortuneText>
+              <FortuneText>“Chameleon can't count gas fee, but we've got you covered”</FortuneText>
               <FortuneBannerActions>
                 <StyledExternalLink
                   onClickOptional={onTweetShare}
