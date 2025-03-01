@@ -42,7 +42,7 @@ import {
 
 import LockedGnoVesting from './LockedGnoVesting'
 
-// Number of blocks to wait before we re-enable the swap COW -> vCOW button after confirmation
+// Number of blocks to wait before we re-enable the swap COW -> vCHM button after confirmation
 const BLOCKS_TO_WAIT = 2
 
 export default function Profile() {
@@ -66,7 +66,7 @@ export default function Profile() {
   // Cow balance
   const cow = useCurrencyAmountBalance(chainId ? cowToken : undefined) || CurrencyAmount.fromRawAmount(cowToken, 0)
 
-  // vCow balance values
+  // vCHM balance values
   const { unvested, vested, total, isLoading: isVCowLoading } = useVCowData()
 
   // Boolean flags
@@ -142,13 +142,13 @@ export default function Profile() {
     vested: (
       <div>
         <p>
-          <strong>Vested vCOW</strong> is the portion of your vCOW token balance, which is fully available to convert to
-          COW token.
+          <strong>Vested vCHM</strong> is the portion of your vCHM token balance, which is fully available to convert to
+          CHM token.
         </p>
         <p>
-          This includes any vCOW received through an <strong>airdrop.</strong>
+          This includes any vCHM received through an <strong>airdrop.</strong>
         </p>
-        <p>When converting your vested vCOW balance to COW, your entire vested balance will be converted.</p>
+        <p>When converting your vested vCHM balance to CHM, your entire vested balance will be converted.</p>
       </div>
     ),
   }
@@ -157,13 +157,13 @@ export default function Profile() {
     let content = null
 
     if (isSwapPending) {
-      content = <span>Converting vCOW...</span>
+      content = <span>Converting vCHM...</span>
     } else if (isSwapConfirmed) {
       content = <span>Successfully converted!</span>
     } else {
       content = (
         <>
-          Convert to COW <SVG src={ArrowIcon} />
+          Convert to CHM <SVG src={ArrowIcon} />
         </>
       )
     }
@@ -203,9 +203,9 @@ export default function Profile() {
         <ConfirmationPendingContent
           modalMode
           onDismiss={closeModal}
-          title="Convert vCOW to COW"
-          description="Converting vCOW to COW"
-          operationLabel="vCOW conversion"
+          title="Convert vCHM to CHM"
+          description="Converting vCHM to CHM"
+          operationLabel="vCHM conversion"
         />
       </CowModal>
 
@@ -222,10 +222,10 @@ export default function Profile() {
           {hasVCowBalance && vCowToken && (
             <Card showLoader={isVCowLoading || isSwapPending}>
               <BalanceDisplay hAlign="left">
-                <SVG src={vCOWImage} title="vCOW token" width="56" height="56" />
+                <SVG src={vCOWImage} title="vCHM token" width="56" height="56" />
                 <span>
                   <i>
-                    <Trans>Total vCOW balance</Trans>
+                    <Trans>Total vCHM balance</Trans>
                   </i>
                   <b>
                     <TokenAmount amount={total} defaultValue="0" tokenSymbol={vCowToken} />{' '}
@@ -263,9 +263,9 @@ export default function Profile() {
 
           <Card>
             <BalanceDisplay titleSize={26}>
-              <img src={CowImage} alt="Cow Balance" height="80" width="80" />
+              <img src={CowImage} alt="CHM Balance" height="80" width="80" />
               <span>
-                <i>Available COW balance</i>
+                <i>Available CHM balance</i>
                 <b>
                   {!isProviderNetworkUnsupported && (
                     <TokenAmount amount={cow} defaultValue="0" tokenSymbol={cowToken} />
@@ -291,7 +291,7 @@ export default function Profile() {
                 }
               />
 
-              <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId]}`}>Buy COW</Link>
+              <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId]}`}>Buy CHM</Link>
             </CardActions>
           </Card>
 

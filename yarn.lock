@@ -5121,6 +5121,11 @@
     got "^11.8.5"
     os-filter-obj "^2.0.0"
 
+"@moonpay/moonpay-react@^1.8.10":
+  version "1.8.10"
+  resolved "https://registry.yarnpkg.com/@moonpay/moonpay-react/-/moonpay-react-1.8.10.tgz#2f8eccc07935b0cf2452d6bb4c118b8657b571da"
+  integrity sha512-N6IuLZNVExyjOCikHU/DuyN+9gkUsVc/usTAaTL5mXOwClfWH3UFJGJUt3CY/gloVZSPnhldbVfjisyoRd4J4A==
+
 "@motionone/animation@^10.15.1":
   version "10.15.1"
   resolved "https://registry.yarnpkg.com/@motionone/animation/-/animation-10.15.1.tgz#4a85596c31cbc5100ae8eb8b34c459fb0ccf6807"

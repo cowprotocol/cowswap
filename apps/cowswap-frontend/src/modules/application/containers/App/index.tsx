@@ -25,6 +25,7 @@ import { parameterizeTradeRoute, useTradeRouteContext } from 'modules/trade'
 import { useInitializeUtm } from 'modules/utm'
 
 import { APP_HEADER_ELEMENT_ID } from 'common/constants/common'
+import { Routes } from 'common/constants/routes'
 import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
@@ -34,7 +35,8 @@ import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 
 import { ADDITIONAL_FOOTER_CONTENT, NAV_ITEMS, PRODUCT_VARIANT } from './menuConsts'
-import * as styledEl from './styled'
+import * as styledEl from './styled';
+
 
 const RoutesApp = lazy(() => import('./RoutesApp').then((module) => ({ default: module.RoutesApp })))
 
@@ -79,6 +81,10 @@ export function App() {
   const navItems = useMemo(() => {
     return [
       {
+        label: 'Home',
+        href: Routes.HOME,
+      },
+      {
         label: 'Trade',
         children: menuItems.map((item) => {
           const href = parameterizeTradeRoute(tradeContext, item.route, true)
@@ -88,7 +94,7 @@ export function App() {
             label: item.label,
             description: item.description,
             badge: item.badgeImage ? <SVG src={item.badgeImage} width={10} height={10} /> : item.badge,
-            badgeType: item.badgeType,
+            badgeType: item.badgeType 
           }
         }),
       },
@@ -113,6 +119,7 @@ export function App() {
     <HeaderControls>
       {!hideNetworkSelector && <NetworkSelector />}
       <HeaderElement>
+        
         <AccountElement pendingActivities={pendingActivity} />
       </HeaderElement>
     </HeaderControls>
@@ -146,10 +153,10 @@ export function App() {
               colorDark={'#DEE3E6'}
               bgDropdownColorLight={Color.neutral100}
               bgDropdownColorDark={Color.neutral0}
-              defaultFillDark="rgba(222, 227, 230, 0.4)"
+              defaultFillDark="rgba(226, 222, 230, 0.4)"
               activeFillDark="#DEE3E6"
-              activeBackgroundDark="#282854"
-              hoverBackgroundDark={'#18193B'}
+              activeBackgroundDark="rgb(77, 40, 84)"
+              hoverBackgroundDark={'rgb(52, 24, 59)'}
               LinkComponent={LinkComponent}
               persistentAdditionalContent={isMobile ? null : persistentAdditionalContent} // This will stay at its original location
               additionalContent={null} // On desktop renders inside the menu bar, on mobile renders inside the mobile menu
@@ -182,13 +189,13 @@ export function App() {
             />
           )}
 
-          {/* {!isInjectedWidgetMode && (
+          {!isInjectedWidgetMode && (
             <Footer
               productVariant={PRODUCT_VARIANT}
               additionalFooterContent={ADDITIONAL_FOOTER_CONTENT}
               hasTouchFooter
             />
-          )} */}
+          )}
 
           {/* Render MobileHeaderControls outside of MenuBar on mobile */}
           {isMobile && !isInjectedWidgetMode && persistentAdditionalContent}

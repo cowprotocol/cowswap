@@ -87,7 +87,7 @@ function colors(darkMode: boolean): Colors {
     )} 50%, ${transparentize(success, 0.92)} 100%);`,
     boxShadow1: darkMode ? '0 24px 32px rgba(0, 0, 0, 0.06)' : '0 12px 12px rgba(63, 5, 101, 0.06)',
     boxShadow2: '0 4px 12px 0 rgb(0 0 0 / 15%)',
-    shadow1: darkMode ? ' #030003' : ' #C52FEF',
+    shadow1: darkMode ? '#030003' : '#C52FEF',
   }
 }
 

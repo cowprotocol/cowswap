@@ -19,15 +19,17 @@ import { RedirectPathToSwapOnly, RedirectToPath } from 'legacy/pages/Swap/redire
 import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
 import Account, { AccountOverview } from 'pages/Account'
 import AdvancedOrdersPage from 'pages/AdvancedOrders'
+import { BuyPage } from 'pages/Buy'
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import { HooksPage } from 'pages/Hooks'
 import { CowShed } from 'pages/Hooks/cowShed'
+import { LandingPage } from 'pages/Landing'
 import LimitOrderPage from 'pages/LimitOrders'
 import { SwapPage } from 'pages/Swap'
 import YieldPage from 'pages/Yield'
 
 // Async routes
-const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
+// const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
 const CowRunner = lazy(() => import(/* webpackChunkName: "cow_runner" */ 'pages/games/CowRunner'))
 const MevSlicer = lazy(() => import(/* webpackChunkName: "mev_slicer" */ 'pages/games/MevSlicer'))
 
@@ -57,6 +59,8 @@ const lazyRoutes: LazyRouteProps[] = [
   { route: RoutesEnum.YIELD, element: <YieldPage /> },
   { route: RoutesEnum.LONG_LIMIT_ORDER, element: <RedirectToPath path={'/limit'} /> },
   { route: RoutesEnum.ADVANCED_ORDERS, element: <AdvancedOrdersPage /> },
+  { route: RoutesEnum.BUY, element: <BuyPage /> },
+  { route: RoutesEnum.HOME, element: <LandingPage /> },
   { route: RoutesEnum.LONG_ADVANCED_ORDERS, element: <RedirectToPath path={'/advanced'} /> },
   { route: RoutesEnum.ABOUT, element: <ExternalRedirect url={COWDAO_COWSWAP_ABOUT_LINK} /> },
   { route: RoutesEnum.FAQ, element: <ExternalRedirect url={COWDAO_KNOWLEDGE_BASE_LINK} /> },
@@ -86,7 +90,8 @@ export function RoutesApp() {
         <Route path="profile" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
 
         {/*Swap*/}
-        <Route path={RoutesEnum.SWAP} element={<SwapPage />} />
+        <Route path={RoutesEnum.BUY} element={<BuyPage />} />
+        <Route path={RoutesEnum.SWAP} element={<SwapPage />} />   
         <Route path={RoutesEnum.HOOKS} element={<HooksPage />} />
         <Route path={RoutesEnum.COW_SHED} element={<CowShed />} />
         <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
@@ -99,12 +104,12 @@ export function RoutesApp() {
         <Route path={RoutesEnum.STATS} element={<ExternalRedirect url={DUNE_DASHBOARD_LINK} />} />
         <Route path={RoutesEnum.TWITTER} element={<ExternalRedirect url={TWITTER_LINK} />} />
 
-        <Route path={RoutesEnum.HOME} element={<RedirectPathToSwapOnly />} />
+        <Route path={RoutesEnum.HOME} element={<LandingPage />} />
         <Route
           path="*"
           element={
             <Suspense fallback={<Loading />}>
-              <NotFound />
+              <LandingPage />
             </Suspense>
           }
         />

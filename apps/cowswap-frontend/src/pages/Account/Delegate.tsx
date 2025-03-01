@@ -18,16 +18,16 @@ export default function Delegate({ dismissable = false, rowOnMobile }: DelegateP
   const renderContent = (onClose?: () => void) => (
     <BannerCard rowOnMobile={rowOnMobile}>
       {dismissable && onClose && <CloseButton onClick={onClose} />}
-      <BannerCardIcon width={159}>
+      {/* <BannerCardIcon width={159}>
         <SVG src={DelegateCowIcon} title="Delegate" />
-      </BannerCardIcon>
+      </BannerCardIcon> */}
       <BannerCardContent>
         <BannerCardTitle>
           Too <i>busy</i> <br />
           to vote?
         </BannerCardTitle>
         <small>
-          Delegate your <img src={CowImage} alt="Cow Balance" height="16" width="16" /> (v)COW
+          Delegate your <img src={CowImage} alt="CHM Balance" height="16" width="16" /> (v)CHM
         </small>
         <ButtonPrimary as="a" href={DELEGATE_URL} target="_blank" rel="noopener nofollow">
           Delegate Now ↗

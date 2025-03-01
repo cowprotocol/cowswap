@@ -339,16 +339,16 @@ const NavDaoTrigger: React.FC<{
 
   useOnClickOutside([triggerRef, dropdownRef], () => setIsOpen(false))
 
-  const handleToggle = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation()
-    setIsOpen(!isOpen)
-  }
+  // const handleToggle = (e: React.MouseEvent<HTMLDivElement>) => {
+  //   e.stopPropagation()
+  //   setIsOpen(!isOpen)
+  // }
 
   const closeMenu = () => setIsOpen(false)
 
   return (
     <>
-      <NavDaoTriggerElement
+      {/* <NavDaoTriggerElement
         ref={triggerRef}
         isActive={isOpen}
         mobileMode={mobileMode}
@@ -356,7 +356,7 @@ const NavDaoTrigger: React.FC<{
         isOpen={isOpen}
       >
         <SVG src={IMG_ICON_MENU_DOTS} />
-      </NavDaoTriggerElement>
+      </NavDaoTriggerElement> */}
       {isOpen &&
         (mobileMode ? (
           <MobileDropdownContainer

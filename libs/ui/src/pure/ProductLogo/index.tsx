@@ -94,7 +94,7 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
       default: {
         src: LOGO_COWSWAP_CHRISTMAS,
         alt: 'Chameleaon swap',
-        color: ' #004293',
+        color: '#7a0093',
         height: '56px',
         heightMobile: '50px',
         preserveOriginalColors: true,

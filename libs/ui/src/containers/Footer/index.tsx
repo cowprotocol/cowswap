@@ -95,36 +95,36 @@ const PRODUCT_LOGO_LINKS: {
 }[] = [
   {
     href: 'https://chameleon.exchange/',
-    label: 'Chameleaon swap',
+    label: 'Chameleon swap',
     productVariant: ProductVariant.CowSwap,
     external: true,
     utmContent: 'product-cow-swap',
   },
-  {
-    href: 'https://cow.fi/',
-    label: 'CoW Protocol',
-    productVariant: ProductVariant.CowProtocol,
-    external: true,
-    utmContent: 'product-cow-protocol',
-  },
-  {
-    href: 'https://cow.fi/mev-blocker',
-    label: 'MEV Blocker',
-    productVariant: ProductVariant.MevBlocker,
-    external: true,
-    utmContent: 'product-mev-blocker',
-  },
-  {
-    href: 'https://cow.fi/cow-amm',
-    label: 'CoW AMM',
-    productVariant: ProductVariant.CowAmm,
-    external: true,
-    utmContent: 'product-cow-amm',
-  },
+  // {
+  //   href: 'https://cow.fi/',
+  //   label: 'CoW Protocol',
+  //   productVariant: ProductVariant.CowProtocol,
+  //   external: true,
+  //   utmContent: 'product-cow-protocol',
+  // },
+  // {
+  //   href: 'https://cow.fi/mev-blocker',
+  //   label: 'MEV Blocker',
+  //   productVariant: ProductVariant.MevBlocker,
+  //   external: true,
+  //   utmContent: 'product-mev-blocker',
+  // },
+  // {
+  //   href: 'https://cow.fi/cow-amm',
+  //   label: 'CoW AMM',
+  //   productVariant: ProductVariant.CowAmm,
+  //   external: true,
+  //   utmContent: 'product-cow-amm',
+  // },
 ]
 
 const GLOBAL_FOOTER_DESCRIPTION =
-  'CoW DAO is an open collective of developers, market makers, and community contributors on a mission to protect users from the dangers of DeFi.'
+  'Chameleon Swap is an open collective of developers, market makers, and community contributors on a mission to protect users from the dangers of DeFi.'
 
 const GLOBAL_FOOTER_NAV_ITEMS: MenuItem[] = [
   {
@@ -157,7 +157,7 @@ const GLOBAL_FOOTER_NAV_ITEMS: MenuItem[] = [
     label: 'Products',
     children: [
       {
-        label: 'Chameleaon swap',
+        label: 'Chameleon swap',
         href: 'https://cow.fi/cow-swap',
         external: true,
         utmContent: 'footer-products-cow-swap',
@@ -331,7 +331,7 @@ export const Footer = ({
               </SocialIconsWrapper>
             </FooterDescriptionSection>
 
-            <LinkListWrapper>
+            {/* <LinkListWrapper>
               {navItems.map((item, index) => (
                 <LinkListGroup key={index}>
                   <SectionTitle>{item.label}</SectionTitle>
@@ -352,14 +352,14 @@ export const Footer = ({
                   </LinkList>
                 </LinkListGroup>
               ))}
-            </LinkListWrapper>
+            </LinkListWrapper> */}
           </FooterContent>
 
-          <FooterAnimation />
+          {/* <FooterAnimation /> */}
         </>
       )}
       <FooterBottom maxWidth={maxWidth}>
-        <BottomText>&copy; CoW DAO - {new Date().getFullYear()}</BottomText>
+        <BottomText>&copy; Chameleon Swap - {new Date().getFullYear()}</BottomText>
         <FooterBottomLogos>
           {PRODUCT_LOGO_LINKS.map((product, index) => (
             <ProductLogo
@@ -378,9 +378,9 @@ export const Footer = ({
 
         <BottomRight>
           {additionalFooterContent && additionalFooterContent}
-          <ToggleFooterButton onClick={toggleFooter} expanded={isFooterExpanded}>
+          {/* <ToggleFooterButton onClick={toggleFooter} expanded={isFooterExpanded}>
             <SVG src={IMG_ICON_ARROW_RIGHT_CIRCULAR} title="Toggle Footer" />
-          </ToggleFooterButton>
+          </ToggleFooterButton> */}
         </BottomRight>
       </FooterBottom>
     </FooterContainer>
