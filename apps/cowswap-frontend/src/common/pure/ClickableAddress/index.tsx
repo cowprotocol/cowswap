@@ -15,6 +15,11 @@ const getTarget = (address: string, chainId: number) => {
 
 const getTitle = (address: string, chainId: number) => {
   const chainInfo = getChainInfo(chainId)
+
+  if (chainInfo?.explorerTitle === 'Etherscan' && chainInfo?.name !== 'mainnet') {
+    return `View ${address} on (${chainInfo.label}) ${chainInfo.explorerTitle}`
+  }
+
   return chainInfo ? `View ${address} on ${chainInfo.explorerTitle}` : undefined
 }
 
@@ -45,7 +50,7 @@ export function ClickableAddress(props: ClickableAddressProps) {
   return (
     shouldShowAddress && (
       <styledEl.Wrapper>
-        <HoverTooltip {...props} content={title} wrapInContainer>
+        <HoverTooltip {...props} placement="bottom" content={title} wrapInContainer>
           <styledEl.AddressWrapper to={target} target="_blank" rel="noopener noreferrer" onClick={handleClick}>
             {shortAddress}
           </styledEl.AddressWrapper>
