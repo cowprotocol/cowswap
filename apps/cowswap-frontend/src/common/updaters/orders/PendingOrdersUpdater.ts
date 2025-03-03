@@ -37,13 +37,13 @@ import {
   emitFulfilledOrderEvent,
   emitPresignedOrderEvent,
 } from 'modules/orders'
-import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 
 import { getOrder } from 'api/cowProtocol'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { fetchAndClassifyOrder } from './utils'
 
+import { useAddOrderToSurplusQueue } from '../../containers/SurplusModalSetup/surplusModal'
 import { removeOrdersToCancelAtom } from '../../hooks/useMultipleOrdersCancellation/state'
 import { useTriggerTotalSurplusUpdateCallback } from '../../state/totalSurplusState'
 

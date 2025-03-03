@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 
 import { Field } from 'legacy/state/types'
 
+import { ethFlow, useEthFlowContext } from 'modules/ethFlow'
 import { TradeWidgetActions, useTradePriceImpact } from 'modules/trade'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
@@ -22,6 +23,7 @@ export function useHandleSwap(params: TradeFlowParams, actions: TradeWidgetActio
   const safeBundleFlowContext = useSafeBundleFlowContext()
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
   const priceImpactParams = useTradePriceImpact()
+  const ethFlowContext = useEthFlowContext()
   const { onUserInput, onChangeRecipient } = actions
   const analytics = useTradeFlowAnalytics()
 
@@ -36,6 +38,19 @@ export function useHandleSwap(params: TradeFlowParams, actions: TradeWidgetActio
     if (!tradeFlowContext) return
 
     const result = await (() => {
+      if (tradeFlowType === FlowType.EOA_ETH_FLOW) {
+        if (!ethFlowContext) throw new Error('Eth flow context is not ready')
+
+        logTradeFlow('ETH FLOW', 'Start eth flow')
+        return ethFlow({
+          tradeContext: tradeFlowContext,
+          ethFlowContext,
+          priceImpactParams,
+          confirmPriceImpactWithoutFee,
+          analytics,
+        })
+      }
+
       if (tradeFlowType === FlowType.SAFE_BUNDLE_APPROVAL) {
         if (!safeBundleFlowContext) throw new Error('Safe bundle flow context is not ready')
 
@@ -79,6 +94,7 @@ export function useHandleSwap(params: TradeFlowParams, actions: TradeWidgetActio
     onChangeRecipient,
     onUserInput,
     analytics,
+    ethFlowContext,
   ])
 
   return { callback, contextIsReady }

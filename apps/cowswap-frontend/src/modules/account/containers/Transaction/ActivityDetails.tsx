@@ -6,15 +6,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { UiOrderType } from '@cowprotocol/types'
-import {
-  BannerOrientation,
-  CustomRecipientWarningBanner,
-  ExternalLink,
-  Icon,
-  IconType,
-  TokenAmount,
-  UI,
-} from '@cowprotocol/ui'
+import { BannerOrientation, ExternalLink, Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
@@ -22,13 +14,15 @@ import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { useToggleAccountModal } from 'modules/account'
+import { EthFlowStepper } from 'modules/ethFlow'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
+import { useAddOrderToSurplusQueue } from 'common/containers/SurplusModalSetup/surplusModal'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
 import {
@@ -51,8 +45,6 @@ import {
   TextAlert,
   TransactionInnerDetail,
 } from './styled'
-
-import { useAddOrderToSurplusQueue } from '../../../swap/state/surplusModal'
 
 import { ActivityDerivedState } from './index'
 

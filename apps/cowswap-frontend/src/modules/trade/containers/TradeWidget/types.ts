@@ -17,10 +17,10 @@ export interface TradeWidgetActions {
 
 interface TradeWidgetParams {
   recipient?: string | null
-  isEoaEthFlow?: boolean
   compactView: boolean
   showRecipient: boolean
   isTradePriceUpdating: boolean
+  isSellingEthSupported?: boolean
   priceImpact: PriceImpact
   tradeQuoteStateOverride?: TradeQuoteState | null
   disableQuotePolling?: boolean
@@ -38,7 +38,6 @@ export interface TradeWidgetSlots {
   lockScreen?: ReactNode
   topContent?: ReactNode
   middleContent?: ReactNode
-  limitPriceInput?: ReactNode
   bottomContent?(warnings: ReactNode | null): ReactNode
   outerContent?: ReactNode
   updaters?: ReactNode

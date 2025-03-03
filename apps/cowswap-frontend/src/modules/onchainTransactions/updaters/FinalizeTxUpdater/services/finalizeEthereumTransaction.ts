@@ -6,6 +6,7 @@ import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/re
 import { finalizeEthFlowTx } from './finalizeEthFlowTx'
 import { finalizeOnChainCancellation } from './finalizeOnChainCancellation'
 
+import { ONCHAIN_TRANSACTIONS_EVENTS, OnchainTxEvents } from '../../../onchainTransactionsEvents'
 import { emitOnchainTransactionEvent } from '../../../utils/emitOnchainTransactionEvent'
 import { CheckEthereumTransactions } from '../types'
 
@@ -13,12 +14,14 @@ export function finalizeEthereumTransaction(
   receipt: TransactionReceipt,
   transaction: EnhancedTransactionDetails,
   params: CheckEthereumTransactions,
-  safeTransactionHash?: string
+  safeTransactionHash?: string,
 ) {
   const { chainId, account, dispatch, addPriorityAllowance } = params
   const { hash } = transaction
 
   console.log(`[FinalizeTxUpdater] Transaction ${receipt.transactionHash} has been mined`, receipt, transaction)
+
+  ONCHAIN_TRANSACTIONS_EVENTS.emit(OnchainTxEvents.BEFORE_TX_FINALIZE, { transaction, receipt })
 
   // Once approval tx is mined, we add the priority allowance to immediately allow the user to place orders
   if (transaction.approval) {
@@ -44,7 +47,7 @@ export function finalizeEthereumTransaction(
         transactionHash: receipt.transactionHash,
         transactionIndex: receipt.transactionIndex,
       },
-    })
+    }),
   )
 
   if (transaction.ethFlow) {

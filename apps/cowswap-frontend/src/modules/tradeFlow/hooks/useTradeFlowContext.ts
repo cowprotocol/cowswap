@@ -73,9 +73,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
     recipientAddress,
     orderKind,
   } = derivedTradeState || {}
-  const quoteParams = tradeQuote?.quoteParams
-  const quoteResponse = tradeQuote?.response
-  const localQuoteTimestamp = tradeQuote?.localQuoteTimestamp
 
   return (
     useSWR(
@@ -88,9 +85,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         account &&
         provider &&
         appData &&
-        quoteParams &&
-        quoteResponse &&
-        localQuoteTimestamp &&
+        tradeQuote.response &&
         orderKind &&
         settlementContract &&
         uiOrderType
@@ -98,9 +93,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             account,
             allowsOffchainSigning,
             appData,
-            quoteParams,
-            quoteResponse,
-            localQuoteTimestamp,
+            tradeQuote,
             buyToken,
             settlementChainId,
             closeModals,
@@ -128,9 +121,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         account,
         allowsOffchainSigning,
         appData,
-        quoteParams,
-        quoteResponse,
-        localQuoteTimestamp,
+        tradeQuote,
         buyToken,
         chainId,
         closeModals,
@@ -191,18 +182,14 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             feeAmount: networkFee,
             sellToken: sellToken as TokenWithLogo,
             buyToken: buyToken as TokenWithLogo,
-            validTo: getOrderValidTo(deadline, {
-              validFor: quoteParams.validFor,
-              quoteValidTo: quoteResponse.quote.validTo,
-              localQuoteTimestamp,
-            }),
+            validTo: getOrderValidTo(deadline, tradeQuote),
             recipient: recipientAddress || recipient || account,
             recipientAddressOrName: recipient || null,
             allowsOffchainSigning,
             appData,
             class: OrderClass.MARKET,
             partiallyFillable: isHooksTradeType,
-            quoteId: quoteResponse.id,
+            quoteId: tradeQuote.response!.id,
             isSafeWallet,
           },
         }
