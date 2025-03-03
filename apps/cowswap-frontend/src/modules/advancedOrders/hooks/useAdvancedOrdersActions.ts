@@ -12,7 +12,10 @@ import { useResetTradeQuote } from 'modules/tradeQuote'
 import { useAdvancedOrdersDerivedState } from './useAdvancedOrdersDerivedState'
 import { useUpdateAdvancedOrdersRawState } from './useAdvancedOrdersRawState'
 
-// TODO: this should be also unified for each trade widget (swap, limit, advanced)
+const onSwitchTradeOverride = {
+  outputCurrencyAmount: null,
+}
+
 export function useAdvancedOrdersActions() {
   const { inputCurrency } = useAdvancedOrdersDerivedState()
 
@@ -58,9 +61,7 @@ export function useAdvancedOrdersActions() {
     [updateAdvancedOrdersState],
   )
 
-  const onSwitchTokensDefault = useSwitchTokensPlaces({
-    outputCurrencyAmount: null,
-  })
+  const onSwitchTokensDefault = useSwitchTokensPlaces(onSwitchTradeOverride)
 
   const onSwitchTokens = useCallback(() => {
     onSwitchTokensDefault()

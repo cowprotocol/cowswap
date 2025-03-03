@@ -5,16 +5,16 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
 
-import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
-import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
-import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
-
 import { convertAmountToCurrency } from 'utils/orderUtils/calculateExecutionPrice'
 
+import { useDerivedTradeState } from './useDerivedTradeState'
+import { useNavigateOnCurrencySelection } from './useNavigateOnCurrencySelection'
+import { useTradeState } from './useTradeState'
+
 export function useOnCurrencySelection(): (field: Field, currency: Currency | null) => void {
-  const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
+  const { inputCurrencyAmount, outputCurrencyAmount } = useDerivedTradeState() || {}
   const navigateOnCurrencySelection = useNavigateOnCurrencySelection()
-  const updateLimitOrdersState = useUpdateLimitOrdersRawState()
+  const { updateState } = useTradeState()
 
   return useCallback(
     (field: Field, currency: Currency | null) => {
@@ -35,7 +35,7 @@ export function useOnCurrencySelection(): (field: Field, currency: Currency | nu
           const converted = convertAmountToCurrency(amount, currency)
 
           return navigateOnCurrencySelection(field, currency, () => {
-            updateLimitOrdersState({
+            updateState?.({
               [amountField]: FractionUtils.serializeFractionToJSON(converted),
             })
           })
@@ -44,6 +44,6 @@ export function useOnCurrencySelection(): (field: Field, currency: Currency | nu
 
       return navigateOnCurrencySelection(field, currency)
     },
-    [navigateOnCurrencySelection, updateLimitOrdersState, inputCurrencyAmount, outputCurrencyAmount]
+    [navigateOnCurrencySelection, updateState, inputCurrencyAmount, outputCurrencyAmount],
   )
 }

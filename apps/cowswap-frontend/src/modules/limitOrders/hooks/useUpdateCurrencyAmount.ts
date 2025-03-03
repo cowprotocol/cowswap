@@ -37,6 +37,14 @@ export function useUpdateCurrencyAmount() {
       const field = isSellOrder(orderKind) ? Field.INPUT : Field.OUTPUT
       const isBuyAmountChange = field === Field.OUTPUT
 
+      if (!amount || amount.equalTo(0)) {
+        updateLimitOrdersState({
+          inputCurrencyAmount: null,
+          outputCurrencyAmount: null,
+        })
+        return
+      }
+
       if (!limitPriceLocked && !isPriceUpdate) {
         // Limit price is unlocked, we should not update the opposite amount, only the price!
         const update: Partial<Writeable<LimitOrdersRawState>> = {

@@ -226,15 +226,13 @@ export function YieldWidget() {
       inputCurrencyInfo={inputCurrencyInfo}
       outputCurrencyInfo={outputCurrencyInfo}
       confirmModal={
-        doTrade.contextIsReady ? (
-          <YieldConfirmModal
-            doTrade={doTrade.callback}
-            recipient={recipient}
-            priceImpact={priceImpact}
-            inputCurrencyInfo={inputCurrencyPreviewInfo}
-            outputCurrencyInfo={outputCurrencyPreviewInfo}
-          />
-        ) : null
+        <YieldConfirmModal
+          doTrade={doTrade.callback}
+          recipient={recipient}
+          priceImpact={priceImpact}
+          inputCurrencyInfo={inputCurrencyPreviewInfo}
+          outputCurrencyInfo={outputCurrencyPreviewInfo}
+        />
       }
     />
   )

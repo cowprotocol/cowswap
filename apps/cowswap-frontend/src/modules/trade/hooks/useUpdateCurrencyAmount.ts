@@ -23,7 +23,7 @@ export function useUpdateCurrencyAmount() {
 
   return useCallback(
     ({ field, currency, amount }: UpdateCurrencyAmountProps) => {
-      if (!currency) {
+      if (!currency || !updateState) {
         return
       }
 
@@ -36,11 +36,19 @@ export function useUpdateCurrencyAmount() {
         ? tryParseCurrencyAmount(value, currency)
         : CurrencyAmount.fromRawAmount(currency, value)
 
+      if (!parsedAmount || parsedAmount.equalTo(0)) {
+        updateState({
+          inputCurrencyAmount: null,
+          outputCurrencyAmount: null,
+        })
+        return
+      }
+
       const currencyAmount = FractionUtils.serializeFractionToJSON(parsedAmount)
       const currencyField = field === Field.INPUT ? 'inputCurrencyAmount' : 'outputCurrencyAmount'
 
-      updateState?.({ [currencyField]: currencyAmount })
+      updateState({ [currencyField]: currencyAmount })
     },
-    [updateState]
+    [updateState],
   )
 }

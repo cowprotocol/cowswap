@@ -29,7 +29,7 @@ export function TradeWidget(props: TradeWidgetProps) {
           {slots.updaters}
         </TradeWidgetUpdaters>
 
-        <styledEl.Container>{modals || <TradeWidgetForm {...props} slots={slots} />}</styledEl.Container>
+        <styledEl.Container>{modals || <TradeWidgetForm {...props} />}</styledEl.Container>
       </styledEl.Container>
     </>
   )
