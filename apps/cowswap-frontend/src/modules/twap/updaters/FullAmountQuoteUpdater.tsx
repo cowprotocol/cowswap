@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
-import { OrderKind, OrderQuoteResponse } from '@cowprotocol/cow-sdk'
+import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useTradeQuote, useQuoteParams } from 'modules/tradeQuote'
@@ -20,7 +20,7 @@ export function FullAmountQuoteUpdater() {
   const fullQuoteAmount = inputCurrencyAmount?.quotient.toString() || null
   const partQuoteAmount = response?.quote.buyAmount
 
-  const quoteParams = useQuoteParams(fullQuoteAmount, OrderKind.SELL)
+  const quoteParams = useQuoteParams(fullQuoteAmount)
   const updateQuoteState = useSetAtom(fullAmountQuoteAtom)
 
   useEffect(() => {
