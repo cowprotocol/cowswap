@@ -462,7 +462,7 @@ export default function Page() {
                 <p>Server(s) hosting the Products;</p>
               </li>
               <li>
-                <p>Any computer or database connected to the Products;</p>
+                <p>Any computer or database connected to the Products.</p>
               </li>
             </ul>
             <p>You are prohibited from attacking the Products through:</p>
