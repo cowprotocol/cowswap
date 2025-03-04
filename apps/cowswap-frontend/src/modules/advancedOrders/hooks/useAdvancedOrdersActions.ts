@@ -27,16 +27,9 @@ export function useAdvancedOrdersActions() {
 
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency | null) => {
-      // Reset the output field until we fetch quote for new selected token
-      // This is to avoid displaying wrong amounts in output field
-      updateCurrencyAmount({
-        amount: { isTyped: false, value: '' },
-        field: Field.OUTPUT,
-        currency,
-      })
       naviageOnCurrencySelection(field, currency)
     },
-    [naviageOnCurrencySelection, updateCurrencyAmount],
+    [naviageOnCurrencySelection],
   )
 
   const onUserInput = useCallback(
