@@ -1,3 +1,5 @@
+import type { LatestAppDataDocVersion } from '@cowprotocol/app-data'
+
 import { decodeAppData } from 'modules/appData'
 
 import { FeeQuoteParams } from 'common/types'
@@ -45,7 +47,7 @@ function removeQuoteMetadata(appData: string | undefined): string | undefined {
 
   if (!decoded) return
 
-  const { metadata: fullMetadata, ...rest } = decoded
-  const { quote: _, ...metadata } = fullMetadata
+  const { metadata: fullMetadata, ...rest } = decoded as LatestAppDataDocVersion
+  const { quote: _, hooks: __, ...metadata } = fullMetadata
   return JSON.stringify({ ...rest, metadata })
 }
