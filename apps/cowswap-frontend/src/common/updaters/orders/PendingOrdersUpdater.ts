@@ -200,7 +200,7 @@ async function _updateOrders({
   if (!pending.length) {
     return
   } else {
-    _triggerNps(pending, chainId)
+    _triggerNps(pending, chainId, account)
   }
 
   // Iterate over pending orders fetching API data
@@ -340,7 +340,7 @@ function getReplacedOrCancelledEthFlowOrders(
 
 // Check if there is any order pending for a long time
 // If so, trigger appzi
-function _triggerNps(pending: Order[], chainId: ChainId) {
+function _triggerNps(pending: Order[], chainId: ChainId, account: string) {
   for (const order of pending) {
     const { openSince, id: orderId } = order
     const orderType = getUiOrderType(order)
@@ -354,6 +354,7 @@ function _triggerNps(pending: Order[], chainId: ChainId) {
         explorerUrl,
         chainId,
         orderType,
+        account,
       })
       // Break the loop, don't need to show more than once
       break

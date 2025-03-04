@@ -62,6 +62,7 @@ type AppziCustomSettings = {
   orderType?: string
   account?: string
   pendingOrderIds?: string
+  walletName?: string
 }
 
 type AppziSettings = {
@@ -85,8 +86,11 @@ function updateAppziSettings({ data = {}, userId = '' }: AppziSettings) {
   }
 }
 
-export function openFeedbackAppzi() {
+export function openFeedbackAppzi(params: { account?: string; walletName?: string; chainId: number }) {
+  const { account, chainId, walletName } = params
+
   if (typeof window !== 'undefined') {
+    updateAppziSettings({ data: { account, chainId, walletName } })
     window.appzi?.openWidget(FEEDBACK_KEY)
   }
 }
@@ -125,7 +129,7 @@ type SurveyType = 'nps' | 'limit'
  */
 export function triggerAppziSurvey(
   data?: Omit<AppziCustomSettings, 'userTradedOrWaitedForLong' | 'isTestNps'>,
-  surveyType: SurveyType = 'nps'
+  surveyType: SurveyType = 'nps',
 ) {
   if (isInjectedWidget()) return
 
