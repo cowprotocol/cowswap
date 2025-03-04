@@ -1,4 +1,4 @@
-import { getCurrencyAddress, isSellOrder, percentToBps } from '@cowprotocol/common-utils'
+import { isSellOrder, percentToBps } from '@cowprotocol/common-utils'
 
 import { AppDataUpdater } from 'modules/appData'
 import { EthFlowDeadlineUpdater } from 'modules/ethFlow'
@@ -12,16 +12,12 @@ import { useFillSwapDerivedState, useSwapDerivedState } from '../hooks/useSwapDe
 import { useSwapDeadlineState } from '../hooks/useSwapSettings'
 
 export function SwapUpdaters() {
-  const { orderKind, inputCurrency, inputCurrencyAmount, outputCurrencyAmount, slippage } = useSwapDerivedState()
+  const { orderKind, inputCurrencyAmount, outputCurrencyAmount, slippage } = useSwapDerivedState()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
   const swapDeadlineState = useSwapDeadlineState()
 
   useFillSwapDerivedState()
-  useSetTradeQuoteParams(
-    isSellOrder(orderKind) ? inputCurrencyAmount : outputCurrencyAmount,
-    inputCurrency && getCurrencyAddress(inputCurrency),
-    true,
-  )
+  useSetTradeQuoteParams(isSellOrder(orderKind) ? inputCurrencyAmount : outputCurrencyAmount, true)
 
   return (
     <>

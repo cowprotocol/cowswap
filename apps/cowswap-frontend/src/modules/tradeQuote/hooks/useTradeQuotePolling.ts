@@ -23,14 +23,15 @@ export const PRICE_UPDATE_INTERVAL = ms`30s`
 const QUOTE_EXPIRATION_CHECK_INTERVAL = ms`2s`
 
 export function useTradeQuotePolling() {
-  const { amount, sellTokenAddress, fastQuote } = useAtomValue(tradeQuoteInputAtom)
+  const { amount, fastQuote } = useAtomValue(tradeQuoteInputAtom)
   const tradeQuote = useTradeQuote()
   const tradeQuoteRef = useRef(tradeQuote)
   tradeQuoteRef.current = tradeQuote
 
   const quoteParams = useQuoteParams(amount?.quotient.toString())
+  const sellToken = quoteParams?.sellToken
 
-  const tradeQuoteManager = useTradeQuoteManager(sellTokenAddress)
+  const tradeQuoteManager = useTradeQuoteManager(sellToken)
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const getIsUnsupportedTokens = useAreUnsupportedTokens()
   const processUnsupportedTokenError = useProcessUnsupportedTokenError()

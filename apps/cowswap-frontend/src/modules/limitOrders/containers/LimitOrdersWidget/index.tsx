@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import React, { useCallback, useEffect, useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { getCurrencyAddress, isSellOrder } from '@cowprotocol/common-utils'
+import { isSellOrder } from '@cowprotocol/common-utils'
 
 import { useLocation } from 'react-router-dom'
 
@@ -90,7 +90,7 @@ export function LimitOrdersWidget() {
     [isSell, inputCurrencyAmount, outputCurrencyAmount],
   )
 
-  useSetTradeQuoteParams(quoteAmount, inputCurrency && getCurrencyAddress(inputCurrency))
+  useSetTradeQuoteParams(quoteAmount)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,

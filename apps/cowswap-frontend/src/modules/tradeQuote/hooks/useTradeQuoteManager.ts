@@ -18,7 +18,7 @@ export interface TradeQuoteManager {
   onResponse(data: OrderQuoteResponse, requestParams: FeeQuoteParams, fetchStartTimestamp: number): void
 }
 
-export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | null): TradeQuoteManager | null {
+export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefined): TradeQuoteManager | null {
   const update = useSetAtom(updateTradeQuoteAtom)
   const processUnsupportedTokenError = useProcessUnsupportedTokenError()
 

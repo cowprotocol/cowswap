@@ -1,8 +1,8 @@
 import { atom } from 'jotai'
 
-import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { getCurrencyAddress, isFractionFalsy } from '@cowprotocol/common-utils'
 
-import { tradeQuoteAtom } from 'modules/tradeQuote'
+import { tradeQuotesAtom } from 'modules/tradeQuote'
 import { volumeFeeAtom } from 'modules/volumeFee'
 
 import { derivedTradeStateAtom } from './derivedTradeStateAtom'
@@ -10,10 +10,11 @@ import { derivedTradeStateAtom } from './derivedTradeStateAtom'
 import { getReceiveAmountInfo } from '../utils/getReceiveAmountInfo'
 
 export const receiveAmountInfoAtom = atom((get) => {
-  const { response: quoteResponse } = get(tradeQuoteAtom)
+  const tradeQuotes = get(tradeQuotesAtom)
   const volumeFee = get(volumeFeeAtom)
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, slippage, orderKind } =
     get(derivedTradeStateAtom) || {}
+  const quoteResponse = inputCurrency && tradeQuotes[getCurrencyAddress(inputCurrency).toLowerCase()]?.response
 
   if (isFractionFalsy(inputCurrencyAmount) && isFractionFalsy(outputCurrencyAmount)) return null
 

@@ -1,5 +1,5 @@
 import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from '@cowprotocol/common-const'
-import { getCurrencyAddress, percentToBps } from '@cowprotocol/common-utils'
+import { percentToBps } from '@cowprotocol/common-utils'
 
 import { AppDataUpdater } from 'modules/appData'
 import { useSetTradeQuoteParams } from 'modules/tradeQuote'
@@ -10,10 +10,10 @@ import { SetupYieldAmountsFromUrlUpdater } from './SetupYieldAmountsFromUrlUpdat
 import { useFillYieldDerivedState, useYieldDerivedState } from '../hooks/useYieldDerivedState'
 
 export function YieldUpdaters() {
-  const { inputCurrencyAmount, inputCurrency } = useYieldDerivedState()
+  const { inputCurrencyAmount } = useYieldDerivedState()
 
   useFillYieldDerivedState()
-  useSetTradeQuoteParams(inputCurrencyAmount, inputCurrency && getCurrencyAddress(inputCurrency), true)
+  useSetTradeQuoteParams(inputCurrencyAmount, true)
 
   return (
     <>

@@ -5,8 +5,6 @@ import { OrderQuoteResponse, PriceQuality } from '@cowprotocol/cow-sdk'
 import QuoteApiError from 'api/cowProtocol/errors/QuoteError'
 import { FeeQuoteParams } from 'common/types'
 
-import { tradeQuoteInputAtom } from './tradeQuoteInputAtom'
-
 type SellTokenAddress = string
 
 export interface TradeQuoteState {
@@ -29,14 +27,7 @@ export const DEFAULT_TRADE_QUOTE_STATE: TradeQuoteState = {
   localQuoteTimestamp: null,
 }
 
-const tradeQuotesAtom = atom<Record<SellTokenAddress, TradeQuoteState>>({})
-
-export const tradeQuoteAtom = atom<TradeQuoteState>((get) => {
-  const { sellTokenAddress } = get(tradeQuoteInputAtom)
-  const quotes = get(tradeQuotesAtom)
-
-  return (sellTokenAddress && quotes[sellTokenAddress]) || DEFAULT_TRADE_QUOTE_STATE
-})
+export const tradeQuotesAtom = atom<Record<SellTokenAddress, TradeQuoteState | undefined>>({})
 
 export const updateTradeQuoteAtom = atom(
   null,

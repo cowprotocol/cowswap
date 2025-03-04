@@ -6,8 +6,7 @@ export type SellTokenAddress = string
 
 export interface TradeQuoteInputState {
   amount: CurrencyAmount<Currency> | null
-  sellTokenAddress: SellTokenAddress | null
   fastQuote?: boolean
 }
 
-export const tradeQuoteInputAtom = atom<TradeQuoteInputState>({ amount: null, sellTokenAddress: null })
+export const tradeQuoteInputAtom = atom<TradeQuoteInputState>({ amount: null })
