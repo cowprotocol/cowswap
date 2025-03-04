@@ -1,5 +1,7 @@
 import { useAtomValue } from 'jotai'
 
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
+
 import { useSetTradeQuoteParams } from 'modules/tradeQuote'
 
 import { useAdvancedOrdersDerivedState } from '../../advancedOrders'
@@ -12,12 +14,12 @@ import { twapOrdersSettingsAtom } from '../state/twapOrdersSettingsAtom'
  * useSetTradeQuoteParams() just fill the quote amount into `tradeQuoteParamsAtom` that is used by `useQuoteParams`.
  */
 export function QuoteParamsUpdater() {
-  const { inputCurrencyAmount } = useAdvancedOrdersDerivedState()
+  const { inputCurrencyAmount, inputCurrency } = useAdvancedOrdersDerivedState()
   const { numberOfPartsValue } = useAtomValue(twapOrdersSettingsAtom)
 
   const inputPartAmount = inputCurrencyAmount?.divide(numberOfPartsValue)
 
-  useSetTradeQuoteParams(inputPartAmount)
+  useSetTradeQuoteParams(inputPartAmount, inputCurrency && getCurrencyAddress(inputCurrency))
 
   return null
 }

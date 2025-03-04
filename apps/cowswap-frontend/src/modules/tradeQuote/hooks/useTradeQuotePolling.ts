@@ -16,7 +16,7 @@ import QuoteApiError, { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteE
 import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenError'
 import { useQuoteParams } from './useQuoteParams'
 import { useTradeQuote } from './useTradeQuote'
-import { useUpdateTradeQuote } from './useUpdateTradeQuote'
+import { useTradeQuoteManager } from './useTradeQuoteManager'
 
 import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
 import { isQuoteExpired } from '../utils/quoteDeadline'
@@ -30,14 +30,14 @@ const getFastQuote = onlyResolvesLast<OrderQuoteResponse>(getQuote)
 const getOptimalQuote = onlyResolvesLast<OrderQuoteResponse>(getQuote)
 
 export function useTradeQuotePolling() {
-  const { amount, fastQuote } = useAtomValue(tradeQuoteInputAtom)
+  const { amount, sellTokenAddress, fastQuote } = useAtomValue(tradeQuoteInputAtom)
   const tradeQuote = useTradeQuote()
   const tradeQuoteRef = useRef(tradeQuote)
   tradeQuoteRef.current = tradeQuote
 
   const quoteParams = useQuoteParams(amount?.quotient.toString())
 
-  const updateQuoteState = useUpdateTradeQuote()
+  const tradeQuoteManager = useTradeQuoteManager(sellTokenAddress)
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const getIsUnsupportedTokens = useAreUnsupportedTokens()
   const processUnsupportedTokenError = useProcessUnsupportedTokenError()
@@ -51,8 +51,12 @@ export function useTradeQuotePolling() {
   isOnlineRef.current = isOnline
 
   useLayoutEffect(() => {
+    if (!tradeQuoteManager) {
+      return
+    }
+
     if (!quoteParams || quoteParams.amount === '0') {
-      updateQuoteState({ response: null, isLoading: false })
+      tradeQuoteManager.reset()
       return
     }
 
@@ -67,7 +71,7 @@ export function useTradeQuotePolling() {
     const currentQuoteParams = currentQuote.quoteParams
 
     const fetchQuote = (hasParamsChanged: boolean, priceQuality: PriceQuality, fetchStartTimestamp: number) => {
-      updateQuoteState({ isLoading: true, hasParamsChanged })
+      tradeQuoteManager.setLoading(hasParamsChanged)
 
       const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
       const requestParams = { ...quoteParams, priceQuality }
@@ -81,18 +85,11 @@ export function useTradeQuotePolling() {
             return
           }
 
-          updateQuoteState({
-            response: data,
-            quoteParams: requestParams,
-            ...(isOptimalQuote ? { isLoading: false } : null),
-            error: null,
-            hasParamsChanged: false,
-            fetchStartTimestamp,
-          })
+          tradeQuoteManager.onResponse(data, requestParams, fetchStartTimestamp)
         })
         .catch((error: QuoteApiError) => {
           console.log('[useGetQuote]:: fetchQuote error', error)
-          updateQuoteState({ isLoading: false, error, hasParamsChanged: false })
+          tradeQuoteManager.onError(error)
 
           if (error.type === QuoteApiErrorCodes.UnsupportedToken) {
             processUnsupportedTokenError(error, requestParams)
@@ -149,7 +146,7 @@ export function useTradeQuotePolling() {
         /**
          * Reset the quote state in order to not trigger the quote expiration check again
          */
-        updateQuoteState({ response: null, isLoading: false })
+        tradeQuoteManager.reset()
         fetchAndUpdateQuote(false)
       }
     }, QUOTE_EXPIRATION_CHECK_INTERVAL)
@@ -161,7 +158,7 @@ export function useTradeQuotePolling() {
   }, [
     fastQuote,
     quoteParams,
-    updateQuoteState,
+    tradeQuoteManager,
     updateCurrencyAmount,
     processUnsupportedTokenError,
     getIsUnsupportedTokens,
