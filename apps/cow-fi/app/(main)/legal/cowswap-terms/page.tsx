@@ -731,7 +731,7 @@ export default function Page() {
                 during Period;
               </li>
               <li>
-                Each of the three (3) selected users will receive a reward of <strong>1000 COW tokens</strong>;
+                Each of the three (3) selected users will receive a reward of <strong>1000 COW tokens;</strong>
               </li>
               <li>
                 The reward will be sent to the wallet address used to trade on CoW Swap on Base during the Period.
