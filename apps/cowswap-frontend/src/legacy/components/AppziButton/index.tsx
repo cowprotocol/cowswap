@@ -1,10 +1,11 @@
+import { useCallback } from 'react'
+
 import FeedbackIcon from '@cowprotocol/assets/cow-swap/feedback.svg'
 import { Media } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { isAppziEnabled, openFeedbackAppzi } from 'appzi'
 import { transparentize } from 'color2k'
-import { useCallback } from 'react'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -62,15 +63,16 @@ interface AppziButtonProps {
 }
 
 export default function Appzi({ menuTitle }: AppziButtonProps) {
-  if (!isAppziEnabled) {
-    return null
-  }
   const { account, chainId } = useWalletInfo()
   const { walletName } = useWalletDetails()
 
   const showFeedbackModal = useCallback(() => {
     openFeedbackAppzi({ account, chainId, walletName })
   }, [account, chainId, walletName])
+
+  if (!isAppziEnabled) {
+    return null
+  }
 
   return (
     <Wrapper onClick={showFeedbackModal}>
