@@ -7,7 +7,6 @@ import { Field } from 'legacy/state/types'
 
 import { useNavigateOnCurrencySelection, useSwitchTokensPlaces, useUpdateCurrencyAmount } from 'modules/trade'
 import { createDebouncedTradeAmountAnalytics } from 'modules/trade/utils/analytics'
-import { useResetTradeQuote } from 'modules/tradeQuote'
 
 import { useAdvancedOrdersDerivedState } from './useAdvancedOrdersDerivedState'
 import { useUpdateAdvancedOrdersRawState } from './useAdvancedOrdersRawState'
@@ -21,7 +20,6 @@ export function useAdvancedOrdersActions() {
 
   const naviageOnCurrencySelection = useNavigateOnCurrencySelection()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
-  const resetTradeQuote = useResetTradeQuote()
   const cowAnalytics = useCowAnalytics()
   const debouncedTradeAmountAnalytics = useMemo(() => createDebouncedTradeAmountAnalytics(cowAnalytics), [cowAnalytics])
 
@@ -37,9 +35,8 @@ export function useAdvancedOrdersActions() {
         currency,
       })
       naviageOnCurrencySelection(field, currency)
-      resetTradeQuote()
     },
-    [naviageOnCurrencySelection, updateCurrencyAmount, resetTradeQuote],
+    [naviageOnCurrencySelection, updateCurrencyAmount],
   )
 
   const onUserInput = useCallback(
@@ -61,12 +58,7 @@ export function useAdvancedOrdersActions() {
     [updateAdvancedOrdersState],
   )
 
-  const onSwitchTokensDefault = useSwitchTokensPlaces(onSwitchTradeOverride)
-
-  const onSwitchTokens = useCallback(() => {
-    onSwitchTokensDefault()
-    resetTradeQuote()
-  }, [resetTradeQuote, onSwitchTokensDefault])
+  const onSwitchTokens = useSwitchTokensPlaces(onSwitchTradeOverride)
 
   return useMemo(
     () => ({
