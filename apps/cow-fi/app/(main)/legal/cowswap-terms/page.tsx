@@ -512,62 +512,62 @@ export default function Page() {
             <h2 id="warranties">Warranties</h2>
             <p>By using our Products you hereby agree, represent and warrant that:</p>
             <ul>
-              <li>you have read and understood the Terms and agree to be bound by them;</li>
+              <li>You have read and understood the Terms and agree to be bound by them;</li>
               <li>
-                you do not rely on, and shall have no remedies in respect of, any statement, representation, assurance
+                You do not rely on, and shall have no remedies in respect of, any statement, representation, assurance
                 or warranty (whether made innocently or negligently) that is not set out in these Terms;
               </li>
               <li>
-                you have reached the legal age of majority applicable to you and you agree to provide legitimate and
+                You have reached the legal age of majority applicable to you and you agree to provide legitimate and
                 lawful documentation proving such status if we so request;
               </li>
               <li>
-                your usage of the Interface is legal under the laws of your jurisdiction or under the laws of any other
+                Your usage of the Interface is legal under the laws of your jurisdiction or under the laws of any other
                 jurisdiction to which you may be subject;
               </li>
-              <li>you are not a person subject to sanction set out by the EU or Portugal;</li>
+              <li>You are not a person subject to sanction set out by the EU or Portugal;</li>
               <li>
-                you understand the functionality, usage, storage, transmission mechanisms and intricacies associated
+                You understand the functionality, usage, storage, transmission mechanisms and intricacies associated
                 with cryptographic assets, token storage facilities (including wallets), blockchain technology and
                 blockchain-based software systems;
               </li>
               <li>
-                you understand that transactions on the Ethereum Mainnet, Gnosis Chain and compatible layer 2 solutions
+                You understand that transactions on the Ethereum Mainnet, Gnosis Chain and compatible layer 2 solutions
                 are irreversible and may not be erased and that your wallet address and any transaction is displayed
                 permanently and publicly and that you relinquish any right of rectification or erasure of personal data;
               </li>
               <li>
-                you shall comply with any applicable tax obligations in your jurisdiction arising from your use of the
+                You shall comply with any applicable tax obligations in your jurisdiction arising from your use of the
                 interface;
               </li>
               <li>
-                you shall not misuse or gain unauthorised access to the Interface by knowingly introducing viruses,
+                You shall not misuse or gain unauthorised access to the Interface by knowingly introducing viruses,
                 Trojan horses, worms, time-bombs, keystroke loggers, spyware, adware or any other harmful programs or
                 similar computer code designed to adversely affect the Interface and that in the event you do so or
                 otherwise attack the Interface, we report any such activity to the relevant law enforcement authorities;
               </li>
               <li>
-                you shall not access without authority, interfere with, damage or disrupt any part of the Interface, any
+                You shall not access without authority, interfere with, damage or disrupt any part of the Interface, any
                 equipment or network on which the Interface is stored, any software used in the provision of the
                 Interface or any equipment or network or software owned or used by any third party;
               </li>
               <li>
-                you shall not use the Interface for activities that are unlawful or fraudulent or have such purpose or
+                You shall not use the Interface for activities that are unlawful or fraudulent or have such purpose or
                 effect or otherwise support any activities that breach applicable local, national or international law
                 or regulations;
               </li>
               <li>
-                you shall not use the Interface to trade cryptographic assets that are proceeds of criminal or
+                You shall not use the Interface to trade cryptographic assets that are proceeds of criminal or
                 fraudulent activity;
               </li>
               <li>
-                the Interface, the Protocol, the Ethereum Blockchain, Gnosis Chain and compatible layer 2 solutions are
+                The Interface, the Protocol, the Ethereum Blockchain, Gnosis Chain and compatible layer 2 solutions are
                 in an early development stage and we accordingly do not guarantee an error-free process and give no
                 price or liquidity guarantee;
               </li>
-              <li>you are using the Interface at your own risk;</li>
+              <li>You are using the Interface at your own risk;</li>
               <li>
-                the risks of using the Interface are substantial and include, but are not limited to, the ones set out
+                The risks of using the Interface are substantial and include, but are not limited to, the ones set out
                 in these Terms, which is hereby expressly incorporated into these Terms, and you are willing to accept
                 the risk of loss associated therewith.
               </li>
@@ -711,8 +711,8 @@ export default function Page() {
               Must be a real user who conducted trades on CoW Swap on the Base Network during February 2025 and must:
             </p>
             <ul>
-              <li>be minimum 18 years of age;</li>
-              <li>not be an employee, affiliate, or immediate family member of the Organizer.</li>
+              <li>Be minimum 18 years of age;</li>
+              <li>Not be an employee, affiliate, or immediate family member of the Organizer.</li>
             </ul>
             <h3 id="base-token-reward-period">3. Reward Period</h3>
             <p>
@@ -724,14 +724,14 @@ export default function Page() {
             <ul>
               <li>
                 <strong>No action is required from users to be considered for this reward.</strong> Users who traded on
-                CoW Swap on the Base network in the Period are automatically considered for this retroactive reward.
+                CoW Swap on the Base network in the Period are automatically considered for this retroactive reward;
               </li>
               <li>
                 Three (3) users will be <strong>randomly selected</strong> from all users who traded on CoW Swap on Base
-                during Period.
+                during Period;
               </li>
               <li>
-                Each of the three (3) selected users will receive a reward of <strong>1000 COW tokens.</strong>
+                Each of the three (3) selected users will receive a reward of <strong>1000 COW tokens</strong>;
               </li>
               <li>
                 The reward will be sent to the wallet address used to trade on CoW Swap on Base during the Period.
@@ -741,9 +741,9 @@ export default function Page() {
             <ul>
               <li>
                 Winners will be <strong>randomly selected</strong> by the Organizer from the pool of unique wallet
-                addresses that conducted valid trades on CoW Swap on the Base network during Period.
+                addresses that conducted valid trades on CoW Swap on the Base network during Period;
               </li>
-              <li>The selection process will be conducted by the Organizer and is final and binding.</li>
+              <li>The selection process will be conducted by the Organizer and is final and binding;</li>
               <li>
                 Odds of being selected depend on the total number of unique users who traded on CoW Swap on Base during
                 Period.
@@ -759,21 +759,21 @@ export default function Page() {
             <ul>
               <li>
                 The Organizer reserves the right to modify, suspend, or cancel this reward program at any time for any
-                reason, including but not limited to technical issues, security concerns, or regulatory changes.
+                reason, including but not limited to technical issues, security concerns, or regulatory changes;
               </li>
               <li>
                 The Organizer is not responsible for any technical issues that may prevent the distribution of rewards
-                or impact the announcement.
+                or impact the announcement;
               </li>
               <li>
                 Participation in trading on CoW Swap and potentially receiving this reward is subject to applicable laws
                 and regulations. It is the user's responsibility to ensure their participation is legal in their
-                jurisdiction.
+                jurisdiction;
               </li>
               <li>
                 The recipient acknowledges that receiving the reward may trigger tax obligations for the recipient. The
                 Organiser is not liable for any tax obligation resulting from the reception of the reward by the
-                recipient.
+                recipient;
               </li>
               <li>
                 The Organizer's decisions regarding winner selection, reward distribution, and all other aspects of this
@@ -785,11 +785,11 @@ export default function Page() {
               <li>
                 To the maximum extent permitted by applicable law, the Organizer shall not be liable for any losses,
                 damages, or liabilities arising out of or in connection with this reward program, the selection of
-                winners, or the distribution of prizes.
+                winners, or the distribution of prizes;
               </li>
               <li>
                 Participants acknowledge that the value of COW tokens can fluctuate and the Organizer is not responsible
-                for any changes in token value.
+                for any changes in token value;
               </li>
               <li>
                 Receiving cryptocurrency and participating in DeFi activities involves risks, and participants are
