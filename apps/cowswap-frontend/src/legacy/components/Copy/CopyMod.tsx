@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { MouseEvent } from 'react'
 
 import { useCopyClipboard } from '@cowprotocol/common-hooks'
 import { UI } from '@cowprotocol/ui'
@@ -43,10 +43,15 @@ export default function CopyHelper(props: CopyHelperProps) {
   const { toCopy, children, clickableLink } = props
   const [isCopied, setCopied] = useCopyClipboard()
 
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation()
+    setCopied(toCopy)
+  }
+
   return (
     <>
       {clickableLink && <LinkStyledButton onClick={() => setCopied(toCopy)}>{toCopy}</LinkStyledButton>}
-      <CopyIcon isCopied={isCopied} onClick={() => setCopied(toCopy)}>
+      <CopyIcon isCopied={isCopied} onClick={handleClick}>
         {isCopied ? (
           <TransactionStatusText
             isCopied={isCopied} // mod
