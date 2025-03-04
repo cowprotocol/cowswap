@@ -17,7 +17,7 @@ const getTitle = (address: string, chainId: number) => {
   const chainInfo = getChainInfo(chainId)
 
   if (chainInfo?.explorerTitle === 'Etherscan' && chainInfo?.name !== 'mainnet') {
-    return `View ${address} on (${chainInfo.label}) ${chainInfo.explorerTitle}`
+    return `View ${address} on ${chainInfo.label} ${chainInfo.explorerTitle}`
   }
 
   return chainInfo ? `View ${address} on ${chainInfo.explorerTitle}` : undefined
