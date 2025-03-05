@@ -59,13 +59,13 @@ export function useTradeQuotePolling() {
       return
     }
 
-    const currentQuote = tradeQuoteRef.current
-    const currentQuoteParams = currentQuote.quoteParams
-
     const fetchQuote = (fetchParams: TradeQuoteFetchParams) =>
       fetchAndProcessQuote(fetchParams, quoteParams, tradeQuoteManager)
 
     function fetchAndUpdateQuote(hasParamsChanged: boolean) {
+      const currentQuote = tradeQuoteRef.current
+      const currentQuoteParams = currentQuote.quoteParams
+
       // Don't fetch quote if the parameters are the same
       // Also avoid quote refresh when only appData.quote (contains slippage) is changed
       // Important! We should skip quote updateing only if there is no quote response
