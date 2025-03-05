@@ -62,7 +62,7 @@ export function useTradeQuotePolling() {
     const fetchQuote = (fetchParams: TradeQuoteFetchParams) =>
       fetchAndProcessQuote(fetchParams, quoteParams, tradeQuoteManager)
 
-    function fetchAndUpdateQuote(hasParamsChanged: boolean) {
+    function fetchAndUpdateQuote(hasParamsChanged: boolean, forceUpdate = false) {
       const currentQuote = tradeQuoteRef.current
       const currentQuoteParams = currentQuote.quoteParams
       const hasCachedResponse = !!currentQuote.response
@@ -71,12 +71,16 @@ export function useTradeQuotePolling() {
       // Don't fetch quote if the parameters are the same
       // Also avoid quote refresh when only appData.quote (contains slippage) is changed
       // Important! We should skip quote updateing only if there is no quote response
-      if ((hasCachedResponse || hasCachedError) && quoteUsingSameParameters(currentQuoteParams, quoteParams)) {
+      if (
+        !forceUpdate &&
+        (hasCachedResponse || hasCachedError) &&
+        quoteUsingSameParameters(currentQuoteParams, quoteParams)
+      ) {
         return
       }
 
       // When browser is offline or the tab is not active do no fetch
-      if (!isOnlineRef.current || !isWindowVisibleRef.current) {
+      if (!forceUpdate && (!isOnlineRef.current || !isWindowVisibleRef.current)) {
         return
       }
 
@@ -94,7 +98,7 @@ export function useTradeQuotePolling() {
      * Start polling for the quote
      */
     const pollingIntervalId = setInterval(() => {
-      fetchAndUpdateQuote(false)
+      fetchAndUpdateQuote(false, true)
     }, PRICE_UPDATE_INTERVAL)
 
     /**
@@ -112,7 +116,7 @@ export function useTradeQuotePolling() {
          * Reset the quote state in order to not trigger the quote expiration check again
          */
         tradeQuoteManager.reset()
-        fetchAndUpdateQuote(false)
+        fetchAndUpdateQuote(false, true)
       }
     }, QUOTE_EXPIRATION_CHECK_INTERVAL)
 
