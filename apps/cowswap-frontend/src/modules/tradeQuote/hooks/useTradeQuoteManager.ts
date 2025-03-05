@@ -37,7 +37,7 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
               update(sellTokenAddress, { response: null, isLoading: false })
             },
             onError(error: QuoteApiError, requestParams: FeeQuoteParams) {
-              update(sellTokenAddress, { isLoading: false, error, hasParamsChanged: false })
+              update(sellTokenAddress, { error, quoteParams: requestParams, isLoading: false, hasParamsChanged: false })
 
               if (error.type === QuoteApiErrorCodes.UnsupportedToken) {
                 processUnsupportedTokenError(error, requestParams)
