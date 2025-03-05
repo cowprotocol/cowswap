@@ -6,6 +6,7 @@ import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { initializeConnector, Web3ReactHooks } from '@web3-react/core'
 import { Web3ReactStore } from '@web3-react/types'
+import type { WalletConnectOptions } from '@web3-react/walletconnect-v2'
 
 import { ASYNC_CUSTOM_PROVIDER_EVENT, AsyncConnector } from './asyncConnector'
 import { onError } from './onError'
@@ -14,6 +15,7 @@ import { default as WalletConnectV2Image } from '../../api/assets/walletConnectI
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../api/types'
 import { getConnectionName } from '../../api/utils/connection'
+import { PhantomWalletLogo } from '../../assets'
 import { WC_PROJECT_ID } from '../../constants'
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
 import { ConnectionOptionProps, Web3ReactConnection } from '../types'
@@ -22,6 +24,22 @@ export const walletConnectV2Option = {
   color: '#4196FC',
   icon: WalletConnectV2Image,
   id: 'wallet-connect-v2',
+}
+
+const qrModalOptions: WalletConnectOptions['qrModalOptions'] = {
+  walletImages: {
+    phantom: PhantomWalletLogo,
+  },
+  mobileWallets: [
+    {
+      id: 'phantom',
+      name: 'Phantom',
+      links: {
+        native: 'phantom://v1/connect?app_url=' + location.origin,
+        universal: 'https://phantom.app/ul/v1/connect?app_url=' + location.origin,
+      },
+    },
+  ],
 }
 
 function createWalletConnectV2Connector(chainId: SupportedChainId): [AsyncConnector, Web3ReactHooks, Web3ReactStore] {
@@ -42,12 +60,13 @@ function createWalletConnectV2Connector(chainId: SupportedChainId): [AsyncConnec
                   optionalChains: ALL_SUPPORTED_CHAIN_IDS,
                   showQrModal: true,
                   rpcMap: RPC_URLS,
+                  qrModalOptions,
                 },
-              })
+              }),
           ),
         actions,
-        onError
-      )
+        onError,
+      ),
   )
 }
 
@@ -86,7 +105,7 @@ function createWc2Connection(chainId = getCurrentChainIdFromUrl()): Web3ReactCon
       getOwnPropertyDescriptor: (target, p) => Reflect.getOwnPropertyDescriptor(web3WalletConnectV2, p),
       getPrototypeOf: () => AsyncConnector.prototype,
       set: (target, p, receiver) => Reflect.set(web3WalletConnectV2, p, receiver),
-    }
+    },
   ) as typeof web3WalletConnectV2
 
   const proxyHooks = new Proxy(
@@ -102,12 +121,12 @@ function createWc2Connection(chainId = getCurrentChainIdFromUrl()): Web3ReactCon
               onActivate = onChange
               return () => (onActivate = undefined)
             },
-            () => web3WalletConnectV2Hooks
+            () => web3WalletConnectV2Hooks,
           )
           return Reflect.get(hooks, p, receiver)()
         }
       },
-    }
+    },
   ) as typeof web3WalletConnectV2Hooks
 
   return {
