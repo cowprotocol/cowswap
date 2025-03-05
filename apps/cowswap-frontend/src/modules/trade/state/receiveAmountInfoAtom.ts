@@ -12,10 +12,13 @@ import { getReceiveAmountInfo } from '../utils/getReceiveAmountInfo'
 export const receiveAmountInfoAtom = atom((get) => {
   const { response: quoteResponse } = get(tradeQuoteAtom)
   const volumeFee = get(volumeFeeAtom)
-  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, slippage } =
+  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, slippage, orderKind } =
     get(derivedTradeStateAtom) || {}
 
   if (isFractionFalsy(inputCurrencyAmount) && isFractionFalsy(outputCurrencyAmount)) return null
+
+  // Avoid states mismatch
+  if (orderKind !== quoteResponse?.quote.kind) return null
 
   if (quoteResponse && inputCurrency && outputCurrency && slippage) {
     return getReceiveAmountInfo(quoteResponse.quote, inputCurrency, outputCurrency, slippage, volumeFee?.bps)

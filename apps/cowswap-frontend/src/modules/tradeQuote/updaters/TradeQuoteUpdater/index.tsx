@@ -9,13 +9,7 @@ export function TradeQuoteUpdater() {
 
   useTradeQuotePolling()
 
-  useSetLocalTimeOffset(
-    getQuoteTimeOffset({
-      validFor: quoteState.quoteParams?.validFor,
-      quoteValidTo: quoteState.response?.quote.validTo,
-      localQuoteTimestamp: quoteState.localQuoteTimestamp,
-    })
-  )
+  useSetLocalTimeOffset(getQuoteTimeOffset(quoteState))
 
   return null
 }

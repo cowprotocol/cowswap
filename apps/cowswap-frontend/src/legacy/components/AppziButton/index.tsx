@@ -1,5 +1,8 @@
+import { useCallback } from 'react'
+
 import FeedbackIcon from '@cowprotocol/assets/cow-swap/feedback.svg'
 import { Media } from '@cowprotocol/ui'
+import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { isAppziEnabled, openFeedbackAppzi } from 'appzi'
 import { transparentize } from 'color2k'
@@ -19,7 +22,9 @@ const Wrapper = styled.div`
   z-index: 10;
   cursor: pointer;
   transform: translateY(0);
-  transition: background 0.5s ease-in-out, transform 0.5s ease-in-out;
+  transition:
+    background 0.5s ease-in-out,
+    transform 0.5s ease-in-out;
 
   > svg {
     width: 100%;
@@ -28,7 +33,9 @@ const Wrapper = styled.div`
     color: inherit;
     fill: currentColor;
     transform: rotate(0);
-    transition: fill 0.5s ease-in-out, transform 0.5s ease-in-out;
+    transition:
+      fill 0.5s ease-in-out,
+      transform 0.5s ease-in-out;
   }
 
   &:hover {
@@ -56,12 +63,19 @@ interface AppziButtonProps {
 }
 
 export default function Appzi({ menuTitle }: AppziButtonProps) {
+  const { account, chainId } = useWalletInfo()
+  const { walletName } = useWalletDetails()
+
+  const showFeedbackModal = useCallback(() => {
+    openFeedbackAppzi({ account, chainId, walletName })
+  }, [account, chainId, walletName])
+
   if (!isAppziEnabled) {
     return null
   }
 
   return (
-    <Wrapper onClick={openFeedbackAppzi}>
+    <Wrapper onClick={showFeedbackModal}>
       {menuTitle && <span>{menuTitle}</span>}
       <SVG src={FeedbackIcon} description="Provide Feedback" />
     </Wrapper>

@@ -5,11 +5,11 @@ import { Fraction } from '@uniswap/sdk-core'
 
 import { useAsyncMemo } from 'use-async-memo'
 
-import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
+import { useUsdPrice } from 'modules/usdAmount'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
-import { useUsdPrice } from '../../usdAmount'
+import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
 // Fetches the INPUT and OUTPUT price and calculates initial Active rate
 // When return null it means we failed on price loading

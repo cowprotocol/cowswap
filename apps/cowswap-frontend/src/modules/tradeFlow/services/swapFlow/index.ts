@@ -11,8 +11,9 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
-import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+
+import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 import { presignOrderStep } from './steps/presignOrderStep'
 

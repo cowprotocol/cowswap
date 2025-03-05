@@ -21,7 +21,6 @@ export interface CheckEthereumTransactions {
   getTxSafeInfo: GetSafeTxInfo
   dispatch: AppDispatch
   addPriorityAllowance: ReturnType<typeof useAddPriorityAllowance>
-  removeInFlightOrderId: (update: string) => void
   nativeCurrencySymbol: string
   cancelOrdersBatch: CancelOrdersBatchCallback
   safeInfo: GnosisSafeInfo | undefined
