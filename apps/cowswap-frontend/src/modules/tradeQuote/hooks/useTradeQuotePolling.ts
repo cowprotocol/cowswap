@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useLayoutEffect, useRef } from 'react'
 
 import { useIsOnline, useIsWindowVisible } from '@cowprotocol/common-hooks'
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { PriceQuality } from '@cowprotocol/cow-sdk'
 import { useAreUnsupportedTokens } from '@cowprotocol/tokens'
 
@@ -28,10 +29,9 @@ export function useTradeQuotePolling() {
   const tradeQuoteRef = useRef(tradeQuote)
   tradeQuoteRef.current = tradeQuote
 
-  const quoteParams = useQuoteParams(amount?.quotient.toString())
-  const sellToken = quoteParams?.sellToken
+  const { quoteParams, inputCurrency } = useQuoteParams(amount?.quotient.toString()) || {}
 
-  const tradeQuoteManager = useTradeQuoteManager(sellToken)
+  const tradeQuoteManager = useTradeQuoteManager(inputCurrency && getCurrencyAddress(inputCurrency))
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const getIsUnsupportedTokens = useAreUnsupportedTokens()
   const processUnsupportedTokenError = useProcessUnsupportedTokenError()
