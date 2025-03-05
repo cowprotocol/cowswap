@@ -2,6 +2,7 @@ import { useDebounce } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress, getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { PriceQuality } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { Currency } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 import { Nullish } from 'types'
@@ -17,7 +18,9 @@ import { FeeQuoteParams } from 'common/types'
 const DEFAULT_QUOTE_TTL = ms`30m` / 1000
 const AMOUNT_CHANGE_DEBOUNCE_TIME = ms`350ms`
 
-export function useQuoteParams(amount: Nullish<string>): FeeQuoteParams | undefined {
+export function useQuoteParams(
+  amount: Nullish<string>,
+): { quoteParams: FeeQuoteParams; inputCurrency: Currency } | undefined {
   const { chainId, account } = useWalletInfo()
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
@@ -36,7 +39,7 @@ export function useQuoteParams(amount: Nullish<string>): FeeQuoteParams | undefi
     const fromDecimals = inputCurrency.decimals
     const toDecimals = outputCurrency.decimals
 
-    const params: FeeQuoteParams = {
+    const quoteParams: FeeQuoteParams = {
       sellToken,
       buyToken,
       amount,
@@ -53,7 +56,7 @@ export function useQuoteParams(amount: Nullish<string>): FeeQuoteParams | undefi
       validFor: DEFAULT_QUOTE_TTL,
     }
 
-    return params
+    return { quoteParams, inputCurrency }
   }, [
     inputCurrency,
     outputCurrency,

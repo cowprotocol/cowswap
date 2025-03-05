@@ -1,3 +1,5 @@
+import { Nullish } from 'types'
+
 import { decodeAppData } from 'modules/appData'
 
 import { FeeQuoteParams } from 'common/types'
@@ -7,7 +9,12 @@ import { FeeQuoteParams } from 'common/types'
  *
  * Quotes are only valid for a given token-pair and amount. If any of these parameter change, the fee needs to be re-fetched
  */
-export function quoteUsingSameParameters(currentParams: FeeQuoteParams, nextParams: FeeQuoteParams): boolean {
+export function quoteUsingSameParameters(
+  currentParams: Nullish<FeeQuoteParams>,
+  nextParams: Nullish<FeeQuoteParams>,
+): boolean {
+  if (!currentParams || !nextParams) return false
+
   const hasSameAppData = compareAppDataWithoutQuoteData(currentParams.appData, nextParams.appData)
 
   return (

@@ -18,6 +18,7 @@ export function QuoteObserverUpdater() {
   /**
    * Only when quote update because some params (input amount) changed
    */
+  const hasQuoteError = !!tradeQuote.error
   const isQuoteUpdating = tradeQuote.isLoading && tradeQuote.hasParamsChanged
   const { beforeNetworkCosts, isSell } = receiveAmountInfo || {}
 
@@ -41,14 +42,15 @@ export function QuoteObserverUpdater() {
    * Reset the opposite field when the quote is updating
    */
   useEffect(() => {
-    if (!isQuoteUpdating || !orderKind) return
+    // Reset the opposite field when the quote is updating or has an error
+    if ((!hasQuoteError && !isQuoteUpdating) || !orderKind) return
 
     const fieldToReset = isSellOrder(orderKind) ? 'outputCurrencyAmount' : 'inputCurrencyAmount'
 
     updateSwapState({
       [fieldToReset]: null,
     })
-  }, [isQuoteUpdating, updateSwapState, orderKind])
+  }, [isQuoteUpdating, hasQuoteError, updateSwapState, orderKind])
 
   return null
 }

@@ -11,6 +11,9 @@ export function useSetTradeQuoteParams(amount: Nullish<CurrencyAmount<Currency>>
   const updateState = useSetAtom(tradeQuoteInputAtom)
 
   useEffect(() => {
-    updateState({ amount: amount || null, fastQuote })
+    updateState({
+      amount: amount || null,
+      fastQuote,
+    })
   }, [updateState, amount, fastQuote])
 }

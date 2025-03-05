@@ -1,10 +1,10 @@
-import { ReactNode, useEffect } from 'react'
+import { ReactNode } from 'react'
 
 import { PriorityTokensUpdater } from '@cowprotocol/balances-and-allowances'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
-import { TradeQuoteState, TradeQuoteUpdater, useUpdateTradeQuote } from 'modules/tradeQuote'
+import { TradeQuoteUpdater } from 'modules/tradeQuote'
 import { SmartSlippageUpdater } from 'modules/tradeSlippage'
 
 import { usePriorityTokenAddresses } from '../../hooks/usePriorityTokenAddresses'
@@ -19,27 +19,18 @@ interface TradeWidgetUpdatersProps {
   disableNativeSelling: boolean
   enableSmartSlippage?: boolean
   children: ReactNode
-  tradeQuoteStateOverride?: TradeQuoteState | null
   onChangeRecipient: (recipient: string | null) => void
 }
 
 export function TradeWidgetUpdaters({
   disableQuotePolling,
   disableNativeSelling,
-  tradeQuoteStateOverride,
   enableSmartSlippage,
   onChangeRecipient,
   children,
 }: TradeWidgetUpdatersProps) {
   const { chainId, account } = useWalletInfo()
-  const updateQuoteState = useUpdateTradeQuote()
   const priorityTokenAddresses = usePriorityTokenAddresses()
-
-  useEffect(() => {
-    if (disableQuotePolling && tradeQuoteStateOverride) {
-      updateQuoteState(tradeQuoteStateOverride)
-    }
-  }, [tradeQuoteStateOverride, disableQuotePolling, updateQuoteState])
 
   useResetRecipient(onChangeRecipient)
 
