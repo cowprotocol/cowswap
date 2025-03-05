@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useLayoutEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 
 import { useIsOnline, useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
@@ -41,6 +41,12 @@ export function useTradeQuotePolling() {
   const isOnline = useIsOnline()
   const isOnlineRef = useRef(isOnline)
   isOnlineRef.current = isOnline
+
+  useEffect(() => {
+    if (!isWindowVisible && tradeQuoteManager) {
+      tradeQuoteManager.reset()
+    }
+  }, [isWindowVisible, tradeQuoteManager])
 
   useLayoutEffect(() => {
     if (!tradeQuoteManager) {
