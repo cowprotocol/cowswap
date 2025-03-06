@@ -8,13 +8,16 @@ import { Order } from 'legacy/state/orders/actions'
  *
  * @param order The order
  */
-export function getOrderExecutedAmounts(order: Order): {
+export function getOrderExecutedAmounts(
+  order: Order,
+  unknownExecutionAmounts: boolean,
+): {
   executedBuyAmount: JSBI
   executedSellAmount: JSBI
 } {
   const { apiAdditionalInfo } = order
 
-  if (!apiAdditionalInfo) {
+  if (!apiAdditionalInfo || unknownExecutionAmounts) {
     return {
       executedBuyAmount: JSBI.BigInt(0),
       executedSellAmount: JSBI.BigInt(0),
