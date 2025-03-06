@@ -5,7 +5,7 @@ import { useSendBatchTransactions } from '@cowprotocol/wallet'
 
 import useSWR from 'swr'
 
-import { useReceiveAmountInfo } from 'modules/trade'
+import { useReceiveAmounts } from 'modules/trade'
 
 import { useGP2SettlementContract, useTokenContract, useWethContract } from 'common/hooks/useContract'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
@@ -20,8 +20,9 @@ export function useSafeBundleFlowContext(): SafeBundleFlowContext | null {
   const sendBatchTransactions = useSendBatchTransactions()
   const { contract: wrappedNativeContract, chainId: wrappedNativeChainId } = useWethContract()
 
-  const receiveAmountInfo = useReceiveAmountInfo()
-  const inputAmountWithSlippage = receiveAmountInfo?.afterSlippage.sellAmount
+  const receiveAmountInfo = useReceiveAmounts()
+  const inputAmountWithSlippage = receiveAmountInfo?.maximumSendSellAmount
+
   const needsApproval = useNeedsApproval(inputAmountWithSlippage)
   const inputCurrencyAddress = useMemo(() => {
     return inputAmountWithSlippage ? getCurrencyAddress(inputAmountWithSlippage.currency) : undefined
