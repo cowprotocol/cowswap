@@ -17,7 +17,6 @@ import {
   V_COW_CONTRACT_ADDRESS,
   WRAPPED_NATIVE_CURRENCIES,
 } from '@cowprotocol/common-const'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getContract } from '@cowprotocol/common-utils'
 import { isEns, isProd, isStaging } from '@cowprotocol/common-utils'
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -105,14 +104,11 @@ export function useWethContract(withSignerIfPossible?: boolean) {
 
 export function useEthFlowContract(): {
   result: UseContractResult<CoWSwapEthFlow>
-  useNewEthFlowContracts: boolean
 } {
-  const { useNewEthFlowContracts = false } = useFeatureFlags()
-  const contractAddress = getEthFlowContractAddresses(ethFlowEnv, useNewEthFlowContracts)
+  const contractAddress = getEthFlowContractAddresses(ethFlowEnv)
 
   return {
     result: useContract<CoWSwapEthFlow>(contractAddress, CoWSwapEthFlowAbi, true),
-    useNewEthFlowContracts,
   }
 }
 

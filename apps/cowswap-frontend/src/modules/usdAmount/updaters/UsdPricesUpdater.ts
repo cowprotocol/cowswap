@@ -8,6 +8,8 @@ import { Fraction, Token } from '@uniswap/sdk-core'
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
 
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+
 import { fetchCurrencyUsdPrice } from '../services/fetchCurrencyUsdPrice'
 import {
   currenciesUsdPriceQueueAtom,
@@ -26,11 +28,14 @@ const swrOptions: SWRConfiguration = {
   revalidateOnFocus: true,
 }
 
+const EMPTY_USD_PRICES: UsdRawPrices = {}
+
 export function UsdPricesUpdater() {
   const { chainId } = useWalletInfo()
   const setUsdPrices = useSetAtom(usdRawPricesAtom)
   const setUsdPricesLoading = useSetAtom(setUsdPricesLoadingAtom)
   const currenciesUsdPriceQueue = useAtomValue(currenciesUsdPriceQueueAtom)
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
 
   const queue = useMemo(() => Object.values(currenciesUsdPriceQueue), [currenciesUsdPriceQueue])
 
@@ -49,6 +54,11 @@ export function UsdPricesUpdater() {
   useEffect(() => {
     const { data, isLoading, error } = swrResponse
 
+    if (isProviderNetworkUnsupported) {
+      setUsdPrices(EMPTY_USD_PRICES)
+      return
+    }
+
     if (error) {
       console.error('Error loading USD prices', error)
       return
@@ -59,7 +69,7 @@ export function UsdPricesUpdater() {
     }
 
     setUsdPrices(data)
-  }, [swrResponse, setUsdPrices])
+  }, [swrResponse, setUsdPrices, isProviderNetworkUnsupported])
 
   return null
 }

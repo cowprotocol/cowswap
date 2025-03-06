@@ -19,7 +19,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
       font-family: 'Inter var', sans-serif;
     }
   }
- 
+
   html,
   body {
     margin: 0;
@@ -78,16 +78,6 @@ export const ThemedGlobalStyle = createGlobalStyle`
       top: 0 !important;
       bottom: 0 !important;
     }
-  }
-
-  // Appzi Container override
-  div[id*='appzi-wfo-'] {
-    display: none !important; // Force hiding Appzi container when not opened
-  }
-
-  body[class*='appzi-f-w-open-'] div[id^='appzi-wfo-'] {
-    z-index: 2147483004 !important;
-    display: block !important;
   }
 
   // Walletconnect V2 mobile override

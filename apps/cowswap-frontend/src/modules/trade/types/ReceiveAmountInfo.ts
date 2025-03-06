@@ -5,6 +5,8 @@ export interface OrderTypeReceiveAmounts {
   amountAfterSlippage: CurrencyAmount<Currency>
   amountAfterFees: CurrencyAmount<Currency>
   networkFeeAmount: CurrencyAmount<Currency>
+  maximumSendSellAmount: CurrencyAmount<Currency>
+  minimumReceiveBuyAmount: CurrencyAmount<Currency>
 }
 
 export interface ReceiveAmountInfo {

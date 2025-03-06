@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.103.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.1...cowswap-v1.103.2) (2025-03-06)
+
+
+### Bug Fixes
+
+* **appzi:** remove open state styles ([b5f873b](https://github.com/cowprotocol/cowswap/commit/b5f873b944b947d1b6f4d9351c17b965a83a9941))
+
 ## [1.103.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.0...cowswap-v1.103.1) (2025-02-27)
 
 
