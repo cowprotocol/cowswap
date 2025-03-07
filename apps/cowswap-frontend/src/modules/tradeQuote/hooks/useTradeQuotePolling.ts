@@ -23,7 +23,7 @@ import { quoteUsingSameParameters } from '../utils/quoteUsingSameParameters'
 export const PRICE_UPDATE_INTERVAL = ms`30s`
 const QUOTE_EXPIRATION_CHECK_INTERVAL = ms`2s`
 
-export function useTradeQuotePolling(isConfirmOpen: boolean) {
+export function useTradeQuotePolling(isConfirmOpen = false) {
   const { amount, fastQuote } = useAtomValue(tradeQuoteInputAtom)
   const tradeQuote = useTradeQuote()
   const tradeQuoteRef = useRef(tradeQuote)
