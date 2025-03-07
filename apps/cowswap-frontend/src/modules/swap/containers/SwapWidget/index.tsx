@@ -171,7 +171,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     showRecipient,
     isTradePriceUpdating: isRateLoading,
     priceImpact,
-    disableQuotePolling: isConfirmOpen,
   }
 
   return (
