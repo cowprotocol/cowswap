@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.103.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.2...cowswap-v1.103.3) (2025-03-07)
+
+
+### Bug Fixes
+
+* revert [#5456](https://github.com/cowprotocol/cowswap/issues/5456) as Safe tx service is live again ([#5486](https://github.com/cowprotocol/cowswap/issues/5486)) ([0737eda](https://github.com/cowprotocol/cowswap/commit/0737edab51859d402361b6179668fee6d8c5b595))
+
 ## [1.103.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.1...cowswap-v1.103.2) (2025-03-06)
 
 
