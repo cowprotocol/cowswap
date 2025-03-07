@@ -5,7 +5,7 @@ import { useSendBatchTransactions } from '@cowprotocol/wallet'
 
 import useSWR from 'swr'
 
-import { useReceiveAmounts } from 'modules/trade'
+import { useAmountsToSign } from 'modules/trade'
 
 import { useGP2SettlementContract, useTokenContract, useWethContract } from 'common/hooks/useContract'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
@@ -20,13 +20,12 @@ export function useSafeBundleFlowContext(): SafeBundleFlowContext | null {
   const sendBatchTransactions = useSendBatchTransactions()
   const { contract: wrappedNativeContract, chainId: wrappedNativeChainId } = useWethContract()
 
-  const receiveAmountInfo = useReceiveAmounts()
-  const inputAmountWithSlippage = receiveAmountInfo?.maximumSendSellAmount
+  const { maximumSendSellAmount } = useAmountsToSign() || {}
 
-  const needsApproval = useNeedsApproval(inputAmountWithSlippage)
+  const needsApproval = useNeedsApproval(maximumSendSellAmount)
   const inputCurrencyAddress = useMemo(() => {
-    return inputAmountWithSlippage ? getCurrencyAddress(inputAmountWithSlippage.currency) : undefined
-  }, [inputAmountWithSlippage])
+    return maximumSendSellAmount ? getCurrencyAddress(maximumSendSellAmount.currency) : undefined
+  }, [maximumSendSellAmount])
   const { contract: erc20Contract, chainId: erc20ChainId } = useTokenContract(inputCurrencyAddress)
 
   return (

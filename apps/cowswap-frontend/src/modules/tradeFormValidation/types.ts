@@ -1,9 +1,11 @@
 import { Command } from '@cowprotocol/types'
 
-import { OrderTypeReceiveAmounts, TradeDerivedState } from 'modules/trade'
+import { TradeDerivedState } from 'modules/trade'
 import { TradeQuoteState } from 'modules/tradeQuote'
 
 import { ApprovalState } from 'common/hooks/useApproveState'
+
+import { AmountsToSign } from '../trade/hooks/useAmountsToSign'
 
 export enum TradeFormValidation {
   // Wrap/unwrap
@@ -62,7 +64,7 @@ export interface TradeFormValidationContext extends TradeFormValidationCommonCon
 
 export interface TradeFormButtonContext {
   defaultText: string
-  receiveAmounts: OrderTypeReceiveAmounts | null
+  amountsToSign: AmountsToSign | null
   derivedState: TradeDerivedState
   quote: TradeQuoteState
   isSupportedWallet: boolean

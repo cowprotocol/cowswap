@@ -18,9 +18,6 @@ export function getOrderTypeReceiveAmounts(info: ReceiveAmountInfo): OrderTypeRe
     amountAfterFees: isSell ? afterPartnerFees.buyAmount : afterPartnerFees.sellAmount,
     amountAfterSlippage: isSell ? afterSlippage.buyAmount : afterSlippage.sellAmount,
     networkFeeAmount: isSell ? networkFee.amountInBuyCurrency : networkFee.amountInSellCurrency,
-    // Regardless of the order type, the maximum send amount is the amount after slippage
-    maximumSendSellAmount: afterSlippage.sellAmount,
-    minimumReceiveBuyAmount: afterSlippage.buyAmount,
   }
 }
 

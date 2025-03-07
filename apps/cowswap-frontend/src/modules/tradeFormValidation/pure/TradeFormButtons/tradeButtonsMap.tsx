@@ -155,8 +155,8 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     )
   },
   [TradeFormValidation.ApproveRequired]: (context) => {
-    if (!context.receiveAmounts) return null
-    const { maximumSendSellAmount } = context.receiveAmounts
+    if (!context.amountsToSign) return null
+    const { maximumSendSellAmount } = context.amountsToSign
 
     return (
       <TradeApproveButton amountToApprove={maximumSendSellAmount}>
