@@ -258,6 +258,9 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
                     />
                   </b>
                   .
+                    <styledEl.ExecuteInformationTooltipWarning>
+                    This price is taken from CoinGecko and may not accurately reflect the current on-chain price.
+                  </styledEl.ExecuteInformationTooltipWarning>
                 </>
               )}
             </styledEl.ExecuteInformationTooltip>
