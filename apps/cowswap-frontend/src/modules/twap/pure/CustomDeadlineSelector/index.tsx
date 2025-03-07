@@ -24,7 +24,7 @@ interface CustomDeadlineSelectorProps {
 export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
   const { isOpen, onDismiss, customDeadline, selectCustomDeadline } = props
   const { hours = 0, minutes = 0 } = customDeadline
-  const analytics = useCowAnalytics()
+  const { sendEvent } = useCowAnalytics()
 
   const [hoursValue, setHoursValue] = useState(hours)
   const [minutesValue, setMinutesValue] = useState(minutes)
@@ -38,7 +38,7 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
   const isDisabled = !hoursValue && !minutesValue
 
   const onApply = () => {
-    analytics.sendEvent({
+    sendEvent({
       category: CowSwapAnalyticsCategory.TWAP,
       action: 'Apply custom deadline',
       label: `${hoursValue}h ${minutesValue}m`,
