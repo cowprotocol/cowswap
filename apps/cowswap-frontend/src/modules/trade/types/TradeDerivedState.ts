@@ -17,7 +17,13 @@ export interface TradeDerivedState {
   readonly orderKind: OrderKind
   readonly slippage: Percent | null
   readonly tradeType: TradeType | null
-  readonly supportBuyOrders: boolean
+  /**
+   * If true, the order amount is based on a quote. Means that the order amount is calculated based on the quote.
+   * For now, it's only true for Swap.
+   * In Limit order price might be changed by a user.
+   * In TWAP the order price depends on parts count and price protection.
+   */
+  readonly isQuoteBasedOrder: boolean
 }
 
 export const DEFAULT_TRADE_DERIVED_STATE: TradeDerivedState = {
@@ -34,5 +40,5 @@ export const DEFAULT_TRADE_DERIVED_STATE: TradeDerivedState = {
   slippage: null,
   orderKind: OrderKind.SELL,
   tradeType: null,
-  supportBuyOrders: false,
+  isQuoteBasedOrder: false,
 }

@@ -15,15 +15,15 @@ export interface AmountsToSign {
  * It means, those values already include fees and slippage depending on order type
  */
 export function useAmountsToSign(): AmountsToSign | null {
-  const { supportBuyOrders, inputCurrencyAmount, outputCurrencyAmount } = useDerivedTradeState() || {}
+  const { isQuoteBasedOrder, inputCurrencyAmount, outputCurrencyAmount } = useDerivedTradeState() || {}
   const { afterSlippage } = useReceiveAmountInfo() || {}
 
   return useMemo(() => {
-    const maximumSendSellAmount = supportBuyOrders ? afterSlippage?.sellAmount : inputCurrencyAmount
-    const minimumReceiveBuyAmount = supportBuyOrders ? afterSlippage?.buyAmount : outputCurrencyAmount
+    const maximumSendSellAmount = isQuoteBasedOrder ? afterSlippage?.sellAmount : inputCurrencyAmount
+    const minimumReceiveBuyAmount = isQuoteBasedOrder ? afterSlippage?.buyAmount : outputCurrencyAmount
 
     if (!maximumSendSellAmount || !minimumReceiveBuyAmount) return null
 
     return { maximumSendSellAmount, minimumReceiveBuyAmount }
-  }, [supportBuyOrders, inputCurrencyAmount, outputCurrencyAmount, afterSlippage])
+  }, [isQuoteBasedOrder, inputCurrencyAmount, outputCurrencyAmount, afterSlippage])
 }

@@ -17,7 +17,7 @@ import { TradeDerivedState } from '../types'
 
 export function useBuildTradeDerivedState(
   stateAtom: Atom<ExtendedTradeRawState>,
-  supportBuyOrders: boolean,
+  isQuoteBasedOrder: boolean,
 ): Omit<TradeDerivedState, 'slippage' | 'tradeType'> {
   const rawState = useAtomValue(stateAtom)
 
@@ -55,7 +55,7 @@ export function useBuildTradeDerivedState(
     outputCurrencyBalance,
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
-    supportBuyOrders,
+    isQuoteBasedOrder,
   })
 }
 
