@@ -1,5 +1,3 @@
-import React, { useMemo } from 'react'
-
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
@@ -38,15 +36,7 @@ export interface SwapConfirmModalProps {
 }
 
 export function SwapConfirmModal(props: SwapConfirmModalProps) {
-  const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade: _doTrade } = props
-
-  /**
-   * This is a very important part of the code.
-   * After the confirmation modal opens, the trade context should not be recreated.
-   * In order to prevent this, we use useMemo to keep the trade context the same when the modal was opened.
-   */
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const doTrade = useMemo(() => _doTrade, [])
+  const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade } = props
 
   const { account, chainId } = useWalletInfo()
   const { ensName } = useWalletDetails()

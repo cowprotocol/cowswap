@@ -31,9 +31,9 @@ export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
           <div>
             {label && (
               <Label labelOpacity={labelOpacity}>
-                <p>
+                <div>
                   {label} {tooltip && <InfoTooltip className="info-tooltip" content={tooltip} />}
-                </p>
+                </div>
               </Label>
             )}
           </div>

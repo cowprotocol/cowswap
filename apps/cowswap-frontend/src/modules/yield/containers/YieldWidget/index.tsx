@@ -8,13 +8,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Field } from 'legacy/state/types'
 
 import { SelectTokenWidget } from 'modules/tokensList'
-import {
-  TradeWidget,
-  TradeWidgetSlots,
-  useReceiveAmountInfo,
-  useTradeConfirmState,
-  useTradePriceImpact,
-} from 'modules/trade'
+import { TradeWidget, TradeWidgetSlots, useReceiveAmountInfo, useTradePriceImpact } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useHandleSwap } from 'modules/tradeFlow'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -65,7 +59,6 @@ export function YieldWidget() {
   const [isUnlocked, setIsUnlocked] = useYieldUnlockState()
   const { isLoading: isRateLoading } = useTradeQuote()
   const priceImpact = useTradePriceImpact()
-  const { isOpen: isConfirmOpen } = useTradeConfirmState()
   const widgetActions = useYieldWidgetActions()
   const receiveAmountInfo = useReceiveAmountInfo()
   const poolsInfo = usePoolsInfo()
@@ -213,7 +206,6 @@ export function YieldWidget() {
     showRecipient,
     isTradePriceUpdating: isRateLoading,
     priceImpact,
-    disableQuotePolling: isConfirmOpen,
     customSelectTokenButton: SelectAPoolButton,
   }
 

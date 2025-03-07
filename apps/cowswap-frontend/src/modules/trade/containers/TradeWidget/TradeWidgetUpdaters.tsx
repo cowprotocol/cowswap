@@ -9,6 +9,7 @@ import { SmartSlippageUpdater } from 'modules/tradeSlippage'
 
 import { usePriorityTokenAddresses } from '../../hooks/usePriorityTokenAddresses'
 import { useResetRecipient } from '../../hooks/useResetRecipient'
+import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { CommonTradeUpdater } from '../../updaters/CommonTradeUpdater'
 import { DisableNativeTokenSellingUpdater } from '../../updaters/DisableNativeTokenSellingUpdater'
 import { PriceImpactUpdater } from '../../updaters/PriceImpactUpdater'
@@ -31,6 +32,7 @@ export function TradeWidgetUpdaters({
 }: TradeWidgetUpdatersProps) {
   const { chainId, account } = useWalletInfo()
   const priorityTokenAddresses = usePriorityTokenAddresses()
+  const { isOpen: isConfirmOpen } = useTradeConfirmState()
 
   useResetRecipient(onChangeRecipient)
 
@@ -39,7 +41,7 @@ export function TradeWidgetUpdaters({
       <PriorityTokensUpdater account={account} chainId={chainId} tokenAddresses={priorityTokenAddresses} />
       <RecipientAddressUpdater />
 
-      {!disableQuotePolling && <TradeQuoteUpdater />}
+      {!disableQuotePolling && <TradeQuoteUpdater isConfirmOpen={isConfirmOpen} />}
       <PriceImpactUpdater />
       <TradeFormValidationUpdater />
       <CommonTradeUpdater />
