@@ -4,7 +4,7 @@ import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import { getOrderTypeReceiveAmounts, CompatibilityIssuesWarning } from 'modules/trade'
+import { CompatibilityIssuesWarning } from 'modules/trade'
 
 import { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { TradeApproveButton } from 'common/containers/TradeApprove'
@@ -155,8 +155,8 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     )
   },
   [TradeFormValidation.ApproveRequired]: (context) => {
-    if (!context.receiveAmountInfo) return null
-    const { maximumSendSellAmount } = getOrderTypeReceiveAmounts(context.receiveAmountInfo)
+    if (!context.receiveAmounts) return null
+    const { maximumSendSellAmount } = context.receiveAmounts
 
     return (
       <TradeApproveButton amountToApprove={maximumSendSellAmount}>
