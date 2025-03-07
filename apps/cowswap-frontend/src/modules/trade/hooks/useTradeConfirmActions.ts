@@ -16,7 +16,7 @@ export interface TradeConfirmActions {
   onSign(pendingTrade: TradeAmounts): void
   onError(error: string): void
   onSuccess(transactionHash: string): void
-  onOpen(forcePriceConfirmation?: boolean): void
+  onOpen(): void
   requestPermitSignature(pendingTrade: TradeAmounts): void
   onDismiss(): void
 }
@@ -40,8 +40,8 @@ export function useTradeConfirmActions(): TradeConfirmActions {
       onSuccess(transactionHash: string) {
         setTxHashTradeConfirm(transactionHash)
       },
-      onOpen(forcePriceConfirmation?: boolean) {
-        setOpenTradeConfirm(typeof forcePriceConfirmation === 'boolean' ? forcePriceConfirmation : undefined)
+      onOpen() {
+        setOpenTradeConfirm()
       },
       requestPermitSignature(pendingTrade: TradeAmounts) {
         setPermitSignatureRequested(pendingTrade)

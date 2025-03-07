@@ -8,11 +8,6 @@ interface TradeConfirmModalState {
   transactionHash: string | null
   error: string | null
   permitSignatureState: undefined | 'requested' | 'signed'
-  /**
-   * When true, the user will be forced to confirm the price before placing an order
-   * The confirmation is happening through "Price updated" banner
-   */
-  forcePriceConfirmation: boolean
 }
 
 export const tradeConfirmStateAtom = atom<TradeConfirmModalState>({
@@ -21,17 +16,15 @@ export const tradeConfirmStateAtom = atom<TradeConfirmModalState>({
   transactionHash: null,
   error: null,
   permitSignatureState: undefined,
-  forcePriceConfirmation: false,
 })
 
-export const setOpenTradeConfirmAtom = atom(null, (get, set, forcePriceConfirmation: boolean = false) => {
+export const setOpenTradeConfirmAtom = atom(null, (get, set) => {
   set(tradeConfirmStateAtom, () => ({
     isOpen: true,
     error: null,
     pendingTrade: null,
     transactionHash: null,
     permitSignatureState: undefined,
-    forcePriceConfirmation,
   }))
 })
 
@@ -42,7 +35,6 @@ export const setCloseTradeConfirmAtom = atom(null, (get, set) => {
     error: null,
     pendingTrade: null,
     permitSignatureState: undefined,
-    forcePriceConfirmation: false,
   }))
 })
 
@@ -54,7 +46,6 @@ export const setErrorTradeConfirmAtom = atom(null, (get, set, error: string) => 
     pendingTrade: null,
     transactionHash: null,
     permitSignatureState: undefined,
-    forcePriceConfirmation: false,
   }))
 })
 

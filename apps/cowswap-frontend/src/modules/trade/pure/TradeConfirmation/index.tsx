@@ -43,7 +43,7 @@ export interface TradeConfirmationProps {
 }
 
 export function TradeConfirmation(props: TradeConfirmationProps) {
-  const { pendingTrade, forcePriceConfirmation } = useTradeConfirmState()
+  const { pendingTrade } = useTradeConfirmState()
 
   const propsRef = useRef(props)
   propsRef.current = props
@@ -84,7 +84,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
   const inputAmount = inputCurrencyInfo.amount?.toExact()
   const outputAmount = outputCurrencyInfo.amount?.toExact()
 
-  const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(inputAmount, outputAmount, forcePriceConfirmation)
+  const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(inputAmount, outputAmount)
 
   const isButtonDisabled = isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade
 
