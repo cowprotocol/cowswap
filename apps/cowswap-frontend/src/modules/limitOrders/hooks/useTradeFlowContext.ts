@@ -15,7 +15,7 @@ import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
-import { TradeType, useReceiveAmounts } from 'modules/trade'
+import { TradeType, useAmountsToSign } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
@@ -36,12 +36,12 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const rateImpact = useRateImpact()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const permitInfo = usePermitInfo(state.inputCurrency, TradeType.LIMIT_ORDER)
-  const receiveAmounts = useReceiveAmounts()
+  const { maximumSendSellAmount } = useAmountsToSign() || {}
 
   const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[settlementChainId]
   const { enoughAllowance } = useEnoughBalanceAndAllowance({
     account,
-    amount: receiveAmounts?.maximumSendSellAmount || undefined,
+    amount: maximumSendSellAmount || undefined,
     checkAllowanceAddress,
   })
   const generatePermitHook = useGeneratePermitHook()
