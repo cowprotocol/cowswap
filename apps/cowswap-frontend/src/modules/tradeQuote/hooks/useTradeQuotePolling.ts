@@ -23,7 +23,7 @@ import { quoteUsingSameParameters } from '../utils/quoteUsingSameParameters'
 export const PRICE_UPDATE_INTERVAL = ms`30s`
 const QUOTE_EXPIRATION_CHECK_INTERVAL = ms`2s`
 
-export function useTradeQuotePolling() {
+export function useTradeQuotePolling(isConfirmOpen: boolean) {
   const { amount, fastQuote } = useAtomValue(tradeQuoteInputAtom)
   const tradeQuote = useTradeQuote()
   const tradeQuoteRef = useRef(tradeQuote)
@@ -43,10 +43,14 @@ export function useTradeQuotePolling() {
   isOnlineRef.current = isOnline
 
   useEffect(() => {
+    // Do not reset the quote if the confirm modal is open
+    // Because we already have a quote and don't want to reset it
+    if (isConfirmOpen) return
+
     if (!isWindowVisible && tradeQuoteManager) {
       tradeQuoteManager.reset()
     }
-  }, [isWindowVisible, tradeQuoteManager])
+  }, [isWindowVisible, tradeQuoteManager, isConfirmOpen])
 
   useLayoutEffect(() => {
     if (!tradeQuoteManager) {
