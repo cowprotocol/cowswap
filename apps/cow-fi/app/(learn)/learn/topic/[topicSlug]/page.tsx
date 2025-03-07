@@ -9,10 +9,11 @@ import { getPageMetadata } from '@/util/getPageMetadata'
 
 type Props = {
   params: Promise<{ topicSlug: string }>
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const topicSlug = (await params).topicSlug
+  const { topicSlug } = await params
 
   if (!topicSlug) return {}
 
@@ -31,9 +32,10 @@ export async function generateStaticParams() {
   return categoriesResponse.map((topicSlug) => ({ topicSlug }))
 }
 
-export default async function TopicPage({ params }: { params: { topicSlug: string } }) {
+export default async function TopicPage({ params }: { params: Promise<{ topicSlug: string }> }) {
   // Get the category
-  const category = await getCategoryBySlug(params.topicSlug)
+  const { topicSlug } = await params
+  const category = await getCategoryBySlug(topicSlug)
 
   if (!category) {
     notFound()
@@ -54,7 +56,7 @@ export default async function TopicPage({ params }: { params: { topicSlug: strin
     filters: {
       categories: {
         slug: {
-          $eq: params.topicSlug,
+          $eq: topicSlug,
         },
       },
     },
