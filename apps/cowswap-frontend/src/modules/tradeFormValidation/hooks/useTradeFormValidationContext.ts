@@ -6,7 +6,7 @@ import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useTokenSupportsPermit } from 'modules/permit'
-import { TradeType, useAmountsToSign, useDerivedTradeState, useIsWrapOrUnwrap, useReceiveAmounts } from 'modules/trade'
+import { TradeType, useAmountsToSign, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 import { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
