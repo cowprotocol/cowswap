@@ -24,7 +24,7 @@ export function useFillLimitOrdersDerivedState() {
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const updateDerivedState = useSetAtom(limitOrdersDerivedStateAtom)
   const isUnlocked = useIsWidgetUnlocked()
-  const derivedState = useBuildTradeDerivedState(limitOrdersRawStateAtom)
+  const derivedState = useBuildTradeDerivedState(limitOrdersRawStateAtom, false)
 
   useEffect(() => {
     updateDerivedState(
