@@ -4,15 +4,35 @@ import { getArticles, getCategories } from '../../../services/cms'
 
 import { LearnPageComponent } from '@/components/LearnPageComponent'
 
-export default async function Page() {
-  const categoriesResponse = await getCategories()
-  const articlesResponse = await getArticles()
+export default async function LearnPage() {
+  // Fetch articles with pagination instead of fetchAll
+  // Using a larger pageSize to get more articles at once, but not all
+  const articlesResponse = await getArticles({ pageSize: 200 })
+  const articles = articlesResponse.data
 
+  // Fetch featured articles
   const featuredArticlesResponse = await getArticles({
-    filters: { featured: { $eq: true } },
-    pageSize: 6,
+    filters: {
+      featured: {
+        $eq: true,
+      },
+    },
+    pageSize: 7, // Limit to 7 articles
   })
 
+  // Format featured articles for the component
+  const featuredArticles = featuredArticlesResponse.data.map((article) => {
+    const attributes = article.attributes
+    return {
+      title: attributes?.title || 'No title',
+      description: attributes?.description || 'No description',
+      link: `/learn/${attributes?.slug || 'no-slug'}`,
+      cover: attributes?.cover?.data?.attributes?.url || '',
+    }
+  })
+
+  const categoriesResponse = await getCategories()
+  // Format categories for the component
   const categories =
     categoriesResponse?.map((category: any) => {
       const imageUrl = category?.attributes?.image?.data?.attributes?.url || ''
@@ -29,17 +49,5 @@ export default async function Page() {
       }
     }) || []
 
-  const featuredArticles = featuredArticlesResponse.data.map((article) => {
-    const attributes = article.attributes
-    return {
-      title: attributes?.title || 'No title',
-      description: attributes?.description || 'No description',
-      link: `/learn/${attributes?.slug || 'no-slug'}`,
-      cover: attributes?.cover?.data?.attributes?.url || '',
-    }
-  })
-
-  return (
-    <LearnPageComponent categories={categories} articles={articlesResponse.data} featuredArticles={featuredArticles} />
-  )
+  return <LearnPageComponent articles={articles} featuredArticles={featuredArticles} categories={categories} />
 }

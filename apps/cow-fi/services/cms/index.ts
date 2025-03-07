@@ -5,8 +5,9 @@ import qs from 'qs'
 import { toQueryParams } from 'util/queryParams'
 import { getCmsClient } from '@cowprotocol/core'
 
-const PAGE_SIZE = 50
+const PAGE_SIZE = 100
 const CMS_CACHE_TIME = 5 * 60 // 5 min
+const ARTICLES_FETCHING_PAGE_LIMIT = 10 // Maximum number of pages to fetch recursively
 
 type Schemas = components['schemas']
 export type Article = Schemas['ArticleListResponseDataItem']
@@ -117,7 +118,8 @@ export async function getArticles({
   page = 0,
   pageSize = PAGE_SIZE,
   filters = {},
-}: PaginationParam & { filters?: any } = {}): Promise<ArticleListResponse> {
+  fetchAll = false,
+}: PaginationParam & { filters?: any; fetchAll?: boolean } = {}): Promise<ArticleListResponse> {
   const querySerializer = (params: any) => {
     return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
   }
@@ -146,7 +148,112 @@ export async function getArticles({
     throw error
   }
 
+  // If fetchAll is true and there are more pages, recursively fetch them
+  if (
+    fetchAll &&
+    data.meta.pagination.page < data.meta.pagination.pageCount &&
+    data.meta.pagination.page < ARTICLES_FETCHING_PAGE_LIMIT
+  ) {
+    const nextPageResponse = await getArticles({
+      page: page + 1,
+      pageSize,
+      filters,
+      fetchAll: true,
+    })
+
+    // Combine the current page with subsequent pages
+    return {
+      data: [...data.data, ...nextPageResponse.data],
+      meta: {
+        pagination: {
+          ...data.meta.pagination,
+          // Update total to reflect the actual number of articles fetched
+          total: data.meta.pagination.total,
+        },
+      },
+    }
+  }
+
   return { data: data.data, meta: data.meta }
+}
+
+/**
+ * Search for articles containing a search term across multiple fields.
+ * Uses Strapi's filtering capabilities to perform the search server-side.
+ *
+ * @param searchTerm The term to search for
+ * @param page The page number (0-indexed)
+ * @param pageSize The number of articles per page
+ * @returns Articles matching the search term with pagination info
+ */
+export async function searchArticles({
+  searchTerm,
+  page = 0,
+  pageSize = PAGE_SIZE,
+}: {
+  searchTerm: string
+  page?: number
+  pageSize?: number
+}): Promise<ArticleListResponse> {
+  const trimmedSearchTerm = searchTerm.trim()
+
+  if (!trimmedSearchTerm) {
+    return { data: [], meta: { pagination: { page, pageSize, pageCount: 0, total: 0 } } }
+  }
+
+  try {
+    // 1. Log the raw search term
+    console.log('Searching for:', JSON.stringify(trimmedSearchTerm))
+
+    // 2. Removed unused filters declaration
+
+    // 3. Build query parameters with explicit array indices
+    const queryParams = {
+      'filters[$or][0][title][$startsWithi]': trimmedSearchTerm,
+      'filters[$or][1][title][$containsi]': trimmedSearchTerm,
+      'filters[$or][2][description][$containsi]': trimmedSearchTerm,
+      'pagination[page]': page,
+      'pagination[pageSize]': pageSize,
+      'sort[0]': 'title:asc',
+      'populate[0]': 'cover',
+      'populate[1]': 'blocks',
+      'populate[2]': 'seo',
+      'populate[3]': 'authorsBio',
+      publicationState: 'live', // Ensure published content
+    }
+
+    // 4. Manual query string construction for absolute clarity
+    const queryString = qs.stringify(queryParams, {
+      encodeValuesOnly: true,
+      arrayFormat: 'brackets',
+      encode: false,
+    })
+
+    // 5. Debug output
+    console.log('Final query string:', decodeURIComponent(queryString))
+    console.log('Full URL:', `/articles?${queryString}`)
+
+    const url = `/articles?${queryString}`
+    const { data, error, response } = await client.GET(url, clientAddons)
+
+    // 6. Response inspection
+    console.log('API response status:', response.status)
+    console.log('API response data:', JSON.stringify(data, null, 2))
+
+    if (error) {
+      console.error(`Search failed (${response.status}):`, error)
+      throw new Error(`Search failed: ${error.message}`)
+    }
+
+    // 7. Result validation
+    const foundIds = data.data.map((article: Article) => article.id)
+    console.log('Found article IDs:', foundIds)
+
+    return { data: data.data, meta: data.meta }
+  } catch (error) {
+    console.error('Search error:', error)
+    throw new Error('Unable to complete search. Please try again.')
+  }
 }
 
 /**

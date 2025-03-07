@@ -62,7 +62,8 @@ export default async function ArticlePage({ params }: Props) {
     return notFound()
   }
 
-  const articlesResponse = await getArticles()
+  // Get related articles
+  const articlesResponse = await getArticles({ pageSize: 100 })
   const articles = articlesResponse.data
 
   // Fetch featured articles
