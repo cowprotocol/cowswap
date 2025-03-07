@@ -17,6 +17,7 @@ export interface TradeDerivedState {
   readonly orderKind: OrderKind
   readonly slippage: Percent | null
   readonly tradeType: TradeType | null
+  readonly supportBuyOrders: boolean
 }
 
 export const DEFAULT_TRADE_DERIVED_STATE: TradeDerivedState = {
@@ -33,4 +34,5 @@ export const DEFAULT_TRADE_DERIVED_STATE: TradeDerivedState = {
   slippage: null,
   orderKind: OrderKind.SELL,
   tradeType: null,
+  supportBuyOrders: false,
 }
