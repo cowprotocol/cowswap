@@ -61,7 +61,7 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
     const swap = async () => {
       callbacks.dismiss()
       onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCIES[chainId], () => {
-        openSwapConfirmModal()
+        openSwapConfirmModal(true)
       })
     }
 
