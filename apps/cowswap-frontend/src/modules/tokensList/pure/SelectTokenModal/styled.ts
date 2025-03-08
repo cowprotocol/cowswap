@@ -24,8 +24,10 @@ export const Separator = styled.div`
 export const Header = styled.div`
   display: flex;
   flex-direction: row;
-  padding: 20px 20px 0 20px;
-  margin-bottom: 15px;
+  padding: 10px 16px;
+  margin-bottom: 8px;
+  align-items: center;
+  border-bottom: 1px solid var(${UI.COLOR_BORDER});
 
   > h3 {
     font-size: 16px;

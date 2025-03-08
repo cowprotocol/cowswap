@@ -3,9 +3,9 @@ import React, { useState } from 'react'
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenListCategory, UnsupportedTokensState } from '@cowprotocol/tokens'
-import { BackButton, SearchInput } from '@cowprotocol/ui'
+import { SearchInput } from '@cowprotocol/ui'
 
-import { Edit } from 'react-feather'
+import { Edit, X } from 'react-feather'
 
 import { PermitCompatibleTokens } from 'modules/permit'
 
@@ -14,6 +14,7 @@ import * as styledEl from './styled'
 import { LpTokenListsWidget } from '../../containers/LpTokenListsWidget'
 import { TokenSearchResults } from '../../containers/TokenSearchResults'
 import { SelectTokenContext } from '../../types'
+import { IconButton } from '../commonElements'
 import { FavoriteTokensList } from '../FavoriteTokensList'
 import { TokensVirtualList } from '../TokensVirtualList'
 
@@ -107,19 +108,17 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
   return (
     <styledEl.Wrapper>
       <styledEl.Header>
-        <BackButton onClick={onDismiss} />
-        <h3>Select a token</h3>
-      </styledEl.Header>
-      <styledEl.Row>
         <SearchInput
           id="token-search-input"
           value={inputValue}
           onKeyDown={(e) => e.key === 'Enter' && onInputPressEnter?.()}
           onChange={(e) => setInputValue(e.target.value)}
-          type="text"
-          placeholder="Search name or paste address"
+          placeholder="Search name or paste address..."
         />
-      </styledEl.Row>
+        <IconButton onClick={onDismiss}>
+          <X size={18} />
+        </IconButton>
+      </styledEl.Header>
       {displayLpTokenLists ? (
         <LpTokenListsWidget
           account={account}

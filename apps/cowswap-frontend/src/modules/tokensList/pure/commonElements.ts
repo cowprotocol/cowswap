@@ -16,7 +16,7 @@ export const blankButtonMixin = css`
 `
 
 export const IconButton = styled.button`
-  ${blankButtonMixin}
+  ${blankButtonMixin};
 
   color: inherit;
   opacity: 0.6;
