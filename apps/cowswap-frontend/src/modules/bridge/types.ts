@@ -1,16 +1,6 @@
-import { TokenInfo } from '@cowprotocol/types'
-
-export interface Chain {
-  id: number
-  name: string
-  nativeCurrency: TokenInfo
-  isEvmChain: boolean
-  blockExplorer: string
-  logoUrl: string
-  mainColor: string
-}
+import { ChainInfo, TokenInfo } from '@cowprotocol/types'
 
 export interface BridgeProvider {
-  getNetworks(): Promise<Chain[]>
+  getNetworks(): Promise<ChainInfo[]>
   getTokens(chainId: number): Promise<TokenInfo[] | null>
 }

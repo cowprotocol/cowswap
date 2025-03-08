@@ -1,6 +1,6 @@
 import { TokenInfo } from '@cowprotocol/types'
 
-import { BridgeProvider, Chain } from './types'
+import { BridgeProvider, ChainInfo } from './types'
 
 export const testBridgeProvider: BridgeProvider = {
   async getNetworks() {
@@ -11,7 +11,7 @@ export const testBridgeProvider: BridgeProvider = {
   },
 }
 
-const testNetworks: Chain[] = [
+const testNetworks: ChainInfo[] = [
   {
     id: 56,
     name: 'Binance Smart Chain',
