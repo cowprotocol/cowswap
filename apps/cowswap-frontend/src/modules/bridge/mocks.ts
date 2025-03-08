@@ -11,7 +11,7 @@ export const testBridgeProvider: BridgeProvider = {
   },
 }
 
-const testNetworks: ChainInfo[] = [
+export const testNetworks: ChainInfo[] = [
   {
     id: 56,
     name: 'Binance Smart Chain',
