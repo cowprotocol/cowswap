@@ -1,10 +1,11 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ListState } from '@cowprotocol/tokens'
 
 export const allTokensMock: TokenWithLogo[] = [
   {
     name: 'Gnosis',
-    chainId: 5,
+    chainId: SupportedChainId.SEPOLIA,
     symbol: 'GNO',
     decimals: 18,
     address: '0x02abbdbaaa7b1bb64b5c878f7ac17f8dda169532',
@@ -13,7 +14,7 @@ export const allTokensMock: TokenWithLogo[] = [
   },
   {
     name: 'Basic Attention Token',
-    chainId: 5,
+    chainId: SupportedChainId.SEPOLIA,
     symbol: 'BAT',
     decimals: 18,
     address: '0x70cBa46d2e933030E2f274AE58c951C800548AeF',
@@ -22,7 +23,7 @@ export const allTokensMock: TokenWithLogo[] = [
   },
   {
     name: 'CoW Protocol Token',
-    chainId: 5,
+    chainId: SupportedChainId.SEPOLIA,
     symbol: 'COW',
     decimals: 18,
     address: '0x91056D4A53E1faa1A84306D4deAEc71085394bC8',
@@ -30,7 +31,7 @@ export const allTokensMock: TokenWithLogo[] = [
   },
   {
     name: 'USD Coin',
-    chainId: 5,
+    chainId: SupportedChainId.SEPOLIA,
     symbol: 'USDC',
     decimals: 6,
     address: '0xD87Ba7A50B2E7E660f678A895E4B72E7CB4CCd9C',
@@ -39,7 +40,7 @@ export const allTokensMock: TokenWithLogo[] = [
   },
   {
     name: 'DAI',
-    chainId: 5,
+    chainId: SupportedChainId.SEPOLIA,
     symbol: 'DAI',
     decimals: 18,
     address: '0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60',
@@ -48,7 +49,7 @@ export const allTokensMock: TokenWithLogo[] = [
   },
   {
     name: '0x',
-    chainId: 5,
+    chainId: SupportedChainId.SEPOLIA,
     symbol: 'ZRX',
     decimals: 18,
     address: '0xe4E81Fa6B16327D4B78CFEB83AAdE04bA7075165',
@@ -60,7 +61,7 @@ export const allTokensMock: TokenWithLogo[] = [
 export const favoriteTokensMock: TokenWithLogo[] = [
   {
     name: 'Basic Attention Token',
-    chainId: 5,
+    chainId: SupportedChainId.SEPOLIA,
     symbol: 'BAT',
     decimals: 18,
     address: '0x70cBa46d2e933030E2f274AE58c951C800548AeF',
@@ -69,7 +70,7 @@ export const favoriteTokensMock: TokenWithLogo[] = [
   },
   {
     name: 'Polymath Network',
-    chainId: 5,
+    chainId: SupportedChainId.SEPOLIA,
     symbol: 'POLY',
     decimals: 18,
     address: '0x9e32c0EfF886B6Ccae99350Fd5e7002dCED55F15',
@@ -80,7 +81,7 @@ export const favoriteTokensMock: TokenWithLogo[] = [
 export const customTokensMock: TokenWithLogo[] = [
   {
     name: 'Tether USD',
-    chainId: 5,
+    chainId: SupportedChainId.SEPOLIA,
     symbol: 'USDT',
     decimals: 6,
     address: '0x7b77F953e703E80CD97F6911385c0b1ceabC96Bc',
@@ -88,7 +89,7 @@ export const customTokensMock: TokenWithLogo[] = [
   },
   {
     name: 'Euro Coin',
-    chainId: 5,
+    chainId: SupportedChainId.SEPOLIA,
     symbol: 'EUROC',
     decimals: 6,
     address: '0x1aBaEA1f7C830bD89Acc67eC4af516284b1bC33c',
