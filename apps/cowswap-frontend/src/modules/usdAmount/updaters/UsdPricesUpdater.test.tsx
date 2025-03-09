@@ -18,6 +18,13 @@ import * as defillamaApi from '../apis/getDefillamaUsdPrice'
 import * as services from '../services/fetchCurrencyUsdPrice'
 import { currenciesUsdPriceQueueAtom, UsdRawPrices, usdRawPricesAtom } from '../state/usdRawPricesAtom'
 
+jest.mock('common/hooks/useIsProviderNetworkUnsupported', () => {
+  return {
+    ...jest.requireActual('common/hooks/useIsProviderNetworkUnsupported'),
+    useIsProviderNetworkUnsupported: jest.fn().mockReturnValue(false),
+  }
+})
+
 const mockGetBffUsdPrice = jest.spyOn(bffUsdApi, 'getBffUsdPrice')
 const mockGetDefillamaUsdPrice = jest.spyOn(defillamaApi, 'getDefillamaUsdPrice')
 const mockGetCowProtocolUsdPrice = jest.spyOn(cowProtocolApi, 'getCowProtocolUsdPrice')

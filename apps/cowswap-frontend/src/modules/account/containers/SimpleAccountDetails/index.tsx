@@ -22,7 +22,7 @@ const SimpleWrapper = styled(Wrapper)<StyledWrapperProps>`
   }
 `
 
-export default function SimpleAccountDetails({
+export function SimpleAccountDetails({
   pendingTransactions = [],
   confirmedTransactions = [],
   ...styleProps

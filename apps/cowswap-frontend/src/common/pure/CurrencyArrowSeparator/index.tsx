@@ -19,11 +19,11 @@ export function CurrencyArrowSeparator(props: CurrencyArrowSeparatorProps) {
 
   return (
     <styledEl.Box isCollapsed={isCollapsed} hasSeparatorLine={hasSeparatorLine} disabled={disabled}>
-      <styledEl.LoadingWrapper isLoading={isLoading}>
+      <styledEl.LoadingWrapper isLoading={isLoading} onClick={disabled ? undefined : onSwitchTokens}>
         {!isInjectedWidgetMode && isLoading ? (
           <styledEl.CowImg src={loadingCowWebp} alt="loading" />
         ) : (
-          <styledEl.ArrowDownIcon onClick={disabled ? undefined : onSwitchTokens} disabled={disabled} />
+          <styledEl.ArrowDownIcon disabled={disabled} />
         )}
       </styledEl.LoadingWrapper>
     </styledEl.Box>

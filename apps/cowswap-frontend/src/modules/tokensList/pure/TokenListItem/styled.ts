@@ -22,10 +22,14 @@ export const TokenItem = styled.button`
   font-size: 16px;
   padding: 10px 20px;
   margin-bottom: 10px;
-  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+  opacity: 1;
   transition:
     background var(${UI.ANIMATION_DURATION}) ease-in-out,
     color var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &.token-item-selected {
+    opacity: 0.5;
+  }
 
   ${Media.upToSmall()} {
     font-size: 14px;
@@ -37,8 +41,12 @@ export const TokenItem = styled.button`
   }
 
   &:hover {
-    background: ${({ disabled }) => !disabled && `var(${UI.COLOR_PAPER_DARKER})`};
     color: inherit;
+    background: var(${UI.COLOR_PAPER_DARKER});
+  }
+
+  &.token-item-selected:hover {
+    background: none;
   }
 `
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { MouseEvent } from 'react'
 
 import { useCopyClipboard } from '@cowprotocol/common-hooks'
 import { UI } from '@cowprotocol/ui'
@@ -33,21 +33,25 @@ export const CopyIcon = styled(LinkStyledButton)`
   }
 `
 
-/* const TransactionStatusText = styled.span`
-  margin-left: 0.25rem;
-  font-size: 0.825rem;
-  ${({ theme }) => theme.flexRowNoWrap};
-  align-items: center;
-` */
+interface CopyHelperProps {
+  toCopy: string
+  children?: React.ReactNode
+  clickableLink?: boolean
+}
 
-export default function CopyHelper(props: { toCopy: string; children?: React.ReactNode; clickableLink?: boolean }) {
+export default function CopyHelper(props: CopyHelperProps) {
   const { toCopy, children, clickableLink } = props
   const [isCopied, setCopied] = useCopyClipboard()
+
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation()
+    setCopied(toCopy)
+  }
 
   return (
     <>
       {clickableLink && <LinkStyledButton onClick={() => setCopied(toCopy)}>{toCopy}</LinkStyledButton>}
-      <CopyIcon isCopied={isCopied} onClick={() => setCopied(toCopy)}>
+      <CopyIcon isCopied={isCopied} onClick={handleClick}>
         {isCopied ? (
           <TransactionStatusText
             isCopied={isCopied} // mod

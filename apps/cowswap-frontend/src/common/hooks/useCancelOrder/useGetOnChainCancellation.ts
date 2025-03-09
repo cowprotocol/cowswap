@@ -1,8 +1,9 @@
 import { useCallback } from 'react'
 
+import { getIsNativeToken } from '@cowprotocol/common-utils'
+
 import { Order } from 'legacy/state/orders/actions'
 
-import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 import { useCancelTwapOrder } from 'modules/twap/hooks/useCancelTwapOrder'
 
 import {
@@ -37,7 +38,7 @@ export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCa
         return cancelTwapOrder(order.composableCowInfo!.id!, order)
       }
 
-      const isEthFlowOrder = getIsEthFlowOrder(order.inputToken.address)
+      const isEthFlowOrder = getIsNativeToken(order.inputToken)
 
       if (isEthFlowOrder) {
         return getEthFlowCancellation(ethFlowContract!, order)

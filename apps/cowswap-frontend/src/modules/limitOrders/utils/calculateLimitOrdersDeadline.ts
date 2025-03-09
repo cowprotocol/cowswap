@@ -5,13 +5,9 @@ import { TradeQuoteState, getOrderValidTo } from 'modules/tradeQuote'
 
 export function calculateLimitOrdersDeadline(
   settingsState: LimitOrdersSettingsState,
-  quoteState: TradeQuoteState
+  quoteState: TradeQuoteState,
 ): Timestamp {
   return settingsState.customDeadlineTimestamp
     ? settingsState.customDeadlineTimestamp
-    : getOrderValidTo(settingsState.deadlineMilliseconds / 1000, {
-        validFor: quoteState.quoteParams?.validFor,
-        quoteValidTo: quoteState.response?.quote.validTo,
-        localQuoteTimestamp: quoteState.localQuoteTimestamp,
-      })
+    : getOrderValidTo(settingsState.deadlineMilliseconds / 1000, quoteState)
 }

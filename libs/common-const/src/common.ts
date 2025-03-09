@@ -1,4 +1,3 @@
-import { ethFlowBarnJson, ethFlowProdJson } from '@cowprotocol/abis'
 import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
@@ -6,9 +5,6 @@ import BigNumber from 'bignumber.js'
 import ms from 'ms.macro'
 
 // TODO: move those consts to src/constants/common
-
-const EthFlowBarn = ethFlowBarnJson.CoWSwapEthFlow
-const EthFlowProd = ethFlowProdJson.CoWSwapEthFlow
 
 export const ZERO_BIG_NUMBER = new BigNumber(0)
 export const ZERO_FRACTION = new Fraction(0)
@@ -46,32 +42,8 @@ const NEW_COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Record<Env, string> = {
   barn: '0x04501b9b1d52e67f6862d157e00d13419d2d6e95',
 }
 
-const OLD_COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Record<Env, Record<SupportedChainId, string>> = {
-  prod: mapSupportedNetworks((chain) => EthFlowProd[chain].address),
-  barn: mapSupportedNetworks((chain) => EthFlowBarn[chain].address),
-}
-
-export function getEthFlowContractAddresses(
-  env: Env,
-  useNewEthFlowContracts: boolean,
-  chainId: SupportedChainId,
-): string
-export function getEthFlowContractAddresses(
-  env: Env,
-  useNewEthFlowContracts: boolean,
-): string | Record<SupportedChainId, string>
-
-export function getEthFlowContractAddresses(
-  env: Env,
-  useNewEthFlowContracts: boolean,
-  chainId?: SupportedChainId,
-): string | Record<SupportedChainId, string> {
-  if (useNewEthFlowContracts) {
-    return NEW_COWSWAP_ETHFLOW_CONTRACT_ADDRESS[env]
-  }
-
-  const contractAddressesByChainId = OLD_COWSWAP_ETHFLOW_CONTRACT_ADDRESS[env]
-  return chainId ? contractAddressesByChainId[chainId] : contractAddressesByChainId
+export function getEthFlowContractAddresses(env: Env): string {
+  return NEW_COWSWAP_ETHFLOW_CONTRACT_ADDRESS[env]
 }
 
 export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {

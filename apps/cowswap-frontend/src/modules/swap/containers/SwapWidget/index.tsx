@@ -1,64 +1,37 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
-// import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
-import HAND_SVG from '@cowprotocol/assets/cow-swap/hand.svg'
-import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
-import { useIsTradeUnsupported } from '@cowprotocol/tokens'
-import { BannerOrientation, InlineBanner } from '@cowprotocol/ui'
-import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
-import { TradeType } from '@cowprotocol/widget-lib'
+import { isSellOrder } from '@cowprotocol/common-utils'
 
-import { Link } from 'react-router-dom'
-
-import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
-import { useModalIsOpen } from 'legacy/state/application/hooks'
-import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
-import { useHooksEnabledManager, useRecipientToggleManager, useUserTransactionTTL } from 'legacy/state/user/hooks'
+import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 
-import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
-import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
-import { useShowRecipientControls } from 'modules/swap/hooks/useShowRecipientControls'
-import { useSwapButtonContext } from 'modules/swap/hooks/useSwapButtonContext'
-import { useSwapCurrenciesAmounts } from 'modules/swap/hooks/useSwapCurrenciesAmounts'
-import { useTradePricesUpdate } from 'modules/swap/hooks/useTradePricesUpdate'
-import { SwapButtons } from 'modules/swap/pure/SwapButtons'
+import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
 import {
-  SwapWarningsBottom,
-  SwapWarningsBottomProps,
-  SwapWarningsTop,
-  SwapWarningsTopProps,
-} from 'modules/swap/pure/warnings'
-import {
-  parameterizeTradeRoute,
   TradeWidget,
-  TradeWidgetContainer,
   TradeWidgetSlots,
-  useIsEoaEthFlow,
-  useIsHooksTradeType,
-  useIsNoImpactWarningAccepted,
   useReceiveAmountInfo,
+  useTradeConfirmState,
   useTradePriceImpact,
-  useTradeRouteContext,
-  useUnknownImpactWarning,
+  useWrapNativeFlow,
 } from 'modules/trade'
-import { getQuoteTimeOffset } from 'modules/tradeQuote'
-import { useTradeSlippage } from 'modules/tradeSlippage'
-import { SettingsTab, TradeRateDetails, useHighFeeWarning } from 'modules/tradeWidgetAddons'
-import { useTradeUsdAmounts } from 'modules/usdAmount'
+import { useHandleSwap } from 'modules/tradeFlow'
+import { useTradeQuote } from 'modules/tradeQuote'
+import { SettingsTab, TradeRateDetails } from 'modules/tradeWidgetAddons'
 
-import { Routes } from 'common/constants/routes'
-import { useSetLocalTimeOffset } from 'common/containers/InvalidLocalTimeWarning/localTimeOffsetState'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
+import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { SWAP_QUOTE_CHECK_INTERVAL } from 'common/updaters/FeesUpdater'
 
-import { SwapButtonState } from '../../helpers/getSwapButtonState'
-import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from '../../hooks/useSwapState'
-import { useTradeQuoteStateFromLegacy } from '../../hooks/useTradeQuoteStateFromLegacy'
-import { ConfirmSwapModalSetup } from '../ConfirmSwapModalSetup'
+import { Container } from './styled'
+
+import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrappedBalanceForSwap'
+import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
+import { useSwapDeadlineState, useSwapRecipientToggleState, useSwapSettings } from '../../hooks/useSwapSettings'
+import { useSwapWidgetActions } from '../../hooks/useSwapWidgetActions'
+import { BottomBanners } from '../BottomBanners'
+import { SwapConfirmModal } from '../SwapConfirmModal'
+import { TradeButtons } from '../TradeButtons'
+import { Warnings } from '../Warnings'
 
 export interface SwapWidgetProps {
   topContent?: ReactNode
@@ -66,83 +39,66 @@ export interface SwapWidgetProps {
 }
 
 export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
-  const { chainId, account } = useWalletInfo()
-  const { currencies, trade } = useDerivedSwapInfo()
-  const slippage = useTradeSlippage()
-  const parsedAmounts = useSwapCurrenciesAmounts()
-  const { isSupportedWallet } = useWalletDetails()
-  const isSwapUnsupported = useIsTradeUnsupported(currencies.INPUT, currencies.OUTPUT)
-  const swapActions = useSwapActionHandlers()
-  const swapState = useSwapState()
-  const { independentField, recipient } = swapState
-  const showRecipientControls = useShowRecipientControls(recipient)
-  const isEoaEthFlow = useIsEoaEthFlow()
-  const widgetParams = useInjectedWidgetParams()
-  const { enabledTradeTypes } = widgetParams
-  const priceImpactParams = useTradePriceImpact()
-  const tradeQuoteStateOverride = useTradeQuoteStateFromLegacy()
-  const receiveAmountInfo = useReceiveAmountInfo()
-  const recipientToggleState = useRecipientToggleManager()
+  const { showRecipient } = useSwapSettings()
+  const deadlineState = useSwapDeadlineState()
+  const recipientToggleState = useSwapRecipientToggleState()
   const hooksEnabledState = useHooksEnabledManager()
-  const deadlineState = useUserTransactionTTL()
-  const isHookTradeType = useIsHooksTradeType()
+  const { isLoading: isRateLoading } = useTradeQuote()
+  const priceImpact = useTradePriceImpact()
+  const { isOpen: isConfirmOpen } = useTradeConfirmState()
+  const widgetActions = useSwapWidgetActions()
+  const receiveAmountInfo = useReceiveAmountInfo()
+  const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
 
-  const isTradePriceUpdating = useTradePricesUpdate()
+  const openNativeWrapModal = useCallback(() => setOpenNativeWrapModal(true), [])
+  const dismissNativeWrapModal = useCallback(() => setOpenNativeWrapModal(false), [])
 
-  const inputToken = useMemo(() => {
-    if (!currencies.INPUT) return currencies.INPUT
-
-    if (currencies.INPUT.isNative) return NATIVE_CURRENCIES[chainId]
-
-    return TokenWithLogo.fromToken(currencies.INPUT)
-  }, [chainId, currencies.INPUT])
-
-  const outputToken = useMemo(() => {
-    if (!currencies.OUTPUT) return currencies.OUTPUT
-
-    if (currencies.OUTPUT.isNative) return NATIVE_CURRENCIES[chainId]
-
-    return TokenWithLogo.fromToken(currencies.OUTPUT)
-  }, [chainId, currencies.OUTPUT])
-
-  const inputCurrencyBalance = useCurrencyAmountBalanceCombined(inputToken) || null
-  const outputCurrencyBalance = useCurrencyAmountBalanceCombined(outputToken) || null
-
-  const isSellTrade = independentField === Field.INPUT
+  const wrapCallback = useWrapNativeFlow()
 
   const {
-    inputAmount: { value: inputUsdValue },
-    outputAmount: { value: outputUsdValue },
-  } = useTradeUsdAmounts(
-    trade?.inputAmountWithoutFee || parsedAmounts.INPUT,
-    trade?.outputAmountWithoutFee || parsedAmounts.OUTPUT,
-    inputToken,
-    outputToken,
-    true,
-  )
+    inputCurrency,
+    outputCurrency,
+    inputCurrencyAmount,
+    outputCurrencyAmount,
+    inputCurrencyBalance,
+    outputCurrencyBalance,
+    inputCurrencyFiatAmount,
+    outputCurrencyFiatAmount,
+    recipient,
+    orderKind,
+  } = useSwapDerivedState()
+  const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }), widgetActions)
+  const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()
 
-  // TODO: unify CurrencyInfo assembling between Swap and Limit orders
-  // TODO: delegate formatting to the view layer
+  const isSellTrade = isSellOrder(orderKind)
+
+  const ethFlowProps: EthFlowProps = useSafeMemoObject({
+    nativeInput: inputCurrencyAmount || undefined,
+    onDismiss: dismissNativeWrapModal,
+    wrapCallback,
+    directSwapCallback: doTrade.callback,
+    hasEnoughWrappedBalanceForSwap,
+  })
+
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
-    currency: currencies.INPUT || null,
-    amount: parsedAmounts.INPUT || null,
+    currency: inputCurrency,
+    amount: inputCurrencyAmount,
     isIndependent: isSellTrade,
     balance: inputCurrencyBalance,
-    fiatAmount: inputUsdValue,
+    fiatAmount: inputCurrencyFiatAmount,
     receiveAmountInfo: !isSellTrade ? receiveAmountInfo : null,
   }
 
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
-    currency: currencies.OUTPUT || null,
-    amount: parsedAmounts.OUTPUT || null,
+    currency: outputCurrency,
+    amount: outputCurrencyAmount,
     isIndependent: !isSellTrade,
     balance: outputCurrencyBalance,
-    fiatAmount: outputUsdValue,
+    fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo: isSellTrade ? receiveAmountInfo : null,
   }
-
   const inputCurrencyPreviewInfo = {
     amount: inputCurrencyInfo.amount,
     fiatAmount: inputCurrencyInfo.fiatAmount,
@@ -157,82 +113,15 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     label: isSellTrade ? 'Receive (before fees)' : 'Buy exactly',
   }
 
+  const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
+
   const buyingFiatAmount = useMemo(
     () => (isSellTrade ? outputCurrencyInfo.fiatAmount : inputCurrencyInfo.fiatAmount),
     [isSellTrade, outputCurrencyInfo.fiatAmount, inputCurrencyInfo.fiatAmount],
   )
 
-  const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
-  const showCowSubsidyModal = useModalIsOpen(ApplicationModal.COW_SUBSIDY)
-
-  const { feeWarningAccepted } = useHighFeeWarning()
-  const noImpactWarningAccepted = useIsNoImpactWarningAccepted()
-  const { impactWarningAccepted: unknownImpactWarning } = useUnknownImpactWarning()
-  const impactWarningAccepted = noImpactWarningAccepted || unknownImpactWarning
-
-  const openNativeWrapModal = useCallback(() => setOpenNativeWrapModal(true), [])
-  const dismissNativeWrapModal = useCallback(() => setOpenNativeWrapModal(false), [])
-
-  const swapButtonContext = useSwapButtonContext(
-    {
-      feeWarningAccepted,
-      impactWarningAccepted,
-      openNativeWrapModal,
-    },
-    swapActions,
-  )
-
-  const tradeUrlParams = useTradeRouteContext()
-
-  const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
-
-  const ethFlowProps: EthFlowProps = {
-    nativeInput: parsedAmounts.INPUT,
-    onDismiss: dismissNativeWrapModal,
-    wrapCallback: swapButtonContext.onWrapOrUnwrap,
-    directSwapCallback: swapButtonContext.handleSwap,
-    hasEnoughWrappedBalanceForSwap: swapButtonContext.hasEnoughWrappedBalanceForSwap,
-  }
-
-  const swapModalsProps: SwapModalsProps = {
-    showNativeWrapModal,
-    showCowSubsidyModal,
-  }
-  const showTwapSuggestionBanner = !enabledTradeTypes || enabledTradeTypes.includes(TradeType.ADVANCED)
-  const isNativeSellInHooksStore = swapButtonContext.swapButtonState === SwapButtonState.SellNativeInHooks
-
-  const swapWarningsTopProps: SwapWarningsTopProps = useMemo(
-    () => ({
-      chainId,
-      trade,
-      showTwapSuggestionBanner,
-      buyingFiatAmount,
-      priceImpact: priceImpactParams.priceImpact,
-      tradeUrlParams,
-      isNativeSellInHooksStore,
-    }),
-    [
-      chainId,
-      trade,
-      showTwapSuggestionBanner,
-      buyingFiatAmount,
-      priceImpactParams.priceImpact,
-      tradeUrlParams,
-      isNativeSellInHooksStore,
-    ],
-  )
-
-  const swapWarningsBottomProps: SwapWarningsBottomProps = useMemo(
-    () => ({
-      isSupportedWallet,
-      swapIsUnsupported: isSwapUnsupported,
-      currencyIn: currencies.INPUT || undefined,
-      currencyOut: currencies.OUTPUT || undefined,
-    }),
-    [isSupportedWallet, isSwapUnsupported, currencies.INPUT, currencies.OUTPUT],
-  )
-
   const slots: TradeWidgetSlots = {
+    topContent,
     settingsWidget: (
       <SettingsTab
         recipientToggleState={recipientToggleState}
@@ -240,109 +129,71 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         deadlineState={deadlineState}
       />
     ),
-
-    topContent,
     bottomContent: useCallback(
-      (warnings: ReactNode | null) => {
+      (tradeWarnings: ReactNode | null) => {
         return (
           <>
             {bottomContent}
             <TradeRateDetails
-              isTradePriceUpdating={isTradePriceUpdating}
+              isTradePriceUpdating={isRateLoading}
               rateInfoParams={rateInfoParams}
               deadline={deadlineState[0]}
             />
-            <SwapWarningsTop {...swapWarningsTopProps} />
-            {warnings}
-            <SwapButtons {...swapButtonContext} />
-            <SwapWarningsBottom {...swapWarningsBottomProps} />
+            <Warnings buyingFiatAmount={buyingFiatAmount} />
+            {tradeWarnings}
+            <TradeButtons
+              isTradeContextReady={doTrade.contextIsReady}
+              openNativeWrapModal={openNativeWrapModal}
+              hasEnoughWrappedBalanceForSwap={hasEnoughWrappedBalanceForSwap}
+            />
           </>
         )
       },
       [
-        bottomContent,
-        deadlineState,
-        isTradePriceUpdating,
+        doTrade.contextIsReady,
+        isRateLoading,
         rateInfoParams,
-        swapButtonContext,
-        swapWarningsTopProps,
-        swapWarningsBottomProps,
+        deadlineState,
+        bottomContent,
+        buyingFiatAmount,
+        hasEnoughWrappedBalanceForSwap,
+        openNativeWrapModal,
       ],
     ),
   }
 
   const params = {
-    isEoaEthFlow,
     compactView: true,
     enableSmartSlippage: true,
     isMarketOrderWidget: true,
+    isSellingEthSupported: true,
     recipient,
-    showRecipient: showRecipientControls,
-    isTradePriceUpdating,
-    priceImpact: priceImpactParams,
-    disableQuotePolling: true,
-    tradeQuoteStateOverride,
+    showRecipient,
+    isTradePriceUpdating: isRateLoading,
+    priceImpact,
+    disableQuotePolling: isConfirmOpen,
   }
 
-  useSetLocalTimeOffset(getQuoteTimeOffset(swapButtonContext.quoteDeadlineParams))
-
-  const cowShedLink = useMemo(
-    () =>
-      parameterizeTradeRoute(
-        {
-          chainId: chainId.toString(),
-          inputCurrencyId: undefined,
-          outputCurrencyId: undefined,
-          inputCurrencyAmount: undefined,
-          outputCurrencyAmount: undefined,
-          orderKind: undefined,
-        },
-        Routes.COW_SHED,
-      ),
-    [chainId],
-  )
-
   return (
-    <>
-      <SwapModals {...swapModalsProps} />
-      <TradeWidgetContainer>
-        <TradeWidget
-          id="swap-page"
-          slots={slots}
-          actions={swapActions}
-          params={params}
-          inputCurrencyInfo={inputCurrencyInfo}
-          outputCurrencyInfo={outputCurrencyInfo}
-          confirmModal={
-            <ConfirmSwapModalSetup
-              chainId={chainId}
-              rateInfoParams={rateInfoParams}
-              trade={trade}
-              allowedSlippage={slippage}
-              doTrade={swapButtonContext.handleSwap}
-              priceImpact={priceImpactParams}
-              inputCurrencyInfo={inputCurrencyPreviewInfo}
-              outputCurrencyInfo={outputCurrencyPreviewInfo}
-              refreshInterval={SWAP_QUOTE_CHECK_INTERVAL}
-            />
-          }
-          genericModal={showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
-        />
-
-        {!isHookTradeType && <NetworkAlert />}
-        {isHookTradeType && !!account && (
-          <InlineBanner
-            bannerType="information"
-            customIcon={HAND_SVG}
-            iconSize={24}
-            orientation={BannerOrientation.Horizontal}
-            backDropBlur
-            margin="10px auto auto"
-          >
-            Funds stuck? <Link to={cowShedLink}>Recover your funds</Link>
-          </InlineBanner>
-        )}
-      </TradeWidgetContainer>
-    </>
+    <Container>
+      <TradeWidget
+        slots={slots}
+        actions={widgetActions}
+        params={params}
+        inputCurrencyInfo={inputCurrencyInfo}
+        outputCurrencyInfo={outputCurrencyInfo}
+        confirmModal={
+          <SwapConfirmModal
+            doTrade={doTrade.callback}
+            recipient={recipient}
+            priceImpact={priceImpact}
+            inputCurrencyInfo={inputCurrencyPreviewInfo}
+            outputCurrencyInfo={outputCurrencyPreviewInfo}
+          />
+        }
+        genericModal={showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
+      />
+      <BottomBanners />
+    </Container>
   )
 }

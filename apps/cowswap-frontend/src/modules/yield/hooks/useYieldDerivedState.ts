@@ -14,7 +14,7 @@ export function useYieldDerivedState() {
 
 export function useFillYieldDerivedState() {
   const updateDerivedState = useSetAtom(yieldDerivedStateAtom)
-  const derivedState = useBuildTradeDerivedState(yieldRawStateAtom)
+  const derivedState = useBuildTradeDerivedState(yieldRawStateAtom, false)
 
   useEffect(() => {
     updateDerivedState({

@@ -1,12 +1,12 @@
 import { useCallback } from 'react'
 
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { Order } from 'legacy/state/orders/actions'
 import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy/state/orders/hooks'
 
-import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 import { useSetPartOrderCancelling } from 'modules/twap/hooks/useSetPartOrderCancelling'
 
 import { CancelledOrderInfo } from './onChainCancellation'
@@ -24,7 +24,7 @@ export function useSendOnChainCancellation() {
     ({ txHash, orderId, sellTokenAddress, sellTokenSymbol }: CancelledOrderInfo) => {
       if (!chainId) return
 
-      const isEthFlowOrder = getIsEthFlowOrder(sellTokenAddress)
+      const isEthFlowOrder = getIsNativeToken(chainId, sellTokenAddress)
 
       cancelPendingOrder({ id: orderId, chainId })
       setOrderCancellationHash({ chainId, id: orderId, hash: txHash })
@@ -39,7 +39,7 @@ export function useSendOnChainCancellation() {
         })
       }
     },
-    [chainId, cancelPendingOrder, setOrderCancellationHash, addTransaction, setPartOrderCancelling]
+    [chainId, cancelPendingOrder, setOrderCancellationHash, addTransaction, setPartOrderCancelling],
   )
 
   return useCallback(
@@ -48,6 +48,6 @@ export function useSendOnChainCancellation() {
 
       await sendTransaction(processCancelledOrder)
     },
-    [processCancelledOrder, getOnChainCancellation]
+    [processCancelledOrder, getOnChainCancellation],
   )
 }

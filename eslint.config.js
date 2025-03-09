@@ -12,6 +12,9 @@ const compat = new FlatCompat({
 
 module.exports = [
   {
+    ignores: ['static-files/'],
+  },
+  {
     plugins: {
       '@nx': nxEslintPlugin,
       'unused-imports': unusedImports,

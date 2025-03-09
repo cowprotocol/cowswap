@@ -9,9 +9,10 @@ import { useCancelledOrders, useFulfillOrdersBatch } from 'legacy/state/orders/h
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 
 import { emitFulfilledOrderEvent } from 'modules/orders'
-import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 
 import { fetchAndClassifyOrder } from './utils'
+
+import { useAddOrderToSurplusQueue } from '../../containers/SurplusModalSetup/surplusModal'
 
 /**
  * Updater for cancelled orders.
@@ -66,7 +67,7 @@ export function CancelledOrdersUpdater(): null {
               now - creationTime < CANCELLED_ORDERS_PENDING_TIME &&
               !(cancellationHash && status === 'cancelled')
             )
-          }
+          },
         )
 
         if (pending.length === 0) {
@@ -77,7 +78,7 @@ export function CancelledOrdersUpdater(): null {
 
         // Iterate over pending orders fetching operator order data, async
         const unfilteredOrdersData = await Promise.all(
-          pending.map(async (orderFromStore) => fetchAndClassifyOrder(orderFromStore, chainId))
+          pending.map(async (orderFromStore) => fetchAndClassifyOrder(orderFromStore, chainId)),
         )
 
         // Group resolved promises by status
@@ -97,7 +98,7 @@ export function CancelledOrdersUpdater(): null {
             unknown: [],
             presignaturePending: [],
             pending: [],
-          }
+          },
         )
 
         // Bach state update fulfilled orders, if any
@@ -118,7 +119,7 @@ export function CancelledOrdersUpdater(): null {
         isUpdating.current = false
       }
     },
-    [addOrderToSurplusQueue, fulfillOrdersBatch]
+    [addOrderToSurplusQueue, fulfillOrdersBatch],
   )
 
   useEffect(() => {

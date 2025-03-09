@@ -1,12 +1,12 @@
 import { useLayoutEffect } from 'react'
 
-import { useSwapActionHandlers } from 'modules/swap/hooks/useSwapState'
+import { useSwapWidgetActions } from 'modules/swap/hooks/useSwapWidgetActions'
 import { useIsHooksTradeType, useIsNativeIn } from 'modules/trade'
 
 import { usePostHooksRecipientOverride } from './usePostHooksRecipientOverride'
 
 export function useSetRecipientOverride() {
-  const { onChangeRecipient } = useSwapActionHandlers()
+  const { onChangeRecipient } = useSwapWidgetActions()
   const hookRecipientOverride = usePostHooksRecipientOverride()
   const isHooksTradeType = useIsHooksTradeType()
   const isNativeIn = useIsNativeIn()

@@ -1,4 +1,4 @@
-import { SupportedChainId, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { BackButton } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
@@ -11,7 +11,7 @@ import type { Order } from 'legacy/state/orders/actions'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { GnosisSafeTxDetails } from 'modules/account/containers/Transaction/ActivityDetails'
-import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
+import { EthFlowStepper } from 'modules/ethFlow'
 import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
@@ -43,7 +43,7 @@ function getTitleStatus(activityDerivedState: ActivityDerivedState | null): stri
 export interface TransactionSubmittedContentProps {
   onDismiss(): void
   hash: string | undefined
-  chainId: ChainId
+  chainId: SupportedChainId
   activityDerivedState: ActivityDerivedState | null
   currencyToAdd?: Nullish<Currency>
   orderProgressBarV2Props: OrderProgressBarV2Props
@@ -62,10 +62,6 @@ export function TransactionSubmittedContent({
   const { order, isOrder, isCreating, isPending } = activityDerivedState || {}
   const { isProgressBarSetup, showCancellationModal, stepName } = orderProgressBarV2Props
   const showCancellationButton = isOrder && (isCreating || isPending) && showCancellationModal
-
-  if (!chainId) {
-    return null
-  }
 
   const isPresignaturePending = activityDerivedState?.isPresignaturePending
   const showSafeSigningInfo = isPresignaturePending && activityDerivedState && !!activityDerivedState.gnosisSafeInfo

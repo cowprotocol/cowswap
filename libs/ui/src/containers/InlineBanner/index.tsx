@@ -4,10 +4,13 @@ import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { BannerOrientation } from './banners'
-
 import { UI } from '../../enum'
 import { Icon, IconType } from '../../pure/Icon'
+
+export enum BannerOrientation {
+  Horizontal = 'horizontal',
+  Vertical = 'vertical',
+}
 
 export type BannerType = 'alert' | 'information' | 'success' | 'danger' | 'savings'
 

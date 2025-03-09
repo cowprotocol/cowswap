@@ -10,7 +10,6 @@ import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
-import { cowSwapStore, AppState } from 'legacy/state'
 
 import { Title } from 'modules/application/pure/Page'
 
@@ -40,7 +39,10 @@ const CodeBlockWrapper = styled.div`
   background: var(${UI.COLOR_PAPER});
   overflow: auto;
   white-space: pre;
-  box-shadow: 0 0 1px rgba(0, 0, 0, 0.01), 0 4px 8px rgba(0, 0, 0, 0.04), 0 16px 24px rgba(0, 0, 0, 0.04),
+  box-shadow:
+    0 0 1px rgba(0, 0, 0, 0.01),
+    0 4px 8px rgba(0, 0, 0, 0.04),
+    0 16px 24px rgba(0, 0, 0, 0.04),
     0 24px 32px rgba(0, 0, 0, 0.01);
   border-radius: 16px;
   padding: 16px;
@@ -87,7 +89,7 @@ export const ErrorWithStackTrace = ({ error }: { error: Error }) => {
               href={
                 CODE_LINK +
                 `/issues/new?assignees=&labels=🐞 Bug,🔥 Critical&body=${encodedBody}&title=${encodeURIComponent(
-                  `Crash report: \`${error.name}${error.message && `: ${truncate(error.message)}`}\``
+                  `Crash report: \`${error.name}${error.message && `: ${truncate(error.message)}`}\``,
                 )}`
               }
             >
@@ -111,42 +113,12 @@ export const ErrorWithStackTrace = ({ error }: { error: Error }) => {
   )
 }
 
-function getRelevantState(): null | keyof AppState {
-  const path = window.location.hash
-  if (!path.startsWith('#/')) {
-    return null
-  }
-  const pieces = path.substring(2).split(/[/\\?]/)
-  switch (pieces[0]) {
-    case 'swap':
-      return 'swap'
-    /* case 'add':
-        if (pieces[1] === 'v2') return 'mint'
-        else return 'mintV3'
-      case 'remove':
-        if (pieces[1] === 'v2') return 'burn'
-        else return 'burnV3' */
-  }
-  return null
-}
-
 function issueBody(error: Error): string {
-  const relevantState = getRelevantState()
   const deviceData = userAgent
   return `## URL
 
 ${window.location.href}
 
-${
-  relevantState
-    ? `## \`${relevantState}\` state
-
-\`\`\`json
-${JSON.stringify(cowSwapStore.getState()[relevantState], null, 2)}
-\`\`\`
-`
-    : ''
-}
 ${
   error.name &&
   `## Error

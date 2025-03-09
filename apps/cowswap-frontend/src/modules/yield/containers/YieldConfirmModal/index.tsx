@@ -73,7 +73,6 @@ export function YieldConfirmModal(props: YieldConfirmModalProps) {
         buttonText="Confirm Swap"
         recipient={recipient}
         appData={appData || undefined}
-        isPriceStatic={true}
       >
         {(restContent) => (
           <>

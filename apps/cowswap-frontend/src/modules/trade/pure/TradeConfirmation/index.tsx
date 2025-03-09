@@ -1,14 +1,6 @@
 import { ReactElement, useEffect, useRef, useState } from 'react'
 
-import {
-  BackButton,
-  BannerOrientation,
-  ButtonPrimary,
-  ButtonSize,
-  CenteredDots,
-  CustomRecipientWarningBanner,
-  LongLoadText,
-} from '@cowprotocol/ui'
+import { BackButton, BannerOrientation, ButtonPrimary, ButtonSize, CenteredDots, LongLoadText } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import ms from 'ms.macro'
@@ -20,6 +12,7 @@ import type { AppDataInfo } from 'modules/appData'
 
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
 import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
+import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
 
 import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
@@ -33,9 +26,7 @@ const ONE_SEC = ms`1s`
 
 export interface TradeConfirmationProps {
   onConfirm(): void
-
   onDismiss(): void
-
   account: string | undefined
   ensName: string | undefined
   appData?: string | AppDataInfo
@@ -52,7 +43,7 @@ export interface TradeConfirmationProps {
 }
 
 export function TradeConfirmation(props: TradeConfirmationProps) {
-  const { pendingTrade } = useTradeConfirmState()
+  const { pendingTrade, forcePriceConfirmation } = useTradeConfirmState()
 
   const propsRef = useRef(props)
   propsRef.current = props
@@ -93,7 +84,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
   const inputAmount = inputCurrencyInfo.amount?.toExact()
   const outputAmount = outputCurrencyInfo.amount?.toExact()
 
-  const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(inputAmount, outputAmount)
+  const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(inputAmount, outputAmount, forcePriceConfirmation)
 
   const isButtonDisabled = isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade
 

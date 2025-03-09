@@ -22,6 +22,8 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     account,
     isPermitSupported,
     isInsufficientBalanceOrderAllowed,
+    isProviderNetworkUnsupported,
+    isOnline,
   } = context
 
   const { inputCurrency, outputCurrency, inputCurrencyAmount, inputCurrencyBalance, recipient } = derivedTradeState
@@ -35,6 +37,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     !isPermitSupported && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
 
   const inputAmountIsNotSet = !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
+  const isFastQuote = tradeQuote.quoteParams?.priceQuality === PriceQuality.FAST
 
   if (!isWrapUnwrap && tradeQuote.error) {
     return TradeFormValidation.QuoteErrors
@@ -46,6 +49,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (!isSupportedWallet) {
     return TradeFormValidation.WalletNotSupported
+  }
+
+  if (isProviderNetworkUnsupported) {
+    return TradeFormValidation.NetworkNotSupported
   }
 
   if (isSafeReadonlyUser) {
@@ -64,6 +71,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     return TradeFormValidation.InputAmountNotSet
   }
 
+  if (!isOnline) {
+    return TradeFormValidation.BrowserOffline
+  }
+
   if (!isWrapUnwrap) {
     if (recipient && !recipientEnsAddress && !isAddress(recipient)) {
       return TradeFormValidation.RecipientInvalid
@@ -73,22 +84,15 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       return TradeFormValidation.CurrencyNotSupported
     }
 
-    if (!tradeQuote.response) {
+    if (isFastQuote || !tradeQuote.response) {
       return TradeFormValidation.QuoteLoading
     }
 
     if (
       derivedTradeState.tradeType !== TradeType.LIMIT_ORDER &&
       !tradeQuote.isLoading &&
-      tradeQuote.quoteParams?.priceQuality !== PriceQuality.FAST &&
-      isQuoteExpired({
-        expirationDate: tradeQuote.response?.expiration,
-        deadlineParams: {
-          validFor: tradeQuote.quoteParams?.validFor,
-          quoteValidTo: tradeQuote.response.quote.validTo,
-          localQuoteTimestamp: tradeQuote.localQuoteTimestamp,
-        },
-      })
+      !isFastQuote &&
+      isQuoteExpired(tradeQuote)
     ) {
       return TradeFormValidation.QuoteExpired
     }

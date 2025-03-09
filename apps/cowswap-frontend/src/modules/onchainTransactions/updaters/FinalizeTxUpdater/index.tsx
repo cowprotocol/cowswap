@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { useAllTransactionsDetails } from 'legacy/state/enhancedTransactions/hooks'
 import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 
-import { useCheckEthereumTransactions } from './hooks/useCheckEthereumTransactions'
+import { usePendingTransactionsContext } from './hooks/usePendingTransactionsContext'
 import { useShouldCheckPendingTx } from './hooks/useShouldCheckPendingTx'
 import { checkOnChainTransaction } from './services/checkOnChainTransaction'
 import { checkSafeTransaction } from './services/checkSafeTransaction'
@@ -16,7 +16,7 @@ export function FinalizeTxUpdater() {
 
   const transactions = useAllTransactionsDetails(shouldCheckFilter)
 
-  const params = useCheckEthereumTransactions()
+  const params = usePendingTransactionsContext()
 
   useEffect(() => {
     if (!params) return

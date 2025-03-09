@@ -20,7 +20,7 @@ export function FullAmountQuoteUpdater() {
   const fullQuoteAmount = inputCurrencyAmount?.quotient.toString() || null
   const partQuoteAmount = response?.quote.buyAmount
 
-  const quoteParams = useQuoteParams(fullQuoteAmount)
+  const quoteParams = useQuoteParams(fullQuoteAmount)?.quoteParams
   const updateQuoteState = useSetAtom(fullAmountQuoteAtom)
 
   useEffect(() => {

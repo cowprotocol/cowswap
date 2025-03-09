@@ -8,20 +8,6 @@ export interface TradeDerivedState {
   readonly outputCurrency: Currency | null
   readonly inputCurrencyAmount: CurrencyAmount<Currency> | null
   readonly outputCurrencyAmount: CurrencyAmount<Currency> | null
-  /**
-   * Since Cow Protocol supports buying trade type
-   * Sometimes we need a maximum amount to sell
-   *
-   * How it works:
-   * You want to buy exactly 2 WETH for <some amount> of COW.
-   * In this case, you will input 2 WETH in the buy input
-   * and the sell input will be automatically filled by the quote API response, for example with the value 552 COW.
-   * Since the market is liquid, there might be a slippage, let's assume it's 2%.
-   * So, the final sell amount will be 552 COW + 2% = 563.04
-   */
-  readonly slippageAdjustedSellAmount: CurrencyAmount<Currency> | null
-  // TODO: remove those fields and use useReceiveAmountInfo() instead
-  readonly slippageAdjustedBuyAmount: CurrencyAmount<Currency> | null
   readonly inputCurrencyBalance: CurrencyAmount<Currency> | null
   readonly outputCurrencyBalance: CurrencyAmount<Currency> | null
   readonly inputCurrencyFiatAmount: CurrencyAmount<Currency> | null
@@ -31,6 +17,13 @@ export interface TradeDerivedState {
   readonly orderKind: OrderKind
   readonly slippage: Percent | null
   readonly tradeType: TradeType | null
+  /**
+   * If true, the order amount is based on a quote. Means that the order amount is calculated based on the quote.
+   * For now, it's only true for Swap.
+   * In Limit order price might be changed by a user.
+   * In TWAP the order price depends on parts count and price protection.
+   */
+  readonly isQuoteBasedOrder: boolean
 }
 
 export const DEFAULT_TRADE_DERIVED_STATE: TradeDerivedState = {
@@ -38,8 +31,6 @@ export const DEFAULT_TRADE_DERIVED_STATE: TradeDerivedState = {
   outputCurrency: null,
   inputCurrencyAmount: null,
   outputCurrencyAmount: null,
-  slippageAdjustedSellAmount: null,
-  slippageAdjustedBuyAmount: null,
   inputCurrencyBalance: null,
   outputCurrencyBalance: null,
   inputCurrencyFiatAmount: null,
@@ -49,4 +40,5 @@ export const DEFAULT_TRADE_DERIVED_STATE: TradeDerivedState = {
   slippage: null,
   orderKind: OrderKind.SELL,
   tradeType: null,
+  isQuoteBasedOrder: false,
 }

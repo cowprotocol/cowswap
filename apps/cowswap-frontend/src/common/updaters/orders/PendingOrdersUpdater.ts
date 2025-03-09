@@ -37,13 +37,13 @@ import {
   emitFulfilledOrderEvent,
   emitPresignedOrderEvent,
 } from 'modules/orders'
-import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 
 import { getOrder } from 'api/cowProtocol'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { fetchAndClassifyOrder } from './utils'
 
+import { useAddOrderToSurplusQueue } from '../../containers/SurplusModalSetup/surplusModal'
 import { removeOrdersToCancelAtom } from '../../hooks/useMultipleOrdersCancellation/state'
 import { useTriggerTotalSurplusUpdateCallback } from '../../state/totalSurplusState'
 
@@ -200,7 +200,7 @@ async function _updateOrders({
   if (!pending.length) {
     return
   } else {
-    _triggerNps(pending, chainId)
+    _triggerNps(pending, chainId, account)
   }
 
   // Iterate over pending orders fetching API data
@@ -340,7 +340,7 @@ function getReplacedOrCancelledEthFlowOrders(
 
 // Check if there is any order pending for a long time
 // If so, trigger appzi
-function _triggerNps(pending: Order[], chainId: ChainId) {
+function _triggerNps(pending: Order[], chainId: ChainId, account: string) {
   for (const order of pending) {
     const { openSince, id: orderId } = order
     const orderType = getUiOrderType(order)
@@ -354,6 +354,7 @@ function _triggerNps(pending: Order[], chainId: ChainId) {
         explorerUrl,
         chainId,
         orderType,
+        account,
       })
       // Break the loop, don't need to show more than once
       break

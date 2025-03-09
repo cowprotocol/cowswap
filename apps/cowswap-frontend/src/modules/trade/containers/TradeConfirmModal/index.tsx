@@ -94,8 +94,6 @@ function InnerComponent(props: InnerComponentProps) {
   }
 
   if (pendingTrade && permitSignatureState && permitSignatureState !== 'signed') {
-    // TODO: potentially replace TradeConfirmPendingContent completely with PermitModal
-    // We could use this not just for permit, but for any token, even already approved
     const step = permitSignatureState === 'signed' ? 'submit' : 'approve'
     return (
       <PermitModal

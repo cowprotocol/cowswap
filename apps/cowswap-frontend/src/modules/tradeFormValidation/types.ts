@@ -5,6 +5,8 @@ import { TradeQuoteState } from 'modules/tradeQuote'
 
 import { ApprovalState } from 'common/hooks/useApproveState'
 
+import { AmountsToSign } from '../trade/hooks/useAmountsToSign'
+
 export enum TradeFormValidation {
   // Wrap/unwrap
   WrapUnwrapFlow,
@@ -22,6 +24,8 @@ export enum TradeFormValidation {
   CurrencyNotSet,
   InputAmountNotSet,
   RecipientInvalid,
+  NetworkNotSupported,
+  BrowserOffline,
 
   // Quote loading indicator
   QuoteLoading,
@@ -52,12 +56,15 @@ export interface TradeFormValidationCommonContext {
   isSafeReadonlyUser: boolean
   isPermitSupported: boolean
   isInsufficientBalanceOrderAllowed: boolean
+  isProviderNetworkUnsupported: boolean
+  isOnline: boolean
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}
 
 export interface TradeFormButtonContext {
   defaultText: string
+  amountsToSign: AmountsToSign | null
   derivedState: TradeDerivedState
   quote: TradeQuoteState
   isSupportedWallet: boolean

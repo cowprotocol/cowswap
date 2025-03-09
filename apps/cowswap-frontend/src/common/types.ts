@@ -1,3 +1,4 @@
+import type { AppData, AppDataHash, EnrichedOrder, PriceQuality, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 /**
@@ -27,4 +28,19 @@ export type SafeTransactionParams = {
 export interface TradeAmounts {
   readonly inputAmount: CurrencyAmount<Currency>
   readonly outputAmount: CurrencyAmount<Currency>
+}
+
+export interface FeeQuoteParams extends Pick<EnrichedOrder, 'sellToken' | 'buyToken' | 'kind'> {
+  amount: string
+  userAddress?: string | null
+  receiver?: string | null
+  validFor?: number
+  fromDecimals?: number
+  toDecimals?: number
+  chainId: SupportedChainId
+  priceQuality: PriceQuality
+  isBestQuote?: boolean
+  isEthFlow: boolean
+  appData?: AppData
+  appDataHash?: AppDataHash
 }

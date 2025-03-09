@@ -7,17 +7,18 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
+import { AmountsToSign, useAmountsToSign } from './useAmountsToSign'
 import { useDerivedTradeState } from './useDerivedTradeState'
 
 import { TradeTypeToUiOrderType } from '../const/common'
-import { TradeType } from '../types'
-import { TradeDerivedState } from '../types/TradeDerivedState'
+import { TradeType, TradeDerivedState } from '../types'
 
 export function useNotifyWidgetTrade() {
   const state = useDerivedTradeState()
+  const amountsToSign = useAmountsToSign()
 
   useEffect(() => {
-    if (!state) return
+    if (!state || !amountsToSign) return
 
     /**
      * There is no way to select both empty sell and buy currencies in the widget UI.
@@ -34,12 +35,16 @@ export function useNotifyWidgetTrade() {
 
     WIDGET_EVENT_EMITTER.emit(
       CowWidgetEvents.ON_CHANGE_TRADE_PARAMS,
-      getTradeParamsEventPayload(state.tradeType, state),
+      getTradeParamsEventPayload(state.tradeType, state, amountsToSign),
     )
-  }, [state])
+  }, [state, amountsToSign])
 }
 
-function getTradeParamsEventPayload(tradeType: TradeType, state: TradeDerivedState): OnTradeParamsPayload {
+function getTradeParamsEventPayload(
+  tradeType: TradeType,
+  state: TradeDerivedState,
+  { maximumSendSellAmount, minimumReceiveBuyAmount }: AmountsToSign,
+): OnTradeParamsPayload {
   return {
     orderType: TradeTypeToUiOrderType[tradeType],
     sellToken: currencyToTokenInfo(state.inputCurrency),
@@ -50,8 +55,8 @@ function getTradeParamsEventPayload(tradeType: TradeType, state: TradeDerivedSta
     buyTokenBalance: currencyAmountToAtomsAndUnits(state.outputCurrencyBalance),
     sellTokenFiatAmount: state.inputCurrencyFiatAmount?.toExact(),
     buyTokenFiatAmount: state.outputCurrencyFiatAmount?.toExact(),
-    maximumSendSellAmount: currencyAmountToAtomsAndUnits(state.slippageAdjustedSellAmount),
-    minimumReceiveBuyAmount: currencyAmountToAtomsAndUnits(state.slippageAdjustedBuyAmount),
+    maximumSendSellAmount: currencyAmountToAtomsAndUnits(maximumSendSellAmount),
+    minimumReceiveBuyAmount: currencyAmountToAtomsAndUnits(minimumReceiveBuyAmount),
     recipient: state.recipient || undefined,
     orderKind: state.orderKind,
   }

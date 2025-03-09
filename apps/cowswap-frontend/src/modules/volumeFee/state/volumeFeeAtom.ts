@@ -46,7 +46,7 @@ const shouldSkipFeeAtom = atom<boolean>((get) => {
   const inputCurrencyAddress = getCurrencyAddress(inputCurrency).toLowerCase()
   const outputCurrencyAddress = getCurrencyAddress(outputCurrency).toLowerCase()
 
-  const isCorrelated = correlatedTokens.some((tokens) => {
+  return correlatedTokens.some((tokens) => {
     // If there is only one asset in the list, it means that it is a global correlated token
     const addresses = Object.keys(tokens)
     if (addresses.length === 1) {
@@ -56,16 +56,6 @@ const shouldSkipFeeAtom = atom<boolean>((get) => {
       return tokens[inputCurrencyAddress] && tokens[outputCurrencyAddress]
     }
   })
-
-  if (isCorrelated) {
-    console.debug('[Volume Fee] Skipping fee for correlated tokens', {
-      inputCurrencyAddress,
-      outputCurrencyAddress,
-      correlatedTokens,
-    })
-  }
-
-  return isCorrelated
 })
 
 const widgetPartnerFeeAtom = atom<VolumeFee | undefined>((get) => {

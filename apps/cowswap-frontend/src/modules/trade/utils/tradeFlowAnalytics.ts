@@ -1,9 +1,9 @@
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { UiOrderType } from '@cowprotocol/types'
 
-import { USER_SWAP_REJECTED_ERROR } from 'modules/trade/utils/swapErrorHelper'
-
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
+
+import { USER_SWAP_REJECTED_ERROR } from '../../../common/utils/getSwapErrorMessage'
 
 export interface TradeFlowAnalyticsContext {
   account: string | null

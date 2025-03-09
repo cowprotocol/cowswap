@@ -1,34 +1,27 @@
 import { MAX_VALID_TO_EPOCH } from '@cowprotocol/common-utils'
 
-import { Nullish } from 'types'
+import { TradeQuoteState } from '../state/tradeQuoteAtom'
 
 const EXPIRATION_TIME_THRESHOLD = 5 // 5 seconds
-
-export interface QuoteDeadlineParams {
-  validFor: Nullish<number>
-  quoteValidTo: Nullish<number>
-  localQuoteTimestamp: Nullish<number>
-}
-
-interface QuoteExpirationInfo {
-  expirationDate: Nullish<string>
-  deadlineParams: QuoteDeadlineParams
-}
 
 /**
  * Because local time can be different from the server time, we need to calculate time offset and take it into account
  *
- * @param expirationDate the timestamp when the quote is no longer valid (from API response)
- * @param deadlineParams the deadline parameters for the quote
+ * expirationDate the timestamp when the quote is no longer valid (from API response)
+ * deadlineParams the deadline parameters for the quote
  */
-export function isQuoteExpired({ expirationDate, deadlineParams }: QuoteExpirationInfo): boolean | undefined {
-  const timeOffset = getQuoteTimeOffset(deadlineParams)
+export function isQuoteExpired(state: TradeQuoteState): boolean | undefined {
+  if (!state.response) return undefined
 
-  if (!expirationDate || timeOffset === undefined) {
+  const { expiration } = state.response
+
+  const timeOffset = getQuoteTimeOffset(state)
+
+  if (!expiration || timeOffset === undefined) {
     return undefined
   }
 
-  const expirationTime = new Date(expirationDate).getTime()
+  const expirationTime = new Date(expiration).getTime()
   const delta = (expirationTime - Date.now()) / 1000
 
   /**
@@ -39,15 +32,15 @@ export function isQuoteExpired({ expirationDate, deadlineParams }: QuoteExpirati
 
 /**
  * Calculate the time offset between the expected validTo and the actual quote validTo
- * @param validFor duration of the quote
- * @param quoteValidTo the timestamp when the quote is no longer valid (from API response)
- * @param localQuoteTimestamp the timestamp when the quote was created
+ * validFor duration of the quote
+ * quoteValidTo the timestamp when the quote is no longer valid (from API response)
+ * localQuoteTimestamp the timestamp when the quote was created
  */
-export function getQuoteTimeOffset({
-  validFor,
-  quoteValidTo,
-  localQuoteTimestamp,
-}: QuoteDeadlineParams): number | undefined {
+export function getQuoteTimeOffset(state: TradeQuoteState): number | undefined {
+  const validFor = state.quoteParams?.validFor
+  const quoteValidTo = state.response?.quote.validTo
+  const localQuoteTimestamp = state.localQuoteTimestamp
+
   if (!validFor || !quoteValidTo || !localQuoteTimestamp) return undefined
 
   const expectedValidTo = localQuoteTimestamp + validFor
@@ -58,8 +51,8 @@ export function getQuoteTimeOffset({
 /**
  * Calculate the validTo timestamp for the order
  */
-export function getOrderValidTo(deadline: number, quoteDeadlineParams: QuoteDeadlineParams): number {
-  const timeOffset = getQuoteTimeOffset(quoteDeadlineParams)
+export function getOrderValidTo(deadline: number, state: TradeQuoteState): number {
+  const timeOffset = getQuoteTimeOffset(state)
 
   if (timeOffset === undefined) return 0
 

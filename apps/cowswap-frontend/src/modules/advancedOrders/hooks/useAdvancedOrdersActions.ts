@@ -7,18 +7,19 @@ import { Field } from 'legacy/state/types'
 
 import { useNavigateOnCurrencySelection, useSwitchTokensPlaces, useUpdateCurrencyAmount } from 'modules/trade'
 import { createDebouncedTradeAmountAnalytics } from 'modules/trade/utils/analytics'
-import { useResetTradeQuote } from 'modules/tradeQuote'
 
 import { useAdvancedOrdersDerivedState } from './useAdvancedOrdersDerivedState'
 import { useUpdateAdvancedOrdersRawState } from './useAdvancedOrdersRawState'
 
-// TODO: this should be also unified for each trade widget (swap, limit, advanced)
+const onSwitchTradeOverride = {
+  outputCurrencyAmount: null,
+}
+
 export function useAdvancedOrdersActions() {
   const { inputCurrency } = useAdvancedOrdersDerivedState()
 
   const naviageOnCurrencySelection = useNavigateOnCurrencySelection()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
-  const resetTradeQuote = useResetTradeQuote()
   const cowAnalytics = useCowAnalytics()
   const debouncedTradeAmountAnalytics = useMemo(() => createDebouncedTradeAmountAnalytics(cowAnalytics), [cowAnalytics])
 
@@ -26,17 +27,9 @@ export function useAdvancedOrdersActions() {
 
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency | null) => {
-      // Reset the output field until we fetch quote for new selected token
-      // This is to avoid displaying wrong amounts in output field
-      updateCurrencyAmount({
-        amount: { isTyped: false, value: '' },
-        field: Field.OUTPUT,
-        currency,
-      })
       naviageOnCurrencySelection(field, currency)
-      resetTradeQuote()
     },
-    [naviageOnCurrencySelection, updateCurrencyAmount, resetTradeQuote],
+    [naviageOnCurrencySelection],
   )
 
   const onUserInput = useCallback(
@@ -58,14 +51,7 @@ export function useAdvancedOrdersActions() {
     [updateAdvancedOrdersState],
   )
 
-  const onSwitchTokensDefault = useSwitchTokensPlaces({
-    outputCurrencyAmount: null,
-  })
-
-  const onSwitchTokens = useCallback(() => {
-    onSwitchTokensDefault()
-    resetTradeQuote()
-  }, [resetTradeQuote, onSwitchTokensDefault])
+  const onSwitchTokens = useSwitchTokensPlaces(onSwitchTradeOverride)
 
   return useMemo(
     () => ({

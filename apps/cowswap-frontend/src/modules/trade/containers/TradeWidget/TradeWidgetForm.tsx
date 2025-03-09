@@ -16,7 +16,6 @@ import { Field } from 'legacy/state/types'
 
 import { useToggleAccountModal } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { SetRecipient } from 'modules/swap/containers/SetRecipient'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
@@ -32,8 +31,10 @@ import * as styledEl from './styled'
 import { TradeWidgetProps } from './types'
 
 import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateFromUrl'
+import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner'
+import { SetRecipient } from '../../pure/SetRecipient'
 import { LimitOrdersPromoBannerWrapper } from '../LimitOrdersPromoBannerWrapper'
 import { TradeWarnings } from '../TradeWarnings'
 import { TradeWidgetLinks } from '../TradeWidgetLinks'
@@ -64,13 +65,13 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     compactView,
     showRecipient,
     isTradePriceUpdating,
-    isEoaEthFlow = false,
     priceImpact,
     recipient,
     hideTradeWarnings,
     enableSmartSlippage,
     displayTokenName = false,
     isMarketOrderWidget = false,
+    isSellingEthSupported = false,
   } = params
 
   const inputCurrencyInfo = useMemo(
@@ -96,6 +97,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const primaryFormValidation = useGetTradeFormValidation()
   const { shouldBeVisible: isLimitOrdersPromoBannerVisible } = useLimitOrdersPromoBanner()
   const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
+  const isEoaEthFlow = useIsEoaEthFlow()
 
   const sellToken = inputCurrencyInfo.currency
   const areCurrenciesLoading = !sellToken && !outputCurrencyInfo.currency
@@ -215,9 +217,9 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 <div>
                   <CurrencyInputPanel
                     id="output-currency-input"
-                    inputDisabled={isEoaEthFlow || isWrapOrUnwrap || disableOutput}
+                    inputDisabled={(isSellingEthSupported && isEoaEthFlow) || isWrapOrUnwrap || disableOutput}
                     inputTooltip={
-                      isEoaEthFlow
+                      isSellingEthSupported && isEoaEthFlow
                         ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
                         : undefined
                     }
@@ -230,7 +232,6 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                     {...currencyInputCommonProps}
                   />
                 </div>
-                {slots.limitPriceInput}
                 {withRecipient && <SetRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />}
 
                 {isWrapOrUnwrap ? (

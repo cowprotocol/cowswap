@@ -4,7 +4,7 @@ import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
+import { CompatibilityIssuesWarning } from 'modules/trade'
 
 import { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { TradeApproveButton } from 'common/containers/TradeApprove'
@@ -74,6 +74,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.InputAmountNotSet]: {
     text: 'Enter an amount',
   },
+  [TradeFormValidation.BrowserOffline]: {
+    text: 'Error loading price. You are currently offline.',
+  },
   [TradeFormValidation.RecipientInvalid]: {
     text: 'Enter a valid recipient',
   },
@@ -105,6 +108,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.WalletNotSupported]: {
     text: 'Wallet Unsupported',
   },
+  [TradeFormValidation.NetworkNotSupported]: {
+    text: 'Unsupported Network',
+  },
   [TradeFormValidation.SafeReadonlyUser]: {
     text: (
       <>
@@ -128,15 +134,17 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     text: "Couldn't load balances",
   },
   [TradeFormValidation.BalanceInsufficient]: (context) => {
+    const inputCurrency = context.derivedState.inputCurrency
+
     return (
       <TradeFormBlankButton disabled={true}>
-        <Trans>Insufficient&nbsp;{<TokenSymbol token={context.derivedState.inputCurrency} />}&nbsp;balance</Trans>
+        <Trans>Insufficient&nbsp;{<TokenSymbol token={inputCurrency} />}&nbsp;balance</Trans>
       </TradeFormBlankButton>
     )
   },
   [TradeFormValidation.ApproveAndSwap]: (context, isDisabled = false) => {
-    const currency = context.derivedState.slippageAdjustedSellAmount?.currency
-    const tokenToApprove = currency && getWrappedToken(currency)
+    const inputCurrency = context.derivedState.inputCurrency
+    const tokenToApprove = inputCurrency && getWrappedToken(inputCurrency)
 
     return (
       <TradeFormBlankButton disabled={isDisabled} onClick={context.confirmTrade}>
@@ -147,12 +155,11 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     )
   },
   [TradeFormValidation.ApproveRequired]: (context) => {
-    const amountToApprove = context.derivedState.slippageAdjustedSellAmount
-
-    if (!amountToApprove) return null
+    if (!context.amountsToSign) return null
+    const { maximumSendSellAmount } = context.amountsToSign
 
     return (
-      <TradeApproveButton amountToApprove={amountToApprove}>
+      <TradeApproveButton amountToApprove={maximumSendSellAmount}>
         <TradeFormBlankButton disabled={true}>
           <Trans>{context.defaultText}</Trans>
         </TradeFormBlankButton>
@@ -160,14 +167,14 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     )
   },
   [TradeFormValidation.SellNativeToken]: (context) => {
-    const currency = context.derivedState.inputCurrency
-    const isNativeIn = !!currency && getIsNativeToken(currency)
+    const inputCurrency = context.derivedState.inputCurrency
+    const isNativeIn = !!inputCurrency && getIsNativeToken(inputCurrency)
 
     if (!isNativeIn) return null
 
     return (
       <TradeFormBlankButton disabled>
-        <Trans>Selling {currency.symbol} is not supported</Trans>
+        <Trans>Selling {inputCurrency.symbol} is not supported</Trans>
       </TradeFormBlankButton>
     )
   },

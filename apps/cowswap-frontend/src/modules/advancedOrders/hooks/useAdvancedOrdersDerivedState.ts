@@ -20,7 +20,7 @@ export function useFillAdvancedOrdersDerivedState(slippage: Percent) {
   const rawState = useAtomValue(advancedOrdersAtom)
   const updateDerivedState = useSetAtom(advancedOrdersDerivedStateAtom)
 
-  const derivedState = useBuildTradeDerivedState(advancedOrdersAtom)
+  const derivedState = useBuildTradeDerivedState(advancedOrdersAtom, false)
   const isUnlocked = rawState.isUnlocked
 
   useEffect(() => {
