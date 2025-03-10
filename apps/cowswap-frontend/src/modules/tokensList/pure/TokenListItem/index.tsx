@@ -1,3 +1,5 @@
+import { MouseEventHandler } from 'react'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { LoadingRows, LoadingRowSmall, TokenAmount } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -27,7 +29,7 @@ export interface TokenListItemProps {
 export function TokenListItem(props: TokenListItemProps) {
   const { token, selectedToken, balance, onSelectToken, isUnsupported, isPermitCompatible, isWalletConnected } = props
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
     if (isTokenSelected) {
       e.preventDefault()
       e.stopPropagation()
