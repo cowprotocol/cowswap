@@ -3,7 +3,6 @@ import { ReactElement, useEffect, useRef, useState } from 'react'
 import { BackButton, BannerOrientation, ButtonPrimary, ButtonSize, CenteredDots, LongLoadText } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-import ms from 'ms.macro'
 
 import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -21,8 +20,6 @@ import * as styledEl from './styled'
 import { NoImpactWarning } from '../../containers/NoImpactWarning'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
-
-const ONE_SEC = ms`1s`
 
 export interface TradeConfirmationProps {
   onConfirm(): void
@@ -88,20 +85,6 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
 
   const isButtonDisabled = isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade
 
-  const [nextUpdateAt, setNextUpdateAt] = useState(refreshInterval)
-
-  useEffect(() => {
-    if (refreshInterval === undefined || nextUpdateAt === undefined) return
-
-    const interval = setInterval(() => {
-      const newValue = nextUpdateAt - ONE_SEC
-
-      setNextUpdateAt(newValue <= 0 ? refreshInterval : newValue)
-    }, ONE_SEC)
-
-    return () => clearInterval(interval)
-  }, [nextUpdateAt, refreshInterval])
-
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -134,7 +117,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
 
         <styledEl.HeaderRightContent>
-          {hasPendingTrade ? null : nextUpdateAt !== undefined && <QuoteCountdown nextUpdateAt={nextUpdateAt} />}
+          {hasPendingTrade ? null : <QuoteCountdown refreshInterval={refreshInterval} />}
         </styledEl.HeaderRightContent>
       </styledEl.Header>
       <styledEl.ContentWrapper id="trade-confirmation">

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.15.1...common-const-v1.16.0) (2025-03-10)
+
+
+### Features
+
+* **swap:** unificate swap widget with other trade widgets ([#5443](https://github.com/cowprotocol/cowswap/issues/5443)) ([f8d47da](https://github.com/cowprotocol/cowswap/commit/f8d47da493e0e6203fac3d1c6cc5abe2af1de403))
+
 ## [1.15.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.15.0...common-const-v1.15.1) (2025-02-07)
 
 

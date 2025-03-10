@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.103.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.4...cowswap-v1.103.5) (2025-03-10)
+
+
+### Bug Fixes
+
+* **swap:** disable button when costs warning is not accepted ([#5494](https://github.com/cowprotocol/cowswap/issues/5494)) ([cfdf773](https://github.com/cowprotocol/cowswap/commit/cfdf7731d4e08225f08381a9e3eecfbb67f6feb7))
+
+## [1.103.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.3...cowswap-v1.103.4) (2025-03-10)
+
+
+### Bug Fixes
+
+* **swap:** update quote in confirm screen ([#5485](https://github.com/cowprotocol/cowswap/issues/5485)) ([91187d9](https://github.com/cowprotocol/cowswap/commit/91187d9129f571b131e381a4c1b46814b4f3b479))
+
+## [1.103.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.2...cowswap-v1.103.3) (2025-03-07)
+
+
+### Bug Fixes
+
+* revert [#5456](https://github.com/cowprotocol/cowswap/issues/5456) as Safe tx service is live again ([#5486](https://github.com/cowprotocol/cowswap/issues/5486)) ([0737eda](https://github.com/cowprotocol/cowswap/commit/0737edab51859d402361b6179668fee6d8c5b595))
+
 ## [1.103.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.1...cowswap-v1.103.2) (2025-03-06)
 
 

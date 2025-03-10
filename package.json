@@ -113,7 +113,6 @@
     "@safe-global/safe-apps-sdk": "^9.1.0",
     "@safe-global/safe-core-sdk-types": "^2.2.0",
     "@safe-global/safe-ethers-lib": "^1.9.4",
-    "@safe-global/safe-gateway-typescript-sdk": "^3.22.9",
     "@sentry/react": "^7.80.0",
     "@sentry/tracing": "^7.80.0",
     "@sentry/webpack-plugin": "^2.10.0",

@@ -6,7 +6,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useTradePriceImpact, useTradeRouteContext } from 'modules/trade'
-import { HighFeeWarning, MetamaskTransactionWarning } from 'modules/tradeWidgetAddons'
+import { BundleTxWrapBanner, HighFeeWarning, MetamaskTransactionWarning } from 'modules/tradeWidgetAddons'
 import { SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
 
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
@@ -34,6 +34,7 @@ export function Warnings({ buyingFiatAmount }: WarningsProps) {
       {inputCurrency && !isNativeSellInHooksStore && <MetamaskTransactionWarning sellToken={inputCurrency} />}
       {isNativeSellInHooksStore && <SellNativeWarningBanner />}
       <HighFeeWarning />
+      <BundleTxWrapBanner />
       {showTwapSuggestionBanner && (
         <TwapSuggestionBanner
           chainId={chainId}

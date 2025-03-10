@@ -18,8 +18,6 @@ export function getOrderTypeReceiveAmounts(info: ReceiveAmountInfo): OrderTypeRe
     amountAfterFees: isSell ? afterPartnerFees.buyAmount : afterPartnerFees.sellAmount,
     amountAfterSlippage: isSell ? afterSlippage.buyAmount : afterSlippage.sellAmount,
     networkFeeAmount: isSell ? networkFee.amountInBuyCurrency : networkFee.amountInSellCurrency,
-    maximumSendSellAmount: isSell ? afterSlippage.sellAmount : beforeNetworkCosts.sellAmount,
-    minimumReceiveBuyAmount: isSell ? beforeNetworkCosts.buyAmount : afterSlippage.buyAmount,
   }
 }
 
