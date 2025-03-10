@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { BaseChainInfo, CHAIN_INFO } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ChainInfo } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -39,9 +40,10 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
   const { chainId } = useWalletInfo()
   const { field, selectedTargetChainId = chainId } = useSelectTokenWidgetState()
   const { data: bridgeSupportedNetworks, isLoading } = useBridgeSupportedNetworks()
+  const { isBridgingEnabled } = useFeatureFlags()
 
   return useMemo(() => {
-    if (!field) return undefined
+    if (!field || !isBridgingEnabled) return undefined
 
     if (field === Field.INPUT) {
       return { defaultChainId: chainId, chains: SUPPORTED_CHAINS }
@@ -54,5 +56,5 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
       chains: [currentChainInfo, ...(bridgeSupportedNetworks || [])],
       isLoading,
     }
-  }, [field, selectedTargetChainId, chainId, bridgeSupportedNetworks, isLoading])
+  }, [field, selectedTargetChainId, chainId, bridgeSupportedNetworks, isLoading, isBridgingEnabled])
 }
