@@ -7,18 +7,18 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
+import { AmountsToSign, useAmountsToSign } from './useAmountsToSign'
 import { useDerivedTradeState } from './useDerivedTradeState'
-import { useReceiveAmounts } from './useReceiveAmounts'
 
 import { TradeTypeToUiOrderType } from '../const/common'
-import { TradeType, TradeDerivedState, OrderTypeReceiveAmounts } from '../types'
+import { TradeType, TradeDerivedState } from '../types'
 
 export function useNotifyWidgetTrade() {
   const state = useDerivedTradeState()
-  const receiveAmounts = useReceiveAmounts()
+  const amountsToSign = useAmountsToSign()
 
   useEffect(() => {
-    if (!state || !receiveAmounts) return
+    if (!state || !amountsToSign) return
 
     /**
      * There is no way to select both empty sell and buy currencies in the widget UI.
@@ -35,15 +35,15 @@ export function useNotifyWidgetTrade() {
 
     WIDGET_EVENT_EMITTER.emit(
       CowWidgetEvents.ON_CHANGE_TRADE_PARAMS,
-      getTradeParamsEventPayload(state.tradeType, state, receiveAmounts),
+      getTradeParamsEventPayload(state.tradeType, state, amountsToSign),
     )
-  }, [state, receiveAmounts])
+  }, [state, amountsToSign])
 }
 
 function getTradeParamsEventPayload(
   tradeType: TradeType,
   state: TradeDerivedState,
-  { maximumSendSellAmount, minimumReceiveBuyAmount }: OrderTypeReceiveAmounts,
+  { maximumSendSellAmount, minimumReceiveBuyAmount }: AmountsToSign,
 ): OnTradeParamsPayload {
   return {
     orderType: TradeTypeToUiOrderType[tradeType],
