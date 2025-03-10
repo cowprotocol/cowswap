@@ -65,7 +65,7 @@ export function TradeButtons({
   if (!tradeFormButtonContext) return null
 
   if (localFormValidation && isPrimaryValidationPassed) {
-    return swapTradeButtonsMap[localFormValidation](context)
+    return swapTradeButtonsMap[localFormValidation](context, isDisabled)
   }
 
   return (
