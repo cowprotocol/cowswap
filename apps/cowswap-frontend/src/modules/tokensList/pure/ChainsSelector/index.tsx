@@ -17,7 +17,11 @@ export interface ChainsSelectorProps {
 export function ChainsSelector({ chains, onSelectChain, defaultChainId, itemsToDisplay = 4 }: ChainsSelectorProps) {
   const [displayMore, setDisplayMore] = useState(false)
   const isDisplayMore = chains.length > itemsToDisplay
-  const chainsToDisplay = displayMore ? chains : chains.slice(0, itemsToDisplay)
+
+  const defaultChain = defaultChainId && chains.find((info) => info.id === defaultChainId)
+  const sortedChains = defaultChain ? [defaultChain, ...chains.filter((info) => info.id !== defaultChainId)] : chains
+  const chainsToDisplay = displayMore ? sortedChains : sortedChains.slice(0, itemsToDisplay)
+
   const toggleDisplayMore = () => setDisplayMore((state) => !state)
 
   return (
