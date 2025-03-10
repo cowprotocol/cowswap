@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenListCategory, UnsupportedTokensState } from '@cowprotocol/tokens'
+import { ChainInfo } from '@cowprotocol/types'
 import { SearchInput } from '@cowprotocol/ui'
 
 import { Edit, X } from 'react-feather'
@@ -14,6 +15,7 @@ import * as styledEl from './styled'
 import { LpTokenListsWidget } from '../../containers/LpTokenListsWidget'
 import { TokenSearchResults } from '../../containers/TokenSearchResults'
 import { SelectTokenContext } from '../../types'
+import { ChainsSelector } from '../ChainsSelector'
 import { IconButton } from '../commonElements'
 import { FavoriteTokensList } from '../FavoriteTokensList'
 import { TokensVirtualList } from '../TokensVirtualList'
@@ -29,19 +31,16 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   displayLpTokenLists?: boolean
   disableErc20?: boolean
   account: string | undefined
+  chainsToSelect: ChainInfo[] | undefined
   tokenListCategoryState: [T, (category: T) => void]
-
-  onSelectToken(token: TokenWithLogo): void
-
-  openPoolPage(poolAddress: string): void
-
-  onInputPressEnter?(): void
-
   defaultInputValue?: string
 
+  onSelectToken(token: TokenWithLogo): void
+  openPoolPage(poolAddress: string): void
+  onInputPressEnter?(): void
   onOpenManageWidget(): void
-
   onDismiss(): void
+  onSelectChain(chain: ChainInfo): void
 }
 
 export function SelectTokenModal(props: SelectTokenModalProps) {
@@ -63,6 +62,8 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     openPoolPage,
     tokenListCategoryState,
     disableErc20,
+    chainsToSelect,
+    onSelectChain,
   } = props
 
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
@@ -131,7 +132,16 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
           {allListsContent}
         </LpTokenListsWidget>
       ) : (
-        allListsContent
+        <>
+          {chainsToSelect && (
+            <>
+              <styledEl.ChainsSelectorWrapper>
+                <ChainsSelector chains={chainsToSelect} onSelectChain={onSelectChain} />
+              </styledEl.ChainsSelectorWrapper>
+            </>
+          )}
+          {allListsContent}
+        </>
       )}
     </styledEl.Wrapper>
   )

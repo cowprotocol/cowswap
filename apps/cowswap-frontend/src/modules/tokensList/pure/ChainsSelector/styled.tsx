@@ -28,15 +28,15 @@ export const ChainButton = styled.button`
   }
 
   > img {
-    width: 21px;
-    height: 21px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
   }
 `
 
 export const TextButton = styled.span`
-  height: 21px;
-  min-width: 21px;
+  height: 24px;
+  min-width: 24px;
   padding: 0 2px;
   text-align: center;
   justify-content: space-around;

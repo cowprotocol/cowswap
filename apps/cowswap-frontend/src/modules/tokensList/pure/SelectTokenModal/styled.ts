@@ -16,6 +16,12 @@ export const Row = styled.div`
   margin: 0 20px 20px;
 `
 
+export const ChainsSelectorWrapper = styled.div`
+  border-bottom: 1px solid var(${UI.COLOR_BORDER});
+  padding: 10px 16px 16px 20px;
+  margin-bottom: 20px;
+`
+
 export const Separator = styled.div`
   width: 100%;
   border-bottom: 1px solid var(${UI.COLOR_BORDER});

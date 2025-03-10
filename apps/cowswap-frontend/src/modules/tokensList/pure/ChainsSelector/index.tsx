@@ -10,14 +10,14 @@ export interface ChainsSelectorProps {
   onSelectChain: (chainId: ChainInfo) => void
 }
 
-export function ChainsSelector({ chains }: ChainsSelectorProps) {
+export function ChainsSelector({ chains, onSelectChain }: ChainsSelectorProps) {
   return (
     <styledEl.Wrapper>
       <styledEl.ChainButton>
         <styledEl.TextButton>All</styledEl.TextButton>
       </styledEl.ChainButton>
       {chains.map((chain) => (
-        <styledEl.ChainButton key={chain.id}>
+        <styledEl.ChainButton key={chain.id} onClick={() => onSelectChain(chain)}>
           <img src={chain.logoUrl} alt={chain.name} />
         </styledEl.ChainButton>
       ))}

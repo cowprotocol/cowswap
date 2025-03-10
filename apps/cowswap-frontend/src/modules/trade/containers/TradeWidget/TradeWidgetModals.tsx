@@ -8,7 +8,7 @@ import {
   SelectTokenWidget,
   useSelectTokenWidgetState,
   useTokenListAddingError,
-  useUpdateSelectTokenWidgetState
+  useUpdateSelectTokenWidgetState,
 } from 'modules/tokensList'
 import { useZeroApproveModalState, ZeroApprovalModal } from 'modules/zeroApproval'
 
@@ -25,7 +25,7 @@ import { useWrapNativeScreenState } from '../../hooks/useWrapNativeScreenState'
 import { WrapNativeModal } from '../WrapNativeModal'
 
 interface TradeWidgetModalsProps {
-  confirmModal: ReactNode | undefined,
+  confirmModal: ReactNode | undefined
   genericModal: ReactNode | undefined
   selectTokenWidget: ReactNode | undefined
 }
@@ -33,7 +33,7 @@ interface TradeWidgetModalsProps {
 export function TradeWidgetModals({
   confirmModal,
   genericModal,
-  selectTokenWidget = <SelectTokenWidget />
+  selectTokenWidget = <SelectTokenWidget />,
 }: TradeWidgetModalsProps) {
   const { chainId, account } = useWalletInfo()
   const { state: rawState } = useTradeState()
@@ -47,39 +47,52 @@ export function TradeWidgetModals({
   const { isModalOpen: isZeroApprovalModalOpen, closeModal: closeZeroApprovalModal } = useZeroApproveModalState()
   const {
     tokensToImport,
-    modalState: { isModalOpen: isAutoImportModalOpen, closeModal: closeAutoImportModal }
+    modalState: { isModalOpen: isAutoImportModalOpen, closeModal: closeAutoImportModal },
   } = useAutoImportTokensState(rawState?.inputCurrencyId, rawState?.outputCurrencyId)
 
   const { onDismiss: closeTradeConfirm } = useTradeConfirmActions()
   const updateSelectTokenWidgetState = useUpdateSelectTokenWidgetState()
   const updateTradeApproveState = useUpdateTradeApproveState()
 
-  const resetAllScreens = useCallback(() => {
-    closeTradeConfirm()
-    closeZeroApprovalModal()
-    closeAutoImportModal()
-    updateSelectTokenWidgetState({ open: false })
-    setWrapNativeScreenState({ isOpen: false })
-    updateTradeApproveState({ approveInProgress: false, error: undefined })
-    setTokenListAddingError(null)
-  }, [
-    closeTradeConfirm,
-    closeZeroApprovalModal,
-    closeAutoImportModal,
-    updateSelectTokenWidgetState,
-    setWrapNativeScreenState,
-    updateTradeApproveState,
-    setTokenListAddingError
-  ])
+  const resetAllScreens = useCallback(
+    (closeTokenSelectWidget = true) => {
+      closeTradeConfirm()
+      closeZeroApprovalModal()
+      closeAutoImportModal()
+      if (closeTokenSelectWidget) {
+        updateSelectTokenWidgetState({ open: false })
+      }
+      setWrapNativeScreenState({ isOpen: false })
+      updateTradeApproveState({ approveInProgress: false, error: undefined })
+      setTokenListAddingError(null)
+    },
+    [
+      closeTradeConfirm,
+      closeZeroApprovalModal,
+      closeAutoImportModal,
+      updateSelectTokenWidgetState,
+      setWrapNativeScreenState,
+      updateTradeApproveState,
+      setTokenListAddingError,
+    ],
+  )
 
   const error = tokenListAddingError || approveError || confirmError
 
   /**
-   * Close modals on chain/account change
+   * Close modals on account change
    */
   useEffect(() => {
     resetAllScreens()
-  }, [chainId, account, resetAllScreens])
+  }, [account, resetAllScreens])
+
+  /**
+   * Close all modals besides token select widget on chain change
+   * Because network might be changed from the widget inside
+   */
+  useEffect(() => {
+    resetAllScreens(false)
+  }, [chainId, resetAllScreens])
 
   if (genericModal) {
     return genericModal

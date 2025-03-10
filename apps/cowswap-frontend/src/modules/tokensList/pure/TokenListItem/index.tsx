@@ -1,6 +1,7 @@
 import { MouseEventHandler } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { LoadingRows, LoadingRowSmall, TokenAmount } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -39,6 +40,7 @@ export function TokenListItem(props: TokenListItemProps) {
   }
 
   const isTokenSelected = token.address.toLowerCase() === selectedToken?.toLowerCase()
+  const isSupportedChain = token.chainId in SupportedChainId
 
   const balanceAmount = balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
 
@@ -52,7 +54,7 @@ export function TokenListItem(props: TokenListItemProps) {
       {isWalletConnected && (
         <styledEl.TokenMetadata>
           <styledEl.TokenBalance>
-            {balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement}
+            {isSupportedChain ? balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement : null}
           </styledEl.TokenBalance>
           <TokenTags isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} />
         </styledEl.TokenMetadata>

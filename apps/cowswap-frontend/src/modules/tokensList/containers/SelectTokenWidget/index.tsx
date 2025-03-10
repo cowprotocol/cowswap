@@ -9,7 +9,6 @@ import {
   useAddList,
   useAddUserToken,
   useAllListsList,
-  useAllActiveTokens,
   useFavoriteTokens,
   useUnsupportedTokens,
   useUserAddedTokens,
@@ -28,8 +27,11 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import { getDefaultTokenListCategories } from './getDefaultTokenListCategories'
 
+import { useChainsToSelect } from '../../hooks/useChainsToSelect'
+import { useOnSelectChain } from '../../hooks/useOnSelectChain'
 import { useOnTokenListAddingError } from '../../hooks/useOnTokenListAddingError'
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
+import { useTokensToSelect } from '../../hooks/useTokensToSelect'
 import { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
 import { ImportListModal } from '../../pure/ImportListModal'
 import { ImportTokenModal } from '../../pure/ImportTokenModal'
@@ -63,6 +65,8 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
     oppositeToken,
   } = useSelectTokenWidgetState()
   const { count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
+  const chainsToSelect = useChainsToSelect()
+  const onSelectChain = useOnSelectChain()
 
   const [isManageWidgetOpen, setIsManageWidgetOpen] = useState(false)
   const disableErc20 = field === Field.OUTPUT && !!displayLpTokenLists
@@ -84,7 +88,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
   })
   const importTokenCallback = useAddUserToken()
 
-  const allTokens = useAllActiveTokens()
+  const allTokens = useTokensToSelect()
   const favoriteTokens = useFavoriteTokens()
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllListsList()
@@ -103,6 +107,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
       tokenToImport: undefined,
       listToImport: undefined,
       selectedPoolAddress: undefined,
+      selectedTargetChainId: undefined,
     })
   }, [updateSelectTokenWidget])
 
@@ -211,6 +216,8 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
             tokenListCategoryState={tokenListCategoryState}
             disableErc20={disableErc20}
             account={account}
+            chainsToSelect={chainsToSelect}
+            onSelectChain={onSelectChain}
           />
         )
       })()}
