@@ -11,6 +11,7 @@ export const testBridgeProvider: BridgeProvider = {
     return testNetworks
   },
   async getTokens(chainId: number) {
+    await wait(1500)
     return testTokens[chainId] || null
   },
 }

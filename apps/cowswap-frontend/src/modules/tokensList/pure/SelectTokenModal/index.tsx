@@ -4,7 +4,7 @@ import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenListCategory, UnsupportedTokensState } from '@cowprotocol/tokens'
 import { ChainInfo } from '@cowprotocol/types'
-import { SearchInput } from '@cowprotocol/ui'
+import { Loader, SearchInput } from '@cowprotocol/ui'
 
 import { Edit, X } from 'react-feather'
 
@@ -34,6 +34,7 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   chainsToSelect: ChainsToSelectState | undefined
   tokenListCategoryState: [T, (category: T) => void]
   defaultInputValue?: string
+  areTokensLoading: boolean
 
   onSelectToken(token: TokenWithLogo): void
   openPoolPage(poolAddress: string): void
@@ -64,6 +65,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     disableErc20,
     chainsToSelect,
     onSelectChain,
+    areTokensLoading,
   } = props
 
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
@@ -87,15 +89,23 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
         />
       </styledEl.Row>
       <styledEl.Separator />
-      {inputValue.trim() ? (
-        <TokenSearchResults searchInput={inputValue.trim()} {...selectTokenContext} />
+      {areTokensLoading ? (
+        <styledEl.TokensLoader>
+          <Loader />
+        </styledEl.TokensLoader>
       ) : (
-        <TokensVirtualList
-          allTokens={allTokens}
-          {...selectTokenContext}
-          account={account}
-          displayLpTokenLists={displayLpTokenLists}
-        />
+        <>
+          {inputValue.trim() ? (
+            <TokenSearchResults searchInput={inputValue.trim()} {...selectTokenContext} />
+          ) : (
+            <TokensVirtualList
+              allTokens={allTokens}
+              {...selectTokenContext}
+              account={account}
+              displayLpTokenLists={displayLpTokenLists}
+            />
+          )}
+        </>
       )}
       <styledEl.Separator />
       <div>

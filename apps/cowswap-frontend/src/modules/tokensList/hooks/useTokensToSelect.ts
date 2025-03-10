@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useAllActiveTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -15,11 +17,14 @@ export function useTokensToSelect() {
   const { selectedTargetChainId = chainId, field } = useSelectTokenWidgetState()
   const allTokens = useAllActiveTokens()
 
-  // TODO: display loading state in UI
-  const { data: bridgeSupportedTokens } = useBridgeSupportedTokens(selectedTargetChainId)
+  const { data: bridgeSupportedTokens, isLoading } = useBridgeSupportedTokens(selectedTargetChainId)
 
-  return (
-    (field === Field.OUTPUT ? (selectedTargetChainId === chainId ? allTokens : bridgeSupportedTokens) : allTokens) ||
-    EMPTY_TOKENS
-  )
+  return useMemo(() => {
+    const areTokensFromBridge = field === Field.OUTPUT && selectedTargetChainId !== chainId
+
+    return {
+      isLoading: areTokensFromBridge ? isLoading : false,
+      tokens: (areTokensFromBridge ? bridgeSupportedTokens : allTokens) || EMPTY_TOKENS,
+    }
+  }, [allTokens, bridgeSupportedTokens, chainId, field, isLoading, selectedTargetChainId])
 }

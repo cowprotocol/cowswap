@@ -88,7 +88,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
   })
   const importTokenCallback = useAddUserToken()
 
-  const allTokens = useTokensToSelect()
+  const { tokens: allTokens, isLoading: areTokensLoading } = useTokensToSelect()
   const favoriteTokens = useFavoriteTokens()
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllListsList()
@@ -217,6 +217,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
             account={account}
             chainsToSelect={chainsToSelect}
             onSelectChain={onSelectChain}
+            areTokensLoading={areTokensLoading}
           />
         )
       })()}
