@@ -1,6 +1,6 @@
-import { TokenInfo } from '@cowprotocol/types'
+import { ChainInfo, TokenInfo } from '@cowprotocol/types'
 
-import { BridgeProvider, ChainInfo } from './types'
+import { BridgeProvider } from './types'
 
 export const testBridgeProvider: BridgeProvider = {
   async getNetworks() {
