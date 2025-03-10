@@ -1,5 +1,6 @@
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { getRandomInt } from '@cowprotocol/common-utils'
+import { ChainInfo } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import styled from 'styled-components/macro'
@@ -31,6 +32,11 @@ const defaultProps: SelectTokenModalProps = {
   unsupportedTokens,
   allTokens: allTokensMock,
   favoriteTokens: favoriteTokensMock,
+  areTokensLoading: false,
+  chainsToSelect: undefined,
+  onSelectChain(chain: ChainInfo) {
+    console.log('onSelectChain', chain)
+  },
   tokenListCategoryState: [null, () => void 0],
   balancesState: {
     values: balances,

@@ -16,6 +16,12 @@ export const Row = styled.div`
   margin: 0 20px 20px;
 `
 
+export const ChainsSelectorWrapper = styled.div`
+  border-bottom: 1px solid var(${UI.COLOR_BORDER});
+  padding: 10px 16px 16px 20px;
+  margin-bottom: 20px;
+`
+
 export const Separator = styled.div`
   width: 100%;
   border-bottom: 1px solid var(${UI.COLOR_BORDER});
@@ -24,8 +30,10 @@ export const Separator = styled.div`
 export const Header = styled.div`
   display: flex;
   flex-direction: row;
-  padding: 20px 20px 0 20px;
-  margin-bottom: 15px;
+  padding: 10px 16px;
+  margin-bottom: 8px;
+  align-items: center;
+  border-bottom: 1px solid var(${UI.COLOR_BORDER});
 
   > h3 {
     font-size: 16px;
@@ -55,4 +63,12 @@ export const ActionButton = styled.button`
   &:hover {
     opacity: 1;
   }
+`
+
+export const TokensLoader = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  padding: 20px 0;
+  text-align: center;
 `

@@ -4,7 +4,7 @@ import { getChainInfo } from '@cowprotocol/common-const'
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { HoverTooltip } from '@cowprotocol/ui'
 
-import CopyHelper, { CopyIcon } from 'legacy/components/Copy/CopyMod'
+import CopyHelper from 'legacy/components/Copy/CopyMod'
 
 import * as styledEl from './styled'
 
@@ -55,9 +55,7 @@ export function ClickableAddress(props: ClickableAddressProps) {
             {shortAddress}
           </styledEl.AddressWrapper>
         </HoverTooltip>
-        <CopyHelper toCopy={address} clickableLink={false}>
-          <CopyIcon />
-        </CopyHelper>
+        <CopyHelper toCopy={address} clickableLink={false} />
       </styledEl.Wrapper>
     )
   )

@@ -160,7 +160,6 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType
         <Wrapper>
           <form onSubmit={handleSubmit}>
             <SearchInput
-              type="text"
               placeholder="Enter a hook dapp URL"
               value={input}
               onChange={handleInputChange}

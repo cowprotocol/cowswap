@@ -24,5 +24,8 @@ export function getIsNativeToken(chainIdOrTokenParams: SupportedChainId | Curren
 
   const nativeToken = NATIVE_CURRENCIES[chainId as SupportedChainId]
 
+  // When token is from Bridge, it's not in the list of native tokens
+  if (!nativeToken) return false
+
   return doesTokenMatchSymbolOrAddress(nativeToken, tokenId)
 }

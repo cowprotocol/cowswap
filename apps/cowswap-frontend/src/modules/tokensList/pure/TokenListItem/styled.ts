@@ -7,7 +7,7 @@ export const Wrapper = styled.div`
   border-bottom: 1px solid var(${UI.COLOR_BORDER});
 `
 
-export const TokenItem = styled.button`
+export const TokenItem = styled.div`
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
