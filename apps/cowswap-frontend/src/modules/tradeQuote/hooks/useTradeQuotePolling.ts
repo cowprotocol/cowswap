@@ -1,109 +1,142 @@
 import { useAtomValue } from 'jotai'
-import { useLayoutEffect, useMemo } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 
-import { useDebounce } from '@cowprotocol/common-hooks'
-import { onlyResolvesLast } from '@cowprotocol/common-utils'
-import { OrderQuoteResponse, PriceQuality } from '@cowprotocol/cow-sdk'
+import { useIsOnline, useIsWindowVisible } from '@cowprotocol/common-hooks'
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { PriceQuality } from '@cowprotocol/cow-sdk'
 import { useAreUnsupportedTokens } from '@cowprotocol/tokens'
 
 import ms from 'ms.macro'
 
-import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
-
-import { getQuote } from 'api/cowProtocol/api'
-import QuoteApiError, { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
+import { useUpdateCurrencyAmount } from 'modules/trade'
 
 import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenError'
 import { useQuoteParams } from './useQuoteParams'
-import { useUpdateTradeQuote } from './useUpdateTradeQuote'
+import { useTradeQuote } from './useTradeQuote'
+import { useTradeQuoteManager } from './useTradeQuoteManager'
 
-import { tradeQuoteParamsAtom } from '../state/tradeQuoteParamsAtom'
+import { fetchAndProcessQuote, TradeQuoteFetchParams } from '../services/fetchAndProcessQuote'
+import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
+import { isQuoteExpired } from '../utils/quoteDeadline'
+import { quoteUsingSameParameters } from '../utils/quoteUsingSameParameters'
 
 export const PRICE_UPDATE_INTERVAL = ms`30s`
-const AMOUNT_CHANGE_DEBOUNCE_TIME = ms`300`
+const QUOTE_EXPIRATION_CHECK_INTERVAL = ms`2s`
 
-// Solves the problem of multiple requests
-const getFastQuote = onlyResolvesLast<OrderQuoteResponse>(getQuote)
-const getOptimalQuote = onlyResolvesLast<OrderQuoteResponse>(getQuote)
+export function useTradeQuotePolling(isConfirmOpen = false) {
+  const { amount, fastQuote } = useAtomValue(tradeQuoteInputAtom)
+  const tradeQuote = useTradeQuote()
+  const tradeQuoteRef = useRef(tradeQuote)
+  tradeQuoteRef.current = tradeQuote
 
-export function useTradeQuotePolling() {
-  const { amount, fastQuote } = useAtomValue(tradeQuoteParamsAtom)
-  const amountStr = useDebounce(
-    useMemo(() => amount?.quotient.toString() || null, [amount]),
-    AMOUNT_CHANGE_DEBOUNCE_TIME,
-  )
-  const quoteParams = useQuoteParams(amountStr)
+  const { quoteParams, inputCurrency } = useQuoteParams(amount?.quotient.toString()) || {}
 
-  const updateQuoteState = useUpdateTradeQuote()
+  const tradeQuoteManager = useTradeQuoteManager(inputCurrency && getCurrencyAddress(inputCurrency))
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const getIsUnsupportedTokens = useAreUnsupportedTokens()
   const processUnsupportedTokenError = useProcessUnsupportedTokenError()
 
+  const isWindowVisible = useIsWindowVisible()
+
+  const isOnline = useIsOnline()
+  const isOnlineRef = useRef(isOnline)
+  isOnlineRef.current = isOnline
+
+  useEffect(() => {
+    // Do not reset the quote if the confirm modal is open
+    // Because we already have a quote and don't want to reset it
+    if (isConfirmOpen) return
+
+    if (!isWindowVisible && tradeQuoteManager) {
+      tradeQuoteManager.reset()
+    }
+  }, [isWindowVisible, tradeQuoteManager, isConfirmOpen])
+
   useLayoutEffect(() => {
-    if (!quoteParams) {
-      updateQuoteState({ response: null, isLoading: false })
+    if (!tradeQuoteManager) {
       return
     }
 
-    const isUnsupportedTokens = getIsUnsupportedTokens(quoteParams)
+    if (!quoteParams || quoteParams.amount === '0') {
+      tradeQuoteManager.reset()
+      return
+    }
 
     // Don't fetch quote if token is not supported
-    if (isUnsupportedTokens) {
+    if (getIsUnsupportedTokens(quoteParams)) {
       return
     }
 
-    const fetchQuote = (hasParamsChanged: boolean, priceQuality: PriceQuality, fetchStartTimestamp: number) => {
-      updateQuoteState({ isLoading: true, hasParamsChanged })
+    const fetchQuote = (fetchParams: TradeQuoteFetchParams) =>
+      fetchAndProcessQuote(fetchParams, quoteParams, tradeQuoteManager)
 
-      const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
-      const requestParams = { ...quoteParams, priceQuality }
-      const request = isOptimalQuote ? getOptimalQuote(requestParams) : getFastQuote(requestParams)
+    function fetchAndUpdateQuote(hasParamsChanged: boolean, forceUpdate = false) {
+      const currentQuote = tradeQuoteRef.current
+      const currentQuoteParams = currentQuote.quoteParams
+      const hasCachedResponse = !!currentQuote.response
+      const hasCachedError = !!currentQuote.error
 
-      return request
-        .then((response) => {
-          const { cancelled, data } = response
+      if (!forceUpdate) {
+        // Don't fetch quote if the parameters are the same
+        // Also avoid quote refresh when only appData.quote (contains slippage) is changed
+        // Important! We should skip quote updateing only if there is no quote response
+        if ((hasCachedResponse || hasCachedError) && quoteUsingSameParameters(currentQuoteParams, quoteParams)) {
+          return
+        }
 
-          if (cancelled) {
-            return
-          }
+        // When browser is offline or the tab is not active do no fetch
+        if (!isOnlineRef.current || !isWindowVisible) {
+          return
+        }
+      }
 
-          updateQuoteState({
-            response: data,
-            quoteParams: requestParams,
-            ...(isOptimalQuote ? { isLoading: false } : null),
-            error: null,
-            hasParamsChanged: false,
-            fetchStartTimestamp,
-          })
-        })
-        .catch((error: QuoteApiError) => {
-          console.log('[useGetQuote]:: fetchQuote error', error)
-          updateQuoteState({ isLoading: false, error, hasParamsChanged: false })
-
-          if (error.type === QuoteApiErrorCodes.UnsupportedToken) {
-            processUnsupportedTokenError(error, requestParams)
-          }
-        })
+      const fetchStartTimestamp = Date.now()
+      if (fastQuote) fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.FAST, fetchStartTimestamp })
+      fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.OPTIMAL, fetchStartTimestamp })
     }
 
-    const fetchStartTimestamp = Date.now()
-    if (fastQuote) fetchQuote(true, PriceQuality.FAST, fetchStartTimestamp)
-    fetchQuote(true, PriceQuality.OPTIMAL, fetchStartTimestamp)
+    /**
+     * Fetch the quote instantly once the quote params are changed
+     */
+    fetchAndUpdateQuote(true)
 
-    const intervalId = setInterval(() => {
-      const fetchStartTimestamp = Date.now()
-      if (fastQuote) fetchQuote(false, PriceQuality.FAST, fetchStartTimestamp)
-      fetchQuote(false, PriceQuality.OPTIMAL, fetchStartTimestamp)
+    /**
+     * Start polling for the quote
+     */
+    const pollingIntervalId = setInterval(() => {
+      fetchAndUpdateQuote(false)
     }, PRICE_UPDATE_INTERVAL)
 
-    return () => clearInterval(intervalId)
+    /**
+     * Periodically check if the quote has expired and refetch it
+     */
+    const quoteExpirationInterval = setInterval(() => {
+      const currentQuote = tradeQuoteRef.current
+
+      if (
+        currentQuote.response &&
+        currentQuote.quoteParams?.priceQuality === PriceQuality.OPTIMAL &&
+        isQuoteExpired(currentQuote)
+      ) {
+        /**
+         * Reset the quote state in order to not trigger the quote expiration check again
+         */
+        fetchAndUpdateQuote(false, true)
+      }
+    }, QUOTE_EXPIRATION_CHECK_INTERVAL)
+
+    return () => {
+      clearInterval(pollingIntervalId)
+      clearInterval(quoteExpirationInterval)
+    }
   }, [
     fastQuote,
     quoteParams,
-    updateQuoteState,
+    tradeQuoteManager,
     updateCurrencyAmount,
     processUnsupportedTokenError,
     getIsUnsupportedTokens,
+    isWindowVisible,
   ])
 
   return null

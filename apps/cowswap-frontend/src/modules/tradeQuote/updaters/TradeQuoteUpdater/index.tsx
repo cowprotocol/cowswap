@@ -4,18 +4,16 @@ import { useTradeQuote } from '../../hooks/useTradeQuote'
 import { useTradeQuotePolling } from '../../hooks/useTradeQuotePolling'
 import { getQuoteTimeOffset } from '../../utils/quoteDeadline'
 
-export function TradeQuoteUpdater() {
+export interface TradeQuoteUpdaterProps {
+  isConfirmOpen: boolean
+}
+
+export function TradeQuoteUpdater({ isConfirmOpen }: TradeQuoteUpdaterProps) {
   const quoteState = useTradeQuote()
 
-  useTradeQuotePolling()
+  useTradeQuotePolling(isConfirmOpen)
 
-  useSetLocalTimeOffset(
-    getQuoteTimeOffset({
-      validFor: quoteState.quoteParams?.validFor,
-      quoteValidTo: quoteState.response?.quote.validTo,
-      localQuoteTimestamp: quoteState.localQuoteTimestamp,
-    })
-  )
+  useSetLocalTimeOffset(getQuoteTimeOffset(quoteState))
 
   return null
 }

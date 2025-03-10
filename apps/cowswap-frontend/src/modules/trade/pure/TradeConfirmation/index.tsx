@@ -1,17 +1,8 @@
 import { ReactElement, useEffect, useRef, useState } from 'react'
 
-import {
-  BackButton,
-  BannerOrientation,
-  ButtonPrimary,
-  ButtonSize,
-  CenteredDots,
-  CustomRecipientWarningBanner,
-  LongLoadText,
-} from '@cowprotocol/ui'
+import { BackButton, BannerOrientation, ButtonPrimary, ButtonSize, CenteredDots, LongLoadText } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-import ms from 'ms.macro'
 
 import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -20,6 +11,7 @@ import type { AppDataInfo } from 'modules/appData'
 
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
 import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
+import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
 
 import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
@@ -29,13 +21,9 @@ import { NoImpactWarning } from '../../containers/NoImpactWarning'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
 
-const ONE_SEC = ms`1s`
-
 export interface TradeConfirmationProps {
   onConfirm(): void
-
   onDismiss(): void
-
   account: string | undefined
   ensName: string | undefined
   appData?: string | AppDataInfo
@@ -52,7 +40,7 @@ export interface TradeConfirmationProps {
 }
 
 export function TradeConfirmation(props: TradeConfirmationProps) {
-  const { pendingTrade } = useTradeConfirmState()
+  const { pendingTrade, forcePriceConfirmation } = useTradeConfirmState()
 
   const propsRef = useRef(props)
   propsRef.current = props
@@ -93,23 +81,9 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
   const inputAmount = inputCurrencyInfo.amount?.toExact()
   const outputAmount = outputCurrencyInfo.amount?.toExact()
 
-  const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(inputAmount, outputAmount)
+  const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(inputAmount, outputAmount, forcePriceConfirmation)
 
   const isButtonDisabled = isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade
-
-  const [nextUpdateAt, setNextUpdateAt] = useState(refreshInterval)
-
-  useEffect(() => {
-    if (refreshInterval === undefined || nextUpdateAt === undefined) return
-
-    const interval = setInterval(() => {
-      const newValue = nextUpdateAt - ONE_SEC
-
-      setNextUpdateAt(newValue <= 0 ? refreshInterval : newValue)
-    }, ONE_SEC)
-
-    return () => clearInterval(interval)
-  }, [nextUpdateAt, refreshInterval])
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -143,7 +117,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
 
         <styledEl.HeaderRightContent>
-          {hasPendingTrade ? null : nextUpdateAt !== undefined && <QuoteCountdown nextUpdateAt={nextUpdateAt} />}
+          {hasPendingTrade ? null : <QuoteCountdown refreshInterval={refreshInterval} />}
         </styledEl.HeaderRightContent>
       </styledEl.Header>
       <styledEl.ContentWrapper id="trade-confirmation">
