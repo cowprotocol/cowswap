@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.103.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.3...cowswap-v1.103.4) (2025-03-10)
+
+
+### Bug Fixes
+
+* **swap:** update quote in confirm screen ([#5485](https://github.com/cowprotocol/cowswap/issues/5485)) ([91187d9](https://github.com/cowprotocol/cowswap/commit/91187d9129f571b131e381a4c1b46814b4f3b479))
+
 ## [1.103.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.2...cowswap-v1.103.3) (2025-03-07)
 
 

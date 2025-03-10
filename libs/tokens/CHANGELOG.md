@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.14.1...tokens-v1.15.0) (2025-03-10)
+
+
+### Features
+
+* **trade:** cache quotes ([#5473](https://github.com/cowprotocol/cowswap/issues/5473)) ([edf8d5f](https://github.com/cowprotocol/cowswap/commit/edf8d5fb239e1491c30a0de474cbc5d1fca7b2a7))
+
 ## [1.14.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.14.0...tokens-v1.14.1) (2025-02-05)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.11.0...common-utils-v1.12.0) (2025-03-10)
+
+
+### Features
+
+* **swap:** unificate swap widget with other trade widgets ([#5443](https://github.com/cowprotocol/cowswap/issues/5443)) ([f8d47da](https://github.com/cowprotocol/cowswap/commit/f8d47da493e0e6203fac3d1c6cc5abe2af1de403))
+
 ## [1.11.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.10.0...common-utils-v1.11.0) (2025-02-25)
 
 
