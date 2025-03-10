@@ -1,33 +1,44 @@
+import { useState } from 'react'
+
 import { ChainInfo } from '@cowprotocol/types'
 
-import { ChevronDown } from 'react-feather'
+import { ChevronDown, ChevronUp } from 'react-feather'
 
 import * as styledEl from './styled'
 
 export interface ChainsSelectorProps {
   chains: ChainInfo[]
-  defaultChainId?: ChainInfo['id']
   onSelectChain: (chainId: ChainInfo) => void
+  defaultChainId?: ChainInfo['id']
+  itemsToDisplay?: number
 }
 
-export function ChainsSelector({ chains, onSelectChain, defaultChainId }: ChainsSelectorProps) {
+// TODO: change default value for itemsToDisplay
+export function ChainsSelector({ chains, onSelectChain, defaultChainId, itemsToDisplay = 4 }: ChainsSelectorProps) {
+  const [displayMore, setDisplayMore] = useState(false)
+  const isDisplayMore = chains.length > itemsToDisplay
+  const chainsToDisplay = displayMore ? chains : chains.slice(0, itemsToDisplay)
+  const toggleDisplayMore = () => setDisplayMore((state) => !state)
+
   return (
     <styledEl.Wrapper>
-      <styledEl.ChainButton>
-        <styledEl.TextButton>All</styledEl.TextButton>
-      </styledEl.ChainButton>
-      {chains.map((chain) => (
+      {/*TODO: do we need this button?*/}
+      {/*<styledEl.ChainButton>*/}
+      {/*  <styledEl.TextButton>All</styledEl.TextButton>*/}
+      {/*</styledEl.ChainButton>*/}
+      {chainsToDisplay.map((chain) => (
         <styledEl.ChainButton key={chain.id} active$={defaultChainId === chain.id} onClick={() => onSelectChain(chain)}>
           <img src={chain.logoUrl} alt={chain.name} />
         </styledEl.ChainButton>
       ))}
-      <styledEl.ChainButton>
-        {/*TODO: add logic to "More"*/}
-        <styledEl.TextButton>
-          More
-          <ChevronDown size={14} />
-        </styledEl.TextButton>
-      </styledEl.ChainButton>
+      {isDisplayMore && (
+        <styledEl.ChainButton>
+          <styledEl.TextButton onClick={toggleDisplayMore}>
+            {displayMore ? 'Less' : 'More'}
+            {displayMore ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+          </styledEl.TextButton>
+        </styledEl.ChainButton>
+      )}
     </styledEl.Wrapper>
   )
 }

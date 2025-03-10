@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { BaseChainInfo, CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ChainInfo } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -13,11 +13,9 @@ import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 
 import { ChainsToSelectState } from '../types'
 
-const SUPPORTED_CHAINS: ChainInfo[] = Object.keys(CHAIN_INFO).map((chainId) => {
-  const info = CHAIN_INFO[+chainId as SupportedChainId]
-
+function mapChainInfo(chainId: number, info: BaseChainInfo): ChainInfo {
   return {
-    id: +chainId,
+    id: chainId,
     name: info.name,
     nativeCurrency: {
       ...info.nativeCurrency,
@@ -29,11 +27,17 @@ const SUPPORTED_CHAINS: ChainInfo[] = Object.keys(CHAIN_INFO).map((chainId) => {
     logoUrl: info.logo.light,
     mainColor: info.color,
   }
+}
+
+const SUPPORTED_CHAINS: ChainInfo[] = Object.keys(CHAIN_INFO).map((chainId) => {
+  const info = CHAIN_INFO[+chainId as SupportedChainId]
+
+  return mapChainInfo(+chainId, info)
 })
 
 export function useChainsToSelect(): ChainsToSelectState | undefined {
   const { chainId } = useWalletInfo()
-  const { field, selectedTargetChainId } = useSelectTokenWidgetState()
+  const { field, selectedTargetChainId = chainId } = useSelectTokenWidgetState()
   // TODO: add loading state
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
 
@@ -44,6 +48,8 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
       return { defaultChainId: chainId, chains: SUPPORTED_CHAINS }
     }
 
-    return { defaultChainId: selectedTargetChainId, chains: bridgeSupportedNetworks }
+    const currentChainInfo = mapChainInfo(chainId, CHAIN_INFO[chainId])
+
+    return { defaultChainId: selectedTargetChainId, chains: [currentChainInfo, ...(bridgeSupportedNetworks || [])] }
   }, [field, selectedTargetChainId, chainId, bridgeSupportedNetworks])
 }
