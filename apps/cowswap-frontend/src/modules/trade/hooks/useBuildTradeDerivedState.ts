@@ -13,7 +13,12 @@ import { useTradeUsdAmounts } from 'modules/usdAmount'
 
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
-export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>) {
+import { TradeDerivedState } from '../types'
+
+export function useBuildTradeDerivedState(
+  stateAtom: Atom<ExtendedTradeRawState>,
+  isQuoteBasedOrder: boolean,
+): Omit<TradeDerivedState, 'slippage' | 'tradeType'> {
   const rawState = useAtomValue(stateAtom)
 
   const recipient = rawState.recipient
@@ -50,6 +55,7 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
     outputCurrencyBalance,
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
+    isQuoteBasedOrder,
   })
 }
 

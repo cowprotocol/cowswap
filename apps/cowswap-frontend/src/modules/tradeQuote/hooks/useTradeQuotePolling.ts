@@ -23,7 +23,7 @@ import { quoteUsingSameParameters } from '../utils/quoteUsingSameParameters'
 export const PRICE_UPDATE_INTERVAL = ms`30s`
 const QUOTE_EXPIRATION_CHECK_INTERVAL = ms`2s`
 
-export function useTradeQuotePolling() {
+export function useTradeQuotePolling(isConfirmOpen = false) {
   const { amount, fastQuote } = useAtomValue(tradeQuoteInputAtom)
   const tradeQuote = useTradeQuote()
   const tradeQuoteRef = useRef(tradeQuote)
@@ -43,10 +43,14 @@ export function useTradeQuotePolling() {
   isOnlineRef.current = isOnline
 
   useEffect(() => {
+    // Do not reset the quote if the confirm modal is open
+    // Because we already have a quote and don't want to reset it
+    if (isConfirmOpen) return
+
     if (!isWindowVisible && tradeQuoteManager) {
       tradeQuoteManager.reset()
     }
-  }, [isWindowVisible, tradeQuoteManager])
+  }, [isWindowVisible, tradeQuoteManager, isConfirmOpen])
 
   useLayoutEffect(() => {
     if (!tradeQuoteManager) {
@@ -66,22 +70,24 @@ export function useTradeQuotePolling() {
     const fetchQuote = (fetchParams: TradeQuoteFetchParams) =>
       fetchAndProcessQuote(fetchParams, quoteParams, tradeQuoteManager)
 
-    function fetchAndUpdateQuote(hasParamsChanged: boolean) {
+    function fetchAndUpdateQuote(hasParamsChanged: boolean, forceUpdate = false) {
       const currentQuote = tradeQuoteRef.current
       const currentQuoteParams = currentQuote.quoteParams
       const hasCachedResponse = !!currentQuote.response
       const hasCachedError = !!currentQuote.error
 
-      // Don't fetch quote if the parameters are the same
-      // Also avoid quote refresh when only appData.quote (contains slippage) is changed
-      // Important! We should skip quote updateing only if there is no quote response
-      if ((hasCachedResponse || hasCachedError) && quoteUsingSameParameters(currentQuoteParams, quoteParams)) {
-        return
-      }
+      if (!forceUpdate) {
+        // Don't fetch quote if the parameters are the same
+        // Also avoid quote refresh when only appData.quote (contains slippage) is changed
+        // Important! We should skip quote updateing only if there is no quote response
+        if ((hasCachedResponse || hasCachedError) && quoteUsingSameParameters(currentQuoteParams, quoteParams)) {
+          return
+        }
 
-      // When browser is offline or the tab is not active do no fetch
-      if (!isOnlineRef.current || !isWindowVisible) {
-        return
+        // When browser is offline or the tab is not active do no fetch
+        if (!isOnlineRef.current || !isWindowVisible) {
+          return
+        }
       }
 
       const fetchStartTimestamp = Date.now()
@@ -115,8 +121,7 @@ export function useTradeQuotePolling() {
         /**
          * Reset the quote state in order to not trigger the quote expiration check again
          */
-        tradeQuoteManager.reset()
-        fetchAndUpdateQuote(false)
+        fetchAndUpdateQuote(false, true)
       }
     }, QUOTE_EXPIRATION_CHECK_INTERVAL)
 
