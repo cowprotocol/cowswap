@@ -15,4 +15,5 @@ export interface SelectTokenContext {
 export interface ChainsToSelectState {
   chains: ChainInfo[] | undefined
   defaultChainId?: number
+  isLoading?: boolean
 }

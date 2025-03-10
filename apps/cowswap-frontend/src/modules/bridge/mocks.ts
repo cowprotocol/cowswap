@@ -1,9 +1,13 @@
 import { ChainInfo, TokenInfo } from '@cowprotocol/types'
 
+import { wait } from 'common/utils/wait'
+
 import { BridgeProvider } from './types'
 
 export const testBridgeProvider: BridgeProvider = {
   async getNetworks() {
+    await wait(1500)
+
     return testNetworks
   },
   async getTokens(chainId: number) {

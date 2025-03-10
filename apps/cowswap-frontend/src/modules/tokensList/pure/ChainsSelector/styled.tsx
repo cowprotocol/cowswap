@@ -9,6 +9,23 @@ export const Wrapper = styled.div`
   gap: 8px;
 `
 
+export const ShimmerItem = styled.span`
+  width: 36px;
+  height: 36px;
+  border-radius: 16px;
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  overflow: hidden;
+
+  &:before {
+    content: '';
+    width: 36px;
+    height: 36px;
+    display: block;
+    transform: translateX(-100%);
+    ${({ theme }) => theme.shimmer};
+  }
+`
+
 export const ChainButton = styled.button<{ active$?: boolean }>`
   display: inline-block;
   border-radius: 14px;

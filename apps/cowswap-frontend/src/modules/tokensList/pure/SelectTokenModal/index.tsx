@@ -137,6 +137,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
             <>
               <styledEl.ChainsSelectorWrapper>
                 <ChainsSelector
+                  isLoading={chainsToSelect.isLoading || false}
                   chains={chainsToSelect.chains}
                   defaultChainId={chainsToSelect.defaultChainId}
                   onSelectChain={onSelectChain}

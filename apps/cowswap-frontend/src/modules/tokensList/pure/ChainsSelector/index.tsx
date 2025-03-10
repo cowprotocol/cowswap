@@ -6,15 +6,32 @@ import { ChevronDown, ChevronUp } from 'react-feather'
 
 import * as styledEl from './styled'
 
+const Shimmer = (
+  <styledEl.Wrapper>
+    <styledEl.ShimmerItem />
+    <styledEl.ShimmerItem />
+    <styledEl.ShimmerItem />
+    <styledEl.ShimmerItem />
+    <styledEl.ShimmerItem />
+  </styledEl.Wrapper>
+)
+
 export interface ChainsSelectorProps {
   chains: ChainInfo[]
   onSelectChain: (chainId: ChainInfo) => void
   defaultChainId?: ChainInfo['id']
   itemsToDisplay?: number
+  isLoading: boolean
 }
 
 // TODO: change default value for itemsToDisplay
-export function ChainsSelector({ chains, onSelectChain, defaultChainId, itemsToDisplay = 4 }: ChainsSelectorProps) {
+export function ChainsSelector({
+  chains,
+  onSelectChain,
+  defaultChainId,
+  isLoading,
+  itemsToDisplay = 4,
+}: ChainsSelectorProps) {
   const [displayMore, setDisplayMore] = useState(false)
   const isDisplayMore = chains.length > itemsToDisplay
 
@@ -23,6 +40,10 @@ export function ChainsSelector({ chains, onSelectChain, defaultChainId, itemsToD
   const chainsToDisplay = displayMore ? sortedChains : sortedChains.slice(0, itemsToDisplay)
 
   const toggleDisplayMore = () => setDisplayMore((state) => !state)
+
+  if (isLoading) {
+    return Shimmer
+  }
 
   return (
     <styledEl.Wrapper>

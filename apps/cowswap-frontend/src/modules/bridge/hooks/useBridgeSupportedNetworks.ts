@@ -8,5 +8,4 @@ export function useBridgeSupportedNetworks() {
   return useSWR([bridgeProvider], ([bridgeProvider]) => {
     return bridgeProvider.getNetworks()
   })
-
 }

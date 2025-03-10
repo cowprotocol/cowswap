@@ -38,8 +38,7 @@ const SUPPORTED_CHAINS: ChainInfo[] = Object.keys(CHAIN_INFO).map((chainId) => {
 export function useChainsToSelect(): ChainsToSelectState | undefined {
   const { chainId } = useWalletInfo()
   const { field, selectedTargetChainId = chainId } = useSelectTokenWidgetState()
-  // TODO: add loading state
-  const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
+  const { data: bridgeSupportedNetworks, isLoading } = useBridgeSupportedNetworks()
 
   return useMemo(() => {
     if (!field) return undefined
@@ -50,6 +49,10 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
 
     const currentChainInfo = mapChainInfo(chainId, CHAIN_INFO[chainId])
 
-    return { defaultChainId: selectedTargetChainId, chains: [currentChainInfo, ...(bridgeSupportedNetworks || [])] }
-  }, [field, selectedTargetChainId, chainId, bridgeSupportedNetworks])
+    return {
+      defaultChainId: selectedTargetChainId,
+      chains: [currentChainInfo, ...(bridgeSupportedNetworks || [])],
+      isLoading,
+    }
+  }, [field, selectedTargetChainId, chainId, bridgeSupportedNetworks, isLoading])
 }
