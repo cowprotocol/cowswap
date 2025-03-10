@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.103.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.4...cowswap-v1.103.5) (2025-03-10)
+
+
+### Bug Fixes
+
+* **swap:** disable button when costs warning is not accepted ([#5494](https://github.com/cowprotocol/cowswap/issues/5494)) ([cfdf773](https://github.com/cowprotocol/cowswap/commit/cfdf7731d4e08225f08381a9e3eecfbb67f6feb7))
+
 ## [1.103.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.3...cowswap-v1.103.4) (2025-03-10)
 
 
