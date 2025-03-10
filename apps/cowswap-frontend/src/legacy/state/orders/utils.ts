@@ -442,14 +442,14 @@ export function getRemainderAmount(kind: OrderKind, order: Order | ParsedOrder):
   }
 
   const fullAmount = isSellOrder(kind) ? sellAmount : buyAmount
-
+  const fullAmountBN = JSBI.BigInt(Number(fullAmount))
   if (!executedSellAmount || !executedBuyAmount || executedSellAmount === '0' || executedBuyAmount === '0') {
-    return fullAmount
+    return fullAmountBN.toString()
   }
 
-  const executedAmount = JSBI.BigInt((isSellOrder(kind) ? executedSellAmount : executedBuyAmount) || 0)
+  const executedAmount = JSBI.BigInt((isSellOrder(kind) ? Number(executedSellAmount) : Number(executedBuyAmount)) || 0)
 
-  return JSBI.subtract(JSBI.BigInt(fullAmount), executedAmount).toString()
+  return JSBI.subtract(fullAmountBN, executedAmount).toString()
 }
 
 function extrapolatePriceBasedOnFeeAmount<T extends Currency>(
