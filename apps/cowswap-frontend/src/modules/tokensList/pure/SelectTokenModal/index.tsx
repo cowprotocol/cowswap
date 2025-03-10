@@ -14,7 +14,7 @@ import * as styledEl from './styled'
 
 import { LpTokenListsWidget } from '../../containers/LpTokenListsWidget'
 import { TokenSearchResults } from '../../containers/TokenSearchResults'
-import { SelectTokenContext } from '../../types'
+import { ChainsToSelectState, SelectTokenContext } from '../../types'
 import { ChainsSelector } from '../ChainsSelector'
 import { IconButton } from '../commonElements'
 import { FavoriteTokensList } from '../FavoriteTokensList'
@@ -31,7 +31,7 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   displayLpTokenLists?: boolean
   disableErc20?: boolean
   account: string | undefined
-  chainsToSelect: ChainInfo[] | undefined
+  chainsToSelect: ChainsToSelectState | undefined
   tokenListCategoryState: [T, (category: T) => void]
   defaultInputValue?: string
 
@@ -133,10 +133,14 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
         </LpTokenListsWidget>
       ) : (
         <>
-          {chainsToSelect && (
+          {chainsToSelect?.chains && (
             <>
               <styledEl.ChainsSelectorWrapper>
-                <ChainsSelector chains={chainsToSelect} onSelectChain={onSelectChain} />
+                <ChainsSelector
+                  chains={chainsToSelect.chains}
+                  defaultChainId={chainsToSelect.defaultChainId}
+                  onSelectChain={onSelectChain}
+                />
               </styledEl.ChainsSelectorWrapper>
             </>
           )}

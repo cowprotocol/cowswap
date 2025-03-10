@@ -107,7 +107,6 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
       tokenToImport: undefined,
       listToImport: undefined,
       selectedPoolAddress: undefined,
-      selectedTargetChainId: undefined,
     })
   }, [updateSelectTokenWidget])
 

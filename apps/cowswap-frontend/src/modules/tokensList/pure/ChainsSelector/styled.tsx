@@ -9,11 +9,11 @@ export const Wrapper = styled.div`
   gap: 8px;
 `
 
-export const ChainButton = styled.button`
+export const ChainButton = styled.button<{ active$?: boolean }>`
   display: inline-block;
   border-radius: 14px;
   padding: 6px;
-  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  border: ${({ active$ }) => `1px solid var(${active$ ? UI.COLOR_TEXT_OPACITY_50 : UI.COLOR_TEXT_OPACITY_10})`};
   cursor: pointer;
   line-height: 0;
   background: transparent;
