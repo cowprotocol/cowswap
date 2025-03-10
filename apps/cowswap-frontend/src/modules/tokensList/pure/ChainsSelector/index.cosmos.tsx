@@ -1,10 +1,10 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ChainInfo } from '@cowprotocol/types'
+import { ChainInfo, TokenInfo } from '@cowprotocol/types'
 
 import styled from 'styled-components/macro'
 
-import { testNetworks } from '../../../bridge/mocks'
+import { testNetworks } from 'modules/bridge/mocks'
 
 import { ChainsSelector } from './index'
 
@@ -15,7 +15,7 @@ const chains: ChainInfo[] = [
     return {
       id: +chainId,
       name: info.name,
-      nativeCurrency: info.nativeCurrency,
+      nativeCurrency: info.nativeCurrency as TokenInfo,
       isEvmChain: true,
       blockExplorer: info.explorer,
       logoUrl: info.logo.light,
@@ -32,7 +32,11 @@ const Wrapper = styled.div`
 const Fixtures = {
   default: (
     <Wrapper>
-      <ChainsSelector chains={chains} onSelectChain={(chainId) => console.log('Chain selected: ', chainId)} />
+      <ChainsSelector
+        chains={chains}
+        isLoading={false}
+        onSelectChain={(chainId) => console.log('Chain selected: ', chainId)}
+      />
     </Wrapper>
   ),
 }
