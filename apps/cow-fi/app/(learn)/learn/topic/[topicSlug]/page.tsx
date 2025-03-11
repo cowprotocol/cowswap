@@ -60,19 +60,15 @@ export default async function TopicPage({ params }: { params: Promise<{ topicSlu
         },
       },
     },
-    pageSize: 100,
   })
 
-  // Get articles for search functionality (limited to 100 instead of fetchAll)
-  const allArticlesResponse = await getArticles({
-    pageSize: 100,
-  })
+  // Get articles for search functionality
+  const allArticlesResponse = await getArticles()
 
   const topicArticles = topicArticlesResponse.data
   const allArticles = allArticlesResponse.data
 
   const categoriesResponse = await getCategories()
-  // Format categories for the component
   const allCategories =
     categoriesResponse?.map((category: any) => {
       return {

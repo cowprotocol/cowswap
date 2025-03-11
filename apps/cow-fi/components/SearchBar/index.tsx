@@ -20,80 +20,14 @@ import {
   LoadingIndicator,
   ErrorMessage,
   CloseIcon,
-  DEBOUNCE_DELAY,
-  PAGE_SIZE,
 } from './styled'
+import { DEBOUNCE_DELAY, PAGE_SIZE, MIN_SEARCH_LENGTH } from './const'
 import { Media } from '@cowprotocol/ui'
 import { useRouter } from 'next/navigation'
-
-// Minimum query length before triggering backend search
-const MIN_SEARCH_LENGTH = 2
-
-// Navigation helper functions
-const getNextIndex = (currentIndex: number, itemsLength: number, direction: 'up' | 'down'): number => {
-  if (direction === 'down') {
-    return (currentIndex + 1) % Math.max(1, itemsLength)
-  } else {
-    return (currentIndex - 1 + itemsLength) % Math.max(1, itemsLength)
-  }
-}
-
-// Custom hook for keyboard navigation with improved focus management
-const useKeyboardNavigation = (
-  isActive: boolean,
-  itemsLength: number,
-  onSelect: (index: number) => void,
-  onEscape: () => void,
-  containerRef: React.RefObject<HTMLDivElement>,
-) => {
-  const [selectedIndex, setSelectedIndex] = useState(-1)
-
-  useEffect(() => {
-    if (!isActive) {
-      setSelectedIndex(-1)
-      return
-    }
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!containerRef.current?.contains(document.activeElement)) {
-        return
-      }
-
-      switch (e.key) {
-        case 'ArrowDown':
-        case 'ArrowUp':
-          e.preventDefault()
-          setSelectedIndex((prevIndex) => getNextIndex(prevIndex, itemsLength, e.key === 'ArrowDown' ? 'down' : 'up'))
-          break
-        case 'Enter':
-          if (selectedIndex >= 0 && selectedIndex < itemsLength) {
-            onSelect(selectedIndex)
-          }
-          break
-        case 'Escape':
-          onEscape()
-          break
-        case 'Tab':
-          // Allow normal tab navigation but keep track of selected item
-          if (itemsLength > 0) {
-            e.preventDefault()
-            setSelectedIndex((prevIndex) => getNextIndex(prevIndex, itemsLength, e.shiftKey ? 'up' : 'down'))
-          }
-          break
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [isActive, itemsLength, onSelect, onEscape, containerRef])
-
-  return selectedIndex
-}
+import { useKeyboardNavigation } from '../../hooks/useKeyboardNavigation'
 
 interface SearchBarProps {
-  articles: Article[] // This is still needed for initial rendering
+  articles: Article[]
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {

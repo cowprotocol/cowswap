@@ -1,5 +1,5 @@
-import styled from 'styled-components/macro'
 import { Font, Color, Media } from '@cowprotocol/ui'
+import styled from 'styled-components/macro'
 
 export const SearchBarContainer = styled.div`
   width: 100%;
@@ -255,7 +255,3 @@ export const CloseIcon = styled.div`
     fill: currentColor;
   }
 `
-
-// Constants for optimization
-export const DEBOUNCE_DELAY = 300 // ms
-export const PAGE_SIZE = 100 // Number of results per page

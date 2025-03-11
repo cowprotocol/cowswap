@@ -5,7 +5,7 @@ import qs from 'qs'
 import { toQueryParams } from 'util/queryParams'
 import { getCmsClient } from '@cowprotocol/core'
 
-const PAGE_SIZE = 100
+const DEFAULT_PAGE_SIZE = 100
 const CMS_CACHE_TIME = 5 * 60 // 5 min
 const ARTICLES_FETCHING_PAGE_LIMIT = 10 // Maximum number of pages to fetch recursively
 
@@ -51,7 +51,7 @@ export async function getAllArticleSlugs(): Promise<string[]> {
     params: {
       query: {
         fields: ['slug'],
-        'pagination[pageSize]': 100, // Adjust the page size as needed
+        'pagination[pageSize]': DEFAULT_PAGE_SIZE,
       },
     },
     querySerializer,
@@ -79,7 +79,7 @@ export async function getCategories(): Promise<Category[]> {
       params: {
         pagination: {
           page: 0,
-          pageSize: 50,
+          pageSize: DEFAULT_PAGE_SIZE,
         },
         sort: 'name:asc',
       },
@@ -116,7 +116,7 @@ export async function getAllCategorySlugs(): Promise<string[]> {
  */
 export async function getArticles({
   page = 0,
-  pageSize = PAGE_SIZE,
+  pageSize = DEFAULT_PAGE_SIZE,
   filters = {},
   fetchAll = false,
 }: PaginationParam & { filters?: any; fetchAll?: boolean } = {}): Promise<ArticleListResponse> {
@@ -189,7 +189,7 @@ export async function getArticles({
 export async function searchArticles({
   searchTerm,
   page = 0,
-  pageSize = PAGE_SIZE,
+  pageSize = DEFAULT_PAGE_SIZE,
 }: {
   searchTerm: string
   page?: number

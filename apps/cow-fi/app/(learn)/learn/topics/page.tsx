@@ -3,9 +3,10 @@
 import { getArticles, getCategories } from '../../../../services/cms'
 import { Color } from '@cowprotocol/ui'
 import { TopicsPageComponent } from '@/components/TopicsPageComponent'
+import { ARTICLES_LARGE_PAGE_SIZE } from '@/const/pagination'
 
 export default async function TopicsPage() {
-  const articlesResponse = await getArticles({ pageSize: 200 })
+  const articlesResponse = await getArticles({ pageSize: ARTICLES_LARGE_PAGE_SIZE })
   const articles = articlesResponse.data
 
   const categoriesResponse = await getCategories()

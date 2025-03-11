@@ -1,13 +1,11 @@
 'use server'
 
 import { getArticles, getCategories } from '../../../services/cms'
-
+import { ARTICLES_LARGE_PAGE_SIZE, FEATURED_ARTICLES_PAGE_SIZE } from '@/const/pagination'
 import { LearnPageComponent } from '@/components/LearnPageComponent'
 
 export default async function LearnPage() {
-  // Fetch articles with pagination instead of fetchAll
-  // Using a larger pageSize to get more articles at once, but not all
-  const articlesResponse = await getArticles({ pageSize: 200 })
+  const articlesResponse = await getArticles({ pageSize: ARTICLES_LARGE_PAGE_SIZE })
   const articles = articlesResponse.data
 
   // Fetch featured articles
@@ -17,7 +15,7 @@ export default async function LearnPage() {
         $eq: true,
       },
     },
-    pageSize: 7, // Limit to 7 articles
+    pageSize: FEATURED_ARTICLES_PAGE_SIZE,
   })
 
   // Format featured articles for the component

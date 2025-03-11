@@ -14,7 +14,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { stripHtmlTags } from '@/util/stripHTMLTags'
 import { getPageMetadata } from '@/util/getPageMetadata'
-
+import { FEATURED_ARTICLES_PAGE_SIZE } from '@/const/pagination'
 function isRichTextComponent(block: any): block is SharedRichTextComponent {
   return block.body !== undefined
 }
@@ -63,7 +63,7 @@ export default async function ArticlePage({ params }: Props) {
   }
 
   // Get related articles
-  const articlesResponse = await getArticles({ pageSize: 100 })
+  const articlesResponse = await getArticles()
   const articles = articlesResponse.data
 
   // Fetch featured articles
@@ -73,7 +73,7 @@ export default async function ArticlePage({ params }: Props) {
         $eq: true,
       },
     },
-    pageSize: 7, // Limit to 7 articles
+    pageSize: FEATURED_ARTICLES_PAGE_SIZE,
   })
   const featuredArticles = featuredArticlesResponse.data
 
