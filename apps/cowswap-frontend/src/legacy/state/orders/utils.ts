@@ -401,7 +401,7 @@ export function getRemainderAmountsWithoutSurplus(order: Order | ParsedOrder): {
     return { sellAmount: sellRemainder, buyAmount: buyRemainder }
   }
 
-  const surplusAmount = JSBI.BigInt(surplusAmountBigNumber.decimalPlaces(0).toString())
+  const surplusAmount = JSBI.BigInt(`0x${surplusAmountBigNumber.decimalPlaces(0).toString(16)}`)
 
   if (isSellOrder(order.kind)) {
     const buyAmount = JSBI.subtract(JSBI.BigInt(buyRemainder), surplusAmount).toString()
@@ -442,14 +442,13 @@ export function getRemainderAmount(kind: OrderKind, order: Order | ParsedOrder):
   }
 
   const fullAmount = isSellOrder(kind) ? sellAmount : buyAmount
-  const fullAmountBN = JSBI.BigInt(Number(fullAmount))
   if (!executedSellAmount || !executedBuyAmount || executedSellAmount === '0' || executedBuyAmount === '0') {
-    return fullAmountBN.toString()
+    return fullAmount
   }
 
-  const executedAmount = JSBI.BigInt((isSellOrder(kind) ? Number(executedSellAmount) : Number(executedBuyAmount)) || 0)
+  const executedAmount = JSBI.BigInt((isSellOrder(kind) ? executedSellAmount : executedBuyAmount) || 0)
 
-  return JSBI.subtract(fullAmountBN, executedAmount).toString()
+  return JSBI.subtract(JSBI.BigInt(Number(fullAmount)), executedAmount).toString()
 }
 
 function extrapolatePriceBasedOnFeeAmount<T extends Currency>(
