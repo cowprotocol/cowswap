@@ -10,7 +10,6 @@ import {
   TradeWidget,
   TradeWidgetSlots,
   useReceiveAmountInfo,
-  useTradeConfirmState,
   useTradePriceImpact,
   useWrapNativeFlow,
 } from 'modules/trade'
@@ -45,7 +44,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const hooksEnabledState = useHooksEnabledManager()
   const { isLoading: isRateLoading } = useTradeQuote()
   const priceImpact = useTradePriceImpact()
-  const { isOpen: isConfirmOpen } = useTradeConfirmState()
   const widgetActions = useSwapWidgetActions()
   const receiveAmountInfo = useReceiveAmountInfo()
   const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
@@ -171,7 +169,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     showRecipient,
     isTradePriceUpdating: isRateLoading,
     priceImpact,
-    disableQuotePolling: isConfirmOpen,
   }
 
   return (

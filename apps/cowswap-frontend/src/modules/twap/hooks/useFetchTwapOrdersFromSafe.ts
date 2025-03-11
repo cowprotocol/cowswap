@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 
 import { ComposableCoW } from '@cowprotocol/abis'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
+
+import { useSafeApiKit } from 'common/hooks/useSafeApiKit'
 
 import { fetchTwapOrdersFromSafe } from '../services/fetchTwapOrdersFromSafe'
 import { TwapOrdersSafeData } from '../types'
@@ -17,12 +18,14 @@ export function useFetchTwapOrdersFromSafe({
   safeAddress: string
   composableCowContract: ComposableCoW
 }): TwapOrdersSafeData[] {
-  const { chainId } = useWalletInfo()
+  const safeApiKit = useSafeApiKit()
   const [ordersSafeData, setOrdersSafeData] = useState<TwapOrdersSafeData[]>([])
 
   useEffect(() => {
+    if (!safeApiKit) return
+
     const persistOrders = () => {
-      fetchTwapOrdersFromSafe(safeAddress, chainId, composableCowContract).then(setOrdersSafeData)
+      fetchTwapOrdersFromSafe(safeAddress, safeApiKit, composableCowContract).then(setOrdersSafeData)
     }
 
     const interval = setInterval(persistOrders, PENDING_TWAP_UPDATE_INTERVAL)
@@ -30,7 +33,7 @@ export function useFetchTwapOrdersFromSafe({
     persistOrders()
 
     return () => clearInterval(interval)
-  }, [safeAddress, chainId, composableCowContract])
+  }, [safeAddress, safeApiKit, composableCowContract])
 
   return ordersSafeData
 }

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.21.0...cow-fi-v1.21.1) (2025-03-10)
+
+
+### Bug Fixes
+
+* some typos on the terms page ([#5468](https://github.com/cowprotocol/cowswap/issues/5468)) ([7dcaa06](https://github.com/cowprotocol/cowswap/commit/7dcaa06b90a6f6ae69027a2d8e958f5032fab73c))
+
 ## [1.21.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.20.0...cow-fi-v1.21.0) (2025-02-27)
 
 
