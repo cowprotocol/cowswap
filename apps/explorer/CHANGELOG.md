@@ -1,5 +1,27 @@
 # Changelog
 
+## [2.44.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.43.0...explorer-v2.44.0) (2025-02-27)
+
+
+### Features
+
+* add dummy change to force release ([0a5a954](https://github.com/cowprotocol/cowswap/commit/0a5a9547bdfe9f3bec4fd73dc11ffd0035501d90))
+
+## [2.43.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.42.2...explorer-v2.43.0) (2025-02-25)
+
+
+### Features
+
+* **analytics:** migrate to GTM-based analytics ([#5360](https://github.com/cowprotocol/cowswap/issues/5360)) ([f404d02](https://github.com/cowprotocol/cowswap/commit/f404d0280d9d1d86cc249d70852a5c0ec9827475))
+
+## [2.42.2](https://github.com/cowprotocol/cowswap/compare/explorer-v2.42.1...explorer-v2.42.2) (2025-02-12)
+
+
+### Bug Fixes
+
+* **explorer:** enhance hooks details layout ([#5416](https://github.com/cowprotocol/cowswap/issues/5416)) ([3259da8](https://github.com/cowprotocol/cowswap/commit/3259da89a791dc04a832ea7093f5b2a9fa441b95))
+* tooltip placement inside an order in cow  explorer ([#5400](https://github.com/cowprotocol/cowswap/issues/5400)) ([8288fa6](https://github.com/cowprotocol/cowswap/commit/8288fa6dad18c951c16d428ac6c8f318fce35ca1))
+
 ## [2.42.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.42.0...explorer-v2.42.1) (2025-02-05)
 
 

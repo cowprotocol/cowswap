@@ -1,7 +1,9 @@
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { UiOrderType } from '@cowprotocol/types'
 
-import { signTradeAnalytics, tradeAnalytics } from 'modules/analytics'
-import { USER_SWAP_REJECTED_ERROR } from 'modules/trade/utils/swapErrorHelper'
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
+
+import { USER_SWAP_REJECTED_ERROR } from '../../../common/utils/getSwapErrorMessage'
 
 export interface TradeFlowAnalyticsContext {
   account: string | null
@@ -11,38 +13,55 @@ export interface TradeFlowAnalyticsContext {
   orderType: UiOrderType
 }
 
-export const tradeFlowAnalytics = {
-  trade(context: TradeFlowAnalyticsContext) {
-    tradeAnalytics('Send', context.orderType, context.marketLabel)
-  },
-  sign(context: TradeFlowAnalyticsContext) {
-    const { marketLabel, orderType } = context
-    signTradeAnalytics(orderType, marketLabel)
-  },
-  approveAndPresign(context: TradeFlowAnalyticsContext) {
-    const { marketLabel, orderType } = context
-    tradeAnalytics('Bundle Approve and Swap', orderType, marketLabel)
-  },
-  placeAdvancedOrder(context: TradeFlowAnalyticsContext) {
-    const { marketLabel, orderType } = context
-    tradeAnalytics('Place Advanced Order', orderType, marketLabel)
-  },
-  wrapApproveAndPresign(context: TradeFlowAnalyticsContext) {
-    const { marketLabel, orderType } = context
-    tradeAnalytics('Bundled Eth Flow', orderType, marketLabel)
-  },
-  error(error: any, errorMessage: string, context: TradeFlowAnalyticsContext) {
-    const { marketLabel, orderType } = context
+export interface TradeFlowAnalytics {
+  trade(context: TradeFlowAnalyticsContext): void
+  sign(context: TradeFlowAnalyticsContext): void
+  approveAndPresign(context: TradeFlowAnalyticsContext): void
+  placeAdvancedOrder(context: TradeFlowAnalyticsContext): void
+  wrapApproveAndPresign(context: TradeFlowAnalyticsContext): void
+  error(error: Error & { code?: number }, errorMessage: string, context: TradeFlowAnalyticsContext): void
+}
 
-    if (errorMessage === USER_SWAP_REJECTED_ERROR) {
-      tradeAnalytics('Reject', orderType, marketLabel)
-    } else {
-      tradeAnalytics(
-        'Error',
-        orderType,
-        marketLabel,
-        error.code && typeof error.code === 'number' ? error.code : undefined
-      )
-    }
-  },
+export function useTradeFlowAnalytics(): TradeFlowAnalytics {
+  const analytics = useCowAnalytics()
+
+  const sendTradeAnalytics = (action: string, orderType: UiOrderType, marketLabel?: string, value?: number) => {
+    analytics.sendEvent({
+      category: CowSwapAnalyticsCategory.TRADE,
+      action,
+      label: `${orderType}|${marketLabel}`,
+      ...(value !== undefined && { value }),
+    })
+  }
+
+  return {
+    trade(context: TradeFlowAnalyticsContext) {
+      sendTradeAnalytics('Send', context.orderType, context.marketLabel)
+    },
+    sign(context: TradeFlowAnalyticsContext) {
+      const { marketLabel, orderType } = context
+      sendTradeAnalytics('Sign', orderType, marketLabel)
+    },
+    approveAndPresign(context: TradeFlowAnalyticsContext) {
+      const { marketLabel, orderType } = context
+      sendTradeAnalytics('Bundle Approve and Swap', orderType, marketLabel)
+    },
+    placeAdvancedOrder(context: TradeFlowAnalyticsContext) {
+      const { marketLabel, orderType } = context
+      sendTradeAnalytics('Place Advanced Order', orderType, marketLabel)
+    },
+    wrapApproveAndPresign(context: TradeFlowAnalyticsContext) {
+      const { marketLabel, orderType } = context
+      sendTradeAnalytics('Bundled Eth Flow', orderType, marketLabel)
+    },
+    error(error: Error & { code?: number }, errorMessage: string, context: TradeFlowAnalyticsContext) {
+      const { marketLabel, orderType } = context
+
+      if (errorMessage === USER_SWAP_REJECTED_ERROR) {
+        sendTradeAnalytics('Reject', orderType, marketLabel)
+      } else {
+        sendTradeAnalytics('Error', orderType, marketLabel, error.code)
+      }
+    },
+  }
 }

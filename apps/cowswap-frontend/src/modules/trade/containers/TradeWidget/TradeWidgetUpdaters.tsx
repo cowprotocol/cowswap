@@ -1,14 +1,15 @@
-import { ReactNode, useEffect } from 'react'
+import { ReactNode } from 'react'
 
 import { PriorityTokensUpdater } from '@cowprotocol/balances-and-allowances'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
-import { TradeQuoteState, TradeQuoteUpdater, useUpdateTradeQuote } from 'modules/tradeQuote'
+import { TradeQuoteUpdater } from 'modules/tradeQuote'
 import { SmartSlippageUpdater } from 'modules/tradeSlippage'
 
 import { usePriorityTokenAddresses } from '../../hooks/usePriorityTokenAddresses'
 import { useResetRecipient } from '../../hooks/useResetRecipient'
+import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { CommonTradeUpdater } from '../../updaters/CommonTradeUpdater'
 import { DisableNativeTokenSellingUpdater } from '../../updaters/DisableNativeTokenSellingUpdater'
 import { PriceImpactUpdater } from '../../updaters/PriceImpactUpdater'
@@ -19,27 +20,19 @@ interface TradeWidgetUpdatersProps {
   disableNativeSelling: boolean
   enableSmartSlippage?: boolean
   children: ReactNode
-  tradeQuoteStateOverride?: TradeQuoteState | null
   onChangeRecipient: (recipient: string | null) => void
 }
 
 export function TradeWidgetUpdaters({
   disableQuotePolling,
   disableNativeSelling,
-  tradeQuoteStateOverride,
   enableSmartSlippage,
   onChangeRecipient,
   children,
 }: TradeWidgetUpdatersProps) {
   const { chainId, account } = useWalletInfo()
-  const updateQuoteState = useUpdateTradeQuote()
   const priorityTokenAddresses = usePriorityTokenAddresses()
-
-  useEffect(() => {
-    if (disableQuotePolling && tradeQuoteStateOverride) {
-      updateQuoteState(tradeQuoteStateOverride)
-    }
-  }, [tradeQuoteStateOverride, disableQuotePolling, updateQuoteState])
+  const { isOpen: isConfirmOpen } = useTradeConfirmState()
 
   useResetRecipient(onChangeRecipient)
 
@@ -48,7 +41,7 @@ export function TradeWidgetUpdaters({
       <PriorityTokensUpdater account={account} chainId={chainId} tokenAddresses={priorityTokenAddresses} />
       <RecipientAddressUpdater />
 
-      {!disableQuotePolling && <TradeQuoteUpdater />}
+      {!disableQuotePolling && <TradeQuoteUpdater isConfirmOpen={isConfirmOpen} />}
       <PriceImpactUpdater />
       <TradeFormValidationUpdater />
       <CommonTradeUpdater />

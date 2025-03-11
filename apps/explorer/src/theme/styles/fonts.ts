@@ -1,7 +1,5 @@
 import 'inter-ui'
 
-import { Theme } from 'theme'
-import { logDebug } from 'utils'
 export interface Fonts {
   fontDefault: string
   fontVariable: string
@@ -17,7 +15,7 @@ export interface Fonts {
   fontLineHeight: string
 }
 
-const fontsVariables = {
+const fontsVariables: Fonts = {
   fontDefault: 'Inter',
   fontVariable: 'Inter var',
   fontThin: '100',
@@ -32,7 +30,6 @@ const fontsVariables = {
   fontLineHeight: '2.6rem',
 }
 
-export function getFonts(mode: Theme): Fonts {
-  logDebug(`[THEME] Loading ${mode} theme font`)
+export function getFonts(): Fonts {
   return fontsVariables
 }

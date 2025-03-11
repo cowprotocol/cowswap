@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.10.1](https://github.com/cowprotocol/cowswap/compare/wallet-v1.10.0...wallet-v1.10.1) (2025-02-17)
+
+
+### Bug Fixes
+
+* do not check capabilities in mobile wc ([#5429](https://github.com/cowprotocol/cowswap/issues/5429)) ([26b907d](https://github.com/cowprotocol/cowswap/commit/26b907dad4c7310bdc3e560e5592fdeb3db11b95))
+
+## [1.10.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.9.3...wallet-v1.10.0) (2025-02-12)
+
+
+### Features
+
+* support EIP-5792 batch tx for Safe via WC ([#5417](https://github.com/cowprotocol/cowswap/issues/5417)) ([8aa612f](https://github.com/cowprotocol/cowswap/commit/8aa612f7b93a40d69efa364a10634863bc743e95))
+
 ## [1.9.3](https://github.com/cowprotocol/cowswap/compare/wallet-v1.9.2...wallet-v1.9.3) (2025-02-03)
 
 

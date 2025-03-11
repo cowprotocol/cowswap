@@ -1,5 +1,37 @@
 # Changelog
 
+## [1.21.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.21.0...cow-fi-v1.21.1) (2025-03-10)
+
+
+### Bug Fixes
+
+* some typos on the terms page ([#5468](https://github.com/cowprotocol/cowswap/issues/5468)) ([7dcaa06](https://github.com/cowprotocol/cowswap/commit/7dcaa06b90a6f6ae69027a2d8e958f5032fab73c))
+
+## [1.21.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.20.0...cow-fi-v1.21.0) (2025-02-27)
+
+
+### Features
+
+* **cow-fi:** update base token reward T&C ([#5460](https://github.com/cowprotocol/cowswap/issues/5460)) ([485f2b4](https://github.com/cowprotocol/cowswap/commit/485f2b494848aaf8816854fe0c604d8bda84ac5b))
+
+
+### Bug Fixes
+
+* TX amount change on MEV blocker page ([#5453](https://github.com/cowprotocol/cowswap/issues/5453)) ([9ee3d08](https://github.com/cowprotocol/cowswap/commit/9ee3d088a0e2d21c60ac7d632c18170ca44aa50a))
+
+## [1.20.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.19.4...cow-fi-v1.20.0) (2025-02-25)
+
+
+### Features
+
+* **analytics:** migrate to GTM-based analytics ([#5360](https://github.com/cowprotocol/cowswap/issues/5360)) ([f404d02](https://github.com/cowprotocol/cowswap/commit/f404d0280d9d1d86cc249d70852a5c0ec9827475))
+
+
+### Bug Fixes
+
+* update email contact from people@cow.fi to jobs@cow.fi ([#5438](https://github.com/cowprotocol/cowswap/issues/5438)) ([297c2f4](https://github.com/cowprotocol/cowswap/commit/297c2f406c83bc4f8554dcd33b2d8e913c5455d9))
+* update some stats on Cow.fi pages ([#5441](https://github.com/cowprotocol/cowswap/issues/5441)) ([4ec735f](https://github.com/cowprotocol/cowswap/commit/4ec735fdf0f9620422b24d585f3eccb8fb27aa1a))
+
 ## [1.19.4](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.19.3...cow-fi-v1.19.4) (2025-02-05)
 
 

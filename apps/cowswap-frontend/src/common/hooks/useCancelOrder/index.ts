@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
-import { calculateGasMargin } from '@cowprotocol/common-utils'
+import { calculateGasMargin, getIsNativeToken } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -10,9 +10,6 @@ import { useCloseModal, useOpenModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useGasPrices } from 'legacy/state/gas/hooks'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
-
-import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
-import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 import { useGetOnChainCancellation } from 'common/hooks/useCancelOrder/useGetOnChainCancellation'
 import { computeOrderSummary } from 'common/updaters/orders/utils'
@@ -22,6 +19,8 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { cancellationModalContextAtom, CancellationType, updateCancellationModalContextAtom } from './state'
 import { useOffChainCancelOrder } from './useOffChainCancelOrder'
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'
+
+import { getSwapErrorMessage } from '../../utils/getSwapErrorMessage'
 
 export type UseCancelOrderReturn = Command | null
 
@@ -53,7 +52,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
     (order: Order) => {
       // Check the 'cancellability'
 
-      const isEthFlowOrder = getIsEthFlowOrder(order.inputToken.address)
+      const isEthFlowOrder = getIsNativeToken(order.inputToken)
 
       // 1. EthFlow orders will never be able to be cancelled offChain
       // 2. The wallet must support offChain singing
@@ -131,6 +130,6 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
       gasPrices,
       nativeCurrency,
       isPendingSignature,
-    ]
+    ],
   )
 }

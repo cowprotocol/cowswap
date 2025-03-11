@@ -15,14 +15,17 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
-import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-import { tradeFlowAnalytics, TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
+import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 import { presignOrderStep } from 'modules/tradeFlow/services/swapFlow/steps/presignOrderStep'
+
+import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 export async function tradeFlow(
   params: TradeFlowContext,
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,
+  analytics: TradeFlowAnalytics,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
   beforePermit: () => Promise<void>,
   beforeTrade: Command,
@@ -78,7 +81,7 @@ export async function tradeFlow(
     }
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 3: send transaction')
-    tradeFlowAnalytics.trade(swapFlowAnalyticsContext)
+    analytics.trade(swapFlowAnalyticsContext)
 
     beforeTrade()
 
@@ -136,14 +139,14 @@ export async function tradeFlow(
     })
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 8: Sign order')
-    tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
+    analytics.sign(swapFlowAnalyticsContext)
 
     return orderId
   } catch (error: any) {
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 9: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
-    tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
+    analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
     throw error
   }

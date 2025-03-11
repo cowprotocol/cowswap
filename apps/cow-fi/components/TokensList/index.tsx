@@ -3,6 +3,7 @@ import { TokenLink } from '@/components/TokenDetails/index.styles'
 import { getPriceChangeColor } from 'util/getPriceChangeColor'
 import { formatUSDPrice } from 'util/formatUSDPrice'
 import { TokenInfo } from 'types'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import {
   HeaderItem,
   ListItem,
@@ -13,7 +14,12 @@ import {
   Wrapper,
   NoTokensText,
 } from './index.style'
-import { clickOnToken } from 'modules/analytics'
+import { useTheme } from 'styled-components/macro'
+
+// Utility function for consistent value formatting
+const formatValue = <T,>(value: T | null | undefined, formatter: (val: T) => string): string => {
+  return value ? formatter(value) : '-'
+}
 
 export interface TokenListProps {
   tokens: TokenInfo[]
@@ -43,6 +49,11 @@ export function TokenList({ tokens }: TokenListProps) {
         placeholder="Search tokens..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
+        data-click-event={toCowFiGtmEvent({
+          category: CowFiCategory.TOKENS,
+          action: 'Search Tokens',
+          label: search || 'Empty Search',
+        })}
       />
       <TokenTable>
         <HeaderItem>
@@ -69,12 +80,20 @@ interface TokenItemProps {
 }
 
 function TokenItem({ token, index }: TokenItemProps) {
+  const theme = useTheme()
   const { id, name, symbol, change24h, priceUsd, marketCap, volume, image } = token
   return (
     <ListItem key={id}>
       <span>{index + 1}</span>
 
-      <TokenLink href={`/tokens/${id}`} onClick={() => clickOnToken(name)}>
+      <TokenLink
+        href={`/tokens/${id}`}
+        data-click-event={toCowFiGtmEvent({
+          category: CowFiCategory.TOKENS,
+          action: 'Click Token',
+          label: `${name} (${symbol})`,
+        })}
+      >
         {image.large && image.large !== 'missing_large.png' ? (
           <img src={image.large} alt={name} />
         ) : (
@@ -85,12 +104,12 @@ function TokenItem({ token, index }: TokenItemProps) {
         </span>
       </TokenLink>
 
-      <ListItemValue>{priceUsd ? `$${priceUsd}` : '-'}</ListItemValue>
-      <ListItemValue color={getPriceChangeColor(change24h)}>
-        {change24h ? `${Number(change24h).toFixed(2)}%` : '-'}
+      <ListItemValue>{formatValue(priceUsd, (price) => `$${price}`)}</ListItemValue>
+      <ListItemValue color={getPriceChangeColor(change24h, theme)}>
+        {formatValue(change24h, (change) => `${Number(change).toFixed(2)}%`)}
       </ListItemValue>
-      <ListItemValue>{marketCap ? `${formatUSDPrice(marketCap)}` : '-'}</ListItemValue>
-      <ListItemValue>{volume ? `${formatUSDPrice(volume)}` : '-'}</ListItemValue>
+      <ListItemValue>{formatValue(marketCap, formatUSDPrice)}</ListItemValue>
+      <ListItemValue>{formatValue(volume, formatUSDPrice)}</ListItemValue>
     </ListItem>
   )
 }

@@ -1,12 +1,10 @@
 'use client'
 
 import { Color } from '@cowprotocol/ui'
-
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 import styled from 'styled-components/macro'
-
 import { ContainerCard, ArticleContent, Breadcrumbs, ArticleMainTitle, BodyContent } from '@/styles/styled'
-
-import { clickOnCareers } from '../../../../modules/analytics'
 
 const Wrapper = styled.div`
   display: flex;
@@ -20,12 +18,23 @@ const Wrapper = styled.div`
 `
 
 export default function Page() {
+  const analytics = useCowAnalytics()
+
   return (
     <Wrapper>
       <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
         <ArticleContent maxWidth="100%">
           <Breadcrumbs>
-            <a href="/careers" onClick={() => clickOnCareers('click-breadcrumb-careers')}>
+            <a
+              href="/careers"
+              onClick={() =>
+                analytics.sendEvent({
+                  category: CowFiCategory.CAREERS,
+                  action: 'Click Breadcrumb',
+                  label: 'careers',
+                })
+              }
+            >
               Careers
             </a>
             <span>Refer-to-Earn</span>
@@ -54,8 +63,8 @@ export default function Page() {
               <br />
               <b>
                 Have Questions? Ask us at{' '}
-                <a href="mailto:people@cow.fi" target="_blank" rel="noreferrer">
-                  people@cow.fi
+                <a href="mailto:jobs@cow.fi" target="_blank" rel="noreferrer">
+                  jobs@cow.fi
                 </a>
               </b>
             </p>
@@ -95,7 +104,7 @@ export default function Page() {
             <ul>
               <li>
                 The referrer should reach out to a CoW core team member or directly contact the People department via
-                email at <a href="mailto:people@cow.fi">people@cow.fi</a>, LinkedIn, or Telegram. When reaching out, the
+                email at <a href="mailto:jobs@cow.fi">jobs@cow.fi</a>, LinkedIn, or Telegram. When reaching out, the
                 Referrer must include the candidate's name, surname, and email or LinkedIn profile. The Referrer is
                 responsible for ensuring that the Candidate has given consent to share this information.
               </li>

@@ -1,11 +1,11 @@
 import { useAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { getAddress } from '@cowprotocol/common-utils'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { alternativeModalAnalytics } from 'modules/analytics'
 import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
 import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundleFlowContext'
 import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
@@ -15,14 +15,31 @@ import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersS
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { useNavigateToAllOrdersTable } from 'modules/ordersTable'
 import { useCloseReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal/hooks'
+import { useTradeFlowAnalytics } from 'modules/trade'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
 import { useAlternativeOrder, useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
-import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 import OperatorError from 'api/cowProtocol/errors/OperatorError'
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { TradeAmounts } from 'common/types'
+import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
+
+function useAlternativeModalAnalytics() {
+  const analytics = useCowAnalytics()
+
+  return useCallback(
+    (wasPlaced: boolean) => {
+      analytics.sendEvent({
+        category: CowSwapAnalyticsCategory.TRADE,
+        action: 'alternative_modal_completion',
+        label: wasPlaced ? 'placed' : 'not-placed',
+      })
+    },
+    [analytics],
+  )
+}
 
 export function useHandleOrderPlacement(
   tradeContext: TradeFlowContext,
@@ -40,6 +57,8 @@ export function useHandleOrderPlacement(
   // tx bundling stuff
   const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)
   const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
+  const alternativeModalAnalytics = useAlternativeModalAnalytics()
+  const analytics = useTradeFlowAnalytics()
 
   const beforePermit = useCallback(async () => {
     if (!tradeContext) return
@@ -75,6 +94,7 @@ export function useHandleOrderPlacement(
         priceImpact,
         settingsState,
         confirmPriceImpactWithoutFee,
+        analytics,
         beforeTrade,
       )
     }
@@ -82,7 +102,15 @@ export function useHandleOrderPlacement(
     tradeContext.postOrderParams.partiallyFillable =
       partiallyFillableOverride ?? tradeContext.postOrderParams.partiallyFillable
 
-    return tradeFlow(tradeContext, priceImpact, settingsState, confirmPriceImpactWithoutFee, beforePermit, beforeTrade)
+    return tradeFlow(
+      tradeContext,
+      priceImpact,
+      settingsState,
+      analytics,
+      confirmPriceImpactWithoutFee,
+      beforePermit,
+      beforeTrade,
+    )
   }, [
     beforePermit,
     beforeTrade,
@@ -93,6 +121,7 @@ export function useHandleOrderPlacement(
     safeBundleFlowContext,
     settingsState,
     tradeContext,
+    analytics,
   ])
 
   return useCallback(() => {
@@ -112,7 +141,7 @@ export function useHandleOrderPlacement(
 
         // Analytics event to track alternative modal usage, only if was using alternative modal
         if (isAlternativeOrderEdit !== undefined) {
-          alternativeModalAnalytics(isAlternativeOrderEdit, 'placed')
+          alternativeModalAnalytics(isAlternativeOrderEdit)
         }
       })
       .catch((error) => {
@@ -133,6 +162,7 @@ export function useHandleOrderPlacement(
     navigateToAllOrdersTable,
     closeReceiptModal,
     hideAlternativeOrderModal,
+    alternativeModalAnalytics,
   ])
 }
 

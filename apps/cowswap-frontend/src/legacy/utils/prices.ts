@@ -4,10 +4,7 @@ import {
   ALLOWED_PRICE_IMPACT_MEDIUM,
   BLOCKED_PRICE_IMPACT_NON_EXPERT,
 } from '@cowprotocol/common-const'
-import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
-
-import TradeGp from 'legacy/state/swap/TradeGp'
-import { Field } from 'legacy/state/types'
+import { Percent } from '@uniswap/sdk-core'
 
 const IMPACT_TIERS = [
   BLOCKED_PRICE_IMPACT_NON_EXPERT,
@@ -28,16 +25,4 @@ export function warningSeverity(priceImpact: Percent | undefined): WarningSeveri
     impact--
   }
   return 0
-}
-
-// computes the minimum amount out and maximum amount in for a trade given a user specified allowed slippage in bps
-export function computeSlippageAdjustedAmounts(
-  //   trade: Trade | undefined,
-  trade: TradeGp | undefined,
-  allowedSlippage: Percent
-): { [field in Field]?: CurrencyAmount<Currency> } {
-  return {
-    [Field.INPUT]: trade?.maximumAmountIn(allowedSlippage),
-    [Field.OUTPUT]: trade?.minimumAmountOut(allowedSlippage),
-  }
 }

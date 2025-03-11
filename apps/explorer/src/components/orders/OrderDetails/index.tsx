@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { Media } from '@cowprotocol/ui'
+import { Color, Media } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import CowLoading from 'components/common/CowLoading'
@@ -31,9 +31,9 @@ import { FillsTableWithData } from './FillsTableWithData'
 import { FlexContainerVar } from '../../../explorer/pages/styled'
 
 const TitleUid = styled(RowWithCopyButton)`
-  color: ${({ theme }): string => theme.grey};
-  font-size: ${({ theme }): string => theme.fontSizeDefault};
-  font-weight: ${({ theme }): string => theme.fontNormal};
+  color: ${Color.explorer_grey};
+  font-size: var(--font-size-default);
+  font-weight: var(--font-weight-normal);
   margin: 0 0 0 1rem;
   display: flex;
   align-items: center;

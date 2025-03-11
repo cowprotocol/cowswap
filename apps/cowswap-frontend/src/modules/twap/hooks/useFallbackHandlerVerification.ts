@@ -9,7 +9,8 @@ export function useFallbackHandlerVerification(): ExtensibleFallbackVerification
   const { account } = useWalletInfo()
   const state = useAtomValue(fallbackHandlerVerificationAtom)
 
-  return account ? state[account] || null : null
+  // For backward compatibility check both upper and lower case
+  return account ? state[account.toLowerCase()] || state[account] || null : null
 }
 
 export function useIsFallbackHandlerRequired(): boolean {

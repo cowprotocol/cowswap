@@ -3,12 +3,11 @@ import { useCallback } from 'react'
 
 import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 
-import { modifySafeHandlerAnalytics } from 'modules/analytics'
-import { SellNativeWarningBanner } from 'modules/trade/containers/SellNativeWarningBanner'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { TradeFormValidation } from 'modules/tradeFormValidation/types'
 import { useTradeQuoteFeeFiatAmount } from 'modules/tradeQuote'
+import { SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
 
 import {
   FallbackHandlerWarning,
@@ -51,7 +50,6 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
 
   const toggleFallbackHandlerSetupFlag = useCallback(
     (isFallbackHandlerSetupAccepted: boolean) => {
-      modifySafeHandlerAnalytics(isFallbackHandlerSetupAccepted ? 'enabled' : 'disabled')
       updateTwapOrdersSettings({ isFallbackHandlerSetupAccepted })
     },
     [updateTwapOrdersSettings],

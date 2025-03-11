@@ -1,8 +1,9 @@
-import { ChartContainer, LoadingChart } from '../Chart/LoadingChart'
+import { LoadingChart } from '../Chart/LoadingChart'
+import { ChartContainer } from '../Chart/LoadingChart'
 import { Chart, TimePeriod } from '../Chart'
 import { ParentSize } from '@visx/responsive'
 import { useMemo } from 'react'
-import { useQuery } from '@apollo/client'
+import { useQuery, OperationVariables } from '@apollo/client'
 import { tokenPriceQuery, HistoryDuration, Chain } from 'services/uniswap-price/queries'
 import { usePriceHistory } from 'lib/hooks/usePriceHistory'
 import { fixChart } from 'util/fixChart'
@@ -12,31 +13,38 @@ type ChartSectionProps = {
   platforms: Platforms
 }
 
-export function ChartSection({ platforms }: ChartSectionProps) {
-  const queryVariables = useMemo(() => {
-    const output: any = { duration: HistoryDuration.Day }
+type QueryVars = {
+  duration: HistoryDuration
+  chain: Chain
+  address: string
+}
 
-    if (platforms.ethereum.contractAddress) {
-      output.chain = Chain.Ethereum
-      output.address = platforms.ethereum.contractAddress
-      return output
+export function ChartSection({ platforms }: ChartSectionProps) {
+  const queryVariables = useMemo<QueryVars | undefined>(() => {
+    if (!platforms.ethereum.contractAddress) {
+      return undefined
     }
 
-    return null
+    return {
+      duration: HistoryDuration.Day,
+      chain: Chain.Ethereum,
+      address: platforms.ethereum.contractAddress,
+    }
   }, [platforms.ethereum.contractAddress])
 
   const { data, loading } = useQuery(tokenPriceQuery, {
-    variables: { ...queryVariables },
+    variables: queryVariables,
+    skip: !queryVariables,
   })
 
   const originalPrices = usePriceHistory(data)
 
   const { prices } = useMemo(
     () => (originalPrices && originalPrices.length > 0 ? fixChart(originalPrices) : { prices: null, blanks: [] }),
-    [originalPrices]
+    [originalPrices],
   )
 
-  if (loading) {
+  if (loading || !prices) {
     return <LoadingChart />
   }
 

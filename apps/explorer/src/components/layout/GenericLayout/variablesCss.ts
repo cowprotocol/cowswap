@@ -1,3 +1,5 @@
+import { Color } from '@cowprotocol/ui'
+
 import { css } from 'styled-components/macro'
 
 const AllColors = css`
@@ -28,30 +30,29 @@ const AllColors = css`
 
 const DarkColors = css`
   /* Palette specific */
-  --color-green: #00c46e;
-  --color-red: #ff305b;
+  --color-green: ${Color.explorer_green1};
+  --color-red: ${Color.explorer_red1};
 
-  // --color-primary: #1E1F2B;
-  --color-primary: #181923;
-  --color-menu-mobile: #0e0f14; /* bg4 */
+  --color-primary: ${Color.explorer_bg};
+  --color-menu-mobile: ${Color.explorer_bg2};
   --color-transparent: transparent;
-  --color-long: var(--color-green);
-  --color-short: var(--color-red);
+  --color-long: ${Color.explorer_green1};
+  --color-short: ${Color.explorer_red1};
 
   /* Gradients */
-  --color-gradient-1: #21222e;
-  --color-gradient-2: #2c2d3f;
+  --color-gradient-1: ${Color.explorer_gradient1};
+  --color-gradient-2: ${Color.explorer_gradient2};
 
   /* Borders */
-  --color-border: #2e3148;
+  --color-border: ${Color.explorer_border};
 
   /* Text */
-  --color-text-primary: #ffffff;
-  --color-text-secondary1: #ededed;
-  --color-text-secondary2: #9797b8;
-  --color-text-hover: rgb(137 88 253 / 20%);
-  --color-text-strong: #ffffff;
-  --color-text-weak: rgba(214, 214, 214, 1);
+  --color-text-primary: ${Color.explorer_textPrimary};
+  --color-text-secondary1: ${Color.explorer_textSecondary1};
+  --color-text-secondary2: ${Color.explorer_textSecondary2};
+  --color-text-hover: ${Color.explorer_textActive};
+  --color-text-strong: ${Color.explorer_textPrimary};
+  --color-text-weak: ${Color.explorer_textSecondary};
 
   /* Buttons */
   --color-button-gradient: linear-gradient(270deg, #8958ff 0%, #3f77ff 100%);

@@ -1,12 +1,13 @@
 'use client'
 
 import { Color } from '@cowprotocol/ui'
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 import styled from 'styled-components/macro'
 import { Link } from '@/components/Link'
 
 import { ArticleContent, ArticleMainTitle, BodyContent, Breadcrumbs, ContainerCard } from '@/styles/styled'
-import { clickOnLegal } from '../../../../modules/analytics'
 
 const Wrapper = styled.div`
   display: flex;
@@ -20,6 +21,7 @@ const Wrapper = styled.div`
 `
 
 export default function Page() {
+  const analytics = useCowAnalytics()
   const title = 'CoW Swap Terms and Conditions'
 
   return (
@@ -27,10 +29,26 @@ export default function Page() {
       <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
         <ArticleContent maxWidth="100%">
           <Breadcrumbs>
-            <Link href="/" onClick={() => clickOnLegal('click-legal-breadcrumbs')}>
+            <Link
+              href="/"
+              onClick={() =>
+                analytics.sendEvent({
+                  category: CowFiCategory.LEGAL,
+                  action: 'click-legal-breadcrumbs',
+                })
+              }
+            >
               Home
             </Link>
-            <Link href="/legal" onClick={() => clickOnLegal('click-legal-breadcrumbs')}>
+            <Link
+              href="/legal"
+              onClick={() =>
+                analytics.sendEvent({
+                  category: CowFiCategory.LEGAL,
+                  action: 'click-legal-breadcrumbs',
+                })
+              }
+            >
               Legal
             </Link>
             <span>{title}</span>
@@ -39,10 +57,9 @@ export default function Page() {
           <ArticleMainTitle margin={'0 0 62px'} fontSize={52}>
             {title}
           </ArticleMainTitle>
-
           <BodyContent>
             <p>
-              <strong>Last updated: December 2024</strong>
+              <strong>Last updated: February 2025</strong>
             </p>
             <p>
               These Terms of Use (the &quot;Terms&quot;) govern your access to{' '}
@@ -80,7 +97,7 @@ export default function Page() {
               significant risks of loss. You could lose all or more of your capital.
             </p>
             <p>
-              The tokens’ value is highly volatile causing price fluctuations, as auctions typically run for some time
+              The tokens' value is highly volatile causing price fluctuations, as auctions typically run for some time
               and trades are not executed instantly.
             </p>
             <p>
@@ -181,7 +198,7 @@ export default function Page() {
               for more information on our Interface.
             </p>
             <p>
-              The features of the Interface can also be accessed through third parties’ websites integrating our widget
+              The features of the Interface can also be accessed through third parties' websites integrating our widget
               (the &quot;Widget&quot;).
             </p>
             <p>
@@ -227,9 +244,9 @@ export default function Page() {
             <p>
               To use the Interface, you must employ a non-custodial wallet application, enabling interaction with EVM
               compatible public blockchains. Your connection with the non-custodial wallet provider is governed by the
-              applicable service terms of such a third-party wallet provider. We do not hold custody of your
-              wallet&#39;s contents and are unable to recover or transfer such content. By connecting your wallet to our
-              Interface, you agree to be bound by these Terms and all of the terms incorporated herein by reference.
+              applicable service terms of such a third-party wallet provider. We do not hold custody of your wallet's
+              contents and are unable to recover or transfer such content. By connecting your wallet to our Interface,
+              you agree to be bound by these Terms and all of the terms incorporated herein by reference.
             </p>
             <p>
               For more details on how to use the Interface please refer to our{' '}
@@ -245,7 +262,7 @@ export default function Page() {
               Interface when the user places their trade intent. Such a fee is designed in accordance with the specific
               features of the protocol.
             </p>
-            <h4 id="widget-integrator-s-fee">Widget Integrator’s Fee</h4>
+            <h4 id="widget-integrator-s-fee">Widget Integrator's Fee</h4>
             <p>
               Third-party integrators can embed the Interface on their own website using the Widget may charge an
               additional service fee to the user of the Widget on their website. The user acknowledges that such a
@@ -302,7 +319,7 @@ export default function Page() {
             </h3>
             <p>
               https://forum.cow.fi (the &quot;Forum&quot;) is a moderated online forum for discussing CoW Protocol and
-              partially exercising COW Protocol&#39;s governance process.
+              partially exercising COW Protocol's governance process.
             </p>
             <p>You may access and use the Forum only for lawful purposes and in compliance with these Terms of Use.</p>
             <h3 id="registration-and-account-security">Registration and Account Security</h3>
@@ -314,7 +331,7 @@ export default function Page() {
             <h3 id="acceptable-use">Acceptable Use</h3>
             <p>
               You agree not to post any content that is unlawful, harmful, threatening, abusive, harassing, defamatory,
-              vulgar, obscene, invasive of another&#39;s privacy, or otherwise promoting illegal or harmful activities.
+              vulgar, obscene, invasive of another's privacy, or otherwise promoting illegal or harmful activities.
             </p>
             <p>
               You will not impersonate any person or entity or falsely state or otherwise misrepresent your affiliation
@@ -378,7 +395,7 @@ export default function Page() {
               limited to software, text, images, trademarks, service marks, copyrights, patents, and designs. This means
               we own all the legal rights to them. You are not allowed to copy, modify, adapt, rent, license, sell,
               publish, distribute, or share access to the Interface or its contents with anyone else, unless we
-              explicitly give you permission in writing. Simply using the Interface doesn&#39;t give you any ownership
+              explicitly give you permission in writing. Simply using the Interface doesn't give you any ownership
               rights to it or its contents.
             </p>
             <p>
@@ -445,7 +462,7 @@ export default function Page() {
                 <p>Server(s) hosting the Products;</p>
               </li>
               <li>
-                <p>Any computer or database connected to the Products;</p>
+                <p>Any computer or database connected to the Products.</p>
               </li>
             </ul>
             <p>You are prohibited from attacking the Products through:</p>
@@ -495,62 +512,62 @@ export default function Page() {
             <h2 id="warranties">Warranties</h2>
             <p>By using our Products you hereby agree, represent and warrant that:</p>
             <ul>
-              <li>you have read and understood the Terms and agree to be bound by them;</li>
+              <li>You have read and understood the Terms and agree to be bound by them;</li>
               <li>
-                you do not rely on, and shall have no remedies in respect of, any statement, representation, assurance
+                You do not rely on, and shall have no remedies in respect of, any statement, representation, assurance
                 or warranty (whether made innocently or negligently) that is not set out in these Terms;
               </li>
               <li>
-                you have reached the legal age of majority applicable to you and you agree to provide legitimate and
+                You have reached the legal age of majority applicable to you and you agree to provide legitimate and
                 lawful documentation proving such status if we so request;
               </li>
               <li>
-                your usage of the Interface is legal under the laws of your jurisdiction or under the laws of any other
+                Your usage of the Interface is legal under the laws of your jurisdiction or under the laws of any other
                 jurisdiction to which you may be subject;
               </li>
-              <li>you are not a person subject to sanction set out by the EU or Portugal;</li>
+              <li>You are not a person subject to sanction set out by the EU or Portugal;</li>
               <li>
-                you understand the functionality, usage, storage, transmission mechanisms and intricacies associated
+                You understand the functionality, usage, storage, transmission mechanisms and intricacies associated
                 with cryptographic assets, token storage facilities (including wallets), blockchain technology and
                 blockchain-based software systems;
               </li>
               <li>
-                you understand that transactions on the Ethereum Mainnet, Gnosis Chain and compatible layer 2 solutions
+                You understand that transactions on the Ethereum Mainnet, Gnosis Chain and compatible layer 2 solutions
                 are irreversible and may not be erased and that your wallet address and any transaction is displayed
                 permanently and publicly and that you relinquish any right of rectification or erasure of personal data;
               </li>
               <li>
-                you shall comply with any applicable tax obligations in your jurisdiction arising from your use of the
+                You shall comply with any applicable tax obligations in your jurisdiction arising from your use of the
                 interface;
               </li>
               <li>
-                you shall not misuse or gain unauthorised access to the Interface by knowingly introducing viruses,
+                You shall not misuse or gain unauthorised access to the Interface by knowingly introducing viruses,
                 Trojan horses, worms, time-bombs, keystroke loggers, spyware, adware or any other harmful programs or
                 similar computer code designed to adversely affect the Interface and that in the event you do so or
                 otherwise attack the Interface, we report any such activity to the relevant law enforcement authorities;
               </li>
               <li>
-                you shall not access without authority, interfere with, damage or disrupt any part of the Interface, any
+                You shall not access without authority, interfere with, damage or disrupt any part of the Interface, any
                 equipment or network on which the Interface is stored, any software used in the provision of the
                 Interface or any equipment or network or software owned or used by any third party;
               </li>
               <li>
-                you shall not use the Interface for activities that are unlawful or fraudulent or have such purpose or
+                You shall not use the Interface for activities that are unlawful or fraudulent or have such purpose or
                 effect or otherwise support any activities that breach applicable local, national or international law
                 or regulations;
               </li>
               <li>
-                you shall not use the Interface to trade cryptographic assets that are proceeds of criminal or
+                You shall not use the Interface to trade cryptographic assets that are proceeds of criminal or
                 fraudulent activity;
               </li>
               <li>
-                the Interface, the Protocol, the Ethereum Blockchain, Gnosis Chain and compatible layer 2 solutions are
+                The Interface, the Protocol, the Ethereum Blockchain, Gnosis Chain and compatible layer 2 solutions are
                 in an early development stage and we accordingly do not guarantee an error-free process and give no
                 price or liquidity guarantee;
               </li>
-              <li>you are using the Interface at your own risk;</li>
+              <li>You are using the Interface at your own risk;</li>
               <li>
-                the risks of using the Interface are substantial and include, but are not limited to, the ones set out
+                The risks of using the Interface are substantial and include, but are not limited to, the ones set out
                 in these Terms, which is hereby expressly incorporated into these Terms, and you are willing to accept
                 the risk of loss associated therewith.
               </li>
@@ -679,44 +696,111 @@ export default function Page() {
               modification to or deletion of a provision or part-provision under this clause shall not affect the
               validity and enforceability of the rest of these Terms.
             </p>{' '}
-            <h2 id="base-launch">COW Token Giveaway, Base Launch: Terms and Conditions</h2>
-            <h3 id="base-launch-introduction">1. Introduction</h3>
-            <p>By participating in the COW Token Giveaway, you agree to these Terms and Conditions.</p>
-            <h3 id="base-launch-eligibility">2. Eligibility</h3>
+            <h2 id="base-token-reward">
+              Terms and Conditions for Retroactive COW Token Reward for February Base Users
+            </h2>
+            <h3 id="base-token-reward-introduction">1. Introduction</h3>
             <p>
-              18+ years old. Not an employee or affiliate of the Organizer. Must have a valid compatible wallet. Must
-              follow CoW Protocol on X. Void where prohibited.
+              This is a surprise, retroactive reward program to appreciate users who traded on CoW Swap on the Base
+              network during February 2025. By being selected as a winner in this COW Token Reward, you acknowledge and
+              agree to these Terms and Conditions. This is not a typical giveaway with an entry period, but a
+              retroactive reward for past activity.
             </p>
-            <h3 id="base-launch-giveaway-period">3. Giveaway Period</h3>
-            <p>From 2024-12-12 at the time of the post on the X Platform to 2024-12-31, at 11:59 PM UTC.</p>
-            <h3 id="base-launch-how-to-enter">4. How to Enter</h3>
+            <h3 id="base-token-reward-eligibility">2. Eligibility</h3>
             <p>
-              Trade on Base using CoW Swap during the Giveaway Period. Quote Tweet the Giveaway announcement with your
-              trade's transaction hash. One entry per eligible transaction.
+              Must be a real user who conducted trades on CoW Swap on the Base Network during February 2025 and must:
             </p>
-            <h3 id="base-launch-prize">5. Prize</h3>
+            <ul>
+              <li>Be minimum 18 years of age;</li>
+              <li>Not be an employee, affiliate, or immediate family member of the Organizer.</li>
+            </ul>
+            <h3 id="base-token-reward-period">3. Reward Period</h3>
             <p>
-              10,000 COW tokens distributed among randomly selected winners. The Organiser will determine the number of
-              winners and token allocation at its discretion.
+              This reward program is based on trading activity that occurred during the period from{' '}
+              <strong>February 1st, 2025 to February 28th, 2025</strong> (the “Period”) on the Base Network using CoW
+              Swap. This is a retroactive program and not an ongoing or future giveaway.
             </p>
-            <h3 id="base-launch-winner-selection">6. Winner Selection</h3>
-            <p>Random selection from eligible entries. Odds depend on the number of entries.</p>
-            <h3 id="base-launch-winner-notification">7. Winner Notification</h3>
-            <p>Winners announced on X within 15 days after the Giveaway Period.</p>
-            <h3 id="base-launch-publicblockchain">8. Public Blockchain</h3>
+            <h3 id="base-token-reward-how-to-enter">4. How to be Selected & Reward</h3>
+            <ul>
+              <li>
+                <strong>No action is required from users to be considered for this reward.</strong> Users who traded on
+                CoW Swap on the Base network in the Period are automatically considered for this retroactive reward;
+              </li>
+              <li>
+                Three (3) users will be <strong>randomly selected</strong> from all users who traded on CoW Swap on Base
+                during Period;
+              </li>
+              <li>
+                Each of the three (3) selected users will receive a reward of <strong>1000 COW tokens;</strong>
+              </li>
+              <li>
+                The reward will be sent to the wallet address used to trade on CoW Swap on Base during the Period.
+              </li>
+            </ul>
+            <h3 id="base-token-winner-selection">5. Winner Selection Process</h3>
+            <ul>
+              <li>
+                Winners will be <strong>randomly selected</strong> by the Organizer from the pool of unique wallet
+                addresses that conducted valid trades on CoW Swap on the Base network during Period;
+              </li>
+              <li>The selection process will be conducted by the Organizer and is final and binding;</li>
+              <li>
+                Odds of being selected depend on the total number of unique users who traded on CoW Swap on Base during
+                Period.
+              </li>
+            </ul>
+            <h3 id="base-token-reward-distribution">6. Reward Distribution</h3>
             <p>
-              Blockchain transactions are public and immutable. Sharing your transaction hash may make your wallet and
-              transaction details public and related to your X account.
+              The Organizer will make reasonable efforts to distribute the COW token rewards to the winning wallets.
             </p>
-            <h3 id="base-launch-general-conditions">9. General Conditions</h3>
+            <h3 id="base-token-reward-blockchain-privacy">7. Public Blockchain & Privacy</h3>
+            <p>Users acknowledge that blockchain transactions are public and immutable.</p>
+            <h3 id="base-token-reward-general-conditions">8. General Conditions</h3>
+            <ul>
+              <li>
+                The Organizer reserves the right to modify, suspend, or cancel this reward program at any time for any
+                reason, including but not limited to technical issues, security concerns, or regulatory changes;
+              </li>
+              <li>
+                The Organizer is not responsible for any technical issues that may prevent the distribution of rewards
+                or impact the announcement;
+              </li>
+              <li>
+                Participation in trading on CoW Swap and potentially receiving this reward is subject to applicable laws
+                and regulations. It is the user's responsibility to ensure their participation is legal in their
+                jurisdiction;
+              </li>
+              <li>
+                The recipient acknowledges that receiving the reward may trigger tax obligations for the recipient. The
+                Organiser is not liable for any tax obligation resulting from the reception of the reward by the
+                recipient;
+              </li>
+              <li>
+                The Organizer's decisions regarding winner selection, reward distribution, and all other aspects of this
+                reward program are final and binding.
+              </li>
+            </ul>
+            <h3 id="base-token-reward-limitation">9. Limitation of Liability</h3>
+            <ul>
+              <li>
+                To the maximum extent permitted by applicable law, the Organizer shall not be liable for any losses,
+                damages, or liabilities arising out of or in connection with this reward program, the selection of
+                winners, or the distribution of prizes;
+              </li>
+              <li>
+                Participants acknowledge that the value of COW tokens can fluctuate and the Organizer is not responsible
+                for any changes in token value;
+              </li>
+              <li>
+                Receiving cryptocurrency and participating in DeFi activities involves risks, and participants are
+                solely responsible for understanding and managing these risks.
+              </li>
+            </ul>
+            <h3 id="base-token-reward-governing-law">10. Governing Law</h3>
             <p>
-              Organisers can disqualify entries or modify/cancel the Giveaway. Not responsible for technical issues.
-              Subject to applicable laws. The organiser's decisions are final.
+              These Terms and Conditions shall be governed by and construed in accordance with the laws of England and
+              Wales, without regard to its conflict of law principles.
             </p>
-            <h3 id="base-launch-limitation-of-liability">10. Limitation of Liability</h3>
-            <p>Organiser not liable for losses related to the Giveaway or prize. COW token value may fluctuate.</p>
-            <h3 id="base-launch-governing-law">11. Governing Law</h3>
-            <p>Governed by the laws of England and Wales</p>
           </BodyContent>
         </ArticleContent>
       </ContainerCard>

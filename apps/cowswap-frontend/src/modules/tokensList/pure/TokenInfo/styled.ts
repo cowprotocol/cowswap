@@ -26,3 +26,10 @@ export const TokenDetails = styled.div`
   flex: 1 1 100%;
   gap: 4px;
 `
+
+export const TokenSymbolWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+`

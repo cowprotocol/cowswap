@@ -2,6 +2,7 @@ import React from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { Color } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 import { capitalize } from 'utils'
@@ -9,10 +10,10 @@ import { capitalize } from 'utils'
 const TradeTypeWrapper = styled.div`
   span {
     &.long {
-      color: var(--color-long);
+      color: ${Color.explorer_green1};
     }
     &.short {
-      color: var(--color-short);
+      color: ${Color.explorer_red1};
     }
   }
 `

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
-import { formatDateWithTimezone, getAddress } from '@cowprotocol/common-utils'
+import { formatDateWithTimezone, getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
@@ -14,7 +14,6 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 import { getEstimatedExecutionPrice } from 'legacy/state/orders/utils'
 
 import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
-import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
@@ -204,7 +203,7 @@ export function OrderRow({
           <TableRowCheckbox
             type="checkbox"
             checked={isRowSelected}
-            disabled={getIsEthFlowOrder(order.inputToken.address) || !isOrderCancellable(order)}
+            disabled={getIsNativeToken(order.inputToken) || !isOrderCancellable(order)}
             onChange={() => orderActions.toggleOrderForCancellation(order)}
           />
           <CheckboxCheckmark />

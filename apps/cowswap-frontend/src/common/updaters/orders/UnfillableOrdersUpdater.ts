@@ -1,10 +1,11 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCY_ADDRESS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
-import { getPromiseFulfilledValue, isSellOrder } from '@cowprotocol/common-utils'
+import { isSellOrder } from '@cowprotocol/common-utils'
 import { PriceQuality, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -12,8 +13,6 @@ import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { FeeInformation } from 'types'
 
-import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
-import { PriceStrategy } from 'legacy/state/gas/atoms'
 import { Order } from 'legacy/state/orders/actions'
 import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useOnlyPendingOrders, useSetIsOrderUnfillable } from 'legacy/state/orders/hooks'
@@ -21,17 +20,18 @@ import {
   getEstimatedExecutionPrice,
   getOrderMarketPrice,
   getRemainderAmount,
-  isOrderUnfillable
+  isOrderUnfillable,
 } from 'legacy/state/orders/utils'
-import type { LegacyFeeQuoteParams } from 'legacy/state/price/types'
-import { getBestQuote } from 'legacy/utils/price'
 
-import { priceOutOfRangeAnalytics } from 'modules/analytics'
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 
+import { getQuote } from 'api/cowProtocol'
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { PRICE_QUOTE_VALID_TO_TIME } from '../../constants/quote'
+import { useIsProviderNetworkUnsupported } from '../../hooks/useIsProviderNetworkUnsupported'
+import { FeeQuoteParams } from '../../types'
 
 /**
  * Updater that checks whether pending orders are still "fillable"
@@ -40,11 +40,12 @@ export function UnfillableOrdersUpdater(): null {
   const { chainId, account } = useWalletInfo()
   const updatePendingOrderPrices = useSetAtom(updatePendingOrderPricesAtom)
   const isWindowVisible = useIsWindowVisible()
+  const cowAnalytics = useCowAnalytics()
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
 
   const pending = useOnlyPendingOrders(chainId)
 
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
-  const strategy = useGetGpPriceStrategy()
 
   const { values: balances } = useTokensBalances()
 
@@ -52,6 +53,17 @@ export function UnfillableOrdersUpdater(): null {
   const pendingRef = useRef(pending)
   pendingRef.current = pending
   const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
+
+  const priceOutOfRangeAnalytics = useCallback(
+    (label: string) => {
+      cowAnalytics.sendEvent({
+        category: CowSwapAnalyticsCategory.TRADE,
+        action: 'Price out of range',
+        label,
+      })
+    },
+    [cowAnalytics],
+  )
 
   const updateOrderMarketPriceCallback = useCallback(
     (
@@ -99,13 +111,13 @@ export function UnfillableOrdersUpdater(): null {
         // order.isUnfillable by default is undefined, so we don't want to dispatch this in that case
         if (typeof order.isUnfillable !== 'undefined') {
           const label = `${order.inputToken.symbol}, ${order.outputToken.symbol}`
-          priceOutOfRangeAnalytics(isUnfillable, label)
+          priceOutOfRangeAnalytics(label)
         }
       }
 
       updateOrderMarketPriceCallback(order, fee, marketPrice, estimatedExecutionPrice)
     },
-    [setIsOrderUnfillable, updateOrderMarketPriceCallback],
+    [setIsOrderUnfillable, updateOrderMarketPriceCallback, priceOutOfRangeAnalytics],
   )
 
   const balancesRef = useRef(balances)
@@ -127,19 +139,15 @@ export function UnfillableOrdersUpdater(): null {
       }
 
       pending.forEach((order) => {
-        _getOrderPrice(chainId, order, strategy)
+        _getOrderPrice(chainId, order)
           .then((quote) => {
             if (quote) {
-              const [promisedPrice, promisedFee] = quote
-              const price = getPromiseFulfilledValue(promisedPrice, null)
-              const fee = getPromiseFulfilledValue(promisedFee, null)
+              const amount = isSellOrder(quote.quote.kind) ? quote.quote.buyAmount : quote.quote.sellAmount
 
-              price?.amount &&
-                fee &&
-                updateIsUnfillableFlag(chainId, order, price.amount, {
-                  expirationDate: fee.expiration,
-                  amount: fee.quote.feeAmount,
-                })
+              updateIsUnfillableFlag(chainId, order, amount, {
+                expirationDate: quote.expiration,
+                amount: quote.quote.feeAmount,
+              })
             }
           })
           .catch((e) => {
@@ -157,20 +165,20 @@ export function UnfillableOrdersUpdater(): null {
     } finally {
       isUpdating.current = false
     }
-  }, [account, chainId, strategy, updateIsUnfillableFlag, isWindowVisible, updatePendingOrderPrices])
+  }, [account, chainId, updateIsUnfillableFlag, isWindowVisible, updatePendingOrderPrices])
 
   const updatePendingRef = useRef(updatePending)
   updatePendingRef.current = updatePending
 
   useEffect(() => {
-    if (!chainId || !account || !isWindowVisible) {
+    if (!chainId || !account || !isWindowVisible || isProviderNetworkUnsupported) {
       return
     }
 
     updatePendingRef.current()
     const interval = setInterval(() => updatePendingRef.current(), PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL)
     return () => clearInterval(interval)
-  }, [chainId, account, isWindowVisible])
+  }, [chainId, account, isWindowVisible, isProviderNetworkUnsupported])
 
   return null
 }
@@ -178,7 +186,7 @@ export function UnfillableOrdersUpdater(): null {
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
  */
-async function _getOrderPrice(chainId: ChainId, order: Order, strategy: PriceStrategy) {
+async function _getOrderPrice(chainId: ChainId, order: Order) {
   let baseToken, quoteToken
 
   // TODO: consider a fixed amount in case of partial fills
@@ -221,12 +229,12 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: PriceStr
     appDataHash: order.appDataHash ?? undefined,
   }
 
-  const legacyFeeQuoteParams = quoteParams as LegacyFeeQuoteParams
+  const legacyFeeQuoteParams = quoteParams as FeeQuoteParams
 
   legacyFeeQuoteParams.validFor = Math.round(PRICE_QUOTE_VALID_TO_TIME / 1000)
 
   try {
-    return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
+    return getQuote(quoteParams)
   } catch {
     return null
   }

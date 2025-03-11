@@ -25,8 +25,10 @@ jest.mock('@cowprotocol/wallet', () => {
   return {
     ...jest.requireActual('@cowprotocol/wallet'),
     useWalletInfo: jest.fn().mockReturnValue({ chainId }),
+    useSendBatchTransactions: jest.fn().mockResolvedValue('0x01'),
   }
 })
+
 jest.mock('common/hooks/useContract', () => {
   return {
     ...jest.requireActual('common/hooks/useContract'),
@@ -35,7 +37,6 @@ jest.mock('common/hooks/useContract', () => {
   }
 })
 jest.mock('legacy/state/enhancedTransactions/hooks')
-jest.mock('modules/analytics/useAnalyticsReporterCowSwap')
 
 const orderMock = {
   id: 'xx1',
@@ -93,7 +94,6 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
         error: null,
         loading: false,
       },
-      useNewEthFlowContracts: false,
     })
 
     settlementInvalidationMock.mockResolvedValue({ hash: settlementCancellationTxHash })

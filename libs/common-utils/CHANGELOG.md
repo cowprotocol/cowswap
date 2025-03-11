@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.12.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.11.0...common-utils-v1.12.0) (2025-03-10)
+
+
+### Features
+
+* **swap:** unificate swap widget with other trade widgets ([#5443](https://github.com/cowprotocol/cowswap/issues/5443)) ([f8d47da](https://github.com/cowprotocol/cowswap/commit/f8d47da493e0e6203fac3d1c6cc5abe2af1de403))
+
+## [1.11.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.10.0...common-utils-v1.11.0) (2025-02-25)
+
+
+### Features
+
+* **analytics:** migrate to GTM-based analytics ([#5360](https://github.com/cowprotocol/cowswap/issues/5360)) ([f404d02](https://github.com/cowprotocol/cowswap/commit/f404d0280d9d1d86cc249d70852a5c0ec9827475))
+
 ## [1.10.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.9.1...common-utils-v1.10.0) (2025-02-05)
 
 

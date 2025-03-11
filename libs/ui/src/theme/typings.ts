@@ -20,13 +20,13 @@ export interface Colors {
   text1: ColorValue
   text4: ColorValue
   bg2: ColorValue
+  bg3: ColorValue
   bg5: ColorValue
+  grey1: ColorValue
   green1: ColorValue
   yellow3: ColorValue
   blue1: ColorValue
   bg8: ColorValue
-  purple: ColorValue
-  yellow: ColorValue
   blueShade: ColorValue
   blueShade3: ColorValue
   blue2: ColorValue
@@ -47,6 +47,41 @@ export interface Colors {
   boxShadow1: ColorValue
   boxShadow2: ColorValue
   shadow1: ColorValue
+
+  // TODO: Colors migrated from cow-fi
+  // TODO: Remove these once we've migrated all the colors
+  cowfi_orange: ColorValue
+  cowfi_darkBlue: ColorValue
+  cowfi_darkBlue2: ColorValue
+  cowfi_darkBlue3: ColorValue
+  cowfi_darkBlue4: ColorValue
+  cowfi_darkBlue5: ColorValue
+  cowfi_lightBlue1: ColorValue
+  cowfi_lightBlue2: ColorValue
+  cowfi_lightBlue3: ColorValue
+  cowfi_lightBlue4: ColorValue
+  cowfi_white2: ColorValue
+  cowfi_grey: ColorValue
+  cowfi_grey2: ColorValue
+  cowfi_grey3: ColorValue
+  cowfi_text1: ColorValue
+  cowfi_text2: ColorValue
+  cowfi_border: ColorValue
+  cowfi_borderGradient: ColorValue
+  cowfi_gradient: ColorValue
+  cowfi_gradient2: ColorValue
+  cowfi_gradientMesh: StyledFlattenSimpleInterpolation
+  cowfi_purple1: ColorValue
+  cowfi_purple2: ColorValue
+  cowfi_purple3: ColorValue
+  cowfi_discord_pink: ColorValue
+  cowfi_snapshot_red: ColorValue
+
+  // CoW AMM Colors
+  cowamm_green: ColorValue
+  cowamm_dark_green: ColorValue
+  cowamm_dark_green2: ColorValue
+  cowamm_light_green: ColorValue
 }
 
 export interface ThemeUtils {
@@ -57,10 +92,13 @@ export interface ThemeUtils {
   flexRowNoWrap: StyledFlattenSimpleInterpolation
 }
 
-declare module 'styled-components' {
-  export interface CowProtocolTheme extends Colors, ThemeUtils {
-    mode: CowSwapTheme
-  }
+// Export the theme interface for external use
+export interface CowProtocolTheme extends Colors, ThemeUtils {
+  mode: CowSwapTheme
+}
 
-  export interface DefaultTheme extends CowProtocolTheme {}
+declare module 'styled-components' {
+  export interface DefaultTheme extends CowProtocolTheme {
+    // No additional properties needed
+  }
 }

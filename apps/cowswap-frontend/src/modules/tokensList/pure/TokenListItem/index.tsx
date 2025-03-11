@@ -27,6 +27,15 @@ export interface TokenListItemProps {
 export function TokenListItem(props: TokenListItemProps) {
   const { token, selectedToken, balance, onSelectToken, isUnsupported, isPermitCompatible, isWalletConnected } = props
 
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (isTokenSelected) {
+      e.preventDefault()
+      e.stopPropagation()
+    } else {
+      onSelectToken(token)
+    }
+  }
+
   const isTokenSelected = token.address.toLowerCase() === selectedToken?.toLowerCase()
 
   const balanceAmount = balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
@@ -34,17 +43,17 @@ export function TokenListItem(props: TokenListItemProps) {
   return (
     <styledEl.TokenItem
       data-address={token.address.toLowerCase()}
-      disabled={isTokenSelected}
-      onClick={() => onSelectToken(token)}
+      onClick={handleClick}
+      className={isTokenSelected ? 'token-item-selected' : ''}
     >
       <TokenInfo token={token} />
       {isWalletConnected && (
-        <>
+        <styledEl.TokenMetadata>
           <styledEl.TokenBalance>
             {balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement}
           </styledEl.TokenBalance>
           <TokenTags isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} />
-        </>
+        </styledEl.TokenMetadata>
       )}
     </styledEl.TokenItem>
   )

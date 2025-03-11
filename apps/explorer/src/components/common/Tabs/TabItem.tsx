@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { Color } from '@cowprotocol/ui'
+
 import { TabItemInterface, TabTheme } from 'components/common/Tabs/Tabs'
 import styled from 'styled-components/macro'
 
@@ -20,27 +22,22 @@ const TabItemBase = styled(ButtonBase)`
   justify-content: center;
   border: 0;
   border-radius: 0;
-  /* TODO: move this into baseStyles or sth similar */
   height: var(--height-button-default);
   text-align: center;
   appearance: none;
-  background: red;
+  background: ${Color.explorer_bg2};
 `
 
 // TODO: replace with DefaultTheme and remove `var` approach
 // Make Tabs and TabItemBase it's own common component with theme
 const TabItemWrapper = styled(TabItemBase)<TabItemWrapperProps>`
-  background: ${({ isActive, tabTheme }): string => (isActive ? tabTheme.activeBg : tabTheme.inactiveBg)};
-  color: ${({ isActive, tabTheme }): string => (isActive ? tabTheme.activeText : tabTheme.inactiveText)};
-
+  background: ${({ isActive }): string => (isActive ? Color.explorer_bg2 : 'transparent')};
+  color: ${({ isActive }): string => (isActive ? Color.explorer_textPrimary : Color.explorer_textSecondary2)};
   font-weight: ${({ tabTheme }): string => tabTheme.fontWeight};
   font-size: ${({ tabTheme }): string => tabTheme.fontSize};
   letter-spacing: ${({ tabTheme }): string => tabTheme.letterSpacing};
-
   border-bottom: ${({ isActive, tabTheme }): string =>
-    `${tabTheme.indicatorTabSize}rem solid ${isActive ? tabTheme.activeBorder : tabTheme.inactiveBorder}`};
-
-  /* TODO: Provide alternative :focus styling because of using outline: 0; */
+    `${tabTheme.indicatorTabSize}rem solid ${isActive ? Color.explorer_orange1 : 'transparent'}`};
 
   &:first-of-type {
     border-top-left-radius: ${({ tabTheme }): string =>
@@ -54,7 +51,11 @@ const TabItemWrapper = styled(TabItemBase)<TabItemWrapperProps>`
       `${!tabTheme.borderRadius ? '0' : 'var(--border-radius-default)'}`};
     border-bottom-right-radius: ${({ tabTheme }): string =>
       `${!tabTheme.borderRadius ? '0' : 'var(--border-radius-default)'}`};
-    ${({ isActive, tabTheme }): string | false => isActive && `background: ${tabTheme.activeBgAlt};`}
+    ${({ isActive }): string | false => isActive && `background: ${Color.explorer_bg2}`};
+  }
+
+  &:hover {
+    background: ${Color.explorer_bg2};
   }
 `
 
@@ -73,5 +74,4 @@ const TabItem: React.FC<TabProps> = (props) => {
     </TabItemWrapper>
   )
 }
-
 export default TabItem

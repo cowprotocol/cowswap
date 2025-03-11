@@ -1,9 +1,11 @@
 import { lazy, PropsWithChildren, Suspense, useMemo } from 'react'
 
+import { useAnalyticsReporter, useCowAnalytics, initPixelAnalytics, WebVitalsAnalytics } from '@cowprotocol/analytics'
 import { ACTIVE_CUSTOM_THEME, CustomTheme } from '@cowprotocol/common-const'
 import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
+import { useWalletInfo, useWalletDetails } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router-dom'
@@ -19,8 +21,8 @@ import TopLevelModals from 'legacy/components/TopLevelModals'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { OrdersPanel } from 'modules/account'
-import { useAnalyticsReporterCowSwap } from 'modules/analytics'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
 import { parameterizeTradeRoute, useTradeRouteContext } from 'modules/trade'
 import { useInitializeUtm } from 'modules/utm'
 
@@ -28,6 +30,7 @@ import { APP_HEADER_ELEMENT_ID } from 'common/constants/common'
 import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
+import { useGetMarketDimension } from 'common/hooks/useGetMarketDimension'
 import { useMenuItems } from 'common/hooks/useMenuItems'
 import { LoadingApp } from 'common/pure/LoadingApp'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
@@ -40,6 +43,9 @@ const RoutesApp = lazy(() => import('./RoutesApp').then((module) => ({ default: 
 
 const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts, 'transparent')
 
+// Initialize static analytics instance
+const pixel = initPixelAnalytics()
+
 const LinkComponent = ({ href, children }: PropsWithChildren<{ href: string }>) => {
   const external = href.startsWith('http')
 
@@ -51,10 +57,25 @@ const LinkComponent = ({ href, children }: PropsWithChildren<{ href: string }>) 
 }
 
 export function App() {
-  useAnalyticsReporterCowSwap()
+  const { chainId, account } = useWalletInfo()
+  const { walletName } = useWalletDetails()
+  const cowAnalytics = useCowAnalytics()
+  const webVitals = new WebVitalsAnalytics(cowAnalytics)
+
+  useAnalyticsReporter({
+    account,
+    chainId,
+    walletName,
+    cowAnalytics,
+    pixelAnalytics: pixel,
+    webVitalsAnalytics: webVitals,
+    marketDimension: useGetMarketDimension() || undefined,
+    injectedWidgetAppId: useInjectedWidgetMetaData()?.appCode,
+  })
+
   useInitializeUtm()
 
-  const { isYieldEnabled, } = useFeatureFlags()
+  const { isYieldEnabled } = useFeatureFlags()
   // TODO: load them from feature flags when we want to enable again
   const isChristmasEnabled = false
   const isHalloweenEnabled = false

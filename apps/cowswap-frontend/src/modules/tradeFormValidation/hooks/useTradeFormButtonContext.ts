@@ -5,28 +5,29 @@ import { useWalletDetails } from '@cowprotocol/wallet'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { useWrapNativeFlow } from 'modules/trade'
-import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { useAmountsToSign, useDerivedTradeState, useWrapNativeFlow } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { TradeFormButtonContext } from '../types'
 
 export function useTradeFormButtonContext(
   defaultText: string,
-  confirmTrade: () => void
+  confirmTrade: () => void,
 ): TradeFormButtonContext | null {
-  const derivedState = useDerivedTradeState()
   const wrapNativeFlow = useWrapNativeFlow()
   const { isSupportedWallet } = useWalletDetails()
   const quote = useTradeQuote()
   const toggleWalletModal = useToggleWalletModal()
   const { standaloneMode } = useInjectedWidgetParams()
+  const derivedState = useDerivedTradeState()
+  const amountsToSign = useAmountsToSign()
 
   return useMemo(() => {
     if (!derivedState) return null
 
     return {
       defaultText,
+      amountsToSign,
       derivedState,
       quote,
       isSupportedWallet,
@@ -37,6 +38,7 @@ export function useTradeFormButtonContext(
     }
   }, [
     defaultText,
+    amountsToSign,
     derivedState,
     quote,
     isSupportedWallet,

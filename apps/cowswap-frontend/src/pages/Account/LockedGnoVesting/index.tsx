@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
 import cowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import {
@@ -26,8 +27,7 @@ import SVG from 'react-inlinesvg'
 import CopyHelper from 'legacy/components/Copy'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 
-import { claimAnalytics } from 'modules/analytics'
-
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { HelpCircle } from 'common/pure/HelpCircle'
 import { BalanceDisplay, Card, CardActions, ConvertWrapper, ExtLink, VestingBreakdown } from 'pages/Account/styled'
 
@@ -77,6 +77,18 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
     ? MERKLE_DROP_CONTRACT_ADDRESSES[chainId]
     : TOKEN_DISTRO_CONTRACT_ADDRESSES[chainId]
 
+  const cowAnalytics = useCowAnalytics()
+  const claimAnalytics = useCallback(
+    (action: string) => {
+      cowAnalytics.sendEvent({
+        category: CowSwapAnalyticsCategory.CLAIM_COW_FOR_LOCKED_GNO,
+        action,
+        label: 'GNO',
+      })
+    },
+    [cowAnalytics],
+  )
+
   const handleClaim = useCallback(async () => {
     handleCloseError()
     if (!claimCallback) {
@@ -85,7 +97,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
 
     setStatus(ClaimStatus.ATTEMPTING)
 
-    claimAnalytics('Send')
+    claimAnalytics('Claim')
     claimCallback()
       .then((tx) => {
         claimAnalytics('Sign')
@@ -101,24 +113,20 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
         }, 5000)
       })
       .catch((error) => {
-        let errorMessage, errorCode
+        let errorMessage
         const isRejected = isRejectRequestProviderError(error)
         if (isRejected) {
           errorMessage = 'User rejected signing COW claim transaction'
         } else {
           errorMessage = getProviderErrorMessage(error)
-
-          if (error?.code && typeof error.code === 'number') {
-            errorCode = error.code
-          }
           console.error('Error Signing locked GNO COW claiming', error)
         }
         console.error('[Profile::LockedGnoVesting::index::claimCallback]::error', errorMessage)
         setStatus(ClaimStatus.INITIAL)
-        claimAnalytics(isRejected ? 'Reject' : 'Error', errorCode)
+        claimAnalytics(isRejected ? 'Reject' : 'Error')
         handleSetError(errorMessage)
       })
-  }, [handleCloseError, handleSetError, claimCallback])
+  }, [handleCloseError, handleSetError, claimCallback, claimAnalytics])
 
   // Fix for enabling claim button after user changes account
   useEffect(() => {

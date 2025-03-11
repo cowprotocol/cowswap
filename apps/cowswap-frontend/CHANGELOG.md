@@ -1,5 +1,79 @@
 # Changelog
 
+## [1.103.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.4...cowswap-v1.103.5) (2025-03-10)
+
+
+### Bug Fixes
+
+* **swap:** disable button when costs warning is not accepted ([#5494](https://github.com/cowprotocol/cowswap/issues/5494)) ([cfdf773](https://github.com/cowprotocol/cowswap/commit/cfdf7731d4e08225f08381a9e3eecfbb67f6feb7))
+
+## [1.103.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.3...cowswap-v1.103.4) (2025-03-10)
+
+
+### Bug Fixes
+
+* **swap:** update quote in confirm screen ([#5485](https://github.com/cowprotocol/cowswap/issues/5485)) ([91187d9](https://github.com/cowprotocol/cowswap/commit/91187d9129f571b131e381a4c1b46814b4f3b479))
+
+## [1.103.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.2...cowswap-v1.103.3) (2025-03-07)
+
+
+### Bug Fixes
+
+* revert [#5456](https://github.com/cowprotocol/cowswap/issues/5456) as Safe tx service is live again ([#5486](https://github.com/cowprotocol/cowswap/issues/5486)) ([0737eda](https://github.com/cowprotocol/cowswap/commit/0737edab51859d402361b6179668fee6d8c5b595))
+
+## [1.103.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.1...cowswap-v1.103.2) (2025-03-06)
+
+
+### Bug Fixes
+
+* **appzi:** remove open state styles ([b5f873b](https://github.com/cowprotocol/cowswap/commit/b5f873b944b947d1b6f4d9351c17b965a83a9941))
+
+## [1.103.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.0...cowswap-v1.103.1) (2025-02-27)
+
+
+### Bug Fixes
+
+* **twap:** migrate to new Safe api for orders history ([#5456](https://github.com/cowprotocol/cowswap/issues/5456)) ([03c89fe](https://github.com/cowprotocol/cowswap/commit/03c89fe227c65c3f9f2c0852ff69c5f8170dde40))
+
+## [1.103.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.102.0...cowswap-v1.103.0) (2025-02-25)
+
+
+### Features
+
+* **analytics:** migrate to GTM-based analytics ([#5360](https://github.com/cowprotocol/cowswap/issues/5360)) ([f404d02](https://github.com/cowprotocol/cowswap/commit/f404d0280d9d1d86cc249d70852a5c0ec9827475))
+
+
+### Bug Fixes
+
+* Orders table: 'Learn more' link update ([#5440](https://github.com/cowprotocol/cowswap/issues/5440)) ([49f4a26](https://github.com/cowprotocol/cowswap/commit/49f4a262a2262f56615f95e8e15d239a09a2ff81))
+* **ui:** minor layout and styling tweaks across components ([#5437](https://github.com/cowprotocol/cowswap/issues/5437)) ([2602d1c](https://github.com/cowprotocol/cowswap/commit/2602d1ca0848571d09ef94a4ee6ff7024cdc736c))
+* **volume-fee:** remove hardcoded stablecoins check for Safe fee ([#5436](https://github.com/cowprotocol/cowswap/issues/5436)) ([ce77355](https://github.com/cowprotocol/cowswap/commit/ce773552fe29fbca1571a17b9d0177522a847183))
+
+## [1.102.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.101.0...cowswap-v1.102.0) (2025-02-17)
+
+
+### Features
+
+* **correlated-tokens:** use new CMS model Correlated Tokens ([#5427](https://github.com/cowprotocol/cowswap/issues/5427)) ([6ed415a](https://github.com/cowprotocol/cowswap/commit/6ed415a05c6a7f228fda704ea27c664d6c8d3321))
+
+
+### Bug Fixes
+
+* do not check capabilities in mobile wc ([#5429](https://github.com/cowprotocol/cowswap/issues/5429)) ([26b907d](https://github.com/cowprotocol/cowswap/commit/26b907dad4c7310bdc3e560e5592fdeb3db11b95))
+* **twap:** do not show FallbackHandler warning after first order ([#5418](https://github.com/cowprotocol/cowswap/issues/5418)) ([337795a](https://github.com/cowprotocol/cowswap/commit/337795a4746e7a36c5144b0ff590c35bcad88a3f))
+
+## [1.101.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.100.1...cowswap-v1.101.0) (2025-02-12)
+
+
+### Features
+
+* support EIP-5792 batch tx for Safe via WC ([#5417](https://github.com/cowprotocol/cowswap/issues/5417)) ([8aa612f](https://github.com/cowprotocol/cowswap/commit/8aa612f7b93a40d69efa364a10634863bc743e95))
+
+
+### Bug Fixes
+
+* use quote currency on fill at tooltip ([#5421](https://github.com/cowprotocol/cowswap/issues/5421)) ([24920e8](https://github.com/cowprotocol/cowswap/commit/24920e804b636baf715335a8cabb18d4762036e1))
+
 ## [1.100.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.100.0...cowswap-v1.100.1) (2025-02-07)
 
 

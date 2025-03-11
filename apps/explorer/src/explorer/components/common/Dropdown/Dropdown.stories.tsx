@@ -1,5 +1,7 @@
 import React, { ReactElement, useState } from 'react'
 
+import { Color } from '@cowprotocol/ui'
+
 import { Meta, Story } from '@storybook/react'
 import styled, { css } from 'styled-components/macro'
 
@@ -14,8 +16,8 @@ export default {
 } as Meta
 
 const PaginationTextCSS = css`
-  color: ${({ theme }): string => theme.textPrimary1};
-  font-size: ${({ theme }): string => theme.fontSizeDefault};
+  color: ${Color.explorer_textPrimary1};
+  font-size: var(--font-size-default);
   font-weight: normal;
   white-space: nowrap;
 `
