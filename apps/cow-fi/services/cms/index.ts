@@ -202,12 +202,7 @@ export async function searchArticles({
   }
 
   try {
-    // 1. Log the raw search term
-    console.log('Searching for:', JSON.stringify(trimmedSearchTerm))
-
-    // 2. Removed unused filters declaration
-
-    // 3. Build query parameters with explicit array indices
+    // Build query parameters with explicit array indices
     const queryParams = {
       'filters[$or][0][title][$startsWithi]': trimmedSearchTerm,
       'filters[$or][1][title][$containsi]': trimmedSearchTerm,
@@ -222,32 +217,20 @@ export async function searchArticles({
       publicationState: 'live', // Ensure published content
     }
 
-    // 4. Manual query string construction for absolute clarity
+    // Manual query string construction for absolute clarity
     const queryString = qs.stringify(queryParams, {
       encodeValuesOnly: true,
       arrayFormat: 'brackets',
       encode: false,
     })
 
-    // 5. Debug output
-    console.log('Final query string:', decodeURIComponent(queryString))
-    console.log('Full URL:', `/articles?${queryString}`)
-
     const url = `/articles?${queryString}`
     const { data, error, response } = await client.GET(url, clientAddons)
-
-    // 6. Response inspection
-    console.log('API response status:', response.status)
-    console.log('API response data:', JSON.stringify(data, null, 2))
 
     if (error) {
       console.error(`Search failed (${response.status}):`, error)
       throw new Error(`Search failed: ${error.message}`)
     }
-
-    // 7. Result validation
-    const foundIds = data.data.map((article: Article) => article.id)
-    console.log('Found article IDs:', foundIds)
 
     return { data: data.data, meta: data.meta }
   } catch (error) {
@@ -369,8 +352,6 @@ async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles')
 
     populate,
   })
-
-  // console.log(`[getBySlugAux] get ${entity} for slug ${slug}`, query)
 
   const { data, error } = await client.GET(endpoint, {
     params: {
