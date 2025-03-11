@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { ChainInfo } from '@cowprotocol/types'
+import { HoverTooltip } from '@cowprotocol/ui'
 
 import { ChevronDown, ChevronUp } from 'react-feather'
 
@@ -46,14 +47,16 @@ export function ChainsSelector({
 
   return (
     <styledEl.Wrapper>
-      {/*TODO: do we need this button?*/}
-      {/*<styledEl.ChainButton>*/}
-      {/*  <styledEl.TextButton>All</styledEl.TextButton>*/}
-      {/*</styledEl.ChainButton>*/}
       {chainsToDisplay.map((chain) => (
-        <styledEl.ChainButton key={chain.id} active$={defaultChainId === chain.id} onClick={() => onSelectChain(chain)}>
-          <img src={chain.logoUrl} alt={chain.name} />
-        </styledEl.ChainButton>
+        <HoverTooltip tooltipCloseDelay={0} content={chain.name} placement="bottom">
+          <styledEl.ChainButton
+            key={chain.id}
+            active$={defaultChainId === chain.id}
+            onClick={() => onSelectChain(chain)}
+          >
+            <img src={chain.logoUrl} alt={chain.name} />
+          </styledEl.ChainButton>
+        </HoverTooltip>
       ))}
       {isDisplayMore && (
         <styledEl.ChainButton>

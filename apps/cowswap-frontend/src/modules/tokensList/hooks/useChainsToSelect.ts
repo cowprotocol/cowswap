@@ -17,7 +17,7 @@ import { ChainsToSelectState } from '../types'
 function mapChainInfo(chainId: number, info: BaseChainInfo): ChainInfo {
   return {
     id: chainId,
-    name: info.name,
+    name: info.label,
     nativeCurrency: {
       ...info.nativeCurrency,
       name: info.nativeCurrency.name || '',

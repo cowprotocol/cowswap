@@ -36,6 +36,11 @@ export interface HoverTooltipProps extends Omit<PopoverProps, 'content' | 'show'
    * Whether to disable the hover and content display
    */
   disableHover?: boolean
+
+  /**
+   * In milliseconds, the delay before the tooltip is closed
+   */
+  tooltipCloseDelay?: number
 }
 
 /**
@@ -49,7 +54,15 @@ export interface HoverTooltipProps extends Omit<PopoverProps, 'content' | 'show'
  * @returns
  */
 export function HoverTooltip(props: HoverTooltipProps) {
-  const { content, children, onOpen = undefined, disableHover, wrapInContainer = false, ...rest } = props
+  const {
+    content,
+    children,
+    onOpen = undefined,
+    disableHover,
+    wrapInContainer = false,
+    tooltipCloseDelay = TOOLTIP_CLOSE_DELAY,
+    ...rest
+  } = props
 
   // { text, className, ...rest }: TooltipProps
 
@@ -85,7 +98,7 @@ export function HoverTooltip(props: HoverTooltipProps) {
       closeNow()
     } else {
       // Close after a delay
-      const closeTimeout = setTimeout(closeNow, TOOLTIP_CLOSE_DELAY)
+      const closeTimeout = setTimeout(closeNow, tooltipCloseDelay)
 
       cancelCloseRef.current = () => {
         cancelCloseRef.current = null
