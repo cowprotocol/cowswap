@@ -19,6 +19,7 @@ import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import {
   SelectTokenWidget,
   useOpenTokenSelectWidget,
+  useSelectTokenWidgetChainId,
   useSelectTokenWidgetState,
   useUpdateSelectTokenWidgetState,
 } from 'modules/tokensList'
@@ -115,6 +116,7 @@ export function RecoverFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
   const onSelectToken = useOpenTokenSelectWidget()
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
   const { open: isSelectTokenWidgetOpen } = useSelectTokenWidgetState()
+  const selectTokenWidgetChainId = useSelectTokenWidgetChainId()
 
   const onDismissCallback = useCallback(() => {
     updateSelectTokenWidget({ open: false })
@@ -141,6 +143,7 @@ export function RecoverFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
 
   const { isLoading: isNativeBalanceLoading, data: nativeTokenBalance } = useNativeTokenBalance(
     isNativeToken ? proxyAddress : undefined,
+    selectTokenWidgetChainId,
     BALANCE_SWR_CFG,
   )
 

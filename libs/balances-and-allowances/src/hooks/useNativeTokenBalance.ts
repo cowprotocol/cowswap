@@ -1,5 +1,5 @@
+import { getRpcProvider } from '@cowprotocol/common-const'
 import { getMulticallContract } from '@cowprotocol/multicall'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import ms from 'ms.macro'
@@ -9,9 +9,10 @@ const SWR_CONFIG = { refreshInterval: ms`11s` }
 
 export function useNativeTokenBalance(
   account: string | undefined,
+  chainId: number,
   swrConfig: SWRConfiguration = SWR_CONFIG,
 ): SWRResponse<BigNumber> {
-  const provider = useWalletProvider()
+  const provider = getRpcProvider(chainId)
 
   return useSWR(
     account && provider ? ['useNativeTokenBalance', account, provider] : null,

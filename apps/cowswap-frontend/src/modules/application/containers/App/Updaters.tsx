@@ -1,6 +1,7 @@
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { MultiCallUpdater } from '@cowprotocol/multicall'
 import { TokensListsUpdater, UnsupportedTokensUpdater, WidgetTokensListsUpdater } from '@cowprotocol/tokens'
 import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
@@ -47,6 +48,7 @@ export function Updaters() {
 
   return (
     <>
+      <MultiCallUpdater chainId={selectTokenWidgetChainId} />
       <FeatureFlagsUpdater />
       <WalletUpdater standaloneMode={standaloneMode} />
       <HwAccountIndexUpdater />
@@ -99,7 +101,6 @@ export function Updaters() {
         }}
       />
       <UnsupportedTokensUpdater />
-      {/*TODO: make the updater work with a provider corresponding to selectTokenWidgetChainId*/}
       <BalancesAndAllowancesUpdater chainId={selectTokenWidgetChainId} account={account} />
       <LpBalancesAndAllowancesUpdater
         chainId={selectTokenWidgetChainId}
