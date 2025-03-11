@@ -3,10 +3,7 @@ import { UI } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
   width: 100%;
-  gap: 8px;
 `
 
 export const ShimmerItem = styled.span`
@@ -15,6 +12,8 @@ export const ShimmerItem = styled.span`
   border-radius: 16px;
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   overflow: hidden;
+  display: inline-block;
+  margin-right: 8px;
 
   &:before {
     content: '';
@@ -35,6 +34,8 @@ export const ChainButton = styled.button<{ active$?: boolean }>`
   line-height: 0;
   background: transparent;
   outline: none;
+  margin: 0 8px 8px 0;
+  vertical-align: top;
 
   &:hover {
     border-color: var(${UI.COLOR_TEXT_OPACITY_25});

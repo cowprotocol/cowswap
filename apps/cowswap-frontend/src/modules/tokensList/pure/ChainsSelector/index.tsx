@@ -24,13 +24,12 @@ export interface ChainsSelectorProps {
   isLoading: boolean
 }
 
-// TODO: change default value for itemsToDisplay
 export function ChainsSelector({
   chains,
   onSelectChain,
   defaultChainId,
   isLoading,
-  itemsToDisplay = 4,
+  itemsToDisplay = 7,
 }: ChainsSelectorProps) {
   const [displayMore, setDisplayMore] = useState(false)
   const isDisplayMore = chains.length > itemsToDisplay
