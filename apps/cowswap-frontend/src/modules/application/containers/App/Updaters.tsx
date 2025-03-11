@@ -11,7 +11,7 @@ import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
 import { FinalizeTxUpdater } from 'modules/onchainTransactions'
 import { OrdersNotificationsUpdater } from 'modules/orders'
-import { useOnTokenListAddingError, useSelectTokenWidgetChainId } from 'modules/tokensList'
+import { useOnTokenListAddingError, useSourceChainId } from 'modules/tokensList'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 import { CorrelatedTokensUpdater } from 'modules/volumeFee'
@@ -44,11 +44,11 @@ export function Updaters() {
   const tradeTypeInfo = useTradeTypeInfo()
   const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
   const cowAnalytics = useCowAnalytics()
-  const selectTokenWidgetChainId = useSelectTokenWidgetChainId()
+  const sourceChainId = useSourceChainId()
 
   return (
     <>
-      <MultiCallUpdater chainId={selectTokenWidgetChainId} />
+      <MultiCallUpdater chainId={sourceChainId} />
       <FeatureFlagsUpdater />
       <WalletUpdater standaloneMode={standaloneMode} />
       <HwAccountIndexUpdater />
@@ -75,7 +75,7 @@ export function Updaters() {
       <AnnouncementsUpdater />
 
       <TokensListsUpdater
-        chainId={selectTokenWidgetChainId}
+        chainId={sourceChainId}
         isGeoBlockEnabled={isGeoBlockEnabled}
         enableLpTokensByDefault={isYieldWidget}
         isYieldEnabled={isYieldEnabled}
@@ -101,12 +101,8 @@ export function Updaters() {
         }}
       />
       <UnsupportedTokensUpdater />
-      <BalancesAndAllowancesUpdater chainId={selectTokenWidgetChainId} account={account} />
-      <LpBalancesAndAllowancesUpdater
-        chainId={selectTokenWidgetChainId}
-        account={account}
-        enablePolling={isYieldWidget}
-      />
+      <BalancesAndAllowancesUpdater chainId={sourceChainId} account={account} />
+      <LpBalancesAndAllowancesUpdater chainId={sourceChainId} account={account} enablePolling={isYieldWidget} />
       <PoolsInfoUpdater />
       <LpTokensWithBalancesUpdater />
       <VampireAttackUpdater />
