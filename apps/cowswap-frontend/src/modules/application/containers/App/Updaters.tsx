@@ -10,7 +10,7 @@ import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
 import { FinalizeTxUpdater } from 'modules/onchainTransactions'
 import { OrdersNotificationsUpdater } from 'modules/orders'
-import { useOnTokenListAddingError } from 'modules/tokensList'
+import { useOnTokenListAddingError, useSelectTokenWidgetChainId } from 'modules/tokensList'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 import { CorrelatedTokensUpdater } from 'modules/volumeFee'
@@ -36,13 +36,14 @@ import { SolversInfoUpdater } from 'common/updaters/SolversInfoUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
 
 export function Updaters() {
-  const { chainId, account } = useWalletInfo()
+  const { account } = useWalletInfo()
   const { tokenLists, appCode, customTokens, standaloneMode } = useInjectedWidgetParams()
   const onTokenListAddingError = useOnTokenListAddingError()
   const { isGeoBlockEnabled, isYieldEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
   const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
   const cowAnalytics = useCowAnalytics()
+  const selectTokenWidgetChainId = useSelectTokenWidgetChainId()
 
   return (
     <>
@@ -72,7 +73,7 @@ export function Updaters() {
       <AnnouncementsUpdater />
 
       <TokensListsUpdater
-        chainId={chainId}
+        chainId={selectTokenWidgetChainId}
         isGeoBlockEnabled={isGeoBlockEnabled}
         enableLpTokensByDefault={isYieldWidget}
         isYieldEnabled={isYieldEnabled}
@@ -98,8 +99,13 @@ export function Updaters() {
         }}
       />
       <UnsupportedTokensUpdater />
-      <BalancesAndAllowancesUpdater chainId={chainId} account={account} />
-      <LpBalancesAndAllowancesUpdater chainId={chainId} account={account} enablePolling={isYieldWidget} />
+      {/*TODO: make the updater work with a provider corresponding to selectTokenWidgetChainId*/}
+      <BalancesAndAllowancesUpdater chainId={selectTokenWidgetChainId} account={account} />
+      <LpBalancesAndAllowancesUpdater
+        chainId={selectTokenWidgetChainId}
+        account={account}
+        enablePolling={isYieldWidget}
+      />
       <PoolsInfoUpdater />
       <LpTokensWithBalancesUpdater />
       <VampireAttackUpdater />

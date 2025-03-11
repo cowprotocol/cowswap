@@ -102,12 +102,12 @@ export function TradeWidgetModals({
     return confirmModal
   }
 
-  if (isAutoImportModalOpen) {
-    return <ImportTokenModal tokens={tokensToImport} onDismiss={closeAutoImportModal} onImport={importTokenCallback} />
-  }
-
   if (isTokenSelectOpen) {
     return selectTokenWidget
+  }
+
+  if (isAutoImportModalOpen) {
+    return <ImportTokenModal tokens={tokensToImport} onDismiss={closeAutoImportModal} onImport={importTokenCallback} />
   }
 
   if (isWrapNativeOpen) {
