@@ -45,15 +45,12 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
   return useMemo(() => {
     if (!field || !isBridgingEnabled) return undefined
 
-    if (field === Field.INPUT) {
-      return { defaultChainId: chainId, chains: SUPPORTED_CHAINS }
-    }
-
     const currentChainInfo = mapChainInfo(chainId, CHAIN_INFO[chainId])
+    const chains = field === Field.INPUT ? SUPPORTED_CHAINS : [currentChainInfo, ...(bridgeSupportedNetworks || [])]
 
     return {
       defaultChainId: selectedTargetChainId,
-      chains: [currentChainInfo, ...(bridgeSupportedNetworks || [])],
+      chains,
       isLoading,
     }
   }, [field, selectedTargetChainId, chainId, bridgeSupportedNetworks, isLoading, isBridgingEnabled])
