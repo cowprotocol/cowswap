@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-import { TradeType, useTradeTracking } from '@cowprotocol/analytics'
+import { TradeType, useTradeTracking, getActivityStatusString } from '@cowprotocol/analytics'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -29,9 +29,9 @@ export function TwapTrackingUpdater() {
   // Map ActivityDescriptors to ActivityItemForTracking
   const activityItems = activityDescriptors.map((item) => ({
     id: item.id,
-    status: String(item.status), // Convert ActivityStatus enum to string
+    status: item.status,
     type: item.type,
-    orderType: UiOrderType.TWAP, // All items are TWAP type in this context
+    orderType: UiOrderType.TWAP,
   }))
 
   // Create a record of orders by ID for tracking
@@ -63,7 +63,7 @@ export function TwapTrackingUpdater() {
 
       // Process executed orders
       if (
-        item.status === String(ActivityStatus.CONFIRMED) &&
+        item.status === ActivityStatus.CONFIRMED &&
         order.status === 'fulfilled' &&
         !executedOrdersRef.current.has(item.id)
       ) {
@@ -94,6 +94,7 @@ export function TwapTrackingUpdater() {
           contractAddress: order.inputToken?.address || '',
           transactionHash: order.fulfilledTransactionHash || order.id,
           orderId: item.id,
+          orderStatus: getActivityStatusString(item.status),
         })
 
         // Mark as tracked to prevent duplicate events
@@ -101,11 +102,7 @@ export function TwapTrackingUpdater() {
       }
 
       // Process failed orders
-      if (
-        item.status === String(ActivityStatus.FAILED) &&
-        order.status === 'failed' &&
-        !failedOrdersRef.current.has(item.id)
-      ) {
+      if (item.status === ActivityStatus.FAILED && order.status === 'failed' && !failedOrdersRef.current.has(item.id)) {
         // Track the failure via GTM
         tradeTracking.onOrderFailed(
           {
@@ -115,6 +112,7 @@ export function TwapTrackingUpdater() {
             toCurrency: order.outputToken?.symbol || '',
             contractAddress: order.inputToken?.address || '',
             orderId: item.id,
+            orderStatus: getActivityStatusString(item.status),
           },
           'Order execution failed',
         )

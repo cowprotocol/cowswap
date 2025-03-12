@@ -27,6 +27,41 @@ export enum TradeType {
 }
 
 /**
+ * Helper function to convert ActivityStatus enum values to descriptive strings
+ * This is useful for analytics where string values are more readable than numeric enum values
+ *
+ * ActivityStatus is a numeric enum defined in apps/cowswap-frontend/src/legacy/hooks/useRecentActivity.ts:
+ *
+ * enum ActivityStatus {
+ *   PENDING = 0,
+ *   PRESIGNATURE_PENDING = 1,
+ *   CONFIRMED = 2,
+ *   EXPIRED = 3,
+ *   CANCELLING = 4,
+ *   CANCELLED = 5,
+ *   CREATING = 6,
+ *   FAILED = 7,
+ * }
+ * TODO: Consider using the ActivityStatus enum directly for tighter coupling and better type safety.
+ * This would require updating the legacy hook and moving the enum to the libs/types
+ */
+export function getActivityStatusString(status: number): string {
+  // Map of ActivityStatus enum values to human-readable strings for analytics
+  const activityStatusMap: Record<number, string> = {
+    0: 'pending', // ActivityStatus.PENDING
+    1: 'presignaturePending', // ActivityStatus.PRESIGNATURE_PENDING
+    2: 'fulfilled', // ActivityStatus.CONFIRMED maps to 'fulfilled' in analytics
+    3: 'expired', // ActivityStatus.EXPIRED
+    4: 'cancelling', // ActivityStatus.CANCELLING
+    5: 'cancelled', // ActivityStatus.CANCELLED
+    6: 'creating', // ActivityStatus.CREATING
+    7: 'failed', // ActivityStatus.FAILED
+  }
+
+  return activityStatusMap[status] || `unknown_status_${status}`
+}
+
+/**
  * Push an event to GTM's dataLayer with standardized parameters
  * This ensures consistency across all tracking services
  */
@@ -87,6 +122,7 @@ export function trackOrderSubmitted(params: {
   toAmountUSD?: number
   contractAddress?: string
   orderId?: string
+  orderStatus?: string
 }) {
   pushTradeEvent(TradeTrackingEventType.ORDER_SUBMITTED, params)
 }
@@ -106,6 +142,7 @@ export function trackOrderExecuted(params: {
   contractAddress?: string
   transactionHash?: string
   orderId?: string
+  orderStatus?: string
 }) {
   pushTradeEvent(TradeTrackingEventType.ORDER_EXECUTED, params)
 }
@@ -121,6 +158,7 @@ export function trackOrderFailed(
     toCurrency?: string
     contractAddress?: string
     orderId?: string
+    orderStatus?: string
   },
   error?: string,
 ) {

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-import { TradeType, useTradeTracking } from '@cowprotocol/analytics'
+import { TradeType, useTradeTracking, getActivityStatusString } from '@cowprotocol/analytics'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -26,9 +26,9 @@ export function LimitOrdersTrackingUpdater() {
   // Map ActivityDescriptors to ActivityItemForTracking
   const activityItems = activityDescriptors.map((item) => ({
     id: item.id,
-    status: String(item.status), // Convert ActivityStatus enum to string
+    status: item.status,
     type: item.type,
-    orderType: UiOrderType.LIMIT, // All items are LIMIT type in this context
+    orderType: UiOrderType.LIMIT,
   }))
 
   // Create a record of orders by ID for tracking
@@ -63,7 +63,7 @@ export function LimitOrdersTrackingUpdater() {
 
       // Process executed orders
       if (
-        item.status === String(ActivityStatus.CONFIRMED) &&
+        item.status === ActivityStatus.CONFIRMED &&
         order.status === 'fulfilled' &&
         !executedOrdersRef.current.has(item.id)
       ) {
@@ -94,6 +94,7 @@ export function LimitOrdersTrackingUpdater() {
           contractAddress: order.inputToken?.address || '',
           transactionHash: order.fulfilledTransactionHash || order.id,
           orderId: item.id,
+          orderStatus: getActivityStatusString(item.status),
         })
 
         // Mark as tracked to prevent duplicate events
@@ -101,11 +102,7 @@ export function LimitOrdersTrackingUpdater() {
       }
 
       // Process failed orders
-      if (
-        item.status === String(ActivityStatus.FAILED) &&
-        order.status === 'failed' &&
-        !failedOrdersRef.current.has(item.id)
-      ) {
+      if (item.status === ActivityStatus.FAILED && order.status === 'failed' && !failedOrdersRef.current.has(item.id)) {
         // Track the failure via GTM
         tradeTracking.onOrderFailed(
           {
@@ -115,6 +112,7 @@ export function LimitOrdersTrackingUpdater() {
             toCurrency: order.outputToken?.symbol || '',
             contractAddress: order.inputToken?.address || '',
             orderId: item.id,
+            orderStatus: getActivityStatusString(item.status),
           },
           'Order execution failed',
         )

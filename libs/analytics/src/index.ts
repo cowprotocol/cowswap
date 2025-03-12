@@ -17,6 +17,7 @@ export {
   trackOrderSubmitted,
   trackOrderExecuted,
   trackOrderFailed,
+  getActivityStatusString,
 } from './gtm/TradeTrackingEvents'
 export { useTradeTracking } from './hooks/useTradeTracking'
 

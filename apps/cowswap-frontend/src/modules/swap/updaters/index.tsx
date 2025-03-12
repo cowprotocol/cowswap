@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-import { useTradeTracking, TradeType, TradeTrackingEventType } from '@cowprotocol/analytics'
+import { useTradeTracking, TradeType, TradeTrackingEventType, getActivityStatusString } from '@cowprotocol/analytics'
 import { isSellOrder, percentToBps } from '@cowprotocol/common-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -37,7 +37,7 @@ function OrderTrackingUpdater({
   orders: Record<string, any>
   activityItems: Array<{
     id: string
-    status: string
+    status: ActivityStatus // Using enum for type safety
     type: string
     orderType: string
   }>
@@ -62,7 +62,7 @@ function OrderTrackingUpdater({
 
       // Check for executed orders
       if (
-        item.status === String(ActivityStatus.CONFIRMED) &&
+        item.status === ActivityStatus.CONFIRMED &&
         order.status === 'fulfilled' &&
         !executedOrdersRef.current.has(item.id) // Prevent duplicate tracking
       ) {
@@ -92,6 +92,8 @@ function OrderTrackingUpdater({
           toCurrency: order.outputToken?.symbol || '',
           contractAddress: order.inputToken?.address || '',
           transactionHash: order.fulfilledTransactionHash || order.id,
+          orderId: item.id,
+          orderStatus: getActivityStatusString(item.status), // Add descriptive status string for analytics
         })
 
         console.info(`[Analytics] Tracked ${TradeTrackingEventType.ORDER_EXECUTED} event for order ${item.id}`)
@@ -102,7 +104,7 @@ function OrderTrackingUpdater({
 
       // Check for failed orders
       if (
-        item.status === String(ActivityStatus.FAILED) &&
+        item.status === ActivityStatus.FAILED &&
         order.status === 'failed' &&
         !failedOrdersRef.current.has(item.id) // Prevent duplicate tracking
       ) {
@@ -114,6 +116,8 @@ function OrderTrackingUpdater({
             fromCurrency: order.inputToken?.symbol || '',
             toCurrency: order.outputToken?.symbol || '',
             contractAddress: order.inputToken?.address || '',
+            orderId: item.id,
+            orderStatus: getActivityStatusString(item.status), // Add descriptive status string for analytics
           },
           'Swap execution failed',
         )
@@ -157,9 +161,9 @@ export function SwapUpdaters() {
   // Map ActivityDescriptors to ActivityItemForTracking
   const activityItems = activityDescriptors.map((item) => ({
     id: item.id,
-    status: String(item.status), // Convert ActivityStatus enum to string
+    status: item.status, // Keep as enum value for type safety
     type: item.type,
-    orderType: UiOrderType.SWAP, // All items are SWAP type in this context
+    orderType: UiOrderType.SWAP,
   }))
 
   // Create a record of orders by ID for the OrderTrackingUpdater

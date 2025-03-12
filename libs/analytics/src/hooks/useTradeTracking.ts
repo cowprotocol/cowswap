@@ -52,6 +52,7 @@ export function useTradeTracking() {
       toAmountUSD?: number
       contractAddress?: string
       orderId?: string
+      orderStatus?: string
     }) => {
       trackOrderSubmitted(params)
     },
@@ -74,6 +75,7 @@ export function useTradeTracking() {
       contractAddress?: string
       transactionHash?: string
       orderId?: string
+      orderStatus?: string
     }) => {
       trackOrderExecuted(params)
     },
@@ -92,6 +94,7 @@ export function useTradeTracking() {
         toCurrency?: string
         contractAddress?: string
         orderId?: string
+        orderStatus?: string
       },
       error?: string,
     ) => {
