@@ -9,9 +9,8 @@ import {
   trackOrderSubmitted,
   trackOrderExecuted,
   trackOrderFailed,
+  TradeType,
 } from '../gtm/TradeTrackingEvents'
-
-export type TradeType = 'swap' | 'limit_order' | 'twap_order'
 
 /**
  * Hook for tracking trade-related events through GTM

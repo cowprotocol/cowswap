@@ -78,7 +78,7 @@ export function trackTokenSelected(account: string, field: string, currency: Cur
  */
 export function trackOrderSubmitted(params: {
   walletAddress: string
-  tradeType: string
+  tradeType: TradeType
   fromAmount?: number
   fromCurrency?: string
   fromAmountUSD?: number
@@ -96,7 +96,7 @@ export function trackOrderSubmitted(params: {
  */
 export function trackOrderExecuted(params: {
   walletAddress: string
-  tradeType: string
+  tradeType: TradeType
   fromAmount?: number
   fromCurrency?: string
   fromAmountUSD?: number
@@ -116,7 +116,7 @@ export function trackOrderExecuted(params: {
 export function trackOrderFailed(
   params: {
     walletAddress: string
-    tradeType: string
+    tradeType: TradeType
     fromCurrency?: string
     toCurrency?: string
     contractAddress?: string
