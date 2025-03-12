@@ -215,6 +215,11 @@ export const ExecuteInformationTooltip = styled.div`
   margin: 0;
 `
 
+export const ExecuteInformationTooltipWarning = styled.div`
+  font-weight: 500;
+  margin-top: 12px;
+`
+
 export const CancelledDisplay = styled.div`
   display: flex;
   align-items: center;

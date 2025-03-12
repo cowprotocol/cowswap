@@ -160,6 +160,9 @@ export function OrderFillsAt({
                 </b>
                 , {priceDiffs.percentage.toFixed(2)}% from market) and is expected to{' '}
                 {!percentIsAlmostHundred(filledPercentDisplay) ? 'partially' : ''} fill soon
+                <styledEl.ExecuteInformationTooltipWarning>
+                  This price is taken from external sources and may not accurately reflect the current on-chain price.
+                </styledEl.ExecuteInformationTooltipWarning>
               </div>
             }
           >
