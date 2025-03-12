@@ -1,9 +1,8 @@
-import { useState } from 'react'
-
 import { ChainInfo } from '@cowprotocol/types'
 import { HoverTooltip } from '@cowprotocol/ui'
 
-import { ChevronDown, ChevronUp } from 'react-feather'
+import { Menu } from '@reach/menu-button'
+import { Check, ChevronDown, ChevronUp } from 'react-feather'
 
 import * as styledEl from './styled'
 
@@ -30,16 +29,14 @@ export function ChainsSelector({
   onSelectChain,
   defaultChainId,
   isLoading,
-  itemsToDisplay = 7,
+  // TODO: change the value to 7 after tests
+  itemsToDisplay = 3,
 }: ChainsSelectorProps) {
-  const [displayMore, setDisplayMore] = useState(false)
   const isDisplayMore = chains.length > itemsToDisplay
 
-  const defaultChain = defaultChainId && chains.find((info) => info.id === defaultChainId)
-  const sortedChains = defaultChain ? [defaultChain, ...chains.filter((info) => info.id !== defaultChainId)] : chains
-  const chainsToDisplay = displayMore ? sortedChains : sortedChains.slice(0, itemsToDisplay)
-
-  const toggleDisplayMore = () => setDisplayMore((state) => !state)
+  const visibleChains = chains.slice(0, itemsToDisplay)
+  const menuChains = chains.slice(itemsToDisplay)
+  const selectedMenuChain = menuChains.find((i) => i.id === defaultChainId)
 
   if (isLoading) {
     return Shimmer
@@ -47,24 +44,53 @@ export function ChainsSelector({
 
   return (
     <styledEl.Wrapper>
-      {chainsToDisplay.map((chain) => (
-        <HoverTooltip tooltipCloseDelay={0} content={chain.name} placement="bottom">
-          <styledEl.ChainButton
-            key={chain.id}
-            active$={defaultChainId === chain.id}
-            onClick={() => onSelectChain(chain)}
-          >
+      {visibleChains.map((chain) => (
+        <HoverTooltip
+          key={chain.id}
+          tooltipCloseDelay={0}
+          wrapInContainer={true}
+          content={chain.name}
+          placement="bottom"
+        >
+          <styledEl.ChainButton active$={defaultChainId === chain.id} onClick={() => onSelectChain(chain)}>
             <img src={chain.logoUrl} alt={chain.name} />
           </styledEl.ChainButton>
         </HoverTooltip>
       ))}
       {isDisplayMore && (
-        <styledEl.ChainButton>
-          <styledEl.TextButton onClick={toggleDisplayMore}>
-            {displayMore ? 'Less' : 'More'}
-            {displayMore ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-          </styledEl.TextButton>
-        </styledEl.ChainButton>
+        <styledEl.MenuWrapper>
+          <Menu>
+            {({ isOpen }) => (
+              <>
+                <styledEl.MenuButtonStyled active$={!!selectedMenuChain}>
+                  <styledEl.TextButton>
+                    {selectedMenuChain ? (
+                      <styledEl.MenuChainButton>
+                        <img src={selectedMenuChain.logoUrl} alt={selectedMenuChain.name} />
+                      </styledEl.MenuChainButton>
+                    ) : isOpen ? (
+                      'Less'
+                    ) : (
+                      'More'
+                    )}
+                    {isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                  </styledEl.TextButton>
+                </styledEl.MenuButtonStyled>
+                <styledEl.MenuListStyled portal={false}>
+                  {menuChains.map((chain) => (
+                    <styledEl.MenuItemStyled key={chain.id} onSelect={() => onSelectChain(chain)} tabIndex={0}>
+                      {selectedMenuChain?.id === chain.id && <Check size={16} />}
+                      <styledEl.MenuChainButton>
+                        <img src={chain.logoUrl} alt={chain.name} />
+                      </styledEl.MenuChainButton>
+                      <span>{chain.name}</span>
+                    </styledEl.MenuItemStyled>
+                  ))}
+                </styledEl.MenuListStyled>
+              </>
+            )}
+          </Menu>
+        </styledEl.MenuWrapper>
       )}
     </styledEl.Wrapper>
   )
