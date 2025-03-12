@@ -1,11 +1,13 @@
 import { useAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { useCowAnalytics } from '@cowprotocol/analytics'
+import { useCowAnalytics, useSafaryTradeTracking, SafaryTradeType } from '@cowprotocol/analytics'
 import { getAddress } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
+import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
 import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundleFlowContext'
 import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
@@ -59,6 +61,10 @@ export function useHandleOrderPlacement(
   const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
   const alternativeModalAnalytics = useAlternativeModalAnalytics()
   const analytics = useTradeFlowAnalytics()
+  const { account } = useWalletInfo()
+
+  // Get fiat amounts from derived state
+  const { inputCurrencyFiatAmount, outputCurrencyFiatAmount } = useLimitOrdersDerivedState()
 
   const beforePermit = useCallback(async () => {
     if (!tradeContext) return
@@ -82,6 +88,25 @@ export function useHandleOrderPlacement(
     tradeConfirmActions.onSign(buildTradeAmounts(tradeContext))
   }, [tradeContext, tradeConfirmActions])
 
+  // Extract currency information for Safary tracking
+  const inputCurrencyInfo = {
+    symbol: tradeContext?.postOrderParams?.inputAmount?.currency?.symbol,
+    amount: tradeContext?.postOrderParams?.inputAmount,
+    fiatAmount: inputCurrencyFiatAmount ? Number(inputCurrencyFiatAmount.toSignificant(6)) : null,
+  }
+
+  const outputCurrencyInfo = {
+    symbol: tradeContext?.postOrderParams?.outputAmount?.currency?.symbol,
+    amount: tradeContext?.postOrderParams?.outputAmount,
+    fiatAmount: outputCurrencyFiatAmount ? Number(outputCurrencyFiatAmount.toSignificant(6)) : null,
+  }
+
+  // Get contract address for tracking
+  const contractAddress = tradeContext?.postOrderParams?.inputAmount?.currency?.isToken
+    ? tradeContext?.postOrderParams?.inputAmount?.currency?.address
+    : undefined
+
+  // Enhance trade function with Safary tracking
   const tradeFn = useCallback(async () => {
     if (isSafeBundle) {
       if (!safeBundleFlowContext) throw new Error('safeBundleFlowContext is not set!')
@@ -124,8 +149,19 @@ export function useHandleOrderPlacement(
     analytics,
   ])
 
+  // Enhance the trade function with Safary tracking
+  const enhancedTradeFn = useSafaryTradeTracking({
+    account,
+    inputCurrencyInfo,
+    outputCurrencyInfo,
+    contractAddress,
+    tradeType: SafaryTradeType.LIMIT_ORDER,
+    tradeFn,
+    label: 'limit order',
+  })
+
   return useCallback(() => {
-    return tradeFn()
+    return enhancedTradeFn()
       .then((orderHash) => {
         tradeConfirmActions.onSuccess(orderHash)
 
@@ -154,7 +190,7 @@ export function useHandleOrderPlacement(
         }
       })
   }, [
-    tradeFn,
+    enhancedTradeFn,
     tradeConfirmActions,
     updateLimitOrdersState,
     setPartiallyFillableOverride,

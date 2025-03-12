@@ -11,6 +11,7 @@ import { PartOrdersUpdater } from './PartOrdersUpdater'
 import { QuoteObserverUpdater } from './QuoteObserverUpdater'
 import { QuoteParamsUpdater } from './QuoteParamsUpdater'
 import { TwapOrdersUpdater } from './TwapOrdersUpdater'
+import { TwapTrackingUpdater } from './TwapTrackingUpdater'
 
 import { useTwapSlippage } from '../hooks/useTwapSlippage'
 
@@ -28,6 +29,9 @@ export function TwapUpdaters() {
       <QuoteParamsUpdater />
       <AppDataUpdater orderClass="twap" slippageBips={percentToBps(twapOrderSlippage)} />
       <QuoteObserverUpdater />
+
+      <TwapTrackingUpdater />
+
       {shouldLoadTwapOrders && (
         <>
           <FullAmountQuoteUpdater />

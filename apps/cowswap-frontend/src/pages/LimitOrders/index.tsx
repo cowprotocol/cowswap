@@ -7,6 +7,7 @@ import {
   FillLimitOrdersDerivedStateUpdater,
   InitialPriceUpdater,
   LIMIT_ORDER_SLIPPAGE,
+  LimitOrdersTrackingUpdater,
   QuoteObserverUpdater,
   SetupLimitOrderAmountsFromUrlUpdater,
   TriggerAppziLimitOrdersSurveyUpdater,
@@ -16,12 +17,14 @@ import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternati
 
 import { AlternativeLimitOrder } from './AlternativeLimitOrder'
 import { RegularLimitOrders } from './RegularLimitOrders'
+
 export default function LimitOrderPage() {
   const isAlternative = useIsAlternativeOrderModalVisible()
 
   return (
     <>
       <AppDataUpdater orderClass="limit" slippageBips={percentToBps(LIMIT_ORDER_SLIPPAGE)} />
+      <LimitOrdersTrackingUpdater />
       <QuoteObserverUpdater />
       <FillLimitOrdersDerivedStateUpdater />
       <ExecutionPriceUpdater />

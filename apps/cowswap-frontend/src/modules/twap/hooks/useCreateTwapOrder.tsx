@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { useCowAnalytics } from '@cowprotocol/analytics'
+import { useCowAnalytics, useSafaryTradeTracking, SafaryTradeType } from '@cowprotocol/analytics'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useSendBatchTransactions, useWalletInfo } from '@cowprotocol/wallet'
@@ -56,7 +56,8 @@ export function useCreateTwapOrder() {
   const addTwapOrderToList = useSetAtom(addTwapOrderToListAtom)
   const navigateToAllOrdersTable = useNavigateToAllOrdersTable()
 
-  const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
+  const { inputCurrencyAmount, outputCurrencyAmount, inputCurrencyFiatAmount, outputCurrencyFiatAmount } =
+    useAdvancedOrdersDerivedState()
 
   const appDataInfo = useAppData()
   const sendSafeTransactions = useSendBatchTransactions()
@@ -98,7 +99,24 @@ export function useCreateTwapOrder() {
     [analytics],
   )
 
-  return useCallback(
+  // Extract currency information for Safary tracking
+  const inputCurrencyInfo = {
+    symbol: inputCurrencyAmount?.currency?.symbol,
+    amount: inputCurrencyAmount,
+    fiatAmount: inputCurrencyFiatAmount ? Number(inputCurrencyFiatAmount.toSignificant(6)) : null,
+  }
+
+  const outputCurrencyInfo = {
+    symbol: outputCurrencyAmount?.currency?.symbol,
+    amount: outputCurrencyAmount,
+    fiatAmount: outputCurrencyFiatAmount ? Number(outputCurrencyFiatAmount.toSignificant(6)) : null,
+  }
+
+  // Get contract address for tracking
+  const contractAddress = inputCurrencyAmount?.currency?.isToken ? inputCurrencyAmount?.currency?.address : undefined
+
+  // Create the base TWAP order creation function
+  const createTwapOrderFn = useCallback(
     async (fallbackHandlerIsNotSet: boolean) => {
       if (!chainId || !account || chainId !== twapOrderCreationContext?.chainId) return
       if (
@@ -183,12 +201,15 @@ export function useCreateTwapOrder() {
 
         // Navigate to all orders after successful placement
         navigateToAllOrdersTable()
+
+        return safeTxHash
       } catch (error) {
         console.error('[useCreateTwapOrder] error', error)
         const errorMessage = getErrorMessage(error)
         tradeConfirmActions.onError(errorMessage)
         tradeFlowAnalytics.error(error, errorMessage, twapFlowAnalyticsContext)
         sendTwapConversionAnalytics('rejected', fallbackHandlerIsNotSet)
+        throw error
       }
     },
     [
@@ -213,4 +234,18 @@ export function useCreateTwapOrder() {
       navigateToAllOrdersTable,
     ],
   )
+
+  // Enhance the TWAP order creation function with Safary tracking
+  const enhancedCreateTwapOrderFn = useSafaryTradeTracking({
+    account,
+    inputCurrencyInfo,
+    outputCurrencyInfo,
+    contractAddress,
+    tradeType: SafaryTradeType.TWAP_ORDER,
+    tradeFn: createTwapOrderFn,
+    label: 'TWAP order',
+  })
+
+  // Return the enhanced function
+  return enhancedCreateTwapOrderFn
 }
