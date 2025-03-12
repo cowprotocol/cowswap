@@ -36,6 +36,12 @@ const SUPPORTED_CHAINS: ChainInfo[] = Object.keys(CHAIN_INFO).map((chainId) => {
   return mapChainInfo(+chainId, info)
 })
 
+/**
+ * Returns an array of chains to select in the token selector widget.
+ * The array depends on sell/buy token selection.
+ * For the sell token we return all supported chains.
+ * For the buy token we return current network + all bridge target networks.
+ */
 export function useChainsToSelect(): ChainsToSelectState | undefined {
   const { chainId } = useWalletInfo()
   const { field, selectedTargetChainId = chainId } = useSelectTokenWidgetState()
