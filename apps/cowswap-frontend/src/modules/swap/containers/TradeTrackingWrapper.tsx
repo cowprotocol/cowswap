@@ -17,8 +17,6 @@ interface TradeTrackingWrapperProps {
 }
 
 /**
- * TradeTrackingWrapper
- *
  * This component handles tracking for all trade-related events:
  * - page_view: When user lands on the swap page
  * - wallet_connected: When user connects their wallet
