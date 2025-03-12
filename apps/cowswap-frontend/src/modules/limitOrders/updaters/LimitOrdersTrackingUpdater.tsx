@@ -12,8 +12,6 @@ import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentAct
 /**
  * This component is responsible for tracking limit orders analytics.
  * It tracks order execution and failure events through GTM.
- *
- * This is a standalone component to minimize changes to the existing code structure
  */
 export function LimitOrdersTrackingUpdater() {
   const { account, chainId } = useWalletInfo()

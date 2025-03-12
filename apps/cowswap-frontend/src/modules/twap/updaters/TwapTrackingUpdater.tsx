@@ -10,10 +10,7 @@ import { useOrders } from 'legacy/state/orders/hooks'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 
 /**
- * TwapTrackingUpdater Component
- *
- * Dedicated component for tracking TWAP order-related events for marketing analytics
- * This is a standalone component to minimize changes to the existing code structure
+ * Dedicated component for tracking TWAP order-related events for analytics
  */
 export function TwapTrackingUpdater() {
   const { account, chainId } = useWalletInfo()

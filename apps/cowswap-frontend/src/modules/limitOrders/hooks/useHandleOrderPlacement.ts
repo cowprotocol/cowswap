@@ -171,22 +171,6 @@ export function useHandleOrderPlacement(
       // Execute the trade
       const result = await tradeFn()
 
-      // Track successful execution
-      if (account && result) {
-        tradeTracking.onOrderExecuted({
-          walletAddress: account,
-          tradeType: TradeType.LIMIT,
-          fromAmount: inputCurrencyInfo.amount ? parseFloat(inputCurrencyInfo.amount.toSignificant(6)) : undefined,
-          fromCurrency: inputCurrencyInfo.symbol,
-          fromAmountUSD: inputCurrencyInfo.fiatAmount ?? undefined,
-          toAmount: outputCurrencyInfo.amount ? parseFloat(outputCurrencyInfo.amount.toSignificant(6)) : undefined,
-          toCurrency: outputCurrencyInfo.symbol,
-          toAmountUSD: outputCurrencyInfo.fiatAmount ?? undefined,
-          contractAddress,
-          orderId: result,
-        })
-      }
-
       return result
     } catch (error) {
       // Track failure

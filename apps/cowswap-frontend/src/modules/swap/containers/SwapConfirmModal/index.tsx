@@ -94,26 +94,6 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
       // Execute the original trade function
       const result = await originalDoTrade()
 
-      // Track successful execution (note: this might not be the right place for execution tracking
-      // since the order might be executed later in a batch auction)
-      if (result !== false && account) {
-        tradeTracking.onOrderExecuted({
-          walletAddress: account,
-          tradeType: TradeType.SWAP,
-          fromAmount,
-          fromCurrency: inputCurrencyInfo.amount?.currency.symbol,
-          fromAmountUSD,
-          toAmount,
-          toCurrency: outputCurrencyInfo.amount?.currency.symbol,
-          toAmountUSD,
-          contractAddress: inputCurrencyInfo.amount?.currency.isToken
-            ? inputCurrencyInfo.amount.currency.address
-            : undefined,
-        })
-
-        console.info(`[Analytics] Tracked ${TradeTrackingEventType.ORDER_EXECUTED} event`)
-      }
-
       return result
     } catch (error) {
       // Track failure
