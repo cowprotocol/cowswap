@@ -6,15 +6,15 @@
 import { Currency } from '@uniswap/sdk-core'
 
 /**
- * Event names that match Safary's expected event types
+ * Event names that match expected event types
  */
 export enum TradeTrackingEventType {
   PAGE_VIEW = 'page_view',
   WALLET_CONNECTED = 'wallet_connected',
   TOKEN_SELECTED = 'token_selected',
   ORDER_SUBMITTED = 'order_submitted',
-  ORDER_EXECUTED = 'order_executed', // Equivalent to trade execution
-  ORDER_FAILED = 'order_failed', // Equivalent to trade failure
+  ORDER_EXECUTED = 'order_executed',
+  ORDER_FAILED = 'order_failed',
 }
 
 /**

@@ -15,7 +15,6 @@ export type TradeType = 'swap' | 'limit_order' | 'twap_order'
 
 /**
  * Hook for tracking trade-related events through GTM
- * GTM will handle forwarding events to various analytics services (including Safary)
  */
 export function useTradeTracking() {
   /**

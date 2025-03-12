@@ -28,6 +28,3 @@ export { useAnalyticsReporter } from './hooks/useAnalyticsReporter'
 export { Category } from './types'
 export type { AnalyticsCategory, BaseGtmEvent, GtmEvent } from './types'
 export type { AnalyticsContext, CowAnalytics } from './CowAnalytics'
-
-// Safary analytics is deprecated in favor of GTM-based tracking
-// See libs/analytics/src/safary/DEPRECATED.md for details
