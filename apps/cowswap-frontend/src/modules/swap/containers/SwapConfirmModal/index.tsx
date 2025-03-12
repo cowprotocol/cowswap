@@ -1,3 +1,4 @@
+import { useSafaryTradeTracking, SafaryTradeType } from '@cowprotocol/analytics'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
@@ -36,7 +37,7 @@ export interface SwapConfirmModalProps {
 }
 
 export function SwapConfirmModal(props: SwapConfirmModalProps) {
-  const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade } = props
+  const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade: originalDoTrade } = props
 
   const { account, chainId } = useWalletInfo()
   const { ensName } = useWalletDetails()
@@ -49,6 +50,32 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
   const submittedContent = useOrderSubmittedContent(chainId)
   const labelsAndTooltips = useLabelsAndTooltips()
+
+  // Use a custom hook to enhance doTrade with Safary tracking
+  const doTrade = useSafaryTradeTracking({
+    account,
+    inputCurrencyInfo: {
+      symbol: inputCurrencyInfo.amount?.currency.symbol,
+      amount: inputCurrencyInfo.amount,
+      fiatAmount: inputCurrencyInfo.fiatAmount
+        ? typeof inputCurrencyInfo.fiatAmount === 'number'
+          ? inputCurrencyInfo.fiatAmount
+          : Number(inputCurrencyInfo.fiatAmount.toSignificant(6))
+        : null,
+    },
+    outputCurrencyInfo: {
+      symbol: outputCurrencyInfo.amount?.currency.symbol,
+      amount: outputCurrencyInfo.amount,
+      fiatAmount: outputCurrencyInfo.fiatAmount
+        ? typeof outputCurrencyInfo.fiatAmount === 'number'
+          ? outputCurrencyInfo.fiatAmount
+          : Number(outputCurrencyInfo.fiatAmount.toSignificant(6))
+        : null,
+    },
+    contractAddress: inputCurrencyInfo.amount?.currency.isToken ? inputCurrencyInfo.amount.currency.address : undefined,
+    tradeType: SafaryTradeType.SWAP_ORDER,
+    tradeFn: originalDoTrade,
+  })
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
