@@ -1,9 +1,10 @@
+import { TradeTrackingEventType } from '@cowprotocol/analytics'
 import { WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Navigate, useLocation, useParams } from 'react-router-dom'
 
-import { SwapUpdaters, SwapWidget } from 'modules/swap'
+import { SwapUpdaters, SwapWidget, TradeTrackingWrapper } from 'modules/swap'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
@@ -17,10 +18,10 @@ export function SwapPage() {
   }
 
   return (
-    <>
+    <TradeTrackingWrapper pageView={TradeTrackingEventType.PAGE_VIEW}>
       <SwapUpdaters />
       <SwapWidget />
-    </>
+    </TradeTrackingWrapper>
   )
 }
 

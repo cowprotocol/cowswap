@@ -1,3 +1,4 @@
+import { trackOrderSubmitted, trackOrderFailed, TradeType } from '@cowprotocol/analytics'
 import { getAddress, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { UiOrderType } from '@cowprotocol/types'
@@ -77,6 +78,30 @@ export async function swapFlow(
       callbacks.closeModals()
     })
 
+    // Track order submission with GTM
+    if (account) {
+      const inputCurrencySymbol = inputCurrency.symbol || ''
+      const outputCurrencySymbol = outputAmount.currency.symbol || ''
+
+      // Extract numeric amounts for tracking
+      const fromAmount = parseFloat(inputAmount.toSignificant())
+      const toAmount = parseFloat(outputAmount.toSignificant())
+
+      // Get contract address - prefer token address, use 'NATIVE' for native currency
+      const contractAddress = inputCurrency.isToken ? inputCurrency.address : 'NATIVE'
+
+      trackOrderSubmitted({
+        walletAddress: account,
+        tradeType: TradeType.SWAP,
+        fromAmount,
+        fromCurrency: inputCurrencySymbol,
+        toAmount,
+        toCurrency: outputCurrencySymbol,
+        contractAddress,
+        orderId: orderUid,
+      })
+    }
+
     addPendingOrderStep(
       {
         id: orderUid,
@@ -130,6 +155,20 @@ export async function swapFlow(
   } catch (error: any) {
     logTradeFlow('SWAP FLOW', 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
+
+    // Track order failure with GTM
+    if (orderParams.account) {
+      trackOrderFailed(
+        {
+          walletAddress: orderParams.account,
+          tradeType: TradeType.SWAP,
+          fromCurrency: inputCurrency.symbol || '',
+          toCurrency: outputAmount.currency.symbol || '',
+          contractAddress: inputCurrency.isToken ? inputCurrency.address : 'NATIVE',
+        },
+        swapErrorMessage,
+      )
+    }
 
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 

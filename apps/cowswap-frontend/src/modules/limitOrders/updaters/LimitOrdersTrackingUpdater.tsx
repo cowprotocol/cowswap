@@ -1,4 +1,6 @@
-import { SafaryTradeType, TradeFlowTrackingUpdater } from '@cowprotocol/analytics'
+import { useEffect, useRef } from 'react'
+
+import { TradeType, useTradeTracking } from '@cowprotocol/analytics'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -8,14 +10,14 @@ import { useOrders } from 'legacy/state/orders/hooks'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 
 /**
- * This component is responsible for tracking limit orders analytics using Safary.
- * It works by providing a TradeFlowTrackingUpdater with all the necessary order data
- * and also tracks page visits with fiat amounts.
+ * This component is responsible for tracking limit orders analytics.
+ * It tracks order execution and failure events through GTM.
  *
  * This is a standalone component to minimize changes to the existing code structure
  */
 export function LimitOrdersTrackingUpdater() {
   const { account, chainId } = useWalletInfo()
+  const tradeTracking = useTradeTracking()
 
   // Get all orders and activity data for tracking
   const orders = useOrders(chainId, account, UiOrderType.LIMIT)
@@ -31,28 +33,99 @@ export function LimitOrdersTrackingUpdater() {
     orderType: UiOrderType.LIMIT, // All items are LIMIT type in this context
   }))
 
-  // Create a record of orders by ID for the TradeFlowTrackingUpdater
+  // Create a record of orders by ID for tracking
   const ordersById = orders.reduce((acc: Record<string, any>, order: any) => {
     acc[order.id] = order
     return acc
   }, {})
 
-  return (
-    <TradeFlowTrackingUpdater
-      account={account}
-      pageView="limit_orders_page_view"
-      orderType={UiOrderType.LIMIT}
-      tradeType={SafaryTradeType.LIMIT_ORDER}
-      ordersById={ordersById}
-      activityItems={activityItems}
-      statusConstants={{
-        activityTypeName: 'order',
-        fulfilledStatus: String(ActivityStatus.CONFIRMED),
-        failedStatus: String(ActivityStatus.FAILED),
-        orderFulfilledStatus: 'fulfilled',
-        orderFailedStatus: 'failed',
-      }}
-      label="limit order"
-    />
-  )
+  // Track page view when component mounts or account changes
+  useEffect(() => {
+    if (account) {
+      // Track page view
+      tradeTracking.onPageView('limit_orders_page_view')
+
+      // Track wallet connection
+      tradeTracking.onWalletConnected(account)
+    }
+  }, [account, tradeTracking])
+
+  // Track order execution and failures using refs to avoid duplicates
+  const executedOrdersRef = useRef<Set<string>>(new Set())
+  const failedOrdersRef = useRef<Set<string>>(new Set())
+
+  useEffect(() => {
+    if (!account || !activityItems.length || !ordersById) return
+
+    activityItems.forEach((item) => {
+      if (item.type !== 'order' || item.orderType !== UiOrderType.LIMIT) return
+
+      const order = ordersById[item.id]
+      if (!order) return
+
+      // Process executed orders
+      if (
+        item.status === String(ActivityStatus.CONFIRMED) &&
+        order.status === 'fulfilled' &&
+        !executedOrdersRef.current.has(item.id)
+      ) {
+        // Calculate amounts for tracking
+        let fromAmount: number | undefined = undefined
+        let toAmount: number | undefined = undefined
+
+        try {
+          if (order.sellAmount) {
+            fromAmount = parseFloat(order.sellAmount.toString()) / 10 ** (order.inputToken?.decimals || 18)
+          }
+
+          if (order.buyAmount) {
+            toAmount = parseFloat(order.buyAmount.toString()) / 10 ** (order.outputToken?.decimals || 18)
+          }
+        } catch (error) {
+          console.error(`[GTM] Error calculating limit order amounts:`, error)
+        }
+
+        // Track the execution via GTM
+        tradeTracking.onOrderExecuted({
+          walletAddress: account,
+          tradeType: TradeType.LIMIT,
+          fromAmount,
+          fromCurrency: order.inputToken?.symbol || '',
+          toAmount,
+          toCurrency: order.outputToken?.symbol || '',
+          contractAddress: order.inputToken?.address || '',
+          transactionHash: order.fulfilledTransactionHash || order.id,
+          orderId: item.id,
+        })
+
+        // Mark as tracked to prevent duplicate events
+        executedOrdersRef.current.add(item.id)
+      }
+
+      // Process failed orders
+      if (
+        item.status === String(ActivityStatus.FAILED) &&
+        order.status === 'failed' &&
+        !failedOrdersRef.current.has(item.id)
+      ) {
+        // Track the failure via GTM
+        tradeTracking.onOrderFailed(
+          {
+            walletAddress: account,
+            tradeType: TradeType.LIMIT,
+            fromCurrency: order.inputToken?.symbol || '',
+            toCurrency: order.outputToken?.symbol || '',
+            contractAddress: order.inputToken?.address || '',
+            orderId: item.id,
+          },
+          'Order execution failed',
+        )
+
+        // Mark as tracked to prevent duplicate events
+        failedOrdersRef.current.add(item.id)
+      }
+    })
+  }, [account, activityItems, ordersById, tradeTracking])
+
+  return null
 }

@@ -1,4 +1,4 @@
-import { useSafaryTradeTracking, SafaryTradeType } from '@cowprotocol/analytics'
+import { useTradeTracking, TradeType, TradeTrackingEventType } from '@cowprotocol/analytics'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
@@ -46,36 +46,98 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
   const tradeConfirmActions = useTradeConfirmActions()
   const { slippage } = useSwapDerivedState()
   const [deadline] = useSwapDeadlineState()
+  const tradeTracking = useTradeTracking()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
   const submittedContent = useOrderSubmittedContent(chainId)
   const labelsAndTooltips = useLabelsAndTooltips()
 
-  // Use a custom hook to enhance doTrade with Safary tracking
-  const doTrade = useSafaryTradeTracking({
-    account,
-    inputCurrencyInfo: {
-      symbol: inputCurrencyInfo.amount?.currency.symbol,
-      amount: inputCurrencyInfo.amount,
-      fiatAmount: inputCurrencyInfo.fiatAmount
-        ? typeof inputCurrencyInfo.fiatAmount === 'number'
-          ? inputCurrencyInfo.fiatAmount
-          : Number(inputCurrencyInfo.fiatAmount.toSignificant(6))
-        : null,
-    },
-    outputCurrencyInfo: {
-      symbol: outputCurrencyInfo.amount?.currency.symbol,
-      amount: outputCurrencyInfo.amount,
-      fiatAmount: outputCurrencyInfo.fiatAmount
-        ? typeof outputCurrencyInfo.fiatAmount === 'number'
-          ? outputCurrencyInfo.fiatAmount
-          : Number(outputCurrencyInfo.fiatAmount.toSignificant(6))
-        : null,
-    },
-    contractAddress: inputCurrencyInfo.amount?.currency.isToken ? inputCurrencyInfo.amount.currency.address : undefined,
-    tradeType: SafaryTradeType.SWAP_ORDER,
-    tradeFn: originalDoTrade,
-  })
+  // Parse currency amounts for tracking
+  const fromAmount = inputCurrencyInfo.amount ? parseFloat(inputCurrencyInfo.amount.toSignificant(6)) : undefined
+  const toAmount = outputCurrencyInfo.amount ? parseFloat(outputCurrencyInfo.amount.toSignificant(6)) : undefined
+
+  // Parse fiat amounts for tracking
+  const fromAmountUSD = inputCurrencyInfo.fiatAmount
+    ? typeof inputCurrencyInfo.fiatAmount === 'number'
+      ? inputCurrencyInfo.fiatAmount
+      : Number(inputCurrencyInfo.fiatAmount.toSignificant(6))
+    : undefined
+
+  const toAmountUSD = outputCurrencyInfo.fiatAmount
+    ? typeof outputCurrencyInfo.fiatAmount === 'number'
+      ? outputCurrencyInfo.fiatAmount
+      : Number(outputCurrencyInfo.fiatAmount.toSignificant(6))
+    : undefined
+
+  // Enhanced trade function with GTM tracking
+  const doTrade = async () => {
+    if (account) {
+      // Track order submission
+      tradeTracking.onOrderSubmitted({
+        walletAddress: account,
+        tradeType: TradeType.SWAP,
+        fromAmount,
+        fromCurrency: inputCurrencyInfo.amount?.currency.symbol,
+        fromAmountUSD,
+        toAmount,
+        toCurrency: outputCurrencyInfo.amount?.currency.symbol,
+        toAmountUSD,
+        contractAddress: inputCurrencyInfo.amount?.currency.isToken
+          ? inputCurrencyInfo.amount.currency.address
+          : undefined,
+      })
+
+      console.info(`[Analytics] Tracked ${TradeTrackingEventType.ORDER_SUBMITTED} event`)
+    }
+
+    try {
+      // Execute the original trade function
+      const result = await originalDoTrade()
+
+      // Track successful execution (note: this might not be the right place for execution tracking
+      // since the order might be executed later in a batch auction)
+      if (result !== false && account) {
+        tradeTracking.onOrderExecuted({
+          walletAddress: account,
+          tradeType: TradeType.SWAP,
+          fromAmount,
+          fromCurrency: inputCurrencyInfo.amount?.currency.symbol,
+          fromAmountUSD,
+          toAmount,
+          toCurrency: outputCurrencyInfo.amount?.currency.symbol,
+          toAmountUSD,
+          contractAddress: inputCurrencyInfo.amount?.currency.isToken
+            ? inputCurrencyInfo.amount.currency.address
+            : undefined,
+        })
+
+        console.info(`[Analytics] Tracked ${TradeTrackingEventType.ORDER_EXECUTED} event`)
+      }
+
+      return result
+    } catch (error) {
+      // Track failure
+      if (account) {
+        tradeTracking.onOrderFailed(
+          {
+            walletAddress: account,
+            tradeType: TradeType.SWAP,
+            fromCurrency: inputCurrencyInfo.amount?.currency.symbol,
+            toCurrency: outputCurrencyInfo.amount?.currency.symbol,
+            contractAddress: inputCurrencyInfo.amount?.currency.isToken
+              ? inputCurrencyInfo.amount.currency.address
+              : undefined,
+          },
+          error instanceof Error ? error.message : String(error),
+        )
+
+        console.error(`[Analytics] Tracked ${TradeTrackingEventType.ORDER_FAILED} event:`, error)
+      }
+
+      // Re-throw the error to maintain the original behavior
+      throw error
+    }
+  }
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>

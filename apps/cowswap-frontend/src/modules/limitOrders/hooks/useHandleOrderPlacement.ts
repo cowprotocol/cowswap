@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { useCowAnalytics, useSafaryTradeTracking, SafaryTradeType } from '@cowprotocol/analytics'
+import { useCowAnalytics, useTradeTracking, TradeType } from '@cowprotocol/analytics'
 import { getAddress } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -61,6 +61,7 @@ export function useHandleOrderPlacement(
   const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
   const alternativeModalAnalytics = useAlternativeModalAnalytics()
   const analytics = useTradeFlowAnalytics()
+  const tradeTracking = useTradeTracking()
   const { account } = useWalletInfo()
 
   // Get fiat amounts from derived state
@@ -88,7 +89,7 @@ export function useHandleOrderPlacement(
     tradeConfirmActions.onSign(buildTradeAmounts(tradeContext))
   }, [tradeContext, tradeConfirmActions])
 
-  // Extract currency information for Safary tracking
+  // Extract currency information for tracking
   const inputCurrencyInfo = {
     symbol: tradeContext?.postOrderParams?.inputAmount?.currency?.symbol,
     amount: tradeContext?.postOrderParams?.inputAmount,
@@ -106,7 +107,7 @@ export function useHandleOrderPlacement(
     ? tradeContext?.postOrderParams?.inputAmount?.currency?.address
     : undefined
 
-  // Enhance trade function with Safary tracking
+  // Enhance trade function with GTM tracking
   const tradeFn = useCallback(async () => {
     if (isSafeBundle) {
       if (!safeBundleFlowContext) throw new Error('safeBundleFlowContext is not set!')
@@ -149,16 +150,72 @@ export function useHandleOrderPlacement(
     analytics,
   ])
 
-  // Enhance the trade function with Safary tracking
-  const enhancedTradeFn = useSafaryTradeTracking({
+  // Enhanced trade function with GTM tracking
+  const enhancedTradeFn = useCallback(async () => {
+    try {
+      // Track order submission
+      if (account) {
+        tradeTracking.onOrderSubmitted({
+          walletAddress: account,
+          tradeType: TradeType.LIMIT,
+          fromAmount: inputCurrencyInfo.amount ? parseFloat(inputCurrencyInfo.amount.toSignificant(6)) : undefined,
+          fromCurrency: inputCurrencyInfo.symbol,
+          fromAmountUSD: inputCurrencyInfo.fiatAmount ?? undefined,
+          toAmount: outputCurrencyInfo.amount ? parseFloat(outputCurrencyInfo.amount.toSignificant(6)) : undefined,
+          toCurrency: outputCurrencyInfo.symbol,
+          toAmountUSD: outputCurrencyInfo.fiatAmount ?? undefined,
+          contractAddress,
+        })
+      }
+
+      // Execute the trade
+      const result = await tradeFn()
+
+      // Track successful execution
+      if (account && result) {
+        tradeTracking.onOrderExecuted({
+          walletAddress: account,
+          tradeType: TradeType.LIMIT,
+          fromAmount: inputCurrencyInfo.amount ? parseFloat(inputCurrencyInfo.amount.toSignificant(6)) : undefined,
+          fromCurrency: inputCurrencyInfo.symbol,
+          fromAmountUSD: inputCurrencyInfo.fiatAmount ?? undefined,
+          toAmount: outputCurrencyInfo.amount ? parseFloat(outputCurrencyInfo.amount.toSignificant(6)) : undefined,
+          toCurrency: outputCurrencyInfo.symbol,
+          toAmountUSD: outputCurrencyInfo.fiatAmount ?? undefined,
+          contractAddress,
+          orderId: result,
+        })
+      }
+
+      return result
+    } catch (error) {
+      // Track failure
+      if (account) {
+        tradeTracking.onOrderFailed(
+          {
+            walletAddress: account,
+            tradeType: TradeType.LIMIT,
+            fromCurrency: inputCurrencyInfo.symbol,
+            toCurrency: outputCurrencyInfo.symbol,
+            contractAddress,
+          },
+          error instanceof Error ? error.message : String(error),
+        )
+      }
+      throw error
+    }
+  }, [
     account,
-    inputCurrencyInfo,
-    outputCurrencyInfo,
     contractAddress,
-    tradeType: SafaryTradeType.LIMIT_ORDER,
+    inputCurrencyInfo.amount,
+    inputCurrencyInfo.fiatAmount,
+    inputCurrencyInfo.symbol,
+    outputCurrencyInfo.amount,
+    outputCurrencyInfo.fiatAmount,
+    outputCurrencyInfo.symbol,
     tradeFn,
-    label: 'limit order',
-  })
+    tradeTracking,
+  ])
 
   return useCallback(() => {
     return enhancedTradeFn()

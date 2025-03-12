@@ -1,8 +1,6 @@
-import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useMemo, useState } from 'react'
 
-import { useSafaryAnalytics } from '@cowprotocol/analytics'
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
@@ -49,8 +47,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const widgetActions = useSwapWidgetActions()
   const receiveAmountInfo = useReceiveAmountInfo()
   const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
-  const { account } = useWalletInfo()
-  const safaryAnalytics = useSafaryAnalytics()
 
   const openNativeWrapModal = useCallback(() => setOpenNativeWrapModal(true), [])
   const dismissNativeWrapModal = useCallback(() => setOpenNativeWrapModal(false), [])
@@ -69,33 +65,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     recipient,
     orderKind,
   } = useSwapDerivedState()
-
-  // Track page view when component mounts
-  useEffect(() => {
-    if (safaryAnalytics.hasSafary) {
-      safaryAnalytics.trackPageView('swap_page_view')
-    }
-  }, [safaryAnalytics])
-
-  // Track wallet connection
-  useEffect(() => {
-    if (safaryAnalytics.hasSafary && account) {
-      safaryAnalytics.trackWalletConnected(account)
-    }
-  }, [safaryAnalytics, account])
-
-  // Track token selection when currencies change
-  useEffect(() => {
-    if (!safaryAnalytics.hasSafary || !account) return
-
-    if (inputCurrency) {
-      safaryAnalytics.trackTokenSelected(account, 'input', inputCurrency)
-    }
-
-    if (outputCurrency) {
-      safaryAnalytics.trackTokenSelected(account, 'output', outputCurrency)
-    }
-  }, [safaryAnalytics, account, inputCurrency, outputCurrency])
 
   const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }), widgetActions)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()

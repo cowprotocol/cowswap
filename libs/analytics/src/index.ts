@@ -7,6 +7,19 @@ export { WebVitalsAnalytics } from './webVitals/WebVitalsAnalytics'
 export type { GtmClickEvent, GtmCategory } from './gtm/types'
 export { toGtmEvent } from './gtm/types'
 
+// Trade tracking through GTM
+export {
+  TradeType,
+  TradeTrackingEventType,
+  trackPageView,
+  trackWalletConnected,
+  trackTokenSelected,
+  trackOrderSubmitted,
+  trackOrderExecuted,
+  trackOrderFailed,
+} from './gtm/TradeTrackingEvents'
+export { useTradeTracking } from './hooks/useTradeTracking'
+
 // Analytics context and hooks
 export { CowAnalyticsProvider, useCowAnalytics } from './context/CowAnalyticsContext'
 export { useAnalyticsReporter } from './hooks/useAnalyticsReporter'
@@ -16,5 +29,5 @@ export { Category } from './types'
 export type { AnalyticsCategory, BaseGtmEvent, GtmEvent } from './types'
 export type { AnalyticsContext, CowAnalytics } from './CowAnalytics'
 
-// Safary analytics export
-export * from './safary'
+// Safary analytics is deprecated in favor of GTM-based tracking
+// See libs/analytics/src/safary/DEPRECATED.md for details
