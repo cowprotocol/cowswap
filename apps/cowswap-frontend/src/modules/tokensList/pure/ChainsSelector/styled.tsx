@@ -1,123 +1,119 @@
 import { UI } from '@cowprotocol/ui'
+import { Media } from '@cowprotocol/ui'
 
-import { MenuButton, MenuList, MenuItem } from '@reach/menu-button'
-import styled, { css } from 'styled-components/macro'
+import { MenuList } from '@reach/menu-button'
+import styled from 'styled-components/macro'
 
-const ChainItem = css<{ active$?: boolean }>`
-  display: inline-block;
+export const Wrapper = styled.div`
+  display: flex;
+  flex-flow: row;
+  gap: 8px;
+  width: 100%;
+
+  ${Media.upToSmall()} {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+`
+
+export const ChainItem = styled.button<{
+  active$?: boolean
+  iconOnly?: boolean
+  iconSize?: number
+  borderless?: boolean
+  isLoading?: boolean
+}>`
+  --itemSize: 38px;
+  width: ${({ iconOnly }) => (iconOnly ? 'var(--itemSize)' : 'auto')};
+  height: var(--itemSize);
+  display: flex;
+  align-items: center;
+  justify-content: ${({ iconOnly }) => (iconOnly ? 'center' : 'flex-start')};
+  gap: 4px;
+  font-weight: 500;
+  font-size: 13px;
   border-radius: 14px;
   padding: 6px;
-  border: ${({ active$ }) => `1px solid var(${active$ ? UI.COLOR_TEXT_OPACITY_50 : UI.COLOR_TEXT_OPACITY_10})`};
-  cursor: pointer;
-  line-height: 0;
-  background: transparent;
+  border: ${({ active$, borderless }) =>
+    borderless ? 'none' : `1px solid var(${active$ ? UI.COLOR_PRIMARY_OPACITY_70 : UI.COLOR_TEXT_OPACITY_10})`};
+  cursor: ${({ isLoading }) => (isLoading ? 'default' : 'pointer')};
+  line-height: 1;
   outline: none;
-  margin: 0 8px 8px 0;
+  margin: 0;
   vertical-align: top;
-  background: ${({ active$ }) => (active$ ? `var(${UI.COLOR_TEXT_OPACITY_10})` : '')};
+  background: ${({ active$ }) => (active$ ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  box-shadow: ${({ active$ }) =>
+    active$
+      ? `0px -1px 0px 0px var(${UI.COLOR_TEXT_OPACITY_10}) inset,
+         0px 0px 0px 1px var(${UI.COLOR_PRIMARY_OPACITY_10}) inset,
+         0px 1px 3px 0px var(${UI.COLOR_TEXT_OPACITY_10})`
+      : '0'};
+  transition:
+    color 0.2s ease-in-out,
+    background 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
+  outline: none;
+  overflow: ${({ isLoading }) => (isLoading ? 'hidden' : 'visible')};
+  position: relative;
 
   &:hover {
-    border-color: var(${UI.COLOR_TEXT_OPACITY_25});
-  }
-
-  &:focus {
-    outline: 1px solid var(${UI.COLOR_TEXT_OPACITY_25});
+    border-color: ${({ isLoading }) =>
+      isLoading ? `var(${UI.COLOR_TEXT_OPACITY_10})` : `var(${UI.COLOR_TEXT_OPACITY_25})`};
+    background: ${({ isLoading }) => (isLoading ? 'transparent' : `var(${UI.COLOR_PAPER_DARKER})`)};
+    color: ${({ isLoading }) => (isLoading ? `var(${UI.COLOR_TEXT_OPACITY_70})` : `var(${UI.COLOR_TEXT})`)};
   }
 
   > img {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
+    width: ${({ iconOnly, iconSize = 24 }) => (iconOnly ? '100%' : `${iconSize}px`)};
+    height: ${({ iconOnly, iconSize = 24 }) => (iconOnly ? '100%' : `${iconSize}px`)};
+    border-radius: 100%;
   }
-`
 
-export const Wrapper = styled.div`
-  width: 100%;
-`
-
-export const ShimmerItem = styled.span`
-  width: 36px;
-  height: 36px;
-  border-radius: 16px;
-  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
-  overflow: hidden;
-  display: inline-block;
-  margin-right: 8px;
+  > span {
+    padding: 0 4px;
+  }
 
   &:before {
     content: '';
-    width: 36px;
-    height: 36px;
-    display: block;
+    width: var(--itemSize);
+    height: var(--itemSize);
+    display: ${({ isLoading }) => (isLoading ? 'block' : 'none')};
     transform: translateX(-100%);
-    ${({ theme }) => theme.shimmer};
-  }
-`
-
-export const ChainButton = styled.button`
-  ${ChainItem};
-`
-
-export const MenuChainButton = styled.button`
-  ${ChainItem};
-  margin: 0;
-  padding: 0;
-
-  &:hover {
-    outline: none;
-    border-color: var(${UI.COLOR_TEXT_OPACITY_10});
+    position: absolute;
+    left: 0;
+    top: 0;
+    ${({ theme, isLoading }) => isLoading && theme.shimmer};
   }
 `
 
 export const MenuWrapper = styled.div`
   position: relative;
-  display: inline-block;
-  vertical-align: top;
-`
-export const MenuButtonStyled = styled(MenuButton)`
-  ${ChainItem};
 `
 
 export const MenuListStyled = styled(MenuList)`
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  flex-direction: column;
+  gap: 4px;
   position: absolute;
   right: 0;
   top: 40px;
   z-index: 12;
   border-radius: 12px;
-  padding: 4px;
+  padding: 10px;
   background: var(${UI.COLOR_PAPER});
   box-shadow: var(${UI.BOX_SHADOW});
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   outline: none;
   overflow: hidden;
-`
-
-export const MenuItemStyled = styled(MenuItem)`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  border-radius: 8px;
-  margin: 2px;
-  min-width: 200px;
-  justify-content: end;
-  cursor: pointer;
-
-  &:hover,
-  &:focus {
-    background: var(${UI.COLOR_PAPER_DARKER});
-  }
-`
-
-export const TextButton = styled.span`
-  height: 24px;
-  min-width: 24px;
-  padding: 0 2px;
-  text-align: center;
-  justify-content: space-around;
-  display: inline-flex;
-  align-items: center;
-  font-size: 14px;
-  gap: 4px;
-  color: var(${UI.COLOR_TEXT});
+  min-width: 160px;
 `

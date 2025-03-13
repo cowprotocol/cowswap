@@ -1,26 +1,21 @@
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/types'
 import { HoverTooltip } from '@cowprotocol/ui'
+import { Media } from '@cowprotocol/ui'
 
-import { Menu } from '@reach/menu-button'
+import { Menu, MenuButton, MenuItem } from '@reach/menu-button'
 import { Check, ChevronDown, ChevronUp } from 'react-feather'
 
 import * as styledEl from './styled'
 
-const Shimmer = (
-  <styledEl.Wrapper>
-    <styledEl.ShimmerItem />
-    <styledEl.ShimmerItem />
-    <styledEl.ShimmerItem />
-    <styledEl.ShimmerItem />
-    <styledEl.ShimmerItem />
-  </styledEl.Wrapper>
-)
+// Number of skeleton shimmers to show during loading state
+const LOADING_ITEMS_COUNT = 5
 
 export interface ChainsSelectorProps {
   chains: ChainInfo[]
   onSelectChain: (chainId: ChainInfo) => void
   defaultChainId?: ChainInfo['id']
-  itemsToDisplay?: number
+  visibleNetworkIcons?: number // Number of network icons to display before showing "More" dropdown
   isLoading: boolean
 }
 
@@ -30,16 +25,21 @@ export function ChainsSelector({
   defaultChainId,
   isLoading,
   // TODO: change the value to 7 after tests
-  itemsToDisplay = 3,
+  visibleNetworkIcons = 3,
 }: ChainsSelectorProps) {
-  const isDisplayMore = chains.length > itemsToDisplay
-
-  const visibleChains = chains.slice(0, itemsToDisplay)
-  const menuChains = chains.slice(itemsToDisplay)
-  const selectedMenuChain = menuChains.find((i) => i.id === defaultChainId)
+  const isMobile = useMediaQuery(Media.upToSmall(false))
+  const isDisplayMore = !isMobile && chains.length > visibleNetworkIcons
+  const visibleChains = isMobile ? chains : chains.slice(0, visibleNetworkIcons)
+  const selectedMenuChain = !isMobile && chains.find((i) => i.id === defaultChainId && !visibleChains.includes(i))
 
   if (isLoading) {
-    return Shimmer
+    return (
+      <styledEl.Wrapper>
+        {Array.from({ length: LOADING_ITEMS_COUNT }, (_, index) => (
+          <styledEl.ChainItem key={index} iconOnly isLoading />
+        ))}
+      </styledEl.Wrapper>
+    )
   }
 
   return (
@@ -52,45 +52,45 @@ export function ChainsSelector({
           content={chain.name}
           placement="bottom"
         >
-          <styledEl.ChainButton active$={defaultChainId === chain.id} onClick={() => onSelectChain(chain)}>
-            <img src={chain.logoUrl} alt={chain.name} />
-          </styledEl.ChainButton>
+          <styledEl.ChainItem active$={defaultChainId === chain.id} onClick={() => onSelectChain(chain)} iconOnly>
+            <img src={chain.logoUrl} alt={chain.name} loading="lazy" />
+          </styledEl.ChainItem>
         </HoverTooltip>
       ))}
       {isDisplayMore && (
-        <styledEl.MenuWrapper>
-          <Menu>
-            {({ isOpen }) => (
-              <>
-                <styledEl.MenuButtonStyled active$={!!selectedMenuChain}>
-                  <styledEl.TextButton>
-                    {selectedMenuChain ? (
-                      <styledEl.MenuChainButton>
-                        <img src={selectedMenuChain.logoUrl} alt={selectedMenuChain.name} />
-                      </styledEl.MenuChainButton>
-                    ) : isOpen ? (
-                      'Less'
-                    ) : (
-                      'More'
-                    )}
-                    {isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                  </styledEl.TextButton>
-                </styledEl.MenuButtonStyled>
-                <styledEl.MenuListStyled portal={false}>
-                  {menuChains.map((chain) => (
-                    <styledEl.MenuItemStyled key={chain.id} onSelect={() => onSelectChain(chain)} tabIndex={0}>
-                      {selectedMenuChain?.id === chain.id && <Check size={16} />}
-                      <styledEl.MenuChainButton>
-                        <img src={chain.logoUrl} alt={chain.name} />
-                      </styledEl.MenuChainButton>
-                      <span>{chain.name}</span>
-                    </styledEl.MenuItemStyled>
-                  ))}
-                </styledEl.MenuListStyled>
-              </>
-            )}
-          </Menu>
-        </styledEl.MenuWrapper>
+        <Menu as={styledEl.MenuWrapper}>
+          {({ isOpen }) => (
+            <>
+              <MenuButton as={styledEl.ChainItem} active$={!!selectedMenuChain}>
+                {selectedMenuChain ? (
+                  <img src={selectedMenuChain.logoUrl} alt={selectedMenuChain.name} loading="lazy" />
+                ) : isOpen ? (
+                  <span>Less</span>
+                ) : (
+                  <span>More</span>
+                )}
+                {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              </MenuButton>
+              <styledEl.MenuListStyled portal={false}>
+                {chains.map((chain) => (
+                  <MenuItem
+                    key={chain.id}
+                    as={styledEl.ChainItem}
+                    onSelect={() => onSelectChain(chain)}
+                    active$={defaultChainId === chain.id}
+                    iconSize={21}
+                    tabIndex={0}
+                    borderless
+                  >
+                    <img src={chain.logoUrl} alt={chain.name} loading="lazy" />
+                    <span>{chain.name}</span>
+                    {chain.id === defaultChainId && <Check size={16} />}
+                  </MenuItem>
+                ))}
+              </styledEl.MenuListStyled>
+            </>
+          )}
+        </Menu>
       )}
     </styledEl.Wrapper>
   )
