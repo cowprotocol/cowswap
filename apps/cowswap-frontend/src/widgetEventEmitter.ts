@@ -89,6 +89,25 @@ const EVENT_MAPPING: Partial<Record<CowWidgetEvents, string>> = {
   [CowWidgetEvents.ON_EXPIRED_ORDER]: 'swap_failed',
 }
 
+// Helper to create default values for payload properties based on their type
+const createDefaultPayloadValue = (key: keyof OrderTrackingPayload): string | number => {
+  // Special case for chainId which is a number
+  if (key === 'chainId') return 0
+  // All other fields are strings
+  return ''
+}
+
+// Generate default tracking payload
+const createDefaultTrackingPayload = (): OrderTrackingPayload => {
+  return Object.keys({} as OrderTrackingPayload).reduce(
+    (acc, key) => ({
+      ...acc,
+      [key]: createDefaultPayloadValue(key as keyof OrderTrackingPayload),
+    }),
+    {} as OrderTrackingPayload,
+  )
+}
+
 // Helper to extract common order properties
 const getCommonOrderProperties = (payload: unknown, isPostedOrder = false): OrderTrackingPayload => {
   if (isPostedOrder && isPostedOrderPayload(payload)) {
@@ -116,15 +135,7 @@ const getCommonOrderProperties = (payload: unknown, isPostedOrder = false): Orde
   }
 
   // Fallback for unexpected payload types
-  return {
-    walletAddress: '',
-    orderId: '',
-    chainId: 0,
-    sellToken: '',
-    buyToken: '',
-    sellAmount: '',
-    buyAmount: '',
-  }
+  return createDefaultTrackingPayload()
 }
 
 // Helper to set up an event handler with common logic
