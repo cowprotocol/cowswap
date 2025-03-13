@@ -1,7 +1,9 @@
 import { useMemo } from 'react'
 
-import type { Result } from '@ethersproject/abi'
+import type { Multicall3 } from '@cowprotocol/abis'
+import { Result } from '@ethersproject/abi'
 import type { BaseContract } from '@ethersproject/contracts'
+import type { Web3Provider } from '@ethersproject/providers'
 
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
 
@@ -30,10 +32,16 @@ export function useSingleContractMultipleData<T = Result, P = unknown>(
   }, [contract, methodName, params])
 
   return useSWR<(T | undefined)[] | null>(
-    ['useSingleContractMultipleData', provider, calls, options],
-    async () => {
-      if (!contract || !calls || calls.length === 0 || !provider) return null
-
+    !contract || !calls || calls.length === 0 || !provider
+      ? null
+      : [provider, calls, options, methodName, contract, 'useSingleContractMultipleData'],
+    async ([provider, calls, options, methodName, contract]: [
+      Web3Provider,
+      Multicall3.CallStruct[],
+      MultiCallOptions,
+      string,
+      BaseContract,
+    ]) => {
       return multiCall(provider, calls, options).then((results) => {
         return results.map((result) => {
           try {

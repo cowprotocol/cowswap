@@ -38,8 +38,16 @@ export function useMultipleContractSingleData<T = Result>(
   }, [addresses, callData])
 
   return useSWR<(T | undefined)[] | null>(
-    !calls?.length || !provider ? null : [provider, calls, multicallOptions, 'useMultipleContractSingleData'],
-    async ([provider, calls, multicallOptions]: [Web3Provider, Multicall3.CallStruct[], MultiCallOptions]) => {
+    !calls?.length || !provider
+      ? null
+      : [provider, calls, multicallOptions, methodName, contractInterface, 'useMultipleContractSingleData'],
+    async ([provider, calls, multicallOptions, methodName, contractInterface]: [
+      Web3Provider,
+      Multicall3.CallStruct[],
+      MultiCallOptions,
+      string,
+      Interface,
+    ]) => {
       return multiCall(provider, calls, multicallOptions).then((results) => {
         return results.map((result) => {
           try {
