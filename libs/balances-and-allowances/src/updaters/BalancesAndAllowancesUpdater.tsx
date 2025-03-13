@@ -49,5 +49,5 @@ export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAl
     setBalances((state) => ({ ...state, values: { ...state.values, ...nativeBalanceState } }))
   }, [nativeTokenBalance, chainId, setBalances])
 
-  return account ? <BalancesCacheUpdater chainId={chainId} /> : null
+  return <BalancesCacheUpdater chainId={chainId} account={account} />
 }

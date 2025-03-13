@@ -6,7 +6,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { balancesAtom, balancesCacheAtom } from '../state/balancesAtom'
 
-export function BalancesCacheUpdater({ chainId, account }: { chainId: SupportedChainId; account?: string }) {
+export function BalancesCacheUpdater({ chainId, account }: { chainId: SupportedChainId; account: string | undefined }) {
   const [balances, setBalances] = useAtom(balancesAtom)
   const [balancesCache, setBalancesCache] = useAtom(balancesCacheAtom)
   const areBalancesRestoredFromCacheRef = useRef(false)
