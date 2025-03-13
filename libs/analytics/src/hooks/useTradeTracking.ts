@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { Currency } from '@uniswap/sdk-core'
 
@@ -109,13 +109,24 @@ export function useTradeTracking() {
   const isTrackingAvailable =
     typeof window !== 'undefined' && !!window.dataLayer && typeof window.dataLayer.push === 'function'
 
-  return {
-    onPageView,
-    onWalletConnected,
-    onTokenSelected,
-    onOrderSubmitted,
-    onOrderExecuted,
-    onOrderFailed,
-    isTrackingAvailable,
-  }
+  return useMemo(
+    () => ({
+      onPageView,
+      onWalletConnected,
+      onTokenSelected,
+      onOrderSubmitted,
+      onOrderExecuted,
+      onOrderFailed,
+      isTrackingAvailable,
+    }),
+    [
+      onPageView,
+      onWalletConnected,
+      onTokenSelected,
+      onOrderSubmitted,
+      onOrderExecuted,
+      onOrderFailed,
+      isTrackingAvailable,
+    ],
+  )
 }
