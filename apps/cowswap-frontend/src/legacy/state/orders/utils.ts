@@ -388,7 +388,7 @@ export function getRemainderAmountsWithoutSurplus(order: Order | ParsedOrder): {
   const sellRemainder = getRemainderAmount(OrderKind.SELL, order)
   const buyRemainder = getRemainderAmount(OrderKind.BUY, order)
   const surplusAmountBigNumber = getSurplusAmountBigNumber(order)
-  
+
   if (surplusAmountBigNumber.isZero()) {
     return { sellAmount: sellRemainder, buyAmount: buyRemainder }
   }
@@ -407,16 +407,12 @@ export function getRemainderAmountsWithoutSurplus(order: Order | ParsedOrder): {
 }
 
 function getSurplusAmountBigNumber(order: Order | ParsedOrder): BigNumber {
-  let surplusAmountBigNumber: BigNumber
   if ('executionData' in order) {
     // ParsedOrder
-    surplusAmountBigNumber = order.executionData.surplusAmount
-  } else {
-    // Order
-    surplusAmountBigNumber = getOrderSurplus(order).amount
+    return order.executionData.surplusAmount
   }
-
-  return surplusAmountBigNumber
+  // Order
+  return getOrderSurplus(order).amount
 }
 
 /**
@@ -434,14 +430,14 @@ export function getRemainderAmount(kind: OrderKind, order: Order | ParsedOrder):
   const { sellAmount, executedSellAmount, executedBuyAmount } = getExecutedAmounts(order)
 
   const fullAmount = isSellOrder(kind) ? sellAmount : buyAmount
-  
+
   if (!executedSellAmount || !executedBuyAmount || executedSellAmount === '0' || executedBuyAmount === '0') {
     return fullAmount
   }
 
   const executedAmount = JSBI.BigInt((isSellOrder(kind) ? executedSellAmount : executedBuyAmount) || 0)
 
-  return JSBI.subtract(JSBI.BigInt(Number(fullAmount)), executedAmount).toString()
+  return JSBI.subtract(JSBI.BigInt(fullAmount), executedAmount).toString()
 }
 
 function getExecutedAmounts(order: Order | ParsedOrder) {
