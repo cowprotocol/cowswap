@@ -53,21 +53,38 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
   const labelsAndTooltips = useLabelsAndTooltips()
 
   // Parse currency amounts for tracking
-  const fromAmount = inputCurrencyInfo.amount ? parseFloat(inputCurrencyInfo.amount.toSignificant(6)) : undefined
-  const toAmount = outputCurrencyInfo.amount ? parseFloat(outputCurrencyInfo.amount.toSignificant(6)) : undefined
+  let fromAmount = inputCurrencyInfo.amount ? parseFloat(inputCurrencyInfo.amount.toSignificant(6)) : undefined
+  if (fromAmount !== undefined && Number.isNaN(fromAmount)) {
+    console.warn('Invalid "fromAmount" encountered, defaulting to undefined')
+    fromAmount = undefined
+  }
+
+  let toAmount = outputCurrencyInfo.amount ? parseFloat(outputCurrencyInfo.amount.toSignificant(6)) : undefined
+  if (toAmount !== undefined && Number.isNaN(toAmount)) {
+    console.warn('Invalid "toAmount" encountered, defaulting to undefined')
+    toAmount = undefined
+  }
 
   // Parse fiat amounts for tracking
-  const fromAmountUSD = inputCurrencyInfo.fiatAmount
+  let fromAmountUSD = inputCurrencyInfo.fiatAmount
     ? typeof inputCurrencyInfo.fiatAmount === 'number'
       ? inputCurrencyInfo.fiatAmount
       : Number(inputCurrencyInfo.fiatAmount.toSignificant(6))
     : undefined
+  if (fromAmountUSD !== undefined && Number.isNaN(fromAmountUSD)) {
+    console.warn('Invalid "fromAmountUSD" encountered, defaulting to undefined')
+    fromAmountUSD = undefined
+  }
 
-  const toAmountUSD = outputCurrencyInfo.fiatAmount
+  let toAmountUSD = outputCurrencyInfo.fiatAmount
     ? typeof outputCurrencyInfo.fiatAmount === 'number'
       ? outputCurrencyInfo.fiatAmount
       : Number(outputCurrencyInfo.fiatAmount.toSignificant(6))
     : undefined
+  if (toAmountUSD !== undefined && Number.isNaN(toAmountUSD)) {
+    console.warn('Invalid "toAmountUSD" encountered, defaulting to undefined')
+    toAmountUSD = undefined
+  }
 
   // Enhanced trade function with GTM tracking
   const doTrade = async () => {
