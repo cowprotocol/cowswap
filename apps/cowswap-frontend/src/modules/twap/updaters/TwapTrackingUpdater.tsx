@@ -20,6 +20,12 @@ export function TwapTrackingUpdater() {
   const executedOrdersRef = useRef<Set<string>>(new Set())
   const failedOrdersRef = useRef<Set<string>>(new Set())
 
+  // Reset tracked orders when account or chainId changes
+  useEffect(() => {
+    executedOrdersRef.current.clear()
+    failedOrdersRef.current.clear()
+  }, [account, chainId])
+
   // Gather order data for tracking order execution and failures
   const allOrders = useOrders(chainId, account, UiOrderType.TWAP)
   const { pendingActivity, confirmedActivity } = useCategorizeRecentActivity()
