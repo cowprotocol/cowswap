@@ -106,7 +106,8 @@ export function useTradeTracking() {
   /**
    * Check if window and dataLayer are available
    */
-  const isTrackingAvailable = typeof window !== 'undefined' && !!window.dataLayer
+  const isTrackingAvailable =
+    typeof window !== 'undefined' && !!window.dataLayer && typeof window.dataLayer.push === 'function'
 
   return {
     onPageView,
