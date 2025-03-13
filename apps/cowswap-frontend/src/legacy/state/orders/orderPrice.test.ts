@@ -1,42 +1,54 @@
 import { USDC_MAINNET, WETH_MAINNET } from '@cowprotocol/common-const'
-import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderClass, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
 import { Price } from '@uniswap/sdk-core'
 
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
 
-import { Order } from './actions'
+import { Order, OrderStatus } from './actions'
 import { getEstimatedExecutionPrice, getRemainderAmountsWithoutSurplus } from './utils'
 
+
 const getLimitOrderWithFee = (
-  sellAmountBeforeFee: number,
-  buyAmount: number,
-  fee: number,
+  sellAmountBeforeFee: string,
+  buyAmount: string,
+  fee: string,
   orderKind: OrderKind = OrderKind.SELL,
-): Order =>
-  ({
-    id: '',
-    inputToken: WETH_MAINNET,
-    outputToken: USDC_MAINNET,
-    sellAmountBeforeFee: '0x' + BigInt(sellAmountBeforeFee).toString(16),
-    sellAmount: '0x' + BigInt(sellAmountBeforeFee - fee).toString(16),
-    buyAmount: buyAmount.toString(),
-    class: OrderClass.LIMIT,
-    kind: orderKind,
-  }) as unknown as Order
+): Order => ({
+  owner: '',
+  status: OrderStatus.CREATING,
+  summary: '',
+  creationTime: '',
+  sellToken: '',
+  buyToken: '',
+  validTo: 0,
+  feeAmount: '',
+  kind: orderKind,
+  partiallyFillable: false,
+  id: '',
+  inputToken: WETH_MAINNET,
+  outputToken: USDC_MAINNET,
+  sellAmountBeforeFee,
+  sellAmount: new BigNumber(sellAmountBeforeFee).minus(new BigNumber(fee)).toString(),
+  buyAmount: new BigNumber(buyAmount).toString(),
+  class: OrderClass.LIMIT,
+  appData: '',
+  signingScheme: SigningScheme.EIP712,
+  signature: '',
+})
 
 describe('getEstimatedExecutionPrice()', () => {
   it('Should take the fee into account for the estimated execution price calculation', () => {
-    const fee = 0.00021 * 10 ** WETH_MAINNET.decimals
-    const sellAmountBeforeFee = 100 * 10 ** WETH_MAINNET.decimals
-    const buyAmount = 182000 * 10 ** USDC_MAINNET.decimals
+    const fee = new BigNumber(0.00021).times(10 ** WETH_MAINNET.decimals).toString()
+    const sellAmountBeforeFee = new BigNumber(100).times(10 ** WETH_MAINNET.decimals).toString()
+    const buyAmount = new BigNumber(182000).times(10 ** USDC_MAINNET.decimals).toString()
 
     const fillPrice = new Price(WETH_MAINNET, USDC_MAINNET, '10000000000', '1')
 
     const orderWithFee = getLimitOrderWithFee(sellAmountBeforeFee, buyAmount, fee)
     const executionPriceWithFee = getEstimatedExecutionPrice(orderWithFee, fillPrice, fee.toString())
 
-    const zeroFee = 0
+    const zeroFee = new BigNumber(0).toString()
     const orderWithoutFee = getLimitOrderWithFee(sellAmountBeforeFee, buyAmount, zeroFee)
     const executionPriceWithoutFee = getEstimatedExecutionPrice(orderWithoutFee, fillPrice, zeroFee.toString())
 
@@ -47,9 +59,9 @@ describe('getEstimatedExecutionPrice()', () => {
 
 describe('getRemainderAmountsWithoutSurplus()', () => {
   it('Should return the remainder amounts without the surplus', () => {
-    const fee = 0.00016 * 10 ** WETH_MAINNET.decimals
-    const sellAmountBeforeFee = 99 * 10 ** WETH_MAINNET.decimals
-    const buyAmount = 17345 * 10 ** USDC_MAINNET.decimals
+    const fee = new BigNumber(0.00016).times(10 ** WETH_MAINNET.decimals).toString()
+    const sellAmountBeforeFee = new BigNumber(99).times(10 ** WETH_MAINNET.decimals).toString()
+    const buyAmount = new BigNumber(17345).times(10 ** USDC_MAINNET.decimals).toString()
 
     const order = getLimitOrderWithFee(sellAmountBeforeFee, buyAmount, fee, OrderKind.SELL)
     const remainderAmounts = getRemainderAmountsWithoutSurplus(order)
@@ -59,58 +71,61 @@ describe('getRemainderAmountsWithoutSurplus()', () => {
   })
 
   it('should return the full amount if there is no surplus', () => {
-    const order = getLimitOrderWithFee(100, 100, 0)
+    const fee = new BigNumber(0).toString()
+    const sellAmountBeforeFee = new BigNumber(100).times(10 ** WETH_MAINNET.decimals).toString()
+    const buyAmount = new BigNumber(100).times(10 ** USDC_MAINNET.decimals).toString()
+
+    const order = getLimitOrderWithFee(sellAmountBeforeFee, buyAmount, fee)
     const remainderAmounts = getRemainderAmountsWithoutSurplus(order)
 
-    expect(remainderAmounts.buyAmount).toEqual('100')
-    expect(remainderAmounts.sellAmount).toEqual('100')
+    expect(remainderAmounts.buyAmount).toEqual('100000000')
+    expect(remainderAmounts.sellAmount).toEqual('100000000000000000000')
   })
 
   it('should return the remainder amounts if there is a surplus when passing a SELL ParsedOrder', () => {
-    const fee = 0.1 * 10 ** WETH_MAINNET.decimals
-    const sellAmountBeforeFee = 100001 * 10 ** WETH_MAINNET.decimals
-    const buyAmount = 12345567 * 10 ** USDC_MAINNET.decimals
+    const fee = new BigNumber(0.1).times(10 ** WETH_MAINNET.decimals).toString()
+    const sellAmountBeforeFee = new BigNumber(101).times(10 ** WETH_MAINNET.decimals).toString()
+    const buyAmount = new BigNumber(12345567).times(10 ** USDC_MAINNET.decimals).toString()
 
     const order = getLimitOrderWithFee(sellAmountBeforeFee, buyAmount, fee, OrderKind.SELL)
 
     ;(order as any).executionData = {
-      executedSellAmount: '0x' + BigInt(99999 * 10 ** WETH_MAINNET.decimals).toString(16),
-      executedBuyAmount: '0x' + BigInt(12345566 * 10 ** USDC_MAINNET.decimals).toString(16),
-      surplusAmount: new BigNumber('0x' + BigInt(3 * 10 ** WETH_MAINNET.decimals).toString(16)),
+      executedSellAmount: new BigNumber(99 * 10 ** WETH_MAINNET.decimals),
+      executedBuyAmount: new BigNumber(12345566 * 10 ** USDC_MAINNET.decimals),
+      surplusAmount: new BigNumber(3 * 10 ** WETH_MAINNET.decimals),
     }
 
     const remainderAmounts = getRemainderAmountsWithoutSurplus(order)
 
-    expect(remainderAmounts.buyAmount).toEqual('2312319564256475852308472')
-    expect(remainderAmounts.sellAmount).toEqual('1242619072256475131805692')
+    expect(remainderAmounts.buyAmount).toEqual('-2999999999999000000')
+    expect(remainderAmounts.sellAmount).toEqual('1900000000000000000')
   })
 
-  it.skip('should return the remainder amounts if there is a surplus when passing a BUY ParsedOrder', () => {
-    const fee = 0.1 * 10 ** WETH_MAINNET.decimals
-    const sellAmountBeforeFee = 100001 * 10 ** WETH_MAINNET.decimals
-    const buyAmount = 12345567 * 10 ** USDC_MAINNET.decimals
+  it('should return the remainder amounts if there is a surplus when passing a BUY ParsedOrder', () => {
+    const fee = new BigNumber(0.1).times(10 ** WETH_MAINNET.decimals).toString()
+    const sellAmountBeforeFee = new BigNumber(101).times(10 ** WETH_MAINNET.decimals).toString()
+    const buyAmount = new BigNumber(12345567).times(10 ** USDC_MAINNET.decimals).toString()
 
     const order = getLimitOrderWithFee(sellAmountBeforeFee, buyAmount, fee, OrderKind.BUY)
 
     ;(order as any).executionData = {
-      executedSellAmount: 100000 * 10 ** WETH_MAINNET.decimals,
-      executedBuyAmount: 12345566 * 10 ** USDC_MAINNET.decimals,
-      surplusAmount: 2 * 10 ** WETH_MAINNET.decimals,
+      executedSellAmount: new BigNumber(101 * 10 ** WETH_MAINNET.decimals),
+      executedBuyAmount: new BigNumber(12345566 * 10 ** USDC_MAINNET.decimals),
+      surplusAmount: new BigNumber(2 * 10 ** WETH_MAINNET.decimals),
     }
 
     const remainderAmounts = getRemainderAmountsWithoutSurplus(order)
 
-    expect(remainderAmounts.buyAmount).toEqual('4112319564256476036857852')
-    expect(remainderAmounts.sellAmount).toEqual('4542619072256475291189243')
+    expect(remainderAmounts.buyAmount).toEqual('1000000')
+    expect(remainderAmounts.sellAmount).toEqual('1900000000000000000')
   })
 
-  it.skip('should return the remainder amounts if there is surplus when passing a SELL Order', () => {
-    const order = getLimitOrderWithFee(
-      17.42619072256475129773952e23,
-      16.12319564256475887773621e23,
-      0.3,
-      OrderKind.SELL,
-    )
+  it('should return the remainder amounts if there is surplus when passing a SELL Order', () => {
+    const fee = new BigNumber(0.02).times(10 ** WETH_MAINNET.decimals).toString()
+    const sellAmountBeforeFee = new BigNumber(304).times(10 ** WETH_MAINNET.decimals).toString()
+    const buyAmount = new BigNumber(6763849).times(10 ** USDC_MAINNET.decimals).toString()
+
+    const order = getLimitOrderWithFee(sellAmountBeforeFee, buyAmount, fee, OrderKind.SELL)
 
     ;(order as any).apiAdditionalInfo = {
       executedSellAmountBeforeFees: JSBI.BigInt(17),
@@ -120,17 +135,16 @@ describe('getRemainderAmountsWithoutSurplus()', () => {
 
     const remainderAmounts = getRemainderAmountsWithoutSurplus(order)
 
-    expect(remainderAmounts.buyAmount).toEqual('1612319564256475810365424')
-    expect(remainderAmounts.sellAmount).toEqual('1742619072256475123417071')
+    expect(remainderAmounts.buyAmount).toEqual('6763848999984')
+    expect(remainderAmounts.sellAmount).toEqual('303999999999999999983')
   })
 
-  it.skip('should return the remainder amounts if there is surplus when passing a BUY Order', () => {
-    const order = getLimitOrderWithFee(
-      11.42619072256475129773952e23,
-      10.12319564256475887773621e23,
-      0.00045,
-      OrderKind.BUY,
-    )
+  it('should return the remainder amounts if there is surplus when passing a BUY Order', () => {
+    const fee = new BigNumber(1.1).times(10 ** WETH_MAINNET.decimals).toString()
+    const sellAmountBeforeFee = new BigNumber(10.3).times(10 ** WETH_MAINNET.decimals).toString()
+    const buyAmount = new BigNumber(11224).times(10 ** USDC_MAINNET.decimals).toString()
+
+    const order = getLimitOrderWithFee(sellAmountBeforeFee, buyAmount, fee, OrderKind.BUY)
 
     ;(order as any).apiAdditionalInfo = {
       executedSellAmountBeforeFees: JSBI.BigInt(3),
@@ -140,7 +154,7 @@ describe('getRemainderAmountsWithoutSurplus()', () => {
 
     const remainderAmounts = getRemainderAmountsWithoutSurplus(order)
 
-    expect(remainderAmounts.buyAmount).toEqual('1012319564256475927805950')
-    expect(remainderAmounts.sellAmount).toEqual('2285238144512950206639866')
+    expect(remainderAmounts.buyAmount).toEqual('11223999998')
+    expect(remainderAmounts.sellAmount).toEqual('19499999999999999994')
   })
 })
