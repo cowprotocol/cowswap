@@ -165,6 +165,8 @@ export async function swapFlow(
           fromCurrency: inputCurrency.symbol || '',
           toCurrency: outputAmount.currency.symbol || '',
           contractAddress: inputCurrency.isToken ? inputCurrency.address : 'NATIVE',
+          errorCode: error.code || '',
+          errorType: error.name || '',
         },
         swapErrorMessage,
       )

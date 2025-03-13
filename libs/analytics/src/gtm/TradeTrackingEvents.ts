@@ -159,6 +159,8 @@ export function trackOrderFailed(
     contractAddress?: string
     orderId?: string
     orderStatus?: string
+    errorCode?: string
+    errorType?: string
   },
   error?: string,
 ) {
