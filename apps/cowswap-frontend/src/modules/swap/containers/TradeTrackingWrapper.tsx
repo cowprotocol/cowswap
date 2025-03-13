@@ -5,7 +5,7 @@
 
 import { useEffect } from 'react'
 
-import { useTradeTracking, TradeType, TradeTrackingEventType } from '@cowprotocol/analytics'
+import { useTradeTracking, TradeTrackingEventType } from '@cowprotocol/analytics'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useSwapDerivedState } from '../hooks/useSwapDerivedState'
@@ -13,7 +13,6 @@ import { useSwapDerivedState } from '../hooks/useSwapDerivedState'
 interface TradeTrackingWrapperProps {
   children: React.ReactNode
   pageView: string
-  tradeType?: TradeType // Default to 'swap' if not provided
 }
 
 /**
