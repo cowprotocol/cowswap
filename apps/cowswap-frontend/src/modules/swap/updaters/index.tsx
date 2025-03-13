@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-import { useTradeTracking, TradeType, TradeTrackingEventType, getActivityStatusString } from '@cowprotocol/analytics'
+import { useTradeTracking, TradeType, trackOrderStatusChanges } from '@cowprotocol/analytics'
 import { isSellOrder, percentToBps } from '@cowprotocol/common-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -37,7 +37,7 @@ function OrderTrackingUpdater({
   orders: Record<string, any>
   activityItems: Array<{
     id: string
-    status: ActivityStatus // Using enum for type safety
+    status: ActivityStatus
     type: string
     orderType: string
   }>
@@ -50,84 +50,17 @@ function OrderTrackingUpdater({
 
   // Track order execution and failures
   useEffect(() => {
-    if (!account || !activityItems.length || !orders) return
-
-    // Process only activity items for the SWAP order type
-    activityItems.forEach((item) => {
-      if (item.type !== 'order') return
-      if (item.orderType !== UiOrderType.SWAP) return
-
-      const order = orders[item.id]
-      if (!order) return
-
-      // Check for executed orders
-      if (
-        item.status === ActivityStatus.CONFIRMED &&
-        order.status === 'fulfilled' &&
-        !executedOrdersRef.current.has(item.id) // Prevent duplicate tracking
-      ) {
-        // Get executed amounts - safely convert to numbers
-        let fromAmount: number | undefined = undefined
-        let toAmount: number | undefined = undefined
-
-        try {
-          if (order.sellAmount) {
-            fromAmount = parseFloat(order.sellAmount.toString()) / 10 ** (order.inputToken?.decimals || 18)
-          }
-
-          if (order.buyAmount) {
-            toAmount = parseFloat(order.buyAmount.toString()) / 10 ** (order.outputToken?.decimals || 18)
-          }
-        } catch (error) {
-          console.error(`[Analytics] Error calculating swap amounts:`, error)
-        }
-
-        // Track order execution
-        tradeTracking.onOrderExecuted({
-          walletAddress: account,
-          tradeType: TradeType.SWAP,
-          fromAmount,
-          fromCurrency: order.inputToken?.symbol || '',
-          toAmount,
-          toCurrency: order.outputToken?.symbol || '',
-          contractAddress: order.inputToken?.address || '',
-          transactionHash: order.fulfilledTransactionHash || order.id,
-          orderId: item.id,
-          orderStatus: getActivityStatusString(item.status), // Add descriptive status string for analytics
-        })
-
-        console.info(`[Analytics] Tracked ${TradeTrackingEventType.ORDER_EXECUTED} event for order ${item.id}`)
-
-        // Mark order as tracked to prevent duplicate tracking
-        executedOrdersRef.current.add(item.id)
-      }
-
-      // Check for failed orders
-      if (
-        item.status === ActivityStatus.FAILED &&
-        order.status === 'failed' &&
-        !failedOrdersRef.current.has(item.id) // Prevent duplicate tracking
-      ) {
-        // Track order failure
-        tradeTracking.onOrderFailed(
-          {
-            walletAddress: account,
-            tradeType: TradeType.SWAP,
-            fromCurrency: order.inputToken?.symbol || '',
-            toCurrency: order.outputToken?.symbol || '',
-            contractAddress: order.inputToken?.address || '',
-            orderId: item.id,
-            orderStatus: getActivityStatusString(item.status), // Add descriptive status string for analytics
-          },
-          'Swap execution failed',
-        )
-
-        console.info(`[Analytics] Tracked ${TradeTrackingEventType.ORDER_FAILED} event for order ${item.id}`)
-
-        // Mark order as failure-tracked to prevent duplicate tracking
-        failedOrdersRef.current.add(item.id)
-      }
-    })
+    trackOrderStatusChanges(
+      account,
+      orders,
+      activityItems,
+      UiOrderType.SWAP,
+      TradeType.SWAP,
+      tradeTracking,
+      executedOrdersRef,
+      failedOrdersRef,
+      'Swap execution failed',
+    )
   }, [account, activityItems, orders, tradeTracking])
 
   return null
