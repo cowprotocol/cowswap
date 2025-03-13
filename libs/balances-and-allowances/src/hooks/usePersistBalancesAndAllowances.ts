@@ -133,4 +133,11 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
       onBalancesLoaded?.(false)
     }
   }, [account, prevAccount, resetAllowances, resetBalances, setBalancesCache, onBalancesLoaded])
+
+  // Reset balances and allowances when chainId is changed
+  useEffect(() => {
+    resetBalances()
+    resetAllowances()
+    onBalancesLoaded?.(false)
+  }, [chainId, resetBalances, resetAllowances, onBalancesLoaded])
 }
