@@ -1,5 +1,12 @@
-import { dispatchCustomEvent } from '@cowprotocol/analytics'
+import { CowAnalytics } from '@cowprotocol/analytics'
 import { CowWidgetEventPayloadMap, CowWidgetEvents, SimpleCowEventEmitter } from '@cowprotocol/events'
+
+const getCowAnalytics = (): CowAnalytics | undefined => {
+  if (typeof window !== 'undefined' && 'cowAnalyticsInstance' in window) {
+    return window.cowAnalyticsInstance as CowAnalytics
+  }
+  return undefined
+}
 
 export const WIDGET_EVENT_EMITTER = Object.freeze(
   new SimpleCowEventEmitter<CowWidgetEventPayloadMap, CowWidgetEvents>(),
@@ -134,10 +141,15 @@ const setupEventHandler = <T extends CowWidgetEvents>(
 
       const eventName = EVENT_MAPPING[event]
       if (eventName) {
-        dispatchCustomEvent(eventName, {
-          ...commonProps,
-          ...additionalProps,
-        })
+        const analytics = getCowAnalytics()
+        if (analytics) {
+          analytics.sendEvent(eventName, {
+            ...commonProps,
+            ...additionalProps,
+          })
+        } else {
+          console.warn('Analytics instance not available for event:', eventName)
+        }
       }
     },
   })
