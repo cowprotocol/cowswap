@@ -18,8 +18,8 @@ const getLimitOrderWithFee = (
     id: '',
     inputToken: WETH_MAINNET,
     outputToken: USDC_MAINNET,
-    sellAmountBeforeFee: sellAmountBeforeFee.toString(),
-    sellAmount: (sellAmountBeforeFee - fee).toString(),
+    sellAmountBeforeFee: '0x' + BigInt(sellAmountBeforeFee).toString(16),
+    sellAmount: '0x' + BigInt(sellAmountBeforeFee - fee).toString(16),
     buyAmount: buyAmount.toString(),
     class: OrderClass.LIMIT,
     kind: orderKind,
@@ -74,9 +74,9 @@ describe('getRemainderAmountsWithoutSurplus()', () => {
     const order = getLimitOrderWithFee(sellAmountBeforeFee, buyAmount, fee, OrderKind.SELL)
 
     ;(order as any).executionData = {
-      executedSellAmount: 99999 * 10 ** WETH_MAINNET.decimals,
-      executedBuyAmount: 12345566 * 10 ** USDC_MAINNET.decimals,
-      surplusAmount: 3 * 10 ** WETH_MAINNET.decimals,
+      executedSellAmount: '0x' + BigInt(99999 * 10 ** WETH_MAINNET.decimals).toString(16),
+      executedBuyAmount: '0x' + BigInt(12345566 * 10 ** USDC_MAINNET.decimals).toString(16),
+      surplusAmount: new BigNumber('0x' + BigInt(3 * 10 ** WETH_MAINNET.decimals).toString(16)),
     }
 
     const remainderAmounts = getRemainderAmountsWithoutSurplus(order)
