@@ -12,15 +12,13 @@ import { Currency } from '@uniswap/sdk-core'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-const METAMASK_WALLET_NAME_REGEX = /metamask/i
-
 const Banner = styled(InlineBanner)`
   font-size: 14px;
   text-align: center;
   width: 100%;
 
   b {
-    display:contents;
+    display: contents;
   }
 `
 
@@ -43,8 +41,9 @@ export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency 
 
   return (
     <Banner bannerType="danger" iconSize={32}>
-      Issues have been reported with Metamask sending transactions to the wrong chain on versions prior to <b>v{VERSION_WHERE_BUG_WAS_FIXED}</b>. Before you sign, please check in
-      your wallet that the transaction is being sent to the network:{' '}
+      Issues have been reported with Metamask sending transactions to the wrong chain on versions prior to{' '}
+      <b>v{VERSION_WHERE_BUG_WAS_FIXED}</b>. Before you sign, please check in your wallet that the transaction is being
+      sent to the network:{' '}
       <NetworkInfo>
         <SVG src={chainInfo.logo.light} height={24} width={24} /> <span>{chainInfo.label}</span>
       </NetworkInfo>
@@ -85,11 +84,10 @@ function useIsMetamaskMobileInjectedWallet(): boolean {
  * Returns null if the version could not be fetched
  */
 async function getMetamaskVersion(provider: any): Promise<string | null> {
-
   try {
     return await provider.request({
-      "method": "web3_clientVersion",
-      "params": [],
+      method: 'web3_clientVersion',
+      params: [],
     })
   } catch (error) {
     console.error('Failed to get Metamask version:', error)
@@ -104,7 +102,6 @@ function extractMetamaskSemver(version: string): string | null {
   const match = version.match(EXTRACT_SEMVER_REGEX)
   return match ? match[1] : null
 }
-
 
 /**
  * Check whether the Metamask version is smaller than the target version
@@ -138,9 +135,7 @@ function useShouldDisplayMetamaskWarning(): boolean {
 
   const isWidgetMetamaskBrowserExtension = widgetProviderMetaInfo?.providerEip6963Info?.rdns === METAMASK_RDNS
 
-  const isMetamask =
-    isMetamaskBrowserExtension ||
-    isWidgetMetamaskBrowserExtension
+  const isMetamask = isMetamaskBrowserExtension || isWidgetMetamaskBrowserExtension
 
   const provider = useWalletProvider()
 
