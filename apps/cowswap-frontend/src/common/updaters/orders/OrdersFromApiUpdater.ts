@@ -141,7 +141,7 @@ export function OrdersFromApiUpdater(): null {
   const clearOrderStorage = useClearOrdersStorage()
 
   const { account, chainId } = useWalletInfo()
-  const allTokens = useAllActiveTokens()
+  const allTokens = useAllActiveTokens().tokens
   const tokensAreLoaded = useMemo(() => Object.keys(allTokens).length > 0, [allTokens])
   const addOrUpdateOrders = useAddOrUpdateOrders()
   const updateApiOrders = useSetAtom(apiOrdersAtom)

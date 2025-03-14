@@ -13,6 +13,8 @@ import { useNativeTokenBalance } from '../hooks/useNativeTokenBalance'
 import { usePersistBalancesAndAllowances } from '../hooks/usePersistBalancesAndAllowances'
 import { balancesAtom } from '../state/balancesAtom'
 
+const EMPTY_TOKENS: string[] = []
+
 // A small gap between balances and allowances refresh intervals is needed to avoid high load to the node at the same time
 const BALANCES_SWR_CONFIG = { refreshInterval: ms`31s` }
 const ALLOWANCES_SWR_CONFIG = { refreshInterval: ms`33s` }
@@ -27,10 +29,11 @@ export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAl
   const allTokens = useAllActiveTokens()
   const { data: nativeTokenBalance } = useNativeTokenBalance(account, chainId)
 
-  const tokenAddresses = useMemo(
-    () => allTokens.filter((token) => !(token instanceof LpToken)).map((token) => token.address),
-    [allTokens],
-  )
+  const tokenAddresses = useMemo(() => {
+    if (allTokens.chainId !== chainId) return EMPTY_TOKENS
+
+    return allTokens.tokens.filter((token) => !(token instanceof LpToken)).map((token) => token.address)
+  }, [allTokens, chainId])
 
   usePersistBalancesAndAllowances({
     account,

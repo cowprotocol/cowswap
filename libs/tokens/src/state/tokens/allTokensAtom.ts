@@ -6,7 +6,7 @@ import { TokenInfo } from '@cowprotocol/types'
 import { favoriteTokensAtom } from './favoriteTokensAtom'
 import { userAddedTokensAtom } from './userAddedTokensAtom'
 
-import { TokensMap } from '../../types'
+import { ActiveTokensState, TokensMap } from '../../types'
 import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
 import { parseTokenInfo } from '../../utils/parseTokenInfo'
 import { tokenMapToListWithLogo } from '../../utils/tokenMapToListWithLogo'
@@ -67,7 +67,7 @@ const tokensStateAtom = atom<TokensState>((get) => {
  * The list includes: native token, user added tokens, favorite tokens and tokens from active lists
  * Native token is always the first element in the list
  */
-export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
+export const activeTokensAtom = atom<ActiveTokensState>((get) => {
   const { chainId, enableLpTokensByDefault } = get(environmentAtom)
   const userAddedTokens = get(userAddedTokensAtom)
   const favoriteTokensState = get(favoriteTokensAtom)
@@ -75,7 +75,7 @@ export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
   const tokensMap = get(tokensStateAtom)
   const nativeToken = NATIVE_CURRENCIES[chainId]
 
-  return tokenMapToListWithLogo(
+  const tokens = tokenMapToListWithLogo(
     {
       [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo,
       ...tokensMap.activeTokens,
@@ -95,6 +95,8 @@ export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
     },
     chainId,
   )
+
+  return { tokens, chainId }
 })
 
 export const inactiveTokensAtom = atom<TokenWithLogo[]>((get) => {
@@ -105,14 +107,14 @@ export const inactiveTokensAtom = atom<TokenWithLogo[]>((get) => {
 })
 
 export const tokensByAddressAtom = atom<TokensByAddress>((get) => {
-  return get(activeTokensAtom).reduce<TokensByAddress>((acc, token) => {
+  return get(activeTokensAtom).tokens.reduce<TokensByAddress>((acc, token) => {
     acc[token.address.toLowerCase()] = token
     return acc
   }, {})
 })
 
 export const tokensBySymbolAtom = atom<TokensBySymbol>((get) => {
-  return get(activeTokensAtom).reduce<TokensBySymbol>((acc, token) => {
+  return get(activeTokensAtom).tokens.reduce<TokensBySymbol>((acc, token) => {
     if (!token.symbol) return acc
 
     const symbol = token.symbol.toLowerCase()
