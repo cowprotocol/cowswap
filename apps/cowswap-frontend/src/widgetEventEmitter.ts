@@ -154,13 +154,13 @@ const setupEventHandler = <T extends CowWidgetEvents>(
   WIDGET_EVENT_EMITTER.on({
     event,
     handler: (payload: unknown) => {
-      const commonProps = getCommonOrderProperties(payload, isPostedOrder)
-      const additionalProps = getAdditionalProps(payload)
-
       const eventName = EVENT_MAPPING[event]
       if (eventName) {
         const analytics = getCowAnalytics()
         if (analytics) {
+          const commonProps = getCommonOrderProperties(payload, isPostedOrder)
+          const additionalProps = getAdditionalProps(payload)
+
           analytics.sendEvent(eventName, {
             ...commonProps,
             ...additionalProps,
