@@ -6,6 +6,7 @@ import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAllActiveTokens } from '@cowprotocol/tokens'
 
 import ms from 'ms.macro'
+import { SWRConfiguration } from 'swr'
 
 import { BalancesCacheUpdater } from './BalancesCacheUpdater'
 
@@ -15,9 +16,14 @@ import { balancesAtom } from '../state/balancesAtom'
 
 const EMPTY_TOKENS: string[] = []
 
+const BASIC_SWR_CONFIG: SWRConfiguration = {
+  refreshWhenHidden: false,
+  refreshWhenOffline: false,
+  revalidateOnFocus: false,
+}
 // A small gap between balances and allowances refresh intervals is needed to avoid high load to the node at the same time
-const BALANCES_SWR_CONFIG = { refreshInterval: ms`31s` }
-const ALLOWANCES_SWR_CONFIG = { refreshInterval: ms`33s` }
+const BALANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_SWR_CONFIG, refreshInterval: ms`31s` }
+const ALLOWANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_SWR_CONFIG, refreshInterval: ms`33s` }
 
 export interface BalancesAndAllowancesUpdaterProps {
   account: string | undefined
