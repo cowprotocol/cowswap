@@ -26,29 +26,14 @@ const NetworkInfo = styled.div`
   gap: 8px;
 `
 
+const VERSION_WHERE_BUG_WAS_FIXED = '12.10.4' // Anything smaller than this version is potentially affected by the bug
+
 export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency }) {
-  const walletDetails = useWalletDetails()
-  const isMetamaskBrowserExtension = useIsMetamaskBrowserExtensionWallet()
-
-  const widgetProviderMetaInfo = useWidgetProviderMetaInfo()
-  const isMetamaskMobileInjectedBrowser = useIsMetamaskMobileInjectedWallet()
-
-  const isMetamaskViaWalletConnect = METAMASK_WALLET_NAME_REGEX.test(walletDetails.walletName || '')
-
-  const isWidgetMetamaskBrowserExtension = widgetProviderMetaInfo?.providerEip6963Info?.rdns === METAMASK_RDNS
-  const isWidgetMetamaskViaWalletConnect = METAMASK_WALLET_NAME_REGEX.test(
-    widgetProviderMetaInfo?.providerWcMetadata?.name || '',
-  )
-
-  const isMetamask =
-    isMetamaskBrowserExtension ||
-    isMetamaskViaWalletConnect ||
-    isMetamaskMobileInjectedBrowser ||
-    isWidgetMetamaskBrowserExtension ||
-    isWidgetMetamaskViaWalletConnect
   const isNativeSellToken = getIsNativeToken(sellToken)
 
-  if (!isMetamask || !isNativeSellToken) return null
+  const shouldDisplayMetamaskWarning = useShouldDisplayMetamaskWarning()
+
+  if (!shouldDisplayMetamaskWarning || !isNativeSellToken) return null
 
   const chainInfo = CHAIN_INFO[sellToken.chainId as SupportedChainId]
 
@@ -89,4 +74,111 @@ function useIsMetamaskMobileInjectedWallet(): boolean {
   const rawProvider = walletProvider?.provider as any
 
   return Boolean(rawProvider?.isMetaMask && rawProvider._metamask && !rawProvider.isRabby)
+}
+
+/**
+ * Fetch the Metamask version using the method defined in https://docs.metamask.io/wallet/reference/json-rpc-methods/web3_clientversion
+ * Returns null if the version could not be fetched
+ */
+async function getMetamaskVersion(provider: any): Promise<string | null> {
+
+  try {
+    return await provider.request({
+      "method": "web3_clientVersion",
+      "params": [],
+    })
+  } catch (error) {
+    console.error('Failed to get Metamask version:', error)
+    return null
+  }
+}
+
+const SEMVER_REGEX = /\d+\.\d+\.\d+/
+const EXTRACT_SEMVER_REGEX = new RegExp(`/v?(${SEMVER_REGEX.source})`)
+
+function extractMetamaskSemver(version: string): string | null {
+  const match = version.match(EXTRACT_SEMVER_REGEX)
+  return match ? match[1] : null
+}
+
+
+/**
+ * Check whether the Metamask version is smaller than the target version
+ * Returns undefined if the version is not a valid semantic version
+ */
+function isMetamaskSemverSmallerThanTarget(version: string, target: string): boolean | undefined {
+  // Check whether the version is smaller than the target
+  // We are comparing semantic versions, so the format of both should already be: major.minor.patch
+  if (!SEMVER_REGEX.test(version) || !SEMVER_REGEX.test(target)) return undefined
+
+  const [major, minor, patch] = version.split('.').map(Number)
+  const [targetMajor, targetMinor, targetPatch] = target.split('.').map(Number)
+
+  if (major < targetMajor) return true
+  if (major === targetMajor && minor < targetMinor) return true
+  if (major === targetMajor && minor === targetMinor && patch < targetPatch) return true
+
+  return false
+}
+
+/**
+ * Hook to check if the wallet is affected by the Metamask bug where transactions are sent to the wrong chain
+ * Returns true if the wallet is affected, false if it is not
+ */
+function useShouldDisplayMetamaskWarning(): boolean {
+  const [isAffected, setIsAffected] = useState<boolean | undefined>(undefined)
+
+  const walletDetails = useWalletDetails()
+  const isMetamaskBrowserExtension = useIsMetamaskBrowserExtensionWallet()
+
+  const widgetProviderMetaInfo = useWidgetProviderMetaInfo()
+  const isMetamaskMobileInjectedBrowser = useIsMetamaskMobileInjectedWallet()
+
+  const isMetamaskViaWalletConnect = METAMASK_WALLET_NAME_REGEX.test(walletDetails.walletName || '')
+
+  const isWidgetMetamaskBrowserExtension = widgetProviderMetaInfo?.providerEip6963Info?.rdns === METAMASK_RDNS
+  const isWidgetMetamaskViaWalletConnect = METAMASK_WALLET_NAME_REGEX.test(
+    widgetProviderMetaInfo?.providerWcMetadata?.name || '',
+  )
+
+  const isMetamask =
+    isMetamaskBrowserExtension ||
+    isMetamaskViaWalletConnect ||
+    isMetamaskMobileInjectedBrowser ||
+    isWidgetMetamaskBrowserExtension ||
+    isWidgetMetamaskViaWalletConnect
+
+  const provider = useWalletProvider()
+
+  useEffect(() => {
+    if (!isMetamask || !provider?.provider) {
+      setIsAffected(false)
+      return
+    }
+
+    // Here we know we are connected to a form of Metamask
+    // Fetch the version
+    getMetamaskVersion(provider.provider).then((version) => {
+      if (!version) {
+        // No version found, assume the wallet is affected
+        setIsAffected(undefined)
+        return
+      }
+
+      const semver = extractMetamaskSemver(version)
+      if (!semver) {
+        // Invalid version, assume the wallet is affected
+        setIsAffected(undefined)
+        return
+      }
+
+      // Check if the version is smaller than the target version where the bug was fixed
+      // If the version is smaller, the wallet is still affected by the bug
+      const isAffected = isMetamaskSemverSmallerThanTarget(semver, VERSION_WHERE_BUG_WAS_FIXED)
+      setIsAffected(isAffected)
+    })
+  }, [isMetamask, provider])
+
+  // If we don't know, show it according to the isMetamask flag
+  return isAffected === undefined ? isMetamask : isAffected
 }
