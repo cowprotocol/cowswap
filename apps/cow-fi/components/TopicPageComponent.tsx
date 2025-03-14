@@ -105,7 +105,7 @@ export function TopicPageComponent({ category, allCategories, articles, allArtic
     <Wrapper>
       <CategoryLinks allCategories={allCategories} />
 
-      <SearchBar articles={allArticles || articles} />
+      <SearchBar />
 
       <ContainerCard gap={42} gapMobile={24} minHeight="100vh" alignContent="flex-start" touchFooter>
         <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>

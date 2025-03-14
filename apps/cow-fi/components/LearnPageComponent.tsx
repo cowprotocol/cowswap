@@ -167,7 +167,7 @@ export function LearnPageComponent({ categories, articles, featuredArticles }: P
 
       <CategoryLinks allCategories={categories} noDivider />
 
-      <SearchBar articles={articles} />
+      <SearchBar />
 
       <ContainerCard marginMobile="0 auto 24px">
         <ContainerCardInner maxWidth={1350}>
