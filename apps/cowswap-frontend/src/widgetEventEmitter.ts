@@ -75,7 +75,15 @@ function isOrderPayload(payload: unknown): payload is OrderPayload {
     payload &&
     typeof payload === 'object' &&
     'chainId' in payload &&
-    ('order' in payload || 'transactionHash' in payload)
+    // An order payload must have either:
+    // 1. An 'order' property (standard case)
+    // 2. A 'transactionHash' property AND be related to an order operation (like cancellation)
+    // This ensures we don't treat a regular transaction as an order payload
+    ('order' in payload ||
+      // For cancelled orders, we might only have the transactionHash
+      // The presence of specific event types (like ON_CANCELLED_ORDER) helps distinguish
+      // order-related transactions from regular transactions
+      ('transactionHash' in payload && payload.transactionHash !== undefined))
   )
 }
 
@@ -129,6 +137,7 @@ const getCommonOrderProperties = (payload: unknown, isPostedOrder = false): Orde
       buyToken: safeGetString(payload.order, 'buyToken'),
       sellAmount: safeGetString(payload.order, 'sellAmount'),
       buyAmount: safeGetString(payload.order, 'buyAmount'),
+      ...(payload.transactionHash ? { transactionHash: payload.transactionHash } : {}),
     }
   }
 
