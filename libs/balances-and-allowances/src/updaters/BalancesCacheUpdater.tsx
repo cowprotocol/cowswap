@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai/index'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { balancesAtom, balancesCacheAtom } from '../state/balancesAtom'
@@ -18,7 +18,6 @@ export function BalancesCacheUpdater({ chainId, account }: { chainId: SupportedC
   // Persist into localStorage only non-zero balances
   useEffect(() => {
     if (!account) {
-      setBalancesCache(mapSupportedNetworks({}))
       return
     }
 
