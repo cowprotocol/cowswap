@@ -13,6 +13,9 @@ export const WIDGET_EVENT_EMITTER = Object.freeze(
 )
 
 interface TrackingEventPayload {
+  eventCategory?: string
+  eventAction?: string
+  eventLabel?: string
   [key: string]: string | number | boolean | undefined
 }
 
@@ -26,7 +29,6 @@ interface OrderTrackingPayload extends TrackingEventPayload {
   buyAmount: string
 }
 
-// Define interfaces for the payload types to avoid 'as any' casts
 interface PostedOrderPayload {
   owner: string
   orderUid: string
@@ -77,16 +79,18 @@ function isOrderPayload(payload: unknown): payload is OrderPayload {
   )
 }
 
-// Helper function to safely access nested properties with fallbacks
-const safeGet = <T, K extends keyof T>(obj: T | undefined, key: K, fallback: any = ''): any =>
-  obj ? (obj[key] ?? fallback) : fallback
+// Specialized helper function for string properties to ensure we always return a string
+const safeGetString = <T, K extends keyof T>(obj: T | undefined, key: K, fallback: string = ''): string => {
+  const value = obj && obj[key] !== undefined ? obj[key] : fallback
+  return String(value || '')
+}
 
 // Map CowWidgetEvents to GTM event names - only include the ones we use
 const EVENT_MAPPING: Partial<Record<CowWidgetEvents, string>> = {
   [CowWidgetEvents.ON_POSTED_ORDER]: 'order_submitted',
   [CowWidgetEvents.ON_FULFILLED_ORDER]: 'swap_executed',
-  [CowWidgetEvents.ON_CANCELLED_ORDER]: 'swap_failed',
-  [CowWidgetEvents.ON_EXPIRED_ORDER]: 'swap_failed',
+  [CowWidgetEvents.ON_CANCELLED_ORDER]: 'swap_cancelled',
+  [CowWidgetEvents.ON_EXPIRED_ORDER]: 'swap_expired',
 }
 
 // Generate default tracking payload
@@ -109,8 +113,8 @@ const getCommonOrderProperties = (payload: unknown, isPostedOrder = false): Orde
       walletAddress: payload.owner,
       orderId: payload.orderUid,
       chainId: payload.chainId,
-      sellToken: safeGet(payload.inputToken, 'address'),
-      buyToken: safeGet(payload.outputToken, 'address'),
+      sellToken: safeGetString(payload.inputToken, 'address'),
+      buyToken: safeGetString(payload.outputToken, 'address'),
       sellAmount: payload.inputAmount?.toString() || '',
       buyAmount: payload.outputAmount?.toString() || '',
     }
@@ -118,13 +122,13 @@ const getCommonOrderProperties = (payload: unknown, isPostedOrder = false): Orde
 
   if (isOrderPayload(payload)) {
     return {
-      walletAddress: safeGet(payload.order, 'owner'),
-      orderId: safeGet(payload.order, 'uid'),
+      walletAddress: safeGetString(payload.order, 'owner'),
+      orderId: safeGetString(payload.order, 'uid'),
       chainId: payload.chainId,
-      sellToken: safeGet(payload.order, 'sellToken'),
-      buyToken: safeGet(payload.order, 'buyToken'),
-      sellAmount: safeGet(payload.order, 'sellAmount'),
-      buyAmount: safeGet(payload.order, 'buyAmount'),
+      sellToken: safeGetString(payload.order, 'sellToken'),
+      buyToken: safeGetString(payload.order, 'buyToken'),
+      sellAmount: safeGetString(payload.order, 'sellAmount'),
+      buyAmount: safeGetString(payload.order, 'buyAmount'),
     }
   }
 
@@ -160,14 +164,13 @@ const setupEventHandler = <T extends CowWidgetEvents>(
   })
 }
 
-// Configure event handlers
 const setupEventHandlers = () => {
   // Handle order submission
   setupEventHandler(
     CowWidgetEvents.ON_POSTED_ORDER,
     (payload) => ({
-      sellTokenSymbol: safeGet(payload.inputToken, 'symbol'),
-      buyTokenSymbol: safeGet(payload.outputToken, 'symbol'),
+      sellTokenSymbol: safeGetString(payload.inputToken, 'symbol'),
+      buyTokenSymbol: safeGetString(payload.outputToken, 'symbol'),
       orderType: payload.orderType,
       kind: payload.kind,
       receiver: payload.receiver || '',
@@ -178,9 +181,9 @@ const setupEventHandlers = () => {
 
   // Handle order fulfillment
   setupEventHandler(CowWidgetEvents.ON_FULFILLED_ORDER, (payload) => ({
-    executedSellAmount: safeGet(payload.order, 'executedSellAmount'),
-    executedBuyAmount: safeGet(payload.order, 'executedBuyAmount'),
-    executedFeeAmount: safeGet(payload.order, 'executedFeeAmount'),
+    executedSellAmount: safeGetString(payload.order, 'executedSellAmount'),
+    executedBuyAmount: safeGetString(payload.order, 'executedBuyAmount'),
+    executedFeeAmount: safeGetString(payload.order, 'executedFeeAmount'),
   }))
 
   // Handle order cancellation
