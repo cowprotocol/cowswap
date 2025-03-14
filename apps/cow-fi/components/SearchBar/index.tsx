@@ -50,6 +50,14 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   // Use custom debounce hook
   const debouncedQuery = useDebounce(query, DEBOUNCE_DELAY)
 
+  // Function to reset search results state
+  const resetSearchResults = (errorMessage: string | null = null) => {
+    setFilteredArticles([])
+    setTotalResults(0)
+    setHasMoreResults(false)
+    setError(errorMessage)
+  }
+
   // Handle selection for keyboard navigation
   const handleSelect = (index: number) => {
     if (index >= 0 && index < filteredArticles.length) {
@@ -62,7 +70,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   const handleEscape = () => {
     setIsFocused(false)
     setQuery('')
-    setFilteredArticles([])
+    resetSearchResults(null)
     inputRef.current?.blur()
   }
 
@@ -79,53 +87,42 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   useEffect(() => {
     const trimmedQuery = debouncedQuery.trim()
 
-    if (trimmedQuery.length > 0 && trimmedQuery.length < MIN_SEARCH_LENGTH) {
+    if (trimmedQuery.length === 0) {
+      setShowMinLengthMessage(false)
+      resetSearchResults(null)
+      return
+    }
+
+    if (trimmedQuery.length < MIN_SEARCH_LENGTH) {
       setShowMinLengthMessage(true)
-      setFilteredArticles([])
-      setTotalResults(0)
-      setHasMoreResults(false)
-      setError(null)
+      resetSearchResults(null)
       return
     }
 
     setShowMinLengthMessage(false)
+    setCurrentPage(0) // Reset to first page on new search
+    setError(null) // Clear any previous errors
 
-    if (trimmedQuery.length >= MIN_SEARCH_LENGTH) {
-      setCurrentPage(0) // Reset to first page on new search
-      setError(null) // Clear any previous errors
-
-      startTransition(async () => {
-        try {
-          const result = await searchArticlesAction(trimmedQuery, 0, PAGE_SIZE)
-          if (result.success && result.data) {
-            setFilteredArticles(result.data.data)
-            setTotalResults(result.data.meta.pagination.total)
-            setHasMoreResults(result.data.meta.pagination.pageCount > 1)
-          } else {
-            console.error('Search failed:', result.error)
-            setError('Unable to complete search. Please try again.')
-            setFilteredArticles([])
-            setTotalResults(0)
-            setHasMoreResults(false)
-          }
-        } catch (error) {
-          console.error('Error searching articles:', error)
-          setError('An error occurred while searching. Please try again.')
-          setFilteredArticles([])
-          setTotalResults(0)
-          setHasMoreResults(false)
+    startTransition(async () => {
+      try {
+        const result = await searchArticlesAction(trimmedQuery, 0, PAGE_SIZE)
+        if (result.success && result.data) {
+          setFilteredArticles(result.data.data)
+          setTotalResults(result.data.meta.pagination.total)
+          setHasMoreResults(result.data.meta.pagination.pageCount > 1)
+        } else {
+          console.error('Search failed:', result.error)
+          resetSearchResults('Unable to complete search. Please try again.')
         }
-      })
-    } else {
-      setFilteredArticles([])
-      setTotalResults(0)
-      setHasMoreResults(false)
-      setError(null)
-    }
+      } catch (error) {
+        console.error('Error searching articles:', error)
+        resetSearchResults('An error occurred while searching. Please try again.')
+      }
+    })
   }, [debouncedQuery])
 
-  // Function to load more results
-  const loadMoreResults = async () => {
+  // Function to load more results - memoized to prevent unnecessary recreations
+  const loadMoreResults = React.useCallback(async () => {
     if (debouncedQuery.trim().length >= MIN_SEARCH_LENGTH && hasMoreResults && !isLoadingMore) {
       const nextPage = currentPage + 1
       setIsLoadingMore(true)
@@ -146,7 +143,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
         setIsLoadingMore(false)
       }
     }
-  }
+  }, [debouncedQuery, currentPage, hasMoreResults, isLoadingMore])
 
   // Scroll to highlighted result and ensure it's visible
   useEffect(() => {
@@ -159,31 +156,32 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
     }
   }, [highlightedIndex])
 
-  const handleClear = () => {
+  // Memoized clear handler to prevent unnecessary recreations
+  const handleClear = React.useCallback(() => {
     setQuery('')
-    setFilteredArticles([])
-    setTotalResults(0)
-    setHasMoreResults(false)
-    setError(null)
+    resetSearchResults(null)
     setShowMinLengthMessage(false)
     // Refocus input after clearing
     inputRef.current?.focus()
-  }
+  }, [])
 
   // Handle clicks outside using the useOnClickOutside hook
-  const handleClickOutside = () => {
+  const handleClickOutside = React.useCallback(() => {
     if (isMediumUp) {
       // Close search results when clicking outside on medium screens and up
       setIsFocused(false)
     }
-  }
+  }, [isMediumUp])
 
   useOnClickOutside([searchContainerRef], handleClickOutside)
 
-  // Keep results visible if there's a query, even when input loses focus
-  const shouldShowResults =
-    (isFocused && (filteredArticles.length > 0 || isPending || error || showMinLengthMessage)) ||
-    (!isMediumUp && query.trim() && (filteredArticles.length > 0 || showMinLengthMessage))
+  // Keep results visible if there's a query, even when input loses focus - memoized for performance
+  const shouldShowResults = React.useMemo(
+    () =>
+      (isFocused && (filteredArticles.length > 0 || isPending || error || showMinLengthMessage)) ||
+      (!isMediumUp && query.trim() && (filteredArticles.length > 0 || showMinLengthMessage)),
+    [isFocused, filteredArticles.length, isPending, error, showMinLengthMessage, isMediumUp, query],
+  )
 
   return (
     <SearchBarContainer ref={searchContainerRef}>
