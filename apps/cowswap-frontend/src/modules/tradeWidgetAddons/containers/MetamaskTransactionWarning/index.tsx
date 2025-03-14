@@ -69,17 +69,6 @@ function useWidgetProviderMetaInfo() {
 }
 
 /**
- * This is hacky way to detect if the wallet is metamask mobile injected wallet
- * Many injected wallet browsers emulate isMetaMask, but only metamask mobile has _metamask
- */
-function useIsMetamaskMobileInjectedWallet(): boolean {
-  const walletProvider = useWalletProvider()
-  const rawProvider = walletProvider?.provider as any
-
-  return Boolean(rawProvider?.isMetaMask && rawProvider._metamask && !rawProvider.isRabby)
-}
-
-/**
  * Fetch the Metamask version using the method defined in https://docs.metamask.io/wallet/reference/json-rpc-methods/web3_clientversion
  * Returns null if the version could not be fetched
  */
@@ -117,9 +106,7 @@ function isMetamaskSemverSmallerThanTarget(version: string, target: string): boo
 
   if (major < targetMajor) return true
   if (major === targetMajor && minor < targetMinor) return true
-  if (major === targetMajor && minor === targetMinor && patch < targetPatch) return true
-
-  return false
+  return major === targetMajor && minor === targetMinor && patch < targetPatch
 }
 
 /**
