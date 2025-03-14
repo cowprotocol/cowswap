@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useTransition } from 'react'
+import React, { useState, useEffect, useRef, useTransition, useCallback, useMemo } from 'react'
 import { useMediaQuery, useOnClickOutside, useDebounce } from '@cowprotocol/common-hooks'
 import { Article } from 'services/cms'
 import SVG from 'react-inlinesvg'
@@ -122,7 +122,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   }, [debouncedQuery])
 
   // Function to load more results - memoized to prevent unnecessary recreations
-  const loadMoreResults = React.useCallback(async () => {
+  const loadMoreResults = useCallback(async () => {
     if (debouncedQuery.trim().length >= MIN_SEARCH_LENGTH && hasMoreResults && !isLoadingMore) {
       const nextPage = currentPage + 1
       setIsLoadingMore(true)
@@ -157,7 +157,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   }, [highlightedIndex])
 
   // Memoized clear handler to prevent unnecessary recreations
-  const handleClear = React.useCallback(() => {
+  const handleClear = useCallback(() => {
     setQuery('')
     resetSearchResults(null)
     setShowMinLengthMessage(false)
@@ -166,7 +166,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   }, [])
 
   // Handle clicks outside using the useOnClickOutside hook
-  const handleClickOutside = React.useCallback(() => {
+  const handleClickOutside = useCallback(() => {
     if (isMediumUp) {
       // Close search results when clicking outside on medium screens and up
       setIsFocused(false)
@@ -176,7 +176,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   useOnClickOutside([searchContainerRef], handleClickOutside)
 
   // Keep results visible if there's a query, even when input loses focus - memoized for performance
-  const shouldShowResults = React.useMemo(
+  const shouldShowResults = useMemo(
     () =>
       (isFocused && (filteredArticles.length > 0 || isPending || error || showMinLengthMessage)) ||
       (!isMediumUp && query.trim() && (filteredArticles.length > 0 || showMinLengthMessage)),
