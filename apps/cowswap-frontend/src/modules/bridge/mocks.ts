@@ -10,11 +10,6 @@ export const testBridgeProvider: BridgeProvider = {
 
     return testNetworks
   },
-  async getNetworkById(chainId: number) {
-    await wait(1500)
-
-    return testNetworks.find((network) => network.id === chainId) || null
-  },
   async getTokens(chainId: number) {
     await wait(1500)
     return testTokens[chainId] || null
