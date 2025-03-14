@@ -7,7 +7,11 @@ import { getCmsClient } from '@cowprotocol/core'
 
 const DEFAULT_PAGE_SIZE = 100
 const CMS_CACHE_TIME = 5 * 60 // 5 min
-const ARTICLES_FETCHING_PAGE_LIMIT = 10 // Maximum number of pages to fetch recursively
+
+// Helper function for query serialization
+const querySerializer = (params: any) => {
+  return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
+}
 
 type Schemas = components['schemas']
 export type Article = Schemas['ArticleListResponseDataItem']
@@ -43,10 +47,6 @@ const clientAddons = {
  * @returns Slugs
  */
 export async function getAllArticleSlugs(): Promise<string[]> {
-  const querySerializer = (params: any) => {
-    return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
-  }
-
   const { data, error, response } = await client.GET('/articles', {
     params: {
       query: {
@@ -118,12 +118,7 @@ export async function getArticles({
   page = 0,
   pageSize = DEFAULT_PAGE_SIZE,
   filters = {},
-  fetchAll = false,
-}: PaginationParam & { filters?: any; fetchAll?: boolean } = {}): Promise<ArticleListResponse> {
-  const querySerializer = (params: any) => {
-    return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
-  }
-
+}: PaginationParam & { filters?: any } = {}): Promise<ArticleListResponse> {
   const { data, error, response } = await client.GET('/articles', {
     params: {
       query: {
@@ -146,32 +141,6 @@ export async function getArticles({
   if (error) {
     console.error(`Error ${response.status} getting articles: ${response.url}. Page ${page}`, error)
     throw error
-  }
-
-  // If fetchAll is true and there are more pages, recursively fetch them
-  if (
-    fetchAll &&
-    data.meta.pagination.page < data.meta.pagination.pageCount &&
-    data.meta.pagination.page < ARTICLES_FETCHING_PAGE_LIMIT
-  ) {
-    const nextPageResponse = await getArticles({
-      page: page + 1,
-      pageSize,
-      filters,
-      fetchAll: true,
-    })
-
-    // Combine the current page with subsequent pages
-    return {
-      data: [...data.data, ...nextPageResponse.data],
-      meta: {
-        pagination: {
-          ...data.meta.pagination,
-          // Update total to reflect the actual number of articles fetched
-          total: data.meta.pagination.total,
-        },
-      },
-    }
   }
 
   return { data: data.data, meta: data.meta }
@@ -250,36 +219,7 @@ export async function searchArticles({
  * @returns Article with the given slug
  */
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
-  const querySerializer = (params: any) => {
-    return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
-  }
-
-  const { data, error, response } = await client.GET(`/articles`, {
-    params: {
-      query: {
-        filters: {
-          slug: {
-            $eq: slug,
-          },
-        },
-        populate: ['cover', 'blocks', 'seo', 'authorsBio', 'categories'],
-      },
-    },
-    querySerializer,
-    ...clientAddons,
-  })
-
-  if (error) {
-    console.error(`Error ${response.status} getting article by slug: ${response.url}`, error)
-    throw error
-  }
-
-  const articles = data.data
-  if (articles.length === 0) {
-    return null
-  }
-
-  return articles[0]
+  return getBySlugAux(slug, '/articles')
 }
 
 /**
