@@ -12,7 +12,6 @@ import styled, { css } from 'styled-components/macro'
 
 import { SingleLetterLogo } from './SingleLetterLogo'
 
-import { useNetworkLogo } from '../../hooks/tokens/useNetworkLogo'
 import { useTokensByAddressMap } from '../../hooks/tokens/useTokensByAddressMap'
 import { getTokenLogoUrls } from '../../utils/getTokenLogoUrls'
 
@@ -20,7 +19,6 @@ const invalidUrlsAtom = atom<{ [url: string]: boolean }>({})
 const defaultSize = 42
 
 export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number }>`
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -32,7 +30,7 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
   min-width: ${({ size = defaultSize }) => size}px;
   min-height: ${({ size = defaultSize }) => size}px;
   font-size: ${({ size = defaultSize }) => size}px;
-  overflow: revert;
+  overflow: hidden;
 
   > img,
   > svg {
@@ -59,28 +57,6 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
             }
           `
         : ''}
-  }
-`
-
-const ChainLogoWrapper = styled.div<{ size?: number }>`
-  width: ${({ size = 16 }) => size}px;
-  height: ${({ size = 16 }) => size}px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  border: 1px solid white;
-  position: absolute;
-  padding: 0;
-  bottom: -2px;
-  right: -2px;
-
-  > img,
-  > svg {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: contain;
   }
 `
 
@@ -149,8 +125,6 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, no
 
   const currentUrl = validUrls?.[0]
 
-  const { logoUrl } = useNetworkLogo(token?.chainId)
-
   const onError = useCallback(() => {
     if (!currentUrl) return
 
@@ -174,7 +148,7 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, no
     )
   }
 
-  const tokenContent = currentUrl ? (
+  const content = currentUrl ? (
     <img alt="token logo" src={currentUrl} onError={onError} />
   ) : initial ? (
     <SingleLetterLogo initial={initial} />
@@ -182,14 +156,11 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, no
     <Slash />
   )
 
-  if (noWrap) return tokenContent
+  if (noWrap) return content
 
   return (
     <TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
-      {tokenContent}
-        <ChainLogoWrapper size={size / 2}>
-          <img src={logoUrl} alt="chain logo" />
-        </ChainLogoWrapper>
+      {content}
     </TokenLogoWrapper>
   )
 }

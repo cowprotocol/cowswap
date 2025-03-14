@@ -44,10 +44,7 @@ export interface ChainInfo {
   nativeCurrency: TokenInfo
   isEvmChain: boolean
   blockExplorer: string
-  logoUrl: {
-    light: string
-    dark: string
-  }
+  logoUrl: string
   mainColor: string
 }
 

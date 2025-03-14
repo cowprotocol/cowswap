@@ -10,11 +10,6 @@ export const testBridgeProvider: BridgeProvider = {
 
     return testNetworks
   },
-  async getNetworkById(chainId: number) {
-    await wait(1500)
-
-    return testNetworks.find((network) => network.id === chainId) || null
-  },
   async getTokens(chainId: number) {
     await wait(1500)
     return testTokens[chainId] || null
@@ -35,10 +30,7 @@ export const testNetworks: ChainInfo[] = [
     },
     isEvmChain: true,
     blockExplorer: 'https://bscscan.com/',
-    logoUrl: {
-      light: 'https://icons.llamao.fi/icons/chains/rsz_binance.jpg',
-      dark: 'https://icons.llamao.fi/icons/chains/rsz_binance.jpg',
-    },
+    logoUrl: 'https://icons.llamao.fi/icons/chains/rsz_binance.jpg',
     mainColor: '#F0B90B',
   },
   {
@@ -54,10 +46,7 @@ export const testNetworks: ChainInfo[] = [
     },
     isEvmChain: true,
     blockExplorer: 'https://cchain.explorer.avax.network/',
-    logoUrl: {
-      light: 'https://icons.llamao.fi/icons/chains/rsz_avalanche.jpg',
-      dark: 'https://icons.llamao.fi/icons/chains/rsz_avalanche.jpg',
-    },
+    logoUrl: 'https://icons.llamao.fi/icons/chains/rsz_avalanche.jpg',
     mainColor: '#fa4040',
   },
 ]

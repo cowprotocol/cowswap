@@ -25,10 +25,7 @@ function mapChainInfo(chainId: number, info: BaseChainInfo): ChainInfo {
     },
     isEvmChain: true,
     blockExplorer: info.explorer,
-    logoUrl: {
-      light: info.logo.light,
-      dark: info.logo.light,
-    },
+    logoUrl: info.logo.light,
     mainColor: info.color,
   }
 }

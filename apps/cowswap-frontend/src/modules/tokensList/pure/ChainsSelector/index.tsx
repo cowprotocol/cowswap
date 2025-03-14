@@ -53,7 +53,7 @@ export function ChainsSelector({
           placement="bottom"
         >
           <styledEl.ChainButton active$={defaultChainId === chain.id} onClick={() => onSelectChain(chain)}>
-            <img src={chain.logoUrl.light} alt={chain.name} />
+            <img src={chain.logoUrl} alt={chain.name} />
           </styledEl.ChainButton>
         </HoverTooltip>
       ))}
@@ -66,7 +66,7 @@ export function ChainsSelector({
                   <styledEl.TextButton>
                     {selectedMenuChain ? (
                       <styledEl.MenuChainButton>
-                        <img src={selectedMenuChain.logoUrl.light} alt={selectedMenuChain.name} />
+                        <img src={selectedMenuChain.logoUrl} alt={selectedMenuChain.name} />
                       </styledEl.MenuChainButton>
                     ) : isOpen ? (
                       'Less'
@@ -81,7 +81,7 @@ export function ChainsSelector({
                     <styledEl.MenuItemStyled key={chain.id} onSelect={() => onSelectChain(chain)} tabIndex={0}>
                       {selectedMenuChain?.id === chain.id && <Check size={16} />}
                       <styledEl.MenuChainButton>
-                        <img src={chain.logoUrl.light} alt={chain.name} />
+                        <img src={chain.logoUrl} alt={chain.name} />
                       </styledEl.MenuChainButton>
                       <span>{chain.name}</span>
                     </styledEl.MenuItemStyled>

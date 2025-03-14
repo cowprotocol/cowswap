@@ -18,10 +18,7 @@ const chains: ChainInfo[] = [
       nativeCurrency: info.nativeCurrency as TokenInfo,
       isEvmChain: true,
       blockExplorer: info.explorer,
-      logoUrl: {
-        light: info.logo.light,
-        dark: info.logo.dark,
-      },
+      logoUrl: info.logo.light,
       mainColor: info.color,
     }
   }),
