@@ -26,7 +26,9 @@ import { Media } from '@cowprotocol/ui'
 import { useRouter } from 'next/navigation'
 import { useKeyboardNavigation } from '../../hooks/useKeyboardNavigation'
 
-export const SearchBar: React.FC = () => {
+interface SearchBarProps {}
+
+export const SearchBar: React.FC<SearchBarProps> = () => {
   const [query, setQuery] = useState('')
   const [filteredArticles, setFilteredArticles] = useState<Article[]>([])
   const [isFocused, setIsFocused] = useState(false)
