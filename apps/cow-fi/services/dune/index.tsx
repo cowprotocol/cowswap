@@ -44,7 +44,6 @@ interface TotalCount {
 
 export async function _getTotalCount(queryId: number): Promise<TotalCount> {
   const queryResut = await getFromDune<{ count: number }>(queryId)
-  console.log('queryResut', queryId, queryResut)
 
   // Expect one row
   assert(
