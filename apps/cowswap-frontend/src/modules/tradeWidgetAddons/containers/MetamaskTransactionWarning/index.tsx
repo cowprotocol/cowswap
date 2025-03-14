@@ -5,7 +5,7 @@ import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ProviderMetaInfoPayload, WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 import { InlineBanner } from '@cowprotocol/ui'
-import { METAMASK_RDNS, useIsMetamaskBrowserExtensionWallet, useWalletDetails } from '@cowprotocol/wallet'
+import { METAMASK_RDNS, useIsMetamaskBrowserExtensionWallet } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Currency } from '@uniswap/sdk-core'
 
@@ -98,7 +98,7 @@ async function getMetamaskVersion(provider: any): Promise<string | null> {
 }
 
 const SEMVER_REGEX = /\d+\.\d+\.\d+/
-const EXTRACT_SEMVER_REGEX = new RegExp(`/v?(${SEMVER_REGEX.source})`)
+const EXTRACT_SEMVER_REGEX = new RegExp(`/v(${SEMVER_REGEX.source})`)
 
 function extractMetamaskSemver(version: string): string | null {
   const match = version.match(EXTRACT_SEMVER_REGEX)
@@ -132,25 +132,15 @@ function isMetamaskSemverSmallerThanTarget(version: string, target: string): boo
 function useShouldDisplayMetamaskWarning(): boolean {
   const [isAffected, setIsAffected] = useState<boolean | undefined>(undefined)
 
-  const walletDetails = useWalletDetails()
   const isMetamaskBrowserExtension = useIsMetamaskBrowserExtensionWallet()
 
   const widgetProviderMetaInfo = useWidgetProviderMetaInfo()
-  const isMetamaskMobileInjectedBrowser = useIsMetamaskMobileInjectedWallet()
-
-  const isMetamaskViaWalletConnect = METAMASK_WALLET_NAME_REGEX.test(walletDetails.walletName || '')
 
   const isWidgetMetamaskBrowserExtension = widgetProviderMetaInfo?.providerEip6963Info?.rdns === METAMASK_RDNS
-  const isWidgetMetamaskViaWalletConnect = METAMASK_WALLET_NAME_REGEX.test(
-    widgetProviderMetaInfo?.providerWcMetadata?.name || '',
-  )
 
   const isMetamask =
     isMetamaskBrowserExtension ||
-    isMetamaskViaWalletConnect ||
-    isMetamaskMobileInjectedBrowser ||
-    isWidgetMetamaskBrowserExtension ||
-    isWidgetMetamaskViaWalletConnect
+    isWidgetMetamaskBrowserExtension
 
   const provider = useWalletProvider()
 
