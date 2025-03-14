@@ -1,0 +1,40 @@
+import { useAtomValue } from 'jotai'
+import { useEffect, useMemo, useRef } from 'react'
+
+import type { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import ms from 'ms.macro'
+import { SWRConfiguration } from 'swr'
+
+import { balancesAtom, balancesUpdateAtom } from '../state/balancesAtom'
+
+const BALANCE_VALIDITY_PERIOD = ms`20s`
+
+/**
+ * To avoid fetching balances too frequently, this hook allows to pause SWR fetching based on the last update timestamp.
+ */
+export function useSwrConfigWithPause(
+  chainId: SupportedChainId,
+  config: SWRConfiguration,
+  validityPeriod = BALANCE_VALIDITY_PERIOD,
+): SWRConfiguration {
+  const shouldSkipFetchingRef = useRef(false)
+  const balances = useAtomValue(balancesAtom)
+  const balancesUpdate = useAtomValue(balancesUpdateAtom)
+
+  useEffect(() => {
+    if (balances.chainId && balances.chainId !== chainId) return
+
+    const lastUpdateTimestamp = balancesUpdate[chainId]
+
+    shouldSkipFetchingRef.current = !!lastUpdateTimestamp && Date.now() - lastUpdateTimestamp < validityPeriod
+  }, [balances, chainId, validityPeriod])
+
+  return useMemo(
+    () => ({
+      ...config,
+      isPaused: () => shouldSkipFetchingRef.current,
+    }),
+    [config],
+  )
+}

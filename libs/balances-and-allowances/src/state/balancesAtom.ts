@@ -1,3 +1,4 @@
+import { atom } from 'jotai'
 import { atomWithReset, atomWithStorage } from 'jotai/utils'
 
 import { getJotaiMergerStorage } from '@cowprotocol/core'
@@ -18,4 +19,10 @@ export const balancesCacheAtom = atomWithStorage<BalancesCache>(
   getJotaiMergerStorage(),
 )
 
-export const balancesAtom = atomWithReset<BalancesState>({ isLoading: false, values: {}, chainId: null })
+export const balancesAtom = atomWithReset<BalancesState>({
+  isLoading: false,
+  values: {},
+  chainId: null,
+})
+
+export const balancesUpdateAtom = atom<PersistentStateByChain<number>>(mapSupportedNetworks(0))

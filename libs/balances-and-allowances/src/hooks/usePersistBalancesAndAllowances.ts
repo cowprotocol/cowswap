@@ -12,7 +12,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { SWRConfiguration } from 'swr'
 
 import { AllowancesState, allowancesFullState } from '../state/allowancesAtom'
-import { balancesAtom, balancesCacheAtom, BalancesState } from '../state/balancesAtom'
+import { balancesAtom, balancesCacheAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
 
 const MULTICALL_OPTIONS = {}
 
@@ -43,6 +43,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
   const setBalances = useSetAtom(balancesAtom)
   const setAllowances = useSetAtom(allowancesFullState)
   const setBalancesCache = useSetAtom(balancesCacheAtom)
+  const setBalancesUpdate = useSetAtom(balancesUpdateAtom)
 
   const resetBalances = useResetAtom(balancesAtom)
   const resetAllowances = useResetAtom(allowancesFullState)
@@ -77,7 +78,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     setBalances((state) => ({ ...state, isLoading: isBalancesLoading }))
   }, [setBalances, isBalancesLoading, setLoadingState])
 
-  // Set allwoances loading state
+  // Set allowances loading state
   useEffect(() => {
     if (!setLoadingState) return
 
@@ -100,11 +101,19 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     setBalances((state) => {
       return {
         ...state,
+        chainId,
         values: { ...state.values, ...balancesState },
         ...(setLoadingState ? { isLoading: false } : {}),
       }
     })
-  }, [balances, tokenAddresses, setBalances, chainId, setLoadingState, onBalancesLoaded])
+
+    if (setLoadingState) {
+      setBalancesUpdate((state) => ({
+        ...state,
+        [chainId]: Date.now(),
+      }))
+    }
+  }, [balances, tokenAddresses, setBalances, chainId, setLoadingState, onBalancesLoaded, setBalancesUpdate])
 
   // Set allowances to the store
   useEffect(() => {

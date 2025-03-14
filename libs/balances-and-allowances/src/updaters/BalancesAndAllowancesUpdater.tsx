@@ -12,6 +12,7 @@ import { BalancesCacheUpdater } from './BalancesCacheUpdater'
 
 import { useNativeTokenBalance } from '../hooks/useNativeTokenBalance'
 import { usePersistBalancesAndAllowances } from '../hooks/usePersistBalancesAndAllowances'
+import { useSwrConfigWithPause } from '../hooks/useSwrConfigWithPause'
 import { balancesAtom } from '../state/balancesAtom'
 
 const EMPTY_TOKENS: string[] = []
@@ -40,14 +41,16 @@ export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAl
 
     return allTokens.tokens.filter((token) => !(token instanceof LpToken)).map((token) => token.address)
   }, [allTokens, chainId])
+  const balancesSwrConfig = useSwrConfigWithPause(chainId, BALANCES_SWR_CONFIG)
+  const allowancesSwrConfig = useSwrConfigWithPause(chainId, ALLOWANCES_SWR_CONFIG)
 
   usePersistBalancesAndAllowances({
     account,
     chainId,
     tokenAddresses,
     setLoadingState: true,
-    balancesSwrConfig: BALANCES_SWR_CONFIG,
-    allowancesSwrConfig: ALLOWANCES_SWR_CONFIG,
+    balancesSwrConfig,
+    allowancesSwrConfig,
   })
 
   // Add native token balance to the store as well

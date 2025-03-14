@@ -37,10 +37,12 @@ export function useMultipleContractSingleData<T = Result>(
     })
   }, [addresses, callData])
 
+  const chainId = provider?.network?.chainId
+
   return useSWR<(T | undefined)[] | null>(
     !calls?.length || !provider
       ? null
-      : [provider, calls, multicallOptions, methodName, contractInterface, 'useMultipleContractSingleData'],
+      : [provider, calls, multicallOptions, methodName, contractInterface, chainId, 'useMultipleContractSingleData'],
     async ([provider, calls, multicallOptions, methodName, contractInterface]: [
       Web3Provider,
       Multicall3.CallStruct[],
@@ -48,6 +50,14 @@ export function useMultipleContractSingleData<T = Result>(
       string,
       Interface,
     ]) => {
+      // TODO: remove after test
+      if (methodName === 'balanceOf') {
+        console.log('MULTICALL BALANCES UPDATE', {
+          calls: calls.length,
+          chainId: provider.network.chainId,
+        })
+      }
+
       return multiCall(provider, calls, multicallOptions).then((results) => {
         return results.map((result) => {
           try {
