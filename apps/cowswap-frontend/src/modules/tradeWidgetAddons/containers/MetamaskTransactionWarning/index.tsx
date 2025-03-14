@@ -18,6 +18,10 @@ const Banner = styled(InlineBanner)`
   font-size: 14px;
   text-align: center;
   width: 100%;
+
+  b {
+    display:contents;
+  }
 `
 
 const NetworkInfo = styled.div`
@@ -39,7 +43,7 @@ export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency 
 
   return (
     <Banner bannerType="danger" iconSize={32}>
-      Issues have been reported with Metamask sending transactions to the wrong chain. Before you sign, please check in
+      Issues have been reported with Metamask sending transactions to the wrong chain on versions prior to <b>v{VERSION_WHERE_BUG_WAS_FIXED}</b>. Before you sign, please check in
       your wallet that the transaction is being sent to the network:{' '}
       <NetworkInfo>
         <SVG src={chainInfo.logo.light} height={24} width={24} /> <span>{chainInfo.label}</span>
