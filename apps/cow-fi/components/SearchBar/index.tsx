@@ -178,9 +178,16 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   // Keep results visible if there's a query, even when input loses focus - memoized for performance
   const shouldShowResults = useMemo(
     () =>
-      (isFocused && (filteredArticles.length > 0 || isPending || error || showMinLengthMessage)) ||
-      (!isMediumUp && query.trim() && (filteredArticles.length > 0 || showMinLengthMessage)),
-    [isFocused, filteredArticles.length, isPending, error, showMinLengthMessage, isMediumUp, query],
+      (isFocused &&
+        (filteredArticles.length > 0 ||
+          isPending ||
+          error ||
+          showMinLengthMessage ||
+          debouncedQuery.trim().length >= MIN_SEARCH_LENGTH)) ||
+      (!isMediumUp &&
+        query.trim() &&
+        (filteredArticles.length > 0 || showMinLengthMessage || debouncedQuery.trim().length >= MIN_SEARCH_LENGTH)),
+    [isFocused, filteredArticles.length, isPending, error, showMinLengthMessage, isMediumUp, query, debouncedQuery],
   )
 
   return (
@@ -231,7 +238,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
             ) : showMinLengthMessage ? (
               <SearchResultsInfo>Please enter at least {MIN_SEARCH_LENGTH} characters to search</SearchResultsInfo>
             ) : filteredArticles.length === 0 ? (
-              <SearchResultsInfo>No results found</SearchResultsInfo>
+              <SearchResultsInfo>No results found for "{debouncedQuery}"</SearchResultsInfo>
             ) : (
               <>
                 <SearchResultsInfo>
