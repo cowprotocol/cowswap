@@ -167,7 +167,6 @@ export default function Page() {
                   color={Color.cowfi_purple_bright}
                   href="https://docs.cow.fi/cow-protocol/reference/core/intents"
                   external
-                  linkType={LinkType.SectionTitleButton}
                   data-click-event={toCowFiGtmEvent({
                     category: CowFiCategory.COWPROTOCOL,
                     action: 'Open Intents Documentation',
@@ -215,7 +214,6 @@ export default function Page() {
                   color={Color.cowfi_purple_bright}
                   href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
                   external
-                  linkType={LinkType.SectionTitleButton}
                   data-click-event={toCowFiGtmEvent({
                     category: CowFiCategory.COWPROTOCOL,
                     action: 'Open Solvers Documentation',
