@@ -2,6 +2,7 @@ import { atom, useAtom } from 'jotai'
 import { useCallback, useMemo } from 'react'
 
 import { cowprotocolTokenLogoUrl, LpToken, NATIVE_CURRENCY_ADDRESS, TokenWithLogo } from '@cowprotocol/common-const'
+import { getChainInfo } from '@cowprotocol/common-const'
 import { uriToHttp } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Media, UI } from '@cowprotocol/ui'
@@ -63,17 +64,23 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
 `
 
 const ChainLogoWrapper = styled.div<{ size?: number }>`
-  width: ${({ size = 16 }) => size}px;
-  height: ${({ size = 16 }) => size}px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  border: 1px solid white;
-  position: absolute;
-  padding: 0;
-  bottom: -2px;
-  right: -2px;
+  ${({ size = 16 }) => {
+    const getBorderWidth = () => Math.max(1.5, Math.min(2.2, size * 0.15))
+    return `
+      width: ${size}px;
+      height: ${size}px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(${UI.COLOR_DARK_IMAGE_PAPER});
+      border: ${getBorderWidth()}px solid var(${UI.COLOR_PAPER});
+      position: absolute;
+      padding: 0;
+      bottom: -${getBorderWidth()}px;
+      right: -${getBorderWidth()}px;
+    `
+  }}
 
   > img,
   > svg {
@@ -175,7 +182,11 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, no
   }
 
   const tokenContent = currentUrl ? (
-    <img alt="token logo" src={currentUrl} onError={onError} />
+    <img
+      alt={`${token?.symbol || ''} ${token?.name ? `(${token?.name})` : ''} token logo`}
+      src={currentUrl}
+      onError={onError}
+    />
   ) : initial ? (
     <SingleLetterLogo initial={initial} />
   ) : (
@@ -184,12 +195,14 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, no
 
   if (noWrap) return tokenContent
 
+  const chainName = token?.chainId ? getChainInfo(token.chainId as SupportedChainId).label : ''
+
   return (
     <TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
       {tokenContent}
-        <ChainLogoWrapper size={size / 2}>
-          <img src={logoUrl} alt="chain logo" />
-        </ChainLogoWrapper>
+      <ChainLogoWrapper size={size / 1.85}>
+        <img src={logoUrl} alt={`${chainName} network logo`} />
+      </ChainLogoWrapper>
     </TokenLogoWrapper>
   )
 }
