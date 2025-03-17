@@ -87,7 +87,7 @@ export function ArticlePageComponent({
     <Wrapper>
       <CategoryLinks allCategories={allCategories} />
 
-      <SearchBar articles={articles} />
+      <SearchBar />
       <ContainerCard gap={62} gapMobile={42} margin="0 auto" centerContent>
         <ArticleContent>
           <Breadcrumbs>
