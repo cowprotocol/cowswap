@@ -78,6 +78,8 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     permitCompatibleTokens,
   }
 
+  const trimmedInputValue = inputValue.trim()
+
   const allListsContent = (
     <>
       <styledEl.Row>
@@ -95,8 +97,8 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
         </styledEl.TokensLoader>
       ) : (
         <>
-          {inputValue.trim() ? (
-            <TokenSearchResults searchInput={inputValue.trim()} {...selectTokenContext} />
+          {trimmedInputValue ? (
+            <TokenSearchResults searchInput={trimmedInputValue} {...selectTokenContext} />
           ) : (
             <TokensVirtualList
               allTokens={allTokens}

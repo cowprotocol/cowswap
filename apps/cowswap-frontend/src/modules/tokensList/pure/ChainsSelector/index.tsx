@@ -32,7 +32,7 @@ export function ChainsSelector({
   // TODO: change the value to 7 after tests
   itemsToDisplay = 3,
 }: ChainsSelectorProps) {
-  const isDisplayMore = chains.length > itemsToDisplay
+  const shouldDisplayMore = chains.length > itemsToDisplay
 
   const visibleChains = chains.slice(0, itemsToDisplay)
   const menuChains = chains.slice(itemsToDisplay)
@@ -57,7 +57,7 @@ export function ChainsSelector({
           </styledEl.ChainButton>
         </HoverTooltip>
       ))}
-      {isDisplayMore && (
+      {shouldDisplayMore && (
         <styledEl.MenuWrapper>
           <Menu>
             {({ isOpen }) => (
