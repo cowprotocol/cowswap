@@ -1,41 +1,24 @@
 import { useMemo } from 'react'
 
-import { BaseChainInfo, getChainInfo } from '@cowprotocol/common-const'
+import { getChainInfo } from '@cowprotocol/common-const'
 
-import { useBridgeSupportedNetworks } from '../../../../../apps/cowswap-frontend/src/modules/bridge/hooks/useBridgeSupportedNetworks'
+import { useAtomValue } from 'jotai/index'
+import { environmentAtom } from '../../state/environmentAtom'
 
 export function useNetworkLogo(chainId?: number) {
-  if (!chainId) {
-    return { isLoading: false, logoUrl: undefined }
-  }
+  const { bridgeNetworkInfo } = useAtomValue(environmentAtom)
 
-  const baseNetworkInfo: BaseChainInfo | undefined = useMemo(() => {
+  if (!chainId) return undefined
+
+  const baseNetworkInfo: string | undefined = useMemo(() => {
     if (!chainId) {
       return undefined
     }
 
-    return getChainInfo(chainId)
+    return getChainInfo(chainId).logo.light
   }, [chainId])
 
-  const bridgeNetworkInfo = useBridgeSupportedNetworks()
+  if (baseNetworkInfo) return baseNetworkInfo
 
-  if (!chainId) {
-    return {
-      isLoading: false,
-      logoUrl: undefined,
-    }
-  }
-
-  if (baseNetworkInfo) {
-    return {
-      isLoading: false,
-      logoUrl: baseNetworkInfo.logo.light,
-    }
-  }
-
-  return {
-    isLoading: bridgeNetworkInfo?.isLoading,
-    logoUrl: bridgeNetworkInfo?.data?.find((network) => network.id === chainId)?.logoUrl?.light,
-    error: bridgeNetworkInfo?.error,
-  }
+  return bridgeNetworkInfo?.find((network) => network.id === chainId)?.logoUrl?.light
 }
