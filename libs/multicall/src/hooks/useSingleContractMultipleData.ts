@@ -20,6 +20,10 @@ export function useSingleContractMultipleData<T = Result, P = unknown>(
 ): SWRResponse<(T | undefined)[] | null> {
   const provider = useMultiCallRpcProvider()
 
+  /**
+   * ChainId must be in useSWR deps bellow.
+   * Otherwise, it won't refetch when provider changes. I really don't know why.
+   */
   const chainId = provider?.network?.chainId
 
   const calls = useMemo(() => {
