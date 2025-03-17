@@ -1,4 +1,7 @@
+import { MouseEventHandler } from 'react'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { LoadingRows, LoadingRowSmall, TokenAmount } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -27,7 +30,7 @@ export interface TokenListItemProps {
 export function TokenListItem(props: TokenListItemProps) {
   const { token, selectedToken, balance, onSelectToken, isUnsupported, isPermitCompatible, isWalletConnected } = props
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
     if (isTokenSelected) {
       e.preventDefault()
       e.stopPropagation()
@@ -37,6 +40,7 @@ export function TokenListItem(props: TokenListItemProps) {
   }
 
   const isTokenSelected = token.address.toLowerCase() === selectedToken?.toLowerCase()
+  const isSupportedChain = token.chainId in SupportedChainId
 
   const balanceAmount = balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
 
@@ -53,7 +57,7 @@ export function TokenListItem(props: TokenListItemProps) {
       {isWalletConnected && (
         <styledEl.TokenMetadata>
           <styledEl.TokenBalance>
-            {balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement}
+            {isSupportedChain ? balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement : null}
           </styledEl.TokenBalance>
           <TokenTags isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} />
         </styledEl.TokenMetadata>
