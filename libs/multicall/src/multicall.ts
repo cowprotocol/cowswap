@@ -1,5 +1,5 @@
 import type { Multicall3 } from '@cowprotocol/abis'
-import type { Web3Provider } from '@ethersproject/providers'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 
 import { DEFAULT_BATCH_SIZE } from './const'
 import { getMulticallContract } from './utils/getMulticallContract'
@@ -15,7 +15,7 @@ export interface MultiCallOptions {
  * TODO: add providers fallback
  */
 export async function multiCall(
-  provider: Web3Provider,
+  provider: JsonRpcProvider,
   calls: Multicall3.CallStruct[],
   options: MultiCallOptions = {},
 ): Promise<Multicall3.ResultStructOutput[]> {

@@ -3,3 +3,5 @@ export { useMultipleContractSingleData } from './hooks/useMultipleContractSingle
 export { getMulticallContract } from './utils/getMulticallContract'
 export { multiCall } from './multicall'
 export type { MultiCallOptions } from './multicall'
+
+export { MultiCallUpdater } from './updaters/MultiCallUpdater'

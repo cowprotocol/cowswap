@@ -1,4 +1,5 @@
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { JsonRpcProvider } from '@ethersproject/providers'
 
 const INFURA_KEY = process.env.REACT_APP_INFURA_KEY || '2af29cd5ac554ae3b8d991afe1ba4b7d' // Default rate-limited infura key (should be overridden, not reliable to use)
 
@@ -37,4 +38,21 @@ function getRpcUrl(chainId: SupportedChainId): string {
   }
 
   return defaultRpc.url
+}
+
+const rpcProviderCache: Record<number, JsonRpcProvider> = {}
+
+export function getRpcProvider(chainId: number): JsonRpcProvider | null {
+  if (!rpcProviderCache[chainId]) {
+    const url = RPC_URLS[chainId as SupportedChainId]
+    if (!url) return null
+
+    const provider = new JsonRpcProvider(url)
+
+    rpcProviderCache[chainId] = provider
+
+    return provider
+  }
+
+  return rpcProviderCache[chainId]
 }

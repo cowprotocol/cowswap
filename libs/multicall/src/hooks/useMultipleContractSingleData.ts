@@ -1,11 +1,12 @@
 import { useMemo } from 'react'
 
 import type { Multicall3 } from '@cowprotocol/abis'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Interface, Result } from '@ethersproject/abi'
 import type { Web3Provider } from '@ethersproject/providers'
 
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
+
+import { useMultiCallRpcProvider } from './useMultiCallRpcProvider'
 
 import { multiCall, MultiCallOptions } from '../multicall'
 
@@ -17,7 +18,7 @@ export function useMultipleContractSingleData<T = Result>(
   multicallOptions: MultiCallOptions = {},
   swrConfig?: SWRConfiguration,
 ): SWRResponse<(T | undefined)[] | null> {
-  const provider = useWalletProvider()
+  const provider = useMultiCallRpcProvider()
 
   const callData = useMemo(() => {
     if (!params) return null

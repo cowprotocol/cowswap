@@ -1,31 +1,47 @@
+import { InputHTMLAttributes } from 'react'
+
+import { Search } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { UI } from '../../enum'
 
-export const SearchInput = styled.input`
+const Wrapper = styled.div`
+  display: inline-flex;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+`
+
+const SearchIcon = styled(Search)`
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+`
+
+const SearchInputEl = styled.input`
   position: relative;
   display: flex;
-  padding: 16px;
+  padding: 8px 16px 8px 10px;
   align-items: center;
   width: 100%;
   white-space: nowrap;
   outline: none;
-  background: var(${UI.COLOR_PAPER_DARKER});
+  background: transparent;
   color: inherit;
-  border: 1px solid var(${UI.COLOR_BORDER});
   appearance: none;
   font-size: 16px;
   border-radius: 12px;
+  border: none;
 
   ::placeholder {
     color: inherit;
     opacity: 0.7;
   }
-
-  transition: border 100ms;
-
-  :focus {
-    border: 1px solid var(${UI.COLOR_PRIMARY});
-    outline: none;
-  }
 `
+
+export function SearchInput(props: InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <Wrapper>
+      <SearchIcon size={20} />
+      <SearchInputEl type="text" {...props} />
+    </Wrapper>
+  )
+}

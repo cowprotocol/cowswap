@@ -36,6 +36,11 @@ export interface HoverTooltipProps extends Omit<PopoverProps, 'content' | 'show'
    * Whether to disable the hover and content display
    */
   disableHover?: boolean
+
+  /**
+   * In milliseconds, the delay before the tooltip is closed
+   */
+  tooltipCloseDelay?: number
 }
 
 /**
@@ -49,7 +54,15 @@ export interface HoverTooltipProps extends Omit<PopoverProps, 'content' | 'show'
  * @returns
  */
 export function HoverTooltip(props: HoverTooltipProps) {
-  const { content, children, onOpen = undefined, disableHover, wrapInContainer = false, ...rest } = props
+  const {
+    content,
+    children,
+    onOpen = undefined,
+    disableHover,
+    wrapInContainer = false,
+    tooltipCloseDelay = TOOLTIP_CLOSE_DELAY,
+    ...rest
+  } = props
 
   // { text, className, ...rest }: TooltipProps
 
@@ -67,34 +80,37 @@ export function HoverTooltip(props: HoverTooltipProps) {
   )
 
   // Close the tooltip
-  const close = useCallback((e: MouseEvent<HTMLDivElement> | null, eager = false) => {
-    e && e.preventDefault()
+  const close = useCallback(
+    (e: MouseEvent<HTMLDivElement> | null, eager = false) => {
+      e && e.preventDefault()
 
-    // Cancel any previous scheduled close
-    if (cancelCloseRef.current) {
-      cancelCloseRef.current()
-    }
-
-    const closeNow = () => {
-      cancelCloseRef.current = null
-      setShow(false)
-    }
-
-    if (eager) {
-      // Close eagerly
-      closeNow()
-    } else {
-      // Close after a delay
-      const closeTimeout = setTimeout(closeNow, TOOLTIP_CLOSE_DELAY)
-
-      cancelCloseRef.current = () => {
-        cancelCloseRef.current = null
-        clearTimeout(closeTimeout)
+      // Cancel any previous scheduled close
+      if (cancelCloseRef.current) {
+        cancelCloseRef.current()
       }
-    }
 
-    return () => cancelCloseRef.current && cancelCloseRef.current()
-  }, [])
+      const closeNow = () => {
+        cancelCloseRef.current = null
+        setShow(false)
+      }
+
+      if (eager) {
+        // Close eagerly
+        closeNow()
+      } else {
+        // Close after a delay
+        const closeTimeout = setTimeout(closeNow, tooltipCloseDelay)
+
+        cancelCloseRef.current = () => {
+          cancelCloseRef.current = null
+          clearTimeout(closeTimeout)
+        }
+      }
+
+      return () => cancelCloseRef.current && cancelCloseRef.current()
+    },
+    [tooltipCloseDelay],
+  )
 
   // Stop the delayed close when hovering the tooltip
   const stopDelayedClose = useCallback(() => {
