@@ -72,7 +72,7 @@ export function TopicsPageComponent({ articles, categories }: PageProps) {
       <h1>Knowledge Base</h1>
       <h2>All Topics</h2>
 
-      <SearchBar articles={articles || []} />
+      <SearchBar />
 
       <ContainerCard touchFooter>
         <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>

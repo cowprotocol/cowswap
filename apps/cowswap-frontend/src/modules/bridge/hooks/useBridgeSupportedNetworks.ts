@@ -9,4 +9,3 @@ export function useBridgeSupportedNetworks() {
     return bridgeProvider.getNetworks()
   })
 }
-

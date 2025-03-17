@@ -156,7 +156,7 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, no
 
   const currentUrl = validUrls?.[0]
 
-  const { logoUrl } = useNetworkLogo(token?.chainId)
+  const logoUrl = useNetworkLogo(token?.chainId)
 
   const onError = useCallback(() => {
     if (!currentUrl) return
@@ -200,9 +200,11 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, no
   return (
     <TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
       {tokenContent}
-      <ChainLogoWrapper size={size / 1.85}>
-        <img src={logoUrl} alt={`${chainName} network logo`} />
-      </ChainLogoWrapper>
+      {logoUrl && (
+        <ChainLogoWrapper size={size / 1.85}>
+          <img src={logoUrl} alt={`${chainName} network logo`} />
+        </ChainLogoWrapper>
+      )}
     </TokenLogoWrapper>
   )
 }
