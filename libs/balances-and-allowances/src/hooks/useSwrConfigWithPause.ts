@@ -22,13 +22,14 @@ export function useSwrConfigWithPause(
   const balances = useAtomValue(balancesAtom)
   const balancesUpdate = useAtomValue(balancesUpdateAtom)
 
-  useEffect(() => {
-    if (balances.chainId && balances.chainId !== chainId) return
+  const balancesChainId = balances.chainId
+  const lastUpdateTimestamp = balancesUpdate[chainId]
 
-    const lastUpdateTimestamp = balancesUpdate[chainId]
+  useEffect(() => {
+    if (balancesChainId && balancesChainId !== chainId) return
 
     shouldSkipFetchingRef.current = !!lastUpdateTimestamp && Date.now() - lastUpdateTimestamp < validityPeriod
-  }, [balances, chainId, validityPeriod])
+  }, [balancesChainId, lastUpdateTimestamp, chainId, validityPeriod])
 
   return useMemo(
     () => ({
