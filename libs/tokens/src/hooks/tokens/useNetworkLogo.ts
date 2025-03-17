@@ -1,8 +1,8 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 
-import { useAtomValue } from 'jotai/index'
 import { environmentAtom } from '../../state/environmentAtom'
 
 export function useNetworkLogo(chainId?: number) {
