@@ -57,7 +57,6 @@ function Main() {
                         <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
                           <WalletUnsupportedNetworkBanner />
                           <Updaters />
-
                           <Toasts />
                           <App />
                         </CowAnalyticsProvider>

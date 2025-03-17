@@ -5,8 +5,13 @@ import qs from 'qs'
 import { toQueryParams } from 'util/queryParams'
 import { getCmsClient } from '@cowprotocol/core'
 
-const PAGE_SIZE = 50
+const DEFAULT_PAGE_SIZE = 100
 const CMS_CACHE_TIME = 5 * 60 // 5 min
+
+// Helper function for query serialization
+const querySerializer = (params: any) => {
+  return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
+}
 
 type Schemas = components['schemas']
 export type Article = Schemas['ArticleListResponseDataItem']
@@ -42,15 +47,11 @@ const clientAddons = {
  * @returns Slugs
  */
 export async function getAllArticleSlugs(): Promise<string[]> {
-  const querySerializer = (params: any) => {
-    return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
-  }
-
   const { data, error, response } = await client.GET('/articles', {
     params: {
       query: {
         fields: ['slug'],
-        'pagination[pageSize]': 100, // Adjust the page size as needed
+        'pagination[pageSize]': DEFAULT_PAGE_SIZE,
       },
     },
     querySerializer,
@@ -78,7 +79,7 @@ export async function getCategories(): Promise<Category[]> {
       params: {
         pagination: {
           page: 0,
-          pageSize: 50,
+          pageSize: DEFAULT_PAGE_SIZE,
         },
         sort: 'name:asc',
       },
@@ -115,13 +116,9 @@ export async function getAllCategorySlugs(): Promise<string[]> {
  */
 export async function getArticles({
   page = 0,
-  pageSize = PAGE_SIZE,
+  pageSize = DEFAULT_PAGE_SIZE,
   filters = {},
 }: PaginationParam & { filters?: any } = {}): Promise<ArticleListResponse> {
-  const querySerializer = (params: any) => {
-    return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
-  }
-
   const { data, error, response } = await client.GET('/articles', {
     params: {
       query: {
@@ -150,6 +147,68 @@ export async function getArticles({
 }
 
 /**
+ * Search for articles containing a search term across multiple fields.
+ * Uses Strapi's filtering capabilities to perform the search server-side.
+ *
+ * @param searchTerm The term to search for
+ * @param page The page number (0-indexed)
+ * @param pageSize The number of articles per page
+ * @returns Articles matching the search term with pagination info
+ */
+export async function searchArticles({
+  searchTerm,
+  page = 0,
+  pageSize = DEFAULT_PAGE_SIZE,
+}: {
+  searchTerm: string
+  page?: number
+  pageSize?: number
+}): Promise<ArticleListResponse> {
+  const trimmedSearchTerm = searchTerm.trim()
+
+  if (!trimmedSearchTerm) {
+    return { data: [], meta: { pagination: { page, pageSize, pageCount: 0, total: 0 } } }
+  }
+
+  try {
+    // Build query parameters with explicit array indices
+    const queryParams = {
+      'filters[$or][0][title][$startsWithi]': trimmedSearchTerm,
+      'filters[$or][1][title][$containsi]': trimmedSearchTerm,
+      'filters[$or][2][description][$containsi]': trimmedSearchTerm,
+      'pagination[page]': page,
+      'pagination[pageSize]': pageSize,
+      'sort[0]': 'title:asc',
+      'populate[0]': 'cover',
+      'populate[1]': 'blocks',
+      'populate[2]': 'seo',
+      'populate[3]': 'authorsBio',
+      publicationState: 'live', // Ensure published content
+    }
+
+    // Manual query string construction for absolute clarity
+    const queryString = qs.stringify(queryParams, {
+      encodeValuesOnly: true,
+      arrayFormat: 'brackets',
+      encode: false,
+    })
+
+    const url = `/articles?${queryString}`
+    const { data, error, response } = await client.GET(url, clientAddons)
+
+    if (error) {
+      console.error(`Search failed (${response.status}):`, error)
+      throw new Error(`Search failed: ${error.message}`)
+    }
+
+    return { data: data.data, meta: data.meta }
+  } catch (error) {
+    console.error('Search error:', error)
+    throw new Error('Unable to complete search. Please try again.')
+  }
+}
+
+/**
  * Get article by slug.
  *
  * @param slug Slug of the article
@@ -160,36 +219,7 @@ export async function getArticles({
  * @returns Article with the given slug
  */
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
-  const querySerializer = (params: any) => {
-    return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
-  }
-
-  const { data, error, response } = await client.GET(`/articles`, {
-    params: {
-      query: {
-        filters: {
-          slug: {
-            $eq: slug,
-          },
-        },
-        populate: ['cover', 'blocks', 'seo', 'authorsBio', 'categories'],
-      },
-    },
-    querySerializer,
-    ...clientAddons,
-  })
-
-  if (error) {
-    console.error(`Error ${response.status} getting article by slug: ${response.url}`, error)
-    throw error
-  }
-
-  const articles = data.data
-  if (articles.length === 0) {
-    return null
-  }
-
-  return articles[0]
+  return getBySlugAux(slug, '/articles')
 }
 
 /**
@@ -262,8 +292,6 @@ async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles')
 
     populate,
   })
-
-  // console.log(`[getBySlugAux] get ${entity} for slug ${slug}`, query)
 
   const { data, error } = await client.GET(endpoint, {
     params: {
