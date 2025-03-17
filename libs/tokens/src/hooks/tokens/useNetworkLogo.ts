@@ -10,8 +10,6 @@ export function useNetworkLogo(chainId?: number) {
   const { bridgeNetworkInfo } = useAtomValue(environmentAtom)
   const theme = useTheme()
 
-  if (!chainId) return undefined
-
   const baseNetworkInfo: string | undefined = useMemo(() => {
     if (!chainId) {
       return undefined
@@ -19,6 +17,8 @@ export function useNetworkLogo(chainId?: number) {
 
     return getChainInfo(chainId).logo.light
   }, [chainId])
+
+  if (!chainId) return undefined
 
   if (baseNetworkInfo) return baseNetworkInfo
 
