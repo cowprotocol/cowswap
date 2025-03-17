@@ -2,11 +2,13 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
+import { useTheme } from '@cowprotocol/common-hooks'
 
 import { environmentAtom } from '../../state/environmentAtom'
 
 export function useNetworkLogo(chainId?: number) {
   const { bridgeNetworkInfo } = useAtomValue(environmentAtom)
+  const theme = useTheme()
 
   if (!chainId) return undefined
 
@@ -20,5 +22,7 @@ export function useNetworkLogo(chainId?: number) {
 
   if (baseNetworkInfo) return baseNetworkInfo
 
-  return bridgeNetworkInfo?.find((network) => network.id === chainId)?.logoUrl?.light
+  const bridgeNetworkLogo = bridgeNetworkInfo?.find((network) => network.id === chainId)?.logoUrl
+
+  return bridgeNetworkLogo ? (theme.darkMode ? bridgeNetworkLogo.dark : bridgeNetworkLogo.light) : undefined
 }
