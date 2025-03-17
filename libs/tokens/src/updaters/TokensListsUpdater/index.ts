@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 import { atomWithPartialUpdate, isInjectedWidget } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
-import { PersistentStateByChain } from '@cowprotocol/types'
+import { ChainInfo, PersistentStateByChain } from '@cowprotocol/types'
 
 import * as Sentry from '@sentry/browser'
 import useSWR, { SWRConfiguration } from 'swr'
@@ -40,6 +40,7 @@ interface TokensListsUpdaterProps {
   isGeoBlockEnabled: boolean
   enableLpTokensByDefault: boolean
   isYieldEnabled: boolean
+  bridgeNetworkInfo: ChainInfo[] | undefined
 }
 
 /**
@@ -55,6 +56,7 @@ export function TokensListsUpdater({
   isGeoBlockEnabled,
   enableLpTokensByDefault,
   isYieldEnabled,
+  bridgeNetworkInfo,
 }: TokensListsUpdaterProps) {
   const { chainId } = useAtomValue(environmentAtom)
   const setEnvironment = useSetAtom(updateEnvironmentAtom)
@@ -66,8 +68,8 @@ export function TokensListsUpdater({
   const upsertLists = useSetAtom(upsertListsAtom)
 
   useEffect(() => {
-    setEnvironment({ chainId: currentChainId, enableLpTokensByDefault, isYieldEnabled })
-  }, [setEnvironment, currentChainId, enableLpTokensByDefault, isYieldEnabled])
+    setEnvironment({ chainId: currentChainId, enableLpTokensByDefault, isYieldEnabled, bridgeNetworkInfo })
+  }, [setEnvironment, currentChainId, enableLpTokensByDefault, isYieldEnabled, bridgeNetworkInfo])
 
   // Fetch tokens lists once in 6 hours
   const { data: listsStates, isLoading } = useSWR<ListState[] | null>(
