@@ -43,6 +43,7 @@ export function ChainsSelector({
 
   const shouldDisplayMore = !isMobile && chains.length > visibleNetworkIcons
   const visibleChains = isMobile ? chains : chains.slice(0, visibleNetworkIcons)
+  // Find the selected chain that isn't visible in the main row (so we can display it in the dropdown)
   const selectedMenuChain = !isMobile && chains.find((i) => i.id === defaultChainId && !visibleChains.includes(i))
 
   return (

@@ -60,7 +60,6 @@ export const ChainItem = styled.button<{
     color 0.2s ease-in-out,
     background 0.2s ease-in-out,
     box-shadow 0.2s ease-in-out;
-  outline: none;
   overflow: ${({ isLoading }) => (isLoading ? 'hidden' : 'visible')};
   position: relative;
 
