@@ -11,6 +11,14 @@ import * as styledEl from './styled'
 // Number of skeleton shimmers to show during loading state
 const LOADING_ITEMS_COUNT = 5
 
+const LoadingShimmerElements = (
+  <styledEl.Wrapper>
+    {Array.from({ length: LOADING_ITEMS_COUNT }, (_, index) => (
+      <styledEl.ChainItem key={index} iconOnly isLoading />
+    ))}
+  </styledEl.Wrapper>
+)
+
 export interface ChainsSelectorProps {
   chains: ChainInfo[]
   onSelectChain: (chainId: ChainInfo) => void
@@ -30,13 +38,7 @@ export function ChainsSelector({
   const isMobile = useMediaQuery(Media.upToSmall(false))
 
   if (isLoading) {
-    return (
-      <styledEl.Wrapper>
-        {Array.from({ length: LOADING_ITEMS_COUNT }, (_, index) => (
-          <styledEl.ChainItem key={index} iconOnly isLoading />
-        ))}
-      </styledEl.Wrapper>
-    )
+    return LoadingShimmerElements
   }
 
   const isDisplayMore = !isMobile && chains.length > visibleNetworkIcons
