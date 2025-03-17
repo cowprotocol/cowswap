@@ -28,9 +28,6 @@ export function ChainsSelector({
   visibleNetworkIcons = 3,
 }: ChainsSelectorProps) {
   const isMobile = useMediaQuery(Media.upToSmall(false))
-  const isDisplayMore = !isMobile && chains.length > visibleNetworkIcons
-  const visibleChains = isMobile ? chains : chains.slice(0, visibleNetworkIcons)
-  const selectedMenuChain = !isMobile && chains.find((i) => i.id === defaultChainId && !visibleChains.includes(i))
 
   if (isLoading) {
     return (
@@ -41,6 +38,10 @@ export function ChainsSelector({
       </styledEl.Wrapper>
     )
   }
+
+  const isDisplayMore = !isMobile && chains.length > visibleNetworkIcons
+  const visibleChains = isMobile ? chains : chains.slice(0, visibleNetworkIcons)
+  const selectedMenuChain = !isMobile && chains.find((i) => i.id === defaultChainId && !visibleChains.includes(i))
 
   return (
     <styledEl.Wrapper>
