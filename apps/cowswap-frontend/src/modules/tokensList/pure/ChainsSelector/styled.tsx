@@ -115,5 +115,5 @@ export const MenuListStyled = styled(MenuList)`
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   outline: none;
   overflow: hidden;
-  min-width: 160px;
+  min-width: 200px;
 `
