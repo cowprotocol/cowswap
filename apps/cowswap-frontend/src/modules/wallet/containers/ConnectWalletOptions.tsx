@@ -30,7 +30,8 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const connectionProps = { darkMode, selectedWallet, tryActivation }
 
   const metaMaskSdkOption = <MetaMaskSdkOption {...connectionProps} />
-  const coinbaseWalletOption = (!hasCoinbaseEip6963 && <CoinbaseWalletOption {...connectionProps} />) ?? null
+  const coinbaseWalletOption =
+    (!hasCoinbaseEip6963 && !(isMobile && isWidget) && <CoinbaseWalletOption {...connectionProps} />) ?? null
   const walletConnectionV2Option =
     ((!isInjectedMobileBrowser || isWidget) && <WalletConnectV2Option {...connectionProps} />) ?? null
   const trezorOption = (!isInjectedMobileBrowser && !isMobile && <TrezorOption {...connectionProps} />) ?? null
