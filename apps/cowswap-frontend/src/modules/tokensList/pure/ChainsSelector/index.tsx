@@ -41,7 +41,7 @@ export function ChainsSelector({
     return LoadingShimmerElements
   }
 
-  const isDisplayMore = !isMobile && chains.length > visibleNetworkIcons
+  const shouldDisplayMore = !isMobile && chains.length > visibleNetworkIcons
   const visibleChains = isMobile ? chains : chains.slice(0, visibleNetworkIcons)
   const selectedMenuChain = !isMobile && chains.find((i) => i.id === defaultChainId && !visibleChains.includes(i))
 
@@ -60,7 +60,7 @@ export function ChainsSelector({
           </styledEl.ChainItem>
         </HoverTooltip>
       ))}
-      {isDisplayMore && (
+      {shouldDisplayMore && (
         <Menu as={styledEl.MenuWrapper}>
           {({ isOpen }) => (
             <>

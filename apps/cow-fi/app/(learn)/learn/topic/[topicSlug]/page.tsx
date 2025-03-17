@@ -9,10 +9,11 @@ import { getPageMetadata } from '@/util/getPageMetadata'
 
 type Props = {
   params: Promise<{ topicSlug: string }>
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const topicSlug = (await params).topicSlug
+  const { topicSlug } = await params
 
   if (!topicSlug) return {}
 
@@ -31,35 +32,57 @@ export async function generateStaticParams() {
   return categoriesResponse.map((topicSlug) => ({ topicSlug }))
 }
 
-export default async function TopicPage({ params }: Props) {
-  const slug = (await params).topicSlug
-
-  const category = await getCategoryBySlug(slug)
+export default async function TopicPage({ params }: { params: Promise<{ topicSlug: string }> }) {
+  // Get the category
+  const { topicSlug } = await params
+  const category = await getCategoryBySlug(topicSlug)
 
   if (!category) {
-    return notFound()
+    notFound()
   }
 
-  const articlesResponse = await getArticles({
-    page: 0,
-    pageSize: 50,
+  // Format the category for the component
+  const formattedCategory = {
+    name: category.attributes?.name || '',
+    slug: category.attributes?.slug || '',
+    description: category.attributes?.description || '',
+    bgColor: category.attributes?.backgroundColor || '#FFFFFF',
+    textColor: category.attributes?.textColor || '#000000',
+    imageUrl: category.attributes?.image?.data?.attributes?.url || '',
+  }
+
+  // Get articles for this topic
+  const topicArticlesResponse = await getArticles({
     filters: {
       categories: {
         slug: {
-          $eq: slug,
+          $eq: topicSlug,
         },
       },
     },
   })
 
-  const articles = articlesResponse.data
+  // Get articles for search functionality
+  const allArticlesResponse = await getArticles()
+
+  const topicArticles = topicArticlesResponse.data
+  const allArticles = allArticlesResponse.data
 
   const categoriesResponse = await getCategories()
   const allCategories =
-    categoriesResponse?.map((category: any) => ({
-      name: category?.attributes?.name || '',
-      slug: category?.attributes?.slug || '',
-    })) || []
+    categoriesResponse?.map((category: any) => {
+      return {
+        name: category.attributes?.name || '',
+        slug: category.attributes?.slug || '',
+      }
+    }) || []
 
-  return <TopicPageComponent category={category} allCategories={allCategories} articles={articles} />
+  return (
+    <TopicPageComponent
+      category={formattedCategory}
+      allCategories={allCategories}
+      articles={topicArticles}
+      allArticles={allArticles}
+    />
+  )
 }

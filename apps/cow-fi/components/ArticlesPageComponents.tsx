@@ -61,16 +61,23 @@ interface ArticlesPageProps {
   totalArticles: number
   currentPage: number
   allCategories: { name: string; slug: string }[]
+  allArticles: Article[]
 }
 
-export function ArticlesPageComponents({ articles, totalArticles, currentPage, allCategories }: ArticlesPageProps) {
+export function ArticlesPageComponents({
+  articles,
+  totalArticles,
+  currentPage,
+  allCategories,
+  allArticles,
+}: ArticlesPageProps) {
   const analytics = useCowAnalytics()
   const totalPages = Math.ceil(totalArticles / ITEMS_PER_PAGE)
 
   return (
     <Wrapper>
       <CategoryLinks allCategories={allCategories} />
-      <SearchBar articles={articles} />
+      <SearchBar />
       <ContainerCard gap={42} gapMobile={24} touchFooter>
         <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>
           <ContainerCardSectionTop>
