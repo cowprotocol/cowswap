@@ -20,6 +20,8 @@ export function useSingleContractMultipleData<T = Result, P = unknown>(
 ): SWRResponse<(T | undefined)[] | null> {
   const provider = useMultiCallRpcProvider()
 
+  const chainId = provider?.network?.chainId
+
   const calls = useMemo(() => {
     if (!contract || !params) return null
 
@@ -34,7 +36,7 @@ export function useSingleContractMultipleData<T = Result, P = unknown>(
   return useSWR<(T | undefined)[] | null>(
     !contract || !calls || calls.length === 0 || !provider
       ? null
-      : [provider, calls, options, methodName, contract, 'useSingleContractMultipleData'],
+      : [provider, calls, options, methodName, contract, chainId, 'useSingleContractMultipleData'],
     async ([provider, calls, options, methodName, contract]: [
       Web3Provider,
       Multicall3.CallStruct[],
