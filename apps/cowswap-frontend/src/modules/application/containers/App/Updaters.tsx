@@ -1,6 +1,7 @@
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { MultiCallUpdater } from '@cowprotocol/multicall'
 import { TokensListsUpdater, UnsupportedTokensUpdater, WidgetTokensListsUpdater } from '@cowprotocol/tokens'
 import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
@@ -10,7 +11,7 @@ import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
 import { FinalizeTxUpdater } from 'modules/onchainTransactions'
 import { OrdersNotificationsUpdater } from 'modules/orders'
-import { useOnTokenListAddingError } from 'modules/tokensList'
+import { useOnTokenListAddingError, useSourceChainId } from 'modules/tokensList'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 import { CorrelatedTokensUpdater } from 'modules/volumeFee'
@@ -36,16 +37,18 @@ import { SolversInfoUpdater } from 'common/updaters/SolversInfoUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
 
 export function Updaters() {
-  const { chainId, account } = useWalletInfo()
+  const { account } = useWalletInfo()
   const { tokenLists, appCode, customTokens, standaloneMode } = useInjectedWidgetParams()
   const onTokenListAddingError = useOnTokenListAddingError()
   const { isGeoBlockEnabled, isYieldEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
   const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
   const cowAnalytics = useCowAnalytics()
+  const sourceChainId = useSourceChainId()
 
   return (
     <>
+      <MultiCallUpdater chainId={sourceChainId} />
       <FeatureFlagsUpdater />
       <WalletUpdater standaloneMode={standaloneMode} />
       <HwAccountIndexUpdater />
@@ -72,7 +75,7 @@ export function Updaters() {
       <AnnouncementsUpdater />
 
       <TokensListsUpdater
-        chainId={chainId}
+        chainId={sourceChainId}
         isGeoBlockEnabled={isGeoBlockEnabled}
         enableLpTokensByDefault={isYieldWidget}
         isYieldEnabled={isYieldEnabled}
@@ -98,8 +101,8 @@ export function Updaters() {
         }}
       />
       <UnsupportedTokensUpdater />
-      <BalancesAndAllowancesUpdater chainId={chainId} account={account} />
-      <LpBalancesAndAllowancesUpdater chainId={chainId} account={account} enablePolling={isYieldWidget} />
+      <BalancesAndAllowancesUpdater chainId={sourceChainId} account={account} />
+      <LpBalancesAndAllowancesUpdater chainId={sourceChainId} account={account} enablePolling={isYieldWidget} />
       <PoolsInfoUpdater />
       <LpTokensWithBalancesUpdater />
       <VampireAttackUpdater />

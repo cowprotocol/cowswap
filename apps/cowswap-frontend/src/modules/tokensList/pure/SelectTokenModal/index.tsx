@@ -3,9 +3,10 @@ import React, { useState } from 'react'
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenListCategory, UnsupportedTokensState } from '@cowprotocol/tokens'
-import { BackButton, SearchInput } from '@cowprotocol/ui'
+import { ChainInfo } from '@cowprotocol/types'
+import { Loader, SearchInput } from '@cowprotocol/ui'
 
-import { Edit } from 'react-feather'
+import { Edit, X } from 'react-feather'
 
 import { PermitCompatibleTokens } from 'modules/permit'
 
@@ -13,7 +14,9 @@ import * as styledEl from './styled'
 
 import { LpTokenListsWidget } from '../../containers/LpTokenListsWidget'
 import { TokenSearchResults } from '../../containers/TokenSearchResults'
-import { SelectTokenContext } from '../../types'
+import { ChainsToSelectState, SelectTokenContext } from '../../types'
+import { ChainsSelector } from '../ChainsSelector'
+import { IconButton } from '../commonElements'
 import { FavoriteTokensList } from '../FavoriteTokensList'
 import { TokensVirtualList } from '../TokensVirtualList'
 
@@ -28,19 +31,17 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   displayLpTokenLists?: boolean
   disableErc20?: boolean
   account: string | undefined
+  chainsToSelect: ChainsToSelectState | undefined
   tokenListCategoryState: [T, (category: T) => void]
+  defaultInputValue?: string
+  areTokensLoading: boolean
 
   onSelectToken(token: TokenWithLogo): void
-
   openPoolPage(poolAddress: string): void
-
   onInputPressEnter?(): void
-
-  defaultInputValue?: string
-
   onOpenManageWidget(): void
-
   onDismiss(): void
+  onSelectChain(chain: ChainInfo): void
 }
 
 export function SelectTokenModal(props: SelectTokenModalProps) {
@@ -62,6 +63,9 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     openPoolPage,
     tokenListCategoryState,
     disableErc20,
+    chainsToSelect,
+    onSelectChain,
+    areTokensLoading,
   } = props
 
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
@@ -74,6 +78,8 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     permitCompatibleTokens,
   }
 
+  const trimmedInputValue = inputValue.trim()
+
   const allListsContent = (
     <>
       <styledEl.Row>
@@ -85,15 +91,23 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
         />
       </styledEl.Row>
       <styledEl.Separator />
-      {inputValue.trim() ? (
-        <TokenSearchResults searchInput={inputValue.trim()} {...selectTokenContext} />
+      {areTokensLoading ? (
+        <styledEl.TokensLoader>
+          <Loader />
+        </styledEl.TokensLoader>
       ) : (
-        <TokensVirtualList
-          allTokens={allTokens}
-          {...selectTokenContext}
-          account={account}
-          displayLpTokenLists={displayLpTokenLists}
-        />
+        <>
+          {trimmedInputValue ? (
+            <TokenSearchResults searchInput={trimmedInputValue} {...selectTokenContext} />
+          ) : (
+            <TokensVirtualList
+              allTokens={allTokens}
+              {...selectTokenContext}
+              account={account}
+              displayLpTokenLists={displayLpTokenLists}
+            />
+          )}
+        </>
       )}
       <styledEl.Separator />
       <div>
@@ -107,19 +121,17 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
   return (
     <styledEl.Wrapper>
       <styledEl.Header>
-        <BackButton onClick={onDismiss} />
-        <h3>Select a token</h3>
-      </styledEl.Header>
-      <styledEl.Row>
         <SearchInput
           id="token-search-input"
           value={inputValue}
           onKeyDown={(e) => e.key === 'Enter' && onInputPressEnter?.()}
           onChange={(e) => setInputValue(e.target.value)}
-          type="text"
-          placeholder="Search name or paste address"
+          placeholder="Search name or paste address..."
         />
-      </styledEl.Row>
+        <IconButton onClick={onDismiss}>
+          <X size={18} />
+        </IconButton>
+      </styledEl.Header>
       {displayLpTokenLists ? (
         <LpTokenListsWidget
           account={account}
@@ -132,7 +144,21 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
           {allListsContent}
         </LpTokenListsWidget>
       ) : (
-        allListsContent
+        <>
+          {chainsToSelect?.chains && (
+            <>
+              <styledEl.ChainsSelectorWrapper>
+                <ChainsSelector
+                  isLoading={chainsToSelect.isLoading || false}
+                  chains={chainsToSelect.chains}
+                  defaultChainId={chainsToSelect.defaultChainId}
+                  onSelectChain={onSelectChain}
+                />
+              </styledEl.ChainsSelectorWrapper>
+            </>
+          )}
+          {allListsContent}
+        </>
       )}
     </styledEl.Wrapper>
   )
