@@ -4,7 +4,7 @@ import { Article, getArticles, getCategories } from '../../../../../services/cms
 import { ArticlesPageComponents } from '@/components/ArticlesPageComponents'
 import { redirect } from 'next/navigation'
 
-const ITEMS_PER_PAGE = 24
+const ITEMS_PER_PAGE = 48
 
 type Props = {
   params: Promise<{ pageIndex?: string }>
@@ -38,7 +38,12 @@ export default async function Page({ params }: Props) {
 
   const page = pageParam && pageIndexIsValid ? parseInt(pageParam, 10) : 1
 
+  // Fetch paginated articles for display
   const articlesResponse = (await getArticles({ page, pageSize: ITEMS_PER_PAGE })) as ArticlesResponse
+
+  // Get all articles for search functionality
+  const allArticlesResponse = await getArticles()
+  const allArticles = allArticlesResponse.data
 
   const totalArticles = articlesResponse.meta?.pagination?.total || 0
   const articles =
@@ -67,6 +72,7 @@ export default async function Page({ params }: Props) {
   return (
     <ArticlesPageComponents
       articles={articles}
+      allArticles={allArticles}
       totalArticles={totalArticles}
       currentPage={page}
       allCategories={allCategories}
