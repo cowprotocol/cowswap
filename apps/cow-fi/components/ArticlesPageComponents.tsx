@@ -77,7 +77,7 @@ export function ArticlesPageComponents({
   return (
     <Wrapper>
       <CategoryLinks allCategories={allCategories} />
-      <SearchBar articles={allArticles || articles} />
+      <SearchBar />
       <ContainerCard gap={42} gapMobile={24} touchFooter>
         <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>
           <ContainerCardSectionTop>
