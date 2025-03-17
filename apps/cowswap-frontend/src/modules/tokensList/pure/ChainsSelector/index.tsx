@@ -1,3 +1,4 @@
+import { useTheme } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/types'
 import { HoverTooltip } from '@cowprotocol/ui'
 
@@ -38,6 +39,8 @@ export function ChainsSelector({
   const menuChains = chains.slice(itemsToDisplay)
   const selectedMenuChain = menuChains.find((i) => i.id === defaultChainId)
 
+  const theme = useTheme()
+
   if (isLoading) {
     return Shimmer
   }
@@ -53,7 +56,7 @@ export function ChainsSelector({
           placement="bottom"
         >
           <styledEl.ChainButton active$={defaultChainId === chain.id} onClick={() => onSelectChain(chain)}>
-            <img src={chain.logoUrl.light} alt={chain.name} />
+            <img src={theme.darkMode ? chain.logoUrl.dark : chain.logoUrl.light} alt={chain.name} />
           </styledEl.ChainButton>
         </HoverTooltip>
       ))}
@@ -66,7 +69,10 @@ export function ChainsSelector({
                   <styledEl.TextButton>
                     {selectedMenuChain ? (
                       <styledEl.MenuChainButton>
-                        <img src={selectedMenuChain.logoUrl.light} alt={selectedMenuChain.name} />
+                        <img
+                          src={theme.darkMode ? selectedMenuChain.logoUrl.dark : selectedMenuChain.logoUrl.light}
+                          alt={selectedMenuChain.name}
+                        />
                       </styledEl.MenuChainButton>
                     ) : isOpen ? (
                       'Less'
@@ -81,7 +87,7 @@ export function ChainsSelector({
                     <styledEl.MenuItemStyled key={chain.id} onSelect={() => onSelectChain(chain)} tabIndex={0}>
                       {selectedMenuChain?.id === chain.id && <Check size={16} />}
                       <styledEl.MenuChainButton>
-                        <img src={chain.logoUrl.light} alt={chain.name} />
+                        <img src={theme.darkMode ? chain.logoUrl.dark : chain.logoUrl.light} alt={chain.name} />
                       </styledEl.MenuChainButton>
                       <span>{chain.name}</span>
                     </styledEl.MenuItemStyled>
