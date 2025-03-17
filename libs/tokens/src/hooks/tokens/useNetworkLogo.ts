@@ -16,7 +16,7 @@ export function useNetworkLogo(chainId?: number) {
       return undefined
     }
 
-    return getChainInfo(chainId).logo.light
+    return theme.darkMode ? getChainInfo(chainId).logo.dark : getChainInfo(chainId).logo.light
   }, [chainId])
 
   if (!chainId || !isBridgingEnabled) return undefined
