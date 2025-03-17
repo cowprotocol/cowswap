@@ -64,7 +64,8 @@ function isPostedOrderPayload(payload: unknown): payload is PostedOrderPayload {
     typeof payload === 'object' &&
     'owner' in payload &&
     'orderUid' in payload &&
-    'chainId' in payload
+    'chainId' in payload &&
+    typeof (payload as any).chainId === 'number'
   )
 }
 
@@ -73,6 +74,7 @@ function isOrderPayload(payload: unknown): payload is OrderPayload {
     payload &&
     typeof payload === 'object' &&
     'chainId' in payload &&
+    typeof (payload as any).chainId === 'number' &&
     ('order' in payload || ('transactionHash' in payload && payload.transactionHash !== undefined))
   )
 }
