@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { BalancesState, useTokensBalances } from '@cowprotocol/balances-and-allowances'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { BigNumber } from 'ethers'
@@ -13,7 +14,7 @@ import { useIsHooksTradeType } from 'modules/trade'
 import { balancesCombinedAtom } from '../state/balanceCombinedAtom'
 
 export function BalancesCombinedUpdater() {
-  const { account } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const setBalancesCombined = useSetAtom(balancesCombinedAtom)
   const preHooksBalancesDiff = usePreHookBalanceDiff()
   const { preHooks } = useHooks()
@@ -26,13 +27,17 @@ export function BalancesCombinedUpdater() {
       return
     }
     const accountBalancesDiff = preHooksBalancesDiff[account.toLowerCase()] || {}
-    setBalancesCombined(applyBalanceDiffs(tokenBalances, accountBalancesDiff))
-  }, [account, preHooksBalancesDiff, isHooksTradeType, tokenBalances, preHooks.length, setBalancesCombined])
+    setBalancesCombined(applyBalanceDiffs(tokenBalances, accountBalancesDiff, chainId))
+  }, [account, chainId, preHooksBalancesDiff, isHooksTradeType, tokenBalances, preHooks.length, setBalancesCombined])
 
   return null
 }
 
-function applyBalanceDiffs(currentBalances: BalancesState, balanceDiff: Record<string, string>): BalancesState {
+function applyBalanceDiffs(
+  currentBalances: BalancesState,
+  balanceDiff: Record<string, string>,
+  chainId: SupportedChainId,
+): BalancesState {
   const normalizedValues = { ...currentBalances.values }
 
   // Only process addresses that have balance differences
@@ -52,5 +57,6 @@ function applyBalanceDiffs(currentBalances: BalancesState, balanceDiff: Record<s
   return {
     isLoading: currentBalances.isLoading,
     values: normalizedValues,
+    chainId,
   }
 }
