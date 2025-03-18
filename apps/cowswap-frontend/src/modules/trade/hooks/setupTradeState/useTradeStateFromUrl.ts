@@ -1,7 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import { tradeStateFromUrlAtom } from 'modules/trade/state/tradeStateFromUrlAtom'
-
+import { tradeStateFromUrlAtom } from '../../state/tradeStateFromUrlAtom'
 import { TradeRawState } from '../../types/TradeRawState'
 
 /**
