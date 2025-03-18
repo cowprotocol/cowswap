@@ -94,7 +94,8 @@ async function getMetamaskVersion(provider: ExternalProvider): Promise<string | 
 }
 
 const SEMVER_REGEX = /\d+\.\d+\.\d+/
-const EXTRACT_SEMVER_REGEX = new RegExp(`/v(${SEMVER_REGEX.source})`)
+const EXTRACT_SEMVER_REGEX = new RegExp(`metamask/v(${SEMVER_REGEX.source})`, 'i')
+const METAMASK_EXTENSION_REGEX = /metamask/i
 
 function extractMetamaskSemver(version: string): string | null {
   const match = version.match(EXTRACT_SEMVER_REGEX)
@@ -151,8 +152,16 @@ function useShouldDisplayMetamaskWarning(): { shouldDisplayMetamaskWarning: bool
         setCurrentVersion('')
         return
       }
+      if (!METAMASK_EXTENSION_REGEX.test(version)) {
+        // Not the browser extension, assume the wallet is not affected
+        // MM via SDK on mobile returns this for example: "Geth/v1.14.13-stable-eb00f169/linux-arm64/go1.23.5"
+        setIsAffected(false)
+        setCurrentVersion('')
+        return
+      }
 
       const semver = extractMetamaskSemver(version)
+
       if (!semver) {
         // Invalid version, assume the wallet is affected
         setIsAffected(undefined)
