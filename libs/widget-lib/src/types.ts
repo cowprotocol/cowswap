@@ -200,6 +200,10 @@ export interface CowSwapWidgetParams {
    */
   chainId?: SupportedChainId
   /**
+   * An id of a network to bridge the output token.
+   */
+  targetChainId?: number
+  /**
    * The token lists urls to use in the widget
    */
   tokenLists?: string[]
