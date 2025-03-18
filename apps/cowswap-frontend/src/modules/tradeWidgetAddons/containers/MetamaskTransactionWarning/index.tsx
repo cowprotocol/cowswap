@@ -7,6 +7,7 @@ import { ProviderMetaInfoPayload, WidgetEthereumProvider } from '@cowprotocol/if
 import { InlineBanner } from '@cowprotocol/ui'
 import { METAMASK_RDNS, useIsMetamaskBrowserExtensionWallet } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
+import { ExternalProvider } from '@ethersproject/providers'
 import { Currency } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
@@ -72,7 +73,9 @@ function useWidgetProviderMetaInfo() {
  * Fetch the Metamask version using the method defined in https://docs.metamask.io/wallet/reference/json-rpc-methods/web3_clientversion
  * Returns null if the version could not be fetched
  */
-async function getMetamaskVersion(provider: any): Promise<string | null> {
+async function getMetamaskVersion(provider: ExternalProvider): Promise<string | null> {
+  if (!provider.request) return null
+
   try {
     return await provider.request({
       method: 'web3_clientVersion',
