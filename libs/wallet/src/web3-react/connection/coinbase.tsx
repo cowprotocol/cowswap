@@ -1,6 +1,6 @@
 import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import { RPC_URLS } from '@cowprotocol/common-const'
-import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { initializeConnector } from '@web3-react/core'
 
 import { AsyncConnector } from './asyncConnector'
@@ -31,7 +31,7 @@ const [web3CoinbaseWallet, web3CoinbaseWalletHooks] = initializeConnector<AsyncC
                 url: RPC_URLS[SupportedChainId.MAINNET],
                 appName: 'CoW Swap',
                 appLogoUrl: CowImage,
-                appChainIds: ALL_SUPPORTED_CHAIN_IDS,
+                reloadOnDisconnect: false,
               },
               onError,
             }),
