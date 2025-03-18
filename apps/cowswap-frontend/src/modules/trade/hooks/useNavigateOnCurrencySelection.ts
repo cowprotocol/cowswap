@@ -11,6 +11,7 @@ import { Field } from 'legacy/state/types'
 import { useTradeNavigate } from './useTradeNavigate'
 import { useTradeState } from './useTradeState'
 
+import { getDefaultCurrencies } from '../types'
 import { TradeSearchParams } from '../utils/parameterizeTradeSearch'
 
 export type CurrencySelectionCallback = (
@@ -27,7 +28,7 @@ function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => str
     (currency: Currency | null): string | null => {
       if (!currency) return null
 
-      return currency instanceof LpToken || areThereTokensWithSameSymbol(currency.symbol)
+      return currency instanceof LpToken || areThereTokensWithSameSymbol(currency.symbol, currency.chainId)
         ? (currency as Token).address
         : currency.symbol || null
     },
@@ -63,6 +64,13 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
        * Because we allow to sell only tokens from supported networks
        */
       const targetChainId = isInputField ? currency?.chainId || chainId : chainId
+      /**
+       * If selected sell token doesn't match current network
+       * It means that it was selected from another chain, and we are switching network
+       * So, we should reset the buy token corresponding to the new network
+       */
+      const shouldResetBuyToken = isInputField && targetChainId !== chainId
+      const defaultOutputCurrency = getDefaultCurrencies(targetChainId).outputCurrency
 
       navigate(
         targetChainId,
@@ -71,7 +79,7 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
           ? { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId }
           : {
               inputCurrencyId: targetInputCurrencyId,
-              outputCurrencyId: targetOutputCurrencyId,
+              outputCurrencyId: shouldResetBuyToken ? defaultOutputCurrency?.address || null : targetOutputCurrencyId,
             },
         searchParams,
       )
