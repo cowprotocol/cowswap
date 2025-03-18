@@ -16,5 +16,8 @@ export { Category } from './types'
 export type { AnalyticsCategory, BaseGtmEvent, GtmEvent } from './types'
 export type { AnalyticsContext, CowAnalytics } from './CowAnalytics'
 
+// Utils
+export { getCowAnalytics } from './utils'
+
 export * from './CowAnalytics'
 export * from './widget/orderLifecycleAnalytics'
