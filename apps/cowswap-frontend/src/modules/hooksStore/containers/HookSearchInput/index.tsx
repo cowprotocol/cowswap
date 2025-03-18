@@ -53,8 +53,8 @@ const ClearButton = styled(ButtonIcon)`
   }
 
   > svg {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     color: inherit;
   }
 
@@ -73,7 +73,6 @@ export function HookSearchInput({
   return (
     <SearchContainer>
       <SearchInput
-        type="text"
         placeholder={placeholder}
         value={value}
         onChange={onChange}
