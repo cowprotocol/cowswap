@@ -34,7 +34,7 @@ const VERSION_WHERE_BUG_WAS_FIXED = '12.10.4' // Anything smaller than this vers
 export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency }) {
   const isNativeSellToken = getIsNativeToken(sellToken)
 
-  const shouldDisplayMetamaskWarning = useShouldDisplayMetamaskWarning()
+  const { shouldDisplayMetamaskWarning, currentVersion } = useShouldDisplayMetamaskWarning()
 
   if (!shouldDisplayMetamaskWarning || !isNativeSellToken) return null
 
@@ -42,6 +42,12 @@ export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency 
 
   return (
     <Banner bannerType="danger" iconSize={32}>
+      {currentVersion && (
+        <>
+          Your Metamask extension (<b>v{currentVersion}</b>) is out of date.{' '}
+        </>
+      )}
+      <br />
       Issues have been reported with Metamask sending transactions to the wrong chain on versions prior to{' '}
       <b>v{VERSION_WHERE_BUG_WAS_FIXED}</b>. Before you sign, please check in your wallet that the transaction is being
       sent to the network:{' '}
@@ -116,8 +122,9 @@ function isMetamaskSemverSmallerThanTarget(version: string, target: string): boo
  * Hook to check if the wallet is affected by the Metamask bug where transactions are sent to the wrong chain
  * Returns true if the wallet is affected, false if it is not
  */
-function useShouldDisplayMetamaskWarning(): boolean {
+function useShouldDisplayMetamaskWarning(): { shouldDisplayMetamaskWarning: boolean; currentVersion: string } {
   const [isAffected, setIsAffected] = useState<boolean | undefined>(false)
+  const [currentVersion, setCurrentVersion] = useState<string>('')
 
   const isMetamaskBrowserExtension = useIsMetamaskBrowserExtensionWallet()
 
@@ -141,6 +148,7 @@ function useShouldDisplayMetamaskWarning(): boolean {
       if (!version) {
         // No version found, assume the wallet is affected
         setIsAffected(undefined)
+        setCurrentVersion('')
         return
       }
 
@@ -148,8 +156,10 @@ function useShouldDisplayMetamaskWarning(): boolean {
       if (!semver) {
         // Invalid version, assume the wallet is affected
         setIsAffected(undefined)
+        setCurrentVersion('')
         return
       }
+      setCurrentVersion(semver)
 
       // Check if the version is smaller than the target version where the bug was fixed
       // If the version is smaller, the wallet is still affected by the bug
@@ -159,5 +169,7 @@ function useShouldDisplayMetamaskWarning(): boolean {
   }, [isMetamask, provider])
 
   // If we don't know, show it according to the isMetamask flag
-  return isAffected === undefined ? isMetamask : isAffected
+  const shouldDisplayMetamaskWarning = isAffected === undefined ? isMetamask : isAffected
+
+  return { shouldDisplayMetamaskWarning, currentVersion }
 }
