@@ -25,7 +25,7 @@ export function parameterizeTradeSearch(search: string, searchParamsToAdd?: Trad
 
   searchParamsToAdd?.amount && amountQueryKey && searchParams.set(amountQueryKey, searchParamsToAdd.amount)
 
-  searchParamsToAdd?.targetChainId && searchParams.set('targetChainId', searchParamsToAdd.targetChainId)
+  searchParamsToAdd?.targetChainId && searchParams.set('targetChainId', searchParamsToAdd.targetChainId.toString())
 
   return searchParams.toString()
 }
