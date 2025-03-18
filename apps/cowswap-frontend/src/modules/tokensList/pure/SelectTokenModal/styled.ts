@@ -18,7 +18,7 @@ export const Row = styled.div`
 
 export const ChainsSelectorWrapper = styled.div`
   border-bottom: 1px solid var(${UI.COLOR_BORDER});
-  padding: 10px 16px 16px 20px;
+  padding: 2px 16px 10px 20px;
   margin-bottom: 20px;
 `
 
