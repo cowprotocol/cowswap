@@ -85,18 +85,18 @@ const safeGetString = <T, K extends keyof T>(obj: T | undefined, key: K, fallbac
   return String(value)
 }
 
-// Generate default tracking payload
-const createDefaultTrackingPayload = (): OrderTrackingPayload => {
-  return {
-    walletAddress: '',
-    orderId: '',
-    chainId: 0,
-    sellToken: '',
-    buyToken: '',
-    sellAmount: '',
-    buyAmount: '',
-  }
-}
+// Default tracking payload
+const DEFAULT_TRACKING_VALUES: OrderTrackingPayload = {
+  walletAddress: '',
+  orderId: '',
+  chainId: 0,
+  sellToken: '',
+  buyToken: '',
+  sellAmount: '',
+  buyAmount: '',
+} as const
+
+const createDefaultTrackingPayload = (): OrderTrackingPayload => ({ ...DEFAULT_TRACKING_VALUES })
 
 // Helper to extract common order properties
 const getCommonOrderProperties = (payload: unknown, isPostedOrder = false): OrderTrackingPayload => {
