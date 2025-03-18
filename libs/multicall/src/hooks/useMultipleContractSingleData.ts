@@ -37,10 +37,6 @@ export function useMultipleContractSingleData<T = Result>(
     })
   }, [addresses, callData])
 
-  /**
-   * ChainId must be in useSWR deps bellow.
-   * Otherwise, it won't refetch when provider changes. I really don't know why.
-   */
   const chainId = provider?.network?.chainId
 
   return useSWR<(T | undefined)[] | null>(
