@@ -194,55 +194,50 @@ export const setupEventHandlers = (
   eventEmitter: SimpleCowEventEmitter<CowWidgetEventPayloadMap, CowWidgetEvents>,
   getAnalytics: () => CowAnalytics | undefined,
 ) => {
-  // Handle order submission
-  eventEmitter.on({
-    event: CowWidgetEvents.ON_POSTED_ORDER,
-    handler: (payload: unknown) => {
-      const analytics = getAnalytics()
-      if (analytics) {
-        handlePostedOrder(analytics, payload)
-      } else {
-        console.warn('Analytics instance not available for event: order_submitted')
-      }
+  // Define event configurations to maintain exact behavior
+  const eventConfigs: Array<{
+    event: CowWidgetEvents
+    handler: (analytics: CowAnalytics, payload: unknown) => void
+    errorMessage: string
+  }> = [
+    // Handle order submission
+    {
+      event: CowWidgetEvents.ON_POSTED_ORDER,
+      handler: handlePostedOrder,
+      errorMessage: 'order_submitted',
     },
-  })
+    // Handle order fulfillment
+    {
+      event: CowWidgetEvents.ON_FULFILLED_ORDER,
+      handler: handleFulfilledOrder,
+      errorMessage: 'swap_executed',
+    },
+    // Handle order cancellation
+    {
+      event: CowWidgetEvents.ON_CANCELLED_ORDER,
+      handler: handleCancelledOrder,
+      errorMessage: 'swap_cancelled',
+    },
+    // Handle order expiration
+    {
+      event: CowWidgetEvents.ON_EXPIRED_ORDER,
+      handler: handleExpiredOrder,
+      errorMessage: 'swap_expired',
+    },
+  ]
 
-  // Handle order fulfillment
-  eventEmitter.on({
-    event: CowWidgetEvents.ON_FULFILLED_ORDER,
-    handler: (payload: unknown) => {
-      const analytics = getAnalytics()
-      if (analytics) {
-        handleFulfilledOrder(analytics, payload)
-      } else {
-        console.warn('Analytics instance not available for event: swap_executed')
-      }
-    },
-  })
-
-  // Handle order cancellation
-  eventEmitter.on({
-    event: CowWidgetEvents.ON_CANCELLED_ORDER,
-    handler: (payload: unknown) => {
-      const analytics = getAnalytics()
-      if (analytics) {
-        handleCancelledOrder(analytics, payload)
-      } else {
-        console.warn('Analytics instance not available for event: swap_cancelled')
-      }
-    },
-  })
-
-  // Handle order expiration
-  eventEmitter.on({
-    event: CowWidgetEvents.ON_EXPIRED_ORDER,
-    handler: (payload: unknown) => {
-      const analytics = getAnalytics()
-      if (analytics) {
-        handleExpiredOrder(analytics, payload)
-      } else {
-        console.warn('Analytics instance not available for event: swap_expired')
-      }
-    },
+  // Register each event handler while maintaining exact behavior
+  eventConfigs.forEach(({ event, handler, errorMessage }) => {
+    eventEmitter.on({
+      event,
+      handler: (payload: unknown) => {
+        const analytics = getAnalytics()
+        if (analytics) {
+          handler(analytics, payload)
+        } else {
+          console.warn(`Analytics instance not available for event: ${errorMessage}`)
+        }
+      },
+    })
   })
 }
