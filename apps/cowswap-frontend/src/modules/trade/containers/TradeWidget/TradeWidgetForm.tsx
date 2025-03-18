@@ -70,6 +70,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     hideTradeWarnings,
     enableSmartSlippage,
     displayTokenName = false,
+    displayChainName = true,
     isMarketOrderWidget = false,
     isSellingEthSupported = false,
   } = params
@@ -139,6 +140,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     allowsOffchainSigning,
     tokenSelectorDisabled: alternativeOrderModalVisible,
     displayTokenName,
+    displayChainName,
   }
 
   const openSellTokenSelect = useCallback(

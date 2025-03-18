@@ -36,6 +36,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   inputDisabled?: boolean
   tokenSelectorDisabled?: boolean
   displayTokenName?: boolean
+  displayChainName?: boolean
   inputTooltip?: string
   showSetMax?: boolean
   maxBalance?: CurrencyAmount<Currency> | undefined
@@ -68,6 +69,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     inputDisabled = false,
     tokenSelectorDisabled = false,
     displayTokenName = false,
+    displayChainName = false,
     inputTooltip,
     onUserInput,
     allowsOffchainSigning,
@@ -247,6 +249,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
               loading={areCurrenciesLoading || disabled}
               readonlyMode={tokenSelectorDisabled}
               displayTokenName={displayTokenName}
+              displayChainName={displayChainName}
               customSelectTokenButton={customSelectTokenButton}
             />
           </div>
