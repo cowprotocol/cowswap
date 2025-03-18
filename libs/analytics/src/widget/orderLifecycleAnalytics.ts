@@ -194,7 +194,7 @@ export const setupEventHandlers = (
   eventEmitter: SimpleCowEventEmitter<CowWidgetEventPayloadMap, CowWidgetEvents>,
   getAnalytics: () => CowAnalytics | undefined,
 ) => {
-  // Define event configurations to maintain exact behavior
+  // Define event configurations
   const eventConfigs: Array<{
     event: CowWidgetEvents
     handler: (analytics: CowAnalytics, payload: unknown) => void
@@ -226,7 +226,7 @@ export const setupEventHandlers = (
     },
   ]
 
-  // Register each event handler while maintaining exact behavior
+  // Register each event handler
   eventConfigs.forEach(({ event, handler, errorMessage }) => {
     eventEmitter.on({
       event,
