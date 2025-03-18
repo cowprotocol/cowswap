@@ -114,7 +114,7 @@ function isMetamaskSemverSmallerThanTarget(version: string, target: string): boo
  * Returns true if the wallet is affected, false if it is not
  */
 function useShouldDisplayMetamaskWarning(): boolean {
-  const [isAffected, setIsAffected] = useState<boolean | undefined>(undefined)
+  const [isAffected, setIsAffected] = useState<boolean | undefined>(false)
 
   const isMetamaskBrowserExtension = useIsMetamaskBrowserExtensionWallet()
 
