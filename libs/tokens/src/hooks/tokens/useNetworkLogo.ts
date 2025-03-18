@@ -10,14 +10,14 @@ export function useNetworkLogo(chainId?: number) {
   const { bridgeNetworkInfo } = useAtomValue(environmentAtom)
   const theme = useTheme()
   const { isBridgingEnabled } = useFeatureFlags()
-  
+
   const baseNetworkInfo: string | undefined = useMemo(() => {
     if (!chainId) {
       return undefined
     }
 
     return theme.darkMode ? getChainInfo(chainId).logo.dark : getChainInfo(chainId).logo.light
-  }, [chainId])
+  }, [chainId, theme.darkMode])
 
   if (!chainId || !isBridgingEnabled) return undefined
 
