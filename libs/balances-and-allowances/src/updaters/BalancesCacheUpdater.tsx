@@ -1,22 +1,27 @@
 import { useAtom } from 'jotai/index'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { balancesAtom, balancesCacheAtom } from '../state/balancesAtom'
 
-export function BalancesCacheUpdater({ chainId, account }: { chainId: SupportedChainId; account?: string }) {
+export function BalancesCacheUpdater({ chainId, account }: { chainId: SupportedChainId; account: string | undefined }) {
   const [balances, setBalances] = useAtom(balancesAtom)
   const [balancesCache, setBalancesCache] = useAtom(balancesCacheAtom)
   const areBalancesRestoredFromCacheRef = useRef(false)
 
+  useEffect(() => {
+    areBalancesRestoredFromCacheRef.current = false
+  }, [chainId])
+
   // Persist into localStorage only non-zero balances
   useEffect(() => {
     if (!account) {
-      setBalancesCache(mapSupportedNetworks({}))
       return
     }
+
+    if (balances.chainId !== chainId) return
 
     setBalancesCache((state) => {
       const balancesValues = balances.values
@@ -55,7 +60,7 @@ export function BalancesCacheUpdater({ chainId, account }: { chainId: SupportedC
         },
       }
     })
-  }, [chainId, account, balances.values, setBalancesCache])
+  }, [chainId, account, balances.values, balances.chainId, setBalancesCache])
 
   // Restore balances from cache once
   useLayoutEffect(() => {
@@ -73,6 +78,7 @@ export function BalancesCacheUpdater({ chainId, account }: { chainId: SupportedC
 
     setBalances((state) => {
       return {
+        chainId,
         isLoading: state.isLoading,
         values: {
           ...state.values,

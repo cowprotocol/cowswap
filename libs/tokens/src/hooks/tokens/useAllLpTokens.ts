@@ -11,7 +11,7 @@ import { TokenListCategory } from '../../types'
 const fallbackData: LpToken[] = []
 
 export function useAllLpTokens(categories: TokenListCategory[] | null): LpToken[] {
-  const activeTokens = useAtomValue(activeTokensAtom)
+  const activeTokens = useAtomValue(activeTokensAtom).tokens
   const inactiveTokens = useAtomValue(inactiveTokensAtom)
 
   return useSWR(

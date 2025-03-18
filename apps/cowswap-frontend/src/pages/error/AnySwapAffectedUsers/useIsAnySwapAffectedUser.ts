@@ -10,6 +10,7 @@ import { Interface } from '@ethersproject/abi'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import ms from 'ms.macro'
+import { SWRConfiguration } from 'swr'
 
 const WETH_ADDRESS = WETH[ChainId.MAINNET].address
 const PERI_ADDRESS = '0x5d30aD9C6374Bf925D0A75454fa327AACf778492'
@@ -25,7 +26,7 @@ const ANYSWAP_V4_CONTRACT = '0x6b7a87899490EcE95443e979cA9485CBE7E71522'
 // const ANYSWAP_V4_CONTRACT = '0xC92E8bdf79f0507f65a392b0ab4667716BFE0110' //'0x6b7a87899490EcE95443e979cA9485CBE7E71522'
 
 const MULTICALL_OPTIONS = {}
-const SWR_CONFIG = { refreshInterval: ms`30m` }
+const SWR_CONFIG: SWRConfiguration = { refreshInterval: ms`30m`, revalidateOnFocus: false }
 
 export default function useIsAnySwapAffectedUser() {
   const { chainId, account } = useWalletInfo()
@@ -35,7 +36,7 @@ export default function useIsAnySwapAffectedUser() {
     'allowance',
     [account || ZERO_ADDRESS, ANYSWAP_V4_CONTRACT],
     MULTICALL_OPTIONS,
-    SWR_CONFIG
+    SWR_CONFIG,
   )
 
   return useMemo(() => {

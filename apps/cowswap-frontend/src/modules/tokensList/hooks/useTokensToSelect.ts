@@ -15,7 +15,7 @@ const EMPTY_TOKENS: TokenWithLogo[] = []
 export function useTokensToSelect() {
   const { chainId } = useWalletInfo()
   const { selectedTargetChainId = chainId, field } = useSelectTokenWidgetState()
-  const allTokens = useAllActiveTokens()
+  const allTokens = useAllActiveTokens().tokens
 
   const { data: bridgeSupportedTokens, isLoading } = useBridgeSupportedTokens(selectedTargetChainId)
 
