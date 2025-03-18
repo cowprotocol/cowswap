@@ -33,17 +33,28 @@ export function useResetStateWithSymbolDuplication(state: TradeRawState | null):
   useEffect(() => {
     const defaultState = getDefaultTradeRawState(chainId)
 
-    const inputCurrencyIsDuplicated = checkTokensWithSameSymbol(inputCurrencyId)
-    const outputCurrencyIsDuplicated = checkTokensWithSameSymbol(outputCurrencyId)
+    const inputCurrencyIsDuplicated = checkTokensWithSameSymbol(inputCurrencyId, chainId)
+    const outputCurrencyIsDuplicated = checkTokensWithSameSymbol(outputCurrencyId, chainId)
 
-    const defaultInputIsDuplicated = checkTokensWithSameSymbol(defaultState.inputCurrencyId)
-    const defaultOutputIsDuplicated = checkTokensWithSameSymbol(defaultState.outputCurrencyId)
+    const defaultInputIsDuplicated = checkTokensWithSameSymbol(defaultState.inputCurrencyId, chainId)
+    const defaultOutputIsDuplicated = checkTokensWithSameSymbol(defaultState.outputCurrencyId, chainId)
 
     const defaultInput = defaultInputIsDuplicated ? '' : defaultState.inputCurrencyId
     const defaultOutput = defaultOutputIsDuplicated ? '' : defaultState.outputCurrencyId
 
     if (chainId && (inputCurrencyIsDuplicated || outputCurrencyIsDuplicated)) {
       const doubledSymbol = inputCurrencyIsDuplicated ? inputCurrencyId : outputCurrencyId
+
+      const shouldSkipInputCurrency = inputCurrencyIsDuplicated
+        ? inputCurrencyId?.toLowerCase() === defaultInput?.toLowerCase()
+        : true
+      const shouldSkipOutputCurrency = outputCurrencyIsDuplicated
+        ? outputCurrencyId?.toLowerCase() === defaultOutput?.toLowerCase()
+        : true
+      /**
+       * There are duplicates, but the value to reset already matches the value
+       */
+      if (shouldSkipInputCurrency || shouldSkipOutputCurrency) return
 
       if (timeoutId) {
         clearTimeout(timeoutId)

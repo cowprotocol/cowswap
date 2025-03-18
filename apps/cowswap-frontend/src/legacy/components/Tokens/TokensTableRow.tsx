@@ -60,7 +60,7 @@ export const TokensTableRow = ({
   const theme = useTheme()
   const tradeLink = useCallback(
     ({ symbol, address }: Token) => {
-      const inputCurrencyId = areThereTokensWithSameSymbol(symbol) ? address : symbol
+      const inputCurrencyId = areThereTokensWithSameSymbol(symbol, chainId) ? address : symbol
 
       return parameterizeTradeRoute(
         {
@@ -71,10 +71,10 @@ export const TokensTableRow = ({
           outputCurrencyAmount: undefined,
           orderKind: undefined,
         },
-        Routes.SWAP
+        Routes.SWAP,
       )
     },
-    [areThereTokensWithSameSymbol, chainId]
+    [areThereTokensWithSameSymbol, chainId],
   )
 
   const { handleSetError, handleCloseError } = useErrorModal()
