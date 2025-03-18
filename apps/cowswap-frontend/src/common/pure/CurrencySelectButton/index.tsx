@@ -36,7 +36,7 @@ export function CurrencySelectButton(props: CurrencySelectButtonProps) {
     loading,
     readonlyMode = false,
     displayTokenName = false,
-    displayChainName = true,
+    displayChainName = false,
     customSelectTokenButton,
   } = props
 
