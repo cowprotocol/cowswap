@@ -5,7 +5,12 @@ import { BigNumber } from '@ethersproject/bignumber'
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
 
-const SWR_CONFIG = { refreshInterval: ms`11s` }
+const SWR_CONFIG: SWRConfiguration = {
+  refreshInterval: ms`11s`,
+  refreshWhenHidden: false,
+  refreshWhenOffline: false,
+  revalidateOnFocus: false,
+}
 
 export function useNativeTokenBalance(
   account: string | undefined,
