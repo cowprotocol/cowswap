@@ -6,12 +6,14 @@ import { useWeb3React } from '@web3-react/core'
 import { switchChain } from '../utils/switchChain'
 
 export function useSwitchNetwork() {
-  const { connector } = useWeb3React()
+  const { connector, account } = useWeb3React()
 
   return useCallback(
-    (targetChain: SupportedChainId) => {
+    async (targetChain: SupportedChainId) => {
+      if (!account) return
+
       return switchChain(connector, targetChain)
     },
-    [connector]
+    [connector, account],
   )
 }
