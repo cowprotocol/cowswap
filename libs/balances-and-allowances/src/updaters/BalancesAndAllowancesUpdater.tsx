@@ -12,7 +12,7 @@ import { BalancesCacheUpdater } from './BalancesCacheUpdater'
 
 import { useNativeTokenBalance } from '../hooks/useNativeTokenBalance'
 import { usePersistBalancesAndAllowances } from '../hooks/usePersistBalancesAndAllowances'
-import { useSwrConfigWithPause } from '../hooks/useSwrConfigWithPause'
+import { useSwrConfigWithPauseForNetwork } from '../hooks/useSwrConfigWithPauseForNetwork'
 import { balancesAtom } from '../state/balancesAtom'
 
 const EMPTY_TOKENS: string[] = []
@@ -41,8 +41,8 @@ export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAl
 
     return allTokens.tokens.filter((token) => !(token instanceof LpToken)).map((token) => token.address)
   }, [allTokens, chainId])
-  const balancesSwrConfig = useSwrConfigWithPause(chainId, BALANCES_SWR_CONFIG)
-  const allowancesSwrConfig = useSwrConfigWithPause(chainId, ALLOWANCES_SWR_CONFIG)
+  const balancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, BALANCES_SWR_CONFIG)
+  const allowancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, ALLOWANCES_SWR_CONFIG)
 
   usePersistBalancesAndAllowances({
     account,

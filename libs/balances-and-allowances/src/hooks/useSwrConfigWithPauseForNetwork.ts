@@ -13,7 +13,7 @@ const BALANCE_VALIDITY_PERIOD = ms`20s`
 /**
  * To avoid fetching balances too frequently, this hook allows to pause SWR fetching based on the last update timestamp.
  */
-export function useSwrConfigWithPause(
+export function useSwrConfigWithPauseForNetwork(
   chainId: SupportedChainId,
   config: SWRConfiguration,
   validityPeriod = BALANCE_VALIDITY_PERIOD,
