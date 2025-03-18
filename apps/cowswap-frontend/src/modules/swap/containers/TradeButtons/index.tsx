@@ -1,11 +1,6 @@
 import React from 'react'
 
-import {
-  useIsNoImpactWarningAccepted,
-  useOnCurrencySelection,
-  useTradeConfirmActions,
-  useWrappedToken,
-} from 'modules/trade'
+import { useIsNoImpactWarningAccepted, useTradeConfirmActions, useWrappedToken } from 'modules/trade'
 import {
   TradeFormButtons,
   TradeFormValidation,
@@ -18,6 +13,7 @@ import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
 import { swapTradeButtonsMap } from './swapTradeButtonsMap'
 
+import { useOnCurrencySelection } from '../../hooks/useOnCurrencySelection'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapFormState } from '../../hooks/useSwapFormState'
 
