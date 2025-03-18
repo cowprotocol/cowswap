@@ -34,11 +34,11 @@ const [web3CoinbaseWallet, web3CoinbaseWalletHooks] = initializeConnector<AsyncC
                 reloadOnDisconnect: false,
               },
               onError,
-            })
+            }),
         ),
       actions,
-      onError
-    )
+      onError,
+    ),
 )
 
 export const coinbaseWalletConnection: Web3ReactConnection = {
