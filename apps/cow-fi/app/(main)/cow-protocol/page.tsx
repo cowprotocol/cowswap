@@ -239,7 +239,7 @@ export default function Page() {
                 <Link
                   bgColor={Color.cowfi_purple3}
                   color={Color.cowfi_purple_bright}
-                  href="https://cow.fi/learn/understanding-batch-auctions"
+                  href="/learn/understanding-batch-auctions"
                   data-click-event={toCowFiGtmEvent({
                     category: CowFiCategory.COWPROTOCOL,
                     action: 'Open Batch Auctions Documentation',
