@@ -6,6 +6,7 @@ import { TokensListsUpdater, UnsupportedTokensUpdater, WidgetTokensListsUpdater 
 import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
+import { useBridgeSupportedNetworks } from 'modules/bridge'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances/updater/BalancesCombinedUpdater'
 import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -45,6 +46,7 @@ export function Updaters() {
   const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
   const cowAnalytics = useCowAnalytics()
   const sourceChainId = useSourceChainId()
+  const bridgeNetworkInfo = useBridgeSupportedNetworks()
 
   return (
     <>
@@ -79,6 +81,7 @@ export function Updaters() {
         isGeoBlockEnabled={isGeoBlockEnabled}
         enableLpTokensByDefault={isYieldWidget}
         isYieldEnabled={isYieldEnabled}
+        bridgeNetworkInfo={bridgeNetworkInfo?.data}
       />
       <WidgetTokensListsUpdater
         tokenLists={tokenLists}
