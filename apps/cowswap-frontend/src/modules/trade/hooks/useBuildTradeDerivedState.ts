@@ -1,7 +1,7 @@
 import { Atom, useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { doesTokenMatchSymbolOrAddress, tryParseFractionalAmount } from '@cowprotocol/common-utils'
+import { tryParseFractionalAmount } from '@cowprotocol/common-utils'
 import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -73,7 +73,9 @@ function useTokenForTargetChain(targetChainId: number | undefined, currencyId: s
   return useMemo(() => {
     if (!bridgeSupportedTokens || !currencyId) return null
 
-    return bridgeSupportedTokens.find((token) => doesTokenMatchSymbolOrAddress(token, currencyId)) || null
+    const currencyIdLower = currencyId.toLowerCase()
+
+    return bridgeSupportedTokens.find((token) => token.address.toLowerCase() === currencyIdLower) || null
   }, [bridgeSupportedTokens, currencyId])
 }
 
