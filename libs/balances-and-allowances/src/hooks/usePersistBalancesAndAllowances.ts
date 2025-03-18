@@ -143,7 +143,13 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     }
   }, [account, prevAccount, resetAllowances, resetBalances, setBalancesCache, onBalancesLoaded])
 
-  // Reset balances and allowances when chainId is changed
+  /**
+   * Reset balances and allowances when chainId is changed.
+   *
+   * If we don't reset the values, you might see balances from the previous network after switching,
+   * because it takes awhile to load balances for the new chain.
+   * p.s. there is BalancesCacheUpdater which fills cached values in.
+   */
   useEffect(() => {
     resetBalances()
     resetAllowances()
