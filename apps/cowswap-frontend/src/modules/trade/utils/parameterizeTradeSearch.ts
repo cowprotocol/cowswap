@@ -4,8 +4,9 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { TRADE_URL_BUY_AMOUNT_KEY, TRADE_URL_SELL_AMOUNT_KEY } from '../const/tradeUrl'
 
 export type TradeSearchParams = {
-  amount: string | undefined
-  kind: OrderKind
+  amount?: string
+  kind?: OrderKind
+  targetChainId?: number
 }
 
 /**
@@ -16,13 +17,15 @@ export type TradeSearchParams = {
 export function parameterizeTradeSearch(search: string, searchParamsToAdd?: TradeSearchParams): string {
   const searchParams = new URLSearchParams(search)
 
-  const amountQueryKey = searchParamsToAdd
+  const amountQueryKey = searchParamsToAdd?.kind
     ? isSellOrder(searchParamsToAdd.kind)
       ? TRADE_URL_SELL_AMOUNT_KEY
       : TRADE_URL_BUY_AMOUNT_KEY
     : undefined
 
   searchParamsToAdd?.amount && amountQueryKey && searchParams.set(amountQueryKey, searchParamsToAdd.amount)
+
+  searchParamsToAdd?.targetChainId && searchParams.set('targetChainId', searchParamsToAdd.targetChainId)
 
   return searchParams.toString()
 }

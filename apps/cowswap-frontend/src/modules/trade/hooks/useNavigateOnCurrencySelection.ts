@@ -63,14 +63,20 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
        * Change network to the token network only when select a sell token
        * Because we allow to sell only tokens from supported networks
        */
-      const targetChainId = isInputField ? currency?.chainId || chainId : chainId
+      const targetChainId = currency?.chainId || chainId
+      const targetChainMismatch = targetChainId !== chainId
       /**
        * If selected sell token doesn't match current network
        * It means that it was selected from another chain, and we are switching network
        * So, we should reset the buy token corresponding to the new network
        */
-      const shouldResetBuyToken = isInputField && targetChainId !== chainId
+      const shouldResetBuyToken = isInputField && targetChainMismatch
+      const shouldSetTargetChain = !isInputField && targetChainMismatch
       const defaultOutputCurrency = getDefaultCurrencies(targetChainId).outputCurrency
+
+      if (shouldSetTargetChain) {
+        searchParams = { ...searchParams, targetChainId: targetChainId }
+      }
 
       navigate(
         targetChainId,
