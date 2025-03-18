@@ -1,5 +1,6 @@
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { getRandomInt } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ChainInfo } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -41,6 +42,7 @@ const defaultProps: SelectTokenModalProps = {
   balancesState: {
     values: balances,
     isLoading: false,
+    chainId: SupportedChainId.SEPOLIA,
   },
   selectedToken,
   onSelectToken() {
