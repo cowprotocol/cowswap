@@ -8,9 +8,9 @@ import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 // // Source chainId should always be a value from SupportedChainId
 export function useSourceChainId(): SupportedChainId {
   const { chainId } = useWalletInfo()
-  const { selectedTargetChainId = chainId, field } = useSelectTokenWidgetState()
+  const { selectedTargetChainId = chainId, field, open } = useSelectTokenWidgetState()
 
-  if (field === Field.OUTPUT) return chainId
+  if (!open || field === Field.OUTPUT) return chainId
 
   return selectedTargetChainId
 }
