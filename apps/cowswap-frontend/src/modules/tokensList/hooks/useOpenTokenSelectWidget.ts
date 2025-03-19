@@ -21,11 +21,14 @@ export function useOpenTokenSelectWidget(): (
 
   return useCallback(
     (selectedToken, field, oppositeToken, onSelectToken) => {
+      const selectedTargetChainId = field === Field.OUTPUT && selectedToken ? selectedToken.chainId : undefined
+
       updateSelectTokenWidget({
         selectedToken,
         field,
         oppositeToken,
         open: true,
+        selectedTargetChainId,
         onSelectToken: (currency) => {
           closeTokenSelectWidget()
           onSelectToken(currency)
