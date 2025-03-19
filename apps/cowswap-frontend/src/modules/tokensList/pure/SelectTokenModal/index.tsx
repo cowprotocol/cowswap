@@ -2,11 +2,14 @@ import React, { useState } from 'react'
 
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { TokenListCategory, UnsupportedTokensState } from '@cowprotocol/tokens'
 import { ChainInfo } from '@cowprotocol/types'
 import { Loader, SearchInput } from '@cowprotocol/ui'
+import { Currency } from '@uniswap/sdk-core'
 
 import { Edit, X } from 'react-feather'
+import { Nullish } from 'types'
 
 import { PermitCompatibleTokens } from 'modules/permit'
 
@@ -25,7 +28,7 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   favoriteTokens: TokenWithLogo[]
   balancesState: BalancesState
   unsupportedTokens: UnsupportedTokensState
-  selectedToken?: string
+  selectedToken?: Nullish<Currency>
   permitCompatibleTokens: PermitCompatibleTokens
   hideFavoriteTokensTooltip?: boolean
   displayLpTokenLists?: boolean
@@ -85,7 +88,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
       <styledEl.Row>
         <FavoriteTokensList
           onSelectToken={onSelectToken}
-          selectedToken={selectedToken}
+          selectedToken={(selectedToken && getCurrencyAddress(selectedToken)) || undefined}
           tokens={favoriteTokens}
           hideTooltip={hideFavoriteTokensTooltip}
         />
