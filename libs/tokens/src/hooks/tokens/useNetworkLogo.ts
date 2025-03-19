@@ -16,7 +16,13 @@ export function useNetworkLogo(chainId?: number) {
       return undefined
     }
 
-    return theme.darkMode ? getChainInfo(chainId)?.logo?.dark : getChainInfo(chainId)?.logo?.light
+    const chainInfo = getChainInfo(chainId)
+
+    if (chainInfo?.name === 'arbitrum_one') {
+      return chainInfo.logo.light
+    }
+
+    return theme.darkMode ? chainInfo?.logo?.dark : chainInfo?.logo?.light
   }, [chainId, theme.darkMode])
 
   if (!chainId || !isBridgingEnabled) return undefined

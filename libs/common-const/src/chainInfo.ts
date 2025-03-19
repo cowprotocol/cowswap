@@ -1,4 +1,5 @@
 import ArbitrumOneLogoLight from '@cowprotocol/assets/cow-swap/network-arbitrum-one-logo-blue.svg'
+import ArbitrumOneLogoDark from '@cowprotocol/assets/cow-swap/network-arbitrum-one-logo-white.svg'
 import BaseLogo from '@cowprotocol/assets/cow-swap/network-base-logo.svg'
 import GnosisChainLogo from '@cowprotocol/assets/cow-swap/network-gnosis-chain-logo.svg'
 import EthereumLogo from '@cowprotocol/assets/cow-swap/network-mainnet-logo.svg'
@@ -51,7 +52,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     name: 'arbitrum_one',
     explorerTitle: 'Arbiscan',
     urlAlias: 'arb1',
-    logo: { light: ArbitrumOneLogoLight, dark: ArbitrumOneLogoLight },
+    logo: { light: ArbitrumOneLogoLight, dark: ArbitrumOneLogoDark },
     color: '#1B4ADD',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.ARBITRUM_ONE],
   },
