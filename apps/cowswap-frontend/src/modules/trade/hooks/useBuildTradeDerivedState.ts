@@ -33,7 +33,7 @@ export function useBuildTradeDerivedState(
   const outputCurrencyFromBridge = useTokenForTargetChain(targetChainId, outputCurrencyId)
   const outputCurrencyFromTokenLists = useTokenBySymbolOrAddress(targetChainId ? null : outputCurrencyId)
 
-  const outputCurrency = targetChainId ? outputCurrencyFromBridge : outputCurrencyFromTokenLists
+  const outputCurrency = outputCurrencyFromBridge || outputCurrencyFromTokenLists
 
   const inputCurrencyAmount = useMemo(
     () => getCurrencyAmount(inputCurrency, rawState.inputCurrencyAmount),
