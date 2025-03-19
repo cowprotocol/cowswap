@@ -5,7 +5,7 @@ import { Field } from 'legacy/state/types'
 
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 
-// // Source chainId should always be a value from SupportedChainId
+// Source chainId should always be a value from SupportedChainId
 export function useSourceChainId(): SupportedChainId {
   const { chainId } = useWalletInfo()
   const { selectedTargetChainId = chainId, field, open } = useSelectTokenWidgetState()

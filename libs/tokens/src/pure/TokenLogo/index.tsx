@@ -2,6 +2,7 @@ import { atom, useAtom } from 'jotai'
 import { useCallback, useMemo } from 'react'
 
 import { cowprotocolTokenLogoUrl, LpToken, NATIVE_CURRENCY_ADDRESS, TokenWithLogo } from '@cowprotocol/common-const'
+import { getChainInfo } from '@cowprotocol/common-const'
 import { uriToHttp } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Media, UI } from '@cowprotocol/ui'
@@ -12,31 +13,41 @@ import styled, { css } from 'styled-components/macro'
 
 import { SingleLetterLogo } from './SingleLetterLogo'
 
+import { useNetworkLogo } from '../../hooks/tokens/useNetworkLogo'
 import { useTokensByAddressMap } from '../../hooks/tokens/useTokensByAddressMap'
 import { getTokenLogoUrls } from '../../utils/getTokenLogoUrls'
 
+const BORDER_WIDTH_MIN = 1.5
+const BORDER_WIDTH_MAX = 2.2
+const BORDER_WIDTH_RATIO = 0.15
+const DEFAULT_SIZE = 42
+const DEFAULT_CHAIN_LOGO_SIZE = 16
+
 const invalidUrlsAtom = atom<{ [url: string]: boolean }>({})
-const defaultSize = 42
+
+const getBorderWidth = (size: number): number =>
+  Math.max(BORDER_WIDTH_MIN, Math.min(BORDER_WIDTH_MAX, size * BORDER_WIDTH_RATIO))
 
 export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number }>`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(${UI.COLOR_DARK_IMAGE_PAPER});
   color: var(${UI.COLOR_DARK_IMAGE_PAPER_TEXT});
-  border-radius: ${({ size = defaultSize }) => size}px;
-  width: ${({ size = defaultSize }) => size}px;
-  height: ${({ size = defaultSize }) => size}px;
-  min-width: ${({ size = defaultSize }) => size}px;
-  min-height: ${({ size = defaultSize }) => size}px;
-  font-size: ${({ size = defaultSize }) => size}px;
-  overflow: hidden;
+  border-radius: ${({ size = DEFAULT_SIZE }) => size}px;
+  width: ${({ size = DEFAULT_SIZE }) => size}px;
+  height: ${({ size = DEFAULT_SIZE }) => size}px;
+  min-width: ${({ size = DEFAULT_SIZE }) => size}px;
+  min-height: ${({ size = DEFAULT_SIZE }) => size}px;
+  font-size: ${({ size = DEFAULT_SIZE }) => size}px;
+  overflow: revert;
 
   > img,
   > svg {
     width: 100%;
     height: 100%;
-    border-radius: ${({ size }) => size ?? defaultSize}px;
+    border-radius: ${({ size }) => size ?? DEFAULT_SIZE}px;
     object-fit: contain;
   }
 
@@ -57,6 +68,34 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
             }
           `
         : ''}
+  }
+`
+
+const ChainLogoWrapper = styled.div<{ size?: number }>`
+  ${({ size = DEFAULT_CHAIN_LOGO_SIZE }) => {
+    const borderWidth = getBorderWidth(size)
+    return `
+      width: ${size}px;
+      height: ${size}px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(${UI.COLOR_DARK_IMAGE_PAPER});
+      border: ${borderWidth}px solid var(${UI.COLOR_PAPER});
+      position: absolute;
+      padding: 0;
+      bottom: -${borderWidth}px;
+      right: -${borderWidth}px;
+    `
+  }}
+
+  > img,
+  > svg {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: contain;
   }
 `
 
@@ -84,10 +123,10 @@ const LpTokenWrapper = styled.div<{ size?: number }>`
 
   > div > img,
   > div > svg {
-    width: ${({ size = defaultSize }) => size}px;
-    height: ${({ size = defaultSize }) => size}px;
-    min-width: ${({ size = defaultSize }) => size}px;
-    min-height: ${({ size = defaultSize }) => size}px;
+    width: ${({ size = DEFAULT_SIZE }) => size}px;
+    height: ${({ size = DEFAULT_SIZE }) => size}px;
+    min-width: ${({ size = DEFAULT_SIZE }) => size}px;
+    min-height: ${({ size = DEFAULT_SIZE }) => size}px;
   }
 `
 
@@ -125,6 +164,8 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, no
 
   const currentUrl = validUrls?.[0]
 
+  const logoUrl = useNetworkLogo(token?.chainId)
+
   const onError = useCallback(() => {
     if (!currentUrl) return
 
@@ -148,19 +189,33 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, no
     )
   }
 
-  const content = currentUrl ? (
-    <img alt="token logo" src={currentUrl} onError={onError} />
+  const tokenContent = currentUrl ? (
+    <img
+      alt={`${token?.symbol || ''} ${token?.name ? `(${token?.name})` : ''} token logo`}
+      src={currentUrl}
+      onError={onError}
+    />
   ) : initial ? (
     <SingleLetterLogo initial={initial} />
   ) : (
     <Slash />
   )
 
-  if (noWrap) return content
+  if (noWrap) return tokenContent
+
+  const chainName =
+    token?.chainId && Object.values(SupportedChainId).includes(token.chainId)
+      ? getChainInfo(token.chainId as SupportedChainId).label
+      : ''
 
   return (
     <TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
-      {content}
+      {tokenContent}
+      {logoUrl && (
+        <ChainLogoWrapper size={size / 1.85}>
+          <img src={logoUrl} alt={`${chainName} network logo`} />
+        </ChainLogoWrapper>
+      )}
     </TokenLogoWrapper>
   )
 }
