@@ -77,5 +77,5 @@ function shouldSkipCurrency(
   currencyId: Nullish<string>,
   defaultValue: Nullish<string>,
 ): boolean {
-  return isDuplicated ? currencyId?.toLowerCase() === defaultValue?.toLowerCase() : true
+  return !isDuplicated || currencyId?.toLowerCase() === defaultValue?.toLowerCase()
 }
