@@ -8,6 +8,7 @@ export interface TradeUrlParams {
   readonly inputCurrencyAmount: string | undefined
   readonly outputCurrencyAmount: string | undefined
   readonly orderKind: OrderKind | undefined
+  readonly targetChainId?: string
 }
 
 export interface TradeRawState {

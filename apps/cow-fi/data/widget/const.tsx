@@ -108,7 +108,7 @@ export const DAO_CONTENT = {
       icon: `${DAO_LOGOS_PATH}aave-icon.svg`,
       title: 'Aave',
       description: 'Aave DAO used CoW Swap to swap over $4 million directly into Balancer liquidity pool',
-      link: 'https://medium.com/@cow-protocol/aave-trade-breakdown-e17a7563d7ba',
+      link: '/learn/aave-trade-breakdown',
       volume: '$4 million',
     },
     {
@@ -116,14 +116,14 @@ export const DAO_CONTENT = {
       title: 'Nexus Mutual',
       description:
         'In the largest DAO trade ever, Nexus Mutual relied on CoW Swap to trade 14,400 ETH for the rETH liquid staking token',
-      link: 'https://medium.com/@cow-protocol/nexus-mutual-trade-breakdown-4aacc6a94be8',
+      link: '/learn/nexus-mutual-trade-breakdown',
       volume: '14,400 ETH',
     },
     {
       icon: `${DAO_LOGOS_PATH}ens-icon.svg`,
       title: 'ENS',
       description: 'ENS DAO traded a whopping 10,000 of ETH ($16.5 million dollars) for USDC through CoW Swap',
-      link: 'https://medium.com/@cow-protocol/ens-trade-breakdown-a8eb00ddd8c0',
+      link: '/learn/ens-trade-breakdown',
       volume: '10,000 ETH',
     },
     { icon: `${DAO_LOGOS_PATH}karpatkey.svg`, title: 'Karpatkey', link: 'https://www.karpatkey.com/' },

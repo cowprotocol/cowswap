@@ -28,6 +28,7 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { getDefaultTokenListCategories } from './getDefaultTokenListCategories'
 
 import { useChainsToSelect } from '../../hooks/useChainsToSelect'
+import { useCloseTokenSelectWidget } from '../../hooks/useCloseTokenSelectWidget'
 import { useOnSelectChain } from '../../hooks/useOnSelectChain'
 import { useOnTokenListAddingError } from '../../hooks/useOnTokenListAddingError'
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
@@ -99,17 +100,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
 
   const isInjectedWidgetMode = isInjectedWidget()
 
-  const closeTokenSelectWidget = useCallback(() => {
-    updateSelectTokenWidget({
-      open: false,
-      selectedToken: undefined,
-      onSelectToken: undefined,
-      tokenToImport: undefined,
-      listToImport: undefined,
-      selectedPoolAddress: undefined,
-      selectedTargetChainId: undefined,
-    })
-  }, [updateSelectTokenWidget])
+  const closeTokenSelectWidget = useCloseTokenSelectWidget()
 
   const openPoolPage = useCallback(
     (selectedPoolAddress: string) => {
