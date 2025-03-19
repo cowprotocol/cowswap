@@ -25,7 +25,10 @@ export const testNetworks: ChainInfo[] = [
     },
     isEvmChain: true,
     blockExplorer: 'https://bscscan.com/',
-    logoUrl: 'https://icons.llamao.fi/icons/chains/rsz_binance.jpg',
+    logoUrl: {
+      light: 'https://icons.llamao.fi/icons/chains/rsz_binance.jpg',
+      dark: 'https://icons.llamao.fi/icons/chains/rsz_binance.jpg',
+    },
     mainColor: '#F0B90B',
   },
   {
@@ -41,7 +44,10 @@ export const testNetworks: ChainInfo[] = [
     },
     isEvmChain: true,
     blockExplorer: 'https://cchain.explorer.avax.network/',
-    logoUrl: 'https://icons.llamao.fi/icons/chains/rsz_avalanche.jpg',
+    logoUrl: {
+      light: 'https://icons.llamao.fi/icons/chains/rsz_avalanche.jpg',
+      dark: 'https://icons.llamao.fi/icons/chains/rsz_avalanche.jpg',
+    },
     mainColor: '#fa4040',
   },
 ]

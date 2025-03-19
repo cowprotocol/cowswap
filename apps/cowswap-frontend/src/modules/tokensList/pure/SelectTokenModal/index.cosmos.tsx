@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 
 const unsupportedTokens = {}
 
-const selectedToken = favoriteTokensMock[0].address
+const selectedToken = favoriteTokensMock[0]
 
 const balances = allTokensMock.reduce<BalancesState['values']>((acc, token) => {
   acc[token.address] = BigNumber.from(getRandomInt(20_000, 120_000_000) + '0'.repeat(token.decimals))

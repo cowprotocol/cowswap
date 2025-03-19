@@ -4,6 +4,7 @@ import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/macro'
+import { Nullish } from 'types'
 
 import { getDefaultTradeRawState, TradeRawState } from '../../types/TradeRawState'
 import { useTradeNavigate } from '../useTradeNavigate'
@@ -45,12 +46,9 @@ export function useResetStateWithSymbolDuplication(state: TradeRawState | null):
     if (chainId && (inputCurrencyIsDuplicated || outputCurrencyIsDuplicated)) {
       const doubledSymbol = inputCurrencyIsDuplicated ? inputCurrencyId : outputCurrencyId
 
-      const shouldSkipInputCurrency = inputCurrencyIsDuplicated
-        ? inputCurrencyId?.toLowerCase() === defaultInput?.toLowerCase()
-        : true
-      const shouldSkipOutputCurrency = outputCurrencyIsDuplicated
-        ? outputCurrencyId?.toLowerCase() === defaultOutput?.toLowerCase()
-        : true
+      const shouldSkipInputCurrency = shouldSkipCurrency(inputCurrencyIsDuplicated, inputCurrencyId, defaultInput)
+      const shouldSkipOutputCurrency = shouldSkipCurrency(outputCurrencyIsDuplicated, outputCurrencyId, defaultOutput)
+
       /**
        * There are duplicates, but the value to reset already matches the value
        */
@@ -72,4 +70,12 @@ export function useResetStateWithSymbolDuplication(state: TradeRawState | null):
       })
     }
   }, [navigate, checkTokensWithSameSymbol, chainId, inputCurrencyId, outputCurrencyId])
+}
+
+function shouldSkipCurrency(
+  isDuplicated: boolean,
+  currencyId: Nullish<string>,
+  defaultValue: Nullish<string>,
+): boolean {
+  return !isDuplicated || currencyId?.toLowerCase() === defaultValue?.toLowerCase()
 }

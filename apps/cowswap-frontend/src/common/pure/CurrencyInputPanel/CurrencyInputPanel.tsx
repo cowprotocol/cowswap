@@ -21,6 +21,7 @@ import * as styledEl from './styled'
 
 import { useConvertUsdToTokenValue } from '../../hooks/useConvertUsdToTokenValue'
 import { ReceiveAmount } from '../ReceiveAmount'
+import { Nullish } from 'types'
 
 interface BuiltItProps {
   className: string
@@ -46,7 +47,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   onCurrencySelection: (field: Field, currency: Currency) => void
   onUserInput: (field: Field, typedValue: string) => void
   openTokenSelectWidget(
-    selectedToken: string | undefined,
+    selectedToken: Nullish<Currency>,
     field: Field | undefined,
     onCurrencySelection: (currency: Currency) => void,
   ): void
@@ -205,8 +206,8 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   }, [_priceImpactParams, bothCurrenciesSet])
 
   const onTokenSelectClick = useCallback(() => {
-    openTokenSelectWidget(selectedTokenAddress, field, (currency) => onCurrencySelection(field, currency))
-  }, [openTokenSelectWidget, selectedTokenAddress, onCurrencySelection, field])
+    openTokenSelectWidget(currency, field, (currency) => onCurrencySelection(field, currency))
+  }, [openTokenSelectWidget, currency, onCurrencySelection, field])
 
   return (
     <styledEl.OuterWrapper>

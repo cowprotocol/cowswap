@@ -1,3 +1,4 @@
+import { useTheme } from '@cowprotocol/common-hooks'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/types'
 import { HoverTooltip } from '@cowprotocol/ui'
@@ -37,6 +38,8 @@ export function ChainsSelector({
 }: ChainsSelectorProps) {
   const isMobile = useMediaQuery(Media.upToSmall(false))
 
+  const theme = useTheme()
+
   if (isLoading) {
     return LoadingShimmerElements
   }
@@ -57,7 +60,7 @@ export function ChainsSelector({
           placement="bottom"
         >
           <styledEl.ChainItem active$={defaultChainId === chain.id} onClick={() => onSelectChain(chain)} iconOnly>
-            <img src={chain.logoUrl} alt={chain.name} loading="lazy" />
+            <img src={theme.darkMode ? chain.logoUrl.dark : chain.logoUrl.light} alt={chain.name} loading="lazy" />
           </styledEl.ChainItem>
         </HoverTooltip>
       ))}
@@ -67,7 +70,11 @@ export function ChainsSelector({
             <>
               <MenuButton as={styledEl.ChainItem} active$={!!selectedMenuChain}>
                 {selectedMenuChain ? (
-                  <img src={selectedMenuChain.logoUrl} alt={selectedMenuChain.name} loading="lazy" />
+                  <img
+                    src={theme.darkMode ? selectedMenuChain.logoUrl.dark : selectedMenuChain.logoUrl.light}
+                    alt={selectedMenuChain.name}
+                    loading="lazy"
+                  />
                 ) : isOpen ? (
                   <span>Less</span>
                 ) : (
@@ -86,7 +93,11 @@ export function ChainsSelector({
                     tabIndex={0}
                     borderless
                   >
-                    <img src={chain.logoUrl} alt={chain.name} loading="lazy" />
+                    <img
+                      src={theme.darkMode ? chain.logoUrl.dark : chain.logoUrl.light}
+                      alt={chain.name}
+                      loading="lazy"
+                    />
                     <span>{chain.name}</span>
                     {chain.id === defaultChainId && <Check size={16} />}
                   </MenuItem>
