@@ -9,6 +9,7 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
+import { Nullish } from 'types'
 
 import { AccountElement } from 'legacy/components/Header/AccountElement'
 import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
@@ -142,14 +143,14 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   }
 
   const openSellTokenSelect = useCallback(
-    (selectedToken: string | undefined, field: Field | undefined, onSelectToken: (currency: Currency) => void) => {
+    (selectedToken: Nullish<Currency>, field: Field | undefined, onSelectToken: (currency: Currency) => void) => {
       openTokenSelectWidget(selectedToken, field, outputCurrencyInfo.currency || undefined, onSelectToken)
     },
     [openTokenSelectWidget, outputCurrencyInfo.currency],
   )
 
   const openBuyTokenSelect = useCallback(
-    (selectedToken: string | undefined, field: Field | undefined, onSelectToken: (currency: Currency) => void) => {
+    (selectedToken: Nullish<Currency>, field: Field | undefined, onSelectToken: (currency: Currency) => void) => {
       openTokenSelectWidget(selectedToken, field, sellToken || undefined, onSelectToken)
     },
     [openTokenSelectWidget, sellToken],
