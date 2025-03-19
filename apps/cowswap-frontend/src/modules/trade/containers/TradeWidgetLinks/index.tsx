@@ -17,7 +17,7 @@ import { useMenuItems } from 'common/hooks/useMenuItems'
 
 import * as styledEl from './styled'
 
-import { useDerivedTradeState } from '../../hooks/useDerivedTradeState'
+import { useGetTradeUrlParams } from '../../hooks/useGetTradeUrlParams'
 import { useTradeRouteContext } from '../../hooks/useTradeRouteContext'
 import { useGetTradeStateByRoute } from '../../hooks/useTradeState'
 import { getDefaultTradeRawState, TradeUrlParams } from '../../types/TradeRawState'
@@ -43,16 +43,13 @@ interface TradeWidgetLinksProps {
 }
 
 export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) {
-  const derivedTradeState = useDerivedTradeState()
   const tradeContext = useTradeRouteContext()
   const location = useLocation()
   const [isDropdownVisible, setDropdownVisible] = useState(false)
   const { enabledTradeTypes } = useInjectedWidgetParams()
   const menuItems = useMenuItems()
   const getTradeStateByType = useGetTradeStateByRoute()
-
-  const areAssetsFromDifferentChains =
-    derivedTradeState?.inputCurrency?.chainId !== derivedTradeState?.outputCurrency?.chainId
+  const getTradeUrlParams = useGetTradeUrlParams()
 
   const handleMenuItemClick = useCallback((_item?: MenuItemConfig): void => {
     setDropdownVisible(false)
@@ -81,18 +78,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
             inputCurrencyId: itemTradeState.inputCurrencyId || defaultState?.inputCurrencyId || null,
             outputCurrencyId: itemTradeState.outputCurrencyId,
           } as TradeUrlParams)
-        : /**
-           * Bridging mode is currently enabled only in Swap
-           * When we navigate from Swap to anywhere else and currently selected trade is bridging
-           * Then navigate to the target widget with default assets
-           */
-          areAssetsFromDifferentChains
-          ? ({
-              chainId,
-              inputCurrencyId: defaultState?.inputCurrencyId || null,
-              outputCurrencyId: defaultState?.outputCurrencyId || null,
-            } as TradeUrlParams)
-          : tradeContext
+        : getTradeUrlParams(item)
 
       const routePath =
         isItemYield && !isCurrentPathYield
@@ -120,7 +106,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
     location.pathname,
     handleMenuItemClick,
     getTradeStateByType,
-    areAssetsFromDifferentChains,
+    getTradeUrlParams,
   ])
 
   const singleMenuItem = menuItemsElements.length === 1

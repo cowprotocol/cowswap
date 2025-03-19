@@ -6,6 +6,8 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount, HoverTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Nullish } from 'types'
+
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { Field } from 'legacy/state/types'
@@ -21,7 +23,6 @@ import * as styledEl from './styled'
 
 import { useConvertUsdToTokenValue } from '../../hooks/useConvertUsdToTokenValue'
 import { ReceiveAmount } from '../ReceiveAmount'
-import { Nullish } from 'types'
 
 interface BuiltItProps {
   className: string
