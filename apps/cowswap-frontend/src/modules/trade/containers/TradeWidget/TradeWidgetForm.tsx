@@ -33,6 +33,7 @@ import * as styledEl from './styled'
 import { TradeWidgetProps } from './types'
 
 import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateFromUrl'
+import { useIsCurrentTradeBridging } from '../../hooks/useIsCurrentTradeBridging'
 import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner'
@@ -58,6 +59,8 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const { pendingActivity } = useCategorizeRecentActivity()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
+  const { isLimitOrdersUpgradeBannerEnabled, isBridgingEnabled } = useFeatureFlags()
+  const isCurrentTradeBridging = useIsCurrentTradeBridging()
 
   const { slots, actions, params, disableOutput } = props
   const { settingsWidget, lockScreen, topContent, middleContent, bottomContent, outerContent } = slots
@@ -72,7 +75,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     hideTradeWarnings,
     enableSmartSlippage,
     displayTokenName = false,
-    displayChainName = true,
+    displayChainName = isBridgingEnabled && !isCurrentTradeBridging,
     isMarketOrderWidget = false,
     isSellingEthSupported = false,
   } = params
@@ -99,7 +102,6 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const alternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const primaryFormValidation = useGetTradeFormValidation()
   const { shouldBeVisible: isLimitOrdersPromoBannerVisible } = useLimitOrdersPromoBanner()
-  const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
   const isEoaEthFlow = useIsEoaEthFlow()
 
   const sellToken = inputCurrencyInfo.currency
