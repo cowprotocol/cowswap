@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.11.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.10.1...wallet-v1.11.0) (2025-03-20)
+
+
+### Features
+
+* **bridge:** select sell token from another chain ([#5521](https://github.com/cowprotocol/cowswap/issues/5521)) ([f0fc900](https://github.com/cowprotocol/cowswap/commit/f0fc900c7035e47331e07b0d5b7a31674dc7bc13))
+
+
+### Bug Fixes
+
+* **wallets:** disable coinbase in widget mobile ([#5516](https://github.com/cowprotocol/cowswap/issues/5516)) ([7233573](https://github.com/cowprotocol/cowswap/commit/7233573925c164de35017a3c48fc2af00d6106d2))
+
 ## [1.10.1](https://github.com/cowprotocol/cowswap/compare/wallet-v1.10.0...wallet-v1.10.1) (2025-02-17)
 
 
