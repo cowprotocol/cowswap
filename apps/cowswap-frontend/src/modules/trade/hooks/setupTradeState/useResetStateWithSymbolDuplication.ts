@@ -4,6 +4,7 @@ import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/macro'
+import { Nullish } from 'types'
 
 import { getDefaultTradeRawState, TradeRawState } from '../../types/TradeRawState'
 import { useTradeNavigate } from '../useTradeNavigate'
@@ -33,17 +34,25 @@ export function useResetStateWithSymbolDuplication(state: TradeRawState | null):
   useEffect(() => {
     const defaultState = getDefaultTradeRawState(chainId)
 
-    const inputCurrencyIsDuplicated = checkTokensWithSameSymbol(inputCurrencyId)
-    const outputCurrencyIsDuplicated = checkTokensWithSameSymbol(outputCurrencyId)
+    const inputCurrencyIsDuplicated = checkTokensWithSameSymbol(inputCurrencyId, chainId)
+    const outputCurrencyIsDuplicated = checkTokensWithSameSymbol(outputCurrencyId, chainId)
 
-    const defaultInputIsDuplicated = checkTokensWithSameSymbol(defaultState.inputCurrencyId)
-    const defaultOutputIsDuplicated = checkTokensWithSameSymbol(defaultState.outputCurrencyId)
+    const defaultInputIsDuplicated = checkTokensWithSameSymbol(defaultState.inputCurrencyId, chainId)
+    const defaultOutputIsDuplicated = checkTokensWithSameSymbol(defaultState.outputCurrencyId, chainId)
 
     const defaultInput = defaultInputIsDuplicated ? '' : defaultState.inputCurrencyId
     const defaultOutput = defaultOutputIsDuplicated ? '' : defaultState.outputCurrencyId
 
     if (chainId && (inputCurrencyIsDuplicated || outputCurrencyIsDuplicated)) {
       const doubledSymbol = inputCurrencyIsDuplicated ? inputCurrencyId : outputCurrencyId
+
+      const shouldSkipInputCurrency = shouldSkipCurrency(inputCurrencyIsDuplicated, inputCurrencyId, defaultInput)
+      const shouldSkipOutputCurrency = shouldSkipCurrency(outputCurrencyIsDuplicated, outputCurrencyId, defaultOutput)
+
+      /**
+       * There are duplicates, but the value to reset already matches the value
+       */
+      if (shouldSkipInputCurrency || shouldSkipOutputCurrency) return
 
       if (timeoutId) {
         clearTimeout(timeoutId)
@@ -61,4 +70,12 @@ export function useResetStateWithSymbolDuplication(state: TradeRawState | null):
       })
     }
   }, [navigate, checkTokensWithSameSymbol, chainId, inputCurrencyId, outputCurrencyId])
+}
+
+function shouldSkipCurrency(
+  isDuplicated: boolean,
+  currencyId: Nullish<string>,
+  defaultValue: Nullish<string>,
+): boolean {
+  return !isDuplicated || currencyId?.toLowerCase() === defaultValue?.toLowerCase()
 }

@@ -1,5 +1,7 @@
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { getRandomInt } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ChainInfo } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import styled from 'styled-components/macro'
@@ -17,7 +19,7 @@ const Wrapper = styled.div`
 
 const unsupportedTokens = {}
 
-const selectedToken = favoriteTokensMock[0].address
+const selectedToken = favoriteTokensMock[0]
 
 const balances = allTokensMock.reduce<BalancesState['values']>((acc, token) => {
   acc[token.address] = BigNumber.from(getRandomInt(20_000, 120_000_000) + '0'.repeat(token.decimals))
@@ -31,10 +33,16 @@ const defaultProps: SelectTokenModalProps = {
   unsupportedTokens,
   allTokens: allTokensMock,
   favoriteTokens: favoriteTokensMock,
+  areTokensLoading: false,
+  chainsToSelect: undefined,
+  onSelectChain(chain: ChainInfo) {
+    console.log('onSelectChain', chain)
+  },
   tokenListCategoryState: [null, () => void 0],
   balancesState: {
     values: balances,
     isLoading: false,
+    chainId: SupportedChainId.SEPOLIA,
   },
   selectedToken,
   onSelectToken() {

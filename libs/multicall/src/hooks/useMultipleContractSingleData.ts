@@ -1,11 +1,12 @@
 import { useMemo } from 'react'
 
 import type { Multicall3 } from '@cowprotocol/abis'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Interface, Result } from '@ethersproject/abi'
 import type { Web3Provider } from '@ethersproject/providers'
 
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
+
+import { useMultiCallRpcProvider } from './useMultiCallRpcProvider'
 
 import { multiCall, MultiCallOptions } from '../multicall'
 
@@ -17,7 +18,7 @@ export function useMultipleContractSingleData<T = Result>(
   multicallOptions: MultiCallOptions = {},
   swrConfig?: SWRConfiguration,
 ): SWRResponse<(T | undefined)[] | null> {
-  const provider = useWalletProvider()
+  const provider = useMultiCallRpcProvider()
 
   const callData = useMemo(() => {
     if (!params) return null
@@ -36,9 +37,28 @@ export function useMultipleContractSingleData<T = Result>(
     })
   }, [addresses, callData])
 
+  const chainId = provider?.network?.chainId
+
   return useSWR<(T | undefined)[] | null>(
-    !calls?.length || !provider ? null : [provider, calls, multicallOptions, 'useMultipleContractSingleData'],
-    async ([provider, calls, multicallOptions]: [Web3Provider, Multicall3.CallStruct[], MultiCallOptions]) => {
+    !calls?.length || !provider
+      ? null
+      : [
+          provider,
+          calls,
+          multicallOptions,
+          methodName,
+          contractInterface,
+          chainId,
+          calls.length,
+          'useMultipleContractSingleData',
+        ],
+    async ([provider, calls, multicallOptions, methodName, contractInterface]: [
+      Web3Provider,
+      Multicall3.CallStruct[],
+      MultiCallOptions,
+      string,
+      Interface,
+    ]) => {
       return multiCall(provider, calls, multicallOptions).then((results) => {
         return results.map((result) => {
           try {

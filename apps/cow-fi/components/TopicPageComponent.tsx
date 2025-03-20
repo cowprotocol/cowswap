@@ -18,6 +18,7 @@ import {
   LinkSection,
 } from '@/styles/styled'
 import Link from 'next/link'
+import { Article } from '../services/cms'
 
 const Wrapper = styled.div`
   display: flex;
@@ -92,20 +93,19 @@ const CategoryDescription = styled.div`
 
 interface TopicPageProps {
   category: any
-  articles: any[]
+  articles: Article[]
   allCategories: { name: string; slug: string }[]
+  allArticles: Article[]
 }
 
-export function TopicPageComponent({ category, allCategories, articles }: TopicPageProps) {
-  const { name, description, image } = category.attributes || {}
-  const imageUrl = image?.data?.attributes?.url
+export function TopicPageComponent({ category, allCategories, articles, allArticles }: TopicPageProps) {
   const analytics = useCowAnalytics()
 
   return (
     <Wrapper>
       <CategoryLinks allCategories={allCategories} />
 
-      <SearchBar articles={articles} />
+      <SearchBar />
 
       <ContainerCard gap={42} gapMobile={24} minHeight="100vh" alignContent="flex-start" touchFooter>
         <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>
@@ -146,24 +146,24 @@ export function TopicPageComponent({ category, allCategories, articles }: TopicP
             >
               Topic
             </Link>
-            <span>{name}</span>
+            <span>{category.name}</span>
           </Breadcrumbs>
 
           <ContainerCardSectionTop>
             <CategoryTitle>
-              {imageUrl && name && (
+              {category.imageUrl && (
                 <CategoryImageWrapper>
-                  <CategoryImage src={imageUrl} alt={name} width={82} height={82} />
+                  <CategoryImage src={category.imageUrl} alt={category.name} width={82} height={82} />
                 </CategoryImageWrapper>
               )}
-              <h1>{name}</h1>
+              <h1>{category.name}</h1>
             </CategoryTitle>
             <ArrowButton link="/learn/topics" text="All topics" />
           </ContainerCardSectionTop>
 
           <ContainerCardSection>
             <CategoryDescription>
-              <p>{description}</p>
+              <p>{category.description}</p>
               <i>{articles.length} articles</i>
             </CategoryDescription>
 

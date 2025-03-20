@@ -38,6 +38,19 @@ export enum LpTokenProvider {
   PANCAKE = 'PANCAKE',
 }
 
+export interface ChainInfo {
+  id: number
+  name: string
+  nativeCurrency: TokenInfo
+  isEvmChain: boolean
+  blockExplorer: string
+  logoUrl: {
+    light: string
+    dark: string
+  }
+  mainColor: string
+}
+
 /**
  * This helper type allows to define a state that is persisted by chain.
  *

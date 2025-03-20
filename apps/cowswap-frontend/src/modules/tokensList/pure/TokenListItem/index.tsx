@@ -1,7 +1,13 @@
+import { MouseEventHandler } from 'react'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { LoadingRows, LoadingRowSmall, TokenAmount } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { Nullish } from 'types'
 
 import * as styledEl from './styled'
 
@@ -16,7 +22,7 @@ const LoadingElement = (
 
 export interface TokenListItemProps {
   token: TokenWithLogo
-  selectedToken?: string
+  selectedToken?: Nullish<Currency>
   balance: BigNumber | undefined
   onSelectToken(token: TokenWithLogo): void
   isUnsupported: boolean
@@ -27,7 +33,7 @@ export interface TokenListItemProps {
 export function TokenListItem(props: TokenListItemProps) {
   const { token, selectedToken, balance, onSelectToken, isUnsupported, isPermitCompatible, isWalletConnected } = props
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
     if (isTokenSelected) {
       e.preventDefault()
       e.stopPropagation()
@@ -36,7 +42,12 @@ export function TokenListItem(props: TokenListItemProps) {
     }
   }
 
-  const isTokenSelected = token.address.toLowerCase() === selectedToken?.toLowerCase()
+  const isTokenSelected =
+    selectedToken &&
+    token.address.toLowerCase() === getCurrencyAddress(selectedToken).toLowerCase() &&
+    token.chainId === selectedToken.chainId
+
+  const isSupportedChain = token.chainId in SupportedChainId
 
   const balanceAmount = balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
 
@@ -50,7 +61,7 @@ export function TokenListItem(props: TokenListItemProps) {
       {isWalletConnected && (
         <styledEl.TokenMetadata>
           <styledEl.TokenBalance>
-            {balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement}
+            {isSupportedChain ? balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement : null}
           </styledEl.TokenBalance>
           <TokenTags isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} />
         </styledEl.TokenMetadata>

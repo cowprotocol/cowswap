@@ -6,6 +6,8 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount, HoverTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Nullish } from 'types'
+
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { Field } from 'legacy/state/types'
@@ -46,7 +48,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   onCurrencySelection: (field: Field, currency: Currency) => void
   onUserInput: (field: Field, typedValue: string) => void
   openTokenSelectWidget(
-    selectedToken: string | undefined,
+    selectedToken: Nullish<Currency>,
     field: Field | undefined,
     onCurrencySelection: (currency: Currency) => void,
   ): void
@@ -205,8 +207,8 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   }, [_priceImpactParams, bothCurrenciesSet])
 
   const onTokenSelectClick = useCallback(() => {
-    openTokenSelectWidget(selectedTokenAddress, field, (currency) => onCurrencySelection(field, currency))
-  }, [openTokenSelectWidget, selectedTokenAddress, onCurrencySelection, field])
+    openTokenSelectWidget(currency, field, (currency) => onCurrencySelection(field, currency))
+  }, [openTokenSelectWidget, currency, onCurrencySelection, field])
 
   return (
     <styledEl.OuterWrapper>

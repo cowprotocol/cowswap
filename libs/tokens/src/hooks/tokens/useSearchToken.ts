@@ -59,20 +59,20 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
 
   const isTokenAlreadyFoundByAddress = useMemo(() => {
     return [...tokensFromActiveLists, ...tokensFromInactiveLists].some(
-      (token) => token.address.toLowerCase() === debouncedInputInList
+      (token) => token.address.toLowerCase() === debouncedInputInList,
     )
   }, [debouncedInputInList, tokensFromActiveLists, tokensFromInactiveLists])
 
   // Search in external API
   const { data: apiResultTokens, isLoading: apiIsLoading } = useSearchTokensInApi(
     debouncedInputInExternals,
-    isTokenAlreadyFoundByAddress
+    isTokenAlreadyFoundByAddress,
   )
 
   // Search in Blockchain
   const { data: tokenFromBlockChain, isLoading: blockchainIsLoading } = useFetchTokenFromBlockchain(
     debouncedInputInExternals,
-    isTokenAlreadyFoundByAddress
+    isTokenAlreadyFoundByAddress,
   )
 
   useEffect(() => {
@@ -132,7 +132,7 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
 }
 
 function useSearchTokensInLists(input: string | undefined): FromListsResult {
-  const activeTokens = useAtomValue(activeTokensAtom)
+  const activeTokens = useAtomValue(activeTokensAtom).tokens
   const inactiveTokens = useAtomValue(inactiveTokensAtom)
 
   const { data: inListsResult } = useSWR<FromListsResult>(
@@ -145,7 +145,7 @@ function useSearchTokensInLists(input: string | undefined): FromListsResult {
       const tokensFromInactiveLists = inactiveTokens.filter(filter)
 
       return { tokensFromActiveLists, tokensFromInactiveLists }
-    }
+    },
   )
 
   return inListsResult || emptyFromListsResult
