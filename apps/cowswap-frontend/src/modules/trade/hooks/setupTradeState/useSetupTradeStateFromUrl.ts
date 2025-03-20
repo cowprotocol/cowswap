@@ -3,8 +3,7 @@ import { useMemo, useRef } from 'react'
 
 import { useLocation, useParams } from 'react-router-dom'
 
-import { tradeStateFromUrlAtom } from 'modules/trade/state/tradeStateFromUrlAtom'
-
+import { tradeStateFromUrlAtom } from '../../state/tradeStateFromUrlAtom'
 import { TradeRawState } from '../../types/TradeRawState'
 import { useTradeState } from '../useTradeState'
 
@@ -30,6 +29,7 @@ export function useSetupTradeStateFromUrl(): null {
    */
   useMemo(() => {
     const searchParams = new URLSearchParams(location.search)
+    const targetChainId = searchParams.get('targetChainId')
     const recipient = searchParams.get('recipient')
     const recipientAddress = searchParams.get('recipientAddress')
     const { chainId, inputCurrencyId, outputCurrencyId } = JSON.parse(stringifiedParams)
@@ -37,6 +37,7 @@ export function useSetupTradeStateFromUrl(): null {
 
     const state: TradeRawState = {
       chainId: chainIdAsNumber,
+      targetChainId: targetChainId ? +targetChainId : null,
       inputCurrencyId: inputCurrencyId || searchParams.get('inputCurrency') || null,
       outputCurrencyId: outputCurrencyId || searchParams.get('outputCurrency') || null,
       ...(recipient ? { recipient } : undefined),

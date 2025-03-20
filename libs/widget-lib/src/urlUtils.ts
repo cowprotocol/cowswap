@@ -21,7 +21,7 @@ export function buildWidgetPath(params: Partial<CowSwapWidgetParams>): string {
 export function buildWidgetUrlQuery(params: Partial<CowSwapWidgetParams>): URLSearchParams {
   const query = new URLSearchParams()
 
-  return addThemePaletteToQuery(addTradeAmountsToQuery(query, params), params)
+  return addTargetChainIdToQuery(addThemePaletteToQuery(addTradeAmountsToQuery(query, params), params), params)
 }
 
 function addTradeAmountsToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
@@ -52,6 +52,14 @@ function addThemePaletteToQuery(query: URLSearchParams, params: Partial<CowSwapW
   } else {
     query.append('palette', 'null')
     query.append('theme', theme)
+  }
+
+  return query
+}
+
+function addTargetChainIdToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
+  if (params.targetChainId) {
+    query.append('targetChainId', params.targetChainId.toString())
   }
 
   return query
