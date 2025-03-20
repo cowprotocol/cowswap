@@ -7,6 +7,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
+import { useBridgeSupportedTokens } from 'modules/bridge'
 import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
 import { ExtendedTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
@@ -20,13 +21,20 @@ export function useBuildTradeDerivedState(
   isQuoteBasedOrder: boolean,
 ): Omit<TradeDerivedState, 'slippage' | 'tradeType'> {
   const rawState = useAtomValue(stateAtom)
+  const { inputCurrencyId, outputCurrencyId } = rawState
 
+  const targetChainId = rawState.targetChainId || undefined
   const recipient = rawState.recipient
   const recipientAddress = rawState.recipientAddress
   const orderKind = rawState.orderKind
 
-  const inputCurrency = useTokenBySymbolOrAddress(rawState.inputCurrencyId)
-  const outputCurrency = useTokenBySymbolOrAddress(rawState.outputCurrencyId)
+  const inputCurrency = useTokenBySymbolOrAddress(inputCurrencyId)
+
+  const outputCurrencyFromBridge = useTokenForTargetChain(targetChainId, outputCurrencyId)
+  const outputCurrencyFromTokenLists = useTokenBySymbolOrAddress(targetChainId ? null : outputCurrencyId)
+
+  const outputCurrency = outputCurrencyFromBridge || outputCurrencyFromTokenLists
+
   const inputCurrencyAmount = useMemo(
     () => getCurrencyAmount(inputCurrency, rawState.inputCurrencyAmount),
     [inputCurrency, rawState.inputCurrencyAmount],
@@ -57,6 +65,18 @@ export function useBuildTradeDerivedState(
     outputCurrencyFiatAmount,
     isQuoteBasedOrder,
   })
+}
+
+function useTokenForTargetChain(targetChainId: number | undefined, currencyId: string | null) {
+  const bridgeSupportedTokens = useBridgeSupportedTokens(targetChainId).data
+
+  return useMemo(() => {
+    if (!bridgeSupportedTokens || !currencyId) return null
+
+    const currencyIdLower = currencyId.toLowerCase()
+
+    return bridgeSupportedTokens.find((token) => token.address.toLowerCase() === currencyIdLower) || null
+  }, [bridgeSupportedTokens, currencyId])
 }
 
 function getCurrencyAmount(

@@ -3,9 +3,9 @@ import { useMemo } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import { useFeatureFlags, useTheme } from '@cowprotocol/common-hooks'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { environmentAtom } from '../../state/environmentAtom'
-
 export function useNetworkLogo(chainId?: number) {
   const { bridgeNetworkInfo } = useAtomValue(environmentAtom)
   const theme = useTheme()
@@ -16,7 +16,14 @@ export function useNetworkLogo(chainId?: number) {
       return undefined
     }
 
-    return theme.darkMode ? getChainInfo(chainId)?.logo?.dark : getChainInfo(chainId)?.logo?.light
+    const chainInfo = getChainInfo(chainId)
+
+    // Always use light (blue) logo for Arbitrum to ensure visibility against white backgrounds
+    if (chainId === SupportedChainId.ARBITRUM_ONE) {
+      return chainInfo.logo.light
+    }
+
+    return theme.darkMode ? chainInfo?.logo?.dark : chainInfo?.logo?.light
   }, [chainId, theme.darkMode])
 
   if (!chainId || !isBridgingEnabled) return undefined

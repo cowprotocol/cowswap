@@ -9,7 +9,7 @@ import { tokensBySymbolAtom } from '../../state/tokens/allTokensAtom'
 
 export function useTokenBySymbolOrAddress(symbolOrAddress?: string | null): TokenWithLogo | null {
   const tokensByAddress = useTokensByAddressMap()
-  const tokensBySymbol = useAtomValue(tokensBySymbolAtom)
+  const tokensBySymbol = useAtomValue(tokensBySymbolAtom).tokens
 
   return useMemo(() => {
     if (!symbolOrAddress) {

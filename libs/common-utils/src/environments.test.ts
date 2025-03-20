@@ -41,7 +41,7 @@ describe('Detect environments using host and path', () => {
 
     it('<CID>.ipfs.dweb.link', () => {
       expect(
-        checkEnvironment('bafybeiff3lt2cfhrxvv3tm77s5qvaoaksxfrrblcclnvkxbf56oxqapjuq.ipfs.dweb.link', '')
+        checkEnvironment('bafybeiff3lt2cfhrxvv3tm77s5qvaoaksxfrrblcclnvkxbf56oxqapjuq.ipfs.dweb.link', ''),
       ).toEqual(isEns)
     })
 
@@ -51,7 +51,7 @@ describe('Detect environments using host and path', () => {
 
     it('gateway.pinata.cloud/ipfs/<HASH>', () => {
       expect(checkEnvironment('gateway.pinata.cloud', '/ipfs/QmZW5abzempvhyPvSMbLhnmZ6d6SEGgGQd3paaHRK7CSfm')).toEqual(
-        isEns
+        isEns,
       )
     })
   })
@@ -76,7 +76,7 @@ describe('Detect environments using host and path', () => {
     const isPr = { ...DEFAULT_ENVIRONMENTS_CHECKS, isPr: true }
 
     it('pr<NUMBER>--cowswap.review.gnosisdev.com', () => {
-      expect(checkEnvironment('swap-dev-git-improve-quote-updater-cowswap.vercel.app', '')).toEqual(isPr)
+      expect(checkEnvironment('swap-dev-git-improve-quote-updater-cowswap-dev.vercel.app', '')).toEqual(isPr)
     })
   })
 

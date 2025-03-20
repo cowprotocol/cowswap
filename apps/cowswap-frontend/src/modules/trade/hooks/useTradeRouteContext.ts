@@ -15,8 +15,8 @@ export function useTradeRouteContext(): TradeUrlParams {
 
   const { orderKind, inputCurrencyAmount, outputCurrencyAmount } = derivedState || {}
   const hasState = !!state
-  const targetChainId = state?.chainId || walletChainId
-  const { inputCurrencyId, outputCurrencyId } = state || getDefaultTradeRawState(targetChainId)
+  const sourceChainId = state?.chainId || walletChainId
+  const { inputCurrencyId, outputCurrencyId, targetChainId } = state || getDefaultTradeRawState(sourceChainId)
 
   const prevContext = prevContextRef.current
 
@@ -29,10 +29,19 @@ export function useTradeRouteContext(): TradeUrlParams {
       outputCurrencyId: outputCurrencyId || undefined,
       inputCurrencyAmount: inputCurrencyAmountStr,
       outputCurrencyAmount: outputCurrencyAmountStr,
-      chainId: targetChainId.toString(),
+      chainId: sourceChainId.toString(),
+      targetChainId: targetChainId?.toString(),
       orderKind,
     }),
-    [orderKind, inputCurrencyId, outputCurrencyId, targetChainId, inputCurrencyAmountStr, outputCurrencyAmountStr],
+    [
+      orderKind,
+      inputCurrencyId,
+      outputCurrencyId,
+      sourceChainId,
+      targetChainId,
+      inputCurrencyAmountStr,
+      outputCurrencyAmountStr,
+    ],
   )
 
   useEffect(() => {
