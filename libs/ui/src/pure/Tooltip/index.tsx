@@ -183,11 +183,32 @@ export interface TooltipProps extends Omit<PopoverProps, 'content'> {
  * IMPORTANT: Don't use it if you need to show the tooltip when you hover on one element. For that use `HoverTooltip`
  * @see HoverTooltip as an alternative if you need to show the tooltip on hover
  */
-export function Tooltip({ content, className, wrapInContainer, ...rest }: TooltipProps) {
+export function Tooltip({ content, className, wrapInContainer, show, ...rest }: TooltipProps) {
+  const tooltipRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handleClickOutside(event: globalThis.MouseEvent) {
+      if (tooltipRef.current && !tooltipRef.current.contains(event.target as Node)) {
+        if (rest.onClickCapture) {
+          rest.onClickCapture(event as unknown as React.MouseEvent<HTMLDivElement>)
+        }
+      }
+    }
+
+    if (show) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [show, rest.onClickCapture])
+
   return (
     <Popover
       className={className}
-      content={wrapInContainer ? <TooltipContainer>{content}</TooltipContainer> : content}
+      show={show}
+      content={<div ref={tooltipRef}>{wrapInContainer ? <TooltipContainer>{content}</TooltipContainer> : content}</div>}
       {...rest}
     />
   )

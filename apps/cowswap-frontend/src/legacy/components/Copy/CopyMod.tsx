@@ -5,7 +5,7 @@ import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { CheckCircle, Copy } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled, { DefaultTheme, StyledComponentProps } from 'styled-components/macro'
 import { LinkStyledButton } from 'theme'
 
 import { TransactionStatusText } from 'legacy/components/Copy/index'
@@ -33,14 +33,25 @@ export const CopyIcon = styled(LinkStyledButton)`
   }
 `
 
-interface CopyHelperProps {
+interface CopyHelperProps
+  extends StyledComponentProps<
+    typeof CopyIcon,
+    DefaultTheme,
+    {
+      disabled?: boolean
+      bg?: boolean
+      isCopied?: boolean
+      color?: string
+    },
+    never
+  > {
   toCopy: string
   children?: React.ReactNode
-  clickableLink?: boolean
+  clickableLink?: boolean, 
 }
 
 export default function CopyHelper(props: CopyHelperProps) {
-  const { toCopy, children, clickableLink } = props
+  const { toCopy, children, clickableLink, ...rest } = props
   const [isCopied, setCopied] = useCopyClipboard()
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -51,7 +62,7 @@ export default function CopyHelper(props: CopyHelperProps) {
   return (
     <>
       {clickableLink && <LinkStyledButton onClick={() => setCopied(toCopy)}>{toCopy}</LinkStyledButton>}
-      <CopyIcon isCopied={isCopied} onClick={handleClick}>
+      <CopyIcon isCopied={isCopied} onClick={handleClick} {...rest}>
         {isCopied ? (
           <TransactionStatusText
             isCopied={isCopied} // mod
