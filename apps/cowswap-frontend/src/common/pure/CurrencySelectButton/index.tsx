@@ -40,7 +40,7 @@ export function CurrencySelectButton(props: CurrencySelectButtonProps) {
     customSelectTokenButton,
   } = props
 
-  const $noCurrencySelected = !currency || false
+  const $noCurrencySelected = !currency
   const showDetailedDisplay = displayTokenName || displayChainName
 
   if (!currency && customSelectTokenButton) {
