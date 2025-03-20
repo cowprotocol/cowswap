@@ -24,7 +24,8 @@ export function useGetTradeUrlParams() {
       return isCurrentTradeBridging && !isItemSwap
         ? ({
             chainId,
-            inputCurrencyId: defaultState?.inputCurrencyId || null,
+            // Keep inputCurrencyId because it's always from supported chain
+            inputCurrencyId: tradeContext.inputCurrencyId || null,
             outputCurrencyId: defaultState?.outputCurrencyId || null,
           } as TradeUrlParams)
         : tradeContext
