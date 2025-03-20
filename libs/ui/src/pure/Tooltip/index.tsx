@@ -202,7 +202,7 @@ export function Tooltip({ content, className, wrapInContainer, show, ...rest }: 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [show, rest.onClickCapture])
+  }, [show, rest])
 
   return (
     <Popover
