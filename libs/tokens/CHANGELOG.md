@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.16.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.15.0...tokens-v1.16.0) (2025-03-20)
+
+
+### Features
+
+* **bridge:** add network logo token icon ([#5511](https://github.com/cowprotocol/cowswap/issues/5511)) ([1e74585](https://github.com/cowprotocol/cowswap/commit/1e74585ebe0d4a2d9f1a535972192b820a643869))
+* **bridge:** do not fetch balances too often ([#5509](https://github.com/cowprotocol/cowswap/issues/5509)) ([a673668](https://github.com/cowprotocol/cowswap/commit/a6736681aadc2e1e42dea3ca13827728976e4ce2))
+* **bridge:** select sell token from another chain ([#5521](https://github.com/cowprotocol/cowswap/issues/5521)) ([f0fc900](https://github.com/cowprotocol/cowswap/commit/f0fc900c7035e47331e07b0d5b7a31674dc7bc13))
+
 ## [1.15.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.14.1...tokens-v1.15.0) (2025-03-10)
 
 
