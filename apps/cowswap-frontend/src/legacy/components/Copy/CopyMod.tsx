@@ -47,7 +47,7 @@ interface CopyHelperProps
   > {
   toCopy: string
   children?: React.ReactNode
-  clickableLink?: boolean, 
+  clickableLink?: boolean
 }
 
 export default function CopyHelper(props: CopyHelperProps) {
