@@ -6,7 +6,7 @@ import { TokenInfo } from '@cowprotocol/types'
 import { favoriteTokensAtom } from './favoriteTokensAtom'
 import { userAddedTokensAtom } from './userAddedTokensAtom'
 
-import { ActiveTokensState, TokensMap } from '../../types'
+import { ActiveTokensState, TokensBySymbolState, TokensMap } from '../../types'
 import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
 import { parseTokenInfo } from '../../utils/parseTokenInfo'
 import { tokenMapToListWithLogo } from '../../utils/tokenMapToListWithLogo'
@@ -113,8 +113,9 @@ export const tokensByAddressAtom = atom<TokensByAddress>((get) => {
   }, {})
 })
 
-export const tokensBySymbolAtom = atom<TokensBySymbol>((get) => {
-  return get(activeTokensAtom).tokens.reduce<TokensBySymbol>((acc, token) => {
+export const tokensBySymbolAtom = atom<TokensBySymbolState>((get) => {
+  const { tokens, chainId } = get(activeTokensAtom)
+  const tokensBySymbol = tokens.reduce<TokensBySymbol>((acc, token) => {
     if (!token.symbol) return acc
 
     const symbol = token.symbol.toLowerCase()
@@ -125,4 +126,6 @@ export const tokensBySymbolAtom = atom<TokensBySymbol>((get) => {
 
     return acc
   }, {})
+
+  return { tokens: tokensBySymbol, chainId }
 })

@@ -3,12 +3,14 @@ import { useCallback } from 'react'
 import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
 import { Currency } from '@uniswap/sdk-core'
 
+import { Nullish } from 'types'
+
 import { Field } from 'legacy/state/types'
 
 import { useUpdateSelectTokenWidgetState } from './useUpdateSelectTokenWidgetState'
 
 export function useOpenTokenSelectWidget(): (
-  selectedToken: string | undefined,
+  selectedToken: Nullish<Currency>,
   field: Field | undefined,
   oppositeToken: TokenWithLogo | LpToken | Currency | undefined,
   onSelectToken: (currency: Currency) => void,

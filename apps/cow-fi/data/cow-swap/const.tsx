@@ -27,7 +27,7 @@ export const COW_IS_DIFFERENT = [
     bgColor: Color.cowfi_blue_dark,
     fontSize: 28,
     color: Color.cowfi_lightBlue1,
-    description: 'MEV is a $1.3+ billion problem that you never have to worry about on CoW Swap',
+    description: 'MEV is a $1.4+ billion problem that you never have to worry about on CoW Swap',
     imgSrc: IMG_COWSWAP_MEV,
   },
   {
