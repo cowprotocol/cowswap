@@ -1,5 +1,6 @@
 export * from './useAvailableChains'
 export * from './useDebounce'
+export * from './useIsBridgingEnabled'
 export * from './usePrevious'
 export * from './useParsedQueryString'
 export * from './useLoadingWithTimeout'
