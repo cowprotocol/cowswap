@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.22.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.21.0...ui-v1.22.0) (2025-03-20)
+
+
+### Features
+
+* **bridge:** display tokens in selector from bridge provider ([#5489](https://github.com/cowprotocol/cowswap/issues/5489)) ([b5b08ee](https://github.com/cowprotocol/cowswap/commit/b5b08ee8da9c1746bd3b2147444c2090afdf3950))
+
+
+### Bug Fixes
+
+* Add custom token - Update update link ([a896981](https://github.com/cowprotocol/cowswap/commit/a8969814dd4ce72605b2c03d9fff44fba1ad2f9a))
+
 ## [1.21.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.20.0...ui-v1.21.0) (2025-03-10)
 
 
