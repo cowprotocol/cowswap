@@ -201,38 +201,33 @@ const handleExpiredOrder = (payload: OnExpiredOrderPayload) => {
   }))
 }
 
-/**
- * Sets up event handlers for order lifecycle events.
- * Since this is within the analytics library, we use the analytics
- * instance directly rather than taking it as a parameter.
- */
-export const setupEventHandlers = (eventEmitter: SimpleCowEventEmitter<CowWidgetEventPayloadMap, CowWidgetEvents>) => {
-  // Define event configurations
-  const eventConfigs = [
-    // Handle order submission
-    {
-      event: CowWidgetEvents.ON_POSTED_ORDER,
-      handler: handlePostedOrder,
-    },
-    // Handle order fulfillment
-    {
-      event: CowWidgetEvents.ON_FULFILLED_ORDER,
-      handler: handleFulfilledOrder,
-    },
-    // Handle order cancellation
-    {
-      event: CowWidgetEvents.ON_CANCELLED_ORDER,
-      handler: handleCancelledOrder,
-    },
-    // Handle order expiration
-    {
-      event: CowWidgetEvents.ON_EXPIRED_ORDER,
-      handler: handleExpiredOrder,
-    },
-  ] as const
+const EVENT_CONFIGS = [
+  // Handle order submission
+  {
+    event: CowWidgetEvents.ON_POSTED_ORDER,
+    handler: handlePostedOrder,
+  },
+  // Handle order fulfillment
+  {
+    event: CowWidgetEvents.ON_FULFILLED_ORDER,
+    handler: handleFulfilledOrder,
+  },
+  // Handle order cancellation
+  {
+    event: CowWidgetEvents.ON_CANCELLED_ORDER,
+    handler: handleCancelledOrder,
+  },
+  // Handle order expiration
+  {
+    event: CowWidgetEvents.ON_EXPIRED_ORDER,
+    handler: handleExpiredOrder,
+  },
+] as const
 
+// Sets up event handlers for order lifecycle events.
+export const setupEventHandlers = (eventEmitter: SimpleCowEventEmitter<CowWidgetEventPayloadMap, CowWidgetEvents>) => {
   // Register each event handler
-  eventConfigs.forEach(({ event, handler }) => {
+  EVENT_CONFIGS.forEach(({ event, handler }) => {
     eventEmitter.on({
       event,
       handler: handler as any, // event emitter expecting a common handler type
