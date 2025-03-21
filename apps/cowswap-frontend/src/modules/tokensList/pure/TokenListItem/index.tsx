@@ -54,6 +54,9 @@ export function TokenListItem(props: TokenListItemProps) {
   return (
     <styledEl.TokenItem
       data-address={token.address.toLowerCase()}
+      data-token-symbol={token.symbol || ''}
+      data-token-name={token.name || ''}
+      data-element-type="token-selection"
       onClick={handleClick}
       className={isTokenSelected ? 'token-item-selected' : ''}
     >

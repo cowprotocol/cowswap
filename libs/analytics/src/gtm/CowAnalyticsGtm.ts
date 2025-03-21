@@ -85,6 +85,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
     this._sendPageView(path, params, title)
   }, 1000)
   private dataLayer: DataLayer = []
+  private previousAccount: string | undefined = undefined
 
   private cleanup = () => {
     window.cowAnalyticsInstance = undefined
@@ -110,12 +111,72 @@ export class CowAnalyticsGtm implements CowAnalytics {
     }
   }
 
-  setUserAccount(account: string | undefined): void {
+  /**
+   * Sets the user account for analytics tracking and tracks wallet connection events.
+   *
+   * This method:
+   * 1. Sets the user address in the analytics context
+   * 2. Pushes a 'set_user_account' event to the data layer
+   * 3. Tracks wallet connection events:
+   *    - 'wallet_connected' for initial connections
+   *    - 'wallet_switched' when switching between accounts
+   *    - 'wallet_disconnected' when disconnecting a wallet
+   *    - Includes metadata like wallet name and previous address
+   *
+   * @param account The user's wallet address or undefined if disconnected
+   * @param walletName Optional wallet name (e.g., 'MetaMask', 'WalletConnect')
+   */
+  setUserAccount(account: string | undefined, walletName?: string): void {
     this.setContext(AnalyticsContext.userAddress, account || 'disconnected')
+
+    // Basic user account tracking
     this.pushToDataLayer({
       event: 'set_user_account',
       userId: account || undefined,
     })
+
+    // Enhanced wallet connection tracking
+    // Case 1: Wallet disconnection (account changes from defined to undefined)
+    if (this.previousAccount && !account) {
+      this.pushToDataLayer({
+        event: 'wallet_disconnected',
+        eventType: 'wallet_disconnection',
+        previousWalletAddress: this.previousAccount,
+        previousWalletName: this.dimensions[AnalyticsContext.walletName] || 'Unknown',
+      })
+    }
+    // Case 2: Wallet connection/switching (account is defined)
+    else if (account) {
+      // Get wallet name from context if not provided
+      const walletNameToUse = walletName || this.dimensions[AnalyticsContext.walletName] || 'Unknown'
+
+      // Common properties for wallet events
+      const commonEventProps = {
+        walletAddress: account,
+        walletName: walletNameToUse,
+      }
+
+      // Initial connection (account changes from undefined/null to defined)
+      if (!this.previousAccount) {
+        this.pushToDataLayer({
+          event: 'wallet_connected',
+          eventType: 'wallet_initial_connection',
+          ...commonEventProps,
+        })
+      }
+      // Wallet switched (account changes from one defined value to another)
+      else if (this.previousAccount !== account) {
+        this.pushToDataLayer({
+          event: 'wallet_switched',
+          eventType: 'wallet_switch',
+          previousWalletAddress: this.previousAccount,
+          ...commonEventProps,
+        })
+      }
+    }
+
+    // Update the previous account reference
+    this.previousAccount = account
   }
 
   sendPageView(path?: string, params?: string[], title?: string): void {
@@ -197,7 +258,14 @@ export class CowAnalyticsGtm implements CowAnalytics {
 
   private pushToDataLayer(data: DataLayerEvent): void {
     if (typeof window !== 'undefined') {
-      this.dataLayer.push(data)
+      const dataLayerEvent = { ...data }
+
+      // Debug log in development environment
+      if (process.env.NODE_ENV === 'development') {
+        console.debug('[GTM] Pushing to data layer:', dataLayerEvent)
+      }
+
+      this.dataLayer.push(dataLayerEvent)
     }
   }
 
