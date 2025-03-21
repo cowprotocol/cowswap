@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.16.0...common-const-v1.17.0) (2025-03-20)
+
+
+### Features
+
+* **bridge:** display tokens in selector from bridge provider ([#5489](https://github.com/cowprotocol/cowswap/issues/5489)) ([b5b08ee](https://github.com/cowprotocol/cowswap/commit/b5b08ee8da9c1746bd3b2147444c2090afdf3950))
+
 ## [1.16.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.15.1...common-const-v1.16.0) (2025-03-10)
 
 

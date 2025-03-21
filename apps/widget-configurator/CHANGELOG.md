@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.13.0...widget-configurator-v1.13.1) (2025-03-20)
+
+
+### Bug Fixes
+
+* **wallets:** disable coinbase in widget mobile ([#5516](https://github.com/cowprotocol/cowswap/issues/5516)) ([7233573](https://github.com/cowprotocol/cowswap/commit/7233573925c164de35017a3c48fc2af00d6106d2))
+
 ## [1.13.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.12.0...widget-configurator-v1.13.0) (2025-02-25)
 
 
