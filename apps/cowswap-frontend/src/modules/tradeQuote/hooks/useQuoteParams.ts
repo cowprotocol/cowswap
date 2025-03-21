@@ -1,26 +1,29 @@
 import { useDebounce } from '@cowprotocol/common-hooks'
-import { getCurrencyAddress, getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
-import { PriceQuality } from '@cowprotocol/cow-sdk'
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { TradeParameters } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 import { Nullish } from 'types'
 
-import { useAppData } from 'modules/appData'
+import { AppDataInfo, useAppData } from 'modules/appData'
 import { useIsWrapOrUnwrap } from 'modules/trade'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
-import { FeeQuoteParams } from 'common/types'
 
 const DEFAULT_QUOTE_TTL = ms`30m` / 1000
 const AMOUNT_CHANGE_DEBOUNCE_TIME = ms`350ms`
 
-export function useQuoteParams(
-  amount: Nullish<string>,
-): { quoteParams: FeeQuoteParams; inputCurrency: Currency } | undefined {
+export interface QuoteParams {
+  quoteParams: TradeParameters
+  inputCurrency: Currency
+  appData: AppDataInfo['doc'] | undefined
+}
+
+export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined {
   const { chainId, account } = useWalletInfo()
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
@@ -34,29 +37,24 @@ export function useQuoteParams(
     if (isWrapOrUnwrap || isProviderNetworkUnsupported) return
     if (!inputCurrency || !outputCurrency || !amount || !orderKind) return
 
-    const sellToken = getWrappedToken(inputCurrency).address
+    const sellToken = getCurrencyAddress(inputCurrency)
     const buyToken = getCurrencyAddress(outputCurrency)
-    const fromDecimals = inputCurrency.decimals
-    const toDecimals = outputCurrency.decimals
 
-    const quoteParams: FeeQuoteParams = {
+    const sellTokenDecimals = inputCurrency.decimals
+    const buyTokenDecimals = outputCurrency.decimals
+
+    const quoteParams: TradeParameters = {
+      kind: orderKind,
       sellToken,
       buyToken,
+      sellTokenDecimals,
+      buyTokenDecimals,
       amount,
-      chainId,
-      userAddress: account,
       receiver: account,
-      kind: orderKind,
-      toDecimals,
-      fromDecimals,
-      isEthFlow: getIsNativeToken(inputCurrency),
-      priceQuality: PriceQuality.OPTIMAL,
-      appData: appData?.fullAppData,
-      appDataHash: appData?.appDataKeccak256,
       validFor: DEFAULT_QUOTE_TTL,
     }
 
-    return { quoteParams, inputCurrency }
+    return { quoteParams, inputCurrency, appData: appData?.doc }
   }, [
     inputCurrency,
     outputCurrency,
@@ -64,8 +62,7 @@ export function useQuoteParams(
     orderKind,
     chainId,
     account,
-    appData?.fullAppData,
-    appData?.appDataKeccak256,
+    appData?.doc,
     isWrapOrUnwrap,
     isProviderNetworkUnsupported,
   ])

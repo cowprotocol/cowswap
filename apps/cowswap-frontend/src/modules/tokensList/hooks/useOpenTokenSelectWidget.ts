@@ -7,8 +7,8 @@ import { Nullish } from 'types'
 
 import { Field } from 'legacy/state/types'
 
-import { useUpdateSelectTokenWidgetState } from './useUpdateSelectTokenWidgetState'
 import { useCloseTokenSelectWidget } from './useCloseTokenSelectWidget'
+import { useUpdateSelectTokenWidgetState } from './useUpdateSelectTokenWidgetState'
 
 export function useOpenTokenSelectWidget(): (
   selectedToken: Nullish<Currency>,
@@ -35,6 +35,6 @@ export function useOpenTokenSelectWidget(): (
         },
       })
     },
-    [closeTokenSelectWidget],
+    [closeTokenSelectWidget, updateSelectTokenWidget],
   )
 }

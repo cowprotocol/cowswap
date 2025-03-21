@@ -85,7 +85,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         account &&
         provider &&
         appData &&
-        tradeQuote.response &&
+        tradeQuote.quote &&
         orderKind &&
         settlementContract &&
         uiOrderType
@@ -189,7 +189,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             appData,
             class: OrderClass.MARKET,
             partiallyFillable: isHooksTradeType,
-            quoteId: tradeQuote.response!.id,
+            quoteId: tradeQuote.quote!.quoteResults.quoteResponse.id,
             isSafeWallet,
           },
         }

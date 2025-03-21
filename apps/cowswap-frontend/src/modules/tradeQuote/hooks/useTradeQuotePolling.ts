@@ -7,6 +7,7 @@ import { PriceQuality } from '@cowprotocol/cow-sdk'
 import { useAreUnsupportedTokens } from '@cowprotocol/tokens'
 
 import ms from 'ms.macro'
+import { useTradingSdk } from 'tradingSdk/useTradingSdk'
 
 import { useUpdateCurrencyAmount } from 'modules/trade'
 
@@ -15,8 +16,9 @@ import { useQuoteParams } from './useQuoteParams'
 import { useTradeQuote } from './useTradeQuote'
 import { useTradeQuoteManager } from './useTradeQuoteManager'
 
-import { fetchAndProcessQuote, TradeQuoteFetchParams } from '../services/fetchAndProcessQuote'
+import { fetchAndProcessQuote } from '../services/fetchAndProcessQuote'
 import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
+import { TradeQuoteFetchParams } from '../types'
 import { isQuoteExpired } from '../utils/quoteDeadline'
 import { quoteUsingSameParameters } from '../utils/quoteUsingSameParameters'
 
@@ -29,8 +31,9 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
   const tradeQuoteRef = useRef(tradeQuote)
   tradeQuoteRef.current = tradeQuote
 
-  const { quoteParams, inputCurrency } = useQuoteParams(amount?.quotient.toString()) || {}
+  const { quoteParams, appData, inputCurrency } = useQuoteParams(amount?.quotient.toString()) || {}
 
+  const tradingSdk = useTradingSdk()
   const tradeQuoteManager = useTradeQuoteManager(inputCurrency && getCurrencyAddress(inputCurrency))
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const getIsUnsupportedTokens = useAreUnsupportedTokens()
@@ -53,7 +56,7 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
   }, [isWindowVisible, tradeQuoteManager, isConfirmOpen])
 
   useLayoutEffect(() => {
-    if (!tradeQuoteManager) {
+    if (!tradeQuoteManager || !tradingSdk) {
       return
     }
 
@@ -68,19 +71,23 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
     }
 
     const fetchQuote = (fetchParams: TradeQuoteFetchParams) =>
-      fetchAndProcessQuote(fetchParams, quoteParams, tradeQuoteManager)
+      fetchAndProcessQuote(fetchParams, quoteParams, appData, tradeQuoteManager, tradingSdk)
 
     function fetchAndUpdateQuote(hasParamsChanged: boolean, forceUpdate = false) {
       const currentQuote = tradeQuoteRef.current
-      const currentQuoteParams = currentQuote.quoteParams
-      const hasCachedResponse = !!currentQuote.response
+      const currentQuoteParams = currentQuote.quote?.quoteResults.tradeParameters
+      const currentQuoteAppData = currentQuote.quote?.quoteResults.appDataInfo
+      const hasCachedResponse = !!currentQuote.quote
       const hasCachedError = !!currentQuote.error
 
       if (!forceUpdate) {
         // Don't fetch quote if the parameters are the same
         // Also avoid quote refresh when only appData.quote (contains slippage) is changed
         // Important! We should skip quote updateing only if there is no quote response
-        if ((hasCachedResponse || hasCachedError) && quoteUsingSameParameters(currentQuoteParams, quoteParams)) {
+        if (
+          (hasCachedResponse || hasCachedError) &&
+          quoteUsingSameParameters(currentQuoteParams, quoteParams, currentQuoteAppData?.doc, appData)
+        ) {
           return
         }
 
@@ -114,8 +121,8 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
       const currentQuote = tradeQuoteRef.current
 
       if (
-        currentQuote.response &&
-        currentQuote.quoteParams?.priceQuality === PriceQuality.OPTIMAL &&
+        currentQuote.quote &&
+        currentQuote.fetchParams?.priceQuality === PriceQuality.OPTIMAL &&
         isQuoteExpired(currentQuote)
       ) {
         /**
@@ -132,11 +139,13 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
   }, [
     fastQuote,
     quoteParams,
+    appData,
     tradeQuoteManager,
     updateCurrencyAmount,
     processUnsupportedTokenError,
     getIsUnsupportedTokens,
     isWindowVisible,
+    tradingSdk,
   ])
 
   return null

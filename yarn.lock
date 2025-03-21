@@ -21049,6 +21049,11 @@ jju@~1.4.0:
   resolved "https://registry.yarnpkg.com/jju/-/jju-1.4.0.tgz#a3abe2718af241a2b2904f84a625970f389ae32a"
   integrity sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==
 
+jotai-cache@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/jotai-cache/-/jotai-cache-0.5.0.tgz#cd7d3c2c97382686c55b4fe4d8c8672c510c759d"
+  integrity sha512-29pUuEfSXL7Ba6lxZmiNDARc73TspWzAzCy0jCkk2uEOnFJ6kaUBZTp/AZSwnIsh1ndfUfM9/QpbLU7uJAQL0A==
+
 jotai@2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/jotai/-/jotai-2.2.0.tgz#80c176efeb59d32d7eef7f14510ba8e01ef7b0db"

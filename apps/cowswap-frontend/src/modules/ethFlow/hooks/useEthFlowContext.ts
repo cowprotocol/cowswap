@@ -17,7 +17,6 @@ export function useEthFlowContext(): EthFlowContext | null {
   const {
     result: { contract },
   } = useEthFlowContract()
-  // TODO: bind Swap module to tradeQuote module
   const quote = useTradeQuote()
 
   const addTransaction = useTransactionAdder()

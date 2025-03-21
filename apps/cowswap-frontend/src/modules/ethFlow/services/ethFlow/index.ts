@@ -68,7 +68,10 @@ export async function ethFlow({
   try {
     // Do not proceed if fee is expired
     if (quote && isQuoteExpired(quote)) {
-      reportPlaceOrderWithExpiredQuote({ ...orderParamsOriginal, fee: quote.response?.quote.feeAmount })
+      reportPlaceOrderWithExpiredQuote({
+        ...orderParamsOriginal,
+        fee: quote.quote?.quoteResults.quoteResponse.quote.feeAmount,
+      })
       throw new Error('Quote expired. Please refresh.')
     }
 
