@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenName } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
@@ -8,22 +10,46 @@ import { Trans } from '@lingui/macro'
 import { Nullish } from 'types'
 
 import * as styledEl from './styled'
-import { CurrencyName, StyledTokenSymbol } from './styled'
+import { StyledTokenSymbol, TokenSubText } from './styled'
+
+const TOKEN_SYMBOL_LENGTH = 40
+const TOKEN_NAME_LENGTH = 110
+const TOKEN_LOGO_SIZE = {
+  LARGE: 32,
+  SMALL: 28,
+} as const
 
 export interface CurrencySelectButtonProps {
   currency?: Nullish<Currency>
   loading: boolean
   readonlyMode?: boolean
   displayTokenName?: boolean
+  displayChainName?: boolean
   onClick?(): void
   customSelectTokenButton?: ReactNode
 }
 
 export function CurrencySelectButton(props: CurrencySelectButtonProps) {
-  const { currency, onClick, loading, readonlyMode = false, displayTokenName = false, customSelectTokenButton } = props
-  const $stubbed = !currency || false
+  const {
+    currency,
+    onClick,
+    loading,
+    readonlyMode = false,
+    displayTokenName = false,
+    displayChainName = false,
+    customSelectTokenButton,
+  } = props
 
-  if (!currency && customSelectTokenButton) return <div onClick={onClick}>{customSelectTokenButton}</div>
+  const $noCurrencySelected = !currency
+  const showDetailedDisplay = displayTokenName || displayChainName
+
+  if (!currency && customSelectTokenButton) {
+    return (
+      <div onClick={onClick} role="button" aria-label="Select custom token" tabIndex={0}>
+        {customSelectTokenButton}
+      </div>
+    )
+  }
 
   return (
     <styledEl.CurrencySelectWrapper
@@ -32,25 +58,44 @@ export function CurrencySelectButton(props: CurrencySelectButtonProps) {
       disabled={readonlyMode}
       onClick={onClick}
       isLoading={loading}
-      $stubbed={$stubbed}
+      $noCurrencySelected={$noCurrencySelected}
       displayTokenName={displayTokenName}
+      displayChainName={displayChainName}
+      role="button"
+      aria-label={currency ? `Selected token: ${currency.symbol}` : 'Select a token'}
+      tabIndex={readonlyMode ? -1 : 0}
     >
-      {currency ? <TokenLogo token={currency} size={displayTokenName ? 36 : 24} /> : <div></div>}
-      <styledEl.CurrencySymbol className="token-symbol-container" $stubbed={$stubbed}>
+      {currency ? (
+        <TokenLogo token={currency} size={showDetailedDisplay ? TOKEN_LOGO_SIZE.LARGE : TOKEN_LOGO_SIZE.SMALL} />
+      ) : (
+        <div aria-hidden="true" />
+      )}
+      <styledEl.CurrencySymbol className="token-symbol-container" $noCurrencySelected={$noCurrencySelected}>
         {currency ? (
           <>
-            <StyledTokenSymbol token={currency} length={40} displayTokenName={displayTokenName} />
+            <StyledTokenSymbol
+              token={currency}
+              length={TOKEN_SYMBOL_LENGTH}
+              displayTokenName={displayTokenName}
+              displayChainName={displayChainName}
+            />
+
             {displayTokenName && (
-              <CurrencyName>
-                <TokenName token={currency} length={110} />
-              </CurrencyName>
+              <TokenSubText>
+                <TokenName token={currency} length={TOKEN_NAME_LENGTH} />
+              </TokenSubText>
+            )}
+            {displayChainName && currency.chainId && (
+              <TokenSubText>
+                {CHAIN_INFO[currency.chainId as SupportedChainId]?.label || `ChainID: ${currency.chainId}`}
+              </TokenSubText>
             )}
           </>
         ) : (
           <Trans>Select a token</Trans>
         )}
       </styledEl.CurrencySymbol>
-      {readonlyMode ? null : $stubbed ? <styledEl.ArrowDown $stubbed={$stubbed} /> : <styledEl.ArrowDown />}
+      {readonlyMode ? null : <styledEl.ArrowDown $noCurrencySelected={$noCurrencySelected} aria-hidden="true" />}
     </styledEl.CurrencySelectWrapper>
   )
 }
