@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.6.0...hook-dapp-lib-v1.7.0) (2025-03-20)
+
+
+### Features
+
+* **hook-store:** add uni-v2 deposit hook dapp ([#5245](https://github.com/cowprotocol/cowswap/issues/5245)) ([f335a05](https://github.com/cowprotocol/cowswap/commit/f335a0575e624747714662e7237b8bd7b97bd49d))
+
 ## [1.6.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.5.0...hook-dapp-lib-v1.6.0) (2025-02-05)
 
 

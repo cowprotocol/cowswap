@@ -10,17 +10,30 @@ import { Nullish } from 'types'
 
 import { Field } from 'legacy/state/types'
 
+interface SelectTokenWidgetState {
+  open: boolean
+  field?: Field
+  oppositeToken?: TokenWithLogo | LpToken | Currency
+  selectedToken?: Nullish<Currency>
+  selectedPoolAddress?: string
+  tokenToImport?: TokenWithLogo
+  listToImport?: ListState
+  onSelectToken?: (currency: Currency) => void
+  onInputPressEnter?: Command
+  selectedTargetChainId?: number
+}
+
+export const DEFAULT_SELECT_TOKEN_WIDGET_STATE: SelectTokenWidgetState = {
+  open: false,
+  field: undefined,
+  selectedToken: undefined,
+  onSelectToken: undefined,
+  tokenToImport: undefined,
+  listToImport: undefined,
+  selectedPoolAddress: undefined,
+  selectedTargetChainId: undefined,
+}
+
 export const { atom: selectTokenWidgetAtom, updateAtom: updateSelectTokenWidgetAtom } = atomWithPartialUpdate(
-  atom<{
-    open: boolean
-    field?: Field
-    oppositeToken?: TokenWithLogo | LpToken | Currency
-    selectedToken?: Nullish<Currency>
-    selectedPoolAddress?: string
-    tokenToImport?: TokenWithLogo
-    listToImport?: ListState
-    onSelectToken?: (currency: Currency) => void
-    onInputPressEnter?: Command
-    selectedTargetChainId?: number
-  }>({ open: false }),
+  atom<SelectTokenWidgetState>(DEFAULT_SELECT_TOKEN_WIDGET_STATE),
 )

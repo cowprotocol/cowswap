@@ -8,10 +8,12 @@ export interface TradeUrlParams {
   readonly inputCurrencyAmount: string | undefined
   readonly outputCurrencyAmount: string | undefined
   readonly orderKind: OrderKind | undefined
+  readonly targetChainId?: string
 }
 
 export interface TradeRawState {
   readonly chainId: number | null
+  readonly targetChainId: number | null
   readonly inputCurrencyId: string | null
   readonly outputCurrencyId: string | null
   readonly recipient?: string | null
@@ -42,6 +44,7 @@ export function getDefaultTradeRawState(chainId: SupportedChainId | null): Trade
 
   return {
     chainId,
+    targetChainId: null,
     inputCurrencyId: inputCurrency?.symbol || null, // Currently WETH/wxDAI, less likely to be duplicated, symbol is fine
     outputCurrencyId: outputCurrency?.address || null, // Currently USDC, more likely to be duplicated, better to use address
     recipient: null,

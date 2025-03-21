@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.13.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.12.0...common-utils-v1.13.0) (2025-03-20)
+
+
+### Features
+
+* **bridge:** display tokens in selector from bridge provider ([#5489](https://github.com/cowprotocol/cowswap/issues/5489)) ([b5b08ee](https://github.com/cowprotocol/cowswap/commit/b5b08ee8da9c1746bd3b2147444c2090afdf3950))
+
+
+### Bug Fixes
+
+* **wallets:** disable coinbase in widget mobile ([#5516](https://github.com/cowprotocol/cowswap/issues/5516)) ([7233573](https://github.com/cowprotocol/cowswap/commit/7233573925c164de35017a3c48fc2af00d6106d2))
+
 ## [1.12.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.11.0...common-utils-v1.12.0) (2025-03-10)
 
 
