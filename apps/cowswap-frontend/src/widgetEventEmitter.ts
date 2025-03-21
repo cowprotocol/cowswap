@@ -1,6 +1,6 @@
-import { setupEventHandlers, getCowAnalytics } from '@cowprotocol/analytics'
-import { CowWidgetEventPayloadMap, CowWidgetEvents, SimpleCowEventEmitter } from '@cowprotocol/events'
+import { setupEventHandlers } from '@cowprotocol/analytics'
+import { SimpleCowEventEmitter, CowWidgetEventPayloadMap, CowWidgetEvents } from '@cowprotocol/events'
 
 export const WIDGET_EVENT_EMITTER = new SimpleCowEventEmitter<CowWidgetEventPayloadMap, CowWidgetEvents>()
 
-setupEventHandlers(WIDGET_EVENT_EMITTER, getCowAnalytics)
+setupEventHandlers(WIDGET_EVENT_EMITTER)

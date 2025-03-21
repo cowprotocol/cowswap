@@ -1,6 +1,14 @@
-import { CowWidgetEvents, SimpleCowEventEmitter, CowWidgetEventPayloadMap } from '@cowprotocol/events'
+import {
+  CowWidgetEvents,
+  SimpleCowEventEmitter,
+  CowWidgetEventPayloadMap,
+  OnPostedOrderPayload,
+  OnFulfilledOrderPayload,
+  OnCancelledOrderPayload,
+  OnExpiredOrderPayload,
+} from '@cowprotocol/events'
 
-import { CowAnalytics } from '../CowAnalytics'
+import { getCowAnalytics } from '../utils'
 
 // Map CowWidgetEvents to GTM event names - only include the ones we use
 export const EVENT_MAPPING: Partial<Record<CowWidgetEvents, string>> = {
@@ -130,13 +138,18 @@ const getCommonOrderProperties = (payload: unknown, isPostedOrder = false): Orde
 }
 
 // Helper to set up an event handler with common logic
-export const setupEventHandler = (
-  analytics: CowAnalytics,
+const setupEventHandler = (
   event: CowWidgetEvents,
   payload: unknown,
   getAdditionalProps: (payload: any) => Record<string, any>,
   isPostedOrder = false,
 ) => {
+  const analytics = getCowAnalytics()
+  if (!analytics) {
+    console.warn('Analytics instance not available for event:', EVENT_MAPPING[event])
+    return
+  }
+
   const eventName = EVENT_MAPPING[event]
   if (eventName) {
     const commonProps = getCommonOrderProperties(payload, isPostedOrder)
@@ -151,10 +164,8 @@ export const setupEventHandler = (
   }
 }
 
-// Event handler setup functions
-export const handlePostedOrder = (analytics: CowAnalytics, payload: unknown) => {
+const handlePostedOrder = (payload: OnPostedOrderPayload) => {
   setupEventHandler(
-    analytics,
     CowWidgetEvents.ON_POSTED_ORDER,
     payload,
     (p) => ({
@@ -169,75 +180,62 @@ export const handlePostedOrder = (analytics: CowAnalytics, payload: unknown) => 
   )
 }
 
-export const handleFulfilledOrder = (analytics: CowAnalytics, payload: unknown) => {
-  setupEventHandler(analytics, CowWidgetEvents.ON_FULFILLED_ORDER, payload, (p) => ({
+const handleFulfilledOrder = (payload: OnFulfilledOrderPayload) => {
+  setupEventHandler(CowWidgetEvents.ON_FULFILLED_ORDER, payload, (p) => ({
     executedSellAmount: safeGetString(p.order, 'executedSellAmount'),
     executedBuyAmount: safeGetString(p.order, 'executedBuyAmount'),
     executedFeeAmount: safeGetString(p.order, 'executedFeeAmount'),
   }))
 }
 
-export const handleCancelledOrder = (analytics: CowAnalytics, payload: unknown) => {
-  setupEventHandler(analytics, CowWidgetEvents.ON_CANCELLED_ORDER, payload, (p) => ({
+const handleCancelledOrder = (payload: OnCancelledOrderPayload) => {
+  setupEventHandler(CowWidgetEvents.ON_CANCELLED_ORDER, payload, (p) => ({
     reason: 'cancelled',
     transactionHash: p.transactionHash || '',
   }))
 }
 
-export const handleExpiredOrder = (analytics: CowAnalytics, payload: unknown) => {
-  setupEventHandler(analytics, CowWidgetEvents.ON_EXPIRED_ORDER, payload, () => ({
+const handleExpiredOrder = (payload: OnExpiredOrderPayload) => {
+  setupEventHandler(CowWidgetEvents.ON_EXPIRED_ORDER, payload, () => ({
     reason: 'expired',
   }))
 }
 
-export const setupEventHandlers = (
-  eventEmitter: SimpleCowEventEmitter<CowWidgetEventPayloadMap, CowWidgetEvents>,
-  getAnalytics: () => CowAnalytics | undefined,
-) => {
+/**
+ * Sets up event handlers for CoW Swap order lifecycle events.
+ * Since this is within the analytics library, we use the analytics
+ * instance directly rather than taking it as a parameter.
+ */
+export const setupEventHandlers = (eventEmitter: SimpleCowEventEmitter<CowWidgetEventPayloadMap, CowWidgetEvents>) => {
   // Define event configurations
-  const eventConfigs: Array<{
-    event: CowWidgetEvents
-    handler: (analytics: CowAnalytics, payload: unknown) => void
-    errorMessage: string
-  }> = [
+  const eventConfigs = [
     // Handle order submission
     {
       event: CowWidgetEvents.ON_POSTED_ORDER,
       handler: handlePostedOrder,
-      errorMessage: 'order_submitted',
     },
     // Handle order fulfillment
     {
       event: CowWidgetEvents.ON_FULFILLED_ORDER,
       handler: handleFulfilledOrder,
-      errorMessage: 'swap_executed',
     },
     // Handle order cancellation
     {
       event: CowWidgetEvents.ON_CANCELLED_ORDER,
       handler: handleCancelledOrder,
-      errorMessage: 'swap_cancelled',
     },
     // Handle order expiration
     {
       event: CowWidgetEvents.ON_EXPIRED_ORDER,
       handler: handleExpiredOrder,
-      errorMessage: 'swap_expired',
     },
-  ]
+  ] as const
 
   // Register each event handler
-  eventConfigs.forEach(({ event, handler, errorMessage }) => {
+  eventConfigs.forEach(({ event, handler }) => {
     eventEmitter.on({
       event,
-      handler: (payload: unknown) => {
-        const analytics = getAnalytics()
-        if (analytics) {
-          handler(analytics, payload)
-        } else {
-          console.warn(`Analytics instance not available for event: ${errorMessage}`)
-        }
-      },
+      handler: handler as any, // event emitter expecting a common handler type
     })
   })
 }
