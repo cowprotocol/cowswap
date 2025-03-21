@@ -5,7 +5,7 @@ import { useBridgeProvider } from './useBridgeProvider'
 export function useBridgeSupportedNetworks() {
   const bridgeProvider = useBridgeProvider()
 
-  return useSWR([bridgeProvider], ([bridgeProvider]) => {
+  return useSWR([bridgeProvider, 'useBridgeSupportedNetworks'], ([bridgeProvider]) => {
     return bridgeProvider.getNetworks()
   })
 }

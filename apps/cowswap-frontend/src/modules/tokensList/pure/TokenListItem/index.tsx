@@ -1,10 +1,13 @@
 import { MouseEventHandler } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { LoadingRows, LoadingRowSmall, TokenAmount } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { Nullish } from 'types'
 
 import * as styledEl from './styled'
 
@@ -19,7 +22,7 @@ const LoadingElement = (
 
 export interface TokenListItemProps {
   token: TokenWithLogo
-  selectedToken?: string
+  selectedToken?: Nullish<Currency>
   balance: BigNumber | undefined
   onSelectToken(token: TokenWithLogo): void
   isUnsupported: boolean
@@ -39,7 +42,11 @@ export function TokenListItem(props: TokenListItemProps) {
     }
   }
 
-  const isTokenSelected = token.address.toLowerCase() === selectedToken?.toLowerCase()
+  const isTokenSelected =
+    selectedToken &&
+    token.address.toLowerCase() === getCurrencyAddress(selectedToken).toLowerCase() &&
+    token.chainId === selectedToken.chainId
+
   const isSupportedChain = token.chainId in SupportedChainId
 
   const balanceAmount = balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined

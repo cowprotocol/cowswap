@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.0](https://github.com/cowprotocol/cowswap/compare/multicall-v1.0.0...multicall-v1.1.0) (2025-03-20)
+
+
+### Features
+
+* **bridge:** display tokens in selector from bridge provider ([#5489](https://github.com/cowprotocol/cowswap/issues/5489)) ([b5b08ee](https://github.com/cowprotocol/cowswap/commit/b5b08ee8da9c1746bd3b2147444c2090afdf3950))
+* **bridge:** do not fetch balances too often ([#5509](https://github.com/cowprotocol/cowswap/issues/5509)) ([a673668](https://github.com/cowprotocol/cowswap/commit/a6736681aadc2e1e42dea3ca13827728976e4ce2))
+
+
+### Bug Fixes
+
+* **balances:** do not false skip balances fetching ([#5529](https://github.com/cowprotocol/cowswap/issues/5529)) ([f1de831](https://github.com/cowprotocol/cowswap/commit/f1de831143689d12cea15f0348d00561d77bcf68))
+
 ## 1.0.0 (2024-11-06)
 
 

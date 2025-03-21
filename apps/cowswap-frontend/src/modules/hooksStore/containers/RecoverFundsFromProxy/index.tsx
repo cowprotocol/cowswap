@@ -169,8 +169,8 @@ export function RecoverFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
   }, [recoverFundsCallback, addTransaction, handleSetError])
 
   const onCurrencySelectClick = useCallback(() => {
-    onSelectToken(selectedTokenAddress, undefined, undefined, setSelectedCurrency)
-  }, [onSelectToken, selectedTokenAddress, setSelectedCurrency])
+    onSelectToken(selectedCurrency, undefined, undefined, setSelectedCurrency)
+  }, [onSelectToken, selectedCurrency, setSelectedCurrency])
 
   const explorerLink = proxyAddress ? getEtherscanLink(erc20ChainId, 'address', proxyAddress) : undefined
 

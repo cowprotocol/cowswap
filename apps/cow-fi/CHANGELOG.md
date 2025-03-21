@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.22.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.21.1...cow-fi-v1.22.0) (2025-03-20)
+
+
+### Features
+
+* **learn:** enhance search and article fetching functionality ([#5461](https://github.com/cowprotocol/cowswap/issues/5461)) ([8344440](https://github.com/cowprotocol/cowswap/commit/8344440e8136a2f20fc9c0888ec6a39d64f6214c))
+
+
+### Bug Fixes
+
+* **cow.fi:** update navigation to relevant links on Daos and CoW Protocol pages ([#5518](https://github.com/cowprotocol/cowswap/issues/5518)) ([64c057a](https://github.com/cowprotocol/cowswap/commit/64c057a7d9f28fcae8a6e4ae1728c61708d88e2c))
+
 ## [1.21.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.21.0...cow-fi-v1.21.1) (2025-03-10)
 
 

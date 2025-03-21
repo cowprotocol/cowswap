@@ -19,6 +19,7 @@ export function useOnCurrencySelection(): (field: Field, currency: Currency | nu
 
   return useCallback(
     (field: Field, currency: Currency | null, callback?: Command) => {
+      if (!currency) return
       /**
        * Since we store quotient value in the store, we must adjust the value regarding a currency decimals
        * For example, we selected USDC (6 decimals) as input currency and entered "6" as amount
@@ -27,21 +28,19 @@ export function useOnCurrencySelection(): (field: Field, currency: Currency | nu
        * Before changing the input currency we must adjust the inputCurrencyAmount for the new currency decimals
        * 6000000 must be converted to 6000000000000000000
        */
-      if (currency) {
-        const amountField = field === Field.INPUT ? 'inputCurrencyAmount' : 'outputCurrencyAmount'
+      const amountField = field === Field.INPUT ? 'inputCurrencyAmount' : 'outputCurrencyAmount'
 
-        const amount = field === Field.INPUT ? inputCurrencyAmount : outputCurrencyAmount
+      const amount = field === Field.INPUT ? inputCurrencyAmount : outputCurrencyAmount
 
-        if (amount) {
-          const converted = convertAmountToCurrency(amount, currency)
+      if (amount) {
+        const converted = convertAmountToCurrency(amount, currency)
 
-          return navigateOnCurrencySelection(field, currency, () => {
-            updateState?.({
-              [amountField]: FractionUtils.serializeFractionToJSON(converted),
-            })
-            callback?.()
+        return navigateOnCurrencySelection(field, currency, () => {
+          updateState?.({
+            [amountField]: FractionUtils.serializeFractionToJSON(converted),
           })
-        }
+          callback?.()
+        })
       }
 
       return navigateOnCurrencySelection(field, currency, callback)
