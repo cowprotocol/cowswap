@@ -511,8 +511,6 @@ const MAINNET_STABLECOINS = [
   sUSD_MAINNET.address,
 ].map((t) => t.toLowerCase())
 
-// NOTE: whenever this list is updated, make sure to update the docs section regarding the volume fees
-// https://github.com/cowprotocol/docs/blob/main/docs/governance/fees/fees.md?plain=1#L40
 const GNOSIS_CHAIN_STABLECOINS = [
   SDAI_GNOSIS_CHAIN_ADDRESS,
   NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN].address, //xDAI
@@ -535,7 +533,6 @@ const ARBITRUM_ONE_STABLECOINS = [
   MIM_ARBITRUM_ONE.address,
 ].map((t) => t.toLowerCase())
 
-// Not used for fees
 const BASE_STABLECOINS = [
   USDC_BASE.address,
   DAI_BASE.address,
