@@ -62,6 +62,8 @@ export const CurrencySelectWrapper = styled.button<{
   displayTokenName: boolean
   displayChainName: boolean
 }>`
+  --min-height: 35px;
+  --min-width: 190px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -78,7 +80,8 @@ export const CurrencySelectWrapper = styled.button<{
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   ${({ readonlyMode }) => (readonlyMode ? 'padding-right: 10px;' : '')}
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
-  max-width: 190px;
+  max-width: var(--max-width);
+  min-height: var(--min-height);
   padding: ${({ displayTokenName, displayChainName }) =>
     displayTokenName || displayChainName ? '5px 10px 5px 5px' : '5px'};
 

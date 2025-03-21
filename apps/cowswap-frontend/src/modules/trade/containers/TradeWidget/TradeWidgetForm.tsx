@@ -75,7 +75,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     hideTradeWarnings,
     enableSmartSlippage,
     displayTokenName = false,
-    displayChainName = isBridgingEnabled && !isCurrentTradeBridging,
+    displayChainName = isBridgingEnabled && isCurrentTradeBridging,
     isMarketOrderWidget = false,
     isSellingEthSupported = false,
   } = params
