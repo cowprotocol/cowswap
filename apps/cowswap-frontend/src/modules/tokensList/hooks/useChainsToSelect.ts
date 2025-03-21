@@ -27,7 +27,7 @@ function mapChainInfo(chainId: number, info: BaseChainInfo): ChainInfo {
     blockExplorer: info.explorer,
     logoUrl: {
       light: info.logo.light,
-      dark: info.logo.light,
+      dark: info.logo.dark,
     },
     mainColor: info.color,
   }

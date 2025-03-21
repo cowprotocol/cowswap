@@ -47,7 +47,11 @@ export function parameterizeTradeRoute(
   }
 
   if (targetChainId) {
-    return `${path}?targetChainId=${targetChainId}`
+    const params = new URLSearchParams()
+
+    params.set('targetChainId', targetChainId.toString())
+
+    return `${path}?${params.toString()}`
   }
 
   return path

@@ -18,26 +18,31 @@ export function useSwrConfigWithPauseForNetwork(
   config: SWRConfiguration,
   validityPeriod = BALANCE_VALIDITY_PERIOD,
 ): SWRConfiguration {
-  const shouldSkipFetchingRef = useRef<Record<number, boolean>>({})
   const balances = useAtomValue(balancesAtom)
   const balancesUpdate = useAtomValue(balancesUpdateAtom)
 
   const balancesChainId = balances.chainId
   const lastUpdateTimestamp = balancesUpdate[chainId]
 
+  const lastUpdateTimestampRef = useRef(lastUpdateTimestamp)
+
   useEffect(() => {
     if (balancesChainId && balancesChainId !== chainId) {
       return
     }
 
-    shouldSkipFetchingRef.current[chainId] = !!lastUpdateTimestamp && Date.now() - lastUpdateTimestamp < validityPeriod
-  }, [balancesChainId, lastUpdateTimestamp, chainId, validityPeriod])
+    lastUpdateTimestampRef.current = lastUpdateTimestamp
+  }, [lastUpdateTimestamp, balancesChainId, chainId])
 
   return useMemo(
     () => ({
       ...config,
-      isPaused: () => shouldSkipFetchingRef.current[chainId],
+      isPaused: () => {
+        const lastUpdateTimestamp = lastUpdateTimestampRef.current
+
+        return !!lastUpdateTimestamp && Date.now() - lastUpdateTimestamp < validityPeriod
+      },
     }),
-    [config, chainId],
+    [config, validityPeriod],
   )
 }

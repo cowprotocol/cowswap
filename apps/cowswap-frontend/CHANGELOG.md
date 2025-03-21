@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.104.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.5...cowswap-v1.104.0) (2025-03-20)
+
+
+### Features
+
+* add a warning message to the order limit price tooltip modal ([#5487](https://github.com/cowprotocol/cowswap/issues/5487)) ([ebe0bf0](https://github.com/cowprotocol/cowswap/commit/ebe0bf07d07f031660cd2b9044ef57fb794f260d))
+* **bridge:** add network logo token icon ([#5511](https://github.com/cowprotocol/cowswap/issues/5511)) ([1e74585](https://github.com/cowprotocol/cowswap/commit/1e74585ebe0d4a2d9f1a535972192b820a643869))
+* **bridge:** display tokens in selector from bridge provider ([#5489](https://github.com/cowprotocol/cowswap/issues/5489)) ([b5b08ee](https://github.com/cowprotocol/cowswap/commit/b5b08ee8da9c1746bd3b2147444c2090afdf3950))
+* **bridge:** do not fetch balances too often ([#5509](https://github.com/cowprotocol/cowswap/issues/5509)) ([a673668](https://github.com/cowprotocol/cowswap/commit/a6736681aadc2e1e42dea3ca13827728976e4ce2))
+* **bridge:** select sell token from another chain ([#5521](https://github.com/cowprotocol/cowswap/issues/5521)) ([f0fc900](https://github.com/cowprotocol/cowswap/commit/f0fc900c7035e47331e07b0d5b7a31674dc7bc13))
+* bring arb1 feature flag back "Revert ([#5500](https://github.com/cowprotocol/cowswap/issues/5500))" ([#5519](https://github.com/cowprotocol/cowswap/issues/5519)) ([4aa518e](https://github.com/cowprotocol/cowswap/commit/4aa518e2bf640b0acac6201f773856fa9701554f))
+* **learn:** enhance search and article fetching functionality ([#5461](https://github.com/cowprotocol/cowswap/issues/5461)) ([8344440](https://github.com/cowprotocol/cowswap/commit/8344440e8136a2f20fc9c0888ec6a39d64f6214c))
+* remove arb1CowSwapFeePercentage feature flag ([#5500](https://github.com/cowprotocol/cowswap/issues/5500)) ([937686e](https://github.com/cowprotocol/cowswap/commit/937686e5a3770f4d99ebc95e032966a8795b86dc))
+
+
+### Bug Fixes
+
+* issue [#5490](https://github.com/cowprotocol/cowswap/issues/5490) ([#5495](https://github.com/cowprotocol/cowswap/issues/5495)) ([b98737d](https://github.com/cowprotocol/cowswap/commit/b98737de3e6ece64b92d9d62053d843e38069e7d))
+* **wallets:** disable coinbase in widget mobile ([#5516](https://github.com/cowprotocol/cowswap/issues/5516)) ([7233573](https://github.com/cowprotocol/cowswap/commit/7233573925c164de35017a3c48fc2af00d6106d2))
+* **wallets:** show MM warning only to affected/unknown versions ([#5510](https://github.com/cowprotocol/cowswap/issues/5510)) ([50c65fc](https://github.com/cowprotocol/cowswap/commit/50c65fc3b4b651534178f887c25657669ffd5f21))
+
 ## [1.103.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.4...cowswap-v1.103.5) (2025-03-10)
 
 
