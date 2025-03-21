@@ -202,7 +202,7 @@ const handleExpiredOrder = (payload: OnExpiredOrderPayload) => {
 }
 
 /**
- * Sets up event handlers for CoW Swap order lifecycle events.
+ * Sets up event handlers for order lifecycle events.
  * Since this is within the analytics library, we use the analytics
  * instance directly rather than taking it as a parameter.
  */
