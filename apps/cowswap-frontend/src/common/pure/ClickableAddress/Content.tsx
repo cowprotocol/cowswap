@@ -34,15 +34,24 @@ const ExtLinkWrapper = styled(ExtLink)`
   font-size: 0.825rem;
   opacity: 0.75;
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-  
-  &:hover {
+
+  &:hover,
+  &:active,
+  &:focus {
     text-decoration: none;
     opacity: 1;
   }
 `
 
+const ExplorerIcon = styled(SVG)`
+  margin: 0 0 0 1px;
+  > path {
+    fill: var(${UI.COLOR_TEXT});
+  }
+`
+
 const Text = styled.span`
-  margin-left: 8px;
+  margin: 0 0 0 8px;
 `
 
 interface ContentProps {
@@ -57,7 +66,7 @@ export function Content({ address, target }: ContentProps) {
         <Text>Copy address</Text>
       </CopyHelperWrapper>
       <ExtLinkWrapper href={target} target="_blank">
-        <SVG
+        <ExplorerIcon
           src={EtherscanImage}
           width={16}
           height={16}

@@ -1,23 +1,12 @@
-import { MouseEvent, useCallback, useState } from 'react'
+import { MouseEvent, useCallback, useRef, useState } from 'react'
 
-import { getChainInfo } from '@cowprotocol/common-const'
-import { shortenAddress } from '@cowprotocol/common-utils'
+import { ExplorerDataType, getExplorerLink, shortenAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { Tooltip } from '@cowprotocol/ui'
 
 import { Info } from 'react-feather'
 
 import { Content } from './Content'
 import * as styledEl from './styled'
-
-const getTarget = (address: string, chainId: number) => {
-  const chainInfo = getChainInfo(chainId)
-  return chainInfo ? `${chainInfo.explorer}/address/${address}` : undefined
-}
-
-const isNativeToken = (address: string, chainId: number) => {
-  const chainInfo = getChainInfo(chainId)
-  return chainInfo ? chainInfo.nativeCurrency.address === address : false
-}
 
 export type ClickableAddressProps = {
   address: string
@@ -27,35 +16,38 @@ export type ClickableAddressProps = {
 export function ClickableAddress(props: ClickableAddressProps) {
   const { address, chainId } = props
 
+  const wrapperRef = useRef<HTMLDivElement>(null)
+
   const [openTooltip, setOpenTooltip] = useState(false)
 
   const shortAddress = shortenAddress(address)
 
-  const target = getTarget(address, chainId)
+  const target = getExplorerLink(chainId, address, ExplorerDataType.TOKEN)
 
-  const shouldShowAddress = target && !isNativeToken(address, chainId)
+  const shouldShowAddress = target && !getIsNativeToken(chainId, address)
 
   const handleClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation()
+    event.stopPropagation?.()
     setOpenTooltip((prev) => !prev)
   }, [])
 
-  const handleClickCapture = useCallback((event: MouseEvent<HTMLDivElement>) => {
-    event.stopPropagation()
-    setOpenTooltip((prev) => !prev)
+  const handleClickOutside = useCallback((event: MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation?.()
+    setOpenTooltip(false)
   }, [])
 
   return (
     shouldShowAddress && (
-      <styledEl.Wrapper openTooltip={openTooltip}>
+      <styledEl.Wrapper openTooltip={openTooltip} ref={wrapperRef}>
         <styledEl.AddressWrapper>{shortAddress}</styledEl.AddressWrapper>
         <styledEl.InfoIcon onClick={handleClick}>
           <Tooltip
             content={<Content address={address} target={target} />}
             placement="bottom"
             wrapInContainer
-            onClickCapture={handleClickCapture}
             show={openTooltip}
+            onClickCapture={handleClickOutside}
+            containerRef={wrapperRef}
           >
             <Info size={16} />
           </Tooltip>

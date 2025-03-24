@@ -53,9 +53,9 @@ export const InfoIcon = styled(LinkStyledButton)`
     justify-content: center;
   }
 
-  :hover,
-  :active,
-  :focus {
+  &:hover,
+  &:active,
+  &:focus {
     text-decoration: none;
     color: inherit;
   }
