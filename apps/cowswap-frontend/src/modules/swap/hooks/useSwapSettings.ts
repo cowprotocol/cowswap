@@ -4,6 +4,8 @@ import { useMemo } from 'react'
 
 import { StatefulValue } from '@cowprotocol/types'
 
+import { useUpdateSwapRawState } from './useUpdateSwapRawState'
+
 import { updateSwapSettingsAtom, swapSettingsAtom } from '../state/swapSettingsAtom'
 
 export function useSwapSettings() {
@@ -23,9 +25,18 @@ export function useSwapDeadlineState(): StatefulValue<number> {
 export function useSwapRecipientToggleState(): StatefulValue<boolean> {
   const updateState = useSetAtom(updateSwapSettingsAtom)
   const settings = useSwapSettings()
+  const updateSwapRawState = useUpdateSwapRawState()
 
   return useMemo(
-    () => [settings.showRecipient, (showRecipient: boolean) => updateState({ showRecipient })],
-    [settings.showRecipient, updateState],
+    () => [
+      settings.showRecipient,
+      (showRecipient: boolean) => {
+        updateState({ showRecipient })
+        if (!showRecipient) {
+          updateSwapRawState({ recipient: undefined, recipientAddress: undefined })
+        }
+      },
+    ],
+    [settings.showRecipient, updateState, updateSwapRawState],
   )
 }
