@@ -7,7 +7,7 @@ import { useBridgeProvider } from './useBridgeProvider'
 export function useBridgeSupportedTokens(chainId: number | undefined) {
   const bridgeProvider = useBridgeProvider()
 
-  return useSWR([bridgeProvider, chainId], ([bridgeProvider, chainId]) => {
+  return useSWR([bridgeProvider, chainId, 'useBridgeSupportedTokens'], ([bridgeProvider, chainId]) => {
     if (typeof chainId === 'undefined') return null
 
     return bridgeProvider.getTokens(chainId).then((tokens) => {

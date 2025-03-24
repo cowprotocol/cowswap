@@ -7,6 +7,7 @@ import { Nullish } from 'types'
 
 import { Field } from 'legacy/state/types'
 
+import { useCloseTokenSelectWidget } from './useCloseTokenSelectWidget'
 import { useUpdateSelectTokenWidgetState } from './useUpdateSelectTokenWidgetState'
 
 export function useOpenTokenSelectWidget(): (
@@ -16,20 +17,24 @@ export function useOpenTokenSelectWidget(): (
   onSelectToken: (currency: Currency) => void,
 ) => void {
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
+  const closeTokenSelectWidget = useCloseTokenSelectWidget()
 
   return useCallback(
     (selectedToken, field, oppositeToken, onSelectToken) => {
+      const selectedTargetChainId = field === Field.OUTPUT && selectedToken ? selectedToken.chainId : undefined
+
       updateSelectTokenWidget({
         selectedToken,
         field,
         oppositeToken,
         open: true,
+        selectedTargetChainId,
         onSelectToken: (currency) => {
-          updateSelectTokenWidget({ open: false })
+          closeTokenSelectWidget()
           onSelectToken(currency)
         },
       })
     },
-    [updateSelectTokenWidget],
+    [closeTokenSelectWidget, updateSelectTokenWidget],
   )
 }

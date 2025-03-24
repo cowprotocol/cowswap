@@ -9,7 +9,15 @@ import { RoutesValues } from 'common/constants/routes'
  * /limit/_/DAI
  */
 export function parameterizeTradeRoute(
-  { chainId, orderKind, inputCurrencyId, outputCurrencyId, inputCurrencyAmount, outputCurrencyAmount }: TradeUrlParams,
+  {
+    chainId,
+    targetChainId,
+    orderKind,
+    inputCurrencyId,
+    outputCurrencyId,
+    inputCurrencyAmount,
+    outputCurrencyAmount,
+  }: TradeUrlParams,
   route: RoutesValues,
   withAmounts?: boolean,
 ): string {
@@ -29,7 +37,19 @@ export function parameterizeTradeRoute(
       params.set('buyAmount', outputCurrencyAmount)
     }
 
+    if (targetChainId) {
+      params.set('targetChainId', targetChainId)
+    }
+
     params.set('orderKind', orderKind || OrderKind.SELL)
+
+    return `${path}?${params.toString()}`
+  }
+
+  if (targetChainId) {
+    const params = new URLSearchParams()
+
+    params.set('targetChainId', targetChainId.toString())
 
     return `${path}?${params.toString()}`
   }

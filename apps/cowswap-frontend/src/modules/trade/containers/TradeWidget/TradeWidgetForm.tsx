@@ -3,6 +3,7 @@ import React, { useCallback, useMemo } from 'react'
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonOutlined, Media, MY_ORDERS_ID, SWAP_HEADER_OFFSET } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
@@ -101,8 +102,9 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const isEoaEthFlow = useIsEoaEthFlow()
 
   const sellToken = inputCurrencyInfo.currency
-  const areCurrenciesLoading = !sellToken && !outputCurrencyInfo.currency
-  const bothCurrenciesSet = !!sellToken && !!outputCurrencyInfo.currency
+  const buyToken = outputCurrencyInfo.currency
+  const areCurrenciesLoading = !sellToken && !buyToken
+  const bothCurrenciesSet = !!sellToken && !!buyToken
 
   const hasRecipientInUrl = !!tradeStateFromUrl?.recipient
   const withRecipient = !isWrapOrUnwrap && (showRecipient || hasRecipientInUrl)
@@ -144,9 +146,9 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
 
   const openSellTokenSelect = useCallback(
     (selectedToken: Nullish<Currency>, field: Field | undefined, onSelectToken: (currency: Currency) => void) => {
-      openTokenSelectWidget(selectedToken, field, outputCurrencyInfo.currency || undefined, onSelectToken)
+      openTokenSelectWidget(selectedToken, field, buyToken || undefined, onSelectToken)
     },
-    [openTokenSelectWidget, outputCurrencyInfo.currency],
+    [openTokenSelectWidget, buyToken],
   )
 
   const openBuyTokenSelect = useCallback(
@@ -165,6 +167,8 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
       scrollToMyOrders()
     }
   }, [isMarketOrderWidget, toggleAccountModal])
+
+  const isOutputTokenUnsupported = !!buyToken && !(buyToken.chainId in SupportedChainId)
 
   return (
     <>
@@ -212,7 +216,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                     hasSeparatorLine={!compactView}
                     onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
                     isLoading={Boolean(sellToken && outputCurrencyInfo.currency && isTradePriceUpdating)}
-                    disabled={isAlternativeOrderModalVisible}
+                    disabled={isAlternativeOrderModalVisible || isOutputTokenUnsupported}
                   />
                 </styledEl.CurrencySeparatorBox>
                 <div>
