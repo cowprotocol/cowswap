@@ -44,7 +44,7 @@ export function ClickableAddress(props: ClickableAddressProps) {
           <Tooltip
             content={<Content address={address} target={target} />}
             placement="bottom"
-            wrapInContainer
+            wrapInContainer={false}
             show={openTooltip}
             onClickCapture={handleClickOutside}
             containerRef={wrapperRef}

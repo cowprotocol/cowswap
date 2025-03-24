@@ -1,7 +1,6 @@
-import EtherscanImage from '@cowprotocol/assets/cow-swap/etherscan-icon.svg'
 import { UI } from '@cowprotocol/ui'
 
-import SVG from 'react-inlinesvg'
+import { Link2 } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import CopyHelper from 'legacy/components/Copy'
@@ -13,40 +12,35 @@ const Box = styled.div`
   flex-direction: column;
   align-items: start;
   justify-content: start;
-  gap: 12px;
-  min-width: 124px;
+  gap: 4px;
+  min-width: 128px;
+  padding: 0;
+  margin: 0;
 `
 
 const CopyHelperWrapper = styled(CopyHelper)`
-  opacity: 0.75;
-  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  padding: 6px 8px;
+  border-radius: 0;
 
   &:hover {
-    opacity: 1;
+    background: var(${UI.COLOR_PAPER});
   }
 `
 
 const ExtLinkWrapper = styled(ExtLink)`
-  padding-left: 6px;
+  padding: 6px 8px;
+  width: 100%;
   display: flex;
   align-items: center;
   text-decoration: none;
   font-size: 0.825rem;
-  opacity: 0.75;
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover,
   &:active,
   &:focus {
-    text-decoration: none;
-    opacity: 1;
-  }
-`
-
-const ExplorerIcon = styled(SVG)`
-  margin: 0 0 0 1px;
-  > path {
-    fill: var(${UI.COLOR_TEXT});
+    color: var(${UI.COLOR_TEXT});
+    background: var(${UI.COLOR_PAPER});
   }
 `
 
@@ -62,17 +56,11 @@ interface ContentProps {
 export function Content({ address, target }: ContentProps) {
   return (
     <Box>
-      <CopyHelperWrapper toCopy={address}>
+      <CopyHelperWrapper toCopy={address} copyIconWidth="100%">
         <Text>Copy address</Text>
       </CopyHelperWrapper>
       <ExtLinkWrapper href={target} target="_blank">
-        <ExplorerIcon
-          src={EtherscanImage}
-          width={16}
-          height={16}
-          title="View token contract"
-          description="View token contract"
-        />
+        <Link2 size={16} />
         <Text>View details</Text>
       </ExtLinkWrapper>
     </Box>
