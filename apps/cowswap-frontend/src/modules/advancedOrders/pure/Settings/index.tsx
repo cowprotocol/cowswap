@@ -16,6 +16,7 @@ export interface SettingsProps {
 
 export function Settings({ state, onStateChanged }: SettingsProps) {
   const { showRecipient } = state
+  // TODO: we should use limit orders settings in Advanced Orders!
   const limitOrdersSettings = useAtomValue(limitOrdersSettingsAtom)
   const updateLimitOrdersSettings = useSetAtom(updateLimitOrdersSettingsAtom)
 

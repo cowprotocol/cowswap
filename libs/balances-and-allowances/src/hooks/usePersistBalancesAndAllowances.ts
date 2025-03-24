@@ -39,6 +39,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     onBalancesLoaded,
   } = params
 
+  const prevChainId = usePrevious(chainId)
   const prevAccount = usePrevious(account)
   const setBalances = useSetAtom(balancesAtom)
   const setAllowances = useSetAtom(allowancesFullState)
@@ -151,8 +152,11 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
    * p.s. there is BalancesCacheUpdater which fills cached values in.
    */
   useEffect(() => {
+    if (!setLoadingState) return
+    if (prevChainId && chainId === prevChainId) return
+
     resetBalances()
     resetAllowances()
     onBalancesLoaded?.(false)
-  }, [chainId, resetBalances, resetAllowances, onBalancesLoaded])
+  }, [chainId, prevChainId, setLoadingState, resetBalances, resetAllowances, onBalancesLoaded])
 }

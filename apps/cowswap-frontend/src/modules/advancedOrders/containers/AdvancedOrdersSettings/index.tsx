@@ -7,6 +7,7 @@ import styled from 'styled-components/macro'
 import { Settings } from 'modules/advancedOrders/pure/Settings'
 import { SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
 
+import { useUpdateAdvancedOrdersRawState } from '../../hooks/useAdvancedOrdersRawState'
 import {
   advancedOrdersSettingsAtom,
   AdvancedOrdersSettingsState,
@@ -25,12 +26,16 @@ const MenuWrapper = styled.div`
 export function AdvancedOrdersSettings() {
   const settingsState = useAtomValue(advancedOrdersSettingsAtom)
   const updateSettingsState = useSetAtom(updateAdvancedOrdersSettingsAtom)
+  const updateAdvancedOrdersRawState = useUpdateAdvancedOrdersRawState()
 
   const onStateChanged = useCallback(
     (state: Partial<AdvancedOrdersSettingsState>) => {
       updateSettingsState(state)
+      if (state.showRecipient === false) {
+        updateAdvancedOrdersRawState({ recipient: undefined, recipientAddress: undefined })
+      }
     },
-    [updateSettingsState],
+    [updateSettingsState, updateAdvancedOrdersRawState],
   )
 
   return (
