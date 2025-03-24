@@ -108,15 +108,15 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     return TradeFormValidation.WrapUnwrapFlow
   }
 
+  if (isNativeIn) {
+    return TradeFormValidation.SellNativeToken
+  }
+
   if (approvalRequired) {
     if (isBundlingSupported) {
       return TradeFormValidation.ApproveAndSwap
     }
     return TradeFormValidation.ApproveRequired
-  }
-
-  if (isNativeIn) {
-    return TradeFormValidation.SellNativeToken
   }
 
   return null
