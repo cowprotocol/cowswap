@@ -2,14 +2,17 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
-import { useFeatureFlags, useTheme } from '@cowprotocol/common-hooks'
+import { useIsBridgingEnabled, useTheme } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { environmentAtom } from '../../state/environmentAtom'
+
 export function useNetworkLogo(chainId?: number) {
   const { bridgeNetworkInfo } = useAtomValue(environmentAtom)
   const theme = useTheme()
-  const { isBridgingEnabled } = useFeatureFlags()
+  const isSmartContractWallet = useIsSmartContractWallet()
+  const isBridgingEnabled = useIsBridgingEnabled(isSmartContractWallet)
 
   const baseNetworkInfo: string | undefined = useMemo(() => {
     if (!chainId) {

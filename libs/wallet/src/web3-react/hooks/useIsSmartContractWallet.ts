@@ -14,6 +14,8 @@ export function useIsSmartContractWallet(): boolean | undefined {
   return isSafeWallet || hasCodeAtAddress
 }
 
+// TODO: This assumption will change after next hardfork on EIP7702 https://eips.ethereum.org/EIPS/eip-7702
+// TODO: Will affect the whole app, need to think properly how to address it
 function useHasContractAtAddress(): boolean | undefined {
   const { provider } = useWeb3React()
   const { account } = useWalletInfo()
@@ -29,7 +31,7 @@ function useHasContractAtAddress(): boolean | undefined {
         return false
       }
     },
-    SWR_NO_REFRESH_OPTIONS
+    SWR_NO_REFRESH_OPTIONS,
   )
 
   return data
