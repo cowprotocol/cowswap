@@ -19,8 +19,8 @@ const Box = styled.div`
 `
 
 const CopyHelperWrapper = styled(CopyHelper)`
-  padding: 6px 8px;
-  border-radius: 0;
+  padding: 12px;
+  border-radius: 6px;
 
   &:hover {
     background: var(${UI.COLOR_PAPER});
@@ -28,7 +28,8 @@ const CopyHelperWrapper = styled(CopyHelper)`
 `
 
 const ExtLinkWrapper = styled(ExtLink)`
-  padding: 6px 8px;
+  padding: 12px;
+  border-radius: 6px;
   width: 100%;
   display: flex;
   align-items: center;
