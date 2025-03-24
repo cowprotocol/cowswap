@@ -7,7 +7,7 @@ import { cowSwapStore } from 'legacy/state'
 
 import { injectedWidgetParamsAtom } from 'modules/injectedWidget/state/injectedWidgetParamsAtom'
 
-// import { featureFlagsAtom } from 'common/state/featureFlagsState'
+import { featureFlagsAtom } from 'common/state/featureFlagsState'
 
 type SoundType = 'SEND' | 'SUCCESS' | 'ERROR'
 type Sounds = Record<SoundType, string>
@@ -87,11 +87,10 @@ function getThemedSounds(params: {
 
 function getThemeBasedSound(type: SoundType): string {
   // TODO: load featureFlags when enabling again
-  // const featureFlags = jotaiStore.get(featureFlagsAtom) as Record<string, boolean>
-  // const { isAprilsFoolsEnabled /*isChristmasEnabled, isHalloweenEnabled */ } = featureFlags
+  const featureFlags = jotaiStore.get(featureFlagsAtom) as Record<string, boolean>
+  const { isAprilsFoolsEnabled /*isChristmasEnabled, isHalloweenEnabled */ } = featureFlags
   const isChristmasEnabled = false
   const isHalloweenEnabled = false
-  const isAprilsFoolsEnabled = true
   const isInjectedWidgetMode = isInjectedWidget()
 
   // When in widget mode, always return default sounds
