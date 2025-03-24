@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.104.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.104.0...cowswap-v1.104.1) (2025-03-24)
+
+
+### Bug Fixes
+
+* **swap:** wait for a optimal quote before eth-flow ([#5530](https://github.com/cowprotocol/cowswap/issues/5530)) ([acd0f49](https://github.com/cowprotocol/cowswap/commit/acd0f493c28af15451b9cae0af34c80917bfb586))
+* **trade:** reset recipient when turn off settings ([#5538](https://github.com/cowprotocol/cowswap/issues/5538)) ([0abfb94](https://github.com/cowprotocol/cowswap/commit/0abfb94c29a5317dd2cf920a73640adbaef14063))
+
 ## [1.104.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.103.5...cowswap-v1.104.0) (2025-03-20)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.3.0...balances-and-allowances-v1.3.1) (2025-03-24)
+
+
+### Bug Fixes
+
+* **swap:** wait for a optimal quote before eth-flow ([#5530](https://github.com/cowprotocol/cowswap/issues/5530)) ([acd0f49](https://github.com/cowprotocol/cowswap/commit/acd0f493c28af15451b9cae0af34c80917bfb586))
+
 ## [1.3.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.2.0...balances-and-allowances-v1.3.0) (2025-03-20)
 
 
