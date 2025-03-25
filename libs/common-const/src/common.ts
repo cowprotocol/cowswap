@@ -1,4 +1,5 @@
-import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { ethFlowBarnJson, ethFlowProdJson } from '@cowprotocol/abis'
+import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
 import BigNumber from 'bignumber.js'
@@ -38,8 +39,8 @@ export const APP_TITLE = 'CoW Swap | The smartest way to trade cryptocurrencies'
 type Env = 'barn' | 'prod'
 
 const NEW_COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Record<Env, string> = {
-  prod: '0xba3cb449bd2b4adddbc894d8697f5170800eadec',
-  barn: '0x04501b9b1d52e67f6862d157e00d13419d2d6e95',
+  prod: ethFlowProdJson['CoWSwapEthFlow']['1'].address, // Now all chains have the same address
+  barn: ethFlowBarnJson['CoWSwapEthFlow']['1'].address,
 }
 
 export function getEthFlowContractAddresses(env: Env): string {
