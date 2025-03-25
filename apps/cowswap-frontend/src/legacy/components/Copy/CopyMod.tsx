@@ -34,6 +34,10 @@ export const CopyIcon = styled(LinkStyledButton)<{ copyIconWidth?: string }>`
   }
 `
 
+const CheckCircleIconWrapper = styled(CheckCircle)`
+  margin: 0 4px 0 0;
+`
+
 interface CopyHelperProps
   extends StyledComponentProps<
     typeof CopyIcon,
@@ -69,7 +73,7 @@ export default function CopyHelper(props: CopyHelperProps) {
           <TransactionStatusText
             isCopied={isCopied} // mod
           >
-            <CheckCircle size={'16'} />
+            <CheckCircleIconWrapper size={'16'} />
             <TransactionStatusText
               isCopied={isCopied} // mod
             >

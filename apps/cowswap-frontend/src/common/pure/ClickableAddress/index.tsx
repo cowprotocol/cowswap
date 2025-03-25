@@ -1,7 +1,8 @@
 import { MouseEvent, useCallback, useRef, useState } from 'react'
 
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { ExplorerDataType, getExplorerLink, shortenAddress, getIsNativeToken } from '@cowprotocol/common-utils'
-import { Tooltip } from '@cowprotocol/ui'
+import { Media, Tooltip } from '@cowprotocol/ui'
 
 import { Info } from 'react-feather'
 
@@ -17,6 +18,8 @@ export function ClickableAddress(props: ClickableAddressProps) {
   const { address, chainId } = props
 
   const wrapperRef = useRef<HTMLDivElement>(null)
+
+  const isMobile = useMediaQuery(Media.upToMedium(false))
 
   const [openTooltip, setOpenTooltip] = useState(false)
 
@@ -38,7 +41,7 @@ export function ClickableAddress(props: ClickableAddressProps) {
 
   return (
     shouldShowAddress && (
-      <styledEl.Wrapper openTooltip={openTooltip} ref={wrapperRef}>
+      <styledEl.Wrapper openTooltip={openTooltip} alwaysShow={isMobile} ref={wrapperRef}>
         <styledEl.AddressWrapper>{shortAddress}</styledEl.AddressWrapper>
         <styledEl.InfoIcon onClick={handleClick}>
           <Tooltip

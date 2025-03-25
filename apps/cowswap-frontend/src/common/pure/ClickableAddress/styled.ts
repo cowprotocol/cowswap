@@ -3,7 +3,7 @@ import { UI } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 import { LinkStyledButton } from 'theme'
 
-export const Wrapper = styled.div<{ openTooltip: boolean }>`
+export const Wrapper = styled.div<{ openTooltip: boolean; alwaysShow: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -15,7 +15,7 @@ export const Wrapper = styled.div<{ openTooltip: boolean }>`
   }
 
   > button {
-    opacity: ${({ openTooltip }) => (openTooltip ? 1 : 0)};
+    opacity: ${({ openTooltip, alwaysShow }) => (openTooltip || alwaysShow ? 1 : 0)};
 
     &:hover {
       opacity: 1;
