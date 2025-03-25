@@ -30,7 +30,7 @@ import {
   updateOrder,
   updatePresignGnosisSafeTx,
 } from './actions'
-import { ContractDeploymentBlocks, MAX_ITEMS_PER_STATUS } from './consts'
+import { ContractDeploymentBlocks, MAX_ITEMS_PER_STATUS, ORDER_VALIDITY_THRESHOLD } from './consts'
 import { flatOrdersStateNetwork } from './flatOrdersStateNetwork'
 
 export interface OrderObject {
@@ -284,8 +284,16 @@ export default createReducer(initialState, (builder) =>
     .addCase(addOrUpdateOrders, (state, action) => {
       prefillState(state, action)
       const { chainId, orders, isSafeWallet } = action.payload
+      const now = new Date().getTime()
 
-      orders.forEach((newOrder) => {
+      /**
+       * Do not add orders that are expired + threshold in order to display expired orders within next day after expiration
+       */
+      const relevantOrders = orders.filter((order) => {
+        return now <= order.validTo * 1000 + ORDER_VALIDITY_THRESHOLD
+      })
+
+      relevantOrders.forEach((newOrder) => {
         const { id, status: newStatus } = newOrder
 
         // sanity check, is the status set?
