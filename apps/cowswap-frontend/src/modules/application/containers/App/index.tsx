@@ -98,6 +98,18 @@ export function App() {
           }
         }),
       },
+      {
+        label: 'Reward',
+        href: Routes.REWARD,
+      },
+      {
+        label: 'Buy',
+        href: Routes.BUY,
+      },
+      // {
+      //   label: 'Bridge',
+      //   href: Routes.BRIDGE,
+      // },
       ...NAV_ITEMS,
     ]
   }, [tradeContext, menuItems])

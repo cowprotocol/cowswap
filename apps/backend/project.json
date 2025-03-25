@@ -1,0 +1,19 @@
+{
+    "name": "backend",
+    "targets": {
+      "serve": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "node apps/backend/src/index.js",
+          "cwd": "{workspaceRoot}"
+        }
+      },
+      "dev": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "nodemon apps/backend/src/index.js",
+          "cwd": "{workspaceRoot}"
+        }
+      }
+    }
+  }

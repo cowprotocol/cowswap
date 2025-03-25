@@ -6,7 +6,9 @@ export const TRADE_WIDGET_PREFIX = isInjectedWidget() ? '/widget' : ''
 
 export const Routes = {
   HOME: `/landingpage`,
+  REWARD: `/rewardpage`,
   BUY:`/buypage`,
+  // BRIDGE: `/bridgepage`,
   SWAPS: `/swap`,
   LIMIT: `/limit`,
   ADVANCED: `/advanced`,
@@ -59,7 +61,7 @@ export const MENU_ITEMS: IMenuItem[] = [
   { route: Routes.SWAP, label: 'Swap', description: 'Trade tokens' },
   { route: Routes.LIMIT_ORDER, label: 'Limit', fullLabel: 'Limit order', description: 'Set your own price' },
   { route: Routes.ADVANCED_ORDERS, label: 'TWAP', description: 'Place orders with a time-weighted average price' },
-  { route: Routes.BUY, label: 'Buy', description: 'Buy tokens with card' },
+  // { route: Routes.BUY, label: 'Buy', description: 'Buy tokens with card' },
 ]
 
 export const HOOKS_STORE_MENU_ITEM: IMenuItem = {

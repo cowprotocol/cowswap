@@ -19,12 +19,14 @@ import { RedirectPathToSwapOnly, RedirectToPath } from 'legacy/pages/Swap/redire
 import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
 import Account, { AccountOverview } from 'pages/Account'
 import AdvancedOrdersPage from 'pages/AdvancedOrders'
+// import { BridgePage } from 'pages/Bridge'
 import { BuyPage } from 'pages/Buy'
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import { HooksPage } from 'pages/Hooks'
 import { CowShed } from 'pages/Hooks/cowShed'
 import { LandingPage } from 'pages/Landing'
 import LimitOrderPage from 'pages/LimitOrders'
+import { RewardPage } from 'pages/Reward'
 import { SwapPage } from 'pages/Swap'
 import YieldPage from 'pages/Yield'
 
@@ -59,7 +61,9 @@ const lazyRoutes: LazyRouteProps[] = [
   { route: RoutesEnum.YIELD, element: <YieldPage /> },
   { route: RoutesEnum.LONG_LIMIT_ORDER, element: <RedirectToPath path={'/limit'} /> },
   { route: RoutesEnum.ADVANCED_ORDERS, element: <AdvancedOrdersPage /> },
+  // { route: RoutesEnum.BRIDGE, element: <BridgePage />},
   { route: RoutesEnum.BUY, element: <BuyPage /> },
+  { route: RoutesEnum.REWARD, element: <RewardPage /> },
   { route: RoutesEnum.HOME, element: <LandingPage /> },
   { route: RoutesEnum.LONG_ADVANCED_ORDERS, element: <RedirectToPath path={'/advanced'} /> },
   { route: RoutesEnum.ABOUT, element: <ExternalRedirect url={COWDAO_COWSWAP_ABOUT_LINK} /> },
@@ -91,6 +95,7 @@ export function RoutesApp() {
 
         {/*Swap*/}
         <Route path={RoutesEnum.BUY} element={<BuyPage />} />
+        <Route path={RoutesEnum.REWARD} element={<RewardPage />} />
         <Route path={RoutesEnum.SWAP} element={<SwapPage />} />   
         <Route path={RoutesEnum.HOOKS} element={<HooksPage />} />
         <Route path={RoutesEnum.COW_SHED} element={<CowShed />} />

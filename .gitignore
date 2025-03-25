@@ -58,3 +58,4 @@ out
 # Next.js sitemap
 apps/cow-fi/public/robots.txt
 apps/cow-fi/public/sitemap*
+.qodo
