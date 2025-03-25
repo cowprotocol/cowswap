@@ -13,8 +13,9 @@ const Box = styled.div`
   align-items: start;
   justify-content: start;
   gap: 4px;
-  min-width: 128px;
-  padding: 0;
+  min-width: 155px;
+  min-height: 104px;
+  padding: 10px;
   margin: 0;
 `
 
@@ -35,7 +36,6 @@ const ExtLinkWrapper = styled(ExtLink)`
   align-items: center;
   text-decoration: none;
   font-size: 0.825rem;
-  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover,
   &:active,

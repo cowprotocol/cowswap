@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Opacity, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 import { LinkStyledButton } from 'theme'
@@ -10,15 +10,19 @@ export const Wrapper = styled.div<{ openTooltip: boolean; alwaysShow: boolean }>
 
   &:hover {
     > button {
-      opacity: 0.6;
+      opacity: ${Opacity.medium};
     }
   }
 
   > button {
-    opacity: ${({ openTooltip, alwaysShow }) => (openTooltip || alwaysShow ? 1 : 0)};
+    opacity: ${({ openTooltip, alwaysShow }) => {
+      if (alwaysShow) return Opacity.medium
+
+      return openTooltip ? Opacity.full : Opacity.none
+    }};
 
     &:hover {
-      opacity: 1;
+      opacity: ${Opacity.full};
     }
   }
 `
@@ -28,7 +32,7 @@ export const AddressWrapper = styled.span`
   font-size: 12px;
   font-weight: 400;
   color: inherit;
-  opacity: 0.6;
+  opacity: ${Opacity.medium};
 `
 
 export const InfoIcon = styled(LinkStyledButton)`
