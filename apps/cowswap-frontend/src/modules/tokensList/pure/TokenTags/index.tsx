@@ -57,7 +57,7 @@ export function TokenTags({
   const tagsToShow: TagInfo[] = []
 
   // Handle Circle Native tag
-  if (!tags.includes('circle')) {
+  if (tags.includes('circle')) {
     tagsToShow.push(TOKEN_TAGS[Tags.CIRCLE])
   }
 
