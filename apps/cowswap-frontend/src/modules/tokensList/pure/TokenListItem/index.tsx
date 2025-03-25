@@ -60,14 +60,14 @@ export function TokenListItem(props: TokenListItemProps) {
       onClick={handleClick}
       className={isTokenSelected ? 'token-item-selected' : ''}
     >
-      <TokenInfo token={token} />
+      <TokenInfo
+        token={token}
+        tags={<TokenTags isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} tags={token.tags} />}
+      />
       {isWalletConnected && (
-        <styledEl.TokenMetadata>
-          <styledEl.TokenBalance>
-            {isSupportedChain ? balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement : null}
-          </styledEl.TokenBalance>
-          <TokenTags isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} />
-        </styledEl.TokenMetadata>
+        <styledEl.TokenBalance>
+          {isSupportedChain ? balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement : null}
+        </styledEl.TokenBalance>
       )}
     </styledEl.TokenItem>
   )

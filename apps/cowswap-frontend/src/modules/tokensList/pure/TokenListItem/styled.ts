@@ -9,10 +9,9 @@ export const Wrapper = styled.div`
 
 export const TokenItem = styled.div`
   display: flex;
-  flex-flow: row wrap;
   justify-content: space-between;
+  align-items: flex-start;
   gap: 8px;
-  align-items: center;
   width: 100%;
   background: none;
   border: 0;
@@ -20,8 +19,8 @@ export const TokenItem = styled.div`
   color: inherit;
   cursor: pointer;
   font-size: 16px;
-  padding: 10px 20px;
-  margin-bottom: 10px;
+  padding: 12px 18px;
+  margin: 0;
   opacity: 1;
   transition:
     background var(${UI.ANIMATION_DURATION}) ease-in-out,
@@ -51,20 +50,13 @@ export const TokenItem = styled.div`
 `
 
 export const TokenBalance = styled.span`
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   display: flex;
   justify-content: flex-end;
+  min-width: 0;
+  max-width: 40%;
 
   > span {
     text-align: right;
   }
-`
-
-export const TokenMetadata = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-  justify-content: flex-end;
 `

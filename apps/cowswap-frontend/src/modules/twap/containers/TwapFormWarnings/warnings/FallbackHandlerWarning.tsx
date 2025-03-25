@@ -1,4 +1,4 @@
-import { ExternalLink, InlineBanner } from '@cowprotocol/ui'
+import { ExternalLink, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -80,7 +80,7 @@ export function FallbackHandlerWarning({
   if (isFallbackHandlerSetupAccepted) {
     return (
       <Wrapper>
-        <InlineBanner hideIcon={true} bannerType="information">
+        <InlineBanner hideIcon={true} bannerType={StatusColorVariant.Info}>
           <CheckboxWrapper>{fallbackHandlerCheckbox}</CheckboxWrapper>
         </InlineBanner>
       </Wrapper>
@@ -88,7 +88,7 @@ export function FallbackHandlerWarning({
   } else {
     return (
       <Wrapper>
-        <InlineBannerWithCheckbox bannerType="alert">
+        <InlineBannerWithCheckbox bannerType={StatusColorVariant.Alert}>
           <strong>Your Safe needs a modification</strong>
           <p>
             TWAP orders require a one-time update to your Safe to enable automated execution of scheduled transactions.

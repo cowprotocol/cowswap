@@ -3,7 +3,14 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { useSearchToken } from '@cowprotocol/tokens'
-import { BannerOrientation, ExternalLink, InlineBanner, LINK_GUIDE_ADD_CUSTOM_TOKEN, Loader } from '@cowprotocol/ui'
+import {
+  BannerOrientation,
+  ExternalLink,
+  InlineBanner,
+  LINK_GUIDE_ADD_CUSTOM_TOKEN,
+  Loader,
+  StatusColorVariant,
+} from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useNetworkName } from 'common/hooks/useNetworkName'
@@ -93,7 +100,12 @@ export function TokenSearchResults({
 
   return (
     <CommonListContainer id="currency-list">
-      <InlineBanner margin={'10px'} width="auto" orientation={BannerOrientation.Horizontal} bannerType={'information'}>
+      <InlineBanner
+        margin={'10px'}
+        width="auto"
+        orientation={BannerOrientation.Horizontal}
+        bannerType={StatusColorVariant.Info}
+      >
         <p>
           Can't find your token on the list?{' '}
           <ExternalLink href={LINK_GUIDE_ADD_CUSTOM_TOKEN}>Read our guide</ExternalLink> on how to add custom tokens.

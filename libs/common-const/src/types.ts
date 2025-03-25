@@ -5,7 +5,16 @@ const emptyTokens = [] as string[]
 
 export class TokenWithLogo extends Token {
   static fromToken(token: Token | TokenInfo, logoURI?: string): TokenWithLogo {
-    return new TokenWithLogo(logoURI, token.chainId, token.address, token.decimals, token.symbol, token.name)
+    return new TokenWithLogo(
+      logoURI,
+      token.chainId,
+      token.address,
+      token.decimals,
+      token.symbol,
+      token.name,
+      undefined, // bypassChecksum parameter
+      (token as any).tags || [],
+    )
   }
 
   constructor(
@@ -16,6 +25,7 @@ export class TokenWithLogo extends Token {
     symbol?: string,
     name?: string,
     bypassChecksum?: boolean,
+    public tags: string[] = [],
   ) {
     super(chainId, address, decimals, symbol, name, bypassChecksum)
   }

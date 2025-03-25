@@ -28,7 +28,8 @@ export const Wrapper = styled.div<{ openTooltip: boolean; alwaysShow: boolean }>
 `
 
 export const AddressWrapper = styled.span`
-  margin-left: 4px;
+  margin: 0;
+  line-height: 1;
   font-size: 12px;
   font-weight: 400;
   color: inherit;

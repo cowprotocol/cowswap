@@ -3,35 +3,36 @@ import styled from 'styled-components/macro'
 import { sanitizeTokenName } from './sanitizeTokenName'
 
 import { Media } from '../../consts'
+import { UI } from '../../enum'
 
 export type TokenNameProps = {
   token: { name?: string } | undefined
   className?: string
-  length?: number
 }
 
 const Wrapper = styled.span<{ length?: number }>`
-  display: inline-block;
-  width: ${({ length }) => length ?? 200}px;
-  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  white-space: normal;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
 
   ${Media.upToSmall()} {
-    white-space: normal;
-    width: 100%;
     word-break: break-word;
     padding: 0 5px 0 0;
   }
 `
 
-export function TokenName({ token, className, length }: TokenNameProps) {
+export function TokenName({ token, className }: TokenNameProps) {
   const { name } = token || {}
 
   if (!name) return null
 
   return (
-    <Wrapper length={length} className={className} title={sanitizeTokenName(name)}>
+    <Wrapper className={className} title={sanitizeTokenName(name)}>
       {sanitizeTokenName(name)}
     </Wrapper>
   )
