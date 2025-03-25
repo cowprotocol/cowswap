@@ -193,7 +193,7 @@ export function Tooltip({ content, className, wrapInContainer, show, containerRe
     if (show && rest.onClickCapture) {
       rest.onClickCapture({} as React.MouseEvent<HTMLDivElement>)
     }
-  }, [show, rest.onClickCapture])
+  }, [show, rest])
 
   useOnClickOutside([tooltipRef], handleClick)
 
