@@ -1,5 +1,5 @@
 import { Erc20, GPv2Settlement } from '@cowprotocol/abis'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, TradingSdk } from '@cowprotocol/cow-sdk'
 import type { SendBatchTxCallback } from '@cowprotocol/wallet'
 import { Web3Provider } from '@ethersproject/providers'
 
@@ -25,6 +25,7 @@ export interface TradeFlowContext {
   generatePermitHook: GeneratePermitHook
   getCachedPermit: ReturnType<typeof useGetCachedPermit>
   quoteState: TradeQuoteState
+  tradingSdk: TradingSdk
 }
 
 export interface SafeBundleFlowContext extends TradeFlowContext {

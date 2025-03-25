@@ -1,9 +1,11 @@
 import { getEthFlowContractAddresses } from '@cowprotocol/common-const'
 import { reportPlaceOrderWithExpiredQuote } from '@cowprotocol/common-utils'
+import { OrderClass, SigningScheme } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { getOrderSubmitSummary, mapUnsignedOrderToOrder } from 'legacy/utils/trade'
 
 import { removePermitHookFromAppData } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
@@ -15,9 +17,6 @@ import { isQuoteExpired } from 'modules/tradeQuote'
 
 import { ethFlowEnv } from 'common/hooks/useContract'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
-
-import { calculateUniqueOrderId } from './steps/calculateUniqueOrderId'
-import { signEthFlowOrderStep } from './steps/signEthFlowOrderStep'
 
 import { EthFlowContext } from '../../types'
 
@@ -36,41 +35,36 @@ export async function ethFlow({
   confirmPriceImpactWithoutFee,
   analytics,
 }: EthFlowParams): Promise<void | boolean> {
-  const {
-    tradeConfirmActions,
-    swapFlowAnalyticsContext,
-    context,
-    callbacks,
-    orderParams: orderParamsOriginal,
-    typedHooks,
-  } = tradeContext
-  const { contract, appData, uploadAppData, addTransaction, checkEthFlowOrderExists, addInFlightOrderId, quote } =
+  const { tradeConfirmActions, swapFlowAnalyticsContext, context, callbacks, orderParams, typedHooks, tradeQuote } =
+    tradeContext
+  const { contract, appData, uploadAppData, addTransaction, checkEthFlowOrderExists, addInFlightOrderId } =
     ethFlowContext
 
   const { chainId, inputAmount, outputAmount } = context
   const tradeAmounts = { inputAmount, outputAmount }
-  const { account, recipientAddressOrName, kind } = orderParamsOriginal
+  const { account, recipientAddressOrName, kind } = orderParams
+
+  if (!tradeQuote.quote) {
+    throw new Error('Quote is undefined in ethFlow!')
+  }
 
   logTradeFlow('ETH FLOW', 'STEP 1: confirm price impact')
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
     return false
   }
 
-  orderParamsOriginal.appData = await removePermitHookFromAppData(orderParamsOriginal.appData, typedHooks)
+  orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)
 
   logTradeFlow('ETH FLOW', 'STEP 2: send transaction')
   analytics.trade(swapFlowAnalyticsContext)
   tradeConfirmActions.onSign(tradeAmounts)
 
-  logTradeFlow('ETH FLOW', 'STEP 3: Get Unique Order Id (prevent collisions)')
-  const { orderId, orderParams } = await calculateUniqueOrderId(orderParamsOriginal, contract, checkEthFlowOrderExists)
-
   try {
     // Do not proceed if fee is expired
-    if (quote && isQuoteExpired(quote)) {
+    if (isQuoteExpired(tradeQuote)) {
       reportPlaceOrderWithExpiredQuote({
-        ...orderParamsOriginal,
-        fee: quote.quote?.quoteResults.quoteResponse.quote.feeAmount,
+        ...orderParams,
+        fee: tradeQuote.quote.quoteResults.quoteResponse.quote.feeAmount,
       })
       throw new Error('Quote expired. Please refresh.')
     }
@@ -84,21 +78,46 @@ export async function ethFlow({
       )
     }
 
-    logTradeFlow('ETH FLOW', 'STEP 4: sign order')
-    const { order, txReceipt } = await signEthFlowOrderStep(
-      orderId,
-      orderParams,
-      contract,
-      addInFlightOrderId,
-      tradeContext,
-    ).finally(() => {
-      callbacks.closeModals()
+    logTradeFlow('ETH FLOW', 'STEP 3: sign order')
+
+    const { orderId, txHash, signature, signingScheme } = await tradeQuote.quote
+      .postSwapOrderFromQuote({
+        additionalParams: {
+          checkEthFlowOrderExists,
+        },
+        quoteRequest: {
+          signingScheme: SigningScheme.EIP1271,
+        },
+      })
+      .finally(() => {
+        callbacks.closeModals()
+      })
+
+    const unsignedOrder = tradeQuote.quote.quoteResults.orderToSign
+    const quoteId = tradeQuote.quote.quoteResults.quoteResponse.id
+
+    const order = mapUnsignedOrderToOrder({
+      unsignedOrder,
+      additionalParams: {
+        ...orderParams,
+        orderId,
+        summary: getOrderSubmitSummary(orderParams),
+        signingScheme,
+        signature,
+        // For ETH-flow we always set order class to 'market' since we don't support ETH-flow in Limit orders
+        class: OrderClass.MARKET,
+        quoteId,
+        orderCreationHash: txHash,
+        isOnChain: true, // always on-chain
+      },
     })
+
+    addInFlightOrderId(orderId)
 
     emitPostedOrderEvent({
       chainId,
       id: orderId,
-      orderCreationHash: txReceipt.hash,
+      orderCreationHash: txHash,
       kind,
       receiver: recipientAddressOrName,
       inputAmount,
@@ -119,7 +138,7 @@ export async function ethFlow({
       callbacks.dispatch,
     )
     // TODO: maybe move this into addPendingOrderStep?
-    addTransaction({ hash: txReceipt.hash, ethFlow: { orderId: order.id, subType: 'creation' } })
+    addTransaction({ hash: txHash!, ethFlow: { orderId: order.id, subType: 'creation' } })
 
     logTradeFlow('ETH FLOW', 'STEP 6: add app data to upload queue')
     uploadAppData({ chainId: context.chainId, orderId, appData })

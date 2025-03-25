@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
+import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
@@ -18,7 +19,7 @@ export function TradingSdkUpdater() {
     const signer = provider?.getSigner()
 
     if (signer && appCode) {
-      setTradingSdkParams({ signer, chainId, appCode })
+      setTradingSdkParams({ signer, chainId, appCode, env: isBarnBackendEnv ? 'staging' : 'prod' })
     }
   }, [chainId, provider, appCode, setTradingSdkParams])
 

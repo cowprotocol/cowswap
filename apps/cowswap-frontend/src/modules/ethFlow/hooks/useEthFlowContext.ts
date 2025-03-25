@@ -4,7 +4,6 @@ import { useMemo } from 'react'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { useAppData, useUploadAppData } from 'modules/appData'
-import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useEthFlowContract } from 'common/hooks/useContract'
 
@@ -17,8 +16,6 @@ export function useEthFlowContext(): EthFlowContext | null {
   const {
     result: { contract },
   } = useEthFlowContract()
-  const quote = useTradeQuote()
-
   const addTransaction = useTransactionAdder()
   const uploadAppData = useUploadAppData()
   const appData = useAppData()
@@ -30,7 +27,6 @@ export function useEthFlowContext(): EthFlowContext | null {
   return useMemo(() => {
     return appData && contract
       ? {
-          quote,
           contract,
           addTransaction,
           checkEthFlowOrderExists,
@@ -39,5 +35,5 @@ export function useEthFlowContext(): EthFlowContext | null {
           appData,
         }
       : null
-  }, [appData, contract, quote, addTransaction, checkEthFlowOrderExists, addInFlightOrderId, uploadAppData])
+  }, [appData, contract, addTransaction, checkEthFlowOrderExists, addInFlightOrderId, uploadAppData])
 }

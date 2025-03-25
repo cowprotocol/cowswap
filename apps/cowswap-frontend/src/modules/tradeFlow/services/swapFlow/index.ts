@@ -1,11 +1,12 @@
 import { getAddress, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
+import { SigningScheme } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
-import { signAndPostOrder } from 'legacy/utils/trade'
+import { getOrderSubmitSummary, mapUnsignedOrderToOrder } from 'legacy/utils/trade'
 
 import { emitPostedOrderEvent } from 'modules/orders'
 import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
@@ -14,8 +15,6 @@ import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
-
-import { presignOrderStep } from './steps/presignOrderStep'
 
 import { TradeFlowContext } from '../../types/TradeFlowContext'
 
@@ -28,6 +27,8 @@ export async function swapFlow(
   const {
     tradeConfirmActions,
     callbacks: { getCachedPermit },
+    tradeQuote,
+    tradingSdk,
   } = input
 
   const {
@@ -35,6 +36,10 @@ export async function swapFlow(
     typedHooks,
   } = input
   const tradeAmounts = { inputAmount, outputAmount }
+
+  if (!tradeQuote.quote) {
+    throw new Error('Quote is undefined in ethFlow!')
+  }
 
   logTradeFlow('SWAP FLOW', 'STEP 1: confirm price impact')
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
@@ -73,13 +78,41 @@ export async function swapFlow(
     tradeConfirmActions.onSign(tradeAmounts)
 
     logTradeFlow('SWAP FLOW', 'STEP 4: sign and post order')
-    const { id: orderUid, order } = await signAndPostOrder(orderParams).finally(() => {
-      callbacks.closeModals()
+    const { orderId, signature, signingScheme } = await tradeQuote.quote
+      .postSwapOrderFromQuote({
+        appData: orderParams.appData.doc,
+        additionalParams: {
+          signingScheme: orderParams.allowsOffchainSigning ? SigningScheme.EIP712 : SigningScheme.PRESIGN,
+        },
+      })
+      .finally(() => {
+        callbacks.closeModals()
+      })
+
+    let presignTxHash: string | null = null
+
+    if (!orderParams.allowsOffchainSigning) {
+      logTradeFlow('SWAP FLOW', 'STEP 5: presign order (optional)')
+      const presignTx = await tradingSdk.getPreSignTransaction({ orderId, account })
+
+      presignTxHash = (await orderParams.signer.sendTransaction(presignTx)).hash
+    }
+
+    const { orderToSign: unsignedOrder } = tradeQuote.quote.quoteResults
+    const order = mapUnsignedOrderToOrder({
+      unsignedOrder,
+      additionalParams: {
+        ...orderParams,
+        orderId,
+        summary: getOrderSubmitSummary(orderParams),
+        signingScheme,
+        signature,
+      },
     })
 
     addPendingOrderStep(
       {
-        id: orderUid,
+        id: orderId,
         chainId: chainId,
         order: {
           ...order,
@@ -90,14 +123,9 @@ export async function swapFlow(
       callbacks.dispatch,
     )
 
-    logTradeFlow('SWAP FLOW', 'STEP 5: presign order (optional)')
-    const presignTx = await (input.flags.allowsOffchainSigning
-      ? Promise.resolve(null)
-      : presignOrderStep(orderUid, input.contract))
-
     emitPostedOrderEvent({
       chainId,
-      id: orderUid,
+      id: orderId,
       kind,
       receiver: recipientAddressOrName,
       inputAmount,
@@ -107,13 +135,13 @@ export async function swapFlow(
     })
 
     logTradeFlow('SWAP FLOW', 'STEP 6: unhide SC order (optional)')
-    if (presignTx) {
+    if (presignTxHash) {
       partialOrderUpdate(
         {
           chainId,
           order: {
             id: order.id,
-            presignGnosisSafeTxHash: isSafeWallet ? presignTx.hash : undefined,
+            presignGnosisSafeTxHash: isSafeWallet ? presignTxHash : undefined,
             isHidden: false,
           },
           isSafeWallet,
@@ -122,8 +150,8 @@ export async function swapFlow(
       )
     }
 
-    logTradeFlow('SWAP FLOW', 'STEP 7: show UI of the successfully sent transaction', orderUid)
-    tradeConfirmActions.onSuccess(orderUid)
+    logTradeFlow('SWAP FLOW', 'STEP 7: show UI of the successfully sent transaction', orderId)
+    tradeConfirmActions.onSuccess(orderId)
     analytics.sign(swapFlowAnalyticsContext)
 
     return true

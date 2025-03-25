@@ -1,14 +1,14 @@
+import { SigningScheme } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
-import { signAndPostOrder } from 'legacy/utils/trade'
+import { getOrderSubmitSummary, mapUnsignedOrderToOrder } from 'legacy/utils/trade'
 
 import { removePermitHookFromAppData } from 'modules/appData'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
-import { buildPresignTx } from 'modules/operations/bundle/buildPresignTx'
 import { buildZeroApproveTx } from 'modules/operations/bundle/buildZeroApproveTx'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
@@ -29,15 +29,28 @@ export async function safeBundleApprovalFlow(
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
   analytics: TradeFlowAnalytics,
 ): Promise<void | boolean> {
+  const {
+    context,
+    callbacks,
+    orderParams,
+    swapFlowAnalyticsContext,
+    tradeConfirmActions,
+    typedHooks,
+    tradeQuote,
+    tradingSdk,
+  } = tradeContext
+
+  if (!tradeQuote.quote) {
+    throw new Error('Quote is undefined in ethFlow!')
+  }
+
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
 
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
     return false
   }
 
-  const { context, callbacks, orderParams, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks } = tradeContext
-
-  const { spender, settlementContract, sendBatchTransactions, erc20Contract } = safeBundleContext
+  const { spender, sendBatchTransactions, erc20Contract } = safeBundleContext
 
   const { chainId } = context
   const { account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount, kind } = orderParams
@@ -59,8 +72,27 @@ export async function safeBundleApprovalFlow(
     orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)
 
     logTradeFlow(LOG_PREFIX, 'STEP 3: post order')
-    const { id: orderId, order } = await signAndPostOrder(orderParams).finally(() => {
-      callbacks.closeModals()
+    const { orderId, signingScheme, signature } = await tradeQuote.quote
+      .postSwapOrderFromQuote({
+        quoteRequest: {
+          signingScheme: SigningScheme.PRESIGN,
+        },
+      })
+      .finally(() => {
+        callbacks.closeModals()
+      })
+
+    const unsignedOrder = tradeQuote.quote.quoteResults.orderToSign
+
+    const order = mapUnsignedOrderToOrder({
+      unsignedOrder,
+      additionalParams: {
+        ...orderParams,
+        orderId,
+        summary: getOrderSubmitSummary(orderParams),
+        signature,
+        signingScheme,
+      },
     })
 
     addPendingOrderStep(
@@ -77,12 +109,12 @@ export async function safeBundleApprovalFlow(
     )
 
     logTradeFlow(LOG_PREFIX, 'STEP 4: build presign tx')
-    const presignTx = await buildPresignTx({ settlementContract, orderId })
+    const presignTx = await tradingSdk.getPreSignTransaction({ orderId, account })
 
     logTradeFlow(LOG_PREFIX, 'STEP 5: send safe tx')
     const safeTransactionData: MetaTransactionData[] = [
       { to: approveTx.to!, data: approveTx.data!, value: '0', operation: 0 },
-      { to: presignTx.to!, data: presignTx.data!, value: '0', operation: 0 },
+      { to: presignTx.to, data: presignTx.data, value: '0', operation: 0 },
     ]
 
     const shouldZeroApprove = await shouldZeroApproveFn({

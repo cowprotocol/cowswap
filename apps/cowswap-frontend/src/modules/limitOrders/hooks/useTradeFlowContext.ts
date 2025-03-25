@@ -6,6 +6,7 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { useDispatch } from 'react-redux'
+import { useTradingSdk } from 'tradingSdk/useTradingSdk'
 
 import { AppDispatch } from 'legacy/state'
 
@@ -37,6 +38,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const permitInfo = usePermitInfo(state.inputCurrency, TradeType.LIMIT_ORDER)
   const { maximumSendSellAmount } = useAmountsToSign() || {}
+  const tradingSdk = useTradingSdk()
 
   const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[settlementChainId]
   const { enoughAllowance } = useEnoughBalanceAndAllowance({
@@ -67,7 +69,8 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       !provider ||
       !settlementContract ||
       !isQuoteReady ||
-      !appData
+      !appData ||
+      !tradingSdk
     ) {
       return null
     }
@@ -84,6 +87,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       generatePermitHook,
       getCachedPermit,
       quoteState,
+      tradingSdk,
       postOrderParams: {
         class: OrderClass.LIMIT,
         kind: state.orderKind,
@@ -135,5 +139,6 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     appData,
     quoteId,
     isSafeWallet,
+    tradingSdk,
   ])
 }
