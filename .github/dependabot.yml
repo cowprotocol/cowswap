@@ -1,0 +1,17 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    reviewers:
+      - "cowprotocol/frontend"
+    commit-message:
+      prefix: "fix(deps-update): "
+      prefix-development: "chore(dev-deps-update): "
+    groups:
+      dev-deps:
+        dependency-type: "development"
+      # uncomment if we decide that production updates can be grouped
+      #prod-deps:
+      #  dependency-type: "production"
