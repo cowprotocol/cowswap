@@ -63,10 +63,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     return TradeFormValidation.CurrencyNotSet
   }
 
-  if (isNativeIn) {
-    return TradeFormValidation.SellNativeToken
-  }
-
   if (inputAmountIsNotSet) {
     return TradeFormValidation.InputAmountNotSet
   }
@@ -117,6 +113,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       return TradeFormValidation.ApproveAndSwap
     }
     return TradeFormValidation.ApproveRequired
+  }
+
+  if (isNativeIn) {
+    return TradeFormValidation.SellNativeToken
   }
 
   return null
