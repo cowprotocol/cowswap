@@ -161,3 +161,11 @@ export const Gradients = {
       radial-gradient(at 19% 39%, hsla(204, 100%, 89%, 1) 0px, transparent 50%);
   `,
 } as const
+
+export const Opacity = {
+  full: '1',
+  high: '0.9',
+  medium: '0.6',
+  low: '0.4',
+  none: '0',
+} as const
