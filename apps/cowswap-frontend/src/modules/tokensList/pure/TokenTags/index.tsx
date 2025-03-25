@@ -56,15 +56,15 @@ export function TokenTags({
 }) {
   const tagsToShow: TagInfo[] = []
 
+  // Handle Circle Native tag
+  if (!tags.includes('circle')) {
+    tagsToShow.push(TOKEN_TAGS[Tags.CIRCLE])
+  }
+
   if (isUnsupported) {
     tagsToShow.push(TOKEN_TAGS[Tags.UNSUPPORTED])
   } else if (isPermitCompatible) {
     tagsToShow.push(TOKEN_TAGS[Tags.GAS_FREE])
-  }
-
-  // Handle Circle Native tag
-  if (tags.includes('circle')) {
-    tagsToShow.push(TOKEN_TAGS[Tags.CIRCLE])
   }
 
   if (tagsToShow.length === 0) {
