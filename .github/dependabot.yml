@@ -4,7 +4,7 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    reviwers:
+    reviewers:
       - "cowprotocol/frontend"
     commit-message:
       prefix: "fix(deps-update): "
