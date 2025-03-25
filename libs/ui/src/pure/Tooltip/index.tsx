@@ -189,17 +189,15 @@ export interface TooltipProps extends Omit<PopoverProps, 'content'> {
 export function Tooltip({ content, className, wrapInContainer, show, containerRef, ...rest }: TooltipProps) {
   const tooltipRef = useRef<HTMLDivElement>(null)
 
-  useOnClickOutside([tooltipRef], () => {
+  const handleClick = useCallback(() => {
     if (show && rest.onClickCapture) {
       rest.onClickCapture({} as React.MouseEvent<HTMLDivElement>)
     }
-  })
+  }, [show, rest.onClickCapture])
 
-  useOnScroll(containerRef, () => {
-    if (show && rest.onClickCapture) {
-      rest.onClickCapture({} as React.MouseEvent<HTMLDivElement>)
-    }
-  })
+  useOnClickOutside([tooltipRef], handleClick)
+
+  useOnScroll(containerRef, handleClick)
 
   return (
     <Popover
