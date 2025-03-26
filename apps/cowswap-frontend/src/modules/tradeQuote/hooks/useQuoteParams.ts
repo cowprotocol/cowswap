@@ -10,6 +10,7 @@ import { Nullish } from 'types'
 import { AppDataInfo, useAppData } from 'modules/appData'
 import { useIsWrapOrUnwrap } from 'modules/trade'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { useVolumeFee } from 'modules/volumeFee'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
@@ -30,6 +31,7 @@ export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
 
   const state = useDerivedTradeState()
+  const volumeFee = useVolumeFee()
 
   const { inputCurrency, outputCurrency, orderKind } = state || {}
 
@@ -52,6 +54,7 @@ export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined
       amount,
       receiver: account,
       validFor: DEFAULT_QUOTE_TTL,
+      partnerFee: volumeFee,
     }
 
     return { quoteParams, inputCurrency, appData: appData?.doc }
