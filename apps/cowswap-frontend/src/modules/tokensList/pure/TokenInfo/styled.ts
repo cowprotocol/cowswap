@@ -43,7 +43,7 @@ export const TokenSymbolWrapper = styled.div`
 `
 
 export const TokenNameRow = styled.div`
-  display: inline-flex;
+  display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;

@@ -50,11 +50,9 @@ export const TokenItem = styled.div`
 `
 
 export const TokenBalance = styled.span`
-  flex: 0 1 auto;
+  flex: 1 0 auto;
   display: flex;
   justify-content: flex-end;
-  min-width: 0;
-  max-width: 40%;
 
   > span {
     text-align: right;
