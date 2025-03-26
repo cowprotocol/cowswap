@@ -16,6 +16,7 @@ interface TagInfo {
   color?: StatusColorVariant
 }
 
+// Only these whitelisted tags will be shown, any other tags from token lists are ignored
 enum Tags {
   UNSUPPORTED = '0',
   GAS_FREE = '1',
