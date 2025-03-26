@@ -16,7 +16,7 @@ const Wrapper = styled.span<{ length?: number }>`
   white-space: normal;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 400;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
 

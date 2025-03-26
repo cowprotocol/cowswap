@@ -19,7 +19,7 @@ export const TokenItem = styled.div`
   color: inherit;
   cursor: pointer;
   font-size: 16px;
-  padding: 12px 18px;
+  padding: 12px 16px;
   margin: 0;
   opacity: 1;
   transition:

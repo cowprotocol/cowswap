@@ -30,10 +30,9 @@ export const Wrapper = styled.div<{ openTooltip: boolean; alwaysShow: boolean }>
 export const AddressWrapper = styled.span`
   margin: 0;
   line-height: 1;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 400;
-  color: inherit;
-  opacity: ${Opacity.medium};
+  color: var(${UI.COLOR_TEXT_OPACITY_50});
 `
 
 export const InfoIcon = styled(LinkStyledButton)`
