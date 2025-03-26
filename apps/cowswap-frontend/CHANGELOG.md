@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.104.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.104.1...cowswap-v1.104.2) (2025-03-24)
+
+
+### Bug Fixes
+
+* do not ask apporval for native sell token ([#5545](https://github.com/cowprotocol/cowswap/issues/5545)) ([ca29c8e](https://github.com/cowprotocol/cowswap/commit/ca29c8eb6dfd0d33f065c7c565ee7dd58378626d))
+
 ## [1.104.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.104.0...cowswap-v1.104.1) (2025-03-24)
 
 
