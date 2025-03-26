@@ -29,7 +29,7 @@ export const TokenName = styled.div`
 export const TokenDetails = styled.div`
   display: flex;
   flex-flow: column wrap;
-  flex: 1;
+  flex: 1 1 auto;
   gap: 4px;
   min-width: 0;
 `
