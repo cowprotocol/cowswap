@@ -16,29 +16,24 @@ interface TagInfo {
   color?: StatusColorVariant
 }
 
-// Only these whitelisted tags will be shown, any other tags from token lists are ignored
-enum Tags {
-  UNSUPPORTED = '0',
-  GAS_FREE = '1',
-  CIRCLE = '2',
-}
+export type TokenTagType = keyof typeof TOKEN_TAGS
 
-const TOKEN_TAGS: Record<Tags, TagInfo> = {
-  [Tags.UNSUPPORTED]: {
+const TOKEN_TAGS: Record<string, TagInfo> = {
+  unsupported: {
     name: 'Unsupported',
     description:
       'This token is unsupported as it does not operate optimally with CoW Protocol. Please refer to the FAQ for more information.',
     id: '0',
     color: StatusColorVariant.Warning,
   },
-  [Tags.GAS_FREE]: {
+  'gas-free': {
     name: 'Gas-free',
     icon: ICON_GAS_FREE,
     description: 'This token supports gas-free approvals. Enjoy! 🐮',
     id: '1',
     color: StatusColorVariant.Success,
   },
-  [Tags.CIRCLE]: {
+  circle: {
     name: 'Circle Native',
     description: 'Token officially issued by Circle',
     id: '2',
@@ -55,22 +50,16 @@ export function TokenTags({
   isPermitCompatible?: boolean
   tags?: string[]
 }) {
-  const tagsToShow: TagInfo[] = []
+  const tagsToShow = [
+    // Include valid tags from token.tags
+    ...tags.filter((tag) => tag in TOKEN_TAGS).map((tag) => TOKEN_TAGS[tag as TokenTagType]),
+    // Add unsupported tag if applicable
+    ...(isUnsupported ? [TOKEN_TAGS.unsupported] : []),
+    // Add gas-free tag if applicable (and not unsupported)
+    ...(!isUnsupported && isPermitCompatible ? [TOKEN_TAGS['gas-free']] : []),
+  ]
 
-  // Handle Circle Native tag
-  if (tags.includes('circle')) {
-    tagsToShow.push(TOKEN_TAGS[Tags.CIRCLE])
-  }
-
-  if (isUnsupported) {
-    tagsToShow.push(TOKEN_TAGS[Tags.UNSUPPORTED])
-  } else if (isPermitCompatible) {
-    tagsToShow.push(TOKEN_TAGS[Tags.GAS_FREE])
-  }
-
-  if (tagsToShow.length === 0) {
-    return null
-  }
+  if (tagsToShow.length === 0) return null
 
   return (
     <TagDescriptor tags={tagsToShow}>
