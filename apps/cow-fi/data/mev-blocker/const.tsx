@@ -1,5 +1,5 @@
 import { Link } from '@/components/Link'
-import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
@@ -42,7 +42,7 @@ export const MEV_BLOCKER_LIST = [
     description: 'A fast, free, censorship-resistant solution open to all searchers and builders',
     iconImage: IMGAGE_FASTFREE,
     bgColor: Color.cowfi_lightBlue4,
-    textColor: Color.cowfi_blue_dark,
+    textColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
   },
 ]
 

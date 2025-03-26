@@ -1,4 +1,4 @@
-import { MenuItem, ProductVariant, Color } from '@cowprotocol/ui'
+import { MenuItem, ProductVariant, Color, UI } from '@cowprotocol/ui'
 import { initGtm } from '@cowprotocol/analytics'
 import { CowFiCategory } from 'src/common/analytics/types'
 
@@ -111,7 +111,7 @@ export const NAV_ADDITIONAL_BUTTONS = [
       }),
     external: true,
     isButton: true,
-    bgColor: Color.cowfi_blue_lighter,
-    color: Color.cowfi_blue_dark,
+    bgColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`,
+    color: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
   },
 ]

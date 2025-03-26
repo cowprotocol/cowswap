@@ -105,6 +105,8 @@ function colors(darkMode: boolean): Colors {
     boxShadow2: '0 4px 12px 0 rgb(0 0 0 / 15%)',
     shadow1: darkMode ? '#000' : '#2F80ED',
     blueDark2,
+    blue_300_primary: '#84D6FB',
+    blue_900_primary: '#012F7A',
     // Import all static colors from Color
     ...Color,
     // Add dynamic colors from Gradients
