@@ -50,14 +50,14 @@ export function TokenTags({
   isPermitCompatible?: boolean
   tags?: string[]
 }) {
-  const tagsToShow = [
-    // Include valid tags from token.tags
-    ...tags.filter((tag) => tag in TOKEN_TAGS).map((tag) => TOKEN_TAGS[tag as TokenTagType]),
-    // Add unsupported tag if applicable
-    ...(isUnsupported ? [TOKEN_TAGS.unsupported] : []),
-    // Add gas-free tag if applicable (and not unsupported)
-    ...(!isUnsupported && isPermitCompatible ? [TOKEN_TAGS['gas-free']] : []),
-  ]
+  const tagsToShow = isUnsupported
+    ? [TOKEN_TAGS.unsupported]
+    : [
+        // Include valid tags from token.tags
+        ...tags.filter((tag) => tag in TOKEN_TAGS).map((tag) => TOKEN_TAGS[tag as TokenTagType]),
+        // Add gas-free tag if applicable
+        ...(isPermitCompatible ? [TOKEN_TAGS['gas-free']] : []),
+      ]
 
   if (tagsToShow.length === 0) return null
 
