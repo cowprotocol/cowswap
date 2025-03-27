@@ -20,7 +20,7 @@ export function useNativeTokenBalance(
   const provider = getRpcProvider(chainId)
 
   return useSWR(
-    account && provider ? ['useNativeTokenBalance', account, provider] : null,
+    account && provider ? ['useNativeTokenBalance', account, provider, chainId] : null,
     async ([, _account, _provider]) => {
       const contract = getMulticallContract(_provider)
 
