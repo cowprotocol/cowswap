@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.19.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.18.1...widget-lib-v0.19.0) (2025-03-27)
+
+
+### Features
+
+* **widget:** allow passing targetChainId for bridge ([#5523](https://github.com/cowprotocol/cowswap/issues/5523)) ([8572095](https://github.com/cowprotocol/cowswap/commit/85720957f2aaf1e8f67d745642f09bf3403ed8a5))
+
 ## [0.18.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.18.0...widget-lib-v0.18.1) (2025-02-05)
 
 
