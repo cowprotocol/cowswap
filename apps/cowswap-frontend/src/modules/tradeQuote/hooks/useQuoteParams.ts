@@ -54,7 +54,7 @@ export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined
       amount,
       receiver: account,
       validFor: DEFAULT_QUOTE_TTL,
-      partnerFee: volumeFee,
+      ...(volumeFee ? { partnerFee: volumeFee } : null),
     }
 
     return { quoteParams, inputCurrency, appData: appData?.doc }

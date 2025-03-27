@@ -7,7 +7,7 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { renderHook } from '@testing-library/react'
 import { JotaiTestProvider, WithMockedWeb3 } from 'test-utils'
-import { useTradingSdk } from 'tradingSdk/useTradingSdk'
+import { tradingSdk } from 'tradingSdk/tradingSdk'
 
 import { LimitOrdersDerivedState, limitOrdersDerivedStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
 import * as tokensModule from 'modules/tokens'
@@ -25,13 +25,14 @@ jest.mock('@cowprotocol/common-hooks', () => ({
   useIsWindowVisible: jest.fn().mockReturnValue(true),
 }))
 
-jest.mock('tradingSdk/useTradingSdk')
+jest.mock('tradingSdk/tradingSdk', () => ({
+  tradingSdk: {
+    getQuote: jest.fn(),
+  },
+}))
 const useEnoughBalanceAndAllowanceMock = jest.spyOn(tokensModule, 'useEnoughBalanceAndAllowance')
 
-const tradingSdkMock = {
-  getQuote: jest.fn(),
-}
-const mockUseTradingSdk = useTradingSdk as jest.MockedFunction<typeof useTradingSdk>
+const tradingSdkMock = tradingSdk as unknown as { getQuote: jest.Mock }
 
 const inputCurrencyAmount = CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10_000_000)
 const outputCurrencyAmount = CurrencyAmount.fromRawAmount(COW[SupportedChainId.SEPOLIA], 2_000_000)
@@ -69,8 +70,8 @@ describe('useTradeQuotePolling()', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
-    tradingSdkMock.getQuote = jest.fn().mockImplementation(() => new Promise(() => void 0))
-    mockUseTradingSdk.mockImplementation(() => tradingSdkMock as any)
+    tradingSdkMock.getQuote.mockImplementation(() => new Promise(() => void 0))
+
     useEnoughBalanceAndAllowanceMock.mockReturnValue({ enoughBalance: true, enoughAllowance: true })
   })
 
