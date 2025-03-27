@@ -31,6 +31,7 @@ const SWR_CONFIG: SWRConfiguration = { refreshInterval: ms`30m`, revalidateOnFoc
 export default function useIsAnySwapAffectedUser() {
   const { chainId, account } = useWalletInfo()
   const { data: allowances } = useMultipleContractSingleData<[BigNumber]>(
+    chainId,
     AFFECTED_TOKENS,
     ERC20_INTERFACE,
     'allowance',

@@ -12,6 +12,7 @@ import { useMultiCallRpcProvider } from './useMultiCallRpcProvider'
 import { multiCall, MultiCallOptions } from '../multicall'
 
 export function useSingleContractMultipleData<T = Result, P = unknown>(
+  chainId: number,
   contract: BaseContract | undefined,
   methodName: string,
   params: P[] | undefined,
@@ -19,8 +20,6 @@ export function useSingleContractMultipleData<T = Result, P = unknown>(
   swrConfig?: SWRConfiguration,
 ): SWRResponse<(T | undefined)[] | null> {
   const provider = useMultiCallRpcProvider()
-
-  const chainId = provider?.network?.chainId
 
   const calls = useMemo(() => {
     if (!contract || !params) return null

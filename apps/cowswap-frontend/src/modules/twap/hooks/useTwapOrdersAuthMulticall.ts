@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { ComposableCoW } from '@cowprotocol/abis'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSingleContractMultipleData } from '@cowprotocol/multicall'
 
 import ms from 'ms.macro'
@@ -12,20 +13,22 @@ const MULTICALL_OPTIONS = {}
 const SWR_CONFIG = { refreshInterval: ms`30s` }
 
 export function useTwapOrdersAuthMulticall(
+  chainId: SupportedChainId,
   safeAddress: string,
   composableCowContract: ComposableCoW,
-  ordersInfo: TwapOrderInfo[]
+  ordersInfo: TwapOrderInfo[],
 ): TwapOrdersAuthResult | null {
   const input = useMemo(() => {
     return ordersInfo.map(({ id }) => [safeAddress, id])
   }, [safeAddress, ordersInfo])
 
   const { data: loadedResults, isLoading } = useSingleContractMultipleData<[boolean]>(
+    chainId,
     composableCowContract,
     'singleOrders',
     input,
     MULTICALL_OPTIONS,
-    SWR_CONFIG
+    SWR_CONFIG,
   )
 
   return useMemo(() => {

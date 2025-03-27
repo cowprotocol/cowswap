@@ -55,6 +55,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
   const allowanceParams = useMemo(() => (account && spender ? [account, spender] : undefined), [account, spender])
 
   const { isLoading: isBalancesLoading, data: balances } = useMultipleContractSingleData<{ balance: BigNumber }>(
+    chainId,
     tokenAddresses,
     ERC_20_INTERFACE,
     'balanceOf',
@@ -64,6 +65,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
   )
 
   const { isLoading: isAllowancesLoading, data: allowances } = useMultipleContractSingleData<[BigNumber]>(
+    chainId,
     tokenAddresses,
     ERC_20_INTERFACE,
     'allowance',
