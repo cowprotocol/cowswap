@@ -74,6 +74,7 @@ export async function safeBundleApprovalFlow(
     logTradeFlow(LOG_PREFIX, 'STEP 3: post order')
     const { orderId, signingScheme, signature } = await tradeQuote.quote
       .postSwapOrderFromQuote({
+        appData: orderParams.appData.doc,
         quoteRequest: {
           signingScheme: SigningScheme.PRESIGN,
         },

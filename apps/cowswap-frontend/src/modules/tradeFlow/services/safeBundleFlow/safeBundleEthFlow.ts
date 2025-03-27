@@ -95,6 +95,7 @@ export async function safeBundleEthFlow(
 
     const { orderId, signature, signingScheme } = await tradeQuote.quote
       .postSwapOrderFromQuote({
+        appData: orderParams.appData.doc,
         quoteRequest: {
           signingScheme: SigningScheme.PRESIGN,
         },

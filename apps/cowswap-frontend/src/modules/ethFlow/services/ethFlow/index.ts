@@ -82,6 +82,7 @@ export async function ethFlow({
 
     const { orderId, txHash, signature, signingScheme } = await tradeQuote.quote
       .postSwapOrderFromQuote({
+        appData: orderParams.appData.doc,
         additionalParams: {
           checkEthFlowOrderExists,
         },
