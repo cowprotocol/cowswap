@@ -1,5 +1,5 @@
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
-import { PriceQuality, QuoteAndPost, TradeParameters } from '@cowprotocol/cow-sdk'
+import { PriceQuality, QuoteAndPost, SupportedChainId, TradeParameters } from '@cowprotocol/cow-sdk'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
 
@@ -13,6 +13,7 @@ const getFastQuote = onlyResolvesLast<QuoteAndPost>(getQuote)
 const getOptimalQuote = onlyResolvesLast<QuoteAndPost>(getQuote)
 
 export async function fetchAndProcessQuote(
+  chainId: SupportedChainId,
   fetchParams: TradeQuoteFetchParams,
   quoteParams: TradeParameters,
   appData: AppDataInfo['doc'] | undefined,
@@ -42,6 +43,6 @@ export async function fetchAndProcessQuote(
     tradeQuoteManager.onResponse(data, fetchParams)
   } catch (error) {
     console.log('[useGetQuote]:: fetchQuote error', error)
-    tradeQuoteManager.onError(error, tradingSdk.traderParams.chainId, quoteParams, fetchParams)
+    tradeQuoteManager.onError(error, chainId, quoteParams, fetchParams)
   }
 }

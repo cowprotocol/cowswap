@@ -2424,10 +2424,10 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@^5.10.2-RC.0":
-  version "5.10.2-RC.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-5.10.2-RC.0.tgz#7cb2784e6ece3b7c61235c9cb7d537d82225de07"
-  integrity sha512-xX9bq/UdhtHgF3r1Fiugv8BXyWV67FXAEAhWgjRetHI4ZqDMNnSke1+a8jtT7C1LR/UfgMpnjVaWRZ9jMri8cw==
+"@cowprotocol/cow-sdk@^6.0.0-RC.22":
+  version "6.0.0-RC.22"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-6.0.0-RC.22.tgz#a5f6f1c18014c1df313c11fdd646cd20020aca00"
+  integrity sha512-uXR3XEBhh0zPW2zRz60oQYYTaY0kiqWmyLJ3dLhUmz2DcW4lZfTVskcxM7eB4qEE5I3q77tMo2Auw5YSxTIbNQ==
   dependencies:
     "@cowprotocol/app-data" "^2.4.0"
     "@cowprotocol/contracts" "^1.6.0"
@@ -2435,6 +2435,7 @@
     "@openzeppelin/merkle-tree" "^1.0.5"
     "@weiroll/weiroll.js" "^0.3.0"
     cross-fetch "^3.1.5"
+    deepmerge "^4.3.1"
     exponential-backoff "^3.1.1"
     graphql "^16.3.0"
     graphql-request "^4.3.0"

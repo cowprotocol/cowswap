@@ -25,7 +25,7 @@ export interface QuoteParams {
 }
 
 export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined {
-  const { chainId, account } = useWalletInfo()
+  const { account } = useWalletInfo()
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -58,17 +58,7 @@ export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined
     }
 
     return { quoteParams, inputCurrency, appData: appData?.doc }
-  }, [
-    inputCurrency,
-    outputCurrency,
-    amount,
-    orderKind,
-    chainId,
-    account,
-    appData?.doc,
-    isWrapOrUnwrap,
-    isProviderNetworkUnsupported,
-  ])
+  }, [inputCurrency, outputCurrency, amount, orderKind, appData?.doc, isWrapOrUnwrap, isProviderNetworkUnsupported])
 
   return useDebounce(params, AMOUNT_CHANGE_DEBOUNCE_TIME)
 }

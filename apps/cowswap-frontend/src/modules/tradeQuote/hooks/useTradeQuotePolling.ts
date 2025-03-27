@@ -5,6 +5,7 @@ import { useIsOnline, useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { PriceQuality } from '@cowprotocol/cow-sdk'
 import { useAreUnsupportedTokens } from '@cowprotocol/tokens'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 
@@ -30,6 +31,7 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
   const tradeQuoteRef = useRef(tradeQuote)
   tradeQuoteRef.current = tradeQuote
 
+  const { chainId } = useWalletInfo()
   const { quoteParams, appData, inputCurrency } = useQuoteParams(amount?.quotient.toString()) || {}
 
   const tradeQuoteManager = useTradeQuoteManager(inputCurrency && getCurrencyAddress(inputCurrency))
@@ -69,7 +71,7 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
     }
 
     const fetchQuote = (fetchParams: TradeQuoteFetchParams) =>
-      fetchAndProcessQuote(fetchParams, quoteParams, appData, tradeQuoteManager)
+      fetchAndProcessQuote(chainId, fetchParams, quoteParams, appData, tradeQuoteManager)
 
     function fetchAndUpdateQuote(hasParamsChanged: boolean, forceUpdate = false) {
       const currentQuote = tradeQuoteRef.current
@@ -135,6 +137,7 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
       clearInterval(quoteExpirationInterval)
     }
   }, [
+    chainId,
     fastQuote,
     quoteParams,
     appData,
