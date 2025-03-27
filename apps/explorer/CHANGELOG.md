@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.45.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.44.0...explorer-v2.45.0) (2025-03-27)
+
+
+### Features
+
+* enhance event tracking and analytics integration ([#5507](https://github.com/cowprotocol/cowswap/issues/5507)) ([39ea64d](https://github.com/cowprotocol/cowswap/commit/39ea64d7e7c7fe908327590b998bf6efc82c1b07))
+
 ## [2.44.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.43.0...explorer-v2.44.0) (2025-02-27)
 
 
