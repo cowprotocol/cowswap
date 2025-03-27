@@ -99,7 +99,14 @@ export function LpTokenLists({
 
       if (isMobile) {
         return (
-          <MobileCard key={token.address} data-address={token.address} onClick={() => onSelectToken(token)}>
+          <MobileCard
+            key={token.address}
+            data-address={token.address}
+            data-token-symbol={token.symbol || ''}
+            data-token-name={token.name || ''}
+            data-element-type="token-selection"
+            onClick={() => onSelectToken(token)}
+          >
             <MobileCardRow>{commonContent}</MobileCardRow>
             <MobileCardRowItem label="Balance" value={BalanceDisplay} />
             <MobileCardRowItem label="APR" value={info?.apy ? `${info.apy}%` : ''} />
@@ -117,7 +124,14 @@ export function LpTokenLists({
       }
 
       return (
-        <ListItem key={token.address} data-address={token.address} onClick={() => onSelectToken(token)}>
+        <ListItem
+          key={token.address}
+          data-address={token.address}
+          data-token-symbol={token.symbol || ''}
+          data-token-name={token.name || ''}
+          data-element-type="token-selection"
+          onClick={() => onSelectToken(token)}
+        >
           <LpTokenWrapper>{commonContent}</LpTokenWrapper>
           <LpTokenBalance>{BalanceDisplay}</LpTokenBalance>
           <LpTokenYieldPercentage>{info?.apy ? `${info.apy}%` : ''}</LpTokenYieldPercentage>
@@ -149,7 +163,7 @@ export function LpTokenLists({
       )}
       {displayCreatePoolBanner && (
         <NoPoolWrapper>
-          <div>Can’t find the pool you’re looking for?</div>
+          <div>Can't find the pool you're looking for?</div>
           <CreatePoolLink href="https://pool-creator.balancer.fi/cow">Create a pool ↗</CreatePoolLink>
         </NoPoolWrapper>
       )}

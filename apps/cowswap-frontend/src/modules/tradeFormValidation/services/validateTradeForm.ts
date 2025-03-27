@@ -119,5 +119,9 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     return TradeFormValidation.ApproveRequired
   }
 
+  if (isNativeIn) {
+    return TradeFormValidation.SellNativeToken
+  }
+
   return null
 }

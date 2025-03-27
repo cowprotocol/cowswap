@@ -29,6 +29,9 @@ export function FavoriteTokensList(props: FavoriteTokensListProps) {
             <styledEl.TokensItem
               key={token.address}
               data-address={token.address.toLowerCase()}
+              data-token-symbol={token.symbol || ''}
+              data-token-name={token.name || ''}
+              data-element-type="token-selection"
               disabled={isTokenSelected}
               onClick={() => onSelectToken(token)}
             >

@@ -23,7 +23,8 @@
       "@cowprotocol/types": ["../../../libs/types/src/index.ts"],
       "@cowprotocol/hook-dapp-lib": ["../../../libs/hook-dapp-lib/src/index.ts"],
       "@cowprotocol/iframe-transport": ["../../../libs/iframe-transport/src/index.ts"],
-      "@cowprotocol/wallet": ["../../../libs/wallet/src/index.ts"]
+      "@cowprotocol/wallet": ["../../../libs/wallet/src/index.ts"],
+      "@cowprotocol/events": ["../../../libs/events/src/index.ts"]
     }
   },
   "files": [],

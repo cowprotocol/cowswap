@@ -23,7 +23,7 @@ import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { OrdersPanel } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
-import { parameterizeTradeRoute, useTradeRouteContext } from 'modules/trade'
+import { parameterizeTradeRoute, useGetTradeUrlParams } from 'modules/trade'
 import { useInitializeUtm } from 'modules/utm'
 
 import { APP_HEADER_ELEMENT_ID } from 'common/constants/common'
@@ -95,14 +95,14 @@ export function App() {
     [darkMode, toggleDarkMode],
   )
 
-  const tradeContext = useTradeRouteContext()
+  const getTradeUrlParams = useGetTradeUrlParams()
 
   const navItems = useMemo(() => {
     return [
       {
         label: 'Trade',
         children: menuItems.map((item) => {
-          const href = parameterizeTradeRoute(tradeContext, item.route, true)
+          const href = parameterizeTradeRoute(getTradeUrlParams(item), item.route, true)
 
           return {
             href,
@@ -115,7 +115,7 @@ export function App() {
       },
       ...NAV_ITEMS,
     ]
-  }, [tradeContext, menuItems])
+  }, [menuItems, getTradeUrlParams])
 
   const { hideNetworkSelector } = useInjectedWidgetParams()
   const { pendingActivity } = useCategorizeRecentActivity()

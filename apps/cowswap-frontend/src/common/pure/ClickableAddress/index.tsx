@@ -1,32 +1,13 @@
-import { MouseEvent } from 'react'
+import { MouseEvent, useCallback, useRef, useState } from 'react'
 
-import { getChainInfo } from '@cowprotocol/common-const'
-import { shortenAddress } from '@cowprotocol/common-utils'
-import { HoverTooltip } from '@cowprotocol/ui'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { ExplorerDataType, getExplorerLink, shortenAddress, getIsNativeToken } from '@cowprotocol/common-utils'
+import { Media, Tooltip } from '@cowprotocol/ui'
 
-import CopyHelper from 'legacy/components/Copy/CopyMod'
+import { Info } from 'react-feather'
 
+import { Content } from './Content'
 import * as styledEl from './styled'
-
-const getTarget = (address: string, chainId: number) => {
-  const chainInfo = getChainInfo(chainId)
-  return chainInfo ? `${chainInfo.explorer}/address/${address}` : undefined
-}
-
-const getTitle = (address: string, chainId: number) => {
-  const chainInfo = getChainInfo(chainId)
-
-  if (chainInfo?.explorerTitle === 'Etherscan' && chainInfo?.name !== 'mainnet') {
-    return `View ${address} on ${chainInfo.label} ${chainInfo.explorerTitle}`
-  }
-
-  return chainInfo ? `View ${address} on ${chainInfo.explorerTitle}` : undefined
-}
-
-const isNativeToken = (address: string, chainId: number) => {
-  const chainInfo = getChainInfo(chainId)
-  return chainInfo ? chainInfo.nativeCurrency.address === address : false
-}
 
 export type ClickableAddressProps = {
   address: string
@@ -36,26 +17,44 @@ export type ClickableAddressProps = {
 export function ClickableAddress(props: ClickableAddressProps) {
   const { address, chainId } = props
 
+  const wrapperRef = useRef<HTMLDivElement>(null)
+
+  const isMobile = useMediaQuery(Media.upToMedium(false))
+
+  const [openTooltip, setOpenTooltip] = useState(false)
+
   const shortAddress = shortenAddress(address)
 
-  const target = getTarget(address, chainId)
-  const title = getTitle(address, chainId)
+  const target = getExplorerLink(chainId, address, ExplorerDataType.TOKEN)
 
-  const shouldShowAddress = target && title && !isNativeToken(address, chainId)
+  const shouldShowAddress = target && !getIsNativeToken(chainId, address)
 
-  const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
-    e.stopPropagation()
-  }
+  const handleClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation?.()
+    setOpenTooltip((prev) => !prev)
+  }, [])
+
+  const handleClickOutside = useCallback((event: MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation?.()
+    setOpenTooltip(false)
+  }, [])
 
   return (
     shouldShowAddress && (
-      <styledEl.Wrapper>
-        <HoverTooltip {...props} placement="bottom" content={title} wrapInContainer>
-          <styledEl.AddressWrapper to={target} target="_blank" rel="noopener noreferrer" onClick={handleClick}>
-            {shortAddress}
-          </styledEl.AddressWrapper>
-        </HoverTooltip>
-        <CopyHelper toCopy={address} clickableLink={false} />
+      <styledEl.Wrapper openTooltip={openTooltip} alwaysShow={isMobile} ref={wrapperRef}>
+        <styledEl.AddressWrapper>{shortAddress}</styledEl.AddressWrapper>
+        <styledEl.InfoIcon onClick={handleClick}>
+          <Tooltip
+            content={<Content address={address} target={target} />}
+            placement="bottom"
+            wrapInContainer={false}
+            show={openTooltip}
+            onClickCapture={handleClickOutside}
+            containerRef={wrapperRef}
+          >
+            <Info size={16} />
+          </Tooltip>
+        </styledEl.InfoIcon>
       </styledEl.Wrapper>
     )
   )
