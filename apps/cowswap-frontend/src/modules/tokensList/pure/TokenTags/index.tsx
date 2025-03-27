@@ -6,6 +6,8 @@ import ICON_GAS_FREE from 'assets/icon/gas-free.svg'
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router-dom'
 
+import { useTokenListTags } from 'common/hooks/useTokenListTags'
+
 import * as styledEl from './styled'
 
 interface TagInfo {
@@ -16,9 +18,10 @@ interface TagInfo {
   color?: StatusColorVariant
 }
 
-export type TokenTagType = keyof typeof TOKEN_TAGS
+export type TokenTagType = keyof typeof APP_TOKEN_TAGS
 
-const TOKEN_TAGS: Record<string, TagInfo> = {
+// Programmatic tags that don't come from tokenlists
+const APP_TOKEN_TAGS: Record<string, TagInfo> = {
   unsupported: {
     name: 'Unsupported',
     description:
@@ -33,12 +36,6 @@ const TOKEN_TAGS: Record<string, TagInfo> = {
     id: '1',
     color: StatusColorVariant.Success,
   },
-  circle: {
-    name: 'Circle Native',
-    description: 'Token officially issued by Circle',
-    id: '2',
-    color: StatusColorVariant.Info,
-  },
 }
 
 export function TokenTags({
@@ -50,13 +47,27 @@ export function TokenTags({
   isPermitCompatible?: boolean
   tags?: string[]
 }) {
+  // Get tags from tokenlists
+  const tokenListTags = useTokenListTags()
+
   const tagsToShow = isUnsupported
-    ? [TOKEN_TAGS.unsupported]
+    ? [APP_TOKEN_TAGS.unsupported]
     : [
         // Include valid tags from token.tags
-        ...tags.filter((tag) => tag in TOKEN_TAGS).map((tag) => TOKEN_TAGS[tag as TokenTagType]),
+        ...tags
+          .filter((tag) => {
+            const hasTag = tag in tokenListTags || tag in APP_TOKEN_TAGS
+
+            return hasTag
+          })
+          .map((tag) => {
+            const tagInfo =
+              tag in tokenListTags ? tokenListTags[tag] : APP_TOKEN_TAGS[tag as keyof typeof APP_TOKEN_TAGS]
+
+            return tagInfo
+          }),
         // Add gas-free tag if applicable
-        ...(isPermitCompatible ? [TOKEN_TAGS['gas-free']] : []),
+        ...(isPermitCompatible ? [APP_TOKEN_TAGS['gas-free']] : []),
       ]
 
   if (tagsToShow.length === 0) return null
