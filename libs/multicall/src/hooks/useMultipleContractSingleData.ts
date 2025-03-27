@@ -11,7 +11,6 @@ import { useMultiCallRpcProvider } from './useMultiCallRpcProvider'
 import { multiCall, MultiCallOptions } from '../multicall'
 
 export function useMultipleContractSingleData<T = Result>(
-  chainId: number,
   addresses: string[],
   contractInterface: Interface,
   methodName: string,
@@ -37,6 +36,8 @@ export function useMultipleContractSingleData<T = Result>(
       }
     })
   }, [addresses, callData])
+
+  const chainId = provider?.network?.chainId
 
   return useSWR<(T | undefined)[] | null>(
     !calls?.length || !provider

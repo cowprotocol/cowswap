@@ -48,7 +48,7 @@ export function TwapOrdersUpdater(props: {
   }, [allOrdersInfo])
 
   // Here we know which orders are cancelled: if it's auth === false, then it's cancelled
-  const ordersAuthResult = useTwapOrdersAuthMulticall(chainId, safeAddress, composableCowContract, pendingTwapOrders)
+  const ordersAuthResult = useTwapOrdersAuthMulticall(safeAddress, composableCowContract, pendingTwapOrders)
 
   /**
    * Since, a transaction proposal might be rejected in Safe
