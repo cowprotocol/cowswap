@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.11.0...wallet-v1.12.0) (2025-03-27)
+
+
+### Features
+
+* **bridge:** disable bridging sc wallets ([#5536](https://github.com/cowprotocol/cowswap/issues/5536)) ([98372ec](https://github.com/cowprotocol/cowswap/commit/98372ec6b5d2fd8b4f97147197154ae3830497d8))
+
 ## [1.11.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.10.1...wallet-v1.11.0) (2025-03-20)
 
 
