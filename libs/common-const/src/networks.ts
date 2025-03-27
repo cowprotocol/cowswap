@@ -47,7 +47,7 @@ export function getRpcProvider(chainId: number): JsonRpcProvider | null {
     const url = RPC_URLS[chainId as SupportedChainId]
     if (!url) return null
 
-    const provider = new JsonRpcProvider(url)
+    const provider = new JsonRpcProvider(url, chainId)
 
     rpcProviderCache[chainId] = provider
 
