@@ -69,7 +69,7 @@
   "dependencies": {
     "@1inch/permit-signed-approvals-utils": "^1.4.10",
     "@apollo/client": "^3.1.5",
-    "@babel/runtime": "^7.17.0",
+    "@babel/runtime": "^7.26.10",
     "@coinbase/wallet-sdk": "^3.3.0",
     "@cowprotocol/app-data": "^2.3.0",
     "@cowprotocol/cms": "^0.11.0",
