@@ -5,6 +5,8 @@ import { UiOrderType } from '@cowprotocol/types'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
+import { tradingSdk } from 'tradingSdk/tradingSdk'
+
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { getOrderSubmitSummary, mapUnsignedOrderToOrder, type PostOrderParams } from 'legacy/utils/trade'
@@ -30,8 +32,7 @@ export async function safeBundleEthFlow(
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
   analytics: TradeFlowAnalytics,
 ): Promise<void | boolean> {
-  const { context, callbacks, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks, tradeQuote, tradingSdk } =
-    tradeContext
+  const { context, callbacks, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks, tradeQuote } = tradeContext
 
   if (!tradeQuote.quote) {
     throw new Error('Quote is undefined in ethFlow!')

@@ -1,4 +1,6 @@
-import { TradeParameters, TradingSdk } from '@cowprotocol/cow-sdk'
+import { TradeParameters } from '@cowprotocol/cow-sdk'
+
+import { tradingSdk } from 'tradingSdk/tradingSdk'
 
 import { AppDataInfo } from 'modules/appData'
 
@@ -10,7 +12,6 @@ export async function fetchAndProcessQuote(
   quoteParams: TradeParameters,
   appData: AppDataInfo['doc'] | undefined,
   tradeQuoteManager: TradeQuoteManager,
-  tradingSdk: TradingSdk,
 ) {
   const { hasParamsChanged, priceQuality } = fetchParams
 

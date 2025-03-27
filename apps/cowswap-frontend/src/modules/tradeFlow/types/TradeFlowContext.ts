@@ -1,5 +1,4 @@
 import type { Erc20, GPv2Settlement, Weth } from '@cowprotocol/abis'
-import type { TradingSdk } from '@cowprotocol/cow-sdk'
 import type { Command } from '@cowprotocol/types'
 import type { SendBatchTxCallback } from '@cowprotocol/wallet'
 import type { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -22,7 +21,6 @@ export enum FlowType {
 
 export interface TradeFlowContext {
   tradeQuote: TradeQuoteState
-  tradingSdk: TradingSdk
   context: {
     chainId: number
     inputAmount: CurrencyAmount<Currency>

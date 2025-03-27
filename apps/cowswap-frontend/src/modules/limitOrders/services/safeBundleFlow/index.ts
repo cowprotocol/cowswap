@@ -3,6 +3,8 @@ import { Command, UiOrderType } from '@cowprotocol/types'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
+import { tradingSdk } from 'tradingSdk/tradingSdk'
+
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { getOrderSubmitSummary, mapUnsignedOrderToOrder } from 'legacy/utils/trade'
@@ -25,7 +27,7 @@ import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 const LOG_PREFIX = 'LIMIT ORDER SAFE BUNDLE FLOW'
 
 export async function safeBundleFlow(
-  { tradingSdk, quoteState }: TradeFlowContext,
+  { quoteState }: TradeFlowContext,
   params: SafeBundleFlowContext,
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,

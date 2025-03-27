@@ -7,7 +7,6 @@ import { PriceQuality } from '@cowprotocol/cow-sdk'
 import { useAreUnsupportedTokens } from '@cowprotocol/tokens'
 
 import ms from 'ms.macro'
-import { useTradingSdk } from 'tradingSdk/useTradingSdk'
 
 import { useUpdateCurrencyAmount } from 'modules/trade'
 
@@ -33,7 +32,6 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
 
   const { quoteParams, appData, inputCurrency } = useQuoteParams(amount?.quotient.toString()) || {}
 
-  const tradingSdk = useTradingSdk()
   const tradeQuoteManager = useTradeQuoteManager(inputCurrency && getCurrencyAddress(inputCurrency))
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const getIsUnsupportedTokens = useAreUnsupportedTokens()
@@ -56,7 +54,7 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
   }, [isWindowVisible, tradeQuoteManager, isConfirmOpen])
 
   useLayoutEffect(() => {
-    if (!tradeQuoteManager || !tradingSdk) {
+    if (!tradeQuoteManager) {
       return
     }
 
@@ -71,7 +69,7 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
     }
 
     const fetchQuote = (fetchParams: TradeQuoteFetchParams) =>
-      fetchAndProcessQuote(fetchParams, quoteParams, appData, tradeQuoteManager, tradingSdk)
+      fetchAndProcessQuote(fetchParams, quoteParams, appData, tradeQuoteManager)
 
     function fetchAndUpdateQuote(hasParamsChanged: boolean, forceUpdate = false) {
       const currentQuote = tradeQuoteRef.current
@@ -145,7 +143,6 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
     processUnsupportedTokenError,
     getIsUnsupportedTokens,
     isWindowVisible,
-    tradingSdk,
   ])
 
   return null

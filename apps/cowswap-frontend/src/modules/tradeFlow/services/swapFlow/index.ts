@@ -4,6 +4,8 @@ import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
+import { tradingSdk } from 'tradingSdk/tradingSdk'
+
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { getOrderSubmitSummary, mapUnsignedOrderToOrder } from 'legacy/utils/trade'
@@ -28,7 +30,6 @@ export async function swapFlow(
     tradeConfirmActions,
     callbacks: { getCachedPermit },
     tradeQuote,
-    tradingSdk,
   } = input
 
   const {

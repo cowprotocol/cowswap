@@ -5,7 +5,6 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useDispatch } from 'react-redux'
 import useSWR from 'swr'
-import { useTradingSdk } from 'tradingSdk/useTradingSdk'
 
 import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
@@ -58,7 +57,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
   const appData = useAppData()
   const typedHooks = useAppDataHooks()
-  const tradingSdk = useTradingSdk()
   const tradeQuote = useTradeQuote()
 
   const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[settlementChainId || SupportedChainId.MAINNET]
@@ -89,7 +87,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         appData &&
         tradeQuote.quote &&
         tradeQuote.fetchParams?.priceQuality === PriceQuality.OPTIMAL &&
-        tradingSdk &&
         orderKind &&
         settlementContract &&
         uiOrderType
@@ -98,7 +95,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             allowsOffchainSigning,
             appData,
             tradeQuote,
-            tradingSdk,
             buyToken,
             settlementChainId,
             closeModals,
@@ -127,7 +123,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         allowsOffchainSigning,
         appData,
         tradeQuote,
-        tradingSdk,
         buyToken,
         chainId,
         closeModals,
@@ -152,7 +147,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
       ]) => {
         return {
           tradeQuote,
-          tradingSdk,
           context: {
             chainId,
             inputAmount,
