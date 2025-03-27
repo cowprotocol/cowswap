@@ -16,6 +16,8 @@ export function getIsNativeToken(chainIdOrTokenParams: SupportedChainId | Curren
   if (typeof chainIdOrTokenParams === 'number') {
     const nativeToken = NATIVE_CURRENCIES[chainIdOrTokenParams as SupportedChainId]
 
+    if (!nativeToken) return false
+
     return doesTokenMatchSymbolOrAddress(nativeToken, _tokenId)
   }
 

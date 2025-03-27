@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.7.0...common-hooks-v1.8.0) (2025-03-27)
+
+
+### Features
+
+* **bridge:** disable bridging sc wallets ([#5536](https://github.com/cowprotocol/cowswap/issues/5536)) ([98372ec](https://github.com/cowprotocol/cowswap/commit/98372ec6b5d2fd8b4f97147197154ae3830497d8))
+* move inside a popup "copy address" and "view details" ([#5532](https://github.com/cowprotocol/cowswap/issues/5532)) ([c060193](https://github.com/cowprotocol/cowswap/commit/c060193028b716b7ba062d55dbc5cac67a170031))
+
 ## [1.7.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.6.1...common-hooks-v1.7.0) (2025-02-25)
 
 

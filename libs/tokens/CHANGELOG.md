@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.16.0...tokens-v1.17.0) (2025-03-27)
+
+
+### Features
+
+* **bridge:** disable bridging sc wallets ([#5536](https://github.com/cowprotocol/cowswap/issues/5536)) ([98372ec](https://github.com/cowprotocol/cowswap/commit/98372ec6b5d2fd8b4f97147197154ae3830497d8))
+
 ## [1.16.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.15.0...tokens-v1.16.0) (2025-03-20)
 
 

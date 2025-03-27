@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.105.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.104.2...cowswap-v1.105.0) (2025-03-27)
+
+
+### Features
+
+* move inside a popup "copy address" and "view details" ([#5532](https://github.com/cowprotocol/cowswap/issues/5532)) ([c060193](https://github.com/cowprotocol/cowswap/commit/c060193028b716b7ba062d55dbc5cac67a170031))
+
+
+### Bug Fixes
+
+* **bridge:** ignore buy token selection when bridging is not enabled ([#5561](https://github.com/cowprotocol/cowswap/issues/5561)) ([bd7b501](https://github.com/cowprotocol/cowswap/commit/bd7b5012c6d5b4fb98812a4d374fd01da3e11d70))
+
 ## [1.104.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.104.1...cowswap-v1.104.2) (2025-03-24)
 
 
