@@ -15,6 +15,7 @@ import { PermitCompatibleTokens } from 'modules/permit'
 
 import * as styledEl from './styled'
 
+import { TokenListTags } from '../../../../common/hooks/useTokenListTags'
 import { LpTokenListsWidget } from '../../containers/LpTokenListsWidget'
 import { TokenSearchResults } from '../../containers/TokenSearchResults'
 import { ChainsToSelectState, SelectTokenContext } from '../../types'
@@ -38,12 +39,18 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   tokenListCategoryState: [T, (category: T) => void]
   defaultInputValue?: string
   areTokensLoading: boolean
+  tokenListTags: TokenListTags
 
   onSelectToken(token: TokenWithLogo): void
+
   openPoolPage(poolAddress: string): void
+
   onInputPressEnter?(): void
+
   onOpenManageWidget(): void
+
   onDismiss(): void
+
   onSelectChain(chain: ChainInfo): void
 }
 
@@ -69,6 +76,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     chainsToSelect,
     onSelectChain,
     areTokensLoading,
+    tokenListTags,
   } = props
 
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
@@ -79,6 +87,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     onSelectToken,
     unsupportedTokens,
     permitCompatibleTokens,
+    tokenListTags,
   }
 
   const trimmedInputValue = inputValue.trim()

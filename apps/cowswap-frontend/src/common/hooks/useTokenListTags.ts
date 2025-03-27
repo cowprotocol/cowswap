@@ -11,15 +11,17 @@ export interface TagInfo {
   color?: StatusColorVariant
 }
 
+export type TokenListTags = Record<string, TagInfo>
+
 // The list of tag names that we want to support from tokenlists
 const ALLOWED_TOKENLIST_TAGS = ['circle']
 
-export function useTokenListTags(): Record<string, TagInfo> {
+export function useTokenListTags(): TokenListTags {
   const tokenLists = useAllListsList()
 
   return useMemo(() => {
     // Build a map of allowed tag information from all token lists
-    const tokenListTags: Record<string, TagInfo> = {}
+    const tokenListTags: TokenListTags = {}
 
     // Process all loaded token lists
     for (const { list } of tokenLists) {

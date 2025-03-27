@@ -17,6 +17,7 @@ import { useNetworkName } from 'common/hooks/useNetworkName'
 
 import * as styledEl from './styled'
 
+import { useTokenListTags } from '../../../../common/hooks/useTokenListTags'
 import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
 import { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
 import { CommonListContainer } from '../../pure/commonElements'
@@ -52,6 +53,8 @@ export function TokenSearchResults({
   const addTokenImportCallback = useAddTokenImportCallback()
 
   const networkName = useNetworkName()
+
+  const tokenListTags = useTokenListTags()
 
   const searchCount = [
     activeListsResult.length,
@@ -138,6 +141,7 @@ export function TokenSearchResults({
                   balance={balances ? balances[token.address.toLowerCase()] : undefined}
                   onSelectToken={onSelectToken}
                   isWalletConnected={isWalletConnected}
+                  tokenListTags={tokenListTags}
                 />
               )
             })}

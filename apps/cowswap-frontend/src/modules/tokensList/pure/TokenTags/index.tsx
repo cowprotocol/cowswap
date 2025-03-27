@@ -1,12 +1,13 @@
+import { useMemo } from 'react'
+
 import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowprotocol/common-const'
-import { HoverTooltip } from '@cowprotocol/ui'
-import { StatusColorVariant, getStatusColorEnums } from '@cowprotocol/ui'
+import { getStatusColorEnums, HoverTooltip, StatusColorVariant } from '@cowprotocol/ui'
 
 import ICON_GAS_FREE from 'assets/icon/gas-free.svg'
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router-dom'
 
-import { useTokenListTags } from 'common/hooks/useTokenListTags'
+import { TokenListTags } from 'common/hooks/useTokenListTags'
 
 import * as styledEl from './styled'
 
@@ -42,33 +43,27 @@ export function TokenTags({
   isUnsupported,
   isPermitCompatible,
   tags = [],
+  tokenListTags,
 }: {
   isUnsupported: boolean
   isPermitCompatible?: boolean
   tags?: string[]
+  tokenListTags: TokenListTags
 }) {
-  // Get tags from tokenlists
-  const tokenListTags = useTokenListTags()
-
-  const tagsToShow = isUnsupported
-    ? [APP_TOKEN_TAGS.unsupported]
-    : [
-        // Include valid tags from token.tags
-        ...tags
-          .filter((tag) => {
-            const hasTag = tag in tokenListTags || tag in APP_TOKEN_TAGS
-
-            return hasTag
-          })
-          .map((tag) => {
-            const tagInfo =
-              tag in tokenListTags ? tokenListTags[tag] : APP_TOKEN_TAGS[tag as keyof typeof APP_TOKEN_TAGS]
-
-            return tagInfo
-          }),
-        // Add gas-free tag if applicable
-        ...(isPermitCompatible ? [APP_TOKEN_TAGS['gas-free']] : []),
-      ]
+  const tagsToShow = useMemo(() => {
+    return isUnsupported
+      ? [APP_TOKEN_TAGS.unsupported]
+      : [
+          // Include valid tags from token.tags
+          ...tags
+            .filter((tag) => tag in tokenListTags || tag in APP_TOKEN_TAGS)
+            .map((tag) =>
+              tag in tokenListTags ? tokenListTags[tag] : APP_TOKEN_TAGS[tag as keyof typeof APP_TOKEN_TAGS],
+            ),
+          // Add gas-free tag if applicable
+          ...(isPermitCompatible ? [APP_TOKEN_TAGS['gas-free']] : []),
+        ]
+  }, [isUnsupported, tags, tokenListTags, isPermitCompatible])
 
   if (tagsToShow.length === 0) return null
 

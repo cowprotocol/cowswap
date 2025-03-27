@@ -26,6 +26,7 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
     onSelectToken,
     unsupportedTokens,
     permitCompatibleTokens,
+    tokenListTags,
     account,
     displayLpTokenLists,
   } = props
@@ -53,10 +54,19 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
           balance={balance}
           onSelectToken={onSelectToken}
           isWalletConnected={isWalletConnected}
+          tokenListTags={tokenListTags}
         />
       )
     },
-    [balances, unsupportedTokens, permitCompatibleTokens, selectedToken, onSelectToken, isWalletConnected],
+    [
+      balances,
+      unsupportedTokens,
+      permitCompatibleTokens,
+      selectedToken,
+      onSelectToken,
+      isWalletConnected,
+      tokenListTags,
+    ],
   )
 
   return (

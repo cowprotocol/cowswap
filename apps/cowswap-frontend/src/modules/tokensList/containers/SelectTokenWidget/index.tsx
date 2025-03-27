@@ -27,6 +27,7 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import { getDefaultTokenListCategories } from './getDefaultTokenListCategories'
 
+import { useTokenListTags } from '../../../../common/hooks/useTokenListTags'
 import { useChainsToSelect } from '../../hooks/useChainsToSelect'
 import { useCloseTokenSelectWidget } from '../../hooks/useCloseTokenSelectWidget'
 import { useOnSelectChain } from '../../hooks/useOnSelectChain'
@@ -96,6 +97,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
   const balancesState = useTokensBalancesCombined()
   const unsupportedTokens = useUnsupportedTokens()
   const permitCompatibleTokens = usePermitCompatibleTokens()
+  const tokenListTags = useTokenListTags()
   const onTokenListAddingError = useOnTokenListAddingError()
 
   const isInjectedWidgetMode = isInjectedWidget()
@@ -210,6 +212,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
             chainsToSelect={chainsToSelect}
             onSelectChain={onSelectChain}
             areTokensLoading={areTokensLoading}
+            tokenListTags={tokenListTags}
           />
         )
       })()}

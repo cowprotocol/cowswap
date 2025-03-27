@@ -13,7 +13,7 @@ export class TokenWithLogo extends Token {
       token.symbol,
       token.name,
       undefined, // bypassChecksum parameter
-      (token as any).tags || [],
+      ('tags' in token && token.tags) || [],
     )
   }
 
@@ -41,6 +41,8 @@ export class LpToken extends TokenWithLogo {
       token.decimals,
       token.symbol,
       token.name,
+      undefined,
+      ('tags' in token && token.tags) || [],
     )
   }
 
@@ -53,6 +55,7 @@ export class LpToken extends TokenWithLogo {
     symbol?: string,
     name?: string,
     bypassChecksum?: boolean,
+    public tags: string[] = [],
   ) {
     super(undefined, chainId, address, decimals, symbol, name, bypassChecksum)
   }

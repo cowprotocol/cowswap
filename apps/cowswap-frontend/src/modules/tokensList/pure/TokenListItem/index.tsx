@@ -11,6 +11,7 @@ import { Nullish } from 'types'
 
 import * as styledEl from './styled'
 
+import { TokenListTags } from '../../../../common/hooks/useTokenListTags'
 import { TokenInfo } from '../TokenInfo'
 import { TokenTags } from '../TokenTags'
 
@@ -24,14 +25,26 @@ export interface TokenListItemProps {
   token: TokenWithLogo
   selectedToken?: Nullish<Currency>
   balance: BigNumber | undefined
+
   onSelectToken(token: TokenWithLogo): void
+
   isUnsupported: boolean
   isPermitCompatible: boolean
   isWalletConnected: boolean
+  tokenListTags: TokenListTags
 }
 
 export function TokenListItem(props: TokenListItemProps) {
-  const { token, selectedToken, balance, onSelectToken, isUnsupported, isPermitCompatible, isWalletConnected } = props
+  const {
+    token,
+    selectedToken,
+    balance,
+    onSelectToken,
+    isUnsupported,
+    isPermitCompatible,
+    isWalletConnected,
+    tokenListTags,
+  } = props
 
   const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
     if (isTokenSelected) {
@@ -62,7 +75,14 @@ export function TokenListItem(props: TokenListItemProps) {
     >
       <TokenInfo
         token={token}
-        tags={<TokenTags isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} tags={token.tags} />}
+        tags={
+          <TokenTags
+            isUnsupported={isUnsupported}
+            isPermitCompatible={isPermitCompatible}
+            tags={token.tags}
+            tokenListTags={tokenListTags}
+          />
+        }
       />
       {isWalletConnected && (
         <styledEl.TokenBalance>
