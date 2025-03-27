@@ -1,5 +1,6 @@
-import { MouseEvent, ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { MouseEvent, ReactNode, useCallback, RefObject, useEffect, useRef, useState } from 'react'
 
+import { useOnClickOutside, useOnScroll } from '@cowprotocol/common-hooks'
 import { isMobile } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 
@@ -175,6 +176,8 @@ export interface TooltipProps extends Omit<PopoverProps, 'content'> {
    * The content of the tooltip
    */
   content: ReactNode
+
+  containerRef: RefObject<HTMLElement>
 }
 
 /**
@@ -183,11 +186,24 @@ export interface TooltipProps extends Omit<PopoverProps, 'content'> {
  * IMPORTANT: Don't use it if you need to show the tooltip when you hover on one element. For that use `HoverTooltip`
  * @see HoverTooltip as an alternative if you need to show the tooltip on hover
  */
-export function Tooltip({ content, className, wrapInContainer, ...rest }: TooltipProps) {
+export function Tooltip({ content, className, wrapInContainer, show, containerRef, ...rest }: TooltipProps) {
+  const tooltipRef = useRef<HTMLDivElement>(null)
+
+  const handleClick = useCallback(() => {
+    if (show && rest.onClickCapture) {
+      rest.onClickCapture({} as React.MouseEvent<HTMLDivElement>)
+    }
+  }, [show, rest])
+
+  useOnClickOutside([tooltipRef], handleClick)
+
+  useOnScroll(containerRef, handleClick)
+
   return (
     <Popover
       className={className}
-      content={wrapInContainer ? <TooltipContainer>{content}</TooltipContainer> : content}
+      show={show}
+      content={<div ref={tooltipRef}>{wrapInContainer ? <TooltipContainer>{content}</TooltipContainer> : content}</div>}
       {...rest}
     />
   )
