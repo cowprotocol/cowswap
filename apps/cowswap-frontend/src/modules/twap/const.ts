@@ -10,7 +10,7 @@ import { TwapOrderExecutionInfo, TwapOrderStatus } from './types'
 
 export const DEFAULT_TWAP_SLIPPAGE = new Percent(10, 100) // 10%
 
-export const MAX_TWAP_SLIPPAGE = 100 // 100%
+export const MAX_TWAP_SLIPPAGE = 99.99 // 99.99%
 
 export type OrderDeadline = { label: string; value: number }
 
