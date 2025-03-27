@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.23.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.22.0...ui-v1.23.0) (2025-03-27)
+
+
+### Features
+
+* move inside a popup "copy address" and "view details" ([#5532](https://github.com/cowprotocol/cowswap/issues/5532)) ([c060193](https://github.com/cowprotocol/cowswap/commit/c060193028b716b7ba062d55dbc5cac67a170031))
+
 ## [1.22.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.21.0...ui-v1.22.0) (2025-03-20)
 
 
