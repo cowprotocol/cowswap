@@ -1,4 +1,5 @@
-import { TradeParameters } from '@cowprotocol/cow-sdk'
+import { onlyResolvesLast } from '@cowprotocol/common-utils'
+import { PriceQuality, QuoteAndPost, TradeParameters } from '@cowprotocol/cow-sdk'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
 
@@ -7,6 +8,10 @@ import { AppDataInfo } from 'modules/appData'
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
 import { TradeQuoteFetchParams } from '../types'
 
+const getQuote = tradingSdk.getQuote.bind(tradingSdk)
+const getFastQuote = onlyResolvesLast<QuoteAndPost>(getQuote)
+const getOptimalQuote = onlyResolvesLast<QuoteAndPost>(getQuote)
+
 export async function fetchAndProcessQuote(
   fetchParams: TradeQuoteFetchParams,
   quoteParams: TradeParameters,
@@ -14,19 +19,27 @@ export async function fetchAndProcessQuote(
   tradeQuoteManager: TradeQuoteManager,
 ) {
   const { hasParamsChanged, priceQuality } = fetchParams
+  const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
+  const advancedSettings = {
+    quoteRequest: {
+      priceQuality,
+    },
+    appData: appData,
+  }
 
   tradeQuoteManager.setLoading(hasParamsChanged)
+  const request = isOptimalQuote
+    ? getOptimalQuote(quoteParams, advancedSettings)
+    : getFastQuote(quoteParams, advancedSettings)
 
   try {
-    // TODO: add cancelling of the previous request
-    const quote = await tradingSdk.getQuote(quoteParams, {
-      quoteRequest: {
-        priceQuality,
-      },
-      appData: appData,
-    })
+    const { cancelled, data } = await request
 
-    tradeQuoteManager.onResponse(quote, fetchParams)
+    if (cancelled) {
+      return
+    }
+
+    tradeQuoteManager.onResponse(data, fetchParams)
   } catch (error) {
     console.log('[useGetQuote]:: fetchQuote error', error)
     tradeQuoteManager.onError(error, tradingSdk.traderParams.chainId, quoteParams, fetchParams)
