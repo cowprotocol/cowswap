@@ -80,11 +80,11 @@ export function TradeWidgetModals({
   const error = tokenListAddingError || approveError || confirmError
 
   /**
-   * Close modals on account change
+   * Close modals on chainId/account change
    */
   useEffect(() => {
     resetAllScreens()
-  }, [account, resetAllScreens])
+  }, [chainId, account, resetAllScreens])
 
   /**
    * Close all modals besides token select widget on chain change

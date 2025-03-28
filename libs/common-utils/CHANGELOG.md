@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.13.0...common-utils-v1.13.1) (2025-03-27)
+
+
+### Bug Fixes
+
+* **bridge:** fix getIsNativeToken ([#5565](https://github.com/cowprotocol/cowswap/issues/5565)) ([240134e](https://github.com/cowprotocol/cowswap/commit/240134ecf8ed46bd495bad78547b2c120920e1a1))
+
 ## [1.13.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.12.0...common-utils-v1.13.0) (2025-03-20)
 
 
