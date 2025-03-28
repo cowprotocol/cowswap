@@ -78,9 +78,6 @@ export const activeTokensAtom = atom<ActiveTokensState>((get) => {
   const tokens = tokenMapToListWithLogo(
     {
       [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo,
-      ...tokensMap.activeTokens,
-      ...lowerCaseTokensMap(userAddedTokens[chainId] || {}),
-      ...lowerCaseTokensMap(favoriteTokensState[chainId]),
       ...(enableLpTokensByDefault
         ? Object.keys(tokensMap.inactiveTokens).reduce<TokensMap>((acc, key) => {
             const token = tokensMap.inactiveTokens[key]
@@ -92,6 +89,9 @@ export const activeTokensAtom = atom<ActiveTokensState>((get) => {
             return acc
           }, {})
         : null),
+      ...lowerCaseTokensMap(favoriteTokensState[chainId]),
+      ...tokensMap.activeTokens,
+      ...lowerCaseTokensMap(userAddedTokens[chainId] || {}),
     },
     chainId,
   )
