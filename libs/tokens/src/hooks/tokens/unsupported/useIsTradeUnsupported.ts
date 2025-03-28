@@ -8,5 +8,8 @@ type NullishCurrency = Currency | null | undefined
 export function useIsTradeUnsupported(inputCurrency: NullishCurrency, outputCurrency: NullishCurrency): boolean {
   const areUnsupportedTokens = useAreUnsupportedTokens()
 
-  return areUnsupportedTokens({ sellToken: getAddress(inputCurrency), buyToken: getAddress(outputCurrency) })
+  return areUnsupportedTokens({
+    sellTokenAddress: getAddress(inputCurrency),
+    buyTokenAddress: getAddress(outputCurrency),
+  })
 }

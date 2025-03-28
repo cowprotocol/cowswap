@@ -26,6 +26,7 @@ export function FullAmountQuoteUpdater() {
   useEffect(() => {
     if (error || isLoading || !partQuoteAmount || !quoteParams) return
 
+    // TODO: adjust params
     getQuoteOnlyResolveLast(quoteParams).then((response) => {
       const { cancelled, data } = response
 

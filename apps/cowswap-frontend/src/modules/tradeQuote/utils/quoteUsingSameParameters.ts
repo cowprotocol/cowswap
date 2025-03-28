@@ -1,4 +1,4 @@
-import { TradeParameters } from '@cowprotocol/cow-sdk'
+import { QuoteBridgeRequest, TradeParameters } from '@cowprotocol/cow-sdk'
 
 import { Nullish } from 'types'
 
@@ -11,7 +11,7 @@ import { AppDataInfo } from 'modules/appData'
  */
 export function quoteUsingSameParameters(
   currentParams: Nullish<TradeParameters>,
-  nextParams: Nullish<TradeParameters>,
+  nextParams: Nullish<QuoteBridgeRequest>,
   currentAppData: AppDataInfo['doc'] | undefined,
   appData: AppDataInfo['doc'] | undefined,
 ): boolean {
@@ -19,11 +19,12 @@ export function quoteUsingSameParameters(
 
   const hasSameAppData = compareAppDataWithoutQuoteData(currentAppData, appData)
 
+  // TODO: compare tokens chainIds
   return (
     hasSameAppData &&
     currentParams.kind === nextParams.kind &&
-    currentParams.sellToken === nextParams.sellToken &&
-    currentParams.buyToken === nextParams.buyToken &&
+    currentParams.sellToken === nextParams.sellTokenAddress &&
+    currentParams.buyToken === nextParams.buyTokenAddress &&
     currentParams.amount === nextParams.amount &&
     currentParams.receiver === nextParams.receiver &&
     currentParams.validFor === nextParams.validFor

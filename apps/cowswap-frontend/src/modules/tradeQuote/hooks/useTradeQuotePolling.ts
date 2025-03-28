@@ -60,7 +60,7 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
       return
     }
 
-    if (!quoteParams || quoteParams.amount === '0') {
+    if (!quoteParams || quoteParams.amount.toString() === '0') {
       tradeQuoteManager.reset()
       return
     }

@@ -1,7 +1,9 @@
+import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { TradeParameters } from '@cowprotocol/cow-sdk'
+import { QuoteBridgeRequest } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Currency } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
@@ -19,13 +21,14 @@ const DEFAULT_QUOTE_TTL = ms`30m` / 1000
 const AMOUNT_CHANGE_DEBOUNCE_TIME = ms`350ms`
 
 export interface QuoteParams {
-  quoteParams: TradeParameters
+  quoteParams: QuoteBridgeRequest
   inputCurrency: Currency
   appData: AppDataInfo['doc'] | undefined
 }
 
 export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined {
   const { account } = useWalletInfo()
+  const provider = useWalletProvider()
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -37,28 +40,48 @@ export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined
 
   const params = useSafeMemo(() => {
     if (isWrapOrUnwrap || isProviderNetworkUnsupported) return
-    if (!inputCurrency || !outputCurrency || !amount || !orderKind) return
+    if (!inputCurrency || !outputCurrency || !amount || !orderKind || !provider) return
 
-    const sellToken = getCurrencyAddress(inputCurrency)
-    const buyToken = getCurrencyAddress(outputCurrency)
+    const appCode = appData?.doc.appCode || DEFAULT_APP_CODE
+
+    const sellTokenAddress = getCurrencyAddress(inputCurrency)
+    const buyTokenAddress = getCurrencyAddress(outputCurrency)
 
     const sellTokenDecimals = inputCurrency.decimals
     const buyTokenDecimals = outputCurrency.decimals
 
-    const quoteParams: TradeParameters = {
-      kind: orderKind,
-      sellToken,
-      buyToken,
+    const quoteParams: QuoteBridgeRequest = {
+      kind: orderKind as any, // TODO: fix
+      amount: BigInt(amount),
+
+      sellTokenChainId: inputCurrency.chainId,
+      sellTokenAddress,
       sellTokenDecimals,
+
+      buyTokenChainId: outputCurrency.chainId,
+      buyTokenAddress,
       buyTokenDecimals,
-      amount,
+
+      account: account as `0x${string}`,
+      appCode,
+      signer: provider.provider,
+
       receiver: account,
       validFor: DEFAULT_QUOTE_TTL,
       ...(volumeFee ? { partnerFee: volumeFee } : null),
     }
 
     return { quoteParams, inputCurrency, appData: appData?.doc }
-  }, [inputCurrency, outputCurrency, amount, orderKind, appData?.doc, isWrapOrUnwrap, isProviderNetworkUnsupported])
+  }, [
+    provider,
+    inputCurrency,
+    outputCurrency,
+    amount,
+    orderKind,
+    appData?.doc,
+    isWrapOrUnwrap,
+    isProviderNetworkUnsupported,
+  ])
 
   return useDebounce(params, AMOUNT_CHANGE_DEBOUNCE_TIME)
 }
