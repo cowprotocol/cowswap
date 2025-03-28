@@ -1,8 +1,9 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { useAllListsList } from '@cowprotocol/tokens'
 import { StatusColorVariant } from '@cowprotocol/ui'
+
+import { useAllListsList } from '../../hooks/lists/useAllListsList'
 import { tokenListsTagsAtom } from '../../state/tokenLists/tokenListsTagsAtom'
 import { TokenListTags } from '../../types'
 
@@ -42,7 +43,7 @@ export function TokensListsTagsUpdater() {
     }
 
     setTokenListTags(tokenListTags)
-  }, [tokenLists])
+  }, [tokenLists, setTokenListTags])
 
   return null
 }
