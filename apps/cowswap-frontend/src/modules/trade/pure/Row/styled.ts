@@ -2,12 +2,12 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const DividerHorizontal = styled.hr`
+export const DividerHorizontal = styled.hr<{ margin?: string }>`
   border: 0;
   border-bottom: 1px solid var(${UI.COLOR_TEXT});
   display: flex;
   width: 100%;
-  margin: 4px auto;
+  margin: ${({ margin }) => margin || '4px auto'};
   opacity: 0.1;
 `
 

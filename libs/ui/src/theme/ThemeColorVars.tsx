@@ -92,6 +92,8 @@ export const ThemeColorVars = css`
     // Colors
     ${UI.COLOR_WHITE}: ${({ theme }) => theme.white};
     ${UI.COLOR_BLUE}: ${({ theme }) => theme.blueDark2};
+    ${UI.COLOR_BLUE_300_PRIMARY}: ${({ theme }) => theme.blue_300_primary};
+    ${UI.COLOR_BLUE_900_PRIMARY}: ${({ theme }) => theme.blue_900_primary};
     ${UI.COLOR_LIGHT_BLUE_OPACITY_90}: ${({ theme }) => theme.info};
     ${UI.COLOR_LIGHT_BLUE_OPACITY_80}: ${({ theme }) => transparentize(theme.info, 0.2)}; // 80% opacity
     ${UI.COLOR_YELLOW_LIGHT}: ${({ theme }) => theme.alert2};

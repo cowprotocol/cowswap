@@ -366,11 +366,16 @@ function AnimatedTokens({
       <styledEl.TokenWrapper position="center" size={ICON_SIZE} sizeMobile={MOBILE_ICON_SIZE}>
         <TokenLogo token={buyToken} size={ICON_SIZE} sizeMobile={MOBILE_ICON_SIZE} />
       </styledEl.TokenWrapper>
-      <styledEl.TokenWrapper position="right" bgColor={'#012F7A'} size={ICON_SIZE} sizeMobile={MOBILE_ICON_SIZE}>
+      <styledEl.TokenWrapper
+        position="right"
+        bgColor={`var(${UI.COLOR_BLUE_900_PRIMARY})`}
+        size={ICON_SIZE}
+        sizeMobile={MOBILE_ICON_SIZE}
+      >
         <ProductLogo
           variant={ProductVariant.CowSwap}
           theme={'dark'}
-          overrideHoverColor={'#65D9FF'}
+          overrideHoverColor={`var(${UI.COLOR_BLUE_300_PRIMARY})`}
           height={58}
           heightMobile={32}
           logoIconOnly

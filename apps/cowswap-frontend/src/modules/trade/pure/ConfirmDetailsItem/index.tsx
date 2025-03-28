@@ -17,10 +17,19 @@ export type ConfirmDetailsItemProps = {
   fiatAmount?: string
   withTimelineDot?: boolean
   highlighted?: boolean
+  contentTextColor?: string
 }
 
 export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
-  const { children, label, labelOpacity = false, tooltip, withArrow = false, withTimelineDot = false } = props
+  const {
+    children,
+    label,
+    labelOpacity = false,
+    tooltip,
+    withArrow = false,
+    withTimelineDot = false,
+    contentTextColor,
+  } = props
 
   return (
     <Wrapper>
@@ -38,7 +47,7 @@ export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
             )}
           </div>
 
-          <Content>{children}</Content>
+          <Content contentTextColor={contentTextColor}>{children}</Content>
         </Row>
       ) : (
         children

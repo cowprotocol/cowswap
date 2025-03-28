@@ -1,7 +1,7 @@
 'use client'
 
 import { createGlobalStyle } from 'styled-components/macro'
-import { Color, Media } from '@cowprotocol/ui'
+import { Color, Media, UI } from '@cowprotocol/ui'
 
 const GlobalStyles = createGlobalStyle`
 
@@ -158,8 +158,8 @@ span[class^='wordtag-'] {
   }
 
   .wordtag-blue {
-    color: ${Color.cowfi_blue_dark};
-    background: ${Color.cowfi_blue_lighter};
+    color: var(${UI.COLOR_BLUE_900_PRIMARY});
+    background: var(${UI.COLOR_BLUE_300_PRIMARY});
   }
 
   .wordtag-orange {
