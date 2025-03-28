@@ -1,28 +1,17 @@
 import { useMemo } from 'react'
 
 import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowprotocol/common-const'
+import { TagInfo, TokenListTags } from '@cowprotocol/tokens'
 import { getStatusColorEnums, HoverTooltip, StatusColorVariant } from '@cowprotocol/ui'
 
 import ICON_GAS_FREE from 'assets/icon/gas-free.svg'
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router-dom'
 
-import { TokenListTags } from 'common/hooks/useTokenListTags'
-
 import * as styledEl from './styled'
 
-interface TagInfo {
-  id: string
-  name: string
-  description: string
-  icon?: string
-  color?: StatusColorVariant
-}
-
-export type TokenTagType = keyof typeof APP_TOKEN_TAGS
-
 // Programmatic tags that don't come from tokenlists
-const APP_TOKEN_TAGS: Record<string, TagInfo> = {
+const APP_TOKEN_TAGS: TokenListTags = {
   unsupported: {
     name: 'Unsupported',
     description:
@@ -55,11 +44,7 @@ export function TokenTags({
       ? [APP_TOKEN_TAGS.unsupported]
       : [
           // Include valid tags from token.tags
-          ...tags
-            .filter((tag) => tag in tokenListTags || tag in APP_TOKEN_TAGS)
-            .map((tag) =>
-              tag in tokenListTags ? tokenListTags[tag] : APP_TOKEN_TAGS[tag as keyof typeof APP_TOKEN_TAGS],
-            ),
+          ...tags.filter((tag) => tag in tokenListTags).map((tag) => tokenListTags[tag]),
           // Add gas-free tag if applicable
           ...(isPermitCompatible ? [APP_TOKEN_TAGS['gas-free']] : []),
         ]

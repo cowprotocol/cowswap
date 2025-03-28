@@ -10,6 +10,7 @@ import {
   useAddUserToken,
   useAllListsList,
   useFavoriteTokens,
+  useTokenListsTags,
   useUnsupportedTokens,
   useUserAddedTokens,
 } from '@cowprotocol/tokens'
@@ -27,7 +28,6 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import { getDefaultTokenListCategories } from './getDefaultTokenListCategories'
 
-import { useTokenListTags } from '../../../../common/hooks/useTokenListTags'
 import { useChainsToSelect } from '../../hooks/useChainsToSelect'
 import { useCloseTokenSelectWidget } from '../../hooks/useCloseTokenSelectWidget'
 import { useOnSelectChain } from '../../hooks/useOnSelectChain'
@@ -97,7 +97,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
   const balancesState = useTokensBalancesCombined()
   const unsupportedTokens = useUnsupportedTokens()
   const permitCompatibleTokens = usePermitCompatibleTokens()
-  const tokenListTags = useTokenListTags()
+  const tokenListTags = useTokenListsTags()
   const onTokenListAddingError = useOnTokenListAddingError()
 
   const isInjectedWidgetMode = isInjectedWidget()

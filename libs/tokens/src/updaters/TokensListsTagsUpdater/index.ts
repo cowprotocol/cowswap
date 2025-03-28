@@ -1,25 +1,19 @@
-import { useMemo } from 'react'
+import { useSetAtom } from 'jotai'
+import { useEffect } from 'react'
 
 import { useAllListsList } from '@cowprotocol/tokens'
 import { StatusColorVariant } from '@cowprotocol/ui'
-
-export interface TagInfo {
-  id: string
-  name: string
-  description: string
-  icon?: string
-  color?: StatusColorVariant
-}
-
-export type TokenListTags = Record<string, TagInfo>
+import { tokenListsTagsAtom } from '../../state/tokenLists/tokenListsTagsAtom'
+import { TokenListTags } from '../../types'
 
 // The list of tag names that we want to support from tokenlists
 const ALLOWED_TOKENLIST_TAGS = ['circle']
 
-export function useTokenListTags(): TokenListTags {
+export function TokensListsTagsUpdater() {
   const tokenLists = useAllListsList()
+  const setTokenListTags = useSetAtom(tokenListsTagsAtom)
 
-  return useMemo(() => {
+  useEffect(() => {
     // Build a map of allowed tag information from all token lists
     const tokenListTags: TokenListTags = {}
 
@@ -47,6 +41,8 @@ export function useTokenListTags(): TokenListTags {
       }
     }
 
-    return tokenListTags
+    setTokenListTags(tokenListTags)
   }, [tokenLists])
+
+  return null
 }

@@ -3,6 +3,7 @@ import { MouseEventHandler } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenListTags } from '@cowprotocol/tokens'
 import { LoadingRows, LoadingRowSmall, TokenAmount } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -11,7 +12,6 @@ import { Nullish } from 'types'
 
 import * as styledEl from './styled'
 
-import { TokenListTags } from '../../../../common/hooks/useTokenListTags'
 import { TokenInfo } from '../TokenInfo'
 import { TokenTags } from '../TokenTags'
 

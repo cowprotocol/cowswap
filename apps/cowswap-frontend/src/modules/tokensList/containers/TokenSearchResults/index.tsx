@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
-import { useSearchToken } from '@cowprotocol/tokens'
+import { useSearchToken, useTokenListsTags } from '@cowprotocol/tokens'
 import {
   BannerOrientation,
   ExternalLink,
@@ -17,7 +17,6 @@ import { useNetworkName } from 'common/hooks/useNetworkName'
 
 import * as styledEl from './styled'
 
-import { useTokenListTags } from '../../../../common/hooks/useTokenListTags'
 import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
 import { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
 import { CommonListContainer } from '../../pure/commonElements'
@@ -54,7 +53,7 @@ export function TokenSearchResults({
 
   const networkName = useNetworkName()
 
-  const tokenListTags = useTokenListTags()
+  const tokenListTags = useTokenListsTags()
 
   const searchCount = [
     activeListsResult.length,
