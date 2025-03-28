@@ -21,6 +21,7 @@ export function quoteUsingSameParameters(
 
   return (
     hasSameAppData &&
+    currentParams.owner === nextParams.owner &&
     currentParams.kind === nextParams.kind &&
     currentParams.sellToken === nextParams.sellToken &&
     currentParams.buyToken === nextParams.buyToken &&

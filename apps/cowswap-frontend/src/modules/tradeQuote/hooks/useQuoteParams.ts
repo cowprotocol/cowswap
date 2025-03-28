@@ -1,3 +1,4 @@
+import { ZERO_ADDRESS } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { TradeParameters } from '@cowprotocol/cow-sdk'
@@ -51,6 +52,7 @@ export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined
       buyToken,
       sellTokenDecimals,
       buyTokenDecimals,
+      owner: (account || ZERO_ADDRESS) as `0x${string}`,
       amount,
       receiver: account,
       validFor: DEFAULT_QUOTE_TTL,
