@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.17.0...common-const-v1.17.1) (2025-03-27)
+
+
+### Bug Fixes
+
+* **balances:** updated balances on network changes ([#5569](https://github.com/cowprotocol/cowswap/issues/5569)) ([1aaf6b5](https://github.com/cowprotocol/cowswap/commit/1aaf6b58a205be331e6668bdf411f93f6cbb32ca))
+
 ## [1.17.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.16.0...common-const-v1.17.0) (2025-03-20)
 
 
