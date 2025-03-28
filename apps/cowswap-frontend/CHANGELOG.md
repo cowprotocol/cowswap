@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.105.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.105.0...cowswap-v1.105.1) (2025-03-27)
+
+
+### Bug Fixes
+
+* **balances:** updated balances on network changes ([#5569](https://github.com/cowprotocol/cowswap/issues/5569)) ([1aaf6b5](https://github.com/cowprotocol/cowswap/commit/1aaf6b58a205be331e6668bdf411f93f6cbb32ca))
+
 ## [1.105.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.104.2...cowswap-v1.105.0) (2025-03-27)
 
 

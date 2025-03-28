@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.3.1...balances-and-allowances-v1.3.2) (2025-03-27)
+
+
+### Bug Fixes
+
+* **balances:** updated balances on network changes ([#5569](https://github.com/cowprotocol/cowswap/issues/5569)) ([1aaf6b5](https://github.com/cowprotocol/cowswap/commit/1aaf6b58a205be331e6668bdf411f93f6cbb32ca))
+
 ## [1.3.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.3.0...balances-and-allowances-v1.3.1) (2025-03-24)
 
 
