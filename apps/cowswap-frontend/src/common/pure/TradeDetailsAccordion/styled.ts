@@ -7,7 +7,7 @@ export const Wrapper = styled.div<{ isOpen: boolean }>`
   flex-flow: row wrap;
   align-items: center;
   width: 100%;
-  padding: 6px 10px;
+  padding: 6px;
   height: auto;
   font-size: 13px;
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
@@ -116,43 +116,5 @@ export const SummaryClickable = styled.div<{ isOpen: boolean }>`
   // If it's the only child, make it take all the space
   &:only-child {
     grid-column: 1 / -1;
-  }
-`
-
-export const ProtocolIcon = styled.div<{ bgColor?: string }>`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--size);
-  height: var(--size);
-  border-radius: var(--size);
-  overflow: hidden;
-  background: ${({ bgColor }) => (bgColor ? `var(${bgColor})` : 'transparent')};
-  z-index: 2;
-  border: 2px solid var(${UI.COLOR_PAPER});
-  box-sizing: content-box;
-
-  > svg,
-  > span {
-    object-fit: contain;
-    width: 100%;
-    height: 100%;
-    padding: ${({ bgColor }) => (bgColor ? '3px' : '0')};
-  }
-`
-
-export const ProtocolIconsContainer = styled.div`
-  --size: 18px;
-  display: inline-flex;
-  align-items: center;
-
-  // Negative margin to the left of the next icon
-  > ${ProtocolIcon}:not(:first-child) {
-    margin-left: calc(var(--size) * -0.6);
-    z-index: 1;
-  }
-
-  > ${ProtocolIcon}:hover {
-    z-index: 3;
   }
 `

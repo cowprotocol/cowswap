@@ -1,21 +1,21 @@
 import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
-import BungeeLogo from '@cowprotocol/assets/images/bungee-logo.svg'
-import { FiatAmount, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
-import { ProductLogo } from '@cowprotocol/ui'
+import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
 
-import { Wrapper, Summary, SummaryClickable, ToggleIcon, Details, ProtocolIcon, ProtocolIconsContainer } from './styled'
+import { BridgeAccordionSummary, BridgeProtocolConfig } from 'modules/bridge'
 
-// TODO(bridge): Remove this toggle once actual bridge transaction time estimation is implemented
-// This is a temporary placeholder for displaying estimated bridge transaction completion time
-const SHOW_BRIDGE_TIME_PLACEHOLDER = true
+import { Wrapper, Summary, SummaryClickable, ToggleIcon, Details } from './styled'
 
-// TODO(bridge): Remove this helper once actual bridge time calculation is implemented
-// Generates a random bridge transaction time estimate between 2-15 minutes
-const getBridgeEstimatedMinutes = () => Math.floor(Math.random() * (15 - 2 + 1)) + 2
-
+/**
+ 
+ * TODO(bridge): The following bridge-related props are temporary for the bridge demo
+ * and will be refactored or moved when actual bridge functionality is implemented.
+ * @property {number} [bridgeEstimatedTime] - Estimated time for bridge transaction in minutes
+ * @property {BridgeProtocolConfig} [bridgeProtocol] - Information about the bridge protocol
+ * @property {boolean} [showBridgeUI] - Whether to show bridge-related UI elements
+ */
 interface TradeDetailsAccordionProps {
   rateInfo: React.ReactNode
   feeTotalAmount: CurrencyAmount<Currency> | null
@@ -23,8 +23,23 @@ interface TradeDetailsAccordionProps {
   children?: React.ReactNode
   open: boolean
   onToggle: () => void
+
+  // Optional bridge-related props
+  bridgeEstimatedTime?: number
+  bridgeProtocol?: BridgeProtocolConfig
+  showBridgeUI?: boolean
 }
 
+/**
+ * A reusable accordion component for displaying trade details.
+ *
+ * This component displays rate information, fee amounts, and can expand to show
+ * more detailed information about a trade.
+ *
+ * TODO(bridge): Currently has temporary bridge-related functionality for demo purposes.
+ * When the actual bridge implementation is completed, this component should be revisited
+ * to ensure it remains a "dumb" UI component while supporting bridge UI needs.
+ */
 export const TradeDetailsAccordion = ({
   rateInfo,
   feeTotalAmount,
@@ -32,6 +47,9 @@ export const TradeDetailsAccordion = ({
   children,
   open,
   onToggle,
+  bridgeEstimatedTime,
+  bridgeProtocol,
+  showBridgeUI = false,
 }: TradeDetailsAccordionProps) => {
   const handleToggle = () => {
     onToggle?.()
@@ -57,33 +75,13 @@ export const TradeDetailsAccordion = ({
         >
           <>
             {feeUsdTotalAmount?.greaterThan(0) ? (
-              <>
+              showBridgeUI && bridgeProtocol ? (
+                <BridgeAccordionSummary bridgeEstimatedTime={bridgeEstimatedTime} bridgeProtocol={bridgeProtocol}>
+                  <FiatAmount amount={feeUsdTotalAmount} />
+                </BridgeAccordionSummary>
+              ) : (
                 <FiatAmount amount={feeUsdTotalAmount} />
-                {/* TODO(bridge): Replace with actual bridge transaction time estimation logic */}
-                {SHOW_BRIDGE_TIME_PLACEHOLDER && (
-                  <>
-                    {
-                      <span title={`Estimated bridge transaction time: ${getBridgeEstimatedMinutes()} minutes`}>
-                        / {getBridgeEstimatedMinutes()} min
-                      </span>
-                    }
-                    <ProtocolIconsContainer>
-                      <ProtocolIcon bgColor={UI.COLOR_BLUE_900_PRIMARY} title="Cow Protocol">
-                        <ProductLogo
-                          variant={ProductVariant.CowProtocol}
-                          height={18}
-                          logoIconOnly
-                          overrideColor={`var(${UI.COLOR_BLUE_300_PRIMARY})`}
-                          overrideHoverColor={`var(${UI.COLOR_BLUE_300_PRIMARY})`}
-                        />
-                      </ProtocolIcon>
-                      <ProtocolIcon title="Bungee Exchange">
-                        <SVG src={BungeeLogo} width={18} height={18} title="Bungee" />
-                      </ProtocolIcon>
-                    </ProtocolIconsContainer>
-                  </>
-                )}
-              </>
+              )
             ) : (
               <>
                 {feeTotalAmount?.greaterThan(0) ? (

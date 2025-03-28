@@ -25,7 +25,7 @@ export const Row = styled(StyledRowBetween)`
   justify-content: space-between;
 `
 
-export const Content = styled.div<{ highlighted?: boolean }>`
+export const Content = styled.div<{ highlighted?: boolean; contentTextColor?: string }>`
   display: flex;
   flex-flow: row wrap;
   align-items: center;
@@ -33,7 +33,7 @@ export const Content = styled.div<{ highlighted?: boolean }>`
   margin: 0 0 0 auto;
   font-weight: ${({ highlighted }) => (highlighted ? 700 : 500)};
   font-size: 13px;
-
+  color: ${({ contentTextColor }) => contentTextColor};
   ${Media.upToSmall()} {
     margin: 0;
   }
