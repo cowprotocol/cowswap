@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
 import { getQuoteUnsupportedToken } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, TradeParameters } from '@cowprotocol/cow-sdk'
 import { useAddUnsupportedToken } from '@cowprotocol/tokens'
 
 import QuoteApiError from 'api/cowProtocol/errors/QuoteError'
@@ -10,13 +10,13 @@ export function useProcessUnsupportedTokenError() {
   const addGpUnsupportedToken = useAddUnsupportedToken()
 
   return useCallback(
-    (error: QuoteApiError, quoteParams: { chainId: SupportedChainId; sellToken: string; buyToken: string }) => {
+    (error: QuoteApiError, chainId: SupportedChainId, quoteParams: TradeParameters) => {
       const unsupportedTokenAddress = getQuoteUnsupportedToken(error, quoteParams)
 
       if (unsupportedTokenAddress) {
-        addGpUnsupportedToken(quoteParams.chainId, unsupportedTokenAddress)
+        addGpUnsupportedToken(chainId, unsupportedTokenAddress)
       }
     },
-    [addGpUnsupportedToken]
+    [addGpUnsupportedToken],
   )
 }
