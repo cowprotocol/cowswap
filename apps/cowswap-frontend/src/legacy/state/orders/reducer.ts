@@ -30,7 +30,12 @@ import {
   updateOrder,
   updatePresignGnosisSafeTx,
 } from './actions'
-import { ContractDeploymentBlocks, MAX_ITEMS_PER_STATUS } from './consts'
+import {
+  ContractDeploymentBlocks,
+  FILLED_ORDER_VALIDITY_THRESHOLD,
+  MAX_ITEMS_PER_STATUS,
+  ORDER_VALIDITY_THRESHOLD,
+} from './consts'
 import { flatOrdersStateNetwork } from './flatOrdersStateNetwork'
 
 export interface OrderObject {
@@ -284,8 +289,30 @@ export default createReducer(initialState, (builder) =>
     .addCase(addOrUpdateOrders, (state, action) => {
       prefillState(state, action)
       const { chainId, orders, isSafeWallet } = action.payload
+      const now = new Date().getTime()
 
-      orders.forEach((newOrder) => {
+      /**
+       * Do not add orders that are expired + threshold in order to display expired orders within next day after expiration
+       */
+      const relevantOrders = orders.filter((order) => {
+        // Do not filter TWAP children
+        if (getIsComposableCowDiscreteOrder(order)) return true
+
+        // Do not filter orders that are not in final status
+        if (!CONFIRMED_STATES.includes(order.status)) return true
+
+        const isPartiallyFilled = +(order.apiAdditionalInfo?.executedSellAmount || 0) > 0
+        // Filled and partially filled orders keep to be displayed at least one month
+        // Others - one week
+        const validityThreshold =
+          order.status === OrderStatus.FULFILLED || isPartiallyFilled
+            ? FILLED_ORDER_VALIDITY_THRESHOLD
+            : ORDER_VALIDITY_THRESHOLD
+
+        return now <= order.validTo * 1000 + validityThreshold
+      })
+
+      relevantOrders.forEach((newOrder) => {
         const { id, status: newStatus } = newOrder
 
         // sanity check, is the status set?
