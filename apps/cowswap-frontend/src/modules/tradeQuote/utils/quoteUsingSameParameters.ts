@@ -22,6 +22,7 @@ export function quoteUsingSameParameters(
   // TODO: compare tokens chainIds
   return (
     hasSameAppData &&
+    currentParams.owner === nextParams.owner &&
     currentParams.kind === nextParams.kind &&
     currentParams.sellToken === nextParams.sellTokenAddress &&
     currentParams.buyToken === nextParams.buyTokenAddress &&

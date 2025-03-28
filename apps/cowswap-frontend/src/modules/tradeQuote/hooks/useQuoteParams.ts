@@ -1,4 +1,4 @@
-import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
+import { DEFAULT_APP_CODE, ZERO_ADDRESS } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { QuoteBridgeRequest } from '@cowprotocol/cow-sdk'
@@ -53,6 +53,7 @@ export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined
     const quoteParams: QuoteBridgeRequest = {
       kind: orderKind as any, // TODO: fix
       amount: BigInt(amount),
+      owner: (account || ZERO_ADDRESS) as `0x${string}`,
 
       sellTokenChainId: inputCurrency.chainId,
       sellTokenAddress,
