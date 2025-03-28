@@ -827,7 +827,7 @@ export const MenuBar = (props: MenuBarProps) => {
         <RightAligned mobileMode={isMedium} flexFlowMobile="row wrap">
           {persistentAdditionalContent} {/* Always render this content */}
           {!isMedium && additionalContent} {/* Render this content only on desktop */}
-          {!isMedium &&
+          {/* {!isMedium &&
             isLoaded &&
             additionalNavButtons &&
             additionalNavButtons.map((item, index) => {
@@ -855,7 +855,7 @@ export const MenuBar = (props: MenuBarProps) => {
                   </LinkComponent>
                 </DropdownContentItemButton>
               )
-            })}
+            })} */}
           {showGlobalSettings && settingsNavItems && (
             <>
               <GlobalSettingsButton ref={settingsButtonRef} mobileMode={isMedium} onClick={handleSettingsToggle}>

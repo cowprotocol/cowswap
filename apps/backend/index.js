@@ -31,7 +31,14 @@ app.use(
   })
 );
 
-app.use('/user',route);
+app.use('/api/user',route);
+app.get("/",(req,res)=>{
+  res.status(200).json({
+    message:"Welcome to backend",
+    status:true
+  })
+})
+
 
 const PORT = process.env.PORT || 5000;
 

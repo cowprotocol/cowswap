@@ -12,9 +12,22 @@ const schema = new db.Schema(
       type: String,
       trim: true,
     },
+    password: {
+      type: String,
+      trim: true,
+    },
+    email: {
+      type: String,
+      trim: true,
+    },
+    role: {
+      type: String,
+      trim: true,
+      enum:['admin', 'user', 'super admin']
+    },
     reffer_code: {
       type: String,
-      required: true,
+      // required: true,
       trim: true,
     },
     reffer_by: {

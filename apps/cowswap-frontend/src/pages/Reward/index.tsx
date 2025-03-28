@@ -7,6 +7,7 @@ import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
 import { generateReferralCode } from './utils'
+import http from 'utils/http'
 
 
 const Wrapper = styled.div`
@@ -143,10 +144,14 @@ export function RewardPage() {
     }
   }, [account])
 
-  const handleGenerateReferralCode = () => {
-    // TODO: Implement API call to generate and store referral code
-    const newCode = generateReferralCode()
-    setReferralCode(newCode)
+  const handleGenerateReferralCode = async() => {
+    try {
+      const {data}=await http.post("/reffer_code",{"wallet_address":account})
+      setReferralCode(data.code)
+    } catch (error) {
+      console.log(error.message)
+      console.log(error)
+    }
   }
 
   const copyReferralLink = () => {

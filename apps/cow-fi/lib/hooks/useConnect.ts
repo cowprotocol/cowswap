@@ -35,6 +35,7 @@ export function useConnect() {
           clearInterval(checkConnection)
           try {
             const result = await connectAsync({ connector: injectedConnector })
+            console.log(result)
             resolve(result)
           } catch (error) {
             reject(error)
