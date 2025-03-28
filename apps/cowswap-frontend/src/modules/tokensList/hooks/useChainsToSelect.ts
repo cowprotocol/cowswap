@@ -1,9 +1,8 @@
 import { useMemo } from 'react'
 
-import { BaseChainInfo, CHAIN_INFO } from '@cowprotocol/common-const'
+import { BaseChainInfo, CHAIN_INFO, RPC_URLS } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ChainInfo } from '@cowprotocol/types'
+import { SupportedChainId, ChainInfo } from '@cowprotocol/cow-sdk'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
@@ -16,20 +15,38 @@ import { ChainsToSelectState } from '../types'
 
 function mapChainInfo(chainId: number, info: BaseChainInfo): ChainInfo {
   return {
+    addressPrefix: info.addressPrefix,
+    contracts: {},
+    docs: {
+      url: info.docs,
+      name: '',
+    }, // TODO
+    isTestnet: false, // TODO
+    rpcUrls: {
+      default: {
+        http: [RPC_URLS[SupportedChainId.MAINNET]],
+      },
+    }, // TODO
+    website: {
+      url: '',
+      name: '',
+    }, // TODO
     id: chainId,
-    name: info.label,
+    label: info.label,
     nativeCurrency: {
       ...info.nativeCurrency,
       name: info.nativeCurrency.name || '',
       symbol: info.nativeCurrency.symbol || '',
     },
-    isEvmChain: true,
-    blockExplorer: info.explorer,
-    logoUrl: {
+    blockExplorer: {
+      url: info.explorer,
+      name: info.explorerTitle,
+    },
+    logo: {
       light: info.logo.light,
       dark: info.logo.dark,
     },
-    mainColor: info.color,
+    color: info.color,
   }
 }
 
