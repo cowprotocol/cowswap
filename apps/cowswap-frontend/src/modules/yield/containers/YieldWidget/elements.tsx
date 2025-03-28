@@ -4,6 +4,7 @@ import {
   DismissableInlineBanner,
   ExternalLink,
   ProductVariant,
+  StatusColorVariant,
   TokenSymbol,
   UI,
 } from '@cowprotocol/ui'
@@ -21,7 +22,7 @@ export const CoWAmmInlineBanner = ({ token, apyDiff }: { token: LpToken | undefi
     <DismissableInlineBanner
       bannerId="yieldTopBanner"
       orientation={BannerOrientation.Horizontal}
-      bannerType="savings"
+      bannerType={StatusColorVariant.Savings}
       customIcon={CoWAmmGreenLogo}
     >
       <strong>Boost Your Yield with One-Click Conversion</strong>

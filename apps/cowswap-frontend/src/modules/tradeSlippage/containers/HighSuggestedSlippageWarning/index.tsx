@@ -1,5 +1,5 @@
 import { percentToBps } from '@cowprotocol/common-utils'
-import { BannerOrientation, InfoTooltip, InlineBanner } from '@cowprotocol/ui'
+import { BannerOrientation, InfoTooltip, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
@@ -28,7 +28,7 @@ export function HighSuggestedSlippageWarning(props: HighSuggestedSlippageWarning
   }
 
   return (
-    <StyledInlineBanner bannerType="alert" orientation={BannerOrientation.Horizontal} noWrapContent>
+    <StyledInlineBanner bannerType={StatusColorVariant.Alert} orientation={BannerOrientation.Horizontal} noWrapContent>
       Slippage adjusted to {`${slippageBps / 100}`}% to ensure quick execution
       <InfoTooltip
         size={24}

@@ -41,3 +41,5 @@ export * from './containers/CowSwapSafeAppLink'
 export * from './containers/InlineBanner'
 export * from './containers/Footer'
 export * from './containers/ExternalLink'
+
+export * from './theme/statusColors'

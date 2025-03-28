@@ -1,5 +1,6 @@
 // Updaters
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'
+export { TokensListsTagsUpdater } from './updaters/TokensListsTagsUpdater'
 export { UnsupportedTokensUpdater } from './updaters/UnsupportedTokensUpdater'
 export { WidgetTokensListsUpdater } from './updaters/WidgetTokensListsUpdater'
 
@@ -18,6 +19,7 @@ export { useAllListsList } from './hooks/lists/useAllListsList'
 export { useAddList } from './hooks/lists/useAddList'
 export { useAllActiveTokens } from './hooks/tokens/useAllActiveTokens'
 export { useVirtualLists } from './hooks/lists/useVirtualLists'
+export { useTokenListsTags } from './hooks/lists/useTokenListsTags'
 export { useFavoriteTokens } from './hooks/tokens/favorite/useFavoriteTokens'
 export { useUserAddedTokens } from './hooks/tokens/userAdded/useUserAddedTokens'
 export { useAddUserToken } from './hooks/tokens/userAdded/useAddUserToken'

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import HAND_SVG from '@cowprotocol/assets/cow-swap/hand.svg'
-import { BannerOrientation, InlineBanner } from '@cowprotocol/ui'
+import { BannerOrientation, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Link } from 'react-router-dom'
@@ -36,7 +36,7 @@ export function BottomBanners() {
       {!isHookTradeType && <NetworkBridgeBanner />}
       {isHookTradeType && !!account && (
         <InlineBanner
-          bannerType="information"
+          bannerType={StatusColorVariant.Info}
           customIcon={HAND_SVG}
           iconSize={24}
           orientation={BannerOrientation.Horizontal}

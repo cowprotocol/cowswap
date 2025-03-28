@@ -1,4 +1,4 @@
-import { InlineBanner } from '@cowprotocol/ui'
+import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { useIsTxBundlingSupported, useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { useIsHooksTradeType, useIsNativeIn, useWrappedToken } from 'modules/trade'
@@ -18,7 +18,7 @@ export function BundleTxWrapBanner() {
   if (!showWrapBundlingBanner) return null
 
   return (
-    <InlineBanner bannerType="information" iconSize={32}>
+    <InlineBanner bannerType={StatusColorVariant.Info} iconSize={32}>
       <strong>Token wrapping bundling</strong>
       <p>
         For your convenience, CoW Swap will bundle all the necessary actions for this trade into a single transaction.

@@ -3,6 +3,7 @@ import { MouseEventHandler } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenListTags } from '@cowprotocol/tokens'
 import { LoadingRows, LoadingRowSmall, TokenAmount } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -24,14 +25,26 @@ export interface TokenListItemProps {
   token: TokenWithLogo
   selectedToken?: Nullish<Currency>
   balance: BigNumber | undefined
+
   onSelectToken(token: TokenWithLogo): void
+
   isUnsupported: boolean
   isPermitCompatible: boolean
   isWalletConnected: boolean
+  tokenListTags: TokenListTags
 }
 
 export function TokenListItem(props: TokenListItemProps) {
-  const { token, selectedToken, balance, onSelectToken, isUnsupported, isPermitCompatible, isWalletConnected } = props
+  const {
+    token,
+    selectedToken,
+    balance,
+    onSelectToken,
+    isUnsupported,
+    isPermitCompatible,
+    isWalletConnected,
+    tokenListTags,
+  } = props
 
   const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
     if (isTokenSelected) {
@@ -60,14 +73,21 @@ export function TokenListItem(props: TokenListItemProps) {
       onClick={handleClick}
       className={isTokenSelected ? 'token-item-selected' : ''}
     >
-      <TokenInfo token={token} />
+      <TokenInfo
+        token={token}
+        tags={
+          <TokenTags
+            isUnsupported={isUnsupported}
+            isPermitCompatible={isPermitCompatible}
+            tags={token.tags}
+            tokenListTags={tokenListTags}
+          />
+        }
+      />
       {isWalletConnected && (
-        <styledEl.TokenMetadata>
-          <styledEl.TokenBalance>
-            {isSupportedChain ? balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement : null}
-          </styledEl.TokenBalance>
-          <TokenTags isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} />
-        </styledEl.TokenMetadata>
+        <styledEl.TokenBalance>
+          {isSupportedChain ? balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement : null}
+        </styledEl.TokenBalance>
       )}
     </styledEl.TokenItem>
   )

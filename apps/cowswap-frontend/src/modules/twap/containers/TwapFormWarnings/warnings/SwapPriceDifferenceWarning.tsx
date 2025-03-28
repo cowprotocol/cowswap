@@ -1,4 +1,4 @@
-import { FiatAmount, TokenAmount, InlineBanner } from '@cowprotocol/ui'
+import { FiatAmount, TokenAmount, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { NavLink } from 'react-router-dom'
@@ -46,7 +46,7 @@ export function SwapPriceDifferenceWarning({
   const swapOrderLink = <StyledNavLink to={routePath}>SWAP order</StyledNavLink>
 
   return (
-    <InlineBanner bannerType={'savings'}>
+    <InlineBanner bannerType={StatusColorVariant.Savings}>
       {isTwapBetter ? (
         <>
           <strong>Maximizing Your Gains! </strong>

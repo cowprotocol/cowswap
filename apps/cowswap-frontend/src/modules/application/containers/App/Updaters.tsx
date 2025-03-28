@@ -2,7 +2,12 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { MultiCallUpdater } from '@cowprotocol/multicall'
-import { TokensListsUpdater, UnsupportedTokensUpdater, WidgetTokensListsUpdater } from '@cowprotocol/tokens'
+import {
+  TokensListsTagsUpdater,
+  TokensListsUpdater,
+  UnsupportedTokensUpdater,
+  WidgetTokensListsUpdater,
+} from '@cowprotocol/tokens'
 import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
@@ -83,6 +88,7 @@ export function Updaters() {
         isYieldEnabled={isYieldEnabled}
         bridgeNetworkInfo={bridgeNetworkInfo?.data}
       />
+      <TokensListsTagsUpdater />
       <WidgetTokensListsUpdater
         tokenLists={tokenLists}
         customTokens={customTokens}

@@ -1,6 +1,7 @@
 import styled from 'styled-components/macro'
 
 import { InlineBanner } from '.'
+import { StatusColorVariant } from '@cowprotocol/ui'
 
 const DemoContainer = styled.div`
   width: 100%;
@@ -26,14 +27,14 @@ const Fixtures = {
   ),
   alert: (
     <DemoContainer>
-      <InlineBanner bannerType="alert">
+      <InlineBanner bannerType={StatusColorVariant.Alert}>
         <strong>This is an alert banner (explicitly passed bannerType).</strong>
       </InlineBanner>
     </DemoContainer>
   ),
   information: (
     <DemoContainer>
-      <InlineBanner bannerType="information">
+      <InlineBanner bannerType={StatusColorVariant.Info}>
         <strong>Token approval bundling</strong>
         <p>
           For your convenience, token approval and order placement will be bundled into a single transaction,
@@ -44,14 +45,14 @@ const Fixtures = {
   ),
   success: (
     <DemoContainer>
-      <InlineBanner bannerType="success">
+      <InlineBanner bannerType={StatusColorVariant.Success}>
         <strong>Operation completed successfully!</strong>
       </InlineBanner>
     </DemoContainer>
   ),
   danger: (
     <DemoContainer>
-      <InlineBanner bannerType="danger">
+      <InlineBanner bannerType={StatusColorVariant.Danger}>
         <strong>Something went wrong! Please try again.</strong>
       </InlineBanner>
     </DemoContainer>

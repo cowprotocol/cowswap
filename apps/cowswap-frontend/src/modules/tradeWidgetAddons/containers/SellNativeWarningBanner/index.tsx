@@ -1,5 +1,5 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { InlineBanner, LinkStyledButton } from '@cowprotocol/ui'
+import { InlineBanner, LinkStyledButton, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
@@ -35,7 +35,7 @@ export function SellNativeWarningBanner() {
   if (!account) return null
 
   return (
-    <InlineBanner bannerType="alert" iconSize={32}>
+    <InlineBanner bannerType={StatusColorVariant.Alert} iconSize={32}>
       <strong>Cannot sell {nativeSymbol}</strong>
       <p>Selling {nativeSymbol} is only supported on SWAP orders.</p>
       <p>

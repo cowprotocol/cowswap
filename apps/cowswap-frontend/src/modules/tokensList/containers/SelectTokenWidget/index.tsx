@@ -10,6 +10,7 @@ import {
   useAddUserToken,
   useAllListsList,
   useFavoriteTokens,
+  useTokenListsTags,
   useUnsupportedTokens,
   useUserAddedTokens,
 } from '@cowprotocol/tokens'
@@ -96,6 +97,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
   const balancesState = useTokensBalancesCombined()
   const unsupportedTokens = useUnsupportedTokens()
   const permitCompatibleTokens = usePermitCompatibleTokens()
+  const tokenListTags = useTokenListsTags()
   const onTokenListAddingError = useOnTokenListAddingError()
 
   const isInjectedWidgetMode = isInjectedWidget()
@@ -210,6 +212,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
             chainsToSelect={chainsToSelect}
             onSelectChain={onSelectChain}
             areTokensLoading={areTokensLoading}
+            tokenListTags={tokenListTags}
           />
         )
       })()}
