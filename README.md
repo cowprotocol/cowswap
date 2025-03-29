@@ -1,3 +1,4 @@
+[![CLA](https://github.com/cowprotocol/cowswap/actions/workflows/cla.yml/badge.svg)](https://github.com/cowprotocol/cowswap/actions/workflows/cla.yml)
 [![Tests](https://github.com/cowprotocol/cowswap/workflows/CI/badge.svg)](https://github.com/cowprotocol/cowswap/actions/workflows/ci.yml?query=workflow%3ACI)
 
 CoW Swap is the first trading interface built on top of CoW Protocol.
