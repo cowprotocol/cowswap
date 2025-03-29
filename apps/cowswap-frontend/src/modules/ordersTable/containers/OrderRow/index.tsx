@@ -88,7 +88,7 @@ export function OrderRow({
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance } = orderParams
   const { creationTime, expirationTime, status } = order
-  const { filledPercentDisplay, executedPrice } = order.executionData
+  const { filledPercentDisplay, executedPrice, hasApiAdditionalInfo } = order.executionData
   const { inputCurrencyAmount, outputCurrencyAmount } = rateInfoParams
   const { feeAmount } = prices || {}
   const estimatedExecutionPrice = useSafeMemo(() => {
@@ -327,10 +327,16 @@ export function OrderRow({
       {/* Filled % */}
       <styledEl.CellElement doubleRow clickable onClick={onClick}>
         <styledEl.FilledPercentageContainer>
-          <styledEl.ProgressBar value={filledPercentDisplay}></styledEl.ProgressBar>
-          <b>
-            <PercentDisplay percent={filledPercentDisplay} />
-          </b>
+          {hasApiAdditionalInfo ? (
+            <>
+              <styledEl.ProgressBar value={filledPercentDisplay}></styledEl.ProgressBar>
+              <b>
+                <PercentDisplay percent={filledPercentDisplay} />
+              </b>
+            </>
+          ) : (
+            <b>Loading...</b>
+          )}
         </styledEl.FilledPercentageContainer>
       </styledEl.CellElement>
 
