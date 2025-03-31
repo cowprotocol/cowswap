@@ -55,6 +55,7 @@ export const Content = styled.div<{ highlighted?: boolean; contentTextColor?: st
 export const Label = styled.span<{ labelOpacity?: boolean }>`
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   font-weight: 400;
   text-align: left;
   opacity: ${({ labelOpacity }) => (labelOpacity ? 0.7 : 1)};
@@ -84,7 +85,8 @@ export const Label = styled.span<{ labelOpacity?: boolean }>`
   > div,
   > b > div,
   > p > div {
-    display: inline-block;
-    vertical-align: middle;
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
 `
