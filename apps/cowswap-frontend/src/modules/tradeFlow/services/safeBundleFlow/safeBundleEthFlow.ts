@@ -95,7 +95,12 @@ export async function safeBundleEthFlow(
 
     logTradeFlow(LOG_PREFIX, 'STEP 4: post order')
 
-    const { orderId, signature, signingScheme } = await tradeQuote.quote
+    const {
+      orderId,
+      signature,
+      signingScheme,
+      orderToSign: unsignedOrder,
+    } = await tradeQuote.quote
       .postSwapOrderFromQuote({
         appData: orderParams.appData.doc,
         quoteRequest: {
@@ -105,8 +110,6 @@ export async function safeBundleEthFlow(
       .finally(() => {
         callbacks.closeModals()
       })
-
-    const unsignedOrder = tradeQuote.quote.quoteResults.orderToSign
 
     const order = mapUnsignedOrderToOrder({
       unsignedOrder,

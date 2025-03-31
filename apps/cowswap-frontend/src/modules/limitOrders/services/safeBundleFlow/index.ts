@@ -79,7 +79,12 @@ export async function safeBundleFlow(
     })
 
     logTradeFlow(LOG_PREFIX, 'STEP 3: post order')
-    const { orderId, signature, signingScheme } = await tradingSdk.postLimitOrder(
+    const {
+      orderId,
+      signature,
+      signingScheme,
+      orderToSign: unsignedOrder,
+    } = await tradingSdk.postLimitOrder(
       {
         sellAmount: postOrderParams.inputAmount.quotient.toString(),
         buyAmount: postOrderParams.outputAmount.quotient.toString(),
@@ -101,7 +106,6 @@ export async function safeBundleFlow(
       },
     )
 
-    const { orderToSign: unsignedOrder } = quoteState.quote.quoteResults
     const order = mapUnsignedOrderToOrder({
       unsignedOrder,
       additionalParams: {

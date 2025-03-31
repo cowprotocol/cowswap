@@ -67,7 +67,12 @@ export async function safeBundleApprovalFlow(
     orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)
 
     logTradeFlow(LOG_PREFIX, 'STEP 3: post order')
-    const { orderId, signingScheme, signature } = await tradeQuote.quote
+    const {
+      orderId,
+      signingScheme,
+      signature,
+      orderToSign: unsignedOrder,
+    } = await tradeQuote.quote
       .postSwapOrderFromQuote({
         appData: orderParams.appData.doc,
         quoteRequest: {
@@ -77,8 +82,6 @@ export async function safeBundleApprovalFlow(
       .finally(() => {
         callbacks.closeModals()
       })
-
-    const unsignedOrder = tradeQuote.quote.quoteResults.orderToSign
 
     const order = mapUnsignedOrderToOrder({
       unsignedOrder,

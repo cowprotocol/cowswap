@@ -94,7 +94,12 @@ export async function tradeFlow(
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 4: sign and post order')
 
-    const { orderId, signature, signingScheme } = await tradingSdk.postLimitOrder(
+    const {
+      orderId,
+      signature,
+      signingScheme,
+      orderToSign: unsignedOrder,
+    } = await tradingSdk.postLimitOrder(
       {
         sellAmount: postOrderParams.inputAmount.quotient.toString(),
         buyAmount: postOrderParams.outputAmount.quotient.toString(),
@@ -124,7 +129,6 @@ export async function tradeFlow(
       presignTxHash = await provider.send('eth_sendTransaction', [presignTx])
     }
 
-    const { orderToSign: unsignedOrder } = quoteState.quote.quoteResults
     const order = mapUnsignedOrderToOrder({
       unsignedOrder,
       additionalParams: {

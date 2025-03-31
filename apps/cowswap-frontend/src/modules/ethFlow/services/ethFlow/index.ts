@@ -80,7 +80,13 @@ export async function ethFlow({
 
     logTradeFlow('ETH FLOW', 'STEP 3: sign order')
 
-    const { orderId, txHash, signature, signingScheme } = await tradeQuote.quote
+    const {
+      orderId,
+      txHash,
+      signature,
+      signingScheme,
+      orderToSign: unsignedOrder,
+    } = await tradeQuote.quote
       .postSwapOrderFromQuote({
         appData: orderParams.appData.doc,
         additionalParams: {
@@ -94,7 +100,6 @@ export async function ethFlow({
         callbacks.closeModals()
       })
 
-    const unsignedOrder = tradeQuote.quote.quoteResults.orderToSign
     const quoteId = tradeQuote.quote.quoteResults.quoteResponse.id
 
     const order = mapUnsignedOrderToOrder({

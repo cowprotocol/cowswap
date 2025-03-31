@@ -80,7 +80,12 @@ export async function swapFlow(
     tradeConfirmActions.onSign(tradeAmounts)
 
     logTradeFlow('SWAP FLOW', 'STEP 4: sign and post order')
-    const { orderId, signature, signingScheme } = await tradeQuote.quote
+    const {
+      orderId,
+      signature,
+      signingScheme,
+      orderToSign: unsignedOrder,
+    } = await tradeQuote.quote
       .postSwapOrderFromQuote({
         appData: orderParams.appData.doc,
         additionalParams: {
@@ -100,7 +105,6 @@ export async function swapFlow(
       presignTxHash = (await orderParams.signer.sendTransaction(presignTx)).hash
     }
 
-    const { orderToSign: unsignedOrder } = tradeQuote.quote.quoteResults
     const order = mapUnsignedOrderToOrder({
       unsignedOrder,
       additionalParams: {
