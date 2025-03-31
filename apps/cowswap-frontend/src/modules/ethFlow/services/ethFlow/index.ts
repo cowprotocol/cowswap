@@ -13,7 +13,7 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import { TradeFlowContext } from 'modules/tradeFlow'
-import { isQuoteExpired } from 'modules/tradeQuote'
+import { isQuoteExpired, NO_QUOTE_IN_ORDER_ERROR } from 'modules/tradeQuote'
 
 import { ethFlowEnv } from 'common/hooks/useContract'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
@@ -45,7 +45,7 @@ export async function ethFlow({
   const { account, recipientAddressOrName, kind } = orderParams
 
   if (!tradeQuote.quote) {
-    throw new Error('Quote is undefined in ethFlow!')
+    throw new Error(NO_QUOTE_IN_ORDER_ERROR)
   }
 
   logTradeFlow('ETH FLOW', 'STEP 1: confirm price impact')

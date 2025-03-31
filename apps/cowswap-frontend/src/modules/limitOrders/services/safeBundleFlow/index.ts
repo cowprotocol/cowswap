@@ -20,6 +20,7 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics, TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
+import { NO_QUOTE_IN_ORDER_ERROR } from 'modules/tradeQuote'
 import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
@@ -39,7 +40,7 @@ export async function safeBundleFlow(
   const isTooLowRate = params.rateImpact < LOW_RATE_THRESHOLD_PERCENT
 
   if (!quoteState.quote) {
-    throw new Error('Quote is undefined in safeBundleFlow!')
+    throw new Error(NO_QUOTE_IN_ORDER_ERROR)
   }
 
   if (!isTooLowRate && priceImpact.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpact.priceImpact))) {

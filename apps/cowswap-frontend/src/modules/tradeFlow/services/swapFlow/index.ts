@@ -15,6 +15,7 @@ import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import { NO_QUOTE_IN_ORDER_ERROR } from 'modules/tradeQuote'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
@@ -39,7 +40,7 @@ export async function swapFlow(
   const tradeAmounts = { inputAmount, outputAmount }
 
   if (!tradeQuote.quote) {
-    throw new Error('Quote is undefined in ethFlow!')
+    throw new Error(NO_QUOTE_IN_ORDER_ERROR)
   }
 
   logTradeFlow('SWAP FLOW', 'STEP 1: confirm price impact')
