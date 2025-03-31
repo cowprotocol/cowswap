@@ -5,7 +5,7 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import * as styledEl from '../styled'
+import * as styledEl from './styled'
 
 // styled
 function OrderIntent({ order }: { order?: Order }) {

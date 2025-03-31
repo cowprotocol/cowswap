@@ -6,7 +6,7 @@ import SVG from 'react-inlinesvg'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
-import * as styledEl from '../styled'
+import * as styledEl from './styled'
 
 interface ExpiredStepProps {
   children: React.ReactNode

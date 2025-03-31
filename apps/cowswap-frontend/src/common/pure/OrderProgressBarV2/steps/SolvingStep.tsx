@@ -5,9 +5,10 @@ import { Command } from '@cowprotocol/types'
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
 
+import * as styledEl from './styled'
+
 import { STEPS } from '../constants'
 import StepsWrapper from '../container/StepsWrapper'
-import * as styledEl from '../styled'
 
 interface SolvingStepProps {
   children: React.ReactNode

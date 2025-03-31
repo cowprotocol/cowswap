@@ -1,4 +1,4 @@
-import * as styledEl from '../styled'
+import * as styledEl from './styled'
 
 interface CancelledStepProps {
   children: React.ReactNode

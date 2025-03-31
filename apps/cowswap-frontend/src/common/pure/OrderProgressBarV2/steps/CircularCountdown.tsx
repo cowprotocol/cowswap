@@ -1,6 +1,6 @@
 import { PROGRESS_BAR_TIMER_DURATION } from "common/hooks/orderProgressBarV2"
 
-import * as styledEl from '../styled'
+import * as styledEl from './styled'
 
 interface CircularCountdownProps {
   countdown: number

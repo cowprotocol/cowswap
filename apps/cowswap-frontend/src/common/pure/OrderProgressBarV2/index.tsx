@@ -7,6 +7,7 @@ import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
 
 import { FINAL_STATES } from './constants'
 import RenderProgressTopSection from './container/RenderProgressTopSection'
+import DebugPanel from './DebugPanel'
 import CancelledStep from './steps/CancelledStep'
 import CancellingStep from './steps/CancellingStep'
 import ExecutingStep from './steps/ExecutingStep'
@@ -14,7 +15,6 @@ import ExpiredStep from './steps/ExpiredStep'
 import FinishedStep from './steps/FinishedStep'
 import InitialStep from './steps/InitialStep'
 import SolvingStep from './steps/SolvingStep'
-import * as styledEl from './styled'
 import { OrderProgressBarV2Props } from './types'
 
 const IS_DEBUG_MODE = false
@@ -90,17 +90,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
   return StepComponent ? (
     <>
       <StepComponent {...props} stepName={currentStep} />
-      {debugMode && (
-        <styledEl.DebugPanel>
-          <select value={debugStep} onChange={(e) => setDebugStep(e.target.value as OrderProgressBarStepName)}>
-            {Object.keys(STEP_NAME_TO_STEP_COMPONENT).map((step) => (
-              <option key={step} value={step}>
-                {step}
-              </option>
-            ))}
-          </select>
-        </styledEl.DebugPanel>
-      )}
+      {debugMode && <DebugPanel STEP_NAME_TO_STEP_COMPONENT={STEP_NAME_TO_STEP_COMPONENT} stepName={currentStep} setDebugStep={setDebugStep} />}
     </>
   ) : null // Fallback return value if StepComponent is not found
 }

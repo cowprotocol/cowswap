@@ -22,10 +22,10 @@ import { OrderProgressBarStepName, SolverCompetition } from 'common/hooks/orderP
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
+import * as styledEl from './styled'
+
 import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../constants'
 import { getSurplusText, getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../helpers'
-import * as styledEl from '../styled'
-
 
 interface FinishedStepProps {
   children: React.ReactNode

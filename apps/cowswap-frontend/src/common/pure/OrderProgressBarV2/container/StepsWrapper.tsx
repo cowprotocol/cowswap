@@ -1,10 +1,9 @@
 import React, {useEffect, useRef, useState } from 'react'
 
 import StepComponent from './StepComponent'
+import * as styledEl from './styled'
 
 import { STEPS } from '../constants'
-import * as styledEl from '../styled'
-
 
 function StepsWrapper({
   steps,

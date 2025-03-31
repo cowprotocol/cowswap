@@ -4,7 +4,7 @@ import LOTTIE_RED_CROSS from '@cowprotocol/assets/lottie/red-cross.json'
 
 import Lottie from 'lottie-react'
 
-import * as styledEl from '../styled'
+import * as styledEl from './styled'
 
 function StepComponent({
   status,

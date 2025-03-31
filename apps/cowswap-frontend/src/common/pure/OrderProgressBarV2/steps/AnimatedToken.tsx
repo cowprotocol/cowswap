@@ -3,7 +3,7 @@ import { TokenLogo } from "@cowprotocol/tokens"
 import { ProductLogo, ProductVariant } from "@cowprotocol/ui"
 import { Currency } from "@uniswap/sdk-core"
 
-import * as styledEl from '../styled'
+import * as styledEl from './styled'
 
 function AnimatedTokens({
   sellToken,

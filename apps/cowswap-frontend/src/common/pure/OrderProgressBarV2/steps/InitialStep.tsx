@@ -2,9 +2,10 @@ import React from 'react'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
+import * as styledEl from './styled'
+
 import { STEPS } from '../constants'
 import StepsWrapper from '../container/StepsWrapper'
-import * as styledEl from '../styled'
 
 interface InitialStepProps {
   children: React.ReactNode

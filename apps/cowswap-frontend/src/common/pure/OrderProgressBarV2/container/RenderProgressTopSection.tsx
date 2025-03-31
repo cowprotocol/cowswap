@@ -15,12 +15,13 @@ import Lottie from 'lottie-react'
 import SVG from 'react-inlinesvg'
 import { Textfit } from 'react-textfit'
 
+import * as styledEl from './styled'
+
 import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../constants'
 import { truncateWithEllipsis } from '../helpers'
 import AnimatedTokens from '../steps/AnimatedToken'
 import CircularCountdown from '../steps/CircularCountdown'
 import OrderIntent from '../steps/OrderIntent'
-import * as styledEl from '../styled'
 import { OrderProgressBarV2Props } from '../types'
 
 function RenderProgressTopSection({
