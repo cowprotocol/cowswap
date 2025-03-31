@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.105.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.105.1...cowswap-v1.105.2) (2025-03-31)
+
+
+### Bug Fixes
+
+* **safe-app-fee:** replace Safe App Fee recipient address ([#5581](https://github.com/cowprotocol/cowswap/issues/5581)) ([f72485b](https://github.com/cowprotocol/cowswap/commit/f72485bc8b16fff0a96b5b045b83be1fd4e53368))
+
 ## [1.105.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.105.0...cowswap-v1.105.1) (2025-03-27)
 
 
