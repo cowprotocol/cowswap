@@ -8,6 +8,7 @@ import {
   FillAdvancedOrdersDerivedStateUpdater,
   SetupAdvancedOrderAmountsFromUrlUpdater,
 } from 'modules/advancedOrders'
+import { PageTitle } from 'modules/application/containers/PageTitle'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
@@ -45,6 +46,7 @@ export default function AdvancedOrdersPage() {
 
   return (
     <>
+      <PageTitle title="TWAP" />
       <FillAdvancedOrdersDerivedStateUpdater slippage={twapSlippage} />
       <SetupAdvancedOrderAmountsFromUrlUpdater />
       <styledEl.PageWrapper
