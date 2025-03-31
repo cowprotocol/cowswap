@@ -294,6 +294,23 @@ export function BridgeRouteBreakdown({
         </ConfirmDetailsItem>
       )}
 
+      {swapMaxSlippage && (
+        <ConfirmDetailsItem
+          label={
+            <>
+              Max. swap slippage{' '}
+              <InfoTooltip
+                content="CoW Swap dynamically adjusts your slippage tolerance to ensure your trade executes quickly while still getting the best price. Trades are protected from MEV, so your slippage can't be exploited!"
+                size={14}
+              />
+            </>
+          }
+          withTimelineDot
+        >
+          {swapMaxSlippage}%
+        </ConfirmDetailsItem>
+      )}
+
       {swapMinReceive && (
         <ConfirmDetailsItem
           label={
@@ -371,19 +388,19 @@ export function BridgeRouteBreakdown({
       <ConfirmDetailsItem
         label={
           <>
-            Estimated time{' '}
+            Estimated bridge time{' '}
             <InfoTooltip content="The estimated time for the bridge transaction to complete." size={14} />
           </>
         }
         withTimelineDot
       >
-        {displayTime(estimatedTime * 1000, true)}
+        ~ {displayTime(estimatedTime * 1000, true)}
       </ConfirmDetailsItem>
 
       <ConfirmDetailsItem
         label={
           <ReceiveAmountTitle>
-            <b>Min. receive</b>
+            <b>Min. to receive</b>
           </ReceiveAmountTitle>
         }
       >
