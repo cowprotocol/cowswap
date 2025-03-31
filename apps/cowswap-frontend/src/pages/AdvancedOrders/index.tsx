@@ -1,5 +1,7 @@
 import { useAtomValue } from 'jotai'
 
+import { PAGE_TITLES } from '@cowprotocol/common-const'
+
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import {
@@ -46,7 +48,7 @@ export default function AdvancedOrdersPage() {
 
   return (
     <>
-      <PageTitle title="TWAP" />
+      <PageTitle title={PAGE_TITLES.ADVANCED} />
       <FillAdvancedOrdersDerivedStateUpdater slippage={twapSlippage} />
       <SetupAdvancedOrderAmountsFromUrlUpdater />
       <styledEl.PageWrapper

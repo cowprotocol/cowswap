@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { CowGame } from '@cowprotocol/cow-runner-game'
 
 import styled from 'styled-components/macro'
@@ -48,7 +49,7 @@ export default function CowRunnerPage() {
 
   return (
     <Wrapper>
-      <PageTitle title="CoW Runner" />
+      <PageTitle title={PAGE_TITLES.COW_RUNNER} />
       <p>
         Run! ...and try not getting sandwiched{' '}
         <span role="img" aria-label="sandwich-icon">

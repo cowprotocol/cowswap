@@ -35,6 +35,17 @@ export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
 
 export const APP_TITLE = 'CoW Swap | The smartest way to trade cryptocurrencies'
 
+export const PAGE_TITLES = {
+  SWAP: 'Swap',
+  LIMIT_ORDERS: 'Limit Orders',
+  YIELD: 'Yield',
+  ADVANCED: 'TWAP',
+  ACCOUNT_OVERVIEW: 'Account Overview',
+  TOKENS_OVERVIEW: 'Tokens Overview',
+  COW_RUNNER: 'CoW Runner',
+  MEV_SLICER: 'Mev Slicer',
+}
+
 type Env = 'barn' | 'prod'
 
 const NEW_COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Record<Env, string> = {

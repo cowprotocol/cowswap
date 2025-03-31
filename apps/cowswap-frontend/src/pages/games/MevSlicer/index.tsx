@@ -1,4 +1,5 @@
 import ninjaCowImg from '@cowprotocol/assets/cow-swap/ninja-cow.png'
+import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -50,7 +51,7 @@ function openGame() {
 export default function MevSlicer() {
   return (
     <Wrapper>
-      <PageTitle title="Mev Slicer" />
+      <PageTitle title={PAGE_TITLES.MEV_SLICER} />
       <p>This CoW doesn&apos;t run away any more! Not from MEV!</p>
       <p>
         Now is the time to take some action! -{' '}
