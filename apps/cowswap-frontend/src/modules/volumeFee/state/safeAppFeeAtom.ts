@@ -11,7 +11,7 @@ import { featureFlagsAtom } from 'common/state/featureFlagsState'
 
 import { VolumeFee } from '../types'
 
-const SAFE_FEE_RECIPIENT = '0x63695Eee2c3141BDE314C5a6f89B98E62808d716'
+const SAFE_FEE_RECIPIENT = '0x8025BAcF968aa82BDfE51B513123b55BFb0060D3'
 
 const FEE_TIERS = {
   TIER_1: 100_000, // 0 - 100k
