@@ -3,19 +3,7 @@ import { Badge, UI } from '@cowprotocol/ui'
 import { NavLink } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
-export const Link = styled(NavLink)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  color: inherit;
-  gap: 4px;
-  font-weight: inherit;
-  line-height: 1;
-  transition:
-    color var(${UI.ANIMATION_DURATION}) ease-in-out,
-    fill var(${UI.ANIMATION_DURATION}) ease-in-out;
-
+const ItemWithIcon = css`
   svg {
     width: 10px;
     height: 10px;
@@ -40,6 +28,36 @@ export const Link = styled(NavLink)`
   svg > path {
     fill: currentColor;
   }
+`
+
+export const Link = styled(NavLink)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: inherit;
+  gap: 4px;
+  font-weight: inherit;
+  line-height: 1;
+  transition:
+    color var(${UI.ANIMATION_DURATION}) ease-in-out,
+    fill var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  ${ItemWithIcon};
+`
+
+export const DropdownButton = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: inherit;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 5px 10px;
+
+  ${ItemWithIcon};
 `
 
 export const Wrapper = styled.div`
