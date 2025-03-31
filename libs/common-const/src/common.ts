@@ -44,6 +44,7 @@ export const PAGE_TITLES = {
   TOKENS_OVERVIEW: 'Tokens Overview',
   COW_RUNNER: 'CoW Runner',
   MEV_SLICER: 'Mev Slicer',
+  HOOKS: 'Hooks',
 }
 
 type Env = 'barn' | 'prod'
