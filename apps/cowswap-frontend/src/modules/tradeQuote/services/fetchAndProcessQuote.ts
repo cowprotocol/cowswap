@@ -5,6 +5,9 @@ import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { AppDataInfo } from 'modules/appData'
 
+import QuoteApiError, { mapOperatorErrorToQuoteError } from 'api/cowProtocol/errors/QuoteError'
+import { getIsOrderBookTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
+
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
 import { TradeQuoteFetchParams } from '../types'
 
@@ -49,7 +52,22 @@ export async function fetchAndProcessQuote(
       fetchParams,
     )
   } catch (error) {
-    console.log('[useGetQuote]:: fetchQuote error', error)
-    tradeQuoteManager.onError(error, chainId, quoteParams, fetchParams)
+    const parsedError = parseError(error)
+
+    console.log('[useGetQuote]:: fetchQuote error', parsedError)
+
+    if (parsedError instanceof QuoteApiError) {
+      tradeQuoteManager.onError(parsedError, chainId, quoteParams, fetchParams)
+    }
   }
+}
+
+function parseError(error: Error): QuoteApiError | Error {
+  if (getIsOrderBookTypedError(error)) {
+    const errorObject = mapOperatorErrorToQuoteError(error.body)
+
+    return errorObject ? new QuoteApiError(errorObject) : error
+  }
+
+  return error
 }

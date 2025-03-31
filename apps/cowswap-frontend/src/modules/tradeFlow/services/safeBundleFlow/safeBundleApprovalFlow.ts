@@ -16,6 +16,7 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import { NO_QUOTE_IN_ORDER_ERROR } from 'modules/tradeQuote'
 import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
@@ -35,7 +36,7 @@ export async function safeBundleApprovalFlow(
     tradeContext
 
   if (!tradeQuote.quote) {
-    throw new Error('Quote is undefined in ethFlow!')
+    throw new Error(NO_QUOTE_IN_ORDER_ERROR)
   }
 
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
@@ -66,18 +67,23 @@ export async function safeBundleApprovalFlow(
     orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)
 
     logTradeFlow(LOG_PREFIX, 'STEP 3: post order')
-    const { orderId, signingScheme, signature } = await tradeQuote.quote
+    const {
+      orderId,
+      signingScheme,
+      signature,
+      orderToSign: unsignedOrder,
+    } = await tradeQuote.quote
       .postSwapOrderFromQuote({
         appData: orderParams.appData.doc,
         quoteRequest: {
           signingScheme: SigningScheme.PRESIGN,
+          validTo: orderParams.validTo,
+          receiver: orderParams.recipient,
         },
       })
       .finally(() => {
         callbacks.closeModals()
       })
-
-    const unsignedOrder = tradeQuote.quote.quoteResults.orderToSign
 
     const order = mapUnsignedOrderToOrder({
       unsignedOrder,

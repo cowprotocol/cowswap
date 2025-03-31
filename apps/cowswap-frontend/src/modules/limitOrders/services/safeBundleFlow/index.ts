@@ -20,6 +20,7 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics, TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
+import { NO_QUOTE_IN_ORDER_ERROR } from 'modules/tradeQuote'
 import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
@@ -39,7 +40,7 @@ export async function safeBundleFlow(
   const isTooLowRate = params.rateImpact < LOW_RATE_THRESHOLD_PERCENT
 
   if (!quoteState.quote) {
-    throw new Error('Quote is undefined in safeBundleFlow!')
+    throw new Error(NO_QUOTE_IN_ORDER_ERROR)
   }
 
   if (!isTooLowRate && priceImpact.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpact.priceImpact))) {
@@ -78,7 +79,12 @@ export async function safeBundleFlow(
     })
 
     logTradeFlow(LOG_PREFIX, 'STEP 3: post order')
-    const { orderId, signature, signingScheme } = await tradingSdk.postLimitOrder(
+    const {
+      orderId,
+      signature,
+      signingScheme,
+      orderToSign: unsignedOrder,
+    } = await tradingSdk.postLimitOrder(
       {
         sellAmount: postOrderParams.inputAmount.quotient.toString(),
         buyAmount: postOrderParams.outputAmount.quotient.toString(),
@@ -100,7 +106,6 @@ export async function safeBundleFlow(
       },
     )
 
-    const { orderToSign: unsignedOrder } = quoteState.quote.quoteResults
     const order = mapUnsignedOrderToOrder({
       unsignedOrder,
       additionalParams: {
