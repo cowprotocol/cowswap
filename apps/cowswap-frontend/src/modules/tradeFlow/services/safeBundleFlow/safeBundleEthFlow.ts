@@ -105,6 +105,8 @@ export async function safeBundleEthFlow(
         appData: orderParams.appData.doc,
         quoteRequest: {
           signingScheme: SigningScheme.PRESIGN,
+          validTo: orderParams.validTo,
+          receiver: orderParams.recipient,
         },
       })
       .finally(() => {

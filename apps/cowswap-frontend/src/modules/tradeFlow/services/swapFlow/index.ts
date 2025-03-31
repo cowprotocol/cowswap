@@ -91,6 +91,10 @@ export async function swapFlow(
         additionalParams: {
           signingScheme: orderParams.allowsOffchainSigning ? SigningScheme.EIP712 : SigningScheme.PRESIGN,
         },
+        quoteRequest: {
+          validTo: orderParams.validTo,
+          receiver: orderParams.recipient,
+        },
       })
       .finally(() => {
         callbacks.closeModals()

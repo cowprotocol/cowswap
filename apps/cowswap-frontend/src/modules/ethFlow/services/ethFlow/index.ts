@@ -94,6 +94,8 @@ export async function ethFlow({
         },
         quoteRequest: {
           signingScheme: SigningScheme.EIP1271,
+          validTo: orderParams.validTo,
+          receiver: orderParams.recipient,
         },
       })
       .finally(() => {
