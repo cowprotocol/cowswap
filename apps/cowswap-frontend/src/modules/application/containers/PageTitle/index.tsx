@@ -8,7 +8,8 @@ type PageTitleProps = {
 
 export function PageTitle({ title }: PageTitleProps) {
   return (
-    <Helmet>
+    <Helmet defer={false}>
+      <meta charSet="utf-8" />
       <title>
         {title ? `${title} - ` : ''}
         {APP_TITLE}
