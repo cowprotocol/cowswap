@@ -89,7 +89,6 @@ export const TokenFlowContainer = styled.div`
   align-items: center;
   gap: 4px;
   margin: 0 auto 0 0;
-  letter-spacing: -0.2px;
 `
 
 export const ArrowIcon = styled.span`

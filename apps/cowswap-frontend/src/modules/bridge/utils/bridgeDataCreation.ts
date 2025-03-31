@@ -34,7 +34,7 @@ const DEMO_BRIDGE_DATA = {
   swapMaxSlippage: '0.5',
 
   // Default bridge details
-  bridgeAmount: '3442.423',
+  bridgeAmount: '3438.321',
   bridgeToken: 'COW',
   bridgeTokenAddress: DEMO_COW_TOKEN_ADDRESS,
   bridgeTokenReceiveAddress: DEMO_COW_TOKEN_ADDRESS, // Assuming same token on destination for demo

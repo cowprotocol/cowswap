@@ -262,7 +262,7 @@ export function BridgeRouteBreakdown({
         }
         withTimelineDot
       >
-        {networkCost} {sellToken}{' '}
+        {networkCost} {sellToken}&nbsp;
         {networkCostUsdValue && (
           <i>
             (<FiatAmount amount={networkCostUsdValue} />)
@@ -388,7 +388,7 @@ export function BridgeRouteBreakdown({
       <ConfirmDetailsItem
         label={
           <>
-            Estimated bridge time{' '}
+            Est. bridge time{' '}
             <InfoTooltip content="The estimated time for the bridge transaction to complete." size={14} />
           </>
         }
