@@ -29,7 +29,7 @@ export function BridgeAccordionSummary({ bridgeEstimatedTime, bridgeProtocol, ch
           / {displayTime(bridgeEstimatedTime * 1000, true)}
         </span>
       )}
-      {bridgeProtocol && <ProtocolIcons secondProtocol={bridgeProtocol} size={14} />}
+      {bridgeProtocol && <ProtocolIcons secondProtocol={bridgeProtocol} size={18} />}
     </>
   )
 }

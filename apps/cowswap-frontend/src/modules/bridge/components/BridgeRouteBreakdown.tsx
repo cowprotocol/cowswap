@@ -118,10 +118,9 @@ export function BridgeRouteBreakdown({
   buyToken,
   buyTokenAddress,
   networkCost,
-  networkCostUsd,
   swapMinReceive,
-  swapExpectedToReceive: _swapExpectedToReceive,
-  swapMaxSlippage: _swapMaxSlippage,
+  swapExpectedToReceive,
+  swapMaxSlippage,
   bridgeAmount,
   bridgeToken,
   bridgeTokenAddress,
@@ -182,8 +181,17 @@ export function BridgeRouteBreakdown({
   const sourceChainInfo = getChainInfo(sourceChainId)
   const sourceChainName = sourceChainInfo.label
 
+  // Derive CurrencyAmount and USD value for networkCost
+  const networkCostCurrency = networkCost ? tryParseCurrencyAmount(networkCost, sellTokenObj) : undefined
+  const { value: networkCostUsdValue } = useUsdAmount(networkCostCurrency)
+
   const swapMinReceiveCurrency = swapMinReceive ? tryParseCurrencyAmount(swapMinReceive, buyTokenObj) : undefined
   const { value: swapMinReceiveUsd } = useUsdAmount(swapMinReceiveCurrency)
+
+  const swapExpectedReceiveCurrency = swapExpectedToReceive
+    ? tryParseCurrencyAmount(swapExpectedToReceive, buyTokenObj)
+    : undefined
+  const { value: swapExpectedReceiveUsd } = useUsdAmount(swapExpectedReceiveCurrency)
 
   const bridgeReceiveAmountCurrency = bridgeReceiveAmount
     ? tryParseCurrencyAmount(bridgeReceiveAmount, destTokenObj)
@@ -233,25 +241,58 @@ export function BridgeRouteBreakdown({
       <ConfirmDetailsItem
         label={
           <>
-            Swap fee <InfoTooltip content="The fee for the swap transaction." size={14} />
+            Swap fee <InfoTooltip content="No fee for order placement!" size={14} />
           </>
         }
         withTimelineDot
-        contentTextColor={getFeeTextColor(bridgeFee)}
+        contentTextColor={getFeeTextColor('FREE')}
       >
-        {isFreeSwapFee(bridgeFee) ? 'FREE' : bridgeFee}
+        FREE
       </ConfirmDetailsItem>
 
       <ConfirmDetailsItem
         label={
           <>
-            Network costs <InfoTooltip content="The estimated cost for executing transactions on-chain." size={14} />
+            Network cost (est.){' '}
+            <InfoTooltip
+              content="This is the cost of settling your order on-chain, including gas and any LP fees. CoW Swap will try to lower this cost where possible."
+              size={14}
+            />
           </>
         }
         withTimelineDot
       >
-        {networkCost} {sellToken} (${networkCostUsd})
+        {networkCost} {sellToken}{' '}
+        {networkCostUsdValue && (
+          <i>
+            (<FiatAmount amount={networkCostUsdValue} />)
+          </i>
+        )}
       </ConfirmDetailsItem>
+
+      {swapExpectedToReceive && (
+        <ConfirmDetailsItem
+          withTimelineDot
+          label={
+            <>
+              Expected to receive{' '}
+              <InfoTooltip
+                content={`The estimated amount you'll receive after estimated network costs and the max slippage setting (${swapMaxSlippage}%).`}
+                size={14}
+              />
+            </>
+          }
+        >
+          <AmountWithTokenIcon>
+            {swapExpectedToReceive} {buyToken}
+            {swapExpectedReceiveUsd && (
+              <i>
+                (<FiatAmount amount={swapExpectedReceiveUsd} />)
+              </i>
+            )}
+          </AmountWithTokenIcon>
+        </ConfirmDetailsItem>
+      )}
 
       {swapMinReceive && (
         <ConfirmDetailsItem
