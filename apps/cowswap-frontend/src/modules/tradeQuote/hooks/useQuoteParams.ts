@@ -1,7 +1,7 @@
 import { DEFAULT_APP_CODE, ZERO_ADDRESS } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress, isAddress } from '@cowprotocol/common-utils'
-import { QuoteBridgeRequest, TradeParameters } from '@cowprotocol/cow-sdk'
+import { QuoteBridgeRequest } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Currency } from '@uniswap/sdk-core'
@@ -53,7 +53,7 @@ export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined
     const buyTokenDecimals = outputCurrency.decimals
 
     const quoteParams: QuoteBridgeRequest = {
-      kind: orderKind as any, // TODO: fix
+      kind: orderKind,
       amount: BigInt(amount),
       owner: (account || ZERO_ADDRESS) as `0x${string}`,
 
