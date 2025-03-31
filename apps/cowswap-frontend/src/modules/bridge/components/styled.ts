@@ -8,6 +8,7 @@ export const Wrapper = styled.div`
   gap: 7px;
   padding: 0;
   font-size: 13px;
+  width: 100%;
 `
 
 export const StopTitle = styled.div`
@@ -76,7 +77,6 @@ export const AmountWithTokenIcon = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
-  white-space: nowrap;
 
   > i {
     font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
@@ -89,6 +89,7 @@ export const TokenFlowContainer = styled.div`
   align-items: center;
   gap: 4px;
   margin: 0 auto 0 0;
+  width: 100%;
 `
 
 export const ArrowIcon = styled.span`

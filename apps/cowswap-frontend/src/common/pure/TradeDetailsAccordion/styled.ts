@@ -27,9 +27,7 @@ export const Details = styled.div<{ isVisible: boolean }>`
   margin: ${({ isVisible }) => (isVisible ? '4px 0 0' : '0')};
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
   visibility: ${({ isVisible }) => (isVisible ? 'visible' : 'hidden')};
-  overflow: hidden;
   transform-origin: top;
-  clip-path: ${({ isVisible }) => (isVisible ? 'inset(0 0 0 0)' : 'inset(0 0 100% 0)')};
   transition:
     opacity var(${UI.ANIMATION_DURATION_SLOW}) ease-in-out,
     visibility var(${UI.ANIMATION_DURATION_SLOW}) ease-in-out,
