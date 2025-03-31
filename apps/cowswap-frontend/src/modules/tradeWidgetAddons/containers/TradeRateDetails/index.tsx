@@ -123,7 +123,6 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
 
   const totalCosts = getTotalCosts(receiveAmountInfo)
 
-  // Create the content for the accordion based on whether bridge UI should be shown
   const accordionContent =
     showBridgeUI && bridgeData ? (
       <BridgeRouteBreakdown {...bridgeData} />

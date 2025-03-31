@@ -12,6 +12,7 @@ export const Wrapper = styled.div<{ isOpen: boolean }>`
   align-items: center;
   width: 100%;
   padding: 6px;
+  gap: 8px;
   height: auto;
   font-size: 13px;
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
@@ -24,7 +25,7 @@ export const Details = styled.div<{ isVisible: boolean }>`
   width: 100%;
   height: auto;
   max-height: ${({ isVisible }) => (isVisible ? `${EXPANDED_MAX_HEIGHT_PX}px` : '0')};
-  margin: ${({ isVisible }) => (isVisible ? '4px 0 0' : '0')};
+  margin: 0;
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
   visibility: ${({ isVisible }) => (isVisible ? 'visible' : 'hidden')};
   transform-origin: top;
