@@ -1,6 +1,6 @@
 import { ZERO_ADDRESS } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
-import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { getCurrencyAddress, isAddress } from '@cowprotocol/common-utils'
 import { TradeParameters } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
@@ -34,7 +34,9 @@ export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined
   const state = useDerivedTradeState()
   const volumeFee = useVolumeFee()
 
-  const { inputCurrency, outputCurrency, orderKind } = state || {}
+  const { inputCurrency, outputCurrency, orderKind, recipientAddress } = state || {}
+
+  const receiver = recipientAddress && isAddress(recipientAddress) ? recipientAddress : account
 
   const params = useSafeMemo(() => {
     if (isWrapOrUnwrap || isProviderNetworkUnsupported) return
@@ -54,13 +56,23 @@ export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined
       buyTokenDecimals,
       owner: (account || ZERO_ADDRESS) as `0x${string}`,
       amount,
-      receiver: account,
+      receiver,
       validFor: DEFAULT_QUOTE_TTL,
       ...(volumeFee ? { partnerFee: volumeFee } : null),
     }
 
     return { quoteParams, inputCurrency, appData: appData?.doc }
-  }, [inputCurrency, outputCurrency, amount, orderKind, appData?.doc, isWrapOrUnwrap, isProviderNetworkUnsupported])
+  }, [
+    inputCurrency,
+    outputCurrency,
+    amount,
+    orderKind,
+    appData?.doc,
+    receiver,
+    account,
+    isWrapOrUnwrap,
+    isProviderNetworkUnsupported,
+  ])
 
   return useDebounce(params, AMOUNT_CHANGE_DEBOUNCE_TIME)
 }
