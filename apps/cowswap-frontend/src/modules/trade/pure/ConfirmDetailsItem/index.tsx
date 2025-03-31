@@ -18,6 +18,7 @@ export type ConfirmDetailsItemProps = {
   withTimelineDot?: boolean
   highlighted?: boolean
   contentTextColor?: string
+  isLast?: boolean
 }
 
 export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
@@ -29,12 +30,13 @@ export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
     withArrow = false,
     withTimelineDot = false,
     contentTextColor,
+    isLast = false,
   } = props
 
   return (
     <Wrapper>
       {withArrow && <CornerDownRight size={14} />}
-      {withTimelineDot && <TimelineDot />}
+      {withTimelineDot && <TimelineDot isLast={isLast} />}
       {label ? (
         <Row>
           <div>

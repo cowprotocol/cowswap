@@ -425,6 +425,7 @@ export function BridgeRouteBreakdown({
           </>
         }
         withTimelineDot
+        isLast={true}
       >
         <RecipientWrapper>
           <NetworkLogo chainId={recipientChainId} />

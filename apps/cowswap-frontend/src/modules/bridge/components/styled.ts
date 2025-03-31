@@ -37,7 +37,7 @@ export const RouteTitle = styled.div`
 export const StopsInfo = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   font-weight: var(${UI.FONT_WEIGHT_BOLD});
 `
 
