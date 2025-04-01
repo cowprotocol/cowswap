@@ -4,6 +4,10 @@ import type { TokenInfo } from '@uniswap/token-lists'
 
 const tokensCache = new Map<TargetChainId, Record<string, TokenInfo>>()
 
+/**
+ * TODO: refactor this and make it more efficient
+ * Add parallel request handling
+ */
 export async function getErc20Tokens(chainId: TargetChainId, addresses: string[]): Promise<TokenInfo[]> {
   const lists = DEFAULT_TOKENS_LISTS[chainId as SupportedChainId]
 
