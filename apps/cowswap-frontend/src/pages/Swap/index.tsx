@@ -1,8 +1,9 @@
-import { WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
+import { PAGE_TITLES, WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Navigate, useLocation, useParams } from 'react-router-dom'
 
+import { PageTitle } from 'modules/application/containers/PageTitle'
 import { SwapUpdaters, SwapWidget } from 'modules/swap'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
@@ -18,6 +19,7 @@ export function SwapPage() {
 
   return (
     <>
+      <PageTitle title={PAGE_TITLES.SWAP} />
       <SwapUpdaters />
       <SwapWidget />
     </>
