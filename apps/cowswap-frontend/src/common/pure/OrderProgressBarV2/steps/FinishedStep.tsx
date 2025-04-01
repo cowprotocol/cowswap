@@ -6,7 +6,7 @@ import LOTTIE_GREEN_CHECKMARK from '@cowprotocol/assets/lottie/green-checkmark.j
 import { ExplorerDataType, getExplorerLink, getRandomInt, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { Confetti, ExternalLink, InfoTooltip,  TokenAmount, } from '@cowprotocol/ui'
+import { Confetti, ExternalLink, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import Lottie from 'lottie-react'
@@ -39,7 +39,17 @@ interface FinishedStepProps {
   debugForceShowSurplus?: boolean
 }
 
-function FinishedStep({ children, stepName, surplusData, solvers, order, chainId, receiverEnsName, totalSolvers, debugForceShowSurplus }: FinishedStepProps) {
+export function FinishedStep({
+  children,
+  stepName,
+  surplusData,
+  solvers,
+  order,
+  chainId,
+  receiverEnsName,
+  totalSolvers,
+  debugForceShowSurplus,
+}: FinishedStepProps) {
   const [showAllSolvers, setShowAllSolvers] = useState(false)
   const cancellationFailed = stepName === 'cancellationFailed'
 
@@ -248,5 +258,3 @@ function FinishedStep({ children, stepName, surplusData, solvers, order, chainId
     </styledEl.FinishedStepContainer>
   )
 }
-
-export default FinishedStep

@@ -9,7 +9,7 @@ interface DebugPanelProps {
   setDebugStep: (stepName: OrderProgressBarStepName) => void
 }
 
-function DebugPanel({ STEP_NAME_TO_STEP_COMPONENT, stepName, setDebugStep }: DebugPanelProps) {
+export function DebugPanel({ STEP_NAME_TO_STEP_COMPONENT, stepName, setDebugStep }: DebugPanelProps) {
   return (
     <styledEl.DebugPanel>
       <select value={stepName} onChange={(e) => setDebugStep(e.target.value as OrderProgressBarStepName)}>
@@ -22,5 +22,3 @@ function DebugPanel({ STEP_NAME_TO_STEP_COMPONENT, stepName, setDebugStep }: Deb
     </styledEl.DebugPanel>
   )
 }
-
-export default DebugPanel

@@ -1,11 +1,11 @@
-import React, {useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
-import StepComponent from './StepComponent'
+import { StepComponent } from './StepComponent'
 import * as styledEl from './styled'
 
 import { STEPS } from '../constants'
 
-function StepsWrapper({
+export function StepsWrapper({
   steps,
   currentStep,
   extraContent,
@@ -77,5 +77,3 @@ function StepsWrapper({
     </styledEl.StepsContainer>
   )
 }
-
-export default StepsWrapper

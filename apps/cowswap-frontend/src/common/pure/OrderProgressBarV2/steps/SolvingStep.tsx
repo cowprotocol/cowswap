@@ -8,7 +8,7 @@ import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
 import * as styledEl from './styled'
 
 import { STEPS } from '../constants'
-import StepsWrapper from '../container/StepsWrapper'
+import { StepsWrapper } from '../container/StepsWrapper'
 
 interface SolvingStepProps {
   children: React.ReactNode
@@ -16,7 +16,7 @@ interface SolvingStepProps {
   showCancellationModal: Command | null
 }
 
-function SolvingStep({ children, stepName, showCancellationModal }: SolvingStepProps) {
+export function SolvingStep({ children, stepName, showCancellationModal }: SolvingStepProps) {
   const isUnfillable = stepName === 'unfillable'
   const isDelayed = stepName === 'delayed'
   const isSubmissionFailed = stepName === 'submissionFailed'
@@ -121,5 +121,3 @@ function SolvingStep({ children, stepName, showCancellationModal }: SolvingStepP
     </styledEl.ProgressContainer>
   )
 }
-
-export default SolvingStep

@@ -1,13 +1,13 @@
 import * as styledEl from './styled'
 
 import { STEPS } from '../constants'
-import StepsWrapper from '../container/StepsWrapper'
+import { StepsWrapper } from '../container/StepsWrapper'
 
 interface ExecutingStepProps {
   children: React.ReactNode
 }
 
-function ExecutingStep({ children }: ExecutingStepProps) {
+export function ExecutingStep({ children }: ExecutingStepProps) {
   return (
     <styledEl.ProgressContainer>
       {children}
@@ -24,5 +24,3 @@ function ExecutingStep({ children }: ExecutingStepProps) {
     </styledEl.ProgressContainer>
   )
 }
-
-export default ExecutingStep

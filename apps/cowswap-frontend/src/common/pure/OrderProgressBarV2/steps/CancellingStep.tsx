@@ -4,13 +4,13 @@ import { UI } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
 
-import StepsWrapper from '../container/StepsWrapper'
+import { StepsWrapper } from '../container/StepsWrapper'
 
 interface CancellingStepProps {
-    children: React.ReactNode
+  children: React.ReactNode
 }
 
-function CancellingStep({ children }: CancellingStepProps) {
+export function CancellingStep({ children }: CancellingStepProps) {
   return (
     <styledEl.ProgressContainer>
       {children}
@@ -24,5 +24,3 @@ function CancellingStep({ children }: CancellingStepProps) {
     </styledEl.ProgressContainer>
   )
 }
-
-export default CancellingStep

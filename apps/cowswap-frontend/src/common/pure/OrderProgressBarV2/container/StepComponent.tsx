@@ -6,7 +6,7 @@ import Lottie from 'lottie-react'
 
 import * as styledEl from './styled'
 
-function StepComponent({
+export function StepComponent({
   status,
   isFirst,
   step,
@@ -54,5 +54,3 @@ function StepComponent({
     </styledEl.Step>
   )
 }
-
-export default StepComponent

@@ -5,13 +5,13 @@ import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/ty
 import * as styledEl from './styled'
 
 import { STEPS } from '../constants'
-import StepsWrapper from '../container/StepsWrapper'
+import { StepsWrapper } from '../container/StepsWrapper'
 
 interface InitialStepProps {
   children: React.ReactNode
 }
 
-function InitialStep({ children }: InitialStepProps) {
+export function InitialStep({ children }: InitialStepProps) {
   return (
     <styledEl.ProgressContainer>
       {children}
@@ -39,5 +39,3 @@ function InitialStep({ children }: InitialStepProps) {
     </styledEl.ProgressContainer>
   )
 }
-
-export default InitialStep

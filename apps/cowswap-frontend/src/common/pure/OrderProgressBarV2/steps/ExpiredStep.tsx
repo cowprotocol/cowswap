@@ -13,7 +13,7 @@ interface ExpiredStepProps {
   navigateToNewOrder?: Command
 }
 
-function ExpiredStep({ children, navigateToNewOrder }: ExpiredStepProps) {
+export function ExpiredStep({ children, navigateToNewOrder }: ExpiredStepProps) {
   return (
     <styledEl.ProgressContainer>
       {children}
@@ -79,5 +79,3 @@ function ExpiredStep({ children, navigateToNewOrder }: ExpiredStepProps) {
     </styledEl.ProgressContainer>
   )
 }
-
-export default ExpiredStep

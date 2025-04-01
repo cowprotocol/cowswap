@@ -21,7 +21,7 @@ import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../constants'
 import OrderIntent from '../steps/OrderIntent'
 import { OrderProgressBarV2Props } from '../types'
 
-function RenderProgressTopSection({
+export function RenderProgressTopSection({
   stepName,
   order,
   countdown,
@@ -116,5 +116,3 @@ function RenderProgressTopSection({
     </styledEl.ProgressTopSection>
   )
 }
-
-export default RenderProgressTopSection
