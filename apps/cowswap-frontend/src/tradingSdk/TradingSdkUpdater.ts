@@ -6,6 +6,7 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { tradingSdk } from './tradingSdk'
 
+import { orderBookApi } from '../cowSdk'
 import { useAppCode } from '../modules/appData/hooks'
 
 export function TradingSdkUpdater() {
@@ -18,6 +19,7 @@ export function TradingSdkUpdater() {
 
     if (signer && appCode) {
       tradingSdk.setTraderParams({ signer, chainId, appCode, env: isBarnBackendEnv ? 'staging' : 'prod' })
+      orderBookApi.context.chainId = chainId
     }
   }, [chainId, provider, appCode])
 

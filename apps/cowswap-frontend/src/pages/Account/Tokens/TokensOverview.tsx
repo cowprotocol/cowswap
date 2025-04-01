@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useCallback, useRef, ChangeEventHandler } from 'react'
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
-import { TokenWithLogo } from '@cowprotocol/common-const'
+import { PAGE_TITLES, TokenWithLogo } from '@cowprotocol/common-const'
 import { useTheme, useDebounce, useOnClickOutside, usePrevious } from '@cowprotocol/common-hooks'
 import { isAddress, isTruthy } from '@cowprotocol/common-utils'
 import { useTokensByAddressMap, useFavoriteTokens, useResetFavoriteTokens } from '@cowprotocol/tokens'
@@ -205,7 +205,7 @@ export default function TokensOverview() {
         </AccountHeading>
       )}
       <Overview>
-        <PageTitle title="Tokens Overview" />
+        <PageTitle title={PAGE_TITLES.TOKENS_OVERVIEW} />
 
         {isProviderNetworkUnsupported ? 'Unsupported network' : renderTableContent()}
       </Overview>
