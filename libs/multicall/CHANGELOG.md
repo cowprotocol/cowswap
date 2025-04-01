@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/cowprotocol/cowswap/compare/multicall-v1.1.0...multicall-v1.1.1) (2025-04-01)
+
+
+### Bug Fixes
+
+* do not use RPC node when wallet is connected ([#5585](https://github.com/cowprotocol/cowswap/issues/5585)) ([d51fe53](https://github.com/cowprotocol/cowswap/commit/d51fe5394f6c13ed28ac1725331bfb505b8275a5))
+
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/multicall-v1.0.0...multicall-v1.1.0) (2025-03-20)
 
 
