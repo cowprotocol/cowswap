@@ -8,7 +8,6 @@ import type { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { ArrowRight, ArrowLeft } from 'react-feather'
-// import { HashLink } from 'react-router-hash-link'
 import styled from 'styled-components/macro'
 import { LinkStyledButton } from 'theme'
 
@@ -141,11 +140,6 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
               <p>
                 Keep in mind a solver might already have included the order in a solution even if this cancellation is
                 successful. 
-                // Read more in the{' '}
-                // <HashLink target="_blank" rel="noreferrer" to={`${Routes.FAQ_TRADING}#can-i-cancel-an-order`}>
-                //  FAQ
-                // </HashLink>
-                // .
                 {isOnChainType && (
                   <StyledNotificationBanner isVisible={true} canClose={false} level="INFO">
                     <div>
