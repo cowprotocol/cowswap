@@ -22,7 +22,9 @@ import { TradeQuoteFetchParams } from '../types'
 import { isQuoteExpired } from '../utils/quoteDeadline'
 import { quoteUsingSameParameters } from '../utils/quoteUsingSameParameters'
 
-export const PRICE_UPDATE_INTERVAL = ms`30s`
+// TODO: revert after bridging fixes
+// TODO: now bridging quote requires hook signing which is not right
+export const PRICE_UPDATE_INTERVAL = ms`120s`
 const QUOTE_EXPIRATION_CHECK_INTERVAL = ms`2s`
 
 export function useTradeQuotePolling(isConfirmOpen = false) {

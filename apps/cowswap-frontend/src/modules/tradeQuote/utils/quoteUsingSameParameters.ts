@@ -20,6 +20,12 @@ export function quoteUsingSameParameters(
 ): boolean {
   if (!currentParams || !nextParams) return false
 
+  /**
+   * TODO: in bridging mode buy token changes to intermediate token
+   * TODO: in bridging mode, appData contains only hooks without other information
+   * TODO: in bridging mode, receiver became a CoW Shed address
+   */
+  const isBridge = true
   const hasSameAppData = compareAppDataWithoutQuoteData(currentAppData, appData)
   const isNativeToken = getIsNativeToken(chainId, nextParams.sellTokenAddress)
   const wrappedToken = WRAPPED_NATIVE_CURRENCIES[chainId]
@@ -30,13 +36,13 @@ export function quoteUsingSameParameters(
 
   // TODO: compare tokens chainIds
   return (
-    hasSameAppData &&
+    (isBridge ? true : hasSameAppData) &&
     currentParams.owner === nextParams.owner &&
     currentParams.kind === nextParams.kind &&
     currentParams.sellToken.toLowerCase() === nextSellToken &&
-    currentParams.buyToken === nextParams.buyTokenAddress &&
+    (isBridge ? true : currentParams.buyToken === nextParams.buyTokenAddress) &&
     currentParams.amount === nextParams.amount.toString() &&
-    currentParams.receiver === nextParams.receiver &&
+    (isBridge ? true : currentParams.receiver === nextParams.receiver) &&
     currentParams.validFor === nextParams.validFor
   )
 }
