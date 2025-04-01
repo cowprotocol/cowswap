@@ -7,7 +7,9 @@ import styled from 'styled-components/macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { OrderProgressBarV2, OrderProgressBarV2Props } from './index'
+import { OrderProgressBarV2Props } from './types'
+
+import { OrderProgressBarV2 } from './index'
 
 const order = {
   ...getOrderMock(SupportedChainId.MAINNET),
