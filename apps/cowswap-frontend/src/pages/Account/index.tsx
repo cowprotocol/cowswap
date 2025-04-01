@@ -1,5 +1,7 @@
 import { lazy, Suspense } from 'react'
 
+import { PAGE_TITLES } from '@cowprotocol/common-const'
+
 import { useLocation, Outlet } from 'react-router-dom'
 
 import { Loading } from 'legacy/components/FlashingLoading'
@@ -36,7 +38,7 @@ export const AccountOverview = () => {
   return (
     <>
       <Container>
-        <PageTitle title="Account Overview" />
+        <PageTitle title={PAGE_TITLES.ACCOUNT_OVERVIEW} />
         <CardsWrapper>
           <Balances />
           <Governance />
