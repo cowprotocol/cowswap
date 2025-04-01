@@ -1,6 +1,6 @@
-import { SupportedChainId, QuoteBridgeRequest, TradeParameters } from '@cowprotocol/cow-sdk'
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { SupportedChainId, QuoteBridgeRequest, TradeParameters } from '@cowprotocol/cow-sdk'
 
 import { Nullish } from 'types'
 
@@ -35,7 +35,7 @@ export function quoteUsingSameParameters(
     currentParams.kind === nextParams.kind &&
     currentParams.sellToken.toLowerCase() === nextSellToken &&
     currentParams.buyToken === nextParams.buyTokenAddress &&
-    currentParams.amount === nextParams.amount &&
+    currentParams.amount === nextParams.amount.toString() &&
     currentParams.receiver === nextParams.receiver &&
     currentParams.validFor === nextParams.validFor
   )
