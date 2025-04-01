@@ -86,7 +86,7 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
         // Important! We should skip quote updateing only if there is no quote response
         if (
           (hasCachedResponse || hasCachedError) &&
-          quoteUsingSameParameters(currentQuoteParams, quoteParams, currentQuoteAppData?.doc, appData)
+          quoteUsingSameParameters(chainId, currentQuoteParams, quoteParams, currentQuoteAppData?.doc, appData)
         ) {
           return
         }
