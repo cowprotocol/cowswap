@@ -19,7 +19,8 @@ import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/ty
 import * as styledEl from './styled'
 
 import { CancelButton } from '../CancelButton'
-import { OrderProgressBarV2, OrderProgressBarV2Props } from '../OrderProgressBarV2'
+import { OrderProgressBarV2 } from '../OrderProgressBarV2'
+import { OrderProgressBarV2Props } from '../OrderProgressBarV2/types'
 
 const activityStatusLabels: Partial<Record<ActivityStatus, string>> = {
   [ActivityStatus.CONFIRMED]: 'Confirmed',
