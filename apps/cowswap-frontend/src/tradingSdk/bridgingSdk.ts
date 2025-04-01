@@ -1,10 +1,10 @@
 import { AcrossBridgeProvider, BridgingSdk, TargetChainId } from '@cowprotocol/cow-sdk'
 
-import { getErc20Token } from './getErc20Token'
+import { getErc20Tokens } from './getErc20Tokens'
 import { tradingSdk } from './tradingSdk'
 
 export const acrossBridgeProvider = new AcrossBridgeProvider({
-  // getTokenInfos(chainId: number, addresses: string[]): Promise<TokenInfo[]> {},
+  getTokenInfos: getErc20Tokens,
 })
 
 export const bridgingSdk = new BridgingSdk({
@@ -12,12 +12,12 @@ export const bridgingSdk = new BridgingSdk({
   enableLogging: true,
   tradingSdk,
   async getErc20Decimals(chainId: TargetChainId, tokenAddress: string) {
-    const token = await getErc20Token(chainId, tokenAddress)
+    const tokens = await getErc20Tokens(chainId, [tokenAddress])
 
-    if (!token) {
+    if (!tokens.length) {
       throw new Error('Cannot find a ERC-20 token: ' + tokenAddress + ' in chain ' + chainId)
     }
 
-    return token?.decimals
+    return tokens[0].decimals
   },
 })
