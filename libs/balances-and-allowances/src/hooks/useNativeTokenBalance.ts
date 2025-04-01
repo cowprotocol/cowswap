@@ -1,5 +1,4 @@
-import { getRpcProvider } from '@cowprotocol/common-const'
-import { getMulticallContract } from '@cowprotocol/multicall'
+import { getMulticallContract, useMultiCallRpcProvider } from '@cowprotocol/multicall'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import ms from 'ms.macro'
@@ -17,7 +16,7 @@ export function useNativeTokenBalance(
   chainId: number,
   swrConfig: SWRConfiguration = SWR_CONFIG,
 ): SWRResponse<BigNumber> {
-  const provider = getRpcProvider(chainId)
+  const provider = useMultiCallRpcProvider()
 
   return useSWR(
     account && provider ? ['useNativeTokenBalance', account, provider, chainId] : null,

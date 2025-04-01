@@ -12,10 +12,12 @@ export function useMultiCallRpcProvider(): JsonRpcProvider | null {
   const context = useAtomValue(multiCallContextAtom)
 
   return useMemo(() => {
-    if (!context) return null
+    const providerChainId = provider?.network?.chainId
+
+    if (!context || !providerChainId) return null
 
     // Use wallet provider if current network matches the wallet network
-    if (provider?.network?.chainId === context.chainId) {
+    if (providerChainId === context.chainId) {
       return provider
     }
 
