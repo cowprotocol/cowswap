@@ -7,7 +7,7 @@ import { tradingSdk } from 'tradingSdk/tradingSdk'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
-import { getOrderSubmitSummary, mapUnsignedOrderToOrder } from 'legacy/utils/trade'
+import { getOrderSubmitSummary, mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
 import { removePermitHookFromAppData } from 'modules/appData'
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
@@ -84,26 +84,28 @@ export async function safeBundleFlow(
       signature,
       signingScheme,
       orderToSign: unsignedOrder,
-    } = await tradingSdk.postLimitOrder(
-      {
-        sellAmount: postOrderParams.inputAmount.quotient.toString(),
-        buyAmount: postOrderParams.outputAmount.quotient.toString(),
-        sellToken: postOrderParams.sellToken.address,
-        buyToken: postOrderParams.buyToken.address,
-        sellTokenDecimals: postOrderParams.sellToken.decimals,
-        buyTokenDecimals: postOrderParams.buyToken.decimals,
-        kind: postOrderParams.kind,
-        partiallyFillable: postOrderParams.partiallyFillable,
-        receiver: postOrderParams.recipient,
-        validTo,
-        quoteId: postOrderParams.quoteId,
-      },
-      {
-        appData: postOrderParams.appData.doc,
-        additionalParams: {
-          signingScheme: SigningScheme.PRESIGN,
+    } = await wrapErrorInOperatorError(() =>
+      tradingSdk.postLimitOrder(
+        {
+          sellAmount: postOrderParams.inputAmount.quotient.toString(),
+          buyAmount: postOrderParams.outputAmount.quotient.toString(),
+          sellToken: postOrderParams.sellToken.address,
+          buyToken: postOrderParams.buyToken.address,
+          sellTokenDecimals: postOrderParams.sellToken.decimals,
+          buyTokenDecimals: postOrderParams.buyToken.decimals,
+          kind: postOrderParams.kind,
+          partiallyFillable: postOrderParams.partiallyFillable,
+          receiver: postOrderParams.recipient,
+          validTo,
+          quoteId: postOrderParams.quoteId,
         },
-      },
+        {
+          appData: postOrderParams.appData.doc,
+          additionalParams: {
+            signingScheme: SigningScheme.PRESIGN,
+          },
+        },
+      ),
     )
 
     const order = mapUnsignedOrderToOrder({

@@ -239,7 +239,7 @@ export async function sendOrderCancellation(params: OrderCancellationParams): Pr
   })
 }
 
-async function wrapErrorInOperatorError<T>(fn: () => Promise<T>): Promise<T> {
+export async function wrapErrorInOperatorError<T>(fn: () => Promise<T>): Promise<T> {
   try {
     return await fn()
   } catch (e) {

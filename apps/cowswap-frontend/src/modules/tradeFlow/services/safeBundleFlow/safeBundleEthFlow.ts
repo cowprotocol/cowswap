@@ -9,7 +9,12 @@ import { tradingSdk } from 'tradingSdk/tradingSdk'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
-import { getOrderSubmitSummary, mapUnsignedOrderToOrder, type PostOrderParams } from 'legacy/utils/trade'
+import {
+  getOrderSubmitSummary,
+  mapUnsignedOrderToOrder,
+  type PostOrderParams,
+  wrapErrorInOperatorError,
+} from 'legacy/utils/trade'
 
 import { removePermitHookFromAppData } from 'modules/appData'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
@@ -100,18 +105,20 @@ export async function safeBundleEthFlow(
       signature,
       signingScheme,
       orderToSign: unsignedOrder,
-    } = await tradeQuote.quote
-      .postSwapOrderFromQuote({
-        appData: orderParams.appData.doc,
-        quoteRequest: {
-          signingScheme: SigningScheme.PRESIGN,
-          validTo: orderParams.validTo,
-          receiver: orderParams.recipient,
-        },
-      })
-      .finally(() => {
-        callbacks.closeModals()
-      })
+    } = await wrapErrorInOperatorError(() =>
+      tradeQuote
+        .quote!.postSwapOrderFromQuote({
+          appData: orderParams.appData.doc,
+          quoteRequest: {
+            signingScheme: SigningScheme.PRESIGN,
+            validTo: orderParams.validTo,
+            receiver: orderParams.recipient,
+          },
+        })
+        .finally(() => {
+          callbacks.closeModals()
+        }),
+    )
 
     const order = mapUnsignedOrderToOrder({
       unsignedOrder,

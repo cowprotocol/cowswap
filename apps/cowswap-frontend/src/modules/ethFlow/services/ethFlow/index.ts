@@ -5,7 +5,7 @@ import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { getOrderSubmitSummary, mapUnsignedOrderToOrder } from 'legacy/utils/trade'
+import { getOrderSubmitSummary, mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
 import { removePermitHookFromAppData } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
@@ -86,21 +86,23 @@ export async function ethFlow({
       signature,
       signingScheme,
       orderToSign: unsignedOrder,
-    } = await tradeQuote.quote
-      .postSwapOrderFromQuote({
-        appData: orderParams.appData.doc,
-        additionalParams: {
-          checkEthFlowOrderExists,
-        },
-        quoteRequest: {
-          signingScheme: SigningScheme.EIP1271,
-          validTo: orderParams.validTo,
-          receiver: orderParams.recipient,
-        },
-      })
-      .finally(() => {
-        callbacks.closeModals()
-      })
+    } = await wrapErrorInOperatorError(() =>
+      tradeQuote
+        .quote!.postSwapOrderFromQuote({
+          appData: orderParams.appData.doc,
+          additionalParams: {
+            checkEthFlowOrderExists,
+          },
+          quoteRequest: {
+            signingScheme: SigningScheme.EIP1271,
+            validTo: orderParams.validTo,
+            receiver: orderParams.recipient,
+          },
+        })
+        .finally(() => {
+          callbacks.closeModals()
+        }),
+    )
 
     const quoteId = tradeQuote.quote.quoteResults.quoteResponse.id
 

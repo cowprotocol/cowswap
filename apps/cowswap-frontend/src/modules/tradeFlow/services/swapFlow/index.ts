@@ -8,7 +8,7 @@ import { tradingSdk } from 'tradingSdk/tradingSdk'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
-import { getOrderSubmitSummary, mapUnsignedOrderToOrder } from 'legacy/utils/trade'
+import { getOrderSubmitSummary, mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
 import { emitPostedOrderEvent } from 'modules/orders'
 import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
@@ -85,20 +85,22 @@ export async function swapFlow(
       signature,
       signingScheme,
       orderToSign: unsignedOrder,
-    } = await tradeQuote.quote
-      .postSwapOrderFromQuote({
-        appData: orderParams.appData.doc,
-        additionalParams: {
-          signingScheme: orderParams.allowsOffchainSigning ? SigningScheme.EIP712 : SigningScheme.PRESIGN,
-        },
-        quoteRequest: {
-          validTo: orderParams.validTo,
-          receiver: orderParams.recipient,
-        },
-      })
-      .finally(() => {
-        callbacks.closeModals()
-      })
+    } = await wrapErrorInOperatorError(() =>
+      tradeQuote
+        .quote!.postSwapOrderFromQuote({
+          appData: orderParams.appData.doc,
+          additionalParams: {
+            signingScheme: orderParams.allowsOffchainSigning ? SigningScheme.EIP712 : SigningScheme.PRESIGN,
+          },
+          quoteRequest: {
+            validTo: orderParams.validTo,
+            receiver: orderParams.recipient,
+          },
+        })
+        .finally(() => {
+          callbacks.closeModals()
+        }),
+    )
 
     let presignTxHash: string | null = null
 
