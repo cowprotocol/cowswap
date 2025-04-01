@@ -73,7 +73,11 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     if (!field || !isBridgingEnabled) return undefined
 
     const currentChainInfo = mapChainInfo(chainId, CHAIN_INFO[chainId])
-    const chains = field === Field.INPUT ? SUPPORTED_CHAINS : [currentChainInfo, ...(bridgeSupportedNetworks || [])]
+    const isCurrentChainInBridge = bridgeSupportedNetworks?.find((bridgeChain) => bridgeChain.id === chainId)
+    const chains =
+      field === Field.INPUT
+        ? SUPPORTED_CHAINS
+        : [...(isCurrentChainInBridge ? [] : [currentChainInfo]), ...(bridgeSupportedNetworks || [])]
 
     return {
       defaultChainId: selectedTargetChainId,
