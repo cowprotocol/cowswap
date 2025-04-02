@@ -64,6 +64,7 @@ function getProgressImageWrapperHeight(stepName: OrderProgressBarV2Props['stepNa
     case 'delayed':
     case 'submissionFailed':
     case 'solved':
+    case 'finished':
       return '229px'
     default:
       return 'auto'
