@@ -1,6 +1,6 @@
 import { useTheme } from '@cowprotocol/common-hooks'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { ChainInfo } from '@cowprotocol/types'
+import { ChainInfo } from '@cowprotocol/cow-sdk'
 import { HoverTooltip } from '@cowprotocol/ui'
 import { Media } from '@cowprotocol/ui'
 
@@ -56,11 +56,11 @@ export function ChainsSelector({
           key={chain.id}
           tooltipCloseDelay={0}
           wrapInContainer={true}
-          content={chain.name}
+          content={chain.label}
           placement="bottom"
         >
           <styledEl.ChainItem active$={defaultChainId === chain.id} onClick={() => onSelectChain(chain)} iconOnly>
-            <img src={theme.darkMode ? chain.logoUrl.dark : chain.logoUrl.light} alt={chain.name} loading="lazy" />
+            <img src={theme.darkMode ? chain.logo.dark : chain.logo.light} alt={chain.label} loading="lazy" />
           </styledEl.ChainItem>
         </HoverTooltip>
       ))}
@@ -71,8 +71,8 @@ export function ChainsSelector({
               <MenuButton as={styledEl.ChainItem} active$={!!selectedMenuChain}>
                 {selectedMenuChain ? (
                   <img
-                    src={theme.darkMode ? selectedMenuChain.logoUrl.dark : selectedMenuChain.logoUrl.light}
-                    alt={selectedMenuChain.name}
+                    src={theme.darkMode ? selectedMenuChain.logo.dark : selectedMenuChain.logo.light}
+                    alt={selectedMenuChain.label}
                     loading="lazy"
                   />
                 ) : isOpen ? (
@@ -93,12 +93,8 @@ export function ChainsSelector({
                     tabIndex={0}
                     borderless
                   >
-                    <img
-                      src={theme.darkMode ? chain.logoUrl.dark : chain.logoUrl.light}
-                      alt={chain.name}
-                      loading="lazy"
-                    />
-                    <span>{chain.name}</span>
+                    <img src={theme.darkMode ? chain.logo.dark : chain.logo.light} alt={chain.label} loading="lazy" />
+                    <span>{chain.label}</span>
                     {chain.id === defaultChainId && <Check size={16} />}
                   </MenuItem>
                 ))}

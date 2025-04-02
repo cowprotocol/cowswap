@@ -1,6 +1,6 @@
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { ChainInfo } from '@cowprotocol/types'
+import { ChainInfo } from '@cowprotocol/cow-sdk'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'

@@ -33,7 +33,7 @@ export function useNetworkLogo(chainId?: number) {
 
   if (baseNetworkInfo) return baseNetworkInfo
 
-  const bridgeNetworkLogo = bridgeNetworkInfo?.find((network) => network.id === chainId)?.logoUrl
+  const bridgeNetworkLogo = bridgeNetworkInfo?.find((network) => network.id === chainId)?.logo
 
   return bridgeNetworkLogo ? (theme.darkMode ? bridgeNetworkLogo.dark : bridgeNetworkLogo.light) : undefined
 }

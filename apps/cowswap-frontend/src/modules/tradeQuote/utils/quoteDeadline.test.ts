@@ -1,5 +1,5 @@
 import { MAX_VALID_TO_EPOCH } from '@cowprotocol/common-utils'
-import { QuoteAndPost } from '@cowprotocol/cow-sdk'
+import { CrossChainQuoteAndPost } from '@cowprotocol/cow-sdk'
 
 import { getOrderValidTo, getQuoteTimeOffset, isQuoteExpired } from './quoteDeadline'
 
@@ -36,7 +36,7 @@ const getQuoteState = ({
           expiration,
         },
       },
-    } as QuoteAndPost,
+    } as CrossChainQuoteAndPost,
   }) as TradeQuoteState
 
 describe('Quote deadline utils', () => {

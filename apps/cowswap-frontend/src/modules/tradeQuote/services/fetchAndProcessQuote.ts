@@ -1,7 +1,7 @@
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
-import { PriceQuality, QuoteAndPost, SupportedChainId, TradeParameters } from '@cowprotocol/cow-sdk'
+import { PriceQuality, CrossChainQuoteAndPost, SupportedChainId, QuoteBridgeRequest } from '@cowprotocol/cow-sdk'
 
-import { tradingSdk } from 'tradingSdk/tradingSdk'
+import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { AppDataInfo } from 'modules/appData'
 
@@ -10,25 +10,29 @@ import { getIsOrderBookTypedError } from 'api/cowProtocol/getIsOrderBookTypedErr
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
 import { TradeQuoteFetchParams } from '../types'
+import { getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
 
-const getQuote = tradingSdk.getQuote.bind(tradingSdk)
-const getFastQuote = onlyResolvesLast<QuoteAndPost>(getQuote)
-const getOptimalQuote = onlyResolvesLast<QuoteAndPost>(getQuote)
+const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
+const getFastQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
+const getOptimalQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 
 export async function fetchAndProcessQuote(
   chainId: SupportedChainId,
   fetchParams: TradeQuoteFetchParams,
-  quoteParams: TradeParameters,
+  quoteParams: QuoteBridgeRequest,
   appData: AppDataInfo['doc'] | undefined,
   tradeQuoteManager: TradeQuoteManager,
 ) {
   const { hasParamsChanged, priceQuality } = fetchParams
   const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
+
+  const isBridge = quoteParams.sellTokenChainId !== quoteParams.buyTokenChainId
   const advancedSettings = {
     quoteRequest: {
       priceQuality,
     },
     appData: appData,
+    quoteSigner: isBridge ? getBridgeQuoteSigner(chainId) : undefined,
   }
 
   tradeQuoteManager.setLoading(hasParamsChanged)
@@ -43,7 +47,13 @@ export async function fetchAndProcessQuote(
       return
     }
 
-    tradeQuoteManager.onResponse(data, fetchParams)
+    tradeQuoteManager.onResponse(
+      {
+        quoteResults: (data as any).swap || (data as any).quoteResults, // TODO fix types
+        postSwapOrderFromQuote: data.postSwapOrderFromQuote,
+      },
+      fetchParams,
+    )
   } catch (error) {
     const parsedError = parseError(error)
 

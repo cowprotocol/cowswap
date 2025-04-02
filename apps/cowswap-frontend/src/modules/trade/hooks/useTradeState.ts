@@ -7,7 +7,7 @@ import {
 import { useLimitOrdersRawState, useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
 import { useSwapRawState } from 'modules/swap/hooks/useSwapRawState'
 import { useUpdateSwapRawState } from 'modules/swap/hooks/useUpdateSwapRawState'
-import { ExtendedTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
+import { ExtendedTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useUpdateYieldRawState, useYieldRawState } from 'modules/yield'
 
 import { Routes, RoutesValues } from 'common/constants/routes'
@@ -19,7 +19,7 @@ import { TradeType } from '../types'
 const EMPTY_TRADE_STATE = {}
 
 export function useTradeState(): {
-  state?: TradeRawState
+  state?: ExtendedTradeRawState
   updateState?: (update: Partial<ExtendedTradeRawState>) => void
 } {
   const tradeTypeInfo = useTradeTypeInfoFromUrl()

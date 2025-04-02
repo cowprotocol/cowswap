@@ -1,10 +1,7 @@
-import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ChainInfo, TokenInfo } from '@cowprotocol/types'
+import { CHAIN_INFO, RPC_URLS } from '@cowprotocol/common-const'
+import { SupportedChainId, ChainInfo } from '@cowprotocol/cow-sdk'
 
 import styled from 'styled-components/macro'
-
-import { testNetworks } from 'modules/bridge/mocks'
 
 import { ChainsSelector } from './index'
 
@@ -14,18 +11,39 @@ const chains: ChainInfo[] = [
 
     return {
       id: +chainId,
-      name: info.name,
-      nativeCurrency: info.nativeCurrency as TokenInfo,
-      isEvmChain: true,
-      blockExplorer: info.explorer,
-      logoUrl: {
+      addressPrefix: info.addressPrefix,
+      contracts: {},
+      docs: {
+        url: info.docs,
+        name: '',
+      }, // TODO
+      isTestnet: false, // TODO
+      rpcUrls: {
+        default: {
+          http: [RPC_URLS[SupportedChainId.MAINNET]],
+        },
+      }, // TODO
+      website: {
+        url: '',
+        name: '',
+      }, // TODO
+      label: info.label,
+      nativeCurrency: {
+        ...info.nativeCurrency,
+        name: info.nativeCurrency.name || '',
+        symbol: info.nativeCurrency.symbol || '',
+      },
+      blockExplorer: {
+        url: info.explorer,
+        name: info.explorerTitle,
+      },
+      logo: {
         light: info.logo.light,
         dark: info.logo.dark,
       },
-      mainColor: info.color,
+      color: info.color,
     }
   }),
-  ...testNetworks,
 ]
 
 const Wrapper = styled.div`

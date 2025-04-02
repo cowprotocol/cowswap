@@ -1,8 +1,9 @@
-import { ZERO_ADDRESS } from '@cowprotocol/common-const'
+import { DEFAULT_APP_CODE, ZERO_ADDRESS } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress, isAddress } from '@cowprotocol/common-utils'
-import { TradeParameters } from '@cowprotocol/cow-sdk'
+import { QuoteBridgeRequest } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Currency } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
@@ -20,13 +21,14 @@ const DEFAULT_QUOTE_TTL = ms`30m` / 1000
 const AMOUNT_CHANGE_DEBOUNCE_TIME = ms`350ms`
 
 export interface QuoteParams {
-  quoteParams: TradeParameters | undefined
+  quoteParams: QuoteBridgeRequest | undefined
   inputCurrency: Currency
   appData: AppDataInfo['doc'] | undefined
 }
 
 export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined {
   const { account } = useWalletInfo()
+  const provider = useWalletProvider()
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -40,10 +42,12 @@ export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined
 
   const params = useSafeMemo(() => {
     if (isWrapOrUnwrap || isProviderNetworkUnsupported) return
-    if (!inputCurrency || !outputCurrency || !orderKind) return
+    if (!inputCurrency || !outputCurrency || !orderKind || !provider) return
 
-    const sellToken = getCurrencyAddress(inputCurrency)
-    const buyToken = getCurrencyAddress(outputCurrency)
+    const appCode = appData?.doc.appCode || DEFAULT_APP_CODE
+
+    const sellTokenAddress = getCurrencyAddress(inputCurrency)
+    const buyTokenAddress = getCurrencyAddress(outputCurrency)
 
     const sellTokenDecimals = inputCurrency.decimals
     const buyTokenDecimals = outputCurrency.decimals
@@ -56,14 +60,23 @@ export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined
       }
     }
 
-    const quoteParams: TradeParameters = {
+    const quoteParams: QuoteBridgeRequest = {
       kind: orderKind,
-      sellToken,
-      buyToken,
-      sellTokenDecimals,
-      buyTokenDecimals,
+      amount: BigInt(amount),
       owner: (account || ZERO_ADDRESS) as `0x${string}`,
-      amount,
+
+      sellTokenChainId: inputCurrency.chainId,
+      sellTokenAddress,
+      sellTokenDecimals,
+
+      buyTokenChainId: outputCurrency.chainId,
+      buyTokenAddress,
+      buyTokenDecimals,
+
+      account: account as `0x${string}`,
+      appCode,
+      signer: provider.provider,
+
       receiver,
       validFor: DEFAULT_QUOTE_TTL,
       ...(volumeFee ? { partnerFee: volumeFee } : null),
@@ -71,6 +84,7 @@ export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined
 
     return { quoteParams, inputCurrency, appData: appData?.doc }
   }, [
+    provider,
     inputCurrency,
     outputCurrency,
     amount,
