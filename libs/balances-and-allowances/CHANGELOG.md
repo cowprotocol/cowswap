@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.3](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.3.2...balances-and-allowances-v1.3.3) (2025-04-01)
+
+
+### Bug Fixes
+
+* do not use RPC node when wallet is connected ([#5585](https://github.com/cowprotocol/cowswap/issues/5585)) ([d51fe53](https://github.com/cowprotocol/cowswap/commit/d51fe5394f6c13ed28ac1725331bfb505b8275a5))
+
 ## [1.3.2](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.3.1...balances-and-allowances-v1.3.2) (2025-03-27)
 
 
