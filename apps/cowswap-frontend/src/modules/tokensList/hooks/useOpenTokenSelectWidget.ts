@@ -1,6 +1,8 @@
 import { useCallback } from 'react'
 
 import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
+import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
+import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
@@ -18,10 +20,13 @@ export function useOpenTokenSelectWidget(): (
 ) => void {
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
+  const isSmartContractWallet = useIsSmartContractWallet()
+  const isBridgingEnabled = useIsBridgingEnabled(isSmartContractWallet)
 
   return useCallback(
     (selectedToken, field, oppositeToken, onSelectToken) => {
-      const selectedTargetChainId = field === Field.OUTPUT && selectedToken ? selectedToken.chainId : undefined
+      const selectedTargetChainId =
+        field === Field.OUTPUT && selectedToken && isBridgingEnabled ? selectedToken.chainId : undefined
 
       updateSelectTokenWidget({
         selectedToken,
@@ -35,6 +40,6 @@ export function useOpenTokenSelectWidget(): (
         },
       })
     },
-    [closeTokenSelectWidget, updateSelectTokenWidget],
+    [closeTokenSelectWidget, updateSelectTokenWidget, isBridgingEnabled],
   )
 }

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/cowprotocol/cowswap/compare/events-v1.5.0...events-v1.6.0) (2025-03-27)
+
+
+### Features
+
+* enhance event tracking and analytics integration ([#5507](https://github.com/cowprotocol/cowswap/issues/5507)) ([39ea64d](https://github.com/cowprotocol/cowswap/commit/39ea64d7e7c7fe908327590b998bf6efc82c1b07))
+
 ## [1.5.0](https://github.com/cowprotocol/cowswap/compare/events-v1.4.1...events-v1.5.0) (2024-09-30)
 
 
