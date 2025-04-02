@@ -5,12 +5,23 @@ import { BannerOrientation, InlineBanner, StatusColorVariant } from '@cowprotoco
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Link } from 'react-router-dom'
+import styled from 'styled-components/macro'
+import { WIDGET_MAX_WIDTH } from 'theme'
 
 import { parameterizeTradeRoute, useIsHooksTradeType } from 'modules/trade'
 
 import { Routes } from 'common/constants/routes'
 
 import { NetworkBridgeBanner } from '../NetworkBridgeBanner/NetworkBridgeBanner'
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  gap: 10px;
+  width: 100%;
+  max-width: ${WIDGET_MAX_WIDTH.swap};
+  margin: 0 auto;
+`
 
 export function BottomBanners() {
   const { chainId, account } = useWalletInfo()
@@ -32,7 +43,7 @@ export function BottomBanners() {
   )
 
   return (
-    <>
+    <Wrapper>
       {!isHookTradeType && <NetworkBridgeBanner />}
       {isHookTradeType && !!account && (
         <InlineBanner
@@ -46,6 +57,6 @@ export function BottomBanners() {
           Funds stuck? <Link to={cowShedLink}>Recover your funds</Link>
         </InlineBanner>
       )}
-    </>
+    </Wrapper>
   )
 }
