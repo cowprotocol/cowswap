@@ -23,13 +23,15 @@ interface BridgeAccordionSummaryProps {
 export function BridgeAccordionSummary({ bridgeEstimatedTime, bridgeProtocol, children }: BridgeAccordionSummaryProps) {
   return (
     <>
-      {children}
-      {bridgeEstimatedTime !== undefined && (
-        <span title={`Estimated bridge transaction time: ${bridgeEstimatedTime} minutes`}>
-          / {displayTime(bridgeEstimatedTime * 1000, true)}
-        </span>
-      )}
-      {bridgeProtocol && <ProtocolIcons secondProtocol={bridgeProtocol} size={18} />}
+      <span>
+        {children}
+        {bridgeEstimatedTime !== undefined && (
+          <span title={`Estimated bridge transaction time: ${bridgeEstimatedTime} minutes`}>
+            / {displayTime(bridgeEstimatedTime * 1000, true)}
+          </span>
+        )}
+      </span>
+      <span>{bridgeProtocol && <ProtocolIcons secondProtocol={bridgeProtocol} size={18} />}</span>
     </>
   )
 }

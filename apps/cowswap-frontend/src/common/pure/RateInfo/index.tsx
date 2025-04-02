@@ -47,6 +47,7 @@ const Wrapper = styled.div<{ stylized: boolean }>`
   font-size: 14px;
   font-weight: 400;
   gap: 10px;
+  flex: 1 1 min-content;
 `
 
 const RateLabel = styled.div`

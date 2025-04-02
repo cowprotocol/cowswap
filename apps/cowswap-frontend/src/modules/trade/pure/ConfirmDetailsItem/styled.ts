@@ -31,9 +31,11 @@ export const Content = styled.div<{ highlighted?: boolean; contentTextColor?: st
   align-items: center;
   justify-content: flex-end;
   margin: 0 0 0 auto;
+  flex: 1 1 auto;
   font-weight: ${({ highlighted }) => (highlighted ? 700 : 500)};
   font-size: 13px;
   color: ${({ contentTextColor }) => contentTextColor};
+
   ${Media.upToSmall()} {
     margin: 0;
   }
@@ -54,39 +56,22 @@ export const Content = styled.div<{ highlighted?: boolean; contentTextColor?: st
 
 export const Label = styled.span<{ labelOpacity?: boolean }>`
   display: flex;
-  flex-wrap: wrap;
+  flex-flow: row;
   align-items: center;
+  flex: 0 0 auto;
   font-weight: 400;
   text-align: left;
+  gap: 4px;
   opacity: ${({ labelOpacity }) => (labelOpacity ? 0.7 : 1)};
   transition:
     color var(${UI.ANIMATION_DURATION}) ease-in-out,
     opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   color: inherit;
-  display: inline;
   white-space: normal;
   word-break: break-word;
   line-height: 1.2;
 
   &:hover {
     opacity: 1;
-  }
-
-  // Label text
-  > p,
-  > b {
-    margin: 0 4px 0 0;
-    display: inline-block;
-    vertical-align: middle;
-    line-height: inherit;
-  }
-
-  // Tooltip
-  > div,
-  > b > div,
-  > p > div {
-    display: flex;
-    align-items: center;
-    gap: 4px;
   }
 `

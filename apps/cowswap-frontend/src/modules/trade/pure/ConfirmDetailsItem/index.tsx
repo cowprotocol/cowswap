@@ -39,15 +39,14 @@ export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
       {withTimelineDot && <TimelineDot isLast={isLast} />}
       {label ? (
         <Row>
-          <div>
+          <>
             {label && (
               <Label labelOpacity={labelOpacity}>
-                <div>
-                  {label} {tooltip && <InfoTooltip className="info-tooltip" content={tooltip} />}
-                </div>
+                {label}
+                {tooltip && <InfoTooltip className="info-tooltip" content={tooltip} />}
               </Label>
             )}
-          </div>
+          </>
 
           <Content contentTextColor={contentTextColor}>{children}</Content>
         </Row>

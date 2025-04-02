@@ -75,8 +75,13 @@ export const NetworkLogoWrapper = styled.div<{ size?: number }>`
 
 export const AmountWithTokenIcon = styled.div`
   display: flex;
+  flex-flow: row wrap;
   align-items: center;
+  justify-content: flex-end;
+  text-align: right;
   gap: 4px;
+  word-break: break-word;
+  line-height: 1;
 
   > i {
     font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
@@ -87,6 +92,7 @@ export const AmountWithTokenIcon = styled.div`
 export const TokenFlowContainer = styled.div`
   display: flex;
   align-items: center;
+  flex-flow: row wrap;
   gap: 4px;
   margin: 0 auto 0 0;
   width: 100%;

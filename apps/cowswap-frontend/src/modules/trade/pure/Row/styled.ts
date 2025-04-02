@@ -1,4 +1,4 @@
-import { Media, UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -23,10 +23,6 @@ export const TimelineDot = styled.div<{ isLast?: boolean }>`
   position: relative;
   margin: 0 0 0 1px;
   opacity: 0.15;
-
-  ${Media.upToSmall()} {
-    display: none;
-  }
 
   &::before {
     content: ' ';
