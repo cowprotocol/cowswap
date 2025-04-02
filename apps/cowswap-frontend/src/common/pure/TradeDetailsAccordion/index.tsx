@@ -73,27 +73,26 @@ export const TradeDetailsAccordion = ({
           tabIndex={0}
           isOpen={open}
         >
-          <>
-            {feeUsdTotalAmount?.greaterThan(0) ? (
-              showBridgeUI && bridgeProtocol ? (
-                <BridgeAccordionSummary bridgeEstimatedTime={bridgeEstimatedTime} bridgeProtocol={bridgeProtocol}>
-                  <FiatAmount amount={feeUsdTotalAmount} />
-                </BridgeAccordionSummary>
-              ) : (
+          {feeUsdTotalAmount?.greaterThan(0) ? (
+            showBridgeUI && bridgeProtocol ? (
+              <BridgeAccordionSummary bridgeEstimatedTime={bridgeEstimatedTime} bridgeProtocol={bridgeProtocol}>
                 <FiatAmount amount={feeUsdTotalAmount} />
-              )
+              </BridgeAccordionSummary>
             ) : (
-              <>
-                {feeTotalAmount?.greaterThan(0) ? (
-                  <>
-                    Fee <TokenAmount amount={feeTotalAmount} tokenSymbol={feeTotalAmount?.currency} />
-                  </>
-                ) : (
-                  'Free'
-                )}
-              </>
-            )}
-          </>
+              <FiatAmount amount={feeUsdTotalAmount} />
+            )
+          ) : (
+            <>
+              {feeTotalAmount?.greaterThan(0) ? (
+                <>
+                  Fee <TokenAmount amount={feeTotalAmount} tokenSymbol={feeTotalAmount?.currency} />
+                </>
+              ) : (
+                'Free'
+              )}
+            </>
+          )}
+
           <ToggleIcon isOpen={open}>
             <SVG src={CarretIcon} title={open ? 'Close' : 'Open'} />
           </ToggleIcon>
