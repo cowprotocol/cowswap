@@ -1,5 +1,4 @@
-import { ProductVariant, UI } from '@cowprotocol/ui'
-import { ProductLogo } from '@cowprotocol/ui'
+import { ProductVariant, UI, ProductLogo } from '@cowprotocol/ui'
 
 import { ProtocolIcon, ProtocolIconsContainer } from './styled'
 
