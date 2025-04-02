@@ -1,7 +1,8 @@
-import React, { useMemo, useState, useCallback, ReactElement } from 'react'
+import { useMemo, useState, useCallback, ReactElement } from 'react'
 
-import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
-import { useWalletDetails } from '@cowprotocol/wallet'
+// TODO(bridge): Import the bridge hooks and state from the bridge module once the bridge is implemented
+// import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
+// import { useWalletDetails } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { BridgeProvider, BridgeRouteBreakdown, createBridgeData, useBridgeProviderDetails } from 'modules/bridge'
@@ -13,8 +14,10 @@ import {
   NetworkCostsRow,
   useReceiveAmountInfo,
   useShouldPayGas,
+  useIsHooksTradeType,
 } from 'modules/trade'
-import { useIsCurrentTradeBridging } from 'modules/trade/hooks/useIsCurrentTradeBridging'
+// TODO(bridge): Import the isCurrentTradeBridging hook from the bridge module once the bridge is implemented
+// import { useIsCurrentTradeBridging } from 'modules/trade/hooks/useIsCurrentTradeBridging'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
 import { useUsdAmount } from 'modules/usdAmount'
@@ -47,12 +50,13 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
   const shouldPayGas = useShouldPayGas()
-  const { isSmartContractWallet } = useWalletDetails()
+  // const { isSmartContractWallet } = useWalletDetails()
 
   // TODO(bridge): Bridge-related hooks and state
   // TODO(bridge): Use the bridge hooks and state from the bridge module once the bridge is implemented
-  const _isBridgingEnabled = useIsBridgingEnabled(isSmartContractWallet)
-  const _isCurrentTradeBridging = useIsCurrentTradeBridging()
+  // const _isBridgingEnabled = useIsBridgingEnabled(isSmartContractWallet)
+  const isHooksTabEnabled = useIsHooksTradeType()
+
   // TODO(bridge): For now, force showBridgeUI to true for demo purposes.
   // In production, this should be: const showBridgeUI = _isBridgingEnabled && _isCurrentTradeBridging
   const showBridgeUI = true
@@ -66,10 +70,12 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
     if (!showBridgeUI) return null
 
     try {
-      return createBridgeData({
+      const data = createBridgeData({
         bridgeProvider: providerDetails,
         estimatedTime: getBridgeEstimatedMinutes(),
       })
+
+      return data
     } catch (error) {
       console.error('Failed to create bridge data:', error)
       // In case of error, return null to fall back to regular trade UI
@@ -117,28 +123,32 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
 
   const totalCosts = getTotalCosts(receiveAmountInfo)
 
-  const accordionContent =
-    showBridgeUI && bridgeData ? (
-      <BridgeRouteBreakdown {...bridgeData} />
-    ) : (
-      <>
-        <TradeFeesAndCosts
-          receiveAmountInfo={receiveAmountInfo}
-          withTimelineDot={false}
-          networkCostsSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
-          networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
-          volumeFeeTooltip={volumeFeeTooltip}
+  // Determine if Bridge UI should be rendered based on additional conditions:
+  // 1. Not on the Hooks tab
+  // 2. Tokens are on different chains (cross-chain trade)
+  const shouldRenderBridgeUI = showBridgeUI && bridgeData && !isHooksTabEnabled
+
+  const accordionContent = shouldRenderBridgeUI ? (
+    <BridgeRouteBreakdown {...bridgeData} />
+  ) : (
+    <>
+      <TradeFeesAndCosts
+        receiveAmountInfo={receiveAmountInfo}
+        withTimelineDot={false}
+        networkCostsSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
+        networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
+        volumeFeeTooltip={volumeFeeTooltip}
+      />
+      {slippage && (
+        <RowSlippage
+          isTradePriceUpdating={isTradePriceUpdating}
+          allowedSlippage={slippage}
+          isSlippageModified={isSlippageModified}
         />
-        {slippage && (
-          <RowSlippage
-            isTradePriceUpdating={isTradePriceUpdating}
-            allowedSlippage={slippage}
-            isSlippageModified={isSlippageModified}
-          />
-        )}
-        <RowDeadline deadline={deadline} />
-      </>
-    )
+      )}
+      <RowDeadline deadline={deadline} />
+    </>
+  )
 
   return (
     <TradeTotalCostsDetails
@@ -148,7 +158,7 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
       toggleAccordion={toggleAccordion}
       bridgeEstimatedTime={bridgeEstimatedTime}
       bridgeProtocol={providerDetails}
-      showBridgeUI={showBridgeUI}
+      showBridgeUI={!!shouldRenderBridgeUI}
     >
       {accordionContent}
     </TradeTotalCostsDetails>
