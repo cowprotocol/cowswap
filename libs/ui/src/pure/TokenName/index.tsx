@@ -21,6 +21,7 @@ const Wrapper = styled.span`
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   position: relative;
   line-height: 1.4;
+  word-break: break-word;
 
   ${Media.upToSmall()} {
     padding: 0 5px 0 0;
