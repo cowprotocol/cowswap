@@ -21,7 +21,7 @@ const DEFAULT_QUOTE_TTL = ms`30m` / 1000
 const AMOUNT_CHANGE_DEBOUNCE_TIME = ms`350ms`
 
 export interface QuoteParams {
-  quoteParams: QuoteBridgeRequest
+  quoteParams: QuoteBridgeRequest | undefined
   inputCurrency: Currency
   appData: AppDataInfo['doc'] | undefined
 }
@@ -42,7 +42,7 @@ export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined
 
   const params = useSafeMemo(() => {
     if (isWrapOrUnwrap || isProviderNetworkUnsupported) return
-    if (!inputCurrency || !outputCurrency || !amount || !orderKind || !provider) return
+    if (!inputCurrency || !outputCurrency || !orderKind || !provider) return
 
     const appCode = appData?.doc.appCode || DEFAULT_APP_CODE
 
@@ -51,6 +51,14 @@ export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined
 
     const sellTokenDecimals = inputCurrency.decimals
     const buyTokenDecimals = outputCurrency.decimals
+
+    if (!amount) {
+      return {
+        quoteParams: undefined,
+        inputCurrency,
+        appData: appData?.doc,
+      }
+    }
 
     const quoteParams: QuoteBridgeRequest = {
       kind: orderKind,

@@ -113,6 +113,8 @@ export async function safeBundleEthFlow(
             signingScheme: SigningScheme.PRESIGN,
             validTo: orderParams.validTo,
             receiver: orderParams.recipient,
+            // Override the sellToken to be the wrapped native token
+            sellToken: WRAPPED_NATIVE_CURRENCIES[chainId as SupportedChainId].address,
           },
         })
         .finally(() => {

@@ -33,8 +33,9 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
   const tradeQuoteRef = useRef(tradeQuote)
   tradeQuoteRef.current = tradeQuote
 
+  const amountStr = amount?.quotient.toString()
   const { chainId } = useWalletInfo()
-  const { quoteParams, appData, inputCurrency } = useQuoteParams(amount?.quotient.toString()) || {}
+  const { quoteParams, appData, inputCurrency } = useQuoteParams(amountStr) || {}
 
   const tradeQuoteManager = useTradeQuoteManager(inputCurrency && getCurrencyAddress(inputCurrency))
   const updateCurrencyAmount = useUpdateCurrencyAmount()
@@ -52,10 +53,10 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
     // Because we already have a quote and don't want to reset it
     if (isConfirmOpen) return
 
-    if (!isWindowVisible && tradeQuoteManager) {
+    if ((!isWindowVisible || !amountStr) && tradeQuoteManager) {
       tradeQuoteManager.reset()
     }
-  }, [isWindowVisible, tradeQuoteManager, isConfirmOpen])
+  }, [isWindowVisible, tradeQuoteManager, isConfirmOpen, amountStr])
 
   useLayoutEffect(() => {
     if (!tradeQuoteManager) {
@@ -100,7 +101,10 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
       }
 
       const fetchStartTimestamp = Date.now()
-      if (fastQuote) fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.FAST, fetchStartTimestamp })
+      // Don't fetch fast quote in confirm screen
+      if (fastQuote && !isConfirmOpen) {
+        fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.FAST, fetchStartTimestamp })
+      }
       fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.OPTIMAL, fetchStartTimestamp })
     }
 
@@ -148,6 +152,7 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
     processUnsupportedTokenError,
     getIsUnsupportedTokens,
     isWindowVisible,
+    isConfirmOpen,
   ])
 
   return null
