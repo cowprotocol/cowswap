@@ -10,6 +10,7 @@ import { getIsOrderBookTypedError } from 'api/cowProtocol/getIsOrderBookTypedErr
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
 import { TradeQuoteFetchParams } from '../types'
+import { getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
 
 const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
 const getFastQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
@@ -25,11 +26,13 @@ export async function fetchAndProcessQuote(
   const { hasParamsChanged, priceQuality } = fetchParams
   const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
 
+  const isBridge = quoteParams.sellTokenChainId !== quoteParams.buyTokenChainId
   const advancedSettings = {
     quoteRequest: {
       priceQuality,
     },
     appData: appData,
+    quoteSigner: isBridge ? getBridgeQuoteSigner(chainId) : undefined,
   }
 
   tradeQuoteManager.setLoading(hasParamsChanged)
