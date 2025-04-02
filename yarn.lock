@@ -2363,10 +2363,10 @@
     json-stringify-deterministic "^1.0.8"
     multiformats "^9.6.4"
 
-"@cowprotocol/app-data@^2.4.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-2.4.0.tgz#326e20065161e06308cf0ff429fe9dd2908c1c30"
-  integrity sha512-aG3CicUdR7jpY5/linxXmpL4axmiUvEwiHlOM0qKO/QdbNSntKNXjSu3r4QtHZ7BUiF1VUkcDVvvFW4D2MA0Rw==
+"@cowprotocol/app-data@^2.5.1":
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-2.5.1.tgz#c674ddfd161afd9a2ff425468b90a4b2f94d4341"
+  integrity sha512-GvcLQ44ZUHKdSAXiZ+YCaIehtme/OIvbvL/4go1UqNLTj3jDTDkagPh7CH/z2IPwFWTADyNZO/RSzKrW5UDNaA==
   dependencies:
     ajv "^8.11.0"
     cross-fetch "^3.1.5"
@@ -2396,20 +2396,20 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@^6.0.0-RC.25":
-  version "6.0.0-RC.25"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-6.0.0-RC.25.tgz#1968ed322352e4393500f4628c3748d6e6c3ced2"
-  integrity sha512-aJMA8+him/yi8N6s/WT0MSWYGO+1q42bs9cv9NNzZxk6XFrTRoe24ftxwWryxOoqdtY8q66wT4QysXGAv8q8Bg==
+"@cowprotocol/cow-sdk@^6.0.0-RC.28":
+  version "6.0.0-RC.28"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-6.0.0-RC.28.tgz#1eef862239716d2e19d9cc6c0d6461574af6d3b7"
+  integrity sha512-fqLeoJ6L27ornlwHV8o9fvZHpXuP2IiFHzikAHA6I4PRz11i96ytQ689qU/cPjzcbFefdNaIaOqEbQMH7fSmHQ==
   dependencies:
-    "@cowprotocol/app-data" "^2.4.0"
+    "@cowprotocol/app-data" "^2.5.1"
     "@cowprotocol/contracts" "^1.6.0"
-    "@ethersproject/abstract-signer" "^5.7.0"
+    "@ethersproject/abstract-signer" "^5.8.0"
     "@openzeppelin/merkle-tree" "^1.0.5"
     "@weiroll/weiroll.js" "^0.3.0"
     cross-fetch "^3.1.5"
     deepmerge "^4.3.1"
-    exponential-backoff "^3.1.1"
-    graphql "^16.3.0"
+    exponential-backoff "^3.1.2"
+    graphql "^16.10.0"
     graphql-request "^4.3.0"
     limiter "^3.0.0"
 
@@ -17004,6 +17004,11 @@ exponential-backoff@^3.1.1:
   resolved "https://registry.yarnpkg.com/exponential-backoff/-/exponential-backoff-3.1.1.tgz#64ac7526fe341ab18a39016cd22c787d01e00bf6"
   integrity sha512-dX7e/LHVJ6W3DE1MHWi9S1EYzDESENfLrYohG2G++ovZrYOkm4Knwa0mc1cn84xJOR4KEU0WSchhLbd0UklbHw==
 
+exponential-backoff@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/exponential-backoff/-/exponential-backoff-3.1.2.tgz#a8f26adb96bf78e8cd8ad1037928d5e5c0679d91"
+  integrity sha512-8QxYTVXUkuy7fIIoitQkPwGonB8F3Zj8eEO8Sqg9Zv/bkI7RJAzowee4gr81Hak/dUTpA2Z7VfQgoijjPNlUZA==
+
 express@4.18.2, express@^4.14.0, express@^4.17.3:
   version "4.18.2"
   resolved "https://registry.yarnpkg.com/express/-/express-4.18.2.tgz#3fabe08296e930c796c19e3c516979386ba9fd59"
@@ -18143,10 +18148,10 @@ graphql-tag@^2.12.6:
   dependencies:
     tslib "^2.1.0"
 
-graphql@^16.3.0:
-  version "16.8.1"
-  resolved "https://registry.yarnpkg.com/graphql/-/graphql-16.8.1.tgz#1930a965bef1170603702acdb68aedd3f3cf6f07"
-  integrity sha512-59LZHPdGZVh695Ud9lRzPBVTtlX9ZCV150Er2W43ro37wVof0ctenSaskPPjN7lVTIN8mSZt8PHUNKZuNQUuxw==
+graphql@^16.10.0:
+  version "16.10.0"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-16.10.0.tgz#24c01ae0af6b11ea87bf55694429198aaa8e220c"
+  integrity sha512-AjqGKbDGUFRKIRCP9tCKiIGHyriz2oHEbPIbEtcSLSs4YjReZOIPQQWek4+6hjw62H9QShXHyaGivGiYVLeYFQ==
 
 graphql@^16.8.0:
   version "16.8.0"
