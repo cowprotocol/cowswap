@@ -39,6 +39,13 @@ export function StepsWrapper({
     }
   }, [currentStep, steps.length])
 
+  const getStatus = (index: number) => {
+    if (index === currentStep) return isCancelling ? 'cancelling' : 'active'
+    if (index === currentStep + 1) return 'next'
+    if (index < currentStep) return 'done'
+    return 'future'
+  }
+
   return (
     <styledEl.StepsContainer
       $height={containerHeight}
@@ -47,24 +54,14 @@ export function StepsWrapper({
     >
       <styledEl.StepsWrapper ref={wrapperRef}>
         {steps.map((step, index) => {
-          const customTitle = customStepTitles && customStepTitles[index]
-          const status =
-            index === currentStep
-              ? isCancelling
-                ? 'cancelling'
-                : 'active'
-              : index === currentStep + 1
-                ? 'next'
-                : index < currentStep
-                  ? 'done'
-                  : 'future'
+          const customTitle = customStepTitles?.[index]
           return (
             <div key={index}>
               <StepComponent
-                status={status}
+                status={getStatus(index)}
                 isFirst={index === 0}
                 step={{ ...step, title: customTitle || step.title }}
-                _index={index}
+                index={index}
                 extraContent={index === currentStep ? extraContent : step.description}
                 customColor={index === currentStep ? customColor : undefined}
                 isUnfillable={isUnfillable && index === currentStep}

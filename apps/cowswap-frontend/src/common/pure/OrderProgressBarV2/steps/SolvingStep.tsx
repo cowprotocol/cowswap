@@ -16,6 +16,19 @@ interface SolvingStepProps {
   showCancellationModal: Command | null
 }
 
+function getCustomStepTitles(
+  isUnfillable: boolean,
+  isDelayed: boolean,
+  isSubmissionFailed: boolean,
+  isSolved: boolean,
+) {
+  if (isUnfillable) return { 1: 'Price change' }
+  if (isDelayed) return { 1: 'Still searching' }
+  if (isSubmissionFailed) return { 1: 'A new competition has started' }
+  if (isSolved) return { 1: 'A new competition has started' }
+  return undefined
+}
+
 export function SolvingStep({ children, stepName, showCancellationModal }: SolvingStepProps) {
   const isUnfillable = stepName === 'unfillable'
   const isDelayed = stepName === 'delayed'
@@ -28,23 +41,22 @@ export function SolvingStep({ children, stepName, showCancellationModal }: Solvi
     label: isSolved ? 'Solved' : 'Solving',
   })
 
+  function CancelButton() {
+    if (!showCancellationModal) return null
+    return (
+      <styledEl.CancelButton data-click-event={cancelEventData} onClick={showCancellationModal}>
+        cancel the order
+      </styledEl.CancelButton>
+    )
+  }
+
   return (
     <styledEl.ProgressContainer>
       {children}
       <StepsWrapper
         steps={STEPS}
         currentStep={1}
-        customStepTitles={
-          isUnfillable
-            ? { 1: 'Price change' }
-            : isDelayed
-              ? { 1: 'Still searching' }
-              : isSubmissionFailed
-                ? { 1: 'A new competition has started' }
-                : isSolved
-                  ? { 1: 'A new competition has started' }
-                  : undefined
-        }
+        customStepTitles={getCustomStepTitles(isUnfillable, isDelayed, isSubmissionFailed, isSolved)}
         extraContent={
           <styledEl.Description>
             {isUnfillable ? (
@@ -53,10 +65,7 @@ export function SolvingStep({ children, stepName, showCancellationModal }: Solvi
                 {showCancellationModal && (
                   <>
                     {' '}
-                    or{' '}
-                    <styledEl.CancelButton data-click-event={cancelEventData} onClick={showCancellationModal}>
-                      cancel the order
-                    </styledEl.CancelButton>
+                    or <CancelButton />
                   </>
                 )}
                 .
@@ -68,10 +77,7 @@ export function SolvingStep({ children, stepName, showCancellationModal }: Solvi
                 {showCancellationModal && (
                   <>
                     {' '}
-                    or{' '}
-                    <styledEl.CancelButton data-click-event={cancelEventData} onClick={showCancellationModal}>
-                      cancel your order
-                    </styledEl.CancelButton>
+                    or <CancelButton />
                   </>
                 )}
                 .

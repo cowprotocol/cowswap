@@ -7,7 +7,7 @@ import { ExplorerDataType, getExplorerLink, getRandomInt, isSellOrder, shortenAd
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Confetti, ExternalLink, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import Lottie from 'lottie-react'
 import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
@@ -27,6 +27,111 @@ import * as styledEl from './styled'
 import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../constants'
 import { getSurplusText, getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../helpers'
 
+function getTransactionStatus(isDarkMode: boolean) {
+  return (
+    <styledEl.TransactionStatus margin={'0 auto 24px'}>
+      <Lottie
+        animationData={isDarkMode ? LOTTIE_GREEN_CHECKMARK_DARK : LOTTIE_GREEN_CHECKMARK}
+        loop={false}
+        autoplay
+        style={{ width: '36px', height: '36px' }}
+      />
+      Transaction completed!
+    </styledEl.TransactionStatus>
+  )
+}
+
+function getSoldAmount(order: Order) {
+  return (
+    <styledEl.SoldAmount>
+      You sold <TokenLogo token={order.inputToken} size={20} />
+    </styledEl.SoldAmount>
+  )
+}
+
+function getReceivedAmount(
+  order: Order,
+  chainId: SupportedChainId,
+  isCustomRecipient?: boolean,
+  receiver?: string | null,
+  receiverEnsName?: string | null,
+) {
+  return (
+    <styledEl.ReceivedAmount>
+      {!isCustomRecipient && 'You received '}
+      <TokenLogo token={order.outputToken} size={20} />
+      <b>
+        <TokenAmount
+          amount={CurrencyAmount.fromRawAmount(order.outputToken, order.apiAdditionalInfo?.executedBuyAmount || 0)}
+          tokenSymbol={order.outputToken}
+        />
+      </b>{' '}
+      {isCustomRecipient && receiver && (
+        <>
+          was sent to
+          <ExternalLink href={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)}>
+            {receiverEnsName || shortenAddress(receiver)} ↗
+          </ExternalLink>
+        </>
+      )}
+    </styledEl.ReceivedAmount>
+  )
+}
+
+function getExtraAmount(
+  surplusAmount?: CurrencyAmount<Currency> | null,
+  surplusFiatValue?: CurrencyAmount<Currency> | null,
+  isCustomRecipient?: boolean,
+  isSell?: boolean,
+) {
+  return (
+    <styledEl.ExtraAmount>
+      {getSurplusText(isSell, isCustomRecipient)}
+      <i>
+        +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
+      </i>{' '}
+      {surplusFiatValue && +surplusFiatValue.toFixed(2) > 0 && <>(~${surplusFiatValue.toFixed(2)})</>}
+    </styledEl.ExtraAmount>
+  )
+}
+
+function getSolverRow(solver: SolverCompetition, index: number, solvers: SolverCompetition[]) {
+  return (
+    <styledEl.SolverTableRow key={`${solver.solver}-${index}`} isWinner={index === 0}>
+      {solvers.length > 1 && <styledEl.SolverRank>{index + 1}</styledEl.SolverRank>}
+      <styledEl.SolverTableCell>
+        <styledEl.SolverInfo>
+          <styledEl.SolverLogo>
+            <img
+              src={solver.image || AMM_LOGOS[solver.solver]?.src || AMM_LOGOS.default.src}
+              alt={`${solver.solver} logo`}
+              width="24"
+              height="24"
+            />
+          </styledEl.SolverLogo>
+          <styledEl.SolverName>
+            {solver.displayName || solver.solver}
+            {solver.description && (
+              <span>
+                <InfoTooltip content={solver.description} />
+              </span>
+            )}
+          </styledEl.SolverName>
+        </styledEl.SolverInfo>
+      </styledEl.SolverTableCell>
+      <styledEl.SolverTableCell>
+        {index === 0 && (
+          <styledEl.WinningBadge>
+            <styledEl.TrophyIcon>
+              <PiTrophyFill />
+            </styledEl.TrophyIcon>
+            <span>Winning solver</span>
+          </styledEl.WinningBadge>
+        )}
+      </styledEl.SolverTableCell>
+    </styledEl.SolverTableRow>
+  )
+}
 interface FinishedStepProps {
   children: React.ReactNode
   stepName?: OrderProgressBarStepName
@@ -114,57 +219,14 @@ export function FinishedStep({
       )}
 
       <styledEl.ConclusionContent>
-        <styledEl.TransactionStatus margin={'0 auto 24px'}>
-          <Lottie
-            animationData={isDarkMode ? LOTTIE_GREEN_CHECKMARK_DARK : LOTTIE_GREEN_CHECKMARK}
-            loop={false}
-            autoplay
-            style={{ width: '36px', height: '36px' }}
-          />
-          Transaction completed!
-        </styledEl.TransactionStatus>
+        {getTransactionStatus(isDarkMode)}
 
-        {order?.apiAdditionalInfo?.executedSellAmount && (
-          <styledEl.SoldAmount>
-            You sold <TokenLogo token={order.inputToken} size={20} />
-            <b>
-              <TokenAmount
-                amount={CurrencyAmount.fromRawAmount(order.inputToken, order.apiAdditionalInfo.executedSellAmount)}
-                tokenSymbol={order.inputToken}
-              />
-            </b>
-          </styledEl.SoldAmount>
-        )}
+        {order?.apiAdditionalInfo?.executedSellAmount && getSoldAmount(order)}
 
-        {order?.apiAdditionalInfo?.executedBuyAmount && (
-          <styledEl.ReceivedAmount>
-            {!isCustomRecipient && 'You received '}
-            <TokenLogo token={order.outputToken} size={20} />
-            <b>
-              <TokenAmount
-                amount={CurrencyAmount.fromRawAmount(order.outputToken, order.apiAdditionalInfo.executedBuyAmount)}
-                tokenSymbol={order.outputToken}
-              />
-            </b>{' '}
-            {isCustomRecipient && receiver && (
-              <>
-                was sent to
-                <ExternalLink href={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)}>
-                  {receiverEnsName || shortenAddress(receiver)} ↗
-                </ExternalLink>
-              </>
-            )}
-          </styledEl.ReceivedAmount>
-        )}
-        {shouldShowSurplus ? (
-          <styledEl.ExtraAmount>
-            {getSurplusText(isSell, isCustomRecipient)}
-            <i>
-              +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
-            </i>{' '}
-            {surplusFiatValue && +surplusFiatValue.toFixed(2) > 0 && <>(~${surplusFiatValue.toFixed(2)})</>}
-          </styledEl.ExtraAmount>
-        ) : null}
+        {order?.apiAdditionalInfo?.executedBuyAmount &&
+          getReceivedAmount(order, chainId, isCustomRecipient, receiver, receiverEnsName)}
+
+        {shouldShowSurplus ? getExtraAmount(surplusAmount, surplusFiatValue, isCustomRecipient, isSell) : null}
 
         {solvers && solvers.length > 0 && (
           <styledEl.SolverRankings>
@@ -180,43 +242,7 @@ export function FinishedStep({
             )}
 
             <styledEl.SolverTable>
-              <tbody>
-                {visibleSolvers?.map((solver, index) => (
-                  <styledEl.SolverTableRow key={`${solver.solver}-${index}`} isWinner={index === 0}>
-                    {solvers.length > 1 && <styledEl.SolverRank>{index + 1}</styledEl.SolverRank>}
-                    <styledEl.SolverTableCell>
-                      <styledEl.SolverInfo>
-                        <styledEl.SolverLogo>
-                          <img
-                            src={solver.image || AMM_LOGOS[solver.solver]?.src || AMM_LOGOS.default.src}
-                            alt={`${solver.solver} logo`}
-                            width="24"
-                            height="24"
-                          />
-                        </styledEl.SolverLogo>
-                        <styledEl.SolverName>
-                          {solver.displayName || solver.solver}
-                          {solver.description && (
-                            <span>
-                              <InfoTooltip content={solver.description} />
-                            </span>
-                          )}
-                        </styledEl.SolverName>
-                      </styledEl.SolverInfo>
-                    </styledEl.SolverTableCell>
-                    <styledEl.SolverTableCell>
-                      {index === 0 && (
-                        <styledEl.WinningBadge>
-                          <styledEl.TrophyIcon>
-                            <PiTrophyFill />
-                          </styledEl.TrophyIcon>
-                          <span>Winning solver</span>
-                        </styledEl.WinningBadge>
-                      )}
-                    </styledEl.SolverTableCell>
-                  </styledEl.SolverTableRow>
-                ))}
-              </tbody>
+              <tbody>{visibleSolvers?.map((solver, index) => getSolverRow(solver, index, solvers))}</tbody>
             </styledEl.SolverTable>
 
             {solvers.length > 3 && (

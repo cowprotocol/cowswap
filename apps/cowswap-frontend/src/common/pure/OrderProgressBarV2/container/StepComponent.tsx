@@ -10,16 +10,16 @@ export function StepComponent({
   status,
   isFirst,
   step,
-  _index,
+  index,
   extraContent,
   customColor,
   isUnfillable,
   isCancelling,
 }: {
-  status: string
+  status: 'cancelling' | 'cancelled' | 'expired' | 'active' | 'next' | 'future' | 'done'
   isFirst: boolean
   step: { title: string }
-  _index: number
+  index: number
   extraContent?: React.ReactNode
   customColor?: string
   isUnfillable?: boolean
@@ -42,7 +42,7 @@ export function StepComponent({
           />
         ) : (
           <>
-            {_index + 1}
+            {index + 1}
             {status === 'active' && !isUnfillable && <styledEl.Spinner />}
           </>
         )}

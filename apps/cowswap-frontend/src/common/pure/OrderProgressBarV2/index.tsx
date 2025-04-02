@@ -92,7 +92,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
       <StepComponent {...props} stepName={currentStep} />
       {debugMode && (
         <DebugPanel
-          STEP_NAME_TO_STEP_COMPONENT={STEP_NAME_TO_STEP_COMPONENT}
+          stepNameToStepComponent={STEP_NAME_TO_STEP_COMPONENT}
           stepName={currentStep}
           setDebugStep={setDebugStep}
         />

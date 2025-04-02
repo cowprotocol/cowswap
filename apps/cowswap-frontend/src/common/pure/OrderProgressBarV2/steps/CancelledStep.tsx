@@ -9,7 +9,7 @@ export function CancelledStep({ children }: CancelledStepProps) {
     <styledEl.ProgressContainer>
       {children}
       <styledEl.ConclusionContent>
-        <styledEl.TransactionStatus status={'expired'} flexFlow="column" margin={'14px auto 24px'}>
+        <styledEl.TransactionStatus status={'cancelled'} flexFlow="column" margin={'14px auto 24px'}>
           Your order was cancelled
         </styledEl.TransactionStatus>
       </styledEl.ConclusionContent>

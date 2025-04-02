@@ -7,11 +7,17 @@ import { Order } from 'legacy/state/orders/actions'
 
 import * as styledEl from './styled'
 
-// styled
-function OrderIntent({ order }: { order?: Order }) {
+const TOKEN_SIZE = 20
+
+export function OrderIntent({ order }: { order?: Order }) {
   if (!order) return null
 
   const { inputToken, outputToken, kind, sellAmount, buyAmount } = order
+
+  if (!inputToken || !outputToken || !sellAmount || !buyAmount) {
+    return null
+  }
+
   const isSell = isSellOrder(kind)
 
   const sellCurrencyAmount = CurrencyAmount.fromRawAmount(inputToken, sellAmount)
@@ -19,14 +25,14 @@ function OrderIntent({ order }: { order?: Order }) {
 
   const sellTokenPart = (
     <>
-      <TokenLogo token={inputToken} size={20} />
+      <TokenLogo token={inputToken} size={TOKEN_SIZE} />
       <TokenAmount amount={sellCurrencyAmount} tokenSymbol={inputToken} />
     </>
   )
 
   const buyTokenPart = (
     <>
-      <TokenLogo token={outputToken} size={20} />
+      <TokenLogo token={outputToken} size={TOKEN_SIZE} />
       <TokenAmount amount={buyCurrencyAmount} tokenSymbol={outputToken} />
     </>
   )
@@ -45,5 +51,3 @@ function OrderIntent({ order }: { order?: Order }) {
     </styledEl.OriginalOrderIntent>
   )
 }
-
-export default OrderIntent

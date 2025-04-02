@@ -18,7 +18,7 @@ import {
 } from './TopSections'
 
 import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../constants'
-import OrderIntent from '../steps/OrderIntent'
+import { OrderIntent } from '../steps/OrderIntent'
 import { OrderProgressBarV2Props } from '../types'
 
 export function RenderProgressTopSection({
@@ -59,11 +59,9 @@ export function RenderProgressTopSection({
           <ProgressImageWrapper stepName={stepName}>
             {stepName === 'unfillable' && <UnfillableTopSection />}
 
-            {
-              (stepName === 'delayed' ||
-                stepName === 'submissionFailed' ||
-                stepName === 'solved') && <DelayedSolvedSubmissionFailedTopSection />
-            }
+            {(stepName === 'delayed' || stepName === 'submissionFailed' || stepName === 'solved') && (
+              <DelayedSolvedSubmissionFailedTopSection />
+            )}
 
             {stepName === 'solving' && <SolvingTopSection stepName={stepName} countdown={countdown || 0} />}
           </ProgressImageWrapper>

@@ -16,7 +16,7 @@ import * as styledEl from './styled'
 
 import { truncateWithEllipsis } from '../helpers'
 import AnimatedTokens from '../steps/AnimatedToken'
-import CircularCountdown from '../steps/CircularCountdown'
+import { CircularCountdown } from '../steps/CircularCountdown'
 import { OrderProgressBarV2Props } from '../types'
 
 interface BaseTopSectionProps {

@@ -4,16 +4,22 @@ import * as styledEl from './styled'
 import { OrderProgressBarV2Props } from './types'
 
 interface DebugPanelProps {
-  STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, React.ComponentType<OrderProgressBarV2Props>>
+  stepNameToStepComponent: Record<OrderProgressBarStepName, React.ComponentType<OrderProgressBarV2Props>>
   stepName: OrderProgressBarStepName
   setDebugStep: (stepName: OrderProgressBarStepName) => void
 }
 
-export function DebugPanel({ STEP_NAME_TO_STEP_COMPONENT, stepName, setDebugStep }: DebugPanelProps) {
+export function DebugPanel({ stepNameToStepComponent, stepName, setDebugStep }: DebugPanelProps) {
   return (
     <styledEl.DebugPanel>
-      <select value={stepName} onChange={(e) => setDebugStep(e.target.value as OrderProgressBarStepName)}>
-        {Object.keys(STEP_NAME_TO_STEP_COMPONENT).map((step) => (
+      <label htmlFor="debug-step-select">Debug Step:</label>
+      <select
+        id="debug-step-select"
+        value={stepName}
+        aria-label="Select debug step"
+        onChange={(e) => setDebugStep(e.target.value as OrderProgressBarStepName)}
+      >
+        {Object.keys(stepNameToStepComponent).map((step) => (
           <option key={step} value={step}>
             {step}
           </option>

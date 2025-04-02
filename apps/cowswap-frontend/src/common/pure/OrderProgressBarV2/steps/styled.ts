@@ -1,12 +1,15 @@
 import IMAGE_STAR_SHINE from '@cowprotocol/assets/cow-swap/star-shine.svg'
 import { SingleLetterLogoWrapper } from '@cowprotocol/tokens'
-import { ButtonPrimary, Font, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, Color, Font, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
-import { CancelButton as CancelButtonOriginal } from '../../CancelButton'
+export { Description, ProgressImageWrapper } from '../sharedStyled'
 
-const BLUE_COLOR = '#65d9ff'
+import { CancelButton as CancelButtonOriginal } from '../../CancelButton'
+import { ProgressImageWrapper } from '../sharedStyled'
+
+const BLUE_COLOR = Color.cowfi_blue_lighter
 
 const progressAnimation = (startAt: number, end: number) => {
   const start = end - startAt
@@ -28,19 +31,6 @@ export const ProgressContainer = styled.div`
   flex-direction: column;
   align-items: flex-start;
   padding: 0 0 24px;
-`
-
-export const Description = styled.div<{ center?: boolean; margin?: string }>`
-  margin: ${({ margin }) => margin || '8px 0 0'};
-  font-size: 14px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-  text-align: ${({ center }) => (center ? 'center' : 'left')};
-
-  > button,
-  > a {
-    text-decoration: underline;
-    color: var(${UI.COLOR_TEXT_PAPER});
-  }
 `
 
 export const Link = styled.a<{ underline?: boolean }>`
@@ -72,45 +62,6 @@ export const Button = styled(LinkStyledButton)`
 
   &:hover {
     text-decoration: none;
-  }
-`
-
-export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: string; height?: string; gap?: string }>`
-  width: 100%;
-  height: ${({ height }) => height || '246px'};
-  min-height: 200px;
-  max-height: ${({ height }) => height || '246px'};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-flow: column wrap;
-  border-radius: 21px;
-  padding: ${({ padding }) => padding || '0'};
-  gap: ${({ gap }) => gap || '0'};
-  background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
-  transition: height 0.3s ease-in-out;
-  position: relative;
-  overflow: hidden;
-
-  ${Media.upToSmall()} {
-    min-height: auto;
-    height: auto;
-  }
-
-  > img,
-  > svg {
-    --size: 100%;
-    max-width: var(--size);
-    max-height: var(--size);
-    height: var(--size);
-    width: var(--size);
-    object-fit: contain;
-    padding: 0;
-    margin: 0;
-  }
-
-  > div {
-    display: flex;
   }
 `
 
@@ -160,10 +111,11 @@ export const TokenWrapper = styled.div<{
   right: 0;
   left: 0;
   margin: auto;
+  will-change: transform;
   animation: ${({ position }) => (position === 'left' ? 'appear-left' : position === 'right' ? 'appear-right' : 'none')}
     2.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
   animation-delay: ${({ position }) => (position === 'center' ? '0s' : '0.75s')};
-  border: ${({ position }) => (position === 'right' || 'center' ? `8px solid ${BLUE_COLOR}` : '0')};
+  border: ${({ position }) => (position === 'right' || position === 'center' ? `8px solid ${BLUE_COLOR}` : '0')};
   box-sizing: content-box;
   background: ${({ position, bgColor }) =>
     position === 'right' ? bgColor || `var(${UI.COLOR_PRIMARY})` : 'transparent'};
@@ -468,7 +420,7 @@ export const ReceivedAmount = styled.span`
   }
 `
 
-export const SoldAmount = styled(ReceivedAmount)``
+export const SoldAmount = ReceivedAmount
 
 export const ExtraAmount = styled.p`
   display: flex;
@@ -573,6 +525,7 @@ export const CircleProgress = styled.circle<{ startAt: number; end: number }>`
   stroke: #05a1ff;
   stroke-width: 6;
   stroke-linecap: round;
+  stroke-dasharray: 283; /* Approximately 2 * PI * 45 */
 
   ${({ startAt, end }) => css`
     animation: ${progressAnimation(startAt, end)} ${startAt}s linear infinite;
