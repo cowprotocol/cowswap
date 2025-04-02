@@ -366,8 +366,9 @@ export function BridgeRouteBreakdown({
           </>
         }
         withTimelineDot
+        contentTextColor={getFeeTextColor(bridgeFee)}
       >
-        ${bridgeFee}
+        {isFreeSwapFee(bridgeFee) ? 'FREE' : `$${bridgeFee}`}
       </ConfirmDetailsItem>
 
       <ConfirmDetailsItem
