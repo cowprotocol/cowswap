@@ -1,4 +1,4 @@
-import React from 'react'
+import { ReactElement } from 'react'
 
 import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
 
@@ -8,7 +8,7 @@ export interface PrimaryActionButtonContext {
   confirmTrade(): void
 }
 
-const buttonsMap: Record<TwapFormState, (_context: PrimaryActionButtonContext) => JSX.Element> = {
+const buttonsMap: Record<TwapFormState, (_context: PrimaryActionButtonContext) => ReactElement> = {
   [TwapFormState.LOADING_SAFE_INFO]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
       Loading...

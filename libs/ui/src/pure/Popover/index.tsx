@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
@@ -37,7 +37,7 @@ export default function Popover(props: PopoverProps) {
         { name: 'preventOverflow', options: { padding: 8 } },
       ],
     }),
-    [arrowElement, placement]
+    [arrowElement, placement],
   )
 
   const { styles, update, attributes } = usePopper(referenceElement, popperElement, options)
@@ -81,7 +81,7 @@ export default function Popover(props: PopoverProps) {
 // TODO: reuse hook from @cowprotocol/common-hooks
 // Currently it's not possible because of dependency inversion
 function useInterval(callback: Command, delay: null | number, leading = true) {
-  const savedCallback = useRef<Command>()
+  const savedCallback = useRef<Command>(null)
 
   // Remember the latest callback.
   useEffect(() => {

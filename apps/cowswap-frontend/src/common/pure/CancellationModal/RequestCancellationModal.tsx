@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import { ReactElement, useCallback, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
@@ -81,7 +81,7 @@ const OrderTypeDetails = styled.div`
   }
 `
 
-export function RequestCancellationModal(props: RequestCancellationModalProps): JSX.Element {
+export function RequestCancellationModal(props: RequestCancellationModalProps): ReactElement {
   const { onDismiss, triggerCancellation, summary, shortId, defaultType, txCost, nativeCurrency } = props
   const isOffChainCancellable = defaultType === 'offChain'
 
