@@ -78,16 +78,10 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
   }, [providerDetails, showBridgeUI])
 
   // Get bridge time estimate with error handling
-  const bridgeEstimatedTime = useMemo(() => {
-    if (!showBridgeUI) return undefined
-
-    try {
-      return getBridgeEstimatedMinutes()
-    } catch (error) {
-      console.error('Failed to get bridge time estimate:', error)
-      return undefined
-    }
-  }, [showBridgeUI])
+  const bridgeEstimatedTime = useMemo(
+    () => (showBridgeUI && bridgeData ? bridgeData.estimatedTime : undefined),
+    [showBridgeUI, bridgeData],
+  )
 
   const inputCurrency = derivedTradeState?.inputCurrency
   const costsExceedFeeRaw = tradeQuote?.error?.data?.fee_amount
