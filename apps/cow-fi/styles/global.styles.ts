@@ -1,9 +1,10 @@
 'use client'
 
 import { createGlobalStyle } from 'styled-components/macro'
-import { Color, Media, UI } from '@cowprotocol/ui'
+import { Color, Media, ThemeColorVars, UI } from '@cowprotocol/ui'
 
 const GlobalStyles = createGlobalStyle`
+${ThemeColorVars}
 
   html, body {
     width: 100%;

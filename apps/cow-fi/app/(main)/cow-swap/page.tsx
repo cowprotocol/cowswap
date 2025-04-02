@@ -296,7 +296,13 @@ export default function Page() {
           </SectionTitleWrapper>
 
           <TopicList columns={4} columnsTablet={2}>
-            <TopicCard contentAlign={'left'} bgColor={`var`} textColor={Color.neutral100} padding={'32px'} asProp="div">
+            <TopicCard
+              contentAlign={'left'}
+              bgColor={`var(${UI.COLOR_BLUE_900_PRIMARY})`}
+              textColor={Color.neutral100}
+              padding={'32px'}
+              asProp="div"
+            >
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={Color.neutral100} fontSize={51}>
                   $2,500
@@ -307,7 +313,13 @@ export default function Page() {
               </TopicCardInner>
             </TopicCard>
 
-            <TopicCard contentAlign={'left'} bgColor={`var`} textColor={Color.neutral100} padding={'32px'} asProp="div">
+            <TopicCard
+              contentAlign={'left'}
+              bgColor={`var(${UI.COLOR_BLUE_900_PRIMARY})`}
+              textColor={Color.neutral100}
+              padding={'32px'}
+              asProp="div"
+            >
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={Color.neutral100} fontSize={51}>
                   50%
@@ -318,7 +330,13 @@ export default function Page() {
               </TopicCardInner>
             </TopicCard>
 
-            <TopicCard contentAlign={'left'} bgColor={`var`} textColor={Color.neutral100} padding={'32px'} asProp="div">
+            <TopicCard
+              contentAlign={'left'}
+              bgColor={`var(${UI.COLOR_BLUE_900_PRIMARY})`}
+              textColor={Color.neutral100}
+              padding={'32px'}
+              asProp="div"
+            >
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={Color.neutral100} fontSize={51}>
                   42%
