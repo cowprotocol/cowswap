@@ -39,7 +39,7 @@ export type UseOrderProgressBarPropsParams = {
   chainId: SupportedChainId
 }
 
-export type UseOrderProgressBarV2Result = Pick<OrderProgressBarState, 'countdown'> & {
+export type UseOrderProgressBarResult = Pick<OrderProgressBarState, 'countdown'> & {
   stepName: Exclude<OrderProgressBarState['progressBarStepName'], undefined>
   showCancellationModal: Command | null
   solverCompetition?: SolverCompetition[]
@@ -50,19 +50,19 @@ const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
 export const PROGRESS_BAR_TIMER_DURATION = 15 // in seconds
 
 /**
- * Hook for fetching ProgressBarV2 props
+ * Hook for fetching ProgressBar props
  */
 export function useOrderProgressBarProps(chainId: SupportedChainId, order: Order | undefined) {
   const orderId = order?.id
   const [activity] = useMultipleActivityDescriptors({ chainId, ids: orderId ? [orderId] : [] })
   const activityDerivedState = useActivityDerivedState({ chainId, activity })
-  const progressBarV2Props = useOrderBaseProgressBarV2Props({ chainId, activityDerivedState })
+  const progressBarProps = useOrderBaseProgressBarProps({ chainId, activityDerivedState })
 
   const getCancellation = useCancelOrder()
   const showCancellationModal = useMemo(
     // Sort of duplicate cancellation logic since ethflow on creating state don't have progress bar props
-    () => progressBarV2Props?.showCancellationModal || (order && getCancellation ? getCancellation(order) : null),
-    [progressBarV2Props?.showCancellationModal, order, getCancellation],
+    () => progressBarProps?.showCancellationModal || (order && getCancellation ? getCancellation(order) : null),
+    [progressBarProps?.showCancellationModal, order, getCancellation],
   )
   const surplusData = useGetSurplusData(order)
   const receiverEnsName = useENS(order?.receiver).name || undefined
@@ -70,7 +70,7 @@ export function useOrderProgressBarProps(chainId: SupportedChainId, order: Order
   return useMemo(() => {
     // Add supplementary stuff
     const data = {
-      ...progressBarV2Props,
+      ...progressBarProps,
       activityDerivedState,
       surplusData,
       chainId,
@@ -79,17 +79,15 @@ export function useOrderProgressBarProps(chainId: SupportedChainId, order: Order
       isProgressBarSetup: true,
     }
 
-    if (!progressBarV2Props) {
+    if (!progressBarProps) {
       // Not setup, progress bar shouldn't be displayed, but cancellation still needed for ethflow
       return { ...data, isProgressBarSetup: false }
     }
     return data
-  }, [progressBarV2Props, activityDerivedState, surplusData, chainId, receiverEnsName, showCancellationModal])
+  }, [progressBarProps, activityDerivedState, surplusData, chainId, receiverEnsName, showCancellationModal])
 }
 
-function useOrderBaseProgressBarV2Props(
-  params: UseOrderProgressBarPropsParams,
-): UseOrderProgressBarV2Result | undefined {
+function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): UseOrderProgressBarResult | undefined {
   const { activityDerivedState, chainId } = params
 
   const {
