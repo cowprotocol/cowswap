@@ -19,8 +19,8 @@ import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/ty
 import * as styledEl from './styled'
 
 import { CancelButton } from '../CancelButton'
-import { OrderProgressBarV2 } from '../OrderProgressBarV2'
-import { OrderProgressBarV2Props } from '../OrderProgressBarV2/types'
+import { OrderProgressBar } from '../OrderProgressBar'
+import { OrderProgressBarV2Props } from '../OrderProgressBar/types'
 
 const activityStatusLabels: Partial<Record<ActivityStatus, string>> = {
   [ActivityStatus.CONFIRMED]: 'Confirmed',
@@ -111,7 +111,7 @@ export function TransactionSubmittedContent({
           {showSafeSigningInfo && <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />}
           {!isFinished && <EthFlowStepper order={order} showProgressBar={!!showProgressBar} />}
           {activityDerivedState && showProgressBar && isProgressBarSetup && (
-            <OrderProgressBarV2
+            <OrderProgressBar
               {...orderProgressBarV2Props}
               order={order}
               navigateToNewOrder={navigateToNewOrderCallback?.(chainId, order, onDismiss)}

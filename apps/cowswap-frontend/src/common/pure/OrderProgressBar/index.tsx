@@ -20,7 +20,7 @@ import { OrderProgressBarV2Props } from './types'
 const IS_DEBUG_MODE = false
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
-export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
+export function OrderProgressBar(props: OrderProgressBarV2Props) {
   const { stepName = 'initial', debugMode = IS_DEBUG_MODE } = props
   const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
   const currentStep = debugMode ? debugStep : stepName
