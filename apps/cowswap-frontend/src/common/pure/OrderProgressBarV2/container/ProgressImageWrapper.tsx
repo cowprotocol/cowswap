@@ -25,7 +25,7 @@ function getProgressImageWrapperBgColor(stepName: OrderProgressBarV2Props['stepN
     case 'cancellationFailed':
       return Color.cowfi_blue_lighter
     default:
-      return Color.cowfi_blue_lighter
+      return undefined
   }
 }
 
