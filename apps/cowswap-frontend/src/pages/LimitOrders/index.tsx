@@ -1,6 +1,8 @@
+import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { percentToBps } from '@cowprotocol/common-utils'
 
 import { AppDataUpdater } from 'modules/appData'
+import { PageTitle } from 'modules/application/containers/PageTitle'
 import {
   AlternativeLimitOrderUpdater,
   ExecutionPriceUpdater,
@@ -39,6 +41,7 @@ export default function LimitOrderPage() {
           <RegularLimitOrders />
         </>
       )}
+      <PageTitle title={PAGE_TITLES.LIMIT_ORDERS} />
     </>
   )
 }
