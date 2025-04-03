@@ -1,7 +1,8 @@
 import styled from 'styled-components/macro'
 
+import { StatusColorVariant } from '../../theme/statusColors'
+
 import { InlineBanner } from '.'
-import { StatusColorVariant } from '@cowprotocol/ui'
 
 const DemoContainer = styled.div`
   width: 100%;
