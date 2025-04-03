@@ -47,7 +47,7 @@ export interface TransactionSubmittedContentProps {
   chainId: SupportedChainId
   activityDerivedState: ActivityDerivedState | null
   currencyToAdd?: Nullish<Currency>
-  orderProgressBarV2Props: OrderProgressBarProps
+  orderProgressBarProps: OrderProgressBarProps
   navigateToNewOrderCallback?: (chainId: SupportedChainId, order?: Order, callback?: Command) => () => void
 }
 
@@ -57,11 +57,11 @@ export function TransactionSubmittedContent({
   hash,
   currencyToAdd,
   activityDerivedState,
-  orderProgressBarV2Props,
+  orderProgressBarProps,
   navigateToNewOrderCallback,
 }: TransactionSubmittedContentProps) {
   const { order, isOrder, isCreating, isPending } = activityDerivedState || {}
-  const { isProgressBarSetup, showCancellationModal, stepName } = orderProgressBarV2Props
+  const { isProgressBarSetup, showCancellationModal, stepName } = orderProgressBarProps
   const showCancellationButton = isOrder && (isCreating || isPending) && showCancellationModal
 
   const isPresignaturePending = activityDerivedState?.isPresignaturePending
@@ -112,7 +112,7 @@ export function TransactionSubmittedContent({
           {!isFinished && <EthFlowStepper order={order} showProgressBar={!!showProgressBar} />}
           {activityDerivedState && showProgressBar && isProgressBarSetup && (
             <OrderProgressBar
-              {...orderProgressBarV2Props}
+              {...orderProgressBarProps}
               order={order}
               navigateToNewOrder={navigateToNewOrderCallback?.(chainId, order, onDismiss)}
             />

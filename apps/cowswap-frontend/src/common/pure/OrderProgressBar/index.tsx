@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
-import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
+import { OrderProgressBarStepName } from 'common/hooks/orderProgressBar'
 
 import { FINAL_STATES } from './constants'
 import { RenderProgressTopSection } from './container/RenderProgressTopSection'

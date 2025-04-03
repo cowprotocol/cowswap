@@ -1,4 +1,4 @@
-import { PROGRESS_BAR_TIMER_DURATION } from 'common/hooks/orderProgressBarV2'
+import { PROGRESS_BAR_TIMER_DURATION } from 'common/hooks/orderProgressBar'
 
 import * as styledEl from './styled'
 

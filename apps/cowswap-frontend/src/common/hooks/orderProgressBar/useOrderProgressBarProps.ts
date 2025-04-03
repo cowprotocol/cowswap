@@ -52,7 +52,7 @@ export const PROGRESS_BAR_TIMER_DURATION = 15 // in seconds
 /**
  * Hook for fetching ProgressBarV2 props
  */
-export function useOrderProgressBarV2Props(chainId: SupportedChainId, order: Order | undefined) {
+export function useOrderProgressBarProps(chainId: SupportedChainId, order: Order | undefined) {
   const orderId = order?.id
   const [activity] = useMultipleActivityDescriptors({ chainId, ids: orderId ? [orderId] : [] })
   const activityDerivedState = useActivityDerivedState({ chainId, activity })

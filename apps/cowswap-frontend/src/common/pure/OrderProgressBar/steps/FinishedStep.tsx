@@ -18,7 +18,7 @@ import { Order } from 'legacy/state/orders/actions'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
-import { OrderProgressBarStepName, SolverCompetition } from 'common/hooks/orderProgressBarV2'
+import { OrderProgressBarStepName, SolverCompetition } from 'common/hooks/orderProgressBar'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 

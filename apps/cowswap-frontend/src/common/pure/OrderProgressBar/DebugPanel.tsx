@@ -1,4 +1,4 @@
-import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2/types'
+import { OrderProgressBarStepName } from 'common/hooks/orderProgressBar/types'
 
 import * as styledEl from './styled'
 import { OrderProgressBarProps } from './types'
