@@ -45,6 +45,12 @@ function getSoldAmount(order: Order) {
   return (
     <styledEl.SoldAmount>
       You sold <TokenLogo token={order.inputToken} size={20} />
+      <b>
+        <TokenAmount
+          amount={CurrencyAmount.fromRawAmount(order.inputToken, order.apiAdditionalInfo?.executedSellAmount || 0)}
+          tokenSymbol={order.inputToken}
+        />
+      </b>
     </styledEl.SoldAmount>
   )
 }
