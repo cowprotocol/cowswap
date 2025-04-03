@@ -2,7 +2,7 @@ import { TokensMap } from '../types'
 
 /**
  * Merges multiple token maps into a single map, combining token properties and tags
- * Later maps in the list take precedence for basic properties, but tags are concatenated
+ * Earlier® maps in the list take precedence for basic properties, but tags are concatenated
  */
 export function mergeTokenMaps(...tokenMaps: (TokensMap | null | undefined)[]): TokensMap {
   return tokenMaps.reduce<TokensMap>((acc, currentMap) => {
@@ -12,8 +12,8 @@ export function mergeTokenMaps(...tokenMaps: (TokensMap | null | undefined)[]): 
       const lowerAddress = address.toLowerCase()
       if (acc[lowerAddress]) {
         acc[lowerAddress] = {
-          ...acc[lowerAddress],
           ...token,
+          ...acc[lowerAddress],
           tags: [...(acc[lowerAddress].tags || []), ...(token.tags || [])],
         }
       } else {
