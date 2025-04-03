@@ -15,12 +15,12 @@ import { ExpiredStep } from './steps/ExpiredStep'
 import { FinishedStep } from './steps/FinishedStep'
 import { InitialStep } from './steps/InitialStep'
 import { SolvingStep } from './steps/SolvingStep'
-import { OrderProgressBarV2Props } from './types'
+import { OrderProgressBarProps } from './types'
 
 const IS_DEBUG_MODE = false
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
-export function OrderProgressBar(props: OrderProgressBarV2Props) {
+export function OrderProgressBar(props: OrderProgressBarProps) {
   const { stepName = 'initial', debugMode = IS_DEBUG_MODE } = props
   const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
   const currentStep = debugMode ? debugStep : stepName
@@ -78,7 +78,7 @@ export function OrderProgressBar(props: OrderProgressBarV2Props) {
   }, [currentStep, getDuration, analytics])
 
   // Ensure StepComponent will be a valid React component or null
-  let StepComponent: React.ComponentType<OrderProgressBarV2Props> | null
+  let StepComponent: React.ComponentType<OrderProgressBarProps> | null
 
   if (currentStep === 'cancellationFailed' || currentStep === 'finished') {
     StepComponent = FinishedStepWrapper
@@ -101,7 +101,7 @@ export function OrderProgressBar(props: OrderProgressBarV2Props) {
   ) : null // Fallback return value if StepComponent is not found
 }
 
-function InitialStepWrapper(props: OrderProgressBarV2Props) {
+function InitialStepWrapper(props: OrderProgressBarProps) {
   return (
     <InitialStep>
       <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
@@ -109,7 +109,7 @@ function InitialStepWrapper(props: OrderProgressBarV2Props) {
   )
 }
 
-function ExecutingStepWrapper(props: OrderProgressBarV2Props) {
+function ExecutingStepWrapper(props: OrderProgressBarProps) {
   return (
     <ExecutingStep>
       <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
@@ -117,7 +117,7 @@ function ExecutingStepWrapper(props: OrderProgressBarV2Props) {
   )
 }
 
-function FinishedStepWrapper(props: OrderProgressBarV2Props) {
+function FinishedStepWrapper(props: OrderProgressBarProps) {
   const { stepName, solverCompetition: solvers, totalSolvers, order, surplusData, chainId, receiverEnsName } = props
 
   return (
@@ -136,7 +136,7 @@ function FinishedStepWrapper(props: OrderProgressBarV2Props) {
   )
 }
 
-function SolvingStepWrapper(props: OrderProgressBarV2Props) {
+function SolvingStepWrapper(props: OrderProgressBarProps) {
   const { countdown, stepName, showCancellationModal } = props
   const isUnfillable = stepName === 'unfillable'
   const isDelayed = stepName === 'delayed'
@@ -155,7 +155,7 @@ function SolvingStepWrapper(props: OrderProgressBarV2Props) {
   )
 }
 
-function CancellingStepWrapper(props: OrderProgressBarV2Props) {
+function CancellingStepWrapper(props: OrderProgressBarProps) {
   return (
     <CancellingStep>
       <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
@@ -163,7 +163,7 @@ function CancellingStepWrapper(props: OrderProgressBarV2Props) {
   )
 }
 
-function CancelledStepWrapper(props: OrderProgressBarV2Props) {
+function CancelledStepWrapper(props: OrderProgressBarProps) {
   return (
     <CancelledStep>
       <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
@@ -171,7 +171,7 @@ function CancelledStepWrapper(props: OrderProgressBarV2Props) {
   )
 }
 
-function ExpiredStepWrapper(props: OrderProgressBarV2Props) {
+function ExpiredStepWrapper(props: OrderProgressBarProps) {
   return (
     <ExpiredStep navigateToNewOrder={props.navigateToNewOrder}>
       <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
@@ -179,7 +179,7 @@ function ExpiredStepWrapper(props: OrderProgressBarV2Props) {
   )
 }
 
-const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, React.ComponentType<OrderProgressBarV2Props>> = {
+const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, React.ComponentType<OrderProgressBarProps>> = {
   initial: InitialStepWrapper,
   solving: SolvingStepWrapper,
   executing: ExecutingStepWrapper,

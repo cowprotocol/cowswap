@@ -7,7 +7,7 @@ import styled from 'styled-components/macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { OrderProgressBarV2Props } from './types'
+import { OrderProgressBarProps } from './types'
 
 import { OrderProgressBar } from './index'
 
@@ -16,7 +16,7 @@ const order = {
   apiAdditionalInfo: { executedBuyAmount: '1000000000000000000000', executedSellAmount: '5000000000000000000' },
 } as Order
 
-const defaultProps: OrderProgressBarV2Props = {
+const defaultProps: OrderProgressBarProps = {
   order,
   chainId: 1,
   stepName: 'initial',

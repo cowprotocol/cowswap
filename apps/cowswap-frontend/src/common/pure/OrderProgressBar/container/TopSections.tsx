@@ -17,14 +17,14 @@ import * as styledEl from './styled'
 import { truncateWithEllipsis } from '../helpers'
 import AnimatedTokens from '../steps/AnimatedToken'
 import { CircularCountdown } from '../steps/CircularCountdown'
-import { OrderProgressBarV2Props } from '../types'
+import { OrderProgressBarProps } from '../types'
 
 interface BaseTopSectionProps {
-  stepName: OrderProgressBarV2Props['stepName']
+  stepName: OrderProgressBarProps['stepName']
 }
 
 interface InitialTopSectionProps extends BaseTopSectionProps {
-  order: OrderProgressBarV2Props['order']
+  order: OrderProgressBarProps['order']
 }
 
 export function InitialTopSection({ stepName, order }: InitialTopSectionProps) {
@@ -78,7 +78,7 @@ export function ExecutingTopSection({ stepName }: BaseTopSectionProps) {
 }
 
 interface FinishedCancellationFailedTopSectionProps extends BaseTopSectionProps {
-  order: OrderProgressBarV2Props['order']
+  order: OrderProgressBarProps['order']
   randomImage: string
   shouldShowSurplus?: boolean | null
   surplusPercentValue: string

@@ -19,7 +19,7 @@ import {
 
 import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../constants'
 import { OrderIntent } from '../steps/OrderIntent'
-import { OrderProgressBarV2Props } from '../types'
+import { OrderProgressBarProps } from '../types'
 
 export function RenderProgressTopSection({
   stepName,
@@ -28,7 +28,7 @@ export function RenderProgressTopSection({
   chainId,
   surplusData,
   debugForceShowSurplus = false,
-}: Pick<OrderProgressBarV2Props, 'stepName' | 'order' | 'countdown' | 'chainId' | 'surplusData'> & {
+}: Pick<OrderProgressBarProps, 'stepName' | 'order' | 'countdown' | 'chainId' | 'surplusData'> & {
   debugForceShowSurplus?: boolean
 }) {
   const hideIntent = stepName === 'finished' || stepName === 'cancellationFailed'

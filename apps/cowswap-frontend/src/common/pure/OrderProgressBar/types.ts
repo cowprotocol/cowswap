@@ -6,7 +6,7 @@ import { Order } from 'legacy/state/orders/actions'
 import { OrderProgressBarStepName, SolverCompetition } from 'common/hooks/orderProgressBarV2'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 
-export type OrderProgressBarV2Props = {
+export type OrderProgressBarProps = {
   stepName?: OrderProgressBarStepName
   chainId: SupportedChainId
   countdown?: number | null | undefined

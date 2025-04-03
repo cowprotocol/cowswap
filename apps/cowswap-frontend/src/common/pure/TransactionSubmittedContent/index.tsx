@@ -20,7 +20,7 @@ import * as styledEl from './styled'
 
 import { CancelButton } from '../CancelButton'
 import { OrderProgressBar } from '../OrderProgressBar'
-import { OrderProgressBarV2Props } from '../OrderProgressBar/types'
+import { OrderProgressBarProps } from '../OrderProgressBar/types'
 
 const activityStatusLabels: Partial<Record<ActivityStatus, string>> = {
   [ActivityStatus.CONFIRMED]: 'Confirmed',
@@ -47,7 +47,7 @@ export interface TransactionSubmittedContentProps {
   chainId: SupportedChainId
   activityDerivedState: ActivityDerivedState | null
   currencyToAdd?: Nullish<Currency>
-  orderProgressBarV2Props: OrderProgressBarV2Props
+  orderProgressBarV2Props: OrderProgressBarProps
   navigateToNewOrderCallback?: (chainId: SupportedChainId, order?: Order, callback?: Command) => () => void
 }
 

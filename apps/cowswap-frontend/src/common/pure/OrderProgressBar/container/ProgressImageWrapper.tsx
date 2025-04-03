@@ -2,14 +2,14 @@ import { Color } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
 
-import { OrderProgressBarV2Props } from '../types'
+import { OrderProgressBarProps } from '../types'
 
 interface ProgressImageWrapperProps {
   children: React.ReactNode
-  stepName: OrderProgressBarV2Props['stepName']
+  stepName: OrderProgressBarProps['stepName']
 }
 
-function getProgressImageWrapperBgColor(stepName: OrderProgressBarV2Props['stepName']) {
+function getProgressImageWrapperBgColor(stepName: OrderProgressBarProps['stepName']) {
   switch (stepName) {
     case 'initial':
       return Color.cowfi_blue_lighter
@@ -29,7 +29,7 @@ function getProgressImageWrapperBgColor(stepName: OrderProgressBarV2Props['stepN
   }
 }
 
-function getProgressImageWrapperPadding(stepName: OrderProgressBarV2Props['stepName']) {
+function getProgressImageWrapperPadding(stepName: OrderProgressBarProps['stepName']) {
   switch (stepName) {
     case 'initial':
       return '24px'
@@ -49,7 +49,7 @@ function getProgressImageWrapperPadding(stepName: OrderProgressBarV2Props['stepN
   }
 }
 
-function getProgressImageWrapperGap(stepName: OrderProgressBarV2Props['stepName']) {
+function getProgressImageWrapperGap(stepName: OrderProgressBarProps['stepName']) {
   switch (stepName) {
     case 'finished':
     case 'cancellationFailed':
@@ -59,7 +59,7 @@ function getProgressImageWrapperGap(stepName: OrderProgressBarV2Props['stepName'
   }
 }
 
-function getProgressImageWrapperHeight(stepName: OrderProgressBarV2Props['stepName']) {
+function getProgressImageWrapperHeight(stepName: OrderProgressBarProps['stepName']) {
   switch (stepName) {
     case 'delayed':
     case 'submissionFailed':
