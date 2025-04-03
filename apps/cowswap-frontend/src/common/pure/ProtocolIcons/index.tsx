@@ -39,6 +39,10 @@ export function ProtocolIcons({ secondProtocol, showOnlyFirst, showOnlySecond, s
   }
 
   if (showOnlySecond) {
+    if (!secondProtocol) {
+      console.error('secondProtocol is required when showOnlySecond is true')
+      return null
+    }
     return (
       <ProtocolIcon title={secondProtocol.title} size={iconSize}>
         <img
