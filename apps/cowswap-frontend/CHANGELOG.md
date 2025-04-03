@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.105.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.105.2...cowswap-v1.105.3) (2025-04-03)
+
+
+### Bug Fixes
+
+* issue [#5379](https://github.com/cowprotocol/cowswap/issues/5379): page name not updating ([#5579](https://github.com/cowprotocol/cowswap/issues/5579)) ([a21e054](https://github.com/cowprotocol/cowswap/commit/a21e054f089ab5c367858800a1ee93c4dbed4af0))
+* remove irrelevant link from cancellation modal ([#5580](https://github.com/cowprotocol/cowswap/issues/5580)) ([5c6ac46](https://github.com/cowprotocol/cowswap/commit/5c6ac46b9229d62e590799a8dfe9d01a0121b53a))
+
 ## [1.105.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.105.1...cowswap-v1.105.2) (2025-03-31)
 
 
