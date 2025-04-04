@@ -57,9 +57,20 @@ import { AnalyticsCategory } from '../../common/analytics/types'
 import { ColorModeContext } from '../../theme/ColorModeContext'
 import { EmbedDialog } from '../embedDialog'
 
+import type { W3mButton } from '@web3modal/scaffold'
+
 declare global {
   interface Window {
     cowSwapWidgetParams?: Partial<CowSwapWidgetParams>
+  }
+
+  // Attempt to fix build issue only seen on Vercel:
+  // apps/widget-configurator/src/app/configurator/index.tsx:272:17 - error TS2339: Property 'w3m-button' does not exist on type 'JSX.IntrinsicElements'.
+  // Fix from https://github.com/reown-com/appkit/issues/3093#issuecomment-2543124482
+  namespace JSX {
+    interface IntrinsicElements {
+      'w3m-button': Pick<W3mButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
+    }
   }
 }
 
