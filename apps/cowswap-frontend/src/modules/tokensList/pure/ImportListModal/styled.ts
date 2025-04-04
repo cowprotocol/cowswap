@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -27,10 +27,18 @@ export const ListInfo = styled.div`
 export const ListTitle = styled.div`
   font-weight: 600;
   font-size: 18px;
+
+  ${Media.upToSmall()} {
+    word-break: break-all;
+  }
 `
 
 export const ListLink = styled.a`
   font-size: 14px;
+
+  ${Media.upToSmall()} {
+    word-break: break-all;
+  }
 `
 
 export const ExternalSourceAlertStyled = styled(ExternalSourceAlert)`
