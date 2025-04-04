@@ -90,6 +90,7 @@ export function useHandleOrderPlacement(
         partiallyFillableOverride ?? safeBundleFlowContext.postOrderParams.partiallyFillable
 
       return safeBundleFlow(
+        tradeContext,
         safeBundleFlowContext,
         priceImpact,
         settingsState,
@@ -148,7 +149,7 @@ export function useHandleOrderPlacement(
         if (error instanceof PriceImpactDeclineError) return
 
         if (error instanceof OperatorError) {
-          tradeConfirmActions.onError(error.message)
+          tradeConfirmActions.onError(error.message || error.description)
         } else {
           tradeConfirmActions.onError(getSwapErrorMessage(error))
         }

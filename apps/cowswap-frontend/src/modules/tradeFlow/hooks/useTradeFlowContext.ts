@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderClass, PriceQuality, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
@@ -85,7 +85,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         account &&
         provider &&
         appData &&
-        tradeQuote.response &&
+        tradeQuote.quote &&
+        tradeQuote.fetchParams?.priceQuality === PriceQuality.OPTIMAL &&
         orderKind &&
         settlementContract &&
         uiOrderType
@@ -145,6 +146,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         uiOrderType,
       ]) => {
         return {
+          tradeQuote,
           context: {
             chainId,
             inputAmount,
@@ -189,7 +191,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             appData,
             class: OrderClass.MARKET,
             partiallyFillable: isHooksTradeType,
-            quoteId: tradeQuote.response!.id,
+            quoteId: tradeQuote.quote!.quoteResults.quoteResponse.id,
             isSafeWallet,
           },
         }

@@ -8,7 +8,6 @@ import {
   shortenAddress,
 } from '@cowprotocol/common-utils'
 import {
-  EcdsaSigningScheme,
   OrderClass,
   OrderKind,
   OrderSigningUtils,
@@ -22,12 +21,10 @@ import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { orderBookApi } from 'cowSdk'
 
 import { ChangeOrderStatusParams, Order, OrderStatus } from 'legacy/state/orders/actions'
-import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
 
 import { AppDataInfo } from 'modules/appData'
 
-import { getIsOrderBookTypedError, getTrades } from 'api/cowProtocol'
-import { getProfileData } from 'api/cowProtocol/api'
+import { getIsOrderBookTypedError } from 'api/cowProtocol'
 import OperatorError, { ApiErrorObject } from 'api/cowProtocol/errors/OperatorError'
 
 export type PostOrderParams = {
@@ -52,7 +49,7 @@ export type PostOrderParams = {
   isSafeWallet: boolean
 }
 
-export type UnsignedOrderAdditionalParams = PostOrderParams & {
+export type UnsignedOrderAdditionalParams = Omit<PostOrderParams, 'signer' | 'validTo'> & {
   orderId: string
   summary: string
   signature: string
@@ -213,59 +210,6 @@ function _getOrderStatus(allowsOffchainSigning: boolean, isOnChain: boolean | un
   }
 }
 
-export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnserialisedPendingOrderParams> {
-  const { chainId, account, signer, allowsOffchainSigning, appData, isSafeWallet } = params
-
-  // Prepare order
-  const { summary, quoteId, order: unsignedOrder } = getSignOrderParams(params)
-  const receiver = unsignedOrder.receiver
-
-  let signingScheme: SigningScheme
-  let signature = ''
-
-  if (allowsOffchainSigning) {
-    const signedOrderInfo = await OrderSigningUtils.signOrder(unsignedOrder, chainId, signer)
-    signingScheme =
-      signedOrderInfo.signingScheme === EcdsaSigningScheme.ETHSIGN ? SigningScheme.ETHSIGN : SigningScheme.EIP712
-    signature = signedOrderInfo.signature
-  } else {
-    signingScheme = SigningScheme.PRESIGN
-    signature = account
-  }
-
-  if (!signature) throw new Error('Signature is undefined!')
-
-  return await wrapErrorInOperatorError(async () => {
-    // Call API
-    const orderId = await orderBookApi.sendOrder(
-      {
-        ...unsignedOrder,
-        from: account,
-        receiver,
-        signingScheme,
-        // Include the signature
-        signature,
-        quoteId,
-        appData: appData.fullAppData, // We sign the keccak256 hash, but we send the API the full appData string
-        appDataHash: appData.appDataKeccak256,
-      },
-      { chainId },
-    )
-
-    const pendingOrderParams: Order = mapUnsignedOrderToOrder({
-      unsignedOrder,
-      additionalParams: { ...params, orderId, summary, signature, signingScheme },
-    })
-
-    return {
-      chainId,
-      id: orderId,
-      order: pendingOrderParams,
-      isSafeWallet,
-    }
-  })
-}
-
 type OrderCancellationParams = {
   orderId: string
   account: string
@@ -295,13 +239,7 @@ export async function sendOrderCancellation(params: OrderCancellationParams): Pr
   })
 }
 
-export async function hasTrades(chainId: ChainId, address: string): Promise<boolean> {
-  const [trades, profileData] = await Promise.all([getTrades(chainId, address), getProfileData(chainId, address)])
-
-  return trades.length > 0 || (profileData?.totalTrades ?? 0) > 0
-}
-
-async function wrapErrorInOperatorError<T>(fn: () => Promise<T>): Promise<T> {
+export async function wrapErrorInOperatorError<T>(fn: () => Promise<T>): Promise<T> {
   try {
     return await fn()
   } catch (e) {

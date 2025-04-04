@@ -15,10 +15,10 @@ const getQuoteOnlyResolveLast = onlyResolvesLast<OrderQuoteResponse>(getQuote)
 
 export function FullAmountQuoteUpdater() {
   const { inputCurrencyAmount } = useAdvancedOrdersDerivedState()
-  const { response, error, isLoading } = useTradeQuote()
+  const { quote, error, isLoading } = useTradeQuote()
 
   const fullQuoteAmount = inputCurrencyAmount?.quotient.toString() || null
-  const partQuoteAmount = response?.quote.buyAmount
+  const partQuoteAmount = quote?.quoteResults.quoteResponse.quote.buyAmount
 
   const quoteParams = useQuoteParams(fullQuoteAmount)?.quoteParams
   const updateQuoteState = useSetAtom(fullAmountQuoteAtom)

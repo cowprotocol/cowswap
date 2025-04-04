@@ -51,11 +51,11 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
 }
 
 export function useLimitOrdersFormState(): LimitOrdersFormState | null {
-  const quote = useTradeQuote()
+  const { quote } = useTradeQuote()
   const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
   const { activeRate, isLoading } = useAtomValue(limitRateAtom)
 
-  const feeRawAmount = quote?.response?.quote?.feeAmount
+  const feeRawAmount = quote?.quoteResults.quoteResponse.quote.feeAmount
   const feeAmount =
     feeRawAmount && inputCurrencyAmount
       ? CurrencyAmount.fromRawAmount(inputCurrencyAmount.currency, feeRawAmount)
