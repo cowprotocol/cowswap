@@ -2,7 +2,7 @@
 
 ```mermaid
 
-stateDiagram-v2
+stateDiagram (former stateDiagram-v2)
     state place_order <<fork>>
         [*] --> place_order: user place order
         place_order --> EOA

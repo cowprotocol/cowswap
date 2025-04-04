@@ -7,14 +7,16 @@ import styled from 'styled-components/macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { OrderProgressBarV2, OrderProgressBarV2Props } from './index'
+import { OrderProgressBarProps } from './types'
+
+import { OrderProgressBar } from './index'
 
 const order = {
   ...getOrderMock(SupportedChainId.MAINNET),
   apiAdditionalInfo: { executedBuyAmount: '1000000000000000000000', executedSellAmount: '5000000000000000000' },
 } as Order
 
-const defaultProps: OrderProgressBarV2Props = {
+const defaultProps: OrderProgressBarProps = {
   order,
   chainId: 1,
   stepName: 'initial',
@@ -52,47 +54,47 @@ const Wrapper = styled.div`
 const Fixtures = {
   '1-initial': (
     <Wrapper>
-      <OrderProgressBarV2 {...defaultProps} />
+      <OrderProgressBar {...defaultProps} />
     </Wrapper>
   ),
   '2-solving': (
     <Wrapper>
-      <OrderProgressBarV2 {...defaultProps} stepName="solving" countdown={15} />
+      <OrderProgressBar {...defaultProps} stepName="solving" countdown={15} />
     </Wrapper>
   ),
   '2a-delayed': (
     <Wrapper>
-      <OrderProgressBarV2 {...defaultProps} stepName="delayed" />
+      <OrderProgressBar {...defaultProps} stepName="delayed" />
     </Wrapper>
   ),
   '2b-unfillable': (
     <Wrapper>
-      <OrderProgressBarV2 {...defaultProps} stepName="unfillable" />
+      <OrderProgressBar {...defaultProps} stepName="unfillable" />
     </Wrapper>
   ),
   '2c-solved': (
     <Wrapper>
-      <OrderProgressBarV2 {...defaultProps} stepName="solved" />
+      <OrderProgressBar {...defaultProps} stepName="solved" />
     </Wrapper>
   ),
   '3-executing': (
     <Wrapper>
-      <OrderProgressBarV2 {...defaultProps} stepName="executing" />
+      <OrderProgressBar {...defaultProps} stepName="executing" />
     </Wrapper>
   ),
   '3a-submissionFailed': (
     <Wrapper>
-      <OrderProgressBarV2 {...defaultProps} stepName="submissionFailed" />
+      <OrderProgressBar {...defaultProps} stepName="submissionFailed" />
     </Wrapper>
   ),
   '4-finished': (
     <Wrapper>
-      <OrderProgressBarV2 {...defaultProps} stepName="finished" />
+      <OrderProgressBar {...defaultProps} stepName="finished" />
     </Wrapper>
   ),
   '4-finished-customReceiver': (
     <Wrapper>
-      <OrderProgressBarV2
+      <OrderProgressBar
         {...defaultProps}
         order={{ ...order, receiver: '0xdd9EB88C5C6D2A85A08a96c7F0ccccE27Cb843cb' }}
         stepName="finished"
@@ -101,7 +103,7 @@ const Fixtures = {
   ),
   '4-finished-customReceiver-ensName': (
     <Wrapper>
-      <OrderProgressBarV2
+      <OrderProgressBar
         {...defaultProps}
         order={{ ...order, receiver: '0xdd9EB88C5C6D2A85A08a96c7F0ccccE27Cb843cb' }}
         receiverEnsName={'ihaveaname.eth'}
@@ -111,22 +113,22 @@ const Fixtures = {
   ),
   '4a-cancellationFailed': (
     <Wrapper>
-      <OrderProgressBarV2 {...defaultProps} stepName="cancellationFailed" />
+      <OrderProgressBar {...defaultProps} stepName="cancellationFailed" />
     </Wrapper>
   ),
   cancelling: (
     <Wrapper>
-      <OrderProgressBarV2 {...defaultProps} stepName="cancelling" />
+      <OrderProgressBar {...defaultProps} stepName="cancelling" />
     </Wrapper>
   ),
   cancelled: (
     <Wrapper>
-      <OrderProgressBarV2 {...defaultProps} stepName="cancelled" />
+      <OrderProgressBar {...defaultProps} stepName="cancelled" />
     </Wrapper>
   ),
   expired: (
     <Wrapper>
-      <OrderProgressBarV2 {...defaultProps} stepName="expired" />
+      <OrderProgressBar {...defaultProps} stepName="expired" />
     </Wrapper>
   ),
 }

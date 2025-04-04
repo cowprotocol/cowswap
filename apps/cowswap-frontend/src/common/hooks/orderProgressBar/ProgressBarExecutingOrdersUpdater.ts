@@ -4,7 +4,7 @@ import { useLayoutEffect, useRef } from 'react'
 import { ordersProgressBarCountdown } from './atoms'
 import { OrdersProgressBarCountdown } from './types'
 
-export function ProgressBarV2ExecutingOrdersUpdater(): null {
+export function ProgressBarExecutingOrdersUpdater(): null {
   useCountdownUpdater()
 
   return null

@@ -8,7 +8,7 @@ import { useTradeConfirmState, useNavigateToNewOrderCallback } from 'modules/tra
 
 import { useOrderIdForSurplusModal, useRemoveOrderFromSurplusQueue } from './surplusModal'
 
-import { useOrderProgressBarV2Props } from '../../hooks/orderProgressBarV2'
+import { useOrderProgressBarProps } from '../../hooks/orderProgressBar'
 import { CowModal } from '../../pure/Modal'
 import { TransactionSubmittedContent } from '../../pure/TransactionSubmittedContent'
 
@@ -19,8 +19,8 @@ export function SurplusModalSetup() {
   const { chainId } = useWalletInfo()
   const order = useOrder({ id: orderId, chainId })
 
-  const progressBarV2Props = useOrderProgressBarV2Props(chainId, order)
-  const { isProgressBarSetup, activityDerivedState } = progressBarV2Props
+  const progressBarProps = useOrderProgressBarProps(chainId, order)
+  const { isProgressBarSetup, activityDerivedState } = progressBarProps
 
   const { isOpen: isConfirmationModalOpen, transactionHash } = useTradeConfirmState()
 
@@ -62,7 +62,7 @@ export function SurplusModalSetup() {
         chainId={chainId}
         hash={orderId}
         activityDerivedState={activityDerivedState}
-        orderProgressBarV2Props={progressBarV2Props}
+        orderProgressBarProps={progressBarProps}
         navigateToNewOrderCallback={navigateToNewOrderCallback}
       />
     </CowModal>
