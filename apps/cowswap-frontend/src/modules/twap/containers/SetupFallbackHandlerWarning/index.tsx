@@ -3,7 +3,7 @@ import { useSetAtom } from 'jotai/index'
 import { useCallback, useEffect, useState } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
-import { ButtonPrimary, InlineBanner, Loader, BannerOrientation, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, InlineBanner, Loader, BannerOrientation, UI, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
@@ -135,7 +135,7 @@ export function SetupFallbackHandlerWarning() {
   return (
     <div>
       <Banner
-        bannerType="danger"
+        bannerType={StatusColorVariant.Danger}
         backDropBlur
         orientation={BannerOrientation.Vertical}
         iconSize={46}

@@ -39,7 +39,7 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
           <styledEl.TokenInfo key={token.address.toLowerCase()}>
             <TokenLogo token={token} size={24} />
             <styledEl.StyledTokenSymbol token={token} />
-            <styledEl.StyledTokenName token={token} length={400} />
+            <styledEl.StyledTokenName token={token} />
             <ExternalLinkStyled
               target="_blank"
               href={getExplorerLink(token.chainId, token.address, ExplorerDataType.TOKEN)}

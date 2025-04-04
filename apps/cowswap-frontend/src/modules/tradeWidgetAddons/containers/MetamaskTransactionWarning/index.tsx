@@ -4,7 +4,7 @@ import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ProviderMetaInfoPayload, WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
-import { InlineBanner } from '@cowprotocol/ui'
+import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { METAMASK_RDNS, useIsMetamaskBrowserExtensionWallet } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { ExternalProvider } from '@ethersproject/providers'
@@ -41,7 +41,7 @@ export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency 
   const chainInfo = CHAIN_INFO[sellToken.chainId as SupportedChainId]
 
   return (
-    <Banner bannerType="danger" iconSize={32}>
+    <Banner bannerType={StatusColorVariant.Danger} iconSize={32}>
       {currentVersion && (
         <>
           Your Metamask extension (<b>v{currentVersion}</b>) is out of date.{' '}
