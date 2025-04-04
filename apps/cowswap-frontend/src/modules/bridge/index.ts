@@ -5,7 +5,7 @@ export * from './components'
 export { useBridgeProvider } from './hooks/useBridgeProvider'
 export { useBridgeSupportedTokens } from './hooks/useBridgeSupportedTokens'
 export { useBridgeSupportedNetworks } from './hooks/useBridgeSupportedNetworks'
-export { useBridgeProviderDetails, useAllBridgeProviderDetails } from './hooks/useBridgeProviderDetails'
+export { useBridgeProviderDetails } from './hooks/useBridgeProviderDetails'
 
 // Constants
 export {
@@ -17,6 +17,3 @@ export {
 
 // Types
 export * from './types'
-
-// Utils
-export * from './utils'
