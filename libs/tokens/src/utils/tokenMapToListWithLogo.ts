@@ -7,11 +7,18 @@ import { TokensMap } from '../types'
  */
 export function tokenMapToListWithLogo(tokenMap: TokensMap, chainId: number): TokenWithLogo[] {
   return Object.values(tokenMap)
-    .filter((token) => token.chainId === chainId)
-    .sort((a, b) => a.symbol.localeCompare(b.symbol))
-    .map((token) =>
-      token.lpTokenProvider
-        ? LpToken.fromTokenToLp(token, token.lpTokenProvider)
-        : TokenWithLogo.fromToken(token, token.logoURI),
-    )
+    .reduce<TokenWithLogo[]>((acc, token) => {
+      if (token.chainId === chainId) {
+        acc.push(
+          token.lpTokenProvider
+            ? LpToken.fromTokenToLp(token, token.lpTokenProvider)
+            : TokenWithLogo.fromToken(token, token.logoURI),
+        )
+      }
+      return acc
+    }, [])
+    .sort((a, b) => {
+      if (!a.symbol || !b.symbol) return 0
+      return a.symbol.localeCompare(b.symbol)
+    })
 }

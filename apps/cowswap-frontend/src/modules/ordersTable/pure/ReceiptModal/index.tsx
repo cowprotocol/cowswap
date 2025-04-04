@@ -1,7 +1,7 @@
 import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { BannerOrientation, ExternalLink, Icon, IconType, InlineBanner, UI } from '@cowprotocol/ui'
+import { BannerOrientation, ExternalLink, Icon, IconType, InlineBanner, StatusColorVariant, UI } from '@cowprotocol/ui'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
 import { CloseIcon } from 'theme'
@@ -144,7 +144,7 @@ export function ReceiptModal({
 
         {twapOrder && (
           <styledEl.InfoBannerWrapper>
-            <InlineBanner bannerType="information">
+            <InlineBanner bannerType={StatusColorVariant.Info}>
               <p>
                 {isTwapPartOrder
                   ? `Part of a ${twapOrder.order.n}-part TWAP order split`
