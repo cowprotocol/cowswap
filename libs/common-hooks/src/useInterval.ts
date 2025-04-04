@@ -9,7 +9,7 @@ import { Command } from '@cowprotocol/types'
  * @param leading if true, the callback will be invoked immediately (on the leading edge); otherwise, it will be invoked after delay
  */
 export function useInterval(callback: Command, delay: null | number, leading = true) {
-  const savedCallback = useRef<Command>(null)
+  const savedCallback = useRef<Command | null>(null)
 
   // Remember the latest callback.
   useEffect(() => {
