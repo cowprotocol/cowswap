@@ -76,8 +76,7 @@ const iconButtonStyles = css<{ active?: boolean; iconSize?: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(${UI.COLOR_TEXT});
-  opacity: ${({ active }) => (active ? '1' : '0.6')};
+  color: var(${UI.COLOR_TEXT_OPACITY_60});
   transition: all var(${UI.ANIMATION_DURATION}) ease-in-out;
   border-radius: 8px;
   max-width: var(--maxSize);
@@ -86,7 +85,7 @@ const iconButtonStyles = css<{ active?: boolean; iconSize?: string }>`
   height: var(--maxSize);
 
   &:hover {
-    opacity: 1;
+    color: var(${UI.COLOR_TEXT});
     background: var(${UI.COLOR_PAPER_DARKER});
   }
 

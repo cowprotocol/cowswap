@@ -17,28 +17,36 @@ export type ConfirmDetailsItemProps = {
   fiatAmount?: string
   withTimelineDot?: boolean
   highlighted?: boolean
+  contentTextColor?: string
+  isLast?: boolean
 }
 
 export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
-  const { children, label, labelOpacity = false, tooltip, withArrow = false, withTimelineDot = false } = props
+  const {
+    children,
+    label,
+    labelOpacity = false,
+    tooltip,
+    withArrow = false,
+    withTimelineDot = false,
+    contentTextColor,
+    isLast = false,
+  } = props
 
   return (
     <Wrapper>
       {withArrow && <CornerDownRight size={14} />}
-      {withTimelineDot && <TimelineDot />}
+      {withTimelineDot && <TimelineDot isLast={isLast} />}
       {label ? (
         <Row>
-          <div>
-            {label && (
-              <Label labelOpacity={labelOpacity}>
-                <div>
-                  {label} {tooltip && <InfoTooltip className="info-tooltip" content={tooltip} />}
-                </div>
-              </Label>
-            )}
-          </div>
+          {label && (
+            <Label labelOpacity={labelOpacity}>
+              {label}
+              {tooltip && <InfoTooltip className="info-tooltip" content={tooltip} />}
+            </Label>
+          )}
 
-          <Content>{children}</Content>
+          <Content contentTextColor={contentTextColor}>{children}</Content>
         </Row>
       ) : (
         children
