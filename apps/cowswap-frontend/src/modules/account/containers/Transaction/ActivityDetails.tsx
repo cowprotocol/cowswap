@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from 'react'
+import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { COW, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
@@ -34,7 +34,6 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { StatusDetails } from './StatusDetails'
 import {
-  TransactionState as ActivityLink,
   ActivityVisual,
   CreationTimeText,
   FiatWrapper,
@@ -44,6 +43,7 @@ import {
   SummaryInnerRow,
   TextAlert,
   TransactionInnerDetail,
+  TransactionState as ActivityLink,
 } from './styled'
 
 import { ActivityDerivedState } from './index'
@@ -58,7 +58,7 @@ const DEFAULT_ORDER_SUMMARY = {
 export function GnosisSafeTxDetails(props: {
   chainId: number
   activityDerivedState: ActivityDerivedState
-}): JSX.Element | null {
+}): ReactElement | null {
   const { chainId, activityDerivedState } = props
   const { gnosisSafeInfo, enhancedTransaction, status, isOrder, order, isExpired, isCancelled, isFailed } =
     activityDerivedState
@@ -86,7 +86,7 @@ export function GnosisSafeTxDetails(props: {
   const pendingSignaturesCount = gnosisSafeThreshold - numConfirmations
   const isPendingSignatures = pendingSignaturesCount > 0
 
-  let signaturesMessage: JSX.Element
+  let signaturesMessage: ReactElement
 
   const areIsMessage = pendingSignaturesCount > 1 ? 's are' : ' is'
 

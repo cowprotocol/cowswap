@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { ReactElement, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isSellOrder } from '@cowprotocol/common-utils'
@@ -15,7 +15,7 @@ interface OrderSummaryProps {
   sellAmount: string
   buyAmount: string
   kind: OrderKind
-  children?: JSX.Element | string
+  children?: ReactElement | string
   customTemplate?: typeof SellForAtLeastTemplate
 }
 
@@ -42,8 +42,8 @@ export function OrderSummary(props: OrderSummaryProps) {
   const summary = customTemplate
     ? customTemplate(templateProps)
     : isSell
-    ? SellForAtLeastTemplate(templateProps)
-    : BuyForAtMostTemplate(templateProps)
+      ? SellForAtLeastTemplate(templateProps)
+      : BuyForAtMostTemplate(templateProps)
 
   return (
     <div>

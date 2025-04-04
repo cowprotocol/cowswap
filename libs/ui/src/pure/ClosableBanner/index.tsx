@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { useCallback } from 'react'
+import { ReactElement, useCallback } from 'react'
 
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 
@@ -10,7 +10,7 @@ import { CLOSABLE_BANNER_STORAGE } from './constants'
 type ClosableBannersState = Record<string, true | undefined>
 
 interface ClosableBannerCallback {
-  (close: () => void): JSX.Element
+  (close: () => void): ReactElement
 }
 
 export interface ClosableBannerProps {

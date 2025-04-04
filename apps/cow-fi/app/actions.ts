@@ -5,7 +5,15 @@ import { searchArticles as searchArticlesService } from '../services/cms'
 /**
  * Server action to search for articles
  */
-export async function searchArticlesAction(searchTerm: string, page: number = 0, pageSize: number) {
+export async function searchArticlesAction({
+  searchTerm,
+  page = 0,
+  pageSize = 10,
+}: {
+  searchTerm: string
+  page?: number
+  pageSize?: number
+}) {
   try {
     const results = await searchArticlesService({ searchTerm, page, pageSize })
 

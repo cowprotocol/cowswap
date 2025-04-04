@@ -1,4 +1,13 @@
-import React, { forwardRef, useMemo, useRef, useState, useEffect, ComponentType, PropsWithChildren } from 'react'
+import React, {
+  ComponentType,
+  forwardRef,
+  PropsWithChildren,
+  ReactElement,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 
 import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'
 import IMG_ICON_CARRET_DOWN from '@cowprotocol/assets/images/carret-down.svg'
@@ -89,7 +98,7 @@ type LinkComponentType = ComponentType<PropsWithChildren<{ href: string }>>
 export interface MenuItem {
   href?: string
   label?: string
-  badge?: string | JSX.Element
+  badge?: string | ReactElement
   children?: DropdownMenuItem[]
   productVariant?: ProductVariant
   icon?: string
@@ -113,7 +122,7 @@ interface DropdownMenuItem {
   external?: boolean
   label?: string
   icon?: string
-  badge?: string | JSX.Element
+  badge?: string | ReactElement
   description?: string
   isButton?: boolean
   children?: DropdownMenuItem[]
@@ -602,7 +611,7 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
     <>
       {isOpen &&
         (mobileMode ? (
-          <MobileDropdownContainer mobileMode={mobileMode} ref={ref as React.RefObject<HTMLDivElement>}>
+          <MobileDropdownContainer mobileMode={mobileMode} ref={ref as unknown as React.RefObject<HTMLDivElement>}>
             <DropdownContent isOpen={true} alignRight={true} mobileMode={mobileMode}>
               {settingsNavItems.map((item, index) => {
                 const to = item.external
