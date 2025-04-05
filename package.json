@@ -80,7 +80,7 @@
     "@davatar/react": "1.8.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@ethersproject/experimental": "^5.7.0",
+    "@ethersproject/experimental": "^5.8.0",
     "@fontsource/ibm-plex-mono": "^4.5.1",
     "@fontsource/inter": "^4.5.1",
     "@fortawesome/fontawesome-svg-core": "^6.7.1",
