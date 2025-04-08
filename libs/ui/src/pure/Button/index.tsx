@@ -4,11 +4,7 @@ import { ChevronDown, Star } from 'react-feather'
 import { ButtonProps } from 'rebass/styled-components'
 import styled from 'styled-components/macro'
 
-import {
-  ButtonConfirmedStyle as ButtonConfirmedStyleMod,
-  ButtonGray as ButtonGrayMod,
-  ButtonPrimary as ButtonPrimaryMod,
-} from './ButtonMod'
+import { ButtonGray as ButtonGrayMod, ButtonPrimary as ButtonPrimaryMod } from './ButtonMod'
 import { ButtonSize } from './types'
 
 import { UI } from '../../enum'
@@ -28,7 +24,9 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   border-radius: 16px;
   position: relative;
   min-height: 58px;
-  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  transition:
+    background var(${UI.ANIMATION_DURATION}) ease-in-out,
+    color var(${UI.ANIMATION_DURATION}) ease-in-out;
   margin: 0;
   flex-flow: row wrap;
 
@@ -125,8 +123,11 @@ export const ButtonOutlined = styled.button<{ disabled?: boolean; margin?: strin
   padding: 5px 10px;
   min-height: ${({ minHeight }) => (minHeight ? `${minHeight}px` : 'initial')};
   margin: ${({ margin }) => margin || '0'};
-  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out,
-    border var(${UI.ANIMATION_DURATION}) ease-in-out, opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  transition:
+    background var(${UI.ANIMATION_DURATION}) ease-in-out,
+    color var(${UI.ANIMATION_DURATION}) ease-in-out,
+    border var(${UI.ANIMATION_DURATION}) ease-in-out,
+    opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -153,18 +154,6 @@ export const ButtonOutlined = styled.button<{ disabled?: boolean; margin?: strin
     opacity: ${({ disabled }) => (disabled ? 0.4 : 1)};
     cursor: auto;
   }
-`
-
-export const ButtonConfirmedStyle = styled(ButtonConfirmedStyleMod)`
-  // CSS overrides
-  background-color: ${({ theme }) => theme.disabled};
-  color: var(--cow-color-text1);
-  background-image: none;
-  border: 0;
-  cursor: auto;
-  animation: none;
-  border: none;
-  box-shadow: none;
 `
 
 export const ButtonErrorStyle = styled(ButtonPrimary)`
@@ -211,18 +200,6 @@ const HoverIcon = styled.div`
 
 type ButtonCustomProps = ButtonProps & {
   buttonSize?: ButtonSize
-}
-
-export function ButtonConfirmed({
-  confirmed,
-  altDisabledStyle,
-  ...rest
-}: { confirmed?: boolean; altDisabledStyle?: boolean } & ButtonCustomProps) {
-  if (confirmed) {
-    return <ButtonConfirmedStyle {...rest} />
-  } else {
-    return <ButtonPrimary {...rest} altDisabledStyle={altDisabledStyle} />
-  }
 }
 
 export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonCustomProps) {

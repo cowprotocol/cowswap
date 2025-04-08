@@ -1,13 +1,15 @@
-import { useContext, useMemo } from 'react'
+import { useContext } from 'react'
 
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
-import { AutoRow, ButtonConfirmed, ButtonSize, HoverTooltip, Loader, TokenSymbol } from '@cowprotocol/ui'
+import { ButtonPrimary, ButtonSize, HoverTooltip, Loader, TokenSymbol } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import { CheckCircle, HelpCircle } from 'react-feather'
+import { HelpCircle } from 'react-feather'
 import { ThemeContext } from 'styled-components/macro'
+
+import * as styledEl from './styledEl'
 
 import { ApprovalState } from '../../hooks/useApproveState'
 
@@ -23,21 +25,13 @@ export function ApproveButton(props: ApproveButtonProps) {
 
   const theme = useContext(ThemeContext)
   const isPending = state === ApprovalState.PENDING
-  const isConfirmed = state === ApprovalState.APPROVED
   const disabled = isDisabled || state !== ApprovalState.NOT_APPROVED
 
-  const content = useMemo(() => {
-    if (isConfirmed) {
-      return (
-        <>
-          <Trans>
-            You can now trade <TokenSymbol token={currency} />
-          </Trans>
-          <CheckCircle size="24" />
-        </>
-      )
-    } else {
-      return (
+  return (
+    <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={onClick} disabled={disabled || !onClick}>
+      <styledEl.ApproveButtonWrapper isPending={isPending}>
+        <TokenLogo token={currency} size={24} />
+
         <>
           {/* we need to shorten this string on mobile */}
           <span>
@@ -57,35 +51,7 @@ export function ApproveButton(props: ApproveButtonProps) {
             {isPending ? <Loader stroke={theme.text1} /> : <HelpCircle size="24" />}
           </HoverTooltip>
         </>
-      )
-    }
-  }, [currency, theme, isPending, isConfirmed])
-
-  return (
-    <ButtonConfirmed
-      buttonSize={ButtonSize.BIG}
-      onClick={onClick}
-      disabled={disabled || !onClick}
-      width="100%"
-      marginBottom={10}
-      altDisabledStyle={isPending} // show solid button while waiting
-      confirmed={isConfirmed}
-    >
-      <AutoRow justify="space-between" style={{ flexWrap: 'nowrap' }}>
-        <span
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-evenly',
-            width: '100%',
-            fontSize: '14px',
-          }}
-        >
-          <TokenLogo token={currency} size={24} />
-
-          {content}
-        </span>
-      </AutoRow>
-    </ButtonConfirmed>
+      </styledEl.ApproveButtonWrapper>
+    </ButtonPrimary>
   )
 }

@@ -15,7 +15,6 @@ export const BaseButton = styled(RebassButton)<
     padding?: string
     width?: string
     $borderRadius?: string
-    altDisabledStyle?: boolean
     buttonSize?: ButtonSize // mod
   } & ButtonProps
 >`
@@ -63,14 +62,13 @@ export const ButtonPrimary = styled(BaseButton)`
     color: ${({ theme }) => theme.text1};
   }
   &:disabled {
-    background-color: ${({ theme, altDisabledStyle, disabled }) =>
-      altDisabledStyle ? (disabled ? theme.bg2 : theme.bg2) : theme.background};
-    color: ${({ theme, altDisabledStyle }) => (altDisabledStyle ? 'white' : theme.info)};
+    background-color: ${({ theme }) => theme.background};
+    color: ${({ theme }) => theme.info};
     cursor: auto;
     box-shadow: none;
     border: 1px solid transparent;
     outline: none;
-    opacity: ${({ altDisabledStyle }) => (altDisabledStyle ? '0.7' : '1')};
+    opacity: 1;
   }
 `
 
@@ -211,18 +209,6 @@ export const ButtonEmpty = styled(BaseButton)`
   }
 `
 
-export const ButtonConfirmedStyle = styled(BaseButton)`
-  background-color: ${({ theme }) => theme.background};
-  color: var(--cow-color-text1);
-
-  &:disabled {
-    /* opacity: 50%; */
-    background-color: ${({ theme }) => theme.primary};
-    color: var(--cow-color-text2);
-    cursor: auto;
-  }
-`
-
 export const ButtonErrorStyle = styled(BaseButton)`
   background-color: ${({ theme }) => theme.danger};
   border: 1px solid ${({ theme }) => theme.danger};
@@ -246,18 +232,6 @@ export const ButtonErrorStyle = styled(BaseButton)`
     border: 1px solid ${({ theme }) => theme.danger};
   }
 `
-
-export function ButtonConfirmed({
-  confirmed,
-  altDisabledStyle,
-  ...rest
-}: { confirmed?: boolean; altDisabledStyle?: boolean } & ButtonProps) {
-  if (confirmed) {
-    return <ButtonConfirmedStyle {...rest} />
-  } else {
-    return <ButtonPrimary {...rest} altDisabledStyle={altDisabledStyle} />
-  }
-}
 
 export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonProps) {
   if (error) {
