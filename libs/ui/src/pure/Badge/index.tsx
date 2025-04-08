@@ -44,7 +44,3 @@ export const Badge = styled.div<{ type?: BadgeType }>`
     fill: ${({ type }) => badgeColors[type || 'default']};
   }
 `
-
-Badge.defaultProps = {
-  type: 'default',
-}

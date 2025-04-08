@@ -1,6 +1,6 @@
 import { Color } from '@cowprotocol/ui'
 
-import { Stylesheet } from 'cytoscape'
+import { StylesheetCSS } from 'cytoscape'
 import styled, { css } from 'styled-components/macro'
 
 // TODO: update icon
@@ -73,7 +73,6 @@ export const LayoutButton = styled.span`
 export const DropdownWrapper = styled(Dropdown)`
   &.dropdown-container {
     ${ArrowIconCSS}
-
     div:first-child {
       display: flex;
       align-items: center;
@@ -82,11 +81,11 @@ export const DropdownWrapper = styled(Dropdown)`
   }
 `
 
-export function STYLESHEET(): Stylesheet[] {
+export function STYLESHEET(): StylesheetCSS[] {
   return [
     {
       selector: 'node[label]',
-      style: {
+      css: {
         label: 'data(label)',
         color: Color.neutral100,
         height: 50,
@@ -96,7 +95,7 @@ export function STYLESHEET(): Stylesheet[] {
     },
     {
       selector: 'node',
-      style: {
+      css: {
         'border-style': 'solid',
         'border-width': 3,
         'border-opacity': 0,
@@ -104,7 +103,7 @@ export function STYLESHEET(): Stylesheet[] {
     },
     {
       selector: 'node.hover',
-      style: {
+      css: {
         'border-color': Color.explorer_orange1,
         'border-style': 'solid',
         'border-width': 3,
@@ -113,7 +112,7 @@ export function STYLESHEET(): Stylesheet[] {
     },
     {
       selector: 'edge[label]',
-      style: {
+      css: {
         label: 'data(label)',
         width: 2,
         'target-arrow-shape': 'triangle',
@@ -133,7 +132,7 @@ export function STYLESHEET(): Stylesheet[] {
     },
     {
       selector: 'edge.many-bidirectional',
-      style: {
+      css: {
         'curve-style': 'bezier',
         'font-size': '15px',
         'text-background-padding': '3px',
@@ -141,27 +140,27 @@ export function STYLESHEET(): Stylesheet[] {
     },
     {
       selector: 'edge.sell,edge.amm',
-      style: {
+      css: {
         'line-color': Color.explorer_textError,
         'target-arrow-color': Color.explorer_textError,
       },
     },
     {
       selector: 'edge.buy,edge.user',
-      style: {
+      css: {
         'line-color': Color.explorer_green1,
         'target-arrow-color': Color.explorer_green1,
       },
     },
     {
       selector: 'edge.amm,edge.user',
-      style: {
+      css: {
         'curve-style': 'bezier',
       },
     },
     {
       selector: 'edge.hover',
-      style: {
+      css: {
         width: 3,
         'line-color': Color.explorer_orange1,
         'target-arrow-color': Color.explorer_orange1,
@@ -171,7 +170,7 @@ export function STYLESHEET(): Stylesheet[] {
     },
     {
       selector: 'node[type="trader"]',
-      style: {
+      css: {
         'background-image': `url(${TraderIcon})`,
         'text-valign': 'bottom',
         'text-margin-y': 8,
@@ -179,7 +178,7 @@ export function STYLESHEET(): Stylesheet[] {
     },
     {
       selector: 'node[type="special"]',
-      style: {
+      css: {
         'background-image': `url(${SpecialIcon})`,
         'text-valign': 'bottom',
         'text-margin-y': 8,
@@ -187,7 +186,7 @@ export function STYLESHEET(): Stylesheet[] {
     },
     {
       selector: 'node[type="dex"]',
-      style: {
+      css: {
         'background-image': `url(${DexIcon})`,
         'text-max-width': '5rem',
         'text-valign': 'bottom',
@@ -196,7 +195,7 @@ export function STYLESHEET(): Stylesheet[] {
     },
     {
       selector: 'node[type="token"]',
-      style: {
+      css: {
         'background-image': `url(${TokenIcon})`,
         'text-max-width': '5rem',
         'text-valign': 'bottom',
@@ -205,7 +204,7 @@ export function STYLESHEET(): Stylesheet[] {
     },
     {
       selector: 'node[type="hyper"]',
-      style: {
+      css: {
         'background-color': Color.explorer_textError,
         width: '10',
         height: '10',
@@ -216,7 +215,7 @@ export function STYLESHEET(): Stylesheet[] {
     },
     {
       selector: 'node[type="cowProtocol"]',
-      style: {
+      css: {
         'background-image': `url(${CowProtocolIcon})`,
         height: '90',
         width: '90',
@@ -226,7 +225,7 @@ export function STYLESHEET(): Stylesheet[] {
     },
     {
       selector: 'node[type="networkNode"]',
-      style: {
+      css: {
         'border-style': 'dashed',
         'border-opacity': 0.8,
         'border-width': 1,

@@ -1,4 +1,4 @@
-import { MouseEvent, ReactNode, useCallback, RefObject, useEffect, useRef, useState } from 'react'
+import { MouseEvent, ReactNode, RefObject, useCallback, useEffect, useRef, useState } from 'react'
 
 import { useOnClickOutside, useOnScroll } from '@cowprotocol/common-hooks'
 import { isMobile } from '@cowprotocol/common-utils'
@@ -177,7 +177,7 @@ export interface TooltipProps extends Omit<PopoverProps, 'content'> {
    */
   content: ReactNode
 
-  containerRef: RefObject<HTMLElement>
+  containerRef: RefObject<HTMLElement | null>
 }
 
 /**

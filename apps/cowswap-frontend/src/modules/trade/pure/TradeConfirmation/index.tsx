@@ -23,7 +23,9 @@ import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
 
 export interface TradeConfirmationProps {
   onConfirm(): void
+
   onDismiss(): void
+
   account: string | undefined
   ensName: string | undefined
   appData?: string | AppDataInfo
@@ -31,7 +33,7 @@ export interface TradeConfirmationProps {
   outputCurrencyInfo: CurrencyPreviewInfo
   isConfirmDisabled: boolean
   priceImpact: PriceImpact
-  title: JSX.Element | string
+  title: ReactElement | string
   refreshInterval?: number
   isPriceStatic?: boolean
   recipient?: string | null
