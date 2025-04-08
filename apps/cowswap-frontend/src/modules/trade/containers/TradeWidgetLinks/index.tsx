@@ -20,7 +20,7 @@ import * as styledEl from './styled'
 import { useGetTradeUrlParams } from '../../hooks/useGetTradeUrlParams'
 import { useTradeRouteContext } from '../../hooks/useTradeRouteContext'
 import { useGetTradeStateByRoute } from '../../hooks/useTradeState'
-import { getDefaultTradeRawState, TradeUrlParams } from '../../types/TradeRawState'
+import { getDefaultTradeRawState, TradeUrlParams } from '../../types'
 import { addChainIdToRoute, parameterizeTradeRoute } from '../../utils/parameterizeTradeRoute'
 
 interface MenuItemConfig {
@@ -63,7 +63,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
     })
   }, [menuItems, enabledTradeTypes])
 
-  const menuItemsElements: JSX.Element[] = useMemo(() => {
+  const menuItemsElements = useMemo(() => {
     return enabledItems.map((item) => {
       const isItemYield = item.route === Routes.YIELD
       const chainId = tradeContext.chainId

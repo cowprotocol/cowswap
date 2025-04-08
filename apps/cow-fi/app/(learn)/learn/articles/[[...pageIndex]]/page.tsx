@@ -1,8 +1,6 @@
-'use server'
-
-import { Article, getArticles, getCategories } from '../../../../../services/cms'
 import { ArticlesPageComponents } from '@/components/ArticlesPageComponents'
 import { redirect } from 'next/navigation'
+import { Article, getArticles, getCategories } from '../../../../../services/cms'
 
 const ITEMS_PER_PAGE = 48
 

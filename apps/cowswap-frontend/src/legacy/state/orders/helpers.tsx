@@ -1,3 +1,5 @@
+import { ReactElement } from 'react'
+
 import { BlockExplorerLinkType, formatOrderId } from '@cowprotocol/common-utils'
 
 import { OrderStatus } from './actions'
@@ -8,7 +10,7 @@ type OrderStatusExtended = OrderStatus | 'submitted' | 'presigned'
 interface SetOrderSummaryParams {
   id: string
   status?: OrderStatusExtended
-  summary?: string | JSX.Element
+  summary?: string | ReactElement
   descriptor?: string | null
   orderType?: BlockExplorerLinkType
 }
@@ -25,7 +27,7 @@ enum OrderIdType {
 
 interface BasePopupContent {
   success: boolean
-  summary: string | JSX.Element
+  summary: string | ReactElement
   orderType?: BlockExplorerLinkType
 }
 
@@ -68,16 +70,16 @@ export function setPopupData(
     summary,
     status,
     descriptor,
-  }: SetOrderSummaryParams & { success?: boolean; orderType?: BlockExplorerLinkType }
+  }: SetOrderSummaryParams & { success?: boolean; orderType?: BlockExplorerLinkType },
 ): { key?: string; content: MetaPopupContent }
 // Txn popup
 export function setPopupData(
   type: OrderTxTypes.TXN,
-  { success, id, summary, status, descriptor }: SetOrderSummaryParams & { hash: string; success?: boolean }
+  { success, id, summary, status, descriptor }: SetOrderSummaryParams & { hash: string; success?: boolean },
 ): { key?: string; content: TxnPopupContent }
 export function setPopupData(
   type: OrderTxTypes,
-  { hash, success = true, id, summary, status, descriptor, orderType }: any
+  { hash, success = true, id, summary, status, descriptor, orderType }: any,
 ): { key?: string; content: TxnPopupContent | MetaPopupContent } {
   const key = id + '_' + status
   const baseContent = {

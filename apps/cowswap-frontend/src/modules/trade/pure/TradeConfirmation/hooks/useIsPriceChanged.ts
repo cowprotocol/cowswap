@@ -5,7 +5,7 @@ export function useIsPriceChanged(
   outputAmount: string | undefined,
   defaultState: boolean = false,
 ) {
-  const initialAmounts = useRef<{ inputAmount?: string; outputAmount?: string }>()
+  const initialAmounts = useRef<{ inputAmount?: string; outputAmount?: string }>({})
 
   const [isPriceChanged, setIsPriceChanged] = useState(defaultState)
 

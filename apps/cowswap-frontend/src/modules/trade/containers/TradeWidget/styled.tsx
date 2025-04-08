@@ -3,9 +3,9 @@ import { UI } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 import { WIDGET_MAX_WIDTH } from 'theme'
 
-export const Container = styled.div`
+export const Container = styled.div<{ isTokenSelectOpen?: boolean }>`
   width: 100%;
-  max-width: ${WIDGET_MAX_WIDTH.swap};
+  max-width: ${({ isTokenSelectOpen }) => (isTokenSelectOpen ? WIDGET_MAX_WIDTH.tokenSelect : WIDGET_MAX_WIDTH.swap)};
   margin: 0 auto;
   position: relative;
 `

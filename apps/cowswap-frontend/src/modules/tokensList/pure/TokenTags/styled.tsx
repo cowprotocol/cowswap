@@ -1,40 +1,28 @@
-import { Media, UI } from '@cowprotocol/ui'
+import { StatusColorEnums, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
 export const TagContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
+  display: inline-flex;
   flex-flow: row wrap;
   color: inherit;
-  flex: 0 1 auto;
   gap: 4px;
-  margin: 0 0 0 auto;
+  align-items: center;
 `
 
-export const Tag = styled.div<{ tag?: { id: string } }>`
+export const Tag = styled.div<{ tag?: { id: string }; colorEnums: StatusColorEnums }>`
   display: flex;
   align-items: center;
-  background: ${({ tag }) =>
-    tag?.id === '0'
-      ? `var(${UI.COLOR_DANGER_BG})`
-      : tag?.id === '1'
-        ? `var(${UI.COLOR_SUCCESS_BG})`
-        : `var(${UI.COLOR_PAPER_DARKER})`};
-  color: ${({ tag }) =>
-    tag?.id === '0'
-      ? `var(${UI.COLOR_DANGER_TEXT})`
-      : tag?.id === '1'
-        ? `var(${UI.COLOR_SUCCESS_TEXT})`
-        : `var(${UI.COLOR_TEXT})`};
-  font-size: 12px;
+  background: var(${({ colorEnums }) => colorEnums.bg});
+  color: var(${({ colorEnums }) => colorEnums.text});
+  font-size: 11px;
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
-  border-radius: 4px;
-  padding: 4px 6px;
+  border-radius: 12px;
+  padding: 3px 6px;
+  line-height: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  justify-self: flex-end;
 
   ${Media.upToSmall()} {
     margin: 0;

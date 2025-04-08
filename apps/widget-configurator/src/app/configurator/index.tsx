@@ -269,6 +269,10 @@ export function Configurator({ title }: { title: string }) {
             </FormControl>
             {!standaloneMode && (
               <div style={WalletConnectionWrapper}>
+                {/* Attempt 2 at fixing issue on Vercel build (locally it builds fine) */}
+                {/* Error: apps/widget-configurator/src/app/configurator/index.tsx:272:17 - error TS2339: Property 'w3m-button' does not exist on type 'JSX.IntrinsicElements'.*/}
+                {/* Fix from https://github.com/reown-com/appkit/issues/3093 */}
+                {/* @ts-ignore */}
                 <w3m-button />
               </div>
             )}

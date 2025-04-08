@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
@@ -26,6 +26,7 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
     onSelectToken,
     unsupportedTokens,
     permitCompatibleTokens,
+    tokenListTags,
     account,
     displayLpTokenLists,
   } = props
@@ -34,9 +35,7 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
   const isWalletConnected = !!account
   const { isYieldEnabled } = useFeatureFlags()
 
-  const sortedTokens = useMemo(() => {
-    return balances ? allTokens.sort(tokensListSorter(balances)) : allTokens
-  }, [allTokens, balances])
+  const sortedTokens = useMemo(() => balances ? allTokens.sort(tokensListSorter(balances)) : allTokens, [allTokens, balances])
 
   const getItemView = useCallback(
     (sortedTokens: TokenWithLogo[], virtualRow: VirtualItem) => {
@@ -53,10 +52,19 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
           balance={balance}
           onSelectToken={onSelectToken}
           isWalletConnected={isWalletConnected}
+          tokenListTags={tokenListTags}
         />
       )
     },
-    [balances, unsupportedTokens, permitCompatibleTokens, selectedToken, onSelectToken, isWalletConnected],
+    [
+      balances,
+      unsupportedTokens,
+      permitCompatibleTokens,
+      selectedToken,
+      onSelectToken,
+      isWalletConnected,
+      tokenListTags,
+    ],
   )
 
   return (
