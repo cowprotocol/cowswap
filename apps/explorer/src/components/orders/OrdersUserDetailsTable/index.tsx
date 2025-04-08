@@ -254,8 +254,8 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
                 </span>
               </th>
               <SortHeader field="kind" label="Type" />
-              <th>Sell amount</th>
-              <th>Buy amount</th>
+              <SortHeader field='sellAmount' label='Sell amount' />
+              <SortHeader field='buyAmount' label='Buy amount' />
               <th>
                 <span>
                   Limit price <Icon icon={faExchangeAlt} onClick={invertLimitPrice} />
