@@ -53,7 +53,7 @@ const CHART_COLORS = {
   marketPrice: Color.explorer_green,
   gasPrice: Color.explorer_blue1,
   expectedFillPrice: Color.explorer_yellow4,
-  limitPrice: Color.explorer_red1,
+  limitPrice: Color.explorer_orange1,
   fillableZone: Color.explorer_green + '33', // 20% opacity version of green
   fillableZoneLimit: Color.explorer_green + '66', // 40% opacity version of green for limit orders
   fillableArea: Color.explorer_green + '20', // 12% opacity version of green for the area between lines
@@ -209,40 +209,33 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label, o
         {timestamp.toLocaleString()}
       </div>
       <div style={{ fontSize: '14px', marginBottom: '4px', color: CHART_COLORS.marketPrice }}>
-        <strong>Market Price:</strong> ${data.marketPrice.toFixed(2)}
+        Market Price: ${data.marketPrice.toFixed(2)}
       </div>
       <div style={{ fontSize: '14px', marginBottom: '4px', color: CHART_COLORS.gasPrice }}>
-        <strong>Gas Price:</strong> {data.gasPrice.toFixed(1)} Gwei
+        Gas Price: {data.gasPrice.toFixed(1)} Gwei
       </div>
-      {data.expectedFillPrice && (
-        <div style={{ fontSize: '14px', marginBottom: '4px', color: CHART_COLORS.expectedFillPrice }}>
-          <strong>Expected Fill:</strong> ${data.expectedFillPrice.toFixed(2)}
-          <div style={{ fontSize: '12px', color: Color.explorer_greyShade }}>(includes gas cost impact)</div>
-        </div>
-      )}
-      {orderType === 'Limit' && (
+      <div style={{ fontSize: '14px', marginBottom: '4px', color: CHART_COLORS.expectedFillPrice }}>
+        Expected Fill: ${data.expectedFillPrice.toFixed(2)}
+        <div style={{ fontSize: '12px', color: Color.explorer_greyShade }}>(includes gas cost impact)</div>
+      </div>
+      <div style={{ fontSize: '14px', marginBottom: '4px', color: CHART_COLORS.limitPrice }}>
+        Limit Price: ${DEMO_LIMIT_PRICE.toFixed(2)}
+      </div>
+      <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center' }}>
+        <span style={{ fontSize: '14px', marginRight: '8px' }}>Status:</span>
         <div
           style={{
-            fontSize: '14px',
-            marginBottom: '4px',
-            color: data.isFillable ? CHART_COLORS.fillableZoneLimit : Color.explorer_greyShade,
+            backgroundColor: STATUS_COLORS[data.status!],
+            color: Color.explorer_bg,
+            padding: '4px 12px',
+            borderRadius: '6px',
+            fontSize: '11px',
+            fontWeight: 500,
           }}
         >
-          <strong>Fillable:</strong> {data.isFillable ? 'Yes' : 'No'}
+          {data.status}
         </div>
-      )}
-      {data.status && (
-        <div
-          style={{
-            fontSize: '14px',
-            color: STATUS_COLORS[data.status],
-            marginTop: '8px',
-            fontWeight: 'bold',
-          }}
-        >
-          Status: {data.status}
-        </div>
-      )}
+      </div>
     </div>
   )
 }
@@ -261,10 +254,21 @@ interface CustomLabelProps {
 
 const CustomLabel: React.FC<CustomLabelProps> = ({ value, viewBox, onHover }) => {
   const [isHovered, setIsHovered] = React.useState(false)
+  const textRef = React.useRef<SVGTextElement>(null)
+  const [textWidth, setTextWidth] = React.useState(0)
 
   if (!value || !viewBox?.x || !viewBox?.y || !viewBox?.height) return null
 
   const y = viewBox.y + viewBox.height - 30
+  const labelHeight = 20
+  const horizontalPadding = 9 // Same as LimitPriceLabel
+
+  React.useEffect(() => {
+    if (textRef.current) {
+      const bbox = textRef.current.getBBox()
+      setTextWidth(bbox.width + horizontalPadding * 2) // Add padding to both sides
+    }
+  }, [value])
 
   const handleMouseEnter = () => {
     setIsHovered(true)
@@ -284,18 +288,26 @@ const CustomLabel: React.FC<CustomLabelProps> = ({ value, viewBox, onHover }) =>
       onMouseLeave={handleMouseLeave}
     >
       <rect
-        x={-30}
+        x={-(textWidth / 2) || -30} // Center the rect around x=0, fallback to -30 until measured
         y={0}
-        width={60}
-        height={20}
-        rx={3}
+        width={textWidth || 60} // Use measured width, fallback to 60 until measured
+        height={labelHeight}
+        rx={6}
         fill={STATUS_COLORS[value as OrderStatus]}
         style={{
           filter: isHovered ? 'brightness(1.1)' : undefined,
           transition: 'filter 0.2s ease',
         }}
       />
-      <text x={0} y={14} textAnchor="middle" fill="#FFFFFF" fontSize={11} style={{ pointerEvents: 'none' }}>
+      <text
+        ref={textRef}
+        x={0}
+        y={14}
+        textAnchor="middle"
+        fill={Color.explorer_bg}
+        fontSize={11}
+        style={{ pointerEvents: 'none' }}
+      >
         {value}
       </text>
     </g>
@@ -312,16 +324,41 @@ interface LimitPriceLabelProps {
 }
 
 const LimitPriceLabel: React.FC<LimitPriceLabelProps> = ({ value, viewBox }) => {
+  const textRef = React.useRef<SVGTextElement>(null)
+  const [textWidth, setTextWidth] = React.useState(0)
+
   if (!value || !viewBox?.x || !viewBox?.y) return null
 
-  // Center the label vertically on the line
   const labelHeight = 20
   const verticalOffset = -labelHeight / 2
+  const horizontalPadding = 9
+
+  React.useEffect(() => {
+    if (textRef.current) {
+      const bbox = textRef.current.getBBox()
+      setTextWidth(bbox.width + horizontalPadding * 2) // Add padding to both sides
+    }
+  }, [value])
 
   return (
     <g transform={`translate(${viewBox.x + 5},${viewBox.y})`}>
-      <rect x={0} y={verticalOffset} width={100} height={labelHeight} rx={4} fill={CHART_COLORS.limitPrice} />
-      <text x={50} y={verticalOffset + labelHeight / 2 + 4} textAnchor="middle" fill="#FFFFFF" fontSize={12}>
+      <rect
+        x={0}
+        y={verticalOffset}
+        width={textWidth || 100} // Fallback width until text is measured
+        height={labelHeight}
+        rx={6}
+        fill={CHART_COLORS.limitPrice}
+      />
+      <text
+        ref={textRef}
+        x={horizontalPadding} // Position text after left padding
+        y={verticalOffset + labelHeight / 2 + 4}
+        textAnchor="start" // Align from the start since we're using absolute positioning
+        fill={Color.explorer_bg}
+        fontSize={12}
+        fontWeight={500}
+      >
         Limit Price: ${value}
       </text>
     </g>
@@ -336,7 +373,7 @@ const ChartContainer = styled.div`
 
 export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> = ({
   orderType = 'Market',
-  height = 400,
+  height = 500,
   width,
 }) => {
   const data = React.useMemo(() => generateDemoData(), [])
