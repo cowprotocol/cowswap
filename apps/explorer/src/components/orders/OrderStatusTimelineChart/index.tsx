@@ -57,47 +57,79 @@ const CHART_COLORS = {
   fillableZone: Color.explorer_green + '33', // 20% opacity version of green
   fillableZoneLimit: Color.explorer_green + '66', // 40% opacity version of green for limit orders
   fillableArea: Color.explorer_blue2, // Use blue for fillable area
+  grid: Color.explorer_greyShade, // Grid lines color
 }
 
 // Demo data with explicit data points
 const DEMO_LIMIT_PRICE = 100
 
 const DEMO_DATA_POINTS = [
-  // 0-30 min: Ready. Market Price starts above expected fill, trending down
+  // Hour 0-4: Ready status, prices relatively stable with slight downward trend
   { minute: 0, marketPrice: 104.5, expectedFillPrice: 97.5, gasPrice: 45, status: 'Ready', isStatusChange: true },
-  { minute: 5, marketPrice: 103.8, expectedFillPrice: 97.8, gasPrice: 43 },
-  { minute: 10, marketPrice: 103.2, expectedFillPrice: 98.1, gasPrice: 40 },
-  { minute: 15, marketPrice: 102.5, expectedFillPrice: 98.4, gasPrice: 38 },
-  { minute: 20, marketPrice: 101.8, expectedFillPrice: 98.7, gasPrice: 35 },
-  { minute: 25, marketPrice: 101.0, expectedFillPrice: 99.0, gasPrice: 33 },
-  { minute: 28.5, marketPrice: 100.2, expectedFillPrice: 99.3, gasPrice: 32 },
+  { minute: 300, marketPrice: 103.8, expectedFillPrice: 97.8, gasPrice: 43 },
+  { minute: 600, marketPrice: 103.2, expectedFillPrice: 98.1, gasPrice: 42 },
+  { minute: 900, marketPrice: 102.8, expectedFillPrice: 98.3, gasPrice: 41 },
+  { minute: 1200, marketPrice: 102.5, expectedFillPrice: 98.4, gasPrice: 40 },
 
-  // At minute 29.2: Price approaches expected fill price of 99.38 - Considered starts here
+  // Hour 4-8: Market starts moving down more rapidly
+  { minute: 1500, marketPrice: 101.8, expectedFillPrice: 98.7, gasPrice: 38 },
+  { minute: 1800, marketPrice: 101.0, expectedFillPrice: 99.0, gasPrice: 36 },
+  { minute: 2100, marketPrice: 100.2, expectedFillPrice: 99.2, gasPrice: 35 },
+  { minute: 2400, marketPrice: 99.8, expectedFillPrice: 99.3, gasPrice: 34 },
+
+  // Hour 8-9: First Considered status only (keeping original price movement)
   {
-    minute: 29.2,
+    minute: 2520,
     marketPrice: 99.4,
     expectedFillPrice: 99.38,
-    gasPrice: 31,
+    gasPrice: 33,
     status: 'Considered',
     isStatusChange: true,
   },
+  { minute: 2535, marketPrice: 98.8, expectedFillPrice: 99.4, gasPrice: 32 },
+  { minute: 2550, marketPrice: 98.2, expectedFillPrice: 99.45, gasPrice: 31 },
+  { minute: 2565, marketPrice: 97.8, expectedFillPrice: 99.5, gasPrice: 30 },
 
-  // 30-32 min: Short Considered period
-  { minute: 30, marketPrice: 98.8, expectedFillPrice: 99.4, gasPrice: 30 },
-  { minute: 31.3, marketPrice: 98.2, expectedFillPrice: 99.45, gasPrice: 29 },
+  // Hour 9-12: Price recovery
+  { minute: 2700, marketPrice: 98.5, expectedFillPrice: 99.6, gasPrice: 35 },
+  { minute: 3000, marketPrice: 99.8, expectedFillPrice: 99.7, gasPrice: 38 },
+  { minute: 3300, marketPrice: 101.2, expectedFillPrice: 99.8, gasPrice: 40 },
+  { minute: 3600, marketPrice: 102.5, expectedFillPrice: 99.9, gasPrice: 42 },
 
-  // At minute 31.8: Start executing
-  { minute: 31.8, marketPrice: 97.8, expectedFillPrice: 99.5, gasPrice: 28, status: 'Executing', isStatusChange: true },
+  // Hour 12-16: Stable period with slight oscillations
+  { minute: 3900, marketPrice: 102.8, expectedFillPrice: 100.0, gasPrice: 41 },
+  { minute: 4200, marketPrice: 102.6, expectedFillPrice: 100.1, gasPrice: 39 },
+  { minute: 4500, marketPrice: 102.3, expectedFillPrice: 100.2, gasPrice: 38 },
+  { minute: 4800, marketPrice: 102.0, expectedFillPrice: 100.3, gasPrice: 37 },
 
-  // Short Executing period
-  { minute: 32.4, marketPrice: 97.4, expectedFillPrice: 99.6, gasPrice: 27 },
+  // Hour 16-20: Second major price movement and complete order cycle (spread out)
+  { minute: 5100, marketPrice: 101.2, expectedFillPrice: 100.4, gasPrice: 36 },
+  { minute: 5400, marketPrice: 100.5, expectedFillPrice: 100.45, gasPrice: 35 },
+  {
+    minute: 5460,
+    marketPrice: 100.2,
+    expectedFillPrice: 100.48,
+    gasPrice: 34,
+    status: 'Considered',
+    isStatusChange: true,
+  },
+  { minute: 5480, marketPrice: 99.8, expectedFillPrice: 100.5, gasPrice: 33 },
+  {
+    minute: 5580,
+    marketPrice: 99.4,
+    expectedFillPrice: 100.52,
+    gasPrice: 32,
+    status: 'Executing',
+    isStatusChange: true,
+  },
+  { minute: 5680, marketPrice: 99.0, expectedFillPrice: 100.54, gasPrice: 31, status: 'Settled', isStatusChange: true },
 
-  // At minute 32.7: Settled
-  { minute: 32.7, marketPrice: 97.0, expectedFillPrice: 99.7, gasPrice: 26, status: 'Settled', isStatusChange: true },
-
-  // Continue showing some time after settlement
-  { minute: 33.5, marketPrice: 96.8, expectedFillPrice: 99.8, gasPrice: 25 },
-  { minute: 35, marketPrice: 96.7, expectedFillPrice: 99.9, gasPrice: 24 },
+  // Hour 20-24: Final period, prices stabilizing
+  { minute: 5700, marketPrice: 99.5, expectedFillPrice: 100.6, gasPrice: 33 },
+  { minute: 6000, marketPrice: 100.2, expectedFillPrice: 100.7, gasPrice: 35 },
+  { minute: 6300, marketPrice: 101.0, expectedFillPrice: 100.8, gasPrice: 37 },
+  { minute: 6600, marketPrice: 101.8, expectedFillPrice: 100.9, gasPrice: 39 },
+  { minute: 7200, marketPrice: 102.5, expectedFillPrice: 101.0, gasPrice: 40 },
 ]
 
 const generateDemoData = (): ChartDataPoint[] => {
@@ -402,7 +434,7 @@ export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> =
               <circle cx="3" cy="3" r="1" fill={CHART_COLORS.fillableArea} fillOpacity="0.4" />
             </pattern>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" />
+          <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
           <XAxis
             dataKey="timestamp"
             tickFormatter={(value) => {
