@@ -18,7 +18,7 @@ import { useTradeQuotePolling } from './useTradeQuotePolling'
 import { tradeTypeAtom } from '../../trade/state/tradeTypeAtom'
 import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
 
-jest.mock('../../erc20Approval/hooks/useZeroApprovalState')
+jest.mock('modules/erc20Approval')
 jest.mock('common/hooks/useGetMarketDimension')
 jest.mock('@cowprotocol/common-hooks', () => ({
   ...jest.requireActual('@cowprotocol/common-hooks'),

@@ -9,7 +9,7 @@ import { Trans } from '@lingui/macro'
 import { CheckCircle, HelpCircle } from 'react-feather'
 import { ThemeContext } from 'styled-components/macro'
 
-import { ApprovalState } from 'modules/erc20Approval'
+import { ApprovalState } from '../../hooks/useApproveState'
 
 export interface ApproveButtonProps {
   currency: Currency | undefined | null

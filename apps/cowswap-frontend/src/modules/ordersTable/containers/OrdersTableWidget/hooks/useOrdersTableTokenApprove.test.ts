@@ -8,7 +8,7 @@ import { useApproveCurrency } from 'modules/erc20Approval'
 
 import { useOrdersTableTokenApprove } from './useOrdersTableTokenApprove'
 
-jest.mock('../../../../erc20Approval/hooks/useApproveCurrency')
+jest.mock('modules/erc20Approval')
 
 const mockUseTradeApproveCallback = useApproveCurrency as jest.MockedFunction<typeof useApproveCurrency>
 const tradeApproveCallbackMock = jest.fn().mockImplementation(() => Promise.resolve(undefined))

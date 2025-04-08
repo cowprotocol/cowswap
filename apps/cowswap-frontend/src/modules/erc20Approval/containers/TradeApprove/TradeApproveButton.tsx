@@ -2,9 +2,9 @@ import React from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useApproveCurrency, useApproveState } from 'modules/erc20Approval'
-
-import { ApproveButton } from 'common/pure/ApproveButton'
+import { useApproveCurrency } from '../../hooks/useApproveCurrency'
+import { useApproveState } from '../../hooks/useApproveState'
+import { ApproveButton } from '../../pure/ApproveButton'
 
 export interface TradeApproveButtonProps {
   amountToApprove: CurrencyAmount<Currency>

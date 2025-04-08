@@ -1,6 +1,7 @@
 import { Currency } from '@uniswap/sdk-core'
 
-import { usePendingApprovalModal } from '../../hooks/usePendingApprovalModal'
+import { usePendingApprovalModal } from 'common/hooks/usePendingApprovalModal'
+
 import { useUpdateTradeApproveState } from '../../hooks/useUpdateTradeApproveState'
 
 export function TradeApproveModal({ currency }: { currency: Currency | undefined }) {

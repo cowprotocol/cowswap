@@ -1,12 +1,12 @@
 import { COW, GNO_MAINNET } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { DemoContainer } from 'cosmos.decorator'
 import { useSelect } from 'react-cosmos/client'
 
-import { ApprovalState } from 'modules/erc20Approval'
+import { DemoContainer } from '../../../../cosmos.decorator'
+import { ApprovalState } from '../../hooks/useApproveState'
 
-import { ApproveButton } from '.'
+import { ApproveButton } from './index'
 
 const COW_TOKEN = COW[SupportedChainId.MAINNET]
 const GNO_TOKEN = GNO_MAINNET

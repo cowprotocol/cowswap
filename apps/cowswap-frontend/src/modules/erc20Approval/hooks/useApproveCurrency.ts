@@ -2,9 +2,10 @@ import { useCallback } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useShouldZeroApprove, useZeroApprove } from 'modules/erc20Approval'
+import { useShouldZeroApprove } from './useShouldZeroApprove'
+import { useZeroApprove } from './useZeroApprove'
 
-import { useTradeApproveCallback } from 'common/containers/TradeApprove'
+import { useTradeApproveCallback } from '../containers/TradeApprove/useTradeApproveCallback'
 
 export function useApproveCurrency(amountToApprove: CurrencyAmount<Currency> | undefined) {
   const tradeApproveCallback = useTradeApproveCallback(amountToApprove)

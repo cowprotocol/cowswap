@@ -6,10 +6,10 @@ import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
+import { TradeApproveButton } from 'modules/erc20Approval'
 import { CompatibilityIssuesWarning } from 'modules/trade'
 
 import { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
-import { TradeApproveButton } from 'common/containers/TradeApprove'
 import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
 import { TradeFormButtonContext, TradeFormValidation } from '../../types'

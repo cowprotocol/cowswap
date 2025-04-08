@@ -5,11 +5,10 @@ import { errorToString, isRejectRequestProviderError } from '@cowprotocol/common
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useApproveCallback } from 'modules/erc20Approval'
-
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
+import { useApproveCallback } from '../../hooks/useApproveCallback'
 import { useUpdateTradeApproveState } from '../../hooks/useUpdateTradeApproveState'
 
 interface TradeApproveCallbackParams {

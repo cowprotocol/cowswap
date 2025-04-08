@@ -3,7 +3,13 @@ import { ReactNode, useCallback, useEffect } from 'react'
 import { useAddUserToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useZeroApproveModalState, ZeroApprovalModal } from 'modules/erc20Approval'
+import {
+  TradeApproveModal,
+  useZeroApproveModalState,
+  ZeroApprovalModal,
+  useTradeApproveState,
+  useUpdateTradeApproveState,
+} from 'modules/erc20Approval'
 import {
   ImportTokenModal,
   SelectTokenWidget,
@@ -12,9 +18,6 @@ import {
   useUpdateSelectTokenWidgetState,
 } from 'modules/tokensList'
 
-import { TradeApproveModal } from 'common/containers/TradeApprove'
-import { useTradeApproveState } from 'common/hooks/useTradeApproveState'
-import { useUpdateTradeApproveState } from 'common/hooks/useUpdateTradeApproveState'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 import { useAutoImportTokensState } from '../../hooks/useAutoImportTokensState'
