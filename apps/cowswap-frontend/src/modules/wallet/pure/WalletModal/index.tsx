@@ -3,6 +3,7 @@ import { AutoRow } from '@cowprotocol/ui'
 import { TryActivation } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
+import { usePrivy } from '@privy-io/react-auth'
 import { ThemedText } from 'theme'
 
 import { LightCard } from 'legacy/components/Card'
@@ -30,6 +31,9 @@ interface WalletModalProps {
 
 export function WalletModal(props: Readonly<WalletModalProps>) {
   const { isOpen, onDismiss, view, openOptions, pendingError, tryActivation, tryConnection } = props
+  const { ready, authenticated, user } = usePrivy()
+
+  console.log('WalletModal privy: ready, authenticated, user ===>', ready, authenticated, user)
 
   const isPending = view === 'pending'
 
@@ -50,10 +54,10 @@ export function WalletModal(props: Readonly<WalletModalProps>) {
           )}
           <ContentWrapper>
             <AutoColumn gap="16px">
-              {isPending && (
+              {(isPending || !ready) && (
                 <PendingView openOptions={openOptions} error={pendingError} tryConnection={tryConnection} />
               )}
-              {!isPending && (
+              {!isPending && ready && (
                 <OptionGrid data-testid="option-grid">
                   <ConnectWalletOptions tryActivation={tryActivation} />
                 </OptionGrid>

@@ -11,6 +11,7 @@ import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
 import { Web3Provider } from '@cowprotocol/wallet'
 
+import { PrivyProvider } from '@privy-io/react-auth'
 import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
 import SvgCacheProvider from 'react-inlinesvg/provider'
@@ -44,31 +45,57 @@ if (window.ethereum) {
 function Main() {
   return (
     <StrictMode>
-      <SvgCacheProvider>
-        <Provider store={cowSwapStore}>
-          <AtomProvider store={jotaiStore}>
-            <HashRouter>
-              <LanguageProvider>
-                <Web3ProviderInstance>
-                  <ThemeProvider>
-                    <ThemedGlobalStyle />
-                    <BlockNumberProvider>
-                      <WithLDProvider>
-                        <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
-                          <WalletUnsupportedNetworkBanner />
-                          <Updaters />
-                          <Toasts />
-                          <App />
-                        </CowAnalyticsProvider>
-                      </WithLDProvider>
-                    </BlockNumberProvider>
-                  </ThemeProvider>
-                </Web3ProviderInstance>
-              </LanguageProvider>
-            </HashRouter>
-          </AtomProvider>
-        </Provider>
-      </SvgCacheProvider>
+      <PrivyProvider
+        appId="cm972y01j0069l50l35icf0e7"
+        clientId="client-WY5ijWTp9P5SjENYNUfdVfJDmUqaCLtiXBzBczSFhYcS8"
+        config={{
+          // Display email and wallet as login methods
+          loginMethods: ['google', 'email'],
+          appearance: {
+            theme: 'light',
+            accentColor: '#676FFF',
+            walletChainType: 'ethereum-only',
+            // logo: 'https://your-logo-url',
+          },
+          // Create embedded wallets for users who don't have a wallet
+          embeddedWallets: {
+            requireUserPasswordOnCreate: false,
+            showWalletUIs: true,
+            ethereum: {
+              createOnLogin: 'users-without-wallets',
+            },
+            solana: {
+              createOnLogin: 'off',
+            },
+          },
+        }}
+      >
+        <SvgCacheProvider>
+          <Provider store={cowSwapStore}>
+            <AtomProvider store={jotaiStore}>
+              <HashRouter>
+                <LanguageProvider>
+                  <Web3ProviderInstance>
+                    <ThemeProvider>
+                      <ThemedGlobalStyle />
+                      <BlockNumberProvider>
+                        <WithLDProvider>
+                          <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+                            <WalletUnsupportedNetworkBanner />
+                            <Updaters />
+                            <Toasts />
+                            <App />
+                          </CowAnalyticsProvider>
+                        </WithLDProvider>
+                      </BlockNumberProvider>
+                    </ThemeProvider>
+                  </Web3ProviderInstance>
+                </LanguageProvider>
+              </HashRouter>
+            </AtomProvider>
+          </Provider>
+        </SvgCacheProvider>
+      </PrivyProvider>
     </StrictMode>
   )
 }

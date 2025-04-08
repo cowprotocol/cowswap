@@ -9,6 +9,7 @@ export enum ConnectionType {
   METAMASK = 'METAMASK',
   GNOSIS_SAFE = 'GNOSIS_SAFE',
   TREZOR = 'TREZOR',
+  PRIVY = 'PRIVY',
 }
 
 export interface WalletInfo {
@@ -27,6 +28,7 @@ export interface WalletDetails {
   icon?: string
   isSupportedWallet: boolean
   isSafeApp: boolean
+  isPrivy: boolean
 
   // Feature Support
   allowsOffchainSigning: boolean

@@ -114,6 +114,7 @@ export default defineConfig(({ mode }) => {
       assetsInlineLimit: 0, // prevent inlining assets
       // sourcemap: true, // disabled for now, as this is causing vercel builds to fail
       rollupOptions: {
+        external: ['@solana/web3.js'],
         output: {
           manualChunks(id) {
             if (id.includes('@1inch')) return '@1inch'

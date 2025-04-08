@@ -16,6 +16,7 @@ import {
 } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
+import { useLogout, useFundWallet } from '@privy-io/react-auth'
 
 import Copy from 'legacy/components/Copy'
 import {
@@ -87,6 +88,9 @@ export function AccountDetails({
   handleCloseOrdersPanel,
   forceHardwareWallet,
 }: AccountDetailsProps) {
+  const { logout } = useLogout()
+  const { fundWallet } = useFundWallet()
+
   const { account, chainId } = useWalletInfo()
   const connectionType = useConnectionType()
   const walletDetails = useWalletDetails()
@@ -128,8 +132,22 @@ export function AccountDetails({
     dispatch(updateSelectedWallet({ wallet: undefined }))
   }
 
+  const handleLogoutClick = () => {
+    logout()
+  }
+
+  const handleAddFundsClick = async () => {
+    if (!account) {
+      return
+    }
+
+    await fundWallet(account)
+  }
+
   const networkLabel = CHAIN_INFO[chainId].label
   const isHardWareWallet = forceHardwareWallet || getIsHardWareWallet(connectionType)
+
+  console.log('AccountDetails ===>', walletDetails)
 
   return (
     <Wrapper>
@@ -180,6 +198,18 @@ export function AccountDetails({
                   {standaloneMode !== false && connectionType !== ConnectionType.GNOSIS_SAFE && (
                     <WalletAction onClick={handleDisconnectClick}>
                       <Trans>Disconnect</Trans>
+                    </WalletAction>
+                  )}
+
+                  {walletDetails.isPrivy && (
+                    <WalletAction onClick={handleLogoutClick}>
+                      <Trans>Logout</Trans>
+                    </WalletAction>
+                  )}
+
+                  {walletDetails.isPrivy && (
+                    <WalletAction onClick={handleAddFundsClick}>
+                      <Trans>Add funds</Trans>
                     </WalletAction>
                   )}
                 </>

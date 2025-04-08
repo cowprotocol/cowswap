@@ -6,6 +6,7 @@ import {
   InjectedOption as DefaultInjectedOption,
   MetaMaskSdkOption,
   TrezorOption,
+  PrivyOption,
   WalletConnectV2Option,
   getIsInjected,
   TryActivation,
@@ -42,6 +43,8 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
       <InjectedOptions connectionProps={connectionProps} multiInjectedProviders={multiInjectedProviders} />
     )) ??
     null
+  
+  const privyOption = <PrivyOption/>
 
   return (
     <>
@@ -50,6 +53,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
       {walletConnectionV2Option}
       {coinbaseWalletOption}
       {trezorOption}
+      {privyOption}
     </>
   )
 }

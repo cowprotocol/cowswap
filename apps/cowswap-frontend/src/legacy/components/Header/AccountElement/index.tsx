@@ -45,6 +45,8 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
 
   const [isSidebarOpen, setSidebarOpen] = useState(false)
 
+  console.log('AccountElement ===>', account)
+
   return (
     <>
       <Wrapper className={className} active={!!account}>
