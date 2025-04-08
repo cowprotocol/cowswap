@@ -2,6 +2,7 @@ import { useConnectionType, useWalletDetails, useWalletInfo } from '@cowprotocol
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
+import { usePendingOrdersFillability } from '../../../../common/hooks/usePendingOrdersFillability'
 import { Web3StatusInner } from '../../pure/Web3StatusInner'
 import { Wrapper } from '../../pure/Web3StatusInner/styled'
 import { AccountSelectorModal } from '../AccountSelectorModal'
@@ -20,10 +21,20 @@ export function Web3Status({ pendingActivities, className, onClick }: Web3Status
 
   const toggleWalletModal = useToggleWalletModal()
 
+  const ordersFillability = usePendingOrdersFillability()
+  const unfillableOrders = Object.keys(ordersFillability).filter((key) => {
+    if (!pendingActivities.includes(key)) return false
+
+    const order = ordersFillability[key]
+
+    return order.hasEnoughBalance === false || order.hasEnoughAllowance === false
+  })
+
   return (
     <Wrapper className={className} onClick={onClick}>
       <Web3StatusInner
         pendingCount={pendingActivities.length}
+        unfillableOrdersCount={unfillableOrders.length}
         account={account}
         ensName={ensName}
         connectWallet={toggleWalletModal}

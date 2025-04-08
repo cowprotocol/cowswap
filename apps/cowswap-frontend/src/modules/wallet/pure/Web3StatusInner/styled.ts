@@ -43,6 +43,25 @@ export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
     `}
 `
 
+export const UnfillableWarning = styled.div`
+  color: var(${UI.COLOR_DANGER});
+  line-height: 0;
+
+  > svg {
+    animation: growShrink 1s ease-in-out infinite;
+  }
+
+  @keyframes growShrink {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2); /* Change to desired size */
+    }
+  }
+`
+
 export const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean; clickDisabled?: boolean }>`
   background-color: var(${UI.COLOR_PAPER_DARKER});
   border: 1px solid transparent;
@@ -51,6 +70,10 @@ export const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean
 
   &:hover {
     background-color: var(${UI.COLOR_PAPER_DARKEST});
+    color: inherit;
+  }
+
+  &:hover ${UnfillableWarning} {
     color: inherit;
   }
 

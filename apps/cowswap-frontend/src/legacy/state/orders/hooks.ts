@@ -306,16 +306,6 @@ export const useAddOrUpdateOrders = (): AddOrUpdateOrdersCallback => {
   )
 }
 
-export const useAddPendingOrder = (): AddOrderCallback => {
-  const dispatch = useDispatch<AppDispatch>()
-  return useCallback(
-    (addOrderParams: AddUnserialisedPendingOrderParams) => {
-      addPendingOrderStep(addOrderParams, dispatch)
-    },
-    [dispatch],
-  )
-}
-
 export type UpdateOrderParams = {
   chainId: SupportedChainId
   order: Partial<Omit<Order, 'id'>> & Pick<Order, 'id'>

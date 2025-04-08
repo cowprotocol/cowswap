@@ -7,26 +7,28 @@ import { ConnectionType } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
 import ICON_WALLET from 'assets/icon/wallet.svg'
+import { AlertCircle } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
 import { upToExtraSmall, upToTiny, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent, CowSwapGtmEvent } from 'common/analytics/types'
 
-import { Text, Web3StatusConnect, Web3StatusConnected } from './styled'
+import { Text, UnfillableWarning, Web3StatusConnect, Web3StatusConnected } from './styled'
 
 import { StatusIcon } from '../StatusIcon'
 
 export interface Web3StatusInnerProps {
   account?: string
   pendingCount: number
+  unfillableOrdersCount: number
   connectWallet: Command
   connectionType: ConnectionType
   ensName?: string | null
 }
 
 export function Web3StatusInner(props: Web3StatusInnerProps) {
-  const { account, pendingCount, ensName, connectionType, connectWallet } = props
+  const { account, pendingCount, unfillableOrdersCount, ensName, connectionType, connectWallet } = props
 
   const hasPendingTransactions = !!pendingCount
   const isUpToExtraSmall = useMediaQuery(upToExtraSmall)
@@ -50,7 +52,13 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
             <Text>
               <Trans>{pendingCount} Pending</Trans>
             </Text>{' '}
-            <Loader stroke="currentColor" />
+            {unfillableOrdersCount > 0 ? (
+              <UnfillableWarning>
+                <AlertCircle size={18} />
+              </UnfillableWarning>
+            ) : (
+              <Loader stroke="currentColor" />
+            )}
           </RowBetween>
         ) : (
           <Text>{ensName || shortenAddress(account, isUpToTiny ? 4 : isUpToExtraSmall ? 3 : 4)}</Text>
