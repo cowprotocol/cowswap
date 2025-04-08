@@ -45,17 +45,17 @@ function getPrivyConnector() {
 }
 
 export function PrivyOption({ tryActivation }: ConnectionOptionProps) {
-  const { authenticated, user } = usePrivy()
+  const { authenticated } = usePrivy()
 
-  console.log('privy ready ===>', authenticated, user)
+  // console.log('privy ready ===>', authenticated, user)
 
   const { login } = useLogin({
     onComplete: () => {
-      console.log('login success ===>')
+      // console.log('login success ===>')
       tryActivation(getPrivyConnector().connector)
     },
     onError: () => {
-      console.log('login error ===>')
+      // console.log('login error ===>')
     },
   })
 

@@ -147,7 +147,7 @@ export function AccountDetails({
   const networkLabel = CHAIN_INFO[chainId].label
   const isHardWareWallet = forceHardwareWallet || getIsHardWareWallet(connectionType)
 
-  console.log('AccountDetails ===>', walletDetails)
+  // console.log('AccountDetails ===>', walletDetails)
 
   return (
     <Wrapper>
