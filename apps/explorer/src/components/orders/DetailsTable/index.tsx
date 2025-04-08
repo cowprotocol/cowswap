@@ -3,7 +3,7 @@ import React from 'react'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Command } from '@cowprotocol/types'
+import { Command, UiOrderType } from '@cowprotocol/types'
 import { Icon, Media, UI, Color } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
@@ -146,6 +146,16 @@ export type Props = {
   viewFills: Command
   isPriceInverted: boolean
   invertPrice: Command
+}
+
+// Helper function to convert order class to UiOrderType
+const getOrderUiType = (order: Order): UiOrderType => {
+  switch (order.class) {
+    case 'limit':
+      return UiOrderType.LIMIT
+    default:
+      return UiOrderType.SWAP
+  }
 }
 
 export function DetailsTable(props: Props): React.ReactNode | null {
@@ -325,7 +335,7 @@ export function DetailsTable(props: Props): React.ReactNode | null {
               </span>
             </td>
             <td>
-              <OrderStatusTimelineChart />
+              <OrderStatusTimelineChart orderId={uid} order={order} orderType={getOrderUiType(order)} />
             </td>
           </tr>
           <tr>

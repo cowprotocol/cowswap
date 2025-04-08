@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Color } from '@cowprotocol/ui'
+import { UiOrderType } from '@cowprotocol/types'
 
 import {
   ComposedChart,
@@ -15,10 +16,23 @@ import {
   Area,
 } from 'recharts'
 import styled from 'styled-components/macro'
+import { Order } from 'api/operator'
 
 // Types
 export type OrderStatus = 'Ready' | 'Considered' | 'Executing' | 'Settled' | 'Expired'
 export type OrderType = 'Market' | 'Limit'
+
+// Convert UiOrderType to chart's OrderType
+const getChartOrderType = (uiOrderType: UiOrderType): OrderType => {
+  switch (uiOrderType) {
+    case UiOrderType.SWAP:
+      return 'Market'
+    case UiOrderType.LIMIT:
+      return 'Limit'
+    default:
+      return 'Market' // Default to Market for other types
+  }
+}
 
 interface ChartDataPoint {
   timestamp: number
@@ -34,9 +48,11 @@ interface ChartDataPoint {
 }
 
 interface OrderStatusTimelineChartProps {
-  orderType?: OrderType
+  orderType?: UiOrderType
   height?: number
   width?: number
+  orderId: string
+  order: Order
 }
 
 // Status colors
@@ -58,105 +74,6 @@ const CHART_COLORS = {
   fillableZoneLimit: Color.explorer_green + '66', // 40% opacity version of green for limit orders
   fillableArea: Color.explorer_blue2, // Use blue for fillable area
   grid: Color.explorer_greyShade, // Grid lines color
-}
-
-// Demo data with explicit data points
-const DEMO_LIMIT_PRICE = 100
-
-const DEMO_DATA_POINTS = [
-  // Hour 0-4: Ready status, prices relatively stable with slight downward trend
-  { minute: 0, marketPrice: 104.5, expectedFillPrice: 97.5, gasPrice: 45, status: 'Ready', isStatusChange: true },
-  { minute: 300, marketPrice: 103.8, expectedFillPrice: 97.8, gasPrice: 43 },
-  { minute: 600, marketPrice: 103.2, expectedFillPrice: 98.1, gasPrice: 42 },
-  { minute: 900, marketPrice: 102.8, expectedFillPrice: 98.3, gasPrice: 41 },
-  { minute: 1200, marketPrice: 102.5, expectedFillPrice: 98.4, gasPrice: 40 },
-
-  // Hour 4-8: Market starts moving down more rapidly
-  { minute: 1500, marketPrice: 101.8, expectedFillPrice: 98.7, gasPrice: 38 },
-  { minute: 1800, marketPrice: 101.0, expectedFillPrice: 99.0, gasPrice: 36 },
-  { minute: 2100, marketPrice: 100.2, expectedFillPrice: 99.2, gasPrice: 35 },
-  { minute: 2400, marketPrice: 99.8, expectedFillPrice: 99.3, gasPrice: 34 },
-
-  // Hour 8-9: First Considered status only (keeping original price movement)
-  {
-    minute: 2520,
-    marketPrice: 99.4,
-    expectedFillPrice: 99.38,
-    gasPrice: 33,
-    status: 'Considered',
-    isStatusChange: true,
-  },
-  { minute: 2535, marketPrice: 98.8, expectedFillPrice: 99.4, gasPrice: 32 },
-  { minute: 2550, marketPrice: 98.2, expectedFillPrice: 99.45, gasPrice: 31 },
-  { minute: 2565, marketPrice: 97.8, expectedFillPrice: 99.5, gasPrice: 30 },
-
-  // Hour 9-12: Price recovery
-  { minute: 2700, marketPrice: 98.5, expectedFillPrice: 99.6, gasPrice: 35 },
-  { minute: 3000, marketPrice: 99.8, expectedFillPrice: 99.7, gasPrice: 38 },
-  { minute: 3300, marketPrice: 101.2, expectedFillPrice: 99.8, gasPrice: 40 },
-  { minute: 3600, marketPrice: 102.5, expectedFillPrice: 99.9, gasPrice: 42 },
-
-  // Hour 12-16: Stable period with slight oscillations
-  { minute: 3900, marketPrice: 102.8, expectedFillPrice: 100.0, gasPrice: 41 },
-  { minute: 4200, marketPrice: 102.6, expectedFillPrice: 100.1, gasPrice: 39 },
-  { minute: 4500, marketPrice: 102.3, expectedFillPrice: 100.2, gasPrice: 38 },
-  { minute: 4800, marketPrice: 102.0, expectedFillPrice: 100.3, gasPrice: 37 },
-
-  // Hour 16-20: Second major price movement and complete order cycle (spread out)
-  { minute: 5100, marketPrice: 101.2, expectedFillPrice: 100.4, gasPrice: 36 },
-  { minute: 5400, marketPrice: 100.5, expectedFillPrice: 100.45, gasPrice: 35 },
-  {
-    minute: 5460,
-    marketPrice: 100.2,
-    expectedFillPrice: 100.48,
-    gasPrice: 34,
-    status: 'Considered',
-    isStatusChange: true,
-  },
-  { minute: 5480, marketPrice: 99.8, expectedFillPrice: 100.5, gasPrice: 33 },
-  {
-    minute: 5580,
-    marketPrice: 99.4,
-    expectedFillPrice: 100.52,
-    gasPrice: 32,
-    status: 'Executing',
-    isStatusChange: true,
-  },
-  { minute: 5680, marketPrice: 99.0, expectedFillPrice: 100.54, gasPrice: 31, status: 'Settled', isStatusChange: true },
-
-  // Hour 20-24: Final period, prices stabilizing
-  { minute: 5700, marketPrice: 99.5, expectedFillPrice: 100.6, gasPrice: 33 },
-  { minute: 6000, marketPrice: 100.2, expectedFillPrice: 100.7, gasPrice: 35 },
-  { minute: 6300, marketPrice: 101.0, expectedFillPrice: 100.8, gasPrice: 37 },
-  { minute: 6600, marketPrice: 101.8, expectedFillPrice: 100.9, gasPrice: 39 },
-  { minute: 7200, marketPrice: 102.5, expectedFillPrice: 101.0, gasPrice: 40 },
-]
-
-const generateDemoData = (): ChartDataPoint[] => {
-  const baseTime = Date.now()
-
-  // Interpolate between data points to get smooth transitions
-  return DEMO_DATA_POINTS.flatMap((point, index) => {
-    const nextPoint = DEMO_DATA_POINTS[index + 1]
-    if (!nextPoint) return [createDataPoint(point, baseTime)]
-
-    // Create points between each defined point (including the point itself)
-    const points: ChartDataPoint[] = []
-    for (let i = 0; i < 5; i++) {
-      const progress = i / 5
-      const interpolatedPoint = {
-        minute: point.minute + (nextPoint.minute - point.minute) * progress,
-        marketPrice: point.marketPrice + (nextPoint.marketPrice - point.marketPrice) * progress,
-        expectedFillPrice: point.expectedFillPrice + (nextPoint.expectedFillPrice - point.expectedFillPrice) * progress,
-        gasPrice: point.gasPrice + (nextPoint.gasPrice - point.gasPrice) * progress,
-        status: point.status || getStatusForMinute(point.minute),
-        // Only pass isStatusChange for the first point if it's a status change point
-        isStatusChange: i === 0 ? point.isStatusChange : false,
-      }
-      points.push(createDataPoint(interpolatedPoint, baseTime))
-    }
-    return points
-  })
 }
 
 // Helper function to get status for any minute
@@ -191,7 +108,7 @@ const createDataPoint = (data: any, baseTime: number): ChartDataPoint => {
   return point
 }
 
-// Add proper typing for the tooltip props
+// Update CustomTooltip to show the correct limit price
 interface CustomTooltipProps {
   active?: boolean
   payload?: Array<{
@@ -204,9 +121,10 @@ interface CustomTooltipProps {
     x: number
     y: number
   }
+  limitPrice: number
 }
 
-const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label, orderType, coordinate }) => {
+const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label, orderType, coordinate, limitPrice }) => {
   if (!active || !payload || !payload.length || !coordinate) {
     return null
   }
@@ -255,7 +173,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label, o
       </div>
       <div style={{ fontSize: '14px', marginBottom: '4px' }}>
         <span style={{ color: Color.neutral100 }}>Limit Price: </span>
-        <span style={{ color: CHART_COLORS.limitPrice }}>${DEMO_LIMIT_PRICE.toFixed(2)}</span>
+        <span style={{ color: CHART_COLORS.limitPrice }}>${limitPrice.toFixed(2)}</span>
       </div>
       <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center' }}>
         <span style={{ fontSize: '14px', marginRight: '8px', color: Color.neutral100 }}>Status:</span>
@@ -407,16 +325,199 @@ const ChartContainer = styled.div`
   height: 100%;
 `
 
+// Types for API responses
+interface StatusEvent {
+  time: number
+  value: string
+}
+
+interface PricePoint {
+  time: number
+  fillPrice: string
+  gasPriceGwei: string
+  sellTokenPriceInEthWei: string
+}
+
+const BASE_URL = 'https://bff.barn.cow.fi/1/orders/%7BorderId%7D'
+
+// Hook to fetch and transform data
+const useOrderData = (orderId: string) => {
+  const [statusEvents, setStatusEvents] = useState<StatusEvent[]>([])
+  const [marketPrices, setMarketPrices] = useState<PricePoint[]>([])
+  const [estimatedFillPrices, setEstimatedFillPrices] = useState<PricePoint[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true)
+        setError(null)
+
+        // Use exact URLs as provided, only append orderId
+        const statusUrl = `https://bff.barn.cow.fi/1/orders/%7BoderId%7D/statusEvents?orderId=${orderId}`
+        const marketPriceUrl = `https://bff.barn.cow.fi/1/orders/%7BoderId%7D/marketPrice?orderId=${orderId}`
+        const estimatedFillPriceUrl = `https://bff.barn.cow.fi/1/orders/%7BoderId%7D/estimatedFillPrice?orderId=${orderId}`
+
+        // Log the URLs being called
+        console.log('Fetching from URLs:', {
+          statusUrl,
+          marketPriceUrl,
+          estimatedFillPriceUrl,
+        })
+
+        // Fetch data from all endpoints
+        const [statusRes, marketPriceRes, estimatedFillPriceRes] = await Promise.all([
+          fetch(statusUrl),
+          fetch(marketPriceUrl),
+          fetch(estimatedFillPriceUrl),
+        ])
+
+        // Log response statuses
+        console.log('Response statuses:', {
+          status: statusRes.status,
+          market: marketPriceRes.status,
+          estimatedFill: estimatedFillPriceRes.status,
+        })
+
+        // Check if any response is not ok
+        if (!statusRes.ok || !marketPriceRes.ok || !estimatedFillPriceRes.ok) {
+          throw new Error('One or more API calls failed')
+        }
+
+        const [statusData, marketPriceData, estimatedFillPriceData] = await Promise.all([
+          statusRes.json(),
+          marketPriceRes.json(),
+          estimatedFillPriceRes.json(),
+        ])
+
+        setStatusEvents(statusData)
+        setMarketPrices(marketPriceData)
+        setEstimatedFillPrices(estimatedFillPriceData)
+      } catch (err) {
+        console.error('Error fetching data:', err)
+        setError(err instanceof Error ? err.message : 'Failed to fetch data')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    if (orderId) {
+      fetchData()
+    }
+  }, [orderId])
+
+  // Transform data into chart format
+  const transformData = (): ChartDataPoint[] => {
+    if (!marketPrices.length || !estimatedFillPrices.length) return []
+
+    // Create a map of status changes
+    const statusMap = new Map<number, string>()
+    statusEvents.forEach((event) => {
+      statusMap.set(event.time, event.value)
+    })
+
+    // Combine market prices and estimated fill prices
+    const allTimePoints = Array.from(
+      new Set([...marketPrices.map((p) => p.time), ...estimatedFillPrices.map((p) => p.time)]),
+    ).sort((a, b) => a - b)
+
+    let lastStatus = ''
+
+    const transformedData = allTimePoints.map((time) => {
+      const marketPricePoint = marketPrices.find((p) => p.time === time)
+      const estimatedFillPricePoint = estimatedFillPrices.find((p) => p.time === time)
+
+      // Parse prices directly from the API response
+      const marketPrice = marketPricePoint ? parseFloat(marketPricePoint.fillPrice) : 0
+      const expectedFillPrice = estimatedFillPricePoint ? parseFloat(estimatedFillPricePoint.fillPrice) : 0
+      const gasPrice = estimatedFillPricePoint ? parseFloat(estimatedFillPricePoint.gasPriceGwei) : 0
+
+      const currentStatus = statusMap.get(time)
+
+      // Determine if this is a status change point
+      const isStatusChange = currentStatus && currentStatus !== lastStatus
+      if (currentStatus) {
+        lastStatus = currentStatus
+      }
+
+      const point: ChartDataPoint = {
+        timestamp: time,
+        marketPrice,
+        expectedFillPrice,
+        gasPrice,
+        isStatusChange: Boolean(isStatusChange),
+        status: (currentStatus?.toUpperCase() as OrderStatus) || (lastStatus?.toUpperCase() as OrderStatus),
+      }
+
+      // Calculate fillable amount when market price is below expected fill price
+      if (marketPrice < expectedFillPrice) {
+        point.fillableAmount = [marketPrice, expectedFillPrice]
+      }
+
+      if (marketPrice >= expectedFillPrice) {
+        point.isFillable = true
+        point.fillableDifference = marketPrice - expectedFillPrice
+      }
+
+      return point
+    })
+
+    return transformedData
+  }
+
+  return {
+    data: transformData(),
+    isLoading,
+    error,
+  }
+}
+
 export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> = ({
-  orderType = 'Market',
+  orderType = UiOrderType.SWAP,
   height = 500,
   width,
+  orderId,
+  order,
 }) => {
-  const data = React.useMemo(() => generateDemoData(), [])
+  // Group all hooks at the top
   const [hoveredStatus, setHoveredStatus] = React.useState<string | null>(null)
+  const { data, isLoading, error } = useOrderData(orderId)
 
-  // Filter status changes once
+  // Calculate limit price from order data
+  const limitPrice = React.useMemo(() => {
+    if (!order.buyAmount || !order.sellAmount) return 0
+    return parseFloat(order.sellAmount.toString()) / parseFloat(order.buyAmount.toString())
+  }, [order])
+
+  // Filter status changes
   const statusChanges = React.useMemo(() => data.filter((point) => point.isStatusChange), [data])
+
+  const chartOrderType = getChartOrderType(orderType)
+
+  // Calculate y-axis domain based on actual prices
+  const yAxisDomain = React.useMemo(() => {
+    if (!data.length) return [0, 1] // Default domain if no data
+
+    const allPrices = data.flatMap((point) => [point.marketPrice, point.expectedFillPrice])
+    const minPrice = Math.min(...allPrices)
+    const maxPrice = Math.max(...allPrices)
+
+    // Add 10% padding to the range
+    const padding = (maxPrice - minPrice) * 0.1
+    return [
+      Math.max(0, minPrice - padding), // Don't go below 0
+      maxPrice + padding,
+    ]
+  }, [data])
+
+  if (isLoading) {
+    return <div>Loading chart data...</div>
+  }
+
+  if (error) {
+    return <div>Error loading chart data: {error}</div>
+  }
 
   return (
     <ChartContainer>
@@ -452,7 +553,7 @@ export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> =
           />
           <YAxis
             yAxisId="left"
-            domain={[97, 105]}
+            domain={yAxisDomain}
             tickCount={5}
             tickFormatter={(value) => `$${value.toFixed(2)}`}
             label={{
@@ -480,7 +581,7 @@ export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> =
           />
           */}
           <Tooltip
-            content={<CustomTooltip orderType={orderType} />}
+            content={<CustomTooltip orderType={chartOrderType} limitPrice={limitPrice} />}
             position={{ x: 0, y: 0 }}
             allowEscapeViewBox={{ x: true, y: true }}
           />
@@ -534,7 +635,7 @@ export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> =
           />
 
           {/* Fillable zone for Market orders */}
-          {orderType === 'Market' && (
+          {chartOrderType === 'Market' && (
             <>
               {/* Base Area up to market price */}
               <Area
@@ -550,7 +651,7 @@ export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> =
           )}
 
           {/* Fillable zone for Limit orders - STACKED APPROACH */}
-          {orderType === 'Limit' && (
+          {chartOrderType === 'Limit' && (
             <>
               {/* Base Area (represents the expectedFillPrice line itself) */}
               <Area
@@ -579,11 +680,11 @@ export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> =
 
           {/* Limit price reference line */}
           <ReferenceLine
-            y={DEMO_LIMIT_PRICE}
+            y={limitPrice}
             yAxisId="left"
             stroke={CHART_COLORS.limitPrice}
             strokeWidth={1}
-            label={<LimitPriceLabel value={DEMO_LIMIT_PRICE} />}
+            label={<LimitPriceLabel value={limitPrice} />}
           />
 
           {/* Render non-hovered status lines first */}
