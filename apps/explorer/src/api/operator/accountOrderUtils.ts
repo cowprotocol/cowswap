@@ -116,6 +116,15 @@ export function useAllAccountOrdersWithTokenInfo(networkId: SupportedChainId | u
       })
 }
 
+export function useFilteredUserOrders(
+  networkId: SupportedChainId | undefined,
+  owner: string,
+  filter: (order: Order) => boolean,
+): Order[] {
+  const orders = useAllAccountOrdersWithTokenInfo(networkId, owner)
+  return useMemo(() => orders.filter(filter), [orders, filter])
+}
+
 const PAGE_SIZE = 999
 
 function buildGetSwrKey(networkId: SupportedChainId | undefined, owner: string | undefined) {
@@ -148,7 +157,7 @@ export function useGetAllAccountOrders(networkId: SupportedChainId | undefined, 
     getKey,
     async ([_, _networkId, _owner, offset, fetchProdOrders, fetchBarnOrders]) =>
       getAccountOrdersPage(_networkId, _owner, offset, PAGE_SIZE, fetchProdOrders, fetchBarnOrders),
-    { initialSize: 10, revalidateFirstPage: false, persistSize: false },
+    { initialSize: 100, revalidateFirstPage: false, persistSize: false },
   )
 
   const orders = useMemo(() => data?.flatMap((page) => page.orders) ?? EMPTY_ORDERS, [data])
@@ -169,7 +178,7 @@ async function getAccountOrdersPage(
   networkId: SupportedChainId,
   owner: string,
   offset: number,
-  limit: number = 1000,
+  limit: number,
   fetchProdOrders: boolean = true,
   fetchBarnOrders: boolean = true,
 ): Promise<AccountOrdersPage> {

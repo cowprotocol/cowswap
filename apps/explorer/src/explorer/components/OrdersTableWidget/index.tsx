@@ -1,10 +1,12 @@
+import { atom, useAtom } from 'jotai'
 import React from 'react'
 
 import { Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { OrdersTableContext, BlockchainNetwork } from './context/OrdersTableContext'
+
+import { BlockchainNetwork, OrdersTableContext } from './context/OrdersTableContext'
 import { OrdersTableWithData } from './OrdersTableWithData'
 import { useTable } from './useTable'
 
@@ -50,8 +52,35 @@ const WrapperExtraComponents = styled.div`
   }
 `
 
+export const selectedOrderStatusAtom = atom<string>('')
+
+const STATUS_OPTIONS = ['open', 'filled', 'cancelled', 'cancelling', 'expired', 'signing']
+
+export function OrderStatusPicker() {
+  const [selectedOrderStatus, setSelectedOrderStatus] = useAtom(selectedOrderStatusAtom)
+
+  return <div>
+    <label htmlFor="order-status">Order Status:</label>
+    <select
+      id="order-status"
+      value={selectedOrderStatus}
+      onChange={(e) => {
+        setSelectedOrderStatus(e.target.value)
+      }}
+    >
+      <option value="">All</option>
+      {STATUS_OPTIONS.map((status) => (
+        <option key={status} value={status}>
+          {status.charAt(0).toUpperCase() + status.slice(1)}
+        </option>
+      ))}
+    </select>
+  </div>
+}
+
 const ExtraComponentNode: React.ReactNode = (
   <WrapperExtraComponents>
+    <OrderStatusPicker />
     <TablePagination context={OrdersTableContext} />
   </WrapperExtraComponents>
 )
@@ -72,8 +101,10 @@ const OrdersTableWidget: React.FC<Props> = ({ ownerAddress, networkId }) => {
     isLoading,
     error,
     isThereNext: isThereNextOrder,
+    totalCount,
   } = useGetAccountOrders(ownerAddress, tableState.pageSize, tableState.pageOffset, tableState.pageIndex)
   tableState['hasNextPage'] = isThereNextOrder
+  tableState['totalCount'] = totalCount
   const addressAccountParams = { ownerAddress, networkId }
 
   return (

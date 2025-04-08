@@ -1,8 +1,10 @@
+import { useAtomValue } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
 
 import { Props as ExplorerLinkProps } from 'components/common/BlockExplorerLink'
+import { selectedOrderStatusAtom } from 'explorer/components/OrdersTableWidget'
 import { useMultipleErc20 } from 'hooks/useErc20'
 import {
   GetOrderApi,
@@ -15,7 +17,7 @@ import { Network, UiError } from 'types'
 import { transformOrder } from 'utils'
 
 import { Order, getTxOrders } from 'api/operator'
-import { useAllAccountOrdersWithTokenInfo } from 'api/operator/accountOrderUtils'
+import { useFilteredUserOrders } from 'api/operator/accountOrderUtils'
 import { GetTxOrdersParams, RawOrder } from 'api/operator/types'
 import { updateWeb3Provider } from 'api/web3'
 
@@ -52,6 +54,7 @@ type Result = {
 
 type GetAccountOrdersResult = Result & {
   isThereNext: boolean
+  totalCount?: number
 }
 
 type GetTxOrdersResult = Result & {
@@ -199,8 +202,13 @@ export function useGetAccountOrders(
   pageIndex?: number
 ): GetAccountOrdersResult {
   const networkId = useNetworkId() || undefined
-  const orders = useAllAccountOrdersWithTokenInfo(networkId, ownerAddress)
+  const orderStatus = useAtomValue(selectedOrderStatusAtom)
+  const filter = useCallback((order: Order) => {
+    if (orderStatus === '') return true
+    return order.status === orderStatus
+  }, [orderStatus])
+  const orders = useFilteredUserOrders(networkId, ownerAddress, filter)
   const isThereNext = orders.length > limit + offset
 
-  return { orders: orders?.slice(offset, offset + limit) || [], isLoading: false, isThereNext }
+  return { orders: orders?.slice(offset, offset + limit) || [], isLoading: false, isThereNext, totalCount: orders.length }
 }
