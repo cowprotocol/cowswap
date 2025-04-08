@@ -1,5 +1,6 @@
 import { useState, KeyboardEvent, FocusEvent, ReactNode } from 'react'
 
+import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { ButtonPrimary, ButtonSize, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -15,7 +16,7 @@ const digitRegex = /^\d$/
 export interface ApproveConfirmationProps {
   amountToApprove: CurrencyAmount<Currency>
   currentAllowance: BigNumber | undefined
-  handleApprove?(): void
+  handleApprove?(amount: CurrencyAmount<Currency>): void
 }
 
 export function ApproveConfirmation({ amountToApprove, handleApprove }: ApproveConfirmationProps) {
@@ -26,6 +27,8 @@ export function ApproveConfirmation({ amountToApprove, handleApprove }: ApproveC
   const [isAmountInputFocused, setIsAmountInputFocused] = useState(false)
   const [approveAmountStr, setApproveAmountStr] = useState(defaultAmountToApprove)
   const [inputChangedText, setInputChangedText] = useState(approveAmountStr)
+  const [isChangedTextValid, setIsChangedTextValid] = useState(true)
+  const [amountToApproveOverride, setAmountToApproveOverride] = useState<CurrencyAmount<Currency> | null>(null)
 
   const tokenSymbol = <TokenSymbol token={currency} />
 
@@ -51,10 +54,23 @@ export function ApproveConfirmation({ amountToApprove, handleApprove }: ApproveC
   const onAmountTyping = (e: KeyboardEvent<HTMLDivElement>) => {
     const content = (e.target as HTMLDivElement).innerText
 
+    try {
+      const parsedAmount = tryParseCurrencyAmount(content, currency)
+
+      if (parsedAmount) {
+        setIsChangedTextValid(true)
+        setAmountToApproveOverride(parsedAmount)
+      } else {
+        setIsChangedTextValid(false)
+      }
+    } catch {
+      setIsChangedTextValid(false)
+    }
+
     setInputChangedText(content)
   }
 
-  const onAmountChange = (e: FocusEvent<HTMLDivElement>) => {
+  const onBlur = (e: FocusEvent<HTMLDivElement>) => {
     const parsedValue = parseFloat(inputChangedText)
 
     setIsAmountInputFocused(false)
@@ -74,9 +90,11 @@ export function ApproveConfirmation({ amountToApprove, handleApprove }: ApproveC
     setIsAmountInputFocused(true)
   }
 
+  console.log('TODO handle amountToApproveOverride', amountToApproveOverride)
+
   return (
     <styledEl.Wrapper>
-      <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={handleApprove}>
+      <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={() => handleApprove?.()}>
         <styledEl.ButtonWrapper>
           <span>Default approve</span>
           <HelpTooltip>
@@ -87,16 +105,17 @@ export function ApproveConfirmation({ amountToApprove, handleApprove }: ApproveC
           </HelpTooltip>
         </styledEl.ButtonWrapper>
       </ButtonPrimary>
-      <styledEl.AdvancedWrapper open={isAdvancedOpen}>
+      <styledEl.AdvancedWrapper open={isAdvancedOpen} error={!isChangedTextValid}>
         <styledEl.AdvancedDropdown height={isAdvancedOpen ? 500 : 0}>
           <styledEl.TextWrapper>
             Allow spending:
             <styledEl.AmountInput
               translate="no"
+              invalid={!isChangedTextValid}
               contentEditable={true}
               onKeyDown={filterAmountInput}
               onKeyUp={onAmountTyping}
-              onBlur={onAmountChange}
+              onBlur={onBlur}
               onFocus={onFocus}
               suppressContentEditableWarning={true}
             >
@@ -104,7 +123,11 @@ export function ApproveConfirmation({ amountToApprove, handleApprove }: ApproveC
             </styledEl.AmountInput>
             {tokenSymbol}
           </styledEl.TextWrapper>
-          <styledEl.AdvancedApproveButton disabled={isAmountInputFocused} onClick={handleApprove}>
+          {!isChangedTextValid && <styledEl.ValidationText>Entered amount is invalid</styledEl.ValidationText>}
+          <styledEl.AdvancedApproveButton
+            disabled={isAmountInputFocused || !isChangedTextValid}
+            onClick={() => handleApprove?.()}
+          >
             <span>Approve</span>
             <HelpTooltip>
               In case you want to give allowance only for the trade amount, use the advanced mode. You can also change

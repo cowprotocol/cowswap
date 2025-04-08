@@ -36,9 +36,10 @@ export const AdvancedDropdownButton = styled.button`
   }
 `
 
-export const AdvancedWrapper = styled.div<{ open: boolean }>`
+export const AdvancedWrapper = styled.div<{ open: boolean; error: boolean }>`
   width: 100%;
-  border: ${({ open }) => (open ? `1px solid var(${UI.COLOR_TEXT_OPACITY_10})` : 0)};
+  border: ${({ open, error }) =>
+    open ? `1px solid var(${error ? UI.COLOR_ALERT_TEXT : UI.COLOR_TEXT_OPACITY_10})` : 0};
   border-radius: 8px;
   margin-top: ${({ open }) => (open ? '10px' : 0)};
   padding: ${({ open }) => (open ? '10px' : 0)};
@@ -66,6 +67,12 @@ export const TextWrapper = styled.div`
   padding: 5px 0;
 `
 
+export const ValidationText = styled.div`
+  color: var(${UI.COLOR_ALERT_TEXT});
+  margin-bottom: 10px;
+  font-size: 14px;
+`
+
 export const AdvancedApproveButton = styled.button`
   display: flex;
   align-items: center;
@@ -83,7 +90,7 @@ export const AdvancedApproveButton = styled.button`
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   border: 1px solid var(${UI.COLOR_PRIMARY_OPACITY_25});
 
-  &:hover {
+  &:hover:enabled {
     background: var(${UI.COLOR_PRIMARY_OPACITY_25});
     color: var(${UI.COLOR_TEXT});
     border: 1px solid var(${UI.COLOR_PRIMARY_OPACITY_50});
@@ -95,7 +102,7 @@ export const AdvancedApproveButton = styled.button`
   }
 `
 
-export const AmountInput = styled.div`
+export const AmountInput = styled.div<{ invalid: boolean }>`
   display: inline-block;
   cursor: text;
   padding: 4px 5px;
@@ -104,6 +111,7 @@ export const AmountInput = styled.div`
   margin: 0 3px;
   max-width: 200px;
   word-wrap: break-word;
+  color: ${({ invalid }) => (invalid ? `var(${UI.COLOR_ALERT_TEXT})` : '')};
 
   &:hover {
     background: var(${UI.COLOR_PAPER_DARKER});
