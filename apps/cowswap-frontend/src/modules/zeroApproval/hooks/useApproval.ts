@@ -19,7 +19,6 @@ function toApprovalState(
   amountToApprove: Nullish<CurrencyAmount<Currency>>,
   spender: string | undefined,
   currentAllowance?: CurrencyAmount<Token>,
-  pendingApproval?: boolean,
 ): ApprovalState {
   // Unknown amount or spender
   if (!amountToApprove || !spender) {
@@ -41,23 +40,21 @@ function toApprovalState(
     return ApprovalState.APPROVED
   }
 
-  return pendingApproval ? ApprovalState.PENDING : ApprovalState.NOT_APPROVED
+  return ApprovalState.NOT_APPROVED
 }
 
 export function useApprovalStateForSpender(
   amountToApprove: Nullish<CurrencyAmount<Currency>>,
   spender: string | undefined,
-  useIsPendingApproval: (token?: Token, spender?: string) => boolean,
 ): ApprovalStateForSpenderResult {
   const { account } = useWalletInfo()
   const currency = amountToApprove?.currency
   const token = currency && !getIsNativeToken(currency) ? currency : undefined
 
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
-  const pendingApproval = useIsPendingApproval(token, spender)
 
   return useMemo(() => {
-    const approvalState = toApprovalState(amountToApprove, spender, currentAllowance, pendingApproval)
+    const approvalState = toApprovalState(amountToApprove, spender, currentAllowance)
     return { approvalState, currentAllowance }
-  }, [amountToApprove, currentAllowance, pendingApproval, spender])
+  }, [amountToApprove, currentAllowance, spender])
 }

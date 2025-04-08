@@ -23,7 +23,7 @@ export function useShouldZeroApprove(amountToApprove: Nullish<CurrencyAmount<Cur
   const currency = amountToApprove?.currency
   const token = currency && !getIsNativeToken(currency) ? currency : undefined
   const { contract: tokenContract } = useTokenContract(token?.address)
-  const approvalState = useApprovalStateForSpender(amountToApprove, spender, () => false) // ignore approval pending state
+  const approvalState = useApprovalStateForSpender(amountToApprove, spender) // ignore approval pending state
 
   useEffect(() => {
     let isStale = false
