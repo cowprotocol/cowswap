@@ -1,3 +1,4 @@
+import { atom, useSetAtom } from 'jotai'
 import { useEffect, useMemo, useRef } from 'react'
 
 import { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -27,7 +28,7 @@ async function getAccountOrdersFromStorage(
 
   const orders = ordersPerNetwork[networkId] // TODO: may need to parse/hydrate it
 
-  return orders
+  return orders || []
 }
 
 async function appendAccountOrdersToStorage(
@@ -48,6 +49,8 @@ async function appendAccountOrdersToStorage(
 
   await localforage.setItem(KEY, { ...accountOrders, [owner.toLowerCase()]: ordersPerNetwork })
 }
+
+export const areAccountOrdersLoadingAtom = atom(false)
 
 export function AccountOrdersUpdater({
   networkId,
@@ -105,15 +108,21 @@ export function useAllAccountOrdersWithTokenInfo(networkId: SupportedChainId | u
     areErc20Loading,
   )
 
-  return areErc20Loading
-    ? []
-    : orders.map((order) => {
-        const o = transformOrder(order)
-        o.buyToken = valueErc20s[order.buyToken.toLowerCase()] || o.buyToken
-        o.sellToken = valueErc20s[order.sellToken.toLowerCase()] || o.sellToken
+  const setLoading = useSetAtom(areAccountOrdersLoadingAtom)
 
-        return o
-      })
+  useEffect(() => {
+    setLoading(areErc20Loading)
+  }, [areErc20Loading, setLoading])
+
+  return (
+    orders?.map((order) => {
+      const o = transformOrder(order)
+      o.buyToken = valueErc20s[order.buyToken.toLowerCase()] || o.buyToken
+      o.sellToken = valueErc20s[order.sellToken.toLowerCase()] || o.sellToken
+
+      return o
+    }) || []
+  )
 }
 
 export function useFilteredUserOrders(
