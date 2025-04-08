@@ -56,7 +56,7 @@ const CHART_COLORS = {
   limitPrice: Color.explorer_orange1,
   fillableZone: Color.explorer_green + '33', // 20% opacity version of green
   fillableZoneLimit: Color.explorer_green + '66', // 40% opacity version of green for limit orders
-  fillableArea: Color.explorer_green + '20', // 12% opacity version of green for the area between lines
+  fillableArea: Color.explorer_blue2, // Use blue for fillable area
 }
 
 // Demo data with explicit data points
@@ -208,21 +208,25 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label, o
       >
         {timestamp.toLocaleString()}
       </div>
-      <div style={{ fontSize: '14px', marginBottom: '4px', color: CHART_COLORS.marketPrice }}>
-        Market Price: ${data.marketPrice.toFixed(2)}
+      <div style={{ fontSize: '14px', marginBottom: '4px' }}>
+        <span style={{ color: Color.neutral100 }}>Market Price: </span>
+        <span style={{ color: CHART_COLORS.marketPrice }}>${data.marketPrice.toFixed(2)}</span>
       </div>
-      <div style={{ fontSize: '14px', marginBottom: '4px', color: CHART_COLORS.gasPrice }}>
-        Gas Price: {data.gasPrice.toFixed(1)} Gwei
+      <div style={{ fontSize: '14px', marginBottom: '4px' }}>
+        <span style={{ color: Color.neutral100 }}>Gas Price: </span>
+        <span style={{ color: CHART_COLORS.gasPrice }}>{data.gasPrice.toFixed(1)} Gwei</span>
       </div>
-      <div style={{ fontSize: '14px', marginBottom: '4px', color: CHART_COLORS.expectedFillPrice }}>
-        Expected Fill: ${data.expectedFillPrice.toFixed(2)}
+      <div style={{ fontSize: '14px', marginBottom: '4px' }}>
+        <span style={{ color: Color.neutral100 }}>Expected Fill: </span>
+        <span style={{ color: CHART_COLORS.expectedFillPrice }}>${data.expectedFillPrice.toFixed(2)}</span>
         <div style={{ fontSize: '12px', color: Color.explorer_greyShade }}>(includes gas cost impact)</div>
       </div>
-      <div style={{ fontSize: '14px', marginBottom: '4px', color: CHART_COLORS.limitPrice }}>
-        Limit Price: ${DEMO_LIMIT_PRICE.toFixed(2)}
+      <div style={{ fontSize: '14px', marginBottom: '4px' }}>
+        <span style={{ color: Color.neutral100 }}>Limit Price: </span>
+        <span style={{ color: CHART_COLORS.limitPrice }}>${DEMO_LIMIT_PRICE.toFixed(2)}</span>
       </div>
       <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center' }}>
-        <span style={{ fontSize: '14px', marginRight: '8px' }}>Status:</span>
+        <span style={{ fontSize: '14px', marginRight: '8px', color: Color.neutral100 }}>Status:</span>
         <div
           style={{
             backgroundColor: STATUS_COLORS[data.status!],
@@ -386,6 +390,18 @@ export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> =
     <ChartContainer>
       <ResponsiveContainer width={width || '100%'} height={height}>
         <ComposedChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+          <defs>
+            <pattern
+              id="fillableAreaPattern"
+              patternUnits="userSpaceOnUse"
+              width="6"
+              height="6"
+              patternTransform="rotate(0)"
+            >
+              <rect width="6" height="6" fill={Color.explorer_bg} fillOpacity={0} />
+              <circle cx="3" cy="3" r="1" fill={CHART_COLORS.fillableArea} fillOpacity="0.4" />
+            </pattern>
+          </defs>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
             dataKey="timestamp"
@@ -438,13 +454,17 @@ export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> =
           />
           <Legend />
 
-          {/* Add fillable area between market price and expected fill price */}
+          {/* Update the Area component to use the pattern */}
           <Area
             yAxisId="left"
             dataKey="fillableAmount"
-            stroke="none"
-            fill={CHART_COLORS.fillableArea}
+            stroke={CHART_COLORS.fillableArea}
+            strokeWidth={1}
+            fill="url(#fillableAreaPattern)"
             fillOpacity={1}
+            name="Fillable Zone"
+            legendType="circle"
+            color={CHART_COLORS.fillableArea}
           />
 
           <Line
