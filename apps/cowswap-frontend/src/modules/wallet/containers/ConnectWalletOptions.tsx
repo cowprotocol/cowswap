@@ -44,7 +44,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
     )) ??
     null
   
-  const privyOption = <PrivyOption/>
+  const privyOption = <PrivyOption {...connectionProps}/>
 
   return (
     <>
