@@ -90,7 +90,7 @@ function FilterOrdersBar() {
       onChange={(e) => {
         setFilterInput(e.target.value)
       }}
-      placeholder="Search orders..."
+      placeholder="Filter orders..."
     />
   )
 }
