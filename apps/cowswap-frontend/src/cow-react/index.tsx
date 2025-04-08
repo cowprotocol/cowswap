@@ -50,7 +50,7 @@ function Main() {
         clientId="client-WY5ijWTp9P5SjENYNUfdVfJDmUqaCLtiXBzBczSFhYcS8"
         config={{
           // Display email and wallet as login methods
-          loginMethods: ['google', 'email'],
+          loginMethods: ['google', 'github', 'email'],
           appearance: {
             theme: 'light',
             accentColor: '#676FFF',

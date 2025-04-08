@@ -31,9 +31,7 @@ interface WalletModalProps {
 
 export function WalletModal(props: Readonly<WalletModalProps>) {
   const { isOpen, onDismiss, view, openOptions, pendingError, tryActivation, tryConnection } = props
-  const { ready, authenticated, user } = usePrivy()
-
-  console.log('WalletModal privy: ready, authenticated, user ===>', ready, authenticated, user)
+  const { ready } = usePrivy()
 
   const isPending = view === 'pending'
 

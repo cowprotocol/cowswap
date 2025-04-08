@@ -195,11 +195,13 @@ export function AccountDetails({
                     </AddressLink>
                   )}
 
-                  {standaloneMode !== false && connectionType !== ConnectionType.GNOSIS_SAFE && (
-                    <WalletAction onClick={handleDisconnectClick}>
-                      <Trans>Disconnect</Trans>
-                    </WalletAction>
-                  )}
+                  {standaloneMode !== false &&
+                    connectionType !== ConnectionType.GNOSIS_SAFE &&
+                    !walletDetails.isPrivy && (
+                      <WalletAction onClick={handleDisconnectClick}>
+                        <Trans>Disconnect</Trans>
+                      </WalletAction>
+                    )}
 
                   {walletDetails.isPrivy && (
                     <WalletAction onClick={handleLogoutClick}>
