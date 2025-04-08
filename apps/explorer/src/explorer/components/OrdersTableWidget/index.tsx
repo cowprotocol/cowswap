@@ -78,8 +78,26 @@ export function OrderStatusPicker() {
   </div>
 }
 
+export const filterInputAtom = atom<string>('')
+
+function FilterOrdersBar() {
+  const [filterInput, setFilterInput] = useAtom(filterInputAtom)
+
+  return (
+    <input
+      type="text"
+      value={filterInput}
+      onChange={(e) => {
+        setFilterInput(e.target.value)
+      }}
+      placeholder="Search orders..."
+    />
+  )
+}
+
 const ExtraComponentNode: React.ReactNode = (
   <WrapperExtraComponents>
+    <FilterOrdersBar />
     <OrderStatusPicker />
     <TablePagination context={OrdersTableContext} />
   </WrapperExtraComponents>

@@ -5,7 +5,7 @@ import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
 
 import { Props as ExplorerLinkProps } from 'components/common/BlockExplorerLink'
 import { sortByAtom } from 'components/orders/OrdersUserDetailsTable'
-import { selectedOrderStatusAtom } from 'explorer/components/OrdersTableWidget'
+import { filterInputAtom, selectedOrderStatusAtom } from 'explorer/components/OrdersTableWidget'
 import { useMultipleErc20 } from 'hooks/useErc20'
 import {
   GetOrderApi,
@@ -203,12 +203,32 @@ export function useGetAccountOrders(
   pageIndex?: number
 ): GetAccountOrdersResult {
   const networkId = useNetworkId() || undefined
-  const orderStatus = useAtomValue(selectedOrderStatusAtom)
-  const filter = useCallback((order: Order) => {
-    if (orderStatus === '') return true
-    return order.status === orderStatus
-  }, [orderStatus])
-  const orders = useFilteredUserOrders(networkId, ownerAddress, filter)
+  const filterByOrderStatus = useAtomValue(selectedOrderStatusAtom)
+  const filterByInputString = useAtomValue(filterInputAtom)
+
+  const orderStatusFilter = useCallback((order: Order) => {
+    if (filterByOrderStatus === '') return true
+    return order.status === filterByOrderStatus
+  }, [filterByOrderStatus])
+
+  const inputStringFilter = useCallback((order: Order) => {
+    if (filterByInputString === '') return true
+    const inputString = filterByInputString.toLowerCase()
+    if (order.buyTokenAddress.toLowerCase().includes(inputString)) return true
+    if (order.sellTokenAddress.toLowerCase().includes(inputString)) return true
+    if (order.buyToken?.symbol?.toLowerCase().includes(inputString)) return true
+    if (order.sellToken?.symbol?.toLowerCase().includes(inputString)) return true
+    if (order.buyToken?.name?.toLowerCase().includes(inputString)) return true
+    if (order.sellToken?.name?.toLowerCase().includes(inputString)) return true
+    return false
+  }, [filterByInputString])
+
+  const orderFilters = useCallback(
+    (order: Order) => orderStatusFilter(order) && inputStringFilter(order),
+    [orderStatusFilter, inputStringFilter]
+  )
+
+  const orders = useFilteredUserOrders(networkId, ownerAddress, orderFilters)
   const sortedOrders = useSortOrders(orders)
   const isThereNext = orders.length > limit + offset
   const isLoading = useAtomValue(areAccountOrdersLoadingAtom)
