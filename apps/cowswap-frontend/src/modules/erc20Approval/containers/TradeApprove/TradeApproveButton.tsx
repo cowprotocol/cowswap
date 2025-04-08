@@ -1,4 +1,4 @@
-import React from 'react'
+import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -8,7 +8,7 @@ import { ApproveButton } from '../../pure/ApproveButton'
 
 export interface TradeApproveButtonProps {
   amountToApprove: CurrencyAmount<Currency>
-  children?: React.ReactNode
+  children?: ReactNode
   isDisabled?: boolean
 }
 
@@ -23,9 +23,9 @@ export function TradeApproveButton(props: TradeApproveButtonProps) {
 
   return (
     <>
-      <ApproveButton isDisabled={isDisabled} currency={currency} onClick={handleApprove} state={approvalState} />
-
-      {children}
+      <ApproveButton isDisabled={isDisabled} currency={currency} onClick={handleApprove} state={approvalState}>
+        {children}
+      </ApproveButton>
     </>
   )
 }
