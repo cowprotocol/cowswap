@@ -1,6 +1,5 @@
 import { Command } from '@cowprotocol/types'
 
-import { ApprovalState } from 'modules/erc20Approval'
 import { TradeDerivedState, AmountsToSign } from 'modules/trade'
 import { TradeQuoteState } from 'modules/tradeQuote'
 
@@ -43,7 +42,7 @@ export enum TradeFormValidation {
 export interface TradeFormValidationCommonContext {
   account: string | undefined
   derivedTradeState: TradeDerivedState
-  approvalState: ApprovalState
+  isApprovalRequired: boolean
   tradeQuote: TradeQuoteState
   recipientEnsAddress: string | null
   isWrapUnwrap: boolean
@@ -51,7 +50,6 @@ export interface TradeFormValidationCommonContext {
   isSupportedWallet: boolean
   isSwapUnsupported: boolean
   isSafeReadonlyUser: boolean
-  isPermitSupported: boolean
   isInsufficientBalanceOrderAllowed: boolean
   isProviderNetworkUnsupported: boolean
   isOnline: boolean

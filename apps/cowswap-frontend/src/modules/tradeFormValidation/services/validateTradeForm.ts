@@ -1,7 +1,6 @@
 import { getIsNativeToken, isAddress, isFractionFalsy } from '@cowprotocol/common-utils'
 import { PriceQuality } from '@cowprotocol/cow-sdk'
 
-import { ApprovalState } from 'modules/erc20Approval'
 import { TradeType } from 'modules/trade'
 import { isQuoteExpired } from 'modules/tradeQuote'
 
@@ -10,7 +9,7 @@ import { TradeFormValidation, TradeFormValidationContext } from '../types'
 export function validateTradeForm(context: TradeFormValidationContext): TradeFormValidation | null {
   const {
     derivedTradeState,
-    approvalState,
+    isApprovalRequired,
     isBundlingSupported,
     isWrapUnwrap,
     isSupportedWallet,
@@ -19,7 +18,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     recipientEnsAddress,
     tradeQuote,
     account,
-    isPermitSupported,
     isInsufficientBalanceOrderAllowed,
     isProviderNetworkUnsupported,
     isOnline,
@@ -31,9 +29,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     : false
   const canPlaceOrderWithoutBalance = isBalanceGreaterThan1Atom && isInsufficientBalanceOrderAllowed && !isWrapUnwrap
   const isNativeIn = inputCurrency && getIsNativeToken(inputCurrency) && !isWrapUnwrap
-
-  const approvalRequired =
-    !isPermitSupported && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
 
   const inputAmountIsNotSet = !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
   const isFastQuote = tradeQuote.fetchParams?.priceQuality === PriceQuality.FAST
@@ -111,7 +106,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     return TradeFormValidation.SellNativeToken
   }
 
-  if (approvalRequired) {
+  if (isApprovalRequired) {
     if (isBundlingSupported) {
       return TradeFormValidation.ApproveAndSwap
     }

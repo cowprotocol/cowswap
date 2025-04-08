@@ -5,12 +5,11 @@ import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useTokenSupportsPermit } from 'modules/permit'
-import { TradeType, useAmountsToSign, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
+import { TradeType, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 import { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
-import { useApproveState } from 'modules/erc20Approval'
+import { useIsApprovalRequired } from 'modules/erc20Approval'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { TradeFormValidationCommonContext } from '../types'
@@ -23,8 +22,6 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isOnline = useIsOnline()
 
   const { inputCurrency, outputCurrency, recipient, tradeType } = derivedTradeState || {}
-  const { maximumSendSellAmount } = useAmountsToSign() || {}
-  const { state: approvalState } = useApproveState(maximumSendSellAmount)
   const { address: recipientEnsAddress } = useENSAddress(recipient)
   const isSwapUnsupported =
     useIsTradeUnsupported(inputCurrency, outputCurrency) || isUnsupportedTokenInQuote(tradeQuote)
@@ -36,7 +33,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly === true
 
-  const isPermitSupported = useTokenSupportsPermit(inputCurrency, tradeType)
+  const isApprovalRequired = useIsApprovalRequired()
 
   const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
 
@@ -48,9 +45,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     isSwapUnsupported,
     isSafeReadonlyUser,
     recipientEnsAddress,
-    approvalState,
     tradeQuote,
-    isPermitSupported,
+    isApprovalRequired,
     isInsufficientBalanceOrderAllowed,
     isProviderNetworkUnsupported,
     isOnline,

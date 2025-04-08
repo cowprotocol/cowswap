@@ -4,6 +4,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 
+import { useIsApprovalRequired } from 'modules/erc20Approval'
 import { useIsSmartSlippageApplied, useTradeSlippage } from 'modules/tradeSlippage'
 
 const StyledInlineBanner = styled(InlineBanner)`
@@ -18,12 +19,13 @@ export function HighSuggestedSlippageWarning(props: HighSuggestedSlippageWarning
   const { isTradePriceUpdating } = props
   const { account } = useWalletInfo()
   const slippage = useTradeSlippage()
+  const isApprovalRequired = useIsApprovalRequired()
 
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
   const isSuggestedSlippage = isSmartSlippageApplied && !isTradePriceUpdating && !!account
   const slippageBps = percentToBps(slippage)
 
-  if (!isSuggestedSlippage || !slippageBps || slippageBps <= 200) {
+  if (!isSuggestedSlippage || !slippageBps || slippageBps <= 200 || isApprovalRequired) {
     return null
   }
 

@@ -9,8 +9,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 
-import { ApprovalState, useApproveState } from 'modules/erc20Approval'
-import { useAmountsToSign, useUpdateCurrencyAmount } from 'modules/trade'
+import { useIsApprovalRequired } from 'modules/erc20Approval'
+import { useUpdateCurrencyAmount } from 'modules/trade'
 
 import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenError'
 import { useQuoteParams } from './useQuoteParams'
@@ -41,9 +41,7 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
   const getIsUnsupportedTokens = useAreUnsupportedTokens()
   const processUnsupportedTokenError = useProcessUnsupportedTokenError()
 
-  const { maximumSendSellAmount } = useAmountsToSign() || {}
-  const { state: approvalState } = useApproveState(maximumSendSellAmount)
-  const needsApproval = approvalState === ApprovalState.NOT_APPROVED
+  const isApprovalRequired = useIsApprovalRequired()
 
   const isWindowVisible = useIsWindowVisible()
 
@@ -103,7 +101,7 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
         }
 
         // Do not fetch quote if the trade needs approval and the params are not changed
-        if (needsApproval && !hasParamsChanged) {
+        if (isApprovalRequired && !hasParamsChanged) {
           return
         }
       }
@@ -161,7 +159,7 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
     getIsUnsupportedTokens,
     isWindowVisible,
     isConfirmOpen,
-    needsApproval,
+    isApprovalRequired,
   ])
 
   return null
