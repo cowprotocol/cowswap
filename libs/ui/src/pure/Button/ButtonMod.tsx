@@ -15,7 +15,7 @@ export const BaseButton = styled(RebassButton)<
     padding?: string
     width?: string
     $borderRadius?: string
-    buttonSize?: ButtonSize // mod
+    buttonSize?: ButtonSize
   } & ButtonProps
 >`
   padding: ${({ padding }) => padding ?? '16px'};

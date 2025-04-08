@@ -1,7 +1,5 @@
 import { TokenLogoWrapper } from '@cowprotocol/tokens'
-import { FiatAmount, Media, RowFixed } from '@cowprotocol/ui'
-import { ExternalLink, StyledLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { FiatAmount, Media, RowFixed, ExternalLink, StyledLink, InlineBanner, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled, { css, keyframes } from 'styled-components/macro'
@@ -240,10 +238,10 @@ export const StatusLabel = styled.div<{
     isPending || isPresignaturePending || isCreating
       ? `var(${UI.COLOR_TEXT})`
       : color === 'success'
-      ? `var(${UI.COLOR_SUCCESS})`
-      : color === 'danger'
-      ? `var(${UI.COLOR_DANGER})`
-      : `var(${UI.COLOR_ALERT})`};
+        ? `var(${UI.COLOR_SUCCESS})`
+        : color === 'danger'
+          ? `var(${UI.COLOR_DANGER})`
+          : `var(${UI.COLOR_ALERT})`};
   height: 28px;
   width: 100px;
   ${({ isPending, isPresignaturePending, isCancelling, isCreating, theme }) =>
@@ -331,7 +329,7 @@ export const OldTransactionState = styled(ExternalLink)<{ pending: boolean; succ
 // override the href, pending and success props
 // override mouse actions via CSS when we dont want a clickable row
 export const TransactionState = styled(OldTransactionState).attrs(
-  (props): { href?: string; disableMouseActions?: boolean; pending?: boolean; success?: boolean } => props
+  (props): { href?: string; disableMouseActions?: boolean; pending?: boolean; success?: boolean } => props,
 )`
   ${(props): string | false => !!props.disableMouseActions && `pointer-events: none; cursor: none;`}
   width: 100%;
@@ -447,4 +445,14 @@ export const FiatWrapper = styled.span`
   margin-left: 5px;
   align-items: center;
   display: flex;
+`
+
+export const UnfillableWarning = styled(InlineBanner)`
+  margin: 10px 0;
+  padding: 15px;
+`
+
+export const ApproveWrapper = styled.div`
+  width: 100%;
+  color: var(${UI.COLOR_TEXT});
 `

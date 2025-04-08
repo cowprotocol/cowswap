@@ -6,7 +6,7 @@ import { MaxUint256 } from '@ethersproject/constants'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useApproveCurrency } from '../../hooks/useApproveCurrency'
-import { useApproveState } from '../../hooks/useApproveState'
+import { ApprovalState, useApproveState } from '../../hooks/useApproveState'
 import { ApproveButton } from '../../pure/ApproveButton'
 import { ApproveConfirmation } from '../../pure/ApproveConfirmation'
 
@@ -31,7 +31,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps) {
 
   const isDisabled = props.isDisabled || !handleApprove
 
-  if (isConfirmationOpen && handleApprove) {
+  if (isConfirmationOpen && handleApprove && approvalState !== ApprovalState.PENDING) {
     return (
       <ApproveConfirmation
         amountToApprove={amountToApprove}

@@ -6,7 +6,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { UiOrderType } from '@cowprotocol/types'
-import { BannerOrientation, ExternalLink, Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
+import { BannerOrientation, ExternalLink, Icon, IconType, StatusColorVariant, TokenAmount, UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
@@ -14,6 +14,7 @@ import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { useToggleAccountModal } from 'modules/account'
+import { TradeApproveButton } from 'modules/erc20Approval'
 import { EthFlowStepper } from 'modules/ethFlow'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
@@ -22,6 +23,7 @@ import { useAddOrderToSurplusQueue } from 'common/containers/SurplusModalSetup/s
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { OrderFillability } from 'common/hooks/usePendingOrdersFillability'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
@@ -37,6 +39,7 @@ import {
   ActivityVisual,
   CreationTimeText,
   FiatWrapper,
+  UnfillableWarning,
   StyledFiatAmount,
   Summary,
   SummaryInner,
@@ -44,6 +47,7 @@ import {
   TextAlert,
   TransactionInnerDetail,
   TransactionState as ActivityLink,
+  ApproveWrapper,
 } from './styled'
 
 import { ActivityDerivedState } from './index'
@@ -169,14 +173,17 @@ interface OrderSummaryType {
   kind?: string
 }
 
-export function ActivityDetails(props: {
+interface ActivityDetailsProps {
   chainId: number
   activityDerivedState: ActivityDerivedState
   activityLinkUrl: string | undefined
   disableMouseActions: boolean | undefined
   creationTime?: string | undefined
-}) {
-  const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime } = props
+  fillability: OrderFillability | undefined
+}
+
+export function ActivityDetails(props: ActivityDetailsProps) {
+  const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime, fillability } = props
   const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired } = activityDerivedState
   const activityState = getActivityState(activityDerivedState)
   const tokenAddress =
@@ -228,6 +235,8 @@ export function ActivityDetails(props: {
   }
   let isOrderFulfilled = false
 
+  let orderFillability = null
+
   if (order) {
     const {
       inputToken,
@@ -277,6 +286,27 @@ export function ActivityDetails(props: {
         : undefined,
       kind: kind.toString(),
     }
+
+    orderFillability = (
+      <>
+        {fillability?.hasEnoughBalance === false && (
+          <UnfillableWarning bannerType={StatusColorVariant.Danger} orientation={BannerOrientation.Horizontal}>
+            Order cannot be filled due to insufficient balance on the current account.
+            <br />
+            Please, top up {inputAmount.currency.symbol} balance or cancel the order.
+          </UnfillableWarning>
+        )}
+
+        {fillability?.hasEnoughAllowance === false && (
+          <UnfillableWarning bannerType={StatusColorVariant.Danger} orientation={BannerOrientation.Horizontal}>
+            Order cannot be filled due to insufficient allowance on the current account.
+            <ApproveWrapper>
+              <TradeApproveButton amountToApprove={inputAmount} />
+            </ApproveWrapper>
+          </UnfillableWarning>
+        )}
+      </>
+    )
   } else {
     orderSummary = DEFAULT_ORDER_SUMMARY
   }
@@ -400,6 +430,8 @@ export function ActivityDetails(props: {
           ) : (
             (summary ?? id)
           )}
+
+          {orderFillability}
 
           {activityLinkUrl && enhancedTransaction?.replacementType !== 'replaced' && (
             <ActivityLink href={activityLinkUrl} disableMouseActions={disableMouseActions}>

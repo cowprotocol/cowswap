@@ -7,9 +7,11 @@ import styled from 'styled-components/macro'
 
 import { useMultipleActivityDescriptors, groupActivitiesByDay } from 'legacy/hooks/useRecentActivity'
 
-import { renderActivities } from '../AccountDetails'
+import { usePendingOrdersFillability } from 'common/hooks/usePendingOrdersFillability'
+
 import { AccountDetailsProps } from '../AccountDetails'
-import { LowerSectionSimple, Wrapper } from '../AccountDetails/styled'
+import { LowerSectionSimple, TransactionListWrapper, Wrapper } from '../AccountDetails/styled'
+import { Activity } from '../Transaction'
 
 type StyledWrapperProps = { $margin?: string }
 type SimpleAccountDetailsProps = Pick<AccountDetailsProps, 'pendingTransactions' | 'confirmedTransactions'> &
@@ -31,6 +33,7 @@ export function SimpleAccountDetails({
 
   const activities = useMultipleActivityDescriptors({ chainId, ids: pendingTransactions.concat(confirmedTransactions) })
   const activitiesGroupedByDate = groupActivitiesByDay(activities)
+  const pendingOrdersFillability = usePendingOrdersFillability()
 
   if (!pendingTransactions.length && !confirmedTransactions.length) return null
 
@@ -39,7 +42,19 @@ export function SimpleAccountDetails({
       <LowerSectionSimple>
         <div>
           {activitiesGroupedByDate.map(({ date, activities }) => (
-            <Fragment key={date.getTime()}>{renderActivities(activities)}</Fragment>
+            <Fragment key={date.getTime()}>
+              <TransactionListWrapper>
+                {activities.map((activity) => {
+                  return (
+                    <Activity
+                      key={activity.id}
+                      activity={activity}
+                      fillability={pendingOrdersFillability[activity.id]}
+                    />
+                  )
+                })}
+              </TransactionListWrapper>
+            </Fragment>
           ))}
         </div>
       </LowerSectionSimple>

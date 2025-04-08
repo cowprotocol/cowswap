@@ -2,7 +2,7 @@ import { ReactNode, useContext } from 'react'
 
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
-import { ButtonPrimary, ButtonSize, Loader, TokenSymbol } from '@cowprotocol/ui'
+import { ButtonPrimary, Loader, TokenSymbol } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -29,7 +29,7 @@ export function ApproveButton(props: ApproveButtonProps) {
 
   return (
     <>
-      <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={onClick} disabled={disabled || !onClick}>
+      <ButtonPrimary onClick={onClick} disabled={disabled || !onClick}>
         <styledEl.ApproveButtonWrapper isPending={isPending}>
           <TokenLogo token={currency} size={24} />
 

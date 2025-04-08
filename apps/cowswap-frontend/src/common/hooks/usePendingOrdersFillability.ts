@@ -8,7 +8,7 @@ export interface OrderFillability {
   hasEnoughBalance: boolean | undefined
 }
 
-export function usePendingOrdersFillability(): Record<string, OrderFillability> {
+export function usePendingOrdersFillability(): Record<string, OrderFillability | undefined> {
   const { chainId } = useWalletInfo()
 
   const { values: balances } = useTokensBalances()

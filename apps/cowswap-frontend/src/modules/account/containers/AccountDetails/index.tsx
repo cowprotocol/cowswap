@@ -3,7 +3,7 @@ import { Fragment } from 'react'
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { getEtherscanLink, getExplorerLabel, shortenAddress, getExplorerAddressLink } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
-import { ExternalLink } from '@cowprotocol/ui'
+import { BannerOrientation, ExternalLink, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import {
   useWalletInfo,
   useWalletDetails,
@@ -18,18 +18,15 @@ import {
 import { Trans } from '@lingui/macro'
 
 import Copy from 'legacy/components/Copy'
-import {
-  ActivityDescriptors,
-  groupActivitiesByDay,
-  useMultipleActivityDescriptors,
-} from 'legacy/hooks/useRecentActivity'
+import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 import { useAppDispatch } from 'legacy/state/hooks'
 import { updateSelectedWallet } from 'legacy/state/user/reducer'
 
-import Activity from 'modules/account/containers/Transaction'
+import { Activity } from 'modules/account/containers/Transaction'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { usePendingOrdersFillability } from 'common/hooks/usePendingOrdersFillability'
 import { useUnsupportedNetworksText } from 'common/hooks/useUnsupportedNetworksText'
 
 import { AccountIcon } from './AccountIcon'
@@ -60,16 +57,6 @@ export const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',
 }
 
-export function renderActivities(activities: ActivityDescriptors[]) {
-  return (
-    <TransactionListWrapper>
-      {activities.map((activity) => {
-        return <Activity key={activity.id} activity={activity} />
-      })}
-    </TransactionListWrapper>
-  )
-}
-
 export interface AccountDetailsProps {
   pendingTransactions: string[]
   confirmedTransactions: string[]
@@ -94,6 +81,8 @@ export function AccountDetails({
   const disconnectWallet = useDisconnectWallet()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const { standaloneMode } = useInjectedWidgetParams()
+  const pendingOrdersFillability = usePendingOrdersFillability()
+  const unfillableOrdersIds = Object.keys(pendingOrdersFillability)
 
   const explorerOrdersLink = account && getExplorerAddressLink(chainId, account)
   const explorerLabel = account ? getExplorerLabel(chainId, 'address', account) : undefined
@@ -195,6 +184,15 @@ export function AccountDetails({
         <>
           <SurplusCard />
 
+          {unfillableOrdersIds.length > 0 && (
+            <>
+              <InlineBanner bannerType={StatusColorVariant.Danger} orientation={BannerOrientation.Horizontal}>
+                <>{unfillableOrdersIds.length} orders are not fillable! Check details in the order list bellow.</>
+              </InlineBanner>
+              <br />
+            </>
+          )}
+
           {activityTotalCount ? (
             <LowerSection>
               <span>
@@ -210,7 +208,17 @@ export function AccountDetails({
                   <Fragment key={date.getTime()}>
                     {/* TODO: style me! */}
                     <CreationDateText>{date.toLocaleString(undefined, DATE_FORMAT_OPTION)}</CreationDateText>
-                    {renderActivities(activities)}
+                    <TransactionListWrapper>
+                      {activities.map((activity) => {
+                        return (
+                          <Activity
+                            key={activity.id}
+                            activity={activity}
+                            fillability={pendingOrdersFillability[activity.id]}
+                          />
+                        )
+                      })}
+                    </TransactionListWrapper>
                   </Fragment>
                 ))}
                 {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders ↗</ExternalLink>}

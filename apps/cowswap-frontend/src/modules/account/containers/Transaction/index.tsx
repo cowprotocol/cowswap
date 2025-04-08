@@ -6,6 +6,8 @@ import { ActivityDescriptors, ActivityStatus, ActivityType } from 'legacy/hooks/
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 import { Order } from 'legacy/state/orders/actions'
 
+import { OrderFillability } from 'common/hooks/usePendingOrdersFillability'
+
 import { ActivityDetails } from './ActivityDetails'
 import { TransactionStatusText as ActivityDetailsText, TransactionWrapper, Wrapper } from './styled'
 
@@ -85,7 +87,12 @@ export interface ActivityDerivedState {
   orderCreationTxInfo?: OrderCreationTxInfo
 }
 
-export default function Activity({ activity }: { activity: ActivityDescriptors }) {
+interface ActivityProps {
+  activity: ActivityDescriptors
+  fillability: OrderFillability | undefined
+}
+
+export function Activity({ activity, fillability }: ActivityProps) {
   const { chainId } = useWalletInfo()
 
   // Get some derived information about the activity. It helps to simplify the rendering of the subcomponents
@@ -100,8 +107,8 @@ export default function Activity({ activity }: { activity: ActivityDescriptors }
   const creationTimeFull = creationTimeEnhanced
     ? new Date(creationTimeEnhanced)
     : creationTimeOrder
-    ? new Date(Date.parse(creationTimeOrder))
-    : undefined
+      ? new Date(Date.parse(creationTimeOrder))
+      : undefined
 
   const timeFormatOptionHM: Intl.DateTimeFormatOptions = {
     timeStyle: 'short',
@@ -122,6 +129,7 @@ export default function Activity({ activity }: { activity: ActivityDescriptors }
               activityLinkUrl={activityLinkUrl ?? undefined}
               disableMouseActions={!hasLink}
               creationTime={creationTime && creationTime}
+              fillability={fillability}
             />
           </ActivityDetailsText>
         </RowFixed>
