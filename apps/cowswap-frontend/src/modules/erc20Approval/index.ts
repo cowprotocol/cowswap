@@ -4,6 +4,7 @@ export { useApproveCurrency } from './hooks/useApproveCurrency'
 export { useApproveState, ApprovalState } from './hooks/useApproveState'
 export { useTradeApproveState } from './hooks/useTradeApproveState'
 export { useUpdateTradeApproveState } from './hooks/useUpdateTradeApproveState'
+export { useIsApprovalRequired } from './hooks/useIsApprovalRequired'
 
 // Zero approvals
 export { shouldZeroApprove, useShouldZeroApprove } from './hooks/useShouldZeroApprove'

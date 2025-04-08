@@ -2,11 +2,10 @@ import { ReactNode, useContext } from 'react'
 
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
-import { ButtonPrimary, ButtonSize, HoverTooltip, Loader, TokenSymbol } from '@cowprotocol/ui'
+import { ButtonPrimary, ButtonSize, Loader, TokenSymbol } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import { HelpCircle } from 'react-feather'
 import { ThemeContext } from 'styled-components/macro'
 
 import * as styledEl from './styledEl'
@@ -14,7 +13,7 @@ import * as styledEl from './styledEl'
 import { ApprovalState } from '../../hooks/useApproveState'
 
 export interface ApproveButtonProps {
-  currency: Currency | undefined | null
+  currency: Currency
   state: ApprovalState
   onClick?: Command
   isDisabled?: boolean
@@ -41,17 +40,7 @@ export function ApproveButton(props: ApproveButtonProps) {
                 Allow CoW Swap to use your <TokenSymbol token={currency} />
               </Trans>
             </span>
-            <HoverTooltip
-              wrapInContainer
-              content={
-                <Trans>
-                  You must give the CoW Protocol smart contracts permission to use your <TokenSymbol token={currency} />
-                  . If you approve the default amount, you will only have to do this once per token.
-                </Trans>
-              }
-            >
-              {isPending ? <Loader stroke={theme.text1} /> : <HelpCircle size="24" />}
-            </HoverTooltip>
+            <span>{isPending && <Loader stroke={theme.text1} />}</span>
           </>
         </styledEl.ApproveButtonWrapper>
       </ButtonPrimary>
