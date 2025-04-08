@@ -2,12 +2,15 @@ import { ReactNode, useState } from 'react'
 
 import { useTokensAllowances } from '@cowprotocol/balances-and-allowances'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { MaxUint256 } from '@ethersproject/constants'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useApproveCurrency } from '../../hooks/useApproveCurrency'
 import { useApproveState } from '../../hooks/useApproveState'
 import { ApproveButton } from '../../pure/ApproveButton'
 import { ApproveConfirmation } from '../../pure/ApproveConfirmation'
+
+const MaxApprovalAmount = BigInt(MaxUint256.toString())
 
 export interface TradeApproveButtonProps {
   amountToApprove: CurrencyAmount<Currency>
@@ -28,12 +31,13 @@ export function TradeApproveButton(props: TradeApproveButtonProps) {
 
   const isDisabled = props.isDisabled || !handleApprove
 
-  if (isConfirmationOpen) {
+  if (isConfirmationOpen && handleApprove) {
     return (
       <ApproveConfirmation
         amountToApprove={amountToApprove}
         currentAllowance={currentAllowance}
         handleApprove={handleApprove}
+        maxApprovalAmount={MaxApprovalAmount}
       />
     )
   }

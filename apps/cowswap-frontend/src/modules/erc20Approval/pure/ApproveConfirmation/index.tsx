@@ -16,10 +16,11 @@ const digitRegex = /^\d$/
 export interface ApproveConfirmationProps {
   amountToApprove: CurrencyAmount<Currency>
   currentAllowance: BigNumber | undefined
-  handleApprove?(amount: CurrencyAmount<Currency>): void
+  handleApprove(amount: bigint): void
+  maxApprovalAmount: bigint
 }
 
-export function ApproveConfirmation({ amountToApprove, handleApprove }: ApproveConfirmationProps) {
+export function ApproveConfirmation({ amountToApprove, handleApprove, maxApprovalAmount }: ApproveConfirmationProps) {
   const currency = amountToApprove.currency
   const defaultAmountToApprove = amountToApprove.toExact()
 
@@ -90,11 +91,9 @@ export function ApproveConfirmation({ amountToApprove, handleApprove }: ApproveC
     setIsAmountInputFocused(true)
   }
 
-  console.log('TODO handle amountToApproveOverride', amountToApproveOverride)
-
   return (
     <styledEl.Wrapper>
-      <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={() => handleApprove?.()}>
+      <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={() => handleApprove(maxApprovalAmount)}>
         <styledEl.ButtonWrapper>
           <span>Default approve</span>
           <HelpTooltip>
@@ -126,7 +125,13 @@ export function ApproveConfirmation({ amountToApprove, handleApprove }: ApproveC
           {!isChangedTextValid && <styledEl.ValidationText>Entered amount is invalid</styledEl.ValidationText>}
           <styledEl.AdvancedApproveButton
             disabled={isAmountInputFocused || !isChangedTextValid}
-            onClick={() => handleApprove?.()}
+            onClick={() =>
+              handleApprove(
+                amountToApproveOverride
+                  ? BigInt(amountToApproveOverride.quotient.toString())
+                  : BigInt(amountToApprove.quotient.toString()),
+              )
+            }
           >
             <span>Approve</span>
             <HelpTooltip>

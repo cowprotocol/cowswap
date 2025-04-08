@@ -25,7 +25,7 @@ import { WrappingPreviewProps } from '../../pure/WrappingPreview'
 import { ethFlowContextAtom } from '../../state/ethFlowContextAtom'
 
 export interface EthFlowProps {
-  nativeInput?: CurrencyAmount<Currency>
+  nativeInput: CurrencyAmount<Currency>
   hasEnoughWrappedBalanceForSwap: boolean
   wrapCallback: WrapUnwrapCallback | null
   directSwapCallback: Command
@@ -46,14 +46,20 @@ export function EthFlowModal({
 
   const ethFlowContext = useAtomValue(ethFlowContextAtom)
   const approveCallback = useTradeApproveCallback(
-    (nativeInput && currencyAmountToTokenAmount(nativeInput)) || undefined,
+    (nativeInput && currencyAmountToTokenAmount(nativeInput).currency) || undefined,
   )
-  const ethFlowActions = useEthFlowActions({
-    wrap: wrapCallback,
-    approve: approveCallback,
-    dismiss: onDismiss,
-    directSwap: directSwapCallback,
-  })
+  const actions = useMemo(
+    () => ({
+      wrap: wrapCallback,
+      async approve() {
+        return approveCallback(BigInt(nativeInput.quotient.toString()))
+      },
+      dismiss: onDismiss,
+      directSwap: directSwapCallback,
+    }),
+    [wrapCallback, approveCallback, nativeInput, onDismiss, directSwapCallback],
+  )
+  const ethFlowActions = useEthFlowActions(actions)
 
   const approveActivity = useSingleActivityDescriptor({ chainId, id: ethFlowContext.approve.txHash || undefined })
   const wrapActivity = useSingleActivityDescriptor({ chainId, id: ethFlowContext.wrap.txHash || undefined })

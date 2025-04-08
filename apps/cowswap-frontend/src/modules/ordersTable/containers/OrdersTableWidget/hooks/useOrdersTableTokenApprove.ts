@@ -20,7 +20,7 @@ export function useOrdersTableTokenApprove(): Dispatch<SetStateAction<Token | un
   // Trigger approve flow once amountToApprove is set
   useSafeEffect(() => {
     if (amountToApprove && tradeApproveCallback) {
-      tradeApproveCallback()
+      tradeApproveCallback(BigInt(amountToApprove.quotient.toString()))
       setTokenToApprove(undefined)
     }
   }, [amountToApprove, tradeApproveCallback])

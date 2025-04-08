@@ -70,13 +70,17 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
 
   const isSellTrade = isSellOrder(orderKind)
 
-  const ethFlowProps: EthFlowProps = useSafeMemoObject({
-    nativeInput: inputCurrencyAmount || undefined,
-    onDismiss: dismissNativeWrapModal,
-    wrapCallback,
-    directSwapCallback: doTrade.callback,
-    hasEnoughWrappedBalanceForSwap,
-  })
+  const ethFlowProps: EthFlowProps | undefined = useMemo(() => {
+    if (!inputCurrencyAmount) return
+
+    return {
+      nativeInput: inputCurrencyAmount,
+      onDismiss: dismissNativeWrapModal,
+      wrapCallback,
+      directSwapCallback: doTrade.callback,
+      hasEnoughWrappedBalanceForSwap,
+    }
+  }, [inputCurrencyAmount, dismissNativeWrapModal, wrapCallback, doTrade.callback, hasEnoughWrappedBalanceForSwap])
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
@@ -188,7 +192,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
             outputCurrencyInfo={outputCurrencyPreviewInfo}
           />
         }
-        genericModal={showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
+        genericModal={showNativeWrapModal && ethFlowProps && <EthFlowModal {...ethFlowProps} />}
       />
       <BottomBanners />
     </Container>

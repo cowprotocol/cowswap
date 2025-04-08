@@ -84,7 +84,7 @@ export const TokensTableRow = ({
   const amountToApprove = useMemo(() => CurrencyAmount.fromRawAmount(tokenData, MaxUint256), [tokenData])
 
   const { state: approvalState, currentAllowance } = useApproveState(isNativeToken ? null : amountToApprove)
-  const approveCallback = useApproveCallback(amountToApprove, vaultRelayer)
+  const approveCallback = useApproveCallback(amountToApprove.currency, vaultRelayer)
 
   const handleApprove = useCallback(async () => {
     handleCloseError()
@@ -97,7 +97,7 @@ export const TokensTableRow = ({
     // TODO: make a separate hook out of this and add GA
     try {
       openApproveModal(tokenData?.symbol)
-      await approveCallback(`Approve ${tokenData?.symbol || 'token'}`)
+      await approveCallback(amountToApprove, `Approve ${tokenData?.symbol || 'token'}`)
     } catch (error: any) {
       console.error(`[TokensTableRow]: Issue approving.`, error)
       handleSetError(error?.message)
@@ -106,6 +106,7 @@ export const TokensTableRow = ({
     }
   }, [
     account,
+    amountToApprove,
     approveCallback,
     handleCloseError,
     handleSetError,

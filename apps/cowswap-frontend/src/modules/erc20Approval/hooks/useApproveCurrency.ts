@@ -8,18 +8,19 @@ import { useZeroApprove } from './useZeroApprove'
 import { useTradeApproveCallback } from '../containers/TradeApprove/useTradeApproveCallback'
 
 export function useApproveCurrency(amountToApprove: CurrencyAmount<Currency> | undefined) {
-  const tradeApproveCallback = useTradeApproveCallback(amountToApprove)
+  const currency = amountToApprove?.currency
+
+  const tradeApproveCallback = useTradeApproveCallback(currency)
   const shouldZeroApprove = useShouldZeroApprove(amountToApprove)
-  const zeroApprove = useZeroApprove(amountToApprove?.currency)
-  const callback = useCallback(async () => {
-    if (shouldZeroApprove) {
-      await zeroApprove()
-    }
+  const zeroApprove = useZeroApprove(currency)
+  return useCallback(
+    async (amount: bigint) => {
+      if (shouldZeroApprove) {
+        await zeroApprove()
+      }
 
-    await tradeApproveCallback()
-  }, [tradeApproveCallback, zeroApprove, shouldZeroApprove])
-
-  if (shouldZeroApprove === null) return undefined
-
-  return callback
+      await tradeApproveCallback(amount)
+    },
+    [tradeApproveCallback, zeroApprove, shouldZeroApprove],
+  )
 }
