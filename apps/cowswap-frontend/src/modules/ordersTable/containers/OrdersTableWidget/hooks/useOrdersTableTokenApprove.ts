@@ -3,7 +3,8 @@ import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 import { MaxUint256 } from '@ethersproject/constants'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { useApproveCurrency } from 'common/hooks/useApproveCurrency'
+import { useApproveCurrency } from 'modules/erc20Approval'
+
 import { useSafeEffect } from 'common/hooks/useSafeMemo'
 
 export function useOrdersTableTokenApprove(): Dispatch<SetStateAction<Token | undefined>> {

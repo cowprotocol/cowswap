@@ -1,11 +1,8 @@
 import { Command } from '@cowprotocol/types'
 
-import { TradeDerivedState } from 'modules/trade'
+import { ApprovalState } from 'modules/erc20Approval'
+import { TradeDerivedState, AmountsToSign } from 'modules/trade'
 import { TradeQuoteState } from 'modules/tradeQuote'
-
-import { ApprovalState } from 'common/hooks/useApproveState'
-
-import { AmountsToSign } from '../trade/hooks/useAmountsToSign'
 
 export enum TradeFormValidation {
   // Wrap/unwrap

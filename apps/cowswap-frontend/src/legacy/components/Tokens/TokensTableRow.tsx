@@ -16,11 +16,10 @@ import { Link } from 'react-router-dom'
 
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 
+import { useApproveState, useApproveCallback, ApprovalState } from 'modules/erc20Approval'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
 import { Routes } from 'common/constants/routes'
-import { useApproveCallback } from 'common/hooks/useApproveCallback'
-import { ApprovalState, useApproveState } from 'common/hooks/useApproveState'
 import { CardsSpinner, ExtLink } from 'pages/Account/styled'
 
 import BalanceCell from './BalanceCell'

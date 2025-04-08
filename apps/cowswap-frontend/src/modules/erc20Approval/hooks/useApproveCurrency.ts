@@ -4,9 +4,8 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useShouldZeroApprove, useZeroApprove } from 'modules/zeroApproval'
 
-import { useTradeApproveCallback } from '../containers/TradeApprove'
+import { useTradeApproveCallback } from 'common/containers/TradeApprove'
 
-// TODO: allocate a module for all approval process logic
 export function useApproveCurrency(amountToApprove: CurrencyAmount<Currency> | undefined) {
   const tradeApproveCallback = useTradeApproveCallback(amountToApprove)
   const shouldZeroApprove = useShouldZeroApprove(amountToApprove)

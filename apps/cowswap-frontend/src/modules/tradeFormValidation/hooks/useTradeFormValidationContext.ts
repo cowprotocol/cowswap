@@ -10,7 +10,7 @@ import { TradeType, useAmountsToSign, useDerivedTradeState, useIsWrapOrUnwrap } 
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 import { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
-import { useApproveState } from 'common/hooks/useApproveState'
+import { useApproveState } from 'modules/erc20Approval'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { TradeFormValidationCommonContext } from '../types'

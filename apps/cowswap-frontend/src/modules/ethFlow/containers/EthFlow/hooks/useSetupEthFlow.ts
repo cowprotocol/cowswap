@@ -5,7 +5,7 @@ import { Command } from '@cowprotocol/types'
 
 import { ActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 
-import { ApprovalState } from 'common/hooks/useApproveState'
+import { ApprovalState } from 'modules/erc20Approval'
 
 import { useHandleChainChange } from './useHandleChainChange'
 

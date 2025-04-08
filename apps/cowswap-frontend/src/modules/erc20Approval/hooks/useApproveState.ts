@@ -10,8 +10,7 @@ import { Nullish } from 'types'
 import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
-
-import { useTradeSpenderAddress } from './useTradeSpenderAddress'
+import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
 export enum ApprovalState {
   UNKNOWN = 'UNKNOWN',
@@ -28,7 +27,7 @@ function getCurrencyToApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>
 
 export function useApproveState(
   amountToApprove: Nullish<CurrencyAmount<Currency>>,
-  amountToCheckAgainstAllowance?: Nullish<CurrencyAmount<Currency>>
+  amountToCheckAgainstAllowance?: Nullish<CurrencyAmount<Currency>>,
 ): {
   state: ApprovalState
   currentAllowance: Nullish<CurrencyAmount<Currency>>
@@ -85,7 +84,7 @@ export function useApproveState(
  */
 function useAuxApprovalState(
   approvalStateBase: ApprovalState,
-  currentAllowance?: CurrencyAmount<Currency>
+  currentAllowance?: CurrencyAmount<Currency>,
 ): ApprovalState {
   const previousApprovalState = usePrevious(approvalStateBase)
   const currentAllowanceString = currentAllowance?.quotient.toString(16)

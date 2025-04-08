@@ -1,10 +1,9 @@
 import { getIsNativeToken, isAddress, isFractionFalsy } from '@cowprotocol/common-utils'
 import { PriceQuality } from '@cowprotocol/cow-sdk'
 
+import { ApprovalState } from 'modules/erc20Approval'
 import { TradeType } from 'modules/trade'
 import { isQuoteExpired } from 'modules/tradeQuote'
-
-import { ApprovalState } from 'common/hooks/useApproveState'
 
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
 
