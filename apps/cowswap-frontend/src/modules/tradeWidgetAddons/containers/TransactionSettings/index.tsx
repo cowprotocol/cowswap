@@ -39,13 +39,13 @@ import {
 } from 'modules/tradeSlippage'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
+import { useNativeCurrency } from 'common/hooks/useNativeCurrency'
 import {
   getNativeOrderDeadlineTooltip,
   getNativeSlippageTooltip,
   getNonNativeOrderDeadlineTooltip,
   getNonNativeSlippageTooltip,
 } from 'common/utils/tradeSettingsTooltips'
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import * as styledEl from './styled'
 

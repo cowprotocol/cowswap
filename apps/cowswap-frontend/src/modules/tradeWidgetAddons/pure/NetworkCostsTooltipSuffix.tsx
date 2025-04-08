@@ -3,7 +3,7 @@ import { useWalletDetails } from '@cowprotocol/wallet'
 
 import { useIsEoaEthFlow } from 'modules/trade'
 
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { useNativeCurrency } from 'common/hooks/useNativeCurrency'
 
 export function NetworkCostsTooltipSuffix() {
   const { allowsOffchainSigning } = useWalletDetails()

@@ -98,3 +98,4 @@ export const NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> = {
 export const WETH_MAINNET = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.MAINNET]
 export const WXDAI = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN]
 export const WETH_SEPOLIA = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.SEPOLIA]
+export const MAINNET_NATIVE_CURRENCY = NATIVE_CURRENCIES[SupportedChainId.MAINNET]

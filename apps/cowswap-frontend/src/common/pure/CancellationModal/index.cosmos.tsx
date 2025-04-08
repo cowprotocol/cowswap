@@ -1,9 +1,9 @@
 import { useState } from 'react'
 
+import { MAINNET_NATIVE_CURRENCY } from '@cowprotocol/common-const'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { CancellationModalContext } from 'common/hooks/useCancelOrder/state'
-import { MAINNET_NATIVE_CURRENCY } from 'lib/hooks/useNativeCurrency'
 
 import { CancellationModal, CancellationModalProps } from '.'
 

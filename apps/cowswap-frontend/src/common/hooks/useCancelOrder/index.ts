@@ -14,13 +14,13 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { useGetOnChainCancellation } from 'common/hooks/useCancelOrder/useGetOnChainCancellation'
 import { computeOrderSummary } from 'common/updaters/orders/utils'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { cancellationModalContextAtom, CancellationType, updateCancellationModalContextAtom } from './state'
 import { useOffChainCancelOrder } from './useOffChainCancelOrder'
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'
 
 import { getSwapErrorMessage } from '../../utils/getSwapErrorMessage'
+import { useNativeCurrency } from '../useNativeCurrency'
 
 export type UseCancelOrderReturn = Command | null
 

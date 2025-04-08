@@ -1,11 +1,9 @@
 import { atom } from 'jotai'
 import { atomWithReset } from 'jotai/utils'
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
+import { MAINNET_NATIVE_CURRENCY, TokenWithLogo } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
-
-import { MAINNET_NATIVE_CURRENCY } from 'lib/hooks/useNativeCurrency'
 
 export type CancellationType = 'offChain' | 'onChain'
 export type CancellationModalContext = {
@@ -44,5 +42,5 @@ export const updateCancellationModalContextAtom = atom(
 
       return { ...prevState, ...nextState }
     })
-  }
+  },
 )

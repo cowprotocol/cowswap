@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { useIsEoaEthFlow, useIsWrapOrUnwrap } from 'modules/trade'
 
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { useNativeCurrency } from 'common/hooks/useNativeCurrency'
 
 import { RowDeadlineContent } from '../../pure/Row/RowDeadline'
 

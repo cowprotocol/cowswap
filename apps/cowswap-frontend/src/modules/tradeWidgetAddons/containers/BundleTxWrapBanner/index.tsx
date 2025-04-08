@@ -3,7 +3,7 @@ import { useIsTxBundlingSupported, useIsSmartContractWallet } from '@cowprotocol
 
 import { useIsHooksTradeType, useIsNativeIn, useWrappedToken } from 'modules/trade'
 
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { useNativeCurrency } from 'common/hooks/useNativeCurrency'
 
 export function BundleTxWrapBanner() {
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'

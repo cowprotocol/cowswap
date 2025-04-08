@@ -7,7 +7,7 @@ import { Percent } from '@uniswap/sdk-core'
 import { useIsEoaEthFlow } from 'modules/trade'
 import { useIsSmartSlippageApplied, useSetSlippage, useSmartTradeSlippage } from 'modules/tradeSlippage'
 
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { useNativeCurrency } from 'common/hooks/useNativeCurrency'
 
 import { RowSlippageContent } from '../../pure/Row/RowSlippageContent'
 

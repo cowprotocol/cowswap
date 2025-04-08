@@ -7,9 +7,10 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import useSWR from 'swr'
 
 import { getSurplusData } from 'api/cowProtocol/api'
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { totalSurplusAtom } from './atoms'
+
+import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 
 export function TotalSurplusUpdater(): null {
   const { chainId, account } = useWalletInfo()
@@ -26,7 +27,7 @@ export function TotalSurplusUpdater(): null {
 
       return CurrencyAmount.fromRawAmount(nativeCurrency, surplusData.totalSurplus)
     },
-    [nativeCurrency]
+    [nativeCurrency],
   )
 
   const {
@@ -37,7 +38,7 @@ export function TotalSurplusUpdater(): null {
   } = useSWR<CurrencyAmount<Currency> | null>(
     // Don't load if required params are missing: https://swr.vercel.app/docs/conditional-fetching
     chainId && account ? ['getSurplusData', chainId, account] : null,
-    fetcher
+    fetcher,
   )
 
   useEffect(() => {

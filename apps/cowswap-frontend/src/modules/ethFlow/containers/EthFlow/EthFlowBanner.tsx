@@ -4,7 +4,7 @@ import { Command } from '@cowprotocol/types'
 
 import { useIsNativeIn, useWrappedToken } from 'modules/trade'
 
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { useNativeCurrency } from 'common/hooks/useNativeCurrency'
 
 import { EthFlowBannerContent } from '../../pure/EthFlowBanner'
 

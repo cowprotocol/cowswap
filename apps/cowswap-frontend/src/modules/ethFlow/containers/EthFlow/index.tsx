@@ -14,7 +14,7 @@ import { useWrappedToken } from 'modules/trade'
 
 import { useTradeApproveCallback } from 'common/containers/TradeApprove'
 import { useApproveState } from 'common/hooks/useApproveState'
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { useNativeCurrency } from 'common/hooks/useNativeCurrency'
 
 import { useEthFlowActions } from './hooks/useEthFlowActions'
 import useRemainingNativeTxsAndCosts from './hooks/useRemainingNativeTxsAndCosts'

@@ -7,9 +7,9 @@ import { useIsEoaEthFlow, useShouldPayGas } from 'modules/trade'
 import { useIsSmartSlippageApplied, useSmartTradeSlippage } from 'modules/tradeSlippage'
 import { NetworkCostsTooltipSuffix } from 'modules/tradeWidgetAddons'
 
+import { useNativeCurrency } from 'common/hooks/useNativeCurrency'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 

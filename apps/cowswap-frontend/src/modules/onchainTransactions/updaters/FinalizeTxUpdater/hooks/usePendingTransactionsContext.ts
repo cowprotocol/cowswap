@@ -12,7 +12,7 @@ import { useGetTwapOrderById } from 'modules/twap/hooks/useGetTwapOrderById'
 
 import { useBlockNumber } from 'common/hooks/useBlockNumber'
 import { useGetReceipt } from 'common/hooks/useGetReceipt'
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { useNativeCurrency } from 'common/hooks/useNativeCurrency'
 
 import { CheckEthereumTransactions } from '../types'
 

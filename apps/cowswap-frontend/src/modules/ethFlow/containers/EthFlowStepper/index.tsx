@@ -5,7 +5,7 @@ import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/re
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { isOrderExpired } from 'legacy/state/orders/utils'
 
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { useNativeCurrency } from 'common/hooks/useNativeCurrency'
 
 import { EthFlowStepper as Pure, EthFlowStepperProps as PureProps, SmartOrderStatus } from '../../pure/EthFlowStepper'
 

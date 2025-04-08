@@ -8,7 +8,7 @@ import { Field } from 'legacy/state/types'
 
 import { useDerivedTradeState, useNavigateOnCurrencySelection, useWrappedToken } from 'modules/trade'
 
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { useNativeCurrency } from 'common/hooks/useNativeCurrency'
 
 const Button = styled(LinkStyledButton)`
   text-decoration: underline;
