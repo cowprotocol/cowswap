@@ -37,7 +37,7 @@
     "lint": "nx run-many -t lint",
     "prebuild-app": "yarn i18n",
     "prepare": "husky install",
-    "postinstall": "yarn run patch-package && yarn i18n",
+    "postinstall": "yarn run patch-package",
     "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst yarn build"
   },
   "browser": {
