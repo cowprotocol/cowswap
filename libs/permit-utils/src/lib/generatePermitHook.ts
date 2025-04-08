@@ -2,7 +2,7 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { DEFAULT_PERMIT_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_SIGNER } from '../const'
 import { PermitHookData, PermitHookParams } from '../types'
-import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from '../utils/buildPermitCallData'
+import { buildDaiLikePermitCallData, buildEip2612PermitCallData } from '../utils/buildPermitCallData'
 import { getPermitDeadline } from '../utils/getPermitDeadline'
 import { isSupportedPermitInfo } from '../utils/isSupportedPermitInfo'
 
@@ -37,7 +37,7 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
 }
 
 async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHookData> {
-  const { inputToken, spender, chainId, permitInfo, provider, account, eip2162Utils, nonce: preFetchedNonce } = params
+  const { inputToken, spender, chainId, permitInfo, provider, account, eip2612Utils, nonce: preFetchedNonce } = params
 
   const tokenAddress = inputToken.address
   // TODO: remove the need for `name` from input token. Should come from permitInfo instead
@@ -55,15 +55,15 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
 
   // Only fetch the nonce in case it wasn't pre-fetched before
   // That's the case for static account
-  const nonce = preFetchedNonce === undefined ? await eip2162Utils.getTokenNonce(tokenAddress, owner) : preFetchedNonce
+  const nonce = preFetchedNonce === undefined ? await eip2612Utils.getTokenNonce(tokenAddress, owner) : preFetchedNonce
 
   const deadline = getPermitDeadline()
   const value = DEFAULT_PERMIT_VALUE
 
   const callData =
     permitInfo.type === 'eip-2612'
-      ? await buildEip2162PermitCallData({
-          eip2162Utils,
+      ? await buildEip2612PermitCallData({
+          eip2612Utils,
           callDataParams: [
             {
               owner,
@@ -79,7 +79,7 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
           ],
         })
       : await buildDaiLikePermitCallData({
-          eip2162Utils,
+          eip2612Utils,
           callDataParams: [
             {
               holder: owner,

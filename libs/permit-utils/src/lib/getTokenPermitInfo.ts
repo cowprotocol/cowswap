@@ -6,13 +6,13 @@ import { getPermitUtilsInstance } from './getPermitUtilsInstance'
 
 import { DEFAULT_MIN_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_SIGNER } from '../const'
 import { GetTokenPermitInfoParams, GetTokenPermitIntoResult, PermitInfo, PermitType } from '../types'
-import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from '../utils/buildPermitCallData'
+import { buildDaiLikePermitCallData, buildEip2612PermitCallData } from '../utils/buildPermitCallData'
 import { Eip712Domain, getEip712Domain } from '../utils/getEip712Domain'
 import { getPermitDeadline } from '../utils/getPermitDeadline'
 import { getTokenName } from '../utils/getTokenName'
 import { getTokenPermitVersion } from '../utils/getTokenPermitVersion'
 
-const EIP_2162_PERMIT_PARAMS = {
+const EIP_2612_PERMIT_PARAMS = {
   value: DEFAULT_PERMIT_VALUE,
   nonce: 0,
   deadline: getPermitDeadline(),
@@ -215,20 +215,20 @@ async function estimateTokenPermit(params: EstimateParams): Promise<GetTokenPerm
 
   return gasLimit > minGasLimit
     ? {
-        type,
-        version,
-        name: tokenName,
-      }
+      type,
+      version,
+      name: tokenName,
+    }
     : { ...UNSUPPORTED, name: tokenName }
 }
 
 async function getEip2612CallData(params: BaseParams): Promise<string> {
   const { eip2612PermitUtils, walletAddress, spender, nonce, chainId, tokenName, tokenAddress, version } = params
-  return buildEip2162PermitCallData({
-    eip2162Utils: eip2612PermitUtils,
+  return buildEip2612PermitCallData({
+    eip2612Utils: eip2612PermitUtils,
     callDataParams: [
       {
-        ...EIP_2162_PERMIT_PARAMS,
+        ...EIP_2612_PERMIT_PARAMS,
         owner: walletAddress,
         spender,
         nonce,
@@ -254,7 +254,7 @@ async function getDaiLikeCallData(params: BaseParams): Promise<string | false> {
 
   if (permitTypeHash === DAI_LIKE_PERMIT_TYPEHASH) {
     return buildDaiLikePermitCallData({
-      eip2162Utils: eip2612PermitUtils,
+      eip2612Utils: eip2612PermitUtils,
       callDataParams: [
         {
           ...DAI_LIKE_PERMIT_PARAMS,
