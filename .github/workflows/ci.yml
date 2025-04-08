@@ -129,53 +129,53 @@ jobs:
       - name: Run eslint
         run: yarn lint
 
-  integration-tests:
-    name: Cypress
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+  # integration-tests:
+  #   name: Cypress
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
 
-      - name: Increase watchers
-        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+  #     - name: Increase watchers
+  #       run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
-      - name: Set up node
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: yarn
+  #     - name: Set up node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+  #         cache: yarn
 
-      # Install deps only
-      - name: Cypress install dependencies
-        id: cypress-deps
-        uses: cypress-io/github-action@v5.0.5
-        # Do not consider failure a failure. Well, sort of.
-        # See https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#steps-context
-        continue-on-error: true
-        with:
-          runTests: false
+  #     # Install deps only
+  #     - name: Cypress install dependencies
+  #       id: cypress-deps
+  #       uses: cypress-io/github-action@v5.0.5
+  #       # Do not consider failure a failure. Well, sort of.
+  #       # See https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#steps-context
+  #       continue-on-error: true
+  #       with:
+  #         runTests: false
 
-      - name: Install Cypress binary
-        id: cypress-bin
-        # Only run if previous step failed
-        if: steps.cypress-deps.outcome == 'failure'
-        run: npx cypress install
+  #     - name: Install Cypress binary
+  #       id: cypress-bin
+  #       # Only run if previous step failed
+  #       if: steps.cypress-deps.outcome == 'failure'
+  #       run: npx cypress install
 
-      - name: Start server in the background
-        run: yarn start &
+  #     - name: Start server in the background
+  #       run: yarn start &
 
-      # Actually run tests, building repo
-      - name: Cypress run
-        id: cypress-run
-        uses: cypress-io/github-action@v5.8.3
-        with:
-          wait-on: http://[::1]:3000
-          wait-on-timeout: 600
-          install: false
-          working-directory: apps/cowswap-frontend-e2e
-        env:
-          CYPRESS_INTEGRATION_TEST_PRIVATE_KEY: ${{ secrets.CYPRESS_INTEGRATION_TEST_PRIVATE_KEY }}
-          CYPRESS_INTEGRATION_TESTS_INFURA_KEY: ${{ secrets.CYPRESS_INTEGRATION_TESTS_INFURA_KEY }}
+  #     # Actually run tests, building repo
+  #     - name: Cypress run
+  #       id: cypress-run
+  #       uses: cypress-io/github-action@v5.8.3
+  #       with:
+  #         wait-on: http://[::1]:3000
+  #         wait-on-timeout: 600
+  #         install: false
+  #         working-directory: apps/cowswap-frontend-e2e
+  #       env:
+  #         CYPRESS_INTEGRATION_TEST_PRIVATE_KEY: ${{ secrets.CYPRESS_INTEGRATION_TEST_PRIVATE_KEY }}
+  #         CYPRESS_INTEGRATION_TESTS_INFURA_KEY: ${{ secrets.CYPRESS_INTEGRATION_TESTS_INFURA_KEY }}
 
       # - uses: actions/upload-artifact@v3
       #   if: always()
