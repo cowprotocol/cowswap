@@ -10,7 +10,7 @@ import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
 import { shouldZeroApprove as shouldZeroApproveFn } from './shouldZeroApprove'
 
-import { useApprovalStateForSpender } from '../useApproval'
+import { useApprovalStateForSpender } from '../useApprovalStateForSpender'
 
 // TODO: Handle tokens that don't allow approvals larger than the balance of the wallet
 /**
