@@ -1,10 +1,11 @@
+import { atom, useAtomValue, useSetAtom } from 'jotai'
 import React, { useEffect, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
 import { Color } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
-import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
+import { faExchangeAlt, faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons'
 import { safeTokenName } from '@gnosis.pm/dex-js'
 import { DateDisplay } from 'components/common/DateDisplay'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
@@ -188,11 +189,41 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted, showCanceledAndE
   )
 }
 
+export const sortByAtom = atom<{ field: string, asc: boolean } | null>(null)
+export const toggleSortByAtom = atom(null, (get, set, field: string) => {
+  const sortBy = get(sortByAtom)
+
+  console.log('fuck:sortBy', sortBy, field)
+  if (sortBy?.field === field) {
+    set(sortByAtom, { field, asc: !sortBy.asc })
+  } else {
+    set(sortByAtom, { field, asc: false })
+  }
+})
+
+function SortHeader({ field, label }: { field: string; label: string }) {
+  const sortBy = useAtomValue(sortByAtom)
+  const toggleSortBy = useSetAtom(toggleSortByAtom)
+
+  const isActive = sortBy?.field === field
+  const isAsc = sortBy?.asc
+  const icon = isActive ? (isAsc ? faSortDown : faSortUp) : faSort
+
+  return <th onClick={() => toggleSortBy(field)} >
+    {label} <Icon icon={icon} />
+  </th>
+}
+
 const OrdersUserDetailsTable: React.FC<Props> = (props) => {
   const { orders, messageWhenEmpty, tableState, handleNextPage } = props
   const [isPriceInverted, setIsPriceInverted] = useState(false)
   const [showCanceledAndExpired, setShowCanceledAndExpired] = useState(false)
   const [showPreSigning, setShowPreSigning] = useState(false)
+  const setSortBy = useSetAtom(sortByAtom)
+
+  useEffect(() => {
+    setSortBy(null)
+  }, [setSortBy])
 
   const canceledAndExpiredCount = orders?.filter(isExpiredOrCanceled).length || 0
   const preSigningCount = orders?.filter((order) => order.status === 'signing').length || 0
@@ -222,7 +253,7 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
                   Order ID <HelpTooltip tooltip={tooltip.orderID} />
                 </span>
               </th>
-              <th>Type</th>
+              <SortHeader field="kind" label="Type" />
               <th>Sell amount</th>
               <th>Buy amount</th>
               <th>
@@ -230,8 +261,8 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
                   Limit price <Icon icon={faExchangeAlt} onClick={invertLimitPrice} />
                 </span>
               </th>
-              <th>Surplus</th>
-              <th>Created</th>
+              <SortHeader field='surplusPercentage' label='Surplus' />
+              <SortHeader field="creationDate" label="Created" />
               <th>Status</th>
             </tr>
           )}

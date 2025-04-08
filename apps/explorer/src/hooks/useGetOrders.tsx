@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
 
 import { Props as ExplorerLinkProps } from 'components/common/BlockExplorerLink'
+import { sortByAtom } from 'components/orders/OrdersUserDetailsTable'
 import { selectedOrderStatusAtom } from 'explorer/components/OrdersTableWidget'
 import { useMultipleErc20 } from 'hooks/useErc20'
 import {
@@ -17,7 +18,7 @@ import { Network, UiError } from 'types'
 import { transformOrder } from 'utils'
 
 import { Order, getTxOrders } from 'api/operator'
-import { useFilteredUserOrders } from 'api/operator/accountOrderUtils'
+import { areAccountOrdersLoadingAtom, useFilteredUserOrders } from 'api/operator/accountOrderUtils'
 import { GetTxOrdersParams, RawOrder } from 'api/operator/types'
 import { updateWeb3Provider } from 'api/web3'
 
@@ -208,7 +209,24 @@ export function useGetAccountOrders(
     return order.status === orderStatus
   }, [orderStatus])
   const orders = useFilteredUserOrders(networkId, ownerAddress, filter)
+  const sortedOrders = useSortOrders(orders)
   const isThereNext = orders.length > limit + offset
+  const isLoading = useAtomValue(areAccountOrdersLoadingAtom)
 
-  return { orders: orders?.slice(offset, offset + limit) || [], isLoading: false, isThereNext, totalCount: orders.length }
+  return { orders: sortedOrders?.slice(offset, offset + limit) || [], isLoading, isThereNext, totalCount: orders.length }
+}
+
+function useSortOrders(orders: Order[] | undefined): Order[] {
+  const sortBy = useAtomValue(sortByAtom)
+
+  return useMemo(() => {
+    if (!sortBy || !orders) return orders || []
+
+    return orders.sort((a, b) => {
+      if (sortBy.asc) {
+        return a[sortBy.field] - b[sortBy.field]
+      }
+      return b[sortBy.field] - a[sortBy.field]
+    })
+  }, [orders, sortBy])
 }
