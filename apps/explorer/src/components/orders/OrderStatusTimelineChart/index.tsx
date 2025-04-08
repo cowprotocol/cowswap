@@ -14,31 +14,23 @@ import {
   ResponsiveContainer,
   ReferenceLine,
   Area,
+  Brush,
 } from 'recharts'
 import styled from 'styled-components/macro'
 import { Order } from 'api/operator'
 import { CircularProgress, Typography } from '@mui/material'
 
 // Types
-export type OrderStatus = 'Ready' | 'Considered' | 'Executing' | 'Settled' | 'Expired'
+export type OrderStatus =
+  | 'created'
+  | 'ready'
+  | 'filtered'
+  | 'invalid'
+  | 'executing'
+  | 'considered'
+  | 'traded'
+  | 'cancelled'
 export type OrderType = 'Market' | 'Limit'
-
-// BFF status mapping to our OrderStatus
-const mapBffStatusToOrderStatus = (bffStatus: string): OrderStatus => {
-  switch (bffStatus.toLowerCase()) {
-    case 'created':
-      return 'Ready'
-    case 'ready':
-      return 'Considered'
-    case 'invalid':
-    case 'cancelled':
-      return 'Expired'
-    case 'fulfilled':
-      return 'Settled'
-    default:
-      return 'Ready'
-  }
-}
 
 // Convert UiOrderType to chart's OrderType
 const getChartOrderType = (uiOrderType: UiOrderType): OrderType => {
@@ -75,11 +67,14 @@ interface OrderStatusTimelineChartProps {
 
 // Status colors
 const STATUS_COLORS: Record<OrderStatus, string> = {
-  Ready: '#6F7EAE', // Soft blue
-  Considered: '#FFB74D', // Amber
-  Executing: '#4DB6AC', // Teal
-  Settled: '#66BB6A', // Green
-  Expired: '#E57373', // Red
+  created: '#6F7EAE', // Soft blue
+  ready: '#4DB6AC', // Teal
+  filtered: '#E57373', // Red
+  invalid: '#E57373', // Red
+  executing: '#FFB74D', // Amber
+  considered: '#4DB6AC', // Teal
+  traded: '#66BB6A', // Green
+  cancelled: '#E57373', // Red
 }
 
 // Format price for tooltip and axis labels
@@ -120,10 +115,10 @@ const CHART_COLORS = {
 
 // Helper function to get status for any minute
 const getStatusForMinute = (minute: number): OrderStatus => {
-  if (minute < 29) return 'Ready'
-  if (minute < 32) return 'Considered'
-  if (minute < 34) return 'Executing'
-  return 'Settled'
+  if (minute < 29) return 'created'
+  if (minute < 32) return 'considered'
+  if (minute < 34) return 'executing'
+  return 'traded'
 }
 
 // Helper function to create a ChartDataPoint from interpolated data
@@ -388,6 +383,7 @@ const LimitPriceLabel: React.FC<LimitPriceLabelProps> = ({ value, viewBox }) => 
 const ChartContainer = styled.div`
   width: 100%;
   height: 100%;
+  padding-bottom: 20px;
 `
 
 // Types for API responses
@@ -448,7 +444,7 @@ const useOrderData = (orderId: string) => {
 
         // Create a map of status events by timestamp, converting BFF status to our OrderStatus
         const statusEventsMap = new Map(
-          statusEvents.map((event: StatusEvent) => [event.time, mapBffStatusToOrderStatus(event.value)]),
+          statusEvents.map((event: StatusEvent) => [event.time, event.value as OrderStatus]),
         )
 
         // First, create base data points from fill price data
@@ -476,7 +472,7 @@ const useOrderData = (orderId: string) => {
 
         // Then, add data points for status events that don't align with existing timestamps
         statusEvents.forEach((event: StatusEvent) => {
-          const status = mapBffStatusToOrderStatus(event.value)
+          const status = event.value.toLowerCase() as OrderStatus
           const existingPoint = transformedData.find((point) => point.timestamp === event.time)
 
           if (existingPoint) {
@@ -564,6 +560,7 @@ export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> =
   order,
 }) => {
   const [hoveredStatus, setHoveredStatus] = React.useState<string | null>(null)
+  const [zoomDomain, setZoomDomain] = useState<[number, number] | null>(null)
   const { data, isLoading, error } = useOrderData(orderId)
 
   // Calculate limit price from order data - move this before any conditional returns
@@ -669,7 +666,7 @@ export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> =
   return (
     <ChartContainer>
       <ResponsiveContainer width={width || '100%'} height={height}>
-        <ComposedChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+        <ComposedChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 60 }}>
           <defs>
             <pattern
               id="fillableAreaPattern"
@@ -694,7 +691,7 @@ export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> =
               return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             }}
             type="number"
-            domain={['dataMin', 'dataMax']}
+            domain={zoomDomain || ['dataMin', 'dataMax']}
             interval="preserveStartEnd"
             minTickGap={50}
           />
@@ -711,22 +708,6 @@ export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> =
               style: { fill: Color.explorer_green },
             }}
           />
-          {/* TODO: Right Y-axis temporarily hidden along with gas price line
-          <YAxis
-            yAxisId="right"
-            orientation="right"
-            domain={[0, 150]}
-            tickCount={6}
-            tickFormatter={(value) => `${value.toFixed(0)} Gwei`}
-            label={{
-              value: 'Gas Price (Gwei)',
-              angle: 90,
-              position: 'insideRight',
-              offset: 10,
-              style: { fill: Color.explorer_blue1 },
-            }}
-          />
-          */}
           <Tooltip
             content={<CustomTooltip orderType={chartOrderType} limitPrice={limitPrice} allData={data} />}
             position={{ x: 0, y: 0 }}
@@ -734,7 +715,6 @@ export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> =
           />
           <Legend />
 
-          {/* Update the Area component to use the pattern */}
           <Area
             yAxisId="left"
             dataKey="fillableAmount"
@@ -758,19 +738,6 @@ export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> =
             connectNulls={true}
           />
 
-          {/* Gas price line */}
-          {/* TODO: Gas price line temporarily hidden for better price visualization clarity
-          <Line
-            yAxisId="right"
-            type="monotone"
-            dataKey="gasPrice"
-            stroke={CHART_COLORS.gasPrice}
-            name="Gas Price"
-            dot={false}
-          />
-          */}
-
-          {/* Expected fill price line */}
           <Line
             yAxisId="left"
             type="monotone"
@@ -782,10 +749,8 @@ export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> =
             dot={false}
           />
 
-          {/* Fillable zone for Market orders */}
           {chartOrderType === 'Market' && (
             <>
-              {/* Base Area up to market price */}
               <Area
                 yAxisId="left"
                 type="monotone"
@@ -798,35 +763,31 @@ export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> =
             </>
           )}
 
-          {/* Fillable zone for Limit orders - STACKED APPROACH */}
           {chartOrderType === 'Limit' && (
             <>
-              {/* Base Area (represents the expectedFillPrice line itself) */}
               <Area
                 yAxisId="left"
                 type="monotone"
-                dataKey="expectedFillPrice" // The base line
-                stackId="limitFill" // Stack group identifier
+                dataKey="expectedFillPrice"
+                stackId="limitFill"
                 stroke="none"
-                fill="transparent" // Make base transparent so only the difference is colored
+                fill="transparent"
                 isAnimationActive={false}
               />
-              {/* Difference Area (shows the actual fillable zone above expectedFillPrice) */}
               <Area
                 yAxisId="left"
                 type="monotone"
-                dataKey="fillableDifference" // The difference to stack on top
-                stackId="limitFill" // Same stack group identifier
+                dataKey="fillableDifference"
+                stackId="limitFill"
                 name="Fillable Zone"
                 fill={CHART_COLORS.fillableZoneLimit}
-                fillOpacity={0.4} // Adjusted opacity
+                fillOpacity={0.4}
                 stroke="none"
                 isAnimationActive={false}
               />
             </>
           )}
 
-          {/* Limit price reference line */}
           <ReferenceLine
             y={limitPrice}
             yAxisId="left"
@@ -835,7 +796,6 @@ export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> =
             label={<LimitPriceLabel value={limitPrice} />}
           />
 
-          {/* Render non-hovered status lines first */}
           {statusChanges
             .filter((point) => point.status !== hoveredStatus)
             .map((point) => (
@@ -849,7 +809,6 @@ export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> =
               />
             ))}
 
-          {/* Render hovered status line last to appear on top */}
           {hoveredStatus &&
             statusChanges
               .filter((point) => point.status === hoveredStatus)
@@ -863,6 +822,32 @@ export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> =
                   label={<CustomLabel value={point.status!} onHover={(status) => setHoveredStatus(status)} />}
                 />
               ))}
+
+          <Brush
+            dataKey="timestamp"
+            height={40}
+            stroke={CHART_COLORS.marketPrice}
+            fill={Color.explorer_bg}
+            tickFormatter={(value) => {
+              const date = new Date(value)
+              return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }}
+            onChange={(brushData) => {
+              if (
+                brushData.startIndex === undefined ||
+                brushData.endIndex === undefined ||
+                brushData.startIndex === brushData.endIndex
+              ) {
+                setZoomDomain(null)
+                return
+              }
+              const startTime = data[brushData.startIndex]?.timestamp
+              const endTime = data[brushData.endIndex]?.timestamp
+              if (startTime && endTime) {
+                setZoomDomain([startTime, endTime])
+              }
+            }}
+          />
         </ComposedChart>
       </ResponsiveContainer>
     </ChartContainer>
