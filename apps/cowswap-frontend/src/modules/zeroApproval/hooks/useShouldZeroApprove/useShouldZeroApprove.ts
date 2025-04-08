@@ -7,9 +7,10 @@ import { Nullish } from 'types'
 
 import { useTokenContract } from 'common/hooks/useContract'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
-import { useApprovalStateForSpender } from 'lib/hooks/useApproval'
 
 import { shouldZeroApprove as shouldZeroApproveFn } from './shouldZeroApprove'
+
+import { useApprovalStateForSpender } from '../useApproval'
 
 // TODO: Handle tokens that don't allow approvals larger than the balance of the wallet
 /**
