@@ -426,12 +426,12 @@ export const OrderStatusTimelineChart: React.FC<OrderStatusTimelineChartProps> =
             <pattern
               id="fillableAreaPattern"
               patternUnits="userSpaceOnUse"
-              width="6"
-              height="6"
+              width="5"
+              height="5"
               patternTransform="rotate(0)"
             >
-              <rect width="6" height="6" fill={Color.explorer_bg} fillOpacity={0} />
-              <circle cx="3" cy="3" r="1" fill={CHART_COLORS.fillableArea} fillOpacity="0.4" />
+              <rect width="5" height="5" fill={CHART_COLORS.fillableArea} fillOpacity={0.1} />
+              <circle cx="4" cy="4" r="1" fill={CHART_COLORS.fillableArea} fillOpacity="0.75" />
             </pattern>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
