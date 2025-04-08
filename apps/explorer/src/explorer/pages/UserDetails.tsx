@@ -4,7 +4,9 @@ import { Helmet } from 'react-helmet'
 import { useParams } from 'react-router'
 import styled from 'styled-components/macro'
 
-import { TitleAddress, Wrapper as WrapperMod, FlexContainerVar, StyledSearch } from './styled'
+import { AccountOrdersUpdater } from 'api/operator/accountOrderUtils'
+
+import { FlexContainerVar, StyledSearch, TitleAddress, Wrapper as WrapperMod } from './styled'
 
 import { BlockExplorerLink } from '../../components/common/BlockExplorerLink'
 import CowLoading from '../../components/common/CowLoading'
@@ -33,6 +35,7 @@ const UserDetails: React.FC = () => {
       <StyledSearch />
       {addressAccount ? (
         <>
+          <AccountOrdersUpdater networkId={networkId} owner={addressAccount?.address} />
           <FlexContainerVar>
             <h1>User details</h1>
             <TitleAddress

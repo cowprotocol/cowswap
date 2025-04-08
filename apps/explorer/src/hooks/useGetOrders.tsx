@@ -14,12 +14,12 @@ import { useNetworkId } from 'state/network'
 import { Network, UiError } from 'types'
 import { transformOrder } from 'utils'
 
-import { Order, getAccountOrders, getTxOrders } from 'api/operator'
+import { Order, getTxOrders } from 'api/operator'
+import { useAllAccountOrdersWithTokenInfo } from 'api/operator/accountOrderUtils'
 import { GetTxOrdersParams, RawOrder } from 'api/operator/types'
 import { updateWeb3Provider } from 'api/web3'
 
 import { web3 } from '../explorer/api'
-import { ORDERS_QUERY_INTERVAL } from '../explorer/const'
 
 function isObjectEmpty(object: Record<string, unknown>): boolean {
 
@@ -199,53 +199,8 @@ export function useGetAccountOrders(
   pageIndex?: number
 ): GetAccountOrdersResult {
   const networkId = useNetworkId() || undefined
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<UiError>()
-  const { orders, setOrders, setMountNewOrders, setErc20Addresses } = useOrdersWithTokenInfo(networkId)
-  const [isThereNext, setIsThereNext] = useState(false)
+  const orders = useAllAccountOrdersWithTokenInfo(networkId, ownerAddress)
+  const isThereNext = orders.length > limit + offset
 
-  const fetchOrders = useCallback(
-    async (network: Network, owner: string): Promise<void> => {
-      setIsLoading(true)
-
-      try {
-        const { orders, hasNextPage } = await getAccountOrders({ networkId: network, owner, offset, limit })
-        setIsThereNext(hasNextPage)
-        const newErc20Addresses = filterDuplicateErc20Addresses(orders)
-        setErc20Addresses(newErc20Addresses)
-
-        setOrders(orders.map((order) => transformOrder(order)))
-        setMountNewOrders(true)
-        setError(undefined)
-      } catch (e) {
-        const msg = `Failed to fetch orders`
-        console.error(msg, e)
-        setError({ message: msg, type: 'error' })
-      } finally {
-        setIsLoading(false)
-      }
-    },
-    [limit, offset, setErc20Addresses, setMountNewOrders, setOrders]
-  )
-
-  useEffect(() => {
-    if (!networkId) {
-      return
-    }
-
-    setIsThereNext(false)
-    fetchOrders(networkId, ownerAddress)
-
-    if (pageIndex && pageIndex > 1) return
-
-    const intervalId: NodeJS.Timeout = setInterval(() => {
-      fetchOrders(networkId, ownerAddress)
-    }, ORDERS_QUERY_INTERVAL)
-
-    return (): void => {
-      clearInterval(intervalId)
-    }
-  }, [fetchOrders, networkId, ownerAddress, pageIndex])
-
-  return useMemo(() => ({ orders, error, isLoading, isThereNext }), [orders, error, isLoading, isThereNext])
+  return { orders: orders?.slice(offset, offset + limit) || [], isLoading: false, isThereNext }
 }
