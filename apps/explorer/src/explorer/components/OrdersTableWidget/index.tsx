@@ -59,8 +59,8 @@ const STATUS_OPTIONS = ['open', 'filled', 'cancelled', 'cancelling', 'expired', 
 export function OrderStatusPicker() {
   const [selectedOrderStatus, setSelectedOrderStatus] = useAtom(selectedOrderStatusAtom)
 
-  return <div>
-    <label htmlFor="order-status">Order Status:</label>
+  return <div style={{ padding: '10px' }}>
+    <label htmlFor="order-status" style={{ fontSize: '2em', padding: '10px' }}>Order Status:</label>
     <select
       id="order-status"
       value={selectedOrderStatus}
