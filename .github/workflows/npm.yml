@@ -26,7 +26,7 @@ on:
         default: latest
 
 env:
-  NODE_VERSION: lts/hydrogen
+  NODE_VERSION: lts/iron
   DESTINATION_PATH: dist/libs/${{ inputs.lib }}
 
 jobs:
