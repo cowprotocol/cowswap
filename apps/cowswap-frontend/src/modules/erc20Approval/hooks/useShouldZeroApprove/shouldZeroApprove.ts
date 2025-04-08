@@ -3,7 +3,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { ApprovalState } from 'modules/erc20Approval'
+import { ApprovalState } from '../useApproveState'
 
 interface ShouldZeroApproveBaseParams {
   tokenContract: Nullish<Erc20>

@@ -8,7 +8,7 @@ import { Nullish } from 'types'
 
 import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 
-import { ApprovalState } from 'modules/erc20Approval'
+import { ApprovalState } from './useApproveState'
 
 export interface ApprovalStateForSpenderResult {
   approvalState: ApprovalState

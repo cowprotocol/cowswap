@@ -2,9 +2,9 @@ import React from 'react'
 
 import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 
+import { useShouldZeroApprove } from 'modules/erc20Approval'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { HighSuggestedSlippageWarning } from 'modules/tradeSlippage'
-import { useShouldZeroApprove } from 'modules/zeroApproval'
 
 import { useReceiveAmountInfo } from '../../hooks/useReceiveAmountInfo'
 import { ZeroApprovalWarning } from '../../pure/ZeroApprovalWarning'

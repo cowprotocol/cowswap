@@ -8,7 +8,7 @@ import { Nullish } from 'types'
 
 import { CURRENT_BLOCK_FACTORY_ADDRESS } from 'modules/advancedOrders'
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
-import { useNeedsZeroApproval } from 'modules/zeroApproval'
+import { useNeedsZeroApproval } from 'modules/erc20Approval'
 
 import { useTokenContract } from 'common/hooks/useContract'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'

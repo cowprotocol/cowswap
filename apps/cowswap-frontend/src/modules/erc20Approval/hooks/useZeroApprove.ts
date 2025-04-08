@@ -6,11 +6,11 @@ import SafeApiKit from '@safe-global/api-kit'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useApproveCallback } from 'modules/erc20Approval'
-
 import { useSafeApiKit } from 'common/hooks/useSafeApiKit'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 import { pollUntil } from 'common/utils/pollUntil'
+
+import { useApproveCallback } from './useApproveCallback'
 
 import { zeroApprovalState } from '../state/zeroApprovalState'
 

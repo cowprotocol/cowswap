@@ -10,6 +10,7 @@ import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { getOrderSubmitSummary, mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
 import { removePermitHookFromAppData } from 'modules/appData'
+import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/erc20Approval'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
 import { buildZeroApproveTx } from 'modules/operations/bundle/buildZeroApproveTx'
 import { emitPostedOrderEvent } from 'modules/orders'
@@ -17,7 +18,6 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import { NO_QUOTE_IN_ORDER_ERROR } from 'modules/tradeQuote'
-import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
