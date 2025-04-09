@@ -214,12 +214,10 @@ export function useGetAccountOrders(
   const inputStringFilter = useCallback((order: Order) => {
     if (filterByInputString === '' || filterByInputString.length < 3) return true
     const inputString = filterByInputString.toLowerCase()
-    if (order.buyTokenAddress.toLowerCase().includes(inputString)) return true
-    if (order.sellTokenAddress.toLowerCase().includes(inputString)) return true
+    if (order.buyTokenAddress.toLowerCase() === inputString) return true
+    if (order.sellTokenAddress.toLowerCase() === inputString) return true
     if (order.buyToken?.symbol?.toLowerCase().includes(inputString)) return true
     if (order.sellToken?.symbol?.toLowerCase().includes(inputString)) return true
-    if (order.buyToken?.name?.toLowerCase().includes(inputString)) return true
-    if (order.sellToken?.name?.toLowerCase().includes(inputString)) return true
     return false
   }, [filterByInputString])
 
