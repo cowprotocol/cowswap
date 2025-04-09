@@ -27,7 +27,7 @@ export function Web3Status({ pendingActivities, className, onClick }: Web3Status
 
     const order = ordersFillability[key]
 
-    return order.hasEnoughBalance === false || order.hasEnoughAllowance === false
+    return order?.hasEnoughBalance === false || order?.hasEnoughAllowance === false
   })
 
   return (

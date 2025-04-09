@@ -59,7 +59,7 @@ export function EthFlowModal({
     }),
     [wrapCallback, approveCallback, nativeInput, onDismiss, directSwapCallback],
   )
-  const ethFlowActions = useEthFlowActions(actions)
+  const ethFlowActions = useEthFlowActions(actions, nativeInput)
 
   const approveActivity = useSingleActivityDescriptor({ chainId, id: ethFlowContext.approve.txHash || undefined })
   const wrapActivity = useSingleActivityDescriptor({ chainId, id: ethFlowContext.wrap.txHash || undefined })

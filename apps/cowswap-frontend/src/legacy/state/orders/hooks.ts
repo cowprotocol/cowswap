@@ -8,7 +8,6 @@ import { UiOrderType } from '@cowprotocol/types'
 import { useDispatch, useSelector } from 'react-redux'
 import useSWR from 'swr'
 
-import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 

@@ -5,11 +5,11 @@ import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
+import { useIsApprovalRequired } from 'modules/erc20Approval'
 import { TradeType, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 import { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
-import { useIsApprovalRequired } from 'modules/erc20Approval'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { TradeFormValidationCommonContext } from '../types'

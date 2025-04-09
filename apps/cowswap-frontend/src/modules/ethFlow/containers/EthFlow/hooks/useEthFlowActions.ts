@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { Field } from 'legacy/state/types'
@@ -30,8 +31,12 @@ export interface EthFlowActions {
   directSwap(): void
 }
 
-export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowActions {
+export function useEthFlowActions(
+  callbacks: EthFlowActionCallbacks,
+  nativeInput: CurrencyAmount<Currency>,
+): EthFlowActions {
   const { chainId } = useWalletInfo()
+  const amount = BigInt(nativeInput.quotient.toString())
 
   const updateEthFlowContext = useSetAtom(updateEthFlowContextAtom)
 
@@ -66,7 +71,7 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
 
     const approve = (useModals?: boolean) => {
       return sendTransaction('approve', () => {
-        return callbacks.approve({ useModals: !!useModals }).then((res) => res?.hash)
+        return callbacks.approve(amount, { useModals: !!useModals }).then((res) => res?.hash)
       })
     }
 
@@ -90,5 +95,5 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
       wrap,
       directSwap,
     }
-  }, [callbacks, chainId, updateEthFlowContext, onCurrencySelection, openSwapConfirmModal])
+  }, [callbacks, chainId, updateEthFlowContext, onCurrencySelection, openSwapConfirmModal, amount])
 }
