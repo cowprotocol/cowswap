@@ -9,75 +9,53 @@ interface ProgressImageWrapperProps {
   stepName: OrderProgressBarProps['stepName']
 }
 
-function getProgressImageWrapperBgColor(stepName: OrderProgressBarProps['stepName']) {
-  switch (stepName) {
-    case 'initial':
-      return Color.cowfi_blue_lighter
-    case 'unfillable':
-      return '#FFDB9C'
-    case 'delayed':
-    case 'submissionFailed':
-    case 'solved':
-      return '#FFB3B3'
-    case 'solving':
-      return Color.cowfi_blue_lighter
-    case 'finished':
-    case 'cancellationFailed':
-      return Color.cowfi_blue_lighter
-    default:
-      return undefined
-  }
+type StepName = OrderProgressBarProps['stepName']
+type BgColorMap = Partial<Record<NonNullable<StepName>, string>>
+type PaddingMap = Partial<Record<NonNullable<StepName>, string>>
+type HeightMap = Partial<Record<NonNullable<StepName>, string | 'auto'>>
+type GapMap = Partial<Record<NonNullable<StepName>, string>>
+
+const PROCESS_IMAGE_WRAPPER_BG_COLOR: BgColorMap = {
+  initial: Color.cowfi_blue_lighter,
+  unfillable: '#FFDB9C',
+  delayed: '#FFB3B3',
+  submissionFailed: '#FFB3B3',
+  solved: '#FFB3B3',
+  solving: Color.cowfi_blue_lighter,
+  finished: Color.cowfi_blue_lighter,
+  cancellationFailed: Color.cowfi_blue_lighter,
 }
 
-function getProgressImageWrapperPadding(stepName: OrderProgressBarProps['stepName']) {
-  switch (stepName) {
-    case 'initial':
-      return '24px'
-    case 'unfillable':
-      return '20px 0 0'
-    case 'delayed':
-    case 'submissionFailed':
-    case 'solved':
-      return '0'
-    case 'solving':
-      return '16px'
-    case 'finished':
-    case 'cancellationFailed':
-      return '10px'
-    default:
-      return '0'
-  }
+const PROCESS_IMAGE_WRAPPER_PADDING: PaddingMap = {
+  initial: '24px',
+  unfillable: '20px 0 0',
+  delayed: '0',
+  submissionFailed: '0',
+  solved: '0',
+  solving: '16px',
+  finished: '10px',
+  cancellationFailed: '10px',
 }
 
-function getProgressImageWrapperGap(stepName: OrderProgressBarProps['stepName']) {
-  switch (stepName) {
-    case 'finished':
-    case 'cancellationFailed':
-      return '10px'
-    default:
-      return '0'
-  }
+const PROCESS_IMAGE_WRAPPER_HEIGHT: HeightMap = {
+  delayed: '229px',
+  submissionFailed: '229px',
+  solved: '229px',
+  finished: '229px',
 }
 
-function getProgressImageWrapperHeight(stepName: OrderProgressBarProps['stepName']) {
-  switch (stepName) {
-    case 'delayed':
-    case 'submissionFailed':
-    case 'solved':
-    case 'finished':
-      return '229px'
-    default:
-      return 'auto'
-  }
+const PROCESS_IMAGE_WRAPPER_GAP: GapMap = {
+  finished: '10px',
+  cancellationFailed: '10px',
 }
 
 export function ProgressImageWrapper({ children, stepName, ...props }: ProgressImageWrapperProps) {
   return (
     <styledEl.ProgressImageWrapper
-      bgColor={getProgressImageWrapperBgColor(stepName)}
-      padding={getProgressImageWrapperPadding(stepName)}
-      height={getProgressImageWrapperHeight(stepName)}
-      gap={getProgressImageWrapperGap(stepName)}
+      bgColor={stepName ? PROCESS_IMAGE_WRAPPER_BG_COLOR[stepName] : undefined}
+      padding={stepName ? PROCESS_IMAGE_WRAPPER_PADDING[stepName] : '0'}
+      height={stepName ? PROCESS_IMAGE_WRAPPER_HEIGHT[stepName] : 'auto'}
+      gap={stepName ? PROCESS_IMAGE_WRAPPER_GAP[stepName] : '0'}
       {...props}
     >
       {children}
