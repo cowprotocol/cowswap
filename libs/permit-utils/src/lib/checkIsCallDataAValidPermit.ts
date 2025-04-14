@@ -5,7 +5,7 @@ import { PermitInfo } from '../types'
 export async function checkIsCallDataAValidPermit(
   owner: string,
   chainId: number,
-  eip2162Utils: Eip2612PermitUtils,
+  eip2612Utils: Eip2612PermitUtils,
   tokenAddress: string,
   _tokenName: string | undefined,
   callData: string,
@@ -28,7 +28,7 @@ export async function checkIsCallDataAValidPermit(
 
   // If pre-hook doesn't start with either selector, it's not a permit
   if (callData.startsWith(EIP_2612_PERMIT_SELECTOR)) {
-    recoverPermitOwnerPromise = eip2162Utils.recoverPermitOwnerFromCallData({
+    recoverPermitOwnerPromise = eip2612Utils.recoverPermitOwnerFromCallData({
       ...params,
       // I don't know why this was removed, ok?
       // We added it back on buildPermitCallData.ts
@@ -37,7 +37,7 @@ export async function checkIsCallDataAValidPermit(
       callData: callData.replace(EIP_2612_PERMIT_SELECTOR, '0x'),
     })
   } else if (callData.startsWith(DAI_PERMIT_SELECTOR)) {
-    recoverPermitOwnerPromise = eip2162Utils.recoverDaiLikePermitOwnerFromCallData({
+    recoverPermitOwnerPromise = eip2612Utils.recoverDaiLikePermitOwnerFromCallData({
       ...params,
       callData: callData.replace(DAI_PERMIT_SELECTOR, '0x'),
     })
