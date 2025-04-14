@@ -1,4 +1,5 @@
 import { ReactElement } from 'react'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
