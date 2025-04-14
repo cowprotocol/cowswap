@@ -42,12 +42,12 @@ export function useGeneratePermitHook(): GeneratePermitHook {
         return
       }
 
-      const eip2162Utils = getPermitUtilsInstance(chainId, provider, account)
+      const eip2612Utils = getPermitUtilsInstance(chainId, provider, account)
       const spender = customSpender || COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
       // Always get the nonce for the real account, to know whether the cache should be invalidated
       // Static account should never need to pre-check the nonce as it'll never change once cached
-      const nonce = account ? await eip2162Utils.getTokenNonce(inputToken.address, account) : undefined
+      const nonce = account ? await eip2612Utils.getTokenNonce(inputToken.address, account) : undefined
 
       const permitParams = { chainId, tokenAddress: inputToken.address, account, nonce }
 
@@ -63,7 +63,7 @@ export function useGeneratePermitHook(): GeneratePermitHook {
         spender,
         provider,
         permitInfo,
-        eip2162Utils,
+        eip2612Utils,
         account,
         nonce,
       })

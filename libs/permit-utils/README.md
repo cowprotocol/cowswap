@@ -43,7 +43,7 @@ const hookData = await generatePermitHook({
   spender,
   provider,
   permitInfo,
-  eip2162Utils,
+  eip2612Utils,
   account,
   nonce
 })
@@ -57,7 +57,7 @@ import { checkIsCallDataAValidPermit } from "@cowprotocol/permit-utils"
 const isCallDataAValidPermit = await checkIsCallDataAValidPermit(
   account,
   chainId,
-  eip2612Utils, 
+  eip2612Utils,
   tokenAddress,
   tokenName,
   callData,
@@ -97,7 +97,7 @@ if (!permitInfo) {
 const eip2612Utils = getPermitUtilsInstance(chainId, provider, account)
 
 // Need to know what the current permit nonce is
-const nonce = await eip2162Utils.getTokenNonce(inputToken.address, account)
+const nonce = await eip2612Utils.getTokenNonce(inputToken.address, account)
 
 // Calling this fn should trigger the signature in the user's wallet
 const hookData = await generatePermitHook({
