@@ -20,7 +20,7 @@ const defaultConfig: Partial<Options> & Pick<Options, 'modifiers'> = {
 
 const createConfig = (
   config: Partial<Options> | undefined | null,
-  setState: (state: State) => void
+  setState: (state: State) => void,
 ): Partial<Options> => {
   const finalConfig = {
     ...defaultConfig,
@@ -41,20 +41,23 @@ const createConfig = (
 
 interface Result<T extends HTMLElement, U extends HTMLElement = HTMLDivElement> {
   show(): void
+
   hide(): void
+
   toggle(): void
-  target: RefObject<T>
-  ref: RefObject<U>
+
+  target: RefObject<T | null>
+  ref: RefObject<U | null>
   isShown: boolean
   state: State | Record<string, unknown>
 }
 
 export const usePopper = <T extends HTMLElement, U extends HTMLElement = HTMLDivElement>(
-  config?: Partial<Options>
+  config?: Partial<Options>,
 ): Result<T, U> => {
   const [isShown, setIsShown] = useState(false)
-  const popupRef = useRef<U>(null)
-  const targetRef = useRef<T>(null)
+  const popupRef = useRef<U | null>(null)
+  const targetRef = useRef<T | null>(null)
   const popperRef = useRef<Instance | null>(null)
   const [state, setState] = useState<State | Record<string, unknown>>({})
 
@@ -83,7 +86,7 @@ export const usePopper = <T extends HTMLElement, U extends HTMLElement = HTMLDiv
       target: targetRef,
       ref: popupRef,
     }),
-    []
+    [],
   )
 
   // LayoutEffect gets applied before browser paint
@@ -98,7 +101,7 @@ export const usePopper = <T extends HTMLElement, U extends HTMLElement = HTMLDiv
       isShown,
       state,
     }),
-    [isShown, state, stableProps]
+    [isShown, state, stableProps],
   )
 }
 
@@ -137,7 +140,7 @@ interface PopperDefaultHookResult<T extends HTMLElement> {
 // Popper hook using default triggers
 export const usePopperDefault = <T extends HTMLElement>(
   placement: Placement = 'top',
-  offset?: number
+  offset?: number,
 ): PopperDefaultHookResult<T> => {
   const config = usePlacementAndOffset({ placement, offset })
 
@@ -152,7 +155,7 @@ export const usePopperDefault = <T extends HTMLElement>(
       onBlur: hide,
       ref: target,
     }),
-    [hide, show, target]
+    [hide, show, target],
   )
 
   return useMemo(
@@ -160,7 +163,7 @@ export const usePopperDefault = <T extends HTMLElement>(
       targetProps,
       tooltipProps,
     }),
-    [targetProps, tooltipProps]
+    [targetProps, tooltipProps],
   )
 }
 
@@ -178,7 +181,7 @@ interface PopperOnClickResult<T extends HTMLElement> {
 
 export const usePopperOnClick = <T extends HTMLElement>(
   placement: Placement = 'top',
-  offset?: number
+  offset?: number,
 ): PopperOnClickResult<T> => {
   const config = usePlacementAndOffset({ placement, offset })
 
@@ -201,7 +204,7 @@ export const usePopperOnClick = <T extends HTMLElement>(
       onClick: toggle,
       ref: target,
     }),
-    [toggle, target]
+    [toggle, target],
   )
 
   return useMemo(
@@ -209,6 +212,6 @@ export const usePopperOnClick = <T extends HTMLElement>(
       targetProps,
       tooltipProps,
     }),
-    [targetProps, tooltipProps]
+    [targetProps, tooltipProps],
   )
 }

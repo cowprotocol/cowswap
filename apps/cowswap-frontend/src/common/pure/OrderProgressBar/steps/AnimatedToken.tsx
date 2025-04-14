@@ -1,3 +1,4 @@
+import { ReactElement } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
@@ -14,7 +15,7 @@ function AnimatedTokens({
 }: {
   sellToken: Currency | TokenWithLogo | null | undefined
   buyToken: Currency | TokenWithLogo | null | undefined
-}): JSX.Element {
+}): ReactElement {
   return (
     <styledEl.AnimatedTokensWrapper>
       <styledEl.TokenWrapper position="left" size={ICON_SIZE} sizeMobile={MOBILE_ICON_SIZE}>

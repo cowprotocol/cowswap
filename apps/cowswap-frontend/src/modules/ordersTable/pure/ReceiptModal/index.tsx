@@ -1,7 +1,9 @@
+import { ReactElement } from 'react'
+
 import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { BannerOrientation, ExternalLink, Icon, IconType, InlineBanner, UI } from '@cowprotocol/ui'
+import { BannerOrientation, ExternalLink, Icon, IconType, InlineBanner, StatusColorVariant, UI } from '@cowprotocol/ui'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
 import { CloseIcon } from 'theme'
@@ -55,7 +57,7 @@ interface ReceiptProps {
 
 const FILLED_COMMON_TOOLTIP = 'How much of the order has been filled.'
 
-const tooltips: { [key: string]: string | JSX.Element } = {
+const tooltips: { [key: string]: string | ReactElement } = {
   LIMIT_PRICE: 'You will receive this price or better for your tokens.',
   EXECUTION_PRICE: 'An order’s actual execution price will vary based on the market price and network costs.',
   EXECUTES_AT:
@@ -144,7 +146,7 @@ export function ReceiptModal({
 
         {twapOrder && (
           <styledEl.InfoBannerWrapper>
-            <InlineBanner bannerType="information">
+            <InlineBanner bannerType={StatusColorVariant.Info}>
               <p>
                 {isTwapPartOrder
                   ? `Part of a ${twapOrder.order.n}-part TWAP order split`

@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai/index'
-import React, { ReactNode } from 'react'
+import { ReactElement, ReactNode } from 'react'
 
 import { HelpTooltip, renderTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -18,7 +18,7 @@ import { twapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 interface TradeAmountPreviewProps {
   amount: Nullish<CurrencyAmount<Currency>>
   usdAmount: Nullish<CurrencyAmount<Currency>>
-  label: JSX.Element
+  label: ReactElement
   tooltip: ReactNode
   children?: ReactNode
 }

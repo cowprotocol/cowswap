@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import Cytoscape, { EdgeDataDefinition, ElementDefinition, NodeDataDefinition, Stylesheet } from 'cytoscape'
+import Cytoscape, { EdgeDataDefinition, ElementDefinition, NodeDataDefinition, StylesheetCSS } from 'cytoscape'
 
 import { LAYOUTS } from './layouts'
 import { buildContractViewNodes, buildTokenViewNodes, getTokenAddress } from './nodesBuilder'
@@ -34,7 +34,7 @@ export type UseCytoscapeReturn = {
   layout: CustomLayoutOptions
   setLayout: (layout: CustomLayoutOptions) => void
   cyPopperRef: React.MutableRefObject<PopperInstance | null>
-  tokensStylesheets: Cytoscape.Stylesheet[]
+  tokensStylesheets: StylesheetCSS[]
 }
 
 export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
@@ -51,7 +51,7 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
   const { innerHeight } = useWindowSizes()
   const heightSize = innerHeight && innerHeight - HEIGHT_HEADER_FOOTER
   const [failedToLoadGraph, setFailedToLoadGraph] = useState(false)
-  const [tokensStylesheets, setTokensStylesheets] = useState<Cytoscape.Stylesheet[]>([])
+  const [tokensStylesheets, setTokensStylesheets] = useState<StylesheetCSS[]>([])
 
   const setCytoscape = useCallback(
     (ref: Cytoscape.Core | null) => {
@@ -64,7 +64,7 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
         })
       }
     },
-    [layout.name]
+    [layout.name],
   )
 
   const stableTxSettlement = JSON.stringify(txSettlement)
@@ -164,15 +164,15 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
       cyPopperRef,
       elements,
       tokensStylesheets,
-    ]
+    ],
   )
 }
 
 function getStylesheets(
-  nodes: ElementDefinition[]
+  nodes: ElementDefinition[],
   // networkId: SupportedChainId,
-): Stylesheet[] {
-  const stylesheets: Stylesheet[] = []
+): StylesheetCSS[] {
+  const stylesheets: StylesheetCSS[] = []
 
   nodes.forEach((node) => {
     if (node.data.type === 'token') {
@@ -183,7 +183,7 @@ function getStylesheets(
 
       stylesheets.push({
         selector: `node[id="${node.data.id}"]`,
-        style: {
+        css: {
           // It's in theory possible to pass multiple images as a fallback, but when that's done,
           // the image sizes are broken, going over the image bounds
           'background-image': `url("${image}")`,
@@ -220,7 +220,7 @@ export function useTxBatchData(
   networkId: Network | undefined,
   orders: Order[] | undefined,
   txHash: string,
-  visualization: ViewType
+  visualization: ViewType,
 ): GetTxBatchTradesResult {
   // Fetch data from tenderly
   const txData = useTransactionData(networkId, txHash)
@@ -243,7 +243,7 @@ export function useTxBatchData(
 
         return acc
       }, {}) || {},
-    [orders]
+    [orders],
   )
 
   // Collect addresses of missing tokens which were not part of any order
@@ -285,7 +285,7 @@ export function useTxBatchData(
 
   return useMemo(
     () => ({ txSettlement, error: txData.error, isLoading: txData.isLoading || areTokensLoading }),
-    [txSettlement, txData.error, txData.isLoading, areTokensLoading]
+    [txSettlement, txData.error, txData.isLoading, areTokensLoading],
   )
 }
 
@@ -300,7 +300,7 @@ export function useVisualization(): UseVisualizationReturn {
   const updateVisQuery = useUpdateVisQuery()
 
   const [visualizationViewSelected, setVisualizationViewSelected] = useState<ViewType>(
-    ViewType[visualization] || DEFAULT_VIEW_TYPE
+    ViewType[visualization] || DEFAULT_VIEW_TYPE,
   )
 
   const onChangeVisualization = useCallback((viewName: ViewType) => setVisualizationViewSelected(viewName), [])

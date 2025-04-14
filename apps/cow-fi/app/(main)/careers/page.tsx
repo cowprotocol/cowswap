@@ -1,5 +1,3 @@
-'use server'
-
 import { getJobs } from '../../../services/ashByHq'
 
 import { CareersPageContent } from '@/components/CareersPageContent'

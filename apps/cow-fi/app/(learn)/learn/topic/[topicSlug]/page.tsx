@@ -1,11 +1,8 @@
-'use server'
-
-import React from 'react'
-import { getAllCategorySlugs, getArticles, getCategories, getCategoryBySlug } from '../../../../../services/cms'
 import { TopicPageComponent } from '@/components/TopicPageComponent'
-import { notFound } from 'next/navigation'
-import type { Metadata } from 'next'
 import { getPageMetadata } from '@/util/getPageMetadata'
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import { getAllCategorySlugs, getArticles, getCategories, getCategoryBySlug } from '../../../../../services/cms'
 
 type Props = {
   params: Promise<{ topicSlug: string }>
@@ -13,6 +10,8 @@ type Props = {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  'use server'
+
   const { topicSlug } = await params
 
   if (!topicSlug) return {}
@@ -27,6 +26,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
+  'use server'
+
   const categoriesResponse = await getAllCategorySlugs()
 
   return categoriesResponse.map((topicSlug) => ({ topicSlug }))
