@@ -10,10 +10,10 @@ interface ProgressImageWrapperProps {
 }
 
 type StepName = OrderProgressBarProps['stepName']
-type BgColorMap = Partial<Record<NonNullable<StepName>, string>>
-type PaddingMap = Partial<Record<NonNullable<StepName>, string>>
-type HeightMap = Partial<Record<NonNullable<StepName>, string | 'auto'>>
-type GapMap = Partial<Record<NonNullable<StepName>, string>>
+type BgColorMap = Record<NonNullable<StepName>, string | undefined>
+type PaddingMap = Record<NonNullable<StepName>, string | undefined>
+type HeightMap = Record<NonNullable<StepName>, string | undefined>
+type GapMap = Record<NonNullable<StepName>, string | undefined>
 
 const PROCESS_IMAGE_WRAPPER_BG_COLOR: BgColorMap = {
   initial: Color.cowfi_blue_lighter,
@@ -24,6 +24,10 @@ const PROCESS_IMAGE_WRAPPER_BG_COLOR: BgColorMap = {
   solving: Color.cowfi_blue_lighter,
   finished: Color.cowfi_blue_lighter,
   cancellationFailed: Color.cowfi_blue_lighter,
+  executing: undefined,
+  cancelling: undefined,
+  cancelled: undefined,
+  expired: undefined,
 }
 
 const PROCESS_IMAGE_WRAPPER_PADDING: PaddingMap = {
@@ -35,6 +39,10 @@ const PROCESS_IMAGE_WRAPPER_PADDING: PaddingMap = {
   solving: '16px',
   finished: '10px',
   cancellationFailed: '10px',
+  executing: undefined,
+  cancelling: undefined,
+  cancelled: undefined,
+  expired: undefined,
 }
 
 const PROCESS_IMAGE_WRAPPER_HEIGHT: HeightMap = {
@@ -42,11 +50,29 @@ const PROCESS_IMAGE_WRAPPER_HEIGHT: HeightMap = {
   submissionFailed: '229px',
   solved: '229px',
   finished: '229px',
+  initial: undefined,
+  solving: undefined,
+  executing: undefined,
+  cancelling: undefined,
+  cancelled: undefined,
+  expired: undefined,
+  unfillable: undefined,
+  cancellationFailed: undefined,
 }
 
 const PROCESS_IMAGE_WRAPPER_GAP: GapMap = {
   finished: '10px',
   cancellationFailed: '10px',
+  initial: undefined,
+  solving: undefined,
+  executing: undefined,
+  cancelling: undefined,
+  cancelled: undefined,
+  expired: undefined,
+  unfillable: undefined,
+  delayed: undefined,
+  submissionFailed: undefined,
+  solved: undefined,
 }
 
 export function ProgressImageWrapper({ children, stepName, ...props }: ProgressImageWrapperProps) {
