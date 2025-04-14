@@ -26,11 +26,11 @@ export function useGetCachedPermit(): (
       const spender = customSpender || COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[chainId]
 
       try {
-        const eip2162Utils = getPermitUtilsInstance(chainId, provider, account)
+        const eip2612Utils = getPermitUtilsInstance(chainId, provider, account)
 
         // Always get the nonce for the real account, to know whether the cache should be invalidated
         // Static account should never need to pre-check the nonce as it'll never change once cached
-        const nonce = account ? await eip2162Utils.getTokenNonce(tokenAddress, account) : undefined
+        const nonce = account ? await eip2612Utils.getTokenNonce(tokenAddress, account) : undefined
 
         const permitParams = { chainId, tokenAddress, account, nonce, spender }
 
