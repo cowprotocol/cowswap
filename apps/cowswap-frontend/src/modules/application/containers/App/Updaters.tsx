@@ -24,7 +24,7 @@ import { CorrelatedTokensUpdater } from 'modules/volumeFee'
 import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield/shared'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
-import { ProgressBarV2ExecutingOrdersUpdater } from 'common/hooks/orderProgressBarV2'
+import { ProgressBarExecutingOrdersUpdater } from 'common/hooks/orderProgressBar'
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { AnnouncementsUpdater } from 'common/updaters/AnnouncementsUpdater'
 import { FeatureFlagsUpdater } from 'common/updaters/FeatureFlagsUpdater'
@@ -77,7 +77,7 @@ export function Updaters() {
       <TotalSurplusUpdater />
       <UsdPricesUpdater />
       <OrdersNotificationsUpdater />
-      <ProgressBarV2ExecutingOrdersUpdater />
+      <ProgressBarExecutingOrdersUpdater />
       <SolversInfoUpdater />
       <AnnouncementsUpdater />
 
