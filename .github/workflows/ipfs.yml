@@ -16,7 +16,7 @@ env:
   REACT_APP_BFF_BASE_URL: ${{ secrets.BFF_BASE_URL }}
   REACT_APP_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
   NEXT_PUBLIC_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
-  NODE_VERSION: lts/hydrogen
+  NODE_VERSION: lts/jod
 
 jobs:
   ipfs:

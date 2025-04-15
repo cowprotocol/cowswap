@@ -290,7 +290,7 @@ In case of problems with the service worker cache you force a reset using
 
 Since this repo includes multiple apps, we do not want to build all of them on each PR because it causes long build queues in Vercel.  
 Some apps (see the list bellow) are not required to be built on each PR so we run them only a PR is labeled with a specific label.
-This label is defined in the project settings on Vercel in `Settings`/`Git`/`Ignored Build Step` script.  
+This label is defined in the project settings on Vercel in `Settings`/`Git`/`Ignored Build Step` script.
 For example, the label for the widget-configurator is `preview-widget-cfg`:
 ```
 node tools/scripts/ignore-build-step.js --app=preview-widget-cfg
