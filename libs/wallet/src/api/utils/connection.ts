@@ -14,6 +14,7 @@ const connectionTypeToName: Record<ConnectionType, string> = {
   [ConnectionType.NETWORK]: 'Network',
   [ConnectionType.GNOSIS_SAFE]: 'Safe',
   [ConnectionType.TREZOR]: 'Trezor',
+  [ConnectionType.PRIVY]: 'Privy',
 }
 
 const IDENTICON_KEY = 'Identicon'
@@ -26,6 +27,7 @@ const connectionTypeToIcon: Record<ConnectionType, 'Identicon' | string> = {
   [ConnectionType.COINBASE_WALLET]: CoinbaseWalletIcon,
   [ConnectionType.TREZOR]: TrezorIcon,
   [ConnectionType.WALLET_CONNECT_V2]: WalletConnectIcon,
+  [ConnectionType.PRIVY]: IDENTICON_KEY,
 }
 
 export function getConnectionIcon(connectionType: ConnectionType): string {

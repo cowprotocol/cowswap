@@ -13,6 +13,7 @@ const allowedChainsByWallet: Record<ConnectionType, SupportedChainId[]> = {
   [ConnectionType.NETWORK]: ALL_SUPPORTED_CHAIN_IDS,
   [ConnectionType.GNOSIS_SAFE]: ALL_SUPPORTED_CHAIN_IDS,
   [ConnectionType.TREZOR]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.PRIVY]: [1],
 }
 
 export function isChainAllowed(connector: Connector, chainId: number): boolean {

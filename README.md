@@ -299,7 +299,7 @@ node tools/scripts/ignore-build-step.js --app=preview-widget-cfg
 List of applications and their labels:
 - widget-configurator: `preview-widget-cfg`
 - cosmos: `preview-cosmos`
-- sdk-tools: `preview-sdk-tools`
+- sdk-tools: `preview-sdk-tools` 
 
 # 📚 Technical Documentation
 

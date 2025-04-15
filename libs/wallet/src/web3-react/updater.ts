@@ -7,6 +7,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENSName } from '@cowprotocol/ens'
 import { useWeb3React } from '@web3-react/core'
 
+import { usePrivy } from '@privy-io/react-auth'
 import ms from 'ms.macro'
 
 import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
@@ -34,23 +35,34 @@ function _checkIsSupportedWallet(walletName?: string): boolean {
 
 function _useWalletInfo(): WalletInfo {
   const { account, chainId, isActive: active } = useWeb3React()
+  const { ready, authenticated, user } = usePrivy()
   const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
 
-  return useMemo(
-    () => ({
+  return useMemo(() => {
+    if (ready && authenticated) {
+      return {
+        chainId: 1,
+        active,
+        account: user?.wallet?.address,
+      }
+    }
+
+    return {
       chainId: isChainIdUnsupported || !chainId ? getCurrentChainIdFromUrl() : chainId,
       active,
       account,
-    }),
-    [chainId, active, account, isChainIdUnsupported],
-  )
+    }
+  }, [chainId, active, ready, authenticated, user, account, isChainIdUnsupported])
 }
 
 function _useWalletDetails(account?: string, standaloneMode?: boolean): WalletDetails {
+  const { authenticated } = usePrivy()
   const { ENSName: ensName } = useENSName(account ?? undefined)
   const isSmartContractWallet = useIsSmartContractWallet()
   const { walletName, icon } = useWalletMetaData(standaloneMode)
   const isSafeApp = useIsSafeApp()
+  // console.log('_useWalletDetails ===>', authenticated)
+  const isPrivy = authenticated
 
   return useMemo(() => {
     return {
@@ -64,8 +76,9 @@ function _useWalletDetails(account?: string, standaloneMode?: boolean): WalletDe
       // In the future, once the API adds EIP-1271 support, we can allow some SC wallets to use offchain signing
       allowsOffchainSigning: !isSmartContractWallet,
       isSafeApp,
+      isPrivy,
     }
-  }, [isSmartContractWallet, isSafeApp, walletName, icon, ensName])
+  }, [isSmartContractWallet, isPrivy, isSafeApp, walletName, icon, ensName])
 }
 
 function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
