@@ -57,7 +57,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
   const buttonText = useMemo(() => {
     if (!hasEnoughWrappedBalanceForSwap) {
       const { amount } = inputCurrencyInfo
-      return `Insufficient ${amount?.currency.symbol} balance`
+      return `Insufficient ${amount?.currency?.symbol || 'token'} balance`
     }
     return 'Confirm Swap'
   }, [hasEnoughWrappedBalanceForSwap, inputCurrencyInfo])
