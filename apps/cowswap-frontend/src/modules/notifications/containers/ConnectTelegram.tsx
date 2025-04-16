@@ -14,6 +14,7 @@ interface TelegramData {
   username: string
 }
 
+const TG_BOT_NAME = 'cowNotificationsTestBot'
 const cmsClient = getCmsClient()
 
 export function ConnectTelegram() {
@@ -40,7 +41,7 @@ export function ConnectTelegram() {
 
     const scriptElement = document.createElement('script')
     scriptElement.src = 'https://telegram.org/js/telegram-widget.js?22'
-    scriptElement.setAttribute('data-telegram-login', 'cowNotificationsBot')
+    scriptElement.setAttribute('data-telegram-login', TG_BOT_NAME)
     scriptElement.setAttribute('data-size', 'medium')
     scriptElement.setAttribute('data-onauth', 'onTelegramAuth(user)')
     scriptElement.setAttribute('data-request-access', 'write')
@@ -52,7 +53,7 @@ export function ConnectTelegram() {
   useEffect(() => {
     if (!isTgSubscribed) return
 
-    const prevIframe = document.getElementById('telegram-login-cowNotificationsBot')
+    const prevIframe = document.getElementById('telegram-login-' + TG_BOT_NAME)
 
     if (prevIframe) {
       prevIframe.parentNode!.removeChild(prevIframe)
