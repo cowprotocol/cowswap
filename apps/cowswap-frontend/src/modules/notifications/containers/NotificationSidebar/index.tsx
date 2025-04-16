@@ -6,7 +6,7 @@ import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
-import { Sidebar, SidebarHeader, DoubleArrowRightIcon, CloseIcon, ArrowLeft } from './styled'
+import { Sidebar, SidebarHeader, DoubleArrowRightIcon, CloseIcon, ArrowLeft, SettingsIcon } from './styled'
 
 import { NotificationSettings } from '../NotificationSettings'
 import { NotificationsList } from '../NotificationsList'
@@ -77,6 +77,7 @@ export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProp
               )}
             </span>
             <h3>Notifications</h3>
+            <SettingsIcon size={18} onClick={toggleSettingsOpen} />
           </SidebarHeader>
         </NotificationsList>
       )}
