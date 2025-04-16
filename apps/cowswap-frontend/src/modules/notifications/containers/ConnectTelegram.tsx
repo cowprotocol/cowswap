@@ -15,7 +15,7 @@ interface TelegramData {
   username: string
 }
 
-const TG_BOT_NAME = 'cowNotificationsTestBot'
+const TG_BOT_NAME = 'cowNotificationsBot'
 
 export function ConnectTelegram() {
   const { account } = useWalletInfo()

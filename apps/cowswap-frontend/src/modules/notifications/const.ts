@@ -1,6 +1,3 @@
-import { CmsClient } from '@cowprotocol/cms'
+import { getCmsClient } from '@cowprotocol/core'
 
-// TODO: use getCmsClient() instead
-export const notificationsCmsClient = CmsClient({
-  url: 'http://localhost:1337/api',
-})
+export const notificationsCmsClient = getCmsClient()
