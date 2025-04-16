@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { getCmsClient } from '@cowprotocol/core'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { CheckCircle } from 'react-feather'
+
+import { notificationsCmsClient } from '../const'
 
 interface TelegramData {
   auth_date: number
@@ -15,7 +16,6 @@ interface TelegramData {
 }
 
 const TG_BOT_NAME = 'cowNotificationsTestBot'
-const cmsClient = getCmsClient()
 
 export function ConnectTelegram() {
   const { account } = useWalletInfo()
@@ -29,7 +29,7 @@ export function ConnectTelegram() {
 
     isDataReceivedRef.current = true
 
-    cmsClient
+    notificationsCmsClient
       .POST('/add-tg-subscription', { body: { account, data: tgData } })
       .then(({ data: result }: { data: boolean }) => {
         setTgSubscribed(result)
