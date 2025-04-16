@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
@@ -33,10 +35,12 @@ export interface SwapConfirmModalProps {
   outputCurrencyInfo: CurrencyPreviewInfo
   priceImpact: PriceImpact
   recipient?: string | null
+  hasEnoughWrappedBalanceForSwap: boolean
 }
 
 export function SwapConfirmModal(props: SwapConfirmModalProps) {
-  const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade } = props
+  const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade, hasEnoughWrappedBalanceForSwap } =
+    props
 
   const { account, chainId } = useWalletInfo()
   const { ensName } = useWalletDetails()
@@ -50,6 +54,14 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
   const submittedContent = useOrderSubmittedContent(chainId)
   const labelsAndTooltips = useLabelsAndTooltips()
 
+  const buttonText = useMemo(() => {
+    if (!hasEnoughWrappedBalanceForSwap) {
+      const { amount } = inputCurrencyInfo
+      return `Insufficient ${amount?.currency.symbol} balance`
+    }
+    return 'Confirm Swap'
+  }, [hasEnoughWrappedBalanceForSwap, inputCurrencyInfo])
+
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
       <TradeConfirmation
@@ -60,9 +72,9 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={doTrade}
         onDismiss={tradeConfirmActions.onDismiss}
-        isConfirmDisabled={false}
+        isConfirmDisabled={!hasEnoughWrappedBalanceForSwap}
         priceImpact={priceImpact}
-        buttonText="Confirm Swap"
+        buttonText={buttonText}
         recipient={recipient}
         appData={appData || undefined}
         refreshInterval={PRICE_UPDATE_INTERVAL}
