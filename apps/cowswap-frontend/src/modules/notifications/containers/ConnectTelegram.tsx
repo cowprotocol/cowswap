@@ -37,17 +37,22 @@ export function ConnectTelegram() {
   }, [tgData, account])
 
   useEffect(() => {
-    ;(window as any)['onTelegramAuth'] = setTgData
+    if (!telegramWrapperRef.current) return
+
+    if (telegramWrapperRef.current.getElementsByTagName('script').length > 0) return
+
+    window.onTelegramAuth = setTgData
 
     const scriptElement = document.createElement('script')
     scriptElement.src = 'https://telegram.org/js/telegram-widget.js?22'
     scriptElement.setAttribute('data-telegram-login', TG_BOT_NAME)
+    scriptElement.setAttribute('data-lang', 'en')
     scriptElement.setAttribute('data-size', 'medium')
     scriptElement.setAttribute('data-onauth', 'onTelegramAuth(user)')
     scriptElement.setAttribute('data-request-access', 'write')
     scriptElement.async = true
 
-    telegramWrapperRef.current!.appendChild(scriptElement)
+    telegramWrapperRef.current.appendChild(scriptElement)
   }, [])
 
   useEffect(() => {
@@ -55,8 +60,8 @@ export function ConnectTelegram() {
 
     const prevIframe = document.getElementById('telegram-login-' + TG_BOT_NAME)
 
-    if (prevIframe) {
-      prevIframe.parentNode!.removeChild(prevIframe)
+    if (prevIframe?.parentNode) {
+      prevIframe.parentNode.removeChild(prevIframe)
     }
   }, [isTgSubscribed])
 
@@ -68,5 +73,5 @@ export function ConnectTelegram() {
     )
   }
 
-  return <div ref={telegramWrapperRef}></div>
+  return <div ref={telegramWrapperRef} />
 }

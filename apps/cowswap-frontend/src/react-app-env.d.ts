@@ -23,6 +23,7 @@ interface Window {
     isTrustWallet?: boolean
   }
   web3?: Record<string, unknown>
+  onTelegramAuth?(data: TelegramData | null): void
 }
 
 interface Console extends Node.Console {
