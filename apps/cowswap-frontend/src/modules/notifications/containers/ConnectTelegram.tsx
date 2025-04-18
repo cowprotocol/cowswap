@@ -31,7 +31,7 @@ interface TelegramData {
 }
 
 const TELEGRAM_AUTH_WIDGET_URL = 'https://telegram.org/js/telegram-widget.js?22'
-const TG_BOT_ID = 7076584722 // cowNotificationsBot
+const TG_BOT_ID = 7395431337 // cowNotificationsTestBot
 
 const AUTH_OPTIONS = {
   bot_id: TG_BOT_ID,
