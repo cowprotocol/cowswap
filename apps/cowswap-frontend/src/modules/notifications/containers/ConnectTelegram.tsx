@@ -111,7 +111,10 @@ export function ConnectTelegram() {
   useEffect(() => {
     if (!telegramWrapperRef.current) return
 
-    if (telegramWrapperRef.current.getElementsByTagName('script').length > 0) return
+    if (telegramWrapperRef.current.getElementsByTagName('script').length > 0) {
+      setIsTelegramScriptLoading(false)
+      return
+    }
 
     const scriptElement = document.createElement('script')
     scriptElement.src = TELEGRAM_AUTH_WIDGET_URL
