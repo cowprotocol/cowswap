@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react'
 
-import { useOnClickOutside } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useOnClickOutside } from '@cowprotocol/common-hooks'
 
 import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
@@ -20,6 +20,8 @@ export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProp
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const sidebarRef = useRef<HTMLDivElement>(null)
   const isMobile = useMediaQuery(upToSmall)
+
+  const { areTelegramNotificationsEnabled } = useFeatureFlags()
 
   const onDismiss = useCallback(() => {
     onClose()
@@ -77,7 +79,7 @@ export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProp
               )}
             </span>
             <h3>Notifications</h3>
-            <SettingsIcon size={18} onClick={toggleSettingsOpen} />
+            {areTelegramNotificationsEnabled && <SettingsIcon size={18} onClick={toggleSettingsOpen} />}
           </SidebarHeader>
         </NotificationsList>
       )}

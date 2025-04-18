@@ -6,13 +6,16 @@ interface TelegramData {
   photo_url: string
   username: string
 }
+
+const AUTH_GET_URL = 'https://oauth.telegram.org/auth/get'
+
 /**
  * Reverse engineered from https://telegram.org/js/widget-frame.js?63
  */
 export function getTelegramAuth(botId: number, callback: (data: { user: TelegramData } | false) => void) {
   const xhr = new XMLHttpRequest()
 
-  xhr.open('POST', 'https://oauth.telegram.org/auth/get?bot_id=' + botId)
+  xhr.open('POST', AUTH_GET_URL + '?bot_id=' + botId)
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
   xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
 

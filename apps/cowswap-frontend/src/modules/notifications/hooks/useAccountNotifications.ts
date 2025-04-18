@@ -1,9 +1,9 @@
+import { getCmsClient } from '@cowprotocol/core'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
 
-import { notificationsCmsClient } from '../const'
 import { NotificationModel } from '../types'
 
 const swrOptions: SWRConfiguration = {
@@ -20,7 +20,7 @@ export function useAccountNotifications() {
     account ? `/notification-list/${account}` : null,
     (url: string | null) => {
       return url
-        ? notificationsCmsClient
+        ? getCmsClient()
             .GET(url)
             .then((res: { data: NotificationModel[] }) => res.data)
             .catch((error: Error) => {

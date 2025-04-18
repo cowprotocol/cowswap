@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 
+import { getCmsClient } from '@cowprotocol/core'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 
-import { notificationsCmsClient } from '../const'
 import { TelegramConnectionStatus } from '../pure/TelegramConnectionStatus'
 import { getTelegramAuth } from '../services/getTelegramAuth'
 
@@ -32,6 +32,12 @@ interface TelegramData {
 
 const TELEGRAM_AUTH_WIDGET_URL = 'https://telegram.org/js/telegram-widget.js?22'
 const TG_BOT_ID = 7076584722 // cowNotificationsBot
+
+const AUTH_OPTIONS = {
+  bot_id: TG_BOT_ID,
+  lang: 'en',
+  request_access: 'write',
+}
 
 export function ConnectTelegram() {
   const { account } = useWalletInfo()
@@ -62,23 +68,16 @@ export function ConnectTelegram() {
 
     setIsLoginInProgress(true)
 
-    window.Telegram.Login.auth(
-      {
-        bot_id: TG_BOT_ID,
-        lang: 'en',
-        request_access: 'write',
-      },
-      (data) => {
-        if (data) {
-          setTgData(data)
+    window.Telegram.Login.auth(AUTH_OPTIONS, (data) => {
+      if (data) {
+        setTgData(data)
+        setIsLoginInProgress(false)
+      } else {
+        authorize(() => {
           setIsLoginInProgress(false)
-        } else {
-          authorize(() => {
-            setIsLoginInProgress(false)
-          })
-        }
-      },
-    )
+        })
+      }
+    })
   }
 
   /**
@@ -99,7 +98,7 @@ export function ConnectTelegram() {
 
     setIsCmsCallInProgress(true)
 
-    notificationsCmsClient
+    getCmsClient()
       .POST('/add-tg-subscription', { body: { account, data: tgData } })
       .then(({ data: result }: { data: boolean }) => {
         setTgSubscribed(result)
