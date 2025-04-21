@@ -9,7 +9,7 @@ import {
 } from '@cowprotocol/analytics'
 import { CHAIN_INFO_ARRAY } from '@cowprotocol/common-const'
 
-import ScrollToHashElement from '@cascadia-code/scroll-to-hash-element'
+import ScrollToHashElement from '@cascadia-code/scroll-to-hash-element/src/index'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 import { BrowserRouter, HashRouter, Navigate, Route, Routes, useLocation } from 'react-router'
