@@ -13,24 +13,24 @@ import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 
 import { ChainsToSelectState } from '../types'
 
-function mapChainInfo(chainId: number, info: BaseChainInfo): ChainInfo {
+function mapChainInfo(chainId: SupportedChainId, info: BaseChainInfo): ChainInfo {
   return {
     addressPrefix: info.addressPrefix,
     contracts: {},
     docs: {
       url: info.docs,
-      name: '',
-    }, // TODO
-    isTestnet: false, // TODO
+      name: `${info.label} Docs`,
+    },
+    isTestnet: chainId === SupportedChainId.SEPOLIA,
     rpcUrls: {
       default: {
-        http: [RPC_URLS[SupportedChainId.MAINNET]],
+        http: [RPC_URLS[chainId]],
       },
-    }, // TODO
+    },
     website: {
-      url: '',
-      name: '',
-    }, // TODO
+      url: info.infoLink,
+      name: info.label,
+    },
     id: chainId,
     label: info.label,
     nativeCurrency: {
@@ -51,9 +51,10 @@ function mapChainInfo(chainId: number, info: BaseChainInfo): ChainInfo {
 }
 
 const SUPPORTED_CHAINS: ChainInfo[] = Object.keys(CHAIN_INFO).map((chainId) => {
-  const info = CHAIN_INFO[+chainId as SupportedChainId]
+  const supportedChainId = +chainId as SupportedChainId
+  const info = CHAIN_INFO[supportedChainId]
 
-  return mapChainInfo(+chainId, info)
+  return mapChainInfo(supportedChainId, info)
 })
 
 /**
