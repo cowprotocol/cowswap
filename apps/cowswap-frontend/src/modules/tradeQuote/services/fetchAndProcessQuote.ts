@@ -1,5 +1,12 @@
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
-import { PriceQuality, CrossChainQuoteAndPost, SupportedChainId, QuoteBridgeRequest } from '@cowprotocol/cow-sdk'
+import {
+  PriceQuality,
+  CrossChainQuoteAndPost,
+  SupportedChainId,
+  QuoteBridgeRequest,
+  SwapAdvancedSettings,
+  isBridgeQuoteAndPost,
+} from '@cowprotocol/cow-sdk'
 
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
@@ -27,7 +34,8 @@ export async function fetchAndProcessQuote(
   const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
 
   const isBridge = quoteParams.sellTokenChainId !== quoteParams.buyTokenChainId
-  const advancedSettings = {
+
+  const advancedSettings: SwapAdvancedSettings = {
     quoteRequest: {
       priceQuality,
     },
@@ -47,13 +55,13 @@ export async function fetchAndProcessQuote(
       return
     }
 
-    tradeQuoteManager.onResponse(
-      {
-        quoteResults: (data as any).swap || (data as any).quoteResults, // TODO fix types
-        postSwapOrderFromQuote: data.postSwapOrderFromQuote,
-      },
-      fetchParams,
-    )
+    const quoteAndPost = isBridgeQuoteAndPost(data)
+      ? { quoteResults: data.swap, postSwapOrderFromQuote: data.postSwapOrderFromQuote }
+      : { quoteResults: data.quoteResults, postSwapOrderFromQuote: data.postSwapOrderFromQuote }
+
+    const bridgeQuote = isBridgeQuoteAndPost(data) ? data.bridge : null
+
+    tradeQuoteManager.onResponse(quoteAndPost, bridgeQuote, fetchParams)
   } catch (error) {
     const parsedError = parseError(error)
 
