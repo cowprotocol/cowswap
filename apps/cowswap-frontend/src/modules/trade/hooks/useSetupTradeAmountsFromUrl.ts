@@ -3,7 +3,7 @@ import { useCallback, useMemo, useRef } from 'react'
 import { FractionUtils, getIntOrFloat, isFractionFalsy, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 import { Writeable } from 'types'
 
 import {

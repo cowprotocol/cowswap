@@ -1,10 +1,9 @@
 import { TokenLogo } from '@cowprotocol/tokens'
-import { BaseButton, Media } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { BaseButton, Media, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import { HelpCircle } from 'react-feather'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`

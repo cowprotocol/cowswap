@@ -12,7 +12,7 @@ import { I18nProvider } from '@lingui/react'
 import { render } from '@testing-library/react'
 import { LocationDescriptorObject } from 'history'
 import { Provider } from 'react-redux'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 import { getCowswapTheme } from 'theme'
 
