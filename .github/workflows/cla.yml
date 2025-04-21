@@ -20,8 +20,6 @@ jobs:
               { org: "cowprotocol" },
             );
             return members.map(m => m.login).join(",");
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 'CLA Assistant'
         if: (github.event.comment.body == 'recheck' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request_target'
