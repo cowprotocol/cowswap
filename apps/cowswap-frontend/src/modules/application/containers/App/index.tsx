@@ -7,6 +7,7 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
+// TODO: Update the import once https://github.com/ncoughlin/scroll-to-hash-element/pull/13 is merged
 import ScrollToHashElement from '@cascadia-code/scroll-to-hash-element/src/index'
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router'
