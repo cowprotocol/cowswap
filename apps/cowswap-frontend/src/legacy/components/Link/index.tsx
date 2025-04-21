@@ -1,6 +1,6 @@
 import { ExternalLink } from '@cowprotocol/ui'
 
-import { HashLink } from 'react-router-hash-link'
+import { Link as ReactRouterLink } from 'react-router'
 
 import { scrollToElement } from 'common/utils/scrollToElement'
 
@@ -13,16 +13,16 @@ export interface LinkRendererProps {
 }
 
 export function Link(props: LinkRendererProps) {
-  const { children, href = '#', smooth, scroll, className } = props
+  const { children, href = '#', className } = props
   const isExternalLink = /^(https?:)?\/\//.test(href)
   return isExternalLink ? (
     <ExternalLink href={href} className={className}>
       {children}
     </ExternalLink>
   ) : (
-    <HashLink smooth={smooth} to={href} scroll={scroll} className={className}>
+    <ReactRouterLink to={href} className={className}>
       {children}
-    </HashLink>
+    </ReactRouterLink>
   )
 }
 

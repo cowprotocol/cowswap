@@ -7,6 +7,7 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
+import ScrollToHashElement from '@cascadia-code/scroll-to-hash-element'
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router'
 import Snowfall from 'react-snowfall'
@@ -146,6 +147,7 @@ export function App() {
         <RedirectAnySwapAffectedUsers />
         <ThemeProvider />
         <GlobalStyles />
+        <ScrollToHashElement />
 
         <styledEl.AppWrapper>
           <URLWarning />
