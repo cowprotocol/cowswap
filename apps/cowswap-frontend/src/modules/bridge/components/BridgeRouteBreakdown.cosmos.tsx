@@ -1,6 +1,9 @@
+import React from 'react'
+
 import bungeeIcon from '@cowprotocol/assets/images/bungee-logo.svg'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { GlobalCoWDAOStyles } from '@cowprotocol/ui'
+import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 import { ThemeProvider } from 'theme'
@@ -8,6 +11,7 @@ import { ThemeProvider } from 'theme'
 import { BodyWrapper } from 'modules/application/containers/App/styled'
 import { Container, ContainerBox } from 'modules/trade/containers/TradeWidget/styled'
 
+import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 
 import { BridgeRouteBreakdown } from './BridgeRouteBreakdown'
@@ -65,6 +69,18 @@ const Wrapper = styled.div`
   background: transparent;
 `
 
+// Style for the rate info
+const RateInfoStyled = styled.span`
+  display: flex;
+  font-size: 13px;
+  font-weight: 500;
+`
+
+const FiatValue = styled.span`
+  margin-left: 5px;
+  opacity: 0.7;
+`
+
 // Reusable wrapper component
 const BridgeFixtureWrapper = ({ children }: { children: React.ReactNode }) => (
   <Wrapper>
@@ -78,16 +94,60 @@ const BridgeFixtureWrapper = ({ children }: { children: React.ReactNode }) => (
   </Wrapper>
 )
 
+// Create mock Currency for fee amount
+const USDC = {
+  name: 'USD Coin',
+  symbol: 'USDC',
+  decimals: 6,
+  isToken: true,
+} as Currency
+
+// Bridge route with accordion
+const BridgeRouteWithAccordion = ({ props, isOpen = false }: { props: typeof defaultProps; isOpen?: boolean }) => {
+  const [open, setOpen] = React.useState(isOpen)
+
+  // Create mock currency amount for the fee
+  const feeAmount =
+    props.bridgeFee === BridgeFeeType.FREE
+      ? CurrencyAmount.fromRawAmount(USDC, 0)
+      : CurrencyAmount.fromRawAmount(USDC, Math.round(parseFloat(props.bridgeFee.toString()) * 10 ** 6))
+
+  return (
+    <TradeDetailsAccordion
+      rateInfo={
+        <RateInfoStyled>
+          1 {props.sellToken} = 0.995 {props.buyToken} <FiatValue>(≈ $0.29)</FiatValue>
+        </RateInfoStyled>
+      }
+      feeTotalAmount={feeAmount}
+      feeUsdTotalAmount={feeAmount} // Pass the feeAmount as USD amount to trigger BridgeAccordionSummary
+      open={open}
+      onToggle={() => setOpen(!open)}
+      bridgeEstimatedTime={props.estimatedTime / 60} // Convert seconds to minutes
+      bridgeProtocol={props.bridgeProvider}
+      showBridgeUI={true}
+    >
+      <BridgeRouteBreakdown {...props} />
+    </TradeDetailsAccordion>
+  )
+}
+
 // Main fixture exports
 const Default = () => (
   <BridgeFixtureWrapper>
-    <BridgeRouteBreakdown {...defaultProps} />
+    <BridgeRouteWithAccordion props={defaultProps} />
   </BridgeFixtureWrapper>
 )
 
 const FreeBridgeFee = () => (
   <BridgeFixtureWrapper>
-    <BridgeRouteBreakdown {...defaultProps} bridgeFee={BridgeFeeType.FREE} bridgeProvider={bungeeProviderConfig} />
+    <BridgeRouteWithAccordion
+      props={{
+        ...defaultProps,
+        bridgeFee: BridgeFeeType.FREE,
+        bridgeProvider: bungeeProviderConfig,
+      }}
+    />
   </BridgeFixtureWrapper>
 )
 

@@ -128,6 +128,7 @@ export const ThemeColorVars = css`
 
     // Text
     ${UI.COLOR_TEXT_OPACITY_25}: ${({ theme }) => transparentize(theme.text, 0.75)};
+    ${UI.COLOR_TEXT_OPACITY_15}: ${({ theme }) => transparentize(theme.text, 0.85)};
     ${UI.COLOR_TEXT_OPACITY_10}: ${({ theme }) => transparentize(theme.text, 0.9)};
     ${UI.COLOR_TEXT2}: ${({ theme }) => transparentize(theme.text, 0.3)};
     ${UI.COLOR_LINK}: var(${UI.COLOR_PRIMARY});

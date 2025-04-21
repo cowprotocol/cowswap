@@ -27,6 +27,7 @@ import {
   RecipientWrapper,
   RouteHeader,
   RouteTitle,
+  StopNumberCircle,
   StopTitle,
   StopsInfo,
   TokenFlowContainer,
@@ -220,8 +221,12 @@ export function BridgeRouteBreakdown({
       </RouteHeader>
 
       <StopTitle>
-        <ProtocolIcons showOnlyFirst size={21} secondProtocol={bridgeProvider} />
-        <b>Stop 1 → Swap on CoW Protocol</b>
+        <StopNumberCircle>1</StopNumberCircle>
+        <b>
+          <span>Swap on </span>
+          <ProtocolIcons showOnlyFirst size={21} secondProtocol={bridgeProvider} />
+          <span> CoW Protocol</span>
+        </b>
       </StopTitle>
 
       <ConfirmDetailsItem label="" withTimelineDot>
@@ -336,8 +341,12 @@ export function BridgeRouteBreakdown({
       <DividerHorizontal margin="8px 0 4px" />
 
       <StopTitle>
-        <ProtocolIcons showOnlySecond size={21} secondProtocol={bridgeProvider} />
-        <b>Stop 2 → Bridge via {bridgeProvider.title}</b>
+        <StopNumberCircle>2</StopNumberCircle>
+        <b>
+          <span>Bridge via </span>
+          <ProtocolIcons showOnlySecond size={21} secondProtocol={bridgeProvider} />
+          <span> {bridgeProvider.title}</span>
+        </b>
       </StopTitle>
 
       <ConfirmDetailsItem label="" withTimelineDot>
