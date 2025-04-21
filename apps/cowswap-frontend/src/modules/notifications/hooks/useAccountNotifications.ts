@@ -13,8 +13,6 @@ const swrOptions: SWRConfiguration = {
   revalidateOnFocus: false,
 }
 
-const cmsClient = getCmsClient()
-
 export function useAccountNotifications() {
   const { account } = useWalletInfo()
 
@@ -22,7 +20,7 @@ export function useAccountNotifications() {
     account ? `/notification-list/${account}` : null,
     (url: string | null) => {
       return url
-        ? cmsClient
+        ? getCmsClient()
             .GET(url)
             .then((res: { data: NotificationModel[] }) => res.data)
             .catch((error: Error) => {
@@ -31,7 +29,7 @@ export function useAccountNotifications() {
             })
         : null
     },
-    swrOptions
+    swrOptions,
   )
 
   return notifications
