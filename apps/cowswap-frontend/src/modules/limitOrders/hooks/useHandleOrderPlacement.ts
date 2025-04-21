@@ -90,7 +90,6 @@ export function useHandleOrderPlacement(
         partiallyFillableOverride ?? safeBundleFlowContext.postOrderParams.partiallyFillable
 
       return safeBundleFlow(
-        tradeContext,
         safeBundleFlowContext,
         priceImpact,
         settingsState,

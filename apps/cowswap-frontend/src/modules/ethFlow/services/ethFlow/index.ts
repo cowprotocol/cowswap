@@ -13,7 +13,7 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import { TradeFlowContext } from 'modules/tradeFlow'
-import { isQuoteExpired, NO_QUOTE_IN_ORDER_ERROR } from 'modules/tradeQuote'
+import { isQuoteExpired } from 'modules/tradeQuote'
 
 import { ethFlowEnv } from 'common/hooks/useContract'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
@@ -35,18 +35,22 @@ export async function ethFlow({
   confirmPriceImpactWithoutFee,
   analytics,
 }: EthFlowParams): Promise<void | boolean> {
-  const { tradeConfirmActions, swapFlowAnalyticsContext, context, callbacks, orderParams, typedHooks, tradeQuote } =
-    tradeContext
+  const {
+    tradeConfirmActions,
+    swapFlowAnalyticsContext,
+    context,
+    callbacks,
+    orderParams,
+    typedHooks,
+    tradeQuote,
+    tradeQuoteState,
+  } = tradeContext
   const { contract, appData, uploadAppData, addTransaction, checkEthFlowOrderExists, addInFlightOrderId } =
     ethFlowContext
 
   const { chainId, inputAmount, outputAmount } = context
   const tradeAmounts = { inputAmount, outputAmount }
   const { account, recipientAddressOrName, kind } = orderParams
-
-  if (!tradeQuote.quote) {
-    throw new Error(NO_QUOTE_IN_ORDER_ERROR)
-  }
 
   logTradeFlow('ETH FLOW', 'STEP 1: confirm price impact')
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
@@ -61,10 +65,10 @@ export async function ethFlow({
 
   try {
     // Do not proceed if fee is expired
-    if (isQuoteExpired(tradeQuote)) {
+    if (isQuoteExpired(tradeQuoteState)) {
       reportPlaceOrderWithExpiredQuote({
         ...orderParams,
-        fee: tradeQuote.quote.quoteResults.quoteResponse.quote.feeAmount,
+        fee: tradeQuote.quoteResults.quoteResponse.quote.feeAmount,
       })
       throw new Error('Quote expired. Please refresh.')
     }
@@ -88,7 +92,7 @@ export async function ethFlow({
       orderToSign: unsignedOrder,
     } = await wrapErrorInOperatorError(() =>
       tradeQuote
-        .quote!.postSwapOrderFromQuote({
+        .postSwapOrderFromQuote({
           appData: orderParams.appData.doc,
           additionalParams: {
             checkEthFlowOrderExists,
@@ -104,7 +108,7 @@ export async function ethFlow({
         }),
     )
 
-    const quoteId = tradeQuote.quote.quoteResults.quoteResponse.id
+    const quoteId = tradeQuote.quoteResults.quoteResponse.id
 
     const order = mapUnsignedOrderToOrder({
       unsignedOrder,
