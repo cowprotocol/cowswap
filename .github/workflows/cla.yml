@@ -14,14 +14,14 @@ jobs:
         id: team
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          result-encoding: string
           script: |
             const members = await github.paginate(
               github.rest.orgs.listMembers,
               { org: "cowprotocol" },
             );
             return members.map(m => m.login).join(",");
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 'CLA Assistant'
         if: (github.event.comment.body == 'recheck' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request_target'
