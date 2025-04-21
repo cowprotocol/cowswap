@@ -42,7 +42,7 @@ export async function tradeFlow(
     dispatch,
     generatePermitHook,
     quoteState,
-    provider,
+    signer,
   } = params
   const { account, recipientAddressOrName, sellToken, buyToken, appData, isSafeWallet, inputAmount, outputAmount } =
     postOrderParams
@@ -123,7 +123,7 @@ export async function tradeFlow(
     if (!postOrderParams.allowsOffchainSigning) {
       const presignTx = await tradingSdk.getPreSignTransaction({ orderId, account })
 
-      presignTxHash = await provider.send('eth_sendTransaction', [presignTx])
+      presignTxHash = (await signer.sendTransaction(presignTx)).hash
     }
 
     const order = mapUnsignedOrderToOrder({
