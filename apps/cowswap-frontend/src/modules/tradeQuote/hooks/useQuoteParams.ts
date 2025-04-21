@@ -60,10 +60,11 @@ export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined
       }
     }
 
+    const owner = (account || ZERO_ADDRESS) as `0x${string}`
     const quoteParams: QuoteBridgeRequest = {
       kind: orderKind,
       amount: BigInt(amount),
-      owner: (account || ZERO_ADDRESS) as `0x${string}`,
+      owner,
 
       sellTokenChainId: inputCurrency.chainId,
       sellTokenAddress,
@@ -73,9 +74,9 @@ export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined
       buyTokenAddress,
       buyTokenDecimals,
 
-      account: account as `0x${string}`,
+      account: owner,
       appCode,
-      signer: provider.provider,
+      signer: provider.provider || provider.getSigner(),
 
       receiver,
       validFor: DEFAULT_QUOTE_TTL,

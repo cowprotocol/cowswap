@@ -65,7 +65,7 @@ export async function fetchAndProcessQuote(
   } catch (error) {
     const parsedError = parseError(error)
 
-    console.log('[useGetQuote]:: fetchQuote error', parsedError)
+    console.error('[fetchAndProcessQuote]:: fetchQuote error', parsedError)
 
     if (parsedError instanceof QuoteApiError) {
       tradeQuoteManager.onError(parsedError, chainId, quoteParams, fetchParams)
