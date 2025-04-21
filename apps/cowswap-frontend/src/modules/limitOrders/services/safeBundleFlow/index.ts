@@ -11,7 +11,7 @@ import { getOrderSubmitSummary, mapUnsignedOrderToOrder, wrapErrorInOperatorErro
 
 import { removePermitHookFromAppData } from 'modules/appData'
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
-import { PriceImpactDeclineError, SafeBundleFlowContext, TradeFlowContext } from 'modules/limitOrders/services/types'
+import { PriceImpactDeclineError, SafeBundleFlowContext } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
@@ -20,7 +20,6 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics, TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
-import { NO_QUOTE_IN_ORDER_ERROR } from 'modules/tradeQuote'
 import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
@@ -28,7 +27,6 @@ import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 const LOG_PREFIX = 'LIMIT ORDER SAFE BUNDLE FLOW'
 
 export async function safeBundleFlow(
-  { quoteState }: TradeFlowContext,
   params: SafeBundleFlowContext,
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,
@@ -38,10 +36,6 @@ export async function safeBundleFlow(
 ): Promise<string> {
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
   const isTooLowRate = params.rateImpact < LOW_RATE_THRESHOLD_PERCENT
-
-  if (!quoteState.quote) {
-    throw new Error(NO_QUOTE_IN_ORDER_ERROR)
-  }
 
   if (!isTooLowRate && priceImpact.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpact.priceImpact))) {
     throw new PriceImpactDeclineError()

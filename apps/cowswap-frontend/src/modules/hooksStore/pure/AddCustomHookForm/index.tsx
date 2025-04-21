@@ -2,7 +2,15 @@ import { ReactElement, useCallback, useState } from 'react'
 
 import { isDevelopmentEnv, uriToHttp } from '@cowprotocol/common-utils'
 import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
-import { BannerOrientation, ButtonOutlined, ButtonPrimary, InlineBanner, Loader, SearchInput } from '@cowprotocol/ui'
+import {
+  BannerOrientation,
+  ButtonOutlined,
+  ButtonPrimary,
+  InlineBanner,
+  Loader,
+  SearchInput,
+  StatusColorVariant,
+} from '@cowprotocol/ui'
 
 import { ExternalSourceAlert } from 'common/pure/ExternalSourceAlert'
 
@@ -168,7 +176,7 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType
             />
 
             {manifestError && (
-              <InlineBanner bannerType="danger" orientation={BannerOrientation.Horizontal}>
+              <InlineBanner bannerType={StatusColorVariant.Danger} orientation={BannerOrientation.Horizontal}>
                 <div>{manifestError}</div>
               </InlineBanner>
             )}

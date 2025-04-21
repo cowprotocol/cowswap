@@ -50,14 +50,12 @@ export enum ApiErrorCodes {
   UNHANDLED_DELETE_ERROR = 'UNHANDLED_DELETE_ERROR',
 }
 
-const DuplicateOrderError = 'There was another identical order already submitted. Please try again.'
 export enum ApiErrorCodeDetails {
   AlreadyCancelled = 'Order is already cancelled.',
   AmountIsZero = 'Cannot place order with 0 amounts.',
   AppDataHashMismatch = 'AppDataHashMismatch',
   AppdataFromMismatch = 'AppdataFromMismatch',
-  DuplicateOrder = DuplicateOrderError,
-  DuplicatedOrder = DuplicateOrderError,
+  DuplicateOrder = 'There was another identical order already submitted. Please try again.',
   ExcessiveValidTo = 'Order expiration too far in the future. Please try again with a shorter expiration.',
   IncompatibleSigningScheme = 'IncompatibleSigningScheme',
   InsufficientAllowance = 'The account needs to approve the selling token in order to trade.',

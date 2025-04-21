@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { ReactElement, useEffect, useRef } from 'react'
 
 import styled from 'styled-components/macro'
 
@@ -10,7 +10,7 @@ const LinkScrollableStyled = styled(LinkScrollable)`
   color: ${({ theme }) => theme.blue1} !important;
 `
 
-function Table({ children }: { children: JSX.Element }) {
+function Table({ children }: { children: ReactElement }) {
   return (
     <div id="table-container">
       <table>{children}</table>
@@ -18,7 +18,7 @@ function Table({ children }: { children: JSX.Element }) {
   )
 }
 
-function H2({ children }: { children: JSX.Element }) {
+function H2({ children }: { children: ReactElement }) {
   const ref = useRef<HTMLHeadingElement>(null)
 
   useEffect(() => {

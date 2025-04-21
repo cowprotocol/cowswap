@@ -4,7 +4,7 @@ import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
-import { TokenListCategory, UnsupportedTokensState } from '@cowprotocol/tokens'
+import { TokenListCategory, TokenListTags, UnsupportedTokensState } from '@cowprotocol/tokens'
 import { Loader, SearchInput } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
@@ -38,12 +38,18 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   tokenListCategoryState: [T, (category: T) => void]
   defaultInputValue?: string
   areTokensLoading: boolean
+  tokenListTags: TokenListTags
 
   onSelectToken(token: TokenWithLogo): void
+
   openPoolPage(poolAddress: string): void
+
   onInputPressEnter?(): void
+
   onOpenManageWidget(): void
+
   onDismiss(): void
+
   onSelectChain(chain: ChainInfo): void
 }
 
@@ -69,6 +75,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     chainsToSelect,
     onSelectChain,
     areTokensLoading,
+    tokenListTags,
   } = props
 
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
@@ -79,6 +86,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     onSelectToken,
     unsupportedTokens,
     permitCompatibleTokens,
+    tokenListTags,
   }
 
   const trimmedInputValue = inputValue.trim()

@@ -20,7 +20,6 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
-import { NO_QUOTE_IN_ORDER_ERROR } from 'modules/tradeQuote'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
@@ -48,10 +47,6 @@ export async function tradeFlow(
   const { account, recipientAddressOrName, sellToken, buyToken, appData, isSafeWallet, inputAmount, outputAmount } =
     postOrderParams
   const marketLabel = [sellToken.symbol, buyToken.symbol].join(',')
-
-  if (!quoteState.quote) {
-    throw new Error(NO_QUOTE_IN_ORDER_ERROR)
-  }
 
   const swapFlowAnalyticsContext: TradeFlowAnalyticsContext = {
     account,

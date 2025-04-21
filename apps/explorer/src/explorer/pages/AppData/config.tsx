@@ -56,9 +56,9 @@ export const transformErrors = (errors: AjvError[]): AjvError[] => {
 }
 
 export const handleErrors = (
-  ref: RefObject<Form<FormProps>>,
+  ref: RefObject<Form<FormProps> | null>,
   errors: FormValidation,
-  handler: (value: boolean) => void
+  handler: (value: boolean) => void,
 ): FormValidation => {
   if (!ref.current) return errors
   const { errors: formErrors } = ref.current?.state as FormProps

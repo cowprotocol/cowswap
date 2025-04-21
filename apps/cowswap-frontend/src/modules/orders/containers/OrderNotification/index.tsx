@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { ReactElement, useCallback, useMemo } from 'react'
 
 import { shortenOrderId } from '@cowprotocol/common-utils'
 import { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -21,7 +21,7 @@ import { ReceiverInfo } from '../../pure/ReceiverInfo'
 import { TransactionContentWithLink } from '../TransactionContentWithLink'
 
 export interface BaseOrderNotificationProps {
-  title: JSX.Element | string
+  title: ReactElement | string
   messageType: ToastMessageType
   chainId: SupportedChainId
   orderUid: string
@@ -29,7 +29,7 @@ export interface BaseOrderNotificationProps {
   orderInfo?: OrderInfo | EnrichedOrder
   transactionHash?: string
   isEthFlow?: boolean
-  children?: JSX.Element
+  children?: ReactElement
 }
 
 export function OrderNotification(props: BaseOrderNotificationProps) {
@@ -53,14 +53,14 @@ export function OrderNotification(props: BaseOrderNotificationProps) {
         orderUid,
         orderType,
       }),
-    [messageType, orderType, orderUid]
+    [messageType, orderType, orderUid],
   )
 
   const ref = useCallback(
     (node: HTMLDivElement) => {
       if (node) onToastMessage(node.innerText)
     },
-    [onToastMessage]
+    [onToastMessage],
   )
 
   if (!order) return

@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import {
   BaseToastMessagePayload,
@@ -12,9 +12,9 @@ import { COW_LISTENERS } from '../consts'
 export function useToastsManager(setListeners: (listeners: CowWidgetEventListeners) => void) {
   const isInitRef = useRef(false)
   const [disableToastMessages, setDisableToastMessages] = useState<boolean>(false)
-  const [toasts, setToasts] = useState<(JSX.Element | string)[]>([])
+  const [toasts, setToasts] = useState<(ReactElement | string)[]>([])
 
-  const openToast = (message: JSX.Element | string) => {
+  const openToast = (message: ReactElement | string) => {
     setToasts((t) => [...t, message])
   }
 

@@ -1,6 +1,9 @@
-'use server'
-
-import React from 'react'
+import { ArticlePageComponent } from '@/components/ArticlePageComponent'
+import { FEATURED_ARTICLES_PAGE_SIZE } from '@/const/pagination'
+import { getPageMetadata } from '@/util/getPageMetadata'
+import { stripHtmlTags } from '@/util/stripHTMLTags'
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 import {
   Article,
   getAllArticleSlugs,
@@ -9,12 +12,6 @@ import {
   getCategories,
   SharedRichTextComponent,
 } from '../../../../services/cms'
-import { ArticlePageComponent } from '@/components/ArticlePageComponent'
-import { notFound } from 'next/navigation'
-import type { Metadata } from 'next'
-import { stripHtmlTags } from '@/util/stripHTMLTags'
-import { getPageMetadata } from '@/util/getPageMetadata'
-import { FEATURED_ARTICLES_PAGE_SIZE } from '@/const/pagination'
 function isRichTextComponent(block: any): block is SharedRichTextComponent {
   return block.body !== undefined
 }

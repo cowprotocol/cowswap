@@ -82,7 +82,7 @@ export function CurrencySelectButton(props: CurrencySelectButtonProps) {
 
             {displayTokenName && (
               <TokenSubText>
-                <TokenName token={currency} length={TOKEN_NAME_LENGTH} />
+                <TokenName token={currency} maxLength={TOKEN_NAME_LENGTH} />
               </TokenSubText>
             )}
             {displayChainName && currency.chainId && (

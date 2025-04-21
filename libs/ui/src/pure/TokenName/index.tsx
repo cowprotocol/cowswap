@@ -1,38 +1,44 @@
+import { formatSymbol } from '@cowprotocol/common-utils'
+
 import styled from 'styled-components/macro'
 
 import { sanitizeTokenName } from './sanitizeTokenName'
 
 import { Media } from '../../consts'
+import { UI } from '../../enum'
 
 export type TokenNameProps = {
   token: { name?: string } | undefined
   className?: string
-  length?: number
+  maxLength?: number
 }
 
-const Wrapper = styled.span<{ length?: number }>`
+const Wrapper = styled.span`
   display: inline-block;
-  width: ${({ length }) => length ?? 200}px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  position: relative;
+  line-height: 1.4;
+  word-break: break-word;
 
   ${Media.upToSmall()} {
-    white-space: normal;
-    width: 100%;
-    word-break: break-word;
     padding: 0 5px 0 0;
   }
 `
 
-export function TokenName({ token, className, length }: TokenNameProps) {
+export function TokenName({ token, className, maxLength = 200 }: TokenNameProps) {
   const { name } = token || {}
 
   if (!name) return null
 
+  const sanitizedName = sanitizeTokenName(name)
+  const formattedName = formatSymbol(sanitizedName, maxLength)
+
   return (
-    <Wrapper length={length} className={className} title={sanitizeTokenName(name)}>
-      {sanitizeTokenName(name)}
+    <Wrapper className={className} title={sanitizedName}>
+      {formattedName}
     </Wrapper>
   )
 }

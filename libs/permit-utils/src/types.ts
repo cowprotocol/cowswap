@@ -25,7 +25,7 @@ export type PermitHookParams = {
   chainId: number
   permitInfo: PermitInfo
   provider: JsonRpcProvider
-  eip2162Utils: Eip2612PermitUtils
+  eip2612Utils: Eip2612PermitUtils
   account?: string | undefined
   nonce?: number | undefined
 }
@@ -41,9 +41,9 @@ export type GetTokenPermitIntoResult =
   | FailedToIdentify
 
 type BasePermitCallDataParams = {
-  eip2162Utils: Eip2612PermitUtils
+  eip2612Utils: Eip2612PermitUtils
 }
-export type BuildEip2162PermitCallDataParams = BasePermitCallDataParams & {
+export type BuildEip2612PermitCallDataParams = BasePermitCallDataParams & {
   callDataParams: Parameters<Eip2612PermitUtils['buildPermitCallData']>
 }
 export type BuildDaiLikePermitCallDataParams = BasePermitCallDataParams & {

@@ -18,7 +18,9 @@ const threeDivs = () => (
 interface VirtualListProps<T> {
   id?: string
   items: T[]
+
   getItemView(items: T[], item: VirtualItem): ReactNode
+
   loading?: boolean
   estimateSize?: () => number
   children?: ReactNode
@@ -34,7 +36,7 @@ export function VirtualList<T>({
 }: VirtualListProps<T>) {
   const parentRef = useRef<HTMLDivElement>(null)
   const wrapperRef = useRef<HTMLDivElement>(null)
-  const scrollTimeoutRef = useRef<NodeJS.Timeout>()
+  const scrollTimeoutRef = useRef<NodeJS.Timeout>(undefined)
 
   const onScroll = useCallback(() => {
     if (scrollTimeoutRef.current) {

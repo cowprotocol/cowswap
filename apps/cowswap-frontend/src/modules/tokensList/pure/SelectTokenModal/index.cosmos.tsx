@@ -27,6 +27,7 @@ const balances = allTokensMock.reduce<BalancesState['values']>((acc, token) => {
 }, {})
 
 const defaultProps: SelectTokenModalProps = {
+  tokenListTags: {},
   account: undefined,
   permitCompatibleTokens: {},
   unsupportedTokens,
