@@ -2,18 +2,28 @@ import { Provider, createStore } from 'jotai'
 import React from 'react'
 
 import bungeeIcon from '@cowprotocol/assets/images/bungee-logo.svg'
-import { USDC_MAINNET, COW } from '@cowprotocol/common-const'
+import { USDC_MAINNET, COW, getChainInfo } from '@cowprotocol/common-const'
+import { shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { GlobalCoWDAOStyles } from '@cowprotocol/ui'
-import { CurrencyAmount, Currency, Fraction } from '@uniswap/sdk-core'
+import { TokenLogo } from '@cowprotocol/tokens'
+import { GlobalCoWDAOStyles, ButtonError, ButtonSize } from '@cowprotocol/ui'
+import { CurrencyAmount, Currency, Fraction, Percent, Price } from '@uniswap/sdk-core'
 
+import JSBI from 'jsbi'
 import styled from 'styled-components/macro'
 import { ThemeProvider } from 'theme'
 
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { Field } from 'legacy/state/types'
+
 import { BodyWrapper } from 'modules/application/containers/App/styled'
 import { Container, ContainerBox } from 'modules/trade/containers/TradeWidget/styled'
+import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
+import { TradeConfirmation } from 'modules/trade/pure/TradeConfirmation'
+import { ReceiveAmountInfo } from 'modules/trade/types'
 import { usdRawPricesAtom } from 'modules/usdAmount/state/usdRawPricesAtom'
 
+import { CurrencyInputPanel } from 'common/pure/CurrencyInputPanel/CurrencyInputPanel'
 import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 
@@ -108,10 +118,13 @@ const Wrapper = styled.div`
 `
 
 // Style for the rate info
-const RateInfoStyled = styled.span`
+const RateInfoStyled = styled.div`
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-size: 13px;
   font-weight: 500;
+  gap: 4px;
 `
 
 const FiatValue = styled.span`
@@ -172,61 +185,364 @@ const BridgeRouteWithAccordion = ({ props, isOpen = false }: { props: typeof def
   )
 }
 
+// Styled container for trade form
+const TradeFormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 480px;
+  margin-bottom: 16px;
+`
+
+const TradeFormFooter = styled.div`
+  margin-top: 16px;
+`
+
 /**
- * Swap Review fixture that directly uses the enhanced BridgeRouteBreakdown component
- * with its new accordion functionality (collapsible, expandable)
- *
- * This demonstrates how the component can be used on its own without any additional
- * wrapper components or custom accordion implementations.
- *
- * Key features demonstrated:
- * - Using BridgeRouteBreakdown with isCollapsible=true to enable accordion behavior
- * - Managing the expanded state in the parent component
- * - Providing the toggle callback to let the component request state changes
- * - Clean, reusable approach that avoids duplicated UI code
+ * SwapConfirmation fixture using TradeConfirmation component to simulate
+ * a real trade confirmation screen with the BridgeRouteBreakdown integrated
  */
-const SwapReview = () => {
-  // State for controlling the accordion's expanded/collapsed state
+const SwapConfirmation = () => {
+  // State for controlling the accordion's expanded/collapsed state for BridgeRouteBreakdown
   const [isExpanded, setIsExpanded] = React.useState(false)
 
-  // Use the enhanced component with accordion functionality
+  // Mock data for TradeConfirmation component
+  const inputCurrencyInfo = {
+    amount: CurrencyAmount.fromRawAmount(USDC_MAINNET, JSBI.BigInt(1000 * 10 ** 6)),
+    fiatAmount: CurrencyAmount.fromRawAmount(USDC_MAINNET, JSBI.BigInt(1000 * 10 ** 6)),
+    balance: CurrencyAmount.fromRawAmount(USDC_MAINNET, JSBI.BigInt(10000 * 10 ** 6)),
+    label: 'You pay',
+  }
+
+  const outputCurrencyInfo = {
+    amount: CurrencyAmount.fromRawAmount(COW_MAINNET, JSBI.BigInt(3442 * 10 ** 18)),
+    fiatAmount: CurrencyAmount.fromRawAmount(USDC_MAINNET, JSBI.BigInt(1480 * 10 ** 6)), // $0.43 per COW
+    balance: CurrencyAmount.fromRawAmount(COW_MAINNET, JSBI.BigInt(5000 * 10 ** 18)),
+    label: 'You receive',
+  }
+
+  // Mock price impact data - Create a proper Percent for priceImpact
+  const priceImpact: PriceImpact = {
+    priceImpact: new Percent(10, 10000), // 0.1%
+    loading: false,
+  }
+
+  // Mock app data for TradeConfirmation
+  const appData = 'CoW Bridge Referral'
+
+  // Additional styles for the added elements that match the provided screenshots
+  const ConfirmationDetailsRow = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    padding: 0;
+  `
+
+  const Label = styled.span`
+    color: var(--cow-color-text-opacity-70);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  `
+
+  const Value = styled.span`
+    color: var(--cow-color-text);
+    font-weight: 500;
+  `
+
+  const PriceValue = styled.span`
+    display: flex;
+    align-items: center;
+    color: var(--cow-color-text);
+  `
+
+  const MinToReceiveRow = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 0 0 10px;
+  `
+
+  const MinToReceiveValue = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  `
+
+  const TokenIconWrapper = styled.div`
+    display: inline-flex;
+    margin-right: 4px;
+  `
+
+  const FiatValueText = styled.span`
+    margin-left: 5px;
+    opacity: 0.7;
+  `
+
   return (
     <BridgeFixtureWrapper>
-      <div
-        style={{
-          padding: '16px',
-          borderRadius: '16px',
-          background: 'var(--cow-container-bg-01)',
-          border: '1px solid var(--cow-container-border-01)',
-        }}
-      >
-        <BridgeRouteBreakdown
-          {...defaultProps}
-          isCollapsible={true}
-          isExpanded={isExpanded}
-          onExpandToggle={() => setIsExpanded(!isExpanded)}
-        />
-      </div>
+      <TradeConfirmation
+        onConfirm={() => console.log('Confirmed')}
+        onDismiss={() => console.log('Dismissed')}
+        account="0x1234...5678"
+        ensName={undefined}
+        inputCurrencyInfo={inputCurrencyInfo}
+        outputCurrencyInfo={outputCurrencyInfo}
+        isConfirmDisabled={false}
+        priceImpact={priceImpact}
+        title="Confirm Swap"
+        refreshInterval={15000}
+        isPriceStatic={false}
+        recipient={defaultProps.recipient}
+        buttonText="Confirm"
+        appData={appData}
+        children={(restContent) => (
+          <>
+            {/* Price line item */}
+            <ConfirmationDetailsRow>
+              <Label>Price</Label>
+              <PriceValue>
+                1 COW = 0.290387 USDC <FiatValueText>(≈ $0.29)</FiatValueText>
+              </PriceValue>
+            </ConfirmationDetailsRow>
+
+            {/* Route breakdown component with collapsible behavior */}
+            <BridgeRouteBreakdown
+              {...defaultProps}
+              isCollapsible={true}
+              isExpanded={isExpanded}
+              onExpandToggle={() => setIsExpanded(!isExpanded)}
+            />
+
+            {/* Only show these elements when breakdown is NOT expanded */}
+            {!isExpanded && (
+              <>
+                {/* Recipient line item */}
+                <ConfirmationDetailsRow>
+                  <Label>Recipient</Label>
+                  <Value style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <img
+                      src={getChainInfo(defaultProps.recipientChainId).logo.light}
+                      alt="Chain logo"
+                      style={{ width: '16px', height: '16px' }}
+                    />
+                    {shortenAddress(defaultProps.recipient)} &#8599;
+                  </Value>
+                </ConfirmationDetailsRow>
+
+                <DividerHorizontal />
+
+                {/* Min to receive line item */}
+                <MinToReceiveRow>
+                  <Label style={{ fontWeight: '600' }}>Min. to receive</Label>
+                  <MinToReceiveValue>
+                    <TokenIconWrapper>
+                      <TokenLogo token={COW_GNOSIS} size={18} />
+                    </TokenIconWrapper>
+                    3423.83 COW <FiatValueText>(≈ $994.23)</FiatValueText>
+                  </MinToReceiveValue>
+                </MinToReceiveRow>
+              </>
+            )}
+
+            {/* Rest of content from TradeConfirmation */}
+            {restContent}
+          </>
+        )}
+      />
     </BridgeFixtureWrapper>
   )
 }
 
-// Main fixture exports
-const SwapForm = () => (
-  <BridgeFixtureWrapper>
-    <BridgeRouteWithAccordion props={defaultProps} isOpen={false} />
-  </BridgeFixtureWrapper>
-)
+// Enhanced SwapForm with CurrencyInputPanel components
+const SwapForm = () => {
+  // Create buy currency amount for convenient calculations
+  const buyAmount = CurrencyAmount.fromRawAmount(
+    COW_MAINNET,
+    JSBI.BigInt(Math.round(parseFloat(defaultProps.buyAmount) * 10 ** 18)),
+  )
 
-const SwapFormExpanded = () => (
-  <BridgeFixtureWrapper>
-    <BridgeRouteWithAccordion props={defaultProps} isOpen={true} />
-  </BridgeFixtureWrapper>
-)
+  // Create sell currency amount for convenient calculations
+  const sellAmount = CurrencyAmount.fromRawAmount(
+    USDC_MAINNET,
+    JSBI.BigInt(Math.round(parseFloat(defaultProps.sellAmount) * 10 ** 6)),
+  )
+
+  // Network fee in sell currency (USDC)
+  const networkFeeInSellCurrency = CurrencyAmount.fromRawAmount(
+    USDC_MAINNET,
+    JSBI.BigInt(Math.round(parseFloat(defaultProps.networkCost) * 10 ** 6)),
+  )
+
+  // Network fee converted to buy currency (COW)
+  const networkFeeInBuyCurrency = CurrencyAmount.fromRawAmount(
+    COW_MAINNET,
+    JSBI.BigInt(Math.round(parseFloat(defaultProps.networkCost) * 2.5 * 10 ** 18)), // Estimate conversion
+  )
+
+  // Create a quote price
+  const quotePrice = new Price({
+    baseAmount: sellAmount,
+    quoteAmount: buyAmount,
+  })
+
+  // Calculate amounts after fees
+  const buyAmountAfterFees = CurrencyAmount.fromRawAmount(
+    COW_MAINNET,
+    JSBI.BigInt(Math.round(parseFloat(defaultProps.swapExpectedToReceive) * 10 ** 18)),
+  )
+
+  // Calculate minimum amount from slippage
+  const buyAmountAfterSlippage = CurrencyAmount.fromRawAmount(
+    COW_MAINNET,
+    JSBI.BigInt(Math.round(parseFloat(defaultProps.swapMinReceive) * 10 ** 18)),
+  )
+
+  // Create receiveAmountInfo for output currency
+  const receiveAmountInfo: ReceiveAmountInfo = {
+    isSell: true,
+    quotePrice,
+    costs: {
+      networkFee: {
+        amountInSellCurrency: networkFeeInSellCurrency,
+        amountInBuyCurrency: networkFeeInBuyCurrency,
+      },
+      partnerFee: {
+        amount: CurrencyAmount.fromRawAmount(COW_MAINNET, 0), // No partner fee in this example
+        bps: 0,
+      },
+    },
+    beforeNetworkCosts: {
+      sellAmount: sellAmount,
+      buyAmount: buyAmount,
+    },
+    afterNetworkCosts: {
+      sellAmount: sellAmount,
+      buyAmount: buyAmountAfterFees,
+    },
+    afterPartnerFees: {
+      sellAmount: sellAmount,
+      buyAmount: buyAmountAfterFees,
+    },
+    afterSlippage: {
+      sellAmount: sellAmount,
+      buyAmount: buyAmountAfterSlippage,
+    },
+  }
+
+  // Create input (sell) currency data using values from defaultProps
+  const sellCurrencyInfo = {
+    field: Field.INPUT,
+    isIndependent: true,
+    receiveAmountInfo: null,
+    currency: USDC_MAINNET,
+    balance: CurrencyAmount.fromRawAmount(USDC_MAINNET, JSBI.BigInt(10000 * 10 ** 6)), // 10,000 USDC
+    amount: sellAmount,
+    fiatAmount: sellAmount, // 1:1 for USDC
+  }
+
+  // Create output (buy) currency data using values from defaultProps
+  const buyCurrencyInfo = {
+    field: Field.OUTPUT,
+    isIndependent: false,
+    receiveAmountInfo,
+    currency: COW_MAINNET,
+    balance: CurrencyAmount.fromRawAmount(COW_MAINNET, JSBI.BigInt(5000 * 10 ** 18)), // 5,000 COW
+    amount: buyAmount,
+    fiatAmount: CurrencyAmount.fromRawAmount(
+      USDC_MAINNET,
+      JSBI.BigInt(Math.round(parseFloat(defaultProps.buyAmount) * 0.43 * 10 ** 6)),
+    ),
+  }
+
+  // Price impact for the trade
+  const priceImpact: PriceImpact = {
+    priceImpact: new Percent(10, 10000), // 0.1%
+    loading: false,
+  }
+
+  // Mock functions
+  const onUserInput = () => {
+    /* no-op */
+  }
+  const onCurrencySelection = () => {
+    /* no-op */
+  }
+  const openTokenSelectWidget = () => {
+    /* no-op */
+  }
+
+  // Subsidy and balance for COW token
+  const subsidyAndBalance = {
+    subsidy: {
+      tier: 0,
+      discount: 0,
+    },
+    balance: CurrencyAmount.fromRawAmount(COW_MAINNET, JSBI.BigInt(5000 * 10 ** 18)),
+  }
+
+  return (
+    <BridgeFixtureWrapper>
+      <TradeFormContainer>
+        {/* From input */}
+        <CurrencyInputPanel
+          id="swap-from"
+          chainId={defaultProps.sourceChainId}
+          areCurrenciesLoading={false}
+          bothCurrenciesSet={true}
+          isChainIdUnsupported={false}
+          disabled={false}
+          showSetMax={true}
+          maxBalance={sellCurrencyInfo.balance}
+          allowsOffchainSigning={true}
+          currencyInfo={sellCurrencyInfo}
+          priceImpactParams={priceImpact}
+          onCurrencySelection={onCurrencySelection}
+          onUserInput={onUserInput}
+          openTokenSelectWidget={openTokenSelectWidget}
+          topLabel="You pay"
+          displayChainName
+        />
+
+        {/* To input */}
+        <CurrencyInputPanel
+          id="swap-to"
+          chainId={defaultProps.recipientChainId}
+          areCurrenciesLoading={false}
+          bothCurrenciesSet={true}
+          isChainIdUnsupported={false}
+          disabled={false}
+          inputDisabled={true}
+          allowsOffchainSigning={true}
+          currencyInfo={buyCurrencyInfo}
+          priceImpactParams={priceImpact}
+          onCurrencySelection={onCurrencySelection}
+          onUserInput={onUserInput}
+          openTokenSelectWidget={openTokenSelectWidget}
+          topLabel="You receive"
+          displayChainName
+          subsidyAndBalance={subsidyAndBalance}
+        />
+
+        {/* Bridge route breakdown */}
+        <BridgeRouteWithAccordion props={defaultProps} isOpen={false} />
+
+        <TradeFormFooter>
+          <ButtonError buttonSize={ButtonSize.BIG} onClick={() => {}}>
+            Swap
+          </ButtonError>
+        </TradeFormFooter>
+      </TradeFormContainer>
+    </BridgeFixtureWrapper>
+  )
+}
 
 // Export all fixtures
 export default {
   SwapForm,
-  SwapFormExpanded,
-  SwapReview,
+  SwapConfirmation,
 }
