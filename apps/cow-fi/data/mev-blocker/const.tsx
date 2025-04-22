@@ -170,7 +170,7 @@ export const FAQ_DATA = [
             action: 'Click Contact',
           })}
         >
-          Get in touch
+           Get in touch
         </Link>{' '}
         if you're interested in doing this!
       </>
