@@ -1,15 +1,18 @@
+import { Provider, createStore } from 'jotai'
 import React from 'react'
 
 import bungeeIcon from '@cowprotocol/assets/images/bungee-logo.svg'
+import { USDC_MAINNET, COW } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { GlobalCoWDAOStyles } from '@cowprotocol/ui'
-import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
+import { CurrencyAmount, Currency, Fraction } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 import { ThemeProvider } from 'theme'
 
 import { BodyWrapper } from 'modules/application/containers/App/styled'
 import { Container, ContainerBox } from 'modules/trade/containers/TradeWidget/styled'
+import { usdRawPricesAtom } from 'modules/usdAmount/state/usdRawPricesAtom'
 
 import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
@@ -28,26 +31,30 @@ const bungeeProviderConfig: BridgeProtocolConfig = {
   description: 'Multi-chain bridge and swap protocol',
 }
 
+// Get token references
+const COW_MAINNET = COW[SupportedChainId.MAINNET]
+const COW_GNOSIS = COW[SupportedChainId.GNOSIS_CHAIN]
+
 // Prepare default props that will be used in all fixtures
 const defaultProps = {
   // Swap details
   sellAmount: '1000',
   sellToken: 'USDC',
-  sellTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // Mainnet USDC
-  buyAmount: '995',
-  buyToken: 'USDC',
-  buyTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // Mainnet USDC
+  sellTokenAddress: USDC_MAINNET.address, // Mainnet USDC
+  buyAmount: '3442.423',
+  buyToken: 'COW',
+  buyTokenAddress: COW_MAINNET.address, // Mainnet COW
   networkCost: '0.5',
   networkCostUsd: '0.45',
-  swapMinReceive: '990',
-  swapExpectedToReceive: '994',
+  swapMinReceive: '3425.21',
+  swapExpectedToReceive: '3442.423',
   swapMaxSlippage: '0.5',
   // Bridge details
-  bridgeAmount: '994',
-  bridgeToken: 'USDC',
-  bridgeTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // Mainnet USDC
-  bridgeTokenReceiveAddress: '0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83', // Gnosis Chain USDC
-  bridgeReceiveAmount: '993',
+  bridgeAmount: '3442.423',
+  bridgeToken: 'COW',
+  bridgeTokenAddress: COW_MAINNET.address, // Mainnet COW
+  bridgeTokenReceiveAddress: COW_GNOSIS.address, // Gnosis Chain COW
+  bridgeReceiveAmount: '3433.1',
   bridgeFee: '1.50',
   maxBridgeSlippage: '1',
   estimatedTime: 1200, // 20 minutes in seconds
@@ -56,7 +63,38 @@ const defaultProps = {
   // Chain IDs
   sourceChainId: SupportedChainId.MAINNET,
   recipientChainId: SupportedChainId.GNOSIS_CHAIN,
+  // Display options
+  hideBridgeFlowFiatAmount: true, // Hide fiat amount in bridge destination token flow
 }
+
+// Create mock USD price data using proper Token objects
+const mockUsdPrices = {
+  // USDC on Mainnet (lowercase address as key)
+  [USDC_MAINNET.address.toLowerCase()]: {
+    currency: USDC_MAINNET,
+    price: new Fraction(1, 1), // 1:1 with USD
+    isLoading: false,
+    updatedAt: Date.now(),
+  },
+  // COW on Mainnet (lowercase address as key)
+  [COW_MAINNET.address.toLowerCase()]: {
+    currency: COW_MAINNET,
+    price: new Fraction(43, 100), // $0.43 per COW
+    isLoading: false,
+    updatedAt: Date.now(),
+  },
+  // COW on Gnosis Chain (lowercase address as key)
+  [COW_GNOSIS.address.toLowerCase()]: {
+    currency: COW_GNOSIS,
+    price: new Fraction(43, 100), // $0.43 per COW
+    isLoading: false,
+    updatedAt: Date.now(),
+  },
+}
+
+// Create a store with the mock USD prices
+const store = createStore()
+store.set(usdRawPricesAtom, mockUsdPrices)
 
 // Styled wrapper for bridge fixtures
 const Wrapper = styled.div`
@@ -81,17 +119,19 @@ const FiatValue = styled.span`
   opacity: 0.7;
 `
 
-// Reusable wrapper component
+// Reusable wrapper component with Jotai provider for mock USD prices
 const BridgeFixtureWrapper = ({ children }: { children: React.ReactNode }) => (
-  <Wrapper>
-    <ThemeProvider />
-    <GlobalStyles />{' '}
-    <BodyWrapper>
-      <Container>
-        <ContainerBox>{children}</ContainerBox>
-      </Container>{' '}
-    </BodyWrapper>
-  </Wrapper>
+  <Provider store={store}>
+    <Wrapper>
+      <ThemeProvider />
+      <GlobalStyles />{' '}
+      <BodyWrapper>
+        <Container>
+          <ContainerBox>{children}</ContainerBox>
+        </Container>{' '}
+      </BodyWrapper>
+    </Wrapper>
+  </Provider>
 )
 
 // Create mock Currency for fee amount
@@ -116,7 +156,7 @@ const BridgeRouteWithAccordion = ({ props, isOpen = false }: { props: typeof def
     <TradeDetailsAccordion
       rateInfo={
         <RateInfoStyled>
-          1 {props.sellToken} = 0.995 {props.buyToken} <FiatValue>(≈ $0.29)</FiatValue>
+          1 {props.sellToken} = 3.442 {props.buyToken} <FiatValue>(≈ $0.43)</FiatValue>
         </RateInfoStyled>
       }
       feeTotalAmount={feeAmount}
@@ -135,11 +175,18 @@ const BridgeRouteWithAccordion = ({ props, isOpen = false }: { props: typeof def
 // Main fixture exports
 const SwapForm = () => (
   <BridgeFixtureWrapper>
-    <BridgeRouteWithAccordion props={defaultProps} />
+    <BridgeRouteWithAccordion props={defaultProps} isOpen={false} />
+  </BridgeFixtureWrapper>
+)
+
+const SwapFormExpanded = () => (
+  <BridgeFixtureWrapper>
+    <BridgeRouteWithAccordion props={defaultProps} isOpen={true} />
   </BridgeFixtureWrapper>
 )
 
 // Export all fixtures
 export default {
   SwapForm,
+  SwapFormExpanded,
 }

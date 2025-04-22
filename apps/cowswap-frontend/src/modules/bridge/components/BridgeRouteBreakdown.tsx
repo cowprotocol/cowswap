@@ -106,6 +106,9 @@ export interface BridgeRouteBreakdownProps {
   recipientChainId?: SupportedChainId
   sourceChainId?: SupportedChainId
   tokenLogoSize?: number
+
+  // Display options
+  hideBridgeFlowFiatAmount?: boolean
 }
 
 /**
@@ -135,6 +138,7 @@ export function BridgeRouteBreakdown({
   recipientChainId = SupportedChainId.MAINNET, // Default to Ethereum mainnet
   sourceChainId = SupportedChainId.MAINNET, // Default to Ethereum mainnet
   tokenLogoSize = 18,
+  hideBridgeFlowFiatAmount = false,
 }: BridgeRouteBreakdownProps) {
   // Create token objects for the swap tokens
   const sellTokenObj = new TokenWithLogo(
@@ -359,10 +363,14 @@ export function BridgeRouteBreakdown({
           <AmountWithTokenIcon>
             <TokenLogo token={destTokenObj} size={tokenLogoSize} />
             {bridgeReceiveAmount} {bridgeToken} on {recipientChainName}
-            {bridgeReceiveAmountUsd && (
-              <i>
-                (<FiatAmount amount={bridgeReceiveAmountUsd} />)
-              </i>
+            {hideBridgeFlowFiatAmount || (
+              <>
+                {bridgeReceiveAmountUsd && (
+                  <i>
+                    (<FiatAmount amount={bridgeReceiveAmountUsd} />)
+                  </i>
+                )}
+              </>
             )}
           </AmountWithTokenIcon>
         </TokenFlowContainer>
