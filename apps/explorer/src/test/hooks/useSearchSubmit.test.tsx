@@ -1,7 +1,7 @@
-import { renderHook, act } from '@testing-library/react'
+import { act, renderHook } from '@testing-library/react'
 import { LocationDescriptorObject } from 'history'
 import { useSearchSubmit } from 'hooks/useSearchSubmit'
-import { MemoryRouter, useLocation } from 'react-router-dom'
+import { MemoryRouter, useLocation } from 'react-router'
 
 interface Props {
   children?: React.ReactNode

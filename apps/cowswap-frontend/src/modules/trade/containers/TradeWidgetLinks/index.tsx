@@ -7,7 +7,7 @@ import type { TradeType } from '@cowprotocol/widget-lib'
 import { Trans } from '@lingui/macro'
 import IMAGE_CARET from 'assets/icon/caret.svg'
 import SVG from 'react-inlinesvg'
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { ModalHeader } from 'modules/tokensList/pure/ModalHeader'
@@ -74,10 +74,10 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
 
       const tradeUrlParams = isCurrentPathYield
         ? ({
-            chainId,
-            inputCurrencyId: itemTradeState.inputCurrencyId || defaultState?.inputCurrencyId || null,
-            outputCurrencyId: itemTradeState.outputCurrencyId,
-          } as TradeUrlParams)
+          chainId,
+          inputCurrencyId: itemTradeState.inputCurrencyId || defaultState?.inputCurrencyId || null,
+          outputCurrencyId: itemTradeState.outputCurrencyId,
+        } as TradeUrlParams)
         : getTradeUrlParams(item)
 
       const routePath =

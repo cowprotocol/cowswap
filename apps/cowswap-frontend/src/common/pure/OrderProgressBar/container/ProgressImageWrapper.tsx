@@ -51,12 +51,12 @@ const PROCESS_IMAGE_WRAPPER_HEIGHT: HeightMap = {
   solved: '229px',
   finished: '229px',
   initial: undefined,
-  solving: undefined,
-  executing: undefined,
+  solving: 'auto',
+  executing: 'auto',
   cancelling: undefined,
   cancelled: undefined,
   expired: undefined,
-  unfillable: undefined,
+  unfillable: 'auto',
   cancellationFailed: undefined,
 }
 
