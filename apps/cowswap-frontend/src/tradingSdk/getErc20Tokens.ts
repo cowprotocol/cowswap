@@ -23,7 +23,9 @@ export async function getErc20Tokens(chainId: TargetChainId, addresses: string[]
 
   const allLists = await Promise.all(lists.map((list) => fetchTokenList(list)))
   const tokens = allLists.flatMap((list) => list.list.tokens)
-  const tokensByAddress = Object.fromEntries(tokens.map((token) => [token.address.toLowerCase(), token]))
+  const tokensByAddress = Object.fromEntries(
+    tokens.filter((token) => token.chainId === chainId).map((token) => [token.address.toLowerCase(), token]),
+  )
 
   tokensCache.set(chainId, tokensByAddress)
 

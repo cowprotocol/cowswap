@@ -50,9 +50,9 @@ export function useTradeNavigate(): UseTradeNavigateCallback {
         targetRoute,
       )
 
-      if (location.pathname === route) return
-
       const search = parameterizeTradeSearch(location.search, searchParams)
+
+      if (location.pathname === route && location.search.slice(1) === search) return
 
       navigate({ pathname: route, search })
     },
