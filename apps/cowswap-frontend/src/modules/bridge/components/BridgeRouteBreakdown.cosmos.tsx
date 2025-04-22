@@ -133,26 +133,13 @@ const BridgeRouteWithAccordion = ({ props, isOpen = false }: { props: typeof def
 }
 
 // Main fixture exports
-const Default = () => (
+const SwapForm = () => (
   <BridgeFixtureWrapper>
     <BridgeRouteWithAccordion props={defaultProps} />
   </BridgeFixtureWrapper>
 )
 
-const FreeBridgeFee = () => (
-  <BridgeFixtureWrapper>
-    <BridgeRouteWithAccordion
-      props={{
-        ...defaultProps,
-        bridgeFee: BridgeFeeType.FREE,
-        bridgeProvider: bungeeProviderConfig,
-      }}
-    />
-  </BridgeFixtureWrapper>
-)
-
 // Export all fixtures
 export default {
-  Default,
-  FreeBridgeFee,
+  SwapForm,
 }
