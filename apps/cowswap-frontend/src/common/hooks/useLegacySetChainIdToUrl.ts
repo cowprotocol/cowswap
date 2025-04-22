@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 
 import { useTradeTypeInfo } from 'modules/trade'
 
@@ -30,10 +30,10 @@ export function useLegacySetChainIdToUrl() {
           pathname: location.pathname,
           search: replaceURLParam(location.search, 'chain', chainInfo.name),
         },
-        { replace: true }
+        { replace: true },
       )
     },
-    [tradeTypeInfo, navigate, location]
+    [tradeTypeInfo, navigate, location],
   )
 }
 

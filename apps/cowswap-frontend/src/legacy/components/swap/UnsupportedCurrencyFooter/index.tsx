@@ -1,12 +1,12 @@
 import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowprotocol/common-const'
 
 import { transparentize } from 'color2k'
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router'
 import styled from 'styled-components/macro'
 
 import UnsupportedCurrencyFooterMod, {
-  UnsupportedCurrencyFooterParams,
   DetailsFooter,
+  UnsupportedCurrencyFooterParams,
 } from './UnsupportedCurrencyFooterMod'
 
 const DEFAULT_DETAILS_TEXT = (

@@ -12,7 +12,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, MaxUint256, Token } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 
