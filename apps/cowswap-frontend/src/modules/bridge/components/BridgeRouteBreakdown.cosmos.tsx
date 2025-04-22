@@ -142,7 +142,7 @@ const USDC = {
   isToken: true,
 } as Currency
 
-// Bridge route with accordion
+// Bridge route with accordion that shows the full BridgeRouteBreakdown
 const BridgeRouteWithAccordion = ({ props, isOpen = false }: { props: typeof defaultProps; isOpen?: boolean }) => {
   const [open, setOpen] = React.useState(isOpen)
 
@@ -172,6 +172,45 @@ const BridgeRouteWithAccordion = ({ props, isOpen = false }: { props: typeof def
   )
 }
 
+/**
+ * Swap Review fixture that directly uses the enhanced BridgeRouteBreakdown component
+ * with its new accordion functionality (collapsible, expandable)
+ *
+ * This demonstrates how the component can be used on its own without any additional
+ * wrapper components or custom accordion implementations.
+ *
+ * Key features demonstrated:
+ * - Using BridgeRouteBreakdown with isCollapsible=true to enable accordion behavior
+ * - Managing the expanded state in the parent component
+ * - Providing the toggle callback to let the component request state changes
+ * - Clean, reusable approach that avoids duplicated UI code
+ */
+const SwapReview = () => {
+  // State for controlling the accordion's expanded/collapsed state
+  const [isExpanded, setIsExpanded] = React.useState(false)
+
+  // Use the enhanced component with accordion functionality
+  return (
+    <BridgeFixtureWrapper>
+      <div
+        style={{
+          padding: '16px',
+          borderRadius: '16px',
+          background: 'var(--cow-container-bg-01)',
+          border: '1px solid var(--cow-container-border-01)',
+        }}
+      >
+        <BridgeRouteBreakdown
+          {...defaultProps}
+          isCollapsible={true}
+          isExpanded={isExpanded}
+          onExpandToggle={() => setIsExpanded(!isExpanded)}
+        />
+      </div>
+    </BridgeFixtureWrapper>
+  )
+}
+
 // Main fixture exports
 const SwapForm = () => (
   <BridgeFixtureWrapper>
@@ -189,4 +228,5 @@ const SwapFormExpanded = () => (
 export default {
   SwapForm,
   SwapFormExpanded,
+  SwapReview,
 }

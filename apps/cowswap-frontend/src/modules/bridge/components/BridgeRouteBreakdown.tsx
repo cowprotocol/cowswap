@@ -1,3 +1,4 @@
+import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
 import {
@@ -11,6 +12,9 @@ import {
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { FiatAmount, InfoTooltip, UI } from '@cowprotocol/ui'
+
+import SVG from 'react-inlinesvg'
+import styled from 'styled-components/macro'
 
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReceiveAmountTitle } from 'modules/trade/pure/ReceiveAmountTitle'
@@ -109,10 +113,97 @@ export interface BridgeRouteBreakdownProps {
 
   // Display options
   hideBridgeFlowFiatAmount?: boolean
+
+  // Accordion functionality
+  /**
+   * Whether the component should be collapsible/expandable.
+   * When true, clicking the header will toggle between collapsed (header only) and expanded (full breakdown) views.
+   */
+  isCollapsible?: boolean
+
+  /**
+   * Whether the component is currently expanded.
+   * - When true: shows the full route breakdown
+   * - When false and isCollapsible is true: shows only the header
+   * Only relevant when isCollapsible is true.
+   */
+  isExpanded?: boolean
+
+  /**
+   * Callback function invoked when the header is clicked in collapsible mode.
+   * The parent component should use this to toggle the isExpanded state.
+   */
+  onExpandToggle?: () => void
 }
+
+// Toggle arrow component for the collapsible header
+const ToggleArrow = styled.div<{ isOpen: boolean }>`
+  --size: var(${UI.ICON_SIZE_SMALL});
+  transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+  transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size);
+  height: var(--size);
+
+  > svg {
+    --size: var(${UI.ICON_SIZE_TINY});
+    width: var(--size);
+    height: var(--size);
+    object-fit: contain;
+    transition: fill var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+    path {
+      fill: var(${UI.COLOR_TEXT_OPACITY_70});
+    }
+  }
+`
+
+// Modified StopsInfo to include toggle arrow when collapsible
+const CollapsibleStopsInfo = styled(StopsInfo)`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  transition: all var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    color: var(${UI.COLOR_TEXT});
+
+    ${ToggleArrow} {
+      > svg {
+        path {
+          fill: var(${UI.COLOR_TEXT});
+        }
+      }
+    }
+  }
+`
+
+// Add a styled version of RouteHeader with clickable behavior
+const ClickableRouteHeader = styled(RouteHeader)`
+  cursor: pointer;
+
+  &:hover {
+    ${RouteTitle} {
+      color: var(${UI.COLOR_TEXT});
+    }
+  }
+`
 
 /**
  * BridgeRouteBreakdown component displays the details of a bridge transaction
+ *
+ * The component supports two display modes:
+ * 1. Standard mode (default): Always shows the full breakdown
+ * 2. Accordion mode: Can toggle between showing just the header (collapsed) or the full breakdown (expanded)
+ *
+ * To use in accordion mode, set:
+ * - isCollapsible={true} - Enables accordion functionality
+ * - isExpanded={yourExpandedState} - Controls whether it's expanded or collapsed
+ * - onExpandToggle={yourToggleFunction} - Handles the expand/collapse action
  */
 export function BridgeRouteBreakdown({
   sellAmount,
@@ -139,6 +230,9 @@ export function BridgeRouteBreakdown({
   sourceChainId = SupportedChainId.MAINNET, // Default to Ethereum mainnet
   tokenLogoSize = 18,
   hideBridgeFlowFiatAmount = false,
+  isCollapsible = false, // Default to non-collapsible mode
+  isExpanded = true, // Default to expanded if collapsible
+  onExpandToggle = () => {}, // Default no-op
 }: BridgeRouteBreakdownProps) {
   // Create token objects for the swap tokens
   const sellTokenObj = new TokenWithLogo(
@@ -203,9 +297,20 @@ export function BridgeRouteBreakdown({
     : undefined
   const { value: bridgeReceiveAmountUsd } = useUsdAmount(bridgeReceiveAmountCurrency)
 
-  return (
-    <Wrapper>
-      <RouteHeader>
+  // Handle header click for accordion functionality - triggers the callback to toggle expanded state
+  const handleHeaderClick = () => {
+    if (isCollapsible) {
+      onExpandToggle()
+    }
+  }
+
+  // Renders the route header - shared between collapsed and expanded views to avoid code duplication
+  const renderHeader = () => {
+    // Use different header component based on whether it's collapsible
+    const HeaderComponent = isCollapsible ? ClickableRouteHeader : RouteHeader
+
+    return (
+      <HeaderComponent onClick={isCollapsible ? handleHeaderClick : undefined}>
         <RouteTitle>
           Route{' '}
           <InfoTooltip
@@ -218,11 +323,35 @@ export function BridgeRouteBreakdown({
             size={14}
           />
         </RouteTitle>
-        <StopsInfo>
-          2 stops
-          <ProtocolIcons secondProtocol={bridgeProvider} />
-        </StopsInfo>
-      </RouteHeader>
+        {isCollapsible ? (
+          // Enhanced version with toggle arrow for collapsible mode
+          <CollapsibleStopsInfo>
+            2 stops
+            <ProtocolIcons secondProtocol={bridgeProvider} />
+            <ToggleArrow isOpen={isExpanded}>
+              <SVG src={CarretIcon} title={isExpanded ? 'Close' : 'Open'} />
+            </ToggleArrow>
+          </CollapsibleStopsInfo>
+        ) : (
+          // Standard version without toggle arrow for non-collapsible mode
+          <StopsInfo>
+            2 stops
+            <ProtocolIcons secondProtocol={bridgeProvider} />
+          </StopsInfo>
+        )}
+      </HeaderComponent>
+    )
+  }
+
+  // When in collapsible mode and collapsed state, render only the header
+  if (isCollapsible && !isExpanded) {
+    return <Wrapper>{renderHeader()}</Wrapper>
+  }
+
+  // Standard rendering (either not collapsible or in expanded state) - shows full content
+  return (
+    <Wrapper>
+      {renderHeader()}
 
       <StopTitle>
         <StopNumberCircle>1</StopNumberCircle>
