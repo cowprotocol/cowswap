@@ -137,5 +137,18 @@
       "walletCompatibility": ["EOA"],
       "supportedNetworks": [1, 42161, 11155111, 8453]
     }
+  },
+  "TRANSFER": {
+    "name": "Transfer",
+    "type": "INTERNAL",
+    "descriptionShort": "Transfer some buyAmount to another address.",
+    "description": "Transfer some buyAmount to another address.",
+    "version": "0.0.1",
+    "website": "https://dev.swap.cow.fi/",
+    "image": "https://cdn-icons-png.flaticon.com/512/2879/2879440.png",
+    "conditions": {
+      "position": "post",
+      "walletCompatibility": ["EOA"]
+    }
   }
 }
