@@ -1,6 +1,6 @@
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { SupportedChainId, QuoteBridgeRequest } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, QuoteBridgeRequest, areHooksEqual } from '@cowprotocol/cow-sdk'
 
 import { Nullish } from 'types'
 
@@ -93,11 +93,7 @@ function removeBridgePostHook(
   const copy = { ...appData }
 
   if (copy.metadata.hooks?.post) {
-    copy.metadata.hooks.post = copy.metadata.hooks.post.filter((hook) => {
-      return (
-        hook.target !== postHook.target && hook.callData !== postHook.callData && hook.gasLimit !== postHook.gasLimit
-      )
-    })
+    copy.metadata.hooks.post = copy.metadata.hooks.post.filter((hook) => !areHooksEqual(hook, postHook))
 
     if (!copy.metadata.hooks.post.length) {
       copy.metadata.hooks.post = undefined
