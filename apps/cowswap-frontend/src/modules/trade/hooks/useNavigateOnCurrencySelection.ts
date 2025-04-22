@@ -85,6 +85,13 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
 
       const defaultOutputCurrency = getDefaultCurrencies(targetChainId).outputCurrency
 
+      /**
+       * Keep the target chain id in the search params when input token changed
+       */
+      if (isInputField && state.targetChainId) {
+        searchParams = { ...searchParams, targetChainId: state.targetChainId }
+      }
+
       if (shouldSetTargetChain) {
         searchParams = { ...searchParams, targetChainId: targetChainId }
       }
