@@ -2151,11 +2151,6 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@cascadia-code/scroll-to-hash-element@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@cascadia-code/scroll-to-hash-element/-/scroll-to-hash-element-2.0.3.tgz#8e062b22343d119c6b185f1a4431856c96f9bc6d"
-  integrity sha512-unNYcJYLhcFdKAvjxRe0fACyj/mDnK8qbljEoPzOgT526J1Dvd2zhyNKy383QT8Iaq8pYcmAjmJpQ5hf639FvQ==
-
 "@coinbase/wallet-sdk@3.9.1":
   version "3.9.1"
   resolved "https://registry.yarnpkg.com/@coinbase/wallet-sdk/-/wallet-sdk-3.9.1.tgz#503a14671bb392d653623ef2340934e213ac971f"

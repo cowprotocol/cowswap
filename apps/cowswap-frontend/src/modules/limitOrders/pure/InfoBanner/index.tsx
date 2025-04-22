@@ -21,7 +21,6 @@ export function InfoBanner() {
             </div>
             <div className="content">
               Your order may not fill exactly when the market price reaches your limit price.{' '}
-              {/*TODO: does the FAQ exist?*/}
               <ReactRouterLink
                 target="_blank"
                 to="https://docs.cow.fi/governance/fees#surplus-fee-on-out-of-market-limit-orders"

@@ -9,8 +9,6 @@ import {
 } from '@cowprotocol/analytics'
 import { CHAIN_INFO_ARRAY } from '@cowprotocol/common-const'
 
-// TODO: Update the import once https://github.com/ncoughlin/scroll-to-hash-element/pull/13 is merged
-import ScrollToHashElement from '@cascadia-code/scroll-to-hash-element/src/index'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 import { BrowserRouter, HashRouter, Navigate, Route, Routes, useLocation } from 'react-router'
@@ -163,7 +161,6 @@ export const ExplorerApp: React.FC = () => {
   return (
     <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
       <GlobalStyle />
-      <ScrollToHashElement />
       <MainWrapper>
         <Router basename={process.env.BASE_URL}>
           <StateUpdaters />
