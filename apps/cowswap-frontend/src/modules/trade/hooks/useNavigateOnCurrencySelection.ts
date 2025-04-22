@@ -81,7 +81,7 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
        */
       const shouldResetBuyToken = isInputField && targetChainMismatch
       const shouldSetTargetChain = !isInputField && targetChainMismatch
-      const shouldResetBuyOrder = !isInputField && orderKind === OrderKind.BUY
+      const shouldResetBuyOrder = !isInputField && targetChainMismatch && orderKind === OrderKind.BUY
 
       const defaultOutputCurrency = getDefaultCurrencies(targetChainId).outputCurrency
 
