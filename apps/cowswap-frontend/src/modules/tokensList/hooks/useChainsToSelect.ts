@@ -13,7 +13,7 @@ import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 
 import { ChainsToSelectState } from '../types'
 
-function mapChainInfo(chainId: SupportedChainId, info: BaseChainInfo): ChainInfo {
+export function mapChainInfo(chainId: SupportedChainId, info: BaseChainInfo): ChainInfo {
   return {
     addressPrefix: info.addressPrefix,
     contracts: {},
