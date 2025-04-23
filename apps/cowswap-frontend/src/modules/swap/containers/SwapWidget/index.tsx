@@ -31,6 +31,7 @@ import { BottomBanners } from '../BottomBanners'
 import { SwapConfirmModal } from '../SwapConfirmModal'
 import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
+import { BridgeQuoteDetails } from '../../pure/BridgeQuoteDetails'
 
 export interface SwapWidgetProps {
   topContent?: ReactNode
@@ -42,7 +43,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
   const hooksEnabledState = useHooksEnabledManager()
-  const { isLoading: isRateLoading } = useTradeQuote()
+  const { isLoading: isRateLoading, bridgeQuote } = useTradeQuote()
   const priceImpact = useTradePriceImpact()
   const widgetActions = useSwapWidgetActions()
   const receiveAmountInfo = useReceiveAmountInfo()
@@ -137,6 +138,9 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
               rateInfoParams={rateInfoParams}
               deadline={deadlineState[0]}
             />
+            {outputCurrency && bridgeQuote && (
+              <BridgeQuoteDetails details={bridgeQuote} outputCurrency={outputCurrency} />
+            )}
             <Warnings buyingFiatAmount={buyingFiatAmount} />
             {tradeWarnings}
             <TradeButtons
