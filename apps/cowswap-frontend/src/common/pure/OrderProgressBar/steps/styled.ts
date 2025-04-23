@@ -507,8 +507,8 @@ export const CancellationFailedBanner = styled.div`
   padding: 10px;
   margin: 0 auto;
   border-radius: 16px;
-  text-align: center;
   font-size: 15px;
+  text-align: center;
 `
 
 export const CircularProgress = styled.svg`
