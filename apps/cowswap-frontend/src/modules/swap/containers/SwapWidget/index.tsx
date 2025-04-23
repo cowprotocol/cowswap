@@ -27,11 +27,11 @@ import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrapp
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapDeadlineState, useSwapRecipientToggleState, useSwapSettings } from '../../hooks/useSwapSettings'
 import { useSwapWidgetActions } from '../../hooks/useSwapWidgetActions'
+import { BridgeQuoteDetails } from '../../pure/BridgeQuoteDetails'
 import { BottomBanners } from '../BottomBanners'
 import { SwapConfirmModal } from '../SwapConfirmModal'
 import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
-import { BridgeQuoteDetails } from '../../pure/BridgeQuoteDetails'
 
 export interface SwapWidgetProps {
   topContent?: ReactNode
@@ -160,6 +160,8 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         buyingFiatAmount,
         hasEnoughWrappedBalanceForSwap,
         openNativeWrapModal,
+        bridgeQuote,
+        outputCurrency,
       ],
     ),
   }
