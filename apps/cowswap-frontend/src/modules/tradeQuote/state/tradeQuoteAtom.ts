@@ -1,29 +1,28 @@
 import { atom } from 'jotai'
 
-import { OrderQuoteResponse, PriceQuality } from '@cowprotocol/cow-sdk'
+import { PriceQuality, QuoteAndPost } from '@cowprotocol/cow-sdk'
 
 import QuoteApiError from 'api/cowProtocol/errors/QuoteError'
-import { FeeQuoteParams } from 'common/types'
+
+import { TradeQuoteFetchParams } from '../types'
 
 type SellTokenAddress = string
 
 export interface TradeQuoteState {
-  response: OrderQuoteResponse | null
+  quote: QuoteAndPost | null
+  fetchParams: TradeQuoteFetchParams | null
   error: QuoteApiError | null
-  isLoading: boolean
   hasParamsChanged: boolean
-  quoteParams: FeeQuoteParams | null
-  fetchStartTimestamp: number | null
+  isLoading: boolean
   localQuoteTimestamp: number | null
 }
 
 export const DEFAULT_TRADE_QUOTE_STATE: TradeQuoteState = {
-  response: null,
+  quote: null,
+  fetchParams: null,
   error: null,
-  isLoading: false,
   hasParamsChanged: false,
-  quoteParams: null,
-  fetchStartTimestamp: null,
+  isLoading: false,
   localQuoteTimestamp: null,
 }
 
@@ -39,9 +38,9 @@ export const updateTradeQuoteAtom = atom(
 
       // Don't update state if Fast quote finished after Optimal quote
       if (
-        prevQuote.fetchStartTimestamp === nextState.fetchStartTimestamp &&
-        nextState.response &&
-        nextState.quoteParams?.priceQuality === PriceQuality.FAST
+        prevQuote.fetchParams?.fetchStartTimestamp === nextState.fetchParams?.fetchStartTimestamp &&
+        nextState.quote &&
+        nextState.fetchParams?.priceQuality === PriceQuality.FAST
       ) {
         return { ...prevState }
       }
@@ -49,8 +48,8 @@ export const updateTradeQuoteAtom = atom(
       const update: TradeQuoteState = {
         ...prevQuote,
         ...nextState,
-        quoteParams: typeof nextState.quoteParams === 'undefined' ? prevQuote.quoteParams : nextState.quoteParams,
-        localQuoteTimestamp: nextState.response ? Math.ceil(Date.now() / 1000) : null,
+        quote: typeof nextState.quote === 'undefined' ? prevQuote.quote : nextState.quote,
+        localQuoteTimestamp: nextState.quote ? Math.ceil(Date.now() / 1000) : null,
       }
 
       return {

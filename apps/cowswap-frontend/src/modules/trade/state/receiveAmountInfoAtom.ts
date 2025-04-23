@@ -14,7 +14,8 @@ export const receiveAmountInfoAtom = atom((get) => {
   const volumeFee = get(volumeFeeAtom)
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, slippage, orderKind } =
     get(derivedTradeStateAtom) || {}
-  const quoteResponse = inputCurrency && tradeQuotes[getCurrencyAddress(inputCurrency).toLowerCase()]?.response
+  const quoteResponse =
+    inputCurrency && tradeQuotes[getCurrencyAddress(inputCurrency).toLowerCase()]?.quote?.quoteResults.quoteResponse
 
   if (isFractionFalsy(inputCurrencyAmount) && isFractionFalsy(outputCurrencyAmount)) return null
 
