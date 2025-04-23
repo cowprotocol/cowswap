@@ -10,6 +10,8 @@ import {
 } from '@cowprotocol/tokens'
 import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
+import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
+
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { useBridgeSupportedNetworks } from 'modules/bridge'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances/updater/BalancesCombinedUpdater'
@@ -24,7 +26,7 @@ import { CorrelatedTokensUpdater } from 'modules/volumeFee'
 import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield/shared'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
-import { ProgressBarV2ExecutingOrdersUpdater } from 'common/hooks/orderProgressBarV2'
+import { ProgressBarExecutingOrdersUpdater } from 'common/hooks/orderProgressBar'
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { AnnouncementsUpdater } from 'common/updaters/AnnouncementsUpdater'
 import { FeatureFlagsUpdater } from 'common/updaters/FeatureFlagsUpdater'
@@ -55,6 +57,7 @@ export function Updaters() {
 
   return (
     <>
+      <TradingSdkUpdater />
       <MultiCallUpdater chainId={sourceChainId} />
       <FeatureFlagsUpdater />
       <WalletUpdater standaloneMode={standaloneMode} />
@@ -77,7 +80,7 @@ export function Updaters() {
       <TotalSurplusUpdater />
       <UsdPricesUpdater />
       <OrdersNotificationsUpdater />
-      <ProgressBarV2ExecutingOrdersUpdater />
+      <ProgressBarExecutingOrdersUpdater />
       <SolversInfoUpdater />
       <AnnouncementsUpdater />
 

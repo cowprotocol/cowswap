@@ -1,16 +1,16 @@
-import React from 'react'
+import { ReactElement } from 'react'
 
 import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
 import { LimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 
 interface ButtonConfig {
-  text: JSX.Element | string
+  text: ReactElement | string
   id?: string
 }
 
 interface ButtonCallback {
-  (): JSX.Element | null
+  (): ReactElement | null
 }
 
 export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: ButtonConfig | ButtonCallback } = {

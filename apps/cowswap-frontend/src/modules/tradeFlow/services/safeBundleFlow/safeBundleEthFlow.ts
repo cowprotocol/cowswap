@@ -1,17 +1,23 @@
 import { Erc20 } from '@cowprotocol/abis'
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
+import { tradingSdk } from 'tradingSdk/tradingSdk'
+
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
-import { type PostOrderParams, signAndPostOrder } from 'legacy/utils/trade'
+import {
+  getOrderSubmitSummary,
+  mapUnsignedOrderToOrder,
+  type PostOrderParams,
+  wrapErrorInOperatorError,
+} from 'legacy/utils/trade'
 
 import { removePermitHookFromAppData } from 'modules/appData'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
-import { buildPresignTx } from 'modules/operations/bundle/buildPresignTx'
 import { buildWrapTx } from 'modules/operations/bundle/buildWrapTx'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
@@ -31,15 +37,15 @@ export async function safeBundleEthFlow(
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
   analytics: TradeFlowAnalytics,
 ): Promise<void | boolean> {
+  const { context, callbacks, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks, tradeQuote } = tradeContext
+
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
 
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
     return false
   }
 
-  const { context, callbacks, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks } = tradeContext
-
-  const { spender, settlementContract, sendBatchTransactions, needsApproval, wrappedNativeContract } = safeBundleContext
+  const { spender, sendBatchTransactions, needsApproval, wrappedNativeContract } = safeBundleContext
 
   const { chainId, inputAmount, outputAmount } = context
 
@@ -88,8 +94,38 @@ export async function safeBundleEthFlow(
     orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)
 
     logTradeFlow(LOG_PREFIX, 'STEP 4: post order')
-    const { id: orderId, order } = await signAndPostOrder(orderParams).finally(() => {
-      callbacks.closeModals()
+
+    const {
+      orderId,
+      signature,
+      signingScheme,
+      orderToSign: unsignedOrder,
+    } = await wrapErrorInOperatorError(() =>
+      tradeQuote
+        .postSwapOrderFromQuote({
+          appData: orderParams.appData.doc,
+          quoteRequest: {
+            signingScheme: SigningScheme.PRESIGN,
+            validTo: orderParams.validTo,
+            receiver: orderParams.recipient,
+            // Override the sellToken to be the wrapped native token
+            sellToken: WRAPPED_NATIVE_CURRENCIES[chainId as SupportedChainId].address,
+          },
+        })
+        .finally(() => {
+          callbacks.closeModals()
+        }),
+    )
+
+    const order = mapUnsignedOrderToOrder({
+      unsignedOrder,
+      additionalParams: {
+        ...orderParams,
+        orderId,
+        summary: getOrderSubmitSummary(orderParams),
+        signature,
+        signingScheme,
+      },
     })
 
     const { isSafeWallet } = orderParams
@@ -108,7 +144,7 @@ export async function safeBundleEthFlow(
     )
 
     logTradeFlow(LOG_PREFIX, 'STEP 5: build presign tx')
-    const presignTx = await buildPresignTx({ settlementContract, orderId })
+    const presignTx = await tradingSdk.getPreSignTransaction({ orderId, account })
 
     txs.push({
       to: presignTx.to!,

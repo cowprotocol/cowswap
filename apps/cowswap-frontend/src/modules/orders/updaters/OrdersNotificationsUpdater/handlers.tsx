@@ -1,3 +1,5 @@
+import { ReactElement } from 'react'
+
 import {
   CowEventPayloads,
   CowWidgetEvents,
@@ -17,7 +19,7 @@ import { OrderNotification } from '../../containers/OrderNotification'
 
 type OrdersNotificationsHandler = {
   icon: IconType
-  handler(payload: CowEventPayloads[keyof CowEventPayloads]): JSX.Element | null
+  handler(payload: CowEventPayloads[keyof CowEventPayloads]): ReactElement | null
 }
 
 export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotificationsHandler> = {

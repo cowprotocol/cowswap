@@ -1,3 +1,5 @@
+import { ReactElement } from 'react'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
@@ -22,10 +24,10 @@ const Container = styled.div`
     box-shadow: none;
   }
 `
-type CustomSubmittedContent = (onDismiss: Command) => JSX.Element
+type CustomSubmittedContent = (onDismiss: Command) => ReactElement
 
 export interface TradeConfirmModalProps {
-  children: JSX.Element
+  children: ReactElement
   title: string
   submittedContent?: CustomSubmittedContent
 }
@@ -61,7 +63,7 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
 }
 
 type InnerComponentProps = {
-  children: JSX.Element
+  children: ReactElement
   chainId: SupportedChainId
   account: string
   title: string

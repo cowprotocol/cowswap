@@ -1,9 +1,8 @@
-'use server'
-
-import type { Metadata } from 'next'
+// This is a Server Component by default in the app directory
+import { Layout } from '@/components/Layout'
 import { NotFoundPageComponent } from '@/components/NotFoundPageComponent'
 import { getPageMetadata } from '@/util/getPageMetadata'
-import { Layout } from '@/components/Layout'
+import type { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
   return getPageMetadata({

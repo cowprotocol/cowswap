@@ -1,7 +1,6 @@
-import React from 'react'
-import { AnchorHTMLAttributes, useMemo, ComponentType } from 'react'
+import React, { AnchorHTMLAttributes, ComponentType, useMemo } from 'react'
 import Link, { LinkProps } from 'next/link'
-import { UtmParams, useUtm } from 'modules/utm'
+import { useUtm, UtmParams } from 'modules/utm'
 import { addUtmToUrl } from 'modules/utm/utils'
 
 export const defaultUtm: UtmParams = {
@@ -36,7 +35,7 @@ export function LinkWithUtmComponent(p: LinkWithUtmProps): React.ReactNode {
   )
 }
 
-export function withUtmLink<T extends JSX.IntrinsicAttributes>(Component: ComponentType<T>) {
+export function withUtmLink<T extends React.JSX.IntrinsicAttributes>(Component: ComponentType<T>) {
   return (props: T & LinkWithUtmProps) => {
     return (
       <LinkWithUtmComponent {...props}>

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { ReactElement, useMemo } from 'react'
 
 import { shortenOrderId } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
@@ -17,7 +17,7 @@ export type CancellationModalProps = {
   context: CancellationModalContext
 }
 
-export function CancellationModal(props: CancellationModalProps): JSX.Element | null {
+export function CancellationModal(props: CancellationModalProps): ReactElement | null {
   const { isOpen, onDismiss, context } = props
   const {
     chainId,

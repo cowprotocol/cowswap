@@ -19,7 +19,8 @@ import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/ty
 import * as styledEl from './styled'
 
 import { CancelButton } from '../CancelButton'
-import { OrderProgressBarV2, OrderProgressBarV2Props } from '../OrderProgressBarV2'
+import { OrderProgressBar } from '../OrderProgressBar'
+import { OrderProgressBarProps } from '../OrderProgressBar/types'
 
 const activityStatusLabels: Partial<Record<ActivityStatus, string>> = {
   [ActivityStatus.CONFIRMED]: 'Confirmed',
@@ -46,7 +47,7 @@ export interface TransactionSubmittedContentProps {
   chainId: SupportedChainId
   activityDerivedState: ActivityDerivedState | null
   currencyToAdd?: Nullish<Currency>
-  orderProgressBarV2Props: OrderProgressBarV2Props
+  orderProgressBarProps: OrderProgressBarProps
   navigateToNewOrderCallback?: (chainId: SupportedChainId, order?: Order, callback?: Command) => () => void
 }
 
@@ -56,11 +57,11 @@ export function TransactionSubmittedContent({
   hash,
   currencyToAdd,
   activityDerivedState,
-  orderProgressBarV2Props,
+  orderProgressBarProps,
   navigateToNewOrderCallback,
 }: TransactionSubmittedContentProps) {
   const { order, isOrder, isCreating, isPending } = activityDerivedState || {}
-  const { isProgressBarSetup, showCancellationModal, stepName } = orderProgressBarV2Props
+  const { isProgressBarSetup, showCancellationModal, stepName } = orderProgressBarProps
   const showCancellationButton = isOrder && (isCreating || isPending) && showCancellationModal
 
   const isPresignaturePending = activityDerivedState?.isPresignaturePending
@@ -110,8 +111,8 @@ export function TransactionSubmittedContent({
           {showSafeSigningInfo && <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />}
           {!isFinished && <EthFlowStepper order={order} showProgressBar={!!showProgressBar} />}
           {activityDerivedState && showProgressBar && isProgressBarSetup && (
-            <OrderProgressBarV2
-              {...orderProgressBarV2Props}
+            <OrderProgressBar
+              {...orderProgressBarProps}
               order={order}
               navigateToNewOrder={navigateToNewOrderCallback?.(chainId, order, onDismiss)}
             />
