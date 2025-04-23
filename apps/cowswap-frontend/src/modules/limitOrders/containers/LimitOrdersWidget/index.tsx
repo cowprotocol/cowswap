@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo } from 'react'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
 
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 
 import { Field } from 'legacy/state/types'
 

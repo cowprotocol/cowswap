@@ -1,30 +1,30 @@
-import React, { useState, useEffect, useRef, useTransition, useCallback, useMemo } from 'react'
-import { useMediaQuery, useOnClickOutside, useDebounce } from '@cowprotocol/common-hooks'
-import { Article } from 'services/cms'
-import SVG from 'react-inlinesvg'
-import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 import IMG_ICON_SEARCH from '@cowprotocol/assets/images/icon-search.svg'
-import { highlightQuery } from '../../util/textHighlighting'
-import { searchArticlesAction } from '../../app/actions'
-import {
-  SearchBarContainer,
-  InputContainer,
-  SearchIcon,
-  Input,
-  SearchResults,
-  SearchResultsInner,
-  ResultItem,
-  ResultTitle,
-  ResultDescription,
-  SearchResultsInfo,
-  LoadingIndicator,
-  ErrorMessage,
-  CloseIcon,
-} from './styled'
-import { DEBOUNCE_DELAY, PAGE_SIZE, MIN_SEARCH_LENGTH } from './const'
+import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
+import { useDebounce, useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
 import { useRouter } from 'next/navigation'
+import React, { useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react'
+import SVG from 'react-inlinesvg'
+import { Article } from 'services/cms'
+import { searchArticlesAction } from '../../app/actions'
 import { useKeyboardNavigation } from '../../hooks/useKeyboardNavigation'
+import { highlightQuery } from '@/util/textHighlighting'
+import { DEBOUNCE_DELAY, MIN_SEARCH_LENGTH, PAGE_SIZE } from './const'
+import {
+  CloseIcon,
+  ErrorMessage,
+  Input,
+  InputContainer,
+  LoadingIndicator,
+  ResultDescription,
+  ResultItem,
+  ResultTitle,
+  SearchBarContainer,
+  SearchIcon,
+  SearchResults,
+  SearchResultsInfo,
+  SearchResultsInner,
+} from './styled'
 
 interface SearchBarProps {}
 
@@ -103,7 +103,7 @@ export const SearchBar: React.FC<SearchBarProps> = () => {
 
     startTransition(async () => {
       try {
-        const result = await searchArticlesAction(trimmedQuery, 0, PAGE_SIZE)
+        const result = await searchArticlesAction({ searchTerm: trimmedQuery, page: 0, pageSize: PAGE_SIZE })
         if (result.success && result.data) {
           setFilteredArticles(result.data.data)
           setTotalResults(result.data.meta.pagination.total)
@@ -126,7 +126,7 @@ export const SearchBar: React.FC<SearchBarProps> = () => {
       setIsLoadingMore(true)
 
       try {
-        const result = await searchArticlesAction(debouncedQuery, nextPage, PAGE_SIZE)
+        const result = await searchArticlesAction({ searchTerm: debouncedQuery, page: nextPage, pageSize: PAGE_SIZE })
         if (result.success && result.data) {
           setFilteredArticles((prevArticles) => [...prevArticles, ...result.data.data])
           setCurrentPage(nextPage)

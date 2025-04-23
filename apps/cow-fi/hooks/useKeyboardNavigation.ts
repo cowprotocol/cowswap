@@ -1,4 +1,4 @@
-import { useState, useEffect, RefObject } from 'react'
+import { RefObject, useEffect, useState } from 'react'
 
 // Keyboard navigation types
 type NavigationDirection = 'up' | 'down'
@@ -34,7 +34,7 @@ export function useKeyboardNavigation(
   itemsLength: number,
   onSelect: (index: number) => void,
   onEscape: () => void,
-  containerRef: RefObject<HTMLDivElement>,
+  containerRef: RefObject<HTMLDivElement | null>,
 ): number {
   const [selectedIndex, setSelectedIndex] = useState(-1)
 

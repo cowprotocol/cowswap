@@ -7,7 +7,7 @@ import type { TradeType } from '@cowprotocol/widget-lib'
 import { Trans } from '@lingui/macro'
 import IMAGE_CARET from 'assets/icon/caret.svg'
 import SVG from 'react-inlinesvg'
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { ModalHeader } from 'modules/tokensList/pure/ModalHeader'
@@ -20,7 +20,7 @@ import * as styledEl from './styled'
 import { useGetTradeUrlParams } from '../../hooks/useGetTradeUrlParams'
 import { useTradeRouteContext } from '../../hooks/useTradeRouteContext'
 import { useGetTradeStateByRoute } from '../../hooks/useTradeState'
-import { getDefaultTradeRawState, TradeUrlParams } from '../../types/TradeRawState'
+import { getDefaultTradeRawState, TradeUrlParams } from '../../types'
 import { addChainIdToRoute, parameterizeTradeRoute } from '../../utils/parameterizeTradeRoute'
 
 interface MenuItemConfig {
@@ -63,7 +63,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
     })
   }, [menuItems, enabledTradeTypes])
 
-  const menuItemsElements: JSX.Element[] = useMemo(() => {
+  const menuItemsElements = useMemo(() => {
     return enabledItems.map((item) => {
       const isItemYield = item.route === Routes.YIELD
       const chainId = tradeContext.chainId
@@ -74,10 +74,10 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
 
       const tradeUrlParams = isCurrentPathYield
         ? ({
-            chainId,
-            inputCurrencyId: itemTradeState.inputCurrencyId || defaultState?.inputCurrencyId || null,
-            outputCurrencyId: itemTradeState.outputCurrencyId,
-          } as TradeUrlParams)
+          chainId,
+          inputCurrencyId: itemTradeState.inputCurrencyId || defaultState?.inputCurrencyId || null,
+          outputCurrencyId: itemTradeState.outputCurrencyId,
+        } as TradeUrlParams)
         : getTradeUrlParams(item)
 
       const routePath =

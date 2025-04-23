@@ -1,3 +1,5 @@
+import { ReactElement } from 'react'
+
 import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -9,7 +11,7 @@ import * as styledEl from './styled'
 
 export type Props = { order: ParsedOrder }
 
-export function FeeField({ order }: Props): JSX.Element | null {
+export function FeeField({ order }: Props): ReactElement | null {
   const { totalFee } = order.executionData
   const feeToken = getFeeToken(order)
 

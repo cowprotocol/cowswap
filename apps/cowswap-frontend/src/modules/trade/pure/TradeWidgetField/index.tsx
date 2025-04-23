@@ -1,5 +1,6 @@
-import { renderTooltip } from '@cowprotocol/ui'
-import { HelpTooltip } from '@cowprotocol/ui'
+import { ReactElement } from 'react'
+
+import { HelpTooltip, renderTooltip } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 
@@ -9,7 +10,7 @@ export type TradeWidgetFieldError = { type: 'error' | 'warning'; text: string | 
 
 export interface TradeWidgetFieldProps {
   label: React.ReactNode
-  children?: JSX.Element
+  children?: ReactElement
   tooltip?: React.ReactNode | ((params: any) => React.ReactNode)
   error?: TradeWidgetFieldError
   className?: string

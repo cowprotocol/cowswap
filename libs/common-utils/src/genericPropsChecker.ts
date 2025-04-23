@@ -30,7 +30,7 @@ export function genericPropsChecker(prev: any, next: any): boolean {
       And we do it until we met not object value (primitive, array, function)
       */
       if (typeof nextValue === 'object' && !Array.isArray(nextValue) && nextValue !== null) {
-        // JSX.Element
+        // ReactElement
         if (JSX_ELEMENT_TYPE in nextValue) {
           return prevValue === nextValue
         }

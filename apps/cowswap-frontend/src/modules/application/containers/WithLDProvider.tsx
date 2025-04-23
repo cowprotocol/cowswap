@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react'
+import { JSX, PropsWithChildren } from 'react'
 
 import { LAUNCH_DARKLY_CLIENT_KEY } from '@cowprotocol/common-const'
 

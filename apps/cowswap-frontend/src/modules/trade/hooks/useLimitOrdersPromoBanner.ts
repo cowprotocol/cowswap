@@ -5,7 +5,7 @@ import { useCallback } from 'react'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
-import { useMatch } from 'react-router-dom'
+import { useMatch } from 'react-router'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 

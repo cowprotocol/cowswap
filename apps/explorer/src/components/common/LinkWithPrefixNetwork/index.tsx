@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Link, LinkProps } from 'react-router-dom'
+import { Link, LinkProps } from 'react-router'
 import { usePathPrefix } from 'state/network'
 
 interface LinkWithPrefixProps extends LinkProps {

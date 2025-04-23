@@ -4,7 +4,7 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 
 import { useNavigate } from 'common/hooks/useNavigate'

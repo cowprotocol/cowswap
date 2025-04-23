@@ -37,7 +37,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     !isPermitSupported && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
 
   const inputAmountIsNotSet = !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
-  const isFastQuote = tradeQuote.quoteParams?.priceQuality === PriceQuality.FAST
+  const isFastQuote = tradeQuote.fetchParams?.priceQuality === PriceQuality.FAST
 
   if (!isWrapUnwrap && tradeQuote.error) {
     return TradeFormValidation.QuoteErrors
@@ -80,7 +80,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       return TradeFormValidation.CurrencyNotSupported
     }
 
-    if (isFastQuote || !tradeQuote.response) {
+    if (isFastQuote || !tradeQuote.quote) {
       return TradeFormValidation.QuoteLoading
     }
 
