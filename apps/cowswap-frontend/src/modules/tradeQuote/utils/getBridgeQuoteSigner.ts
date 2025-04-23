@@ -13,7 +13,13 @@ export function getBridgeQuoteSigner(chainId: SupportedChainId): Wallet {
 
   if (cached) return cached
 
-  const quoteSigner = new Wallet(BRIDGE_QUOTE_PK, getRpcProvider(chainId)!)
+  const provider = getRpcProvider(chainId)
+
+  if (!provider) {
+    throw new Error(`No RPC provider available for chain ID: ${chainId}`)
+  }
+
+  const quoteSigner = new Wallet(BRIDGE_QUOTE_PK, provider)
 
   cache.set(chainId, quoteSigner)
 
