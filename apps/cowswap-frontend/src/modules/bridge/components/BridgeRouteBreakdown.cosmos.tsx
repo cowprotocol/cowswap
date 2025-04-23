@@ -176,7 +176,7 @@ const BridgeRouteWithAccordion = ({ props, isOpen = false }: { props: typeof def
       feeUsdTotalAmount={feeAmount} // Pass the feeAmount as USD amount to trigger BridgeAccordionSummary
       open={open}
       onToggle={() => setOpen(!open)}
-      bridgeEstimatedTime={props.estimatedTime / 60} // Convert seconds to minutes
+      bridgeEstimatedTime={props.estimatedTime / 60}
       bridgeProtocol={props.bridgeProvider}
       showBridgeUI={true}
     >
@@ -185,7 +185,6 @@ const BridgeRouteWithAccordion = ({ props, isOpen = false }: { props: typeof def
   )
 }
 
-// Styled container for trade form
 const TradeFormContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -231,7 +230,6 @@ const SwapConfirmation = () => {
   // Mock app data for TradeConfirmation
   const appData = 'CoW Bridge Referral'
 
-  // Additional styles for the added elements that match the provided screenshots
   const ConfirmationDetailsRow = styled.div`
     display: flex;
     justify-content: space-between;
@@ -541,7 +539,6 @@ const SwapForm = () => {
   )
 }
 
-// Export all fixtures
 export default {
   SwapForm,
   SwapConfirmation,
