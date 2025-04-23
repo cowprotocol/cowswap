@@ -41,6 +41,7 @@ export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletO
 
   const walletConnectionV2Option =
     ((!isInjectedMobileBrowser || isWidget) && <WalletConnectV2Option {...connectionProps} />) ?? null
+  // TODO: the Trezor connector is not working now and need to be repaired
   // const trezorOption = (!isInjectedMobileBrowser && !isMobile && <TrezorOption {...connectionProps} />) ?? null
   const injectedOption =
     (getIsInjected() && (
