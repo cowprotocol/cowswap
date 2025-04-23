@@ -18,7 +18,7 @@ import {
 export function DeadlineInput() {
   const { deadlineMilliseconds, customDeadlineTimestamp } = useAtomValue(limitOrdersSettingsAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
-  const currentDeadlineNode = useRef<HTMLButtonElement>()
+  const currentDeadlineNode = useRef<HTMLButtonElement>(undefined)
   const existingDeadline = useMemo(
     () => getLimitOrderDeadlines(deadlineMilliseconds).find((item) => item.value === deadlineMilliseconds),
     [deadlineMilliseconds],

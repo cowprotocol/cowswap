@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { ReactElement, useEffect, useRef, useState } from 'react'
 
-import { UI, CenteredDots, LongLoadText } from '@cowprotocol/ui'
+import { CenteredDots, LongLoadText, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import ms from 'ms.macro'
 import styled from 'styled-components/macro'
 
-import { useMediaQuery, upToMedium } from 'legacy/hooks/useMediaQuery'
+import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 const JUST_CLICKED_TIMEOUT = ms`1s`
 const LONG_TEXT_LENGTH = 20
@@ -46,11 +46,13 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
 `
 
 export interface TradeFormPrimaryButtonProps {
-  children: JSX.Element | string
+  children: ReactElement | string
   disabled?: boolean
   loading?: boolean
   id?: string
+
   onClick?(): void
+
   className?: string
 }
 

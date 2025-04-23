@@ -5,7 +5,7 @@ import { Command } from '@cowprotocol/types'
 
 import { useOrder } from 'legacy/state/orders/hooks'
 
-import { useOrderProgressBarV2Props } from 'common/hooks/orderProgressBarV2'
+import { useOrderProgressBarProps } from 'common/hooks/orderProgressBar'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 
 import { useNavigateToNewOrderCallback } from './useNavigateToNewOrderCallback'
@@ -15,7 +15,7 @@ export function useOrderSubmittedContent(chainId: SupportedChainId) {
   const { transactionHash } = useTradeConfirmState()
   const order = useOrder({ chainId, id: transactionHash || undefined })
 
-  const orderProgressBarV2Props = useOrderProgressBarV2Props(chainId, order)
+  const orderProgressBarProps = useOrderProgressBarProps(chainId, order)
 
   const navigateToNewOrderCallback = useNavigateToNewOrderCallback()
 
@@ -25,11 +25,11 @@ export function useOrderSubmittedContent(chainId: SupportedChainId) {
         chainId={chainId}
         hash={transactionHash || undefined}
         onDismiss={onDismiss}
-        activityDerivedState={orderProgressBarV2Props.activityDerivedState}
-        orderProgressBarV2Props={orderProgressBarV2Props}
+        activityDerivedState={orderProgressBarProps.activityDerivedState}
+        orderProgressBarProps={orderProgressBarProps}
         navigateToNewOrderCallback={navigateToNewOrderCallback}
       />
     ),
-    [chainId, transactionHash, orderProgressBarV2Props, navigateToNewOrderCallback],
+    [chainId, transactionHash, orderProgressBarProps, navigateToNewOrderCallback],
   )
 }

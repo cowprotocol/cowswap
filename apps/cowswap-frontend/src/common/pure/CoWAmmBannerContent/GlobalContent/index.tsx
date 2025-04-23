@@ -10,7 +10,7 @@ import * as styledEl from '../styled'
 import { CoWAmmBannerContext } from '../types'
 
 interface GlobalContentProps {
-  arrowBackgroundRef: RefObject<HTMLDivElement>
+  arrowBackgroundRef: RefObject<HTMLDivElement | null>
   context: CoWAmmBannerContext
   comparedProviders: LpTokenProvider[] | undefined
   children: ReactNode

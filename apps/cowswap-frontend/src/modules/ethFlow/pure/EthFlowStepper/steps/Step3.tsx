@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { ReactElement, useMemo } from 'react'
 
 import Checkmark from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import Exclamation from '@cowprotocol/assets/cow-swap/exclamation.svg'
@@ -105,7 +105,7 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, creation, refund, 
   const wontReceiveToken = !isFilled && (isExpired || isOrderRejected || isRefunding || isCanceling || isRefunded)
   const isSuccess = stepState === 'success'
 
-  let refundLink: JSX.Element | undefined
+  let refundLink: ReactElement | undefined
 
   if (cancellationHash && refundFailed !== false && !isFilled) {
     refundLink = (

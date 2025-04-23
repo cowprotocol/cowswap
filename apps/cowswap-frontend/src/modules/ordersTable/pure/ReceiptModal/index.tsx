@@ -1,3 +1,5 @@
+import { ReactElement } from 'react'
+
 import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
@@ -55,7 +57,7 @@ interface ReceiptProps {
 
 const FILLED_COMMON_TOOLTIP = 'How much of the order has been filled.'
 
-const tooltips: { [key: string]: string | JSX.Element } = {
+const tooltips: { [key: string]: string | ReactElement } = {
   LIMIT_PRICE: 'You will receive this price or better for your tokens.',
   EXECUTION_PRICE: 'An order’s actual execution price will vary based on the market price and network costs.',
   EXECUTES_AT:

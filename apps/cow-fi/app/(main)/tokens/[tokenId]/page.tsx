@@ -1,15 +1,11 @@
-'use server'
-
-import React from 'react'
-
-import { getTokenDetails as getTokenDetails, getTokensIds } from '../../../../services/tokens'
 import { CONFIG } from '@/const/meta'
+import { getTokenDetails, getTokensIds } from '../../../../services/tokens'
 
 import { TokenPageComponent } from '@/components/TokenPageComponent'
-import type { Metadata } from 'next'
-import type { TokenDetails } from '../../../../types'
 import { getPageMetadata } from '@/util/getPageMetadata'
+import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
+import type { TokenDetails } from '../../../../types'
 
 type Props = {
   params: Promise<{ tokenId: string }>

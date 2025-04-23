@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { ReactNode } from 'react'
+import { ReactElement, ReactNode } from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
 
@@ -42,7 +42,7 @@ export type AdvancedOrdersWidgetProps = {
   updaters?: ReactNode
   params: AdvancedOrdersWidgetParams
   mapCurrencyInfo?: (info: CurrencyInfo) => CurrencyInfo
-  confirmContent: JSX.Element
+  confirmContent: ReactElement
   children(warnings: ReactNode): ReactNode
 }
 

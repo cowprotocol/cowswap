@@ -1,5 +1,3 @@
-'use server'
-
 import { DaosPageComponent } from '@/components/DaosPageComponent'
 
 export default async function Page() {

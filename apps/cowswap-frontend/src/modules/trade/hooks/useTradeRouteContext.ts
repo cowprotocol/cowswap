@@ -5,13 +5,13 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useTradeState } from './useTradeState'
 
-import { getDefaultTradeRawState, TradeUrlParams } from '../types/TradeRawState'
+import { getDefaultTradeRawState, TradeUrlParams } from '../types'
 
 export function useTradeRouteContext(): TradeUrlParams {
   const { chainId: walletChainId } = useWalletInfo()
   const { state } = useTradeState()
   const derivedState = useDerivedTradeState()
-  const prevContextRef = useRef<TradeUrlParams>()
+  const prevContextRef = useRef<TradeUrlParams>(undefined)
 
   const { orderKind, inputCurrencyAmount, outputCurrencyAmount } = derivedState || {}
   const hasState = !!state

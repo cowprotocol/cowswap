@@ -1,3 +1,5 @@
+import { ReactElement } from 'react'
+
 import { isCowOrder } from '@cowprotocol/common-utils'
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -19,9 +21,10 @@ const OrderLinkWrapper = styled.div`
 interface TransactionContentWithLinkProps {
   transactionHash: string | undefined
   orderUid?: string
-  children?: JSX.Element
+  children?: ReactElement
   isEthFlow?: boolean
 }
+
 export function TransactionContentWithLink(props: TransactionContentWithLinkProps) {
   const { chainId } = useWalletInfo()
   const safeInfo = useGnosisSafeInfo()

@@ -1,3 +1,5 @@
+import { ReactElement } from 'react'
+
 import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -9,7 +11,7 @@ export function SideMenu({
 }: {
   longList?: boolean
   className?: string
-  children: JSX.Element
+  children: ReactElement
 }) {
   return (
     <Wrapper longList={longList} className={className}>
