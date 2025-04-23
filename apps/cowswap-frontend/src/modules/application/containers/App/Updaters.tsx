@@ -10,6 +10,8 @@ import {
 } from '@cowprotocol/tokens'
 import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
+import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
+
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { useBridgeSupportedNetworks } from 'modules/bridge'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances/updater/BalancesCombinedUpdater'
@@ -55,6 +57,7 @@ export function Updaters() {
 
   return (
     <>
+      <TradingSdkUpdater />
       <MultiCallUpdater chainId={sourceChainId} />
       <FeatureFlagsUpdater />
       <WalletUpdater standaloneMode={standaloneMode} />
