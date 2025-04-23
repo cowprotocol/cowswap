@@ -1,31 +1,40 @@
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
-import { OrderQuoteResponse, PriceQuality } from '@cowprotocol/cow-sdk'
+import { PriceQuality, QuoteAndPost, SupportedChainId, TradeParameters } from '@cowprotocol/cow-sdk'
 
-import { getQuote } from 'api/cowProtocol/api'
-import { FeeQuoteParams } from 'common/types'
+import { tradingSdk } from 'tradingSdk/tradingSdk'
+
+import { AppDataInfo } from 'modules/appData'
+
+import QuoteApiError, { mapOperatorErrorToQuoteError } from 'api/cowProtocol/errors/QuoteError'
+import { getIsOrderBookTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
+import { TradeQuoteFetchParams } from '../types'
 
-// Solves the problem of multiple requests
-const getFastQuote = onlyResolvesLast<OrderQuoteResponse>(getQuote)
-const getOptimalQuote = onlyResolvesLast<OrderQuoteResponse>(getQuote)
-
-export interface TradeQuoteFetchParams {
-  hasParamsChanged: boolean
-  priceQuality: PriceQuality
-  fetchStartTimestamp: number
-}
+const getQuote = tradingSdk.getQuote.bind(tradingSdk)
+const getFastQuote = onlyResolvesLast<QuoteAndPost>(getQuote)
+const getOptimalQuote = onlyResolvesLast<QuoteAndPost>(getQuote)
 
 export async function fetchAndProcessQuote(
-  { hasParamsChanged, priceQuality, fetchStartTimestamp }: TradeQuoteFetchParams,
-  quoteParams: FeeQuoteParams,
+  chainId: SupportedChainId,
+  fetchParams: TradeQuoteFetchParams,
+  quoteParams: TradeParameters,
+  appData: AppDataInfo['doc'] | undefined,
   tradeQuoteManager: TradeQuoteManager,
 ) {
-  tradeQuoteManager.setLoading(hasParamsChanged)
-
+  const { hasParamsChanged, priceQuality } = fetchParams
   const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
-  const requestParams = { ...quoteParams, priceQuality }
-  const request = isOptimalQuote ? getOptimalQuote(requestParams) : getFastQuote(requestParams)
+  const advancedSettings = {
+    quoteRequest: {
+      priceQuality,
+    },
+    appData: appData,
+  }
+
+  tradeQuoteManager.setLoading(hasParamsChanged)
+  const request = isOptimalQuote
+    ? getOptimalQuote(quoteParams, advancedSettings)
+    : getFastQuote(quoteParams, advancedSettings)
 
   try {
     const { cancelled, data } = await request
@@ -34,9 +43,24 @@ export async function fetchAndProcessQuote(
       return
     }
 
-    tradeQuoteManager.onResponse(data, requestParams, fetchStartTimestamp)
+    tradeQuoteManager.onResponse(data, fetchParams)
   } catch (error) {
-    console.log('[useGetQuote]:: fetchQuote error', error)
-    tradeQuoteManager.onError(error, requestParams)
+    const parsedError = parseError(error)
+
+    console.log('[useGetQuote]:: fetchQuote error', parsedError)
+
+    if (parsedError instanceof QuoteApiError) {
+      tradeQuoteManager.onError(parsedError, chainId, quoteParams, fetchParams)
+    }
   }
+}
+
+function parseError(error: Error): QuoteApiError | Error {
+  if (getIsOrderBookTypedError(error)) {
+    const errorObject = mapOperatorErrorToQuoteError(error.body)
+
+    return errorObject ? new QuoteApiError(errorObject) : error
+  }
+
+  return error
 }
