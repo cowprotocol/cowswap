@@ -57,7 +57,7 @@ const UNLOCK_SCREEN = {
   orderType: 'partially fillable',
   buttonText: 'Get started with limit orders',
   buttonLink:
-    'https://medium.com/@cow-protocol/cow-swap-improves-the-limit-order-experience-with-partially-fillable-limit-orders-45f19143e87d',
+    'https://cow.fi/learn/cow-swap-improves-the-limit-order-experience-with-partially-fillable-limit-orders',
 }
 
 export function LimitOrdersWidget() {
