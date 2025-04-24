@@ -97,7 +97,7 @@ export function ConnectTelegram() {
 
   const subscribeAccount = () => {
     const addSubscription = () => {
-      checkOrAddTgSubscription('add-tg-subscription')
+      checkOrAddTgSubscription('/add-tg-subscription')
     }
 
     if (!isTgSubscribed) {
