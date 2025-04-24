@@ -6,7 +6,7 @@
   ],
   "port": 5001,
   "exportPath": "../../build/cosmos",
-  "publicUrl": "",
+  "publicUrl": "./",
   "plugins": [
     "react-cosmos-plugin-vite"
   ],

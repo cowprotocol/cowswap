@@ -78,7 +78,7 @@ export default defineConfig(({ mode }) => {
   }
 
   return {
-    base: isCosmos ? '' : './',
+    base: isCosmos ? './' : './',
     define: {
       ...getReactProcessEnv(mode),
     },
