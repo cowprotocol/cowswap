@@ -28,9 +28,6 @@ import { useLabelsAndTooltips } from './useLabelsAndTooltips'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapDeadlineState } from '../../hooks/useSwapSettings'
 
-
-
-
 const CONFIRM_TITLE = 'Swap'
 const PRICE_UPDATE_INTERVAL = ms`30s`
 
@@ -44,8 +41,7 @@ export interface SwapConfirmModalProps {
 }
 
 export function SwapConfirmModal(props: SwapConfirmModalProps) {
-  const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade } =
-    props
+  const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade } = props
 
   const { account, chainId } = useWalletInfo()
   const { ensName } = useWalletDetails()
@@ -68,9 +64,9 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
       let normalisedAddress
 
       if (getIsNativeToken(current)) {
-        normalisedAddress = NATIVE_CURRENCY_ADDRESS[current.chainId]
+        normalisedAddress = NATIVE_CURRENCY_ADDRESS[current.chainId].toLowerCase()
       } else {
-        normalisedAddress = current.address
+        normalisedAddress = current.address.toLowerCase()
       }
 
       const balance = balances[normalisedAddress]
