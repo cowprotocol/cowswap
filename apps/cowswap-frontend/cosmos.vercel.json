@@ -4,5 +4,8 @@
             "source": "/(.*)",
             "destination": "/index.html"
         }
-    ]
+    ],
+    "buildCommand": "cd ../../ && yarn build:cosmos",
+    "outputDirectory": "../../build/cosmos",
+    "installCommand": "cd ../../ && yarn"
 }
