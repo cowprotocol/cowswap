@@ -24,6 +24,7 @@ import { useLabelsAndTooltips } from './useLabelsAndTooltips'
 
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapDeadlineState } from '../../hooks/useSwapSettings'
+import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 
 const CONFIRM_TITLE = 'Swap'
 const PRICE_UPDATE_INTERVAL = ms`30s`
@@ -35,12 +36,10 @@ export interface SwapConfirmModalProps {
   outputCurrencyInfo: CurrencyPreviewInfo
   priceImpact: PriceImpact
   recipient?: string | null
-  hasEnoughWrappedBalanceForSwap: boolean
 }
 
 export function SwapConfirmModal(props: SwapConfirmModalProps) {
-  const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade, hasEnoughWrappedBalanceForSwap } =
-    props
+  const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade } = props
 
   const { account, chainId } = useWalletInfo()
   const { ensName } = useWalletDetails()
@@ -54,13 +53,19 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
   const submittedContent = useOrderSubmittedContent(chainId)
   const labelsAndTooltips = useLabelsAndTooltips()
 
+  const primaryFormValidation = useGetTradeFormValidation()
+
+  // Selling ETH is allowed in Swap
+  const isPrimaryValidationPassed =
+    !primaryFormValidation || primaryFormValidation === TradeFormValidation.SellNativeToken
+
   const buttonText = useMemo(() => {
-    if (!hasEnoughWrappedBalanceForSwap) {
+    if (!isPrimaryValidationPassed) {
       const { amount } = inputCurrencyInfo
       return `Insufficient ${amount?.currency?.symbol || 'token'} balance`
     }
     return 'Confirm Swap'
-  }, [hasEnoughWrappedBalanceForSwap, inputCurrencyInfo])
+  }, [isPrimaryValidationPassed, inputCurrencyInfo])
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
@@ -72,7 +77,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={doTrade}
         onDismiss={tradeConfirmActions.onDismiss}
-        isConfirmDisabled={!hasEnoughWrappedBalanceForSwap}
+        isConfirmDisabled={!isPrimaryValidationPassed}
         priceImpact={priceImpact}
         buttonText={buttonText}
         recipient={recipient}
