@@ -24,10 +24,7 @@ const analyzeBundle = process.env.ANALYZE_BUNDLE === 'true'
 const analyzeBundleTemplate: TemplateType = (process.env.ANALYZE_BUNDLE_TEMPLATE as TemplateType) || 'treemap' //  "sunburst" | "treemap" | "network" | "raw-data" | "list";
 
 export default defineConfig(({ mode }) => {
-  const isCosmos =
-    process.env.npm_lifecycle_event?.startsWith('cosmos') ||
-    process.env.npm_lifecycle_event?.includes('cosmos:') ||
-    process.env.npm_lifecycle_event?.includes(':cosmos')
+  const isCosmos = process.env.COSMOS_EXPORT === 'true'
 
   const plugins = [
     nodePolyfills({

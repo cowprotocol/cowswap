@@ -9,7 +9,7 @@
     "patch-package": "npx patch-package",
     "cosmos:clear": "rm -rf ./public/cosmos",
     "cosmos:run": "yarn run _cosmos:run",
-    "build:cosmos": "npx cross-env NODE_ENV=development npx cosmos-export",
+    "build:cosmos": "npx cross-env NODE_ENV=development COSMOS_EXPORT=true npx cosmos-export",
     "_cosmos:run": "yarn cosmos:clear && npx cosmos"
   },
   "browser": {
