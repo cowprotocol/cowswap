@@ -6,6 +6,7 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
+import { useHookStateDiff } from 'modules/hooksStore/hooks/useStateDiff'
 import { useTradeState, useTradeNavigate } from 'modules/trade'
 
 import { useAddHook } from '../../hooks/useAddHook'
@@ -37,6 +38,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
   const tradeNavigate = useTradeNavigate()
   const isDarkMode = useIsDarkMode()
   const balancesDiff = useHookBalancesDiff(isPreHook, hookToEditDetails?.uuid)
+  const stateDiff = useHookStateDiff(isPreHook, hookToEditDetails?.uuid)
 
   const { inputCurrencyId = null, outputCurrencyId = null } = tradeState.state || {}
   const signer = useMemo(() => provider?.getSigner(), [provider])
@@ -52,6 +54,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
       isPreHook,
       isDarkMode,
       balancesDiff,
+      stateDiff,
       editHook(...args) {
         editHook(...args)
         onDismiss()
@@ -83,6 +86,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
     isDarkMode,
     orderParams,
     balancesDiff,
+    stateDiff,
   ])
 
   const dappProps = useMemo(() => ({ context, dapp, isPreHook }), [context, dapp, isPreHook])
