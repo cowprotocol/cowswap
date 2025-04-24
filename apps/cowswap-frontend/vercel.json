@@ -1,10 +1,5 @@
 {
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
+  "rewrites": [],
   "redirects": [
     {
       "source": "/((?!#|.*[\\w\\d\\.-]\\.\\w{2,15}$).+)",
