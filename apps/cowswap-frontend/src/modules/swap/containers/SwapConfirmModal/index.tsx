@@ -1,5 +1,7 @@
 import { useMemo } from 'react'
 
+import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { NATIVE_CURRENCY_ADDRESS } from '@cowprotocol/cow-sdk'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
@@ -7,6 +9,7 @@ import ms from 'ms.macro'
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useAppData } from 'modules/appData'
+import { useTokensBalancesCombined } from 'modules/combinedBalances/hooks/useTokensBalancesCombined'
 import {
   TradeBasicConfirmDetails,
   TradeConfirmation,
@@ -24,7 +27,9 @@ import { useLabelsAndTooltips } from './useLabelsAndTooltips'
 
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapDeadlineState } from '../../hooks/useSwapSettings'
-import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+
+
+
 
 const CONFIRM_TITLE = 'Swap'
 const PRICE_UPDATE_INTERVAL = ms`30s`
@@ -39,7 +44,8 @@ export interface SwapConfirmModalProps {
 }
 
 export function SwapConfirmModal(props: SwapConfirmModalProps) {
-  const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade } = props
+  const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade } =
+    props
 
   const { account, chainId } = useWalletInfo()
   const { ensName } = useWalletDetails()
@@ -53,19 +59,36 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
   const submittedContent = useOrderSubmittedContent(chainId)
   const labelsAndTooltips = useLabelsAndTooltips()
 
-  const primaryFormValidation = useGetTradeFormValidation()
+  const { values: balances } = useTokensBalancesCombined()
 
-  // Selling ETH is allowed in Swap
-  const isPrimaryValidationPassed =
-    !primaryFormValidation || primaryFormValidation === TradeFormValidation.SellNativeToken
+  const disableConfirm = useMemo(() => {
+    const current = inputCurrencyInfo?.amount?.currency
+
+    if (current) {
+      let normalisedAddress
+
+      if (getIsNativeToken(current)) {
+        normalisedAddress = NATIVE_CURRENCY_ADDRESS[current.chainId]
+      } else {
+        normalisedAddress = current.address
+      }
+
+      const balance = balances[normalisedAddress]
+      const isBalanceEnough = balance ? inputCurrencyInfo?.amount?.lessThan(balance.toString()) : true
+
+      return Boolean(isBalanceEnough)
+    }
+
+    return true
+  }, [balances, inputCurrencyInfo])
 
   const buttonText = useMemo(() => {
-    if (!isPrimaryValidationPassed) {
+    if (disableConfirm) {
       const { amount } = inputCurrencyInfo
       return `Insufficient ${amount?.currency?.symbol || 'token'} balance`
     }
     return 'Confirm Swap'
-  }, [isPrimaryValidationPassed, inputCurrencyInfo])
+  }, [disableConfirm, inputCurrencyInfo])
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
@@ -77,7 +100,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={doTrade}
         onDismiss={tradeConfirmActions.onDismiss}
-        isConfirmDisabled={!isPrimaryValidationPassed}
+        isConfirmDisabled={disableConfirm}
         priceImpact={priceImpact}
         buttonText={buttonText}
         recipient={recipient}
