@@ -24,6 +24,11 @@ const analyzeBundle = process.env.ANALYZE_BUNDLE === 'true'
 const analyzeBundleTemplate: TemplateType = (process.env.ANALYZE_BUNDLE_TEMPLATE as TemplateType) || 'treemap' //  "sunburst" | "treemap" | "network" | "raw-data" | "list";
 
 export default defineConfig(({ mode }) => {
+  const isCosmos =
+    process.env.npm_lifecycle_event?.startsWith('cosmos') ||
+    process.env.npm_lifecycle_event?.includes('cosmos:') ||
+    process.env.npm_lifecycle_event?.includes(':cosmos')
+
   const plugins = [
     nodePolyfills({
       exclude: allNodeDeps.filter((dep) => !nodeDepsToInclude.includes(dep)),
@@ -45,17 +50,23 @@ export default defineConfig(({ mode }) => {
       cwd: 'apps/cowswap-frontend',
     }),
     svgr(),
-    VitePWA({
-      injectRegister: null,
-      strategies: 'injectManifest',
-      srcDir: 'src',
-      filename: 'service-worker.ts',
-      minify: true,
-      injectManifest: {
-        globPatterns: ['**/*.{js,css,html,png,jpg,svg,json,woff,woff2,md}'],
-      },
-    }),
   ]
+
+  // Only add PWA plugin when not building for Cosmos
+  if (!isCosmos) {
+    plugins.push(
+      VitePWA({
+        injectRegister: null,
+        strategies: 'injectManifest',
+        srcDir: 'src',
+        filename: 'service-worker.ts',
+        minify: true,
+        injectManifest: {
+          globPatterns: ['**/*.{js,css,html,png,jpg,svg,json,woff,woff2,md}'],
+        },
+      }),
+    )
+  }
 
   if (analyzeBundle) {
     plugins.push(
