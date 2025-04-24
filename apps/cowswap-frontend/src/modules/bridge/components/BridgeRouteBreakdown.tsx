@@ -35,6 +35,7 @@ import {
   StopTitle,
   StopsInfo,
   TokenFlowContainer,
+  SectionContent,
   Wrapper,
 } from './styled'
 
@@ -113,6 +114,7 @@ export interface BridgeRouteBreakdownProps {
 
   // Display options
   hideBridgeFlowFiatAmount?: boolean
+  hideRouteHeader?: boolean
 
   // Accordion functionality
   /**
@@ -134,6 +136,21 @@ export interface BridgeRouteBreakdownProps {
    * The parent component should use this to toggle the isExpanded state.
    */
   onExpandToggle?: () => void
+
+  // Section-level accordion functionality
+  /** Swap section can be collapsed */
+  isSwapSectionCollapsible?: boolean
+  /** Current expanded state for swap section */
+  isSwapSectionExpanded?: boolean
+  /** Callback when swap section header is clicked */
+  onSwapSectionToggle?: () => void
+
+  /** Bridge section can be collapsed */
+  isBridgeSectionCollapsible?: boolean
+  /** Current expanded state for bridge section */
+  isBridgeSectionExpanded?: boolean
+  /** Callback when bridge section header is clicked */
+  onBridgeSectionToggle?: () => void
 }
 
 // Toggle arrow component for the collapsible header
@@ -193,6 +210,25 @@ const ClickableRouteHeader = styled(RouteHeader)`
   }
 `
 
+// Clickable version of StopTitle
+const ClickableStopTitle = styled(StopTitle)<{ isCollapsible?: boolean }>`
+  /* Preserve original StopTitle styling, just add clickable behavior */
+  cursor: ${({ isCollapsible }) => (isCollapsible ? 'pointer' : 'default')};
+  position: relative; /* For absolute positioning of the toggle icon */
+
+  &:hover {
+    opacity: ${({ isCollapsible }) => (isCollapsible ? 0.8 : 1)};
+  }
+`
+
+// Absolutely positioned toggle icon container (to avoid affecting layout)
+const ToggleIconContainer = styled.div`
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+`
+
 /**
  * BridgeRouteBreakdown component displays the details of a bridge transaction
  *
@@ -230,9 +266,17 @@ export function BridgeRouteBreakdown({
   sourceChainId = SupportedChainId.MAINNET, // Default to Ethereum mainnet
   tokenLogoSize = 18,
   hideBridgeFlowFiatAmount = false,
+  hideRouteHeader = false,
   isCollapsible = false, // Default to non-collapsible mode
   isExpanded = true, // Default to expanded if collapsible
   onExpandToggle = () => {}, // Default no-op
+  // Section-level defaults
+  isSwapSectionCollapsible = false,
+  isSwapSectionExpanded = true,
+  onSwapSectionToggle = () => {},
+  isBridgeSectionCollapsible = false,
+  isBridgeSectionExpanded = true,
+  onBridgeSectionToggle = () => {},
 }: BridgeRouteBreakdownProps) {
   // Create token objects for the swap tokens
   const sellTokenObj = new TokenWithLogo(
@@ -351,105 +395,226 @@ export function BridgeRouteBreakdown({
   // Standard rendering (either not collapsible or in expanded state) - shows full content
   return (
     <Wrapper>
-      {renderHeader()}
+      {!hideRouteHeader && renderHeader()}
 
-      <StopTitle>
+      {/* Swap Section Header - Can be clicked if collapsible */}
+      <ClickableStopTitle
+        isCollapsible={isSwapSectionCollapsible}
+        onClick={isSwapSectionCollapsible ? onSwapSectionToggle : undefined}
+      >
         <StopNumberCircle>1</StopNumberCircle>
         <b>
           <span>Swap on </span>
           <ProtocolIcons showOnlyFirst size={21} secondProtocol={bridgeProvider} />
           <span> CoW Protocol</span>
         </b>
-      </StopTitle>
-
-      <ConfirmDetailsItem label="" withTimelineDot>
-        <TokenFlowContainer>
-          <AmountWithTokenIcon>
-            <TokenLogo token={sellTokenObj} size={tokenLogoSize} />
-            {sellAmount} {sellToken}
-          </AmountWithTokenIcon>
-          <ArrowIcon>→</ArrowIcon>
-          <AmountWithTokenIcon>
-            <TokenLogo token={buyTokenObj} size={tokenLogoSize} />
-            {buyAmount} {buyToken} on {sourceChainName}
-          </AmountWithTokenIcon>
-        </TokenFlowContainer>
-      </ConfirmDetailsItem>
-
-      <ConfirmDetailsItem
-        label={
-          <>
-            Swap fee <InfoTooltip content="No fee for order placement!" size={14} />
-          </>
-        }
-        withTimelineDot
-        contentTextColor={getFeeTextColor('FREE')}
-      >
-        FREE
-      </ConfirmDetailsItem>
-
-      <ConfirmDetailsItem
-        label={
-          <>
-            Network cost (est.){' '}
-            <InfoTooltip
-              content="This is the cost of settling your order on-chain, including gas and any LP fees. CoW Swap will try to lower this cost where possible."
-              size={14}
-            />
-          </>
-        }
-        withTimelineDot
-      >
-        {networkCost} {sellToken}&nbsp;
-        {networkCostUsdValue && (
-          <i>
-            (<FiatAmount amount={networkCostUsdValue} />)
-          </i>
+        {isSwapSectionCollapsible && (
+          <ToggleIconContainer>
+            <ToggleArrow isOpen={isSwapSectionExpanded}>
+              <SVG src={CarretIcon} title={isSwapSectionExpanded ? 'Close' : 'Open'} />
+            </ToggleArrow>
+          </ToggleIconContainer>
         )}
-      </ConfirmDetailsItem>
+      </ClickableStopTitle>
 
-      {swapExpectedToReceive && (
+      {/* Swap Section Content - Can be collapsed */}
+      <SectionContent isExpanded={isSwapSectionExpanded}>
+        <ConfirmDetailsItem label="" withTimelineDot>
+          <TokenFlowContainer>
+            <AmountWithTokenIcon>
+              <TokenLogo token={sellTokenObj} size={tokenLogoSize} />
+              {sellAmount} {sellToken}
+            </AmountWithTokenIcon>
+            <ArrowIcon>→</ArrowIcon>
+            <AmountWithTokenIcon>
+              <TokenLogo token={buyTokenObj} size={tokenLogoSize} />
+              {buyAmount} {buyToken} on {sourceChainName}
+            </AmountWithTokenIcon>
+          </TokenFlowContainer>
+        </ConfirmDetailsItem>
+
         <ConfirmDetailsItem
-          withTimelineDot
           label={
             <>
-              Expected to receive{' '}
+              Swap fee <InfoTooltip content="No fee for order placement!" size={14} />
+            </>
+          }
+          withTimelineDot
+          contentTextColor={getFeeTextColor('FREE')}
+        >
+          FREE
+        </ConfirmDetailsItem>
+
+        <ConfirmDetailsItem
+          label={
+            <>
+              Network cost (est.){' '}
               <InfoTooltip
-                content={`The estimated amount you'll receive after estimated network costs and the max slippage setting (${swapMaxSlippage}%).`}
+                content="This is the cost of settling your order on-chain, including gas and any LP fees. CoW Swap will try to lower this cost where possible."
                 size={14}
               />
             </>
           }
+          withTimelineDot
         >
-          <AmountWithTokenIcon>
-            {swapExpectedToReceive} {buyToken}
-            {swapExpectedReceiveUsd && (
-              <i>
-                (<FiatAmount amount={swapExpectedReceiveUsd} />)
-              </i>
-            )}
-          </AmountWithTokenIcon>
+          {networkCost} {sellToken}&nbsp;
+          {networkCostUsdValue && (
+            <i>
+              (<FiatAmount amount={networkCostUsdValue} />)
+            </i>
+          )}
         </ConfirmDetailsItem>
-      )}
 
-      {swapMaxSlippage && (
+        {swapExpectedToReceive && (
+          <ConfirmDetailsItem
+            withTimelineDot
+            label={
+              <>
+                Expected to receive{' '}
+                <InfoTooltip
+                  content={`The estimated amount you'll receive after estimated network costs and the max slippage setting (${swapMaxSlippage}%).`}
+                  size={14}
+                />
+              </>
+            }
+          >
+            <AmountWithTokenIcon>
+              {swapExpectedToReceive} {buyToken}
+              {swapExpectedReceiveUsd && (
+                <i>
+                  (<FiatAmount amount={swapExpectedReceiveUsd} />)
+                </i>
+              )}
+            </AmountWithTokenIcon>
+          </ConfirmDetailsItem>
+        )}
+
+        {swapMaxSlippage && (
+          <ConfirmDetailsItem
+            label={
+              <>
+                Max. swap slippage{' '}
+                <InfoTooltip
+                  content="CoW Swap dynamically adjusts your slippage tolerance to ensure your trade executes quickly while still getting the best price. Trades are protected from MEV, so your slippage can't be exploited!"
+                  size={14}
+                />
+              </>
+            }
+            withTimelineDot
+          >
+            {swapMaxSlippage}%
+          </ConfirmDetailsItem>
+        )}
+
+        {swapMinReceive && (
+          <ConfirmDetailsItem
+            label={
+              <ReceiveAmountTitle>
+                <b>Min. to receive</b>
+              </ReceiveAmountTitle>
+            }
+          >
+            <b>
+              <AmountWithTokenIcon>
+                <TokenLogo token={buyTokenObj} size={tokenLogoSize} />
+                {swapMinReceive} {buyToken}
+                {swapMinReceiveUsd && (
+                  <i>
+                    (<FiatAmount amount={swapMinReceiveUsd} />)
+                  </i>
+                )}
+              </AmountWithTokenIcon>
+            </b>
+          </ConfirmDetailsItem>
+        )}
+      </SectionContent>
+
+      <DividerHorizontal margin="8px 0 4px" />
+
+      {/* Bridge Section Header - Can be clicked if collapsible */}
+      <ClickableStopTitle
+        isCollapsible={isBridgeSectionCollapsible}
+        onClick={isBridgeSectionCollapsible ? onBridgeSectionToggle : undefined}
+      >
+        <StopNumberCircle>2</StopNumberCircle>
+        <b>
+          <span>Bridge via </span>
+          <ProtocolIcons showOnlySecond size={21} secondProtocol={bridgeProvider} />
+          <span> {bridgeProvider.title}</span>
+        </b>
+        {isBridgeSectionCollapsible && (
+          <ToggleIconContainer>
+            <ToggleArrow isOpen={isBridgeSectionExpanded}>
+              <SVG src={CarretIcon} title={isBridgeSectionExpanded ? 'Close' : 'Open'} />
+            </ToggleArrow>
+          </ToggleIconContainer>
+        )}
+      </ClickableStopTitle>
+
+      {/* Bridge Section Content - Can be collapsed */}
+      <SectionContent isExpanded={isBridgeSectionExpanded}>
+        <ConfirmDetailsItem label="" withTimelineDot>
+          <TokenFlowContainer>
+            <AmountWithTokenIcon>
+              <TokenLogo token={sourceTokenObj} size={tokenLogoSize} />
+              {bridgeAmount} {bridgeToken}
+            </AmountWithTokenIcon>
+            <ArrowIcon>→</ArrowIcon>
+            <AmountWithTokenIcon>
+              <TokenLogo token={destTokenObj} size={tokenLogoSize} />
+              {bridgeReceiveAmount} {bridgeToken} on {recipientChainName}
+              {hideBridgeFlowFiatAmount || (
+                <>
+                  {bridgeReceiveAmountUsd && (
+                    <i>
+                      (<FiatAmount amount={bridgeReceiveAmountUsd} />)
+                    </i>
+                  )}
+                </>
+              )}
+            </AmountWithTokenIcon>
+          </TokenFlowContainer>
+        </ConfirmDetailsItem>
+
         <ConfirmDetailsItem
           label={
             <>
-              Max. swap slippage{' '}
+              Bridge fee <InfoTooltip content="The fee for the bridge transaction." size={14} />
+            </>
+          }
+          withTimelineDot
+          contentTextColor={getFeeTextColor(bridgeFee)}
+        >
+          {isFreeSwapFee(bridgeFee) ? 'FREE' : `$${bridgeFee}`}
+        </ConfirmDetailsItem>
+
+        <ConfirmDetailsItem
+          label={
+            <>
+              Max. bridge slippage{' '}
               <InfoTooltip
-                content="CoW Swap dynamically adjusts your slippage tolerance to ensure your trade executes quickly while still getting the best price. Trades are protected from MEV, so your slippage can't be exploited!"
+                content="Your transaction will revert if the price changes unfavorably by more than this percentage."
                 size={14}
               />
             </>
           }
           withTimelineDot
         >
-          {swapMaxSlippage}%
+          {maxBridgeSlippage}%
         </ConfirmDetailsItem>
-      )}
 
-      {swapMinReceive && (
+        <ConfirmDetailsItem
+          label={
+            <>
+              Est. bridge time{' '}
+              <InfoTooltip content="The estimated time for the bridge transaction to complete." size={14} />
+            </>
+          }
+          withTimelineDot
+        >
+          ~ {displayTime(estimatedTime * 1000, true)}
+        </ConfirmDetailsItem>
+
         <ConfirmDetailsItem
           label={
             <ReceiveAmountTitle>
@@ -459,132 +624,39 @@ export function BridgeRouteBreakdown({
         >
           <b>
             <AmountWithTokenIcon>
-              <TokenLogo token={buyTokenObj} size={tokenLogoSize} />
-              {swapMinReceive} {buyToken}
-              {swapMinReceiveUsd && (
+              <TokenLogo token={destTokenObj} size={tokenLogoSize} />
+              {bridgeReceiveAmount} {bridgeToken}
+              {bridgeReceiveAmountUsd && (
                 <i>
-                  (<FiatAmount amount={swapMinReceiveUsd} />)
+                  (<FiatAmount amount={bridgeReceiveAmountUsd} />)
                 </i>
               )}
             </AmountWithTokenIcon>
           </b>
         </ConfirmDetailsItem>
-      )}
 
-      <DividerHorizontal margin="8px 0 4px" />
-
-      <StopTitle>
-        <StopNumberCircle>2</StopNumberCircle>
-        <b>
-          <span>Bridge via </span>
-          <ProtocolIcons showOnlySecond size={21} secondProtocol={bridgeProvider} />
-          <span> {bridgeProvider.title}</span>
-        </b>
-      </StopTitle>
-
-      <ConfirmDetailsItem label="" withTimelineDot>
-        <TokenFlowContainer>
-          <AmountWithTokenIcon>
-            <TokenLogo token={sourceTokenObj} size={tokenLogoSize} />
-            {bridgeAmount} {bridgeToken}
-          </AmountWithTokenIcon>
-          <ArrowIcon>→</ArrowIcon>
-          <AmountWithTokenIcon>
-            <TokenLogo token={destTokenObj} size={tokenLogoSize} />
-            {bridgeReceiveAmount} {bridgeToken} on {recipientChainName}
-            {hideBridgeFlowFiatAmount || (
-              <>
-                {bridgeReceiveAmountUsd && (
-                  <i>
-                    (<FiatAmount amount={bridgeReceiveAmountUsd} />)
-                  </i>
-                )}
-              </>
+        <ConfirmDetailsItem
+          label={
+            <>
+              Recipient{' '}
+              <InfoTooltip content="The address that will receive the tokens on the destination chain." size={14} />
+            </>
+          }
+          withTimelineDot
+          isLast={true}
+        >
+          <RecipientWrapper>
+            <NetworkLogo chainId={recipientChainId} />
+            {isAddress(recipient) ? (
+              <Link href={getExplorerLink(recipientChainId, recipient, ExplorerDataType.ADDRESS)} target="_blank">
+                {shortenAddress(recipient)} ↗
+              </Link>
+            ) : (
+              recipient
             )}
-          </AmountWithTokenIcon>
-        </TokenFlowContainer>
-      </ConfirmDetailsItem>
-
-      <ConfirmDetailsItem
-        label={
-          <>
-            Bridge fee <InfoTooltip content="The fee for the bridge transaction." size={14} />
-          </>
-        }
-        withTimelineDot
-        contentTextColor={getFeeTextColor(bridgeFee)}
-      >
-        {isFreeSwapFee(bridgeFee) ? 'FREE' : `$${bridgeFee}`}
-      </ConfirmDetailsItem>
-
-      <ConfirmDetailsItem
-        label={
-          <>
-            Max. bridge slippage{' '}
-            <InfoTooltip
-              content="Your transaction will revert if the price changes unfavorably by more than this percentage."
-              size={14}
-            />
-          </>
-        }
-        withTimelineDot
-      >
-        {maxBridgeSlippage}%
-      </ConfirmDetailsItem>
-
-      <ConfirmDetailsItem
-        label={
-          <>
-            Est. bridge time{' '}
-            <InfoTooltip content="The estimated time for the bridge transaction to complete." size={14} />
-          </>
-        }
-        withTimelineDot
-      >
-        ~ {displayTime(estimatedTime * 1000, true)}
-      </ConfirmDetailsItem>
-
-      <ConfirmDetailsItem
-        label={
-          <ReceiveAmountTitle>
-            <b>Min. to receive</b>
-          </ReceiveAmountTitle>
-        }
-      >
-        <b>
-          <AmountWithTokenIcon>
-            <TokenLogo token={destTokenObj} size={tokenLogoSize} />
-            {bridgeReceiveAmount} {bridgeToken}
-            {bridgeReceiveAmountUsd && (
-              <i>
-                (<FiatAmount amount={bridgeReceiveAmountUsd} />)
-              </i>
-            )}
-          </AmountWithTokenIcon>
-        </b>
-      </ConfirmDetailsItem>
-
-      <ConfirmDetailsItem
-        label={
-          <>
-            Recipient{' '}
-            <InfoTooltip content="The address that will receive the tokens on the destination chain." size={14} />
-          </>
-        }
-        withTimelineDot
-        isLast={true}
-      >
-        <RecipientWrapper>
-          <NetworkLogo chainId={recipientChainId} />
-          {isAddress(recipient) ? (
-            <Link href={getExplorerLink(recipientChainId, recipient, ExplorerDataType.ADDRESS)} target="_blank">
-              {shortenAddress(recipient)} ↗
-            </Link>
-          ) : (
-            recipient
-          )}
-        </RecipientWrapper>
-      </ConfirmDetailsItem>
+          </RecipientWrapper>
+        </ConfirmDetailsItem>
+      </SectionContent>
     </Wrapper>
   )
 }
