@@ -12,8 +12,6 @@ export function useHookStateDiff(isPreHook: boolean, hookToEditUid?: string): St
   const { data } = useTenderlyBundleSimulation()
   const { preHooks, postHooks } = useHooks()
 
-  console.log({ tenderlySimulationData: data })
-
   const preHookStateDiff = useMemo(() => {
     if (!data || !preHooks.length) return EMPTY_STATE_DIFF
 
