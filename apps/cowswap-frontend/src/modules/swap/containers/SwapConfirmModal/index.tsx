@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
-import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { NATIVE_CURRENCY_ADDRESS } from '@cowprotocol/cow-sdk'
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 
@@ -61,18 +61,16 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
     const current = inputCurrencyInfo?.amount?.currency
 
     if (current) {
-      let normalisedAddress
-
-      if (getIsNativeToken(current)) {
-        normalisedAddress = NATIVE_CURRENCY_ADDRESS[current.chainId].toLowerCase()
-      } else {
-        normalisedAddress = current.address.toLowerCase()
-      }
-
+      const normalisedAddress = getCurrencyAddress(current).toLowerCase()
       const balance = balances[normalisedAddress]
-      const isBalanceEnough = balance ? inputCurrencyInfo?.amount?.lessThan(balance.toString()) : true
+      const balanceAsCurrencyAmount = CurrencyAmount.fromRawAmount(current, balance?.toString() ?? '0')
 
-      return Boolean(isBalanceEnough)
+      const isBalanceEnough = balanceAsCurrencyAmount
+        ? inputCurrencyInfo?.amount?.equalTo(balanceAsCurrencyAmount) ||
+          inputCurrencyInfo?.amount?.lessThan(balanceAsCurrencyAmount)
+        : false
+
+      return !isBalanceEnough
     }
 
     return true
