@@ -1,5 +1,7 @@
 import { AcrossBridgeProvider, BridgingSdk, TargetChainId } from '@cowprotocol/cow-sdk'
 
+import { orderBookApi } from 'cowSdk'
+
 import { getErc20Tokens } from './getErc20Tokens'
 import { tradingSdk } from './tradingSdk'
 
@@ -11,6 +13,7 @@ export const bridgingSdk = new BridgingSdk({
   providers: [acrossBridgeProvider],
   enableLogging: true,
   tradingSdk,
+  orderBookApi,
   async getErc20Decimals(chainId: TargetChainId, tokenAddress: string) {
     const tokens = await getErc20Tokens(chainId, [tokenAddress])
 
