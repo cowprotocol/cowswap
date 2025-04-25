@@ -26,14 +26,14 @@ export const PRICE_UPDATE_INTERVAL = ms`30s`
 const QUOTE_EXPIRATION_CHECK_INTERVAL = ms`2s`
 
 export function useTradeQuotePolling(isConfirmOpen = false) {
-  const { amount, fastQuote } = useAtomValue(tradeQuoteInputAtom)
+  const { amount, fastQuote, partiallyFillable } = useAtomValue(tradeQuoteInputAtom)
   const tradeQuote = useTradeQuote()
   const tradeQuoteRef = useRef(tradeQuote)
   tradeQuoteRef.current = tradeQuote
 
   const amountStr = amount?.quotient.toString()
   const { chainId } = useWalletInfo()
-  const { quoteParams, appData, inputCurrency } = useQuoteParams(amountStr) || {}
+  const { quoteParams, appData, inputCurrency } = useQuoteParams(amountStr, partiallyFillable) || {}
 
   const tradeQuoteManager = useTradeQuoteManager(inputCurrency && getCurrencyAddress(inputCurrency))
   const updateCurrencyAmount = useUpdateCurrencyAmount()

@@ -72,20 +72,6 @@ function compareAppDataWithoutQuoteData(a: AppDataInfo['doc'] | undefined, b: Ap
     return a === b
   }
 
-  // When environment is set in one appData and not in the other, we need to remove it
-  if ((a.environment && !b.environment) || (!a.environment && b.environment)) {
-    return (
-      removeQuoteMetadata({
-        ...a,
-        environment: undefined,
-      }) ===
-      removeQuoteMetadata({
-        ...b,
-        environment: undefined,
-      })
-    )
-  }
-
   return removeQuoteMetadata(a) === removeQuoteMetadata(b)
 }
 
@@ -94,7 +80,7 @@ function compareAppDataWithoutQuoteData(a: AppDataInfo['doc'] | undefined, b: Ap
  */
 function removeQuoteMetadata(appData: AppDataInfo['doc']): string {
   const { metadata: fullMetadata, ...rest } = appData
-  const { quote: _, referrer: _1, replacedOrder: _2, utm: _3, widget: _4, ...metadata } = fullMetadata
+  const { quote: _, ...metadata } = fullMetadata
   return JSON.stringify({ ...rest, metadata })
 }
 

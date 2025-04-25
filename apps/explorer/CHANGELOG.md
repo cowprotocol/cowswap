@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.45.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.45.0...explorer-v2.45.1) (2025-04-25)
+
+
+### Bug Fixes
+
+* **deps-update:** bump cytoscape and @types/cytoscape ([#5590](https://github.com/cowprotocol/cowswap/issues/5590)) ([6a83086](https://github.com/cowprotocol/cowswap/commit/6a83086473cb503aa8c69f5e79ccd0ac007f5a27))
+* **deps-update:** bump react-router-dom from 6.24.0 to 7.5.1 ([#5618](https://github.com/cowprotocol/cowswap/issues/5618)) ([2470bfa](https://github.com/cowprotocol/cowswap/commit/2470bfaf7ec0629223ea4dd5b42f090dd58a45df))
+* **explorer:** fix explorer deep links ([#5631](https://github.com/cowprotocol/cowswap/issues/5631)) ([90b5ae8](https://github.com/cowprotocol/cowswap/commit/90b5ae897a7f365ced1e1ca816a6c851b63a1994))
+
 ## [2.45.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.44.0...explorer-v2.45.0) (2025-03-27)
 
 
