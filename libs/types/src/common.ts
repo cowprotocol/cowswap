@@ -27,6 +27,7 @@ export type TokenInfo = {
   logoURI?: string
   tokens?: string[]
   lpTokenProvider?: LpTokenProvider
+  tags?: string[]
 }
 
 export enum LpTokenProvider {

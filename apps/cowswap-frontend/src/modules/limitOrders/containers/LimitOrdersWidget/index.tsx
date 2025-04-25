@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo } from 'react'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
 
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 
 import { Field } from 'legacy/state/types'
 
@@ -56,8 +56,7 @@ const UNLOCK_SCREEN = {
   subtitle: 'Get started!',
   orderType: 'partially fillable',
   buttonText: 'Get started with limit orders',
-  buttonLink:
-    'https://medium.com/@cow-protocol/cow-swap-improves-the-limit-order-experience-with-partially-fillable-limit-orders-45f19143e87d',
+  buttonLink: 'https://cow.fi/learn/cow-swap-improves-the-limit-order-experience-with-partially-fillable-limit-orders',
 }
 
 export function LimitOrdersWidget() {
@@ -90,7 +89,7 @@ export function LimitOrdersWidget() {
     [isSell, inputCurrencyAmount, outputCurrencyAmount],
   )
 
-  useSetTradeQuoteParams(quoteAmount)
+  useSetTradeQuoteParams({ amount: quoteAmount })
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,

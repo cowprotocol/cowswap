@@ -11,10 +11,6 @@ export const BaseCard = styled.div<{ noPadding?: boolean }>`
   position: relative;
 `
 
-BaseCard.defaultProps = {
-  noPadding: false,
-}
-
 export const DropdownTextCSS = css`
   color: ${Color.explorer_textPrimary};
   font-size: ${({ theme }): string => theme.fontSizeDefault};

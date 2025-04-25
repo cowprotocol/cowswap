@@ -19,7 +19,7 @@ const defaultProps = {
     ...activityDerivedStateMock,
     order,
   },
-  orderProgressBarV2Props: {
+  orderProgressBarProps: {
     chainId: SupportedChainId.MAINNET, isProgressBarSetup: false, showCancellationModal: () => {
       alert('Cancellation triggered!!')
     }

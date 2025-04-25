@@ -1,3 +1,5 @@
+import { ReactElement } from 'react'
+
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
@@ -14,12 +16,12 @@ import { TradeFormButtonContext, TradeFormValidation } from '../../types'
 import { TradeFormBlankButton } from '../TradeFormBlankButton'
 
 interface ButtonErrorConfig {
-  text: JSX.Element | string
+  text: ReactElement | string
   id?: string
 }
 
 interface ButtonCallback {
-  (context: TradeFormButtonContext, isDisabled?: boolean): JSX.Element | null
+  (context: TradeFormButtonContext, isDisabled?: boolean): ReactElement | null
 }
 
 const CompatibilityIssuesWarningWrapper = styled.div`

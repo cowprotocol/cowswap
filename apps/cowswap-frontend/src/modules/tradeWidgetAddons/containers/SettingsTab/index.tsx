@@ -134,7 +134,7 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
 }
 
 interface SettingsTabControllerProps {
-  buttonRef: RefObject<HTMLButtonElement>
+  buttonRef: RefObject<HTMLButtonElement | null>
   children: ReactElement
 }
 

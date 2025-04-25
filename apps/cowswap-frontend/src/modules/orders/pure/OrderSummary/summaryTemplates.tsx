@@ -1,6 +1,8 @@
+import { ReactElement } from 'react'
+
 export interface OrderSummaryTemplateProps {
-  inputAmount: JSX.Element
-  outputAmount: JSX.Element
+  inputAmount: ReactElement
+  outputAmount: ReactElement
 }
 
 export function SellForAtLeastTemplate({ inputAmount, outputAmount }: OrderSummaryTemplateProps) {

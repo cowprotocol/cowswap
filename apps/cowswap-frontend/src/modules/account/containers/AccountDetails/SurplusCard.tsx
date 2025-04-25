@@ -188,7 +188,7 @@ export function SurplusCard() {
           <small>{surplusUsdAmount && <FiatAmount amount={surplusUsdAmount} accurate={false} />}</small>
         </div>
         <div>
-          <ExternalLink href={'https://blog.cow.fi/announcing-cow-swap-surplus-notifications-f679c77702ea'}>
+          <ExternalLink href={'https://cow.fi/learn/announcing-cow-swap-surplus-notifications'}>
             Learn about surplus on CoW Swap ↗
           </ExternalLink>
         </div>

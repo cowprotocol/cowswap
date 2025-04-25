@@ -1,8 +1,6 @@
-'use server'
-
-import { getArticles, getCategories } from '../../../services/cms'
-import { ARTICLES_LARGE_PAGE_SIZE, FEATURED_ARTICLES_PAGE_SIZE } from '@/const/pagination'
 import { LearnPageComponent } from '@/components/LearnPageComponent'
+import { ARTICLES_LARGE_PAGE_SIZE, FEATURED_ARTICLES_PAGE_SIZE } from '@/const/pagination'
+import { getArticles, getCategories } from '../../../services/cms'
 
 export default async function LearnPage() {
   const articlesResponse = await getArticles({ pageSize: ARTICLES_LARGE_PAGE_SIZE })

@@ -5,7 +5,16 @@ const emptyTokens = [] as string[]
 
 export class TokenWithLogo extends Token {
   static fromToken(token: Token | TokenInfo, logoURI?: string): TokenWithLogo {
-    return new TokenWithLogo(logoURI, token.chainId, token.address, token.decimals, token.symbol, token.name)
+    return new TokenWithLogo(
+      logoURI,
+      token.chainId,
+      token.address,
+      token.decimals,
+      token.symbol,
+      token.name,
+      undefined, // bypassChecksum parameter
+      ('tags' in token && token.tags) || [],
+    )
   }
 
   constructor(
@@ -16,6 +25,7 @@ export class TokenWithLogo extends Token {
     symbol?: string,
     name?: string,
     bypassChecksum?: boolean,
+    public tags: string[] = [],
   ) {
     super(chainId, address, decimals, symbol, name, bypassChecksum)
   }
@@ -31,6 +41,8 @@ export class LpToken extends TokenWithLogo {
       token.decimals,
       token.symbol,
       token.name,
+      undefined,
+      ('tags' in token && token.tags) || [],
     )
   }
 
@@ -43,6 +55,7 @@ export class LpToken extends TokenWithLogo {
     symbol?: string,
     name?: string,
     bypassChecksum?: boolean,
+    public tags: string[] = [],
   ) {
     super(undefined, chainId, address, decimals, symbol, name, bypassChecksum)
   }

@@ -1,9 +1,9 @@
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { InlineBanner } from '@cowprotocol/ui'
+import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router'
 import styled from 'styled-components/macro'
 
 import { parameterizeTradeRoute, parameterizeTradeSearch, TradeUrlParams } from 'modules/trade'
@@ -63,7 +63,7 @@ export function TwapSuggestionBanner({
     })
 
   return (
-    <InlineBanner bannerType="alert" iconSize={32}>
+    <InlineBanner bannerType={StatusColorVariant.Alert} iconSize={32}>
       <strong>Minimize price impact with TWAP</strong>
       <p>
         The price impact is <b>{+priceImpact.toFixed(2)}%</b>. Consider breaking up your order using a{' '}

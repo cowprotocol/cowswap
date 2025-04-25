@@ -1,5 +1,6 @@
-import { BackButton, ButtonPrimary } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { ReactElement } from 'react'
+
+import { BackButton, ButtonPrimary, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { AlertTriangle } from 'react-feather'
@@ -45,8 +46,10 @@ const BackButtonStyled = styled(BackButton)`
 `
 
 export interface TransactionErrorContentProps {
-  message: JSX.Element | string
+  message: ReactElement | string
+
   onDismiss(): void
+
   modalMode?: boolean
 }
 
