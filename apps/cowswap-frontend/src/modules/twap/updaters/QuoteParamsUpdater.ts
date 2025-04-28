@@ -17,7 +17,7 @@ export function QuoteParamsUpdater() {
 
   const inputPartAmount = inputCurrencyAmount?.divide(numberOfPartsValue)
 
-  useSetTradeQuoteParams(inputPartAmount)
+  useSetTradeQuoteParams({ amount: inputPartAmount })
 
   return null
 }
