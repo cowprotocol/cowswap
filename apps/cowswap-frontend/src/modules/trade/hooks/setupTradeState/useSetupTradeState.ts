@@ -6,7 +6,6 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
-
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 import { getDefaultTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
@@ -22,10 +21,10 @@ import { useTradeTypeInfo } from '../useTradeTypeInfo'
 
 const INITIAL_CHAIN_ID_FROM_URL = getRawCurrentChainIdFromUrl()
 const EMPTY_TOKEN_ID = '_'
-// Timeout to ensure network change has time to complete
-const NETWORK_CHANGE_TIMEOUT = 1000
 // Maximum number of retries to update URL
 const MAX_URL_UPDATE_RETRIES = 3
+// Track retry attempts for URL updates
+const urlUpdateRetryCountRef = { current: 0 }
 
 export function useSetupTradeState(): void {
   useSetupTradeStateFromUrl()
@@ -46,12 +45,6 @@ export function useSetupTradeState(): void {
   const [isFirstLoad, setIsFirstLoad] = useState(true)
   // Track network changes in progress with target chainId
   const [pendingNetworkChange, setPendingNetworkChange] = useState<SupportedChainId | null>(null)
-  // Use a ref to track if a forced URL update is in progress
-  const forceUrlUpdateTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  // Track retry attempts for URL updates
-  const urlUpdateRetryCount = useRef<number>(0)
-  // Track if current mode is TWAP (Advanced Orders)
-  const isTwapMode = tradeTypeInfo?.route === Routes.ADVANCED_ORDERS
 
   const isWalletConnected = !!account
   const urlChainId = tradeStateFromUrl?.chainId
@@ -60,62 +53,7 @@ export function useSetupTradeState(): void {
   const currentChainId = !urlChainId ? prevProviderChainId || providerChainId || SupportedChainId.MAINNET : urlChainId
 
   const isAlternativeModalVisible = useIsAlternativeOrderModalVisible()
-
-  // Force update the URL to match provider chainId after network change
-  const forceUrlUpdateAfterNetworkChange = useCallback(
-    (targetChainId: SupportedChainId) => {
-      // Clear any existing timeout
-      if (forceUrlUpdateTimeoutRef.current) {
-        clearTimeout(forceUrlUpdateTimeoutRef.current)
-        forceUrlUpdateTimeoutRef.current = null
-      }
-
-      // Set a timeout to ensure all state updates have propagated before forcing URL update
-      forceUrlUpdateTimeoutRef.current = setTimeout(() => {
-        // Only update if we're still on the same provider chain
-        if (targetChainId === providerChainId) {
-          urlUpdateRetryCount.current = 0
-
-          // Use default tokens when switching chains
-          const defaultState = getDefaultTradeRawState(targetChainId)
-          tradeNavigate(targetChainId, defaultState)
-
-          // For TWAP mode, immediately update the state as well to ensure consistency
-          if (updateState) {
-            updateState({ ...defaultState })
-          }
-        }
-
-        // Clear pending network change state
-        setPendingNetworkChange(null)
-        forceUrlUpdateTimeoutRef.current = null
-      }, NETWORK_CHANGE_TIMEOUT)
-    },
-    [providerChainId, tradeNavigate, updateState],
-  )
-
-  // Monitor URL state for reversions and force correction if needed
-  useEffect(() => {
-    // Only for TWAP mode and when we've had a successful provider change
-    if (isTwapMode && providerChainId && urlChainId && providerChainId !== urlChainId) {
-      // If URL has reverted to old chainId after we thought we updated it
-      if (pendingNetworkChange === null && forceUrlUpdateTimeoutRef.current === null) {
-        // Only retry a limited number of times to avoid infinite loops
-        if (urlUpdateRetryCount.current < MAX_URL_UPDATE_RETRIES) {
-          urlUpdateRetryCount.current++
-          forceUrlUpdateAfterNetworkChange(providerChainId)
-        } else {
-          console.error('[TRADE STATE]', 'Exceeded max retries for URL correction', {
-            providerChainId,
-            urlChainId,
-          })
-        }
-      }
-    } else {
-      // Reset retry counter when chain IDs match
-      urlUpdateRetryCount.current = 0
-    }
-  }, [providerChainId, urlChainId, isTwapMode, pendingNetworkChange, forceUrlUpdateAfterNetworkChange])
+  const isTwapMode = tradeTypeInfo?.route === Routes.ADVANCED_ORDERS
 
   const switchNetworkInWallet = useCallback(
     (targetChainId: SupportedChainId) => {
@@ -141,16 +79,6 @@ export function useSetupTradeState(): void {
   }, 800)
 
   const onProviderNetworkChanges = useCallback(() => {
-    // Skip if there's no provider chainId
-    if (!providerChainId) return
-
-    // When provider chain ID changes, ensure we update the state correctly
-    if (pendingNetworkChange && pendingNetworkChange === providerChainId) {
-      // Force URL update to ensure it matches the new provider chain
-      forceUrlUpdateAfterNetworkChange(providerChainId)
-      return
-    }
-
     const rememberedUrlState = rememberedUrlStateRef.current
 
     if (rememberedUrlState) {
@@ -166,33 +94,22 @@ export function useSetupTradeState(): void {
         if (urlChainId && INITIAL_CHAIN_ID_FROM_URL !== null) {
           switchNetworkInWallet(urlChainId)
         }
-        return
       }
 
       // For any chain change, use default tokens (matching production behavior)
       if (prevProviderChainId && prevProviderChainId !== providerChainId) {
-        // Update state with default tokens for the new network
         const defaultState = getDefaultTradeRawState(providerChainId)
+        tradeNavigate(providerChainId, defaultState)
 
-        if (updateState) {
+        // For TWAP mode, immediately update the state as well to ensure consistency
+        if (isTwapMode && updateState) {
           updateState(defaultState)
         }
-
-        tradeNavigate(providerChainId, defaultState)
       }
     }
+    // Triggering only when chainId was changed in the provider
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    providerChainId,
-    prevProviderChainId,
-    pendingNetworkChange,
-    isWalletConnected,
-    forceUrlUpdateAfterNetworkChange,
-    isFirstLoad,
-    urlChainId,
-    updateState,
-    tradeNavigate,
-  ])
+  }, [providerChainId, prevProviderChainId, isTwapMode, updateState])
 
   /**
    * On URL parameter changes
@@ -218,7 +135,6 @@ export function useSetupTradeState(): void {
    *  - remember the URL changes (/100/USDC/COW)
    *  - apply the URL changes only if user accepted network changes in the wallet
    */
-  // Triggering only on changes from URL, with special handling for TWAP mode to maintain provider/URL chainId sync
   useEffect(() => {
     // Do nothing when in alternative modal
     // App should already be loaded by then
@@ -231,24 +147,7 @@ export function useSetupTradeState(): void {
     }
 
     // Skip updating from URL while there is a pending network change in progress
-    // or if a forced URL update is in progress
-    if (pendingNetworkChange !== null || forceUrlUpdateTimeoutRef.current !== null) {
-      return
-    }
-
-    // Critical check: if provider has changed but URL hasn't updated yet, skip this update
-    if (providerChainId && tradeStateFromUrl.chainId !== providerChainId && prevProviderChainId !== providerChainId) {
-      // For TWAP mode, force URL correction immediately
-      if (isTwapMode) {
-        forceUrlUpdateAfterNetworkChange(providerChainId)
-      }
-
-      return
-    }
-
-    // TWAP mode with a mismatch between URL and provider chainId (when not in the middle of a change)
-    if (isTwapMode && providerChainId && tradeStateFromUrl.chainId !== providerChainId) {
-      forceUrlUpdateAfterNetworkChange(providerChainId)
+    if (pendingNetworkChange !== null) {
       return
     }
 
@@ -271,6 +170,25 @@ export function useSetupTradeState(): void {
 
     // While network change in progress and only chainId is changed, then do nothing
     if (rememberedUrlStateRef.current && onlyChainIdIsChanged) {
+      return
+    }
+
+    // For TWAP mode, handle URL chainId mismatch with provider
+    if (isTwapMode && providerChainId && tradeStateFromUrl.chainId !== providerChainId) {
+      // If URL has reverted to old chainId after we thought we updated it
+      if (urlUpdateRetryCountRef.current < MAX_URL_UPDATE_RETRIES) {
+        urlUpdateRetryCountRef.current++
+        tradeNavigate(providerChainId, defaultState)
+        if (updateState) {
+          updateState(defaultState)
+        }
+      } else {
+        console.error('[TRADE STATE]', 'Exceeded max retries for URL correction', {
+          providerChainId,
+          urlChainId: tradeStateFromUrl.chainId,
+        })
+        urlUpdateRetryCountRef.current = 0
+      }
       return
     }
 
@@ -306,8 +224,9 @@ export function useSetupTradeState(): void {
     updateState?.(tradeStateFromUrl)
     console.debug('[TRADE STATE]', 'Applying a new state from URL', tradeStateFromUrl)
 
+    // Triggering only on changes from URL
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tradeStateFromUrl, pendingNetworkChange, providerChainId, isTwapMode, forceUrlUpdateAfterNetworkChange])
+  }, [tradeStateFromUrl, pendingNetworkChange, providerChainId, isTwapMode])
 
   /**
    * On:
@@ -320,13 +239,14 @@ export function useSetupTradeState(): void {
    * 2. If provider's chainId is the same with chainId in URL, then do nothing
    * 3. When the URL state is remembered, then set it's chainId to the provider
    */
-  // Triggering only when chainId in URL changes, provider changes, or rememberedUrlState changes
   useEffect(() => {
     // When wallet provider is loaded and chainId matches to the URL chainId
     const isProviderChainIdMatchesUrl = providerChainId === urlChainId
 
     if (isProviderChainIdMatchesUrl) {
       setIsFirstLoad(false)
+      // Reset retry counter when chain IDs match
+      urlUpdateRetryCountRef.current = 0
     }
 
     if (!providerChainId || providerChainId === currentChainId) return
@@ -338,7 +258,7 @@ export function useSetupTradeState(): void {
     debouncedSwitchNetworkInWallet(targetChainId)
 
     console.debug('[TRADE STATE]', 'Set chainId to provider', { provider, urlChainId })
-
+    // Triggering only when chainId in URL is changes, provider is changed or rememberedUrlState is changed
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider, urlChainId])
 
@@ -364,15 +284,6 @@ export function useSetupTradeState(): void {
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onProviderNetworkChanges])
-
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (forceUrlUpdateTimeoutRef.current) {
-        clearTimeout(forceUrlUpdateTimeoutRef.current)
-      }
-    }
-  }, [])
 
   /**
    * If user opened a link with some token symbol, and we have more than one token with the same symbol in the listing
