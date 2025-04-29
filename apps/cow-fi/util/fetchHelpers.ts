@@ -10,13 +10,7 @@ import { Article, getArticleBySlug } from '../services/cms'
  * @returns Article or null if not found
  */
 export async function fetchArticleWithRetry(slug: string, retries = 2, delay = 500): Promise<Article | null> {
-  try {
-    return await getArticleBySlug(slug)
-  } catch (error) {
-    if (retries <= 0) throw error
-    await new Promise((resolve) => setTimeout(resolve, delay))
-    return fetchArticleWithRetry(slug, retries - 1, delay * 1.5)
-  }
+  return withRetry(() => getArticleBySlug(slug), retries, delay)
 }
 
 /**
