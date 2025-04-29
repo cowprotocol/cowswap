@@ -21,10 +21,6 @@ import { useTradeTypeInfo } from '../useTradeTypeInfo'
 
 const INITIAL_CHAIN_ID_FROM_URL = getRawCurrentChainIdFromUrl()
 const EMPTY_TOKEN_ID = '_'
-// Maximum number of retries to update URL
-const MAX_URL_UPDATE_RETRIES = 3
-// Track retry attempts for URL updates
-const urlUpdateRetryCountRef = { current: 0 }
 
 export function useSetupTradeState(): void {
   useSetupTradeStateFromUrl()
@@ -68,17 +64,18 @@ export function useSetupTradeState(): void {
         // Because it's a normal situation when we are not in Gnosis safe App
         if (error.name === 'NoSafeContext') return
 
-        console.error('Network switching error: ', error)
+        console.error('[TRADE STATE]', 'Failed to switch network in wallet', error)
       })
     },
     [switchNetwork],
   )
 
-  const debouncedSwitchNetworkInWallet = debounce(([targetChainId]: [SupportedChainId]) => {
-    switchNetworkInWallet(targetChainId)
-  }, 800)
+  const debouncedSwitchNetworkInWallet = useCallback(debounce(switchNetworkInWallet, 200), [switchNetworkInWallet])
 
-  const onProviderNetworkChanges = useCallback(() => {
+  /**
+   * On provider chainId changes
+   */
+  useEffect(() => {
     const rememberedUrlState = rememberedUrlStateRef.current
 
     if (rememberedUrlState) {
@@ -113,27 +110,6 @@ export function useSetupTradeState(): void {
 
   /**
    * On URL parameter changes
-   *
-   * 1. The case, when chainId in URL was changed while wallet is connected (read about it bellow)
-   * 2. When chainId in URL is invalid, then redirect to the default chainId
-   * 3. When URL contains the same token symbols (USDC/USDC), then redirect to the default state
-   * 4. When URL doesn't contain both tokens, then redirect to the default state
-   * 5. When only chainId was changed in URL, then redirect to the default state
-   * 6. Otherwise, fill the trade state by data from URL
-   *
-   * *** When chainId in URL was changed while wallet is connected ***
-   * Imagine a case:
-   *  - user connected a wallet with chainId = 1, URL looks like /1/swap/WETH
-   *  - user changed URL to /100/USDC/COW
-   *
-   * It will require chainId changes in the wallet to 100
-   * In case, if user decline network changes, we will have chainId=100 in URL and chainId=1 in wallet
-   * It creates some problem due to chainIds mismatch
-   *
-   * Because of it, in this case we must:
-   *  - revert the URL to the previous state (/1/swap/WETH)
-   *  - remember the URL changes (/100/USDC/COW)
-   *  - apply the URL changes only if user accepted network changes in the wallet
    */
   useEffect(() => {
     // Do nothing when in alternative modal
@@ -170,25 +146,6 @@ export function useSetupTradeState(): void {
 
     // While network change in progress and only chainId is changed, then do nothing
     if (rememberedUrlStateRef.current && onlyChainIdIsChanged) {
-      return
-    }
-
-    // For TWAP mode, handle URL chainId mismatch with provider
-    if (isTwapMode && providerChainId && tradeStateFromUrl.chainId !== providerChainId) {
-      // If URL has reverted to old chainId after we thought we updated it
-      if (urlUpdateRetryCountRef.current < MAX_URL_UPDATE_RETRIES) {
-        urlUpdateRetryCountRef.current++
-        tradeNavigate(providerChainId, defaultState)
-        if (updateState) {
-          updateState(defaultState)
-        }
-      } else {
-        console.error('[TRADE STATE]', 'Exceeded max retries for URL correction', {
-          providerChainId,
-          urlChainId: tradeStateFromUrl.chainId,
-        })
-        urlUpdateRetryCountRef.current = 0
-      }
       return
     }
 
@@ -232,12 +189,6 @@ export function useSetupTradeState(): void {
    * On:
    *  - chainId in URL changes
    *  - provider changes
-   *
-   * Note: useEagerlyConnect() changes connectors several times at the beginning
-   *
-   * 1. When chainId in URL is changed, then set it to the provider
-   * 2. If provider's chainId is the same with chainId in URL, then do nothing
-   * 3. When the URL state is remembered, then set it's chainId to the provider
    */
   useEffect(() => {
     // When wallet provider is loaded and chainId matches to the URL chainId
@@ -245,8 +196,6 @@ export function useSetupTradeState(): void {
 
     if (isProviderChainIdMatchesUrl) {
       setIsFirstLoad(false)
-      // Reset retry counter when chain IDs match
-      urlUpdateRetryCountRef.current = 0
     }
 
     if (!providerChainId || providerChainId === currentChainId) return
@@ -261,29 +210,6 @@ export function useSetupTradeState(): void {
     // Triggering only when chainId in URL is changes, provider is changed or rememberedUrlState is changed
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider, urlChainId])
-
-  /**
-   * On chainId in provider changes
-   *
-   * 1. Do nothing, when provider's chainId matches to the chainId from URL, or it's not supported
-   * 2. If the URL state was remembered, then put it into URL
-   * 3. If it's the first load and wallet is connected, then switch network in the wallet to the chainId from URL
-   * 4. Otherwise, navigate to the new chainId with default tokens
-   */
-  useEffect(() => {
-    // When wallet provider is not loaded yet, or chainId has not changed
-    const shouldSkip = !providerChainId || providerChainId === urlChainId || providerChainId === prevProviderChainId
-
-    if (shouldSkip) return
-
-    onProviderNetworkChanges()
-
-    console.debug('[TRADE STATE]', 'Provider changed chainId', {
-      providerChainId,
-      urlChanges: rememberedUrlStateRef.current,
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onProviderNetworkChanges])
 
   /**
    * If user opened a link with some token symbol, and we have more than one token with the same symbol in the listing
