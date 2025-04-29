@@ -11,8 +11,7 @@ import { Article, getArticleBySlug } from '../services/cms'
  */
 export async function fetchArticleWithRetry(slug: string, retries = 2, delay = 500): Promise<Article | null> {
   try {
-    const article = await getArticleBySlug(slug)
-    return article
+    return await getArticleBySlug(slug)
   } catch (error) {
     if (retries <= 0) throw error
     await new Promise((resolve) => setTimeout(resolve, delay))
