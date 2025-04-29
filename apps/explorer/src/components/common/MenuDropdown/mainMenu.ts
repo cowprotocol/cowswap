@@ -20,7 +20,7 @@ export const MAIN_MENU: MenuTreeItem[] = [
       {
         sectionTitle: 'OVERVIEW',
         links: [
-                    {
+          {
             title: 'CoW Protocol',
             url: PROTOCOL_LINK,
             kind: MenuItemKind.EXTERNAL_LINK,
