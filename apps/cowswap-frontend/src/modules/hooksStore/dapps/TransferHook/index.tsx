@@ -2,52 +2,38 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Wrapper } from '../styled'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { HookDappProps } from 'modules/hooksStore/types/hooks'
-import { Address, createPublicClient, encodeFunctionData, http } from 'viem'
+import { Address, Chain, createPublicClient, encodeFunctionData, formatUnits, http, isAddress, parseUnits } from 'viem'
 import { Erc20Abi } from '@cowprotocol/abis'
 
-import { mainnet } from 'viem/chains'
+import { mainnet, base } from 'viem/chains'
 
 import { CowShedHooks } from '@cowprotocol/cow-sdk'
 import { BaseTransaction, useCowShedSignature } from './useCowShedSignature'
-import { CoWHookDappActions, HookDappContext, initCoWHookDapp } from '@cowprotocol/hook-dapp-lib'
-import { BigNumber, type Signer } from 'ethers'
+import { BigNumber } from 'ethers'
 
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import { useHandleTokenAllowance } from './useHandleTokenAllowance'
+import { useReadTokenContract } from './useReadTokenContract'
+import { useWalletProvider } from '@cowprotocol/common-hooks'
 
 export function TransferHookApp({ context }: HookDappProps) {
   const hookToEdit = context.hookToEdit
   const isPreHook = context.isPreHook
   const account = context?.account
   const tokenAddress = context?.orderParams?.buyTokenAddress as Address | undefined
-  const amount = context?.orderParams?.buyAmount ? BigInt(context.orderParams.buyAmount) / BigInt(2) : undefined
-
-  const toAddress = '0x21F3d1B62f6F23fC8b1B6920a3b62915790A85D5'
 
   const target = tokenAddress
 
-  const [_context, _setContext] = useState<HookDappContext>()
-  const [web3Provider, setWeb3Provider] = useState<Web3Provider>()
-  const [actions, setActions] = useState<CoWHookDappActions>()
-  const [signer, setSigner] = useState<Signer>()
+  const web3Provider = useWalletProvider()
+  const signer = useMemo(() => web3Provider && web3Provider.getSigner(), [web3Provider])
 
-  useEffect(() => {
-    const { actions, provider } = initCoWHookDapp({
-      onContext: _setContext as (args: HookDappContext) => void,
-    })
-
-    setActions(actions)
-
-    const web3Provider = new Web3Provider(provider)
-    setWeb3Provider(web3Provider)
-    setSigner(web3Provider.getSigner())
-  }, [])
+  const chain = ([mainnet, base].find((chain) => chain.id === context?.chainId) ?? mainnet) as Chain
 
   const publicClient = useMemo(() => {
     if (!context?.chainId) return
     return createPublicClient({
-      chain: mainnet,
-      transport: http('https://eth.llamarpc.com'),
+      chain,
+      transport: http(context?.chainId === 1 ? 'https://eth.llamarpc.com' : 'https://base.llamarpc.com'),
     })
   }, [context?.chainId])
 
@@ -56,14 +42,14 @@ export function TransferHookApp({ context }: HookDappProps) {
     return new JsonRpcProvider('https://eth.llamarpc.com')
   }, [context?.chainId])
 
-  const callData = useMemo(() => {
-    if (!tokenAddress || !amount || !signer) return
-    return encodeFunctionData({
-      abi: Erc20Abi,
-      functionName: 'transferFrom',
-      args: [account, toAddress, amount],
-    })
-  }, [tokenAddress, amount, account])
+  const { tokenDecimals, tokenSymbol, userBalance } = useReadTokenContract({
+    tokenAddress: context?.orderParams?.buyTokenAddress as Address | undefined,
+    context,
+    publicClient,
+  })
+
+  const formattedBalance =
+    tokenDecimals && userBalance !== undefined ? formatUnits(userBalance, tokenDecimals) : undefined
 
   const gasLimit = '100000'
 
@@ -93,7 +79,22 @@ export function TransferHookApp({ context }: HookDappProps) {
   })
 
   const onButtonClick = useCallback(async () => {
-    if (!cowShed || !target || !callData || !gasLimit || !amount) return
+    if (!cowShed || !target || !gasLimit) return
+
+    //@ts-ignore
+    const amount = String(document?.getElementById('amount')?.value)
+    //@ts-ignore
+    const toAddress = String(document?.getElementById('address')?.value)
+
+    if (!amount || !toAddress || !isAddress(toAddress) || Number(amount) <= 0) return
+
+    const amountBigint = parseUnits(amount, tokenDecimals)
+
+    const callData = encodeFunctionData({
+      abi: Erc20Abi,
+      functionName: 'transferFrom',
+      args: [account, toAddress, amountBigint],
+    })
 
     const hookTx: BaseTransaction = {
       to: target,
@@ -103,15 +104,15 @@ export function TransferHookApp({ context }: HookDappProps) {
 
     const permitTx = await handleTokenAllowance(BigNumber.from(amount), tokenAddress)
 
-    if (!permitTx) return
+    const permitTxAdjusted = permitTx
+      ? {
+          to: permitTx.target,
+          value: BigInt(0),
+          callData: permitTx.callData,
+        }
+      : undefined
 
-    const permitTxAdjusted = {
-      to: permitTx.target,
-      value: BigInt(0),
-      callData: permitTx.callData,
-    }
-
-    const txs = [permitTxAdjusted, hookTx]
+    const txs = permitTxAdjusted ? [permitTxAdjusted, hookTx] : [hookTx]
 
     const cowShedCall = await cowShedSignature(txs)
     if (!cowShedCall) throw new Error('Error signing hooks')
@@ -128,7 +129,7 @@ export function TransferHookApp({ context }: HookDappProps) {
     }
 
     context.addHook({ hook })
-  }, [target, callData, gasLimit, context])
+  }, [target, gasLimit, context])
 
   const buttonProps = useMemo(() => {
     if (!context.account) return { message: 'Connect wallet', disabled: true }
@@ -138,7 +139,17 @@ export function TransferHookApp({ context }: HookDappProps) {
 
   return (
     <Wrapper>
-      <span>This hook will transfer half of the buyAmount to {toAddress}.</span>
+      <span>Amount of {tokenSymbol} to transfer</span>
+      <input
+        id="amount"
+        type="number"
+        inputMode="decimal"
+        step={`0.${'0'.repeat(tokenDecimals - 1)}1`}
+        style={{ padding: '8px', fontSize: 16 }}
+      />
+      <span>Your balance: {formattedBalance}</span>
+      <span>Address to transfer</span>
+      <input id="address" style={{ padding: '8px', fontSize: 16 }} />
       <ButtonPrimary onClick={onButtonClick} disabled={buttonProps.disabled}>
         {buttonProps.message}
       </ButtonPrimary>
