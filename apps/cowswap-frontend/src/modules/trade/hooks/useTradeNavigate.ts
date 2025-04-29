@@ -34,7 +34,7 @@ export function useTradeNavigate(): UseTradeNavigateCallback {
   const tradeRoute = tradeTypeInfo?.route
 
   // For TWAP mode: use a ref to track navigation debouncing
-  const navigationTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const navigationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   return useCallback(
     (

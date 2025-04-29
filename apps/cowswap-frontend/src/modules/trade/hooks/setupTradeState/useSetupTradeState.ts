@@ -46,7 +46,7 @@ export function useSetupTradeState(): void {
   // Track network changes in progress with target chainId
   const [pendingNetworkChange, setPendingNetworkChange] = useState<SupportedChainId | null>(null)
   // Use a ref to track if a forced URL update is in progress
-  const forceUrlUpdateTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const forceUrlUpdateTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   // Track retry attempts for URL updates
   const urlUpdateRetryCount = useRef<number>(0)
   // Track if current mode is TWAP (Advanced Orders)
