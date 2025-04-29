@@ -73,7 +73,7 @@ export function useSetupTradeState(): void {
   const debouncedSwitchNetworkInWallet = useCallback(debounce(switchNetworkInWallet, 200), [switchNetworkInWallet])
 
   /**
-   * On provider chainId changes
+   * On chainId in provider changes
    *
    * 1. Do nothing, when provider's chainId matches to the chainId from URL, or it's not supported
    * 2. If the URL state was remembered, then put it into URL
@@ -81,11 +81,15 @@ export function useSetupTradeState(): void {
    * 4. Otherwise, navigate to the new chainId with default tokens
    */
   useEffect(() => {
+    // When wallet provider is not loaded yet, or chainId has not changed
+    const shouldSkip = !providerChainId || providerChainId === urlChainId || providerChainId === prevProviderChainId
+
+    if (shouldSkip) return
+
     const rememberedUrlState = rememberedUrlStateRef.current
 
     if (rememberedUrlState) {
       rememberedUrlStateRef.current = null
-
       tradeNavigate(rememberedUrlState.chainId, rememberedUrlState)
     } else {
       // When app loaded with connected wallet
@@ -99,19 +103,21 @@ export function useSetupTradeState(): void {
       }
 
       // For any chain change, use default tokens (matching production behavior)
-      if (prevProviderChainId && prevProviderChainId !== providerChainId) {
-        const defaultState = getDefaultTradeRawState(providerChainId)
-        tradeNavigate(providerChainId, defaultState)
+      const defaultState = getDefaultTradeRawState(providerChainId)
+      tradeNavigate(providerChainId, defaultState)
 
-        // For TWAP mode, immediately update the state as well to ensure consistency
-        if (isTwapMode && updateState) {
-          updateState(defaultState)
-        }
+      // For TWAP mode, immediately update the state as well to ensure consistency
+      if (isTwapMode && updateState) {
+        updateState(defaultState)
       }
     }
-    // Triggering only when chainId was changed in the provider
+
+    console.debug('[TRADE STATE]', 'Provider changed chainId', {
+      providerChainId,
+      urlChanges: rememberedUrlStateRef.current,
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [providerChainId, prevProviderChainId, isTwapMode, updateState])
+  }, [providerChainId, urlChainId, prevProviderChainId])
 
   /**
    * On URL parameter changes
