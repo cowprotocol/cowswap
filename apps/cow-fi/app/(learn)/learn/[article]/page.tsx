@@ -14,6 +14,11 @@ import {
   SharedRichTextComponent,
 } from '../../../../services/cms'
 
+// Maximum length for metadata descriptions. When content exceeds MAX_LENGTH,
+// we truncate to TRUNCATE_LENGTH (MAX_LENGTH - 3) to make room for "..." ellipsis
+const METADATA_DESCRIPTION_MAX_LENGTH = 150
+const METADATA_DESCRIPTION_TRUNCATE_LENGTH = METADATA_DESCRIPTION_MAX_LENGTH - 3
+
 function isRichTextComponent(block: any): block is SharedRichTextComponent {
   return block.body !== undefined
 }
@@ -48,8 +53,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       absoluteTitle: `${title} - CoW DAO`,
       description: description
         ? stripHtmlTags(description)
-        : plainContent.length > 150
-          ? stripHtmlTags(plainContent.substring(0, 147)) + '...'
+        : plainContent.length > METADATA_DESCRIPTION_MAX_LENGTH
+          ? stripHtmlTags(plainContent.substring(0, METADATA_DESCRIPTION_TRUNCATE_LENGTH)) + '...'
           : stripHtmlTags(plainContent),
       image: coverImageUrl,
     })
