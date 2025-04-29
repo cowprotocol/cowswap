@@ -74,6 +74,11 @@ export function useSetupTradeState(): void {
 
   /**
    * On provider chainId changes
+   *
+   * 1. Do nothing, when provider's chainId matches to the chainId from URL, or it's not supported
+   * 2. If the URL state was remembered, then put it into URL
+   * 3. If it's the first load and wallet is connected, then switch network in the wallet to the chainId from URL
+   * 4. Otherwise, navigate to the new chainId with default tokens
    */
   useEffect(() => {
     const rememberedUrlState = rememberedUrlStateRef.current
@@ -110,6 +115,27 @@ export function useSetupTradeState(): void {
 
   /**
    * On URL parameter changes
+   *
+   * 1. The case, when chainId in URL was changed while wallet is connected (read about it bellow)
+   * 2. When chainId in URL is invalid, then redirect to the default chainId
+   * 3. When URL contains the same token symbols (USDC/USDC), then redirect to the default state
+   * 4. When URL doesn't contain both tokens, then redirect to the default state
+   * 5. When only chainId was changed in URL, then redirect to the default state
+   * 6. Otherwise, fill the trade state by data from URL
+   *
+   * *** When chainId in URL was changed while wallet is connected ***
+   * Imagine a case:
+   *  - user connected a wallet with chainId = 1, URL looks like /1/swap/WETH
+   *  - user changed URL to /100/USDC/COW
+   *
+   * It will require chainId changes in the wallet to 100
+   * In case, if user decline network changes, we will have chainId=100 in URL and chainId=1 in wallet
+   * It creates some problem due to chainIds mismatch
+   *
+   * Because of it, in this case we must:
+   *  - revert the URL to the previous state (/1/swap/WETH)
+   *  - remember the URL changes (/100/USDC/COW)
+   *  - apply the URL changes only if user accepted network changes in the wallet
    */
   useEffect(() => {
     // Do nothing when in alternative modal
@@ -189,6 +215,12 @@ export function useSetupTradeState(): void {
    * On:
    *  - chainId in URL changes
    *  - provider changes
+   *
+   * Note: useEagerlyConnect() changes connectors several times at the beginning
+   *
+   * 1. When chainId in URL is changed, then set it to the provider
+   * 2. If provider's chainId is the same with chainId in URL, then do nothing
+   * 3. When the URL state is remembered, then set it's chainId to the provider
    */
   useEffect(() => {
     // When wallet provider is loaded and chainId matches to the URL chainId
