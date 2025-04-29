@@ -21,6 +21,12 @@ export const MAIN_MENU: MenuTreeItem[] = [
         sectionTitle: 'OVERVIEW',
         links: [
           {
+            title: 'CoW Swap',
+            url: COWSWAP_LINK,
+            kind: MenuItemKind.EXTERNAL_LINK,
+            iconSVG: IMAGE_COW,
+          },
+          {
             title: 'CoW Protocol',
             url: PROTOCOL_LINK,
             kind: MenuItemKind.EXTERNAL_LINK,
