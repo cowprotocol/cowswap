@@ -75,25 +75,13 @@ export function useSetupTradeState(): void {
         if (targetChainId === providerChainId) {
           urlUpdateRetryCount.current = 0
 
-          // For TWAP mode, create new state object with both tokens and new chainId
-          if (isTwapMode && state && state.inputCurrencyId && state.outputCurrencyId) {
-            // Create a new state object with the current tokens and new chainId
-            const newState = {
-              ...getDefaultTradeRawState(targetChainId),
-              inputCurrencyId: state.inputCurrencyId,
-              outputCurrencyId: state.outputCurrencyId,
-            }
+          // Use default tokens when switching chains
+          const defaultState = getDefaultTradeRawState(targetChainId)
+          tradeNavigate(targetChainId, defaultState)
 
-            tradeNavigate(targetChainId, newState)
-
-            // For TWAP mode, immediately update the state as well to ensure consistency
-            if (updateState) {
-              updateState({ ...state, chainId: targetChainId })
-            }
-          } else {
-            // For non-TWAP mode, just use default state
-            const defaultState = getDefaultTradeRawState(targetChainId)
-            tradeNavigate(targetChainId, defaultState)
+          // For TWAP mode, immediately update the state as well to ensure consistency
+          if (updateState) {
+            updateState({ ...defaultState })
           }
         }
 
@@ -102,7 +90,7 @@ export function useSetupTradeState(): void {
         forceUrlUpdateTimeoutRef.current = null
       }, NETWORK_CHANGE_TIMEOUT)
     },
-    [providerChainId, tradeNavigate, isTwapMode, state, updateState, urlChainId],
+    [providerChainId, tradeNavigate, updateState],
   )
 
   // Monitor URL state for reversions and force correction if needed
@@ -180,31 +168,15 @@ export function useSetupTradeState(): void {
         return
       }
 
-      // For TWAP mode, handle provider chain changes directly without relying on URL state
-      if (isTwapMode && prevProviderChainId && prevProviderChainId !== providerChainId) {
-        // Update state directly for TWAP mode
-        if (updateState && state) {
-          const newState = { ...state, chainId: providerChainId }
-          updateState(newState)
-
-          // Then force URL update to match
-          if (state.inputCurrencyId && state.outputCurrencyId) {
-            const newUrlState = {
-              ...getDefaultTradeRawState(providerChainId),
-              inputCurrencyId: state.inputCurrencyId,
-              outputCurrencyId: state.outputCurrencyId,
-            }
-
-            tradeNavigate(providerChainId, newUrlState)
-          } else {
-            const defaultState = getDefaultTradeRawState(providerChainId)
-            tradeNavigate(providerChainId, defaultState)
-          }
-        }
-      }
-      // Handle actual provider chain change for non-TWAP modes
-      else if (prevProviderChainId && prevProviderChainId !== providerChainId) {
+      // For any chain change, use default tokens (matching production behavior)
+      if (prevProviderChainId && prevProviderChainId !== providerChainId) {
+        // Update state with default tokens for the new network
         const defaultState = getDefaultTradeRawState(providerChainId)
+
+        if (updateState) {
+          updateState(defaultState)
+        }
+
         tradeNavigate(providerChainId, defaultState)
       }
     }
@@ -217,7 +189,8 @@ export function useSetupTradeState(): void {
     forceUrlUpdateAfterNetworkChange,
     isFirstLoad,
     urlChainId,
-    isTwapMode,
+    updateState,
+    tradeNavigate,
   ])
 
   /**
