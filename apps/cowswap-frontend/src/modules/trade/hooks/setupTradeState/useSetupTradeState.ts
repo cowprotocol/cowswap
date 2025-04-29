@@ -96,7 +96,8 @@ export function useSetupTradeState(): void {
       const defaultState = getDefaultTradeRawState(providerChainId)
       tradeNavigate(providerChainId, defaultState)
 
-      // For TWAP mode, immediately update the state as well to ensure consistency
+      // Ensures TWAP internal state reflects the default state immediately after provider network change,
+      // preventing potential use of stale state before the URL-driven update cycle completes (unlike Swap/Limit modes).
       if (isTwapMode && updateState) {
         updateState(defaultState)
       }
