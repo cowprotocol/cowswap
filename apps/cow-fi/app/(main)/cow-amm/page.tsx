@@ -229,7 +229,7 @@ export default function Page() {
                   <br />
                   <br />
                   Backtesting research conducted over 6 months in 2023 shows that CoW AMM returns would have equalled or
-                  outperformed CF-AMM returns for 10 of the 11 most liquid, non-stablecoin pairs.
+                  outperformed CF-AMM returns for 10 of the 11 most liquid, non-stablecoin pairs
                 </TopicDescription>
               </TopicCardInner>
               <TopicImage
@@ -283,7 +283,7 @@ export default function Page() {
                 <TopicDescription fontSize={24} color={Color.neutral50}>
                   Healthy liquidity for DAO tokens reduces price impact, encourages investment and discourages
                   volatility. But DAOs can be reluctant to provide liquidity with treasury funds when their pools can be
-                  exploited by arbitrageurs. CoW AMM makes providing liquidity more attractive to DAOs of all sizes.
+                  exploited by arbitrageurs. CoW AMM makes providing liquidity more attractive to DAOs of all sizes
                 </TopicDescription>
               </TopicCardInner>
             </TopicCard>
@@ -303,7 +303,7 @@ export default function Page() {
                   With LVR in the rear view mirror, providing liquidity becomes identical to running a passive
                   investment strategy: solvers rebalance the pool at the correct market price to keep the value of its
                   reserves equal, thereby keeping portfolios balanced and reducing risk. On top of that, liquidity
-                  providers earn surplus when they trade with CoW Protocol traders.
+                  providers earn surplus when they trade with CoW Protocol traders
                 </TopicDescription>
               </TopicCardInner>
               <TopicImage
