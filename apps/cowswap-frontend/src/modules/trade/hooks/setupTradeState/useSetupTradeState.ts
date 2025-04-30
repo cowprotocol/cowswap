@@ -44,7 +44,6 @@ export function useSetupTradeState(): void {
   const currentChainId = !urlChainId ? prevProviderChainId || providerChainId || SupportedChainId.MAINNET : urlChainId
 
   const isAlternativeModalVisible = useIsAlternativeOrderModalVisible()
-  const isTwapMode = tradeTypeInfo?.route === Routes.ADVANCED_ORDERS
 
   const switchNetworkInWallet = useCallback(
     (targetChainId: SupportedChainId) => {
