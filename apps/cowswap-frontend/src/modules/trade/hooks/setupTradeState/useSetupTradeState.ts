@@ -10,14 +10,11 @@ import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 import { getDefaultTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
 
-import { Routes } from 'common/constants/routes'
-
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useSetupTradeStateFromUrl } from './useSetupTradeStateFromUrl'
 import { useTradeStateFromUrl } from './useTradeStateFromUrl'
 
 import { useTradeState } from '../useTradeState'
-import { useTradeTypeInfo } from '../useTradeTypeInfo'
 
 const INITIAL_CHAIN_ID_FROM_URL = getRawCurrentChainIdFromUrl()
 const EMPTY_TOKEN_ID = '_'
@@ -32,7 +29,6 @@ export function useSetupTradeState(): void {
   const switchNetwork = useSwitchNetwork()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const { state, updateState } = useTradeState()
-  const tradeTypeInfo = useTradeTypeInfo()
 
   const rememberedUrlStateRef = useRef<TradeRawState | null>(null)
   const [isFirstLoad, setIsFirstLoad] = useState(true)
