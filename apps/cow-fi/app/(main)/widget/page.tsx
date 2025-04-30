@@ -69,7 +69,7 @@ export default function Page() {
           </HeroTitle>
           <HeroDescription color={Color.neutral30}>
             Integrate the CoW Swap widget to bring seamless, MEV-protected trading to your website or dApp. Delight your
-            users while adding an extra revenue stream for your project - it's a win-win.
+            users while adding an extra revenue stream for your project - it's a win-win
           </HeroDescription>
 
           <HeroButtonWrapper>
@@ -135,7 +135,7 @@ export default function Page() {
               <TopicCardInner contentAlign="left">
                 <TopicTitle fontSize={48}>Earn Revenue for Your Project</TopicTitle>
                 <TopicDescription fontSize={24} color={Color.neutral80}>
-                  You may collect revenue when users trade with your widget.*
+                  You may collect revenue when users trade with your widget*
                 </TopicDescription>
               </TopicCardInner>
               <TopicImage width={400} height={400} heightMobile={300} orderReverseMobile bgColor="transparent">
@@ -158,7 +158,7 @@ export default function Page() {
                 <TopicTitle fontSize={67}>Integrate With Ease</TopicTitle>
                 <TopicDescription fontSize={24} color={Color.neutral80}>
                   The CoW Swap widget is quick to install and easy to customize. Add the widget to your site in under 5
-                  minutes by copy-pasting a few lines of code. Contact our team for implementation details.
+                  minutes by copy-pasting a few lines of code. Contact our team for implementation details
                 </TopicDescription>
               </TopicCardInner>
             </TopicCard>
@@ -175,7 +175,7 @@ export default function Page() {
             <SectionTitleText fontSize={62}>Every Bell, Whistle, and Moo</SectionTitleText>
             <SectionTitleDescription fontSize={24} color={Color.neutral40}>
               With the CoW Swap widget, you can offer your users everything you know and love about CoW Swap, and more.
-              Oh, and yes… it does come with the "moo".
+              Oh, and yes… it does come with the "moo"
             </SectionTitleDescription>
           </SectionTitleWrapper>
 
@@ -188,7 +188,7 @@ export default function Page() {
                 <TopicTitle>Full protection from MEV</TopicTitle>
                 <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
                   CoW Swap offers the best MEV protection in the land. Thanks to a delegated trading model that relies
-                  on experts to execute swaps, traders can rest assured that they're safe from the MEV bots.
+                  on experts to execute swaps, traders can rest assured that they're safe from the MEV bots
                 </TopicDescription>
               </TopicCardInner>
             </TopicCard>
@@ -201,7 +201,7 @@ export default function Page() {
                 <TopicTitle>Surplus-capturing orders</TopicTitle>
                 <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
                   Every order is surplus-capturing and traders usually earn a little extra in their sell token with each
-                  swap.
+                  swap
                 </TopicDescription>
               </TopicCardInner>
             </TopicCard>
@@ -214,7 +214,7 @@ export default function Page() {
                 <TopicTitle>Gasless trading</TopicTitle>
                 <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
                   All gas fees are paid in the sell token for swaps and even for token approvals. Users can enjoy
-                  ETH-free trading every time, even with brand-new wallets.
+                  ETH-free trading every time, even with brand-new wallets
                 </TopicDescription>
               </TopicCardInner>
             </TopicCard>
@@ -345,7 +345,7 @@ export default function Page() {
               jurisdiction. You are solely responsible for ensuring compliance, and the provider is not liable for any
               legal consequences or issues arising from your failure to adhere. Using the widget indicates acceptance of
               the <Link href="/widget/terms-and-conditions">Terms and Conditions;</Link> if you do not agree, refrain
-              from using it.
+              from using it
             </SectionTitleDescription>
           </SectionTitleWrapper>
         </ContainerCardSection>
