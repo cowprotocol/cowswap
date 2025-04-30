@@ -41,9 +41,9 @@ export default async function Page({ params }: Props) {
   const articlesResponse = await getArticles({ page, pageSize: ARTICLES_PER_PAGE })
   const totalArticles = articlesResponse.meta?.pagination?.total || 0
 
-  // If page number is out of bounds, redirect to page 1
+  // If page number is out of bounds (either less than 1 or greater than total pages), redirect to page 1
   const numberOfPages = calculateTotalPages(totalArticles)
-  if (page > numberOfPages) {
+  if (page < 1 || page > numberOfPages) {
     return redirect('/learn/articles')
   }
 

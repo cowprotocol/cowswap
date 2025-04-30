@@ -16,8 +16,11 @@ export function calculatePageRange(
   totalItems: number,
   itemsPerPage: number = ARTICLES_PER_PAGE,
 ): { start: number; end: number } {
-  const start = itemsPerPage * (currentPage - 1) + 1
-  const end = Math.min(itemsPerPage * currentPage, totalItems)
+  // Ensure currentPage is valid (minimum 1)
+  const validCurrentPage = Math.max(1, currentPage)
+
+  const start = itemsPerPage * (validCurrentPage - 1) + 1
+  const end = Math.min(itemsPerPage * validCurrentPage, totalItems)
   return { start, end }
 }
 
