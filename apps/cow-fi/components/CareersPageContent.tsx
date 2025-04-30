@@ -47,7 +47,7 @@ export function CareersPageContent({
             <SectionTitleDescription fontSize={24} color={Color.neutral40} fontWeight={Font.weight.regular}>
               We are an ambitious, fast-growing and international team working at the forefront of DeFi. We believe that
               we can make markets more fair and more efficient by building the ultimate batch auction settlement layer
-              across EVM-compatible blockchains.
+              across EVM-compatible blockchains
             </SectionTitleDescription>
           </SectionTitleWrapper>
 
