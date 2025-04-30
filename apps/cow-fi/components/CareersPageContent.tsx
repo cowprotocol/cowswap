@@ -161,7 +161,7 @@ export function CareersPageContent({
 
                 <TopicDescription fontSize={24} fontWeight={Font.weight.regular} margin="0 0 24px">
                   Know someone who is looking not just for a job, but for a great opportunity to grow? Refer them to
-                  earn up to $6,000 in USD or USDC.{' '}
+                  earn up to $6,000 in USD or USDC{' '}
                 </TopicDescription>
                 <Link
                   linkType={LinkType.TopicButton}
