@@ -41,7 +41,8 @@ export default async function Page({ params }: Props) {
   const totalArticles = articlesResponse.meta?.pagination?.total || 0
 
   // If page number is out of bounds, redirect to page 1
-  if (page > Math.ceil(totalArticles / ARTICLES_PER_PAGE)) {
+  const numberOfPages = Math.ceil(totalArticles / ARTICLES_PER_PAGE)
+  if (page > numberOfPages) {
     return redirect('/learn/articles')
   }
 
