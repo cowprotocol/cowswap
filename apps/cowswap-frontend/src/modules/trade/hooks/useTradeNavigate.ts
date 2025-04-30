@@ -5,7 +5,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLocation } from 'react-router'
 
-import { Routes, RoutesValues } from 'common/constants/routes'
+import { RoutesValues } from 'common/constants/routes'
 import { useNavigate } from 'common/hooks/useNavigate'
 
 import { useTradeTypeInfo } from './useTradeTypeInfo'
@@ -14,8 +14,8 @@ import { TradeCurrenciesIds } from '../types/TradeRawState'
 import { parameterizeTradeRoute } from '../utils/parameterizeTradeRoute'
 import { parameterizeTradeSearch, TradeSearchParams } from '../utils/parameterizeTradeSearch'
 
-// Debounce time for TWAP navigation to prevent rapid chainId flipping in URL
-const TWAP_NAVIGATION_DEBOUNCE_MS = 200
+// Debounce time to prevent rapid chainId flipping in URL
+const NAVIGATION_DEBOUNCE_MS = 300
 
 interface UseTradeNavigateCallback {
   (
@@ -33,8 +33,8 @@ export function useTradeNavigate(): UseTradeNavigateCallback {
   const { chainId: providerChainId } = useWalletInfo()
   const tradeRoute = tradeTypeInfo?.route
 
-  // For TWAP mode: use a ref to track navigation debouncing
-  const navigationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  // Use a ref to keep track of the latest navigation timer
+  const navigationTimerRef = useRef<number | null>(null)
 
   return useCallback(
     (
@@ -46,10 +46,9 @@ export function useTradeNavigate(): UseTradeNavigateCallback {
       const targetRoute = customRoute || tradeRoute
       if (!targetRoute) return
 
-      // For TWAP (Advanced Orders) mode, always use provider's chainId if available
+      // ALWAYS prioritize provider's chainId when available
       // This ensures the chainId in URL always matches the network the wallet is connected to
-      const isTwapMode = targetRoute === Routes.ADVANCED_ORDERS
-      const effectiveChainId = isTwapMode && providerChainId ? providerChainId : chainId
+      const effectiveChainId = providerChainId || chainId
 
       const route = parameterizeTradeRoute(
         {
@@ -63,25 +62,23 @@ export function useTradeNavigate(): UseTradeNavigateCallback {
         targetRoute,
       )
 
+      // Don't navigate if we're already on this route
       if (location.pathname === route) return
 
       const search = parameterizeTradeSearch(location.search, searchParams)
 
-      // For TWAP mode, use debouncing to prevent chain ID flipping
-      if (isTwapMode) {
-        // Clear any pending navigation
-        if (navigationTimeoutRef.current) {
-          clearTimeout(navigationTimeoutRef.current)
-        }
-
-        // Schedule the navigation with a delay
-        navigationTimeoutRef.current = setTimeout(() => {
-          navigate({ pathname: route, search })
-        }, TWAP_NAVIGATION_DEBOUNCE_MS)
-      } else {
-        // For non-TWAP modes, navigate immediately
-        navigate({ pathname: route, search })
+      // Clear any existing navigation timer
+      if (navigationTimerRef.current) {
+        clearTimeout(navigationTimerRef.current)
       }
+
+      // Create a new debounced navigation to prevent URL flipping
+      // This ensures we only navigate after things have settled, making URL updates more stable
+      navigationTimerRef.current = window.setTimeout(() => {
+        navigate({ pathname: route, search })
+        console.debug('[TRADE NAVIGATE] Navigating to:', route)
+        navigationTimerRef.current = null
+      }, NAVIGATION_DEBOUNCE_MS)
     },
     [tradeRoute, navigate, location.pathname, location.search, providerChainId],
   )

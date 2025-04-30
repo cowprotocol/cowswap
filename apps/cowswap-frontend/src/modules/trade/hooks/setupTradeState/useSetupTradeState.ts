@@ -34,13 +34,8 @@ export function useSetupTradeState(): void {
   const { state, updateState } = useTradeState()
   const tradeTypeInfo = useTradeTypeInfo()
 
-  // When wallet is connected, and user navigates to the URL with a new chainId
-  // We must change chainId in provider, and only then change the trade state
-  // Since the network chaning process takes some time, we have to remember the state from URL
   const rememberedUrlStateRef = useRef<TradeRawState | null>(null)
   const [isFirstLoad, setIsFirstLoad] = useState(true)
-  // Track network changes in progress with target chainId
-  const [pendingNetworkChange, setPendingNetworkChange] = useState<SupportedChainId | null>(null)
 
   const isWalletConnected = !!account
   const urlChainId = tradeStateFromUrl?.chainId
@@ -53,13 +48,7 @@ export function useSetupTradeState(): void {
 
   const switchNetworkInWallet = useCallback(
     (targetChainId: SupportedChainId) => {
-      // Set the pending network change to prevent reversion
-      setPendingNetworkChange(targetChainId)
-
       switchNetwork(targetChainId).catch((error: Error) => {
-        // Clear the pending state if network switch fails
-        setPendingNetworkChange(null)
-
         // We are ignoring Gnosis safe context error
         // Because it's a normal situation when we are not in Gnosis safe App
         if (error.name === 'NoSafeContext') return
@@ -94,17 +83,25 @@ export function useSetupTradeState(): void {
 
       // For any chain change, use default tokens (matching production behavior)
       const defaultState = getDefaultTradeRawState(providerChainId)
-      tradeNavigate(providerChainId, defaultState)
 
-      // Ensures TWAP internal state reflects the default state immediately after provider network change,
-      // preventing potential use of stale state before the URL-driven update cycle completes (unlike Swap/Limit modes).
-      if (isTwapMode && updateState) {
+      // Ensures internal state reflects the default state immediately after provider network change,
+      // preventing potential use of stale state before the URL-driven update cycle completes.
+      // Applied universally for robustness.
+      if (updateState) {
         updateState(defaultState)
       }
+
+      // Always navigate with the provider's chain ID as source of truth
+      tradeNavigate(providerChainId, defaultState)
     }
+
+    console.debug('[TRADE STATE]', 'Provider changed chainId', {
+      providerChainId,
+      urlChanges: rememberedUrlStateRef.current,
+    })
     // Triggering only when chainId was changed in the provider
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [providerChainId, prevProviderChainId, isTwapMode, updateState])
+  }, [providerChainId, prevProviderChainId, updateState])
 
   /**
    * On URL parameter changes
@@ -138,11 +135,6 @@ export function useSetupTradeState(): void {
     }
     // Not loaded yet, ignore
     if (!tradeStateFromUrl) {
-      return
-    }
-
-    // Skip updating from URL while there is a pending network change in progress
-    if (pendingNetworkChange !== null) {
       return
     }
 
@@ -202,7 +194,7 @@ export function useSetupTradeState(): void {
 
     // Triggering only on changes from URL
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tradeStateFromUrl, pendingNetworkChange])
+  }, [tradeStateFromUrl])
 
   /**
    * On:
