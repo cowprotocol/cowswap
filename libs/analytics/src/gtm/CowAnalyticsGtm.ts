@@ -194,6 +194,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
   }
 
   sendEvent(event: string | EventOptions, params?: unknown): void {
+    console.log('event ==>', event)
     const eventData: DataLayerEvent =
       typeof event === 'string'
         ? { event, ...(params as Record<string, unknown>) }
