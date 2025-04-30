@@ -1,4 +1,5 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+
 import { isNativeAddress } from './tokens'
 describe('tokens', () => {
   describe('isNativeAddress', () => {
