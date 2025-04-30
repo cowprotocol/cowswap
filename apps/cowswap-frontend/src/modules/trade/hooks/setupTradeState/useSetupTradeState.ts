@@ -76,7 +76,7 @@ export function useSetupTradeState(): void {
         }
       }
 
-      // For any chain change, use default tokens (matching production behavior)
+      // For any chain change, use default tokens
       const defaultState = getDefaultTradeRawState(providerChainId)
 
       // Ensures internal state reflects the default state immediately after provider network change,
