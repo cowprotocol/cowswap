@@ -17,6 +17,8 @@ export function SentryUpdater(): null {
 
   const { inputCurrencyId, outputCurrencyId } = state || {}
 
+  console.log('inputCurrencyId ==>', inputCurrencyId)
+  console.log('outputCurrencyId ==>', outputCurrencyId)
   useEffect(() => {
     if (windowVisible) {
       // setup scope/context/tags
