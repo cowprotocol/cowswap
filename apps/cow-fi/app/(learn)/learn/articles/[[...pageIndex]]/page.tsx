@@ -37,7 +37,7 @@ export default async function Page({ params }: Props) {
   const page = pageParam && pageIndexIsValid ? parseInt(pageParam, 10) : 1
 
   // Fetch paginated articles for display
-  const articlesResponse = (await getArticles({ page, pageSize: ARTICLES_PER_PAGE })) as ArticlesResponse
+  const articlesResponse = await getArticles({ page, pageSize: ARTICLES_PER_PAGE })
   const totalArticles = articlesResponse.meta?.pagination?.total || 0
 
   // If page number is out of bounds, redirect to page 1
