@@ -8,11 +8,15 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 export function isNativeAddress(tokenAddress: string, chainId: ChainId) {
   if (!tokenAddress || !chainId) return false
 
-  if (tokenAddress === 'ETH') return true
+  const tokenAddressLower = tokenAddress.toLowerCase()
+
+  if (tokenAddressLower === 'eth') return true
 
   const native = NATIVE_CURRENCIES[chainId]
 
-  return native && (tokenAddress === native.address || tokenAddress === native.symbol)
+  return (
+    native && (tokenAddressLower === native.address.toLowerCase() || tokenAddressLower === native.symbol?.toLowerCase())
+  )
 }
 
 export function toErc20Address(tokenAddress: string, chainId: ChainId): string {

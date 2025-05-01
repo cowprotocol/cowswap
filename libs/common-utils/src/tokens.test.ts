@@ -15,7 +15,9 @@ describe('tokens', () => {
 
     it('should return true if symbol is native currency', () => {
       expect(isNativeAddress('ETH', ChainId.MAINNET)).toBe(true)
+      expect(isNativeAddress('eth', ChainId.MAINNET)).toBe(true)
       expect(isNativeAddress('xDAI', ChainId.GNOSIS_CHAIN)).toBe(true)
+      expect(isNativeAddress('xdai', ChainId.GNOSIS_CHAIN)).toBe(true)
     })
   })
 })
