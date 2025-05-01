@@ -1,12 +1,15 @@
 import { useMemo } from 'react'
 
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useAppData } from 'modules/appData'
+import { useTokensBalancesCombined } from 'modules/combinedBalances/hooks/useTokensBalancesCombined'
 import {
   TradeBasicConfirmDetails,
   TradeConfirmation,
@@ -35,12 +38,10 @@ export interface SwapConfirmModalProps {
   outputCurrencyInfo: CurrencyPreviewInfo
   priceImpact: PriceImpact
   recipient?: string | null
-  hasEnoughWrappedBalanceForSwap: boolean
 }
 
 export function SwapConfirmModal(props: SwapConfirmModalProps) {
-  const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade, hasEnoughWrappedBalanceForSwap } =
-    props
+  const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade } = props
 
   const { account, chainId } = useWalletInfo()
   const { ensName } = useWalletDetails()
@@ -54,13 +55,34 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
   const submittedContent = useOrderSubmittedContent(chainId)
   const labelsAndTooltips = useLabelsAndTooltips()
 
+  const { values: balances } = useTokensBalancesCombined()
+
+  const disableConfirm = useMemo(() => {
+    const current = inputCurrencyInfo?.amount?.currency
+
+    if (current) {
+      const normalisedAddress = getCurrencyAddress(current).toLowerCase()
+      const balance = balances[normalisedAddress]
+      const balanceAsCurrencyAmount = CurrencyAmount.fromRawAmount(current, balance?.toString() ?? '0')
+
+      const isBalanceEnough = balanceAsCurrencyAmount
+        ? inputCurrencyInfo?.amount?.equalTo(balanceAsCurrencyAmount) ||
+          inputCurrencyInfo?.amount?.lessThan(balanceAsCurrencyAmount)
+        : false
+
+      return !isBalanceEnough
+    }
+
+    return true
+  }, [balances, inputCurrencyInfo])
+
   const buttonText = useMemo(() => {
-    if (!hasEnoughWrappedBalanceForSwap) {
+    if (disableConfirm) {
       const { amount } = inputCurrencyInfo
       return `Insufficient ${amount?.currency?.symbol || 'token'} balance`
     }
     return 'Confirm Swap'
-  }, [hasEnoughWrappedBalanceForSwap, inputCurrencyInfo])
+  }, [disableConfirm, inputCurrencyInfo])
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
@@ -72,7 +94,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={doTrade}
         onDismiss={tradeConfirmActions.onDismiss}
-        isConfirmDisabled={!hasEnoughWrappedBalanceForSwap}
+        isConfirmDisabled={disableConfirm}
         priceImpact={priceImpact}
         buttonText={buttonText}
         recipient={recipient}

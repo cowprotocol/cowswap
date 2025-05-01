@@ -85,11 +85,11 @@ export const LVR_CONTENT = [
         Liquidity providers expect their tokens to earn yield, but the dirty little secret of AMMs is that most
         liquidity pools lose money. In fact, hundreds of millions of dollars of LP funds are stolen by arbitrageurs
         every year<sup>1</sup>. These losses are known as loss-versus-rebalancing (LVR). LVR is a bigger source of MEV
-        than frontrunning and sandwich attacks combined.
+        than frontrunning and sandwich attacks combined
       </>
     ),
     description2:
-      "Andrea Canidio and Robin Fritsch, Arbitrageurs' profits, LVR, and sandwich attacks: batch trading as an AMM design response (November 2023).",
+      "Andrea Canidio and Robin Fritsch, Arbitrageurs' profits, LVR, and sandwich attacks: batch trading as an AMM design response (November 2023)",
     bgColor: 'transparent',
     image: IMG_COWAMM_LVR,
   },
