@@ -160,7 +160,7 @@ export default function Page() {
                 <TopicTitle fontSize={51}>Intents</TopicTitle>
                 <TopicDescription fontSize={28} color={Color.neutral50}>
                   CoW Protocol users sign an "intent to trade" message instead of directly executing orders on-chain
-                  (like on Uniswap). This lets solvers trade on behalf of the user.
+                  (like on Uniswap). This lets solvers trade on behalf of the user
                 </TopicDescription>
                 <Link
                   bgColor={Color.cowfi_purple3}
@@ -207,7 +207,7 @@ export default function Page() {
                 <TopicTitle fontSize={51}>Solvers</TopicTitle>
                 <TopicDescription fontSize={28} color={Color.neutral50}>
                   Professional third parties known as solvers find the most optimal trade path from a combination of
-                  public and private liquidity sources - finding better prices than most users could find on their own.
+                  public and private liquidity sources - finding better prices than most users could find on their own
                 </TopicDescription>
                 <Link
                   bgColor={Color.cowfi_purple3}
@@ -234,7 +234,7 @@ export default function Page() {
                   <br />
                   <br />
                   The solver that wins the batch auction is the solver that finds the most surplus - so they win when
-                  you win.
+                  you win
                 </TopicDescription>
                 <Link
                   bgColor={Color.cowfi_purple3}
@@ -577,7 +577,7 @@ export default function Page() {
               frequently.
               <br />
               <br />
-              Learn more about building a solver by reading the CoW Protocol docs.
+              Learn more about building a solver by reading the CoW Protocol docs
             </SectionTitleDescription>
 
             <Link
