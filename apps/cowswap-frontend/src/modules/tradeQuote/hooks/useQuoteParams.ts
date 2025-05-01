@@ -25,7 +25,7 @@ export interface QuoteParams {
   appData: AppDataInfo['doc'] | undefined
 }
 
-export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined {
+export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
   const { account } = useWalletInfo()
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
@@ -67,6 +67,7 @@ export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined
       receiver,
       validFor: DEFAULT_QUOTE_TTL,
       ...(volumeFee ? { partnerFee: volumeFee } : null),
+      partiallyFillable,
     }
 
     return { quoteParams, inputCurrency, appData: appData?.doc }
@@ -74,6 +75,7 @@ export function useQuoteParams(amount: Nullish<string>): QuoteParams | undefined
     inputCurrency,
     outputCurrency,
     amount,
+    partiallyFillable,
     orderKind,
     appData?.doc,
     receiver,

@@ -7,13 +7,20 @@ import { Nullish } from 'types'
 
 import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
 
-export function useSetTradeQuoteParams(amount: Nullish<CurrencyAmount<Currency>>, fastQuote?: boolean) {
+export interface SetTradeQuoteParams {
+  amount: Nullish<CurrencyAmount<Currency>>
+  partiallyFillable?: boolean
+  fastQuote?: boolean
+}
+
+export function useSetTradeQuoteParams({ amount, partiallyFillable, fastQuote }: SetTradeQuoteParams) {
   const updateState = useSetAtom(tradeQuoteInputAtom)
 
   useEffect(() => {
     updateState({
       amount: amount || null,
       fastQuote,
+      partiallyFillable,
     })
-  }, [updateState, amount, fastQuote])
+  }, [updateState, amount, partiallyFillable, fastQuote])
 }

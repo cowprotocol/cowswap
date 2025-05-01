@@ -30,6 +30,7 @@ export const CODE_LINK = 'https://github.com/' + GITHUB_REPOSITORY
 export const RAW_CODE_LINK = 'https://raw.githubusercontent.com/' + GITHUB_REPOSITORY
 export const DOCS_LINK = 'https://docs.cow.fi'
 export const PROTOCOL_LINK = 'https://cow.fi/cow-protocol'
+export const COWSWAP_LINK = 'https://swap.cow.fi'
 export const CONTRACTS_CODE_LINK = 'https://github.com/cowprotocol/contracts'
 export const DISCORD_LINK = 'https://discord.gg/cowprotocol'
 export const DUNE_DASHBOARD_LINK = 'https://dune.com/cowprotocol/cowswap'

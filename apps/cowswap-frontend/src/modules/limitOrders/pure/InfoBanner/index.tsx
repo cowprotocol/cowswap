@@ -23,7 +23,7 @@ export function InfoBanner() {
               Your order may not fill exactly when the market price reaches your limit price.{' '}
               <ReactRouterLink
                 target="_blank"
-                to="https://docs.cow.fi/governance/fees#surplus-fee-on-out-of-market-limit-orders"
+                to="https://docs.cow.fi/cow-protocol/tutorials/cow-swap/limit#track-a-limit-order"
                 data-click-event={toCowSwapGtmEvent({
                   category: CowSwapAnalyticsCategory.TRADE,
                   action: 'Click limit order fees FAQ link',
