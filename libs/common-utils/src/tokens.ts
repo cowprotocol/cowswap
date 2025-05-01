@@ -12,7 +12,7 @@ export function isNativeAddress(tokenAddress: string, chainId: ChainId) {
 
   const native = NATIVE_CURRENCIES[chainId]
 
-  return native ? tokenAddress === native.address || tokenAddress === native.symbol : false
+  return native && (tokenAddress === native.address || tokenAddress === native.symbol)
 }
 
 export function toErc20Address(tokenAddress: string, chainId: ChainId): string {
