@@ -10,10 +10,9 @@ export function isNativeAddress(tokenAddress: string, chainId: ChainId) {
 
   if (tokenAddress === 'ETH') return true
 
-  const maybeNativeCurrency = NATIVE_CURRENCIES[chainId]
-  return maybeNativeCurrency
-    ? tokenAddress === maybeNativeCurrency.address || tokenAddress === maybeNativeCurrency?.symbol
-    : false
+  const native = NATIVE_CURRENCIES[chainId]
+
+  return native ? tokenAddress === native.address || tokenAddress === native.symbol : false
 }
 
 export function toErc20Address(tokenAddress: string, chainId: ChainId): string {
