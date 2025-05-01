@@ -1,15 +1,19 @@
 import {
+  NATIVE_CURRENCIES,
   NATIVE_CURRENCY_ADDRESS,
   WRAPPED_NATIVE_CURRENCIES as WETH,
-  NATIVE_CURRENCIES,
 } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 export function isNativeAddress(tokenAddress: string, chainId: ChainId) {
   if (!tokenAddress || !chainId) return false
 
+  if (tokenAddress === 'ETH') return true
+
   const maybeNativeCurrency = NATIVE_CURRENCIES[chainId]
-  return maybeNativeCurrency ? tokenAddress === maybeNativeCurrency.address : false
+  return maybeNativeCurrency
+    ? tokenAddress === maybeNativeCurrency.address || tokenAddress === maybeNativeCurrency?.symbol
+    : false
 }
 
 export function toErc20Address(tokenAddress: string, chainId: ChainId): string {
