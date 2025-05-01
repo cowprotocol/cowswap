@@ -167,7 +167,7 @@ export function DaosPageComponent() {
                   >
                     Milkman bot
                   </Link>
-                  . Set the maximum deviation you&apos;ll accept, and Milkman will do the rest.
+                  . Set the maximum deviation you&apos;ll accept, and Milkman will do the rest
                 </TopicDescription>
               </TopicCardInner>
             </TopicCard>
@@ -180,7 +180,7 @@ export function DaosPageComponent() {
                 <TopicTitle>TWAP Orders</TopicTitle>
                 <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
                   Time-weighted average price orders allow you to spread your trade out over time, averaging out your
-                  trading price, minimizing price impact, and allowing for lower slippage.
+                  trading price, minimizing price impact, and allowing for lower slippage
                 </TopicDescription>
               </TopicCardInner>
             </TopicCard>
@@ -193,7 +193,7 @@ export function DaosPageComponent() {
                 <TopicTitle>Limit Orders</TopicTitle>
                 <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
                   CoW Swap's surplus-capturing limit orders allow you to set a price and sit back while your order gets
-                  filled over time - perfect for token buybacks and other large trades.
+                  filled over time - perfect for token buybacks and other large trades
                 </TopicDescription>
               </TopicCardInner>
             </TopicCard>
@@ -206,7 +206,7 @@ export function DaosPageComponent() {
                 <TopicTitle>Price Walls</TopicTitle>
                 <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
                   Pick an asset, define a threshold price, and CoW Swap will automatically sell above the threshold, and
-                  buy below it.
+                  buy below it
                 </TopicDescription>
               </TopicCardInner>
             </TopicCard>
@@ -233,7 +233,7 @@ export function DaosPageComponent() {
                     Dump.services
                   </Link>
                   , a collaboration between CoW Swap and Yearn, allows DAOs and traders to sell multiple tokens in a
-                  single transaction.
+                  single transaction
                 </TopicDescription>
               </TopicCardInner>
             </TopicCard>
@@ -246,7 +246,7 @@ export function DaosPageComponent() {
                 <TopicTitle>Place Your Logic Here</TopicTitle>
                 <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
                   ERC-1271 Smart Orders and CoW Hooks allow you to define your own complex trading logic; if you can
-                  think it, you can trade it.
+                  think it, you can trade it
                 </TopicDescription>
               </TopicCardInner>
             </TopicCard>

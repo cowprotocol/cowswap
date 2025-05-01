@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.22.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.0...cow-fi-v1.22.1) (2025-04-25)
+
+
+### Bug Fixes
+
+* add space before the link on mev blocker FAQ ([39c290a](https://github.com/cowprotocol/cowswap/commit/39c290a5729765f9f99eb542d36e04c9adc28f7b))
+
 ## [1.22.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.21.1...cow-fi-v1.22.0) (2025-03-20)
 
 
