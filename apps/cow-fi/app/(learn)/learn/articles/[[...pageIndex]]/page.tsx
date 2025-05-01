@@ -2,6 +2,7 @@ import { ArticlesPageComponents } from '@/components/ArticlesPageComponents'
 import { redirect } from 'next/navigation'
 import { Article, getArticles, getCategories } from '../../../../../services/cms'
 import { ARTICLES_PER_PAGE } from '@/const/pagination'
+import { calculateTotalPages } from '@/util/paginationUtils'
 
 type Props = {
   params: Promise<{ pageIndex?: string[] }>
@@ -19,7 +20,7 @@ export type ArticlesResponse = {
 export async function generateStaticParams() {
   const articlesResponse = await getArticles({ page: 0, pageSize: ARTICLES_PER_PAGE })
   const totalArticles = articlesResponse.meta?.pagination?.total || 0
-  const totalPages = Math.ceil(totalArticles / ARTICLES_PER_PAGE)
+  const totalPages = calculateTotalPages(totalArticles)
 
   return Array.from({ length: totalPages }, (_, i) => ({ pageIndex: [(i + 1).toString()] }))
 }
@@ -37,11 +38,12 @@ export default async function Page({ params }: Props) {
   const page = pageParam && pageIndexIsValid ? parseInt(pageParam, 10) : 1
 
   // Fetch paginated articles for display
-  const articlesResponse = (await getArticles({ page, pageSize: ARTICLES_PER_PAGE })) as ArticlesResponse
+  const articlesResponse = await getArticles({ page, pageSize: ARTICLES_PER_PAGE })
   const totalArticles = articlesResponse.meta?.pagination?.total || 0
 
-  // If page number is out of bounds, redirect to page 1
-  if (page > Math.ceil(totalArticles / ARTICLES_PER_PAGE)) {
+  // If page number is out of bounds (either less than 1 or greater than total pages), redirect to page 1
+  const numberOfPages = calculateTotalPages(totalArticles)
+  if (page < 1 || page > numberOfPages) {
     return redirect('/learn/articles')
   }
 
