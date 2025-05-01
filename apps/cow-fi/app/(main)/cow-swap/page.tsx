@@ -213,7 +213,7 @@ export default function Page() {
             </SectionTitleIcon>
             <SectionTitleText>S-moooo-th trading</SectionTitleText>
             <SectionTitleDescription color={Color.neutral60}>
-              CoW Swap features the smoothest trading experiences in DeFi, allowing you to worry less and do more.
+              CoW Swap features the smoothest trading experiences in DeFi, allowing you to worry less and do more
             </SectionTitleDescription>
           </SectionTitleWrapper>
 
