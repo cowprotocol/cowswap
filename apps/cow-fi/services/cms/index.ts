@@ -6,7 +6,7 @@ import { toQueryParams } from 'util/queryParams'
 import { getCmsClient } from '@cowprotocol/core'
 
 const DEFAULT_PAGE_SIZE = 100
-const CMS_CACHE_TIME = 5 * 60 // 5 min
+const CMS_CACHE_TIME = 60 * 60 // 60 minutes
 
 // Helper function for query serialization
 const querySerializer = (params: any) => {
@@ -38,7 +38,13 @@ export const client = getCmsClient()
 
 const clientAddons = {
   // https://github.com/openapi-ts/openapi-typescript/issues/1569#issuecomment-1982247959
-  fetch: (request: unknown) => fetch(request as Request, { next: { revalidate: CMS_CACHE_TIME } }),
+  fetch: (request: unknown) =>
+    fetch(request as Request, {
+      next: {
+        revalidate: CMS_CACHE_TIME,
+        tags: ['cms-content'], // tag for cache invalidation
+      },
+    }),
 }
 
 /**
@@ -219,7 +225,18 @@ export async function searchArticles({
  * @returns Article with the given slug
  */
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
-  return getBySlugAux(slug, '/articles')
+  if (!slug) {
+    console.error('getArticleBySlug called with empty slug')
+    return null
+  }
+
+  try {
+    const result = await getBySlugAux(slug, '/articles')
+    return result
+  } catch (error) {
+    console.error(`Error getting article by slug ${slug}:`, error)
+    throw error
+  }
 }
 
 /**
