@@ -44,6 +44,10 @@ export function ApproveButton(props: ApproveButtonProps) {
             <Trans>
               Allow CoW Swap to use your <TokenSymbol token={currency} />
             </Trans>
+            style={{
+            paddingLeft: '3px',
+            paddingRight: '3px',            
+          }}
           </span>
           <HoverTooltip
             wrapInContainer
