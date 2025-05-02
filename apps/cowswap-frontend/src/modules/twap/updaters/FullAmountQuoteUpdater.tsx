@@ -5,7 +5,7 @@ import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { useTradeQuote, useQuoteParams } from 'modules/tradeQuote'
+import { useQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
 import { getQuote } from 'api/cowProtocol/api'
 
@@ -26,15 +26,21 @@ export function FullAmountQuoteUpdater() {
   useEffect(() => {
     if (error || isLoading || !partQuoteAmount || !quoteParams) return
 
-    getQuoteOnlyResolveLast(quoteParams).then((response) => {
-      const { cancelled, data } = response
+    getQuoteOnlyResolveLast(quoteParams)
+      .then((response) => {
+        const { cancelled, data } = response
 
-      if (cancelled) {
-        return
-      }
+        if (cancelled) {
+          return
+        }
 
-      updateQuoteState(data)
-    })
+        updateQuoteState(data)
+      })
+      .catch((error) => {
+        const parsedError = error as Error
+
+        console.log('[FullAmountQuoteUpdater]:: fetchQuote error', parsedError)
+      })
   }, [partQuoteAmount, isLoading, error, quoteParams, updateQuoteState])
 
   return null
