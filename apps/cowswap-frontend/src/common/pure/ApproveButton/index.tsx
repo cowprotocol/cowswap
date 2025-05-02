@@ -42,7 +42,7 @@ export function ApproveButton(props: ApproveButtonProps) {
           {/* we need to shorten this string on mobile */}
           <span>
             <Trans>
-              {' '}Allow CoW Swap to use your <TokenSymbol token={currency}{' '}/>
+              {' '}Allow CoW Swap to use your <TokenSymbol token={currency}/>{' '}
             </Trans>
           </span>
           <HoverTooltip
