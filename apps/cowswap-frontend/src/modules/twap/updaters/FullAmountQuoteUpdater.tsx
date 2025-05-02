@@ -2,16 +2,18 @@ import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
-import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
+import { QuoteAndPost } from '@cowprotocol/cow-sdk'
+
+import { tradingSdk } from 'tradingSdk/tradingSdk'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
-import { getQuote } from 'api/cowProtocol/api'
-
 import { fullAmountQuoteAtom } from '../state/fullAmountQuoteAtom'
 
-const getQuoteOnlyResolveLast = onlyResolvesLast<OrderQuoteResponse>(getQuote)
+const getQuote = tradingSdk.getQuote.bind(tradingSdk)
+
+const getQuoteOnlyResolveLast = onlyResolvesLast<QuoteAndPost>(getQuote)
 
 export function FullAmountQuoteUpdater() {
   const { inputCurrencyAmount } = useAdvancedOrdersDerivedState()
@@ -33,8 +35,9 @@ export function FullAmountQuoteUpdater() {
         if (cancelled) {
           return
         }
+        const { quoteResults } = data
 
-        updateQuoteState(data)
+        updateQuoteState(quoteResults.quoteResponse)
       })
       .catch((error) => {
         const parsedError = error as Error
