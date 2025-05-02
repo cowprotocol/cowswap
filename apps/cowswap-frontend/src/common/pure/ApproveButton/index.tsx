@@ -41,13 +41,13 @@ export function ApproveButton(props: ApproveButtonProps) {
         <>
           {/* we need to shorten this string on mobile */}
           <span>
+            style={{
+              paddingLeft: '3px',
+              paddingRight: '3px',            
+             }}
             <Trans>
               Allow CoW Swap to use your <TokenSymbol token={currency} />
-            </Trans>
-            style={{
-            paddingLeft: '3px',
-            paddingRight: '3px',            
-          }}
+            </Trans>             
           </span>
           <HoverTooltip
             wrapInContainer
