@@ -19,7 +19,7 @@ export function useHookStateDiff(isPreHook: boolean, hookToEditUid?: string): St
     return data[lastPreHook?.uuid]?.stateDiff || EMPTY_STATE_DIFF
   }, [data, preHooks])
 
-  const postHookBalanceDiff = useMemo(() => {
+  const postHookStateDiff = useMemo(() => {
     // is adding the first post hook or simulation not available
     if (!data || !postHooks) return preHookStateDiff
 
@@ -27,7 +27,7 @@ export function useHookStateDiff(isPreHook: boolean, hookToEditUid?: string): St
     return data[lastPostHook?.uuid]?.stateDiff || preHookStateDiff
   }, [data, preHookStateDiff, postHooks])
 
-  const hookToEditBalanceDiff = useMemo(() => {
+  const hookToEditStateDiff = useMemo(() => {
     if (!data || !hookToEditUid) return EMPTY_STATE_DIFF
 
     const otherHooks = isPreHook ? preHooks : postHooks
@@ -47,8 +47,8 @@ export function useHookStateDiff(isPreHook: boolean, hookToEditUid?: string): St
   }, [data, hookToEditUid, isPreHook, preHooks, postHooks, preHookStateDiff])
 
   return useMemo(() => {
-    if (hookToEditUid) return hookToEditBalanceDiff
+    if (hookToEditUid) return hookToEditStateDiff
     if (isPreHook) return preHookStateDiff
-    return postHookBalanceDiff
-  }, [hookToEditBalanceDiff, hookToEditUid, isPreHook, postHookBalanceDiff, preHookStateDiff])
+    return postHookStateDiff
+  }, [hookToEditStateDiff, hookToEditUid, isPreHook, postHookStateDiff, preHookStateDiff])
 }
