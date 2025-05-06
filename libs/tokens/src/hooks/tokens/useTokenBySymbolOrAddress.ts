@@ -38,7 +38,7 @@ export function useTokenBySymbolOrAddress(symbolOrAddress?: string | null): Toke
       // Ignore if not a valid address (e.g., it's a symbol)
     }
 
-    // NEW: Check all user-added tokens to see if any match the symbol
+    // Check all user-added tokens to see if any match the symbol
     if (userAddedTokensForChain && Object.keys(userAddedTokensForChain).length > 0) {
       // Find the first token with a matching symbol
       const userTokenWithMatchingSymbol = Object.values(userAddedTokensForChain).find(
