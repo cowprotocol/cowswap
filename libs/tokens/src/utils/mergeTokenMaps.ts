@@ -5,7 +5,7 @@ import { TokensMap } from '../types'
  * Earlier® maps in the list take precedence for basic properties, but tags are concatenated
  */
 export function mergeTokenMaps(...tokenMaps: (TokensMap | null | undefined)[]): TokensMap {
-  // Note: Develop version logic. Earlier maps in the original list (processed later here)
+  // Note: Earlier maps in the original list (processed later here)
   // have their properties OVERRIDDEN by later maps in the original list (processed earlier here).
   return tokenMaps.reduce<TokensMap>((acc, currentMap) => {
     if (!currentMap) return acc
