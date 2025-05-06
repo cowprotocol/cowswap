@@ -53,7 +53,7 @@ const GEOBLOCK_ERRORS_TO_IGNORE = /(failed to fetch)|(load failed)/i
 
 export function TokensListsUpdater({
   chainId: currentChainId,
-  isGeoBlockEnabled = true,
+  isGeoBlockEnabled,
   enableLpTokensByDefault,
   isYieldEnabled,
   bridgeNetworkInfo,
