@@ -33,9 +33,9 @@ export function ApproveButton(props: ApproveButtonProps) {
     if (isConfirmed) {
       return (
         <>
-          <Trans>
-            You can now trade <TokenSymbol token={currency} />
-          </Trans>
+         <Trans>
+           You can now trade <TokenSymbol token={currency} />
+         </Trans>
           <CheckCircle size="24" />
         </>
       )
