@@ -53,7 +53,7 @@ const GEOBLOCK_ERRORS_TO_IGNORE = /(failed to fetch)|(load failed)/i
 
 export function TokensListsUpdater({
   chainId: currentChainId,
-  isGeoBlockEnabled,
+  isGeoBlockEnabled = true,
   enableLpTokensByDefault,
   isYieldEnabled,
   bridgeNetworkInfo,
@@ -108,6 +108,7 @@ export function TokensListsUpdater({
         const isUsUser = country === 'US'
 
         if (isUsUser) {
+          // set curated first, then update time
           setEnvironment({ useCuratedListOnly: true })
           updateLastUpdateTime({ [chainId]: 0 })
         }
