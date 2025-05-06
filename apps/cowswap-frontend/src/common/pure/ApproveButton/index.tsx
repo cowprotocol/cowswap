@@ -25,6 +25,9 @@ export function ApproveButton(props: ApproveButtonProps) {
   const isPending = state === ApprovalState.PENDING
   const isConfirmed = state === ApprovalState.APPROVED
   const disabled = isDisabled || state !== ApprovalState.NOT_APPROVED
+  const Wrapper = styled.span`
+   padding: 0 3px;  
+`
 
   const content = useMemo(() => {
     if (isConfirmed) {
@@ -40,16 +43,11 @@ export function ApproveButton(props: ApproveButtonProps) {
       return (
         <>
           {/* we need to shorten this string on mobile */}
-          <span
-            style={{
-              paddingLeft: '3px',
-              paddingRight: '3px',            
-             }}
-            >
+          <Wrapper>
               <Trans>
                 Allow CoW Swap to use your <TokenSymbol token={currency} />
               </Trans>             
-          </span>
+          </Wrapper>
           <HoverTooltip
             wrapInContainer
             content={
