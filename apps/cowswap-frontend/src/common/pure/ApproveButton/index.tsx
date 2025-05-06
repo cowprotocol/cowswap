@@ -7,7 +7,7 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import { CheckCircle, HelpCircle } from 'react-feather'
-import { ThemeContext } from 'styled-components/macro'
+import styled, { ThemeContext } from 'styled-components/macro'
 
 import { ApprovalState } from '../../hooks/useApproveState'
 
