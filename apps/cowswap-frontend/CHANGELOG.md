@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.106.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.1...cowswap-v1.106.2) (2025-05-07)
+
+
+### Bug Fixes
+
+* button's text color on Confirm price impact modal ([#5664](https://github.com/cowprotocol/cowswap/issues/5664)) ([8f50581](https://github.com/cowprotocol/cowswap/commit/8f50581df40cedeb9e75b549a842b5afc61ea310))
+* mix UI fixes ([#5666](https://github.com/cowprotocol/cowswap/issues/5666)) ([3a9ef2b](https://github.com/cowprotocol/cowswap/commit/3a9ef2baf46364876be84e781d0b456ccb247008))
+* **tokens:** fix token import logic for user-added tokens ([#5668](https://github.com/cowprotocol/cowswap/issues/5668)) ([73aeba3](https://github.com/cowprotocol/cowswap/commit/73aeba388892106cb7bf7c9b5addef6d679d491d))
+* **twap:** quote 405 error ([#5665](https://github.com/cowprotocol/cowswap/issues/5665)) ([1182531](https://github.com/cowprotocol/cowswap/commit/1182531efc94ec711ea0755d5e78f6b193e81c54))
+
+## [1.106.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.0...cowswap-v1.106.1) (2025-05-01)
+
+
+### Bug Fixes
+
+* **twap:** chainid url v2 ([#5657](https://github.com/cowprotocol/cowswap/issues/5657)) ([aa9c4c5](https://github.com/cowprotocol/cowswap/commit/aa9c4c51706de3928bb46455ad8310d55be3eff4))
+
 ## [1.106.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.105.3...cowswap-v1.106.0) (2025-04-25)
 
 
