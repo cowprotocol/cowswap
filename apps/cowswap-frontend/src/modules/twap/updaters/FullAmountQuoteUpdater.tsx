@@ -2,16 +2,18 @@ import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
-import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
+import { QuoteAndPost } from '@cowprotocol/cow-sdk'
+
+import { tradingSdk } from 'tradingSdk/tradingSdk'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { useTradeQuote, useQuoteParams } from 'modules/tradeQuote'
-
-import { getQuote } from 'api/cowProtocol/api'
+import { useQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
 import { fullAmountQuoteAtom } from '../state/fullAmountQuoteAtom'
 
-const getQuoteOnlyResolveLast = onlyResolvesLast<OrderQuoteResponse>(getQuote)
+const getQuote = tradingSdk.getQuote.bind(tradingSdk)
+
+const getQuoteOnlyResolveLast = onlyResolvesLast<QuoteAndPost>(getQuote)
 
 export function FullAmountQuoteUpdater() {
   const { inputCurrencyAmount } = useAdvancedOrdersDerivedState()
@@ -26,15 +28,22 @@ export function FullAmountQuoteUpdater() {
   useEffect(() => {
     if (error || isLoading || !partQuoteAmount || !quoteParams) return
 
-    getQuoteOnlyResolveLast(quoteParams).then((response) => {
-      const { cancelled, data } = response
+    getQuoteOnlyResolveLast(quoteParams)
+      .then((response) => {
+        const { cancelled, data } = response
 
-      if (cancelled) {
-        return
-      }
+        if (cancelled) {
+          return
+        }
+        const { quoteResults } = data
 
-      updateQuoteState(data)
-    })
+        updateQuoteState(quoteResults.quoteResponse)
+      })
+      .catch((error) => {
+        const parsedError = error as Error
+
+        console.log('[FullAmountQuoteUpdater]:: fetchQuote error', parsedError)
+      })
   }, [partQuoteAmount, isLoading, error, quoteParams, updateQuoteState])
 
   return null
