@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.106.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.0...cowswap-v1.106.1) (2025-05-01)
+
+
+### Bug Fixes
+
+* **twap:** chainid url v2 ([#5657](https://github.com/cowprotocol/cowswap/issues/5657)) ([aa9c4c5](https://github.com/cowprotocol/cowswap/commit/aa9c4c51706de3928bb46455ad8310d55be3eff4))
+
 ## [1.106.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.105.3...cowswap-v1.106.0) (2025-04-25)
 
 
