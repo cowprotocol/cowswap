@@ -1,10 +1,10 @@
 import {
+  isCoinbaseWalletBrowser,
   isImTokenBrowser,
   isInjectedWidget,
   isProdLike,
   majorBrowserVersion,
   userAgent,
-  isCoinbaseWalletBrowser,
 } from '@cowprotocol/common-utils'
 import { UiOrderType } from '@cowprotocol/types'
 
