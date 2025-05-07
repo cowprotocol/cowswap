@@ -1,11 +1,22 @@
 import { UAParser } from 'ua-parser-js'
 
+// Augment the Window interface to include the ethereum property
+declare global {
+  interface Window {
+    ethereum?: {
+      isCoinbaseWallet?: boolean
+      // Add other ethereum provider properties if needed by common-utils
+    }
+  }
+}
+
 let userAgentRaw: string = ''
 let parser: UAParser = new UAParser()
 let type: string = ''
 let userAgent: any = {}
 let isMobile: boolean = false
 let isImTokenBrowser: boolean = false
+let isCoinbaseWalletBrowser: boolean = false
 let majorBrowserVersion: number | undefined
 let isChrome: boolean = false
 
@@ -17,6 +28,7 @@ if (typeof window !== 'undefined') {
   userAgent = parser.getResult()
   isMobile = type === 'mobile' || type === 'tablet'
   isImTokenBrowser = /imToken/.test(userAgentRaw)
+  isCoinbaseWalletBrowser = window.ethereum?.isCoinbaseWallet === true
 
   function getBrowserMajorVersion() {
     const major = userAgent.browser.version?.split('.')[0]
@@ -29,4 +41,4 @@ if (typeof window !== 'undefined') {
   isChrome = name?.toLowerCase().startsWith('chrome') || false
 }
 
-export { userAgent, isMobile, isImTokenBrowser, majorBrowserVersion, isChrome }
+export { userAgent, isMobile, isImTokenBrowser, isCoinbaseWalletBrowser, majorBrowserVersion, isChrome }
