@@ -11,6 +11,18 @@ import styled, { ThemeContext } from 'styled-components/macro'
 
 import { ApprovalState } from '../../hooks/useApproveState'
 
+const ApproveButtonContentWrapper = styled.span`
+  padding: 0 3px;
+`
+
+const TokenLogoContainer = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+  font-size: 14px;
+`
+
 export interface ApproveButtonProps {
   currency: Currency | undefined | null
   state: ApprovalState
@@ -25,17 +37,14 @@ export function ApproveButton(props: ApproveButtonProps) {
   const isPending = state === ApprovalState.PENDING
   const isConfirmed = state === ApprovalState.APPROVED
   const disabled = isDisabled || state !== ApprovalState.NOT_APPROVED
-  const Wrapper = styled.span`
-   padding: 0 3px;  
-`
 
   const content = useMemo(() => {
     if (isConfirmed) {
       return (
         <>
-         <Trans>
-           You can now trade <TokenSymbol token={currency} />
-         </Trans>
+          <Trans>
+            You can now trade <TokenSymbol token={currency} />
+          </Trans>
           <CheckCircle size="24" />
         </>
       )
@@ -43,11 +52,11 @@ export function ApproveButton(props: ApproveButtonProps) {
       return (
         <>
           {/* we need to shorten this string on mobile */}
-          <Wrapper>
-              <Trans>
-                Allow CoW Swap to use your <TokenSymbol token={currency} />
-              </Trans>             
-          </Wrapper>
+          <ApproveButtonContentWrapper>
+            <Trans>
+              Allow CoW Swap to use your <TokenSymbol token={currency} />
+            </Trans>
+          </ApproveButtonContentWrapper>
           <HoverTooltip
             wrapInContainer
             content={
@@ -75,19 +84,10 @@ export function ApproveButton(props: ApproveButtonProps) {
       confirmed={isConfirmed}
     >
       <AutoRow justify="space-between" style={{ flexWrap: 'nowrap' }}>
-        <span
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-evenly',
-            width: '100%',
-            fontSize: '14px',
-          }}
-        >
+        <TokenLogoContainer>
           <TokenLogo token={currency} size={24} />
-
           {content}
-        </span>
+        </TokenLogoContainer>
       </AutoRow>
     </ButtonConfirmed>
   )
