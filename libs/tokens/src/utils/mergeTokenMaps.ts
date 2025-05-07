@@ -1,12 +1,12 @@
 import { TokensMap } from '../types'
 
 /**
- * Merges multiple token maps into a single map, combining token properties and tags
- * Earlier® maps in the list take precedence for basic properties, but tags are concatenated
+ * Merges multiple token maps into a single map, combining token properties and tags.
+ * Later maps in the list take precedence for basic properties (overwriting earlier ones),
+ * but tags are concatenated (preserving original list order).
  */
 export function mergeTokenMaps(...tokenMaps: (TokensMap | null | undefined)[]): TokensMap {
-  // Note: Earlier maps in the original list (processed later here)
-  // have their properties OVERRIDDEN by later maps in the original list (processed earlier here).
+  // Maps processed later in the array override properties of earlier maps when addresses match
   return tokenMaps.reduce<TokensMap>((acc, currentMap) => {
     if (!currentMap) return acc
 
@@ -14,10 +14,9 @@ export function mergeTokenMaps(...tokenMaps: (TokensMap | null | undefined)[]): 
       const lowerAddress = address.toLowerCase()
       if (acc[lowerAddress]) {
         acc[lowerAddress] = {
-          ...token, // Properties from the current map (earlier in original list)
-          ...acc[lowerAddress], // Properties from the accumulator (later in original list - these override)
-          // Tags are concatenated, preserving original list order (acc first, then token)
-          tags: [...(acc[lowerAddress].tags || []), ...(token.tags || [])],
+          ...token, // Properties from the current token (processed earlier)
+          ...acc[lowerAddress], // Properties from accumulated tokens override (processed later)
+          tags: [...(acc[lowerAddress].tags || []), ...(token.tags || [])], // Tags are concatenated
         }
       } else {
         acc[lowerAddress] = token
