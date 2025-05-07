@@ -170,7 +170,7 @@ export function SurplusCard() {
             <i>
               Your total surplus{' '}
               <HelpTooltip
-                text={`The total surplus CoW Swap has generated for you in ${nativeSymbol} across all your trades since ${startDate}`}
+                text={`The total surplus CoW Swap has generated for you in ${nativeSymbol} across all your trades since ${startDate}.`}
               />
             </i>
           </span>
