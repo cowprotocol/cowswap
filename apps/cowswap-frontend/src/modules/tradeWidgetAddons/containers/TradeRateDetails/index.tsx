@@ -1,11 +1,10 @@
 import { useMemo, useState, useCallback, ReactElement } from 'react'
 
-// TODO(bridge): Import the bridge hooks and state from the bridge module once the bridge is implemented
-// import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
-// import { useWalletDetails } from '@cowprotocol/wallet'
+import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
+import { useWalletDetails } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { BridgeProvider, BridgeRouteBreakdown, createBridgeData, useBridgeProviderDetails } from 'modules/bridge'
+import { BridgeData, BridgeRouteBreakdown, BridgeProtocolConfig } from 'modules/bridge'
 import {
   getTotalCosts,
   TradeFeesAndCosts,
@@ -15,9 +14,8 @@ import {
   useReceiveAmountInfo,
   useShouldPayGas,
   useIsHooksTradeType,
+  useIsCurrentTradeBridging,
 } from 'modules/trade'
-// TODO(bridge): Import the isCurrentTradeBridging hook from the bridge module once the bridge is implemented
-// import { useIsCurrentTradeBridging } from 'modules/trade/hooks/useIsCurrentTradeBridging'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
 import { useUsdAmount } from 'modules/usdAmount'
@@ -38,10 +36,6 @@ interface TradeRateDetailsProps {
   isTradePriceUpdating: boolean
 }
 
-// TODO(bridge): Generates a random bridge transaction time estimate between 2-15 minutes
-// In the final implementation, this should be replaced with actual time calculations from bridge providers
-const getBridgeEstimatedMinutes = () => Math.floor(Math.random() * (15 - 2 + 1)) + 2
-
 export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdating }: TradeRateDetailsProps) {
   const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(false)
 
@@ -51,51 +45,23 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
   const shouldPayGas = useShouldPayGas()
-  // const { isSmartContractWallet } = useWalletDetails()
-
-  // TODO(bridge): Bridge-related hooks and state
-  // TODO(bridge): Use the bridge hooks and state from the bridge module once the bridge is implemented
-  // const _isBridgingEnabled = useIsBridgingEnabled(isSmartContractWallet)
   const isHooksTabEnabled = useIsHooksTradeType()
+  const { isSmartContractWallet } = useWalletDetails()
 
-  // TODO(bridge): For now, force showBridgeUI to true for demo purposes.
-  // In production, this should be: const showBridgeUI = _isBridgingEnabled && _isCurrentTradeBridging
-  const showBridgeUI = true
-
-  // TODO(bridge): Use default bridge provider for now - can be made configurable later
-  const bridgeProvider = BridgeProvider.BUNGEE
-  const providerDetails = useBridgeProviderDetails(bridgeProvider)
-
-  // Create example bridge data using the provider details
-  const bridgeData = useMemo(() => {
-    if (!showBridgeUI) return null
-
-    try {
-      const data = createBridgeData({
-        bridgeProvider: providerDetails,
-        estimatedTime: getBridgeEstimatedMinutes(),
-      })
-
-      return data
-    } catch (error) {
-      console.error('Failed to create bridge data:', error)
-      // In case of error, return null to fall back to regular trade UI
-      return null
-    }
-  }, [providerDetails, showBridgeUI])
-
-  // Get bridge time estimate with error handling
-  const bridgeEstimatedTime = useMemo(
-    () => (showBridgeUI && bridgeData ? bridgeData.estimatedTime : undefined),
-    [showBridgeUI, bridgeData],
-  )
+  // Bridge related state
+  const isBridgingEnabled = useIsBridgingEnabled(isSmartContractWallet)
+  const isCurrentTradeBridging = useIsCurrentTradeBridging()
+  const showBridgeUI = isBridgingEnabled && isCurrentTradeBridging
+  // TODO: Set a real value for bridgeData based on bridging logic
+  const bridgeData: BridgeData | null = null
+  const providerDetails: BridgeProtocolConfig | undefined = (bridgeData as any)?.bridgeProvider
+  const bridgeEstimatedTime: number | undefined = (bridgeData as any)?.estimatedTime
 
   const inputCurrency = derivedTradeState?.inputCurrency
   const costsExceedFeeRaw = tradeQuote.error instanceof QuoteApiError ? tradeQuote?.error?.data?.fee_amount : undefined
 
   const networkFeeAmount = useMemo(() => {
     if (!costsExceedFeeRaw || !inputCurrency) return null
-
     return CurrencyAmount.fromRawAmount(inputCurrency, costsExceedFeeRaw)
   }, [costsExceedFeeRaw, inputCurrency])
 
@@ -124,13 +90,10 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
 
   const totalCosts = getTotalCosts(receiveAmountInfo)
 
-  // Determine if Bridge UI should be rendered based on additional conditions:
-  // 1. Not on the Hooks tab
-  // 2. Tokens are on different chains (cross-chain trade)
-  const shouldRenderBridgeUI = showBridgeUI && bridgeData && !isHooksTabEnabled
+  const shouldRenderBridgeUI = !!(showBridgeUI && bridgeData && !isHooksTabEnabled)
 
   const accordionContent = shouldRenderBridgeUI ? (
-    <BridgeRouteBreakdown {...bridgeData} />
+    <BridgeRouteBreakdown {...(bridgeData as BridgeData)} />
   ) : (
     <>
       <TradeFeesAndCosts
@@ -159,7 +122,7 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
       toggleAccordion={toggleAccordion}
       bridgeEstimatedTime={bridgeEstimatedTime}
       bridgeProtocol={providerDetails}
-      showBridgeUI={!!shouldRenderBridgeUI}
+      showBridgeUI={shouldRenderBridgeUI}
     >
       {accordionContent}
     </TradeTotalCostsDetails>

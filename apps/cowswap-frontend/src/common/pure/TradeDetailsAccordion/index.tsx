@@ -9,12 +9,9 @@ import { BridgeAccordionSummary, BridgeProtocolConfig } from 'modules/bridge'
 import { Wrapper, Summary, SummaryClickable, ToggleIcon, Details } from './styled'
 
 /**
- 
- * TODO(bridge): The following bridge-related props are temporary for the bridge demo
- * and will be refactored or moved when actual bridge functionality is implemented.
- * @property {number} [bridgeEstimatedTime] - Estimated time for bridge transaction in minutes
+ * @property {number} [bridgeEstimatedTime] - Estimated time for bridge transaction
  * @property {BridgeProtocolConfig} [bridgeProtocol] - Information about the bridge protocol
- * @property {boolean} [showBridgeUI] - Whether to show bridge-related UI elements
+ * @property {boolean} [showBridgeUI] - Whether to show bridge-related UI elements in the summary
  */
 interface TradeDetailsAccordionProps {
   rateInfo: React.ReactNode
@@ -36,9 +33,7 @@ interface TradeDetailsAccordionProps {
  * This component displays rate information, fee amounts, and can expand to show
  * more detailed information about a trade.
  *
- * TODO(bridge): Currently has temporary bridge-related functionality for demo purposes.
- * When the actual bridge implementation is completed, this component should be revisited
- * to ensure it remains a "dumb" UI component while supporting bridge UI needs.
+ * Optionally displays bridge-related summary info if corresponding props are provided.
  */
 export const TradeDetailsAccordion = ({
   rateInfo,

@@ -17,9 +17,7 @@ export interface TradeRatesProps {
   toggleAccordion: () => void
   children?: ReactNode
 
-  // TODO(bridge): The following props are temporary for bridge demo and will be refactored
-  // when actual bridging functionality is implemented. They allow bridge information to be
-  // displayed in the accordion UI.
+  // Optional props for displaying bridge info in the accordion summary
   bridgeEstimatedTime?: number
   bridgeProtocol?: BridgeProtocolConfig
   showBridgeUI?: boolean
@@ -32,8 +30,6 @@ export function TradeTotalCostsDetails(props: TradeRatesProps) {
     isFeeDetailsOpen,
     toggleAccordion,
     children,
-    // TODO(bridge): These bridge-related props are temporary and will be replaced
-    // with actual bridge data when the full bridge implementation is completed
     bridgeEstimatedTime,
     bridgeProtocol,
     showBridgeUI,
@@ -51,7 +47,6 @@ export function TradeTotalCostsDetails(props: TradeRatesProps) {
       feeTotalAmount={totalCosts}
       open={isFeeDetailsOpen}
       onToggle={toggleAccordion}
-      // TODO(bridge): Passing bridge props through for demo purposes
       bridgeEstimatedTime={bridgeEstimatedTime}
       bridgeProtocol={bridgeProtocol}
       showBridgeUI={showBridgeUI}

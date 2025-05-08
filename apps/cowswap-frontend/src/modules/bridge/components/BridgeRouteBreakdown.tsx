@@ -27,6 +27,7 @@ import {
   RecipientWrapper,
   RouteHeader,
   RouteTitle,
+  StopNumberCircle,
   StopTitle,
   StopsInfo,
   TokenFlowContainer,
@@ -105,6 +106,9 @@ export interface BridgeRouteBreakdownProps {
   recipientChainId?: SupportedChainId
   sourceChainId?: SupportedChainId
   tokenLogoSize?: number
+
+  // Display options
+  hideBridgeFlowFiatAmount?: boolean
 }
 
 /**
@@ -134,6 +138,7 @@ export function BridgeRouteBreakdown({
   recipientChainId = SupportedChainId.MAINNET, // Default to Ethereum mainnet
   sourceChainId = SupportedChainId.MAINNET, // Default to Ethereum mainnet
   tokenLogoSize = 18,
+  hideBridgeFlowFiatAmount = false,
 }: BridgeRouteBreakdownProps) {
   // Create token objects for the swap tokens
   const sellTokenObj = new TokenWithLogo(
@@ -220,8 +225,12 @@ export function BridgeRouteBreakdown({
       </RouteHeader>
 
       <StopTitle>
-        <ProtocolIcons showOnlyFirst size={21} secondProtocol={bridgeProvider} />
-        <b>Stop 1 → Swap on CoW Protocol</b>
+        <StopNumberCircle>1</StopNumberCircle>
+        <b>
+          <span>Swap on </span>
+          <ProtocolIcons showOnlyFirst size={21} secondProtocol={bridgeProvider} />
+          <span> CoW Protocol</span>
+        </b>
       </StopTitle>
 
       <ConfirmDetailsItem label="" withTimelineDot>
@@ -336,8 +345,12 @@ export function BridgeRouteBreakdown({
       <DividerHorizontal margin="8px 0 4px" />
 
       <StopTitle>
-        <ProtocolIcons showOnlySecond size={21} secondProtocol={bridgeProvider} />
-        <b>Stop 2 → Bridge via {bridgeProvider.title}</b>
+        <StopNumberCircle>2</StopNumberCircle>
+        <b>
+          <span>Bridge via </span>
+          <ProtocolIcons showOnlySecond size={21} secondProtocol={bridgeProvider} />
+          <span> {bridgeProvider.title}</span>
+        </b>
       </StopTitle>
 
       <ConfirmDetailsItem label="" withTimelineDot>
@@ -350,10 +363,14 @@ export function BridgeRouteBreakdown({
           <AmountWithTokenIcon>
             <TokenLogo token={destTokenObj} size={tokenLogoSize} />
             {bridgeReceiveAmount} {bridgeToken} on {recipientChainName}
-            {bridgeReceiveAmountUsd && (
-              <i>
-                (<FiatAmount amount={bridgeReceiveAmountUsd} />)
-              </i>
+            {hideBridgeFlowFiatAmount || (
+              <>
+                {bridgeReceiveAmountUsd && (
+                  <i>
+                    (<FiatAmount amount={bridgeReceiveAmountUsd} />)
+                  </i>
+                )}
+              </>
             )}
           </AmountWithTokenIcon>
         </TokenFlowContainer>

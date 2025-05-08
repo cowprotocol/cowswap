@@ -30,6 +30,7 @@ export enum UI {
   COLOR_TEXT_OPACITY_60 = '--cow-color-text-opacity-60',
   COLOR_TEXT_OPACITY_50 = '--cow-color-text-opacity-50',
   COLOR_TEXT_OPACITY_25 = '--cow-color-text-opacity-25',
+  COLOR_TEXT_OPACITY_15 = '--cow-color-text-opacity-15',
   COLOR_TEXT_OPACITY_10 = '--cow-color-text-opacity-10',
 
   COLOR_SECONDARY_TEXT = '--cow-color-secondary-text',

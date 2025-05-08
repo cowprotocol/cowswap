@@ -11,13 +11,35 @@ export const Wrapper = styled.div`
   width: 100%;
 `
 
+export const StopNumberCircle = styled.div`
+  --size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background-color: var(${UI.COLOR_TEXT_OPACITY_15});
+  color: var(${UI.COLOR_TEXT});
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
+  font-size: 13px;
+`
+
 export const StopTitle = styled.div`
   display: flex;
   width: 100%;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   margin: 0 0 0 -4px;
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
+  font-size: 14px;
+
+  > b {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+  }
 `
 
 export const RouteHeader = styled.div`
