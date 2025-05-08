@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.106.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.2...cowswap-v1.106.3) (2025-05-08)
+
+
+### Bug Fixes
+
+* null change to trigger cowswap build ([#5675](https://github.com/cowprotocol/cowswap/issues/5675)) ([b6be5f5](https://github.com/cowprotocol/cowswap/commit/b6be5f52dd3c4a5022e21766b5d46d6041d2c4e5))
+
 ## [1.106.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.1...cowswap-v1.106.2) (2025-05-07)
 
 
