@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.106.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.3...cowswap-v1.106.4) (2025-05-08)
+
+
+### Bug Fixes
+
+* skip quote fetching when appData is not changed ([#5676](https://github.com/cowprotocol/cowswap/issues/5676)) ([4d57e8c](https://github.com/cowprotocol/cowswap/commit/4d57e8c2454ad901a826f015e70dd956c33b6661))
+
 ## [1.106.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.2...cowswap-v1.106.3) (2025-05-08)
 
 
