@@ -21,6 +21,7 @@ import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
 import { useUsdAmount } from 'modules/usdAmount'
 import { useVolumeFeeTooltip } from 'modules/volumeFee'
 
+import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 import { RateInfoParams } from 'common/pure/RateInfo'
 
@@ -51,12 +52,14 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
   const isBridgingEnabled = useIsBridgingEnabled(isSmartContractWallet)
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
   const showBridgeUI = isBridgingEnabled && isCurrentTradeBridging
+  // TODO: Set a real value for bridgeData based on bridging logic
   const bridgeData: BridgeData | null = null
   const providerDetails: BridgeProtocolConfig | undefined = (bridgeData as any)?.bridgeProvider
   const bridgeEstimatedTime: number | undefined = (bridgeData as any)?.estimatedTime
 
   const inputCurrency = derivedTradeState?.inputCurrency
-  const costsExceedFeeRaw = tradeQuote?.error?.data?.fee_amount
+  const costsExceedFeeRaw = tradeQuote.error instanceof QuoteApiError ? tradeQuote?.error?.data?.fee_amount : undefined
+
   const networkFeeAmount = useMemo(() => {
     if (!costsExceedFeeRaw || !inputCurrency) return null
     return CurrencyAmount.fromRawAmount(inputCurrency, costsExceedFeeRaw)

@@ -1,8 +1,8 @@
 import { atom } from 'jotai'
 
-import { PriceQuality, QuoteAndPost } from '@cowprotocol/cow-sdk'
+import { PriceQuality, QuoteAndPost, BridgeQuoteResults, BridgeProviderQuoteError } from '@cowprotocol/cow-sdk'
 
-import QuoteApiError from 'api/cowProtocol/errors/QuoteError'
+import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 
 import { TradeQuoteFetchParams } from '../types'
 
@@ -10,8 +10,9 @@ type SellTokenAddress = string
 
 export interface TradeQuoteState {
   quote: QuoteAndPost | null
+  bridgeQuote: BridgeQuoteResults | null
   fetchParams: TradeQuoteFetchParams | null
-  error: QuoteApiError | null
+  error: QuoteApiError | BridgeProviderQuoteError | null
   hasParamsChanged: boolean
   isLoading: boolean
   localQuoteTimestamp: number | null
@@ -19,6 +20,7 @@ export interface TradeQuoteState {
 
 export const DEFAULT_TRADE_QUOTE_STATE: TradeQuoteState = {
   quote: null,
+  bridgeQuote: null,
   fetchParams: null,
   error: null,
   hasParamsChanged: false,

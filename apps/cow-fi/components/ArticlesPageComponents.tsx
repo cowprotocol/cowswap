@@ -19,11 +19,10 @@ import styled from 'styled-components/macro'
 import { Color, Font, Media } from '@cowprotocol/ui'
 import Link from 'next/link'
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { calculateTotalPages, calculatePageRange, createPaginationArray } from '@/util/paginationUtils'
 
-const LEARN_PATH = '/learn/'
-const ARTICLES_PATH = `${LEARN_PATH}articles/`
-
-const ITEMS_PER_PAGE = 24
+const LEARN_PATH = '/learn'
+const ARTICLES_PATH = `${LEARN_PATH}/articles`
 
 const Wrapper = styled.div`
   display: flex;
@@ -72,7 +71,8 @@ export function ArticlesPageComponents({
   allArticles,
 }: ArticlesPageProps) {
   const analytics = useCowAnalytics()
-  const totalPages = Math.ceil(totalArticles / ITEMS_PER_PAGE)
+  const totalPages = calculateTotalPages(totalArticles)
+  const { start, end } = calculatePageRange(currentPage, totalArticles)
 
   return (
     <Wrapper>
@@ -83,7 +83,7 @@ export function ArticlesPageComponents({
           <ContainerCardSectionTop>
             <Breadcrumbs padding="0">
               <Link
-                href="/learn"
+                href={LEARN_PATH}
                 onClick={() =>
                   analytics.sendEvent({
                     category: CowFiCategory.KNOWLEDGEBASE,
@@ -97,8 +97,7 @@ export function ArticlesPageComponents({
               <h1>All articles</h1>
             </Breadcrumbs>
             <ArticleCount>
-              Showing {ITEMS_PER_PAGE * (currentPage - 1) + 1}-{Math.min(ITEMS_PER_PAGE * currentPage, totalArticles)}{' '}
-              of {totalArticles} articles
+              Showing {start}-{end} of {totalArticles} articles
             </ArticleCount>
           </ContainerCardSectionTop>
           <ContainerCardSection>
@@ -107,20 +106,20 @@ export function ArticlesPageComponents({
             </LinkSection>
           </ContainerCardSection>
           <Pagination>
-            {Array.from({ length: totalPages }, (_, i) => (
+            {createPaginationArray(totalPages).map((pageNum) => (
               <Link
-                key={i}
-                href={`${ARTICLES_PATH}${i + 1}`}
-                className={i + 1 === currentPage ? 'active' : ''}
+                key={pageNum - 1}
+                href={pageNum === 1 ? ARTICLES_PATH : `${ARTICLES_PATH}/${pageNum}`}
+                className={pageNum === currentPage ? 'active' : ''}
                 onClick={() =>
                   analytics.sendEvent({
                     category: CowFiCategory.KNOWLEDGEBASE,
                     action: 'Click pagination',
-                    label: `page-${i + 1}`,
+                    label: `page-${pageNum}`,
                   })
                 }
               >
-                {i + 1}
+                {pageNum}
               </Link>
             ))}
           </Pagination>

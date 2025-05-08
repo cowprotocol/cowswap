@@ -108,7 +108,7 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
                           <b>
                             <SVG src={EXPERIMENT_ICON} width={12} height={12} /> Experimental:
                           </b>{' '}
-                          Add DeFI interactions before and after your trade
+                          Add DeFI interactions before and after your trade.
                         </Trans>
                       }
                     />
