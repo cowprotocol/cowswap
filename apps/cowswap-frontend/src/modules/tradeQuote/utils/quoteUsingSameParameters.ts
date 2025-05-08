@@ -2,6 +2,7 @@ import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId, TradeParameters } from '@cowprotocol/cow-sdk'
 
+import jsonStringify from 'json-stringify-deterministic'
 import { Nullish } from 'types'
 
 import { AppDataInfo } from 'modules/appData'
@@ -59,5 +60,7 @@ function compareAppDataWithoutQuoteData(a: AppDataInfo['doc'] | undefined, b: Ap
 function removeQuoteMetadata(appData: AppDataInfo['doc']): string {
   const { metadata: fullMetadata, ...rest } = appData
   const { quote: _, ...metadata } = fullMetadata
-  return JSON.stringify({ ...rest, metadata })
+
+  const obj = { ...rest, metadata }
+  return jsonStringify(obj)
 }
