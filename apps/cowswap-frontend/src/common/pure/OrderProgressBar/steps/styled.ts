@@ -1,6 +1,6 @@
 import IMAGE_STAR_SHINE from '@cowprotocol/assets/cow-swap/star-shine.svg'
 import { SingleLetterLogoWrapper } from '@cowprotocol/tokens'
-import { ButtonPrimary, Color, Font, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, Font, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
@@ -8,8 +8,6 @@ export { Description, ProgressImageWrapper } from '../sharedStyled'
 
 import { CancelButton as CancelButtonOriginal } from '../../CancelButton'
 import { ProgressImageWrapper } from '../sharedStyled'
-
-const BLUE_COLOR = Color.cowfi_blue_lighter
 
 const progressAnimation = (startAt: number, end: number) => {
   const start = end - startAt
@@ -115,7 +113,8 @@ export const TokenWrapper = styled.div<{
   animation: ${({ position }) => (position === 'left' ? 'appear-left' : position === 'right' ? 'appear-right' : 'none')}
     2.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
   animation-delay: ${({ position }) => (position === 'center' ? '0s' : '0.75s')};
-  border: ${({ position }) => (position === 'right' || position === 'center' ? `8px solid ${BLUE_COLOR}` : '0')};
+  border: ${({ position }) =>
+    position === 'right' || position === 'center' ? `8px solid var(${UI.COLOR_BLUE_300_PRIMARY})` : '0'};
   box-sizing: content-box;
   background: ${({ position, bgColor }) =>
     position === 'right' ? bgColor || `var(${UI.COLOR_PRIMARY})` : 'transparent'};
@@ -529,5 +528,5 @@ export const CircleProgress = styled.circle<{ startAt: number; end: number }>`
 
   ${({ startAt, end }) => css`
     animation: ${progressAnimation(startAt, end)} ${startAt}s linear infinite;
-  `};
+  `}
 `
