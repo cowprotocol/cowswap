@@ -1,29 +1,109 @@
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import SVG from 'react-inlinesvg'
+import styled, { css, keyframes } from 'styled-components/macro'
 
-export const Wrapper = styled.div`
+const spin = keyframes`
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+`
+
+export const StyledSpinnerIcon = styled(SVG)`
+  transform-origin: center;
+  animation: ${spin} 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+`
+
+export const Wrapper = styled.div<{ hasBackground?: boolean }>`
   display: flex;
   flex-flow: column wrap;
   gap: 7px;
-  padding: 0;
+  padding: ${({ hasBackground }) => (hasBackground ? '12px' : '0')};
   font-size: 13px;
   width: 100%;
+  border-radius: ${({ hasBackground }) => (hasBackground ? '16px' : '0')};
+  background-color: ${({ hasBackground }) => (hasBackground ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
 `
 
-export const StopNumberCircle = styled.div`
-  --size: 24px;
+const stopCircleBase = css`
+  --size: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
   width: var(--size);
   height: var(--size);
   border-radius: 50%;
-  background-color: var(${UI.COLOR_TEXT_OPACITY_15});
-  color: var(${UI.COLOR_TEXT});
   font-weight: var(${UI.FONT_WEIGHT_BOLD});
   font-size: 13px;
   flex-shrink: 0;
+  position: relative;
+
+  > svg {
+    width: calc(var(--size) - 5px);
+    height: calc(var(--size) - 5px);
+    display: block;
+
+    path {
+      fill: currentColor;
+    }
+  }
+`
+
+export const StopNumberCircle = styled.div<{
+  status?: 'default' | 'done' | 'pending' | 'failed' | 'refund_complete'
+  stopNumber?: number
+}>`
+  ${stopCircleBase}
+
+  ${({ status, stopNumber }) => {
+    switch (status) {
+      case 'done':
+        return css`
+          background-color: var(${UI.COLOR_SUCCESS_BG});
+          color: var(${UI.COLOR_SUCCESS_TEXT});
+          padding: 5px;
+          &::before {
+            content: none;
+          }
+        `
+      case 'pending':
+        return css`
+          background-color: ${`var(${UI.COLOR_INFO_BG})`};
+          color: ${`var(${UI.COLOR_INFO_TEXT})`};
+          &::after {
+            content: none;
+          }
+        `
+      case 'failed':
+        return css`
+          background-color: var(${UI.COLOR_ALERT_BG});
+          color: var(${UI.COLOR_ALERT_TEXT});
+          &::before {
+            content: none;
+          }
+        `
+      case 'refund_complete':
+        return css`
+          background-color: var(${UI.COLOR_ALERT_BG});
+          color: var(${UI.COLOR_ALERT_TEXT});
+          &::before {
+            content: none;
+          }
+        `
+      case 'default':
+      default:
+        return css`
+          background-color: var(${UI.COLOR_TEXT_OPACITY_15});
+          color: var(${UI.COLOR_TEXT});
+          &::before {
+            content: '${stopNumber}';
+          }
+        `
+    }
+  }}
 `
 
 export const StopTitle = styled.div`
@@ -278,9 +358,9 @@ export const ConfirmDetailsItem = styled.div<{
 `
 
 // Basic definition for DividerHorizontal - adjust as needed
-export const DividerHorizontal = styled.hr<{ margin?: string }>`
+export const DividerHorizontal = styled.hr<{ margin?: string; overrideColor?: string }>`
   border: none;
-  border-top: 1px solid var(${UI.COLOR_BORDER});
+  border-top: 1px solid ${({ overrideColor }) => overrideColor || `var(${UI.COLOR_BORDER})`};
   margin: ${({ margin = '8px 0' }) => margin};
   width: 100%;
 `

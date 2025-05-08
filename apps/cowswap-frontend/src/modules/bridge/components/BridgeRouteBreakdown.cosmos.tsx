@@ -6,7 +6,7 @@ import { USDC_MAINNET, COW, getChainInfo } from '@cowprotocol/common-const'
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { GlobalCoWDAOStyles, ButtonError, ButtonSize } from '@cowprotocol/ui'
+import { GlobalCoWDAOStyles, ButtonError, ButtonSize, UI } from '@cowprotocol/ui'
 import { CurrencyAmount, Currency, Fraction, Percent, Price } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
@@ -28,6 +28,7 @@ import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 
 import { BridgeRouteBreakdown } from './BridgeRouteBreakdown'
+import { StopStatus } from './SwapStopDetails'
 
 import { BridgeFeeType, BridgeProtocolConfig } from '../types'
 
@@ -539,14 +540,32 @@ const SwapConfirmation = () => {
   )
 }
 
+type ScenarioKey = 'swapDoneBridgePending' | 'bothDone' | 'bridgeFailed' | 'refundComplete'
+
+interface Scenario {
+  label: string
+  swapStatus: StopStatus
+  bridgeStatus: StopStatus
+}
+
+const scenarios: Record<ScenarioKey, Scenario> = {
+  swapDoneBridgePending: { label: 'Swap Done / Bridge Pending', swapStatus: 'done', bridgeStatus: 'pending' },
+  bothDone: { label: 'Swap Done / Bridge Done', swapStatus: 'done', bridgeStatus: 'done' },
+  bridgeFailed: { label: 'Swap Done / Bridge Failed (Refund Started)', swapStatus: 'done', bridgeStatus: 'failed' },
+  refundComplete: { label: 'Swap Done / Refund Complete', swapStatus: 'done', bridgeStatus: 'refund_complete' },
+}
+
 /**
  * BridgeStatus fixture showing a bridge transaction with individually expandable sections
  * This fixture demonstrates section-level expandable functionality for Swap and Bridge parts
+ * AND allows dynamic status changes via a dropdown.
  */
 const BridgeStatus = () => {
-  // State for section-level expansion
-  const [isSwapSectionExpanded, setIsSwapSectionExpanded] = React.useState(true)
+  const [isSwapSectionExpanded, setIsSwapSectionExpanded] = React.useState(false)
   const [isBridgeSectionExpanded, setIsBridgeSectionExpanded] = React.useState(true)
+  const [selectedScenarioKey, setSelectedScenarioKey] = React.useState<ScenarioKey>('swapDoneBridgePending')
+
+  const currentScenario = scenarios[selectedScenarioKey]
 
   const StatusTitle = styled.h2`
     margin: 0 0 16px;
@@ -555,13 +574,44 @@ const BridgeStatus = () => {
     color: var(--cow-color-text);
   `
 
+  const DropdownWrapper = styled.div`
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 9999;
+    background: ${`var(${UI.COLOR_PAPER_DARKEST})`};
+    padding: 10px;
+    border: 1px solid ${`var(${UI.COLOR_PAPER_DARKEST})`};
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  `
+
   return (
     <BridgeFixtureWrapper>
+      <DropdownWrapper>
+        <label htmlFor="status-scenario-select" style={{ marginRight: '8px' }}>
+          Select Scenario:
+        </label>
+        <select
+          id="status-scenario-select"
+          value={selectedScenarioKey}
+          onChange={(e) => setSelectedScenarioKey(e.target.value as ScenarioKey)}
+        >
+          {Object.entries(scenarios).map(([key, scenario]) => (
+            <option key={key} value={key}>
+              {scenario.label}
+            </option>
+          ))}
+        </select>
+      </DropdownWrapper>
       <TradeFormContainer>
-        <StatusTitle>Bridge Status</StatusTitle>
+        <StatusTitle>Bridge Status ({currentScenario.label})</StatusTitle>
         <BridgeRouteBreakdown
           {...defaultProps}
+          hasBackground={true}
           hideRouteHeader={true}
+          swapStatus={currentScenario.swapStatus}
+          bridgeStatus={currentScenario.bridgeStatus}
           isSwapSectionCollapsible={true}
           isSwapSectionExpanded={isSwapSectionExpanded}
           onSwapSectionToggle={() => setIsSwapSectionExpanded(!isSwapSectionExpanded)}

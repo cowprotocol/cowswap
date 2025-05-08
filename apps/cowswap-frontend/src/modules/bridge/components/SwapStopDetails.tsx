@@ -1,6 +1,8 @@
 import { ReactNode } from 'react'
 
 import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
+import CheckmarkIcon from '@cowprotocol/assets/cow-swap/checkmark.svg'
+import SpinnerIcon from '@cowprotocol/assets/cow-swap/spinner.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { FiatAmount, InfoTooltip } from '@cowprotocol/ui'
@@ -24,14 +26,18 @@ import {
   ToggleArrow,
   ToggleIconContainer,
   SectionContent,
+  StyledSpinnerIcon,
 } from './styled'
 
 import { BridgeProtocolConfig, BridgeFeeType } from '../types'
+
+export type StopStatus = 'default' | 'done' | 'pending' | 'failed' | 'refund_complete'
 
 export interface SwapStopDetailsProps {
   isCollapsible?: boolean
   isExpanded?: boolean
   onToggle?: () => void
+  status?: StopStatus
   sellAmount: string
   sellToken: string
   sellTokenObj: TokenWithLogo
@@ -54,6 +60,7 @@ export function SwapStopDetails({
   isCollapsible = false,
   isExpanded = true,
   onToggle = () => {},
+  status,
   sellAmount,
   sellToken,
   sellTokenObj,
@@ -75,11 +82,25 @@ export function SwapStopDetails({
   const swapExpectedReceiveUsdValue = swapExpectedReceiveUsdResult?.value
   const swapMinReceiveUsdValue = swapMinReceiveUsdResult?.value
 
+  let titlePrefix = 'Swap on'
+  if (status === 'done') {
+    titlePrefix = 'Swapped on'
+  } else if (status === 'pending') {
+    titlePrefix = 'Swapping on'
+  } else if (status === 'failed') {
+    titlePrefix = 'Swap failed'
+  } else if (status === 'refund_complete') {
+    titlePrefix = 'Swap refunded'
+  }
+
   const TitleContent = (
     <>
-      <StopNumberCircle>1</StopNumberCircle>
+      <StopNumberCircle status={status} stopNumber={1}>
+        {status === 'done' && <SVG src={CheckmarkIcon} />}
+        {status === 'pending' && <StyledSpinnerIcon src={SpinnerIcon} />}
+      </StopNumberCircle>
       <b>
-        <span>Swap on </span>
+        <span>{titlePrefix} </span>
         <ProtocolIcons showOnlyFirst size={21} secondProtocol={bridgeProvider} />
         <span> CoW Protocol</span>
       </b>

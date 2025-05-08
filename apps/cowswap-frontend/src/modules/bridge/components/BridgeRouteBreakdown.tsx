@@ -21,7 +21,7 @@ import {
   ClickableRouteHeader,
   DividerHorizontal,
 } from './styled'
-import { SwapStopDetails } from './SwapStopDetails'
+import { SwapStopDetails, StopStatus } from './SwapStopDetails'
 
 import { BridgeFeeType, BridgeProtocolConfig } from '../types'
 
@@ -65,6 +65,9 @@ export interface BridgeRouteBreakdownProps {
   recipientChainId?: SupportedChainId
   sourceChainId?: SupportedChainId
   tokenLogoSize?: number
+  hasBackground?: boolean
+  swapStatus?: StopStatus
+  bridgeStatus?: StopStatus
 
   // Display options
   hideBridgeFlowFiatAmount?: boolean
@@ -117,6 +120,9 @@ export function BridgeRouteBreakdown({
   recipientChainId = SupportedChainId.MAINNET,
   sourceChainId = SupportedChainId.MAINNET,
   tokenLogoSize = 18,
+  hasBackground = false,
+  swapStatus,
+  bridgeStatus,
   hideBridgeFlowFiatAmount = false,
   hideRouteHeader = false,
   isCollapsible = false,
@@ -235,12 +241,12 @@ export function BridgeRouteBreakdown({
 
   // If overall component is collapsible and currently collapsed, render only the header
   if (isCollapsible && !isExpanded) {
-    return <Wrapper>{!hideRouteHeader && renderHeader()}</Wrapper>
+    return <Wrapper hasBackground={hasBackground}>{!hideRouteHeader && renderHeader()}</Wrapper>
   }
 
   // Render the full breakdown (overall component is expanded or not collapsible)
   return (
-    <Wrapper>
+    <Wrapper hasBackground={hasBackground}>
       {!hideRouteHeader && renderHeader()}
 
       {/* --- Swap Section --- */}
@@ -248,6 +254,7 @@ export function BridgeRouteBreakdown({
         isCollapsible={isSwapSectionCollapsible}
         isExpanded={isSwapSectionExpanded}
         onToggle={onSwapSectionToggle}
+        status={swapStatus}
         sellAmount={sellAmount}
         sellToken={sellToken}
         sellTokenObj={sellTokenObj}
@@ -266,13 +273,17 @@ export function BridgeRouteBreakdown({
         bridgeProvider={bridgeProvider}
       />
 
-      <DividerHorizontal margin="8px 0 4px" />
+      <DividerHorizontal
+        margin="8px 0 4px"
+        overrideColor={hasBackground ? `var(${UI.COLOR_PAPER_DARKEST})` : undefined}
+      />
 
       {/* --- Bridge Section --- */}
       <BridgeStopDetails
         isCollapsible={isBridgeSectionCollapsible}
         isExpanded={isBridgeSectionExpanded}
         onToggle={onBridgeSectionToggle}
+        status={bridgeStatus}
         bridgeProvider={bridgeProvider}
         sourceTokenObj={sourceTokenObj}
         destTokenObj={destTokenObj}
