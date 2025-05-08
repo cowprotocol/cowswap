@@ -6,7 +6,6 @@ import EthereumLogo from '@cowprotocol/assets/cow-swap/network-mainnet-logo.svg'
 import SepoliaLogo from '@cowprotocol/assets/cow-swap/network-sepolia-logo.svg'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { COW_PROTOCOL_LINK } from './common'
 import { NATIVE_CURRENCIES } from './nativeAndWrappedTokens'
 import { TokenWithLogo } from './types'
 
@@ -30,9 +29,9 @@ export type ChainInfoMap = Record<SupportedChainId, BaseChainInfo>
 
 export const CHAIN_INFO: ChainInfoMap = {
   [SupportedChainId.MAINNET]: {
-    docs: 'https://docs.cow.fi',
+    docs: 'https://ethereum.org/en/learn',
     explorer: 'https://etherscan.io',
-    infoLink: COW_PROTOCOL_LINK,
+    infoLink: 'https://ethereum.org',
     label: 'Ethereum',
     name: 'mainnet',
     addressPrefix: 'eth',
@@ -57,10 +56,10 @@ export const CHAIN_INFO: ChainInfoMap = {
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.ARBITRUM_ONE],
   },
   [SupportedChainId.BASE]: {
-    docs: 'https://docs.base.org/',
+    docs: 'https://docs.base.org',
     bridge: 'https://bridge.base.org/deposit',
     explorer: 'https://basescan.org',
-    infoLink: 'https://www.base.org/',
+    infoLink: 'https://www.base.org',
     label: 'Base',
     addressPrefix: 'base',
     name: 'base',
@@ -87,7 +86,7 @@ export const CHAIN_INFO: ChainInfoMap = {
   [SupportedChainId.SEPOLIA]: {
     docs: 'https://docs.cow.fi',
     explorer: 'https://sepolia.etherscan.io',
-    infoLink: COW_PROTOCOL_LINK,
+    infoLink: 'https://ethereum.org',
     label: 'Sepolia',
     name: 'sepolia',
     addressPrefix: 'sep',
