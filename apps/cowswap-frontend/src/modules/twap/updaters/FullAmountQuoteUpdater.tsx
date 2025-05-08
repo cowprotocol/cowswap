@@ -2,16 +2,17 @@ import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
-import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
+import { CrossChainQuoteAndPost, isBridgeQuoteAndPost } from '@cowprotocol/cow-sdk'
+
+import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useTradeQuote, useQuoteParams } from 'modules/tradeQuote'
 
-import { getQuote } from 'api/cowProtocol/api'
-
 import { fullAmountQuoteAtom } from '../state/fullAmountQuoteAtom'
 
-const getQuoteOnlyResolveLast = onlyResolvesLast<OrderQuoteResponse>(getQuote)
+const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
+const getQuoteOnlyResolveLast = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 
 export function FullAmountQuoteUpdater() {
   const { inputCurrencyAmount } = useAdvancedOrdersDerivedState()
@@ -26,15 +27,21 @@ export function FullAmountQuoteUpdater() {
   useEffect(() => {
     if (error || isLoading || !partQuoteAmount || !quoteParams) return
 
-    getQuoteOnlyResolveLast(quoteParams).then((response) => {
-      const { cancelled, data } = response
+    getQuoteOnlyResolveLast(quoteParams)
+      .then((response) => {
+        const { cancelled, data } = response
 
-      if (cancelled) {
-        return
-      }
+        if (cancelled) {
+          return
+        }
 
-      updateQuoteState(data)
-    })
+        const quote = isBridgeQuoteAndPost(data) ? data.swap.quoteResponse : data.quoteResults.quoteResponse
+
+        updateQuoteState(quote)
+      })
+      .catch((error) => {
+        console.error('[TWAP FullAmountQuoteUpdater]:: fetchQuote error', error)
+      })
   }, [partQuoteAmount, isLoading, error, quoteParams, updateQuoteState])
 
   return null

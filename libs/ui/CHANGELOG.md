@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.23.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.23.0...ui-v1.23.1) (2025-05-07)
+
+
+### Bug Fixes
+
+* button's text color on Confirm price impact modal ([#5664](https://github.com/cowprotocol/cowswap/issues/5664)) ([8f50581](https://github.com/cowprotocol/cowswap/commit/8f50581df40cedeb9e75b549a842b5afc61ea310))
+
 ## [1.23.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.22.0...ui-v1.23.0) (2025-03-27)
 
 
