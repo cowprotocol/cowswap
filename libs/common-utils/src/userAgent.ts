@@ -6,6 +6,7 @@ let type: string = ''
 let userAgent: any = {}
 let isMobile: boolean = false
 let isImTokenBrowser: boolean = false
+let isCoinbaseWalletBrowser: boolean = false
 let majorBrowserVersion: number | undefined
 let isChrome: boolean = false
 
@@ -17,6 +18,7 @@ if (typeof window !== 'undefined') {
   userAgent = parser.getResult()
   isMobile = type === 'mobile' || type === 'tablet'
   isImTokenBrowser = /imToken/.test(userAgentRaw)
+  isCoinbaseWalletBrowser = !!(window as any).ethereum?.isCoinbaseWallet
 
   function getBrowserMajorVersion() {
     const major = userAgent.browser.version?.split('.')[0]
@@ -29,4 +31,4 @@ if (typeof window !== 'undefined') {
   isChrome = name?.toLowerCase().startsWith('chrome') || false
 }
 
-export { userAgent, isMobile, isImTokenBrowser, majorBrowserVersion, isChrome }
+export { userAgent, isMobile, isImTokenBrowser, isCoinbaseWalletBrowser, majorBrowserVersion, isChrome }
