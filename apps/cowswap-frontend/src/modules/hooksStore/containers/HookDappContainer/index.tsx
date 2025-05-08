@@ -6,7 +6,6 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
-import { useHookStateDiff } from 'modules/hooksStore/hooks/useStateDiff'
 import { useTradeState, useTradeNavigate } from 'modules/trade'
 
 import { useAddHook } from '../../hooks/useAddHook'
@@ -14,6 +13,7 @@ import { useHookBalancesDiff } from '../../hooks/useBalancesDiff'
 import { useEditHook } from '../../hooks/useEditHook'
 import { useHookById } from '../../hooks/useHookById'
 import { useOrderParams } from '../../hooks/useOrderParams'
+import { useHookStateDiff } from '../../hooks/useStateDiff'
 import { HookDapp, HookDappContext as HookDappContextType } from '../../types/hooks'
 import { isHookDappIframe } from '../../utils'
 import { IframeDappContainer } from '../IframeDappContainer'
