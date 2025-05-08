@@ -124,3 +124,60 @@ export const ArrowIcon = styled.span`
   font-size: 13px;
   line-height: 1;
 `
+
+// Toggle arrow component for the collapsible header
+export const ToggleArrow = styled.div<{ isOpen: boolean }>`
+  --size: var(${UI.ICON_SIZE_SMALL});
+  transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+  transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size);
+  height: var(--size);
+
+  > svg {
+    --size: var(${UI.ICON_SIZE_TINY});
+    width: var(--size);
+    height: var(--size);
+    object-fit: contain;
+    transition: fill var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+    path {
+      fill: var(${UI.COLOR_TEXT_OPACITY_70});
+    }
+  }
+`
+
+// Modified StopsInfo to include toggle arrow when collapsible
+export const CollapsibleStopsInfo = styled(StopsInfo)`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  transition: all var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    color: var(${UI.COLOR_TEXT});
+
+    ${ToggleArrow} {
+      > svg {
+        path {
+          fill: var(${UI.COLOR_TEXT});
+        }
+      }
+    }
+  }
+`
+
+// Add a styled version of RouteHeader with clickable behavior
+export const ClickableRouteHeader = styled(RouteHeader)`
+  cursor: pointer;
+
+  &:hover {
+    ${RouteTitle} {
+      color: var(${UI.COLOR_TEXT});
+    }
+  }
+`
