@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.2](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.13.1...common-utils-v1.13.2) (2025-05-01)
+
+
+### Bug Fixes
+
+* **twap:** base dai error v2 ([#5658](https://github.com/cowprotocol/cowswap/issues/5658)) ([368926d](https://github.com/cowprotocol/cowswap/commit/368926d566e58e9558799ed7bebd4ae16f2e6ca3))
+
 ## [1.13.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.13.0...common-utils-v1.13.1) (2025-03-27)
 
 

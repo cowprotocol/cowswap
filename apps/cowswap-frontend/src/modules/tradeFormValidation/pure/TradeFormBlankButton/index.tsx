@@ -13,6 +13,7 @@ const LONG_TEXT_LENGTH = 20
 
 const ActionButton = styled.button<{ hasLongText$: boolean }>`
   display: flex;
+  gap: 8px;
   width: 100%;
   align-items: center;
   justify-content: center;
