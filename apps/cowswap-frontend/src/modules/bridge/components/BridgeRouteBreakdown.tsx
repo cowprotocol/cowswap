@@ -19,6 +19,7 @@ import {
   ToggleArrow,
   CollapsibleStopsInfo,
   ClickableRouteHeader,
+  DividerHorizontal,
 } from './styled'
 import { SwapStopDetails } from './SwapStopDetails'
 
@@ -44,7 +45,6 @@ export interface BridgeRouteBreakdownProps {
   buyToken: string
   buyTokenAddress: string
   networkCost: string
-  networkCostUsd: string
   swapMinReceive?: string
   swapExpectedToReceive?: string
   swapMaxSlippage?: string
@@ -68,27 +68,20 @@ export interface BridgeRouteBreakdownProps {
 
   // Display options
   hideBridgeFlowFiatAmount?: boolean
+  hideRouteHeader?: boolean
 
-  // Accordion functionality
-  /**
-   * Whether the component should be collapsible/expandable.
-   * When true, clicking the header will toggle between collapsed (header only) and expanded (full breakdown) views.
-   */
+  // Overall Accordion functionality
   isCollapsible?: boolean
-
-  /**
-   * Whether the component is currently expanded.
-   * - When true: shows the full route breakdown
-   * - When false and isCollapsible is true: shows only the header
-   * Only relevant when isCollapsible is true.
-   */
   isExpanded?: boolean
-
-  /**
-   * Callback function invoked when the header is clicked in collapsible mode.
-   * The parent component should use this to toggle the isExpanded state.
-   */
   onExpandToggle?: () => void
+
+  // Section-level accordion functionality
+  isSwapSectionCollapsible?: boolean
+  isSwapSectionExpanded?: boolean
+  onSwapSectionToggle?: () => void
+  isBridgeSectionCollapsible?: boolean
+  isBridgeSectionExpanded?: boolean
+  onBridgeSectionToggle?: () => void
 }
 
 /**
@@ -98,10 +91,7 @@ export interface BridgeRouteBreakdownProps {
  * 1. Standard mode (default): Always shows the full breakdown
  * 2. Accordion mode: Can toggle between showing just the header (collapsed) or the full breakdown (expanded)
  *
- * To use in accordion mode, set:
- * - isCollapsible={true} - Enables accordion functionality
- * - isExpanded={yourExpandedState} - Controls whether it's expanded or collapsed
- * - onExpandToggle={yourToggleFunction} - Handles the expand/collapse action
+ * Also supports independent collapsibility for the Swap and Bridge sections.
  */
 export function BridgeRouteBreakdown({
   sellAmount,
@@ -128,11 +118,18 @@ export function BridgeRouteBreakdown({
   sourceChainId = SupportedChainId.MAINNET,
   tokenLogoSize = 18,
   hideBridgeFlowFiatAmount = false,
+  hideRouteHeader = false,
   isCollapsible = false,
   isExpanded = true,
   onExpandToggle = () => {},
+  isSwapSectionCollapsible = false,
+  isSwapSectionExpanded = true,
+  onSwapSectionToggle = () => {},
+  isBridgeSectionCollapsible = false,
+  isBridgeSectionExpanded = true,
+  onBridgeSectionToggle = () => {},
 }: BridgeRouteBreakdownProps) {
-  // Create token objects for the swap tokens
+  // Create token objects
   const sellTokenObj = new TokenWithLogo(
     undefined,
     sourceChainId,
@@ -151,7 +148,6 @@ export function BridgeRouteBreakdown({
     buyToken,
   )
 
-  // Create token objects for the bridge tokens (source and destination)
   const sourceTokenObj = new TokenWithLogo(
     undefined,
     sourceChainId,
@@ -178,7 +174,7 @@ export function BridgeRouteBreakdown({
   const sourceChainInfo = getChainInfo(sourceChainId)
   const sourceChainName = sourceChainInfo.label
 
-  // Derive CurrencyAmount and USD results for networkCost
+  // Derive CurrencyAmount and USD results using hooks
   const networkCostCurrency = networkCost ? tryParseCurrencyAmount(networkCost, sellTokenObj) : undefined
   const networkCostUsdResult = useUsdAmount(networkCostCurrency)
 
@@ -195,79 +191,63 @@ export function BridgeRouteBreakdown({
     : undefined
   const bridgeReceiveAmountUsdResult = useUsdAmount(bridgeReceiveAmountCurrency)
 
-  // Handle header click for accordion functionality - triggers the callback to toggle expanded state
+  // Handle overall header click for accordion functionality
   const handleHeaderClick = () => {
     if (isCollapsible) {
       onExpandToggle()
     }
   }
 
-  // Use different header component based on whether it's collapsible
+  // Determine header component based on overall collapsibility
   const HeaderComponent = isCollapsible ? ClickableRouteHeader : RouteHeader
 
-  // When in collapsible mode and collapsed state, render only the header
+  // Render the main header
+  const renderHeader = () => (
+    <HeaderComponent onClick={isCollapsible ? handleHeaderClick : undefined}>
+      <RouteTitle>
+        Route{' '}
+        <InfoTooltip
+          content={
+            <>
+              Your trade will be executed in 2 stops. First, you swap on <b>CoW Protocol (Stop 1)</b>, then you bridge
+              via <b>{bridgeProvider.title} (Stop 2)</b>.
+            </>
+          }
+          size={14}
+        />
+      </RouteTitle>
+      {isCollapsible ? (
+        <CollapsibleStopsInfo>
+          2 stops
+          <ProtocolIcons secondProtocol={bridgeProvider} />
+          <ToggleArrow isOpen={isExpanded}>
+            <SVG src={CarretIcon} title={isExpanded ? 'Close' : 'Open'} />
+          </ToggleArrow>
+        </CollapsibleStopsInfo>
+      ) : (
+        <StopsInfo>
+          2 stops
+          <ProtocolIcons secondProtocol={bridgeProvider} />
+        </StopsInfo>
+      )}
+    </HeaderComponent>
+  )
+
+  // If overall component is collapsible and currently collapsed, render only the header
   if (isCollapsible && !isExpanded) {
-    // Render header directly
-    return (
-      <Wrapper>
-        <HeaderComponent onClick={handleHeaderClick}>
-          <RouteTitle>
-            Route{' '}
-            <InfoTooltip
-              content={
-                <>
-                  Your trade will be executed in 2 stops. First, you swap on <b>CoW Protocol (Stop 1)</b>, then you
-                  bridge via <b>{bridgeProvider.title} (Stop 2)</b>.
-                </>
-              }
-              size={14}
-            />
-          </RouteTitle>
-          <CollapsibleStopsInfo>
-            2 stops
-            <ProtocolIcons secondProtocol={bridgeProvider} />
-            <ToggleArrow isOpen={isExpanded}>
-              <SVG src={CarretIcon} title={isExpanded ? 'Close' : 'Open'} />
-            </ToggleArrow>
-          </CollapsibleStopsInfo>
-        </HeaderComponent>
-      </Wrapper>
-    )
+    return <Wrapper>{!hideRouteHeader && renderHeader()}</Wrapper>
   }
 
-  // Expanded state rendering
+  // Render the full breakdown (overall component is expanded or not collapsible)
   return (
     <Wrapper>
-      <HeaderComponent onClick={isCollapsible ? handleHeaderClick : undefined}>
-        <RouteTitle>
-          Route{' '}
-          <InfoTooltip
-            content={
-              <>
-                Your trade will be executed in 2 stops. First, you swap on <b>CoW Protocol (Stop 1)</b>, then you bridge
-                via <b>{bridgeProvider.title} (Stop 2)</b>.
-              </>
-            }
-            size={14}
-          />
-        </RouteTitle>
-        {isCollapsible ? (
-          <CollapsibleStopsInfo>
-            2 stops
-            <ProtocolIcons secondProtocol={bridgeProvider} />
-            <ToggleArrow isOpen={isExpanded}>
-              <SVG src={CarretIcon} title={isExpanded ? 'Close' : 'Open'} />
-            </ToggleArrow>
-          </CollapsibleStopsInfo>
-        ) : (
-          <StopsInfo>
-            2 stops
-            <ProtocolIcons secondProtocol={bridgeProvider} />
-          </StopsInfo>
-        )}
-      </HeaderComponent>
+      {!hideRouteHeader && renderHeader()}
 
+      {/* --- Swap Section --- */}
       <SwapStopDetails
+        isCollapsible={isSwapSectionCollapsible}
+        isExpanded={isSwapSectionExpanded}
+        onToggle={onSwapSectionToggle}
         sellAmount={sellAmount}
         sellToken={sellToken}
         sellTokenObj={sellTokenObj}
@@ -286,7 +266,13 @@ export function BridgeRouteBreakdown({
         bridgeProvider={bridgeProvider}
       />
 
+      <DividerHorizontal margin="8px 0 4px" />
+
+      {/* --- Bridge Section --- */}
       <BridgeStopDetails
+        isCollapsible={isBridgeSectionCollapsible}
+        isExpanded={isBridgeSectionExpanded}
+        onToggle={onBridgeSectionToggle}
         bridgeProvider={bridgeProvider}
         sourceTokenObj={sourceTokenObj}
         destTokenObj={destTokenObj}

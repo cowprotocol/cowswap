@@ -13,7 +13,7 @@ import { BridgeProtocolConfig } from '../types'
 interface BridgeAccordionSummaryProps {
   bridgeEstimatedTime?: number
   bridgeProtocol?: BridgeProtocolConfig
-  children: ReactNode // This would be the FiatAmount component
+  children: ReactNode
 }
 
 /**

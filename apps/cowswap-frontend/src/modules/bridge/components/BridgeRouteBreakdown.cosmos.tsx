@@ -198,164 +198,6 @@ const TradeFormFooter = styled.div`
   margin-top: 16px;
 `
 
-/**
- * SwapConfirmation fixture using TradeConfirmation component to simulate
- * a real trade confirmation screen with the BridgeRouteBreakdown integrated
- */
-const SwapConfirmation = () => {
-  // State for controlling the accordion's expanded/collapsed state for BridgeRouteBreakdown
-  const [isExpanded, setIsExpanded] = React.useState(false)
-
-  // Mock data for TradeConfirmation component
-  const inputCurrencyInfo = {
-    amount: CurrencyAmount.fromRawAmount(USDC_MAINNET, JSBI.BigInt(1000 * 10 ** 6)),
-    fiatAmount: CurrencyAmount.fromRawAmount(USDC_MAINNET, JSBI.BigInt(1000 * 10 ** 6)),
-    balance: CurrencyAmount.fromRawAmount(USDC_MAINNET, JSBI.BigInt(10000 * 10 ** 6)),
-    label: 'You pay',
-  }
-
-  const outputCurrencyInfo = {
-    amount: CurrencyAmount.fromRawAmount(COW_MAINNET, JSBI.BigInt(3442 * 10 ** 18)),
-    fiatAmount: CurrencyAmount.fromRawAmount(USDC_MAINNET, JSBI.BigInt(1480 * 10 ** 6)), // $0.43 per COW
-    balance: CurrencyAmount.fromRawAmount(COW_MAINNET, JSBI.BigInt(5000 * 10 ** 18)),
-    label: 'You receive',
-  }
-
-  // Mock price impact data - Create a proper Percent for priceImpact
-  const priceImpact: PriceImpact = {
-    priceImpact: new Percent(10, 10000), // 0.1%
-    loading: false,
-  }
-
-  // Mock app data for TradeConfirmation
-  const appData = 'CoW Bridge Referral'
-
-  const ConfirmationDetailsRow = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 14px;
-    padding: 0;
-  `
-
-  const Label = styled.span`
-    color: var(--cow-color-text-opacity-70);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  `
-
-  const Value = styled.span`
-    color: var(--cow-color-text);
-    font-weight: 500;
-  `
-
-  const PriceValue = styled.span`
-    display: flex;
-    align-items: center;
-    color: var(--cow-color-text);
-  `
-
-  const MinToReceiveRow = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 14px;
-    font-weight: 600;
-    padding: 0 0 10px;
-  `
-
-  const MinToReceiveValue = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  `
-
-  const TokenIconWrapper = styled.div`
-    display: inline-flex;
-    margin-right: 4px;
-  `
-
-  const FiatValueText = styled.span`
-    margin-left: 5px;
-    opacity: 0.7;
-  `
-
-  return (
-    <BridgeFixtureWrapper>
-      <TradeConfirmation
-        onConfirm={() => console.log('Confirmed')}
-        onDismiss={() => console.log('Dismissed')}
-        account="0x1234...5678"
-        ensName={undefined}
-        inputCurrencyInfo={inputCurrencyInfo}
-        outputCurrencyInfo={outputCurrencyInfo}
-        isConfirmDisabled={false}
-        priceImpact={priceImpact}
-        title="Confirm Swap"
-        refreshInterval={15000}
-        isPriceStatic={false}
-        recipient={defaultProps.recipient}
-        buttonText="Confirm"
-        appData={appData}
-        children={(restContent) => (
-          <>
-            {/* Price line item */}
-            <ConfirmationDetailsRow>
-              <Label>Price</Label>
-              <PriceValue>
-                1 COW = 0.290387 USDC <FiatValueText>(≈ $0.29)</FiatValueText>
-              </PriceValue>
-            </ConfirmationDetailsRow>
-
-            {/* Route breakdown component with collapsible behavior */}
-            <BridgeRouteBreakdown
-              {...defaultProps}
-              isCollapsible={true}
-              isExpanded={isExpanded}
-              onExpandToggle={() => setIsExpanded(!isExpanded)}
-            />
-
-            {/* Only show these elements when breakdown is NOT expanded */}
-            {!isExpanded && (
-              <>
-                {/* Recipient line item */}
-                <ConfirmationDetailsRow>
-                  <Label>Recipient</Label>
-                  <Value style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <img
-                      src={getChainInfo(defaultProps.recipientChainId).logo.light}
-                      alt="Chain logo"
-                      style={{ width: '16px', height: '16px' }}
-                    />
-                    {shortenAddress(defaultProps.recipient)} &#8599;
-                  </Value>
-                </ConfirmationDetailsRow>
-
-                <DividerHorizontal />
-
-                {/* Min to receive line item */}
-                <MinToReceiveRow>
-                  <Label style={{ fontWeight: '600' }}>Min. to receive</Label>
-                  <MinToReceiveValue>
-                    <TokenIconWrapper>
-                      <TokenLogo token={COW_GNOSIS} size={18} />
-                    </TokenIconWrapper>
-                    3423.83 COW <FiatValueText>(≈ $994.23)</FiatValueText>
-                  </MinToReceiveValue>
-                </MinToReceiveRow>
-              </>
-            )}
-
-            {/* Rest of content from TradeConfirmation */}
-            {restContent}
-          </>
-        )}
-      />
-    </BridgeFixtureWrapper>
-  )
-}
-
 // Enhanced SwapForm with CurrencyInputPanel components
 const SwapForm = () => {
   // Create buy currency amount for convenient calculations
@@ -539,7 +381,201 @@ const SwapForm = () => {
   )
 }
 
+/**
+ * SwapConfirmation fixture using TradeConfirmation component to simulate
+ * a real trade confirmation screen with the BridgeRouteBreakdown integrated
+ */
+const SwapConfirmation = () => {
+  // State for controlling the accordion's expanded/collapsed state for BridgeRouteBreakdown
+  const [isExpanded, setIsExpanded] = React.useState(false)
+
+  // Mock data for TradeConfirmation component
+  const inputCurrencyInfo = {
+    amount: CurrencyAmount.fromRawAmount(USDC_MAINNET, JSBI.BigInt(1000 * 10 ** 6)),
+    fiatAmount: CurrencyAmount.fromRawAmount(USDC_MAINNET, JSBI.BigInt(1000 * 10 ** 6)),
+    balance: CurrencyAmount.fromRawAmount(USDC_MAINNET, JSBI.BigInt(10000 * 10 ** 6)),
+    label: 'You pay',
+  }
+
+  const outputCurrencyInfo = {
+    amount: CurrencyAmount.fromRawAmount(COW_MAINNET, JSBI.BigInt(3442 * 10 ** 18)),
+    fiatAmount: CurrencyAmount.fromRawAmount(USDC_MAINNET, JSBI.BigInt(1480 * 10 ** 6)), // $0.43 per COW
+    balance: CurrencyAmount.fromRawAmount(COW_MAINNET, JSBI.BigInt(5000 * 10 ** 18)),
+    label: 'You receive',
+  }
+
+  // Mock price impact data - Create a proper Percent for priceImpact
+  const priceImpact: PriceImpact = {
+    priceImpact: new Percent(10, 10000), // 0.1%
+    loading: false,
+  }
+
+  // Mock app data for TradeConfirmation
+  const appData = 'CoW Bridge Referral'
+
+  const ConfirmationDetailsRow = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    padding: 0;
+  `
+
+  const Label = styled.span`
+    color: var(--cow-color-text-opacity-70);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  `
+
+  const Value = styled.span`
+    color: var(--cow-color-text);
+    font-weight: 500;
+  `
+
+  const PriceValue = styled.span`
+    display: flex;
+    align-items: center;
+    color: var(--cow-color-text);
+  `
+
+  const MinToReceiveRow = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 0 0 10px;
+  `
+
+  const MinToReceiveValue = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  `
+
+  const TokenIconWrapper = styled.div`
+    display: inline-flex;
+    margin-right: 4px;
+  `
+
+  const FiatValueText = styled.span`
+    margin-left: 5px;
+    opacity: 0.7;
+  `
+
+  return (
+    <BridgeFixtureWrapper>
+      <TradeConfirmation
+        onConfirm={() => console.log('Confirmed')}
+        onDismiss={() => console.log('Dismissed')}
+        account="0x1234...5678"
+        ensName={undefined}
+        inputCurrencyInfo={inputCurrencyInfo}
+        outputCurrencyInfo={outputCurrencyInfo}
+        isConfirmDisabled={false}
+        priceImpact={priceImpact}
+        title="Confirm Swap"
+        refreshInterval={15000}
+        isPriceStatic={false}
+        recipient={defaultProps.recipient}
+        buttonText="Confirm"
+        appData={appData}
+        children={(restContent) => (
+          <>
+            {/* Price line item */}
+            <ConfirmationDetailsRow>
+              <Label>Price</Label>
+              <PriceValue>
+                1 COW = 0.290387 USDC <FiatValueText>(≈ $0.29)</FiatValueText>
+              </PriceValue>
+            </ConfirmationDetailsRow>
+
+            {/* Route breakdown component with collapsible behavior */}
+            <BridgeRouteBreakdown
+              {...defaultProps}
+              isCollapsible={true}
+              isExpanded={isExpanded}
+              onExpandToggle={() => setIsExpanded(!isExpanded)}
+            />
+
+            {/* Only show these elements when breakdown is NOT expanded */}
+            {!isExpanded && (
+              <>
+                {/* Recipient line item */}
+                <ConfirmationDetailsRow>
+                  <Label>Recipient</Label>
+                  <Value style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <img
+                      src={getChainInfo(defaultProps.recipientChainId).logo.light}
+                      alt="Chain logo"
+                      style={{ width: '16px', height: '16px' }}
+                    />
+                    {shortenAddress(defaultProps.recipient)} &#8599;
+                  </Value>
+                </ConfirmationDetailsRow>
+
+                <DividerHorizontal />
+
+                {/* Min to receive line item */}
+                <MinToReceiveRow>
+                  <Label style={{ fontWeight: '600' }}>Min. to receive</Label>
+                  <MinToReceiveValue>
+                    <TokenIconWrapper>
+                      <TokenLogo token={COW_GNOSIS} size={18} />
+                    </TokenIconWrapper>
+                    3423.83 COW <FiatValueText>(≈ $994.23)</FiatValueText>
+                  </MinToReceiveValue>
+                </MinToReceiveRow>
+              </>
+            )}
+
+            {/* Rest of content from TradeConfirmation */}
+            {restContent}
+          </>
+        )}
+      />
+    </BridgeFixtureWrapper>
+  )
+}
+
+/**
+ * BridgeStatus fixture showing a bridge transaction with individually expandable sections
+ * This fixture demonstrates section-level expandable functionality for Swap and Bridge parts
+ */
+const BridgeStatus = () => {
+  // State for section-level expansion
+  const [isSwapSectionExpanded, setIsSwapSectionExpanded] = React.useState(true)
+  const [isBridgeSectionExpanded, setIsBridgeSectionExpanded] = React.useState(true)
+
+  const StatusTitle = styled.h2`
+    margin: 0 0 16px;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--cow-color-text);
+  `
+
+  return (
+    <BridgeFixtureWrapper>
+      <TradeFormContainer>
+        <StatusTitle>Bridge Status</StatusTitle>
+        <BridgeRouteBreakdown
+          {...defaultProps}
+          hideRouteHeader={true}
+          isSwapSectionCollapsible={true}
+          isSwapSectionExpanded={isSwapSectionExpanded}
+          onSwapSectionToggle={() => setIsSwapSectionExpanded(!isSwapSectionExpanded)}
+          isBridgeSectionCollapsible={true}
+          isBridgeSectionExpanded={isBridgeSectionExpanded}
+          onBridgeSectionToggle={() => setIsBridgeSectionExpanded(!isBridgeSectionExpanded)}
+        />
+      </TradeFormContainer>
+    </BridgeFixtureWrapper>
+  )
+}
+
 export default {
   SwapForm,
   SwapConfirmation,
+  BridgeStatus,
 }
