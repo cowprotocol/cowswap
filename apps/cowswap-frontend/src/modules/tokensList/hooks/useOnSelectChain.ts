@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import { ChainInfo } from '@cowprotocol/types'
+import { ChainInfo } from '@cowprotocol/cow-sdk'
 
 import { useUpdateSelectTokenWidgetState } from './useUpdateSelectTokenWidgetState'
 
