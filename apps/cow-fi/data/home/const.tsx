@@ -1,4 +1,4 @@
-import { Color, ProductVariant } from '@cowprotocol/ui'
+import { Color, ProductVariant, UI } from '@cowprotocol/ui'
 import { initGtm } from '@cowprotocol/analytics'
 import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
@@ -50,11 +50,11 @@ export const PRODUCT_LIST = [
     linkEvent: 'click-trade-on-cow-swap',
     linkExternal: true,
     linkUtmContent: 'home-page-trade-on-cow-swap',
-    bgColor: Color.cowfi_blue_lighter,
-    textColor: Color.cowfi_blue_dark,
-    descriptionColor: Color.cowfi_blue_dark,
-    linkBgColor: Color.cowfi_blue_dark,
-    linkColor: Color.cowfi_blue_lighter,
+    bgColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`,
+    textColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
+    descriptionColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
+    linkBgColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
+    linkColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`,
     productVariant: ProductVariant.CowDao,
     iconImage: IMG_COINS,
   },

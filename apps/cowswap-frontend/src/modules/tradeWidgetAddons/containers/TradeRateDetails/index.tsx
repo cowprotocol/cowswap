@@ -1,7 +1,10 @@
-import React, { useMemo, useState, useCallback, ReactElement } from 'react'
+import { useMemo, useState, useCallback, ReactElement } from 'react'
 
+import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
+import { useWalletDetails } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { BridgeData, BridgeRouteBreakdown, BridgeProtocolConfig } from 'modules/bridge'
 import {
   getTotalCosts,
   TradeFeesAndCosts,
@@ -10,6 +13,8 @@ import {
   NetworkCostsRow,
   useReceiveAmountInfo,
   useShouldPayGas,
+  useIsHooksTradeType,
+  useIsCurrentTradeBridging,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
@@ -40,13 +45,23 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
   const shouldPayGas = useShouldPayGas()
+  const isHooksTabEnabled = useIsHooksTradeType()
+  const { isSmartContractWallet } = useWalletDetails()
+
+  // Bridge related state
+  const isBridgingEnabled = useIsBridgingEnabled(isSmartContractWallet)
+  const isCurrentTradeBridging = useIsCurrentTradeBridging()
+  const showBridgeUI = isBridgingEnabled && isCurrentTradeBridging
+  // TODO: Set a real value for bridgeData based on bridging logic
+  const bridgeData: BridgeData | null = null
+  const providerDetails: BridgeProtocolConfig | undefined = (bridgeData as any)?.bridgeProvider
+  const bridgeEstimatedTime: number | undefined = (bridgeData as any)?.estimatedTime
 
   const inputCurrency = derivedTradeState?.inputCurrency
   const costsExceedFeeRaw = tradeQuote.error instanceof QuoteApiError ? tradeQuote?.error?.data?.fee_amount : undefined
 
   const networkFeeAmount = useMemo(() => {
     if (!costsExceedFeeRaw || !inputCurrency) return null
-
     return CurrencyAmount.fromRawAmount(inputCurrency, costsExceedFeeRaw)
   }, [costsExceedFeeRaw, inputCurrency])
 
@@ -75,13 +90,12 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
 
   const totalCosts = getTotalCosts(receiveAmountInfo)
 
-  return (
-    <TradeTotalCostsDetails
-      totalCosts={totalCosts}
-      rateInfoParams={rateInfoParams}
-      isFeeDetailsOpen={isFeeDetailsOpen}
-      toggleAccordion={toggleAccordion}
-    >
+  const shouldRenderBridgeUI = !!(showBridgeUI && bridgeData && !isHooksTabEnabled)
+
+  const accordionContent = shouldRenderBridgeUI ? (
+    <BridgeRouteBreakdown {...(bridgeData as BridgeData)} />
+  ) : (
+    <>
       <TradeFeesAndCosts
         receiveAmountInfo={receiveAmountInfo}
         withTimelineDot={false}
@@ -97,6 +111,20 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
         />
       )}
       <RowDeadline deadline={deadline} />
+    </>
+  )
+
+  return (
+    <TradeTotalCostsDetails
+      totalCosts={totalCosts}
+      rateInfoParams={rateInfoParams}
+      isFeeDetailsOpen={isFeeDetailsOpen}
+      toggleAccordion={toggleAccordion}
+      bridgeEstimatedTime={bridgeEstimatedTime}
+      bridgeProtocol={providerDetails}
+      showBridgeUI={shouldRenderBridgeUI}
+    >
+      {accordionContent}
     </TradeTotalCostsDetails>
   )
 }
