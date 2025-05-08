@@ -1,8 +1,11 @@
+import { useAtomValue } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
 
 import { Props as ExplorerLinkProps } from 'components/common/BlockExplorerLink'
+import { sortByAtom } from 'components/orders/OrdersUserDetailsTable'
+import { filterInputAtom, selectedOrderStatusAtom } from 'explorer/components/OrdersTableWidget'
 import { useMultipleErc20 } from 'hooks/useErc20'
 import {
   GetOrderApi,
@@ -14,12 +17,12 @@ import { useNetworkId } from 'state/network'
 import { Network, UiError } from 'types'
 import { transformOrder } from 'utils'
 
-import { Order, getAccountOrders, getTxOrders } from 'api/operator'
+import { Order, getTxOrders } from 'api/operator'
+import { areAccountOrdersLoadingAtom, useFilteredUserOrders } from 'api/operator/accountOrderUtils'
 import { GetTxOrdersParams, RawOrder } from 'api/operator/types'
 import { updateWeb3Provider } from 'api/web3'
 
 import { web3 } from '../explorer/api'
-import { ORDERS_QUERY_INTERVAL } from '../explorer/const'
 
 function isObjectEmpty(object: Record<string, unknown>): boolean {
 
@@ -52,6 +55,7 @@ type Result = {
 
 type GetAccountOrdersResult = Result & {
   isThereNext: boolean
+  totalCount?: number
 }
 
 type GetTxOrdersResult = Result & {
@@ -199,53 +203,48 @@ export function useGetAccountOrders(
   pageIndex?: number
 ): GetAccountOrdersResult {
   const networkId = useNetworkId() || undefined
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<UiError>()
-  const { orders, setOrders, setMountNewOrders, setErc20Addresses } = useOrdersWithTokenInfo(networkId)
-  const [isThereNext, setIsThereNext] = useState(false)
+  const filterByOrderStatus = useAtomValue(selectedOrderStatusAtom)
+  const filterByInputString = useAtomValue(filterInputAtom)
 
-  const fetchOrders = useCallback(
-    async (network: Network, owner: string): Promise<void> => {
-      setIsLoading(true)
+  const orderStatusFilter = useCallback((order: Order) => {
+    if (filterByOrderStatus === '') return true
+    return order.status === filterByOrderStatus
+  }, [filterByOrderStatus])
 
-      try {
-        const { orders, hasNextPage } = await getAccountOrders({ networkId: network, owner, offset, limit })
-        setIsThereNext(hasNextPage)
-        const newErc20Addresses = filterDuplicateErc20Addresses(orders)
-        setErc20Addresses(newErc20Addresses)
+  const inputStringFilter = useCallback((order: Order) => {
+    if (filterByInputString === '' || filterByInputString.length < 3) return true
+    const inputString = filterByInputString.toLowerCase()
+    if (order.buyTokenAddress.toLowerCase() === inputString) return true
+    if (order.sellTokenAddress.toLowerCase() === inputString) return true
+    if (order.buyToken?.symbol?.toLowerCase().includes(inputString)) return true
+    if (order.sellToken?.symbol?.toLowerCase().includes(inputString)) return true
+    return false
+  }, [filterByInputString])
 
-        setOrders(orders.map((order) => transformOrder(order)))
-        setMountNewOrders(true)
-        setError(undefined)
-      } catch (e) {
-        const msg = `Failed to fetch orders`
-        console.error(msg, e)
-        setError({ message: msg, type: 'error' })
-      } finally {
-        setIsLoading(false)
-      }
-    },
-    [limit, offset, setErc20Addresses, setMountNewOrders, setOrders]
+  const orderFilters = useCallback(
+    (order: Order) => orderStatusFilter(order) && inputStringFilter(order),
+    [orderStatusFilter, inputStringFilter]
   )
 
-  useEffect(() => {
-    if (!networkId) {
-      return
-    }
+  const orders = useFilteredUserOrders(networkId, ownerAddress, orderFilters)
+  const sortedOrders = useSortOrders(orders)
+  const isThereNext = orders.length > limit + offset
+  const isLoading = useAtomValue(areAccountOrdersLoadingAtom)
 
-    setIsThereNext(false)
-    fetchOrders(networkId, ownerAddress)
+  return { orders: sortedOrders?.slice(offset, offset + limit) || [], isLoading, isThereNext, totalCount: orders.length }
+}
 
-    if (pageIndex && pageIndex > 1) return
+function useSortOrders(orders: Order[] | undefined): Order[] {
+  const sortBy = useAtomValue(sortByAtom)
 
-    const intervalId: NodeJS.Timeout = setInterval(() => {
-      fetchOrders(networkId, ownerAddress)
-    }, ORDERS_QUERY_INTERVAL)
+  return useMemo(() => {
+    if (!sortBy || !orders) return orders || []
 
-    return (): void => {
-      clearInterval(intervalId)
-    }
-  }, [fetchOrders, networkId, ownerAddress, pageIndex])
-
-  return useMemo(() => ({ orders, error, isLoading, isThereNext }), [orders, error, isLoading, isThereNext])
+    return orders.sort((a, b) => {
+      if (sortBy.asc) {
+        return a[sortBy.field] - b[sortBy.field]
+      }
+      return b[sortBy.field] - a[sortBy.field]
+    })
+  }, [orders, sortBy])
 }

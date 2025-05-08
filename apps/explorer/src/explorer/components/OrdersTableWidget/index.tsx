@@ -1,10 +1,12 @@
+import { atom, useAtom } from 'jotai'
 import React from 'react'
 
 import { Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { OrdersTableContext, BlockchainNetwork } from './context/OrdersTableContext'
+
+import { BlockchainNetwork, OrdersTableContext } from './context/OrdersTableContext'
 import { OrdersTableWithData } from './OrdersTableWithData'
 import { useTable } from './useTable'
 
@@ -50,8 +52,53 @@ const WrapperExtraComponents = styled.div`
   }
 `
 
+export const selectedOrderStatusAtom = atom<string>('')
+
+const STATUS_OPTIONS = ['open', 'filled', 'cancelled', 'cancelling', 'expired', 'signing']
+
+export function OrderStatusPicker() {
+  const [selectedOrderStatus, setSelectedOrderStatus] = useAtom(selectedOrderStatusAtom)
+
+  return <div style={{ padding: '10px' }}>
+    <label htmlFor="order-status" style={{ fontSize: '2em', padding: '10px' }}>Order Status:</label>
+    <select
+      id="order-status"
+      value={selectedOrderStatus}
+      onChange={(e) => {
+        setSelectedOrderStatus(e.target.value)
+      }}
+    >
+      <option value="">All</option>
+      {STATUS_OPTIONS.map((status) => (
+        <option key={status} value={status}>
+          {status.charAt(0).toUpperCase() + status.slice(1)}
+        </option>
+      ))}
+    </select>
+  </div>
+}
+
+export const filterInputAtom = atom<string>('')
+
+function FilterOrdersBar() {
+  const [filterInput, setFilterInput] = useAtom(filterInputAtom)
+
+  return (
+    <input
+      type="text"
+      value={filterInput}
+      onChange={(e) => {
+        setFilterInput(e.target.value)
+      }}
+      placeholder="Filter orders..."
+    />
+  )
+}
+
 const ExtraComponentNode: React.ReactNode = (
   <WrapperExtraComponents>
+    <FilterOrdersBar />
+    <OrderStatusPicker />
     <TablePagination context={OrdersTableContext} />
   </WrapperExtraComponents>
 )
@@ -72,8 +119,10 @@ const OrdersTableWidget: React.FC<Props> = ({ ownerAddress, networkId }) => {
     isLoading,
     error,
     isThereNext: isThereNextOrder,
+    totalCount,
   } = useGetAccountOrders(ownerAddress, tableState.pageSize, tableState.pageOffset, tableState.pageIndex)
   tableState['hasNextPage'] = isThereNextOrder
+  tableState['totalCount'] = totalCount
   const addressAccountParams = { ownerAddress, networkId }
 
   return (
