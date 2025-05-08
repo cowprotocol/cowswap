@@ -10,8 +10,26 @@ export function useBridgeSupportedTokens(chainId: number | undefined) {
   return useSWR([bridgeProvider, chainId, 'useBridgeSupportedTokens'], ([bridgeProvider, chainId]) => {
     if (typeof chainId === 'undefined') return null
 
-    return bridgeProvider.getTokens(chainId).then((tokens) => {
-      return tokens && tokens.map((token) => TokenWithLogo.fromToken(token, token.logoURI))
-    })
+    return bridgeProvider
+      .getBuyTokens(chainId)
+      .then((tokens) => {
+        return (
+          tokens &&
+          tokens.map((token) =>
+            TokenWithLogo.fromToken(
+              {
+                ...token,
+                name: token.name || '',
+                symbol: token.symbol || '',
+              },
+              token.logoUrl,
+            ),
+          )
+        )
+      })
+      .catch((error) => {
+        console.error('Cannot getBuyTokens from bridgeProvider', error)
+        return Promise.reject(error)
+      })
   })
 }
