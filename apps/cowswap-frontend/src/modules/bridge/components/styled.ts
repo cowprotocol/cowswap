@@ -23,6 +23,7 @@ export const StopNumberCircle = styled.div`
   color: var(${UI.COLOR_TEXT});
   font-weight: var(${UI.FONT_WEIGHT_BOLD});
   font-size: 13px;
+  flex-shrink: 0;
 `
 
 export const StopTitle = styled.div`
@@ -33,6 +34,7 @@ export const StopTitle = styled.div`
   margin: 0 0 0 -4px;
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   font-size: 14px;
+  position: relative;
 
   > b {
     display: flex;
@@ -125,7 +127,97 @@ export const ArrowIcon = styled.span`
   line-height: 1;
 `
 
-// Add a new styled component for section content that can be collapsed
+// Toggle arrow component for the collapsible header
+export const ToggleArrow = styled.div<{ isOpen: boolean }>`
+  --size: var(${UI.ICON_SIZE_SMALL});
+  transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+  transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size);
+  height: var(--size);
+
+  > svg {
+    --size: var(${UI.ICON_SIZE_TINY});
+    width: var(--size);
+    height: var(--size);
+    object-fit: contain;
+    transition: fill var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+    path {
+      fill: var(${UI.COLOR_TEXT_OPACITY_70});
+    }
+  }
+`
+
+// Modified StopsInfo to include toggle arrow when collapsible
+export const CollapsibleStopsInfo = styled(StopsInfo)`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  transition: all var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    color: var(${UI.COLOR_TEXT});
+
+    ${ToggleArrow} {
+      > svg {
+        path {
+          fill: var(${UI.COLOR_TEXT});
+        }
+      }
+    }
+  }
+`
+
+// Add a styled version of RouteHeader with clickable behavior
+export const ClickableRouteHeader = styled(RouteHeader)`
+  cursor: pointer;
+
+  &:hover {
+    ${RouteTitle} {
+      color: var(${UI.COLOR_TEXT});
+    }
+    ${CollapsibleStopsInfo} {
+      color: var(${UI.COLOR_TEXT});
+      ${ToggleArrow} > svg > path {
+        fill: var(${UI.COLOR_TEXT});
+      }
+    }
+  }
+`
+
+// Clickable version of StopTitle (for sections)
+export const ClickableStopTitle = styled(StopTitle)<{ isCollapsible?: boolean }>`
+  cursor: ${({ isCollapsible }) => (isCollapsible ? 'pointer' : 'default')};
+
+  &:hover {
+    opacity: ${({ isCollapsible }) => (isCollapsible ? 0.8 : 1)};
+
+    ${({ isCollapsible }) =>
+      isCollapsible &&
+      `
+      ${ToggleArrow} > svg > path {
+         fill: var(${UI.COLOR_TEXT});
+      }
+    `}
+  }
+`
+
+// Absolutely positioned toggle icon container (for sections)
+export const ToggleIconContainer = styled.div`
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+`
+
+// Section content that can be collapsed
 export const SectionContent = styled.div<{ isExpanded: boolean }>`
   display: ${({ isExpanded }) => (isExpanded ? 'flex' : 'none')};
   flex-flow: column wrap;
@@ -133,4 +225,70 @@ export const SectionContent = styled.div<{ isExpanded: boolean }>`
   padding: 0;
   font-size: 13px;
   width: 100%;
+  overflow: hidden;
+  transition:
+    max-height var(${UI.ANIMATION_DURATION}) ease-in-out,
+    opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  max-height: ${({ isExpanded }) => (isExpanded ? '1000px' : '0')};
+  opacity: ${({ isExpanded }) => (isExpanded ? 1 : 0)};
+`
+
+// Basic definition for ConfirmDetailsItem - adjust as needed
+export const ConfirmDetailsItem = styled.div<{
+  withTimelineDot?: boolean
+  isLast?: boolean
+  contentTextColor?: string
+}>`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  padding-left: ${({ withTimelineDot }) => (withTimelineDot ? '20px' : '0')};
+  position: relative;
+  min-height: 18px;
+
+  ${({ withTimelineDot }) =>
+    withTimelineDot &&
+    `
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 4px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(${UI.COLOR_TEXT_OPACITY_15});
+    }
+
+    &:not(:last-child)::after {
+       content: '';
+       position: absolute;
+       left: 3px;
+       top: 14px;
+       bottom: -5px;
+       width: 2px;
+       background-color: var(${UI.COLOR_TEXT_OPACITY_15});
+     }
+  `}
+
+  > :last-child {
+    color: ${({ contentTextColor }) => contentTextColor || 'inherit'};
+  }
+`
+
+// Basic definition for DividerHorizontal - adjust as needed
+export const DividerHorizontal = styled.hr<{ margin?: string }>`
+  border: none;
+  border-top: 1px solid var(${UI.COLOR_BORDER});
+  margin: ${({ margin = '8px 0' }) => margin};
+  width: 100%;
+`
+
+// Definition for ReceiveAmountTitle - adjust as needed
+export const ReceiveAmountTitle = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
 `

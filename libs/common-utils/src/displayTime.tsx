@@ -17,8 +17,15 @@ export function displayTime(time: number, expandedUnits = false): string {
       const seconds = Math.round(timeMs / oneS)
       return `${seconds} sec`
     } else if (timeMs < oneH) {
-      const minutes = Math.round(timeMs / oneM)
-      return `${minutes} min`
+      // Calculate minutes and remaining seconds
+      const minutes = Math.floor(timeMs / oneM)
+      const remainingSeconds = Math.round((timeMs % oneM) / oneS)
+      // Return minutes only if seconds are 0
+      if (remainingSeconds === 0) {
+        return `${minutes} min`
+      }
+      // Return minutes and seconds
+      return `${minutes} min ${remainingSeconds} sec`
     } else {
       const hours = Math.round(timeMs / oneH)
       return `${hours} ${hours === 1 ? 'hr' : 'hrs'}`

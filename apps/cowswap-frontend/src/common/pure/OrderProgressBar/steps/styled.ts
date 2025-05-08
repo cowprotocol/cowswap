@@ -515,8 +515,8 @@ export const CircularProgress = styled.svg`
   width: 100%;
   height: 100%;
   position: absolute;
-  transform: rotate(-90deg);
   padding: 8px;
+  transform: rotate(-90deg);
 `
 
 export const CircleProgress = styled.circle<{ startAt: number; end: number }>`
