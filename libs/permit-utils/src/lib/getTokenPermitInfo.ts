@@ -215,10 +215,10 @@ async function estimateTokenPermit(params: EstimateParams): Promise<GetTokenPerm
 
   return gasLimit > minGasLimit
     ? {
-      type,
-      version,
-      name: tokenName,
-    }
+        type,
+        version,
+        name: tokenName,
+      }
     : { ...UNSUPPORTED, name: tokenName }
 }
 
