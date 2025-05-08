@@ -4,7 +4,7 @@ import { getQuoteUnsupportedToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAddUnsupportedToken } from '@cowprotocol/tokens'
 
-import QuoteApiError from 'api/cowProtocol/errors/QuoteError'
+import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 
 export function useProcessUnsupportedTokenError() {
   const addGpUnsupportedToken = useAddUnsupportedToken()
