@@ -108,6 +108,7 @@ export function TokensListsUpdater({
         const isUsUser = country === 'US'
 
         if (isUsUser) {
+          // set curated first, then update time
           setEnvironment({ useCuratedListOnly: true })
           updateLastUpdateTime({ [chainId]: 0 })
         }
