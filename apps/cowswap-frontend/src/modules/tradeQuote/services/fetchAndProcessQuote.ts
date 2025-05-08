@@ -6,13 +6,14 @@ import {
   QuoteBridgeRequest,
   SwapAdvancedSettings,
   isBridgeQuoteAndPost,
+  BridgeProviderQuoteError,
 } from '@cowprotocol/cow-sdk'
 
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { AppDataInfo } from 'modules/appData'
 
-import QuoteApiError, { mapOperatorErrorToQuoteError } from 'api/cowProtocol/errors/QuoteError'
+import { QuoteApiError, mapOperatorErrorToQuoteError } from 'api/cowProtocol/errors/QuoteError'
 import { getIsOrderBookTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
@@ -63,6 +64,11 @@ export async function fetchAndProcessQuote(
 
     tradeQuoteManager.onResponse(quoteAndPost, bridgeQuote, fetchParams)
   } catch (error) {
+    if (error instanceof BridgeProviderQuoteError) {
+      tradeQuoteManager.onError(error, chainId, quoteParams, fetchParams)
+      return
+    }
+
     const parsedError = parseError(error)
 
     console.error('[fetchAndProcessQuote]:: fetchQuote error', parsedError)
