@@ -301,7 +301,7 @@ export const ToggleIconContainer = styled.div`
 export const SectionContent = styled.div<{ isExpanded: boolean }>`
   display: ${({ isExpanded }) => (isExpanded ? 'flex' : 'none')};
   flex-flow: column wrap;
-  gap: 7px;
+  gap: 4px;
   padding: 0;
   font-size: 13px;
   width: 100%;

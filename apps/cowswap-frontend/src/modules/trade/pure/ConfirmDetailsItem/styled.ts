@@ -11,6 +11,7 @@ export const Wrapper = styled.div`
   gap: 6px;
   width: 100%;
   font-size: 13px;
+  min-height: 20px;
 
   > svg:first-child {
     margin: 0 4px 0 0;
