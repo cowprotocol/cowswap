@@ -10,6 +10,7 @@ import { GlobalCoWDAOStyles, ButtonError, ButtonSize } from '@cowprotocol/ui'
 import { CurrencyAmount, Currency, Fraction, Percent, Price } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
+import { useFixtureSelect } from 'react-cosmos/client'
 import styled from 'styled-components/macro'
 import { ThemeProvider } from 'theme'
 
@@ -28,6 +29,7 @@ import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 
 import { BridgeRouteBreakdown } from './BridgeRouteBreakdown'
+import { StopStatusEnum } from './SwapStopDetails'
 
 import { BridgeFeeType, BridgeProtocolConfig } from '../types'
 
@@ -539,14 +541,49 @@ const SwapConfirmation = () => {
   )
 }
 
+// Status scenarios for bridge transaction states
+type ScenarioKey = 'swapDoneBridgePending' | 'bothDone' | 'bridgeFailed' | 'refundComplete'
+
+interface Scenario {
+  label: string
+  swapStatus: StopStatusEnum
+  bridgeStatus: StopStatusEnum
+}
+
+const scenarios: Record<ScenarioKey, Scenario> = {
+  swapDoneBridgePending: {
+    label: 'Swap Done / Bridge Pending',
+    swapStatus: StopStatusEnum.DONE,
+    bridgeStatus: StopStatusEnum.PENDING,
+  },
+  bothDone: { label: 'Swap Done / Bridge Done', swapStatus: StopStatusEnum.DONE, bridgeStatus: StopStatusEnum.DONE },
+  bridgeFailed: {
+    label: 'Swap Done / Bridge Failed (Refund Started)',
+    swapStatus: StopStatusEnum.DONE,
+    bridgeStatus: StopStatusEnum.FAILED,
+  },
+  refundComplete: {
+    label: 'Swap Done / Refund Complete',
+    swapStatus: StopStatusEnum.DONE,
+    bridgeStatus: StopStatusEnum.REFUND_COMPLETE,
+  },
+}
+
 /**
- * BridgeStatus fixture showing a bridge transaction with individually expandable sections
- * This fixture demonstrates section-level expandable functionality for Swap and Bridge parts
+ * BridgeStatus fixture with scenario selection via Cosmos control panel
  */
-const BridgeStatus = () => {
-  // State for section-level expansion
-  const [isSwapSectionExpanded, setIsSwapSectionExpanded] = React.useState(true)
+function BridgeStatus() {
+  // Use Cosmos fixture select to create a dropdown in the control panel
+  const [scenarioKey] = useFixtureSelect('scenario', {
+    defaultValue: 'swapDoneBridgePending' as ScenarioKey,
+    options: ['swapDoneBridgePending', 'bothDone', 'bridgeFailed', 'refundComplete'],
+  })
+
+  const [isSwapSectionExpanded, setIsSwapSectionExpanded] = React.useState(false)
   const [isBridgeSectionExpanded, setIsBridgeSectionExpanded] = React.useState(true)
+
+  // Get the current scenario based on selected key
+  const scenario = scenarios[scenarioKey as ScenarioKey]
 
   const StatusTitle = styled.h2`
     margin: 0 0 16px;
@@ -558,10 +595,13 @@ const BridgeStatus = () => {
   return (
     <BridgeFixtureWrapper>
       <TradeFormContainer>
-        <StatusTitle>Bridge Status</StatusTitle>
+        <StatusTitle>Bridge Status: {scenario.label}</StatusTitle>
         <BridgeRouteBreakdown
           {...defaultProps}
+          hasBackground={true}
           hideRouteHeader={true}
+          swapStatus={scenario.swapStatus}
+          bridgeStatus={scenario.bridgeStatus}
           isSwapSectionCollapsible={true}
           isSwapSectionExpanded={isSwapSectionExpanded}
           onSwapSectionToggle={() => setIsSwapSectionExpanded(!isSwapSectionExpanded)}

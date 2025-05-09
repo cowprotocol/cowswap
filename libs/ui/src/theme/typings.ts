@@ -47,7 +47,9 @@ export interface Colors {
   boxShadow1: ColorValue
   boxShadow2: ColorValue
   shadow1: ColorValue
+  blue_100_primary: ColorValue
   blue_300_primary: ColorValue
+  blue_400_primary: ColorValue
   blue_900_primary: ColorValue
   // TODO: Colors migrated from cow-fi
   // TODO: Remove these once we've migrated all the colors

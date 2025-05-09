@@ -1,6 +1,9 @@
 import { ReactNode } from 'react'
 
 import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
+import CheckmarkIcon from '@cowprotocol/assets/cow-swap/checkmark.svg'
+import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
+import SpinnerIcon from '@cowprotocol/assets/cow-swap/spinner.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { FiatAmount, InfoTooltip } from '@cowprotocol/ui'
@@ -14,6 +17,7 @@ import { UsdAmountInfo } from 'modules/usdAmount/hooks/useUsdAmount'
 import { ProtocolIcons } from 'common/pure/ProtocolIcons'
 
 import { getFeeTextColor } from './BridgeRouteBreakdown'
+import { StyledRefundCompleteIcon } from './BridgeStopDetails'
 import {
   AmountWithTokenIcon,
   ArrowIcon,
@@ -24,14 +28,40 @@ import {
   ToggleArrow,
   ToggleIconContainer,
   SectionContent,
+  StyledSpinnerIcon,
 } from './styled'
 
 import { BridgeProtocolConfig, BridgeFeeType } from '../types'
+
+export enum StopStatusEnum {
+  DEFAULT = 'default',
+  DONE = 'done',
+  PENDING = 'pending',
+  FAILED = 'failed',
+  REFUND_COMPLETE = 'refund_complete',
+}
+
+// Helper function to render the status icon
+function renderStopStatusIcon(status?: StopStatusEnum): React.ReactElement | null {
+  switch (status) {
+    case StopStatusEnum.DONE:
+      return <SVG src={CheckmarkIcon} />
+    case StopStatusEnum.PENDING:
+      return <StyledSpinnerIcon src={SpinnerIcon} />
+    case StopStatusEnum.FAILED:
+      return <SVG src={RefundIcon} />
+    case StopStatusEnum.REFUND_COMPLETE:
+      return <StyledRefundCompleteIcon src={RefundIcon} />
+    default:
+      return null
+  }
+}
 
 export interface SwapStopDetailsProps {
   isCollapsible?: boolean
   isExpanded?: boolean
   onToggle?: () => void
+  status?: StopStatusEnum
   sellAmount: string
   sellToken: string
   sellTokenObj: TokenWithLogo
@@ -54,6 +84,7 @@ export function SwapStopDetails({
   isCollapsible = false,
   isExpanded = true,
   onToggle = () => {},
+  status,
   sellAmount,
   sellToken,
   sellTokenObj,
@@ -75,11 +106,24 @@ export function SwapStopDetails({
   const swapExpectedReceiveUsdValue = swapExpectedReceiveUsdResult?.value
   const swapMinReceiveUsdValue = swapMinReceiveUsdResult?.value
 
+  let titlePrefix = 'Swap on'
+  if (status === StopStatusEnum.DONE) {
+    titlePrefix = 'Swapped on'
+  } else if (status === StopStatusEnum.PENDING) {
+    titlePrefix = 'Swapping on'
+  } else if (status === StopStatusEnum.FAILED) {
+    titlePrefix = 'Swap failed'
+  } else if (status === StopStatusEnum.REFUND_COMPLETE) {
+    titlePrefix = 'Swap refunded'
+  }
+
   const TitleContent = (
     <>
-      <StopNumberCircle>1</StopNumberCircle>
+      <StopNumberCircle status={status} stopNumber={1}>
+        {renderStopStatusIcon(status)}
+      </StopNumberCircle>
       <b>
-        <span>Swap on </span>
+        <span>{titlePrefix} </span>
         <ProtocolIcons showOnlyFirst size={21} secondProtocol={bridgeProvider} />
         <span> CoW Protocol</span>
       </b>

@@ -53,14 +53,19 @@ const Wrapper = styled.div`
 interface ReceiveAmountTitleProps {
   children: ReactNode
   className?: string
+  icon?: ReactNode
 }
 
-export function ReceiveAmountTitle({ className, children }: ReceiveAmountTitleProps) {
+export function ReceiveAmountTitle({ className, children, icon }: ReceiveAmountTitleProps) {
   return (
     <Wrapper className={className}>
-      <EqualSign>
-        <SVG src={EqualIcon} />
-      </EqualSign>{' '}
+      {icon ? (
+        icon
+      ) : (
+        <EqualSign>
+          <SVG src={EqualIcon} />
+        </EqualSign>
+      )}{' '}
       {children}
     </Wrapper>
   )
