@@ -78,13 +78,31 @@ const refundAnimation = keyframes`
   }
 `
 
+const refundCompleteAnimation = keyframes`
+  0% {
+    transform: rotate(0deg) scale(1);
+    animation-timing-function: ease-in;
+  }
+  30% {
+    transform: rotate(-720deg) scale(1);
+    animation-timing-function: ease-out;
+  }
+  85% {
+    transform: rotate(-1080deg) scale(1.15);
+    animation-timing-function: ease-in;
+  }
+  100% {
+    transform: rotate(-1080deg) scale(1);
+  }
+`
+
 const StatusAwareText = styled.span<{ status?: StopStatus }>`
   color: ${({ status }) => getStatusTextColor(status)};
 `
 
 const AnimatedEllipsis = styled.span`
   display: inline-block;
-  width: 1.2em;
+  width: 0.8em;
   text-align: left;
   vertical-align: bottom;
 
@@ -98,11 +116,23 @@ const AnimatedEllipsis = styled.span`
 const StyledRefundIcon = styled(SVG)`
   width: 16px;
   height: 16px;
-  /* Let the StopNumberCircle control the colors */
   fill: currentColor;
   display: block;
   transform-origin: center;
   animation: ${refundAnimation} 3s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
+`
+
+export const StyledRefundCompleteIcon = styled(SVG)`
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  display: block;
+  transform-origin: center;
+  animation: ${refundCompleteAnimation} 2.5s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+`
+
+const DangerText = styled.span`
+  color: var(${UI.COLOR_DANGER_TEXT});
 `
 
 export interface BridgeStopDetailsProps {
@@ -169,13 +199,13 @@ export function BridgeStopDetails({
         {status === 'done' && <SVG src={CheckmarkIcon} />}
         {status === 'pending' && <StyledSpinnerIcon src={SpinnerIcon} />}
         {status === 'failed' && <StyledRefundIcon src={RefundIcon} />}
-        {status === 'refund_complete' && <StyledRefundIcon src={RefundIcon} />}
+        {status === 'refund_complete' && <StyledRefundCompleteIcon src={RefundIcon} />}
       </StopNumberCircle>
       <b>
         <span>{titlePrefix} </span>
         <ProtocolIcons showOnlySecond size={21} secondProtocol={bridgeProvider} />
         <span> {bridgeProvider.title}</span>
-        {status === 'failed' && <span style={{ marginLeft: '4px' }}>failed</span>}
+        {(status === 'failed' || status === 'refund_complete') && <DangerText> → failed</DangerText>}
       </b>
       {isCollapsible && (
         <ToggleIconContainer>
@@ -305,13 +335,7 @@ export function BridgeStopDetails({
               label={<span style={{ textDecoration: 'line-through' }}>You received</span>}
               withTimelineDot={true}
             >
-              <span
-                style={{
-                  color: `var(${UI.COLOR_DANGER_TEXT})`,
-                }}
-              >
-                Bridging failed
-              </span>
+              <DangerText>Bridging failed</DangerText>
             </ConfirmDetailsItem>
             <ConfirmDetailsItem
               label={
@@ -320,7 +344,10 @@ export function BridgeStopDetails({
                 </ReceiveAmountTitle>
               }
             >
-              <span style={{ color: `var(${UI.COLOR_ALERT_TEXT})` }}>Refund started</span>
+              <span style={{ color: `var(${UI.COLOR_ALERT_TEXT})` }}>
+                Refund started
+                <AnimatedEllipsis />
+              </span>
             </ConfirmDetailsItem>
           </>
         )}
@@ -331,13 +358,7 @@ export function BridgeStopDetails({
               label={<span style={{ textDecoration: 'line-through' }}>You received</span>}
               withTimelineDot={true}
             >
-              <span
-                style={{
-                  color: `var(${UI.COLOR_DANGER_TEXT})`,
-                }}
-              >
-                Bridging failed
-              </span>
+              <DangerText>Bridging failed</DangerText>
             </ConfirmDetailsItem>
             <ConfirmDetailsItem
               label={

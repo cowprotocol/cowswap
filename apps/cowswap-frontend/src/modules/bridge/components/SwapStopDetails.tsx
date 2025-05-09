@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import CheckmarkIcon from '@cowprotocol/assets/cow-swap/checkmark.svg'
+import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
 import SpinnerIcon from '@cowprotocol/assets/cow-swap/spinner.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenLogo } from '@cowprotocol/tokens'
@@ -16,6 +17,7 @@ import { UsdAmountInfo } from 'modules/usdAmount/hooks/useUsdAmount'
 import { ProtocolIcons } from 'common/pure/ProtocolIcons'
 
 import { getFeeTextColor } from './BridgeRouteBreakdown'
+import { StyledRefundCompleteIcon } from './BridgeStopDetails'
 import {
   AmountWithTokenIcon,
   ArrowIcon,
@@ -98,6 +100,8 @@ export function SwapStopDetails({
       <StopNumberCircle status={status} stopNumber={1}>
         {status === 'done' && <SVG src={CheckmarkIcon} />}
         {status === 'pending' && <StyledSpinnerIcon src={SpinnerIcon} />}
+        {status === 'failed' && <SVG src={RefundIcon} />}
+        {status === 'refund_complete' && <StyledRefundCompleteIcon src={RefundIcon} />}
       </StopNumberCircle>
       <b>
         <span>{titlePrefix} </span>
