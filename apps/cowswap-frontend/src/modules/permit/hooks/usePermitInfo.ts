@@ -36,7 +36,7 @@ export const PERMIT_GAS_LIMIT_MIN: Record<SupportedChainId, number> = mapSupport
  * If not found, tries to load the info from chain
  * The result will be cached on localStorage if a final conclusion is found
  *
- * When it is, returned type is `{type: 'dai'|'permit', gasLimit: number}
+ * When it is, returned type is `{type: 'dai-like' | 'eip-2612', gasLimit: number}
  * When it is not, returned type is `{type: 'unsupported'}`
  * When it is unknown, returned type is `undefined`
  */
