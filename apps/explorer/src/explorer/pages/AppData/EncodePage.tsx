@@ -46,7 +46,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
     },
   )
   const [isLoading, setIsLoading] = useState<boolean>(encode.options.isLoading ?? false)
-  const [appDataInfo, setAppDataInfo] = useState<AppDataInfo | void | undefined>(encode.options.appDataInfo)
+  const [appDataInfo, setAppDataInfo] = useState<AppDataInfo | undefined>(encode.options.appDataInfo)
   const [ipfsCredentials /* setIpfsCredentials */] = useState<{ pinataApiKey?: string; pinataApiSecret?: string }>(
     encode.options.ipfsCredentials ?? {},
   )
