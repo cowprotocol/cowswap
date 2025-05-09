@@ -29,7 +29,7 @@ import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 
 import { BridgeRouteBreakdown } from './BridgeRouteBreakdown'
-import { StopStatus } from './SwapStopDetails'
+import { StopStatusEnum } from './SwapStopDetails'
 
 import { BridgeFeeType, BridgeProtocolConfig } from '../types'
 
@@ -546,15 +546,27 @@ type ScenarioKey = 'swapDoneBridgePending' | 'bothDone' | 'bridgeFailed' | 'refu
 
 interface Scenario {
   label: string
-  swapStatus: StopStatus
-  bridgeStatus: StopStatus
+  swapStatus: StopStatusEnum
+  bridgeStatus: StopStatusEnum
 }
 
 const scenarios: Record<ScenarioKey, Scenario> = {
-  swapDoneBridgePending: { label: 'Swap Done / Bridge Pending', swapStatus: 'done', bridgeStatus: 'pending' },
-  bothDone: { label: 'Swap Done / Bridge Done', swapStatus: 'done', bridgeStatus: 'done' },
-  bridgeFailed: { label: 'Swap Done / Bridge Failed (Refund Started)', swapStatus: 'done', bridgeStatus: 'failed' },
-  refundComplete: { label: 'Swap Done / Refund Complete', swapStatus: 'done', bridgeStatus: 'refund_complete' },
+  swapDoneBridgePending: {
+    label: 'Swap Done / Bridge Pending',
+    swapStatus: StopStatusEnum.DONE,
+    bridgeStatus: StopStatusEnum.PENDING,
+  },
+  bothDone: { label: 'Swap Done / Bridge Done', swapStatus: StopStatusEnum.DONE, bridgeStatus: StopStatusEnum.DONE },
+  bridgeFailed: {
+    label: 'Swap Done / Bridge Failed (Refund Started)',
+    swapStatus: StopStatusEnum.DONE,
+    bridgeStatus: StopStatusEnum.FAILED,
+  },
+  refundComplete: {
+    label: 'Swap Done / Refund Complete',
+    swapStatus: StopStatusEnum.DONE,
+    bridgeStatus: StopStatusEnum.REFUND_COMPLETE,
+  },
 }
 
 /**

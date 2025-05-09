@@ -3,6 +3,8 @@ import { UI } from '@cowprotocol/ui'
 import SVG from 'react-inlinesvg'
 import styled, { css, keyframes } from 'styled-components/macro'
 
+import { StopStatusEnum } from './SwapStopDetails'
+
 const spin = keyframes`
   0% {
     transform: rotate(0deg);
@@ -53,14 +55,14 @@ const stopCircleBase = css`
 `
 
 export const StopNumberCircle = styled.div<{
-  status?: 'default' | 'done' | 'pending' | 'failed' | 'refund_complete'
+  status?: StopStatusEnum
   stopNumber?: number
 }>`
   ${stopCircleBase}
 
   ${({ status, stopNumber }) => {
     switch (status) {
-      case 'done':
+      case StopStatusEnum.DONE:
         return css`
           background-color: var(${UI.COLOR_SUCCESS_BG});
           color: var(${UI.COLOR_SUCCESS_TEXT});
@@ -69,7 +71,7 @@ export const StopNumberCircle = styled.div<{
             content: none;
           }
         `
-      case 'pending':
+      case StopStatusEnum.PENDING:
         return css`
           background-color: ${`var(${UI.COLOR_INFO_BG})`};
           color: ${`var(${UI.COLOR_INFO_TEXT})`};
@@ -77,7 +79,7 @@ export const StopNumberCircle = styled.div<{
             content: none;
           }
         `
-      case 'failed':
+      case StopStatusEnum.FAILED:
         return css`
           background-color: var(${UI.COLOR_ALERT_BG});
           color: var(${UI.COLOR_ALERT_TEXT});
@@ -85,7 +87,7 @@ export const StopNumberCircle = styled.div<{
             content: none;
           }
         `
-      case 'refund_complete':
+      case StopStatusEnum.REFUND_COMPLETE:
         return css`
           background-color: var(${UI.COLOR_ALERT_BG});
           color: var(${UI.COLOR_ALERT_TEXT});
@@ -93,7 +95,7 @@ export const StopNumberCircle = styled.div<{
             content: none;
           }
         `
-      case 'default':
+      case StopStatusEnum.DEFAULT:
       default:
         return css`
           background-color: var(${UI.COLOR_TEXT_OPACITY_15});

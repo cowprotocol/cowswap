@@ -33,13 +33,35 @@ import {
 
 import { BridgeProtocolConfig, BridgeFeeType } from '../types'
 
-export type StopStatus = 'default' | 'done' | 'pending' | 'failed' | 'refund_complete'
+export enum StopStatusEnum {
+  DEFAULT = 'default',
+  DONE = 'done',
+  PENDING = 'pending',
+  FAILED = 'failed',
+  REFUND_COMPLETE = 'refund_complete',
+}
+
+// Helper function to render the status icon
+function renderStopStatusIcon(status?: StopStatusEnum): React.ReactElement | null {
+  switch (status) {
+    case StopStatusEnum.DONE:
+      return <SVG src={CheckmarkIcon} />
+    case StopStatusEnum.PENDING:
+      return <StyledSpinnerIcon src={SpinnerIcon} />
+    case StopStatusEnum.FAILED:
+      return <SVG src={RefundIcon} />
+    case StopStatusEnum.REFUND_COMPLETE:
+      return <StyledRefundCompleteIcon src={RefundIcon} />
+    default:
+      return null
+  }
+}
 
 export interface SwapStopDetailsProps {
   isCollapsible?: boolean
   isExpanded?: boolean
   onToggle?: () => void
-  status?: StopStatus
+  status?: StopStatusEnum
   sellAmount: string
   sellToken: string
   sellTokenObj: TokenWithLogo
@@ -85,23 +107,20 @@ export function SwapStopDetails({
   const swapMinReceiveUsdValue = swapMinReceiveUsdResult?.value
 
   let titlePrefix = 'Swap on'
-  if (status === 'done') {
+  if (status === StopStatusEnum.DONE) {
     titlePrefix = 'Swapped on'
-  } else if (status === 'pending') {
+  } else if (status === StopStatusEnum.PENDING) {
     titlePrefix = 'Swapping on'
-  } else if (status === 'failed') {
+  } else if (status === StopStatusEnum.FAILED) {
     titlePrefix = 'Swap failed'
-  } else if (status === 'refund_complete') {
+  } else if (status === StopStatusEnum.REFUND_COMPLETE) {
     titlePrefix = 'Swap refunded'
   }
 
   const TitleContent = (
     <>
       <StopNumberCircle status={status} stopNumber={1}>
-        {status === 'done' && <SVG src={CheckmarkIcon} />}
-        {status === 'pending' && <StyledSpinnerIcon src={SpinnerIcon} />}
-        {status === 'failed' && <SVG src={RefundIcon} />}
-        {status === 'refund_complete' && <StyledRefundCompleteIcon src={RefundIcon} />}
+        {renderStopStatusIcon(status)}
       </StopNumberCircle>
       <b>
         <span>{titlePrefix} </span>

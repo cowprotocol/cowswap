@@ -35,19 +35,19 @@ import {
   SectionContent,
   StyledSpinnerIcon,
 } from './styled'
-import { StopStatus } from './SwapStopDetails'
+import { StopStatusEnum } from './SwapStopDetails'
 
 import { BridgeFeeType, BridgeProtocolConfig } from '../types'
 
 // Helper to determine text color based on status
-const getStatusTextColor = (status: StopStatus | undefined): string => {
+const getStatusTextColor = (status: StopStatusEnum | undefined): string => {
   switch (status) {
-    case 'pending':
+    case StopStatusEnum.PENDING:
       return `var(${UI.COLOR_INFO_TEXT})`
-    case 'failed':
+    case StopStatusEnum.FAILED:
       return `var(${UI.COLOR_DANGER_TEXT})`
-    case 'done':
-    case 'refund_complete':
+    case StopStatusEnum.DONE:
+    case StopStatusEnum.REFUND_COMPLETE:
       return `var(${UI.COLOR_SUCCESS_TEXT})`
     default:
       return `var(${UI.COLOR_TEXT})`
@@ -96,7 +96,7 @@ const refundCompleteAnimation = keyframes`
   }
 `
 
-const StatusAwareText = styled.span<{ status?: StopStatus }>`
+const StatusAwareText = styled.span<{ status?: StopStatusEnum }>`
   color: ${({ status }) => getStatusTextColor(status)};
 `
 
@@ -139,7 +139,7 @@ export interface BridgeStopDetailsProps {
   isCollapsible?: boolean
   isExpanded?: boolean
   onToggle?: () => void
-  status?: StopStatus
+  status?: StopStatusEnum
 
   bridgeProvider: BridgeProtocolConfig
   sourceTokenObj: TokenWithLogo
@@ -156,6 +156,22 @@ export interface BridgeStopDetailsProps {
   recipient: string
   recipientChainId: SupportedChainId
   tokenLogoSize: number
+}
+
+// Helper function to render the status icon for BridgeStop
+function renderBridgeStopStatusIcon(status?: StopStatusEnum): React.ReactElement | null {
+  switch (status) {
+    case StopStatusEnum.DONE:
+      return <SVG src={CheckmarkIcon} />
+    case StopStatusEnum.PENDING:
+      return <StyledSpinnerIcon src={SpinnerIcon} />
+    case StopStatusEnum.FAILED:
+      return <StyledRefundIcon src={RefundIcon} />
+    case StopStatusEnum.REFUND_COMPLETE:
+      return <StyledRefundCompleteIcon src={RefundIcon} />
+    default:
+      return null
+  }
 }
 
 export function BridgeStopDetails({
@@ -180,32 +196,29 @@ export function BridgeStopDetails({
   tokenLogoSize,
 }: BridgeStopDetailsProps): ReactNode {
   const bridgeReceiveAmountUsdValue = bridgeReceiveAmountUsdResult?.value
-  const isStatusMode = status && status !== 'default'
+  const isStatusMode = status && status !== StopStatusEnum.DEFAULT
 
   let titlePrefix = 'Bridge via'
-  if (status === 'done') {
+  if (status === StopStatusEnum.DONE) {
     titlePrefix = 'Bridged via'
-  } else if (status === 'pending') {
+  } else if (status === StopStatusEnum.PENDING) {
     titlePrefix = 'Bridging via'
-  } else if (status === 'failed') {
+  } else if (status === StopStatusEnum.FAILED) {
     titlePrefix = 'Bridging via'
-  } else if (status === 'refund_complete') {
+  } else if (status === StopStatusEnum.REFUND_COMPLETE) {
     titlePrefix = 'Bridging via'
   }
 
   const TitleContent = (
     <>
       <StopNumberCircle status={status} stopNumber={2}>
-        {status === 'done' && <SVG src={CheckmarkIcon} />}
-        {status === 'pending' && <StyledSpinnerIcon src={SpinnerIcon} />}
-        {status === 'failed' && <StyledRefundIcon src={RefundIcon} />}
-        {status === 'refund_complete' && <StyledRefundCompleteIcon src={RefundIcon} />}
+        {renderBridgeStopStatusIcon(status)}
       </StopNumberCircle>
       <b>
         <span>{titlePrefix} </span>
         <ProtocolIcons showOnlySecond size={21} secondProtocol={bridgeProvider} />
         <span> {bridgeProvider.title}</span>
-        {(status === 'failed' || status === 'refund_complete') && <DangerText> → failed</DangerText>}
+        {status === StopStatusEnum.REFUND_COMPLETE && ' → refunded'}
       </b>
       {isCollapsible && (
         <ToggleIconContainer>
@@ -329,12 +342,9 @@ export function BridgeStopDetails({
           )}
         </ConfirmDetailsItem>
 
-        {isStatusMode && status === 'failed' && (
+        {isStatusMode && status === StopStatusEnum.FAILED && (
           <>
-            <ConfirmDetailsItem
-              label={<span style={{ textDecoration: 'line-through' }}>You received</span>}
-              withTimelineDot={true}
-            >
+            <ConfirmDetailsItem label="You received" withTimelineDot={true}>
               <DangerText>Bridging failed</DangerText>
             </ConfirmDetailsItem>
             <ConfirmDetailsItem
@@ -352,18 +362,15 @@ export function BridgeStopDetails({
           </>
         )}
 
-        {isStatusMode && status === 'refund_complete' && (
+        {isStatusMode && status === StopStatusEnum.REFUND_COMPLETE && (
           <>
-            <ConfirmDetailsItem
-              label={<span style={{ textDecoration: 'line-through' }}>You received</span>}
-              withTimelineDot={true}
-            >
+            <ConfirmDetailsItem label="You received" withTimelineDot={true}>
               <DangerText>Bridging failed</DangerText>
             </ConfirmDetailsItem>
             <ConfirmDetailsItem
               label={
                 <ReceiveAmountTitle>
-                  <b>Refunded</b>
+                  <b>You got refunded</b>
                 </ReceiveAmountTitle>
               }
             >
@@ -381,7 +388,7 @@ export function BridgeStopDetails({
           </>
         )}
 
-        {isStatusMode && status !== 'failed' && status !== 'refund_complete' && (
+        {isStatusMode && status !== StopStatusEnum.FAILED && status !== StopStatusEnum.REFUND_COMPLETE && (
           <ConfirmDetailsItem
             label={
               <ReceiveAmountTitle>
@@ -390,13 +397,13 @@ export function BridgeStopDetails({
             }
           >
             <b>
-              {status === 'pending' && (
+              {status === StopStatusEnum.PENDING && (
                 <StatusAwareText status={status}>
                   in progress
                   <AnimatedEllipsis />
                 </StatusAwareText>
               )}
-              {status === 'done' && (
+              {status === StopStatusEnum.DONE && (
                 <AmountWithTokenIcon>
                   <TokenLogo token={destTokenObj} size={tokenLogoSize} />
                   {bridgeReceiveAmount} {bridgeToken}

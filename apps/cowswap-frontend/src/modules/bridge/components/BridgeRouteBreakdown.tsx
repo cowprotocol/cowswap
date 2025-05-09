@@ -21,7 +21,7 @@ import {
   ClickableRouteHeader,
   DividerHorizontal,
 } from './styled'
-import { SwapStopDetails, StopStatus } from './SwapStopDetails'
+import { SwapStopDetails, StopStatusEnum } from './SwapStopDetails'
 
 import { BridgeFeeType, BridgeProtocolConfig } from '../types'
 
@@ -66,8 +66,8 @@ export interface BridgeRouteBreakdownProps {
   sourceChainId?: SupportedChainId
   tokenLogoSize?: number
   hasBackground?: boolean
-  swapStatus?: StopStatus
-  bridgeStatus?: StopStatus
+  swapStatus?: StopStatusEnum
+  bridgeStatus?: StopStatusEnum
 
   // Display options
   hideBridgeFlowFiatAmount?: boolean
