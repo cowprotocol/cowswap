@@ -4,6 +4,7 @@ import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import CheckmarkIcon from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
 import SpinnerIcon from '@cowprotocol/assets/cow-swap/spinner.svg'
+import CLOSE_ICON_X from '@cowprotocol/assets/cow-swap/x.svg'
 import { TokenWithLogo, getChainInfo } from '@cowprotocol/common-const'
 import { displayTime, ExplorerDataType, getExplorerLink, isAddress, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -113,15 +114,6 @@ const AnimatedEllipsis = styled.span`
   }
 `
 
-const StyledRefundIcon = styled(SVG)`
-  width: 16px;
-  height: 16px;
-  fill: currentColor;
-  display: block;
-  transform-origin: center;
-  animation: ${refundAnimation} 3s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
-`
-
 export const StyledRefundCompleteIcon = styled(SVG)`
   width: 16px;
   height: 16px;
@@ -129,6 +121,26 @@ export const StyledRefundCompleteIcon = styled(SVG)`
   display: block;
   transform-origin: center;
   animation: ${refundCompleteAnimation} 2.5s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+`
+
+const StyledAnimatedTimelineRefundIcon = styled(SVG)`
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  display: block;
+  transform-origin: center;
+  animation: ${refundAnimation} 3s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
+`
+
+const TimelineIconCircleWrapper = styled.span`
+  --size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size);
+  height: var(--size);
+  border-radius: var(--size);
+  padding: 3px;
 `
 
 const DangerText = styled.span`
@@ -162,13 +174,14 @@ export interface BridgeStopDetailsProps {
 function renderBridgeStopStatusIcon(status?: StopStatusEnum): React.ReactElement | null {
   switch (status) {
     case StopStatusEnum.DONE:
-      return <SVG src={CheckmarkIcon} />
+      return (
+        <SVG src={CheckmarkIcon} style={{ width: '24px', height: '18px', color: `var(${UI.COLOR_SUCCESS_TEXT})` }} />
+      )
     case StopStatusEnum.PENDING:
       return <StyledSpinnerIcon src={SpinnerIcon} />
     case StopStatusEnum.FAILED:
-      return <StyledRefundIcon src={RefundIcon} />
     case StopStatusEnum.REFUND_COMPLETE:
-      return <StyledRefundCompleteIcon src={RefundIcon} />
+      return <SVG src={CLOSE_ICON_X} style={{ color: `var(${UI.COLOR_DANGER_TEXT})` }} />
     default:
       return null
   }
@@ -198,15 +211,21 @@ export function BridgeStopDetails({
   const bridgeReceiveAmountUsdValue = bridgeReceiveAmountUsdResult?.value
   const isStatusMode = status && status !== StopStatusEnum.DEFAULT
 
-  let titlePrefix = 'Bridge via'
-  if (status === StopStatusEnum.DONE) {
-    titlePrefix = 'Bridged via'
-  } else if (status === StopStatusEnum.PENDING) {
-    titlePrefix = 'Bridging via'
-  } else if (status === StopStatusEnum.FAILED) {
-    titlePrefix = 'Bridging via'
-  } else if (status === StopStatusEnum.REFUND_COMPLETE) {
-    titlePrefix = 'Bridging via'
+  let titleActionText: string
+  switch (status) {
+    case StopStatusEnum.DONE:
+      titleActionText = 'Bridged via'
+      break
+    case StopStatusEnum.PENDING:
+      titleActionText = 'Bridging via'
+      break
+    case StopStatusEnum.FAILED:
+    case StopStatusEnum.REFUND_COMPLETE:
+      titleActionText = 'Bridge failed on'
+      break
+    default:
+      titleActionText = 'Bridge via'
+      break
   }
 
   const TitleContent = (
@@ -215,10 +234,9 @@ export function BridgeStopDetails({
         {renderBridgeStopStatusIcon(status)}
       </StopNumberCircle>
       <b>
-        <span>{titlePrefix} </span>
+        <span>{titleActionText} </span>
         <ProtocolIcons showOnlySecond size={21} secondProtocol={bridgeProvider} />
         <span> {bridgeProvider.title}</span>
-        {status === StopStatusEnum.REFUND_COMPLETE && ' → refunded'}
       </b>
       {isCollapsible && (
         <ToggleIconContainer>
@@ -342,6 +360,28 @@ export function BridgeStopDetails({
           )}
         </ConfirmDetailsItem>
 
+        <ConfirmDetailsItem
+          label={
+            <>
+              Recipient{' '}
+              <InfoTooltip content="The address that will receive the tokens on the destination chain." size={14} />
+            </>
+          }
+          withTimelineDot
+          isLast={!isStatusMode}
+        >
+          <RecipientWrapper>
+            <NetworkLogo chainId={recipientChainId} size={16} />
+            {isAddress(recipient) ? (
+              <Link href={getExplorerLink(recipientChainId, recipient, ExplorerDataType.ADDRESS)} target="_blank">
+                {shortenAddress(recipient)} ↗
+              </Link>
+            ) : (
+              recipient
+            )}
+          </RecipientWrapper>
+        </ConfirmDetailsItem>
+
         {isStatusMode && status === StopStatusEnum.FAILED && (
           <>
             <ConfirmDetailsItem label="You received" withTimelineDot={true}>
@@ -349,15 +389,24 @@ export function BridgeStopDetails({
             </ConfirmDetailsItem>
             <ConfirmDetailsItem
               label={
-                <ReceiveAmountTitle>
-                  <b>Refunding</b>
+                <ReceiveAmountTitle
+                  icon={
+                    <StyledAnimatedTimelineRefundIcon
+                      src={RefundIcon}
+                      style={{ color: `var(${UI.COLOR_INFO_TEXT})` }}
+                    />
+                  }
+                >
+                  <span style={{ color: `var(${UI.COLOR_INFO_TEXT})` }}>
+                    <b>Refunding</b>
+                  </span>
                 </ReceiveAmountTitle>
               }
             >
-              <span style={{ color: `var(${UI.COLOR_ALERT_TEXT})` }}>
+              <b style={{ color: `var(${UI.COLOR_INFO_TEXT})` }}>
                 Refund started
                 <AnimatedEllipsis />
-              </span>
+              </b>
             </ConfirmDetailsItem>
           </>
         )}
@@ -369,21 +418,32 @@ export function BridgeStopDetails({
             </ConfirmDetailsItem>
             <ConfirmDetailsItem
               label={
-                <ReceiveAmountTitle>
-                  <b>You got refunded</b>
+                <ReceiveAmountTitle
+                  icon={
+                    <TimelineIconCircleWrapper style={{ backgroundColor: `var(${UI.COLOR_SUCCESS_BG})` }}>
+                      <SVG
+                        src={CheckmarkIcon}
+                        style={{ width: '14px', height: '14px', color: `var(${UI.COLOR_SUCCESS_TEXT})` }}
+                      />
+                    </TimelineIconCircleWrapper>
+                  }
+                >
+                  <b style={{ color: `var(${UI.COLOR_SUCCESS_TEXT})` }}>Refunded</b>
                 </ReceiveAmountTitle>
               }
             >
-              <AmountWithTokenIcon>
-                <TokenLogo token={sourceTokenObj} size={tokenLogoSize} />
-                {bridgeAmount} {bridgeToken}
-                {hideBridgeFlowFiatAmount ||
-                  (bridgeReceiveAmountUsdValue && (
-                    <i>
-                      (<FiatAmount amount={bridgeReceiveAmountUsdValue} />)
-                    </i>
-                  ))}
-              </AmountWithTokenIcon>
+              <b>
+                <AmountWithTokenIcon>
+                  <TokenLogo token={sourceTokenObj} size={tokenLogoSize} />
+                  {bridgeAmount} {bridgeToken}
+                  {hideBridgeFlowFiatAmount ||
+                    (bridgeReceiveAmountUsdValue && (
+                      <i>
+                        (<FiatAmount amount={bridgeReceiveAmountUsdValue} />)
+                      </i>
+                    ))}
+                </AmountWithTokenIcon>
+              </b>
             </ConfirmDetailsItem>
           </>
         )}
@@ -418,28 +478,6 @@ export function BridgeStopDetails({
             </b>
           </ConfirmDetailsItem>
         )}
-
-        <ConfirmDetailsItem
-          label={
-            <>
-              Recipient{' '}
-              <InfoTooltip content="The address that will receive the tokens on the destination chain." size={14} />
-            </>
-          }
-          withTimelineDot
-          isLast={true}
-        >
-          <RecipientWrapper>
-            <NetworkLogo chainId={recipientChainId} size={16} />
-            {isAddress(recipient) ? (
-              <Link href={getExplorerLink(recipientChainId, recipient, ExplorerDataType.ADDRESS)} target="_blank">
-                {shortenAddress(recipient)} ↗
-              </Link>
-            ) : (
-              recipient
-            )}
-          </RecipientWrapper>
-        </ConfirmDetailsItem>
       </SectionContent>
     </>
   )

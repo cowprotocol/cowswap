@@ -66,7 +66,7 @@ export const StopNumberCircle = styled.div<{
         return css`
           background-color: var(${UI.COLOR_SUCCESS_BG});
           color: var(${UI.COLOR_SUCCESS_TEXT});
-          padding: 5px;
+          padding: 6px;
           &::before {
             content: none;
           }
@@ -75,7 +75,7 @@ export const StopNumberCircle = styled.div<{
         return css`
           background-color: ${`var(${UI.COLOR_INFO_BG})`};
           color: ${`var(${UI.COLOR_INFO_TEXT})`};
-          &::after {
+          &::before {
             content: none;
           }
         `
@@ -83,6 +83,7 @@ export const StopNumberCircle = styled.div<{
         return css`
           background-color: var(${UI.COLOR_ALERT_BG});
           color: var(${UI.COLOR_ALERT_TEXT});
+          padding: 6.5px;
           &::before {
             content: none;
           }
@@ -91,6 +92,7 @@ export const StopNumberCircle = styled.div<{
         return css`
           background-color: var(${UI.COLOR_ALERT_BG});
           color: var(${UI.COLOR_ALERT_TEXT});
+          padding: 6.5px;
           &::before {
             content: none;
           }
