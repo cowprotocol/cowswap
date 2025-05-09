@@ -56,8 +56,6 @@ export const useAppData = (appData: string, fullAppData?: string): AppDataDecodi
     },
   )
 
-  console.log('appDataDocFromApi', appDataDocFromApi)
-
   return {
     isLoading: isLoading || isIpfsLoading || isAppDataLoading,
     hasError: !!(appDataError && (ipfsError || error)),
