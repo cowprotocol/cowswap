@@ -1,13 +1,4 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ChainInfo, TokenInfo } from '@cowprotocol/types'
-
-/**
- * Interface for a Bridge Provider service
- */
-export interface BridgeProvider {
-  getNetworks(): Promise<ChainInfo[]>
-  getTokens(chainId: number): Promise<TokenInfo[] | null>
-}
 
 /**
  * Configuration for a bridge protocol
