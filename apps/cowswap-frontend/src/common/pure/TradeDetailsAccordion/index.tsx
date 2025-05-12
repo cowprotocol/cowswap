@@ -8,11 +8,6 @@ import { BridgeAccordionSummary, BridgeProtocolConfig } from 'modules/bridge'
 
 import { Wrapper, Summary, SummaryClickable, ToggleIcon, Details } from './styled'
 
-/**
- * @property {number} [bridgeEstimatedTime] - Estimated time for bridge transaction
- * @property {BridgeProtocolConfig} [bridgeProtocol] - Information about the bridge protocol
- * @property {boolean} [showBridgeUI] - Whether to show bridge-related UI elements in the summary
- */
 interface TradeDetailsAccordionProps {
   rateInfo: React.ReactNode
   feeTotalAmount: CurrencyAmount<Currency> | null
@@ -22,8 +17,11 @@ interface TradeDetailsAccordionProps {
   onToggle: () => void
 
   // Optional bridge-related props
+  /** Estimated time for bridge transaction */
   bridgeEstimatedTime?: number
+  /** Information about the bridge protocol */
   bridgeProtocol?: BridgeProtocolConfig
+  /** Whether to show bridge-related UI elements in the summary */
   showBridgeUI?: boolean
 }
 
