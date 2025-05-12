@@ -13,7 +13,7 @@ export function YieldUpdaters() {
   const { inputCurrencyAmount } = useYieldDerivedState()
 
   useFillYieldDerivedState()
-  useSetTradeQuoteParams(inputCurrencyAmount, true)
+  useSetTradeQuoteParams({ amount: inputCurrencyAmount, partiallyFillable: false, fastQuote: true })
 
   return (
     <>

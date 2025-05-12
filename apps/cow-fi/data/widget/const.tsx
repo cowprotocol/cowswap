@@ -9,37 +9,37 @@ export const DAO_CONTENT = {
       image: `${IMAGE_PATH}/dao-enjoy-surplus.svg`,
       title: 'Enjoy more price surplus than anywhere else',
       description:
-        'Every DEX aggregator will tell you they have the best prices, but at the end of the day, CoW Swap does everything they do and then some. With peer-to-peer order matching, gas optimization, and MEV protection, CoW Swap improves your quoted price and forwards the surplus back to you.',
+        'Every DEX aggregator will tell you they have the best prices, but at the end of the day, CoW Swap does everything they do and then some. With peer-to-peer order matching, gas optimization, and MEV protection, CoW Swap improves your quoted price and forwards the surplus back to you',
     },
     {
       image: `${IMAGE_PATH}/dao-custom-tailor-orders.svg`,
       title: 'Stop scrambling for signatures',
       description:
-        "Tired of rushing to sign the multi-sig? Eyes glazed over from staring at candlesticks? CoW Swap automatically adjusts your trade's execution path to fill your order at the best possible price, every time.",
+        "Tired of rushing to sign the multi-sig? Eyes glazed over from staring at candlesticks? CoW Swap automatically adjusts your trade's execution path to fill your order at the best possible price, every time",
     },
     {
       image: `${IMAGE_PATH}/dao-vote-once.svg`,
       title: 'Forget about voting twice ',
       description:
-        "Milkman orders from CoW Swap let your DAO approve trades based on dynamic price feeds rather than fixed prices, so you don't have to re-vote if the market moves significantly.",
+        "Milkman orders from CoW Swap let your DAO approve trades based on dynamic price feeds rather than fixed prices, so you don't have to re-vote if the market moves significantly",
     },
     {
       image: `${IMAGE_PATH}/dao-outsmart-bots.svg`,
       title: 'Outsmart the bots',
       description:
-        "CoW Swap offers MEV protection that is one order of magnitude better than any other exchange. Solvers execute trades on your behalf so you're never exposed to on-chain attacks – and even when trade details are announced weeks in advance, CoW Swap stands between you and the MEV bots.",
+        "CoW Swap offers MEV protection that is one order of magnitude better than any other exchange. Solvers execute trades on your behalf so you're never exposed to on-chain attacks – and even when trade details are announced weeks in advance, CoW Swap stands between you and the MEV bots",
     },
     {
       image: `${IMAGE_PATH}/dao-manage-price-impact.svg`,
       title: 'Manage price impact',
       description:
-        "Your trades move markets… but being the biggest isn't always the best. CoW Swap spreads your order across multiple liquidity pools so you make as little of a splash as possible.",
+        "Your trades move markets… but being the biggest isn't always the best. CoW Swap spreads your order across multiple liquidity pools so you make as little of a splash as possible",
     },
     {
       image: `${IMAGE_PATH}/dao-do-more.svg`,
       title: 'Do anything you can imagine',
       description:
-        'With CoW Swap you can customize rules for your orders above and beyond traditional settings. Want to trigger a trade only when a wallet has n funds in it? Want to schedule recurring trades? CoW Swap lets you do all that and more in just a few clicks.',
+        'With CoW Swap you can customize rules for your orders above and beyond traditional settings. Want to trigger a trade only when a wallet has n funds in it? Want to schedule recurring trades? CoW Swap lets you do all that and more in just a few clicks',
     },
   ],
 

@@ -1,11 +1,11 @@
 import { TelegramConnectionStatus } from './index'
 
-const authenticate = () => {}
+const subscribeAccount = () => {}
 
 const Fixtures = {
-  loading: <TelegramConnectionStatus isLoading={true} isSubscribed={false} authenticate={authenticate} />,
-  subscribed: <TelegramConnectionStatus isLoading={false} isSubscribed={true} authenticate={authenticate} />,
-  needLogin: <TelegramConnectionStatus isLoading={false} isSubscribed={false} authenticate={authenticate} />,
+  loading: <TelegramConnectionStatus isLoading={true} isSubscribed={false} subscribeAccount={subscribeAccount} />,
+  subscribed: <TelegramConnectionStatus isLoading={false} isSubscribed={true} subscribeAccount={subscribeAccount} />,
+  needLogin: <TelegramConnectionStatus isLoading={false} isSubscribed={false} subscribeAccount={subscribeAccount} />,
 }
 
 export default Fixtures

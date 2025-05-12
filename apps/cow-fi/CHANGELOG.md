@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.22.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.1...cow-fi-v1.22.2) (2025-05-01)
+
+
+### Bug Fixes
+
+* **cowfi:** fix learn ([#5655](https://github.com/cowprotocol/cowswap/issues/5655)) ([3fa654c](https://github.com/cowprotocol/cowswap/commit/3fa654cf465038435a880d04c063cacbab245433))
+* **learn:** fixing CMS article 404s with improved error handling and retry logic ([#5632](https://github.com/cowprotocol/cowswap/issues/5632)) ([75fb06d](https://github.com/cowprotocol/cowswap/commit/75fb06daf4895fac03d754ebc2df5564e8fa48c5))
+
+## [1.22.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.0...cow-fi-v1.22.1) (2025-04-25)
+
+
+### Bug Fixes
+
+* add space before the link on mev blocker FAQ ([39c290a](https://github.com/cowprotocol/cowswap/commit/39c290a5729765f9f99eb542d36e04c9adc28f7b))
+
 ## [1.22.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.21.1...cow-fi-v1.22.0) (2025-03-20)
 
 

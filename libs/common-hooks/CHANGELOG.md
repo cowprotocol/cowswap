@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.8.0...common-hooks-v1.8.1) (2025-04-25)
+
+
+### Bug Fixes
+
+* **deps-update:** bump react-router-dom from 6.24.0 to 7.5.1 ([#5618](https://github.com/cowprotocol/cowswap/issues/5618)) ([2470bfa](https://github.com/cowprotocol/cowswap/commit/2470bfaf7ec0629223ea4dd5b42f090dd58a45df))
+
 ## [1.8.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.7.0...common-hooks-v1.8.0) (2025-03-27)
 
 

@@ -63,7 +63,7 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
             const url = shouldPreservePath ? `${network.urlAlias}/${pathSuffix || ''}` : network.urlAlias
 
             return (
-              <Option to={url} color={network.color} key={itemNetworkId}>
+              <Option to={'../' + url} color={network.color} key={itemNetworkId}>
                 <div className="dot" />
                 <div className={`name ${itemNetworkId === networkId && 'selected'}`}>{network.label}</div>
                 {itemNetworkId === networkId && <StyledFAIcon icon={faCheck} />}
