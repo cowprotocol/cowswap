@@ -6,7 +6,9 @@ import { UI } from '@cowprotocol/ui'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-const EqualSign = styled.div<{ size?: number }>`
+type EqualSignVariant = 'default' | 'success'
+
+const EqualSign = styled.div<{ size?: number; variant?: EqualSignVariant }>`
   --size: ${({ size }) => `${size ? size : 14}px`};
   padding: 3px;
   display: flex;
@@ -21,9 +23,10 @@ const EqualSign = styled.div<{ size?: number }>`
 
   &::before {
     content: '';
-    background: var(${UI.COLOR_TEXT});
+    background: ${({ variant = 'default' }) =>
+      variant === 'success' ? `var(${UI.COLOR_SUCCESS_BG})` : `var(${UI.COLOR_TEXT})`};
     border-radius: var(--size);
-    opacity: 0.15;
+    opacity: ${({ variant = 'default' }) => (variant === 'success' ? 1 : 0.15)};
     width: 100%;
     height: 100%;
     position: absolute;
@@ -38,7 +41,8 @@ const EqualSign = styled.div<{ size?: number }>`
     object-fit: contain;
 
     > g {
-      fill: var(${UI.COLOR_TEXT});
+      fill: ${({ variant = 'default' }) =>
+        variant === 'success' ? `var(${UI.COLOR_SUCCESS_TEXT})` : `var(${UI.COLOR_TEXT})`};
     }
   }
 `
@@ -54,15 +58,16 @@ interface ReceiveAmountTitleProps {
   children: ReactNode
   className?: string
   icon?: ReactNode
+  variant?: EqualSignVariant
 }
 
-export function ReceiveAmountTitle({ className, children, icon }: ReceiveAmountTitleProps) {
+export function ReceiveAmountTitle({ className, children, icon, variant }: ReceiveAmountTitleProps) {
   return (
     <Wrapper className={className}>
       {icon ? (
         icon
       ) : (
-        <EqualSign>
+        <EqualSign variant={variant}>
           <SVG src={EqualIcon} />
         </EqualSign>
       )}{' '}

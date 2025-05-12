@@ -3,7 +3,7 @@ import { UI } from '@cowprotocol/ui'
 import SVG from 'react-inlinesvg'
 import styled, { css, keyframes } from 'styled-components/macro'
 
-import { StopStatusEnum } from './SwapStopDetails'
+import { StopStatusEnum } from '../../utils/status'
 
 const spin = keyframes`
   0% {
@@ -17,17 +17,6 @@ const spin = keyframes`
 export const StyledSpinnerIcon = styled(SVG)`
   transform-origin: center;
   animation: ${spin} 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-`
-
-export const Wrapper = styled.div<{ hasBackground?: boolean }>`
-  display: flex;
-  flex-flow: column wrap;
-  gap: 7px;
-  padding: ${({ hasBackground }) => (hasBackground ? '12px' : '0')};
-  font-size: 13px;
-  width: 100%;
-  border-radius: ${({ hasBackground }) => (hasBackground ? '16px' : '0')};
-  background-color: ${({ hasBackground }) => (hasBackground ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
 `
 
 const stopCircleBase = css`
@@ -128,75 +117,6 @@ export const StopTitle = styled.div`
   }
 `
 
-export const RouteHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-`
-
-export const RouteTitle = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
-`
-
-export const StopsInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
-`
-
-export const Link = styled.a`
-  text-decoration: none;
-  color: inherit;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`
-
-export const RecipientWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 5px;
-`
-
-export const NetworkLogoWrapper = styled.div<{ size?: number }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  width: ${({ size = 16 }) => size}px;
-  height: ${({ size = 16 }) => size}px;
-  overflow: hidden;
-
-  > img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: contain;
-  }
-`
-
-export const AmountWithTokenIcon = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  justify-content: flex-end;
-  text-align: right;
-  gap: 4px;
-  word-break: break-word;
-  line-height: 1;
-
-  > i {
-    font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
-    letter-spacing: -0.2px;
-  }
-`
-
 export const TokenFlowContainer = styled.div`
   display: flex;
   align-items: center;
@@ -211,70 +131,26 @@ export const ArrowIcon = styled.span`
   line-height: 1;
 `
 
-// Toggle arrow component for the collapsible header
 export const ToggleArrow = styled.div<{ isOpen: boolean }>`
-  --size: var(${UI.ICON_SIZE_SMALL});
-  transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
-  transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  --size: 12px;
   width: var(--size);
   height: var(--size);
+  object-fit: contain;
+  transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+  transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
+  margin-left: 6px;
 
   > svg {
-    --size: var(${UI.ICON_SIZE_TINY});
-    width: var(--size);
-    height: var(--size);
+    width: 100%;
+    height: 100%;
     object-fit: contain;
-    transition: fill var(${UI.ANIMATION_DURATION}) ease-in-out;
 
-    path {
-      fill: var(${UI.COLOR_TEXT_OPACITY_70});
+    > path {
+      fill: currentColor;
     }
   }
 `
 
-// Modified StopsInfo to include toggle arrow when collapsible
-export const CollapsibleStopsInfo = styled(StopsInfo)`
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-  transition: all var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-  &:hover {
-    color: var(${UI.COLOR_TEXT});
-
-    ${ToggleArrow} {
-      > svg {
-        path {
-          fill: var(${UI.COLOR_TEXT});
-        }
-      }
-    }
-  }
-`
-
-// Add a styled version of RouteHeader with clickable behavior
-export const ClickableRouteHeader = styled(RouteHeader)`
-  cursor: pointer;
-
-  &:hover {
-    ${RouteTitle} {
-      color: var(${UI.COLOR_TEXT});
-    }
-    ${CollapsibleStopsInfo} {
-      color: var(${UI.COLOR_TEXT});
-      ${ToggleArrow} > svg > path {
-        fill: var(${UI.COLOR_TEXT});
-      }
-    }
-  }
-`
-
-// Clickable version of StopTitle (for sections)
 export const ClickableStopTitle = styled(StopTitle)<{ isCollapsible?: boolean }>`
   cursor: ${({ isCollapsible }) => (isCollapsible ? 'pointer' : 'default')};
 
@@ -291,7 +167,6 @@ export const ClickableStopTitle = styled(StopTitle)<{ isCollapsible?: boolean }>
   }
 `
 
-// Absolutely positioned toggle icon container (for sections)
 export const ToggleIconContainer = styled.div`
   position: absolute;
   right: 0;
@@ -301,7 +176,6 @@ export const ToggleIconContainer = styled.div`
   align-items: center;
 `
 
-// Section content that can be collapsed
 export const SectionContent = styled.div<{ isExpanded: boolean }>`
   display: ${({ isExpanded }) => (isExpanded ? 'flex' : 'none')};
   flex-flow: column wrap;
@@ -317,7 +191,6 @@ export const SectionContent = styled.div<{ isExpanded: boolean }>`
   opacity: ${({ isExpanded }) => (isExpanded ? 1 : 0)};
 `
 
-// Basic definition for ConfirmDetailsItem - adjust as needed
 export const ConfirmDetailsItem = styled.div<{
   withTimelineDot?: boolean
   isLast?: boolean
@@ -361,18 +234,77 @@ export const ConfirmDetailsItem = styled.div<{
   }
 `
 
-// Basic definition for DividerHorizontal - adjust as needed
-export const DividerHorizontal = styled.hr<{ margin?: string; overrideColor?: string }>`
-  border: none;
-  border-top: 1px solid ${({ overrideColor }) => overrideColor || `var(${UI.COLOR_BORDER})`};
-  margin: ${({ margin = '8px 0' }) => margin};
-  width: 100%;
-`
-
-// Definition for ReceiveAmountTitle - adjust as needed
 export const ReceiveAmountTitle = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
+`
+
+export const Link = styled.a<{ underline?: boolean }>`
+  text-decoration: ${({ underline }) => (underline ? 'underline' : 'none')};
+  color: inherit;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`
+
+export const Wrapper = styled.div<{ hasBackground?: boolean }>`
+  width: 100%;
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  background: ${({ hasBackground }) => (hasBackground ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
+  display: flex;
+  flex-flow: column wrap;
+  gap: 4px;
+  padding: ${({ hasBackground }) => (hasBackground ? '16px' : '0')};
+  box-sizing: border-box;
+`
+
+export const RouteHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 3px 0;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  margin-bottom: 4px;
+`
+
+export const ClickableRouteHeader = styled(RouteHeader)`
+  cursor: pointer;
+  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    color: var(${UI.COLOR_TEXT});
+  }
+`
+
+export const RouteTitle = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
+`
+
+export const StopsInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
+`
+
+export const CollapsibleStopsInfo = styled(StopsInfo)`
+  display: flex;
+  align-items: center;
+`
+
+export const DividerHorizontal = styled.div<{ margin?: string; overrideColor?: string }>`
+  width: 100%;
+  height: 1px;
+  margin: ${({ margin }) => margin || '0'};
+  background-color: ${({ overrideColor }) => overrideColor || `var(${UI.COLOR_PAPER_DARKER})`};
 `

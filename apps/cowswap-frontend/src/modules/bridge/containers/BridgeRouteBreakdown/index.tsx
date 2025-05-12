@@ -1,60 +1,44 @@
 import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
-import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InfoTooltip, UI } from '@cowprotocol/ui'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
 
+import { ToggleArrow } from 'modules/bridge/styles'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { ProtocolIcons } from 'common/pure/ProtocolIcons'
 
-import { BridgeStopDetails } from './BridgeStopDetails'
 import {
+  Wrapper,
   RouteHeader,
   RouteTitle,
   StopsInfo,
-  Wrapper,
-  ToggleArrow,
   CollapsibleStopsInfo,
   ClickableRouteHeader,
   DividerHorizontal,
 } from './styled'
-import { SwapStopDetails, StopStatusEnum } from './SwapStopDetails'
 
-import { BridgeFeeType, BridgeProtocolConfig } from '../types'
-
-export function isFreeSwapFee(fee: string | BridgeFeeType): boolean {
-  return fee === BridgeFeeType.FREE || fee === 'FREE' || fee === '0' || fee === '0.0'
-}
-
-export function getFeeTextColor(fee: string | BridgeFeeType): string | undefined {
-  if (isFreeSwapFee(fee)) {
-    return `var(${UI.COLOR_GREEN})`
-  }
-  return undefined
-}
+import { useParsedAmountWithUsd } from '../../hooks'
+import { BridgeStopDetails } from '../../pure/BridgeStopDetails/index'
+import { SwapStopDetails } from '../../pure/SwapStopDetails/index'
+import { BridgeFeeType, BridgeProtocolConfig } from '../../types'
+import { StopStatusEnum } from '../../utils/status'
 
 export interface BridgeRouteBreakdownProps {
   // Swap details
-  sellAmount: string
-  sellToken: string
-  sellTokenAddress: string
-  buyAmount: string
-  buyToken: string
-  buyTokenAddress: string
+  sellCurrencyAmount: CurrencyAmount<TokenWithLogo>
+  buyCurrencyAmount: CurrencyAmount<TokenWithLogo>
   networkCost: string
   swapMinReceive?: string
   swapExpectedToReceive?: string
   swapMaxSlippage?: string
 
   // Bridge details
-  bridgeAmount: string
-  bridgeToken: string
-  bridgeTokenAddress: string
-  bridgeReceiveAmount: string
-  bridgeTokenReceiveAddress?: string
+  bridgeSendCurrencyAmount: CurrencyAmount<TokenWithLogo>
+  bridgeReceiveCurrencyAmount: CurrencyAmount<TokenWithLogo>
   bridgeFee: string | BridgeFeeType
   maxBridgeSlippage: string
   estimatedTime: number
@@ -62,8 +46,6 @@ export interface BridgeRouteBreakdownProps {
   bridgeProvider: BridgeProtocolConfig
 
   // Optional props with defaults
-  recipientChainId?: SupportedChainId
-  sourceChainId?: SupportedChainId
   tokenLogoSize?: number
   hasBackground?: boolean
   swapStatus?: StopStatusEnum
@@ -87,38 +69,20 @@ export interface BridgeRouteBreakdownProps {
   onBridgeSectionToggle?: () => void
 }
 
-/**
- * BridgeRouteBreakdown component displays the details of a bridge transaction
- *
- * The component supports two display modes:
- * 1. Standard mode (default): Always shows the full breakdown
- * 2. Accordion mode: Can toggle between showing just the header (collapsed) or the full breakdown (expanded)
- *
- * Also supports independent collapsibility for the Swap and Bridge sections.
- */
 export function BridgeRouteBreakdown({
-  sellAmount,
-  sellToken,
-  sellTokenAddress,
-  buyAmount,
-  buyToken,
-  buyTokenAddress,
+  sellCurrencyAmount,
+  buyCurrencyAmount,
   networkCost,
   swapMinReceive,
   swapExpectedToReceive,
   swapMaxSlippage,
-  bridgeAmount,
-  bridgeToken,
-  bridgeTokenAddress,
-  bridgeReceiveAmount,
-  bridgeTokenReceiveAddress,
+  bridgeSendCurrencyAmount,
+  bridgeReceiveCurrencyAmount,
   bridgeFee,
   maxBridgeSlippage,
   estimatedTime,
   recipient,
   bridgeProvider,
-  recipientChainId = SupportedChainId.MAINNET,
-  sourceChainId = SupportedChainId.MAINNET,
   tokenLogoSize = 18,
   hasBackground = false,
   swapStatus,
@@ -135,80 +99,34 @@ export function BridgeRouteBreakdown({
   isBridgeSectionExpanded = true,
   onBridgeSectionToggle = () => {},
 }: BridgeRouteBreakdownProps) {
-  // Create token objects
-  const sellTokenObj = new TokenWithLogo(
-    undefined,
-    sourceChainId,
-    sellTokenAddress,
-    18, // Default decimals
-    sellToken,
-    sellToken,
-  )
+  const sellToken = sellCurrencyAmount.currency
+  const buyToken = buyCurrencyAmount.currency
 
-  const buyTokenObj = new TokenWithLogo(
-    undefined,
-    sourceChainId,
-    buyTokenAddress,
-    18, // Default decimals
-    buyToken,
-    buyToken,
-  )
+  const derivedSourceChainId = sellToken.chainId as SupportedChainId
 
-  const sourceTokenObj = new TokenWithLogo(
-    undefined,
-    sourceChainId,
-    bridgeTokenAddress,
-    18, // Default decimals
-    bridgeToken,
-    bridgeToken,
-  )
+  const destToken = bridgeReceiveCurrencyAmount.currency
+  const derivedRecipientChainId = destToken.chainId as SupportedChainId
 
-  const destTokenAddress = bridgeTokenReceiveAddress || bridgeTokenAddress
-
-  const destTokenObj = new TokenWithLogo(
-    undefined,
-    recipientChainId,
-    destTokenAddress,
-    18, // Default decimals
-    bridgeToken,
-    bridgeToken,
-  )
-
-  const recipientChainInfo = getChainInfo(recipientChainId)
+  const recipientChainInfo = getChainInfo(derivedRecipientChainId)
   const recipientChainName = recipientChainInfo.label
 
-  const sourceChainInfo = getChainInfo(sourceChainId)
+  const sourceChainInfo = getChainInfo(derivedSourceChainId)
   const sourceChainName = sourceChainInfo.label
 
-  // Derive CurrencyAmount and USD results using hooks
-  const networkCostCurrency = networkCost ? tryParseCurrencyAmount(networkCost, sellTokenObj) : undefined
-  const networkCostUsdResult = useUsdAmount(networkCostCurrency)
+  const { usdInfo: networkCostUsdResult } = useParsedAmountWithUsd(networkCost, sellToken)
+  const { usdInfo: swapMinReceiveUsdResult } = useParsedAmountWithUsd(swapMinReceive, buyToken)
+  const { usdInfo: swapExpectedReceiveUsdResult } = useParsedAmountWithUsd(swapExpectedToReceive, buyToken)
+  const bridgeReceiveAmountUsdInfo = useUsdAmount(bridgeReceiveCurrencyAmount, destToken)
 
-  const swapMinReceiveCurrency = swapMinReceive ? tryParseCurrencyAmount(swapMinReceive, buyTokenObj) : undefined
-  const swapMinReceiveUsdResult = useUsdAmount(swapMinReceiveCurrency)
-
-  const swapExpectedReceiveCurrency = swapExpectedToReceive
-    ? tryParseCurrencyAmount(swapExpectedToReceive, buyTokenObj)
-    : undefined
-  const swapExpectedReceiveUsdResult = useUsdAmount(swapExpectedReceiveCurrency)
-
-  const bridgeReceiveAmountCurrency = bridgeReceiveAmount
-    ? tryParseCurrencyAmount(bridgeReceiveAmount, destTokenObj)
-    : undefined
-  const bridgeReceiveAmountUsdResult = useUsdAmount(bridgeReceiveAmountCurrency)
-
-  // Handle overall header click for accordion functionality
   const handleHeaderClick = () => {
     if (isCollapsible) {
       onExpandToggle()
     }
   }
 
-  // Determine header component based on overall collapsibility
   const HeaderComponent = isCollapsible ? ClickableRouteHeader : RouteHeader
 
-  // Render the main header
-  const renderHeader = () => (
+  const headerContent = (
     <HeaderComponent onClick={isCollapsible ? handleHeaderClick : undefined}>
       <RouteTitle>
         Route{' '}
@@ -239,28 +157,21 @@ export function BridgeRouteBreakdown({
     </HeaderComponent>
   )
 
-  // If overall component is collapsible and currently collapsed, render only the header
   if (isCollapsible && !isExpanded) {
-    return <Wrapper hasBackground={hasBackground}>{!hideRouteHeader && renderHeader()}</Wrapper>
+    return <Wrapper hasBackground={hasBackground}>{!hideRouteHeader && headerContent}</Wrapper>
   }
 
-  // Render the full breakdown (overall component is expanded or not collapsible)
   return (
     <Wrapper hasBackground={hasBackground}>
-      {!hideRouteHeader && renderHeader()}
+      {!hideRouteHeader && headerContent}
 
-      {/* --- Swap Section --- */}
       <SwapStopDetails
         isCollapsible={isSwapSectionCollapsible}
         isExpanded={isSwapSectionExpanded}
         onToggle={onSwapSectionToggle}
         status={swapStatus}
-        sellAmount={sellAmount}
-        sellToken={sellToken}
-        sellTokenObj={sellTokenObj}
-        buyAmount={buyAmount}
-        buyToken={buyToken}
-        buyTokenObj={buyTokenObj}
+        sellCurrencyAmount={sellCurrencyAmount}
+        buyCurrencyAmount={buyCurrencyAmount}
         sourceChainName={sourceChainName}
         networkCost={networkCost}
         networkCostUsdResult={networkCostUsdResult}
@@ -271,6 +182,8 @@ export function BridgeRouteBreakdown({
         swapMinReceiveUsdResult={swapMinReceiveUsdResult}
         tokenLogoSize={tokenLogoSize}
         bridgeProvider={bridgeProvider}
+        recipient={recipient}
+        sourceChainId={derivedSourceChainId}
       />
 
       <DividerHorizontal
@@ -278,26 +191,22 @@ export function BridgeRouteBreakdown({
         overrideColor={hasBackground ? `var(${UI.COLOR_PAPER_DARKEST})` : undefined}
       />
 
-      {/* --- Bridge Section --- */}
       <BridgeStopDetails
         isCollapsible={isBridgeSectionCollapsible}
         isExpanded={isBridgeSectionExpanded}
         onToggle={onBridgeSectionToggle}
         status={bridgeStatus}
         bridgeProvider={bridgeProvider}
-        sourceTokenObj={sourceTokenObj}
-        destTokenObj={destTokenObj}
-        bridgeAmount={bridgeAmount}
-        bridgeToken={bridgeToken}
-        bridgeReceiveAmount={bridgeReceiveAmount}
+        bridgeSendCurrencyAmount={bridgeSendCurrencyAmount}
+        bridgeReceiveCurrencyAmount={bridgeReceiveCurrencyAmount}
         recipientChainName={recipientChainName}
         hideBridgeFlowFiatAmount={hideBridgeFlowFiatAmount}
-        bridgeReceiveAmountUsdResult={bridgeReceiveAmountUsdResult}
+        bridgeReceiveAmountUsdResult={bridgeReceiveAmountUsdInfo}
         bridgeFee={bridgeFee}
         maxBridgeSlippage={maxBridgeSlippage}
         estimatedTime={estimatedTime}
         recipient={recipient}
-        recipientChainId={recipientChainId}
+        recipientChainId={derivedRecipientChainId}
         tokenLogoSize={tokenLogoSize}
       />
     </Wrapper>

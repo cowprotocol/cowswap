@@ -5,8 +5,10 @@ import CheckmarkIcon from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
 import SpinnerIcon from '@cowprotocol/assets/cow-swap/spinner.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { TokenLogo } from '@cowprotocol/tokens'
+import { ExplorerDataType, getExplorerLink, isAddress, shortenAddress } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { FiatAmount, InfoTooltip } from '@cowprotocol/ui'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
 
@@ -16,32 +18,26 @@ import { UsdAmountInfo } from 'modules/usdAmount/hooks/useUsdAmount'
 
 import { ProtocolIcons } from 'common/pure/ProtocolIcons'
 
-import { getFeeTextColor } from './BridgeRouteBreakdown'
-import { StyledRefundCompleteIcon } from './BridgeStopDetails'
 import {
-  AmountWithTokenIcon,
   ArrowIcon,
+  ClickableStopTitle,
+  Link,
+  SectionContent,
   StopNumberCircle,
   StopTitle,
-  TokenFlowContainer,
-  ClickableStopTitle,
+  StyledSpinnerIcon,
   ToggleArrow,
   ToggleIconContainer,
-  SectionContent,
-  StyledSpinnerIcon,
-} from './styled'
+  TokenFlowContainer,
+} from '../../styles'
+import { BridgeProtocolConfig, BridgeFeeType } from '../../types'
+import { getFeeTextColor } from '../../utils/fees'
+import { StopStatusEnum } from '../../utils/status'
+import { StyledRefundCompleteIcon } from '../BridgeStopDetails/index'
+import { RecipientWrapper } from '../BridgeStopDetails/styled'
+import { NetworkLogo } from '../NetworkLogo'
+import { TokenAmountDisplay } from '../TokenAmountDisplay'
 
-import { BridgeProtocolConfig, BridgeFeeType } from '../types'
-
-export enum StopStatusEnum {
-  DEFAULT = 'default',
-  DONE = 'done',
-  PENDING = 'pending',
-  FAILED = 'failed',
-  REFUND_COMPLETE = 'refund_complete',
-}
-
-// Helper function to render the status icon
 function renderStopStatusIcon(status?: StopStatusEnum): React.ReactElement | null {
   switch (status) {
     case StopStatusEnum.DONE:
@@ -62,12 +58,8 @@ export interface SwapStopDetailsProps {
   isExpanded?: boolean
   onToggle?: () => void
   status?: StopStatusEnum
-  sellAmount: string
-  sellToken: string
-  sellTokenObj: TokenWithLogo
-  buyAmount: string
-  buyToken: string
-  buyTokenObj: TokenWithLogo
+  sellCurrencyAmount: CurrencyAmount<TokenWithLogo>
+  buyCurrencyAmount: CurrencyAmount<TokenWithLogo>
   sourceChainName: string
   networkCost: string
   networkCostUsdResult?: UsdAmountInfo | null
@@ -78,6 +70,8 @@ export interface SwapStopDetailsProps {
   swapMinReceiveUsdResult?: UsdAmountInfo | null
   tokenLogoSize: number
   bridgeProvider: BridgeProtocolConfig
+  recipient?: string
+  sourceChainId?: SupportedChainId
 }
 
 export function SwapStopDetails({
@@ -85,12 +79,8 @@ export function SwapStopDetails({
   isExpanded = true,
   onToggle = () => {},
   status,
-  sellAmount,
-  sellToken,
-  sellTokenObj,
-  buyAmount,
-  buyToken,
-  buyTokenObj,
+  sellCurrencyAmount,
+  buyCurrencyAmount,
   sourceChainName,
   networkCost,
   networkCostUsdResult,
@@ -101,7 +91,17 @@ export function SwapStopDetails({
   swapMinReceiveUsdResult,
   tokenLogoSize,
   bridgeProvider,
+  recipient,
+  sourceChainId = SupportedChainId.MAINNET,
 }: SwapStopDetailsProps): ReactNode {
+  const sellTokenObj = sellCurrencyAmount.currency
+  const sellAmount = sellCurrencyAmount.toSignificant(6)
+  const sellTokenSymbol = sellTokenObj.symbol || '???'
+
+  const buyTokenObj = buyCurrencyAmount.currency
+  const buyAmount = buyCurrencyAmount.toSignificant(6)
+  const buyTokenSymbol = buyTokenObj.symbol || '???'
+
   const networkCostUsdValue = networkCostUsdResult?.value
   const swapExpectedReceiveUsdValue = swapExpectedReceiveUsdResult?.value
   const swapMinReceiveUsdValue = swapMinReceiveUsdResult?.value
@@ -150,15 +150,22 @@ export function SwapStopDetails({
       <SectionContent isExpanded={isExpanded}>
         <ConfirmDetailsItem label="" withTimelineDot>
           <TokenFlowContainer>
-            <AmountWithTokenIcon>
-              <TokenLogo token={sellTokenObj} size={tokenLogoSize} />
-              {sellAmount} {sellToken}
-            </AmountWithTokenIcon>
+            <TokenAmountDisplay
+              token={sellTokenObj}
+              amount={sellAmount}
+              displaySymbol={sellTokenSymbol}
+              tokenLogoSize={tokenLogoSize}
+              hideFiatAmount={true}
+            />
             <ArrowIcon>→</ArrowIcon>
-            <AmountWithTokenIcon>
-              <TokenLogo token={buyTokenObj} size={tokenLogoSize} />
-              {buyAmount} {buyToken} on {sourceChainName}
-            </AmountWithTokenIcon>
+            <TokenAmountDisplay
+              token={buyTokenObj}
+              amount={buyAmount}
+              displaySymbol={buyTokenSymbol}
+              tokenLogoSize={tokenLogoSize}
+              hideFiatAmount={true}
+            />
+            {` on ${sourceChainName}`}
           </TokenFlowContainer>
         </ConfirmDetailsItem>
 
@@ -186,7 +193,7 @@ export function SwapStopDetails({
           }
           withTimelineDot
         >
-          {networkCost} {sellToken}&nbsp;
+          {networkCost} {sellTokenSymbol}&nbsp;
           {networkCostUsdValue && (
             <i>
               (<FiatAmount amount={networkCostUsdValue} />)
@@ -207,14 +214,13 @@ export function SwapStopDetails({
               </>
             }
           >
-            <AmountWithTokenIcon>
-              {swapExpectedToReceive} {buyToken}
-              {swapExpectedReceiveUsdValue && (
-                <i>
-                  (<FiatAmount amount={swapExpectedReceiveUsdValue} />)
-                </i>
-              )}
-            </AmountWithTokenIcon>
+            <TokenAmountDisplay
+              token={buyTokenObj}
+              amount={swapExpectedToReceive}
+              displaySymbol={buyTokenSymbol}
+              usdValue={swapExpectedReceiveUsdValue}
+              tokenLogoSize={tokenLogoSize}
+            />
           </ConfirmDetailsItem>
         )}
 
@@ -235,6 +241,32 @@ export function SwapStopDetails({
           </ConfirmDetailsItem>
         )}
 
+        {recipient && (
+          <ConfirmDetailsItem
+            label={
+              <>
+                Recipient <InfoTooltip content="The address that will receive the tokens." size={14} />
+              </>
+            }
+            withTimelineDot
+          >
+            <RecipientWrapper>
+              <NetworkLogo chainId={sourceChainId} size={16} />
+              {isAddress(recipient) ? (
+                <Link
+                  href={getExplorerLink(sourceChainId, recipient, ExplorerDataType.ADDRESS)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {shortenAddress(recipient)} ↗
+                </Link>
+              ) : (
+                recipient
+              )}
+            </RecipientWrapper>
+          </ConfirmDetailsItem>
+        )}
+
         {swapMinReceive && (
           <ConfirmDetailsItem
             label={
@@ -244,15 +276,13 @@ export function SwapStopDetails({
             }
           >
             <b>
-              <AmountWithTokenIcon>
-                <TokenLogo token={buyTokenObj} size={tokenLogoSize} />
-                {swapMinReceive} {buyToken}
-                {swapMinReceiveUsdValue && (
-                  <i>
-                    (<FiatAmount amount={swapMinReceiveUsdValue} />)
-                  </i>
-                )}
-              </AmountWithTokenIcon>
+              <TokenAmountDisplay
+                token={buyTokenObj}
+                amount={swapMinReceive}
+                displaySymbol={buyTokenSymbol}
+                usdValue={swapMinReceiveUsdValue}
+                tokenLogoSize={tokenLogoSize}
+              />
             </b>
           </ConfirmDetailsItem>
         )}

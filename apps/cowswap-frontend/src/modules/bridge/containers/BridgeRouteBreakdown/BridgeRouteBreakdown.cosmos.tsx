@@ -28,12 +28,23 @@ import { CurrencyInputPanel } from 'common/pure/CurrencyInputPanel/CurrencyInput
 import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 
-import { BridgeRouteBreakdown } from './BridgeRouteBreakdown'
-import { StopStatusEnum } from './SwapStopDetails'
+import { BridgeFeeType, BridgeProtocolConfig } from '../../types'
+import { StopStatusEnum } from '../../utils/status'
 
-import { BridgeFeeType, BridgeProtocolConfig } from '../types'
+import { BridgeRouteBreakdown } from './index'
 
 const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts, 'transparent')
+
+// Helper to create CurrencyAmount from a string value and a token object
+const createAmount = <T extends Currency>(currency: T, value: string | number): CurrencyAmount<T> => {
+  const numericValue = typeof value === 'string' ? parseFloat(value) : value
+  return CurrencyAmount.fromRawAmount<T>(currency, JSBI.BigInt(Math.round(numericValue * 10 ** currency.decimals)))
+}
+
+const sharedPriceImpact: PriceImpact = {
+  priceImpact: new Percent(10, 10000), // 0.1%
+  loading: false,
+}
 
 // Define provider configs
 const bungeeProviderConfig: BridgeProtocolConfig = {
@@ -50,31 +61,20 @@ const COW_GNOSIS = COW[SupportedChainId.GNOSIS_CHAIN]
 // Prepare default props that will be used in all fixtures
 const defaultProps = {
   // Swap details
-  sellAmount: '1000',
-  sellToken: 'USDC',
-  sellTokenAddress: USDC_MAINNET.address, // Mainnet USDC
-  buyAmount: '3442.423',
-  buyToken: 'COW',
-  buyTokenAddress: COW_MAINNET.address, // Mainnet COW
+  sellCurrencyAmount: createAmount(USDC_MAINNET, '1000'),
+  buyCurrencyAmount: createAmount(COW_MAINNET, '3442.423'),
   networkCost: '0.5',
-  networkCostUsd: '0.45',
   swapMinReceive: '3425.21',
   swapExpectedToReceive: '3442.423',
   swapMaxSlippage: '0.5',
   // Bridge details
-  bridgeAmount: '3442.423',
-  bridgeToken: 'COW',
-  bridgeTokenAddress: COW_MAINNET.address, // Mainnet COW
-  bridgeTokenReceiveAddress: COW_GNOSIS.address, // Gnosis Chain COW
-  bridgeReceiveAmount: '3433.1',
+  bridgeSendCurrencyAmount: createAmount(COW_MAINNET, '3442.423'),
+  bridgeReceiveCurrencyAmount: createAmount(COW_GNOSIS, '3433.1'),
   bridgeFee: '1.50',
   maxBridgeSlippage: '1',
   estimatedTime: 1200, // 20 minutes in seconds
   recipient: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045', // vitalik.eth
   bridgeProvider: bungeeProviderConfig,
-  // Chain IDs
-  sourceChainId: SupportedChainId.MAINNET,
-  recipientChainId: SupportedChainId.GNOSIS_CHAIN,
   // Display options
   hideBridgeFlowFiatAmount: true, // Hide fiat amount in bridge destination token flow
 }
@@ -91,14 +91,14 @@ const mockUsdPrices = {
   // COW on Mainnet (lowercase address as key)
   [COW_MAINNET.address.toLowerCase()]: {
     currency: COW_MAINNET,
-    price: new Fraction(43, 100), // $0.43 per COW
+    price: new Fraction(43, 100),
     isLoading: false,
     updatedAt: Date.now(),
   },
   // COW on Gnosis Chain (lowercase address as key)
   [COW_GNOSIS.address.toLowerCase()]: {
     currency: COW_GNOSIS,
-    price: new Fraction(43, 100), // $0.43 per COW
+    price: new Fraction(43, 100),
     isLoading: false,
     updatedAt: Date.now(),
   },
@@ -108,7 +108,6 @@ const mockUsdPrices = {
 const store = createStore()
 store.set(usdRawPricesAtom, mockUsdPrices)
 
-// Styled wrapper for bridge fixtures
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
@@ -119,7 +118,6 @@ const Wrapper = styled.div`
   background: transparent;
 `
 
-// Style for the rate info
 const RateInfoStyled = styled.div`
   display: flex;
   justify-content: space-between;
@@ -163,15 +161,14 @@ const BridgeRouteWithAccordion = ({ props, isOpen = false }: { props: typeof def
 
   // Create mock currency amount for the fee
   const feeAmount =
-    props.bridgeFee === BridgeFeeType.FREE
-      ? CurrencyAmount.fromRawAmount(USDC, 0)
-      : CurrencyAmount.fromRawAmount(USDC, Math.round(parseFloat(props.bridgeFee.toString()) * 10 ** 6))
+    props.bridgeFee === BridgeFeeType.FREE ? createAmount(USDC, '0') : createAmount(USDC, props.bridgeFee)
 
   return (
     <TradeDetailsAccordion
       rateInfo={
         <RateInfoStyled>
-          1 {props.sellToken} = 3.442 {props.buyToken} <FiatValue>(≈ $0.43)</FiatValue>
+          1 {props.sellCurrencyAmount.currency.symbol} = 3.442 {props.buyCurrencyAmount.currency.symbol}{' '}
+          <FiatValue>(≈ $0.43)</FiatValue>
         </RateInfoStyled>
       }
       feeTotalAmount={feeAmount}
@@ -202,29 +199,21 @@ const TradeFormFooter = styled.div`
 
 // Enhanced SwapForm with CurrencyInputPanel components
 const SwapForm = () => {
-  // Create buy currency amount for convenient calculations
-  const buyAmount = CurrencyAmount.fromRawAmount(
-    COW_MAINNET,
-    JSBI.BigInt(Math.round(parseFloat(defaultProps.buyAmount) * 10 ** 18)),
-  )
+  // Use original hardcoded string values for SwapForm fixture's internal logic
+  const originalSellAmountStr = '1000'
+  const originalBuyAmountStr = '3442.423'
 
-  // Create sell currency amount for convenient calculations
-  const sellAmount = CurrencyAmount.fromRawAmount(
-    USDC_MAINNET,
-    JSBI.BigInt(Math.round(parseFloat(defaultProps.sellAmount) * 10 ** 6)),
-  )
+  // Create buy currency amount for convenient calculations within the fixture
+  const buyAmount = createAmount(COW_MAINNET, originalBuyAmountStr)
+
+  // Create sell currency amount for convenient calculations within the fixture
+  const sellAmount = createAmount(USDC_MAINNET, originalSellAmountStr)
 
   // Network fee in sell currency (USDC)
-  const networkFeeInSellCurrency = CurrencyAmount.fromRawAmount(
-    USDC_MAINNET,
-    JSBI.BigInt(Math.round(parseFloat(defaultProps.networkCost) * 10 ** 6)),
-  )
+  const networkFeeInSellCurrency = createAmount(USDC_MAINNET, defaultProps.networkCost)
 
   // Network fee converted to buy currency (COW)
-  const networkFeeInBuyCurrency = CurrencyAmount.fromRawAmount(
-    COW_MAINNET,
-    JSBI.BigInt(Math.round(parseFloat(defaultProps.networkCost) * 2.5 * 10 ** 18)), // Estimate conversion
-  )
+  const networkFeeInBuyCurrency = createAmount(COW_MAINNET, parseFloat(defaultProps.networkCost) * 2.5) // Estimate conversion
 
   // Create a quote price
   const quotePrice = new Price({
@@ -233,16 +222,10 @@ const SwapForm = () => {
   })
 
   // Calculate amounts after fees
-  const buyAmountAfterFees = CurrencyAmount.fromRawAmount(
-    COW_MAINNET,
-    JSBI.BigInt(Math.round(parseFloat(defaultProps.swapExpectedToReceive) * 10 ** 18)),
-  )
+  const buyAmountAfterFees = createAmount(COW_MAINNET, defaultProps.swapExpectedToReceive)
 
   // Calculate minimum amount from slippage
-  const buyAmountAfterSlippage = CurrencyAmount.fromRawAmount(
-    COW_MAINNET,
-    JSBI.BigInt(Math.round(parseFloat(defaultProps.swapMinReceive) * 10 ** 18)),
-  )
+  const buyAmountAfterSlippage = createAmount(COW_MAINNET, defaultProps.swapMinReceive)
 
   // Create receiveAmountInfo for output currency
   const receiveAmountInfo: ReceiveAmountInfo = {
@@ -254,7 +237,7 @@ const SwapForm = () => {
         amountInBuyCurrency: networkFeeInBuyCurrency,
       },
       partnerFee: {
-        amount: CurrencyAmount.fromRawAmount(COW_MAINNET, 0), // No partner fee in this example
+        amount: createAmount(COW_MAINNET, '0'), // No partner fee in this example
         bps: 0,
       },
     },
@@ -282,7 +265,7 @@ const SwapForm = () => {
     isIndependent: true,
     receiveAmountInfo: null,
     currency: USDC_MAINNET,
-    balance: CurrencyAmount.fromRawAmount(USDC_MAINNET, JSBI.BigInt(10000 * 10 ** 6)), // 10,000 USDC
+    balance: createAmount(USDC_MAINNET, '10000'), // 10,000 USDC
     amount: sellAmount,
     fiatAmount: sellAmount, // 1:1 for USDC
   }
@@ -293,19 +276,13 @@ const SwapForm = () => {
     isIndependent: false,
     receiveAmountInfo,
     currency: COW_MAINNET,
-    balance: CurrencyAmount.fromRawAmount(COW_MAINNET, JSBI.BigInt(5000 * 10 ** 18)), // 5,000 COW
+    balance: createAmount(COW_MAINNET, '5000'), // 5,000 COW
     amount: buyAmount,
-    fiatAmount: CurrencyAmount.fromRawAmount(
-      USDC_MAINNET,
-      JSBI.BigInt(Math.round(parseFloat(defaultProps.buyAmount) * 0.43 * 10 ** 6)),
-    ),
+    fiatAmount: createAmount(USDC_MAINNET, parseFloat(originalBuyAmountStr) * 0.43), // Use original string for calculation
   }
 
-  // Price impact for the trade
-  const priceImpact: PriceImpact = {
-    priceImpact: new Percent(10, 10000), // 0.1%
-    loading: false,
-  }
+  // Price impact for the trade, now using the shared constant
+  const priceImpact = sharedPriceImpact
 
   // Mock functions
   const onUserInput = () => {
@@ -324,7 +301,7 @@ const SwapForm = () => {
       tier: 0,
       discount: 0,
     },
-    balance: CurrencyAmount.fromRawAmount(COW_MAINNET, JSBI.BigInt(5000 * 10 ** 18)),
+    balance: buyCurrencyInfo.balance, // Reuse balance from buyCurrencyInfo
   }
 
   return (
@@ -333,7 +310,7 @@ const SwapForm = () => {
         {/* From input */}
         <CurrencyInputPanel
           id="swap-from"
-          chainId={defaultProps.sourceChainId}
+          chainId={defaultProps.sellCurrencyAmount.currency.chainId}
           areCurrenciesLoading={false}
           bothCurrenciesSet={true}
           isChainIdUnsupported={false}
@@ -353,7 +330,7 @@ const SwapForm = () => {
         {/* To input */}
         <CurrencyInputPanel
           id="swap-to"
-          chainId={defaultProps.recipientChainId}
+          chainId={defaultProps.buyCurrencyAmount.currency.chainId}
           areCurrenciesLoading={false}
           bothCurrenciesSet={true}
           isChainIdUnsupported={false}
@@ -393,24 +370,22 @@ const SwapConfirmation = () => {
 
   // Mock data for TradeConfirmation component
   const inputCurrencyInfo = {
-    amount: CurrencyAmount.fromRawAmount(USDC_MAINNET, JSBI.BigInt(1000 * 10 ** 6)),
-    fiatAmount: CurrencyAmount.fromRawAmount(USDC_MAINNET, JSBI.BigInt(1000 * 10 ** 6)),
-    balance: CurrencyAmount.fromRawAmount(USDC_MAINNET, JSBI.BigInt(10000 * 10 ** 6)),
+    amount: createAmount(USDC_MAINNET, '1000'),
+    fiatAmount: createAmount(USDC_MAINNET, '1000'),
+    balance: createAmount(USDC_MAINNET, '10000'),
     label: 'You pay',
   }
 
   const outputCurrencyInfo = {
-    amount: CurrencyAmount.fromRawAmount(COW_MAINNET, JSBI.BigInt(3442 * 10 ** 18)),
-    fiatAmount: CurrencyAmount.fromRawAmount(USDC_MAINNET, JSBI.BigInt(1480 * 10 ** 6)), // $0.43 per COW
-    balance: CurrencyAmount.fromRawAmount(COW_MAINNET, JSBI.BigInt(5000 * 10 ** 18)),
+    amount: createAmount(COW_MAINNET, '3442'),
+    fiatAmount: createAmount(USDC_MAINNET, '1480'), // $0.43 per COW would be ~1479.06. Using provided mock value.
+    balance: createAmount(COW_MAINNET, '5000'),
     label: 'You receive',
   }
 
   // Mock price impact data - Create a proper Percent for priceImpact
-  const priceImpact: PriceImpact = {
-    priceImpact: new Percent(10, 10000), // 0.1%
-    loading: false,
-  }
+  // Now using the shared constant
+  const priceImpact = sharedPriceImpact
 
   // Mock app data for TradeConfirmation
   const appData = 'CoW Bridge Referral'
@@ -430,9 +405,17 @@ const SwapConfirmation = () => {
     gap: 4px;
   `
 
-  const Value = styled.span`
-    color: var(--cow-color-text);
-    font-weight: 500;
+  const RecipientValue = styled.span`
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--cow-color-text); // from Value
+    font-weight: 500; // from Value
+  `
+
+  const ChainLogoImg = styled.img`
+    width: 16px;
+    height: 16px;
   `
 
   const PriceValue = styled.span`
@@ -507,23 +490,23 @@ const SwapConfirmation = () => {
                 {/* Recipient line item */}
                 <ConfirmationDetailsRow>
                   <Label>Recipient</Label>
-                  <Value style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <img
-                      src={getChainInfo(defaultProps.recipientChainId).logo.light}
+                  <RecipientValue>
+                    <ChainLogoImg
+                      src={getChainInfo(defaultProps.buyCurrencyAmount.currency.chainId).logo.light}
                       alt="Chain logo"
-                      style={{ width: '16px', height: '16px' }}
                     />
                     {shortenAddress(defaultProps.recipient)} &#8599;
-                  </Value>
+                  </RecipientValue>
                 </ConfirmationDetailsRow>
 
                 <DividerHorizontal />
 
                 {/* Min to receive line item */}
                 <MinToReceiveRow>
-                  <Label style={{ fontWeight: '600' }}>Min. to receive</Label>
+                  <Label>Min. to receive</Label>
                   <MinToReceiveValue>
                     <TokenIconWrapper>
+                      <TokenLogo token={defaultProps.buyCurrencyAmount.currency} size={18} />
                       <TokenLogo token={COW_GNOSIS} size={18} />
                     </TokenIconWrapper>
                     3423.83 COW <FiatValueText>(≈ $994.23)</FiatValueText>
