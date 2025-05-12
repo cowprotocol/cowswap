@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
-import { IpfsHashInfo, stringifyDeterministic } from '@cowprotocol/app-data'
+import { AppDataInfo, stringifyDeterministic } from '@cowprotocol/app-data'
 
 import Form, { FormValidation } from '@rjsf/core'
 import { JSONSchema7 } from 'json-schema'
@@ -43,12 +43,12 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
     encode.options.invalidFormDataAttempted ?? {
       appData: false,
       ipfs: false,
-    }
+    },
   )
   const [isLoading, setIsLoading] = useState<boolean>(encode.options.isLoading ?? false)
-  const [ipfsHashInfo, setIpfsHashInfo] = useState<IpfsHashInfo | void | undefined>(encode.options.ipfsHashInfo)
+  const [appDataInfo, setAppDataInfo] = useState<AppDataInfo | undefined>(encode.options.appDataInfo)
   const [ipfsCredentials /* setIpfsCredentials */] = useState<{ pinataApiKey?: string; pinataApiSecret?: string }>(
-    encode.options.ipfsCredentials ?? {}
+    encode.options.ipfsCredentials ?? {},
   )
   const [isDocUploaded, setIsDocUploaded] = useState<boolean>(encode.options.isDocUploaded ?? false)
   const [error, setError] = useState<string | undefined>(encode.options.error)
@@ -77,7 +77,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
           disabledIPFS,
           invalidFormDataAttempted,
           isLoading,
-          ipfsHashInfo,
+          appDataInfo,
           ipfsCredentials,
           isDocUploaded,
           error,
@@ -91,7 +91,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
     error,
     invalidFormDataAttempted,
     ipfsCredentials,
-    ipfsHashInfo,
+    appDataInfo,
     isDocUploaded,
     isLoading,
     schema,
@@ -107,15 +107,17 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
 
     // Get the fullAppData (deterministic stringify JSON)
     _toFullAppData(appDataForm)
-      .then((fullAppData) => {
+      .then(async (fullAppData) => {
         // Update the fullAppData
         setFullAppData(fullAppData)
 
         // Get the IPFS hash
-        return metadataApiSDK.appDataToCid(fullAppData.fullAppData)
+        const appDataInfo = await metadataApiSDK.getAppDataInfo(fullAppData.fullAppData)
+        console.log('appDataInfo', appDataInfo)
+
+        // Update CID
+        setAppDataInfo(appDataInfo)
       })
-      // Update CID
-      .then(setIpfsHashInfo)
       .catch((e) => {
         console.error('Error updating the IPFS Hash info (CID, hex)', e)
         setError(e.message)
@@ -132,7 +134,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
 
   const handleMetadataErrors = useCallback(
     (_: FormProps, errors: FormValidation): FormValidation => handleErrors(formRef, errors, setDisabledAppData),
-    []
+    [],
   )
 
   const handleOnChange = useCallback(
@@ -144,14 +146,14 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
         }
       }
       setAppDataForm(formData)
-      if (ipfsHashInfo) {
-        setIpfsHashInfo(undefined)
+      if (appDataInfo) {
+        setAppDataInfo(undefined)
         setIsDocUploaded(false)
         resetFormFields('appData')
         setError(undefined)
       }
     },
-    [ipfsHashInfo]
+    [appDataInfo],
   )
 
   return (
@@ -234,10 +236,10 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
                   , this way the same content yields always the same <strong>AppData hex</strong>.
                 </p>
                 <JsonContent content={fullAppData} isError={!isValidAppData} />
-                <p className="disclaimer">Note: Don’t forget to upload this file to IPFS!</p>
+                <p className="disclaimer">Note: Don't forget to upload this file to IPFS!</p>
               </>
             )}
-            {!!ipfsHashInfo && (
+            {!!appDataInfo && (
               <>
                 <h2>
                   <span role="img" aria-label="Cow emoji">
@@ -261,8 +263,8 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
                 </p>
                 <RowWithCopyButton
                   className="appData-hash"
-                  textToCopy={ipfsHashInfo.appDataHex}
-                  contentsToDisplay={ipfsHashInfo.appDataHex}
+                  textToCopy={appDataInfo.appDataHex}
+                  contentsToDisplay={appDataInfo.appDataHex}
                 />
                 <h2>
                   <span role="img" aria-label="Earth emoji">
@@ -287,7 +289,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
                     see here how
                   </a>
                   ). You can see how this <strong>AppData hex</strong> is encoded, using the{' '}
-                  <a href={'https://cid.ipfs.tech/#' + ipfsHashInfo.cid} target="_blank" rel="noreferrer">
+                  <a href={'https://cid.ipfs.tech/#' + appDataInfo.cid} target="_blank" rel="noreferrer">
                     CID Inspector
                   </a>
                   .
@@ -298,8 +300,8 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
                 </p>
                 <RowWithCopyButton
                   className="appData-hash"
-                  textToCopy={ipfsHashInfo.cid}
-                  contentsToDisplay={ipfsHashInfo.cid}
+                  textToCopy={appDataInfo.cid}
+                  contentsToDisplay={appDataInfo.cid}
                 />
               </>
             )}

@@ -1,7 +1,7 @@
 import { AnyAppDataDocVersion } from '@cowprotocol/app-data'
 
 import { DEFAULT_IPFS_READ_URI, IPFS_INVALID_APP_IDS } from 'const'
-import { metadataApiSDK } from 'cowSdk'
+import { metadataApiSDK, orderBookSDK } from 'cowSdk'
 import useSWR from 'swr'
 
 import { decodeFullAppData } from '../utils/decodeFullAppData'
@@ -28,6 +28,20 @@ export const useAppData = (appData: string, fullAppData?: string): AppDataDecodi
   })
 
   const {
+    error: appDataError,
+    isLoading: isAppDataLoading,
+    data: appDataDocFromApi,
+  } = useSWR(['appDataFromApi', appData], async ([_, appDataHash]) => {
+    const response = await orderBookSDK.getAppData(appDataHash)
+
+    const { error, decodedAppData } = await getDecodedAppData(appData, isLegacyAppDataHex, response.fullAppData)
+
+    if (error) throw error
+
+    return decodedAppData
+  })
+
+  const {
     error,
     isLoading,
     data: appDataDoc,
@@ -42,7 +56,12 @@ export const useAppData = (appData: string, fullAppData?: string): AppDataDecodi
     },
   )
 
-  return { isLoading: isLoading || isIpfsLoading, hasError: !!(ipfsError || error), appDataDoc, ipfsUri }
+  return {
+    isLoading: isLoading || isIpfsLoading || isAppDataLoading,
+    hasError: !!(appDataError && (ipfsError || error)),
+    appDataDoc: appDataDocFromApi || appDataDoc,
+    ipfsUri,
+  }
 }
 
 export const fetchDocFromAppDataHex = (
