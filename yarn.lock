@@ -5580,7 +5580,7 @@
     semver "^7.5.3"
     tslib "^2.3.0"
 
-"@nx/eslint@21.0.3", "@nx/eslint@^21.0.3":
+"@nx/eslint@21.0.3":
   version "21.0.3"
   resolved "https://registry.yarnpkg.com/@nx/eslint/-/eslint-21.0.3.tgz#97a716b0b85ce7c42169b54a533fe25fd811da39"
   integrity sha512-0YNNO5iTPIq8j4vTluVTIXM1Be3GOvB1n930oupZYVvnQIR0Zv7SO9fnoz+boyZfeFhjBcy74xeiymz8eoAsDA==
@@ -5665,7 +5665,7 @@
     tslib "^2.3.0"
     webpack "^5.88.0"
 
-"@nx/next@^21.0.3":
+"@nx/next@21.0.3":
   version "21.0.3"
   resolved "https://registry.yarnpkg.com/@nx/next/-/next-21.0.3.tgz#c2b1a66087c1ddf2f52d51e995f1f05c3543109c"
   integrity sha512-5VRlqmb1YQQVEkth2u3davpWXoNyOD0skzkexRMLCV7rh+INWEKKsKwxBO5fl+KJHh2hf88RMffnUNJmumWUaw==
@@ -24080,7 +24080,7 @@ nwsapi@^2.2.0, nwsapi@^2.2.16, nwsapi@^2.2.2:
   resolved "https://registry.yarnpkg.com/nwsapi/-/nwsapi-2.2.20.tgz#22e53253c61e7b0e7e93cef42c891154bcca11ef"
   integrity sha512-/ieB+mDe4MrrKMT8z+mQL8klXydZWGR5Dowt4RAGKbJ3kIGEx3X4ljUo+6V73IXtUPWgfOlU5B9MlGxFO5T+cA==
 
-nx-cloud@19.1.0, nx-cloud@latest:
+nx-cloud@19.1.0:
   version "19.1.0"
   resolved "https://registry.yarnpkg.com/nx-cloud/-/nx-cloud-19.1.0.tgz#3edb6eaad70f7ab09b2008fdd02fa5ac0f9df940"
   integrity sha512-f24vd5/57/MFSXNMfkerdDiK0EvScGOKO71iOWgJNgI1xVweDRmOA/EfjnPMRd5m+pnoPs/4A7DzuwSW0jZVyw==
