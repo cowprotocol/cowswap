@@ -38,7 +38,7 @@ import { RecipientWrapper } from '../BridgeStopDetails/styled'
 import { NetworkLogo } from '../NetworkLogo'
 import { TokenAmountDisplay } from '../TokenAmountDisplay'
 
-function renderStopStatusIcon(status?: StopStatusEnum): React.ReactElement | null {
+function getStopStatusIcon(status?: StopStatusEnum): React.ReactElement | null {
   switch (status) {
     case StopStatusEnum.DONE:
       return <SVG src={CheckmarkIcon} />
@@ -94,13 +94,13 @@ export function SwapStopDetails({
   recipient,
   sourceChainId = SupportedChainId.MAINNET,
 }: SwapStopDetailsProps): ReactNode {
-  const sellTokenObj = sellCurrencyAmount.currency
+  const sellToken = sellCurrencyAmount.currency
   const sellAmount = sellCurrencyAmount.toSignificant(6)
-  const sellTokenSymbol = sellTokenObj.symbol || '???'
+  const sellTokenSymbol = sellToken.symbol || '???'
 
-  const buyTokenObj = buyCurrencyAmount.currency
+  const buyToken = buyCurrencyAmount.currency
   const buyAmount = buyCurrencyAmount.toSignificant(6)
-  const buyTokenSymbol = buyTokenObj.symbol || '???'
+  const buyTokenSymbol = buyToken.symbol || '???'
 
   const networkCostUsdValue = networkCostUsdResult?.value
   const swapExpectedReceiveUsdValue = swapExpectedReceiveUsdResult?.value
@@ -120,7 +120,7 @@ export function SwapStopDetails({
   const TitleContent = (
     <>
       <StopNumberCircle status={status} stopNumber={1}>
-        {renderStopStatusIcon(status)}
+        {getStopStatusIcon(status)}
       </StopNumberCircle>
       <b>
         <span>{titlePrefix} </span>
@@ -151,7 +151,7 @@ export function SwapStopDetails({
         <ConfirmDetailsItem label="" withTimelineDot>
           <TokenFlowContainer>
             <TokenAmountDisplay
-              token={sellTokenObj}
+              token={sellToken}
               amount={sellAmount}
               displaySymbol={sellTokenSymbol}
               tokenLogoSize={tokenLogoSize}
@@ -159,7 +159,7 @@ export function SwapStopDetails({
             />
             <ArrowIcon>→</ArrowIcon>
             <TokenAmountDisplay
-              token={buyTokenObj}
+              token={buyToken}
               amount={buyAmount}
               displaySymbol={buyTokenSymbol}
               tokenLogoSize={tokenLogoSize}
@@ -208,14 +208,14 @@ export function SwapStopDetails({
               <>
                 Expected to receive{' '}
                 <InfoTooltip
-                  content={`The estimated amount you'll receive after estimated network costs and the max slippage setting (${swapMaxSlippage}%).`}
+                  content={`The estimated amount you\'ll receive after estimated network costs and the max slippage setting (${swapMaxSlippage}%).`}
                   size={14}
                 />
               </>
             }
           >
             <TokenAmountDisplay
-              token={buyTokenObj}
+              token={buyToken}
               amount={swapExpectedToReceive}
               displaySymbol={buyTokenSymbol}
               usdValue={swapExpectedReceiveUsdValue}
@@ -267,17 +267,14 @@ export function SwapStopDetails({
           </ConfirmDetailsItem>
         )}
 
-        {swapMinReceive && (
+        {status !== StopStatusEnum.FAILED && status !== StopStatusEnum.REFUND_COMPLETE && swapMinReceive && (
           <ConfirmDetailsItem
-            label={
-              <ReceiveAmountTitle>
-                <b>Min. to receive</b>
-              </ReceiveAmountTitle>
-            }
+            label={<ReceiveAmountTitle>Min. to receive</ReceiveAmountTitle>}
+            isLast={status !== StopStatusEnum.DONE && status !== StopStatusEnum.PENDING}
           >
             <b>
               <TokenAmountDisplay
-                token={buyTokenObj}
+                token={buyToken}
                 amount={swapMinReceive}
                 displaySymbol={buyTokenSymbol}
                 usdValue={swapMinReceiveUsdValue}

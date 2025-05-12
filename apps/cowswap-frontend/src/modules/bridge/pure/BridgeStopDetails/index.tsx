@@ -59,7 +59,7 @@ import { TokenAmountDisplay } from '../TokenAmountDisplay'
 // Re-export for SwapStopDetails
 export { LocalStyledRefundCompleteIcon as StyledRefundCompleteIcon }
 
-function renderBridgeStopStatusIcon(status?: StopStatusEnum): React.ReactElement | null {
+function getBridgeStopStatusIcon(status?: StopStatusEnum): React.ReactElement | null {
   switch (status) {
     case StopStatusEnum.DONE:
       return <StyledStatusCheckmarkIcon src={CheckmarkIcon} />
@@ -111,13 +111,13 @@ export function BridgeStopDetails({
   recipientChainId,
   tokenLogoSize,
 }: BridgeStopDetailsProps): ReactNode {
-  const sourceTokenObj = bridgeSendCurrencyAmount.currency
+  const sourceToken = bridgeSendCurrencyAmount.currency
   const bridgeAmount = bridgeSendCurrencyAmount.toSignificant(6)
-  const bridgeTokenSymbol = sourceTokenObj.symbol || '???'
+  const bridgeTokenSymbol = sourceToken.symbol || '???'
 
-  const destTokenObj = bridgeReceiveCurrencyAmount.currency
+  const destToken = bridgeReceiveCurrencyAmount.currency
   const bridgeReceiveAmount = bridgeReceiveCurrencyAmount.toSignificant(6)
-  const bridgeReceiveTokenSymbol = destTokenObj.symbol || '???'
+  const bridgeReceiveTokenSymbol = destToken.symbol || '???'
 
   const bridgeReceiveAmountUsdValue = bridgeReceiveAmountUsdResult?.value
   const isStatusMode = status && status !== StopStatusEnum.DEFAULT
@@ -142,7 +142,7 @@ export function BridgeStopDetails({
   const TitleContent = (
     <>
       <StopNumberCircle status={status} stopNumber={2}>
-        {renderBridgeStopStatusIcon(status)}
+        {getBridgeStopStatusIcon(status)}
       </StopNumberCircle>
       <b>
         <span>{titleActionText} </span>
@@ -173,7 +173,7 @@ export function BridgeStopDetails({
         <ConfirmDetailsItem label="" withTimelineDot>
           <TokenFlowContainer>
             <TokenAmountDisplay
-              token={sourceTokenObj}
+              token={sourceToken}
               amount={bridgeAmount}
               displaySymbol={bridgeTokenSymbol}
               tokenLogoSize={tokenLogoSize}
@@ -181,7 +181,7 @@ export function BridgeStopDetails({
             />
             <ArrowIcon>→</ArrowIcon>
             <TokenAmountDisplay
-              token={destTokenObj}
+              token={destToken}
               amount={bridgeReceiveAmount}
               displaySymbol={bridgeReceiveTokenSymbol}
               usdValue={bridgeReceiveAmountUsdValue}
@@ -267,7 +267,7 @@ export function BridgeStopDetails({
         >
           {isStatusMode ? (
             <TokenAmountDisplay
-              token={destTokenObj}
+              token={destToken}
               amount={bridgeReceiveAmount}
               displaySymbol={bridgeReceiveTokenSymbol}
               usdValue={bridgeReceiveAmountUsdValue}
@@ -277,7 +277,7 @@ export function BridgeStopDetails({
           ) : (
             <b>
               <TokenAmountDisplay
-                token={destTokenObj}
+                token={destToken}
                 amount={bridgeReceiveAmount}
                 displaySymbol={bridgeReceiveTokenSymbol}
                 usdValue={bridgeReceiveAmountUsdValue}
@@ -327,10 +327,10 @@ export function BridgeStopDetails({
                   <RefundSuccessTextBold>
                     Refunded to{' '}
                     <RefundRecipientWrapper>
-                      <NetworkLogo chainId={sourceTokenObj.chainId as SupportedChainId} size={16} />
+                      <NetworkLogo chainId={sourceToken.chainId as SupportedChainId} size={16} />
                       <RefundLink
                         href={getExplorerLink(
-                          sourceTokenObj.chainId as SupportedChainId,
+                          sourceToken.chainId as SupportedChainId,
                           recipient,
                           ExplorerDataType.ADDRESS,
                         )}
@@ -346,7 +346,7 @@ export function BridgeStopDetails({
             >
               <b>
                 <TokenAmountDisplay
-                  token={sourceTokenObj}
+                  token={sourceToken}
                   amount={bridgeAmount}
                   displaySymbol={bridgeTokenSymbol}
                   hideFiatAmount={true}
@@ -374,7 +374,7 @@ export function BridgeStopDetails({
               )}
               {status === StopStatusEnum.DONE && (
                 <TokenAmountDisplay
-                  token={destTokenObj}
+                  token={destToken}
                   amount={bridgeReceiveAmount}
                   displaySymbol={bridgeReceiveTokenSymbol}
                   usdValue={bridgeReceiveAmountUsdValue}
