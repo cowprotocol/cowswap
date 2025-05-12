@@ -4,8 +4,8 @@ import { useEffect } from 'react'
 
 import { atomWithPartialUpdate, isInjectedWidget } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
-import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
-import { ChainInfo, PersistentStateByChain } from '@cowprotocol/types'
+import { ChainInfo, SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { PersistentStateByChain } from '@cowprotocol/types'
 
 import * as Sentry from '@sentry/browser'
 import useSWR, { SWRConfiguration } from 'swr'

@@ -61,7 +61,7 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
       return
     }
 
-    if (!quoteParams || quoteParams.amount === '0') {
+    if (!quoteParams || quoteParams.amount.toString() === '0') {
       tradeQuoteManager.reset()
       return
     }
@@ -76,7 +76,6 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
 
     function fetchAndUpdateQuote(hasParamsChanged: boolean, forceUpdate = false) {
       const currentQuote = tradeQuoteRef.current
-      const currentQuoteParams = currentQuote.quote?.quoteResults.tradeParameters
       const currentQuoteAppData = currentQuote.quote?.quoteResults.appDataInfo
       const hasCachedResponse = !!currentQuote.quote
       const hasCachedError = !!currentQuote.error
@@ -87,7 +86,7 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
         // Important! We should skip quote updateing only if there is no quote response
         if (
           (hasCachedResponse || hasCachedError) &&
-          quoteUsingSameParameters(chainId, currentQuoteParams, quoteParams, currentQuoteAppData?.doc, appData)
+          quoteUsingSameParameters(chainId, currentQuote, quoteParams, currentQuoteAppData?.doc, appData)
         ) {
           return
         }

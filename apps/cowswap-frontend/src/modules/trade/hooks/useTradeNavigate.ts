@@ -62,10 +62,10 @@ export function useTradeNavigate(): UseTradeNavigateCallback {
         targetRoute,
       )
 
-      // Don't navigate if we're already on this route
-      if (location.pathname === route) return
-
       const search = parameterizeTradeSearch(location.search, searchParams)
+
+      // Don't navigate if we're already on this route
+      if (location.pathname === route && location.search.slice(1) === search) return
 
       // Clear any existing navigation timer
       if (navigationTimerRef.current) {
