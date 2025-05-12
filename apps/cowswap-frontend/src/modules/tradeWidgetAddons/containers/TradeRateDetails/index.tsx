@@ -1,5 +1,6 @@
 import { useMemo, useState, useCallback, ReactElement } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { useWalletDetails } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -53,11 +54,15 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
   const showBridgeUI = isBridgingEnabled && isCurrentTradeBridging
   // TODO: Set a real value for bridgeData based on bridging logic
-  const bridgeData: BridgeData | null = null
-  const providerDetails: BridgeProtocolConfig | undefined = (bridgeData as any)?.bridgeProvider
-  const bridgeEstimatedTime: number | undefined = (bridgeData as any)?.estimatedTime
+  const bridgeData = null as BridgeData | null
+  const providerDetails: BridgeProtocolConfig | undefined = bridgeData?.bridgeProvider
+  const bridgeEstimatedTime: number | undefined = bridgeData?.estimatedTime
 
   const inputCurrency = derivedTradeState?.inputCurrency
+  const outputCurrency = derivedTradeState?.outputCurrency
+  const inputCurrencyAmount = derivedTradeState?.inputCurrencyAmount
+  const outputCurrencyAmount = derivedTradeState?.outputCurrencyAmount
+
   const costsExceedFeeRaw = tradeQuote.error instanceof QuoteApiError ? tradeQuote?.error?.data?.fee_amount : undefined
 
   const networkFeeAmount = useMemo(() => {
@@ -90,10 +95,34 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
 
   const totalCosts = getTotalCosts(receiveAmountInfo)
 
-  const shouldRenderBridgeUI = !!(showBridgeUI && bridgeData && !isHooksTabEnabled)
+  const shouldRenderBridgeUI = !!(
+    showBridgeUI &&
+    bridgeData &&
+    !isHooksTabEnabled &&
+    inputCurrency &&
+    outputCurrency &&
+    inputCurrencyAmount &&
+    outputCurrencyAmount &&
+    'sellAmount' in bridgeData &&
+    'buyAmount' in bridgeData
+  )
 
   const accordionContent = shouldRenderBridgeUI ? (
-    <BridgeRouteBreakdown {...(bridgeData as BridgeData)} />
+    <BridgeRouteBreakdown
+      sellCurrencyAmount={inputCurrencyAmount as CurrencyAmount<TokenWithLogo>}
+      buyCurrencyAmount={outputCurrencyAmount as CurrencyAmount<TokenWithLogo>}
+      bridgeSendCurrencyAmount={inputCurrencyAmount as CurrencyAmount<TokenWithLogo>}
+      bridgeReceiveCurrencyAmount={outputCurrencyAmount as CurrencyAmount<TokenWithLogo>}
+      networkCost={bridgeData.networkCost}
+      swapMinReceive={bridgeData.swapMinReceive}
+      swapExpectedToReceive={bridgeData.swapExpectedToReceive}
+      swapMaxSlippage={bridgeData.swapMaxSlippage}
+      bridgeFee={bridgeData.bridgeFee}
+      maxBridgeSlippage={bridgeData.maxBridgeSlippage}
+      estimatedTime={bridgeData.estimatedTime}
+      recipient={bridgeData.recipient}
+      bridgeProvider={bridgeData.bridgeProvider}
+    />
   ) : (
     <>
       <TradeFeesAndCosts
