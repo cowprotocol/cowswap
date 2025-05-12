@@ -35,9 +35,9 @@
     "test:all": "nx run-many -t test",
     "e2e": "nx run-many -t e2e",
     "lint": "nx run-many -t lint",
-    "prebuild-app": "yarn i18n",
+    "prebuild:cowswap": "yarn i18n",
     "prepare": "husky",
-    "postinstall": "yarn run patch-package && yarn i18n",
+    "postinstall": "yarn run patch-package",
     "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst yarn build"
   },
   "browser": {
@@ -315,7 +315,6 @@
     "jsdom": "~26.1.0",
     "node-stdlib-browser": "^1.2.0",
     "nx": "21.0.3",
-    "nx-cloud": "19.1.0",
     "patch-package": "^8.0.0",
     "prettier": "^3.3.3",
     "react-cosmos": "^6.1.1",
