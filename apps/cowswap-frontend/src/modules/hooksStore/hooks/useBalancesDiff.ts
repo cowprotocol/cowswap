@@ -45,7 +45,7 @@ export function useHookBalancesDiff(isPreHook: boolean, hookToEditUid?: string):
     if (orderParams?.sellAmount && orderParams.sellTokenAddress && account)
       balanceDiff[orderParams.sellTokenAddress.toLowerCase()] = `-${orderParams.sellAmount}`
 
-    return { account: balanceDiff }
+    return { [account.toLowerCase()]: balanceDiff }
   }, [orderParams, account])
 
   const firstPostHookBalanceDiff = useMemo(() => {
