@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled, { css, keyframes } from 'styled-components/macro'
@@ -121,7 +121,7 @@ export const TokenFlowContainer = styled.div`
   display: flex;
   align-items: center;
   flex-flow: row wrap;
-  gap: 4px;
+  gap: 0 4px;
   margin: 0 auto 0 0;
   width: 100%;
 `
@@ -259,6 +259,10 @@ export const Wrapper = styled.div<{ hasBackground?: boolean }>`
   gap: 4px;
   padding: ${({ hasBackground }) => (hasBackground ? '16px' : '0')};
   box-sizing: border-box;
+
+  ${Media.upToSmall()} {
+    padding: ${({ hasBackground }) => (hasBackground ? '10px' : '0')};
+  }
 `
 
 export const RouteHeader = styled.div`
