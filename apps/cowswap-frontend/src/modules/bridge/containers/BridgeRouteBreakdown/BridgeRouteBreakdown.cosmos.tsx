@@ -122,13 +122,13 @@ const RateInfoStyled = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-flow: row wrap;
   font-size: 13px;
   font-weight: 500;
   gap: 4px;
 `
 
 const FiatValue = styled.span`
-  margin-left: 5px;
   opacity: 0.7;
 `
 
