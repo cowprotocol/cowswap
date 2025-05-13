@@ -460,11 +460,11 @@ const SwapConfirmation = () => {
         outputCurrencyInfo={outputCurrencyInfo}
         isConfirmDisabled={false}
         priceImpact={priceImpact}
-        title="Confirm Swap"
+        title="Swap"
         refreshInterval={15000}
         isPriceStatic={false}
         recipient={defaultProps.recipient}
-        buttonText="Confirm"
+        buttonText="Confirm Swap"
         appData={appData}
         children={(restContent) => (
           <>
