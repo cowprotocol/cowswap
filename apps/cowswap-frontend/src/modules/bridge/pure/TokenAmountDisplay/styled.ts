@@ -8,5 +8,5 @@ export const AmountWithTokenIcon = styled.div`
   text-align: right;
   word-break: break-word;
   line-height: 1;
-  gap: 3px;
+  gap: 4px;
 `

@@ -43,7 +43,6 @@ export function TokenAmountDisplay({
   return (
     <AmountWithTokenIcon>
       <TokenLogo token={token} size={tokenLogoSize} />
-      <span />
       <LibTokenAmount
         amount={parsedAmount}
         tokenSymbol={tokenSymbolForLib}

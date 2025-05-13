@@ -441,7 +441,6 @@ const SwapConfirmation = () => {
 
   const TokenIconWrapper = styled.div`
     display: inline-flex;
-    margin-right: 4px;
   `
 
   const FiatValueText = styled.span`
@@ -507,7 +506,6 @@ const SwapConfirmation = () => {
                   <MinToReceiveValue>
                     <TokenIconWrapper>
                       <TokenLogo token={defaultProps.buyCurrencyAmount.currency} size={18} />
-                      <TokenLogo token={COW_GNOSIS} size={18} />
                     </TokenIconWrapper>
                     3423.83 COW <FiatValueText>(≈ $994.23)</FiatValueText>
                   </MinToReceiveValue>
