@@ -161,7 +161,7 @@ export const FAQ_DATA = [
         <br />
         You can add RPC endpoints like MEV Blocker by changing the selected network in your crypto wallet. Some DeFi
         trading apps will also be able to integrate the MEV Blocker RPC endpoint directly — making it a default for all
-        users.
+        users.{' '}
         <Link
           href="https://t.me/+yonLSGoFPRI0YTFk"
           external

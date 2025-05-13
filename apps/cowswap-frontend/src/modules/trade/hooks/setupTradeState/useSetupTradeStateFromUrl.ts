@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useMemo, useRef } from 'react'
 
-import { useLocation, useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router'
 
 import { tradeStateFromUrlAtom } from '../../state/tradeStateFromUrlAtom'
 import { TradeRawState } from '../../types/TradeRawState'

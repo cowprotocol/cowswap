@@ -1,6 +1,6 @@
 import { useLayoutEffect } from 'react'
 
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
@@ -29,7 +29,7 @@ export function useValidatePageUrlParams(ordersLength: number, currentTabId: str
           pageNumber: shouldResetPageNumber ? 1 : undefined,
           tabId: shouldResetTabId ? currentTabId : undefined,
         }),
-        { replace: true }
+        { replace: true },
       )
     }
   }, [navigate, location, currentTabId, currentPageNumber, ordersLength])

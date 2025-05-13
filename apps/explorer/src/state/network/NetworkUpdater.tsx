@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 
 import { setNetwork } from './actions'
 import { NETWORK_PREFIXES } from './const'

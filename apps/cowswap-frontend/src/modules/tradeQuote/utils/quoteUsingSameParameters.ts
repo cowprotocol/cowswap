@@ -1,8 +1,13 @@
+import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { SupportedChainId, QuoteBridgeRequest, areHooksEqual } from '@cowprotocol/cow-sdk'
+
+import jsonStringify from 'json-stringify-deterministic'
 import { Nullish } from 'types'
 
-import { decodeAppData } from 'modules/appData'
+import type { AppDataInfo, CowHook } from 'modules/appData'
 
-import { FeeQuoteParams } from 'common/types'
+import type { TradeQuoteState } from '../state/tradeQuoteAtom'
 
 /**
  * Checks if the parameters for the current quote are correct
@@ -10,34 +15,63 @@ import { FeeQuoteParams } from 'common/types'
  * Quotes are only valid for a given token-pair and amount. If any of these parameter change, the fee needs to be re-fetched
  */
 export function quoteUsingSameParameters(
-  currentParams: Nullish<FeeQuoteParams>,
-  nextParams: Nullish<FeeQuoteParams>,
+  chainId: SupportedChainId,
+  currentQuote: TradeQuoteState,
+  nextParams: Nullish<QuoteBridgeRequest>,
+  currentAppData: AppDataInfo['doc'] | undefined,
+  appData: AppDataInfo['doc'] | undefined,
 ): boolean {
+  const currentParams = currentQuote.quote?.quoteResults.tradeParameters
   if (!currentParams || !nextParams) return false
 
-  const hasSameAppData = compareAppDataWithoutQuoteData(currentParams.appData, nextParams.appData)
+  const isNativeToken = getIsNativeToken(chainId, nextParams.sellTokenAddress)
+  const wrappedToken = WRAPPED_NATIVE_CURRENCIES[chainId]
+  /**
+   * Due to CoW Protocol design, we do
+   */
+  const nextSellToken = isNativeToken ? wrappedToken.address.toLowerCase() : nextParams.sellTokenAddress.toLowerCase()
+
+  if (currentQuote.bridgeQuote) {
+    const bridgeTradeParams = currentQuote.bridgeQuote.tradeParameters
+    const bridgePostHook = currentQuote.bridgeQuote.bridgeCallDetails.preAuthorizedBridgingHook.postHook
+
+    return (
+      compareAppDataWithoutQuoteData(
+        removeBridgePostHook(currentAppData, bridgePostHook),
+        removeBridgePostHook(appData, bridgePostHook),
+      ) &&
+      currentParams.owner === nextParams.owner &&
+      currentParams.kind === nextParams.kind &&
+      currentParams.amount === nextParams.amount.toString() &&
+      bridgeTradeParams.validFor === nextParams.validFor &&
+      bridgeTradeParams.receiver === nextParams.receiver &&
+      currentParams.sellToken.toLowerCase() === nextSellToken &&
+      bridgeTradeParams.sellTokenChainId === nextParams.sellTokenChainId &&
+      bridgeTradeParams.buyTokenAddress.toLowerCase() === nextParams.buyTokenAddress.toLowerCase()
+    )
+  }
 
   return (
-    hasSameAppData &&
-    currentParams.sellToken === nextParams.sellToken &&
-    currentParams.buyToken === nextParams.buyToken &&
+    compareAppDataWithoutQuoteData(currentAppData, appData) &&
+    currentParams.owner === nextParams.owner &&
     currentParams.kind === nextParams.kind &&
-    currentParams.amount === nextParams.amount &&
-    currentParams.userAddress === nextParams.userAddress &&
-    currentParams.receiver === nextParams.receiver &&
+    currentParams.amount === nextParams.amount.toString() &&
     currentParams.validFor === nextParams.validFor &&
-    currentParams.fromDecimals === nextParams.fromDecimals &&
-    currentParams.toDecimals === nextParams.toDecimals &&
-    currentParams.isEthFlow === nextParams.isEthFlow &&
-    currentParams.chainId === nextParams.chainId
+    currentParams.receiver === nextParams.receiver &&
+    currentParams.sellToken.toLowerCase() === nextSellToken &&
+    currentParams.buyToken.toLowerCase() === nextParams.buyTokenAddress.toLowerCase()
   )
 }
 
 /**
  * Compares appData without taking into account the `quote` metadata
  */
-function compareAppDataWithoutQuoteData<T extends string | undefined>(a: T, b: T): boolean {
+function compareAppDataWithoutQuoteData(a: AppDataInfo['doc'] | undefined, b: AppDataInfo['doc'] | undefined): boolean {
   if (a === b) return true
+
+  if (!a || !b) {
+    return a === b
+  }
 
   return removeQuoteMetadata(a) === removeQuoteMetadata(b)
 }
@@ -45,14 +79,37 @@ function compareAppDataWithoutQuoteData<T extends string | undefined>(a: T, b: T
 /**
  * If appData is set and is valid, remove `quote` metadata from it
  */
-function removeQuoteMetadata(appData: string | undefined): string | undefined {
-  if (!appData) return
-
-  const decoded = decodeAppData(appData)
-
-  if (!decoded) return
-
-  const { metadata: fullMetadata, ...rest } = decoded
+function removeQuoteMetadata(appData: AppDataInfo['doc']): string {
+  const { metadata: fullMetadata, ...rest } = appData
   const { quote: _, ...metadata } = fullMetadata
-  return JSON.stringify({ ...rest, metadata })
+
+  const obj = { ...rest, metadata }
+  return jsonStringify(obj)
+}
+
+function removeBridgePostHook(
+  appData: AppDataInfo['doc'] | undefined,
+  postHook: CowHook,
+): AppDataInfo['doc'] | undefined {
+  if (!appData) return appData
+
+  const copy = { ...appData }
+
+  if (copy.metadata.hooks?.post) {
+    copy.metadata.hooks.post = copy.metadata.hooks.post.filter((hook) => !areHooksEqual(hook, postHook))
+
+    if (!copy.metadata.hooks.post.length) {
+      copy.metadata.hooks.post = undefined
+    }
+
+    if (!copy.metadata.hooks.pre?.length) {
+      copy.metadata.hooks.pre = undefined
+    }
+  }
+
+  if (copy.metadata.hooks && !copy.metadata.hooks.post && !copy.metadata.hooks.pre) {
+    copy.metadata.hooks = undefined
+  }
+
+  return copy
 }

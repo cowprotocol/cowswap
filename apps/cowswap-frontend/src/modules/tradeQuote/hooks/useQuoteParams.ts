@@ -1,71 +1,100 @@
+import { DEFAULT_APP_CODE, ZERO_ADDRESS } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
-import { getCurrencyAddress, getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
-import { PriceQuality } from '@cowprotocol/cow-sdk'
+import { getCurrencyAddress, isAddress } from '@cowprotocol/common-utils'
+import { QuoteBridgeRequest } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Currency } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 import { Nullish } from 'types'
 
-import { useAppData } from 'modules/appData'
+import { AppDataInfo, useAppData } from 'modules/appData'
 import { useIsWrapOrUnwrap } from 'modules/trade'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { useVolumeFee } from 'modules/volumeFee'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
-import { FeeQuoteParams } from 'common/types'
 
 const DEFAULT_QUOTE_TTL = ms`30m` / 1000
 const AMOUNT_CHANGE_DEBOUNCE_TIME = ms`350ms`
 
-export function useQuoteParams(
-  amount: Nullish<string>,
-): { quoteParams: FeeQuoteParams; inputCurrency: Currency } | undefined {
-  const { chainId, account } = useWalletInfo()
+export interface QuoteParams {
+  quoteParams: QuoteBridgeRequest | undefined
+  inputCurrency: Currency
+  appData: AppDataInfo['doc'] | undefined
+}
+
+export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
+  const { account } = useWalletInfo()
+  const provider = useWalletProvider()
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
 
   const state = useDerivedTradeState()
+  const volumeFee = useVolumeFee()
 
-  const { inputCurrency, outputCurrency, orderKind } = state || {}
+  const { inputCurrency, outputCurrency, orderKind, recipientAddress } = state || {}
+
+  const receiver = recipientAddress && isAddress(recipientAddress) ? recipientAddress : account
 
   const params = useSafeMemo(() => {
     if (isWrapOrUnwrap || isProviderNetworkUnsupported) return
-    if (!inputCurrency || !outputCurrency || !amount || !orderKind) return
+    if (!inputCurrency || !outputCurrency || !orderKind || !provider) return
 
-    const sellToken = getWrappedToken(inputCurrency).address
-    const buyToken = getCurrencyAddress(outputCurrency)
-    const fromDecimals = inputCurrency.decimals
-    const toDecimals = outputCurrency.decimals
+    const appCode = appData?.doc.appCode || DEFAULT_APP_CODE
 
-    const quoteParams: FeeQuoteParams = {
-      sellToken,
-      buyToken,
-      amount,
-      chainId,
-      userAddress: account,
-      receiver: account,
-      kind: orderKind,
-      toDecimals,
-      fromDecimals,
-      isEthFlow: getIsNativeToken(inputCurrency),
-      priceQuality: PriceQuality.OPTIMAL,
-      appData: appData?.fullAppData,
-      appDataHash: appData?.appDataKeccak256,
-      validFor: DEFAULT_QUOTE_TTL,
+    const sellTokenAddress = getCurrencyAddress(inputCurrency)
+    const buyTokenAddress = getCurrencyAddress(outputCurrency)
+
+    const sellTokenDecimals = inputCurrency.decimals
+    const buyTokenDecimals = outputCurrency.decimals
+
+    if (!amount) {
+      return {
+        quoteParams: undefined,
+        inputCurrency,
+        appData: appData?.doc,
+      }
     }
 
-    return { quoteParams, inputCurrency }
+    const owner = (account || ZERO_ADDRESS) as `0x${string}`
+    const quoteParams: QuoteBridgeRequest = {
+      kind: orderKind,
+      amount: BigInt(amount),
+      owner,
+
+      sellTokenChainId: inputCurrency.chainId,
+      sellTokenAddress,
+      sellTokenDecimals,
+
+      buyTokenChainId: outputCurrency.chainId,
+      buyTokenAddress,
+      buyTokenDecimals,
+
+      account: owner,
+      appCode,
+      signer: provider.provider || provider.getSigner(),
+
+      receiver,
+      validFor: DEFAULT_QUOTE_TTL,
+      ...(volumeFee ? { partnerFee: volumeFee } : null),
+      partiallyFillable,
+    }
+
+    return { quoteParams, inputCurrency, appData: appData?.doc }
   }, [
+    provider,
     inputCurrency,
     outputCurrency,
     amount,
+    partiallyFillable,
     orderKind,
-    chainId,
+    appData?.doc,
+    receiver,
     account,
-    appData?.fullAppData,
-    appData?.appDataKeccak256,
     isWrapOrUnwrap,
     isProviderNetworkUnsupported,
   ])

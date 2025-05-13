@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useLayoutEffect } from 'react'
 
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
@@ -82,6 +82,6 @@ export function useInitializeUtm(): void {
     },
     // No dependencies: It only needs to be initialized once
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [],
   )
 }

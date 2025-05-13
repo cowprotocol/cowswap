@@ -54,9 +54,13 @@ export function WalletModal(props: Readonly<WalletModalProps>) {
                 <PendingView openOptions={openOptions} error={pendingError} tryConnection={tryConnection} />
               )}
               {!isPending && (
-                <OptionGrid data-testid="option-grid">
-                  <ConnectWalletOptions tryActivation={tryActivation} />
-                </OptionGrid>
+                <ConnectWalletOptions tryActivation={tryActivation}>
+                  {(content, count) => (
+                    <OptionGrid data-testid="option-grid" itemsCount={count}>
+                      {content}
+                    </OptionGrid>
+                  )}
+                </ConnectWalletOptions>
               )}
               {!pendingError && (
                 <LightCard>

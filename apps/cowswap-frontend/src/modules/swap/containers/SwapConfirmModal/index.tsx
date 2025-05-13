@@ -1,10 +1,15 @@
+import { useMemo } from 'react'
+
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useAppData } from 'modules/appData'
+import { useTokensBalancesCombined } from 'modules/combinedBalances/hooks/useTokensBalancesCombined'
 import {
   TradeBasicConfirmDetails,
   TradeConfirmation,
@@ -50,6 +55,35 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
   const submittedContent = useOrderSubmittedContent(chainId)
   const labelsAndTooltips = useLabelsAndTooltips()
 
+  const { values: balances } = useTokensBalancesCombined()
+
+  const disableConfirm = useMemo(() => {
+    const current = inputCurrencyInfo?.amount?.currency
+
+    if (current) {
+      const normalisedAddress = getCurrencyAddress(current).toLowerCase()
+      const balance = balances[normalisedAddress]
+      const balanceAsCurrencyAmount = CurrencyAmount.fromRawAmount(current, balance?.toString() ?? '0')
+
+      const isBalanceEnough = balanceAsCurrencyAmount
+        ? inputCurrencyInfo?.amount?.equalTo(balanceAsCurrencyAmount) ||
+          inputCurrencyInfo?.amount?.lessThan(balanceAsCurrencyAmount)
+        : false
+
+      return !isBalanceEnough
+    }
+
+    return true
+  }, [balances, inputCurrencyInfo])
+
+  const buttonText = useMemo(() => {
+    if (disableConfirm) {
+      const { amount } = inputCurrencyInfo
+      return `Insufficient ${amount?.currency?.symbol || 'token'} balance`
+    }
+    return 'Confirm Swap'
+  }, [disableConfirm, inputCurrencyInfo])
+
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
       <TradeConfirmation
@@ -60,9 +94,9 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={doTrade}
         onDismiss={tradeConfirmActions.onDismiss}
-        isConfirmDisabled={false}
+        isConfirmDisabled={disableConfirm}
         priceImpact={priceImpact}
-        buttonText="Confirm Swap"
+        buttonText={buttonText}
         recipient={recipient}
         appData={appData || undefined}
         refreshInterval={PRICE_UPDATE_INTERVAL}

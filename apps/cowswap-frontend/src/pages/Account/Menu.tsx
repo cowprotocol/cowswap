@@ -1,6 +1,6 @@
 import { ACCOUNT_MENU_LINKS } from '@cowprotocol/common-const'
 
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router'
 
 import { SideMenu } from 'legacy/components/SideMenu'
 

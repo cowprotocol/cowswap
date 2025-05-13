@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 
 import { LpToken } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -52,7 +53,7 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
     (field: Field, currency: Currency | null, stateUpdateCallback?: Command, searchParams?: TradeSearchParams) => {
       if (!state) return
 
-      const { inputCurrencyId, outputCurrencyId } = state
+      const { inputCurrencyId, outputCurrencyId, orderKind } = state
       const tokenSymbolOrAddress = resolveCurrencyAddressOrSymbol(currency)
 
       /**
@@ -80,10 +81,27 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
        */
       const shouldResetBuyToken = isInputField && targetChainMismatch
       const shouldSetTargetChain = !isInputField && targetChainMismatch
+      const shouldResetBuyOrder = !isInputField && targetChainMismatch && orderKind === OrderKind.BUY
+
       const defaultOutputCurrency = getDefaultCurrencies(targetChainId).outputCurrency
+
+      /**
+       * Keep the target chain id in the search params when input token changed
+       */
+      if (isInputField && state.targetChainId) {
+        searchParams = { ...searchParams, targetChainId: state.targetChainId }
+      }
 
       if (shouldSetTargetChain) {
         searchParams = { ...searchParams, targetChainId: targetChainId }
+      }
+
+      /**
+       * Buy orders are not allowed in bridging mode
+       * Because of that, we reset order kind and amount to defaults
+       */
+      if (shouldResetBuyOrder) {
+        searchParams = { ...searchParams, kind: OrderKind.SELL, amount: '1' }
       }
 
       navigate(

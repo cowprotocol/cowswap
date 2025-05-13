@@ -3,7 +3,7 @@ import React, { PropsWithChildren } from 'react'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { Color, Media, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 
 const HeaderStyled = styled.header`

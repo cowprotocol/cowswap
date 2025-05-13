@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
-import { PathMatch } from '@remix-run/router'
-import { useMatch } from 'react-router-dom'
+import { PathMatch, useMatch } from 'react-router'
 
 import { Routes, TRADE_WIDGET_PREFIX } from 'common/constants/routes'
 

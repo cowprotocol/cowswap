@@ -47,13 +47,13 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const generatePermitHook = useGeneratePermitHook()
   const getCachedPermit = useGetCachedPermit()
 
-  const isQuoteReady = !!quoteState.response && !quoteState.isLoading && !!quoteState.localQuoteTimestamp
+  const isQuoteReady = !!quoteState.quote && !quoteState.isLoading && !!quoteState.localQuoteTimestamp
 
   const recipientAddressOrName = state.recipient || state.recipientAddress
   const recipient = state.recipientAddress || state.recipient || account
   const sellToken = state.inputCurrency as Token
   const buyToken = state.outputCurrency as Token
-  const quoteId = quoteState.response?.id || undefined
+  const quoteId = quoteState.quote?.quoteResults.quoteResponse.id || undefined
 
   const partiallyFillable = settingsState.partialFillsEnabled
 
@@ -78,7 +78,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       settlementContract,
       allowsOffchainSigning,
       dispatch,
-      provider,
+      signer: provider.getSigner(),
       rateImpact,
       permitInfo: !enoughAllowance ? permitInfo : undefined,
       generatePermitHook,
@@ -119,7 +119,6 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     settlementContract,
     allowsOffchainSigning,
     dispatch,
-    provider,
     rateImpact,
     enoughAllowance,
     permitInfo,

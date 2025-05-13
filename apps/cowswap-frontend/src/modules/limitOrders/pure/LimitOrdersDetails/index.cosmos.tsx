@@ -48,7 +48,7 @@ const tradeContext: TradeFlowContext = {
     isSafeWallet: false,
   },
   rateImpact: 0,
-  provider: {} as any,
+  signer: {} as any,
   settlementContract: {} as any,
   chainId: 1,
   dispatch: (() => void 0) as any,

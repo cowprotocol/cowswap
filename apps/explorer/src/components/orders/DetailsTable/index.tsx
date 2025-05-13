@@ -4,7 +4,7 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { Icon, Media, UI, Color } from '@cowprotocol/ui'
+import { Color, Icon, Media, UI } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import { faFill, faGroupArrowsRotate, faHistory, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
@@ -23,7 +23,7 @@ import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
 import { StatusLabel } from 'components/orders/StatusLabel'
 import { HelpTooltip } from 'components/Tooltip'
 import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 import { capitalize } from 'utils'
 
@@ -237,7 +237,7 @@ export function DetailsTable(props: Props): React.ReactNode | null {
                 />
                 <LinkButton to={`/address/${owner}`}>
                   <FontAwesomeIcon icon={faHistory} />
-                  Order History
+                  Order history
                 </LinkButton>
               </Wrapper>
             </td>
@@ -261,7 +261,7 @@ export function DetailsTable(props: Props): React.ReactNode | null {
                 />
                 <LinkButton to={`/address/${receiver}`}>
                   <FontAwesomeIcon icon={faHistory} />
-                  Order History
+                  Order history
                 </LinkButton>
               </Wrapper>
             </td>

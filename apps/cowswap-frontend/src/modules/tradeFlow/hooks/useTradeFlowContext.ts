@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderClass, PriceQuality, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
@@ -74,6 +74,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
     orderKind,
   } = derivedTradeState || {}
 
+  const validTo = getOrderValidTo(deadline, tradeQuote)
+
   return (
     useSWR(
       inputAmount &&
@@ -85,7 +87,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         account &&
         provider &&
         appData &&
-        tradeQuote.response &&
+        tradeQuote.quote &&
+        tradeQuote.fetchParams?.priceQuality === PriceQuality.OPTIMAL &&
         orderKind &&
         settlementContract &&
         uiOrderType
@@ -94,6 +97,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             allowsOffchainSigning,
             appData,
             tradeQuote,
+            tradeQuote.quote,
             buyToken,
             settlementChainId,
             closeModals,
@@ -112,7 +116,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             settlementContract,
             tradeConfirmActions,
             typedHooks,
-            deadline,
+            validTo,
             orderKind,
             uiOrderType,
           ]
@@ -121,6 +125,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         account,
         allowsOffchainSigning,
         appData,
+        tradeQuoteState,
         tradeQuote,
         buyToken,
         chainId,
@@ -140,11 +145,13 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         settlementContract,
         tradeConfirmActions,
         typedHooks,
-        deadline,
+        validTo,
         orderKind,
         uiOrderType,
       ]) => {
         return {
+          tradeQuoteState,
+          tradeQuote,
           context: {
             chainId,
             inputAmount,
@@ -182,14 +189,14 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             feeAmount: networkFee,
             sellToken: sellToken as TokenWithLogo,
             buyToken: buyToken as TokenWithLogo,
-            validTo: getOrderValidTo(deadline, tradeQuote),
+            validTo,
             recipient: recipientAddress || recipient || account,
             recipientAddressOrName: recipient || null,
             allowsOffchainSigning,
             appData,
             class: OrderClass.MARKET,
             partiallyFillable: isHooksTradeType,
-            quoteId: tradeQuote.response!.id,
+            quoteId: tradeQuote.quoteResults.quoteResponse.id,
             isSafeWallet,
           },
         }

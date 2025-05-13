@@ -1,11 +1,14 @@
 import { reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
+import { SigningScheme } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
+import { tradingSdk } from 'tradingSdk/tradingSdk'
+
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
-import { signAndPostOrder } from 'legacy/utils/trade'
+import { getOrderSubmitSummary, mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
@@ -17,7 +20,6 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
-import { presignOrderStep } from 'modules/tradeFlow/services/swapFlow/steps/presignOrderStep'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
@@ -35,12 +37,12 @@ export async function tradeFlow(
     typedHooks,
     rateImpact,
     permitInfo,
-    provider,
     chainId,
     allowsOffchainSigning,
-    settlementContract,
     dispatch,
     generatePermitHook,
+    quoteState,
+    signer,
   } = params
   const { account, recipientAddressOrName, sellToken, buyToken, appData, isSafeWallet, inputAmount, outputAmount } =
     postOrderParams
@@ -61,7 +63,7 @@ export async function tradeFlow(
     throw new PriceImpactDeclineError()
   }
 
-  const validTo = calculateLimitOrdersDeadline(settingsState, params.quoteState)
+  const validTo = calculateLimitOrdersDeadline(settingsState, quoteState)
 
   try {
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 2: handle permit')
@@ -86,10 +88,53 @@ export async function tradeFlow(
     beforeTrade()
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 4: sign and post order')
-    const { id: orderId, order } = await signAndPostOrder({
-      ...postOrderParams,
-      signer: provider.getSigner(),
-      validTo,
+
+    const {
+      orderId,
+      signature,
+      signingScheme,
+      orderToSign: unsignedOrder,
+    } = await wrapErrorInOperatorError(() =>
+      tradingSdk.postLimitOrder(
+        {
+          sellAmount: postOrderParams.inputAmount.quotient.toString(),
+          buyAmount: postOrderParams.outputAmount.quotient.toString(),
+          sellToken: postOrderParams.sellToken.address,
+          buyToken: postOrderParams.buyToken.address,
+          sellTokenDecimals: postOrderParams.sellToken.decimals,
+          buyTokenDecimals: postOrderParams.buyToken.decimals,
+          kind: postOrderParams.kind,
+          partiallyFillable: postOrderParams.partiallyFillable,
+          receiver: postOrderParams.recipient,
+          validTo,
+          quoteId: postOrderParams.quoteId,
+        },
+        {
+          appData: postOrderParams.appData.doc,
+          additionalParams: {
+            signingScheme: postOrderParams.allowsOffchainSigning ? SigningScheme.EIP712 : SigningScheme.PRESIGN,
+          },
+        },
+      ),
+    )
+
+    let presignTxHash: string | null = null
+
+    if (!postOrderParams.allowsOffchainSigning) {
+      const presignTx = await tradingSdk.getPreSignTransaction({ orderId, account })
+
+      presignTxHash = (await signer.sendTransaction(presignTx)).hash
+    }
+
+    const order = mapUnsignedOrderToOrder({
+      unsignedOrder,
+      additionalParams: {
+        ...postOrderParams,
+        orderId,
+        summary: getOrderSubmitSummary(postOrderParams),
+        signingScheme,
+        signature,
+      },
     })
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 5: add pending order step')
@@ -106,19 +151,14 @@ export async function tradeFlow(
       dispatch,
     )
 
-    logTradeFlow('LIMIT ORDER FLOW', 'STEP 6: presign order (optional)')
-    const presignTx = await (allowsOffchainSigning
-      ? Promise.resolve(null)
-      : presignOrderStep(orderId, settlementContract))
-
-    logTradeFlow('LIMIT ORDER FLOW', 'STEP 7: unhide SC order (optional)')
-    if (presignTx) {
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 6: unhide SC order (optional)')
+    if (presignTxHash) {
       partialOrderUpdate(
         {
           chainId,
           order: {
             id: order.id,
-            presignGnosisSafeTxHash: isSafeWallet ? presignTx.hash : undefined,
+            presignGnosisSafeTxHash: isSafeWallet ? presignTxHash : undefined,
             isHidden: false,
           },
           isSafeWallet,

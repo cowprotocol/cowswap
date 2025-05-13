@@ -1,12 +1,11 @@
 import { ReactElement, useEffect, useRef } from 'react'
 
+import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 
 import { headingToId } from './utils'
 
-import { LinkScrollable } from '../Link'
-
-const LinkScrollableStyled = styled(LinkScrollable)`
+const LinkScrollableStyled = styled(Link)`
   color: ${({ theme }) => theme.blue1} !important;
 `
 

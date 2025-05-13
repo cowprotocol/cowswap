@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { usePathPrefix } from 'state/network'
-import { isAnAddressAccount, isAnOrderId, isEns, isATxHash } from 'utils'
+import { isAnAddressAccount, isAnOrderId, isATxHash, isEns } from 'utils'
 
 export function pathAccordingTo(query: string): string {
   let path = 'search'
@@ -34,6 +34,6 @@ export function useSearchSubmit(): (query: string) => void {
         query && query.length > 0 && navigate(`/${pathPrefix}/${query}`)
       }
     },
-    [navigate, prefixNetwork]
+    [navigate, prefixNetwork],
   )
 }

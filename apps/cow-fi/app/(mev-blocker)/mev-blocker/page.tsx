@@ -226,10 +226,10 @@ export default function Page() {
                 </SectionTitleIcon>
                 <SectionTitleText>Get Protected</SectionTitleText>
                 <SectionTitleDescription color={Color.neutral50}>
-                  Add this RPC endpoint to your wallet to enjoy the full benefits of MEV Blocker.
+                  Add this RPC endpoint to your wallet to enjoy the full benefits of MEV Blocker
                 </SectionTitleDescription>
                 <SectionTitleDescription fontSize={21} color={Color.neutral50}>
-                  Note: some wallets make you reselect MEV Blocker every time you change networks.
+                  Note: some wallets make you reselect MEV Blocker every time you change networks
                 </SectionTitleDescription>
               </SectionTitleWrapper>
               <TopicList columns={2} columnsTablet={1}>
@@ -302,7 +302,7 @@ export default function Page() {
                 </SectionTitleIcon>
                 <SectionTitleText>Multiple endpoints for multiple protection types</SectionTitleText>
                 <SectionTitleDescription color={Color.neutral50}>
-                  Advanced MEV Blocker users can select from a variety of endpoints to suit their specific needs.
+                  Advanced MEV Blocker users can select from a variety of endpoints to suit their specific needs
                 </SectionTitleDescription>
               </SectionTitleWrapper>
 
@@ -364,8 +364,7 @@ export default function Page() {
                     })}
                   >
                     read the MEV Blocker docs
-                  </Link>
-                  .
+                  </Link>                  
                 </SectionTitleDescription>
               </SectionTitleWrapper>
             </ContainerCardSection>
@@ -433,7 +432,7 @@ export default function Page() {
                 </SectionTitleText>
                 <SectionTitleDescription color={Color.neutral50}>
                   If you're a wallet, a solver, or any project that settles transactions on behalf of users, you should
-                  integrate MEV Blocker to protect them from MEV and earn some extra revenue.
+                  integrate MEV Blocker to protect them from MEV and earn some extra revenue
                 </SectionTitleDescription>
 
                 <Link

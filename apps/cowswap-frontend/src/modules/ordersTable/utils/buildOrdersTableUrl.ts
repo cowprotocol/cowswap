@@ -1,11 +1,9 @@
-import { Location } from 'history'
-
 import { ORDERS_TABLE_PAGE_KEY, ORDERS_TABLE_TAB_KEY } from '../const/tabs'
 import { OrdersTablePageParams } from '../types'
 
 export function buildOrdersTableUrl(
   { pathname, search }: Pick<Location, 'pathname' | 'search'>,
-  { tabId, pageNumber }: Partial<OrdersTablePageParams>
+  { tabId, pageNumber }: Partial<OrdersTablePageParams>,
 ): Partial<{ pathname: string; search: string }> {
   const query = new URLSearchParams(search)
 

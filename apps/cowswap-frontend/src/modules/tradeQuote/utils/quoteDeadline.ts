@@ -11,9 +11,9 @@ const EXPIRATION_TIME_THRESHOLD = 5 // 5 seconds
  * deadlineParams the deadline parameters for the quote
  */
 export function isQuoteExpired(state: TradeQuoteState): boolean | undefined {
-  if (!state.response) return undefined
+  if (!state.quote) return undefined
 
-  const { expiration } = state.response
+  const { expiration } = state.quote.quoteResults.quoteResponse
 
   const timeOffset = getQuoteTimeOffset(state)
 
@@ -37,8 +37,8 @@ export function isQuoteExpired(state: TradeQuoteState): boolean | undefined {
  * localQuoteTimestamp the timestamp when the quote was created
  */
 export function getQuoteTimeOffset(state: TradeQuoteState): number | undefined {
-  const validFor = state.quoteParams?.validFor
-  const quoteValidTo = state.response?.quote.validTo
+  const validFor = state.quote?.quoteResults.tradeParameters.validFor
+  const quoteValidTo = state.quote?.quoteResults.quoteResponse.quote.validTo
   const localQuoteTimestamp = state.localQuoteTimestamp
 
   if (!validFor || !quoteValidTo || !localQuoteTimestamp) return undefined

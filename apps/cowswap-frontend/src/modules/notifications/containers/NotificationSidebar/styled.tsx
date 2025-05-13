@@ -3,6 +3,7 @@ import ICON_DOUBLE_ARROW_RIGHT from '@cowprotocol/assets/images/double-arrow-rig
 import ICON_CLOSE_X from '@cowprotocol/assets/images/x.svg'
 import { Media, UI } from '@cowprotocol/ui'
 
+import { Settings } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -18,7 +19,9 @@ const IconBase = styled(SVG)<{ size?: string; opacity?: string }>`
   cursor: pointer;
   opacity: ${({ opacity }) => opacity || 0.5};
   fill: currentColor;
-  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out, background var(${UI.ANIMATION_DURATION}) ease-in-out;
+  transition:
+    opacity var(${UI.ANIMATION_DURATION}) ease-in-out,
+    background var(${UI.ANIMATION_DURATION}) ease-in-out;
   padding: 8px;
   box-sizing: content-box;
   border-radius: ${({ size }) => size || '18px'};
@@ -111,5 +114,13 @@ export const SidebarHeader = styled.div<SidebarHeaderProps>`
     ${Media.upToSmall()} {
       flex-flow: ${({ isArrowNav }) => (isArrowNav ? 'row' : 'row-reverse')};
     }
+  }
+`
+
+export const SettingsIcon = styled(Settings)`
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.7;
   }
 `

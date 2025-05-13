@@ -1,17 +1,17 @@
 import { lazy, ReactNode, Suspense, useEffect } from 'react'
 
 import {
+  COWDAO_COWSWAP_ABOUT_LINK,
+  COWDAO_KNOWLEDGE_BASE_LINK,
+  COWDAO_LEGAL_LINK,
   DISCORD_LINK,
   DOCS_LINK,
   DUNE_DASHBOARD_LINK,
   TWITTER_LINK,
-  COWDAO_KNOWLEDGE_BASE_LINK,
-  COWDAO_COWSWAP_ABOUT_LINK,
-  COWDAO_LEGAL_LINK,
 } from '@cowprotocol/common-const'
 import { Loader } from '@cowprotocol/ui'
 
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router'
 
 import { Loading } from 'legacy/components/FlashingLoading'
 import { RedirectPathToSwapOnly, RedirectToPath } from 'legacy/pages/Swap/redirects'

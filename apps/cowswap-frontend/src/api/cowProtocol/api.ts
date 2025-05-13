@@ -22,7 +22,6 @@ import {
   SigningScheme,
   SupportedChainId as ChainId,
   TotalSurplus,
-  Trade,
 } from '@cowprotocol/cow-sdk'
 
 import { orderBookApi } from 'cowSdk'
@@ -33,7 +32,7 @@ import { FeeQuoteParams } from 'common/types'
 import { getQuoteValidFor } from 'utils/orderUtils/getQuoteValidFor'
 
 import { ApiErrorCodes } from './errors/OperatorError'
-import QuoteApiError, { mapOperatorErrorToQuoteError, QuoteApiErrorDetails } from './errors/QuoteError'
+import { QuoteApiError, mapOperatorErrorToQuoteError, QuoteApiErrorDetails } from './errors/QuoteError'
 import { getIsOrderBookTypedError } from './getIsOrderBookTypedError'
 
 export { getIsOrderBookTypedError } from './getIsOrderBookTypedError'
@@ -205,10 +204,6 @@ export async function getOrders(
   return orderBookApi.getOrders(params, context)
 }
 
-export async function getTrades(chainId: ChainId, owner: string): Promise<Trade[]> {
-  return orderBookApi.getTrades({ owner }, { chainId })
-}
-
 export async function getNativePrice(chainId: ChainId, currencyAddress: string): Promise<NativePriceResponse> {
   return orderBookApi.getNativePrice(currencyAddress, { chainId })
 }
@@ -226,32 +221,5 @@ export async function getOrderCompetitionStatus(
   } catch (e) {
     console.debug(`[getOrderCompetitionStatus] Non successful response:`, e?.message || e)
     return
-  }
-}
-
-export type ProfileData = {
-  totalTrades: number
-  totalReferrals: number
-  tradeVolumeUsd: number
-  referralVolumeUsd: number
-  lastUpdated: string
-}
-
-export async function getProfileData(chainId: ChainId, address: string): Promise<ProfileData | null> {
-  console.log(`[api:${API_NAME}] Get profile data for`, chainId, address)
-  if (chainId !== ChainId.MAINNET) {
-    console.info('Profile data is only available for mainnet')
-    return null
-  }
-
-  const response = await _getProfile(chainId, `/profile/${address}`)
-
-  // TODO: Update the error handler when the openAPI profile spec is defined
-  if (!response.ok) {
-    const errorResponse = await response.json()
-    console.log(errorResponse)
-    throw new Error(errorResponse?.description)
-  } else {
-    return response.json()
   }
 }

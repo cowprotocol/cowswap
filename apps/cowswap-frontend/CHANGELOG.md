@@ -1,5 +1,57 @@
 # Changelog
 
+## [1.106.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.3...cowswap-v1.106.4) (2025-05-08)
+
+
+### Bug Fixes
+
+* skip quote fetching when appData is not changed ([#5676](https://github.com/cowprotocol/cowswap/issues/5676)) ([4d57e8c](https://github.com/cowprotocol/cowswap/commit/4d57e8c2454ad901a826f015e70dd956c33b6661))
+
+## [1.106.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.2...cowswap-v1.106.3) (2025-05-08)
+
+
+### Bug Fixes
+
+* null change to trigger cowswap build ([#5675](https://github.com/cowprotocol/cowswap/issues/5675)) ([b6be5f5](https://github.com/cowprotocol/cowswap/commit/b6be5f52dd3c4a5022e21766b5d46d6041d2c4e5))
+
+## [1.106.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.1...cowswap-v1.106.2) (2025-05-07)
+
+
+### Bug Fixes
+
+* button's text color on Confirm price impact modal ([#5664](https://github.com/cowprotocol/cowswap/issues/5664)) ([8f50581](https://github.com/cowprotocol/cowswap/commit/8f50581df40cedeb9e75b549a842b5afc61ea310))
+* mix UI fixes ([#5666](https://github.com/cowprotocol/cowswap/issues/5666)) ([3a9ef2b](https://github.com/cowprotocol/cowswap/commit/3a9ef2baf46364876be84e781d0b456ccb247008))
+* **tokens:** fix token import logic for user-added tokens ([#5668](https://github.com/cowprotocol/cowswap/issues/5668)) ([73aeba3](https://github.com/cowprotocol/cowswap/commit/73aeba388892106cb7bf7c9b5addef6d679d491d))
+* **twap:** quote 405 error ([#5665](https://github.com/cowprotocol/cowswap/issues/5665)) ([1182531](https://github.com/cowprotocol/cowswap/commit/1182531efc94ec711ea0755d5e78f6b193e81c54))
+
+## [1.106.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.0...cowswap-v1.106.1) (2025-05-01)
+
+
+### Bug Fixes
+
+* **twap:** chainid url v2 ([#5657](https://github.com/cowprotocol/cowswap/issues/5657)) ([aa9c4c5](https://github.com/cowprotocol/cowswap/commit/aa9c4c51706de3928bb46455ad8310d55be3eff4))
+
+## [1.106.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.105.3...cowswap-v1.106.0) (2025-04-25)
+
+
+### Features
+
+* **notifications:** subscribe to Telegram notifications ([#5613](https://github.com/cowprotocol/cowswap/issues/5613)) ([293f9f7](https://github.com/cowprotocol/cowswap/commit/293f9f7aee73c5c9d0d8fc88e1a3a77bb7fe9456))
+* **trade:** use Trading SDK in trade flows ([#5549](https://github.com/cowprotocol/cowswap/issues/5549)) ([d4eaad9](https://github.com/cowprotocol/cowswap/commit/d4eaad91d977a9dcb2add425ca09811c26de4b2c))
+
+
+### Bug Fixes
+
+* **deps-update:** bump react-router-dom from 6.24.0 to 7.5.1 ([#5618](https://github.com/cowprotocol/cowswap/issues/5618)) ([2470bfa](https://github.com/cowprotocol/cowswap/commit/2470bfaf7ec0629223ea4dd5b42f090dd58a45df))
+* disable Swap if insufficient balance ([#5614](https://github.com/cowprotocol/cowswap/issues/5614)) ([71b74bc](https://github.com/cowprotocol/cowswap/commit/71b74bc691c107601500f29644659556bafc1e93))
+* disable Swap in insufficient balance - updated logic ([#5637](https://github.com/cowprotocol/cowswap/issues/5637)) ([8f8f599](https://github.com/cowprotocol/cowswap/commit/8f8f599f9c5f6b956fa5fbd132e5ad2a77fc95bb))
+* fix token list modal import on mobile ([#5599](https://github.com/cowprotocol/cowswap/issues/5599)) ([d23878e](https://github.com/cowprotocol/cowswap/commit/d23878e9cb09e63d981b7d398b5a0191d0026d30))
+* **hooks:** make partiallyFillable orders in Hooks widget ([#5641](https://github.com/cowprotocol/cowswap/issues/5641)) ([1d34f7d](https://github.com/cowprotocol/cowswap/commit/1d34f7dfe29cb473fd9c3492b9e4004e8354051d))
+* **links:** change links on suplus card and twap form ([#5596](https://github.com/cowprotocol/cowswap/issues/5596)) ([1674a60](https://github.com/cowprotocol/cowswap/commit/1674a60da10de0cefc4a9348687af9f6c6c2903f))
+* progress bar image alignment during `executing` step ([#5624](https://github.com/cowprotocol/cowswap/issues/5624)) ([7fce9ec](https://github.com/cowprotocol/cowswap/commit/7fce9ecc03fa4435d18e16fc7aa4ec85365f4b56))
+* update links on limit orders page ([#5636](https://github.com/cowprotocol/cowswap/issues/5636)) ([1350e61](https://github.com/cowprotocol/cowswap/commit/1350e61b31a452e5a7ac85a0e586473762b5bce3))
+* **wallets:** hide trezor option ([#5630](https://github.com/cowprotocol/cowswap/issues/5630)) ([16f2eb7](https://github.com/cowprotocol/cowswap/commit/16f2eb7a99ea054e1f4b10be0184099d05ab1918))
+
 ## [1.105.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.105.2...cowswap-v1.105.3) (2025-04-03)
 
 

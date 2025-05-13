@@ -6,7 +6,7 @@ import { getStatusColorEnums, HoverTooltip, StatusColorVariant } from '@cowproto
 
 import ICON_GAS_FREE from 'assets/icon/gas-free.svg'
 import SVG from 'react-inlinesvg'
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router'
 
 import * as styledEl from './styled'
 
@@ -43,11 +43,11 @@ export function TokenTags({
     return isUnsupported
       ? [APP_TOKEN_TAGS.unsupported]
       : [
-          // Include valid tags from token.tags
-          ...tags.filter((tag) => tag in tokenListTags).map((tag) => tokenListTags[tag]),
-          // Add gas-free tag if applicable
-          ...(isPermitCompatible ? [APP_TOKEN_TAGS['gas-free']] : []),
-        ]
+        // Include valid tags from token.tags
+        ...tags.filter((tag) => tag in tokenListTags).map((tag) => tokenListTags[tag]),
+        // Add gas-free tag if applicable
+        ...(isPermitCompatible ? [APP_TOKEN_TAGS['gas-free']] : []),
+      ]
   }, [isUnsupported, tags, tokenListTags, isPermitCompatible])
 
   if (tagsToShow.length === 0) return null

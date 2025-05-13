@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router'
 
 // Redirects to swap but only replace the pathname
 export function RedirectPathToSwapOnly() {

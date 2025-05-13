@@ -1,11 +1,12 @@
+import { ReactNode } from 'react'
+
 import { useTheme } from '@cowprotocol/common-hooks'
-import { isMobile, isInjectedWidget } from '@cowprotocol/common-utils'
+import { isMobile, isInjectedWidget, isTruthy } from '@cowprotocol/common-utils'
 import { EIP6963ProviderDetail } from '@cowprotocol/types'
 import {
   CoinbaseWalletOption,
   InjectedOption as DefaultInjectedOption,
   MetaMaskSdkOption,
-  TrezorOption,
   WalletConnectV2Option,
   getIsInjected,
   TryActivation,
@@ -17,7 +18,11 @@ import {
 
 import { useSelectedWallet } from 'legacy/state/user/hooks'
 
-export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActivation }) {
+interface ConnectWalletOptionsProps {
+  tryActivation: TryActivation
+  children: (content: ReactNode, count: number) => ReactNode
+}
+export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletOptionsProps) {
   const selectedWallet = useSelectedWallet()
   const multiInjectedProviders = useMultiInjectedProviders()
   const { darkMode } = useTheme()
@@ -36,22 +41,23 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
 
   const walletConnectionV2Option =
     ((!isInjectedMobileBrowser || isWidget) && <WalletConnectV2Option {...connectionProps} />) ?? null
-  const trezorOption = (!isInjectedMobileBrowser && !isMobile && <TrezorOption {...connectionProps} />) ?? null
+  // TODO: the Trezor connector is not working now and need to be repaired
+  // const trezorOption = (!isInjectedMobileBrowser && !isMobile && <TrezorOption {...connectionProps} />) ?? null
   const injectedOption =
     (getIsInjected() && (
       <InjectedOptions connectionProps={connectionProps} multiInjectedProviders={multiInjectedProviders} />
     )) ??
     null
 
-  return (
-    <>
-      {injectedOption}
-      {metaMaskSdkOption}
-      {walletConnectionV2Option}
-      {coinbaseWalletOption}
-      {trezorOption}
-    </>
-  )
+  const items = [
+    injectedOption,
+    metaMaskSdkOption,
+    walletConnectionV2Option,
+    coinbaseWalletOption,
+    /*{trezorOption}*/
+  ].filter(isTruthy)
+
+  return children(<>{items}</>, items.length - 1)
 }
 
 interface InjectedOptionsProps {

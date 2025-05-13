@@ -1,0 +1,11 @@
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "buildCommand": "cd ../../ && yarn build:explorer",
+  "outputDirectory": "../../build/explorer",
+  "installCommand": "cd ../../ && yarn"
+}

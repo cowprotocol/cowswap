@@ -1,14 +1,14 @@
 import { lazy, PropsWithChildren, Suspense, useMemo } from 'react'
 
-import { useAnalyticsReporter, useCowAnalytics, initPixelAnalytics, WebVitalsAnalytics } from '@cowprotocol/analytics'
+import { initPixelAnalytics, useAnalyticsReporter, useCowAnalytics, WebVitalsAnalytics } from '@cowprotocol/analytics'
 import { ACTIVE_CUSTOM_THEME, CustomTheme } from '@cowprotocol/common-const'
 import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
-import { useWalletInfo, useWalletDetails } from '@cowprotocol/wallet'
+import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router'
 import Snowfall from 'react-snowfall'
 import { ThemeProvider } from 'theme'
 
@@ -21,8 +21,7 @@ import TopLevelModals from 'legacy/components/TopLevelModals'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { OrdersPanel } from 'modules/account'
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
+import { useInjectedWidgetMetaData, useInjectedWidgetParams } from 'modules/injectedWidget'
 import { parameterizeTradeRoute, useGetTradeUrlParams } from 'modules/trade'
 import { useInitializeUtm } from 'modules/utm'
 

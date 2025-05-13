@@ -78,10 +78,10 @@ export const UpperSection = styled.div`
   }
 `
 
-export const OptionGrid = styled.div`
+export const OptionGrid = styled.div<{ itemsCount: number }>`
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: ${({ itemsCount }) => `repeat(${Math.min(4, Math.max(itemsCount, 2))}, 1fr)`};
   grid-template-rows: max-content;
   color: inherit;
 

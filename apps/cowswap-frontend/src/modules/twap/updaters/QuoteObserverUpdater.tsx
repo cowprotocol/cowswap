@@ -14,7 +14,7 @@ import { twapOrdersSettingsAtom } from '../state/twapOrdersSettingsAtom'
 
 export function QuoteObserverUpdater() {
   const state = useDerivedTradeState()
-  const { response, isLoading } = useTradeQuote()
+  const { quote, isLoading } = useTradeQuote()
   const { numberOfPartsValue } = useAtomValue(twapOrdersSettingsAtom)
   const prevNumberOfParts = usePrevious(numberOfPartsValue)
 
@@ -41,7 +41,7 @@ export function QuoteObserverUpdater() {
   }, [isLoading, numberOfPartsValue, buyAmount, prevNumberOfParts])
 
   useMemo(() => {
-    if (!outputCurrency || !response || !quoteBuyAmount) {
+    if (!outputCurrency || !quote || !quoteBuyAmount) {
       return
     }
 
@@ -50,7 +50,7 @@ export function QuoteObserverUpdater() {
       currency: outputCurrency,
       field: Field.OUTPUT,
     })
-  }, [outputCurrency, response, updateCurrencyAmount, quoteBuyAmount])
+  }, [outputCurrency, quote, updateCurrencyAmount, quoteBuyAmount])
 
   return null
 }
