@@ -144,6 +144,7 @@ describe('UsdPricesUpdater', () => {
   it('Should use BFF API by default', async () => {
     const price = FractionUtils.fromNumber(3.5)
 
+    mockFetchCurrencyUsdPrice.mockRestore()
     mockGetBffUsdPrice.mockImplementation(() => Promise.resolve(price))
 
     const state = await performTest()
@@ -159,6 +160,7 @@ describe('UsdPricesUpdater', () => {
   it('Should fallback to Defillama API when BFF is down', async () => {
     const price = FractionUtils.fromNumber(7.22)
 
+    mockFetchCurrencyUsdPrice.mockRestore()
     mockGetBffUsdPrice.mockImplementation(() => Promise.reject(new Error('Server error')))
     mockGetDefillamaUsdPrice.mockImplementation(() => Promise.resolve(price))
 
@@ -174,6 +176,7 @@ describe('UsdPricesUpdater', () => {
   it('Should fallback to CoW Protocol API when Coingecko and Defillama are down', async () => {
     const price = FractionUtils.fromNumber(7.22)
 
+    mockFetchCurrencyUsdPrice.mockRestore()
     mockGetBffUsdPrice.mockImplementation(() => Promise.reject(new Error('Server error')))
     mockGetDefillamaUsdPrice.mockImplementation(() => Promise.reject(new Error('Server error')))
     mockGetCowProtocolUsdPrice.mockImplementation(() => Promise.resolve(price))

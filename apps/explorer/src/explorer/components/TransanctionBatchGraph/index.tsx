@@ -32,9 +32,13 @@ import { usePrevious } from '../../../hooks/usePrevious'
 import { Network } from '../../../types'
 import { DropdownOption, DropdownPosition } from '../common/Dropdown'
 
+// eslint-disable-next-line react-hooks/rules-of-hooks
 Cytoscape.use(popper)
+// eslint-disable-next-line react-hooks/rules-of-hooks
 Cytoscape.use(noOverlap)
+// eslint-disable-next-line react-hooks/rules-of-hooks
 Cytoscape.use(fcose)
+// eslint-disable-next-line react-hooks/rules-of-hooks
 Cytoscape.use(klay)
 
 const WrapperCytoscape = styled(CytoscapeComponent)`

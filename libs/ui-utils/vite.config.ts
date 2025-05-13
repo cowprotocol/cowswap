@@ -4,7 +4,10 @@ import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
+import * as path from 'path'
+
 export default defineConfig({
+  root: path.resolve(__dirname, './'),
   cacheDir: '../../../node_modules/.vite/ui',
 
   plugins: [
