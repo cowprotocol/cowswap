@@ -169,7 +169,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
 
     return (
       <TradeFormBlankButton disabled={true}>
-        <Trans>Insufficient&nbsp;{<TokenSymbol token={inputCurrency} />}&nbsp;balance</Trans>
+        <Trans>Insufficient {<TokenSymbol token={inputCurrency} />} balance</Trans>
       </TradeFormBlankButton>
     )
   },
@@ -180,7 +180,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     return (
       <TradeFormBlankButton disabled={isDisabled} onClick={context.confirmTrade}>
         <Trans>
-          Approve&nbsp;{<TokenSymbol token={tokenToApprove} length={6} />}&nbsp;and {context.defaultText}
+          Approve {<TokenSymbol token={tokenToApprove} length={6} />} and {context.defaultText}
         </Trans>
       </TradeFormBlankButton>
     )
