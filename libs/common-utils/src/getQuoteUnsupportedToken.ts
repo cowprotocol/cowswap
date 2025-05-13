@@ -2,10 +2,10 @@ import { getDoesMessageIncludeToken } from './getDoesMessageIncludeToken'
 
 export function getQuoteUnsupportedToken(
   error: { description: string },
-  quoteData: { sellToken: string | null; buyToken: string | null }
+  quoteData: { sellTokenAddress: string | null; buyTokenAddress: string | null },
 ): string | null {
   return (
-    (quoteData.sellToken && getDoesMessageIncludeToken(error.description, quoteData.sellToken)) ||
-    (quoteData.buyToken && getDoesMessageIncludeToken(error.description, quoteData.buyToken))
+    (quoteData.sellTokenAddress && getDoesMessageIncludeToken(error.description, quoteData.sellTokenAddress)) ||
+    (quoteData.buyTokenAddress && getDoesMessageIncludeToken(error.description, quoteData.buyTokenAddress))
   )
 }

@@ -49,3 +49,9 @@ export { getTokenListViewLink } from './utils/getTokenListViewLink'
 export { getTokenLogoUrls } from './utils/getTokenLogoUrls'
 export { fetchTokenFromBlockchain } from './utils/fetchTokenFromBlockchain'
 export { getTokenSearchFilter } from './utils/getTokenSearchFilter'
+
+// Services
+export { fetchTokenList } from './services/fetchTokenList'
+
+// Consts
+export { DEFAULT_TOKENS_LISTS } from './const/tokensLists'

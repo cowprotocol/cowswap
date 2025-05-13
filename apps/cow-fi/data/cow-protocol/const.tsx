@@ -524,7 +524,7 @@ export const COW_PROTOCOL_SECTIONS = [
   {
     title: 'For developers',
     description:
-      'CoW Protocol is open-source and permissionless. Thanks to comprehensive documentation and live coding tutorials, integrating the protocol is easy.',
+      'CoW Protocol is open-source and permissionless. Thanks to comprehensive documentation and live coding tutorials, integrating the protocol is easy',
     bgColor: Color.cowfi_purple3,
     textColor: Color.cowfi_purple_bright,
     titleColor: Color.cowfi_white2,
@@ -537,7 +537,7 @@ export const COW_PROTOCOL_SECTIONS = [
   {
     title: 'For DeFi projects',
     description:
-      "Don't need overly custom trading logic? The CoW Swap widget is the easiest way to integrate swaps, TWAPs, and limit orders directly into your project site.",
+      "Don't need overly custom trading logic? The CoW Swap widget is the easiest way to integrate swaps, TWAPs, and limit orders directly into your project site",
     bgColor: Color.cowfi_purple_dark,
     textColor: Color.cowfi_purple_bright,
     titleColor: Color.cowfi_white2,
@@ -549,7 +549,7 @@ export const COW_PROTOCOL_SECTIONS = [
   {
     title: 'For anyone',
     description:
-      'The CoW DAO Grants program has awarded over $100,000 in grants to innovators that build public DeFi applications with CoW Protocol.',
+      'The CoW DAO Grants program has awarded over $100,000 in grants to innovators that build public DeFi applications with CoW Protocol',
     bgColor: Color.cowfi_purple_bright,
     textColor: Color.cowfi_purple3,
     titleColor: Color.cowfi_purple_dark,

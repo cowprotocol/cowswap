@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.17.0...tokens-v1.17.1) (2025-05-07)
+
+
+### Bug Fixes
+
+* **tokens:** fix token import logic for user-added tokens ([#5668](https://github.com/cowprotocol/cowswap/issues/5668)) ([73aeba3](https://github.com/cowprotocol/cowswap/commit/73aeba388892106cb7bf7c9b5addef6d679d491d))
+
 ## [1.17.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.16.0...tokens-v1.17.0) (2025-03-27)
 
 
