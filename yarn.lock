@@ -17626,10 +17626,10 @@ flatted@^3.2.9:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.3.1.tgz#21db470729a6734d4997002f439cb308987f567a"
   integrity sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==
 
-flexsearch@^0.7.21:
-  version "0.7.41"
-  resolved "https://registry.yarnpkg.com/flexsearch/-/flexsearch-0.7.41.tgz#952e662f692b41c9f38068a783e8f5f440bfc72e"
-  integrity sha512-nlSsN+cLeoOMEPivjjMuYdMN7WdCKaogCirVZNxQ8a34reoKZvxDxbAtIoAK1ewmkXd5dz8Pb2kwwYJ6b/07PQ==
+flexsearch@^0.8.164:
+  version "0.8.164"
+  resolved "https://registry.yarnpkg.com/flexsearch/-/flexsearch-0.8.164.tgz#2d1277249d6dec8eb745358fa64543ddbddc9e05"
+  integrity sha512-tauQG+NlwSWW6uL3BIJdHNEXYiei2xTR3H/mrjNadAOwvXgiLbLvLzQWSJvD31Yn0+1lAxG2NVRndywGnDZZiA==
 
 focus-lock@^0.9.1:
   version "0.9.2"
@@ -29766,9 +29766,9 @@ timers-browserify@^2.0.4:
     setimmediate "^1.0.4"
 
 tiny-invariant@^1.1.0, tiny-invariant@^1.2.0:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/tiny-invariant/-/tiny-invariant-1.3.1.tgz#8560808c916ef02ecfd55e66090df23a4b7aa642"
-  integrity sha512-AD5ih2NlSssTCwsMznbvwMZpJ1cbhkGd2uueNxzv2jDlEeZdU04JQfRnggJQ8DrcVBGjAsCKwFBbDlVNtEMlzw==
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/tiny-invariant/-/tiny-invariant-1.3.3.tgz#46680b7a873a0d5d10005995eb90a70d74d60127"
+  integrity sha512-+FbBPE1o9QAYvviau/qC5SE3caw21q3xkvWKBtja5vgqOWIHHJ3ioaq1VPfn/Szqctz2bU/oYeKd9/z5BL+PVg==
 
 tiny-secp256k1@^1.1.6:
   version "1.1.6"
