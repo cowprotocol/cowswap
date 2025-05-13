@@ -19,10 +19,14 @@ export default async function LearnPage() {
   // Format featured articles for the component
   const featuredArticles = featuredArticlesResponse.data.map((article) => {
     const attributes = article.attributes
+    const slug = attributes?.slug || 'no-slug'
     return {
       title: attributes?.title || 'No title',
       description: attributes?.description || 'No description',
-      link: `/learn/${attributes?.slug || 'no-slug'}`,
+      // IMPORTANT: Must use direct string interpolation for href in Next.js App Router
+      // Object format ({ pathname: '/learn/[article]', query: { article: slug } })
+      // is not supported and will cause "Dynamic href" errors
+      link: `/learn/${slug}`,
       cover: attributes?.cover?.data?.attributes?.url || '',
     }
   })
