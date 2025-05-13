@@ -110,7 +110,7 @@ store.set(usdRawPricesAtom, mockUsdPrices)
 
 const Wrapper = styled.div`
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   padding: 0;
   display: flex;
   justify-content: center;
