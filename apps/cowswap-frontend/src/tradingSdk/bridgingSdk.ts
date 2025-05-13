@@ -11,7 +11,7 @@ export const acrossBridgeProvider = new AcrossBridgeProvider({
 
 export const bridgingSdk = new BridgingSdk({
   providers: [acrossBridgeProvider],
-  enableLogging: true,
+  enableLogging: false,
   tradingSdk,
   orderBookApi,
   async getErc20Decimals(chainId: TargetChainId, tokenAddress: string) {

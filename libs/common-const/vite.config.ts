@@ -7,6 +7,7 @@ import viteTsConfigPaths from 'vite-tsconfig-paths'
 import * as path from 'path'
 
 export default defineConfig({
+  root: path.resolve(__dirname, './'),
   cacheDir: '../../node_modules/.vite/common-const',
 
   plugins: [

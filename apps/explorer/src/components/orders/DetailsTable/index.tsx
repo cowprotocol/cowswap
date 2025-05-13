@@ -237,7 +237,7 @@ export function DetailsTable(props: Props): React.ReactNode | null {
                 />
                 <LinkButton to={`/address/${owner}`}>
                   <FontAwesomeIcon icon={faHistory} />
-                  Order History
+                  Order history
                 </LinkButton>
               </Wrapper>
             </td>
@@ -261,7 +261,7 @@ export function DetailsTable(props: Props): React.ReactNode | null {
                 />
                 <LinkButton to={`/address/${receiver}`}>
                   <FontAwesomeIcon icon={faHistory} />
-                  Order History
+                  Order history
                 </LinkButton>
               </Wrapper>
             </td>
