@@ -223,7 +223,7 @@
     "styled-components": "5.3.11",
     "styled-jsx": "5.1.2",
     "swiper": "^11.1.1",
-    "swr": "^2.2.0",
+    "swr": "^2.3.3",
     "text-encoding-polyfill": "^0.6.7",
     "timeago.js": "^4.0.2",
     "tiny-invariant": "^1.2.0",
