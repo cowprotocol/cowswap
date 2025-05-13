@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.6.0...permit-utils-v0.6.1) (2025-05-08)
+
+
+### Bug Fixes
+
+* **permit:** nonce not supported [#5653](https://github.com/cowprotocol/cowswap/issues/5653) ([#5672](https://github.com/cowprotocol/cowswap/issues/5672)) ([a526222](https://github.com/cowprotocol/cowswap/commit/a526222e115c28540d68addd2476070815975846))
+
 ## [0.6.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.5.0...permit-utils-v0.6.0) (2025-01-09)
 
 

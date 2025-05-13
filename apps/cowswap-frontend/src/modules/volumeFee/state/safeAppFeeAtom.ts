@@ -66,11 +66,5 @@ export const safeAppFeeAtom = atom<VolumeFee | null>((get) => {
     return isStableCoinTrade ? FEE_PERCENTAGE_BPS.STABLE.TIER_3 : FEE_PERCENTAGE_BPS.REGULAR.TIER_3
   })()
 
-  console.debug('[Volume Fee] Calculated a fee for Safe App (not added yet)', {
-    bps,
-    fiatAmount,
-    isStableCoinTrade,
-  })
-
   return { bps, recipient: SAFE_FEE_RECIPIENT }
 })
