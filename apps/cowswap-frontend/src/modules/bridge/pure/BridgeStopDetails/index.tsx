@@ -27,7 +27,6 @@ import {
   RecipientWrapper,
   RefundLink,
   RefundRecipientWrapper,
-  RefundSuccessTextBold,
   StatusAwareText,
   StyledAnimatedTimelineRefundIcon,
   StyledRefundCompleteIcon as LocalStyledRefundCompleteIcon,
@@ -312,7 +311,7 @@ export function BridgeStopDetails({
 
         {isStatusMode && status === StopStatusEnum.REFUND_COMPLETE && (
           <>
-            <ConfirmDetailsItem label="You received" withTimelineDot={true}>
+            <ConfirmDetailsItem label="You received" withTimelineDot>
               <DangerText>Bridging failed</DangerText>
             </ConfirmDetailsItem>
             <ConfirmDetailsItem
@@ -324,8 +323,8 @@ export function BridgeStopDetails({
                     </TimelineIconCircleWrapper>
                   }
                 >
-                  <RefundSuccessTextBold>
-                    Refunded to{' '}
+                  <SuccessTextBold>
+                    <span>Refunded to </span>
                     <RefundRecipientWrapper>
                       <NetworkLogo chainId={sourceToken.chainId as SupportedChainId} size={16} />
                       <RefundLink
@@ -340,7 +339,7 @@ export function BridgeStopDetails({
                         {shortenAddress(recipient)} ↗
                       </RefundLink>
                     </RefundRecipientWrapper>
-                  </RefundSuccessTextBold>
+                  </SuccessTextBold>
                 </ReceiveAmountTitle>
               }
             >

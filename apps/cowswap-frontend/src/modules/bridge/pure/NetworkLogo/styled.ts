@@ -8,7 +8,6 @@ export const NetworkLogoWrapper = styled.div<{ size: number }>`
   height: ${({ size }) => size}px;
   border-radius: 50%;
   overflow: hidden;
-  margin-right: 4px;
 
   > img {
     width: 100%;

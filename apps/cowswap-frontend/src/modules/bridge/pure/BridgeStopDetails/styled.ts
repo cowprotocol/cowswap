@@ -111,13 +111,6 @@ export const SuccessTextBold = styled.b`
   color: var(${UI.COLOR_SUCCESS_TEXT});
 `
 
-export const RefundSuccessTextBold = styled(SuccessTextBold)`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  min-width: 0;
-`
-
 export const StyledRefundCompleteIcon = styled(SVG)`
   width: 16px;
   height: 16px;
@@ -153,7 +146,6 @@ export const RecipientWrapper = styled.div`
 export const RefundRecipientWrapper = styled(RecipientWrapper)`
   width: 100%;
   min-width: 0;
-  padding: 0 0 0 3px;
 `
 
 export const NetworkLogoWrapper = styled.div<{ size?: number }>`
