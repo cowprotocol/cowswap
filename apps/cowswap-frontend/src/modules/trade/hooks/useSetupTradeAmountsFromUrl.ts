@@ -48,6 +48,15 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
 
     const queryParams = new URLSearchParams(search)
 
+    // Do nothing if queryParams are already clear
+    if (
+      !queryParams.has(TRADE_URL_BUY_AMOUNT_KEY) &&
+      !queryParams.get(TRADE_URL_SELL_AMOUNT_KEY) &&
+      !queryParams.get(TRADE_URL_ORDER_KIND_KEY)
+    ) {
+      return
+    }
+
     queryParams.delete(TRADE_URL_BUY_AMOUNT_KEY)
     queryParams.delete(TRADE_URL_SELL_AMOUNT_KEY)
     queryParams.delete(TRADE_URL_ORDER_KIND_KEY)
@@ -111,5 +120,5 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
       }
     }
     // Trigger only when URL or assets are changed
-  }, [params, inputCurrency, outputCurrency, onlySell])
+  }, [params, inputCurrency, outputCurrency, cleanParams, onlySell])
 }
