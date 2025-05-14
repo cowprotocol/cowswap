@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.106.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.4...cowswap-v1.106.5) (2025-05-14)
+
+
+### Bug Fixes
+
+* update curve link ([#5694](https://github.com/cowprotocol/cowswap/issues/5694)) ([718c9b1](https://github.com/cowprotocol/cowswap/commit/718c9b16490fcc27eccbe7b35c033002fe94701a))
+
 ## [1.106.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.3...cowswap-v1.106.4) (2025-05-08)
 
 
