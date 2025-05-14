@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.22.3](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.2...cow-fi-v1.22.3) (2025-05-14)
+
+
+### Bug Fixes
+
+* update curve link ([#5694](https://github.com/cowprotocol/cowswap/issues/5694)) ([718c9b1](https://github.com/cowprotocol/cowswap/commit/718c9b16490fcc27eccbe7b35c033002fe94701a))
+
 ## [1.22.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.1...cow-fi-v1.22.2) (2025-05-01)
 
 
