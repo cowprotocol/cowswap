@@ -8,8 +8,7 @@ const [oneD, oneH, oneM, oneS] = [ms('1d'), ms('1h'), ms('1m'), ms('1s')]
  * @param label The base label for the unit (e.g., "hr", "min", "sec")
  * @returns Formatted string with proper pluralization
  */
-const addPluralSuffix = (num: number, label: string): string =>
-  num % 10 === 1 && num % 100 !== 11 ? `${label}` : label
+const plural = (num: number, label: string): string => `${label}${num === 1 ? '' : 's'}`
 
 /**
  * Formats time in milliseconds into a human-readable string
@@ -18,40 +17,40 @@ const addPluralSuffix = (num: number, label: string): string =>
  * @returns Formatted time string
  */
 export function displayTime(time: number, expandedUnits = false): string {
-  const timeMs = ms(`${time}ms`)
+  const timeMs = time
 
-  // For expanded units format, use a different approach based on the largest unit
-  if (expandedUnits) {
-    const days = Math.floor(timeMs / oneD)
-    const hours = Math.floor((timeMs % oneD) / oneH)
-    const minutes = Math.floor((timeMs % oneH) / oneM)
-    const seconds = Math.floor((timeMs % oneM) / oneS)
+  // Define units from largest to smallest
+  const definedUnits = [
+    { unitMs: oneD, label: 'day', compactSuffix: 'd' },
+    { unitMs: oneH, label: 'hr', compactSuffix: 'h' },
+    { unitMs: oneM, label: 'min', compactSuffix: 'm' },
+    { unitMs: oneS, label: 'sec', compactSuffix: 's' },
+  ]
 
-    const parts = [
-      [days, addPluralSuffix(days, 'day')],
-      [hours, addPluralSuffix(hours, 'hr')],
-      [minutes, addPluralSuffix(minutes, 'min')],
-      [seconds, addPluralSuffix(seconds, 'sec')],
-    ]
-      .filter(([value]) => !!value)
-      .map(([value, label]) => `${value} ${label}`)
+  let remainingMs = timeMs
+  const parts: string[] = []
 
-    return parts.join(' ')
+  for (const { unitMs, label, compactSuffix } of definedUnits) {
+    if (remainingMs >= unitMs) {
+      const value = Math.floor(remainingMs / unitMs)
+      if (value > 0) {
+        if (expandedUnits) {
+          parts.push(`${value} ${plural(value, label)}`)
+        } else {
+          parts.push(`${value}${compactSuffix}`)
+        }
+        remainingMs %= unitMs
+      }
+    }
   }
 
-  // Original implementation for compact format
-  const days = Math.floor(timeMs / oneD)
-  const hours = Math.floor((timeMs % oneD) / oneH)
-  const minutes = Math.floor((timeMs % oneH) / oneM)
-  const seconds = Math.floor((timeMs % oneM) / oneS)
+  // Handle zero or sub-second positive durations that didn't form a part
+  if (parts.length === 0) {
+    if (timeMs === 0) {
+      return expandedUnits ? '0 secs' : '0s'
+    }
+    return expandedUnits ? '0 secs' : '0s'
+  }
 
-  return [
-    [days, 'd'],
-    [hours, 'h'],
-    [minutes, 'm'],
-    [seconds, 's'],
-  ]
-    .filter(([value]) => !!value)
-    .map(([value, suffix]) => `${value}${suffix}`)
-    .join(' ')
+  return parts.join(' ')
 }
