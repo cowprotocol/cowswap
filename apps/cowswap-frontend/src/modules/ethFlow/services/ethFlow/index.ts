@@ -1,6 +1,6 @@
-import { getEthFlowContractAddresses } from '@cowprotocol/common-const'
+import { getEthFlowContractAddresses, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { reportPlaceOrderWithExpiredQuote } from '@cowprotocol/common-utils'
-import { OrderClass, SigningScheme } from '@cowprotocol/cow-sdk'
+import { OrderClass, SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -98,6 +98,7 @@ export async function ethFlow({
             checkEthFlowOrderExists,
           },
           quoteRequest: {
+            sellToken: NATIVE_CURRENCIES[chainId as SupportedChainId].address,
             signingScheme: SigningScheme.EIP1271,
             validTo: orderParams.validTo,
             receiver: orderParams.recipient,
