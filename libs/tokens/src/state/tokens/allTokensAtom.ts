@@ -88,7 +88,7 @@ export const activeTokensAtom = atom<ActiveTokensState>((get) => {
     : null
 
   const mergedTokens = mergeTokenMaps(
-    { [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo },
+    nativeToken ? { [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo } : null,
     lpTokens,
     lowerCaseTokensMap(favoriteTokensState[chainId]),
     tokensMap.activeTokens,

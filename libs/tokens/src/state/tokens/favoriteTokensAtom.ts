@@ -14,14 +14,17 @@ type FavoriteTokens = Record<SupportedChainId, TokensMap>
 export const favoriteTokensAtom = atomWithStorage<FavoriteTokens>(
   'favoriteTokensAtom:v2',
   DEFAULT_FAVORITE_TOKENS,
-  getJotaiMergerStorage()
+  getJotaiMergerStorage(),
 )
 
 export const favoriteTokensListAtom = atom((get) => {
   const { chainId } = get(environmentAtom)
   const favoriteTokensState = get(favoriteTokensAtom)
+  const favoriteTokens = favoriteTokensState[chainId]
 
-  return Object.values(favoriteTokensState[chainId]).map((token) => TokenWithLogo.fromToken(token, token.logoURI))
+  if (!favoriteTokens) return []
+
+  return Object.values(favoriteTokens).map((token) => TokenWithLogo.fromToken(token, token.logoURI))
 })
 
 export const resetFavoriteTokensAtom = atom(null, (get, set) => {
@@ -68,7 +71,7 @@ function migrateFavoriteTokensAtom(oldStorageKey: string, newStorageKey: string)
         }
         return acc
       },
-      {}
+      {},
     )
 
     // Save the new state
