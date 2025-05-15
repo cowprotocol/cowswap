@@ -38,19 +38,20 @@ import { RecipientWrapper } from '../BridgeStopDetails/styled'
 import { NetworkLogo } from '../NetworkLogo'
 import { TokenAmountDisplay } from '../TokenAmountDisplay'
 
-function getStopStatusIcon(status?: StopStatusEnum): React.ReactElement | null {
-  switch (status) {
-    case StopStatusEnum.DONE:
-      return <SVG src={CheckmarkIcon} />
-    case StopStatusEnum.PENDING:
-      return <StyledSpinnerIcon src={SpinnerIcon} />
-    case StopStatusEnum.FAILED:
-      return <SVG src={RefundIcon} />
-    case StopStatusEnum.REFUND_COMPLETE:
-      return <StyledRefundCompleteIcon src={RefundIcon} />
-    default:
-      return null
-  }
+const StopStatusIcons: Record<StopStatusEnum, ReactNode> = {
+  [StopStatusEnum.DONE]: <SVG src={CheckmarkIcon} />,
+  [StopStatusEnum.PENDING]: <StyledSpinnerIcon src={SpinnerIcon} />,
+  [StopStatusEnum.FAILED]: <SVG src={RefundIcon} />,
+  [StopStatusEnum.REFUND_COMPLETE]: <StyledRefundCompleteIcon src={RefundIcon} />,
+  [StopStatusEnum.DEFAULT]: null,
+}
+
+const StopStatusTitlePrefixes: Record<StopStatusEnum, ReactNode> = {
+  [StopStatusEnum.DONE]: 'Swapped on',
+  [StopStatusEnum.PENDING]: 'Swapping on',
+  [StopStatusEnum.FAILED]: 'Swap failed',
+  [StopStatusEnum.REFUND_COMPLETE]: 'Swap refunded',
+  [StopStatusEnum.DEFAULT]: 'Swap on',
 }
 
 export interface SwapStopDetailsProps {
@@ -78,7 +79,7 @@ export function SwapStopDetails({
   isCollapsible = false,
   isExpanded = true,
   onToggle = () => {},
-  status,
+  status = StopStatusEnum.DEFAULT,
   sellCurrencyAmount,
   buyCurrencyAmount,
   sourceChainName,
@@ -106,24 +107,13 @@ export function SwapStopDetails({
   const swapExpectedReceiveUsdValue = swapExpectedReceiveUsdResult?.value
   const swapMinReceiveUsdValue = swapMinReceiveUsdResult?.value
 
-  let titlePrefix = 'Swap on'
-  if (status === StopStatusEnum.DONE) {
-    titlePrefix = 'Swapped on'
-  } else if (status === StopStatusEnum.PENDING) {
-    titlePrefix = 'Swapping on'
-  } else if (status === StopStatusEnum.FAILED) {
-    titlePrefix = 'Swap failed'
-  } else if (status === StopStatusEnum.REFUND_COMPLETE) {
-    titlePrefix = 'Swap refunded'
-  }
-
   const TitleContent = (
     <>
       <StopNumberCircle status={status} stopNumber={1}>
-        {getStopStatusIcon(status)}
+        {StopStatusIcons[status]}
       </StopNumberCircle>
       <b>
-        <span>{titlePrefix} </span>
+        <span>{StopStatusTitlePrefixes[status]} </span>
         <ProtocolIcons showOnlyFirst size={21} secondProtocol={bridgeProvider} />
         <span> CoW Protocol</span>
       </b>

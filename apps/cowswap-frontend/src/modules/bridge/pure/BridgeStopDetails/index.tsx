@@ -58,18 +58,24 @@ import { TokenAmountDisplay } from '../TokenAmountDisplay'
 // Re-export for SwapStopDetails
 export { LocalStyledRefundCompleteIcon as StyledRefundCompleteIcon }
 
-function getBridgeStopStatusIcon(status?: StopStatusEnum): React.ReactElement | null {
-  switch (status) {
-    case StopStatusEnum.DONE:
-      return <StyledStatusCheckmarkIcon src={CheckmarkIcon} />
-    case StopStatusEnum.PENDING:
-      return <StyledSpinnerIcon src={SpinnerIconAsset} />
-    case StopStatusEnum.FAILED:
-    case StopStatusEnum.REFUND_COMPLETE:
-      return <StyledStatusCloseIcon src={CLOSE_ICON_X} />
-    default:
-      return null
-  }
+const CloseIcon = <StyledStatusCloseIcon src={CLOSE_ICON_X} />
+
+const BridgeStopStatusIcons: Record<StopStatusEnum, ReactNode> = {
+  [StopStatusEnum.DONE]: <StyledStatusCheckmarkIcon src={CheckmarkIcon} />,
+  [StopStatusEnum.PENDING]: <StyledSpinnerIcon src={SpinnerIconAsset} />,
+  [StopStatusEnum.FAILED]: CloseIcon,
+  [StopStatusEnum.REFUND_COMPLETE]: CloseIcon,
+  [StopStatusEnum.DEFAULT]: null,
+}
+
+const bridgeFailedTitle = 'Bridge failed on'
+
+const ActionTitles: Record<StopStatusEnum, string> = {
+  [StopStatusEnum.DONE]: 'Bridged via',
+  [StopStatusEnum.PENDING]: 'Bridging via',
+  [StopStatusEnum.FAILED]: bridgeFailedTitle,
+  [StopStatusEnum.REFUND_COMPLETE]: bridgeFailedTitle,
+  [StopStatusEnum.DEFAULT]: 'Bridge via',
 }
 
 export interface BridgeStopDetailsProps {
@@ -96,7 +102,7 @@ export function BridgeStopDetails({
   isCollapsible = false,
   isExpanded = true,
   onToggle = () => {},
-  status,
+  status = StopStatusEnum.DEFAULT,
   bridgeProvider,
   bridgeSendCurrencyAmount,
   bridgeReceiveCurrencyAmount,
@@ -119,32 +125,15 @@ export function BridgeStopDetails({
   const bridgeReceiveTokenSymbol = destToken.symbol || '???'
 
   const bridgeReceiveAmountUsdValue = bridgeReceiveAmountUsdResult?.value
-  const isStatusMode = status && status !== StopStatusEnum.DEFAULT
-
-  let titleActionText: string
-  switch (status) {
-    case StopStatusEnum.DONE:
-      titleActionText = 'Bridged via'
-      break
-    case StopStatusEnum.PENDING:
-      titleActionText = 'Bridging via'
-      break
-    case StopStatusEnum.FAILED:
-    case StopStatusEnum.REFUND_COMPLETE:
-      titleActionText = 'Bridge failed on'
-      break
-    default:
-      titleActionText = 'Bridge via'
-      break
-  }
+  const isStatusMode = status !== StopStatusEnum.DEFAULT
 
   const TitleContent = (
     <>
       <StopNumberCircle status={status} stopNumber={2}>
-        {getBridgeStopStatusIcon(status)}
+        {BridgeStopStatusIcons[status]}
       </StopNumberCircle>
       <b>
-        <span>{titleActionText} </span>
+        <span>{ActionTitles[status]} </span>
         <ProtocolIcons showOnlySecond size={21} secondProtocol={bridgeProvider} />
         <span> {bridgeProvider.title}</span>
       </b>

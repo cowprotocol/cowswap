@@ -6,6 +6,7 @@ import { useUsdAmount } from 'modules/usdAmount'
 import { UsdAmountInfo } from 'modules/usdAmount/hooks/useUsdAmount'
 
 /**
+ * TODO: bridgeDetailsUI: get rid of string amounts and use only useUsdAmount
  * Custom hook to parse amount string and get USD value
  */
 export function useParsedAmountWithUsd(

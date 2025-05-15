@@ -48,20 +48,16 @@ const refundCompleteAnimation = keyframes`
   }
 `
 
+const StatusAwareColors: Record<StopStatusEnum, string> = {
+  [StopStatusEnum.PENDING]: `var(${UI.COLOR_INFO_TEXT})`,
+  [StopStatusEnum.FAILED]: `var(${UI.COLOR_DANGER_TEXT})`,
+  [StopStatusEnum.DONE]: `var(${UI.COLOR_SUCCESS_TEXT})`,
+  [StopStatusEnum.REFUND_COMPLETE]: `var(${UI.COLOR_SUCCESS_TEXT})`,
+  [StopStatusEnum.DEFAULT]: `var(${UI.COLOR_TEXT})`,
+}
+
 export const StatusAwareText = styled.span<{ status?: StopStatusEnum }>`
-  color: ${({ status }) => {
-    switch (status) {
-      case StopStatusEnum.PENDING:
-        return `var(${UI.COLOR_INFO_TEXT})`
-      case StopStatusEnum.FAILED:
-        return `var(${UI.COLOR_DANGER_TEXT})`
-      case StopStatusEnum.DONE:
-      case StopStatusEnum.REFUND_COMPLETE:
-        return `var(${UI.COLOR_SUCCESS_TEXT})`
-      default:
-        return `var(${UI.COLOR_TEXT})`
-    }
-  }};
+  color: ${({ status = StopStatusEnum.DEFAULT }) => StatusAwareColors[status]};
 `
 
 export const AnimatedEllipsis = styled.span`

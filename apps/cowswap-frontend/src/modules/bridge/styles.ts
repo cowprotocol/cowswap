@@ -1,6 +1,7 @@
 import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
+import { FlattenSimpleInterpolation } from 'styled-components'
 import styled, { css, keyframes } from 'styled-components/macro'
 
 import { StopStatusEnum } from './utils/status'
@@ -43,60 +44,59 @@ const stopCircleBase = css`
   }
 `
 
+const StopStatusStyles: Record<StopStatusEnum, FlattenSimpleInterpolation> = {
+  [StopStatusEnum.DONE]: css`
+    background-color: var(${UI.COLOR_SUCCESS_BG});
+    color: var(${UI.COLOR_SUCCESS_TEXT});
+    padding: 6px;
+    &::before {
+      content: none;
+    }
+  `,
+  [StopStatusEnum.PENDING]: css`
+    background-color: ${`var(${UI.COLOR_INFO_BG})`};
+    color: ${`var(${UI.COLOR_INFO_TEXT})`};
+    &::before {
+      content: none;
+    }
+  `,
+  [StopStatusEnum.FAILED]: css`
+    background-color: var(${UI.COLOR_ALERT_BG});
+    color: var(${UI.COLOR_ALERT_TEXT});
+    padding: 6.5px;
+    &::before {
+      content: none;
+    }
+  `,
+  [StopStatusEnum.REFUND_COMPLETE]: css`
+    background-color: var(${UI.COLOR_ALERT_BG});
+    color: var(${UI.COLOR_ALERT_TEXT});
+    padding: 6.5px;
+    &::before {
+      content: none;
+    }
+  `,
+  [StopStatusEnum.DEFAULT]: css`
+    background-color: var(${UI.COLOR_TEXT_OPACITY_15});
+    color: var(${UI.COLOR_TEXT});
+  `,
+}
+
 export const StopNumberCircle = styled.div<{
   status?: StopStatusEnum
   stopNumber?: number
 }>`
   ${stopCircleBase}
 
-  ${({ status, stopNumber }) => {
-    switch (status) {
-      case StopStatusEnum.DONE:
-        return css`
-          background-color: var(${UI.COLOR_SUCCESS_BG});
-          color: var(${UI.COLOR_SUCCESS_TEXT});
-          padding: 6px;
-          &::before {
-            content: none;
-          }
-        `
-      case StopStatusEnum.PENDING:
-        return css`
-          background-color: ${`var(${UI.COLOR_INFO_BG})`};
-          color: ${`var(${UI.COLOR_INFO_TEXT})`};
-          &::before {
-            content: none;
-          }
-        `
-      case StopStatusEnum.FAILED:
-        return css`
-          background-color: var(${UI.COLOR_ALERT_BG});
-          color: var(${UI.COLOR_ALERT_TEXT});
-          padding: 6.5px;
-          &::before {
-            content: none;
-          }
-        `
-      case StopStatusEnum.REFUND_COMPLETE:
-        return css`
-          background-color: var(${UI.COLOR_ALERT_BG});
-          color: var(${UI.COLOR_ALERT_TEXT});
-          padding: 6.5px;
-          &::before {
-            content: none;
-          }
-        `
-      case StopStatusEnum.DEFAULT:
-      default:
-        return css`
-          background-color: var(${UI.COLOR_TEXT_OPACITY_15});
-          color: var(${UI.COLOR_TEXT});
-          &::before {
-            content: '${stopNumber}';
-          }
-        `
-    }
-  }}
+  ${({ status = StopStatusEnum.DEFAULT }) => StopStatusStyles[status]}
+
+  ${({ status = StopStatusEnum.DEFAULT, stopNumber }) =>
+    status === StopStatusEnum.DEFAULT &&
+    css`
+      &::before {
+        content: '${stopNumber}';
+      }
+    `}
 `
 
 export const StopTitle = styled.div`
@@ -192,56 +192,6 @@ export const SectionContent = styled.div<{ isExpanded: boolean }>`
     opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   max-height: ${({ isExpanded }) => (isExpanded ? '1000px' : '0')};
   opacity: ${({ isExpanded }) => (isExpanded ? 1 : 0)};
-`
-
-export const ConfirmDetailsItem = styled.div<{
-  withTimelineDot?: boolean
-  isLast?: boolean
-  contentTextColor?: string
-}>`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 8px;
-  padding-left: ${({ withTimelineDot }) => (withTimelineDot ? '20px' : '0')};
-  position: relative;
-  min-height: 18px;
-
-  ${({ withTimelineDot }) =>
-    withTimelineDot &&
-    `
-    &::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 4px;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: var(${UI.COLOR_TEXT_OPACITY_15});
-    }
-
-    &:not(:last-child)::after {
-       content: '';
-       position: absolute;
-       left: 3px;
-       top: 14px;
-       bottom: -5px;
-       width: 2px;
-       background-color: var(${UI.COLOR_TEXT_OPACITY_15});
-     }
-  `}
-
-  > :last-child {
-    color: ${({ contentTextColor }) => contentTextColor || 'inherit'};
-  }
-`
-
-export const ReceiveAmountTitle = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
 `
 
 export const Link = styled.a<{ underline?: boolean }>`
