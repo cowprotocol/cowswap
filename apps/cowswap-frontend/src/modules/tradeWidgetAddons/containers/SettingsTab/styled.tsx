@@ -7,31 +7,20 @@ import styled from 'styled-components/macro'
 export const StyledMenuButton = styled(MenuButton)`
   position: relative;
   width: 100%;
+  height: 100%;
   border: none;
-  background-color: transparent;
+  background: transparent;
   margin: 0;
   padding: 0;
-  border-radius: 0.5rem;
-  height: var(${UI.ICON_SIZE_NORMAL});
-  opacity: 0.6;
-  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   color: inherit;
   display: flex;
   align-items: center;
 
   &:hover,
   &:focus {
-    opacity: 1;
     cursor: pointer;
     outline: none;
     color: currentColor;
-  }
-
-  svg {
-    opacity: 1;
-    margin: auto;
-    transition: transform 0.3s cubic-bezier(0.65, 0.05, 0.36, 1);
-    color: inherit;
   }
 `
 

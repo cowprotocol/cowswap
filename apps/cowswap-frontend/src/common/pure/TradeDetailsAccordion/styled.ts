@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -7,25 +7,28 @@ export const Wrapper = styled.div<{ isOpen: boolean }>`
   flex-flow: row wrap;
   align-items: center;
   width: 100%;
-  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
-  border-radius: 16px;
-  padding: 10px;
+  padding: 6px;
+  gap: 8px;
   height: auto;
   font-size: 13px;
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
+
+  ${Media.upToSmall()} {
+    padding: 2px;
+  }
 `
 
-export const Details = styled.div`
-  display: flex;
+export const Details = styled.div<{ isVisible: boolean }>`
+  display: ${({ isVisible }) => (isVisible ? 'flex' : 'none')};
+  height: ${({ isVisible }) => (isVisible ? 'auto' : '0')};
+  margin: 0;
   flex-flow: row wrap;
   align-items: center;
   width: 100%;
-  margin: 16px 0 0;
 `
 
 export const Summary = styled.div`
-  display: grid;
-  grid-template-columns: 1fr auto;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
@@ -39,32 +42,10 @@ export const Summary = styled.div`
   }
 `
 
-export const SummaryClickable = styled.div<{ isOpen: boolean }>`
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 7px;
-  opacity: ${({ isOpen }) => (isOpen ? 1 : 0.7)};
-  transition: opacity ${UI.ANIMATION_DURATION_SLOW} ease-in-out;
-  outline: none;
-  font-size: inherit;
-  font-weight: inherit;
-
-  &:hover {
-    opacity: 1;
-  }
-
-  // If it's the only child, make it take all the space
-  &:only-child {
-    grid-column: 1 / -1;
-  }
-`
-
 export const ToggleIcon = styled.div<{ isOpen: boolean }>`
   --size: var(${UI.ICON_SIZE_SMALL});
   transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
-  transition: transform var(${UI.ANIMATION_DURATION_SLOW}) ease-in-out;
+  transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,9 +57,56 @@ export const ToggleIcon = styled.div<{ isOpen: boolean }>`
     width: var(--size);
     height: var(--size);
     object-fit: contain;
+    transition: fill var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     path {
-      fill: var(${UI.COLOR_TEXT});
+      fill: var(${UI.COLOR_TEXT_OPACITY_70});
     }
+  }
+`
+
+export const SummaryClickable = styled.div<{ isOpen: boolean }>`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-flow: row wrap;
+  gap: 4px;
+  color: ${({ isOpen }) => (isOpen ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_70})`)};
+  transition: all var(${UI.ANIMATION_DURATION}) ease-in-out;
+  outline: none;
+  font-size: inherit;
+  font-weight: inherit;
+
+  > span {
+    text-align: right;
+    gap: 4px;
+    display: flex;
+    flex: 0 0 auto;
+  }
+
+  > *:not(${ToggleIcon}) {
+    opacity: ${({ isOpen }) => (isOpen ? '0' : '1')};
+    visibility: ${({ isOpen }) => (isOpen ? 'hidden' : 'visible')};
+    transition:
+      opacity var(${UI.ANIMATION_DURATION}) ease-in-out,
+      visibility var(${UI.ANIMATION_DURATION}) ease-in-out;
+  }
+
+  &:hover {
+    color: var(${UI.COLOR_TEXT});
+
+    ${ToggleIcon} {
+      > svg {
+        path {
+          fill: var(${UI.COLOR_TEXT});
+        }
+      }
+    }
+  }
+
+  // If it's the only child, make it take all the space
+  &:only-child {
+    grid-column: 1 / -1;
   }
 `
