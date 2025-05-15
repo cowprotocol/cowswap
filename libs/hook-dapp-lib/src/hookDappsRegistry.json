@@ -16,10 +16,7 @@
     "image": "https://raw.githubusercontent.com/cowprotocol/cowswap/897ce91ca60a6b2d3823e6a002c3bf64c5384afe/libs/assets/src/cow-swap/network-gnosis-chain-logo.svg",
     "version": "v0.1.1",
     "website": "https://www.gnosis.io",
-    "conditions": {
-      "supportedNetworks": [100],
-      "position": "pre"
-    }
+    "conditions": { "supportedNetworks": [100], "position": "pre" }
   },
   "PERMIT_TOKEN": {
     "type": "INTERNAL",
@@ -29,10 +26,7 @@
     "image": "https://raw.githubusercontent.com/cowprotocol/cowswap/refs/heads/develop/apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/icon.png",
     "version": "v0.1.0",
     "website": "https://docs.cow.fi/cow-protocol/tutorials/hook-dapp",
-    "conditions": {
-      "walletCompatibility": ["EOA"],
-      "supportedNetworks": [11155111]
-    }
+    "conditions": { "walletCompatibility": ["EOA"], "supportedNetworks": [11155111] }
   },
   "CLAIM_COW_AIRDROP": {
     "type": "INTERNAL",
@@ -42,9 +36,7 @@
     "image": "https://raw.githubusercontent.com/cowprotocol/cowswap/897ce91ca60a6b2d3823e6a002c3bf64c5384afe/apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/airdrop.svg",
     "version": "v0.1.0",
     "website": "https://github.com/bleu/cow-airdrop-contract-deployer",
-    "conditions": {
-      "supportedNetworks": [11155111]
-    }
+    "conditions": { "supportedNetworks": [11155111] }
   },
   "COW_AMM_WITHDRAW": {
     "name": "CoW AMM Withdraw Liquidity",
@@ -55,11 +47,7 @@
     "website": "https://balancer.fi/pools/cow",
     "image": "https://cow-hooks-dapps-withdraw-pool.vercel.app/icon.png",
     "url": "https://cow-hooks-dapps-withdraw-pool.vercel.app/",
-    "conditions": {
-      "position": "pre",
-      "walletCompatibility": ["EOA"],
-      "smartContractWalletSupported": false
-    }
+    "conditions": { "position": "pre", "walletCompatibility": ["EOA"], "smartContractWalletSupported": false }
   },
   "CLAIM_LLAMAPAY_VESTING": {
     "type": "IFRAME",
@@ -117,11 +105,7 @@
     "website": "https://balancer.fi/pools/cow",
     "image": "https://cow-hooks-dapps-cow-amm-deposit.vercel.app/icon.png",
     "url": "https://cow-hooks-dapps-cow-amm-deposit.vercel.app/",
-    "conditions": {
-      "position": "post",
-      "walletCompatibility": ["EOA"],
-      "smartContractWalletSupported": false
-    }
+    "conditions": { "position": "post", "walletCompatibility": ["EOA"], "smartContractWalletSupported": false }
   },
   "UNI_V2_DEPOSIT": {
     "name": "Uniswap v2 Deposit",
@@ -136,6 +120,21 @@
       "position": "post",
       "walletCompatibility": ["EOA"],
       "supportedNetworks": [1, 42161, 11155111, 8453]
+    }
+  },
+  "MORPHO_LENDING": {
+    "name": "Morpho Lending",
+    "type": "IFRAME",
+    "descriptionShort": "Supply, borrow, repay and withdraw on Morpho Protocol.",
+    "description": "Seamlessly add and remove liquidity on the Morpho Lending Protocol. Whether you're optimizing your yield or efficiently deploying assets, this hook streamlines the process, ensuring your liquidity transactions happen in a smooth, efficient flow.",
+    "version": "0.0.1",
+    "website": "https://app.morpho.org/",
+    "image": "https://cow-hooks-dapps-morpho-lending.vercel.app/icon.png",
+    "url": "https://cow-hooks-dapps-morpho-lending.vercel.app/",
+    "conditions": {
+      "walletCompatibility": ["EOA"],
+      "supportedNetworks": [1, 8453],
+      "smartContractWalletSupported": false
     }
   }
 }
