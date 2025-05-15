@@ -1,7 +1,7 @@
 import { Link } from '@/components/Link'
 import { initGtm } from '@cowprotocol/analytics'
 import { CowFiCategory } from 'src/common/analytics/types'
-import { Color } from '@cowprotocol/ui'
+import { Color, UI } from '@cowprotocol/ui'
 
 import IMG_COWSWAP_COINS from '@cowprotocol/assets/images/image-coins.svg'
 import IMG_COWSWAP_MEV from '@cowprotocol/assets/images/image-cowswap-mev.svg'
@@ -17,14 +17,14 @@ const analytics = initGtm()
 
 export const COW_IS_DIFFERENT = [
   {
-    bgColor: Color.cowfi_blue_lighter,
+    bgColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`,
     fontSize: 28,
-    color: Color.cowfi_blue_dark,
+    color: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
     description: "By aligning incentives between solvers and users, CoW Swap finds surplus you won't get anywhere else",
     imgSrc: IMG_COWSWAP_COINS,
   },
   {
-    bgColor: Color.cowfi_blue_dark,
+    bgColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
     fontSize: 28,
     color: Color.cowfi_lightBlue1,
     description: 'MEV is a $1.4+ billion problem that you never have to worry about on CoW Swap',
@@ -33,7 +33,7 @@ export const COW_IS_DIFFERENT = [
   {
     bgColor: Color.cowfi_lightBlue1,
     fontSize: 28,
-    color: Color.cowfi_blue_dark,
+    color: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
     description: "CoW Swap's unique architecture enables advanced order types and seamless UX",
     imgSrc: IMG_COWSWAP_UX,
   },
@@ -41,7 +41,7 @@ export const COW_IS_DIFFERENT = [
 
 export const ADVANCED_ORDER_TYPES = [
   {
-    bgColor: Color.cowfi_blue_dark,
+    bgColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
     textColor: Color.cowfi_lightBlue1,
     titleColor: Color.cowfi_white2,
     title: 'Market orders (aka swaps)',
@@ -51,7 +51,7 @@ export const ADVANCED_ORDER_TYPES = [
   {
     bgColor: Color.cowfi_lightBlue1,
     textColor: Color.cowfi_darkBlue,
-    titleColor: Color.cowfi_blue_dark,
+    titleColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
     title: 'Limit orders',
     description:
       'Placing a limit order is like setting a trap for a price for your trade. CoW Swap is the only DEX that offers surplus on limit orders – and one of the only DEXs that offers limit orders at all',
@@ -60,7 +60,7 @@ export const ADVANCED_ORDER_TYPES = [
   {
     bgColor: Color.cowfi_lightBlue4,
     textColor: Color.cowfi_darkBlue5,
-    titleColor: Color.cowfi_blue_dark,
+    titleColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
     title: 'TWAP orders',
     description:
       'Time-weighted average price (TWAP) orders minimize price impact and volatility risk by letting you trade assets at fixed intervals over a period of time',
@@ -72,13 +72,13 @@ export const BETTER_UX = [
   {
     bgColor: Color.cowfi_lightBlue4,
     textColor: Color.cowfi_darkBlue5,
-    titleColor: Color.cowfi_blue_dark,
+    titleColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
     title: 'Gasless trading',
     description: 'All gas fees are paid in the sell token - so you can save your precious ETH',
     imgSrc: IMG_COWSWAP_GASLESS,
   },
   {
-    bgColor: Color.cowfi_blue_dark,
+    bgColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
     textColor: Color.cowfi_lightBlue1,
     titleColor: Color.cowfi_white2,
     title: 'No fees for failed transactions',
@@ -88,7 +88,7 @@ export const BETTER_UX = [
   {
     bgColor: Color.cowfi_lightBlue1,
     textColor: Color.cowfi_darkBlue5,
-    titleColor: Color.cowfi_blue_dark,
+    titleColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
     title: 'Execute multiple trades at once',
     description: 'With intent-based trading, you can place as many orders as you want simultaneously',
     imgSrc: IMG_COWSWAP_MULTIPLE,
