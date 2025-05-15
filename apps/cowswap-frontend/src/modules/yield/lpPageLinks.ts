@@ -38,7 +38,7 @@ export const LP_PAGE_LINKS: Record<LpTokenProvider, (chainId: SupportedChainId, 
     `https://balancer.fi/pools/${COW_AMM_CHAINS[chainId]}/cow/${address}`,
   [LpTokenProvider.UNIV2]: (chainId, address) =>
     `https://app.uniswap.org/explore/pools/${UNI_CHAINS[chainId]}/${address}`,
-  [LpTokenProvider.CURVE]: () => `https://classic.curve.fi/pools`,
+  [LpTokenProvider.CURVE]: () => `https://classic.curve.finance/pools`,
   [LpTokenProvider.BALANCERV2]: () => `https://balancer.fi/pools`,
   [LpTokenProvider.SUSHI]: (chainId, address) => `https://www.sushi.com/${SUSHI_CHAINS[chainId]}/pool/v2/${address}`,
   [LpTokenProvider.PANCAKE]: (chainId, address) =>
