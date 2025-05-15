@@ -53,7 +53,7 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
   const isBridgingEnabled = useIsBridgingEnabled(isSmartContractWallet)
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
   const showBridgeUI = isBridgingEnabled && isCurrentTradeBridging
-  // TODO: Set a real value for bridgeData based on bridging logic
+  // TODO: bridgeDetailsUI: Set a real value for bridgeData based on bridging logic
   const bridgeData = null as BridgeData | null
   const providerDetails: BridgeProtocolConfig | undefined = bridgeData?.bridgeProvider
   const bridgeEstimatedTime: number | undefined = bridgeData?.estimatedTime
