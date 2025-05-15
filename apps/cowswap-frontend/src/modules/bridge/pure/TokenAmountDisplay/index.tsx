@@ -34,6 +34,7 @@ export function TokenAmountDisplay({
     // as LibTokenAmount might expect a non-null amount if we pass it.
     // However, LibTokenAmountProps amount is Nullish<FractionLike>.
     // So, passing a null parsedAmount should be fine.
+    return null
   }
 
   const tokenSymbolForLib: LibTokenAmountProps['tokenSymbol'] = {

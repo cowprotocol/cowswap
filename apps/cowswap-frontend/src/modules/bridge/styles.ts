@@ -84,7 +84,7 @@ const StopStatusStyles: Record<StopStatusEnum, FlattenSimpleInterpolation> = {
 
 export const StopNumberCircle = styled.div<{
   status?: StopStatusEnum
-  stopNumber?: number
+  stopNumber: number
 }>`
   ${stopCircleBase}
 

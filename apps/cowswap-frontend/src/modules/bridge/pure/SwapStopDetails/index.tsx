@@ -72,7 +72,7 @@ export interface SwapStopDetailsProps {
   tokenLogoSize: number
   bridgeProvider: BridgeProtocolConfig
   recipient?: string
-  sourceChainId?: SupportedChainId
+  sourceChainId: SupportedChainId
 }
 
 export function SwapStopDetails({
@@ -93,7 +93,7 @@ export function SwapStopDetails({
   tokenLogoSize,
   bridgeProvider,
   recipient,
-  sourceChainId = SupportedChainId.MAINNET,
+  sourceChainId,
 }: SwapStopDetailsProps): ReactNode {
   const sellToken = sellCurrencyAmount.currency
   const sellAmount = sellCurrencyAmount.toSignificant(6)
