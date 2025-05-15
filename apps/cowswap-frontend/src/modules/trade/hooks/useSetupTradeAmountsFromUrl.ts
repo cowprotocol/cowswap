@@ -51,8 +51,8 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
     // Do nothing if queryParams are already clear
     if (
       !queryParams.has(TRADE_URL_BUY_AMOUNT_KEY) &&
-      !queryParams.get(TRADE_URL_SELL_AMOUNT_KEY) &&
-      !queryParams.get(TRADE_URL_ORDER_KIND_KEY)
+      !queryParams.has(TRADE_URL_SELL_AMOUNT_KEY) &&
+      !queryParams.has(TRADE_URL_ORDER_KIND_KEY)
     ) {
       return
     }
