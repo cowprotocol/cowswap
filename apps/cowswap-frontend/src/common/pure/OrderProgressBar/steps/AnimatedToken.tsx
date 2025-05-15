@@ -2,7 +2,7 @@ import { ReactElement } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import * as styledEl from './styled'
@@ -27,7 +27,7 @@ function AnimatedTokens({
       </styledEl.TokenWrapper>
       <styledEl.TokenWrapper
         position="right"
-        bgColor={Color.cowfi_blue_dark}
+        bgColor={`var(${UI.COLOR_BLUE_900_PRIMARY})`}
         size={ICON_SIZE}
         sizeMobile={MOBILE_ICON_SIZE}
       >

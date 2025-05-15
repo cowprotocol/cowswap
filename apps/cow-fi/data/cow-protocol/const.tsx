@@ -475,7 +475,7 @@ export const UNIQUE_TRADING_LOGIC = [
 
 export const TOP_LOGOS = [
   { src: IMG_LOGO_LIDO, alt: 'Lido', url: 'https://lido.fi/' },
-  { src: IMG_LOGO_CURVE_TEXT, alt: 'Curve', url: 'https://curve.fi/' },
+  { src: IMG_LOGO_CURVE_TEXT, alt: 'Curve', url: 'https://curve.finance/' },
   { src: IMG_LOGO_SAFE, alt: 'Safe', url: 'https://safe.global/' },
 ]
 

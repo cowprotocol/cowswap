@@ -41,4 +41,9 @@ export const QuestionHelperWrapped = styled(HelpTooltip)`
   display: inline-block;
   vertical-align: bottom;
   line-height: 0;
+  color: var(${UI.COLOR_TEXT_OPACITY_60});
+
+  &:hover {
+    color: var(${UI.COLOR_TEXT});
+  }
 `

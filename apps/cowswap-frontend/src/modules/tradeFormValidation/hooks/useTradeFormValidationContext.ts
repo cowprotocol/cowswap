@@ -9,7 +9,7 @@ import { useTokenSupportsPermit } from 'modules/permit'
 import { TradeType, useAmountsToSign, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
-import { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
+import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { useApproveState } from 'common/hooks/useApproveState'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
@@ -69,5 +69,5 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 }
 
 function isUnsupportedTokenInQuote(state: TradeQuoteState): boolean {
-  return state.error?.type === QuoteApiErrorCodes.UnsupportedToken
+  return state.error instanceof QuoteApiError && state.error?.type === QuoteApiErrorCodes.UnsupportedToken
 }

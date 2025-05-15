@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.106.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.4...cowswap-v1.106.5) (2025-05-14)
+
+
+### Bug Fixes
+
+* update curve link ([#5694](https://github.com/cowprotocol/cowswap/issues/5694)) ([718c9b1](https://github.com/cowprotocol/cowswap/commit/718c9b16490fcc27eccbe7b35c033002fe94701a))
+
+## [1.106.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.3...cowswap-v1.106.4) (2025-05-08)
+
+
+### Bug Fixes
+
+* skip quote fetching when appData is not changed ([#5676](https://github.com/cowprotocol/cowswap/issues/5676)) ([4d57e8c](https://github.com/cowprotocol/cowswap/commit/4d57e8c2454ad901a826f015e70dd956c33b6661))
+
+## [1.106.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.2...cowswap-v1.106.3) (2025-05-08)
+
+
+### Bug Fixes
+
+* null change to trigger cowswap build ([#5675](https://github.com/cowprotocol/cowswap/issues/5675)) ([b6be5f5](https://github.com/cowprotocol/cowswap/commit/b6be5f52dd3c4a5022e21766b5d46d6041d2c4e5))
+
 ## [1.106.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.1...cowswap-v1.106.2) (2025-05-07)
 
 
