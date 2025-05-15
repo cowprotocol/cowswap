@@ -11,7 +11,9 @@ import { ProtocolIcons } from 'common/pure/ProtocolIcons'
 
 import { BridgeProtocolConfig } from '../types'
 interface BridgeAccordionSummaryProps {
+  /** Estimated time for bridge transaction in minutes */
   bridgeEstimatedTime?: number
+  /** Information about the bridge protocol */
   bridgeProtocol?: BridgeProtocolConfig
   children: ReactNode
 }

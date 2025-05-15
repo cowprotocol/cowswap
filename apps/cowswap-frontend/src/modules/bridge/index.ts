@@ -1,6 +1,8 @@
 // Components
 export { BridgeAccordionSummary } from './pure/BridgeAccordionSummary'
-export { BridgeRouteBreakdown } from './components/BridgeRouteBreakdown'
+export { BridgeRouteBreakdown } from './containers/BridgeRouteBreakdown'
+export { BridgeStopDetails } from './pure/BridgeStopDetails'
+export { SwapStopDetails } from './pure/SwapStopDetails'
 
 // Hooks
 export { useBridgeProvider } from './hooks/useBridgeProvider'
