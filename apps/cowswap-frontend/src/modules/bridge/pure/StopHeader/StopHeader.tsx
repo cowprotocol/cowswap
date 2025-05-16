@@ -96,8 +96,13 @@ export function StopHeader({
 
   const ViewDetailsLink =
     explorerUrl && status !== StopStatusEnum.DEFAULT ? (
-      <ExplorerLink href={explorerUrl} target="_blank" rel="noopener noreferrer">
-        View details ↗
+      <ExplorerLink
+        href={explorerUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="View transaction details on explorer (opens in new tab)"
+      >
+        View details <span aria-hidden="true">↗</span>
       </ExplorerLink>
     ) : null
 
@@ -107,7 +112,7 @@ export function StopHeader({
         role="button"
         tabIndex={0}
         onClick={onToggle}
-        onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onToggle && onToggle()}
+        onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onToggle?.()}
         isCollapsible={true}
         aria-expanded={isExpanded}
       >
