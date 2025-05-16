@@ -6,25 +6,16 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
 
-import { BridgeAccordionSummary, BridgeProtocolConfig } from 'modules/bridge'
-
 import { Wrapper, Summary, SummaryClickable, ToggleIcon, Details } from './styled'
 
 interface TradeDetailsAccordionProps {
   rateInfo: ReactNode
   feeTotalAmount: CurrencyAmount<Currency> | null
   feeUsdTotalAmount: CurrencyAmount<Currency> | null
-  children?: ReactNode
   open: boolean
   onToggle: () => void
-
-  // Optional bridge-related props
-  /** Estimated time for bridge transaction */
-  bridgeEstimatedTime?: number
-  /** Information about the bridge protocol */
-  bridgeProtocol?: BridgeProtocolConfig
-  /** Whether to show bridge-related UI elements in the summary */
-  showBridgeUI?: boolean
+  feeWrapper?: (feeElement: ReactNode) => ReactNode
+  children?: ReactNode
 }
 
 /**
@@ -42,9 +33,7 @@ export const TradeDetailsAccordion = ({
   children,
   open,
   onToggle,
-  bridgeEstimatedTime,
-  bridgeProtocol,
-  showBridgeUI = false,
+  feeWrapper,
 }: TradeDetailsAccordionProps) => {
   const handleToggle = () => {
     onToggle?.()
@@ -69,10 +58,8 @@ export const TradeDetailsAccordion = ({
           isOpen={open}
         >
           {feeUsdTotalAmount?.greaterThan(0) ? (
-            showBridgeUI && bridgeProtocol ? (
-              <BridgeAccordionSummary bridgeEstimatedTime={bridgeEstimatedTime} bridgeProtocol={bridgeProtocol}>
-                <FiatAmount amount={feeUsdTotalAmount} />
-              </BridgeAccordionSummary>
+            feeWrapper ? (
+              feeWrapper(<FiatAmount amount={feeUsdTotalAmount} />)
             ) : (
               <FiatAmount amount={feeUsdTotalAmount} />
             )

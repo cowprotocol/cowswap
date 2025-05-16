@@ -2,7 +2,6 @@ import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { BridgeProtocolConfig } from 'modules/bridge'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
@@ -16,24 +15,11 @@ export interface TradeRatesProps {
   isFeeDetailsOpen: boolean
   toggleAccordion: () => void
   children?: ReactNode
-
-  // Optional props for displaying bridge info in the accordion summary
-  bridgeEstimatedTime?: number
-  bridgeProtocol?: BridgeProtocolConfig
-  showBridgeUI?: boolean
+  feeWrapper?: (feeElement: ReactNode) => ReactNode
 }
 
 export function TradeTotalCostsDetails(props: TradeRatesProps) {
-  const {
-    rateInfoParams,
-    totalCosts,
-    isFeeDetailsOpen,
-    toggleAccordion,
-    children,
-    bridgeEstimatedTime,
-    bridgeProtocol,
-    showBridgeUI,
-  } = props
+  const { rateInfoParams, totalCosts, isFeeDetailsOpen, toggleAccordion, children, feeWrapper } = props
   const totalCostsUsd = useUsdAmount(totalCosts).value
 
   if (!totalCosts) {
@@ -47,9 +33,7 @@ export function TradeTotalCostsDetails(props: TradeRatesProps) {
       feeTotalAmount={totalCosts}
       open={isFeeDetailsOpen}
       onToggle={toggleAccordion}
-      bridgeEstimatedTime={bridgeEstimatedTime}
-      bridgeProtocol={bridgeProtocol}
-      showBridgeUI={showBridgeUI}
+      feeWrapper={feeWrapper}
     >
       <styledEl.Box noMargin>{children}</styledEl.Box>
     </TradeDetailsAccordion>

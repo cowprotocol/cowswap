@@ -5,7 +5,7 @@ import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { useWalletDetails } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { BridgeData, BridgeRouteBreakdown, BridgeProtocolConfig } from 'modules/bridge'
+import { BridgeData, BridgeRouteBreakdown, BridgeProtocolConfig, BridgeAccordionSummary } from 'modules/bridge'
 import {
   getTotalCosts,
   TradeFeesAndCosts,
@@ -149,9 +149,15 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
       rateInfoParams={rateInfoParams}
       isFeeDetailsOpen={isFeeDetailsOpen}
       toggleAccordion={toggleAccordion}
-      bridgeEstimatedTime={bridgeEstimatedTime}
-      bridgeProtocol={providerDetails}
-      showBridgeUI={shouldRenderBridgeUI}
+      feeWrapper={
+        shouldRenderBridgeUI
+          ? (feeElement) => (
+              <BridgeAccordionSummary bridgeEstimatedTime={bridgeEstimatedTime} bridgeProtocol={providerDetails}>
+                {feeElement}
+              </BridgeAccordionSummary>
+            )
+          : undefined
+      }
     >
       {accordionContent}
     </TradeTotalCostsDetails>
