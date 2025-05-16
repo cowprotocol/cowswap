@@ -1,10 +1,11 @@
+import { notFound } from 'next/navigation'
+
 import { ArticlePageComponent } from '@/components/ArticlePageComponent'
 import { FEATURED_ARTICLES_PAGE_SIZE } from '@/const/pagination'
+import { fetchArticleWithRetry } from '@/util/fetchHelpers'
 import { getPageMetadata } from '@/util/getPageMetadata'
 import { stripHtmlTags } from '@/util/stripHTMLTags'
-import { fetchArticleWithRetry } from '@/util/fetchHelpers'
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+
 import {
   Article,
   getAllArticleSlugs,
@@ -13,6 +14,10 @@ import {
   getCategories,
   SharedRichTextComponent,
 } from '../../../../services/cms'
+
+import type { Metadata } from 'next'
+
+export const revalidate = 3600 // Revalidate at most once per hour
 
 // Maximum length for metadata descriptions. When content exceeds MAX_LENGTH,
 // we truncate to TRUNCATE_LENGTH (MAX_LENGTH - 3) to make room for "..." ellipsis

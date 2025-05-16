@@ -6,9 +6,8 @@ import { buildDaiLikePermitCallData, buildEip2612PermitCallData } from '../utils
 import { getPermitDeadline } from '../utils/getPermitDeadline'
 import { isSupportedPermitInfo } from '../utils/isSupportedPermitInfo'
 
-// keccak(PERMIT_TOKEN)
 // See hookDappsRegistry.json in @cowprotocol/hook-dapp-lib
-const PERMIT_HOOK_DAPP_ID = '1db4bacb661a90fb6b475fd5b585acba9745bc373573c65ecc3e8f5bfd5dee1f'
+const PERMIT_HOOK_DAPP_ID = 'PERMIT_TOKEN'
 
 const REQUESTS_CACHE: { [permitKey: string]: Promise<PermitHookData | undefined> } = {}
 

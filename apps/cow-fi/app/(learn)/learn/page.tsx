@@ -1,6 +1,9 @@
 import { LearnPageComponent } from '@/components/LearnPageComponent'
 import { ARTICLES_LARGE_PAGE_SIZE, FEATURED_ARTICLES_PAGE_SIZE } from '@/const/pagination'
+
 import { getArticles, getCategories } from '../../../services/cms'
+
+export const revalidate = 3600 // Revalidate at most once per hour
 
 export default async function LearnPage() {
   const articlesResponse = await getArticles({ pageSize: ARTICLES_LARGE_PAGE_SIZE })
