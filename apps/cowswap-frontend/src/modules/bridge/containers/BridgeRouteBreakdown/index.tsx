@@ -1,5 +1,8 @@
+import { useMemo } from 'react'
+
 import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
+import { SolverInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InfoTooltip, UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -9,7 +12,8 @@ import SVG from 'react-inlinesvg'
 import { ToggleArrow, DividerHorizontal } from 'modules/bridge/styles'
 import { useUsdAmount } from 'modules/usdAmount'
 
-import { SolverCompetition } from 'common/hooks/orderProgressBar'
+import { SolverCompetition, ApiSolverCompetition } from 'common/hooks/orderProgressBar'
+import { useSolversInfo } from 'common/hooks/useSolversInfo'
 import { ProtocolIcons } from 'common/pure/ProtocolIcons'
 
 import { Wrapper, RouteHeader, RouteTitle, StopsInfo, CollapsibleStopsInfo, ClickableRouteHeader } from './styled'
@@ -61,7 +65,7 @@ export interface BridgeRouteBreakdownProps {
   isBridgeSectionExpanded?: boolean
   onBridgeSectionToggle?: () => void
 
-  winningSolver?: SolverCompetition | null
+  winningSolverId?: string | null
   receivedAmount?: CurrencyAmount<TokenWithLogo> | null
   surplusAmount?: CurrencyAmount<TokenWithLogo> | null
 }
@@ -95,7 +99,7 @@ export function BridgeRouteBreakdown({
   isBridgeSectionCollapsible = false,
   isBridgeSectionExpanded = true,
   onBridgeSectionToggle = () => {},
-  winningSolver = null,
+  winningSolverId,
   receivedAmount = null,
   surplusAmount = null,
 }: BridgeRouteBreakdownProps) {
@@ -103,15 +107,39 @@ export function BridgeRouteBreakdown({
   const buyToken = buyCurrencyAmount.currency
 
   const derivedSourceChainId = sellToken.chainId as SupportedChainId
+  const sourceChainInfo = getChainInfo(derivedSourceChainId)
+  const sourceChainName = sourceChainInfo.label
 
   const destToken = bridgeReceiveCurrencyAmount.currency
   const derivedRecipientChainId = destToken.chainId as SupportedChainId
-
   const recipientChainInfo = getChainInfo(derivedRecipientChainId)
   const recipientChainName = recipientChainInfo.label
 
-  const sourceChainInfo = getChainInfo(derivedSourceChainId)
-  const sourceChainName = sourceChainInfo.label
+  const allSolversInfo = useSolversInfo(derivedSourceChainId)
+
+  const winningSolverDisplayInfo = useMemo(() => {
+    if (!winningSolverId || !allSolversInfo || !Object.keys(allSolversInfo).length) {
+      return undefined
+    }
+    const normalizedId = winningSolverId.replace(/-solve$/, '')
+    return allSolversInfo[normalizedId]
+  }, [winningSolverId, allSolversInfo])
+
+  const winningSolverForSwapDetails: SolverCompetition | null = useMemo(() => {
+    if (!winningSolverId) {
+      return null
+    }
+    const baseSolverData: Pick<ApiSolverCompetition, 'solver'> = {
+      solver: winningSolverId,
+    }
+
+    const displayInfo: Partial<SolverInfo> = winningSolverDisplayInfo || {}
+
+    return {
+      ...baseSolverData,
+      ...displayInfo,
+    } as SolverCompetition
+  }, [winningSolverId, winningSolverDisplayInfo])
 
   const { usdInfo: networkCostUsdResult } = useParsedAmountWithUsd(networkCost, sellToken)
   const { usdInfo: swapMinReceiveUsdResult } = useParsedAmountWithUsd(swapMinReceive, buyToken)
@@ -188,7 +216,7 @@ export function BridgeRouteBreakdown({
         bridgeProvider={bridgeProvider}
         recipient={recipient}
         sourceChainId={derivedSourceChainId}
-        winningSolver={winningSolver}
+        winningSolver={winningSolverForSwapDetails}
         receivedAmount={receivedAmount}
         receivedAmountUsdResult={receivedAmountUsdInfo}
         surplusAmount={surplusAmount}

@@ -1,7 +1,7 @@
 import { Provider, createStore } from 'jotai'
 import React from 'react'
 
-import { USDC_MAINNET, COW, getChainInfo } from '@cowprotocol/common-const'
+import { USDC_MAINNET, COW, getChainInfo } from '@cowprotocol/common-const' // TokenWithLogo removed
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
@@ -26,6 +26,7 @@ import { usdRawPricesAtom } from 'modules/usdAmount/state/usdRawPricesAtom'
 import { CurrencyInputPanel } from 'common/pure/CurrencyInputPanel/CurrencyInputPanel'
 import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
+import { SolversInfoUpdater } from 'common/updaters/SolversInfoUpdater'
 
 import { BridgeProvider, BRIDGE_PROVIDER_DETAILS } from '../../constants'
 import { BridgeFeeType } from '../../types'
@@ -34,6 +35,13 @@ import { StopStatusEnum } from '../../utils/status'
 import { BridgeRouteBreakdown } from './index'
 
 const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts, 'transparent')
+
+const StatusTitle = styled.h2`
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
+  color: var(${UI.COLOR_TEXT});
+`
 
 // Helper to create CurrencyAmount from a string value and a token object
 const createAmount = <T extends Currency>(currency: T, value: string | number): CurrencyAmount<T> => {
@@ -130,6 +138,7 @@ const FiatValue = styled.span`
 // Reusable wrapper component with Jotai provider for mock USD prices
 const BridgeFixtureWrapper = ({ children }: { children: React.ReactNode }) => (
   <Provider store={store}>
+    <SolversInfoUpdater />
     <Wrapper>
       <ThemeProvider />
       <GlobalStyles />{' '}
@@ -476,6 +485,7 @@ const SwapConfirmation = () => {
               isCollapsible={true}
               isExpanded={isExpanded}
               onExpandToggle={() => setIsExpanded(!isExpanded)}
+              winningSolverId={null} // For this fixture, no specific winning solver needed for overall confirmation view
             />
 
             {/* Only show these elements when breakdown is NOT expanded */}
@@ -532,7 +542,11 @@ const scenarios: Record<ScenarioKey, Scenario> = {
     swapStatus: StopStatusEnum.DONE,
     bridgeStatus: StopStatusEnum.PENDING,
   },
-  bothDone: { label: 'Swap Done / Bridge Done', swapStatus: StopStatusEnum.DONE, bridgeStatus: StopStatusEnum.DONE },
+  bothDone: {
+    label: 'Swap Done / Bridge Done',
+    swapStatus: StopStatusEnum.DONE,
+    bridgeStatus: StopStatusEnum.DONE,
+  },
   bridgeFailed: {
     label: 'Swap Done / Bridge Failed (Refund Started)',
     swapStatus: StopStatusEnum.DONE,
@@ -561,33 +575,16 @@ function BridgeStatus() {
   // Get the current scenario based on selected key
   const scenario = scenarios[scenarioKey as ScenarioKey]
 
-  // Create mock data for completed status
-  let mockSolver = null
+  let winningSolverIdForFixture: string | null = null
   let mockReceivedAmount = null
   let mockSurplusAmount = null
 
-  // Only for DONE status, add solver and received amount data
   if (scenario.swapStatus === StopStatusEnum.DONE) {
-    mockSolver = {
-      solver: 'Baseline',
-      displayName: 'Baseline',
-      description: 'The baseline solver',
-    }
+    winningSolverIdForFixture = 'baseline' // Set the ID to be passed to BridgeRouteBreakdown
 
-    // Always add received amount for DONE status
-    // Use a slightly lower value than expected to receive
     mockReceivedAmount = createAmount(COW_MAINNET, '3438.321')
-
-    // Always add surplus amount for DONE status
     mockSurplusAmount = createAmount(COW_MAINNET, '21.2937')
   }
-
-  const StatusTitle = styled.h2`
-    margin: 0 0 16px;
-    font-size: 20px;
-    font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
-    color: var(${UI.COLOR_TEXT});
-  `
 
   return (
     <BridgeFixtureWrapper>
@@ -605,7 +602,7 @@ function BridgeStatus() {
           isBridgeSectionCollapsible={true}
           isBridgeSectionExpanded={isBridgeSectionExpanded}
           onBridgeSectionToggle={() => setIsBridgeSectionExpanded(!isBridgeSectionExpanded)}
-          winningSolver={mockSolver}
+          winningSolverId={winningSolverIdForFixture}
           receivedAmount={mockReceivedAmount}
           surplusAmount={mockSurplusAmount}
         />

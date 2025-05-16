@@ -12,6 +12,8 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
 
+import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
+
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReceiveAmountTitle } from 'modules/trade/pure/ReceiveAmountTitle'
 import { UsdAmountInfo } from 'modules/usdAmount/hooks/useUsdAmount'
@@ -170,7 +172,12 @@ export function SwapStopDetails({
           <ConfirmDetailsItem label="Winning solver" withTimelineDot>
             <WinningSolverContainer>
               <b>{winningSolver.displayName || winningSolver.solver}</b>
-              <img src={winningSolver.image} alt={`${winningSolver.solver} logo`} width="16" height="16" />
+              <img
+                src={winningSolver.image || AMM_LOGOS[winningSolver.solver]?.src || AMM_LOGOS.default.src}
+                alt={`${winningSolver.solver} logo`}
+                width="16"
+                height="16"
+              />
             </WinningSolverContainer>
           </ConfirmDetailsItem>
         )}
