@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -9,10 +11,10 @@ import { BridgeAccordionSummary, BridgeProtocolConfig } from 'modules/bridge'
 import { Wrapper, Summary, SummaryClickable, ToggleIcon, Details } from './styled'
 
 interface TradeDetailsAccordionProps {
-  rateInfo: React.ReactNode
+  rateInfo: ReactNode
   feeTotalAmount: CurrencyAmount<Currency> | null
   feeUsdTotalAmount: CurrencyAmount<Currency> | null
-  children?: React.ReactNode
+  children?: ReactNode
   open: boolean
   onToggle: () => void
 

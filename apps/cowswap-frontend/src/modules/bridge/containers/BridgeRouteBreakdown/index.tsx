@@ -6,7 +6,6 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
 
-import { ToggleArrow } from 'modules/bridge/styles'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { ProtocolIcons } from 'common/pure/ProtocolIcons'
@@ -24,6 +23,7 @@ import {
 import { useParsedAmountWithUsd } from '../../hooks'
 import { BridgeStopDetails } from '../../pure/BridgeStopDetails/index'
 import { SwapStopDetails } from '../../pure/SwapStopDetails/index'
+import { ToggleArrow } from '../../styles'
 import { BridgeFeeType, BridgeProtocolConfig } from '../../types'
 import { StopStatusEnum } from '../../utils/status'
 
