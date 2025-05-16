@@ -103,7 +103,14 @@ export function StopHeader({
 
   if (isCollapsible) {
     return (
-      <ClickableStopTitle onClick={onToggle} isCollapsible={true}>
+      <ClickableStopTitle
+        role="button"
+        tabIndex={0}
+        onClick={onToggle}
+        onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onToggle && onToggle()}
+        isCollapsible={true}
+        aria-expanded={isExpanded}
+      >
         {TitleContent}
         {ViewDetailsLink}
         <ToggleIconContainer>

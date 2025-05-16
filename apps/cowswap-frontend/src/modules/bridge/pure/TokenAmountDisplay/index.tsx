@@ -38,7 +38,8 @@ export function TokenAmountDisplay({
 }: TokenAmountDisplayProps): ReactElement | null {
   // Only parse the amount if not already provided and only when inputs change
   const parsedAmount = useMemo(() => {
-    if (providedParsedAmount !== undefined) return providedParsedAmount
+    // Accept only non-null values; fall back to parsing otherwise
+    if (providedParsedAmount != null) return providedParsedAmount
     return amount && token ? tryParseCurrencyAmount(amount, token) : null
   }, [amount, token, providedParsedAmount])
 
