@@ -162,9 +162,18 @@ export function BridgeRouteBreakdown({
     } as SolverCompetition
   }, [winningSolverId, winningSolverDisplayInfo])
 
-  const { usdInfo: networkCostUsdResult } = useParsedAmountWithUsd(networkCost, sellToken)
-  const { usdInfo: swapMinReceiveUsdResult } = useParsedAmountWithUsd(swapMinReceive, buyToken)
-  const { usdInfo: swapExpectedReceiveUsdResult } = useParsedAmountWithUsd(swapExpectedToReceive, buyToken)
+  const { currencyAmount: parsedNetworkCost, usdInfo: networkCostUsdInfo } = useParsedAmountWithUsd(
+    networkCost,
+    sellToken,
+  )
+  const { currencyAmount: parsedSwapMinReceive, usdInfo: swapMinReceiveUsdInfo } = useParsedAmountWithUsd(
+    swapMinReceive,
+    buyToken,
+  )
+  const { currencyAmount: parsedSwapExpectedToReceive, usdInfo: swapExpectedReceiveUsdInfo } = useParsedAmountWithUsd(
+    swapExpectedToReceive,
+    buyToken,
+  )
 
   const bridgeReceiveAmountUsdInfo = useUsdAmount(bridgeReceiveCurrencyAmount, bridgeReceiveCurrencyAmount.currency)
   const rawReceivedAmountUsdInfo = useUsdAmount(receivedAmount, buyToken)
@@ -231,22 +240,22 @@ export function BridgeRouteBreakdown({
         sellCurrencyAmount={sellCurrencyAmount}
         buyCurrencyAmount={buyCurrencyAmount}
         sourceChainName={sourceChainData.chainName}
-        networkCost={networkCost}
-        networkCostUsdResult={networkCostUsdResult}
-        swapExpectedToReceive={swapExpectedToReceive}
-        swapExpectedReceiveUsdResult={swapExpectedReceiveUsdResult}
+        networkCostAmount={parsedNetworkCost}
+        networkCostUsdInfo={networkCostUsdInfo}
+        swapExpectedToReceiveAmount={parsedSwapExpectedToReceive}
+        swapExpectedReceiveUsdInfo={swapExpectedReceiveUsdInfo}
         swapMaxSlippage={swapMaxSlippage}
-        swapMinReceive={swapMinReceive}
-        swapMinReceiveUsdResult={swapMinReceiveUsdResult}
+        swapMinReceiveAmount={parsedSwapMinReceive}
+        swapMinReceiveUsdInfo={swapMinReceiveUsdInfo}
         tokenLogoSize={tokenLogoSize}
         bridgeProvider={bridgeProvider}
         recipient={recipient}
         sourceChainId={sourceChainData.chainId}
         winningSolver={winningSolverForSwapDetails}
         receivedAmount={receivedAmount}
-        receivedAmountUsdResult={receivedAmountUsdInfo}
+        receivedAmountUsdInfo={receivedAmountUsdInfo}
         surplusAmount={surplusAmount}
-        surplusAmountUsdResult={surplusAmountUsdInfo}
+        surplusAmountUsdInfo={surplusAmountUsdInfo}
         swapExplorerUrl={swapExplorerUrl}
       />
 

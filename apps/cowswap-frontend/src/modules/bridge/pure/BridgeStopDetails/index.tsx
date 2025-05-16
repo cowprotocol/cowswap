@@ -81,11 +81,9 @@ export function BridgeStopDetails({
   bridgeExplorerUrl,
 }: BridgeStopDetailsProps): ReactNode {
   const sourceToken = bridgeSendCurrencyAmount.currency
-  const bridgeAmount = bridgeSendCurrencyAmount.toSignificant(6)
   const bridgeTokenSymbol = sourceToken.symbol || '???'
 
   const destToken = bridgeReceiveCurrencyAmount.currency
-  const bridgeReceiveAmount = bridgeReceiveCurrencyAmount.toSignificant(6)
   const bridgeReceiveTokenSymbol = destToken.symbol || '???'
 
   const bridgeReceiveAmountUsdValue = bridgeReceiveAmountUsdResult?.value
@@ -115,7 +113,6 @@ export function BridgeStopDetails({
           <TokenFlowContainer>
             <TokenAmountDisplay
               token={sourceToken}
-              amount={bridgeAmount}
               displaySymbol={bridgeTokenSymbol}
               tokenLogoSize={tokenLogoSize}
               hideFiatAmount={true}
@@ -124,7 +121,6 @@ export function BridgeStopDetails({
             <ArrowIcon>→</ArrowIcon>
             <TokenAmountDisplay
               token={destToken}
-              amount={bridgeReceiveAmount}
               displaySymbol={bridgeReceiveTokenSymbol}
               usdValue={bridgeReceiveAmountUsdValue}
               hideFiatAmount={hideBridgeFlowFiatAmount}
@@ -202,10 +198,8 @@ export function BridgeStopDetails({
           {isStatusMode ? (
             <TokenAmountDisplay
               token={destToken}
-              amount={bridgeReceiveAmount}
               displaySymbol={bridgeReceiveTokenSymbol}
               usdValue={bridgeReceiveAmountUsdValue}
-              hideFiatAmount={hideBridgeFlowFiatAmount}
               tokenLogoSize={tokenLogoSize}
               parsedAmount={bridgeReceiveCurrencyAmount}
             />
@@ -213,10 +207,8 @@ export function BridgeStopDetails({
             <b>
               <TokenAmountDisplay
                 token={destToken}
-                amount={bridgeReceiveAmount}
                 displaySymbol={bridgeReceiveTokenSymbol}
                 usdValue={bridgeReceiveAmountUsdValue}
-                hideFiatAmount={hideBridgeFlowFiatAmount}
                 tokenLogoSize={tokenLogoSize}
                 parsedAmount={bridgeReceiveCurrencyAmount}
               />
@@ -283,7 +275,6 @@ export function BridgeStopDetails({
               <b>
                 <TokenAmountDisplay
                   token={sourceToken}
-                  amount={bridgeAmount}
                   displaySymbol={bridgeTokenSymbol}
                   hideFiatAmount={true}
                   tokenLogoSize={tokenLogoSize}
@@ -312,10 +303,8 @@ export function BridgeStopDetails({
               {status === StopStatusEnum.DONE && (
                 <TokenAmountDisplay
                   token={destToken}
-                  amount={bridgeReceiveAmount}
                   displaySymbol={bridgeReceiveTokenSymbol}
                   usdValue={bridgeReceiveAmountUsdValue}
-                  hideFiatAmount={hideBridgeFlowFiatAmount}
                   tokenLogoSize={tokenLogoSize}
                   parsedAmount={bridgeReceiveCurrencyAmount}
                 />

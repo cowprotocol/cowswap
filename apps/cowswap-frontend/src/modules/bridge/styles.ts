@@ -6,6 +6,8 @@ import styled, { css, keyframes } from 'styled-components/macro'
 
 import { StopStatusEnum } from './utils/status'
 
+const ARROW_ICON_SIZE = '12px'
+
 const spin = keyframes`
   0% {
     transform: rotate(0deg);
@@ -157,7 +159,7 @@ export const ArrowIcon = styled.span`
 `
 
 export const ToggleArrow = styled.div<{ isOpen: boolean }>`
-  --size: 100%;
+  --size: ${ARROW_ICON_SIZE};
   transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
   transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
   display: flex;
@@ -170,10 +172,10 @@ export const ToggleArrow = styled.div<{ isOpen: boolean }>`
     width: var(--size);
     height: var(--size);
     object-fit: contain;
-    transition: fill var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     path {
-      fill: var(${UI.COLOR_TEXT_OPACITY_70});
+      fill: currentColor;
+      transition: fill var(${UI.ANIMATION_DURATION}) ease-in-out;
     }
   }
 `
@@ -181,29 +183,31 @@ export const ToggleArrow = styled.div<{ isOpen: boolean }>`
 export const ClickableStopTitle = styled(StopTitle)<{ isCollapsible?: boolean }>`
   cursor: ${({ isCollapsible }) => (isCollapsible ? 'pointer' : 'default')};
 
+  ${ToggleArrow} {
+    color: var(${UI.COLOR_TEXT_OPACITY_50});
+  }
+
   &:hover {
     opacity: ${({ isCollapsible }) => (isCollapsible ? 0.8 : 1)};
 
     ${({ isCollapsible }) =>
       isCollapsible &&
-      `
-      ${ToggleArrow} > svg > path {
-         fill: var(${UI.COLOR_TEXT});
-      }
-    `}
+      css`
+        ${ToggleArrow} {
+          color: var(${UI.COLOR_TEXT});
+        }
+      `}
   }
 `
 
 export const ToggleIconContainer = styled.div`
-  --size: 24px;
-  height: var(--size);
-  width: var(--size);
   display: flex;
   align-items: center;
   margin: 0 0 0 auto;
   padding: 6px;
   border-radius: var(--size);
   cursor: pointer;
+  border-radius: ${ARROW_ICON_SIZE};
   transition:
     background var(${UI.ANIMATION_DURATION}) ease-in-out,
     opacity var(${UI.ANIMATION_DURATION}) ease-in-out;

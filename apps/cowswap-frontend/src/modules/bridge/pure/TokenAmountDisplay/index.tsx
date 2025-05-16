@@ -12,7 +12,7 @@ import { AmountWithTokenIcon } from './styled'
 
 export interface TokenAmountDisplayProps {
   token: TokenWithLogo
-  amount: string
+  amount?: string
   displaySymbol?: string
   usdValue?: CurrencyAmount<Token> | null
   hideFiatAmount?: boolean

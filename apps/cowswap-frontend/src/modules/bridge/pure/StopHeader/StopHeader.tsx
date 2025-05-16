@@ -19,7 +19,7 @@ import { BridgeProtocolConfig } from '../../types'
 import { StopStatusEnum } from '../../utils/status'
 
 const ExplorerLink = styled.a`
-  font-size: 11px;
+  font-size: 12px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   text-decoration: underline;
   transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;

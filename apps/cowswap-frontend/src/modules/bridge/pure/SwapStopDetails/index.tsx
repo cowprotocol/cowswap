@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import PlusIcon from '@cowprotocol/assets/cow-swap/plus.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { FiatAmount, InfoTooltip } from '@cowprotocol/ui'
+import { InfoTooltip } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
@@ -27,7 +27,7 @@ import {
   AnimatedEllipsis,
 } from '../../styles'
 import { BridgeProtocolConfig, BridgeFeeType } from '../../types'
-import { getAmountString, getFeeTextColor, StatusColor, StopStatusEnum } from '../../utils'
+import { getFeeTextColor, StatusColor, StopStatusEnum } from '../../utils'
 import { RecipientDisplay } from '../RecipientDisplay'
 import { StopHeader } from '../StopHeader/StopHeader'
 import { SwapStatusIcons, SwapStatusTitlePrefixes } from '../StopStatus'
@@ -41,22 +41,22 @@ export interface SwapStopDetailsProps {
   sellCurrencyAmount: CurrencyAmount<TokenWithLogo>
   buyCurrencyAmount: CurrencyAmount<TokenWithLogo>
   sourceChainName: string
-  networkCost: string
-  networkCostUsdResult?: UsdAmountInfo | null
-  swapExpectedToReceive?: string
-  swapExpectedReceiveUsdResult?: UsdAmountInfo | null
+  networkCostAmount?: CurrencyAmount<TokenWithLogo>
+  networkCostUsdInfo?: UsdAmountInfo | null
+  swapExpectedToReceiveAmount?: CurrencyAmount<TokenWithLogo>
+  swapExpectedReceiveUsdInfo?: UsdAmountInfo | null
   swapMaxSlippage?: string
-  swapMinReceive?: string
-  swapMinReceiveUsdResult?: UsdAmountInfo | null
+  swapMinReceiveAmount?: CurrencyAmount<TokenWithLogo>
+  swapMinReceiveUsdInfo?: UsdAmountInfo | null
   tokenLogoSize: number
   bridgeProvider: BridgeProtocolConfig
   recipient?: string
   sourceChainId: SupportedChainId
   winningSolver?: SolverCompetition | null
   receivedAmount?: CurrencyAmount<TokenWithLogo> | null
-  receivedAmountUsdResult?: UsdAmountInfo | null
+  receivedAmountUsdInfo?: UsdAmountInfo | null
   surplusAmount?: CurrencyAmount<TokenWithLogo> | null
-  surplusAmountUsdResult?: UsdAmountInfo | null
+  surplusAmountUsdInfo?: UsdAmountInfo | null
   swapExplorerUrl?: string
 }
 
@@ -68,22 +68,22 @@ export function SwapStopDetails({
   sellCurrencyAmount,
   buyCurrencyAmount,
   sourceChainName,
-  networkCost,
-  networkCostUsdResult,
-  swapExpectedToReceive,
-  swapExpectedReceiveUsdResult,
+  networkCostAmount,
+  networkCostUsdInfo,
+  swapExpectedToReceiveAmount,
+  swapExpectedReceiveUsdInfo,
   swapMaxSlippage,
-  swapMinReceive,
-  swapMinReceiveUsdResult,
+  swapMinReceiveAmount,
+  swapMinReceiveUsdInfo,
   tokenLogoSize,
   bridgeProvider,
   recipient,
   sourceChainId,
   winningSolver = null,
   receivedAmount = null,
-  receivedAmountUsdResult = null,
+  receivedAmountUsdInfo = null,
   surplusAmount = null,
-  surplusAmountUsdResult = null,
+  surplusAmountUsdInfo = null,
   swapExplorerUrl,
 }: SwapStopDetailsProps): ReactNode {
   const sellToken = sellCurrencyAmount.currency
@@ -94,11 +94,11 @@ export function SwapStopDetails({
   const buyAmount = buyCurrencyAmount.toSignificant(6)
   const buyTokenSymbol = buyToken.symbol || '???'
 
-  const networkCostUsdValue = networkCostUsdResult?.value
-  const swapExpectedReceiveUsdValue = swapExpectedReceiveUsdResult?.value
-  const swapMinReceiveUsdValue = swapMinReceiveUsdResult?.value
-  const receivedAmountUsdValue = receivedAmountUsdResult?.value
-  const surplusAmountUsdValue = surplusAmountUsdResult?.value
+  const networkCostUsdValue = networkCostUsdInfo?.value
+  const swapExpectedReceiveUsdValue = swapExpectedReceiveUsdInfo?.value
+  const swapMinReceiveUsdValue = swapMinReceiveUsdInfo?.value
+  const receivedAmountUsdValue = receivedAmountUsdInfo?.value
+  const surplusAmountUsdValue = surplusAmountUsdInfo?.value
 
   // Check if we're in the BridgeStatus with solver data
   const isBridgeStatusView = winningSolver !== null || receivedAmount !== null
@@ -194,16 +194,21 @@ export function SwapStopDetails({
             }
             withTimelineDot
           >
-            {networkCost} {sellTokenSymbol}&nbsp;
-            {networkCostUsdValue && (
-              <i>
-                (<FiatAmount amount={networkCostUsdValue} />)
-              </i>
+            {networkCostAmount ? (
+              <TokenAmountDisplay
+                token={sellToken}
+                parsedAmount={networkCostAmount}
+                displaySymbol={sellTokenSymbol}
+                usdValue={networkCostUsdValue}
+                tokenLogoSize={tokenLogoSize}
+              />
+            ) : (
+              '-'
             )}
           </ConfirmDetailsItem>
         )}
 
-        {!isBridgeStatusView && swapExpectedToReceive && (
+        {!isBridgeStatusView && swapExpectedToReceiveAmount && (
           <ConfirmDetailsItem
             withTimelineDot
             label={
@@ -218,7 +223,7 @@ export function SwapStopDetails({
           >
             <TokenAmountDisplay
               token={buyToken}
-              amount={swapExpectedToReceive}
+              parsedAmount={swapExpectedToReceiveAmount}
               displaySymbol={buyTokenSymbol}
               usdValue={swapExpectedReceiveUsdValue}
               tokenLogoSize={tokenLogoSize}
@@ -269,11 +274,10 @@ export function SwapStopDetails({
             <b>
               <TokenAmountDisplay
                 token={buyToken}
-                amount={getAmountString(receivedAmount)}
+                parsedAmount={receivedAmount}
                 displaySymbol={buyTokenSymbol}
                 usdValue={receivedAmountUsdValue}
                 tokenLogoSize={tokenLogoSize}
-                parsedAmount={receivedAmount}
               />
             </b>
           </ConfirmDetailsItem>
@@ -298,12 +302,11 @@ export function SwapStopDetails({
               +{' '}
               <TokenAmountDisplay
                 token={buyToken}
-                amount={getAmountString(surplusAmount)}
+                parsedAmount={surplusAmount}
                 displaySymbol={buyTokenSymbol}
                 usdValue={surplusAmountUsdValue}
                 tokenLogoSize={tokenLogoSize}
                 hideTokenIcon={true}
-                parsedAmount={surplusAmount}
               />
             </SuccessTextBold>
           </ConfirmDetailsItem>
@@ -321,11 +324,10 @@ export function SwapStopDetails({
             <b>
               <TokenAmountDisplay
                 token={buyToken}
-                amount={getAmountString(receivedAmount)}
+                parsedAmount={receivedAmount}
                 displaySymbol={buyTokenSymbol}
                 usdValue={receivedAmountUsdValue}
                 tokenLogoSize={tokenLogoSize}
-                parsedAmount={receivedAmount}
               />
             </b>
           </ConfirmDetailsItem>
@@ -351,13 +353,12 @@ export function SwapStopDetails({
               +{' '}
               <TokenAmountDisplay
                 token={buyToken}
-                amount={getAmountString(surplusAmount)}
+                parsedAmount={surplusAmount}
                 displaySymbol={buyTokenSymbol}
                 usdValue={surplusAmountUsdValue}
                 tokenLogoSize={tokenLogoSize}
                 status={StatusColor.SUCCESS}
                 hideTokenIcon={true}
-                parsedAmount={surplusAmount}
               />
             </b>
           </ConfirmDetailsItem>
@@ -376,7 +377,7 @@ export function SwapStopDetails({
         {!isBridgeStatusView &&
           status !== StopStatusEnum.FAILED &&
           status !== StopStatusEnum.REFUND_COMPLETE &&
-          swapMinReceive &&
+          swapMinReceiveAmount &&
           !shouldShowReceivedSection && (
             <ConfirmDetailsItem
               label={<ReceiveAmountTitle>Min. to receive</ReceiveAmountTitle>}
@@ -385,7 +386,7 @@ export function SwapStopDetails({
               <b>
                 <TokenAmountDisplay
                   token={buyToken}
-                  amount={swapMinReceive}
+                  parsedAmount={swapMinReceiveAmount}
                   displaySymbol={buyTokenSymbol}
                   usdValue={swapMinReceiveUsdValue}
                   tokenLogoSize={tokenLogoSize}
@@ -398,7 +399,7 @@ export function SwapStopDetails({
         {isBridgeStatusView &&
           status !== StopStatusEnum.FAILED &&
           status !== StopStatusEnum.REFUND_COMPLETE &&
-          swapMinReceive &&
+          swapMinReceiveAmount &&
           !shouldShowReceivedSection && (
             <ConfirmDetailsItem
               label={
@@ -411,7 +412,7 @@ export function SwapStopDetails({
               <b>
                 <TokenAmountDisplay
                   token={buyToken}
-                  amount={swapMinReceive}
+                  parsedAmount={swapMinReceiveAmount}
                   displaySymbol={buyTokenSymbol}
                   usdValue={swapMinReceiveUsdValue}
                   tokenLogoSize={tokenLogoSize}

@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useUsdAmount } from 'modules/usdAmount'
 import { UsdAmountInfo } from 'modules/usdAmount/hooks/useUsdAmount'
@@ -20,9 +20,9 @@ import { UsdAmountInfo } from 'modules/usdAmount/hooks/useUsdAmount'
  * 3. Leveraging the useUsdAmount hook for USD conversion
  */
 export function useParsedAmountWithUsd(
-  amount?: string | CurrencyAmount<Token>,
+  amount?: string | CurrencyAmount<TokenWithLogo>,
   token?: TokenWithLogo,
-): { currencyAmount?: CurrencyAmount<Token>; usdInfo: UsdAmountInfo } {
+): { currencyAmount?: CurrencyAmount<TokenWithLogo>; usdInfo: UsdAmountInfo } {
   // Only parse the amount if it's a string and only when inputs change
   const currencyAmount = useMemo(() => {
     if (!amount || !token) return undefined
