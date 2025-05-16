@@ -47,7 +47,7 @@ const stopCircleBase = css`
 const StopStatusStyles: Record<StopStatusEnum, FlattenSimpleInterpolation> = {
   [StopStatusEnum.DONE]: css`
     background-color: var(${UI.COLOR_SUCCESS_BG});
-    color: var(${UI.COLOR_SUCCESS_TEXT});
+    color: var(${UI.COLOR_SUCCESS});
     padding: 6px;
     &::before {
       content: none;
@@ -204,7 +204,7 @@ export const Link = styled.a<{ underline?: boolean }>`
 `
 
 export const SuccessTextBold = styled.b`
-  color: var(${UI.COLOR_SUCCESS_TEXT});
+  color: var(${UI.COLOR_SUCCESS});
   font-weight: var(${UI.FONT_WEIGHT_BOLD});
   display: inline-flex;
   align-items: center;
@@ -277,7 +277,7 @@ export const StyledTimelinePlusIcon = styled(SVG)`
   --size: 100%;
   width: var(--size);
   height: var(--size);
-  color: var(${UI.COLOR_SUCCESS_TEXT});
+  color: var(${UI.COLOR_SUCCESS});
 
   > path {
     fill: currentColor;

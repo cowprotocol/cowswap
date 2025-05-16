@@ -285,10 +285,10 @@ export function BridgeStopDetails({
                     </TimelineIconCircleWrapper>
                   }
                 >
-                  <SuccessTextBold>
-                    <span>Refunded to </span>
-                    <RefundRecipientWrapper>
-                      <NetworkLogo chainId={sourceToken.chainId as SupportedChainId} size={16} />
+                  <SuccessTextBold>Refunded to</SuccessTextBold>
+                  <RefundRecipientWrapper>
+                    <NetworkLogo chainId={sourceToken.chainId as SupportedChainId} size={16} />
+                    <b>
                       <RefundLink
                         href={getExplorerLink(
                           sourceToken.chainId as SupportedChainId,
@@ -300,8 +300,8 @@ export function BridgeStopDetails({
                       >
                         {shortenAddress(recipient)} ↗
                       </RefundLink>
-                    </RefundRecipientWrapper>
-                  </SuccessTextBold>
+                    </b>
+                  </RefundRecipientWrapper>
                 </ReceiveAmountTitle>
               }
             >

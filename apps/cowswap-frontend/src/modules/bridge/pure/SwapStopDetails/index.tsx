@@ -294,7 +294,7 @@ export function SwapStopDetails({
               </ReceiveAmountTitle>
             }
           >
-            <SuccessTextBold>
+            <b>
               <TokenAmountDisplay
                 token={buyToken}
                 amount={getAmountString(receivedAmount)}
@@ -302,7 +302,7 @@ export function SwapStopDetails({
                 usdValue={receivedAmountUsdValue}
                 tokenLogoSize={tokenLogoSize}
               />
-            </SuccessTextBold>
+            </b>
           </ConfirmDetailsItem>
         )}
 

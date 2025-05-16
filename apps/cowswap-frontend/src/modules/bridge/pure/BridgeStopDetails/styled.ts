@@ -33,8 +33,8 @@ const refundAnimation = keyframes`
 const StatusAwareColors: Record<StopStatusEnum, string> = {
   [StopStatusEnum.PENDING]: `var(${UI.COLOR_INFO_TEXT})`,
   [StopStatusEnum.FAILED]: `var(${UI.COLOR_DANGER_TEXT})`,
-  [StopStatusEnum.DONE]: `var(${UI.COLOR_SUCCESS_TEXT})`,
-  [StopStatusEnum.REFUND_COMPLETE]: `var(${UI.COLOR_SUCCESS_TEXT})`,
+  [StopStatusEnum.DONE]: `var(${UI.COLOR_SUCCESS})`,
+  [StopStatusEnum.REFUND_COMPLETE]: `var(${UI.COLOR_SUCCESS})`,
   [StopStatusEnum.DEFAULT]: `var(${UI.COLOR_TEXT})`,
 }
 
@@ -58,7 +58,7 @@ export const AnimatedEllipsis = styled.span`
 export const StyledStatusCheckmarkIcon = styled(SVG)`
   width: 24px;
   height: 18px;
-  color: var(${UI.COLOR_SUCCESS_TEXT});
+  color: var(${UI.COLOR_SUCCESS});
 `
 
 export const StyledStatusCloseIcon = styled(SVG)`
@@ -70,7 +70,7 @@ export const StyledStatusCloseIcon = styled(SVG)`
 export const StyledTimelineCheckmarkIcon = styled(SVG)`
   width: 14px;
   height: 14px;
-  color: var(${UI.COLOR_SUCCESS_TEXT});
+  color: var(${UI.COLOR_SUCCESS});
 
   > path {
     fill: currentColor;
