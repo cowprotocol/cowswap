@@ -32,6 +32,7 @@ import { ExplorerCategory } from 'common/analytics/types'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
 import { OrderHooksDetails } from '../OrderHooksDetails'
+import { OrderStatusTimelineChart } from '../OrderStatusTimelineChart'
 import { UnsignedOrderWarning } from '../UnsignedOrderWarning'
 
 const tooltip = {
@@ -42,6 +43,7 @@ const tooltip = {
   appData:
     'The AppData hash for this order. It can denote encoded metadata with info on the app, environment and more, although not all interfaces follow the same pattern. Show more will try to decode that information.',
   status: 'The order status is either Open, Filled, Expired or Canceled.',
+  orderTimeline: "A visual timeline showing the order's status changes and relevant market price data over time.",
   hooks: 'Hooks are interactions before/after order execution.',
   submission:
     'The date and time at which the order was submitted. The timezone is based on the browser locale settings.',
@@ -314,6 +316,16 @@ export function DetailsTable(props: Props): React.ReactNode | null {
             </td>
             <td>
               <StatusLabel status={status} partiallyFilled={partiallyFilled} partialTagPosition="right" />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span>
+                <HelpTooltip tooltip={tooltip.orderTimeline} /> Order Timeline
+              </span>
+            </td>
+            <td>
+              <OrderStatusTimelineChart />
             </td>
           </tr>
           <tr>
