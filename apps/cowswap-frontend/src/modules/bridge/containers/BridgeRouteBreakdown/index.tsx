@@ -1,25 +1,22 @@
+import { useMemo, useCallback } from 'react'
+
 import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
+import { SolverInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InfoTooltip, UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
 
-import { ToggleArrow } from 'modules/bridge/styles'
+import { ToggleArrow, DividerHorizontal } from 'modules/bridge/styles'
 import { useUsdAmount } from 'modules/usdAmount'
 
+import { SolverCompetition, ApiSolverCompetition } from 'common/hooks/orderProgressBar'
+import { useSolversInfo } from 'common/hooks/useSolversInfo'
 import { ProtocolIcons } from 'common/pure/ProtocolIcons'
 
-import {
-  Wrapper,
-  RouteHeader,
-  RouteTitle,
-  StopsInfo,
-  CollapsibleStopsInfo,
-  ClickableRouteHeader,
-  DividerHorizontal,
-} from './styled'
+import { Wrapper, RouteHeader, RouteTitle, StopsInfo, CollapsibleStopsInfo, ClickableRouteHeader } from './styled'
 
 import { useParsedAmountWithUsd } from '../../hooks'
 import { BridgeStopDetails } from '../../pure/BridgeStopDetails/index'
@@ -67,6 +64,12 @@ export interface BridgeRouteBreakdownProps {
   isBridgeSectionCollapsible?: boolean
   isBridgeSectionExpanded?: boolean
   onBridgeSectionToggle?: () => void
+
+  winningSolverId?: string | null
+  receivedAmount?: CurrencyAmount<TokenWithLogo> | null
+  surplusAmount?: CurrencyAmount<TokenWithLogo> | null
+  swapExplorerUrl?: string
+  bridgeExplorerUrl?: string
 }
 
 export function BridgeRouteBreakdown({
@@ -98,63 +101,127 @@ export function BridgeRouteBreakdown({
   isBridgeSectionCollapsible = false,
   isBridgeSectionExpanded = true,
   onBridgeSectionToggle = () => {},
+  winningSolverId,
+  receivedAmount = null,
+  surplusAmount = null,
+  swapExplorerUrl,
+  bridgeExplorerUrl,
 }: BridgeRouteBreakdownProps) {
   const sellToken = sellCurrencyAmount.currency
   const buyToken = buyCurrencyAmount.currency
 
-  const derivedSourceChainId = sellToken.chainId as SupportedChainId
+  // Derive chain information
+  // This only needs to be recomputed when the chain ID changes
+  const sourceChainData = useMemo(() => {
+    const chainId = sellToken.chainId as SupportedChainId
+    const info = getChainInfo(chainId)
+    return {
+      chainId,
+      chainInfo: info,
+      chainName: info.label,
+    }
+  }, [sellToken.chainId])
 
-  const destToken = bridgeReceiveCurrencyAmount.currency
-  const derivedRecipientChainId = destToken.chainId as SupportedChainId
+  const destChainData = useMemo(() => {
+    const chainId = bridgeReceiveCurrencyAmount.currency.chainId as SupportedChainId
+    const info = getChainInfo(chainId)
+    return {
+      chainId,
+      chainInfo: info,
+      chainName: info.label,
+    }
+  }, [bridgeReceiveCurrencyAmount.currency.chainId])
 
-  const recipientChainInfo = getChainInfo(derivedRecipientChainId)
-  const recipientChainName = recipientChainInfo.label
+  const allSolversInfo = useSolversInfo(sourceChainData.chainId)
 
-  const sourceChainInfo = getChainInfo(derivedSourceChainId)
-  const sourceChainName = sourceChainInfo.label
+  // This is a computation that depends on external data (solversInfo) that might change,
+  // so we should memoize it to avoid unnecessary recalculations
+  const winningSolverDisplayInfo = useMemo(() => {
+    if (!winningSolverId || !allSolversInfo || !Object.keys(allSolversInfo).length) {
+      return undefined
+    }
+    const normalizedId = winningSolverId.replace(/-solve$/, '')
+    return allSolversInfo[normalizedId]
+  }, [winningSolverId, allSolversInfo])
 
-  const { usdInfo: networkCostUsdResult } = useParsedAmountWithUsd(networkCost, sellToken)
-  const { usdInfo: swapMinReceiveUsdResult } = useParsedAmountWithUsd(swapMinReceive, buyToken)
-  const { usdInfo: swapExpectedReceiveUsdResult } = useParsedAmountWithUsd(swapExpectedToReceive, buyToken)
-  const bridgeReceiveAmountUsdInfo = useUsdAmount(bridgeReceiveCurrencyAmount, destToken)
+  // Given that this is a complex object being built that's used in a child component,
+  // memoization makes sense to prevent unnecessary re-renderings
+  const winningSolverForSwapDetails: SolverCompetition | null = useMemo(() => {
+    if (!winningSolverId) {
+      return null
+    }
+    const baseSolverData: Pick<ApiSolverCompetition, 'solver'> = {
+      solver: winningSolverId,
+    }
 
-  const handleHeaderClick = () => {
+    const displayInfo: Partial<SolverInfo> = winningSolverDisplayInfo || {}
+
+    return {
+      ...baseSolverData,
+      ...displayInfo,
+    } as SolverCompetition
+  }, [winningSolverId, winningSolverDisplayInfo])
+
+  const { currencyAmount: parsedNetworkCost, usdInfo: networkCostUsdInfo } = useParsedAmountWithUsd(
+    networkCost,
+    sellToken,
+  )
+  const { currencyAmount: parsedSwapMinReceive, usdInfo: swapMinReceiveUsdInfo } = useParsedAmountWithUsd(
+    swapMinReceive,
+    buyToken,
+  )
+  const { currencyAmount: parsedSwapExpectedToReceive, usdInfo: swapExpectedReceiveUsdInfo } = useParsedAmountWithUsd(
+    swapExpectedToReceive,
+    buyToken,
+  )
+
+  const bridgeReceiveAmountUsdInfo = useUsdAmount(bridgeReceiveCurrencyAmount, bridgeReceiveCurrencyAmount.currency)
+  const rawReceivedAmountUsdInfo = useUsdAmount(receivedAmount, buyToken)
+  const receivedAmountUsdInfo = receivedAmount ? rawReceivedAmountUsdInfo : null
+  const rawSurplusAmountUsdInfo = useUsdAmount(surplusAmount, buyToken)
+  const surplusAmountUsdInfo = surplusAmount ? rawSurplusAmountUsdInfo : null
+
+  // This is a potentially expensive callback that will be passed to a child component,
+  const handleHeaderClick = useCallback(() => {
     if (isCollapsible) {
       onExpandToggle()
     }
-  }
+  }, [isCollapsible, onExpandToggle])
 
   const HeaderComponent = isCollapsible ? ClickableRouteHeader : RouteHeader
 
-  const headerContent = (
-    <HeaderComponent onClick={isCollapsible ? handleHeaderClick : undefined}>
-      <RouteTitle>
-        Route{' '}
-        <InfoTooltip
-          content={
-            <>
-              Your trade will be executed in 2 stops. First, you swap on <b>CoW Protocol (Stop 1)</b>, then you bridge
-              via <b>{bridgeProvider.title} (Stop 2)</b>.
-            </>
-          }
-          size={14}
-        />
-      </RouteTitle>
-      {isCollapsible ? (
-        <CollapsibleStopsInfo>
-          2 stops
-          <ProtocolIcons secondProtocol={bridgeProvider} />
-          <ToggleArrow isOpen={isExpanded}>
-            <SVG src={CarretIcon} title={isExpanded ? 'Close' : 'Open'} />
-          </ToggleArrow>
-        </CollapsibleStopsInfo>
-      ) : (
-        <StopsInfo>
-          2 stops
-          <ProtocolIcons secondProtocol={bridgeProvider} />
-        </StopsInfo>
-      )}
-    </HeaderComponent>
+  const headerContent = useMemo(
+    () => (
+      <HeaderComponent onClick={isCollapsible ? handleHeaderClick : undefined}>
+        <RouteTitle>
+          Route{' '}
+          <InfoTooltip
+            content={
+              <>
+                Your trade will be executed in 2 stops. First, you swap on <b>CoW Protocol (Stop 1)</b>, then you bridge
+                via <b>{bridgeProvider.title} (Stop 2)</b>.
+              </>
+            }
+            size={14}
+          />
+        </RouteTitle>
+        {isCollapsible ? (
+          <CollapsibleStopsInfo>
+            2 stops
+            <ProtocolIcons secondProtocol={bridgeProvider} />
+            <ToggleArrow isOpen={isExpanded}>
+              <SVG src={CarretIcon} title={isExpanded ? 'Close' : 'Open'} />
+            </ToggleArrow>
+          </CollapsibleStopsInfo>
+        ) : (
+          <StopsInfo>
+            2 stops
+            <ProtocolIcons secondProtocol={bridgeProvider} />
+          </StopsInfo>
+        )}
+      </HeaderComponent>
+    ),
+    [bridgeProvider, isCollapsible, isExpanded, handleHeaderClick, HeaderComponent],
   )
 
   if (isCollapsible && !isExpanded) {
@@ -172,18 +239,24 @@ export function BridgeRouteBreakdown({
         status={swapStatus}
         sellCurrencyAmount={sellCurrencyAmount}
         buyCurrencyAmount={buyCurrencyAmount}
-        sourceChainName={sourceChainName}
-        networkCost={networkCost}
-        networkCostUsdResult={networkCostUsdResult}
-        swapExpectedToReceive={swapExpectedToReceive}
-        swapExpectedReceiveUsdResult={swapExpectedReceiveUsdResult}
+        sourceChainName={sourceChainData.chainName}
+        networkCostAmount={parsedNetworkCost}
+        networkCostUsdInfo={networkCostUsdInfo}
+        swapExpectedToReceiveAmount={parsedSwapExpectedToReceive}
+        swapExpectedReceiveUsdInfo={swapExpectedReceiveUsdInfo}
         swapMaxSlippage={swapMaxSlippage}
-        swapMinReceive={swapMinReceive}
-        swapMinReceiveUsdResult={swapMinReceiveUsdResult}
+        swapMinReceiveAmount={parsedSwapMinReceive}
+        swapMinReceiveUsdInfo={swapMinReceiveUsdInfo}
         tokenLogoSize={tokenLogoSize}
         bridgeProvider={bridgeProvider}
         recipient={recipient}
-        sourceChainId={derivedSourceChainId}
+        sourceChainId={sourceChainData.chainId}
+        winningSolver={winningSolverForSwapDetails}
+        receivedAmount={receivedAmount}
+        receivedAmountUsdInfo={receivedAmountUsdInfo}
+        surplusAmount={surplusAmount}
+        surplusAmountUsdInfo={surplusAmountUsdInfo}
+        swapExplorerUrl={swapExplorerUrl}
       />
 
       <DividerHorizontal
@@ -199,15 +272,16 @@ export function BridgeRouteBreakdown({
         bridgeProvider={bridgeProvider}
         bridgeSendCurrencyAmount={bridgeSendCurrencyAmount}
         bridgeReceiveCurrencyAmount={bridgeReceiveCurrencyAmount}
-        recipientChainName={recipientChainName}
+        recipientChainName={destChainData.chainName}
         hideBridgeFlowFiatAmount={hideBridgeFlowFiatAmount}
         bridgeReceiveAmountUsdResult={bridgeReceiveAmountUsdInfo}
         bridgeFee={bridgeFee}
         maxBridgeSlippage={maxBridgeSlippage}
         estimatedTime={estimatedTime}
         recipient={recipient}
-        recipientChainId={derivedRecipientChainId}
+        recipientChainId={destChainData.chainId}
         tokenLogoSize={tokenLogoSize}
+        bridgeExplorerUrl={bridgeExplorerUrl}
       />
     </Wrapper>
   )

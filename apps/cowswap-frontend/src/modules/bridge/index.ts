@@ -1,10 +1,4 @@
-// Components
 export { BridgeAccordionSummary } from './pure/BridgeAccordionSummary'
-export { BridgeRouteBreakdown } from './containers/BridgeRouteBreakdown'
-export { BridgeStopDetails } from './pure/BridgeStopDetails'
-export { SwapStopDetails } from './pure/SwapStopDetails'
-
-// Hooks
 export { useBridgeProvider } from './hooks/useBridgeProvider'
 export { useBridgeSupportedTokens } from './hooks/useBridgeSupportedTokens'
 export { useBridgeSupportedNetworks } from './hooks/useBridgeSupportedNetworks'
@@ -18,5 +12,15 @@ export {
   getBridgeProviderDetails,
 } from './constants/bridgeProviders'
 
+export {
+  SwapStatusIcons,
+  BridgeStatusIcons,
+  SwapStatusTitlePrefixes,
+  BridgeStatusTitlePrefixes,
+} from './pure/StopStatus'
+
 // Types
 export * from './types'
+
+// Lazy-loaded components from dedicated file
+export { BridgeRouteBreakdown, BridgeStopDetails, SwapStopDetails } from './lazy'

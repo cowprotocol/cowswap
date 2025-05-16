@@ -1,12 +1,11 @@
 import { Provider, createStore } from 'jotai'
 import React from 'react'
 
-import bungeeIcon from '@cowprotocol/assets/images/bungee-logo.svg'
-import { USDC_MAINNET, COW, getChainInfo } from '@cowprotocol/common-const'
+import { USDC_MAINNET, COW, getChainInfo } from '@cowprotocol/common-const' // TokenWithLogo removed
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { GlobalCoWDAOStyles, ButtonError, ButtonSize } from '@cowprotocol/ui'
+import { GlobalCoWDAOStyles, ButtonError, ButtonSize, UI } from '@cowprotocol/ui'
 import { CurrencyAmount, Currency, Fraction, Percent, Price } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
@@ -27,13 +26,22 @@ import { usdRawPricesAtom } from 'modules/usdAmount/state/usdRawPricesAtom'
 import { CurrencyInputPanel } from 'common/pure/CurrencyInputPanel/CurrencyInputPanel'
 import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
+import { SolversInfoUpdater } from 'common/updaters/SolversInfoUpdater'
 
-import { BridgeFeeType, BridgeProtocolConfig } from '../../types'
+import { BridgeProvider, BRIDGE_PROVIDER_DETAILS } from '../../constants'
+import { BridgeFeeType } from '../../types'
 import { StopStatusEnum } from '../../utils/status'
 
 import { BridgeRouteBreakdown } from './index'
 
 const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts, 'transparent')
+
+const StatusTitle = styled.h2`
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
+  color: var(${UI.COLOR_TEXT});
+`
 
 // Helper to create CurrencyAmount from a string value and a token object
 const createAmount = <T extends Currency>(currency: T, value: string | number): CurrencyAmount<T> => {
@@ -47,12 +55,7 @@ const sharedPriceImpact: PriceImpact = {
 }
 
 // Define provider configs
-const bungeeProviderConfig: BridgeProtocolConfig = {
-  icon: bungeeIcon,
-  title: 'Bungee Exchange',
-  url: 'https://bungee.exchange',
-  description: 'Multi-chain bridge and swap protocol',
-}
+const bungeeProviderConfig = BRIDGE_PROVIDER_DETAILS[BridgeProvider.BUNGEE]
 
 // Get token references
 const COW_MAINNET = COW[SupportedChainId.MAINNET]
@@ -77,6 +80,11 @@ const defaultProps = {
   bridgeProvider: bungeeProviderConfig,
   // Display options
   hideBridgeFlowFiatAmount: true, // Hide fiat amount in bridge destination token flow
+  // Explorer URLs
+  swapExplorerUrl:
+    'https://explorer.cow.fi/orders/0xeaef82ff8696bff255e130b266231acb53a8f02823ed89b33acda5fd3987a53ad8da6bf26964af9d7eed9e03e53415d37aa96045676d56da',
+  bridgeExplorerUrl:
+    'https://explorer.cow.fi/orders/0xeaef82ff8696bff255e130b266231acb53a8f02823ed89b33acda5fd3987a53ad8da6bf26964af9d7eed9e03e53415d37aa96045676d56da',
 }
 
 // Create mock USD price data using proper Token objects
@@ -135,6 +143,7 @@ const FiatValue = styled.span`
 // Reusable wrapper component with Jotai provider for mock USD prices
 const BridgeFixtureWrapper = ({ children }: { children: React.ReactNode }) => (
   <Provider store={store}>
+    <SolversInfoUpdater />
     <Wrapper>
       <ThemeProvider />
       <GlobalStyles />{' '}
@@ -399,7 +408,7 @@ const SwapConfirmation = () => {
   `
 
   const Label = styled.span`
-    color: var(--cow-color-text-opacity-70);
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
     display: flex;
     align-items: center;
     gap: 4px;
@@ -409,8 +418,8 @@ const SwapConfirmation = () => {
     display: flex;
     align-items: center;
     gap: 4px;
-    color: var(--cow-color-text); // from Value
-    font-weight: 500; // from Value
+    color: var(${UI.COLOR_TEXT});
+    font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   `
 
   const ChainLogoImg = styled.img`
@@ -421,7 +430,7 @@ const SwapConfirmation = () => {
   const PriceValue = styled.span`
     display: flex;
     align-items: center;
-    color: var(--cow-color-text);
+    color: var(${UI.COLOR_TEXT});
   `
 
   const MinToReceiveRow = styled.div`
@@ -429,7 +438,7 @@ const SwapConfirmation = () => {
     justify-content: space-between;
     align-items: center;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
     padding: 0 0 10px;
   `
 
@@ -481,6 +490,9 @@ const SwapConfirmation = () => {
               isCollapsible={true}
               isExpanded={isExpanded}
               onExpandToggle={() => setIsExpanded(!isExpanded)}
+              winningSolverId={null} // For this fixture, no specific winning solver needed for overall confirmation view
+              swapExplorerUrl={defaultProps.swapExplorerUrl} // Use the defaultProps swapExplorerUrl
+              bridgeExplorerUrl={defaultProps.bridgeExplorerUrl} // Use the defaultProps bridgeExplorerUrl
             />
 
             {/* Only show these elements when breakdown is NOT expanded */}
@@ -537,7 +549,11 @@ const scenarios: Record<ScenarioKey, Scenario> = {
     swapStatus: StopStatusEnum.DONE,
     bridgeStatus: StopStatusEnum.PENDING,
   },
-  bothDone: { label: 'Swap Done / Bridge Done', swapStatus: StopStatusEnum.DONE, bridgeStatus: StopStatusEnum.DONE },
+  bothDone: {
+    label: 'Swap Done / Bridge Done',
+    swapStatus: StopStatusEnum.DONE,
+    bridgeStatus: StopStatusEnum.DONE,
+  },
   bridgeFailed: {
     label: 'Swap Done / Bridge Failed (Refund Started)',
     swapStatus: StopStatusEnum.DONE,
@@ -566,12 +582,16 @@ function BridgeStatus() {
   // Get the current scenario based on selected key
   const scenario = scenarios[scenarioKey as ScenarioKey]
 
-  const StatusTitle = styled.h2`
-    margin: 0 0 16px;
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--cow-color-text);
-  `
+  let winningSolverIdForFixture: string | null = null
+  let mockReceivedAmount = null
+  let mockSurplusAmount = null
+
+  if (scenario.swapStatus === StopStatusEnum.DONE) {
+    winningSolverIdForFixture = 'baseline' // Set the ID to be passed to BridgeRouteBreakdown
+
+    mockReceivedAmount = createAmount(COW_MAINNET, '3438.321')
+    mockSurplusAmount = createAmount(COW_MAINNET, '21.2937')
+  }
 
   return (
     <BridgeFixtureWrapper>
@@ -589,6 +609,11 @@ function BridgeStatus() {
           isBridgeSectionCollapsible={true}
           isBridgeSectionExpanded={isBridgeSectionExpanded}
           onBridgeSectionToggle={() => setIsBridgeSectionExpanded(!isBridgeSectionExpanded)}
+          winningSolverId={winningSolverIdForFixture}
+          receivedAmount={mockReceivedAmount}
+          surplusAmount={mockSurplusAmount}
+          swapExplorerUrl={defaultProps.swapExplorerUrl} // Use the defaultProps swapExplorerUrl
+          bridgeExplorerUrl={defaultProps.bridgeExplorerUrl} // Use the defaultProps bridgeExplorerUrl
         />
       </TradeFormContainer>
     </BridgeFixtureWrapper>

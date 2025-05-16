@@ -2,6 +2,8 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
+import { ToggleArrow as ImportedToggleArrow } from 'modules/bridge/styles'
+
 export const Wrapper = styled.div<{ isOpen: boolean }>`
   display: flex;
   flex-flow: row wrap;
@@ -42,27 +44,8 @@ export const Summary = styled.div`
   }
 `
 
-export const ToggleIcon = styled.div<{ isOpen: boolean }>`
-  --size: var(${UI.ICON_SIZE_SMALL});
-  transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
-  transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--size);
-  height: var(--size);
-
-  > svg {
-    --size: var(${UI.ICON_SIZE_TINY});
-    width: var(--size);
-    height: var(--size);
-    object-fit: contain;
-    transition: fill var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-    path {
-      fill: var(${UI.COLOR_TEXT_OPACITY_70});
-    }
-  }
+export const ToggleIcon = styled(ImportedToggleArrow)`
+  color: var(${UI.COLOR_TEXT_OPACITY_50});
 `
 
 export const SummaryClickable = styled.div<{ isOpen: boolean }>`
@@ -97,11 +80,7 @@ export const SummaryClickable = styled.div<{ isOpen: boolean }>`
     color: var(${UI.COLOR_TEXT});
 
     ${ToggleIcon} {
-      > svg {
-        path {
-          fill: var(${UI.COLOR_TEXT});
-        }
-      }
+      color: var(${UI.COLOR_TEXT});
     }
   }
 
