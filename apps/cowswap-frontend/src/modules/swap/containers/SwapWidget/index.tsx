@@ -27,6 +27,7 @@ import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrapp
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapDeadlineState, useSwapRecipientToggleState, useSwapSettings } from '../../hooks/useSwapSettings'
 import { useSwapWidgetActions } from '../../hooks/useSwapWidgetActions'
+import { BridgeQuoteDetails } from '../../pure/BridgeQuoteDetails'
 import { BottomBanners } from '../BottomBanners'
 import { SwapConfirmModal } from '../SwapConfirmModal'
 import { TradeButtons } from '../TradeButtons'
@@ -42,7 +43,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
   const hooksEnabledState = useHooksEnabledManager()
-  const { isLoading: isRateLoading } = useTradeQuote()
+  const { isLoading: isRateLoading, bridgeQuote } = useTradeQuote()
   const priceImpact = useTradePriceImpact()
   const widgetActions = useSwapWidgetActions()
   const receiveAmountInfo = useReceiveAmountInfo()
@@ -137,6 +138,9 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
               rateInfoParams={rateInfoParams}
               deadline={deadlineState[0]}
             />
+            {outputCurrency && bridgeQuote && (
+              <BridgeQuoteDetails details={bridgeQuote} outputCurrency={outputCurrency} />
+            )}
             <Warnings buyingFiatAmount={buyingFiatAmount} />
             {tradeWarnings}
             <TradeButtons
@@ -156,6 +160,8 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         buyingFiatAmount,
         hasEnoughWrappedBalanceForSwap,
         openNativeWrapModal,
+        bridgeQuote,
+        outputCurrency,
       ],
     ),
   }

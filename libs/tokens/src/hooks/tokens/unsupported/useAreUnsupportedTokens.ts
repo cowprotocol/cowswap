@@ -8,9 +8,9 @@ export function useAreUnsupportedTokens() {
   const isUnsupportedToken = useIsUnsupportedToken()
 
   return useCallback(
-    ({ sellToken, buyToken }: { sellToken: NullishAddress; buyToken: NullishAddress }) => {
-      return isUnsupportedToken(sellToken) || isUnsupportedToken(buyToken)
+    ({ sellTokenAddress, buyTokenAddress }: { sellTokenAddress: NullishAddress; buyTokenAddress: NullishAddress }) => {
+      return isUnsupportedToken(sellTokenAddress) || isUnsupportedToken(buyTokenAddress)
     },
-    [isUnsupportedToken]
+    [isUnsupportedToken],
   )
 }

@@ -4,11 +4,14 @@ import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
+import * as path from 'path'
+
 export default defineConfig(({ command }) => {
   if (command === 'serve') {
     const entryPoint = './src/demo/index.html'
 
     return {
+      root: path.resolve(__dirname, './'),
       server: {
         open: entryPoint,
         fs: {
@@ -26,6 +29,7 @@ export default defineConfig(({ command }) => {
   }
 
   return {
+    root: path.resolve(__dirname, './'),
     cacheDir: '../../../node_modules/.vite/hook-dapp-lib',
 
     plugins: [

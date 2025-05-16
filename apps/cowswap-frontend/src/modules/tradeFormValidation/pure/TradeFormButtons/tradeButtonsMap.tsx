@@ -1,14 +1,15 @@
 import { ReactElement } from 'react'
 
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
-import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
+import { BridgeProviderQuoteError } from '@cowprotocol/cow-sdk'
+import { HelpTooltip, InfoTooltip, TokenSymbol } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
 import { CompatibilityIssuesWarning } from 'modules/trade'
 
-import { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
+import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { TradeApproveButton } from 'common/containers/TradeApprove'
 import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
@@ -26,6 +27,12 @@ interface ButtonCallback {
 
 const CompatibilityIssuesWarningWrapper = styled.div`
   margin-top: -10px;
+`
+
+const JsonDisplay = styled.pre`
+  word-break: break-word;
+  white-space: pre-wrap;
+  width: 100%;
 `
 
 const quoteErrorTexts: Record<QuoteApiErrorCodes, string> = {
@@ -89,13 +96,35 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     const { quote } = context
     const defaultError = quoteErrorTexts[QuoteApiErrorCodes.UNHANDLED_ERROR]
 
-    if (quote.error?.type === QuoteApiErrorCodes.UnsupportedToken) {
-      return unsupportedTokenButton(context)
+    if (quote.error instanceof QuoteApiError) {
+      if (quote.error.type === QuoteApiErrorCodes.UnsupportedToken) {
+        return unsupportedTokenButton(context)
+      }
+
+      return (
+        <TradeFormBlankButton disabled={true}>
+          <Trans>{quoteErrorTexts[quote.error.type] || defaultError}</Trans>
+        </TradeFormBlankButton>
+      )
+    }
+
+    if (quote.error instanceof BridgeProviderQuoteError) {
+      return (
+        <TradeFormBlankButton disabled={true}>
+          <>
+            <Trans>Bridge quote error</Trans>
+            {'  '}
+            <InfoTooltip>
+              <JsonDisplay>{JSON.stringify(quote.error.context, null, 2)}</JsonDisplay>
+            </InfoTooltip>
+          </>
+        </TradeFormBlankButton>
+      )
     }
 
     return (
       <TradeFormBlankButton disabled={true}>
-        <Trans>{(quote.error && quoteErrorTexts[quote.error.type]) || defaultError}</Trans>
+        <Trans>Unknown quote error</Trans>
       </TradeFormBlankButton>
     )
   },
@@ -140,7 +169,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
 
     return (
       <TradeFormBlankButton disabled={true}>
-        <Trans>Insufficient&nbsp;{<TokenSymbol token={inputCurrency} />}&nbsp;balance</Trans>
+        <span>
+          <Trans>Insufficient {<TokenSymbol token={inputCurrency} />} balance</Trans>
+        </span>
       </TradeFormBlankButton>
     )
   },
@@ -150,9 +181,11 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
 
     return (
       <TradeFormBlankButton disabled={isDisabled} onClick={context.confirmTrade}>
-        <Trans>
-          Approve&nbsp;{<TokenSymbol token={tokenToApprove} length={6} />}&nbsp;and {context.defaultText}
-        </Trans>
+        <span>
+          <Trans>
+            Approve {<TokenSymbol token={tokenToApprove} length={6} />} and {context.defaultText}
+          </Trans>
+        </span>
       </TradeFormBlankButton>
     )
   },

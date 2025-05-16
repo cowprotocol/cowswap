@@ -5,6 +5,8 @@ import macrosPlugin from 'vite-plugin-babel-macros'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
+import * as path from 'path'
+
 import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
 
 const plugins = [
@@ -26,6 +28,7 @@ const plugins = [
 
 export default defineConfig(({ mode }) => {
   return {
+    root: path.resolve(__dirname, './'),
     define: {
       ...getReactProcessEnv(mode),
     },

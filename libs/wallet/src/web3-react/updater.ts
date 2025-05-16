@@ -28,11 +28,11 @@ let longSafeInfoInterval: NodeJS.Timeout | null
 // Smart contract wallets are filtered out by default, no need to add them to this list
 const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])
 
-function _checkIsSupportedWallet(walletName?: string): boolean {
+function checkIsSupportedWallet(walletName?: string): boolean {
   return !(walletName && UNSUPPORTED_WC_WALLETS.has(walletName))
 }
 
-function _useWalletInfo(): WalletInfo {
+function useWalletInfo(): WalletInfo {
   const { account, chainId, isActive: active } = useWeb3React()
   const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
 
@@ -46,7 +46,7 @@ function _useWalletInfo(): WalletInfo {
   )
 }
 
-function _useWalletDetails(account?: string, standaloneMode?: boolean): WalletDetails {
+function useWalletDetails(account?: string, standaloneMode?: boolean): WalletDetails {
   const { ENSName: ensName } = useENSName(account ?? undefined)
   const isSmartContractWallet = useIsSmartContractWallet()
   const { walletName, icon } = useWalletMetaData(standaloneMode)
@@ -58,7 +58,7 @@ function _useWalletDetails(account?: string, standaloneMode?: boolean): WalletDe
       walletName,
       icon,
       ensName: ensName || undefined,
-      isSupportedWallet: _checkIsSupportedWallet(walletName),
+      isSupportedWallet: checkIsSupportedWallet(walletName),
 
       // TODO: For now, all SC wallets use pre-sign instead of offchain signing
       // In the future, once the API adds EIP-1271 support, we can allow some SC wallets to use offchain signing
@@ -68,7 +68,7 @@ function _useWalletDetails(account?: string, standaloneMode?: boolean): WalletDe
   }, [isSmartContractWallet, isSafeApp, walletName, icon, ensName])
 }
 
-function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
+function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   const { provider } = useWeb3React()
   const { account, chainId } = walletInfo
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo>()
@@ -151,9 +151,9 @@ interface WalletUpdaterProps {
 }
 
 export function WalletUpdater({ standaloneMode }: WalletUpdaterProps) {
-  const walletInfo = _useWalletInfo()
-  const walletDetails = _useWalletDetails(walletInfo.account, standaloneMode)
-  const gnosisSafeInfo = _useSafeInfo(walletInfo)
+  const walletInfo = useWalletInfo()
+  const walletDetails = useWalletDetails(walletInfo.account, standaloneMode)
+  const gnosisSafeInfo = useSafeInfo(walletInfo)
 
   const setWalletInfo = useSetAtom(walletInfoAtom)
   const setWalletDetails = useSetAtom(walletDetailsAtom)

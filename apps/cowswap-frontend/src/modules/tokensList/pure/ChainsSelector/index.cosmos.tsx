@@ -1,31 +1,19 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ChainInfo, TokenInfo } from '@cowprotocol/types'
+import { SupportedChainId, ChainInfo } from '@cowprotocol/cow-sdk'
 
 import styled from 'styled-components/macro'
 
-import { testNetworks } from 'modules/bridge/mocks'
+import { mapChainInfo } from '../../hooks/useChainsToSelect'
 
 import { ChainsSelector } from './index'
 
 const chains: ChainInfo[] = [
   ...Object.keys(CHAIN_INFO).map((chainId) => {
-    const info = CHAIN_INFO[+chainId as SupportedChainId]
+    const supportedChainId = +chainId as SupportedChainId
+    const info = CHAIN_INFO[supportedChainId]
 
-    return {
-      id: +chainId,
-      name: info.name,
-      nativeCurrency: info.nativeCurrency as TokenInfo,
-      isEvmChain: true,
-      blockExplorer: info.explorer,
-      logoUrl: {
-        light: info.logo.light,
-        dark: info.logo.dark,
-      },
-      mainColor: info.color,
-    }
+    return mapChainInfo(supportedChainId, info)
   }),
-  ...testNetworks,
 ]
 
 const Wrapper = styled.div`

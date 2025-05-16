@@ -28,13 +28,13 @@ const UserDetails: React.FC = () => {
   return (
     <Wrapper>
       <Helmet>
-        <title>User Details - {APP_TITLE}</title>
+        <title>Order History - {APP_TITLE}</title>
       </Helmet>
       <StyledSearch />
       {addressAccount ? (
         <>
           <FlexContainerVar>
-            <h1>User details</h1>
+            <h1>Order history</h1>
             <TitleAddress
               textToCopy={addressAccount.address}
               contentsToDisplay={

@@ -10,6 +10,7 @@ import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
 
 export default defineConfig(({ mode }) => {
   return {
+    root: path.resolve(__dirname, './'),
     define: {
       ...getReactProcessEnv(mode),
     },

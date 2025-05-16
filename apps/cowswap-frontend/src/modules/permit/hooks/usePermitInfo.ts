@@ -57,7 +57,7 @@ export function usePermitInfo(
   const isPermitEnabled = useIsPermitEnabled() && isPermitSupported
 
   const addPermitInfo = useAddPermitInfo()
-  const permitInfo = _usePermitInfo(chainId, isPermitEnabled ? lowerCaseAddress : undefined)
+  const permitInfo = usePermitInfoState(chainId, isPermitEnabled ? lowerCaseAddress : undefined)
   const { permitInfo: preGeneratedInfo, isLoading: preGeneratedIsLoading } = usePreGeneratedPermitInfoForToken(
     isPermitEnabled && !isNative ? token : undefined,
   )
@@ -122,12 +122,12 @@ function useAddPermitInfo() {
   return useSetAtom(addPermitInfoForTokenAtom)
 }
 
-function _usePermitInfo(chainId: SupportedChainId, tokenAddress: string | undefined): IsTokenPermittableResult {
-  const permittableTokens = useAtomValue(permittableTokensAtom)
+function usePermitInfoState(chainId: SupportedChainId, tokenAddress: string | undefined): IsTokenPermittableResult {
+  const permitableTokens = useAtomValue(permittableTokensAtom)
 
   return useMemo(() => {
     if (!tokenAddress) return undefined
 
-    return permittableTokens[chainId]?.[tokenAddress.toLowerCase()]
-  }, [chainId, permittableTokens, tokenAddress])
+    return permitableTokens[chainId]?.[tokenAddress.toLowerCase()]
+  }, [chainId, permitableTokens, tokenAddress])
 }

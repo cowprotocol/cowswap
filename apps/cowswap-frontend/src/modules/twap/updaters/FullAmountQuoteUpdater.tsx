@@ -2,18 +2,17 @@ import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
-import { QuoteAndPost } from '@cowprotocol/cow-sdk'
+import { CrossChainQuoteAndPost, isBridgeQuoteAndPost } from '@cowprotocol/cow-sdk'
 
-import { tradingSdk } from 'tradingSdk/tradingSdk'
+import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { useQuoteParams, useTradeQuote } from 'modules/tradeQuote'
+import { useTradeQuote, useQuoteParams } from 'modules/tradeQuote'
 
 import { fullAmountQuoteAtom } from '../state/fullAmountQuoteAtom'
 
-const getQuote = tradingSdk.getQuote.bind(tradingSdk)
-
-const getQuoteOnlyResolveLast = onlyResolvesLast<QuoteAndPost>(getQuote)
+const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
+const getQuoteOnlyResolveLast = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 
 export function FullAmountQuoteUpdater() {
   const { inputCurrencyAmount } = useAdvancedOrdersDerivedState()
@@ -35,14 +34,13 @@ export function FullAmountQuoteUpdater() {
         if (cancelled) {
           return
         }
-        const { quoteResults } = data
 
-        updateQuoteState(quoteResults.quoteResponse)
+        const quote = isBridgeQuoteAndPost(data) ? data.swap.quoteResponse : data.quoteResults.quoteResponse
+
+        updateQuoteState(quote)
       })
       .catch((error) => {
-        const parsedError = error as Error
-
-        console.log('[FullAmountQuoteUpdater]:: fetchQuote error', parsedError)
+        console.error('[TWAP FullAmountQuoteUpdater]:: fetchQuote error', error)
       })
   }, [partQuoteAmount, isLoading, error, quoteParams, updateQuoteState])
 

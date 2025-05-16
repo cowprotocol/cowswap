@@ -1,14 +1,14 @@
 import { useSetAtom } from 'jotai/index'
 import { useMemo } from 'react'
 
-import { PriceQuality, SupportedChainId, TradeParameters } from '@cowprotocol/cow-sdk'
+import { BridgeQuoteResults, PriceQuality, QuoteBridgeRequest, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { QuoteAndPost } from '@cowprotocol/cow-sdk'
 
-import QuoteApiError, { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
+import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 
 import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenError'
 
-import { updateTradeQuoteAtom } from '../state/tradeQuoteAtom'
+import { TradeQuoteState, updateTradeQuoteAtom } from '../state/tradeQuoteAtom'
 import { SellTokenAddress } from '../state/tradeQuoteInputAtom'
 import { TradeQuoteFetchParams } from '../types'
 
@@ -16,12 +16,12 @@ export interface TradeQuoteManager {
   setLoading(hasParamsChanged: boolean): void
   reset(): void
   onError(
-    error: QuoteApiError,
+    error: TradeQuoteState['error'],
     chainId: SupportedChainId,
-    quoteParams: TradeParameters,
+    quoteParams: QuoteBridgeRequest,
     fetchParams: TradeQuoteFetchParams,
   ): void
-  onResponse(data: QuoteAndPost, fetchParams: TradeQuoteFetchParams): void
+  onResponse(data: QuoteAndPost, bridgeQuote: BridgeQuoteResults | null, fetchParams: TradeQuoteFetchParams): void
 }
 
 export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefined): TradeQuoteManager | null {
@@ -43,22 +43,27 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
               update(sellTokenAddress, { quote: null, isLoading: false })
             },
             onError(
-              error: QuoteApiError,
+              error: TradeQuoteState['error'],
               chainId: SupportedChainId,
-              quoteParams: TradeParameters,
+              quoteParams: QuoteBridgeRequest,
               fetchParams: TradeQuoteFetchParams,
             ) {
               update(sellTokenAddress, { error, fetchParams, isLoading: false, hasParamsChanged: false })
 
-              if (error.type === QuoteApiErrorCodes.UnsupportedToken) {
+              if (error instanceof QuoteApiError && error.type === QuoteApiErrorCodes.UnsupportedToken) {
                 processUnsupportedTokenError(error, chainId, quoteParams)
               }
             },
-            onResponse(quote: QuoteAndPost, fetchParams: TradeQuoteFetchParams) {
+            onResponse(
+              quote: QuoteAndPost,
+              bridgeQuote: BridgeQuoteResults | null,
+              fetchParams: TradeQuoteFetchParams,
+            ) {
               const isOptimalQuote = fetchParams.priceQuality === PriceQuality.OPTIMAL
 
               update(sellTokenAddress, {
                 quote,
+                bridgeQuote,
                 ...(isOptimalQuote ? { isLoading: false } : null),
                 error: null,
                 hasParamsChanged: false,

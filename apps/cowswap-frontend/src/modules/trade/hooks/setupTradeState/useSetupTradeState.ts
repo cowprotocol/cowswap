@@ -79,27 +79,11 @@ export function useSetupTradeState(): void {
         }
       }
 
-      // For any chain change, use default tokens
-      const defaultState = getDefaultTradeRawState(providerChainId)
-
-      // Ensures internal state reflects the default state immediately after provider network change,
-      // preventing potential use of stale state before the URL-driven update cycle completes.
-      // Applied universally for robustness.
-      if (updateState) {
-        updateState(defaultState)
-      }
-
-      // Always navigate with the provider's chain ID as source of truth
-      tradeNavigate(providerChainId, defaultState)
+      tradeNavigate(providerChainId, getDefaultTradeRawState(providerChainId))
     }
-
-    console.debug('[TRADE STATE]', 'Provider changed chainId', {
-      providerChainId,
-      urlChanges: rememberedUrlStateRef.current,
-    })
     // Triggering only when chainId was changed in the provider
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [providerChainId, prevProviderChainId, updateState])
+  }, [providerChainId, prevProviderChainId])
 
   /**
    * On URL parameter changes

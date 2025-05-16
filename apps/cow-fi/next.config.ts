@@ -1,7 +1,9 @@
-const { composePlugins, withNx } = require('@nx/next')
+import { withNx } from '@nx/next'
+import { WithNxOptions } from '@nx/next/plugins/with-nx'
 
-const nextConfig = {
+const nextConfig: WithNxOptions = {
   reactStrictMode: true,
+  swcMinify: true,
   nx: {
     svgr: false,
   },
@@ -108,6 +110,4 @@ const nextConfig = {
   },
 }
 
-const plugins = [withNx]
-
-module.exports = composePlugins(...plugins)(nextConfig)
+module.exports = withNx(nextConfig)

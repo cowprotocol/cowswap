@@ -10,6 +10,8 @@ import { VitePWA } from 'vite-plugin-pwa'
 import svgr from 'vite-plugin-svgr'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
+import * as path from 'path'
+
 import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
 
 // eslint-disable-next-line no-restricted-imports
@@ -52,6 +54,7 @@ export default defineConfig(({ mode }) => {
       filename: 'service-worker.ts',
       minify: true,
       injectManifest: {
+        maximumFileSizeToCacheInBytes: 7000000, // 7mb
         globPatterns: ['**/*.{js,css,html,png,jpg,svg,json,woff,woff2,md}'],
       },
     }),
@@ -70,6 +73,7 @@ export default defineConfig(({ mode }) => {
   }
 
   return {
+    root: path.resolve(__dirname, './'),
     base: './',
     define: {
       ...getReactProcessEnv(mode),

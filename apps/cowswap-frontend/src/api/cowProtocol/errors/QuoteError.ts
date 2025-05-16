@@ -69,7 +69,7 @@ export function mapOperatorErrorToQuoteError(error?: ApiErrorObject): QuoteApiEr
   }
 }
 
-export default class QuoteApiError extends Error {
+export class QuoteApiError extends Error {
   name = 'QuoteErrorObject'
   type: QuoteApiErrorCodes
   description: string

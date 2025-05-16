@@ -9,18 +9,18 @@ import dynamicImport from 'vite-plugin-dynamic-import'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
+import * as path from 'path'
+
 import { loadConfig } from './loadConfig'
 import { version as APP_VERSION } from './package.json'
 
-
-
 import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
-
 
 const CONFIG = loadConfig()
 
 export default defineConfig(({ mode }) => {
   return {
+    root: path.resolve(__dirname, './'),
     base: './',
     cacheDir: '../../node_modules/.vite/explorer',
 
