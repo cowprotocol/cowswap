@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.22.4](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.3...cow-fi-v1.22.4) (2025-05-16)
+
+
+### Bug Fixes
+
+* **cowfi:** update article link generation to use slug variable ([#5689](https://github.com/cowprotocol/cowswap/issues/5689)) ([74f9821](https://github.com/cowprotocol/cowswap/commit/74f98211ee2800364f0d48a404510b83ba5dfa4d))
+
 ## [1.22.3](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.2...cow-fi-v1.22.3) (2025-05-14)
 
 
