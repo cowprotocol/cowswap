@@ -202,3 +202,84 @@ export const Link = styled.a<{ underline?: boolean }>`
     text-decoration: underline;
   }
 `
+
+export const SuccessTextBold = styled.b`
+  color: var(${UI.COLOR_SUCCESS_TEXT});
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  gap: 2px;
+`
+
+export const InfoTextSpan = styled.span`
+  color: var(${UI.COLOR_INFO_TEXT});
+`
+
+export const InfoTextBold = styled.b`
+  color: var(${UI.COLOR_INFO_TEXT});
+`
+
+export const DividerHorizontal = styled.div<{ margin?: string; overrideColor?: string }>`
+  width: 100%;
+  height: 1px;
+  margin: ${({ margin }) => margin || '0'};
+  background-color: ${({ overrideColor }) => overrideColor || `var(${UI.COLOR_PAPER_DARKER})`};
+`
+
+const refundCompleteAnimation = keyframes`
+  0% {
+    transform: rotate(0deg) scale(1);
+    animation-timing-function: ease-in;
+  }
+  30% {
+    transform: rotate(-720deg) scale(1);
+    animation-timing-function: ease-out;
+  }
+  85% {
+    transform: rotate(-1080deg) scale(1.15);
+    animation-timing-function: ease-in;
+  }
+  100% {
+    transform: rotate(-1080deg) scale(1);
+  }
+`
+
+export const StyledRefundCompleteIcon = styled(SVG)`
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  display: block;
+  transform-origin: center;
+  animation: ${refundCompleteAnimation} 2.5s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+`
+
+export const RecipientWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`
+
+export const TimelineIconCircleWrapper = styled.span`
+  --size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size);
+  height: var(--size);
+  border-radius: var(--size);
+  padding: 3px;
+  background-color: var(${UI.COLOR_SUCCESS_BG});
+`
+
+export const StyledTimelinePlusIcon = styled(SVG)`
+  --size: 100%;
+  width: var(--size);
+  height: var(--size);
+  color: var(${UI.COLOR_SUCCESS_TEXT});
+
+  > path {
+    fill: currentColor;
+  }
+`

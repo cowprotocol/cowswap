@@ -1,12 +1,11 @@
 import { Provider, createStore } from 'jotai'
 import React from 'react'
 
-import bungeeIcon from '@cowprotocol/assets/images/bungee-logo.svg'
 import { USDC_MAINNET, COW, getChainInfo } from '@cowprotocol/common-const'
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { GlobalCoWDAOStyles, ButtonError, ButtonSize } from '@cowprotocol/ui'
+import { GlobalCoWDAOStyles, ButtonError, ButtonSize, UI } from '@cowprotocol/ui'
 import { CurrencyAmount, Currency, Fraction, Percent, Price } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
@@ -28,7 +27,8 @@ import { CurrencyInputPanel } from 'common/pure/CurrencyInputPanel/CurrencyInput
 import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 
-import { BridgeFeeType, BridgeProtocolConfig } from '../../types'
+import { BridgeProvider, BRIDGE_PROVIDER_DETAILS } from '../../constants'
+import { BridgeFeeType } from '../../types'
 import { StopStatusEnum } from '../../utils/status'
 
 import { BridgeRouteBreakdown } from './index'
@@ -47,12 +47,7 @@ const sharedPriceImpact: PriceImpact = {
 }
 
 // Define provider configs
-const bungeeProviderConfig: BridgeProtocolConfig = {
-  icon: bungeeIcon,
-  title: 'Bungee Exchange',
-  url: 'https://bungee.exchange',
-  description: 'Multi-chain bridge and swap protocol',
-}
+const bungeeProviderConfig = BRIDGE_PROVIDER_DETAILS[BridgeProvider.BUNGEE]
 
 // Get token references
 const COW_MAINNET = COW[SupportedChainId.MAINNET]
@@ -399,7 +394,7 @@ const SwapConfirmation = () => {
   `
 
   const Label = styled.span`
-    color: var(--cow-color-text-opacity-70);
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
     display: flex;
     align-items: center;
     gap: 4px;
@@ -409,8 +404,8 @@ const SwapConfirmation = () => {
     display: flex;
     align-items: center;
     gap: 4px;
-    color: var(--cow-color-text); // from Value
-    font-weight: 500; // from Value
+    color: var(${UI.COLOR_TEXT});
+    font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   `
 
   const ChainLogoImg = styled.img`
@@ -421,7 +416,7 @@ const SwapConfirmation = () => {
   const PriceValue = styled.span`
     display: flex;
     align-items: center;
-    color: var(--cow-color-text);
+    color: var(${UI.COLOR_TEXT});
   `
 
   const MinToReceiveRow = styled.div`
@@ -429,7 +424,7 @@ const SwapConfirmation = () => {
     justify-content: space-between;
     align-items: center;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
     padding: 0 0 10px;
   `
 
@@ -566,11 +561,32 @@ function BridgeStatus() {
   // Get the current scenario based on selected key
   const scenario = scenarios[scenarioKey as ScenarioKey]
 
+  // Create mock data for completed status
+  let mockSolver = null
+  let mockReceivedAmount = null
+  let mockSurplusAmount = null
+
+  // Only for DONE status, add solver and received amount data
+  if (scenario.swapStatus === StopStatusEnum.DONE) {
+    mockSolver = {
+      solver: 'Baseline',
+      displayName: 'Baseline',
+      description: 'The baseline solver',
+    }
+
+    // Always add received amount for DONE status
+    // Use a slightly lower value than expected to receive
+    mockReceivedAmount = createAmount(COW_MAINNET, '3438.321')
+
+    // Always add surplus amount for DONE status
+    mockSurplusAmount = createAmount(COW_MAINNET, '21.2937')
+  }
+
   const StatusTitle = styled.h2`
     margin: 0 0 16px;
     font-size: 20px;
-    font-weight: 600;
-    color: var(--cow-color-text);
+    font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
+    color: var(${UI.COLOR_TEXT});
   `
 
   return (
@@ -589,6 +605,9 @@ function BridgeStatus() {
           isBridgeSectionCollapsible={true}
           isBridgeSectionExpanded={isBridgeSectionExpanded}
           onBridgeSectionToggle={() => setIsBridgeSectionExpanded(!isBridgeSectionExpanded)}
+          winningSolver={mockSolver}
+          receivedAmount={mockReceivedAmount}
+          surplusAmount={mockSurplusAmount}
         />
       </TradeFormContainer>
     </BridgeFixtureWrapper>

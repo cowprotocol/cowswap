@@ -6,7 +6,9 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { FiatAmount, TokenAmount as LibTokenAmount, TokenAmountProps as LibTokenAmountProps } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { AmountWithTokenIcon } from './styled' // This path is correct for the new location
+import { StatusColor } from 'modules/bridge/utils/status'
+
+import { AmountWithTokenIcon } from './styled'
 
 export interface TokenAmountDisplayProps {
   token: TokenWithLogo
@@ -15,7 +17,9 @@ export interface TokenAmountDisplayProps {
   usdValue?: CurrencyAmount<Token> | null
   hideFiatAmount?: boolean
   tokenLogoSize: number
+  status?: StatusColor
   libTokenAmountProps?: Omit<LibTokenAmountProps, 'amount' | 'tokenSymbol' | 'hideTokenSymbol'>
+  hideTokenIcon?: boolean
 }
 
 export function TokenAmountDisplay({
@@ -25,7 +29,9 @@ export function TokenAmountDisplay({
   usdValue,
   hideFiatAmount = false,
   tokenLogoSize,
+  status,
   libTokenAmountProps,
+  hideTokenIcon = false,
 }: TokenAmountDisplayProps): ReactElement | null {
   const parsedAmount = tryParseCurrencyAmount(amount, token)
 
@@ -42,8 +48,8 @@ export function TokenAmountDisplay({
   }
 
   return (
-    <AmountWithTokenIcon>
-      <TokenLogo token={token} size={tokenLogoSize} />
+    <AmountWithTokenIcon colorVariant={status}>
+      {!hideTokenIcon && <TokenLogo token={token} size={tokenLogoSize} />}
       <LibTokenAmount
         amount={parsedAmount}
         tokenSymbol={tokenSymbolForLib}

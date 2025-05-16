@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 
-import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import CheckmarkIcon from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
 import SpinnerIconAsset from '@cowprotocol/assets/cow-swap/spinner.svg'
@@ -11,52 +10,40 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InfoTooltip } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import SVG from 'react-inlinesvg'
-
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReceiveAmountTitle } from 'modules/trade/pure/ReceiveAmountTitle'
 import { UsdAmountInfo } from 'modules/usdAmount/hooks/useUsdAmount'
 
-import { ProtocolIcons } from 'common/pure/ProtocolIcons'
-
 import {
   AnimatedEllipsis,
   DangerText,
-  InfoTextBold,
-  InfoTextSpan,
-  RecipientWrapper,
   RefundLink,
   RefundRecipientWrapper,
   StatusAwareText,
   StyledAnimatedTimelineRefundIcon,
-  StyledRefundCompleteIcon as LocalStyledRefundCompleteIcon,
   StyledStatusCheckmarkIcon,
   StyledStatusCloseIcon,
   StyledTimelineCheckmarkIcon,
-  SuccessTextBold,
-  TimelineIconCircleWrapper,
 } from './styled'
 
 import {
   ArrowIcon,
-  ClickableStopTitle,
   Link,
   SectionContent,
-  StopNumberCircle,
-  StopTitle,
-  StyledSpinnerIcon,
-  ToggleArrow,
-  ToggleIconContainer,
   TokenFlowContainer,
+  InfoTextSpan,
+  InfoTextBold,
+  SuccessTextBold,
+  RecipientWrapper,
+  TimelineIconCircleWrapper,
+  StyledSpinnerIcon,
 } from '../../styles'
 import { BridgeFeeType, BridgeProtocolConfig } from '../../types'
 import { getFeeTextColor, isFreeSwapFee } from '../../utils/fees'
 import { StopStatusEnum } from '../../utils/status'
 import { NetworkLogo } from '../NetworkLogo'
+import { StopHeader } from '../StopHeader/StopHeader'
 import { TokenAmountDisplay } from '../TokenAmountDisplay'
-
-// Re-export for SwapStopDetails
-export { LocalStyledRefundCompleteIcon as StyledRefundCompleteIcon }
 
 const CloseIcon = <StyledStatusCloseIcon src={CLOSE_ICON_X} />
 
@@ -127,35 +114,21 @@ export function BridgeStopDetails({
   const bridgeReceiveAmountUsdValue = bridgeReceiveAmountUsdResult?.value
   const isStatusMode = status !== StopStatusEnum.DEFAULT
 
-  const TitleContent = (
-    <>
-      <StopNumberCircle status={status} stopNumber={2}>
-        {BridgeStopStatusIcons[status]}
-      </StopNumberCircle>
-      <b>
-        <span>{ActionTitles[status]} </span>
-        <ProtocolIcons showOnlySecond size={21} secondProtocol={bridgeProvider} />
-        <span> {bridgeProvider.title}</span>
-      </b>
-      {isCollapsible && (
-        <ToggleIconContainer>
-          <ToggleArrow isOpen={isExpanded}>
-            <SVG src={CarretIcon} title={isExpanded ? 'Close' : 'Open'} />
-          </ToggleArrow>
-        </ToggleIconContainer>
-      )}
-    </>
-  )
-
   return (
     <>
-      {isCollapsible ? (
-        <ClickableStopTitle isCollapsible={true} onClick={onToggle}>
-          {TitleContent}
-        </ClickableStopTitle>
-      ) : (
-        <StopTitle>{TitleContent}</StopTitle>
-      )}
+      <StopHeader
+        status={status}
+        stopNumber={2}
+        statusIcons={BridgeStopStatusIcons}
+        statusTitlePrefix={ActionTitles[status]}
+        protocolName={bridgeProvider.title}
+        protocolIconSize={21}
+        protocolIconShowOnly="second"
+        protocolIconBridgeProvider={bridgeProvider}
+        isCollapsible={isCollapsible}
+        isExpanded={isExpanded}
+        onToggle={onToggle}
+      />
 
       <SectionContent isExpanded={isExpanded}>
         <ConfirmDetailsItem label="" withTimelineDot>

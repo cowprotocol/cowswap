@@ -2,15 +2,6 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const Link = styled.a<{ underline?: boolean }>`
-  text-decoration: ${({ underline }) => (underline ? 'underline' : 'none')};
-  color: inherit;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`
-
 export const Wrapper = styled.div<{ hasBackground?: boolean }>`
   width: 100%;
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
@@ -65,11 +56,4 @@ export const StopsInfo = styled.div`
 export const CollapsibleStopsInfo = styled(StopsInfo)`
   display: flex;
   align-items: center;
-`
-
-export const DividerHorizontal = styled.div<{ margin?: string; overrideColor?: string }>`
-  width: 100%;
-  height: 1px;
-  margin: ${({ margin }) => margin || '0'};
-  background-color: ${({ overrideColor }) => overrideColor || `var(${UI.COLOR_PAPER_DARKER})`};
 `

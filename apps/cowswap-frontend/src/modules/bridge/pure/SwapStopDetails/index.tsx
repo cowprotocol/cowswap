@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 
-import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import CheckmarkIcon from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
+import PlusIcon from '@cowprotocol/assets/cow-swap/plus.svg'
 import SpinnerIcon from '@cowprotocol/assets/cow-swap/spinner.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, isAddress, shortenAddress } from '@cowprotocol/common-utils'
@@ -16,29 +16,29 @@ import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReceiveAmountTitle } from 'modules/trade/pure/ReceiveAmountTitle'
 import { UsdAmountInfo } from 'modules/usdAmount/hooks/useUsdAmount'
 
-import { ProtocolIcons } from 'common/pure/ProtocolIcons'
+import { SolverCompetition } from 'common/hooks/orderProgressBar'
+
+import { WinningSolverContainer } from './styled'
 
 import {
   ArrowIcon,
-  ClickableStopTitle,
   Link,
   SectionContent,
-  StopNumberCircle,
-  StopTitle,
   StyledSpinnerIcon,
-  ToggleArrow,
-  ToggleIconContainer,
+  SuccessTextBold,
   TokenFlowContainer,
+  RecipientWrapper,
+  TimelineIconCircleWrapper,
+  StyledTimelinePlusIcon,
+  StyledRefundCompleteIcon,
 } from '../../styles'
 import { BridgeProtocolConfig, BridgeFeeType } from '../../types'
-import { getFeeTextColor } from '../../utils/fees'
-import { StopStatusEnum } from '../../utils/status'
-import { StyledRefundCompleteIcon } from '../BridgeStopDetails/index'
-import { RecipientWrapper } from '../BridgeStopDetails/styled'
+import { getAmountString, getFeeTextColor, StatusColor, StopStatusEnum } from '../../utils'
 import { NetworkLogo } from '../NetworkLogo'
+import { StopHeader } from '../StopHeader/StopHeader'
 import { TokenAmountDisplay } from '../TokenAmountDisplay'
 
-const StopStatusIcons: Record<StopStatusEnum, ReactNode> = {
+const StopStatusIconsMap: Record<StopStatusEnum, ReactNode> = {
   [StopStatusEnum.DONE]: <SVG src={CheckmarkIcon} />,
   [StopStatusEnum.PENDING]: <StyledSpinnerIcon src={SpinnerIcon} />,
   [StopStatusEnum.FAILED]: <SVG src={RefundIcon} />,
@@ -73,6 +73,11 @@ export interface SwapStopDetailsProps {
   bridgeProvider: BridgeProtocolConfig
   recipient?: string
   sourceChainId: SupportedChainId
+  winningSolver?: SolverCompetition | null
+  receivedAmount?: CurrencyAmount<TokenWithLogo> | null
+  receivedAmountUsdResult?: UsdAmountInfo | null
+  surplusAmount?: CurrencyAmount<TokenWithLogo> | null
+  surplusAmountUsdResult?: UsdAmountInfo | null
 }
 
 export function SwapStopDetails({
@@ -94,6 +99,11 @@ export function SwapStopDetails({
   bridgeProvider,
   recipient,
   sourceChainId,
+  winningSolver = null,
+  receivedAmount = null,
+  receivedAmountUsdResult = null,
+  surplusAmount = null,
+  surplusAmountUsdResult = null,
 }: SwapStopDetailsProps): ReactNode {
   const sellToken = sellCurrencyAmount.currency
   const sellAmount = sellCurrencyAmount.toSignificant(6)
@@ -106,36 +116,33 @@ export function SwapStopDetails({
   const networkCostUsdValue = networkCostUsdResult?.value
   const swapExpectedReceiveUsdValue = swapExpectedReceiveUsdResult?.value
   const swapMinReceiveUsdValue = swapMinReceiveUsdResult?.value
+  const receivedAmountUsdValue = receivedAmountUsdResult?.value
+  const surplusAmountUsdValue = surplusAmountUsdResult?.value
 
-  const TitleContent = (
-    <>
-      <StopNumberCircle status={status} stopNumber={1}>
-        {StopStatusIcons[status]}
-      </StopNumberCircle>
-      <b>
-        <span>{StopStatusTitlePrefixes[status]} </span>
-        <ProtocolIcons showOnlyFirst size={21} secondProtocol={bridgeProvider} />
-        <span> CoW Protocol</span>
-      </b>
-      {isCollapsible && (
-        <ToggleIconContainer>
-          <ToggleArrow isOpen={isExpanded}>
-            <SVG src={CarretIcon} title={isExpanded ? 'Close' : 'Open'} />
-          </ToggleArrow>
-        </ToggleIconContainer>
-      )}
-    </>
-  )
+  // Check if we're in the BridgeStatus with solver data
+  const isBridgeStatusView = winningSolver !== null || receivedAmount !== null
+
+  // For BridgeStatus view, always show received section if we have received amount
+  // For normal views, only show it in DONE status
+  const shouldShowReceivedSection = isBridgeStatusView
+    ? receivedAmount !== null
+    : status === StopStatusEnum.DONE && receivedAmount !== null
 
   return (
     <>
-      {isCollapsible ? (
-        <ClickableStopTitle isCollapsible={true} onClick={onToggle}>
-          {TitleContent}
-        </ClickableStopTitle>
-      ) : (
-        <StopTitle>{TitleContent}</StopTitle>
-      )}
+      <StopHeader
+        status={status}
+        stopNumber={1}
+        statusIcons={StopStatusIconsMap}
+        statusTitlePrefix={StopStatusTitlePrefixes[status]}
+        protocolName="CoW Protocol"
+        protocolIconSize={21}
+        protocolIconShowOnly="first"
+        protocolIconBridgeProvider={bridgeProvider}
+        isCollapsible={isCollapsible}
+        isExpanded={isExpanded}
+        onToggle={onToggle}
+      />
 
       <SectionContent isExpanded={isExpanded}>
         <ConfirmDetailsItem label="" withTimelineDot>
@@ -159,39 +166,52 @@ export function SwapStopDetails({
           </TokenFlowContainer>
         </ConfirmDetailsItem>
 
-        <ConfirmDetailsItem
-          label={
-            <>
-              Swap fee <InfoTooltip content="No fee for order placement!" size={14} />
-            </>
-          }
-          withTimelineDot
-          contentTextColor={getFeeTextColor(BridgeFeeType.FREE)}
-        >
-          FREE
-        </ConfirmDetailsItem>
+        {isBridgeStatusView && status === StopStatusEnum.DONE && winningSolver && (
+          <ConfirmDetailsItem label="Winning solver" withTimelineDot>
+            <WinningSolverContainer>
+              <b>{winningSolver.displayName || winningSolver.solver}</b>
+              <img src={winningSolver.image} alt={`${winningSolver.solver} logo`} width="16" height="16" />
+            </WinningSolverContainer>
+          </ConfirmDetailsItem>
+        )}
 
-        <ConfirmDetailsItem
-          label={
-            <>
-              Network cost (est.){' '}
-              <InfoTooltip
-                content="This is the cost of settling your order on-chain, including gas and any LP fees. CoW Swap will try to lower this cost where possible."
-                size={14}
-              />
-            </>
-          }
-          withTimelineDot
-        >
-          {networkCost} {sellTokenSymbol}&nbsp;
-          {networkCostUsdValue && (
-            <i>
-              (<FiatAmount amount={networkCostUsdValue} />)
-            </i>
-          )}
-        </ConfirmDetailsItem>
+        {!isBridgeStatusView && (
+          <ConfirmDetailsItem
+            label={
+              <>
+                Swap fee <InfoTooltip content="No fee for order placement!" size={14} />
+              </>
+            }
+            withTimelineDot
+            contentTextColor={getFeeTextColor(BridgeFeeType.FREE)}
+          >
+            FREE
+          </ConfirmDetailsItem>
+        )}
 
-        {swapExpectedToReceive && (
+        {!isBridgeStatusView && (
+          <ConfirmDetailsItem
+            label={
+              <>
+                Network cost (est.){' '}
+                <InfoTooltip
+                  content="This is the cost of settling your order on-chain, including gas and any LP fees. CoW Swap will try to lower this cost where possible."
+                  size={14}
+                />
+              </>
+            }
+            withTimelineDot
+          >
+            {networkCost} {sellTokenSymbol}&nbsp;
+            {networkCostUsdValue && (
+              <i>
+                (<FiatAmount amount={networkCostUsdValue} />)
+              </i>
+            )}
+          </ConfirmDetailsItem>
+        )}
+
+        {!isBridgeStatusView && swapExpectedToReceive && (
           <ConfirmDetailsItem
             withTimelineDot
             label={
@@ -214,7 +234,7 @@ export function SwapStopDetails({
           </ConfirmDetailsItem>
         )}
 
-        {swapMaxSlippage && (
+        {!isBridgeStatusView && swapMaxSlippage && (
           <ConfirmDetailsItem
             label={
               <>
@@ -231,7 +251,8 @@ export function SwapStopDetails({
           </ConfirmDetailsItem>
         )}
 
-        {recipient && (
+        {/* Standard recipient display for normal fixtures */}
+        {!isBridgeStatusView && recipient && (
           <ConfirmDetailsItem
             label={
               <>
@@ -257,22 +278,155 @@ export function SwapStopDetails({
           </ConfirmDetailsItem>
         )}
 
-        {status !== StopStatusEnum.FAILED && status !== StopStatusEnum.REFUND_COMPLETE && swapMinReceive && (
+        {/* Show received amount for BridgeStatus view */}
+        {isBridgeStatusView && shouldShowReceivedSection && receivedAmount && (
           <ConfirmDetailsItem
-            label={<ReceiveAmountTitle>Min. to receive</ReceiveAmountTitle>}
-            isLast={status !== StopStatusEnum.DONE && status !== StopStatusEnum.PENDING}
+            label={
+              <ReceiveAmountTitle>
+                <b>Received</b>
+              </ReceiveAmountTitle>
+            }
+          >
+            <SuccessTextBold>
+              <TokenAmountDisplay
+                token={buyToken}
+                amount={getAmountString(receivedAmount)}
+                displaySymbol={buyTokenSymbol}
+                usdValue={receivedAmountUsdValue}
+                tokenLogoSize={tokenLogoSize}
+              />
+            </SuccessTextBold>
+          </ConfirmDetailsItem>
+        )}
+
+        {/* Show surplus with custom plus icon for BridgeStatus view */}
+        {isBridgeStatusView && shouldShowReceivedSection && surplusAmount && surplusAmount.greaterThan(0) && (
+          <ConfirmDetailsItem
+            label={
+              <ReceiveAmountTitle
+                icon={
+                  <TimelineIconCircleWrapper>
+                    <StyledTimelinePlusIcon src={PlusIcon} />
+                  </TimelineIconCircleWrapper>
+                }
+              >
+                <SuccessTextBold>Surplus received</SuccessTextBold>
+              </ReceiveAmountTitle>
+            }
+          >
+            <SuccessTextBold>
+              +{' '}
+              <TokenAmountDisplay
+                token={buyToken}
+                amount={getAmountString(surplusAmount)}
+                displaySymbol={buyTokenSymbol}
+                usdValue={surplusAmountUsdValue}
+                tokenLogoSize={tokenLogoSize}
+                hideTokenIcon={true}
+              />
+            </SuccessTextBold>
+          </ConfirmDetailsItem>
+        )}
+
+        {!isBridgeStatusView && shouldShowReceivedSection && receivedAmount && (
+          <ConfirmDetailsItem
+            label={
+              <ReceiveAmountTitle variant="success">
+                =&nbsp;<b>Received</b>
+              </ReceiveAmountTitle>
+            }
+            withTimelineDot
           >
             <b>
               <TokenAmountDisplay
                 token={buyToken}
-                amount={swapMinReceive}
+                amount={getAmountString(receivedAmount)}
                 displaySymbol={buyTokenSymbol}
-                usdValue={swapMinReceiveUsdValue}
+                usdValue={receivedAmountUsdValue}
                 tokenLogoSize={tokenLogoSize}
               />
             </b>
           </ConfirmDetailsItem>
         )}
+
+        {/* Show surplus with plus sign for normal fixtures */}
+        {!isBridgeStatusView && shouldShowReceivedSection && surplusAmount && surplusAmount.greaterThan(0) && (
+          <ConfirmDetailsItem
+            label={
+              <ReceiveAmountTitle
+                icon={
+                  <TimelineIconCircleWrapper>
+                    <StyledTimelinePlusIcon src={PlusIcon} />
+                  </TimelineIconCircleWrapper>
+                }
+              >
+                <SuccessTextBold>Surplus received</SuccessTextBold>
+              </ReceiveAmountTitle>
+            }
+            contentTextColor={StatusColor.SUCCESS}
+          >
+            <b>
+              +{' '}
+              <TokenAmountDisplay
+                token={buyToken}
+                amount={getAmountString(surplusAmount)}
+                displaySymbol={buyTokenSymbol}
+                usdValue={surplusAmountUsdValue}
+                tokenLogoSize={tokenLogoSize}
+                status={StatusColor.SUCCESS}
+                hideTokenIcon={true}
+              />
+            </b>
+          </ConfirmDetailsItem>
+        )}
+
+        {/* Min to receive for non-BridgeStatus views when needed */}
+        {!isBridgeStatusView &&
+          status !== StopStatusEnum.FAILED &&
+          status !== StopStatusEnum.REFUND_COMPLETE &&
+          swapMinReceive &&
+          !shouldShowReceivedSection && (
+            <ConfirmDetailsItem
+              label={<ReceiveAmountTitle>Min. to receive</ReceiveAmountTitle>}
+              isLast={status !== StopStatusEnum.DONE && status !== StopStatusEnum.PENDING}
+            >
+              <b>
+                <TokenAmountDisplay
+                  token={buyToken}
+                  amount={swapMinReceive}
+                  displaySymbol={buyTokenSymbol}
+                  usdValue={swapMinReceiveUsdValue}
+                  tokenLogoSize={tokenLogoSize}
+                />
+              </b>
+            </ConfirmDetailsItem>
+          )}
+
+        {/* Min to receive for BridgeStatus view */}
+        {isBridgeStatusView &&
+          status !== StopStatusEnum.FAILED &&
+          status !== StopStatusEnum.REFUND_COMPLETE &&
+          swapMinReceive &&
+          !shouldShowReceivedSection && (
+            <ConfirmDetailsItem
+              label={
+                <ReceiveAmountTitle>
+                  <b>Min. to receive</b>
+                </ReceiveAmountTitle>
+              }
+              withTimelineDot
+            >
+              <b>
+                <TokenAmountDisplay
+                  token={buyToken}
+                  amount={swapMinReceive}
+                  displaySymbol={buyTokenSymbol}
+                  usdValue={swapMinReceiveUsdValue}
+                  tokenLogoSize={tokenLogoSize}
+                />
+              </b>
+            </ConfirmDetailsItem>
+          )}
       </SectionContent>
     </>
   )

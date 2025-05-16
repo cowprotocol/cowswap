@@ -6,20 +6,13 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
 
-import { ToggleArrow } from 'modules/bridge/styles'
+import { ToggleArrow, DividerHorizontal } from 'modules/bridge/styles'
 import { useUsdAmount } from 'modules/usdAmount'
 
+import { SolverCompetition } from 'common/hooks/orderProgressBar'
 import { ProtocolIcons } from 'common/pure/ProtocolIcons'
 
-import {
-  Wrapper,
-  RouteHeader,
-  RouteTitle,
-  StopsInfo,
-  CollapsibleStopsInfo,
-  ClickableRouteHeader,
-  DividerHorizontal,
-} from './styled'
+import { Wrapper, RouteHeader, RouteTitle, StopsInfo, CollapsibleStopsInfo, ClickableRouteHeader } from './styled'
 
 import { useParsedAmountWithUsd } from '../../hooks'
 import { BridgeStopDetails } from '../../pure/BridgeStopDetails/index'
@@ -67,6 +60,10 @@ export interface BridgeRouteBreakdownProps {
   isBridgeSectionCollapsible?: boolean
   isBridgeSectionExpanded?: boolean
   onBridgeSectionToggle?: () => void
+
+  winningSolver?: SolverCompetition | null
+  receivedAmount?: CurrencyAmount<TokenWithLogo> | null
+  surplusAmount?: CurrencyAmount<TokenWithLogo> | null
 }
 
 export function BridgeRouteBreakdown({
@@ -98,6 +95,9 @@ export function BridgeRouteBreakdown({
   isBridgeSectionCollapsible = false,
   isBridgeSectionExpanded = true,
   onBridgeSectionToggle = () => {},
+  winningSolver = null,
+  receivedAmount = null,
+  surplusAmount = null,
 }: BridgeRouteBreakdownProps) {
   const sellToken = sellCurrencyAmount.currency
   const buyToken = buyCurrencyAmount.currency
@@ -117,6 +117,10 @@ export function BridgeRouteBreakdown({
   const { usdInfo: swapMinReceiveUsdResult } = useParsedAmountWithUsd(swapMinReceive, buyToken)
   const { usdInfo: swapExpectedReceiveUsdResult } = useParsedAmountWithUsd(swapExpectedToReceive, buyToken)
   const bridgeReceiveAmountUsdInfo = useUsdAmount(bridgeReceiveCurrencyAmount, destToken)
+  const rawReceivedAmountUsdInfo = useUsdAmount(receivedAmount, buyToken)
+  const receivedAmountUsdInfo = receivedAmount ? rawReceivedAmountUsdInfo : null
+  const rawSurplusAmountUsdInfo = useUsdAmount(surplusAmount, buyToken)
+  const surplusAmountUsdInfo = surplusAmount ? rawSurplusAmountUsdInfo : null
 
   const handleHeaderClick = () => {
     if (isCollapsible) {
@@ -184,6 +188,11 @@ export function BridgeRouteBreakdown({
         bridgeProvider={bridgeProvider}
         recipient={recipient}
         sourceChainId={derivedSourceChainId}
+        winningSolver={winningSolver}
+        receivedAmount={receivedAmount}
+        receivedAmountUsdResult={receivedAmountUsdInfo}
+        surplusAmount={surplusAmount}
+        surplusAmountUsdResult={surplusAmountUsdInfo}
       />
 
       <DividerHorizontal
