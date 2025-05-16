@@ -29,7 +29,8 @@ const ExplorerLink = styled.a`
   }
 
   ${Media.upToSmall()} {
-    margin: 10px auto 0;
+    order: 5;
+    margin: 10px auto;
     font-size: 13px;
     background: var(${UI.COLOR_INFO_BG});
     color: var(${UI.COLOR_INFO_TEXT});

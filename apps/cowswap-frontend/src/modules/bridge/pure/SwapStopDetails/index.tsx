@@ -1,16 +1,10 @@
 import { ReactNode } from 'react'
 
-import CheckmarkIcon from '@cowprotocol/assets/cow-swap/checkmark.svg'
-import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
 import PlusIcon from '@cowprotocol/assets/cow-swap/plus.svg'
-import SpinnerIcon from '@cowprotocol/assets/cow-swap/spinner.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { ExplorerDataType, getExplorerLink, isAddress, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { FiatAmount, InfoTooltip } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
-
-import SVG from 'react-inlinesvg'
 
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 
@@ -24,37 +18,20 @@ import { WinningSolverContainer } from './styled'
 
 import {
   ArrowIcon,
-  Link,
   SectionContent,
-  StyledSpinnerIcon,
   SuccessTextBold,
   TokenFlowContainer,
-  RecipientWrapper,
   TimelineIconCircleWrapper,
   StyledTimelinePlusIcon,
-  StyledRefundCompleteIcon,
+  StatusAwareText,
+  AnimatedEllipsis,
 } from '../../styles'
 import { BridgeProtocolConfig, BridgeFeeType } from '../../types'
 import { getAmountString, getFeeTextColor, StatusColor, StopStatusEnum } from '../../utils'
-import { NetworkLogo } from '../NetworkLogo'
+import { RecipientDisplay } from '../RecipientDisplay'
 import { StopHeader } from '../StopHeader/StopHeader'
+import { SwapStatusIcons, SwapStatusTitlePrefixes } from '../StopStatus'
 import { TokenAmountDisplay } from '../TokenAmountDisplay'
-
-const StopStatusIconsMap: Record<StopStatusEnum, ReactNode> = {
-  [StopStatusEnum.DONE]: <SVG src={CheckmarkIcon} />,
-  [StopStatusEnum.PENDING]: <StyledSpinnerIcon src={SpinnerIcon} />,
-  [StopStatusEnum.FAILED]: <SVG src={RefundIcon} />,
-  [StopStatusEnum.REFUND_COMPLETE]: <StyledRefundCompleteIcon src={RefundIcon} />,
-  [StopStatusEnum.DEFAULT]: null,
-}
-
-const StopStatusTitlePrefixes: Record<StopStatusEnum, ReactNode> = {
-  [StopStatusEnum.DONE]: 'Swapped on',
-  [StopStatusEnum.PENDING]: 'Swapping on',
-  [StopStatusEnum.FAILED]: 'Swap failed',
-  [StopStatusEnum.REFUND_COMPLETE]: 'Swap refunded',
-  [StopStatusEnum.DEFAULT]: 'Swap on',
-}
 
 export interface SwapStopDetailsProps {
   isCollapsible?: boolean
@@ -132,13 +109,16 @@ export function SwapStopDetails({
     ? receivedAmount !== null
     : status === StopStatusEnum.DONE && receivedAmount !== null
 
+  // Determine if animations should be visible based on component state
+  const isAnimationVisible = isExpanded && (status === StopStatusEnum.PENDING || status === StopStatusEnum.FAILED)
+
   return (
     <>
       <StopHeader
         status={status}
         stopNumber={1}
-        statusIcons={StopStatusIconsMap}
-        statusTitlePrefix={StopStatusTitlePrefixes[status]}
+        statusIcons={SwapStatusIcons}
+        statusTitlePrefix={SwapStatusTitlePrefixes[status]}
         protocolName="CoW Protocol"
         protocolIconSize={21}
         protocolIconShowOnly="first"
@@ -158,6 +138,7 @@ export function SwapStopDetails({
               displaySymbol={sellTokenSymbol}
               tokenLogoSize={tokenLogoSize}
               hideFiatAmount={true}
+              parsedAmount={sellCurrencyAmount}
             />
             <ArrowIcon>→</ArrowIcon>
             <TokenAmountDisplay
@@ -166,6 +147,7 @@ export function SwapStopDetails({
               displaySymbol={buyTokenSymbol}
               tokenLogoSize={tokenLogoSize}
               hideFiatAmount={true}
+              parsedAmount={buyCurrencyAmount}
             />
             {` on ${sourceChainName}`}
           </TokenFlowContainer>
@@ -271,20 +253,7 @@ export function SwapStopDetails({
             }
             withTimelineDot
           >
-            <RecipientWrapper>
-              <NetworkLogo chainId={sourceChainId} size={16} />
-              {isAddress(recipient) ? (
-                <Link
-                  href={getExplorerLink(sourceChainId, recipient, ExplorerDataType.ADDRESS)}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {shortenAddress(recipient)} ↗
-                </Link>
-              ) : (
-                recipient
-              )}
-            </RecipientWrapper>
+            <RecipientDisplay recipient={recipient} chainId={sourceChainId} />
           </ConfirmDetailsItem>
         )}
 
@@ -304,6 +273,7 @@ export function SwapStopDetails({
                 displaySymbol={buyTokenSymbol}
                 usdValue={receivedAmountUsdValue}
                 tokenLogoSize={tokenLogoSize}
+                parsedAmount={receivedAmount}
               />
             </b>
           </ConfirmDetailsItem>
@@ -333,6 +303,7 @@ export function SwapStopDetails({
                 usdValue={surplusAmountUsdValue}
                 tokenLogoSize={tokenLogoSize}
                 hideTokenIcon={true}
+                parsedAmount={surplusAmount}
               />
             </SuccessTextBold>
           </ConfirmDetailsItem>
@@ -354,6 +325,7 @@ export function SwapStopDetails({
                 displaySymbol={buyTokenSymbol}
                 usdValue={receivedAmountUsdValue}
                 tokenLogoSize={tokenLogoSize}
+                parsedAmount={receivedAmount}
               />
             </b>
           </ConfirmDetailsItem>
@@ -385,8 +357,18 @@ export function SwapStopDetails({
                 tokenLogoSize={tokenLogoSize}
                 status={StatusColor.SUCCESS}
                 hideTokenIcon={true}
+                parsedAmount={surplusAmount}
               />
             </b>
+          </ConfirmDetailsItem>
+        )}
+
+        {status === StopStatusEnum.PENDING && (
+          <ConfirmDetailsItem label="Status" withTimelineDot>
+            <StatusAwareText status={status}>
+              In progress
+              <AnimatedEllipsis isVisible={isAnimationVisible} />
+            </StatusAwareText>
           </ConfirmDetailsItem>
         )}
 

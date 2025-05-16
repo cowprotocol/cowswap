@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import { ReactElement, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
@@ -20,6 +20,8 @@ export interface TokenAmountDisplayProps {
   status?: StatusColor
   libTokenAmountProps?: Omit<LibTokenAmountProps, 'amount' | 'tokenSymbol' | 'hideTokenSymbol'>
   hideTokenIcon?: boolean
+  // Allow pre-parsed amount to be passed to skip parsing step
+  parsedAmount?: CurrencyAmount<Token> | null
 }
 
 export function TokenAmountDisplay({
@@ -32,8 +34,13 @@ export function TokenAmountDisplay({
   status,
   libTokenAmountProps,
   hideTokenIcon = false,
+  parsedAmount: providedParsedAmount,
 }: TokenAmountDisplayProps): ReactElement | null {
-  const parsedAmount = tryParseCurrencyAmount(amount, token)
+  // Only parse the amount if not already provided and only when inputs change
+  const parsedAmount = useMemo(() => {
+    if (providedParsedAmount !== undefined) return providedParsedAmount
+    return amount && token ? tryParseCurrencyAmount(amount, token) : null
+  }, [amount, token, providedParsedAmount])
 
   if (!parsedAmount) {
     // Or, to be safe and explicit, return null if parsing fails,

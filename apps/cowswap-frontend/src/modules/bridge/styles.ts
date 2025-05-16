@@ -135,6 +135,10 @@ export const StopTitle = styled.div`
     justify-content: center;
     gap: 3px;
     letter-spacing: -0.1px;
+
+    ${Media.upToSmall()} {
+      padding: 0 24px 0 0;
+    }
   }
 `
 
@@ -153,7 +157,7 @@ export const ArrowIcon = styled.span`
 `
 
 export const ToggleArrow = styled.div<{ isOpen: boolean }>`
-  --size: var(${UI.ICON_SIZE_SMALL});
+  --size: 100%;
   transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
   transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
   display: flex;
@@ -163,7 +167,6 @@ export const ToggleArrow = styled.div<{ isOpen: boolean }>`
   height: var(--size);
 
   > svg {
-    --size: var(${UI.ICON_SIZE_TINY});
     width: var(--size);
     height: var(--size);
     object-fit: contain;
@@ -192,16 +195,30 @@ export const ClickableStopTitle = styled(StopTitle)<{ isCollapsible?: boolean }>
 `
 
 export const ToggleIconContainer = styled.div`
+  --size: 24px;
+  height: var(--size);
+  width: var(--size);
   display: flex;
   align-items: center;
   margin: 0 0 0 auto;
-  padding: 4px;
-  border-radius: 16px;
+  padding: 6px;
+  border-radius: var(--size);
   cursor: pointer;
+  transition:
+    background var(${UI.ANIMATION_DURATION}) ease-in-out,
+    opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
     opacity: 0.8;
     background: var(${UI.COLOR_PAPER_DARKEST});
+  }
+
+  ${Media.upToSmall()} {
+    position: absolute;
+    right: 0px;
+    top: 13px;
+    transform: translateY(-13px);
+    margin-left: 0;
   }
 `
 
@@ -209,7 +226,7 @@ export const SectionContent = styled.div<{ isExpanded: boolean }>`
   display: ${({ isExpanded }) => (isExpanded ? 'flex' : 'none')};
   flex-flow: column wrap;
   gap: 4px;
-  padding: 0;
+  padding: 0 0 0 1px;
   font-size: 13px;
   width: 100%;
   overflow: hidden;
@@ -322,7 +339,11 @@ export const StatusAwareText = styled.span<{ status?: StopStatusEnum }>`
   color: ${({ status = StopStatusEnum.DEFAULT }) => StatusAwareColors[status]};
 `
 
-export const AnimatedEllipsis = styled.span`
+/**
+ * Animated ellipsis component that can be conditionally animated
+ * This helps reduce unnecessary animation calculations when not visible
+ */
+export const AnimatedEllipsis = styled.span<{ isVisible?: boolean }>`
   display: inline-block;
   width: 0.8em;
   text-align: left;
@@ -330,7 +351,12 @@ export const AnimatedEllipsis = styled.span`
 
   &::after {
     content: '.';
-    animation: ${ellipsisAnimation} 2s infinite steps(1);
+    animation: ${({ isVisible = true }) =>
+      isVisible
+        ? css`
+            ${ellipsisAnimation} 2s infinite steps(1)
+          `
+        : 'none'};
     display: inline-block;
   }
 `

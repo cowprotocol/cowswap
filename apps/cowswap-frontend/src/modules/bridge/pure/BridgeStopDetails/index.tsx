@@ -2,10 +2,8 @@ import { ReactNode } from 'react'
 
 import CheckmarkIcon from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
-import SpinnerIconAsset from '@cowprotocol/assets/cow-swap/spinner.svg'
-import CLOSE_ICON_X from '@cowprotocol/assets/cow-swap/x.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { displayTime, ExplorerDataType, getExplorerLink, isAddress, shortenAddress } from '@cowprotocol/common-utils'
+import { displayTime, ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InfoTooltip } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -18,22 +16,17 @@ import {
   RefundLink,
   RefundRecipientWrapper,
   StyledAnimatedTimelineRefundIcon,
-  StyledStatusCheckmarkIcon,
-  StyledStatusCloseIcon,
   StyledTimelineCheckmarkIcon,
 } from './styled'
 
 import {
   ArrowIcon,
-  Link,
   SectionContent,
   TokenFlowContainer,
   InfoTextSpan,
   InfoTextBold,
   SuccessTextBold,
-  RecipientWrapper,
   TimelineIconCircleWrapper,
-  StyledSpinnerIcon,
   AnimatedEllipsis,
   DangerText,
   StatusAwareText,
@@ -42,28 +35,10 @@ import { BridgeFeeType, BridgeProtocolConfig } from '../../types'
 import { getFeeTextColor, isFreeSwapFee } from '../../utils/fees'
 import { StopStatusEnum } from '../../utils/status'
 import { NetworkLogo } from '../NetworkLogo'
+import { RecipientDisplay } from '../RecipientDisplay'
 import { StopHeader } from '../StopHeader/StopHeader'
+import { BridgeStatusIcons, BridgeStatusTitlePrefixes } from '../StopStatus'
 import { TokenAmountDisplay } from '../TokenAmountDisplay'
-
-const CloseIcon = <StyledStatusCloseIcon src={CLOSE_ICON_X} />
-
-const BridgeStopStatusIcons: Record<StopStatusEnum, ReactNode> = {
-  [StopStatusEnum.DONE]: <StyledStatusCheckmarkIcon src={CheckmarkIcon} />,
-  [StopStatusEnum.PENDING]: <StyledSpinnerIcon src={SpinnerIconAsset} />,
-  [StopStatusEnum.FAILED]: CloseIcon,
-  [StopStatusEnum.REFUND_COMPLETE]: CloseIcon,
-  [StopStatusEnum.DEFAULT]: null,
-}
-
-const bridgeFailedTitle = 'Bridge failed on'
-
-const ActionTitles: Record<StopStatusEnum, string> = {
-  [StopStatusEnum.DONE]: 'Bridged via',
-  [StopStatusEnum.PENDING]: 'Bridging via',
-  [StopStatusEnum.FAILED]: bridgeFailedTitle,
-  [StopStatusEnum.REFUND_COMPLETE]: bridgeFailedTitle,
-  [StopStatusEnum.DEFAULT]: 'Bridge via',
-}
 
 export interface BridgeStopDetailsProps {
   isCollapsible?: boolean
@@ -115,14 +90,16 @@ export function BridgeStopDetails({
 
   const bridgeReceiveAmountUsdValue = bridgeReceiveAmountUsdResult?.value
   const isStatusMode = status !== StopStatusEnum.DEFAULT
+  // Determine if animation should be visible based on component state
+  const isAnimationVisible = isExpanded && status === StopStatusEnum.PENDING
 
   return (
     <>
       <StopHeader
         status={status}
         stopNumber={2}
-        statusIcons={BridgeStopStatusIcons}
-        statusTitlePrefix={ActionTitles[status]}
+        statusIcons={BridgeStatusIcons}
+        statusTitlePrefix={BridgeStatusTitlePrefixes[status]}
         protocolName={bridgeProvider.title}
         protocolIconSize={21}
         protocolIconShowOnly="second"
@@ -142,6 +119,7 @@ export function BridgeStopDetails({
               displaySymbol={bridgeTokenSymbol}
               tokenLogoSize={tokenLogoSize}
               hideFiatAmount={true}
+              parsedAmount={bridgeSendCurrencyAmount}
             />
             <ArrowIcon>→</ArrowIcon>
             <TokenAmountDisplay
@@ -151,6 +129,7 @@ export function BridgeStopDetails({
               usdValue={bridgeReceiveAmountUsdValue}
               hideFiatAmount={hideBridgeFlowFiatAmount}
               tokenLogoSize={tokenLogoSize}
+              parsedAmount={bridgeReceiveCurrencyAmount}
             />
             {` on ${recipientChainName}`}
           </TokenFlowContainer>
@@ -204,16 +183,7 @@ export function BridgeStopDetails({
           }
           withTimelineDot
         >
-          <RecipientWrapper>
-            <NetworkLogo chainId={recipientChainId} size={16} />
-            {isAddress(recipient) ? (
-              <Link href={getExplorerLink(recipientChainId, recipient, ExplorerDataType.ADDRESS)} target="_blank">
-                {shortenAddress(recipient)} ↗
-              </Link>
-            ) : (
-              recipient
-            )}
-          </RecipientWrapper>
+          <RecipientDisplay recipient={recipient} chainId={recipientChainId} logoSize={16} />
         </ConfirmDetailsItem>
 
         <ConfirmDetailsItem
@@ -237,6 +207,7 @@ export function BridgeStopDetails({
               usdValue={bridgeReceiveAmountUsdValue}
               hideFiatAmount={hideBridgeFlowFiatAmount}
               tokenLogoSize={tokenLogoSize}
+              parsedAmount={bridgeReceiveCurrencyAmount}
             />
           ) : (
             <b>
@@ -247,6 +218,7 @@ export function BridgeStopDetails({
                 usdValue={bridgeReceiveAmountUsdValue}
                 hideFiatAmount={hideBridgeFlowFiatAmount}
                 tokenLogoSize={tokenLogoSize}
+                parsedAmount={bridgeReceiveCurrencyAmount}
               />
             </b>
           )}
@@ -268,7 +240,7 @@ export function BridgeStopDetails({
             >
               <InfoTextBold>
                 Refund started
-                <AnimatedEllipsis />
+                <AnimatedEllipsis isVisible={isAnimationVisible} />
               </InfoTextBold>
             </ConfirmDetailsItem>
           </>
@@ -315,6 +287,7 @@ export function BridgeStopDetails({
                   displaySymbol={bridgeTokenSymbol}
                   hideFiatAmount={true}
                   tokenLogoSize={tokenLogoSize}
+                  parsedAmount={bridgeSendCurrencyAmount}
                 />
               </b>
             </ConfirmDetailsItem>
@@ -333,7 +306,7 @@ export function BridgeStopDetails({
               {status === StopStatusEnum.PENDING && (
                 <StatusAwareText status={status}>
                   in progress
-                  <AnimatedEllipsis />
+                  <AnimatedEllipsis isVisible={isAnimationVisible} />
                 </StatusAwareText>
               )}
               {status === StopStatusEnum.DONE && (
@@ -344,6 +317,7 @@ export function BridgeStopDetails({
                   usdValue={bridgeReceiveAmountUsdValue}
                   hideFiatAmount={hideBridgeFlowFiatAmount}
                   tokenLogoSize={tokenLogoSize}
+                  parsedAmount={bridgeReceiveCurrencyAmount}
                 />
               )}
             </b>
