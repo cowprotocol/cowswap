@@ -15,11 +15,8 @@ import { ReceiveAmountTitle } from 'modules/trade/pure/ReceiveAmountTitle'
 import { UsdAmountInfo } from 'modules/usdAmount/hooks/useUsdAmount'
 
 import {
-  AnimatedEllipsis,
-  DangerText,
   RefundLink,
   RefundRecipientWrapper,
-  StatusAwareText,
   StyledAnimatedTimelineRefundIcon,
   StyledStatusCheckmarkIcon,
   StyledStatusCloseIcon,
@@ -37,6 +34,9 @@ import {
   RecipientWrapper,
   TimelineIconCircleWrapper,
   StyledSpinnerIcon,
+  AnimatedEllipsis,
+  DangerText,
+  StatusAwareText,
 } from '../../styles'
 import { BridgeFeeType, BridgeProtocolConfig } from '../../types'
 import { getFeeTextColor, isFreeSwapFee } from '../../utils/fees'
@@ -83,6 +83,7 @@ export interface BridgeStopDetailsProps {
   recipient: string
   recipientChainId: SupportedChainId
   tokenLogoSize: number
+  bridgeExplorerUrl?: string
 }
 
 export function BridgeStopDetails({
@@ -102,6 +103,7 @@ export function BridgeStopDetails({
   recipient,
   recipientChainId,
   tokenLogoSize,
+  bridgeExplorerUrl,
 }: BridgeStopDetailsProps): ReactNode {
   const sourceToken = bridgeSendCurrencyAmount.currency
   const bridgeAmount = bridgeSendCurrencyAmount.toSignificant(6)
@@ -128,6 +130,7 @@ export function BridgeStopDetails({
         isCollapsible={isCollapsible}
         isExpanded={isExpanded}
         onToggle={onToggle}
+        explorerUrl={bridgeExplorerUrl}
       />
 
       <SectionContent isExpanded={isExpanded}>

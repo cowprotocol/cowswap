@@ -68,6 +68,8 @@ export interface BridgeRouteBreakdownProps {
   winningSolverId?: string | null
   receivedAmount?: CurrencyAmount<TokenWithLogo> | null
   surplusAmount?: CurrencyAmount<TokenWithLogo> | null
+  swapExplorerUrl?: string
+  bridgeExplorerUrl?: string
 }
 
 export function BridgeRouteBreakdown({
@@ -102,6 +104,8 @@ export function BridgeRouteBreakdown({
   winningSolverId,
   receivedAmount = null,
   surplusAmount = null,
+  swapExplorerUrl,
+  bridgeExplorerUrl,
 }: BridgeRouteBreakdownProps) {
   const sellToken = sellCurrencyAmount.currency
   const buyToken = buyCurrencyAmount.currency
@@ -221,6 +225,7 @@ export function BridgeRouteBreakdown({
         receivedAmountUsdResult={receivedAmountUsdInfo}
         surplusAmount={surplusAmount}
         surplusAmountUsdResult={surplusAmountUsdInfo}
+        swapExplorerUrl={swapExplorerUrl}
       />
 
       <DividerHorizontal
@@ -245,6 +250,7 @@ export function BridgeRouteBreakdown({
         recipient={recipient}
         recipientChainId={derivedRecipientChainId}
         tokenLogoSize={tokenLogoSize}
+        bridgeExplorerUrl={bridgeExplorerUrl}
       />
     </Wrapper>
   )

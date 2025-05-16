@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import { FlattenSimpleInterpolation } from 'styled-components'
@@ -12,6 +12,21 @@ const spin = keyframes`
   }
   100% {
     transform: rotate(360deg);
+  }
+`
+
+const ellipsisAnimation = keyframes`
+  0%, 100% {
+    content: '.';
+  }
+  25% {
+    content: '..';
+  }
+  50% {
+    content: '...';
+  }
+  75% {
+    content: '';
   }
 `
 
@@ -101,6 +116,7 @@ export const StopNumberCircle = styled.div<{
 
 export const StopTitle = styled.div`
   display: flex;
+  flex-flow: row wrap;
   width: 100%;
   align-items: center;
   gap: 6px;
@@ -109,11 +125,16 @@ export const StopTitle = styled.div`
   font-size: 14px;
   position: relative;
 
+  ${Media.upToSmall()} {
+    font-size: 13px;
+  }
+
   > b {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 3px;
+    letter-spacing: -0.1px;
   }
 `
 
@@ -171,12 +192,17 @@ export const ClickableStopTitle = styled(StopTitle)<{ isCollapsible?: boolean }>
 `
 
 export const ToggleIconContainer = styled.div`
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
   display: flex;
   align-items: center;
+  margin: 0 0 0 auto;
+  padding: 4px;
+  border-radius: 16px;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+    background: var(${UI.COLOR_PAPER_DARKEST});
+  }
 `
 
 export const SectionContent = styled.div<{ isExpanded: boolean }>`
@@ -282,4 +308,33 @@ export const StyledTimelinePlusIcon = styled(SVG)`
   > path {
     fill: currentColor;
   }
+`
+
+const StatusAwareColors: Record<StopStatusEnum, string> = {
+  [StopStatusEnum.PENDING]: `var(${UI.COLOR_INFO_TEXT})`,
+  [StopStatusEnum.FAILED]: `var(${UI.COLOR_DANGER_TEXT})`,
+  [StopStatusEnum.DONE]: `var(${UI.COLOR_SUCCESS})`,
+  [StopStatusEnum.REFUND_COMPLETE]: `var(${UI.COLOR_SUCCESS})`,
+  [StopStatusEnum.DEFAULT]: `var(${UI.COLOR_TEXT})`,
+}
+
+export const StatusAwareText = styled.span<{ status?: StopStatusEnum }>`
+  color: ${({ status = StopStatusEnum.DEFAULT }) => StatusAwareColors[status]};
+`
+
+export const AnimatedEllipsis = styled.span`
+  display: inline-block;
+  width: 0.8em;
+  text-align: left;
+  vertical-align: bottom;
+
+  &::after {
+    content: '.';
+    animation: ${ellipsisAnimation} 2s infinite steps(1);
+    display: inline-block;
+  }
+`
+
+export const DangerText = styled.span`
+  color: var(${UI.COLOR_DANGER_TEXT});
 `

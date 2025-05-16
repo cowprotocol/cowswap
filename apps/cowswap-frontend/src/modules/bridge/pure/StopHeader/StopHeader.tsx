@@ -1,8 +1,10 @@
 import { ReactNode } from 'react'
 
 import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
+import { Media, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
+import styled from 'styled-components/macro'
 
 import { ProtocolIcons } from 'common/pure/ProtocolIcons'
 
@@ -15,6 +17,30 @@ import {
 } from '../../styles'
 import { BridgeProtocolConfig } from '../../types'
 import { StopStatusEnum } from '../../utils/status'
+
+const ExplorerLink = styled.a`
+  font-size: 11px;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  text-decoration: underline;
+  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    color: var(${UI.COLOR_TEXT});
+  }
+
+  ${Media.upToSmall()} {
+    margin: 10px auto 0;
+    font-size: 13px;
+    background: var(${UI.COLOR_INFO_BG});
+    color: var(${UI.COLOR_INFO_TEXT});
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+  }
+`
 
 export interface StopHeaderProps {
   status: StopStatusEnum
@@ -32,6 +58,7 @@ export interface StopHeaderProps {
   isCollapsible: boolean
   isExpanded: boolean
   onToggle?: () => void
+  explorerUrl?: string
 }
 
 export function StopHeader({
@@ -46,6 +73,7 @@ export function StopHeader({
   isCollapsible,
   isExpanded,
   onToggle,
+  explorerUrl,
 }: StopHeaderProps): ReactNode {
   const TitleContent = (
     <>
@@ -62,23 +90,34 @@ export function StopHeader({
         />
         <span> {protocolName}</span>
       </b>
-      {isCollapsible && (
-        <ToggleIconContainer>
-          <ToggleArrow isOpen={isExpanded}>
-            <SVG src={CarretIcon} title={isExpanded ? 'Close' : 'Open'} />
-          </ToggleArrow>
-        </ToggleIconContainer>
-      )}
     </>
   )
+
+  const ViewDetailsLink =
+    explorerUrl && status !== StopStatusEnum.DEFAULT ? (
+      <ExplorerLink href={explorerUrl} target="_blank" rel="noopener noreferrer">
+        View details ↗
+      </ExplorerLink>
+    ) : null
 
   if (isCollapsible) {
     return (
       <ClickableStopTitle onClick={onToggle} isCollapsible={true}>
         {TitleContent}
+        {ViewDetailsLink}
+        <ToggleIconContainer>
+          <ToggleArrow isOpen={isExpanded}>
+            <SVG src={CarretIcon} title={isExpanded ? 'Close' : 'Open'} />
+          </ToggleArrow>
+        </ToggleIconContainer>
       </ClickableStopTitle>
     )
   }
 
-  return <BaseStopTitle>{TitleContent}</BaseStopTitle>
+  return (
+    <BaseStopTitle>
+      {TitleContent}
+      {ViewDetailsLink}
+    </BaseStopTitle>
+  )
 }

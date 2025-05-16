@@ -80,6 +80,11 @@ const defaultProps = {
   bridgeProvider: bungeeProviderConfig,
   // Display options
   hideBridgeFlowFiatAmount: true, // Hide fiat amount in bridge destination token flow
+  // Explorer URLs
+  swapExplorerUrl:
+    'https://explorer.cow.fi/orders/0xeaef82ff8696bff255e130b266231acb53a8f02823ed89b33acda5fd3987a53ad8da6bf26964af9d7eed9e03e53415d37aa96045676d56da',
+  bridgeExplorerUrl:
+    'https://explorer.cow.fi/orders/0xeaef82ff8696bff255e130b266231acb53a8f02823ed89b33acda5fd3987a53ad8da6bf26964af9d7eed9e03e53415d37aa96045676d56da',
 }
 
 // Create mock USD price data using proper Token objects
@@ -486,6 +491,8 @@ const SwapConfirmation = () => {
               isExpanded={isExpanded}
               onExpandToggle={() => setIsExpanded(!isExpanded)}
               winningSolverId={null} // For this fixture, no specific winning solver needed for overall confirmation view
+              swapExplorerUrl={defaultProps.swapExplorerUrl} // Use the defaultProps swapExplorerUrl
+              bridgeExplorerUrl={defaultProps.bridgeExplorerUrl} // Use the defaultProps bridgeExplorerUrl
             />
 
             {/* Only show these elements when breakdown is NOT expanded */}
@@ -605,6 +612,8 @@ function BridgeStatus() {
           winningSolverId={winningSolverIdForFixture}
           receivedAmount={mockReceivedAmount}
           surplusAmount={mockSurplusAmount}
+          swapExplorerUrl={defaultProps.swapExplorerUrl} // Use the defaultProps swapExplorerUrl
+          bridgeExplorerUrl={defaultProps.bridgeExplorerUrl} // Use the defaultProps bridgeExplorerUrl
         />
       </TradeFormContainer>
     </BridgeFixtureWrapper>

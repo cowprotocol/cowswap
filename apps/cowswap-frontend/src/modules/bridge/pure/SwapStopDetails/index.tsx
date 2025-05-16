@@ -80,6 +80,7 @@ export interface SwapStopDetailsProps {
   receivedAmountUsdResult?: UsdAmountInfo | null
   surplusAmount?: CurrencyAmount<TokenWithLogo> | null
   surplusAmountUsdResult?: UsdAmountInfo | null
+  swapExplorerUrl?: string
 }
 
 export function SwapStopDetails({
@@ -106,6 +107,7 @@ export function SwapStopDetails({
   receivedAmountUsdResult = null,
   surplusAmount = null,
   surplusAmountUsdResult = null,
+  swapExplorerUrl,
 }: SwapStopDetailsProps): ReactNode {
   const sellToken = sellCurrencyAmount.currency
   const sellAmount = sellCurrencyAmount.toSignificant(6)
@@ -144,6 +146,7 @@ export function SwapStopDetails({
         isCollapsible={isCollapsible}
         isExpanded={isExpanded}
         onToggle={onToggle}
+        explorerUrl={swapExplorerUrl}
       />
 
       <SectionContent isExpanded={isExpanded}>

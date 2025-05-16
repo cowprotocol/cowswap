@@ -4,22 +4,6 @@ import SVG from 'react-inlinesvg'
 import styled, { keyframes } from 'styled-components/macro'
 
 import { Link, RecipientWrapper } from '../../styles'
-import { StopStatusEnum } from '../../utils/status'
-
-const ellipsisAnimation = keyframes`
-  0%, 100% {
-    content: '.';
-  }
-  25% {
-    content: '..';
-  }
-  50% {
-    content: '...';
-  }
-  75% {
-    content: '';
-  }
-`
 
 const refundAnimation = keyframes`
   0% {
@@ -27,31 +11,6 @@ const refundAnimation = keyframes`
   }
   100% {
     transform: rotate(-360deg);
-  }
-`
-
-const StatusAwareColors: Record<StopStatusEnum, string> = {
-  [StopStatusEnum.PENDING]: `var(${UI.COLOR_INFO_TEXT})`,
-  [StopStatusEnum.FAILED]: `var(${UI.COLOR_DANGER_TEXT})`,
-  [StopStatusEnum.DONE]: `var(${UI.COLOR_SUCCESS})`,
-  [StopStatusEnum.REFUND_COMPLETE]: `var(${UI.COLOR_SUCCESS})`,
-  [StopStatusEnum.DEFAULT]: `var(${UI.COLOR_TEXT})`,
-}
-
-export const StatusAwareText = styled.span<{ status?: StopStatusEnum }>`
-  color: ${({ status = StopStatusEnum.DEFAULT }) => StatusAwareColors[status]};
-`
-
-export const AnimatedEllipsis = styled.span`
-  display: inline-block;
-  width: 0.8em;
-  text-align: left;
-  vertical-align: bottom;
-
-  &::after {
-    content: '.';
-    animation: ${ellipsisAnimation} 2s infinite steps(1);
-    display: inline-block;
   }
 `
 
@@ -98,8 +57,4 @@ export const RefundLink = styled(Link)`
 export const RefundRecipientWrapper = styled(RecipientWrapper)`
   width: 100%;
   min-width: 0;
-`
-
-export const DangerText = styled.span`
-  color: var(${UI.COLOR_DANGER_TEXT});
 `
