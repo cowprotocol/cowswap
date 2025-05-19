@@ -33,7 +33,7 @@ export interface BridgeRouteBreakdownProps {
   // Bridge details
   bridgeSendCurrencyAmount: CurrencyAmount<TokenWithLogo>
   bridgeReceiveCurrencyAmount: CurrencyAmount<TokenWithLogo>
-  bridgeFee: string | BridgeFeeType
+  bridgeFee: CurrencyAmount<TokenWithLogo> | BridgeFeeType
   maxBridgeSlippage: string
   estimatedTime: number
   recipient: string

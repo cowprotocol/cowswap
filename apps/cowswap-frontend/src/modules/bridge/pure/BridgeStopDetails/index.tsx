@@ -52,7 +52,7 @@ export interface BridgeStopDetailsProps {
   recipientChainName: string
   hideBridgeFlowFiatAmount: boolean
   bridgeReceiveAmountUsdResult?: UsdAmountInfo | null
-  bridgeFee: string | BridgeFeeType
+  bridgeFee: CurrencyAmount<TokenWithLogo> | BridgeFeeType
   maxBridgeSlippage: string
   estimatedTime: number
   recipient: string
@@ -91,6 +91,24 @@ export function BridgeStopDetails({
   // Determine if animation should be visible based on component state
   const isAnimationVisible = isExpanded && status === StopStatusEnum.PENDING
 
+  // Prepare fee display
+  const feeDisplayNode = (() => {
+    if (isFreeSwapFee(bridgeFee)) {
+      return 'FREE'
+    }
+    // It must be a CurrencyAmount if not FREE
+    // We need to decide how to display it. For now, let's assume we want to show its token amount.
+    // If a USD equivalent is needed, useUsdAmount would be called here or passed in.
+    // TokenAmountDisplay is suitable here.
+    return (
+      <TokenAmountDisplay
+        token={(bridgeFee as CurrencyAmount<TokenWithLogo>).currency}
+        currencyAmount={bridgeFee as CurrencyAmount<TokenWithLogo>}
+        tokenLogoSize={tokenLogoSize}
+      />
+    )
+  })()
+
   return (
     <>
       <StopHeader
@@ -116,7 +134,7 @@ export function BridgeStopDetails({
               displaySymbol={bridgeTokenSymbol}
               tokenLogoSize={tokenLogoSize}
               hideFiatAmount={true}
-              parsedAmount={bridgeSendCurrencyAmount}
+              currencyAmount={bridgeSendCurrencyAmount}
             />
             <ArrowIcon>→</ArrowIcon>
             <TokenAmountDisplay
@@ -125,7 +143,7 @@ export function BridgeStopDetails({
               usdValue={bridgeReceiveAmountUsdValue}
               hideFiatAmount={hideBridgeFlowFiatAmount}
               tokenLogoSize={tokenLogoSize}
-              parsedAmount={bridgeReceiveCurrencyAmount}
+              currencyAmount={bridgeReceiveCurrencyAmount}
             />
             {` on ${recipientChainName}`}
           </TokenFlowContainer>
@@ -140,7 +158,7 @@ export function BridgeStopDetails({
           withTimelineDot
           contentTextColor={getFeeTextColor(bridgeFee)}
         >
-          {isFreeSwapFee(bridgeFee) ? 'FREE' : `$${bridgeFee}`}
+          {feeDisplayNode}
         </ConfirmDetailsItem>
 
         <ConfirmDetailsItem
@@ -201,7 +219,7 @@ export function BridgeStopDetails({
               displaySymbol={bridgeReceiveTokenSymbol}
               usdValue={bridgeReceiveAmountUsdValue}
               tokenLogoSize={tokenLogoSize}
-              parsedAmount={bridgeReceiveCurrencyAmount}
+              currencyAmount={bridgeReceiveCurrencyAmount}
             />
           ) : (
             <b>
@@ -210,7 +228,7 @@ export function BridgeStopDetails({
                 displaySymbol={bridgeReceiveTokenSymbol}
                 usdValue={bridgeReceiveAmountUsdValue}
                 tokenLogoSize={tokenLogoSize}
-                parsedAmount={bridgeReceiveCurrencyAmount}
+                currencyAmount={bridgeReceiveCurrencyAmount}
               />
             </b>
           )}
@@ -278,7 +296,7 @@ export function BridgeStopDetails({
                   displaySymbol={bridgeTokenSymbol}
                   hideFiatAmount={true}
                   tokenLogoSize={tokenLogoSize}
-                  parsedAmount={bridgeSendCurrencyAmount}
+                  currencyAmount={bridgeSendCurrencyAmount}
                 />
               </b>
             </ConfirmDetailsItem>
@@ -306,7 +324,7 @@ export function BridgeStopDetails({
                   displaySymbol={bridgeReceiveTokenSymbol}
                   usdValue={bridgeReceiveAmountUsdValue}
                   tokenLogoSize={tokenLogoSize}
-                  parsedAmount={bridgeReceiveCurrencyAmount}
+                  currencyAmount={bridgeReceiveCurrencyAmount}
                 />
               )}
             </b>

@@ -87,11 +87,9 @@ export function SwapStopDetails({
   swapExplorerUrl,
 }: SwapStopDetailsProps): ReactNode {
   const sellToken = sellCurrencyAmount.currency
-  const sellAmount = sellCurrencyAmount.toSignificant(6)
   const sellTokenSymbol = sellToken.symbol || '???'
 
   const buyToken = buyCurrencyAmount.currency
-  const buyAmount = buyCurrencyAmount.toSignificant(6)
   const buyTokenSymbol = buyToken.symbol || '???'
 
   const networkCostUsdValue = networkCostUsdInfo?.value
@@ -134,20 +132,18 @@ export function SwapStopDetails({
           <TokenFlowContainer>
             <TokenAmountDisplay
               token={sellToken}
-              amount={sellAmount}
               displaySymbol={sellTokenSymbol}
               tokenLogoSize={tokenLogoSize}
               hideFiatAmount={true}
-              parsedAmount={sellCurrencyAmount}
+              currencyAmount={sellCurrencyAmount}
             />
             <ArrowIcon>→</ArrowIcon>
             <TokenAmountDisplay
               token={buyToken}
-              amount={buyAmount}
               displaySymbol={buyTokenSymbol}
               tokenLogoSize={tokenLogoSize}
               hideFiatAmount={true}
-              parsedAmount={buyCurrencyAmount}
+              currencyAmount={buyCurrencyAmount}
             />
             {` on ${sourceChainName}`}
           </TokenFlowContainer>
@@ -197,7 +193,7 @@ export function SwapStopDetails({
             {networkCostAmount ? (
               <TokenAmountDisplay
                 token={sellToken}
-                parsedAmount={networkCostAmount}
+                currencyAmount={networkCostAmount}
                 displaySymbol={sellTokenSymbol}
                 usdValue={networkCostUsdValue}
                 tokenLogoSize={tokenLogoSize}
@@ -223,7 +219,7 @@ export function SwapStopDetails({
           >
             <TokenAmountDisplay
               token={buyToken}
-              parsedAmount={swapExpectedToReceiveAmount}
+              currencyAmount={swapExpectedToReceiveAmount}
               displaySymbol={buyTokenSymbol}
               usdValue={swapExpectedReceiveUsdValue}
               tokenLogoSize={tokenLogoSize}
@@ -274,7 +270,7 @@ export function SwapStopDetails({
             <b>
               <TokenAmountDisplay
                 token={buyToken}
-                parsedAmount={receivedAmount}
+                currencyAmount={receivedAmount}
                 displaySymbol={buyTokenSymbol}
                 usdValue={receivedAmountUsdValue}
                 tokenLogoSize={tokenLogoSize}
@@ -302,7 +298,7 @@ export function SwapStopDetails({
               +{' '}
               <TokenAmountDisplay
                 token={buyToken}
-                parsedAmount={surplusAmount}
+                currencyAmount={surplusAmount}
                 displaySymbol={buyTokenSymbol}
                 usdValue={surplusAmountUsdValue}
                 tokenLogoSize={tokenLogoSize}
@@ -324,7 +320,7 @@ export function SwapStopDetails({
             <b>
               <TokenAmountDisplay
                 token={buyToken}
-                parsedAmount={receivedAmount}
+                currencyAmount={receivedAmount}
                 displaySymbol={buyTokenSymbol}
                 usdValue={receivedAmountUsdValue}
                 tokenLogoSize={tokenLogoSize}
@@ -353,7 +349,7 @@ export function SwapStopDetails({
               +{' '}
               <TokenAmountDisplay
                 token={buyToken}
-                parsedAmount={surplusAmount}
+                currencyAmount={surplusAmount}
                 displaySymbol={buyTokenSymbol}
                 usdValue={surplusAmountUsdValue}
                 tokenLogoSize={tokenLogoSize}
@@ -386,7 +382,7 @@ export function SwapStopDetails({
               <b>
                 <TokenAmountDisplay
                   token={buyToken}
-                  parsedAmount={swapMinReceiveAmount}
+                  currencyAmount={swapMinReceiveAmount}
                   displaySymbol={buyTokenSymbol}
                   usdValue={swapMinReceiveUsdValue}
                   tokenLogoSize={tokenLogoSize}
@@ -412,7 +408,7 @@ export function SwapStopDetails({
               <b>
                 <TokenAmountDisplay
                   token={buyToken}
-                  parsedAmount={swapMinReceiveAmount}
+                  currencyAmount={swapMinReceiveAmount}
                   displaySymbol={buyTokenSymbol}
                   usdValue={swapMinReceiveUsdValue}
                   tokenLogoSize={tokenLogoSize}

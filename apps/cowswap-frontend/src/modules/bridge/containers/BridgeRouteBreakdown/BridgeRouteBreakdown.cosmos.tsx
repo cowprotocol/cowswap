@@ -29,7 +29,6 @@ import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 import { SolversInfoUpdater } from 'common/updaters/SolversInfoUpdater'
 
 import { BridgeProvider, BRIDGE_PROVIDER_DETAILS } from '../../constants'
-import { BridgeFeeType } from '../../types'
 import { StopStatusEnum } from '../../utils/status'
 
 import { BridgeRouteBreakdown } from './index'
@@ -73,7 +72,7 @@ const defaultProps = {
   // Bridge details
   bridgeSendCurrencyAmount: createAmount(COW_MAINNET, '3442.423'),
   bridgeReceiveCurrencyAmount: createAmount(COW_GNOSIS, '3433.1'),
-  bridgeFee: '1.50',
+  bridgeFee: createAmount(USDC_MAINNET, '1.50'),
   maxBridgeSlippage: '1',
   estimatedTime: 1200, // 20 minutes in seconds
   recipient: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045', // vitalik.eth
@@ -169,8 +168,10 @@ const BridgeRouteWithAccordion = ({ props, isOpen = false }: { props: typeof def
   const [open, setOpen] = React.useState(isOpen)
 
   // Create mock currency amount for the fee
-  const feeAmount =
-    props.bridgeFee === BridgeFeeType.FREE ? createAmount(USDC, '0') : createAmount(USDC, props.bridgeFee)
+  const feeAmount: CurrencyAmount<Currency> =
+    props.bridgeFee instanceof CurrencyAmount
+      ? props.bridgeFee // It's already a CurrencyAmount (props.bridgeFee is CurrencyAmount<TokenWithLogo>)
+      : createAmount(USDC, '0') // It must be BridgeFeeType.FREE, so create a zero amount with the local mock USDC
 
   return (
     <TradeDetailsAccordion
