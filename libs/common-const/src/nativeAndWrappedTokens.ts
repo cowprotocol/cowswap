@@ -50,6 +50,22 @@ export const WRAPPED_NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> 
     'WETH',
     'Wrapped Ether',
   ),
+  [SupportedChainId.POLYGON]: new TokenWithLogo(
+    undefined,
+    SupportedChainId.POLYGON,
+    '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
+    DEFAULT_NATIVE_DECIMALS,
+    'WPOL',
+    'Wrapped POL',
+  ),
+  [SupportedChainId.AVALANCHE]: new TokenWithLogo(
+    undefined,
+    SupportedChainId.AVALANCHE,
+    '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7',
+    DEFAULT_NATIVE_DECIMALS,
+    'WAVAX',
+    'Wrapped AVAX',
+  ),
 }
 
 export const NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> = {
@@ -92,6 +108,22 @@ export const NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> = {
     DEFAULT_NATIVE_DECIMALS,
     'ETH',
     'Ether',
+  ),
+  [SupportedChainId.POLYGON]: new TokenWithLogo(
+    undefined, // TODO: add logo
+    SupportedChainId.POLYGON,
+    NATIVE_CURRENCY_ADDRESS,
+    DEFAULT_NATIVE_DECIMALS,
+    'POL',
+    'Polygon',
+  ),
+  [SupportedChainId.AVALANCHE]: new TokenWithLogo(
+    undefined, // TODO: add logo
+    SupportedChainId.AVALANCHE,
+    NATIVE_CURRENCY_ADDRESS,
+    DEFAULT_NATIVE_DECIMALS,
+    'AVAX',
+    'Avalanche',
   ),
 }
 

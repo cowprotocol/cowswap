@@ -1,9 +1,11 @@
+import AvalancheLogo from '@cowprotocol/assets/cow-swap/avax-logo.svg'
 import ArbitrumOneLogoLight from '@cowprotocol/assets/cow-swap/network-arbitrum-one-logo-blue.svg'
 import ArbitrumOneLogoDark from '@cowprotocol/assets/cow-swap/network-arbitrum-one-logo-white.svg'
 import BaseLogo from '@cowprotocol/assets/cow-swap/network-base-logo.svg'
 import GnosisChainLogo from '@cowprotocol/assets/cow-swap/network-gnosis-chain-logo.svg'
 import EthereumLogo from '@cowprotocol/assets/cow-swap/network-mainnet-logo.svg'
 import SepoliaLogo from '@cowprotocol/assets/cow-swap/network-sepolia-logo.svg'
+import PolygonLogo from '@cowprotocol/assets/cow-swap/polygon-logo.svg'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { NATIVE_CURRENCIES } from './nativeAndWrappedTokens'
@@ -95,6 +97,32 @@ export const CHAIN_INFO: ChainInfoMap = {
     logo: { light: SepoliaLogo, dark: SepoliaLogo },
     color: '#C12FF2',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.SEPOLIA],
+  },
+  [SupportedChainId.POLYGON]: {
+    docs: 'https://docs.polygon.technology',
+    explorer: 'https://polygonscan.com',
+    infoLink: 'https://polygon.technology',
+    label: 'Polygon',
+    name: 'polygon',
+    addressPrefix: 'op',
+    explorerTitle: 'Polygonscan',
+    urlAlias: 'polygon',
+    logo: { light: PolygonLogo, dark: PolygonLogo },
+    color: '#ff0420',
+    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.POLYGON],
+  },
+  [SupportedChainId.AVALANCHE]: {
+    docs: 'https://build.avax.network/docs',
+    explorer: 'https://snowtrace.io',
+    infoLink: 'https://avax.network',
+    label: 'Avalanche',
+    name: 'avalanche',
+    addressPrefix: 'avax',
+    explorerTitle: 'Snowtrace',
+    urlAlias: 'avalanche',
+    logo: { light: AvalancheLogo, dark: AvalancheLogo },
+    color: '#ff3944',
+    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.AVALANCHE],
   },
 }
 
