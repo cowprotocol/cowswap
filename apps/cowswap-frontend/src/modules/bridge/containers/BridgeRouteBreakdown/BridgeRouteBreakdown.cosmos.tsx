@@ -22,6 +22,7 @@ import { Container, ContainerBox } from 'modules/trade/containers/TradeWidget/st
 import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
 import { TradeConfirmation } from 'modules/trade/pure/TradeConfirmation'
 import { ReceiveAmountInfo } from 'modules/trade/types'
+import { getUsdPriceStateKey } from 'modules/usdAmount'
 import { usdRawPricesAtom } from 'modules/usdAmount/state/usdRawPricesAtom'
 
 import { CurrencyInputPanel } from 'common/pure/CurrencyInputPanel/CurrencyInputPanel'
@@ -82,21 +83,21 @@ const defaultProps = {
 // Create mock USD price data using proper Token objects
 const mockUsdPrices = {
   // USDC on Mainnet (lowercase address as key)
-  [USDC_MAINNET.address.toLowerCase()]: {
+  [getUsdPriceStateKey(USDC_MAINNET)]: {
     currency: USDC_MAINNET,
     price: new Fraction(1, 1), // 1:1 with USD
     isLoading: false,
     updatedAt: Date.now(),
   },
   // COW on Mainnet (lowercase address as key)
-  [COW_MAINNET.address.toLowerCase()]: {
+  [getUsdPriceStateKey(COW_MAINNET)]: {
     currency: COW_MAINNET,
     price: new Fraction(43, 100),
     isLoading: false,
     updatedAt: Date.now(),
   },
   // COW on Gnosis Chain (lowercase address as key)
-  [COW_GNOSIS.address.toLowerCase()]: {
+  [getUsdPriceStateKey(COW_GNOSIS)]: {
     currency: COW_GNOSIS,
     price: new Fraction(43, 100),
     isLoading: false,
