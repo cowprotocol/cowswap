@@ -111,7 +111,6 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
     <BridgeRouteBreakdown
       sellCurrencyAmount={inputCurrencyAmount as CurrencyAmount<TokenWithLogo>}
       buyCurrencyAmount={outputCurrencyAmount as CurrencyAmount<TokenWithLogo>}
-      bridgeSendCurrencyAmount={inputCurrencyAmount as CurrencyAmount<TokenWithLogo>}
       bridgeReceiveCurrencyAmount={outputCurrencyAmount as CurrencyAmount<TokenWithLogo>}
       networkCost={bridgeData.networkCost}
       swapMinReceive={bridgeData.swapMinReceive}
