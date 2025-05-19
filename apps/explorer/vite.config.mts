@@ -1,5 +1,6 @@
 /// <reference types="vitest" />
-import { version as CONTRACT_VERSION } from '@cowprotocol/contracts/package.json' assert { type: 'json' }
+import contractsPgk from '@cowprotocol/contracts/package.json' with { type: 'json' }
+const CONTRACT_VERSION = contractsPgk.version
 
 import react from '@vitejs/plugin-react-swc'
 import { defineConfig, searchForWorkspaceRoot } from 'vite'
