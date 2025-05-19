@@ -24,7 +24,6 @@ import {
   RefundRecipientWrapper,
   StatusAwareText,
   StyledAnimatedTimelineRefundIcon,
-  StyledRefundCompleteIcon as LocalStyledRefundCompleteIcon,
   StyledStatusCheckmarkIcon,
   StyledStatusCloseIcon,
   StyledTimelineCheckmarkIcon,
@@ -39,9 +38,6 @@ import { StopStatusEnum } from '../../utils/status'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { NetworkLogo } from '../NetworkLogo'
 import { TokenAmountDisplay } from '../TokenAmountDisplay'
-
-// Re-export for SwapStopDetails
-export { LocalStyledRefundCompleteIcon as StyledRefundCompleteIcon }
 
 const CloseIcon = <StyledStatusCloseIcon src={CLOSE_ICON_X} />
 

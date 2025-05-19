@@ -30,24 +30,6 @@ const refundAnimation = keyframes`
   }
 `
 
-const refundCompleteAnimation = keyframes`
-  0% {
-    transform: rotate(0deg) scale(1);
-    animation-timing-function: ease-in;
-  }
-  30% {
-    transform: rotate(-720deg) scale(1);
-    animation-timing-function: ease-out;
-  }
-  85% {
-    transform: rotate(-1080deg) scale(1.15);
-    animation-timing-function: ease-in;
-  }
-  100% {
-    transform: rotate(-1080deg) scale(1);
-  }
-`
-
 const StatusAwareColors: Record<StopStatusEnum, string> = {
   [StopStatusEnum.PENDING]: `var(${UI.COLOR_INFO_TEXT})`,
   [StopStatusEnum.FAILED]: `var(${UI.COLOR_DANGER_TEXT})`,
@@ -105,15 +87,6 @@ export const InfoTextBold = styled.b`
 
 export const SuccessTextBold = styled.b`
   color: var(${UI.COLOR_SUCCESS_TEXT});
-`
-
-export const StyledRefundCompleteIcon = styled(SVG)`
-  width: 16px;
-  height: 16px;
-  fill: currentColor;
-  display: block;
-  transform-origin: center;
-  animation: ${refundCompleteAnimation} 2.5s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
 `
 
 export const StyledAnimatedTimelineRefundIcon = styled(SVG)`
