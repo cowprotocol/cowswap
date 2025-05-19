@@ -1,4 +1,4 @@
-import { revalidateTag } from 'next/cache'
+import { revalidateTag, revalidatePath } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 
 // Secret key for protecting the revalidation endpoint
@@ -7,6 +7,7 @@ const REVALIDATE_SECRET = process.env.REVALIDATE_SECRET
 export async function GET(request: NextRequest) {
   const secret = request.nextUrl.searchParams.get('secret')
   const tag = request.nextUrl.searchParams.get('tag') || 'cms-content'
+  const path = request.nextUrl.searchParams.get('path')
 
   // Validate that the secret is configured
   if (!REVALIDATE_SECRET) {
@@ -20,11 +21,28 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Revalidate the tag
+    // Revalidate the tag for data freshness
     revalidateTag(tag)
+
+    // Always revalidate the main learn page to ensure it's fresh
+    revalidatePath('/learn')
+
+    // If a specific path was provided, revalidate it to update the route manifest
+    if (path) {
+      // Ensure path has the proper format
+      const formattedPath = path.startsWith('/') ? path : `/${path}`
+
+      // For article paths, ensure they're in the correct format
+      if (formattedPath.includes('learn/') && !formattedPath.startsWith('/learn/')) {
+        revalidatePath(`/learn/${formattedPath.split('learn/')[1]}`)
+      } else {
+        revalidatePath(formattedPath)
+      }
+    }
+
     return NextResponse.json({
       revalidated: true,
-      message: `Cache for tag '${tag}' has been revalidated`,
+      message: `Cache for tag '${tag}' has been revalidated${path ? `, path '${path}' has been revalidated` : ''}`,
       date: new Date().toISOString(),
     })
   } catch (err) {
