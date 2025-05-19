@@ -78,7 +78,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       settlementContract,
       allowsOffchainSigning,
       dispatch,
-      signer: provider.getSigner(),
+      signer: provider.getUncheckedSigner(),
       rateImpact,
       permitInfo: !enoughAllowance ? permitInfo : undefined,
       generatePermitHook,
