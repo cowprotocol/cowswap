@@ -8637,12 +8637,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/lodash@^4.14.136":
-  version "4.14.197"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.197.tgz#e95c5ddcc814ec3e84c891910a01e0c8a378c54b"
-  integrity sha512-BMVOiWs0uNxHVlHBgzTIqJYmj+PgCo4euloGF+5m4okL3rEYzM2EEv78mw8zWSMM57dM7kVIgJ2QDvwHSoCI5g==
-
-"@types/lodash@^4.14.172":
+"@types/lodash@^4.14.136", "@types/lodash@^4.14.172":
   version "4.17.0"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.0.tgz#d774355e41f372d5350a4d0714abb48194a489c3"
   integrity sha512-t7dhREVv6dbNj0q17X12j7yDG4bD/DHYX7o5/DbDxobP0HnGPgpRz2Ej77aL7TZT3DSw13fqUTj8J4mMnqa7WA==
@@ -9311,6 +9306,14 @@
     classnames "^2.3.1"
     prop-types "^15.6.0"
 
+"@visx/curve@3.12.0":
+  version "3.12.0"
+  resolved "https://registry.yarnpkg.com/@visx/curve/-/curve-3.12.0.tgz#e22e4b62a2ade29ffd6c87d627b7148d2ed6d2bb"
+  integrity sha512-Ng1mefXIzoIoAivw7dJ+ZZYYUbfuwXgZCgQynShr6ZIVw7P4q4HeQfJP3W24ON+1uCSrzoycHSXRelhR9SBPcw==
+  dependencies:
+    "@types/d3-shape" "^1.3.1"
+    d3-shape "^1.0.6"
+
 "@visx/curve@3.3.0":
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/@visx/curve/-/curve-3.3.0.tgz#a5ed8f1511d404ef83c0b956ed5021088ac64b0e"
@@ -9339,6 +9342,15 @@
     d3-shape "^1.2.0"
     prop-types "^15.6.2"
 
+"@visx/group@3.12.0":
+  version "3.12.0"
+  resolved "https://registry.yarnpkg.com/@visx/group/-/group-3.12.0.tgz#2c69b810b52f1c1e69bf6f2fe923d184e32078c7"
+  integrity sha512-Dye8iS1alVXPv7nj/7M37gJe6sSKqJLH7x6sEWAsRQ9clI0kFvjbKcKgF+U3aAVQr0NCohheFV+DtR8trfK/Ag==
+  dependencies:
+    "@types/react" "*"
+    classnames "^2.3.1"
+    prop-types "^15.6.2"
+
 "@visx/group@3.3.0":
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/@visx/group/-/group-3.3.0.tgz#20c1b75c1ab31798c3c702b6f58c412c688a6373"
@@ -9363,6 +9375,13 @@
     lodash "^4.17.21"
     prop-types "^15.6.1"
 
+"@visx/scale@3.12.0":
+  version "3.12.0"
+  resolved "https://registry.yarnpkg.com/@visx/scale/-/scale-3.12.0.tgz#1b6e8655e9be17ea73c59506b1aba9ad06825679"
+  integrity sha512-+ubijrZ2AwWCsNey0HGLJ0YKNeC/XImEFsr9rM+Uef1CM3PNM43NDdNTrdBejSlzRq0lcfQPWYMYQFSlkLcPOg==
+  dependencies:
+    "@visx/vendor" "3.12.0"
+
 "@visx/scale@3.5.0":
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/@visx/scale/-/scale-3.5.0.tgz#c3db3863bbdd24d44781104ef5ee4cdc8df6f11d"
@@ -9370,7 +9389,7 @@
   dependencies:
     "@visx/vendor" "3.5.0"
 
-"@visx/shape@3.5.0", "@visx/shape@^3.5.0":
+"@visx/shape@3.5.0":
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/@visx/shape/-/shape-3.5.0.tgz#fa4bb7a9ed863360be541d75c434503246305e36"
   integrity sha512-DP3t9jBQ7dSE3e6ptA1xO4QAIGxO55GrY/6P+S6YREuQGjZgq20TLYLAsiaoPEzFSS4tp0m12ZTPivWhU2VBTw==
@@ -9388,6 +9407,24 @@
     lodash "^4.17.21"
     prop-types "^15.5.10"
 
+"@visx/shape@^3.5.0":
+  version "3.12.0"
+  resolved "https://registry.yarnpkg.com/@visx/shape/-/shape-3.12.0.tgz#ce54491d2fb2d96a1f31095ff12218d85d3a2e15"
+  integrity sha512-/1l0lrpX9tPic6SJEalryBKWjP/ilDRnQA+BGJTI1tj7i23mJ/J0t4nJHyA1GrL4QA/bM/qTJ35eyz5dEhJc4g==
+  dependencies:
+    "@types/d3-path" "^1.0.8"
+    "@types/d3-shape" "^1.3.1"
+    "@types/lodash" "^4.14.172"
+    "@types/react" "*"
+    "@visx/curve" "3.12.0"
+    "@visx/group" "3.12.0"
+    "@visx/scale" "3.12.0"
+    classnames "^2.3.1"
+    d3-path "^1.0.5"
+    d3-shape "^1.2.0"
+    lodash "^4.17.21"
+    prop-types "^15.5.10"
+
 "@visx/text@3.3.0":
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/@visx/text/-/text-3.3.0.tgz#f53366a9c18bc448c6b8869527c0f75c9591e7a7"
@@ -9399,6 +9436,31 @@
     lodash "^4.17.21"
     prop-types "^15.7.2"
     reduce-css-calc "^1.3.0"
+
+"@visx/vendor@3.12.0":
+  version "3.12.0"
+  resolved "https://registry.yarnpkg.com/@visx/vendor/-/vendor-3.12.0.tgz#36de9d513648b37e1569a963881261dce28b1354"
+  integrity sha512-SVO+G0xtnL9dsNpGDcjCgoiCnlB3iLSM9KLz1sLbSrV7RaVXwY3/BTm2X9OWN1jH2a9M+eHt6DJ6sE6CXm4cUg==
+  dependencies:
+    "@types/d3-array" "3.0.3"
+    "@types/d3-color" "3.1.0"
+    "@types/d3-delaunay" "6.0.1"
+    "@types/d3-format" "3.0.1"
+    "@types/d3-geo" "3.1.0"
+    "@types/d3-interpolate" "3.0.1"
+    "@types/d3-scale" "4.0.2"
+    "@types/d3-time" "3.0.0"
+    "@types/d3-time-format" "2.1.0"
+    d3-array "3.2.1"
+    d3-color "3.1.0"
+    d3-delaunay "6.0.2"
+    d3-format "3.1.0"
+    d3-geo "3.1.0"
+    d3-interpolate "3.0.1"
+    d3-scale "4.0.2"
+    d3-time "3.1.0"
+    d3-time-format "4.1.0"
+    internmap "2.0.3"
 
 "@visx/vendor@3.5.0":
   version "3.5.0"
