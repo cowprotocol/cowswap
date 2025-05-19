@@ -1,5 +1,5 @@
 /// <reference types="vitest" />
-import contractsPkg from '@cowprotocol/contracts/package.json' assert { type: 'json' }
+import contractsPkg from '@cowprotocol/contracts/package.json' with { type: 'json' }
 const CONTRACT_VERSION = contractsPkg.version
 
 import react from '@vitejs/plugin-react-swc'
