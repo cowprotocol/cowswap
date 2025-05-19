@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react'
+import { useMemo, useCallback, ReactNode } from 'react'
 
 import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
 import { SolverInfo } from '@cowprotocol/core'
@@ -34,7 +34,7 @@ export interface BridgeRouteBreakdownProps {
   bridgeSendCurrencyAmount: CurrencyAmount<TokenWithLogo>
   bridgeReceiveCurrencyAmount: CurrencyAmount<TokenWithLogo>
   bridgeFee: CurrencyAmount<TokenWithLogo> | BridgeFeeType
-  maxBridgeSlippage: string
+  maxBridgeSlippage?: string
   estimatedTime: number
   recipient: string
   bridgeProvider: BridgeProtocolConfig
@@ -54,19 +54,12 @@ export interface BridgeRouteBreakdownProps {
   isExpanded?: boolean
   onExpandToggle?: () => void
 
-  // Section-level accordion functionality
-  isSwapSectionCollapsible?: boolean
-  isSwapSectionExpanded?: boolean
-  onSwapSectionToggle?: () => void
-  isBridgeSectionCollapsible?: boolean
-  isBridgeSectionExpanded?: boolean
-  onBridgeSectionToggle?: () => void
-
   winningSolverId?: string | null
   receivedAmount?: CurrencyAmount<TokenWithLogo> | null
   surplusAmount?: CurrencyAmount<TokenWithLogo> | null
   swapExplorerUrl?: string
   bridgeExplorerUrl?: string
+  collapsedDefault?: ReactNode
 }
 
 export function BridgeRouteBreakdown({
@@ -92,20 +85,19 @@ export function BridgeRouteBreakdown({
   isCollapsible = false,
   isExpanded = true,
   onExpandToggle = () => {},
-  isSwapSectionCollapsible = false,
-  isSwapSectionExpanded = true,
-  onSwapSectionToggle = () => {},
-  isBridgeSectionCollapsible = false,
-  isBridgeSectionExpanded = true,
-  onBridgeSectionToggle = () => {},
   winningSolverId,
   receivedAmount = null,
   surplusAmount = null,
   swapExplorerUrl,
   bridgeExplorerUrl,
+  collapsedDefault,
 }: BridgeRouteBreakdownProps) {
   const sellToken = sellCurrencyAmount.currency
   const buyToken = buyCurrencyAmount.currency
+
+  // Determine if we are in a mode where statuses are actively displayed (like the BridgeStatus fixture)
+  // This is true if swapStatus is provided, indicating a status-aware context.
+  const isInStatusDisplayMode = typeof swapStatus !== 'undefined'
 
   // Derive chain information
   // This only needs to be recomputed when the chain ID changes
@@ -223,18 +215,25 @@ export function BridgeRouteBreakdown({
     [bridgeProvider, isCollapsible, isExpanded, handleHeaderClick, HeaderComponent],
   )
 
+  // Logic for when the main component is collapsed
   if (isCollapsible && !isExpanded) {
-    return <Wrapper hasBackground={hasBackground}>{!hideRouteHeader && headerContent}</Wrapper>
+    // Render header and then the collapsedDefault content if provided
+    return (
+      <Wrapper hasBackground={hasBackground}>
+        {!hideRouteHeader && headerContent}
+        {collapsedDefault}
+      </Wrapper>
+    )
   }
 
+  // Main expanded view
   return (
     <Wrapper hasBackground={hasBackground}>
       {!hideRouteHeader && headerContent}
 
       <SwapStopDetails
-        isCollapsible={isSwapSectionCollapsible}
-        isExpanded={isSwapSectionExpanded}
-        onToggle={onSwapSectionToggle}
+        isCollapsible={isCollapsible}
+        defaultExpanded={!isInStatusDisplayMode}
         status={swapStatus}
         sellCurrencyAmount={sellCurrencyAmount}
         buyCurrencyAmount={buyCurrencyAmount}
@@ -264,9 +263,8 @@ export function BridgeRouteBreakdown({
       />
 
       <BridgeStopDetails
-        isCollapsible={isBridgeSectionCollapsible}
-        isExpanded={isBridgeSectionExpanded}
-        onToggle={onBridgeSectionToggle}
+        isCollapsible={isCollapsible}
+        defaultExpanded={true}
         status={bridgeStatus}
         bridgeProvider={bridgeProvider}
         bridgeSendCurrencyAmount={bridgeSendCurrencyAmount}

@@ -1,7 +1,7 @@
 import { Provider, createStore } from 'jotai'
-import React from 'react'
+import React, { ReactNode } from 'react'
 
-import { USDC_MAINNET, COW, getChainInfo } from '@cowprotocol/common-const' // TokenWithLogo removed
+import { USDC_MAINNET, COW, getChainInfo } from '@cowprotocol/common-const'
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
@@ -29,6 +29,8 @@ import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 import { SolversInfoUpdater } from 'common/updaters/SolversInfoUpdater'
 
 import { BridgeProvider, BRIDGE_PROVIDER_DETAILS } from '../../constants'
+import { BridgeAccordionSummary } from '../../pure/BridgeAccordionSummary'
+import { BridgeFeeType } from '../../types'
 import { StopStatusEnum } from '../../utils/status'
 
 import { BridgeRouteBreakdown } from './index'
@@ -167,11 +169,27 @@ const USDC = {
 const BridgeRouteWithAccordion = ({ props, isOpen = false }: { props: typeof defaultProps; isOpen?: boolean }) => {
   const [open, setOpen] = React.useState(isOpen)
 
-  // Create mock currency amount for the fee
-  const feeAmount: CurrencyAmount<Currency> =
-    props.bridgeFee instanceof CurrencyAmount
-      ? props.bridgeFee // It's already a CurrencyAmount (props.bridgeFee is CurrencyAmount<TokenWithLogo>)
-      : createAmount(USDC, '0') // It must be BridgeFeeType.FREE, so create a zero amount with the local mock USDC
+  let feeAmount: CurrencyAmount<Currency>
+
+  if (props.bridgeFee instanceof CurrencyAmount) {
+    feeAmount = props.bridgeFee as CurrencyAmount<Currency>
+  } else if (props.bridgeFee === BridgeFeeType.FREE) {
+    feeAmount = createAmount(USDC, '0')
+  } else {
+    console.warn('Unexpected bridgeFee type in BridgeRouteWithAccordion fixture:', props.bridgeFee)
+    feeAmount = createAmount(USDC, '0')
+  }
+
+  const feeWrapper = (defaultFeeContent: ReactNode): ReactNode => {
+    if (props.bridgeProvider && typeof props.estimatedTime === 'number') {
+      return (
+        <BridgeAccordionSummary bridgeEstimatedTime={props.estimatedTime / 60} bridgeProtocol={props.bridgeProvider}>
+          {defaultFeeContent}
+        </BridgeAccordionSummary>
+      )
+    }
+    return defaultFeeContent
+  }
 
   return (
     <TradeDetailsAccordion
@@ -182,12 +200,10 @@ const BridgeRouteWithAccordion = ({ props, isOpen = false }: { props: typeof def
         </RateInfoStyled>
       }
       feeTotalAmount={feeAmount}
-      feeUsdTotalAmount={feeAmount} // Pass the feeAmount as USD amount to trigger BridgeAccordionSummary
+      feeUsdTotalAmount={feeAmount}
       open={open}
       onToggle={() => setOpen(!open)}
-      bridgeEstimatedTime={props.estimatedTime / 60}
-      bridgeProtocol={props.bridgeProvider}
-      showBridgeUI={true}
+      feeWrapper={feeWrapper}
     >
       <BridgeRouteBreakdown {...props} />
     </TradeDetailsAccordion>
@@ -376,9 +392,6 @@ const SwapForm = () => {
  * a real trade confirmation screen with the BridgeRouteBreakdown integrated
  */
 const SwapConfirmation = () => {
-  // State for controlling the accordion's expanded/collapsed state for BridgeRouteBreakdown
-  const [isExpanded, setIsExpanded] = React.useState(false)
-
   // Mock data for TradeConfirmation component
   const inputCurrencyInfo = {
     amount: createAmount(USDC_MAINNET, '1000'),
@@ -489,43 +502,37 @@ const SwapConfirmation = () => {
             {/* Route breakdown component with collapsible behavior */}
             <BridgeRouteBreakdown
               {...defaultProps}
-              isCollapsible={true}
-              isExpanded={isExpanded}
-              onExpandToggle={() => setIsExpanded(!isExpanded)}
-              winningSolverId={null} // For this fixture, no specific winning solver needed for overall confirmation view
-              swapExplorerUrl={defaultProps.swapExplorerUrl} // Use the defaultProps swapExplorerUrl
-              bridgeExplorerUrl={defaultProps.bridgeExplorerUrl} // Use the defaultProps bridgeExplorerUrl
+              isCollapsible={false}
+              winningSolverId={null}
+              collapsedDefault={
+                <>
+                  {/* Recipient line item */}
+                  <ConfirmationDetailsRow>
+                    <Label>Recipient</Label>
+                    <RecipientValue>
+                      <ChainLogoImg
+                        src={getChainInfo(defaultProps.bridgeReceiveCurrencyAmount.currency.chainId).logo.light}
+                        alt="Chain logo"
+                      />
+                      {shortenAddress(defaultProps.recipient)} &#8599;
+                    </RecipientValue>
+                  </ConfirmationDetailsRow>
+
+                  <DividerHorizontal />
+
+                  {/* Min to receive line item */}
+                  <MinToReceiveRow>
+                    <Label>Min. to receive</Label>
+                    <MinToReceiveValue>
+                      <TokenIconWrapper>
+                        <TokenLogo token={defaultProps.bridgeReceiveCurrencyAmount.currency} size={18} />
+                      </TokenIconWrapper>
+                      {`${defaultProps.swapMinReceive.toSignificant(6)} ${defaultProps.buyCurrencyAmount.currency.symbol}`}
+                    </MinToReceiveValue>
+                  </MinToReceiveRow>
+                </>
+              }
             />
-
-            {/* Only show these elements when breakdown is NOT expanded */}
-            {!isExpanded && (
-              <>
-                {/* Recipient line item */}
-                <ConfirmationDetailsRow>
-                  <Label>Recipient</Label>
-                  <RecipientValue>
-                    <ChainLogoImg
-                      src={getChainInfo(defaultProps.buyCurrencyAmount.currency.chainId).logo.light}
-                      alt="Chain logo"
-                    />
-                    {shortenAddress(defaultProps.recipient)} &#8599;
-                  </RecipientValue>
-                </ConfirmationDetailsRow>
-
-                <DividerHorizontal />
-
-                {/* Min to receive line item */}
-                <MinToReceiveRow>
-                  <Label>Min. to receive</Label>
-                  <MinToReceiveValue>
-                    <TokenIconWrapper>
-                      <TokenLogo token={defaultProps.buyCurrencyAmount.currency} size={18} />
-                    </TokenIconWrapper>
-                    3423.83 COW <FiatValueText>(≈ $994.23)</FiatValueText>
-                  </MinToReceiveValue>
-                </MinToReceiveRow>
-              </>
-            )}
 
             {/* Rest of content from TradeConfirmation */}
             {restContent}
@@ -578,10 +585,6 @@ function BridgeStatus() {
     options: ['swapDoneBridgePending', 'bothDone', 'bridgeFailed', 'refundComplete'],
   })
 
-  const [isSwapSectionExpanded, setIsSwapSectionExpanded] = React.useState(false)
-  const [isBridgeSectionExpanded, setIsBridgeSectionExpanded] = React.useState(true)
-
-  // Get the current scenario based on selected key
   const scenario = scenarios[scenarioKey as ScenarioKey]
 
   let winningSolverIdForFixture: string | null = null
@@ -601,21 +604,14 @@ function BridgeStatus() {
         <StatusTitle>Bridge Status: {scenario.label}</StatusTitle>
         <BridgeRouteBreakdown
           {...defaultProps}
+          isCollapsible={true}
           hasBackground={true}
           hideRouteHeader={true}
           swapStatus={scenario.swapStatus}
           bridgeStatus={scenario.bridgeStatus}
-          isSwapSectionCollapsible={true}
-          isSwapSectionExpanded={isSwapSectionExpanded}
-          onSwapSectionToggle={() => setIsSwapSectionExpanded(!isSwapSectionExpanded)}
-          isBridgeSectionCollapsible={true}
-          isBridgeSectionExpanded={isBridgeSectionExpanded}
-          onBridgeSectionToggle={() => setIsBridgeSectionExpanded(!isBridgeSectionExpanded)}
           winningSolverId={winningSolverIdForFixture}
           receivedAmount={mockReceivedAmount}
           surplusAmount={mockSurplusAmount}
-          swapExplorerUrl={defaultProps.swapExplorerUrl} // Use the defaultProps swapExplorerUrl
-          bridgeExplorerUrl={defaultProps.bridgeExplorerUrl} // Use the defaultProps bridgeExplorerUrl
         />
       </TradeFormContainer>
     </BridgeFixtureWrapper>
