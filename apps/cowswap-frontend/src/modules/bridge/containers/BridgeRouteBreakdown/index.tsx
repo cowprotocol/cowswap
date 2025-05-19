@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
@@ -58,6 +58,7 @@ export interface BridgeRouteBreakdownProps {
 
   // Overall Accordion functionality
   isCollapsible?: boolean
+  collapsedDefault?: ReactNode
 }
 
 export function BridgeRouteBreakdown({
@@ -75,6 +76,7 @@ export function BridgeRouteBreakdown({
   bridgeProvider,
   tokenLogoSize = 18,
   hasBackground = false,
+  collapsedDefault,
   swapStatus,
   bridgeStatus,
   hideBridgeFlowFiatAmount = false,
@@ -140,7 +142,12 @@ export function BridgeRouteBreakdown({
   )
 
   if (isCollapsible && !isExpanded) {
-    return <Wrapper hasBackground={hasBackground}>{!hideRouteHeader && headerContent}</Wrapper>
+    return (
+      <>
+        <Wrapper hasBackground={hasBackground}>{!hideRouteHeader && headerContent}</Wrapper>
+        {collapsedDefault}
+      </>
+    )
   }
 
   return (

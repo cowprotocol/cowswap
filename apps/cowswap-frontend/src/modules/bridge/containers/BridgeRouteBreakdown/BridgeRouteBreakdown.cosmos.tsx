@@ -175,9 +175,6 @@ const BridgeRouteWithAccordion = ({ props, isOpen = false }: { props: typeof def
       feeUsdTotalAmount={feeAmount} // Pass the feeAmount as USD amount to trigger BridgeAccordionSummary
       open={open}
       onToggle={() => setOpen(!open)}
-      bridgeEstimatedTime={props.estimatedTime / 60}
-      bridgeProtocol={props.bridgeProvider}
-      showBridgeUI={true}
     >
       <BridgeRouteBreakdown {...props} />
     </TradeDetailsAccordion>
@@ -365,9 +362,6 @@ const SwapForm = () => {
  * a real trade confirmation screen with the BridgeRouteBreakdown integrated
  */
 const SwapConfirmation = () => {
-  // State for controlling the accordion's expanded/collapsed state for BridgeRouteBreakdown
-  const [isExpanded, setIsExpanded] = React.useState(false)
-
   // Mock data for TradeConfirmation component
   const inputCurrencyInfo = {
     amount: createAmount(USDC_MAINNET, '1000'),
@@ -479,39 +473,36 @@ const SwapConfirmation = () => {
             <BridgeRouteBreakdown
               {...defaultProps}
               isCollapsible={true}
-              isExpanded={isExpanded}
-              onExpandToggle={() => setIsExpanded(!isExpanded)}
+              // Only show these elements when breakdown is NOT expanded
+              collapsedDefault={
+                <>
+                  {/* Recipient line item */}
+                  <ConfirmationDetailsRow>
+                    <Label>Recipient</Label>
+                    <RecipientValue>
+                      <ChainLogoImg
+                        src={getChainInfo(defaultProps.buyCurrencyAmount.currency.chainId).logo.light}
+                        alt="Chain logo"
+                      />
+                      {shortenAddress(defaultProps.recipient)} &#8599;
+                    </RecipientValue>
+                  </ConfirmationDetailsRow>
+
+                  <DividerHorizontal />
+
+                  {/* Min to receive line item */}
+                  <MinToReceiveRow>
+                    <Label>Min. to receive</Label>
+                    <MinToReceiveValue>
+                      <TokenIconWrapper>
+                        <TokenLogo token={defaultProps.buyCurrencyAmount.currency} size={18} />
+                      </TokenIconWrapper>
+                      3423.83 COW <FiatValueText>(≈ $994.23)</FiatValueText>
+                    </MinToReceiveValue>
+                  </MinToReceiveRow>
+                </>
+              }
             />
-
-            {/* Only show these elements when breakdown is NOT expanded */}
-            {!isExpanded && (
-              <>
-                {/* Recipient line item */}
-                <ConfirmationDetailsRow>
-                  <Label>Recipient</Label>
-                  <RecipientValue>
-                    <ChainLogoImg
-                      src={getChainInfo(defaultProps.buyCurrencyAmount.currency.chainId).logo.light}
-                      alt="Chain logo"
-                    />
-                    {shortenAddress(defaultProps.recipient)} &#8599;
-                  </RecipientValue>
-                </ConfirmationDetailsRow>
-
-                <DividerHorizontal />
-
-                {/* Min to receive line item */}
-                <MinToReceiveRow>
-                  <Label>Min. to receive</Label>
-                  <MinToReceiveValue>
-                    <TokenIconWrapper>
-                      <TokenLogo token={defaultProps.buyCurrencyAmount.currency} size={18} />
-                    </TokenIconWrapper>
-                    3423.83 COW <FiatValueText>(≈ $994.23)</FiatValueText>
-                  </MinToReceiveValue>
-                </MinToReceiveRow>
-              </>
-            )}
 
             {/* Rest of content from TradeConfirmation */}
             {restContent}
@@ -560,9 +551,6 @@ function BridgeStatus() {
     options: ['swapDoneBridgePending', 'bothDone', 'bridgeFailed', 'refundComplete'],
   })
 
-  const [isSwapSectionExpanded, setIsSwapSectionExpanded] = React.useState(false)
-  const [isBridgeSectionExpanded, setIsBridgeSectionExpanded] = React.useState(true)
-
   // Get the current scenario based on selected key
   const scenario = scenarios[scenarioKey as ScenarioKey]
 
@@ -583,12 +571,6 @@ function BridgeStatus() {
           hideRouteHeader={true}
           swapStatus={scenario.swapStatus}
           bridgeStatus={scenario.bridgeStatus}
-          isSwapSectionCollapsible={true}
-          isSwapSectionExpanded={isSwapSectionExpanded}
-          onSwapSectionToggle={() => setIsSwapSectionExpanded(!isSwapSectionExpanded)}
-          isBridgeSectionCollapsible={true}
-          isBridgeSectionExpanded={isBridgeSectionExpanded}
-          onBridgeSectionToggle={() => setIsBridgeSectionExpanded(!isBridgeSectionExpanded)}
         />
       </TradeFormContainer>
     </BridgeFixtureWrapper>
