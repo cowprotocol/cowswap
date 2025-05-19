@@ -181,7 +181,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
           orderParams: {
             account,
             chainId,
-            signer: provider.getSigner(),
+            signer: provider.getUncheckedSigner(),
             kind: orderKind,
             inputAmount,
             outputAmount,
