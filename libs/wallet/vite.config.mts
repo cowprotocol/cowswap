@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 import react from '@vitejs/plugin-react-swc'
 import { defineConfig } from 'vite'
+import macrosPlugin from 'vite-plugin-babel-macros'
 import dts from 'vite-plugin-dts'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
@@ -19,6 +20,7 @@ export default defineConfig({
     viteTsConfigPaths({
       root: '../../',
     }),
+    macrosPlugin(),
   ],
 
   // Uncomment this if you are using workers.
