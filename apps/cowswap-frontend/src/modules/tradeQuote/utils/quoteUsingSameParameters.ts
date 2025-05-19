@@ -1,11 +1,13 @@
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { SupportedChainId, TradeParameters } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, QuoteBridgeRequest, areHooksEqual } from '@cowprotocol/cow-sdk'
 
 import jsonStringify from 'json-stringify-deterministic'
 import { Nullish } from 'types'
 
-import { AppDataInfo } from 'modules/appData'
+import type { AppDataInfo, CowHook } from 'modules/appData'
+
+import type { TradeQuoteState } from '../state/tradeQuoteAtom'
 
 /**
  * Checks if the parameters for the current quote are correct
@@ -14,30 +16,50 @@ import { AppDataInfo } from 'modules/appData'
  */
 export function quoteUsingSameParameters(
   chainId: SupportedChainId,
-  currentParams: Nullish<TradeParameters>,
-  nextParams: Nullish<TradeParameters>,
+  currentQuote: TradeQuoteState,
+  nextParams: Nullish<QuoteBridgeRequest>,
   currentAppData: AppDataInfo['doc'] | undefined,
   appData: AppDataInfo['doc'] | undefined,
 ): boolean {
+  const currentParams = currentQuote.quote?.quoteResults.tradeParameters
   if (!currentParams || !nextParams) return false
 
-  const hasSameAppData = compareAppDataWithoutQuoteData(currentAppData, appData)
-  const isNativeToken = getIsNativeToken(chainId, nextParams.sellToken)
+  const isNativeToken = getIsNativeToken(chainId, nextParams.sellTokenAddress)
   const wrappedToken = WRAPPED_NATIVE_CURRENCIES[chainId]
   /**
    * Due to CoW Protocol design, we do
    */
-  const nextSellToken = isNativeToken ? wrappedToken.address.toLowerCase() : nextParams.sellToken.toLowerCase()
+  const nextSellToken = isNativeToken ? wrappedToken.address.toLowerCase() : nextParams.sellTokenAddress.toLowerCase()
+
+  if (currentQuote.bridgeQuote) {
+    const bridgeTradeParams = currentQuote.bridgeQuote.tradeParameters
+    const bridgePostHook = currentQuote.bridgeQuote.bridgeCallDetails.preAuthorizedBridgingHook.postHook
+
+    return (
+      compareAppDataWithoutQuoteData(
+        removeBridgePostHook(currentAppData, bridgePostHook),
+        removeBridgePostHook(appData, bridgePostHook),
+      ) &&
+      currentParams.owner === nextParams.owner &&
+      currentParams.kind === nextParams.kind &&
+      currentParams.amount === nextParams.amount.toString() &&
+      bridgeTradeParams.validFor === nextParams.validFor &&
+      bridgeTradeParams.receiver === nextParams.receiver &&
+      currentParams.sellToken.toLowerCase() === nextSellToken &&
+      bridgeTradeParams.sellTokenChainId === nextParams.sellTokenChainId &&
+      bridgeTradeParams.buyTokenAddress.toLowerCase() === nextParams.buyTokenAddress.toLowerCase()
+    )
+  }
 
   return (
-    hasSameAppData &&
+    compareAppDataWithoutQuoteData(currentAppData, appData) &&
     currentParams.owner === nextParams.owner &&
     currentParams.kind === nextParams.kind &&
-    currentParams.sellToken.toLowerCase() === nextSellToken &&
-    currentParams.buyToken === nextParams.buyToken &&
-    currentParams.amount === nextParams.amount &&
+    currentParams.amount === nextParams.amount.toString() &&
+    currentParams.validFor === nextParams.validFor &&
     currentParams.receiver === nextParams.receiver &&
-    currentParams.validFor === nextParams.validFor
+    currentParams.sellToken.toLowerCase() === nextSellToken &&
+    currentParams.buyToken.toLowerCase() === nextParams.buyTokenAddress.toLowerCase()
   )
 }
 
@@ -63,4 +85,31 @@ function removeQuoteMetadata(appData: AppDataInfo['doc']): string {
 
   const obj = { ...rest, metadata }
   return jsonStringify(obj)
+}
+
+function removeBridgePostHook(
+  appData: AppDataInfo['doc'] | undefined,
+  postHook: CowHook,
+): AppDataInfo['doc'] | undefined {
+  if (!appData) return appData
+
+  const copy = { ...appData }
+
+  if (copy.metadata.hooks?.post) {
+    copy.metadata.hooks.post = copy.metadata.hooks.post.filter((hook) => !areHooksEqual(hook, postHook))
+
+    if (!copy.metadata.hooks.post.length) {
+      copy.metadata.hooks.post = undefined
+    }
+
+    if (!copy.metadata.hooks.pre?.length) {
+      copy.metadata.hooks.pre = undefined
+    }
+  }
+
+  if (copy.metadata.hooks && !copy.metadata.hooks.post && !copy.metadata.hooks.pre) {
+    copy.metadata.hooks = undefined
+  }
+
+  return copy
 }

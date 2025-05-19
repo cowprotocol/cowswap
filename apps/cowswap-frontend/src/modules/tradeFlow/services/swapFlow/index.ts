@@ -103,7 +103,19 @@ export async function swapFlow(
       logTradeFlow('SWAP FLOW', 'STEP 5: presign order (optional)')
       const presignTx = await tradingSdk.getPreSignTransaction({ orderId, account })
 
-      presignTxHash = (await orderParams.signer.sendTransaction(presignTx)).hash
+      presignTxHash = (
+        await orderParams.signer.sendTransaction(presignTx).catch((error) => {
+          /**
+           * When using Rabby and Safe, the presign transaction is not a real transaction
+           * It's a safe signature
+           */
+          if (error.transactionHash) {
+            return { hash: error.transactionHash }
+          } else {
+            throw error
+          }
+        })
+      ).hash
     }
 
     const order = mapUnsignedOrderToOrder({
