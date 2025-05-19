@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 
-import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import CheckmarkIcon from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
 import SpinnerIcon from '@cowprotocol/assets/cow-swap/spinner.svg'
@@ -16,23 +15,19 @@ import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReceiveAmountTitle } from 'modules/trade/pure/ReceiveAmountTitle'
 import { UsdAmountInfo } from 'modules/usdAmount/hooks/useUsdAmount'
 
-import { ProtocolIcons } from 'common/pure/ProtocolIcons'
-
 import {
   ArrowIcon,
   ClickableStopTitle,
   Link,
   SectionContent,
-  StopNumberCircle,
   StopTitle,
   StyledSpinnerIcon,
-  ToggleArrow,
-  ToggleIconContainer,
   TokenFlowContainer,
 } from '../../styles'
 import { BridgeProtocolConfig, BridgeFeeType } from '../../types'
 import { getFeeTextColor } from '../../utils/fees'
 import { StopStatusEnum } from '../../utils/status'
+import { BridgeRouteTitle } from '../BridgeRouteTitle'
 import { StyledRefundCompleteIcon } from '../BridgeStopDetails/index'
 import { RecipientWrapper } from '../BridgeStopDetails/styled'
 import { NetworkLogo } from '../NetworkLogo'
@@ -108,23 +103,16 @@ export function SwapStopDetails({
   const swapMinReceiveUsdValue = swapMinReceiveUsdResult?.value
 
   const TitleContent = (
-    <>
-      <StopNumberCircle status={status} stopNumber={1}>
-        {StopStatusIcons[status]}
-      </StopNumberCircle>
-      <b>
-        <span>{StopStatusTitlePrefixes[status]} </span>
-        <ProtocolIcons showOnlyFirst size={21} secondProtocol={bridgeProvider} />
-        <span> CoW Protocol</span>
-      </b>
-      {isCollapsible && (
-        <ToggleIconContainer>
-          <ToggleArrow isOpen={isExpanded}>
-            <SVG src={CarretIcon} title={isExpanded ? 'Close' : 'Open'} />
-          </ToggleArrow>
-        </ToggleIconContainer>
-      )}
-    </>
+    <BridgeRouteTitle
+      stopNumber={1}
+      status={status}
+      icon={StopStatusIcons[status]}
+      title={StopStatusTitlePrefixes[status]}
+      bridgeProvider={bridgeProvider}
+      providerTitle="CoW Protocol"
+      isCollapsible={isCollapsible}
+      isExpanded={isExpanded}
+    />
   )
 
   return (

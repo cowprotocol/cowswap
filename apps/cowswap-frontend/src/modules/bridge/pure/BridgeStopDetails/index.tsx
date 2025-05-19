@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 
-import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import CheckmarkIcon from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
 import SpinnerIconAsset from '@cowprotocol/assets/cow-swap/spinner.svg'
@@ -11,13 +10,9 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InfoTooltip } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import SVG from 'react-inlinesvg'
-
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReceiveAmountTitle } from 'modules/trade/pure/ReceiveAmountTitle'
 import { UsdAmountInfo } from 'modules/usdAmount/hooks/useUsdAmount'
-
-import { ProtocolIcons } from 'common/pure/ProtocolIcons'
 
 import {
   AnimatedEllipsis,
@@ -42,16 +37,14 @@ import {
   ClickableStopTitle,
   Link,
   SectionContent,
-  StopNumberCircle,
   StopTitle,
   StyledSpinnerIcon,
-  ToggleArrow,
-  ToggleIconContainer,
   TokenFlowContainer,
 } from '../../styles'
 import { BridgeFeeType, BridgeProtocolConfig } from '../../types'
 import { getFeeTextColor, isFreeSwapFee } from '../../utils/fees'
 import { StopStatusEnum } from '../../utils/status'
+import { BridgeRouteTitle } from '../BridgeRouteTitle'
 import { NetworkLogo } from '../NetworkLogo'
 import { TokenAmountDisplay } from '../TokenAmountDisplay'
 
@@ -91,7 +84,7 @@ export interface BridgeStopDetailsProps {
   hideBridgeFlowFiatAmount: boolean
   bridgeReceiveAmountUsdResult?: UsdAmountInfo | null
   bridgeFee: string | BridgeFeeType
-  maxBridgeSlippage: string
+  maxBridgeSlippage?: string
   estimatedTime: number
   recipient: string
   recipientChainId: SupportedChainId
@@ -128,23 +121,16 @@ export function BridgeStopDetails({
   const isStatusMode = status !== StopStatusEnum.DEFAULT
 
   const TitleContent = (
-    <>
-      <StopNumberCircle status={status} stopNumber={2}>
-        {BridgeStopStatusIcons[status]}
-      </StopNumberCircle>
-      <b>
-        <span>{ActionTitles[status]} </span>
-        <ProtocolIcons showOnlySecond size={21} secondProtocol={bridgeProvider} />
-        <span> {bridgeProvider.title}</span>
-      </b>
-      {isCollapsible && (
-        <ToggleIconContainer>
-          <ToggleArrow isOpen={isExpanded}>
-            <SVG src={CarretIcon} title={isExpanded ? 'Close' : 'Open'} />
-          </ToggleArrow>
-        </ToggleIconContainer>
-      )}
-    </>
+    <BridgeRouteTitle
+      stopNumber={2}
+      status={status}
+      icon={BridgeStopStatusIcons[status]}
+      title={ActionTitles[status]}
+      bridgeProvider={bridgeProvider}
+      providerTitle={bridgeProvider.title}
+      isCollapsible={isCollapsible}
+      isExpanded={isExpanded}
+    />
   )
 
   return (
@@ -192,20 +178,22 @@ export function BridgeStopDetails({
           {isFreeSwapFee(bridgeFee) ? 'FREE' : `$${bridgeFee}`}
         </ConfirmDetailsItem>
 
-        <ConfirmDetailsItem
-          label={
-            <>
-              Max. bridge slippage{' '}
-              <InfoTooltip
-                content="Your transaction will revert if the price changes unfavorably by more than this percentage."
-                size={14}
-              />
-            </>
-          }
-          withTimelineDot
-        >
-          {maxBridgeSlippage}%
-        </ConfirmDetailsItem>
+        {maxBridgeSlippage && (
+          <ConfirmDetailsItem
+            label={
+              <>
+                Max. bridge slippage{' '}
+                <InfoTooltip
+                  content="Your transaction will revert if the price changes unfavorably by more than this percentage."
+                  size={14}
+                />
+              </>
+            }
+            withTimelineDot
+          >
+            {maxBridgeSlippage}%
+          </ConfirmDetailsItem>
+        )}
 
         <ConfirmDetailsItem
           label={
