@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.106.6](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.5...cowswap-v1.106.6) (2025-05-16)
+
+
+### Bug Fixes
+
+* **permit:** dai permit issues ([#5680](https://github.com/cowprotocol/cowswap/issues/5680)) ([a9e2da0](https://github.com/cowprotocol/cowswap/commit/a9e2da026cab2b0e001adc7fb0ebf11d1b028089))
+
 ## [1.106.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.4...cowswap-v1.106.5) (2025-05-14)
 
 
