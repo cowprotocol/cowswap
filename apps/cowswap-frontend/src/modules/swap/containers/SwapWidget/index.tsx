@@ -1,14 +1,21 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
+import { useWalletDetails } from '@cowprotocol/wallet'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 
+import { BridgeAccordionSummary, BridgeData, BridgeProtocolConfig, BridgeRouteBreakdown } from 'modules/bridge'
 import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
 import {
   TradeWidget,
   TradeWidgetSlots,
+  useIsCurrentTradeBridging,
+  useIsHooksTradeType,
   useReceiveAmountInfo,
   useTradePriceImpact,
   useWrapNativeFlow,
@@ -119,6 +126,18 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     [isSellTrade, outputCurrencyInfo.fiatAmount, inputCurrencyInfo.fiatAmount],
   )
 
+  const isHooksTabEnabled = useIsHooksTradeType()
+  const { isSmartContractWallet } = useWalletDetails()
+
+  const isBridgingEnabled = useIsBridgingEnabled(isSmartContractWallet)
+  const isCurrentTradeBridging = useIsCurrentTradeBridging()
+  const shouldDisplayBridgeDetails = isBridgingEnabled && isCurrentTradeBridging && !isHooksTabEnabled
+
+  // TODO: bridgeDetailsUI: Set a real value for bridgeData based on bridging logic
+  const bridgeData = null as BridgeData | null
+  const providerDetails: BridgeProtocolConfig | undefined = bridgeData?.bridgeProvider
+  const bridgeEstimatedTime: number | undefined = bridgeData?.estimatedTime
+
   const slots: TradeWidgetSlots = {
     topContent,
     settingsWidget: (
@@ -137,6 +156,37 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
               isTradePriceUpdating={isRateLoading}
               rateInfoParams={rateInfoParams}
               deadline={deadlineState[0]}
+              accordionContent={
+                shouldDisplayBridgeDetails &&
+                bridgeData && (
+                  <BridgeRouteBreakdown
+                    sellCurrencyAmount={inputCurrencyAmount as CurrencyAmount<TokenWithLogo>}
+                    buyCurrencyAmount={outputCurrencyAmount as CurrencyAmount<TokenWithLogo>}
+                    bridgeReceiveCurrencyAmount={outputCurrencyAmount as CurrencyAmount<TokenWithLogo>}
+                    networkCost={bridgeData.networkCost}
+                    swapMinReceive={bridgeData.swapMinReceive}
+                    swapExpectedToReceive={bridgeData.swapExpectedToReceive}
+                    swapMaxSlippage={bridgeData.swapMaxSlippage}
+                    bridgeFee={bridgeData.bridgeFee}
+                    maxBridgeSlippage={bridgeData.maxBridgeSlippage}
+                    estimatedTime={bridgeData.estimatedTime}
+                    recipient={bridgeData.recipient}
+                    bridgeProvider={bridgeData.bridgeProvider}
+                  />
+                )
+              }
+              feeWrapper={
+                shouldDisplayBridgeDetails && bridgeData
+                  ? (feeElement: ReactNode) => (
+                      <BridgeAccordionSummary
+                        bridgeEstimatedTime={bridgeEstimatedTime}
+                        bridgeProtocol={providerDetails}
+                      >
+                        {feeElement}
+                      </BridgeAccordionSummary>
+                    )
+                  : undefined
+              }
             />
             {outputCurrency && bridgeQuote && (
               <BridgeQuoteDetails details={bridgeQuote} outputCurrency={outputCurrency} />
@@ -152,16 +202,21 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         )
       },
       [
-        doTrade.contextIsReady,
+        bottomContent,
         isRateLoading,
         rateInfoParams,
         deadlineState,
-        bottomContent,
-        buyingFiatAmount,
-        hasEnoughWrappedBalanceForSwap,
-        openNativeWrapModal,
-        bridgeQuote,
+        shouldDisplayBridgeDetails,
+        inputCurrencyAmount,
+        outputCurrencyAmount,
         outputCurrency,
+        bridgeQuote,
+        buyingFiatAmount,
+        doTrade.contextIsReady,
+        openNativeWrapModal,
+        hasEnoughWrappedBalanceForSwap,
+        bridgeEstimatedTime,
+        providerDetails,
       ],
     ),
   }
