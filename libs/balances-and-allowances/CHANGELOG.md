@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.4](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.3.3...balances-and-allowances-v1.3.4) (2025-05-19)
+
+
+### Bug Fixes
+
+* **dev-deps-update:** bump the dev-deps group with 76 updates ([#5663](https://github.com/cowprotocol/cowswap/issues/5663)) ([552b349](https://github.com/cowprotocol/cowswap/commit/552b349f53762a01ccf008e9a2083248424cbafa))
+
 ## [1.3.3](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.3.2...balances-and-allowances-v1.3.3) (2025-04-01)
 
 

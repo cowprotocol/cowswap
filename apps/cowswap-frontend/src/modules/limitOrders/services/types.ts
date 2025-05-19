@@ -1,7 +1,7 @@
 import { Erc20, GPv2Settlement } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { SendBatchTxCallback } from '@cowprotocol/wallet'
-import type { Signer } from '@ethersproject/abstract-signer'
+import type { JsonRpcSigner } from '@ethersproject/providers'
 
 import { AppDispatch } from 'legacy/state'
 import { PostOrderParams } from 'legacy/utils/trade'
@@ -19,7 +19,7 @@ export interface TradeFlowContext {
   chainId: SupportedChainId
   dispatch: AppDispatch
   rateImpact: number
-  signer: Signer
+  signer: JsonRpcSigner
   allowsOffchainSigning: boolean
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook

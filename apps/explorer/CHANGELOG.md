@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.47.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.46.0...explorer-v2.47.0) (2025-05-19)
+
+
+### Features
+
+* adapt to new app-data and fix issue decoding ([#5678](https://github.com/cowprotocol/cowswap/issues/5678)) ([db791a2](https://github.com/cowprotocol/cowswap/commit/db791a21afdcd2ec8f10db293833725cd6581a28))
+
+
+### Bug Fixes
+
+* consistent naming for Order history button and page ([#5683](https://github.com/cowprotocol/cowswap/issues/5683)) ([a34d3f7](https://github.com/cowprotocol/cowswap/commit/a34d3f783e52ec54207a6ec79ce3d9ae9a641e5e))
+* **dev-deps-update:** bump the dev-deps group with 76 updates ([#5663](https://github.com/cowprotocol/cowswap/issues/5663)) ([552b349](https://github.com/cowprotocol/cowswap/commit/552b349f53762a01ccf008e9a2083248424cbafa))
+
 ## [2.46.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.45.1...explorer-v2.46.0) (2025-05-07)
 
 

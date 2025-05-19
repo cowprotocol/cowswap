@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.18.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.17.1...tokens-v1.18.0) (2025-05-19)
+
+
+### Features
+
+* **bridge:** use real bridge provider ([#5588](https://github.com/cowprotocol/cowswap/issues/5588)) ([63981ab](https://github.com/cowprotocol/cowswap/commit/63981ab03a92e115d967ec482e9fec04abb9d9f5))
+
+
+### Bug Fixes
+
+* **dev-deps-update:** bump the dev-deps group with 76 updates ([#5663](https://github.com/cowprotocol/cowswap/issues/5663)) ([552b349](https://github.com/cowprotocol/cowswap/commit/552b349f53762a01ccf008e9a2083248424cbafa))
+
 ## [1.17.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.17.0...tokens-v1.17.1) (2025-05-07)
 
 

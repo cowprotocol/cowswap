@@ -88,7 +88,7 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
     }
 
     if (onlySell) {
-      update.outputCurrencyAmount = null
+      delete update.outputCurrencyAmount
 
       update.orderKind = OrderKind.SELL
     } else {
