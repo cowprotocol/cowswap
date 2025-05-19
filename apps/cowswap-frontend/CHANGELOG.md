@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.106.7](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.6...cowswap-v1.106.7) (2025-05-19)
+
+
+### Bug Fixes
+
+* fix order presign flow ([#5714](https://github.com/cowprotocol/cowswap/issues/5714)) ([2ff6dbd](https://github.com/cowprotocol/cowswap/commit/2ff6dbdb6b723c304107c778f7eba3d0ef5b4a83))
+* handle presign tx signature for Safe via Rabby ([#5711](https://github.com/cowprotocol/cowswap/issues/5711)) ([3e33751](https://github.com/cowprotocol/cowswap/commit/3e3375171a59e9fa536442222b87bf9622e7fd68))
+
 ## [1.106.6](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.5...cowswap-v1.106.6) (2025-05-16)
 
 
