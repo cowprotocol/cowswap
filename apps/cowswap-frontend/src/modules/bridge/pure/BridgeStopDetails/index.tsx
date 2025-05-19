@@ -32,19 +32,11 @@ import {
   TimelineIconCircleWrapper,
 } from './styled'
 
-import {
-  ArrowIcon,
-  ClickableStopTitle,
-  Link,
-  SectionContent,
-  StopTitle,
-  StyledSpinnerIcon,
-  TokenFlowContainer,
-} from '../../styles'
+import { ArrowIcon, Link, StyledSpinnerIcon, TokenFlowContainer } from '../../styles'
 import { BridgeFeeType, BridgeProtocolConfig } from '../../types'
 import { getFeeTextColor, isFreeSwapFee } from '../../utils/fees'
 import { StopStatusEnum } from '../../utils/status'
-import { BridgeRouteTitle } from '../BridgeRouteTitle'
+import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { NetworkLogo } from '../NetworkLogo'
 import { TokenAmountDisplay } from '../TokenAmountDisplay'
 
@@ -73,10 +65,7 @@ const ActionTitles: Record<StopStatusEnum, string> = {
 
 export interface BridgeStopDetailsProps {
   isCollapsible?: boolean
-  isExpanded?: boolean
-  onToggle?: () => void
   status?: StopStatusEnum
-
   bridgeProvider: BridgeProtocolConfig
   bridgeSendCurrencyAmount: CurrencyAmount<TokenWithLogo>
   bridgeReceiveCurrencyAmount: CurrencyAmount<TokenWithLogo>
@@ -93,8 +82,6 @@ export interface BridgeStopDetailsProps {
 
 export function BridgeStopDetails({
   isCollapsible = false,
-  isExpanded = true,
-  onToggle = () => {},
   status = StopStatusEnum.DEFAULT,
   bridgeProvider,
   bridgeSendCurrencyAmount,
@@ -120,8 +107,8 @@ export function BridgeStopDetails({
   const bridgeReceiveAmountUsdValue = bridgeReceiveAmountUsdResult?.value
   const isStatusMode = status !== StopStatusEnum.DEFAULT
 
-  const TitleContent = (
-    <BridgeRouteTitle
+  return (
+    <BridgeDetailsContainer
       stopNumber={2}
       status={status}
       icon={BridgeStopStatusIcons[status]}
@@ -129,31 +116,115 @@ export function BridgeStopDetails({
       bridgeProvider={bridgeProvider}
       providerTitle={bridgeProvider.title}
       isCollapsible={isCollapsible}
-      isExpanded={isExpanded}
-    />
-  )
+    >
+      <ConfirmDetailsItem label="" withTimelineDot>
+        <TokenFlowContainer>
+          <TokenAmountDisplay
+            token={sourceToken}
+            amount={bridgeAmount}
+            displaySymbol={bridgeTokenSymbol}
+            tokenLogoSize={tokenLogoSize}
+            hideFiatAmount={true}
+          />
+          <ArrowIcon>→</ArrowIcon>
+          <TokenAmountDisplay
+            token={destToken}
+            amount={bridgeReceiveAmount}
+            displaySymbol={bridgeReceiveTokenSymbol}
+            usdValue={bridgeReceiveAmountUsdValue}
+            hideFiatAmount={hideBridgeFlowFiatAmount}
+            tokenLogoSize={tokenLogoSize}
+          />
+          {` on ${recipientChainName}`}
+        </TokenFlowContainer>
+      </ConfirmDetailsItem>
 
-  return (
-    <>
-      {isCollapsible ? (
-        <ClickableStopTitle isCollapsible={true} onClick={onToggle}>
-          {TitleContent}
-        </ClickableStopTitle>
-      ) : (
-        <StopTitle>{TitleContent}</StopTitle>
+      <ConfirmDetailsItem
+        label={
+          <>
+            Bridge fee <InfoTooltip content="The fee for the bridge transaction." size={14} />
+          </>
+        }
+        withTimelineDot
+        contentTextColor={getFeeTextColor(bridgeFee)}
+      >
+        {isFreeSwapFee(bridgeFee) ? 'FREE' : `$${bridgeFee}`}
+      </ConfirmDetailsItem>
+
+      {maxBridgeSlippage && (
+        <ConfirmDetailsItem
+          label={
+            <>
+              Max. bridge slippage{' '}
+              <InfoTooltip
+                content="Your transaction will revert if the price changes unfavorably by more than this percentage."
+                size={14}
+              />
+            </>
+          }
+          withTimelineDot
+        >
+          {maxBridgeSlippage}%
+        </ConfirmDetailsItem>
       )}
 
-      <SectionContent isExpanded={isExpanded}>
-        <ConfirmDetailsItem label="" withTimelineDot>
-          <TokenFlowContainer>
-            <TokenAmountDisplay
-              token={sourceToken}
-              amount={bridgeAmount}
-              displaySymbol={bridgeTokenSymbol}
-              tokenLogoSize={tokenLogoSize}
-              hideFiatAmount={true}
-            />
-            <ArrowIcon>→</ArrowIcon>
+      <ConfirmDetailsItem
+        label={
+          <>
+            Est. bridge time{' '}
+            <InfoTooltip content="The estimated time for the bridge transaction to complete." size={14} />
+          </>
+        }
+        withTimelineDot
+      >
+        ~ {displayTime(estimatedTime * 1000, true)}
+      </ConfirmDetailsItem>
+
+      <ConfirmDetailsItem
+        label={
+          <>
+            Recipient{' '}
+            <InfoTooltip content="The address that will receive the tokens on the destination chain." size={14} />
+          </>
+        }
+        withTimelineDot
+      >
+        <RecipientWrapper>
+          <NetworkLogo chainId={recipientChainId} size={16} />
+          {isAddress(recipient) ? (
+            <Link href={getExplorerLink(recipientChainId, recipient, ExplorerDataType.ADDRESS)} target="_blank">
+              {shortenAddress(recipient)} ↗
+            </Link>
+          ) : (
+            recipient
+          )}
+        </RecipientWrapper>
+      </ConfirmDetailsItem>
+
+      <ConfirmDetailsItem
+        label={
+          isStatusMode ? (
+            'Min. to receive'
+          ) : (
+            <ReceiveAmountTitle>
+              <b>Min. to receive</b>
+            </ReceiveAmountTitle>
+          )
+        }
+        {...(isStatusMode && { withTimelineDot: true })}
+        isLast={!isStatusMode}
+      >
+        {isStatusMode ? (
+          <TokenAmountDisplay
+            token={destToken}
+            amount={bridgeReceiveAmount}
+            displaySymbol={bridgeReceiveTokenSymbol}
+            usdValue={bridgeReceiveAmountUsdValue}
+            hideFiatAmount={hideBridgeFlowFiatAmount}
+            tokenLogoSize={tokenLogoSize}
+          />
+        ) : (
+          <b>
             <TokenAmountDisplay
               token={destToken}
               amount={bridgeReceiveAmount}
@@ -162,96 +233,95 @@ export function BridgeStopDetails({
               hideFiatAmount={hideBridgeFlowFiatAmount}
               tokenLogoSize={tokenLogoSize}
             />
-            {` on ${recipientChainName}`}
-          </TokenFlowContainer>
-        </ConfirmDetailsItem>
+          </b>
+        )}
+      </ConfirmDetailsItem>
 
-        <ConfirmDetailsItem
-          label={
-            <>
-              Bridge fee <InfoTooltip content="The fee for the bridge transaction." size={14} />
-            </>
-          }
-          withTimelineDot
-          contentTextColor={getFeeTextColor(bridgeFee)}
-        >
-          {isFreeSwapFee(bridgeFee) ? 'FREE' : `$${bridgeFee}`}
-        </ConfirmDetailsItem>
-
-        {maxBridgeSlippage && (
+      {isStatusMode && status === StopStatusEnum.FAILED && (
+        <>
+          <ConfirmDetailsItem label="You received" withTimelineDot={true}>
+            <DangerText>Bridging failed</DangerText>
+          </ConfirmDetailsItem>
           <ConfirmDetailsItem
             label={
-              <>
-                Max. bridge slippage{' '}
-                <InfoTooltip
-                  content="Your transaction will revert if the price changes unfavorably by more than this percentage."
-                  size={14}
-                />
-              </>
-            }
-            withTimelineDot
-          >
-            {maxBridgeSlippage}%
-          </ConfirmDetailsItem>
-        )}
-
-        <ConfirmDetailsItem
-          label={
-            <>
-              Est. bridge time{' '}
-              <InfoTooltip content="The estimated time for the bridge transaction to complete." size={14} />
-            </>
-          }
-          withTimelineDot
-        >
-          ~ {displayTime(estimatedTime * 1000, true)}
-        </ConfirmDetailsItem>
-
-        <ConfirmDetailsItem
-          label={
-            <>
-              Recipient{' '}
-              <InfoTooltip content="The address that will receive the tokens on the destination chain." size={14} />
-            </>
-          }
-          withTimelineDot
-        >
-          <RecipientWrapper>
-            <NetworkLogo chainId={recipientChainId} size={16} />
-            {isAddress(recipient) ? (
-              <Link href={getExplorerLink(recipientChainId, recipient, ExplorerDataType.ADDRESS)} target="_blank">
-                {shortenAddress(recipient)} ↗
-              </Link>
-            ) : (
-              recipient
-            )}
-          </RecipientWrapper>
-        </ConfirmDetailsItem>
-
-        <ConfirmDetailsItem
-          label={
-            isStatusMode ? (
-              'Min. to receive'
-            ) : (
-              <ReceiveAmountTitle>
-                <b>Min. to receive</b>
+              <ReceiveAmountTitle icon={<StyledAnimatedTimelineRefundIcon src={RefundIcon} />}>
+                <InfoTextSpan>
+                  <b>Refunding</b>
+                </InfoTextSpan>
               </ReceiveAmountTitle>
-            )
-          }
-          {...(isStatusMode && { withTimelineDot: true })}
-          isLast={!isStatusMode}
-        >
-          {isStatusMode ? (
-            <TokenAmountDisplay
-              token={destToken}
-              amount={bridgeReceiveAmount}
-              displaySymbol={bridgeReceiveTokenSymbol}
-              usdValue={bridgeReceiveAmountUsdValue}
-              hideFiatAmount={hideBridgeFlowFiatAmount}
-              tokenLogoSize={tokenLogoSize}
-            />
-          ) : (
+            }
+          >
+            <InfoTextBold>
+              Refund started
+              <AnimatedEllipsis />
+            </InfoTextBold>
+          </ConfirmDetailsItem>
+        </>
+      )}
+
+      {isStatusMode && status === StopStatusEnum.REFUND_COMPLETE && (
+        <>
+          <ConfirmDetailsItem label="You received" withTimelineDot>
+            <DangerText>Bridging failed</DangerText>
+          </ConfirmDetailsItem>
+          <ConfirmDetailsItem
+            label={
+              <ReceiveAmountTitle
+                icon={
+                  <TimelineIconCircleWrapper>
+                    <StyledTimelineCheckmarkIcon src={CheckmarkIcon} />
+                  </TimelineIconCircleWrapper>
+                }
+              >
+                <SuccessTextBold>
+                  <span>Refunded to </span>
+                  <RefundRecipientWrapper>
+                    <NetworkLogo chainId={sourceToken.chainId as SupportedChainId} size={16} />
+                    <RefundLink
+                      href={getExplorerLink(
+                        sourceToken.chainId as SupportedChainId,
+                        recipient,
+                        ExplorerDataType.ADDRESS,
+                      )}
+                      target="_blank"
+                      underline
+                    >
+                      {shortenAddress(recipient)} ↗
+                    </RefundLink>
+                  </RefundRecipientWrapper>
+                </SuccessTextBold>
+              </ReceiveAmountTitle>
+            }
+          >
             <b>
+              <TokenAmountDisplay
+                token={sourceToken}
+                amount={bridgeAmount}
+                displaySymbol={bridgeTokenSymbol}
+                hideFiatAmount={true}
+                tokenLogoSize={tokenLogoSize}
+              />
+            </b>
+          </ConfirmDetailsItem>
+        </>
+      )}
+
+      {isStatusMode && status !== StopStatusEnum.FAILED && status !== StopStatusEnum.REFUND_COMPLETE && (
+        <ConfirmDetailsItem
+          label={
+            <ReceiveAmountTitle variant={status === StopStatusEnum.DONE ? 'success' : undefined}>
+              {status === StopStatusEnum.DONE ? <SuccessTextBold>You received</SuccessTextBold> : <b>You received</b>}
+            </ReceiveAmountTitle>
+          }
+        >
+          <b>
+            {status === StopStatusEnum.PENDING && (
+              <StatusAwareText status={status}>
+                in progress
+                <AnimatedEllipsis />
+              </StatusAwareText>
+            )}
+            {status === StopStatusEnum.DONE && (
               <TokenAmountDisplay
                 token={destToken}
                 amount={bridgeReceiveAmount}
@@ -260,108 +330,10 @@ export function BridgeStopDetails({
                 hideFiatAmount={hideBridgeFlowFiatAmount}
                 tokenLogoSize={tokenLogoSize}
               />
-            </b>
-          )}
+            )}
+          </b>
         </ConfirmDetailsItem>
-
-        {isStatusMode && status === StopStatusEnum.FAILED && (
-          <>
-            <ConfirmDetailsItem label="You received" withTimelineDot={true}>
-              <DangerText>Bridging failed</DangerText>
-            </ConfirmDetailsItem>
-            <ConfirmDetailsItem
-              label={
-                <ReceiveAmountTitle icon={<StyledAnimatedTimelineRefundIcon src={RefundIcon} />}>
-                  <InfoTextSpan>
-                    <b>Refunding</b>
-                  </InfoTextSpan>
-                </ReceiveAmountTitle>
-              }
-            >
-              <InfoTextBold>
-                Refund started
-                <AnimatedEllipsis />
-              </InfoTextBold>
-            </ConfirmDetailsItem>
-          </>
-        )}
-
-        {isStatusMode && status === StopStatusEnum.REFUND_COMPLETE && (
-          <>
-            <ConfirmDetailsItem label="You received" withTimelineDot>
-              <DangerText>Bridging failed</DangerText>
-            </ConfirmDetailsItem>
-            <ConfirmDetailsItem
-              label={
-                <ReceiveAmountTitle
-                  icon={
-                    <TimelineIconCircleWrapper>
-                      <StyledTimelineCheckmarkIcon src={CheckmarkIcon} />
-                    </TimelineIconCircleWrapper>
-                  }
-                >
-                  <SuccessTextBold>
-                    <span>Refunded to </span>
-                    <RefundRecipientWrapper>
-                      <NetworkLogo chainId={sourceToken.chainId as SupportedChainId} size={16} />
-                      <RefundLink
-                        href={getExplorerLink(
-                          sourceToken.chainId as SupportedChainId,
-                          recipient,
-                          ExplorerDataType.ADDRESS,
-                        )}
-                        target="_blank"
-                        underline
-                      >
-                        {shortenAddress(recipient)} ↗
-                      </RefundLink>
-                    </RefundRecipientWrapper>
-                  </SuccessTextBold>
-                </ReceiveAmountTitle>
-              }
-            >
-              <b>
-                <TokenAmountDisplay
-                  token={sourceToken}
-                  amount={bridgeAmount}
-                  displaySymbol={bridgeTokenSymbol}
-                  hideFiatAmount={true}
-                  tokenLogoSize={tokenLogoSize}
-                />
-              </b>
-            </ConfirmDetailsItem>
-          </>
-        )}
-
-        {isStatusMode && status !== StopStatusEnum.FAILED && status !== StopStatusEnum.REFUND_COMPLETE && (
-          <ConfirmDetailsItem
-            label={
-              <ReceiveAmountTitle variant={status === StopStatusEnum.DONE ? 'success' : undefined}>
-                {status === StopStatusEnum.DONE ? <SuccessTextBold>You received</SuccessTextBold> : <b>You received</b>}
-              </ReceiveAmountTitle>
-            }
-          >
-            <b>
-              {status === StopStatusEnum.PENDING && (
-                <StatusAwareText status={status}>
-                  in progress
-                  <AnimatedEllipsis />
-                </StatusAwareText>
-              )}
-              {status === StopStatusEnum.DONE && (
-                <TokenAmountDisplay
-                  token={destToken}
-                  amount={bridgeReceiveAmount}
-                  displaySymbol={bridgeReceiveTokenSymbol}
-                  usdValue={bridgeReceiveAmountUsdValue}
-                  hideFiatAmount={hideBridgeFlowFiatAmount}
-                  tokenLogoSize={tokenLogoSize}
-                />
-              )}
-            </b>
-          </ConfirmDetailsItem>
-        )}
-      </SectionContent>
-    </>
+      )}
+    </BridgeDetailsContainer>
   )
 }

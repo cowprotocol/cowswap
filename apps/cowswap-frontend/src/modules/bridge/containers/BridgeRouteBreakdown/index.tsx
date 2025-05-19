@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -37,10 +39,9 @@ export interface BridgeRouteBreakdownProps {
   swapMaxSlippage?: string
 
   // Bridge details
-  bridgeSendCurrencyAmount: CurrencyAmount<TokenWithLogo>
   bridgeReceiveCurrencyAmount: CurrencyAmount<TokenWithLogo>
   bridgeFee: string | BridgeFeeType
-  maxBridgeSlippage: string
+  maxBridgeSlippage?: string
   estimatedTime: number
   recipient: string
   bridgeProvider: BridgeProtocolConfig
@@ -57,16 +58,6 @@ export interface BridgeRouteBreakdownProps {
 
   // Overall Accordion functionality
   isCollapsible?: boolean
-  isExpanded?: boolean
-  onExpandToggle?: () => void
-
-  // Section-level accordion functionality
-  isSwapSectionCollapsible?: boolean
-  isSwapSectionExpanded?: boolean
-  onSwapSectionToggle?: () => void
-  isBridgeSectionCollapsible?: boolean
-  isBridgeSectionExpanded?: boolean
-  onBridgeSectionToggle?: () => void
 }
 
 export function BridgeRouteBreakdown({
@@ -76,7 +67,6 @@ export function BridgeRouteBreakdown({
   swapMinReceive,
   swapExpectedToReceive,
   swapMaxSlippage,
-  bridgeSendCurrencyAmount,
   bridgeReceiveCurrencyAmount,
   bridgeFee,
   maxBridgeSlippage,
@@ -90,14 +80,6 @@ export function BridgeRouteBreakdown({
   hideBridgeFlowFiatAmount = false,
   hideRouteHeader = false,
   isCollapsible = false,
-  isExpanded = true,
-  onExpandToggle = () => {},
-  isSwapSectionCollapsible = false,
-  isSwapSectionExpanded = true,
-  onSwapSectionToggle = () => {},
-  isBridgeSectionCollapsible = false,
-  isBridgeSectionExpanded = true,
-  onBridgeSectionToggle = () => {},
 }: BridgeRouteBreakdownProps) {
   const sellToken = sellCurrencyAmount.currency
   const buyToken = buyCurrencyAmount.currency
@@ -118,10 +100,10 @@ export function BridgeRouteBreakdown({
   const { usdInfo: swapExpectedReceiveUsdResult } = useParsedAmountWithUsd(swapExpectedToReceive, buyToken)
   const bridgeReceiveAmountUsdInfo = useUsdAmount(bridgeReceiveCurrencyAmount, destToken)
 
+  const [isExpanded, setIsExpanded] = useState(false)
+
   const handleHeaderClick = () => {
-    if (isCollapsible) {
-      onExpandToggle()
-    }
+    setIsExpanded((state) => !state)
   }
 
   const HeaderComponent = isCollapsible ? ClickableRouteHeader : RouteHeader
@@ -166,9 +148,6 @@ export function BridgeRouteBreakdown({
       {!hideRouteHeader && headerContent}
 
       <SwapStopDetails
-        isCollapsible={isSwapSectionCollapsible}
-        isExpanded={isSwapSectionExpanded}
-        onToggle={onSwapSectionToggle}
         status={swapStatus}
         sellCurrencyAmount={sellCurrencyAmount}
         buyCurrencyAmount={buyCurrencyAmount}
@@ -192,12 +171,9 @@ export function BridgeRouteBreakdown({
       />
 
       <BridgeStopDetails
-        isCollapsible={isBridgeSectionCollapsible}
-        isExpanded={isBridgeSectionExpanded}
-        onToggle={onBridgeSectionToggle}
         status={bridgeStatus}
         bridgeProvider={bridgeProvider}
-        bridgeSendCurrencyAmount={bridgeSendCurrencyAmount}
+        bridgeSendCurrencyAmount={buyCurrencyAmount}
         bridgeReceiveCurrencyAmount={bridgeReceiveCurrencyAmount}
         recipientChainName={recipientChainName}
         hideBridgeFlowFiatAmount={hideBridgeFlowFiatAmount}

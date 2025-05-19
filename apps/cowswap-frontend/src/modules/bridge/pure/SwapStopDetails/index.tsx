@@ -15,19 +15,11 @@ import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReceiveAmountTitle } from 'modules/trade/pure/ReceiveAmountTitle'
 import { UsdAmountInfo } from 'modules/usdAmount/hooks/useUsdAmount'
 
-import {
-  ArrowIcon,
-  ClickableStopTitle,
-  Link,
-  SectionContent,
-  StopTitle,
-  StyledSpinnerIcon,
-  TokenFlowContainer,
-} from '../../styles'
+import { ArrowIcon, Link, StyledSpinnerIcon, TokenFlowContainer } from '../../styles'
 import { BridgeProtocolConfig, BridgeFeeType } from '../../types'
 import { getFeeTextColor } from '../../utils/fees'
 import { StopStatusEnum } from '../../utils/status'
-import { BridgeRouteTitle } from '../BridgeRouteTitle'
+import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { StyledRefundCompleteIcon } from '../BridgeStopDetails/index'
 import { RecipientWrapper } from '../BridgeStopDetails/styled'
 import { NetworkLogo } from '../NetworkLogo'
@@ -51,8 +43,6 @@ const StopStatusTitlePrefixes: Record<StopStatusEnum, ReactNode> = {
 
 export interface SwapStopDetailsProps {
   isCollapsible?: boolean
-  isExpanded?: boolean
-  onToggle?: () => void
   status?: StopStatusEnum
   sellCurrencyAmount: CurrencyAmount<TokenWithLogo>
   buyCurrencyAmount: CurrencyAmount<TokenWithLogo>
@@ -72,8 +62,6 @@ export interface SwapStopDetailsProps {
 
 export function SwapStopDetails({
   isCollapsible = false,
-  isExpanded = true,
-  onToggle = () => {},
   status = StopStatusEnum.DEFAULT,
   sellCurrencyAmount,
   buyCurrencyAmount,
@@ -102,8 +90,8 @@ export function SwapStopDetails({
   const swapExpectedReceiveUsdValue = swapExpectedReceiveUsdResult?.value
   const swapMinReceiveUsdValue = swapMinReceiveUsdResult?.value
 
-  const TitleContent = (
-    <BridgeRouteTitle
+  return (
+    <BridgeDetailsContainer
       stopNumber={1}
       status={status}
       icon={StopStatusIcons[status]}
@@ -111,157 +99,142 @@ export function SwapStopDetails({
       bridgeProvider={bridgeProvider}
       providerTitle="CoW Protocol"
       isCollapsible={isCollapsible}
-      isExpanded={isExpanded}
-    />
-  )
+    >
+      <ConfirmDetailsItem label="" withTimelineDot>
+        <TokenFlowContainer>
+          <TokenAmountDisplay
+            token={sellToken}
+            amount={sellAmount}
+            displaySymbol={sellTokenSymbol}
+            tokenLogoSize={tokenLogoSize}
+            hideFiatAmount={true}
+          />
+          <ArrowIcon>→</ArrowIcon>
+          <TokenAmountDisplay
+            token={buyToken}
+            amount={buyAmount}
+            displaySymbol={buyTokenSymbol}
+            tokenLogoSize={tokenLogoSize}
+            hideFiatAmount={true}
+          />
+          {` on ${sourceChainName}`}
+        </TokenFlowContainer>
+      </ConfirmDetailsItem>
 
-  return (
-    <>
-      {isCollapsible ? (
-        <ClickableStopTitle isCollapsible={true} onClick={onToggle}>
-          {TitleContent}
-        </ClickableStopTitle>
-      ) : (
-        <StopTitle>{TitleContent}</StopTitle>
-      )}
+      <ConfirmDetailsItem
+        label={
+          <>
+            Swap fee <InfoTooltip content="No fee for order placement!" size={14} />
+          </>
+        }
+        withTimelineDot
+        contentTextColor={getFeeTextColor(BridgeFeeType.FREE)}
+      >
+        FREE
+      </ConfirmDetailsItem>
 
-      <SectionContent isExpanded={isExpanded}>
-        <ConfirmDetailsItem label="" withTimelineDot>
-          <TokenFlowContainer>
-            <TokenAmountDisplay
-              token={sellToken}
-              amount={sellAmount}
-              displaySymbol={sellTokenSymbol}
-              tokenLogoSize={tokenLogoSize}
-              hideFiatAmount={true}
+      <ConfirmDetailsItem
+        label={
+          <>
+            Network cost (est.){' '}
+            <InfoTooltip
+              content="This is the cost of settling your order on-chain, including gas and any LP fees. CoW Swap will try to lower this cost where possible."
+              size={14}
             />
-            <ArrowIcon>→</ArrowIcon>
-            <TokenAmountDisplay
-              token={buyToken}
-              amount={buyAmount}
-              displaySymbol={buyTokenSymbol}
-              tokenLogoSize={tokenLogoSize}
-              hideFiatAmount={true}
-            />
-            {` on ${sourceChainName}`}
-          </TokenFlowContainer>
-        </ConfirmDetailsItem>
+          </>
+        }
+        withTimelineDot
+      >
+        {networkCost} {sellTokenSymbol}&nbsp;
+        {networkCostUsdValue && (
+          <i>
+            (<FiatAmount amount={networkCostUsdValue} />)
+          </i>
+        )}
+      </ConfirmDetailsItem>
 
+      {swapExpectedToReceive && (
         <ConfirmDetailsItem
+          withTimelineDot
           label={
             <>
-              Swap fee <InfoTooltip content="No fee for order placement!" size={14} />
+              Expected to receive{' '}
+              <InfoTooltip
+                content={`The estimated amount you\'ll receive after estimated network costs and the max slippage setting (${swapMaxSlippage}%).`}
+                size={14}
+              />
             </>
           }
-          withTimelineDot
-          contentTextColor={getFeeTextColor(BridgeFeeType.FREE)}
         >
-          FREE
+          <TokenAmountDisplay
+            token={buyToken}
+            amount={swapExpectedToReceive}
+            displaySymbol={buyTokenSymbol}
+            usdValue={swapExpectedReceiveUsdValue}
+            tokenLogoSize={tokenLogoSize}
+          />
         </ConfirmDetailsItem>
+      )}
 
+      {swapMaxSlippage && (
         <ConfirmDetailsItem
           label={
             <>
-              Network cost (est.){' '}
+              Max. swap slippage{' '}
               <InfoTooltip
-                content="This is the cost of settling your order on-chain, including gas and any LP fees. CoW Swap will try to lower this cost where possible."
+                content="CoW Swap dynamically adjusts your slippage tolerance to ensure your trade executes quickly while still getting the best price. Trades are protected from MEV, so your slippage can't be exploited!"
                 size={14}
               />
             </>
           }
           withTimelineDot
         >
-          {networkCost} {sellTokenSymbol}&nbsp;
-          {networkCostUsdValue && (
-            <i>
-              (<FiatAmount amount={networkCostUsdValue} />)
-            </i>
-          )}
+          {swapMaxSlippage}%
         </ConfirmDetailsItem>
+      )}
 
-        {swapExpectedToReceive && (
-          <ConfirmDetailsItem
-            withTimelineDot
-            label={
-              <>
-                Expected to receive{' '}
-                <InfoTooltip
-                  content={`The estimated amount you\'ll receive after estimated network costs and the max slippage setting (${swapMaxSlippage}%).`}
-                  size={14}
-                />
-              </>
-            }
-          >
+      {recipient && (
+        <ConfirmDetailsItem
+          label={
+            <>
+              Recipient <InfoTooltip content="The address that will receive the tokens." size={14} />
+            </>
+          }
+          withTimelineDot
+        >
+          <RecipientWrapper>
+            <NetworkLogo chainId={sourceChainId} size={16} />
+            {isAddress(recipient) ? (
+              <Link
+                href={getExplorerLink(sourceChainId, recipient, ExplorerDataType.ADDRESS)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {shortenAddress(recipient)} ↗
+              </Link>
+            ) : (
+              recipient
+            )}
+          </RecipientWrapper>
+        </ConfirmDetailsItem>
+      )}
+
+      {status !== StopStatusEnum.FAILED && status !== StopStatusEnum.REFUND_COMPLETE && swapMinReceive && (
+        <ConfirmDetailsItem
+          label={<ReceiveAmountTitle>Min. to receive</ReceiveAmountTitle>}
+          isLast={status !== StopStatusEnum.DONE && status !== StopStatusEnum.PENDING}
+        >
+          <b>
             <TokenAmountDisplay
               token={buyToken}
-              amount={swapExpectedToReceive}
+              amount={swapMinReceive}
               displaySymbol={buyTokenSymbol}
-              usdValue={swapExpectedReceiveUsdValue}
+              usdValue={swapMinReceiveUsdValue}
               tokenLogoSize={tokenLogoSize}
             />
-          </ConfirmDetailsItem>
-        )}
-
-        {swapMaxSlippage && (
-          <ConfirmDetailsItem
-            label={
-              <>
-                Max. swap slippage{' '}
-                <InfoTooltip
-                  content="CoW Swap dynamically adjusts your slippage tolerance to ensure your trade executes quickly while still getting the best price. Trades are protected from MEV, so your slippage can't be exploited!"
-                  size={14}
-                />
-              </>
-            }
-            withTimelineDot
-          >
-            {swapMaxSlippage}%
-          </ConfirmDetailsItem>
-        )}
-
-        {recipient && (
-          <ConfirmDetailsItem
-            label={
-              <>
-                Recipient <InfoTooltip content="The address that will receive the tokens." size={14} />
-              </>
-            }
-            withTimelineDot
-          >
-            <RecipientWrapper>
-              <NetworkLogo chainId={sourceChainId} size={16} />
-              {isAddress(recipient) ? (
-                <Link
-                  href={getExplorerLink(sourceChainId, recipient, ExplorerDataType.ADDRESS)}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {shortenAddress(recipient)} ↗
-                </Link>
-              ) : (
-                recipient
-              )}
-            </RecipientWrapper>
-          </ConfirmDetailsItem>
-        )}
-
-        {status !== StopStatusEnum.FAILED && status !== StopStatusEnum.REFUND_COMPLETE && swapMinReceive && (
-          <ConfirmDetailsItem
-            label={<ReceiveAmountTitle>Min. to receive</ReceiveAmountTitle>}
-            isLast={status !== StopStatusEnum.DONE && status !== StopStatusEnum.PENDING}
-          >
-            <b>
-              <TokenAmountDisplay
-                token={buyToken}
-                amount={swapMinReceive}
-                displaySymbol={buyTokenSymbol}
-                usdValue={swapMinReceiveUsdValue}
-                tokenLogoSize={tokenLogoSize}
-              />
-            </b>
-          </ConfirmDetailsItem>
-        )}
-      </SectionContent>
-    </>
+          </b>
+        </ConfirmDetailsItem>
+      )}
+    </BridgeDetailsContainer>
   )
 }
