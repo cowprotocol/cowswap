@@ -64,8 +64,6 @@ export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.ARBITRUM_ONE]: null, // doesn't exist!
   [SupportedChainId.BASE]: null, // doesn't exist!
   [SupportedChainId.SEPOLIA]: '0x21d06a222bbb94ec1406a0a8ba86b4d761bc9864',
-  [SupportedChainId.AVALANCHE]: 'TODONETOWRK',
-  [SupportedChainId.POLYGON]: 'TODONETOWRK',
 }
 
 export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string> = {
@@ -74,8 +72,6 @@ export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string> = {
   [SupportedChainId.ARBITRUM_ONE]: '0xcb8b5cd20bdcaea9a010ac1f8d835824f5c87a04',
   [SupportedChainId.BASE]: '0xc694a91e6b071bF030A18BD3053A7fE09B6DaE69',
   [SupportedChainId.SEPOLIA]: '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59',
-  [SupportedChainId.AVALANCHE]: 'TODONETOWRK',
-  [SupportedChainId.POLYGON]: 'TODONETOWRK',
 }
 
 export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
@@ -93,8 +89,6 @@ export const MINIMUM_ETH_FLOW_SLIPPAGE_BPS: Record<SupportedChainId, number> = {
   [SupportedChainId.ARBITRUM_ONE]: DEFAULT_SLIPPAGE_BPS,
   [SupportedChainId.BASE]: DEFAULT_SLIPPAGE_BPS,
   [SupportedChainId.SEPOLIA]: DEFAULT_SLIPPAGE_BPS,
-  [SupportedChainId.AVALANCHE]: DEFAULT_SLIPPAGE_BPS,
-  [SupportedChainId.POLYGON]: DEFAULT_SLIPPAGE_BPS,
 }
 
 export const MINIMUM_ETH_FLOW_SLIPPAGE: Record<SupportedChainId, Percent> = mapSupportedNetworks(
@@ -133,8 +127,6 @@ export const GAS_FEE_ENDPOINTS: Record<SupportedChainId, string> = {
   [SupportedChainId.ARBITRUM_ONE]: 'https://arbitrum.blockscout.com/api/v1/gas-price-oracle',
   [SupportedChainId.BASE]: 'https://base.blockscout.com/api/v1/gas-price-oracle',
   [SupportedChainId.SEPOLIA]: '',
-  [SupportedChainId.AVALANCHE]: 'TODONETOWRK',
-  [SupportedChainId.POLYGON]: 'TODONETOWRK',
 }
 export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
@@ -142,8 +134,6 @@ export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.ARBITRUM_ONE]: null,
   [SupportedChainId.BASE]: null,
   [SupportedChainId.SEPOLIA]: null,
-  [SupportedChainId.AVALANCHE]: 'TODONETOWRK',
-  [SupportedChainId.POLYGON]: 'TODONETOWRK',
 }
 
 export const UNSUPPORTED_TOKENS_FAQ_URL = 'https://docs.cow.fi/cow-protocol/reference/core/tokens'

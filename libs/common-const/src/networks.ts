@@ -9,8 +9,6 @@ const RPC_URL_ENVS: Record<SupportedChainId, string | undefined> = {
   [SupportedChainId.ARBITRUM_ONE]: process.env.REACT_APP_NETWORK_URL_42161 || undefined,
   [SupportedChainId.BASE]: process.env.REACT_APP_NETWORK_URL_8453 || undefined,
   [SupportedChainId.SEPOLIA]: process.env.REACT_APP_NETWORK_URL_11155111 || undefined,
-  [SupportedChainId.AVALANCHE]: 'TODONETOWRK',
-  [SupportedChainId.POLYGON]: 'TODONETOWRK',
 }
 
 const DEFAULT_RPC_URL: Record<SupportedChainId, { url: string; usesInfura: boolean }> = {
@@ -19,8 +17,6 @@ const DEFAULT_RPC_URL: Record<SupportedChainId, { url: string; usesInfura: boole
   [SupportedChainId.ARBITRUM_ONE]: { url: `https://arbitrum-mainnet.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
   [SupportedChainId.BASE]: { url: `https://base-mainnet.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
   [SupportedChainId.SEPOLIA]: { url: `https://sepolia.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
-  [SupportedChainId.AVALANCHE]: { url: `TODONETOWRK`, usesInfura: true },
-  [SupportedChainId.POLYGON]: { url: `TODONETOWRK`, usesInfura: true },
 }
 
 /**
