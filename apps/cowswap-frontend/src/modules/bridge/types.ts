@@ -1,4 +1,6 @@
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 /**
  * Configuration for a bridge protocol
@@ -28,10 +30,10 @@ export interface BridgeData {
   buyAmount: string
   buyToken: string
   buyTokenAddress: string
-  networkCost: string
+  networkCost: CurrencyAmount<TokenWithLogo>
   networkCostUsd: string
-  swapMinReceive: string
-  swapExpectedToReceive: string
+  swapMinReceive?: CurrencyAmount<TokenWithLogo>
+  swapExpectedToReceive?: CurrencyAmount<TokenWithLogo>
   swapMaxSlippage: string
 
   // Bridge details

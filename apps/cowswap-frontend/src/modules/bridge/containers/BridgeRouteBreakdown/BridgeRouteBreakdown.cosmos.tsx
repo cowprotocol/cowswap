@@ -66,9 +66,9 @@ const defaultProps = {
   // Swap details
   sellCurrencyAmount: createAmount(USDC_MAINNET, '1000'),
   buyCurrencyAmount: createAmount(COW_MAINNET, '3442.423'),
-  networkCost: '0.5',
-  swapMinReceive: '3425.21',
-  swapExpectedToReceive: '3442.423',
+  networkCost: createAmount(USDC_MAINNET, '0.5'),
+  swapMinReceive: createAmount(COW_MAINNET, '3425.21'),
+  swapExpectedToReceive: createAmount(COW_MAINNET, '3442.423'),
   swapMaxSlippage: '0.5',
   // Bridge details
   bridgeSendCurrencyAmount: createAmount(COW_MAINNET, '3442.423'),
@@ -219,10 +219,11 @@ const SwapForm = () => {
   const sellAmount = createAmount(USDC_MAINNET, originalSellAmountStr)
 
   // Network fee in sell currency (USDC)
-  const networkFeeInSellCurrency = createAmount(USDC_MAINNET, defaultProps.networkCost)
+  const networkFeeInSellCurrency = defaultProps.networkCost
 
   // Network fee converted to buy currency (COW)
-  const networkFeeInBuyCurrency = createAmount(COW_MAINNET, parseFloat(defaultProps.networkCost) * 2.5) // Estimate conversion
+  const networkCostFloat = parseFloat(defaultProps.networkCost.toSignificant(6))
+  const networkFeeInBuyCurrency = createAmount(COW_MAINNET, networkCostFloat * 2.5)
 
   // Create a quote price
   const quotePrice = new Price({
@@ -231,10 +232,10 @@ const SwapForm = () => {
   })
 
   // Calculate amounts after fees
-  const buyAmountAfterFees = createAmount(COW_MAINNET, defaultProps.swapExpectedToReceive)
+  const buyAmountAfterFees = createAmount(COW_MAINNET, defaultProps.swapExpectedToReceive.toSignificant(6))
 
   // Calculate minimum amount from slippage
-  const buyAmountAfterSlippage = createAmount(COW_MAINNET, defaultProps.swapMinReceive)
+  const buyAmountAfterSlippage = createAmount(COW_MAINNET, defaultProps.swapMinReceive.toSignificant(6))
 
   // Create receiveAmountInfo for output currency
   const receiveAmountInfo: ReceiveAmountInfo = {

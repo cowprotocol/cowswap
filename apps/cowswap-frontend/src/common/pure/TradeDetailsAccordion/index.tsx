@@ -1,12 +1,11 @@
-import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import SVG from 'react-inlinesvg'
-
 import { BridgeAccordionSummary, BridgeProtocolConfig } from 'modules/bridge'
 
-import { Wrapper, Summary, SummaryClickable, ToggleIcon, Details } from './styled'
+import { ToggleArrow } from 'common/pure/ToggleArrow'
+
+import { Wrapper, Summary, SummaryClickable, Details } from './styled'
 
 interface TradeDetailsAccordionProps {
   rateInfo: React.ReactNode
@@ -86,9 +85,7 @@ export const TradeDetailsAccordion = ({
             </>
           )}
 
-          <ToggleIcon isOpen={open}>
-            <SVG src={CarretIcon} title={open ? 'Close' : 'Open'} />
-          </ToggleIcon>
+          <ToggleArrow isOpen={open} />
         </SummaryClickable>
       </Summary>
       <Details isVisible={open}>{children}</Details>

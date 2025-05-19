@@ -2,8 +2,6 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { ToggleArrow } from '../../styles'
-
 export const Wrapper = styled.div<{ hasBackground?: boolean }>`
   width: 100%;
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
@@ -33,17 +31,6 @@ export const RouteHeader = styled.div`
 export const ClickableRouteHeader = styled(RouteHeader)`
   cursor: pointer;
   transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-  ${ToggleArrow} {
-    color: var(${UI.COLOR_TEXT_OPACITY_50});
-  }
-
-  &:hover {
-    color: var(${UI.COLOR_TEXT});
-    ${ToggleArrow} {
-      color: var(${UI.COLOR_TEXT});
-    }
-  }
 `
 
 export const RouteTitle = styled.div`

@@ -2,7 +2,7 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { ToggleArrow as ImportedToggleArrow } from 'modules/bridge/styles'
+import { StyledToggleArrow } from '../ToggleArrow/styled'
 
 export const Wrapper = styled.div<{ isOpen: boolean }>`
   display: flex;
@@ -44,10 +44,6 @@ export const Summary = styled.div`
   }
 `
 
-export const ToggleIcon = styled(ImportedToggleArrow)`
-  color: var(${UI.COLOR_TEXT_OPACITY_50});
-`
-
 export const SummaryClickable = styled.div<{ isOpen: boolean }>`
   cursor: pointer;
   display: flex;
@@ -68,7 +64,7 @@ export const SummaryClickable = styled.div<{ isOpen: boolean }>`
     flex: 0 0 auto;
   }
 
-  > *:not(${ToggleIcon}) {
+  > *:not(${StyledToggleArrow}) {
     opacity: ${({ isOpen }) => (isOpen ? '0' : '1')};
     visibility: ${({ isOpen }) => (isOpen ? 'hidden' : 'visible')};
     transition:
@@ -76,15 +72,6 @@ export const SummaryClickable = styled.div<{ isOpen: boolean }>`
       visibility var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 
-  &:hover {
-    color: var(${UI.COLOR_TEXT});
-
-    ${ToggleIcon} {
-      color: var(${UI.COLOR_TEXT});
-    }
-  }
-
-  // If it's the only child, make it take all the space
   &:only-child {
     grid-column: 1 / -1;
   }

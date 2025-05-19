@@ -4,9 +4,9 @@ import SVG from 'react-inlinesvg'
 import { FlattenSimpleInterpolation } from 'styled-components'
 import styled, { css, keyframes } from 'styled-components/macro'
 
-import { StopStatusEnum } from './utils/status'
+import { ARROW_ICON_SIZE } from 'common/pure/ToggleArrow/styled'
 
-const ARROW_ICON_SIZE = '12px'
+import { StopStatusEnum } from './utils/status'
 
 const spin = keyframes`
   0% {
@@ -158,56 +158,13 @@ export const ArrowIcon = styled.span`
   line-height: 1;
 `
 
-export const ToggleArrow = styled.div<{ isOpen: boolean }>`
-  --size: ${ARROW_ICON_SIZE};
-  transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
-  transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--size);
-  height: var(--size);
-
-  > svg {
-    width: var(--size);
-    height: var(--size);
-    object-fit: contain;
-
-    path {
-      fill: currentColor;
-      transition: fill var(${UI.ANIMATION_DURATION}) ease-in-out;
-    }
-  }
-`
-
-export const ClickableStopTitle = styled(StopTitle)<{ isCollapsible?: boolean }>`
-  cursor: ${({ isCollapsible }) => (isCollapsible ? 'pointer' : 'default')};
-
-  ${ToggleArrow} {
-    color: var(${UI.COLOR_TEXT_OPACITY_50});
-  }
-
-  &:hover {
-    opacity: ${({ isCollapsible }) => (isCollapsible ? 0.8 : 1)};
-
-    ${({ isCollapsible }) =>
-      isCollapsible &&
-      css`
-        ${ToggleArrow} {
-          color: var(${UI.COLOR_TEXT});
-        }
-      `}
-  }
-`
-
 export const ToggleIconContainer = styled.div`
   display: flex;
   align-items: center;
   margin: 0 0 0 auto;
   padding: 6px;
-  border-radius: var(--size);
-  cursor: pointer;
   border-radius: ${ARROW_ICON_SIZE};
+  cursor: pointer;
   transition:
     background var(${UI.ANIMATION_DURATION}) ease-in-out,
     opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
@@ -367,4 +324,12 @@ export const AnimatedEllipsis = styled.span<{ isVisible?: boolean }>`
 
 export const DangerText = styled.span`
   color: var(${UI.COLOR_DANGER_TEXT});
+`
+
+export const ClickableStopTitle = styled(StopTitle)<{ isCollapsible?: boolean }>`
+  cursor: ${({ isCollapsible }) => (isCollapsible ? 'pointer' : 'default')};
+
+  &:hover {
+    opacity: ${({ isCollapsible }) => (isCollapsible ? 0.8 : 1)};
+  }
 `

@@ -1,24 +1,21 @@
 import { useMemo, useCallback } from 'react'
 
-import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
 import { SolverInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InfoTooltip, UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import SVG from 'react-inlinesvg'
-
-import { ToggleArrow, DividerHorizontal } from 'modules/bridge/styles'
+import { DividerHorizontal } from 'modules/bridge/styles'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { SolverCompetition, ApiSolverCompetition } from 'common/hooks/orderProgressBar'
 import { useSolversInfo } from 'common/hooks/useSolversInfo'
 import { ProtocolIcons } from 'common/pure/ProtocolIcons'
+import { ToggleArrow } from 'common/pure/ToggleArrow'
 
 import { Wrapper, RouteHeader, RouteTitle, StopsInfo, CollapsibleStopsInfo, ClickableRouteHeader } from './styled'
 
-import { useParsedAmountWithUsd } from '../../hooks'
 import { BridgeStopDetails } from '../../pure/BridgeStopDetails/index'
 import { SwapStopDetails } from '../../pure/SwapStopDetails/index'
 import { BridgeFeeType, BridgeProtocolConfig } from '../../types'
@@ -28,9 +25,9 @@ export interface BridgeRouteBreakdownProps {
   // Swap details
   sellCurrencyAmount: CurrencyAmount<TokenWithLogo>
   buyCurrencyAmount: CurrencyAmount<TokenWithLogo>
-  networkCost: string
-  swapMinReceive?: string
-  swapExpectedToReceive?: string
+  networkCost: CurrencyAmount<TokenWithLogo>
+  swapMinReceive?: CurrencyAmount<TokenWithLogo>
+  swapExpectedToReceive?: CurrencyAmount<TokenWithLogo>
   swapMaxSlippage?: string
 
   // Bridge details
@@ -123,10 +120,22 @@ export function BridgeRouteBreakdown({
   }, [sellToken.chainId])
 
   const destChainData = useMemo(() => {
-    const chainId = bridgeReceiveCurrencyAmount.currency.chainId as SupportedChainId
-    const info = getChainInfo(chainId)
+    const currentChainId = bridgeReceiveCurrencyAmount.currency.chainId // this is 'number'
+    const info = getChainInfo(currentChainId) // Accepts number, returns ChainInfo | undefined
+
+    if (!info) {
+      console.warn(`Chain info not found for chainId: ${currentChainId} in BridgeRouteBreakdown. Using fallback.`)
+      // Return a structure that won't crash downstream and provides sensible fallbacks.
+      return {
+        chainId: currentChainId, // Pass the original number
+        chainInfo: undefined,
+        chainName: 'Unsupported Chain', // Fallback name
+      }
+    }
+
+    // At this point, 'info' is valid, implying currentChainId is a supported one.
     return {
-      chainId,
+      chainId: currentChainId as SupportedChainId,
       chainInfo: info,
       chainName: info.label,
     }
@@ -162,18 +171,10 @@ export function BridgeRouteBreakdown({
     } as SolverCompetition
   }, [winningSolverId, winningSolverDisplayInfo])
 
-  const { currencyAmount: parsedNetworkCost, usdInfo: networkCostUsdInfo } = useParsedAmountWithUsd(
-    networkCost,
-    sellToken,
-  )
-  const { currencyAmount: parsedSwapMinReceive, usdInfo: swapMinReceiveUsdInfo } = useParsedAmountWithUsd(
-    swapMinReceive,
-    buyToken,
-  )
-  const { currencyAmount: parsedSwapExpectedToReceive, usdInfo: swapExpectedReceiveUsdInfo } = useParsedAmountWithUsd(
-    swapExpectedToReceive,
-    buyToken,
-  )
+  // networkCost, swapMinReceive, and swapExpectedToReceive are now expected as CurrencyAmount
+  const networkCostUsdInfo = useUsdAmount(networkCost, sellToken)
+  const swapMinReceiveUsdInfo = useUsdAmount(swapMinReceive, buyToken)
+  const swapExpectedReceiveUsdInfo = useUsdAmount(swapExpectedToReceive, buyToken)
 
   const bridgeReceiveAmountUsdInfo = useUsdAmount(bridgeReceiveCurrencyAmount, bridgeReceiveCurrencyAmount.currency)
   const rawReceivedAmountUsdInfo = useUsdAmount(receivedAmount, buyToken)
@@ -209,9 +210,7 @@ export function BridgeRouteBreakdown({
           <CollapsibleStopsInfo>
             2 stops
             <ProtocolIcons secondProtocol={bridgeProvider} />
-            <ToggleArrow isOpen={isExpanded}>
-              <SVG src={CarretIcon} title={isExpanded ? 'Close' : 'Open'} />
-            </ToggleArrow>
+            <ToggleArrow isOpen={isExpanded} />
           </CollapsibleStopsInfo>
         ) : (
           <StopsInfo>
@@ -240,12 +239,12 @@ export function BridgeRouteBreakdown({
         sellCurrencyAmount={sellCurrencyAmount}
         buyCurrencyAmount={buyCurrencyAmount}
         sourceChainName={sourceChainData.chainName}
-        networkCostAmount={parsedNetworkCost}
+        networkCostAmount={networkCost}
         networkCostUsdInfo={networkCostUsdInfo}
-        swapExpectedToReceiveAmount={parsedSwapExpectedToReceive}
+        swapExpectedToReceiveAmount={swapExpectedToReceive}
         swapExpectedReceiveUsdInfo={swapExpectedReceiveUsdInfo}
         swapMaxSlippage={swapMaxSlippage}
-        swapMinReceiveAmount={parsedSwapMinReceive}
+        swapMinReceiveAmount={swapMinReceive}
         swapMinReceiveUsdInfo={swapMinReceiveUsdInfo}
         tokenLogoSize={tokenLogoSize}
         bridgeProvider={bridgeProvider}

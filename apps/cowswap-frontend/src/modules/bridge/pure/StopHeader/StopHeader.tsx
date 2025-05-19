@@ -1,20 +1,15 @@
 import { ReactNode } from 'react'
 
-import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
+// import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg' // Removed
 import { Media, UI } from '@cowprotocol/ui'
 
-import SVG from 'react-inlinesvg'
+// import SVG from 'react-inlinesvg' // Removed
 import styled from 'styled-components/macro'
 
 import { ProtocolIcons } from 'common/pure/ProtocolIcons'
+import { ToggleArrow } from 'common/pure/ToggleArrow'
 
-import {
-  StopNumberCircle,
-  ToggleArrow,
-  ToggleIconContainer,
-  ClickableStopTitle,
-  StopTitle as BaseStopTitle,
-} from '../../styles'
+import { StopNumberCircle, ToggleIconContainer, ClickableStopTitle, StopTitle as BaseStopTitle } from '../../styles'
 import { BridgeProtocolConfig } from '../../types'
 import { StopStatusEnum } from '../../utils/status'
 
@@ -119,9 +114,7 @@ export function StopHeader({
         {TitleContent}
         {ViewDetailsLink}
         <ToggleIconContainer>
-          <ToggleArrow isOpen={isExpanded}>
-            <SVG src={CarretIcon} title={isExpanded ? 'Close' : 'Open'} />
-          </ToggleArrow>
+          <ToggleArrow isOpen={isExpanded} />
         </ToggleIconContainer>
       </ClickableStopTitle>
     )
