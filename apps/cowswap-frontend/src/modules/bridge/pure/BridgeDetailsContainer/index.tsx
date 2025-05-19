@@ -23,13 +23,14 @@ export function BridgeDetailsContainer({
   title,
   providerTitle,
   bridgeProvider,
+  stopNumber,
   children,
   isCollapsible = false,
 }: BridgeDetailsContainerProps) {
   const [isExpanded, setIsExpanded] = useState(true)
   const TitleContent = (
     <BridgeRouteTitle
-      stopNumber={1}
+      stopNumber={stopNumber}
       status={status}
       icon={icon}
       title={title}
