@@ -383,6 +383,7 @@ export const USDC_POLYGON = new TokenWithLogo(
 
   6,
   'USDC',
+  'USD Coin',
 )
 
 export const USDC_AVALANCHE = new TokenWithLogo(
@@ -392,6 +393,7 @@ export const USDC_AVALANCHE = new TokenWithLogo(
   '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e',
   6,
   'USDC',
+  'USD Coin',
 )
 
 export const USDC: Record<SupportedChainId, TokenWithLogo> = {

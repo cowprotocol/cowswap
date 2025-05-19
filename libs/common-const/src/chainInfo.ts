@@ -104,7 +104,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     infoLink: 'https://polygon.technology',
     label: 'Polygon',
     name: 'polygon',
-    addressPrefix: 'op',
+    addressPrefix: 'polygon',
     explorerTitle: 'Polygonscan',
     urlAlias: 'polygon',
     logo: { light: PolygonLogo, dark: PolygonLogo },

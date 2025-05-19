@@ -134,7 +134,7 @@ export const GAS_FEE_ENDPOINTS: Record<SupportedChainId, string> = {
   [SupportedChainId.BASE]: 'https://base.blockscout.com/api/v1/gas-price-oracle',
   [SupportedChainId.SEPOLIA]: '',
   [SupportedChainId.POLYGON]: 'https://polygon.blockscout.com/api/v1/gas-price-oracle',
-  [SupportedChainId.AVALANCHE]: 'null', // TODO: find endpoint
+  [SupportedChainId.AVALANCHE]: '', // TODO: find endpoint
 }
 export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
