@@ -2,7 +2,6 @@ import { ReactNode } from 'react'
 
 import CheckmarkIcon from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
-import { TokenWithLogo } from '@cowprotocol/common-const'
 import { displayTime, ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InfoTooltip, UI } from '@cowprotocol/ui'
@@ -47,7 +46,7 @@ export interface BridgeStopDetailsProps {
   recipientChainName: string
   hideBridgeFlowFiatAmount: boolean
   receiveAmountUsd: CurrencyAmount<Token> | null
-  bridgeFee: CurrencyAmount<TokenWithLogo>
+  bridgeFee: CurrencyAmount<Currency>
   maxBridgeSlippage?: string
   estimatedTime: number | undefined
   recipient: string
