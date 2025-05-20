@@ -6,7 +6,7 @@ import IMAGE_ANALYTICS from 'assets/img/pie.svg'
 
 import { MenuItemKind, MenuTreeItem } from './types'
 
-import { DOCS_LINK, DISCORD_LINK, PROTOCOL_LINK, DUNE_DASHBOARD_LINK, Routes } from '../../../explorer/const'
+import { DOCS_LINK, DISCORD_LINK, PROTOCOL_LINK, COWSWAP_LINK, DUNE_DASHBOARD_LINK, Routes } from '../../../explorer/const'
 
 export const MAIN_MENU: MenuTreeItem[] = [
   {
@@ -20,6 +20,12 @@ export const MAIN_MENU: MenuTreeItem[] = [
       {
         sectionTitle: 'OVERVIEW',
         links: [
+          {
+            title: 'CoW Swap',
+            url: COWSWAP_LINK,
+            kind: MenuItemKind.EXTERNAL_LINK,
+            iconSVG: IMAGE_COW,
+          },
           {
             title: 'CoW Protocol',
             url: PROTOCOL_LINK,

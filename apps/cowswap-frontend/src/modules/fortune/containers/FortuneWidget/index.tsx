@@ -198,7 +198,7 @@ const FortuneText = styled.h3`
 
   &:before,
   &:after {
-    color: inherit;
+    color: var(${UI.COLOR_TEXT_PAPER});
     font-size: 100px;
     position: absolute;
     z-index: 1;

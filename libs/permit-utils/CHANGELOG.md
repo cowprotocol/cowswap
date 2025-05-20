@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.6.2](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.6.1...permit-utils-v0.6.2) (2025-05-16)
+
+
+### Bug Fixes
+
+* **permit:** dai permit issues ([#5680](https://github.com/cowprotocol/cowswap/issues/5680)) ([a9e2da0](https://github.com/cowprotocol/cowswap/commit/a9e2da026cab2b0e001adc7fb0ebf11d1b028089))
+
+## [0.6.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.6.0...permit-utils-v0.6.1) (2025-05-08)
+
+
+### Bug Fixes
+
+* **permit:** nonce not supported [#5653](https://github.com/cowprotocol/cowswap/issues/5653) ([#5672](https://github.com/cowprotocol/cowswap/issues/5672)) ([a526222](https://github.com/cowprotocol/cowswap/commit/a526222e115c28540d68addd2476070815975846))
+
 ## [0.6.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.5.0...permit-utils-v0.6.0) (2025-01-09)
 
 

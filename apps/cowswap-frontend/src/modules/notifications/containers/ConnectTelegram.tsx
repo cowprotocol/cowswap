@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { getCmsClient } from '@cowprotocol/core'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -49,13 +49,11 @@ export function ConnectTelegram() {
 
   const [tgData, setTgData] = useState<TelegramData | null>(null)
   const telegramWrapperRef = useRef<HTMLDivElement>(null)
-  const isDataReceivedRef = useRef(false)
   const isAuthRequestedRef = useRef(false)
 
-  const authorize = (callback?: () => void) => {
+  const authenticate = (callback?: () => void) => {
     getTelegramAuth(TG_BOT_ID, (response) => {
       if (response && response.user) {
-        setIsCmsCallInProgress(true)
         setTgData(response.user)
       }
       setIsAuthChecked(true)
@@ -63,7 +61,7 @@ export function ConnectTelegram() {
     })
   }
 
-  const authenticate = () => {
+  const authorize = (callback: () => void) => {
     if (!window.Telegram) return
 
     setIsLoginInProgress(true)
@@ -72,12 +70,44 @@ export function ConnectTelegram() {
       if (data) {
         setTgData(data)
         setIsLoginInProgress(false)
+        callback()
       } else {
-        authorize(() => {
+        authenticate(() => {
           setIsLoginInProgress(false)
+          callback()
         })
       }
     })
+  }
+
+  const checkOrAddTgSubscription = useCallback(
+    (method: string) => {
+      if (!tgData || !account) return
+
+      setIsCmsCallInProgress(true)
+
+      getCmsClient()
+        .POST(method, { body: { account, data: tgData } })
+        .then(({ data: result }: { data: boolean }) => {
+          setTgSubscribed(result)
+        })
+        .finally(() => {
+          setIsCmsCallInProgress(false)
+        })
+    },
+    [tgData, account],
+  )
+
+  const subscribeAccount = () => {
+    const addSubscription = () => {
+      checkOrAddTgSubscription('/add-tg-subscription')
+    }
+
+    if (!isTgSubscribed) {
+      authorize(addSubscription)
+    } else {
+      addSubscription()
+    }
   }
 
   /**
@@ -88,25 +118,16 @@ export function ConnectTelegram() {
 
     isAuthRequestedRef.current = true
 
-    authorize()
+    authenticate()
   }, [])
 
   useEffect(() => {
-    if (!tgData || !account || isDataReceivedRef.current) return
+    if (!account || !tgData) return
 
-    isDataReceivedRef.current = true
+    setTgSubscribed(false)
 
-    setIsCmsCallInProgress(true)
-
-    getCmsClient()
-      .POST('/add-tg-subscription', { body: { account, data: tgData } })
-      .then(({ data: result }: { data: boolean }) => {
-        setTgSubscribed(result)
-      })
-      .finally(() => {
-        setIsCmsCallInProgress(false)
-      })
-  }, [tgData, account])
+    checkOrAddTgSubscription('/check-tg-subscription')
+  }, [account, tgData, checkOrAddTgSubscription])
 
   useEffect(() => {
     if (!telegramWrapperRef.current) return
@@ -132,7 +153,11 @@ export function ConnectTelegram() {
     <Wrapper ref={telegramWrapperRef}>
       <Option>
         <div>Enable notifications</div>
-        <TelegramConnectionStatus isLoading={isLoading} isSubscribed={isTgSubscribed} authenticate={authenticate} />
+        <TelegramConnectionStatus
+          isLoading={isLoading}
+          isSubscribed={isTgSubscribed}
+          subscribeAccount={subscribeAccount}
+        />
       </Option>
     </Wrapper>
   )

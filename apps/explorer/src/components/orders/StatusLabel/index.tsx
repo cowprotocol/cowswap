@@ -87,8 +87,7 @@ const PartiallyTagLabel = css<PartiallyTagProps>`
               border-left-width: 0;
               border-radius: 0 0.4rem 0.4rem 0;
               padding: 0 0.6rem;
-              font-size: 0.84em;
-              color: ${Color.explorer_textSecondary};
+              font-size: 0.84em;              
             `}
           `
         : null}
