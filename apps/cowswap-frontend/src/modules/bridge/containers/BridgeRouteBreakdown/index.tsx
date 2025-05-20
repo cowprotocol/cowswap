@@ -115,6 +115,7 @@ export function BridgeRouteBreakdown({
     const currentChainId = bridgeReceiveCurrencyAmount.currency.chainId // this is 'number'
     const info = getChainInfo(currentChainId) // Accepts number, returns ChainInfo | undefined
 
+    // TODO: use getChainInfo from brdigeProvider instead
     if (!info) {
       console.warn(`Chain info not found for chainId: ${currentChainId} in BridgeRouteBreakdown. Using fallback.`)
       // Return a structure that won't crash downstream and provides sensible fallbacks.
@@ -183,36 +184,33 @@ export function BridgeRouteBreakdown({
 
   const HeaderComponent = isCollapsible ? ClickableRouteHeader : RouteHeader
 
-  const headerContent = useMemo(
-    () => (
-      <HeaderComponent onClick={isCollapsible ? handleHeaderClick : undefined}>
-        <RouteTitle>
-          Route{' '}
-          <InfoTooltip
-            content={
-              <>
-                Your trade will be executed in 2 stops. First, you swap on <b>CoW Protocol (Stop 1)</b>, then you bridge
-                via <b>{bridgeProvider.title} (Stop 2)</b>.
-              </>
-            }
-            size={14}
-          />
-        </RouteTitle>
-        {isCollapsible ? (
-          <CollapsibleStopsInfo>
-            2 stops
-            <ProtocolIcons secondProtocol={bridgeProvider} />
-            <ToggleArrow isOpen={isExpanded} />
-          </CollapsibleStopsInfo>
-        ) : (
-          <StopsInfo>
-            2 stops
-            <ProtocolIcons secondProtocol={bridgeProvider} />
-          </StopsInfo>
-        )}
-      </HeaderComponent>
-    ),
-    [bridgeProvider, isCollapsible, isExpanded, handleHeaderClick, HeaderComponent],
+  const headerContent = (
+    <HeaderComponent onClick={isCollapsible ? handleHeaderClick : undefined}>
+      <RouteTitle>
+        Route{' '}
+        <InfoTooltip
+          content={
+            <>
+              Your trade will be executed in 2 stops. First, you swap on <b>CoW Protocol (Stop 1)</b>, then you bridge
+              via <b>{bridgeProvider.title} (Stop 2)</b>.
+            </>
+          }
+          size={14}
+        />
+      </RouteTitle>
+      {isCollapsible ? (
+        <CollapsibleStopsInfo>
+          2 stops
+          <ProtocolIcons secondProtocol={bridgeProvider} />
+          <ToggleArrow isOpen={isExpanded} />
+        </CollapsibleStopsInfo>
+      ) : (
+        <StopsInfo>
+          2 stops
+          <ProtocolIcons secondProtocol={bridgeProvider} />
+        </StopsInfo>
+      )}
+    </HeaderComponent>
   )
 
   // Logic for when the main component is collapsed
