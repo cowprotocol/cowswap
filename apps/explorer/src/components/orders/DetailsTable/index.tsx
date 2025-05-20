@@ -136,6 +136,8 @@ const WarningRow = styled.tr`
   background-color: ${Color.explorer_bg};
 `
 
+export type RenderMode = 'FULL' | 'SUMMARY'
+
 export type Props = {
   chainId: SupportedChainId
   order: Order
@@ -144,10 +146,20 @@ export type Props = {
   viewFills: Command
   isPriceInverted: boolean
   invertPrice: Command
+  renderMode?: RenderMode
 }
 
 export function DetailsTable(props: Props): React.ReactNode | null {
-  const { chainId, order, areTradesLoading, showFillsButton, viewFills, isPriceInverted, invertPrice } = props
+  const {
+    chainId,
+    order,
+    areTradesLoading,
+    showFillsButton,
+    viewFills,
+    isPriceInverted,
+    invertPrice,
+    renderMode = 'FULL',
+  } = props
   const cowAnalytics = useCowAnalytics()
   const {
     uid,
@@ -185,6 +197,7 @@ export function DetailsTable(props: Props): React.ReactNode | null {
     })
   }
   const isSigning = status === 'signing'
+  const isSummaryMode = renderMode === 'SUMMARY'
 
   return (
     <SimpleTable
@@ -338,16 +351,18 @@ export function DetailsTable(props: Props): React.ReactNode | null {
               </td>
             </tr>
           )}
-          <tr>
-            <td>
-              <span>
-                <HelpTooltip tooltip={tooltip.expiration} /> Expiration Time
-              </span>
-            </td>
-            <td>
-              <DateDisplay date={expirationDate} showIcon={true} />
-            </td>
-          </tr>
+          {!isSummaryMode && (
+            <tr>
+              <td>
+                <span>
+                  <HelpTooltip tooltip={tooltip.expiration} /> Expiration Time
+                </span>
+              </td>
+              <td>
+                <DateDisplay date={expirationDate} showIcon={true} />
+              </td>
+            </tr>
+          )}
           <tr>
             <td>
               <span>
@@ -369,74 +384,78 @@ export function DetailsTable(props: Props): React.ReactNode | null {
               <AmountsDisplay order={order} />
             </td>
           </tr>
-          <tr>
-            <td>
-              <span>
-                <HelpTooltip tooltip={tooltip.priceLimit} /> Limit Price
-              </span>
-            </td>
-            <td>
-              <OrderPriceDisplay
-                buyAmount={buyAmount}
-                buyToken={buyToken}
-                sellAmount={sellAmount}
-                sellToken={sellToken}
-                showInvertButton
-                isPriceInverted={isPriceInverted}
-                invertPrice={invertPrice}
-              />
-            </td>
-          </tr>
-          <>
+          {!isSummaryMode && (
             <tr>
               <td>
                 <span>
-                  <HelpTooltip tooltip={tooltip.priceExecution} /> Execution price
+                  <HelpTooltip tooltip={tooltip.priceLimit} /> Limit Price
                 </span>
               </td>
               <td>
-                {!filledAmount.isZero() ? (
-                  <OrderPriceDisplay
-                    buyAmount={executedBuyAmount}
-                    buyToken={buyToken}
-                    sellAmount={executedSellAmount}
-                    sellToken={sellToken}
-                    showInvertButton
-                    isPriceInverted={isPriceInverted}
-                    invertPrice={invertPrice}
-                  />
-                ) : (
-                  '-'
-                )}
+                <OrderPriceDisplay
+                  buyAmount={buyAmount}
+                  buyToken={buyToken}
+                  sellAmount={sellAmount}
+                  sellToken={sellToken}
+                  showInvertButton
+                  isPriceInverted={isPriceInverted}
+                  invertPrice={invertPrice}
+                />
               </td>
             </tr>
-            <tr>
-              <td>
-                <span>
-                  <HelpTooltip tooltip={tooltip.filled} /> Filled
-                </span>
-              </td>
-              <td>
-                <Wrapper>
-                  <FilledProgress order={order} />
-                  {showFillsButton && (
-                    <LinkButton onClickOptional={viewFills} to={`/orders/${uid}/?${TAB_QUERY_PARAM_KEY}=fills`}>
-                      <FontAwesomeIcon icon={faFill} />
-                      View fills
-                    </LinkButton>
+          )}
+          {!isSummaryMode && (
+            <>
+              <tr>
+                <td>
+                  <span>
+                    <HelpTooltip tooltip={tooltip.priceExecution} /> Execution price
+                  </span>
+                </td>
+                <td>
+                  {!filledAmount.isZero() ? (
+                    <OrderPriceDisplay
+                      buyAmount={executedBuyAmount}
+                      buyToken={buyToken}
+                      sellAmount={executedSellAmount}
+                      sellToken={sellToken}
+                      showInvertButton
+                      isPriceInverted={isPriceInverted}
+                      invertPrice={invertPrice}
+                    />
+                  ) : (
+                    '-'
                   )}
-                </Wrapper>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <span>
-                  <HelpTooltip tooltip={tooltip.surplus} /> Order surplus
-                </span>
-              </td>
-              <td>{!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}</td>
-            </tr>
-          </>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span>
+                    <HelpTooltip tooltip={tooltip.filled} /> Filled
+                  </span>
+                </td>
+                <td>
+                  <Wrapper>
+                    <FilledProgress order={order} />
+                    {showFillsButton && (
+                      <LinkButton onClickOptional={viewFills} to={`/orders/${uid}/?${TAB_QUERY_PARAM_KEY}=fills`}>
+                        <FontAwesomeIcon icon={faFill} />
+                        View fills
+                      </LinkButton>
+                    )}
+                  </Wrapper>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span>
+                    <HelpTooltip tooltip={tooltip.surplus} /> Order surplus
+                  </span>
+                </td>
+                <td>{!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}</td>
+              </tr>
+            </>
+          )}
           <tr>
             <td>
               <span>
@@ -447,28 +466,32 @@ export function DetailsTable(props: Props): React.ReactNode | null {
               <GasFeeDisplay order={order} />
             </td>
           </tr>
-          <OrderHooksDetails appData={appData} fullAppData={fullAppData ?? undefined}>
-            {(content) => (
-              <tr>
-                <td>
-                  <span>
-                    <HelpTooltip tooltip={tooltip.hooks} /> Hooks
-                  </span>
-                </td>
-                <td>{content}</td>
-              </tr>
-            )}
-          </OrderHooksDetails>
-          <tr>
-            <td>
-              <span>
-                <HelpTooltip tooltip={tooltip.appData} /> AppData
-              </span>
-            </td>
-            <td>
-              <DecodeAppData appData={appData} fullAppData={fullAppData ?? undefined} />
-            </td>
-          </tr>
+          {!isSummaryMode && (
+            <OrderHooksDetails appData={appData} fullAppData={fullAppData ?? undefined}>
+              {(content) => (
+                <tr>
+                  <td>
+                    <span>
+                      <HelpTooltip tooltip={tooltip.hooks} /> Hooks
+                    </span>
+                  </td>
+                  <td>{content}</td>
+                </tr>
+              )}
+            </OrderHooksDetails>
+          )}
+          {!isSummaryMode && (
+            <tr>
+              <td>
+                <span>
+                  <HelpTooltip tooltip={tooltip.appData} /> AppData
+                </span>
+              </td>
+              <td>
+                <DecodeAppData appData={appData} fullAppData={fullAppData ?? undefined} />
+              </td>
+            </tr>
+          )}
         </>
       }
     />
