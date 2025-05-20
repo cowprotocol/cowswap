@@ -1,17 +1,16 @@
 import { ReactElement } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { FiatAmount, TokenAmount as LibTokenAmount, TokenAmountProps as LibTokenAmountProps } from '@cowprotocol/ui'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { StatusColor } from 'modules/bridge/utils/status'
 
 import { AmountWithTokenIcon } from './styled'
 
 export interface TokenAmountDisplayProps {
-  token: TokenWithLogo
-  currencyAmount: CurrencyAmount<Token> | null
+  token: Currency
+  currencyAmount: CurrencyAmount<Currency> | null
   displaySymbol?: string
   usdValue?: CurrencyAmount<Token> | null
   hideFiatAmount?: boolean

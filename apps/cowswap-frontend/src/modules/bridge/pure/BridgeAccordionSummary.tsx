@@ -14,7 +14,7 @@ interface BridgeAccordionSummaryProps {
   /** Estimated time for bridge transaction in minutes */
   bridgeEstimatedTime?: number
   /** Information about the bridge protocol */
-  bridgeProtocol?: BridgeProtocolConfig
+  bridgeProtocol: BridgeProtocolConfig
   children: ReactNode
 }
 

@@ -22,5 +22,4 @@ export {
 // Types
 export * from './types'
 
-// Lazy-loaded components from dedicated file
-export { BridgeRouteBreakdown, BridgeStopDetails, SwapStopDetails } from './lazy'
+export { BridgeRouteBreakdown } from './containers/BridgeRouteBreakdown'
