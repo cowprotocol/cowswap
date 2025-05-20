@@ -24,27 +24,29 @@ import { SwapStopDetails } from '../../pure/SwapStopDetails'
 import { BridgeProtocolConfig } from '../../types'
 import { StopStatusEnum } from '../../utils'
 
+interface BridgeRouteUiParams {
+  tokenLogoSize: number
+  hasBackground: boolean
+
+  // Display options
+  hideBridgeFlowFiatAmount: boolean
+  hideRouteHeader: boolean
+
+  // Overall Accordion functionality
+  isCollapsible: boolean
+  isExpanded: boolean
+  onExpandToggle: () => void
+}
+
 export interface BridgeRouteBreakdownProps {
   receiveAmountInfo: ReceiveAmountInfo
   bridgeQuote: BridgeQuoteResults
-
-  maxBridgeSlippage?: string
   bridgeProvider: BridgeProtocolConfig
 
-  // Optional props with defaults
-  tokenLogoSize?: number
-  hasBackground?: boolean
+  uiParams?: Partial<BridgeRouteUiParams>
+
   swapStatus?: StopStatusEnum
   bridgeStatus?: StopStatusEnum
-
-  // Display options
-  hideBridgeFlowFiatAmount?: boolean
-  hideRouteHeader?: boolean
-
-  // Overall Accordion functionality
-  isCollapsible?: boolean
-  isExpanded?: boolean
-  onExpandToggle?: () => void
 
   winningSolverId?: string | null
   receivedAmount?: CurrencyAmount<TokenWithLogo> | null
@@ -54,20 +56,23 @@ export interface BridgeRouteBreakdownProps {
   collapsedDefault?: ReactNode
 }
 
+const defaultBridgeRouteUiParams: BridgeRouteUiParams = {
+  tokenLogoSize: 18,
+  hasBackground: false,
+  hideBridgeFlowFiatAmount: false,
+  hideRouteHeader: false,
+  isCollapsible: false,
+  isExpanded: true,
+  onExpandToggle: () => {},
+}
+
 export function BridgeRouteBreakdown({
   receiveAmountInfo,
   bridgeQuote,
-  maxBridgeSlippage,
   bridgeProvider,
-  tokenLogoSize = 18,
-  hasBackground = false,
   swapStatus,
   bridgeStatus,
-  hideBridgeFlowFiatAmount = false,
-  hideRouteHeader = false,
-  isCollapsible = false,
-  isExpanded = true,
-  onExpandToggle = () => {},
+  uiParams = defaultBridgeRouteUiParams,
   winningSolverId,
   receivedAmount = null,
   surplusAmount = null,
@@ -106,12 +111,20 @@ export function BridgeRouteBreakdown({
   const rawSurplusAmountUsdInfo = useUsdAmount(surplusAmount)
   const surplusAmountUsdInfo = surplusAmount ? rawSurplusAmountUsdInfo : null
 
-  // This is a potentially expensive callback that will be passed to a child component
   const handleHeaderClick = useCallback(() => {
-    if (isCollapsible) {
-      onExpandToggle()
+    if (uiParams.isCollapsible) {
+      uiParams.onExpandToggle?.()
     }
-  }, [isCollapsible, onExpandToggle])
+  }, [uiParams])
+
+  const {
+    isCollapsible,
+    isExpanded = defaultBridgeRouteUiParams.isExpanded,
+    hasBackground = defaultBridgeRouteUiParams.hasBackground,
+    tokenLogoSize = defaultBridgeRouteUiParams.tokenLogoSize,
+    hideBridgeFlowFiatAmount = defaultBridgeRouteUiParams.hideBridgeFlowFiatAmount,
+    hideRouteHeader = defaultBridgeRouteUiParams.hideRouteHeader,
+  } = uiParams
 
   const HeaderComponent = isCollapsible ? ClickableRouteHeader : RouteHeader
 
@@ -146,9 +159,7 @@ export function BridgeRouteBreakdown({
 
   if (!account) return null
 
-  // Logic for when the main component is collapsed
   if (isCollapsible && !isExpanded) {
-    // Render header and then the collapsedDefault content if provided
     return (
       <Wrapper hasBackground={hasBackground}>
         {!hideRouteHeader && headerContent}
@@ -201,7 +212,6 @@ export function BridgeRouteBreakdown({
         hideBridgeFlowFiatAmount={hideBridgeFlowFiatAmount}
         receiveAmountUsd={bridgeReceiveAmountUsd}
         bridgeFee={amounts.bridgeFee}
-        maxBridgeSlippage={maxBridgeSlippage}
         estimatedTime={bridgeQuote.expectedFillTimeSeconds}
         recipient={recipient || account}
         recipientChainId={targetChainId}

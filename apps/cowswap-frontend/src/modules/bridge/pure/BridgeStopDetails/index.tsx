@@ -47,7 +47,6 @@ export interface BridgeStopDetailsProps {
   hideBridgeFlowFiatAmount: boolean
   receiveAmountUsd: CurrencyAmount<Token> | null
   bridgeFee: CurrencyAmount<Currency>
-  maxBridgeSlippage?: string
   estimatedTime: number | undefined
   recipient: string
   recipientChainId: SupportedChainId
@@ -66,7 +65,6 @@ export function BridgeStopDetails({
   hideBridgeFlowFiatAmount,
   receiveAmountUsd,
   bridgeFee,
-  maxBridgeSlippage,
   estimatedTime,
   recipient,
   recipientChainId,
@@ -132,23 +130,6 @@ export function BridgeStopDetails({
           <TokenAmountDisplay token={bridgeFee.currency} currencyAmount={bridgeFee} tokenLogoSize={tokenLogoSize} />
         )}
       </ConfirmDetailsItem>
-
-      {maxBridgeSlippage && (
-        <ConfirmDetailsItem
-          label={
-            <>
-              Max. bridge slippage{' '}
-              <InfoTooltip
-                content="Your transaction will revert if the price changes unfavorably by more than this percentage."
-                size={14}
-              />
-            </>
-          }
-          withTimelineDot
-        >
-          {maxBridgeSlippage}%
-        </ConfirmDetailsItem>
-      )}
 
       {estimatedTime && (
         <ConfirmDetailsItem
