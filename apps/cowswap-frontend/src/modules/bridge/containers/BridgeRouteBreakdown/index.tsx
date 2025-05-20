@@ -89,10 +89,13 @@ export function BridgeRouteBreakdown({
 
   const intermediateBuyTokenAddress = bridgeQuote.tradeParameters.sellTokenAddress
   const intermediateBuyToken = tokensByAddress[intermediateBuyTokenAddress.toLowerCase()]!
-  const intermediateBuyAmountRaw = bridgeQuote.amountsAndCosts.afterSlippage.sellAmount
+  const intermediateBuyAmountRaw = bridgeQuote.amountsAndCosts.beforeFee.sellAmount
   const intermediateBuyAmount = CurrencyAmount.fromRawAmount(intermediateBuyToken, intermediateBuyAmountRaw.toString())
 
-  const bridgeReceiveCurrencyAmount = receiveAmountInfo.afterSlippage.buyAmount
+  const bridgeReceiveCurrencyAmount = CurrencyAmount.fromRawAmount(
+    buyAmount.currency,
+    bridgeQuote.amountsAndCosts.afterSlippage.buyAmount.toString(),
+  )
   const bridgeFee = CurrencyAmount.fromRawAmount(
     intermediateBuyToken,
     bridgeQuote.amountsAndCosts.costs.bridgingFee.amountInSellCurrency.toString(),
