@@ -1,28 +1,21 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
-import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { useWalletDetails } from '@cowprotocol/wallet'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 
-import { BridgeAccordionSummary, BridgeData, BridgeProtocolConfig, BridgeRouteBreakdown } from 'modules/bridge'
 import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
 import {
   TradeWidget,
   TradeWidgetSlots,
-  useIsCurrentTradeBridging,
-  useIsHooksTradeType,
   useReceiveAmountInfo,
   useTradePriceImpact,
   useWrapNativeFlow,
 } from 'modules/trade'
 import { useHandleSwap } from 'modules/tradeFlow'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { SettingsTab, TradeRateDetails } from 'modules/tradeWidgetAddons'
+import { SettingsTab } from 'modules/tradeWidgetAddons'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
@@ -34,9 +27,9 @@ import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrapp
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapDeadlineState, useSwapRecipientToggleState, useSwapSettings } from '../../hooks/useSwapSettings'
 import { useSwapWidgetActions } from '../../hooks/useSwapWidgetActions'
-import { BridgeQuoteDetails } from '../../pure/BridgeQuoteDetails'
 import { BottomBanners } from '../BottomBanners'
 import { SwapConfirmModal } from '../SwapConfirmModal'
+import { SwapRateDetails } from '../SwapRateDetails'
 import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
 
@@ -50,7 +43,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
   const hooksEnabledState = useHooksEnabledManager()
-  const { isLoading: isRateLoading, bridgeQuote } = useTradeQuote()
+  const { isLoading: isRateLoading } = useTradeQuote()
   const priceImpact = useTradePriceImpact()
   const widgetActions = useSwapWidgetActions()
   const receiveAmountInfo = useReceiveAmountInfo()
@@ -126,18 +119,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     [isSellTrade, outputCurrencyInfo.fiatAmount, inputCurrencyInfo.fiatAmount],
   )
 
-  const isHooksTabEnabled = useIsHooksTradeType()
-  const { isSmartContractWallet } = useWalletDetails()
-
-  const isBridgingEnabled = useIsBridgingEnabled(isSmartContractWallet)
-  const isCurrentTradeBridging = useIsCurrentTradeBridging()
-  const shouldDisplayBridgeDetails = isBridgingEnabled && isCurrentTradeBridging && !isHooksTabEnabled
-
-  // TODO: bridgeDetailsUI: Set a real value for bridgeData based on bridging logic
-  const bridgeData = null as BridgeData | null
-  const providerDetails: BridgeProtocolConfig | undefined = bridgeData?.bridgeProvider
-  const bridgeEstimatedTime: number | undefined = bridgeData?.estimatedTime
-
   const slots: TradeWidgetSlots = {
     topContent,
     settingsWidget: (
@@ -152,46 +133,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         return (
           <>
             {bottomContent}
-            <TradeRateDetails
-              isTradePriceUpdating={isRateLoading}
-              rateInfoParams={rateInfoParams}
-              deadline={deadlineState[0]}
-              accordionContent={
-                shouldDisplayBridgeDetails &&
-                bridgeData && (
-                  <BridgeRouteBreakdown
-                    sellCurrencyAmount={inputCurrencyAmount as CurrencyAmount<TokenWithLogo>}
-                    buyCurrencyAmount={outputCurrencyAmount as CurrencyAmount<TokenWithLogo>}
-                    bridgeSendCurrencyAmount={inputCurrencyAmount as CurrencyAmount<TokenWithLogo>}
-                    bridgeReceiveCurrencyAmount={outputCurrencyAmount as CurrencyAmount<TokenWithLogo>}
-                    networkCost={bridgeData.networkCost}
-                    swapMinReceive={bridgeData.swapMinReceive}
-                    swapExpectedToReceive={bridgeData.swapExpectedToReceive}
-                    swapMaxSlippage={bridgeData.swapMaxSlippage}
-                    bridgeFee={bridgeData.bridgeFee}
-                    maxBridgeSlippage={bridgeData.maxBridgeSlippage}
-                    estimatedTime={bridgeData.estimatedTime}
-                    recipient={bridgeData.recipient}
-                    bridgeProvider={bridgeData.bridgeProvider}
-                  />
-                )
-              }
-              feeWrapper={
-                shouldDisplayBridgeDetails && bridgeData
-                  ? (feeElement: ReactNode) => (
-                      <BridgeAccordionSummary
-                        bridgeEstimatedTime={bridgeEstimatedTime}
-                        bridgeProtocol={providerDetails}
-                      >
-                        {feeElement}
-                      </BridgeAccordionSummary>
-                    )
-                  : undefined
-              }
-            />
-            {outputCurrency && bridgeQuote && (
-              <BridgeQuoteDetails details={bridgeQuote} outputCurrency={outputCurrency} />
-            )}
+            <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
             <Warnings buyingFiatAmount={buyingFiatAmount} />
             {tradeWarnings}
             <TradeButtons
@@ -204,17 +146,8 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
       },
       [
         bottomContent,
-        isRateLoading,
         rateInfoParams,
         deadlineState,
-        shouldDisplayBridgeDetails,
-        inputCurrencyAmount,
-        outputCurrencyAmount,
-        outputCurrency,
-        bridgeQuote,
-        bridgeData,
-        bridgeEstimatedTime,
-        providerDetails,
         buyingFiatAmount,
         doTrade.contextIsReady,
         openNativeWrapModal,
