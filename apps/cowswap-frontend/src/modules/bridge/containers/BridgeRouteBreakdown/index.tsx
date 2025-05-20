@@ -1,9 +1,7 @@
-import { useMemo, useCallback, ReactNode } from 'react'
+import { useCallback, ReactNode } from 'react'
 
 import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
-import { SolverInfo } from '@cowprotocol/core'
 import { BridgeQuoteResults, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { InfoTooltip, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -13,13 +11,14 @@ import { ReceiveAmountInfo, useDerivedTradeState } from 'modules/trade'
 import { useTradeSlippage } from 'modules/tradeSlippage'
 import { useUsdAmount } from 'modules/usdAmount'
 
-import { SolverCompetition, ApiSolverCompetition } from 'common/hooks/orderProgressBar'
-import { useSolversInfo } from 'common/hooks/useSolversInfo'
 import { ProtocolIcons } from 'common/pure/ProtocolIcons'
 import { ToggleArrow } from 'common/pure/ToggleArrow'
 
 import { Wrapper, RouteHeader, RouteTitle, StopsInfo, CollapsibleStopsInfo, ClickableRouteHeader } from './styled'
 
+import { useBridgeQuoteAmounts } from '../../hooks/useBridgeQuoteAmounts'
+import { useBridgeSupportedNetworks } from '../../hooks/useBridgeSupportedNetworks'
+import { useBridgeWinningSolverInfo } from '../../hooks/useBridgeWinningSolverInfo'
 import { BridgeStopDetails } from '../../pure/BridgeStopDetails'
 import { SwapStopDetails } from '../../pure/SwapStopDetails'
 import { BridgeProtocolConfig } from '../../types'
@@ -77,105 +76,31 @@ export function BridgeRouteBreakdown({
   collapsedDefault,
 }: BridgeRouteBreakdownProps) {
   const { account } = useWalletInfo()
-  const tokensByAddress = useTokensByAddressMap()
   const { recipient } = useDerivedTradeState() || {}
   const swapSlippage = useTradeSlippage()
+  const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
 
-  const { sellAmount, buyAmount } = receiveAmountInfo.afterSlippage
-  const { networkFee } = receiveAmountInfo.costs
+  const amounts = useBridgeQuoteAmounts(receiveAmountInfo, bridgeQuote)
+
+  const { sellAmount } = receiveAmountInfo.afterSlippage
   const sellToken = sellAmount.currency
 
-  const swapExpectedToReceive = receiveAmountInfo.afterNetworkCosts.buyAmount
+  const sourceChainId = sellToken.chainId as SupportedChainId
+  const targetChainId = amounts.swapMinReceiveAmount.currency.chainId
 
-  const intermediateBuyTokenAddress = bridgeQuote.tradeParameters.sellTokenAddress
-  const intermediateBuyToken = tokensByAddress[intermediateBuyTokenAddress.toLowerCase()]!
-  const intermediateBuyAmountRaw = bridgeQuote.amountsAndCosts.beforeFee.sellAmount
-  const intermediateBuyAmount = CurrencyAmount.fromRawAmount(intermediateBuyToken, intermediateBuyAmountRaw.toString())
-
-  const bridgeReceiveCurrencyAmount = CurrencyAmount.fromRawAmount(
-    buyAmount.currency,
-    bridgeQuote.amountsAndCosts.afterSlippage.buyAmount.toString(),
-  )
-  const bridgeFee = CurrencyAmount.fromRawAmount(
-    intermediateBuyToken,
-    bridgeQuote.amountsAndCosts.costs.bridgingFee.amountInSellCurrency.toString(),
-  )
+  const sourceChainData = getChainInfo(sourceChainId)
+  const destChainData = bridgeSupportedNetworks?.find((chain) => chain.id === targetChainId)
 
   // Determine if we are in a mode where statuses are actively displayed (like the BridgeStatus fixture)
   // This is true if swapStatus is provided, indicating a status-aware context.
   const isInStatusDisplayMode = typeof swapStatus !== 'undefined'
 
-  // Derive chain information
-  // This only needs to be recomputed when the chain ID changes
-  const sourceChainData = useMemo(() => {
-    const chainId = sellToken.chainId as SupportedChainId
-    const info = getChainInfo(chainId)
-    return {
-      chainId,
-      chainInfo: info,
-      chainName: info.label,
-    }
-  }, [sellToken.chainId])
+  const winningSolverForSwapDetails = useBridgeWinningSolverInfo(sourceChainId, winningSolverId)
 
-  const destChainData = useMemo(() => {
-    const currentChainId = bridgeReceiveCurrencyAmount.currency.chainId // this is 'number'
-    const info = getChainInfo(currentChainId) // Accepts number, returns ChainInfo | undefined
-
-    // TODO: use getChainInfo from brdigeProvider instead
-    if (!info) {
-      console.warn(`Chain info not found for chainId: ${currentChainId} in BridgeRouteBreakdown. Using fallback.`)
-      // Return a structure that won't crash downstream and provides sensible fallbacks.
-      return {
-        chainId: currentChainId, // Pass the original number
-        chainInfo: undefined,
-        chainName: 'Unsupported Chain', // Fallback name
-      }
-    }
-
-    // At this point, 'info' is valid, implying currentChainId is a supported one.
-    return {
-      chainId: currentChainId as SupportedChainId,
-      chainInfo: info,
-      chainName: info.label,
-    }
-  }, [bridgeReceiveCurrencyAmount.currency.chainId])
-
-  const allSolversInfo = useSolversInfo(sourceChainData.chainId)
-
-  // This is a computation that depends on external data (solversInfo) that might change,
-  // so we should memoize it to avoid unnecessary recalculations
-  const winningSolverDisplayInfo = useMemo(() => {
-    if (!winningSolverId || !allSolversInfo || !Object.keys(allSolversInfo).length) {
-      return undefined
-    }
-    const normalizedId = winningSolverId.replace(/-solve$/, '')
-    return allSolversInfo[normalizedId]
-  }, [winningSolverId, allSolversInfo])
-
-  // Given that this is a complex object being built that's used in a child component,
-  // memoization makes sense to prevent unnecessary re-renderings
-  const winningSolverForSwapDetails: SolverCompetition | null = useMemo(() => {
-    if (!winningSolverId) {
-      return null
-    }
-    const baseSolverData: Pick<ApiSolverCompetition, 'solver'> = {
-      solver: winningSolverId,
-    }
-
-    const displayInfo: Partial<SolverInfo> = winningSolverDisplayInfo || {}
-
-    return {
-      ...baseSolverData,
-      ...displayInfo,
-    } as SolverCompetition
-  }, [winningSolverId, winningSolverDisplayInfo])
-
-  // networkCost, swapMinReceive, and swapExpectedToReceive are now expected as CurrencyAmount
-  const networkCostUsdInfo = useUsdAmount(networkFee.amountInSellCurrency)
   const swapMinReceiveUsdInfo = useUsdAmount(receiveAmountInfo.afterSlippage.buyAmount)
-  const swapExpectedReceiveUsdInfo = useUsdAmount(swapExpectedToReceive)
+  const swapExpectedReceiveUsdInfo = useUsdAmount(amounts.swapBuyAmount)
 
-  const { value: bridgeReceiveAmountUsd } = useUsdAmount(bridgeReceiveCurrencyAmount)
+  const { value: bridgeReceiveAmountUsd } = useUsdAmount(amounts.bridgeMinReceiveAmount)
   const rawReceivedAmountUsdInfo = useUsdAmount(receivedAmount)
   const receivedAmountUsdInfo = receivedAmount ? rawReceivedAmountUsdInfo : null
   const rawSurplusAmountUsdInfo = useUsdAmount(surplusAmount)
@@ -241,19 +166,17 @@ export function BridgeRouteBreakdown({
         defaultExpanded={!isInStatusDisplayMode}
         status={swapStatus}
         receiveAmountInfo={receiveAmountInfo}
-        sellCurrencyAmount={sellAmount}
-        buyCurrencyAmount={swapExpectedToReceive}
-        sourceChainName={sourceChainData.chainName}
-        networkCostUsdInfo={networkCostUsdInfo}
-        swapExpectedToReceiveAmount={swapExpectedToReceive}
+        sellCurrencyAmount={amounts.swapSellAmount}
+        buyCurrencyAmount={amounts.swapBuyAmount}
+        sourceChainName={sourceChainData.name}
         swapExpectedReceiveUsdInfo={swapExpectedReceiveUsdInfo}
         swapSlippage={swapSlippage}
-        swapMinReceiveAmount={buyAmount}
+        swapMinReceiveAmount={amounts.swapMinReceiveAmount}
         swapMinReceiveUsdInfo={swapMinReceiveUsdInfo}
         tokenLogoSize={tokenLogoSize}
         bridgeProvider={bridgeProvider}
         recipient={bridgeQuote.bridgeCallDetails.preAuthorizedBridgingHook.recipient}
-        sourceChainId={sourceChainData.chainId}
+        sourceChainId={sourceChainId}
         winningSolver={winningSolverForSwapDetails}
         receivedAmount={receivedAmount}
         receivedAmountUsdInfo={receivedAmountUsdInfo}
@@ -272,16 +195,16 @@ export function BridgeRouteBreakdown({
         defaultExpanded={true}
         status={bridgeStatus}
         bridgeProvider={bridgeProvider}
-        bridgeSendCurrencyAmount={intermediateBuyAmount}
-        bridgeReceiveCurrencyAmount={bridgeReceiveCurrencyAmount}
-        recipientChainName={destChainData.chainName}
+        bridgeSendCurrencyAmount={amounts.swapMinReceiveAmount}
+        bridgeReceiveCurrencyAmount={amounts.bridgeMinReceiveAmount}
+        recipientChainName={destChainData?.label || 'Unknow network'}
         hideBridgeFlowFiatAmount={hideBridgeFlowFiatAmount}
         receiveAmountUsd={bridgeReceiveAmountUsd}
-        bridgeFee={bridgeFee}
+        bridgeFee={amounts.bridgeFee}
         maxBridgeSlippage={maxBridgeSlippage}
         estimatedTime={bridgeQuote.expectedFillTimeSeconds}
         recipient={recipient || account}
-        recipientChainId={destChainData.chainId}
+        recipientChainId={targetChainId}
         tokenLogoSize={tokenLogoSize}
         bridgeExplorerUrl={bridgeExplorerUrl}
       />

@@ -45,8 +45,6 @@ export interface SwapStopDetailsProps {
   sellCurrencyAmount: CurrencyAmount<Currency>
   buyCurrencyAmount: CurrencyAmount<Currency>
   sourceChainName: string
-  networkCostUsdInfo?: UsdAmountInfo | null
-  swapExpectedToReceiveAmount?: CurrencyAmount<Currency>
   swapExpectedReceiveUsdInfo?: UsdAmountInfo | null
   swapSlippage: Percent
   swapMinReceiveAmount?: CurrencyAmount<Currency>
@@ -71,8 +69,6 @@ export function SwapStopDetails({
   sellCurrencyAmount,
   buyCurrencyAmount,
   sourceChainName,
-  networkCostUsdInfo,
-  swapExpectedToReceiveAmount,
   swapExpectedReceiveUsdInfo,
   swapSlippage,
   swapMinReceiveAmount,
@@ -94,7 +90,6 @@ export function SwapStopDetails({
   const buyToken = buyCurrencyAmount.currency
   const buyTokenSymbol = buyToken.symbol || '???'
 
-  const networkCostUsdValue = networkCostUsdInfo?.value
   const swapExpectedReceiveUsdValue = swapExpectedReceiveUsdInfo?.value
   const swapMinReceiveUsdValue = swapMinReceiveUsdInfo?.value
   const receivedAmountUsdValue = receivedAmountUsdInfo?.value
@@ -177,7 +172,7 @@ export function SwapStopDetails({
         </ConfirmDetailsItem>
       )}
 
-      {!isBridgeStatusView && swapExpectedToReceiveAmount && (
+      {!isBridgeStatusView && (
         <ConfirmDetailsItem
           withTimelineDot
           label={
@@ -197,7 +192,7 @@ export function SwapStopDetails({
         >
           <TokenAmountDisplay
             token={buyToken}
-            currencyAmount={swapExpectedToReceiveAmount}
+            currencyAmount={buyCurrencyAmount}
             displaySymbol={buyTokenSymbol}
             usdValue={swapExpectedReceiveUsdValue}
             tokenLogoSize={tokenLogoSize}
