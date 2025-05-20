@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useState, KeyboardEvent } from 'react'
 
 import { ToggleArrow } from 'common/pure/ToggleArrow'
 
@@ -26,7 +26,6 @@ export interface BridgeDetailsContainerProps {
   children: ReactNode
   isCollapsible?: boolean
   defaultExpanded?: boolean
-  onToggle?: (isExpanded: boolean) => void
   explorerUrl?: string
 }
 
@@ -42,15 +41,18 @@ export function BridgeDetailsContainer({
   children,
   isCollapsible = false,
   defaultExpanded = true,
-  onToggle,
   explorerUrl,
 }: BridgeDetailsContainerProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
 
-  const handleToggle = () => {
-    const newExpandedState = !isExpanded
-    setIsExpanded(newExpandedState)
-    onToggle?.(newExpandedState)
+  const toggleExpanded = () => {
+    setIsExpanded((state) => !state)
+  }
+
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (!isCollapsible) return
+    if (!['Enter', ' '].includes(e.key)) return
+    toggleExpanded()
   }
 
   const titleContent = (
@@ -83,10 +85,8 @@ export function BridgeDetailsContainer({
   return (
     <>
       <StopTitleComponent
-        onClick={isCollapsible ? handleToggle : undefined}
-        onKeyDown={
-          isCollapsible ? (e: React.KeyboardEvent) => (e.key === 'Enter' || e.key === ' ') && handleToggle() : undefined
-        }
+        onClick={isCollapsible ? toggleExpanded : undefined}
+        onKeyDown={onKeyDown}
         role={isCollapsible ? 'button' : undefined}
         tabIndex={isCollapsible ? 0 : undefined}
         aria-expanded={isCollapsible ? isExpanded : undefined}

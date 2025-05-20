@@ -35,7 +35,6 @@ import { TokenAmountDisplay } from '../TokenAmountDisplay'
 export interface SwapStopDetailsProps {
   isCollapsible?: boolean
   defaultExpanded?: boolean
-  onExpansionToggle?: (isExpanded: boolean) => void
   status?: StopStatusEnum
   sellCurrencyAmount: CurrencyAmount<TokenWithLogo>
   buyCurrencyAmount: CurrencyAmount<TokenWithLogo>
@@ -62,7 +61,6 @@ export interface SwapStopDetailsProps {
 export function SwapStopDetails({
   isCollapsible = false,
   defaultExpanded = true,
-  onExpansionToggle,
   status = StopStatusEnum.DEFAULT,
   sellCurrencyAmount,
   buyCurrencyAmount,
@@ -116,7 +114,6 @@ export function SwapStopDetails({
       protocolIconSize={21}
       isCollapsible={isCollapsible}
       defaultExpanded={defaultExpanded}
-      onToggle={onExpansionToggle}
       explorerUrl={swapExplorerUrl}
     >
       <ConfirmDetailsItem label="" withTimelineDot>

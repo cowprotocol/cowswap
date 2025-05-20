@@ -226,7 +226,6 @@ export function BridgeRouteBreakdown({
     )
   }
 
-  // Main expanded view
   return (
     <Wrapper hasBackground={hasBackground}>
       {!hideRouteHeader && headerContent}

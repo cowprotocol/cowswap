@@ -42,7 +42,6 @@ import { TokenAmountDisplay } from '../TokenAmountDisplay'
 export interface BridgeStopDetailsProps {
   isCollapsible?: boolean
   defaultExpanded?: boolean
-  onExpansionToggle?: (isExpanded: boolean) => void
   status?: StopStatusEnum
   bridgeProvider: BridgeProtocolConfig
   bridgeSendCurrencyAmount: CurrencyAmount<TokenWithLogo>
@@ -62,7 +61,6 @@ export interface BridgeStopDetailsProps {
 export function BridgeStopDetails({
   isCollapsible = false,
   defaultExpanded = true,
-  onExpansionToggle,
   status = StopStatusEnum.DEFAULT,
   bridgeProvider,
   bridgeSendCurrencyAmount,
@@ -112,7 +110,6 @@ export function BridgeStopDetails({
       protocolIconShowOnly="second"
       isCollapsible={isCollapsible}
       defaultExpanded={defaultExpanded}
-      onToggle={onExpansionToggle}
       explorerUrl={bridgeExplorerUrl}
     >
       <ConfirmDetailsItem label="" withTimelineDot>
