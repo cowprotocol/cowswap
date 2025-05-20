@@ -17,14 +17,15 @@ export function useTokensToSelect() {
   const { selectedTargetChainId = chainId, field } = useSelectTokenWidgetState()
   const allTokens = useAllActiveTokens().tokens
 
-  const { data: bridgeSupportedTokens, isLoading } = useBridgeSupportedTokens(selectedTargetChainId)
+  const areTokensFromBridge = field === Field.OUTPUT && selectedTargetChainId !== chainId
 
+  const { data: bridgeSupportedTokens, isLoading } = useBridgeSupportedTokens(
+    areTokensFromBridge ? selectedTargetChainId : undefined,
+  )
   return useMemo(() => {
-    const areTokensFromBridge = field === Field.OUTPUT && selectedTargetChainId !== chainId
-
     return {
       isLoading: areTokensFromBridge ? isLoading : false,
       tokens: (areTokensFromBridge ? bridgeSupportedTokens : allTokens) || EMPTY_TOKENS,
     }
-  }, [allTokens, bridgeSupportedTokens, chainId, field, isLoading, selectedTargetChainId])
+  }, [allTokens, bridgeSupportedTokens, isLoading, areTokensFromBridge])
 }

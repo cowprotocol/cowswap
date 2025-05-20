@@ -1,42 +1,9 @@
 import { ReactNode } from 'react'
 
-// import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg' // Removed
-import { Media, UI } from '@cowprotocol/ui'
-
-// import SVG from 'react-inlinesvg' // Removed
-import styled from 'styled-components/macro'
-
-import { ProtocolIcons } from 'common/pure/ProtocolIcons'
-import { ToggleArrow } from 'common/pure/ToggleArrow'
-
-import { StopNumberCircle, ToggleIconContainer, ClickableStopTitle, StopTitle as BaseStopTitle } from '../../styles'
+import { ClickableStopTitle, StopTitle as BaseStopTitle, ExplorerLink } from '../../styles'
 import { BridgeProtocolConfig } from '../../types'
 import { StopStatusEnum } from '../../utils/status'
-
-const ExplorerLink = styled.a`
-  font-size: 12px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-  text-decoration: underline;
-  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-  &:hover {
-    color: var(${UI.COLOR_TEXT});
-  }
-
-  ${Media.upToSmall()} {
-    order: 5;
-    margin: 10px auto;
-    font-size: 13px;
-    background: var(${UI.COLOR_INFO_BG});
-    color: var(${UI.COLOR_INFO_TEXT});
-    width: 100%;
-    padding: 8px;
-    border-radius: 8px;
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
-  }
-`
+import { BridgeRouteTitle } from '../BridgeRouteTitle'
 
 export interface StopHeaderProps {
   status: StopStatusEnum
@@ -45,10 +12,8 @@ export interface StopHeaderProps {
   statusTitlePrefix: ReactNode
 
   protocolName: string
-  protocolIconSize: number
+  protocolIconSize?: number
   protocolIconShowOnly?: 'first' | 'second'
-  // For ProtocolIcons, `secondProtocol` is the bridge provider.
-  // `showOnlyFirst` means show CoW. `showOnlySecond` means show the bridge provider.
   protocolIconBridgeProvider: BridgeProtocolConfig
 
   isCollapsible: boolean
@@ -71,22 +36,17 @@ export function StopHeader({
   onToggle,
   explorerUrl,
 }: StopHeaderProps): ReactNode {
-  const TitleContent = (
-    <>
-      <StopNumberCircle status={status} stopNumber={stopNumber}>
-        {statusIcons[status]}
-      </StopNumberCircle>
-      <b>
-        <span>{statusTitlePrefix} </span>
-        <ProtocolIcons
-          size={protocolIconSize}
-          showOnlyFirst={protocolIconShowOnly === 'first'}
-          showOnlySecond={protocolIconShowOnly === 'second'}
-          secondProtocol={protocolIconBridgeProvider}
-        />
-        <span> {protocolName}</span>
-      </b>
-    </>
+  const titleSection = (
+    <BridgeRouteTitle
+      status={status}
+      stopNumber={stopNumber}
+      icon={statusIcons[status]}
+      titlePrefix={statusTitlePrefix}
+      protocolName={protocolName}
+      bridgeProvider={protocolIconBridgeProvider}
+      protocolIconShowOnly={protocolIconShowOnly}
+      protocolIconSize={protocolIconSize}
+    />
   )
 
   const ViewDetailsLink =
@@ -111,18 +71,15 @@ export function StopHeader({
         isCollapsible={true}
         aria-expanded={isExpanded}
       >
-        {TitleContent}
+        {titleSection}
         {ViewDetailsLink}
-        <ToggleIconContainer>
-          <ToggleArrow isOpen={isExpanded} />
-        </ToggleIconContainer>
       </ClickableStopTitle>
     )
   }
 
   return (
     <BaseStopTitle>
-      {TitleContent}
+      {titleSection}
       {ViewDetailsLink}
     </BaseStopTitle>
   )

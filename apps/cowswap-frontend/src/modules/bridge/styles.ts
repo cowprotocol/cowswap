@@ -333,3 +333,28 @@ export const ClickableStopTitle = styled(StopTitle)<{ isCollapsible?: boolean }>
     opacity: ${({ isCollapsible }) => (isCollapsible ? 0.8 : 1)};
   }
 `
+
+export const ExplorerLink = styled.a`
+  font-size: 12px;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  text-decoration: underline;
+  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    color: var(${UI.COLOR_TEXT});
+  }
+
+  ${Media.upToSmall()} {
+    order: 5;
+    margin: 10px auto;
+    font-size: 13px;
+    background: var(${UI.COLOR_INFO_BG});
+    color: var(${UI.COLOR_INFO_TEXT});
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+  }
+`
