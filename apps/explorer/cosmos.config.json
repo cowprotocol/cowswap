@@ -1,0 +1,31 @@
+{
+    "fixturesDir": "src",
+    "fixtureFileSuffix": "fixture",
+    "watchDirs": [
+        "src"
+    ],
+    "globalDecorators": [
+        "./src/cosmos.decorator.tsx"
+    ],
+    "ignore": [
+        "**/*.stories.tsx",
+        "src/storybook/**",
+        "**/*.test.*",
+        "src/test/**",
+        "src/declarations.d.ts",
+        "src/overrideEnvConfig.js",
+        "src/loadConfig.js"
+    ],
+    "port": 5002,
+    "exportPath": "../../build/cosmos-explorer",
+    "publicUrl": "./",
+    "plugins": [
+        "react-cosmos-plugin-vite"
+    ],
+    "vite": {
+        "configPath": "./vite.config.ts"
+    },
+    "dom": {
+        "container": "#cosmos-fixture-root"
+    }
+}
