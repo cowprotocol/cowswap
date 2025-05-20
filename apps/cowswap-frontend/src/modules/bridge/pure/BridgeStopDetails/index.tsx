@@ -5,12 +5,11 @@ import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { displayTime, ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { InfoTooltip } from '@cowprotocol/ui'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { InfoTooltip, UI } from '@cowprotocol/ui'
+import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReceiveAmountTitle } from 'modules/trade/pure/ReceiveAmountTitle'
-import { UsdAmountInfo } from 'modules/usdAmount/hooks/useUsdAmount'
 
 import {
   RefundLink,
@@ -30,8 +29,7 @@ import {
   DangerText,
   StatusAwareText,
 } from '../../styles'
-import { BridgeFeeType, BridgeProtocolConfig } from '../../types'
-import { getFeeTextColor, isFreeSwapFee } from '../../utils/fees'
+import { BridgeProtocolConfig } from '../../types'
 import { StopStatusEnum } from '../../utils/status'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { NetworkLogo } from '../NetworkLogo'
@@ -44,14 +42,14 @@ export interface BridgeStopDetailsProps {
   defaultExpanded?: boolean
   status?: StopStatusEnum
   bridgeProvider: BridgeProtocolConfig
-  bridgeSendCurrencyAmount: CurrencyAmount<TokenWithLogo>
-  bridgeReceiveCurrencyAmount: CurrencyAmount<TokenWithLogo>
+  bridgeSendCurrencyAmount: CurrencyAmount<Currency>
+  bridgeReceiveCurrencyAmount: CurrencyAmount<Currency>
   recipientChainName: string
   hideBridgeFlowFiatAmount: boolean
-  bridgeReceiveAmountUsdResult?: UsdAmountInfo | null
-  bridgeFee: CurrencyAmount<TokenWithLogo> | BridgeFeeType
+  receiveAmountUsd: CurrencyAmount<Token> | null
+  bridgeFee: CurrencyAmount<TokenWithLogo>
   maxBridgeSlippage?: string
-  estimatedTime: number
+  estimatedTime: number | undefined
   recipient: string
   recipientChainId: SupportedChainId
   tokenLogoSize: number
@@ -67,7 +65,7 @@ export function BridgeStopDetails({
   bridgeReceiveCurrencyAmount,
   recipientChainName,
   hideBridgeFlowFiatAmount,
-  bridgeReceiveAmountUsdResult,
+  receiveAmountUsd,
   bridgeFee,
   maxBridgeSlippage,
   estimatedTime,
@@ -82,22 +80,8 @@ export function BridgeStopDetails({
   const destToken = bridgeReceiveCurrencyAmount.currency
   const bridgeReceiveTokenSymbol = destToken.symbol || '???'
 
-  const bridgeReceiveAmountUsdValue = bridgeReceiveAmountUsdResult?.value
   const isStatusMode = status !== StopStatusEnum.DEFAULT
   const isAnimationVisible = defaultExpanded && status === StopStatusEnum.PENDING
-
-  const feeDisplayNode = (() => {
-    if (isFreeSwapFee(bridgeFee)) {
-      return 'FREE'
-    }
-    return (
-      <TokenAmountDisplay
-        token={(bridgeFee as CurrencyAmount<TokenWithLogo>).currency}
-        currencyAmount={bridgeFee as CurrencyAmount<TokenWithLogo>}
-        tokenLogoSize={tokenLogoSize}
-      />
-    )
-  })()
 
   return (
     <BridgeDetailsContainer
@@ -125,7 +109,7 @@ export function BridgeStopDetails({
           <TokenAmountDisplay
             token={destToken}
             displaySymbol={bridgeReceiveTokenSymbol}
-            usdValue={bridgeReceiveAmountUsdValue}
+            usdValue={receiveAmountUsd}
             hideFiatAmount={hideBridgeFlowFiatAmount}
             tokenLogoSize={tokenLogoSize}
             currencyAmount={bridgeReceiveCurrencyAmount}
@@ -141,9 +125,13 @@ export function BridgeStopDetails({
           </>
         }
         withTimelineDot
-        contentTextColor={getFeeTextColor(bridgeFee)}
+        contentTextColor={bridgeFee.equalTo(0) ? `var(${UI.COLOR_GREEN})` : undefined}
       >
-        {feeDisplayNode}
+        {bridgeFee.equalTo(0) ? (
+          'FREE'
+        ) : (
+          <TokenAmountDisplay token={bridgeFee.currency} currencyAmount={bridgeFee} tokenLogoSize={tokenLogoSize} />
+        )}
       </ConfirmDetailsItem>
 
       {maxBridgeSlippage && (
@@ -163,17 +151,19 @@ export function BridgeStopDetails({
         </ConfirmDetailsItem>
       )}
 
-      <ConfirmDetailsItem
-        label={
-          <>
-            Est. bridge time{' '}
-            <InfoTooltip content="The estimated time for the bridge transaction to complete." size={14} />
-          </>
-        }
-        withTimelineDot
-      >
-        ~ {displayTime(estimatedTime * 1000, true)}
-      </ConfirmDetailsItem>
+      {estimatedTime && (
+        <ConfirmDetailsItem
+          label={
+            <>
+              Est. bridge time{' '}
+              <InfoTooltip content="The estimated time for the bridge transaction to complete." size={14} />
+            </>
+          }
+          withTimelineDot
+        >
+          ~ {displayTime(estimatedTime * 1000, true)}
+        </ConfirmDetailsItem>
+      )}
 
       <ConfirmDetailsItem
         label={
@@ -204,7 +194,7 @@ export function BridgeStopDetails({
           <TokenAmountDisplay
             token={destToken}
             displaySymbol={bridgeReceiveTokenSymbol}
-            usdValue={bridgeReceiveAmountUsdValue}
+            usdValue={receiveAmountUsd}
             tokenLogoSize={tokenLogoSize}
             currencyAmount={bridgeReceiveCurrencyAmount}
           />
@@ -213,7 +203,7 @@ export function BridgeStopDetails({
             <TokenAmountDisplay
               token={destToken}
               displaySymbol={bridgeReceiveTokenSymbol}
-              usdValue={bridgeReceiveAmountUsdValue}
+              usdValue={receiveAmountUsd}
               tokenLogoSize={tokenLogoSize}
               currencyAmount={bridgeReceiveCurrencyAmount}
             />
@@ -309,7 +299,7 @@ export function BridgeStopDetails({
               <TokenAmountDisplay
                 token={destToken}
                 displaySymbol={bridgeReceiveTokenSymbol}
-                usdValue={bridgeReceiveAmountUsdValue}
+                usdValue={receiveAmountUsd}
                 tokenLogoSize={tokenLogoSize}
                 currencyAmount={bridgeReceiveCurrencyAmount}
               />

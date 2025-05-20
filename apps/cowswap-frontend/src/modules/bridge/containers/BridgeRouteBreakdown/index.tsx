@@ -2,11 +2,15 @@ import { useMemo, useCallback, ReactNode } from 'react'
 
 import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
 import { SolverInfo } from '@cowprotocol/core'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BridgeQuoteResults, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { InfoTooltip, UI } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { DividerHorizontal } from 'modules/bridge/styles'
+import { ReceiveAmountInfo, useDerivedTradeState } from 'modules/trade'
+import { useTradeSlippage } from 'modules/tradeSlippage'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { SolverCompetition, ApiSolverCompetition } from 'common/hooks/orderProgressBar'
@@ -16,27 +20,16 @@ import { ToggleArrow } from 'common/pure/ToggleArrow'
 
 import { Wrapper, RouteHeader, RouteTitle, StopsInfo, CollapsibleStopsInfo, ClickableRouteHeader } from './styled'
 
-import { BridgeStopDetails } from '../../pure/BridgeStopDetails/index'
-import { SwapStopDetails } from '../../pure/SwapStopDetails/index'
-import { BridgeFeeType, BridgeProtocolConfig } from '../../types'
-import { StopStatusEnum } from '../../utils/status'
+import { BridgeStopDetails } from '../../pure/BridgeStopDetails'
+import { SwapStopDetails } from '../../pure/SwapStopDetails'
+import { BridgeProtocolConfig } from '../../types'
+import { StopStatusEnum } from '../../utils'
 
 export interface BridgeRouteBreakdownProps {
-  // Swap details
-  sellCurrencyAmount: CurrencyAmount<TokenWithLogo>
-  buyCurrencyAmount: CurrencyAmount<TokenWithLogo>
-  networkCost: CurrencyAmount<TokenWithLogo>
-  swapMinReceive?: CurrencyAmount<TokenWithLogo>
-  swapExpectedToReceive?: CurrencyAmount<TokenWithLogo>
-  swapMaxSlippage?: string
+  receiveAmountInfo: ReceiveAmountInfo
+  bridgeQuote: BridgeQuoteResults
 
-  // Bridge details
-  bridgeSendCurrencyAmount: CurrencyAmount<TokenWithLogo>
-  bridgeReceiveCurrencyAmount: CurrencyAmount<TokenWithLogo>
-  bridgeFee: CurrencyAmount<TokenWithLogo> | BridgeFeeType
   maxBridgeSlippage?: string
-  estimatedTime: number
-  recipient: string
   bridgeProvider: BridgeProtocolConfig
 
   // Optional props with defaults
@@ -63,18 +56,9 @@ export interface BridgeRouteBreakdownProps {
 }
 
 export function BridgeRouteBreakdown({
-  sellCurrencyAmount,
-  buyCurrencyAmount,
-  networkCost,
-  swapMinReceive,
-  swapExpectedToReceive,
-  swapMaxSlippage,
-  bridgeSendCurrencyAmount,
-  bridgeReceiveCurrencyAmount,
-  bridgeFee,
+  receiveAmountInfo,
+  bridgeQuote,
   maxBridgeSlippage,
-  estimatedTime,
-  recipient,
   bridgeProvider,
   tokenLogoSize = 18,
   hasBackground = false,
@@ -92,8 +76,27 @@ export function BridgeRouteBreakdown({
   bridgeExplorerUrl,
   collapsedDefault,
 }: BridgeRouteBreakdownProps) {
-  const sellToken = sellCurrencyAmount.currency
-  const buyToken = buyCurrencyAmount.currency
+  const { account } = useWalletInfo()
+  const tokensByAddress = useTokensByAddressMap()
+  const { recipient } = useDerivedTradeState() || {}
+  const swapSlippage = useTradeSlippage()
+
+  const { sellAmount, buyAmount } = receiveAmountInfo.afterSlippage
+  const { networkFee } = receiveAmountInfo.costs
+  const sellToken = sellAmount.currency
+
+  const swapExpectedToReceive = receiveAmountInfo.afterNetworkCosts.buyAmount
+
+  const intermediateBuyTokenAddress = bridgeQuote.tradeParameters.sellTokenAddress
+  const intermediateBuyToken = tokensByAddress[intermediateBuyTokenAddress.toLowerCase()]!
+  const intermediateBuyAmountRaw = bridgeQuote.amountsAndCosts.afterSlippage.sellAmount
+  const intermediateBuyAmount = CurrencyAmount.fromRawAmount(intermediateBuyToken, intermediateBuyAmountRaw.toString())
+
+  const bridgeReceiveCurrencyAmount = receiveAmountInfo.afterSlippage.buyAmount
+  const bridgeFee = CurrencyAmount.fromRawAmount(
+    intermediateBuyToken,
+    bridgeQuote.amountsAndCosts.costs.bridgingFee.amountInSellCurrency.toString(),
+  )
 
   // Determine if we are in a mode where statuses are actively displayed (like the BridgeStatus fixture)
   // This is true if swapStatus is provided, indicating a status-aware context.
@@ -165,17 +168,17 @@ export function BridgeRouteBreakdown({
   }, [winningSolverId, winningSolverDisplayInfo])
 
   // networkCost, swapMinReceive, and swapExpectedToReceive are now expected as CurrencyAmount
-  const networkCostUsdInfo = useUsdAmount(networkCost, sellToken)
-  const swapMinReceiveUsdInfo = useUsdAmount(swapMinReceive, buyToken)
-  const swapExpectedReceiveUsdInfo = useUsdAmount(swapExpectedToReceive, buyToken)
+  const networkCostUsdInfo = useUsdAmount(networkFee.amountInSellCurrency)
+  const swapMinReceiveUsdInfo = useUsdAmount(receiveAmountInfo.afterSlippage.buyAmount)
+  const swapExpectedReceiveUsdInfo = useUsdAmount(swapExpectedToReceive)
 
-  const bridgeReceiveAmountUsdInfo = useUsdAmount(bridgeReceiveCurrencyAmount, bridgeReceiveCurrencyAmount.currency)
-  const rawReceivedAmountUsdInfo = useUsdAmount(receivedAmount, buyToken)
+  const { value: bridgeReceiveAmountUsd } = useUsdAmount(bridgeReceiveCurrencyAmount)
+  const rawReceivedAmountUsdInfo = useUsdAmount(receivedAmount)
   const receivedAmountUsdInfo = receivedAmount ? rawReceivedAmountUsdInfo : null
-  const rawSurplusAmountUsdInfo = useUsdAmount(surplusAmount, buyToken)
+  const rawSurplusAmountUsdInfo = useUsdAmount(surplusAmount)
   const surplusAmountUsdInfo = surplusAmount ? rawSurplusAmountUsdInfo : null
 
-  // This is a potentially expensive callback that will be passed to a child component,
+  // This is a potentially expensive callback that will be passed to a child component
   const handleHeaderClick = useCallback(() => {
     if (isCollapsible) {
       onExpandToggle()
@@ -213,6 +216,8 @@ export function BridgeRouteBreakdown({
     </HeaderComponent>
   )
 
+  if (!account) return null
+
   // Logic for when the main component is collapsed
   if (isCollapsible && !isExpanded) {
     // Render header and then the collapsedDefault content if provided
@@ -232,19 +237,19 @@ export function BridgeRouteBreakdown({
         isCollapsible={isCollapsible}
         defaultExpanded={!isInStatusDisplayMode}
         status={swapStatus}
-        sellCurrencyAmount={sellCurrencyAmount}
-        buyCurrencyAmount={buyCurrencyAmount}
+        receiveAmountInfo={receiveAmountInfo}
+        sellCurrencyAmount={sellAmount}
+        buyCurrencyAmount={swapExpectedToReceive}
         sourceChainName={sourceChainData.chainName}
-        networkCostAmount={networkCost}
         networkCostUsdInfo={networkCostUsdInfo}
         swapExpectedToReceiveAmount={swapExpectedToReceive}
         swapExpectedReceiveUsdInfo={swapExpectedReceiveUsdInfo}
-        swapMaxSlippage={swapMaxSlippage}
-        swapMinReceiveAmount={swapMinReceive}
+        swapSlippage={swapSlippage}
+        swapMinReceiveAmount={buyAmount}
         swapMinReceiveUsdInfo={swapMinReceiveUsdInfo}
         tokenLogoSize={tokenLogoSize}
         bridgeProvider={bridgeProvider}
-        recipient={recipient}
+        recipient={bridgeQuote.bridgeCallDetails.preAuthorizedBridgingHook.recipient}
         sourceChainId={sourceChainData.chainId}
         winningSolver={winningSolverForSwapDetails}
         receivedAmount={receivedAmount}
@@ -264,15 +269,15 @@ export function BridgeRouteBreakdown({
         defaultExpanded={true}
         status={bridgeStatus}
         bridgeProvider={bridgeProvider}
-        bridgeSendCurrencyAmount={bridgeSendCurrencyAmount}
+        bridgeSendCurrencyAmount={intermediateBuyAmount}
         bridgeReceiveCurrencyAmount={bridgeReceiveCurrencyAmount}
         recipientChainName={destChainData.chainName}
         hideBridgeFlowFiatAmount={hideBridgeFlowFiatAmount}
-        bridgeReceiveAmountUsdResult={bridgeReceiveAmountUsdInfo}
+        receiveAmountUsd={bridgeReceiveAmountUsd}
         bridgeFee={bridgeFee}
         maxBridgeSlippage={maxBridgeSlippage}
-        estimatedTime={estimatedTime}
-        recipient={recipient}
+        estimatedTime={bridgeQuote.expectedFillTimeSeconds}
+        recipient={recipient || account}
         recipientChainId={destChainData.chainId}
         tokenLogoSize={tokenLogoSize}
         bridgeExplorerUrl={bridgeExplorerUrl}
