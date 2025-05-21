@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 import react from '@vitejs/plugin-react-swc'
 import { defineConfig } from 'vite'
+import macrosPlugin from 'vite-plugin-babel-macros'
 import dts from 'vite-plugin-dts'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
@@ -8,7 +9,7 @@ import * as path from 'path'
 
 export default defineConfig({
   root: path.resolve(__dirname, './'),
-  cacheDir: '../../node_modules/.vite/snackbars',
+  cacheDir: '../../node_modules/.vite/tokens',
 
   plugins: [
     dts({
@@ -19,6 +20,7 @@ export default defineConfig({
     viteTsConfigPaths({
       root: '../../',
     }),
+    macrosPlugin(),
   ],
 
   // Uncomment this if you are using workers.
@@ -36,7 +38,7 @@ export default defineConfig({
     lib: {
       // Could also be a dictionary or array of multiple entry points.
       entry: 'src/index.ts',
-      name: 'snackbars',
+      name: 'tokens',
       fileName: 'index',
       // Change this to the formats you want to support.
       // Don't forget to update your package.json as well.
