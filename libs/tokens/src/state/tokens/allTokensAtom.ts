@@ -42,9 +42,7 @@ const tokensStateAtom = atom<TokensState>((get) => {
         const tokenInfo = parseTokenInfo(chainId, token)
         const tokenAddressKey = tokenInfo?.address.toLowerCase()
 
-        if (!tokenInfo || !tokenAddressKey || tokenInfo.chainId !== chainId) {
-          return
-        }
+        if (!tokenInfo || !tokenAddressKey) return
 
         if (lpTokenProvider) {
           tokenInfo.lpTokenProvider = lpTokenProvider
