@@ -55,3 +55,15 @@ export const AmountTokenDisplayAndCopyWrapper = styled.div`
   gap: 0.5rem;
   flex-grow: 1;
 `
+
+export const ProviderDisplayWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+`
+
+export const ProviderLogo = styled.img`
+  --provider-logo-size: 1.8rem;
+  width: var(--provider-logo-size);
+  height: var(--provider-logo-size);
+`

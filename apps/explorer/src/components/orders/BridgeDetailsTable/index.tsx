@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { BridgeDetails } from '@cowprotocol/bridge'
+import { BridgeDetails, BRIDGE_PROVIDER_DETAILS } from '@cowprotocol/bridge'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { displayTime, ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -15,6 +15,7 @@ import { Spinner } from 'components/common/Spinner'
 import { TokenDisplay as CommonTokenDisplay } from 'components/common/TokenDisplay'
 import { formatPercentage, safeTokenName, formatSmartMaxPrecision, isNativeToken } from 'utils'
 
+import { ProviderDisplayWrapper, ProviderLogo } from './styled'
 import {
   AmountSectionWrapper,
   AmountDetailBlock,
@@ -160,6 +161,10 @@ export function BridgeDetailsTable({
     )
   }
 
+  const providerConfig = bridgeDetails?.providerName
+    ? Object.values(BRIDGE_PROVIDER_DETAILS).find((config) => config.title === bridgeDetails.providerName)
+    : undefined
+
   return (
     <Wrapper>
       <SimpleTable
@@ -175,14 +180,20 @@ export function BridgeDetailsTable({
             </DetailRow>
 
             <DetailRow label="Provider" tooltipText={tooltipTextMap.provider} isLoading={isOverallLoading}>
-              {bridgeDetails?.providerName &&
-                (bridgeDetails.providerUrl ? (
-                  <a href={bridgeDetails.providerUrl} target="_blank" rel="noopener noreferrer">
-                    {bridgeDetails.providerName} ↗
-                  </a>
-                ) : (
-                  bridgeDetails.providerName
-                ))}
+              {bridgeDetails?.providerName && (
+                <ProviderDisplayWrapper>
+                  {providerConfig?.icon && (
+                    <ProviderLogo src={providerConfig.icon} alt={`${bridgeDetails.providerName} logo`} />
+                  )}
+                  {bridgeDetails.providerUrl ? (
+                    <a href={bridgeDetails.providerUrl} target="_blank" rel="noopener noreferrer">
+                      {bridgeDetails.providerName} ↗
+                    </a>
+                  ) : (
+                    bridgeDetails.providerName
+                  )}
+                </ProviderDisplayWrapper>
+              )}
             </DetailRow>
 
             {ownerAddress && bridgeDetails?.source && (
