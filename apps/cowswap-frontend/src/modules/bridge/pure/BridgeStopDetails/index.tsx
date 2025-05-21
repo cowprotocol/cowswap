@@ -7,6 +7,8 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InfoTooltip, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { Nullish } from 'types'
+
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReceiveAmountTitle } from 'modules/trade/pure/ReceiveAmountTitle'
 
@@ -48,7 +50,7 @@ export interface BridgeStopDetailsProps {
   receiveAmountUsd: CurrencyAmount<Token> | null
   bridgeFee: CurrencyAmount<Currency>
   estimatedTime: number | undefined
-  recipient: string
+  recipient: Nullish<string>
   recipientChainId: SupportedChainId
   tokenLogoSize: number
   bridgeExplorerUrl?: string
@@ -145,17 +147,19 @@ export function BridgeStopDetails({
         </ConfirmDetailsItem>
       )}
 
-      <ConfirmDetailsItem
-        label={
-          <>
-            Recipient{' '}
-            <InfoTooltip content="The address that will receive the tokens on the destination chain." size={14} />
-          </>
-        }
-        withTimelineDot
-      >
-        <RecipientDisplay recipient={recipient} chainId={recipientChainId} logoSize={16} />
-      </ConfirmDetailsItem>
+      {recipient && (
+        <ConfirmDetailsItem
+          label={
+            <>
+              Recipient{' '}
+              <InfoTooltip content="The address that will receive the tokens on the destination chain." size={14} />
+            </>
+          }
+          withTimelineDot
+        >
+          <RecipientDisplay recipient={recipient} chainId={recipientChainId} logoSize={16} />
+        </ConfirmDetailsItem>
+      )}
 
       <ConfirmDetailsItem
         label={
@@ -213,7 +217,7 @@ export function BridgeStopDetails({
         </>
       )}
 
-      {isStatusMode && status === StopStatusEnum.REFUND_COMPLETE && (
+      {isStatusMode && recipient && status === StopStatusEnum.REFUND_COMPLETE && (
         <>
           <ConfirmDetailsItem label="You received" withTimelineDot>
             <DangerText>Bridging failed</DangerText>

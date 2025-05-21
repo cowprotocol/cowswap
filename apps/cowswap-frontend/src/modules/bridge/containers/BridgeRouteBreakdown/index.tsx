@@ -157,8 +157,6 @@ export function BridgeRouteBreakdown({
     </HeaderComponent>
   )
 
-  if (!account) return null
-
   if (isCollapsible && !isExpanded) {
     return (
       <Wrapper hasBackground={hasBackground}>
