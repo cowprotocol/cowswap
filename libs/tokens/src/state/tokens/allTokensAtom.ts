@@ -76,24 +76,25 @@ export const activeTokensAtom = atom<ActiveTokensState>((get) => {
   const tokensMap = get(tokensStateAtom)
   const nativeToken = NATIVE_CURRENCIES[chainId]
 
+  const lpTokens = enableLpTokensByDefault
+    ? Object.keys(tokensMap.inactiveTokens).reduce<TokensMap>((acc, key) => {
+        const token = tokensMap.inactiveTokens[key]
+
+        if (token.lpTokenProvider) {
+          acc[key] = token
+        }
+
+        return acc
+      }, {})
+    : null
+
   const tokens = tokenMapToListWithLogo(
-    {
-      [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo,
-      ...tokensMap.activeTokens,
-      ...lowerCaseTokensMap(userAddedTokens[chainId] || {}),
-      ...lowerCaseTokensMap(favoriteTokensState[chainId]),
-      ...(enableLpTokensByDefault
-        ? Object.keys(tokensMap.inactiveTokens).reduce<TokensMap>((acc, key) => {
-            const token = tokensMap.inactiveTokens[key]
-
-            if (token.lpTokenProvider) {
-              acc[key] = token
-            }
-
-            return acc
-          }, {})
-        : null),
-    },
+    [
+      { [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo },
+      tokensMap.activeTokens,
+      lowerCaseTokensMap(userAddedTokens[chainId] || {}),
+      lowerCaseTokensMap(favoriteTokensState[chainId]),
+    ].concat(lpTokens ? [lpTokens] : []),
     chainId,
   )
 
@@ -104,7 +105,7 @@ export const inactiveTokensAtom = atom<TokenWithLogo[]>((get) => {
   const { chainId } = get(environmentAtom)
   const tokensMap = get(tokensStateAtom)
 
-  return tokenMapToListWithLogo(tokensMap.inactiveTokens, chainId)
+  return tokenMapToListWithLogo([tokensMap.inactiveTokens], chainId)
 })
 
 export const tokensByAddressAtom = atom<{ tokens: TokensByAddress; chainId: SupportedChainId }>((get) => {
