@@ -1,12 +1,12 @@
-import { Provider, createStore } from 'jotai'
+import { createStore, Provider } from 'jotai'
 import React, { ReactNode } from 'react'
 
-import { USDC_MAINNET, COW, getChainInfo } from '@cowprotocol/common-const'
+import { COW, getChainInfo, USDC_MAINNET } from '@cowprotocol/common-const'
 import { shortenAddress } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BridgeQuoteResults, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { GlobalCoWDAOStyles, ButtonError, ButtonSize, UI } from '@cowprotocol/ui'
-import { CurrencyAmount, Currency, Fraction, Percent, Price } from '@uniswap/sdk-core'
+import { ButtonError, ButtonSize, GlobalCoWDAOStyles, UI } from '@cowprotocol/ui'
+import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 import { useFixtureSelect } from 'react-cosmos/client'
@@ -20,7 +20,6 @@ import { BodyWrapper } from 'modules/application/containers/App/styled'
 import { Container, ContainerBox } from 'modules/trade/containers/TradeWidget/styled'
 import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
 import { TradeConfirmation } from 'modules/trade/pure/TradeConfirmation'
-import { ReceiveAmountInfo } from 'modules/trade/types'
 import { getUsdPriceStateKey } from 'modules/usdAmount'
 import { usdRawPricesAtom } from 'modules/usdAmount/state/usdRawPricesAtom'
 
@@ -29,12 +28,10 @@ import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 import { SolversInfoUpdater } from 'common/updaters/SolversInfoUpdater'
 
-import { BridgeProvider, BRIDGE_PROVIDER_DETAILS } from '../../constants'
 import { BridgeAccordionSummary } from '../../pure/BridgeAccordionSummary'
-import { BridgeFeeType } from '../../types'
 import { StopStatusEnum } from '../../utils/status'
 
-import { BridgeRouteBreakdown } from './index'
+import { BridgeRouteBreakdown, BridgeRouteBreakdownProps } from './index'
 
 const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts, 'transparent')
 
@@ -57,31 +54,93 @@ const sharedPriceImpact: PriceImpact = {
 }
 
 // Define provider configs
-const bungeeProviderConfig = BRIDGE_PROVIDER_DETAILS[BridgeProvider.BUNGEE]
+const bungeeProviderConfig = {
+  name: 'Bungee',
+  logoUrl: 'https://www.bungee.exchange/_next/static/media/bungee-full-logo.05f7f32c.svg',
+}
 
 // Get token references
 const COW_MAINNET = COW[SupportedChainId.MAINNET]
 const COW_GNOSIS = COW[SupportedChainId.GNOSIS_CHAIN]
 
 // Prepare default props that will be used in all fixtures
-const defaultProps = {
-  // Swap details
-  sellCurrencyAmount: createAmount(USDC_MAINNET, '1000'),
-  buyCurrencyAmount: createAmount(COW_MAINNET, '3442.423'),
-  networkCost: createAmount(USDC_MAINNET, '0.5'),
-  swapMinReceive: createAmount(COW_MAINNET, '3425.21'),
-  swapExpectedToReceive: createAmount(COW_MAINNET, '3442.423'),
-  swapMaxSlippage: '0.5',
-  // Bridge details
-  bridgeSendCurrencyAmount: createAmount(COW_MAINNET, '3442.423'),
-  bridgeReceiveCurrencyAmount: createAmount(COW_GNOSIS, '3433.1'),
-  bridgeFee: createAmount(USDC_MAINNET, '1.50'),
-  maxBridgeSlippage: '1',
-  estimatedTime: 1200, // 20 minutes in seconds
-  recipient: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045', // vitalik.eth
-  bridgeProvider: bungeeProviderConfig,
-  // Display options
-  hideBridgeFlowFiatAmount: true, // Hide fiat amount in bridge destination token flow
+const defaultProps: BridgeRouteBreakdownProps = {
+  receiveAmountInfo: {
+    isSell: true,
+    quotePrice: new Price({
+      baseAmount: createAmount(USDC_MAINNET, '1000'),
+      quoteAmount: createAmount(COW_MAINNET, '3442.423'),
+    }),
+    costs: {
+      networkFee: {
+        amountInSellCurrency: createAmount(USDC_MAINNET, '0.5'),
+        amountInBuyCurrency: createAmount(COW_MAINNET, '1.25'),
+      },
+      partnerFee: {
+        amount: createAmount(COW_MAINNET, '0'),
+        bps: 0,
+      },
+    },
+    beforeNetworkCosts: {
+      sellAmount: createAmount(USDC_MAINNET, '1000'),
+      buyAmount: createAmount(COW_MAINNET, '3442.423'),
+    },
+    afterNetworkCosts: {
+      sellAmount: createAmount(USDC_MAINNET, '999.5'),
+      buyAmount: createAmount(COW_MAINNET, '3441.173'),
+    },
+    afterPartnerFees: {
+      sellAmount: createAmount(USDC_MAINNET, '999.5'),
+      buyAmount: createAmount(COW_MAINNET, '3441.173'),
+    },
+    afterSlippage: {
+      sellAmount: createAmount(USDC_MAINNET, '999.5'),
+      buyAmount: createAmount(COW_MAINNET, '3425.21'),
+    },
+  },
+  bridgeQuote: {
+    providerInfo: bungeeProviderConfig,
+    tradeParameters: {
+      kind: OrderKind.SELL,
+      amount: BigInt(1000 * 10 ** USDC_MAINNET.decimals),
+      owner: '0x1234...5678',
+      sellTokenAddress: USDC_MAINNET.address,
+      sellTokenChainId: USDC_MAINNET.chainId,
+      sellTokenDecimals: USDC_MAINNET.decimals,
+      buyTokenAddress: COW_MAINNET.address,
+      buyTokenChainId: COW_MAINNET.chainId,
+      buyTokenDecimals: COW_MAINNET.decimals,
+      appCode: 'CoW Bridge Referral',
+      signer: '0x1234...5678',
+      account: '0x1234...5678',
+    },
+    amountsAndCosts: {
+      beforeFee: { sellAmount: 123003742n, buyAmount: 123003742n },
+      afterFee: { sellAmount: 123003742n, buyAmount: 122986211n },
+      afterSlippage: { sellAmount: 123003742n, buyAmount: 122986211n },
+      costs: { bridgingFee: { feeBps: 1, amountInSellCurrency: 17531n, amountInBuyCurrency: 17531n } },
+      slippageBps: 0,
+    },
+    bridgeCallDetails: {
+      unsignedBridgeCall: {
+        to: '0x9585c3062Df1C247d5E373Cfca9167F7dC2b5963',
+        value: '0',
+        data: '0xde792d5f00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000570a082310200ffffffffff0ca0b86991c6218b36c1d19d4a2e9eb0ce3606eb48029beb8e010c01ffffffff01f2ae6728b6f146556977af0a68bfbf5bada22863095ea7b301020cffffffffffa0b86991c6218b36c1d19d4a2e9eb0ce3606eb487b93923241000000000000ff5c7bcd6e7de5423a257d81b442095a1a6ced35c5000304050c01060708090a8bffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000d00000000000000000000000000000000000000000000000000000000000001a000000000000000000000000000000000000000000000000000000000000001e00000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000026000000000000000000000000000000000000000000000000000000000000002a000000000000000000000000000000000000000000000000000000000000002e00000000000000000000000000000000000000000000000000000000000000320000000000000000000000000000000000000000000000000000000000000036000000000000000000000000000000000000000000000000000000000000003a000000000000000000000000000000000000000000000000000000000000003e00000000000000000000000000000000000000000000000000000000000000420000000000000000000000000000000000000000000000000000000000000046000000000000000000000000000000000000000000000000000000000000004a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000002bfcacf7ff137289a2c4841ea90413ab5110303200000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000819ecc41714800000000000000000000000000000000000000000000000000000000000000200000000000000000000000005c7bcd6e7de5423a257d81b442095a1a6ced35c50000000000000000000000000000000000000000000000000000000000000020000000000000000000000000fb3c7eb936caa12b5a884d612393969a557d43070000000000000000000000000000000000000000000000000000000000000020000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000000020000000000000000000000000af88d065e77c8cc2239327c5edb3a432268e58310000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000a4b100000000000000000000000000000000000000000000000000000000000000200000000000000000000000003d7dc36aa2b542ad239012730dfdb23f03d75be9000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000682d717f000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000682d9f8b000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000682d71d9000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+      },
+      preAuthorizedBridgingHook: {
+        postHook: {
+          target: '0x00E989b87700514118Fa55326CD1cCE82faebEF6',
+          callData: '0x0001',
+          gasLimit: '534734',
+          dappId: 'cow-sdk://bridging/providers/across',
+        },
+        recipient: '0xd0b931c58ff095f028C2b37fd95740a2D4aB7257',
+      },
+    },
+  } as any as BridgeQuoteResults,
+  uiParams: {
+    hideBridgeFlowFiatAmount: true, // Hide fiat amount in bridge destination token flow
+  },
   // Explorer URLs
   swapExplorerUrl:
     'https://explorer.cow.fi/orders/0xeaef82ff8696bff255e130b266231acb53a8f02823ed89b33acda5fd3987a53ad8da6bf26964af9d7eed9e03e53415d37aa96045676d56da',
@@ -170,21 +229,19 @@ const USDC = {
 const BridgeRouteWithAccordion = ({ props, isOpen = false }: { props: typeof defaultProps; isOpen?: boolean }) => {
   const [open, setOpen] = React.useState(isOpen)
 
-  let feeAmount: CurrencyAmount<Currency>
-
-  if (props.bridgeFee instanceof CurrencyAmount) {
-    feeAmount = props.bridgeFee as CurrencyAmount<Currency>
-  } else if (props.bridgeFee === BridgeFeeType.FREE) {
-    feeAmount = createAmount(USDC, '0')
-  } else {
-    console.warn('Unexpected bridgeFee type in BridgeRouteWithAccordion fixture:', props.bridgeFee)
-    feeAmount = createAmount(USDC, '0')
-  }
+  const bridgeFee = CurrencyAmount.fromRawAmount(
+    props.receiveAmountInfo.afterSlippage.buyAmount.currency,
+    props.bridgeQuote.amountsAndCosts.costs.bridgingFee.amountInSellCurrency.toString(),
+  )
+  const feeAmount = bridgeFee.equalTo(0) ? createAmount(USDC, '0') : bridgeFee
 
   const feeWrapper = (defaultFeeContent: ReactNode): ReactNode => {
-    if (props.bridgeProvider && typeof props.estimatedTime === 'number') {
+    if (props.bridgeQuote.providerInfo && typeof props.bridgeQuote.expectedFillTimeSeconds === 'number') {
       return (
-        <BridgeAccordionSummary bridgeEstimatedTime={props.estimatedTime / 60} bridgeProtocol={props.bridgeProvider}>
+        <BridgeAccordionSummary
+          bridgeEstimatedTime={props.bridgeQuote.expectedFillTimeSeconds / 60}
+          bridgeProtocol={props.bridgeQuote.providerInfo}
+        >
           {defaultFeeContent}
         </BridgeAccordionSummary>
       )
@@ -196,8 +253,8 @@ const BridgeRouteWithAccordion = ({ props, isOpen = false }: { props: typeof def
     <TradeDetailsAccordion
       rateInfo={
         <RateInfoStyled>
-          1 {props.sellCurrencyAmount.currency.symbol} = 3.442 {props.buyCurrencyAmount.currency.symbol}{' '}
-          <FiatValue>(≈ $0.43)</FiatValue>
+          1 {props.receiveAmountInfo.afterSlippage.sellAmount.currency.symbol} = 3.442{' '}
+          {props.receiveAmountInfo.afterSlippage.buyAmount.currency.symbol} <FiatValue>(≈ $0.43)</FiatValue>
         </RateInfoStyled>
       }
       feeTotalAmount={feeAmount}
@@ -236,57 +293,6 @@ const SwapForm = () => {
   // Create sell currency amount for convenient calculations within the fixture
   const sellAmount = createAmount(USDC_MAINNET, originalSellAmountStr)
 
-  // Network fee in sell currency (USDC)
-  const networkFeeInSellCurrency = defaultProps.networkCost
-
-  // Network fee converted to buy currency (COW)
-  const networkCostFloat = parseFloat(defaultProps.networkCost.toSignificant(6))
-  const networkFeeInBuyCurrency = createAmount(COW_MAINNET, networkCostFloat * 2.5)
-
-  // Create a quote price
-  const quotePrice = new Price({
-    baseAmount: sellAmount,
-    quoteAmount: buyAmount,
-  })
-
-  // Calculate amounts after fees
-  const buyAmountAfterFees = createAmount(COW_MAINNET, defaultProps.swapExpectedToReceive.toSignificant(6))
-
-  // Calculate minimum amount from slippage
-  const buyAmountAfterSlippage = createAmount(COW_MAINNET, defaultProps.swapMinReceive.toSignificant(6))
-
-  // Create receiveAmountInfo for output currency
-  const receiveAmountInfo: ReceiveAmountInfo = {
-    isSell: true,
-    quotePrice,
-    costs: {
-      networkFee: {
-        amountInSellCurrency: networkFeeInSellCurrency,
-        amountInBuyCurrency: networkFeeInBuyCurrency,
-      },
-      partnerFee: {
-        amount: createAmount(COW_MAINNET, '0'), // No partner fee in this example
-        bps: 0,
-      },
-    },
-    beforeNetworkCosts: {
-      sellAmount: sellAmount,
-      buyAmount: buyAmount,
-    },
-    afterNetworkCosts: {
-      sellAmount: sellAmount,
-      buyAmount: buyAmountAfterFees,
-    },
-    afterPartnerFees: {
-      sellAmount: sellAmount,
-      buyAmount: buyAmountAfterFees,
-    },
-    afterSlippage: {
-      sellAmount: sellAmount,
-      buyAmount: buyAmountAfterSlippage,
-    },
-  }
-
   // Create input (sell) currency data using values from defaultProps
   const sellCurrencyInfo = {
     field: Field.INPUT,
@@ -302,7 +308,7 @@ const SwapForm = () => {
   const buyCurrencyInfo = {
     field: Field.OUTPUT,
     isIndependent: false,
-    receiveAmountInfo,
+    receiveAmountInfo: defaultProps.receiveAmountInfo,
     currency: COW_MAINNET,
     balance: createAmount(COW_MAINNET, '5000'), // 5,000 COW
     amount: buyAmount,
@@ -338,7 +344,7 @@ const SwapForm = () => {
         {/* From input */}
         <CurrencyInputPanel
           id="swap-from"
-          chainId={defaultProps.sellCurrencyAmount.currency.chainId}
+          chainId={defaultProps.receiveAmountInfo.afterSlippage.sellAmount.currency.chainId}
           areCurrenciesLoading={false}
           bothCurrenciesSet={true}
           isChainIdUnsupported={false}
@@ -358,7 +364,7 @@ const SwapForm = () => {
         {/* To input */}
         <CurrencyInputPanel
           id="swap-to"
-          chainId={defaultProps.buyCurrencyAmount.currency.chainId}
+          chainId={defaultProps.receiveAmountInfo.afterSlippage.buyAmount.currency.chainId}
           areCurrenciesLoading={false}
           bothCurrenciesSet={true}
           isChainIdUnsupported={false}
@@ -487,7 +493,6 @@ const SwapConfirmation = () => {
         title="Swap"
         refreshInterval={15000}
         isPriceStatic={false}
-        recipient={defaultProps.recipient}
         buttonText="Confirm Swap"
         appData={appData}
         children={(restContent) => (
@@ -503,7 +508,7 @@ const SwapConfirmation = () => {
             {/* Route breakdown component with collapsible behavior */}
             <BridgeRouteBreakdown
               {...defaultProps}
-              isCollapsible={false}
+              uiParams={{ ...defaultProps, isCollapsible: false }}
               winningSolverId={null}
               collapsedDefault={
                 <>
@@ -512,10 +517,13 @@ const SwapConfirmation = () => {
                     <Label>Recipient</Label>
                     <RecipientValue>
                       <ChainLogoImg
-                        src={getChainInfo(defaultProps.bridgeReceiveCurrencyAmount.currency.chainId).logo.light}
+                        src={
+                          getChainInfo(defaultProps.receiveAmountInfo.afterSlippage.sellAmount.currency.chainId).logo
+                            .light
+                        }
                         alt="Chain logo"
                       />
-                      {shortenAddress(defaultProps.recipient)} &#8599;
+                      {shortenAddress('0x4838b106fce9647bdf1e7877bf73ce8b0bad5f97')} &#8599;
                     </RecipientValue>
                   </ConfirmationDetailsRow>
 
@@ -526,9 +534,8 @@ const SwapConfirmation = () => {
                     <Label>Min. to receive</Label>
                     <MinToReceiveValue>
                       <TokenIconWrapper>
-                        <TokenLogo token={defaultProps.bridgeReceiveCurrencyAmount.currency} size={18} />
+                        <TokenLogo token={defaultProps.receiveAmountInfo.afterSlippage.sellAmount.currency} size={18} />
                       </TokenIconWrapper>
-                      {`${defaultProps.swapMinReceive.toSignificant(6)} ${defaultProps.buyCurrencyAmount.currency.symbol}`}
                     </MinToReceiveValue>
                   </MinToReceiveRow>
                 </>
@@ -605,9 +612,7 @@ function BridgeStatus() {
         <StatusTitle>Bridge Status: {scenario.label}</StatusTitle>
         <BridgeRouteBreakdown
           {...defaultProps}
-          isCollapsible={true}
-          hasBackground={true}
-          hideRouteHeader={true}
+          uiParams={{ ...defaultProps.uiParams, isCollapsible: true, hasBackground: true, hideRouteHeader: true }}
           swapStatus={scenario.swapStatus}
           bridgeStatus={scenario.bridgeStatus}
           winningSolverId={winningSolverIdForFixture}
