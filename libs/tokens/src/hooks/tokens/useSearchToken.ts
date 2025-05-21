@@ -11,7 +11,7 @@ import useSWR from 'swr'
 
 import { searchTokensInApi } from '../../services/searchTokensInApi'
 import { environmentAtom } from '../../state/environmentAtom'
-import { activeTokensAtom, inactiveTokensAtom } from '../../state/tokens/allTokensAtom'
+import { allActiveTokensAtom, inactiveTokensAtom } from '../../state/tokens/allTokensAtom'
 import { fetchTokenFromBlockchain } from '../../utils/fetchTokenFromBlockchain'
 import { getTokenSearchFilter } from '../../utils/getTokenSearchFilter'
 import { parseTokensFromApi } from '../../utils/parseTokensFromApi'
@@ -132,7 +132,7 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
 }
 
 function useSearchTokensInLists(input: string | undefined): FromListsResult {
-  const activeTokens = useAtomValue(activeTokensAtom).tokens
+  const activeTokens = useAtomValue(allActiveTokensAtom).tokens
   const inactiveTokens = useAtomValue(inactiveTokensAtom)
 
   const { data: inListsResult } = useSWR<FromListsResult>(

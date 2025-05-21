@@ -63,12 +63,16 @@ const tokensStateAtom = atom<TokensState>((get) => {
   )
 })
 
+export const activeTokensMapAtom = atom<TokensMap>((get) => {
+  return get(tokensStateAtom).activeTokens
+})
+
 /**
  * Returns a list of tokens that are active and sorted alphabetically
  * The list includes: native token, user added tokens, favorite tokens and tokens from active lists
  * Native token is always the first element in the list
  */
-export const activeTokensAtom = atom<ActiveTokensState>((get) => {
+export const allActiveTokensAtom = atom<ActiveTokensState>((get) => {
   const { chainId, enableLpTokensByDefault } = get(environmentAtom)
   const userAddedTokens = get(userAddedTokensAtom)
   const favoriteTokensState = get(favoriteTokensAtom)
@@ -76,24 +80,30 @@ export const activeTokensAtom = atom<ActiveTokensState>((get) => {
   const tokensMap = get(tokensStateAtom)
   const nativeToken = NATIVE_CURRENCIES[chainId]
 
+  const lpTokens = enableLpTokensByDefault
+    ? Object.keys(tokensMap.inactiveTokens).reduce<TokensMap>((acc, key) => {
+        const token = tokensMap.inactiveTokens[key]
+
+        if (token.lpTokenProvider) {
+          acc[key] = token
+        }
+
+        return acc
+      }, {})
+    : null
+
+  /**
+   * Order is important!
+   * The end of the array has the highest priority.
+   * It means that activeTokens should take precedence over favoriteTokens
+   */
   const tokens = tokenMapToListWithLogo(
-    {
-      [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo,
-      ...tokensMap.activeTokens,
-      ...lowerCaseTokensMap(userAddedTokens[chainId] || {}),
-      ...lowerCaseTokensMap(favoriteTokensState[chainId]),
-      ...(enableLpTokensByDefault
-        ? Object.keys(tokensMap.inactiveTokens).reduce<TokensMap>((acc, key) => {
-            const token = tokensMap.inactiveTokens[key]
-
-            if (token.lpTokenProvider) {
-              acc[key] = token
-            }
-
-            return acc
-          }, {})
-        : null),
-    },
+    (lpTokens ? [lpTokens] : []).concat([
+      lowerCaseTokensMap(favoriteTokensState[chainId]),
+      lowerCaseTokensMap(userAddedTokens[chainId] || {}),
+      tokensMap.activeTokens,
+      { [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo },
+    ]),
     chainId,
   )
 
@@ -104,11 +114,11 @@ export const inactiveTokensAtom = atom<TokenWithLogo[]>((get) => {
   const { chainId } = get(environmentAtom)
   const tokensMap = get(tokensStateAtom)
 
-  return tokenMapToListWithLogo(tokensMap.inactiveTokens, chainId)
+  return tokenMapToListWithLogo([tokensMap.inactiveTokens], chainId)
 })
 
 export const tokensByAddressAtom = atom<{ tokens: TokensByAddress; chainId: SupportedChainId }>((get) => {
-  const activeTokens = get(activeTokensAtom)
+  const activeTokens = get(allActiveTokensAtom)
 
   const tokens = activeTokens.tokens.reduce<TokensByAddress>((acc, token) => {
     acc[token.address.toLowerCase()] = token
@@ -122,7 +132,7 @@ export const tokensByAddressAtom = atom<{ tokens: TokensByAddress; chainId: Supp
 })
 
 export const tokensBySymbolAtom = atom<TokensBySymbolState>((get) => {
-  const { tokens, chainId } = get(activeTokensAtom)
+  const { tokens, chainId } = get(allActiveTokensAtom)
   const tokensBySymbol = tokens.reduce<TokensBySymbol>((acc, token) => {
     if (!token.symbol) return acc
 

@@ -1,17 +1,19 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { tokensByAddressAtom } from '../../state/tokens/allTokensAtom'
+import { environmentAtom } from '../../state/environmentAtom'
+import { activeTokensMapAtom } from '../../state/tokens/allTokensAtom'
 import { removeUserTokensAtom, userAddedTokensAtom } from '../../state/tokens/userAddedTokensAtom'
 
 export function UserAddedTokensUpdater() {
+  const { chainId } = useAtomValue(environmentAtom)
   const removeUserTokens = useSetAtom(removeUserTokensAtom)
-  const { tokens: tokensByAddress, chainId } = useAtomValue(tokensByAddressAtom)
+  const activeTokensMap = useAtomValue(activeTokensMapAtom)
   const userAddedTokens = useAtomValue(userAddedTokensAtom)[chainId]
 
   const existingTokens = userAddedTokens
     ? Object.keys(userAddedTokens).filter((tokenAddress) => {
-        return !!tokensByAddress[tokenAddress.toLowerCase()]
+        return !!activeTokensMap[tokenAddress.toLowerCase()]
       })
     : undefined
 
