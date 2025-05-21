@@ -79,7 +79,7 @@ export async function fetchCurrencyUsdPrice(currency: Token): Promise<Fraction |
     )
   }
 
-  // CowProtocolUsdPrice might be derrived only for supported chains
+  // CowProtocolUsdPrice is only available for supported chains
   if (currency.chainId in SupportedChainId) {
     // If all other sources are skipped, use CoW as last resort
     return getCowPrice(currency)
