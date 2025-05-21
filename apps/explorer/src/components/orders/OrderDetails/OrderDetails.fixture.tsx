@@ -1,5 +1,12 @@
 import React from 'react'
 
+import {
+  BridgeDetails,
+  BridgeStatus,
+  BridgeableToken,
+  BridgeProvider,
+  BRIDGE_PROVIDER_DETAILS,
+} from '@cowprotocol/bridge'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
@@ -8,9 +15,9 @@ import { add, sub } from 'date-fns'
 
 import { Order, Trade } from '../../../api/operator'
 import { GlobalStateContext } from '../../../hooks/useGlobalState'
-import { RICH_ORDER } from '../../../test/data' // Moved before types
+import { RICH_ORDER } from '../../../test/data'
 import { Errors, Network } from '../../../types'
-import { BridgeDetails, BridgeStatus, BridgeableToken } from '../../../types/bridge' // Added bridge types
+import { BridgeDetailsTable } from '../BridgeDetailsTable'
 
 import { OrderDetails } from '.'
 
@@ -28,48 +35,50 @@ const usdtToken: TokenErc20 = {
   decimals: 6,
 }
 
-// --- Mock Bridge Details ---
-const mockSourceToken: BridgeableToken = {
-  address: usdtToken.address,
+const daiMainnetToken: BridgeableToken = {
+  address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', // DAI on Mainnet
   chainId: SupportedChainId.MAINNET,
-  symbol: usdtToken.symbol,
-  decimals: usdtToken.decimals,
+  symbol: 'DAI',
+  decimals: 18,
 }
 
-const mockDestinationToken: BridgeableToken = {
-  address: '0xanotherMainnetTokenForBridgeFixture', // Example different token on Mainnet
-  chainId: SupportedChainId.MAINNET, // Using MAINNET again to avoid linter issues
-  symbol: 'USDT.bridged', // Example symbol for bridged USDT on Mainnet for fixture
-  decimals: 6,
+const daiGnosisChainToken: BridgeableToken = {
+  address: '0xaf204776c7245bf4147c2612bf6e5972ee483701',
+  chainId: SupportedChainId.GNOSIS_CHAIN,
+  symbol: 'DAI.gc',
+  decimals: 18,
 }
+
+const bungeeBridgeInfo = BRIDGE_PROVIDER_DETAILS[BridgeProvider.BUNGEE]
 
 const pendingBridgeDetails: BridgeDetails = {
-  providerName: 'TestBridgeProvider',
+  providerName: bungeeBridgeInfo.title,
+  providerUrl: bungeeBridgeInfo.url,
   isSuccess: false,
   status: BridgeStatus.Pending,
-  bridgeQuoteTimestamp: Date.now() - 1000 * 60 * 5, // 5 minutes ago
-  expectedFillTimeSeconds: 600, // 10 minutes
-  source: mockSourceToken,
-  destination: mockDestinationToken,
-  inputAmount: '2000000000', // 2000 USDT (matching sellAmount)
-  // outputAmount initially undefined for pending
-  gasCostsNative: '10000000000000000', // 0.01 ETH on source chain (example)
-  protocolFeeSellToken: '1000000', // 1 USDT
-  maxSlippageBps: 50, // 0.5%
-  sourceChainTransactionHash: '0xsourceTxHashForPendingBridgeOrderDetailsFixture',
-  // destinationChainTransactionHash initially undefined
-  explorerUrl: 'https://testbridgeprovider.example.com/tx/0xsourceTxHashForPendingBridgeOrderDetailsFixture',
-  minDepositAmount: '10000000', // 10 USDT
-  maxDepositAmount: '1000000000000', // 1,000,000 USDT
+  bridgeQuoteTimestamp: Date.now() - 1000 * 60 * 10,
+  expectedFillTimeSeconds: 26 * 60,
+  source: daiMainnetToken,
+  destination: daiGnosisChainToken,
+  inputAmount: '100000000000000000000',
+  outputAmount: undefined,
+  gasCostsNative: '5000000000000000',
+  protocolFeeSellToken: '100000000000000000',
+  maxSlippageBps: 50,
+  sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
+  explorerUrl: bungeeBridgeInfo.url + '/explorer/0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
+  minDepositAmount: '1000000000000000000',
+  maxDepositAmount: '100000000000000000000000',
 }
 
 const completedBridgeDetails: BridgeDetails = {
   ...pendingBridgeDetails,
   isSuccess: true,
   status: BridgeStatus.Completed,
-  outputAmount: '1998000000', // 1998 USDT.bridged (after fees, example)
-  destinationChainTransactionHash: '0xdestinationTxHashForCompletedBridgeOrderDetailsFixture',
-  explorerUrl: 'https://testbridgeprovider.example.com/tx/0xdestinationTxHashForCompletedBridgeOrderDetailsFixture', // URL might update or stay same based on provider
+  outputAmount: '99800000000000000000',
+  sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
+  destinationChainTransactionHash: '0x9e0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a',
+  explorerUrl: bungeeBridgeInfo.url + '/explorer/0x9e0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a',
 }
 
 // Base Mock Order Data - aligned with apps/explorer/src/api/operator/types.ts Order type
@@ -148,13 +157,13 @@ const filledOrder: Order = {
 const swapBridgeOpenOrder: Order = {
   ...baseMockOrderData,
   ...baseMockOrderData.statusOpen, // Swap part is open
-  bridgeDetails: pendingBridgeDetails as any, // Bridge part is pending
+  bridgeDetails: pendingBridgeDetails, // Bridge part is pending (ensure this uses the updated pendingBridgeDetails)
 } as Order
 
 const swapBridgeFilledOrder: Order = {
   ...baseMockOrderData,
   ...baseMockOrderData.statusFilled, // Swap part is filled
-  bridgeDetails: completedBridgeDetails as any, // Bridge part is completed
+  bridgeDetails: completedBridgeDetails, // Bridge part is completed (ensure this uses the updated completedBridgeDetails)
 } as Order
 
 const mockTradeExecutedFee = filledOrder.totalFee // totalFee from Order is BigNumber
@@ -305,6 +314,43 @@ export default {
         areTradesLoading={false}
         errors={noErrors}
       />
+    </WithProviders>
+  ),
+  // --- Standalone BridgeDetailsTable Stories ---
+  'BridgeDetailsTable - Pending': () => (
+    <WithProviders>
+      <div style={{ padding: '1rem' }}>
+        <h2>Bridge Details Table (Pending State)</h2>
+        <BridgeDetailsTable
+          bridgeDetails={pendingBridgeDetails}
+          ownerAddress="0xOwnerPending1234567890abcdef1234567890"
+          receiverAddress="0xReceiverPending0987654321fedcba098765"
+        />
+      </div>
+    </WithProviders>
+  ),
+  'BridgeDetailsTable - Completed': () => (
+    <WithProviders>
+      <div style={{ padding: '1rem' }}>
+        <h2>Bridge Details Table (Completed State)</h2>
+        <BridgeDetailsTable
+          bridgeDetails={completedBridgeDetails}
+          ownerAddress="0xOwnerCompleted1234567890abcdef1234567890"
+          receiverAddress="0xReceiverCompleted0987654321fedcba098765"
+        />
+      </div>
+    </WithProviders>
+  ),
+  'BridgeDetailsTable - Loading': () => (
+    <WithProviders>
+      <div style={{ padding: '1rem' }}>
+        <h2>Bridge Details Table (Loading State)</h2>
+        <BridgeDetailsTable
+          isLoading={true}
+          ownerAddress="0xOwnerLoading1234567890abcdef1234567890"
+          receiverAddress="0xReceiverLoading0987654321fedcba098765"
+        />
+      </div>
     </WithProviders>
   ),
 }

@@ -1,4 +1,4 @@
-import { BridgeDetails } from '../types/bridge' // Adjust path as necessary
+import { BridgeDetails } from '@cowprotocol/bridge'
 
 // A generic order-like type. The real Order type is in 'api/operator'
 // but we want to keep utils potentially reusable or less coupled.

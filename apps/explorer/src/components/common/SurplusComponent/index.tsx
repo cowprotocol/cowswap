@@ -3,32 +3,14 @@ import React from 'react'
 import { Color } from '@cowprotocol/ui'
 
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { TokenAmount } from 'components/token/TokenAmount'
 import { MAX_SURPLUS_PERCENTAGE } from 'const'
-import styled from 'styled-components/macro'
 import { formatPercentage, Surplus } from 'utils'
 
-const IconWrapper = styled(FontAwesomeIcon)`
-  padding: 0 0.5rem 0 0;
-  margin: 0;
-  box-sizing: content-box;
+import { Wrapper, IconWrapper, Percentage, Amount } from './styled'
 
-  &:hover {
-    cursor: pointer;
-  }
-`
-
-export const Percentage = styled.span`
-  color: ${Color.explorer_green};
-`
-
-export const Amount = styled.span`
-  margin: 0 0.5rem 0 0;
-`
-
-const Wrapper = styled.span``
+export { Amount, Percentage } from './styled'
 
 export type SurplusComponentProps = {
   surplus: Surplus | null

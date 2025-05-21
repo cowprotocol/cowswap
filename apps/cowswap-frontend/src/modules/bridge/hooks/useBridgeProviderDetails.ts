@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
-import { BridgeProvider, getBridgeProviderDetails } from '../constants/bridgeProviders'
-import { BridgeProtocolConfig } from '../types'
+import { BridgeProvider, getBridgeProviderDetails, BridgeProtocolConfig } from '@cowprotocol/bridge'
 
 /**
  * Hook to retrieve bridge provider details
@@ -9,6 +8,6 @@ import { BridgeProtocolConfig } from '../types'
  * @param provider - The bridge provider
  * @returns Bridge provider details
  */
-export function useBridgeProviderDetails(provider: BridgeProvider): BridgeProtocolConfig {
+export function useBridgeProviderDetails(provider: BridgeProvider): BridgeProtocolConfig | undefined {
   return useMemo(() => getBridgeProviderDetails(provider), [provider])
 }

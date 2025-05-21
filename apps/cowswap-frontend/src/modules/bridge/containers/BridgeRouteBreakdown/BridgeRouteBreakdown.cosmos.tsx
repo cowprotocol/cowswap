@@ -1,7 +1,7 @@
 import { Provider, createStore } from 'jotai'
 import React from 'react'
 
-import bungeeIcon from '@cowprotocol/assets/images/bungee-logo.svg'
+import { BridgeProvider, BRIDGE_PROVIDER_DETAILS } from '@cowprotocol/bridge'
 import { USDC_MAINNET, COW, getChainInfo } from '@cowprotocol/common-const'
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -28,7 +28,7 @@ import { CurrencyInputPanel } from 'common/pure/CurrencyInputPanel/CurrencyInput
 import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 
-import { BridgeFeeType, BridgeProtocolConfig } from '../../types'
+import { BridgeFeeType } from '../../types'
 import { StopStatusEnum } from '../../utils/status'
 
 import { BridgeRouteBreakdown } from './index'
@@ -44,14 +44,6 @@ const createAmount = <T extends Currency>(currency: T, value: string | number): 
 const sharedPriceImpact: PriceImpact = {
   priceImpact: new Percent(10, 10000), // 0.1%
   loading: false,
-}
-
-// Define provider configs
-const bungeeProviderConfig: BridgeProtocolConfig = {
-  icon: bungeeIcon,
-  title: 'Bungee Exchange',
-  url: 'https://bungee.exchange',
-  description: 'Multi-chain bridge and swap protocol',
 }
 
 // Get token references
@@ -74,7 +66,7 @@ const defaultProps = {
   maxBridgeSlippage: '1',
   estimatedTime: 1200, // 20 minutes in seconds
   recipient: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045', // vitalik.eth
-  bridgeProvider: bungeeProviderConfig,
+  bridgeProvider: BRIDGE_PROVIDER_DETAILS[BridgeProvider.BUNGEE],
   // Display options
   hideBridgeFlowFiatAmount: true, // Hide fiat amount in bridge destination token flow
 }

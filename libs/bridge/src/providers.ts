@@ -1,6 +1,6 @@
-import BungeeLogo from '@cowprotocol/assets/images/bungee-logo.svg'
+import { BridgeProtocolConfig } from './types'
 
-import { BridgeProtocolConfig } from '../types'
+import BungeeLogo from '../../assets/src/images/bungee-logo.svg'
 
 /**
  * Enum of supported bridge providers
@@ -31,7 +31,7 @@ export const BRIDGE_PROVIDER_DETAILS: BridgeProviderDetailsMap = {
  * @param provider - BridgeProvider enum value
  * @returns The provider details
  */
-export function getBridgeProviderDetails(provider: BridgeProvider): BridgeProtocolConfig {
+export function getBridgeProviderDetails(provider: BridgeProvider): BridgeProtocolConfig | undefined {
   return BRIDGE_PROVIDER_DETAILS[provider]
 }
 
