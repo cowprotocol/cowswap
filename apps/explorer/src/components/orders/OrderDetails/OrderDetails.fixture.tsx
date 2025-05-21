@@ -1,5 +1,12 @@
 import React from 'react'
 
+import {
+  BridgeDetails,
+  BridgeStatus,
+  BridgeableToken,
+  BridgeProvider,
+  BRIDGE_PROVIDER_DETAILS,
+} from '@cowprotocol/bridge'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
@@ -8,9 +15,9 @@ import { add, sub } from 'date-fns'
 
 import { Order, Trade } from '../../../api/operator'
 import { GlobalStateContext } from '../../../hooks/useGlobalState'
-import { RICH_ORDER } from '../../../test/data' // Moved before types
+import { RICH_ORDER } from '../../../test/data'
 import { Errors, Network } from '../../../types'
-import { BridgeDetails, BridgeStatus, BridgeableToken } from '../../../types/bridge' // Added bridge types
+import { BridgeDetailsTable } from '../BridgeDetailsTable'
 
 import { OrderDetails } from '.'
 
@@ -28,48 +35,48 @@ const usdtToken: TokenErc20 = {
   decimals: 6,
 }
 
-// --- Mock Bridge Details ---
-const mockSourceToken: BridgeableToken = {
-  address: usdtToken.address,
+const daiMainnetToken: BridgeableToken = {
+  address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', // DAI on Mainnet
   chainId: SupportedChainId.MAINNET,
-  symbol: usdtToken.symbol,
-  decimals: usdtToken.decimals,
+  symbol: 'DAI',
+  decimals: 18,
 }
 
-const mockDestinationToken: BridgeableToken = {
-  address: '0xanotherMainnetTokenForBridgeFixture', // Example different token on Mainnet
-  chainId: SupportedChainId.MAINNET, // Using MAINNET again to avoid linter issues
-  symbol: 'USDT.bridged', // Example symbol for bridged USDT on Mainnet for fixture
-  decimals: 6,
+const daiGnosisChainToken: BridgeableToken = {
+  address: '0xaf204776c7245bf4147c2612bf6e5972ee483701',
+  chainId: SupportedChainId.GNOSIS_CHAIN,
+  symbol: 'DAI.gc',
+  decimals: 18,
 }
+
+const bungeeBridgeInfo = BRIDGE_PROVIDER_DETAILS[BridgeProvider.BUNGEE]
 
 const pendingBridgeDetails: BridgeDetails = {
-  providerName: 'TestBridgeProvider',
+  providerName: bungeeBridgeInfo.title,
   isSuccess: false,
   status: BridgeStatus.Pending,
-  bridgeQuoteTimestamp: Date.now() - 1000 * 60 * 5, // 5 minutes ago
-  expectedFillTimeSeconds: 600, // 10 minutes
-  source: mockSourceToken,
-  destination: mockDestinationToken,
-  inputAmount: '2000000000', // 2000 USDT (matching sellAmount)
-  // outputAmount initially undefined for pending
-  gasCostsNative: '10000000000000000', // 0.01 ETH on source chain (example)
-  protocolFeeSellToken: '1000000', // 1 USDT
-  maxSlippageBps: 50, // 0.5%
-  sourceChainTransactionHash: '0xsourceTxHashForPendingBridgeOrderDetailsFixture',
-  // destinationChainTransactionHash initially undefined
-  explorerUrl: 'https://testbridgeprovider.example.com/tx/0xsourceTxHashForPendingBridgeOrderDetailsFixture',
-  minDepositAmount: '10000000', // 10 USDT
-  maxDepositAmount: '1000000000000', // 1,000,000 USDT
+  bridgeQuoteTimestamp: Date.now() - 1000 * 60 * 10,
+  expectedFillTimeSeconds: 26 * 60,
+  source: daiMainnetToken,
+  destination: daiGnosisChainToken,
+  inputAmount: '100000000000000000000',
+  outputAmount: undefined,
+  gasCostsNative: '5000000000000000',
+  protocolFeeSellToken: '100000000000000000',
+  maxSlippageBps: 50,
+  sourceChainTransactionHash: '0xpendingTxHashMainnet1234567890abcdef1234567890abcdef12345678',
+  explorerUrl: bungeeBridgeInfo.url + '/explorer/0xpendingTxHashMainnet1234567890abcdef1234567890abcdef12345678',
+  minDepositAmount: '1000000000000000000',
+  maxDepositAmount: '100000000000000000000000',
 }
 
 const completedBridgeDetails: BridgeDetails = {
   ...pendingBridgeDetails,
   isSuccess: true,
   status: BridgeStatus.Completed,
-  outputAmount: '1998000000', // 1998 USDT.bridged (after fees, example)
-  destinationChainTransactionHash: '0xdestinationTxHashForCompletedBridgeOrderDetailsFixture',
-  explorerUrl: 'https://testbridgeprovider.example.com/tx/0xdestinationTxHashForCompletedBridgeOrderDetailsFixture', // URL might update or stay same based on provider
+  outputAmount: '99800000000000000000',
+  destinationChainTransactionHash: '0xcompletedTxHashGnosisChain0987654321fedcba0987654321fedcba09',
+  explorerUrl: bungeeBridgeInfo.url + '/explorer/0xcompletedTxHashGnosisChain0987654321fedcba0987654321fedcba09',
 }
 
 // Base Mock Order Data - aligned with apps/explorer/src/api/operator/types.ts Order type
@@ -148,13 +155,13 @@ const filledOrder: Order = {
 const swapBridgeOpenOrder: Order = {
   ...baseMockOrderData,
   ...baseMockOrderData.statusOpen, // Swap part is open
-  bridgeDetails: pendingBridgeDetails as any, // Bridge part is pending
+  bridgeDetails: pendingBridgeDetails, // Bridge part is pending (ensure this uses the updated pendingBridgeDetails)
 } as Order
 
 const swapBridgeFilledOrder: Order = {
   ...baseMockOrderData,
   ...baseMockOrderData.statusFilled, // Swap part is filled
-  bridgeDetails: completedBridgeDetails as any, // Bridge part is completed
+  bridgeDetails: completedBridgeDetails, // Bridge part is completed (ensure this uses the updated completedBridgeDetails)
 } as Order
 
 const mockTradeExecutedFee = filledOrder.totalFee // totalFee from Order is BigNumber
@@ -305,6 +312,31 @@ export default {
         areTradesLoading={false}
         errors={noErrors}
       />
+    </WithProviders>
+  ),
+  // --- Standalone BridgeDetailsTable Stories ---
+  'BridgeDetailsTable - Pending': () => (
+    <WithProviders>
+      <div style={{ padding: '1rem' }}>
+        <h2>Bridge Details Table (Pending State)</h2>
+        <BridgeDetailsTable bridgeDetails={pendingBridgeDetails} />
+      </div>
+    </WithProviders>
+  ),
+  'BridgeDetailsTable - Completed': () => (
+    <WithProviders>
+      <div style={{ padding: '1rem' }}>
+        <h2>Bridge Details Table (Completed State)</h2>
+        <BridgeDetailsTable bridgeDetails={completedBridgeDetails} />
+      </div>
+    </WithProviders>
+  ),
+  'BridgeDetailsTable - Loading': () => (
+    <WithProviders>
+      <div style={{ padding: '1rem' }}>
+        <h2>Bridge Details Table (Loading State)</h2>
+        <BridgeDetailsTable isLoading={true} />
+      </div>
     </WithProviders>
   ),
 }

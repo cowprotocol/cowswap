@@ -3,19 +3,12 @@ import React from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import unknownTokenImg from 'assets/img/unknown-token.png'
-import styled from 'styled-components/macro'
+// import styled from 'styled-components/macro'
 import { getImageUrl, RequireContextMock, safeTokenName } from 'utils'
 
-import { useTokenList } from '../../hooks/useTokenList'
+import { Wrapper } from './styled'
 
-const Wrapper = styled.img<WrapperProps>`
-  width: 2.8rem;
-  height: 2.8rem;
-  border-radius: 3.6rem;
-  object-fit: contain;
-  background-color: white;
-  opacity: ${(props): number => (props.faded ? 0.4 : 1)};
-`
+import { useTokenList } from '../../../hooks/useTokenList'
 
 function _loadFallbackTokenImage(event: React.SyntheticEvent<HTMLImageElement>): void {
   const image = event.currentTarget
@@ -28,10 +21,6 @@ export interface Props {
   name?: string
   address: string
   addressMainnet?: string
-  faded?: boolean
-}
-
-export interface WrapperProps {
   faded?: boolean
 }
 

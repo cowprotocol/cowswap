@@ -1,30 +1,11 @@
-import { Color } from '@cowprotocol/ui'
-
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
-import TokenImg from 'components/common/TokenImg'
-import styled from 'styled-components/macro'
 import { Network } from 'types'
 import { abbreviateString, getImageAddress, isNativeToken } from 'utils'
 
+import { Wrapper, NativeWrapper, StyledImg } from './styled'
+
 export type Props = { erc20: TokenErc20; network: Network; showAbbreviated?: boolean }
-
-const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
-  flex-flow: row nowrap;
-  font-size: inherit;
-`
-
-const NativeWrapper = styled.span`
-  color: ${Color.explorer_textPrimary};
-`
-
-const StyledImg = styled(TokenImg)`
-  width: 1.6rem;
-  height: 1.6rem;
-  margin: 0 0.5rem;
-`
 
 export function TokenDisplay(props: Readonly<Props>): React.ReactNode {
   const { erc20, network, showAbbreviated } = props

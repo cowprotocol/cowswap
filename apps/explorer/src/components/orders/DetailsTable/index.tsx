@@ -11,17 +11,16 @@ import { faFill, faGroupArrowsRotate, faHistory, faProjectDiagram } from '@forta
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import DecodeAppData from 'components/AppData/DecodeAppData'
 import { DateDisplay } from 'components/common/DateDisplay'
+import { DetailRow } from 'components/common/DetailRow'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { SimpleTable } from 'components/common/SimpleTable'
-import Spinner from 'components/common/Spinner'
 import { AmountsDisplay } from 'components/orders/AmountsDisplay'
 import { FilledProgress } from 'components/orders/FilledProgress'
 import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
 import { OrderPriceDisplay } from 'components/orders/OrderPriceDisplay'
 import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
 import { StatusLabel } from 'components/orders/StatusLabel'
-import { HelpTooltip } from 'components/Tooltip'
 import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'
@@ -211,286 +210,165 @@ export function DetailsTable(props: Props): React.ReactNode | null {
               </td>
             </WarningRow>
           )}
-          <tr>
-            <td>
-              <span>
-                <HelpTooltip tooltip={tooltip.orderID} /> Order Id
-              </span>
-            </td>
-            <td>
+          <DetailRow label="Order Id" tooltipText={tooltip.orderID}>
+            <RowWithCopyButton
+              textToCopy={uid}
+              contentsToDisplay={<TruncatedText>{uid}</TruncatedText>}
+              onCopy={(): void => onCopy('orderId')}
+            />
+          </DetailRow>
+          <DetailRow label="From" tooltipText={tooltip.from}>
+            <Wrapper>
+              {isSigning && (
+                <>
+                  <Icon image="ALERT" color={UI.COLOR_ALERT_TEXT} />
+                  &nbsp;
+                </>
+              )}
               <RowWithCopyButton
-                textToCopy={uid}
-                contentsToDisplay={<TruncatedText>{uid}</TruncatedText>}
-                onCopy={(): void => onCopy('orderId')}
+                textToCopy={owner}
+                onCopy={(): void => onCopy('ownerAddress')}
+                contentsToDisplay={
+                  <Link to={getExplorerLink(chainId, owner, ExplorerDataType.ADDRESS)} target="_blank">
+                    {owner}↗
+                  </Link>
+                }
               />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <span>
-                <HelpTooltip tooltip={tooltip.from} /> From
-              </span>
-            </td>
-            <td>
-              <Wrapper>
-                {isSigning && (
-                  <>
-                    <Icon image="ALERT" color={UI.COLOR_ALERT_TEXT} />
-                    &nbsp;
-                  </>
-                )}
-                <RowWithCopyButton
-                  textToCopy={owner}
-                  onCopy={(): void => onCopy('ownerAddress')}
-                  contentsToDisplay={
-                    <Link to={getExplorerLink(chainId, owner, ExplorerDataType.ADDRESS)} target="_blank">
-                      {owner}↗
-                    </Link>
-                  }
-                />
-                <LinkButton to={`/address/${owner}`}>
-                  <FontAwesomeIcon icon={faHistory} />
-                  Order history
-                </LinkButton>
-              </Wrapper>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <span>
-                <HelpTooltip tooltip={tooltip.to} /> To
-              </span>
-            </td>
-            <td>
-              <Wrapper>
-                <RowWithCopyButton
-                  textToCopy={receiver}
-                  onCopy={(): void => onCopy('receiverAddress')}
-                  contentsToDisplay={
-                    <Link to={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)} target="_blank">
-                      {receiver}↗
-                    </Link>
-                  }
-                />
-                <LinkButton to={`/address/${receiver}`}>
-                  <FontAwesomeIcon icon={faHistory} />
-                  Order history
-                </LinkButton>
-              </Wrapper>
-            </td>
-          </tr>
+              <LinkButton to={`/address/${owner}`}>
+                <FontAwesomeIcon icon={faHistory} />
+                Order history
+              </LinkButton>
+            </Wrapper>
+          </DetailRow>
+          <DetailRow label="To" tooltipText={tooltip.to}>
+            <Wrapper>
+              <RowWithCopyButton
+                textToCopy={receiver}
+                onCopy={(): void => onCopy('receiverAddress')}
+                contentsToDisplay={
+                  <Link to={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)} target="_blank">
+                    {receiver}↗
+                  </Link>
+                }
+              />
+              <LinkButton to={`/address/${receiver}`}>
+                <FontAwesomeIcon icon={faHistory} />
+                Order history
+              </LinkButton>
+            </Wrapper>
+          </DetailRow>
           {(!partiallyFillable || txHash) && (
-            <tr>
-              <td>
-                <span>
-                  <HelpTooltip tooltip={tooltip.hash} /> Transaction hash
-                </span>
-              </td>
-              <td>
-                {areTradesLoading ? (
-                  <Spinner />
-                ) : txHash ? (
+            <DetailRow label="Transaction hash" tooltipText={tooltip.hash} isLoading={areTradesLoading}>
+              {txHash ? (
+                <Wrapper>
+                  <RowWithCopyButton
+                    textToCopy={txHash}
+                    onCopy={(): void => onCopy('settlementTx')}
+                    contentsToDisplay={
+                      <Link to={getExplorerLink(chainId, txHash, ExplorerDataType.TRANSACTION)} target="_blank">
+                        {txHash}↗
+                      </Link>
+                    }
+                  />
                   <Wrapper>
-                    <RowWithCopyButton
-                      textToCopy={txHash}
-                      onCopy={(): void => onCopy('settlementTx')}
-                      contentsToDisplay={
-                        <Link to={getExplorerLink(chainId, txHash, ExplorerDataType.TRANSACTION)} target="_blank">
-                          {txHash}↗
-                        </Link>
-                      }
-                    />
-
-                    <Wrapper>
-                      <LinkButton to={`/tx/${txHash}`}>
-                        <FontAwesomeIcon icon={faGroupArrowsRotate} />
-                        Batch
-                      </LinkButton>
-
-                      <LinkButton to={`/tx/${txHash}/?${TAB_QUERY_PARAM_KEY}=graph`}>
-                        <FontAwesomeIcon icon={faProjectDiagram} />
-                        Graph
-                      </LinkButton>
-                    </Wrapper>
+                    <LinkButton to={`/tx/${txHash}`}>
+                      <FontAwesomeIcon icon={faGroupArrowsRotate} />
+                      Batch
+                    </LinkButton>
+                    <LinkButton to={`/tx/${txHash}/?${TAB_QUERY_PARAM_KEY}=graph`}>
+                      <FontAwesomeIcon icon={faProjectDiagram} />
+                      Graph
+                    </LinkButton>
                   </Wrapper>
-                ) : (
-                  '-'
-                )}
-              </td>
-            </tr>
+                </Wrapper>
+              ) : null}
+            </DetailRow>
           )}
-          <tr>
-            <td>
-              <span>
-                <HelpTooltip tooltip={tooltip.status} /> Status
-              </span>
-            </td>
-            <td>
-              <StatusLabel status={status} partiallyFilled={partiallyFilled} partialTagPosition="right" />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <span>
-                <HelpTooltip tooltip={tooltip.submission} /> Submission Time
-              </span>
-            </td>
-            <td>
-              <DateDisplay date={creationDate} showIcon={true} />
-            </td>
-          </tr>
+          <DetailRow label="Status" tooltipText={tooltip.status}>
+            <StatusLabel status={status} partiallyFilled={partiallyFilled} partialTagPosition="right" />
+          </DetailRow>
+          <DetailRow label="Submission Time" tooltipText={tooltip.submission}>
+            <DateDisplay date={creationDate} showIcon={true} />
+          </DetailRow>
           {executionDate && !showFillsButton && (
-            <tr>
-              <td>
-                <span>
-                  <HelpTooltip tooltip={tooltip.execution} /> Execution Time
-                </span>
-              </td>
-              <td>
-                <DateDisplay date={executionDate} showIcon={true} />
-              </td>
-            </tr>
+            <DetailRow label="Execution Time" tooltipText={tooltip.execution}>
+              <DateDisplay date={executionDate} showIcon={true} />
+            </DetailRow>
           )}
           {!isSummaryMode && (
-            <tr>
-              <td>
-                <span>
-                  <HelpTooltip tooltip={tooltip.expiration} /> Expiration Time
-                </span>
-              </td>
-              <td>
-                <DateDisplay date={expirationDate} showIcon={true} />
-              </td>
-            </tr>
+            <DetailRow label="Expiration Time" tooltipText={tooltip.expiration}>
+              <DateDisplay date={expirationDate} showIcon={true} />
+            </DetailRow>
           )}
-          <tr>
-            <td>
-              <span>
-                <HelpTooltip tooltip={tooltip.type} /> Type
-              </span>
-            </td>
-            <td>
+          <DetailRow label="Type" tooltipText={tooltip.type}>
+            <>
               {capitalize(kind)} {getUiOrderType(order).toLowerCase()} order{' '}
               {partiallyFillable ? '(Partially fillable)' : '(Fill or Kill)'}
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <span>
-                <HelpTooltip tooltip={tooltip.amount} /> Amount
-              </span>
-            </td>
-            <td>
-              <AmountsDisplay order={order} />
-            </td>
-          </tr>
+            </>
+          </DetailRow>
+          <DetailRow label="Amount" tooltipText={tooltip.amount}>
+            <AmountsDisplay order={order} />
+          </DetailRow>
           {!isSummaryMode && (
-            <tr>
-              <td>
-                <span>
-                  <HelpTooltip tooltip={tooltip.priceLimit} /> Limit Price
-                </span>
-              </td>
-              <td>
-                <OrderPriceDisplay
-                  buyAmount={buyAmount}
-                  buyToken={buyToken}
-                  sellAmount={sellAmount}
-                  sellToken={sellToken}
-                  showInvertButton
-                  isPriceInverted={isPriceInverted}
-                  invertPrice={invertPrice}
-                />
-              </td>
-            </tr>
+            <DetailRow label="Limit Price" tooltipText={tooltip.priceLimit}>
+              <OrderPriceDisplay
+                buyAmount={buyAmount}
+                buyToken={buyToken}
+                sellAmount={sellAmount}
+                sellToken={sellToken}
+                showInvertButton
+                isPriceInverted={isPriceInverted}
+                invertPrice={invertPrice}
+              />
+            </DetailRow>
           )}
           {!isSummaryMode && (
             <>
-              <tr>
-                <td>
-                  <span>
-                    <HelpTooltip tooltip={tooltip.priceExecution} /> Execution price
-                  </span>
-                </td>
-                <td>
-                  {!filledAmount.isZero() ? (
-                    <OrderPriceDisplay
-                      buyAmount={executedBuyAmount}
-                      buyToken={buyToken}
-                      sellAmount={executedSellAmount}
-                      sellToken={sellToken}
-                      showInvertButton
-                      isPriceInverted={isPriceInverted}
-                      invertPrice={invertPrice}
-                    />
-                  ) : (
-                    '-'
+              <DetailRow label="Execution price" tooltipText={tooltip.priceExecution}>
+                {!filledAmount.isZero() ? (
+                  <OrderPriceDisplay
+                    buyAmount={executedBuyAmount}
+                    buyToken={buyToken}
+                    sellAmount={executedSellAmount}
+                    sellToken={sellToken}
+                    showInvertButton
+                    isPriceInverted={isPriceInverted}
+                    invertPrice={invertPrice}
+                  />
+                ) : null}
+              </DetailRow>
+              <DetailRow label="Filled" tooltipText={tooltip.filled}>
+                <Wrapper>
+                  <FilledProgress order={order} />
+                  {showFillsButton && (
+                    <LinkButton onClickOptional={viewFills} to={`/orders/${uid}/?${TAB_QUERY_PARAM_KEY}=fills`}>
+                      <FontAwesomeIcon icon={faFill} />
+                      View fills
+                    </LinkButton>
                   )}
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <span>
-                    <HelpTooltip tooltip={tooltip.filled} /> Filled
-                  </span>
-                </td>
-                <td>
-                  <Wrapper>
-                    <FilledProgress order={order} />
-                    {showFillsButton && (
-                      <LinkButton onClickOptional={viewFills} to={`/orders/${uid}/?${TAB_QUERY_PARAM_KEY}=fills`}>
-                        <FontAwesomeIcon icon={faFill} />
-                        View fills
-                      </LinkButton>
-                    )}
-                  </Wrapper>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <span>
-                    <HelpTooltip tooltip={tooltip.surplus} /> Order surplus
-                  </span>
-                </td>
-                <td>{!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}</td>
-              </tr>
+                </Wrapper>
+              </DetailRow>
+              <DetailRow label="Order surplus" tooltipText={tooltip.surplus}>
+                {!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : null}
+              </DetailRow>
             </>
           )}
-          <tr>
-            <td>
-              <span>
-                <HelpTooltip tooltip={tooltip.fees} /> Costs &amp; Fees
-              </span>
-            </td>
-            <td>
-              <GasFeeDisplay order={order} />
-            </td>
-          </tr>
+          <DetailRow label="Costs & Fees" tooltipText={tooltip.fees}>
+            <GasFeeDisplay order={order} />
+          </DetailRow>
           {!isSummaryMode && (
             <OrderHooksDetails appData={appData} fullAppData={fullAppData ?? undefined}>
               {(content) => (
-                <tr>
-                  <td>
-                    <span>
-                      <HelpTooltip tooltip={tooltip.hooks} /> Hooks
-                    </span>
-                  </td>
-                  <td>{content}</td>
-                </tr>
+                <DetailRow label="Hooks" tooltipText={tooltip.hooks}>
+                  {content}
+                </DetailRow>
               )}
             </OrderHooksDetails>
           )}
           {!isSummaryMode && (
-            <tr>
-              <td>
-                <span>
-                  <HelpTooltip tooltip={tooltip.appData} /> AppData
-                </span>
-              </td>
-              <td>
-                <DecodeAppData appData={appData} fullAppData={fullAppData ?? undefined} />
-              </td>
-            </tr>
+            <DetailRow label="AppData" tooltipText={tooltip.appData}>
+              <DecodeAppData appData={appData} fullAppData={fullAppData ?? undefined} />
+            </DetailRow>
           )}
         </>
       }

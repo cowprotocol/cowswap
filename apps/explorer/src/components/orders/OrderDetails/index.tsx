@@ -29,6 +29,7 @@ import { FillsTableContext } from './context/FillsTableContext'
 import { FillsTableWithData } from './FillsTableWithData'
 
 import { FlexContainerVar } from '../../../explorer/pages/styled'
+import { BridgeDetailsTable } from '../BridgeDetailsTable'
 
 const TitleUid = styled(RowWithCopyButton)`
   color: ${Color.explorer_grey};
@@ -114,6 +115,11 @@ const tabItems = (
             isPriceInverted={isPriceInverted}
             invertPrice={invertPrice}
           />
+        )}
+        {order && order.bridgeDetails && (
+          <div style={{ marginTop: '2rem' }}>
+            <BridgeDetailsTable bridgeDetails={order.bridgeDetails} />
+          </div>
         )}
         {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
         {isLoadingForTheFirstTime && <CowLoading />}

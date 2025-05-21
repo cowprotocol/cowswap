@@ -31,7 +31,8 @@
       "@cowprotocol/analytics": ["../../../libs/analytics/src/index.ts"],
       "@cowprotocol/permit-utils": ["../../../libs/permit-utils/src/index.ts"],
       "@cowprotocol/multicall": ["../../../libs/multicall/src/index.ts"],
-      "@cowprotocol/balances-and-allowances": ["../../../libs/balances-and-allowances/src/index.ts"]
+      "@cowprotocol/balances-and-allowances": ["../../../libs/balances-and-allowances/src/index.ts"],
+      "@cowprotocol/bridge": ["../../../libs/bridge/src/index.ts"]
     }
   },
   "files": [],

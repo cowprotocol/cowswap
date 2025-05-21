@@ -16,7 +16,7 @@ export {
   BRIDGE_PROVIDER_DETAILS,
   BRIDGE_PROVIDER_DETAILS_ARRAY,
   getBridgeProviderDetails,
-} from './constants/bridgeProviders'
+} from '@cowprotocol/bridge'
 
 // Types
 export * from './types'
