@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
 
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 
 import { favoriteTokensAtom } from './favoriteTokensAtom'
@@ -106,11 +107,18 @@ export const inactiveTokensAtom = atom<TokenWithLogo[]>((get) => {
   return tokenMapToListWithLogo(tokensMap.inactiveTokens, chainId)
 })
 
-export const tokensByAddressAtom = atom<TokensByAddress>((get) => {
-  return get(activeTokensAtom).tokens.reduce<TokensByAddress>((acc, token) => {
+export const tokensByAddressAtom = atom<{ tokens: TokensByAddress; chainId: SupportedChainId }>((get) => {
+  const activeTokens = get(activeTokensAtom)
+
+  const tokens = activeTokens.tokens.reduce<TokensByAddress>((acc, token) => {
     acc[token.address.toLowerCase()] = token
     return acc
   }, {})
+
+  return {
+    tokens,
+    chainId: activeTokens.chainId,
+  }
 })
 
 export const tokensBySymbolAtom = atom<TokensBySymbolState>((get) => {
