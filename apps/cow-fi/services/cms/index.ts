@@ -1,9 +1,10 @@
 import { components } from '@cowprotocol/cms'
-import { PaginationParam } from 'types'
+import { getCmsClient } from '@cowprotocol/core'
+
 import qs from 'qs'
 
+import { PaginationParam } from 'types'
 import { toQueryParams } from 'util/queryParams'
-import { getCmsClient } from '@cowprotocol/core'
 
 const DEFAULT_PAGE_SIZE = 100
 const CMS_CACHE_TIME = 60 * 60 // 60 minutes
