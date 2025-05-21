@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { useWalletDetails } from '@cowprotocol/wallet'
 
-import { BridgeAccordionSummary, BridgeProtocolConfig, BridgeRouteBreakdown } from 'modules/bridge'
+import { BridgeAccordionSummary, BridgeRouteBreakdown } from 'modules/bridge'
 import { useIsCurrentTradeBridging, useIsHooksTradeType, useReceiveAmountInfo } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { TradeRateDetails } from 'modules/tradeWidgetAddons'
@@ -20,22 +20,14 @@ export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsPro
 
   const isHooksTabEnabled = useIsHooksTradeType()
   const { isSmartContractWallet } = useWalletDetails()
+  const receiveAmountInfo = useReceiveAmountInfo()
 
   const isBridgingEnabled = useIsBridgingEnabled(isSmartContractWallet)
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
   const shouldDisplayBridgeDetails = isBridgingEnabled && isCurrentTradeBridging && !isHooksTabEnabled
 
-  const providerDetails: BridgeProtocolConfig | undefined = bridgeQuote
-    ? {
-        icon: bridgeQuote.providerInfo.logoUrl,
-        title: bridgeQuote.providerInfo.name,
-        url: 'TODO PROVIDER URL',
-        description: 'TODO PROVIDER DESC',
-      }
-    : undefined
+  const providerDetails = bridgeQuote?.providerInfo
   const bridgeEstimatedTime = bridgeQuote?.expectedFillTimeSeconds
-
-  const receiveAmountInfo = useReceiveAmountInfo()
 
   return (
     <TradeRateDetails
@@ -45,14 +37,7 @@ export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsPro
       accordionContent={
         shouldDisplayBridgeDetails &&
         receiveAmountInfo &&
-        bridgeQuote &&
-        providerDetails && (
-          <BridgeRouteBreakdown
-            receiveAmountInfo={receiveAmountInfo}
-            bridgeQuote={bridgeQuote}
-            bridgeProvider={providerDetails}
-          />
-        )
+        bridgeQuote && <BridgeRouteBreakdown receiveAmountInfo={receiveAmountInfo} bridgeQuote={bridgeQuote} />
       }
       feeWrapper={
         shouldDisplayBridgeDetails && providerDetails

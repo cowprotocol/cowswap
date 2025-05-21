@@ -1,5 +1,7 @@
 import { ReactNode, useState, KeyboardEvent } from 'react'
 
+import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
+
 import { ToggleArrow } from 'common/pure/ToggleArrow'
 
 import {
@@ -9,7 +11,6 @@ import {
   ExplorerLink,
   ToggleIconContainer,
 } from '../../styles'
-import { BridgeProtocolConfig } from '../../types'
 import { StopStatusEnum } from '../../utils'
 import { BridgeRouteTitle } from '../BridgeRouteTitle'
 
@@ -19,7 +20,7 @@ export interface BridgeDetailsContainerProps {
   statusIcon: ReactNode
   titlePrefix: ReactNode
   protocolName: string
-  bridgeProvider: BridgeProtocolConfig
+  bridgeProvider: BridgeProviderInfo
   protocolIconShowOnly?: 'first' | 'second'
   protocolIconSize?: number
 

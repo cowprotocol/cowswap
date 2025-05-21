@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import CheckmarkIcon from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
 import { displayTime, ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 import { InfoTooltip, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
@@ -30,7 +30,6 @@ import {
   DangerText,
   StatusAwareText,
 } from '../../styles'
-import { BridgeProtocolConfig } from '../../types'
 import { StopStatusEnum } from '../../utils/status'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { NetworkLogo } from '../NetworkLogo'
@@ -42,7 +41,7 @@ export interface BridgeStopDetailsProps {
   isCollapsible?: boolean
   defaultExpanded?: boolean
   status?: StopStatusEnum
-  bridgeProvider: BridgeProtocolConfig
+  bridgeProvider: BridgeProviderInfo
   bridgeSendCurrencyAmount: CurrencyAmount<Currency>
   bridgeReceiveCurrencyAmount: CurrencyAmount<Currency>
   recipientChainName: string
@@ -88,7 +87,7 @@ export function BridgeStopDetails({
       stopNumber={2}
       statusIcon={BridgeStatusIcons[status]}
       titlePrefix={BridgeStatusTitlePrefixes[status]}
-      protocolName={bridgeProvider.title}
+      protocolName={bridgeProvider.name}
       bridgeProvider={bridgeProvider}
       protocolIconShowOnly="second"
       isCollapsible={isCollapsible}
