@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -9,6 +9,7 @@ import ms from 'ms.macro'
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useAppData } from 'modules/appData'
+import { BridgeRouteBreakdown, useShouldDisplayBridgeDetails } from 'modules/bridge'
 import { useTokensBalancesCombined } from 'modules/combinedBalances/hooks/useTokensBalancesCombined'
 import { useOrderSubmittedContent } from 'modules/orderProgressBar'
 import {
@@ -18,10 +19,12 @@ import {
   useReceiveAmountInfo,
   useTradeConfirmActions,
 } from 'modules/trade'
+import { useTradeQuote } from 'modules/tradeQuote'
 import { HighFeeWarning, RowDeadline } from 'modules/tradeWidgetAddons'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
+import { RateInfo } from 'common/pure/RateInfo'
 
 import { useLabelsAndTooltips } from './useLabelsAndTooltips'
 
@@ -50,6 +53,18 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
   const tradeConfirmActions = useTradeConfirmActions()
   const { slippage } = useSwapDerivedState()
   const [deadline] = useSwapDeadlineState()
+
+  const shouldDisplayBridgeDetails = useShouldDisplayBridgeDetails()
+  const { bridgeQuote } = useTradeQuote()
+  const [isBridgeRouteExpanded, setIsBridgeRouteExpanded] = useState(true)
+  const bridgeRouteBreakDownParams = useMemo(
+    () => ({
+      isCollapsible: true,
+      isExpanded: isBridgeRouteExpanded,
+      onExpandToggle: () => setIsBridgeRouteExpanded(!isBridgeRouteExpanded),
+    }),
+    [isBridgeRouteExpanded],
+  )
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
   const submittedContent = useOrderSubmittedContent(chainId)
@@ -101,27 +116,39 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
         appData={appData || undefined}
         refreshInterval={PRICE_UPDATE_INTERVAL}
       >
-        {(restContent) => (
-          <>
-            {receiveAmountInfo && slippage && (
-              <TradeBasicConfirmDetails
-                rateInfoParams={rateInfoParams}
-                slippage={slippage}
-                receiveAmountInfo={receiveAmountInfo}
-                recipient={recipient}
-                account={account}
-                labelsAndTooltips={labelsAndTooltips}
-                hideLimitPrice
-                hideUsdValues
-                withTimelineDot={false}
-              >
-                <RowDeadline deadline={deadline} />
-              </TradeBasicConfirmDetails>
+        {shouldDisplayBridgeDetails && receiveAmountInfo && bridgeQuote
+          ? (restContent) => (
+              <>
+                <RateInfo label="Price" rateInfoParams={rateInfoParams} />
+                <BridgeRouteBreakdown
+                  receiveAmountInfo={receiveAmountInfo}
+                  bridgeQuote={bridgeQuote}
+                  uiParams={bridgeRouteBreakDownParams}
+                />
+                {restContent}
+              </>
+            )
+          : (restContent) => (
+              <>
+                {receiveAmountInfo && slippage && (
+                  <TradeBasicConfirmDetails
+                    rateInfoParams={rateInfoParams}
+                    slippage={slippage}
+                    receiveAmountInfo={receiveAmountInfo}
+                    recipient={recipient}
+                    account={account}
+                    labelsAndTooltips={labelsAndTooltips}
+                    hideLimitPrice
+                    hideUsdValues
+                    withTimelineDot={false}
+                  >
+                    <RowDeadline deadline={deadline} />
+                  </TradeBasicConfirmDetails>
+                )}
+                {restContent}
+                <HighFeeWarning readonlyMode />
+              </>
             )}
-            {restContent}
-            <HighFeeWarning readonlyMode />
-          </>
-        )}
       </TradeConfirmation>
     </TradeConfirmModal>
   )
