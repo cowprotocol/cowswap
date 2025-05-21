@@ -65,7 +65,15 @@ export function ReceiveAmountTitle({ className, children, icon, variant }: Recei
   return (
     <Wrapper className={className}>
       {icon ? (
-        icon
+        typeof icon === 'string' ? (
+          icon.endsWith('.svg') ? (
+            <SVG src={icon} />
+          ) : (
+            <img src={icon} alt="icon" />
+          )
+        ) : (
+          icon
+        )
       ) : (
         <EqualSign variant={variant}>
           <SVG src={EqualIcon} />
