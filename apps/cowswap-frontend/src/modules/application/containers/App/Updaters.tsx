@@ -91,7 +91,9 @@ export function Updaters() {
         isYieldEnabled={isYieldEnabled}
         bridgeNetworkInfo={bridgeNetworkInfo?.data}
       />
+
       <TokensListsTagsUpdater />
+
       <WidgetTokensListsUpdater
         tokenLists={tokenLists}
         customTokens={customTokens}
