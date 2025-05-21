@@ -335,7 +335,9 @@ export function DetailsTable(props: Props): React.ReactNode | null {
                     isPriceInverted={isPriceInverted}
                     invertPrice={invertPrice}
                   />
-                ) : null}
+                ) : (
+                  '-'
+                )}
               </DetailRow>
               <DetailRow label="Filled" tooltipText={tooltip.filled}>
                 <Wrapper>
@@ -349,7 +351,7 @@ export function DetailsTable(props: Props): React.ReactNode | null {
                 </Wrapper>
               </DetailRow>
               <DetailRow label="Order surplus" tooltipText={tooltip.surplus}>
-                {!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : null}
+                {!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}
               </DetailRow>
             </>
           )}
