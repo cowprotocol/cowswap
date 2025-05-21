@@ -24,7 +24,7 @@ function useHasContractAtAddress(): boolean | undefined {
       try {
         const code = await _provider.getCode(_account)
 
-        if (isEIP7702Account(code, _account)) {
+        if (isEip7702EOA(code, _account)) {
           return false
         }
 
@@ -41,6 +41,6 @@ function useHasContractAtAddress(): boolean | undefined {
 }
 
 // https://eips.ethereum.org/EIPS/eip-7702#abstract
-function isEIP7702Account(code: string, account: string): boolean {
+function isEip7702EOA(code: string, account: string): boolean {
   return code.startsWith('0xef0100') || code.toLowerCase() === account.toLowerCase()
 }
