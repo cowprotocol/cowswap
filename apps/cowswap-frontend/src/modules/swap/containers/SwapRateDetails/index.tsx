@@ -1,10 +1,7 @@
 import { ReactNode } from 'react'
 
-import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
-import { useWalletDetails } from '@cowprotocol/wallet'
-
-import { BridgeAccordionSummary, BridgeRouteBreakdown } from 'modules/bridge'
-import { useIsCurrentTradeBridging, useIsHooksTradeType, useReceiveAmountInfo } from 'modules/trade'
+import { BridgeAccordionSummary, BridgeRouteBreakdown, useShouldDisplayBridgeDetails } from 'modules/bridge'
+import { useReceiveAmountInfo } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { TradeRateDetails } from 'modules/tradeWidgetAddons'
 
@@ -18,13 +15,9 @@ export interface SwapRateDetailsProps {
 export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsProps) {
   const { isLoading: isRateLoading, bridgeQuote } = useTradeQuote()
 
-  const isHooksTabEnabled = useIsHooksTradeType()
-  const { isSmartContractWallet } = useWalletDetails()
   const receiveAmountInfo = useReceiveAmountInfo()
 
-  const isBridgingEnabled = useIsBridgingEnabled(isSmartContractWallet)
-  const isCurrentTradeBridging = useIsCurrentTradeBridging()
-  const shouldDisplayBridgeDetails = isBridgingEnabled && isCurrentTradeBridging && !isHooksTabEnabled
+  const shouldDisplayBridgeDetails = useShouldDisplayBridgeDetails()
 
   const providerDetails = bridgeQuote?.providerInfo
   const bridgeEstimatedTime = bridgeQuote?.expectedFillTimeSeconds
