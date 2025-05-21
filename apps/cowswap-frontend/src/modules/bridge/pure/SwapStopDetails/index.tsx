@@ -139,6 +139,8 @@ export function SwapStopDetails({
         </TokenFlowContainer>
       </ConfirmDetailsItem>
 
+      {!isBridgeStatusView && <TradeFeesAndCosts receiveAmountInfo={receiveAmountInfo} />}
+
       {isBridgeStatusView && status === StopStatusEnum.DONE && winningSolver && (
         <ConfirmDetailsItem label="Winning solver" withTimelineDot>
           <WinningSolverContainer>
@@ -150,25 +152,6 @@ export function SwapStopDetails({
               height="16"
             />
           </WinningSolverContainer>
-        </ConfirmDetailsItem>
-      )}
-
-      {!isBridgeStatusView && <TradeFeesAndCosts receiveAmountInfo={receiveAmountInfo} />}
-
-      {!isBridgeStatusView && (
-        <ConfirmDetailsItem
-          label={
-            <>
-              Max. swap slippage{' '}
-              <InfoTooltip
-                content="CoW Swap dynamically adjusts your slippage tolerance to ensure your trade executes quickly while still getting the best price. Trades are protected from MEV, so your slippage can't be exploited!"
-                size={14}
-              />
-            </>
-          }
-          withTimelineDot
-        >
-          {slippagePercentDisplay}
         </ConfirmDetailsItem>
       )}
 
@@ -200,16 +183,20 @@ export function SwapStopDetails({
         </ConfirmDetailsItem>
       )}
 
-      {!isBridgeStatusView && recipient && (
+      {!isBridgeStatusView && (
         <ConfirmDetailsItem
           label={
             <>
-              Recipient <InfoTooltip content="The address that will receive the tokens." size={14} />
+              Max. swap slippage{' '}
+              <InfoTooltip
+                content="CoW Swap dynamically adjusts your slippage tolerance to ensure your trade executes quickly while still getting the best price. Trades are protected from MEV, so your slippage can't be exploited!"
+                size={14}
+              />
             </>
           }
           withTimelineDot
         >
-          <RecipientDisplay recipient={recipient} chainId={sourceChainId} />
+          {slippagePercentDisplay}
         </ConfirmDetailsItem>
       )}
 
@@ -366,6 +353,19 @@ export function SwapStopDetails({
             </b>
           </ConfirmDetailsItem>
         )}
+
+      {!isBridgeStatusView && recipient && (
+        <ConfirmDetailsItem
+          label={
+            <>
+              Recipient <InfoTooltip content="The address that will receive the tokens." size={14} />
+            </>
+          }
+          withTimelineDot
+        >
+          <RecipientDisplay recipient={recipient} chainId={sourceChainId} />
+        </ConfirmDetailsItem>
+      )}
     </BridgeDetailsContainer>
   )
 }
