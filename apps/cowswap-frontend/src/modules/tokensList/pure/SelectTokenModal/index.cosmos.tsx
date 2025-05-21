@@ -1,7 +1,6 @@
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { getRandomInt } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ChainInfo } from '@cowprotocol/types'
+import { SupportedChainId, ChainInfo } from '@cowprotocol/cow-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import styled from 'styled-components/macro'

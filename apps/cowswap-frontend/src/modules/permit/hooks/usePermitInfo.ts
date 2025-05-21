@@ -36,7 +36,7 @@ export const PERMIT_GAS_LIMIT_MIN: Record<SupportedChainId, number> = mapSupport
  * If not found, tries to load the info from chain
  * The result will be cached on localStorage if a final conclusion is found
  *
- * When it is, returned type is `{type: 'dai'|'permit', gasLimit: number}
+ * When it is, returned type is `{type: 'dai-like' | 'eip-2612', gasLimit: number}
  * When it is not, returned type is `{type: 'unsupported'}`
  * When it is unknown, returned type is `undefined`
  */
@@ -57,7 +57,7 @@ export function usePermitInfo(
   const isPermitEnabled = useIsPermitEnabled() && isPermitSupported
 
   const addPermitInfo = useAddPermitInfo()
-  const permitInfo = _usePermitInfo(chainId, isPermitEnabled ? lowerCaseAddress : undefined)
+  const permitInfo = usePermitInfoState(chainId, isPermitEnabled ? lowerCaseAddress : undefined)
   const { permitInfo: preGeneratedInfo, isLoading: preGeneratedIsLoading } = usePreGeneratedPermitInfoForToken(
     isPermitEnabled && !isNative ? token : undefined,
   )
@@ -122,12 +122,12 @@ function useAddPermitInfo() {
   return useSetAtom(addPermitInfoForTokenAtom)
 }
 
-function _usePermitInfo(chainId: SupportedChainId, tokenAddress: string | undefined): IsTokenPermittableResult {
-  const permittableTokens = useAtomValue(permittableTokensAtom)
+function usePermitInfoState(chainId: SupportedChainId, tokenAddress: string | undefined): IsTokenPermittableResult {
+  const permitableTokens = useAtomValue(permittableTokensAtom)
 
   return useMemo(() => {
     if (!tokenAddress) return undefined
 
-    return permittableTokens[chainId]?.[tokenAddress.toLowerCase()]
-  }, [chainId, permittableTokens, tokenAddress])
+    return permitableTokens[chainId]?.[tokenAddress.toLowerCase()]
+  }, [chainId, permitableTokens, tokenAddress])
 }

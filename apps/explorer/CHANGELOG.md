@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.47.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.46.0...explorer-v2.47.0) (2025-05-19)
+
+
+### Features
+
+* adapt to new app-data and fix issue decoding ([#5678](https://github.com/cowprotocol/cowswap/issues/5678)) ([db791a2](https://github.com/cowprotocol/cowswap/commit/db791a21afdcd2ec8f10db293833725cd6581a28))
+
+
+### Bug Fixes
+
+* consistent naming for Order history button and page ([#5683](https://github.com/cowprotocol/cowswap/issues/5683)) ([a34d3f7](https://github.com/cowprotocol/cowswap/commit/a34d3f783e52ec54207a6ec79ce3d9ae9a641e5e))
+* **dev-deps-update:** bump the dev-deps group with 76 updates ([#5663](https://github.com/cowprotocol/cowswap/issues/5663)) ([552b349](https://github.com/cowprotocol/cowswap/commit/552b349f53762a01ccf008e9a2083248424cbafa))
+
+## [2.46.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.45.1...explorer-v2.46.0) (2025-05-07)
+
+
+### Features
+
+* **explorer:** add link to CoW Swap to Explorer menu ([#5649](https://github.com/cowprotocol/cowswap/issues/5649)) ([bc8a100](https://github.com/cowprotocol/cowswap/commit/bc8a10033e92bf615c202127b4b04ab7b84dc5b0))
+
+
+### Bug Fixes
+
+* **explorer:** fix 'partially filled' status color ([#5647](https://github.com/cowprotocol/cowswap/issues/5647)) ([ce6535d](https://github.com/cowprotocol/cowswap/commit/ce6535dda0f4ead6a5ba97b044acea863eedd3ed))
+
 ## [2.45.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.45.0...explorer-v2.45.1) (2025-04-25)
 
 

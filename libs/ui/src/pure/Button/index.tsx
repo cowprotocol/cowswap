@@ -170,14 +170,14 @@ export const ButtonConfirmedStyle = styled(ButtonConfirmedStyleMod)`
 export const ButtonErrorStyle = styled(ButtonPrimary)`
   // CSS overrides
   background: var(${UI.COLOR_DANGER});
-  color: var(${UI.COLOR_BUTTON_TEXT});
+  color: var(${UI.COLOR_PAPER});
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:focus,
   &:hover,
   &:active {
     background: var(${UI.COLOR_DANGER});
-    color: var(${UI.COLOR_BUTTON_TEXT});
+    color: var(${UI.COLOR_PAPER});
   }
 `
 

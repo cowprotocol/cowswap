@@ -7,9 +7,21 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import { CheckCircle, HelpCircle } from 'react-feather'
-import { ThemeContext } from 'styled-components/macro'
+import styled, { ThemeContext } from 'styled-components/macro'
 
 import { ApprovalState } from '../../hooks/useApproveState'
+
+const ApproveButtonContentWrapper = styled.span`
+  padding: 0 3px;
+`
+
+const TokenLogoContainer = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+  font-size: 14px;
+`
 
 export interface ApproveButtonProps {
   currency: Currency | undefined | null
@@ -40,11 +52,11 @@ export function ApproveButton(props: ApproveButtonProps) {
       return (
         <>
           {/* we need to shorten this string on mobile */}
-          <span>
+          <ApproveButtonContentWrapper>
             <Trans>
               Allow CoW Swap to use your <TokenSymbol token={currency} />
             </Trans>
-          </span>
+          </ApproveButtonContentWrapper>
           <HoverTooltip
             wrapInContainer
             content={
@@ -72,19 +84,10 @@ export function ApproveButton(props: ApproveButtonProps) {
       confirmed={isConfirmed}
     >
       <AutoRow justify="space-between" style={{ flexWrap: 'nowrap' }}>
-        <span
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-evenly',
-            width: '100%',
-            fontSize: '14px',
-          }}
-        >
+        <TokenLogoContainer>
           <TokenLogo token={currency} size={24} />
-
           {content}
-        </span>
+        </TokenLogoContainer>
       </AutoRow>
     </ButtonConfirmed>
   )

@@ -19,16 +19,16 @@ const Connected = styled.div`
 interface TelegramConnectionStatusProps {
   isLoading: boolean
   isSubscribed: boolean
-  authenticate(): void
+  subscribeAccount(): void
 }
 
-export function TelegramConnectionStatus({ isLoading, isSubscribed, authenticate }: TelegramConnectionStatusProps) {
+export function TelegramConnectionStatus({ isLoading, isSubscribed, subscribeAccount }: TelegramConnectionStatusProps) {
   if (isLoading) {
     return <Loader />
   }
 
   if (!isLoading && !isSubscribed) {
-    return <Toggle id="toggle-telegram-notifications" isActive={false} toggle={authenticate} />
+    return <Toggle id="toggle-telegram-notifications" isActive={false} toggle={subscribeAccount} />
   }
 
   return (

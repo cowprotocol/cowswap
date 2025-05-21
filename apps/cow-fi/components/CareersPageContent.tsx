@@ -47,7 +47,7 @@ export function CareersPageContent({
             <SectionTitleDescription fontSize={24} color={Color.neutral40} fontWeight={Font.weight.regular}>
               We are an ambitious, fast-growing and international team working at the forefront of DeFi. We believe that
               we can make markets more fair and more efficient by building the ultimate batch auction settlement layer
-              across EVM-compatible blockchains.
+              across EVM-compatible blockchains
             </SectionTitleDescription>
           </SectionTitleWrapper>
 
@@ -161,7 +161,7 @@ export function CareersPageContent({
 
                 <TopicDescription fontSize={24} fontWeight={Font.weight.regular} margin="0 0 24px">
                   Know someone who is looking not just for a job, but for a great opportunity to grow? Refer them to
-                  earn up to $6,000 in USD or USDC.{' '}
+                  earn up to $6,000 in USD or USDC{' '}
                 </TopicDescription>
                 <Link
                   linkType={LinkType.TopicButton}

@@ -9,7 +9,7 @@ import { GlobalStyles, ThemeToggler, Router } from 'storybook/decorators'
 
 import { DropDownItem, MenuItemKind } from './types'
 
-import { DOCS_LINK, DISCORD_LINK, PROTOCOL_LINK, Routes } from '../../../explorer/const'
+import { DOCS_LINK, DISCORD_LINK, PROTOCOL_LINK, COWSWAP_LINK, Routes } from '../../../explorer/const'
 
 import MenuDropdown, { DropdownProps } from '.'
 
@@ -30,12 +30,18 @@ const DropdownMenu: DropDownItem = {
       links: [
         {
           title: 'Option 1',
-          url: PROTOCOL_LINK,
+          url: COWSWAP_LINK,
           kind: MenuItemKind.EXTERNAL_LINK,
           iconSVG: IMAGE_COW,
         },
         {
           title: 'Option 2',
+          url: PROTOCOL_LINK,
+          kind: MenuItemKind.EXTERNAL_LINK,
+          iconSVG: IMAGE_COW,
+        },
+        {
+          title: 'Option 3',
           url: DOCS_LINK,
           kind: MenuItemKind.EXTERNAL_LINK,
           iconSVG: IMAGE_DOC,

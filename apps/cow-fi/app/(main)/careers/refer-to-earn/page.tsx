@@ -45,7 +45,7 @@ export default function Page() {
           <BodyContent>
             <h2>
               Know someone who is not just looking for a job but for a great opportunity to grow? Refer them to us to
-              earn up to $6,000 in USDC or USD.
+              earn up to $6,000 in USDC or USD
             </h2>
             <p>
               We will reward you with a referral bonus of up to <b>6,000 USDC or USD</b> per placement. The referral

@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.22.4](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.3...cow-fi-v1.22.4) (2025-05-16)
+
+
+### Bug Fixes
+
+* **cowfi:** update article link generation to use slug variable ([#5689](https://github.com/cowprotocol/cowswap/issues/5689)) ([74f9821](https://github.com/cowprotocol/cowswap/commit/74f98211ee2800364f0d48a404510b83ba5dfa4d))
+
+## [1.22.3](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.2...cow-fi-v1.22.3) (2025-05-14)
+
+
+### Bug Fixes
+
+* update curve link ([#5694](https://github.com/cowprotocol/cowswap/issues/5694)) ([718c9b1](https://github.com/cowprotocol/cowswap/commit/718c9b16490fcc27eccbe7b35c033002fe94701a))
+
+## [1.22.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.1...cow-fi-v1.22.2) (2025-05-01)
+
+
+### Bug Fixes
+
+* **cowfi:** fix learn ([#5655](https://github.com/cowprotocol/cowswap/issues/5655)) ([3fa654c](https://github.com/cowprotocol/cowswap/commit/3fa654cf465038435a880d04c063cacbab245433))
+* **learn:** fixing CMS article 404s with improved error handling and retry logic ([#5632](https://github.com/cowprotocol/cowswap/issues/5632)) ([75fb06d](https://github.com/cowprotocol/cowswap/commit/75fb06daf4895fac03d754ebc2df5564e8fa48c5))
+
 ## [1.22.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.0...cow-fi-v1.22.1) (2025-04-25)
 
 
