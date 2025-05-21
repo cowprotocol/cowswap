@@ -8,7 +8,6 @@ import { userAddedTokensAtom } from './userAddedTokensAtom'
 
 import { ActiveTokensState, TokensBySymbolState, TokensMap } from '../../types'
 import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
-import { mergeTokenMaps } from '../../utils/mergeTokenMaps'
 import { parseTokenInfo } from '../../utils/parseTokenInfo'
 import { tokenMapToListWithLogo } from '../../utils/tokenMapToListWithLogo'
 import { environmentAtom } from '../environmentAtom'
@@ -36,8 +35,6 @@ const tokensStateAtom = atom<TokensState>((get) => {
     (acc, list) => {
       const isListEnabled = listsEnabledState[list.source]
       const lpTokenProvider = list.lpTokenProvider
-      const currentListTokens: TokensMap = {}
-
       list.list.tokens.forEach((token) => {
         const tokenInfo = parseTokenInfo(chainId, token)
         const tokenAddressKey = tokenInfo?.address.toLowerCase()
@@ -48,14 +45,16 @@ const tokensStateAtom = atom<TokensState>((get) => {
           tokenInfo.lpTokenProvider = lpTokenProvider
         }
 
-        currentListTokens[tokenAddressKey] = tokenInfo
+        if (isListEnabled) {
+          if (!acc.activeTokens[tokenAddressKey]) {
+            acc.activeTokens[tokenAddressKey] = tokenInfo
+          }
+        } else {
+          if (!acc.inactiveTokens[tokenAddressKey]) {
+            acc.inactiveTokens[tokenAddressKey] = tokenInfo
+          }
+        }
       })
-
-      if (isListEnabled) {
-        acc.activeTokens = mergeTokenMaps(acc.activeTokens, currentListTokens)
-      } else {
-        acc.inactiveTokens = mergeTokenMaps(acc.inactiveTokens, currentListTokens)
-      }
 
       return acc
     },
@@ -72,28 +71,30 @@ export const activeTokensAtom = atom<ActiveTokensState>((get) => {
   const { chainId, enableLpTokensByDefault } = get(environmentAtom)
   const userAddedTokens = get(userAddedTokensAtom)
   const favoriteTokensState = get(favoriteTokensAtom)
+
   const tokensMap = get(tokensStateAtom)
   const nativeToken = NATIVE_CURRENCIES[chainId]
 
-  const lpTokens = enableLpTokensByDefault
-    ? Object.keys(tokensMap.inactiveTokens).reduce<TokensMap>((acc, key) => {
-        const token = tokensMap.inactiveTokens[key]
-        if (token.lpTokenProvider) {
-          acc[key] = token
-        }
-        return acc
-      }, {})
-    : null
+  const tokens = tokenMapToListWithLogo(
+    {
+      [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo,
+      ...tokensMap.activeTokens,
+      ...lowerCaseTokensMap(userAddedTokens[chainId] || {}),
+      ...lowerCaseTokensMap(favoriteTokensState[chainId]),
+      ...(enableLpTokensByDefault
+        ? Object.keys(tokensMap.inactiveTokens).reduce<TokensMap>((acc, key) => {
+            const token = tokensMap.inactiveTokens[key]
 
-  const mergedTokens = mergeTokenMaps(
-    { [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo },
-    lpTokens,
-    lowerCaseTokensMap(favoriteTokensState[chainId]),
-    tokensMap.activeTokens,
-    lowerCaseTokensMap(userAddedTokens[chainId] || {}),
+            if (token.lpTokenProvider) {
+              acc[key] = token
+            }
+
+            return acc
+          }, {})
+        : null),
+    },
+    chainId,
   )
-
-  const tokens = tokenMapToListWithLogo(mergedTokens, chainId)
 
   return { tokens, chainId }
 })
