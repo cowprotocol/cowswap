@@ -17,6 +17,7 @@ import { environmentAtom, updateEnvironmentAtom } from '../../state/environmentA
 import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { allListsSourcesAtom, tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { ListState } from '../../types'
+import { UserAddedTokensUpdater } from '../UserAddedTokensUpdater'
 
 const LAST_UPDATE_TIME_DEFAULT = 0
 
@@ -108,7 +109,6 @@ export function TokensListsUpdater({
         const isUsUser = country === 'US'
 
         if (isUsUser) {
-          // set curated first, then update time
           setEnvironment({ useCuratedListOnly: true })
           updateLastUpdateTime({ [chainId]: 0 })
         }
@@ -129,5 +129,5 @@ export function TokensListsUpdater({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, isGeoBlockEnabled])
 
-  return null
+  return <UserAddedTokensUpdater />
 }

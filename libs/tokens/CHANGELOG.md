@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.19.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.18.0...tokens-v1.19.0) (2025-05-21)
+
+
+### Features
+
+* **tokens:** remove user-added tokens if they are in lists ([e875d59](https://github.com/cowprotocol/cowswap/commit/e875d59ca2a9fbe114412926443dcf4d90343b04))
+
+
+### Bug Fixes
+
+* **tokens:** merge token tags from different sources ([2915da1](https://github.com/cowprotocol/cowswap/commit/2915da16429fe84cdf07b37c32566593685bc889))
+
 ## [1.18.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.17.1...tokens-v1.18.0) (2025-05-19)
 
 

@@ -43,17 +43,23 @@ export const addUserTokenAtom = atom(null, (get, set, tokens: TokenWithLogo[]) =
   })
 })
 
-export const removeUserTokenAtom = atom(null, (get, set, token: TokenWithLogo) => {
+export const removeUserTokensAtom = atom(null, (get, set, tokens: string[]) => {
   const { chainId } = get(environmentAtom)
   const userAddedTokensState = get(userAddedTokensAtom)
   const stateCopy = { ...userAddedTokensState[chainId] }
 
-  delete stateCopy[token.address.toLowerCase()]
+  tokens.forEach((token) => {
+    delete stateCopy[token.toLowerCase()]
+  })
 
   set(userAddedTokensAtom, {
     ...userAddedTokensState,
     [chainId]: stateCopy,
   })
+})
+
+export const removeUserTokenAtom = atom(null, (get, set, token: TokenWithLogo) => {
+  set(removeUserTokensAtom, [token.address.toLowerCase()])
 })
 
 export const resetUserTokensAtom = atom(null, (get, set) => {
