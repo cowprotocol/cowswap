@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import PlusIcon from '@cowprotocol/assets/cow-swap/plus.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 import { InfoTooltip, PercentDisplay } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
@@ -28,7 +28,6 @@ import {
   StatusAwareText,
   AnimatedEllipsis,
 } from '../../styles'
-import { BridgeProtocolConfig } from '../../types'
 import { StatusColor, StopStatusEnum } from '../../utils'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { RecipientDisplay } from '../RecipientDisplay'
@@ -50,7 +49,7 @@ export interface SwapStopDetailsProps {
   swapMinReceiveAmount?: CurrencyAmount<Currency>
   swapMinReceiveUsdInfo?: UsdAmountInfo | null
   tokenLogoSize: number
-  bridgeProvider: BridgeProtocolConfig
+  bridgeProvider: BridgeProviderInfo
   recipient?: Nullish<string>
   sourceChainId: SupportedChainId
   winningSolver?: SolverCompetition | null

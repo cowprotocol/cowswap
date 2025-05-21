@@ -1,16 +1,10 @@
+import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 import { ProductVariant, UI, ProductLogo } from '@cowprotocol/ui'
 
 import { ProtocolIcon, ProtocolIconsContainer } from './styled'
 
-export interface SecondProtocolConfig {
-  icon: string
-  title: string
-  width?: number
-  height?: number
-}
-
 export interface ProtocolIconsProps {
-  secondProtocol: SecondProtocolConfig
+  secondProtocol: BridgeProviderInfo
   showOnlyFirst?: boolean
   showOnlySecond?: boolean
   size?: number
@@ -48,13 +42,8 @@ export function ProtocolIcons({
 
   if (showOnlySecond) {
     return (
-      <ProtocolIcon title={secondProtocol.title} size={iconSize}>
-        <img
-          src={secondProtocol.icon}
-          width={secondProtocol.width || logoHeight}
-          height={secondProtocol.height || logoHeight}
-          alt={secondProtocol.title}
-        />
+      <ProtocolIcon title={secondProtocol.name} size={iconSize}>
+        <img src={secondProtocol.logoUrl} width={logoHeight} height={logoHeight} alt={secondProtocol.name} />
       </ProtocolIcon>
     )
   }
@@ -70,12 +59,12 @@ export function ProtocolIcons({
           overrideHoverColor={`var(${UI.COLOR_BLUE_300_PRIMARY})`}
         />
       </ProtocolIcon>
-      <ProtocolIcon title={secondProtocol.title}>
+      <ProtocolIcon title={secondProtocol.name}>
         <img
-          src={secondProtocol.icon}
-          width={secondProtocol.width || DEFAULT_ICON_SIZE * LOGO_HEIGHT_RATIO}
-          height={secondProtocol.height || DEFAULT_ICON_SIZE * LOGO_HEIGHT_RATIO}
-          alt={secondProtocol.title}
+          src={secondProtocol.logoUrl}
+          width={DEFAULT_ICON_SIZE * LOGO_HEIGHT_RATIO}
+          height={DEFAULT_ICON_SIZE * LOGO_HEIGHT_RATIO}
+          alt={secondProtocol.name}
         />
       </ProtocolIcon>
     </ProtocolIconsContainer>

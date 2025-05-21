@@ -1,9 +1,10 @@
 import { ReactNode } from 'react'
 
+import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
+
 import { ProtocolIcons } from 'common/pure/ProtocolIcons'
 
 import { StopNumberCircle } from '../../styles'
-import { BridgeProtocolConfig } from '../../types'
 import { StopStatusEnum } from '../../utils'
 
 interface BridgeRouteTitleProps {
@@ -11,7 +12,7 @@ interface BridgeRouteTitleProps {
   icon: ReactNode
   titlePrefix: ReactNode
   protocolName: string
-  bridgeProvider: BridgeProtocolConfig
+  bridgeProvider: BridgeProviderInfo
   protocolIconShowOnly?: 'first' | 'second'
   protocolIconSize?: number
   stopNumber: number

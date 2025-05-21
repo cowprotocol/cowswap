@@ -21,7 +21,6 @@ import { useBridgeSupportedNetworks } from '../../hooks/useBridgeSupportedNetwor
 import { useBridgeWinningSolverInfo } from '../../hooks/useBridgeWinningSolverInfo'
 import { BridgeStopDetails } from '../../pure/BridgeStopDetails'
 import { SwapStopDetails } from '../../pure/SwapStopDetails'
-import { BridgeProtocolConfig } from '../../types'
 import { StopStatusEnum } from '../../utils'
 
 interface BridgeRouteUiParams {
@@ -41,7 +40,6 @@ interface BridgeRouteUiParams {
 export interface BridgeRouteBreakdownProps {
   receiveAmountInfo: ReceiveAmountInfo
   bridgeQuote: BridgeQuoteResults
-  bridgeProvider: BridgeProtocolConfig
 
   uiParams?: Partial<BridgeRouteUiParams>
 
@@ -69,7 +67,6 @@ const defaultBridgeRouteUiParams: BridgeRouteUiParams = {
 export function BridgeRouteBreakdown({
   receiveAmountInfo,
   bridgeQuote,
-  bridgeProvider,
   swapStatus,
   bridgeStatus,
   uiParams = defaultBridgeRouteUiParams,
@@ -87,6 +84,7 @@ export function BridgeRouteBreakdown({
 
   const amounts = useBridgeQuoteAmounts(receiveAmountInfo, bridgeQuote)
 
+  const providerDetails = bridgeQuote.providerInfo
   const { sellAmount } = receiveAmountInfo.afterSlippage
   const sellToken = sellAmount.currency
 
@@ -136,7 +134,7 @@ export function BridgeRouteBreakdown({
           content={
             <>
               Your trade will be executed in 2 stops. First, you swap on <b>CoW Protocol (Stop 1)</b>, then you bridge
-              via <b>{bridgeProvider.title} (Stop 2)</b>.
+              via <b>{providerDetails.name} (Stop 2)</b>.
             </>
           }
           size={14}
@@ -145,13 +143,13 @@ export function BridgeRouteBreakdown({
       {isCollapsible ? (
         <CollapsibleStopsInfo>
           2 stops
-          <ProtocolIcons secondProtocol={bridgeProvider} />
+          <ProtocolIcons secondProtocol={providerDetails} />
           <ToggleArrow isOpen={isExpanded} />
         </CollapsibleStopsInfo>
       ) : (
         <StopsInfo>
           2 stops
-          <ProtocolIcons secondProtocol={bridgeProvider} />
+          <ProtocolIcons secondProtocol={providerDetails} />
         </StopsInfo>
       )}
     </HeaderComponent>
@@ -183,7 +181,7 @@ export function BridgeRouteBreakdown({
         swapMinReceiveAmount={amounts.swapMinReceiveAmount}
         swapMinReceiveUsdInfo={swapMinReceiveUsdInfo}
         tokenLogoSize={tokenLogoSize}
-        bridgeProvider={bridgeProvider}
+        bridgeProvider={providerDetails}
         recipient={bridgeQuote.bridgeCallDetails.preAuthorizedBridgingHook.recipient}
         sourceChainId={sourceChainId}
         winningSolver={winningSolverForSwapDetails}
@@ -203,7 +201,7 @@ export function BridgeRouteBreakdown({
         isCollapsible={isCollapsible}
         defaultExpanded={true}
         status={bridgeStatus}
-        bridgeProvider={bridgeProvider}
+        bridgeProvider={providerDetails}
         bridgeSendCurrencyAmount={amounts.swapMinReceiveAmount}
         bridgeReceiveCurrencyAmount={amounts.bridgeMinReceiveAmount}
         recipientChainName={destChainData?.label || 'Unknow network'}
