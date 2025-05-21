@@ -118,7 +118,11 @@ const tabItems = (
         )}
         {order && order.bridgeDetails && (
           <div style={{ marginTop: '2rem' }}>
-            <BridgeDetailsTable bridgeDetails={order.bridgeDetails} />
+            <BridgeDetailsTable
+              bridgeDetails={order.bridgeDetails}
+              ownerAddress={order.owner}
+              receiverAddress={order.receiver}
+            />
           </div>
         )}
         {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}

@@ -29,6 +29,7 @@ export interface BridgeableToken {
 
 export interface BridgeDetails {
   providerName: string // This will come from BridgeProtocolConfig.title via BRIDGE_PROVIDER_DETAILS
+  providerUrl?: string
   isSuccess: boolean
   status: BridgeStatus
   bridgeQuoteTimestamp?: number

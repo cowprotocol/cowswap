@@ -53,6 +53,7 @@ const bungeeBridgeInfo = BRIDGE_PROVIDER_DETAILS[BridgeProvider.BUNGEE]
 
 const pendingBridgeDetails: BridgeDetails = {
   providerName: bungeeBridgeInfo.title,
+  providerUrl: bungeeBridgeInfo.url,
   isSuccess: false,
   status: BridgeStatus.Pending,
   bridgeQuoteTimestamp: Date.now() - 1000 * 60 * 10,
@@ -64,8 +65,8 @@ const pendingBridgeDetails: BridgeDetails = {
   gasCostsNative: '5000000000000000',
   protocolFeeSellToken: '100000000000000000',
   maxSlippageBps: 50,
-  sourceChainTransactionHash: '0xpendingTxHashMainnet1234567890abcdef1234567890abcdef12345678',
-  explorerUrl: bungeeBridgeInfo.url + '/explorer/0xpendingTxHashMainnet1234567890abcdef1234567890abcdef12345678',
+  sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
+  explorerUrl: bungeeBridgeInfo.url + '/explorer/0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
   minDepositAmount: '1000000000000000000',
   maxDepositAmount: '100000000000000000000000',
 }
@@ -75,8 +76,9 @@ const completedBridgeDetails: BridgeDetails = {
   isSuccess: true,
   status: BridgeStatus.Completed,
   outputAmount: '99800000000000000000',
-  destinationChainTransactionHash: '0xcompletedTxHashGnosisChain0987654321fedcba0987654321fedcba09',
-  explorerUrl: bungeeBridgeInfo.url + '/explorer/0xcompletedTxHashGnosisChain0987654321fedcba0987654321fedcba09',
+  sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
+  destinationChainTransactionHash: '0x9e0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a',
+  explorerUrl: bungeeBridgeInfo.url + '/explorer/0x9e0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a',
 }
 
 // Base Mock Order Data - aligned with apps/explorer/src/api/operator/types.ts Order type
@@ -319,7 +321,11 @@ export default {
     <WithProviders>
       <div style={{ padding: '1rem' }}>
         <h2>Bridge Details Table (Pending State)</h2>
-        <BridgeDetailsTable bridgeDetails={pendingBridgeDetails} />
+        <BridgeDetailsTable
+          bridgeDetails={pendingBridgeDetails}
+          ownerAddress="0xOwnerPending1234567890abcdef1234567890"
+          receiverAddress="0xReceiverPending0987654321fedcba098765"
+        />
       </div>
     </WithProviders>
   ),
@@ -327,7 +333,11 @@ export default {
     <WithProviders>
       <div style={{ padding: '1rem' }}>
         <h2>Bridge Details Table (Completed State)</h2>
-        <BridgeDetailsTable bridgeDetails={completedBridgeDetails} />
+        <BridgeDetailsTable
+          bridgeDetails={completedBridgeDetails}
+          ownerAddress="0xOwnerCompleted1234567890abcdef1234567890"
+          receiverAddress="0xReceiverCompleted0987654321fedcba098765"
+        />
       </div>
     </WithProviders>
   ),
@@ -335,7 +345,11 @@ export default {
     <WithProviders>
       <div style={{ padding: '1rem' }}>
         <h2>Bridge Details Table (Loading State)</h2>
-        <BridgeDetailsTable isLoading={true} />
+        <BridgeDetailsTable
+          isLoading={true}
+          ownerAddress="0xOwnerLoading1234567890abcdef1234567890"
+          receiverAddress="0xReceiverLoading0987654321fedcba098765"
+        />
       </div>
     </WithProviders>
   ),
