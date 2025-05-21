@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.107.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.7...cowswap-v1.107.0) (2025-05-21)
+
+
+### Features
+
+* update tokens lib ([#5738](https://github.com/cowprotocol/cowswap/issues/5738)) ([2939365](https://github.com/cowprotocol/cowswap/commit/29393656301e33b3e38ee78001e18f7627321ea3))
+
 ## [1.106.7](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.6...cowswap-v1.106.7) (2025-05-19)
 
 
