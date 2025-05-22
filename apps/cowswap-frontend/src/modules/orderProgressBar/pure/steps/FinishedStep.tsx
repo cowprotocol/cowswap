@@ -23,9 +23,9 @@ import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
 
+import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../../constants'
+import { getSurplusText, getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../../helpers'
 import { OrderProgressBarStepName, SolverCompetition } from '../../types'
-import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../constants'
-import { getSurplusText, getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../helpers'
 
 function getTransactionStatus(isDarkMode: boolean) {
   return (

@@ -3,7 +3,7 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Order } from 'legacy/state/orders/actions'
+import type { Order } from 'legacy/state/orders/actions'
 
 import * as styledEl from './styled'
 

@@ -1,7 +1,7 @@
-import { Order } from 'legacy/state/orders/actions'
+import type { Order } from 'legacy/state/orders/actions'
 
-import { OrderProgressBarStepName } from '../../../types'
-import { ProgressImageWrapper } from '../../container/ProgressImageWrapper'
+import { OrderProgressBarStepName } from '../../types'
+import { ProgressImageWrapper } from '../ProgressImageWrapper'
 import {
   CancelledCancellingTopSection,
   DelayedSolvedSubmissionFailedTopSection,
@@ -11,7 +11,7 @@ import {
   InitialTopSection,
   SolvingTopSection,
   UnfillableTopSection,
-} from '../../container/TopSections'
+} from '../TopSections'
 
 export interface ProgressTopSectionProps {
   stepName: OrderProgressBarStepName

@@ -4,7 +4,7 @@ import { UI } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
 
-import { StepsWrapper } from '../container/StepsWrapper'
+import { StepsWrapper } from '../StepsWrapper'
 
 interface CancellingStepProps {
   children: React.ReactNode
