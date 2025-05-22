@@ -114,6 +114,7 @@ export function Updaters() {
           })
         }}
       />
+
       <UnsupportedTokensUpdater />
       <BalancesAndAllowancesUpdater chainId={sourceChainId} account={account} />
       <LpBalancesAndAllowancesUpdater chainId={sourceChainId} account={account} enablePolling={isYieldWidget} />
