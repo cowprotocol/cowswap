@@ -37,20 +37,23 @@ interface BridgeRouteUiParams {
   onExpandToggle: () => void
 }
 
+interface BridgingRouteResults {
+  winningSolverId: string
+  receivedAmount: CurrencyAmount<TokenWithLogo> | null
+  surplusAmount: CurrencyAmount<TokenWithLogo> | null
+  swapExplorerUrl: string
+  bridgeExplorerUrl: string
+}
+
 export interface BridgeRouteBreakdownProps {
   receiveAmountInfo: ReceiveAmountInfo
   bridgeQuote: BridgeQuoteResults
 
-  uiParams?: Partial<BridgeRouteUiParams>
-
-  swapStatus?: StopStatusEnum
   bridgeStatus?: StopStatusEnum
+  swapStatus?: StopStatusEnum
 
-  winningSolverId?: string | null
-  receivedAmount?: CurrencyAmount<TokenWithLogo> | null
-  surplusAmount?: CurrencyAmount<TokenWithLogo> | null
-  swapExplorerUrl?: string
-  bridgeExplorerUrl?: string
+  uiParams?: Partial<BridgeRouteUiParams>
+  bridgingResults?: Partial<BridgingRouteResults>
   collapsedDefault?: ReactNode
 }
 
@@ -70,11 +73,7 @@ export function BridgeRouteBreakdown({
   swapStatus,
   bridgeStatus,
   uiParams = defaultBridgeRouteUiParams,
-  winningSolverId,
-  receivedAmount = null,
-  surplusAmount = null,
-  swapExplorerUrl,
-  bridgeExplorerUrl,
+  bridgingResults,
   collapsedDefault,
 }: BridgeRouteBreakdownProps) {
   const { account } = useWalletInfo()
@@ -97,6 +96,14 @@ export function BridgeRouteBreakdown({
   // Determine if we are in a mode where statuses are actively displayed (like the BridgeStatus fixture)
   // This is true if swapStatus is provided, indicating a status-aware context.
   const isInStatusDisplayMode = typeof swapStatus !== 'undefined'
+
+  const {
+    winningSolverId,
+    receivedAmount = null,
+    surplusAmount = null,
+    swapExplorerUrl,
+    bridgeExplorerUrl,
+  } = bridgingResults || {}
 
   const winningSolverForSwapDetails = useBridgeWinningSolverInfo(sourceChainId, winningSolverId)
 

@@ -141,11 +141,13 @@ const defaultProps: BridgeRouteBreakdownProps = {
   uiParams: {
     hideBridgeFlowFiatAmount: true, // Hide fiat amount in bridge destination token flow
   },
-  // Explorer URLs
-  swapExplorerUrl:
-    'https://explorer.cow.fi/orders/0xeaef82ff8696bff255e130b266231acb53a8f02823ed89b33acda5fd3987a53ad8da6bf26964af9d7eed9e03e53415d37aa96045676d56da',
-  bridgeExplorerUrl:
-    'https://explorer.cow.fi/orders/0xeaef82ff8696bff255e130b266231acb53a8f02823ed89b33acda5fd3987a53ad8da6bf26964af9d7eed9e03e53415d37aa96045676d56da',
+  bridgingResults: {
+    // Explorer URLs
+    swapExplorerUrl:
+      'https://explorer.cow.fi/orders/0xeaef82ff8696bff255e130b266231acb53a8f02823ed89b33acda5fd3987a53ad8da6bf26964af9d7eed9e03e53415d37aa96045676d56da',
+    bridgeExplorerUrl:
+      'https://explorer.cow.fi/orders/0xeaef82ff8696bff255e130b266231acb53a8f02823ed89b33acda5fd3987a53ad8da6bf26964af9d7eed9e03e53415d37aa96045676d56da',
+  },
 }
 
 // Create mock USD price data using proper Token objects
@@ -509,7 +511,7 @@ const SwapConfirmation = () => {
             <BridgeRouteBreakdown
               {...defaultProps}
               uiParams={{ ...defaultProps, isCollapsible: false }}
-              winningSolverId={null}
+              bridgingResults={{ ...defaultProps.bridgingResults, winningSolverId: undefined }}
               collapsedDefault={
                 <>
                   {/* Recipient line item */}
@@ -595,7 +597,7 @@ function BridgeStatus() {
 
   const scenario = scenarios[scenarioKey as ScenarioKey]
 
-  let winningSolverIdForFixture: string | null = null
+  let winningSolverIdForFixture: string | undefined = undefined
   let mockReceivedAmount = null
   let mockSurplusAmount = null
 
@@ -613,11 +615,14 @@ function BridgeStatus() {
         <BridgeRouteBreakdown
           {...defaultProps}
           uiParams={{ ...defaultProps.uiParams, isCollapsible: true, hasBackground: true, hideRouteHeader: true }}
+          bridgingResults={{
+            ...defaultProps.bridgingResults,
+            winningSolverId: winningSolverIdForFixture,
+            receivedAmount: mockReceivedAmount,
+            surplusAmount: mockSurplusAmount,
+          }}
           swapStatus={scenario.swapStatus}
           bridgeStatus={scenario.bridgeStatus}
-          winningSolverId={winningSolverIdForFixture}
-          receivedAmount={mockReceivedAmount}
-          surplusAmount={mockSurplusAmount}
         />
       </TradeFormContainer>
     </BridgeFixtureWrapper>
