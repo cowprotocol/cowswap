@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 `
 
 const Fixtures = {
-  default: (
+  default: () => (
     <Wrapper>
       <ChainsSelector
         chains={chains}
