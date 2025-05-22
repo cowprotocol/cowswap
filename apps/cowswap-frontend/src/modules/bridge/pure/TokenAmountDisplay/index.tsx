@@ -12,7 +12,6 @@ export interface TokenAmountDisplayProps {
   currencyAmount: CurrencyAmount<Currency> | null
   displaySymbol?: boolean
   usdValue?: CurrencyAmount<Token> | null
-  hideFiatAmount?: boolean
   status?: StatusColor
   libTokenAmountProps?: Omit<LibTokenAmountProps, 'amount' | 'tokenSymbol' | 'hideTokenSymbol'>
   hideTokenIcon?: boolean
@@ -22,7 +21,6 @@ export function TokenAmountDisplay({
   currencyAmount,
   displaySymbol,
   usdValue,
-  hideFiatAmount = false,
   status,
   libTokenAmountProps,
   hideTokenIcon = false,
@@ -42,7 +40,7 @@ export function TokenAmountDisplay({
         hideTokenSymbol={false}
         {...libTokenAmountProps}
       />
-      {!hideFiatAmount && usdValue && (
+      {usdValue && (
         <i>
           (<FiatAmount amount={usdValue} />)
         </i>

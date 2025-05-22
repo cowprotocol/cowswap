@@ -27,7 +27,6 @@ interface BridgeRouteUiParams {
   hasBackground: boolean
 
   // Display options
-  hideBridgeFlowFiatAmount: boolean
   hideRouteHeader: boolean
 
   // Overall Accordion functionality
@@ -58,7 +57,6 @@ export interface BridgeRouteBreakdownProps {
 
 const defaultBridgeRouteUiParams: BridgeRouteUiParams = {
   hasBackground: false,
-  hideBridgeFlowFiatAmount: false,
   hideRouteHeader: false,
   isCollapsible: false,
   isExpanded: true,
@@ -124,7 +122,6 @@ export function BridgeRouteBreakdown({
     isCollapsible,
     isExpanded = defaultBridgeRouteUiParams.isExpanded,
     hasBackground = defaultBridgeRouteUiParams.hasBackground,
-    hideBridgeFlowFiatAmount = defaultBridgeRouteUiParams.hideBridgeFlowFiatAmount,
     hideRouteHeader = defaultBridgeRouteUiParams.hideRouteHeader,
   } = uiParams
 
@@ -208,7 +205,6 @@ export function BridgeRouteBreakdown({
         bridgeSendCurrencyAmount={amounts.swapMinReceiveAmount}
         bridgeReceiveCurrencyAmount={amounts.bridgeMinReceiveAmount}
         recipientChainName={destChainData?.label || 'Unknow network'}
-        hideBridgeFlowFiatAmount={hideBridgeFlowFiatAmount}
         receiveAmountUsd={bridgeReceiveAmountUsd}
         bridgeFee={amounts.bridgeFee}
         estimatedTime={bridgeQuote.expectedFillTimeSeconds}

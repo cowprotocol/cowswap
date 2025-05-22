@@ -19,9 +19,7 @@ import { UsdAmountInfo } from 'modules/usdAmount/hooks/useUsdAmount'
 import { WinningSolverContainer } from './styled'
 
 import {
-  ArrowIcon,
   SuccessTextBold,
-  TokenFlowContainer,
   TimelineIconCircleWrapper,
   StyledTimelinePlusIcon,
   StatusAwareText,
@@ -30,6 +28,7 @@ import {
 import { StatusColor, StopStatusEnum } from '../../utils'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { RecipientDisplay } from '../RecipientDisplay'
+import { RouteTitle } from '../RouteTitle'
 import { SwapStatusIcons, SwapStatusTitlePrefixes } from '../StopStatus'
 import { TokenAmountDisplay } from '../TokenAmountDisplay'
 
@@ -108,14 +107,7 @@ export function SwapStopDetails({
       defaultExpanded={defaultExpanded}
       explorerUrl={swapExplorerUrl}
     >
-      <ConfirmDetailsItem label="" withTimelineDot>
-        <TokenFlowContainer>
-          <TokenAmountDisplay currencyAmount={sellCurrencyAmount} displaySymbol hideFiatAmount={true} />
-          <ArrowIcon>→</ArrowIcon>
-          <TokenAmountDisplay currencyAmount={buyCurrencyAmount} displaySymbol hideFiatAmount={true} />
-          {` on ${sourceChainName}`}
-        </TokenFlowContainer>
-      </ConfirmDetailsItem>
+      <RouteTitle chainName={sourceChainName} sellAmount={sellCurrencyAmount} buyAmount={buyCurrencyAmount} />
 
       {!isBridgeStatusView && <TradeFeesAndCosts receiveAmountInfo={receiveAmountInfo} />}
 

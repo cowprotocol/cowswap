@@ -49,7 +49,7 @@ export function RefundedContent({ account, bridgeSendCurrencyAmount }: RefundedC
         }
       >
         <b>
-          <TokenAmountDisplay displaySymbol hideFiatAmount={true} currencyAmount={bridgeSendCurrencyAmount} />
+          <TokenAmountDisplay displaySymbol currencyAmount={bridgeSendCurrencyAmount} />
         </b>
       </ConfirmDetailsItem>
     </>
