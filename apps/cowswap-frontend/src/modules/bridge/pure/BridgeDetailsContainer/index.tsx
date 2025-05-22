@@ -1,6 +1,7 @@
 import { ReactNode, useState, KeyboardEvent } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { ToggleArrow } from 'common/pure/ToggleArrow'
 
@@ -13,6 +14,7 @@ import {
 } from '../../styles'
 import { StopStatusEnum } from '../../utils'
 import { BridgeRouteTitle } from '../BridgeRouteTitle'
+import { RouteTitle } from '../RouteTitle'
 
 export interface BridgeDetailsContainerProps {
   status: StopStatusEnum
@@ -23,6 +25,11 @@ export interface BridgeDetailsContainerProps {
   bridgeProvider: BridgeProviderInfo
   protocolIconShowOnly?: 'first' | 'second'
   protocolIconSize?: number
+
+  sellAmount: CurrencyAmount<Currency>
+  buyAmount: CurrencyAmount<Currency>
+  buyAmountUsd?: CurrencyAmount<Token> | null
+  chainName: string
 
   children: ReactNode
   isCollapsible?: boolean
@@ -43,6 +50,10 @@ export function BridgeDetailsContainer({
   isCollapsible = false,
   defaultExpanded = true,
   explorerUrl,
+  sellAmount,
+  buyAmount,
+  buyAmountUsd,
+  chainName,
 }: BridgeDetailsContainerProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
 
@@ -69,18 +80,6 @@ export function BridgeDetailsContainer({
     />
   )
 
-  const viewDetailsLink =
-    explorerUrl && status !== StopStatusEnum.DEFAULT ? (
-      <ExplorerLink
-        href={explorerUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="View transaction details on explorer (opens in new tab)"
-      >
-        View details <span aria-hidden="true">↗</span>
-      </ExplorerLink>
-    ) : null
-
   const StopTitleComponent = isCollapsible ? ClickableStopTitle : BaseStopTitle
 
   return (
@@ -93,14 +92,27 @@ export function BridgeDetailsContainer({
         aria-expanded={isCollapsible ? isExpanded : undefined}
       >
         {titleContent}
-        {viewDetailsLink}
+        {explorerUrl && (
+          <ExplorerLink
+            href={explorerUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="View transaction details on explorer (opens in new tab)"
+          >
+            View details <span aria-hidden="true">↗</span>
+          </ExplorerLink>
+        )}
         {isCollapsible && (
           <ToggleIconContainer>
             <ToggleArrow isOpen={isExpanded} />
           </ToggleIconContainer>
         )}
       </StopTitleComponent>
-      <SectionContent isExpanded={isExpanded}>{children}</SectionContent>
+      <SectionContent isExpanded={isExpanded}>
+        <RouteTitle chainName={chainName} sellAmount={sellAmount} buyAmount={buyAmount} buyAmountUsd={buyAmountUsd} />
+
+        {children}
+      </SectionContent>
     </>
   )
 }

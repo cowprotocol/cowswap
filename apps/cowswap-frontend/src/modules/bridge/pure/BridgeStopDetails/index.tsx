@@ -32,7 +32,6 @@ import { StopStatusEnum } from '../../utils/status'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { NetworkLogo } from '../NetworkLogo'
 import { RecipientDisplay } from '../RecipientDisplay'
-import { RouteTitle } from '../RouteTitle'
 import { BridgeStatusIcons, BridgeStatusTitlePrefixes } from '../StopStatus'
 import { TokenAmountDisplay } from '../TokenAmountDisplay'
 
@@ -84,14 +83,11 @@ export function BridgeStopDetails({
       isCollapsible={isCollapsible}
       defaultExpanded={defaultExpanded}
       explorerUrl={bridgeExplorerUrl}
+      chainName={recipientChainName}
+      sellAmount={bridgeSendCurrencyAmount}
+      buyAmount={bridgeReceiveCurrencyAmount}
+      buyAmountUsd={receiveAmountUsd}
     >
-      <RouteTitle
-        chainName={recipientChainName}
-        sellAmount={bridgeSendCurrencyAmount}
-        buyAmount={bridgeReceiveCurrencyAmount}
-        buyAmountUsd={receiveAmountUsd}
-      />
-
       <ConfirmDetailsItem
         label={
           <>
