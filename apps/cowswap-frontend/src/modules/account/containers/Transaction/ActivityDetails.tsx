@@ -25,10 +25,12 @@ import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
+import { TransactionInnerDetail } from 'common/pure/TransactionInnerDetail'
 import {
   useHideReceiverWalletBanner,
   useIsReceiverWalletBannerHidden,
 } from 'common/state/receiverWalletBannerVisibility'
+import { ActivityDerivedState, ActivityStatus } from 'common/types/activity'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
@@ -42,11 +44,8 @@ import {
   SummaryInner,
   SummaryInnerRow,
   TextAlert,
-  TransactionInnerDetail,
   TransactionState as ActivityLink,
 } from './styled'
-
-import { ActivityDerivedState, ActivityStatus } from '../../../../common/types/activity'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',

@@ -8,6 +8,8 @@ import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/ty
 
 import * as styledEl from './styled'
 
+import { Description } from '../../sharedStyled'
+
 interface ExpiredStepProps {
   children: React.ReactNode
   navigateToNewOrder?: Command
@@ -56,7 +58,7 @@ export function ExpiredStep({ children, navigateToNewOrder }: ExpiredStepProps) 
         </styledEl.InfoCard>
       </styledEl.CardWrapper>
 
-      <styledEl.Description center margin="10px 0">
+      <Description center margin="10px 0">
         If your orders often expire, consider increasing your slippage or contact us on{' '}
         <styledEl.Link
           href="https://discord.com/invite/cowprotocol"
@@ -70,7 +72,7 @@ export function ExpiredStep({ children, navigateToNewOrder }: ExpiredStepProps) 
           help@cow.fi
         </styledEl.Link>{' '}
         so we can investigate the problem.
-      </styledEl.Description>
+      </Description>
     </styledEl.ProgressContainer>
   )
 }

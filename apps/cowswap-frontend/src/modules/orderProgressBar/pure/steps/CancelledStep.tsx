@@ -1,5 +1,7 @@
 import * as styledEl from './styled'
 
+import { Description } from '../../sharedStyled'
+
 interface CancelledStepProps {
   children: React.ReactNode
 }
@@ -14,9 +16,9 @@ export function CancelledStep({ children }: CancelledStepProps) {
         </styledEl.TransactionStatus>
       </styledEl.ConclusionContent>
 
-      <styledEl.Description center margin="10px auto 40px">
+      <Description center margin="10px auto 40px">
         Your order was successfully cancelled.
-      </styledEl.Description>
+      </Description>
     </styledEl.ProgressContainer>
   )
 }

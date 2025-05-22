@@ -5,6 +5,7 @@ import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/ty
 import * as styledEl from './styled'
 
 import { STEPS } from '../../constants'
+import { Description } from '../../sharedStyled'
 import { StepsWrapper } from '../StepsWrapper'
 
 interface InitialStepProps {
@@ -19,7 +20,7 @@ export function InitialStep({ children }: InitialStepProps) {
         steps={STEPS}
         currentStep={0}
         extraContent={
-          <styledEl.Description>
+          <Description>
             On CoW Swap, orders placed at the same time are{' '}
             <styledEl.Link
               href="https://cow.fi/learn/understanding-batch-auctions"
@@ -33,7 +34,7 @@ export function InitialStep({ children }: InitialStepProps) {
               batched together
             </styledEl.Link>{' '}
             to save on costs!
-          </styledEl.Description>
+          </Description>
         }
       />
     </styledEl.ProgressContainer>

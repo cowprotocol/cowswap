@@ -1,7 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
-import * as styledEl from './styled'
-
+import { ProgressImageWrapper as ProgressImageWrapperEl } from '../sharedStyled'
 import { OrderProgressBarProps } from '../types'
 
 interface ProgressImageWrapperProps {
@@ -77,7 +76,7 @@ const PROCESS_IMAGE_WRAPPER_GAP: GapMap = {
 
 export function ProgressImageWrapper({ children, stepName, ...props }: ProgressImageWrapperProps) {
   return (
-    <styledEl.ProgressImageWrapper
+    <ProgressImageWrapperEl
       bgColor={stepName ? PROCESS_IMAGE_WRAPPER_BG_COLOR[stepName] : undefined}
       padding={stepName ? PROCESS_IMAGE_WRAPPER_PADDING[stepName] : '0'}
       height={stepName ? PROCESS_IMAGE_WRAPPER_HEIGHT[stepName] : 'auto'}
@@ -85,6 +84,6 @@ export function ProgressImageWrapper({ children, stepName, ...props }: ProgressI
       {...props}
     >
       {children}
-    </styledEl.ProgressImageWrapper>
+    </ProgressImageWrapperEl>
   )
 }

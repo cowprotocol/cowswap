@@ -4,9 +4,9 @@ import { ButtonPrimary, Font, LinkStyledButton, Media, UI } from '@cowprotocol/u
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
-export { Description, ProgressImageWrapper } from '../../sharedStyled'
-
 import { CancelButton as CancelButtonOriginal } from 'common/pure/CancelButton'
+
+import { ProgressImageWrapper } from '../../sharedStyled'
 
 const progressAnimation = (startAt: number, end: number) => {
   const start = end - startAt

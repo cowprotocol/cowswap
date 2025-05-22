@@ -2,7 +2,7 @@ import { ButtonOutlined, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { TransactionInnerDetail } from 'modules/account'
+import { TransactionInnerDetail } from 'common/pure/TransactionInnerDetail'
 
 export const ButtonCustom = styled.button<{ cowGame?: boolean }>`
   display: flex;
