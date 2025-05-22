@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.19.0...tokens-v1.19.1) (2025-05-22)
+
+
+### Bug Fixes
+
+* remove UserAddedTokensUpdater ([#5744](https://github.com/cowprotocol/cowswap/issues/5744)) ([19b4055](https://github.com/cowprotocol/cowswap/commit/19b40554a578843241f02f518438208d9128edc9))
+
 ## [1.19.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.18.0...tokens-v1.19.0) (2025-05-21)
 
 
