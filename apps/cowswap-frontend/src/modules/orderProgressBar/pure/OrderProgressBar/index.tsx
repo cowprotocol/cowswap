@@ -7,17 +7,9 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { FINAL_STATES } from '../../constants'
 import { OrderProgressBarProps, OrderProgressBarStepName } from '../../types'
 import { DebugPanel } from '../DebugPanel'
-import { RenderProgressTopSection } from '../RenderProgressTopSection'
-import { CancelledStep } from '../steps/CancelledStep'
-import { CancellingStep } from '../steps/CancellingStep'
-import { ExecutingStep } from '../steps/ExecutingStep'
-import { ExpiredStep } from '../steps/ExpiredStep'
-import { FinishedStep } from '../steps/FinishedStep'
-import { InitialStep } from '../steps/InitialStep'
-import { SolvingStep } from '../steps/SolvingStep'
+import { STEP_NAME_TO_STEP_COMPONENT } from '../steps/stepsRegistry'
 
 const IS_DEBUG_MODE = false
-const DEBUG_FORCE_SHOW_SURPLUS = false
 
 export function OrderProgressBar(props: OrderProgressBarProps) {
   const { stepName = 'initial', debugMode = IS_DEBUG_MODE } = props
@@ -77,13 +69,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   }, [currentStep, getDuration, analytics])
 
   // Ensure StepComponent will be a valid React component or null
-  let StepComponent: React.ComponentType<OrderProgressBarProps> | null
-
-  if (currentStep === 'cancellationFailed' || currentStep === 'finished') {
-    StepComponent = FinishedStepWrapper
-  } else {
-    StepComponent = STEP_NAME_TO_STEP_COMPONENT[currentStep as keyof typeof STEP_NAME_TO_STEP_COMPONENT] || null
-  }
+  const StepComponent = STEP_NAME_TO_STEP_COMPONENT[currentStep] || null
 
   // Always return a value from the function
   return StepComponent ? (
@@ -98,97 +84,4 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
       )}
     </>
   ) : null // Fallback return value if StepComponent is not found
-}
-
-function InitialStepWrapper(props: OrderProgressBarProps) {
-  return (
-    <InitialStep>
-      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
-    </InitialStep>
-  )
-}
-
-function ExecutingStepWrapper(props: OrderProgressBarProps) {
-  return (
-    <ExecutingStep>
-      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
-    </ExecutingStep>
-  )
-}
-
-function FinishedStepWrapper(props: OrderProgressBarProps) {
-  const { stepName, solverCompetition: solvers, totalSolvers, order, surplusData, chainId, receiverEnsName } = props
-
-  return (
-    <FinishedStep
-      stepName={stepName}
-      surplusData={surplusData}
-      solvers={solvers}
-      order={order}
-      chainId={chainId}
-      receiverEnsName={receiverEnsName}
-      totalSolvers={totalSolvers}
-      debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS}
-    >
-      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
-    </FinishedStep>
-  )
-}
-
-function SolvingStepWrapper(props: OrderProgressBarProps) {
-  const { countdown, stepName, showCancellationModal } = props
-  const isUnfillable = stepName === 'unfillable'
-  const isDelayed = stepName === 'delayed'
-  const isSubmissionFailed = stepName === 'submissionFailed'
-  const isSolved = stepName === 'solved'
-  const calculatedCountdownValue = isUnfillable || isDelayed || isSubmissionFailed || isSolved ? undefined : countdown
-
-  return (
-    <SolvingStep stepName={stepName} showCancellationModal={showCancellationModal}>
-      <RenderProgressTopSection
-        {...props}
-        countdown={calculatedCountdownValue}
-        debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS}
-      />
-    </SolvingStep>
-  )
-}
-
-function CancellingStepWrapper(props: OrderProgressBarProps) {
-  return (
-    <CancellingStep>
-      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
-    </CancellingStep>
-  )
-}
-
-function CancelledStepWrapper(props: OrderProgressBarProps) {
-  return (
-    <CancelledStep>
-      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
-    </CancelledStep>
-  )
-}
-
-function ExpiredStepWrapper(props: OrderProgressBarProps) {
-  return (
-    <ExpiredStep navigateToNewOrder={props.navigateToNewOrder}>
-      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
-    </ExpiredStep>
-  )
-}
-
-const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, React.ComponentType<OrderProgressBarProps>> = {
-  initial: InitialStepWrapper,
-  solving: SolvingStepWrapper,
-  executing: ExecutingStepWrapper,
-  finished: FinishedStepWrapper,
-  solved: SolvingStepWrapper, // Use SolvingStep for 'solved' state
-  delayed: SolvingStepWrapper,
-  unfillable: SolvingStepWrapper,
-  submissionFailed: SolvingStepWrapper,
-  cancelling: CancellingStepWrapper,
-  cancelled: CancelledStepWrapper,
-  expired: ExpiredStepWrapper,
-  cancellationFailed: FinishedStepWrapper,
 }
