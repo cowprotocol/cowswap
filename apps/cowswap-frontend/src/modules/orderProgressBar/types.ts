@@ -22,9 +22,10 @@ export type OrdersProgressBarState = Record<string, OrderProgressBarState>
 export type OrdersProgressBarCountdown = Record<string, number | null>
 
 type happyPath = 'initial' | 'solving' | 'executing' | 'finished'
+type bridgingFlow = 'bridgingInProgress' | 'bridgingFailed' | 'bridgingFinished'
 type errorFlow = 'delayed' | 'solved' | 'unfillable' | 'submissionFailed'
 type cancellationFlow = 'cancelling' | 'cancelled' | 'expired' | 'cancellationFailed'
-export type OrderProgressBarStepName = happyPath | errorFlow | cancellationFlow
+export type OrderProgressBarStepName = happyPath | errorFlow | cancellationFlow | bridgingFlow
 
 type Unpacked<T> = T extends (infer U)[] ? U : never
 export type ApiSolverCompetition = Unpacked<CompetitionOrderStatus['value']>
