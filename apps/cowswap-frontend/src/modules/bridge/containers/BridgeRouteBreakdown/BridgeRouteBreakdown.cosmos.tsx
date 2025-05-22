@@ -5,7 +5,7 @@ import { COW, getChainInfo, USDC_MAINNET } from '@cowprotocol/common-const'
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { BridgeQuoteResults, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { ButtonError, ButtonSize, GlobalCoWDAOStyles, UI } from '@cowprotocol/ui'
+import { ButtonError, ButtonSize, GlobalCoWDAOStyles, Media, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
@@ -275,6 +275,16 @@ const TradeFormContainer = styled.div`
   width: 100%;
   max-width: 480px;
   margin-bottom: 16px;
+`
+
+const BridgeStatusWrapper = styled.div`
+  background: var(${UI.COLOR_PAPER_DARKER});
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  padding: 16px;
+
+  ${Media.upToSmall()} {
+    padding: 10px;
+  }
 `
 
 const TradeFormFooter = styled.div`
@@ -610,18 +620,20 @@ function BridgeStatus() {
     <BridgeFixtureWrapper>
       <TradeFormContainer>
         <StatusTitle>Bridge Status: {scenario.label}</StatusTitle>
-        <BridgeRouteBreakdown
-          {...defaultProps}
-          uiParams={{ ...defaultProps.uiParams, isCollapsible: true, hasBackground: true, hideRouteHeader: true }}
-          bridgingResults={{
-            ...defaultProps.bridgingResults,
-            winningSolverId: winningSolverIdForFixture,
-            receivedAmount: mockReceivedAmount,
-            surplusAmount: mockSurplusAmount,
-          }}
-          swapStatus={scenario.swapStatus}
-          bridgeStatus={scenario.bridgeStatus}
-        />
+        <BridgeStatusWrapper>
+          <BridgeRouteBreakdown
+            {...defaultProps}
+            uiParams={{ ...defaultProps.uiParams, isCollapsible: true, hideRouteHeader: true }}
+            bridgingResults={{
+              ...defaultProps.bridgingResults,
+              winningSolverId: winningSolverIdForFixture,
+              receivedAmount: mockReceivedAmount,
+              surplusAmount: mockSurplusAmount,
+            }}
+            swapStatus={scenario.swapStatus}
+            bridgeStatus={scenario.bridgeStatus}
+          />
+        </BridgeStatusWrapper>
       </TradeFormContainer>
     </BridgeFixtureWrapper>
   )

@@ -2,7 +2,6 @@ import { useCallback, ReactNode } from 'react'
 
 import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
 import { BridgeQuoteResults, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -22,8 +21,6 @@ import { SwapStopDetails } from '../../pure/SwapStopDetails'
 import { StopStatusEnum } from '../../utils'
 
 interface BridgeRouteUiParams {
-  hasBackground: boolean
-
   // Display options
   hideRouteHeader: boolean
 
@@ -54,7 +51,6 @@ export interface BridgeRouteBreakdownProps {
 }
 
 const defaultBridgeRouteUiParams: BridgeRouteUiParams = {
-  hasBackground: false,
   hideRouteHeader: false,
   isCollapsible: false,
   isExpanded: true,
@@ -119,7 +115,6 @@ export function BridgeRouteBreakdown({
   const {
     isCollapsible = false,
     isExpanded = defaultBridgeRouteUiParams.isExpanded,
-    hasBackground = defaultBridgeRouteUiParams.hasBackground,
     hideRouteHeader = defaultBridgeRouteUiParams.hideRouteHeader,
   } = uiParams
 
@@ -134,7 +129,7 @@ export function BridgeRouteBreakdown({
 
   if (isCollapsible && !isExpanded) {
     return (
-      <Wrapper hasBackground={hasBackground}>
+      <Wrapper>
         {!hideRouteHeader && headerContent}
         {collapsedDefault}
       </Wrapper>
@@ -142,7 +137,7 @@ export function BridgeRouteBreakdown({
   }
 
   return (
-    <Wrapper hasBackground={hasBackground}>
+    <Wrapper>
       {!hideRouteHeader && headerContent}
 
       <SwapStopDetails
@@ -168,10 +163,7 @@ export function BridgeRouteBreakdown({
         swapExplorerUrl={swapExplorerUrl}
       />
 
-      <DividerHorizontal
-        margin="8px 0 4px"
-        overrideColor={hasBackground ? `var(${UI.COLOR_PAPER_DARKEST})` : undefined}
-      />
+      <DividerHorizontal margin="8px 0 4px" />
 
       <BridgeStopDetails
         isCollapsible={isCollapsible}
