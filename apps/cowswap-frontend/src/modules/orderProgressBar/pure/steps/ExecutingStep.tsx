@@ -1,7 +1,7 @@
 import * as styledEl from './styled'
 
-import { STEPS } from '../constants'
-import { StepsWrapper } from '../container/StepsWrapper'
+import { STEPS } from '../../constants'
+import { StepsWrapper } from '../StepsWrapper'
 
 interface ExecutingStepProps {
   children: React.ReactNode

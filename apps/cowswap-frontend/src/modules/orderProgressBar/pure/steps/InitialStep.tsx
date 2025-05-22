@@ -4,8 +4,8 @@ import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/ty
 
 import * as styledEl from './styled'
 
-import { STEPS } from '../constants'
-import { StepsWrapper } from '../container/StepsWrapper'
+import { STEPS } from '../../constants'
+import { StepsWrapper } from '../StepsWrapper'
 
 interface InitialStepProps {
   children: React.ReactNode

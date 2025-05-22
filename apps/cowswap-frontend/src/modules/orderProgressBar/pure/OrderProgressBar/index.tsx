@@ -4,18 +4,17 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
-import { FINAL_STATES } from './constants'
-import { RenderProgressTopSection } from './container/RenderProgressTopSection'
-import { DebugPanel } from './DebugPanel'
-import { CancelledStep } from './steps/CancelledStep'
-import { CancellingStep } from './steps/CancellingStep'
-import { ExecutingStep } from './steps/ExecutingStep'
-import { ExpiredStep } from './steps/ExpiredStep'
-import { FinishedStep } from './steps/FinishedStep'
-import { InitialStep } from './steps/InitialStep'
-import { SolvingStep } from './steps/SolvingStep'
-
-import { OrderProgressBarProps, OrderProgressBarStepName } from '../types'
+import { FINAL_STATES } from '../../constants'
+import { OrderProgressBarProps, OrderProgressBarStepName } from '../../types'
+import { DebugPanel } from '../DebugPanel'
+import { RenderProgressTopSection } from '../RenderProgressTopSection'
+import { CancelledStep } from '../steps/CancelledStep'
+import { CancellingStep } from '../steps/CancellingStep'
+import { ExecutingStep } from '../steps/ExecutingStep'
+import { ExpiredStep } from '../steps/ExpiredStep'
+import { FinishedStep } from '../steps/FinishedStep'
+import { InitialStep } from '../steps/InitialStep'
+import { SolvingStep } from '../steps/SolvingStep'
 
 const IS_DEBUG_MODE = false
 const DEBUG_FORCE_SHOW_SURPLUS = false

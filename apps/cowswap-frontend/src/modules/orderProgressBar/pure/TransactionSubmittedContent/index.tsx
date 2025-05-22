@@ -18,8 +18,8 @@ import { ActivityDerivedState, ActivityStatus } from 'common/types/activity'
 
 import * as styledEl from './styled'
 
-import { OrderProgressBar } from '../../OrderProgressBar'
 import { OrderProgressBarProps } from '../../types'
+import { OrderProgressBar } from '../OrderProgressBar'
 
 const activityStatusLabels: Partial<Record<ActivityStatus, string>> = {
   [ActivityStatus.CONFIRMED]: 'Confirmed',

@@ -1,6 +1,17 @@
-import * as styledEl from './styled'
+import styled from 'styled-components/macro'
 
-import { OrderProgressBarProps, OrderProgressBarStepName } from '../types'
+import { OrderProgressBarProps, OrderProgressBarStepName } from '../../types'
+
+const Wrapper = styled.div`
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 1000;
+`
 
 interface DebugPanelProps {
   stepNameToStepComponent: Record<OrderProgressBarStepName, React.ComponentType<OrderProgressBarProps>>
@@ -10,7 +21,7 @@ interface DebugPanelProps {
 
 export function DebugPanel({ stepNameToStepComponent, stepName, setDebugStep }: DebugPanelProps) {
   return (
-    <styledEl.DebugPanel>
+    <Wrapper>
       <label htmlFor="debug-step-select">Debug Step:</label>
       <select
         id="debug-step-select"
@@ -24,6 +35,6 @@ export function DebugPanel({ stepNameToStepComponent, stepName, setDebugStep }: 
           </option>
         ))}
       </select>
-    </styledEl.DebugPanel>
+    </Wrapper>
   )
 }

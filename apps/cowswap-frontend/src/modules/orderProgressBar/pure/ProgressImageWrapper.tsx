@@ -2,7 +2,7 @@ import { UI } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
 
-import { OrderProgressBarProps } from '../../types'
+import { OrderProgressBarProps } from '../types'
 
 interface ProgressImageWrapperProps {
   children: React.ReactNode
