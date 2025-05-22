@@ -4,7 +4,7 @@ import PROGRESSBAR_COW_SURPLUS_3 from '@cowprotocol/assets/cow-swap/progressbar-
 import PROGRESSBAR_COW_SURPLUS_4 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-4.svg'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { OrderProgressBarStepName } from 'common/hooks/orderProgressBar'
+import { OrderProgressBarStepName } from 'modules/orderProgressBarMixed/orderProgressBar'
 
 export const STEPS = [
   {

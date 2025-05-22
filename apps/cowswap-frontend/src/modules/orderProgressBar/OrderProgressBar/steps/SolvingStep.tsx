@@ -2,8 +2,9 @@ import React from 'react'
 
 import { Command } from '@cowprotocol/types'
 
+import { OrderProgressBarStepName } from 'modules/orderProgressBarMixed/orderProgressBar'
+
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
-import { OrderProgressBarStepName } from 'common/hooks/orderProgressBar'
 
 import * as styledEl from './styled'
 

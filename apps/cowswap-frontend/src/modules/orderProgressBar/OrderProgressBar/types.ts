@@ -3,7 +3,8 @@ import { Command } from '@cowprotocol/types'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { OrderProgressBarStepName, SolverCompetition } from 'common/hooks/orderProgressBar'
+import { OrderProgressBarStepName, SolverCompetition } from 'modules/orderProgressBarMixed/orderProgressBar'
+
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 
 export type OrderProgressBarProps = {

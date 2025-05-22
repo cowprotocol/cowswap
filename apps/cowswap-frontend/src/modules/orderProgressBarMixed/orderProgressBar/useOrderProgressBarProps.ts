@@ -14,12 +14,14 @@ import { useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
-import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
+import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { useSolversInfo } from 'common/hooks/useSolversInfo'
 import { featureFlagsAtom } from 'common/state/featureFlagsState'
+import { ActivityDerivedState } from 'common/types/activity'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
 import {
@@ -30,9 +32,6 @@ import {
   updateOrderProgressBarStepName,
 } from './atoms'
 import { ApiSolverCompetition, OrderProgressBarState, OrderProgressBarStepName, SolverCompetition } from './types'
-
-import { useGetSurplusData } from '../useGetSurplusFiatValue'
-import { useSolversInfo } from '../useSolversInfo'
 
 export type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null

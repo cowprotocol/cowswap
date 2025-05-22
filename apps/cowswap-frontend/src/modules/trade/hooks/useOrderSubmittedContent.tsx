@@ -5,7 +5,8 @@ import { Command } from '@cowprotocol/types'
 
 import { useOrder } from 'legacy/state/orders/hooks'
 
-import { useOrderProgressBarProps } from 'common/hooks/orderProgressBar'
+import { useOrderProgressBarProps } from 'modules/orderProgressBarMixed/orderProgressBar'
+
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 
 import { useNavigateToNewOrderCallback } from './useNavigateToNewOrderCallback'

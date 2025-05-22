@@ -12,7 +12,6 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
-import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { useToggleAccountModal } from 'modules/account'
@@ -47,7 +46,7 @@ import {
   TransactionState as ActivityLink,
 } from './styled'
 
-import { ActivityDerivedState } from './index'
+import { ActivityDerivedState, ActivityStatus } from '../../../../common/types/activity'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
