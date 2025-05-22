@@ -5,12 +5,10 @@ import { Command } from '@cowprotocol/types'
 
 import { useOrder } from 'legacy/state/orders/hooks'
 
-import { useOrderProgressBarProps } from 'modules/orderProgressBarMixed/orderProgressBar'
+import { useNavigateToNewOrderCallback, useTradeConfirmState } from 'modules/trade'
 
-import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
-
-import { useNavigateToNewOrderCallback } from './useNavigateToNewOrderCallback'
-import { useTradeConfirmState } from './useTradeConfirmState'
+import { useOrderProgressBarProps } from '../../orderProgressBarMixed/orderProgressBar'
+import { TransactionSubmittedContent } from '../pure/TransactionSubmittedContent'
 
 export function useOrderSubmittedContent(chainId: SupportedChainId) {
   const { transactionHash } = useTradeConfirmState()

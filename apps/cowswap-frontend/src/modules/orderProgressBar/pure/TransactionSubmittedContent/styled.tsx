@@ -1,9 +1,8 @@
 import { ButtonOutlined, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-import { CloseIcon } from 'theme'
 
-import { TransactionInnerDetail } from 'modules/account/containers/Transaction/styled'
+import { TransactionInnerDetail } from 'modules/account'
 
 export const ButtonCustom = styled.button<{ cowGame?: boolean }>`
   display: flex;
@@ -61,19 +60,6 @@ export const ButtonGroup = styled.div`
 
   ${Media.upToSmall()} {
     flex-direction: column;
-  }
-`
-
-export const CloseIconWrapper = styled(CloseIcon)<{ margin?: string }>`
-  display: flex;
-  margin: ${({ margin }) => margin ?? '0 0 0 auto'};
-  opacity: 0.6;
-  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-  height: 28px;
-  width: 28px;
-
-  &:hover {
-    opacity: 1;
   }
 `
 
@@ -137,13 +123,6 @@ export const Section = styled.div`
     width: 100%;
     align-items: center;
   }
-`
-
-export const StyledIcon = styled.img`
-  height: auto;
-  width: 20px;
-  max-height: 100%;
-  margin: 0 10px 0 0;
 `
 
 export const Wrapper = styled.div`

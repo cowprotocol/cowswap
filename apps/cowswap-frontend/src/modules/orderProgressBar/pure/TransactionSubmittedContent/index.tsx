@@ -8,18 +8,18 @@ import { Nullish } from 'types'
 import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/DisplayLink'
 import type { Order } from 'legacy/state/orders/actions'
 
-import { GnosisSafeTxDetails } from 'modules/account/containers/Transaction/ActivityDetails'
+import { GnosisSafeTxDetails } from 'modules/account'
 import { EthFlowStepper } from 'modules/ethFlow'
-import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
+import { WatchAssetInWallet } from 'modules/wallet'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { CancelButton } from 'common/pure/CancelButton'
+import { ActivityDerivedState, ActivityStatus } from 'common/types/activity'
 
 import * as styledEl from './styled'
 
-import { OrderProgressBar } from '../../../modules/orderProgressBar/OrderProgressBar'
-import { OrderProgressBarProps } from '../../../modules/orderProgressBar/OrderProgressBar/types'
-import { ActivityDerivedState, ActivityStatus } from '../../types/activity'
-import { CancelButton } from '../CancelButton'
+import { OrderProgressBar } from '../../OrderProgressBar'
+import { OrderProgressBarProps } from '../../OrderProgressBar/types'
 
 const activityStatusLabels: Partial<Record<ActivityStatus, string>> = {
   [ActivityStatus.CONFIRMED]: 'Confirmed',
