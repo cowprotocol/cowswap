@@ -28,7 +28,6 @@ import {
 import { StatusColor, StopStatusEnum } from '../../utils'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { RecipientDisplay } from '../RecipientDisplay'
-import { RouteTitle } from '../RouteTitle'
 import { SwapStatusIcons, SwapStatusTitlePrefixes } from '../StopStatus'
 import { TokenAmountDisplay } from '../TokenAmountDisplay'
 
@@ -106,9 +105,10 @@ export function SwapStopDetails({
       isCollapsible={isCollapsible}
       defaultExpanded={defaultExpanded}
       explorerUrl={swapExplorerUrl}
+      chainName={sourceChainName}
+      sellAmount={sellCurrencyAmount}
+      buyAmount={buyCurrencyAmount}
     >
-      <RouteTitle chainName={sourceChainName} sellAmount={sellCurrencyAmount} buyAmount={buyCurrencyAmount} />
-
       {!isBridgeStatusView && <TradeFeesAndCosts receiveAmountInfo={receiveAmountInfo} />}
 
       {isBridgeStatusView && status === StopStatusEnum.DONE && winningSolver && (
