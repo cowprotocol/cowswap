@@ -6,9 +6,9 @@ import { useOrderIdForSurplusModal, useRemoveOrderFromSurplusQueue } from 'entit
 
 import { useOrder } from 'legacy/state/orders/hooks'
 
+import { useOrderProgressBarProps } from 'modules/orderProgressBarMixed/orderProgressBar'
 import { useTradeConfirmState, useNavigateToNewOrderCallback } from 'modules/trade'
 
-import { useOrderProgressBarProps } from 'common/hooks/orderProgressBar'
 import { CowModal } from 'common/pure/Modal'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 

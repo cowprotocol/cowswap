@@ -10,12 +10,11 @@ import { Nullish } from 'types'
 
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 
+import { SolverCompetition } from 'modules/orderProgressBarMixed/orderProgressBar'
 import { ReceiveAmountInfo, TradeFeesAndCosts } from 'modules/trade'
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReceiveAmountTitle } from 'modules/trade/pure/ReceiveAmountTitle'
 import { UsdAmountInfo } from 'modules/usdAmount/hooks/useUsdAmount'
-
-import { SolverCompetition } from 'common/hooks/orderProgressBar'
 
 import { WinningSolverContainer } from './styled'
 

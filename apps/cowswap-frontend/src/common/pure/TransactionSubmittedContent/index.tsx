@@ -6,10 +6,8 @@ import { Currency } from '@uniswap/sdk-core'
 import { Nullish } from 'types'
 
 import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/DisplayLink'
-import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import type { Order } from 'legacy/state/orders/actions'
 
-import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { GnosisSafeTxDetails } from 'modules/account/containers/Transaction/ActivityDetails'
 import { EthFlowStepper } from 'modules/ethFlow'
 import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
@@ -20,6 +18,7 @@ import * as styledEl from './styled'
 
 import { OrderProgressBar } from '../../../modules/orderProgressBar/OrderProgressBar'
 import { OrderProgressBarProps } from '../../../modules/orderProgressBar/OrderProgressBar/types'
+import { ActivityDerivedState, ActivityStatus } from '../../types/activity'
 import { CancelButton } from '../CancelButton'
 
 const activityStatusLabels: Partial<Record<ActivityStatus, string>> = {

@@ -1,7 +1,7 @@
-import { OrderProgressBarStepName } from 'common/hooks/orderProgressBar/types'
-
 import * as styledEl from './styled'
 import { OrderProgressBarProps } from './types'
+
+import { OrderProgressBarStepName } from '../../orderProgressBarMixed/orderProgressBar/types'
 
 interface DebugPanelProps {
   stepNameToStepComponent: Record<OrderProgressBarStepName, React.ComponentType<OrderProgressBarProps>>

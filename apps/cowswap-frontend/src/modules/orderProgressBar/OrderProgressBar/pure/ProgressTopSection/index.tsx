@@ -1,6 +1,6 @@
 import { Order } from 'legacy/state/orders/actions'
 
-import { OrderProgressBarStepName } from 'common/hooks/orderProgressBar'
+import { OrderProgressBarStepName } from 'modules/orderProgressBarMixed/orderProgressBar'
 
 import { ProgressImageWrapper } from '../../container/ProgressImageWrapper'
 import {

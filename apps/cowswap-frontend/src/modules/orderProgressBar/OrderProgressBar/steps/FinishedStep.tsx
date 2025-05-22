@@ -17,8 +17,9 @@ import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
+import { OrderProgressBarStepName, SolverCompetition } from 'modules/orderProgressBarMixed/orderProgressBar'
+
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
-import { OrderProgressBarStepName, SolverCompetition } from 'common/hooks/orderProgressBar'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
