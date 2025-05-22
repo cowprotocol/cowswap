@@ -5,7 +5,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { Nullish } from 'types'
 
-import { ApiSolverCompetition, SolverCompetition } from 'modules/orderProgressBarMixed/orderProgressBar'
+import type { ApiSolverCompetition, SolverCompetition } from 'modules/orderProgressBar'
 
 import { useSolversInfo } from 'common/hooks/useSolversInfo'
 

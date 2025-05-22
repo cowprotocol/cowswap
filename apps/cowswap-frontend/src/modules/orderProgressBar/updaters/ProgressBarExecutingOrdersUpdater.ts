@@ -1,16 +1,10 @@
 import { useAtom } from 'jotai'
 import { useLayoutEffect, useRef } from 'react'
 
-import { ordersProgressBarCountdown } from './atoms'
-import { OrdersProgressBarCountdown } from './types'
+import { ordersProgressBarCountdown } from '../state/atoms'
+import { OrdersProgressBarCountdown } from '../types'
 
 export function ProgressBarExecutingOrdersUpdater(): null {
-  useCountdownUpdater()
-
-  return null
-}
-
-function useCountdownUpdater() {
   const [allCountdowns, setCountdowns] = useAtom(ordersProgressBarCountdown)
 
   // Use a ref to not restart the updater on every change
@@ -44,4 +38,6 @@ function useCountdownUpdater() {
 
     return () => clearInterval(timer)
   }, [setCountdowns])
+
+  return null
 }

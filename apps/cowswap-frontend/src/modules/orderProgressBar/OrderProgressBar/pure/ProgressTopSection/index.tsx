@@ -1,7 +1,6 @@
 import { Order } from 'legacy/state/orders/actions'
 
-import { OrderProgressBarStepName } from 'modules/orderProgressBarMixed/orderProgressBar'
-
+import { OrderProgressBarStepName } from '../../../types'
 import { ProgressImageWrapper } from '../../container/ProgressImageWrapper'
 import {
   CancelledCancellingTopSection,

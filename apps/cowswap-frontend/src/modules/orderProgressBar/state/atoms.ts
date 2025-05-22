@@ -7,7 +7,7 @@ import {
   OrderProgressBarStepName,
   OrdersProgressBarCountdown,
   OrdersProgressBarState,
-} from './types'
+} from '../types'
 
 /**
  * Base Atom for orders progress bar state
@@ -35,7 +35,7 @@ export const ordersProgressBarCountdown = atom(
       fullState[orderId].countdown = countdowns[orderId]
     })
     set(ordersProgressBarStateAtom, fullState)
-  }
+  },
 )
 
 type UpdateOrderProgressBarCountdownParams = {
@@ -65,7 +65,7 @@ export const updateOrderProgressBarCountdown = atom(
     }
 
     set(ordersProgressBarStateAtom, { ...fullState, [orderId]: singleOrderState })
-  }
+  },
 )
 
 type UpdateOrderProgressBarStepNameParams = {
@@ -96,7 +96,7 @@ export const updateOrderProgressBarStepName = atom(
     singleOrderState.lastTimeChangedSteps = Date.now()
 
     set(ordersProgressBarStateAtom, { ...fullState, [orderId]: singleOrderState })
-  }
+  },
 )
 
 type UpdateOrderProgressBarBackendInfoParams = {
@@ -139,7 +139,7 @@ export const updateOrderProgressBarBackendInfo = atom(
       ...fullState,
       [orderId]: singleOrderState,
     })
-  }
+  },
 )
 
 /**

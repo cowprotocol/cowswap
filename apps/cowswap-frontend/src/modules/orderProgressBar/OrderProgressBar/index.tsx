@@ -2,8 +2,6 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 
-import { OrderProgressBarStepName } from 'modules/orderProgressBarMixed/orderProgressBar'
-
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import { FINAL_STATES } from './constants'
@@ -16,7 +14,8 @@ import { ExpiredStep } from './steps/ExpiredStep'
 import { FinishedStep } from './steps/FinishedStep'
 import { InitialStep } from './steps/InitialStep'
 import { SolvingStep } from './steps/SolvingStep'
-import { OrderProgressBarProps } from './types'
+
+import { OrderProgressBarProps, OrderProgressBarStepName } from '../types'
 
 const IS_DEBUG_MODE = false
 const DEBUG_FORCE_SHOW_SURPLUS = false

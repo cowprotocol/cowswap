@@ -6,10 +6,10 @@ import { AnimatePresence, motion } from 'framer-motion'
 
 import * as styledEl from './styled'
 
+import { OrderProgressBarProps } from '../../types'
 import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../constants'
 import { ProgressTopSection } from '../pure/ProgressTopSection'
 import { OrderIntent } from '../steps/OrderIntent'
-import { OrderProgressBarProps } from '../types'
 
 export function RenderProgressTopSection({
   stepName,

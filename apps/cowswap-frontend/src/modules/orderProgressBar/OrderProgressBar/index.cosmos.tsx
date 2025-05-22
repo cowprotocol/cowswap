@@ -7,9 +7,8 @@ import styled from 'styled-components/macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { OrderProgressBarProps } from './types'
-
 import { getOrderMock } from '../../../mocks/orderMock'
+import { OrderProgressBarProps } from '../types'
 
 import { OrderProgressBar } from './index'
 
