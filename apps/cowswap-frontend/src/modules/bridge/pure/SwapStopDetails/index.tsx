@@ -48,7 +48,6 @@ export interface SwapStopDetailsProps {
   swapSlippage: Percent
   swapMinReceiveAmount?: CurrencyAmount<Currency>
   swapMinReceiveUsdInfo?: UsdAmountInfo | null
-  tokenLogoSize: number
   bridgeProvider: BridgeProviderInfo
   recipient?: Nullish<string>
   sourceChainId: SupportedChainId
@@ -72,7 +71,6 @@ export function SwapStopDetails({
   swapSlippage,
   swapMinReceiveAmount,
   swapMinReceiveUsdInfo,
-  tokenLogoSize,
   bridgeProvider,
   recipient,
   sourceChainId,
@@ -83,12 +81,6 @@ export function SwapStopDetails({
   surplusAmountUsdInfo = null,
   swapExplorerUrl,
 }: SwapStopDetailsProps): ReactNode {
-  const sellToken = sellCurrencyAmount.currency
-  const sellTokenSymbol = sellToken.symbol || '???'
-
-  const buyToken = buyCurrencyAmount.currency
-  const buyTokenSymbol = buyToken.symbol || '???'
-
   const swapExpectedReceiveUsdValue = swapExpectedReceiveUsdInfo?.value
   const swapMinReceiveUsdValue = swapMinReceiveUsdInfo?.value
   const receivedAmountUsdValue = receivedAmountUsdInfo?.value
@@ -119,21 +111,9 @@ export function SwapStopDetails({
     >
       <ConfirmDetailsItem label="" withTimelineDot>
         <TokenFlowContainer>
-          <TokenAmountDisplay
-            token={sellToken}
-            currencyAmount={sellCurrencyAmount}
-            displaySymbol={sellTokenSymbol}
-            tokenLogoSize={tokenLogoSize}
-            hideFiatAmount={true}
-          />
+          <TokenAmountDisplay currencyAmount={sellCurrencyAmount} displaySymbol hideFiatAmount={true} />
           <ArrowIcon>→</ArrowIcon>
-          <TokenAmountDisplay
-            token={buyToken}
-            currencyAmount={buyCurrencyAmount}
-            displaySymbol={buyTokenSymbol}
-            tokenLogoSize={tokenLogoSize}
-            hideFiatAmount={true}
-          />
+          <TokenAmountDisplay currencyAmount={buyCurrencyAmount} displaySymbol hideFiatAmount={true} />
           {` on ${sourceChainName}`}
         </TokenFlowContainer>
       </ConfirmDetailsItem>
@@ -172,13 +152,7 @@ export function SwapStopDetails({
             </>
           }
         >
-          <TokenAmountDisplay
-            token={buyToken}
-            currencyAmount={buyCurrencyAmount}
-            displaySymbol={buyTokenSymbol}
-            usdValue={swapExpectedReceiveUsdValue}
-            tokenLogoSize={tokenLogoSize}
-          />
+          <TokenAmountDisplay currencyAmount={buyCurrencyAmount} displaySymbol usdValue={swapExpectedReceiveUsdValue} />
         </ConfirmDetailsItem>
       )}
 
@@ -208,13 +182,7 @@ export function SwapStopDetails({
           }
         >
           <b>
-            <TokenAmountDisplay
-              token={buyToken}
-              currencyAmount={receivedAmount}
-              displaySymbol={buyTokenSymbol}
-              usdValue={receivedAmountUsdValue}
-              tokenLogoSize={tokenLogoSize}
-            />
+            <TokenAmountDisplay currencyAmount={receivedAmount} displaySymbol usdValue={receivedAmountUsdValue} />
           </b>
         </ConfirmDetailsItem>
       )}
@@ -236,11 +204,9 @@ export function SwapStopDetails({
           <SuccessTextBold>
             +{' '}
             <TokenAmountDisplay
-              token={buyToken}
               currencyAmount={surplusAmount}
-              displaySymbol={buyTokenSymbol}
+              displaySymbol
               usdValue={surplusAmountUsdValue}
-              tokenLogoSize={tokenLogoSize}
               hideTokenIcon={true}
             />
           </SuccessTextBold>
@@ -257,13 +223,7 @@ export function SwapStopDetails({
           withTimelineDot
         >
           <b>
-            <TokenAmountDisplay
-              token={buyToken}
-              currencyAmount={receivedAmount}
-              displaySymbol={buyTokenSymbol}
-              usdValue={receivedAmountUsdValue}
-              tokenLogoSize={tokenLogoSize}
-            />
+            <TokenAmountDisplay currencyAmount={receivedAmount} displaySymbol usdValue={receivedAmountUsdValue} />
           </b>
         </ConfirmDetailsItem>
       )}
@@ -286,11 +246,9 @@ export function SwapStopDetails({
           <b>
             +{' '}
             <TokenAmountDisplay
-              token={buyToken}
               currencyAmount={surplusAmount}
-              displaySymbol={buyTokenSymbol}
+              displaySymbol
               usdValue={surplusAmountUsdValue}
-              tokenLogoSize={tokenLogoSize}
               status={StatusColor.SUCCESS}
               hideTokenIcon={true}
             />
@@ -318,11 +276,9 @@ export function SwapStopDetails({
           >
             <b>
               <TokenAmountDisplay
-                token={buyToken}
                 currencyAmount={swapMinReceiveAmount}
-                displaySymbol={buyTokenSymbol}
+                displaySymbol
                 usdValue={swapMinReceiveUsdValue}
-                tokenLogoSize={tokenLogoSize}
               />
             </b>
           </ConfirmDetailsItem>
@@ -343,11 +299,9 @@ export function SwapStopDetails({
           >
             <b>
               <TokenAmountDisplay
-                token={buyToken}
                 currencyAmount={swapMinReceiveAmount}
-                displaySymbol={buyTokenSymbol}
+                displaySymbol
                 usdValue={swapMinReceiveUsdValue}
-                tokenLogoSize={tokenLogoSize}
               />
             </b>
           </ConfirmDetailsItem>

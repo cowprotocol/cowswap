@@ -24,7 +24,6 @@ import { SwapStopDetails } from '../../pure/SwapStopDetails'
 import { StopStatusEnum } from '../../utils'
 
 interface BridgeRouteUiParams {
-  tokenLogoSize: number
   hasBackground: boolean
 
   // Display options
@@ -58,7 +57,6 @@ export interface BridgeRouteBreakdownProps {
 }
 
 const defaultBridgeRouteUiParams: BridgeRouteUiParams = {
-  tokenLogoSize: 18,
   hasBackground: false,
   hideBridgeFlowFiatAmount: false,
   hideRouteHeader: false,
@@ -126,7 +124,6 @@ export function BridgeRouteBreakdown({
     isCollapsible,
     isExpanded = defaultBridgeRouteUiParams.isExpanded,
     hasBackground = defaultBridgeRouteUiParams.hasBackground,
-    tokenLogoSize = defaultBridgeRouteUiParams.tokenLogoSize,
     hideBridgeFlowFiatAmount = defaultBridgeRouteUiParams.hideBridgeFlowFiatAmount,
     hideRouteHeader = defaultBridgeRouteUiParams.hideRouteHeader,
   } = uiParams
@@ -187,7 +184,6 @@ export function BridgeRouteBreakdown({
         swapSlippage={swapSlippage}
         swapMinReceiveAmount={amounts.swapMinReceiveAmount}
         swapMinReceiveUsdInfo={swapMinReceiveUsdInfo}
-        tokenLogoSize={tokenLogoSize}
         bridgeProvider={providerDetails}
         recipient={bridgeQuote.bridgeCallDetails.preAuthorizedBridgingHook.recipient}
         sourceChainId={sourceChainId}
@@ -218,7 +214,6 @@ export function BridgeRouteBreakdown({
         estimatedTime={bridgeQuote.expectedFillTimeSeconds}
         recipient={recipient || account}
         recipientChainId={targetChainId}
-        tokenLogoSize={tokenLogoSize}
         bridgeExplorerUrl={bridgeExplorerUrl}
       />
     </Wrapper>

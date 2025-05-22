@@ -9,24 +9,20 @@ import { StatusColor } from 'modules/bridge/utils/status'
 import { AmountWithTokenIcon } from './styled'
 
 export interface TokenAmountDisplayProps {
-  token: Currency
   currencyAmount: CurrencyAmount<Currency> | null
-  displaySymbol?: string
+  displaySymbol?: boolean
   usdValue?: CurrencyAmount<Token> | null
   hideFiatAmount?: boolean
-  tokenLogoSize: number
   status?: StatusColor
   libTokenAmountProps?: Omit<LibTokenAmountProps, 'amount' | 'tokenSymbol' | 'hideTokenSymbol'>
   hideTokenIcon?: boolean
 }
 
 export function TokenAmountDisplay({
-  token,
   currencyAmount,
   displaySymbol,
   usdValue,
   hideFiatAmount = false,
-  tokenLogoSize,
   status,
   libTokenAmountProps,
   hideTokenIcon = false,
@@ -35,16 +31,14 @@ export function TokenAmountDisplay({
     return null
   }
 
-  const tokenSymbolForLib: LibTokenAmountProps['tokenSymbol'] = {
-    symbol: displaySymbol || token.symbol || 'Unknown',
-  }
+  const token = currencyAmount.currency
 
   return (
     <AmountWithTokenIcon colorVariant={status}>
-      {!hideTokenIcon && <TokenLogo token={token} size={tokenLogoSize} />}
+      {!hideTokenIcon && <TokenLogo token={token} size={18} />}
       <LibTokenAmount
         amount={currencyAmount}
-        tokenSymbol={tokenSymbolForLib}
+        tokenSymbol={displaySymbol ? token : undefined}
         hideTokenSymbol={false}
         {...libTokenAmountProps}
       />
