@@ -32,7 +32,7 @@ function Host() {
 }
 
 const Fixtures = {
-  default: <Host />,
+  default: () => <Host />,
 }
 
 export default Fixtures

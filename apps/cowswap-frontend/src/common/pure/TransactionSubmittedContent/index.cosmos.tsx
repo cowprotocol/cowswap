@@ -20,10 +20,12 @@ const defaultProps = {
     order,
   },
   orderProgressBarProps: {
-    chainId: SupportedChainId.MAINNET, isProgressBarSetup: false, showCancellationModal: () => {
+    chainId: SupportedChainId.MAINNET,
+    isProgressBarSetup: false,
+    showCancellationModal: () => {
       alert('Cancellation triggered!!')
-    }
-  }
+    },
+  },
 }
 
 const Wrapper = styled.div`
@@ -32,7 +34,7 @@ const Wrapper = styled.div`
 `
 
 const Fixtures = {
-  default: (
+  default: () => (
     <Wrapper>
       <TransactionSubmittedContent {...defaultProps} />
     </Wrapper>
