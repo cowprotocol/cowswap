@@ -8,9 +8,9 @@ import { useOrder } from 'legacy/state/orders/hooks'
 
 import { useTradeConfirmState, useNavigateToNewOrderCallback } from 'modules/trade'
 
-import { useOrderProgressBarProps } from '../../hooks/orderProgressBar'
-import { CowModal } from '../../pure/Modal'
-import { TransactionSubmittedContent } from '../../pure/TransactionSubmittedContent'
+import { useOrderProgressBarProps } from 'common/hooks/orderProgressBar'
+import { CowModal } from 'common/pure/Modal'
+import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 
 export function SurplusModalSetup() {
   const orderId = useOrderIdForSurplusModal()
