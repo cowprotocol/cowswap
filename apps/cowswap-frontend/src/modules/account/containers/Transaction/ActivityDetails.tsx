@@ -9,6 +9,8 @@ import { UiOrderType } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
+
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -18,7 +20,6 @@ import { EthFlowStepper } from 'modules/ethFlow'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
-import { useAddOrderToSurplusQueue } from 'common/containers/SurplusModalSetup/surplusModal'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'

@@ -2,11 +2,11 @@ import { useCallback, useEffect } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useOrderIdForSurplusModal, useRemoveOrderFromSurplusQueue } from 'entities/surplusModal'
+
 import { useOrder } from 'legacy/state/orders/hooks'
 
 import { useTradeConfirmState, useNavigateToNewOrderCallback } from 'modules/trade'
-
-import { useOrderIdForSurplusModal, useRemoveOrderFromSurplusQueue } from './surplusModal'
 
 import { useOrderProgressBarProps } from '../../hooks/orderProgressBar'
 import { CowModal } from '../../pure/Modal'
