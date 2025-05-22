@@ -133,6 +133,21 @@ const Fixtures = {
       <OrderProgressBar {...defaultProps} stepName="expired" />
     </Wrapper>
   ),
+  bridgingInProgress: () => (
+    <Wrapper>
+      <OrderProgressBar {...defaultProps} stepName="bridgingInProgress" />
+    </Wrapper>
+  ),
+  bridgingFailed: () => (
+    <Wrapper>
+      <OrderProgressBar {...defaultProps} stepName="bridgingFailed" />
+    </Wrapper>
+  ),
+  bridgingFinished: () => (
+    <Wrapper>
+      <OrderProgressBar {...defaultProps} stepName="bridgingFinished" />
+    </Wrapper>
+  ),
 }
 
 export default Fixtures

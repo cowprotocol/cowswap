@@ -1,5 +1,6 @@
 import React, { ComponentType } from 'react'
 
+import { BridgingInProgressStep } from './BridgingInProgressStep'
 import { CancelledStep } from './CancelledStep'
 import { CancellingStep } from './CancellingStep'
 import { ExecutingStep } from './ExecutingStep'
@@ -91,6 +92,14 @@ function ExpiredStepWrapper(props: OrderProgressBarProps) {
   )
 }
 
+function BridgingInProgressStepWrapper(props: OrderProgressBarProps) {
+  return (
+    <BridgingInProgressStep>
+      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
+    </BridgingInProgressStep>
+  )
+}
+
 export const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, ComponentType<OrderProgressBarProps>> = {
   initial: InitialStepWrapper,
   solving: SolvingStepWrapper,
@@ -104,4 +113,7 @@ export const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, Compo
   cancelled: CancelledStepWrapper,
   expired: ExpiredStepWrapper,
   cancellationFailed: FinishedStepWrapper,
+  bridgingInProgress: BridgingInProgressStepWrapper,
+  bridgingFailed: BridgingInProgressStepWrapper,
+  bridgingFinished: BridgingInProgressStepWrapper,
 }
