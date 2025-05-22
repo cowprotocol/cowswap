@@ -51,7 +51,6 @@ export interface BridgeStopDetailsProps {
   estimatedTime: number | undefined
   recipient: Nullish<string>
   recipientChainId: SupportedChainId
-  tokenLogoSize: number
   bridgeExplorerUrl?: string
 }
 
@@ -69,14 +68,9 @@ export function BridgeStopDetails({
   estimatedTime,
   recipient,
   recipientChainId,
-  tokenLogoSize,
   bridgeExplorerUrl,
 }: BridgeStopDetailsProps): ReactNode {
   const sourceToken = bridgeSendCurrencyAmount.currency
-  const bridgeTokenSymbol = sourceToken.symbol || '???'
-
-  const destToken = bridgeReceiveCurrencyAmount.currency
-  const bridgeReceiveTokenSymbol = destToken.symbol || '???'
 
   const isStatusMode = status !== StopStatusEnum.DEFAULT
   const isAnimationVisible = defaultExpanded && status === StopStatusEnum.PENDING
@@ -96,20 +90,12 @@ export function BridgeStopDetails({
     >
       <ConfirmDetailsItem label="" withTimelineDot>
         <TokenFlowContainer>
-          <TokenAmountDisplay
-            token={sourceToken}
-            displaySymbol={bridgeTokenSymbol}
-            tokenLogoSize={tokenLogoSize}
-            hideFiatAmount={true}
-            currencyAmount={bridgeSendCurrencyAmount}
-          />
+          <TokenAmountDisplay displaySymbol hideFiatAmount={true} currencyAmount={bridgeSendCurrencyAmount} />
           <ArrowIcon>→</ArrowIcon>
           <TokenAmountDisplay
-            token={destToken}
-            displaySymbol={bridgeReceiveTokenSymbol}
+            displaySymbol
             usdValue={receiveAmountUsd}
             hideFiatAmount={hideBridgeFlowFiatAmount}
-            tokenLogoSize={tokenLogoSize}
             currencyAmount={bridgeReceiveCurrencyAmount}
           />
           {` on ${recipientChainName}`}
@@ -125,11 +111,7 @@ export function BridgeStopDetails({
         withTimelineDot
         contentTextColor={bridgeFee.equalTo(0) ? `var(${UI.COLOR_GREEN})` : undefined}
       >
-        {bridgeFee.equalTo(0) ? (
-          'FREE'
-        ) : (
-          <TokenAmountDisplay token={bridgeFee.currency} currencyAmount={bridgeFee} tokenLogoSize={tokenLogoSize} />
-        )}
+        {bridgeFee.equalTo(0) ? 'FREE' : <TokenAmountDisplay currencyAmount={bridgeFee} />}
       </ConfirmDetailsItem>
 
       {estimatedTime && (
@@ -174,20 +156,12 @@ export function BridgeStopDetails({
         isLast={!isStatusMode}
       >
         {isStatusMode ? (
-          <TokenAmountDisplay
-            token={destToken}
-            displaySymbol={bridgeReceiveTokenSymbol}
-            usdValue={receiveAmountUsd}
-            tokenLogoSize={tokenLogoSize}
-            currencyAmount={bridgeReceiveCurrencyAmount}
-          />
+          <TokenAmountDisplay displaySymbol usdValue={receiveAmountUsd} currencyAmount={bridgeReceiveCurrencyAmount} />
         ) : (
           <b>
             <TokenAmountDisplay
-              token={destToken}
-              displaySymbol={bridgeReceiveTokenSymbol}
+              displaySymbol
               usdValue={receiveAmountUsd}
-              tokenLogoSize={tokenLogoSize}
               currencyAmount={bridgeReceiveCurrencyAmount}
             />
           </b>
@@ -251,13 +225,7 @@ export function BridgeStopDetails({
             }
           >
             <b>
-              <TokenAmountDisplay
-                token={sourceToken}
-                displaySymbol={bridgeTokenSymbol}
-                hideFiatAmount={true}
-                tokenLogoSize={tokenLogoSize}
-                currencyAmount={bridgeSendCurrencyAmount}
-              />
+              <TokenAmountDisplay displaySymbol hideFiatAmount={true} currencyAmount={bridgeSendCurrencyAmount} />
             </b>
           </ConfirmDetailsItem>
         </>
@@ -280,10 +248,8 @@ export function BridgeStopDetails({
             )}
             {status === StopStatusEnum.DONE && (
               <TokenAmountDisplay
-                token={destToken}
-                displaySymbol={bridgeReceiveTokenSymbol}
+                displaySymbol
                 usdValue={receiveAmountUsd}
-                tokenLogoSize={tokenLogoSize}
                 currencyAmount={bridgeReceiveCurrencyAmount}
               />
             )}
