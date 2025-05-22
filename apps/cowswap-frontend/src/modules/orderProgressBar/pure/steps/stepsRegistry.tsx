@@ -1,6 +1,6 @@
 import React, { ComponentType } from 'react'
 
-import { BridgingInProgressStep } from './BridgingInProgressStep'
+import { BridgingStep } from './BridgingStep'
 import { CancelledStep } from './CancelledStep'
 import { CancellingStep } from './CancellingStep'
 import { ExecutingStep } from './ExecutingStep'
@@ -9,7 +9,7 @@ import { FinishedStep } from './FinishedStep'
 import { InitialStep } from './InitialStep'
 import { SolvingStep } from './SolvingStep'
 
-import { OrderProgressBarProps, OrderProgressBarStepName } from '../../types'
+import { BridgingFlowStep, OrderProgressBarProps, OrderProgressBarStepName } from '../../types'
 import { RenderProgressTopSection } from '../RenderProgressTopSection'
 
 const DEBUG_FORCE_SHOW_SURPLUS = false
@@ -92,11 +92,15 @@ function ExpiredStepWrapper(props: OrderProgressBarProps) {
   )
 }
 
-function BridgingInProgressStepWrapper(props: OrderProgressBarProps) {
+function BridgingStepWrapper(props: OrderProgressBarProps) {
+  if (!props.stepName || !props.order) return null
+
   return (
-    <BridgingInProgressStep>
-      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
-    </BridgingInProgressStep>
+    <BridgingStep
+      stepName={props.stepName as BridgingFlowStep}
+      sellToken={props.order.inputToken}
+      buyToken={props.order.outputToken}
+    ></BridgingStep>
   )
 }
 
@@ -113,7 +117,7 @@ export const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, Compo
   cancelled: CancelledStepWrapper,
   expired: ExpiredStepWrapper,
   cancellationFailed: FinishedStepWrapper,
-  bridgingInProgress: BridgingInProgressStepWrapper,
-  bridgingFailed: BridgingInProgressStepWrapper,
-  bridgingFinished: BridgingInProgressStepWrapper,
+  bridgingInProgress: BridgingStepWrapper,
+  bridgingFailed: BridgingStepWrapper,
+  bridgingFinished: BridgingStepWrapper,
 }
