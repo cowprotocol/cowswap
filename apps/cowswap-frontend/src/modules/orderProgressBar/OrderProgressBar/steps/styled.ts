@@ -6,7 +6,8 @@ import styled, { css, keyframes } from 'styled-components/macro'
 
 export { Description, ProgressImageWrapper } from '../sharedStyled'
 
-import { CancelButton as CancelButtonOriginal } from '../../CancelButton'
+import { CancelButton as CancelButtonOriginal } from 'common/pure/CancelButton'
+
 import { ProgressImageWrapper } from '../sharedStyled'
 
 const progressAnimation = (startAt: number, end: number) => {

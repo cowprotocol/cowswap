@@ -18,9 +18,9 @@ import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/ty
 
 import * as styledEl from './styled'
 
+import { OrderProgressBar } from '../../../modules/orderProgressBar/OrderProgressBar'
+import { OrderProgressBarProps } from '../../../modules/orderProgressBar/OrderProgressBar/types'
 import { CancelButton } from '../CancelButton'
-import { OrderProgressBar } from '../OrderProgressBar'
-import { OrderProgressBarProps } from '../OrderProgressBar/types'
 
 const activityStatusLabels: Partial<Record<ActivityStatus, string>> = {
   [ActivityStatus.CONFIRMED]: 'Confirmed',
