@@ -7,6 +7,7 @@ import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/ty
 import * as styledEl from './styled'
 
 import { STEPS } from '../../constants'
+import { Description } from '../../sharedStyled'
 import { OrderProgressBarStepName } from '../../types'
 import { StepsWrapper } from '../StepsWrapper'
 
@@ -58,7 +59,7 @@ export function SolvingStep({ children, stepName, showCancellationModal }: Solvi
         currentStep={1}
         customStepTitles={getCustomStepTitles(isUnfillable, isDelayed, isSubmissionFailed, isSolved)}
         extraContent={
-          <styledEl.Description>
+          <Description>
             {isUnfillable ? (
               <>
                 Uh oh! The market price has moved outside of your slippage tolerance. You can wait for prices to change
@@ -119,7 +120,7 @@ export function SolvingStep({ children, stepName, showCancellationModal }: Solvi
                 are scanning liquidity sources across DeFi. The one that finds you the best price wins!
               </>
             )}
-          </styledEl.Description>
+          </Description>
         }
         customColor={isUnfillable || isDelayed || isSolved || isSubmissionFailed ? '#996815' : undefined}
         isUnfillable={isUnfillable}

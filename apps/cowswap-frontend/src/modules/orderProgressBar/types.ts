@@ -13,6 +13,7 @@ export type OrderProgressBarState = {
   solverCompetition?: CompetitionOrderStatus['value']
   progressBarStepName?: OrderProgressBarStepName
   previousStepName?: OrderProgressBarStepName
+  lastTimeChangedSteps?: number
   cancellationTriggered?: true
 }
 

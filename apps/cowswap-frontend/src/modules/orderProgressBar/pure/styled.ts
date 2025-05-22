@@ -2,8 +2,6 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export { Description, ProgressImageWrapper } from '../sharedStyled'
-
 const getOpacity = (status: string, isDarkMode: boolean): number => {
   const opacityMap = {
     done: isDarkMode ? 0.3 : 0.1,

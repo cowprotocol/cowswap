@@ -6,6 +6,8 @@ import Lottie from 'lottie-react'
 
 import * as styledEl from './styled'
 
+import { Description } from '../sharedStyled'
+
 export function StepComponent({
   status,
   isFirst,
@@ -49,7 +51,7 @@ export function StepComponent({
       </styledEl.NumberedElement>
       <styledEl.Content>
         <styledEl.Title customColor={customColor}>{step.title}</styledEl.Title>
-        {status !== 'next' && extraContent && <styledEl.Description>{extraContent}</styledEl.Description>}
+        {status !== 'next' && extraContent && <Description>{extraContent}</Description>}
       </styledEl.Content>
     </styledEl.Step>
   )

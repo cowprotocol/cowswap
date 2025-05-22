@@ -4,6 +4,7 @@ import { UI } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
 
+import { Description } from '../../sharedStyled'
 import { StepsWrapper } from '../StepsWrapper'
 
 interface CancellingStepProps {
@@ -17,7 +18,7 @@ export function CancellingStep({ children }: CancellingStepProps) {
       <StepsWrapper
         steps={[{ title: 'Cancelling' }]}
         currentStep={0}
-        extraContent={<styledEl.Description>Your order is being cancelled.</styledEl.Description>}
+        extraContent={<Description>Your order is being cancelled.</Description>}
         customColor={`var(${UI.COLOR_DANGER_TEXT})`}
         isCancelling={true}
       />
