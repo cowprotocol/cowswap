@@ -2,12 +2,11 @@ import React from 'react'
 
 import { Command } from '@cowprotocol/types'
 
-import { OrderProgressBarStepName } from 'modules/orderProgressBarMixed/orderProgressBar'
-
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import * as styledEl from './styled'
 
+import { OrderProgressBarStepName } from '../../types'
 import { STEPS } from '../constants'
 import { StepsWrapper } from '../container/StepsWrapper'
 

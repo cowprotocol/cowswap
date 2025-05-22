@@ -30,8 +30,8 @@ import {
   updateOrderProgressBarBackendInfo,
   updateOrderProgressBarCountdown,
   updateOrderProgressBarStepName,
-} from './atoms'
-import { ApiSolverCompetition, OrderProgressBarState, OrderProgressBarStepName, SolverCompetition } from './types'
+} from '../state/atoms'
+import { ApiSolverCompetition, OrderProgressBarState, OrderProgressBarStepName, SolverCompetition } from '../types'
 
 export type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null

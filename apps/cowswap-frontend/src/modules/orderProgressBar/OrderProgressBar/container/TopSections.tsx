@@ -14,10 +14,10 @@ import { Textfit } from 'react-textfit'
 import { ProgressImageWrapper } from './ProgressImageWrapper'
 import * as styledEl from './styled'
 
+import { OrderProgressBarProps } from '../../types'
 import { truncateWithEllipsis } from '../helpers'
 import AnimatedTokens from '../steps/AnimatedToken'
 import { CircularCountdown } from '../steps/CircularCountdown'
-import { OrderProgressBarProps } from '../types'
 
 interface BaseTopSectionProps {
   stepName: OrderProgressBarProps['stepName']

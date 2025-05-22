@@ -7,7 +7,8 @@ import { useOrder } from 'legacy/state/orders/hooks'
 
 import { useNavigateToNewOrderCallback, useTradeConfirmState } from 'modules/trade'
 
-import { useOrderProgressBarProps } from '../../orderProgressBarMixed/orderProgressBar'
+import { useOrderProgressBarProps } from './useOrderProgressBarProps'
+
 import { TransactionSubmittedContent } from '../pure/TransactionSubmittedContent'
 
 export function useOrderSubmittedContent(chainId: SupportedChainId) {
