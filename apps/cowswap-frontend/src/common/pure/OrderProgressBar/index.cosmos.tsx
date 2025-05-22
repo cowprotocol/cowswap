@@ -1,5 +1,6 @@
 import { USDC_GNOSIS_CHAIN } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { getOrderMock } from 'mocks/orderMock'
@@ -49,6 +50,7 @@ const defaultProps: OrderProgressBarProps = {
 const Wrapper = styled.div`
   width: 560px;
   margin: 0 auto;
+  background: var(${UI.COLOR_PAPER});
 `
 
 const Fixtures = {

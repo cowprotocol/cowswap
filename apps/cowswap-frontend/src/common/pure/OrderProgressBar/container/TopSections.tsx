@@ -51,15 +51,15 @@ export function DelayedSolvedSubmissionFailedTopSection() {
   )
 }
 
-interface SolvingTopSectionProps extends BaseTopSectionProps {
+interface SolvingTopSectionProps {
   countdown: number
 }
 
-export function SolvingTopSection({ stepName, countdown }: SolvingTopSectionProps) {
+export function SolvingTopSection({ countdown }: SolvingTopSectionProps) {
   return (
     <>
       <SVG src={STEP_IMAGE_SOLVING} />
-      {stepName === 'solving' && <CircularCountdown countdown={countdown || 0} />}
+      <CircularCountdown countdown={countdown || 0} />
     </>
   )
 }
