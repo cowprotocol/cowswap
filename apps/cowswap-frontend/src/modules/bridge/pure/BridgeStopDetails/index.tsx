@@ -20,8 +20,6 @@ import {
 } from './styled'
 
 import {
-  ArrowIcon,
-  TokenFlowContainer,
   InfoTextSpan,
   InfoTextBold,
   SuccessTextBold,
@@ -34,6 +32,7 @@ import { StopStatusEnum } from '../../utils/status'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { NetworkLogo } from '../NetworkLogo'
 import { RecipientDisplay } from '../RecipientDisplay'
+import { RouteTitle } from '../RouteTitle'
 import { BridgeStatusIcons, BridgeStatusTitlePrefixes } from '../StopStatus'
 import { TokenAmountDisplay } from '../TokenAmountDisplay'
 
@@ -45,7 +44,6 @@ export interface BridgeStopDetailsProps {
   bridgeSendCurrencyAmount: CurrencyAmount<Currency>
   bridgeReceiveCurrencyAmount: CurrencyAmount<Currency>
   recipientChainName: string
-  hideBridgeFlowFiatAmount: boolean
   receiveAmountUsd: CurrencyAmount<Token> | null
   bridgeFee: CurrencyAmount<Currency>
   estimatedTime: number | undefined
@@ -62,7 +60,6 @@ export function BridgeStopDetails({
   bridgeSendCurrencyAmount,
   bridgeReceiveCurrencyAmount,
   recipientChainName,
-  hideBridgeFlowFiatAmount,
   receiveAmountUsd,
   bridgeFee,
   estimatedTime,
@@ -88,19 +85,12 @@ export function BridgeStopDetails({
       defaultExpanded={defaultExpanded}
       explorerUrl={bridgeExplorerUrl}
     >
-      <ConfirmDetailsItem label="" withTimelineDot>
-        <TokenFlowContainer>
-          <TokenAmountDisplay displaySymbol hideFiatAmount={true} currencyAmount={bridgeSendCurrencyAmount} />
-          <ArrowIcon>→</ArrowIcon>
-          <TokenAmountDisplay
-            displaySymbol
-            usdValue={receiveAmountUsd}
-            hideFiatAmount={hideBridgeFlowFiatAmount}
-            currencyAmount={bridgeReceiveCurrencyAmount}
-          />
-          {` on ${recipientChainName}`}
-        </TokenFlowContainer>
-      </ConfirmDetailsItem>
+      <RouteTitle
+        chainName={recipientChainName}
+        sellAmount={bridgeSendCurrencyAmount}
+        buyAmount={bridgeReceiveCurrencyAmount}
+        buyAmountUsd={receiveAmountUsd}
+      />
 
       <ConfirmDetailsItem
         label={
@@ -225,7 +215,7 @@ export function BridgeStopDetails({
             }
           >
             <b>
-              <TokenAmountDisplay displaySymbol hideFiatAmount={true} currencyAmount={bridgeSendCurrencyAmount} />
+              <TokenAmountDisplay displaySymbol currencyAmount={bridgeSendCurrencyAmount} />
             </b>
           </ConfirmDetailsItem>
         </>

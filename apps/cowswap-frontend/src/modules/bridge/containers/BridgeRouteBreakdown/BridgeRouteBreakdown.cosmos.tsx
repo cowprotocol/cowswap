@@ -138,9 +138,7 @@ const defaultProps: BridgeRouteBreakdownProps = {
       },
     },
   } as any as BridgeQuoteResults,
-  uiParams: {
-    hideBridgeFlowFiatAmount: true, // Hide fiat amount in bridge destination token flow
-  },
+  uiParams: {},
   bridgingResults: {
     // Explorer URLs
     swapExplorerUrl:
