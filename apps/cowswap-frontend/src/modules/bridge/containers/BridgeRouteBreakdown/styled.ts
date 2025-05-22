@@ -2,18 +2,17 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const Wrapper = styled.div<{ hasBackground?: boolean }>`
+export const Wrapper = styled.div`
   width: 100%;
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
-  background: ${({ hasBackground }) => (hasBackground ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
+  background: transparent;
   display: flex;
   flex-flow: column wrap;
   gap: 4px;
-  padding: ${({ hasBackground }) => (hasBackground ? '16px' : '0')};
+  padding: 0;
   box-sizing: border-box;
 
   ${Media.upToSmall()} {
-    padding: ${({ hasBackground }) => (hasBackground ? '10px' : '0')};
+    padding: 0;
   }
 `
 
