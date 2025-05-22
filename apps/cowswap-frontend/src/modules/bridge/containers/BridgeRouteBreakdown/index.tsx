@@ -2,7 +2,7 @@ import { useCallback, ReactNode } from 'react'
 
 import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
 import { BridgeQuoteResults, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { InfoTooltip, UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -11,15 +11,13 @@ import { ReceiveAmountInfo, useDerivedTradeState } from 'modules/trade'
 import { useTradeSlippage } from 'modules/tradeSlippage'
 import { useUsdAmount } from 'modules/usdAmount'
 
-import { ProtocolIcons } from 'common/pure/ProtocolIcons'
-import { ToggleArrow } from 'common/pure/ToggleArrow'
-
-import { Wrapper, RouteHeader, RouteTitle, StopsInfo, CollapsibleStopsInfo, ClickableRouteHeader } from './styled'
+import { Wrapper } from './styled'
 
 import { useBridgeQuoteAmounts } from '../../hooks/useBridgeQuoteAmounts'
 import { useBridgeSupportedNetworks } from '../../hooks/useBridgeSupportedNetworks'
 import { useBridgeWinningSolverInfo } from '../../hooks/useBridgeWinningSolverInfo'
 import { BridgeStopDetails } from '../../pure/BridgeStopDetails'
+import { RouteOverviewTitle } from '../../pure/RouteOverviewTitle'
 import { SwapStopDetails } from '../../pure/SwapStopDetails'
 import { StopStatusEnum } from '../../utils'
 
@@ -119,41 +117,19 @@ export function BridgeRouteBreakdown({
   }, [uiParams])
 
   const {
-    isCollapsible,
+    isCollapsible = false,
     isExpanded = defaultBridgeRouteUiParams.isExpanded,
     hasBackground = defaultBridgeRouteUiParams.hasBackground,
     hideRouteHeader = defaultBridgeRouteUiParams.hideRouteHeader,
   } = uiParams
 
-  const HeaderComponent = isCollapsible ? ClickableRouteHeader : RouteHeader
-
   const headerContent = (
-    <HeaderComponent onClick={isCollapsible ? handleHeaderClick : undefined}>
-      <RouteTitle>
-        Route{' '}
-        <InfoTooltip
-          content={
-            <>
-              Your trade will be executed in 2 stops. First, you swap on <b>CoW Protocol (Stop 1)</b>, then you bridge
-              via <b>{providerDetails.name} (Stop 2)</b>.
-            </>
-          }
-          size={14}
-        />
-      </RouteTitle>
-      {isCollapsible ? (
-        <CollapsibleStopsInfo>
-          2 stops
-          <ProtocolIcons secondProtocol={providerDetails} />
-          <ToggleArrow isOpen={isExpanded} />
-        </CollapsibleStopsInfo>
-      ) : (
-        <StopsInfo>
-          2 stops
-          <ProtocolIcons secondProtocol={providerDetails} />
-        </StopsInfo>
-      )}
-    </HeaderComponent>
+    <RouteOverviewTitle
+      isCollapsible={isCollapsible}
+      isExpanded={isExpanded}
+      providerInfo={providerDetails}
+      onClick={handleHeaderClick}
+    />
   )
 
   if (isCollapsible && !isExpanded) {
