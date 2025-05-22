@@ -1,6 +1,7 @@
 import { Order } from 'legacy/state/orders/actions'
 
-import { OrderProgressBarStepName } from '../../../../hooks/orderProgressBar'
+import { OrderProgressBarStepName } from 'common/hooks/orderProgressBar'
+
 import { ProgressImageWrapper } from '../../container/ProgressImageWrapper'
 import {
   CancelledCancellingTopSection,

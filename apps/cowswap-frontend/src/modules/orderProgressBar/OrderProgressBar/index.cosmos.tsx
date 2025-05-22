@@ -3,12 +3,13 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { getOrderMock } from 'mocks/orderMock'
 import styled from 'styled-components/macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
 import { OrderProgressBarProps } from './types'
+
+import { getOrderMock } from '../../../mocks/orderMock'
 
 import { OrderProgressBar } from './index'
 
