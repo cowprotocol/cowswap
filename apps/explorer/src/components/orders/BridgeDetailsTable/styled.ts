@@ -82,7 +82,6 @@ export const RefundStatusText = styled.span<{ status: RefundStatusType }>`
       case RefundStatusEnum.COMPLETED:
         return Color.explorer_green1
       case RefundStatusEnum.NOT_INITIATED:
-      case RefundStatusEnum.PENDING:
       case RefundStatusEnum.FAILED:
       default:
         return Color.explorer_orange1

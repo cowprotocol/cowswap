@@ -1,9 +1,7 @@
 import React, { useMemo } from 'react'
 
 import { BridgeDetails, BridgeStatus, BRIDGE_PROVIDER_DETAILS } from '@cowprotocol/bridge'
-import { getChainInfo } from '@cowprotocol/common-const'
 import { displayTime, ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
-import { NetworkLogo } from '@cowprotocol/ui'
 
 import BigNumber from 'bignumber.js'
 import { DetailRow } from 'components/common/DetailRow'
@@ -13,12 +11,13 @@ import { SimpleTable } from 'components/common/SimpleTable'
 import { TokenDisplay as CommonTokenDisplay } from 'components/common/TokenDisplay'
 import { formatPercentage } from 'utils'
 
+import { AddressLink } from 'utils/addressLinks'
 import { getBridgeStatus } from 'utils/getBridgeStatus'
 import { formatTokenAmount, mapBridgeableToErc20 } from 'utils/tokenFormatting'
 
 import { BridgeAmountDisplay } from './BridgeAmountDisplay'
 import { RefundStatus, RefundStatusEnum } from './RefundStatus'
-import { ProviderDisplayWrapper, ProviderLogo, NetworkName, BridgeStatusWrapper, ErrorMessage } from './styled'
+import { ProviderDisplayWrapper, ProviderLogo, BridgeStatusWrapper, ErrorMessage } from './styled'
 import { AmountSectionWrapper, Wrapper } from './styled'
 
 import { Network } from '../../../types'
@@ -191,18 +190,7 @@ export function BridgeDetailsTable({
               <DetailRow label="From" tooltipText={tooltipTextMap.ownerAddress} isLoading={isOverallLoading}>
                 <RowWithCopyButton
                   textToCopy={ownerAddress}
-                  contentsToDisplay={
-                    <span>
-                      <LinkWithPrefixNetwork
-                        to={getExplorerLink(bridgeDetails.source.chainId, ownerAddress, ExplorerDataType.ADDRESS)}
-                        target="_blank"
-                      >
-                        <NetworkLogo chainId={bridgeDetails.source.chainId} size={16} forceLightMode />
-                        {ownerAddress} ↗
-                      </LinkWithPrefixNetwork>
-                      <NetworkName>on {getChainInfo(bridgeDetails.source.chainId).label}</NetworkName>
-                    </span>
-                  }
+                  contentsToDisplay={<AddressLink address={ownerAddress} chainId={bridgeDetails.source.chainId} />}
                 />
               </DetailRow>
             )}
@@ -212,20 +200,7 @@ export function BridgeDetailsTable({
                 <RowWithCopyButton
                   textToCopy={receiverAddress}
                   contentsToDisplay={
-                    <span>
-                      <LinkWithPrefixNetwork
-                        to={getExplorerLink(
-                          bridgeDetails.destination.chainId,
-                          receiverAddress,
-                          ExplorerDataType.ADDRESS,
-                        )}
-                        target="_blank"
-                      >
-                        <NetworkLogo chainId={bridgeDetails.destination.chainId} size={16} forceLightMode />
-                        {receiverAddress} ↗
-                      </LinkWithPrefixNetwork>
-                      <NetworkName>on {getChainInfo(bridgeDetails.destination.chainId).label}</NetworkName>
-                    </span>
+                    <AddressLink address={receiverAddress} chainId={bridgeDetails.destination.chainId} />
                   }
                 />
               </DetailRow>

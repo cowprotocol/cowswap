@@ -1,15 +1,13 @@
 import React from 'react'
 
 import { BridgeStatus } from '@cowprotocol/bridge'
-import { getChainInfo } from '@cowprotocol/common-const'
-import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
-import { NetworkLogo } from '@cowprotocol/ui'
 
-import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { StatusLabel } from 'components/orders/StatusLabel'
 
-import { NetworkName, RefundStatusText, RefundAddressWrapper, StatusWrapper } from './styled'
+import { AddressLink } from 'utils/addressLinks'
+
+import { RefundStatusText, RefundAddressWrapper, StatusWrapper } from './styled'
 
 export enum RefundStatusEnum {
   NOT_INITIATED = 'not_initiated',
@@ -37,14 +35,7 @@ export function RefundStatus({ status, refundWalletAddress, refundChainId }: Ref
               textToCopy={refundWalletAddress}
               contentsToDisplay={
                 <RefundAddressWrapper>
-                  <LinkWithPrefixNetwork
-                    to={getExplorerLink(refundChainId, refundWalletAddress, ExplorerDataType.ADDRESS)}
-                    target="_blank"
-                  >
-                    <NetworkLogo chainId={refundChainId} size={16} forceLightMode />
-                    {refundWalletAddress} ↗
-                  </LinkWithPrefixNetwork>
-                  <NetworkName>on {getChainInfo(refundChainId).label}</NetworkName>
+                  <AddressLink address={refundWalletAddress} chainId={refundChainId} />
                 </RefundAddressWrapper>
               }
             />
