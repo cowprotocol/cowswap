@@ -91,7 +91,9 @@ export function Updaters() {
         isYieldEnabled={isYieldEnabled}
         bridgeNetworkInfo={bridgeNetworkInfo?.data}
       />
+
       <TokensListsTagsUpdater />
+
       <WidgetTokensListsUpdater
         tokenLists={tokenLists}
         customTokens={customTokens}
@@ -112,6 +114,7 @@ export function Updaters() {
           })
         }}
       />
+
       <UnsupportedTokensUpdater />
       <BalancesAndAllowancesUpdater chainId={sourceChainId} account={account} />
       <LpBalancesAndAllowancesUpdater chainId={sourceChainId} account={account} enablePolling={isYieldWidget} />
