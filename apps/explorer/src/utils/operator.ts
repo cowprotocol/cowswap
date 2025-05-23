@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js'
 import { ZERO_BIG_NUMBER } from 'const'
 import { formatSmartMaxPrecision, formattingAmountPrecision } from 'utils'
 
-import { Order, OrderStatus, RawOrder, Trade } from 'api/operator/types'
+import { Order, OrderStatus, RAW_ORDER_STATUS, RawOrder, Trade } from 'api/operator/types'
 
 import { PENDING_ORDERS_BUFFER } from '../explorer/const'
 
@@ -41,7 +41,7 @@ function isOrderPartiallyFilled(order: RawOrder): boolean {
 }
 
 function isOrderPresigning(order: RawOrder): boolean {
-  return order.status === 'presignaturePending'
+  return order.status === RAW_ORDER_STATUS.PRESIGNATURE_PENDING
 }
 
 /**
@@ -58,22 +58,22 @@ function isOrderCancelled(order: Pick<RawOrder, 'creationDate' | 'invalidated'>)
 }
 
 function isOrderCancelling(order: RawOrder): boolean {
-  return order.status === 'cancelled' && order.invalidated
+  return order.status === RAW_ORDER_STATUS.CANCELLED && order.invalidated
 }
 
 export function getOrderStatus(order: RawOrder): OrderStatus {
   if (isOrderFilled(order)) {
-    return 'filled'
+    return OrderStatus.Filled
   } else if (isOrderCancelled(order)) {
-    return 'cancelled'
+    return OrderStatus.Cancelled
   } else if (isOrderExpired(order)) {
-    return 'expired'
+    return OrderStatus.Expired
   } else if (isOrderPresigning(order)) {
-    return 'signing'
+    return OrderStatus.Signing
   } else if (isOrderCancelling(order)) {
-    return 'cancelling'
+    return OrderStatus.Cancelling
   } else {
-    return 'open'
+    return OrderStatus.Open
   }
 }
 
@@ -341,7 +341,7 @@ export enum FormatAmountPrecision {
 export function formattedAmount(
   erc20: TokenErc20 | null | undefined,
   amount: BigNumber,
-  typePrecision: FormatAmountPrecision = FormatAmountPrecision.maxPrecision
+  typePrecision: FormatAmountPrecision = FormatAmountPrecision.maxPrecision,
 ): string {
   if (!isTokenErc20(erc20)) return '-'
 

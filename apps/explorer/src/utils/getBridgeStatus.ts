@@ -1,5 +1,7 @@
 import { BridgeDetails, BridgeStatus } from '@cowprotocol/bridge'
 
+import { OrderStatus } from 'api/operator'
+
 export interface BridgeStatusResult {
   isWaiting: boolean
   actualStatus: string
@@ -29,7 +31,7 @@ export function getBridgeStatus({
     return { isWaiting: false, actualStatus: 'unknown' }
   }
 
-  const isSwapComplete = swapStatus === 'filled' || partiallyFilled
+  const isSwapComplete = swapStatus === OrderStatus.Filled || partiallyFilled
 
   // If swap is not complete but bridge shows as pending, it's actually waiting
   if (!isSwapComplete && bridgeDetails.status === BridgeStatus.Pending) {

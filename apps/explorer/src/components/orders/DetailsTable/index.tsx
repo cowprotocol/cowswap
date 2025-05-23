@@ -1,11 +1,10 @@
 import React from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { getChainInfo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { Icon, UI, NetworkLogo } from '@cowprotocol/ui'
+import { Icon, UI } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import { faFill, faGroupArrowsRotate, faHistory, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
@@ -25,11 +24,12 @@ import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { Link } from 'react-router'
 import { capitalize } from 'utils'
 
-import { Order } from 'api/operator'
+import { Order, OrderStatus } from 'api/operator'
 import { ExplorerCategory } from 'common/analytics/types'
+import { AddressLink } from 'utils/addressLinks'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
-import { NetworkName, Wrapper, LinkButton, WarningRow } from './styled'
+import { Wrapper, LinkButton, WarningRow } from './styled'
 
 import { OrderHooksDetails } from '../OrderHooksDetails'
 import { UnsignedOrderWarning } from '../UnsignedOrderWarning'
@@ -148,7 +148,7 @@ export function DetailsTable(props: Props): React.ReactNode | null {
       label,
     })
   }
-  const isSigning = status === 'signing'
+  const isSigning = status === OrderStatus.Signing
   const isSummaryMode = renderMode === 'SUMMARY'
 
   return (
@@ -183,11 +183,7 @@ export function DetailsTable(props: Props): React.ReactNode | null {
                 onCopy={(): void => onCopy('ownerAddress')}
                 contentsToDisplay={
                   <span>
-                    <Link to={getExplorerLink(chainId, owner, ExplorerDataType.ADDRESS)} target="_blank">
-                      <NetworkLogo chainId={chainId} size={16} forceLightMode />
-                      {owner}↗
-                    </Link>
-                    <NetworkName>on {getChainInfo(chainId).label}</NetworkName>
+                    <AddressLink address={owner} chainId={chainId} />
                   </span>
                 }
               />
@@ -204,11 +200,7 @@ export function DetailsTable(props: Props): React.ReactNode | null {
                 onCopy={(): void => onCopy('receiverAddress')}
                 contentsToDisplay={
                   <span>
-                    <Link to={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)} target="_blank">
-                      <NetworkLogo chainId={chainId} size={16} forceLightMode />
-                      {receiver}↗
-                    </Link>
-                    <NetworkName>on {getChainInfo(chainId).label}</NetworkName>
+                    <AddressLink address={receiver} chainId={chainId} />
                   </span>
                 }
               />

@@ -7,8 +7,25 @@ import { Network } from 'types'
 
 export type TxHash = string
 
-export type OrderStatus = 'open' | 'filled' | 'cancelled' | 'cancelling' | 'expired' | 'signing'
-export type RawOrderStatusFromAPI = 'presignaturePending' | 'open' | 'fullfilled' | 'cancelled' | 'expired'
+export enum OrderStatus {
+  Open = 'open',
+  Filled = 'filled',
+  Cancelled = 'cancelled',
+  Cancelling = 'cancelling',
+  Expired = 'expired',
+  Signing = 'signing',
+  PartiallyFilled = 'partially filled',
+}
+
+export const RAW_ORDER_STATUS = {
+  PRESIGNATURE_PENDING: 'presignaturePending',
+  OPEN: 'open',
+  FULFILLED: 'fullfilled', // Note: API has typo "fullfilled"
+  CANCELLED: 'cancelled',
+  EXPIRED: 'expired',
+} as const
+
+export type RawOrderStatusFromAPI = (typeof RAW_ORDER_STATUS)[keyof typeof RAW_ORDER_STATUS]
 
 // Raw API response
 export type RawOrder = EnrichedOrder

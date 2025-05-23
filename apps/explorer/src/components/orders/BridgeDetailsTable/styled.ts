@@ -82,7 +82,6 @@ export const RefundStatusText = styled.span<{ status: RefundStatusType }>`
       case RefundStatusEnum.COMPLETED:
         return Color.explorer_green1
       case RefundStatusEnum.NOT_INITIATED:
-      case RefundStatusEnum.PENDING:
       case RefundStatusEnum.FAILED:
       default:
         return Color.explorer_orange1
@@ -101,4 +100,16 @@ export const StatusWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+`
+
+export const BridgeStatusWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+`
+
+export const ErrorMessage = styled.div`
+  font-size: 0.875rem;
+  color: ${Color.explorer_red1};
+  margin-top: 0.25rem;
 `

@@ -4,11 +4,6 @@ import styled from 'styled-components/macro'
 
 import { LinkWithPrefixNetwork } from '../../common/LinkWithPrefixNetwork'
 
-export const NetworkName = styled.span`
-  margin-left: 0.5rem;
-  color: ${Color.explorer_grey};
-`
-
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
