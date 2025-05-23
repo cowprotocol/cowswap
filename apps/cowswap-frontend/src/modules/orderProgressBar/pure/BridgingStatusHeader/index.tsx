@@ -13,12 +13,14 @@ const titles: Record<BridgingFlowStep, string> = {
   bridgingInProgress: 'Bridging to destination...',
   bridgingFailed: 'Bridging failed. Refund started...',
   bridgingFinished: 'Bridging completed!',
+  refundCompleted: 'Refund completed!',
 }
 
 const icons: Record<BridgingFlowStep, string> = {
   bridgingInProgress: bridgingPendingIcon,
   bridgingFailed: bridgingRefundingIcon,
   bridgingFinished: bridgingFinishedIcon,
+  refundCompleted: bridgingFinishedIcon,
 }
 
 export interface BridgingStatusHeaderProps {

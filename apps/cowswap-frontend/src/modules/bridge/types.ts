@@ -1,4 +1,7 @@
+import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
+
+import { StopStatusEnum } from './utils'
 
 import { ReceiveAmountInfo } from '../trade'
 
@@ -47,4 +50,14 @@ export interface SwapResultContext {
   receivedAmountUsd: CurrencyAmount<Token> | null
   surplusAmount: CurrencyAmount<Currency>
   surplusAmountUsd: CurrencyAmount<Token> | null
+}
+
+export interface SwapAndBridgeContext {
+  bridgeProvider: BridgeProviderInfo
+  quoteSwapContext: QuoteSwapContext
+  swapResultContext: SwapResultContext
+
+  quoteBridgeContext: QuoteBridgeContext
+  bridgingProgressContext: BridgingProgressContext
+  bridgingStatus: StopStatusEnum
 }

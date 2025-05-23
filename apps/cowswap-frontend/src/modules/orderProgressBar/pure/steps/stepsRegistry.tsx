@@ -9,7 +9,7 @@ import { FinishedStep } from './FinishedStep'
 import { InitialStep } from './InitialStep'
 import { SolvingStep } from './SolvingStep'
 
-import { BridgingFlowStep, OrderProgressBarProps, OrderProgressBarStepName } from '../../types'
+import { OrderProgressBarProps, OrderProgressBarStepName } from '../../types'
 import { RenderProgressTopSection } from '../RenderProgressTopSection'
 
 const DEBUG_FORCE_SHOW_SURPLUS = false
@@ -93,15 +93,9 @@ function ExpiredStepWrapper(props: OrderProgressBarProps) {
 }
 
 function BridgingStepWrapper(props: OrderProgressBarProps) {
-  if (!props.stepName || !props.order) return null
+  if (!props.stepName || !props.swapAndBridgeContext) return null
 
-  return (
-    <BridgingStep
-      stepName={props.stepName as BridgingFlowStep}
-      sellToken={props.order.inputToken}
-      buyToken={props.order.outputToken}
-    ></BridgingStep>
-  )
+  return <BridgingStep context={props.swapAndBridgeContext}></BridgingStep>
 }
 
 export const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, ComponentType<OrderProgressBarProps>> = {
@@ -120,4 +114,5 @@ export const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, Compo
   bridgingInProgress: BridgingStepWrapper,
   bridgingFailed: BridgingStepWrapper,
   bridgingFinished: BridgingStepWrapper,
+  refundCompleted: BridgingStepWrapper,
 }

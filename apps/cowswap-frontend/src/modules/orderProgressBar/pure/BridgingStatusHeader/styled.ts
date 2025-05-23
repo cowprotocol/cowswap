@@ -9,12 +9,14 @@ const backgroundColors: Record<BridgingFlowStep, string> = {
   bridgingInProgress: UI.COLOR_COWAMM_LIGHT_BLUE,
   bridgingFailed: UI.COLOR_COWAMM_LIGHT_ORANGE,
   bridgingFinished: UI.COLOR_COWAMM_LIGHTER_GREEN,
+  refundCompleted: UI.COLOR_COWAMM_LIGHTER_GREEN,
 }
 
 const titleColors: Record<BridgingFlowStep, string> = {
   bridgingInProgress: '#052B65', // TODO: merge with existing Color.cowfi_darkBlue
   bridgingFailed: '#996815',
   bridgingFinished: '#007B28',
+  refundCompleted: '#007B28',
 }
 
 export const Header = styled.div<{ $step: BridgingFlowStep }>`
