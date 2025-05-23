@@ -1,9 +1,25 @@
 import { ReactNode, useState } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
+import { Media } from '@cowprotocol/ui'
 
-import { Wrapper } from '../../containers/BridgeRouteBreakdown/styled'
+import styled from 'styled-components/macro'
+
 import { RouteOverviewTitle } from '../RouteOverviewTitle'
+
+const Wrapper = styled.div`
+  width: 100%;
+  background: transparent;
+  display: flex;
+  flex-flow: column wrap;
+  gap: 4px;
+  padding: 0;
+  box-sizing: border-box;
+
+  ${Media.upToSmall()} {
+    padding: 0;
+  }
+`
 
 interface CollapsibleBridgeRouteProps {
   isCollapsible?: boolean

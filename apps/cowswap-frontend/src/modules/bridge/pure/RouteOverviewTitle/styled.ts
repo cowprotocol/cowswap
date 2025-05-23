@@ -1,20 +1,6 @@
-import { Media, UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-
-export const Wrapper = styled.div`
-  width: 100%;
-  background: transparent;
-  display: flex;
-  flex-flow: column wrap;
-  gap: 4px;
-  padding: 0;
-  box-sizing: border-box;
-
-  ${Media.upToSmall()} {
-    padding: 0;
-  }
-`
 
 export const RouteHeader = styled.div`
   display: flex;
