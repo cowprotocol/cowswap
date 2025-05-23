@@ -17,6 +17,7 @@ exports[`useTradeQuotePolling() When wallet is NOT connected Then the "receiver"
     "sellTokenChainId": 11155111,
     "sellTokenDecimals": 18,
     "signer": {},
+    "slippageBps": undefined,
     "validFor": 1800,
   },
   {
@@ -46,6 +47,7 @@ exports[`useTradeQuotePolling() When wallet is connected Then should put account
     "sellTokenChainId": 11155111,
     "sellTokenDecimals": 18,
     "signer": {},
+    "slippageBps": undefined,
     "validFor": 1800,
   },
   {

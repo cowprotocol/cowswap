@@ -73,6 +73,7 @@ export enum UI {
   COLOR_COWAMM_BLUE = '--cow-color-cowamm-blue',
   COLOR_COWAMM_DARK_BLUE = '--cow-color-cowamm-dark-blue',
   COLOR_COWAMM_LIGHT_BLUE = '--cow-color-cowamm-light-blue',
+  COLOR_COWAMM_LIGHT_ORANGE = '--cow-color-cowamm-light-orange',
 
   // ================================================================================
 

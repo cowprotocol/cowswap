@@ -1,18 +1,16 @@
 import { ReactNode } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
-import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
-import { useWalletDetails } from '@cowprotocol/wallet'
-import { CurrencyAmount } from '@uniswap/sdk-core'
-
-import { BridgeAccordionSummary, BridgeData, BridgeProtocolConfig, BridgeRouteBreakdown } from 'modules/bridge'
-import { useIsCurrentTradeBridging, useIsHooksTradeType } from 'modules/trade'
+import {
+  BridgeAccordionSummary,
+  useQuoteBridgeContext,
+  useQuoteSwapContext,
+  useShouldDisplayBridgeDetails,
+  QuoteDetails,
+} from 'modules/bridge'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { TradeRateDetails } from 'modules/tradeWidgetAddons'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
-
-import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 
 export interface SwapRateDetailsProps {
   rateInfoParams: RateInfoParams
@@ -20,21 +18,15 @@ export interface SwapRateDetailsProps {
 }
 
 export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsProps) {
-  const { isLoading: isRateLoading } = useTradeQuote()
+  const { isLoading: isRateLoading, bridgeQuote } = useTradeQuote()
 
-  const { inputCurrencyAmount, outputCurrencyAmount } = useSwapDerivedState()
+  const shouldDisplayBridgeDetails = useShouldDisplayBridgeDetails()
 
-  const isHooksTabEnabled = useIsHooksTradeType()
-  const { isSmartContractWallet } = useWalletDetails()
+  const providerDetails = bridgeQuote?.providerInfo
+  const bridgeEstimatedTime = bridgeQuote?.expectedFillTimeSeconds
 
-  const isBridgingEnabled = useIsBridgingEnabled(isSmartContractWallet)
-  const isCurrentTradeBridging = useIsCurrentTradeBridging()
-  const shouldDisplayBridgeDetails = isBridgingEnabled && isCurrentTradeBridging && !isHooksTabEnabled
-
-  // TODO: bridgeDetailsUI: Set a real value for bridgeData based on bridging logic
-  const bridgeData = null as BridgeData | null
-  const providerDetails: BridgeProtocolConfig | undefined = bridgeData?.bridgeProvider
-  const bridgeEstimatedTime: number | undefined = bridgeData?.estimatedTime
+  const swapContext = useQuoteSwapContext()
+  const bridgeContext = useQuoteBridgeContext()
 
   return (
     <TradeRateDetails
@@ -43,26 +35,16 @@ export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsPro
       deadline={deadline}
       accordionContent={
         shouldDisplayBridgeDetails &&
-        bridgeData && (
-          <BridgeRouteBreakdown
-            sellCurrencyAmount={inputCurrencyAmount as CurrencyAmount<TokenWithLogo>}
-            buyCurrencyAmount={outputCurrencyAmount as CurrencyAmount<TokenWithLogo>}
-            bridgeSendCurrencyAmount={inputCurrencyAmount as CurrencyAmount<TokenWithLogo>}
-            bridgeReceiveCurrencyAmount={outputCurrencyAmount as CurrencyAmount<TokenWithLogo>}
-            networkCost={bridgeData.networkCost}
-            swapMinReceive={bridgeData.swapMinReceive}
-            swapExpectedToReceive={bridgeData.swapExpectedToReceive}
-            swapMaxSlippage={bridgeData.swapMaxSlippage}
-            bridgeFee={bridgeData.bridgeFee}
-            maxBridgeSlippage={bridgeData.maxBridgeSlippage}
-            estimatedTime={bridgeData.estimatedTime}
-            recipient={bridgeData.recipient}
-            bridgeProvider={bridgeData.bridgeProvider}
-          />
+        providerDetails &&
+        swapContext &&
+        bridgeContext && (
+          <>
+            <QuoteDetails bridgeProvider={providerDetails} swapContext={swapContext} bridgeContext={bridgeContext} />
+          </>
         )
       }
       feeWrapper={
-        shouldDisplayBridgeDetails && bridgeData
+        shouldDisplayBridgeDetails && providerDetails
           ? (feeElement: ReactNode) => (
               <BridgeAccordionSummary bridgeEstimatedTime={bridgeEstimatedTime} bridgeProtocol={providerDetails}>
                 {feeElement}

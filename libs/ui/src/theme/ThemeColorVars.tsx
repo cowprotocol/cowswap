@@ -113,6 +113,7 @@ export const ThemeColorVars = css`
     ${UI.COLOR_COWAMM_BLUE}: #3fc4ff;
     ${UI.COLOR_COWAMM_DARK_BLUE}: #012F7A;
     ${UI.COLOR_COWAMM_LIGHT_BLUE}: #ccf8ff;
+    ${UI.COLOR_COWAMM_LIGHT_ORANGE}: ${() => transparentize('#DB971E', 0.7)};
 
     // Base
     ${UI.COLOR_CONTAINER_BG_02}: var(${UI.COLOR_PAPER});

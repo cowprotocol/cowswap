@@ -14,7 +14,6 @@ import {
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
 import { useUsdAmount } from 'modules/usdAmount'
-import { useVolumeFeeTooltip } from 'modules/volumeFee'
 
 import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
@@ -57,7 +56,6 @@ export function TradeRateDetails({
     return CurrencyAmount.fromRawAmount(inputCurrency, costsExceedFeeRaw)
   }, [costsExceedFeeRaw, inputCurrency])
 
-  const volumeFeeTooltip = useVolumeFeeTooltip()
   const networkFeeAmountUsd = useUsdAmount(networkFeeAmount).value
 
   const toggleAccordion = useCallback(() => {
@@ -90,7 +88,6 @@ export function TradeRateDetails({
         withTimelineDot={false}
         networkCostsSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
         networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
-        volumeFeeTooltip={volumeFeeTooltip}
       />
       {slippage && (
         <RowSlippage

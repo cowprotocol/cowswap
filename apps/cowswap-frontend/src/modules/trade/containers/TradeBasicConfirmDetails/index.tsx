@@ -7,7 +7,6 @@ import { Percent, Price } from '@uniswap/sdk-core'
 import { Nullish } from 'types'
 
 import { useUsdAmount } from 'modules/usdAmount'
-import { useVolumeFeeTooltip } from 'modules/volumeFee'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
 
@@ -61,7 +60,6 @@ export function TradeBasicConfirmDetails(props: Props) {
     account,
   } = props
   const isInvertedState = useState(false)
-  const volumeFeeTooltip = useVolumeFeeTooltip()
   const { amountAfterFees, amountAfterSlippage } = getOrderTypeReceiveAmounts(receiveAmountInfo)
   const { networkCostsSuffix, networkCostsTooltipSuffix } = labelsAndTooltips || {}
 
@@ -105,7 +103,6 @@ export function TradeBasicConfirmDetails(props: Props) {
         withTimelineDot={withTimelineDot}
         networkCostsSuffix={networkCostsSuffix}
         networkCostsTooltipSuffix={networkCostsTooltipSuffix}
-        volumeFeeTooltip={volumeFeeTooltip}
       />
 
       <ReviewOrderModalAmountRow

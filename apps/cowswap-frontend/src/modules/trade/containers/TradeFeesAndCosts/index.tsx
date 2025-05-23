@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { useUsdAmount } from 'modules/usdAmount'
-import { VolumeFeeTooltip } from 'modules/volumeFee'
+import { useVolumeFeeTooltip } from 'modules/volumeFee'
 
 import { NetworkCostsRow } from '../../pure/NetworkCostsRow'
 import { PartnerFeeRow } from '../../pure/PartnerFeeRow'
@@ -13,19 +13,12 @@ interface TradeFeesAndCostsProps {
   networkCostsSuffix?: ReactNode
   networkCostsTooltipSuffix?: ReactNode
   withTimelineDot?: boolean
-
-  volumeFeeTooltip: VolumeFeeTooltip
 }
 
 export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
-  const {
-    receiveAmountInfo,
-    networkCostsSuffix,
-    networkCostsTooltipSuffix,
-    withTimelineDot = true,
+  const { receiveAmountInfo, networkCostsSuffix, networkCostsTooltipSuffix, withTimelineDot = true } = props
 
-    volumeFeeTooltip,
-  } = props
+  const volumeFeeTooltip = useVolumeFeeTooltip()
 
   const networkFeeAmount = receiveAmountInfo && getOrderTypeReceiveAmounts(receiveAmountInfo).networkFeeAmount
   const partnerFee = receiveAmountInfo && receiveAmountInfo.costs.partnerFee
