@@ -20,6 +20,8 @@ const WALLET_RPC_SUGGESTION: Record<SupportedChainId, string | null> = {
   [SupportedChainId.ARBITRUM_ONE]: 'https://arb1.arbitrum.io/rpc',
   [SupportedChainId.BASE]: 'https://mainnet.base.org',
   [SupportedChainId.SEPOLIA]: null,
+  [SupportedChainId.POLYGON]: 'https://polygon-rpc.com/',
+  [SupportedChainId.AVALANCHE]: 'https://avalanche-c-chain.public.blastapi.io/',
 }
 
 export const switchChain = async (connector: Connector, chainId: SupportedChainId) => {

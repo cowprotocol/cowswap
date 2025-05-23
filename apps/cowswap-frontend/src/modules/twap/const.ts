@@ -43,6 +43,8 @@ export const MINIMUM_PART_SELL_AMOUNT_FIAT: Record<SupportedChainId, CurrencyAmo
   [SupportedChainId.ARBITRUM_ONE]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.ARBITRUM_ONE], 5e6), // 5
   [SupportedChainId.BASE]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.BASE], 5e6), // 5
   [SupportedChainId.SEPOLIA]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.SEPOLIA], 100e18), // 100
+  [SupportedChainId.POLYGON]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.POLYGON], 5e6), // 5
+  [SupportedChainId.AVALANCHE]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.AVALANCHE], 5e6), // 5
 }
 
 export const MINIMUM_PART_TIME = ms`5min` / 1000 // in seconds
