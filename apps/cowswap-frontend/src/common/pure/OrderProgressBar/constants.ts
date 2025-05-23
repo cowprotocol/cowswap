@@ -45,6 +45,8 @@ export const CHAIN_SPECIFIC_BENEFITS: Record<SupportedChainId, string[]> = {
   [SupportedChainId.BASE]: COW_SWAP_BENEFITS,
   [SupportedChainId.GNOSIS_CHAIN]: [TRADE_ON_NEW_CHAINS_BENEFIT, ...COW_SWAP_BENEFITS],
   [SupportedChainId.SEPOLIA]: [TRADE_ON_NEW_CHAINS_BENEFIT, ...COW_SWAP_BENEFITS],
+  [SupportedChainId.POLYGON]: COW_SWAP_BENEFITS,
+  [SupportedChainId.AVALANCHE]: COW_SWAP_BENEFITS,
 }
 
 export const SURPLUS_IMAGES = [

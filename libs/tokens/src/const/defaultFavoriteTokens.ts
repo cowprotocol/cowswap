@@ -11,8 +11,10 @@ import {
   GNO_GNOSIS_CHAIN,
   TokenWithLogo,
   USDC_ARBITRUM_ONE,
+  USDC_AVALANCHE,
   USDC_BASE,
   USDC_MAINNET,
+  USDC_POLYGON,
   USDC_SEPOLIA,
   USDCe_GNOSIS_CHAIN,
   USDT,
@@ -80,5 +82,13 @@ export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.SEPOLIA],
     COW[SupportedChainId.SEPOLIA],
     USDC_SEPOLIA,
+  ]),
+  [SupportedChainId.POLYGON]: tokensListToMap([
+    USDC_POLYGON,
+    WRAPPED_NATIVE_CURRENCIES[SupportedChainId.POLYGON],
+  ]),
+  [SupportedChainId.AVALANCHE]: tokensListToMap([
+    USDC_AVALANCHE,
+    WRAPPED_NATIVE_CURRENCIES[SupportedChainId.AVALANCHE],
   ]),
 }

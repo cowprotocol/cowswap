@@ -97,5 +97,19 @@
       "priority": 5,
       "source": "https://static.optimism.io/optimism.tokenlist.json"
     }
+  ],
+  "137": [
+    {
+      "priority": 1,
+      "enabledByDefault": true,
+      "source": "https://files.cow.fi/tokens/CowSwap.json"
+    }
+  ],
+  "43114": [
+    {
+      "priority": 1,
+      "enabledByDefault": true,
+      "source": "https://files.cow.fi/tokens/CowSwap.json"
+    }
   ]
 }

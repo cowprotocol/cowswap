@@ -35,6 +35,8 @@ const AMOUNT_LIMIT: Record<SupportedChainId, number> = {
   [SupportedChainId.ARBITRUM_ONE]: 500, // $500
   [SupportedChainId.BASE]: 500, // $500
   [SupportedChainId.SEPOLIA]: 100, // $100
+  [SupportedChainId.POLYGON]: 500, // $500
+  [SupportedChainId.AVALANCHE]: 500, // $500
 }
 
 export function TwapSuggestionBanner({
