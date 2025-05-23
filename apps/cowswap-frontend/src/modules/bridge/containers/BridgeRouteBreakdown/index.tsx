@@ -7,9 +7,9 @@ import { InfoTooltip, UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { DividerHorizontal } from 'modules/bridge/styles'
+import type { ApiSolverCompetition, SolverCompetition } from 'modules/orderProgressBar'
 import { useUsdAmount } from 'modules/usdAmount'
 
-import { SolverCompetition, ApiSolverCompetition } from 'common/hooks/orderProgressBar'
 import { useSolversInfo } from 'common/hooks/useSolversInfo'
 import { ProtocolIcons } from 'common/pure/ProtocolIcons'
 import { ToggleArrow } from 'common/pure/ToggleArrow'
