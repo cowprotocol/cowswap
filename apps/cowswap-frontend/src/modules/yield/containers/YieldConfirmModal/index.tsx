@@ -5,11 +5,11 @@ import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useAppData } from 'modules/appData'
+import { useOrderSubmittedContent } from 'modules/orderProgressBar'
 import {
   TradeBasicConfirmDetails,
   TradeConfirmation,
   TradeConfirmModal,
-  useOrderSubmittedContent,
   useReceiveAmountInfo,
   useTradeConfirmActions,
 } from 'modules/trade'

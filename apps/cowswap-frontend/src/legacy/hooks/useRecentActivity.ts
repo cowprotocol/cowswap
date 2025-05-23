@@ -11,6 +11,8 @@ import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/re
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { useCombinedPendingOrders, useOrder, useOrders, useOrdersById } from 'legacy/state/orders/hooks'
 
+import { ActivityStatus, ActivityType } from 'common/types/activity'
+
 /**
  * Returns whether a transaction happened in the last day (86400 seconds * 1000 milliseconds / second)
  * @param tx to check for recency
@@ -28,22 +30,6 @@ export type TransactionAndOrder =
       id: string
       status: OrderStatus
     })
-
-export enum ActivityType {
-  ORDER = 'order',
-  TX = 'tx',
-}
-
-export enum ActivityStatus {
-  PENDING,
-  PRESIGNATURE_PENDING,
-  CONFIRMED,
-  EXPIRED,
-  CANCELLING,
-  CANCELLED,
-  CREATING,
-  FAILED,
-}
 
 enum TxReceiptStatus {
   PENDING,
@@ -68,7 +54,7 @@ export function useRecentActivity(): TransactionAndOrder[] {
           ({
             ...order,
             addedTime: Date.parse(order.creationTime),
-          })
+          }),
         )
         // sort orders by calculated `addedTime` descending
         .sort((a, b) => b.addedTime - a.addedTime)
@@ -111,7 +97,7 @@ export function useRecentActivity(): TransactionAndOrder[] {
       // Concat together the EnhancedTransactionDetails[] and Orders[]
       // then sort them by newest first
       recentTransactionsAdjusted.concat(recentOrdersAdjusted).sort((a, b) => b.addedTime - a.addedTime),
-    [recentOrdersAdjusted, recentTransactionsAdjusted]
+    [recentOrdersAdjusted, recentTransactionsAdjusted],
   )
 }
 
@@ -132,7 +118,7 @@ type UseActivityDescriptionParams = {
 export function createActivityDescriptor(
   chainId: SupportedChainId,
   tx?: EnhancedTransactionDetails,
-  order?: Order
+  order?: Order,
 ): ActivityDescriptors | null {
   if (!tx && !order) return null
 

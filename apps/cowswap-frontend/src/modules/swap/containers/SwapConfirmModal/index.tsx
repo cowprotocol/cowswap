@@ -10,11 +10,11 @@ import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useAppData } from 'modules/appData'
 import { useTokensBalancesCombined } from 'modules/combinedBalances/hooks/useTokensBalancesCombined'
+import { useOrderSubmittedContent } from 'modules/orderProgressBar'
 import {
   TradeBasicConfirmDetails,
   TradeConfirmation,
   TradeConfirmModal,
-  useOrderSubmittedContent,
   useReceiveAmountInfo,
   useTradeConfirmActions,
 } from 'modules/trade'

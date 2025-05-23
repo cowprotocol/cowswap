@@ -7,6 +7,7 @@ import { Command, UiOrderType } from '@cowprotocol/types'
 import { GnosisSafeInfo, useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
 import { isOrderInPendingTooLong, triggerAppziSurvey } from 'appzi'
+import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 import { GetSafeTxInfo, useGetSafeTxInfo } from 'legacy/hooks/useGetSafeTxInfo'
 import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
@@ -43,7 +44,6 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { fetchAndClassifyOrder } from './utils'
 
-import { useAddOrderToSurplusQueue } from '../../containers/SurplusModalSetup/surplusModal'
 import { removeOrdersToCancelAtom } from '../../hooks/useMultipleOrdersCancellation/state'
 import { useTriggerTotalSurplusUpdateCallback } from '../../state/totalSurplusState'
 

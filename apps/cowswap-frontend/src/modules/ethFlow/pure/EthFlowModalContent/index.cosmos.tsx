@@ -3,9 +3,8 @@ import { useState } from 'react'
 import { useSelect, useValue } from 'react-cosmos/client'
 import styled from 'styled-components/macro'
 
-import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
-
 import { CowModal } from 'common/pure/Modal'
+import { ActivityStatus } from 'common/types/activity'
 
 import { getEthFlowModalContentProps } from '../../services/ethFlow/mocks'
 import {

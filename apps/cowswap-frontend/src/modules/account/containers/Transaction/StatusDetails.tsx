@@ -13,11 +13,12 @@ import SVG from 'react-inlinesvg'
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 
 import { CancelButton } from 'common/pure/CancelButton'
+import { ActivityDerivedState } from 'common/types/activity'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 
 import { CancelTxLink, StatusLabel, StatusLabelBelow, StatusLabelWrapper } from './styled'
 
-import { ActivityDerivedState, determinePillColour } from './index'
+import { determinePillColour } from './index'
 
 function _getStateLabel(activityDerivedState: ActivityDerivedState) {
   const activityState = getActivityState(activityDerivedState)
