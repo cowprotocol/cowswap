@@ -39,18 +39,22 @@ export const TabItemWrapper = styled(TabItemBase)<TabItemWrapperProps>`
   border-bottom: ${({ isActive, tabTheme }): string =>
     `${tabTheme.indicatorTabSize}rem solid ${isActive ? Color.explorer_orange1 : 'transparent'}`};
 
-  &:first-of-type {
-    border-top-left-radius: ${({ tabTheme }): string =>
-      `${!tabTheme.borderRadius ? '0' : 'var(--border-radius-default)'}`};
-    border-bottom-left-radius: ${({ tabTheme }): string =>
-      `${!tabTheme.borderRadius ? '0' : 'var(--border-radius-default)'}`};
-  }
+  ${({ tabTheme }): string => {
+    const radius = !tabTheme.borderRadius ? '0' : 'var(--border-radius-default)'
+    return `
+      &:first-of-type {
+        border-top-left-radius: ${radius};
+        border-bottom-left-radius: ${radius};
+      }
+
+      &:last-of-type {
+        border-top-right-radius: ${radius};
+        border-bottom-right-radius: ${radius};
+      }
+    `
+  }}
 
   &:last-of-type {
-    border-top-right-radius: ${({ tabTheme }): string =>
-      `${!tabTheme.borderRadius ? '0' : 'var(--border-radius-default)'}`};
-    border-bottom-right-radius: ${({ tabTheme }): string =>
-      `${!tabTheme.borderRadius ? '0' : 'var(--border-radius-default)'}`};
     ${({ isActive }): string | false => isActive && `background: ${Color.explorer_bg2}`};
   }
 
@@ -72,14 +76,14 @@ export const TabList = styled.div`
   max-width: 100%;
   display: flex;
   justify-content: flex-start;
-  border-bottom: 1px solid ${Color.explorer_border};
+  border-bottom: 0.1rem solid ${Color.explorer_border};
   box-sizing: border-box;
   flex-flow: row wrap;
 
   > button {
     flex: 0 0 auto;
-    min-width: 12rem;
-    padding: 1rem;
+    min-width: 13rem;
+    padding: 1rem 2rem;
     line-height: 2;
     height: auto;
 

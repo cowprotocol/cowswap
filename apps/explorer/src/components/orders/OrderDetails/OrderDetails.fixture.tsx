@@ -18,6 +18,7 @@ import { GlobalStateContext } from '../../../hooks/useGlobalState'
 import { RICH_ORDER } from '../../../test/data'
 import { Errors, Network } from '../../../types'
 import { BridgeDetailsTable } from '../BridgeDetailsTable'
+import { RefundStatusEnum } from '../BridgeDetailsTable/RefundStatus'
 
 import { OrderDetails } from '.'
 
@@ -185,6 +186,45 @@ const swapBridgeFailedOrder: Order = {
     status: BridgeStatus.Failed,
     isSuccess: false,
     errorMessage: 'Bridge operation failed due to insufficient liquidity',
+    refundStatus: RefundStatusEnum.NOT_INITIATED, // Could be: 'not_initiated', 'pending', 'completed', 'failed'
+  },
+} as Order
+
+const swapBridgeFailedRefundPendingOrder: Order = {
+  ...baseMockOrderData,
+  ...baseMockOrderData.statusFilled,
+  bridgeDetails: {
+    ...pendingBridgeDetails,
+    status: BridgeStatus.Failed,
+    isSuccess: false,
+    errorMessage: 'Bridge operation failed due to insufficient liquidity',
+    refundStatus: RefundStatusEnum.PENDING,
+  },
+} as Order
+
+const swapBridgeFailedRefundCompletedOrder: Order = {
+  ...baseMockOrderData,
+  ...baseMockOrderData.statusFilled,
+  bridgeDetails: {
+    ...pendingBridgeDetails,
+    status: BridgeStatus.Failed,
+    isSuccess: false,
+    errorMessage: 'Bridge operation failed due to insufficient liquidity',
+    refundStatus: RefundStatusEnum.COMPLETED,
+    refundWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+    refundChainId: SupportedChainId.MAINNET,
+  },
+} as Order
+
+const swapBridgeFailedRefundFailedOrder: Order = {
+  ...baseMockOrderData,
+  ...baseMockOrderData.statusFilled,
+  bridgeDetails: {
+    ...pendingBridgeDetails,
+    status: BridgeStatus.Failed,
+    isSuccess: false,
+    errorMessage: 'Bridge operation failed due to insufficient liquidity',
+    refundStatus: RefundStatusEnum.FAILED,
   },
 } as Order
 
@@ -365,6 +405,39 @@ export default {
     <WithProviders>
       <OrderDetails
         order={swapBridgeFailedOrder}
+        trades={mockTradesFilledOrder}
+        isOrderLoading={false}
+        areTradesLoading={false}
+        errors={noErrors}
+      />
+    </WithProviders>
+  ),
+  'Swap+Bridge - (Swap Filled, Bridge Failed - Refund Pending)': () => (
+    <WithProviders>
+      <OrderDetails
+        order={swapBridgeFailedRefundPendingOrder}
+        trades={mockTradesFilledOrder}
+        isOrderLoading={false}
+        areTradesLoading={false}
+        errors={noErrors}
+      />
+    </WithProviders>
+  ),
+  'Swap+Bridge - (Swap Filled, Bridge Failed - Refund Completed)': () => (
+    <WithProviders>
+      <OrderDetails
+        order={swapBridgeFailedRefundCompletedOrder}
+        trades={mockTradesFilledOrder}
+        isOrderLoading={false}
+        areTradesLoading={false}
+        errors={noErrors}
+      />
+    </WithProviders>
+  ),
+  'Swap+Bridge - (Swap Filled, Bridge Failed - Refund Failed)': () => (
+    <WithProviders>
+      <OrderDetails
+        order={swapBridgeFailedRefundFailedOrder}
         trades={mockTradesFilledOrder}
         isOrderLoading={false}
         areTradesLoading={false}

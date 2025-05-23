@@ -27,8 +27,8 @@ import { SimpleTable, SimpleTableProps } from '../../common/SimpleTable'
 import { FilledProgress } from '../FilledProgress'
 
 const StyledShimmerBar = styled(ShimmerBar)`
-  min-height: 20px;
-  min-width: 100px;
+  min-height: 2rem;
+  min-width: 10rem;
 `
 
 export type Props = SimpleTableProps & {
@@ -49,7 +49,7 @@ function calculateExecutionPrice(
   sellAmount: BigNumber,
   buyAmount: BigNumber,
   sellToken?: TokenErc20 | null,
-  buyToken?: TokenErc20 | null
+  buyToken?: TokenErc20 | null,
 ): BigNumber | null {
   if (!sellToken || !buyToken) return null
 
