@@ -9,3 +9,4 @@ export {
 } from './pure/StopStatus'
 
 export { BridgeRouteBreakdown } from './containers/BridgeRouteBreakdown'
+export { QuoteDetails } from './pure/QuoteDetails'

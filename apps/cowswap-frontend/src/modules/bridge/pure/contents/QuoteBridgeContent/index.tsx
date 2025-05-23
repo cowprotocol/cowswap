@@ -2,28 +2,20 @@ import { ReactNode } from 'react'
 
 import { displayTime, isTruthy } from '@cowprotocol/common-utils'
 import { InfoTooltip } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
+import { QuoteBridgeContext } from '../../../types'
 import { RecipientDisplay } from '../../RecipientDisplay'
 import { TokenAmountDisplay } from '../../TokenAmountDisplay'
 
 export interface QuoteBridgeContentProps {
-  bridgeFee: CurrencyAmount<Currency>
-  estimatedTime: number | null
-  recipient: string
-  receiveAmount: CurrencyAmount<Currency>
-  receiveAmountUsd: CurrencyAmount<Token> | null
+  context: QuoteBridgeContext
   children?: ReactNode
 }
 
 export function QuoteBridgeContent({
-  recipient,
-  bridgeFee,
-  estimatedTime,
-  receiveAmount,
-  receiveAmountUsd,
+  context: { recipient, bridgeFee, estimatedTime, receiveAmount, receiveAmountUsd },
   children,
 }: QuoteBridgeContentProps) {
   const contents = [
@@ -67,7 +59,11 @@ export function QuoteBridgeContent({
           <b>Min. to receive</b>
         </ReceiveAmountTitle>
       ),
-      content: <TokenAmountDisplay displaySymbol usdValue={receiveAmountUsd} currencyAmount={receiveAmount} />,
+      content: (
+        <b>
+          <TokenAmountDisplay displaySymbol usdValue={receiveAmountUsd} currencyAmount={receiveAmount} />
+        </b>
+      ),
     },
   ]
 

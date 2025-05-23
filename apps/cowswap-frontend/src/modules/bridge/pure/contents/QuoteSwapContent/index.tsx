@@ -1,36 +1,28 @@
 import { InfoTooltip, PercentDisplay } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
-import { ReceiveAmountInfo, ReceiveAmountTitle, TradeFeesAndCosts, ConfirmDetailsItem } from 'modules/trade'
+import { ReceiveAmountTitle, TradeFeesAndCosts, ConfirmDetailsItem } from 'modules/trade'
 
+import { QuoteSwapContext } from '../../../types'
 import { RecipientDisplay } from '../../RecipientDisplay'
 import { TokenAmountDisplay } from '../../TokenAmountDisplay'
 
 interface QuoteDetailsContentProps {
-  receiveAmountInfo: ReceiveAmountInfo
-
-  sellCurrencyAmount: CurrencyAmount<Currency>
-  buyCurrencyAmount: CurrencyAmount<Currency>
-
-  swapSlippage: Percent
-  recipient: string
-
-  swapMinReceiveAmount: CurrencyAmount<Currency>
-  swapMinReceiveUsdValue: CurrencyAmount<Token> | null
-  swapExpectedReceiveUsdValue: CurrencyAmount<Token> | null
+  context: QuoteSwapContext
 }
 
 export function QuoteSwapContent({
-  receiveAmountInfo,
-  sellCurrencyAmount,
-  buyCurrencyAmount,
-  swapSlippage,
-  recipient,
-  swapMinReceiveAmount,
-  swapMinReceiveUsdValue,
-  swapExpectedReceiveUsdValue,
+  context: {
+    receiveAmountInfo,
+    sellAmount,
+    buyAmount,
+    slippage,
+    recipient,
+    minReceiveAmount,
+    minReceiveUsdValue,
+    expectedReceiveUsdValue,
+  },
 }: QuoteDetailsContentProps) {
-  const slippagePercentDisplay = <PercentDisplay percent={swapSlippage.toFixed(2)} />
+  const slippagePercentDisplay = <PercentDisplay percent={slippage.toFixed(2)} />
 
   const contents = [
     {
@@ -49,9 +41,7 @@ export function QuoteSwapContent({
           />
         </>
       ),
-      content: (
-        <TokenAmountDisplay displaySymbol currencyAmount={buyCurrencyAmount} usdValue={swapExpectedReceiveUsdValue} />
-      ),
+      content: <TokenAmountDisplay displaySymbol currencyAmount={buyAmount} usdValue={expectedReceiveUsdValue} />,
     },
     {
       withTimelineDot: true,
@@ -70,7 +60,7 @@ export function QuoteSwapContent({
       label: <ReceiveAmountTitle>Min. to receive</ReceiveAmountTitle>,
       content: (
         <b>
-          <TokenAmountDisplay displaySymbol currencyAmount={swapMinReceiveAmount} usdValue={swapMinReceiveUsdValue} />
+          <TokenAmountDisplay displaySymbol currencyAmount={minReceiveAmount} usdValue={minReceiveUsdValue} />
         </b>
       ),
     },
@@ -81,7 +71,7 @@ export function QuoteSwapContent({
           Recipient <InfoTooltip content="The address that will receive the tokens." size={14} />
         </>
       ),
-      content: <RecipientDisplay recipient={recipient} chainId={sellCurrencyAmount.currency.chainId} />,
+      content: <RecipientDisplay recipient={recipient} chainId={sellAmount.currency.chainId} />,
     },
   ]
 

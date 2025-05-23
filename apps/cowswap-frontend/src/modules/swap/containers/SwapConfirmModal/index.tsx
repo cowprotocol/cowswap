@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -9,7 +9,7 @@ import ms from 'ms.macro'
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useAppData } from 'modules/appData'
-import { BridgeRouteBreakdown, useShouldDisplayBridgeDetails } from 'modules/bridge'
+import { QuoteDetails, useQuoteBridgeContext, useQuoteSwapContext, useShouldDisplayBridgeDetails } from 'modules/bridge'
 import { useTokensBalancesCombined } from 'modules/combinedBalances/hooks/useTokensBalancesCombined'
 import { useOrderSubmittedContent } from 'modules/orderProgressBar'
 import {
@@ -56,15 +56,10 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
 
   const shouldDisplayBridgeDetails = useShouldDisplayBridgeDetails()
   const { bridgeQuote } = useTradeQuote()
-  const [isBridgeRouteExpanded, setIsBridgeRouteExpanded] = useState(true)
-  const bridgeRouteBreakDownParams = useMemo(
-    () => ({
-      isCollapsible: true,
-      isExpanded: isBridgeRouteExpanded,
-      onExpandToggle: () => setIsBridgeRouteExpanded(!isBridgeRouteExpanded),
-    }),
-    [isBridgeRouteExpanded],
-  )
+
+  const bridgeProvider = bridgeQuote?.providerInfo
+  const swapContext = useQuoteSwapContext()
+  const bridgeContext = useQuoteBridgeContext()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
   const submittedContent = useOrderSubmittedContent(chainId)
@@ -116,14 +111,15 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
         appData={appData || undefined}
         refreshInterval={PRICE_UPDATE_INTERVAL}
       >
-        {shouldDisplayBridgeDetails && receiveAmountInfo && bridgeQuote
+        {shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext
           ? (restContent) => (
               <>
                 <RateInfo label="Price" rateInfoParams={rateInfoParams} />
-                <BridgeRouteBreakdown
-                  receiveAmountInfo={receiveAmountInfo}
-                  bridgeQuote={bridgeQuote}
-                  uiParams={bridgeRouteBreakDownParams}
+                <QuoteDetails
+                  isCollapsible
+                  bridgeProvider={bridgeProvider}
+                  swapContext={swapContext}
+                  bridgeContext={bridgeContext}
                 />
                 {restContent}
               </>
