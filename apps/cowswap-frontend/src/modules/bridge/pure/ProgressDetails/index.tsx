@@ -1,6 +1,5 @@
 import { DividerHorizontal } from '../../styles'
-import { SwapAndBridgeContext } from '../../types'
-import { StopStatusEnum } from '../../utils'
+import { SwapAndBridgeStatus, SwapAndBridgeContext } from '../../types'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { CollapsibleBridgeRoute } from '../CollapsibleBridgeRoute'
 import { BridgingProgressContent } from '../contents/BridgingProgressContent'
@@ -26,7 +25,7 @@ export function ProgressDetails({
     bridgingStatus,
   },
 }: QuoteDetailsProps) {
-  const swapStatus = StopStatusEnum.DONE
+  const swapStatus = SwapAndBridgeStatus.DONE
 
   return (
     <CollapsibleBridgeRoute

@@ -10,7 +10,7 @@ import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import { StyledSpinnerIcon, StyledRefundCompleteIcon } from '../../styles'
-import { StopStatusEnum } from '../../utils/status'
+import { SwapAndBridgeStatus } from '../../types'
 
 const StyledStatusCheckmarkIcon = styled(SVG)`
   width: 24px;
@@ -32,41 +32,41 @@ const StyledStatusCloseIcon = styled(SVG)`
 const CloseIcon = <StyledStatusCloseIcon src={CLOSE_ICON_X} />
 
 // Base set of icons for status states, used by both swap and bridge
-export const CommonStatusIcons: Record<StopStatusEnum, ReactNode> = {
-  [StopStatusEnum.DONE]: <StyledStatusCheckmarkIcon src={CheckmarkIcon} />,
-  [StopStatusEnum.PENDING]: <StyledSpinnerIcon src={SpinnerIcon} />,
-  [StopStatusEnum.FAILED]: CloseIcon,
-  [StopStatusEnum.REFUND_COMPLETE]: CloseIcon,
-  [StopStatusEnum.DEFAULT]: null,
+export const CommonStatusIcons: Record<SwapAndBridgeStatus, ReactNode> = {
+  [SwapAndBridgeStatus.DONE]: <StyledStatusCheckmarkIcon src={CheckmarkIcon} />,
+  [SwapAndBridgeStatus.PENDING]: <StyledSpinnerIcon src={SpinnerIcon} />,
+  [SwapAndBridgeStatus.FAILED]: CloseIcon,
+  [SwapAndBridgeStatus.REFUND_COMPLETE]: CloseIcon,
+  [SwapAndBridgeStatus.DEFAULT]: null,
 }
 
 // Swap has custom icons for different states
-export const SwapStatusIcons: Record<StopStatusEnum, ReactNode> = {
+export const SwapStatusIcons: Record<SwapAndBridgeStatus, ReactNode> = {
   ...CommonStatusIcons,
-  [StopStatusEnum.FAILED]: <SVG src={RefundIcon} />,
-  [StopStatusEnum.REFUND_COMPLETE]: <StyledRefundCompleteIcon src={RefundIcon} />,
+  [SwapAndBridgeStatus.FAILED]: <SVG src={RefundIcon} />,
+  [SwapAndBridgeStatus.REFUND_COMPLETE]: <StyledRefundCompleteIcon src={RefundIcon} />,
 }
 
 // Bridge uses the common icons without modification
 export const BridgeStatusIcons = CommonStatusIcons
 
 // Title text used for different swap states
-export const SwapStatusTitlePrefixes: Record<StopStatusEnum, string> = {
-  [StopStatusEnum.DONE]: 'Swapped on',
-  [StopStatusEnum.PENDING]: 'Swapping on',
-  [StopStatusEnum.FAILED]: 'Swap failed',
-  [StopStatusEnum.REFUND_COMPLETE]: 'Swap refunded',
-  [StopStatusEnum.DEFAULT]: 'Swap on',
+export const SwapStatusTitlePrefixes: Record<SwapAndBridgeStatus, string> = {
+  [SwapAndBridgeStatus.DONE]: 'Swapped on',
+  [SwapAndBridgeStatus.PENDING]: 'Swapping on',
+  [SwapAndBridgeStatus.FAILED]: 'Swap failed',
+  [SwapAndBridgeStatus.REFUND_COMPLETE]: 'Swap refunded',
+  [SwapAndBridgeStatus.DEFAULT]: 'Swap on',
 }
 
 // Reusable text for different states
 export const bridgeFailedTitle = 'Bridge failed on'
 
 // Title text used for different bridge states
-export const BridgeStatusTitlePrefixes: Record<StopStatusEnum, string> = {
-  [StopStatusEnum.DONE]: 'Bridged via',
-  [StopStatusEnum.PENDING]: 'Bridging via',
-  [StopStatusEnum.FAILED]: bridgeFailedTitle,
-  [StopStatusEnum.REFUND_COMPLETE]: bridgeFailedTitle,
-  [StopStatusEnum.DEFAULT]: 'Bridge via',
+export const BridgeStatusTitlePrefixes: Record<SwapAndBridgeStatus, string> = {
+  [SwapAndBridgeStatus.DONE]: 'Bridged via',
+  [SwapAndBridgeStatus.PENDING]: 'Bridging via',
+  [SwapAndBridgeStatus.FAILED]: bridgeFailedTitle,
+  [SwapAndBridgeStatus.REFUND_COMPLETE]: bridgeFailedTitle,
+  [SwapAndBridgeStatus.DEFAULT]: 'Bridge via',
 }

@@ -12,12 +12,12 @@ import {
   ExplorerLink,
   ToggleIconContainer,
 } from '../../styles'
-import { StopStatusEnum } from '../../utils'
+import { SwapAndBridgeStatus } from '../../types'
 import { BridgeRouteTitle } from '../BridgeRouteTitle'
 import { RouteTitle } from '../RouteTitle'
 
 export interface BridgeDetailsContainerProps {
-  status: StopStatusEnum
+  status: SwapAndBridgeStatus
   stopNumber: number
   statusIcon: ReactNode
   titlePrefix: ReactNode

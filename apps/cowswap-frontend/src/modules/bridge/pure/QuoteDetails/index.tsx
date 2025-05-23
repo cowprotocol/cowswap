@@ -3,8 +3,7 @@ import { ReactNode } from 'react'
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 
 import { DividerHorizontal } from '../../styles'
-import { QuoteBridgeContext, QuoteSwapContext } from '../../types'
-import { StopStatusEnum } from '../../utils'
+import { QuoteBridgeContext, QuoteSwapContext, SwapAndBridgeStatus } from '../../types'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { CollapsibleBridgeRoute } from '../CollapsibleBridgeRoute'
 import { QuoteBridgeContent } from '../contents/QuoteBridgeContent'
@@ -28,7 +27,7 @@ export function QuoteDetails({
   bridgeContext,
   collapsedDefault,
 }: QuoteDetailsProps) {
-  const status = StopStatusEnum.DEFAULT
+  const status = SwapAndBridgeStatus.DEFAULT
 
   return (
     <CollapsibleBridgeRoute
