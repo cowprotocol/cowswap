@@ -1,7 +1,7 @@
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
-import { AnimatedEllipsis, StatusAwareText } from '../../styles'
-import { StopStatusEnum } from '../../utils'
+import { AnimatedEllipsis, StatusAwareText } from '../../../../styles'
+import { StopStatusEnum } from '../../../../utils'
 
 export function PendingBridgingContent() {
   return (

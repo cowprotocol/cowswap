@@ -2,8 +2,8 @@ import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
-import { AnimatedEllipsis, DangerText, InfoTextBold, InfoTextSpan } from '../../styles'
-import { StyledAnimatedTimelineRefundIcon } from '../BridgeStopDetails/styled'
+import { AnimatedEllipsis, DangerText, InfoTextBold, InfoTextSpan } from '../../../../styles'
+import { StyledAnimatedTimelineRefundIcon } from '../../../BridgeStopDetails/styled'
 
 export function FailedBridgingContent() {
   return (

@@ -7,9 +7,9 @@ import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import type { SolverCompetition } from 'modules/orderProgressBar'
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
-import { StyledTimelinePlusIcon, SuccessTextBold, TimelineIconCircleWrapper } from '../../styles'
-import { WinningSolverContainer } from '../SwapStopDetails/styled'
-import { TokenAmountDisplay } from '../TokenAmountDisplay'
+import { StyledTimelinePlusIcon, SuccessTextBold, TimelineIconCircleWrapper } from '../../../styles'
+import { WinningSolverContainer } from '../../SwapStopDetails/styled'
+import { TokenAmountDisplay } from '../../TokenAmountDisplay'
 
 interface SwapResultContentProps {
   winningSolver: SolverCompetition
