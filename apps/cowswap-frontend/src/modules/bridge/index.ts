@@ -9,7 +9,6 @@ export {
   BridgeStatusTitlePrefixes,
 } from './pure/StopStatus'
 
-export { BridgeRouteBreakdown } from './containers/BridgeRouteBreakdown'
 export { QuoteDetails } from './pure/QuoteDetails'
 export { ProgressDetails } from './pure/ProgressDetails'
 export { StopStatusEnum } from './utils/status'

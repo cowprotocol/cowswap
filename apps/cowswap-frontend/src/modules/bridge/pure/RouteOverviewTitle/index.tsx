@@ -4,13 +4,7 @@ import { InfoTooltip } from '@cowprotocol/ui'
 import { ProtocolIcons } from 'common/pure/ProtocolIcons'
 import { ToggleArrow } from 'common/pure/ToggleArrow'
 
-import {
-  ClickableRouteHeader,
-  CollapsibleStopsInfo,
-  RouteHeader,
-  RouteTitle,
-  StopsInfo,
-} from '../../containers/BridgeRouteBreakdown/styled'
+import { ClickableRouteHeader, CollapsibleStopsInfo, RouteHeader, RouteTitle, StopsInfo } from './styled'
 
 interface RouteOverviewTitleProps {
   isCollapsible: boolean
