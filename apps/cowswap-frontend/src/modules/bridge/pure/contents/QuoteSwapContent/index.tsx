@@ -57,7 +57,11 @@ export function QuoteSwapContent({
       content: slippagePercentDisplay,
     },
     {
-      label: <ReceiveAmountTitle>Min. to receive</ReceiveAmountTitle>,
+      label: (
+        <ReceiveAmountTitle>
+          <b>Min. to receive</b>
+        </ReceiveAmountTitle>
+      ),
       content: (
         <b>
           <TokenAmountDisplay displaySymbol currencyAmount={minReceiveAmount} usdValue={minReceiveUsdValue} />

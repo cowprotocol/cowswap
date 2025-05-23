@@ -18,6 +18,8 @@ export function QuoteBridgeContent({
   quoteContext: { recipient, bridgeFee, estimatedTime, buyAmount, buyAmountUsd },
   children,
 }: QuoteBridgeContentProps) {
+  const buyAmountEl = <TokenAmountDisplay displaySymbol usdValue={buyAmountUsd} currencyAmount={buyAmount} />
+
   const contents = [
     {
       withTimelineDot: true,
@@ -51,7 +53,7 @@ export function QuoteBridgeContent({
       content: <RecipientDisplay recipient={recipient} chainId={bridgeFee.currency.chainId} logoSize={16} />,
     },
     {
-      withTimelineDot: !children,
+      withTimelineDot: true,
       label: children ? (
         'Min. to receive'
       ) : (
@@ -59,11 +61,7 @@ export function QuoteBridgeContent({
           <b>Min. to receive</b>
         </ReceiveAmountTitle>
       ),
-      content: (
-        <b>
-          <TokenAmountDisplay displaySymbol usdValue={buyAmountUsd} currencyAmount={buyAmount} />
-        </b>
-      ),
+      content: children ? buyAmountEl : <b>{buyAmountEl}</b>,
     },
   ]
 
