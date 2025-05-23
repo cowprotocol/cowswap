@@ -6,16 +6,21 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { ReceiveAmountInfo } from 'modules/trade'
 
-export function useBridgeQuoteAmounts(receiveAmountInfo: ReceiveAmountInfo, bridgeQuote: BridgeQuoteResults) {
+export function useBridgeQuoteAmounts(
+  receiveAmountInfo: ReceiveAmountInfo | null,
+  bridgeQuote: BridgeQuoteResults | null,
+) {
   const tokensByAddress = useTokensByAddressMap()
 
-  const { sellAmount: swapSellAmount, buyAmount } = receiveAmountInfo.afterSlippage
-  const buyToken = buyAmount.currency
-
-  const intermediateBuyTokenAddress = bridgeQuote.tradeParameters.sellTokenAddress
-  const intermediateBuyToken = tokensByAddress[intermediateBuyTokenAddress.toLowerCase()]!
-
   return useMemo(() => {
+    if (!receiveAmountInfo || !bridgeQuote) return null
+
+    const { sellAmount: swapSellAmount, buyAmount } = receiveAmountInfo.afterSlippage
+    const buyToken = buyAmount.currency
+
+    const intermediateBuyTokenAddress = bridgeQuote.tradeParameters.sellTokenAddress
+    const intermediateBuyToken = tokensByAddress[intermediateBuyTokenAddress.toLowerCase()]!
+
     const swapBuyAmount = CurrencyAmount.fromRawAmount(
       intermediateBuyToken,
       receiveAmountInfo.afterNetworkCosts.buyAmount.quotient.toString(),
@@ -42,5 +47,5 @@ export function useBridgeQuoteAmounts(receiveAmountInfo: ReceiveAmountInfo, brid
       bridgeMinReceiveAmount,
       bridgeFee,
     }
-  }, [receiveAmountInfo, bridgeQuote, swapSellAmount, buyToken, intermediateBuyToken])
+  }, [receiveAmountInfo, bridgeQuote, tokensByAddress])
 }

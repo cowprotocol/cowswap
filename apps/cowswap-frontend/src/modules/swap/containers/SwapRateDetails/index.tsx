@@ -1,7 +1,12 @@
 import { ReactNode } from 'react'
 
-import { BridgeAccordionSummary, BridgeRouteBreakdown, useShouldDisplayBridgeDetails } from 'modules/bridge'
-import { useReceiveAmountInfo } from 'modules/trade'
+import {
+  BridgeAccordionSummary,
+  useQuoteBridgeContext,
+  useQuoteSwapContext,
+  useShouldDisplayBridgeDetails,
+  QuoteDetails,
+} from 'modules/bridge'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { TradeRateDetails } from 'modules/tradeWidgetAddons'
 
@@ -15,12 +20,13 @@ export interface SwapRateDetailsProps {
 export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsProps) {
   const { isLoading: isRateLoading, bridgeQuote } = useTradeQuote()
 
-  const receiveAmountInfo = useReceiveAmountInfo()
-
   const shouldDisplayBridgeDetails = useShouldDisplayBridgeDetails()
 
   const providerDetails = bridgeQuote?.providerInfo
   const bridgeEstimatedTime = bridgeQuote?.expectedFillTimeSeconds
+
+  const swapContext = useQuoteSwapContext()
+  const bridgeContext = useQuoteBridgeContext()
 
   return (
     <TradeRateDetails
@@ -29,8 +35,13 @@ export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsPro
       deadline={deadline}
       accordionContent={
         shouldDisplayBridgeDetails &&
-        receiveAmountInfo &&
-        bridgeQuote && <BridgeRouteBreakdown receiveAmountInfo={receiveAmountInfo} bridgeQuote={bridgeQuote} />
+        providerDetails &&
+        swapContext &&
+        bridgeContext && (
+          <>
+            <QuoteDetails bridgeProvider={providerDetails} swapContext={swapContext} bridgeContext={bridgeContext} />
+          </>
+        )
       }
       feeWrapper={
         shouldDisplayBridgeDetails && providerDetails
