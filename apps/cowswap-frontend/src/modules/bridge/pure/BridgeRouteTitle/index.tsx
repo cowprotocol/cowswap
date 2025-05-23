@@ -2,10 +2,9 @@ import { ReactNode } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 
-import { ProtocolIcons } from 'common/pure/ProtocolIcons'
-
 import { StopNumberCircle } from '../../styles'
 import { SwapAndBridgeStatus } from '../../types'
+import { ProtocolIcons } from '../ProtocolIcons'
 
 interface BridgeRouteTitleProps {
   status: SwapAndBridgeStatus
