@@ -25,21 +25,18 @@ export async function GET(request: NextRequest) {
     revalidateTag(tag)
 
     // Always revalidate the main learn page to ensure it's fresh
-    revalidatePath('/(learn)/learn')
+    revalidatePath('/learn')
 
-    // Revalidate the dynamic article layout so the client‑side manifest includes new slugs
-    revalidatePath('/(learn)/learn/[article]', 'layout')
+    // Revalidate the dynamic article route so the client-side manifest includes new slugs
+    revalidatePath('/learn/[article]', 'layout')
 
     // If a specific path was provided, revalidate it to update the route manifest
     if (path) {
       // Ensure the incoming path starts with a slash
       const formattedPath = path.startsWith('/') ? path : `/${path}`
 
-      // Convert browser path (/learn/slug) to filesystem path (/(learn)/learn/slug)
-      const groupPath = formattedPath.replace('/learn', '/(learn)/learn')
-
-      // Revalidate the specific article page
-      revalidatePath(groupPath)
+      // Revalidate the specific article page (e.g. /learn/my-new-article)
+      revalidatePath(formattedPath)
     }
 
     return NextResponse.json({
