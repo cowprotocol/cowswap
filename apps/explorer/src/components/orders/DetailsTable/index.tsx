@@ -1,10 +1,11 @@
 import React from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { getChainInfo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { Color, Icon, Media, UI } from '@cowprotocol/ui'
+import { Icon, UI, NetworkLogo } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import { faFill, faGroupArrowsRotate, faHistory, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
@@ -12,7 +13,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import DecodeAppData from 'components/AppData/DecodeAppData'
 import { DateDisplay } from 'components/common/DateDisplay'
 import { DetailRow } from 'components/common/DetailRow'
-import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { SimpleTable } from 'components/common/SimpleTable'
 import { AmountsDisplay } from 'components/orders/AmountsDisplay'
@@ -23,12 +23,13 @@ import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
 import { StatusLabel } from 'components/orders/StatusLabel'
 import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { Link } from 'react-router'
-import styled from 'styled-components/macro'
 import { capitalize } from 'utils'
 
 import { Order } from 'api/operator'
 import { ExplorerCategory } from 'common/analytics/types'
 import { getUiOrderType } from 'utils/getUiOrderType'
+
+import { NetworkName, Wrapper, LinkButton, WarningRow } from './styled'
 
 import { OrderHooksDetails } from '../OrderHooksDetails'
 import { UnsignedOrderWarning } from '../UnsignedOrderWarning'
@@ -86,54 +87,6 @@ const tooltip = {
     'Indicates what percentage amount this order has been filled and the amount sold/bought. Amount sold includes the fee.',
   fees: 'The amount of fees paid for this order. This will show a progressive number for orders with partial fills. Might take a few minutes to show the final value.',
 }
-
-export const Wrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-
-  ${Media.MediumAndUp()} {
-    align-items: center;
-  }
-
-  ${Media.upToSmall()} {
-    flex-direction: column;
-  }
-`
-
-export const LinkButton = styled(LinkWithPrefixNetwork)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  font-weight: ${({ theme }): string => theme.fontBold};
-  font-size: 1.3rem;
-  color: ${Color.explorer_orange1};
-  border: 1px solid ${() => Color.explorer_orange1};
-  background-color: ${Color.explorer_orangeOpacity};
-  border-radius: 0.4rem;
-  padding: 0.8rem 1.5rem;
-  margin: 0 0 0 2rem;
-  transition-duration: 0.2s;
-  transition-timing-function: ease-in-out;
-
-  ${Media.upToSmall()} {
-    margin: 1.6rem 0 0 0;
-  }
-
-  &:hover {
-    opacity: 0.8;
-    color: ${Color.neutral100};
-    text-decoration: none;
-  }
-
-  svg {
-    margin-right: 0.5rem;
-  }
-`
-
-const WarningRow = styled.tr`
-  background-color: ${Color.explorer_bg};
-`
 
 export type RenderMode = 'FULL' | 'SUMMARY'
 
@@ -229,9 +182,13 @@ export function DetailsTable(props: Props): React.ReactNode | null {
                 textToCopy={owner}
                 onCopy={(): void => onCopy('ownerAddress')}
                 contentsToDisplay={
-                  <Link to={getExplorerLink(chainId, owner, ExplorerDataType.ADDRESS)} target="_blank">
-                    {owner}↗
-                  </Link>
+                  <span>
+                    <Link to={getExplorerLink(chainId, owner, ExplorerDataType.ADDRESS)} target="_blank">
+                      <NetworkLogo chainId={chainId} size={16} forceLightMode />
+                      {owner}↗
+                    </Link>
+                    <NetworkName>on {getChainInfo(chainId).label}</NetworkName>
+                  </span>
                 }
               />
               <LinkButton to={`/address/${owner}`}>
@@ -246,9 +203,13 @@ export function DetailsTable(props: Props): React.ReactNode | null {
                 textToCopy={receiver}
                 onCopy={(): void => onCopy('receiverAddress')}
                 contentsToDisplay={
-                  <Link to={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)} target="_blank">
-                    {receiver}↗
-                  </Link>
+                  <span>
+                    <Link to={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)} target="_blank">
+                      <NetworkLogo chainId={chainId} size={16} forceLightMode />
+                      {receiver}↗
+                    </Link>
+                    <NetworkName>on {getChainInfo(chainId).label}</NetworkName>
+                  </span>
                 }
               />
               <LinkButton to={`/address/${receiver}`}>

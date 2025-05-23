@@ -1,68 +1,35 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
+import { BridgeStatus } from '@cowprotocol/bridge'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { Color, Media } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import CowLoading from 'components/common/CowLoading'
-import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
 import { ConnectionStatus } from 'components/ConnectionStatus'
 import { Notification } from 'components/Notification'
 import { DetailsTable } from 'components/orders/DetailsTable'
+import { StatusLabel } from 'components/orders/StatusLabel'
 import RedirectToSearch from 'components/RedirectToSearch'
-import ExplorerTabs from 'explorer/components/common/ExplorerTabs/ExplorerTabs'
 import TablePagination from 'explorer/components/common/TablePagination'
 import { useTable } from 'explorer/components/TokensTableWidget/useTable'
 import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
 import { useLocation } from 'react-router'
 import { useNetworkId } from 'state/network'
-import styled from 'styled-components/macro'
 import { Errors } from 'types'
 import { formatPercentage } from 'utils'
 
 import { Order, Trade } from 'api/operator'
+import { isSwapAndBridgeOrder } from 'utils/orderTypeGuards'
 
 import { FillsTableContext } from './context/FillsTableContext'
 import { FillsTableWithData } from './FillsTableWithData'
+import { TitleUid, WrapperExtraComponents, StyledExplorerTabs, TabContent, BridgeDetailsWrapper } from './styled'
 
 import { FlexContainerVar } from '../../../explorer/pages/styled'
 import { BridgeDetailsTable } from '../BridgeDetailsTable'
-
-const TitleUid = styled(RowWithCopyButton)`
-  color: ${Color.explorer_grey};
-  font-size: var(--font-size-default);
-  font-weight: var(--font-weight-normal);
-  margin: 0 0 0 1rem;
-  display: flex;
-  align-items: center;
-`
-
-const WrapperExtraComponents = styled.div`
-  align-items: center;
-  display: flex;
-  justify-content: flex-end;
-  height: 100%;
-  gap: 1rem;
-
-  ${Media.upToSmall()} {
-    width: 100%;
-  }
-`
-
-const StyledExplorerTabs = styled(ExplorerTabs)`
-  margin-top: 2rem;
-
-  &.orderDetails-tab {
-    &--overview {
-      .tab-content {
-        padding: 0;
-      }
-    }
-  }
-`
 
 export type Props = {
   order: Order | null
@@ -75,13 +42,22 @@ export type Props = {
 export enum TabView {
   OVERVIEW = 1,
   FILLS = 2,
+  SWAP = 3,
+  BRIDGE = 4,
 }
 
 const DEFAULT_TAB = TabView[1]
 
 function useQueryViewParams(): string {
   const query = useQuery()
-  return query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB // if URL param empty will be used DEFAULT
+  const param = query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase()
+
+  // Map unknown values to OVERVIEW
+  if (!param || !TabView[param as keyof typeof TabView]) {
+    return DEFAULT_TAB
+  }
+
+  return param
 }
 
 const tabItems = (
@@ -100,6 +76,101 @@ const tabItems = (
   const filledPercentage = order?.filledPercentage && formatPercentage(order.filledPercentage)
   const showFills = order?.partiallyFillable && !order.txHash && trades.length > 1
 
+  // Check if this is a swap and bridge order
+  const isSwapBridge = order && isSwapAndBridgeOrder(order)
+
+  // For swap+bridge orders, create three tabs
+  if (isSwapBridge) {
+    const overviewTab = {
+      id: TabView.OVERVIEW,
+      tab: <span>Overview</span>,
+      content: (
+        <>
+          {order && areTokensLoaded && (
+            <DetailsTable
+              chainId={chainId}
+              order={order}
+              showFillsButton={false}
+              viewFills={(): void => {}}
+              areTradesLoading={areTradesLoading}
+              isPriceInverted={isPriceInverted}
+              invertPrice={invertPrice}
+              renderMode="SUMMARY"
+            />
+          )}
+          {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
+          {isLoadingForTheFirstTime && <CowLoading />}
+        </>
+      ),
+    }
+
+    const swapTab = {
+      id: TabView.SWAP,
+      tab: (
+        <TabContent>
+          1. Swap <StatusLabel status={order.status} />
+        </TabContent>
+      ),
+      content: (
+        <>
+          {order && areTokensLoaded && (
+            <DetailsTable
+              chainId={chainId}
+              order={order}
+              showFillsButton={showFills}
+              viewFills={(): void => onChangeTab(TabView.FILLS)}
+              areTradesLoading={areTradesLoading}
+              isPriceInverted={isPriceInverted}
+              invertPrice={invertPrice}
+              renderMode="FULL"
+            />
+          )}
+          {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
+          {isLoadingForTheFirstTime && <CowLoading />}
+        </>
+      ),
+    }
+
+    const bridgeStatus = order.bridgeDetails?.status || 'Unknown'
+
+    // Note: swap+bridge orders don't support partial fills for now
+    const isSwapComplete = order.status === 'filled' || order.partiallyFilled
+
+    // Determine effective bridge status for tab title
+    const effectiveBridgeStatusForTab = (() => {
+      if (!isSwapComplete && bridgeStatus === BridgeStatus.Pending) {
+        return 'Waiting for swap'
+      }
+      return bridgeStatus
+    })()
+
+    const bridgeTab = {
+      id: TabView.BRIDGE,
+      tab: (
+        <TabContent>
+          2. Bridge{' '}
+          {effectiveBridgeStatusForTab === 'Waiting for swap' ? (
+            <StatusLabel status={BridgeStatus.Pending} customText="Waiting for swap" />
+          ) : (
+            <StatusLabel status={bridgeStatus} />
+          )}
+        </TabContent>
+      ),
+      content: (
+        <BridgeDetailsTable
+          bridgeDetails={order.bridgeDetails}
+          ownerAddress={order.owner}
+          receiverAddress={order.receiver}
+          swapStatus={order.status}
+          partiallyFilled={order.partiallyFilled}
+        />
+      ),
+    }
+
+    return [overviewTab, swapTab, bridgeTab]
+  }
+
+  // Legacy behavior for regular orders
   const detailsTab = {
     id: TabView.OVERVIEW,
     tab: <span>Overview</span>,
@@ -117,13 +188,15 @@ const tabItems = (
           />
         )}
         {order && order.bridgeDetails && (
-          <div style={{ marginTop: '2rem' }}>
+          <BridgeDetailsWrapper>
             <BridgeDetailsTable
               bridgeDetails={order.bridgeDetails}
               ownerAddress={order.owner}
               receiverAddress={order.receiver}
+              swapStatus={order.status}
+              partiallyFilled={order.partiallyFilled}
             />
-          </div>
+          </BridgeDetailsWrapper>
         )}
         {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
         {isLoadingForTheFirstTime && <CowLoading />}

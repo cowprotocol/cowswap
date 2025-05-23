@@ -82,10 +82,10 @@ const FilterRow = styled.tr`
   td {
     padding: 2rem;
     text-align: right;
-    padding-right: 10px;
+    padding-right: 1rem;
     max-width: 100%;
     & > * {
-      margin-left: 10px;
+      margin-left: 1rem;
     }
   }
 

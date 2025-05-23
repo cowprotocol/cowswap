@@ -30,7 +30,7 @@ function Row(props: RowProps): React.ReactNode {
 
   // Decimals are optional on ERC20 spec. In that unlikely case, graceful fallback to raw amount
   const formattedAmount = erc20.decimals >= 0 ? formatSmartMaxPrecision(amount, erc20) : amount.toString(10)
-  const tokenDisplay = <TokenDisplay erc20={erc20} network={network} />
+  const tokenDisplay = <TokenDisplay erc20={erc20} network={network} showNetworkName={true} />
   return (
     <>
       <RowTitle>

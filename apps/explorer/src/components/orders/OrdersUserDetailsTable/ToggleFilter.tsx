@@ -16,12 +16,12 @@ interface BadgeProps {
 const Wrapper = styled.div<{ checked: boolean }>`
   display: flex;
   align-items: center;
-  padding: 0 8px;
+  padding: 0 0.8rem;
   font-size: ${({ theme }): string => theme.fontSizeDefault};
   cursor: pointer;
   color: ${({ checked }): string => (checked ? Color.explorer_textActive : Color.neutral100)};
   height: 3rem;
-  border: 1px solid ${Color.explorer_border};
+  border: 0.1rem solid ${Color.explorer_border};
   border-radius: 0.5rem;
   background: ${Color.explorer_bg2};
 
@@ -38,7 +38,7 @@ const Wrapper = styled.div<{ checked: boolean }>`
 `
 
 const Label = styled.span`
-  margin-right: 8px;
+  margin-right: 0.8rem;
 `
 
 const Count = styled.span`

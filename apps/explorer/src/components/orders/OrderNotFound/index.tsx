@@ -31,9 +31,9 @@ const Title = styled.h1`
 
 const Content = styled.div`
   width: 100%;
-  font-size: 16px;
+  font-size: 1.6rem;
   border: 0.1rem solid ${Color.explorer_border};
-  padding: 20px;
+  padding: 2rem;
   border-radius: 0.4rem;
 
   p {
@@ -48,7 +48,7 @@ const Content = styled.div`
 
 const SearchSection = styled.div`
   margin-top: 6rem;
-  padding: 20px;
+  padding: 2rem;
   border-radius: 0.4rem;
   background-color: ${Color.explorer_bg2};
 `
@@ -82,9 +82,9 @@ const SearchContent = styled.div`
 
 const Support = styled.a`
   height: 5rem;
-  border: 1px solid ${Color.explorer_border};
+  border: 0.1rem solid ${Color.explorer_border};
   border-radius: 0.6rem;
-  width: 160px;
+  width: 16rem;
   display: flex;
   align-items: center;
   justify-content: center;

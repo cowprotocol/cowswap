@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { BridgeDetails, BRIDGE_PROVIDER_DETAILS } from '@cowprotocol/bridge'
+import { BridgeDetails, BridgeStatus, BRIDGE_PROVIDER_DETAILS } from '@cowprotocol/bridge'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { displayTime, ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { NetworkLogo } from '@cowprotocol/ui'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
@@ -11,20 +11,19 @@ import { DetailRow } from 'components/common/DetailRow'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { SimpleTable } from 'components/common/SimpleTable'
-import { Spinner } from 'components/common/Spinner'
 import { TokenDisplay as CommonTokenDisplay } from 'components/common/TokenDisplay'
-import { formatPercentage, safeTokenName, formatSmartMaxPrecision, isNativeToken } from 'utils'
+import ShimmerBar from 'explorer/components/common/ShimmerBar'
+import { formatPercentage, formatSmartMaxPrecision, isNativeToken } from 'utils'
 
-import { ProviderDisplayWrapper, ProviderLogo } from './styled'
+import { getBridgeStatus } from 'utils/getBridgeStatus'
+
+import { RefundStatus, RefundStatusEnum } from './RefundStatus'
+import { ProviderDisplayWrapper, ProviderLogo, NetworkName } from './styled'
 import {
   AmountSectionWrapper,
   AmountDetailBlock,
   AmountLabel,
   AmountTokenDisplayAndCopyWrapper,
-  FeeItem,
-  FeeLabel,
-  FeesWrapper,
-  FeeValue,
   Wrapper,
 } from './styled'
 
@@ -42,7 +41,12 @@ type BridgeAmountDisplayProps = {
 // It should be replaced with a consolidated component with apps/explorer/src/components/orders/AmountsDisplay
 const BridgeAmountDisplay: React.FC<BridgeAmountDisplayProps> = ({ labelPrefix, bridgeToken, amount, isLoading }) => {
   if (isLoading) {
-    return <Spinner size="sm" />
+    return (
+      <AmountDetailBlock>
+        <AmountLabel>{labelPrefix}</AmountLabel>
+        <ShimmerBar height={1.6} />
+      </AmountDetailBlock>
+    )
   }
   if (!bridgeToken) {
     return (
@@ -87,7 +91,9 @@ const BridgeAmountDisplay: React.FC<BridgeAmountDisplayProps> = ({ labelPrefix, 
 const tooltipTextMap = {
   transactionHash: 'The transaction hash or provider-specific explorer link for the bridge operation.',
   status: 'The current status of the bridge operation.',
-  amounts: 'The amount of tokens sent to the bridge and the amount received (or expected).',
+  amounts: 'The amount of tokens sent to the bridge and the expected amount to be received.',
+  youReceived:
+    'The actual amount of tokens received from the bridge operation. Shows "-" until the bridge is completed.',
   costsAndFees: 'Estimated or actual costs and protocol fees for the bridge operation.',
   bridgingTime: 'Expected time for the bridge operation to complete.',
   maxSlippage: 'The maximum allowed slippage for the bridge in percentage.',
@@ -116,6 +122,8 @@ export type Props = {
   isLoading?: boolean
   ownerAddress?: string
   receiverAddress?: string
+  swapStatus?: string // Swap order status to determine if swap is complete
+  partiallyFilled?: boolean // Note: swap+bridge orders don't support partial fills for now
 }
 
 export function BridgeDetailsTable({
@@ -123,7 +131,23 @@ export function BridgeDetailsTable({
   isLoading: isOverallLoading,
   ownerAddress,
   receiverAddress,
+  swapStatus,
+  partiallyFilled,
 }: Props): React.ReactNode {
+  const effectiveBridgeStatus = getBridgeStatus({
+    bridgeDetails,
+    swapStatus,
+    partiallyFilled,
+  })
+
+  const renderBridgeStatus = (): React.ReactNode => {
+    if (effectiveBridgeStatus.isWaiting) {
+      return <StatusLabel status={BridgeStatus.Pending} customText="Waiting for swap to complete" />
+    }
+
+    return <StatusLabel status={effectiveBridgeStatus.actualStatus} />
+  }
+
   const getTransactionDetailsDisplay = (): React.ReactNode => {
     if (!bridgeDetails) return null
 
@@ -201,12 +225,16 @@ export function BridgeDetailsTable({
                 <RowWithCopyButton
                   textToCopy={ownerAddress}
                   contentsToDisplay={
-                    <LinkWithPrefixNetwork
-                      to={getExplorerLink(bridgeDetails.source.chainId, ownerAddress, ExplorerDataType.ADDRESS)}
-                      target="_blank"
-                    >
-                      {ownerAddress} ↗
-                    </LinkWithPrefixNetwork>
+                    <span>
+                      <LinkWithPrefixNetwork
+                        to={getExplorerLink(bridgeDetails.source.chainId, ownerAddress, ExplorerDataType.ADDRESS)}
+                        target="_blank"
+                      >
+                        <NetworkLogo chainId={bridgeDetails.source.chainId} size={16} forceLightMode />
+                        {ownerAddress} ↗
+                      </LinkWithPrefixNetwork>
+                      <NetworkName>on {getChainInfo(bridgeDetails.source.chainId).label}</NetworkName>
+                    </span>
                   }
                 />
               </DetailRow>
@@ -217,34 +245,42 @@ export function BridgeDetailsTable({
                 <RowWithCopyButton
                   textToCopy={receiverAddress}
                   contentsToDisplay={
-                    <LinkWithPrefixNetwork
-                      to={getExplorerLink(bridgeDetails.destination.chainId, receiverAddress, ExplorerDataType.ADDRESS)}
-                      target="_blank"
-                    >
-                      {receiverAddress} ↗
-                    </LinkWithPrefixNetwork>
+                    <span>
+                      <LinkWithPrefixNetwork
+                        to={getExplorerLink(
+                          bridgeDetails.destination.chainId,
+                          receiverAddress,
+                          ExplorerDataType.ADDRESS,
+                        )}
+                        target="_blank"
+                      >
+                        <NetworkLogo chainId={bridgeDetails.destination.chainId} size={16} forceLightMode />
+                        {receiverAddress} ↗
+                      </LinkWithPrefixNetwork>
+                      <NetworkName>on {getChainInfo(bridgeDetails.destination.chainId).label}</NetworkName>
+                    </span>
                   }
                 />
               </DetailRow>
             )}
 
             <DetailRow label="Status" tooltipText={tooltipTextMap.status} isLoading={isOverallLoading}>
-              {bridgeDetails?.status ? <StatusLabel status={bridgeDetails.status} /> : null}
+              {renderBridgeStatus()}
             </DetailRow>
 
             <DetailRow label="Amounts" tooltipText={tooltipTextMap.amounts} isLoading={isOverallLoading}>
-              {bridgeDetails && bridgeDetails.source && bridgeDetails.inputAmount ? (
+              {bridgeDetails && bridgeDetails.source ? (
                 <AmountSectionWrapper>
                   <BridgeAmountDisplay
                     labelPrefix="From:"
                     bridgeToken={bridgeDetails.source}
-                    amount={bridgeDetails.inputAmount}
+                    amount={bridgeDetails.inputAmount || '0'}
                     isLoading={isOverallLoading}
                   />
                   <BridgeAmountDisplay
-                    labelPrefix={bridgeDetails.outputAmount ? 'To:' : 'To (est.):'}
+                    labelPrefix="To at least:"
                     bridgeToken={bridgeDetails.destination}
-                    amount={bridgeDetails.outputAmount}
+                    amount={bridgeDetails.outputAmount || bridgeDetails.inputAmount || '0'}
                     isLoading={isOverallLoading}
                   />
                 </AmountSectionWrapper>
@@ -253,52 +289,64 @@ export function BridgeDetailsTable({
               )}
             </DetailRow>
 
-            <DetailRow label="Costs & Fees" tooltipText={tooltipTextMap.costsAndFees} isLoading={isOverallLoading}>
-              {bridgeDetails &&
-                (() => {
-                  const feeItems: React.ReactNode[] = []
-                  if (bridgeDetails.gasCostsNative) {
-                    feeItems.push(
-                      <FeeItem key="gas-costs">
-                        <FeeLabel>Native Gas Costs:</FeeLabel>
-                        <FeeValue>
-                          {bridgeDetails.gasCostsNative} on{' '}
-                          {getChainInfo(bridgeDetails.source.chainId as SupportedChainId).label}
-                        </FeeValue>
-                      </FeeItem>,
+            <DetailRow label="You received" tooltipText={tooltipTextMap.youReceived} isLoading={isOverallLoading}>
+              {bridgeDetails?.status === BridgeStatus.Completed &&
+              bridgeDetails.outputAmount &&
+              bridgeDetails.destination
+                ? (() => {
+                    const mappedToken = mapBridgeableToErc20(bridgeDetails.destination)
+                    const formattedAmount = formatSmartMaxPrecision(
+                      new BigNumber(bridgeDetails.outputAmount),
+                      mappedToken,
                     )
-                  }
-                  if (bridgeDetails.protocolFeeSellToken) {
-                    feeItems.push(
-                      <FeeItem key="protocol-fee-source">
-                        <FeeLabel>Protocol Fee (Source):</FeeLabel>
-                        <FeeValue>
-                          {bridgeDetails.protocolFeeSellToken} {safeTokenName(bridgeDetails.source)}
-                        </FeeValue>
-                      </FeeItem>,
+                    const tokenDisplayElement = (
+                      <CommonTokenDisplay
+                        erc20={mappedToken}
+                        network={bridgeDetails.destination.chainId as Network}
+                        showNetworkName={true}
+                      />
                     )
-                  }
-                  if (bridgeDetails.protocolFeeBuyToken) {
-                    feeItems.push(
-                      <FeeItem key="protocol-fee-dest">
-                        <FeeLabel>Protocol Fee (Dest):</FeeLabel>
-                        <FeeValue>
-                          {bridgeDetails.protocolFeeBuyToken} {safeTokenName(bridgeDetails.destination)}
-                        </FeeValue>
-                      </FeeItem>,
-                    )
-                  }
 
-                  if (feeItems.length > 0) {
-                    return <FeesWrapper>{feeItems}</FeesWrapper>
-                  }
+                    return (
+                      <span>
+                        <span>{formattedAmount} </span>
+                        {isNativeToken(mappedToken.address) ? (
+                          tokenDisplayElement
+                        ) : (
+                          <RowWithCopyButton textToCopy={mappedToken.address} contentsToDisplay={tokenDisplayElement} />
+                        )}
+                      </span>
+                    )
+                  })()
+                : '-'}
+            </DetailRow>
 
-                  return (
-                    <FeeItem>
-                      <FeeValue>Not available</FeeValue>
-                    </FeeItem>
-                  )
-                })()}
+            {bridgeDetails?.status === BridgeStatus.Failed && (
+              <DetailRow
+                label="Refund Status"
+                tooltipText="Status of the refund process for the failed bridge transaction"
+                isLoading={isOverallLoading}
+              >
+                <RefundStatus
+                  status={(bridgeDetails as any).refundStatus || RefundStatusEnum.NOT_INITIATED}
+                  refundWalletAddress={(bridgeDetails as any).refundWalletAddress}
+                  refundChainId={(bridgeDetails as any).refundChainId}
+                />
+              </DetailRow>
+            )}
+
+            <DetailRow
+              label="Bridge fee"
+              tooltipText="The fee charged by the bridge provider"
+              isLoading={isOverallLoading}
+            >
+              {bridgeDetails ? (
+                bridgeDetails.protocolFeeSellToken ? (
+                  <span>${bridgeDetails.protocolFeeSellToken}</span>
+                ) : (
+                  <span>Not available</span>
+                )
+              ) : null}
             </DetailRow>
             <DetailRow label="Bridging Time" tooltipText={tooltipTextMap.bridgingTime} isLoading={isOverallLoading}>
               {bridgeDetails?.expectedFillTimeSeconds !== undefined

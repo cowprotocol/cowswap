@@ -7,7 +7,7 @@ import SpinnerIcon from '@cowprotocol/assets/cow-swap/spinner.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, isAddress, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { FiatAmount, InfoTooltip } from '@cowprotocol/ui'
+import { FiatAmount, InfoTooltip, NetworkLogo } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
@@ -35,7 +35,6 @@ import { getFeeTextColor } from '../../utils/fees'
 import { StopStatusEnum } from '../../utils/status'
 import { StyledRefundCompleteIcon } from '../BridgeStopDetails/index'
 import { RecipientWrapper } from '../BridgeStopDetails/styled'
-import { NetworkLogo } from '../NetworkLogo'
 import { TokenAmountDisplay } from '../TokenAmountDisplay'
 
 const StopStatusIcons: Record<StopStatusEnum, ReactNode> = {

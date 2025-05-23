@@ -18,6 +18,7 @@ import { GlobalStateContext } from '../../../hooks/useGlobalState'
 import { RICH_ORDER } from '../../../test/data'
 import { Errors, Network } from '../../../types'
 import { BridgeDetailsTable } from '../BridgeDetailsTable'
+import { RefundStatusEnum } from '../BridgeDetailsTable/RefundStatus'
 
 import { OrderDetails } from '.'
 
@@ -166,6 +167,79 @@ const swapBridgeFilledOrder: Order = {
   bridgeDetails: completedBridgeDetails, // Bridge part is completed (ensure this uses the updated completedBridgeDetails)
 } as Order
 
+// Additional swap+bridge scenarios
+const swapBridgeInProgressOrder: Order = {
+  ...baseMockOrderData,
+  ...baseMockOrderData.statusFilled, // Swap part is filled
+  bridgeDetails: {
+    ...pendingBridgeDetails,
+    status: BridgeStatus.InProgress,
+    sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
+  },
+} as Order
+
+const swapBridgeFailedOrder: Order = {
+  ...baseMockOrderData,
+  ...baseMockOrderData.statusFilled, // Swap part is filled
+  bridgeDetails: {
+    ...pendingBridgeDetails,
+    status: BridgeStatus.Failed,
+    isSuccess: false,
+    errorMessage: 'Bridge operation failed due to insufficient liquidity',
+    refundStatus: RefundStatusEnum.NOT_INITIATED, // Could be: 'not_initiated', 'pending', 'completed', 'failed'
+  },
+} as Order
+
+const swapBridgeFailedRefundPendingOrder: Order = {
+  ...baseMockOrderData,
+  ...baseMockOrderData.statusFilled,
+  bridgeDetails: {
+    ...pendingBridgeDetails,
+    status: BridgeStatus.Failed,
+    isSuccess: false,
+    errorMessage: 'Bridge operation failed due to insufficient liquidity',
+    refundStatus: RefundStatusEnum.PENDING,
+  },
+} as Order
+
+const swapBridgeFailedRefundCompletedOrder: Order = {
+  ...baseMockOrderData,
+  ...baseMockOrderData.statusFilled,
+  bridgeDetails: {
+    ...pendingBridgeDetails,
+    status: BridgeStatus.Failed,
+    isSuccess: false,
+    errorMessage: 'Bridge operation failed due to insufficient liquidity',
+    refundStatus: RefundStatusEnum.COMPLETED,
+    refundWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+    refundChainId: SupportedChainId.MAINNET,
+  },
+} as Order
+
+const swapBridgeFailedRefundFailedOrder: Order = {
+  ...baseMockOrderData,
+  ...baseMockOrderData.statusFilled,
+  bridgeDetails: {
+    ...pendingBridgeDetails,
+    status: BridgeStatus.Failed,
+    isSuccess: false,
+    errorMessage: 'Bridge operation failed due to insufficient liquidity',
+    refundStatus: RefundStatusEnum.FAILED,
+  },
+} as Order
+
+const swapBridgePartiallyFilledOrder: Order = {
+  ...baseMockOrderData,
+  ...baseMockOrderData.statusOpen,
+  partiallyFillable: true,
+  partiallyFilled: true,
+  executedBuyAmount: new BigNumber('500000000000000000'), // 0.5 WETH executed
+  executedSellAmount: new BigNumber('1000000000'), // 1000 USDT executed
+  filledAmount: new BigNumber('1000000000'),
+  filledPercentage: new BigNumber('0.5'),
+  bridgeDetails: pendingBridgeDetails,
+} as Order
+
 const mockTradeExecutedFee = filledOrder.totalFee // totalFee from Order is BigNumber
 
 const mockTradesFilledOrder: Trade[] = [
@@ -310,6 +384,78 @@ export default {
       <OrderDetails
         order={swapBridgeFilledOrder}
         trades={mockTradesFilledOrder} // Swap part has trades
+        isOrderLoading={false}
+        areTradesLoading={false}
+        errors={noErrors}
+      />
+    </WithProviders>
+  ),
+  'Swap+Bridge - (Swap Filled, Bridge In Progress)': () => (
+    <WithProviders>
+      <OrderDetails
+        order={swapBridgeInProgressOrder}
+        trades={mockTradesFilledOrder}
+        isOrderLoading={false}
+        areTradesLoading={false}
+        errors={noErrors}
+      />
+    </WithProviders>
+  ),
+  'Swap+Bridge - (Swap Filled, Bridge Failed)': () => (
+    <WithProviders>
+      <OrderDetails
+        order={swapBridgeFailedOrder}
+        trades={mockTradesFilledOrder}
+        isOrderLoading={false}
+        areTradesLoading={false}
+        errors={noErrors}
+      />
+    </WithProviders>
+  ),
+  'Swap+Bridge - (Swap Filled, Bridge Failed - Refund Pending)': () => (
+    <WithProviders>
+      <OrderDetails
+        order={swapBridgeFailedRefundPendingOrder}
+        trades={mockTradesFilledOrder}
+        isOrderLoading={false}
+        areTradesLoading={false}
+        errors={noErrors}
+      />
+    </WithProviders>
+  ),
+  'Swap+Bridge - (Swap Filled, Bridge Failed - Refund Completed)': () => (
+    <WithProviders>
+      <OrderDetails
+        order={swapBridgeFailedRefundCompletedOrder}
+        trades={mockTradesFilledOrder}
+        isOrderLoading={false}
+        areTradesLoading={false}
+        errors={noErrors}
+      />
+    </WithProviders>
+  ),
+  'Swap+Bridge - (Swap Filled, Bridge Failed - Refund Failed)': () => (
+    <WithProviders>
+      <OrderDetails
+        order={swapBridgeFailedRefundFailedOrder}
+        trades={mockTradesFilledOrder}
+        isOrderLoading={false}
+        areTradesLoading={false}
+        errors={noErrors}
+      />
+    </WithProviders>
+  ),
+  'Swap+Bridge - (Swap Partially Filled)': () => (
+    <WithProviders>
+      <OrderDetails
+        order={swapBridgePartiallyFilledOrder}
+        trades={[
+          {
+            ...mockTradesFilledOrder[0],
+            buyAmount: new BigNumber('500000000000000000'), // 0.5 WETH
+            sellAmount: new BigNumber('1000000000'), // 1000 USDT
+          },
+        ]}
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}

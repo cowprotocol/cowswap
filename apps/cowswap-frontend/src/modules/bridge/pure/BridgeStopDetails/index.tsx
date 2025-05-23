@@ -8,7 +8,7 @@ import CLOSE_ICON_X from '@cowprotocol/assets/cow-swap/x.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { displayTime, ExplorerDataType, getExplorerLink, isAddress, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { InfoTooltip } from '@cowprotocol/ui'
+import { InfoTooltip, NetworkLogo } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
@@ -52,7 +52,6 @@ import {
 import { BridgeFeeType, BridgeProtocolConfig } from '../../types'
 import { getFeeTextColor, isFreeSwapFee } from '../../utils/fees'
 import { StopStatusEnum } from '../../utils/status'
-import { NetworkLogo } from '../NetworkLogo'
 import { TokenAmountDisplay } from '../TokenAmountDisplay'
 
 // Re-export for SwapStopDetails

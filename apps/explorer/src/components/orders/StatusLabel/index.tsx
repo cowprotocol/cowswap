@@ -45,6 +45,7 @@ function getStatusIcon(status: StyledGenericStatus): IconDefinition {
     case 'partially filled':
       return faCircleHalfStroke
     case BridgeStatus.Pending.toLowerCase():
+      return faClock
     case BridgeStatus.InProgress.toLowerCase():
       return faSpinner
     case BridgeStatus.Completed.toLowerCase():
@@ -61,10 +62,7 @@ function getStatusIcon(status: StyledGenericStatus): IconDefinition {
 
 function StatusIcon({ status }: { status: StyledGenericStatus }): React.ReactNode {
   const icon = getStatusIcon(status)
-  const isSpinning =
-    status.toLowerCase() === 'open' ||
-    status.toLowerCase() === BridgeStatus.Pending.toLowerCase() ||
-    status.toLowerCase() === BridgeStatus.InProgress.toLowerCase()
+  const isSpinning = status.toLowerCase() === 'open' || status.toLowerCase() === BridgeStatus.InProgress.toLowerCase()
 
   return <StyledFAIcon icon={icon} spin={isSpinning} />
 }
@@ -74,6 +72,7 @@ export type Props = {
   partiallyFilled?: boolean
   filledPercentage?: BigNumber
   partialTagPosition?: PartiallyTagPosition
+  customText?: string
 }
 
 export function StatusLabel({
@@ -81,11 +80,11 @@ export function StatusLabel({
   partiallyFilled = false,
   filledPercentage,
   partialTagPosition = 'bottom',
+  customText,
 }: Props): React.ReactNode {
   const shimming =
     status.toLowerCase() === 'signing' ||
     status.toLowerCase() === 'cancelling' ||
-    status.toLowerCase() === BridgeStatus.Pending.toLowerCase() ||
     status.toLowerCase() === BridgeStatus.InProgress.toLowerCase() ||
     status.toLowerCase() === BridgeStatus.Refunding.toLowerCase()
 
@@ -113,7 +112,7 @@ export function StatusLabel({
         tagPosition={partialTagPosition}
       >
         <StatusIcon status={displayStatus} />
-        {capitalize(displayStatus.replace(/([A-Z])/g, ' $1').trim())}
+        {customText || capitalize(displayStatus.replace(/([A-Z])/g, ' $1').trim())}
       </Label>
     </Wrapper>
   )
