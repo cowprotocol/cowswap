@@ -43,7 +43,7 @@ const defaultProps: OrderProgressBarProps = {
     showFiatValue: true,
     showSurplus: true,
   },
-  isProgressBarSetup: true
+  isProgressBarSetup: true,
 }
 
 const Wrapper = styled.div`
@@ -52,47 +52,47 @@ const Wrapper = styled.div`
 `
 
 const Fixtures = {
-  '1-initial': (
+  '1-initial': () => (
     <Wrapper>
       <OrderProgressBar {...defaultProps} />
     </Wrapper>
   ),
-  '2-solving': (
+  '2-solving': () => (
     <Wrapper>
       <OrderProgressBar {...defaultProps} stepName="solving" countdown={15} />
     </Wrapper>
   ),
-  '2a-delayed': (
+  '2a-delayed': () => (
     <Wrapper>
       <OrderProgressBar {...defaultProps} stepName="delayed" />
     </Wrapper>
   ),
-  '2b-unfillable': (
+  '2b-unfillable': () => (
     <Wrapper>
       <OrderProgressBar {...defaultProps} stepName="unfillable" />
     </Wrapper>
   ),
-  '2c-solved': (
+  '2c-solved': () => (
     <Wrapper>
       <OrderProgressBar {...defaultProps} stepName="solved" />
     </Wrapper>
   ),
-  '3-executing': (
+  '3-executing': () => (
     <Wrapper>
       <OrderProgressBar {...defaultProps} stepName="executing" />
     </Wrapper>
   ),
-  '3a-submissionFailed': (
+  '3a-submissionFailed': () => (
     <Wrapper>
       <OrderProgressBar {...defaultProps} stepName="submissionFailed" />
     </Wrapper>
   ),
-  '4-finished': (
+  '4-finished': () => (
     <Wrapper>
       <OrderProgressBar {...defaultProps} stepName="finished" />
     </Wrapper>
   ),
-  '4-finished-customReceiver': (
+  '4-finished-customReceiver': () => (
     <Wrapper>
       <OrderProgressBar
         {...defaultProps}
@@ -101,7 +101,7 @@ const Fixtures = {
       />
     </Wrapper>
   ),
-  '4-finished-customReceiver-ensName': (
+  '4-finished-customReceiver-ensName': () => (
     <Wrapper>
       <OrderProgressBar
         {...defaultProps}
@@ -111,22 +111,22 @@ const Fixtures = {
       />
     </Wrapper>
   ),
-  '4a-cancellationFailed': (
+  '4a-cancellationFailed': () => (
     <Wrapper>
       <OrderProgressBar {...defaultProps} stepName="cancellationFailed" />
     </Wrapper>
   ),
-  cancelling: (
+  cancelling: () => (
     <Wrapper>
       <OrderProgressBar {...defaultProps} stepName="cancelling" />
     </Wrapper>
   ),
-  cancelled: (
+  cancelled: () => (
     <Wrapper>
       <OrderProgressBar {...defaultProps} stepName="cancelled" />
     </Wrapper>
   ),
-  expired: (
+  expired: () => (
     <Wrapper>
       <OrderProgressBar {...defaultProps} stepName="expired" />
     </Wrapper>
