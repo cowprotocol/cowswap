@@ -1,4 +1,5 @@
 import { MetadataApi } from '@cowprotocol/app-data'
+import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { DEFAULT_BACKOFF_OPTIONS, OrderBookApi } from '@cowprotocol/cow-sdk'
 
 const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
@@ -7,7 +8,7 @@ const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
 
 export const metadataApiSDK = new MetadataApi()
 export const orderBookApi = new OrderBookApi({
-  env: 'prod', // TODO: this is a temporary hack to force prod env
+  env: isBarnBackendEnv ? 'staging' : 'prod',
   ...(prodBaseUrls ? { baseUrls: prodBaseUrls } : undefined),
   backoffOpts: DEFAULT_BACKOFF_OPTIONS,
 })
