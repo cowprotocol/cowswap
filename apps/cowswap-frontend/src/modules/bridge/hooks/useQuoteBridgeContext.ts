@@ -39,8 +39,8 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
       estimatedTime: bridgeQuote.expectedFillTimeSeconds || null,
       recipient,
       sellAmount: quoteAmounts.swapMinReceiveAmount,
-      receiveAmount: quoteAmounts.bridgeMinReceiveAmount,
-      receiveAmountUsd: bridgeReceiveAmountUsd,
+      buyAmount: quoteAmounts.bridgeMinReceiveAmount,
+      buyAmountUsd: bridgeReceiveAmountUsd,
     }
   }, [quoteAmounts, bridgeQuote, recipient, bridgeSupportedNetworks, bridgeReceiveAmountUsd])
 }

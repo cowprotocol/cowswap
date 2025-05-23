@@ -10,12 +10,12 @@ import { RecipientDisplay } from '../../RecipientDisplay'
 import { TokenAmountDisplay } from '../../TokenAmountDisplay'
 
 export interface QuoteBridgeContentProps {
-  context: QuoteBridgeContext
+  quoteContext: QuoteBridgeContext
   children?: ReactNode
 }
 
 export function QuoteBridgeContent({
-  context: { recipient, bridgeFee, estimatedTime, receiveAmount, receiveAmountUsd },
+  quoteContext: { recipient, bridgeFee, estimatedTime, buyAmount, buyAmountUsd },
   children,
 }: QuoteBridgeContentProps) {
   const contents = [
@@ -61,7 +61,7 @@ export function QuoteBridgeContent({
       ),
       content: (
         <b>
-          <TokenAmountDisplay displaySymbol usdValue={receiveAmountUsd} currencyAmount={receiveAmount} />
+          <TokenAmountDisplay displaySymbol usdValue={buyAmountUsd} currencyAmount={buyAmount} />
         </b>
       ),
     },

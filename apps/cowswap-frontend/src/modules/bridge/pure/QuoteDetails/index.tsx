@@ -69,10 +69,10 @@ export function QuoteDetails({
         bridgeProvider={bridgeProvider}
         chainName={bridgeContext.chainName}
         sellAmount={bridgeContext.sellAmount}
-        buyAmount={bridgeContext.receiveAmount}
-        buyAmountUsd={bridgeContext.receiveAmountUsd}
+        buyAmount={bridgeContext.buyAmount}
+        buyAmountUsd={bridgeContext.buyAmountUsd}
       >
-        <QuoteBridgeContent context={bridgeContext} />
+        <QuoteBridgeContent quoteContext={bridgeContext} />
       </BridgeDetailsContainer>
     </CollapsibleBridgeRoute>
   )

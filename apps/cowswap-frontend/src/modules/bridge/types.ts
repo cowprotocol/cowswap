@@ -2,6 +2,8 @@ import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
 import { ReceiveAmountInfo } from '../trade'
 
+import type { SolverCompetition } from '../orderProgressBar'
+
 export interface QuoteSwapContext {
   chainName: string
   receiveAmountInfo: ReceiveAmountInfo
@@ -25,6 +27,24 @@ export interface QuoteBridgeContext {
   recipient: string
 
   sellAmount: CurrencyAmount<Currency>
-  receiveAmount: CurrencyAmount<Currency>
-  receiveAmountUsd: CurrencyAmount<Token> | null
+  buyAmount: CurrencyAmount<Currency>
+  buyAmountUsd: CurrencyAmount<Token> | null
+}
+
+export interface BridgingProgressContext {
+  account: string
+
+  isFailed?: boolean
+  isRefunded?: boolean
+
+  receivedAmount?: CurrencyAmount<Currency>
+  receivedAmountUsd?: CurrencyAmount<Token> | null
+}
+
+export interface SwapResultContext {
+  winningSolver: SolverCompetition
+  receivedAmount: CurrencyAmount<Currency>
+  receivedAmountUsd: CurrencyAmount<Token> | null
+  surplusAmount: CurrencyAmount<Currency>
+  surplusAmountUsd: CurrencyAmount<Token> | null
 }

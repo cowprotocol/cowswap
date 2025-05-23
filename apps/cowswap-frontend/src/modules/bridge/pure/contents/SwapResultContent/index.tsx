@@ -1,30 +1,21 @@
 import PlusIcon from '@cowprotocol/assets/cow-swap/plus.svg'
 import { isTruthy } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 
-import type { SolverCompetition } from 'modules/orderProgressBar'
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
 import { StyledTimelinePlusIcon, SuccessTextBold, TimelineIconCircleWrapper } from '../../../styles'
+import { SwapResultContext } from '../../../types'
 import { WinningSolverContainer } from '../../SwapStopDetails/styled'
 import { TokenAmountDisplay } from '../../TokenAmountDisplay'
 
 interface SwapResultContentProps {
-  winningSolver: SolverCompetition
-  receivedAmount: CurrencyAmount<Currency>
-  receivedAmountUsd: CurrencyAmount<Token> | null
-  surplusAmount: CurrencyAmount<Currency>
-  surplusAmountUsd: CurrencyAmount<Token> | null
+  context: SwapResultContext
 }
 
 export function SwapResultContentContent({
-  winningSolver,
-  receivedAmount,
-  receivedAmountUsd,
-  surplusAmount,
-  surplusAmountUsd,
+  context: { winningSolver, receivedAmount, receivedAmountUsd, surplusAmount, surplusAmountUsd },
 }: SwapResultContentProps) {
   const contents = [
     {
