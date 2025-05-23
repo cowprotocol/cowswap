@@ -1,13 +1,16 @@
-import { USDC_GNOSIS_CHAIN } from '@cowprotocol/common-const'
+import { USDC_BASE, USDC_GNOSIS_CHAIN } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UI } from '@cowprotocol/ui'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
+import { StopStatusEnum, SwapAndBridgeContext } from 'modules/bridge'
+
 import { getOrderMock } from '../../../../mocks/orderMock'
+import { inputCurrencyInfoMock } from '../../../../mocks/tradeStateMock'
 import { OrderProgressBarProps } from '../../types'
 
 import { OrderProgressBar } from './index'
@@ -16,6 +19,52 @@ const order = {
   ...getOrderMock(SupportedChainId.MAINNET),
   apiAdditionalInfo: { executedBuyAmount: '1000000000000000000000', executedSellAmount: '5000000000000000000' },
 } as Order
+
+const receiveAmountInfo = inputCurrencyInfoMock.receiveAmountInfo!
+
+const swapAndBridgeContextMock: SwapAndBridgeContext = {
+  bridgeProvider: {
+    logoUrl:
+      'https://raw.githubusercontent.com/cowprotocol/cow-sdk/refs/heads/main/src/bridging/providers/across/across-logo.png',
+    name: 'Across',
+  },
+  quoteSwapContext: {
+    chainName: 'Gnosis',
+    receiveAmountInfo,
+    sellAmount: receiveAmountInfo.beforeNetworkCosts.sellAmount,
+    buyAmount: receiveAmountInfo.afterNetworkCosts.buyAmount,
+    slippage: new Percent(2000, 100),
+    recipient: '0xd0b931c58ff095f028C2b37fd95740a2D4aB7257',
+    minReceiveAmount: receiveAmountInfo.afterSlippage.sellAmount,
+    minReceiveUsdValue: CurrencyAmount.fromRawAmount(USDC_GNOSIS_CHAIN, '29000001'),
+    expectedReceiveUsdValue: CurrencyAmount.fromRawAmount(USDC_GNOSIS_CHAIN, '29560000'),
+  },
+  quoteBridgeContext: {
+    chainName: 'Gnosis',
+    estimatedTime: 8,
+    recipient: '0xfb3c7eb936cAA12B5A884d612393969A557d4307',
+    bridgeFee: CurrencyAmount.fromRawAmount(USDC_BASE, '150000'),
+    sellAmount: receiveAmountInfo.afterSlippage.buyAmount,
+    buyAmount: CurrencyAmount.fromRawAmount(USDC_BASE, '28700000'),
+    buyAmountUsd: CurrencyAmount.fromRawAmount(USDC_GNOSIS_CHAIN, '28700004'),
+  },
+  bridgingProgressContext: {
+    account: '0xfb3c7eb936cAA12B5A884d612393969A557d4307',
+  },
+  swapResultContext: {
+    winningSolver: {
+      solver: 'The Best Solver',
+    },
+    receivedAmount: receiveAmountInfo.afterNetworkCosts.buyAmount,
+    receivedAmountUsd: CurrencyAmount.fromRawAmount(USDC_GNOSIS_CHAIN, '29800000'),
+    surplusAmount: CurrencyAmount.fromRawAmount(
+      receiveAmountInfo.afterNetworkCosts.buyAmount.currency,
+      '120000000000000000',
+    ),
+    surplusAmountUsd: CurrencyAmount.fromRawAmount(USDC_GNOSIS_CHAIN, '1300'),
+  },
+  bridgingStatus: StopStatusEnum.PENDING,
+}
 
 const defaultProps: OrderProgressBarProps = {
   order,
@@ -45,6 +94,7 @@ const defaultProps: OrderProgressBarProps = {
     showSurplus: true,
   },
   isProgressBarSetup: true,
+  swapAndBridgeContext: swapAndBridgeContextMock,
 }
 
 const Wrapper = styled.div`
@@ -140,12 +190,51 @@ const Fixtures = {
   ),
   bridgingFailed: () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="bridgingFailed" />
+      <OrderProgressBar
+        {...defaultProps}
+        swapAndBridgeContext={{
+          ...swapAndBridgeContextMock,
+          bridgingStatus: StopStatusEnum.FAILED,
+          bridgingProgressContext: {
+            ...swapAndBridgeContextMock.bridgingProgressContext,
+            isFailed: true,
+          },
+        }}
+        stepName="bridgingFailed"
+      />
+    </Wrapper>
+  ),
+  refundCompleted: () => (
+    <Wrapper>
+      <OrderProgressBar
+        {...defaultProps}
+        swapAndBridgeContext={{
+          ...swapAndBridgeContextMock!,
+          bridgingStatus: StopStatusEnum.REFUND_COMPLETE,
+          bridgingProgressContext: {
+            ...swapAndBridgeContextMock.bridgingProgressContext,
+            isRefunded: true,
+          },
+        }}
+        stepName="refundCompleted"
+      />
     </Wrapper>
   ),
   bridgingFinished: () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="bridgingFinished" />
+      <OrderProgressBar
+        {...defaultProps}
+        swapAndBridgeContext={{
+          ...swapAndBridgeContextMock!,
+          bridgingStatus: StopStatusEnum.DONE,
+          bridgingProgressContext: {
+            ...swapAndBridgeContextMock.bridgingProgressContext,
+            receivedAmount: CurrencyAmount.fromRawAmount(USDC_BASE, '29100000'),
+            receivedAmountUsd: CurrencyAmount.fromRawAmount(USDC_GNOSIS_CHAIN, '29800000'),
+          },
+        }}
+        stepName="bridgingFinished"
+      />
     </Wrapper>
   ),
 }

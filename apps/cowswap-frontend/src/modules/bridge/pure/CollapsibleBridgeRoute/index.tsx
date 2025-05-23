@@ -11,17 +11,18 @@ interface CollapsibleBridgeRouteProps {
   children: ReactNode
   providerInfo: BridgeProviderInfo
   collapsedDefault?: ReactNode
+  className?: string
 }
 
 export function CollapsibleBridgeRoute(props: CollapsibleBridgeRouteProps) {
-  const { isCollapsible = false, children, providerInfo, collapsedDefault } = props
+  const { isCollapsible = false, children, providerInfo, collapsedDefault, className } = props
 
   const [isExpanded, setIsExpanded] = useState(props.isExpanded || false)
 
   const toggleExpanded = () => setIsExpanded((state) => !state)
 
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       {isCollapsible && (
         <RouteOverviewTitle
           isCollapsible={true}

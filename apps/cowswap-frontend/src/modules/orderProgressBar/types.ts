@@ -4,6 +4,8 @@ import { Command } from '@cowprotocol/types'
 
 import type { Order } from 'legacy/state/orders/actions'
 
+import type { SwapAndBridgeContext } from 'modules/bridge'
+
 import type { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 
 export type OrderProgressBarState = {
@@ -22,7 +24,7 @@ export type OrdersProgressBarState = Record<string, OrderProgressBarState>
 export type OrdersProgressBarCountdown = Record<string, number | null>
 
 type happyPath = 'initial' | 'solving' | 'executing' | 'finished'
-export type BridgingFlowStep = 'bridgingInProgress' | 'bridgingFailed' | 'bridgingFinished'
+export type BridgingFlowStep = 'bridgingInProgress' | 'bridgingFailed' | 'refundCompleted' | 'bridgingFinished'
 type errorFlow = 'delayed' | 'solved' | 'unfillable' | 'submissionFailed'
 type cancellationFlow = 'cancelling' | 'cancelled' | 'expired' | 'cancellationFailed'
 export type OrderProgressBarStepName = happyPath | errorFlow | cancellationFlow | BridgingFlowStep
@@ -44,4 +46,5 @@ export type OrderProgressBarProps = {
   receiverEnsName?: string
   navigateToNewOrder?: Command
   isProgressBarSetup: boolean
+  swapAndBridgeContext?: SwapAndBridgeContext
 }
