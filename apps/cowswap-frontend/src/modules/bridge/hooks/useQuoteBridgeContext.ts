@@ -2,12 +2,13 @@ import { useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
+
 import { useDerivedTradeState, useReceiveAmountInfo } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { useBridgeQuoteAmounts } from './useBridgeQuoteAmounts'
-import { useBridgeSupportedNetworks } from './useBridgeSupportedNetworks'
 
 import { QuoteBridgeContext } from '../types'
 

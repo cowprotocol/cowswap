@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import { bridgeProviderAtom } from '../state/bridgeProviderAtom'
+import { bridgeProviderAtom } from './bridgeProviderAtom'
 
 export function useBridgeProvider() {
   return useAtomValue(bridgeProviderAtom)
