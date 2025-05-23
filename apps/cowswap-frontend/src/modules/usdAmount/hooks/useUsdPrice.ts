@@ -9,12 +9,13 @@ import { useSafeEffect } from 'common/hooks/useSafeMemo'
 
 import { addCurrencyToUsdPriceQueue, removeCurrencyToUsdPriceFromQueue } from '../state/usdRawPricesAtom'
 import { UsdPriceState, usdTokenPricesAtom } from '../state/usdTokenPricesAtom'
+import { getUsdPriceStateKey } from '../utils/usdPriceStateKey'
 
 /**
  * Subscribe to USD price for a single currency and returns the USD price state
  */
 export function useUsdPrice(currency: Nullish<Token>): UsdPriceState | null {
-  const currencyAddress = currency?.address?.toLowerCase()
+  const key = currency && getUsdPriceStateKey(currency)
 
   const usdPrices = useAtomValue(usdTokenPricesAtom)
   const addCurrencyToUsdPrice = useSetAtom(addCurrencyToUsdPriceQueue)
@@ -32,9 +33,9 @@ export function useUsdPrice(currency: Nullish<Token>): UsdPriceState | null {
     }
   }, [currency])
 
-  if (!currencyAddress) return null
+  if (!key) return null
 
-  const price = usdPrices[currencyAddress]
+  const price = usdPrices[key]
 
   if (!price || price.currency.chainId !== currency?.chainId) return null
 
@@ -82,9 +83,9 @@ export function useUsdPrices(currencies: Token[]): Record<string, UsdPriceState 
   return useMemo(
     () =>
       currencies.reduce<Record<string, UsdPriceState | null>>((acc, currency) => {
-        const currencyAddress = currency.address.toLowerCase()
+        const key = getUsdPriceStateKey(currency)
 
-        acc[currencyAddress] = usdPrices[currencyAddress] || null
+        acc[key] = usdPrices[key] || null
 
         return acc
       }, {}),

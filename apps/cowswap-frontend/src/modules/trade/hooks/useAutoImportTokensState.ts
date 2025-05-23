@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
 import { isTruthy } from '@cowprotocol/common-utils'
-import { useSearchNonExistentToken, useUserAddedTokens } from '@cowprotocol/tokens'
+import { useSearchNonExistentToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Nullish } from 'types'
@@ -21,7 +21,6 @@ export function useAutoImportTokensState(
 ): AutoImportTokensState {
   const { inputCurrency, outputCurrency } = useDerivedTradeState() || {}
   const { chainId } = useWalletInfo()
-  const userAddedTokens = useUserAddedTokens()
 
   /**
    * If sell or buy token is already derived, and it doesn't match current network
@@ -38,26 +37,10 @@ export function useAutoImportTokensState(
   const foundOutputToken = useSearchNonExistentToken(currencyNetworkMismatch ? null : outputToken || null)
 
   const tokensToImport = useMemo(() => {
-    // First filter just the valid tokens
-    const validTokens = [foundInputToken, foundOutputToken].filter(isTruthy).filter((token) => {
+    return [foundInputToken, foundOutputToken].filter(isTruthy).filter((token) => {
       return token.chainId === chainId && !(token instanceof LpToken)
     })
-
-    // Then filter out any tokens that are already in the user's custom token list
-    return validTokens.filter((token) => {
-      // Check if this token is already in user's custom tokens
-      const isAlreadyInUserTokens = userAddedTokens.some(
-        (userToken) => userToken.address.toLowerCase() === token.address.toLowerCase(),
-      )
-
-      console.log(
-        `[useAutoImportTokensState] Token ${token.symbol} (${token.address}) already in custom list: ${isAlreadyInUserTokens}`,
-      )
-
-      // Only return tokens that aren't already in the user's list
-      return !isAlreadyInUserTokens
-    })
-  }, [foundInputToken, foundOutputToken, chainId, userAddedTokens])
+  }, [foundInputToken, foundOutputToken, chainId])
 
   const tokensToImportCount = tokensToImport.length
 

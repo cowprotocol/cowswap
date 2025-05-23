@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.12.2](https://github.com/cowprotocol/cowswap/compare/wallet-v1.12.1...wallet-v1.12.2) (2025-05-21)
+
+
+### Bug Fixes
+
+* detect EIP7702 account ([#5735](https://github.com/cowprotocol/cowswap/issues/5735)) ([bc30d5a](https://github.com/cowprotocol/cowswap/commit/bc30d5a9dbd23a64874df5f6e4776faec0e79277))
+
+## [1.12.1](https://github.com/cowprotocol/cowswap/compare/wallet-v1.12.0...wallet-v1.12.1) (2025-05-19)
+
+
+### Bug Fixes
+
+* **dev-deps-update:** bump the dev-deps group with 76 updates ([#5663](https://github.com/cowprotocol/cowswap/issues/5663)) ([552b349](https://github.com/cowprotocol/cowswap/commit/552b349f53762a01ccf008e9a2083248424cbafa))
+
 ## [1.12.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.11.0...wallet-v1.12.0) (2025-03-27)
 
 

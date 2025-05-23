@@ -95,17 +95,15 @@ export const listsStatesMapAtom = atom((get) => {
   }, {})
 
   const listsSources = Object.keys(currentNetworkLists).filter((source) => {
-    // This filter is key: in curated mode, only user-added and LP lists pass.
     return useCuratedListOnly ? userAddedListSources[source] || lpTokenListSources[source] : true
   })
 
   const lists = useCuratedListOnly ? [get(curatedListSourceAtom).source, ...listsSources] : listsSources
 
-  // Build the map based on the filtered and ordered list sources
   return lists.reduce<{ [source: string]: ListState }>((acc, source) => {
     const list = currentNetworkLists[source]
 
-    if (!list) return acc // If list data isn't present for the source, skip it.
+    if (!list) return acc
 
     const isDefaultList = !list.widgetAppCode
     const sourceLowerCased = source.toLowerCase()
@@ -148,8 +146,8 @@ export const listsEnabledStateAtom = atom((get) => {
   const virtualListsState = get(virtualListsStateAtom)
 
   const state = allTokensLists.reduce<{ [source: string]: boolean }>((acc, tokenList) => {
-    const listState = listStates[tokenList.source] // Use listState (lowercase l)
-    const isActive = listState?.isEnabled
+    const state = listStates[tokenList.source]
+    const isActive = state?.isEnabled
 
     acc[tokenList.source] = typeof isActive === 'boolean' ? isActive : !!tokenList.enabledByDefault
 
