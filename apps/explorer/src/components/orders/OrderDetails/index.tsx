@@ -24,6 +24,7 @@ import { Errors } from 'types'
 import { formatPercentage } from 'utils'
 
 import { Order, Trade } from 'api/operator'
+import { isSwapAndBridgeOrder } from 'utils/orderTypeGuards'
 
 import { FillsTableContext } from './context/FillsTableContext'
 import { FillsTableWithData } from './FillsTableWithData'
@@ -75,13 +76,22 @@ export type Props = {
 export enum TabView {
   OVERVIEW = 1,
   FILLS = 2,
+  SWAP = 3,
+  BRIDGE = 4,
 }
 
 const DEFAULT_TAB = TabView[1]
 
 function useQueryViewParams(): string {
   const query = useQuery()
-  return query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB // if URL param empty will be used DEFAULT
+  const param = query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase()
+
+  // Map unknown values to OVERVIEW
+  if (!param || !TabView[param as keyof typeof TabView]) {
+    return DEFAULT_TAB
+  }
+
+  return param
 }
 
 const tabItems = (
@@ -100,6 +110,74 @@ const tabItems = (
   const filledPercentage = order?.filledPercentage && formatPercentage(order.filledPercentage)
   const showFills = order?.partiallyFillable && !order.txHash && trades.length > 1
 
+  // Check if this is a swap and bridge order
+  const isSwapBridge = order && isSwapAndBridgeOrder(order)
+
+  // For swap+bridge orders, create three tabs
+  if (isSwapBridge) {
+    const overviewTab = {
+      id: TabView.OVERVIEW,
+      tab: <span>Overview</span>,
+      content: (
+        <>
+          {order && areTokensLoaded && (
+            <DetailsTable
+              chainId={chainId}
+              order={order}
+              showFillsButton={false}
+              viewFills={(): void => {}}
+              areTradesLoading={areTradesLoading}
+              isPriceInverted={isPriceInverted}
+              invertPrice={invertPrice}
+              renderMode="SUMMARY"
+            />
+          )}
+          {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
+          {isLoadingForTheFirstTime && <CowLoading />}
+        </>
+      ),
+    }
+
+    const swapTab = {
+      id: TabView.SWAP,
+      tab: <span>1. Swap - {order.status}</span>,
+      content: (
+        <>
+          {order && areTokensLoaded && (
+            <DetailsTable
+              chainId={chainId}
+              order={order}
+              showFillsButton={showFills}
+              viewFills={(): void => onChangeTab(TabView.FILLS)}
+              areTradesLoading={areTradesLoading}
+              isPriceInverted={isPriceInverted}
+              invertPrice={invertPrice}
+              renderMode="FULL"
+            />
+          )}
+          {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
+          {isLoadingForTheFirstTime && <CowLoading />}
+        </>
+      ),
+    }
+
+    const bridgeStatus = order.bridgeDetails?.status || 'Unknown'
+    const bridgeTab = {
+      id: TabView.BRIDGE,
+      tab: <span>2. Bridge - {bridgeStatus}</span>,
+      content: (
+        <BridgeDetailsTable
+          bridgeDetails={order.bridgeDetails}
+          ownerAddress={order.owner}
+          receiverAddress={order.receiver}
+        />
+      ),
+    }
+
+    return [overviewTab, swapTab, bridgeTab]
+  }
+
+  // Legacy behavior for regular orders
   const detailsTab = {
     id: TabView.OVERVIEW,
     tab: <span>Overview</span>,
