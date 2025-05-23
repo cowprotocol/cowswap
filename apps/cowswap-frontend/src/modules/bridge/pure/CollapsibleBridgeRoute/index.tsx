@@ -14,7 +14,7 @@ interface CollapsibleBridgeRouteProps {
 }
 
 export function CollapsibleBridgeRoute(props: CollapsibleBridgeRouteProps) {
-  const { isCollapsible = true, children, providerInfo, collapsedDefault } = props
+  const { isCollapsible = false, children, providerInfo, collapsedDefault } = props
 
   const [isExpanded, setIsExpanded] = useState(props.isExpanded || false)
 
