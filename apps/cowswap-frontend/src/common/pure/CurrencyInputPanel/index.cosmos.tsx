@@ -67,9 +67,9 @@ const Custom = () => {
 }
 
 const Fixtures = {
-  default: <CurrencyInputPanel {...defaultProps} />,
-  CurrencyPreview: <CurrencyAmountPreview {...defaultProps} />,
-  custom: <Custom />,
+  default: () => <CurrencyInputPanel {...defaultProps} />,
+  CurrencyPreview: () => <CurrencyAmountPreview {...defaultProps} />,
+  custom: () => <Custom />,
 }
 
 export default Fixtures
