@@ -6,9 +6,9 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
 import { DangerText, SuccessTextBold, TimelineIconCircleWrapper } from '../../../../styles'
-import { RefundLink, RefundRecipientWrapper, StyledTimelineCheckmarkIcon } from '../../../BridgeStopDetails/styled'
 import { NetworkLogo } from '../../../NetworkLogo'
 import { TokenAmountDisplay } from '../../../TokenAmountDisplay'
+import { RefundLink, RefundRecipientWrapper, StyledTimelineCheckmarkIcon } from '../../styled'
 
 interface RefundedContentProps {
   account: string
