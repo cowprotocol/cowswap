@@ -13,7 +13,7 @@ import { NetworkName, RefundStatusText, RefundAddressWrapper, StatusWrapper } fr
 
 export enum RefundStatusEnum {
   NOT_INITIATED = 'not_initiated',
-  PENDING = 'pending',
+  REFUNDING = 'refunding',
   COMPLETED = 'completed',
   FAILED = 'failed',
 }
@@ -53,11 +53,11 @@ export function RefundStatus({ status, refundWalletAddress, refundChainId }: Ref
       }
       return <RefundStatusText status={status}>Refund completed</RefundStatusText>
 
-    case RefundStatusEnum.PENDING:
+    case RefundStatusEnum.REFUNDING:
       return (
         <StatusWrapper>
-          <StatusLabel status={BridgeStatus.Pending} />
-          <span>Refund started</span>
+          <StatusLabel status={BridgeStatus.Refunding} />
+          <span>Refund in progress</span>
         </StatusWrapper>
       )
 

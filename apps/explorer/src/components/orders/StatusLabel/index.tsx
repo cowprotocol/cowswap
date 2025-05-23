@@ -2,70 +2,17 @@ import React from 'react'
 
 import { BridgeStatus } from '@cowprotocol/bridge'
 
-import {
-  faCheckCircle,
-  faCircleNotch,
-  faClock,
-  faTimesCircle,
-  IconDefinition,
-  faKey,
-  faCircleHalfStroke,
-  faSpinner,
-  faExclamationCircle,
-  faQuestionCircle,
-} from '@fortawesome/free-solid-svg-icons'
 import BigNumber from 'bignumber.js'
 import { capitalize, formatPercentage } from 'utils'
 
 import { OrderStatus } from 'api/operator'
+import { canBePartiallyFilled } from 'utils/statusHelpers'
 
-import { Wrapper, Label, StyledFAIcon, GenericStatus as StyledGenericStatus } from './styled'
+import { StatusIcon } from './StatusIcon'
+import { Wrapper, Label, GenericStatus as StyledGenericStatus } from './styled'
 
 export type GenericStatus = string
 export type PartiallyTagPosition = 'right' | 'bottom'
-
-function canBePartiallyFilled(status: string): status is OrderStatus {
-  return ['open', 'cancelling'].includes(status)
-}
-
-function getStatusIcon(status: StyledGenericStatus): IconDefinition {
-  switch (status.toLowerCase()) {
-    case 'expired':
-      return faClock
-    case 'filled':
-      return faCheckCircle
-    case 'cancelled':
-      return faTimesCircle
-    case 'cancelling':
-      return faTimesCircle
-    case 'signing':
-      return faKey
-    case 'open':
-      return faCircleNotch
-    case 'partially filled':
-      return faCircleHalfStroke
-    case BridgeStatus.Pending.toLowerCase():
-      return faClock
-    case BridgeStatus.InProgress.toLowerCase():
-      return faSpinner
-    case BridgeStatus.Completed.toLowerCase():
-    case BridgeStatus.RefundComplete.toLowerCase():
-      return faCheckCircle
-    case BridgeStatus.Failed.toLowerCase():
-    case BridgeStatus.Refunding.toLowerCase():
-      return faExclamationCircle
-    case BridgeStatus.Unknown.toLowerCase():
-    default:
-      return faQuestionCircle
-  }
-}
-
-function StatusIcon({ status }: { status: StyledGenericStatus }): React.ReactNode {
-  const icon = getStatusIcon(status)
-  const isSpinning = status.toLowerCase() === 'open' || status.toLowerCase() === BridgeStatus.InProgress.toLowerCase()
-
-  return <StyledFAIcon icon={icon} spin={isSpinning} />
-}
 
 export type Props = {
   status: GenericStatus
@@ -83,12 +30,14 @@ export function StatusLabel({
   customText,
 }: Props): React.ReactNode {
   const shimming =
-    status.toLowerCase() === 'signing' ||
-    status.toLowerCase() === 'cancelling' ||
+    status.toLowerCase() === OrderStatus.Signing.toLowerCase() ||
+    status.toLowerCase() === OrderStatus.Cancelling.toLowerCase() ||
     status.toLowerCase() === BridgeStatus.InProgress.toLowerCase() ||
     status.toLowerCase() === BridgeStatus.Refunding.toLowerCase()
 
-  const customizeStatus = status.toLowerCase() === 'expired' || status.toLowerCase() === 'cancelled'
+  const customizeStatus =
+    status.toLowerCase() === OrderStatus.Expired.toLowerCase() ||
+    status.toLowerCase() === OrderStatus.Cancelled.toLowerCase()
   const tagPartiallyFilled =
     partiallyFilled && typeof status === 'string' && canBePartiallyFilled(status as OrderStatus)
 
@@ -96,7 +45,7 @@ export function StatusLabel({
 
   let displayStatus: StyledGenericStatus = status
   if (customizeStatus && partiallyFilled) {
-    displayStatus = 'partially filled'
+    displayStatus = OrderStatus.PartiallyFilled
   }
 
   return (

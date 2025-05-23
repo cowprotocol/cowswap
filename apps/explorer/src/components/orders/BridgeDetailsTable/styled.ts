@@ -102,3 +102,15 @@ export const StatusWrapper = styled.div`
   align-items: center;
   gap: 0.5rem;
 `
+
+export const BridgeStatusWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+`
+
+export const ErrorMessage = styled.div`
+  font-size: 0.875rem;
+  color: ${Color.explorer_red1};
+  margin-top: 0.25rem;
+`

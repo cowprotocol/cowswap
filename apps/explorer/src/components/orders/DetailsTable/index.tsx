@@ -25,7 +25,7 @@ import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { Link } from 'react-router'
 import { capitalize } from 'utils'
 
-import { Order } from 'api/operator'
+import { Order, OrderStatus } from 'api/operator'
 import { ExplorerCategory } from 'common/analytics/types'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
@@ -148,7 +148,7 @@ export function DetailsTable(props: Props): React.ReactNode | null {
       label,
     })
   }
-  const isSigning = status === 'signing'
+  const isSigning = status === OrderStatus.Signing
   const isSummaryMode = renderMode === 'SUMMARY'
 
   return (

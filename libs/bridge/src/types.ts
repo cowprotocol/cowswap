@@ -47,4 +47,8 @@ export interface BridgeDetails {
   explorerUrl?: string
   minDepositAmount?: string
   maxDepositAmount?: string
+  errorMessage?: string // Optional error message when bridge fails
+  refundStatus?: string // Status of refund process when bridge fails
+  refundWalletAddress?: string // Address where refund was sent
+  refundChainId?: number // Chain ID where refund was sent
 }

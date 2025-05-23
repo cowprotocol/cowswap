@@ -13,7 +13,7 @@ import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { add, sub } from 'date-fns'
 
-import { Order, Trade } from '../../../api/operator'
+import { Order, OrderStatus, Trade } from '../../../api/operator'
 import { GlobalStateContext } from '../../../hooks/useGlobalState'
 import { RICH_ORDER } from '../../../test/data'
 import { Errors, Network } from '../../../types'
@@ -103,7 +103,7 @@ const baseMockOrderData = {
   // Fields for open state
   statusOpen: {
     kind: OrderKind.SELL,
-    status: 'open' as const,
+    status: OrderStatus.Open,
     txHash: undefined,
     executionDate: undefined,
     buyToken: wethToken,
@@ -124,7 +124,7 @@ const baseMockOrderData = {
   // Fields for filled state
   statusFilled: {
     kind: OrderKind.SELL,
-    status: 'filled' as const,
+    status: OrderStatus.Filled,
     txHash: '0xfilltxhash0123456789abcdef0123456789abcdef0123456789abcdef',
     executionDate: new Date(),
     buyToken: wethToken,
@@ -142,6 +142,114 @@ const baseMockOrderData = {
     surplusAmount: new BigNumber('100000000'), // e.g., 100 USDT surplus
     surplusPercentage: new BigNumber('0.05'), // 5% surplus
   },
+  // Fields for signing state
+  statusSigning: {
+    kind: OrderKind.SELL,
+    status: OrderStatus.Signing,
+    txHash: undefined,
+    executionDate: undefined,
+    buyToken: wethToken,
+    sellToken: usdtToken,
+    executedBuyAmount: new BigNumber('0'),
+    executedSellAmount: new BigNumber('0'),
+    executedFeeAmount: new BigNumber('0'),
+    executedFee: new BigNumber('0'),
+    totalFee: new BigNumber('0'),
+    executedFeeToken: usdtToken.address,
+    partiallyFilled: false,
+    fullyFilled: false,
+    filledAmount: new BigNumber('0'),
+    filledPercentage: new BigNumber('0'),
+    surplusAmount: new BigNumber('0'),
+    surplusPercentage: new BigNumber('0'),
+  },
+  // Fields for cancelled state
+  statusCancelled: {
+    kind: OrderKind.SELL,
+    status: OrderStatus.Cancelled,
+    txHash: undefined,
+    executionDate: undefined,
+    buyToken: wethToken,
+    sellToken: usdtToken,
+    executedBuyAmount: new BigNumber('0'),
+    executedSellAmount: new BigNumber('0'),
+    executedFeeAmount: new BigNumber('0'),
+    executedFee: new BigNumber('0'),
+    totalFee: new BigNumber('0'),
+    executedFeeToken: usdtToken.address,
+    partiallyFilled: false,
+    fullyFilled: false,
+    filledAmount: new BigNumber('0'),
+    filledPercentage: new BigNumber('0'),
+    surplusAmount: new BigNumber('0'),
+    surplusPercentage: new BigNumber('0'),
+    cancelled: true,
+  },
+  // Fields for cancelling state
+  statusCancelling: {
+    kind: OrderKind.SELL,
+    status: OrderStatus.Cancelling,
+    txHash: undefined,
+    executionDate: undefined,
+    buyToken: wethToken,
+    sellToken: usdtToken,
+    executedBuyAmount: new BigNumber('0'),
+    executedSellAmount: new BigNumber('0'),
+    executedFeeAmount: new BigNumber('0'),
+    executedFee: new BigNumber('0'),
+    totalFee: new BigNumber('0'),
+    executedFeeToken: usdtToken.address,
+    partiallyFilled: false,
+    fullyFilled: false,
+    filledAmount: new BigNumber('0'),
+    filledPercentage: new BigNumber('0'),
+    surplusAmount: new BigNumber('0'),
+    surplusPercentage: new BigNumber('0'),
+  },
+  // Fields for expired state
+  statusExpired: {
+    kind: OrderKind.SELL,
+    status: OrderStatus.Expired,
+    txHash: undefined,
+    executionDate: undefined,
+    buyToken: wethToken,
+    sellToken: usdtToken,
+    executedBuyAmount: new BigNumber('0'),
+    executedSellAmount: new BigNumber('0'),
+    executedFeeAmount: new BigNumber('0'),
+    executedFee: new BigNumber('0'),
+    totalFee: new BigNumber('0'),
+    executedFeeToken: usdtToken.address,
+    partiallyFilled: false,
+    fullyFilled: false,
+    filledAmount: new BigNumber('0'),
+    filledPercentage: new BigNumber('0'),
+    surplusAmount: new BigNumber('0'),
+    surplusPercentage: new BigNumber('0'),
+    expirationDate: sub(new Date(), { hours: 1 }), // Already expired
+  },
+  // Fields for partially filled state
+  statusPartiallyFilled: {
+    kind: OrderKind.SELL,
+    status: OrderStatus.Open, // Still open but partially filled
+    txHash: undefined,
+    executionDate: undefined,
+    buyToken: wethToken,
+    sellToken: usdtToken,
+    executedBuyAmount: new BigNumber('500000000000000000'), // 0.5 WETH executed
+    executedSellAmount: new BigNumber('1000000000'), // 1000 USDT executed
+    executedFeeAmount: new BigNumber('500000000000000'), // Half fee amount
+    executedFee: new BigNumber('500000000000000'),
+    totalFee: new BigNumber('1000000000000000'),
+    executedFeeToken: usdtToken.address,
+    partiallyFilled: true,
+    fullyFilled: false,
+    filledAmount: new BigNumber('1000000000'), // Sell amount filled
+    filledPercentage: new BigNumber('0.5'), // 50% filled
+    surplusAmount: new BigNumber('50000000'), // 50 USDT surplus
+    surplusPercentage: new BigNumber('0.05'), // 5% surplus
+    partiallyFillable: true,
+  },
 }
 
 const openOrder: Order = {
@@ -154,11 +262,106 @@ const filledOrder: Order = {
   ...baseMockOrderData.statusFilled,
 } as Order
 
+// NEW: Missing regular order status scenarios
+const signingOrder: Order = {
+  ...baseMockOrderData,
+  ...baseMockOrderData.statusSigning,
+} as Order
+
+const cancelledOrder: Order = {
+  ...baseMockOrderData,
+  ...baseMockOrderData.statusCancelled,
+} as Order
+
+const cancellingOrder: Order = {
+  ...baseMockOrderData,
+  ...baseMockOrderData.statusCancelling,
+} as Order
+
+const expiredOrder: Order = {
+  ...baseMockOrderData,
+  ...baseMockOrderData.statusExpired,
+} as Order
+
+const partiallyFilledOrder: Order = {
+  ...baseMockOrderData,
+  ...baseMockOrderData.statusPartiallyFilled,
+} as Order
+
+// NEW: Additional bridge details for missing BridgeStatus scenarios
+const refundingBridgeDetails: BridgeDetails = {
+  ...pendingBridgeDetails,
+  status: BridgeStatus.Failed, // Bridge failed, refund in progress
+  isSuccess: false,
+  sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
+  errorMessage: 'Bridge operation failed due to insufficient liquidity',
+  refundStatus: RefundStatusEnum.REFUNDING, // Refund actively processing (will show shimmer)
+}
+
+const refundCompleteBridgeDetails: BridgeDetails = {
+  ...pendingBridgeDetails,
+  status: BridgeStatus.Failed, // Bridge failed, refund completed
+  isSuccess: false,
+  sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
+  destinationChainTransactionHash: '0x9e0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a',
+  errorMessage: 'Bridge operation failed due to insufficient liquidity',
+  refundStatus: RefundStatusEnum.COMPLETED, // Refund completed
+  refundWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+  refundChainId: SupportedChainId.MAINNET,
+}
+
+const refundFailedBridgeDetails: BridgeDetails = {
+  ...pendingBridgeDetails,
+  status: BridgeStatus.Failed, // Bridge failed, refund also failed
+  isSuccess: false,
+  sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
+  errorMessage: 'Bridge operation failed due to insufficient liquidity',
+  refundStatus: RefundStatusEnum.FAILED, // Refund attempt failed
+}
+
+const unknownBridgeDetails: BridgeDetails = {
+  ...pendingBridgeDetails,
+  status: BridgeStatus.Unknown,
+  isSuccess: false,
+  sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
+  errorMessage: 'Bridge status could not be determined',
+}
+
 // --- New Swap + Bridge Mock Orders ---
 const swapBridgeOpenOrder: Order = {
   ...baseMockOrderData,
   ...baseMockOrderData.statusOpen, // Swap part is open
   bridgeDetails: pendingBridgeDetails, // Bridge part is pending (ensure this uses the updated pendingBridgeDetails)
+} as Order
+
+// NEW: Signing + Bridge scenarios
+const swapBridgeSigningOrder: Order = {
+  ...baseMockOrderData,
+  ...baseMockOrderData.statusSigning, // Swap part needs signature
+  bridgeDetails: pendingBridgeDetails, // Bridge part is pending
+} as Order
+
+// NEW: Cancelled/Expired + Bridge scenarios
+const swapBridgeCancelledOrder: Order = {
+  ...baseMockOrderData,
+  ...baseMockOrderData.statusCancelled, // Swap part was cancelled
+  bridgeDetails: {
+    ...pendingBridgeDetails,
+    status: BridgeStatus.Failed, // Bridge fails when swap is cancelled
+    isSuccess: false,
+    errorMessage: 'Bridge operation failed because the swap order was cancelled. No bridge transaction was initiated.',
+  }, // Bridge fails when swap fails
+} as Order
+
+const swapBridgeExpiredOrder: Order = {
+  ...baseMockOrderData,
+  ...baseMockOrderData.statusExpired, // Swap part expired
+  bridgeDetails: {
+    ...pendingBridgeDetails,
+    status: BridgeStatus.Failed, // Bridge fails when swap expires
+    isSuccess: false,
+    errorMessage: 'Bridge operation failed because the swap order expired. No bridge transaction was initiated.',
+  }, // Bridge fails when swap fails
 } as Order
 
 const swapBridgeFilledOrder: Order = {
@@ -186,46 +389,33 @@ const swapBridgeFailedOrder: Order = {
     status: BridgeStatus.Failed,
     isSuccess: false,
     errorMessage: 'Bridge operation failed due to insufficient liquidity',
-    refundStatus: RefundStatusEnum.NOT_INITIATED, // Could be: 'not_initiated', 'pending', 'completed', 'failed'
+    refundStatus: RefundStatusEnum.NOT_INITIATED, // Could be: 'not_initiated', 'refunding', 'completed', 'failed'
   },
 } as Order
 
-const swapBridgeFailedRefundPendingOrder: Order = {
+// NEW: Missing bridge status scenarios
+const swapBridgeRefundingOrder: Order = {
   ...baseMockOrderData,
-  ...baseMockOrderData.statusFilled,
-  bridgeDetails: {
-    ...pendingBridgeDetails,
-    status: BridgeStatus.Failed,
-    isSuccess: false,
-    errorMessage: 'Bridge operation failed due to insufficient liquidity',
-    refundStatus: RefundStatusEnum.PENDING,
-  },
+  ...baseMockOrderData.statusFilled, // Swap part is filled
+  bridgeDetails: refundingBridgeDetails,
 } as Order
 
-const swapBridgeFailedRefundCompletedOrder: Order = {
+const swapBridgeRefundCompleteOrder: Order = {
   ...baseMockOrderData,
-  ...baseMockOrderData.statusFilled,
-  bridgeDetails: {
-    ...pendingBridgeDetails,
-    status: BridgeStatus.Failed,
-    isSuccess: false,
-    errorMessage: 'Bridge operation failed due to insufficient liquidity',
-    refundStatus: RefundStatusEnum.COMPLETED,
-    refundWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
-    refundChainId: SupportedChainId.MAINNET,
-  },
+  ...baseMockOrderData.statusFilled, // Swap part is filled
+  bridgeDetails: refundCompleteBridgeDetails,
+} as Order
+
+const swapBridgeUnknownOrder: Order = {
+  ...baseMockOrderData,
+  ...baseMockOrderData.statusFilled, // Swap part is filled
+  bridgeDetails: unknownBridgeDetails,
 } as Order
 
 const swapBridgeFailedRefundFailedOrder: Order = {
   ...baseMockOrderData,
   ...baseMockOrderData.statusFilled,
-  bridgeDetails: {
-    ...pendingBridgeDetails,
-    status: BridgeStatus.Failed,
-    isSuccess: false,
-    errorMessage: 'Bridge operation failed due to insufficient liquidity',
-    refundStatus: RefundStatusEnum.FAILED,
-  },
+  bridgeDetails: refundFailedBridgeDetails, // Use the new refund failed scenario
 } as Order
 
 const swapBridgePartiallyFilledOrder: Order = {
@@ -291,6 +481,69 @@ export default {
       <OrderDetails
         order={filledOrder}
         trades={mockTradesFilledOrder}
+        isOrderLoading={false}
+        areTradesLoading={false}
+        errors={noErrors}
+      />
+    </WithProviders>
+  ),
+
+  // NEW: Regular order status scenarios
+  'Signing Order (Pending Signature)': () => (
+    <WithProviders>
+      <OrderDetails
+        order={signingOrder}
+        trades={defaultTrades}
+        isOrderLoading={false}
+        areTradesLoading={false}
+        errors={noErrors}
+      />
+    </WithProviders>
+  ),
+  'Cancelled Order': () => (
+    <WithProviders>
+      <OrderDetails
+        order={cancelledOrder}
+        trades={defaultTrades}
+        isOrderLoading={false}
+        areTradesLoading={false}
+        errors={noErrors}
+      />
+    </WithProviders>
+  ),
+  'Cancelling Order': () => (
+    <WithProviders>
+      <OrderDetails
+        order={cancellingOrder}
+        trades={defaultTrades}
+        isOrderLoading={false}
+        areTradesLoading={false}
+        errors={noErrors}
+      />
+    </WithProviders>
+  ),
+  'Expired Order': () => (
+    <WithProviders>
+      <OrderDetails
+        order={expiredOrder}
+        trades={defaultTrades}
+        isOrderLoading={false}
+        areTradesLoading={false}
+        errors={noErrors}
+      />
+    </WithProviders>
+  ),
+  'Partially Filled Order': () => (
+    <WithProviders>
+      <OrderDetails
+        order={partiallyFilledOrder}
+        trades={[
+          {
+            ...mockTradesFilledOrder[0],
+            buyAmount: new BigNumber('500000000000000000'), // 0.5 WETH
+            sellAmount: new BigNumber('1000000000'), // 1000 USDT
+          },
+        ]}
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
@@ -379,6 +632,40 @@ export default {
       />
     </WithProviders>
   ),
+  // NEW: Additional swap+bridge edge cases
+  'Swap+Bridge - (Swap Signing, Bridge Pending)': () => (
+    <WithProviders>
+      <OrderDetails
+        order={swapBridgeSigningOrder}
+        trades={defaultTrades}
+        isOrderLoading={false}
+        areTradesLoading={false}
+        errors={noErrors}
+      />
+    </WithProviders>
+  ),
+  'Swap+Bridge - (Swap Cancelled, Bridge Failed)': () => (
+    <WithProviders>
+      <OrderDetails
+        order={swapBridgeCancelledOrder}
+        trades={defaultTrades}
+        isOrderLoading={false}
+        areTradesLoading={false}
+        errors={noErrors}
+      />
+    </WithProviders>
+  ),
+  'Swap+Bridge - (Swap Expired, Bridge Failed)': () => (
+    <WithProviders>
+      <OrderDetails
+        order={swapBridgeExpiredOrder}
+        trades={defaultTrades}
+        isOrderLoading={false}
+        areTradesLoading={false}
+        errors={noErrors}
+      />
+    </WithProviders>
+  ),
   'Swap+Bridge - (Swap Filled, Bridge Complete)': () => (
     <WithProviders>
       <OrderDetails
@@ -401,7 +688,7 @@ export default {
       />
     </WithProviders>
   ),
-  'Swap+Bridge - (Swap Filled, Bridge Failed)': () => (
+  'Swap+Bridge - (Swap Filled, Bridge Failed - Refund Not Initiated)': () => (
     <WithProviders>
       <OrderDetails
         order={swapBridgeFailedOrder}
@@ -412,10 +699,11 @@ export default {
       />
     </WithProviders>
   ),
-  'Swap+Bridge - (Swap Filled, Bridge Failed - Refund Pending)': () => (
+  // NEW: Missing bridge status scenarios
+  'Swap+Bridge - (Swap Filled, Bridge Failed - Refunding)': () => (
     <WithProviders>
       <OrderDetails
-        order={swapBridgeFailedRefundPendingOrder}
+        order={swapBridgeRefundingOrder}
         trades={mockTradesFilledOrder}
         isOrderLoading={false}
         areTradesLoading={false}
@@ -426,7 +714,18 @@ export default {
   'Swap+Bridge - (Swap Filled, Bridge Failed - Refund Completed)': () => (
     <WithProviders>
       <OrderDetails
-        order={swapBridgeFailedRefundCompletedOrder}
+        order={swapBridgeRefundCompleteOrder}
+        trades={mockTradesFilledOrder}
+        isOrderLoading={false}
+        areTradesLoading={false}
+        errors={noErrors}
+      />
+    </WithProviders>
+  ),
+  'Swap+Bridge - (Swap Filled, Bridge Unknown)': () => (
+    <WithProviders>
+      <OrderDetails
+        order={swapBridgeUnknownOrder}
         trades={mockTradesFilledOrder}
         isOrderLoading={false}
         areTradesLoading={false}
@@ -447,15 +746,10 @@ export default {
   ),
   'Swap+Bridge - (Swap Partially Filled)': () => (
     <WithProviders>
+      {/* NOTE: Partial fills + bridge is not currently supported, but fixture included for future testing */}
       <OrderDetails
         order={swapBridgePartiallyFilledOrder}
-        trades={[
-          {
-            ...mockTradesFilledOrder[0],
-            buyAmount: new BigNumber('500000000000000000'), // 0.5 WETH
-            sellAmount: new BigNumber('1000000000'), // 1000 USDT
-          },
-        ]}
+        trades={mockTradesFilledOrder}
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
@@ -495,6 +789,55 @@ export default {
           isLoading={true}
           ownerAddress="0xOwnerLoading1234567890abcdef1234567890"
           receiverAddress="0xReceiverLoading0987654321fedcba098765"
+        />
+      </div>
+    </WithProviders>
+  ),
+  // NEW: Missing bridge status scenarios
+  'BridgeDetailsTable - Failed (Refunding)': () => (
+    <WithProviders>
+      <div style={{ padding: '1rem' }}>
+        <h2>Bridge Details Table (Failed - Refunding)</h2>
+        <BridgeDetailsTable
+          bridgeDetails={refundingBridgeDetails}
+          ownerAddress="0xOwnerRefunding1234567890abcdef1234567890"
+          receiverAddress="0xReceiverRefunding0987654321fedcba098765"
+        />
+      </div>
+    </WithProviders>
+  ),
+  'BridgeDetailsTable - Failed (Refund Completed)': () => (
+    <WithProviders>
+      <div style={{ padding: '1rem' }}>
+        <h2>Bridge Details Table (Failed - Refund Completed)</h2>
+        <BridgeDetailsTable
+          bridgeDetails={refundCompleteBridgeDetails}
+          ownerAddress="0xOwnerRefundComplete1234567890abcdef1234567890"
+          receiverAddress="0xReceiverRefundComplete0987654321fedcba098765"
+        />
+      </div>
+    </WithProviders>
+  ),
+  'BridgeDetailsTable - Failed (Refund Failed)': () => (
+    <WithProviders>
+      <div style={{ padding: '1rem' }}>
+        <h2>Bridge Details Table (Failed - Refund Failed)</h2>
+        <BridgeDetailsTable
+          bridgeDetails={refundFailedBridgeDetails}
+          ownerAddress="0xOwnerRefundFailed1234567890abcdef1234567890"
+          receiverAddress="0xReceiverRefundFailed0987654321fedcba098765"
+        />
+      </div>
+    </WithProviders>
+  ),
+  'BridgeDetailsTable - Unknown Status': () => (
+    <WithProviders>
+      <div style={{ padding: '1rem' }}>
+        <h2>Bridge Details Table (Unknown Status)</h2>
+        <BridgeDetailsTable
+          bridgeDetails={unknownBridgeDetails}
+          ownerAddress="0xOwnerUnknown1234567890abcdef1234567890"
+          receiverAddress="0xReceiverUnknown0987654321fedcba098765"
         />
       </div>
     </WithProviders>

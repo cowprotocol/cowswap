@@ -21,7 +21,7 @@ import { useNetworkId } from 'state/network'
 import { Errors } from 'types'
 import { formatPercentage } from 'utils'
 
-import { Order, Trade } from 'api/operator'
+import { Order, Trade, OrderStatus } from 'api/operator'
 import { isSwapAndBridgeOrder } from 'utils/orderTypeGuards'
 
 import { FillsTableContext } from './context/FillsTableContext'
@@ -134,7 +134,7 @@ const tabItems = (
     const bridgeStatus = order.bridgeDetails?.status || 'Unknown'
 
     // Note: swap+bridge orders don't support partial fills for now
-    const isSwapComplete = order.status === 'filled' || order.partiallyFilled
+    const isSwapComplete = order.status === OrderStatus.Filled || order.partiallyFilled
 
     // Determine effective bridge status for tab title
     const effectiveBridgeStatusForTab = (() => {
