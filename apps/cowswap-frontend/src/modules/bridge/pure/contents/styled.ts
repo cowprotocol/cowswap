@@ -14,18 +14,6 @@ const refundAnimation = keyframes`
   }
 `
 
-export const StyledStatusCheckmarkIcon = styled(SVG)`
-  width: 24px;
-  height: 18px;
-  color: var(${UI.COLOR_SUCCESS});
-`
-
-export const StyledStatusCloseIcon = styled(SVG)`
-  color: var(${UI.COLOR_DANGER_TEXT});
-  width: 18px;
-  height: 18px;
-`
-
 export const StyledTimelineCheckmarkIcon = styled(SVG)`
   width: 14px;
   height: 14px;

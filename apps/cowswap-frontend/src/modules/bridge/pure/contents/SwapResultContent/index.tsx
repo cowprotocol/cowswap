@@ -1,14 +1,21 @@
 import PlusIcon from '@cowprotocol/assets/cow-swap/plus.svg'
 import { isTruthy } from '@cowprotocol/common-utils'
 
+import styled from 'styled-components/macro'
+
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
 import { StyledTimelinePlusIcon, SuccessTextBold, TimelineIconCircleWrapper } from '../../../styles'
 import { SwapResultContext } from '../../../types'
-import { WinningSolverContainer } from '../../SwapStopDetails/styled'
 import { TokenAmountDisplay } from '../../TokenAmountDisplay'
+
+const WinningSolverContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`
 
 interface SwapResultContentProps {
   context: SwapResultContext

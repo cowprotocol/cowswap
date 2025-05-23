@@ -4,13 +4,25 @@ import CheckmarkIcon from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
 import SpinnerIcon from '@cowprotocol/assets/cow-swap/spinner.svg'
 import CLOSE_ICON_X from '@cowprotocol/assets/cow-swap/x.svg'
+import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
+import styled from 'styled-components/macro'
 
 import { StyledSpinnerIcon, StyledRefundCompleteIcon } from '../../styles'
 import { StopStatusEnum } from '../../utils/status'
-import { StyledStatusCheckmarkIcon, StyledStatusCloseIcon } from '../BridgeStopDetails/styled'
 
+const StyledStatusCheckmarkIcon = styled(SVG)`
+  width: 24px;
+  height: 18px;
+  color: var(${UI.COLOR_SUCCESS});
+`
+
+const StyledStatusCloseIcon = styled(SVG)`
+  color: var(${UI.COLOR_DANGER_TEXT});
+  width: 18px;
+  height: 18px;
+`
 /**
  * This module centralizes all status-related constants for the bridge module
  * It contains icons and text for different status states across both
