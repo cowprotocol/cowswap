@@ -1,18 +1,18 @@
 import styled from 'styled-components/macro'
 
-import { ProgressDetails, StopStatusEnum, SwapAndBridgeContext } from 'modules/bridge'
+import { ProgressDetails, SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
 
 import * as styledEl from './styled'
 
 import { BridgingFlowStep } from '../../types'
 import { BridgingStatusHeader } from '../BridgingStatusHeader'
 
-const statusesMap: Record<StopStatusEnum, BridgingFlowStep> = {
-  [StopStatusEnum.DONE]: 'bridgingFinished',
-  [StopStatusEnum.DEFAULT]: 'bridgingInProgress',
-  [StopStatusEnum.PENDING]: 'bridgingInProgress',
-  [StopStatusEnum.FAILED]: 'bridgingFailed',
-  [StopStatusEnum.REFUND_COMPLETE]: 'refundCompleted',
+const statusesMap: Record<SwapAndBridgeStatus, BridgingFlowStep> = {
+  [SwapAndBridgeStatus.DONE]: 'bridgingFinished',
+  [SwapAndBridgeStatus.DEFAULT]: 'bridgingInProgress',
+  [SwapAndBridgeStatus.PENDING]: 'bridgingInProgress',
+  [SwapAndBridgeStatus.FAILED]: 'bridgingFailed',
+  [SwapAndBridgeStatus.REFUND_COMPLETE]: 'refundCompleted',
 }
 
 const Wrapper = styled.div`

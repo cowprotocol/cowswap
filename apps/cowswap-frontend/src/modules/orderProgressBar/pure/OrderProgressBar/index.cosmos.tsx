@@ -7,7 +7,7 @@ import styled from 'styled-components/macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { StopStatusEnum, SwapAndBridgeContext } from 'modules/bridge'
+import { SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
 
 import { getOrderMock } from '../../../../mocks/orderMock'
 import { inputCurrencyInfoMock } from '../../../../mocks/tradeStateMock'
@@ -63,7 +63,7 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
     ),
     surplusAmountUsd: CurrencyAmount.fromRawAmount(USDC_GNOSIS_CHAIN, '1300'),
   },
-  bridgingStatus: StopStatusEnum.PENDING,
+  bridgingStatus: SwapAndBridgeStatus.PENDING,
 }
 
 const defaultProps: OrderProgressBarProps = {
@@ -194,7 +194,7 @@ const Fixtures = {
         {...defaultProps}
         swapAndBridgeContext={{
           ...swapAndBridgeContextMock,
-          bridgingStatus: StopStatusEnum.FAILED,
+          bridgingStatus: SwapAndBridgeStatus.FAILED,
           bridgingProgressContext: {
             ...swapAndBridgeContextMock.bridgingProgressContext,
             isFailed: true,
@@ -210,7 +210,7 @@ const Fixtures = {
         {...defaultProps}
         swapAndBridgeContext={{
           ...swapAndBridgeContextMock!,
-          bridgingStatus: StopStatusEnum.REFUND_COMPLETE,
+          bridgingStatus: SwapAndBridgeStatus.REFUND_COMPLETE,
           bridgingProgressContext: {
             ...swapAndBridgeContextMock.bridgingProgressContext,
             isRefunded: true,
@@ -226,7 +226,7 @@ const Fixtures = {
         {...defaultProps}
         swapAndBridgeContext={{
           ...swapAndBridgeContextMock!,
-          bridgingStatus: StopStatusEnum.DONE,
+          bridgingStatus: SwapAndBridgeStatus.DONE,
           bridgingProgressContext: {
             ...swapAndBridgeContextMock.bridgingProgressContext,
             receivedAmount: CurrencyAmount.fromRawAmount(USDC_BASE, '29100000'),

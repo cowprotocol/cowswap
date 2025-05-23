@@ -1,11 +1,20 @@
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
-import { StopStatusEnum } from './utils'
-
 import { ReceiveAmountInfo } from '../trade'
 
 import type { SolverCompetition } from '../orderProgressBar'
+
+/**
+ * Possible statuses for bridge/swap stops
+ */
+export enum SwapAndBridgeStatus {
+  DEFAULT = 'default',
+  DONE = 'done',
+  PENDING = 'pending',
+  FAILED = 'failed',
+  REFUND_COMPLETE = 'refund_complete',
+}
 
 export interface QuoteSwapContext {
   chainName: string
@@ -59,5 +68,5 @@ export interface SwapAndBridgeContext {
 
   quoteBridgeContext: QuoteBridgeContext
   bridgingProgressContext: BridgingProgressContext
-  bridgingStatus: StopStatusEnum
+  bridgingStatus: SwapAndBridgeStatus
 }

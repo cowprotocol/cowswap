@@ -4,9 +4,7 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { FiatAmount, TokenAmount as LibTokenAmount, TokenAmountProps as LibTokenAmountProps } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { StatusColor } from 'modules/bridge/utils/status'
-
-import { AmountWithTokenIcon } from './styled'
+import { StatusColor, AmountWithTokenIcon } from './styled'
 
 export interface TokenAmountDisplayProps {
   currencyAmount: CurrencyAmount<Currency> | null
