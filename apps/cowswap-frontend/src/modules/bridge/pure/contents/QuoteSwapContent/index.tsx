@@ -3,8 +3,8 @@ import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
 import { ReceiveAmountInfo, ReceiveAmountTitle, TradeFeesAndCosts, ConfirmDetailsItem } from 'modules/trade'
 
-import { RecipientDisplay } from '../RecipientDisplay'
-import { TokenAmountDisplay } from '../TokenAmountDisplay'
+import { RecipientDisplay } from '../../RecipientDisplay'
+import { TokenAmountDisplay } from '../../TokenAmountDisplay'
 
 interface QuoteDetailsContentProps {
   receiveAmountInfo: ReceiveAmountInfo
@@ -20,7 +20,7 @@ interface QuoteDetailsContentProps {
   swapExpectedReceiveUsdValue: CurrencyAmount<Token> | null
 }
 
-export function QuoteDetailsContent({
+export function QuoteSwapContent({
   receiveAmountInfo,
   sellCurrencyAmount,
   buyCurrencyAmount,

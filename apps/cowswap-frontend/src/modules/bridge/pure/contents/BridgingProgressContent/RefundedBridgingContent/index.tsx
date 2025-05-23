@@ -5,17 +5,17 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
-import { DangerText, SuccessTextBold, TimelineIconCircleWrapper } from '../../styles'
-import { RefundLink, RefundRecipientWrapper, StyledTimelineCheckmarkIcon } from '../BridgeStopDetails/styled'
-import { NetworkLogo } from '../NetworkLogo'
-import { TokenAmountDisplay } from '../TokenAmountDisplay'
+import { DangerText, SuccessTextBold, TimelineIconCircleWrapper } from '../../../../styles'
+import { RefundLink, RefundRecipientWrapper, StyledTimelineCheckmarkIcon } from '../../../BridgeStopDetails/styled'
+import { NetworkLogo } from '../../../NetworkLogo'
+import { TokenAmountDisplay } from '../../../TokenAmountDisplay'
 
 interface RefundedContentProps {
   account: string
   bridgeSendCurrencyAmount: CurrencyAmount<Currency>
 }
 
-export function RefundedContent({ account, bridgeSendCurrencyAmount }: RefundedContentProps) {
+export function RefundedBridgingContent({ account, bridgeSendCurrencyAmount }: RefundedContentProps) {
   const sourceChainId = bridgeSendCurrencyAmount.currency.chainId as SupportedChainId
 
   return (

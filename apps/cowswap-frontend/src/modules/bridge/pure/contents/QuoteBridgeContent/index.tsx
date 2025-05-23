@@ -6,8 +6,8 @@ import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
-import { RecipientDisplay } from '../RecipientDisplay'
-import { TokenAmountDisplay } from '../TokenAmountDisplay'
+import { RecipientDisplay } from '../../RecipientDisplay'
+import { TokenAmountDisplay } from '../../TokenAmountDisplay'
 
 export interface QuoteBridgeContentProps {
   bridgeFee: CurrencyAmount<Currency>

@@ -1,10 +1,11 @@
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { FailedBridgingContent } from '../FailedBridgingContent'
-import { PendingBridgingContent } from '../PendingBridgingContent'
+import { FailedBridgingContent } from './FailedBridgingContent'
+import { PendingBridgingContent } from './PendingBridgingContent'
+import { ReceivedBridgingContent } from './ReceivedBridgingContent'
+import { RefundedBridgingContent } from './RefundedBridgingContent'
+
 import { QuoteBridgeContent, QuoteBridgeContentProps } from '../QuoteBridgeContent'
-import { ReceivedBridgingContent } from '../ReceivedBridgingContent'
-import { RefundedContent } from '../RefundedContent'
 
 interface BridgingContentProps extends QuoteBridgeContentProps {
   isFailed?: boolean
@@ -16,7 +17,7 @@ interface BridgingContentProps extends QuoteBridgeContentProps {
   receivedAmountUsd?: CurrencyAmount<Token> | null
 }
 
-export function BridgingContent(props: BridgingContentProps) {
+export function BridgingProgressContent(props: BridgingContentProps) {
   const { account, receivedAmount, receivedAmountUsd, bridgeSendCurrencyAmount, isFailed, isRefunded } = props
 
   return (
@@ -24,7 +25,7 @@ export function BridgingContent(props: BridgingContentProps) {
       {receivedAmount ? (
         <ReceivedBridgingContent receivedAmount={receivedAmount} receivedAmountUsd={receivedAmountUsd} />
       ) : isRefunded ? (
-        <RefundedContent account={account} bridgeSendCurrencyAmount={bridgeSendCurrencyAmount} />
+        <RefundedBridgingContent account={account} bridgeSendCurrencyAmount={bridgeSendCurrencyAmount} />
       ) : isFailed ? (
         <FailedBridgingContent />
       ) : (

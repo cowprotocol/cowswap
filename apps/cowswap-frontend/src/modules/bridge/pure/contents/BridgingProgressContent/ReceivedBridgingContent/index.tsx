@@ -2,8 +2,8 @@ import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
-import { SuccessTextBold } from '../../styles'
-import { TokenAmountDisplay } from '../TokenAmountDisplay'
+import { SuccessTextBold } from '../../../../styles'
+import { TokenAmountDisplay } from '../../../TokenAmountDisplay'
 
 interface ReceivedBridgingContentProps {
   receivedAmount: CurrencyAmount<Currency>
