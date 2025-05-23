@@ -14,8 +14,6 @@ export function useIsSmartContractWallet(): boolean | undefined {
   return isSafeWallet || hasCodeAtAddress
 }
 
-// TODO: This assumption will change after next hardfork on EIP7702 https://eips.ethereum.org/EIPS/eip-7702
-// TODO: Will affect the whole app, need to think properly how to address it
 function useHasContractAtAddress(): boolean | undefined {
   const { provider } = useWeb3React()
   const { account } = useWalletInfo()
@@ -25,6 +23,11 @@ function useHasContractAtAddress(): boolean | undefined {
     async ([, _account, _provider]) => {
       try {
         const code = await _provider.getCode(_account)
+
+        if (isEip7702EOA(code, _account)) {
+          return false
+        }
+
         return code !== '0x'
       } catch (e: any) {
         console.debug(`checkIsSmartContractWallet: failed to check address ${_account}`, e.message)
@@ -35,4 +38,9 @@ function useHasContractAtAddress(): boolean | undefined {
   )
 
   return data
+}
+
+// https://eips.ethereum.org/EIPS/eip-7702#abstract
+function isEip7702EOA(code: string, account: string): boolean {
+  return code.startsWith('0xef0100') || code.toLowerCase() === account.toLowerCase()
 }
