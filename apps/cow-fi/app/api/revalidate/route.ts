@@ -27,8 +27,8 @@ export async function GET(request: NextRequest) {
     // Always revalidate the main learn page to ensure it's fresh
     revalidatePath('/learn')
 
-    // Revalidate the dynamic article route so the client-side manifest includes new slugs
-    revalidatePath('/learn/[article]', 'layout')
+    // Revalidate the dynamic article route (this updates the manifest)
+    revalidatePath('/learn/[article]')
 
     // If a specific path was provided, revalidate it to update the route manifest
     if (path) {
