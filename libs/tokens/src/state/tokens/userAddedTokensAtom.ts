@@ -5,6 +5,7 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
+import { getAddress } from '@ethersproject/address'
 import { Token } from '@uniswap/sdk-core'
 
 import { TokensMap } from '../../types'
@@ -53,6 +54,9 @@ export const removeUserTokensAtom = atom(null, (get, set, tokens: string[]) => {
     // Because state might be spoiled with mixed case addresses
     delete stateCopy[token]
     delete stateCopy[token.toLowerCase()]
+    try {
+      delete stateCopy[getAddress(token)]
+    } catch {}
   })
 
   set(userAddedTokensAtom, {
