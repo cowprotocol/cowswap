@@ -7,6 +7,7 @@ import {
   DAI,
   DAI_ARBITRUM_ONE,
   DAI_BASE,
+  DAI_POLYGON,
   EURE_GNOSIS_CHAIN,
   GNO_GNOSIS_CHAIN,
   TokenWithLogo,
@@ -19,7 +20,9 @@ import {
   USDCe_GNOSIS_CHAIN,
   USDT,
   USDT_ARBITRUM_ONE,
+  USDT_AVALANCHE,
   USDT_BASE,
+  USDT_POLYGON,
   WBTC,
   WBTC_ARBITRUM_ONE,
   WBTC_GNOSIS_CHAIN,
@@ -85,10 +88,13 @@ export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
   ]),
   [SupportedChainId.POLYGON]: tokensListToMap([
     USDC_POLYGON,
+    USDT_POLYGON,
+    DAI_POLYGON,
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.POLYGON],
   ]),
   [SupportedChainId.AVALANCHE]: tokensListToMap([
     USDC_AVALANCHE,
+    USDT_AVALANCHE,
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.AVALANCHE],
   ]),
 }

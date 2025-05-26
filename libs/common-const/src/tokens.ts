@@ -385,6 +385,26 @@ export const USDC_POLYGON = new TokenWithLogo(
   'USDC',
   'USD Coin',
 )
+export const USDT_POLYGON = new TokenWithLogo(
+  USDT.logoURI,
+  SupportedChainId.POLYGON,
+  // https://app.uniswap.org/explore/tokens/polygon/0xc2132d05d31c914a87c6611c10748aeb04b58e8f
+  '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
+
+  6,
+  'USDT',
+  'Tether USD',
+)
+export const DAI_POLYGON = new TokenWithLogo(
+  DAI.logoURI,
+  SupportedChainId.POLYGON,
+  // https://app.uniswap.org/explore/tokens/polygon/0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063
+  '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
+
+  18,
+  'DAI',
+  'Dai',
+)
 
 export const USDC_AVALANCHE = new TokenWithLogo(
   USDC_MAINNET.logoURI,
@@ -394,6 +414,16 @@ export const USDC_AVALANCHE = new TokenWithLogo(
   6,
   'USDC',
   'USD Coin',
+)
+
+export const USDT_AVALANCHE = new TokenWithLogo(
+  USDT.logoURI,
+  SupportedChainId.AVALANCHE,
+  // https://snowtrace.io/token/0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7
+  '0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7',
+  6,
+  'USDT',
+  'Tether USD',
 )
 
 export const USDC: Record<SupportedChainId, TokenWithLogo> = {
@@ -596,9 +626,11 @@ const BASE_STABLECOINS = [
   USDT_BASE.address,
 ].map((t) => t.toLowerCase())
 
-const POLYGON_STABLECOINS = [USDC_POLYGON.address].map((t) => t.toLowerCase())
+const POLYGON_STABLECOINS = [USDC_POLYGON.address, USDT_POLYGON.address, DAI_POLYGON.address].map((t) =>
+  t.toLowerCase(),
+)
 
-const AVALANCHE_STABLECOINS = [USDC_AVALANCHE.address].map((t) => t.toLowerCase())
+const AVALANCHE_STABLECOINS = [USDC_AVALANCHE.address, USDT_AVALANCHE.address].map((t) => t.toLowerCase())
 
 // Not used for fees
 const SEPOLIA_STABLECOINS = [USDC_SEPOLIA.address, USDT_SEPOLIA.address].map((t) => t.toLowerCase())

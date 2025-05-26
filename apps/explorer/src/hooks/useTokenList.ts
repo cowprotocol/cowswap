@@ -14,7 +14,7 @@ const INITIAL_TOKEN_LIST_PER_NETWORK: TokenListPerNetwork = mapSupportedNetworks
 export function useTokenList(chainId: SupportedChainId | undefined): { data: TokenListByAddress; isLoading: boolean } {
   const { data: cowSwapList, isLoading: isCowListLoading } = useTokenListByUrl(
     chainId !== SupportedChainId.SEPOLIA
-      ? 'https://files.cow.fi/tokens/CowSwap.json'
+      ? 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CowSwap.json'
       : 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CowSwapSepolia.json',
   )
   const { data: coingeckoList, isLoading: isCoingeckoListLoading } = useTokenListByUrl(

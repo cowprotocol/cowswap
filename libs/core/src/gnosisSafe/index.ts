@@ -14,8 +14,8 @@ const SAFE_TRANSACTION_SERVICE_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.ARBITRUM_ONE]: 'https://safe-transaction-arbitrum.safe.global',
   [SupportedChainId.BASE]: 'https://safe-transaction-base.safe.global',
   [SupportedChainId.SEPOLIA]: 'https://safe-transaction-sepolia.safe.global',
-  [SupportedChainId.POLYGON]: 'https://safe-transaction-polygon.safe.global', // TODO: check correct url
-  [SupportedChainId.AVALANCHE]: 'https://safe-transaction-avalanche.safe.global', // TODO: check correct url
+  [SupportedChainId.POLYGON]: 'https://safe-transaction-polygon.safe.global',
+  [SupportedChainId.AVALANCHE]: 'https://safe-transaction-avalanche.safe.global',
 }
 
 const SAFE_BASE_URL = 'https://app.safe.global'
