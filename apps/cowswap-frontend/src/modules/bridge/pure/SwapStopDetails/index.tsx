@@ -8,11 +8,10 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 
+import type { SolverCompetition } from 'modules/orderProgressBar'
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReceiveAmountTitle } from 'modules/trade/pure/ReceiveAmountTitle'
 import { UsdAmountInfo } from 'modules/usdAmount/hooks/useUsdAmount'
-
-import { SolverCompetition } from 'common/hooks/orderProgressBar'
 
 import { WinningSolverContainer } from './styled'
 
