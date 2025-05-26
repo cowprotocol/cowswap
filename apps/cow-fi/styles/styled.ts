@@ -1901,7 +1901,7 @@ export const DisclaimerGrid = styled.div`
   text-align: left;
   width: 100%;
   padding: 2.4rem;
-  background-color: ${Color.neutral95};
+  background-color: ${Color.neutral98};
   border-radius: 1.6rem;
   border-left: 0.6rem solid ${Color.cowfi_orange_bright};
 
