@@ -3,7 +3,7 @@ import { inputCurrencyInfoMock, outputCurrencyInfoMock, priceImpactMock } from '
 import { TradeConfirmation } from './index'
 
 const Fixtures = {
-  default: (
+  default: () => (
     <TradeConfirmation
       title="Review order"
       account={undefined}

@@ -8,12 +8,13 @@ import styled from 'styled-components/macro'
 import { YellowCard } from 'legacy/components/Card'
 import { CopyIcon, TransactionStatusText } from 'legacy/components/Copy'
 
+import { TransactionInnerDetail } from 'common/pure/TransactionInnerDetail'
+
 import {
   StatusLabelWrapper,
   Summary,
   SummaryInner,
   TextAlert,
-  TransactionInnerDetail,
   TransactionStatusText as ActivityDetailsText,
   TransactionWrapper,
 } from '../../containers/Transaction/styled'

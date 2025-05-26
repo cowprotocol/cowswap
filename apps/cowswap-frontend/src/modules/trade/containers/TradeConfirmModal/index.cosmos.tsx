@@ -77,10 +77,10 @@ function Custom({ stateValue }: { stateValue: string }) {
 }
 
 const Fixtures = {
-  default: <Custom stateValue="default" />,
-  pending: <Custom stateValue="pending" />,
-  error: <Custom stateValue="error" />,
-  success: <Custom stateValue="success" />,
+  default: () => <Custom stateValue="default" />,
+  pending: () => <Custom stateValue="pending" />,
+  error: () => <Custom stateValue="error" />,
+  success: () => <Custom stateValue="success" />,
 }
 
 export default Fixtures

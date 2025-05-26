@@ -126,6 +126,7 @@ export default defineConfig(({ mode }) => {
             if (id.includes('@uniswap')) return '@uniswap'
             if (id.includes('crypto-es/lib')) return 'crypto-es'
             if (id.includes('web3/dist')) return 'web3'
+            if (id.includes('lottie-react')) return 'lottie-react'
           },
         },
       },
