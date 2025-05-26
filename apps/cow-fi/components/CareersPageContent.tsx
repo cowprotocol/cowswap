@@ -12,6 +12,7 @@ import {
   DisclaimerGrid,
   DisclaimerHighlight,
   DisclaimerList,
+  DisclaimerSection,
   PageWrapper,
   SectionTitleDescription,
   SectionTitleIcon,
@@ -208,7 +209,7 @@ export function CareersPageContent({
                   <li>Request sensitive personal documents (e.g. passport) via chat apps</li>
                 </DisclaimerList>
 
-                <div style={{ marginTop: '24px' }}>
+                <DisclaimerSection>
                   <SectionTitleText fontSize={20} fontSizeMobile={18} textAlign="left">
                     What You Should Do:
                   </SectionTitleText>
@@ -223,7 +224,7 @@ export function CareersPageContent({
                       <a href="mailto:abuse@telegram.org">abuse@telegram.org</a>
                     </li>
                   </DisclaimerList>
-                </div>
+                </DisclaimerSection>
               </DisclaimerColumn>
 
               <DisclaimerColumn>

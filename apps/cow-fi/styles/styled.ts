@@ -1945,3 +1945,7 @@ export const DisclaimerHighlight = styled.div`
   background-color: ${Color.neutral90};
   border-radius: 0.8rem;
 `
+
+export const DisclaimerSection = styled.div`
+  margin: 2.4rem 0 0;
+`
