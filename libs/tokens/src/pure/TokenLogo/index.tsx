@@ -1,7 +1,13 @@
 import { atom, useAtom } from 'jotai'
 import { useCallback, useMemo } from 'react'
 
-import { cowprotocolTokenLogoUrl, LpToken, NATIVE_CURRENCY_ADDRESS, TokenWithLogo } from '@cowprotocol/common-const'
+import {
+  BaseChainInfo,
+  cowprotocolTokenLogoUrl,
+  LpToken,
+  NATIVE_CURRENCY_ADDRESS,
+  TokenWithLogo,
+} from '@cowprotocol/common-const'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { uriToHttp } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -203,10 +209,8 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, no
 
   if (noWrap) return tokenContent
 
-  const chainName =
-    token?.chainId && Object.values(SupportedChainId).includes(token.chainId)
-      ? getChainInfo(token.chainId as SupportedChainId).label
-      : ''
+  const chainInfo: BaseChainInfo | undefined = getChainInfo(token?.chainId as SupportedChainId)
+  const chainName = chainInfo?.label || ''
 
   return (
     <TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
