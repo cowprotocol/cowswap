@@ -31,7 +31,13 @@ import {
   updateOrderProgressBarCountdown,
   updateOrderProgressBarStepName,
 } from '../state/atoms'
-import { ApiSolverCompetition, OrderProgressBarState, OrderProgressBarStepName, SolverCompetition } from '../types'
+import {
+  ApiSolverCompetition,
+  OrderProgressBarProps,
+  OrderProgressBarState,
+  OrderProgressBarStepName,
+  SolverCompetition,
+} from '../types'
 
 export type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null
@@ -51,7 +57,13 @@ export const PROGRESS_BAR_TIMER_DURATION = 15 // in seconds
 /**
  * Hook for fetching ProgressBar props
  */
-export function useOrderProgressBarProps(chainId: SupportedChainId, order: Order | undefined) {
+export function useOrderProgressBarProps(
+  chainId: SupportedChainId,
+  order: Order | undefined,
+): {
+  props: OrderProgressBarProps
+  activityDerivedState: ActivityDerivedState | null
+} {
   const orderId = order?.id
   const [activity] = useMultipleActivityDescriptors({ chainId, ids: orderId ? [orderId] : [] })
   const activityDerivedState = useActivityDerivedState({ chainId, activity })
@@ -66,11 +78,10 @@ export function useOrderProgressBarProps(chainId: SupportedChainId, order: Order
   const surplusData = useGetSurplusData(order)
   const receiverEnsName = useENS(order?.receiver).name || undefined
 
-  return useMemo(() => {
+  const props = useMemo(() => {
     // Add supplementary stuff
-    const data = {
+    const data: OrderProgressBarProps = {
       ...progressBarProps,
-      activityDerivedState,
       surplusData,
       chainId,
       receiverEnsName,
@@ -83,7 +94,9 @@ export function useOrderProgressBarProps(chainId: SupportedChainId, order: Order
       return { ...data, isProgressBarSetup: false }
     }
     return data
-  }, [progressBarProps, activityDerivedState, surplusData, chainId, receiverEnsName, showCancellationModal])
+  }, [progressBarProps, surplusData, chainId, receiverEnsName, showCancellationModal])
+
+  return useMemo(() => ({ props, activityDerivedState }), [props, activityDerivedState])
 }
 
 function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): UseOrderProgressBarResult | undefined {
