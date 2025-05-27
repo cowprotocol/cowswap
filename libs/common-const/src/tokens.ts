@@ -380,7 +380,6 @@ export const USDC_POLYGON = new TokenWithLogo(
   SupportedChainId.POLYGON,
   // https://app.uniswap.org/explore/tokens/polygon/0x3c499c542cef5e3811e1192ce70d8cc03d5c3359
   '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
-
   6,
   'USDC',
   'USD Coin',
@@ -390,7 +389,6 @@ export const USDT_POLYGON = new TokenWithLogo(
   SupportedChainId.POLYGON,
   // https://app.uniswap.org/explore/tokens/polygon/0xc2132d05d31c914a87c6611c10748aeb04b58e8f
   '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
-
   6,
   'USDT',
   'Tether USD',
@@ -536,6 +534,7 @@ const COW_TOKEN_SEPOLIA = new TokenWithLogo(
   'CoW Protocol Token',
 )
 
+// TODO: handle when COW doesn't exist in Avalanche
 export const COW_TOKEN_POLYGON = new TokenWithLogo(
   COW_TOKEN_MAINNET.logoURI,
   SupportedChainId.POLYGON,
@@ -545,6 +544,7 @@ export const COW_TOKEN_POLYGON = new TokenWithLogo(
   'CoW Protocol Token',
 )
 
+// TODO: handle when COW doesn't exist in Avalanche
 export const COW_TOKEN_AVALANCHE = new TokenWithLogo(
   COW_TOKEN_MAINNET.logoURI,
   SupportedChainId.AVALANCHE,

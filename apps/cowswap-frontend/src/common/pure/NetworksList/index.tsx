@@ -7,7 +7,7 @@ import { Trans } from '@lingui/macro'
 
 import * as styledEl from './styled'
 
-const NEW_NETWORK_IDS = [8453, 137, 43114] // Base, Avalanche, Polygon
+const NEW_NETWORK_IDS = [137, 43114] // Avalanche, Polygon
 
 export interface NetworksListProps {
   currentChainId: SupportedChainId | null
