@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenInfo } from '@cowprotocol/types'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
@@ -10,7 +11,7 @@ import { Order, Trade } from '../../../api/operator'
 import { GlobalStateContext } from '../../../hooks/useGlobalState'
 import { RICH_ORDER } from '../../../test/data' // Moved before types
 import { Errors, Network } from '../../../types'
-import { BridgeDetails, BridgeStatus, BridgeableToken } from '../../../types/bridge' // Added bridge types
+import { BridgeDetails, BridgeStatus } from '../../../types/bridge' // Added bridge types
 
 import { OrderDetails } from '.'
 
@@ -29,18 +30,20 @@ const usdtToken: TokenErc20 = {
 }
 
 // --- Mock Bridge Details ---
-const mockSourceToken: BridgeableToken = {
+const mockSourceToken: TokenInfo = {
   address: usdtToken.address,
   chainId: SupportedChainId.MAINNET,
-  symbol: usdtToken.symbol,
+  symbol: usdtToken.symbol || 'USDT',
   decimals: usdtToken.decimals,
+  name: usdtToken.name || 'Tether USD',
 }
 
-const mockDestinationToken: BridgeableToken = {
+const mockDestinationToken: TokenInfo = {
   address: '0xanotherMainnetTokenForBridgeFixture', // Example different token on Mainnet
   chainId: SupportedChainId.MAINNET, // Using MAINNET again to avoid linter issues
   symbol: 'USDT.bridged', // Example symbol for bridged USDT on Mainnet for fixture
   decimals: 6,
+  name: 'Bridged USDT',
 }
 
 const pendingBridgeDetails: BridgeDetails = {
@@ -59,8 +62,6 @@ const pendingBridgeDetails: BridgeDetails = {
   sourceChainTransactionHash: '0xsourceTxHashForPendingBridgeOrderDetailsFixture',
   // destinationChainTransactionHash initially undefined
   explorerUrl: 'https://testbridgeprovider.example.com/tx/0xsourceTxHashForPendingBridgeOrderDetailsFixture',
-  minDepositAmount: '10000000', // 10 USDT
-  maxDepositAmount: '1000000000000', // 1,000,000 USDT
 }
 
 const completedBridgeDetails: BridgeDetails = {
