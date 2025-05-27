@@ -180,7 +180,7 @@ export function ArticlePageComponent({ article, randomArticles, featuredArticles
 
                 return (
                   <li key={article.id}>
-                    <Link
+                    <a
                       href={`/learn/${article.attributes?.slug}`}
                       onClick={() =>
                         analytics.sendEvent({
@@ -191,7 +191,7 @@ export function ArticlePageComponent({ article, randomArticles, featuredArticles
                       }
                     >
                       {articleTitle}
-                    </Link>
+                    </a>
                   </li>
                 )
               })}
