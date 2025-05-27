@@ -13,4 +13,6 @@ export const SUBGRAPH_URLS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.ARBITRUM_ONE]: getSubgraphUrl(SupportedChainId.ARBITRUM_ONE, 'ARBITRUM_ONE'),
   [SupportedChainId.BASE]: getSubgraphUrl(SupportedChainId.BASE, 'BASE'),
   [SupportedChainId.SEPOLIA]: getSubgraphUrl(SupportedChainId.SEPOLIA, 'SEPOLIA'),
+  [SupportedChainId.POLYGON]: getSubgraphUrl(SupportedChainId.POLYGON, 'POLYGON'),
+  [SupportedChainId.AVALANCHE]: getSubgraphUrl(SupportedChainId.AVALANCHE, 'AVALANCHE'),
 }

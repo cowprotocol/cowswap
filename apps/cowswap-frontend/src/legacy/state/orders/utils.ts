@@ -535,7 +535,9 @@ function getOrderAmountsWithPartnerFee(
     }
   }
 
-  const partnerFeePercent = bpsToPercent(volumeFee.bps)
+  const volumeFeeItem = Array.isArray(volumeFee) ? volumeFee.find((fee) => 'volumeBps' in fee) : volumeFee
+  const partnerFeePercent =
+    volumeFeeItem && 'volumeBps' in volumeFeeItem ? bpsToPercent(volumeFeeItem.volumeBps) : new Percent(0)
 
   if (isSellOrder) {
     return {

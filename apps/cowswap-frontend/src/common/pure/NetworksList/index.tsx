@@ -7,7 +7,7 @@ import { Trans } from '@lingui/macro'
 
 import * as styledEl from './styled'
 
-const NEW_NETWORK_ID = 8453
+const NEW_NETWORK_IDS = [137, 43114] // Avalanche, Polygon
 
 export interface NetworksListProps {
   currentChainId: SupportedChainId | null
@@ -27,7 +27,7 @@ export function NetworksList(props: NetworksListProps) {
 
         const isActive = targetChainId === currentChainId
         const logoUrl = getLogo(isDarkMode, isActive, logo.dark, logo.light)
-        const isNewNetwork = targetChainId === NEW_NETWORK_ID
+        const isNewNetwork = NEW_NETWORK_IDS.includes(targetChainId)
 
         const rowContent = (
           <styledEl.FlyoutRow key={targetChainId} onClick={() => onSelectChain(targetChainId)} active={isActive}>
