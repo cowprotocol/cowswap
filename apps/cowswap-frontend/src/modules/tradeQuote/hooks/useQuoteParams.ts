@@ -80,7 +80,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
 
       receiver,
       validFor: DEFAULT_QUOTE_TTL,
-      ...(volumeFee ? { partnerFee: volumeFee } : undefined), //TODO: test this!
+      ...(volumeFee ? { partnerFee: volumeFee } : undefined),
       partiallyFillable,
     }
 
