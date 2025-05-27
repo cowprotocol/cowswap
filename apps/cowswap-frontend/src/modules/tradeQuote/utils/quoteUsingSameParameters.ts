@@ -1,6 +1,6 @@
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { SupportedChainId, QuoteBridgeRequest, areHooksEqual } from '@cowprotocol/cow-sdk'
+import { areHooksEqual, QuoteBridgeRequest, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import jsonStringify from 'json-stringify-deterministic'
 import { Nullish } from 'types'
@@ -73,27 +73,7 @@ function compareAppDataWithoutQuoteData(a: AppDataInfo['doc'] | undefined, b: Ap
     return a === b
   }
 
-  const normalizePartnerFee = (doc: AppDataInfo['doc']) => {
-    const { metadata } = doc
-    if (metadata?.partnerFee) {
-      const partnerFee = Array.isArray(metadata.partnerFee) ? metadata.partnerFee[0] : metadata.partnerFee
-      return {
-        ...doc,
-        metadata: {
-          ...metadata,
-          partnerFee: {
-            ...partnerFee,
-            priceImprovementBps: 0,
-            maxVolumeBps: 0,
-            recipient: partnerFee.recipient || '',
-          },
-        },
-      } as AppDataInfo['doc']
-    }
-    return doc
-  }
-
-  return removeQuoteMetadata(normalizePartnerFee(a)) === removeQuoteMetadata(normalizePartnerFee(b))
+  return removeQuoteMetadata(a) === removeQuoteMetadata(b)
 }
 
 /**
