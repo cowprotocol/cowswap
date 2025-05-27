@@ -378,7 +378,7 @@ export const USDT_SEPOLIA = new TokenWithLogo(
 export const USDC_POLYGON = new TokenWithLogo(
   USDC_MAINNET.logoURI,
   SupportedChainId.POLYGON,
-  // https://app.uniswap.org/explore/tokens/polygon/0x3c499c542cef5e3811e1192ce70d8cc03d5c3359
+  // https://polygonscan.com/address/0x3c499c542cef5e3811e1192ce70d8cc03d5c3359
   '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
   6,
   'USDC',
@@ -387,7 +387,7 @@ export const USDC_POLYGON = new TokenWithLogo(
 export const USDT_POLYGON = new TokenWithLogo(
   USDT.logoURI,
   SupportedChainId.POLYGON,
-  // https://app.uniswap.org/explore/tokens/polygon/0xc2132d05d31c914a87c6611c10748aeb04b58e8f
+  // https://polygonscan.com/address/0xc2132d05d31c914a87c6611c10748aeb04b58e8f
   '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
   6,
   'USDT',
@@ -396,9 +396,8 @@ export const USDT_POLYGON = new TokenWithLogo(
 export const DAI_POLYGON = new TokenWithLogo(
   DAI.logoURI,
   SupportedChainId.POLYGON,
-  // https://app.uniswap.org/explore/tokens/polygon/0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063
+  // https://polygonscan.com/address/0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063
   '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
-
   18,
   'DAI',
   'Dai',
