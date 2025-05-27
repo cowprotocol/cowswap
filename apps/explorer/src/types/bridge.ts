@@ -1,4 +1,4 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenInfo } from '@cowprotocol/types'
 
 export enum BridgeStatus {
   Pending = 'pending', // Bridge operation initiated but not yet active
@@ -10,13 +10,6 @@ export enum BridgeStatus {
   Unknown = 'unknown', // Status cannot be determined
 }
 
-export interface BridgeableToken {
-  address: string
-  chainId: SupportedChainId
-  symbol?: string // Optional, for display
-  decimals?: number // Optional, for display or amount calculations
-}
-
 export interface BridgeDetails {
   providerName: string // e.g., "Bungee"
   isSuccess: boolean // Overall success derived from status
@@ -24,8 +17,8 @@ export interface BridgeDetails {
   bridgeQuoteTimestamp?: number // From SDK: BridgeQuoteResult.quoteTimestamp
   expectedFillTimeSeconds?: number // From SDK: BridgeQuoteResult.expectedFillTimeSeconds
 
-  source: BridgeableToken
-  destination: BridgeableToken
+  source: TokenInfo
+  destination: TokenInfo
 
   inputAmount: string // Amount of sourceToken effectively sent into the bridge
   outputAmount?: string // Amount of destinationToken expected/received from the bridge
@@ -40,9 +33,6 @@ export interface BridgeDetails {
   destinationChainTransactionHash?: string // Hash of the bridging transaction on the destination chain
 
   explorerUrl?: string // Link to the bridge provider's explorer for this specific transaction
-
-  minDepositAmount?: string // Derived from SDK: BridgeQuoteResult.limits.minDeposit
-  maxDepositAmount?: string // Derived from SDK: BridgeQuoteResult.limits.maxDeposit
 }
 
 // Example of how it might be added to an Order-like structure
