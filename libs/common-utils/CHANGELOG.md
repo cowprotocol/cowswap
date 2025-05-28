@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.14.0...common-utils-v1.15.0) (2025-05-28)
+
+
+### Features
+
+* **appzi:** disable appzi for Coinbase Wallet ([#5671](https://github.com/cowprotocol/cowswap/issues/5671)) ([381e4b1](https://github.com/cowprotocol/cowswap/commit/381e4b1e8a7b1eec9b99d9d21841c647d66a7420))
+
 ## [1.14.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.13.2...common-utils-v1.14.0) (2025-05-19)
 
 
