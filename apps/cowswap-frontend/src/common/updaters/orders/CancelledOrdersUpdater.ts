@@ -4,6 +4,8 @@ import { CANCELLED_ORDERS_PENDING_TIME } from '@cowprotocol/common-const'
 import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
+import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
+
 import { MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useCancelledOrders, useFulfillOrdersBatch } from 'legacy/state/orders/hooks'
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
@@ -11,8 +13,6 @@ import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { emitFulfilledOrderEvent } from 'modules/orders'
 
 import { fetchAndClassifyOrder } from './utils'
-
-import { useAddOrderToSurplusQueue } from '../../containers/SurplusModalSetup/surplusModal'
 
 /**
  * Updater for cancelled orders.

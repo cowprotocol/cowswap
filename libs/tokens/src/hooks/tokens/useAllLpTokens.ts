@@ -5,13 +5,13 @@ import { LpTokenProvider } from '@cowprotocol/types'
 
 import useSWR from 'swr'
 
-import { activeTokensAtom, inactiveTokensAtom } from '../../state/tokens/allTokensAtom'
+import { allActiveTokensAtom, inactiveTokensAtom } from '../../state/tokens/allTokensAtom'
 import { TokenListCategory } from '../../types'
 
 const fallbackData: LpToken[] = []
 
 export function useAllLpTokens(categories: TokenListCategory[] | null): LpToken[] {
-  const activeTokens = useAtomValue(activeTokensAtom).tokens
+  const activeTokens = useAtomValue(allActiveTokensAtom).tokens
   const inactiveTokens = useAtomValue(inactiveTokensAtom)
 
   return useSWR(

@@ -2,8 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { getWrappedToken } from '@cowprotocol/common-utils'
-import { useWalletInfo } from '@cowprotocol/wallet'
-import { Fraction, Token } from '@uniswap/sdk-core'
+import { Token } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
@@ -18,7 +17,7 @@ import {
   usdRawPricesAtom,
   UsdRawPriceState,
 } from '../state/usdRawPricesAtom'
-import { usdcPriceLoader } from '../utils/usdcPriceLoader'
+import { getUsdPriceStateKey } from '../utils/usdPriceStateKey'
 
 const swrOptions: SWRConfiguration = {
   refreshInterval: ms`60s`,
@@ -31,7 +30,6 @@ const swrOptions: SWRConfiguration = {
 const EMPTY_USD_PRICES: UsdRawPrices = {}
 
 export function UsdPricesUpdater() {
-  const { chainId } = useWalletInfo()
   const setUsdPrices = useSetAtom(usdRawPricesAtom)
   const setUsdPricesLoading = useSetAtom(setUsdPricesLoadingAtom)
   const currenciesUsdPriceQueue = useAtomValue(currenciesUsdPriceQueueAtom)
@@ -40,13 +38,11 @@ export function UsdPricesUpdater() {
   const queue = useMemo(() => Object.values(currenciesUsdPriceQueue), [currenciesUsdPriceQueue])
 
   const swrResponse = useSWR<UsdRawPrices | null>(
-    ['UsdPricesUpdater', queue, chainId],
+    ['UsdPricesUpdater', queue],
     () => {
-      const getUsdcPrice = usdcPriceLoader(chainId)
-
       setUsdPricesLoading(queue)
 
-      return processQueue(queue, getUsdcPrice)
+      return processQueue(queue)
     },
     swrOptions,
   )
@@ -74,7 +70,7 @@ export function UsdPricesUpdater() {
   return null
 }
 
-async function processQueue(queue: Token[], getUsdcPrice: () => Promise<Fraction | null>): Promise<UsdRawPrices> {
+async function processQueue(queue: Token[]): Promise<UsdRawPrices> {
   const results = await Promise.all(
     queue.map(async (currency) => {
       const state: UsdRawPriceState = {
@@ -87,7 +83,7 @@ async function processQueue(queue: Token[], getUsdcPrice: () => Promise<Fraction
       const wrappedCurrency = getWrappedToken(currency)
 
       try {
-        const price = await fetchCurrencyUsdPrice(wrappedCurrency, getUsdcPrice)
+        const price = await fetchCurrencyUsdPrice(wrappedCurrency)
         if (price) {
           state.price = price
           state.updatedAt = Date.now()
@@ -96,7 +92,7 @@ async function processQueue(queue: Token[], getUsdcPrice: () => Promise<Fraction
         console.debug(`[UsdPricesUpdater]: Failed to fetch price for`, currency.symbol)
       }
 
-      return { [currency.address.toLowerCase()]: state }
+      return { [getUsdPriceStateKey(currency)]: state }
     }),
   )
 

@@ -40,7 +40,9 @@ export async function fetchAndProcessQuote(
     quoteRequest: {
       priceQuality,
     },
-    appData: appData,
+    appData: appData
+      ? { appCode: appData.appCode, environment: appData.environment, metadata: appData.metadata }
+      : undefined,
     quoteSigner: isBridge ? getBridgeQuoteSigner(chainId) : undefined,
   }
 
