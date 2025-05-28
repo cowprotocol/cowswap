@@ -1,4 +1,5 @@
 import {
+  isCoinbaseWalletBrowser,
   isImTokenBrowser,
   isInjectedWidget,
   isProdLike,
@@ -17,7 +18,9 @@ const isOldChrome =
 
 const isFeedbackEnabled = process.env.REACT_APP_FEEDBACK_ENABLED_DEV === 'true' || process.env.NODE_ENV === 'production'
 const isImTokenIosBrowser = isImTokenBrowser && userAgent.os.name === 'iOS'
-export const isAppziEnabled = !isOldChrome && !isImTokenIosBrowser && isFeedbackEnabled && !isInjectedWidget()
+const isCoinbaseWalletIos = isCoinbaseWalletBrowser && userAgent.os.name === 'iOS'
+export const isAppziEnabled =
+  !isOldChrome && !isImTokenIosBrowser && !isCoinbaseWalletIos && isFeedbackEnabled && !isInjectedWidget()
 
 const PROD_FEEDBACK_KEY = 'f7591eca-72f7-4888-b15f-e7ff5fcd60cd'
 const TEST_FEEDBACK_KEY = '6da8bf10-4904-4952-9a34-12db70e9194e'
