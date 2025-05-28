@@ -1,8 +1,10 @@
-import { ArticlesPageComponents } from '@/components/ArticlesPageComponents'
 import { redirect } from 'next/navigation'
-import { Article, getArticles, getCategories } from '../../../../../services/cms'
+
+import { ArticlesPageComponents } from '@/components/ArticlesPageComponents'
 import { ARTICLES_PER_PAGE } from '@/const/pagination'
-import { calculateTotalPages } from '@/util/paginationUtils'
+
+import { Article, Category, getArticles, getCategories } from '../../../../../services/cms'
+
 
 type Props = {
   params: Promise<{ pageIndex?: string[] }>
@@ -17,14 +19,29 @@ export type ArticlesResponse = {
   }
 }
 
-export async function generateStaticParams() {
-  const articlesResponse = await getArticles({ page: 0, pageSize: ARTICLES_PER_PAGE })
-  const totalArticles = articlesResponse.meta?.pagination?.total || 0
-  const totalPages = calculateTotalPages(totalArticles)
+// Static limit for reasonable page range to prevent dynamic ISR invalidation
+const MAX_PAGE_LIMIT = 1000
 
-  return Array.from({ length: totalPages }, (_, i) => ({ pageIndex: [(i + 1).toString()] }))
+// Generate static params for first 10 pages only to avoid dynamic content issues
+// Additional pages will be generated on-demand with dynamicParams = true
+export async function generateStaticParams(): Promise<{ pageIndex: string[] }[]> {
+  // Static generation for first 10 pages - avoids dynamic CMS calls that bust ISR cache
+  const MAX_STATIC_PAGES = 10
+  return Array.from({ length: MAX_STATIC_PAGES }, (_, i) => ({
+    pageIndex: [(i + 1).toString()],
+  }))
 }
 
+// Enable dynamic params for pages beyond the static limit
+export const dynamicParams = true
+
+// Next.js requires revalidate to be a literal number for static analysis
+// This value (3600 seconds = 1 hour) should match CMS_CACHE_TIME in services/cms/index.ts
+export const revalidate = 3600
+
+// TODO: Reduce function complexity by extracting logic
+// TODO: Add proper return type annotation
+// eslint-disable-next-line complexity, @typescript-eslint/explicit-function-return-type
 export default async function Page({ params }: Props) {
   const pageParam = (await params)?.pageIndex?.[0]
   const paramsAreSet = Boolean(pageParam)
@@ -41,15 +58,22 @@ export default async function Page({ params }: Props) {
   const articlesResponse = await getArticles({ page, pageSize: ARTICLES_PER_PAGE })
   const totalArticles = articlesResponse.meta?.pagination?.total || 0
 
-  // If page number is out of bounds (either less than 1 or greater than total pages), redirect to page 1
-  const numberOfPages = calculateTotalPages(totalArticles)
-  if (page < 1 || page > numberOfPages) {
+  // Static bounds checking to avoid dynamic ISR invalidation
+  // Allow reasonable page range - let CMS handle actual bounds
+  if (page < 1 || page > MAX_PAGE_LIMIT) {
+    // Conservative upper limit
     return redirect('/learn/articles')
   }
 
-  // Get all articles for search functionality
-  const allArticlesResponse = await getArticles()
-  const allArticles = allArticlesResponse.data
+  // If no articles returned, likely beyond actual bounds
+  if (!articlesResponse.data || articlesResponse.data.length === 0) {
+    return redirect('/learn/articles')
+  }
+
+  // Get minimal articles for search - limit to reduce ISR cache busting
+  // Search functionality can work with a subset of recent articles
+  const searchArticlesResponse = await getArticles({ pageSize: 100 }) // Limit for performance
+  const allArticles = searchArticlesResponse.data
 
   const articles =
     articlesResponse.data?.map((article: Article) => ({
@@ -69,7 +93,7 @@ export default async function Page({ params }: Props) {
 
   const categoriesResponse = await getCategories()
   const allCategories =
-    categoriesResponse?.map((category: any) => ({
+    categoriesResponse?.map((category: Category) => ({
       name: category?.attributes?.name || '',
       slug: category?.attributes?.slug || '',
     })) || []

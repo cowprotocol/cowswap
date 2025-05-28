@@ -1,14 +1,16 @@
+import type { ReactNode } from 'react'
+
+import { Category, getArticles, getCategories } from '../../../services/cms'
+
 import { LearnPageComponent } from '@/components/LearnPageComponent'
-import { ARTICLES_LARGE_PAGE_SIZE, FEATURED_ARTICLES_PAGE_SIZE } from '@/const/pagination'
+import { FEATURED_ARTICLES_PAGE_SIZE } from '@/const/pagination'
 
-import { getArticles, getCategories } from '../../../services/cms'
 
-export const revalidate = 3600 // Revalidate at most once per hour
+// Next.js requires revalidate to be a literal number for static analysis
+// This value (3600 seconds = 1 hour) should match CMS_CACHE_TIME in services/cms/index.ts
+export const revalidate = 3600
 
-export default async function LearnPage() {
-  const articlesResponse = await getArticles({ pageSize: ARTICLES_LARGE_PAGE_SIZE })
-  const articles = articlesResponse.data
-
+export default async function LearnPage(): Promise<ReactNode> {
   // Fetch featured articles
   const featuredArticlesResponse = await getArticles({
     filters: {
@@ -31,22 +33,41 @@ export default async function LearnPage() {
   })
 
   const categoriesResponse = await getCategories()
-  // Format categories for the component
-  const categories =
-    categoriesResponse?.map((category: any) => {
-      const imageUrl = category?.attributes?.image?.data?.attributes?.url || ''
+  // Pass raw categories data to client component for styling
+  const categories = categoriesResponse?.map(formatCategoryForComponent) || []
 
-      return {
-        name: category?.attributes?.name || '',
-        slug: category?.attributes?.slug || '',
-        description: category?.attributes?.description || '',
-        bgColor: category?.attributes?.backgroundColor || '#FFFFFF',
-        textColor: category?.attributes?.textColor || '#000000',
-        link: `/learn/topic/${category?.attributes?.slug}`,
-        iconColor: '#FFFFFF',
-        imageUrl,
-      }
-    }) || []
+  return <LearnPageComponent featuredArticles={featuredArticles} categories={categories} />
+}
 
-  return <LearnPageComponent articles={articles} featuredArticles={featuredArticles} categories={categories} />
+function formatCategoryForComponent(category: Category): {
+  name: string
+  slug: string
+  description: string
+  bgColor: string
+  textColor: string
+  link: string
+  imageUrl: string
+} {
+  const attrs = category?.attributes
+  if (!attrs) {
+    return {
+      name: '',
+      slug: '',
+      description: '',
+      bgColor: '',
+      textColor: '',
+      link: '/learn/topic/',
+      imageUrl: '',
+    }
+  }
+
+  return {
+    name: attrs.name ?? '',
+    slug: attrs.slug ?? '',
+    description: attrs.description ?? '',
+    bgColor: attrs.backgroundColor ?? '',
+    textColor: attrs.textColor ?? '',
+    link: `/learn/topic/${attrs.slug ?? ''}`,
+    imageUrl: attrs.image?.data?.attributes?.url ?? '',
+  }
 }

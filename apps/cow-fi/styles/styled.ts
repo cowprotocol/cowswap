@@ -1,8 +1,9 @@
-import styled, { css } from 'styled-components/macro'
 import { Font, Color, Media } from '@cowprotocol/ui'
+
 import { transparentize } from 'color2k'
+import styled, { css } from 'styled-components/macro'
+
 import { PAGE_MAX_WIDTH } from '@/components/Layout/const'
-import Link from 'next/link'
 
 export const PageWrapper = styled.div<{ margin?: string }>`
   display: flex;
@@ -133,13 +134,19 @@ export const ArticleList = styled.div<{ columns?: number; columnsTablet?: number
   }
 `
 
-export const ArticleCard = styled(Link)`
+export const ArticleCard = styled.a`
   display: flex;
   flex-direction: column;
-  padding: 0;
+  padding: 1.2rem;
   border-radius: 2rem;
   width: 100%;
   text-decoration: none;
+  background: transparent;
+  transition: background 0.2s ease-in-out;
+
+  &:hover {
+    background: ${Color.neutral98};
+  }
 `
 
 export const ArticleImage = styled.div<{ color?: string }>`
