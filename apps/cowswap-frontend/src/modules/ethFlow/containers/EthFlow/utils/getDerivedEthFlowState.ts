@@ -1,4 +1,4 @@
-import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
+import { ActivityStatus } from 'common/types/activity'
 
 import { EthFlowState } from '../../../services/ethFlow/types'
 import { EthFlowContext } from '../../../state/ethFlowContextAtom'

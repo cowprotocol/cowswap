@@ -22,6 +22,8 @@ export const DEFILLAMA_PLATFORMS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.ARBITRUM_ONE]: 'arbitrum-one',
   [SupportedChainId.BASE]: 'base',
   [SupportedChainId.SEPOLIA]: null,
+  [SupportedChainId.POLYGON]: 'polygon',
+  [SupportedChainId.AVALANCHE]: 'avalanche',
 }
 
 const BASE_URL = 'https://coins.llama.fi/prices/current'

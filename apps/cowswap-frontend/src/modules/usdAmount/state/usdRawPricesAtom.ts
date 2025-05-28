@@ -3,6 +3,9 @@ import { atom } from 'jotai'
 import { deepEqual } from '@cowprotocol/common-utils'
 import { Fraction, Token } from '@uniswap/sdk-core'
 
+import { UsdPriceStateKey } from '../types'
+import { getUsdPriceStateKey } from '../utils/usdPriceStateKey'
+
 export interface UsdRawPriceState {
   updatedAt?: number
   // When we couldn't load the price for any reaason (http error, invalid value, etc.), we set it to null
@@ -11,51 +14,51 @@ export interface UsdRawPriceState {
   isLoading: boolean
 }
 
-export type UsdRawPrices = { [tokenAddress: string]: UsdRawPriceState }
+export type UsdRawPrices = { [key: UsdPriceStateKey]: UsdRawPriceState }
 
-const usdPriceQueueSubscribersCountAtom = atom<{ [tokenAddress: string]: number }>({})
+const usdPriceQueueSubscribersCountAtom = atom<{ [key: UsdPriceStateKey]: number }>({})
 
-export const currenciesUsdPriceQueueAtom = atom<{ [tokenAddress: string]: Token }>({})
+export const currenciesUsdPriceQueueAtom = atom<{ [key: UsdPriceStateKey]: Token }>({})
 
 export const usdRawPricesAtom = atom<UsdRawPrices>({})
 
 export const addCurrencyToUsdPriceQueue = atom(null, (get, set, token: Token) => {
-  const currencyAddress = token.address.toLowerCase()
+  const key = getUsdPriceStateKey(token)
   const usdPriceQueueSubscribersCount = get(usdPriceQueueSubscribersCountAtom)
   const currenciesToLoadUsdPrice = { ...get(currenciesUsdPriceQueueAtom) }
 
-  const subscribersCount = (usdPriceQueueSubscribersCount[currencyAddress] || 0) + 1
+  const subscribersCount = (usdPriceQueueSubscribersCount[key] || 0) + 1
 
   // Increase the subscribers count
   set(usdPriceQueueSubscribersCountAtom, {
     ...usdPriceQueueSubscribersCount,
-    [currencyAddress]: subscribersCount,
+    [key]: subscribersCount,
   })
 
-  if (!currenciesToLoadUsdPrice[currencyAddress]) {
+  if (!currenciesToLoadUsdPrice[key]) {
     set(currenciesUsdPriceQueueAtom, {
       ...currenciesToLoadUsdPrice,
-      [currencyAddress]: token,
+      [key]: token,
     })
   }
 })
 
 export const removeCurrencyToUsdPriceFromQueue = atom(null, (get, set, token: Token) => {
-  const currencyAddress = token.address.toLowerCase()
+  const key = getUsdPriceStateKey(token)
   const usdPriceQueueSubscribersCount = get(usdPriceQueueSubscribersCountAtom)
   const currenciesToLoadUsdPrice = { ...get(currenciesUsdPriceQueueAtom) }
 
-  const subscribersCount = Math.max((usdPriceQueueSubscribersCount[currencyAddress] || 0) - 1, 0)
+  const subscribersCount = Math.max((usdPriceQueueSubscribersCount[key] || 0) - 1, 0)
 
   // Decrease the subscribers count
   set(usdPriceQueueSubscribersCountAtom, {
     ...usdPriceQueueSubscribersCount,
-    [currencyAddress]: subscribersCount,
+    [key]: subscribersCount,
   })
 
   // If there are no subscribers, then delete the token from queue
   if (subscribersCount === 0) {
-    delete currenciesToLoadUsdPrice[currencyAddress]
+    delete currenciesToLoadUsdPrice[key]
 
     set(currenciesUsdPriceQueueAtom, currenciesToLoadUsdPrice)
   }
@@ -66,10 +69,10 @@ export const setUsdPricesLoadingAtom = atom(null, (get, set, currencies: Token[]
   const isLoading = true
 
   const newState = currencies.reduce<UsdRawPrices>((acc, token) => {
-    const tokenAddress = token.address.toLowerCase()
-    const state = currentState[tokenAddress]
+    const key = getUsdPriceStateKey(token)
+    const state = currentState[key]
 
-    acc[tokenAddress] = state ? { ...state, isLoading } : { currency: token, isLoading, price: null }
+    acc[key] = state ? { ...state, isLoading } : { currency: token, isLoading, price: null }
 
     return acc
   }, {})

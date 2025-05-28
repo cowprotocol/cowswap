@@ -4,7 +4,7 @@ import { ConfirmationModal } from './ConfirmationModal'
 import { ConfirmationModalHeader } from './ConfirmationModalHeader'
 
 const Fixtures = {
-  default: (
+  default: () => (
     <ConfirmationModal
       isOpen
       title="Turn on Expert mode?"
@@ -14,7 +14,7 @@ const Fixtures = {
       onEnable={() => {}}
     />
   ),
-  header: (
+  header: () => (
     <ConfirmationModalHeader onCloseClick={() => {}}>
       <Trans>Turn on Expert mode?</Trans>
     </ConfirmationModalHeader>

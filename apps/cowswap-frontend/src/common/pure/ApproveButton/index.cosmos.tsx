@@ -30,7 +30,7 @@ const Custom = () => {
 }
 
 const Fixtures = {
-  default: <Custom />,
+  default: () => <Custom />,
 }
 
 export default Fixtures

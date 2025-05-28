@@ -7,10 +7,9 @@ import { GnosisSafeInfo, useGnosisSafeInfo } from '@cowprotocol/wallet'
 import { EnhancedTransactionDetails, HashType } from 'legacy/state/enhancedTransactions/reducer'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
-import { ActivityDerivedState, OrderCreationTxInfo } from 'modules/account/containers/Transaction'
+import { ActivityDescriptors } from './useRecentActivity'
 
-import { ActivityDescriptors, ActivityStatus, ActivityType } from './useRecentActivity'
-
+import { ActivityDerivedState, ActivityStatus, ActivityType, OrderCreationTxInfo } from '../../common/types/activity'
 import { useAllTransactions } from '../state/enhancedTransactions/hooks'
 
 export function useActivityDerivedState({

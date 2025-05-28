@@ -40,7 +40,7 @@ export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, order
       orderClass={orderClass}
       utm={utm}
       typedHooks={typedHooks}
-      volumeFee={volumeFee}
+      volumeFee={volumeFee ? { volumeBps: volumeFee.bps, recipient: volumeFee.recipient } : undefined}
       replacedOrderUid={replacedOrderUid}
     />
   )
