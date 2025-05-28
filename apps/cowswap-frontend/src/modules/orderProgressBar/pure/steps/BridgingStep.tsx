@@ -38,8 +38,8 @@ export function BridgingStep({ context }: BridgingInProgressStepProps) {
       <Wrapper>
         <BridgingStatusHeader
           stepName={statusesMap[context.bridgingStatus]}
-          sellToken={context.quoteBridgeContext.sellAmount.currency}
-          buyToken={context.quoteBridgeContext.buyAmount.currency}
+          sellToken={context.overview.sourceAmounts.sellAmount.currency}
+          buyToken={context.overview.sourceAmounts.buyAmount.currency}
         />
         <ProgressDetailsStyled context={context} />
       </Wrapper>

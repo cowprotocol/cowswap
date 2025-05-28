@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { SolverInfo } from '@cowprotocol/core'
@@ -14,6 +14,7 @@ import { useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
+import { useSwapAndBridgeContext } from 'modules/bridge/hooks/useSwapAndBridgeContext'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
@@ -24,6 +25,7 @@ import { featureFlagsAtom } from 'common/state/featureFlagsState'
 import { ActivityDerivedState } from 'common/types/activity'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
+import { SwapAndBridgeStatus } from '../../bridge'
 import {
   ordersProgressBarStateAtom,
   setOrderProgressBarCancellationTriggered,
@@ -42,6 +44,7 @@ import {
 export type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null
   chainId: SupportedChainId
+  bridgingStatus: SwapAndBridgeStatus | undefined
 }
 
 export type UseOrderProgressBarResult = Pick<OrderProgressBarState, 'countdown'> & {
@@ -67,7 +70,8 @@ export function useOrderProgressBarProps(
   const orderId = order?.id
   const [activity] = useMultipleActivityDescriptors({ chainId, ids: orderId ? [orderId] : [] })
   const activityDerivedState = useActivityDerivedState({ chainId, activity })
-  const progressBarProps = useOrderBaseProgressBarProps({ chainId, activityDerivedState })
+  const [bridgingStatus, setBridgingStatus] = useState<SwapAndBridgeStatus | undefined>(undefined)
+  const progressBarProps = useOrderBaseProgressBarProps({ chainId, activityDerivedState, bridgingStatus })
 
   const getCancellation = useCancelOrder()
   const showCancellationModal = useMemo(
@@ -78,6 +82,15 @@ export function useOrderProgressBarProps(
   const surplusData = useGetSurplusData(order)
   const receiverEnsName = useENS(order?.receiver).name || undefined
 
+  const winnerSolver = progressBarProps?.solverCompetition?.[0]
+  const swapAndBridgeContext = useSwapAndBridgeContext(chainId, order, winnerSolver)
+
+  useEffect(() => {
+    if (!swapAndBridgeContext?.bridgingStatus) return
+
+    setBridgingStatus(swapAndBridgeContext.bridgingStatus)
+  }, [swapAndBridgeContext?.bridgingStatus])
+
   const props = useMemo(() => {
     // Add supplementary stuff
     const data: OrderProgressBarProps = {
@@ -87,6 +100,7 @@ export function useOrderProgressBarProps(
       receiverEnsName,
       showCancellationModal,
       isProgressBarSetup: true,
+      swapAndBridgeContext,
     }
 
     if (!progressBarProps) {
@@ -94,13 +108,13 @@ export function useOrderProgressBarProps(
       return { ...data, isProgressBarSetup: false }
     }
     return data
-  }, [progressBarProps, surplusData, chainId, receiverEnsName, showCancellationModal])
+  }, [progressBarProps, surplusData, chainId, receiverEnsName, showCancellationModal, swapAndBridgeContext])
 
   return useMemo(() => ({ props, activityDerivedState }), [props, activityDerivedState])
 }
 
 function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): UseOrderProgressBarResult | undefined {
-  const { activityDerivedState, chainId } = params
+  const { activityDerivedState, chainId, bridgingStatus } = params
 
   const {
     order,
@@ -157,6 +171,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     previousBackendApiStatus,
     lastTimeChangedSteps,
     previousStepName,
+    bridgingStatus,
   )
   useCancellingOrderUpdater(orderId, isCancelling)
   useCountdownStartUpdater(orderId, countdown, backendApiStatus)
@@ -271,6 +286,7 @@ function useProgressBarStepNameUpdater(
   previousBackendApiStatus: OrderProgressBarState['previousBackendApiStatus'],
   lastTimeChangedSteps: OrderProgressBarState['lastTimeChangedSteps'],
   previousStepName: OrderProgressBarState['previousStepName'],
+  bridgingStatus: SwapAndBridgeStatus | undefined,
 ) {
   const setProgressBarStepName = useSetExecutingOrderProgressBarStepNameCallback()
 
@@ -285,6 +301,7 @@ function useProgressBarStepNameUpdater(
     backendApiStatus,
     previousBackendApiStatus,
     previousStepName,
+    bridgingStatus,
   )
 
   // Update state with new step name
@@ -333,7 +350,24 @@ function getProgressBarStepName(
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
   previousBackendApiStatus: OrderProgressBarState['previousBackendApiStatus'],
   previousStepName: OrderProgressBarState['previousStepName'],
+  bridgingStatus: SwapAndBridgeStatus | undefined,
 ): OrderProgressBarStepName {
+  if (bridgingStatus === SwapAndBridgeStatus.DONE) {
+    return 'bridgingFinished'
+  }
+
+  if (bridgingStatus === SwapAndBridgeStatus.REFUND_COMPLETE) {
+    return 'refundCompleted'
+  }
+
+  if (bridgingStatus === SwapAndBridgeStatus.FAILED) {
+    return 'bridgingFailed'
+  }
+
+  if (bridgingStatus && [SwapAndBridgeStatus.PENDING, SwapAndBridgeStatus.DEFAULT].includes(bridgingStatus)) {
+    return 'bridgingInProgress'
+  }
+
   if (isExpired) {
     return 'expired'
   } else if (isCancelled) {

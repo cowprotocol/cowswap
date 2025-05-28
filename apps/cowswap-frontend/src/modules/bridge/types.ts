@@ -34,13 +34,28 @@ export interface QuoteSwapContext {
 export interface QuoteBridgeContext {
   chainName: string
 
-  bridgeFee: CurrencyAmount<Currency>
+  bridgeFee: CurrencyAmount<Currency> | null
   estimatedTime: number | null
   recipient: string
 
   sellAmount: CurrencyAmount<Currency>
   buyAmount: CurrencyAmount<Currency>
   buyAmountUsd: CurrencyAmount<Token> | null
+}
+
+export interface SwapAndBridgeOverview<Amount = CurrencyAmount<Currency>> {
+  sourceChainName: string
+  targetChainName: string
+
+  sourceAmounts: {
+    sellAmount: Amount
+    buyAmount: Amount
+  }
+
+  targetAmounts?: {
+    sellAmount: Amount
+    buyAmount: Amount
+  }
 }
 
 export interface BridgingProgressContext {
@@ -62,11 +77,10 @@ export interface SwapResultContext {
 }
 
 export interface SwapAndBridgeContext {
-  bridgeProvider: BridgeProviderInfo
-  quoteSwapContext: QuoteSwapContext
-  swapResultContext: SwapResultContext
-
-  quoteBridgeContext: QuoteBridgeContext
-  bridgingProgressContext: BridgingProgressContext
   bridgingStatus: SwapAndBridgeStatus
+  bridgeProvider: BridgeProviderInfo
+  swapResultContext: SwapResultContext
+  overview: SwapAndBridgeOverview
+  quoteBridgeContext?: QuoteBridgeContext
+  bridgingProgressContext?: BridgingProgressContext
 }
