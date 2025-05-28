@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.22.6](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.5...cow-fi-v1.22.6) (2025-05-28)
+
+
+### Bug Fixes
+
+* **cowfi:** simplify revalidation paths in route.ts ([#5736](https://github.com/cowprotocol/cowswap/issues/5736)) ([fc7e4b5](https://github.com/cowprotocol/cowswap/commit/fc7e4b5c5e8822612e579f11b8ee3af78dc2904c))
+* **cowfi:** update comment and simplify revalidation logic in route.ts ([#5753](https://github.com/cowprotocol/cowswap/issues/5753)) ([68a0fe8](https://github.com/cowprotocol/cowswap/commit/68a0fe85ae5c25286541cfda9ae83d9eaeb81500))
+
 ## [1.22.5](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.4...cow-fi-v1.22.5) (2025-05-20)
 
 
