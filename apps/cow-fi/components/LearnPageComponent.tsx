@@ -1,7 +1,14 @@
 'use client'
 
-import { useLazyLoadImages } from '../hooks/useLazyLoadImages'
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
+import { Color, Font, Media } from '@cowprotocol/ui'
+
+import styled from 'styled-components/macro'
+
+import { ArrowButton } from '@/components/ArrowButton'
 import { CategoryLinks } from '@/components/CategoryLinks'
+import LazySVG from '@/components/LazySVG'
 import { SearchBar } from '@/components/SearchBar'
 import {
   ArticleCard,
@@ -27,15 +34,9 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-import { ArrowButton } from '@/components/ArrowButton'
-
 import { CowFiCategory } from 'src/common/analytics/types'
-import { Color, Font, Media } from '@cowprotocol/ui'
-import LazySVG from '@/components/LazySVG'
-import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
-import { ArticleListResponse } from '../services/cms'
-import styled from 'styled-components/macro'
-import { useCowAnalytics } from '@cowprotocol/analytics'
+
+import { useLazyLoadImages } from '../hooks/useLazyLoadImages'
 
 const PODCASTS = [
   {
@@ -114,7 +115,6 @@ interface PageProps {
     iconColor: string
     imageUrl: string
   }[]
-  articles: ArticleListResponse['data']
   featuredArticles: {
     title: string
     description: string
@@ -156,7 +156,7 @@ const Wrapper = styled.div`
   }
 `
 
-export function LearnPageComponent({ categories, articles, featuredArticles }: PageProps) {
+export function LearnPageComponent({ categories, featuredArticles }: PageProps) {
   const { LazyImage } = useLazyLoadImages()
   const analytics = useCowAnalytics()
 
@@ -181,6 +181,8 @@ export function LearnPageComponent({ categories, articles, featuredArticles }: P
                 <ArticleCard
                   key={index}
                   href={link}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={() =>
                     analytics.sendEvent({
                       category: CowFiCategory.KNOWLEDGEBASE,
