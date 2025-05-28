@@ -108,7 +108,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     explorerTitle: 'Polygonscan',
     urlAlias: 'pol',
     logo: { light: PolygonLogo, dark: PolygonLogo },
-    color: '#ff0420',
+    color: '#8247e5',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.POLYGON],
   },
   [SupportedChainId.AVALANCHE]: {
