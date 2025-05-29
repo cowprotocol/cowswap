@@ -1,4 +1,5 @@
-import * as YAML from 'yaml'
+import pkg from 'yaml'
+const { parse: YAMLparse } = pkg
 
 import * as fs from 'fs'
 import * as path from 'path'
@@ -10,7 +11,7 @@ function parseJsonOrYaml(filePath: string) {
   const extension = path.extname(filePath)
   if (SUPPORTED_EXTENSIONS.split('|').includes(extension.replace('.', ''))) {
     const content = fs.readFileSync(filePath, 'utf-8')
-    return YAML.parse(content)
+    return YAMLparse(content)
   } else {
     throw new Error(`Unknown file extension "${extension}". Supported JSON or YAML: ${filePath} `)
   }

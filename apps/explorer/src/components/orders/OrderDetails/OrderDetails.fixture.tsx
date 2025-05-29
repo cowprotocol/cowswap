@@ -1,13 +1,8 @@
 import React from 'react'
 
-import {
-  BridgeDetails,
-  BridgeStatus,
-  BridgeableToken,
-  BridgeProvider,
-  BRIDGE_PROVIDER_DETAILS,
-} from '@cowprotocol/bridge'
+import { BridgeDetails, BridgeStatus, BridgeProvider, BRIDGE_PROVIDER_DETAILS } from '@cowprotocol/bridge'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenInfo } from '@cowprotocol/types'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
@@ -35,18 +30,21 @@ const usdtToken: TokenErc20 = {
   decimals: 6,
 }
 
-const daiMainnetToken: BridgeableToken = {
-  address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', // DAI on Mainnet
+// --- Mock Bridge Details ---
+const mockSourceToken: TokenInfo = {
+  address: usdtToken.address,
   chainId: SupportedChainId.MAINNET,
-  symbol: 'DAI',
-  decimals: 18,
+  symbol: usdtToken.symbol || 'USDT',
+  decimals: usdtToken.decimals,
+  name: usdtToken.name || 'Tether USD',
 }
 
-const daiGnosisChainToken: BridgeableToken = {
-  address: '0xaf204776c7245bf4147c2612bf6e5972ee483701',
-  chainId: SupportedChainId.GNOSIS_CHAIN,
-  symbol: 'DAI.gc',
-  decimals: 18,
+const mockDestinationToken: TokenInfo = {
+  address: '0xanotherMainnetTokenForBridgeFixture', // Example different token on Mainnet
+  chainId: SupportedChainId.MAINNET, // Using MAINNET again to avoid linter issues
+  symbol: 'USDT.bridged', // Example symbol for bridged USDT on Mainnet for fixture
+  decimals: 6,
+  name: 'Bridged USDT',
 }
 
 const bungeeBridgeInfo = BRIDGE_PROVIDER_DETAILS[BridgeProvider.BUNGEE]
@@ -56,19 +54,18 @@ const pendingBridgeDetails: BridgeDetails = {
   providerUrl: bungeeBridgeInfo.url,
   isSuccess: false,
   status: BridgeStatus.Pending,
-  bridgeQuoteTimestamp: Date.now() - 1000 * 60 * 10,
-  expectedFillTimeSeconds: 26 * 60,
-  source: daiMainnetToken,
-  destination: daiGnosisChainToken,
-  inputAmount: '100000000000000000000',
-  outputAmount: undefined,
-  gasCostsNative: '5000000000000000',
-  protocolFeeSellToken: '100000000000000000',
-  maxSlippageBps: 50,
-  sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
-  explorerUrl: bungeeBridgeInfo.url + '/explorer/0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
-  minDepositAmount: '1000000000000000000',
-  maxDepositAmount: '100000000000000000000000',
+  bridgeQuoteTimestamp: Date.now() - 1000 * 60 * 5, // 5 minutes ago
+  expectedFillTimeSeconds: 600, // 10 minutes
+  source: mockSourceToken,
+  destination: mockDestinationToken,
+  inputAmount: '2000000000', // 2000 USDT (matching sellAmount)
+  // outputAmount initially undefined for pending
+  gasCostsNative: '10000000000000000', // 0.01 ETH on source chain (example)
+  protocolFeeSellToken: '1000000', // 1 USDT
+  maxSlippageBps: 50, // 0.5%
+  sourceChainTransactionHash: '0xsourceTxHashForPendingBridgeOrderDetailsFixture',
+  // destinationChainTransactionHash initially undefined
+  explorerUrl: 'https://testbridgeprovider.example.com/tx/0xsourceTxHashForPendingBridgeOrderDetailsFixture',
 }
 
 const completedBridgeDetails: BridgeDetails = {

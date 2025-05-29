@@ -3,7 +3,7 @@ import { ConfirmationPendingContent } from './ConfirmationPendingContent'
 import { CowModal } from '../Modal'
 
 const Fixtures = {
-  default: (
+  default: () => (
     <CowModal onDismiss={console.log} isOpen={true}>
       <ConfirmationPendingContent
         onDismiss={() => alert('dismiss')}

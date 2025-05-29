@@ -23,6 +23,8 @@ const COWSWAP_VOLUME_FEES: Record<SupportedChainId, VolumeFee | null> = {
     bps: 10, // 0.1%
     recipient: '0x6b3214fD11dc91De14718DeE98Ef59bCbFcfB432', // Gnosis Chain Protocol fee safe
   },
+  [SupportedChainId.POLYGON]: null, // TODO: check if we should apply fee on Polygon
+  [SupportedChainId.AVALANCHE]: null, // TODO: check if we should apply fee on Avalanche
 }
 
 export const cowSwapFeeAtom = atom((get) => {

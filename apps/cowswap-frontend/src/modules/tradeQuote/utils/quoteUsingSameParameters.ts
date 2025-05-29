@@ -73,7 +73,27 @@ function compareAppDataWithoutQuoteData(a: AppDataInfo['doc'] | undefined, b: Ap
     return a === b
   }
 
-  return removeQuoteMetadata(a) === removeQuoteMetadata(b)
+  const normalizePartnerFee = (doc: AppDataInfo['doc']) => {
+    const { metadata } = doc
+    if (metadata?.partnerFee) {
+      const partnerFee = Array.isArray(metadata.partnerFee) ? metadata.partnerFee[0] : metadata.partnerFee
+      return {
+        ...doc,
+        metadata: {
+          ...metadata,
+          partnerFee: {
+            ...partnerFee,
+            priceImprovementBps: 0,
+            maxVolumeBps: 0,
+            recipient: partnerFee.recipient || '',
+          },
+        },
+      } as AppDataInfo['doc']
+    }
+    return doc
+  }
+
+  return removeQuoteMetadata(normalizePartnerFee(a)) === removeQuoteMetadata(normalizePartnerFee(b))
 }
 
 /**

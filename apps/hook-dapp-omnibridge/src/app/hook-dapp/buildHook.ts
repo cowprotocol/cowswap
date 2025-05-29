@@ -145,5 +145,5 @@ export async function buildOmnibridgePostHook({
   // TODO: add estimation
   const gasLimit = '850000'
 
-  return { target: COW_SHED_FACTORY, callData: hooksCalldata, gasLimit }
+  return { target: COW_SHED_FACTORY, callData: hooksCalldata, gasLimit, dappId: 'omnibridge' }
 }
