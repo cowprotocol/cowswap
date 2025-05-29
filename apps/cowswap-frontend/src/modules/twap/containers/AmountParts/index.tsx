@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai/index'
+import { useAtomValue } from 'jotai'
 import { ReactElement, ReactNode } from 'react'
 
 import { HelpTooltip, renderTooltip } from '@cowprotocol/ui'

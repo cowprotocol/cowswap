@@ -1,5 +1,4 @@
-import { useSetAtom } from 'jotai'
-import { useAtomValue } from 'jotai/index'
+import { useSetAtom, useAtomValue } from 'jotai'
 import { useEffect } from 'react'
 
 import { isTruthy } from '@cowprotocol/common-utils'

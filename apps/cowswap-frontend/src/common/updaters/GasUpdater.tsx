@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai/index'
+import { useSetAtom } from 'jotai'
 import { useCallback, useEffect } from 'react'
 
 import { GAS_PRICE_UPDATE_THRESHOLD } from '@cowprotocol/common-const'
@@ -28,7 +28,7 @@ function useUpdateGasPrices() {
       dispatch(updateGasPrices(gasParams))
       setGasPrice(gasParams)
     },
-    [dispatch, setGasPrice]
+    [dispatch, setGasPrice],
   )
 }
 

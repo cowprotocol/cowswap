@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai/index'
+import { useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
 import { BridgeQuoteResults, PriceQuality, QuoteBridgeRequest, SupportedChainId } from '@cowprotocol/cow-sdk'

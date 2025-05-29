@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai/index'
+import { useAtomValue } from 'jotai'
 
 import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { Currency, Price } from '@uniswap/sdk-core'
