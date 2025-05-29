@@ -8,8 +8,10 @@ import ms from 'ms.macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
+import { useTwapPartOrdersList } from './useTwapPartOrdersList'
+
 import { twapOrdersAtom, TwapOrdersList } from '../state/twapOrdersListAtom'
-import { TwapPartOrderItem, twapPartOrdersListAtom } from '../state/twapPartOrdersAtom'
+import { TwapPartOrderItem } from '../state/twapPartOrdersAtom'
 import { emulatePartAsOrder } from '../utils/emulatePartAsOrder'
 import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
 
@@ -17,7 +19,7 @@ const EMULATED_ORDERS_REFRESH_MS = ms`5s`
 
 export function useEmulatedPartOrders(tokensByAddress: TokensByAddress | undefined): Order[] {
   const twapOrders = useAtomValue(twapOrdersAtom)
-  const twapParticleOrders = useAtomValue(twapPartOrdersListAtom)
+  const twapParticleOrders = useTwapPartOrdersList()
   // Update emulated part orders every 5 seconds to recalculate expired state
   const refresher = useMachineTimeMs(EMULATED_ORDERS_REFRESH_MS)
 
@@ -33,7 +35,7 @@ export function useEmulatedPartOrders(tokensByAddress: TokensByAddress | undefin
 function emulatePartOrders(
   twapParticleOrders: TwapPartOrderItem[],
   twapOrders: TwapOrdersList,
-  tokensByAddress: TokensByAddress
+  tokensByAddress: TokensByAddress,
 ): Order[] {
   return twapParticleOrders.reduce<Order[]>((acc, item) => {
     if (item.isCreatedInOrderBook) return acc

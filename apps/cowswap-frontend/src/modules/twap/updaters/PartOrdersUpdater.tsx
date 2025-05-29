@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useSetAtom, useAtomValue } from 'jotai'
 import { useEffect } from 'react'
 
 import { isTruthy } from '@cowprotocol/common-utils'
@@ -44,7 +44,7 @@ export function PartOrdersUpdater() {
 async function generateTwapOrderParts(
   twapOrder: TwapOrderItem,
   safeAddress: string,
-  chainId: SupportedChainId
+  chainId: SupportedChainId,
 ): Promise<{ [id: string]: TwapPartOrderItem[] }> {
   const twapOrderId = twapOrder.id
 
