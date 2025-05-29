@@ -17,7 +17,7 @@ import { AccountElement } from 'legacy/components/Header/AccountElement'
 import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
 import { HeaderControls, HeaderElement } from 'legacy/components/Header/styled'
 import { URLWarning } from 'legacy/components/Header/URLWarning'
-import TopLevelModals from 'legacy/components/TopLevelModals'
+import { TopLevelModals } from 'legacy/components/TopLevelModals'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { OrdersPanel } from 'modules/account'

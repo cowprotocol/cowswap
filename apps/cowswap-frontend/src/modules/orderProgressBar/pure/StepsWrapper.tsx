@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, ReactNode } from 'react'
 
 import { StepComponent } from './StepComponent'
 import * as styledEl from './styled'
@@ -13,14 +13,16 @@ export function StepsWrapper({
   customColor,
   isCancelling,
   isUnfillable,
+  isBridgingTrade = false,
 }: {
   steps: typeof STEPS
   currentStep: number
-  extraContent?: React.ReactNode
+  extraContent?: ReactNode
   customStepTitles?: { [key: number]: string }
   customColor?: string
   isCancelling?: boolean
   isUnfillable?: boolean
+  isBridgingTrade?: boolean
 }) {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [containerHeight, setContainerHeight] = useState(0)
@@ -53,7 +55,8 @@ export function StepsWrapper({
       bottomGradient={!isCancelling}
     >
       <styledEl.StepsWrapper ref={wrapperRef}>
-        {steps.map((step, index) => {
+        {steps.map((stepInit, index) => {
+          const step = typeof stepInit === 'function' ? stepInit(isBridgingTrade) : stepInit
           const customTitle = customStepTitles?.[index]
           return (
             <div key={index}>

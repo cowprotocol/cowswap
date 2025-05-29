@@ -11,7 +11,7 @@ import { MultipleOrdersCancellationModal } from 'common/containers/MultipleOrder
 import { cancellationModalContextAtom } from 'common/hooks/useCancelOrder/state'
 import { confirmationModalContextAtom } from 'common/hooks/useConfirmationRequest'
 
-export default function TopLevelModals() {
+export function TopLevelModals() {
   const cancelModalOpen = useModalIsOpen(ApplicationModal.CANCELLATION)
   const confirmationModalOpen = useModalIsOpen(ApplicationModal.CONFIRMATION)
   const multipleCancelModalOpen = useModalIsOpen(ApplicationModal.MULTIPLE_CANCELLATION)

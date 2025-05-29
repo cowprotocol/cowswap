@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
@@ -25,6 +25,7 @@ import * as styledEl from './styled'
 
 import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../../constants'
 import { getSurplusText, getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../../helpers'
+import { useWithConfetti } from '../../hooks/useWithConfetti'
 import { OrderProgressBarStepName, SolverCompetition } from '../../types'
 
 function getTransactionStatus(isDarkMode: boolean) {
@@ -167,7 +168,11 @@ export function FinishedStep({
   const { surplusFiatValue, surplusAmount, showSurplus } = surplusData || {}
   const shouldShowSurplus = debugForceShowSurplus || showSurplus
 
-  const [showConfetti, setShowConfetti] = useState(stepName === 'finished' && shouldShowSurplus)
+  const showConfetti = useWithConfetti({
+    isFinished: stepName === 'finished',
+    surplusData,
+    debugForceShowSurplus,
+  })
 
   const visibleSolvers = useMemo(() => {
     return showAllSolvers ? solvers : solvers?.slice(0, 3)
@@ -194,21 +199,6 @@ export function FinishedStep({
       : getTwitterShareUrlForBenefit(randomBenefit)
     window.open(twitterUrl, '_blank', 'noopener,noreferrer')
   }, [shouldShowSurplus, surplusData, order, randomBenefit])
-
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | undefined
-
-    if (stepName === 'finished' && shouldShowSurplus) {
-      setShowConfetti(true)
-      timer = setTimeout(() => setShowConfetti(false), 3000)
-    }
-
-    return () => {
-      if (timer) {
-        clearTimeout(timer)
-      }
-    }
-  }, [stepName, shouldShowSurplus])
 
   // If order is not set, return null
   if (!order) {

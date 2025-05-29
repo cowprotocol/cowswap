@@ -32,6 +32,7 @@ const bridgeStatusMap: Record<BridgeStatus, SwapAndBridgeStatus> = {
   [BridgeStatus.EXECUTED]: SwapAndBridgeStatus.DONE,
   [BridgeStatus.EXPIRED]: SwapAndBridgeStatus.FAILED,
   [BridgeStatus.REFUND]: SwapAndBridgeStatus.REFUND_COMPLETE,
+  [BridgeStatus.UNKNOWN]: SwapAndBridgeStatus.DEFAULT,
 }
 
 const BRIDGE_TRANSACTION_POLLING_INTERVAL = ms`3s`
@@ -43,29 +44,38 @@ export function useSwapAndBridgeContext(
 ): SwapAndBridgeContext | undefined {
   const [crossChainOrder, setCrossChainOrder] = useState<CrossChainOrder | null>(null)
 
+  const fullAppData = order?.apiAdditionalInfo?.fullAppData
+
   const { account } = useWalletInfo()
   const bridgeProvider = useMemo(() => {
-    const fullAppData = order?.apiAdditionalInfo?.fullAppData
     if (!fullAppData) return
 
     return bridgingSdk.getProviderFromAppData(fullAppData)?.info
-  }, [order])
+  }, [fullAppData])
 
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
   const tokensByAddress = useTokensByAddressMap()
 
-  const { formattedSwappedAmount: receivedAmount, surplusAmount } =
-    useMemo(() => {
-      return order ? getExecutedSummaryData(order) : undefined
-    }, [order]) || {}
+  const executedSummary = useMemo(() => {
+    return order ? getExecutedSummaryData(order) : undefined
+  }, [order])
 
+  const { swappedAmountWithFee, surplusAmount } = executedSummary || {}
+
+  const intermediateToken = order && tokensByAddress[order.buyToken.toLowerCase()]
+
+  const receivedAmount = useMemo(() => {
+    if (!intermediateToken || !swappedAmountWithFee) return undefined
+
+    return CurrencyAmount.fromRawAmount(intermediateToken, swappedAmountWithFee.toString())
+  }, [swappedAmountWithFee, intermediateToken])
   const receivedAmountUsd = useUsdAmount(receivedAmount).value
   const surplusAmountUsd = useUsdAmount(surplusAmount).value
 
   const updateBridgeOrderData = useCallback(async () => {
     const rpcProvider = getRpcProvider(chainId)
 
-    if (!order?.fullAppData || !rpcProvider) return
+    if (!order || !rpcProvider) return
 
     const crossChainOrder = await bridgingSdk.getOrder({
       chainId,
@@ -79,7 +89,17 @@ export function useSwapAndBridgeContext(
   useInterval(updateBridgeOrderData, BRIDGE_TRANSACTION_POLLING_INTERVAL, true)
 
   return useMemo(() => {
-    if (!account || !bridgeProvider || !winningSolver || !receivedAmount || !surplusAmount || !order) return undefined
+    if (
+      !account ||
+      !bridgeProvider ||
+      !winningSolver ||
+      !receivedAmount ||
+      receivedAmount.equalTo(0) ||
+      !surplusAmount ||
+      !order
+    ) {
+      return undefined
+    }
 
     const swapResultContext: SwapResultContext = {
       winningSolver,
@@ -93,9 +113,9 @@ export function useSwapAndBridgeContext(
     const sourceChainData = getChainInfo(order.inputToken.chainId)
     const destChainData = bridgeSupportedNetworks?.find((chain) => chain.id === destinationChainId)
 
-    const intermediateToken = tokensByAddress[order.buyToken.toLowerCase()]
-
-    if (!sourceChainData || !intermediateToken || !destChainData) return undefined
+    if (!sourceChainData || !intermediateToken || !destChainData) {
+      return undefined
+    }
 
     const bridgeReceiveAmount =
       !!crossChainOrder &&
@@ -104,6 +124,7 @@ export function useSwapAndBridgeContext(
     const overview: SwapAndBridgeOverview = {
       sourceChainName: sourceChainData.name,
       targetChainName: destChainData.label,
+      targetCurrency: order.outputToken,
       sourceAmounts: {
         sellAmount: CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount),
         buyAmount: CurrencyAmount.fromRawAmount(intermediateToken, order.buyAmount),
@@ -160,6 +181,7 @@ export function useSwapAndBridgeContext(
     }
   }, [
     order,
+    intermediateToken,
     account,
     bridgeProvider,
     winningSolver,
@@ -169,6 +191,5 @@ export function useSwapAndBridgeContext(
     surplusAmountUsd,
     crossChainOrder,
     bridgeSupportedNetworks,
-    tokensByAddress,
   ])
 }

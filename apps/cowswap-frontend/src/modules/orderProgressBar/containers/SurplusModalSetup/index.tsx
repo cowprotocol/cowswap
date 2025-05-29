@@ -31,8 +31,6 @@ export function SurplusModalSetup() {
 
   const navigateToNewOrderCallback = useNavigateToNewOrderCallback()
 
-  const isBridgingOrder = !!order && order.inputToken.chainId !== order.outputToken.chainId
-
   const isOpen =
     !!orderId &&
     // Open when confirmation modal is closed OR the order we are trying to show is not the one in display
@@ -48,13 +46,11 @@ export function SurplusModalSetup() {
       !isOpen &&
       // Remove when the confirmation is open and the current order is already in display
       isConfirmationModalOpen &&
-      transactionHash === orderId &&
-      // TODO: check this condition
-      !isBridgingOrder
+      transactionHash === orderId
     ) {
       removeOrderId(orderId)
     }
-  }, [orderId, transactionHash, isOpen, order?.status, removeOrderId, isConfirmationModalOpen, isBridgingOrder])
+  }, [orderId, transactionHash, isOpen, order?.status, removeOrderId, isConfirmationModalOpen])
 
   if (!orderId) {
     return null

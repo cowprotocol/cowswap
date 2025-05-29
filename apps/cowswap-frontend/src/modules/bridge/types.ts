@@ -46,6 +46,7 @@ export interface QuoteBridgeContext {
 export interface SwapAndBridgeOverview<Amount = CurrencyAmount<Currency>> {
   sourceChainName: string
   targetChainName: string
+  targetCurrency: Token
 
   sourceAmounts: {
     sellAmount: Amount

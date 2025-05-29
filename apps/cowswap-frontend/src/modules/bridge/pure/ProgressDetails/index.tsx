@@ -1,12 +1,10 @@
-import { Loader } from '@cowprotocol/ui'
-
 import { DividerHorizontal } from '../../styles'
 import { SwapAndBridgeStatus, SwapAndBridgeContext } from '../../types'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { CollapsibleBridgeRoute } from '../CollapsibleBridgeRoute'
 import { BridgingProgressContent } from '../contents/BridgingProgressContent'
+import { PreparingBridgingContent } from '../contents/BridgingProgressContent/PreparingBridgingContent'
 import { SwapResultContentContent } from '../contents/SwapResultContent'
-import { ProtocolIcons } from '../ProtocolIcons'
 import { BridgeStatusIcons, BridgeStatusTitlePrefixes, SwapStatusIcons, SwapStatusTitlePrefixes } from '../StopStatus'
 
 interface QuoteDetailsProps {
@@ -21,15 +19,14 @@ export function ProgressDetails({
 }: QuoteDetailsProps) {
   const { sourceAmounts, targetAmounts, sourceChainName, targetChainName } = overview
   const swapStatus = SwapAndBridgeStatus.DONE
-  const isBridgingStarted = targetAmounts && bridgingProgressContext && quoteBridgeContext
+  const bridgeStatus = bridgingStatus === SwapAndBridgeStatus.DEFAULT ? SwapAndBridgeStatus.PENDING : bridgingStatus
 
   return (
     <CollapsibleBridgeRoute className={className} isCollapsible={false} isExpanded={true} providerInfo={bridgeProvider}>
       <BridgeDetailsContainer
         isCollapsible={true}
-        defaultExpanded={!isBridgingStarted}
+        defaultExpanded={true}
         status={swapStatus}
-        stopNumber={1}
         statusIcon={SwapStatusIcons[swapStatus]}
         protocolIconShowOnly="first"
         protocolIconSize={21}
@@ -42,33 +39,26 @@ export function ProgressDetails({
       >
         <SwapResultContentContent context={swapResultContext} />
       </BridgeDetailsContainer>
-
       <DividerHorizontal margin="8px 0 4px" />
-
-      {isBridgingStarted ? (
-        <BridgeDetailsContainer
-          isCollapsible={true}
-          defaultExpanded={true}
-          status={bridgingStatus}
-          stopNumber={2}
-          statusIcon={BridgeStatusIcons[bridgingStatus]}
-          protocolIconShowOnly="second"
-          titlePrefix={BridgeStatusTitlePrefixes[bridgingStatus]}
-          protocolName={bridgeProvider.name}
-          bridgeProvider={bridgeProvider}
-          chainName={targetChainName}
-          sellAmount={targetAmounts.sellAmount}
-          buyAmount={targetAmounts.buyAmount}
-        >
+      <BridgeDetailsContainer
+        isCollapsible={true}
+        defaultExpanded={true}
+        status={bridgeStatus}
+        statusIcon={BridgeStatusIcons[bridgeStatus]}
+        protocolIconShowOnly="second"
+        titlePrefix={BridgeStatusTitlePrefixes[bridgeStatus]}
+        protocolName={bridgeProvider.name}
+        bridgeProvider={bridgeProvider}
+        chainName={targetChainName}
+        sellAmount={targetAmounts?.sellAmount}
+        buyAmount={targetAmounts?.buyAmount}
+      >
+        {bridgingProgressContext && quoteBridgeContext ? (
           <BridgingProgressContent progressContext={bridgingProgressContext} quoteContext={quoteBridgeContext} />
-        </BridgeDetailsContainer>
-      ) : (
-        <div>
-          {/*TODO: make it beautiful*/}
-          Waiting for bridging details <Loader /> on{' '}
-          <ProtocolIcons size={32} showOnlySecond secondProtocol={bridgeProvider} />
-        </div>
-      )}
+        ) : (
+          <PreparingBridgingContent />
+        )}
+      </BridgeDetailsContainer>
     </CollapsibleBridgeRoute>
   )
 }

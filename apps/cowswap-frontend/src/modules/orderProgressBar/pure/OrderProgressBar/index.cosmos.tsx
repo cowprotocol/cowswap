@@ -33,6 +33,7 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
   overview: {
     sourceChainName: 'Ethereum',
     targetChainName: 'Ethereum',
+    targetCurrency: USDC_BASE,
     sourceAmounts: {
       sellAmount: receiveAmountInfo.beforeNetworkCosts.sellAmount,
       buyAmount: receiveAmountInfo.afterNetworkCosts.buyAmount,
@@ -73,6 +74,7 @@ const defaultProps: OrderProgressBarProps = {
   order,
   chainId: 1,
   stepName: 'initial',
+  isBridgingTrade: false,
   showCancellationModal: () => {
     alert('cancellation triggered o/')
   },
@@ -188,13 +190,14 @@ const Fixtures = {
   ),
   bridgingInProgress: () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="bridgingInProgress" />
+      <OrderProgressBar {...defaultProps} isBridgingTrade stepName="bridgingInProgress" />
     </Wrapper>
   ),
   bridgingFailed: () => (
     <Wrapper>
       <OrderProgressBar
         {...defaultProps}
+        isBridgingTrade
         swapAndBridgeContext={{
           ...swapAndBridgeContextMock,
           bridgingStatus: SwapAndBridgeStatus.FAILED,
@@ -212,6 +215,7 @@ const Fixtures = {
     <Wrapper>
       <OrderProgressBar
         {...defaultProps}
+        isBridgingTrade
         swapAndBridgeContext={{
           ...swapAndBridgeContextMock!,
           bridgingStatus: SwapAndBridgeStatus.REFUND_COMPLETE,
@@ -229,6 +233,7 @@ const Fixtures = {
     <Wrapper>
       <OrderProgressBar
         {...defaultProps}
+        isBridgingTrade
         swapAndBridgeContext={{
           ...swapAndBridgeContextMock!,
           bridgingStatus: SwapAndBridgeStatus.DONE,
@@ -240,6 +245,25 @@ const Fixtures = {
           },
         }}
         stepName="bridgingFinished"
+      />
+    </Wrapper>
+  ),
+  bridgingPreparing: () => (
+    <Wrapper>
+      <OrderProgressBar
+        {...defaultProps}
+        isBridgingTrade
+        swapAndBridgeContext={{
+          ...swapAndBridgeContextMock!,
+          bridgingProgressContext: undefined,
+          quoteBridgeContext: undefined,
+          bridgingStatus: SwapAndBridgeStatus.DEFAULT,
+          overview: {
+            ...swapAndBridgeContextMock.overview,
+            targetAmounts: undefined,
+          },
+        }}
+        stepName="bridgingInProgress"
       />
     </Wrapper>
   ),
