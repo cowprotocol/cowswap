@@ -23,6 +23,10 @@ const UNISWAP_TOKEN_LIST_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.BASE]:
     'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.8453.json',
   [SupportedChainId.SEPOLIA]: UNISWAP_TOKENS_LIST,
+  [SupportedChainId.POLYGON]:
+    'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.137.json',
+  [SupportedChainId.AVALANCHE]:
+    'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.43114.json',
 }
 
 const curatedListSourceAtom = atom((get) => {

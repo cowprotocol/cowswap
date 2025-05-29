@@ -83,7 +83,24 @@ export async function swapFlow(
     } = await wrapErrorInOperatorError(() =>
       tradeQuote
         .postSwapOrderFromQuote({
-          appData: orderParams.appData.doc,
+          appData: {
+            ...orderParams.appData.doc,
+            metadata: {
+              ...orderParams.appData.doc.metadata,
+              partnerFee: orderParams.appData.doc.metadata.partnerFee
+                ? [
+                    {
+                      ...orderParams.appData.doc.metadata.partnerFee,
+                      priceImprovementBps: 0,
+                      maxVolumeBps: 0,
+                      recipient: Array.isArray(orderParams.appData.doc.metadata.partnerFee)
+                        ? orderParams.appData.doc.metadata.partnerFee[0]?.recipient || ''
+                        : orderParams.appData.doc.metadata.partnerFee.recipient || '',
+                    },
+                  ]
+                : undefined,
+            },
+          },
           additionalParams: {
             signingScheme: orderParams.allowsOffchainSigning ? SigningScheme.EIP712 : SigningScheme.PRESIGN,
           },
