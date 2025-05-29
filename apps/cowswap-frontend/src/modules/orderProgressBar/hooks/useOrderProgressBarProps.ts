@@ -60,7 +60,7 @@ export const PROGRESS_BAR_TIMER_DURATION = 15 // in seconds
 
 /**
  * Hook for fetching ProgressBar props
- * TODO FIXME: refactor this, no way to understand the code
+ * TODO FIXME: refactor this
  */
 export function useOrderProgressBarProps(
   chainId: SupportedChainId,
