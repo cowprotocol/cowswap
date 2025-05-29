@@ -1,7 +1,7 @@
 import { USDC_BASE, USDC_GNOSIS_CHAIN } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UI } from '@cowprotocol/ui'
-import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
@@ -22,22 +22,25 @@ const order = {
 
 const receiveAmountInfo = inputCurrencyInfoMock.receiveAmountInfo!
 
+const account = '0xfb3c7eb936cAA12B5A884d612393969A557d4307'
 const swapAndBridgeContextMock: SwapAndBridgeContext = {
   bridgeProvider: {
     logoUrl:
       'https://raw.githubusercontent.com/cowprotocol/cow-sdk/refs/heads/main/src/bridging/providers/across/across-logo.png',
     name: 'Across',
+    dappId: 'cow-sdk://bridging/providers/across',
   },
-  quoteSwapContext: {
-    chainName: 'Gnosis',
-    receiveAmountInfo,
-    sellAmount: receiveAmountInfo.beforeNetworkCosts.sellAmount,
-    buyAmount: receiveAmountInfo.afterNetworkCosts.buyAmount,
-    slippage: new Percent(2000, 100),
-    recipient: '0xd0b931c58ff095f028C2b37fd95740a2D4aB7257',
-    minReceiveAmount: receiveAmountInfo.afterSlippage.sellAmount,
-    minReceiveUsdValue: CurrencyAmount.fromRawAmount(USDC_GNOSIS_CHAIN, '29000001'),
-    expectedReceiveUsdValue: CurrencyAmount.fromRawAmount(USDC_GNOSIS_CHAIN, '29560000'),
+  overview: {
+    sourceChainName: 'Ethereum',
+    targetChainName: 'Ethereum',
+    sourceAmounts: {
+      sellAmount: receiveAmountInfo.beforeNetworkCosts.sellAmount,
+      buyAmount: receiveAmountInfo.afterNetworkCosts.buyAmount,
+    },
+    targetAmounts: {
+      sellAmount: receiveAmountInfo.afterSlippage.buyAmount,
+      buyAmount: CurrencyAmount.fromRawAmount(USDC_BASE, '28700000'),
+    },
   },
   quoteBridgeContext: {
     chainName: 'Gnosis',
@@ -49,7 +52,7 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
     buyAmountUsd: CurrencyAmount.fromRawAmount(USDC_GNOSIS_CHAIN, '28700004'),
   },
   bridgingProgressContext: {
-    account: '0xfb3c7eb936cAA12B5A884d612393969A557d4307',
+    account,
   },
   swapResultContext: {
     winningSolver: {
@@ -197,6 +200,7 @@ const Fixtures = {
           bridgingStatus: SwapAndBridgeStatus.FAILED,
           bridgingProgressContext: {
             ...swapAndBridgeContextMock.bridgingProgressContext,
+            account,
             isFailed: true,
           },
         }}
@@ -213,6 +217,7 @@ const Fixtures = {
           bridgingStatus: SwapAndBridgeStatus.REFUND_COMPLETE,
           bridgingProgressContext: {
             ...swapAndBridgeContextMock.bridgingProgressContext,
+            account,
             isRefunded: true,
           },
         }}
@@ -229,6 +234,7 @@ const Fixtures = {
           bridgingStatus: SwapAndBridgeStatus.DONE,
           bridgingProgressContext: {
             ...swapAndBridgeContextMock.bridgingProgressContext,
+            account,
             receivedAmount: CurrencyAmount.fromRawAmount(USDC_BASE, '29100000'),
             receivedAmountUsd: CurrencyAmount.fromRawAmount(USDC_GNOSIS_CHAIN, '29800000'),
           },
