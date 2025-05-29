@@ -15,7 +15,15 @@ interface QuoteDetailsProps {
 
 export function ProgressDetails({
   className,
-  context: { bridgeProvider, overview, swapResultContext, quoteBridgeContext, bridgingProgressContext, bridgingStatus },
+  context: {
+    bridgeProvider,
+    overview,
+    swapResultContext,
+    quoteBridgeContext,
+    bridgingProgressContext,
+    bridgingStatus,
+    statusResult,
+  },
 }: QuoteDetailsProps) {
   const { sourceAmounts, targetAmounts, sourceChainName, targetChainName } = overview
   const swapStatus = SwapAndBridgeStatus.DONE
@@ -54,7 +62,11 @@ export function ProgressDetails({
         buyAmount={targetAmounts?.buyAmount}
       >
         {bridgingProgressContext && quoteBridgeContext ? (
-          <BridgingProgressContent progressContext={bridgingProgressContext} quoteContext={quoteBridgeContext} />
+          <BridgingProgressContent
+            statusResult={statusResult}
+            progressContext={bridgingProgressContext}
+            quoteContext={quoteBridgeContext}
+          />
         ) : (
           <PreparingBridgingContent />
         )}

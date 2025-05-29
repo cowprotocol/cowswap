@@ -98,8 +98,9 @@ export function useSwapAndBridgeContext(
       receivedAmountUsd,
     }
 
+    const sourceChainId = order.inputToken.chainId
     const destinationChainId = order.outputToken.chainId
-    const sourceChainData = getChainInfo(order.inputToken.chainId)
+    const sourceChainData = getChainInfo(sourceChainId)
     const destChainData = bridgeSupportedNetworks?.find((chain) => chain.id === destinationChainId)
 
     if (!sourceChainData || !intermediateToken || !destChainData) {
@@ -142,7 +143,7 @@ export function useSwapAndBridgeContext(
       }
     }
 
-    const status = crossChainOrder.status
+    const status = crossChainOrder.statusResult.status
     const bridgingStatus = status ? bridgeStatusMap[status] : SwapAndBridgeStatus.DEFAULT
 
     const bridgingProgressContext: BridgingProgressContext = {
@@ -151,6 +152,8 @@ export function useSwapAndBridgeContext(
       isRefunded: status === BridgeStatus.REFUND,
       receivedAmount: status === BridgeStatus.EXECUTED ? bridgeReceiveAmount : undefined,
       receivedAmountUsd: undefined,
+      sourceChainId,
+      destinationChainId,
     }
 
     const quoteBridgeContext: QuoteBridgeContext = {
@@ -170,6 +173,7 @@ export function useSwapAndBridgeContext(
       quoteBridgeContext,
       bridgingProgressContext,
       swapResultContext,
+      statusResult: crossChainOrder.statusResult,
     }
   }, [
     order,

@@ -1,4 +1,4 @@
-import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
+import { BridgeProviderInfo, BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
 import { ReceiveAmountInfo } from '../trade'
@@ -61,6 +61,8 @@ export interface SwapAndBridgeOverview<Amount = CurrencyAmount<Currency>> {
 
 export interface BridgingProgressContext {
   account: string
+  sourceChainId: SupportedChainId
+  destinationChainId: number
 
   isFailed?: boolean
   isRefunded?: boolean
@@ -84,4 +86,5 @@ export interface SwapAndBridgeContext {
   overview: SwapAndBridgeOverview
   quoteBridgeContext?: QuoteBridgeContext
   bridgingProgressContext?: BridgingProgressContext
+  statusResult?: BridgeStatusResult
 }

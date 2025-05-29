@@ -1,5 +1,5 @@
 import { USDC_BASE, USDC_GNOSIS_CHAIN } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, BridgeStatus } from '@cowprotocol/cow-sdk'
 import { UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -54,6 +54,8 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
   },
   bridgingProgressContext: {
     account,
+    sourceChainId: 1,
+    destinationChainId: USDC_BASE.chainId,
   },
   swapResultContext: {
     winningSolver: {
@@ -202,7 +204,7 @@ const Fixtures = {
           ...swapAndBridgeContextMock,
           bridgingStatus: SwapAndBridgeStatus.FAILED,
           bridgingProgressContext: {
-            ...swapAndBridgeContextMock.bridgingProgressContext,
+            ...swapAndBridgeContextMock.bridgingProgressContext!,
             account,
             isFailed: true,
           },
@@ -220,7 +222,7 @@ const Fixtures = {
           ...swapAndBridgeContextMock!,
           bridgingStatus: SwapAndBridgeStatus.REFUND_COMPLETE,
           bridgingProgressContext: {
-            ...swapAndBridgeContextMock.bridgingProgressContext,
+            ...swapAndBridgeContextMock.bridgingProgressContext!,
             account,
             isRefunded: true,
           },
@@ -238,10 +240,15 @@ const Fixtures = {
           ...swapAndBridgeContextMock!,
           bridgingStatus: SwapAndBridgeStatus.DONE,
           bridgingProgressContext: {
-            ...swapAndBridgeContextMock.bridgingProgressContext,
+            ...swapAndBridgeContextMock.bridgingProgressContext!,
             account,
             receivedAmount: CurrencyAmount.fromRawAmount(USDC_BASE, '29100000'),
             receivedAmountUsd: CurrencyAmount.fromRawAmount(USDC_GNOSIS_CHAIN, '29800000'),
+          },
+          statusResult: {
+            status: BridgeStatus.EXECUTED,
+            depositTxHash: '0x080059573e09eb94b4679a5d1369c5244ef827746fec06c8e8d6f993c54f8663',
+            fillTxHash: '0x851ff28340f67ebce1f530bea8665c911787767cf9563ad5aeb232110aa50651',
           },
         }}
         stepName="bridgingFinished"
