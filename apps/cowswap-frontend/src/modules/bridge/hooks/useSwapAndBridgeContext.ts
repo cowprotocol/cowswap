@@ -1,14 +1,12 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
-import { getChainInfo, getRpcProvider } from '@cowprotocol/common-const'
-import { useInterval } from '@cowprotocol/common-hooks'
+import { getChainInfo } from '@cowprotocol/common-const'
 import { SupportedChainId, BridgeStatus, CrossChainOrder } from '@cowprotocol/cow-sdk'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
-import ms from 'ms.macro'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import type { Order } from 'legacy/state/orders/actions'
@@ -17,6 +15,8 @@ import type { SolverCompetition } from 'modules/orderProgressBar'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
+
+import { useUpdateBridgeOrderData } from './useUpdateBridgeOrderData'
 
 import {
   BridgingProgressContext,
@@ -35,26 +35,23 @@ const bridgeStatusMap: Record<BridgeStatus, SwapAndBridgeStatus> = {
   [BridgeStatus.UNKNOWN]: SwapAndBridgeStatus.DEFAULT,
 }
 
-const BRIDGE_TRANSACTION_POLLING_INTERVAL = ms`3s`
-
 export function useSwapAndBridgeContext(
   chainId: SupportedChainId,
   order: Order | undefined,
   winningSolver: SolverCompetition | undefined,
 ): SwapAndBridgeContext | undefined {
+  const { account } = useWalletInfo()
+  const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
+  const tokensByAddress = useTokensByAddressMap()
+
   const [crossChainOrder, setCrossChainOrder] = useState<CrossChainOrder | null>(null)
 
   const fullAppData = order?.apiAdditionalInfo?.fullAppData
+  const intermediateToken = order && tokensByAddress[order.buyToken.toLowerCase()]
 
-  const { account } = useWalletInfo()
   const bridgeProvider = useMemo(() => {
-    if (!fullAppData) return
-
-    return bridgingSdk.getProviderFromAppData(fullAppData)?.info
+    return fullAppData ? bridgingSdk.getProviderFromAppData(fullAppData)?.info : undefined
   }, [fullAppData])
-
-  const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
-  const tokensByAddress = useTokensByAddressMap()
 
   const executedSummary = useMemo(() => {
     return order ? getExecutedSummaryData(order) : undefined
@@ -62,31 +59,23 @@ export function useSwapAndBridgeContext(
 
   const { swappedAmountWithFee, surplusAmount } = executedSummary || {}
 
-  const intermediateToken = order && tokensByAddress[order.buyToken.toLowerCase()]
-
+  /**
+   * By default, order.outputToken has target chain currency
+   * We should use source chain currency instead (intermediateToken)
+   */
   const receivedAmount = useMemo(() => {
     if (!intermediateToken || !swappedAmountWithFee) return undefined
 
     return CurrencyAmount.fromRawAmount(intermediateToken, swappedAmountWithFee.toString())
   }, [swappedAmountWithFee, intermediateToken])
+
   const receivedAmountUsd = useUsdAmount(receivedAmount).value
   const surplusAmountUsd = useUsdAmount(surplusAmount).value
 
-  const updateBridgeOrderData = useCallback(async () => {
-    const rpcProvider = getRpcProvider(chainId)
-
-    if (!order || !rpcProvider) return
-
-    const crossChainOrder = await bridgingSdk.getOrder({
-      chainId,
-      orderId: order.id,
-      rpcProvider,
-    })
-
-    setCrossChainOrder(crossChainOrder)
-  }, [chainId, order])
-
-  useInterval(updateBridgeOrderData, BRIDGE_TRANSACTION_POLLING_INTERVAL, true)
+  /**
+   * Poll bridge provider to get current bridging status
+   */
+  useUpdateBridgeOrderData(chainId, order, setCrossChainOrder)
 
   return useMemo(() => {
     if (
@@ -141,6 +130,9 @@ export function useSwapAndBridgeContext(
           : undefined,
     }
 
+    /**
+     * Swap is finished, but bridging status is not loaded yet
+     */
     if (!crossChainOrder || !bridgeReceiveAmount || !overview.targetAmounts) {
       return {
         bridgingStatus: SwapAndBridgeStatus.DEFAULT,
