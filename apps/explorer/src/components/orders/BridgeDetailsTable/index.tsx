@@ -1,4 +1,4 @@
-import React from 'react'
+import { ReactNode } from 'react'
 
 import { BridgeDetails, BRIDGE_PROVIDER_DETAILS } from '@cowprotocol/bridge'
 import { getChainInfo } from '@cowprotocol/common-const'
@@ -40,7 +40,7 @@ type BridgeAmountDisplayProps = {
 
 // TODO: This is a temporary component to display the bridge amount.
 // It should be replaced with a consolidated component with apps/explorer/src/components/orders/AmountsDisplay
-const BridgeAmountDisplay: React.FC<BridgeAmountDisplayProps> = ({ labelPrefix, bridgeToken, amount, isLoading }) => {
+function BridgeAmountDisplay({ labelPrefix, bridgeToken, amount, isLoading }: BridgeAmountDisplayProps): ReactNode {
   if (isLoading) {
     return <Spinner size="sm" />
   }
@@ -84,6 +84,53 @@ const BridgeAmountDisplay: React.FC<BridgeAmountDisplayProps> = ({ labelPrefix, 
   )
 }
 
+function BridgeFeesDisplay({ bridgeDetails }: { bridgeDetails: BridgeDetails }): ReactNode {
+  const feeItems: ReactNode[] = []
+
+  if (bridgeDetails.gasCostsNative) {
+    feeItems.push(
+      <FeeItem key="gas-costs">
+        <FeeLabel>Native Gas Costs:</FeeLabel>
+        <FeeValue>
+          {bridgeDetails.gasCostsNative} on {getChainInfo(bridgeDetails.source.chainId as SupportedChainId).label}
+        </FeeValue>
+      </FeeItem>,
+    )
+  }
+
+  if (bridgeDetails.protocolFeeSellToken) {
+    feeItems.push(
+      <FeeItem key="protocol-fee-source">
+        <FeeLabel>Protocol Fee (Source):</FeeLabel>
+        <FeeValue>
+          {bridgeDetails.protocolFeeSellToken} {safeTokenName(bridgeDetails.source)}
+        </FeeValue>
+      </FeeItem>,
+    )
+  }
+
+  if (bridgeDetails.protocolFeeBuyToken) {
+    feeItems.push(
+      <FeeItem key="protocol-fee-dest">
+        <FeeLabel>Protocol Fee (Dest):</FeeLabel>
+        <FeeValue>
+          {bridgeDetails.protocolFeeBuyToken} {safeTokenName(bridgeDetails.destination)}
+        </FeeValue>
+      </FeeItem>,
+    )
+  }
+
+  if (feeItems.length > 0) {
+    return <FeesWrapper>{feeItems}</FeesWrapper>
+  }
+
+  return (
+    <FeeItem>
+      <FeeValue>Not available</FeeValue>
+    </FeeItem>
+  )
+}
+
 const tooltipTextMap = {
   transactionHash: 'The transaction hash or provider-specific explorer link for the bridge operation.',
   status: 'The current status of the bridge operation.',
@@ -111,20 +158,23 @@ const mapBridgeableToErc20 = (
   }
 }
 
-export type Props = {
-  bridgeDetails?: BridgeDetails
-  isLoading?: boolean
-  ownerAddress?: string
-  receiverAddress?: string
-}
-
 export function BridgeDetailsTable({
   bridgeDetails,
   isLoading: isOverallLoading,
   ownerAddress,
   receiverAddress,
-}: Props): React.ReactNode {
-  const getTransactionDetailsDisplay = (): React.ReactNode => {
+}: {
+  bridgeDetails?: BridgeDetails
+  isLoading?: boolean
+  ownerAddress?: string
+  receiverAddress?: string
+}): ReactNode {
+  // Early return if no bridge details to render
+  if (!bridgeDetails && !isOverallLoading) {
+    return null
+  }
+
+  function getTransactionDetailsDisplay(): ReactNode {
     if (!bridgeDetails) return null
 
     if (bridgeDetails.explorerUrl) {
@@ -254,57 +304,15 @@ export function BridgeDetailsTable({
             </DetailRow>
 
             <DetailRow label="Costs & Fees" tooltipText={tooltipTextMap.costsAndFees} isLoading={isOverallLoading}>
-              {bridgeDetails &&
-                (() => {
-                  const feeItems: React.ReactNode[] = []
-                  if (bridgeDetails.gasCostsNative) {
-                    feeItems.push(
-                      <FeeItem key="gas-costs">
-                        <FeeLabel>Native Gas Costs:</FeeLabel>
-                        <FeeValue>
-                          {bridgeDetails.gasCostsNative} on{' '}
-                          {getChainInfo(bridgeDetails.source.chainId as SupportedChainId).label}
-                        </FeeValue>
-                      </FeeItem>,
-                    )
-                  }
-                  if (bridgeDetails.protocolFeeSellToken) {
-                    feeItems.push(
-                      <FeeItem key="protocol-fee-source">
-                        <FeeLabel>Protocol Fee (Source):</FeeLabel>
-                        <FeeValue>
-                          {bridgeDetails.protocolFeeSellToken} {safeTokenName(bridgeDetails.source)}
-                        </FeeValue>
-                      </FeeItem>,
-                    )
-                  }
-                  if (bridgeDetails.protocolFeeBuyToken) {
-                    feeItems.push(
-                      <FeeItem key="protocol-fee-dest">
-                        <FeeLabel>Protocol Fee (Dest):</FeeLabel>
-                        <FeeValue>
-                          {bridgeDetails.protocolFeeBuyToken} {safeTokenName(bridgeDetails.destination)}
-                        </FeeValue>
-                      </FeeItem>,
-                    )
-                  }
-
-                  if (feeItems.length > 0) {
-                    return <FeesWrapper>{feeItems}</FeesWrapper>
-                  }
-
-                  return (
-                    <FeeItem>
-                      <FeeValue>Not available</FeeValue>
-                    </FeeItem>
-                  )
-                })()}
+              {bridgeDetails ? <BridgeFeesDisplay bridgeDetails={bridgeDetails} /> : null}
             </DetailRow>
+
             <DetailRow label="Bridging Time" tooltipText={tooltipTextMap.bridgingTime} isLoading={isOverallLoading}>
               {bridgeDetails?.expectedFillTimeSeconds !== undefined
                 ? displayTime(bridgeDetails.expectedFillTimeSeconds * 1000, true)
                 : null}
             </DetailRow>
+
             <DetailRow label="Max Slippage" tooltipText={tooltipTextMap.maxSlippage} isLoading={isOverallLoading}>
               {bridgeDetails?.maxSlippageBps !== undefined
                 ? formatPercentage(new BigNumber(bridgeDetails.maxSlippageBps).div(10000))

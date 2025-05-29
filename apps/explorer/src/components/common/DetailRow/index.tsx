@@ -1,16 +1,16 @@
-import React from 'react'
+import { ReactNode } from 'react'
 
-import ShimmerBar from '../../../explorer/components/common/ShimmerBar'
-import { HelpTooltip } from '../../Tooltip'
+import { HelpTooltip } from 'components/Tooltip'
+import ShimmerBar from 'explorer/components/common/ShimmerBar'
 
 export interface DetailRowProps {
   label: string
-  tooltipText?: React.ReactNode
-  children: React.ReactNode
+  tooltipText?: ReactNode
+  children: ReactNode
   isLoading?: boolean
 }
 
-export function DetailRow({ label, tooltipText, children, isLoading }: DetailRowProps): React.ReactNode {
+export function DetailRow({ label, tooltipText, children, isLoading }: DetailRowProps): ReactNode {
   return (
     <tr>
       <td>

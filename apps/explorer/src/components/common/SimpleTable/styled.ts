@@ -1,8 +1,7 @@
 import { Media, Color } from '@cowprotocol/ui'
 
+import { ScrollBarStyle } from 'explorer/styled'
 import styled, { css } from 'styled-components/macro'
-
-import { ScrollBarStyle } from '../../../explorer/styled'
 
 export const Wrapper = styled.div<{ columnViewMobile?: boolean }>`
   display: block;

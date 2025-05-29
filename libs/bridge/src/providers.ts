@@ -1,6 +1,6 @@
-import { BridgeProtocolConfig } from './types'
+import BungeeLogo from '@cowprotocol/assets/images/bungee-logo.svg'
 
-import BungeeLogo from '../../assets/src/images/bungee-logo.svg'
+import { BridgeProtocolConfig } from './types'
 
 /**
  * Enum of supported bridge providers

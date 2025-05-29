@@ -1,10 +1,9 @@
-import React from 'react'
+import { ReactNode } from 'react'
 
 import searchImg from 'assets/img/search2.svg'
+import { Input, SearchIcon } from 'explorer/components/common/Search/Search.styled'
 
 import { SearchWrapped } from './styled'
-
-import { Input, SearchIcon } from '../../../explorer/components/common/Search/Search.styled'
 
 interface SearchProps {
   query: string
@@ -16,7 +15,7 @@ export function TableSearch({
   query,
   setQuery,
   placeholder = 'Search token by name, symbol or hash',
-}: SearchProps): React.ReactNode {
+}: SearchProps): ReactNode {
   return (
     <SearchWrapped onSubmit={(e): void => e.preventDefault()}>
       <SearchIcon src={searchImg} />

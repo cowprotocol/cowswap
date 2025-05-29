@@ -1,8 +1,7 @@
 import { Media, Color } from '@cowprotocol/ui'
 
+import { Wrapper, Input, SearchIcon } from 'explorer/components/common/Search/Search.styled'
 import styled from 'styled-components/macro'
-
-import { Wrapper, Input, SearchIcon } from '../../../explorer/components/common/Search/Search.styled'
 
 export const SearchWrapped = styled(Wrapper)`
   max-width: 400px;
