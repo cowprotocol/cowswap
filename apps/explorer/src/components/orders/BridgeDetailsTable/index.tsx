@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { BridgeDetails, BRIDGE_PROVIDER_DETAILS } from '@cowprotocol/bridge'
+import { BridgeDetails } from '@cowprotocol/bridge'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { displayTime, ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -15,6 +15,7 @@ import { Spinner } from 'components/common/Spinner'
 import { TokenDisplay as CommonTokenDisplay } from 'components/common/TokenDisplay'
 import { formatPercentage, safeTokenName, formatSmartMaxPrecision, isNativeToken } from 'utils'
 
+import { MOCK_BRIDGE_PROVIDER_DETAILS } from './mockBridgeProviders'
 import { ProviderDisplayWrapper, ProviderLogo } from './styled'
 import {
   AmountSectionWrapper,
@@ -212,7 +213,7 @@ export function BridgeDetailsTable({
   }
 
   const providerConfig = bridgeDetails?.providerName
-    ? Object.values(BRIDGE_PROVIDER_DETAILS).find((config) => config.title === bridgeDetails.providerName)
+    ? Object.values(MOCK_BRIDGE_PROVIDER_DETAILS).find((config) => config.title === bridgeDetails.providerName)
     : undefined
 
   return (

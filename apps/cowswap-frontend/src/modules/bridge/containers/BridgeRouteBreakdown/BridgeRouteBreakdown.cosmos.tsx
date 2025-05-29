@@ -1,7 +1,7 @@
 import { Provider, createStore } from 'jotai'
 import React, { ReactNode } from 'react'
 
-import { BridgeProvider, BRIDGE_PROVIDER_DETAILS } from '@cowprotocol/bridge'
+import BungeeLogo from '@cowprotocol/assets/images/bungee-logo.svg'
 import { USDC_MAINNET, COW, getChainInfo } from '@cowprotocol/common-const'
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -35,6 +35,14 @@ import { BridgeFeeType } from '../../types'
 import { StopStatusEnum } from '../../utils/status'
 
 import { BridgeRouteBreakdown } from './index'
+
+// Local mock data for cosmos fixture (TODO: replace with SDK integration)
+const MOCK_BRIDGE_PROVIDER = {
+  icon: BungeeLogo,
+  title: 'Bungee Exchange',
+  url: 'https://bungee.exchange',
+  description: 'Multi-chain bridge and swap protocol',
+}
 
 const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts, 'transparent')
 
@@ -76,7 +84,7 @@ const defaultProps = {
   maxBridgeSlippage: '1',
   estimatedTime: 1200, // 20 minutes in seconds
   recipient: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045', // vitalik.eth
-  bridgeProvider: BRIDGE_PROVIDER_DETAILS[BridgeProvider.BUNGEE],
+  bridgeProvider: MOCK_BRIDGE_PROVIDER,
   // Display options
   hideBridgeFlowFiatAmount: true, // Hide fiat amount in bridge destination token flow
   // Explorer URLs

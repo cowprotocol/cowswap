@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { BridgeDetails, BridgeStatus, BridgeProvider, BRIDGE_PROVIDER_DETAILS } from '@cowprotocol/bridge'
+import { BridgeDetails, BridgeStatus } from '@cowprotocol/bridge'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 
@@ -13,6 +13,7 @@ import { GlobalStateContext } from '../../../hooks/useGlobalState'
 import { RICH_ORDER } from '../../../test/data'
 import { Errors, Network } from '../../../types'
 import { BridgeDetailsTable } from '../BridgeDetailsTable'
+import { BridgeProvider, MOCK_BRIDGE_PROVIDER_DETAILS } from '../BridgeDetailsTable/mockBridgeProviders'
 
 import { OrderDetails } from '.'
 
@@ -47,7 +48,7 @@ const mockDestinationToken: TokenInfo = {
   name: 'Bridged USDT',
 }
 
-const bungeeBridgeInfo = BRIDGE_PROVIDER_DETAILS[BridgeProvider.BUNGEE]
+const bungeeBridgeInfo = MOCK_BRIDGE_PROVIDER_DETAILS[BridgeProvider.BUNGEE]
 
 const pendingBridgeDetails: BridgeDetails = {
   providerName: bungeeBridgeInfo.title,
