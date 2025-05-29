@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.22.7](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.6...cow-fi-v1.22.7) (2025-05-29)
+
+
+### Bug Fixes
+
+* **cowfi:** link featured articles with href ([#5765](https://github.com/cowprotocol/cowswap/issues/5765)) ([12794dc](https://github.com/cowprotocol/cowswap/commit/12794dcbe0df0e7f25d5da25fc446e2eee6f95bd))
+
 ## [1.22.6](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.5...cow-fi-v1.22.6) (2025-05-28)
 
 

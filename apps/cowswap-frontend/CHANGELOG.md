@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.108.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.108.0...cowswap-v1.108.1) (2025-05-29)
+
+
+### Bug Fixes
+
+* **twap:** use indexedDB to persist state ([#5771](https://github.com/cowprotocol/cowswap/issues/5771)) ([bf410ec](https://github.com/cowprotocol/cowswap/commit/bf410ecc1d27d0d9eadd835c1b74141c6cee4341))
+
 ## [1.108.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.107.1...cowswap-v1.108.0) (2025-05-28)
 
 
