@@ -69,8 +69,8 @@ export function QuoteBridgeContent({
 
   return (
     <>
-      {contents.filter(isTruthy).map(({ withTimelineDot, label, content }) => (
-        <ConfirmDetailsItem withTimelineDot={withTimelineDot} label={label}>
+      {contents.filter(isTruthy).map(({ withTimelineDot, label, content }, index) => (
+        <ConfirmDetailsItem key={index} withTimelineDot={withTimelineDot} label={label}>
           {content}
         </ConfirmDetailsItem>
       ))}
