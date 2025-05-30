@@ -32,8 +32,19 @@ function SwapPageRedirect() {
 
   if (!chainId) return null
 
+  // Debug logging in development
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[SwapPageRedirect] Rendering redirect:', {
+      location: location,
+      search: location.search,
+      hash: location.hash,
+      chainId,
+    })
+  }
+
   const defaultState = getDefaultTradeRawState(chainId)
   const searchParams = new URLSearchParams(location.search)
+
   const inputCurrencyId = searchParams.get('inputCurrency') || defaultState.inputCurrencyId || WETH[chainId]?.symbol
   const outputCurrencyId = searchParams.get('outputCurrency') || defaultState.outputCurrencyId || undefined
 
@@ -53,5 +64,17 @@ function SwapPageRedirect() {
     Routes.SWAP,
   )
 
-  return <Navigate to={{ ...location, pathname, search: searchParams.toString() }} />
+  const finalSearch = searchParams.toString()
+  const redirectTo = { ...location, pathname, search: finalSearch }
+
+  // Debug logging in development
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[SwapPageRedirect] Redirecting to:', {
+      from: location,
+      to: redirectTo,
+      utmParamsInSearch: Array.from(searchParams.entries()).filter(([key]) => key.startsWith('utm_')),
+    })
+  }
+
+  return <Navigate to={redirectTo} />
 }

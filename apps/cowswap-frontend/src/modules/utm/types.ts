@@ -4,4 +4,5 @@ export interface UtmParams {
   utmCampaign?: string
   utmContent?: string
   utmTerm?: string
+  utmCode?: string
 }

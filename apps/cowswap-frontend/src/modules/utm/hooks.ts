@@ -1,9 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useLayoutEffect } from 'react'
-
-import { useLocation } from 'react-router'
-
-import { useNavigate } from 'common/hooks/useNavigate'
+import { useLayoutEffect, useState } from 'react'
 
 import { utmAtom } from './state'
 import { UtmParams } from './types'
@@ -14,9 +10,8 @@ const UTM_SOURCE_PARAMS: UtmParams = {
   utmCampaign: 'utm_campaign',
   utmContent: 'utm_content',
   utmTerm: 'utm_term',
+  utmCode: 'utm_code',
 }
-
-const ALL_UTM_PARAMS = Object.values(UTM_SOURCE_PARAMS)
 
 function getUtmParams(searchParams: URLSearchParams): UtmParams {
   return Object.keys(UTM_SOURCE_PARAMS).reduce<UtmParams>((acc, _key) => {
@@ -32,56 +27,94 @@ export function useUtm(): UtmParams | undefined {
   return useAtomValue(utmAtom)
 }
 
-function cleanUpParams(searchParams: URLSearchParams): URLSearchParams {
-  ALL_UTM_PARAMS.forEach((param) => {
-    if (searchParams.has(param)) {
-      searchParams.delete(param)
-    }
+// Hook to check if UTM attribution is in progress
+export function useUtmAttributionReady(): boolean {
+  const [isReady, setIsReady] = useState(() => {
+    // Check if attribution is in progress
+    return !(window as any)._utmAttributionInProgress
   })
 
-  return searchParams
+  useLayoutEffect(() => {
+    // If attribution is not in progress, we're ready
+    if (!(window as any)._utmAttributionInProgress) {
+      setIsReady(true)
+      return
+    }
+
+    console.log('[UTM Hook] Waiting for attribution completion...')
+
+    // Check periodically if attribution is complete
+    const checkInterval = setInterval(() => {
+      if (!(window as any)._utmAttributionInProgress) {
+        console.log('[UTM Hook] Attribution complete, ready to proceed')
+        setIsReady(true)
+        clearInterval(checkInterval)
+      }
+    }, 100)
+
+    return () => clearInterval(checkInterval)
+  }, [])
+
+  return isReady
 }
 
 export function useInitializeUtm(): void {
-  const navigate = useNavigate()
-  const { search, pathname, hash } = useLocation()
-
   // get atom setter
   const setUtm = useSetAtom(utmAtom)
+  const attributionReady = useUtmAttributionReady()
 
   useLayoutEffect(
     () => {
-      const hasQueryParamsOutOfHashbang = !search && window.location.search
-      const searchParams = new URLSearchParams(search || window.location.search)
-      const utm = getUtmParams(searchParams)
-
-      const { href, origin, pathname: locationPath, hash: locationHash, search: locationSearch } = window.location
-
-      if (Object.values(utm).filter(Boolean).length > 0) {
-        // Only overrides the UTM if the URL includes at least one UTM param
-        setUtm(utm)
-      }
-
-      const newSearch = cleanUpParams(searchParams).toString()
-
-      if (hasQueryParamsOutOfHashbang) {
-        window.location.replace(newSearch ? `/#${locationPath}?${newSearch}` : '/')
+      // Don't proceed if attribution is still in progress
+      if (!attributionReady) {
+        console.log('[UTM Hook] Attribution still in progress, waiting...')
         return
       }
 
-      const validHref = `${origin}${locationPath}${locationHash}${locationSearch}`
-      const isWeirdURl = href !== validHref
+      // Check if UTM attribution was completed by the loading screen
+      const storedUtmData = sessionStorage.getItem('cowswap_utm_attribution')
+      console.log('[UTM Hook] Checking sessionStorage for UTM data:', storedUtmData)
 
-      // Example: http://localhost:3000?
-      if (isWeirdURl) {
-        window.location.href = validHref
-        return
+      if (storedUtmData) {
+        try {
+          const utmData = JSON.parse(storedUtmData)
+          console.log('[UTM Hook] Loading UTM data from attribution:', utmData)
+
+          // Convert to the expected format
+          const utm: UtmParams = {
+            utmSource: utmData.utm_source,
+            utmMedium: utmData.utm_medium,
+            utmCampaign: utmData.utm_campaign,
+            utmContent: utmData.utm_content,
+            utmTerm: utmData.utm_term,
+            utmCode: utmData.utm_code,
+          }
+
+          // Only set if we have at least one UTM parameter
+          if (Object.values(utm).some(Boolean)) {
+            setUtm(utm)
+          }
+
+          // Clear the stored data after loading
+          sessionStorage.removeItem('cowswap_utm_attribution')
+          console.log('[UTM Hook] Cleared UTM data from sessionStorage')
+        } catch (error) {
+          console.error('[UTM Hook] Error parsing stored UTM data:', error)
+        }
+      } else {
+        // Fallback: check URL parameters (for backwards compatibility)
+        const searchParams = new URLSearchParams(window.location.search)
+        const utm = getUtmParams(searchParams)
+
+        if (Object.values(utm).filter(Boolean).length > 0) {
+          console.log('[UTM Hook] Loading UTM data from URL (fallback):', utm)
+          setUtm(utm)
+        } else {
+          console.log('[UTM Hook] No UTM data found in sessionStorage or URL')
+        }
       }
-
-      navigate({ pathname, search: newSearch, hash }, { replace: true })
     },
-    // No dependencies: It only needs to be initialized once
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    // Re-run when attribution becomes ready
+    [setUtm, attributionReady],
   )
 }
