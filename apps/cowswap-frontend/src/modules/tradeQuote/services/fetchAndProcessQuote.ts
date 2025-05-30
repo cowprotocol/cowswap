@@ -1,7 +1,5 @@
-import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import {
   PriceQuality,
-  CrossChainQuoteAndPost,
   SupportedChainId,
   QuoteBridgeRequest,
   SwapAdvancedSettings,
@@ -19,10 +17,6 @@ import { getIsOrderBookTypedError } from 'api/cowProtocol/getIsOrderBookTypedErr
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
 import { TradeQuoteFetchParams } from '../types'
 import { getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
-
-const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
-const getFastQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
-const getOptimalQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 
 export async function fetchAndProcessQuote(
   chainId: SupportedChainId,
@@ -48,15 +42,11 @@ export async function fetchAndProcessQuote(
 
   tradeQuoteManager.setLoading(hasParamsChanged)
   const request = isOptimalQuote
-    ? getOptimalQuote(quoteParams, advancedSettings)
-    : getFastQuote(quoteParams, advancedSettings)
+    ? bridgingSdk.getQuote(quoteParams, advancedSettings)
+    : bridgingSdk.getQuote(quoteParams, advancedSettings)
 
   try {
-    const { cancelled, data } = await request
-
-    if (cancelled) {
-      return
-    }
+    const data = await request
 
     const quoteAndPost = isBridgeQuoteAndPost(data)
       ? { quoteResults: data.swap, postSwapOrderFromQuote: data.postSwapOrderFromQuote }

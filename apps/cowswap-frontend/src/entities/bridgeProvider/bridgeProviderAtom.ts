@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
 
-import { acrossBridgeProvider } from 'tradingSdk/bridgingSdk'
+import { bungeeBridgeProvider } from 'tradingSdk/bridgingSdk'
 
-export const bridgeProviderAtom = atom(acrossBridgeProvider)
+export const bridgeProviderAtom = atom(bungeeBridgeProvider)

@@ -48,6 +48,8 @@ function calculatePrice(currency: Token, price: Fraction | null): Price<Token, T
   const baseAmount = tryParseCurrencyAmount('1', currency)
   const quoteAmount = tryParseCurrencyAmount(price, usdcToken)
 
+  if (!baseAmount || !quoteAmount) return null
+
   return new Price({
     baseAmount,
     quoteAmount,
