@@ -24,6 +24,7 @@ const receiveAmountInfo = inputCurrencyInfoMock.receiveAmountInfo!
 
 const swapAndBridgeContextMock: SwapAndBridgeContext = {
   bridgeProvider: {
+    dappId: 'Across',
     logoUrl:
       'https://raw.githubusercontent.com/cowprotocol/cow-sdk/refs/heads/main/src/bridging/providers/across/across-logo.png',
     name: 'Across',
