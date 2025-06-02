@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useSetAtom } from 'jotai/index'
+import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from '@cowprotocol/common-const'

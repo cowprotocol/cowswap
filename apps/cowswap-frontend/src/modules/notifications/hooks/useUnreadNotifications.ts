@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai/index'
+import { useAtomValue } from 'jotai'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -30,7 +30,7 @@ export function useUnreadNotifications(): UnreadNotifications {
 
           return acc
         }, {})
-      }
+      },
     ).data || EMPTY
   )
 }
