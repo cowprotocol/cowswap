@@ -110,7 +110,7 @@ monorepo/
 
 - Shorter functions are better than longer functions
 - Abide by the structure of the respective projects
-- Use Storybook when coding UI in a project that uses Storybook
+- Use Storybook when coding UI in a project that uses Storybook, Cosmos where Cosmos is used
 - Code should be auto-formatted with rules defined in the project (ESLint)
 - You are free to use whatever editor you fancy (VSCode, Intellij, vim, emacs), preferably with format on save (Prettier plugin)
 
