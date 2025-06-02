@@ -1,41 +1,45 @@
-import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
-
-const UTM_SOURCE_PARAM = 'utm_source'
-const UTM_MEDIUM_PARAM = 'utm_medium'
-const UTM_CAMPAIGN_PARAM = 'utm_campaign'
-const UTM_CONTENT_PARAM = 'utm_content'
-const UTM_TERM_PARAM = 'utm_term'
-
-const ALL_UTM_PARAMS = [UTM_SOURCE_PARAM, UTM_MEDIUM_PARAM, UTM_CAMPAIGN_PARAM, UTM_CONTENT_PARAM, UTM_TERM_PARAM]
-
-import { UtmParams } from './types'
 import { CONFIG } from '@/const/meta'
 
-export function getUtmParams(query: URLSearchParams): UtmParams {
-  const utmSource = (query.get(UTM_SOURCE_PARAM) as string) || undefined
-  const utmMedium = (query.get(UTM_MEDIUM_PARAM) as string) || undefined
-  const utmCampaign = (query.get(UTM_CAMPAIGN_PARAM) as string) || undefined
-  const utmContent = (query.get(UTM_CONTENT_PARAM) as string) || undefined
-  const utmTerm = (query.get(UTM_TERM_PARAM) as string) || undefined
+import { UtmParams } from './types'
 
-  return {
-    utmSource,
-    utmMedium,
-    utmCampaign,
-    utmContent,
-    utmTerm,
+// Using a generic router interface since AppRouterInstance is not exported
+interface AppRouterInstance {
+  replace: (url: string) => void
+}
+
+/**
+ * Extract all UTM parameters from URL search params
+ * Captures any parameter starting with 'utm_'
+ */
+export function getUtmParams(query: URLSearchParams): UtmParams {
+  const utmParams: UtmParams = {}
+
+  // Iterate through all URL parameters and capture utm_* ones
+  for (const [key, value] of query.entries()) {
+    if (key.startsWith('utm_') && value) {
+      // Convert utm_source to utmSource, utm_medium to utmMedium, etc.
+      const camelCaseKey = key.replace(/^utm_/, '').replace(/_([a-z])/g, (_, letter) => letter.toUpperCase())
+      const propertyKey = `utm${camelCaseKey.charAt(0).toUpperCase()}${camelCaseKey.slice(1)}`
+      utmParams[propertyKey] = value
+    }
   }
+
+  return utmParams
 }
 
 export function cleanUpParams(router: AppRouterInstance, pathname: string | null, query: URLSearchParams) {
   let cleanedParams = false
 
-  ALL_UTM_PARAMS.forEach((param) => {
-    if (query.get(param)) {
-      query.delete(param)
+  // Remove all utm_* parameters
+  const paramsToDelete: string[] = []
+  for (const [key] of query.entries()) {
+    if (key.startsWith('utm_')) {
+      paramsToDelete.push(key)
       cleanedParams = true
     }
-  })
+  }
+
+  paramsToDelete.forEach((param) => query.delete(param))
 
   if (cleanedParams) {
     router.replace((pathname || '/') + '?' + query.toString())
@@ -45,7 +49,8 @@ export function cleanUpParams(router: AppRouterInstance, pathname: string | null
 export function hasUtmCodes(utm: UtmParams | undefined): boolean {
   if (!utm) return false
 
-  return !!(utm.utmSource || utm.utmCampaign || utm.utmContent || utm.utmMedium || utm.utmTerm)
+  // Check if any property starting with 'utm' has a value
+  return Object.keys(utm).some((key) => key.startsWith('utm') && !!utm[key])
 }
 
 export function addUtmToUrl(href: string, utm: UtmParams): string {
@@ -58,26 +63,17 @@ export function addUtmToUrl(href: string, utm: UtmParams): string {
   // Create a new URLSearchParams object for the hash's query parameters
   const hashParams = new URLSearchParams(hashQuery)
 
-  // Add UTM parameters to the hash's query parameters
-  if (utm.utmCampaign) {
-    hashParams.set(UTM_CAMPAIGN_PARAM, utm.utmCampaign)
-  }
-
-  if (utm.utmContent) {
-    hashParams.set(UTM_CONTENT_PARAM, utm.utmContent)
-  }
-
-  if (utm.utmMedium) {
-    hashParams.set(UTM_MEDIUM_PARAM, utm.utmMedium)
-  }
-
-  if (utm.utmSource) {
-    hashParams.set(UTM_SOURCE_PARAM, utm.utmSource)
-  }
-
-  if (utm.utmTerm) {
-    hashParams.set(UTM_TERM_PARAM, utm.utmTerm)
-  }
+  // Add all UTM parameters to the hash's query parameters
+  Object.keys(utm).forEach((key) => {
+    if (key.startsWith('utm') && utm[key]) {
+      // Convert utmSource to utm_source, utmMedium to utm_medium, etc.
+      const urlParam = key
+        .replace(/^utm/, 'utm_')
+        .replace(/([A-Z])/g, '_$1')
+        .toLowerCase()
+      hashParams.set(urlParam, utm[key]!)
+    }
+  })
 
   // Construct the final URL
   const baseUrl = url.origin + url.pathname + url.search
