@@ -1,33 +1,24 @@
 import { ReactElement } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { FiatAmount, TokenAmount as LibTokenAmount, TokenAmountProps as LibTokenAmountProps } from '@cowprotocol/ui'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { StatusColor } from 'modules/bridge/utils/status'
-
-import { AmountWithTokenIcon } from './styled'
+import { StatusColor, AmountWithTokenIcon } from './styled'
 
 export interface TokenAmountDisplayProps {
-  token: TokenWithLogo
-  currencyAmount: CurrencyAmount<Token> | null
-  displaySymbol?: string
+  currencyAmount: CurrencyAmount<Currency> | null
+  displaySymbol?: boolean
   usdValue?: CurrencyAmount<Token> | null
-  hideFiatAmount?: boolean
-  tokenLogoSize: number
   status?: StatusColor
   libTokenAmountProps?: Omit<LibTokenAmountProps, 'amount' | 'tokenSymbol' | 'hideTokenSymbol'>
   hideTokenIcon?: boolean
 }
 
 export function TokenAmountDisplay({
-  token,
   currencyAmount,
   displaySymbol,
   usdValue,
-  hideFiatAmount = false,
-  tokenLogoSize,
   status,
   libTokenAmountProps,
   hideTokenIcon = false,
@@ -36,20 +27,18 @@ export function TokenAmountDisplay({
     return null
   }
 
-  const tokenSymbolForLib: LibTokenAmountProps['tokenSymbol'] = {
-    symbol: displaySymbol || token.symbol || 'Unknown',
-  }
+  const token = currencyAmount.currency
 
   return (
     <AmountWithTokenIcon colorVariant={status}>
-      {!hideTokenIcon && <TokenLogo token={token} size={tokenLogoSize} />}
+      {!hideTokenIcon && <TokenLogo token={token} size={18} />}
       <LibTokenAmount
         amount={currencyAmount}
-        tokenSymbol={tokenSymbolForLib}
+        tokenSymbol={displaySymbol ? token : undefined}
         hideTokenSymbol={false}
         {...libTokenAmountProps}
       />
-      {!hideFiatAmount && usdValue && (
+      {usdValue && (
         <i>
           (<FiatAmount amount={usdValue} />)
         </i>

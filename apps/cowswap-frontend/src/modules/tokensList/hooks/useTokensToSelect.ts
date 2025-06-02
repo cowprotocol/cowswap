@@ -4,9 +4,9 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useAllActiveTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { Field } from 'legacy/state/types'
+import { useBridgeSupportedTokens } from 'entities/bridgeProvider'
 
-import { useBridgeSupportedTokens } from 'modules/bridge'
+import { Field } from 'legacy/state/types'
 
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 
