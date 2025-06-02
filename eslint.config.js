@@ -2,6 +2,7 @@ const { FlatCompat } = require('@eslint/eslintrc')
 const js = require('@eslint/js')
 const nxEslintPlugin = require('@nx/eslint-plugin')
 const eslintImport = require('eslint-plugin-import')
+const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
 const unusedImports = require('eslint-plugin-unused-imports')
 
@@ -26,12 +27,38 @@ module.exports = [
   {
     ...js.configs.recommended,
     files: ['**/*.ts', '**/*.tsx'],
+    languageOptions: {
+      parser: require('@typescript-eslint/parser'),
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+    },
     plugins: {
+      react: react,
       'react-hooks': reactHooks,
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
       'react-hooks/exhaustive-deps': 'error',
+
+      // TypeScript strict rules
+      '@typescript-eslint/explicit-function-return-type': 'error',
+
+      // React antipatterns
+      'react/no-unstable-nested-components': 'error',
+
+      // Code quality rules for shorter functions
+      complexity: ['error', 10],
+      'max-lines-per-function': ['error', { max: 50, skipBlankLines: true, skipComments: true }],
+
+      // Prevent unnecessary re-renders
+      'react/jsx-no-bind': ['error', { allowArrowFunctions: true }],
     },
   },
   {
@@ -50,7 +77,7 @@ module.exports = [
           ],
         },
       ],
-      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-explicit-any': 'error',
       'no-prototype-builtins': 'off',
       'react/jsx-no-useless-fragment': 'off',
       'no-irregular-whitespace': 'off',
