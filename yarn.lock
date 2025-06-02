@@ -1841,10 +1841,10 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@6.0.0-RC.46":
-  version "6.0.0-RC.46"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-6.0.0-RC.46.tgz#82dbc1e7b395eed277cfad6e7d9b22dc35330dd4"
-  integrity sha512-iCnFVTsmW8XYNxxwoYSWlTmSP/WcYyrju92IiuYTKqu8pVW/xA/sOBY7PuCON7TWdJ4Bf0t7PJ0gdtP36h7lbQ==
+"@cowprotocol/cow-sdk@6.0.0-RC.51":
+  version "6.0.0-RC.51"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-6.0.0-RC.51.tgz#716af688256c42c43691da8a76f36f591e4e73a9"
+  integrity sha512-mdxgWaMHUOPY6PECFcnRDBn89jCrckfVZAFWp0pG1nVPyrUO29wJ+HplopXv2IbAovZZxD5BXPruY0tU0Hu0bA==
   dependencies:
     "@cowprotocol/app-data" "^3.1.0"
     "@cowprotocol/contracts" "^1.8.0"
