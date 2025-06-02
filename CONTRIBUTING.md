@@ -158,7 +158,7 @@ Additional Guidelines:
 
 - Unit tests / integration tests required when applicable
 - Jest unit tests for logic
-- Storybook stories + interaction tests for every UI component
+- Storybook stories/Cosmos + interaction tests for every UI component
 - Include integration tests
 - Full CI must be green before review
 - Make sure to TEST YOUR OWN PRs before requesting a review
