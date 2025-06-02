@@ -65,15 +65,22 @@ Start with issues carrying the **Help Wanted** label.
 ```
 monorepo/
 ├─ apps/
-│  └─ cowswap-frontend/
-│     ├─ common/      # shared, leaf-only; **must not depend on modules/**
-│     ├─ modules/     # feature folders
-│     ├─ pages/       # Next.js routes
-│     ├─ api/         # API service wrappers
-│     └─ types/       # shared TypeScript types
-├─ libs/              # reusable logic across apps
-├─ tools/             # build & dev utilities
-└─ testing/           # integration helpers
+│  ├─ cowswap-frontend/     # Trading interface (Vite + React)
+│  │  ├─ common/            # shared, leaf-only; **must not depend on modules/**
+│  │  ├─ modules/           # feature folders
+│  │  ├─ pages/             # React Router pages
+│  │  ├─ api/               # API service wrappers
+│  │  └─ types/             # shared TypeScript types
+│  ├─ cow-fi/               # Cow.fi website (Next.js)
+│  │  ├─ app/               # Next.js App Router pages
+│  │  ├─ components/        # React components
+│  │  └─ modules/           # feature modules
+│  ├─ explorer/             # CoW Protocol Explorer (Vite + React)
+│  ├─ widget-configurator/  # Widget configuration tool
+│  └─ ...                   # other specialized apps
+├─ libs/                    # reusable logic across apps
+├─ tools/                   # build & dev utilities
+└─ testing/                 # integration helpers
 ```
 
 **Important**: The `common` directory MUST NOT depend on `modules/` - it is a leaf-only dependency.
