@@ -1,7 +1,7 @@
 # CoW Protocol Front-End • Contribution Guide
 
 Welcome! This document is the canonical set of rules every contributor **and every code assistant** must obey.  
-Violations will be requested to change before merge.
+Make sure you follow them for a speedy review.
 
 ---
 
