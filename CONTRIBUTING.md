@@ -161,6 +161,7 @@ Additional Guidelines:
 - Storybook stories + interaction tests for every UI component
 - Include integration tests
 - Full CI must be green before review
+- Make sure to TEST YOUR OWN PRs before requesting a review
 
 ---
 
