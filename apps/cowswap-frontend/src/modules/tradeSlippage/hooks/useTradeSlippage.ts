@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai/index'
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { bpsToPercent } from '@cowprotocol/common-utils'

@@ -36,6 +36,18 @@ jest.mock('common/hooks/useContract', () => {
     useGP2SettlementContract: jest.fn(),
   }
 })
+jest.mock('modules/twap/hooks/useSetPartOrderCancelling', () => {
+  return {
+    ...jest.requireActual('modules/twap/hooks/useSetPartOrderCancelling'),
+    useSetPartOrderCancelling: jest.fn().mockReturnValue(jest.fn()),
+  }
+})
+jest.mock('modules/twap/hooks/useCancelTwapOrder', () => {
+  return {
+    ...jest.requireActual('modules/twap/hooks/useCancelTwapOrder'),
+    useCancelTwapOrder: jest.fn(),
+  }
+})
 jest.mock('legacy/state/enhancedTransactions/hooks')
 
 const orderMock = {
@@ -117,7 +129,12 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
   })
 
   it('When is ETH-flow order, then should call eth-flow contract', async () => {
-    const { result } = renderHook(() => useSendOnChainCancellation(), { wrapper: WithProviders })
+    const { result } = renderHook(
+      () => {
+        return useSendOnChainCancellation()
+      },
+      { wrapper: WithProviders },
+    )
 
     await result.current({ ...orderMock, inputToken: NATIVE_CURRENCIES[chainId] })
 
