@@ -12,8 +12,9 @@ import { useAddOrUpdateOrders } from 'legacy/state/orders/hooks'
 
 import { useTokensForOrdersList, getTokensListFromOrders, useSWRProdOrders } from 'modules/orders'
 
+import { useTwapPartOrdersList } from '../hooks/useTwapPartOrdersList'
 import { twapOrdersAtom } from '../state/twapOrdersListAtom'
-import { TwapPartOrderItem, twapPartOrdersListAtom, updatePartOrdersAtom } from '../state/twapPartOrdersAtom'
+import { TwapPartOrderItem, updatePartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderItem } from '../types'
 import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
 
@@ -35,7 +36,7 @@ export function CreatedInOrderBookOrdersUpdater() {
   const isSafeWallet = useIsSafeWallet()
   const prodOrders = useSWRProdOrders()
   const getTokensForOrdersList = useTokensForOrdersList()
-  const twapPartOrdersList = useAtomValue(twapPartOrdersListAtom)
+  const twapPartOrdersList = useTwapPartOrdersList()
   const twapOrders = useAtomValue(twapOrdersAtom)
   const updatePartOrders = useSetAtom(updatePartOrdersAtom)
   const addOrUpdateOrders = useAddOrUpdateOrders()
@@ -74,7 +75,7 @@ export function CreatedInOrderBookOrdersUpdater() {
         .filter(isTruthy)
     },
     [prodOrders, twapPartOrdersMap, getTokensForOrdersList, twapOrders],
-    []
+    [],
   )
 
   useEffect(() => {

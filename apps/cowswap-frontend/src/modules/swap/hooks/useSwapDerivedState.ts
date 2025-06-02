@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useSetAtom } from 'jotai/index'
+import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { DEFAULT_TRADE_DERIVED_STATE, TradeType, useBuildTradeDerivedState } from 'modules/trade'
