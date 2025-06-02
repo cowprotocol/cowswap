@@ -1,4 +1,4 @@
-import { atom } from 'jotai/index'
+import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'

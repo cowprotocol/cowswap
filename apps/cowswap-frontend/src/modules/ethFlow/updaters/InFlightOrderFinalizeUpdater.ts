@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai/index'
+import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import ms from 'ms.macro'
