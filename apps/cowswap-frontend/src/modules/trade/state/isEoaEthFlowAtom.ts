@@ -1,4 +1,4 @@
-import { atom } from 'jotai/index'
+import { atom } from 'jotai'
 
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { walletDetailsAtom } from '@cowprotocol/wallet'
