@@ -2,7 +2,7 @@ import React, { JSX, useContext, useReducer } from 'react'
 
 import { AnyAction } from 'combine-reducers'
 
-const GlobalStateContext = React.createContext({})
+export const GlobalStateContext = React.createContext<[unknown, React.Dispatch<AnyAction>]>([null, () => {}])
 
 export function withGlobalContext<P extends JSX.IntrinsicAttributes, State>(
   WrappedComponent: React.FC<P>,

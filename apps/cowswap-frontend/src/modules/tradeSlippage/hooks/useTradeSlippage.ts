@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai/index'
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { bpsToPercent } from '@cowprotocol/common-utils'
@@ -10,8 +10,11 @@ import {
   smartTradeSlippageAtom,
 } from '../state/slippageValueAndTypeAtom'
 
+export function useTradeSlippageValueAndType() {
+  return useAtomValue(slippageValueAndTypeAtom)
+}
 export function useTradeSlippage(): Percent {
-  const { value } = useAtomValue(slippageValueAndTypeAtom)
+  const { value } = useTradeSlippageValueAndType()
 
   return useMemo(() => bpsToPercent(value), [value])
 }

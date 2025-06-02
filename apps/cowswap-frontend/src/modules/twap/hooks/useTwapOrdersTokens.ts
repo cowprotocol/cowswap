@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai/index'
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { TokensByAddress } from '@cowprotocol/tokens'
@@ -7,12 +7,13 @@ import { useAsyncMemo } from 'use-async-memo'
 
 import { useTokensForOrdersList, getTokensListFromOrders } from 'modules/orders'
 
+import { useTwapPartOrdersList } from './useTwapPartOrdersList'
+
 import { twapOrdersListAtom } from '../state/twapOrdersListAtom'
-import { twapPartOrdersListAtom } from '../state/twapPartOrdersAtom'
 
 export function useTwapOrdersTokens(): TokensByAddress | undefined {
   const allTwapOrders = useAtomValue(twapOrdersListAtom)
-  const twapPartOrders = useAtomValue(twapPartOrdersListAtom)
+  const twapPartOrders = useTwapPartOrdersList()
 
   const getTokensForOrdersList = useTokensForOrdersList()
 

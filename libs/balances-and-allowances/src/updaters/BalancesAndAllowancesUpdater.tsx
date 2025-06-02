@@ -56,7 +56,8 @@ export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAl
   // Add native token balance to the store as well
   useEffect(() => {
     const nativeToken = NATIVE_CURRENCIES[chainId]
-    const nativeBalanceState = nativeTokenBalance ? { [nativeToken.address.toLowerCase()]: nativeTokenBalance } : {}
+    const nativeBalanceState =
+      nativeToken && nativeTokenBalance ? { [nativeToken.address.toLowerCase()]: nativeTokenBalance } : {}
 
     setBalances((state) => ({ ...state, values: { ...state.values, ...nativeBalanceState } }))
   }, [nativeTokenBalance, chainId, setBalances])

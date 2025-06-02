@@ -45,6 +45,7 @@ export function quoteUsingSameParameters(
       currentParams.amount === nextParams.amount.toString() &&
       bridgeTradeParams.validFor === nextParams.validFor &&
       bridgeTradeParams.receiver === nextParams.receiver &&
+      bridgeTradeParams.slippageBps === nextParams.slippageBps &&
       currentParams.sellToken.toLowerCase() === nextSellToken &&
       bridgeTradeParams.sellTokenChainId === nextParams.sellTokenChainId &&
       bridgeTradeParams.buyTokenAddress.toLowerCase() === nextParams.buyTokenAddress.toLowerCase()
