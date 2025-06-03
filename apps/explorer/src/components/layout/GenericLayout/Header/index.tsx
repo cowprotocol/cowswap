@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { Color, Media, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { Color, Media, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'
@@ -74,7 +74,7 @@ export const Header: React.FC<Props> = ({ children, linkTo, onClickOptional }) =
       <Logo to={linkTo || '/'} onClick={(event): void => onClickOptional && onClickOptional(event)}>
         <ProductLogo
           variant={ProductVariant.CowExplorer}
-          overrideColor={Color.neutral100}
+          overrideColor={`var(${UI.COLOR_NEUTRAL_100})`}
           logoIconOnly={isUpToMedium}
         />
       </Logo>

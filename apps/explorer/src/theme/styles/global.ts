@@ -1,4 +1,4 @@
-import { Color } from '@cowprotocol/ui'
+import { Color, UI } from '@cowprotocol/ui'
 
 import variables from 'components/layout/GenericLayout/variablesCss'
 import { createGlobalStyle, css } from 'styled-components/macro'
@@ -73,7 +73,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
   html, body {
     background: ${Color.explorer_bg};
-    color: ${({ theme }): string => (theme.mode === 'dark' ? Color.neutral100 : Color.explorer_textPrimary)};
+    color: ${({ theme }): string => (theme.mode === 'dark' ? `var(${UI.COLOR_NEUTRAL_100})` : Color.explorer_textPrimary)};
     /* StyleLint fights you for the sans-serif as it requires a fallback and can't detect it from the theme prop */
     font-family: ${({ theme }): string => theme.fontDefault}, sans-serif;
     font-feature-settings: 'ss01' on, 'ss02' on;

@@ -1,25 +1,35 @@
 'use client'
 
-import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
-import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
-import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import IMG_ICON_BUILD_WITH_COW from '@cowprotocol/assets/images/icon-build-with-cow.svg'
-import IMG_ICON_SECURE from '@cowprotocol/assets/images/icon-secure.svg'
-import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
-import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
-import IMG_LOGO_SAFE from '@cowprotocol/assets/images/icon-logo-safe.svg'
-import IMG_LOGO_LIDO from '@cowprotocol/assets/images/icon-logo-lido.svg'
-import IMG_LOGO_CURVE from '@cowprotocol/assets/images/icon-logo-curve.svg'
-import IMG_INTENTS from '@cowprotocol/assets/images/image-intents.svg'
-import IMG_SOLVERS from '@cowprotocol/assets/images/image-solvers.svg'
-import IMG_BATCHAUCTIONS from '@cowprotocol/assets/images/image-batchauctions.svg'
+import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import IMG_COW_LENS from '@cowprotocol/assets/images/icon-cow-lens.svg'
+import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
+import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
+import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
+import IMG_LOGO_CURVE from '@cowprotocol/assets/images/icon-logo-curve.svg'
+import IMG_LOGO_LIDO from '@cowprotocol/assets/images/icon-logo-lido.svg'
+import IMG_LOGO_SAFE from '@cowprotocol/assets/images/icon-logo-safe.svg'
+import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
+import IMG_ICON_SECURE from '@cowprotocol/assets/images/icon-secure.svg'
+import IMG_BATCHAUCTIONS from '@cowprotocol/assets/images/image-batchauctions.svg'
 import IMG_COW_BITS from '@cowprotocol/assets/images/image-cow-bits.svg'
+import IMG_INTENTS from '@cowprotocol/assets/images/image-intents.svg'
 import IMG_LEADING from '@cowprotocol/assets/images/image-leading.svg'
-import FAQ from '@/components/FAQ'
-import { Link, LinkType } from '@/components/Link'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+import IMG_SOLVERS from '@cowprotocol/assets/images/image-solvers.svg'
+import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
+import FAQ from '@/components/FAQ'
+import LazySVG from '@/components/LazySVG'
+import { Link, LinkType } from '@/components/Link'
+import {
+  ADVANCED_ORDER_TYPES,
+  ALL_LOGOS,
+  CASE_STUDIES,
+  COW_PROTOCOL_SECTIONS,
+  useFaqData,
+  TOP_LOGOS,
+  UNIQUE_TRADING_LOGIC,
+} from '@/data/cow-protocol/const'
 import {
   ContainerCard,
   ContainerCardSection,
@@ -44,19 +54,7 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-
-import LazySVG from '@/components/LazySVG'
-import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
-
-import {
-  ADVANCED_ORDER_TYPES,
-  ALL_LOGOS,
-  CASE_STUDIES,
-  COW_PROTOCOL_SECTIONS,
-  useFaqData,
-  TOP_LOGOS,
-  UNIQUE_TRADING_LOGIC,
-} from '@/data/cow-protocol/const'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 export default function Page() {
   const faqData = useFaqData()
@@ -123,14 +121,14 @@ export default function Page() {
         </Link>
       </MetricsCard>
 
-      <ContainerCard bgColor={Color.neutral98}>
+      <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_98})`}>
         <ContainerCardSection>
-          <SectionTitleWrapper color={Color.neutral0} maxWidth={700} gap={56}>
+          <SectionTitleWrapper color={`var(${UI.COLOR_NEUTRAL_0})`} maxWidth={700} gap={56}>
             <SectionTitleIcon $size={82}>
               <LazySVG src={IMG_ICON_CROWN_COW} />
             </SectionTitleIcon>
             <SectionTitleText>The leading intents-based DEX aggregation protocol</SectionTitleText>
-            <SectionTitleDescription maxWidth={900} color={Color.neutral50}>
+            <SectionTitleDescription maxWidth={900} color={`var(${UI.COLOR_NEUTRAL_50})`}>
               CoW Protocol leverages intents, batch auctions, and the largest solver network in DeFi to bring
               surplus-capturing, MEV-protected trades to users
             </SectionTitleDescription>
@@ -148,7 +146,7 @@ export default function Page() {
               <LazySVG src={IMG_COW_LENS} />
             </SectionTitleIcon>
             <SectionTitleText>How it works</SectionTitleText>
-            <SectionTitleDescription maxWidth={900} color={Color.neutral50}>
+            <SectionTitleDescription maxWidth={900} color={`var(${UI.COLOR_NEUTRAL_50})`}>
               CoW Protocol hosts a continuous competition between solvers to find better prices and protect users from
               MEV
             </SectionTitleDescription>
@@ -158,9 +156,9 @@ export default function Page() {
             <TopicCard columns="repeat(2, 1fr)" columnsTablet="1fr" gap={100} horizontal asProp="div">
               <TopicCardInner contentAlign="left">
                 <TopicTitle fontSize={51}>Intents</TopicTitle>
-                <TopicDescription fontSize={28} color={Color.neutral50}>
-                  CoW Protocol users sign an "intent to trade" message instead of directly executing orders on-chain
-                  (like on Uniswap). This lets solvers trade on behalf of the user
+                <TopicDescription fontSize={28} color={`var(${UI.COLOR_NEUTRAL_50})`}>
+                  CoW Protocol users sign an &quot;intent to trade&quot; message instead of directly executing orders
+                  on-chain (like on Uniswap). This lets solvers trade on behalf of the user
                 </TopicDescription>
                 <Link
                   bgColor={Color.cowfi_purple3}
@@ -205,7 +203,7 @@ export default function Page() {
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle fontSize={51}>Solvers</TopicTitle>
-                <TopicDescription fontSize={28} color={Color.neutral50}>
+                <TopicDescription fontSize={28} color={`var(${UI.COLOR_NEUTRAL_50})`}>
                   Professional third parties known as solvers find the most optimal trade path from a combination of
                   public and private liquidity sources - finding better prices than most users could find on their own
                 </TopicDescription>
@@ -228,7 +226,7 @@ export default function Page() {
             <TopicCard columns="1fr auto" columnsTablet="1fr" gap={100} horizontal asProp="div">
               <TopicCardInner contentAlign="left">
                 <TopicTitle fontSize={51}>Batch Auctions</TopicTitle>
-                <TopicDescription fontSize={28} color={Color.neutral50}>
+                <TopicDescription fontSize={28} color={`var(${UI.COLOR_NEUTRAL_50})`}>
                   Solvers compete for the right to settle trades in batches, which give users additional MEV protection
                   and allow for Coincidence of Wants.
                   <br />
@@ -265,12 +263,12 @@ export default function Page() {
         </ContainerCardSection>
       </ContainerCard>
 
-      <ContainerCard bgColor={Color.neutral0} color={Color.neutral98}>
+      <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_0})`} color={`var(${UI.COLOR_NEUTRAL_98})`}>
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 0">
             <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
             <SectionTitleText>Going where others can&apos;t</SectionTitleText>
-            <SectionTitleDescription color={Color.neutral60}>
+            <SectionTitleDescription color={`var(${UI.COLOR_NEUTRAL_60})`}>
               Thanks to its unique architecture, CoW Protocol can do things other DEXs can&apos;t
             </SectionTitleDescription>
           </SectionTitleWrapper>
@@ -343,7 +341,7 @@ export default function Page() {
 
       <ContainerCard bgColor={'transparent'}>
         <ContainerCardSection>
-          <SectionTitleWrapper maxWidth={878} color={Color.neutral10}>
+          <SectionTitleWrapper maxWidth={878} color={`var(${UI.COLOR_NEUTRAL_10})`}>
             <SectionTitleIcon $size={128}>
               <LazySVG src={IMG_ICON_BULB_COW} />
             </SectionTitleIcon>
@@ -362,7 +360,7 @@ export default function Page() {
                 <LazySVG src={IMG_LOGO_CURVE} />
               </TopicImage>
               <TopicCardInner contentAlign="left">
-                <TopicTitle color={Color.neutral100}>Automating advanced treasury tasks</TopicTitle>
+                <TopicTitle color={`var(${UI.COLOR_NEUTRAL_100})`}>Automating advanced treasury tasks</TopicTitle>
                 <TopicDescription fontSize={21} color={Color.cowfi_purple_bright}>
                   Curve uses programmatic orders from CoW Protocol to streamline their fee burning processes. With the
                   integration in place, Curve can take fees in any token and convert them automatically to CRV, while
@@ -382,12 +380,14 @@ export default function Page() {
                 <LazySVG src={IMG_LOGO_LIDO} />
               </TopicImage>
               <TopicCardInner contentAlign="left">
-                <TopicTitle color={Color.neutral100}>Adding security to sensitive transactions</TopicTitle>
+                <TopicTitle color={`var(${UI.COLOR_NEUTRAL_100})`}>
+                  Adding security to sensitive transactions
+                </TopicTitle>
                 <TopicDescription fontSize={21} color={Color.cowfi_purple_bright}>
-                  Lido leverages programmatic orders as the backbone of "stonks" - a set of smart contracts that they
-                  use to manage treasury ops smoothly and securely without taking custody of funds. Stonks allows Lido
-                  DAO to "set and forget" complex trade intents without compromising the prices they receive on future
-                  swaps - minimizing time spent and human error
+                  Lido leverages programmatic orders as the backbone of &quot;stonks&quot; - a set of smart contracts
+                  that they use to manage treasury ops smoothly and securely without taking custody of funds. Stonks
+                  allows Lido DAO to &quot;set and forget&quot; complex trade intents without compromising the prices
+                  they receive on future swaps - minimizing time spent and human error
                 </TopicDescription>
               </TopicCardInner>
             </TopicCard>
@@ -403,7 +403,7 @@ export default function Page() {
                 <LazySVG src={IMG_LOGO_SAFE} />
               </TopicImage>
               <TopicCardInner contentAlign="left">
-                <TopicTitle color={Color.neutral100}>Powering native swaps</TopicTitle>
+                <TopicTitle color={`var(${UI.COLOR_NEUTRAL_100})`}>Powering native swaps</TopicTitle>
                 <TopicDescription fontSize={21} color={Color.cowfi_purple_bright}>
                   Safe chose CoW Protocol to power native swaps on the Safe app. The team chose to build on top of the
                   CoW widget (the simplest way to integrate CoW Protocol) and is now earning revenue by offering
@@ -415,7 +415,7 @@ export default function Page() {
         </ContainerCardSection>
       </ContainerCard>
 
-      <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
+      <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_10})`} color={`var(${UI.COLOR_NEUTRAL_98})`}>
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 0">
             <SectionTitleIcon $multiple $size={60}>
@@ -431,7 +431,7 @@ export default function Page() {
               <TopicCard
                 key={logo.url}
                 contentAlign={'center'}
-                bgColor={Color.neutral100}
+                bgColor={`var(${UI.COLOR_NEUTRAL_100})`}
                 padding={'42px'}
                 href={`${logo.url}?utm_source=cow.fi&utm_medium=web&utm_content=cow-protocol-logos`}
                 target="_blank"
@@ -442,7 +442,7 @@ export default function Page() {
                 })}
               >
                 <TopicImage
-                  iconColor={Color.neutral20}
+                  iconColor={`var(${UI.COLOR_NEUTRAL_20})`}
                   bgColor={'transparent'}
                   width={'100%'}
                   height={54}
@@ -454,7 +454,13 @@ export default function Page() {
             ))}
 
             {CASE_STUDIES.map((study) => (
-              <TopicCard key={study.link} bgColor={Color.neutral100} padding={'52px'} gap={16} asProp="div">
+              <TopicCard
+                key={study.link}
+                bgColor={`var(${UI.COLOR_NEUTRAL_100})`}
+                padding={'52px'}
+                gap={16}
+                asProp="div"
+              >
                 <TopicImage iconColor={Color.cowfi_purple3} bgColor="transparent" height={96} width={'auto'}>
                   <LazySVG src={study.logo} />
                 </TopicImage>
@@ -486,7 +492,7 @@ export default function Page() {
               <TopicCard
                 key={logo.url}
                 contentAlign={'center'}
-                bgColor={Color.neutral100}
+                bgColor={`var(${UI.COLOR_NEUTRAL_100})`}
                 padding={'42px'}
                 href={`${logo.url}?utm_source=cow.fi&utm_medium=web&utm_content=cow-protocol-logos`}
                 target="_blank"
@@ -496,7 +502,13 @@ export default function Page() {
                   action: `Visit Partner ${logo.alt}`,
                 })}
               >
-                <TopicImage iconColor={Color.neutral20} bgColor={'transparent'} width={90} height={90} margin={'auto'}>
+                <TopicImage
+                  iconColor={`var(${UI.COLOR_NEUTRAL_20})`}
+                  bgColor={'transparent'}
+                  width={90}
+                  height={90}
+                  margin={'auto'}
+                >
                   <LazySVG src={logo.src} title={logo.alt} />
                 </TopicImage>
               </TopicCard>
@@ -507,7 +519,7 @@ export default function Page() {
 
       <ContainerCard bgColor={'transparent'}>
         <ContainerCardSection>
-          <SectionTitleWrapper color={Color.neutral10} maxWidth={1100}>
+          <SectionTitleWrapper color={`var(${UI.COLOR_NEUTRAL_10})`} maxWidth={1100}>
             <SectionTitleIcon $size={78}>
               <LazySVG src={IMG_ICON_BUILD_WITH_COW} />
             </SectionTitleIcon>
@@ -568,7 +580,7 @@ export default function Page() {
               <LazySVG src={IMG_ICON_SECURE} />
             </SectionTitleIcon>
             <SectionTitleText textAlign="center">Want to build a solver?</SectionTitleText>
-            <SectionTitleDescription fontSize={28} color={Color.neutral30}>
+            <SectionTitleDescription fontSize={28} color={`var(${UI.COLOR_NEUTRAL_30})`}>
               Solvers are the backbone of CoW Protocol. In a nutshell, solvers are optimization algorithms that compete
               to find CoW Protocol users the best possible settlements for their trade intents.
               <br />
@@ -599,7 +611,7 @@ export default function Page() {
         </ContainerCardSection>
       </ContainerCard>
 
-      <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} touchFooter>
+      <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_90})`} color={`var(${UI.COLOR_NEUTRAL_10})`} touchFooter>
         <ContainerCardSection>
           <SectionTitleWrapper>
             <SectionTitleIcon $size={62}>

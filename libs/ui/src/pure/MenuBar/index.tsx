@@ -41,8 +41,8 @@ import {
   StyledDropdownContentItem,
 } from './styled'
 
-import { Color } from '../../colors'
 import { Media } from '../../consts'
+import { UI } from '../../enum'
 import { BadgeType } from '../../types'
 import { Badge } from '../Badge'
 import { ProductLogo, ProductVariant } from '../ProductLogo'
@@ -54,8 +54,8 @@ const DAO_NAV_ITEMS: MenuItem[] = [
     href: 'https://cow.fi/',
     productVariant: ProductVariant.CowDao,
     hasDivider: true,
-    hoverColor: Color.neutral100,
-    hoverBgColor: Color.neutral20,
+    hoverColor: `var(${UI.COLOR_NEUTRAL_100})`,
+    hoverBgColor: `var(${UI.COLOR_NEUTRAL_20})`,
     external: true,
     utmContent: 'menubar-dao-nav-cowdao',
   },

@@ -14,8 +14,8 @@ import { useTheme } from '@cowprotocol/common-hooks'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { Color } from '../../colors'
 import { Media } from '../../consts'
+import { UI } from '../../enum'
 import { CowSwapTheme } from '../../types'
 
 export enum ProductVariant {
@@ -106,24 +106,24 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
       default: {
         src: LOGO_COWEXPLORER,
         alt: 'CoW Explorer',
-        color: Color.neutral0,
+        color: `var(${UI.COLOR_NEUTRAL_0})`,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'CoW Explorer',
-        color: Color.neutral0,
+        color: `var(${UI.COLOR_NEUTRAL_0})`,
       },
     },
     dark: {
       default: {
         src: LOGO_COWEXPLORER,
         alt: 'CoW Explorer',
-        color: Color.neutral100,
+        color: `var(${UI.COLOR_NEUTRAL_100})`,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'CoW Explorer',
-        color: Color.neutral100,
+        color: `var(${UI.COLOR_NEUTRAL_100})`,
       },
     },
   },
@@ -134,24 +134,24 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
       default: {
         src: LOGO_COWDAO,
         alt: 'CoW DAO',
-        color: Color.neutral0,
+        color: `var(${UI.COLOR_NEUTRAL_0})`,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'CoW DAO',
-        color: Color.neutral0,
+        color: `var(${UI.COLOR_NEUTRAL_0})`,
       },
     },
     dark: {
       default: {
         src: LOGO_COWDAO,
         alt: 'CoW DAO',
-        color: Color.neutral100,
+        color: `var(${UI.COLOR_NEUTRAL_100})`,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'CoW DAO',
-        color: Color.neutral100,
+        color: `var(${UI.COLOR_NEUTRAL_100})`,
       },
     },
   },
@@ -162,24 +162,24 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
       default: {
         src: LOGO_COWPROTOCOL,
         alt: 'CoW Protocol',
-        color: Color.neutral0,
+        color: `var(${UI.COLOR_NEUTRAL_0})`,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'CoW Protocol',
-        color: Color.neutral0,
+        color: `var(${UI.COLOR_NEUTRAL_0})`,
       },
     },
     dark: {
       default: {
         src: LOGO_COWPROTOCOL,
         alt: 'CoW Protocol',
-        color: Color.neutral100,
+        color: `var(${UI.COLOR_NEUTRAL_100})`,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'CoW Protocol',
-        color: Color.neutral100,
+        color: `var(${UI.COLOR_NEUTRAL_100})`,
       },
     },
   },

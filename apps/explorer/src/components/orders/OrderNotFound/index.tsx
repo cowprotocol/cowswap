@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 
-import { Color, Media } from '@cowprotocol/ui'
+import { Color, Media, UI } from '@cowprotocol/ui'
 
 import SupportIcon from 'assets/img/support.png'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
@@ -90,7 +90,7 @@ const Support = styled.a`
   justify-content: center;
   gap: 1rem;
   cursor: pointer;
-  color: ${Color.neutral100} !important;
+  color: var(${UI.COLOR_NEUTRAL_100}) !important;
 
   :hover {
     background-color: ${Color.explorer_greyOpacity};

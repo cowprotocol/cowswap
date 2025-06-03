@@ -1,4 +1,4 @@
-import { Media, Color } from '@cowprotocol/ui'
+import { Media, Color, UI } from '@cowprotocol/ui'
 
 import styled, { keyframes } from 'styled-components/macro'
 
@@ -29,8 +29,13 @@ export const ChartSkeleton = styled.div<{ backgroundColor?: 'grey' | 'orange' }>
   }
 
   /* shimmering */
-  mask: linear-gradient(-60deg, ${Color.neutral0} 30%, ${Color.explorer_bgOpaque}, ${Color.neutral0} 70%) right/300%
-    100%;
+  mask: linear-gradient(
+      -60deg,
+      ${`var(${UI.COLOR_NEUTRAL_0})}`} 30%,
+      ${Color.explorer_bgOpaque},
+      ${`var(${UI.COLOR_NEUTRAL_0})}`} 70%
+    )
+    right/300% 100%;
   background-repeat: no-repeat;
   animation: shimmer 1.5s infinite;
   animation-name: ${frameAnimation};

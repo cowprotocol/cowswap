@@ -1,6 +1,6 @@
 import React, { Context, useContext } from 'react'
 
-import { Color, Media } from '@cowprotocol/ui'
+import { Color, Media, UI } from '@cowprotocol/ui'
 
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -60,8 +60,8 @@ const Icon = styled(FontAwesomeIcon)`
     color: ${Color.explorer_textActive};
   }
 `
-const PaginationButton = styled.button.attrs<{ disabled?: boolean }>(props => ({
-  disabled: props.disabled ?? true
+const PaginationButton = styled.button.attrs<{ disabled?: boolean }>((props) => ({
+  disabled: props.disabled ?? true,
 }))`
   align-items: center;
   background: none;
@@ -102,7 +102,7 @@ const PaginationDropdownButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  color: ${Color.neutral100};
+  color: var(${UI.COLOR_NEUTRAL_100});
 
   &.selected {
     background-color: transparent;

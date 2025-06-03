@@ -1,4 +1,4 @@
-import { Color } from '@cowprotocol/ui'
+import { Color, UI } from '@cowprotocol/ui'
 
 import { StylesheetCSS } from 'cytoscape'
 import styled, { css } from 'styled-components/macro'
@@ -34,7 +34,7 @@ export const FloatingWrapper = styled.div`
 
 const FloatingButton = css`
   cursor: pointer;
-  color: ${(): string => Color.neutral100};
+  color: var(${UI.COLOR_NEUTRAL_100});
   height: 3rem;
   border: 1px solid ${Color.explorer_border};
   border-radius: 0.5rem;
@@ -87,7 +87,7 @@ export function STYLESHEET(): StylesheetCSS[] {
       selector: 'node[label]',
       css: {
         label: 'data(label)',
-        color: Color.neutral100,
+        color: `var(${UI.COLOR_NEUTRAL_100})`,
         height: 50,
         width: 50,
         'background-color': Color.explorer_bg2,
@@ -118,7 +118,7 @@ export function STYLESHEET(): StylesheetCSS[] {
         'target-arrow-shape': 'triangle',
         'target-arrow-color': Color.explorer_grey,
         'curve-style': 'unbundled-bezier',
-        color: Color.neutral0,
+        color: `var(${UI.COLOR_NEUTRAL_0})`,
         'line-color': Color.explorer_grey,
         'line-opacity': 0.8,
         'text-background-color': Color.explorer_labelTextOpen,
@@ -165,7 +165,7 @@ export function STYLESHEET(): StylesheetCSS[] {
         'line-color': Color.explorer_orange1,
         'target-arrow-color': Color.explorer_orange1,
         'text-background-color': Color.explorer_orange1,
-        color: Color.neutral100,
+        color: `var(${UI.COLOR_NEUTRAL_100})`,
       },
     },
     {

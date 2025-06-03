@@ -1,9 +1,11 @@
+'use client'
+
+import { UI } from '@cowprotocol/ui'
+
 import { LearnPageComponent } from '@/components/LearnPageComponent'
 import { FEATURED_ARTICLES_PAGE_SIZE } from '@/const/pagination'
 
 import { getArticles, getCategories } from '../../../services/cms'
-
-export const revalidate = 3600 // Revalidate at most once per hour
 
 export default async function LearnPage() {
   // Fetch featured articles
@@ -37,10 +39,10 @@ export default async function LearnPage() {
         name: category?.attributes?.name || '',
         slug: category?.attributes?.slug || '',
         description: category?.attributes?.description || '',
-        bgColor: category?.attributes?.backgroundColor || '#FFFFFF',
-        textColor: category?.attributes?.textColor || '#000000',
+        bgColor: category?.attributes?.backgroundColor || `var(${UI.COLOR_NEUTRAL_100})`,
+        textColor: category?.attributes?.textColor || `var(${UI.COLOR_NEUTRAL_0})`,
         link: `/learn/topic/${category?.attributes?.slug}`,
-        iconColor: '#FFFFFF',
+        iconColor: `var(${UI.COLOR_NEUTRAL_100})`,
         imageUrl,
       }
     }) || []

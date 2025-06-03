@@ -2,7 +2,7 @@
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
-import { Color, Font, Media } from '@cowprotocol/ui'
+import { Font, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -136,7 +136,7 @@ const Wrapper = styled.div`
   h1 {
     font-size: 28px;
     font-weight: ${Font.weight.medium};
-    color: ${Color.neutral50};
+    color: var(${UI.COLOR_NEUTRAL_50});
     text-align: center;
     padding: 0 10px;
 
@@ -190,7 +190,7 @@ export function LearnPageComponent({ categories, featuredArticles }: PageProps) 
                     })
                   }
                 >
-                  <ArticleImage color={Color.neutral0}>
+                  <ArticleImage color={`var(${UI.COLOR_NEUTRAL_0})`}>
                     {cover && <LazyImage src={cover} alt={title} width={700} height={200} />}
                   </ArticleImage>
                   <ArticleTitle>{title}</ArticleTitle>
@@ -319,9 +319,9 @@ export function LearnPageComponent({ categories, featuredArticles }: PageProps) 
         </ContainerCardInner>
       </ContainerCard>
 
-      <ContainerCard bgColor={Color.neutral98} padding="0" touchFooter>
+      <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_98})`} padding="0" touchFooter>
         <CTASectionWrapper>
-          <CTAImage color={Color.cowfi_blue}>
+          <CTAImage color={`var(${UI.COLOR_BLUE_500_PRIMARY})`}>
             <LazySVG src={IMG_ICON_BULB_COW} />
           </CTAImage>
           <CTASubtitle>Explore, learn, integrate</CTASubtitle>

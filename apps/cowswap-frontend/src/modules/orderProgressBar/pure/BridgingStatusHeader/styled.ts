@@ -5,30 +5,42 @@ import styled from 'styled-components/macro'
 
 import { BridgingFlowStep } from '../../types'
 
-const backgroundColors: Record<BridgingFlowStep, string> = {
-  bridgingInProgress: UI.COLOR_COWAMM_LIGHT_BLUE,
-  bridgingFailed: UI.COLOR_COWAMM_LIGHT_ORANGE,
-  bridgingFinished: UI.COLOR_COWAMM_LIGHTER_GREEN,
-  refundCompleted: UI.COLOR_COWAMM_LIGHTER_GREEN,
-}
-
-const titleColors: Record<BridgingFlowStep, string> = {
-  bridgingInProgress: '#052B65', // TODO: merge with existing Color.cowfi_darkBlue
-  bridgingFailed: '#996815',
-  bridgingFinished: '#007B28',
-  refundCompleted: '#007B28',
+const stepColors: Record<BridgingFlowStep, { background: string; title: string }> = {
+  bridgingInProgress: {
+    background: UI.COLOR_BLUE_100_PRIMARY,
+    title: UI.COLOR_BLUE_900_PRIMARY,
+  },
+  bridgingFailed: {
+    background: UI.COLOR_ALERT_BG,
+    title: UI.COLOR_ALERT_TEXT,
+  },
+  bridgingFinished: {
+    background: UI.COLOR_SUCCESS_BG,
+    title: UI.COLOR_SUCCESS_TEXT,
+  },
+  refundCompleted: {
+    background: UI.COLOR_SUCCESS_BG,
+    title: UI.COLOR_SUCCESS_TEXT,
+  },
 }
 
 export const Header = styled.div<{ $step: BridgingFlowStep }>`
-  background: var(${({ $step }) => backgroundColors[$step]});
-  color: ${({ $step }) => titleColors[$step]};
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  background: var(${({ $step }) => stepColors[$step].background});
+  color: var(${({ $step }) => stepColors[$step].title});
   width: 100%;
   border-radius: 16px;
   text-align: center;
   padding: 20px;
 
-  h3 {
-    margin: 20px 0 0 0;
+  > h3 {
+    margin: 0;
+    font-size: 19px;
+    color: inherit;
   }
 `
 
@@ -40,33 +52,40 @@ export const HeaderState = styled.div`
   width: 100%;
 `
 
+const TOKEN_SIZE = '42px'
+const CONNECTOR_HEIGHT = '2px'
+const MARGIN_MULTIPLIER = 1.5
+const CONNECTOR_OFFSET_MULTIPLIER = -1.25
+
 export const TokenLogo = styled(TokenLogoOriginal)`
-  --size: 42px;
+  --size: ${TOKEN_SIZE};
+  --margin: calc(var(--size) * ${MARGIN_MULTIPLIER});
+  --connector-offset: calc(var(--size) * ${CONNECTOR_OFFSET_MULTIPLIER});
   position: relative;
 
   &:before {
     content: '';
     display: block;
     width: var(--size);
-    height: 2px;
-    background: #000;
+    height: ${CONNECTOR_HEIGHT};
+    background: var(${UI.COLOR_NEUTRAL_0});
     position: absolute;
     mix-blend-mode: soft-light;
   }
 
   &:first-child {
-    margin-right: calc(var(--size) * 1.5);
+    margin-right: var(--margin);
 
     &:before {
-      right: calc(var(--size) * -1.25);
+      right: var(--connector-offset);
     }
   }
 
   &:last-child {
-    margin-left: calc(var(--size) * 1.5);
+    margin-left: var(--margin);
 
     &:before {
-      left: calc(var(--size) * -1.25);
+      left: var(--connector-offset);
     }
   }
 `

@@ -1,15 +1,16 @@
-import { Color, ProductVariant, UI } from '@cowprotocol/ui'
 import { initGtm } from '@cowprotocol/analytics'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
-
-import IMG_GREEN_WAVES from '@cowprotocol/assets/images/image-green-waves.svg'
-import IMG_COINS from '@cowprotocol/assets/images/image-coins.svg'
 import IMG_BITS from '@cowprotocol/assets/images/image-bits.svg'
-import IMG_TUBE from '@cowprotocol/assets/images/image-tube.svg'
-
+import IMG_COINS from '@cowprotocol/assets/images/image-coins.svg'
 import IMG_DISCORD from '@cowprotocol/assets/images/image-discord.svg'
 import IMG_FORUM from '@cowprotocol/assets/images/image-forum.svg'
+import IMG_GREEN_WAVES from '@cowprotocol/assets/images/image-green-waves.svg'
 import IMG_SNAPSHOT from '@cowprotocol/assets/images/image-snapshot.svg'
+import IMG_TUBE from '@cowprotocol/assets/images/image-tube.svg'
+import { Color, ProductVariant, UI } from '@cowprotocol/ui'
+
+import SVG from 'react-inlinesvg'
+
+import { Link, LinkType } from '@/components/Link'
 import {
   ContainerCard,
   ContainerCardSection,
@@ -22,8 +23,7 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-import { Link, LinkType } from '@/components/Link'
-import SVG from 'react-inlinesvg'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 const analytics = initGtm()
 
@@ -94,7 +94,7 @@ export const CHANNEL_LIST = [
     href: 'https://discord.com/invite/cowprotocol?utm_source=cow.fi&utm_medium=web&utm_content=link',
     linkEvent: 'click-discord',
     iconColor: Color.cowfi_discord_pink,
-    textColor: Color.neutral10,
+    textColor: `var(${UI.COLOR_NEUTRAL_10})`,
     iconImage: IMG_DISCORD,
   },
   {
@@ -116,9 +116,9 @@ export const CHANNEL_LIST = [
 ]
 
 export const PRODUCT_CONTAINERS = (
-  <ContainerCard bgColor={Color.neutral100}>
+  <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_100})`}>
     <ContainerCardSection>
-      <SectionTitleWrapper color={Color.neutral0} maxWidth={1200} margin="100px auto">
+      <SectionTitleWrapper color={`var(${UI.COLOR_NEUTRAL_0})`} maxWidth={1200} margin="100px auto">
         <SectionTitleText lineHeight={1.6} lineHeightMobile={1.8} fontSizeMobile={28}>
           CoW DAO develops the <span className="wordtag-orange">most user-protective</span> products in DeFi – so you
           can <span className="wordtag-purple">do more</span> with <span className="wordtag-blue">less worry</span>
