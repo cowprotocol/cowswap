@@ -44,8 +44,8 @@ const Wrapper = styled.div<{ stylized: boolean }>`
   justify-content: space-between;
   width: 100%;
   align-items: center;
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 13px;
+  font-weight: 500;
   gap: 10px;
   flex: 1 1 min-content;
 `
@@ -53,7 +53,6 @@ const Wrapper = styled.div<{ stylized: boolean }>`
 const RateLabel = styled.div`
   display: flex;
   align-items: center;
-  font-weight: 400;
   gap: 5px;
   text-align: left;
   transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
@@ -130,7 +129,6 @@ export const RateWrapper = styled.button<{ rightAlign?: boolean }>`
 
 export const FiatRate = styled.span`
   color: inherit;
-  opacity: 0.7;
   font-weight: 400;
   text-align: right;
   white-space: nowrap;

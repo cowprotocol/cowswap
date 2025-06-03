@@ -15,8 +15,6 @@ export interface Colors {
   warning: ColorValue
   info: ColorValue
   success: ColorValue
-  white: ColorValue
-  black: ColorValue
   text1: ColorValue
   text4: ColorValue
   bg2: ColorValue
@@ -50,7 +48,23 @@ export interface Colors {
   blue100Primary: ColorValue
   blue300Primary: ColorValue
   blue400Primary: ColorValue
+  blue500Primary: ColorValue
   blue900Primary: ColorValue
+  white: ColorValue
+  neutral100: ColorValue
+  neutral98: ColorValue
+  neutral95: ColorValue
+  neutral90: ColorValue
+  neutral80: ColorValue
+  neutral70: ColorValue
+  neutral60: ColorValue
+  neutral50: ColorValue
+  neutral40: ColorValue
+  neutral30: ColorValue
+  neutral20: ColorValue
+  neutral10: ColorValue
+  neutral0: ColorValue
+  black: ColorValue
   // TODO: Colors migrated from cow-fi
   // TODO: Remove these once we've migrated all the colors
   cowfi_orange: ColorValue

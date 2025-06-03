@@ -82,17 +82,34 @@ export enum UI {
   COLOR_BADGE_YELLOW_TEXT = '--cow-color-badge-yellow-text',
 
   // Colors
-  COLOR_WHITE = '--cow-color-white',
   COLOR_BLUE = '--cow-color-blue',
   COLOR_BLUE_100_PRIMARY = '--cow-color-blue-100-primary',
   COLOR_BLUE_300_PRIMARY = '--cow-color-blue-300-primary',
   COLOR_BLUE_400_PRIMARY = '--cow-color-blue-400-primary',
+  COLOR_BLUE_500_PRIMARY = '--cow-color-blue-500-primary',
   COLOR_BLUE_900_PRIMARY = '--cow-color-blue-900-primary',
   COLOR_LIGHT_BLUE_OPACITY_90 = '--cow-color-lightBlue-opacity-90',
   COLOR_LIGHT_BLUE_OPACITY_80 = '--cow-color-lightBlue-opacity-80',
   COLOR_YELLOW_LIGHT = '--cow-color-yellow-light',
   COLOR_GREEN = '--cow-color-green',
   COLOR_RED = '--cow-color-red',
+
+  // Neutral colors - Base grayscale palette from black (0) to white (100)
+  COLOR_WHITE = '--cow-color-neutral-100',
+  COLOR_NEUTRAL_100 = '--cow-color-neutral-100',
+  COLOR_NEUTRAL_98 = '--cow-color-neutral-98',
+  COLOR_NEUTRAL_95 = '--cow-color-neutral-95',
+  COLOR_NEUTRAL_90 = '--cow-color-neutral-90',
+  COLOR_NEUTRAL_80 = '--cow-color-neutral-80',
+  COLOR_NEUTRAL_70 = '--cow-color-neutral-70',
+  COLOR_NEUTRAL_60 = '--cow-color-neutral-60',
+  COLOR_NEUTRAL_50 = '--cow-color-neutral-50',
+  COLOR_NEUTRAL_40 = '--cow-color-neutral-40',
+  COLOR_NEUTRAL_30 = '--cow-color-neutral-30',
+  COLOR_NEUTRAL_20 = '--cow-color-neutral-20',
+  COLOR_NEUTRAL_10 = '--cow-color-neutral-10',
+  COLOR_NEUTRAL_0 = '--cow-color-neutral-0',
+  COLOR_BLACK = '--cow-color-neutral-0',
 
   // Elements
   COLOR_BORDER = '--cow-color-border',

@@ -27,7 +27,7 @@ export const ProgressContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 0 0 24px;
+  padding: 0;
 `
 
 export const Link = styled.a<{ underline?: boolean }>`

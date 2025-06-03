@@ -1,4 +1,4 @@
-import { Color, Media, ThemeColorVars, UI } from '@cowprotocol/ui'
+import { Media, ThemeColorVars, UI } from '@cowprotocol/ui'
 
 import { createGlobalStyle } from 'styled-components/macro'
 
@@ -57,7 +57,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   body {
-    background: ${({ theme }) => (theme?.isInjectedWidgetMode ? 'transparent' : Color.neutral98)};
+    background: ${({ theme }) => (theme?.isInjectedWidgetMode ? 'transparent' : `var(${UI.COLOR_NEUTRAL_98})`)};
     min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'auto' : '100vh')};
 
     &.noScroll {

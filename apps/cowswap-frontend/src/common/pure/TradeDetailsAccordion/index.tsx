@@ -14,7 +14,7 @@ interface TradeDetailsAccordionProps {
   children?: ReactNode
   open: boolean
   onToggle: () => void
-  feeWrapper?: (feeElement: ReactNode) => ReactNode
+  feeWrapper?: (feeElement: ReactNode, isOpen: boolean) => ReactNode
 }
 
 /**
@@ -68,7 +68,7 @@ export const TradeDetailsAccordion = ({
           tabIndex={0}
           isOpen={open}
         >
-          {feeWrapper ? feeWrapper(defaultFeeContent) : defaultFeeContent}
+          {feeWrapper ? feeWrapper(defaultFeeContent, open) : defaultFeeContent}
 
           <ToggleArrow isOpen={open} />
         </SummaryClickable>

@@ -51,7 +51,7 @@ export const SummaryClickable = styled.div<{ isOpen: boolean }>`
   justify-content: flex-end;
   flex-flow: row wrap;
   gap: 4px;
-  color: ${({ isOpen }) => (isOpen ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_70})`)};
+  color: var(${UI.COLOR_TEXT});
   transition: all var(${UI.ANIMATION_DURATION}) ease-in-out;
   outline: none;
   font-size: inherit;

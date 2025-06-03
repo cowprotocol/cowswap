@@ -5,31 +5,15 @@ import { css } from 'styled-components/macro'
  * Central color system for CoW Protocol applications
  *
  * Colors are organized into several categories:
- * 1. Neutral colors (neutral0-100): Base grayscale palette
- * 2. CoW Protocol colors (cowfi_): Brand-specific colors
- * 3. CoW AMM colors (cowamm_): AMM-specific colors
- * 4. Explorer colors (explorer_): Explorer-specific colors
+ * 1. CoW Protocol colors (cowfi_): Brand-specific colors
+ * 2. CoW AMM colors (cowamm_): AMM-specific colors
+ * 3. Explorer colors (explorer_): Explorer-specific colors
  *
  * Usage:
  * import { Color } from '@cowprotocol/ui'
  * color: ${Color.neutral100}
  */
 export const Color = {
-  // Neutral colors - Base grayscale palette from black (0) to white (100)
-  neutral100: '#FFFFFF',
-  neutral98: '#FFF8F7',
-  neutral95: '#FFEDEC',
-  neutral90: '#F0DEDE',
-  neutral80: '#D4C3C2',
-  neutral70: '#B8A7A7',
-  neutral60: '#9C8D8D',
-  neutral50: '#827474',
-  neutral40: '#685B5B',
-  neutral30: '#504444',
-  neutral20: '#382E2E',
-  neutral10: '#23191A',
-  neutral0: '#000000',
-
   // TODO(theme-cleanup): These colors below were migrated
   // TODO(theme-cleanup): They should be reviewed and potentially consolidated with the existing color system.
 
@@ -39,8 +23,6 @@ export const Color = {
   cowfi_orange_bright: '#ec4612',
   cowfi_orange_pale: '#fee7cf',
   cowfi_peach: '#FDC99F',
-  cowfi_blue: '#00A1FF',
-  cowfi_blue_bright: '#3FC4FF',
   cowfi_yellow: '#F2CD16',
   cowfi_purple1: '#8702AA',
   cowfi_purple2: '#FCCAF2',
@@ -150,7 +132,8 @@ export const Gradients = {
   cowfi_gradient2: 'linear-gradient(0deg, #071B3B 0%, #052B65 100%)',
   cowfi_gradientMesh: css`
     background-color: hsla(142, 0%, 100%, 1);
-    background-image: radial-gradient(at 5% 70%, hsla(204, 100%, 89%, 1) 0px, transparent 50%),
+    background-image:
+      radial-gradient(at 5% 70%, hsla(204, 100%, 89%, 1) 0px, transparent 50%),
       radial-gradient(at 47% 40%, hsla(214, 100%, 88%, 1) 0px, transparent 50%),
       radial-gradient(at 73% 3%, hsla(308, 67%, 91%, 1) 0px, transparent 50%),
       radial-gradient(at 44% 13%, hsla(13, 100%, 93%, 1) 0px, transparent 50%),

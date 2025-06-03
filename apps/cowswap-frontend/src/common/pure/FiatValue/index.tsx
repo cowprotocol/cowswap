@@ -12,12 +12,7 @@ const FiatValueWrapper = styled.div<{ hasValue$: boolean }>`
   display: inline-block;
   font-size: 14px;
   color: ${({ hasValue$ }) => (hasValue$ ? 'inherit' : `var(${UI.COLOR_DANGER_TEXT})`)};
-  opacity: 0.7;
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-  &:hover {
-    opacity: 1;
-  }
 `
 
 export function FiatValue({

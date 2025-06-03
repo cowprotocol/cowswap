@@ -71,8 +71,8 @@ const StopStatusStyles: Record<SwapAndBridgeStatus, FlattenSimpleInterpolation> 
     }
   `,
   [SwapAndBridgeStatus.PENDING]: css`
-    background-color: ${`var(${UI.COLOR_INFO_BG})`};
-    color: ${`var(${UI.COLOR_INFO_TEXT})`};
+    background-color: ${`var(${UI.COLOR_BLUE_100_PRIMARY})`};
+    color: ${`var(${UI.COLOR_BLUE_900_PRIMARY})`};
     &::before {
       content: none;
     }
@@ -123,7 +123,7 @@ export const StopTitle = styled.div`
   width: 100%;
   align-items: center;
   gap: 6px;
-  margin: 0 0 0 -4px;
+  margin: 4px 0 0 -4px;
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   font-size: 14px;
   position: relative;

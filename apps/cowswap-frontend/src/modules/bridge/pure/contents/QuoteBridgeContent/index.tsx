@@ -55,7 +55,7 @@ export function QuoteBridgeContent({
       content: <RecipientDisplay recipient={recipient} chainId={buyAmount.currency.chainId} logoSize={16} />,
     },
     {
-      withTimelineDot: true,
+      withTimelineDot: false,
       label: children ? (
         'Min. to receive'
       ) : (
