@@ -73,6 +73,10 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
    */
   useEffect(() => {
     setFrozenProps(hasPendingTrade ? propsRef.current : null)
+
+    if (!hasPendingTrade) {
+      setIsConfirmClicked(false)
+    }
   }, [hasPendingTrade])
 
   const showRecipientWarning =
@@ -85,7 +89,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
 
   const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(inputAmount, outputAmount, forcePriceConfirmation)
 
-  const [isConfirmClicked, setIsConfirmClicker] = useState(false)
+  const [isConfirmClicked, setIsConfirmClicked] = useState(false)
 
   const isButtonDisabled =
     isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade || isConfirmClicked
@@ -102,7 +106,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
       window.scrollTo({ top: 0, left: 0 })
     }
 
-    setIsConfirmClicker(true)
+    setIsConfirmClicked(true)
     onConfirm()
   }
 
