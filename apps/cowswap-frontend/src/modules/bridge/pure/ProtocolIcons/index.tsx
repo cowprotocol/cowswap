@@ -1,3 +1,5 @@
+import React from 'react'
+
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 import { ProductVariant, UI, ProductLogo } from '@cowprotocol/ui'
 
@@ -21,7 +23,7 @@ export function ProtocolIcons({
   showOnlySecond,
   size = DEFAULT_ICON_SIZE, // Default size for stacked icons
   borderColor,
-}: ProtocolIconsProps) {
+}: ProtocolIconsProps): React.JSX.Element {
   // If showing only first or only second, use the specified size or default single icon size
   const iconSize =
     showOnlyFirst || showOnlySecond ? (size === DEFAULT_ICON_SIZE ? DEFAULT_SINGLE_ICON_SIZE : size) : size

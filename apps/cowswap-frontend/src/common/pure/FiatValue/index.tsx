@@ -1,3 +1,5 @@
+import React from 'react'
+
 import { UI, FiatAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -23,7 +25,7 @@ export function FiatValue({
   fiatValue?: Nullish<CurrencyAmount<Currency>>
   priceImpactParams?: PriceImpact
   className?: string
-}) {
+}): React.JSX.Element {
   return (
     <FiatValueWrapper className={className} hasValue$={!!fiatValue}>
       {fiatValue ? <FiatAmount amount={fiatValue} /> : ''}

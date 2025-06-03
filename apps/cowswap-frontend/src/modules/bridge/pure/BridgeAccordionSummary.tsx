@@ -3,7 +3,7 @@
  * Shows the bridge time estimation and protocol icons next to the fee amount.
  */
 
-import { ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 
 import { displayTime } from '@cowprotocol/common-utils'
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
@@ -47,7 +47,7 @@ export function BridgeAccordionSummary({
   bridgeProtocol,
   isOpen,
   children,
-}: BridgeAccordionSummaryProps) {
+}: BridgeAccordionSummaryProps): React.JSX.Element {
   return (
     <>
       <span>

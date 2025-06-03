@@ -156,7 +156,7 @@ export function RateInfo({
   opacitySymbol = false,
   noFiat = false,
   rightAlign = false,
-}: RateInfoProps) {
+}: RateInfoProps): React.JSX.Element | null {
   const { chainId, inputCurrencyAmount, outputCurrencyAmount, activeRateFiatAmount, invertedActiveRateFiatAmount } =
     rateInfoParams
 

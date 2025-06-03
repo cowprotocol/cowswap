@@ -1,3 +1,5 @@
+import React from 'react'
+
 import { Currency, Token } from '@uniswap/sdk-core'
 
 import { SwapStatusIcons } from 'modules/bridge/pure/StopStatus'
@@ -35,7 +37,7 @@ function createTokenWithChain(token: Currency, chainId?: number): Currency {
 /**
  * Creates a TokenLogo element with consistent styling
  */
-function createTokenLogo(token: Currency, stepName: BridgingFlowStep) {
+function createTokenLogo(token: Currency, stepName: BridgingFlowStep): React.JSX.Element {
   const chainBorderColor = getStepBackgroundColor(stepName)
   return (
     <styledEl.TokenLogo token={token} chainBorderColor={chainBorderColor} size={TOKEN_LOGO_SIZE} $step={stepName} />
@@ -56,7 +58,7 @@ export function BridgingStatusHeader({
   buyToken,
   sourceChainId,
   destinationChainId,
-}: BridgingStatusHeaderProps) {
+}: BridgingStatusHeaderProps): React.JSX.Element {
   const isBridgingFailed = stepName === 'bridgingFailed'
 
   const sellTokenWithChain = createTokenWithChain(sellToken, sourceChainId)
@@ -65,16 +67,11 @@ export function BridgingStatusHeader({
   const sellTokenEl = createTokenLogo(sellTokenWithChain, stepName)
   const buyTokenEl = createTokenLogo(buyTokenWithChain, stepName)
 
-  const renderIcon = () => {
-    const status = stepToStatusMap[stepName]
-    return SwapStatusIcons[status]
-  }
-
   return (
     <styledEl.Header $step={stepName}>
       <styledEl.HeaderState>
         {!isBridgingFailed && sellTokenEl}
-        <styledEl.StatusIcon $step={stepName}>{renderIcon()}</styledEl.StatusIcon>
+        <styledEl.StatusIcon $step={stepName}>{SwapStatusIcons[stepToStatusMap[stepName]]}</styledEl.StatusIcon>
         {!isBridgingFailed ? buyTokenEl : sellTokenEl}
       </styledEl.HeaderState>
       <h3>{titles[stepName]}</h3>

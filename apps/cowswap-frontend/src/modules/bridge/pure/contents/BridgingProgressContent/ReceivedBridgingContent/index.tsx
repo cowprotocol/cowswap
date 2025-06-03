@@ -1,3 +1,5 @@
+import React from 'react'
+
 import InfoIcon from '@cowprotocol/assets/cow-swap/info.svg'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -23,7 +25,7 @@ export function ReceivedBridgingContent({
   receivedAmount,
   sourceChainId,
   destinationChainId,
-}: ReceivedBridgingContentProps) {
+}: ReceivedBridgingContentProps): React.JSX.Element {
   const { depositTxHash, fillTxHash } = statusResult || {}
 
   const depositLink = depositTxHash && getExplorerLink(sourceChainId, depositTxHash, ExplorerDataType.TRANSACTION)

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useCallback } from 'react'
 
 import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -32,16 +32,19 @@ export const TradeDetailsAccordion = ({
   onToggle,
   feeWrapper,
 }: TradeDetailsAccordionProps) => {
-  const handleToggle = () => {
+  const handleToggle = useCallback(() => {
     onToggle?.()
-  }
+  }, [onToggle])
 
-  const handleKeyDown = (e: { key: string; preventDefault: () => void }) => {
-    if (['Enter', ' ', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
-      e.preventDefault()
-      handleToggle()
-    }
-  }
+  const handleKeyDown = useCallback(
+    (e: { key: string; preventDefault: () => void }) => {
+      if (['Enter', ' ', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+        e.preventDefault()
+        handleToggle()
+      }
+    },
+    [handleToggle],
+  )
 
   const defaultFeeContent = feeUsdTotalAmount?.greaterThan(0) ? (
     <FiatAmount amount={feeUsdTotalAmount} />

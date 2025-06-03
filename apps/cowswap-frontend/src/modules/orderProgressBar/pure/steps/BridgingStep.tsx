@@ -40,7 +40,7 @@ interface BridgingInProgressStepProps {
   surplusData?: SurplusData
 }
 
-export function BridgingStep({ context, surplusData }: BridgingInProgressStepProps) {
+export function BridgingStep({ context, surplusData }: BridgingInProgressStepProps): React.JSX.Element {
   const showConfetti = useWithConfetti({
     isFinished: context.bridgingStatus === SwapAndBridgeStatus.DONE,
     surplusData,
