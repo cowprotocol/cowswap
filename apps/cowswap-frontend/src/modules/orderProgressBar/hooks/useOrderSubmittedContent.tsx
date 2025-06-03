@@ -1,21 +1,39 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 
 import { useOrder } from 'legacy/state/orders/hooks'
 
+import { BridgeQuoteAmounts } from 'modules/bridge'
 import { useNavigateToNewOrderCallback, useTradeConfirmState } from 'modules/trade'
 
 import { useOrderProgressBarProps } from './useOrderProgressBarProps'
 
 import { TransactionSubmittedContent } from '../pure/TransactionSubmittedContent'
 
-export function useOrderSubmittedContent(chainId: SupportedChainId) {
-  const { transactionHash } = useTradeConfirmState()
+export function useOrderSubmittedContent(chainId: SupportedChainId, _bridgeQuoteAmounts?: BridgeQuoteAmounts) {
+  const { transactionHash, pendingTrade } = useTradeConfirmState()
+  const hasPendingTrade = !!pendingTrade
   const order = useOrder({ chainId, id: transactionHash || undefined })
 
-  const { props: orderProgressBarProps, activityDerivedState } = useOrderProgressBarProps(chainId, order)
+  const [bridgeQuoteAmounts, setBridgeQuoteAmounts] = useState<BridgeQuoteAmounts | undefined>(_bridgeQuoteAmounts)
+
+  /**
+   * Remember bridgeQuoteAmounts and don't update it while has pending trade
+   */
+  useEffect(() => {
+    if (hasPendingTrade) return
+    if (!_bridgeQuoteAmounts) return
+
+    setBridgeQuoteAmounts(_bridgeQuoteAmounts)
+  }, [hasPendingTrade, _bridgeQuoteAmounts])
+
+  const { props: orderProgressBarProps, activityDerivedState } = useOrderProgressBarProps(
+    chainId,
+    order,
+    bridgeQuoteAmounts,
+  )
 
   const navigateToNewOrderCallback = useNavigateToNewOrderCallback()
 
