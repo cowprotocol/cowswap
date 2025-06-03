@@ -15,6 +15,7 @@ export function useUpdateBridgeOrderData(
   chainId: SupportedChainId,
   order: Order | undefined,
   setCrossChainOrder: (order: CrossChainOrder | null) => void,
+  pollingInterval = BRIDGE_TRANSACTION_POLLING_INTERVAL,
 ) {
   const updateBridgeOrderData = useCallback(async () => {
     const rpcProvider = getRpcProvider(chainId)
@@ -30,5 +31,5 @@ export function useUpdateBridgeOrderData(
     setCrossChainOrder(crossChainOrder)
   }, [chainId, order, setCrossChainOrder])
 
-  useInterval(updateBridgeOrderData, BRIDGE_TRANSACTION_POLLING_INTERVAL, true)
+  useInterval(updateBridgeOrderData, pollingInterval, true)
 }
