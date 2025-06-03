@@ -6,8 +6,6 @@ import { TradeWidgetModals } from './TradeWidgetModals'
 import { TradeWidgetUpdaters } from './TradeWidgetUpdaters'
 import { TradeWidgetProps } from './types'
 
-export const TradeWidgetContainer = styledEl.Container
-
 export function TradeWidget(props: TradeWidgetProps) {
   const { id, slots, params, confirmModal, genericModal } = props
   const { disableQuotePolling = false, disableNativeSelling = false, enableSmartSlippage } = params
