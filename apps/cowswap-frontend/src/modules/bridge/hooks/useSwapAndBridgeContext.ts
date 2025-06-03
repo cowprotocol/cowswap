@@ -72,10 +72,12 @@ export function useSwapAndBridgeContext(
   const receivedAmountUsd = useUsdAmount(receivedAmount).value
   const surplusAmountUsd = useUsdAmount(surplusAmount).value
 
+  const isBridgingExecuted = crossChainOrder?.statusResult.status === BridgeStatus.EXECUTED
+
   /**
    * Poll bridge provider to get current bridging status
    */
-  useUpdateBridgeOrderData(chainId, order, setCrossChainOrder)
+  useUpdateBridgeOrderData(chainId, isBridgingExecuted ? undefined : order, setCrossChainOrder)
 
   return useMemo(() => {
     if (
