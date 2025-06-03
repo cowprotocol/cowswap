@@ -72,7 +72,7 @@ const StopStatusStyles: Record<SwapAndBridgeStatus, FlattenSimpleInterpolation> 
   `,
   [SwapAndBridgeStatus.PENDING]: css`
     background-color: ${`var(${UI.COLOR_BLUE_100_PRIMARY})`};
-    color: ${`var(${UI.COLOR_BLUE_900_PRIMARY})`};
+    color: ${`var(${UI.COLOR_BLUE_500_PRIMARY})`};
     &::before {
       content: none;
     }

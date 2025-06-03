@@ -77,9 +77,10 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
   }
 `
 
-const ChainLogoWrapper = styled.div<{ size?: number }>`
-  ${({ size = DEFAULT_CHAIN_LOGO_SIZE }) => {
+const ChainLogoWrapper = styled.div<{ size?: number; borderColor?: string }>`
+  ${({ size = DEFAULT_CHAIN_LOGO_SIZE, borderColor }) => {
     const borderWidth = getBorderWidth(size)
+    const finalBorderColor = borderColor || `var(${UI.COLOR_PAPER})`
     return `
       width: ${size}px;
       height: ${size}px;
@@ -88,7 +89,7 @@ const ChainLogoWrapper = styled.div<{ size?: number }>`
       justify-content: center;
       border-radius: 50%;
       background: var(${UI.COLOR_DARK_IMAGE_PAPER});
-      border: ${borderWidth}px solid var(${UI.COLOR_PAPER});
+      border: ${borderWidth}px solid ${finalBorderColor};
       position: absolute;
       padding: 0;
       bottom: -${borderWidth}px;
@@ -143,9 +144,18 @@ export interface TokenLogoProps {
   size?: number
   sizeMobile?: number
   noWrap?: boolean
+  chainBorderColor?: string
 }
 
-export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, noWrap }: TokenLogoProps) {
+export function TokenLogo({
+  logoURI,
+  token,
+  className,
+  size = 36,
+  sizeMobile,
+  noWrap,
+  chainBorderColor,
+}: TokenLogoProps) {
   const tokensByAddress = useTokensByAddressMap()
 
   const [invalidUrls, setInvalidUrls] = useAtom(invalidUrlsAtom)
@@ -216,7 +226,7 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, no
     <TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
       {tokenContent}
       {logoUrl && (
-        <ChainLogoWrapper size={size / 1.85}>
+        <ChainLogoWrapper size={size / 1.85} borderColor={chainBorderColor}>
           <img src={logoUrl} alt={`${chainName} network logo`} />
         </ChainLogoWrapper>
       )}
