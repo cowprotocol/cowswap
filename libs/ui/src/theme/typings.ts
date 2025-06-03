@@ -46,6 +46,7 @@ export interface Colors {
   boxShadow2: ColorValue
   shadow1: ColorValue
   blue100Primary: ColorValue
+  blue200Primary: ColorValue
   blue300Primary: ColorValue
   blue400Primary: ColorValue
   blue500Primary: ColorValue

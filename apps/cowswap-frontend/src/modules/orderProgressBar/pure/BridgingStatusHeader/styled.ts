@@ -5,23 +5,38 @@ import styled from 'styled-components/macro'
 
 import { BridgingFlowStep } from '../../types'
 
-const stepColors: Record<BridgingFlowStep, { background: string; title: string }> = {
+export const stepColors: Record<
+  BridgingFlowStep,
+  { background: string; title: string; icon: string; iconBackground: string }
+> = {
   bridgingInProgress: {
     background: UI.COLOR_BLUE_100_PRIMARY,
     title: UI.COLOR_BLUE_900_PRIMARY,
+    icon: UI.COLOR_BLUE_500_PRIMARY,
+    iconBackground: UI.COLOR_BLUE_200_PRIMARY,
   },
   bridgingFailed: {
     background: UI.COLOR_ALERT_BG,
     title: UI.COLOR_ALERT_TEXT,
+    icon: UI.COLOR_ALERT_TEXT,
+    iconBackground: UI.COLOR_ALERT_BG,
   },
   bridgingFinished: {
     background: UI.COLOR_SUCCESS_BG,
     title: UI.COLOR_SUCCESS_TEXT,
+    icon: UI.COLOR_SUCCESS,
+    iconBackground: UI.COLOR_SUCCESS_BG,
   },
   refundCompleted: {
     background: UI.COLOR_SUCCESS_BG,
     title: UI.COLOR_SUCCESS_TEXT,
+    icon: UI.COLOR_SUCCESS,
+    iconBackground: UI.COLOR_SUCCESS_BG,
   },
+}
+
+export const getStepBackgroundColor = (step: BridgingFlowStep): string => {
+  return stepColors[step].background
 }
 
 export const Header = styled.div<{ $step: BridgingFlowStep }>`
@@ -57,7 +72,7 @@ const CONNECTOR_HEIGHT = '2px'
 const MARGIN_MULTIPLIER = 1.5
 const CONNECTOR_OFFSET_MULTIPLIER = -1.25
 
-export const TokenLogo = styled(TokenLogoOriginal)`
+export const TokenLogo = styled(TokenLogoOriginal)<{ $step: BridgingFlowStep }>`
   --size: ${TOKEN_SIZE};
   --margin: calc(var(--size) * ${MARGIN_MULTIPLIER});
   --connector-offset: calc(var(--size) * ${CONNECTOR_OFFSET_MULTIPLIER});
@@ -68,9 +83,8 @@ export const TokenLogo = styled(TokenLogoOriginal)`
     display: block;
     width: var(--size);
     height: ${CONNECTOR_HEIGHT};
-    background: var(${UI.COLOR_NEUTRAL_0});
+    background: var(${({ $step }) => stepColors[$step].iconBackground});
     position: absolute;
-    mix-blend-mode: soft-light;
   }
 
   &:first-child {
@@ -87,5 +101,24 @@ export const TokenLogo = styled(TokenLogoOriginal)`
     &:before {
       left: var(--connector-offset);
     }
+  }
+`
+
+export const StatusIcon = styled.div<{ $step: BridgingFlowStep }>`
+  --iconSize: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(${({ $step }) => stepColors[$step].iconBackground});
+  color: var(${({ $step }) => stepColors[$step].icon});
+  border-radius: var(--iconSize);
+  width: var(--iconSize);
+  height: var(--iconSize);
+
+  > svg {
+    width: 100%;
+    height: 100%;
+    padding: ${({ $step }) => ($step === 'bridgingInProgress' ? '10%' : '18%')};
+    color: currentColor;
   }
 `

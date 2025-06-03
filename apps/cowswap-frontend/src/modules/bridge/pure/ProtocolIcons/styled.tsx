@@ -11,7 +11,7 @@ const spin = keyframes`
   }
 `
 
-export const ProtocolIcon = styled.div<{ bgColor?: string; size?: number }>`
+export const ProtocolIcon = styled.div<{ bgColor?: string; size?: number; borderColor?: string }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -21,7 +21,7 @@ export const ProtocolIcon = styled.div<{ bgColor?: string; size?: number }>`
   overflow: hidden;
   background: ${({ bgColor }) => (bgColor ? `var(${bgColor})` : 'transparent')};
   z-index: 2;
-  border: 2px solid var(${UI.COLOR_PAPER});
+  border: 2px solid ${({ borderColor }) => (borderColor ? `var(${borderColor})` : `var(${UI.COLOR_PAPER})`)};
   box-sizing: content-box;
   transition: transform 0.3s ease-in-out;
 

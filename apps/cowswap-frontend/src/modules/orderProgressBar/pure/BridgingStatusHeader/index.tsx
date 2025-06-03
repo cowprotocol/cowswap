@@ -1,17 +1,14 @@
-import { UI } from '@cowprotocol/ui'
 import { Currency, Token } from '@uniswap/sdk-core'
 
-import SVG from 'react-inlinesvg'
+import { SwapStatusIcons } from 'modules/bridge/pure/StopStatus'
+import { SwapAndBridgeStatus } from 'modules/bridge/types'
 
-import bridgingFinishedIcon from './icons/bridgingFinished.svg'
-import bridgingPendingIcon from './icons/bridgingPending.svg'
-import bridgingRefundingIcon from './icons/bridgingRefunding.svg'
 import * as styledEl from './styled'
+import { getStepBackgroundColor } from './styled'
 
 import { BridgingFlowStep } from '../../types'
 
 const TOKEN_LOGO_SIZE = 46
-const TOKEN_CHAIN_BORDER_COLOR = `var(${UI.COLOR_BLUE_100_PRIMARY})`
 
 const titles: Record<BridgingFlowStep, string> = {
   bridgingInProgress: 'Bridging to destination...',
@@ -20,11 +17,12 @@ const titles: Record<BridgingFlowStep, string> = {
   refundCompleted: 'Refund completed!',
 }
 
-const icons: Record<BridgingFlowStep, string> = {
-  bridgingInProgress: bridgingPendingIcon,
-  bridgingFailed: bridgingRefundingIcon,
-  bridgingFinished: bridgingFinishedIcon,
-  refundCompleted: bridgingFinishedIcon,
+// Map BridgingFlowStep to SwapAndBridgeStatus for consistent icon usage
+const stepToStatusMap: Record<BridgingFlowStep, SwapAndBridgeStatus> = {
+  bridgingInProgress: SwapAndBridgeStatus.PENDING,
+  bridgingFailed: SwapAndBridgeStatus.FAILED,
+  bridgingFinished: SwapAndBridgeStatus.DONE,
+  refundCompleted: SwapAndBridgeStatus.REFUND_COMPLETE,
 }
 
 /**
@@ -37,8 +35,11 @@ function createTokenWithChain(token: Currency, chainId?: number): Currency {
 /**
  * Creates a TokenLogo element with consistent styling
  */
-function createTokenLogo(token: Currency) {
-  return <styledEl.TokenLogo token={token} chainBorderColor={TOKEN_CHAIN_BORDER_COLOR} size={TOKEN_LOGO_SIZE} />
+function createTokenLogo(token: Currency, stepName: BridgingFlowStep) {
+  const chainBorderColor = getStepBackgroundColor(stepName)
+  return (
+    <styledEl.TokenLogo token={token} chainBorderColor={chainBorderColor} size={TOKEN_LOGO_SIZE} $step={stepName} />
+  )
 }
 
 export interface BridgingStatusHeaderProps {
@@ -61,14 +62,19 @@ export function BridgingStatusHeader({
   const sellTokenWithChain = createTokenWithChain(sellToken, sourceChainId)
   const buyTokenWithChain = createTokenWithChain(buyToken, destinationChainId)
 
-  const sellTokenEl = createTokenLogo(sellTokenWithChain)
-  const buyTokenEl = createTokenLogo(buyTokenWithChain)
+  const sellTokenEl = createTokenLogo(sellTokenWithChain, stepName)
+  const buyTokenEl = createTokenLogo(buyTokenWithChain, stepName)
+
+  const renderIcon = () => {
+    const status = stepToStatusMap[stepName]
+    return SwapStatusIcons[status]
+  }
 
   return (
     <styledEl.Header $step={stepName}>
       <styledEl.HeaderState>
         {!isBridgingFailed && sellTokenEl}
-        <SVG src={icons[stepName]} title={stepName} />
+        <styledEl.StatusIcon $step={stepName}>{renderIcon()}</styledEl.StatusIcon>
         {!isBridgingFailed ? buyTokenEl : sellTokenEl}
       </styledEl.HeaderState>
       <h3>{titles[stepName]}</h3>

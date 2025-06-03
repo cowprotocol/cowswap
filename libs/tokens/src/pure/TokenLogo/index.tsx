@@ -80,7 +80,7 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
 const ChainLogoWrapper = styled.div<{ size?: number; borderColor?: string }>`
   ${({ size = DEFAULT_CHAIN_LOGO_SIZE, borderColor }) => {
     const borderWidth = getBorderWidth(size)
-    const finalBorderColor = borderColor || `var(${UI.COLOR_PAPER})`
+    const finalBorderColor = `var(${borderColor || UI.COLOR_PAPER})`
     return `
       width: ${size}px;
       height: ${size}px;

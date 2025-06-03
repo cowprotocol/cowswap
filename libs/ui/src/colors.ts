@@ -119,6 +119,7 @@ export const Color = {
 
   // Blue Primary Color Palette - Theme colors that can be used directly
   blue100Primary: '#CCF8FF',
+  blue200Primary: '#99ECFF',
   blue300Primary: '#65D9FF',
   blue400Primary: '#3FC4FF',
   blue500Primary: '#00A1FF',

@@ -8,6 +8,7 @@ export interface ProtocolIconsProps {
   showOnlyFirst?: boolean
   showOnlySecond?: boolean
   size?: number
+  borderColor?: string
 }
 
 const DEFAULT_ICON_SIZE = 18
@@ -19,6 +20,7 @@ export function ProtocolIcons({
   showOnlyFirst,
   showOnlySecond,
   size = DEFAULT_ICON_SIZE, // Default size for stacked icons
+  borderColor,
 }: ProtocolIconsProps) {
   // If showing only first or only second, use the specified size or default single icon size
   const iconSize =
@@ -28,7 +30,7 @@ export function ProtocolIcons({
 
   if (showOnlyFirst) {
     return (
-      <ProtocolIcon bgColor={UI.COLOR_BLUE_900_PRIMARY} title="CoW Protocol" size={iconSize}>
+      <ProtocolIcon bgColor={UI.COLOR_BLUE_900_PRIMARY} title="CoW Protocol" size={iconSize} borderColor={borderColor}>
         <ProductLogo
           variant={ProductVariant.CowProtocol}
           height={logoHeight}
@@ -42,7 +44,7 @@ export function ProtocolIcons({
 
   if (showOnlySecond) {
     return (
-      <ProtocolIcon title={secondProtocol.name} size={iconSize}>
+      <ProtocolIcon title={secondProtocol.name} size={iconSize} borderColor={borderColor}>
         <img src={secondProtocol.logoUrl} width={logoHeight} height={logoHeight} alt={secondProtocol.name} />
       </ProtocolIcon>
     )
@@ -50,7 +52,7 @@ export function ProtocolIcons({
 
   return (
     <ProtocolIconsContainer iconSize={size}>
-      <ProtocolIcon bgColor={UI.COLOR_BLUE_900_PRIMARY} title="Cow Protocol">
+      <ProtocolIcon bgColor={UI.COLOR_BLUE_900_PRIMARY} title="Cow Protocol" borderColor={borderColor}>
         <ProductLogo
           variant={ProductVariant.CowProtocol}
           height={DEFAULT_ICON_SIZE * LOGO_HEIGHT_RATIO}
@@ -59,7 +61,7 @@ export function ProtocolIcons({
           overrideHoverColor={`var(${UI.COLOR_BLUE_300_PRIMARY})`}
         />
       </ProtocolIcon>
-      <ProtocolIcon title={secondProtocol.name}>
+      <ProtocolIcon title={secondProtocol.name} borderColor={borderColor}>
         <img
           src={secondProtocol.logoUrl}
           width={DEFAULT_ICON_SIZE * LOGO_HEIGHT_RATIO}

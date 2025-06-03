@@ -92,6 +92,7 @@ export const ThemeColorVars = css`
     // Colors
     ${UI.COLOR_BLUE}: ${({ theme }) => theme.blueDark2};
     ${UI.COLOR_BLUE_100_PRIMARY}: ${({ theme }) => theme.blue100Primary};
+    ${UI.COLOR_BLUE_200_PRIMARY}: ${({ theme }) => theme.blue200Primary};
     ${UI.COLOR_BLUE_300_PRIMARY}: ${({ theme }) => theme.blue300Primary};
     ${UI.COLOR_BLUE_400_PRIMARY}: ${({ theme }) => theme.blue400Primary};
     ${UI.COLOR_BLUE_500_PRIMARY}: ${({ theme }) => theme.blue500Primary};

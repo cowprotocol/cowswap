@@ -83,6 +83,7 @@ export enum UI {
   // Colors
   COLOR_BLUE = '--cow-color-blue',
   COLOR_BLUE_100_PRIMARY = '--cow-color-blue-100-primary',
+  COLOR_BLUE_200_PRIMARY = '--cow-color-blue-200-primary',
   COLOR_BLUE_300_PRIMARY = '--cow-color-blue-300-primary',
   COLOR_BLUE_400_PRIMARY = '--cow-color-blue-400-primary',
   COLOR_BLUE_500_PRIMARY = '--cow-color-blue-500-primary',
