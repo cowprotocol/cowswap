@@ -62,8 +62,8 @@ const DAO_NAV_ITEMS: MenuItem[] = [
   {
     href: 'https://swap.cow.fi/',
     productVariant: ProductVariant.CowSwap,
-    hoverColor: '#65D9FF',
-    hoverBgColor: '#012F7A',
+    hoverColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`,
+    hoverBgColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
     external: true,
     utmContent: 'menubar-dao-nav-cowswap',
   },

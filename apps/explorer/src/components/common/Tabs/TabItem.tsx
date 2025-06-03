@@ -32,7 +32,7 @@ const TabItemBase = styled(ButtonBase)`
 // Make Tabs and TabItemBase it's own common component with theme
 const TabItemWrapper = styled(TabItemBase)<TabItemWrapperProps>`
   background: ${({ isActive }): string => (isActive ? Color.explorer_bg2 : 'transparent')};
-  color: ${({ isActive }): string => (isActive ? Color.explorer_textPrimary : Color.explorer_textSecondary2)};
+  color: ${({ isActive }): string => (isActive ? Color.neutral100 : Color.explorer_textSecondary2)};
   font-weight: ${({ tabTheme }): string => tabTheme.fontWeight};
   font-size: ${({ tabTheme }): string => tabTheme.fontSize};
   letter-spacing: ${({ tabTheme }): string => tabTheme.letterSpacing};

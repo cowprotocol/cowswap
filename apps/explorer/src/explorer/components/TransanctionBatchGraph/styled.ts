@@ -61,7 +61,7 @@ export const ResetButton = styled.button`
 export const LayoutButton = styled.span`
   ${FloatingButton} {
     display: flex;
-    color: ${Color.explorer_textPrimary};
+    color: ${Color.neutral100};
     font-size: ${({ theme }): string => theme.fontSizeDefault};
     font-weight: normal;
     white-space: nowrap;
@@ -87,7 +87,7 @@ export function STYLESHEET(): StylesheetCSS[] {
       selector: 'node[label]',
       css: {
         label: 'data(label)',
-        color: `var(${UI.COLOR_NEUTRAL_100})`,
+        color: Color.neutral100,
         height: 50,
         width: 50,
         'background-color': Color.explorer_bg2,
@@ -118,10 +118,10 @@ export function STYLESHEET(): StylesheetCSS[] {
         'target-arrow-shape': 'triangle',
         'target-arrow-color': Color.explorer_grey,
         'curve-style': 'unbundled-bezier',
-        color: `var(${UI.COLOR_NEUTRAL_0})`,
+        color: Color.neutral0,
         'line-color': Color.explorer_grey,
         'line-opacity': 0.8,
-        'text-background-color': Color.explorer_labelTextOpen,
+        'text-background-color': Color.neutral100,
         'text-background-opacity': 1,
         'text-background-padding': '4px',
         'text-background-shape': 'roundrectangle',
@@ -165,7 +165,7 @@ export function STYLESHEET(): StylesheetCSS[] {
         'line-color': Color.explorer_orange1,
         'target-arrow-color': Color.explorer_orange1,
         'text-background-color': Color.explorer_orange1,
-        color: `var(${UI.COLOR_NEUTRAL_100})`,
+        color: Color.neutral100,
       },
     },
     {

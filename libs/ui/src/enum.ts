@@ -71,7 +71,6 @@ export enum UI {
   COLOR_COWAMM_LIGHT_GREEN_OPACITY_30 = '--cow-color-cowamm-light-green-opacity-30',
   COLOR_COWAMM_LIGHTER_GREEN = '--cow-color-cowamm-lighter-green',
   COLOR_COWAMM_BLUE = '--cow-color-cowamm-blue',
-  COLOR_COWAMM_DARK_BLUE = '--cow-color-cowamm-dark-blue',
   COLOR_COWAMM_LIGHT_BLUE = '--cow-color-cowamm-light-blue',
   COLOR_COWAMM_LIGHT_ORANGE = '--cow-color-cowamm-light-orange',
 

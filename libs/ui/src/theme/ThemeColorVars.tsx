@@ -90,7 +90,6 @@ export const ThemeColorVars = css`
     ${UI.COLOR_BADGE_YELLOW_TEXT}: ${({ theme }) => getContrastText(theme.alert2, darken(theme.alert2, 0.6))};
 
     // Colors
-    ${UI.COLOR_WHITE}: ${({ theme }) => theme.white};
     ${UI.COLOR_BLUE}: ${({ theme }) => theme.blueDark2};
     ${UI.COLOR_BLUE_100_PRIMARY}: ${({ theme }) => theme.blue100Primary};
     ${UI.COLOR_BLUE_300_PRIMARY}: ${({ theme }) => theme.blue300Primary};
@@ -101,6 +100,21 @@ export const ThemeColorVars = css`
     ${UI.COLOR_YELLOW_LIGHT}: ${({ theme }) => theme.alert2};
     ${UI.COLOR_GREEN}: ${({ theme }) => theme.success};
     ${UI.COLOR_RED}: ${({ theme }) => theme.danger};
+    ${UI.COLOR_WHITE}: ${({ theme }) => theme.neutral100};
+    ${UI.COLOR_NEUTRAL_100}: ${({ theme }) => theme.neutral100};
+    ${UI.COLOR_NEUTRAL_98}: ${({ theme }) => theme.neutral98};
+    ${UI.COLOR_NEUTRAL_95}: ${({ theme }) => theme.neutral95};
+    ${UI.COLOR_NEUTRAL_90}: ${({ theme }) => theme.neutral90};
+    ${UI.COLOR_NEUTRAL_80}: ${({ theme }) => theme.neutral80};
+    ${UI.COLOR_NEUTRAL_70}: ${({ theme }) => theme.neutral70};
+    ${UI.COLOR_NEUTRAL_60}: ${({ theme }) => theme.neutral60};
+    ${UI.COLOR_NEUTRAL_50}: ${({ theme }) => theme.neutral50};
+    ${UI.COLOR_NEUTRAL_40}: ${({ theme }) => theme.neutral40};
+    ${UI.COLOR_NEUTRAL_30}: ${({ theme }) => theme.neutral30};
+    ${UI.COLOR_NEUTRAL_20}: ${({ theme }) => theme.neutral20};
+    ${UI.COLOR_NEUTRAL_10}: ${({ theme }) => theme.neutral10};
+    ${UI.COLOR_NEUTRAL_0}: ${({ theme }) => theme.neutral0};
+    ${UI.COLOR_BLACK}: ${({ theme }) => theme.neutral0};
 
     // CoW AMM Colors
     ${UI.COLOR_COWAMM_DARK_GREEN}: #194d05;
@@ -111,7 +125,6 @@ export const ThemeColorVars = css`
     ${UI.COLOR_COWAMM_LIGHT_GREEN_OPACITY_30}: ${() => transparentize('#bcec79', 0.7)};
     ${UI.COLOR_COWAMM_LIGHTER_GREEN}: #dcf8a7;
     ${UI.COLOR_COWAMM_BLUE}: #3fc4ff;
-    ${UI.COLOR_COWAMM_DARK_BLUE}: #012F7A;
     ${UI.COLOR_COWAMM_LIGHT_BLUE}: #ccf8ff;
     ${UI.COLOR_COWAMM_LIGHT_ORANGE}: ${() => transparentize('#DB971E', 0.7)};
 

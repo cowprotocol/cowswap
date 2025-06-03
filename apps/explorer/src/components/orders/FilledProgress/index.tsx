@@ -34,7 +34,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  color: ${Color.explorer_textPrimary};
+  color: ${Color.neutral100};
 
   ${Media.upToSmall()} {
     gap: 1rem;
@@ -89,7 +89,7 @@ const TableHeading = styled.div`
     line-height: 1;
     letter-spacing: -0.2rem;
     font-weight: ${({ theme }): string => theme.fontMedium};
-    color: ${Color.explorer_green};
+    color: ${Color.successDark};
 
     ${Media.upToSmall()} {
       font-size: 2.8rem;
@@ -121,7 +121,7 @@ const TableHeading = styled.div`
     }
 
     > span > span:first-child {
-      color: ${Color.explorer_textPrimary};
+      color: ${Color.neutral100};
     }
   }
 `

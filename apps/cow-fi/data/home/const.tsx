@@ -102,7 +102,7 @@ export const CHANNEL_LIST = [
     href: 'https://forum.cow.fi/?utm_source=cow.fi&utm_medium=web&utm_content=link',
     linkEvent: 'click-forum',
     iconColor: Color.cowamm_dark_green,
-    textColor: Color.cowfi_white2,
+    textColor: Color.neutral98,
     iconImage: IMG_FORUM,
   },
   {
@@ -110,7 +110,7 @@ export const CHANNEL_LIST = [
     href: 'https://snapshot.org/#/cow.eth?utm_source=cow.fi&utm_medium=web&utm_content=link',
     linkEvent: 'click-snapshot',
     iconColor: Color.cowfi_snapshot_red,
-    textColor: Color.cowfi_white2,
+    textColor: Color.neutral98,
     iconImage: IMG_SNAPSHOT,
   },
 ]

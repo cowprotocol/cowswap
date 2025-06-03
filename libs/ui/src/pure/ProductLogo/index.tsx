@@ -14,8 +14,8 @@ import { useTheme } from '@cowprotocol/common-hooks'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
+import { Color } from '../../colors'
 import { Media } from '../../consts'
-import { UI } from '../../enum'
 import { CowSwapTheme } from '../../types'
 
 export enum ProductVariant {
@@ -63,26 +63,26 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
       default: {
         src: LOGO_COWSWAP,
         alt: 'CoW Swap',
-        color: '#65D9FF',
+        color: Color.blue300Primary,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'CoW Swap',
-        color: '#65D9FF',
+        color: Color.blue300Primary,
       },
     },
     darkHalloween: {
       default: {
         src: LOGO_COWSWAP_HALLOWEEN,
         alt: 'CoW Swap',
-        color: '#65D9FF',
+        color: Color.blue300Primary,
       },
     },
     darkChristmas: {
       default: {
         src: LOGO_COWSWAP_CHRISTMAS_DARK,
         alt: 'CoW Swap',
-        color: '#65D9FF',
+        color: Color.blue300Primary,
         height: '56px',
         heightMobile: '50px',
         preserveOriginalColors: true,
@@ -106,24 +106,24 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
       default: {
         src: LOGO_COWEXPLORER,
         alt: 'CoW Explorer',
-        color: `var(${UI.COLOR_NEUTRAL_0})`,
+        color: Color.neutral0,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'CoW Explorer',
-        color: `var(${UI.COLOR_NEUTRAL_0})`,
+        color: Color.neutral0,
       },
     },
     dark: {
       default: {
         src: LOGO_COWEXPLORER,
         alt: 'CoW Explorer',
-        color: `var(${UI.COLOR_NEUTRAL_100})`,
+        color: Color.neutral100,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'CoW Explorer',
-        color: `var(${UI.COLOR_NEUTRAL_100})`,
+        color: Color.neutral100,
       },
     },
   },
@@ -134,24 +134,24 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
       default: {
         src: LOGO_COWDAO,
         alt: 'CoW DAO',
-        color: `var(${UI.COLOR_NEUTRAL_0})`,
+        color: Color.neutral0,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'CoW DAO',
-        color: `var(${UI.COLOR_NEUTRAL_0})`,
+        color: Color.neutral0,
       },
     },
     dark: {
       default: {
         src: LOGO_COWDAO,
         alt: 'CoW DAO',
-        color: `var(${UI.COLOR_NEUTRAL_100})`,
+        color: Color.neutral100,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'CoW DAO',
-        color: `var(${UI.COLOR_NEUTRAL_100})`,
+        color: Color.neutral100,
       },
     },
   },
@@ -162,24 +162,24 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
       default: {
         src: LOGO_COWPROTOCOL,
         alt: 'CoW Protocol',
-        color: `var(${UI.COLOR_NEUTRAL_0})`,
+        color: Color.neutral0,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'CoW Protocol',
-        color: `var(${UI.COLOR_NEUTRAL_0})`,
+        color: Color.neutral0,
       },
     },
     dark: {
       default: {
         src: LOGO_COWPROTOCOL,
         alt: 'CoW Protocol',
-        color: `var(${UI.COLOR_NEUTRAL_100})`,
+        color: Color.neutral100,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'CoW Protocol',
-        color: `var(${UI.COLOR_NEUTRAL_100})`,
+        color: Color.neutral100,
       },
     },
   },
@@ -218,12 +218,12 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
       default: {
         src: LOGO_COWAMM,
         alt: 'CoW AMM',
-        color: '#012F7A',
+        color: Color.blue900Primary,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'CoW AMM',
-        color: '#012F7A',
+        color: Color.blue900Primary,
       },
     },
     dark: {

@@ -87,7 +87,7 @@ export const Navigation = styled.ol<Partial<CSS.Properties & { isActive: boolean
   > li.active,
   > li:hover {
     background-color: transparent;
-    color: ${Color.explorer_textPrimary};
+    color: ${Color.neutral100};
     font-weight: var(--font-weight-medium);
   }
 

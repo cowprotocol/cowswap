@@ -45,7 +45,7 @@ function setStatusColors({
       break
     case 'open':
     case 'signing':
-      text = Color.explorer_textPrimary
+      text = Color.neutral100
       background = Color.explorer_bgInput
       break
     case 'partially filled':

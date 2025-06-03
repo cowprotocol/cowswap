@@ -2,7 +2,7 @@ import { ReactElement } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
+import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import * as styledEl from './styled'
@@ -34,7 +34,7 @@ function AnimatedTokens({
         <ProductLogo
           variant={ProductVariant.CowSwap}
           theme={'dark'}
-          overrideHoverColor={'#65D9FF'}
+          overrideHoverColor={Color.blue300Primary}
           height={58}
           heightMobile={32}
           logoIconOnly

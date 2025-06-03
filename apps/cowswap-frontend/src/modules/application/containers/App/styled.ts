@@ -9,7 +9,7 @@ import IMAGE_BACKGROUND_DARK_HALLOWEEN_MEDIUM from '@cowprotocol/assets/images/b
 import IMAGE_BACKGROUND_DARK_HALLOWEEN_SMALL from '@cowprotocol/assets/images/background-cowswap-halloween-dark-small.svg'
 import IMAGE_BACKGROUND_DARK_HALLOWEEN from '@cowprotocol/assets/images/background-cowswap-halloween-dark.svg'
 import IMAGE_BACKGROUND_LIGHT from '@cowprotocol/assets/images/background-cowswap-lightmode.svg'
-import { CowSwapTheme, Media } from '@cowprotocol/ui'
+import { CowSwapTheme, Media, UI } from '@cowprotocol/ui'
 
 import * as CSS from 'csstype'
 import styled from 'styled-components/macro'
@@ -53,7 +53,7 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme }>`
     if (theme.isInjectedWidgetMode) {
       return 'transparent'
     } else {
-      const backgroundColor = theme.darkMode ? '#0E0F2D' : '#65D9FF'
+      const backgroundColor = theme.darkMode ? '#0E0F2D' : `var(${UI.COLOR_BLUE_300_PRIMARY})`
       let backgroundImage
 
       if (customTheme === 'darkHalloween') {

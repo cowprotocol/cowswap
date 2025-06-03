@@ -30,12 +30,12 @@ const Wrapper = styled.div<Props>`
     position: absolute;
     left: 0;
     top: 0;
-    background-color: ${({ activeColor }): string => (activeColor ? activeColor : Color.explorer_green)};
+    background-color: ${({ activeColor }): string => (activeColor ? activeColor : Color.successDark)};
     border-radius: 16rem;
   }
 
   > b {
-    color: ${({ activeColor }): string => (activeColor ? activeColor : Color.explorer_green)};
+    color: ${({ activeColor }): string => (activeColor ? activeColor : Color.successDark)};
     margin: 0 0 0 0.7rem;
   }
 `

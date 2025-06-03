@@ -1,3 +1,4 @@
+import { darken } from 'color2k'
 import { transparentize } from 'polished'
 import { css } from 'styled-components/macro'
 
@@ -38,11 +39,9 @@ export const Color = {
   cowfi_darkBlue3: '#042a63',
   cowfi_darkBlue4: '#042456',
   cowfi_darkBlue5: '#005EB7',
-  cowfi_lightBlue1: '#CCF8FF',
   cowfi_lightBlue2: 'rgb(176 194 255)',
   cowfi_lightBlue3: 'rgb(118 167 230)',
   cowfi_lightBlue4: '#99ECFF',
-  cowfi_white2: '#FFF8F7',
   cowfi_grey: 'rgb(236, 241, 248)',
   cowfi_grey2: 'rgb(201 211 226)',
   cowfi_grey3: '#737b96',
@@ -64,7 +63,6 @@ export const Color = {
   explorer_green3: '#a9ffcd',
   explorer_yellow4: '#f6c343',
   explorer_blue1: '#2172E5',
-  explorer_blue2: '#3F77FF',
   explorer_orange1: '#D96D49',
   explorer_bg: '#16171F',
   explorer_bg2: '#2C2D3F',
@@ -88,7 +86,6 @@ export const Color = {
   explorer_bgLighter: '#f7f7f7',
   explorer_paperCustom: '#0e0f14',
   explorer_shade: '#2E2F3B',
-  explorer_textPrimary: '#FFFFFF',
   explorer_textSecondary1: '#EDEDED',
   explorer_textSecondary2: '#9797B8',
   explorer_textSecondary: '#545454',
@@ -110,18 +107,91 @@ export const Color = {
   explorer_buttonDanger: '#eb4025',
   explorer_buttonSecondary: '#696969',
   explorer_buttonWarning: '#f1851d',
-  explorer_labelTextOpen: '#FFFFFF',
   explorer_labelBgOpen: '#9797B84D',
   explorer_gradient1: '#21222E',
   explorer_gradient2: '#2C2D3F',
-  explorer_svgWithdraw: '#000000',
   explorer_shadow: '#00000047',
   explorer_grey: '#8D8DA9',
   explorer_greyShade: 'rgb(141 141 169 / 70%)',
   explorer_greyOpacity: 'rgb(141 141 169 / 10%)',
   explorer_greenOpacity: 'rgb(0 216 151 / 10%)',
   explorer_orangeOpacity: 'rgb(217 109 73 / 10%)',
-  explorer_green: '#00D897',
+
+  // Blue Primary Color Palette - Theme colors that can be used directly
+  blue100Primary: '#CCF8FF',
+  blue300Primary: '#65D9FF',
+  blue400Primary: '#3FC4FF',
+  blue500Primary: '#00A1FF',
+  blue900Primary: '#012F7A',
+
+  // Base Theme Colors - Colors from baseTheme that may need direct access
+  blueDark2: '#004293',
+  blueDark3: '#0d5ed9',
+  blueDark4: '#021E34',
+  blueLight1: '#CAE9FF',
+  blueLight2: '#afcbda',
+  darkerDark: '#090A20',
+  darkerLight: '#090A20',
+  error: '#D41300',
+  blue1: '#3F77FF',
+  orange: '#FF784A',
+  blueShade: '#0f2644',
+  green1Light: '#007D35',
+  green1Dark: '#27AE60',
+  yellow3: '#F3B71E',
+  paperDark: '#18193B',
+  backgroundLight: '#ECF1F8',
+  alertDark: '#FFCA4A',
+  alertLight: '#DB971E',
+  successDark: '#00D897',
+  successLight: '#007B28',
+  textDark: '#DEE3E6',
+  textLight: '#00234E',
+  disabledTextDark: '#86B2DC',
+  disabledTextLight: '#506B93',
+  dangerDark: '#f44336',
+  errorDark: '#EB3030',
+  alert2: '#F8D06B',
+  warningDark: '#ED6237',
+  warningLight: '#D94719',
+  infoDark: '#428dff',
+  text4Dark: 'rgba(197, 218, 239, 0.7)',
+  text4Light: '#000000b8',
+  grey1Dark: '#40587F',
+  grey1Light: '#8FA3BF',
+  blue2Dark: '#a3beff',
+  blue2Light: '#0c40bf',
+  bg3Dark: '#1a3c6b',
+  bg3Light: '#D0E3EC',
+  bg5Dark: '#1d4373',
+  bg5Light: '#D5E9F0',
+  bg8Light: '#152943',
+  blueShade3Dark: '#1c416e',
+  blueShade3Light: '#bdd6e1',
+  border2Dark: '#254F83',
+  disabledDark: 'rgba(197, 218, 239, 0.4)',
+  boxShadow1Dark: '0 24px 32px rgba(0, 0, 0, 0.06)',
+  boxShadow1Light: '0 12px 12px rgba(5, 43, 101, 0.06)',
+  boxShadow2: '0 4px 12px 0 rgb(0 0 0 / 15%)',
+  shadow1Dark: '#000',
+  shadow1Light: '#2F80ED',
+
+  // Neutral colors - Base grayscale palette
+  white: '#FFFFFF',
+  neutral100: '#FFFFFF',
+  neutral98: '#FFF8F7',
+  neutral95: '#FFEDEC',
+  neutral90: '#F0DEDE',
+  neutral80: '#D4C3C2',
+  neutral70: '#B8A7A7',
+  neutral60: '#9C8D8D',
+  neutral50: '#827474',
+  neutral40: '#685B5B',
+  neutral30: '#504444',
+  neutral20: '#382E2E',
+  neutral10: '#23191A',
+  neutral0: '#000000',
+  black: '#000000',
 } as const
 
 // Gradients and special effects
@@ -150,3 +220,61 @@ export const Opacity = {
   low: '0.4',
   none: '0',
 } as const
+
+/**
+ * Generates all theme-aware colors for a given dark mode state
+ * This is the DRY approach - pass darkMode once and get all computed colors
+ */
+export function getThemeColors(darkMode: boolean) {
+  return {
+    // Core theme colors
+    paper: darkMode ? Color.paperDark : Color.white,
+    background: darkMode ? Color.black : Color.backgroundLight,
+    alert: darkMode ? Color.alertDark : Color.alertLight,
+    success: darkMode ? Color.successDark : Color.successLight,
+    text: darkMode ? Color.textDark : Color.textLight,
+    disabledText: darkMode ? Color.disabledTextDark : Color.disabledTextLight,
+    danger: darkMode ? Color.dangerDark : Color.error,
+    error: darkMode ? Color.errorDark : Color.error,
+    warning: darkMode ? Color.warningDark : Color.warningLight,
+    info: darkMode ? Color.infoDark : Color.blueDark3,
+    white: darkMode ? Color.blueLight1 : Color.white,
+    text1: darkMode ? Color.blueLight1 : Color.blueDark2,
+    text4: darkMode ? Color.text4Dark : Color.text4Light,
+    grey1: darkMode ? Color.grey1Dark : Color.grey1Light,
+
+    // Background variants
+    bg2: darkMode ? Color.blueDark3 : Color.blueDark2,
+    bg3: darkMode ? Color.bg3Dark : Color.bg3Light,
+    bg5: darkMode ? Color.bg5Dark : Color.bg5Light,
+    bg8: darkMode ? Color.blueDark4 : Color.bg8Light,
+
+    // UI colors
+    blue2: darkMode ? Color.blue2Dark : Color.blue2Light,
+    blueShade3: darkMode ? Color.blueShade3Dark : Color.blueShade3Light,
+    border: darkMode ? Color.blueDark4 : Color.neutral100,
+    border2: darkMode ? Color.border2Dark : Color.blueLight2,
+    disabled: darkMode ? Color.disabledDark : Color.blueLight2,
+    green1: darkMode ? Color.green1Dark : Color.green1Light,
+
+    // Effects
+    boxShadow1: darkMode ? Color.boxShadow1Dark : Color.boxShadow1Light,
+    shadow1: darkMode ? Color.shadow1Dark : Color.shadow1Light,
+
+    // Primary colors
+    primary: darkMode ? Color.blue300Primary : Color.blueDark2,
+    buttonTextCustom: darkMode ? Color.blue300Primary : Color.blueDark2,
+
+    // Paper variants
+    paperCustom: darkMode ? Color.paperDark : Color.white,
+    paperDarkerCustom: darkMode ? Color.darkerDark : Color.darkerLight,
+    paperDarkestCustom: darkMode ? darken(Color.darkerDark, 0.05) : darken(Color.darkerLight, 0.1),
+
+    // Gradients
+    gradient1: `linear-gradient(145deg, ${darkMode ? Color.paperDark : Color.white}, ${darkMode ? Color.black : Color.backgroundLight})`,
+    gradient2: `linear-gradient(250deg, ${transparentize(0.92, darkMode ? Color.alertDark : Color.alertLight)} 10%, ${transparentize(
+      0.92,
+      darkMode ? Color.successDark : Color.successLight,
+    )} 50%, ${transparentize(0.92, darkMode ? Color.successDark : Color.successLight)} 100%);`,
+  }
+}

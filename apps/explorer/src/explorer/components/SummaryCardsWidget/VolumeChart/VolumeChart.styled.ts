@@ -64,7 +64,7 @@ export const WrapperChart = styled.div`
     display: none;
     box-sizing: border-box;
     font-size: 12px;
-    color: ${Color.explorer_textPrimary};
+    color: ${Color.neutral100};
     background-color: rgba(255, 255, 255, 0.23);
     text-align: center;
     z-index: 1;
@@ -83,6 +83,7 @@ export const WrapperChart = styled.div`
     top: 3rem !important;
     height: calc(100% - 3rem) !important;
   }
+
   ${Media.upToSmall()} {
     canvas {
       top: 5rem !important;
@@ -96,11 +97,13 @@ export const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'g
   top: 1rem;
   left: 1rem;
   z-index: 3;
+
   > h3 {
     color: ${Color.explorer_grey};
     font-size: small;
     font-weight: ${({ theme }): string => theme.fontMedium};
     margin: 0;
+
     ${Media.upToSmall()} {
       top: 0.5rem;
       word-wrap: break-word;
@@ -118,7 +121,7 @@ export const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'g
     align-items: center;
 
     > p {
-      color: ${Color.explorer_textPrimary};
+      color: ${Color.neutral100};
       font-size: large;
       font-weight: ${({ theme }): string => theme.fontBold};
       &.caption {
@@ -149,7 +152,7 @@ export const WrapperPeriodButton = styled.button<{ active: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ active }): string => (active ? Color.explorer_orange1 : Color.explorer_textPrimary)};
+  color: ${({ active }): string => (active ? Color.explorer_orange1 : Color.neutral100)};
   background-color: ${({ active }): string => (active ? Color.explorer_orangeOpacity : Color.explorer_bg2)};
   border: 1px solid ${({ active }): string => (active ? Color.explorer_orange1 : Color.explorer_bg2)};
   padding: 0;
@@ -177,7 +180,7 @@ export const StyledShimmerBar = styled(ShimmerBar)`
 `
 
 export const WrapperTooltipPrice = styled.div<{ left: number; top: number; height?: number; width?: number }>`
-  color: ${Color.explorer_textPrimary};
+  color: ${Color.neutral100};
   background-color: ${Color.explorer_bg2};
   border: 1px solid ${Color.explorer_border};
   padding: 0.5rem 1rem;
@@ -194,7 +197,7 @@ export const WrapperTooltipPrice = styled.div<{ left: number; top: number; heigh
     font-size: 1.5rem;
     font-weight: ${({ theme }): string => theme.fontMedium};
     margin: 1rem 0;
-    color: ${Color.explorer_textPrimary};
+    color: ${Color.neutral100};
   }
 
   > p {

@@ -69,15 +69,9 @@ export interface Colors {
   // TODO: Remove these once we've migrated all the colors
   cowfi_orange: ColorValue
   cowfi_darkBlue: ColorValue
-  cowfi_darkBlue2: ColorValue
-  cowfi_darkBlue3: ColorValue
-  cowfi_darkBlue4: ColorValue
   cowfi_darkBlue5: ColorValue
-  cowfi_lightBlue1: ColorValue
-  cowfi_lightBlue2: ColorValue
   cowfi_lightBlue3: ColorValue
   cowfi_lightBlue4: ColorValue
-  cowfi_white2: ColorValue
   cowfi_grey: ColorValue
   cowfi_grey2: ColorValue
   cowfi_grey3: ColorValue
@@ -87,7 +81,6 @@ export interface Colors {
   cowfi_borderGradient: ColorValue
   cowfi_gradient: ColorValue
   cowfi_gradient2: ColorValue
-  cowfi_gradientMesh: StyledFlattenSimpleInterpolation
   cowfi_purple1: ColorValue
   cowfi_purple2: ColorValue
   cowfi_purple3: ColorValue

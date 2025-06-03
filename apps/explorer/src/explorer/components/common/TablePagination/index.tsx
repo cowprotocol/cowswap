@@ -9,7 +9,7 @@ import styled, { css } from 'styled-components/macro'
 import { Dropdown, DropdownOption } from '../Dropdown'
 
 const PaginationTextCSS = css`
-  color: ${Color.explorer_textPrimary};
+  color: ${Color.neutral100};
   font-size: ${({ theme }): string => theme.fontSizeDefault};
   font-weight: normal;
   white-space: nowrap;

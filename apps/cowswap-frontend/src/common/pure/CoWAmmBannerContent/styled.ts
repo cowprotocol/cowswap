@@ -179,7 +179,7 @@ export const PoolInfo = styled.div<{
   > i {
     font-style: normal;
     background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_COWAMM_LIGHT_BLUE})`};
-    color: ${({ color }) => color || `var(${UI.COLOR_COWAMM_DARK_BLUE})`};
+    color: ${({ color }) => color || `var(${UI.COLOR_BLUE_900_PRIMARY})`};
     display: flex;
     flex-flow: row;
     gap: 6px;
