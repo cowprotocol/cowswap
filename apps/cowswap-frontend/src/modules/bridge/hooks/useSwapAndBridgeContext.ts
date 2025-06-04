@@ -109,6 +109,7 @@ export function useSwapAndBridgeContext(
 
     const bridgeReceiveAmount =
       !!crossChainOrder &&
+      crossChainOrder.bridgingParams.outputAmount &&
       CurrencyAmount.fromRawAmount(order.outputToken, crossChainOrder.bridgingParams.outputAmount.toString())
 
     const overview: SwapAndBridgeOverview = {
