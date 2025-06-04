@@ -1,45 +1,46 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useLayoutEffect } from 'react'
 
+import { waitForAnalytics } from '@cowprotocol/analytics'
+import { getUtmParams, cleanUpUtmParams, UtmParams } from '@cowprotocol/common-utils'
+
 import { useLocation } from 'react-router'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
 import { utmAtom } from './state'
-import { UtmParams } from './types'
-
-const UTM_SOURCE_PARAMS: UtmParams = {
-  utmSource: 'utm_source',
-  utmMedium: 'utm_medium',
-  utmCampaign: 'utm_campaign',
-  utmContent: 'utm_content',
-  utmTerm: 'utm_term',
-}
-
-const ALL_UTM_PARAMS = Object.values(UTM_SOURCE_PARAMS)
-
-function getUtmParams(searchParams: URLSearchParams): UtmParams {
-  return Object.keys(UTM_SOURCE_PARAMS).reduce<UtmParams>((acc, _key) => {
-    const key = _key as keyof UtmParams
-
-    acc[key] = searchParams.get(UTM_SOURCE_PARAMS[key] as string) || undefined
-
-    return acc
-  }, {})
-}
 
 export function useUtm(): UtmParams | undefined {
   return useAtomValue(utmAtom)
 }
 
-function cleanUpParams(searchParams: URLSearchParams): URLSearchParams {
-  ALL_UTM_PARAMS.forEach((param) => {
-    if (searchParams.has(param)) {
-      searchParams.delete(param)
-    }
-  })
+/**
+ * Handle URL navigation and cleanup after UTM processing
+ */
+function handleUrlNavigation(
+  newSearch: string,
+  hasQueryParamsOutOfHashbang: boolean,
+  navigate: ReturnType<typeof useNavigate>,
+  pathname: string,
+  hash: string,
+): void {
+  const { href, origin, pathname: locationPath, hash: locationHash, search: locationSearch } = window.location
 
-  return searchParams
+  if (hasQueryParamsOutOfHashbang) {
+    window.location.replace(newSearch ? `/#${locationPath}?${newSearch}` : '/')
+    return
+  }
+
+  const validHref = `${origin}${locationPath}${locationHash}${locationSearch}`
+  const isWeirdURl = href !== validHref
+
+  // Example: http://localhost:3000?
+  if (isWeirdURl) {
+    window.location.href = validHref
+    return
+  }
+
+  navigate({ pathname, search: newSearch, hash }, { replace: true })
 }
 
 export function useInitializeUtm(): void {
@@ -55,30 +56,27 @@ export function useInitializeUtm(): void {
       const searchParams = new URLSearchParams(search || window.location.search)
       const utm = getUtmParams(searchParams)
 
-      const { href, origin, pathname: locationPath, hash: locationHash, search: locationSearch } = window.location
-
       if (Object.values(utm).filter(Boolean).length > 0) {
         // Only overrides the UTM if the URL includes at least one UTM param
         setUtm(utm)
+
+        // Wait for analytics to be ready before cleaning up UTM parameters
+        waitForAnalytics().then(() => {
+          // Small additional delay to ensure analytics has captured the parameters
+          setTimeout(() => {
+            const newSearchParams = cleanUpUtmParams(new URLSearchParams(search || window.location.search))
+            const newSearch = newSearchParams.toString()
+
+            handleUrlNavigation(newSearch, !!hasQueryParamsOutOfHashbang, navigate, pathname, hash)
+          }, 250) // Additional 250ms delay for analytics capture
+        })
+      } else {
+        // No UTM parameters, proceed with normal cleanup immediately
+        const newSearchParams = cleanUpUtmParams(searchParams)
+        const newSearch = newSearchParams.toString()
+
+        handleUrlNavigation(newSearch, !!hasQueryParamsOutOfHashbang, navigate, pathname, hash)
       }
-
-      const newSearch = cleanUpParams(searchParams).toString()
-
-      if (hasQueryParamsOutOfHashbang) {
-        window.location.replace(newSearch ? `/#${locationPath}?${newSearch}` : '/')
-        return
-      }
-
-      const validHref = `${origin}${locationPath}${locationHash}${locationSearch}`
-      const isWeirdURl = href !== validHref
-
-      // Example: http://localhost:3000?
-      if (isWeirdURl) {
-        window.location.href = validHref
-        return
-      }
-
-      navigate({ pathname, search: newSearch, hash }, { replace: true })
     },
     // No dependencies: It only needs to be initialized once
     // eslint-disable-next-line react-hooks/exhaustive-deps

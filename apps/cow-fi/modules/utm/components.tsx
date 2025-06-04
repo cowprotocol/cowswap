@@ -1,7 +1,11 @@
 import React, { AnchorHTMLAttributes, ComponentType, useMemo } from 'react'
+
+import { UtmParams } from '@cowprotocol/common-utils'
+
 import Link, { LinkProps } from 'next/link'
-import { useUtm, UtmParams } from 'modules/utm'
-import { addUtmToUrl } from 'modules/utm/utils'
+
+import { useUtm } from './hooks'
+import { addUtmToUrl } from './utils'
 
 export const defaultUtm: UtmParams = {
   utmSource: 'cow.fi',
@@ -19,14 +23,13 @@ export function LinkWithUtmComponent(p: LinkWithUtmProps): React.ReactNode {
   const { href, as, children, defaultUtm: providedUtm = defaultUtm, ...props } = p
   const utm = useUtm()
 
-  const mergedUtm = { ...defaultUtm, ...providedUtm, ...utm }
-
   const newHref = useMemo(() => {
+    const mergedUtm = { ...defaultUtm, ...providedUtm, ...utm }
     if (mergedUtm && typeof href === 'string') {
       return addUtmToUrl(href, mergedUtm)
     }
     return href
-  }, [mergedUtm, href])
+  }, [providedUtm, utm, href])
 
   return (
     <Link href={newHref} as={as} target="_blank" rel="noopener nofollow" {...props}>
@@ -36,11 +39,15 @@ export function LinkWithUtmComponent(p: LinkWithUtmProps): React.ReactNode {
 }
 
 export function withUtmLink<T extends React.JSX.IntrinsicAttributes>(Component: ComponentType<T>) {
-  return (props: T & LinkWithUtmProps) => {
+  const WrappedComponent = (props: T & LinkWithUtmProps) => {
     return (
       <LinkWithUtmComponent {...props}>
         <Component {...(props as T)} />
       </LinkWithUtmComponent>
     )
   }
+
+  WrappedComponent.displayName = `withUtmLink(${Component.displayName || Component.name || 'Component'})`
+
+  return WrappedComponent
 }

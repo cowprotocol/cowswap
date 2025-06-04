@@ -1,10 +1,9 @@
 import { stringifyDeterministic } from '@cowprotocol/app-data'
+import { UtmParams } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { metadataApiSDK } from 'cowSdk'
 import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
-
-import { UtmParams } from 'modules/utm'
 
 import { filterHooks, HooksFilter } from './appDataFilter'
 import { removePermitHookFromHooks, typedAppDataHooksToAppDataHooks } from './typedHooks'
