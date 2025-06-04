@@ -1,7 +1,7 @@
 import { ReactElement } from 'react'
 
 import { TokenLogo } from '@cowprotocol/tokens'
-import { FiatAmount, TokenAmount as LibTokenAmount, TokenAmountProps as LibTokenAmountProps, UI } from '@cowprotocol/ui'
+import { FiatAmount, TokenAmount as LibTokenAmount, TokenAmountProps as LibTokenAmountProps } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { StatusColor, AmountWithTokenIcon } from './styled'
@@ -31,7 +31,7 @@ export function TokenAmountDisplay({
 
   return (
     <AmountWithTokenIcon colorVariant={status}>
-      {!hideTokenIcon && <TokenLogo token={token} size={21} chainBorderColor={UI.COLOR_PAPER_DARKER} />}
+      {!hideTokenIcon && <TokenLogo token={token} size={21} />}
       <LibTokenAmount
         amount={currencyAmount}
         tokenSymbol={displaySymbol ? token : undefined}

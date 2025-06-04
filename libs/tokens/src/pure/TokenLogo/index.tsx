@@ -35,25 +35,25 @@ const getBorderWidth = (size: number): number =>
   Math.max(BORDER_WIDTH_MIN, Math.min(BORDER_WIDTH_MAX, size * BORDER_WIDTH_RATIO))
 
 export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number }>`
+  --size: ${({ size = DEFAULT_SIZE }) => size}px;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(${UI.COLOR_DARK_IMAGE_PAPER});
-  color: var(${UI.COLOR_DARK_IMAGE_PAPER_TEXT});
-  border-radius: ${({ size = DEFAULT_SIZE }) => size}px;
-  width: ${({ size = DEFAULT_SIZE }) => size}px;
-  height: ${({ size = DEFAULT_SIZE }) => size}px;
-  min-width: ${({ size = DEFAULT_SIZE }) => size}px;
-  min-height: ${({ size = DEFAULT_SIZE }) => size}px;
-  font-size: ${({ size = DEFAULT_SIZE }) => size}px;
-  overflow: revert;
+  background: transparent;
+  border-radius: var(--size);
+  width: var(--size);
+  height: var(--size);
+  min-width: var(--size);
+  min-height: var(--size);
+  font-size: var(--size);
+  overflow: visible;
 
   > img,
   > svg {
     width: 100%;
     height: 100%;
-    border-radius: ${({ size }) => size ?? DEFAULT_SIZE}px;
+    border-radius: var(--size);
     object-fit: contain;
   }
 
@@ -61,52 +61,97 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
     ${({ sizeMobile }) =>
       sizeMobile
         ? css`
-            border-radius: ${sizeMobile}px;
-            width: ${sizeMobile}px;
-            height: ${sizeMobile}px;
-            min-width: ${sizeMobile}px;
-            min-height: ${sizeMobile}px;
-            font-size: ${sizeMobile}px;
+            --sizeMobile: ${sizeMobile}px;
+            border-radius: var(--sizeMobile);
+            width: var(--sizeMobile);
+            height: var(--sizeMobile);
+            min-width: var(--sizeMobile);
+            min-height: var(--sizeMobile);
+            font-size: var(--sizeMobile);
 
             > img,
             > svg {
-              border-radius: ${sizeMobile}px;
+              border-radius: var(--sizeMobile);
             }
           `
         : ''}
   }
 `
 
-const ChainLogoWrapper = styled.div<{ size?: number; borderColor?: string }>`
-  ${({ size = DEFAULT_CHAIN_LOGO_SIZE, borderColor }) => {
-    const borderWidth = getBorderWidth(size)
-    const finalBorderColor = `var(${borderColor || UI.COLOR_PAPER})`
-    return `
-      width: ${size}px;
-      height: ${size}px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      background: var(${UI.COLOR_DARK_IMAGE_PAPER});
-      border: ${borderWidth}px solid ${finalBorderColor};
-      position: absolute;
-      padding: 0;
-      bottom: -${borderWidth}px;
-      right: -${borderWidth}px;
+interface ClippedTokenContentWrapperProps {
+  parentSize: number
+  chainLogoSize: number
+  cutThickness: number
+  hasImage: boolean
+}
+
+const ClippedTokenContentWrapper = styled.div<ClippedTokenContentWrapperProps>`
+  --parent-size: ${({ parentSize = DEFAULT_SIZE }) => parentSize}px;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: ${({ hasImage }) => (hasImage ? 'transparent' : `var(${UI.COLOR_DARK_IMAGE_PAPER})`)};
+  color: ${({ hasImage }) => (hasImage ? 'inherit' : `var(${UI.COLOR_DARK_IMAGE_PAPER_TEXT})`)};
+  border-radius: var(--parent-size);
+  transform: translateZ(0);
+
+  > img,
+  > svg,
+  > div {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--parent-size);
+    object-fit: contain;
+  }
+
+  ${({ parentSize, chainLogoSize, cutThickness }) => {
+    const chainLogoRadius = chainLogoSize / 2
+    const chainLogoCenterX = parentSize - chainLogoRadius
+    const chainLogoCenterY = parentSize - chainLogoRadius
+
+    const innerTransparentRadius = chainLogoRadius
+    const outerTransparentRadius = chainLogoRadius + cutThickness
+
+    return css`
+      mask-image: radial-gradient(
+        circle at ${chainLogoCenterX}px ${chainLogoCenterY}px,
+        white 0%,
+        white ${innerTransparentRadius}px,
+        transparent ${innerTransparentRadius}px,
+        transparent ${outerTransparentRadius}px,
+        white ${outerTransparentRadius}px,
+        white 100%
+      );
     `
   }}
+`
+
+const ChainLogoWrapper = styled.div<{ size?: number }>`
+  --size: ${({ size = DEFAULT_CHAIN_LOGO_SIZE }) => size}px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: var(--size);
+  height: var(--size);
+  border-radius: var(--size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
 
   > img,
   > svg {
     width: 100%;
     height: 100%;
-    border-radius: 50%;
+    border-radius: var(--size);
     object-fit: contain;
   }
 `
 
 const LpTokenWrapper = styled.div<{ size?: number }>`
+  --size: ${({ size = DEFAULT_SIZE }) => size}px;
   width: 100%;
   height: 100%;
   position: relative;
@@ -130,10 +175,10 @@ const LpTokenWrapper = styled.div<{ size?: number }>`
 
   > div > img,
   > div > svg {
-    width: ${({ size = DEFAULT_SIZE }) => size}px;
-    height: ${({ size = DEFAULT_SIZE }) => size}px;
-    min-width: ${({ size = DEFAULT_SIZE }) => size}px;
-    min-height: ${({ size = DEFAULT_SIZE }) => size}px;
+    width: var(--size);
+    height: var(--size);
+    min-width: var(--size);
+    min-height: var(--size);
   }
 `
 
@@ -144,18 +189,9 @@ export interface TokenLogoProps {
   size?: number
   sizeMobile?: number
   noWrap?: boolean
-  chainBorderColor?: string
 }
 
-export function TokenLogo({
-  logoURI,
-  token,
-  className,
-  size = 36,
-  sizeMobile,
-  noWrap,
-  chainBorderColor,
-}: TokenLogoProps) {
+export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, noWrap }: TokenLogoProps) {
   const tokensByAddress = useTokensByAddressMap()
 
   const [invalidUrls, setInvalidUrls] = useAtom(invalidUrlsAtom)
@@ -205,7 +241,7 @@ export function TokenLogo({
     )
   }
 
-  const tokenContent = currentUrl ? (
+  const actualTokenContent = currentUrl ? (
     <img
       alt={`${token?.symbol || ''} ${token?.name ? `(${token?.name})` : ''} token logo`}
       src={currentUrl}
@@ -217,16 +253,28 @@ export function TokenLogo({
     <Slash />
   )
 
-  if (noWrap) return tokenContent
+  if (noWrap) return actualTokenContent
 
   const chainInfo: BaseChainInfo | undefined = getChainInfo(token?.chainId as SupportedChainId)
   const chainName = chainInfo?.label || ''
 
+  // This is the size of the chain logo
+  const chainLogoSizeForCalc = size / 2
+  // This is the thickness of the cutout around the chain logo
+  const cutThicknessForCalc = getBorderWidth(chainLogoSizeForCalc)
+
   return (
     <TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
-      {tokenContent}
+      <ClippedTokenContentWrapper
+        parentSize={size}
+        chainLogoSize={chainLogoSizeForCalc}
+        cutThickness={cutThicknessForCalc}
+        hasImage={!!currentUrl}
+      >
+        {actualTokenContent}
+      </ClippedTokenContentWrapper>
       {logoUrl && (
-        <ChainLogoWrapper size={size / 1.85} borderColor={chainBorderColor}>
+        <ChainLogoWrapper size={chainLogoSizeForCalc}>
           <img src={logoUrl} alt={`${chainName} network logo`} />
         </ChainLogoWrapper>
       )}

@@ -223,6 +223,42 @@ export const Opacity = {
 } as const
 
 /**
+ * Generic color mapping system - maps light colors to their dark equivalents
+ * This allows us to reuse existing colors without duplication
+ */
+const COLOR_MAPPINGS = {
+  // Blue primary color mappings - reusing existing defined colors
+  blue100Primary: { light: 'blue100Primary', dark: 'blueDark4' },
+  blue200Primary: { light: 'blue200Primary', dark: 'blueShade3Dark' },
+  blue300Primary: { light: 'blue300Primary', dark: 'blueDark3' },
+  blue400Primary: { light: 'blue400Primary', dark: 'blue1' },
+  blue500Primary: { light: 'blue500Primary', dark: 'blue300Primary' },
+  blue900Primary: { light: 'blue900Primary', dark: 'blueLight1' },
+
+  // Example: Easy to extend for other color families
+  // success: { light: 'successLight', dark: 'successDark' },
+  // warning: { light: 'warningLight', dark: 'warningDark' },
+} as const
+
+/**
+ * Generic function to apply color mappings based on dark mode
+ */
+function applyColorMappings<T extends keyof typeof COLOR_MAPPINGS>(
+  colorKeys: T[],
+  darkMode: boolean,
+): Record<T, string> {
+  return colorKeys.reduce(
+    (acc, key) => {
+      const mapping = COLOR_MAPPINGS[key]
+      const colorKey = darkMode ? mapping.dark : mapping.light
+      acc[key] = Color[colorKey as keyof typeof Color]
+      return acc
+    },
+    {} as Record<T, string>,
+  )
+}
+
+/**
  * Generates all theme-aware colors for a given dark mode state
  * This is the DRY approach - pass darkMode once and get all computed colors
  */
@@ -270,6 +306,12 @@ export function getThemeColors(darkMode: boolean) {
     paperCustom: darkMode ? Color.paperDark : Color.white,
     paperDarkerCustom: darkMode ? Color.darkerDark : Color.darkerLight,
     paperDarkestCustom: darkMode ? darken(Color.darkerDark, 0.05) : darken(Color.darkerLight, 0.1),
+
+    // Blue primary colors - generated systematically using existing color references
+    ...applyColorMappings(
+      ['blue100Primary', 'blue200Primary', 'blue300Primary', 'blue400Primary', 'blue500Primary', 'blue900Primary'],
+      darkMode,
+    ),
 
     // Gradients
     gradient1: `linear-gradient(145deg, ${darkMode ? Color.paperDark : Color.white}, ${darkMode ? Color.black : Color.backgroundLight})`,

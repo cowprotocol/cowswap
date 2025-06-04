@@ -86,8 +86,8 @@ const StopStatusStyles: Record<SwapAndBridgeStatus, FlattenSimpleInterpolation> 
     }
   `,
   [SwapAndBridgeStatus.REFUND_COMPLETE]: css`
-    background-color: var(${UI.COLOR_ALERT_BG});
-    color: var(${UI.COLOR_ALERT_TEXT});
+    background-color: var(${UI.COLOR_DANGER_BG});
+    color: var(${UI.COLOR_DANGER_TEXT});
     padding: 6.5px;
     &::before {
       content: none;
@@ -295,6 +295,17 @@ export const StyledTimelineInfoIcon = styled(SVG)`
   width: var(--size);
   height: var(--size);
   color: var(${UI.COLOR_TEXT_OPACITY_50});
+
+  > path {
+    fill: currentColor;
+  }
+`
+
+export const StyledTimelineReceiptIcon = styled(SVG)`
+  --size: 100%;
+  width: var(--size);
+  height: var(--size);
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
 
   > path {
     fill: currentColor;

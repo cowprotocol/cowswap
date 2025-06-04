@@ -1,6 +1,6 @@
 import React from 'react'
 
-import InfoIcon from '@cowprotocol/assets/cow-swap/info.svg'
+import ReceiptIcon from '@cowprotocol/assets/cow-swap/icon-receipt.svg'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink } from '@cowprotocol/ui'
@@ -8,7 +8,7 @@ import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
-import { StyledTimelineInfoIcon, SuccessTextBold, TimelineIconCircleWrapper } from '../../../../styles'
+import { StyledTimelineReceiptIcon, SuccessTextBold, TimelineIconCircleWrapper } from '../../../../styles'
 import { TokenAmountDisplay } from '../../../TokenAmountDisplay'
 
 interface ReceivedBridgingContentProps {
@@ -53,7 +53,7 @@ export function ReceivedBridgingContent({
           label={
             <>
               <TimelineIconCircleWrapper padding="0" bgColor={'transparent'}>
-                <StyledTimelineInfoIcon src={InfoIcon} />
+                <StyledTimelineReceiptIcon src={ReceiptIcon} />
               </TimelineIconCircleWrapper>{' '}
               Source transaction
             </>
@@ -67,7 +67,7 @@ export function ReceivedBridgingContent({
           label={
             <>
               <TimelineIconCircleWrapper padding="0" bgColor={'transparent'}>
-                <StyledTimelineInfoIcon src={InfoIcon} />
+                <StyledTimelineReceiptIcon src={ReceiptIcon} />
               </TimelineIconCircleWrapper>{' '}
               Destination transaction
             </>

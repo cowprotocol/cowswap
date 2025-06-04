@@ -35,10 +35,6 @@ export const stepColors: Record<
   },
 }
 
-export const getStepBackgroundColor = (step: BridgingFlowStep): string => {
-  return stepColors[step].background
-}
-
 export const Header = styled.div<{ $step: BridgingFlowStep }>`
   display: flex;
   flex-flow: column wrap;
@@ -67,13 +63,12 @@ export const HeaderState = styled.div`
   width: 100%;
 `
 
-const TOKEN_SIZE = '42px'
 const CONNECTOR_HEIGHT = '2px'
 const MARGIN_MULTIPLIER = 1.5
 const CONNECTOR_OFFSET_MULTIPLIER = -1.25
 
-export const TokenLogo = styled(TokenLogoOriginal)<{ $step: BridgingFlowStep }>`
-  --size: ${TOKEN_SIZE};
+export const TokenLogo = styled(TokenLogoOriginal)<{ $step: BridgingFlowStep; $tokenSize: number }>`
+  --size: ${({ $tokenSize }) => $tokenSize}px;
   --margin: calc(var(--size) * ${MARGIN_MULTIPLIER});
   --connector-offset: calc(var(--size) * ${CONNECTOR_OFFSET_MULTIPLIER});
   position: relative;

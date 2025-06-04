@@ -6,7 +6,6 @@ import { SwapStatusIcons } from 'modules/bridge/pure/StopStatus'
 import { SwapAndBridgeStatus } from 'modules/bridge/types'
 
 import * as styledEl from './styled'
-import { getStepBackgroundColor } from './styled'
 
 import { BridgingFlowStep } from '../../types'
 
@@ -38,10 +37,7 @@ function createTokenWithChain(token: Currency, chainId?: number): Currency {
  * Creates a TokenLogo element with consistent styling
  */
 function createTokenLogo(token: Currency, stepName: BridgingFlowStep): React.JSX.Element {
-  const chainBorderColor = getStepBackgroundColor(stepName)
-  return (
-    <styledEl.TokenLogo token={token} chainBorderColor={chainBorderColor} size={TOKEN_LOGO_SIZE} $step={stepName} />
-  )
+  return <styledEl.TokenLogo token={token} size={TOKEN_LOGO_SIZE} $step={stepName} $tokenSize={TOKEN_LOGO_SIZE} />
 }
 
 export interface BridgingStatusHeaderProps {
