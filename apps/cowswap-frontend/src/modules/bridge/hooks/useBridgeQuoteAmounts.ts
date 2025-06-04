@@ -19,7 +19,9 @@ export function useBridgeQuoteAmounts(
     const buyToken = buyAmount.currency
 
     const intermediateBuyTokenAddress = bridgeQuote.tradeParameters.sellTokenAddress
-    const intermediateBuyToken = tokensByAddress[intermediateBuyTokenAddress.toLowerCase()]!
+    const intermediateBuyToken = tokensByAddress[intermediateBuyTokenAddress.toLowerCase()]
+
+    if (!intermediateBuyToken) return null
 
     const swapBuyAmount = CurrencyAmount.fromRawAmount(
       intermediateBuyToken,

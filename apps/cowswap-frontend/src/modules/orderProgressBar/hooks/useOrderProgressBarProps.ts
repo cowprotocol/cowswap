@@ -24,6 +24,8 @@ import { featureFlagsAtom } from 'common/state/featureFlagsState'
 import { ActivityDerivedState } from 'common/types/activity'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
+import { type SwapAndBridgeContext, SwapAndBridgeStatus } from '../../bridge'
+import { useSwapAndBridgeContext } from '../../bridge/hooks/useSwapAndBridgeContext'
 import {
   ordersProgressBarStateAtom,
   setOrderProgressBarCancellationTriggered,
@@ -31,11 +33,18 @@ import {
   updateOrderProgressBarCountdown,
   updateOrderProgressBarStepName,
 } from '../state/atoms'
-import { ApiSolverCompetition, OrderProgressBarState, OrderProgressBarStepName, SolverCompetition } from '../types'
+import {
+  ApiSolverCompetition,
+  OrderProgressBarProps,
+  OrderProgressBarState,
+  OrderProgressBarStepName,
+  SolverCompetition,
+} from '../types'
 
-export type UseOrderProgressBarPropsParams = {
+type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null
   chainId: SupportedChainId
+  isBridgingTrade: boolean
 }
 
 export type UseOrderProgressBarResult = Pick<OrderProgressBarState, 'countdown'> & {
@@ -43,6 +52,7 @@ export type UseOrderProgressBarResult = Pick<OrderProgressBarState, 'countdown'>
   showCancellationModal: Command | null
   solverCompetition?: SolverCompetition[]
   totalSolvers: number
+  swapAndBridgeContext?: SwapAndBridgeContext
 }
 
 const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
@@ -50,12 +60,26 @@ export const PROGRESS_BAR_TIMER_DURATION = 15 // in seconds
 
 /**
  * Hook for fetching ProgressBar props
+ * TODO FIXME: refactor this
  */
-export function useOrderProgressBarProps(chainId: SupportedChainId, order: Order | undefined) {
+export function useOrderProgressBarProps(
+  chainId: SupportedChainId,
+  order: Order | undefined,
+): {
+  props: OrderProgressBarProps
+  activityDerivedState: ActivityDerivedState | null
+} {
   const orderId = order?.id
+  const isBridgingTrade = !!order && order.inputToken.chainId !== order.outputToken.chainId
+
   const [activity] = useMultipleActivityDescriptors({ chainId, ids: orderId ? [orderId] : [] })
   const activityDerivedState = useActivityDerivedState({ chainId, activity })
-  const progressBarProps = useOrderBaseProgressBarProps({ chainId, activityDerivedState })
+
+  const progressBarProps = useOrderBaseProgressBarProps({
+    chainId,
+    activityDerivedState,
+    isBridgingTrade,
+  })
 
   const getCancellation = useCancelOrder()
   const showCancellationModal = useMemo(
@@ -63,19 +87,20 @@ export function useOrderProgressBarProps(chainId: SupportedChainId, order: Order
     () => progressBarProps?.showCancellationModal || (order && getCancellation ? getCancellation(order) : null),
     [progressBarProps?.showCancellationModal, order, getCancellation],
   )
+
   const surplusData = useGetSurplusData(order)
   const receiverEnsName = useENS(order?.receiver).name || undefined
 
-  return useMemo(() => {
+  const props = useMemo(() => {
     // Add supplementary stuff
-    const data = {
+    const data: OrderProgressBarProps = {
       ...progressBarProps,
-      activityDerivedState,
       surplusData,
       chainId,
       receiverEnsName,
       showCancellationModal,
       isProgressBarSetup: true,
+      isBridgingTrade,
     }
 
     if (!progressBarProps) {
@@ -83,11 +108,13 @@ export function useOrderProgressBarProps(chainId: SupportedChainId, order: Order
       return { ...data, isProgressBarSetup: false }
     }
     return data
-  }, [progressBarProps, activityDerivedState, surplusData, chainId, receiverEnsName, showCancellationModal])
+  }, [progressBarProps, surplusData, chainId, receiverEnsName, showCancellationModal, isBridgingTrade])
+
+  return useMemo(() => ({ props, activityDerivedState }), [props, activityDerivedState])
 }
 
 function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): UseOrderProgressBarResult | undefined {
-  const { activityDerivedState, chainId } = params
+  const { activityDerivedState, chainId, isBridgingTrade } = params
 
   const {
     order,
@@ -129,6 +156,10 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
 
   const doNotQuery = getDoNotQueryStatusEndpoint(order, apiSolverCompetition, !!disableProgressBar)
 
+  const winnerSolver = apiSolverCompetition?.[0]
+  const swapAndBridgeContext = useSwapAndBridgeContext(chainId, order, winnerSolver)
+  const bridgingStatus = swapAndBridgeContext?.bridgingStatus
+
   // Local updaters of the respective atom
   useBackendApiStatusUpdater(chainId, orderId, doNotQuery)
   useProgressBarStepNameUpdater(
@@ -144,6 +175,8 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     previousBackendApiStatus,
     lastTimeChangedSteps,
     previousStepName,
+    bridgingStatus,
+    isBridgingTrade,
   )
   useCancellingOrderUpdater(orderId, isCancelling)
   useCountdownStartUpdater(orderId, countdown, backendApiStatus)
@@ -168,8 +201,17 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
       solverCompetition,
       stepName: progressBarStepName || 'initial',
       showCancellationModal,
+      swapAndBridgeContext,
     }
-  }, [disableProgressBar, countdown, totalSolvers, solverCompetition, progressBarStepName, showCancellationModal])
+  }, [
+    disableProgressBar,
+    countdown,
+    totalSolvers,
+    solverCompetition,
+    progressBarStepName,
+    showCancellationModal,
+    swapAndBridgeContext,
+  ])
 }
 
 /**
@@ -196,13 +238,13 @@ function getDoNotQueryStatusEndpoint(
   )
 }
 
-// atom related hooks
+const DEFAULT_STATE = {}
 
 function useGetExecutingOrderState(orderId: string): OrderProgressBarState {
   const fullState = useAtomValue(ordersProgressBarStateAtom)
   const singleState = fullState[orderId]
 
-  return useMemo(() => singleState || {}, [singleState])
+  return useMemo(() => singleState || DEFAULT_STATE, [singleState])
 }
 
 function useSetExecutingOrderCountdownCallback() {
@@ -214,7 +256,12 @@ function useSetExecutingOrderCountdownCallback() {
 function useSetExecutingOrderProgressBarStepNameCallback() {
   const setValue = useSetAtom(updateOrderProgressBarStepName)
 
-  return useCallback((orderId: string, value: OrderProgressBarStepName) => setValue({ orderId, value }), [setValue])
+  return useCallback(
+    (orderId: string, value: OrderProgressBarStepName) => {
+      setValue({ orderId, value })
+    },
+    [setValue],
+  )
 }
 
 // local updaters
@@ -258,6 +305,8 @@ function useProgressBarStepNameUpdater(
   previousBackendApiStatus: OrderProgressBarState['previousBackendApiStatus'],
   lastTimeChangedSteps: OrderProgressBarState['lastTimeChangedSteps'],
   previousStepName: OrderProgressBarState['previousStepName'],
+  bridgingStatus: SwapAndBridgeStatus | undefined,
+  isBridgingTrade: boolean,
 ) {
   const setProgressBarStepName = useSetExecutingOrderProgressBarStepNameCallback()
 
@@ -272,6 +321,8 @@ function useProgressBarStepNameUpdater(
     backendApiStatus,
     previousBackendApiStatus,
     previousStepName,
+    bridgingStatus,
+    isBridgingTrade,
   )
 
   // Update state with new step name
@@ -320,14 +371,40 @@ function getProgressBarStepName(
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
   previousBackendApiStatus: OrderProgressBarState['previousBackendApiStatus'],
   previousStepName: OrderProgressBarState['previousStepName'],
+  bridgingStatus: SwapAndBridgeStatus | undefined,
+  isBridgingTrade: boolean,
 ): OrderProgressBarStepName {
+  const isTradedOrConfirmed = backendApiStatus === 'traded' || isConfirmed
+
+  if (bridgingStatus) {
+    if (bridgingStatus === SwapAndBridgeStatus.DONE) {
+      return 'bridgingFinished'
+    }
+
+    if (bridgingStatus === SwapAndBridgeStatus.REFUND_COMPLETE) {
+      return 'refundCompleted'
+    }
+
+    if (bridgingStatus === SwapAndBridgeStatus.FAILED) {
+      return 'bridgingFailed'
+    }
+
+    if (bridgingStatus && [SwapAndBridgeStatus.PENDING, SwapAndBridgeStatus.DEFAULT].includes(bridgingStatus)) {
+      return 'bridgingInProgress'
+    }
+  }
+
+  if (isTradedOrConfirmed && isBridgingTrade && !bridgingStatus) {
+    return 'executing'
+  }
+
   if (isExpired) {
     return 'expired'
   } else if (isCancelled) {
     return 'cancelled'
   } else if (isCancelling) {
     return 'cancelling'
-  } else if (cancellationTriggered && (backendApiStatus === 'traded' || isConfirmed)) {
+  } else if (cancellationTriggered && isTradedOrConfirmed) {
     // Was cancelling, but got executed in the meantime
     return 'cancellationFailed'
   } else if (isConfirmed) {

@@ -1,9 +1,16 @@
+import React from 'react'
+
+import { Confetti } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { ProgressDetails, SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
 
+import type { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
+
 import * as styledEl from './styled'
 
+import { useWithConfetti } from '../../hooks/useWithConfetti'
 import { BridgingFlowStep } from '../../types'
 import { BridgingStatusHeader } from '../BridgingStatusHeader'
 
@@ -30,16 +37,23 @@ const ProgressDetailsStyled = styled(ProgressDetails)`
 
 interface BridgingInProgressStepProps {
   context: SwapAndBridgeContext
+  surplusData?: SurplusData
 }
 
-export function BridgingStep({ context }: BridgingInProgressStepProps) {
+export function BridgingStep({ context, surplusData }: BridgingInProgressStepProps) {
+  const showConfetti = useWithConfetti({
+    isFinished: context.bridgingStatus === SwapAndBridgeStatus.DONE,
+    surplusData,
+  })
+
   return (
     <styledEl.ProgressContainer>
+      {showConfetti && <Confetti start={true} />}
       <Wrapper>
         <BridgingStatusHeader
           stepName={statusesMap[context.bridgingStatus]}
-          sellToken={context.quoteBridgeContext.sellAmount.currency}
-          buyToken={context.quoteBridgeContext.buyAmount.currency}
+          sellToken={context.overview.sourceAmounts.sellAmount.currency}
+          buyToken={context.overview.targetCurrency}
         />
         <ProgressDetailsStyled context={context} />
       </Wrapper>

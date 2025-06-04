@@ -18,7 +18,7 @@ import { RouteTitle } from '../RouteTitle'
 
 export interface BridgeDetailsContainerProps {
   status: SwapAndBridgeStatus
-  stopNumber: number
+  stopNumber?: number
   statusIcon: ReactNode
   titlePrefix: ReactNode
   protocolName: string
@@ -26,8 +26,8 @@ export interface BridgeDetailsContainerProps {
   protocolIconShowOnly?: 'first' | 'second'
   protocolIconSize?: number
 
-  sellAmount: CurrencyAmount<Currency>
-  buyAmount: CurrencyAmount<Currency>
+  sellAmount: CurrencyAmount<Currency> | undefined
+  buyAmount: CurrencyAmount<Currency> | undefined
   buyAmountUsd?: CurrencyAmount<Token> | null
   chainName: string
 
@@ -108,11 +108,15 @@ export function BridgeDetailsContainer({
           </ToggleIconContainer>
         )}
       </StopTitleComponent>
-      <SectionContent isExpanded={isExpanded}>
-        <RouteTitle chainName={chainName} sellAmount={sellAmount} buyAmount={buyAmount} buyAmountUsd={buyAmountUsd} />
+      {sellAmount && buyAmount ? (
+        <SectionContent isExpanded={isExpanded}>
+          <RouteTitle chainName={chainName} sellAmount={sellAmount} buyAmount={buyAmount} buyAmountUsd={buyAmountUsd} />
 
-        {children}
-      </SectionContent>
+          {children}
+        </SectionContent>
+      ) : (
+        children
+      )}
     </>
   )
 }

@@ -47,4 +47,5 @@ export type OrderProgressBarProps = {
   navigateToNewOrder?: Command
   isProgressBarSetup: boolean
   swapAndBridgeContext?: SwapAndBridgeContext
+  isBridgingTrade: boolean
 }

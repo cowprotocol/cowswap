@@ -41,7 +41,7 @@ export function CollapsibleBridgeRoute(props: CollapsibleBridgeRouteProps) {
     <Wrapper className={className}>
       {isCollapsible && (
         <RouteOverviewTitle
-          isCollapsible={true}
+          isCollapsible
           isExpanded={isExpanded}
           providerInfo={providerInfo}
           onClick={toggleExpanded}

@@ -1,3 +1,5 @@
+import { BridgeStatusResult } from '@cowprotocol/cow-sdk'
+
 import { FailedBridgingContent } from './FailedBridgingContent'
 import { PendingBridgingContent } from './PendingBridgingContent'
 import { ReceivedBridgingContent } from './ReceivedBridgingContent'
@@ -8,18 +10,34 @@ import { QuoteBridgeContent, QuoteBridgeContentProps } from '../QuoteBridgeConte
 
 interface BridgingContentProps extends QuoteBridgeContentProps {
   progressContext: BridgingProgressContext
+  statusResult?: BridgeStatusResult
 }
 
 export function BridgingProgressContent(props: BridgingContentProps) {
   const {
-    progressContext: { account, receivedAmount, receivedAmountUsd, isFailed, isRefunded },
+    progressContext: {
+      account,
+      sourceChainId,
+      destinationChainId,
+      receivedAmount,
+      receivedAmountUsd,
+      isFailed,
+      isRefunded,
+    },
     quoteContext,
+    statusResult,
   } = props
 
   return (
     <QuoteBridgeContent {...props}>
       {receivedAmount ? (
-        <ReceivedBridgingContent receivedAmount={receivedAmount} receivedAmountUsd={receivedAmountUsd} />
+        <ReceivedBridgingContent
+          statusResult={statusResult}
+          sourceChainId={sourceChainId}
+          destinationChainId={destinationChainId}
+          receivedAmount={receivedAmount}
+          receivedAmountUsd={receivedAmountUsd}
+        />
       ) : isRefunded ? (
         <RefundedBridgingContent account={account} bridgeSendCurrencyAmount={quoteContext.sellAmount} />
       ) : isFailed ? (

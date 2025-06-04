@@ -15,7 +15,7 @@ export function useOrderSubmittedContent(chainId: SupportedChainId) {
   const { transactionHash } = useTradeConfirmState()
   const order = useOrder({ chainId, id: transactionHash || undefined })
 
-  const orderProgressBarProps = useOrderProgressBarProps(chainId, order)
+  const { props: orderProgressBarProps, activityDerivedState } = useOrderProgressBarProps(chainId, order)
 
   const navigateToNewOrderCallback = useNavigateToNewOrderCallback()
 
@@ -25,11 +25,11 @@ export function useOrderSubmittedContent(chainId: SupportedChainId) {
         chainId={chainId}
         hash={transactionHash || undefined}
         onDismiss={onDismiss}
-        activityDerivedState={orderProgressBarProps.activityDerivedState}
+        activityDerivedState={activityDerivedState}
         orderProgressBarProps={orderProgressBarProps}
         navigateToNewOrderCallback={navigateToNewOrderCallback}
       />
     ),
-    [chainId, transactionHash, orderProgressBarProps, navigateToNewOrderCallback],
+    [chainId, transactionHash, orderProgressBarProps, activityDerivedState, navigateToNewOrderCallback],
   )
 }
