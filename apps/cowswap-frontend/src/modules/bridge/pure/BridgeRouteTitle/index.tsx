@@ -14,7 +14,7 @@ interface BridgeRouteTitleProps {
   bridgeProvider: BridgeProviderInfo
   protocolIconShowOnly?: 'first' | 'second'
   protocolIconSize?: number
-  stopNumber: number
+  stopNumber?: number
 }
 export function BridgeRouteTitle({
   status,

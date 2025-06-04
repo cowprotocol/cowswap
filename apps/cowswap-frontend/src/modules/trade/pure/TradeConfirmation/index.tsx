@@ -68,11 +68,17 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     appData,
   } = frozenProps || props
 
+  const [isConfirmClicked, setIsConfirmClicked] = useState(false)
+
   /**
    * Once user sends a transaction, we keep the confirmation content frozen
    */
   useEffect(() => {
     setFrozenProps(hasPendingTrade ? propsRef.current : null)
+
+    if (!hasPendingTrade) {
+      setIsConfirmClicked(false)
+    }
   }, [hasPendingTrade])
 
   const showRecipientWarning =
@@ -85,7 +91,8 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
 
   const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(inputAmount, outputAmount, forcePriceConfirmation)
 
-  const isButtonDisabled = isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade
+  const isButtonDisabled =
+    isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade || isConfirmClicked
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -99,6 +106,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
       window.scrollTo({ top: 0, left: 0 })
     }
 
+    setIsConfirmClicked(true)
     onConfirm()
   }
 
@@ -144,7 +152,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
         {isPriceChanged && !isPriceStatic && <PriceUpdatedBanner onClick={resetPriceChanged} />}
         <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
-          {hasPendingTrade ? (
+          {hasPendingTrade || isConfirmClicked ? (
             <LongLoadText fontSize={15} fontWeight={500}>
               Confirm with your wallet <CenteredDots smaller />
             </LongLoadText>

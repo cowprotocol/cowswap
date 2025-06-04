@@ -6,7 +6,10 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { OrderProgressBarStepName } from './types'
 
-export const STEPS = [
+type StepConfig = { title: string; description?: string }
+type BridgeStepConfig = (isBridgingTrade: boolean) => StepConfig
+
+export const STEPS: (StepConfig | BridgeStepConfig)[] = [
   {
     title: 'Batching orders',
   },
@@ -14,7 +17,7 @@ export const STEPS = [
     title: 'The competition has started',
   },
   { title: 'Executing', description: 'The winner of the competition is now executing your order on-chain.' },
-  { title: 'Transaction completed' },
+  (isBridgingTrade: boolean) => ({ title: isBridgingTrade ? 'Start bridging' : 'Transaction completed' }),
 ]
 
 export const FINAL_STATES: OrderProgressBarStepName[] = ['expired', 'finished', 'cancelled', 'cancellationFailed']

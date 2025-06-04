@@ -20,8 +20,8 @@ export function SurplusModalSetup() {
   const { chainId } = useWalletInfo()
   const order = useOrder({ id: orderId, chainId })
 
-  const progressBarProps = useOrderProgressBarProps(chainId, order)
-  const { isProgressBarSetup, activityDerivedState } = progressBarProps
+  const { props: progressBarProps, activityDerivedState } = useOrderProgressBarProps(chainId, order)
+  const { isProgressBarSetup } = progressBarProps
 
   const { isOpen: isConfirmationModalOpen, transactionHash } = useTradeConfirmState()
 

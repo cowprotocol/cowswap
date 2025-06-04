@@ -1,7 +1,7 @@
 import { USDC_BASE, USDC_GNOSIS_CHAIN } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, BridgeStatus } from '@cowprotocol/cow-sdk'
 import { UI } from '@cowprotocol/ui'
-import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
@@ -22,22 +22,26 @@ const order = {
 
 const receiveAmountInfo = inputCurrencyInfoMock.receiveAmountInfo!
 
+const account = '0xfb3c7eb936cAA12B5A884d612393969A557d4307'
 const swapAndBridgeContextMock: SwapAndBridgeContext = {
   bridgeProvider: {
     logoUrl:
       'https://raw.githubusercontent.com/cowprotocol/cow-sdk/refs/heads/main/src/bridging/providers/across/across-logo.png',
     name: 'Across',
+    dappId: 'cow-sdk://bridging/providers/across',
   },
-  quoteSwapContext: {
-    chainName: 'Gnosis',
-    receiveAmountInfo,
-    sellAmount: receiveAmountInfo.beforeNetworkCosts.sellAmount,
-    buyAmount: receiveAmountInfo.afterNetworkCosts.buyAmount,
-    slippage: new Percent(2000, 100),
-    recipient: '0xd0b931c58ff095f028C2b37fd95740a2D4aB7257',
-    minReceiveAmount: receiveAmountInfo.afterSlippage.sellAmount,
-    minReceiveUsdValue: CurrencyAmount.fromRawAmount(USDC_GNOSIS_CHAIN, '29000001'),
-    expectedReceiveUsdValue: CurrencyAmount.fromRawAmount(USDC_GNOSIS_CHAIN, '29560000'),
+  overview: {
+    sourceChainName: 'Ethereum',
+    targetChainName: 'Ethereum',
+    targetCurrency: USDC_BASE,
+    sourceAmounts: {
+      sellAmount: receiveAmountInfo.beforeNetworkCosts.sellAmount,
+      buyAmount: receiveAmountInfo.afterNetworkCosts.buyAmount,
+    },
+    targetAmounts: {
+      sellAmount: receiveAmountInfo.afterSlippage.buyAmount,
+      buyAmount: CurrencyAmount.fromRawAmount(USDC_BASE, '28700000'),
+    },
   },
   quoteBridgeContext: {
     chainName: 'Gnosis',
@@ -49,7 +53,9 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
     buyAmountUsd: CurrencyAmount.fromRawAmount(USDC_GNOSIS_CHAIN, '28700004'),
   },
   bridgingProgressContext: {
-    account: '0xfb3c7eb936cAA12B5A884d612393969A557d4307',
+    account,
+    sourceChainId: 1,
+    destinationChainId: USDC_BASE.chainId,
   },
   swapResultContext: {
     winningSolver: {
@@ -70,6 +76,7 @@ const defaultProps: OrderProgressBarProps = {
   order,
   chainId: 1,
   stepName: 'initial',
+  isBridgingTrade: false,
   showCancellationModal: () => {
     alert('cancellation triggered o/')
   },
@@ -185,18 +192,20 @@ const Fixtures = {
   ),
   bridgingInProgress: () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="bridgingInProgress" />
+      <OrderProgressBar {...defaultProps} isBridgingTrade stepName="bridgingInProgress" />
     </Wrapper>
   ),
   bridgingFailed: () => (
     <Wrapper>
       <OrderProgressBar
         {...defaultProps}
+        isBridgingTrade
         swapAndBridgeContext={{
           ...swapAndBridgeContextMock,
           bridgingStatus: SwapAndBridgeStatus.FAILED,
           bridgingProgressContext: {
-            ...swapAndBridgeContextMock.bridgingProgressContext,
+            ...swapAndBridgeContextMock.bridgingProgressContext!,
+            account,
             isFailed: true,
           },
         }}
@@ -208,11 +217,13 @@ const Fixtures = {
     <Wrapper>
       <OrderProgressBar
         {...defaultProps}
+        isBridgingTrade
         swapAndBridgeContext={{
           ...swapAndBridgeContextMock!,
           bridgingStatus: SwapAndBridgeStatus.REFUND_COMPLETE,
           bridgingProgressContext: {
-            ...swapAndBridgeContextMock.bridgingProgressContext,
+            ...swapAndBridgeContextMock.bridgingProgressContext!,
+            account,
             isRefunded: true,
           },
         }}
@@ -224,16 +235,42 @@ const Fixtures = {
     <Wrapper>
       <OrderProgressBar
         {...defaultProps}
+        isBridgingTrade
         swapAndBridgeContext={{
           ...swapAndBridgeContextMock!,
           bridgingStatus: SwapAndBridgeStatus.DONE,
           bridgingProgressContext: {
-            ...swapAndBridgeContextMock.bridgingProgressContext,
+            ...swapAndBridgeContextMock.bridgingProgressContext!,
+            account,
             receivedAmount: CurrencyAmount.fromRawAmount(USDC_BASE, '29100000'),
             receivedAmountUsd: CurrencyAmount.fromRawAmount(USDC_GNOSIS_CHAIN, '29800000'),
           },
+          statusResult: {
+            status: BridgeStatus.EXECUTED,
+            depositTxHash: '0x080059573e09eb94b4679a5d1369c5244ef827746fec06c8e8d6f993c54f8663',
+            fillTxHash: '0x851ff28340f67ebce1f530bea8665c911787767cf9563ad5aeb232110aa50651',
+          },
         }}
         stepName="bridgingFinished"
+      />
+    </Wrapper>
+  ),
+  bridgingPreparing: () => (
+    <Wrapper>
+      <OrderProgressBar
+        {...defaultProps}
+        isBridgingTrade
+        swapAndBridgeContext={{
+          ...swapAndBridgeContextMock!,
+          bridgingProgressContext: undefined,
+          quoteBridgeContext: undefined,
+          bridgingStatus: SwapAndBridgeStatus.DEFAULT,
+          overview: {
+            ...swapAndBridgeContextMock.overview,
+            targetAmounts: undefined,
+          },
+        }}
+        stepName="bridgingInProgress"
       />
     </Wrapper>
   ),

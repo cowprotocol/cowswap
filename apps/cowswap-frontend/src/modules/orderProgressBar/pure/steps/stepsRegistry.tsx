@@ -16,7 +16,7 @@ const DEBUG_FORCE_SHOW_SURPLUS = false
 
 function InitialStepWrapper(props: OrderProgressBarProps) {
   return (
-    <InitialStep>
+    <InitialStep isBridgingTrade={props.isBridgingTrade}>
       <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
     </InitialStep>
   )
@@ -24,7 +24,7 @@ function InitialStepWrapper(props: OrderProgressBarProps) {
 
 function ExecutingStepWrapper(props: OrderProgressBarProps) {
   return (
-    <ExecutingStep>
+    <ExecutingStep isBridgingTrade={props.isBridgingTrade}>
       <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
     </ExecutingStep>
   )
@@ -50,7 +50,7 @@ function FinishedStepWrapper(props: OrderProgressBarProps) {
 }
 
 function SolvingStepWrapper(props: OrderProgressBarProps) {
-  const { countdown, stepName, showCancellationModal } = props
+  const { countdown, stepName, showCancellationModal, isBridgingTrade } = props
   const isUnfillable = stepName === 'unfillable'
   const isDelayed = stepName === 'delayed'
   const isSubmissionFailed = stepName === 'submissionFailed'
@@ -58,7 +58,7 @@ function SolvingStepWrapper(props: OrderProgressBarProps) {
   const calculatedCountdownValue = isUnfillable || isDelayed || isSubmissionFailed || isSolved ? undefined : countdown
 
   return (
-    <SolvingStep stepName={stepName} showCancellationModal={showCancellationModal}>
+    <SolvingStep stepName={stepName} showCancellationModal={showCancellationModal} isBridgingTrade={isBridgingTrade}>
       <RenderProgressTopSection
         {...props}
         countdown={calculatedCountdownValue}
@@ -95,7 +95,7 @@ function ExpiredStepWrapper(props: OrderProgressBarProps) {
 function BridgingStepWrapper(props: OrderProgressBarProps) {
   if (!props.stepName || !props.swapAndBridgeContext) return null
 
-  return <BridgingStep context={props.swapAndBridgeContext}></BridgingStep>
+  return <BridgingStep context={props.swapAndBridgeContext} surplusData={props.surplusData}></BridgingStep>
 }
 
 export const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, ComponentType<OrderProgressBarProps>> = {

@@ -82,8 +82,8 @@ export function QuoteSwapContent({
   return (
     <>
       <TradeFeesAndCosts receiveAmountInfo={receiveAmountInfo} />
-      {contents.map(({ withTimelineDot, label, content }) => (
-        <ConfirmDetailsItem withTimelineDot={withTimelineDot} label={label}>
+      {contents.map(({ withTimelineDot, label, content }, index) => (
+        <ConfirmDetailsItem key={index} withTimelineDot={withTimelineDot} label={label}>
           {content}
         </ConfirmDetailsItem>
       ))}

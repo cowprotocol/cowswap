@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import * as styledEl from './styled'
 
 import { STEPS } from '../../constants'
@@ -5,14 +7,16 @@ import { Description } from '../../sharedStyled'
 import { StepsWrapper } from '../StepsWrapper'
 
 interface ExecutingStepProps {
-  children: React.ReactNode
+  children: ReactNode
+  isBridgingTrade: boolean
 }
 
-export function ExecutingStep({ children }: ExecutingStepProps) {
+export function ExecutingStep({ children, isBridgingTrade }: ExecutingStepProps) {
   return (
     <styledEl.ProgressContainer>
       {children}
       <StepsWrapper
+        isBridgingTrade={isBridgingTrade}
         steps={STEPS}
         currentStep={2}
         customStepTitles={{ 2: 'Best price found!' }}

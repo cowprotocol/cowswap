@@ -26,7 +26,8 @@ export function getFilledAmounts(order: ParsedOrder) {
   const buyAmountCurrency = CurrencyAmount.fromRawAmount(outputToken, buyAmount.toString())
 
   // TODO: set types, move calculations logic to a function
-  let filledAmountWithFee, swappedAmountWithFee
+  let filledAmountWithFee: BigNumber
+  let swappedAmountWithFee: BigNumber
   if (isSellOrder(kind)) {
     action = 'sold'
 
@@ -65,5 +66,7 @@ export function getFilledAmounts(order: ParsedOrder) {
     formattedSwappedAmount,
     mainAmount,
     action,
+    swappedAmountWithFee,
+    filledAmountWithFee,
   }
 }
