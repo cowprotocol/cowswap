@@ -29,7 +29,7 @@ yarn start
 
 ## 2. Finding a First Issue
 
-Start with issues carrying the **Help Wanted** label.
+Start with issues labeled **Help Wanted**.
 
 ---
 
@@ -62,28 +62,22 @@ Start with issues carrying the **Help Wanted** label.
 
 ## 4. Repository Architecture
 
-```
-monorepo/
-├─ apps/
-│  ├─ cowswap-frontend/     # Trading interface (Vite + React)
-│  │  ├─ common/            # shared, leaf-only; **must not depend on modules/**
-│  │  ├─ modules/           # feature folders
-│  │  ├─ pages/             # React Router pages
-│  │  ├─ api/               # API service wrappers
-│  │  └─ types/             # shared TypeScript types
-│  ├─ cow-fi/               # Cow.fi website (Next.js)
-│  │  ├─ app/               # Next.js App Router pages
-│  │  ├─ components/        # React components
-│  │  └─ modules/           # feature modules
-│  ├─ explorer/             # CoW Protocol Explorer (Vite + React)
-│  ├─ widget-configurator/  # Widget configuration tool
-│  └─ ...                   # other specialized apps
-├─ libs/                    # reusable logic across apps
-├─ tools/                   # build & dev utilities
-└─ testing/                 # integration helpers
-```
+**Monorepo Structure Principles:**
 
-**Important**: The `common` directory MUST NOT depend on `modules/` - it is a leaf-only dependency.
+- `apps/` - Individual applications (cowswap-frontend, cow-fi, explorer, widget-configurator, etc.)
+- `libs/` - Shared logic and utilities across applications
+- `tools/` - Build and development utilities
+- `testing/` - Integration test helpers
+
+**Within cowswap-frontend:**
+
+- `common/` - Shared utilities and components (MUST NOT depend on `modules/`)
+- `modules/` - Feature-specific code organized by domain
+- `pages/` - React Router page components
+- `api/` - Service layer and API wrappers
+- `types/` - Shared TypeScript type definitions
+
+**Critical Architectural Rule:** The `common/` directory is leaf-only and MUST NOT depend on `modules/`. This ensures clean dependency flow and prevents circular dependencies.
 
 ---
 
@@ -179,7 +173,7 @@ Additional Guidelines:
 
 - Use descriptive commit messages, inline comments, and rich PR descriptions (expected behaviour & QA scope)
 - Plan work up-front to keep each PR scoped to a single feature/fix
-- Open PR before starting implementation work
+
 - Provide clear context about feature behavior and QA scope
 - If you are stuck on anything, don't hesitate to reach out
 
