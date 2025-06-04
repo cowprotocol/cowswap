@@ -15,12 +15,12 @@ const COWSWAP_VOLUME_FEES: Record<SupportedChainId, VolumeFee | null> = {
   [SupportedChainId.MAINNET]: null,
   [SupportedChainId.SEPOLIA]: null,
   [SupportedChainId.ARBITRUM_ONE]: {
-    bps: 10, // 0.1%
+    volumeBps: 10, // 0.1%
     recipient: '0x451100Ffc88884bde4ce87adC8bB6c7Df7fACccd', // Arb1 Protocol fee safe
   },
   [SupportedChainId.BASE]: null,
   [SupportedChainId.GNOSIS_CHAIN]: {
-    bps: 10, // 0.1%
+    volumeBps: 10, // 0.1%
     recipient: '0x6b3214fD11dc91De14718DeE98Ef59bCbFcfB432', // Gnosis Chain Protocol fee safe
   },
   [SupportedChainId.POLYGON]: null, // TODO: check if we should apply fee on Polygon

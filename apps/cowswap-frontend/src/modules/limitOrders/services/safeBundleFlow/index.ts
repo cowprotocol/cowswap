@@ -94,23 +94,7 @@ export async function safeBundleFlow(
           quoteId: postOrderParams.quoteId,
         },
         {
-          appData: {
-            ...postOrderParams.appData.doc,
-            metadata: {
-              ...postOrderParams.appData.doc.metadata,
-              partnerFee: postOrderParams.appData.doc.metadata.partnerFee
-                ? [
-                    {
-                      priceImprovementBps: 0,
-                      maxVolumeBps: 0,
-                      recipient: Array.isArray(postOrderParams.appData.doc.metadata.partnerFee)
-                        ? postOrderParams.appData.doc.metadata.partnerFee[0]?.recipient || ''
-                        : postOrderParams.appData.doc.metadata.partnerFee.recipient || '',
-                    },
-                  ]
-                : undefined,
-            },
-          },
+          appData: postOrderParams.appData.doc,
           additionalParams: {
             signingScheme: SigningScheme.PRESIGN,
           },
