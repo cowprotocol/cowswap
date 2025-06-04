@@ -101,7 +101,7 @@ const StopStatusStyles: Record<SwapAndBridgeStatus, FlattenSimpleInterpolation> 
 
 export const StopNumberCircle = styled.div<{
   status?: SwapAndBridgeStatus
-  stopNumber: number
+  stopNumber?: number
 }>`
   ${stopCircleBase}
 
@@ -109,6 +109,7 @@ export const StopNumberCircle = styled.div<{
 
   ${({ status = SwapAndBridgeStatus.DEFAULT, stopNumber }) =>
     status === SwapAndBridgeStatus.DEFAULT &&
+    stopNumber &&
     css`
       &::before {
         content: '${stopNumber}';

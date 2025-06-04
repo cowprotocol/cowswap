@@ -22,6 +22,7 @@ const defaultProps = {
   orderProgressBarProps: {
     chainId: SupportedChainId.MAINNET,
     isProgressBarSetup: false,
+    isBridgingTrade: true,
     showCancellationModal: () => {
       alert('Cancellation triggered!!')
     },

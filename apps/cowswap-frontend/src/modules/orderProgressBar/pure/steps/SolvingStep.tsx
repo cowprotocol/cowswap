@@ -15,6 +15,7 @@ interface SolvingStepProps {
   children: React.ReactNode
   stepName?: OrderProgressBarStepName
   showCancellationModal: Command | null
+  isBridgingTrade: boolean
 }
 
 function getCustomStepTitles(
@@ -30,7 +31,7 @@ function getCustomStepTitles(
   return undefined
 }
 
-export function SolvingStep({ children, stepName, showCancellationModal }: SolvingStepProps) {
+export function SolvingStep({ children, stepName, showCancellationModal, isBridgingTrade }: SolvingStepProps) {
   const isUnfillable = stepName === 'unfillable'
   const isDelayed = stepName === 'delayed'
   const isSubmissionFailed = stepName === 'submissionFailed'
@@ -55,6 +56,7 @@ export function SolvingStep({ children, stepName, showCancellationModal }: Solvi
     <styledEl.ProgressContainer>
       {children}
       <StepsWrapper
+        isBridgingTrade={isBridgingTrade}
         steps={STEPS}
         currentStep={1}
         customStepTitles={getCustomStepTitles(isUnfillable, isDelayed, isSubmissionFailed, isSolved)}

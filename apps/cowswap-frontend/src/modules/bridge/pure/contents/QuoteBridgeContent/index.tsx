@@ -21,15 +21,17 @@ export function QuoteBridgeContent({
   const buyAmountEl = <TokenAmountDisplay displaySymbol usdValue={buyAmountUsd} currencyAmount={buyAmount} />
 
   const contents = [
-    {
-      withTimelineDot: true,
-      label: (
-        <>
-          Bridge fee <InfoTooltip content="The fee for the bridge transaction." size={14} />
-        </>
-      ),
-      content: bridgeFee.equalTo(0) ? 'FREE' : <TokenAmountDisplay currencyAmount={bridgeFee} />,
-    },
+    bridgeFee
+      ? {
+          withTimelineDot: true,
+          label: (
+            <>
+              Bridge fee <InfoTooltip content="The fee for the bridge transaction." size={14} />
+            </>
+          ),
+          content: bridgeFee.equalTo(0) ? 'FREE' : <TokenAmountDisplay currencyAmount={bridgeFee} />,
+        }
+      : null,
     estimatedTime
       ? {
           withTimelineDot: true,
@@ -50,7 +52,7 @@ export function QuoteBridgeContent({
           <InfoTooltip content="The address that will receive the tokens on the destination chain." size={14} />
         </>
       ),
-      content: <RecipientDisplay recipient={recipient} chainId={bridgeFee.currency.chainId} logoSize={16} />,
+      content: <RecipientDisplay recipient={recipient} chainId={buyAmount.currency.chainId} logoSize={16} />,
     },
     {
       withTimelineDot: true,
@@ -67,8 +69,8 @@ export function QuoteBridgeContent({
 
   return (
     <>
-      {contents.filter(isTruthy).map(({ withTimelineDot, label, content }) => (
-        <ConfirmDetailsItem withTimelineDot={withTimelineDot} label={label}>
+      {contents.filter(isTruthy).map(({ withTimelineDot, label, content }, index) => (
+        <ConfirmDetailsItem key={index} withTimelineDot={withTimelineDot} label={label}>
           {content}
         </ConfirmDetailsItem>
       ))}

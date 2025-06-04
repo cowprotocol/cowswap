@@ -32,7 +32,7 @@ export function QuoteDetails({
   return (
     <CollapsibleBridgeRoute
       isCollapsible={isCollapsible}
-      isExpanded={true}
+      isExpanded
       providerInfo={bridgeProvider}
       collapsedDefault={collapsedDefault}
     >
