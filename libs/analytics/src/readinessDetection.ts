@@ -10,20 +10,15 @@ import { isSafaryReady } from './safary/safaryDetection'
 export interface AnalyticsReadiness {
   gtm: boolean
   safary: boolean
-  both: boolean
 }
 
 /**
  * Check if analytics tools are ready to receive events
  */
 export function isAnalyticsReady(): AnalyticsReadiness {
-  const gtm = isGtmReady()
-  const safary = isSafaryReady()
-
   return {
-    gtm,
-    safary,
-    both: gtm && safary,
+    gtm: isGtmReady(),
+    safary: isSafaryReady(),
   }
 }
 
@@ -44,6 +39,7 @@ export function waitForAnalytics(): Promise<void> {
       attempts++
       const analytics = isAnalyticsReady()
       const elapsed = Date.now() - startTime
+      const bothReady = analytics.gtm && analytics.safary
 
       // Log detailed status for debugging
       if (process.env.NODE_ENV === 'development') {
@@ -52,7 +48,7 @@ export function waitForAnalytics(): Promise<void> {
           elapsed: elapsed + 'ms',
           gtmReady: analytics.gtm,
           safaryReady: analytics.safary,
-          bothReady: analytics.both,
+          bothReady,
           dataLayer: !!window.dataLayer,
           gtag: !!window.gtag,
           googleTagManager: !!(window.google_tag_manager && Object.keys(window.google_tag_manager).length > 0),
@@ -64,7 +60,7 @@ export function waitForAnalytics(): Promise<void> {
       }
 
       // If both GTM and Safary are ready, give them extra time and proceed
-      if (analytics.both) {
+      if (bothReady) {
         clearInterval(analyticsInterval)
         if (process.env.NODE_ENV === 'development') {
           console.log('[UTM Analytics] Both GTM and Safary detected, giving extra time for attribution...')

@@ -14,6 +14,35 @@ export function useUtm(): UtmParams | undefined {
   return useAtomValue(utmAtom)
 }
 
+/**
+ * Handle URL navigation and cleanup after UTM processing
+ */
+function handleUrlNavigation(
+  newSearch: string,
+  hasQueryParamsOutOfHashbang: boolean,
+  navigate: ReturnType<typeof useNavigate>,
+  pathname: string,
+  hash: string,
+): void {
+  const { href, origin, pathname: locationPath, hash: locationHash, search: locationSearch } = window.location
+
+  if (hasQueryParamsOutOfHashbang) {
+    window.location.replace(newSearch ? `/#${locationPath}?${newSearch}` : '/')
+    return
+  }
+
+  const validHref = `${origin}${locationPath}${locationHash}${locationSearch}`
+  const isWeirdURl = href !== validHref
+
+  // Example: http://localhost:3000?
+  if (isWeirdURl) {
+    window.location.href = validHref
+    return
+  }
+
+  navigate({ pathname, search: newSearch, hash }, { replace: true })
+}
+
 export function useInitializeUtm(): void {
   const navigate = useNavigate()
   const { search, pathname, hash } = useLocation()
@@ -27,8 +56,6 @@ export function useInitializeUtm(): void {
       const searchParams = new URLSearchParams(search || window.location.search)
       const utm = getUtmParams(searchParams)
 
-      const { href, origin, pathname: locationPath, hash: locationHash, search: locationSearch } = window.location
-
       if (Object.values(utm).filter(Boolean).length > 0) {
         // Only overrides the UTM if the URL includes at least one UTM param
         setUtm(utm)
@@ -40,21 +67,7 @@ export function useInitializeUtm(): void {
             const newSearchParams = cleanUpUtmParams(new URLSearchParams(search || window.location.search))
             const newSearch = newSearchParams.toString()
 
-            if (hasQueryParamsOutOfHashbang) {
-              window.location.replace(newSearch ? `/#${locationPath}?${newSearch}` : '/')
-              return
-            }
-
-            const validHref = `${origin}${locationPath}${locationHash}${locationSearch}`
-            const isWeirdURl = href !== validHref
-
-            // Example: http://localhost:3000?
-            if (isWeirdURl) {
-              window.location.href = validHref
-              return
-            }
-
-            navigate({ pathname, search: newSearch, hash }, { replace: true })
+            handleUrlNavigation(newSearch, !!hasQueryParamsOutOfHashbang, navigate, pathname, hash)
           }, 250) // Additional 250ms delay for analytics capture
         })
       } else {
@@ -62,21 +75,7 @@ export function useInitializeUtm(): void {
         const newSearchParams = cleanUpUtmParams(searchParams)
         const newSearch = newSearchParams.toString()
 
-        if (hasQueryParamsOutOfHashbang) {
-          window.location.replace(newSearch ? `/#${locationPath}?${newSearch}` : '/')
-          return
-        }
-
-        const validHref = `${origin}${locationPath}${locationHash}${locationSearch}`
-        const isWeirdURl = href !== validHref
-
-        // Example: http://localhost:3000?
-        if (isWeirdURl) {
-          window.location.href = validHref
-          return
-        }
-
-        navigate({ pathname, search: newSearch, hash }, { replace: true })
+        handleUrlNavigation(newSearch, !!hasQueryParamsOutOfHashbang, navigate, pathname, hash)
       }
     },
     // No dependencies: It only needs to be initialized once

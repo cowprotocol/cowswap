@@ -58,6 +58,7 @@ export function hasUtmCodes(utm: UtmParams | undefined): boolean {
  * @returns new URLSearchParams with UTM parameters removed
  */
 export function cleanUpUtmParams(searchParams: URLSearchParams): URLSearchParams {
+  // Create a copy to avoid mutating the original URLSearchParams
   const cleanParams = new URLSearchParams(searchParams)
 
   // Remove all utm_* parameters
