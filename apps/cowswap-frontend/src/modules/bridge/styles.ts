@@ -136,7 +136,7 @@ export const StopTitle = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 3px;
+    gap: 5px;
     letter-spacing: -0.1px;
 
     ${Media.upToSmall()} {

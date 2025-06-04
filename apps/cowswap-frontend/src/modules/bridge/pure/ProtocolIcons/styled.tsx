@@ -1,6 +1,4 @@
-import { UI } from '@cowprotocol/ui'
-
-import styled, { keyframes } from 'styled-components/macro'
+import styled, { keyframes, css } from 'styled-components/macro'
 
 const spin = keyframes`
   from {
@@ -11,51 +9,69 @@ const spin = keyframes`
   }
 `
 
-export const ProtocolIcon = styled.div<{ bgColor?: string; size?: number; borderColor?: string }>`
+const BORDER_WIDTH_MIN = 1.5
+const BORDER_WIDTH_MAX = 2.2
+const BORDER_WIDTH_RATIO = 0.15
+
+export const getBorderWidth = (size: number): number =>
+  Math.max(BORDER_WIDTH_MIN, Math.min(BORDER_WIDTH_MAX, size * BORDER_WIDTH_RATIO))
+
+interface ProtocolIconProps {
+  bgColor?: string
+  size?: number
+  isStacked?: boolean
+  maskConfig?: {
+    cx: number // x-coordinate of the center of the overlapping (top) icon
+    cy: number // y-coordinate of the center of the overlapping (top) icon
+    innerR: number // radius of the overlapping (top) icon
+    outerR: number // innerR + cutThickness, defines the transparent ring
+  }
+}
+
+export const ProtocolIcon = styled.div<ProtocolIconProps>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: ${({ size }) => (size ? `${size}px` : 'var(--size)')};
   height: ${({ size }) => (size ? `${size}px` : 'var(--size)')};
   border-radius: ${({ size }) => (size ? `${size}px` : 'var(--size)')};
-  overflow: hidden;
+  overflow: hidden; // Important if children are slightly larger or for clean rounded corners
   background: ${({ bgColor }) => (bgColor ? `var(${bgColor})` : 'transparent')};
-  z-index: 2;
-  border: 2px solid ${({ borderColor }) => (borderColor ? `var(${borderColor})` : `var(${UI.COLOR_PAPER})`)};
-  box-sizing: content-box;
+  position: relative;
   transition: transform 0.3s ease-in-out;
 
-  > svg,
-  > span,
-  > img {
-    object-fit: contain;
-    width: 100%;
-    height: 100%;
-    padding: ${({ bgColor }) => (bgColor ? '3px' : '0')};
-    transition: transform 0.3s ease-in-out;
-  }
+  ${({ maskConfig }) =>
+    maskConfig &&
+    css`
+      mask-image: radial-gradient(
+        circle at ${maskConfig.cx}px ${maskConfig.cy}px,
+        white 0%,
+        white ${maskConfig.innerR}px,
+        /* Bottom icon visible under top icon */ transparent ${maskConfig.innerR}px,
+        /* Start of transparent ring (cutout border) */ transparent ${maskConfig.outerR}px,
+        /* End of transparent ring */ white ${maskConfig.outerR}px,
+        /* Rest of bottom icon visible */ white 100%
+      );
+    `}
 
   &:hover {
-    > svg,
-    > span,
-    > img {
-      animation: ${spin} 10s linear infinite;
-    }
+    animation: ${spin} 10s linear infinite;
+  }
+
+  > img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 `
 
-export const ProtocolIconsContainer = styled.div<{ iconSize?: number }>`
+export const ProtocolIconsContainer = styled.div<{ iconSize?: number; overlapRatio: number }>`
   --size: ${({ iconSize }) => (iconSize ? `${iconSize}px` : '18px')};
   display: inline-flex;
   align-items: center;
+  position: relative;
 
-  // Negative margin to the left of the next icon
-  > ${ProtocolIcon}:not(:first-child) {
-    margin-left: calc(var(--size) * -0.6);
-    z-index: 1;
-  }
-
-  > ${ProtocolIcon}:hover {
-    z-index: 3;
+  > ${ProtocolIcon}:nth-child(2) {
+    margin-left: calc(var(--size) * -${({ overlapRatio }) => overlapRatio});
   }
 `

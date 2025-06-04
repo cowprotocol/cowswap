@@ -1,7 +1,6 @@
 import React, { ReactNode } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
-import { UI } from '@cowprotocol/ui'
 
 import { StopNumberCircle } from '../../styles'
 import { SwapAndBridgeStatus } from '../../types'
@@ -39,7 +38,6 @@ export function BridgeRouteTitle({
           showOnlyFirst={protocolIconShowOnly === 'first'}
           showOnlySecond={protocolIconShowOnly === 'second'}
           secondProtocol={bridgeProvider}
-          borderColor={UI.COLOR_PAPER_DARKER}
         />
         <span> {protocolName}</span>
       </b>
