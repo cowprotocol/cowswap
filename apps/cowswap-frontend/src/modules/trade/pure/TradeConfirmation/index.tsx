@@ -68,6 +68,8 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     appData,
   } = frozenProps || props
 
+  const [isConfirmClicked, setIsConfirmClicked] = useState(false)
+
   /**
    * Once user sends a transaction, we keep the confirmation content frozen
    */
@@ -88,8 +90,6 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
   const outputAmount = outputCurrencyInfo.amount?.toExact()
 
   const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(inputAmount, outputAmount, forcePriceConfirmation)
-
-  const [isConfirmClicked, setIsConfirmClicked] = useState(false)
 
   const isButtonDisabled =
     isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade || isConfirmClicked

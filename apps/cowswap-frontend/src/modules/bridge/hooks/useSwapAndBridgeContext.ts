@@ -16,6 +16,7 @@ import { useUsdAmount } from 'modules/usdAmount'
 
 import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
 
+import { BridgeQuoteAmounts } from './useBridgeQuoteAmounts'
 import { useUpdateBridgeOrderData } from './useUpdateBridgeOrderData'
 
 import {
@@ -39,6 +40,7 @@ export function useSwapAndBridgeContext(
   chainId: SupportedChainId,
   order: Order | undefined,
   winningSolver: SolverCompetition | undefined,
+  bridgeQuoteAmounts?: BridgeQuoteAmounts,
 ): SwapAndBridgeContext | undefined {
   const { account } = useWalletInfo()
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
@@ -72,10 +74,12 @@ export function useSwapAndBridgeContext(
   const receivedAmountUsd = useUsdAmount(receivedAmount).value
   const surplusAmountUsd = useUsdAmount(surplusAmount).value
 
+  const isBridgingExecuted = crossChainOrder?.statusResult.status === BridgeStatus.EXECUTED
+
   /**
    * Poll bridge provider to get current bridging status
    */
-  useUpdateBridgeOrderData(chainId, order, setCrossChainOrder)
+  useUpdateBridgeOrderData(chainId, isBridgingExecuted ? undefined : order, setCrossChainOrder)
 
   return useMemo(() => {
     if (
@@ -107,9 +111,37 @@ export function useSwapAndBridgeContext(
       return undefined
     }
 
+    const bridgeOutputAmount = crossChainOrder?.bridgingParams.outputAmount
+
+    /**
+     * Get receive amount from crossChainOrder if possible
+     * Otherwise, fallback to bridgeQuoteAmounts
+     */
     const bridgeReceiveAmount =
-      !!crossChainOrder &&
-      CurrencyAmount.fromRawAmount(order.outputToken, crossChainOrder.bridgingParams.outputAmount.toString())
+      (!!crossChainOrder &&
+        !!bridgeOutputAmount &&
+        CurrencyAmount.fromRawAmount(order.outputToken, bridgeOutputAmount.toString())) ||
+      bridgeQuoteAmounts?.bridgeMinReceiveAmount
+
+    /**
+     * Bridge provider might not be able to derive `bridgingParams.outputAmount` before destination chain transaction is mined
+     * In that case we will display values we got from a quote before
+     */
+    const targetAmounts =
+      bridgeQuoteAmounts && !bridgeOutputAmount
+        ? {
+            sellAmount: bridgeQuoteAmounts.swapMinReceiveAmount,
+            buyAmount: bridgeQuoteAmounts.bridgeMinReceiveAmount,
+          }
+        : crossChainOrder && bridgeReceiveAmount
+          ? {
+              sellAmount: CurrencyAmount.fromRawAmount(
+                intermediateToken,
+                crossChainOrder.bridgingParams.inputAmount.toString(),
+              ),
+              buyAmount: bridgeReceiveAmount,
+            }
+          : undefined
 
     const overview: SwapAndBridgeOverview = {
       sourceChainName: sourceChainData.name,
@@ -119,16 +151,7 @@ export function useSwapAndBridgeContext(
         sellAmount: CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount),
         buyAmount: CurrencyAmount.fromRawAmount(intermediateToken, order.buyAmount),
       },
-      targetAmounts:
-        crossChainOrder && bridgeReceiveAmount
-          ? {
-              sellAmount: CurrencyAmount.fromRawAmount(
-                intermediateToken,
-                crossChainOrder.bridgingParams.inputAmount.toString(),
-              ),
-              buyAmount: bridgeReceiveAmount,
-            }
-          : undefined,
+      targetAmounts,
     }
 
     /**
@@ -187,5 +210,6 @@ export function useSwapAndBridgeContext(
     surplusAmountUsd,
     crossChainOrder,
     bridgeSupportedNetworks,
+    bridgeQuoteAmounts,
   ])
 }
