@@ -11,6 +11,8 @@ interface Props {
   amount: CurrencyAmount<Token> | undefined
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function CurrencyField({ label, token, amount }: Props) {
   return (
     <styledEl.CurrencyField title={amount?.toExact()}>

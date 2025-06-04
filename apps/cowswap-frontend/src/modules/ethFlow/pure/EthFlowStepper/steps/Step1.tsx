@@ -13,6 +13,8 @@ interface Step1Config {
   label: string
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Step1(props: EthFlowStepperProps) {
   const {
     creation: { hash, replaced },

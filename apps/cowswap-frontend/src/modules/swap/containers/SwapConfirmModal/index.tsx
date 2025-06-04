@@ -49,6 +49,9 @@ export interface SwapConfirmModalProps {
   recipient?: string | null
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function SwapConfirmModal(props: SwapConfirmModalProps) {
   const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade } = props
 
@@ -74,6 +77,8 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
 
   const { values: balances } = useTokensBalancesCombined()
 
+  // TODO: Reduce function complexity by extracting logic
+  // eslint-disable-next-line complexity
   const disableConfirm = useMemo(() => {
     const current = inputCurrencyInfo?.amount?.currency
 

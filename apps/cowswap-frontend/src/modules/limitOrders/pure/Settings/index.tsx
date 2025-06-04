@@ -111,6 +111,9 @@ const POSITION_LABELS = {
   bottom: 'Bottom',
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function Settings({ state, onStateChanged }: SettingsProps) {
   const analytics = useLimitOrderSettingsAnalytics()
   const [isOpen, setIsOpen] = useState(false)
@@ -158,11 +161,15 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
     onStateChanged({ ...state, ordersTableOnLeft: newValue })
   }, [analytics, onStateChanged, state, ordersTableOnLeft])
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const toggleDropdown = (e: React.MouseEvent) => {
     e.stopPropagation()
     setIsOpen(!isOpen)
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleContainerClick = (e: React.MouseEvent) => {
     e.stopPropagation()
   }

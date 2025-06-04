@@ -16,6 +16,8 @@ const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.SCHEDULED]: 'Scheduled',
 }
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function getOrderStatusTitleAndColor(order: ParsedOrder): { title: string; color: string; background: string } {
   // We consider the order fully filled for display purposes even if not 100% filled
   // For this reason we use the flag to override the order status

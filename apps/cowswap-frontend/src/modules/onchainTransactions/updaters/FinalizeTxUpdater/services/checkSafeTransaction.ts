@@ -9,6 +9,8 @@ import { CheckEthereumTransactions } from '../types'
 
 const SAFE_TX_NOT_FOUND_ERROR = 'No MultisigTransaction matches the given query'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function checkSafeTransaction(transaction: EnhancedTransactionDetails, params: CheckEthereumTransactions) {
   const { chainId, getTxSafeInfo, dispatch, safeInfo, getReceipt, lastBlockNumber } = params
   const { hash, receipt } = transaction

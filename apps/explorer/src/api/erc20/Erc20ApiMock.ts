@@ -109,7 +109,7 @@ export class Erc20ApiMock implements Erc20Api {
     return erc20Info.decimals
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   public async totalSupply(_params: TotalSupplyParams): Promise<BN> {
     return this._totalSupply
   }

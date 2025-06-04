@@ -1,4 +1,4 @@
-/* eslint-disable prefer-rest-params */
+ 
 export function nodeRemoveChildFix() {
   if (typeof Node === 'function' && Node.prototype) {
     const originalRemoveChild = Node.prototype.removeChild

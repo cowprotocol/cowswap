@@ -12,7 +12,7 @@ export function getCurrentChainIdFromUrl(): SupportedChainId {
 
 export function getRawCurrentChainIdFromUrl(): SupportedChainId | null {
   // Trying to get chainId from URL (#/100/swap)
-  // eslint-disable-next-line no-restricted-globals
+   
   const { location } = window
   const urlChainIdMatch = location.hash.match(/^#\/(\d{1,9})\D/)
   const searchParams = new URLSearchParams(location.hash.split('?')[1])

@@ -40,6 +40,8 @@ if (window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function Main() {
   return (
     <StrictMode>
@@ -72,6 +74,8 @@ function Main() {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function Web3ProviderInstance({ children }: { children: ReactNode }) {
   const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
   const { standaloneMode } = useInjectedWidgetParams()
@@ -83,6 +87,8 @@ function Web3ProviderInstance({ children }: { children: ReactNode }) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function Toasts() {
   const { disableToastMessages = false } = useInjectedWidgetParams()
 

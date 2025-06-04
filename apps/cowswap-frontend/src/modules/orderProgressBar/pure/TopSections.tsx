@@ -27,6 +27,8 @@ interface InitialTopSectionProps extends BaseTopSectionProps {
   order: OrderProgressBarProps['order']
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function InitialTopSection({ stepName, order }: InitialTopSectionProps) {
   return (
     <ProgressImageWrapper stepName={stepName}>
@@ -35,11 +37,15 @@ export function InitialTopSection({ stepName, order }: InitialTopSectionProps) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function UnfillableTopSection() {
   return <img src={STEP_IMAGE_UNFILLABLE} alt="Order out of market" />
 }
 
 // delayed, submissionFailed, solved
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function DelayedSolvedSubmissionFailedTopSection() {
   return (
     <Lottie
@@ -55,6 +61,8 @@ interface SolvingTopSectionProps {
   countdown: number
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SolvingTopSection({ countdown }: SolvingTopSectionProps) {
   return (
     <>
@@ -64,6 +72,8 @@ export function SolvingTopSection({ countdown }: SolvingTopSectionProps) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ExecutingTopSection({ stepName }: BaseTopSectionProps) {
   return (
     <ProgressImageWrapper stepName={stepName}>
@@ -85,6 +95,9 @@ interface FinishedCancellationFailedTopSectionProps extends BaseTopSectionProps 
   randomBenefit: string
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function FinishedCancellationFailedTopSection({
   stepName,
   order,
@@ -93,6 +106,9 @@ export function FinishedCancellationFailedTopSection({
   surplusPercentValue,
   randomBenefit,
 }: FinishedCancellationFailedTopSectionProps) {
+  // TODO: Extract nested component outside render function
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line react/no-unstable-nested-components, @typescript-eslint/explicit-function-return-type
   function ShowSurplus() {
     return (
       <styledEl.BenefitSurplusContainer>
@@ -121,6 +137,9 @@ export function FinishedCancellationFailedTopSection({
     )
   }
 
+  // TODO: Extract nested component outside render function
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line react/no-unstable-nested-components, @typescript-eslint/explicit-function-return-type
   function NoSurplus() {
     return (
       <styledEl.BenefitSurplusContainer>
@@ -169,6 +188,8 @@ export function FinishedCancellationFailedTopSection({
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function CancelledCancellingTopSection({ stepName }: BaseTopSectionProps) {
   return (
     <ProgressImageWrapper stepName={stepName}>
@@ -177,6 +198,8 @@ export function CancelledCancellingTopSection({ stepName }: BaseTopSectionProps)
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ExpiredTopSection({ stepName }: BaseTopSectionProps) {
   return (
     <ProgressImageWrapper stepName={stepName}>

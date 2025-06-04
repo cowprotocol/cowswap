@@ -6,6 +6,8 @@ import { StatefulValue } from '@cowprotocol/types'
 
 import { updateYieldSettingsAtom, yieldSettingsAtom } from '../state/yieldSettingsAtom'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useYieldSettings() {
   return useAtomValue(yieldSettingsAtom)
 }

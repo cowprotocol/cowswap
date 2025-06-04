@@ -22,6 +22,8 @@ const NoImpactWarningMessage = (
   </div>
 )
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useIsNoImpactWarningAccepted() {
   return useAtomValue(noImpactWarningAcceptedAtom)
 }
@@ -31,6 +33,8 @@ export interface NoImpactWarningProps {
   className?: string
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function NoImpactWarning(props: NoImpactWarningProps) {
   const { withoutAccepting, className } = props
 
@@ -47,6 +51,8 @@ export function NoImpactWarning(props: NoImpactWarningProps) {
 
   const showPriceImpactWarning = canTrade && !!account && !priceImpactParams.loading && !priceImpactParams.priceImpact
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const acceptCallback = () => setIsAccepted((state) => !state)
 
   useEffect(() => {

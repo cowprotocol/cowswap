@@ -54,6 +54,9 @@ const DEFAULT_ORDER_SUMMARY = {
   validTo: '',
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, complexity
 export function GnosisSafeTxDetails(props: {
   chainId: number
   activityDerivedState: ActivityDerivedState
@@ -168,6 +171,10 @@ interface OrderSummaryType {
   kind?: string
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function ActivityDetails(props: {
   chainId: number
   activityDerivedState: ActivityDerivedState

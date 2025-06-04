@@ -8,6 +8,8 @@ import useIsAnySwapAffectedUser from './useIsAnySwapAffectedUser'
 
 const WARNING_PAGE = '/anyswap-affected-users'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function RedirectAnySwapAffectedUsers() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -16,7 +18,7 @@ export default function RedirectAnySwapAffectedUsers() {
   const isAnySwapAffectedUser = useIsAnySwapAffectedUser()
 
   useEffect(() => {
-    // eslint-disable-next-line no-restricted-globals
+     
     if (isAnySwapAffectedUser && location.pathname !== WARNING_PAGE) {
       // Redirect to warning page
       navigate(WARNING_PAGE)

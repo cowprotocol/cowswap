@@ -22,6 +22,8 @@ interface BridgeAccordionSummaryProps {
  * Component to display bridge-related information in the collapsed state of an accordion
  * Shows the bridge time estimation and protocol icons next to the fee amount
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function BridgeAccordionSummary({ bridgeEstimatedTime, bridgeProtocol, children }: BridgeAccordionSummaryProps) {
   return (
     <>

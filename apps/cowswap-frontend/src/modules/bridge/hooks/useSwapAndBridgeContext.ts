@@ -36,6 +36,8 @@ const bridgeStatusMap: Record<BridgeStatus, SwapAndBridgeStatus> = {
   [BridgeStatus.UNKNOWN]: SwapAndBridgeStatus.DEFAULT,
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function useSwapAndBridgeContext(
   chainId: SupportedChainId,
   order: Order | undefined,
@@ -81,6 +83,9 @@ export function useSwapAndBridgeContext(
    */
   useUpdateBridgeOrderData(chainId, isBridgingExecuted ? undefined : order, setCrossChainOrder)
 
+  // TODO: Break down this large function into smaller functions
+  // TODO: Reduce function complexity by extracting logic
+  // eslint-disable-next-line max-lines-per-function, complexity
   return useMemo(() => {
     if (
       !account ||

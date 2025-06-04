@@ -48,7 +48,15 @@ module.exports = [
       'react-hooks/exhaustive-deps': 'error',
 
       // TypeScript strict rules
-      '@typescript-eslint/explicit-function-return-type': 'error',
+      '@typescript-eslint/explicit-function-return-type': [
+        'error',
+        {
+          allowExpressions: true,
+          allowTypedFunctionExpressions: true,
+          allowHigherOrderFunctions: true,
+          allowDirectConstAssertionInArrowFunctions: true,
+        },
+      ],
 
       // React antipatterns
       'react/no-unstable-nested-components': 'error',

@@ -29,6 +29,8 @@ const swrOptions: SWRConfiguration = {
 
 const EMPTY_USD_PRICES: UsdRawPrices = {}
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function UsdPricesUpdater() {
   const setUsdPrices = useSetAtom(usdRawPricesAtom)
   const setUsdPricesLoading = useSetAtom(setUsdPricesLoadingAtom)

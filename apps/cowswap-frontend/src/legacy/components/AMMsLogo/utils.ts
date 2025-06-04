@@ -21,6 +21,8 @@ export const presentationTime = 1 // presentation time for one image in seconds
 export const crossFade = 0.5 // duration for cross fading in seconds
 export const animationDelay = presentationTime + crossFade
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const fadeInOut = (a: number, b: number, n: number, t = (a + b) * n) => keyframes`
   0% {
     opacity: 1;
@@ -39,6 +41,8 @@ export const fadeInOut = (a: number, b: number, n: number, t = (a + b) * n) => k
   }
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const imagesAnimationDelay = (n: number, animationDelay: number) =>
   Array.from(Array(n).keys()).map(
     (i) => css`

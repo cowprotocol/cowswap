@@ -109,6 +109,8 @@ type UpdateOrderProgressBarBackendInfoParams = {
  */
 export const updateOrderProgressBarBackendInfo = atom(
   null,
+  // TODO: Reduce function complexity by extracting logic
+  // eslint-disable-next-line complexity
   (get, set, { orderId, value: { backendApiStatus, solverCompetition } }: UpdateOrderProgressBarBackendInfoParams) => {
     const fullState = get(ordersProgressBarStateAtom)
 

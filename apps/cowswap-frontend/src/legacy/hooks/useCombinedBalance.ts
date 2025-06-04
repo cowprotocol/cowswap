@@ -12,6 +12,8 @@ import { useVCowData } from 'legacy/state/cowToken/hooks'
 /**
  * Hook that returns COW balance
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useCowBalance() {
   const { chainId } = useWalletInfo()
   const cowToken = chainId ? COW[chainId] : undefined
@@ -22,6 +24,8 @@ function useCowBalance() {
 /**
  * Hook that returns combined vCOW + COW balance + vCow from locked GNO
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useCombinedBalance() {
   const { chainId, account } = useWalletInfo()
   const { isLoading: isVCowLoading, total: vCowBalance } = useVCowData()

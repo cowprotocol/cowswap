@@ -23,6 +23,8 @@ type Config = {
   onUpdate?: (registration: ServiceWorkerRegistration) => void
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function registerValidSW(swUrl: string, config?: Config) {
   navigator.serviceWorker
     .register(swUrl)
@@ -67,6 +69,8 @@ function registerValidSW(swUrl: string, config?: Config) {
     })
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function checkValidServiceWorker(swUrl: string, config?: Config) {
   // Check if the service worker can be found. If it can't reload the page.
   fetch(swUrl, {
@@ -92,6 +96,8 @@ function checkValidServiceWorker(swUrl: string, config?: Config) {
     })
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function register(config?: Config) {
   if (!('serviceWorker' in navigator)) return
 
@@ -125,6 +131,8 @@ export function register(config?: Config) {
   })
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function unregister() {
   if (!('serviceWorker' in navigator)) {
     return

@@ -3,13 +3,15 @@ import { getCacheKeyForURL, matchPrecache } from 'workbox-precaching'
 import { Route } from 'workbox-routing'
 
 const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$')
-// eslint-disable-next-line no-restricted-globals
+ 
 export const DOCUMENT = self.location.origin + '/index.html'
 
 /**
  * Matches with App Shell-style routing, so that navigation requests are fulfilled with an index.html shell.
  * See https://developers.google.com/web/fundamentals/architecture/app-shell
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function matchDocument({ request, url }: RouteMatchCallbackOptions) {
   // If this isn't a navigation, skip.
   if (request.mode !== 'navigate') {
@@ -42,6 +44,9 @@ type HandlerContext = {
  *
  * In addition, this handler may serve an offline document if there is no internet connection.
  */
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
 export async function handleDocument(this: HandlerContext, { event: _event, request }: RouteHandlerCallbackOptions) {
   // If we are offline, serve the offline document.
   if ('onLine' in navigator && !navigator.onLine) return this?.offlineDocument?.clone() || fetch(request)
@@ -59,6 +64,8 @@ export async function handleDocument(this: HandlerContext, { event: _event, requ
     if (!cachedResponse) {
       return new Response(response.body, response)
     }
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     if (!cachedResponse) throw e
     return CachedDocument.from(cachedResponse)
@@ -88,6 +95,8 @@ export class DocumentRoute extends Route {
  * This document sets the local `__isDocumentCached` variable to true.
  */
 export class CachedDocument extends Response {
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   static async from(response: Response) {
     const text = await response.text()
 

@@ -9,6 +9,8 @@ export function useInternalHookDapps(isPreHook: boolean): HookDapp[] {
   const { chainId } = useWalletInfo()
 
   return useMemo(() => {
+    // TODO: Reduce function complexity by extracting logic
+    // eslint-disable-next-line complexity
     return ALL_HOOK_DAPPS.filter((dapp) => {
       const position = dapp?.conditions?.position
       const supportedNetworks = dapp?.conditions?.supportedNetworks
