@@ -30,10 +30,10 @@ export function ProgressDetails({
   const bridgeStatus = bridgingStatus === SwapAndBridgeStatus.DEFAULT ? SwapAndBridgeStatus.PENDING : bridgingStatus
 
   return (
-    <CollapsibleBridgeRoute className={className} isCollapsible={false} isExpanded={true} providerInfo={bridgeProvider}>
+    <CollapsibleBridgeRoute className={className} isCollapsible={false} isExpanded providerInfo={bridgeProvider}>
       <BridgeDetailsContainer
-        isCollapsible={true}
-        defaultExpanded={true}
+        isCollapsible
+        defaultExpanded
         status={swapStatus}
         statusIcon={SwapStatusIcons[swapStatus]}
         protocolIconShowOnly="first"
@@ -49,8 +49,8 @@ export function ProgressDetails({
       </BridgeDetailsContainer>
       <DividerHorizontal margin="8px 0 4px" />
       <BridgeDetailsContainer
-        isCollapsible={true}
-        defaultExpanded={true}
+        isCollapsible
+        defaultExpanded
         status={bridgeStatus}
         statusIcon={BridgeStatusIcons[bridgeStatus]}
         protocolIconShowOnly="second"
