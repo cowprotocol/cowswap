@@ -9,7 +9,13 @@ import ms from 'ms.macro'
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useAppData } from 'modules/appData'
-import { QuoteDetails, useQuoteBridgeContext, useQuoteSwapContext, useShouldDisplayBridgeDetails } from 'modules/bridge'
+import {
+  QuoteDetails,
+  useQuoteBridgeContext,
+  useQuoteSwapContext,
+  useShouldDisplayBridgeDetails,
+  useBridgeQuoteAmounts,
+} from 'modules/bridge'
 import { useTokensBalancesCombined } from 'modules/combinedBalances/hooks/useTokensBalancesCombined'
 import { useOrderSubmittedContent } from 'modules/orderProgressBar'
 import {
@@ -58,17 +64,22 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
   const { bridgeQuote } = useTradeQuote()
 
   const bridgeProvider = bridgeQuote?.providerInfo
+  const bridgeQuoteAmounts = useBridgeQuoteAmounts(receiveAmountInfo, bridgeQuote)
   const swapContext = useQuoteSwapContext()
   const bridgeContext = useQuoteBridgeContext()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
-  const submittedContent = useOrderSubmittedContent(chainId)
+  const submittedContent = useOrderSubmittedContent(chainId, bridgeQuoteAmounts || undefined)
   const labelsAndTooltips = useLabelsAndTooltips()
 
   const { values: balances } = useTokensBalancesCombined()
 
   const disableConfirm = useMemo(() => {
     const current = inputCurrencyInfo?.amount?.currency
+
+    if (shouldDisplayBridgeDetails && !bridgeQuoteAmounts) {
+      return true
+    }
 
     if (current) {
       const normalisedAddress = getCurrencyAddress(current).toLowerCase()
@@ -84,7 +95,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
     }
 
     return true
-  }, [balances, inputCurrencyInfo])
+  }, [balances, inputCurrencyInfo, shouldDisplayBridgeDetails, bridgeQuoteAmounts])
 
   const buttonText = useMemo(() => {
     if (disableConfirm) {

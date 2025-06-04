@@ -24,7 +24,7 @@ import { featureFlagsAtom } from 'common/state/featureFlagsState'
 import { ActivityDerivedState } from 'common/types/activity'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
-import { type SwapAndBridgeContext, SwapAndBridgeStatus } from '../../bridge'
+import { BridgeQuoteAmounts, type SwapAndBridgeContext, SwapAndBridgeStatus } from '../../bridge'
 import { useSwapAndBridgeContext } from '../../bridge/hooks/useSwapAndBridgeContext'
 import {
   ordersProgressBarStateAtom,
@@ -45,6 +45,7 @@ type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null
   chainId: SupportedChainId
   isBridgingTrade: boolean
+  bridgeQuoteAmounts?: BridgeQuoteAmounts
 }
 
 export type UseOrderProgressBarResult = Pick<OrderProgressBarState, 'countdown'> & {
@@ -65,6 +66,7 @@ export const PROGRESS_BAR_TIMER_DURATION = 15 // in seconds
 export function useOrderProgressBarProps(
   chainId: SupportedChainId,
   order: Order | undefined,
+  bridgeQuoteAmounts?: BridgeQuoteAmounts,
 ): {
   props: OrderProgressBarProps
   activityDerivedState: ActivityDerivedState | null
@@ -79,6 +81,7 @@ export function useOrderProgressBarProps(
     chainId,
     activityDerivedState,
     isBridgingTrade,
+    bridgeQuoteAmounts,
   })
 
   const getCancellation = useCancelOrder()
@@ -114,7 +117,7 @@ export function useOrderProgressBarProps(
 }
 
 function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): UseOrderProgressBarResult | undefined {
-  const { activityDerivedState, chainId, isBridgingTrade } = params
+  const { activityDerivedState, chainId, isBridgingTrade, bridgeQuoteAmounts } = params
 
   const {
     order,
@@ -157,7 +160,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
   const doNotQuery = getDoNotQueryStatusEndpoint(order, apiSolverCompetition, !!disableProgressBar)
 
   const winnerSolver = apiSolverCompetition?.[0]
-  const swapAndBridgeContext = useSwapAndBridgeContext(chainId, order, winnerSolver)
+  const swapAndBridgeContext = useSwapAndBridgeContext(chainId, order, winnerSolver, bridgeQuoteAmounts)
   const bridgingStatus = swapAndBridgeContext?.bridgingStatus
 
   // Local updaters of the respective atom
