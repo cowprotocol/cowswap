@@ -10,6 +10,8 @@ import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
 
 const indexChanged = true
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function HwAccountIndexUpdater() {
   const [hwAccountIndex, setHwAccountIndex] = useAtom(hwAccountIndexAtom)
   const { chainId, account } = useWalletInfo()

@@ -87,6 +87,8 @@ export class CowAnalyticsGtm implements CowAnalytics {
   private dataLayer: DataLayer = []
   private previousAccount: string | undefined = undefined
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   private cleanup = () => {
     window.cowAnalyticsInstance = undefined
   }
@@ -105,6 +107,8 @@ export class CowAnalyticsGtm implements CowAnalytics {
     }
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   destroy() {
     if (typeof window !== 'undefined') {
       window.removeEventListener('unload', this.cleanup)
@@ -126,6 +130,8 @@ export class CowAnalyticsGtm implements CowAnalytics {
    * @param account The user's wallet address or undefined if disconnected
    * @param walletName Optional wallet name (e.g., 'MetaMask', 'WalletConnect')
    */
+  // TODO: Reduce function complexity by extracting logic
+  // eslint-disable-next-line complexity
   setUserAccount(account: string | undefined, walletName?: string): void {
     this.setContext(AnalyticsContext.userAddress, account || 'disconnected')
 

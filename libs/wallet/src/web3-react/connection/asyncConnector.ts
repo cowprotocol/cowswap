@@ -5,6 +5,8 @@ import EventEmitter from 'events'
 
 export const ASYNC_CUSTOM_PROVIDER_EVENT = 'customProvider'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function initCustomProvider(self: AsyncConnector, connector: Connector, chainId: number) {
   if (connector.provider && !connector.customProvider) {
     self.customProvider = new Web3Provider(connector.provider, chainId)
@@ -32,6 +34,8 @@ export class AsyncConnector extends Connector {
   activate(chainId: number): Promise<void> | void {
     return this.loader().then((connector) => {
       // There is a magic - we change async-connector prototype to the loaded connector
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ;(this as any).__proto__ = connector
 
       return (connector.activate(chainId) || Promise.resolve()).then(() => {
@@ -40,9 +44,13 @@ export class AsyncConnector extends Connector {
     })
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   async connectEagerly(chainId: number) {
     return this.loader().then((connector) => {
       // There is a magic - we change async-connector prototype to the loaded connector
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ;(this as any).__proto__ = connector
 
       const activation = connector.connectEagerly?.(chainId) || Promise.resolve()

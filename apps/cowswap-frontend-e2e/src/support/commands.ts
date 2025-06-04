@@ -82,17 +82,23 @@ declare namespace Cypress {
       method: 'GET' | 'POST' | 'DELETE'
       url: string
       alias?: string
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       body?: any
     }): Chainable<Subject>
   }
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function _clickOnToken(inputOrOutput: string) {
   cy.get(`#${inputOrOutput}-currency-input .open-currency-select-button`, { timeout: 20_000 })
     .should('not.be.disabled')
     .click()
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function _selectTokenFromSelector(tokenAddress: string, inputOrOutput: string) {
   cy.get(`#tokens-list button[data-address="${tokenAddress.toLowerCase()}"]`)
     .scrollIntoView()
@@ -110,30 +116,42 @@ function _responseHandlerFactory(body: string) {
     })
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function clickInputToken() {
   _clickOnToken('input')
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function clickOutputToken() {
   _clickOnToken('output')
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function selectOutput(tokenAddress: string) {
   clickOutputToken()
   _selectTokenFromSelector(tokenAddress, 'output')
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function selectInput(tokenAddress: string) {
   clickInputToken()
   _selectTokenFromSelector(tokenAddress, 'input')
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function pickToken(symbol: string, role: string) {
   cy.get(`#${role}-currency-input .open-currency-select-button`, { timeout: 20_000 }).should('be.enabled').click()
   cy.get('#token-search-input').type(symbol)
   cy.get('#currency-list').get('div').contains(symbol).click({ force: true })
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function enterInputAmount(tokenAddress: string, amount: number | string, selectToken = false) {
   // Choose whether to also select token
   // or just input amount
@@ -144,6 +162,8 @@ function enterInputAmount(tokenAddress: string, amount: number | string, selectT
   cy.get('#input-currency-input .token-amount-input').type(amount.toString(), { force: true, delay: 400 })
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function enterOutputAmount(tokenAddress: string, amount: number | string, selectToken = false) {
   // Choose whether to also select token
   // or just input amount
@@ -153,6 +173,8 @@ function enterOutputAmount(tokenAddress: string, amount: number | string, select
   cy.get('#input-currency-input .token-amount-output').type(amount.toString(), { force: true, delay: 400 })
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function stubResponse({
   method,
   url,
@@ -162,6 +184,8 @@ function stubResponse({
   method: string
   url: string
   alias?: string
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   body?: any
 }) {
   cy.intercept({ method, url }, _responseHandlerFactory(body)).as(alias)

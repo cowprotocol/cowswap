@@ -2,6 +2,8 @@ import type { EIP6963ProviderDetail } from '@cowprotocol/types'
 
 import { EIP6963ProviderInfo, ProviderWcMetadata } from '../types'
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getProviderWcMetadata(provider: any): ProviderWcMetadata | undefined {
   if (!provider.isWalletConnect) return
 

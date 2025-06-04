@@ -17,6 +17,8 @@ const safeGetString = <T, K extends keyof T>(obj: T | undefined, key: K, fallbac
   return String(value)
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const getOrderPayload = (payload: BaseOrderPayload) => ({
   walletAddress: safeGetString(payload.order, 'owner'),
   orderId: safeGetString(payload.order, 'uid'),
@@ -81,6 +83,8 @@ const EVENT_CONFIGS = [
 ]
 
 // Sets up event handlers for order lifecycle events.
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const setupEventHandlers = (eventEmitter: SimpleCowEventEmitter<CowWidgetEventPayloadMap, CowWidgetEvents>) => {
   // Register each event handler
   EVENT_CONFIGS.forEach((config) => {
@@ -88,6 +92,8 @@ export const setupEventHandlers = (eventEmitter: SimpleCowEventEmitter<CowWidget
 
     eventEmitter.on({
       event,
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       handler: (payload: any) => {
         const analytics = getCowAnalytics()
 

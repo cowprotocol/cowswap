@@ -17,6 +17,8 @@ export const ColorModeContext = createContext<ColorModeParams>({
   setMode: () => {},
 })
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const globalStyles = (theme: Theme, mode: PaletteMode) => ({
   'html, input, textarea, button': {
     fontFamily: "'Inter', sans-serif",

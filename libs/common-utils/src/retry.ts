@@ -58,6 +58,8 @@ export function retry<T>(
           completed = true
         }
         break
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         if (completed) {
           break
