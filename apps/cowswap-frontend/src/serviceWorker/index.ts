@@ -10,7 +10,7 @@ import { CacheFirst } from 'workbox-strategies'
 import { DocumentRoute } from './document'
 import { toURL } from './utils'
 
- 
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import pkg from '../../package.json'
 
 const WEB_VERSION = pkg.version
@@ -51,7 +51,7 @@ const { assets, entries } = self.__WB_MANIFEST.reduce<{ assets: { [key: string]:
 
     return acc
   },
-  { assets: {}, entries: [] }
+  { assets: {}, entries: [] },
 )
 
 // Registers the assets' routes for on-demand caching.
@@ -61,8 +61,8 @@ registerRoute(
     new CacheFirst({
       cacheName: 'assets',
       plugins: [new ExpirationPlugin({ maxEntries: 16 })],
-    })
-  )
+    }),
+  ),
 )
 
 // Precaches entries and registers a default route to serve them.

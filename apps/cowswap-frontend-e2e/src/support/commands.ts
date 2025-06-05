@@ -8,9 +8,9 @@
 // https://on.cypress.io/custom-commands
 // ***********************************************
 
- 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace Cypress {
-   
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Chainable<Subject> {
     /**
      * Select token output in the swap page
@@ -109,8 +109,12 @@ function _selectTokenFromSelector(tokenAddress: string, inputOrOutput: string) {
 }
 
 function _responseHandlerFactory(body: string) {
-  return (req) =>
-    req.reply((res) => {
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (req: any) =>
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    req.reply((res: any) => {
       const newBody = JSON.stringify(body || res.body)
       res.body = newBody
     })

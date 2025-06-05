@@ -18,7 +18,6 @@ export default function RedirectAnySwapAffectedUsers() {
   const isAnySwapAffectedUser = useIsAnySwapAffectedUser()
 
   useEffect(() => {
-     
     if (isAnySwapAffectedUser && location.pathname !== WARNING_PAGE) {
       // Redirect to warning page
       navigate(WARNING_PAGE)

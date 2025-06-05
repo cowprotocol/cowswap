@@ -3,7 +3,7 @@ import { getCacheKeyForURL, matchPrecache } from 'workbox-precaching'
 import { Route } from 'workbox-routing'
 
 const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$')
- 
+
 export const DOCUMENT = self.location.origin + '/index.html'
 
 /**
@@ -64,8 +64,8 @@ export async function handleDocument(this: HandlerContext, { event: _event, requ
     if (!cachedResponse) {
       return new Response(response.body, response)
     }
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     if (!cachedResponse) throw e
     return CachedDocument.from(cachedResponse)
