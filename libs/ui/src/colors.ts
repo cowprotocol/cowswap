@@ -308,10 +308,7 @@ export function getThemeColors(darkMode: boolean) {
     paperDarkestCustom: darkMode ? darken(Color.darkerDark, 0.05) : darken(Color.darkerLight, 0.1),
 
     // Blue primary colors - generated systematically using existing color references
-    ...applyColorMappings(
-      ['blue100Primary', 'blue200Primary', 'blue300Primary', 'blue400Primary', 'blue500Primary', 'blue900Primary'],
-      darkMode,
-    ),
+    ...applyColorMappings(Object.keys(COLOR_MAPPINGS) as (keyof typeof COLOR_MAPPINGS)[], darkMode),
 
     // Gradients
     gradient1: `linear-gradient(145deg, ${darkMode ? Color.paperDark : Color.white}, ${darkMode ? Color.black : Color.backgroundLight})`,
