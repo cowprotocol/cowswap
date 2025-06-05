@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 
-import { BridgeDetails, BridgeStatus, BRIDGE_PROVIDER_DETAILS } from '@cowprotocol/bridge'
+import { BridgeStatus, BRIDGE_PROVIDER_DETAILS } from '@cowprotocol/bridge'
 import { displayTime, ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 
 import BigNumber from 'bignumber.js'
@@ -19,6 +19,7 @@ import { RefundStatus, RefundStatusEnum } from './RefundStatus'
 import { ProviderDisplayWrapper, ProviderLogo, BridgeStatusWrapper, ErrorMessage } from './styled'
 import { AmountSectionWrapper, Wrapper } from './styled'
 
+import { Order } from '../../../api/operator'
 import { Network } from '../../../types'
 import { AddressLink } from '../../common/AddressLink'
 import { StatusLabel } from '../StatusLabel'
@@ -37,23 +38,14 @@ const tooltipTextMap = {
   receiverAddress: 'The account address to which the tokens are bridged on the destination chain.',
 }
 
-export type Props = {
-  bridgeDetails?: BridgeDetails
+type Props = {
+  order: Order
   isLoading?: boolean
-  ownerAddress?: string
-  receiverAddress?: string
-  swapStatus?: string // Swap order status to determine if swap is complete
-  partiallyFilled?: boolean // Note: swap+bridge orders don't support partial fills for now
 }
 
-export function BridgeDetailsTable({
-  bridgeDetails,
-  isLoading: isOverallLoading,
-  ownerAddress,
-  receiverAddress,
-  swapStatus,
-  partiallyFilled,
-}: Props): React.ReactNode {
+export function BridgeDetailsTable({ order, isLoading: isOverallLoading }: Props): React.ReactNode {
+  const { bridgeDetails, owner: ownerAddress, receiver: receiverAddress, status: swapStatus, partiallyFilled } = order
+
   const effectiveBridgeStatus = useMemo(
     () =>
       getBridgeStatus({

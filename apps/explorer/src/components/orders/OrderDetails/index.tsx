@@ -147,15 +147,7 @@ const tabItems = (
           )}
         </TabContent>
       ),
-      content: (
-        <BridgeDetailsTable
-          bridgeDetails={order.bridgeDetails}
-          ownerAddress={order.owner}
-          receiverAddress={order.receiver}
-          swapStatus={order.status}
-          partiallyFilled={order.partiallyFilled}
-        />
-      ),
+      content: <BridgeDetailsTable order={order} />,
     }
 
     return [overviewTab, swapTab, bridgeTab]
@@ -170,13 +162,7 @@ const tabItems = (
         {defaultDetails}
         {order && order.bridgeDetails && (
           <BridgeDetailsWrapper>
-            <BridgeDetailsTable
-              bridgeDetails={order.bridgeDetails}
-              ownerAddress={order.owner}
-              receiverAddress={order.receiver}
-              swapStatus={order.status}
-              partiallyFilled={order.partiallyFilled}
-            />
+            <BridgeDetailsTable order={order} />
           </BridgeDetailsWrapper>
         )}
         {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
