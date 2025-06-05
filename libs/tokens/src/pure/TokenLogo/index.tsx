@@ -115,14 +115,18 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, no
 
   return (
     <Styled.TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
-      <Styled.ClippedTokenContentWrapper
-        parentSize={size}
-        chainLogoSize={chainLogoSizeForCalc}
-        cutThickness={cutThicknessForCalc}
-        hasImage={!!currentUrl}
-      >
-        {actualTokenContent}
-      </Styled.ClippedTokenContentWrapper>
+      {logoUrl ? (
+        <Styled.ClippedTokenContentWrapper
+          parentSize={size}
+          chainLogoSize={chainLogoSizeForCalc}
+          cutThickness={cutThicknessForCalc}
+          hasImage={!!currentUrl}
+        >
+          {actualTokenContent}
+        </Styled.ClippedTokenContentWrapper>
+      ) : (
+        actualTokenContent
+      )}
       {logoUrl && (
         <Styled.ChainLogoWrapper size={chainLogoSizeForCalc}>
           <img src={logoUrl} alt={`${chainName} network logo`} />
