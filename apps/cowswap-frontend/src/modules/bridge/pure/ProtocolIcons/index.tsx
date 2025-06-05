@@ -24,6 +24,16 @@ interface MaskConfig {
   outerR: number
 }
 
+interface StackedIconRenderData {
+  id: 'first' | 'second'
+  title: string
+  bgColor: string | undefined
+  zIndex: number
+  maskConfig: MaskConfig | undefined
+  onMouseEnter: () => void
+  iconContent: React.ReactNode
+}
+
 // Helper function to create mask configuration
 const createMask = (
   baseCx: number,
@@ -111,16 +121,6 @@ export const ProtocolIcons = memo(function ProtocolIcons({
   const secondIconChildContent = (
     <img src={secondProtocol.logoUrl} width={currentLogoHeight} height={currentLogoHeight} alt={secondProtocol.name} />
   )
-
-  interface StackedIconRenderData {
-    id: 'first' | 'second'
-    title: string
-    bgColor: string | undefined
-    zIndex: number
-    maskConfig: MaskConfig | undefined
-    onMouseEnter: () => void
-    iconContent: React.ReactNode
-  }
 
   const stackedIconsData: StackedIconRenderData[] = [
     {
