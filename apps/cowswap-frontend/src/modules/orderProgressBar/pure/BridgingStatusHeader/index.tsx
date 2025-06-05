@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { Currency, Token } from '@uniswap/sdk-core'
 
 import { SwapStatusIcons } from 'modules/bridge/pure/StopStatus'
@@ -30,7 +31,7 @@ const stepToStatusMap: Record<BridgingFlowStep, SwapAndBridgeStatus> = {
  * Creates a token with explicit chain ID if the token is a Token instance and chainId is provided
  */
 function createTokenWithChain(token: Currency, chainId?: number): Currency {
-  return chainId && token.isToken ? new Token(chainId, token.address, token.decimals, token.symbol, token.name) : token
+  return chainId ? new Token(chainId, getCurrencyAddress(token), token.decimals, token.symbol, token.name) : token
 }
 
 /**
