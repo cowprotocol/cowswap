@@ -116,7 +116,7 @@ const SingleProtocolIcon = memo(function SingleProtocolIcon({
   secondProtocol,
   currentDisplaySize,
   currentLogoHeight,
-}: SingleProtocolIconProps): React.JSX.Element {
+}: SingleProtocolIconProps): ReactNode {
   const protocolName = showOnlyFirst ? 'CoW Swap' : secondProtocol.name
   const protocolBgColor = showOnlyFirst ? UI.COLOR_BLUE_300_PRIMARY : undefined
   const iconChild = showOnlyFirst ? (
