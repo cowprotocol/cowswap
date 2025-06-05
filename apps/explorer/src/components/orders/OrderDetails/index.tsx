@@ -29,6 +29,7 @@ import { TitleUid, WrapperExtraComponents, StyledExplorerTabs, TabContent, Bridg
 
 import { FlexContainerVar } from '../../../explorer/pages/styled'
 import { BridgeDetailsTable } from '../BridgeDetailsTable'
+import { VerboseDetails } from '../DetailsTable/VerboseDetails'
 
 type Props = {
   order: Order | null
@@ -75,6 +76,19 @@ const tabItems = (
   const filledPercentage = order?.filledPercentage && formatPercentage(order.filledPercentage)
   const showFills = order?.partiallyFillable && !order.txHash && trades.length > 1
 
+  const defaultDetails =
+    order && areTokensLoaded ? (
+      <DetailsTable chainId={chainId} order={order} showFillsButton={showFills} areTradesLoading={areTradesLoading}>
+        <VerboseDetails
+          order={order}
+          showFillsButton={showFills}
+          viewFills={(): void => onChangeTab(TabView.FILLS)}
+          isPriceInverted={isPriceInverted}
+          invertPrice={invertPrice}
+        />
+      </DetailsTable>
+    ) : null
+
   // For swap+bridge orders, create three tabs
   if (order?.bridgeProviderId) {
     const overviewTab = {
@@ -83,17 +97,9 @@ const tabItems = (
       content: (
         <>
           {order && areTokensLoaded && (
-            <DetailsTable
-              chainId={chainId}
-              order={order}
-              showFillsButton={false}
-              viewFills={(): void => {}}
-              areTradesLoading={areTradesLoading}
-              isPriceInverted={isPriceInverted}
-              invertPrice={invertPrice}
-              renderMode="SUMMARY"
-            />
+            <DetailsTable chainId={chainId} order={order} areTradesLoading={areTradesLoading} />
           )}
+          {defaultDetails}
           {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
           {isLoadingForTheFirstTime && <CowLoading />}
         </>
@@ -109,18 +115,7 @@ const tabItems = (
       ),
       content: (
         <>
-          {order && areTokensLoaded && (
-            <DetailsTable
-              chainId={chainId}
-              order={order}
-              showFillsButton={showFills}
-              viewFills={(): void => onChangeTab(TabView.FILLS)}
-              areTradesLoading={areTradesLoading}
-              isPriceInverted={isPriceInverted}
-              invertPrice={invertPrice}
-              renderMode="FULL"
-            />
-          )}
+          {defaultDetails}
           {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
           {isLoadingForTheFirstTime && <CowLoading />}
         </>
@@ -172,17 +167,7 @@ const tabItems = (
     tab: <span>Overview</span>,
     content: (
       <>
-        {order && areTokensLoaded && (
-          <DetailsTable
-            chainId={chainId}
-            order={order}
-            showFillsButton={showFills}
-            viewFills={(): void => onChangeTab(TabView.FILLS)}
-            areTradesLoading={areTradesLoading}
-            isPriceInverted={isPriceInverted}
-            invertPrice={invertPrice}
-          />
-        )}
+        {defaultDetails}
         {order && order.bridgeDetails && (
           <BridgeDetailsWrapper>
             <BridgeDetailsTable
