@@ -17,6 +17,11 @@ const DEFAULT_SINGLE_ICON_SIZE = 36 // For showOnlyFirst
 const LOGO_HEIGHT_RATIO = 0.5 // The ratio of the icon size to the logo height
 const STACKED_ICON_OVERLAP_RATIO = 0.4 // This drives both visual overlap and mask calculation
 
+enum IconPosition {
+  FIRST = 'first',
+  SECOND = 'second',
+}
+
 interface MaskConfig {
   cx: number
   cy: number
@@ -25,7 +30,7 @@ interface MaskConfig {
 }
 
 interface IconHoverState {
-  hoveredIcon: 'first' | 'second' | null
+  hoveredIcon: IconPosition | null
   handleFirstIconMouseEnter: () => void
   handleSecondIconMouseEnter: () => void
   handleMouseLeave: () => void
@@ -40,10 +45,10 @@ interface MaskCalculationResult {
 
 // Custom hook for hover state management
 function useIconHoverState(): IconHoverState {
-  const [hoveredIcon, setHoveredIcon] = useState<'first' | 'second' | null>(null)
+  const [hoveredIcon, setHoveredIcon] = useState<IconPosition | null>(null)
 
-  const handleFirstIconMouseEnter = (): void => setHoveredIcon('first')
-  const handleSecondIconMouseEnter = (): void => setHoveredIcon('second')
+  const handleFirstIconMouseEnter = (): void => setHoveredIcon(IconPosition.FIRST)
+  const handleSecondIconMouseEnter = (): void => setHoveredIcon(IconPosition.SECOND)
   const handleMouseLeave = (): void => setHoveredIcon(null)
 
   return {
@@ -54,7 +59,7 @@ function useIconHoverState(): IconHoverState {
   }
 }
 
-// Utility function for mask configuration
+// Utility function for mask configuration - pure and optimized
 const createMask = (
   baseCx: number,
   offsetMultiplier: number,
@@ -65,42 +70,42 @@ const createMask = (
 ): MaskConfig => ({
   cx: baseCx + offsetMultiplier * distance,
   cy: centerY,
-  innerR: innerR,
-  outerR: outerR,
+  innerR,
+  outerR,
 })
 
+// Pure function for mask calculations - optimized for performance
+function calculateMask(currentDisplaySize: number, hoveredIcon: IconPosition | null): MaskCalculationResult {
+  const cutThickness = getBorderWidth(currentDisplaySize)
+  const radiusOfTopIcon = currentDisplaySize / 2
+  const maskOuterRadius = radiusOfTopIcon + cutThickness
+  const maskCenterY = currentDisplaySize / 2
+  const iconCenterBaseX = currentDisplaySize / 2
+  const distanceBetweenCenters = currentDisplaySize * (1 - STACKED_ICON_OVERLAP_RATIO)
+
+  const isFirstHovered = hoveredIcon === IconPosition.FIRST
+  const isSecondHovered = hoveredIcon === IconPosition.SECOND
+  const isFirstOnTop = isFirstHovered
+  const isSecondOnTop = isSecondHovered || (!isFirstHovered && !isSecondHovered)
+
+  const firstMaskConfig = !isFirstOnTop
+    ? createMask(iconCenterBaseX, 1, distanceBetweenCenters, maskCenterY, radiusOfTopIcon, maskOuterRadius)
+    : undefined
+  const secondMaskConfig = !isSecondOnTop
+    ? createMask(iconCenterBaseX, -1, distanceBetweenCenters, maskCenterY, radiusOfTopIcon, maskOuterRadius)
+    : undefined
+
+  return {
+    firstMaskConfig,
+    secondMaskConfig,
+    isFirstOnTop,
+    isSecondOnTop,
+  }
+}
+
 // Custom hook for mask calculations. Memoized only for costly computation.
-function useMaskCalculations(
-  currentDisplaySize: number,
-  hoveredIcon: 'first' | 'second' | null,
-): MaskCalculationResult {
-  return useMemo(() => {
-    const cutThickness = getBorderWidth(currentDisplaySize)
-    const radiusOfTopIcon = currentDisplaySize / 2
-    const maskOuterRadius = radiusOfTopIcon + cutThickness
-    const maskCenterY = currentDisplaySize / 2
-    const iconCenterBaseX = currentDisplaySize / 2
-    const distanceBetweenCenters = currentDisplaySize * (1 - STACKED_ICON_OVERLAP_RATIO)
-
-    const isFirstHovered = hoveredIcon === 'first'
-    const isSecondHovered = hoveredIcon === 'second'
-    const isFirstOnTop = isFirstHovered
-    const isSecondOnTop = isSecondHovered || (!isFirstHovered && !isSecondHovered)
-
-    const firstMaskConfig = !isFirstOnTop
-      ? createMask(iconCenterBaseX, 1, distanceBetweenCenters, maskCenterY, radiusOfTopIcon, maskOuterRadius)
-      : undefined
-    const secondMaskConfig = !isSecondOnTop
-      ? createMask(iconCenterBaseX, -1, distanceBetweenCenters, maskCenterY, radiusOfTopIcon, maskOuterRadius)
-      : undefined
-
-    return {
-      firstMaskConfig,
-      secondMaskConfig,
-      isFirstOnTop,
-      isSecondOnTop,
-    }
-  }, [currentDisplaySize, hoveredIcon])
+function useMaskCalculations(currentDisplaySize: number, hoveredIcon: IconPosition | null): MaskCalculationResult {
+  return useMemo(() => calculateMask(currentDisplaySize, hoveredIcon), [currentDisplaySize, hoveredIcon])
 }
 
 // Single Protocol Icon Component
