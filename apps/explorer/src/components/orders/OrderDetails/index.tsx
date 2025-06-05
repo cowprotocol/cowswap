@@ -149,7 +149,7 @@ const tabItems = (
           )}
         </TabContent>
       ),
-      content: <BridgeDetailsTable order={order} />,
+      content: <BridgeDetailsTable crossChainOrderResponse={crossChainOrderResponse} />,
     }
 
     return [overviewTab, swapTab, bridgeTab]
@@ -164,7 +164,7 @@ const tabItems = (
         {defaultDetails}
         {order?.bridgeProviderId && (
           <BridgeDetailsWrapper>
-            <BridgeDetailsTable order={order} />
+            <BridgeDetailsTable crossChainOrderResponse={crossChainOrderResponse} />
           </BridgeDetailsWrapper>
         )}
         {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}

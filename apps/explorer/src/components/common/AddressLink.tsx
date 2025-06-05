@@ -43,7 +43,7 @@ export function AddressLink({
 
   return (
     <AddressLinkWrapper>
-      <LinkWithPrefixNetwork to={getExplorerLink(chainId, address, ExplorerDataType.ADDRESS)} target="_blank">
+      <LinkWithPrefixNetwork to={getExplorerLink(chainId, address, ExplorerDataType.ADDRESS)} target="_blank" noPrefix>
         <LinkWithNetworkWrapper>
           {showIcon && <NetworkLogo chainId={chainId} size={16} forceLightMode={true} />}
           {address} ↗
