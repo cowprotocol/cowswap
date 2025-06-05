@@ -11,7 +11,6 @@ import { SimpleTable } from 'components/common/SimpleTable'
 import { TokenDisplay as CommonTokenDisplay } from 'components/common/TokenDisplay'
 import { formatPercentage } from 'utils'
 
-import { AddressLink } from 'utils/addressLinks'
 import { getBridgeStatus } from 'utils/getBridgeStatus'
 import { formatTokenAmount, mapBridgeableToErc20 } from 'utils/tokenFormatting'
 
@@ -21,6 +20,7 @@ import { ProviderDisplayWrapper, ProviderLogo, BridgeStatusWrapper, ErrorMessage
 import { AmountSectionWrapper, Wrapper } from './styled'
 
 import { Network } from '../../../types'
+import { AddressLink } from '../../common/AddressLink'
 import { StatusLabel } from '../StatusLabel'
 
 const tooltipTextMap = {

@@ -5,8 +5,9 @@ import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { NetworkLogo } from '@cowprotocol/ui'
 import { Color } from '@cowprotocol/ui'
 
-import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import styled from 'styled-components/macro'
+
+import { LinkWithPrefixNetwork } from './LinkWithPrefixNetwork'
 
 const NetworkName = styled.span`
   margin-left: 0.5rem;

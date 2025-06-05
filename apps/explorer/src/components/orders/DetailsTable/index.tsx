@@ -26,11 +26,11 @@ import { capitalize } from 'utils'
 
 import { Order, OrderStatus } from 'api/operator'
 import { ExplorerCategory } from 'common/analytics/types'
-import { AddressLink } from 'utils/addressLinks'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
 import { Wrapper, LinkButton, WarningRow } from './styled'
 
+import { AddressLink } from '../../common/AddressLink'
 import { OrderHooksDetails } from '../OrderHooksDetails'
 import { UnsignedOrderWarning } from '../UnsignedOrderWarning'
 

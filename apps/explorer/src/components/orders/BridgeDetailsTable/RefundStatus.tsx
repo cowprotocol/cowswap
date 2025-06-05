@@ -5,9 +5,9 @@ import { BridgeStatus } from '@cowprotocol/bridge'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { StatusLabel } from 'components/orders/StatusLabel'
 
-import { AddressLink } from 'utils/addressLinks'
-
 import { RefundStatusText, RefundAddressWrapper, StatusWrapper } from './styled'
+
+import { AddressLink } from '../../common/AddressLink'
 
 export enum RefundStatusEnum {
   NOT_INITIATED = 'not_initiated',
