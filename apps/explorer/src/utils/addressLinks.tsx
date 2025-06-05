@@ -19,6 +19,11 @@ const AddressLinkWrapper = styled.span`
   flex-wrap: wrap;
   gap: 0;
 `
+const LinkWithNetworkWrapper = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+`
 
 export interface AddressLinkProps {
   address: string
@@ -38,20 +43,12 @@ export function AddressLink({
   return (
     <AddressLinkWrapper>
       <LinkWithPrefixNetwork to={getExplorerLink(chainId, address, ExplorerDataType.ADDRESS)} target="_blank">
-        {showIcon && <NetworkLogo chainId={chainId} size={16} forceLightMode={true} />}
-        {address} ↗
+        <LinkWithNetworkWrapper>
+          {showIcon && <NetworkLogo chainId={chainId} size={16} forceLightMode={true} />}
+          {address} ↗
+        </LinkWithNetworkWrapper>
       </LinkWithPrefixNetwork>
       {showNetworkName && <NetworkName>on {chainInfo.label}</NetworkName>}
     </AddressLinkWrapper>
   )
-}
-
-// Legacy export for backward compatibility (deprecated)
-export function createAddressLinkElement(props: AddressLinkProps): React.ReactElement {
-  console.warn('createAddressLinkElement is deprecated, use AddressLink component instead')
-  return <AddressLink {...props} />
-}
-
-export function getExplorerLinkUrl(chainId: number, hash: string, type: ExplorerDataType): string {
-  return getExplorerLink(chainId, hash, type)
 }
