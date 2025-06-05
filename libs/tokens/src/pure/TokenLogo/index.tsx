@@ -108,6 +108,7 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, no
   const chainName = chainInfo?.label || ''
 
   // This is the size of the chain logo
+  // 2.2 is the ratio of smaller chain logo size vs bigger token logo (makes chain logo ~45% of token logo size)
   const chainLogoSizeForCalc = size / 2.2
   // This is the thickness of the cutout around the chain logo
   const cutThicknessForCalc = getBorderWidth(chainLogoSizeForCalc)

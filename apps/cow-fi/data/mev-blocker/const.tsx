@@ -1,4 +1,4 @@
-import IMGAGE_FASTFREE from '@cowprotocol/assets/images/image-fastfree.svg'
+import IMAGE_FASTFREE from '@cowprotocol/assets/images/image-fastfree.svg'
 import IMAGE_FULLPROTECTION from '@cowprotocol/assets/images/image-fullprotection.svg'
 import IMAGE_MEVBLOCKER_REVIEW_1 from '@cowprotocol/assets/images/image-mevblocker-review-1.svg'
 import IMAGE_MEVBLOCKER_REVIEW_2 from '@cowprotocol/assets/images/image-mevblocker-review-2.svg'
@@ -38,7 +38,7 @@ export const MEV_BLOCKER_LIST = [
   {
     id: 'fastfree',
     description: 'A fast, free, censorship-resistant solution open to all searchers and builders',
-    iconImage: IMGAGE_FASTFREE,
+    iconImage: IMAGE_FASTFREE,
     bgColor: Color.cowfi_lightBlue4,
     textColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
   },

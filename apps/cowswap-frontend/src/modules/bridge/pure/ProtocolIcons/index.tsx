@@ -1,4 +1,4 @@
-import React, { useState, useCallback, memo } from 'react'
+import React, { useState, memo } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 import { ProductVariant, UI, ProductLogo } from '@cowprotocol/ui'
@@ -47,9 +47,9 @@ export const ProtocolIcons = memo(function ProtocolIcons({
 }: ProtocolIconsProps): React.JSX.Element {
   const [hoveredIcon, setHoveredIcon] = useState<'first' | 'second' | null>(null)
 
-  const handleFirstIconMouseEnter = useCallback(() => setHoveredIcon('first'), [])
-  const handleSecondIconMouseEnter = useCallback(() => setHoveredIcon('second'), [])
-  const handleMouseLeave = useCallback(() => setHoveredIcon(null), [])
+  const handleFirstIconMouseEnter = () => setHoveredIcon('first')
+  const handleSecondIconMouseEnter = () => setHoveredIcon('second')
+  const handleMouseLeave = () => setHoveredIcon(null)
 
   const isSingleIconDisplay = !!(showOnlyFirst || showOnlySecond)
   const currentDisplaySize = isSingleIconDisplay ? (size === DEFAULT_ICON_SIZE ? DEFAULT_SINGLE_ICON_SIZE : size) : size
