@@ -71,6 +71,7 @@ export type Order = Pick<
   filledPercentage: BigNumber
   surplusAmount: BigNumber
   surplusPercentage: BigNumber
+  bridgeProviderId?: string
   bridgeDetails?: BridgeDetails
 }
 

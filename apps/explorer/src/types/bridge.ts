@@ -1,5 +1,3 @@
-import { TokenInfo } from '@cowprotocol/types'
-
 export enum BridgeStatus {
   Pending = 'pending', // Bridge operation initiated but not yet active
   InProgress = 'inProgress', // Actively bridging
@@ -12,13 +10,9 @@ export enum BridgeStatus {
 
 export interface BridgeDetails {
   providerName: string // e.g., "Bungee"
-  isSuccess: boolean // Overall success derived from status
   status: BridgeStatus // Our lifecycle status
   bridgeQuoteTimestamp?: number // From SDK: BridgeQuoteResult.quoteTimestamp
   expectedFillTimeSeconds?: number // From SDK: BridgeQuoteResult.expectedFillTimeSeconds
-
-  source: TokenInfo
-  destination: TokenInfo
 
   inputAmount: string // Amount of sourceToken effectively sent into the bridge
   outputAmount?: string // Amount of destinationToken expected/received from the bridge

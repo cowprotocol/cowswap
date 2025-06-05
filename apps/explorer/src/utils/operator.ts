@@ -8,6 +8,8 @@ import { formatSmartMaxPrecision, formattingAmountPrecision } from 'utils'
 
 import { Order, OrderStatus, RAW_ORDER_STATUS, RawOrder, Trade } from 'api/operator/types'
 
+import { getOrderBridgeProviderId } from './getOrderBridgeProviderId'
+
 import { PENDING_ORDERS_BUFFER } from '../explorer/const'
 
 function isOrderFilled(order: RawOrder): boolean {
@@ -383,6 +385,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
   const fullyFilled = isOrderFilled(rawOrder)
   const { amount: filledAmount, percentage: filledPercentage } = getOrderFilledAmount(rawOrder)
   const { amount: surplusAmount, percentage: surplusPercentage } = getOrderSurplus(rawOrder)
+  const bridgeProviderId = getOrderBridgeProviderId(rawOrder)
 
   return {
     ...rest,
@@ -407,6 +410,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
     filledPercentage,
     surplusAmount,
     surplusPercentage,
+    bridgeProviderId,
   } as Order
 }
 

@@ -30,13 +30,12 @@ export interface BridgeableToken {
 export interface BridgeDetails {
   providerName: string // This will come from BridgeProtocolConfig.title via BRIDGE_PROVIDER_DETAILS
   providerUrl?: string
-  isSuccess: boolean
   status: BridgeStatus
-  bridgeQuoteTimestamp?: number
-  expectedFillTimeSeconds?: number
   source: BridgeableToken
   destination: BridgeableToken
   inputAmount: string
+  bridgeQuoteTimestamp?: number
+  expectedFillTimeSeconds?: number
   outputAmount?: string
   gasCostsNative?: string
   protocolFeeSellToken?: string

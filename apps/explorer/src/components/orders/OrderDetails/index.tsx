@@ -22,7 +22,6 @@ import { Errors } from 'types'
 import { formatPercentage } from 'utils'
 
 import { Order, Trade, OrderStatus } from 'api/operator'
-import { isSwapAndBridgeOrder } from 'utils/orderTypeGuards'
 
 import { FillsTableContext } from './context/FillsTableContext'
 import { FillsTableWithData } from './FillsTableWithData'
@@ -31,7 +30,7 @@ import { TitleUid, WrapperExtraComponents, StyledExplorerTabs, TabContent, Bridg
 import { FlexContainerVar } from '../../../explorer/pages/styled'
 import { BridgeDetailsTable } from '../BridgeDetailsTable'
 
-export type Props = {
+type Props = {
   order: Order | null
   trades: Trade[]
   isOrderLoading: boolean
@@ -39,7 +38,7 @@ export type Props = {
   errors: Errors
 }
 
-export enum TabView {
+enum TabView {
   OVERVIEW = 1,
   FILLS = 2,
   SWAP = 3,
@@ -76,11 +75,8 @@ const tabItems = (
   const filledPercentage = order?.filledPercentage && formatPercentage(order.filledPercentage)
   const showFills = order?.partiallyFillable && !order.txHash && trades.length > 1
 
-  // Check if this is a swap and bridge order
-  const isSwapBridge = order && isSwapAndBridgeOrder(order)
-
   // For swap+bridge orders, create three tabs
-  if (isSwapBridge) {
+  if (order?.bridgeProviderId) {
     const overviewTab = {
       id: TabView.OVERVIEW,
       tab: <span>Overview</span>,
@@ -273,7 +269,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
       setRedirectTo(true)
     }, 500)
 
-    return (): void => clearTimeout(timer)
+    return () => clearTimeout(timer)
   })
 
   const onChangeTab = useCallback(

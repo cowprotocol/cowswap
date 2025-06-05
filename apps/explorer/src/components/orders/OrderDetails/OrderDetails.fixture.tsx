@@ -55,7 +55,6 @@ const bungeeBridgeInfo = BRIDGE_PROVIDER_DETAILS[BridgeProvider.BUNGEE]
 const pendingBridgeDetails: BridgeDetails = {
   providerName: bungeeBridgeInfo.title,
   providerUrl: bungeeBridgeInfo.url,
-  isSuccess: false,
   status: BridgeStatus.Pending,
   bridgeQuoteTimestamp: Date.now() - 1000 * 60 * 10,
   expectedFillTimeSeconds: 26 * 60,
@@ -74,7 +73,6 @@ const pendingBridgeDetails: BridgeDetails = {
 
 const completedBridgeDetails: BridgeDetails = {
   ...pendingBridgeDetails,
-  isSuccess: true,
   status: BridgeStatus.Completed,
   outputAmount: '99800000000000000000',
   sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
@@ -292,7 +290,6 @@ const partiallyFilledOrder: Order = {
 const refundingBridgeDetails: BridgeDetails = {
   ...pendingBridgeDetails,
   status: BridgeStatus.Failed, // Bridge failed, refund in progress
-  isSuccess: false,
   sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
   errorMessage: 'Bridge operation failed due to insufficient liquidity',
   refundStatus: RefundStatusEnum.REFUNDING, // Refund actively processing (will show shimmer)
@@ -301,7 +298,6 @@ const refundingBridgeDetails: BridgeDetails = {
 const refundCompleteBridgeDetails: BridgeDetails = {
   ...pendingBridgeDetails,
   status: BridgeStatus.Failed, // Bridge failed, refund completed
-  isSuccess: false,
   sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
   destinationChainTransactionHash: '0x9e0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a',
   errorMessage: 'Bridge operation failed due to insufficient liquidity',
@@ -313,7 +309,6 @@ const refundCompleteBridgeDetails: BridgeDetails = {
 const refundFailedBridgeDetails: BridgeDetails = {
   ...pendingBridgeDetails,
   status: BridgeStatus.Failed, // Bridge failed, refund also failed
-  isSuccess: false,
   sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
   errorMessage: 'Bridge operation failed due to insufficient liquidity',
   refundStatus: RefundStatusEnum.FAILED, // Refund attempt failed
@@ -322,7 +317,6 @@ const refundFailedBridgeDetails: BridgeDetails = {
 const unknownBridgeDetails: BridgeDetails = {
   ...pendingBridgeDetails,
   status: BridgeStatus.Unknown,
-  isSuccess: false,
   sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
   errorMessage: 'Bridge status could not be determined',
 }
@@ -348,7 +342,6 @@ const swapBridgeCancelledOrder: Order = {
   bridgeDetails: {
     ...pendingBridgeDetails,
     status: BridgeStatus.Failed, // Bridge fails when swap is cancelled
-    isSuccess: false,
     errorMessage: 'Bridge operation failed because the swap order was cancelled. No bridge transaction was initiated.',
   }, // Bridge fails when swap fails
 } as Order
@@ -359,7 +352,6 @@ const swapBridgeExpiredOrder: Order = {
   bridgeDetails: {
     ...pendingBridgeDetails,
     status: BridgeStatus.Failed, // Bridge fails when swap expires
-    isSuccess: false,
     errorMessage: 'Bridge operation failed because the swap order expired. No bridge transaction was initiated.',
   }, // Bridge fails when swap fails
 } as Order
@@ -387,7 +379,6 @@ const swapBridgeFailedOrder: Order = {
   bridgeDetails: {
     ...pendingBridgeDetails,
     status: BridgeStatus.Failed,
-    isSuccess: false,
     errorMessage: 'Bridge operation failed due to insufficient liquidity',
     refundStatus: RefundStatusEnum.NOT_INITIATED, // Could be: 'not_initiated', 'refunding', 'completed', 'failed'
   },
