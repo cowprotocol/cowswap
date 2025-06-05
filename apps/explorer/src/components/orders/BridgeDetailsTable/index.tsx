@@ -5,11 +5,17 @@ import { Loader } from '@cowprotocol/ui'
 
 import { DetailRow } from 'components/common/DetailRow'
 import { SimpleTable } from 'components/common/SimpleTable'
+import styled from 'styled-components/macro'
 
 import { BridgeDetailsContent } from './BridgeDetailsContent'
 import { BridgeDetailsTooltips } from './bridgeDetailsTooltips'
 import { BridgeTxOverview } from './BridgeTxOverview'
 import { Wrapper } from './styled'
+
+const LoadingWrapper = styled.div`
+  text-align: center;
+  margin: 50px 0;
+`
 
 interface BridgeDetailsTableProps {
   crossChainOrder: CrossChainOrder | undefined
@@ -23,14 +29,23 @@ export function BridgeDetailsTable({ crossChainOrder, isLoading = false }: Bridg
         columnViewMobile
         body={
           <>
-            <DetailRow
-              label="Transaction Details"
-              tooltipText={BridgeDetailsTooltips.transactionHash}
-              isLoading={isLoading}
-            >
-              {crossChainOrder && <BridgeTxOverview crossChainOrder={crossChainOrder} />}
-            </DetailRow>
-            {isLoading || !crossChainOrder ? <Loader /> : <BridgeDetailsContent crossChainOrder={crossChainOrder} />}
+            {!isLoading && crossChainOrder && (
+              <DetailRow
+                label="Transaction Details"
+                tooltipText={BridgeDetailsTooltips.transactionHash}
+                isLoading={isLoading}
+              >
+                <BridgeTxOverview crossChainOrder={crossChainOrder} />
+              </DetailRow>
+            )}
+            {isLoading || !crossChainOrder ? (
+              <LoadingWrapper>
+                <Loader size="32px" />
+                <h3>Bridging data loading</h3>
+              </LoadingWrapper>
+            ) : (
+              <BridgeDetailsContent crossChainOrder={crossChainOrder} />
+            )}
           </>
         }
       />
