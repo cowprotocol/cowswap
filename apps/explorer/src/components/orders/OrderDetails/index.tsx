@@ -1,69 +1,40 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, BridgeStatus, CrossChainOrder } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { Color, Media } from '@cowprotocol/ui'
+import { Loader } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import CowLoading from 'components/common/CowLoading'
-import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
 import { ConnectionStatus } from 'components/ConnectionStatus'
 import { Notification } from 'components/Notification'
 import { DetailsTable } from 'components/orders/DetailsTable'
+import { StatusLabel } from 'components/orders/StatusLabel'
 import RedirectToSearch from 'components/RedirectToSearch'
-import ExplorerTabs from 'explorer/components/common/ExplorerTabs/ExplorerTabs'
 import TablePagination from 'explorer/components/common/TablePagination'
 import { useTable } from 'explorer/components/TokensTableWidget/useTable'
 import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
 import { useLocation } from 'react-router'
 import { useNetworkId } from 'state/network'
-import styled from 'styled-components/macro'
+import { SWRResponse } from 'swr'
 import { Errors } from 'types'
 import { formatPercentage } from 'utils'
 
-import { Order, Trade } from 'api/operator'
+import { useCrossChainOrder } from 'modules/bridge'
+
+import { Order, Trade, OrderStatus } from 'api/operator'
 
 import { FillsTableContext } from './context/FillsTableContext'
 import { FillsTableWithData } from './FillsTableWithData'
+import { TitleUid, WrapperExtraComponents, StyledExplorerTabs, TabContent, BridgeDetailsWrapper } from './styled'
 
 import { FlexContainerVar } from '../../../explorer/pages/styled'
+import { BridgeDetailsTable } from '../BridgeDetailsTable'
+import { VerboseDetails } from '../DetailsTable/VerboseDetails'
 
-const TitleUid = styled(RowWithCopyButton)`
-  color: ${Color.explorer_grey};
-  font-size: var(--font-size-default);
-  font-weight: var(--font-weight-normal);
-  margin: 0 0 0 1rem;
-  display: flex;
-  align-items: center;
-`
-
-const WrapperExtraComponents = styled.div`
-  align-items: center;
-  display: flex;
-  justify-content: flex-end;
-  height: 100%;
-  gap: 1rem;
-
-  ${Media.upToSmall()} {
-    width: 100%;
-  }
-`
-
-const StyledExplorerTabs = styled(ExplorerTabs)`
-  margin-top: 2rem;
-
-  &.orderDetails-tab {
-    &--overview {
-      .tab-content {
-        padding: 0;
-      }
-    }
-  }
-`
-
-export type Props = {
+type Props = {
   order: Order | null
   trades: Trade[]
   isOrderLoading: boolean
@@ -71,21 +42,31 @@ export type Props = {
   errors: Errors
 }
 
-export enum TabView {
+enum TabView {
   OVERVIEW = 1,
   FILLS = 2,
+  SWAP = 3,
+  BRIDGE = 4,
 }
 
 const DEFAULT_TAB = TabView[1]
 
 function useQueryViewParams(): string {
   const query = useQuery()
-  return query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB // if URL param empty will be used DEFAULT
+  const param = query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase()
+
+  // Map unknown values to OVERVIEW
+  if (!param || !TabView[param as keyof typeof TabView]) {
+    return DEFAULT_TAB
+  }
+
+  return param
 }
 
 const tabItems = (
   chainId: SupportedChainId,
   _order: Order | null,
+  crossChainOrderResponse: SWRResponse<CrossChainOrder | null | undefined>,
   trades: Trade[],
   areTradesLoading: boolean,
   isOrderLoading: boolean,
@@ -99,21 +80,93 @@ const tabItems = (
   const filledPercentage = order?.filledPercentage && formatPercentage(order.filledPercentage)
   const showFills = order?.partiallyFillable && !order.txHash && trades.length > 1
 
+  const { data: crossChainOrder, isLoading: crossChainOrderLoading } = crossChainOrderResponse
+
+  const defaultDetails =
+    order && areTokensLoaded ? (
+      <DetailsTable chainId={chainId} order={order} showFillsButton={showFills} areTradesLoading={areTradesLoading}>
+        <VerboseDetails
+          order={order}
+          showFillsButton={showFills}
+          viewFills={(): void => onChangeTab(TabView.FILLS)}
+          isPriceInverted={isPriceInverted}
+          invertPrice={invertPrice}
+        />
+      </DetailsTable>
+    ) : null
+
+  // For swap+bridge orders, create three tabs
+  if (order?.bridgeProviderId) {
+    const overviewTab = {
+      id: TabView.OVERVIEW,
+      tab: <span>Overview</span>,
+      content: (
+        <>
+          {order && areTokensLoaded && (
+            <DetailsTable chainId={chainId} order={order} areTradesLoading={areTradesLoading} />
+          )}
+          {defaultDetails}
+          {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
+          {isLoadingForTheFirstTime && <CowLoading />}
+        </>
+      ),
+    }
+
+    const swapTab = {
+      id: TabView.SWAP,
+      tab: (
+        <TabContent>
+          1. Swap <StatusLabel status={order.status} />
+        </TabContent>
+      ),
+      content: (
+        <>
+          {defaultDetails}
+          {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
+          {isLoadingForTheFirstTime && <CowLoading />}
+        </>
+      ),
+    }
+
+    const bridgeStatus = crossChainOrder?.statusResult.status || BridgeStatus.UNKNOWN
+
+    // Note: swap+bridge orders don't support partial fills for now
+    const isSwapComplete = order.status === OrderStatus.Filled || order.partiallyFilled
+
+    // Determine effective bridge status for tab title
+    const effectiveBridgeStatusForTab = !isSwapComplete && bridgeStatus === BridgeStatus.IN_PROGRESS
+
+    const bridgeTab = {
+      id: TabView.BRIDGE,
+      tab: (
+        <TabContent>
+          2. Bridge{' '}
+          {effectiveBridgeStatusForTab ? (
+            <StatusLabel status={BridgeStatus.IN_PROGRESS} customText="Waiting for swap" />
+          ) : crossChainOrderLoading ? (
+            <Loader />
+          ) : (
+            <StatusLabel status={bridgeStatus} />
+          )}
+        </TabContent>
+      ),
+      content: <BridgeDetailsTable crossChainOrder={crossChainOrder || undefined} isLoading={crossChainOrderLoading} />,
+    }
+
+    return [overviewTab, swapTab, bridgeTab]
+  }
+
+  // Legacy behavior for regular orders
   const detailsTab = {
     id: TabView.OVERVIEW,
     tab: <span>Overview</span>,
     content: (
       <>
-        {order && areTokensLoaded && (
-          <DetailsTable
-            chainId={chainId}
-            order={order}
-            showFillsButton={showFills}
-            viewFills={(): void => onChangeTab(TabView.FILLS)}
-            areTradesLoading={areTradesLoading}
-            isPriceInverted={isPriceInverted}
-            invertPrice={invertPrice}
-          />
+        {defaultDetails}
+        {order?.bridgeProviderId && (
+          <BridgeDetailsWrapper>
+            <BridgeDetailsTable crossChainOrder={crossChainOrder || undefined} isLoading={crossChainOrderLoading} />
+          </BridgeDetailsWrapper>
         )}
         {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
         {isLoadingForTheFirstTime && <CowLoading />}
@@ -172,6 +225,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
 
   const [redirectTo, setRedirectTo] = useState(false)
   const updateQueryString = useUpdateQueryString()
+  const crossChainOrderResponse = useCrossChainOrder(order?.uid)
 
   tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < trades.length
   tableState['totalResults'] = trades.length
@@ -190,7 +244,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
       setRedirectTo(true)
     }, 500)
 
-    return (): void => clearTimeout(timer)
+    return () => clearTimeout(timer)
   })
 
   const onChangeTab = useCallback(
@@ -244,6 +298,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
           tabItems={tabItems(
             chainId,
             order,
+            crossChainOrderResponse,
             trades,
             areTradesLoading,
             isOrderLoading,

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
@@ -194,56 +194,111 @@ export function FilledProgress(props: Props): React.ReactNode {
     },
   } = props
 
-  const touched = filledPercentage.gt(0)
-  const isSell = isSellOrder(kind)
+  const {
+    touched,
+    mainToken,
+    swappedToken,
+    action,
+    filledAmountWithFee,
+    swappedAmountWithFee,
+    mainSymbol,
+    swappedSymbol,
+    formattedPercentage,
+    surplus,
+    surplusToken,
+  } = useMemo(() => {
+    const touched = filledPercentage.gt(0)
+    const isSell = isSellOrder(kind)
 
-  const mainToken = (isSell ? sellToken : buyToken) || null
-  const mainAddress = isSell ? sellTokenAddress : buyTokenAddress
-  const swappedToken = (isSell ? buyToken : sellToken) || null
-  const swappedAddress = isSell ? buyTokenAddress : sellTokenAddress
-  const swappedAmount = isSell ? executedBuyAmount : executedSellAmount
-  const action = isSell ? 'sold' : 'bought'
-  // Sell orders, add the fee in to the sellAmount (mainAmount, in this case)
-  // Buy orders need to add the fee, to the sellToken too (swappedAmount in this case)
-  const filledAmountWithFee = isSell ? filledAmount.plus(executedFeeAmount) : filledAmount
-  const swappedAmountWithFee = isSell ? swappedAmount : swappedAmount.plus(executedFeeAmount)
+    const mainToken = (isSell ? sellToken : buyToken) || null
+    const mainAddress = isSell ? sellTokenAddress : buyTokenAddress
+    const swappedToken = (isSell ? buyToken : sellToken) || null
+    const swappedAddress = isSell ? buyTokenAddress : sellTokenAddress
+    const swappedAmount = isSell ? executedBuyAmount : executedSellAmount
+    const action = isSell ? 'sold' : 'bought'
+    // Sell orders, add the fee in to the sellAmount (mainAmount, in this case)
+    // Buy orders need to add the fee, to the sellToken too (swappedAmount in this case)
+    const filledAmountWithFee = isSell ? filledAmount.plus(executedFeeAmount) : filledAmount
+    const swappedAmountWithFee = isSell ? swappedAmount : swappedAmount.plus(executedFeeAmount)
 
-  // In case the token object is empty, display the address
-  const mainSymbol = mainToken ? safeTokenName(mainToken) : mainAddress
-  const swappedSymbol = swappedToken ? safeTokenName(swappedToken) : swappedAddress
-  // In case the token object is empty, display the raw amount (`decimals || 0` part)
-  const formattedPercentage = filledPercentage.times(100).toString()
+    // In case the token object is empty, display the address
+    const mainSymbol = mainToken ? safeTokenName(mainToken) : mainAddress
+    const swappedSymbol = swappedToken ? safeTokenName(swappedToken) : swappedAddress
+    // In case the token object is empty, display the raw amount (`decimals || 0` part)
+    const formattedPercentage = filledPercentage.times(100).toString()
 
-  const surplus = { amount: surplusAmount, percentage: surplusPercentage }
-  const surplusToken = (isSell ? buyToken : sellToken) || null
+    const surplus = { amount: surplusAmount, percentage: surplusPercentage }
+    const surplusToken = (isSell ? buyToken : sellToken) || null
 
-  const OrderAssetsInfo = (): React.ReactNode => (
-    <>
-      {' '}
-      <OrderAssetsInfoWrapper lineBreak={lineBreak}>
-        <b>
-          {/* Executed part (bought/sold tokens) */}
-          <TokenAmount amount={filledAmountWithFee} token={mainToken} symbol={mainSymbol} />
-        </b>{' '}
-        {action}{' '}
-        {touched && (
-          // Executed part of the trade:
-          //    Total buy tokens you receive (for sell orders)
-          //    Total sell tokens you pay (for buy orders)
-          <>
-            for a total of{' '}
-            <b>
-              <TokenAmount amount={swappedAmountWithFee} token={swappedToken} symbol={swappedSymbol} />
-            </b>
-          </>
-        )}
-      </OrderAssetsInfoWrapper>
-    </>
+    return {
+      touched,
+      mainToken,
+      swappedToken,
+      action,
+      filledAmountWithFee,
+      swappedAmountWithFee,
+      mainSymbol,
+      swappedSymbol,
+      formattedPercentage,
+      surplus,
+      surplusToken,
+    }
+  }, [
+    filledPercentage,
+    kind,
+    sellToken,
+    buyToken,
+    sellTokenAddress,
+    buyTokenAddress,
+    executedBuyAmount,
+    executedSellAmount,
+    filledAmount,
+    executedFeeAmount,
+    surplusAmount,
+    surplusPercentage,
+  ])
+
+  const orderAssetsInfo = useMemo(
+    () => (
+      <>
+        {' '}
+        <OrderAssetsInfoWrapper lineBreak={lineBreak}>
+          <b>
+            {/* Executed part (bought/sold tokens) */}
+            <TokenAmount amount={filledAmountWithFee} token={mainToken} symbol={mainSymbol} />
+          </b>{' '}
+          {action}{' '}
+          {touched && (
+            // Executed part of the trade:
+            //    Total buy tokens you receive (for sell orders)
+            //    Total sell tokens you pay (for buy orders)
+            <>
+              for a total of{' '}
+              <b>
+                <TokenAmount amount={swappedAmountWithFee} token={swappedToken} symbol={swappedSymbol} />
+              </b>
+            </>
+          )}
+        </OrderAssetsInfoWrapper>
+      </>
+    ),
+    [
+      lineBreak,
+      filledAmountWithFee,
+      mainToken,
+      mainSymbol,
+      action,
+      touched,
+      swappedAmountWithFee,
+      swappedToken,
+      swappedSymbol,
+    ],
   )
+
   return !fullView ? (
     <Wrapper>
       <ProgressBar percentage={formattedPercentage} />
-      <OrderAssetsInfo />
+      {orderAssetsInfo}
     </Wrapper>
   ) : (
     <TableHeading>
@@ -254,7 +309,7 @@ export function FilledProgress(props: Props): React.ReactNode {
             <p className="percentage">
               <PercentDisplay percent={formattedPercentage} />
             </p>
-            <OrderAssetsInfo />
+            {orderAssetsInfo}
           </div>
           <ProgressBar showLabel={false} percentage={formattedPercentage} />
         </FilledContainer>
