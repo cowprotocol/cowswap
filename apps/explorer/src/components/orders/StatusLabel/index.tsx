@@ -43,10 +43,7 @@ export function StatusLabel({
 
   const formattedPercentage = filledPercentage !== undefined && formatPercentage(filledPercentage)
 
-  let displayStatus: StyledGenericStatus = status
-  if (customizeStatus && partiallyFilled) {
-    displayStatus = OrderStatus.PartiallyFilled
-  }
+  const displayStatus: StyledGenericStatus = customizeStatus && partiallyFilled ? OrderStatus.PartiallyFilled : status
 
   return (
     <Wrapper

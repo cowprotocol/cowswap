@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
-import { BridgeStatus } from '@cowprotocol/bridge'
+import { BridgeDetails, BridgeStatus } from '@cowprotocol/bridge'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
@@ -131,7 +131,7 @@ const tabItems = (
       ),
     }
 
-    const bridgeStatus = order.bridgeDetails?.status || 'Unknown'
+    const bridgeStatus = (order?.bridgeDetails as BridgeDetails | undefined)?.status || 'Unknown'
 
     // Note: swap+bridge orders don't support partial fills for now
     const isSwapComplete = order.status === OrderStatus.Filled || order.partiallyFilled
