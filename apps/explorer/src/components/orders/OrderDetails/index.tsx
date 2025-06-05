@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
-import { BridgeDetails, BridgeStatus } from '@cowprotocol/bridge'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, BridgeStatus, CrossChainOrder } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
+import { Loader } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import CowLoading from 'components/common/CowLoading'
@@ -18,8 +18,11 @@ import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
 import { useLocation } from 'react-router'
 import { useNetworkId } from 'state/network'
+import { SWRResponse } from 'swr'
 import { Errors } from 'types'
 import { formatPercentage } from 'utils'
+
+import { useCrossChainOrder } from 'modules/bridge'
 
 import { Order, Trade, OrderStatus } from 'api/operator'
 
@@ -63,6 +66,7 @@ function useQueryViewParams(): string {
 const tabItems = (
   chainId: SupportedChainId,
   _order: Order | null,
+  crossChainOrderResponse: SWRResponse<CrossChainOrder | null | undefined>,
   trades: Trade[],
   areTradesLoading: boolean,
   isOrderLoading: boolean,
@@ -122,26 +126,24 @@ const tabItems = (
       ),
     }
 
-    const bridgeStatus = (order?.bridgeDetails as BridgeDetails | undefined)?.status || 'Unknown'
+    const { data: crossChainOrder, isLoading: crossChainOrderLoading } = crossChainOrderResponse
+    const bridgeStatus = crossChainOrder?.statusResult.status || BridgeStatus.UNKNOWN
 
     // Note: swap+bridge orders don't support partial fills for now
     const isSwapComplete = order.status === OrderStatus.Filled || order.partiallyFilled
 
     // Determine effective bridge status for tab title
-    const effectiveBridgeStatusForTab = (() => {
-      if (!isSwapComplete && bridgeStatus === BridgeStatus.Pending) {
-        return 'Waiting for swap'
-      }
-      return bridgeStatus
-    })()
+    const effectiveBridgeStatusForTab = !isSwapComplete && bridgeStatus === BridgeStatus.IN_PROGRESS
 
     const bridgeTab = {
       id: TabView.BRIDGE,
       tab: (
         <TabContent>
           2. Bridge{' '}
-          {effectiveBridgeStatusForTab === 'Waiting for swap' ? (
-            <StatusLabel status={BridgeStatus.Pending} customText="Waiting for swap" />
+          {effectiveBridgeStatusForTab ? (
+            <StatusLabel status={BridgeStatus.IN_PROGRESS} customText="Waiting for swap" />
+          ) : crossChainOrderLoading ? (
+            <Loader />
           ) : (
             <StatusLabel status={bridgeStatus} />
           )}
@@ -160,7 +162,7 @@ const tabItems = (
     content: (
       <>
         {defaultDetails}
-        {order && order.bridgeDetails && (
+        {order?.bridgeProviderId && (
           <BridgeDetailsWrapper>
             <BridgeDetailsTable order={order} />
           </BridgeDetailsWrapper>
@@ -222,6 +224,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
 
   const [redirectTo, setRedirectTo] = useState(false)
   const updateQueryString = useUpdateQueryString()
+  const crossChainOrderResponse = useCrossChainOrder(order?.uid)
 
   tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < trades.length
   tableState['totalResults'] = trades.length
@@ -294,6 +297,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
           tabItems={tabItems(
             chainId,
             order,
+            crossChainOrderResponse,
             trades,
             areTradesLoading,
             isOrderLoading,

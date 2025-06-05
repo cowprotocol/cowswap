@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { BridgeStatus } from '@cowprotocol/bridge'
+import { BridgeStatus } from '@cowprotocol/cow-sdk'
 
 import BigNumber from 'bignumber.js'
 import { capitalize, formatPercentage } from 'utils'
@@ -11,11 +11,10 @@ import { canBePartiallyFilled } from 'utils/statusHelpers'
 import { StatusIcon } from './StatusIcon'
 import { Wrapper, Label, GenericStatus as StyledGenericStatus } from './styled'
 
-export type GenericStatus = string
 export type PartiallyTagPosition = 'right' | 'bottom'
 
 export type Props = {
-  status: GenericStatus
+  status: string
   partiallyFilled?: boolean
   filledPercentage?: BigNumber
   partialTagPosition?: PartiallyTagPosition
@@ -23,21 +22,20 @@ export type Props = {
 }
 
 export function StatusLabel({
-  status,
+  status: _status,
   partiallyFilled = false,
   filledPercentage,
   partialTagPosition = 'bottom',
   customText,
 }: Props): React.ReactNode {
+  const status = _status.toLowerCase()
   const shimming =
-    status.toLowerCase() === OrderStatus.Signing.toLowerCase() ||
-    status.toLowerCase() === OrderStatus.Cancelling.toLowerCase() ||
-    status.toLowerCase() === BridgeStatus.InProgress.toLowerCase() ||
-    status.toLowerCase() === BridgeStatus.Refunding.toLowerCase()
+    status === OrderStatus.Signing.toLowerCase() ||
+    status === OrderStatus.Cancelling.toLowerCase() ||
+    status === BridgeStatus.IN_PROGRESS.toLowerCase()
 
-  const customizeStatus =
-    status.toLowerCase() === OrderStatus.Expired.toLowerCase() ||
-    status.toLowerCase() === OrderStatus.Cancelled.toLowerCase()
+  const customizeStatus = status === OrderStatus.Expired.toLowerCase() || status === OrderStatus.Cancelled.toLowerCase()
+
   const tagPartiallyFilled =
     partiallyFilled && typeof status === 'string' && canBePartiallyFilled(status as OrderStatus)
 

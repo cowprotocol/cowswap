@@ -1,7 +1,6 @@
-import { BridgeStatus } from '@cowprotocol/bridge'
+import { BridgeStatus } from '@cowprotocol/cow-sdk'
 import { Color } from '@cowprotocol/ui'
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import styled, { DefaultTheme, css, keyframes, FlattenSimpleInterpolation } from 'styled-components/macro'
 
 export type GenericStatus = string
@@ -40,22 +39,20 @@ export function setStatusColors({
       text = Color.explorer_green1
       background = Color.explorer_greenOpacity
       break
-    case BridgeStatus.Pending.toLowerCase():
-    case BridgeStatus.InProgress.toLowerCase():
+    case BridgeStatus.IN_PROGRESS.toLowerCase():
       text = Color.explorer_textPrimary
       background = Color.explorer_bgInput
       break
-    case BridgeStatus.Completed.toLowerCase():
-    case BridgeStatus.RefundComplete.toLowerCase():
+    case BridgeStatus.EXECUTED.toLowerCase():
+    case BridgeStatus.REFUND.toLowerCase():
       text = Color.explorer_green1
       background = Color.explorer_greenOpacity
       break
-    case BridgeStatus.Failed.toLowerCase():
-    case BridgeStatus.Refunding.toLowerCase():
+    case BridgeStatus.EXPIRED.toLowerCase():
       text = Color.explorer_orange1
       background = Color.explorer_orangeOpacity
       break
-    case BridgeStatus.Unknown.toLowerCase():
+    case BridgeStatus.UNKNOWN.toLowerCase():
     default:
       text = Color.explorer_grey
       background = Color.explorer_greyOpacity
@@ -93,7 +90,7 @@ export const PartiallyTagLabel = css<PartiallyTagProps>`
               border-left-width: 0;
               border-radius: 0 0.4rem 0.4rem 0;
               padding: 0 0.6rem;
-              font-size: 0.84em;              
+              font-size: 0.84em;
             `}
           `
         : null}
@@ -148,8 +145,4 @@ export const Label = styled.div<DisplayProps & ShimmingProps & PartiallyTagProps
             border-radius: 0.4rem 0 0 0.4rem;
           `
       : null}
-`
-
-export const StyledFAIcon = styled(FontAwesomeIcon)`
-  margin: 0 0.6rem 0 0;
 `

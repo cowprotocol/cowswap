@@ -1,8 +1,5 @@
 import { latest } from '@cowprotocol/app-data'
-import { EnrichedOrder } from '@cowprotocol/cow-sdk'
-
-// TODO: import from SDK
-const HOOK_DAPP_BRIDGE_PROVIDER_PREFIX = 'cow-sdk://bridging/providers'
+import { EnrichedOrder, HOOK_DAPP_BRIDGE_PROVIDER_PREFIX } from '@cowprotocol/cow-sdk'
 
 export function getOrderBridgeProviderId(order: EnrichedOrder): string | undefined {
   if (!order.fullAppData) return
