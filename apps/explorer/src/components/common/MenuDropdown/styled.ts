@@ -1,4 +1,4 @@
-import { Media, Color } from '@cowprotocol/ui'
+import { Media, Color, UI } from '@cowprotocol/ui'
 
 import InternalExternalMenuLink from 'components/common/MenuDropdown/InternalExternalLink'
 import Icon from 'components/Icon'
@@ -196,7 +196,7 @@ export const Content = styled.div`
   top: 100%;
   right: 0;
   border-radius: 1.6rem;
-  background: ${Color.neutral0};
+  background: var(${UI.COLOR_NEUTRAL_0});
   box-shadow: 0 1.2rem 1.8rem ${Color.explorer_bg};
   padding: 3.2rem;
   gap: 6.2rem;
@@ -230,7 +230,7 @@ export const MenuTitle = styled.b`
   letter-spacing: 0.2rem;
   display: flex;
   margin: 0 0 0.6rem;
-  color: ${Color.neutral100};
+  color: var(${UI.COLOR_NEUTRAL_100});
   ${Media.upToSmall()} {
     display: none;
   }
@@ -264,17 +264,17 @@ export const MenuSection = styled.div`
     font-weight: 500;
     margin: 0;
     padding: 0;
-    color: ${Color.neutral100};
+    color: var(${UI.COLOR_NEUTRAL_100});
     gap: 1.2rem;
     align-items: center;
 
     &:hover {
-      color: ${Color.neutral100};
+      color: var(${UI.COLOR_NEUTRAL_100});
     }
 
     &.ACTIVE {
       font-weight: bold;
-      color: ${Color.neutral100};
+      color: var(${UI.COLOR_NEUTRAL_100});
     }
   }
 

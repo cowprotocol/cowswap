@@ -3,6 +3,7 @@ import { formatFiatAmount, FractionUtils } from '@cowprotocol/common-utils'
 
 import styled from 'styled-components/macro'
 
+import { UI } from '../../enum'
 import { FractionLike, Nullish } from '../../types'
 
 export interface FiatAmountProps {
@@ -15,6 +16,12 @@ export interface FiatAmountProps {
 const Wrapper = styled.span`
   color: inherit;
   word-break: break-all;
+  opacity: 0.7;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
 `
 
 export function FiatAmount({ amount, defaultValue, className, accurate = false }: FiatAmountProps) {

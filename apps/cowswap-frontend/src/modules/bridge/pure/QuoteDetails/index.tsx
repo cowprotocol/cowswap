@@ -12,6 +12,7 @@ import { BridgeStatusTitlePrefixes, SwapStatusTitlePrefixes } from '../StopStatu
 
 interface QuoteDetailsProps {
   isCollapsible?: boolean
+  stepsCollapsible?: boolean
 
   bridgeProvider: BridgeProviderInfo
   swapContext: QuoteSwapContext
@@ -22,11 +23,12 @@ interface QuoteDetailsProps {
 
 export function QuoteDetails({
   isCollapsible,
+  stepsCollapsible = false,
   bridgeProvider,
   swapContext,
   bridgeContext,
   collapsedDefault,
-}: QuoteDetailsProps) {
+}: QuoteDetailsProps): ReactNode {
   const status = SwapAndBridgeStatus.DEFAULT
 
   return (
@@ -37,7 +39,7 @@ export function QuoteDetails({
       collapsedDefault={collapsedDefault}
     >
       <BridgeDetailsContainer
-        isCollapsible={isCollapsible}
+        isCollapsible={stepsCollapsible}
         defaultExpanded={true}
         status={status}
         stopNumber={1}
@@ -57,7 +59,7 @@ export function QuoteDetails({
       <DividerHorizontal margin="8px 0 4px" />
 
       <BridgeDetailsContainer
-        isCollapsible={isCollapsible}
+        isCollapsible={stepsCollapsible}
         defaultExpanded={true}
         status={status}
         stopNumber={2}

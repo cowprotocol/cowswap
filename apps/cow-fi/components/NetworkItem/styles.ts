@@ -1,13 +1,14 @@
+import { Media, UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
-import { Media, Color } from '@cowprotocol/ui'
 
 export const NetworkHeaderItem = styled.div`
   display: grid;
   grid-template-columns: 14rem auto auto;
   align-items: center;
   padding: 1rem 0;
-  border-bottom: 0.1rem solid ${Color.neutral80};
-  color: ${Color.neutral10};
+  border-bottom: 0.1rem solid var(${UI.COLOR_NEUTRAL_80});
+  color: var(${UI.COLOR_NEUTRAL_10});
   gap: 0.8rem;
   width: 100%;
 
@@ -26,7 +27,7 @@ export const NetworkHeaderItem = styled.div`
 
 export const ItemWrapper = styled(NetworkHeaderItem)`
   font-size: 1.6rem;
-  color: ${Color.neutral10};
+  color: var(${UI.COLOR_NEUTRAL_10});
 
   > a {
     display: flex;

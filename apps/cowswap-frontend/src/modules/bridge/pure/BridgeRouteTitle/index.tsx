@@ -25,7 +25,7 @@ export function BridgeRouteTitle({
   protocolIconShowOnly,
   protocolIconSize = 21,
   stopNumber,
-}: BridgeRouteTitleProps) {
+}: BridgeRouteTitleProps): ReactNode {
   return (
     <>
       <StopNumberCircle status={status} stopNumber={stopNumber}>

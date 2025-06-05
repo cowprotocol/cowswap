@@ -1,10 +1,14 @@
 import React, { useState, useEffect, ChangeEvent } from 'react'
-import styled from 'styled-components/macro'
+
+import { Color, UI } from '@cowprotocol/ui'
+
 import { transparentize } from 'polished'
+import styled from 'styled-components/macro'
+
+import { LinkWithUtmComponent } from 'modules/utm'
+
 import { Button } from '@/components/Button'
 import { CONFIG } from '@/const/meta'
-import { LinkWithUtmComponent } from 'modules/utm'
-import { Color } from '@cowprotocol/ui'
 
 type TabProps = {
   active: boolean
@@ -161,7 +165,7 @@ const DropdownOption = styled.div`
   font-weight: 500;
 
   &:hover {
-    background-color: ${Color.neutral100};
+    background-color: var(${UI.COLOR_NEUTRAL_100});
     border-radius: 1rem;
   }
 

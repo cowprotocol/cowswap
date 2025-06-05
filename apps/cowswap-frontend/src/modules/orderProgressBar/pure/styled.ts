@@ -285,6 +285,6 @@ export const BenefitTagLine = styled.div`
   margin: 0 auto auto 0;
   border-radius: 12px;
   padding: 2px 10px;
-  background-color: #3fc4ff;
-  color: #000000;
+  background-color: var(${UI.COLOR_BLUE_400_PRIMARY});
+  color: var(${UI.COLOR_TEXT});
 `

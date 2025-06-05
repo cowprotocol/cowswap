@@ -57,6 +57,15 @@ export function QuoteSwapContent({
       content: slippagePercentDisplay,
     },
     {
+      withTimelineDot: true,
+      label: (
+        <>
+          Recipient <InfoTooltip content="The address that will receive the tokens." size={14} />
+        </>
+      ),
+      content: <RecipientDisplay recipient={recipient} chainId={sellAmount.currency.chainId} />,
+    },
+    {
       label: (
         <ReceiveAmountTitle>
           <b>Min. to receive</b>
@@ -67,15 +76,6 @@ export function QuoteSwapContent({
           <TokenAmountDisplay displaySymbol currencyAmount={minReceiveAmount} usdValue={minReceiveUsdValue} />
         </b>
       ),
-    },
-    {
-      withTimelineDot: true,
-      label: (
-        <>
-          Recipient <InfoTooltip content="The address that will receive the tokens." size={14} />
-        </>
-      ),
-      content: <RecipientDisplay recipient={recipient} chainId={sellAmount.currency.chainId} />,
     },
   ]
 

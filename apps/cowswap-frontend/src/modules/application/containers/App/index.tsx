@@ -4,7 +4,7 @@ import { initPixelAnalytics, useAnalyticsReporter, useCowAnalytics, WebVitalsAna
 import { ACTIVE_CUSTOM_THEME, CustomTheme } from '@cowprotocol/common-const'
 import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
+import { UI, Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
@@ -164,8 +164,8 @@ export function App() {
               showGlobalSettings
               bgColorDark={'rgb(222 227 230 / 7%)'}
               colorDark={'#DEE3E6'}
-              bgDropdownColorLight={Color.neutral100}
-              bgDropdownColorDark={Color.neutral0}
+              bgDropdownColorLight={`var(${UI.COLOR_NEUTRAL_100})`}
+              bgDropdownColorDark={`var(${UI.COLOR_NEUTRAL_0})`}
               defaultFillDark="rgba(222, 227, 230, 0.4)"
               activeFillDark="#DEE3E6"
               activeBackgroundDark="#282854"

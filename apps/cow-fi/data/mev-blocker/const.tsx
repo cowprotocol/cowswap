@@ -1,26 +1,24 @@
-import { Link } from '@/components/Link'
-import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
-
-import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
-import IMG_LOGO_KARPATKEY from '@cowprotocol/assets/images/logo-karpatkey.svg'
-import IMG_LOGO_BLOCKNATIVE from '@cowprotocol/assets/images/logo-blocknative.svg'
-import IMG_LOGO_RABBY from '@cowprotocol/assets/images/logo-rabby.svg'
-import IMG_LOGO_KEEPKEY from '@cowprotocol/assets/images/logo-keepkey.svg'
-import IMG_LOGO_AMBIRE from '@cowprotocol/assets/images/logo-ambire.svg'
-import IMG_LOGO_CRYPTO_COM from '@cowprotocol/assets/images/logo-crypto-com.svg'
-import IMG_LOGO_UNISWAP from '@cowprotocol/assets/images/logo-uniswap.svg'
-
+import IMAGE_FASTFREE from '@cowprotocol/assets/images/image-fastfree.svg'
+import IMAGE_FULLPROTECTION from '@cowprotocol/assets/images/image-fullprotection.svg'
 import IMAGE_MEVBLOCKER_REVIEW_1 from '@cowprotocol/assets/images/image-mevblocker-review-1.svg'
 import IMAGE_MEVBLOCKER_REVIEW_2 from '@cowprotocol/assets/images/image-mevblocker-review-2.svg'
 import IMAGE_MEVBLOCKER_REVIEW_3 from '@cowprotocol/assets/images/image-mevblocker-review-3.svg'
 import IMAGE_MEVBLOCKER_REVIEW_4 from '@cowprotocol/assets/images/image-mevblocker-review-4.svg'
 import IMAGE_MEVBLOCKER_REVIEW_5 from '@cowprotocol/assets/images/image-mevblocker-review-5.svg'
 import IMAGE_MEVBLOCKER_REVIEW_6 from '@cowprotocol/assets/images/image-mevblocker-review-6.svg'
-
-import IMAGE_FULLPROTECTION from '@cowprotocol/assets/images/image-fullprotection.svg'
-import IMGAGE_FASTFREE from '@cowprotocol/assets/images/image-fastfree.svg'
 import IMAGE_PROFIT from '@cowprotocol/assets/images/image-profit.svg'
+import IMG_LOGO_AMBIRE from '@cowprotocol/assets/images/logo-ambire.svg'
+import IMG_LOGO_BLOCKNATIVE from '@cowprotocol/assets/images/logo-blocknative.svg'
+import IMG_LOGO_CRYPTO_COM from '@cowprotocol/assets/images/logo-crypto-com.svg'
+import IMG_LOGO_KARPATKEY from '@cowprotocol/assets/images/logo-karpatkey.svg'
+import IMG_LOGO_KEEPKEY from '@cowprotocol/assets/images/logo-keepkey.svg'
+import IMG_LOGO_RABBY from '@cowprotocol/assets/images/logo-rabby.svg'
+import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
+import IMG_LOGO_UNISWAP from '@cowprotocol/assets/images/logo-uniswap.svg'
+import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
+
+import { Link } from '@/components/Link'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 export const MEV_BLOCKER_LIST = [
   {
@@ -40,7 +38,7 @@ export const MEV_BLOCKER_LIST = [
   {
     id: 'fastfree',
     description: 'A fast, free, censorship-resistant solution open to all searchers and builders',
-    iconImage: IMGAGE_FASTFREE,
+    iconImage: IMAGE_FASTFREE,
     bgColor: Color.cowfi_lightBlue4,
     textColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
   },
@@ -89,8 +87,8 @@ export const TESTIMONIAL_LIST = [
   {
     title: 'MEV Blocker fixed my marriage!',
     description: '– Anon',
-    bgColor: Color.cowfi_blue_bright,
-    textColor: Color.neutral0,
+    bgColor: `var(${UI.COLOR_BLUE_400_PRIMARY})`,
+    textColor: `var(${UI.COLOR_NEUTRAL_0})`,
     iconImage: IMAGE_MEVBLOCKER_REVIEW_1,
   },
   {
@@ -103,14 +101,14 @@ export const TESTIMONIAL_LIST = [
   {
     title: 'I was tired of getting rekt, so I started using MEV Blocker',
     description: '– Anon',
-    bgColor: Color.neutral100,
+    bgColor: `var(${UI.COLOR_NEUTRAL_100})`,
     textColor: Color.cowfi_orange_bright,
     iconImage: IMAGE_MEVBLOCKER_REVIEW_3,
   },
   {
     title: 'Robots should work for me, not against me',
     description: '– Anon',
-    bgColor: Color.neutral100,
+    bgColor: `var(${UI.COLOR_NEUTRAL_100})`,
     textColor: Color.cowfi_orange_bright,
     iconImage: IMAGE_MEVBLOCKER_REVIEW_4,
   },
@@ -135,13 +133,14 @@ export const FAQ_DATA = [
     question: 'What is MEV?',
     answer: (
       <>
-        MEV or "maximal extractable value" is a method used by savvy actors (known as "searchers") to exploit your
-        transactions at your expense. <br />
+        MEV or &quot;maximal extractable value&quot; is a method used by savvy actors (known as &quot;searchers&quot;)
+        to exploit your transactions at your expense. <br />
         <br />
-        Any time you make a transaction that carries value, searchers can "frontrun" it by submitting the exact same
-        transaction before you and keeping the profits for themselves. After getting frontrun, you can also get
-        "backrun", which is where the searcher cleans up any price slippage your trade caused, again keeping the profits
-        for themselves. Both a frontrun and a backrun together are known as a "sandwich attack" — the worst type of MEV.
+        Any time you make a transaction that carries value, searchers can &quot;frontrun&quot; it by submitting the
+        exact same transaction before you and keeping the profits for themselves. After getting frontrun, you can also
+        get &quot;backrun&quot;, which is where the searcher cleans up any price slippage your trade caused, again
+        keeping the profits for themselves. Both a frontrun and a backrun together are known as a &quot;sandwich
+        attack&quot; — the worst type of MEV.
         <br />
         <br />
         MEV gives you a worse price for your transactions and can cause you to lose out on hundreds or even thousands of
@@ -172,7 +171,7 @@ export const FAQ_DATA = [
         >
           Get in touch
         </Link>{' '}
-        if you're interested in doing this!
+        if you&apos;re interested in doing this!
       </>
     ),
   },
@@ -189,10 +188,10 @@ export const FAQ_DATA = [
     question: 'How does MEV Blocker RPC give you a rebate and when?',
     answer: (
       <>
-        MEV Blocker also lets you benefit from backrunning. It does this by allowing searchers to "bid" in an auction to
-        win the right to backrun your trade. When this happens, users of MEV Blocker receive 90% of the profit their
-        backrunning opportunity creates (compared with 0% when not using MEV Blocker). The rebate is paid to the user
-        that sent the transaction (tx.origin), immediately in the same block.
+        MEV Blocker also lets you benefit from backrunning. It does this by allowing searchers to &quot;bid&quot; in an
+        auction to win the right to backrun your trade. When this happens, users of MEV Blocker receive 90% of the
+        profit their backrunning opportunity creates (compared with 0% when not using MEV Blocker). The rebate is paid
+        to the user that sent the transaction (tx.origin), immediately in the same block.
         <br />
         <br />
         In return for benefitting from backrunning your trade, these searchers are not allowed to frontrun or sandwich
@@ -226,11 +225,11 @@ export const FAQ_DATA = [
         from MEV.
         <br />
         <br />
-        See a chance to mint the next Cryptopunks but don't want anyone to snatch the opportunity from you? Use MEV
+        See a chance to mint the next Cryptopunks but don&apos;t want anyone to snatch the opportunity from you? Use MEV
         Blocker.
         <br />
         <br />
-        Want to trade directly on an AMM that doesn't protect you from MEV? Use MEV Blocker.
+        Want to trade directly on an AMM that doesn&apos;t protect you from MEV? Use MEV Blocker.
         <br />
         <br />
         And more!
@@ -265,14 +264,14 @@ export const FAQ_DATA = [
     question: 'How does MEV Blocker work?',
     answer: (
       <>
-        MEV Blocker facilitates an auction between a network of "searchers" who are given the opportunity to backrun
-        your transactions. In return, they protect you from frontrunning and sandwich attacks - the nasty types of MEV
-        that exploit Ethereum users every day.
+        MEV Blocker facilitates an auction between a network of &quot;searchers&quot; who are given the opportunity to
+        backrun your transactions. In return, they protect you from frontrunning and sandwich attacks - the nasty types
+        of MEV that exploit Ethereum users every day.
         <br />
         <br />
         When searchers submit winning bids through the orderflow auction, MEV Blocker sends the full amount of the bid
         to users and validators at a 90/10 split. Validators keep the 10% as a reward, and users pocket the other 90% as
-        profit they'd miss out on if they weren't using MEV Blocker.
+        profit they&apos;d miss out on if they weren&apos;t using MEV Blocker.
         <br />
         <br />
         As long as you have MEV Blocker set as the RPC in your wallet (as if it were another network), you are protected
@@ -318,8 +317,8 @@ export const FAQ_DATA = [
     question: 'Does this RPC offer a secure & private RPC endpoint?',
     answer: (
       <>
-        Yes! if you want your transactions to be completely private, and you don't care about the refund, you need to
-        connect to the following endpoint:{' '}
+        Yes! if you want your transactions to be completely private, and you don&apos;t care about the refund, you need
+        to connect to the following endpoint:{' '}
         <Link
           href="https://rpc.mevblocker.io/norefunds"
           external
@@ -397,7 +396,8 @@ export const FAQ_DATA = [
         <br />
         <br />
         This collaboration represents our commitment to providing a trusted, neutral product available to all Ethereum
-        users. We invite additional contributors - please get in touch if you're interested in supporting the project.
+        users. We invite additional contributors - please get in touch if you&apos;re interested in supporting the
+        project.
       </>
     ),
   },
@@ -437,7 +437,7 @@ export const FAQ_DATA = [
     question: 'How can I get in touch?',
     answer: (
       <>
-        If you are a searcher or a dApp developer, or if you're a user that has questions about MEV Blocker, please
+        If you are a searcher or a dApp developer, or if you&apos;re a user that has questions about MEV Blocker, please
         reach out via{' '}
         <Link
           href="https://t.me/+yonLSGoFPRI0YTFk"

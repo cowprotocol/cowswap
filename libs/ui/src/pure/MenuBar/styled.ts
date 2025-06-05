@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components/macro'
 
-import { Color } from '../../colors'
 import { Font } from '../../consts'
+import { UI } from '../../enum'
 import { CowSwapTheme } from '../../types'
 import { ProductLogoWrapper } from '../ProductLogo'
 
@@ -27,23 +27,31 @@ export const MenuBarWrapper = styled.div<{
   --height: 56px;
   --width: 100%;
   --bgColor: ${({ theme, bgColorLight, bgColorDark }) =>
-    theme.darkMode ? bgColorDark || Color.neutral10 : bgColorLight || 'rgb(255 248 247 / 40%)'};
+    theme.darkMode ? bgColorDark || `var(${UI.COLOR_NEUTRAL_10})` : bgColorLight || 'rgb(255 248 247 / 40%)'};
   --bgDropdownColor: ${({ theme, bgDropdownColorLight, bgDropdownColorDark }) =>
-    theme.darkMode ? bgDropdownColorDark || Color.neutral10 : bgDropdownColorLight || Color.neutral100};
+    theme.darkMode
+      ? bgDropdownColorDark || `var(${UI.COLOR_NEUTRAL_10})`
+      : bgDropdownColorLight || `var(${UI.COLOR_NEUTRAL_100})`};
   --color: ${({ theme, colorLight, colorDark }) =>
-    theme.darkMode ? colorDark || Color.neutral98 : colorLight || Color.neutral0};
+    theme.darkMode ? colorDark || `var(${UI.COLOR_NEUTRAL_98})` : colorLight || `var(${UI.COLOR_NEUTRAL_0})`};
   --borderRadius: 28px;
   --blur: 16px;
 
   // Elements
   --defaultFill: ${({ theme, defaultFillLight, defaultFillDark }) =>
-    theme.darkMode ? defaultFillDark || Color.neutral60 : defaultFillLight || 'rgb(0 0 0 / 50%)'};
+    theme.darkMode ? defaultFillDark || `var(${UI.COLOR_NEUTRAL_60})` : defaultFillLight || 'rgb(0 0 0 / 50%)'};
   --activeBackground: ${({ theme, activeBackgroundLight, activeBackgroundDark }) =>
-    theme.darkMode ? activeBackgroundDark || Color.neutral30 : activeBackgroundLight || Color.neutral100};
+    theme.darkMode
+      ? activeBackgroundDark || `var(${UI.COLOR_NEUTRAL_30})`
+      : activeBackgroundLight || `var(${UI.COLOR_NEUTRAL_100})`};
   --activeFill: ${({ theme, activeFillLight, activeFillDark }) =>
-    theme.darkMode ? activeFillDark || Color.neutral100 : activeFillLight || Color.neutral0};
+    theme.darkMode
+      ? activeFillDark || `var(${UI.COLOR_NEUTRAL_100})`
+      : activeFillLight || `var(${UI.COLOR_NEUTRAL_0})`};
   --hoverBackground: ${({ theme, hoverBackgroundLight, hoverBackgroundDark }) =>
-    theme.darkMode ? hoverBackgroundDark || Color.neutral20 : hoverBackgroundLight || Color.neutral90};
+    theme.darkMode
+      ? hoverBackgroundDark || `var(${UI.COLOR_NEUTRAL_20})`
+      : hoverBackgroundLight || `var(${UI.COLOR_NEUTRAL_90})`};
 
   display: flex;
   width: 100%;
@@ -200,17 +208,17 @@ export const NavItems = styled.ul<{ mobileMode?: boolean; theme: CowSwapTheme }>
       }
 
       ::-webkit-scrollbar-track {
-        background: ${Color.neutral90};
+        background: var(${UI.COLOR_NEUTRAL_90});
         border-radius: 10px;
       }
 
       ::-webkit-scrollbar-thumb {
-        background: ${Color.neutral70};
+        background: var(${UI.COLOR_NEUTRAL_70});
         border-radius: 10px;
       }
 
       ::-webkit-scrollbar-thumb:hover {
-        background: ${Color.neutral50};
+        background: var(${UI.COLOR_NEUTRAL_50});
       }
 
       > div {
@@ -512,18 +520,18 @@ export const DropdownContentItemButton = styled(StyledDropdownContentItem)<{
   minHeight?: string
   mobileMode?: boolean
 }>`
-  background: ${({ bgColor }) => bgColor || Color.neutral100};
-  color: ${({ color }) => color || Color.neutral10};
+  background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_NEUTRAL_100})`};
+  color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_10})`};
   width: 100%;
   border: 0;
   border-radius: 24px;
 
   &:hover {
-    background: ${({ hoverBgColor }) => hoverBgColor || Color.neutral90};
+    background: ${({ hoverBgColor }) => hoverBgColor || `var(${UI.COLOR_NEUTRAL_90})`};
 
     &:hover {
-      background: ${({ hoverBgColor }) => hoverBgColor || Color.neutral100};
-      color: ${({ hoverColor }) => hoverColor || Color.neutral10};
+      background: ${({ hoverBgColor }) => hoverBgColor || `var(${UI.COLOR_NEUTRAL_100})`};
+      color: ${({ hoverColor }) => hoverColor || `var(${UI.COLOR_NEUTRAL_10})`};
     }
   }
 

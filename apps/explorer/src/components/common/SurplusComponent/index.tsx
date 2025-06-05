@@ -21,7 +21,7 @@ const IconWrapper = styled(FontAwesomeIcon)`
 `
 
 export const Percentage = styled.span`
-  color: ${Color.explorer_green};
+  color: ${Color.successDark};
 `
 
 export const Amount = styled.span`
@@ -39,7 +39,7 @@ export type SurplusComponentProps = {
 }
 
 export const SurplusComponent: React.FC<SurplusComponentProps> = (props) => {
-  const { surplus, token, className, icon, iconColor = Color.explorer_green } = props
+  const { surplus, token, className, icon, iconColor = Color.successDark } = props
 
   if (!surplus || !token) {
     return null

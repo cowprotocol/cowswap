@@ -1,7 +1,7 @@
 'use client'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { Color, Font, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { Color, Font, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { Link, LinkType } from '@/components/Link'
 import { CONFIG } from '@/const/meta'
@@ -43,14 +43,18 @@ export function CareersPageContent({
 
   return (
     <PageWrapper>
-      <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} touchFooter>
+      <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_90})`} color={`var(${UI.COLOR_NEUTRAL_10})`} touchFooter>
         <ContainerCardSection>
           <SectionTitleWrapper maxWidth={900} margin="0 auto 56px" marginMobile="0 auto 56px">
             <SectionTitleIcon $size={60}>
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
             </SectionTitleIcon>
             <SectionTitleText fontSize={62}>Want to build the future of decentralized trading?</SectionTitleText>
-            <SectionTitleDescription fontSize={24} color={Color.neutral40} fontWeight={Font.weight.regular}>
+            <SectionTitleDescription
+              fontSize={24}
+              color={`var(${UI.COLOR_NEUTRAL_40})`}
+              fontWeight={Font.weight.regular}
+            >
               We are an ambitious, fast-growing and international team working at the forefront of DeFi. We believe that
               we can make markets more fair and more efficient by building the ultimate batch auction settlement layer
               across EVM-compatible blockchains
@@ -80,18 +84,18 @@ export function CareersPageContent({
                         <TopicCard
                           key={id}
                           contentAlign={'left'}
-                          bgColor={Color.neutral100}
+                          bgColor={`var(${UI.COLOR_NEUTRAL_100})`}
                           padding={'32px'}
                           gap={16}
                           asProp="div"
                           height="100%"
                         >
                           <TopicCardInner contentAlign="left" contentAlignTablet={'center'} height="100%">
-                            <TopicTitle fontSize={16} color={Color.neutral50}>
+                            <TopicTitle fontSize={16} color={`var(${UI.COLOR_NEUTRAL_50})`}>
                               {deptName}
                             </TopicTitle>
                             <TopicTitle fontSize={34}>{title}</TopicTitle>
-                            <TopicDescription fontSize={18} color={Color.neutral40} margin="0 0 24px">
+                            <TopicDescription fontSize={18} color={`var(${UI.COLOR_NEUTRAL_40})`} margin="0 0 24px">
                               {locationName}
                             </TopicDescription>
                             <Link
@@ -123,14 +127,14 @@ export function CareersPageContent({
                         <TopicCard
                           key={index}
                           contentAlign={'left'}
-                          bgColor={Color.neutral100}
+                          bgColor={`var(${UI.COLOR_NEUTRAL_100})`}
                           padding={'32px'}
                           gap={16}
                           asProp="div"
                         >
                           <TopicCardInner contentAlign="left">
                             <TopicTitle>{title}</TopicTitle>
-                            <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                            <TopicDescription fontSize={18} color={`var(${UI.COLOR_NEUTRAL_40})`} margin="0">
                               {locationName}
                             </TopicDescription>
                             <Link
@@ -194,7 +198,11 @@ export function CareersPageContent({
             <SectionTitleText fontSize={32} color={Color.cowfi_orange_bright}>
               Important Notice: Beware of Recruitment Scams
             </SectionTitleText>
-            <SectionTitleDescription fontSize={18} color={Color.neutral40} fontWeight={Font.weight.regular}>
+            <SectionTitleDescription
+              fontSize={18}
+              color={`var(${UI.COLOR_NEUTRAL_40})`}
+              fontWeight={Font.weight.regular}
+            >
               We have been made aware of individuals impersonating our team and reaching out to job seekers via Telegram
               and other unofficial channels, falsely claiming to represent CoW DAO.
             </SectionTitleDescription>
@@ -234,7 +242,7 @@ export function CareersPageContent({
                 <SectionTitleDescription
                   fontSize={16}
                   fontSizeMobile={14}
-                  color={Color.neutral40}
+                  color={`var(${UI.COLOR_NEUTRAL_40})`}
                   textAlign="left"
                   margin="8px 0"
                 >
@@ -257,7 +265,7 @@ export function CareersPageContent({
                   <SectionTitleDescription
                     fontSize={16}
                     fontSizeMobile={14}
-                    color={Color.neutral30}
+                    color={`var(${UI.COLOR_NEUTRAL_30})`}
                     textAlign="left"
                     margin="0 0 12px"
                   >
@@ -267,7 +275,7 @@ export function CareersPageContent({
                   <SectionTitleDescription
                     fontSize={16}
                     fontSizeMobile={14}
-                    color={Color.neutral30}
+                    color={`var(${UI.COLOR_NEUTRAL_30})`}
                     textAlign="left"
                     margin="0"
                   >

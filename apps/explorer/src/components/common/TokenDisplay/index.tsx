@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 `
 
 const NativeWrapper = styled.span`
-  color: ${Color.explorer_textPrimary};
+  color: ${Color.neutral100};
 `
 
 const StyledImg = styled(TokenImg)`

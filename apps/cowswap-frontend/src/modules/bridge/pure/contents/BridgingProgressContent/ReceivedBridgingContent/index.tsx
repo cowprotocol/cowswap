@@ -1,3 +1,6 @@
+import { ReactNode } from 'react'
+
+import ReceiptIcon from '@cowprotocol/assets/cow-swap/icon-receipt.svg'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink } from '@cowprotocol/ui'
@@ -5,7 +8,7 @@ import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
-import { SuccessTextBold } from '../../../../styles'
+import { StyledTimelineReceiptIcon, SuccessTextBold, TimelineIconCircleWrapper } from '../../../../styles'
 import { TokenAmountDisplay } from '../../../TokenAmountDisplay'
 
 interface ReceivedBridgingContentProps {
@@ -22,7 +25,7 @@ export function ReceivedBridgingContent({
   receivedAmount,
   sourceChainId,
   destinationChainId,
-}: ReceivedBridgingContentProps) {
+}: ReceivedBridgingContentProps): ReactNode {
   const { depositTxHash, fillTxHash } = statusResult || {}
 
   const depositLink = depositTxHash && getExplorerLink(sourceChainId, depositTxHash, ExplorerDataType.TRANSACTION)
@@ -44,8 +47,35 @@ export function ReceivedBridgingContent({
           <TokenAmountDisplay displaySymbol currencyAmount={receivedAmount} usdValue={receivedAmountUsd} />
         </b>
       </ConfirmDetailsItem>
-      {depositLink && <ExternalLink href={depositLink}>Deposit transaction ↗</ExternalLink>}
-      {fillTxLink && <ExternalLink href={fillTxLink}>Settlement transaction ↗</ExternalLink>}
+
+      {depositLink && (
+        <ConfirmDetailsItem
+          label={
+            <>
+              <TimelineIconCircleWrapper padding="0" bgColor={'transparent'}>
+                <StyledTimelineReceiptIcon src={ReceiptIcon} />
+              </TimelineIconCircleWrapper>{' '}
+              Source transaction
+            </>
+          }
+        >
+          <ExternalLink href={depositLink}>View on Explorer ↗</ExternalLink>
+        </ConfirmDetailsItem>
+      )}
+      {fillTxLink && (
+        <ConfirmDetailsItem
+          label={
+            <>
+              <TimelineIconCircleWrapper padding="0" bgColor={'transparent'}>
+                <StyledTimelineReceiptIcon src={ReceiptIcon} />
+              </TimelineIconCircleWrapper>{' '}
+              Destination transaction
+            </>
+          }
+        >
+          <ExternalLink href={fillTxLink}>View on Explorer ↗</ExternalLink>
+        </ConfirmDetailsItem>
+      )}
     </>
   )
 }

@@ -1,12 +1,14 @@
 'use client'
 
-import styled from 'styled-components/macro'
-import { CmsImage, Color, Font, Media } from '@cowprotocol/ui'
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { CowFiCategory } from 'src/common/analytics/types'
+import { CmsImage, UI, Font, Media } from '@cowprotocol/ui'
+
+import Link from 'next/link'
+import styled from 'styled-components/macro'
+
+import { ArrowButton } from '@/components/ArrowButton'
 import { CategoryLinks } from '@/components/CategoryLinks'
 import { SearchBar } from '@/components/SearchBar'
-import { ArrowButton } from '@/components/ArrowButton'
 import {
   Breadcrumbs,
   ContainerCard,
@@ -17,7 +19,8 @@ import {
   LinkItem,
   LinkSection,
 } from '@/styles/styled'
-import Link from 'next/link'
+import { CowFiCategory } from 'src/common/analytics/types'
+
 import { Article } from '../services/cms'
 
 const Wrapper = styled.div`
@@ -71,7 +74,7 @@ const CategoryImage = styled(CmsImage)`
 const CategoryDescription = styled.div`
   font-size: 21px;
   line-height: 1.5;
-  color: ${Color.neutral20};
+  color: var(${UI.COLOR_NEUTRAL_20});
   display: flex;
   flex-flow: column wrap;
   gap: 24px;
@@ -86,7 +89,7 @@ const CategoryDescription = styled.div`
   > i {
     font-size: 16px;
     font-weight: ${Font.weight.bold};
-    color: ${Color.neutral0};
+    color: var(${UI.COLOR_NEUTRAL_0});
     font-style: normal;
   }
 `
@@ -98,7 +101,7 @@ interface TopicPageProps {
   allArticles: Article[]
 }
 
-export function TopicPageComponent({ category, allCategories, articles, allArticles }: TopicPageProps) {
+export function TopicPageComponent({ category, allCategories, articles }: TopicPageProps) {
   const analytics = useCowAnalytics()
 
   return (

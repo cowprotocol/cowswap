@@ -45,8 +45,12 @@ export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsPro
       }
       feeWrapper={
         shouldDisplayBridgeDetails && providerDetails
-          ? (feeElement: ReactNode) => (
-              <BridgeAccordionSummary bridgeEstimatedTime={bridgeEstimatedTime} bridgeProtocol={providerDetails}>
+          ? (feeElement: ReactNode, isOpen: boolean) => (
+              <BridgeAccordionSummary
+                bridgeEstimatedTime={bridgeEstimatedTime}
+                bridgeProtocol={providerDetails}
+                isOpen={isOpen}
+              >
                 {feeElement}
               </BridgeAccordionSummary>
             )

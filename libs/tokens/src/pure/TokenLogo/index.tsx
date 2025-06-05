@@ -11,130 +11,25 @@ import {
 import { getChainInfo } from '@cowprotocol/common-const'
 import { uriToHttp } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Media, UI } from '@cowprotocol/ui'
 import { Currency, NativeCurrency } from '@uniswap/sdk-core'
 
 import { Slash } from 'react-feather'
-import styled, { css } from 'styled-components/macro'
 
 import { SingleLetterLogo } from './SingleLetterLogo'
+import * as Styled from './styled'
 
 import { useNetworkLogo } from '../../hooks/tokens/useNetworkLogo'
 import { useTokensByAddressMap } from '../../hooks/tokens/useTokensByAddressMap'
 import { getTokenLogoUrls } from '../../utils/getTokenLogoUrls'
 
-const BORDER_WIDTH_MIN = 1.5
-const BORDER_WIDTH_MAX = 2.2
+export { TokenLogoWrapper } from './styled'
+
+const BORDER_WIDTH_MIN = 1.8
+const BORDER_WIDTH_MAX = 2.5
 const BORDER_WIDTH_RATIO = 0.15
-const DEFAULT_SIZE = 42
-const DEFAULT_CHAIN_LOGO_SIZE = 16
-
 const invalidUrlsAtom = atom<{ [url: string]: boolean }>({})
-
 const getBorderWidth = (size: number): number =>
   Math.max(BORDER_WIDTH_MIN, Math.min(BORDER_WIDTH_MAX, size * BORDER_WIDTH_RATIO))
-
-export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number }>`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(${UI.COLOR_DARK_IMAGE_PAPER});
-  color: var(${UI.COLOR_DARK_IMAGE_PAPER_TEXT});
-  border-radius: ${({ size = DEFAULT_SIZE }) => size}px;
-  width: ${({ size = DEFAULT_SIZE }) => size}px;
-  height: ${({ size = DEFAULT_SIZE }) => size}px;
-  min-width: ${({ size = DEFAULT_SIZE }) => size}px;
-  min-height: ${({ size = DEFAULT_SIZE }) => size}px;
-  font-size: ${({ size = DEFAULT_SIZE }) => size}px;
-  overflow: revert;
-
-  > img,
-  > svg {
-    width: 100%;
-    height: 100%;
-    border-radius: ${({ size }) => size ?? DEFAULT_SIZE}px;
-    object-fit: contain;
-  }
-
-  ${Media.upToSmall()} {
-    ${({ sizeMobile }) =>
-      sizeMobile
-        ? css`
-            border-radius: ${sizeMobile}px;
-            width: ${sizeMobile}px;
-            height: ${sizeMobile}px;
-            min-width: ${sizeMobile}px;
-            min-height: ${sizeMobile}px;
-            font-size: ${sizeMobile}px;
-
-            > img,
-            > svg {
-              border-radius: ${sizeMobile}px;
-            }
-          `
-        : ''}
-  }
-`
-
-const ChainLogoWrapper = styled.div<{ size?: number }>`
-  ${({ size = DEFAULT_CHAIN_LOGO_SIZE }) => {
-    const borderWidth = getBorderWidth(size)
-    return `
-      width: ${size}px;
-      height: ${size}px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      background: var(${UI.COLOR_DARK_IMAGE_PAPER});
-      border: ${borderWidth}px solid var(${UI.COLOR_PAPER});
-      position: absolute;
-      padding: 0;
-      bottom: -${borderWidth}px;
-      right: -${borderWidth}px;
-    `
-  }}
-
-  > img,
-  > svg {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: contain;
-  }
-`
-
-const LpTokenWrapper = styled.div<{ size?: number }>`
-  width: 100%;
-  height: 100%;
-  position: relative;
-
-  > div {
-    width: 50%;
-    height: 100%;
-    overflow: hidden;
-    position: absolute;
-  }
-
-  > div:last-child {
-    right: -1px;
-  }
-
-  > div:last-child > img,
-  > div:last-child > svg {
-    right: 100%;
-    position: relative;
-  }
-
-  > div > img,
-  > div > svg {
-    width: ${({ size = DEFAULT_SIZE }) => size}px;
-    height: ${({ size = DEFAULT_SIZE }) => size}px;
-    min-width: ${({ size = DEFAULT_SIZE }) => size}px;
-    min-height: ${({ size = DEFAULT_SIZE }) => size}px;
-  }
-`
 
 export interface TokenLogoProps {
   token?: TokenWithLogo | LpToken | Currency | null
@@ -182,20 +77,20 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, no
 
   if (isLpToken) {
     return (
-      <TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
-        <LpTokenWrapper size={size}>
+      <Styled.TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
+        <Styled.LpTokenWrapper size={size}>
           <div>
             <TokenLogo noWrap token={tokensByAddress[token.tokens?.[0]]} size={size} sizeMobile={sizeMobile} />
           </div>
           <div>
             <TokenLogo noWrap token={tokensByAddress[token.tokens?.[1]]} size={size} sizeMobile={sizeMobile} />
           </div>
-        </LpTokenWrapper>
-      </TokenLogoWrapper>
+        </Styled.LpTokenWrapper>
+      </Styled.TokenLogoWrapper>
     )
   }
 
-  const tokenContent = currentUrl ? (
+  const actualTokenContent = currentUrl ? (
     <img
       alt={`${token?.symbol || ''} ${token?.name ? `(${token?.name})` : ''} token logo`}
       src={currentUrl}
@@ -207,19 +102,36 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, no
     <Slash />
   )
 
-  if (noWrap) return tokenContent
+  if (noWrap) return actualTokenContent
 
   const chainInfo: BaseChainInfo | undefined = getChainInfo(token?.chainId as SupportedChainId)
   const chainName = chainInfo?.label || ''
 
+  // This is the size of the chain logo
+  // 2.2 is the ratio of smaller chain logo size vs bigger token logo (makes chain logo ~45% of token logo size)
+  const chainLogoSizeForCalc = size / 2.2
+  // This is the thickness of the cutout around the chain logo
+  const cutThicknessForCalc = getBorderWidth(chainLogoSizeForCalc)
+
   return (
-    <TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
-      {tokenContent}
-      {logoUrl && (
-        <ChainLogoWrapper size={size / 1.85}>
-          <img src={logoUrl} alt={`${chainName} network logo`} />
-        </ChainLogoWrapper>
+    <Styled.TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
+      {logoUrl ? (
+        <Styled.ClippedTokenContentWrapper
+          parentSize={size}
+          chainLogoSize={chainLogoSizeForCalc}
+          cutThickness={cutThicknessForCalc}
+          hasImage={!!currentUrl}
+        >
+          {actualTokenContent}
+        </Styled.ClippedTokenContentWrapper>
+      ) : (
+        actualTokenContent
       )}
-    </TokenLogoWrapper>
+      {logoUrl && (
+        <Styled.ChainLogoWrapper size={chainLogoSizeForCalc}>
+          <img src={logoUrl} alt={`${chainName} network logo`} />
+        </Styled.ChainLogoWrapper>
+      )}
+    </Styled.TokenLogoWrapper>
   )
 }

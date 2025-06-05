@@ -31,7 +31,7 @@ export function GlobalContent({ context, children, arrowBackgroundRef, comparedP
         />
         <span>{title}</span>
       </styledEl.Title>
-      <styledEl.Card bgColor={`var(${UI.COLOR_COWAMM_BLUE})`} color={`var(${UI.COLOR_COWAMM_DARK_BLUE})`}>
+      <styledEl.Card bgColor={`var(${UI.COLOR_COWAMM_BLUE})`} color={`var(${UI.COLOR_BLUE_900_PRIMARY})`}>
         <StarIcon size={36} right={80} top={-17} />
         {children}
         <StarIcon size={26} right={20} bottom={-10} />
