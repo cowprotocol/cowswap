@@ -50,10 +50,7 @@ function getShouldSkipBff(currency: Token): boolean {
  * Fetches USD price for a given currency from BFF, Defillama, or CowProtocol
  * Tries sources in that order
  */
-export function fetchCurrencyUsdPrice(
-  currency: Token,
-  getUsdcPrice: () => Promise<Fraction | null>,
-): Promise<Fraction | null> {
+export async function fetchCurrencyUsdPrice(currency: Token): Promise<Fraction | null> {
   const shouldSkipBff = getShouldSkipBff(currency)
   const shouldSkipDefillama = getShouldSkipDefillama(currency)
 
@@ -62,7 +59,7 @@ export function fetchCurrencyUsdPrice(
   }
 
   function getCowPrice(currency: Token): Promise<Fraction | null> {
-    return getCowProtocolUsdPrice(currency, getUsdcPrice).catch((error) => {
+    return getCowProtocolUsdPrice(currency).catch((error) => {
       console.error('Cannot fetch USD price', { error })
       return Promise.reject(error)
     })
@@ -82,8 +79,13 @@ export function fetchCurrencyUsdPrice(
     )
   }
 
-  // If all other sources are skipped, use CoW as last resort
-  return getCowPrice(currency)
+  // CowProtocolUsdPrice is only available for supported chains
+  if (currency.chainId in SupportedChainId) {
+    // If all other sources are skipped, use CoW as last resort
+    return getCowPrice(currency)
+  }
+
+  return null
 }
 
 function handleErrorFactory(

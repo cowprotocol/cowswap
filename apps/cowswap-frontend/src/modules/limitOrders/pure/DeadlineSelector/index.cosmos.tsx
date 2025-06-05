@@ -3,7 +3,7 @@ import { defaultLimitOrderDeadline } from 'modules/limitOrders/pure/DeadlineSele
 import { DeadlineSelector } from './index'
 
 const Fixtures = {
-  default: (
+  default: () => (
     <DeadlineSelector
       deadline={defaultLimitOrderDeadline}
       customDeadline={null}

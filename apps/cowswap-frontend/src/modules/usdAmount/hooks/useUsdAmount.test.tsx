@@ -10,6 +10,7 @@ import { JotaiTestProvider } from 'test-utils'
 import { useUsdAmount } from './useUsdAmount'
 
 import { usdRawPricesAtom, UsdRawPriceState } from '../state/usdRawPricesAtom'
+import { getUsdPriceStateKey } from '../utils/usdPriceStateKey'
 
 const WETH_RAW_PRICE_STATE: UsdRawPriceState = {
   updatedAt: Date.now(),
@@ -20,7 +21,7 @@ const WETH_RAW_PRICE_STATE: UsdRawPriceState = {
 
 function getWrapper() {
   const store = createStore()
-  const initialValues = [[usdRawPricesAtom, { [WETH_GNOSIS_CHAIN.address.toLowerCase()]: WETH_RAW_PRICE_STATE }]]
+  const initialValues = [[usdRawPricesAtom, { [getUsdPriceStateKey(WETH_GNOSIS_CHAIN)]: WETH_RAW_PRICE_STATE }]]
 
   return {
     store,

@@ -57,7 +57,7 @@ const tradeContext: TradeFlowContext = {
 }
 
 const Fixtures = {
-  default: (
+  default: () => (
     <LimitOrdersDetails
       rateInfoParams={rateInfoParams}
       settingsState={defaultLimitOrdersSettings}

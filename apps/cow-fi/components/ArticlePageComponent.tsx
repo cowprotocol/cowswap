@@ -1,9 +1,16 @@
 'use client'
 
-import { Article, SharedRichTextComponent } from '../services/cms'
-import { stripHtmlTags } from '@/util/stripHTMLTags'
-import useWebShare from '../hooks/useWebShare'
+import { useMemo } from 'react'
+
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CmsImage, Color, Media } from '@cowprotocol/ui'
+
+import ReactMarkdown from 'react-markdown'
+import rehypeRaw from 'rehype-raw'
+import styled from 'styled-components/macro'
+
 import { CategoryLinks } from '@/components/CategoryLinks'
+import { Link, LinkType } from '@/components/Link'
 import { SearchBar } from '@/components/SearchBar'
 import {
   ArticleCard,
@@ -24,32 +31,22 @@ import {
   SectionTitleDescription,
   StickyMenu,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
-import { Link, LinkType } from '@/components/Link'
-import { CmsImage, Color, Media } from '@cowprotocol/ui'
-import styled from 'styled-components/macro'
 import { formatDate } from '@/util/formatDate'
+import { stripHtmlTags } from '@/util/stripHTMLTags'
+import { CowFiCategory } from 'src/common/analytics/types'
+
 import { useLazyLoadImages } from '../hooks/useLazyLoadImages'
-import { useMemo } from 'react'
-import ReactMarkdown from 'react-markdown'
-import rehypeRaw from 'rehype-raw'
-import { useCowAnalytics } from '@cowprotocol/analytics'
+import useWebShare from '../hooks/useWebShare'
+import { Article, SharedRichTextComponent } from '../services/cms'
 
 interface ArticlePageProps {
   article: Article
-  articles: Article[]
   randomArticles: Article[]
   featuredArticles: Article[]
   allCategories: { name: string; slug: string }[]
 }
 
-export function ArticlePageComponent({
-  articles,
-  article,
-  randomArticles,
-  featuredArticles,
-  allCategories,
-}: ArticlePageProps) {
+export function ArticlePageComponent({ article, randomArticles, featuredArticles, allCategories }: ArticlePageProps) {
   const attributes: {
     title?: string
     description?: string
@@ -183,7 +180,7 @@ export function ArticlePageComponent({
 
                 return (
                   <li key={article.id}>
-                    <Link
+                    <a
                       href={`/learn/${article.attributes?.slug}`}
                       onClick={() =>
                         analytics.sendEvent({
@@ -194,7 +191,7 @@ export function ArticlePageComponent({
                       }
                     >
                       {articleTitle}
-                    </Link>
+                    </a>
                   </li>
                 )
               })}
@@ -322,7 +319,8 @@ function ArticleSharedRichTextComponent({ sharedRichText }: { sharedRichText: Sh
           return <LazyImage src={src} alt={alt || ''} {...props} width={725} height={400} />
         },
       }}
-      children={processedContent}
-    />
+    >
+      {processedContent}
+    </ReactMarkdown>
   )
 }

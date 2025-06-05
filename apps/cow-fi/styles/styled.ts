@@ -1,8 +1,9 @@
-import styled, { css } from 'styled-components/macro'
 import { Font, Color, Media } from '@cowprotocol/ui'
+
 import { transparentize } from 'color2k'
+import styled, { css } from 'styled-components/macro'
+
 import { PAGE_MAX_WIDTH } from '@/components/Layout/const'
-import Link from 'next/link'
 
 export const PageWrapper = styled.div<{ margin?: string }>`
   display: flex;
@@ -133,13 +134,19 @@ export const ArticleList = styled.div<{ columns?: number; columnsTablet?: number
   }
 `
 
-export const ArticleCard = styled(Link)`
+export const ArticleCard = styled.a`
   display: flex;
   flex-direction: column;
-  padding: 0;
+  padding: 1.2rem;
   border-radius: 2rem;
   width: 100%;
   text-decoration: none;
+  background: transparent;
+  transition: background 0.2s ease-in-out;
+
+  &:hover {
+    background: ${Color.neutral98};
+  }
 `
 
 export const ArticleImage = styled.div<{ color?: string }>`
@@ -1889,4 +1896,61 @@ export const ColorTableCell = styled.td`
     background: var(--green);
     color: var(--neutral);
   }
+`
+
+export const DisclaimerGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.2rem;
+  margin: 2.4rem 0 0;
+  text-align: left;
+  width: 100%;
+  padding: 2.4rem;
+  background-color: ${Color.neutral98};
+  border-radius: 1.6rem;
+  border-left: 0.6rem solid ${Color.cowfi_orange_bright};
+
+  ${Media.upToMedium()} {
+    grid-template-columns: 1fr;
+    gap: 2.4rem;
+    padding: 2rem;
+  }
+`
+
+export const DisclaimerColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+export const DisclaimerList = styled.ul`
+  margin: 0.8rem 0 0 1.6rem;
+  padding: 0 0 0 0.4rem;
+  font-size: 1.6rem;
+  line-height: 1.5;
+  color: ${Color.neutral30};
+
+  ${Media.upToMedium()} {
+    font-size: 1.5rem;
+  }
+
+  a {
+    color: ${Color.neutral10};
+    text-decoration: underline;
+    transition: color 0.2s ease-in-out;
+
+    &:hover {
+      color: ${Color.neutral30};
+    }
+  }
+`
+
+export const DisclaimerHighlight = styled.div`
+  margin: 2.4rem 0 0;
+  padding: 1.6rem;
+  background-color: ${Color.neutral90};
+  border-radius: 0.8rem;
+`
+
+export const DisclaimerSection = styled.div`
+  margin: 2.4rem 0 0;
 `

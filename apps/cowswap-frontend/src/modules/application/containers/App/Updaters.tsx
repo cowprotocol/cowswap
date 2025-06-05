@@ -10,14 +10,15 @@ import {
 } from '@cowprotocol/tokens'
 import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
+import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
-import { useBridgeSupportedNetworks } from 'modules/bridge'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances/updater/BalancesCombinedUpdater'
 import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
 import { FinalizeTxUpdater } from 'modules/onchainTransactions'
+import { ProgressBarExecutingOrdersUpdater } from 'modules/orderProgressBar'
 import { OrdersNotificationsUpdater } from 'modules/orders'
 import { useOnTokenListAddingError, useSourceChainId } from 'modules/tokensList'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
@@ -26,7 +27,6 @@ import { CorrelatedTokensUpdater } from 'modules/volumeFee'
 import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield/shared'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
-import { ProgressBarExecutingOrdersUpdater } from 'common/hooks/orderProgressBar'
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { AnnouncementsUpdater } from 'common/updaters/AnnouncementsUpdater'
 import { FeatureFlagsUpdater } from 'common/updaters/FeatureFlagsUpdater'
@@ -91,7 +91,9 @@ export function Updaters() {
         isYieldEnabled={isYieldEnabled}
         bridgeNetworkInfo={bridgeNetworkInfo?.data}
       />
+
       <TokensListsTagsUpdater />
+
       <WidgetTokensListsUpdater
         tokenLists={tokenLists}
         customTokens={customTokens}
@@ -112,6 +114,7 @@ export function Updaters() {
           })
         }}
       />
+
       <UnsupportedTokensUpdater />
       <BalancesAndAllowancesUpdater chainId={sourceChainId} account={account} />
       <LpBalancesAndAllowancesUpdater chainId={sourceChainId} account={account} enablePolling={isYieldWidget} />

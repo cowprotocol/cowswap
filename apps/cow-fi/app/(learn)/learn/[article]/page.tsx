@@ -92,10 +92,6 @@ export default async function ArticlePage({ params }: Props) {
       return notFound()
     }
 
-    // Get related articles
-    const articlesResponse = await getArticles()
-    const articles = articlesResponse.data
-
     // Fetch featured articles
     const featuredArticlesResponse = await getArticles({
       filters: {
@@ -107,7 +103,9 @@ export default async function ArticlePage({ params }: Props) {
     })
     const featuredArticles = featuredArticlesResponse.data
 
-    const randomArticles = getRandomArticles(articles, 3)
+    // Get articles for random selection
+    const allArticlesResponse = await getArticles()
+    const randomArticles = getRandomArticles(allArticlesResponse.data, 3)
     const categoriesResponse = await getCategories()
     const allCategories =
       categoriesResponse?.map((category: any) => ({
@@ -118,7 +116,6 @@ export default async function ArticlePage({ params }: Props) {
     return (
       <ArticlePageComponent
         article={article}
-        articles={articles}
         randomArticles={randomArticles}
         featuredArticles={featuredArticles}
         allCategories={allCategories}

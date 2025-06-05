@@ -5,7 +5,6 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 import { TradeQuoteUpdater } from 'modules/tradeQuote'
-import { SmartSlippageUpdater } from 'modules/tradeSlippage'
 
 import { usePriorityTokenAddresses } from '../../hooks/usePriorityTokenAddresses'
 import { useResetRecipient } from '../../hooks/useResetRecipient'
@@ -41,11 +40,12 @@ export function TradeWidgetUpdaters({
       <PriorityTokensUpdater account={account} chainId={chainId} tokenAddresses={priorityTokenAddresses} />
       <RecipientAddressUpdater />
 
-      {!disableQuotePolling && <TradeQuoteUpdater isConfirmOpen={isConfirmOpen} />}
+      {!disableQuotePolling && (
+        <TradeQuoteUpdater isConfirmOpen={isConfirmOpen} enableSmartSlippage={enableSmartSlippage} />
+      )}
       <PriceImpactUpdater />
       <TradeFormValidationUpdater />
       <CommonTradeUpdater />
-      {enableSmartSlippage && <SmartSlippageUpdater />}
       {disableNativeSelling && <DisableNativeTokenSellingUpdater />}
       {children}
     </>

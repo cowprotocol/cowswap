@@ -1,52 +1,90 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BridgeProviderInfo, BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
+
+import { ReceiveAmountInfo } from '../trade'
+
+import type { SolverCompetition } from '../orderProgressBar'
 
 /**
- * Configuration for a bridge protocol
+ * Possible statuses for bridge/swap stops
  */
-export interface BridgeProtocolConfig {
-  icon: string
-  title: string
-  url: string
-  description: string
+export enum SwapAndBridgeStatus {
+  DEFAULT = 'default',
+  DONE = 'done',
+  PENDING = 'pending',
+  FAILED = 'failed',
+  REFUND_COMPLETE = 'refund_complete',
 }
 
-/**
- * Enum for bridge fee types
- */
-export enum BridgeFeeType {
-  FREE = 'FREE',
-}
+export interface QuoteSwapContext {
+  chainName: string
+  receiveAmountInfo: ReceiveAmountInfo
 
-/**
- * Interface for bridge data structure
- */
-export interface BridgeData {
-  // Swap details
-  sellAmount: string
-  sellToken: string
-  sellTokenAddress: string
-  buyAmount: string
-  buyToken: string
-  buyTokenAddress: string
-  networkCost: string
-  networkCostUsd: string
-  swapMinReceive: string
-  swapExpectedToReceive: string
-  swapMaxSlippage: string
+  sellAmount: CurrencyAmount<Currency>
+  buyAmount: CurrencyAmount<Currency>
 
-  // Bridge details
-  bridgeAmount: string
-  bridgeToken: string
-  bridgeTokenAddress: string
-  bridgeTokenReceiveAddress: string
-  bridgeReceiveAmount: string
-  bridgeFee: string | BridgeFeeType
-  maxBridgeSlippage: string
-  estimatedTime: number
+  slippage: Percent
   recipient: string
-  recipientChainId: SupportedChainId
-  sourceChainId: SupportedChainId
 
-  // Bridge provider info
-  bridgeProvider: BridgeProtocolConfig
+  minReceiveAmount: CurrencyAmount<Currency>
+  minReceiveUsdValue: CurrencyAmount<Token> | null
+  expectedReceiveUsdValue: CurrencyAmount<Token> | null
+}
+
+export interface QuoteBridgeContext {
+  chainName: string
+
+  bridgeFee: CurrencyAmount<Currency> | null
+  estimatedTime: number | null
+  recipient: string
+
+  sellAmount: CurrencyAmount<Currency>
+  buyAmount: CurrencyAmount<Currency>
+  buyAmountUsd: CurrencyAmount<Token> | null
+}
+
+export interface SwapAndBridgeOverview<Amount = CurrencyAmount<Currency>> {
+  sourceChainName: string
+  targetChainName: string
+  targetCurrency: Token
+
+  sourceAmounts: {
+    sellAmount: Amount
+    buyAmount: Amount
+  }
+
+  targetAmounts?: {
+    sellAmount: Amount
+    buyAmount: Amount
+  }
+}
+
+export interface BridgingProgressContext {
+  account: string
+  sourceChainId: SupportedChainId
+  destinationChainId: number
+
+  isFailed?: boolean
+  isRefunded?: boolean
+
+  receivedAmount?: CurrencyAmount<Currency>
+  receivedAmountUsd?: CurrencyAmount<Token> | null
+}
+
+export interface SwapResultContext {
+  winningSolver: SolverCompetition
+  receivedAmount: CurrencyAmount<Currency>
+  receivedAmountUsd: CurrencyAmount<Token> | null
+  surplusAmount: CurrencyAmount<Currency>
+  surplusAmountUsd: CurrencyAmount<Token> | null
+}
+
+export interface SwapAndBridgeContext {
+  bridgingStatus: SwapAndBridgeStatus
+  bridgeProvider: BridgeProviderInfo
+  swapResultContext: SwapResultContext
+  overview: SwapAndBridgeOverview
+  quoteBridgeContext?: QuoteBridgeContext
+  bridgingProgressContext?: BridgingProgressContext
+  statusResult?: BridgeStatusResult
 }

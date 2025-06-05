@@ -7,6 +7,8 @@ const COW_AMM_CHAINS = {
   [SupportedChainId.ARBITRUM_ONE]: 'arbitrum',
   [SupportedChainId.BASE]: 'base',
   [SupportedChainId.SEPOLIA]: '',
+  [SupportedChainId.POLYGON]: 'polygon',
+  [SupportedChainId.AVALANCHE]: 'avalanche',
 }
 
 const UNI_CHAINS = {
@@ -15,6 +17,8 @@ const UNI_CHAINS = {
   [SupportedChainId.ARBITRUM_ONE]: 'arbitrum',
   [SupportedChainId.BASE]: 'base',
   [SupportedChainId.SEPOLIA]: '',
+  [SupportedChainId.POLYGON]: 'polygon',
+  [SupportedChainId.AVALANCHE]: 'avalanche',
 }
 
 const SUSHI_CHAINS = {
@@ -23,6 +27,8 @@ const SUSHI_CHAINS = {
   [SupportedChainId.ARBITRUM_ONE]: 'arbitrum',
   [SupportedChainId.BASE]: 'base',
   [SupportedChainId.SEPOLIA]: '',
+  [SupportedChainId.POLYGON]: 'polygon',
+  [SupportedChainId.AVALANCHE]: 'avalanche',
 }
 
 const PANCAKE_CHAINS = {
@@ -31,6 +37,8 @@ const PANCAKE_CHAINS = {
   [SupportedChainId.ARBITRUM_ONE]: 'arb',
   [SupportedChainId.BASE]: 'base',
   [SupportedChainId.SEPOLIA]: '',
+  [SupportedChainId.POLYGON]: 'polygon',
+  [SupportedChainId.AVALANCHE]: 'avalanche',
 }
 
 export const LP_PAGE_LINKS: Record<LpTokenProvider, (chainId: SupportedChainId, address: string) => string> = {

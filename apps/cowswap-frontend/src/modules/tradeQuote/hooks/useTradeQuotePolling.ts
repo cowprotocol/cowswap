@@ -25,7 +25,7 @@ import { quoteUsingSameParameters } from '../utils/quoteUsingSameParameters'
 export const PRICE_UPDATE_INTERVAL = ms`30s`
 const QUOTE_EXPIRATION_CHECK_INTERVAL = ms`2s`
 
-export function useTradeQuotePolling(isConfirmOpen = false) {
+export function useTradeQuotePolling(isConfirmOpen = false, enableSmartSlippage = false) {
   const { amount, fastQuote, partiallyFillable } = useAtomValue(tradeQuoteInputAtom)
   const tradeQuote = useTradeQuote()
   const tradeQuoteRef = useRef(tradeQuote)
@@ -35,7 +35,10 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
   const { chainId } = useWalletInfo()
   const { quoteParams, appData, inputCurrency } = useQuoteParams(amountStr, partiallyFillable) || {}
 
-  const tradeQuoteManager = useTradeQuoteManager(inputCurrency && getCurrencyAddress(inputCurrency))
+  const tradeQuoteManager = useTradeQuoteManager(
+    inputCurrency && getCurrencyAddress(inputCurrency),
+    enableSmartSlippage,
+  )
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const getIsUnsupportedTokens = useAreUnsupportedTokens()
   const processUnsupportedTokenError = useProcessUnsupportedTokenError()
@@ -80,13 +83,32 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
       const hasCachedResponse = !!currentQuote.quote
       const hasCachedError = !!currentQuote.error
 
+      const currentQuoteAppDataDoc = {
+        ...currentQuoteAppData?.doc,
+        version: currentQuoteAppData?.doc?.version || '1.4.0',
+        metadata: {
+          ...currentQuoteAppData?.doc?.metadata,
+          partnerFee: currentQuoteAppData?.doc?.metadata?.partnerFee
+            ? [
+                {
+                  priceImprovementBps: 0,
+                  maxVolumeBps: 0,
+                  recipient: Array.isArray(currentQuoteAppData?.doc?.metadata?.partnerFee)
+                    ? currentQuoteAppData?.doc?.metadata?.partnerFee[0]?.recipient || ''
+                    : currentQuoteAppData?.doc?.metadata?.partnerFee.recipient || '',
+                },
+              ]
+            : undefined,
+        },
+      }
+
       if (!forceUpdate) {
         // Don't fetch quote if the parameters are the same
         // Also avoid quote refresh when only appData.quote (contains slippage) is changed
         // Important! We should skip quote updateing only if there is no quote response
         if (
           (hasCachedResponse || hasCachedError) &&
-          quoteUsingSameParameters(chainId, currentQuote, quoteParams, currentQuoteAppData?.doc, appData)
+          quoteUsingSameParameters(chainId, currentQuote, quoteParams, currentQuoteAppDataDoc, appData)
         ) {
           return
         }

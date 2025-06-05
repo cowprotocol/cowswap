@@ -27,17 +27,16 @@ export async function GET(request: NextRequest) {
     // Always revalidate the main learn page to ensure it's fresh
     revalidatePath('/learn')
 
+    // Revalidate the dynamic article route (this updates the manifest)
+    revalidatePath('/learn/[article]')
+
     // If a specific path was provided, revalidate it to update the route manifest
     if (path) {
-      // Ensure path has the proper format
+      // Ensure the incoming path starts with a slash
       const formattedPath = path.startsWith('/') ? path : `/${path}`
 
-      // For article paths, ensure they're in the correct format
-      if (formattedPath.includes('learn/') && !formattedPath.startsWith('/learn/')) {
-        revalidatePath(`/learn/${formattedPath.split('learn/')[1]}`)
-      } else {
-        revalidatePath(formattedPath)
-      }
+      // Revalidate the specific article page (e.g. /learn/my-new-article)
+      revalidatePath(formattedPath)
     }
 
     return NextResponse.json({

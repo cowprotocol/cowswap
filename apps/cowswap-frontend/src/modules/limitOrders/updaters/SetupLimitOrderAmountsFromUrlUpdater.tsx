@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai/index'
+import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'

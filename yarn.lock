@@ -1808,10 +1808,10 @@
   resolved "https://registry.yarnpkg.com/@corex/deepmerge/-/deepmerge-4.0.43.tgz#9bd42559ebb41cc5a7fb7cfeea5f231c20977dca"
   integrity sha512-N8uEMrMPL0cu/bdboEWpQYb/0i2K5Qn8eCsxzOmxSggJbbQte7ljMRoXm917AbntqTGOzdTu+vP3KOOzoC70HQ==
 
-"@cowprotocol/app-data@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-3.0.0.tgz#e5e7676ee8884c5348553883d0e65562c2f09e66"
-  integrity sha512-EyNoyoq3VnVIzvylLdn4Q1r0tU7HOikkjXzYY9PXJ/DUfj9gka7lOyNK7Ot8En2eUYTl3DNAle9RP7kt2sEpeg==
+"@cowprotocol/app-data@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-3.1.0.tgz#2ba5ec7d958b2510f17b08c7e18e05157032c4da"
+  integrity sha512-hdIWp6fGz/vx3gdoJgwd8Dx8rYAblpZEBiXss5mNzgF/LBb21VVhF075sDl9oxyesKuJayKjgiAgaFiZYVgblA==
   dependencies:
     ajv "^8.11.0"
     cross-fetch "^3.1.5"
@@ -1831,23 +1831,29 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/contracts/-/contracts-1.7.0.tgz#a3b93bebfe768b4911de54841b9d7b39b8bd0b99"
   integrity sha512-tog/0igLaWZv6kK30+aFJ267+yNyMINx6qDHaJQFKZs051XUXnzNFlZgCEfICwDz/821XYjZxOnNbe449tgD5w==
 
+"@cowprotocol/contracts@^1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/contracts/-/contracts-1.8.0.tgz#daffbd9846231c11a74b15a186bb754627e420b0"
+  integrity sha512-rMEHo1UBB6k4kRoWejHZNGggg6IBVt7vAd8x0FhEvjxhbq3zlAex61f9HpAcDExJNuvfwwDjsOc/7UGztCzhSw==
+
 "@cowprotocol/cow-runner-game@^0.2.9":
   version "0.2.9"
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@^6.0.0-RC.36":
-  version "6.0.0-RC.36"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-6.0.0-RC.36.tgz#be454c14a8980bf72db978240ec4368dc772d1e3"
-  integrity sha512-ckgY0kHQFQLaFgv7ArW/34rVAQ5DJDZDJ6iny8wmlj1exo5DoOGfTMwO7bFzYAi6CB4NN3B8lVuG6f3v1/nbRg==
+"@cowprotocol/cow-sdk@6.0.0-RC.58":
+  version "6.0.0-RC.58"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-6.0.0-RC.58.tgz#a7582ac3de2d5ea6e85bc98bee665c33c73a7441"
+  integrity sha512-AhxVVPGKuHrL2/U5hOc4fLRpv8GjQINWcaCr8NySAptjRaEO/4yjDByT53dSrP9dex2/PKy+lAHMb279zIVLWg==
   dependencies:
-    "@cowprotocol/app-data" "^3.0.0"
-    "@cowprotocol/contracts" "^1.7.0"
+    "@cowprotocol/app-data" "^3.1.0"
+    "@cowprotocol/contracts" "^1.8.0"
     "@ethersproject/abstract-signer" "^5.8.0"
     "@openzeppelin/merkle-tree" "^1.0.8"
     "@weiroll/weiroll.js" "^0.3.0"
     cross-fetch "^3.2.0"
     deepmerge "^4.3.1"
+    ethers "^5.8.0"
     exponential-backoff "^3.1.2"
     graphql "^16.11.0"
     graphql-request "^4.3.0"
@@ -19020,6 +19026,11 @@ image-size@~0.5.0:
   resolved "https://registry.yarnpkg.com/image-size/-/image-size-0.5.5.tgz#09dfd4ab9d20e29eb1c3e80b8990378df9e3cb9c"
   integrity sha512-6TDAlDPZxUFCv+fuOkIoXT/V/f3Qbq8e37p+YOiYrUv3v9cc3/6x78VdfPgFVaB9dZYeLUfKgHRebpkm/oP2VQ==
 
+immediate@~3.0.5:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
+  integrity sha512-XXOFtyqDjNDAQxVfYxuF7g9Il/IbWmmlQg2MYKOH8ExIT1qg6xc4zyS3HaEEATgs1btfzxq15ciUiY7gjSXRGQ==
+
 immer@^10.0.2:
   version "10.0.2"
   resolved "https://registry.yarnpkg.com/immer/-/immer-10.0.2.tgz#11636c5b77acf529e059582d76faf338beb56141"
@@ -22001,6 +22012,13 @@ license-webpack-plugin@^4.0.2:
   dependencies:
     webpack-sources "^3.0.0"
 
+lie@3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/lie/-/lie-3.1.1.tgz#9a436b2cc7746ca59de7a41fa469b3efb76bd87e"
+  integrity sha512-RiNhHysUjhrDQntfYSfY4MU24coXXdEOgw9WGcKHNeEwffDYbF//u87M1EWaMGzuFoSbqW0C9C6lEEhDOAswfw==
+  dependencies:
+    immediate "~3.0.5"
+
 lightweight-charts@^3.3.0:
   version "3.8.0"
   resolved "https://registry.yarnpkg.com/lightweight-charts/-/lightweight-charts-3.8.0.tgz#8c41ad7c1c083f18621f11ece7fc1096e131a0d3"
@@ -22183,6 +22201,13 @@ local-pkg@^1.0.0:
     mlly "^1.7.4"
     pkg-types "^2.0.1"
     quansync "^0.2.8"
+
+localforage@^1.10.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/localforage/-/localforage-1.10.0.tgz#5c465dc5f62b2807c3a84c0c6a1b1b3212781dd4"
+  integrity sha512-14/H1aX7hzBBmmh7sGPd+AOMkkIrHM3Z1PAyGgZigA1H1p5O5ANnMyWzvpAETtG68/dC4pC0ncy3+PPGzXZHPg==
+  dependencies:
+    lie "3.1.1"
 
 locate-path@^2.0.0:
   version "2.0.0"

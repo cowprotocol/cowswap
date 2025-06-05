@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.108.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.108.0...cowswap-v1.108.1) (2025-05-29)
+
+
+### Bug Fixes
+
+* **twap:** use indexedDB to persist state ([#5771](https://github.com/cowprotocol/cowswap/issues/5771)) ([bf410ec](https://github.com/cowprotocol/cowswap/commit/bf410ecc1d27d0d9eadd835c1b74141c6cee4341))
+
+## [1.108.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.107.1...cowswap-v1.108.0) (2025-05-28)
+
+
+### Features
+
+* **appzi:** disable appzi for Coinbase Wallet ([#5671](https://github.com/cowprotocol/cowswap/issues/5671)) ([381e4b1](https://github.com/cowprotocol/cowswap/commit/381e4b1e8a7b1eec9b99d9d21841c647d66a7420))
+
+## [1.107.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.107.0...cowswap-v1.107.1) (2025-05-22)
+
+
+### Bug Fixes
+
+* update tokens lib ([#5746](https://github.com/cowprotocol/cowswap/issues/5746)) ([10c59fe](https://github.com/cowprotocol/cowswap/commit/10c59fe86ce3a497078e0c1091db0d87fc3493f9))
+
+## [1.107.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.7...cowswap-v1.107.0) (2025-05-21)
+
+
+### Features
+
+* update tokens lib ([#5738](https://github.com/cowprotocol/cowswap/issues/5738)) ([2939365](https://github.com/cowprotocol/cowswap/commit/29393656301e33b3e38ee78001e18f7627321ea3))
+
 ## [1.106.7](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.106.6...cowswap-v1.106.7) (2025-05-19)
 
 

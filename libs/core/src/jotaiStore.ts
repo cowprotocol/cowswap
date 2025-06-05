@@ -1,7 +1,14 @@
-import { createJSONStorage } from 'jotai/utils'
+import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 import { createStore } from 'jotai/vanilla'
 
+import { AsyncStringStorage } from 'jotai/vanilla/utils/atomWithStorage'
+import { createInstance } from 'localforage'
+
 export const jotaiStore = createStore()
+
+const localForageJotai = createInstance({
+  name: 'cowswap_jotai',
+})
 
 /**
  * atomWithStorage() has build-in feature to persist state between all tabs
@@ -41,4 +48,25 @@ export function getJotaiMergerStorage<T>() {
   }
 
   return { ...storage, getItem }
+}
+
+export function atomWithIdbStorage<Value>(key: string, initialValue: Value) {
+  const storage: AsyncStringStorage = {
+    async getItem(key: string): Promise<string | null> {
+      return localForageJotai.getItem(key).then((result) => result as string | null)
+    },
+    async setItem(key: string, newValue: string): Promise<void> {
+      await localForageJotai.setItem(key, newValue)
+    },
+    async removeItem(key: string): Promise<void> {
+      await localForageJotai.removeItem(key)
+    },
+  }
+
+  return atomWithStorage<Value>(
+    key,
+    initialValue,
+    createJSONStorage(() => storage),
+    { unstable_getOnInit: true },
+  )
 }

@@ -24,7 +24,7 @@ function buildRateInfoParams(
   inputToken: Token,
   outputToken: Token,
   inputAmount: number,
-  outputAmount: number
+  outputAmount: number,
 ): RateInfoParams {
   const inputCurrencyAmount = CurrencyAmount.fromRawAmount(inputToken, inputAmount * 10 ** inputToken.decimals)
   const outputCurrencyAmount = CurrencyAmount.fromRawAmount(outputToken, outputAmount * 10 ** outputToken.decimals)
@@ -101,8 +101,8 @@ function SmartQuoteSelection() {
 }
 
 const Fixtures = {
-  default: <RateInfo rateInfoParams={rateInfoParams} />,
-  SmartQuoteSelection: <SmartQuoteSelection />,
+  default: () => <RateInfo rateInfoParams={rateInfoParams} />,
+  SmartQuoteSelection: () => <SmartQuoteSelection />,
 }
 
 export default Fixtures

@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.22.7](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.6...cow-fi-v1.22.7) (2025-05-29)
+
+
+### Bug Fixes
+
+* **cowfi:** link featured articles with href ([#5765](https://github.com/cowprotocol/cowswap/issues/5765)) ([12794dc](https://github.com/cowprotocol/cowswap/commit/12794dcbe0df0e7f25d5da25fc446e2eee6f95bd))
+
+## [1.22.6](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.5...cow-fi-v1.22.6) (2025-05-28)
+
+
+### Bug Fixes
+
+* **cowfi:** simplify revalidation paths in route.ts ([#5736](https://github.com/cowprotocol/cowswap/issues/5736)) ([fc7e4b5](https://github.com/cowprotocol/cowswap/commit/fc7e4b5c5e8822612e579f11b8ee3af78dc2904c))
+* **cowfi:** update comment and simplify revalidation logic in route.ts ([#5753](https://github.com/cowprotocol/cowswap/issues/5753)) ([68a0fe8](https://github.com/cowprotocol/cowswap/commit/68a0fe85ae5c25286541cfda9ae83d9eaeb81500))
+
+## [1.22.5](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.4...cow-fi-v1.22.5) (2025-05-20)
+
+
+### Bug Fixes
+
+* **cowfi:** update revalidation paths for article layout ([#5717](https://github.com/cowprotocol/cowswap/issues/5717)) ([c5e7d9e](https://github.com/cowprotocol/cowswap/commit/c5e7d9eea81062429ce7932cd594a1aae9c03cff))
+
 ## [1.22.4](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.3...cow-fi-v1.22.4) (2025-05-16)
 
 

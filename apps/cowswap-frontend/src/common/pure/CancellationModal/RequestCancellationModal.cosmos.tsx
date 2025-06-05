@@ -18,8 +18,8 @@ const props: Omit<RequestCancellationModalProps, 'defaultType'> = {
 }
 
 const Fixtures = {
-  offChain: <RequestCancellationModal {...props} defaultType="offChain" />,
-  onChain: <RequestCancellationModal {...props} defaultType="onChain" />,
+  offChain: () => <RequestCancellationModal {...props} defaultType="offChain" />,
+  onChain: () => <RequestCancellationModal {...props} defaultType="onChain" />,
 }
 
 export default Fixtures

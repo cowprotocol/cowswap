@@ -5,9 +5,9 @@ import { tryParseFractionalAmount } from '@cowprotocol/common-utils'
 import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { useBridgeSupportedTokens } from 'entities/bridgeProvider'
 import { Nullish } from 'types'
 
-import { useBridgeSupportedTokens } from 'modules/bridge'
 import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
 import { ExtendedTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useTradeUsdAmounts } from 'modules/usdAmount'

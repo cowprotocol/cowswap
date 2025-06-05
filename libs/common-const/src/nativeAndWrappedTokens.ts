@@ -8,6 +8,8 @@ export const NATIVE_CURRENCY_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEE
 const DEFAULT_NATIVE_DECIMALS = 18
 const WETH9_MAINNET_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
 const ETH_LOGO_URL = cowprotocolTokenLogoUrl(WETH9_MAINNET_ADDRESS.toLowerCase(), SupportedChainId.MAINNET)
+const AVAX_LOGO_URL = cowprotocolTokenLogoUrl(NATIVE_CURRENCY_ADDRESS, SupportedChainId.AVALANCHE)
+const POL_LOGO_URL = cowprotocolTokenLogoUrl(NATIVE_CURRENCY_ADDRESS, SupportedChainId.POLYGON)
 
 export const WRAPPED_NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: new TokenWithLogo(
@@ -49,6 +51,22 @@ export const WRAPPED_NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> 
     DEFAULT_NATIVE_DECIMALS,
     'WETH',
     'Wrapped Ether',
+  ),
+  [SupportedChainId.POLYGON]: new TokenWithLogo(
+    undefined,
+    SupportedChainId.POLYGON,
+    '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
+    DEFAULT_NATIVE_DECIMALS,
+    'WPOL',
+    'Wrapped POL',
+  ),
+  [SupportedChainId.AVALANCHE]: new TokenWithLogo(
+    undefined,
+    SupportedChainId.AVALANCHE,
+    '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7',
+    DEFAULT_NATIVE_DECIMALS,
+    'WAVAX',
+    'Wrapped AVAX',
   ),
 }
 
@@ -92,6 +110,22 @@ export const NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> = {
     DEFAULT_NATIVE_DECIMALS,
     'ETH',
     'Ether',
+  ),
+  [SupportedChainId.POLYGON]: new TokenWithLogo(
+    POL_LOGO_URL,
+    SupportedChainId.POLYGON,
+    NATIVE_CURRENCY_ADDRESS,
+    DEFAULT_NATIVE_DECIMALS,
+    'POL',
+    'Polygon',
+  ),
+  [SupportedChainId.AVALANCHE]: new TokenWithLogo(
+    AVAX_LOGO_URL,
+    SupportedChainId.AVALANCHE,
+    NATIVE_CURRENCY_ADDRESS,
+    DEFAULT_NATIVE_DECIMALS,
+    'AVAX',
+    'Avalanche',
   ),
 }
 
