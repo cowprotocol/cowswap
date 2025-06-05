@@ -1,4 +1,4 @@
-import { BridgeStatus } from '@cowprotocol/bridge'
+import { BridgeStatus } from '@cowprotocol/cow-sdk'
 
 import {
   faCheckCircle,
@@ -37,17 +37,15 @@ export function getStatusIcon(status: GenericStatus): IconDefinition {
       return faCircleNotch
     case OrderStatus.PartiallyFilled.toLowerCase():
       return faCircleHalfStroke
-    case BridgeStatus.Pending.toLowerCase():
+    case BridgeStatus.UNKNOWN.toLowerCase():
       return faClock
-    case BridgeStatus.InProgress.toLowerCase():
+    case BridgeStatus.IN_PROGRESS.toLowerCase():
       return faSpinner
-    case BridgeStatus.Completed.toLowerCase():
-    case BridgeStatus.RefundComplete.toLowerCase():
+    case BridgeStatus.EXECUTED.toLowerCase():
+    case BridgeStatus.REFUND.toLowerCase():
       return faCheckCircle
-    case BridgeStatus.Failed.toLowerCase():
-    case BridgeStatus.Refunding.toLowerCase():
+    case BridgeStatus.EXPIRED.toLowerCase():
       return faExclamationCircle
-    case BridgeStatus.Unknown.toLowerCase():
     default:
       return faQuestionCircle
   }

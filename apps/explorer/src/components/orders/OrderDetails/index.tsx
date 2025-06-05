@@ -80,6 +80,8 @@ const tabItems = (
   const filledPercentage = order?.filledPercentage && formatPercentage(order.filledPercentage)
   const showFills = order?.partiallyFillable && !order.txHash && trades.length > 1
 
+  const { data: crossChainOrder, isLoading: crossChainOrderLoading } = crossChainOrderResponse
+
   const defaultDetails =
     order && areTokensLoaded ? (
       <DetailsTable chainId={chainId} order={order} showFillsButton={showFills} areTradesLoading={areTradesLoading}>
@@ -126,7 +128,6 @@ const tabItems = (
       ),
     }
 
-    const { data: crossChainOrder, isLoading: crossChainOrderLoading } = crossChainOrderResponse
     const bridgeStatus = crossChainOrder?.statusResult.status || BridgeStatus.UNKNOWN
 
     // Note: swap+bridge orders don't support partial fills for now
@@ -149,7 +150,7 @@ const tabItems = (
           )}
         </TabContent>
       ),
-      content: <BridgeDetailsTable crossChainOrderResponse={crossChainOrderResponse} />,
+      content: <BridgeDetailsTable crossChainOrder={crossChainOrder || undefined} isLoading={crossChainOrderLoading} />,
     }
 
     return [overviewTab, swapTab, bridgeTab]
@@ -164,7 +165,7 @@ const tabItems = (
         {defaultDetails}
         {order?.bridgeProviderId && (
           <BridgeDetailsWrapper>
-            <BridgeDetailsTable crossChainOrderResponse={crossChainOrderResponse} />
+            <BridgeDetailsTable crossChainOrder={crossChainOrder || undefined} isLoading={crossChainOrderLoading} />
           </BridgeDetailsWrapper>
         )}
         {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}

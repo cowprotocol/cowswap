@@ -1,7 +1,5 @@
 import React from 'react'
 
-import { BridgeStatus } from '@cowprotocol/bridge'
-
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { StatusLabel } from 'components/orders/StatusLabel'
 
@@ -47,7 +45,7 @@ export function RefundStatus({ status, refundWalletAddress, refundChainId }: Ref
     case RefundStatusEnum.REFUNDING:
       return (
         <StatusWrapper>
-          <StatusLabel status={BridgeStatus.Refunding} />
+          <StatusLabel status="refunding" />
           <span>Refund in progress</span>
         </StatusWrapper>
       )
@@ -55,7 +53,7 @@ export function RefundStatus({ status, refundWalletAddress, refundChainId }: Ref
     case RefundStatusEnum.FAILED:
       return (
         <StatusWrapper>
-          <StatusLabel status={BridgeStatus.Failed} />
+          <StatusLabel status="failed" />
           <span>Refund failed</span>
         </StatusWrapper>
       )

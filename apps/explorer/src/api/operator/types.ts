@@ -1,4 +1,3 @@
-import { BridgeDetails } from '@cowprotocol/bridge'
 import { EnrichedOrder, OrderKind, Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
@@ -72,7 +71,6 @@ export type Order = Pick<
   surplusAmount: BigNumber
   surplusPercentage: BigNumber
   bridgeProviderId?: string
-  bridgeDetails?: BridgeDetails
 }
 
 /**

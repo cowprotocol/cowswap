@@ -5,7 +5,6 @@ import { Loader } from '@cowprotocol/ui'
 
 import { DetailRow } from 'components/common/DetailRow'
 import { SimpleTable } from 'components/common/SimpleTable'
-import { SWRResponse } from 'swr'
 
 import { BridgeDetailsContent } from './BridgeDetailsContent'
 import { BridgeDetailsTooltips } from './bridgeDetailsTooltips'
@@ -13,12 +12,11 @@ import { BridgeTxOverview } from './BridgeTxOverview'
 import { Wrapper } from './styled'
 
 interface BridgeDetailsTableProps {
-  crossChainOrderResponse: SWRResponse<CrossChainOrder | null | undefined>
+  crossChainOrder: CrossChainOrder | undefined
+  isLoading?: boolean
 }
 
-export function BridgeDetailsTable({ crossChainOrderResponse }: BridgeDetailsTableProps): ReactNode {
-  const { isLoading: isOverallLoading, data: crossChainOrder } = crossChainOrderResponse
-
+export function BridgeDetailsTable({ crossChainOrder, isLoading = false }: BridgeDetailsTableProps): ReactNode {
   return (
     <Wrapper>
       <SimpleTable
@@ -28,15 +26,11 @@ export function BridgeDetailsTable({ crossChainOrderResponse }: BridgeDetailsTab
             <DetailRow
               label="Transaction Details"
               tooltipText={BridgeDetailsTooltips.transactionHash}
-              isLoading={isOverallLoading}
+              isLoading={isLoading}
             >
               {crossChainOrder && <BridgeTxOverview crossChainOrder={crossChainOrder} />}
             </DetailRow>
-            {isOverallLoading || !crossChainOrder ? (
-              <Loader />
-            ) : (
-              <BridgeDetailsContent crossChainOrder={crossChainOrder} />
-            )}
+            {isLoading || !crossChainOrder ? <Loader /> : <BridgeDetailsContent crossChainOrder={crossChainOrder} />}
           </>
         }
       />

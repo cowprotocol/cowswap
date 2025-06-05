@@ -1,24 +1,18 @@
 import React from 'react'
 
-import {
-  BridgeDetails,
-  BridgeStatus,
-  BridgeableToken,
-  BridgeProvider,
-  BRIDGE_PROVIDER_DETAILS,
-} from '@cowprotocol/bridge'
-import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BridgeStatus, CrossChainOrder, OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { add, sub } from 'date-fns'
+
+import { crossChainOrderMock } from './crossChainOrder.mock'
 
 import { Order, OrderStatus, Trade } from '../../../api/operator'
 import { GlobalStateContext } from '../../../hooks/useGlobalState'
 import { RICH_ORDER } from '../../../test/data'
 import { Errors, Network } from '../../../types'
 import { BridgeDetailsTable } from '../BridgeDetailsTable'
-import { RefundStatusEnum } from '../BridgeDetailsTable/RefundStatus'
 
 import { OrderDetails } from '.'
 
@@ -36,48 +30,45 @@ const usdtToken: TokenErc20 = {
   decimals: 6,
 }
 
-const daiMainnetToken: BridgeableToken = {
-  address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', // DAI on Mainnet
-  chainId: SupportedChainId.MAINNET,
-  symbol: 'DAI',
-  decimals: 18,
+const pendingBridgeDetails: CrossChainOrder = {
+  ...crossChainOrderMock,
+  statusResult: {
+    ...crossChainOrderMock.statusResult,
+    status: BridgeStatus.IN_PROGRESS,
+  },
 }
 
-const daiGnosisChainToken: BridgeableToken = {
-  address: '0xaf204776c7245bf4147c2612bf6e5972ee483701',
-  chainId: SupportedChainId.GNOSIS_CHAIN,
-  symbol: 'DAI.gc',
-  decimals: 18,
-}
-
-const bungeeBridgeInfo = BRIDGE_PROVIDER_DETAILS[BridgeProvider.BUNGEE]
-
-const pendingBridgeDetails: BridgeDetails = {
-  providerName: bungeeBridgeInfo.title,
-  providerUrl: bungeeBridgeInfo.url,
-  status: BridgeStatus.Pending,
-  bridgeQuoteTimestamp: Date.now() - 1000 * 60 * 10,
-  expectedFillTimeSeconds: 26 * 60,
-  source: daiMainnetToken,
-  destination: daiGnosisChainToken,
-  inputAmount: '100000000000000000000',
-  outputAmount: undefined,
-  gasCostsNative: '5000000000000000',
-  protocolFeeSellToken: '100000000000000000',
-  maxSlippageBps: 50,
-  sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
-  explorerUrl: bungeeBridgeInfo.url + '/explorer/0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
-  minDepositAmount: '1000000000000000000',
-  maxDepositAmount: '100000000000000000000000',
-}
-
-const completedBridgeDetails: BridgeDetails = {
+const completedBridgeDetails: CrossChainOrder = {
   ...pendingBridgeDetails,
-  status: BridgeStatus.Completed,
-  outputAmount: '99800000000000000000',
-  sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
-  destinationChainTransactionHash: '0x9e0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a',
-  explorerUrl: bungeeBridgeInfo.url + '/explorer/0x9e0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a',
+  statusResult: {
+    ...crossChainOrderMock.statusResult,
+    status: BridgeStatus.EXECUTED,
+  },
+}
+
+// NEW: Additional bridge details for missing BridgeStatus scenarios
+const refundingBridgeDetails: CrossChainOrder = {
+  ...pendingBridgeDetails,
+  statusResult: {
+    ...crossChainOrderMock.statusResult,
+    status: BridgeStatus.IN_PROGRESS,
+  },
+}
+
+const refundCompleteBridgeDetails: CrossChainOrder = {
+  ...pendingBridgeDetails,
+  statusResult: {
+    ...crossChainOrderMock.statusResult,
+    status: BridgeStatus.REFUND,
+  },
+}
+
+const unknownBridgeDetails: CrossChainOrder = {
+  ...pendingBridgeDetails,
+  statusResult: {
+    ...crossChainOrderMock.statusResult,
+    status: BridgeStatus.UNKNOWN,
+  },
 }
 
 // Base Mock Order Data - aligned with apps/explorer/src/api/operator/types.ts Order type
@@ -286,41 +277,6 @@ const partiallyFilledOrder: Order = {
   ...baseMockOrderData.statusPartiallyFilled,
 } as Order
 
-// NEW: Additional bridge details for missing BridgeStatus scenarios
-const refundingBridgeDetails: BridgeDetails = {
-  ...pendingBridgeDetails,
-  status: BridgeStatus.Failed, // Bridge failed, refund in progress
-  sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
-  errorMessage: 'Bridge operation failed due to insufficient liquidity',
-  refundStatus: RefundStatusEnum.REFUNDING, // Refund actively processing (will show shimmer)
-}
-
-const refundCompleteBridgeDetails: BridgeDetails = {
-  ...pendingBridgeDetails,
-  status: BridgeStatus.Failed, // Bridge failed, refund completed
-  sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
-  destinationChainTransactionHash: '0x9e0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a',
-  errorMessage: 'Bridge operation failed due to insufficient liquidity',
-  refundStatus: RefundStatusEnum.COMPLETED, // Refund completed
-  refundWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
-  refundChainId: SupportedChainId.MAINNET,
-}
-
-const refundFailedBridgeDetails: BridgeDetails = {
-  ...pendingBridgeDetails,
-  status: BridgeStatus.Failed, // Bridge failed, refund also failed
-  sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
-  errorMessage: 'Bridge operation failed due to insufficient liquidity',
-  refundStatus: RefundStatusEnum.FAILED, // Refund attempt failed
-}
-
-const unknownBridgeDetails: BridgeDetails = {
-  ...pendingBridgeDetails,
-  status: BridgeStatus.Unknown,
-  sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
-  errorMessage: 'Bridge status could not be determined',
-}
-
 // --- New Swap + Bridge Mock Orders ---
 const swapBridgeOpenOrder: Order = {
   ...baseMockOrderData,
@@ -339,21 +295,11 @@ const swapBridgeSigningOrder: Order = {
 const swapBridgeCancelledOrder: Order = {
   ...baseMockOrderData,
   ...baseMockOrderData.statusCancelled, // Swap part was cancelled
-  bridgeDetails: {
-    ...pendingBridgeDetails,
-    status: BridgeStatus.Failed, // Bridge fails when swap is cancelled
-    errorMessage: 'Bridge operation failed because the swap order was cancelled. No bridge transaction was initiated.',
-  }, // Bridge fails when swap fails
 } as Order
 
 const swapBridgeExpiredOrder: Order = {
   ...baseMockOrderData,
   ...baseMockOrderData.statusExpired, // Swap part expired
-  bridgeDetails: {
-    ...pendingBridgeDetails,
-    status: BridgeStatus.Failed, // Bridge fails when swap expires
-    errorMessage: 'Bridge operation failed because the swap order expired. No bridge transaction was initiated.',
-  }, // Bridge fails when swap fails
 } as Order
 
 const swapBridgeFilledOrder: Order = {
@@ -366,22 +312,11 @@ const swapBridgeFilledOrder: Order = {
 const swapBridgeInProgressOrder: Order = {
   ...baseMockOrderData,
   ...baseMockOrderData.statusFilled, // Swap part is filled
-  bridgeDetails: {
-    ...pendingBridgeDetails,
-    status: BridgeStatus.InProgress,
-    sourceChainTransactionHash: '0x2f82b4b0c6a5b3e0a9d7c5f8e1a9007a71e02baf43f081a4ea87c494e2b16073',
-  },
 } as Order
 
 const swapBridgeFailedOrder: Order = {
   ...baseMockOrderData,
   ...baseMockOrderData.statusFilled, // Swap part is filled
-  bridgeDetails: {
-    ...pendingBridgeDetails,
-    status: BridgeStatus.Failed,
-    errorMessage: 'Bridge operation failed due to insufficient liquidity',
-    refundStatus: RefundStatusEnum.NOT_INITIATED, // Could be: 'not_initiated', 'refunding', 'completed', 'failed'
-  },
 } as Order
 
 // NEW: Missing bridge status scenarios
@@ -406,7 +341,6 @@ const swapBridgeUnknownOrder: Order = {
 const swapBridgeFailedRefundFailedOrder: Order = {
   ...baseMockOrderData,
   ...baseMockOrderData.statusFilled,
-  bridgeDetails: refundFailedBridgeDetails, // Use the new refund failed scenario
 } as Order
 
 const swapBridgePartiallyFilledOrder: Order = {
@@ -752,11 +686,7 @@ export default {
     <WithProviders>
       <div style={{ padding: '1rem' }}>
         <h2>Bridge Details Table (Pending State)</h2>
-        <BridgeDetailsTable
-          bridgeDetails={pendingBridgeDetails}
-          ownerAddress="0xOwnerPending1234567890abcdef1234567890"
-          receiverAddress="0xReceiverPending0987654321fedcba098765"
-        />
+        <BridgeDetailsTable crossChainOrder={pendingBridgeDetails} />
       </div>
     </WithProviders>
   ),
@@ -764,11 +694,7 @@ export default {
     <WithProviders>
       <div style={{ padding: '1rem' }}>
         <h2>Bridge Details Table (Completed State)</h2>
-        <BridgeDetailsTable
-          bridgeDetails={completedBridgeDetails}
-          ownerAddress="0xOwnerCompleted1234567890abcdef1234567890"
-          receiverAddress="0xReceiverCompleted0987654321fedcba098765"
-        />
+        <BridgeDetailsTable crossChainOrder={completedBridgeDetails} />
       </div>
     </WithProviders>
   ),
@@ -776,11 +702,7 @@ export default {
     <WithProviders>
       <div style={{ padding: '1rem' }}>
         <h2>Bridge Details Table (Loading State)</h2>
-        <BridgeDetailsTable
-          isLoading={true}
-          ownerAddress="0xOwnerLoading1234567890abcdef1234567890"
-          receiverAddress="0xReceiverLoading0987654321fedcba098765"
-        />
+        <BridgeDetailsTable isLoading={true} crossChainOrder={undefined} />
       </div>
     </WithProviders>
   ),
@@ -789,11 +711,7 @@ export default {
     <WithProviders>
       <div style={{ padding: '1rem' }}>
         <h2>Bridge Details Table (Failed - Refunding)</h2>
-        <BridgeDetailsTable
-          bridgeDetails={refundingBridgeDetails}
-          ownerAddress="0xOwnerRefunding1234567890abcdef1234567890"
-          receiverAddress="0xReceiverRefunding0987654321fedcba098765"
-        />
+        <BridgeDetailsTable crossChainOrder={refundingBridgeDetails} />
       </div>
     </WithProviders>
   ),
@@ -801,23 +719,7 @@ export default {
     <WithProviders>
       <div style={{ padding: '1rem' }}>
         <h2>Bridge Details Table (Failed - Refund Completed)</h2>
-        <BridgeDetailsTable
-          bridgeDetails={refundCompleteBridgeDetails}
-          ownerAddress="0xOwnerRefundComplete1234567890abcdef1234567890"
-          receiverAddress="0xReceiverRefundComplete0987654321fedcba098765"
-        />
-      </div>
-    </WithProviders>
-  ),
-  'BridgeDetailsTable - Failed (Refund Failed)': () => (
-    <WithProviders>
-      <div style={{ padding: '1rem' }}>
-        <h2>Bridge Details Table (Failed - Refund Failed)</h2>
-        <BridgeDetailsTable
-          bridgeDetails={refundFailedBridgeDetails}
-          ownerAddress="0xOwnerRefundFailed1234567890abcdef1234567890"
-          receiverAddress="0xReceiverRefundFailed0987654321fedcba098765"
-        />
+        <BridgeDetailsTable crossChainOrder={refundCompleteBridgeDetails} />
       </div>
     </WithProviders>
   ),
@@ -825,11 +727,7 @@ export default {
     <WithProviders>
       <div style={{ padding: '1rem' }}>
         <h2>Bridge Details Table (Unknown Status)</h2>
-        <BridgeDetailsTable
-          bridgeDetails={unknownBridgeDetails}
-          ownerAddress="0xOwnerUnknown1234567890abcdef1234567890"
-          receiverAddress="0xReceiverUnknown0987654321fedcba098765"
-        />
+        <BridgeDetailsTable crossChainOrder={unknownBridgeDetails} />
       </div>
     </WithProviders>
   ),
