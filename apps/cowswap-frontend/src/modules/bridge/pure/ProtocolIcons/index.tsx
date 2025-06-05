@@ -1,4 +1,4 @@
-import React, { useState, memo, useMemo } from 'react'
+import React, { useState, memo, useMemo, ReactNode } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 import { ProductVariant, UI, ProductLogo } from '@cowprotocol/ui'
