@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 
@@ -28,7 +28,7 @@ export function QuoteDetails({
   swapContext,
   bridgeContext,
   collapsedDefault,
-}: QuoteDetailsProps): React.JSX.Element {
+}: QuoteDetailsProps): ReactNode {
   const status = SwapAndBridgeStatus.DEFAULT
 
   return (

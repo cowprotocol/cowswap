@@ -1,4 +1,4 @@
-import React from 'react'
+import { ReactNode } from 'react'
 
 import ReceiptIcon from '@cowprotocol/assets/cow-swap/icon-receipt.svg'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
@@ -25,7 +25,7 @@ export function ReceivedBridgingContent({
   receivedAmount,
   sourceChainId,
   destinationChainId,
-}: ReceivedBridgingContentProps): React.JSX.Element {
+}: ReceivedBridgingContentProps): ReactNode {
   const { depositTxHash, fillTxHash } = statusResult || {}
 
   const depositLink = depositTxHash && getExplorerLink(sourceChainId, depositTxHash, ExplorerDataType.TRANSACTION)

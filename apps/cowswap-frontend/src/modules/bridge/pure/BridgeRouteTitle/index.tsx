@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 
@@ -25,7 +25,7 @@ export function BridgeRouteTitle({
   protocolIconShowOnly,
   protocolIconSize = 21,
   stopNumber,
-}: BridgeRouteTitleProps): React.JSX.Element {
+}: BridgeRouteTitleProps): ReactNode {
   return (
     <>
       <StopNumberCircle status={status} stopNumber={stopNumber}>
