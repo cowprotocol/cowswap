@@ -29,6 +29,7 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
       'https://raw.githubusercontent.com/cowprotocol/cow-sdk/refs/heads/main/src/bridging/providers/across/across-logo.png',
     name: 'Across',
     dappId: 'cow-sdk://bridging/providers/across',
+    website: 'https://across.to',
   },
   overview: {
     sourceChainName: 'Ethereum',
