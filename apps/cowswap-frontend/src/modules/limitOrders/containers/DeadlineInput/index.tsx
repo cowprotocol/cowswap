@@ -15,6 +15,8 @@ import {
   updateLimitOrdersSettingsAtom,
 } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function DeadlineInput() {
   const { deadlineMilliseconds, customDeadlineTimestamp } = useAtomValue(limitOrdersSettingsAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)

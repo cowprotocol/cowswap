@@ -1,4 +1,6 @@
 /* eslint-disable prefer-rest-params */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function nodeRemoveChildFix() {
   if (typeof Node === 'function' && Node.prototype) {
     const originalRemoveChild = Node.prototype.removeChild

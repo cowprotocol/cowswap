@@ -6,6 +6,8 @@ import { withLDProvider } from 'launchdarkly-react-client-sdk'
 
 // TODO: remove duplicated component with app/cowswap-frontend/src/modules/application/containers/WithLDProvider
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function InnerWithLDProvider({ children }: PropsWithChildren) {
   return children
 }

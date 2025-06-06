@@ -116,6 +116,9 @@ export function useOrderProgressBarProps(
   return useMemo(() => ({ props, activityDerivedState }), [props, activityDerivedState])
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, complexity
 function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): UseOrderProgressBarResult | undefined {
   const { activityDerivedState, chainId, isBridgingTrade, bridgeQuoteAmounts } = params
 
@@ -224,6 +227,8 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
  * @param apiSolverCompetition
  * @param disableProgressBar
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getDoNotQueryStatusEndpoint(
   order: Order | undefined,
   apiSolverCompetition: CompetitionOrderStatus['value'] | undefined,
@@ -250,12 +255,16 @@ function useGetExecutingOrderState(orderId: string): OrderProgressBarState {
   return useMemo(() => singleState || DEFAULT_STATE, [singleState])
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useSetExecutingOrderCountdownCallback() {
   const setAtom = useSetAtom(updateOrderProgressBarCountdown)
 
   return useCallback((orderId: string, value: number | null) => setAtom({ orderId, value }), [setAtom])
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useSetExecutingOrderProgressBarStepNameCallback() {
   const setValue = useSetAtom(updateOrderProgressBarStepName)
 
@@ -269,6 +278,8 @@ function useSetExecutingOrderProgressBarStepNameCallback() {
 
 // local updaters
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useCountdownStartUpdater(
   orderId: string,
   countdown: OrderProgressBarState['countdown'],
@@ -287,6 +298,8 @@ function useCountdownStartUpdater(
   }, [backendApiStatus, setCountdown, countdown, orderId])
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useCancellingOrderUpdater(orderId: string, isCancelling: boolean) {
   const setCancellationTriggered = useSetAtom(setOrderProgressBarCancellationTriggered)
 
@@ -295,6 +308,9 @@ function useCancellingOrderUpdater(orderId: string, isCancelling: boolean) {
   }, [orderId, isCancelling, setCancellationTriggered])
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 function useProgressBarStepNameUpdater(
   orderId: string,
   isUnfillable: boolean,
@@ -330,6 +346,8 @@ function useProgressBarStepNameUpdater(
 
   // Update state with new step name
   useEffect(() => {
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     function updateStepName(name: OrderProgressBarStepName) {
       setProgressBarStepName(orderId, name || 'initial')
     }
@@ -363,6 +381,9 @@ function useProgressBarStepNameUpdater(
   }, [orderId, stepName, lastTimeChangedSteps, setProgressBarStepName])
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, complexity
 function getProgressBarStepName(
   isUnfillable: boolean,
   isCancelled: boolean,
@@ -450,6 +471,8 @@ const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<CompetitionOrderStatus.type
   cancelled: 'initial', // TODO: maybe add another state for finished with error?
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string, doNotQuery: boolean) {
   const setAtom = useSetAtom(updateOrderProgressBarBackendInfo)
   const { type: backendApiStatus, value: solverCompetition } = usePendingOrderStatus(chainId, orderId, doNotQuery) || {}
@@ -465,6 +488,8 @@ const POOLING_SWR_OPTIONS = {
   refreshInterval: ms`1s`,
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function usePendingOrderStatus(chainId: SupportedChainId, orderId: string, doNotQuery?: boolean) {
   return useSWR(
     chainId && orderId && !doNotQuery ? ['getOrderCompetitionStatus', chainId, orderId] : null,

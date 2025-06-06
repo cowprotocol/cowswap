@@ -12,6 +12,8 @@ import { useSetPartOrderCancelling } from 'modules/twap/hooks/useSetPartOrderCan
 import { CancelledOrderInfo } from './onChainCancellation'
 import { useGetOnChainCancellation } from './useGetOnChainCancellation'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useSendOnChainCancellation() {
   const { chainId } = useWalletInfo()
   const setOrderCancellationHash = useSetOrderCancellationHash()

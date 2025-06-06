@@ -15,6 +15,8 @@ const DEFAULT_FEE_STATE: [boolean, undefined] = [false, undefined]
  * @description checks whether fee vs trade inputAmount = high fee warning
  * @description returns params related to high fee and a cb for checking/unchecking fee acceptance
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useHighFeeWarning() {
   const receiveAmountInfo = useReceiveAmountInfo()
 
@@ -71,6 +73,8 @@ export function useHighFeeWarning() {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function _computeFeeWarningAcceptedState({
   feeWarningAccepted,
   isHighFee,

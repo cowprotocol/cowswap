@@ -21,6 +21,8 @@ export const filterPermitSignerPermit: HooksFilter = (cowHook: CowHook): boolean
   return !hasFormerAddress && !hasCurrentAddress
 }
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function filterHooks(
   hooks: OrderInteractionHooks | undefined,
   preHooksFilter: HooksFilter | undefined,

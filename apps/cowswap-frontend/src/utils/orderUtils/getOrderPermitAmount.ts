@@ -14,8 +14,12 @@ import {
 import { ParsedOrder } from './parseOrder'
 
 const erc20Interface = Erc20__factory.createInterface()
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const daiInterface = new Interface(DAI_EIP_2612_PERMIT_ABI as any) as Erc20Interface
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function getOrderPermitAmount(chainId: SupportedChainId, order: ParsedOrder): BigNumber | null {
   if (!order.fullAppData) return null
 

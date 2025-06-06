@@ -25,6 +25,8 @@ export interface TradeFlowAnalytics {
 export function useTradeFlowAnalytics(): TradeFlowAnalytics {
   const analytics = useCowAnalytics()
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const sendTradeAnalytics = (action: string, orderType: UiOrderType, marketLabel?: string, value?: number) => {
     analytics.sendEvent({
       category: CowSwapAnalyticsCategory.TRADE,

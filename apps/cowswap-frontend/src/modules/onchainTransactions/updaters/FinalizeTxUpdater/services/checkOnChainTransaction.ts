@@ -6,11 +6,15 @@ import { handleTransactionReplacement } from './handleTransactionReplacement'
 
 import { CheckEthereumTransactions } from '../types'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function checkOnChainTransaction(transaction: EnhancedTransactionDetails, params: CheckEthereumTransactions) {
   const { chainId, transactionsCount, dispatch, getReceipt, lastBlockNumber } = params
   const { hash } = transaction
 
   // Update the last checked blockNumber
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const setTxLastBlockNumber = () => {
     dispatch(checkedTransaction({ chainId, hash, blockNumber: lastBlockNumber }))
   }

@@ -13,6 +13,8 @@ import { useIsHooksTradeType } from 'modules/trade'
 
 import { balancesCombinedAtom } from '../state/balanceCombinedAtom'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function BalancesCombinedUpdater() {
   const { account, chainId } = useWalletInfo()
   const setBalancesCombined = useSetAtom(balancesCombinedAtom)

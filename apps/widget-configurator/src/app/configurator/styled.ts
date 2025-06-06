@@ -2,6 +2,8 @@ import { Theme } from '@mui/material/styles'
 
 export const WrapperStyled = { display: 'flex', flexFlow: 'column wrap', width: '100%' }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const DrawerStyled = (theme: Theme) => ({
   width: '29rem',
   flexShrink: 0,

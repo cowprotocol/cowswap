@@ -9,6 +9,8 @@ import { isATxHash } from '../../utils'
 import { TransactionsTableWidget } from '../components/TransactionsTableWidget'
 import { APP_TITLE } from '../const'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const TransactionDetails = () => {
   const { txHash } = useParams<{ txHash: string }>()
   const networkId = useNetworkId() ?? undefined

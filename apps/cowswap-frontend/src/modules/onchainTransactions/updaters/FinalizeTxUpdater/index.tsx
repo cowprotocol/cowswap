@@ -10,6 +10,8 @@ import { checkSafeTransaction } from './services/checkSafeTransaction'
 
 import { OnchainTransactionEventsUpdater } from '../OnchainTransactionEventsUpdater'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function FinalizeTxUpdater() {
   // Get, from the pending transaction, the ones that we should re-check
   const shouldCheckFilter = useShouldCheckPendingTx()

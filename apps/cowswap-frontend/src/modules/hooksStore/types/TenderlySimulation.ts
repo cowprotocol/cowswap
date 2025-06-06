@@ -557,7 +557,11 @@ interface LogRaw {
 
 interface StateDiff {
   soltype: SoltypeElement | null
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   original: string | Record<string, any>
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dirty: string | Record<string, any>
   raw: RawElement[]
 }

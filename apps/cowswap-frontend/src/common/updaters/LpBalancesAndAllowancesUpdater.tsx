@@ -24,6 +24,8 @@ export interface BalancesAndAllowancesUpdaterProps {
   chainId: SupportedChainId
   enablePolling: boolean
 }
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function LpBalancesAndAllowancesUpdater({ account, chainId, enablePolling }: BalancesAndAllowancesUpdaterProps) {
   const allLpTokens = useAllLpTokens(LP_TOKEN_LIST_CATEGORIES)
   const [isUpdaterPaused, setIsUpdaterPaused] = useState(true)

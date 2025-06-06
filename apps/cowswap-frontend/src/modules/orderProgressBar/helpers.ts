@@ -10,6 +10,8 @@ export function truncateWithEllipsis(str: string, maxLength: number): string {
   return str.slice(0, maxLength - 3) + '...'
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getTwitterText(surplusAmount: string, surplusToken: string, orderKind: OrderKind) {
   const actionWord = isSellOrder(orderKind) ? 'got' : 'saved'
   const surplus = `${surplusAmount} ${surplusToken}`

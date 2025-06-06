@@ -16,6 +16,8 @@ interface ReceivedBridgingContentProps {
   receivedAmountUsd: CurrencyAmount<Token> | null | undefined
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ReceivedBridgingContent({
   statusResult,
   receivedAmountUsd,

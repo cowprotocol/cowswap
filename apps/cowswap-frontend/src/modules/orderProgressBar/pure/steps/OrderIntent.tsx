@@ -9,6 +9,8 @@ import * as styledEl from './styled'
 
 const TOKEN_SIZE = 20
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function OrderIntent({ order }: { order?: Order }) {
   if (!order) return null
 

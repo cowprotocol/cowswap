@@ -50,6 +50,9 @@ const PageView = {
   },
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export default function TokensOverview() {
   const { chainId, account } = useWalletInfo()
   const provider = useWalletProvider()
@@ -155,6 +158,8 @@ export default function TokensOverview() {
       {!isProviderNetworkUnsupported && (
         <AccountHeading>
           <LeftSection>
+            {/* TODO: Replace any with proper type definitions */}
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             <MenuWrapper ref={node as any}>
               <MenuButton onClick={toggleMenu}>
                 <Trans>{PageView[selectedView].label}</Trans>

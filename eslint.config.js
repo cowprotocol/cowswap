@@ -48,7 +48,15 @@ module.exports = [
       'react-hooks/exhaustive-deps': 'error',
 
       // TypeScript strict rules
-      '@typescript-eslint/explicit-function-return-type': 'error',
+      '@typescript-eslint/explicit-function-return-type': [
+        'error',
+        {
+          allowExpressions: true,
+          allowTypedFunctionExpressions: true,
+          allowHigherOrderFunctions: true,
+          allowDirectConstAssertionInArrowFunctions: true,
+        },
+      ],
 
       // React antipatterns
       'react/no-unstable-nested-components': 'error',
@@ -160,6 +168,18 @@ module.exports = [
           },
           'newlines-between': 'always',
         },
+      ],
+      'no-restricted-globals': [
+        'error',
+        'event',
+        'name',
+        'status',
+        'length',
+        'closed',
+        'defaultStatus',
+        'origin',
+        'opener',
+        'frames',
       ],
       'prefer-const': 'error',
       'no-unneeded-ternary': 'error',

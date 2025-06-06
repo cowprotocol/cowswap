@@ -21,6 +21,8 @@ const PILL_COLOUR_MAP = {
   FAILED: 'danger',
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function determinePillColour(status: ActivityStatus, type: ActivityType) {
   const isOrder = type === ActivityType.ORDER
 
@@ -44,6 +46,9 @@ export function determinePillColour(status: ActivityStatus, type: ActivityType) 
   }
 }
 
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
 export default function Activity({ activity }: { activity: ActivityDescriptors }) {
   const { chainId } = useWalletInfo()
 

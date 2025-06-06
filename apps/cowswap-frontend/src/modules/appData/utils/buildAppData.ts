@@ -86,6 +86,8 @@ export async function buildAppData({
   return { doc, fullAppData, appDataKeccak256 }
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function toKeccak256(fullAppData: string) {
   return keccak256(toUtf8Bytes(fullAppData))
 }

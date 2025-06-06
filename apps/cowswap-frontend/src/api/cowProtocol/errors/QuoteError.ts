@@ -3,6 +3,8 @@ import { ApiErrorCodes, ApiErrorObject } from './OperatorError'
 export interface QuoteApiErrorObject {
   errorType: QuoteApiErrorCodes
   description: string
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any
 }
 
@@ -74,12 +76,16 @@ export class QuoteApiError extends Error {
   type: QuoteApiErrorCodes
   description: string
   // any data attached
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any
 
   // Status 400 errors
   // https://github.com/cowprotocol/services/blob/9014ae55412a356e46343e051aefeb683cc69c41/orderbook/openapi.yml#L563
   static quoteErrorDetails = QuoteApiErrorDetails
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   public static async getErrorMessage(response: Response) {
     try {
       const orderPostError: QuoteApiErrorObject = await response.json()
@@ -98,6 +104,8 @@ export class QuoteApiError extends Error {
     }
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   static async getErrorFromStatusCode(response: Response) {
     switch (response.status) {
       case 400:
@@ -123,6 +131,8 @@ export class QuoteApiError extends Error {
   }
 }
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isValidQuoteError(error: any): error is QuoteApiError {
   return error instanceof QuoteApiError
 }

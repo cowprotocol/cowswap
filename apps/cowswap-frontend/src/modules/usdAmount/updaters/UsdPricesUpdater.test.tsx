@@ -42,6 +42,8 @@ const defaultQueue = {
   [cowKey]: COW,
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getWrapper() {
   const store = createStore()
   const initialValues = [[currenciesUsdPriceQueueAtom, { ...defaultQueue }]]
@@ -86,6 +88,8 @@ async function performTest(
   return store.get(usdRawPricesAtom)
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('UsdPricesUpdater', () => {
   afterEach(() => {
     jest.resetAllMocks()

@@ -60,6 +60,8 @@ export function getInputStartDate(customDeadline: number | null, minDate: Date):
  *
  * From https://stackoverflow.com/a/30377368/1272513 on 2023/01/31
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getTimeZoneOffset() {
   const timezoneOffset = new Date().getTimezoneOffset()
   const offset = Math.abs(timezoneOffset)
