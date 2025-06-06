@@ -37,10 +37,11 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
 
   const { chainId, account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
-  const { permitSignatureState, pendingTrade, transactionHash, error } = useTradeConfirmState()
+  const { permitSignatureState, pendingTrade, transactionHash, error, isOpen } = useTradeConfirmState()
   const { onDismiss } = useTradeConfirmActions()
 
-  if (!account) return null
+  // Prevent rendering if account is not available or modal is not open
+  if (!account || !isOpen) return null
 
   return (
     <Container>

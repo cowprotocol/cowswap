@@ -38,3 +38,6 @@ export function Loader({ size = '16px', stroke, ...rest }: { size?: string; stro
     </StyledSVG>
   )
 }
+
+export * from './ProductLogoLoader'
+export * from './styled'

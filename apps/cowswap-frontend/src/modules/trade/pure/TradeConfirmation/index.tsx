@@ -1,6 +1,14 @@
 import { ReactElement, useEffect, useRef, useState } from 'react'
 
-import { BackButton, BannerOrientation, ButtonPrimary, ButtonSize, CenteredDots, LongLoadText } from '@cowprotocol/ui'
+import {
+  BackButton,
+  BannerOrientation,
+  ButtonPrimary,
+  ButtonSize,
+  CenteredDots,
+  LongLoadText,
+  ProductLogoLoader,
+} from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 
@@ -120,6 +128,9 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     </>
   )
 
+  // Check if we're in a loading state without valid currency info
+  const isLoadingState = !inputCurrencyInfo.amount || !outputCurrencyInfo.amount
+
   return (
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
       <styledEl.Header>
@@ -131,30 +142,45 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         </styledEl.HeaderRightContent>
       </styledEl.Header>
       <styledEl.ContentWrapper id="trade-confirmation">
-        <styledEl.AmountsPreviewContainer>
-          <CurrencyAmountPreview id="input-currency-preview" currencyInfo={inputCurrencyInfo} />
-          <styledEl.SeparatorWrapper>
-            <styledEl.AmountsSeparator />
-          </styledEl.SeparatorWrapper>
-          <CurrencyAmountPreview
-            id="output-currency-preview"
-            currencyInfo={outputCurrencyInfo}
-            priceImpactParams={priceImpact}
-          />
-        </styledEl.AmountsPreviewContainer>
-        {children?.(
+        {isLoadingState ? (
+          <ProductLogoLoader text="Loading quote" logoHeight={42} />
+        ) : (
           <>
-            {hookDetailsElement}
-            <NoImpactWarning withoutAccepting />
-          </>,
+            <styledEl.AmountsPreviewContainer>
+              <CurrencyAmountPreview id="input-currency-preview" currencyInfo={inputCurrencyInfo} />
+              <styledEl.SeparatorWrapper>
+                <styledEl.AmountsSeparator />
+              </styledEl.SeparatorWrapper>
+              <CurrencyAmountPreview
+                id="output-currency-preview"
+                currencyInfo={outputCurrencyInfo}
+                priceImpactParams={priceImpact}
+              />
+            </styledEl.AmountsPreviewContainer>
+            {children?.(
+              <>
+                {hookDetailsElement}
+                <NoImpactWarning withoutAccepting />
+              </>,
+            )}
+
+            {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
+            {isPriceChanged && !isPriceStatic && <PriceUpdatedBanner onClick={resetPriceChanged} />}
+          </>
         )}
 
-        {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
-        {isPriceChanged && !isPriceStatic && <PriceUpdatedBanner onClick={resetPriceChanged} />}
-        <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
+        <ButtonPrimary
+          onClick={handleConfirmClick}
+          disabled={isButtonDisabled || isLoadingState}
+          buttonSize={ButtonSize.BIG}
+        >
           {hasPendingTrade || isConfirmClicked ? (
             <LongLoadText fontSize={15} fontWeight={500}>
               Confirm with your wallet <CenteredDots smaller />
+            </LongLoadText>
+          ) : isLoadingState ? (
+            <LongLoadText fontSize={15} fontWeight={500}>
+              Loading <CenteredDots smaller />
             </LongLoadText>
           ) : (
             <Trans>{buttonText}</Trans>

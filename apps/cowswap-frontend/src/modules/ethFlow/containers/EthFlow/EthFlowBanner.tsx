@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
@@ -23,12 +23,31 @@ export function EthFlowBanner({ hasEnoughWrappedBalance, ...props }: EthFlowBann
   const native = useNativeCurrency()
   const wrapped = useWrappedToken()
 
+  // Add stable state management to prevent blinking
+  const [isStableState, setIsStableState] = useState(false)
+  const isNativeInRef = useRef(isNativeIn)
+
+  // Track when the native state becomes stable to prevent blinking
+  useEffect(() => {
+    // If isNativeIn changes from the initial state, mark as stable
+    if (isNativeInRef.current !== isNativeIn) {
+      setIsStableState(true)
+    }
+
+    // After a short delay, always mark as stable to handle initial load
+    const timer = setTimeout(() => {
+      setIsStableState(true)
+    }, 100)
+
+    return () => clearTimeout(timer)
+  }, [isNativeIn])
+
   const showBannerCallback = () => {
     return setShowBanner((state) => !state)
   }
 
-  // dont render if it isn't a native token swap
-  if (!isNativeIn) return null
+  // Only render when we have a stable state and it's a native token swap
+  if (!isStableState || !isNativeIn) return null
 
   return (
     <EthFlowBannerContent

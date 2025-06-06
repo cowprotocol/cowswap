@@ -45,7 +45,13 @@ export function NoImpactWarning(props: NoImpactWarningProps) {
     (primaryFormValidation === null || primaryFormValidation === TradeFormValidation.ApproveAndSwap) &&
     !tradeQuote.error
 
-  const showPriceImpactWarning = canTrade && !!account && !priceImpactParams.loading && !priceImpactParams.priceImpact
+  // Enhanced logic to prevent showing warning during loading states
+  const isQuoteLoading = tradeQuote.isLoading || tradeQuote.hasParamsChanged
+  const hasStableQuoteState = !isQuoteLoading && tradeQuote.quote !== null
+
+  // Only show price impact warning when we have a stable state and confirmed no price impact
+  const showPriceImpactWarning =
+    canTrade && !!account && !priceImpactParams.loading && !priceImpactParams.priceImpact && hasStableQuoteState // Only show when quote is stable
 
   const acceptCallback = () => setIsAccepted((state) => !state)
 
