@@ -7,8 +7,10 @@ import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
+import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFromUrl'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 import { getDefaultTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
+import { TradeType } from 'modules/trade/types/TradeType'
 
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useSetupTradeStateFromUrl } from './useSetupTradeStateFromUrl'
@@ -23,6 +25,7 @@ export function useSetupTradeState(): void {
   useSetupTradeStateFromUrl()
   const { chainId: providerChainId, account } = useWalletInfo()
   const prevProviderChainId = usePrevious(providerChainId)
+  const tradeTypeInfo = useTradeTypeInfoFromUrl()
 
   const provider = useWalletProvider()
   const tradeNavigate = useTradeNavigate()
@@ -129,6 +132,7 @@ export function useSetupTradeState(): void {
       prevTradeStateFromUrl.chainId !== currentChainId
 
     const tokensAreEmpty = !inputCurrencyId && !outputCurrencyId
+    const isYieldRoute = tradeTypeInfo?.tradeType === TradeType.YIELD
 
     const sameTokens =
       inputCurrencyId !== EMPTY_TOKEN_ID &&
@@ -155,12 +159,12 @@ export function useSetupTradeState(): void {
       return
     }
 
-    if (sameTokens || tokensAreEmpty || onlyChainIdIsChanged) {
+    if (sameTokens || (tokensAreEmpty && !isYieldRoute) || onlyChainIdIsChanged) {
       tradeNavigate(currentChainId, defaultState)
 
       if (sameTokens) {
         console.debug('[TRADE STATE]', 'Url contains invalid tokens, resetting')
-      } else if (tokensAreEmpty) {
+      } else if (tokensAreEmpty && !isYieldRoute) {
         console.debug('[TRADE STATE]', 'Url does not contain both tokens, resetting')
       } else if (onlyChainIdIsChanged) {
         // In this case we should update only chainId in the trade state
