@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.108.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.108.1...cowswap-v1.108.2) (2025-06-06)
+
+
+### Bug Fixes
+
+* empty change to trigger cowswap deployment ([b06ba6a](https://github.com/cowprotocol/cowswap/commit/b06ba6ad20adfbbfbe3366f4eed787e2dd8fd21d))
+
 ## [1.108.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.108.0...cowswap-v1.108.1) (2025-05-29)
 
 
