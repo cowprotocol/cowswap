@@ -23,7 +23,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isOnline = useIsOnline()
 
   const { inputCurrency, outputCurrency, recipient, tradeType } = derivedTradeState || {}
-  const { maximumSendSellAmount } = useAmountsToSign() || {}
+  const amountsToSign = useAmountsToSign()
+  const { maximumSendSellAmount } = amountsToSign || {}
   const { state: approvalState } = useApproveState(maximumSendSellAmount)
   const { address: recipientEnsAddress } = useENSAddress(recipient)
   const isSwapUnsupported =
@@ -55,6 +56,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     isProviderNetworkUnsupported,
     isOnline,
     derivedTradeState,
+    amountsToSign,
   }
 
   return useMemo(() => {
