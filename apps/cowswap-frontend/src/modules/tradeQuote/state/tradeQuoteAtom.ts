@@ -1,12 +1,12 @@
 import { atom } from 'jotai'
 
-import { PriceQuality, QuoteAndPost, BridgeQuoteResults, BridgeProviderQuoteError } from '@cowprotocol/cow-sdk'
+import { BridgeProviderQuoteError, BridgeQuoteResults, PriceQuality, QuoteAndPost } from '@cowprotocol/cow-sdk'
 
 import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 
-import { TradeQuoteFetchParams } from '../types'
+import { SellTokenAddress } from './tradeQuoteInputAtom'
 
-type SellTokenAddress = string
+import { TradeQuoteFetchParams } from '../types'
 
 export interface TradeQuoteState {
   quote: QuoteAndPost | null
@@ -47,11 +47,14 @@ export const updateTradeQuoteAtom = atom(
         return { ...prevState }
       }
 
+      // Improved state transition logic to prevent broken modal flickering
       const update: TradeQuoteState = {
         ...prevQuote,
         ...nextState,
         quote: typeof nextState.quote === 'undefined' ? prevQuote.quote : nextState.quote,
         localQuoteTimestamp: nextState.quote ? Math.ceil(Date.now() / 1000) : null,
+        // Ensure loading state is properly managed during transitions
+        isLoading: nextState.isLoading !== undefined ? nextState.isLoading : prevQuote.isLoading,
       }
 
       return {

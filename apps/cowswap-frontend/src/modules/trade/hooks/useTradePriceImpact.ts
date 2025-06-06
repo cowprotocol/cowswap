@@ -1,7 +1,9 @@
 import { useAtomValue } from 'jotai'
 
-import { priceImpactAtom } from '../state/priceImpactAtom'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-export function useTradePriceImpact() {
-  return useAtomValue(priceImpactAtom)
+import { stablePriceImpactAtom } from '../state/priceImpactAtom'
+
+export function useTradePriceImpact(): PriceImpact {
+  return useAtomValue(stablePriceImpactAtom)
 }

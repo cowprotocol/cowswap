@@ -6,32 +6,63 @@ export function useIsPriceChanged(
   defaultState: boolean = false,
 ) {
   const initialAmounts = useRef<{ inputAmount?: string; outputAmount?: string }>({})
-
-  const [isPriceChanged, setIsPriceChanged] = useState(defaultState)
+  const [isPriceChanged, setIsPriceChanged] = useState(false)
+  const [hasInitialized, setHasInitialized] = useState(false)
 
   const resetPriceChanged = useCallback(() => {
     initialAmounts.current = { inputAmount, outputAmount }
     setIsPriceChanged(false)
+    setHasInitialized(true)
   }, [inputAmount, outputAmount])
 
+  // Initialize on first render with current amounts
   useEffect(() => {
-    resetPriceChanged()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    if (!hasInitialized && inputAmount && outputAmount) {
+      resetPriceChanged()
+    }
+  }, [inputAmount, outputAmount, hasInitialized, resetPriceChanged])
 
+  // Only check for price changes after initialization
   useEffect(() => {
-    if (!initialAmounts.current) return
+    if (!hasInitialized || !initialAmounts.current) {
+      return
+    }
 
     const { inputAmount: initialInputAmount, outputAmount: initialOutputAmount } = initialAmounts.current
 
-    if (inputAmount !== initialInputAmount || outputAmount !== initialOutputAmount) {
+    // Only trigger price changed if we have valid initial amounts and they actually differ
+    if (
+      initialInputAmount &&
+      initialOutputAmount &&
+      inputAmount &&
+      outputAmount &&
+      (inputAmount !== initialInputAmount || outputAmount !== initialOutputAmount)
+    ) {
       setIsPriceChanged(true)
     }
-  }, [inputAmount, outputAmount])
+  }, [inputAmount, outputAmount, hasInitialized])
 
+  // Handle forcePriceConfirmation only if there's an actual price difference
   useEffect(() => {
-    setIsPriceChanged(defaultState)
-  }, [defaultState])
+    if (defaultState && hasInitialized) {
+      const { inputAmount: initialInputAmount, outputAmount: initialOutputAmount } = initialAmounts.current
 
-  return useMemo(() => ({ isPriceChanged, resetPriceChanged }), [isPriceChanged, resetPriceChanged])
+      // Only set price changed if there's actually a difference
+      if (
+        initialInputAmount &&
+        initialOutputAmount &&
+        inputAmount &&
+        outputAmount &&
+        (inputAmount !== initialInputAmount || outputAmount !== initialOutputAmount)
+      ) {
+        setIsPriceChanged(true)
+      }
+    }
+  }, [defaultState, inputAmount, outputAmount, hasInitialized])
+
+  const result = useMemo(() => {
+    return { isPriceChanged, resetPriceChanged }
+  }, [isPriceChanged, resetPriceChanged])
+
+  return result
 }
