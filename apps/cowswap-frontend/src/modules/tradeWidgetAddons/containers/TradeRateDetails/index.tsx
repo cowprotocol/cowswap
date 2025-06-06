@@ -63,6 +63,9 @@ export function TradeRateDetails({
   }, [])
 
   if (!receiveAmountInfo) {
+    // Hide fee accordion when there's a quote error
+    if (tradeQuote.error) return null
+    
     if (!networkFeeAmount) return null
 
     return (
