@@ -24,13 +24,21 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isInsufficientBalanceOrderAllowed,
     isProviderNetworkUnsupported,
     isOnline,
+    amountsToSign,
   } = context
 
-  const { inputCurrency, outputCurrency, inputCurrencyAmount, inputCurrencyBalance, recipient } = derivedTradeState
+  const { inputCurrency, outputCurrency, inputCurrencyAmount, inputCurrencyBalance, recipient, isQuoteBasedOrder } = derivedTradeState
   const isBalanceGreaterThan1Atom = inputCurrencyBalance
     ? BigInt(inputCurrencyBalance.quotient.toString()) > BigInt(0)
     : false
   const canPlaceOrderWithoutBalance = isBalanceGreaterThan1Atom && isInsufficientBalanceOrderAllowed && !isWrapUnwrap
+  
+  // For quote-based orders (like buy orders), use the maximum send amount that includes fees and slippage
+  // Otherwise, use the input currency amount
+  const amountToValidateAgainstBalance = isQuoteBasedOrder && amountsToSign 
+    ? amountsToSign.maximumSendSellAmount 
+    : inputCurrencyAmount
+
   const isNativeIn = inputCurrency && getIsNativeToken(inputCurrency) && !isWrapUnwrap
 
   const approvalRequired =
@@ -99,7 +107,17 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       return TradeFormValidation.BalancesNotLoaded
     }
 
-    if (inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
+    if (!amountToValidateAgainstBalance) {
+      return TradeFormValidation.InputAmountNotSet
+    }
+
+    if (inputCurrencyBalance.lessThan(amountToValidateAgainstBalance)) {
+      return TradeFormValidation.BalanceInsufficient
+    }
+  } else if (amountToValidateAgainstBalance && inputCurrencyBalance) {
+    // For orders that can be placed without full balance (like limit orders),
+    // still validate if user has enough for the actual amount including costs
+    if (inputCurrencyBalance.lessThan(amountToValidateAgainstBalance)) {
       return TradeFormValidation.BalanceInsufficient
     }
   }
