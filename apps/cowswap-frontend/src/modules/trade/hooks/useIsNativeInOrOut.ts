@@ -22,7 +22,7 @@ export function useIsNativeIn(): boolean {
   // Track stability to prevent flickering during initial load
   useEffect(() => {
     if (prevInputCurrencyIdRef.current !== inputCurrencyId) {
-      setIsStable(true)
+      setIsStable(false)
       prevInputCurrencyIdRef.current = inputCurrencyId
     }
 
