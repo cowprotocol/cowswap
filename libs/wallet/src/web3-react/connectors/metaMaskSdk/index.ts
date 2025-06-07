@@ -36,6 +36,8 @@ export class NoMetaMaskSDKError extends Error {
 /**
  * Parses a chainId from a string or number.
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function parseChainId(chainId: string | number) {
   return typeof chainId === 'number' ? chainId : Number.parseInt(chainId, chainId.startsWith('0x') ? 16 : 10)
 }
@@ -79,6 +81,8 @@ export class MetaMaskSDK extends Connector {
   /**
    * Indicates whether the user is connected to the MetaMaskSDK.
    */
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   private async isConnected() {
     try {
       if (this.provider?.isConnected?.() === true) {
@@ -122,6 +126,8 @@ export class MetaMaskSDK extends Connector {
       }) as Listener)
 
       this.provider.on('disconnect', (async (error: ProviderRpcError): Promise<void> => {
+        // TODO: Replace any with proper type definitions
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const originalError = ((error.data as any)?.originalError ?? error) as ProviderRpcError
 
         // If MetaMask emits a `code: 1013` error, wait for reconnection before disconnecting
@@ -275,6 +281,8 @@ export class MetaMaskSDK extends Connector {
         params: [{ chainId: chainIdHex }],
       })
       .catch(async (error: ProviderRpcError) => {
+        // TODO: Replace any with proper type definitions
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const originalError = ((error.data as any)?.originalError ?? error) as ProviderRpcError
 
         if (originalError.code === 4902 && desiredChain !== undefined) {
@@ -298,6 +306,8 @@ export class MetaMaskSDK extends Connector {
   /**
    * Clears the cache.
    */
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   private clearCache() {
     localStorage.removeItem('.MMSDK_cached_address')
     localStorage.removeItem('.MMSDK_cached_chainId')

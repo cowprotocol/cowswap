@@ -32,6 +32,8 @@ interface AccountElementProps {
   className?: string
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function AccountElement({ className, standaloneMode, pendingActivities }: AccountElementProps) {
   const { account, chainId } = useWalletInfo()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()

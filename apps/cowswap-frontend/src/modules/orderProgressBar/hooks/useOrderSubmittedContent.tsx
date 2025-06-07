@@ -12,6 +12,8 @@ import { useOrderProgressBarProps } from './useOrderProgressBarProps'
 
 import { TransactionSubmittedContent } from '../pure/TransactionSubmittedContent'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useOrderSubmittedContent(chainId: SupportedChainId, _bridgeQuoteAmounts?: BridgeQuoteAmounts) {
   const { transactionHash, pendingTrade } = useTradeConfirmState()
   const hasPendingTrade = !!pendingTrade

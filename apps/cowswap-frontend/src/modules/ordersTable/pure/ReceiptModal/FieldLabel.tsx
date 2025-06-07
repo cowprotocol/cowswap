@@ -10,6 +10,8 @@ interface Props {
   prefix?: string | ReactElement
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function FieldLabel({ label, tooltip, prefix }: Props) {
   return (
     <styledEl.Label>

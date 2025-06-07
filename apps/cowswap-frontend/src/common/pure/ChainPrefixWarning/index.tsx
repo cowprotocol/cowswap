@@ -38,6 +38,8 @@ type ChainPrefixWarningProps = {
   chainInfo: BaseChainInfo
   isDarkMode: boolean
 }
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function ChainPrefixWarning({ chainPrefixWarning, chainInfo, isDarkMode }: ChainPrefixWarningProps) {
   const { label, addressPrefix, logo, color } = chainInfo
   const logoUrl = isDarkMode ? logo.dark : logo.light

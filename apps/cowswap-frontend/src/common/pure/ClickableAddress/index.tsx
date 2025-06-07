@@ -14,6 +14,8 @@ export type ClickableAddressProps = {
   chainId: number
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ClickableAddress(props: ClickableAddressProps) {
   const { address, chainId } = props
 

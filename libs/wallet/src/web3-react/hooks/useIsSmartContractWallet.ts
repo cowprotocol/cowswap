@@ -29,6 +29,8 @@ function useHasContractAtAddress(): boolean | undefined {
         }
 
         return code !== '0x'
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         console.debug(`checkIsSmartContractWallet: failed to check address ${_account}`, e.message)
         return false

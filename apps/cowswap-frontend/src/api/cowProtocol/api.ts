@@ -72,6 +72,8 @@ function _fetchProfile(
   chainId: ChainId,
   url: string,
   method: 'GET' | 'POST' | 'DELETE',
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any,
 ): Promise<Response> {
   const baseUrl = _getProfileApiBaseUrl(chainId)
@@ -136,6 +138,8 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
   }
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function _getAppDataQuoteParams(params: FeeQuoteParams) {
   if (params.appData) {
     // AppData is set, use what we have

@@ -53,6 +53,8 @@ const mockUseSafeBundleFlowContext = useSafeBundleFlowContext as jest.MockedFunc
 const mockUseNeedsApproval = useNeedsApproval as jest.MockedFunction<typeof useNeedsApproval>
 const mockIsBundlingSupported = useIsTxBundlingSupported as jest.MockedFunction<typeof useIsTxBundlingSupported>
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const tradeContextMock = { postOrderParams: { partiallyFillable: true } } as any as TradeFlowContext
 const priceImpactMock: PriceImpact = {
   priceImpact: undefined,

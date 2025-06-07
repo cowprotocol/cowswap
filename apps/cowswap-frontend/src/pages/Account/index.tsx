@@ -20,6 +20,8 @@ const Balances = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Acco
 const Governance = lazy(() => import(/* webpackChunkName: "governance" */ 'pages/Account/Governance'))
 const Delegate = lazy(() => import(/* webpackChunkName: "delegate" */ 'pages/Account/Delegate'))
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function _getPropsFromRoute(route: string) {
   switch (route) {
     case RoutesEnum.ACCOUNT:
@@ -34,6 +36,8 @@ function _getPropsFromRoute(route: string) {
 }
 
 // Note: As we build these single pages, we will remove this component in the future
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const AccountOverview = () => {
   return (
     <>
@@ -49,6 +53,8 @@ export const AccountOverview = () => {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function Account() {
   const { pathname } = useLocation()
   const [id, name] = _getPropsFromRoute(pathname)

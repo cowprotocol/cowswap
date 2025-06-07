@@ -36,6 +36,9 @@ const START_DATE: Record<SupportedChainId, string> = {
   [SupportedChainId.AVALANCHE]: AVALANCHE_START_DATE,
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function SurplusCard() {
   const { surplusAmount, isLoading } = useTotalSurplus()
 

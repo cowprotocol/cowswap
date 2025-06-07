@@ -1,4 +1,3 @@
-
 import { defaultAbiCoder, ParamType } from '@ethersproject/abi'
 import { TypedDataField } from '@ethersproject/abstract-signer'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -10,7 +9,10 @@ import { AbiInput, AbiItem, EIP712TypedData, ProviderConnector } from '@1inch/pe
 import { getContract } from './getContract'
 
 export class PermitProviderConnector implements ProviderConnector {
-  constructor(private provider: JsonRpcProvider, private walletSigner?: Wallet | undefined) {}
+  constructor(
+    private provider: JsonRpcProvider,
+    private walletSigner?: Wallet | undefined,
+  ) {}
 
   contractEncodeABI(abi: AbiItem[], address: string | null, methodName: string, methodParams: unknown[]): string {
     const contract = getContract(address || '', abi, this.provider)

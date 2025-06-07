@@ -41,6 +41,8 @@ export interface PrimaryActionButtonProps {
   context: PrimaryActionButtonContext
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function PrimaryActionButton(props: PrimaryActionButtonProps) {
   return buttonsMap[props.state](props.context)
 }

@@ -46,6 +46,8 @@ type DataRowParams = {
   toggleWalletModal: Command
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export const TokensTableRow = ({
   tokenData,
   index,
@@ -53,6 +55,8 @@ export const TokensTableRow = ({
   closeApproveModal,
   openApproveModal,
   toggleWalletModal,
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }: DataRowParams) => {
   const { account, chainId } = useWalletInfo()
   const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
@@ -99,6 +103,8 @@ export const TokensTableRow = ({
     try {
       openApproveModal(tokenData?.symbol)
       await approveCallback(`Approve ${tokenData?.symbol || 'token'}`)
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(`[TokensTableRow]: Issue approving.`, error)
       handleSetError(error?.message)

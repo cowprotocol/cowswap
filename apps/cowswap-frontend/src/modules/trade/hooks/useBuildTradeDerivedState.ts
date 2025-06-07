@@ -67,6 +67,8 @@ export function useBuildTradeDerivedState(
   })
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useTokenForTargetChain(targetChainId: number | undefined, currencyId: string | null) {
   const bridgeSupportedTokens = useBridgeSupportedTokens(targetChainId).data
 

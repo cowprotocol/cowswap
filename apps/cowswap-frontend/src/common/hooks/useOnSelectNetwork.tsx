@@ -27,6 +27,8 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
         await switchNetwork(targetChain)
 
         setChainIdToUrl(targetChain)
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         console.error('Failed to switch networks', error)
 

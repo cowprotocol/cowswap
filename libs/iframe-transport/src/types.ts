@@ -1,6 +1,8 @@
 export interface JsonRpcRequest {
   id?: number
   method: string
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   params?: any[]
 }
 

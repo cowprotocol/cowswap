@@ -40,6 +40,8 @@ interface BridgingInProgressStepProps {
   surplusData?: SurplusData
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function BridgingStep({ context, surplusData }: BridgingInProgressStepProps) {
   const showConfetti = useWithConfetti({
     isFinished: context.bridgingStatus === SwapAndBridgeStatus.DONE,

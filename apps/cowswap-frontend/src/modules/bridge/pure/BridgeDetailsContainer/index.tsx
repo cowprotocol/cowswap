@@ -37,6 +37,10 @@ export interface BridgeDetailsContainerProps {
   explorerUrl?: string
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function BridgeDetailsContainer({
   status,
   stopNumber,
@@ -57,10 +61,14 @@ export function BridgeDetailsContainer({
 }: BridgeDetailsContainerProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const toggleExpanded = () => {
     setIsExpanded((state) => !state)
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const onKeyDown = (e: KeyboardEvent) => {
     if (!isCollapsible) return
     if (!['Enter', ' '].includes(e.key)) return

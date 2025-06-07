@@ -12,11 +12,15 @@ import { validateHookDappManifest } from '../validateHookDappManifest'
 const UPDATE_TIME_KEY = 'HOOK_DAPPS_UPDATE_TIME'
 const HOOK_DAPPS_UPDATE_INTERVAL = ms`6h`
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const getLastUpdateTimestamp = () => {
   const lastUpdate = localStorage.getItem(UPDATE_TIME_KEY)
   return lastUpdate ? +lastUpdate : null
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function IframeDappsManifestUpdater() {
   const hooksState = useAtomValue(customHookDappsAtom)
   const upsertCustomHookDapp = useSetAtom(upsertCustomHookDappAtom)

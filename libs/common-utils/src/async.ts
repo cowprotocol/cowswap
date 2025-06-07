@@ -7,6 +7,8 @@
 import { Command } from '@cowprotocol/types'
 
 export type ResolveCallback<T> = (value: CancelableResult<T>) => void
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type RejectCallback = (reason?: any) => void
 export type CancelCallback = Command
 
@@ -63,6 +65,8 @@ export function createImperativePromise<T>(promiseArg?: Promise<T> | null | unde
         }
       }
     },
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     reject: (reason?: any) => {
       reject && reject(reason)
     },
@@ -72,7 +76,11 @@ export function createImperativePromise<T>(promiseArg?: Promise<T> | null | unde
   }
 }
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ArgumentsType<T> = T extends (...args: infer A) => any ? A : never
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AsyncFunction<T> = (...args: any[]) => Promise<T>
 
 // see https://stackoverflow.com/a/54825370/82609

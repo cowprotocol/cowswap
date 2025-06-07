@@ -45,6 +45,8 @@ const tabs = [
     ), value: LP_TOKEN_LIST_COW_AMM_ONLY },
 ]
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function LpTokenListsWidget({
   account,
   search,

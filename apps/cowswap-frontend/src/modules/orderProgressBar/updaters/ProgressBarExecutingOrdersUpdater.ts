@@ -13,6 +13,8 @@ export function ProgressBarExecutingOrdersUpdater(): null {
   countdownsRef.current = allCountdowns
 
   useLayoutEffect(() => {
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     function updateCountdowns() {
       const countdowns = countdownsRef.current
 

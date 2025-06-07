@@ -10,6 +10,8 @@ interface WrapCardProps {
   amountToWrap?: CurrencyAmount<Currency>
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function WrapCard(props: WrapCardProps) {
   const { balance, amountToWrap, currency } = props
 

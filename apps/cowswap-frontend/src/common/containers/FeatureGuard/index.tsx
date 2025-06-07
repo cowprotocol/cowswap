@@ -8,6 +8,8 @@ interface FeatureGuardProps {
   defaultContent?: ReactNode
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function FeatureGuard({ featureFlag, children, defaultContent }: FeatureGuardProps) {
   const flags = useFeatureFlags()
 

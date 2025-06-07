@@ -14,6 +14,9 @@ interface OrderHooksDetailsProps {
   children: (content: ReactElement | string) => ReactElement
 }
 
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
 export function OrderHooksDetails({ appData, fullAppData, children }: OrderHooksDetailsProps) {
   const { appDataDoc } = useAppData(appData, fullAppData)
 
@@ -43,6 +46,8 @@ interface HooksInfoProps {
   title: string
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function HooksInfo({ data, title }: HooksInfoProps) {
   return (
     <Wrapper>

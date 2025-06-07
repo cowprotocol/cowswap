@@ -11,6 +11,8 @@ import { getDefaultTradeRawState, TradeUrlParams } from '../types'
  * When we navigate from Swap to anywhere else and currently selected trade is bridging
  * Then navigate to the target widget with default assets
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useGetTradeUrlParams() {
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
   const tradeContext = useTradeRouteContext()

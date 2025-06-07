@@ -28,6 +28,8 @@ export interface EthFlowParams {
   analytics: TradeFlowAnalytics
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export async function ethFlow({
   tradeContext,
   ethFlowContext,
@@ -178,6 +180,8 @@ export async function ethFlow({
     analytics.sign(swapFlowAnalyticsContext)
 
     return true
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logTradeFlow('ETH FLOW', 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)

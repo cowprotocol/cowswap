@@ -11,6 +11,8 @@ import { PopperInstance } from './types'
 /**
  * This allows to bind a tooltip (popper.js) around to a cytoscape elements (node, edge)
  */
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function bindPopper(
   event: EventObject,
   targetData: Cytoscape.NodeDataDefinition | Cytoscape.EdgeDataDefinition,

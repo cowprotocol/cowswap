@@ -17,6 +17,8 @@ export interface SwapRateDetailsProps {
   deadline: number
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsProps) {
   const { isLoading: isRateLoading, bridgeQuote } = useTradeQuote()
 
@@ -45,6 +47,8 @@ export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsPro
       }
       feeWrapper={
         shouldDisplayBridgeDetails && providerDetails
+          // TODO: Extract nested component outside render function
+          // eslint-disable-next-line react/no-unstable-nested-components
           ? (feeElement: ReactNode) => (
               <BridgeAccordionSummary bridgeEstimatedTime={bridgeEstimatedTime} bridgeProtocol={providerDetails}>
                 {feeElement}

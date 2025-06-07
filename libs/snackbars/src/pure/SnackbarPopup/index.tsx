@@ -61,6 +61,8 @@ export interface SnackbarPopupProps {
   onExpire(id: string): void
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SnackbarPopup(props: SnackbarPopupProps) {
   const { id, children, duration, icon, onExpire } = props
 

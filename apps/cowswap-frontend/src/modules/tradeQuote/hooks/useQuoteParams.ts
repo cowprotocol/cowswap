@@ -27,6 +27,8 @@ export interface QuoteParams {
   appData: AppDataInfo['doc'] | undefined
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
   const { account } = useWalletInfo()
   const provider = useWalletProvider()
@@ -43,6 +45,8 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
 
   const receiver = recipientAddress && isAddress(recipientAddress) ? recipientAddress : account
 
+  // TODO: Reduce function complexity by extracting logic
+  // eslint-disable-next-line complexity
   const params = useSafeMemo(() => {
     if (isWrapOrUnwrap || isProviderNetworkUnsupported) return
     if (!inputCurrency || !outputCurrency || !orderKind || !provider) return

@@ -19,6 +19,8 @@ import { useTradeState } from '../useTradeState'
 const INITIAL_CHAIN_ID_FROM_URL = getRawCurrentChainIdFromUrl()
 const EMPTY_TOKEN_ID = '_'
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function useSetupTradeState(): void {
   useSetupTradeStateFromUrl()
   const { chainId: providerChainId, account } = useWalletInfo()
@@ -109,6 +111,8 @@ export function useSetupTradeState(): void {
    *  - remember the URL changes (/100/USDC/COW)
    *  - apply the URL changes only if user accepted network changes in the wallet
    */
+  // TODO: Reduce function complexity by extracting logic
+  // eslint-disable-next-line complexity
   useEffect(() => {
     // Do nothing when in alternative modal
     // App should already be loaded by then
