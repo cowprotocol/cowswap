@@ -55,6 +55,8 @@ export function useActivityDerivedState({
   }, [chainId, activity, gnosisSafeInfo, orderCreationTxInfo])
 }
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function getActivityDerivedState(props: {
   chainId?: number
   activityData: ActivityDescriptors | null
@@ -114,6 +116,8 @@ export function getActivityDerivedState(props: {
   }
 }
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function getActivityLinkUrl(params: {
   chainId: number
   id: string
@@ -165,6 +169,8 @@ type ActivityState =
   | 'cancelling'
   | 'creating'
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function getActivityState({
   isPending,
   isOrder,

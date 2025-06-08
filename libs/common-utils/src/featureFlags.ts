@@ -6,6 +6,8 @@ import { isProdLike } from './environments'
 const ENABLED_FOR_DEVELOP: string[] = []
 
 export class FeatureFlag {
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   static get(name: string) {
     if (!isProdLike && ENABLED_FOR_DEVELOP.includes(name)) {
       return true
@@ -18,6 +20,8 @@ export class FeatureFlag {
     return null
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   static set(name: string, value: string) {
     if (typeof window !== 'undefined' && window.localStorage) {
       localStorage.setItem(name, value)

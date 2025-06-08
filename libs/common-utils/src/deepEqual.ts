@@ -1,4 +1,6 @@
 // https://dmitripavlutin.com/how-to-compare-objects-in-javascript/
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function deepEqual(object1: any, object2: typeof object1): boolean {
   const keys1 = Object.keys(object1)
   const keys2 = Object.keys(object2)

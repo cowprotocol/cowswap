@@ -11,6 +11,8 @@ import { isOffchainOrder, ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { receiptAtom, updateReceiptAtom } from '../../state/orderReceiptAtom'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useCloseReceiptModal() {
   const updateReceiptState = useSetAtom(updateReceiptAtom)
   return useCallback(() => updateReceiptState({ order: null }), [updateReceiptState])

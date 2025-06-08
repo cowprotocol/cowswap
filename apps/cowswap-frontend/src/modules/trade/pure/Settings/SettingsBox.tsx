@@ -17,6 +17,8 @@ interface SettingsBoxProps {
   toggle: Command
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SettingsBox({ title, tooltip, value, toggle, disabled = false }: SettingsBoxProps) {
   return (
     <SettingsBoxWrapper disabled={disabled}>

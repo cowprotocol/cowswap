@@ -18,6 +18,8 @@ import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { isTwapOrderExpired } from '../utils/getTwapOrderStatus'
 import { parseTwapOrderStruct } from '../utils/parseTwapOrderStruct'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TwapOrdersUpdater(props: {
   safeAddress: string
   chainId: SupportedChainId

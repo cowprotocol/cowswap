@@ -41,14 +41,20 @@ const orderIdForSurplusModalAtom = atom<string | undefined>((get) => {
   return state.orderIds[0]
 })
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useAddOrderToSurplusQueue() {
   return useSetAtom(addSurplusOrderAtom)
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useOrderIdForSurplusModal() {
   return useAtomValue(orderIdForSurplusModalAtom)
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useRemoveOrderFromSurplusQueue() {
   return useSetAtom(removeSurplusOrderAtom)
 }

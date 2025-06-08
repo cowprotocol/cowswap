@@ -8,6 +8,8 @@ interface NetworkLogoProps {
   size?: number
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function NetworkLogo({ chainId, size = 16 }: NetworkLogoProps) {
   const chainInfo = getChainInfo(chainId)
   if (!chainInfo) return null

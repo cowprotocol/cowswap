@@ -18,6 +18,8 @@ const localForageJotai = createInstance({
  * Important!
  * In jotai@2.x they changed the fix above, and now we have to patch the subscribe method
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const getJotaiIsolatedStorage = <T>() => {
   const storage = createJSONStorage<T>(() => localStorage)
 
@@ -37,9 +39,13 @@ export const getJotaiIsolatedStorage = <T>() => {
  *
  * @returns jotai json storage with merged localStorage info and initial state.
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getJotaiMergerStorage<T>() {
   const storage = createJSONStorage<T>(() => localStorage)
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   function getItem(key: string, initial: T) {
     const value = storage.getItem(key, initial)
 
@@ -50,6 +56,8 @@ export function getJotaiMergerStorage<T>() {
   return { ...storage, getItem }
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function atomWithIdbStorage<Value>(key: string, initialValue: Value) {
   const storage: AsyncStringStorage = {
     async getItem(key: string): Promise<string | null> {

@@ -35,6 +35,8 @@ interface SwapVCowCallbackParams {
 /**
  * Hook that parses the result input with BigNumber value to CurrencyAmount
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useParseVCowResult(result: BigNumber | undefined) {
   const { chainId } = useWalletInfo()
 
@@ -90,6 +92,8 @@ export function useVCowData(): VCowData {
 /**
  * Hook used to swap vCow to Cow token
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useSwapVCowCallback({ openModal, closeModal }: SwapVCowCallbackParams) {
   const { account } = useWalletInfo()
   const { contract: vCowContract, chainId } = useVCowContract()
@@ -150,6 +154,8 @@ export function useSetSwapVCowStatus(): SetSwapVCowStatusCallback {
 /**
  * Hook that gets swap vCow->Cow status
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useSwapVCowStatus() {
   return useAppSelector((state: AppState) => state.cowToken.swapVCowStatus)
 }

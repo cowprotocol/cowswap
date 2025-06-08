@@ -68,13 +68,19 @@ function useWalletDetails(account?: string, standaloneMode?: boolean): WalletDet
   }, [isSmartContractWallet, isSafeApp, walletName, icon, ensName])
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   const { provider } = useWeb3React()
   const { account, chainId } = walletInfo
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo>()
   const safeAppsSdk = useSafeAppsSdk()
 
+  // TODO: Break down this large function into smaller functions
+  // eslint-disable-next-line max-lines-per-function
   useEffect(() => {
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const updateSafeInfo = async () => {
       if (safeAppsSdk) {
         try {
@@ -150,6 +156,8 @@ interface WalletUpdaterProps {
   standaloneMode?: boolean
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function WalletUpdater({ standaloneMode }: WalletUpdaterProps) {
   const walletInfo = useWalletInfo()
   const walletDetails = useWalletDetails(walletInfo.account, standaloneMode)

@@ -54,6 +54,8 @@ const TextWrapper = styled.span<{ clickable: boolean }>`
   }
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function HeadingText({ inputCurrency, currency, rateImpact, toggleIcon, onToggle }: Props) {
   if (!currency) {
     return <Wrapper>Select input and output</Wrapper>

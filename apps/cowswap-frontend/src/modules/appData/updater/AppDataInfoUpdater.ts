@@ -27,6 +27,8 @@ export type UseAppDataParams = {
  * Fetches and updates appDataInfo whenever a dependency changes
  * The hook can be called only from an updater
  */
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function AppDataInfoUpdater({
   appCodeWithWidgetMetadata,
   chainId,
@@ -70,6 +72,8 @@ export function AppDataInfoUpdater({
         const { doc, fullAppData, appDataKeccak256 } = await buildAppData(params)
 
         setAppDataInfo({ doc, fullAppData, appDataKeccak256, env: getEnvByClass(orderClass) })
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         console.error(`[useAppData] failed to build appData, falling back to default`, params, e)
         setAppDataInfo(getAppData())

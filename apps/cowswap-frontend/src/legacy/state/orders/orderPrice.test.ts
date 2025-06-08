@@ -57,6 +57,8 @@ describe('getEstimatedExecutionPrice()', () => {
   })
 })
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('getRemainderAmountsWithoutSurplus()', () => {
   it('Should return the remainder amounts without the surplus', () => {
     const fee = new BigNumber(0.00016).times(10 ** WETH_MAINNET.decimals).toString()
@@ -89,6 +91,8 @@ describe('getRemainderAmountsWithoutSurplus()', () => {
 
     const order = getLimitOrderWithFee(sellAmountBeforeFee, buyAmount, fee, OrderKind.SELL)
 
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ;(order as any).executionData = {
       executedSellAmount: new BigNumber(99 * 10 ** WETH_MAINNET.decimals),
       executedBuyAmount: new BigNumber(12345566 * 10 ** USDC_MAINNET.decimals),
@@ -108,6 +112,8 @@ describe('getRemainderAmountsWithoutSurplus()', () => {
 
     const order = getLimitOrderWithFee(sellAmountBeforeFee, buyAmount, fee, OrderKind.BUY)
 
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ;(order as any).executionData = {
       executedSellAmount: new BigNumber(101 * 10 ** WETH_MAINNET.decimals),
       executedBuyAmount: new BigNumber(12345566 * 10 ** USDC_MAINNET.decimals),
@@ -127,6 +133,8 @@ describe('getRemainderAmountsWithoutSurplus()', () => {
 
     const order = getLimitOrderWithFee(sellAmountBeforeFee, buyAmount, fee, OrderKind.SELL)
 
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ;(order as any).apiAdditionalInfo = {
       executedSellAmountBeforeFees: JSBI.BigInt(17),
       executedBuyAmount: JSBI.BigInt(16),
@@ -146,6 +154,8 @@ describe('getRemainderAmountsWithoutSurplus()', () => {
 
     const order = getLimitOrderWithFee(sellAmountBeforeFee, buyAmount, fee, OrderKind.BUY)
 
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ;(order as any).apiAdditionalInfo = {
       executedSellAmountBeforeFees: JSBI.BigInt(3),
       executedBuyAmount: JSBI.BigInt(2),

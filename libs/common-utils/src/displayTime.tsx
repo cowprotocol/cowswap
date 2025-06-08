@@ -2,7 +2,11 @@ import ms from 'ms'
 
 const [oneD, oneH, oneM, oneS] = [ms('1d'), ms('1h'), ms('1m'), ms('1s')]
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const isPlural = (num: number) => (num > 10 ? num % 10 !== 1 : num !== 1)
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const addPluralSuffix = (num: number, label: string) => (isPlural(num) ? `${label}s` : label)
 
 /**

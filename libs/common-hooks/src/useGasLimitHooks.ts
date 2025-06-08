@@ -28,6 +28,8 @@ export const useHookGasLimitCalculator = (): IHookGasCalculator => {
   }
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const useGasLimit = (transactionData: ITransactionData, swrConfig?: SWRConfiguration) => {
   const gasCalculator = useHookGasLimitCalculator()
 

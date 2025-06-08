@@ -16,6 +16,8 @@ type Props = {
   limitPriceTooltip?: React.ReactNode
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function LimitPriceRow(props: Props) {
   const { price, isInvertedState, limitPriceLabel = 'Limit price', limitPriceTooltip = 'The limit price' } = props
   const [isInverted, setIsInverted] = isInvertedState

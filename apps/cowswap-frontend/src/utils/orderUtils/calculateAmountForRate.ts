@@ -11,6 +11,8 @@ export type RateCalculationParams = {
   outputCurrency: Currency | null
 }
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function calculateAmountForRate({
   activeRate,
   amount,

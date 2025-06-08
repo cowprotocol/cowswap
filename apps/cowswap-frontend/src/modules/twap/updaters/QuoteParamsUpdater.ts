@@ -11,6 +11,8 @@ import { twapOrdersSettingsAtom } from '../state/twapOrdersSettingsAtom'
  * For limit orders we just use inputted amount as quote amount, but for TWAP we need to use the amount of the part.
  * useSetTradeQuoteParams() just fill the quote amount into `tradeQuoteParamsAtom` that is used by `useQuoteParams`.
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function QuoteParamsUpdater() {
   const { inputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const { numberOfPartsValue } = useAtomValue(twapOrdersSettingsAtom)

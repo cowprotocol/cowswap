@@ -20,6 +20,9 @@ import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 import { TradeFlowContext } from '../../types/TradeFlowContext'
 
+// TODO: Break down this large function into smaller functions
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, complexity
 export async function swapFlow(
   input: TradeFlowContext,
   priceImpactParams: PriceImpact,
@@ -191,6 +194,8 @@ export async function swapFlow(
     analytics.sign(swapFlowAnalyticsContext)
 
     return true
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logTradeFlow('SWAP FLOW', 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)

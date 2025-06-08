@@ -27,6 +27,8 @@ export function useUpdateActiveRate(): UpdateRateCallback {
   const { isRateFromUrl: _currentIsRateFromUrl } = rateState
 
   return useCallback(
+    // TODO: Reduce function complexity by extracting logic
+    // eslint-disable-next-line complexity
     (update: RateUpdateParams) => {
       const { activeRate, isRateFromUrl, isAlternativeOrderRate, isInitialPriceSet } = update
 

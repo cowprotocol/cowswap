@@ -40,6 +40,8 @@ interface HookParams {
   cowShed: CowShedHooks
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export async function buildOmnibridgePostHook({
   cowShed,
   proxyAddress,

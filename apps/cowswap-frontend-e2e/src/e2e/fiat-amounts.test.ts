@@ -1,7 +1,11 @@
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getInputFiatAmount() {
   return cy.get('#input-currency-input .fiat-amount').invoke('text')
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getInputToken() {
   return cy.get('#input-currency-input .token-amount-input').should('be.enabled')
 }

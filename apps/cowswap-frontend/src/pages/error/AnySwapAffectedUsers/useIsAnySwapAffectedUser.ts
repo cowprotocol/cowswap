@@ -28,6 +28,8 @@ const ANYSWAP_V4_CONTRACT = '0x6b7a87899490EcE95443e979cA9485CBE7E71522'
 const MULTICALL_OPTIONS = {}
 const SWR_CONFIG: SWRConfiguration = { refreshInterval: ms`30m`, revalidateOnFocus: false }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function useIsAnySwapAffectedUser() {
   const { chainId, account } = useWalletInfo()
   const { data: allowances } = useMultipleContractSingleData<[BigNumber]>(

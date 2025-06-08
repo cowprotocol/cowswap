@@ -29,6 +29,9 @@ interface UseAnalyticsReporterProps {
  * Common hook used by all apps to report some basic data to analytics
  * @param props
  */
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function useAnalyticsReporter(props: UseAnalyticsReporterProps) {
   const {
     account,
@@ -44,6 +47,8 @@ export function useAnalyticsReporter(props: UseAnalyticsReporterProps) {
 
   const prevAccount = usePrevious(account)
 
+  // TODO: Reduce function complexity by extracting logic
+  // eslint-disable-next-line complexity
   useEffect(() => {
     if (initiated) {
       return
@@ -64,6 +69,8 @@ export function useAnalyticsReporter(props: UseAnalyticsReporterProps) {
     // Report service worker status
     if (typeof window !== 'undefined') {
       const installed = Boolean(window.navigator.serviceWorker?.controller)
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const hit = Boolean((window as any).__isDocumentCached)
       const action = installed ? (hit ? 'Cache hit' : 'Cache miss') : 'Not installed'
 
