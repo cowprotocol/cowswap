@@ -36,12 +36,18 @@ const IconBase = styled(SVG)<{ size?: string; opacity?: string }>`
   }
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const DoubleArrowRightIcon = ({ onClick }: IconProps) => (
   <IconBase src={ICON_DOUBLE_ARROW_RIGHT} onClick={onClick} />
 )
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const CloseIcon = ({ onClick }: IconProps) => <IconBase src={ICON_CLOSE_X} onClick={onClick} />
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const ArrowLeft = ({ onClick }: IconProps) => (
   <IconBase src={ICON_ARROW} onClick={onClick} size="14px" opacity="1" />
 )

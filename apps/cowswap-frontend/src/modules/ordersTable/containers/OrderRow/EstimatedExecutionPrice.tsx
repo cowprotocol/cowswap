@@ -115,6 +115,10 @@ export type EstimatedExecutionPriceProps = TokenAmountProps & {
   onApprove?: Command
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
   const {
     amount,
@@ -282,6 +286,8 @@ type UnlikelyToExecuteWarningProps = {
   feeAmount?: CurrencyAmount<Currency>
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function UnlikelyToExecuteWarning(props: UnlikelyToExecuteWarningProps) {
   const { feePercentage, feeAmount } = props
 

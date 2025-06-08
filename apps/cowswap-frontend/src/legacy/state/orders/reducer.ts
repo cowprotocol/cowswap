@@ -142,6 +142,8 @@ function prefillState(
   }
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getOrderById(state: Required<OrdersState>, chainId: ChainId, id: string) {
   const stateForChain = state[chainId]
   return (
@@ -156,6 +158,8 @@ function getOrderById(state: Required<OrdersState>, chainId: ChainId, id: string
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function deleteOrderById(state: Required<OrdersState>, chainId: ChainId, id: string) {
   const stateForChain = state[chainId]
   delete stateForChain.pending[id]
@@ -196,6 +200,8 @@ function getValidTo(userValidTo: number | undefined, order: SerializedOrder): nu
   return (userValidTo || order.validTo) as number
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function cancelOrderInState(
   state: Required<OrdersState>,
   chainId: ChainId,
@@ -212,6 +218,8 @@ function cancelOrderInState(
   addOrderToState(state, chainId, id, 'cancelled', orderObject.order, isSafeWallet)
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function _orderSorterByExpirationTime(a: OrderObject | undefined, b: OrderObject | undefined) {
   const validToA = Number(a?.order.validTo)
   const validToB = Number(b?.order.validTo)
@@ -226,6 +234,8 @@ function _orderSorterByExpirationTime(a: OrderObject | undefined, b: OrderObject
   return expirationTimeB - expirationTimeA
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function _toPartialsOrderMap(acc: PartialOrdersMap, element: OrderObject | undefined) {
   element && (acc[element.id] = element)
   return acc
@@ -233,6 +243,8 @@ function _toPartialsOrderMap(acc: PartialOrdersMap, element: OrderObject | undef
 
 const initialState: OrdersState = {}
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export default createReducer(initialState, (builder) =>
   builder
     .addCase(addPendingOrder, (state, action) => {
@@ -285,6 +297,8 @@ export default createReducer(initialState, (builder) =>
       prefillState(state, action)
       const { chainId, orders, isSafeWallet } = action.payload
 
+      // TODO: Reduce function complexity by extracting logic
+      // eslint-disable-next-line complexity
       orders.forEach((newOrder) => {
         const { id, status: newStatus } = newOrder
 

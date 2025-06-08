@@ -15,6 +15,8 @@ interface RefundedContentProps {
   bridgeSendCurrencyAmount: CurrencyAmount<Currency>
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function RefundedBridgingContent({ account, bridgeSendCurrencyAmount }: RefundedContentProps) {
   const sourceChainId = bridgeSendCurrencyAmount.currency.chainId as SupportedChainId
 

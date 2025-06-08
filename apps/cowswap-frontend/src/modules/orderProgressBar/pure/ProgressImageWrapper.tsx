@@ -90,6 +90,8 @@ const PROCESS_IMAGE_WRAPPER_GAP: GapMap = {
   refundCompleted: undefined,
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ProgressImageWrapper({ children, stepName, ...props }: ProgressImageWrapperProps) {
   return (
     <ProgressImageWrapperEl

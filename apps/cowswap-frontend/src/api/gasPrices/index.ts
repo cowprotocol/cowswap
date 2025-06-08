@@ -47,6 +47,8 @@ class GasFeeApi {
   }
 
   getHeaders(chainId: ChainId): { headers?: Headers } {
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const headers: { [key: string]: any } = {}
     const apiKey = GAS_API_KEYS[chainId]
 
@@ -77,6 +79,8 @@ class GasFeeApi {
     return price || null
   }
 
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   parseData(json: any, chainId: ChainId): GasFeeEndpointResponse {
     const output: GasFeeEndpointResponse = {
       lastUpdate: new Date().toISOString(),
@@ -105,6 +109,8 @@ class GasFeeApi {
     return output
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   async fetchData(chainId: ChainId) {
     const url = this.getUrl(chainId)
     const headers = this.getHeaders(chainId)

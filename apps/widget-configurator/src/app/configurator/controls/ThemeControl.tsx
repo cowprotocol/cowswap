@@ -15,10 +15,14 @@ const ThemeOptions = [
   { label: 'Dark', value: 'dark' },
 ]
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ThemeControl() {
   const { mode, toggleColorMode, setAutoMode } = useContext(ColorModeContext)
   const [isAutoMode, setIsAutoMode] = useState(false)
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleThemeChange = (event: SelectChangeEvent) => {
     const selectedTheme = event.target.value
     if (selectedTheme === AUTO) {

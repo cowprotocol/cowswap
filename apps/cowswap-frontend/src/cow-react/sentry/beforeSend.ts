@@ -1,6 +1,8 @@
 import * as Sentry from '@sentry/react'
 import { ErrorEvent as SentryErrorEvent } from '@sentry/types'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function beforeSend(event: SentryErrorEvent, _hint: Sentry.EventHint) {
   if (shouldIgnoreErrorBasedOnExtra(event)) {
     return null
@@ -63,6 +65,8 @@ function isUnhandledRejectionError(type: string): boolean {
   return type === 'UnhandledRejection'
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function searchBreadcrumbs(breadcrumbs: Sentry.Breadcrumb[], checkBreadcrumbs: CheckBreadcrumb[]) {
   const now = Date.now()
 

@@ -18,6 +18,8 @@ interface Props {
  * Creates a link to the relevant explorer: Etherscan, GP Explorer or Blockscout, or Gnosis Safe web if its a Gnosis Safe Transaction
  * @param props
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function EnhancedTransactionLink(props: Props) {
   const { tx, chainId } = props
 

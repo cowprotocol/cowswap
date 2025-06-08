@@ -45,6 +45,10 @@ import LockedGnoVesting from './LockedGnoVesting'
 // Number of blocks to wait before we re-enable the swap COW -> vCOW button after confirmation
 const BLOCKS_TO_WAIT = 2
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export default function Profile() {
   const provider = useWalletProvider()
   const { account, chainId } = useWalletInfo()

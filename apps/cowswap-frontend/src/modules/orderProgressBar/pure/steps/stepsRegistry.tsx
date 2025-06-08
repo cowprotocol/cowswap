@@ -14,6 +14,8 @@ import { RenderProgressTopSection } from '../RenderProgressTopSection'
 
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function InitialStepWrapper(props: OrderProgressBarProps) {
   return (
     <InitialStep isBridgingTrade={props.isBridgingTrade}>
@@ -22,6 +24,8 @@ function InitialStepWrapper(props: OrderProgressBarProps) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function ExecutingStepWrapper(props: OrderProgressBarProps) {
   return (
     <ExecutingStep isBridgingTrade={props.isBridgingTrade}>
@@ -30,6 +34,8 @@ function ExecutingStepWrapper(props: OrderProgressBarProps) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function FinishedStepWrapper(props: OrderProgressBarProps) {
   const { stepName, solverCompetition: solvers, totalSolvers, order, surplusData, chainId, receiverEnsName } = props
 
@@ -49,6 +55,8 @@ function FinishedStepWrapper(props: OrderProgressBarProps) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function SolvingStepWrapper(props: OrderProgressBarProps) {
   const { countdown, stepName, showCancellationModal, isBridgingTrade } = props
   const isUnfillable = stepName === 'unfillable'
@@ -68,6 +76,8 @@ function SolvingStepWrapper(props: OrderProgressBarProps) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function CancellingStepWrapper(props: OrderProgressBarProps) {
   return (
     <CancellingStep>
@@ -76,6 +86,8 @@ function CancellingStepWrapper(props: OrderProgressBarProps) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function CancelledStepWrapper(props: OrderProgressBarProps) {
   return (
     <CancelledStep>
@@ -84,6 +96,8 @@ function CancelledStepWrapper(props: OrderProgressBarProps) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function ExpiredStepWrapper(props: OrderProgressBarProps) {
   return (
     <ExpiredStep navigateToNewOrder={props.navigateToNewOrder}>
@@ -92,6 +106,8 @@ function ExpiredStepWrapper(props: OrderProgressBarProps) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function BridgingStepWrapper(props: OrderProgressBarProps) {
   if (!props.stepName || !props.swapAndBridgeContext) return null
 

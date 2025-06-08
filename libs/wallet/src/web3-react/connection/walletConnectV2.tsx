@@ -66,6 +66,8 @@ function createWalletConnectV2Connector(chainId: SupportedChainId): [AsyncConnec
  * In this case, the connection won't be established, because at step 1 the WC2 connector was created for chainId=1.
  * To overcome this problem we proxy WC2 connection and change it's implementation on flight on network changes.
  */
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 function createWc2Connection(chainId = getCurrentChainIdFromUrl()): Web3ReactConnection {
   let [web3WalletConnectV2, web3WalletConnectV2Hooks] = createWalletConnectV2Connector(chainId)
 
@@ -131,6 +133,8 @@ function createWc2Connection(chainId = getCurrentChainIdFromUrl()): Web3ReactCon
 
 export const walletConnectConnectionV2 = createWc2Connection()
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function WalletConnectV2Option({ selectedWallet, tryActivation }: ConnectionOptionProps) {
   const isActive = useIsActiveConnection(selectedWallet, walletConnectConnectionV2)
 

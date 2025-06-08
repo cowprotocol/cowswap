@@ -30,6 +30,9 @@ import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapForm
 
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export default function AdvancedOrdersPage() {
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)

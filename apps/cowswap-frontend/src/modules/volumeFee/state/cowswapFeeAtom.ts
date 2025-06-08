@@ -27,6 +27,8 @@ const COWSWAP_VOLUME_FEES: Record<SupportedChainId, VolumeFee | null> = {
   [SupportedChainId.AVALANCHE]: null, // TODO: check if we should apply fee on Avalanche
 }
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export const cowSwapFeeAtom = atom((get) => {
   const { chainId, account } = get(walletInfoAtom)
   const volumeFee = COWSWAP_VOLUME_FEES[chainId]

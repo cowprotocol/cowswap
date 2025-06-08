@@ -100,6 +100,8 @@ export function useTransactionsByHash({ hashes }: { hashes: string[] }): Enhance
   }, [allTxs, hashes])
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useAllClaimingTransactions() {
   const transactionsMap = useAllTransactions()
   const transactions = Object.values(transactionsMap)
@@ -109,6 +111,8 @@ export function useAllClaimingTransactions() {
   }, [transactions])
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useAllClaimingTransactionIndices() {
   const claimingTransactions = useAllClaimingTransactions()
   return useMemo(() => {

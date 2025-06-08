@@ -9,6 +9,8 @@ interface OrderTableGroupMapItem {
   children: ParsedOrder[]
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const childrenOrdersSorter = (a: ParsedOrder, b: ParsedOrder) => {
   return a.creationTime.getTime() - b.creationTime.getTime()
 }

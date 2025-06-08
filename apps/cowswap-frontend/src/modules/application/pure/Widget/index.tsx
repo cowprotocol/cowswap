@@ -22,6 +22,8 @@ export interface AppBodyProps {
 /**
  * The styled container element that wraps the content of most pages and the tabs.
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Widget({ children, className }: AppBodyProps) {
   return <Wrapper className={className}>{children}</Wrapper>
 }

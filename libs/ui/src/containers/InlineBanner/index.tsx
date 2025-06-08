@@ -98,6 +98,8 @@ const Wrapper = styled.span<{
   }
 `
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CloseIcon = styled(X as any)`
   --size: 16px;
   cursor: pointer;
@@ -133,6 +135,10 @@ export interface InlineBannerProps {
   backDropBlur?: boolean
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function InlineBanner({
   children,
   className,

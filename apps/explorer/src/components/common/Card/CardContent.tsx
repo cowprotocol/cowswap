@@ -101,6 +101,8 @@ const CardBody = styled.div<{
  *
  * An extensible content container.
  */
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export const CardContent: React.FC<CardContentProps> = ({
   variant,
   valueSize,

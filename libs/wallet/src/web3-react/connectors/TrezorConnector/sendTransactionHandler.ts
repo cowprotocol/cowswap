@@ -8,6 +8,8 @@ import { getHwAccount } from '../../../api/utils/getHwAccount'
 
 import type { TrezorConnect } from '@trezor/connect-web'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export async function sendTransactionHandler(
   params: [{ to: string; value: string | undefined; data: string | undefined }],
   account: string,

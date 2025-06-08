@@ -8,6 +8,8 @@ import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { environmentAtom } from '../../state/environmentAtom'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useNetworkLogo(chainId?: number) {
   const { bridgeNetworkInfo } = useAtomValue(environmentAtom)
   const theme = useTheme()

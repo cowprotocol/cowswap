@@ -255,6 +255,9 @@ export function getEstimatedExecutionPrice(
  * IF (Kind = Partial)
  *        EEP = MAX(FEP, FBOP)
  */
+// TODO: Break down this large function into smaller functions
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, complexity
 export function getEstimatedExecutionPrice(
   order: Order | ParsedOrder | undefined,
   fillPrice: Price<Currency, Currency>,
@@ -440,6 +443,8 @@ export function getRemainderAmount(kind: OrderKind, order: Order | ParsedOrder):
   return JSBI.subtract(JSBI.BigInt(fullAmount), executedAmount).toString()
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getExecutedAmounts(order: Order | ParsedOrder) {
   let sellAmount: string
   let executedSellAmount: string | undefined

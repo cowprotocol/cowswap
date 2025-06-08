@@ -40,6 +40,8 @@ function storeLocale(): SupportedLocale | undefined {
 export const initialLocale =
   parseLocale(parsedQueryString().lng) ?? storeLocale() ?? navigatorLocale() ?? DEFAULT_LOCALE
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useUrlLocale() {
   const parsed = useParsedQueryString()
   return parseLocale(parsed.lng)

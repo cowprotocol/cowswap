@@ -6,12 +6,16 @@ import { WidgetMethodsEmit, widgetIframeTransport } from '@cowprotocol/widget-li
 
 import { openModalState } from 'common/state/openModalState'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function IframeResizer() {
   const isModalOpen = useAtomValue(openModalState)
   const previousHeightRef = useRef(0)
 
   useLayoutEffect(() => {
     // Initial height calculation and message
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const sendHeightUpdate = () => {
       const contentHeight = document.body.scrollHeight
 

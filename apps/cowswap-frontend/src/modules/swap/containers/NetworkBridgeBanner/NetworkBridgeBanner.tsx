@@ -136,6 +136,8 @@ function shouldShowAlert(chainId: number | undefined): chainId is NetworkAlertCh
   return Boolean(chainId && SHOULD_SHOW_ALERT[chainId as unknown as NetworkAlertChains])
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function NetworkBridgeBanner() {
   const { active: isActive, chainId } = useWalletInfo()
   const [darkMode] = useDarkModeManager()
