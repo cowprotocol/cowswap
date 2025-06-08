@@ -12,6 +12,8 @@ import { useUpdateSwapRawState } from './useUpdateSwapRawState'
 
 import { SELL_ETH_RESET_STATE } from '../consts'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useOnCurrencySelection() {
   const { orderKind } = useSwapDerivedState()
   const tradeOnCurrencySelection = useTradeOnCurrencySelection()

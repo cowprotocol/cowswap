@@ -25,6 +25,9 @@ interface BannerProps {
   isTokenSelectorView?: boolean
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
   const isDarkMode = useIsDarkMode()
   const isInjectedWidgetMode = isInjectedWidget()

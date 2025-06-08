@@ -12,6 +12,8 @@ import { useNavigate } from 'common/hooks/useNavigate'
 /**
  * Changing chainId in query parameters: ?chain=mainnet
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useLegacySetChainIdToUrl() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -37,6 +39,8 @@ export function useLegacySetChainIdToUrl() {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const replaceURLParam = (search: string, param: string, newValue: string) => {
   const searchParams = new URLSearchParams(search)
   searchParams.set(param, newValue)

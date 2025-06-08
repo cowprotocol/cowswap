@@ -23,7 +23,7 @@ export function useSendBatchTransactions(): SendBatchTxCallback {
         const chainIdHex = '0x' + (+chainId).toString(16)
         const calls = txs.map((tx) => ({ ...tx, chainId: chainIdHex }))
 
-        return provider.send('wallet_sendCalls', [{ version: '1.0', from: account, calls }])
+        return provider.send('wallet_sendCalls', [{ version: '1.0', from: account, calls, chainId: chainIdHex }])
       }
 
       if (safeAppsSdk) {

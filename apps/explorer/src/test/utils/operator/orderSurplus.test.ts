@@ -11,7 +11,11 @@ const TWENTY_FIVE_PERCENT = new BigNumber('0.25')
 const TWENTY = new BigNumber('20')
 const TWENTY_FIVE = new BigNumber('25')
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('getOrderSurplus', () => {
+  // TODO: Break down this large function into smaller functions
+  // eslint-disable-next-line max-lines-per-function
   describe('Buy order', () => {
     describe('fillOrKill', () => {
       test('No surplus', () => {
@@ -102,6 +106,8 @@ describe('getOrderSurplus', () => {
     })
   })
 
+  // TODO: Break down this large function into smaller functions
+  // eslint-disable-next-line max-lines-per-function
   describe('Sell order', () => {
     describe('fillOrKill', () => {
       test('No surplus', () => {

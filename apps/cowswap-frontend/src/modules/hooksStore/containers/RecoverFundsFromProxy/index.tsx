@@ -36,6 +36,9 @@ const BALANCE_SWR_CFG = { refreshInterval: BALANCE_UPDATE_INTERVAL, revalidateOn
 
 const selectedCurrencyAtom = atom<Currency | undefined>(undefined)
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 function FAQ({ explorerLink }: { explorerLink: string | undefined }) {
   const [openItems, setOpenItems] = useState<Record<number, boolean>>({})
 
@@ -102,6 +105,10 @@ function FAQ({ explorerLink }: { explorerLink: string | undefined }) {
   )
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function RecoverFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
   const [selectedCurrency, setSelectedCurrency] = useAtom(selectedCurrencyAtom)
   const [tokenBalance, setTokenBalance] = useState<CurrencyAmount<Currency> | null>(null)

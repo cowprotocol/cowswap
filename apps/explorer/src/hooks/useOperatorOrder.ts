@@ -130,6 +130,8 @@ export function useOrderAndErc20s(orderId: string, updateInterval = 0): UseOrder
 
   const { value, isLoading: areErc20Loading, error: errors = {} } = useMultipleErc20({ networkId, addresses })
 
+  // TODO: Reduce function complexity by extracting logic
+  // eslint-disable-next-line complexity
   return useMemo(() => {
     if (orderError) {
       errors[orderId] = orderError

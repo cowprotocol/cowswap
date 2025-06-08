@@ -21,6 +21,9 @@ interface SwapResultContentProps {
   context: SwapResultContext
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function SwapResultContentContent({
   context: { winningSolver, receivedAmount, receivedAmountUsd, surplusAmount, surplusAmountUsd },
 }: SwapResultContentProps) {

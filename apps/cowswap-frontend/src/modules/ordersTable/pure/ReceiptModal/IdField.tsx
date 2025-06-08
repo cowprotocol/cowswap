@@ -9,6 +9,8 @@ export type Props = {
   id: string
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function IdField({ id, chainId }: Props) {
   const activityUrl = getEtherscanLink(chainId, 'transaction', id)
 

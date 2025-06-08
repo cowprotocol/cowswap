@@ -91,6 +91,8 @@ export const getPermitCacheAtom = atom(null, (get, set, params: GetPermitCachePa
   }
 })
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function buildKey({ chainId, tokenAddress, account, spender }: PermitCacheKeyParams) {
   const base = `${chainId}-${tokenAddress.toLowerCase()}-${spender.toLowerCase()}`
 

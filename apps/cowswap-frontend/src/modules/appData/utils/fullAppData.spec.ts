@@ -5,6 +5,8 @@ import { ALL_ENVIRONMENTS, EnvironmentName } from '@cowprotocol/common-utils'
 
 import { getFullAppDataByEnv } from './fullAppData'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const getAppData = (env: EnvironmentName | undefined) => JSON.parse(getFullAppDataByEnv(env))
 const metadataApi = new MetadataApi()
 

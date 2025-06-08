@@ -24,6 +24,8 @@ export function useFetchTwapOrdersFromSafe({
   useEffect(() => {
     if (!safeApiKit) return
 
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const persistOrders = () => {
       fetchTwapOrdersFromSafe(safeAddress, safeApiKit, composableCowContract).then(setOrdersSafeData)
     }

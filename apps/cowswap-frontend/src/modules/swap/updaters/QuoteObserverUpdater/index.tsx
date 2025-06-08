@@ -9,6 +9,8 @@ import { useSafeEffect } from 'common/hooks/useSafeMemo'
 
 import { useUpdateSwapRawState } from '../../hooks/useUpdateSwapRawState'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function QuoteObserverUpdater() {
   const state = useDerivedTradeState()
   const receiveAmountInfo = useReceiveAmountInfo()

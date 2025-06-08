@@ -31,11 +31,17 @@ export const TradeDetailsAccordion = ({
   open,
   onToggle,
   feeWrapper,
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }: TradeDetailsAccordionProps) => {
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleToggle = () => {
     onToggle?.()
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleKeyDown = (e: { key: string; preventDefault: () => void }) => {
     if (['Enter', ' ', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
       e.preventDefault()

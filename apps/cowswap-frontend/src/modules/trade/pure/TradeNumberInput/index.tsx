@@ -38,6 +38,8 @@ type InputArrowsProps = {
   onClickDown: Command
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function InputArrows({ onClickUp, onClickDown }: InputArrowsProps) {
   return (
     <ArrowsWrapper>
@@ -56,6 +58,10 @@ export function InputArrows({ onClickUp, onClickDown }: InputArrowsProps) {
   )
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function TradeNumberInput(props: TradeNumberInputProps) {
   const {
     value,
@@ -77,6 +83,8 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
   const [isFocused, setIsFocused] = useState(false)
 
   const validateInput = useCallback(
+    // TODO: Reduce function complexity by extracting logic
+    // eslint-disable-next-line complexity
     (newValue: string) => {
       const hasDot = newValue.includes('.')
       const [quotient, decimals] = (newValue || '').split('.')
@@ -184,6 +192,8 @@ function increaseValue(value: string, step: number, min: number | undefined): st
 
  * Uses BigNumberJS for avoiding JS finicky float point math
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function decreaseValue(value: string, step: number, min: number | undefined) {
   const n = new BigNumberJs(value)
 

@@ -13,6 +13,8 @@ export interface Web3StatusProps {
   onClick?: () => void
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Web3Status({ pendingActivities, className, onClick }: Web3StatusProps) {
   const connectionType = useConnectionType()
   const { account } = useWalletInfo()

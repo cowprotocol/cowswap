@@ -17,6 +17,8 @@ const Wrapper = styled.span`
   word-break: break-all;
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function FiatAmount({ amount, defaultValue, className, accurate = false }: FiatAmountProps) {
   const formattedAmount = formatFiatAmount(amount)
   const title = FractionUtils.fractionLikeToExactString(amount, LONG_PRECISION)

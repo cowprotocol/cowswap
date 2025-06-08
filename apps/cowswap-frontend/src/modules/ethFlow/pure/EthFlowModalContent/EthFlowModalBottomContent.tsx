@@ -34,6 +34,8 @@ export type BottomContentParams = {
   wrappingPreview: WrappingPreviewProps
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function EthFlowModalBottomContent(params: BottomContentParams) {
   const { state, buttonText, ethFlowContext, ethFlowActions, wrappingPreview } = params
   const {

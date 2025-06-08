@@ -58,6 +58,8 @@ export const updateConfirmationModalContextAtom = atom(
   }
 )
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useConfirmationRequest({
   onEnable: onEnableParam,
   onDismiss: onDismissParam,
@@ -70,6 +72,8 @@ export function useConfirmationRequest({
   return useCallback(
     (params: TriggerConfirmationParams): Promise<boolean> => {
       return new Promise((resolve) => {
+        // TODO: Add proper return type annotation
+        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         const onDismiss = () => {
           closeModal()
           onDismissParam?.()
@@ -77,6 +81,8 @@ export function useConfirmationRequest({
           resolve(false)
         }
 
+        // TODO: Add proper return type annotation
+        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         const onEnable = () => {
           closeModal()
           onEnableParam?.()

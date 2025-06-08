@@ -53,6 +53,9 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   onSelectChain(chain: ChainInfo): void
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function SelectTokenModal(props: SelectTokenModalProps) {
   const {
     defaultInputValue = '',

@@ -4,6 +4,8 @@ import { useSafeEffect } from 'common/hooks/useSafeMemo'
 
 import { useReceiveAmountInfo } from './useReceiveAmountInfo'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useUnknownImpactWarning() {
   const receiveAmountInfo = useReceiveAmountInfo()
 

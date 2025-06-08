@@ -86,6 +86,8 @@ const CancelAllButton = styled(TextButton)`
   }
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function MultipleCancellationMenu({ pendingOrders }: Props) {
   const { allowsOffchainSigning } = useWalletDetails()
   const ordersToCancel = useAtomValue(ordersToCancelAtom)

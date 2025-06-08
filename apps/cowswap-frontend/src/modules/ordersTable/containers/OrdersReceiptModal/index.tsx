@@ -17,6 +17,8 @@ type OrdersReceiptModalProps = {
   pendingOrdersPrices: PendingOrdersPrices
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function OrdersReceiptModal(props: OrdersReceiptModalProps) {
   // TODO: can we get selected order from URL by id?
   const order = useSelectedOrder()

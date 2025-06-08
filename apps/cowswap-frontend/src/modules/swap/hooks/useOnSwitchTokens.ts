@@ -11,6 +11,8 @@ import { useSwapDerivedState } from './useSwapDerivedState'
 
 import { SELL_ETH_RESET_STATE } from '../consts'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useOnSwitchTokens() {
   const { chainId } = useWalletInfo()
   const { inputCurrency, outputCurrency, orderKind } = useSwapDerivedState()
