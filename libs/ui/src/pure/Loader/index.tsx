@@ -1,3 +1,5 @@
+import React from 'react'
+
 import styled from 'styled-components/macro'
 
 export const StyledSVG = styled.svg<{ size: string; stroke?: string }>`
@@ -26,10 +28,15 @@ export const StyledSVG = styled.svg<{ size: string; stroke?: string }>`
  * Takes in custom size and stroke for circle color, default to primary color as fill,
  * need ...rest for layered styles on top
  */
-// TODO: Add proper return type annotation
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
-export function Loader({ size = '16px', stroke, ...rest }: { size?: string; stroke?: string; [k: string]: any }) {
+export function Loader({
+  size = '16px',
+  stroke,
+  ...rest
+}: {
+  size?: string
+  stroke?: string
+  [k: string]: unknown
+}): React.ReactElement {
   return (
     <StyledSVG viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" size={size} stroke={stroke} {...rest}>
       <path
