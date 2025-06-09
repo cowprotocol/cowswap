@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useLayoutEffect } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 
 import { waitForAnalytics } from '@cowprotocol/analytics'
 import { getUtmParams, cleanUpUtmParams, UtmParams } from '@cowprotocol/common-utils'
@@ -27,7 +27,10 @@ function handleUrlNavigation(
   const { href, origin, pathname: locationPath, hash: locationHash, search: locationSearch } = window.location
 
   if (hasQueryParamsOutOfHashbang) {
-    window.location.replace(newSearch ? `/#${locationPath}?${newSearch}` : '/')
+    // Preserve the hash content (the actual route) when moving UTM params from main URL to hash
+    const hashContent = locationHash.startsWith('#') ? locationHash.substring(1) : locationHash
+    const finalUrl = newSearch ? `/#${hashContent}?${newSearch}` : `/${locationHash}`
+    window.location.replace(finalUrl)
     return
   }
 
@@ -46,17 +49,27 @@ function handleUrlNavigation(
 export function useInitializeUtm(): void {
   const navigate = useNavigate()
   const { search, pathname, hash } = useLocation()
+  const hasProcessedUtm = useRef(false)
 
   // get atom setter
   const setUtm = useSetAtom(utmAtom)
 
   useLayoutEffect(
     () => {
+      // Prevent multiple runs of UTM processing
+      if (hasProcessedUtm.current) {
+        return
+      }
+
       const hasQueryParamsOutOfHashbang = !search && window.location.search
       const searchParams = new URLSearchParams(search || window.location.search)
       const utm = getUtmParams(searchParams)
+      const hasUtmParams = Object.values(utm).filter(Boolean).length > 0
 
-      if (Object.values(utm).filter(Boolean).length > 0) {
+      if (hasUtmParams) {
+        // Mark as processed to prevent re-runs
+        hasProcessedUtm.current = true
+
         // Only overrides the UTM if the URL includes at least one UTM param
         setUtm(utm)
 
@@ -71,11 +84,16 @@ export function useInitializeUtm(): void {
           }, 250) // Additional 250ms delay for analytics capture
         })
       } else {
-        // No UTM parameters, proceed with normal cleanup immediately
+        // Check if we need to clean up any remaining UTM parameters
         const newSearchParams = cleanUpUtmParams(searchParams)
         const newSearch = newSearchParams.toString()
 
-        handleUrlNavigation(newSearch, !!hasQueryParamsOutOfHashbang, navigate, pathname, hash)
+        // Only navigate if there's actually a change needed
+        const currentSearch = searchParams.toString()
+        if (newSearch !== currentSearch) {
+          hasProcessedUtm.current = true
+          handleUrlNavigation(newSearch, !!hasQueryParamsOutOfHashbang, navigate, pathname, hash)
+        }
       }
     },
     // No dependencies: It only needs to be initialized once

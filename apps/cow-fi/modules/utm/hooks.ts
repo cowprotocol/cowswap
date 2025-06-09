@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { waitForAnalytics } from '@cowprotocol/analytics'
 import { getUtmParams, hasUtmCodes, UtmParams } from '@cowprotocol/common-utils'
@@ -18,15 +18,24 @@ export function useInitializeUtm(): void {
   const pathname = usePathname()
   const router = useRouter()
   const searchParams = useSearchParams()
+  const hasProcessedUtm = useRef(false)
 
   // get atom setter
   const setUtm = useSetAtom(utmAtom)
 
   useEffect(() => {
+    // Prevent multiple runs of UTM processing
+    if (hasProcessedUtm.current) {
+      return
+    }
+
     const query = new URLSearchParams(searchParams?.toString())
     const utm = getUtmParams(query)
 
     if (hasUtmCodes(utm)) {
+      // Mark as processed to prevent re-runs
+      hasProcessedUtm.current = true
+
       // Only overrides the UTM if the URL includes at least one UTM param
       setUtm(utm)
 
@@ -38,8 +47,14 @@ export function useInitializeUtm(): void {
         }, 250) // Additional 250ms delay for analytics capture
       })
     } else {
-      // No UTM parameters, proceed with normal cleanup immediately
-      cleanUpParams(router, pathname, query)
+      // Check if we need to clean up any remaining UTM parameters
+      // cleanUpParams already checks if there are changes before navigating
+      const hasUtmToClean = Array.from(query.keys()).some((key) => key.startsWith('utm_'))
+      if (hasUtmToClean) {
+        hasProcessedUtm.current = true
+        cleanUpParams(router, pathname, query)
+      }
     }
-  }, [router, setUtm, pathname, searchParams])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Intentionally empty - we only want this to run once on mount
 }
