@@ -27,7 +27,7 @@ export function EthFlowBanner({ hasEnoughWrappedBalance, ...props }: EthFlowBann
   const wrapped = useWrappedToken()
 
   const showBannerCallback = (): void => {
-    return setShowBanner((state) => !state)
+    setShowBanner((state) => !state)
   }
 
   // Only render when trade state is ready and it's a native token swap
