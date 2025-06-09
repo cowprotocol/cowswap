@@ -3,6 +3,8 @@ interface OrderTokensToFetch {
   buyToken: string
 }
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isOrderToFetch = (input: any): input is OrderTokensToFetch => !!input.sellToken
 
 export function getTokensListFromOrders(orders: (OrderTokensToFetch | { order: OrderTokensToFetch })[]): string[] {

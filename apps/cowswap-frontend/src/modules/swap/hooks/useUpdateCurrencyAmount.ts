@@ -9,6 +9,8 @@ import { Field } from 'legacy/state/types'
 import { useSwapDerivedState } from './useSwapDerivedState'
 import { useUpdateSwapRawState } from './useUpdateSwapRawState'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useUpdateCurrencyAmount() {
   const { inputCurrencyAmount, outputCurrencyAmount } = useSwapDerivedState()
   const updateSwapState = useUpdateSwapRawState()

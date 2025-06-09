@@ -5,6 +5,8 @@ import { Order, OrderStatus } from '../actions'
 import { OrderObject, V2OrderObject } from '../reducer'
 import { isOrderExpired } from '../utils'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function deserializeOrder(orderObject: OrderObject | V2OrderObject | undefined) {
   let order: Order | undefined
   // we need to make sure the incoming order is a valid
@@ -36,6 +38,8 @@ function deserializeToken(serializedToken: SerializedToken): TokenWithLogo {
   return TokenWithLogo.fromToken(serializedToken, serializedToken.logoURI)
 }
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isV3Order(orderObject: any): orderObject is OrderObject {
   return orderObject?.order?.inputToken !== undefined || orderObject?.order?.outputToken !== undefined
 }

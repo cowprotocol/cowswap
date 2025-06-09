@@ -10,6 +10,8 @@ jest.mock('workbox-precaching', () => ({
 }))
 jest.mock('workbox-routing', () => ({ Route: class {} }))
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('document', () => {
   describe('matchDocument', () => {
     const TEST_DOCUMENTS = [
@@ -28,6 +30,8 @@ describe('document', () => {
     })
   })
 
+  // TODO: Break down this large function into smaller functions
+  // eslint-disable-next-line max-lines-per-function
   describe('handleDocument', () => {
     const requestUrl = 'request_url'
 

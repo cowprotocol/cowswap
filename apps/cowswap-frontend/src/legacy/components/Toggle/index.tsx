@@ -29,6 +29,9 @@ const turnOffToggle = keyframes`
   }
 `
 
+// TODO: Replace any with proper type definitions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-function-return-type
 const ToggleElementHoverStyle = (hasBgColor: boolean, theme: any, isActive?: boolean) =>
   hasBgColor
     ? {
@@ -99,6 +102,8 @@ export interface ToggleProps extends WithClassName {
   'data-click-event'?: string
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Toggle({
   id,
   bgColor,
@@ -110,6 +115,8 @@ export function Toggle({
 }: ToggleProps) {
   const [isInitialToggleLoad, setIsInitialToggleLoad] = useState(true)
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const switchToggle = (e: React.MouseEvent) => {
     e.stopPropagation()
     e.preventDefault()

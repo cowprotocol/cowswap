@@ -9,14 +9,20 @@ import { CREATING_STATES, Order, OrderStatus, PENDING_STATES } from 'legacy/stat
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const isPending = ({ status, replacementType }: { status: OrderStatus; replacementType?: string }) => {
   if (replacementType === 'replaced') return false
 
   return PENDING_STATES.includes(status)
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const isCreating = ({ status }: { status: OrderStatus }) => CREATING_STATES.includes(status)
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useCategorizeRecentActivity() {
   // Returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
   const allRecentActivity = useRecentActivity()

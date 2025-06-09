@@ -25,6 +25,9 @@ const COW_AIRDROP = {
   ),
 } as IAirdrop
 
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
 export function AirdropHookApp({ context }: HookDappProps) {
   const { data: claimData, isValidating, error } = useClaimData(COW_AIRDROP)
   const { data: gasLimit } = useGasLimit({ to: claimData?.contract.address, data: claimData?.callData })
@@ -79,6 +82,8 @@ export function AirdropHookApp({ context }: HookDappProps) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getMessageToUser({
   account,
   claimData,

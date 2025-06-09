@@ -28,6 +28,8 @@ type EncodeProps = {
 }
 type FullAppData = { fullAppData: string; fullAppDataPrettified: string; isValidAppData: boolean }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabChange */ }) => {
   const { encode } = tabData
   const [schema, setSchema] = useState<JSONSchema7>(encode.options.schema ?? {})

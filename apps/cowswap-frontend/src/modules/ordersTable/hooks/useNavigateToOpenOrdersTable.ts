@@ -6,6 +6,8 @@ import { useGetBuildOrdersTableUrl } from './useGetBuildOrdersTableUrl'
 
 import { OPEN_TAB } from '../const/tabs'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useNavigateToOpenOrdersTable() {
   const navigate = useNavigate()
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()

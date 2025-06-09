@@ -97,6 +97,8 @@ export function initGtm(gtmId: string = DEFAULT_GTM_ID): CowAnalytics {
 }
 
 // For testing purposes only
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function __resetGtmInstance() {
   if (process.env.NODE_ENV === 'test') {
     analytics.instance = null

@@ -18,6 +18,8 @@ interface HighFeeWarningProps {
   readonlyMode?: boolean
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function HighFeeWarning({ readonlyMode }: HighFeeWarningProps) {
   const { account } = useWalletInfo()
   const { feeWarningAccepted, setFeeWarningAccepted } = useHighFeeWarning()
@@ -58,6 +60,8 @@ export function HighFeeWarning({ readonlyMode }: HighFeeWarningProps) {
 }
 
 // checks fee as percentage (30% not a decimal)
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function _getWarningInfo(feePercentage?: Fraction) {
   if (!feePercentage || feePercentage.lessThan(LOW_TIER_FEE)) {
     return undefined
@@ -70,6 +74,8 @@ function _getWarningInfo(feePercentage?: Fraction) {
   }
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const HighFeeWarningMessage = ({ feePercentage }: { feePercentage?: Fraction }) => (
   <div>
     <small>

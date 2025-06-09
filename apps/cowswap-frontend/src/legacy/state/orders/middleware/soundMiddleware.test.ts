@@ -13,6 +13,8 @@ const actionMock = mock<AnyAction>()
 
 jest.mock('modules/sounds')
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('soundMiddleware', () => {
   beforeEach(() => {
     resetCalls(actionMock)
@@ -21,6 +23,8 @@ describe('soundMiddleware', () => {
       orders: {
         1: 'mock orders',
       },
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any)
     jest.clearAllMocks()
   })
@@ -31,6 +35,8 @@ describe('soundMiddleware', () => {
       when(actionMock.type).thenReturn('order/fullfillOrdersBatch')
       when(mockStore.getState()).thenReturn({
         orders: {},
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any)
 
       soundMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
@@ -114,6 +120,8 @@ describe('soundMiddleware', () => {
             },
           },
         },
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any)
 
       soundMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
@@ -139,6 +147,8 @@ describe('soundMiddleware', () => {
             },
           },
         },
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any)
 
       soundMiddleware(instance(mockStore))(nextMock)(instance(actionMock))

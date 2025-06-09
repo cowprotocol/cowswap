@@ -5,6 +5,9 @@ import * as styledEl from './styled'
 
 import { STEPS } from '../constants'
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function StepsWrapper({
   steps,
   currentStep,
@@ -41,6 +44,8 @@ export function StepsWrapper({
     }
   }, [currentStep, steps.length])
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const getStatus = (index: number) => {
     if (index === currentStep) return isCancelling ? 'cancelling' : 'active'
     if (index === currentStep + 1) return 'next'

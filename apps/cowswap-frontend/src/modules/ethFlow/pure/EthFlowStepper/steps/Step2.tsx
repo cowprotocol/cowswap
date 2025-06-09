@@ -10,6 +10,9 @@ import { ExplorerLinkStyled, Step, StepProps } from '../Step'
 
 type Step2Config = StepProps & { error?: string }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function Step2({ order, cancellation, creation }: EthFlowStepperProps) {
   const { state, isExpired, orderId, rejectedReason } = order
   const isCreating = state === SmartOrderStatus.CREATING
@@ -27,6 +30,8 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps) {
     state: stepState,
     icon,
     error,
+  // TODO: Reduce function complexity by extracting logic
+  // eslint-disable-next-line complexity
   } = useMemo<Step2Config>(() => {
     if ((rejectedReason || creationCancelled || (creationReplaced && isCreating)) && !isFilled) {
       return {

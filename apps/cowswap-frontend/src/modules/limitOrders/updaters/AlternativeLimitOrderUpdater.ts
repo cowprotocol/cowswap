@@ -168,6 +168,8 @@ function getDuration(order: Order | ParsedOrder): number {
 /**
  * Get pre-defined deadline matching given duration, if any
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getMatchingDeadline(duration: number) {
   // Match duration with approximate time
   return LIMIT_ORDERS_DEADLINES.find(({ value }) => {

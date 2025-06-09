@@ -6,6 +6,8 @@ interface CircularCountdownProps {
   countdown: number
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function CircularCountdown({ countdown }: CircularCountdownProps) {
   const radius = 45
   const circumference = 2 * Math.PI * radius

@@ -18,6 +18,8 @@ const widgetTypeMap: Record<TradeType, string> = {
  * ${sellSymbol},${buySymbol}::${widgetType} or null
  *
  **/
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useGetMarketDimension() {
   const tradeTypeInfo = useTradeTypeInfo()
   const derivedTradeState = useDerivedTradeState()

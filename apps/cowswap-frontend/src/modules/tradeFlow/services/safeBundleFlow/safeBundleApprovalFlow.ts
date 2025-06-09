@@ -24,6 +24,8 @@ import { SafeBundleFlowContext, TradeFlowContext } from '../../types/TradeFlowCo
 
 const LOG_PREFIX = 'SAFE APPROVAL BUNDLE FLOW'
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export async function safeBundleApprovalFlow(
   tradeContext: TradeFlowContext,
   safeBundleContext: SafeBundleFlowContext,

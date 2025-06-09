@@ -11,6 +11,8 @@ import type { Order } from 'legacy/state/orders/actions'
 
 const BRIDGE_TRANSACTION_POLLING_INTERVAL = ms`3s`
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useUpdateBridgeOrderData(
   chainId: SupportedChainId,
   order: Order | undefined,

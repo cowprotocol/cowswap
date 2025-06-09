@@ -14,10 +14,17 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useContract } from 'common/hooks/useContract'
 import { useCowShedHooks } from 'common/hooks/useCowShedHooks'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const fnSelector = (sig: string) => keccak256(toUtf8Bytes(sig)).slice(0, 10)
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const fnCalldata = (sig: string, encodedData: string) => pack(['bytes4', 'bytes'], [fnSelector(sig), encodedData])
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function useRecoverFundsFromProxy(
   selectedTokenAddress: string | undefined,
   tokenBalance: CurrencyAmount<Currency> | null,
@@ -36,6 +43,8 @@ export function useRecoverFundsFromProxy(
     return cowShedHooks.proxyOf(account)
   }, [account, cowShedHooks])
 
+  // TODO: Break down this large function into smaller functions
+  // eslint-disable-next-line max-lines-per-function
   const callback = useCallback(async () => {
     if (
       !cowShedHooks ||

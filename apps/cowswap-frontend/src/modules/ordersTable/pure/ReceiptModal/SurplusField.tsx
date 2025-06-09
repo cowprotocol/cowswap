@@ -10,6 +10,8 @@ interface Props {
   order: ParsedOrder
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SurplusField({ order }: Props) {
   const { kind, inputToken, outputToken } = order
   const { surplusAmount, surplusPercentage } = order.executionData
