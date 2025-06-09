@@ -8,16 +8,11 @@ import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 import { QuoteBridgeContext } from '../../../types'
 import { RecipientDisplay } from '../../RecipientDisplay'
 import { TokenAmountDisplay } from '../../TokenAmountDisplay'
+import { ContentItem } from '../types'
 
 export interface QuoteBridgeContentProps {
   quoteContext: QuoteBridgeContext
   children?: ReactNode
-}
-
-interface ContentItem {
-  withTimelineDot?: boolean
-  label: ReactNode
-  content: ReactNode
 }
 
 function createBridgeFeeContent(bridgeFee: QuoteBridgeContext['bridgeFee']): ContentItem | null {

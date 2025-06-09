@@ -6,7 +6,7 @@ import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { CollapsibleBridgeRoute } from '../CollapsibleBridgeRoute'
 import { BridgingProgressContent } from '../contents/BridgingProgressContent'
 import { PreparingBridgingContent } from '../contents/BridgingProgressContent/PreparingBridgingContent'
-import { SwapResultContentContent } from '../contents/SwapResultContent'
+import { SwapResultContent } from '../contents/SwapResultContent'
 import { BridgeStatusIcons, BridgeStatusTitlePrefixes, SwapStatusIcons, SwapStatusTitlePrefixes } from '../StopStatus'
 
 interface QuoteDetailsProps {
@@ -44,7 +44,7 @@ function SwapStep({ context }: SwapStepProps): ReactNode {
       sellAmount={sourceAmounts.sellAmount}
       buyAmount={sourceAmounts.buyAmount}
     >
-      <SwapResultContentContent context={swapResultContext} />
+      <SwapResultContent context={swapResultContext} />
     </BridgeDetailsContainer>
   )
 }

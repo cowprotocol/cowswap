@@ -12,6 +12,7 @@ import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 import { StyledTimelinePlusIcon, SuccessTextBold, TimelineIconCircleWrapper } from '../../../styles'
 import { SwapResultContext } from '../../../types'
 import { TokenAmountDisplay } from '../../TokenAmountDisplay'
+import { ContentItem } from '../types'
 
 const WinningSolverContainer = styled.div`
   display: flex;
@@ -21,12 +22,6 @@ const WinningSolverContainer = styled.div`
 
 interface SwapResultContentProps {
   context: SwapResultContext
-}
-
-interface ContentItem {
-  withTimelineDot?: boolean
-  label: ReactNode
-  content: ReactNode
 }
 
 function createWinningSolverContent(winningSolver: SwapResultContext['winningSolver']): ContentItem {
@@ -97,7 +92,7 @@ function createSurplusContent(
   }
 }
 
-export function SwapResultContentContent({
+export function SwapResultContent({
   context: { winningSolver, receivedAmount, receivedAmountUsd, surplusAmount, surplusAmountUsd },
 }: SwapResultContentProps): ReactNode {
   const contents = [
