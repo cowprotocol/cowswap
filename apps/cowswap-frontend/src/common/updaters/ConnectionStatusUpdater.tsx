@@ -1,8 +1,7 @@
-import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
 
 import { useIsOnline } from '@cowprotocol/common-hooks'
-import { useAddSnackbar, removeSnackbarAtom, SnackbarItem } from '@cowprotocol/snackbars'
+import { useAddSnackbar, useRemoveSnackbar, SnackbarItem } from '@cowprotocol/snackbars'
 import { UI } from '@cowprotocol/ui'
 
 import { AlertTriangle } from 'react-feather'
@@ -39,7 +38,7 @@ const createOfflineNotification = (): SnackbarItem => ({
 function useOfflineNotification(): void {
   const isOnline = useIsOnline()
   const addSnackbar = useAddSnackbar()
-  const removeSnackbar = useSetAtom(removeSnackbarAtom)
+  const removeSnackbar = useRemoveSnackbar()
   const refreshTimerRef = useRef<number | null>(null)
 
   const clearTimer = useCallback((): void => {
@@ -77,7 +76,7 @@ function useOfflineNotification(): void {
  * Component that monitors connection status and displays notifications when offline.
  * Returns null as it's a purely side-effect component.
  */
-export function ConnectionStatus(): null {
+export function ConnectionStatusUpdater(): null {
   useOfflineNotification()
   return null
 }

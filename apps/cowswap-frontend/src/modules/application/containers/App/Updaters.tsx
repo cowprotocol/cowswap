@@ -27,9 +27,9 @@ import { CorrelatedTokensUpdater } from 'modules/volumeFee'
 import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield/shared'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
-import { ConnectionStatus } from 'common/containers/ConnectionStatus'
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { AnnouncementsUpdater } from 'common/updaters/AnnouncementsUpdater'
+import { ConnectionStatusUpdater } from 'common/updaters/ConnectionStatusUpdater'
 import { FeatureFlagsUpdater } from 'common/updaters/FeatureFlagsUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
 import { LpBalancesAndAllowancesUpdater } from 'common/updaters/LpBalancesAndAllowancesUpdater'
@@ -61,7 +61,7 @@ export function Updaters() {
 
   return (
     <>
-      <ConnectionStatus />
+      <ConnectionStatusUpdater />
       <TradingSdkUpdater />
       <MultiCallUpdater chainId={sourceChainId} />
       <FeatureFlagsUpdater />
