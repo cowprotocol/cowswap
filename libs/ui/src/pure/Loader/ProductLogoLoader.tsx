@@ -1,4 +1,4 @@
-import React from 'react'
+import { ReactElement } from 'react'
 
 import styled, { keyframes } from 'styled-components/macro'
 
@@ -99,7 +99,7 @@ export function ProductLogoLoader({
   variant = ProductVariant.CowSwap,
   minHeight,
   gap,
-}: ProductLogoLoaderProps) {
+}: ProductLogoLoaderProps): ReactElement {
   return (
     <LoaderContainer minHeight={minHeight} gap={gap}>
       <div className="logo-wrapper">
