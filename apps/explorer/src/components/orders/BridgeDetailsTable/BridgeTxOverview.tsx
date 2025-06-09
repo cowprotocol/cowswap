@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { CrossChainOrder } from '@cowprotocol/cow-sdk'
@@ -10,7 +10,7 @@ interface TransactionDetailsDisplayProps {
   crossChainOrder: CrossChainOrder
 }
 
-export function BridgeTxOverview({ crossChainOrder }: TransactionDetailsDisplayProps) {
+export function BridgeTxOverview({ crossChainOrder }: TransactionDetailsDisplayProps): ReactNode {
   const { explorerUrl, provider, statusResult } = crossChainOrder
 
   if (explorerUrl) {
