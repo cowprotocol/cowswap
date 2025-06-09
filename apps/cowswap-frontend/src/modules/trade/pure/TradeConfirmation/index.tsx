@@ -47,84 +47,155 @@ export interface TradeConfirmationProps {
   recipient?: string | null
   buttonText?: React.ReactNode
   children?: (restContent: ReactElement) => ReactElement
+  isQuoteLoading?: boolean
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
-export function TradeConfirmation(props: TradeConfirmationProps) {
+function useTradeConfirmationState(props: TradeConfirmationProps): {
+  currentProps: TradeConfirmationProps
+  hasPendingTrade: boolean
+  isConfirmClicked: boolean
+  setIsConfirmClicked: (value: boolean) => void
+  forcePriceConfirmation: boolean
+} {
   const { pendingTrade, forcePriceConfirmation } = useTradeConfirmState()
-
   const propsRef = useRef(props)
   propsRef.current = props
 
   const [frozenProps, setFrozenProps] = useState<TradeConfirmationProps | null>(null)
   const hasPendingTrade = !!pendingTrade
-
-  const {
-    onConfirm,
-    onDismiss,
-    account,
-    ensName,
-    inputCurrencyInfo,
-    outputCurrencyInfo,
-    isConfirmDisabled,
-    priceImpact,
-    title,
-    refreshInterval,
-    buttonText = 'Confirm',
-    children,
-    recipient,
-    isPriceStatic,
-    appData,
-  } = frozenProps || props
-
   const [isConfirmClicked, setIsConfirmClicked] = useState(false)
+
+  const currentProps = frozenProps || props
 
   /**
    * Once user sends a transaction, we keep the confirmation content frozen
    */
   useEffect(() => {
     setFrozenProps(hasPendingTrade ? propsRef.current : null)
-
     if (!hasPendingTrade) {
       setIsConfirmClicked(false)
     }
   }, [hasPendingTrade])
 
-  const showRecipientWarning =
+  return {
+    currentProps,
+    hasPendingTrade,
+    isConfirmClicked,
+    setIsConfirmClicked,
+    forcePriceConfirmation,
+  }
+}
+
+function useRecipientWarning(recipient?: string | null, account?: string, ensName?: string): boolean {
+  return !!(
     recipient &&
     (account || ensName) &&
     ![account?.toLowerCase(), ensName?.toLowerCase()].includes(recipient.toLowerCase())
+  )
+}
 
+function useTradeConfirmationLogic(
+  currentProps: TradeConfirmationProps,
+  hasPendingTrade: boolean,
+  isConfirmClicked: boolean,
+  forcePriceConfirmation: boolean,
+): {
+  showRecipientWarning: boolean
+  isPriceChanged: boolean
+  resetPriceChanged: () => void
+  isButtonDisabled: boolean
+  isLoadingState: boolean
+} {
+  const { inputCurrencyInfo, outputCurrencyInfo, isConfirmDisabled, isPriceStatic, account, ensName, recipient } =
+    currentProps
+
+  const showRecipientWarning = useRecipientWarning(recipient, account, ensName)
   const inputAmount = inputCurrencyInfo.amount?.toExact()
   const outputAmount = outputCurrencyInfo.amount?.toExact()
-
   const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(inputAmount, outputAmount, forcePriceConfirmation)
-
   const isButtonDisabled =
     isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade || isConfirmClicked
+  // Check if we're in a loading state without valid currency info
+  const isLoadingState = !inputCurrencyInfo.amount || !outputCurrencyInfo.amount
 
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
-
-  const isUpToMedium = useMediaQuery(upToMedium)
-
-  // Combine local onClick logic with incoming onClick
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleConfirmClick = () => {
-    if (isUpToMedium) {
-      window.scrollTo({ top: 0, left: 0 })
-    }
-
-    setIsConfirmClicked(true)
-    onConfirm()
+  return {
+    showRecipientWarning,
+    isPriceChanged,
+    resetPriceChanged,
+    isButtonDisabled,
+    isLoadingState,
   }
+}
 
-  const hookDetailsElement = (
+function TradeConfirmationHeader({
+  title,
+  onDismiss,
+  hasPendingTrade,
+  isQuoteLoading,
+  refreshInterval,
+}: {
+  title: ReactElement | string
+  onDismiss: () => void
+  hasPendingTrade: boolean
+  isQuoteLoading: boolean
+  refreshInterval?: number
+}): ReactElement {
+  return (
+    <styledEl.Header>
+      <BackButton onClick={onDismiss} />
+      <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
+      <styledEl.HeaderRightContent>
+        {hasPendingTrade || isQuoteLoading ? null : <QuoteCountdown refreshInterval={refreshInterval} />}
+      </styledEl.HeaderRightContent>
+    </styledEl.Header>
+  )
+}
+
+function TradeAmountsPreview({
+  inputCurrencyInfo,
+  outputCurrencyInfo,
+  priceImpact,
+}: {
+  inputCurrencyInfo: CurrencyPreviewInfo
+  outputCurrencyInfo: CurrencyPreviewInfo
+  priceImpact: PriceImpact
+}): ReactElement {
+  return (
+    <styledEl.AmountsPreviewContainer>
+      <CurrencyAmountPreview id="input-currency-preview" currencyInfo={inputCurrencyInfo} />
+      <styledEl.SeparatorWrapper>
+        <styledEl.AmountsSeparator />
+      </styledEl.SeparatorWrapper>
+      <CurrencyAmountPreview
+        id="output-currency-preview"
+        currencyInfo={outputCurrencyInfo}
+        priceImpactParams={priceImpact}
+      />
+    </styledEl.AmountsPreviewContainer>
+  )
+}
+
+function TradeWarningsSection({
+  showRecipientWarning,
+  isPriceChanged,
+  isPriceStatic,
+  resetPriceChanged,
+}: {
+  showRecipientWarning: boolean
+  isPriceChanged: boolean
+  isPriceStatic?: boolean
+  resetPriceChanged: () => void
+}): ReactElement {
+  return (
+    <>
+      {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
+      {isPriceChanged && !isPriceStatic && <PriceUpdatedBanner onClick={resetPriceChanged} />}
+    </>
+  )
+}
+
+function TradeHookDetails({ appData }: { appData?: string | AppDataInfo }): ReactElement {
+  return (
     <>
       {appData && (
         <OrderHooksDetails appData={appData} isTradeConfirmation>
@@ -133,65 +204,146 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
       )}
     </>
   )
+}
 
-  // Check if we're in a loading state without valid currency info
-  const isLoadingState = !inputCurrencyInfo.amount || !outputCurrencyInfo.amount
+function TradeConfirmationContent({
+  isLoadingState,
+  inputCurrencyInfo,
+  outputCurrencyInfo,
+  priceImpact,
+  children,
+  appData,
+  showRecipientWarning,
+  isPriceChanged,
+  isPriceStatic,
+  resetPriceChanged,
+}: {
+  isLoadingState: boolean
+  inputCurrencyInfo: CurrencyPreviewInfo
+  outputCurrencyInfo: CurrencyPreviewInfo
+  priceImpact: PriceImpact
+  children?: (restContent: ReactElement) => ReactElement
+  appData?: string | AppDataInfo
+  showRecipientWarning: boolean
+  isPriceChanged: boolean
+  isPriceStatic?: boolean
+  resetPriceChanged: () => void
+}): ReactElement {
+  if (isLoadingState) {
+    return <ProductLogoLoader text="Loading quote" logoHeight={42} />
+  }
 
   return (
-    <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
-      <styledEl.Header>
-        <BackButton onClick={onDismiss} />
-        <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
+    <>
+      <TradeAmountsPreview
+        inputCurrencyInfo={inputCurrencyInfo}
+        outputCurrencyInfo={outputCurrencyInfo}
+        priceImpact={priceImpact}
+      />
+      {children?.(
+        <>
+          <TradeHookDetails appData={appData} />
+          <NoImpactWarning withoutAccepting />
+        </>,
+      )}
+      <TradeWarningsSection
+        showRecipientWarning={showRecipientWarning}
+        isPriceChanged={isPriceChanged}
+        isPriceStatic={isPriceStatic}
+        resetPriceChanged={resetPriceChanged}
+      />
+    </>
+  )
+}
 
-        <styledEl.HeaderRightContent>
-          {hasPendingTrade ? null : <QuoteCountdown refreshInterval={refreshInterval} />}
-        </styledEl.HeaderRightContent>
-      </styledEl.Header>
+function TradeConfirmationButton({
+  handleConfirmClick,
+  isButtonDisabled,
+  isLoadingState,
+  hasPendingTrade,
+  isConfirmClicked,
+  buttonText,
+}: {
+  handleConfirmClick: () => void
+  isButtonDisabled: boolean
+  isLoadingState: boolean
+  hasPendingTrade: boolean
+  isConfirmClicked: boolean
+  buttonText?: React.ReactNode
+}): ReactElement {
+  return (
+    <ButtonPrimary
+      onClick={handleConfirmClick}
+      disabled={isButtonDisabled || isLoadingState}
+      buttonSize={ButtonSize.BIG}
+    >
+      {hasPendingTrade || isConfirmClicked ? (
+        <LongLoadText fontSize={15} fontWeight={500}>
+          Confirm with your wallet <CenteredDots smaller />
+        </LongLoadText>
+      ) : isLoadingState ? (
+        <LongLoadText fontSize={15} fontWeight={500}>
+          Loading <CenteredDots smaller />
+        </LongLoadText>
+      ) : (
+        <Trans>{buttonText}</Trans>
+      )}
+    </ButtonPrimary>
+  )
+}
+
+export function TradeConfirmation(props: TradeConfirmationProps): ReactElement {
+  const { currentProps, hasPendingTrade, isConfirmClicked, setIsConfirmClicked, forcePriceConfirmation } =
+    useTradeConfirmationState(props)
+
+  const { showRecipientWarning, isPriceChanged, resetPriceChanged, isButtonDisabled, isLoadingState } =
+    useTradeConfirmationLogic(currentProps, hasPendingTrade, isConfirmClicked, forcePriceConfirmation)
+
+  const isUpToMedium = useMediaQuery(upToMedium)
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
+  // Combine local onClick logic with incoming onClick
+  const handleConfirmClick = (): void => {
+    if (isUpToMedium) {
+      window.scrollTo({ top: 0, left: 0 })
+    }
+    setIsConfirmClicked(true)
+    currentProps.onConfirm()
+  }
+
+  return (
+    <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && currentProps.onDismiss()}>
+      <TradeConfirmationHeader
+        title={currentProps.title}
+        onDismiss={currentProps.onDismiss}
+        hasPendingTrade={hasPendingTrade}
+        isQuoteLoading={currentProps.isQuoteLoading || false}
+        refreshInterval={currentProps.refreshInterval}
+      />
       <styledEl.ContentWrapper id="trade-confirmation">
-        {isLoadingState ? (
-          <ProductLogoLoader text="Loading quote" logoHeight={42} />
-        ) : (
-          <>
-            <styledEl.AmountsPreviewContainer>
-              <CurrencyAmountPreview id="input-currency-preview" currencyInfo={inputCurrencyInfo} />
-              <styledEl.SeparatorWrapper>
-                <styledEl.AmountsSeparator />
-              </styledEl.SeparatorWrapper>
-              <CurrencyAmountPreview
-                id="output-currency-preview"
-                currencyInfo={outputCurrencyInfo}
-                priceImpactParams={priceImpact}
-              />
-            </styledEl.AmountsPreviewContainer>
-            {children?.(
-              <>
-                {hookDetailsElement}
-                <NoImpactWarning withoutAccepting />
-              </>,
-            )}
-
-            {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
-            {isPriceChanged && !isPriceStatic && <PriceUpdatedBanner onClick={resetPriceChanged} />}
-          </>
-        )}
-
-        <ButtonPrimary
-          onClick={handleConfirmClick}
-          disabled={isButtonDisabled || isLoadingState}
-          buttonSize={ButtonSize.BIG}
-        >
-          {hasPendingTrade || isConfirmClicked ? (
-            <LongLoadText fontSize={15} fontWeight={500}>
-              Confirm with your wallet <CenteredDots smaller />
-            </LongLoadText>
-          ) : isLoadingState ? (
-            <LongLoadText fontSize={15} fontWeight={500}>
-              Loading <CenteredDots smaller />
-            </LongLoadText>
-          ) : (
-            <Trans>{buttonText}</Trans>
-          )}
-        </ButtonPrimary>
+        <TradeConfirmationContent
+          isLoadingState={isLoadingState}
+          inputCurrencyInfo={currentProps.inputCurrencyInfo}
+          outputCurrencyInfo={currentProps.outputCurrencyInfo}
+          priceImpact={currentProps.priceImpact}
+          children={currentProps.children}
+          appData={currentProps.appData}
+          showRecipientWarning={showRecipientWarning}
+          isPriceChanged={isPriceChanged}
+          isPriceStatic={currentProps.isPriceStatic}
+          resetPriceChanged={resetPriceChanged}
+        />
+        <TradeConfirmationButton
+          handleConfirmClick={handleConfirmClick}
+          isButtonDisabled={isButtonDisabled}
+          isLoadingState={isLoadingState}
+          hasPendingTrade={hasPendingTrade}
+          isConfirmClicked={isConfirmClicked}
+          buttonText={currentProps.buttonText || 'Confirm'}
+        />
       </styledEl.ContentWrapper>
     </styledEl.WidgetWrapper>
   )
