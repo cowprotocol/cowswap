@@ -30,6 +30,30 @@ export const DEFAULT_TRADE_QUOTE_STATE: TradeQuoteState = {
 
 export const tradeQuotesAtom = atom<Record<SellTokenAddress, TradeQuoteState | undefined>>({})
 
+// Helper function to check if we should skip update due to Fast quote finishing after Optimal quote
+function shouldSkipFastQuoteUpdate(prevQuote: TradeQuoteState, nextState: Partial<TradeQuoteState>): boolean {
+  return (
+    prevQuote.fetchParams?.fetchStartTimestamp === nextState.fetchParams?.fetchStartTimestamp &&
+    !!nextState.quote &&
+    nextState.fetchParams?.priceQuality === PriceQuality.FAST
+  )
+}
+
+// Helper function to create the updated trade quote state
+function createUpdatedTradeQuoteState(
+  prevQuote: TradeQuoteState,
+  nextState: Partial<TradeQuoteState>,
+): TradeQuoteState {
+  return {
+    ...prevQuote,
+    ...nextState,
+    quote: typeof nextState.quote === 'undefined' ? prevQuote.quote : nextState.quote,
+    localQuoteTimestamp: nextState.quote ? Math.ceil(Date.now() / 1000) : null,
+    // Ensure loading state is properly managed during transitions
+    isLoading: nextState.isLoading !== undefined ? nextState.isLoading : prevQuote.isLoading,
+  }
+}
+
 export const updateTradeQuoteAtom = atom(
   null,
   (get, set, _sellTokenAddress: SellTokenAddress, nextState: Partial<TradeQuoteState>) => {
@@ -39,23 +63,11 @@ export const updateTradeQuoteAtom = atom(
       const prevQuote = prevState[sellTokenAddress] || DEFAULT_TRADE_QUOTE_STATE
 
       // Don't update state if Fast quote finished after Optimal quote
-      if (
-        prevQuote.fetchParams?.fetchStartTimestamp === nextState.fetchParams?.fetchStartTimestamp &&
-        nextState.quote &&
-        nextState.fetchParams?.priceQuality === PriceQuality.FAST
-      ) {
+      if (shouldSkipFastQuoteUpdate(prevQuote, nextState)) {
         return { ...prevState }
       }
 
-      // Improved state transition logic to prevent broken modal flickering
-      const update: TradeQuoteState = {
-        ...prevQuote,
-        ...nextState,
-        quote: typeof nextState.quote === 'undefined' ? prevQuote.quote : nextState.quote,
-        localQuoteTimestamp: nextState.quote ? Math.ceil(Date.now() / 1000) : null,
-        // Ensure loading state is properly managed during transitions
-        isLoading: nextState.isLoading !== undefined ? nextState.isLoading : prevQuote.isLoading,
-      }
+      const update = createUpdatedTradeQuoteState(prevQuote, nextState)
 
       return {
         ...prevState,
