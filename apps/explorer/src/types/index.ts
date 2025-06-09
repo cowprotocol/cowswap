@@ -26,3 +26,5 @@ export type UiError = {
 }
 
 export type Errors = Record<string, UiError>
+
+export type Nullish<T> = T | null | undefined

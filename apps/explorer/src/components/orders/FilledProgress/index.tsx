@@ -1,19 +1,18 @@
-import React, { useMemo } from 'react'
+import React, { ReactNode } from 'react'
 
-import { isSellOrder } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { Color, Media } from '@cowprotocol/ui'
 import { PercentDisplay } from '@cowprotocol/ui/pure/PercentDisplay'
 
 import { ProgressBar } from 'components/common/ProgressBar'
 import { Amount, Percentage, SurplusComponent } from 'components/common/SurplusComponent'
-import { TokenAmount } from 'components/token/TokenAmount'
 import styled from 'styled-components/macro'
-import { safeTokenName } from 'utils'
 
 import { Order } from 'api/operator'
 
-import { OrderPriceDisplay } from '../OrderPriceDisplay'
+import { OrderAssetsInfo } from './OrderAssetsInfo'
+import { PriceWithTitle } from './PriceWithTitle'
+import { useFilledProgressContext } from './useFilledProgressContext'
 
 export type Props = {
   order: Order
@@ -161,141 +160,28 @@ const FilledContainer = styled.div`
   }
 `
 
-const OrderAssetsInfoWrapper = styled.span<{ lineBreak?: boolean }>`
-  font-size: 1.2rem;
-  line-height: normal;
-
-  b:first-child {
-    display: ${({ lineBreak }): string => (lineBreak ? 'block' : 'inline')};
-  }
-`
-
-export function FilledProgress(props: Props): React.ReactNode {
+export function FilledProgress(props: Props): ReactNode {
   const {
-    lineBreak = false,
-    fullView = false,
     isPriceInverted,
     invertPrice,
-    order: {
-      executedFeeAmount,
-      filledAmount,
-      filledPercentage,
-      kind,
-      sellAmount,
-      buyAmount,
-      executedBuyAmount,
-      executedSellAmount,
-      buyToken,
-      sellToken,
-      buyTokenAddress,
-      sellTokenAddress,
-      surplusAmount,
-      surplusPercentage,
-    },
+    order: { sellAmount, buyAmount, executedBuyAmount, executedSellAmount, buyToken, sellToken },
   } = props
 
-  const {
-    touched,
-    mainToken,
-    swappedToken,
-    action,
-    filledAmountWithFee,
-    swappedAmountWithFee,
-    mainSymbol,
-    swappedSymbol,
-    formattedPercentage,
-    surplus,
-    surplusToken,
-  } = useMemo(() => {
-    const touched = filledPercentage.gt(0)
-    const isSell = isSellOrder(kind)
+  const context = useFilledProgressContext(props.order)
 
-    const mainToken = (isSell ? sellToken : buyToken) || null
-    const mainAddress = isSell ? sellTokenAddress : buyTokenAddress
-    const swappedToken = (isSell ? buyToken : sellToken) || null
-    const swappedAddress = isSell ? buyTokenAddress : sellTokenAddress
-    const swappedAmount = isSell ? executedBuyAmount : executedSellAmount
-    const action = isSell ? 'sold' : 'bought'
-    // Sell orders, add the fee in to the sellAmount (mainAmount, in this case)
-    // Buy orders need to add the fee, to the sellToken too (swappedAmount in this case)
-    const filledAmountWithFee = isSell ? filledAmount.plus(executedFeeAmount) : filledAmount
-    const swappedAmountWithFee = isSell ? swappedAmount : swappedAmount.plus(executedFeeAmount)
+  const { formattedPercentage, surplus, surplusToken } = context
+  const orderAssetsInfo = <OrderAssetsInfo lineBreak={props.lineBreak} context={context} />
 
-    // In case the token object is empty, display the address
-    const mainSymbol = mainToken ? safeTokenName(mainToken) : mainAddress
-    const swappedSymbol = swappedToken ? safeTokenName(swappedToken) : swappedAddress
-    // In case the token object is empty, display the raw amount (`decimals || 0` part)
-    const formattedPercentage = filledPercentage.times(100).toString()
-
-    const surplus = { amount: surplusAmount, percentage: surplusPercentage }
-    const surplusToken = (isSell ? buyToken : sellToken) || null
-
-    return {
-      touched,
-      mainToken,
-      swappedToken,
-      action,
-      filledAmountWithFee,
-      swappedAmountWithFee,
-      mainSymbol,
-      swappedSymbol,
-      formattedPercentage,
-      surplus,
-      surplusToken,
-    }
-  }, [
-    filledPercentage,
-    kind,
-    sellToken,
+  const priceViewContext = {
+    sellAmount,
     buyToken,
-    sellTokenAddress,
-    buyTokenAddress,
-    executedBuyAmount,
-    executedSellAmount,
-    filledAmount,
-    executedFeeAmount,
-    surplusAmount,
-    surplusPercentage,
-  ])
+    sellToken,
+    showInvertButton: true,
+    isPriceInverted,
+    invertPrice,
+  }
 
-  const orderAssetsInfo = useMemo(
-    () => (
-      <>
-        {' '}
-        <OrderAssetsInfoWrapper lineBreak={lineBreak}>
-          <b>
-            {/* Executed part (bought/sold tokens) */}
-            <TokenAmount amount={filledAmountWithFee} token={mainToken} symbol={mainSymbol} />
-          </b>{' '}
-          {action}{' '}
-          {touched && (
-            // Executed part of the trade:
-            //    Total buy tokens you receive (for sell orders)
-            //    Total sell tokens you pay (for buy orders)
-            <>
-              for a total of{' '}
-              <b>
-                <TokenAmount amount={swappedAmountWithFee} token={swappedToken} symbol={swappedSymbol} />
-              </b>
-            </>
-          )}
-        </OrderAssetsInfoWrapper>
-      </>
-    ),
-    [
-      lineBreak,
-      filledAmountWithFee,
-      mainToken,
-      mainSymbol,
-      action,
-      touched,
-      swappedAmountWithFee,
-      swappedToken,
-      swappedSymbol,
-    ],
-  )
-
-  return !fullView ? (
+  return !props.fullView ? (
     <Wrapper>
       <ProgressBar percentage={formattedPercentage} />
       {orderAssetsInfo}
@@ -314,42 +200,17 @@ export function FilledProgress(props: Props): React.ReactNode {
           <ProgressBar showLabel={false} percentage={formattedPercentage} />
         </FilledContainer>
       </TableHeadingContent>
-      <TableHeadingContent>
-        <p className="title">Avg. Execution Price</p>
-        <p className="priceNumber">
-          {buyToken && sellToken && (
-            <OrderPriceDisplay
-              buyAmount={executedBuyAmount}
-              buyToken={buyToken}
-              sellAmount={executedSellAmount}
-              sellToken={sellToken}
-              showInvertButton
-              isPriceInverted={isPriceInverted}
-              invertPrice={invertPrice}
-            />
-          )}
-        </p>
-      </TableHeadingContent>
+      <PriceWithTitle
+        title="Avg. Execution Price"
+        buyAmount={executedBuyAmount}
+        sellAmount={executedSellAmount}
+        {...priceViewContext}
+      />
       <TableHeadingContent className="surplus">
         <p className="title">Total Surplus</p>
         <StyledSurplusComponent surplus={surplus} token={surplusToken} />
       </TableHeadingContent>
-      <TableHeadingContent>
-        <p className="title">Limit Price</p>
-        <p className="priceNumber">
-          {buyToken && sellToken && (
-            <OrderPriceDisplay
-              buyAmount={buyAmount}
-              buyToken={buyToken}
-              sellAmount={sellAmount}
-              sellToken={sellToken}
-              showInvertButton
-              isPriceInverted={isPriceInverted}
-              invertPrice={invertPrice}
-            />
-          )}
-        </p>
-      </TableHeadingContent>
+      <PriceWithTitle title="Limit Price" buyAmount={buyAmount} sellAmount={sellAmount} {...priceViewContext} />
     </TableHeading>
   )
 }

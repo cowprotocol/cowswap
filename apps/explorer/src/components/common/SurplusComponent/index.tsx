@@ -6,6 +6,7 @@ import { IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { TokenAmount } from 'components/token/TokenAmount'
 import { MAX_SURPLUS_PERCENTAGE } from 'const'
+import { Nullish } from 'types'
 import { formatPercentage, Surplus } from 'utils'
 
 import { Wrapper, IconWrapper, Percentage, Amount } from './styled'
@@ -14,7 +15,7 @@ export { Amount, Percentage } from './styled'
 
 export type SurplusComponentProps = {
   surplus: Surplus | null
-  token: TokenErc20 | null
+  token: Nullish<TokenErc20>
   className?: string
   icon?: IconDefinition
   iconColor?: string
