@@ -11,7 +11,8 @@ export type ShimmingProps = {
   shimming?: boolean
 }
 
-export function setStatusColors({
+// eslint-disable-next-line complexity
+function setStatusColors({
   status,
 }: {
   status: GenericStatus
