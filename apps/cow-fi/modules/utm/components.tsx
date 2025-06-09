@@ -38,8 +38,10 @@ export function LinkWithUtmComponent(p: LinkWithUtmProps): React.ReactNode {
   )
 }
 
-export function withUtmLink<T extends React.JSX.IntrinsicAttributes>(Component: ComponentType<T>) {
-  const WrappedComponent = (props: T & LinkWithUtmProps) => {
+export function withUtmLink<T extends React.JSX.IntrinsicAttributes>(
+  Component: ComponentType<T>,
+): React.ComponentType<T & LinkWithUtmProps> {
+  const WrappedComponent = (props: T & LinkWithUtmProps): React.ReactNode => {
     return (
       <LinkWithUtmComponent {...props}>
         <Component {...(props as T)} />
