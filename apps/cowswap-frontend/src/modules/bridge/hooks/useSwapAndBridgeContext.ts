@@ -247,6 +247,10 @@ function processCompleteContext(
   bridgeProvider: BridgeProviderInfo,
   swapResultContext: SwapResultContext,
 ): SwapAndBridgeContext {
+  if (!overview.targetAmounts) {
+    throw new Error('Target amounts must be defined for complete context')
+  }
+
   const status = crossChainOrder.statusResult.status
   const bridgingStatus = status ? bridgeStatusMap[status] : SwapAndBridgeStatus.DEFAULT
 
@@ -258,7 +262,7 @@ function processCompleteContext(
     destinationChainId,
   )
 
-  const quoteBridgeContext = createQuoteBridgeContext(destChainData, crossChainOrder, overview.targetAmounts!)
+  const quoteBridgeContext = createQuoteBridgeContext(destChainData, crossChainOrder, overview.targetAmounts)
 
   return createCompleteContext(
     bridgingStatus,
