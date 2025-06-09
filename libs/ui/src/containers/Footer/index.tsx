@@ -219,6 +219,8 @@ interface FooterLinkProps {
   rootDomain?: string
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const FooterLink = ({ href, external, label, utmSource, utmContent, rootDomain }: FooterLinkProps) => {
   const finalRootDomain = rootDomain || (typeof window !== 'undefined' ? window.location.host : '')
 
@@ -255,6 +257,8 @@ const appendUtmParams = (
   rootDomain: string,
   isExternal: boolean,
   label: string | undefined,
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 ) => {
   const finalRootDomain = rootDomain || (typeof window !== 'undefined' ? window.location.host : '')
 
@@ -282,6 +286,8 @@ const appendUtmParams = (
   return href
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export const Footer = ({
   description = GLOBAL_FOOTER_DESCRIPTION,
   navItems = GLOBAL_FOOTER_NAV_ITEMS,
@@ -290,11 +296,15 @@ export const Footer = ({
   hasTouchFooter = false,
   maxWidth,
   host,
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }: FooterProps) => {
   const [isFooterExpanded, setIsFooterExpanded] = useState(expanded)
   const footerRef = useRef<HTMLDivElement>(null)
   const theme = useTheme()
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const toggleFooter = () => {
     setIsFooterExpanded((state) => {
       if (!state && footerRef.current) {

@@ -63,6 +63,9 @@ const ActionButton = styled(ButtonPrimary)`
 
 const pendingTxHashAtom = atom<string | null>(null)
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function SetupFallbackHandlerWarning() {
   const [pendingTxHash, setPendingTxHash] = useAtom(pendingTxHashAtom)
   const [fbHandlerCheckInProgress, setFbHandlerCheckInProgress] = useState(false)
@@ -78,6 +81,8 @@ export function SetupFallbackHandlerWarning() {
 
   const extensibleFallbackContext = useExtensibleFallbackContext()
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleUpdateClick = async () => {
     const txHash = await setupFallbackHandler()
 

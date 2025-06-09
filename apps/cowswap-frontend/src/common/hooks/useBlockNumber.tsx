@@ -12,6 +12,8 @@ const BlockNumberContext = createContext<
   | typeof MISSING_PROVIDER
 >(MISSING_PROVIDER)
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useBlockNumberContext() {
   const blockNumber = useContext(BlockNumberContext)
   if (blockNumber === MISSING_PROVIDER) {
@@ -25,6 +27,8 @@ export function useBlockNumber(): number | undefined {
   return useBlockNumberContext().value
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function BlockNumberProvider({ children }: { children: ReactNode }) {
   const provider = useWalletProvider()
   const activeChainId = useWalletChainId()

@@ -26,6 +26,8 @@ export const injectedOptionDark = {
   icon: InjectedImageDark,
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function InjectedOption({ darkMode, tryActivation, selectedWallet }: ConnectionOptionProps) {
   const options = darkMode ? injectedOptionDark : injectedOption
 
@@ -48,6 +50,8 @@ interface Eip6963OptionProps {
   providers: EIP6963ProviderDetail[]
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Eip6963Option({
   tryActivation,
   selectedWallet,

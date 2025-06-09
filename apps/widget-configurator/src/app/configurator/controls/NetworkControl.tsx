@@ -23,6 +23,8 @@ const DEFAULT_CHAIN_ID = NetworkOptions[0].chainId
 
 const LABEL = 'Network'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const getNetworkOption = (chainId: SupportedChainId) => NetworkOptions.find((item) => item.chainId === chainId)
 
 type NetworkControlProps = {
@@ -31,6 +33,8 @@ type NetworkControlProps = {
   availableChains: SupportedChainId[]
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function NetworkControl({
   state,
   standaloneMode,
@@ -38,6 +42,8 @@ export function NetworkControl({
 }: NetworkControlProps) {
   const [network, setNetwork] = state
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const switchNetwork = (chainId: number) => {
     const targetChainId = chainId || DEFAULT_CHAIN_ID
     const targetNetwork = getNetworkOption(targetChainId)

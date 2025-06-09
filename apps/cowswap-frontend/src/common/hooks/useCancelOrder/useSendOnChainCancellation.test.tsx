@@ -79,10 +79,14 @@ const mockUseGP2SettlementContract = useGP2SettlementContract as jest.MockedFunc
 const ethFlowInvalidationMock = jest.fn()
 const settlementInvalidationMock = jest.fn()
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const WithProviders = ({ children }: PropsWithChildren) => {
   return <WithMockedWeb3>{children}</WithMockedWeb3>
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -101,6 +105,8 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
             invalidateOrder: () => Promise.resolve(BigNumber.from(100)),
           },
           invalidateOrder: ethFlowInvalidationMock,
+        // TODO: Replace any with proper type definitions
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
         chainId,
         error: null,
@@ -116,6 +122,8 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
           invalidateOrder: () => Promise.resolve(BigNumber.from(200)),
         },
         invalidateOrder: settlementInvalidationMock,
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
       chainId,
       error: null,

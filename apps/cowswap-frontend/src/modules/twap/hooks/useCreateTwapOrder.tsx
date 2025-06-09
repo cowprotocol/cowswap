@@ -50,6 +50,9 @@ interface TwapOrderEvent extends TwapAnalyticsEvent {
   label: `${UiOrderType.TWAP}|${string}`
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function useCreateTwapOrder() {
   const { chainId, account } = useWalletInfo()
   const twapOrder = useAtomValue(twapOrderAtom)
@@ -99,6 +102,9 @@ export function useCreateTwapOrder() {
   )
 
   return useCallback(
+    // TODO: Break down this large function into smaller functions
+    // TODO: Reduce function complexity by extracting logic
+    // eslint-disable-next-line max-lines-per-function, complexity
     async (fallbackHandlerIsNotSet: boolean) => {
       if (!chainId || !account || chainId !== twapOrderCreationContext?.chainId) return
       if (

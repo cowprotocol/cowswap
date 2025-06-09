@@ -7,12 +7,16 @@ import TextField from '@mui/material/TextField'
 type CustomSounds = CowSwapWidgetParams['sounds']
 type WidgetSounds = keyof NonNullable<CowSwapWidgetParams['sounds']>
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const valueNullAsString = (value: string | undefined | null) => (value === null ? 'null' : value || '')
 
 export interface CustomSoundsControlProps {
   state: [CustomSounds, Dispatch<SetStateAction<CustomSounds>>]
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function CustomSoundsControl({ state }: CustomSoundsControlProps) {
   const [customSound, setCustomSounds] = state
 

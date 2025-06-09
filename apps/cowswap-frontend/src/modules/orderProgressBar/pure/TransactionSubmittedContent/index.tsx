@@ -50,6 +50,10 @@ export interface TransactionSubmittedContentProps {
   navigateToNewOrderCallback?: (chainId: SupportedChainId, order?: Order, callback?: Command) => () => void
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function TransactionSubmittedContent({
   onDismiss,
   chainId,

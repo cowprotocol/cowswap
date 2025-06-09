@@ -12,6 +12,8 @@ export function findHookDappById(dapps: HookDapp[], hookDetails: CowHookDetails)
 }
 
 // If walletCompatibility is not defined, the hook is compatible with any wallet type
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const isHookCompatible = (dapp: HookDapp, walletType: HookDappWalletCompatibility) =>
   !dapp.conditions?.walletCompatibility ||
   dapp.conditions.walletCompatibility.includes(

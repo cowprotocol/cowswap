@@ -14,6 +14,9 @@ const DEFAULT_ICON_SIZE = 18
 const DEFAULT_SINGLE_ICON_SIZE = 36
 const LOGO_HEIGHT_RATIO = 0.75
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function ProtocolIcons({
   secondProtocol,
   showOnlyFirst,

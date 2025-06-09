@@ -20,6 +20,9 @@ export interface ManageListsAndTokensProps {
 const tokensInputPlaceholder = '0x0000'
 const listsInputPlaceholder = 'https:// or ipfs:// or ENS name'
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function ManageListsAndTokens(props: ManageListsAndTokensProps) {
   const { lists, customTokens, onBack, onDismiss } = props
 
@@ -46,11 +49,15 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps) {
   const tokenSearchResponse = useSearchToken(isTokenAddressValid ? tokenInput : null)
   const listSearchResponse = useSearchList(isListUrlValid ? listInput : null)
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const setListsTab = () => {
     setCurrentTab('lists')
     setInputValue('')
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const setTokensTab = () => {
     setCurrentTab('tokens')
     setInputValue('')

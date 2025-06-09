@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useLoadingWithTimeout(isLoading: boolean, time: number) {
   const [delayedLoad, setDelayedLoad] = useState(isLoading)
 

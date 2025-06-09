@@ -78,6 +78,8 @@ function compareAppDataWithoutQuoteData(a: AppDataInfo['doc'] | undefined, b: Ap
     return a === b
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const normalizePartnerFee = (doc: AppDataInfo['doc']) => {
     const { metadata } = doc
     if (metadata?.partnerFee) {

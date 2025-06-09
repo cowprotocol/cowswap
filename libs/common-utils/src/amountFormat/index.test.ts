@@ -3,11 +3,17 @@ import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { formatAmountWithPrecision, formatFiatAmount, formatPercent, formatTokenAmount } from './index'
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('Amounts formatting', () => {
   const decimals = WETH_SEPOLIA.decimals
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const getAmount = (value: string, decimalsShift: number, token = WETH_SEPOLIA) =>
     CurrencyAmount.fromRawAmount(token, value + '0'.repeat(token.decimals + decimalsShift))
 
+  // TODO: Break down this large function into smaller functions
+  // eslint-disable-next-line max-lines-per-function
   describe('Amounts', () => {
     it('Zero amount', () => {
       const result = formatTokenAmount(getAmount('0', 0)) // 0 WETH

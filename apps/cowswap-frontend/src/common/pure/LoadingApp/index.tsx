@@ -13,6 +13,8 @@ const sweepingLight = keyframes`
   }
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const getGradientColors = (darkMode: boolean) =>
   darkMode
     ? `
@@ -63,6 +65,8 @@ const LoadingWrapper = styled.div`
     `}
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const LoadingApp = () => {
   const isInjectedWidgetMode = isInjectedWidget()
 

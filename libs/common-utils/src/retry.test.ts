@@ -1,5 +1,7 @@
 import { retry, RetryableError } from './retry'
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('retry', () => {
   function makeFn<T>(fails: number, result: T, retryable = true): () => Promise<T> {
     return async () => {
@@ -42,6 +44,9 @@ describe('retry', () => {
     await expect(promise).resolves.toEqual('abc')
   })
 
+  // TODO: Add proper return type annotation
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
   async function checkMinTime(fn: () => Promise<any>, min: number) {
     const time = new Date().getTime()
     await fn()

@@ -11,8 +11,12 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 
 const LABEL = 'Trade types'
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TradeModesControl({ state }: { state: [TradeType[], Dispatch<SetStateAction<TradeType[]>>] }) {
   const [tradeModes, setTradeModes] = state
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleTradeModeChange = (event: SelectChangeEvent<TradeType[]>) => {
     if (!event.target.value.length) return
 

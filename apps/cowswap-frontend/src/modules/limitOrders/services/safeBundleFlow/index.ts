@@ -26,6 +26,8 @@ import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 const LOG_PREFIX = 'LIMIT ORDER SAFE BUNDLE FLOW'
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export async function safeBundleFlow(
   params: SafeBundleFlowContext,
   priceImpact: PriceImpact,
@@ -203,6 +205,8 @@ export async function safeBundleFlow(
     analytics.sign(swapFlowAnalyticsContext)
 
     return orderId
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logTradeFlow(LOG_PREFIX, 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)

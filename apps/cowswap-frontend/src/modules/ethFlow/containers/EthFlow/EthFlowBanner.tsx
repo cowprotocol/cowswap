@@ -17,6 +17,8 @@ export interface EthFlowBannerProps extends EthFlowBannerCallbacks {
   hasEnoughWrappedBalance: boolean
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function EthFlowBanner({ hasEnoughWrappedBalance, ...props }: EthFlowBannerProps) {
   const [showBanner, setShowBanner] = useState(false)
   const isNativeIn = useIsNativeIn()
@@ -42,7 +44,7 @@ export function EthFlowBanner({ hasEnoughWrappedBalance, ...props }: EthFlowBann
     return () => clearTimeout(timer)
   }, [isNativeIn])
 
-  const showBannerCallback = () => {
+  const showBannerCallback = (): void => {
     return setShowBanner((state) => !state)
   }
 

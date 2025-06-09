@@ -16,6 +16,8 @@ const Code = styled.textarea`
   min-height: 300px;
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function WidgetParamsErrorsScreen({ errors }: { errors: WidgetParamsErrors }) {
   const paramsWithErrors = Object.keys(errors)
 

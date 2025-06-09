@@ -29,6 +29,8 @@ export interface BridgingStatusHeaderProps {
   stepName: BridgingFlowStep
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function BridgingStatusHeader({ stepName, sellToken, buyToken }: BridgingStatusHeaderProps) {
   const isBridgingFailed = stepName === 'bridgingFailed'
   const sellTokenEl = <styledEl.TokenLogo token={sellToken} size={36} />

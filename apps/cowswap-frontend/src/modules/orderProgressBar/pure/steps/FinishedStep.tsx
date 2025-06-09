@@ -28,6 +28,8 @@ import { getSurplusText, getTwitterShareUrl, getTwitterShareUrlForBenefit } from
 import { useWithConfetti } from '../../hooks/useWithConfetti'
 import { OrderProgressBarStepName, SolverCompetition } from '../../types'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getTransactionStatus(isDarkMode: boolean) {
   return (
     <styledEl.TransactionStatus margin={'0 auto 24px'}>
@@ -42,6 +44,8 @@ function getTransactionStatus(isDarkMode: boolean) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getSoldAmount(order: Order) {
   return (
     <styledEl.SoldAmount>
@@ -56,6 +60,8 @@ function getSoldAmount(order: Order) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getReceivedAmount(
   order: Order,
   chainId: SupportedChainId,
@@ -85,6 +91,8 @@ function getReceivedAmount(
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getExtraAmount(
   surplusAmount?: CurrencyAmount<Currency> | null,
   surplusFiatValue?: CurrencyAmount<Currency> | null,
@@ -102,6 +110,8 @@ function getExtraAmount(
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getSolverRow(solver: SolverCompetition, index: number, solvers: SolverCompetition[]) {
   return (
     <styledEl.SolverTableRow key={`${solver.solver}-${index}`} isWinner={index === 0}>
@@ -151,6 +161,10 @@ interface FinishedStepProps {
   debugForceShowSurplus?: boolean
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function FinishedStep({
   children,
   stepName,

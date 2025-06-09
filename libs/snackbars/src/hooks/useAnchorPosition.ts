@@ -1,5 +1,7 @@
 import { useLayoutEffect, useState } from 'react'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useAnchorPosition(elementId: string | undefined) {
   const [top, setOffsetTop] = useState(0)
   const [height, setOffsetHeight] = useState(0)
@@ -7,6 +9,8 @@ export function useAnchorPosition(elementId: string | undefined) {
   useLayoutEffect(() => {
     if (!elementId) return
 
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const updatePosition = () => {
       const element = document.getElementById(elementId)
 
