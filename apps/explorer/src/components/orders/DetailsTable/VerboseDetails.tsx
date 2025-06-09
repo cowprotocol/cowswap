@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
@@ -33,7 +33,7 @@ export function VerboseDetails({
   isPriceInverted,
   showFillsButton,
   viewFills,
-}: VerboseDetailsProps) {
+}: VerboseDetailsProps): ReactNode {
   const {
     uid,
     expirationDate,
@@ -53,33 +53,24 @@ export function VerboseDetails({
     return null
   }
 
+  const priceDisplayContext = {
+    buyToken,
+    sellToken,
+    showInvertButton: true,
+    isPriceInverted,
+    invertPrice,
+  }
   return (
     <>
       <DetailRow label="Expiration Time" tooltipText={DetailsTableTooltips.expiration}>
         <DateDisplay date={expirationDate} showIcon={true} />
       </DetailRow>
       <DetailRow label="Limit Price" tooltipText={DetailsTableTooltips.priceLimit}>
-        <OrderPriceDisplay
-          buyAmount={buyAmount}
-          buyToken={buyToken}
-          sellAmount={sellAmount}
-          sellToken={sellToken}
-          showInvertButton
-          isPriceInverted={isPriceInverted}
-          invertPrice={invertPrice}
-        />
+        <OrderPriceDisplay buyAmount={buyAmount} sellAmount={sellAmount} {...priceDisplayContext} />
       </DetailRow>
       <DetailRow label="Execution price" tooltipText={DetailsTableTooltips.priceExecution}>
         {!filledAmount.isZero() ? (
-          <OrderPriceDisplay
-            buyAmount={executedBuyAmount}
-            buyToken={buyToken}
-            sellAmount={executedSellAmount}
-            sellToken={sellToken}
-            showInvertButton
-            isPriceInverted={isPriceInverted}
-            invertPrice={invertPrice}
-          />
+          <OrderPriceDisplay buyAmount={executedBuyAmount} sellAmount={executedSellAmount} {...priceDisplayContext} />
         ) : (
           '-'
         )}
