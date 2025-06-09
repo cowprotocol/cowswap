@@ -1,4 +1,4 @@
-import { useMemo, ReactElement } from 'react'
+import { useMemo, ReactElement, ReactNode } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
@@ -57,13 +57,13 @@ export interface SwapConfirmModalProps {
 }
 
 interface LabelsAndTooltips {
-  slippageLabel?: React.ReactNode
-  slippageTooltip?: React.ReactNode
-  expectReceiveLabel?: React.ReactNode
-  minReceivedLabel?: React.ReactNode
-  minReceivedTooltip?: React.ReactNode
-  networkCostsSuffix?: React.ReactNode
-  networkCostsTooltipSuffix?: React.ReactNode
+  slippageLabel?: ReactNode
+  slippageTooltip?: ReactNode
+  expectReceiveLabel?: ReactNode
+  minReceivedLabel?: ReactNode
+  minReceivedTooltip?: ReactNode
+  networkCostsSuffix?: ReactNode
+  networkCostsTooltipSuffix?: ReactNode
 }
 
 interface SwapConfirmModalData {
