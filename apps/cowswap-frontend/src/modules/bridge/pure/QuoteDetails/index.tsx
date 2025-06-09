@@ -21,9 +21,66 @@ interface QuoteDetailsProps {
   collapsedDefault?: ReactNode
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+interface SwapStepProps {
+  stepsCollapsible: boolean
+  bridgeProvider: BridgeProviderInfo
+  swapContext: QuoteSwapContext
+}
+
+interface BridgeStepProps {
+  stepsCollapsible: boolean
+  bridgeProvider: BridgeProviderInfo
+  bridgeContext: QuoteBridgeContext
+}
+
+function SwapStep({ stepsCollapsible, bridgeProvider, swapContext }: SwapStepProps): ReactNode {
+  const status = SwapAndBridgeStatus.DEFAULT
+
+  return (
+    <BridgeDetailsContainer
+      isCollapsible={stepsCollapsible}
+      defaultExpanded={true}
+      status={status}
+      stopNumber={1}
+      statusIcon={null}
+      protocolIconShowOnly="first"
+      protocolIconSize={21}
+      titlePrefix={SwapStatusTitlePrefixes[status]}
+      protocolName="CoW Protocol"
+      bridgeProvider={bridgeProvider}
+      chainName={swapContext.chainName}
+      sellAmount={swapContext.sellAmount}
+      buyAmount={swapContext.buyAmount}
+    >
+      <QuoteSwapContent context={swapContext} />
+    </BridgeDetailsContainer>
+  )
+}
+
+function BridgeStep({ stepsCollapsible, bridgeProvider, bridgeContext }: BridgeStepProps): ReactNode {
+  const status = SwapAndBridgeStatus.DEFAULT
+
+  return (
+    <BridgeDetailsContainer
+      isCollapsible={stepsCollapsible}
+      defaultExpanded={true}
+      status={status}
+      stopNumber={2}
+      statusIcon={null}
+      protocolIconShowOnly="second"
+      titlePrefix={BridgeStatusTitlePrefixes[status]}
+      protocolName={bridgeProvider.name}
+      bridgeProvider={bridgeProvider}
+      chainName={bridgeContext.chainName}
+      sellAmount={bridgeContext.sellAmount}
+      buyAmount={bridgeContext.buyAmount}
+      buyAmountUsd={bridgeContext.buyAmountUsd}
+    >
+      <QuoteBridgeContent quoteContext={bridgeContext} />
+    </BridgeDetailsContainer>
+  )
+}
+
 export function QuoteDetails({
   isCollapsible,
   stepsCollapsible = false,
@@ -32,8 +89,6 @@ export function QuoteDetails({
   bridgeContext,
   collapsedDefault,
 }: QuoteDetailsProps): ReactNode {
-  const status = SwapAndBridgeStatus.DEFAULT
-
   return (
     <CollapsibleBridgeRoute
       isCollapsible={isCollapsible}
@@ -41,43 +96,9 @@ export function QuoteDetails({
       providerInfo={bridgeProvider}
       collapsedDefault={collapsedDefault}
     >
-      <BridgeDetailsContainer
-        isCollapsible={stepsCollapsible}
-        defaultExpanded={true}
-        status={status}
-        stopNumber={1}
-        statusIcon={null}
-        protocolIconShowOnly="first"
-        protocolIconSize={21}
-        titlePrefix={SwapStatusTitlePrefixes[status]}
-        protocolName="CoW Protocol"
-        bridgeProvider={bridgeProvider}
-        chainName={swapContext.chainName}
-        sellAmount={swapContext.sellAmount}
-        buyAmount={swapContext.buyAmount}
-      >
-        <QuoteSwapContent context={swapContext} />
-      </BridgeDetailsContainer>
-
+      <SwapStep stepsCollapsible={stepsCollapsible} bridgeProvider={bridgeProvider} swapContext={swapContext} />
       <DividerHorizontal margin="8px 0 4px" />
-
-      <BridgeDetailsContainer
-        isCollapsible={stepsCollapsible}
-        defaultExpanded={true}
-        status={status}
-        stopNumber={2}
-        statusIcon={null}
-        protocolIconShowOnly="second"
-        titlePrefix={BridgeStatusTitlePrefixes[status]}
-        protocolName={bridgeProvider.name}
-        bridgeProvider={bridgeProvider}
-        chainName={bridgeContext.chainName}
-        sellAmount={bridgeContext.sellAmount}
-        buyAmount={bridgeContext.buyAmount}
-        buyAmountUsd={bridgeContext.buyAmountUsd}
-      >
-        <QuoteBridgeContent quoteContext={bridgeContext} />
-      </BridgeDetailsContainer>
+      <BridgeStep stepsCollapsible={stepsCollapsible} bridgeProvider={bridgeProvider} bridgeContext={bridgeContext} />
     </CollapsibleBridgeRoute>
   )
 }

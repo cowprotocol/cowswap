@@ -14,60 +14,77 @@ export interface QuoteBridgeContentProps {
   children?: ReactNode
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+interface ContentItem {
+  withTimelineDot?: boolean
+  label: ReactNode
+  content: ReactNode
+}
+
+function createBridgeFeeContent(bridgeFee: QuoteBridgeContext['bridgeFee']): ContentItem | null {
+  if (!bridgeFee) return null
+
+  return {
+    withTimelineDot: true,
+    label: (
+      <>
+        Bridge fee <InfoTooltip content="The fee for the bridge transaction." size={14} />
+      </>
+    ),
+    content: bridgeFee.equalTo(0) ? 'FREE' : <TokenAmountDisplay currencyAmount={bridgeFee} />,
+  }
+}
+
+function createEstimatedTimeContent(estimatedTime: QuoteBridgeContext['estimatedTime']): ContentItem | null {
+  if (!estimatedTime) return null
+
+  return {
+    withTimelineDot: true,
+    label: (
+      <>
+        Est. bridge time <InfoTooltip content="The estimated time for the bridge transaction to complete." size={14} />
+      </>
+    ),
+    content: <>~ {displayTime(estimatedTime * 1000, true)}</>,
+  }
+}
+
+function createRecipientContent(recipient: QuoteBridgeContext['recipient'], chainId: number): ContentItem {
+  return {
+    withTimelineDot: true,
+    label: (
+      <>
+        Recipient <InfoTooltip content="The address that will receive the tokens on the destination chain." size={14} />
+      </>
+    ),
+    content: <RecipientDisplay recipient={recipient} chainId={chainId} logoSize={16} />,
+  }
+}
+
+function createReceiveAmountContent(buyAmountEl: ReactNode, hasChildren: boolean): ContentItem {
+  return {
+    withTimelineDot: true,
+    label: hasChildren ? (
+      'Min. to receive'
+    ) : (
+      <ReceiveAmountTitle>
+        <b>Min. to receive</b>
+      </ReceiveAmountTitle>
+    ),
+    content: hasChildren ? buyAmountEl : <b>{buyAmountEl}</b>,
+  }
+}
+
 export function QuoteBridgeContent({
   quoteContext: { recipient, bridgeFee, estimatedTime, buyAmount, buyAmountUsd },
   children,
-}: QuoteBridgeContentProps) {
+}: QuoteBridgeContentProps): ReactNode {
   const buyAmountEl = <TokenAmountDisplay displaySymbol usdValue={buyAmountUsd} currencyAmount={buyAmount} />
 
   const contents = [
-    bridgeFee
-      ? {
-          withTimelineDot: true,
-          label: (
-            <>
-              Bridge fee <InfoTooltip content="The fee for the bridge transaction." size={14} />
-            </>
-          ),
-          content: bridgeFee.equalTo(0) ? 'FREE' : <TokenAmountDisplay currencyAmount={bridgeFee} />,
-        }
-      : null,
-    estimatedTime
-      ? {
-          withTimelineDot: true,
-          label: (
-            <>
-              Est. bridge time{' '}
-              <InfoTooltip content="The estimated time for the bridge transaction to complete." size={14} />
-            </>
-          ),
-          content: <>~ {displayTime(estimatedTime * 1000, true)}</>,
-        }
-      : null,
-    {
-      withTimelineDot: true,
-      label: (
-        <>
-          Recipient{' '}
-          <InfoTooltip content="The address that will receive the tokens on the destination chain." size={14} />
-        </>
-      ),
-      content: <RecipientDisplay recipient={recipient} chainId={buyAmount.currency.chainId} logoSize={16} />,
-    },
-    {
-      withTimelineDot: true,
-      label: children ? (
-        'Min. to receive'
-      ) : (
-        <ReceiveAmountTitle>
-          <b>Min. to receive</b>
-        </ReceiveAmountTitle>
-      ),
-      content: children ? buyAmountEl : <b>{buyAmountEl}</b>,
-    },
+    createBridgeFeeContent(bridgeFee),
+    createEstimatedTimeContent(estimatedTime),
+    createRecipientContent(recipient, buyAmount.currency.chainId),
+    createReceiveAmountContent(buyAmountEl, !!children),
   ]
 
   return (
