@@ -16,7 +16,7 @@ export const stablePriceImpactAtom = atom<PriceImpact>((get) => {
   // If we're still loading and don't have a price impact yet, keep loading state
   // This prevents the "unknown price impact" warning from showing prematurely
   if (priceImpact.loading && priceImpact.priceImpact === undefined) {
-    return { ...priceImpact, loading: true }
+    return priceImpact
   }
 
   return priceImpact
