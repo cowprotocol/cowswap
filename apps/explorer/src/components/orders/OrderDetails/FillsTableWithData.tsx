@@ -8,7 +8,7 @@ import useFirstRender from 'hooks/useFirstRender'
 import { Order } from 'api/operator'
 
 import { FillsTableContext } from './context/FillsTableContext'
-import FillsTable from './FillsTable'
+import { FillsTable } from './FillsTable'
 
 type Props = {
   areTokensLoaded: boolean
