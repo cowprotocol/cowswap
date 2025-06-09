@@ -1,21 +1,15 @@
 import React, { ReactNode } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Icon, UI } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
-import { faGroupArrowsRotate, faHistory, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { DateDisplay } from 'components/common/DateDisplay'
 import { DetailRow } from 'components/common/DetailRow'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { SimpleTable } from 'components/common/SimpleTable'
 import { AmountsDisplay } from 'components/orders/AmountsDisplay'
 import { StatusLabel } from 'components/orders/StatusLabel'
-import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
-import { Link } from 'react-router'
 import { capitalize } from 'utils'
 
 import { Order, OrderStatus } from 'api/operator'
@@ -23,9 +17,11 @@ import { ExplorerCategory } from 'common/analytics/types'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
 import { DetailsTableTooltips } from './detailsTableTooltips'
-import { Wrapper, LinkButton, WarningRow } from './styled'
+import { FromItem } from './items/FromItem'
+import { ToItem } from './items/ToItem'
+import { TxHashItem } from './items/TxHashItem'
+import { WarningRow } from './styled'
 
-import { AddressLink } from '../../common/AddressLink'
 import { UnsignedOrderWarning } from '../UnsignedOrderWarning'
 
 export type Props = {
@@ -36,7 +32,7 @@ export type Props = {
   children?: ReactNode
 }
 
-export function DetailsTable(props: Props): ReactNode | null {
+export function DetailsTable(props: Props): ReactNode {
   const { chainId, order, areTradesLoading, showFillsButton = false, children } = props
   const cowAnalytics = useCowAnalytics()
   const {
@@ -83,75 +79,13 @@ export function DetailsTable(props: Props): ReactNode | null {
             <RowWithCopyButton
               textToCopy={uid}
               contentsToDisplay={<TruncatedText>{uid}</TruncatedText>}
-              onCopy={(): void => onCopy('orderId')}
+              onCopy={() => onCopy('orderId')}
             />
           </DetailRow>
-          <DetailRow label="From" tooltipText={DetailsTableTooltips.from}>
-            <Wrapper>
-              {isSigning && (
-                <>
-                  <Icon image="ALERT" color={UI.COLOR_ALERT_TEXT} />
-                  &nbsp;
-                </>
-              )}
-              <RowWithCopyButton
-                textToCopy={owner}
-                onCopy={(): void => onCopy('ownerAddress')}
-                contentsToDisplay={
-                  <span>
-                    <AddressLink address={owner} chainId={chainId} />
-                  </span>
-                }
-              />
-              <LinkButton to={`/address/${owner}`}>
-                <FontAwesomeIcon icon={faHistory} />
-                Order history
-              </LinkButton>
-            </Wrapper>
-          </DetailRow>
-          <DetailRow label="To" tooltipText={DetailsTableTooltips.to}>
-            <Wrapper>
-              <RowWithCopyButton
-                textToCopy={receiver}
-                onCopy={(): void => onCopy('receiverAddress')}
-                contentsToDisplay={
-                  <span>
-                    <AddressLink address={receiver} chainId={chainId} />
-                  </span>
-                }
-              />
-              <LinkButton to={`/address/${receiver}`}>
-                <FontAwesomeIcon icon={faHistory} />
-                Order history
-              </LinkButton>
-            </Wrapper>
-          </DetailRow>
-          {(!partiallyFillable || txHash) && (
-            <DetailRow label="Transaction hash" tooltipText={DetailsTableTooltips.hash} isLoading={areTradesLoading}>
-              {txHash ? (
-                <Wrapper>
-                  <RowWithCopyButton
-                    textToCopy={txHash}
-                    onCopy={(): void => onCopy('settlementTx')}
-                    contentsToDisplay={
-                      <Link to={getExplorerLink(chainId, txHash, ExplorerDataType.TRANSACTION)} target="_blank">
-                        {txHash}↗
-                      </Link>
-                    }
-                  />
-                  <Wrapper>
-                    <LinkButton to={`/tx/${txHash}`}>
-                      <FontAwesomeIcon icon={faGroupArrowsRotate} />
-                      Batch
-                    </LinkButton>
-                    <LinkButton to={`/tx/${txHash}/?${TAB_QUERY_PARAM_KEY}=graph`}>
-                      <FontAwesomeIcon icon={faProjectDiagram} />
-                      Graph
-                    </LinkButton>
-                  </Wrapper>
-                </Wrapper>
-              ) : null}
-            </DetailRow>
+          <FromItem chainId={chainId} isSigning={isSigning} onCopy={onCopy} owner={owner} />
+          <ToItem chainId={chainId} onCopy={onCopy} receiver={receiver} />
+          {!partiallyFilled && (
+            <TxHashItem chainId={chainId} txHash={txHash} isLoading={areTradesLoading} onCopy={onCopy} />
           )}
           <DetailRow label="Status" tooltipText={DetailsTableTooltips.status}>
             <StatusLabel status={status} partiallyFilled={partiallyFilled} partialTagPosition="right" />
