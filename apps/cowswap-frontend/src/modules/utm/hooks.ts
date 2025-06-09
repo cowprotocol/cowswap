@@ -160,27 +160,49 @@ function processUtmParams(
   setUtm(utm)
 
   // Wait for analytics to be ready before cleaning up UTM parameters
-  waitForAnalytics().then(() => {
-    logUtmDebug('Analytics ready, cleaning up UTM params after delay', {})
-    setTimeout(() => {
-      // Clean up UTM params from window.location.search if they exist there
-      // Otherwise clean from router search params
-      const windowHasUtm = Object.values(getUtmParams(new URLSearchParams(window.location.search || ''))).some(Boolean)
-      const sourceToClean = windowHasUtm ? window.location.search : search
-      const newSearchParams = cleanUpUtmParams(new URLSearchParams(sourceToClean || ''))
-      const newSearch = newSearchParams.toString()
+  waitForAnalytics()
+    .then(() => {
+      logUtmDebug('Analytics ready, cleaning up UTM params after delay', {})
+      setTimeout(() => {
+        // Clean up UTM params from window.location.search if they exist there
+        // Otherwise clean from router search params
+        const windowHasUtm = Object.values(getUtmParams(new URLSearchParams(window.location.search || ''))).some(Boolean)
+        const sourceToClean = windowHasUtm ? window.location.search : search
+        const newSearchParams = cleanUpUtmParams(new URLSearchParams(sourceToClean || ''))
+        const newSearch = newSearchParams.toString()
 
-      logUtmDebug('Cleaned search params:', {
-        hasQueryParamsOutOfHashbang,
-        originalSearch: sourceToClean,
-        newSearch,
-        windowLocationSearch: window.location.search,
-        routerSearch: search,
-      })
+        logUtmDebug('Cleaned search params:', {
+          hasQueryParamsOutOfHashbang,
+          originalSearch: sourceToClean,
+          newSearch,
+          windowLocationSearch: window.location.search,
+          routerSearch: search,
+        })
 
-      handleUrlNavigation(newSearch, hasQueryParamsOutOfHashbang, navigate, pathname, hash)
-    }, 250)
-  })
+        handleUrlNavigation(newSearch, hasQueryParamsOutOfHashbang, navigate, pathname, hash)
+      }, 250)
+    })
+    .catch((error) => {
+      logUtmDebug('Analytics detection failed, proceeding with cleanup', { error })
+      setTimeout(() => {
+        // Clean up UTM params from window.location.search if they exist there
+        // Otherwise clean from router search params
+        const windowHasUtm = Object.values(getUtmParams(new URLSearchParams(window.location.search || ''))).some(Boolean)
+        const sourceToClean = windowHasUtm ? window.location.search : search
+        const newSearchParams = cleanUpUtmParams(new URLSearchParams(sourceToClean || ''))
+        const newSearch = newSearchParams.toString()
+
+        logUtmDebug('Cleaned search params:', {
+          hasQueryParamsOutOfHashbang,
+          originalSearch: sourceToClean,
+          newSearch,
+          windowLocationSearch: window.location.search,
+          routerSearch: search,
+        })
+
+        handleUrlNavigation(newSearch, hasQueryParamsOutOfHashbang, navigate, pathname, hash)
+      }, 250)
+    })
 }
 
 export function useInitializeUtm(): void {
