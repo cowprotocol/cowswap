@@ -23,6 +23,68 @@ export function isAnalyticsReady(): AnalyticsReadiness {
 }
 
 /**
+ * Log detailed analytics status for debugging
+ */
+function logAnalyticsStatus(
+  attempts: number,
+  elapsed: number,
+  analytics: AnalyticsReadiness,
+  bothReady: boolean,
+): void {
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[UTM Analytics] Readiness check:', {
+      attempt: attempts,
+      elapsed: elapsed + 'ms',
+      gtmReady: analytics.gtm,
+      safaryReady: analytics.safary,
+      bothReady,
+      dataLayer: !!window.dataLayer,
+      gtag: !!window.gtag,
+      googleTagManager: !!(window.google_tag_manager && Object.keys(window.google_tag_manager).length > 0),
+      safaryGlobal: !!window.safary,
+      safaryScript: !!(
+        document.querySelector('script[data-name="safary-sdk"]') || document.querySelector('script[src*="safary"]')
+      ),
+    })
+  }
+}
+
+/**
+ * Handle the case when both GTM and Safary are ready
+ */
+function handleBothReady(analyticsInterval: NodeJS.Timeout, resolve: () => void): void {
+  clearInterval(analyticsInterval)
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[UTM Analytics] Both GTM and Safary detected, giving extra time for attribution...')
+  }
+  // Give analytics scripts extra time to actually track (matches utm-fix.js timing)
+  setTimeout(resolve, 1000)
+}
+
+/**
+ * Handle the case when only GTM is ready after timeout
+ */
+function handleGtmOnlyReady(analyticsInterval: NodeJS.Timeout, resolve: () => void): void {
+  clearInterval(analyticsInterval)
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[UTM Analytics] GTM ready, proceeding (Safary may still be loading)')
+  }
+  // Shorter delay when only GTM is available
+  setTimeout(resolve, 500)
+}
+
+/**
+ * Handle timeout scenarios
+ */
+function handleTimeout(analyticsInterval: NodeJS.Timeout, resolve: () => void, message: string): void {
+  clearInterval(analyticsInterval)
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`[UTM Analytics] ${message}`)
+  }
+  resolve()
+}
+
+/**
  * Wait for analytics tools to be ready with sophisticated timing logic
  * Matches the logic from the utm-fix.js attribution loading system
  *
@@ -41,59 +103,20 @@ export function waitForAnalytics(): Promise<void> {
       const elapsed = Date.now() - startTime
       const bothReady = analytics.gtm && analytics.safary
 
-      // Log detailed status for debugging
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[UTM Analytics] Readiness check:', {
-          attempt: attempts,
-          elapsed: elapsed + 'ms',
-          gtmReady: analytics.gtm,
-          safaryReady: analytics.safary,
-          bothReady,
-          dataLayer: !!window.dataLayer,
-          gtag: !!window.gtag,
-          googleTagManager: !!(window.google_tag_manager && Object.keys(window.google_tag_manager).length > 0),
-          safaryGlobal: !!window.safary,
-          safaryScript: !!(
-            document.querySelector('script[data-name="safary-sdk"]') || document.querySelector('script[src*="safary"]')
-          ),
-        })
-      }
+      logAnalyticsStatus(attempts, elapsed, analytics, bothReady)
 
-      // If both GTM and Safary are ready, give them extra time and proceed
       if (bothReady) {
-        clearInterval(analyticsInterval)
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[UTM Analytics] Both GTM and Safary detected, giving extra time for attribution...')
-        }
-        // Give analytics scripts extra time to actually track (matches utm-fix.js timing)
-        setTimeout(resolve, 1000)
-      }
-      // If only GTM is ready and we've waited 3 seconds for Safary, proceed
-      else if (analytics.gtm && elapsed >= 3000) {
-        clearInterval(analyticsInterval)
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[UTM Analytics] GTM ready, proceeding (Safary may still be loading)')
-        }
-        // Shorter delay when only GTM is available
-        setTimeout(resolve, 500)
-      }
-      // Hard timeout - ensure we never block the user indefinitely
-      else if (attempts >= maxAttempts) {
-        clearInterval(analyticsInterval)
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[UTM Analytics] Timeout reached, proceeding anyway')
-        }
-        resolve()
+        handleBothReady(analyticsInterval, resolve)
+      } else if (analytics.gtm && elapsed >= 3000) {
+        handleGtmOnlyReady(analyticsInterval, resolve)
+      } else if (attempts >= maxAttempts) {
+        handleTimeout(analyticsInterval, resolve, 'Timeout reached, proceeding anyway')
       }
     }, checkInterval)
 
     // Additional hard timeout safety net (10 seconds)
     setTimeout(() => {
-      clearInterval(analyticsInterval)
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[UTM Analytics] Hard timeout reached, force proceeding')
-      }
-      resolve()
+      handleTimeout(analyticsInterval, resolve, 'Hard timeout reached, force proceeding')
     }, 10000)
   })
 }
