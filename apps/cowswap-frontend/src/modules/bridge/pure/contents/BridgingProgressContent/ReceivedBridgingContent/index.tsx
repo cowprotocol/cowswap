@@ -19,8 +19,28 @@ interface ReceivedBridgingContentProps {
   receivedAmountUsd: CurrencyAmount<Token> | null | undefined
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+interface TransactionLinkProps {
+  link: string
+  label: string
+}
+
+function TransactionLink({ link, label }: TransactionLinkProps): ReactNode {
+  return (
+    <ConfirmDetailsItem
+      label={
+        <>
+          <TimelineIconCircleWrapper padding="0" bgColor={'transparent'}>
+            <StyledTimelineReceiptIcon src={ReceiptIcon} />
+          </TimelineIconCircleWrapper>{' '}
+          {label}
+        </>
+      }
+    >
+      <ExternalLink href={link}>View on Explorer ↗</ExternalLink>
+    </ConfirmDetailsItem>
+  )
+}
+
 export function ReceivedBridgingContent({
   statusResult,
   receivedAmountUsd,
@@ -50,34 +70,8 @@ export function ReceivedBridgingContent({
         </b>
       </ConfirmDetailsItem>
 
-      {depositLink && (
-        <ConfirmDetailsItem
-          label={
-            <>
-              <TimelineIconCircleWrapper padding="0" bgColor={'transparent'}>
-                <StyledTimelineReceiptIcon src={ReceiptIcon} />
-              </TimelineIconCircleWrapper>{' '}
-              Source transaction
-            </>
-          }
-        >
-          <ExternalLink href={depositLink}>View on Explorer ↗</ExternalLink>
-        </ConfirmDetailsItem>
-      )}
-      {fillTxLink && (
-        <ConfirmDetailsItem
-          label={
-            <>
-              <TimelineIconCircleWrapper padding="0" bgColor={'transparent'}>
-                <StyledTimelineReceiptIcon src={ReceiptIcon} />
-              </TimelineIconCircleWrapper>{' '}
-              Destination transaction
-            </>
-          }
-        >
-          <ExternalLink href={fillTxLink}>View on Explorer ↗</ExternalLink>
-        </ConfirmDetailsItem>
-      )}
+      {depositLink && <TransactionLink link={depositLink} label="Source transaction" />}
+      {fillTxLink && <TransactionLink link={fillTxLink} label="Destination transaction" />}
     </>
   )
 }
