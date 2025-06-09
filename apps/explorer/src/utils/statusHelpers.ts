@@ -21,6 +21,7 @@ export function canBePartiallyFilled(status: string): status is OrderStatus {
   return [OrderStatus.Open, OrderStatus.Cancelling].includes(status as OrderStatus)
 }
 
+// eslint-disable-next-line complexity
 export function getStatusIcon(status: GenericStatus): IconDefinition {
   switch (status.toLowerCase()) {
     case OrderStatus.Expired.toLowerCase():
