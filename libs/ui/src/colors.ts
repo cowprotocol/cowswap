@@ -259,12 +259,18 @@ function applyColorMappings<T extends keyof typeof COLOR_MAPPINGS>(
 }
 
 /**
- * Generates all theme-aware colors for a given dark mode state
- * This is the DRY approach - pass darkMode once and get all computed colors
+ * Helper function to get basic theme colors
  */
-export function getThemeColors(darkMode: boolean) {
+function getBasicThemeColors(darkMode: boolean): {
+  paper: string
+  background: string
+  alert: string
+  success: string
+  text: string
+  disabledText: string
+  danger: string
+} {
   return {
-    // Core theme colors
     paper: darkMode ? Color.paperDark : Color.white,
     background: darkMode ? Color.black : Color.backgroundLight,
     alert: darkMode ? Color.alertDark : Color.alertLight,
@@ -272,6 +278,22 @@ export function getThemeColors(darkMode: boolean) {
     text: darkMode ? Color.textDark : Color.textLight,
     disabledText: darkMode ? Color.disabledTextDark : Color.disabledTextLight,
     danger: darkMode ? Color.dangerDark : Color.error,
+  }
+}
+
+/**
+ * Helper function to get additional theme colors
+ */
+function getAdditionalThemeColors(darkMode: boolean): {
+  error: string
+  warning: string
+  info: string
+  white: string
+  text1: string
+  text4: string
+  grey1: string
+} {
+  return {
     error: darkMode ? Color.errorDark : Color.error,
     warning: darkMode ? Color.warningDark : Color.warningLight,
     info: darkMode ? Color.infoDark : Color.blueDark3,
@@ -279,42 +301,209 @@ export function getThemeColors(darkMode: boolean) {
     text1: darkMode ? Color.blueLight1 : Color.blueDark2,
     text4: darkMode ? Color.text4Dark : Color.text4Light,
     grey1: darkMode ? Color.grey1Dark : Color.grey1Light,
+  }
+}
 
-    // Background variants
+/**
+ * Helper function to get core theme colors
+ */
+function getCoreThemeColors(darkMode: boolean): {
+  paper: string
+  background: string
+  alert: string
+  success: string
+  text: string
+  disabledText: string
+  danger: string
+  error: string
+  warning: string
+  info: string
+  white: string
+  text1: string
+  text4: string
+  grey1: string
+} {
+  return {
+    ...getBasicThemeColors(darkMode),
+    ...getAdditionalThemeColors(darkMode),
+  }
+}
+
+/**
+ * Helper function to get background variant colors
+ */
+function getBackgroundColors(darkMode: boolean): {
+  bg2: string
+  bg3: string
+  bg5: string
+  bg8: string
+} {
+  return {
     bg2: darkMode ? Color.blueDark3 : Color.blueDark2,
     bg3: darkMode ? Color.bg3Dark : Color.bg3Light,
     bg5: darkMode ? Color.bg5Dark : Color.bg5Light,
     bg8: darkMode ? Color.blueDark4 : Color.bg8Light,
+  }
+}
 
-    // UI colors
+/**
+ * Helper function to get UI colors
+ */
+function getUIColors(darkMode: boolean): {
+  blue2: string
+  blueShade3: string
+  border: string
+  border2: string
+  disabled: string
+  green1: string
+} {
+  return {
     blue2: darkMode ? Color.blue2Dark : Color.blue2Light,
     blueShade3: darkMode ? Color.blueShade3Dark : Color.blueShade3Light,
     border: darkMode ? Color.blueDark4 : Color.neutral100,
     border2: darkMode ? Color.border2Dark : Color.blueLight2,
     disabled: darkMode ? Color.disabledDark : Color.blueLight2,
     green1: darkMode ? Color.green1Dark : Color.green1Light,
+  }
+}
 
-    // Effects
+/**
+ * Helper function to get effect colors
+ */
+function getEffectColors(darkMode: boolean): {
+  boxShadow1: string
+  shadow1: string
+} {
+  return {
     boxShadow1: darkMode ? Color.boxShadow1Dark : Color.boxShadow1Light,
     shadow1: darkMode ? Color.shadow1Dark : Color.shadow1Light,
+  }
+}
 
-    // Primary colors
+/**
+ * Helper function to get primary colors
+ */
+function getPrimaryColors(darkMode: boolean): {
+  primary: string
+  buttonTextCustom: string
+} {
+  return {
     primary: darkMode ? Color.blue300Primary : Color.blueDark2,
     buttonTextCustom: darkMode ? Color.blue300Primary : Color.blueDark2,
+  }
+}
 
-    // Paper variants
+/**
+ * Helper function to get paper variant colors
+ */
+function getPaperColors(darkMode: boolean): {
+  paperCustom: string
+  paperDarkerCustom: string
+  paperDarkestCustom: string
+} {
+  return {
     paperCustom: darkMode ? Color.paperDark : Color.white,
     paperDarkerCustom: darkMode ? Color.darkerDark : Color.darkerLight,
     paperDarkestCustom: darkMode ? darken(Color.darkerDark, 0.05) : darken(Color.darkerLight, 0.1),
+  }
+}
 
-    // Blue primary colors - generated systematically using existing color references
-    ...applyColorMappings(Object.keys(COLOR_MAPPINGS) as (keyof typeof COLOR_MAPPINGS)[], darkMode),
-
-    // Gradients
+/**
+ * Helper function to get gradient colors
+ */
+function getGradientColors(darkMode: boolean): {
+  gradient1: string
+  gradient2: string
+} {
+  return {
     gradient1: `linear-gradient(145deg, ${darkMode ? Color.paperDark : Color.white}, ${darkMode ? Color.black : Color.backgroundLight})`,
     gradient2: `linear-gradient(250deg, ${transparentize(0.92, darkMode ? Color.alertDark : Color.alertLight)} 10%, ${transparentize(
       0.92,
       darkMode ? Color.successDark : Color.successLight,
     )} 50%, ${transparentize(0.92, darkMode ? Color.successDark : Color.successLight)} 100%);`,
+  }
+}
+
+/**
+ * Theme colors return type
+ */
+export type ThemeColors = {
+  // Core theme colors
+  paper: string
+  background: string
+  alert: string
+  success: string
+  text: string
+  disabledText: string
+  danger: string
+  error: string
+  warning: string
+  info: string
+  white: string
+  text1: string
+  text4: string
+  grey1: string
+  // Background variants
+  bg2: string
+  bg3: string
+  bg5: string
+  bg8: string
+  // UI colors
+  blue2: string
+  blueShade3: string
+  border: string
+  border2: string
+  disabled: string
+  green1: string
+  // Effects
+  boxShadow1: string
+  shadow1: string
+  // Primary colors
+  primary: string
+  buttonTextCustom: string
+  // Paper variants
+  paperCustom: string
+  paperDarkerCustom: string
+  paperDarkestCustom: string
+  // Blue primary colors
+  blue100Primary: string
+  blue200Primary: string
+  blue300Primary: string
+  blue400Primary: string
+  blue500Primary: string
+  blue900Primary: string
+  // Gradients
+  gradient1: string
+  gradient2: string
+}
+
+/**
+ * Generates all theme-aware colors for a given dark mode state
+ */
+export function getThemeColors(darkMode: boolean): ThemeColors {
+  return {
+    // Core theme colors
+    ...getCoreThemeColors(darkMode),
+
+    // Background variants
+    ...getBackgroundColors(darkMode),
+
+    // UI colors
+    ...getUIColors(darkMode),
+
+    // Effects
+    ...getEffectColors(darkMode),
+
+    // Primary colors
+    ...getPrimaryColors(darkMode),
+
+    // Paper variants
+    ...getPaperColors(darkMode),
+
+    // Blue primary colors - generated systematically using existing color references
+    ...applyColorMappings(Object.keys(COLOR_MAPPINGS) as (keyof typeof COLOR_MAPPINGS)[], darkMode),
+
+    // Gradients
+    ...getGradientColors(darkMode),
   }
 }
