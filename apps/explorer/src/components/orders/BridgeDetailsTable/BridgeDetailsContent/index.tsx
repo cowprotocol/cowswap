@@ -1,25 +1,26 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
-import { displayTime } from '@cowprotocol/common-utils'
 import { BridgeStatus, CrossChainOrder } from '@cowprotocol/cow-sdk'
 
-import { BridgeAmountDisplay } from './BridgeAmountDisplay'
-import { BridgeDetailsTooltips } from './bridgeDetailsTooltips'
-import { BridgeReceiveAmount } from './BridgeReceiveAmount'
-import { RefundStatus, RefundStatusEnum } from './RefundStatus'
-import { AmountSectionWrapper, ProviderDisplayWrapper, ProviderLogo } from './styled'
+import { AddressLink } from 'components/common/AddressLink'
+import { DetailRow } from 'components/common/DetailRow'
+import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 
-import { useCrossChainTokens } from '../../../modules/bridge/hooks/useCrossChainTokens'
-import { AddressLink } from '../../common/AddressLink'
-import { DetailRow } from '../../common/DetailRow'
-import { RowWithCopyButton } from '../../common/RowWithCopyButton'
-import { StatusLabel } from '../StatusLabel'
+import { useCrossChainTokens } from 'modules/bridge'
+
+import { BridgingTime, RefundStatusItem } from './contents'
+
+import { StatusLabel } from '../../StatusLabel'
+import { BridgeAmountDisplay } from '../BridgeAmountDisplay'
+import { BridgeDetailsTooltips } from '../bridgeDetailsTooltips'
+import { BridgeReceiveAmount } from '../BridgeReceiveAmount'
+import { AmountSectionWrapper, ProviderDisplayWrapper, ProviderLogo } from '../styled'
 
 interface BridgeDetailsContentProps {
   crossChainOrder: CrossChainOrder
 }
 
-export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentProps) {
+export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentProps): ReactNode {
   const {
     statusResult: { status: bridgeStatus, fillTxHash, depositTxHash, fillTimeInSeconds },
     bridgingParams: { inputAmount, outputAmount, owner, sourceChainId, destinationChainId, recipient },
@@ -53,7 +54,7 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
       </DetailRow>
 
       <DetailRow label="Status" tooltipText={BridgeDetailsTooltips.status}>
-        {!bridgeStatus || bridgeStatus === BridgeStatus.UNKNOWN ? (
+        {bridgeStatus === BridgeStatus.UNKNOWN ? (
           <StatusLabel status={BridgeStatus.IN_PROGRESS} customText="Waiting for swap to complete" />
         ) : (
           <StatusLabel status={bridgeStatus} />
@@ -77,13 +78,7 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
         )}
       </DetailRow>
 
-      {bridgeStatus === BridgeStatus.EXPIRED && (depositTxHash || fillTxHash) && (
-        <DetailRow label="Refund Status" tooltipText="Status of the refund process for the failed bridge transaction">
-          <RefundStatus
-            status={RefundStatusEnum.NOT_INITIATED} // TODO: add refund statuses once we have them
-          />
-        </DetailRow>
-      )}
+      <RefundStatusItem bridgeStatus={bridgeStatus} hash={depositTxHash || fillTxHash} />
 
       {/*TODO: uncomment once we know bridge fee*/}
       {/*<DetailRow label="Bridge fee" tooltipText="The fee charged by the bridge provider">*/}
@@ -95,11 +90,7 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
       {/*    )*/}
       {/*  ) : null}*/}
       {/*</DetailRow>*/}
-      {bridgeStatus === BridgeStatus.IN_PROGRESS && fillTimeInSeconds !== undefined && (
-        <DetailRow label="Bridging Time" tooltipText={BridgeDetailsTooltips.bridgingTime}>
-          {displayTime(fillTimeInSeconds, true)}
-        </DetailRow>
-      )}
+      <BridgingTime bridgeStatus={bridgeStatus} fillTimeInSeconds={fillTimeInSeconds} />
       {/*TODO: uncomment once we know bridge slippage*/}
       {/*<DetailRow label="Max Slippage" tooltipText={BridgeDetailsTooltips.maxSlippage}>*/}
       {/*  {bridgeDetails?.maxSlippageBps !== undefined*/}
