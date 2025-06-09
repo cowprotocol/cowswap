@@ -1,10 +1,9 @@
-import { useMemo, ReactElement, ReactNode } from 'react'
+import { ReactElement, ReactNode } from 'react'
 
-import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import { Percent } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 
@@ -21,7 +20,6 @@ import {
   QuoteSwapContext,
   QuoteBridgeContext,
 } from 'modules/bridge'
-import { useTokensBalancesCombined } from 'modules/combinedBalances/hooks/useTokensBalancesCombined'
 import { useOrderSubmittedContent } from 'modules/orderProgressBar'
 import {
   TradeBasicConfirmDetails,
@@ -39,8 +37,8 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 
-import { useLabelsAndTooltips } from './useLabelsAndTooltips'
-
+import { useLabelsAndTooltips } from '../../hooks/useSwapConfirmModalLabels'
+import { useDisableConfirmLogic, getButtonText } from '../../hooks/useSwapConfirmModalLogic'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapDeadlineState } from '../../hooks/useSwapSettings'
 
@@ -83,61 +81,6 @@ interface SwapConfirmModalData {
   rateInfoParams: RateInfoParams
   submittedContent: (onDismiss: Command) => ReactElement
   labelsAndTooltips: LabelsAndTooltips
-}
-
-function checkBalanceSufficiency(inputCurrencyInfo: CurrencyPreviewInfo, balances: Record<string, string>): boolean {
-  const current = inputCurrencyInfo?.amount?.currency
-
-  if (!current) {
-    return false
-  }
-
-  const normalisedAddress = getCurrencyAddress(current).toLowerCase()
-  const balance = balances[normalisedAddress]
-
-  if (!balance) {
-    return false
-  }
-
-  const balanceAsCurrencyAmount = CurrencyAmount.fromRawAmount(current, balance)
-
-  return Boolean(
-    inputCurrencyInfo?.amount?.equalTo(balanceAsCurrencyAmount) ||
-      inputCurrencyInfo?.amount?.lessThan(balanceAsCurrencyAmount),
-  )
-}
-
-function useDisableConfirmLogic(
-  inputCurrencyInfo: CurrencyPreviewInfo,
-  shouldDisplayBridgeDetails: boolean,
-  bridgeQuoteAmounts: BridgeQuoteAmounts | null,
-): boolean {
-  const { values: balances } = useTokensBalancesCombined()
-
-  return useMemo(() => {
-    if (shouldDisplayBridgeDetails && !bridgeQuoteAmounts) {
-      return true
-    }
-
-    const stringBalances: Record<string, string> = {}
-    Object.entries(balances).forEach(([key, value]) => {
-      if (value) {
-        stringBalances[key] = value.toString()
-      }
-    })
-
-    return !checkBalanceSufficiency(inputCurrencyInfo, stringBalances)
-  }, [balances, inputCurrencyInfo, shouldDisplayBridgeDetails, bridgeQuoteAmounts])
-}
-
-function useButtonText(disableConfirm: boolean, inputCurrencyInfo: CurrencyPreviewInfo): string {
-  return useMemo(() => {
-    if (disableConfirm) {
-      const { amount } = inputCurrencyInfo
-      return `Insufficient ${amount?.currency?.symbol || 'token'} balance`
-    }
-    return 'Confirm Swap'
-  }, [disableConfirm, inputCurrencyInfo])
 }
 
 function renderBridgeContent(
@@ -269,7 +212,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactElement {
     modalData.shouldDisplayBridgeDetails,
     modalData.bridgeQuoteAmounts,
   )
-  const buttonText = useButtonText(disableConfirm, inputCurrencyInfo)
+  const buttonText = getButtonText(disableConfirm, inputCurrencyInfo)
   const renderContent = getModalRenderContent(modalData, recipient)
 
   return (

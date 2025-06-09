@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { getMinimumReceivedTooltip, isSellOrder } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -11,11 +11,19 @@ import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
+import { useSwapDerivedState } from './useSwapDerivedState'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useLabelsAndTooltips() {
+interface LabelsAndTooltips {
+  slippageLabel: string | undefined
+  slippageTooltip: ReactNode
+  expectReceiveLabel: string
+  minReceivedLabel: string
+  minReceivedTooltip: string
+  networkCostsSuffix: ReactNode | null
+  networkCostsTooltipSuffix: ReactNode
+}
+
+export function useLabelsAndTooltips(): LabelsAndTooltips {
   const { slippage, orderKind } = useSwapDerivedState()
   const { chainId } = useWalletInfo()
   const shouldPayGas = useShouldPayGas()
