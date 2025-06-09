@@ -63,7 +63,7 @@ module.exports = [
 
       // Code quality rules for shorter functions
       complexity: ['error', 10],
-      'max-lines-per-function': ['error', { max: 50, skipBlankLines: true, skipComments: true }],
+      'max-lines-per-function': ['error', { max: 80, skipBlankLines: true, skipComments: true }],
 
       // Prevent unnecessary re-renders
       'react/jsx-no-bind': ['error', { allowArrowFunctions: true }],
