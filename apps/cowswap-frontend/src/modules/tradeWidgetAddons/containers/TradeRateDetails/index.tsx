@@ -1,6 +1,6 @@
-import { useMemo, useState, useCallback, ReactNode } from 'react'
+import { useMemo, useState, useCallback, ReactNode, ReactElement } from 'react'
 
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount, Currency, Token } from '@uniswap/sdk-core'
 
 import {
   getTotalCosts,
@@ -31,26 +31,14 @@ interface TradeRateDetailsProps {
   feeWrapper?: (feeElement: ReactNode) => React.ReactNode
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
-export function TradeRateDetails({
-  rateInfoParams,
-  deadline,
-  isTradePriceUpdating,
-  accordionContent,
-  feeWrapper,
-}: TradeRateDetailsProps) {
-  const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(false)
+interface NetworkFeeData {
+  networkFeeAmount: CurrencyAmount<Currency> | null
+  networkFeeAmountUsd: CurrencyAmount<Token> | null
+}
 
-  const slippage = useTradeSlippage()
-  const isSlippageModified = useIsSlippageModified()
-  const receiveAmountInfo = useReceiveAmountInfo()
+function useNetworkFeeData(): NetworkFeeData {
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
-  const shouldPayGas = useShouldPayGas()
-
   const inputCurrency = derivedTradeState?.inputCurrency
 
   const costsExceedFeeRaw = tradeQuote.error instanceof QuoteApiError ? tradeQuote?.error?.data?.fee_amount : undefined
@@ -62,33 +50,40 @@ export function TradeRateDetails({
 
   const networkFeeAmountUsd = useUsdAmount(networkFeeAmount).value
 
-  const toggleAccordion = useCallback(() => {
-    setFeeDetailsOpen((prev) => !prev)
-  }, [])
+  return { networkFeeAmount, networkFeeAmountUsd }
+}
 
-  // Hide fee accordion whenever there's a quote error
-  if (tradeQuote.error) return null
+function NetworkCostsOnlyView({
+  networkFeeAmount,
+  networkFeeAmountUsd,
+  shouldPayGas,
+}: {
+  networkFeeAmount: CurrencyAmount<Currency>
+  networkFeeAmountUsd: CurrencyAmount<Token> | null
+  shouldPayGas: boolean
+}): ReactElement {
+  return (
+    <div style={{ padding: '0 10px' }}>
+      <NetworkCostsRow
+        networkFeeAmount={networkFeeAmount}
+        networkFeeAmountUsd={networkFeeAmountUsd}
+        withTimelineDot={false}
+        amountSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
+        tooltipSuffix={<NetworkCostsTooltipSuffix />}
+      />
+    </div>
+  )
+}
 
-  if (!receiveAmountInfo) {
-    if (!networkFeeAmount) return null
-
-    return (
-      <div style={{ padding: '0 10px' }}>
-        <NetworkCostsRow
-          networkFeeAmount={networkFeeAmount}
-          networkFeeAmountUsd={networkFeeAmountUsd}
-          withTimelineDot={false}
-          amountSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
-          tooltipSuffix={<NetworkCostsTooltipSuffix />}
-        />
-      </div>
-    )
-  }
-
-  const totalCosts = getTotalCosts(receiveAmountInfo)
-
-  // Default expanded content if accordionContent prop is not supplied
-  const defaultExpandedContent = (
+function createDefaultExpandedContent(
+  receiveAmountInfo: ReturnType<typeof useReceiveAmountInfo>,
+  shouldPayGas: boolean,
+  slippage: ReturnType<typeof useTradeSlippage>,
+  isTradePriceUpdating: boolean,
+  isSlippageModified: boolean,
+  deadline: number,
+): ReactElement {
+  return (
     <>
       <TradeFeesAndCosts
         receiveAmountInfo={receiveAmountInfo}
@@ -105,6 +100,53 @@ export function TradeRateDetails({
       )}
       <RowDeadline deadline={deadline} />
     </>
+  )
+}
+
+export function TradeRateDetails({
+  rateInfoParams,
+  deadline,
+  isTradePriceUpdating,
+  accordionContent,
+  feeWrapper,
+}: TradeRateDetailsProps): ReactElement | null {
+  const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(false)
+
+  const slippage = useTradeSlippage()
+  const isSlippageModified = useIsSlippageModified()
+  const receiveAmountInfo = useReceiveAmountInfo()
+  const tradeQuote = useTradeQuote()
+  const shouldPayGas = useShouldPayGas()
+  const { networkFeeAmount, networkFeeAmountUsd } = useNetworkFeeData()
+
+  const toggleAccordion = useCallback(() => {
+    setFeeDetailsOpen((prev) => !prev)
+  }, [])
+
+  // Hide fee accordion whenever there's a quote error
+  if (tradeQuote.error) return null
+
+  if (!receiveAmountInfo) {
+    if (!networkFeeAmount) return null
+    return (
+      <NetworkCostsOnlyView
+        networkFeeAmount={networkFeeAmount}
+        networkFeeAmountUsd={networkFeeAmountUsd}
+        shouldPayGas={shouldPayGas}
+      />
+    )
+  }
+
+  const totalCosts = getTotalCosts(receiveAmountInfo)
+
+  // Default expanded content if accordionContent prop is not supplied
+  const defaultExpandedContent = createDefaultExpandedContent(
+    receiveAmountInfo,
+    shouldPayGas,
+    slippage,
+    isTradePriceUpdating,
+    isSlippageModified,
+    deadline,
   )
 
   return (
