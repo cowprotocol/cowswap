@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import { Confetti, UI } from '@cowprotocol/ui'
 
@@ -40,7 +40,7 @@ interface BridgingInProgressStepProps {
   surplusData?: SurplusData
 }
 
-export function BridgingStep({ context, surplusData }: BridgingInProgressStepProps): React.JSX.Element {
+export function BridgingStep({ context, surplusData }: BridgingInProgressStepProps): ReactNode {
   const showConfetti = useWithConfetti({
     isFinished: context.bridgingStatus === SwapAndBridgeStatus.DONE,
     surplusData,

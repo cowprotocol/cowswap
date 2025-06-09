@@ -17,13 +17,32 @@ interface TradeDetailsAccordionProps {
   feeWrapper?: (feeElement: ReactNode, isOpen: boolean) => ReactNode
 }
 
+function createDefaultFeeContent(
+  feeUsdTotalAmount: CurrencyAmount<Currency> | null,
+  feeTotalAmount: CurrencyAmount<Currency> | null,
+): ReactNode {
+  if (feeUsdTotalAmount?.greaterThan(0)) {
+    return <FiatAmount amount={feeUsdTotalAmount} />
+  }
+
+  if (feeTotalAmount?.greaterThan(0)) {
+    return (
+      <>
+        Fee <TokenAmount amount={feeTotalAmount} tokenSymbol={feeTotalAmount?.currency} />
+      </>
+    )
+  }
+
+  return 'Free'
+}
+
 /**
  * A reusable accordion component for displaying trade details.
  *
  * This component displays rate information, fee amounts, and can expand to show
  * more detailed information about a trade.
  */
-export const TradeDetailsAccordion = ({
+export function TradeDetailsAccordion({
   rateInfo,
   feeTotalAmount,
   feeUsdTotalAmount,
@@ -31,13 +50,13 @@ export const TradeDetailsAccordion = ({
   open,
   onToggle,
   feeWrapper,
-}: TradeDetailsAccordionProps) => {
-  const handleToggle = useCallback(() => {
+}: TradeDetailsAccordionProps): ReactNode {
+  const handleToggle = useCallback((): void => {
     onToggle?.()
   }, [onToggle])
 
   const handleKeyDown = useCallback(
-    (e: { key: string; preventDefault: () => void }) => {
+    (e: { key: string; preventDefault: () => void }): void => {
       if (['Enter', ' ', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
         e.preventDefault()
         handleToggle()
@@ -46,19 +65,7 @@ export const TradeDetailsAccordion = ({
     [handleToggle],
   )
 
-  const defaultFeeContent = feeUsdTotalAmount?.greaterThan(0) ? (
-    <FiatAmount amount={feeUsdTotalAmount} />
-  ) : (
-    <>
-      {feeTotalAmount?.greaterThan(0) ? (
-        <>
-          Fee <TokenAmount amount={feeTotalAmount} tokenSymbol={feeTotalAmount?.currency} />
-        </>
-      ) : (
-        'Free'
-      )}
-    </>
-  )
+  const defaultFeeContent = createDefaultFeeContent(feeUsdTotalAmount, feeTotalAmount)
 
   return (
     <Wrapper isOpen={open}>

@@ -6,6 +6,8 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { tokensBySymbolAtom } from '../../state/tokens/allTokensAtom'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useAreThereTokensWithSameSymbol() {
   const tokensBySymbol = useAtomValue(tokensBySymbolAtom)
 

@@ -12,9 +12,13 @@ export enum LimitOrderSettingsAction {
   TABLE_POSITION = 'Orders Table Position',
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useLimitOrderSettingsAnalytics() {
   const analytics = useCowAnalytics()
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const sendLimitOrderSettingsAnalytics = (action: string, label?: string) => {
     analytics.sendEvent({
       category: CowSwapAnalyticsCategory.LIMIT_ORDER_SETTINGS,
@@ -23,6 +27,8 @@ export function useLimitOrderSettingsAnalytics() {
     })
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const sendToggleAnalytics = (action: LimitOrderSettingsAction, enable: boolean, customLabels?: [string, string]) => {
     sendLimitOrderSettingsAnalytics(
       action,

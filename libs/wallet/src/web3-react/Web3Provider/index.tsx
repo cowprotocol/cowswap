@@ -16,6 +16,8 @@ interface Web3ProviderProps {
   standaloneMode?: boolean
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Web3Provider({ children, selectedWallet, standaloneMode }: Web3ProviderProps) {
   useEagerlyConnect(selectedWallet, standaloneMode)
 

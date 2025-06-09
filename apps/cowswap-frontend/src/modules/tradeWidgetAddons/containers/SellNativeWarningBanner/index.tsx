@@ -14,6 +14,8 @@ const Button = styled(LinkStyledButton)`
   text-decoration: underline;
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SellNativeWarningBanner() {
   const { account } = useWalletInfo()
   const native = useNativeCurrency()

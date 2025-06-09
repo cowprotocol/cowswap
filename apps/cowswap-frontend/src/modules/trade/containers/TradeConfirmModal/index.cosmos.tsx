@@ -40,6 +40,8 @@ const confirmationState: TradeConfirmationProps = {
   },
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function Custom({ stateValue }: { stateValue: string }) {
   const updateWalletInfo = useSetAtom(walletInfoAtom)
   const actions = useTradeConfirmActions()

@@ -9,6 +9,8 @@ import { buildOrdersTableUrl } from '../../../utils/buildOrdersTableUrl'
 import { parseOrdersTableUrl } from '../../../utils/parseOrdersTableUrl'
 
 // Reset page params if they are invalid
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useValidatePageUrlParams(ordersLength: number, currentTabId: string, currentPageNumber: number) {
   const location = useLocation()
   const navigate = useNavigate()

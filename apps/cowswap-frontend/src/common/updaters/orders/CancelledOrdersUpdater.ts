@@ -28,6 +28,8 @@ import { fetchAndClassifyOrder } from './utils'
  * Due to the network's nature, we can't tell whether an order has been really cancelled, so we prefer to wait a short
  * period and say it's cancelled even though in some cases it might actually be filled.
  */
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function CancelledOrdersUpdater(): null {
   const isSafeWallet = useIsSafeWallet()
   const { chainId, account } = useWalletInfo()
@@ -43,6 +45,8 @@ export function CancelledOrdersUpdater(): null {
   const fulfillOrdersBatch = useFulfillOrdersBatch()
 
   const updateOrders = useCallback(
+    // TODO: Break down this large function into smaller functions
+    // eslint-disable-next-line max-lines-per-function
     async (chainId: ChainId, account: string, isSafeWallet: boolean) => {
       const lowerCaseAccount = account.toLowerCase()
       const now = Date.now()

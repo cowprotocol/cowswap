@@ -3,6 +3,8 @@ import { InlineBanner } from '@cowprotocol/ui'
 import { MAX_PART_TIME } from '../../../const'
 import { deadlinePartsDisplay } from '../../../utils/deadlinePartsDisplay'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function BigPartTimeWarning() {
   const time = deadlinePartsDisplay(MAX_PART_TIME, true)
 

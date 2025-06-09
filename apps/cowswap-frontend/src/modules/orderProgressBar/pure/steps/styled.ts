@@ -8,6 +8,8 @@ import { CancelButton as CancelButtonOriginal } from 'common/pure/CancelButton'
 
 import { ProgressImageWrapper } from '../../sharedStyled'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const progressAnimation = (startAt: number, end: number) => {
   const start = end - startAt
 

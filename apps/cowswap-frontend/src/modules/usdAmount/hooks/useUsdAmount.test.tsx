@@ -19,6 +19,8 @@ const WETH_RAW_PRICE_STATE: UsdRawPriceState = {
   isLoading: false,
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getWrapper() {
   const store = createStore()
   const initialValues = [[usdRawPricesAtom, { [getUsdPriceStateKey(WETH_GNOSIS_CHAIN)]: WETH_RAW_PRICE_STATE }]]

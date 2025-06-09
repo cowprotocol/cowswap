@@ -1,4 +1,6 @@
-import { ReactNode } from 'react'
+import { ReactNode, useCallback } from 'react'
+
+import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 
 import {
   BridgeAccordionSummary,
@@ -17,7 +19,27 @@ export interface SwapRateDetailsProps {
   deadline: number
 }
 
-export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsProps) {
+interface BridgeFeeWrapperProps {
+  bridgeEstimatedTime: number | undefined
+  bridgeProtocol: BridgeProviderInfo
+  feeElement: ReactNode
+  isOpen: boolean
+}
+
+function BridgeFeeWrapper({
+  bridgeEstimatedTime,
+  bridgeProtocol,
+  feeElement,
+  isOpen,
+}: BridgeFeeWrapperProps): ReactNode {
+  return (
+    <BridgeAccordionSummary bridgeEstimatedTime={bridgeEstimatedTime} bridgeProtocol={bridgeProtocol} isOpen={isOpen}>
+      {feeElement}
+    </BridgeAccordionSummary>
+  )
+}
+
+export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsProps): ReactNode {
   const { isLoading: isRateLoading, bridgeQuote } = useTradeQuote()
 
   const shouldDisplayBridgeDetails = useShouldDisplayBridgeDetails()
@@ -27,6 +49,18 @@ export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsPro
 
   const swapContext = useQuoteSwapContext()
   const bridgeContext = useQuoteBridgeContext()
+
+  const feeWrapper = useCallback(
+    (feeElement: ReactNode, isOpen: boolean) => (
+      <BridgeFeeWrapper
+        bridgeEstimatedTime={bridgeEstimatedTime}
+        bridgeProtocol={providerDetails!}
+        feeElement={feeElement}
+        isOpen={isOpen}
+      />
+    ),
+    [bridgeEstimatedTime, providerDetails],
+  )
 
   return (
     <TradeRateDetails
@@ -43,19 +77,7 @@ export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsPro
           </>
         )
       }
-      feeWrapper={
-        shouldDisplayBridgeDetails && providerDetails
-          ? (feeElement: ReactNode, isOpen: boolean) => (
-              <BridgeAccordionSummary
-                bridgeEstimatedTime={bridgeEstimatedTime}
-                bridgeProtocol={providerDetails}
-                isOpen={isOpen}
-              >
-                {feeElement}
-              </BridgeAccordionSummary>
-            )
-          : undefined
-      }
+      feeWrapper={shouldDisplayBridgeDetails && providerDetails ? feeWrapper : undefined}
     />
   )
 }

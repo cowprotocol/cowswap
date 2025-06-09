@@ -38,6 +38,8 @@ export class TrezorConnector extends Connector {
 
   private cancelActivation: Command = () => void 0
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   connectEagerly(...args: unknown[]) {
     return this.activate(args[0] as SupportedChainId)
   }
@@ -131,6 +133,8 @@ export class TrezorConnector extends Connector {
     return account
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   private async installProvider(
     url: string,
     trezorConnect: TrezorConnect,

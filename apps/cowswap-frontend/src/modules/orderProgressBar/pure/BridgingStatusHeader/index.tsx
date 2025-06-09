@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { Currency, Token } from '@uniswap/sdk-core'
@@ -55,7 +55,7 @@ export function BridgingStatusHeader({
   buyToken,
   sourceChainId,
   destinationChainId,
-}: BridgingStatusHeaderProps): React.JSX.Element {
+}: BridgingStatusHeaderProps): ReactNode {
   const isBridgingFailed = stepName === 'bridgingFailed'
 
   const sellTokenWithChain = createTokenWithChain(sellToken, sourceChainId)

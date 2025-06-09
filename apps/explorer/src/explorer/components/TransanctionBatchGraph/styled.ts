@@ -81,6 +81,8 @@ export const DropdownWrapper = styled(Dropdown)`
   }
 `
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function STYLESHEET(): StylesheetCSS[] {
   return [
     {

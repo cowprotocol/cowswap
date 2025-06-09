@@ -37,6 +37,9 @@ export function baseTheme<T extends CowProtocolTheme>(theme: CowSwapTheme): CowP
  * 2. Static colors from Color enum
  * 3. Gradient definitions
  */
+// TODO: Break down this large function into smaller functions
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, complexity
 function colors(darkMode: boolean): Colors {
   // TODO(theme-cleanup): These colors were migrated from apps/cow-fi/styles/variables.ts
   // They should be reviewed and potentially consolidated with the existing color system.
@@ -57,6 +60,8 @@ function colors(darkMode: boolean): Colors {
   }
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function utils(darkMode: boolean) {
   return {
     shimmer: css`

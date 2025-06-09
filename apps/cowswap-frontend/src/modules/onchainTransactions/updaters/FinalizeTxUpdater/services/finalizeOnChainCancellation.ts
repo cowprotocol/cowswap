@@ -10,6 +10,8 @@ import { emitCancelledOrderEvent } from 'modules/orders'
 import { emitOnchainTransactionEvent } from '../../../utils/emitOnchainTransactionEvent'
 import { CheckEthereumTransactions } from '../types'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function finalizeOnChainCancellation(
   transaction: EnhancedTransactionDetails,
   receipt: TransactionReceipt,

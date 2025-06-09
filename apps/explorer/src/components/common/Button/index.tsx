@@ -116,10 +116,14 @@ const BUTTON_SIZE_STYLES = {
   default: css``,
 } as const
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const getButtonVariantStyles = (variant: ButtonVariations = 'default') => {
   return BUTTON_VARIANT_STYLES[variant]
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const getButtonSizeStyles = (size: ButtonSizeVariations = 'default') => {
   return BUTTON_SIZE_STYLES[size]
 }

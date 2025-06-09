@@ -36,6 +36,8 @@ export async function estimateApprove(
         approveAmount,
         gasLimit: await tokenContract.estimateGas.approve(spender, approveAmount),
       }
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(
         '[useApproveCallbackMod] Error estimating gas for approval. Using default gas limit ' +
@@ -51,6 +53,8 @@ export async function estimateApprove(
   }
 }
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function useApproveCallback(
   amountToApprove?: CurrencyAmount<Currency>,
   spender?: string,

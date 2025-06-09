@@ -9,6 +9,8 @@ import { UTCTimestamp } from 'lightweight-charts'
 import { Network, UiError } from 'types'
 import { getPercentageDifference, isNativeToken } from 'utils'
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function useGetTokens(networkId: Network | undefined): GetTokensResult {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<UiError>()

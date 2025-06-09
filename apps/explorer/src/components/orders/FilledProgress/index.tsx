@@ -170,6 +170,9 @@ const OrderAssetsInfoWrapper = styled.span<{ lineBreak?: boolean }>`
   }
 `
 
+// TODO: Break down this large function into smaller functions
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, complexity
 export function FilledProgress(props: Props): React.ReactNode {
   const {
     lineBreak = false,
@@ -217,6 +220,8 @@ export function FilledProgress(props: Props): React.ReactNode {
   const surplus = { amount: surplusAmount, percentage: surplusPercentage }
   const surplusToken = (isSell ? buyToken : sellToken) || null
 
+  // TODO: Extract nested component outside render function
+  // eslint-disable-next-line react/no-unstable-nested-components
   const OrderAssetsInfo = (): React.ReactNode => (
     <>
       {' '}

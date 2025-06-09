@@ -271,6 +271,9 @@ interface FortuneWidgetProps {
   isMobileMenuOpen?: boolean
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProps) {
   const { openFortune } = useAtomValue(fortuneStateAtom)
   const lastCheckedFortune = useAtomValue(lastCheckedFortuneAtom)
@@ -331,6 +334,9 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
 
   if (isFortunesFeatureDisabled && isDailyFortuneChecked && !openFortune) return null
 
+  // TODO: Extract nested component outside render function
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line react/no-unstable-nested-components, @typescript-eslint/explicit-function-return-type
   const PortalContent = () => (
     <>
       {openFortune && (
