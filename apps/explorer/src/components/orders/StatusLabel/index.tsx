@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import { BridgeStatus } from '@cowprotocol/cow-sdk'
 
@@ -13,7 +13,7 @@ import { Wrapper, Label, GenericStatus as StyledGenericStatus } from './styled'
 
 export type PartiallyTagPosition = 'right' | 'bottom'
 
-export type Props = {
+export type StatusLabelProps = {
   status: string
   partiallyFilled?: boolean
   filledPercentage?: BigNumber
@@ -21,20 +21,24 @@ export type Props = {
   customText?: string
 }
 
+const SHIMMING_STATUSES = [
+  OrderStatus.Signing.toLowerCase(),
+  OrderStatus.Cancelling.toLowerCase(),
+  BridgeStatus.IN_PROGRESS.toLowerCase(),
+]
+
+const FINAL_STATUSES = [OrderStatus.Expired.toLowerCase(), OrderStatus.Cancelled.toLowerCase()]
+
 export function StatusLabel({
   status: _status,
   partiallyFilled = false,
   filledPercentage,
   partialTagPosition = 'bottom',
   customText,
-}: Props): React.ReactNode {
+}: StatusLabelProps): ReactNode {
   const status = _status.toLowerCase()
-  const shimming =
-    status === OrderStatus.Signing.toLowerCase() ||
-    status === OrderStatus.Cancelling.toLowerCase() ||
-    status === BridgeStatus.IN_PROGRESS.toLowerCase()
-
-  const customizeStatus = status === OrderStatus.Expired.toLowerCase() || status === OrderStatus.Cancelled.toLowerCase()
+  const shimming = SHIMMING_STATUSES.includes(status)
+  const customizeStatus = FINAL_STATUSES.includes(status)
 
   const tagPartiallyFilled =
     partiallyFilled && typeof status === 'string' && canBePartiallyFilled(status as OrderStatus)
