@@ -1,3 +1,5 @@
+import { ReactElement } from 'react'
+
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { ProductLogoLoader, ProductVariant } from '@cowprotocol/ui'
 
@@ -13,9 +15,7 @@ const sweepingLight = keyframes`
   }
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const getGradientColors = (darkMode: boolean) =>
+const getGradientColors = (darkMode: boolean): string =>
   darkMode
     ? `
       rgba(44, 46, 112, 0) 0%,
@@ -39,7 +39,7 @@ const LoadingWrapper = styled.div`
   justify-content: center;
   position: fixed;
   background: ${({ theme }) =>
-    theme.isInjectedWidgetMode ? 'transparent' : transparentize(theme.darkMode ? '#0E0F2D' : '#65D9FF', 0.1)};
+    theme.isWidget ? 'transparent' : transparentize(theme.darkMode ? '#0E0F2D' : '#65D9FF', 0.1)};
   z-index: 99;
   top: 0;
   left: 0;
@@ -48,7 +48,7 @@ const LoadingWrapper = styled.div`
   backdrop-filter: blur(3px);
 
   ${({ theme }) =>
-    !theme.isInjectedWidgetMode &&
+    !theme.isWidget &&
     css`
       &:before {
         content: '';
@@ -65,16 +65,14 @@ const LoadingWrapper = styled.div`
     `}
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const LoadingApp = () => {
-  const isInjectedWidgetMode = isInjectedWidget()
+export const LoadingApp = (): ReactElement => {
+  const isWidget = isInjectedWidget()
 
   return (
     <LoadingWrapper>
       <ProductLogoLoader
         variant={ProductVariant.CowSwap}
-        logoHeight={isInjectedWidgetMode ? 60 : 100}
+        logoHeight={isWidget ? 60 : 100}
         text="Loading"
         minHeight="auto"
         gap="14px"

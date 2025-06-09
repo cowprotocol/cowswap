@@ -32,9 +32,7 @@ export interface TradeConfirmModalProps {
   submittedContent?: CustomSubmittedContent
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TradeConfirmModal(props: TradeConfirmModalProps) {
+export function TradeConfirmModal(props: TradeConfirmModalProps): ReactElement | null {
   const { children, submittedContent, title } = props
 
   const { chainId, account } = useWalletInfo()
@@ -79,9 +77,7 @@ type InnerComponentProps = {
   submittedContent?: CustomSubmittedContent
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function InnerComponent(props: InnerComponentProps) {
+function InnerComponent(props: InnerComponentProps): ReactElement {
   const {
     account,
     chainId,
