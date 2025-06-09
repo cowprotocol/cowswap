@@ -14,7 +14,7 @@ export function useCrossChainOrder(orderId: string | undefined): SWRResponse<Cro
 
     if (!orderId || !rpcProvider) return
 
-    const getOrder = (env: CowEnv) => {
+    const getOrder = (env: CowEnv): ReturnType<typeof getCrossChainOrder> => {
       return getCrossChainOrder({
         chainId,
         orderId,
