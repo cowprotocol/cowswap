@@ -1,16 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
-import { SupportedChainId, BridgeStatus, CrossChainOrder } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, CrossChainOrder } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { Loader } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
-import CowLoading from 'components/common/CowLoading'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
 import { ConnectionStatus } from 'components/ConnectionStatus'
 import { Notification } from 'components/Notification'
 import { DetailsTable } from 'components/orders/DetailsTable'
-import { StatusLabel } from 'components/orders/StatusLabel'
 import RedirectToSearch from 'components/RedirectToSearch'
 import TablePagination from 'explorer/components/common/TablePagination'
 import { useTable } from 'explorer/components/TokensTableWidget/useTable'
@@ -24,14 +21,13 @@ import { formatPercentage } from 'utils'
 
 import { useCrossChainOrder } from 'modules/bridge'
 
-import { Order, Trade, OrderStatus } from 'api/operator'
+import { Order, Trade } from 'api/operator'
 
 import { FillsTableContext } from './context/FillsTableContext'
-import { FillsTableWithData } from './FillsTableWithData'
-import { TitleUid, WrapperExtraComponents, StyledExplorerTabs, TabContent, BridgeDetailsWrapper } from './styled'
+import { TitleUid, WrapperExtraComponents, StyledExplorerTabs } from './styled'
+import { getBridgeTab, getFillsTab, getOverviewTab, getSwapTab } from './tabs'
 
 import { FlexContainerVar } from '../../../explorer/pages/styled'
-import { BridgeDetailsTable } from '../BridgeDetailsTable'
 import { VerboseDetails } from '../DetailsTable/VerboseDetails'
 
 type Props = {
@@ -65,7 +61,7 @@ function useQueryViewParams(): string {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, complexity
+// eslint-disable-next-line complexity
 const tabItems = (
   chainId: SupportedChainId,
   _order: Order | null,
@@ -78,12 +74,14 @@ const tabItems = (
   invertPrice: Command,
 ): TabItemInterface[] => {
   const order = getOrderWithTxHash(_order, trades)
-  const areTokensLoaded = order?.buyToken && order?.sellToken
+  const areTokensLoaded = Boolean(order?.buyToken && order?.sellToken)
   const isLoadingForTheFirstTime = isOrderLoading && !areTokensLoaded
   const filledPercentage = order?.filledPercentage && formatPercentage(order.filledPercentage)
   const showFills = order?.partiallyFillable && !order.txHash && trades.length > 1
 
   const { data: crossChainOrder, isLoading: crossChainOrderLoading } = crossChainOrderResponse
+
+  const noTokens = Boolean(!isOrderLoading && order && !areTokensLoaded)
 
   const defaultDetails =
     order && areTokensLoaded ? (
@@ -91,110 +89,31 @@ const tabItems = (
         <VerboseDetails
           order={order}
           showFillsButton={showFills}
-          viewFills={(): void => onChangeTab(TabView.FILLS)}
+          viewFills={() => onChangeTab(TabView.FILLS)}
           isPriceInverted={isPriceInverted}
           invertPrice={invertPrice}
         />
       </DetailsTable>
     ) : null
 
-  // For swap+bridge orders, create three tabs
+  const overviewTab = getOverviewTab(defaultDetails, noTokens, isLoadingForTheFirstTime)
+
+  // Swap & Bridge
   if (order?.bridgeProviderId) {
-    const overviewTab = {
-      id: TabView.OVERVIEW,
-      tab: <span>Overview</span>,
-      content: (
-        <>
-          {order && areTokensLoaded && (
-            <DetailsTable chainId={chainId} order={order} areTradesLoading={areTradesLoading} />
-          )}
-          {defaultDetails}
-          {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
-          {isLoadingForTheFirstTime && <CowLoading />}
-        </>
-      ),
-    }
-
-    const swapTab = {
-      id: TabView.SWAP,
-      tab: (
-        <TabContent>
-          1. Swap <StatusLabel status={order.status} />
-        </TabContent>
-      ),
-      content: (
-        <>
-          {defaultDetails}
-          {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
-          {isLoadingForTheFirstTime && <CowLoading />}
-        </>
-      ),
-    }
-
-    const bridgeStatus = crossChainOrder?.statusResult.status || BridgeStatus.UNKNOWN
-
-    // Note: swap+bridge orders don't support partial fills for now
-    const isSwapComplete = order.status === OrderStatus.Filled || order.partiallyFilled
-
-    // Determine effective bridge status for tab title
-    const effectiveBridgeStatusForTab = !isSwapComplete && bridgeStatus === BridgeStatus.IN_PROGRESS
-
-    const bridgeTab = {
-      id: TabView.BRIDGE,
-      tab: (
-        <TabContent>
-          2. Bridge{' '}
-          {effectiveBridgeStatusForTab ? (
-            <StatusLabel status={BridgeStatus.IN_PROGRESS} customText="Waiting for swap" />
-          ) : crossChainOrderLoading ? (
-            <Loader />
-          ) : (
-            <StatusLabel status={bridgeStatus} />
-          )}
-        </TabContent>
-      ),
-      content: <BridgeDetailsTable crossChainOrder={crossChainOrder || undefined} isLoading={crossChainOrderLoading} />,
-    }
-
-    return [overviewTab, swapTab, bridgeTab]
-  }
-
-  // Legacy behavior for regular orders
-  const detailsTab = {
-    id: TabView.OVERVIEW,
-    tab: <span>Overview</span>,
-    content: (
-      <>
-        {defaultDetails}
-        {order?.bridgeProviderId && (
-          <BridgeDetailsWrapper>
-            <BridgeDetailsTable crossChainOrder={crossChainOrder || undefined} isLoading={crossChainOrderLoading} />
-          </BridgeDetailsWrapper>
-        )}
-        {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
-        {isLoadingForTheFirstTime && <CowLoading />}
-      </>
-    ),
+    return [
+      overviewTab,
+      getSwapTab(order, defaultDetails, noTokens, isLoadingForTheFirstTime),
+      getBridgeTab(order, crossChainOrder, crossChainOrderLoading),
+    ]
   }
 
   if (!showFills) {
-    return [detailsTab]
+    return [overviewTab]
   }
 
-  const fillsTab = {
-    id: TabView.FILLS,
-    tab: filledPercentage ? <span>Fills ({filledPercentage})</span> : <span>Fills</span>,
-    content: (
-      <FillsTableWithData
-        order={order}
-        areTokensLoaded={!!areTokensLoaded}
-        isPriceInverted={isPriceInverted}
-        invertPrice={invertPrice}
-      />
-    ),
-  }
+  const fillsTab = getFillsTab(filledPercentage, { order, areTokensLoaded, isPriceInverted, invertPrice })
 
-  return [detailsTab, fillsTab]
+  return [overviewTab, fillsTab]
 }
 
 /**

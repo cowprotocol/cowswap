@@ -10,14 +10,19 @@ import { Order } from 'api/operator'
 import { FillsTableContext } from './context/FillsTableContext'
 import { FillsTable } from './FillsTable'
 
-type Props = {
+export type FillsTableWithDataProps = {
   areTokensLoaded: boolean
   order: Order | null
   isPriceInverted: boolean
   invertPrice: Command
 }
 
-export const FillsTableWithData: React.FC<Props> = ({ areTokensLoaded, order, isPriceInverted, invertPrice }) => {
+export const FillsTableWithData: React.FC<FillsTableWithDataProps> = ({
+  areTokensLoaded,
+  order,
+  isPriceInverted,
+  invertPrice,
+}) => {
   const { data: trades, tableState } = useContext(FillsTableContext)
   const isFirstRender = useFirstRender()
 

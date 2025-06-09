@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
@@ -38,7 +38,7 @@ export function AddressLink({
   chainId,
   showIcon = true,
   showNetworkName = true,
-}: AddressLinkProps): React.ReactElement {
+}: AddressLinkProps): ReactNode {
   const chainInfo = getChainInfo(chainId)
 
   return (
