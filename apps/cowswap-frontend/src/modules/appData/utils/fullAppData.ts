@@ -10,16 +10,22 @@ let appData: AppDataInfo = (() => {
   return _fromFullAppData(fullAppData)
 })()
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getAppData() {
   return appData
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function updateFullAppData(fullAppData: string | undefined) {
   if (fullAppData) {
     appData = _fromFullAppData(fullAppData)
   }
 }
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function getFullAppDataByEnv(environmentName: EnvironmentName | undefined): string {
   switch (environmentName) {
     case 'production':

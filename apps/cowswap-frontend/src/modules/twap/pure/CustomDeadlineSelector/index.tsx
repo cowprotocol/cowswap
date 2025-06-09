@@ -21,6 +21,9 @@ interface CustomDeadlineSelectorProps {
   customDeadline: CustomDeadline
   selectCustomDeadline(deadline: CustomDeadline): void
 }
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
   const { isOpen, onDismiss, customDeadline, selectCustomDeadline } = props
   const { hours = 0, minutes = 0 } = customDeadline
@@ -37,6 +40,8 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
 
   const isDisabled = !hoursValue && !minutesValue
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const onApply = () => {
     analytics.sendEvent({
       category: CowSwapAnalyticsCategory.TWAP,

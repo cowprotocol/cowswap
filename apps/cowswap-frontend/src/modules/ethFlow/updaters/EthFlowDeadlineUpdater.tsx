@@ -14,6 +14,8 @@ interface EthFlowDeadlineUpdaterProps {
   deadlineState: StatefulValue<number>
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function EthFlowDeadlineUpdater({ deadlineState }: EthFlowDeadlineUpdaterProps) {
   // user deadline (in seconds)
   const [userDeadline, setUserDeadline] = deadlineState

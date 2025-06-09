@@ -53,6 +53,8 @@ const tabItems = (orders: Order[] | undefined, networkId: BlockchainNetwork, txH
   ]
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   const { orders, isLoading: isTxLoading, errorTxPresentInNetworkId, error } = useGetTxOrders(txHash)
   const networkId = useNetworkId() || undefined

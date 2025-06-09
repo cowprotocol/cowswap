@@ -6,6 +6,8 @@ const CHAIN_ID = 11155111
 const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
 const WETH = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function acceptFeesExceedWarning() {
   cy.get('#swap-button > button').should('contain.text', 'Swap')
   cy.get('body').then(($body) => {
@@ -16,6 +18,8 @@ function acceptFeesExceedWarning() {
   })
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('Swap (custom)', () => {
   // uses WETH instead of ETH
   it('can swap WETH for USDC', () => {

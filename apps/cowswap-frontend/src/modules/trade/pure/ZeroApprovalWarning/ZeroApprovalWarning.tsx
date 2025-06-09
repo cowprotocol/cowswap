@@ -17,6 +17,8 @@ interface ZeroApprovalWarningProps {
 // TODO: Replace with FAQ link once available.
 const faqLink = undefined
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ZeroApprovalWarning({ currency }: ZeroApprovalWarningProps) {
   const symbol = currency?.symbol?.toUpperCase()
 

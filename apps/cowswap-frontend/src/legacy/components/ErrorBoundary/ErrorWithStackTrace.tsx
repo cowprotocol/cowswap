@@ -63,6 +63,8 @@ function truncate(value?: string): string | undefined {
   return value ? value.slice(0, 1000) : undefined
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const ErrorWithStackTrace = ({ error }: { error: Error }) => {
   const encodedBody = encodeURIComponent(issueBody(error))
 

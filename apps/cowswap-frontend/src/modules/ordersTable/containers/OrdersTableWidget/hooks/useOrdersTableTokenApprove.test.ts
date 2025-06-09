@@ -16,6 +16,8 @@ const tradeApproveCallbackMock = jest.fn().mockImplementation(() => Promise.reso
 describe('useOrdersTableTokenApprove()', () => {
   beforeEach(() => {
     // GIVEN
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockUseTradeApproveCallback.mockReturnValue(tradeApproveCallbackMock as any)
   })
 

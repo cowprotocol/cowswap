@@ -48,9 +48,15 @@ const tradeContext: TradeFlowContext = {
     isSafeWallet: false,
   },
   rateImpact: 0,
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   signer: {} as any,
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   settlementContract: {} as any,
   chainId: 1,
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dispatch: (() => void 0) as any,
   allowsOffchainSigning: true,
   quoteState: DEFAULT_TRADE_QUOTE_STATE,

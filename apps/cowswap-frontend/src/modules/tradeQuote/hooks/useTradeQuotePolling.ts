@@ -25,6 +25,9 @@ import { quoteUsingSameParameters } from '../utils/quoteUsingSameParameters'
 export const PRICE_UPDATE_INTERVAL = ms`30s`
 const QUOTE_EXPIRATION_CHECK_INTERVAL = ms`2s`
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function useTradeQuotePolling(isConfirmOpen = false, enableSmartSlippage = false) {
   const { amount, fastQuote, partiallyFillable } = useAtomValue(tradeQuoteInputAtom)
   const tradeQuote = useTradeQuote()
@@ -59,6 +62,8 @@ export function useTradeQuotePolling(isConfirmOpen = false, enableSmartSlippage 
     }
   }, [isWindowVisible, tradeQuoteManager, isConfirmOpen, amountStr])
 
+  // TODO: Break down this large function into smaller functions
+  // eslint-disable-next-line max-lines-per-function
   useLayoutEffect(() => {
     if (!tradeQuoteManager) {
       return
@@ -74,9 +79,14 @@ export function useTradeQuotePolling(isConfirmOpen = false, enableSmartSlippage 
       return
     }
 
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const fetchQuote = (fetchParams: TradeQuoteFetchParams) =>
       fetchAndProcessQuote(chainId, fetchParams, quoteParams, appData, tradeQuoteManager)
 
+    // TODO: Add proper return type annotation
+    // TODO: Reduce function complexity by extracting logic
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
     function fetchAndUpdateQuote(hasParamsChanged: boolean, forceUpdate = false) {
       const currentQuote = tradeQuoteRef.current
       const currentQuoteAppData = currentQuote.quote?.quoteResults.appDataInfo

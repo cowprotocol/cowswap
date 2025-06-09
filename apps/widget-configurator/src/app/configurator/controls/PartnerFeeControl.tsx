@@ -5,6 +5,8 @@ import TextField from '@mui/material/TextField'
 export interface PartnerFeeControlProps {
   feeBpsState: [number, Dispatch<SetStateAction<number>>]
 }
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function PartnerFeeControl(props: PartnerFeeControlProps) {
   const { feeBpsState } = props
   const [feeBps, setFeeBps] = feeBpsState

@@ -62,6 +62,8 @@ function calculateExecutionPrice(
   }).multipliedBy(TEN_BIG_NUMBER.exponentiatedBy((isPriceInverted ? buyToken : sellToken).decimals))
 }
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted }) => {
   const network = useNetworkId() ?? undefined
   const {

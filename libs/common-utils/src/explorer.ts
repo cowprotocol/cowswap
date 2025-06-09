@@ -59,6 +59,8 @@ enum Explorers {
 }
 
 // Used for GA ExternalLink detection
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function detectExplorer(href: string) {
   if (href.includes('explorer.cow.fi')) {
     return Explorers.Explorer

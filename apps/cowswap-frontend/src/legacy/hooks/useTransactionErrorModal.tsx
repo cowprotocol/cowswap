@@ -8,6 +8,8 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { CowModal } from 'common/pure/Modal'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function useTransactionErrorModal() {
   const openModal = useOpenModal(ApplicationModal.TRANSACTION_ERROR)
   const closeModal = useCloseModals()

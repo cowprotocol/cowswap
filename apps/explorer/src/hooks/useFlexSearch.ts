@@ -22,6 +22,8 @@ export const useFlexSearch = (
       const filteredObj = Object.keys(el)
         .filter((key) => filterValues.includes(key))
         .reduce((cur, key) => Object.assign(cur, { [key]: el[key] }), {})
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ;(index as any).add(el.id, JSON.stringify(filteredObj))
     })
   }, [index, data, filterValues])
@@ -33,6 +35,8 @@ export const useFlexSearch = (
   useEffect(() => {
     if (!query) return
 
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = (index as any).search(query, searchOptions)
     const filteredResults = data.filter((el: Item) => result.includes(el.id))
     setFilteredResults(filteredResults)

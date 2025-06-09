@@ -40,6 +40,8 @@ const BASE_ORDER = {
   },
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('appziMiddleware', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -50,6 +52,8 @@ describe('appziMiddleware', () => {
       orders: {
         1: 'mocked orders',
       },
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any)
   })
 
@@ -58,6 +62,8 @@ describe('appziMiddleware', () => {
       when(actionMock.payload).thenReturn({ chainId: 1, orders: [BASE_ORDER.order] })
       when(actionMock.type).thenReturn('order/fullfillOrdersBatch')
       getUiOrderTypeMock.mockReturnValue(UiOrderType.SWAP)
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getOrderByOrderIdFromStateMock.mockReturnValue(BASE_ORDER as any)
     })
 
@@ -87,6 +93,8 @@ describe('appziMiddleware', () => {
     it('should not open appzi if order is hidden', () => {
       getOrderByOrderIdFromStateMock.mockReturnValue({
         order: { ...BASE_ORDER.order, isHidden: true },
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any)
 
       appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
@@ -98,6 +106,8 @@ describe('appziMiddleware', () => {
     beforeEach(() => {
       when(actionMock.payload).thenReturn({ chainId: 1, ids: [BASE_ORDER.order.id] })
       when(actionMock.type).thenReturn('order/expireOrdersBatch')
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getOrderByOrderIdFromStateMock.mockReturnValue(BASE_ORDER as any)
       getUiOrderTypeMock.mockReturnValue(UiOrderType.SWAP)
     })
@@ -119,6 +129,8 @@ describe('appziMiddleware', () => {
     it('should not open appzi if market order is hidden', () => {
       getOrderByOrderIdFromStateMock.mockReturnValue({
         order: { ...BASE_ORDER.order, isHidden: true },
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any)
 
       appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
@@ -129,6 +141,8 @@ describe('appziMiddleware', () => {
     it('should not open appzi if limit order is hidden', () => {
       getOrderByOrderIdFromStateMock.mockReturnValue({
         order: { ...BASE_ORDER.order, isHidden: true },
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any)
       getUiOrderTypeMock.mockReturnValue(UiOrderType.LIMIT)
 
@@ -142,6 +156,8 @@ describe('appziMiddleware', () => {
       when(actionMock.payload).thenReturn({ chainId: 1, ids: [BASE_ORDER.order.id] })
       when(actionMock.type).thenReturn('order/presignOrders')
 
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getOrderByOrderIdFromStateMock.mockReturnValue(BASE_ORDER as any)
     })
 
@@ -174,6 +190,8 @@ describe('appziMiddleware', () => {
       when(actionMock.payload).thenReturn({ chainId: 1, ...BASE_ORDER })
       when(actionMock.type).thenReturn('order/addPendingOrder')
 
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getOrderByOrderIdFromStateMock.mockReturnValue(BASE_ORDER as any)
     })
 
@@ -220,6 +238,8 @@ describe('appziMiddleware', () => {
       when(actionMock.payload).thenReturn({ chainId: 1, ids: [BASE_ORDER.order.id] })
       when(actionMock.type).thenReturn('order/cancelOrdersBatch')
 
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getOrderByOrderIdFromStateMock.mockReturnValue(BASE_ORDER as any)
     })
 

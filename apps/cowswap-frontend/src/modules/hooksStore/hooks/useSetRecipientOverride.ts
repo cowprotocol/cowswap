@@ -5,6 +5,8 @@ import { useIsHooksTradeType, useIsNativeIn } from 'modules/trade'
 
 import { usePostHooksRecipientOverride } from './usePostHooksRecipientOverride'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useSetRecipientOverride() {
   const { onChangeRecipient } = useSwapWidgetActions()
   const hookRecipientOverride = usePostHooksRecipientOverride()

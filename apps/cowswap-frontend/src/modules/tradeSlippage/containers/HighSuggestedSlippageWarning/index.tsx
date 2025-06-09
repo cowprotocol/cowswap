@@ -14,6 +14,8 @@ export type HighSuggestedSlippageWarningProps = {
   isTradePriceUpdating: boolean
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function HighSuggestedSlippageWarning(props: HighSuggestedSlippageWarningProps) {
   const { isTradePriceUpdating } = props
   const { account } = useWalletInfo()

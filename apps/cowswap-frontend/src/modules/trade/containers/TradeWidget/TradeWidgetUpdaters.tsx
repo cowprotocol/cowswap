@@ -22,6 +22,8 @@ interface TradeWidgetUpdatersProps {
   onChangeRecipient: (recipient: string | null) => void
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TradeWidgetUpdaters({
   disableQuotePolling,
   disableNativeSelling,

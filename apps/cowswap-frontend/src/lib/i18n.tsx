@@ -78,6 +78,8 @@ const plurals: LocalePlural = {
   pseudo: en,
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export async function dynamicActivate(locale: SupportedLocale) {
   i18n.loadLocaleData(locale, { plurals: plurals[locale] })
   try {
@@ -97,6 +99,8 @@ interface ProviderProps {
   children: ReactNode
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Provider({ locale, onActivate, children }: ProviderProps) {
   useEffect(() => {
     dynamicActivate(locale)
