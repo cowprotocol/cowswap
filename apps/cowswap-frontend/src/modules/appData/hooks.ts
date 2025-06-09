@@ -26,14 +26,20 @@ export function useAppCode(): string | null {
   }, [isSafeApp])
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useUploadAppData() {
   return useSetAtom(addAppDataToUploadQueueAtom)
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useUpdateAppDataHooks() {
   return useSetAtom(appDataHooksAtom)
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useAppDataHooks() {
   return useAtomValue(appDataHooksAtom)
 }

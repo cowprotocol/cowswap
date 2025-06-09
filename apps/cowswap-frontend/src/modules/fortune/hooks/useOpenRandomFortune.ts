@@ -16,6 +16,8 @@ function getRandomFortuneFromList(items: FortuneItem[], checkedFortunes: Checked
   return list[index] || null
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useOpenRandomFortune() {
   const fortunesList = useAtomValue(fortunesListAtom)
   const setOpenFortuneAtom = useSetAtom(updateOpenFortuneAtom)

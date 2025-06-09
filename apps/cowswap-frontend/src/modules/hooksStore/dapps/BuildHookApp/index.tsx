@@ -32,6 +32,9 @@ const FIELDS = [
   { name: 'callData', label: 'Calldata', type: 'textarea', rows: 8 },
 ] as ReadonlyArray<FormFieldParams>
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function BuildHookApp({ context }: HookDappProps) {
   const hookToEdit = context.hookToEdit
   const isPreHook = context.isPreHook
@@ -105,6 +108,8 @@ interface FormFieldProps {
   onChange(value: { name: string; value: string }): void
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function FormField({ params, value, error, onChange }: FormFieldProps) {
   const { name, label, type, rows } = params
   return (

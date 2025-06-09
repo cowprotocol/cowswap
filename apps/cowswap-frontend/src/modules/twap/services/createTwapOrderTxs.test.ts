@@ -31,6 +31,8 @@ const order: TWAPOrder = {
 const CREATE_COW_TX_DATA = '0xCREATE_COW_TX_DATA'
 const APPROVE_TX_DATA = '0xAPPROVE_TX_DATA'
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('Create TWAP order', () => {
   let context: TwapOrderCreationContext
   let createCowFn: jest.Mock
@@ -47,11 +49,15 @@ describe('Create TWAP order', () => {
       composableCowContract: {
         interface: { encodeFunctionData: createCowFn },
         address: COMPOSABLE_COW_ADDRESS[chainId],
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
       needsApproval: false,
       needsZeroApproval: false,
       spender: '0xB4FBF271143F4FBf7B91A5ded31805e42b222222',
       currentBlockFactoryAddress: CURRENT_BLOCK_FACTORY_ADDRESS[chainId],
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       erc20Contract: { interface: { encodeFunctionData: approveFn } } as any,
     }
   })

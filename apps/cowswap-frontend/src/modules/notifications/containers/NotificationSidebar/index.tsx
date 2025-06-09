@@ -16,6 +16,9 @@ interface NotificationSidebarProps {
   onClose: () => void
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const sidebarRef = useRef<HTMLDivElement>(null)

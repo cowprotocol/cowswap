@@ -9,6 +9,8 @@ export interface TradeQuoteUpdaterProps {
   enableSmartSlippage?: boolean
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TradeQuoteUpdater({ isConfirmOpen, enableSmartSlippage = false }: TradeQuoteUpdaterProps) {
   const quoteState = useTradeQuote()
 

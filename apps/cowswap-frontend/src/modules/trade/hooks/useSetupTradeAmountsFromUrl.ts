@@ -32,6 +32,9 @@ interface SetupTradeAmountsParams {
  *
  * In case when both sellAmount and buyAmount specified, the price will be automatically calculated
  */
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: SetupTradeAmountsParams) {
   const navigate = useNavigate()
   const { search, pathname } = useLocation()
@@ -64,6 +67,8 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
     navigate({ pathname, search: queryParams.toString() }, { replace: true })
   }, [navigate, pathname, search])
 
+  // TODO: Reduce function complexity by extracting logic
+  // eslint-disable-next-line complexity
   useSafeEffect(() => {
     const orderKind = params.get(TRADE_URL_ORDER_KIND_KEY) as OrderKind | null
     const sellAmount = getIntOrFloat(params.get(TRADE_URL_SELL_AMOUNT_KEY))

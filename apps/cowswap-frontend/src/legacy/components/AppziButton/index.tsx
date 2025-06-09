@@ -62,6 +62,8 @@ interface AppziButtonProps {
   menuTitle?: string
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function Appzi({ menuTitle }: AppziButtonProps) {
   const { account, chainId } = useWalletInfo()
   const { walletName } = useWalletDetails()

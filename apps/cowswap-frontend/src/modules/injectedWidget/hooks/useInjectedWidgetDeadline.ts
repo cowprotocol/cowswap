@@ -24,6 +24,8 @@ export function useInjectedWidgetDeadline(tradeType: TradeType): number | undefi
   }, [tradeType, forcedOrderDeadline, chainId])
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getDeadline(deadline: ForcedOrderDeadline | undefined, chainId: SupportedChainId, tradeType: TradeType) {
   if (!deadline) {
     return

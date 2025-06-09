@@ -74,9 +74,12 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
     text-align: center;
   }
 
-  ${({ selected, theme }) =>
-    selected &&
-    `
+  ${
+    /* TODO: Break down this large function into smaller functions */
+    /* eslint-disable-next-line max-lines-per-function */
+    ({ selected, theme }) =>
+      selected &&
+      `
     background: ${theme.bg2};
     color: ${theme.white};
     transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
@@ -141,7 +144,8 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
           color: ${theme.white};
         }
     }
-  `}
+  `
+  }
 
   ${({ theme }) =>
     `
@@ -159,6 +163,9 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
 
 const vCowToken = V_COW[SupportedChainId.MAINNET]
 
+// TODO: Add proper return type annotation
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function SubsidyTable({ discount }: CowSubsidy) {
   const darkMode = useIsDarkMode()
 

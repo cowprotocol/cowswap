@@ -22,6 +22,8 @@ interface ConnectWalletOptionsProps {
   tryActivation: TryActivation
   children: (content: ReactNode, count: number) => ReactNode
 }
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletOptionsProps) {
   const selectedWallet = useSelectedWallet()
   const multiInjectedProviders = useMultiInjectedProviders()
@@ -70,6 +72,8 @@ interface InjectedOptionsProps {
   }
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function InjectedOptions({ connectionProps, multiInjectedProviders }: InjectedOptionsProps) {
   if (multiInjectedProviders.length) {
     return (

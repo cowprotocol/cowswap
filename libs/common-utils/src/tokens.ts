@@ -5,6 +5,8 @@ import {
 } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function isNativeAddress(tokenAddress: string, chainId: ChainId) {
   if (!tokenAddress || !chainId) return false
 

@@ -11,6 +11,8 @@ import { TRADE_MODES } from '../consts'
 
 const LABEL = 'Current trade type'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function CurrentTradeTypeControl({ state }: { state: [TradeType, Dispatch<SetStateAction<TradeType>>] }) {
   const [tradeType, setTradeType] = state
 

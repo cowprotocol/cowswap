@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.3](https://github.com/cowprotocol/cowswap/compare/wallet-v1.12.2...wallet-v1.12.3) (2025-06-06)
+
+
+### Bug Fixes
+
+* **safe-wc:** pass chainId to wallet_sendCalls in the body of the request ([#5793](https://github.com/cowprotocol/cowswap/issues/5793)) ([8e21739](https://github.com/cowprotocol/cowswap/commit/8e21739a9829dc47533767b4d28fbba4dc0759f7))
+
 ## [1.12.2](https://github.com/cowprotocol/cowswap/compare/wallet-v1.12.1...wallet-v1.12.2) (2025-05-21)
 
 

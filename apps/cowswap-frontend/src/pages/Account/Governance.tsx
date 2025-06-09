@@ -1,6 +1,8 @@
 import { DELEGATE_URL } from './constants'
 import { ExtLink, BannerCard, BannerCardContent, CardActions, BannerCardTitle } from './styled'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function Governance() {
   return (
     <BannerCard>

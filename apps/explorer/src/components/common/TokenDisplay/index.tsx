@@ -15,6 +15,8 @@ export type Props = {
   showNetworkName?: boolean
 }
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function TokenDisplay(props: Readonly<Props>): React.ReactNode {
   const { erc20, network, showAbbreviated, showNetworkName = false } = props
 

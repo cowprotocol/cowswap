@@ -30,6 +30,8 @@ function useAgnosticPermitDataIfUserHasNoAllowance(): Nullish<PermitHookData> {
   return shouldUsePermit ? hookData : null
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function AppDataHooksUpdater(): null {
   const tradeState = useDerivedTradeState()
   const isHooksTradeType = useIsHooksTradeType()
