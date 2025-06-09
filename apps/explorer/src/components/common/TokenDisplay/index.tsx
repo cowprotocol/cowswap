@@ -1,59 +1,29 @@
-import { getChainInfo } from '@cowprotocol/common-const'
+import { ReactNode } from 'react'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { Network } from 'types'
-import { abbreviateString, getImageAddress, isNativeToken } from 'utils'
+import { getImageAddress, isNativeToken } from 'utils'
 
 import { Wrapper, NativeWrapper, StyledImg } from './styled'
+import { getNetworkSuffix, getTokenLabelBaseNode } from './utils'
 
-export type Props = {
+export type TokenDisplayProps = {
   erc20: TokenErc20 & { chainId?: Network | SupportedChainId }
   network: Network
   showAbbreviated?: boolean
   showNetworkName?: boolean
 }
 
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line complexity
-export function TokenDisplay(props: Readonly<Props>): React.ReactNode {
+export function TokenDisplay(props: Readonly<TokenDisplayProps>): ReactNode {
   const { erc20, network, showAbbreviated, showNetworkName = false } = props
 
-  let tokenLabelBaseNode: React.ReactElement | string
-  if (showAbbreviated) {
-    tokenLabelBaseNode = `${erc20.symbol ?? erc20.name ?? abbreviateString(erc20.address, 6, 4)}`
-  } else if (erc20.name && erc20.symbol) {
-    tokenLabelBaseNode = `${erc20.name} (${erc20.symbol})`
-  } else if (!erc20.name && erc20.symbol) {
-    tokenLabelBaseNode = (
-      <span>
-        <i>{abbreviateString(erc20.address, 6, 4)}</i> ({erc20.symbol})
-      </span>
-    )
-  } else if (!erc20.name && !erc20.symbol && erc20.address) {
-    tokenLabelBaseNode = <i>{abbreviateString(erc20.address, 6, 4)}</i>
-  } else {
-    tokenLabelBaseNode = ''
-  }
+  const tokenLabelBaseNode = getTokenLabelBaseNode(erc20, showAbbreviated)
 
   const effectiveChainId = erc20.chainId ?? network
-  let networkNameSuffix = ''
-  if (showNetworkName) {
-    let fetchedNetworkName = ''
-    try {
-      const chainInfo = getChainInfo(effectiveChainId as SupportedChainId)
-      if (chainInfo && chainInfo.label) {
-        fetchedNetworkName = chainInfo.label
-      }
-    } catch (error) {
-      console.warn(`Could not get chain info for chainId: ${effectiveChainId}`, error)
-    }
-    if (fetchedNetworkName) {
-      networkNameSuffix = `${fetchedNetworkName}`
-    }
-  }
-
+  const networkNameSuffix = showNetworkName && getNetworkSuffix(effectiveChainId)
   const imageAddress = getImageAddress(erc20.address, network)
 
   const nativeTokenDisplay = (
