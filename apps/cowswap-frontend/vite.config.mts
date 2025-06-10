@@ -10,7 +10,6 @@ import { VitePWA } from 'vite-plugin-pwa'
 import svgr from 'vite-plugin-svgr'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 import { meta } from 'vite-plugin-meta-tags'
-import { robots } from 'vite-plugin-robots'
 
 import * as path from 'path'
 
@@ -18,6 +17,7 @@ import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
 
 // eslint-disable-next-line no-restricted-imports
 import type { TemplateType } from 'rollup-plugin-visualizer/dist/plugin/template-types'
+import { robotsPlugin } from '../../tools/vite-plugins/robotsPlugin'
 
 const allNodeDeps = Object.keys(stdLibBrowser).map((key) => key.replace('node:', '')) as ModuleNameWithoutNodePrefix[]
 
@@ -62,9 +62,9 @@ export default defineConfig(({ mode }) => {
         globPatterns: ['**/*.{js,css,html,png,jpg,svg,json,woff,woff2,md}'],
       },
     }),
-    robots({
+    robotsPlugin({
       robotsDir: 'robots',
-      outputRobotsFileName: '../../build/cowswap',
+      publicPath: path.resolve(__dirname, './public'),
     }),
   ]
 
