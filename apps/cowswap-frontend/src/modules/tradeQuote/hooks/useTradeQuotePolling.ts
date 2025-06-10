@@ -63,7 +63,7 @@ export function useTradeQuotePolling(isConfirmOpen = false, enableSmartSlippage 
   }, [isWindowVisible, tradeQuoteManager, isConfirmOpen, amountStr])
 
   // TODO: Break down this large function into smaller functions
-  // eslint-disable-next-line max-lines-per-function
+
   useLayoutEffect(() => {
     if (!tradeQuoteManager) {
       return
@@ -118,7 +118,7 @@ export function useTradeQuotePolling(isConfirmOpen = false, enableSmartSlippage 
         // Important! We should skip quote updateing only if there is no quote response
         if (
           (hasCachedResponse || hasCachedError) &&
-          quoteUsingSameParameters(chainId, currentQuote, quoteParams, currentQuoteAppDataDoc, appData)
+          quoteUsingSameParameters(currentQuote, quoteParams, currentQuoteAppDataDoc, appData)
         ) {
           return
         }
