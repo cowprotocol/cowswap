@@ -73,7 +73,7 @@ const widgetPartnerFeeAtom = atom<VolumeFee | undefined>((get) => {
   if (!bps || !recipient) return undefined
 
   return {
-    bps,
+    volumeBps: bps,
     recipient,
   }
 })

@@ -93,32 +93,13 @@ export function useTradeQuotePolling(isConfirmOpen = false, enableSmartSlippage 
       const hasCachedResponse = !!currentQuote.quote
       const hasCachedError = !!currentQuote.error
 
-      const currentQuoteAppDataDoc = {
-        ...currentQuoteAppData?.doc,
-        version: currentQuoteAppData?.doc?.version || '1.4.0',
-        metadata: {
-          ...currentQuoteAppData?.doc?.metadata,
-          partnerFee: currentQuoteAppData?.doc?.metadata?.partnerFee
-            ? [
-                {
-                  priceImprovementBps: 0,
-                  maxVolumeBps: 0,
-                  recipient: Array.isArray(currentQuoteAppData?.doc?.metadata?.partnerFee)
-                    ? currentQuoteAppData?.doc?.metadata?.partnerFee[0]?.recipient || ''
-                    : currentQuoteAppData?.doc?.metadata?.partnerFee.recipient || '',
-                },
-              ]
-            : undefined,
-        },
-      }
-
       if (!forceUpdate) {
         // Don't fetch quote if the parameters are the same
         // Also avoid quote refresh when only appData.quote (contains slippage) is changed
         // Important! We should skip quote updateing only if there is no quote response
         if (
           (hasCachedResponse || hasCachedError) &&
-          quoteUsingSameParameters(chainId, currentQuote, quoteParams, currentQuoteAppDataDoc, appData)
+          quoteUsingSameParameters(chainId, currentQuote, quoteParams, currentQuoteAppData?.doc, appData)
         ) {
           return
         }

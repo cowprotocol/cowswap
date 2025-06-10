@@ -131,18 +131,7 @@ export function ReceiptModal({
   const outputLabel = isSell ? 'You receive at least' : 'You receive exactly'
   const safeTxParams = twapOrder?.safeTxParams
 
-  const volumeFee = getOrderVolumeFee(order.fullAppData)
-  const volumeFeeBps = !volumeFee
-    ? 0
-    : Array.isArray(volumeFee)
-      ? volumeFee.find((fee) => 'volumeBps' in fee)?.volumeBps ||
-        volumeFee.find((fee) => 'maxVolumeBps' in fee)?.maxVolumeBps ||
-        0
-      : 'volumeBps' in volumeFee
-        ? volumeFee.volumeBps
-        : 'maxVolumeBps' in volumeFee
-          ? volumeFee.maxVolumeBps
-          : 0
+  const volumeFeeBps = getOrderVolumeFee(order.fullAppData)
 
   return (
     <CowModal onDismiss={onDismiss} isOpen={isOpen}>
@@ -228,7 +217,7 @@ export function ReceiptModal({
               </styledEl.Field>
             )}
 
-            {volumeFee && (
+            {volumeFeeBps && (
               <styledEl.Field>
                 <FieldLabel label="Total fee" tooltip={tooltips.TOTAL_FEE} />
                 <span>{(volumeFeeBps / 100).toFixed(2)}%</span>
