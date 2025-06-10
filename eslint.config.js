@@ -69,6 +69,14 @@ module.exports = [
       'react/jsx-no-bind': ['error', { allowArrowFunctions: true }],
     },
   },
+
+  // React components get higher complexity limit due to ternary operators
+  {
+    files: ['**/*.tsx'],
+    rules: {
+      complexity: ['error', 15],
+    },
+  },
   {
     files: ['**/*.{ts,tsx,js,jsx}'],
     rules: {
