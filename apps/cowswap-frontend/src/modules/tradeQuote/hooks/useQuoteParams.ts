@@ -87,16 +87,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
 
       receiver,
       validFor: DEFAULT_QUOTE_TTL,
-      ...(volumeFee
-        ? {
-            partnerFee: {
-              ...volumeFee,
-              priceImprovementBps: 0,
-              maxVolumeBps: 0,
-              recipient: volumeFee.recipient || '',
-            },
-          }
-        : null),
+      ...(volumeFee ? { partnerFee: volumeFee } : undefined),
       partiallyFillable,
       slippageBps,
     }
