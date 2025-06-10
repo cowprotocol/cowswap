@@ -64,7 +64,6 @@ export default defineConfig(({ mode }) => {
     }),
     robots({
       robotsDir: 'robots',
-      outputRobotsFileName: '../../build/cowswap',
     }),
   ]
 
