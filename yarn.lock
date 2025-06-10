@@ -1861,7 +1861,7 @@
 
 "@cowprotocol/ethflowcontract@cowprotocol/ethflowcontract.git#main-artifacts":
   version "1.3.0"
-  resolved "https://codeload.github.com/cowprotocol/ethflowcontract/tar.gz/9797105dfa25330a2e88cc4180df0fc34cf8fbbd"
+  resolved "https://codeload.github.com/cowprotocol/ethflowcontract/tar.gz/0558a6e43723780468f886987dd53e63e1224ae2"
 
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
