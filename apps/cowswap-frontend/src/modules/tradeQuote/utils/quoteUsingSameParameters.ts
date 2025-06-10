@@ -35,32 +35,37 @@ export function quoteUsingSameParameters(
     const bridgeTradeParams = currentQuote.bridgeQuote.tradeParameters
     const bridgePostHook = currentQuote.bridgeQuote.bridgeCallDetails.preAuthorizedBridgingHook.postHook
 
-    return (
+    const cases = [
       compareAppDataWithoutQuoteData(
         removeBridgePostHook(currentAppData, bridgePostHook),
         removeBridgePostHook(appData, bridgePostHook),
-      ) &&
-      currentParams.owner === nextParams.owner &&
-      currentParams.kind === nextParams.kind &&
-      currentParams.amount === nextParams.amount.toString() &&
-      bridgeTradeParams.validFor === nextParams.validFor &&
-      bridgeTradeParams.receiver === nextParams.receiver &&
-      currentParams.sellToken.toLowerCase() === nextSellToken &&
-      bridgeTradeParams.sellTokenChainId === nextParams.sellTokenChainId &&
-      bridgeTradeParams.buyTokenAddress.toLowerCase() === nextParams.buyTokenAddress.toLowerCase()
-    )
+      ),
+      currentParams.owner === nextParams.owner,
+      currentParams.kind === nextParams.kind,
+      currentParams.amount === nextParams.amount.toString(),
+      bridgeTradeParams.validFor === nextParams.validFor,
+      bridgeTradeParams.receiver === nextParams.receiver,
+      bridgeTradeParams.slippageBps === nextParams.slippageBps,
+      currentParams.sellToken.toLowerCase() === nextSellToken,
+      bridgeTradeParams.sellTokenChainId === nextParams.sellTokenChainId,
+      bridgeTradeParams.buyTokenAddress.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(),
+    ]
+
+    return cases.every(Boolean)
   }
 
-  return (
-    compareAppDataWithoutQuoteData(currentAppData, appData) &&
-    currentParams.owner === nextParams.owner &&
-    currentParams.kind === nextParams.kind &&
-    currentParams.amount === nextParams.amount.toString() &&
-    currentParams.validFor === nextParams.validFor &&
-    currentParams.receiver === nextParams.receiver &&
-    currentParams.sellToken.toLowerCase() === nextSellToken &&
-    currentParams.buyToken.toLowerCase() === nextParams.buyTokenAddress.toLowerCase()
-  )
+  const cases = [
+    compareAppDataWithoutQuoteData(currentAppData, appData),
+    currentParams.owner === nextParams.owner,
+    currentParams.kind === nextParams.kind,
+    currentParams.amount === nextParams.amount.toString(),
+    currentParams.validFor === nextParams.validFor,
+    currentParams.receiver === nextParams.receiver,
+    currentParams.sellToken.toLowerCase() === nextSellToken,
+    currentParams.buyToken.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(),
+  ]
+
+  return cases.every(Boolean)
 }
 
 /**
@@ -81,7 +86,7 @@ function compareAppDataWithoutQuoteData(a: AppDataInfo['doc'] | undefined, b: Ap
  */
 function removeQuoteMetadata(appData: AppDataInfo['doc']): string {
   const { metadata: fullMetadata, ...rest } = appData
-  const { quote: _, ...metadata } = fullMetadata
+  const { quote: _, utm: __, ...metadata } = fullMetadata
 
   const obj = { ...rest, metadata }
   return jsonStringify(obj)

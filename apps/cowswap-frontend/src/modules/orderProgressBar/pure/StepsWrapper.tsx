@@ -1,10 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, ReactNode } from 'react'
 
 import { StepComponent } from './StepComponent'
 import * as styledEl from './styled'
 
 import { STEPS } from '../constants'
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function StepsWrapper({
   steps,
   currentStep,
@@ -13,14 +16,16 @@ export function StepsWrapper({
   customColor,
   isCancelling,
   isUnfillable,
+  isBridgingTrade = false,
 }: {
   steps: typeof STEPS
   currentStep: number
-  extraContent?: React.ReactNode
+  extraContent?: ReactNode
   customStepTitles?: { [key: number]: string }
   customColor?: string
   isCancelling?: boolean
   isUnfillable?: boolean
+  isBridgingTrade?: boolean
 }) {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [containerHeight, setContainerHeight] = useState(0)
@@ -39,6 +44,8 @@ export function StepsWrapper({
     }
   }, [currentStep, steps.length])
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const getStatus = (index: number) => {
     if (index === currentStep) return isCancelling ? 'cancelling' : 'active'
     if (index === currentStep + 1) return 'next'
@@ -53,7 +60,8 @@ export function StepsWrapper({
       bottomGradient={!isCancelling}
     >
       <styledEl.StepsWrapper ref={wrapperRef}>
-        {steps.map((step, index) => {
+        {steps.map((stepInit, index) => {
+          const step = typeof stepInit === 'function' ? stepInit(isBridgingTrade) : stepInit
           const customTitle = customStepTitles?.[index]
           return (
             <div key={index}>

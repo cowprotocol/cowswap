@@ -12,8 +12,8 @@ import { ConditionalOrderParams, TwapOrdersSafeData } from '../types'
 
 // ComposableCoW.createWithContext method
 const CREATE_COMPOSABLE_ORDER_SELECTOR = '0d0d9800'
-// Each page contains 20 transactions by default, so we need to fetch 10 pages to get 200 transactions
-const SAFE_TX_HISTORY_DEPTH = 10
+// Each page contains 20 transactions by default, so we need to fetch 200 pages to get 4000 transactions
+const SAFE_TX_HISTORY_DEPTH = 200
 // Just in case, make a short delay between requests
 const SAFE_TX_REQUEST_DELAY = ms`100ms`
 
@@ -94,6 +94,8 @@ function parseSafeTranasctionsResult(
     .filter(isTruthy)
 }
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isSafeMultisigTransactionListResponse(response: any): response is SafeMultisigTransactionResponse {
   return !!response.data && !!response.submissionDate
 }
@@ -105,6 +107,8 @@ function parseConditionalOrderParams(
 ): ConditionalOrderParams | null {
   try {
     const _result = composableCowContract.interface.decodeFunctionData('createWithContext', callData)
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { params } = _result as any as { params: ConditionalOrderParams }
 
     return { handler: params.handler, salt: params.salt, staticInput: params.staticInput }

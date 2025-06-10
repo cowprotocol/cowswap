@@ -1,5 +1,6 @@
 import React, { ComponentType } from 'react'
 
+import { BridgingStep } from './BridgingStep'
 import { CancelledStep } from './CancelledStep'
 import { CancellingStep } from './CancellingStep'
 import { ExecutingStep } from './ExecutingStep'
@@ -13,22 +14,28 @@ import { RenderProgressTopSection } from '../RenderProgressTopSection'
 
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function InitialStepWrapper(props: OrderProgressBarProps) {
   return (
-    <InitialStep>
+    <InitialStep isBridgingTrade={props.isBridgingTrade}>
       <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
     </InitialStep>
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function ExecutingStepWrapper(props: OrderProgressBarProps) {
   return (
-    <ExecutingStep>
+    <ExecutingStep isBridgingTrade={props.isBridgingTrade}>
       <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
     </ExecutingStep>
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function FinishedStepWrapper(props: OrderProgressBarProps) {
   const { stepName, solverCompetition: solvers, totalSolvers, order, surplusData, chainId, receiverEnsName } = props
 
@@ -48,8 +55,10 @@ function FinishedStepWrapper(props: OrderProgressBarProps) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function SolvingStepWrapper(props: OrderProgressBarProps) {
-  const { countdown, stepName, showCancellationModal } = props
+  const { countdown, stepName, showCancellationModal, isBridgingTrade } = props
   const isUnfillable = stepName === 'unfillable'
   const isDelayed = stepName === 'delayed'
   const isSubmissionFailed = stepName === 'submissionFailed'
@@ -57,7 +66,7 @@ function SolvingStepWrapper(props: OrderProgressBarProps) {
   const calculatedCountdownValue = isUnfillable || isDelayed || isSubmissionFailed || isSolved ? undefined : countdown
 
   return (
-    <SolvingStep stepName={stepName} showCancellationModal={showCancellationModal}>
+    <SolvingStep stepName={stepName} showCancellationModal={showCancellationModal} isBridgingTrade={isBridgingTrade}>
       <RenderProgressTopSection
         {...props}
         countdown={calculatedCountdownValue}
@@ -67,6 +76,8 @@ function SolvingStepWrapper(props: OrderProgressBarProps) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function CancellingStepWrapper(props: OrderProgressBarProps) {
   return (
     <CancellingStep>
@@ -75,6 +86,8 @@ function CancellingStepWrapper(props: OrderProgressBarProps) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function CancelledStepWrapper(props: OrderProgressBarProps) {
   return (
     <CancelledStep>
@@ -83,12 +96,22 @@ function CancelledStepWrapper(props: OrderProgressBarProps) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function ExpiredStepWrapper(props: OrderProgressBarProps) {
   return (
     <ExpiredStep navigateToNewOrder={props.navigateToNewOrder}>
       <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
     </ExpiredStep>
   )
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function BridgingStepWrapper(props: OrderProgressBarProps) {
+  if (!props.stepName || !props.swapAndBridgeContext) return null
+
+  return <BridgingStep context={props.swapAndBridgeContext} surplusData={props.surplusData}></BridgingStep>
 }
 
 export const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, ComponentType<OrderProgressBarProps>> = {
@@ -104,4 +127,8 @@ export const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, Compo
   cancelled: CancelledStepWrapper,
   expired: ExpiredStepWrapper,
   cancellationFailed: FinishedStepWrapper,
+  bridgingInProgress: BridgingStepWrapper,
+  bridgingFailed: BridgingStepWrapper,
+  bridgingFinished: BridgingStepWrapper,
+  refundCompleted: BridgingStepWrapper,
 }

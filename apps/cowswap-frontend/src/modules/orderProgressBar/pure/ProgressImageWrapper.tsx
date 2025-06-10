@@ -27,6 +27,10 @@ const PROCESS_IMAGE_WRAPPER_BG_COLOR: BgColorMap = {
   cancelling: undefined,
   cancelled: undefined,
   expired: undefined,
+  bridgingFinished: undefined,
+  bridgingFailed: undefined,
+  bridgingInProgress: undefined,
+  refundCompleted: undefined,
 }
 
 const PROCESS_IMAGE_WRAPPER_PADDING: PaddingMap = {
@@ -42,6 +46,10 @@ const PROCESS_IMAGE_WRAPPER_PADDING: PaddingMap = {
   cancelling: undefined,
   cancelled: undefined,
   expired: undefined,
+  bridgingFinished: undefined,
+  bridgingFailed: undefined,
+  bridgingInProgress: undefined,
+  refundCompleted: undefined,
 }
 
 const PROCESS_IMAGE_WRAPPER_HEIGHT: HeightMap = {
@@ -57,6 +65,10 @@ const PROCESS_IMAGE_WRAPPER_HEIGHT: HeightMap = {
   expired: undefined,
   unfillable: 'auto',
   cancellationFailed: undefined,
+  bridgingFinished: undefined,
+  bridgingFailed: undefined,
+  bridgingInProgress: undefined,
+  refundCompleted: undefined,
 }
 
 const PROCESS_IMAGE_WRAPPER_GAP: GapMap = {
@@ -72,8 +84,14 @@ const PROCESS_IMAGE_WRAPPER_GAP: GapMap = {
   delayed: undefined,
   submissionFailed: undefined,
   solved: undefined,
+  bridgingFinished: undefined,
+  bridgingFailed: undefined,
+  bridgingInProgress: undefined,
+  refundCompleted: undefined,
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ProgressImageWrapper({ children, stepName, ...props }: ProgressImageWrapperProps) {
   return (
     <ProgressImageWrapperEl

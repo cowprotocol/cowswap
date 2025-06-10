@@ -98,12 +98,13 @@ export const allActiveTokensAtom = atom<ActiveTokensState>((get) => {
    * It means that activeTokens should take precedence over favoriteTokens
    */
   const tokens = tokenMapToListWithLogo(
-    (lpTokens ? [lpTokens] : []).concat([
-      lowerCaseTokensMap(favoriteTokensState[chainId]),
-      lowerCaseTokensMap(userAddedTokens[chainId] || {}),
-      tokensMap.activeTokens,
-      { [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo },
-    ]),
+    (lpTokens ? [lpTokens] : [])
+      .concat([
+        lowerCaseTokensMap(favoriteTokensState[chainId]),
+        lowerCaseTokensMap(userAddedTokens[chainId] || {}),
+        tokensMap.activeTokens,
+      ])
+      .concat(nativeToken ? [{ [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo }] : []),
     chainId,
   )
 

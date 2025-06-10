@@ -17,7 +17,7 @@ import { AccountElement } from 'legacy/components/Header/AccountElement'
 import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
 import { HeaderControls, HeaderElement } from 'legacy/components/Header/styled'
 import { URLWarning } from 'legacy/components/Header/URLWarning'
-import TopLevelModals from 'legacy/components/TopLevelModals'
+import { TopLevelModals } from 'legacy/components/TopLevelModals'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { OrdersPanel } from 'modules/account'
@@ -45,6 +45,8 @@ const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts, 'transparent')
 // Initialize static analytics instance
 const pixel = initPixelAnalytics()
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const LinkComponent = ({ href, children }: PropsWithChildren<{ href: string }>) => {
   const external = href.startsWith('http')
 
@@ -55,6 +57,10 @@ const LinkComponent = ({ href, children }: PropsWithChildren<{ href: string }>) 
   )
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function App() {
   const { chainId, account } = useWalletInfo()
   const { walletName } = useWalletDetails()

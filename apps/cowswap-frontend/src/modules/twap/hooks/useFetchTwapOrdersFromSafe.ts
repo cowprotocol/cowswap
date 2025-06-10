@@ -9,7 +9,7 @@ import { useSafeApiKit } from 'common/hooks/useSafeApiKit'
 import { fetchTwapOrdersFromSafe } from '../services/fetchTwapOrdersFromSafe'
 import { TwapOrdersSafeData } from '../types'
 
-const PENDING_TWAP_UPDATE_INTERVAL = ms`15s`
+const PENDING_TWAP_UPDATE_INTERVAL = ms`45s`
 
 export function useFetchTwapOrdersFromSafe({
   safeAddress,
@@ -24,6 +24,8 @@ export function useFetchTwapOrdersFromSafe({
   useEffect(() => {
     if (!safeApiKit) return
 
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const persistOrders = () => {
       fetchTwapOrdersFromSafe(safeAddress, safeApiKit, composableCowContract).then(setOrdersSafeData)
     }

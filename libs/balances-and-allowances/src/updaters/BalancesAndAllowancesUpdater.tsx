@@ -30,6 +30,8 @@ export interface BalancesAndAllowancesUpdaterProps {
   account: string | undefined
   chainId: SupportedChainId
 }
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAllowancesUpdaterProps) {
   const setBalances = useSetAtom(balancesAtom)
 
@@ -56,7 +58,8 @@ export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAl
   // Add native token balance to the store as well
   useEffect(() => {
     const nativeToken = NATIVE_CURRENCIES[chainId]
-    const nativeBalanceState = nativeTokenBalance ? { [nativeToken.address.toLowerCase()]: nativeTokenBalance } : {}
+    const nativeBalanceState =
+      nativeToken && nativeTokenBalance ? { [nativeToken.address.toLowerCase()]: nativeTokenBalance } : {}
 
     setBalances((state) => ({ ...state, values: { ...state.values, ...nativeBalanceState } }))
   }, [nativeTokenBalance, chainId, setBalances])

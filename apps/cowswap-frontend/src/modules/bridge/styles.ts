@@ -6,7 +6,7 @@ import styled, { css, keyframes } from 'styled-components/macro'
 
 import { ARROW_ICON_SIZE } from 'common/pure/ToggleArrow/styled'
 
-import { StopStatusEnum } from './utils/status'
+import { SwapAndBridgeStatus } from './types'
 
 const spin = keyframes`
   0% {
@@ -61,8 +61,8 @@ const stopCircleBase = css`
   }
 `
 
-const StopStatusStyles: Record<StopStatusEnum, FlattenSimpleInterpolation> = {
-  [StopStatusEnum.DONE]: css`
+const StopStatusStyles: Record<SwapAndBridgeStatus, FlattenSimpleInterpolation> = {
+  [SwapAndBridgeStatus.DONE]: css`
     background-color: var(${UI.COLOR_SUCCESS_BG});
     color: var(${UI.COLOR_SUCCESS});
     padding: 6px;
@@ -70,14 +70,14 @@ const StopStatusStyles: Record<StopStatusEnum, FlattenSimpleInterpolation> = {
       content: none;
     }
   `,
-  [StopStatusEnum.PENDING]: css`
+  [SwapAndBridgeStatus.PENDING]: css`
     background-color: ${`var(${UI.COLOR_INFO_BG})`};
     color: ${`var(${UI.COLOR_INFO_TEXT})`};
     &::before {
       content: none;
     }
   `,
-  [StopStatusEnum.FAILED]: css`
+  [SwapAndBridgeStatus.FAILED]: css`
     background-color: var(${UI.COLOR_ALERT_BG});
     color: var(${UI.COLOR_ALERT_TEXT});
     padding: 6.5px;
@@ -85,7 +85,7 @@ const StopStatusStyles: Record<StopStatusEnum, FlattenSimpleInterpolation> = {
       content: none;
     }
   `,
-  [StopStatusEnum.REFUND_COMPLETE]: css`
+  [SwapAndBridgeStatus.REFUND_COMPLETE]: css`
     background-color: var(${UI.COLOR_ALERT_BG});
     color: var(${UI.COLOR_ALERT_TEXT});
     padding: 6.5px;
@@ -93,22 +93,23 @@ const StopStatusStyles: Record<StopStatusEnum, FlattenSimpleInterpolation> = {
       content: none;
     }
   `,
-  [StopStatusEnum.DEFAULT]: css`
+  [SwapAndBridgeStatus.DEFAULT]: css`
     background-color: var(${UI.COLOR_TEXT_OPACITY_15});
     color: var(${UI.COLOR_TEXT});
   `,
 }
 
 export const StopNumberCircle = styled.div<{
-  status?: StopStatusEnum
-  stopNumber: number
+  status?: SwapAndBridgeStatus
+  stopNumber?: number
 }>`
   ${stopCircleBase}
 
-  ${({ status = StopStatusEnum.DEFAULT }) => StopStatusStyles[status]}
+  ${({ status = SwapAndBridgeStatus.DEFAULT }) => StopStatusStyles[status]}
 
-  ${({ status = StopStatusEnum.DEFAULT, stopNumber }) =>
-    status === StopStatusEnum.DEFAULT &&
+  ${({ status = SwapAndBridgeStatus.DEFAULT, stopNumber }) =>
+    status === SwapAndBridgeStatus.DEFAULT &&
+    stopNumber &&
     css`
       &::before {
         content: '${stopNumber}';
@@ -288,16 +289,16 @@ export const StyledTimelinePlusIcon = styled(SVG)`
   }
 `
 
-const StatusAwareColors: Record<StopStatusEnum, string> = {
-  [StopStatusEnum.PENDING]: `var(${UI.COLOR_INFO_TEXT})`,
-  [StopStatusEnum.FAILED]: `var(${UI.COLOR_DANGER_TEXT})`,
-  [StopStatusEnum.DONE]: `var(${UI.COLOR_SUCCESS})`,
-  [StopStatusEnum.REFUND_COMPLETE]: `var(${UI.COLOR_SUCCESS})`,
-  [StopStatusEnum.DEFAULT]: `var(${UI.COLOR_TEXT})`,
+const StatusAwareColors: Record<SwapAndBridgeStatus, string> = {
+  [SwapAndBridgeStatus.PENDING]: `var(${UI.COLOR_INFO_TEXT})`,
+  [SwapAndBridgeStatus.FAILED]: `var(${UI.COLOR_DANGER_TEXT})`,
+  [SwapAndBridgeStatus.DONE]: `var(${UI.COLOR_SUCCESS})`,
+  [SwapAndBridgeStatus.REFUND_COMPLETE]: `var(${UI.COLOR_SUCCESS})`,
+  [SwapAndBridgeStatus.DEFAULT]: `var(${UI.COLOR_TEXT})`,
 }
 
-export const StatusAwareText = styled.span<{ status?: StopStatusEnum }>`
-  color: ${({ status = StopStatusEnum.DEFAULT }) => StatusAwareColors[status]};
+export const StatusAwareText = styled.span<{ status?: SwapAndBridgeStatus }>`
+  color: ${({ status = SwapAndBridgeStatus.DEFAULT }) => StatusAwareColors[status]};
 `
 
 /**

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
@@ -9,14 +9,18 @@ import { Description } from '../../sharedStyled'
 import { StepsWrapper } from '../StepsWrapper'
 
 interface InitialStepProps {
-  children: React.ReactNode
+  children: ReactNode
+  isBridgingTrade: boolean
 }
 
-export function InitialStep({ children }: InitialStepProps) {
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function InitialStep({ children, isBridgingTrade }: InitialStepProps) {
   return (
     <styledEl.ProgressContainer>
       {children}
       <StepsWrapper
+        isBridgingTrade={isBridgingTrade}
         steps={STEPS}
         currentStep={0}
         extraContent={

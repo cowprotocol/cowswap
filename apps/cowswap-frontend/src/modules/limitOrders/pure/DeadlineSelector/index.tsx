@@ -38,6 +38,9 @@ export interface DeadlineSelectorProps {
   selectCustomDeadline(deadline: number | null): void
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function DeadlineSelector(props: DeadlineSelectorProps) {
   const { deadline, customDeadline, isDeadlineDisabled, selectDeadline, selectCustomDeadline } = props
 
@@ -135,6 +138,8 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
         </div>
       ) : (
         <Menu>
+          {/* TODO: Replace any with proper type definitions */}
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           <styledEl.Current ref={currentDeadlineNode as any} $custom={!!customDeadline}>
             <span>{deadlineDisplay}</span>
             <ChevronDown size="18" />

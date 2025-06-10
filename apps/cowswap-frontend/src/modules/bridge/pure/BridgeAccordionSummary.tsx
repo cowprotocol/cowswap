@@ -6,15 +6,15 @@
 import { ReactNode } from 'react'
 
 import { displayTime } from '@cowprotocol/common-utils'
+import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 
-import { ProtocolIcons } from 'common/pure/ProtocolIcons'
+import { ProtocolIcons } from './ProtocolIcons'
 
-import { BridgeProtocolConfig } from '../types'
 interface BridgeAccordionSummaryProps {
   /** Estimated time for bridge transaction in minutes */
   bridgeEstimatedTime?: number
   /** Information about the bridge protocol */
-  bridgeProtocol?: BridgeProtocolConfig
+  bridgeProtocol: BridgeProviderInfo
   children: ReactNode
 }
 
@@ -22,6 +22,8 @@ interface BridgeAccordionSummaryProps {
  * Component to display bridge-related information in the collapsed state of an accordion
  * Shows the bridge time estimation and protocol icons next to the fee amount
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function BridgeAccordionSummary({ bridgeEstimatedTime, bridgeProtocol, children }: BridgeAccordionSummaryProps) {
   return (
     <>

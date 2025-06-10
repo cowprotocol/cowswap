@@ -13,6 +13,8 @@ import { CowModal } from 'common/pure/Modal'
 import { useOrderProgressBarProps } from '../../hooks/useOrderProgressBarProps'
 import { TransactionSubmittedContent } from '../../pure/TransactionSubmittedContent'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SurplusModalSetup() {
   const orderId = useOrderIdForSurplusModal()
   const removeOrderId = useRemoveOrderFromSurplusQueue()
@@ -20,8 +22,8 @@ export function SurplusModalSetup() {
   const { chainId } = useWalletInfo()
   const order = useOrder({ id: orderId, chainId })
 
-  const progressBarProps = useOrderProgressBarProps(chainId, order)
-  const { isProgressBarSetup, activityDerivedState } = progressBarProps
+  const { props: progressBarProps, activityDerivedState } = useOrderProgressBarProps(chainId, order)
+  const { isProgressBarSetup } = progressBarProps
 
   const { isOpen: isConfirmationModalOpen, transactionHash } = useTradeConfirmState()
 

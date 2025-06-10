@@ -15,8 +15,11 @@ interface SolvingStepProps {
   children: React.ReactNode
   stepName?: OrderProgressBarStepName
   showCancellationModal: Command | null
+  isBridgingTrade: boolean
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getCustomStepTitles(
   isUnfillable: boolean,
   isDelayed: boolean,
@@ -30,7 +33,11 @@ function getCustomStepTitles(
   return undefined
 }
 
-export function SolvingStep({ children, stepName, showCancellationModal }: SolvingStepProps) {
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+export function SolvingStep({ children, stepName, showCancellationModal, isBridgingTrade }: SolvingStepProps) {
   const isUnfillable = stepName === 'unfillable'
   const isDelayed = stepName === 'delayed'
   const isSubmissionFailed = stepName === 'submissionFailed'
@@ -42,6 +49,9 @@ export function SolvingStep({ children, stepName, showCancellationModal }: Solvi
     label: isSolved ? 'Solved' : 'Solving',
   })
 
+  // TODO: Extract nested component outside render function
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line react/no-unstable-nested-components, @typescript-eslint/explicit-function-return-type
   function CancelButton() {
     if (!showCancellationModal) return null
     return (
@@ -55,6 +65,7 @@ export function SolvingStep({ children, stepName, showCancellationModal }: Solvi
     <styledEl.ProgressContainer>
       {children}
       <StepsWrapper
+        isBridgingTrade={isBridgingTrade}
         steps={STEPS}
         currentStep={1}
         customStepTitles={getCustomStepTitles(isUnfillable, isDelayed, isSubmissionFailed, isSolved)}

@@ -83,6 +83,8 @@ interface GraphBatchTxParams {
   networkId: Network | undefined
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function TransactionBatchGraph(params: GraphBatchTxParams): React.ReactNode {
   const { orders, networkId, txHash } = params
   const { visualization, onChangeVisualization } = useVisualization()

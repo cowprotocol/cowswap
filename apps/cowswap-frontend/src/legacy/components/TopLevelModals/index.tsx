@@ -11,7 +11,9 @@ import { MultipleOrdersCancellationModal } from 'common/containers/MultipleOrder
 import { cancellationModalContextAtom } from 'common/hooks/useCancelOrder/state'
 import { confirmationModalContextAtom } from 'common/hooks/useConfirmationRequest'
 
-export default function TopLevelModals() {
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function TopLevelModals() {
   const cancelModalOpen = useModalIsOpen(ApplicationModal.CANCELLATION)
   const confirmationModalOpen = useModalIsOpen(ApplicationModal.CONFIRMATION)
   const multipleCancelModalOpen = useModalIsOpen(ApplicationModal.MULTIPLE_CANCELLATION)

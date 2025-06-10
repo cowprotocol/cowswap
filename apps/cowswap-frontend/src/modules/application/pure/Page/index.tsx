@@ -211,6 +211,8 @@ export const GdocsListStyle = css`
 
 export type PageProps = PropsWithChildren<WithClassName>
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Page(props: PageProps) {
   return <PageWrapper className={props?.className}>{props?.children}</PageWrapper>
 }

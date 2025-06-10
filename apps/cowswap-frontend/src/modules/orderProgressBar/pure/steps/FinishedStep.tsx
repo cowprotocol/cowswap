@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
@@ -25,8 +25,11 @@ import * as styledEl from './styled'
 
 import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../../constants'
 import { getSurplusText, getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../../helpers'
+import { useWithConfetti } from '../../hooks/useWithConfetti'
 import { OrderProgressBarStepName, SolverCompetition } from '../../types'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getTransactionStatus(isDarkMode: boolean) {
   return (
     <styledEl.TransactionStatus margin={'0 auto 24px'}>
@@ -41,6 +44,8 @@ function getTransactionStatus(isDarkMode: boolean) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getSoldAmount(order: Order) {
   return (
     <styledEl.SoldAmount>
@@ -55,6 +60,8 @@ function getSoldAmount(order: Order) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getReceivedAmount(
   order: Order,
   chainId: SupportedChainId,
@@ -84,6 +91,8 @@ function getReceivedAmount(
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getExtraAmount(
   surplusAmount?: CurrencyAmount<Currency> | null,
   surplusFiatValue?: CurrencyAmount<Currency> | null,
@@ -101,6 +110,8 @@ function getExtraAmount(
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getSolverRow(solver: SolverCompetition, index: number, solvers: SolverCompetition[]) {
   return (
     <styledEl.SolverTableRow key={`${solver.solver}-${index}`} isWinner={index === 0}>
@@ -150,6 +161,10 @@ interface FinishedStepProps {
   debugForceShowSurplus?: boolean
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function FinishedStep({
   children,
   stepName,
@@ -167,7 +182,11 @@ export function FinishedStep({
   const { surplusFiatValue, surplusAmount, showSurplus } = surplusData || {}
   const shouldShowSurplus = debugForceShowSurplus || showSurplus
 
-  const [showConfetti, setShowConfetti] = useState(stepName === 'finished' && shouldShowSurplus)
+  const showConfetti = useWithConfetti({
+    isFinished: stepName === 'finished',
+    surplusData,
+    debugForceShowSurplus,
+  })
 
   const visibleSolvers = useMemo(() => {
     return showAllSolvers ? solvers : solvers?.slice(0, 3)
@@ -194,21 +213,6 @@ export function FinishedStep({
       : getTwitterShareUrlForBenefit(randomBenefit)
     window.open(twitterUrl, '_blank', 'noopener,noreferrer')
   }, [shouldShowSurplus, surplusData, order, randomBenefit])
-
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | undefined
-
-    if (stepName === 'finished' && shouldShowSurplus) {
-      setShowConfetti(true)
-      timer = setTimeout(() => setShowConfetti(false), 3000)
-    }
-
-    return () => {
-      if (timer) {
-        clearTimeout(timer)
-      }
-    }
-  }, [stepName, shouldShowSurplus])
 
   // If order is not set, return null
   if (!order) {

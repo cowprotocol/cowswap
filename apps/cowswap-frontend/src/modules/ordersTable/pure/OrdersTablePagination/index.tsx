@@ -15,6 +15,9 @@ export interface OrdersTablePaginationProps {
   className?: string
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function OrdersTablePagination({
   pageSize,
   totalCount,
@@ -26,14 +29,13 @@ export function OrdersTablePagination({
   const pagesCount = Math.ceil(totalCount / pageSize)
 
   const pagesArray = useMemo(() => [...new Array(pagesCount)].map((item, i) => i), [pagesCount])
-
   const pageLimitMiddle = Math.ceil(PAGES_LIMIT / 2)
   const batchOffset = currentPage > pageLimitMiddle ? currentPage - pageLimitMiddle : 0
   const isListBig = pagesCount > PAGES_LIMIT
   const isFirstPagesBatch = currentPage <= pageLimitMiddle
   const isLastPagesBatch = currentPage > pagesCount - pageLimitMiddle
 
-  const batchStart = Math.min(batchOffset, pagesCount - PAGES_LIMIT)
+  const batchStart = Math.max(Math.min(batchOffset, pagesCount - PAGES_LIMIT), 0)
   const batchEnd = Math.min(PAGES_LIMIT + batchOffset, pagesCount)
 
   const goToPage = useCallback(
@@ -48,7 +50,7 @@ export function OrdersTablePagination({
         return
       }
     },
-    [onPageChange, getPageUrl]
+    [onPageChange, getPageUrl],
   )
 
   return (

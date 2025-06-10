@@ -17,6 +17,8 @@ interface AllowanceWarningProps extends WarningProps {
   approve: Command
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function BalanceWarning({ symbol, isScheduled }: WarningProps) {
   return (
     <styledEl.WarningParagraph>
@@ -51,6 +53,8 @@ function BalanceWarning({ symbol, isScheduled }: WarningProps) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function AllowanceWarning({ symbol, isScheduled, approve }: AllowanceWarningProps) {
   return (
     <styledEl.WarningParagraph>
@@ -94,6 +98,8 @@ interface WarningTooltipProps {
   onApprove: Command
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function WarningTooltip({
   children,
   hasEnoughBalance,

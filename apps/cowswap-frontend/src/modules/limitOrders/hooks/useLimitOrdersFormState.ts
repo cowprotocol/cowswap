@@ -25,6 +25,8 @@ interface LimitOrdersFormParams {
   buyAmount: CurrencyAmount<Currency> | null
 }
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersFormState | null {
   const { activeRate, isRateLoading, sellAmount, buyAmount, feeAmount } = params
 

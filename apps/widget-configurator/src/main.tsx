@@ -28,6 +28,8 @@ const WrapperStyled = {
 
 initWeb3Modal()
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function Root() {
   const colorMode = useColorMode()
   const { mode } = colorMode

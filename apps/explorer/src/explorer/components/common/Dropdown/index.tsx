@@ -110,6 +110,8 @@ export const DropdownOption = styled.li<DropdownItemProps>`
   list-style-type: none;
 `
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export const Dropdown: React.FC<DropdownProps> = (props) => {
   const {
     activeItemHighlight = true,

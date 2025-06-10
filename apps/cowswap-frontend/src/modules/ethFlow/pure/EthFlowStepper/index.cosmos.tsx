@@ -381,6 +381,8 @@ const Wrapper = styled.div`
   margin: 20px auto;
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function Fixture() {
   const [stepDescription] = useSelect('steps', {
     options: STEPS.map((step) => step.description),

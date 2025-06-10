@@ -30,6 +30,8 @@ import { SafeBundleFlowContext, TradeFlowContext } from '../../types/TradeFlowCo
 
 const LOG_PREFIX = 'SAFE BUNDLE ETH FLOW'
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export async function safeBundleEthFlow(
   tradeContext: TradeFlowContext,
   safeBundleContext: SafeBundleFlowContext,

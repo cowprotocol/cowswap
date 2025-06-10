@@ -57,6 +57,9 @@ const WalletError = styled.div`
   color: var(${UI.COLOR_DANGER_TEXT});
   margin: -15px 0 20px 0;
 `
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function PendingView({
   error,
   tryConnection,

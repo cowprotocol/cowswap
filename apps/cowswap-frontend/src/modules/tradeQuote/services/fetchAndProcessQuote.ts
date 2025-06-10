@@ -24,6 +24,8 @@ const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
 const getFastQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 const getOptimalQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export async function fetchAndProcessQuote(
   chainId: SupportedChainId,
   fetchParams: TradeQuoteFetchParams,

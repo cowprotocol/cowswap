@@ -1,80 +1,90 @@
-import { TokenWithLogo } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { BridgeProviderInfo, BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
+
+import { ReceiveAmountInfo } from '../trade'
+
+import type { SolverCompetition } from '../orderProgressBar'
 
 /**
- * Configuration for a bridge protocol
+ * Possible statuses for bridge/swap stops
  */
-export interface BridgeProtocolConfig {
-  icon: string
-  title: string
-  url: string
-  description: string
+export enum SwapAndBridgeStatus {
+  DEFAULT = 'default',
+  DONE = 'done',
+  PENDING = 'pending',
+  FAILED = 'failed',
+  REFUND_COMPLETE = 'refund_complete',
 }
 
-/**
- * Enum for bridge fee types
- */
-export enum BridgeFeeType {
-  /** Indicates the bridge transaction is free. */
-  FREE = 'FREE',
-}
+export interface QuoteSwapContext {
+  chainName: string
+  receiveAmountInfo: ReceiveAmountInfo
 
-/**
- * Interface for bridge data structure
- * This structure holds all necessary details for displaying and executing a bridge transaction,
- * including the initial swap leg and the subsequent bridging leg.
- */
-export interface BridgeData {
-  // Swap details
-  /** The amount of the token being sold in the swap portion of the bridge. */
-  sellAmount: CurrencyAmount<TokenWithLogo>
-  /** The symbol of the token being sold in the swap. e.g. "ETH" */
-  sellToken: string
-  /** The address of the token being sold in the swap. */
-  sellTokenAddress: string
-  /** The amount of the token being bought in the swap portion of the bridge. */
-  buyAmount: CurrencyAmount<TokenWithLogo>
-  /** The symbol of the token being bought in the swap. e.g. "USDC" */
-  buyToken: string
-  /** The address of the token being bought in the swap. */
-  buyTokenAddress: string
-  /** The estimated network cost for the swap portion, in the native currency of the source chain or the sell token. */
-  networkCost: CurrencyAmount<TokenWithLogo>
-  /** The USD equivalent of the network cost for the swap portion. e.g., "5.23" */
-  networkCostUsd: string // TODO: Consider if this should also be CurrencyAmount<USDStablecoin> or derived
-  /** The minimum amount expected to receive from the swap, after accounting for slippage and fees. May be undefined. */
-  swapMinReceive?: CurrencyAmount<TokenWithLogo>
-  /** The expected amount to receive from the swap before accounting for potential slippage beyond the estimate. May be undefined. */
-  swapExpectedToReceive?: CurrencyAmount<TokenWithLogo>
-  /** The maximum slippage allowed for the swap portion, as a percentage string. e.g., "0.5" for 0.5% */
-  swapMaxSlippage: string
+  sellAmount: CurrencyAmount<Currency>
+  buyAmount: CurrencyAmount<Currency>
 
-  // Bridge details
-  /** The amount of token being sent to the bridge. This is typically the output of the swap portion (`buyAmount`). */
-  bridgeAmount: CurrencyAmount<TokenWithLogo>
-  /** The symbol of the token being bridged. e.g. "USDC" */
-  bridgeToken: string // Often the same as buyToken from swap details
-  /** The address of the token being bridged. */
-  bridgeTokenAddress: string // Often the same as buyTokenAddress
-  /** The address of the token to be received on the destination chain after bridging. */
-  bridgeTokenReceiveAddress: string
-  /** The amount of token expected to be received on the destination chain after bridging. */
-  bridgeReceiveAmount: CurrencyAmount<TokenWithLogo>
-  /** The fee for the bridge operation. Can be a fixed amount in a specific currency or FREE. */
-  bridgeFee: CurrencyAmount<TokenWithLogo> | BridgeFeeType
-  /** The maximum slippage allowed for the bridge operation, as a percentage string. e.g., "1" for 1% */
-  maxBridgeSlippage: string
-  /** The estimated time for the bridge transaction to complete, in seconds. */
-  estimatedTime: number
-  /** The recipient address on the destination chain. */
+  slippage: Percent
   recipient: string
-  /** The chain ID of the destination chain. */
-  recipientChainId: SupportedChainId
-  /** The chain ID of the source chain for the bridge operation. */
-  sourceChainId: SupportedChainId
 
-  // Bridge provider info
-  /** Configuration details of the bridge protocol provider. */
-  bridgeProvider: BridgeProtocolConfig
+  minReceiveAmount: CurrencyAmount<Currency>
+  minReceiveUsdValue: CurrencyAmount<Token> | null
+  expectedReceiveUsdValue: CurrencyAmount<Token> | null
+}
+
+export interface QuoteBridgeContext {
+  chainName: string
+
+  bridgeFee: CurrencyAmount<Currency> | null
+  estimatedTime: number | null
+  recipient: string
+
+  sellAmount: CurrencyAmount<Currency>
+  buyAmount: CurrencyAmount<Currency>
+  buyAmountUsd: CurrencyAmount<Token> | null
+}
+
+export interface SwapAndBridgeOverview<Amount = CurrencyAmount<Currency>> {
+  sourceChainName: string
+  targetChainName: string
+  targetCurrency: Token
+
+  sourceAmounts: {
+    sellAmount: Amount
+    buyAmount: Amount
+  }
+
+  targetAmounts?: {
+    sellAmount: Amount
+    buyAmount: Amount
+  }
+}
+
+export interface BridgingProgressContext {
+  account: string
+  sourceChainId: SupportedChainId
+  destinationChainId: number
+
+  isFailed?: boolean
+  isRefunded?: boolean
+
+  receivedAmount?: CurrencyAmount<Currency>
+  receivedAmountUsd?: CurrencyAmount<Token> | null
+}
+
+export interface SwapResultContext {
+  winningSolver: SolverCompetition
+  receivedAmount: CurrencyAmount<Currency>
+  receivedAmountUsd: CurrencyAmount<Token> | null
+  surplusAmount: CurrencyAmount<Currency>
+  surplusAmountUsd: CurrencyAmount<Token> | null
+}
+
+export interface SwapAndBridgeContext {
+  bridgingStatus: SwapAndBridgeStatus
+  bridgeProvider: BridgeProviderInfo
+  swapResultContext: SwapResultContext
+  overview: SwapAndBridgeOverview
+  quoteBridgeContext?: QuoteBridgeContext
+  bridgingProgressContext?: BridgingProgressContext
+  statusResult?: BridgeStatusResult
 }

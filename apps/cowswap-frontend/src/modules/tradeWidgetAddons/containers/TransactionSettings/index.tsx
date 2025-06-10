@@ -78,6 +78,10 @@ interface DeadlineAnalyticsEvent {
   value: number
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function TransactionSettings({ deadlineState }: TransactionSettingsProps) {
   const { chainId } = useWalletInfo()
   const theme = useContext(ThemeContext)
@@ -214,6 +218,8 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
             sendDeadlineAnalytics('Custom', parsed)
             setDeadline(parsed)
           }
+        // TODO: Replace any with proper type definitions
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           console.error(error)
           setDeadlineError(DeadlineError.InvalidInput)

@@ -12,6 +12,8 @@ export function calculateTwapReceivedAmountInfo(
 
   const { isSell, quotePrice, costs, beforeNetworkCosts, afterNetworkCosts, afterPartnerFees, afterSlippage } = info
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const scaleAmount = (amount: CurrencyAmount<Currency>) => amount.multiply(numOfParts)
 
   return {

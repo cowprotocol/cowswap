@@ -41,6 +41,8 @@ function isValidConfirm(value: string, confirmWord: string): boolean {
   return typeof value === 'string' && value.toLowerCase().trim() === confirmWord
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ConfirmedButton({
   className,
   onConfirm,

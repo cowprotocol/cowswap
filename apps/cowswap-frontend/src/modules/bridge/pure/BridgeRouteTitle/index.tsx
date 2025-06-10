@@ -1,21 +1,23 @@
 import { ReactNode } from 'react'
 
-import { ProtocolIcons } from 'common/pure/ProtocolIcons'
+import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 
 import { StopNumberCircle } from '../../styles'
-import { BridgeProtocolConfig } from '../../types'
-import { StopStatusEnum } from '../../utils'
+import { SwapAndBridgeStatus } from '../../types'
+import { ProtocolIcons } from '../ProtocolIcons'
 
 interface BridgeRouteTitleProps {
-  status: StopStatusEnum
+  status: SwapAndBridgeStatus
   icon: ReactNode
   titlePrefix: ReactNode
   protocolName: string
-  bridgeProvider: BridgeProtocolConfig
+  bridgeProvider: BridgeProviderInfo
   protocolIconShowOnly?: 'first' | 'second'
   protocolIconSize?: number
-  stopNumber: number
+  stopNumber?: number
 }
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function BridgeRouteTitle({
   status,
   icon,

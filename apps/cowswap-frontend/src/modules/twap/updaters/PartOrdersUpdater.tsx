@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useSetAtom, useAtomValue } from 'jotai'
 import { useEffect } from 'react'
 
 import { isTruthy } from '@cowprotocol/common-utils'
@@ -12,6 +12,8 @@ import { twapOrdersListAtom } from '../state/twapOrdersListAtom'
 import { TwapPartOrderItem, setPartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderItem } from '../types'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function PartOrdersUpdater() {
   const { chainId, account } = useWalletInfo()
   const twapOrders = useAtomValue(twapOrdersListAtom)
@@ -44,7 +46,7 @@ export function PartOrdersUpdater() {
 async function generateTwapOrderParts(
   twapOrder: TwapOrderItem,
   safeAddress: string,
-  chainId: SupportedChainId
+  chainId: SupportedChainId,
 ): Promise<{ [id: string]: TwapPartOrderItem[] }> {
   const twapOrderId = twapOrder.id
 

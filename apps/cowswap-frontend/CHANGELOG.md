@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.108.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.108.1...cowswap-v1.108.2) (2025-06-06)
+
+
+### Bug Fixes
+
+* empty change to trigger cowswap deployment ([b06ba6a](https://github.com/cowprotocol/cowswap/commit/b06ba6ad20adfbbfbe3366f4eed787e2dd8fd21d))
+
+## [1.108.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.108.0...cowswap-v1.108.1) (2025-05-29)
+
+
+### Bug Fixes
+
+* **twap:** use indexedDB to persist state ([#5771](https://github.com/cowprotocol/cowswap/issues/5771)) ([bf410ec](https://github.com/cowprotocol/cowswap/commit/bf410ecc1d27d0d9eadd835c1b74141c6cee4341))
+
+## [1.108.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.107.1...cowswap-v1.108.0) (2025-05-28)
+
+
+### Features
+
+* **appzi:** disable appzi for Coinbase Wallet ([#5671](https://github.com/cowprotocol/cowswap/issues/5671)) ([381e4b1](https://github.com/cowprotocol/cowswap/commit/381e4b1e8a7b1eec9b99d9d21841c647d66a7420))
+
 ## [1.107.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.107.0...cowswap-v1.107.1) (2025-05-22)
 
 

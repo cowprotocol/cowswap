@@ -151,6 +151,8 @@ export type SurplusModalProps = {
   order: Order | undefined
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SurplusModal(props: SurplusModalProps) {
   const { order } = props
 
@@ -202,6 +204,8 @@ export function SurplusModal(props: SurplusModalProps) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getTwitterText(surplusAmount: string, surplusToken: string, orderKind: OrderKind) {
   const actionWord = isSellOrder(orderKind) ? SELL_SURPLUS_WORD : BUY_SURPLUS_WORD
   const surplus = `${surplusAmount} ${surplusToken}`

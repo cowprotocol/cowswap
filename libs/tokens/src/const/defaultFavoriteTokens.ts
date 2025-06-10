@@ -33,6 +33,8 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { TokensMap } from '../types'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const tokensListToMap = (list: TokenWithLogo[]) =>
   list.reduce<TokensMap>((acc, token) => {
     acc[token.address.toLowerCase()] = {

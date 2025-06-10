@@ -60,6 +60,8 @@ export function useHookBalancesDiff(isPreHook: boolean, hookToEditUid?: string):
     return data[lastPostHook?.uuid]?.cumulativeBalancesDiff || firstPostHookBalanceDiff
   }, [data, firstPostHookBalanceDiff, postHooks])
 
+  // TODO: Reduce function complexity by extracting logic
+  // eslint-disable-next-line complexity
   const hookToEditBalanceDiff = useMemo(() => {
     if (!data || !hookToEditUid) return EMPTY_BALANCE_DIFF
 

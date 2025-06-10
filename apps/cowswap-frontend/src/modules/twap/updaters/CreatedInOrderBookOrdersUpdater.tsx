@@ -12,8 +12,9 @@ import { useAddOrUpdateOrders } from 'legacy/state/orders/hooks'
 
 import { useTokensForOrdersList, getTokensListFromOrders, useSWRProdOrders } from 'modules/orders'
 
+import { useTwapPartOrdersList } from '../hooks/useTwapPartOrdersList'
 import { twapOrdersAtom } from '../state/twapOrdersListAtom'
-import { TwapPartOrderItem, twapPartOrdersListAtom, updatePartOrdersAtom } from '../state/twapPartOrdersAtom'
+import { TwapPartOrderItem, updatePartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderItem } from '../types'
 import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
 
@@ -30,12 +31,15 @@ const isVirtualPart = false
  * Since WatchTower creates orders only in PROD env, we use useSWRProdOrders()
  * To distinguish parts settled in order-book from other parts, we mark them by isSettledInOrderBook flag
  */
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function CreatedInOrderBookOrdersUpdater() {
   const { chainId } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
   const prodOrders = useSWRProdOrders()
   const getTokensForOrdersList = useTokensForOrdersList()
-  const twapPartOrdersList = useAtomValue(twapPartOrdersListAtom)
+  const twapPartOrdersList = useTwapPartOrdersList()
   const twapOrders = useAtomValue(twapOrdersAtom)
   const updatePartOrders = useSetAtom(updatePartOrdersAtom)
   const addOrUpdateOrders = useAddOrUpdateOrders()
@@ -74,7 +78,7 @@ export function CreatedInOrderBookOrdersUpdater() {
         .filter(isTruthy)
     },
     [prodOrders, twapPartOrdersMap, getTokensForOrdersList, twapOrders],
-    []
+    [],
   )
 
   useEffect(() => {

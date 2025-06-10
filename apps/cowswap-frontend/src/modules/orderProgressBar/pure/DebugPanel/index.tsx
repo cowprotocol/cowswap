@@ -19,6 +19,8 @@ interface DebugPanelProps {
   setDebugStep: (stepName: OrderProgressBarStepName) => void
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function DebugPanel({ stepNameToStepComponent, stepName, setDebugStep }: DebugPanelProps) {
   return (
     <Wrapper>

@@ -79,6 +79,8 @@ export function SpotPricesUpdater(): null {
   const usdPrices = useUsdPrices(marketTokens)
 
   useEffect(() => {
+    // TODO: Reduce function complexity by extracting logic
+    // eslint-disable-next-line complexity
     Object.values(markets).forEach(({ inputCurrency, outputCurrency }) => {
       const inputPrice = usdPrices[inputCurrency.address.toLowerCase()]
       const outputPrice = usdPrices[outputCurrency.address.toLowerCase()]

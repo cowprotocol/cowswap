@@ -1,10 +1,8 @@
 import { atom } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
 
 import { deepEqual } from '@cowprotocol/common-utils'
-import { getJotaiIsolatedStorage } from '@cowprotocol/core'
+import { atomWithIdbStorage } from '@cowprotocol/core'
 import { OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { walletInfoAtom } from '@cowprotocol/wallet'
 
 export interface TwapPartOrderItem {
   uid: string
@@ -22,17 +20,16 @@ export type TwapPartOrders = { [twapOrderHash: string]: TwapPartOrderItem[] }
 // Fields that are stored only in localStorage
 const virtualFields: (keyof TwapPartOrderItem)[] = ['isCreatedInOrderBook', 'isCancelling']
 
-export const twapPartOrdersAtom = atomWithStorage<TwapPartOrders>(
-  'twap-part-orders-list:v1',
-  {},
-  getJotaiIsolatedStorage()
-)
+// Migrating from localStorage to indexedDB
+localStorage.removeItem('twap-part-orders-list:v1')
+
+export const twapPartOrdersAtom = atomWithIdbStorage<TwapPartOrders>('twap-part-orders-list:v1', {})
 
 /**
  * The only goal of this function is protection from isCreatedInOrderBook flag overriding
  */
-export const setPartOrdersAtom = atom(null, (get, set, nextState: TwapPartOrders) => {
-  const currentState = get(twapPartOrdersAtom)
+export const setPartOrdersAtom = atom(null, async (get, set, nextState: TwapPartOrders) => {
+  const currentState = await get(twapPartOrdersAtom)
 
   const newState = Object.keys(nextState).reduce<TwapPartOrders>((acc, parentId) => {
     const items = nextState[parentId]
@@ -47,6 +44,8 @@ export const setPartOrdersAtom = atom(null, (get, set, nextState: TwapPartOrders
         // We need to keep virtual fields from the previous state if they are present in it
         // Because they get updates from `useSetPartOrderCancelling` and `CreatedInOrderBookOrdersUpdater`
         ...virtualFields.reduce<Partial<TwapPartOrderItem>>((acc, val) => {
+          // TODO: Replace any with proper type definitions
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           acc[val] = (currentItemsMap[item.uid]?.[val] || item[val]) as any
           return acc
         }, {}),
@@ -56,13 +55,13 @@ export const setPartOrdersAtom = atom(null, (get, set, nextState: TwapPartOrders
     return acc
   }, {})
 
-  set(twapPartOrdersAtom, newState)
+  await set(twapPartOrdersAtom, newState)
 })
 
 export const updatePartOrdersAtom = atom(
   null,
-  (get, set, updates: { [orderId: string]: Partial<TwapPartOrderItem> }) => {
-    const currentState = get(twapPartOrdersAtom)
+  async (get, set, updates: { [orderId: string]: Partial<TwapPartOrderItem> }) => {
+    const currentState = await get(twapPartOrdersAtom)
 
     const newState = Object.keys(currentState).reduce<TwapPartOrders>((acc, parentId) => {
       acc[parentId] = currentState[parentId].map((item) => {
@@ -75,19 +74,7 @@ export const updatePartOrdersAtom = atom(
     }, {})
 
     if (!deepEqual(currentState, newState)) {
-      set(twapPartOrdersAtom, newState)
+      await set(twapPartOrdersAtom, newState)
     }
-  }
+  },
 )
-
-export const twapPartOrdersListAtom = atom<TwapPartOrderItem[]>((get) => {
-  const { account, chainId } = get(walletInfoAtom)
-
-  if (!account || !chainId) return []
-
-  const accountLowerCase = account.toLowerCase()
-
-  const orders = Object.values(get(twapPartOrdersAtom))
-
-  return orders.flat().filter((order) => order.safeAddress === accountLowerCase && order.chainId === chainId)
-})

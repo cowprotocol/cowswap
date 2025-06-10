@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.2](https://github.com/cowprotocol/cowswap/compare/core-v1.7.1...core-v1.7.2) (2025-05-29)
+
+
+### Bug Fixes
+
+* **twap:** use indexedDB to persist state ([#5771](https://github.com/cowprotocol/cowswap/issues/5771)) ([bf410ec](https://github.com/cowprotocol/cowswap/commit/bf410ecc1d27d0d9eadd835c1b74141c6cee4341))
+
 ## [1.7.1](https://github.com/cowprotocol/cowswap/compare/core-v1.7.0...core-v1.7.1) (2025-05-19)
 
 

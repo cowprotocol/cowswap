@@ -105,6 +105,8 @@ export const listsMock: ListState[] = [
     list: {
       name: 'CowSwap Sepolia',
       logoURI: 'https://gnosis.mypinata.cloud/ipfs/Qme9B6jRpGtZsRFcPjHvA5T4ugFuL4c3SzWfxyMPa59AMo',
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       tokens: [1, 2, 3, 4, 5, 6, 7] as any[],
       version: { major: 0, minor: 0, patch: 1 },
       timestamp: '',
@@ -116,6 +118,8 @@ export const listsMock: ListState[] = [
     list: {
       name: 'Compound',
       logoURI: 'https://raw.githubusercontent.com/compound-finance/token-list/master/assets/compound-interface.svg',
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       tokens: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] as any[],
       version: { major: 0, minor: 2, patch: 1 },
       timestamp: '',
@@ -128,6 +132,8 @@ export const importListsMock: ListState = {
   list: {
     name: 'CoW Swap',
     logoURI: 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/list-logo.png',
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     tokens: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] as any[],
     version: { major: 1, minor: 0, patch: 5 },
     timestamp: '',

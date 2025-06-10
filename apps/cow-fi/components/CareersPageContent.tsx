@@ -196,7 +196,7 @@ export function CareersPageContent({
             </SectionTitleText>
             <SectionTitleDescription fontSize={18} color={Color.neutral40} fontWeight={Font.weight.regular}>
               We have been made aware of individuals impersonating our team and reaching out to job seekers via Telegram
-              and other unofficial channels, falsely claiming to represent CoW DAO.
+              and other unofficial channels, falsely claiming to represent CoW DAO
             </SectionTitleDescription>
 
             <DisclaimerGrid>
@@ -205,8 +205,8 @@ export function CareersPageContent({
                   We Never:
                 </SectionTitleText>
                 <DisclaimerList>
-                  <li>Ask for payment or wallet information during the hiring process</li>
-                  <li>Request sensitive personal documents (e.g. passport) via chat apps</li>
+                  <li>Ask for payment or wallet information during the hiring process.</li>
+                  <li>Request sensitive personal documents (e.g. passport) via chat apps.</li>
                 </DisclaimerList>
 
                 <DisclaimerSection>
@@ -214,14 +214,14 @@ export function CareersPageContent({
                     What You Should Do:
                   </SectionTitleText>
                   <DisclaimerList>
-                    <li>Do not engage with suspicious messages claiming to offer you a job at CoW DAO</li>
-                    <li>Do not share personal information, crypto wallet data, or make payments</li>
+                    <li>Do not engage with suspicious messages claiming to offer you a job at CoW DAO.</li>
+                    <li>Do not share personal information, crypto wallet data, or make payments.</li>
                     <li>
-                      Report impersonation attempts to us at <a href="mailto:people@cow.fi">people@cow.fi</a>
+                      Report impersonation attempts to us at <a href="mailto:people@cow.fi">people@cow.fi</a>.
                     </li>
                     <li>
                       Report fake accounts directly on Telegram or to{' '}
-                      <a href="mailto:abuse@telegram.org">abuse@telegram.org</a>
+                      <a href="mailto:abuse@telegram.org">abuse@telegram.org</a>.
                     </li>
                   </DisclaimerList>
                 </DisclaimerSection>
@@ -241,16 +241,16 @@ export function CareersPageContent({
                   All our hiring communications come from:
                 </SectionTitleDescription>
                 <DisclaimerList>
-                  <li>Official emails are sent from the cow.fi domain</li>
-                  <li>Telegram (we&apos;ll send confirmation email from the cow.fi domain)</li>
+                  <li>Official emails are sent from the cow.fi domain.</li>
+                  <li>Telegram (we&apos;ll send confirmation email from the cow.fi domain).</li>
                   <li>
                     Verified listings on{' '}
                     <a href="https://linkedin.com/company/cow-protocol" target="_blank" rel="noopener noreferrer">
                       LinkedIn
                     </a>{' '}
-                    or official job boards
+                    or official job boards.
                   </li>
-                  <li>Official email or video conferencing platforms (Zoom, Meet)</li>
+                  <li>Official email or video conferencing platforms (Zoom, Meet).</li>
                 </DisclaimerList>
 
                 <DisclaimerHighlight>
