@@ -8,5 +8,5 @@
   ],
   "buildCommand": "cd ../../ && npx nx build cowswap-frontend --configuration=$NX_CONFIGURATION",
   "outputDirectory": "../../build/cowswap",
-  "installCommand": "yarn add hostname && cd ../../ && yarn"
+  "installCommand": "cd ../../ && yarn"
 }

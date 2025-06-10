@@ -62,7 +62,9 @@ export default defineConfig(({ mode }) => {
         globPatterns: ['**/*.{js,css,html,png,jpg,svg,json,woff,woff2,md}'],
       },
     }),
-    robots(),
+    robots({
+      outputRobotsFileName: path.resolve(__dirname, '../../build/cowswap'),
+    }),
   ]
 
   if (analyzeBundle) {
