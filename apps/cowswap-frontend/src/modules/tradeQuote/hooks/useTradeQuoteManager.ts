@@ -26,8 +26,44 @@ export interface TradeQuoteManager {
   onResponse(data: QuoteAndPost, bridgeQuote: BridgeQuoteResults | null, fetchParams: TradeQuoteFetchParams): void
 }
 
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+/**
+ * Validates quote response for edge cases that API doesn't properly handle
+ * Returns QuoteApiError if quote should be treated as an error, null otherwise
+ */
+function validateQuoteResponse(quote: QuoteAndPost): QuoteApiError | null {
+  // API sometimes returns successful response with buyAmount=0
+  // instead of proper FeeExceedsFrom error, causing incorrect UI state
+  const quoteData = quote.quoteResults.quoteResponse?.quote
+  const buyAmount = quoteData?.buyAmount
+  const sellAmount = quoteData?.sellAmount
+  const feeAmount = quoteData?.feeAmount
+  
+  // Check if quote represents an impossible trade (zero output)
+  const isZeroBuyAmount = buyAmount === '0' || buyAmount === '0n'
+  
+  if (isZeroBuyAmount && sellAmount && feeAmount) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Quote validation: Converting zero-output quote to FeeExceedsFrom error', {
+        buyAmount,
+        sellAmount,
+        feeAmount,
+        reason: 'Fees exceed sellAmount, resulting in zero buyAmount'
+      })
+    }
+    
+    return new QuoteApiError({
+      errorType: QuoteApiErrorCodes.FeeExceedsFrom,
+      description: 'Sell amount is too small',
+      data: { 
+        fee_amount: feeAmount,
+        sell_amount: sellAmount 
+      }
+    })
+  }
+
+  return null
+}
+
 export function useTradeQuoteManager(
   sellTokenAddress: SellTokenAddress | undefined,
   enableSmartSlippage: boolean,
@@ -68,6 +104,18 @@ export function useTradeQuoteManager(
               fetchParams: TradeQuoteFetchParams,
             ) {
               const isOptimalQuote = fetchParams.priceQuality === PriceQuality.OPTIMAL
+
+              // Validate quote for edge cases that API doesn't handle properly
+              const validationError = validateQuoteResponse(quote)
+              if (validationError) {
+                update(sellTokenAddress, {
+                  error: validationError,
+                  fetchParams,
+                  isLoading: false,
+                  hasParamsChanged: false,
+                })
+                return
+              }
 
               update(sellTokenAddress, {
                 quote,
