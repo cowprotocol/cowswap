@@ -41,6 +41,8 @@ export function AddressLink({
 }: AddressLinkProps): ReactNode {
   const chainInfo = getChainInfo(chainId)
 
+  if (!chainInfo) return null
+
   return (
     <AddressLinkWrapper>
       <LinkWithPrefixNetwork to={getExplorerLink(chainId, address, ExplorerDataType.ADDRESS)} target="_blank" noPrefix>

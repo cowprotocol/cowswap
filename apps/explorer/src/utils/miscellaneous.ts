@@ -69,7 +69,7 @@ export function isNativeToken(address: string): boolean {
   return address.toLowerCase() === NATIVE_TOKEN_ADDRESS.toLowerCase()
 }
 
-export function getImageAddress(address: string, network: Network): string {
+export function getImageAddress(address: string, network: number): string {
   if (isNativeToken(address)) {
     // What is going on here?
     // Well, this address here is the path on `src/assets/tokens/`

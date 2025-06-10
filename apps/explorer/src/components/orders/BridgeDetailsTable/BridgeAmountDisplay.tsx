@@ -4,7 +4,6 @@ import BigNumber from 'bignumber.js'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { TokenDisplay as CommonTokenDisplay } from 'components/common/TokenDisplay'
 import ShimmerBar from 'explorer/components/common/ShimmerBar'
-import { Network } from 'types'
 
 import { formatTokenAmount, mapBridgeableToErc20 } from 'utils/tokenFormatting'
 
@@ -33,8 +32,8 @@ export function BridgeAmountDisplay({
   }, [mappedToken, amount])
 
   const tokenDisplayElement = useMemo(() => {
-    if (!mappedToken) return null
-    return <CommonTokenDisplay erc20={mappedToken} network={bridgeToken?.chainId as Network} showNetworkName={true} />
+    if (!mappedToken || !bridgeToken?.chainId) return null
+    return <CommonTokenDisplay erc20={mappedToken} network={bridgeToken.chainId} showNetworkName />
   }, [mappedToken, bridgeToken?.chainId])
 
   if (isLoading) {

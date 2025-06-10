@@ -7,12 +7,12 @@ import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { Network } from 'types'
 import { getImageAddress, isNativeToken } from 'utils'
 
-import { Wrapper, NativeWrapper, StyledImg } from './styled'
+import { NativeWrapper, StyledImg, Wrapper } from './styled'
 import { getNetworkSuffix, getTokenLabelBaseNode } from './utils'
 
 export type TokenDisplayProps = {
   erc20: TokenErc20 & { chainId?: Network | SupportedChainId }
-  network: Network
+  network: number
   showAbbreviated?: boolean
   showNetworkName?: boolean
 }
@@ -23,7 +23,8 @@ export function TokenDisplay(props: Readonly<TokenDisplayProps>): ReactNode {
   const tokenLabelBaseNode = getTokenLabelBaseNode(erc20, showAbbreviated)
 
   const effectiveChainId = erc20.chainId ?? network
-  const networkNameSuffix = showNetworkName && getNetworkSuffix(effectiveChainId)
+  const isChainIdSupported = effectiveChainId in SupportedChainId
+  const networkNameSuffix = showNetworkName && isChainIdSupported && getNetworkSuffix(effectiveChainId)
   const imageAddress = getImageAddress(erc20.address, network)
 
   const nativeTokenDisplay = (
@@ -40,12 +41,14 @@ export function TokenDisplay(props: Readonly<TokenDisplayProps>): ReactNode {
         nativeTokenDisplay
       ) : (
         <>
-          <BlockExplorerLink
-            identifier={erc20.address}
-            type="token"
-            label={tokenLabelBaseNode}
-            networkId={effectiveChainId as SupportedChainId}
-          />
+          {isChainIdSupported && (
+            <BlockExplorerLink
+              identifier={erc20.address}
+              type="token"
+              label={tokenLabelBaseNode}
+              networkId={effectiveChainId}
+            />
+          )}
           {networkNameSuffix && <span>{networkNameSuffix}</span>}
         </>
       )}
