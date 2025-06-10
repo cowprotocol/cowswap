@@ -56,7 +56,7 @@ export const safeAppFeeAtom = atom<VolumeFee | null>((get) => {
   const isOutputStableCoin = !!outputCurrency && stablecoins.has(getCurrencyAddress(outputCurrency).toLowerCase())
   const isStableCoinTrade = isInputStableCoin && isOutputStableCoin
 
-  const bps = (() => {
+  const volumeBps = (() => {
     if (fiatAmount < FEE_TIERS.TIER_1) {
       return isStableCoinTrade ? FEE_PERCENTAGE_BPS.STABLE.TIER_1 : FEE_PERCENTAGE_BPS.REGULAR.TIER_1
     }
@@ -68,5 +68,5 @@ export const safeAppFeeAtom = atom<VolumeFee | null>((get) => {
     return isStableCoinTrade ? FEE_PERCENTAGE_BPS.STABLE.TIER_3 : FEE_PERCENTAGE_BPS.REGULAR.TIER_3
   })()
 
-  return { bps, recipient: SAFE_FEE_RECIPIENT }
+  return { volumeBps, recipient: SAFE_FEE_RECIPIENT }
 })
