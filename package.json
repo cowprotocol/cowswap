@@ -331,8 +331,10 @@
     "vite-plugin-babel-macros": "^1.0.6",
     "vite-plugin-dts": "~4.5.3",
     "vite-plugin-dynamic-import": "^1.5.0",
+    "vite-plugin-meta-tags": "^0.1.4",
     "vite-plugin-node-polyfills": "^0.23.0",
     "vite-plugin-pwa": "^1.0.0",
+    "vite-plugin-robots": "^1.0.5",
     "vite-plugin-svgr": "^4.2.0",
     "vite-tsconfig-paths": "~5.1.4",
     "vitest": "~3.1.3"
