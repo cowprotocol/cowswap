@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { getChainInfo } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -28,7 +30,7 @@ export interface NetworkLogoProps {
   forceLightMode?: boolean
 }
 
-export function NetworkLogo({ chainId, size = 16, margin, forceLightMode }: NetworkLogoProps) {
+export function NetworkLogo({ chainId, size = 16, margin, forceLightMode }: NetworkLogoProps): ReactNode {
   const theme = useTheme()
   const chainInfo = getChainInfo(chainId)
 
