@@ -63,7 +63,8 @@ export default defineConfig(({ mode }) => {
       },
     }),
     robots({
-      outputRobotsFileName: path.resolve(__dirname, '../../build/cowswap'),
+      robotsDir: 'robots',
+      outputRobotsFileName: '../../build/cowswap',
     }),
   ]
 
