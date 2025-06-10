@@ -63,7 +63,7 @@ export function useTradeQuotePolling(isConfirmOpen = false, enableSmartSlippage 
   }, [isWindowVisible, tradeQuoteManager, isConfirmOpen, amountStr])
 
   // TODO: Break down this large function into smaller functions
-  // eslint-disable-next-line max-lines-per-function
+
   useLayoutEffect(() => {
     if (!tradeQuoteManager) {
       return
@@ -89,7 +89,7 @@ export function useTradeQuotePolling(isConfirmOpen = false, enableSmartSlippage 
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
     function fetchAndUpdateQuote(hasParamsChanged: boolean, forceUpdate = false) {
       const currentQuote = tradeQuoteRef.current
-      const currentQuoteAppData = currentQuote.quote?.quoteResults.appDataInfo
+      const currentQuoteAppDataDoc = currentQuote.quote?.quoteResults.appDataInfo.doc
       const hasCachedResponse = !!currentQuote.quote
       const hasCachedError = !!currentQuote.error
 
