@@ -155,54 +155,54 @@ function processUtmParams(
   navigate: ReturnType<typeof useNavigate>,
   pathname: string,
   hash: string,
-): void {
+): () => void {
   logUtmDebug('Found UTM params, processing...', utm)
+  // Only overrides the UTM if the URL includes at least one UTM param
   setUtm(utm)
+
+  let timeoutId: number | null = null
+
+  // Return cleanup function for potential cancellation
+  const cleanup = (): void => {
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId)
+      timeoutId = null
+    }
+  }
+
+  const performUtmCleanup = (): void => {
+    // Clean up UTM params from window.location.search if they exist there
+    // Otherwise clean from router search params
+    const windowHasUtm = Object.values(getUtmParams(new URLSearchParams(window.location.search || ''))).some(Boolean)
+    const sourceToClean = windowHasUtm ? window.location.search : search
+    const newSearchParams = cleanUpUtmParams(new URLSearchParams(sourceToClean || ''))
+    const newSearch = newSearchParams.toString()
+
+    logUtmDebug('Cleaned search params:', {
+      hasQueryParamsOutOfHashbang,
+      originalSearch: sourceToClean,
+      newSearch,
+      windowLocationSearch: window.location.search,
+      routerSearch: search,
+    })
+
+    handleUrlNavigation(newSearch, hasQueryParamsOutOfHashbang, navigate, pathname, hash)
+  }
 
   // Wait for analytics to be ready before cleaning up UTM parameters
   waitForAnalytics()
     .then(() => {
       logUtmDebug('Analytics ready, cleaning up UTM params after delay', {})
-      setTimeout(() => {
-        // Clean up UTM params from window.location.search if they exist there
-        // Otherwise clean from router search params
-        const windowHasUtm = Object.values(getUtmParams(new URLSearchParams(window.location.search || ''))).some(Boolean)
-        const sourceToClean = windowHasUtm ? window.location.search : search
-        const newSearchParams = cleanUpUtmParams(new URLSearchParams(sourceToClean || ''))
-        const newSearch = newSearchParams.toString()
-
-        logUtmDebug('Cleaned search params:', {
-          hasQueryParamsOutOfHashbang,
-          originalSearch: sourceToClean,
-          newSearch,
-          windowLocationSearch: window.location.search,
-          routerSearch: search,
-        })
-
-        handleUrlNavigation(newSearch, hasQueryParamsOutOfHashbang, navigate, pathname, hash)
-      }, 250)
+      // Small additional delay to ensure analytics has captured the parameters
+      timeoutId = window.setTimeout(performUtmCleanup, 250)
     })
     .catch((error) => {
       logUtmDebug('Analytics detection failed, proceeding with cleanup', { error })
-      setTimeout(() => {
-        // Clean up UTM params from window.location.search if they exist there
-        // Otherwise clean from router search params
-        const windowHasUtm = Object.values(getUtmParams(new URLSearchParams(window.location.search || ''))).some(Boolean)
-        const sourceToClean = windowHasUtm ? window.location.search : search
-        const newSearchParams = cleanUpUtmParams(new URLSearchParams(sourceToClean || ''))
-        const newSearch = newSearchParams.toString()
-
-        logUtmDebug('Cleaned search params:', {
-          hasQueryParamsOutOfHashbang,
-          originalSearch: sourceToClean,
-          newSearch,
-          windowLocationSearch: window.location.search,
-          routerSearch: search,
-        })
-
-        handleUrlNavigation(newSearch, hasQueryParamsOutOfHashbang, navigate, pathname, hash)
-      }, 250)
+      // Additional 250ms delay for analytics capture
+      timeoutId = window.setTimeout(performUtmCleanup, 250)
     })
+
+  return cleanup
 }
 
 export function useInitializeUtm(): void {
@@ -224,34 +224,38 @@ export function useInitializeUtm(): void {
     // Prevent multiple runs of UTM processing
     if (hasProcessedUtm.current) {
       logUtmDebug('Already processed UTM, skipping', {})
-      return
+      return undefined
     }
 
     const { utm, hasUtmParams, hasQueryParamsOutOfHashbang, searchParams } = extractUtmParams(search)
 
     if (hasUtmParams) {
+      // Mark as processed to prevent re-runs
       hasProcessedUtm.current = true
-      processUtmParams(utm, setUtm, search, hasQueryParamsOutOfHashbang, navigate, pathname, hash)
-    } else {
-      logUtmDebug('No UTM params found, checking for cleanup', {})
-      // Check if we need to clean up any remaining UTM parameters
-      const newSearchParams = cleanUpUtmParams(searchParams)
-      const newSearch = newSearchParams.toString()
-
-      // Only navigate if there's actually a change needed
-      const currentSearch = searchParams.toString()
-      logUtmDebug('Cleanup check:', {
-        currentSearch,
-        newSearch,
-        needsCleanup: newSearch !== currentSearch,
-      })
-
-      if (newSearch !== currentSearch) {
-        logUtmDebug('Cleanup needed, processing...', {})
-        hasProcessedUtm.current = true
-        handleUrlNavigation(newSearch, hasQueryParamsOutOfHashbang, navigate, pathname, hash)
-      }
+      return processUtmParams(utm, setUtm, search, hasQueryParamsOutOfHashbang, navigate, pathname, hash)
     }
+
+    logUtmDebug('No UTM params found, checking for cleanup', {})
+    // Check if we need to clean up any remaining UTM parameters
+    const newSearchParams = cleanUpUtmParams(searchParams)
+    const newSearch = newSearchParams.toString()
+
+    // Only navigate if there's actually a change needed
+    const currentSearch = searchParams.toString()
+    logUtmDebug('Cleanup check:', {
+      currentSearch,
+      newSearch,
+      needsCleanup: newSearch !== currentSearch,
+    })
+
+    if (newSearch !== currentSearch) {
+      logUtmDebug('Cleanup needed, processing...', {})
+      // Mark as processed to prevent re-runs
+      hasProcessedUtm.current = true
+      handleUrlNavigation(newSearch, hasQueryParamsOutOfHashbang, navigate, pathname, hash)
+    }
+
+    return undefined
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Intentionally empty - we only want this to run once on mount
 }
