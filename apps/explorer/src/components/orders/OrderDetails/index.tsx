@@ -24,11 +24,12 @@ import { useCrossChainOrder } from 'modules/bridge'
 import { Order, Trade } from 'api/operator'
 
 import { FillsTableContext } from './context/FillsTableContext'
-import { TitleUid, WrapperExtraComponents, StyledExplorerTabs } from './styled'
-import { getBridgeTab, getFillsTab, getOverviewTab, getSwapTab } from './tabs'
+import { TitleUid, WrapperExtraComponents, StyledExplorerTabs, TabContent } from './styled'
+import { getBridgeTab, getFillsTab, getOverviewTab, TabView } from './tabs'
 
 import { FlexContainerVar } from '../../../explorer/pages/styled'
 import { VerboseDetails } from '../DetailsTable/VerboseDetails'
+import { StatusLabel } from '../StatusLabel'
 
 type Props = {
   order: Order | null
@@ -36,13 +37,6 @@ type Props = {
   isOrderLoading: boolean
   areTradesLoading: boolean
   errors: Errors
-}
-
-enum TabView {
-  OVERVIEW = 1,
-  FILLS = 2,
-  SWAP = 3,
-  BRIDGE = 4,
 }
 
 const DEFAULT_TAB = TabView[1]
@@ -96,15 +90,20 @@ const tabItems = (
       </DetailsTable>
     ) : null
 
-  const overviewTab = getOverviewTab(defaultDetails, noTokens, isLoadingForTheFirstTime)
+  const isBridging = !!order?.bridgeProviderId
+
+  const overviewTabTitle = isBridging ? (
+    <TabContent>
+      1. Swap <StatusLabel status={order.status} />
+    </TabContent>
+  ) : (
+    <span>Overview</span>
+  )
+  const overviewTab = getOverviewTab(overviewTabTitle, defaultDetails, noTokens, isLoadingForTheFirstTime)
 
   // Swap & Bridge
-  if (order?.bridgeProviderId) {
-    return [
-      overviewTab,
-      getSwapTab(order, defaultDetails, noTokens, isLoadingForTheFirstTime),
-      getBridgeTab(order, crossChainOrder, crossChainOrderLoading),
-    ]
+  if (isBridging) {
+    return [overviewTab, getBridgeTab(order, crossChainOrder, crossChainOrderLoading)]
   }
 
   if (!showFills) {

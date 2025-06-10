@@ -16,8 +16,7 @@ import { StatusLabel } from '../StatusLabel'
 export enum TabView {
   OVERVIEW = 1,
   FILLS = 2,
-  SWAP = 3,
-  BRIDGE = 4,
+  BRIDGE = 3,
 }
 
 export interface OrderTab {
@@ -26,33 +25,15 @@ export interface OrderTab {
   content: ReactNode
 }
 
-export function getOverviewTab(children: ReactNode, noTokens: boolean, isLoadingForTheFirstTime: boolean): OrderTab {
-  return {
-    id: TabView.OVERVIEW,
-    tab: <span>Overview</span>,
-    content: (
-      <>
-        {children}
-        {noTokens && <p>Not able to load tokens</p>}
-        {isLoadingForTheFirstTime && <CowLoading />}
-      </>
-    ),
-  }
-}
-
-export function getSwapTab(
-  order: Order,
+export function getOverviewTab(
+  title: ReactNode,
   children: ReactNode,
   noTokens: boolean,
   isLoadingForTheFirstTime: boolean,
 ): OrderTab {
   return {
-    id: TabView.SWAP,
-    tab: (
-      <TabContent>
-        1. Swap <StatusLabel status={order.status} />
-      </TabContent>
-    ),
+    id: TabView.OVERVIEW,
+    tab: title,
     content: (
       <>
         {children}
