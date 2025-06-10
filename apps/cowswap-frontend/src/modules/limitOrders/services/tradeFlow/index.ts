@@ -18,8 +18,8 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
-import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
+import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
@@ -112,23 +112,7 @@ export async function tradeFlow(
           quoteId: postOrderParams.quoteId,
         },
         {
-          appData: {
-            ...postOrderParams.appData.doc,
-            metadata: {
-              ...postOrderParams.appData.doc.metadata,
-              partnerFee: postOrderParams.appData.doc.metadata.partnerFee
-                ? [
-                    {
-                      priceImprovementBps: 0,
-                      maxVolumeBps: 0,
-                      recipient: Array.isArray(postOrderParams.appData.doc.metadata.partnerFee)
-                        ? postOrderParams.appData.doc.metadata.partnerFee[0]?.recipient || ''
-                        : postOrderParams.appData.doc.metadata.partnerFee.recipient || '',
-                    },
-                  ]
-                : undefined,
-            },
-          },
+          appData: postOrderParams.appData.doc,
           additionalParams: {
             signingScheme: postOrderParams.allowsOffchainSigning ? SigningScheme.EIP712 : SigningScheme.PRESIGN,
           },
