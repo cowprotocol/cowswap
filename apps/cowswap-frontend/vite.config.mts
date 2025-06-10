@@ -69,7 +69,6 @@ export default defineConfig(({ mode }) => {
 
   if (analyzeBundle) {
     plugins.push(
-      // @ts-ignore
       visualizer({
         template: analyzeBundleTemplate,
         open: true,
