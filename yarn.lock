@@ -31231,6 +31231,11 @@ vite-plugin-dynamic-import@^1.5.0:
     fast-glob "^3.3.2"
     magic-string "^0.30.11"
 
+vite-plugin-meta-tags@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/vite-plugin-meta-tags/-/vite-plugin-meta-tags-0.1.4.tgz#a176c11ae809c9f115600dbf52d2041da6499ab0"
+  integrity sha512-nC0XnldfLyZXynxElAP5mWEWJeYJk0RB6tFiWjdb9ktbjaqy35SP1b5htRRdjG83eOx8lQ+6Fvmt+Lbrrj5GJQ==
+
 vite-plugin-node-polyfills@^0.23.0:
   version "0.23.0"
   resolved "https://registry.yarnpkg.com/vite-plugin-node-polyfills/-/vite-plugin-node-polyfills-0.23.0.tgz#99d0d1524fa75ce5c7bb1fc8af30283379e9c684"
