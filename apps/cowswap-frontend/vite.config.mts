@@ -9,6 +9,7 @@ import { ModuleNameWithoutNodePrefix, nodePolyfills } from 'vite-plugin-node-pol
 import { VitePWA } from 'vite-plugin-pwa'
 import svgr from 'vite-plugin-svgr'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
+import { meta } from 'vite-plugin-meta-tags'
 
 import * as path from 'path'
 
@@ -16,6 +17,7 @@ import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
 
 // eslint-disable-next-line no-restricted-imports
 import type { TemplateType } from 'rollup-plugin-visualizer/dist/plugin/template-types'
+import { robotsPlugin } from '../../tools/vite-plugins/robotsPlugin'
 
 const allNodeDeps = Object.keys(stdLibBrowser).map((key) => key.replace('node:', '')) as ModuleNameWithoutNodePrefix[]
 
@@ -26,6 +28,8 @@ const analyzeBundle = process.env.ANALYZE_BUNDLE === 'true'
 const analyzeBundleTemplate: TemplateType = (process.env.ANALYZE_BUNDLE_TEMPLATE as TemplateType) || 'treemap' //  "sunburst" | "treemap" | "network" | "raw-data" | "list";
 
 export default defineConfig(({ mode }) => {
+  const isProduction = mode === 'prod'
+
   const plugins = [
     nodePolyfills({
       exclude: allNodeDeps.filter((dep) => !nodeDepsToInclude.includes(dep)),
@@ -58,6 +62,10 @@ export default defineConfig(({ mode }) => {
         globPatterns: ['**/*.{js,css,html,png,jpg,svg,json,woff,woff2,md}'],
       },
     }),
+    robotsPlugin({
+      robotsDir: 'robots',
+      publicPath: path.resolve(__dirname, './public'),
+    }),
   ]
 
   if (analyzeBundle) {
@@ -69,6 +77,19 @@ export default defineConfig(({ mode }) => {
         brotliSize: true,
         filename: 'analyse.html', // will be saved in project's root
       }) as PluginOption,
+    )
+  }
+
+  // Disable page indexing for non-prod envs
+  if (!isProduction) {
+    plugins.push(
+      meta({}, undefined, [
+        {
+          tag: 'meta',
+          injectTo: 'head-prepend',
+          attrs: { name: 'robots', content: 'noindex,nofollow' },
+        },
+      ]),
     )
   }
 

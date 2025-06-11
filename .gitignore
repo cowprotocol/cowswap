@@ -59,3 +59,4 @@ out
 # Next.js sitemap
 apps/cow-fi/public/robots.txt
 apps/cow-fi/public/sitemap*
+apps/cowswap-frontend/public/robots.txt
