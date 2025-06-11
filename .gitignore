@@ -59,3 +59,7 @@ out
 # Next.js sitemap
 apps/cow-fi/public/robots.txt
 apps/cow-fi/public/sitemap*
+
+# Claude context files (local only)
+CLAUDE.md
+.claude/
