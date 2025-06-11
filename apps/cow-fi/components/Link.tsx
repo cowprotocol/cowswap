@@ -1,9 +1,12 @@
-import styled, { css } from 'styled-components/macro'
-import { Font, Color, Media } from '@cowprotocol/ui'
-import { transparentize } from 'color2k'
-import { defaultUtm } from 'modules/utm'
 import { FC, ReactNode } from 'react'
+
+import { Font, Color, Media } from '@cowprotocol/ui'
+
+import { transparentize } from 'color2k'
 import NextLink from 'next/link'
+import styled, { css } from 'styled-components/macro'
+
+import { defaultUtm } from 'modules/utm'
 
 export enum LinkType {
   TopicButton = 'topicButton',
