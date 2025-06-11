@@ -15,6 +15,7 @@ import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { useToggleAccountModal } from 'modules/account'
+import { useSwapAndBridgeContext, ProgressDetails } from 'modules/bridge'
 import { EthFlowStepper } from 'modules/ethFlow'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
@@ -210,6 +211,8 @@ export function ActivityDetails(props: {
   const setShowProgressBar = useAddOrderToSurplusQueue() // TODO: not exactly the proper tool, rethink this
   const toggleAccountModal = useToggleAccountModal()
 
+  const swapAndBridgeContext = useSwapAndBridgeContext(chainId, order, undefined)
+
   const showProgressBarCallback = useMemo(() => {
     if (!showProgressBar) {
       return null
@@ -402,6 +405,8 @@ export function ActivityDetails(props: {
                   )}
                 </OrderHooksDetails>
               )}
+
+              {swapAndBridgeContext && <ProgressDetails context={swapAndBridgeContext} />}
             </>
           ) : (
             (summary ?? id)
