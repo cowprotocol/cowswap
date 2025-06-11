@@ -62,5 +62,6 @@ function getSpotPrice(params: SpotPricesKeyParams, spotPrices: SpotPrices): Pric
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useGetSpotPrice() {
   const spotPrices = useAtomValue(spotPricesAtom)
+
   return useCallback((params: SpotPricesKeyParams) => getSpotPrice(params, spotPrices), [spotPrices])
 }
