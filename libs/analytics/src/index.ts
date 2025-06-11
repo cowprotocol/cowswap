@@ -7,6 +7,12 @@ export { WebVitalsAnalytics } from './webVitals/WebVitalsAnalytics'
 export type { GtmClickEvent, GtmCategory } from './gtm/types'
 export { toGtmEvent } from './gtm/types'
 
+// Analytics detection
+export { isGtmReady } from './gtm/gtmDetection'
+export { isSafaryReady } from './safary/safaryDetection'
+export { isAnalyticsReady, waitForAnalytics } from './readinessDetection'
+export type { AnalyticsReadiness } from './readinessDetection'
+
 // Analytics context and hooks
 export { CowAnalyticsProvider, useCowAnalytics } from './context/CowAnalyticsContext'
 export { useAnalyticsReporter } from './hooks/useAnalyticsReporter'
