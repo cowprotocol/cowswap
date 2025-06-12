@@ -14,8 +14,8 @@ import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { Order } from 'api/operator'
 
 import { BaseDetailsTable } from './BaseDetailsTable'
+import { DetailsTableTooltips } from './detailsTableTooltips'
 import { LinkButton, Wrapper } from './styled'
-import { tooltip } from './tooltips'
 
 import { OrderHooksDetails } from '../OrderHooksDetails'
 
@@ -66,7 +66,7 @@ export function FullDetailsTable({
       <tr>
         <td>
           <span>
-            <HelpTooltip tooltip={tooltip.expiration} /> Expiration Time
+            <HelpTooltip tooltip={DetailsTableTooltips.expiration} /> Expiration Time
           </span>
         </td>
         <td>
@@ -76,7 +76,7 @@ export function FullDetailsTable({
       <tr>
         <td>
           <span>
-            <HelpTooltip tooltip={tooltip.priceLimit} /> Limit Price
+            <HelpTooltip tooltip={DetailsTableTooltips.priceLimit} /> Limit Price
           </span>
         </td>
         <td>
@@ -94,7 +94,7 @@ export function FullDetailsTable({
       <tr>
         <td>
           <span>
-            <HelpTooltip tooltip={tooltip.priceExecution} /> Execution price
+            <HelpTooltip tooltip={DetailsTableTooltips.priceExecution} /> Execution price
           </span>
         </td>
         <td>
@@ -116,7 +116,7 @@ export function FullDetailsTable({
       <tr>
         <td>
           <span>
-            <HelpTooltip tooltip={tooltip.filled} /> Filled
+            <HelpTooltip tooltip={DetailsTableTooltips.filled} /> Filled
           </span>
         </td>
         <td>
@@ -134,7 +134,7 @@ export function FullDetailsTable({
       <tr>
         <td>
           <span>
-            <HelpTooltip tooltip={tooltip.surplus} /> Order surplus
+            <HelpTooltip tooltip={DetailsTableTooltips.surplus} /> Order surplus
           </span>
         </td>
         <td>{!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}</td>
@@ -144,7 +144,7 @@ export function FullDetailsTable({
           <tr>
             <td>
               <span>
-                <HelpTooltip tooltip={tooltip.hooks} /> Hooks
+                <HelpTooltip tooltip={DetailsTableTooltips.hooks} /> Hooks
               </span>
             </td>
             <td>{content}</td>
@@ -154,7 +154,7 @@ export function FullDetailsTable({
       <tr>
         <td>
           <span>
-            <HelpTooltip tooltip={tooltip.appData} /> AppData
+            <HelpTooltip tooltip={DetailsTableTooltips.appData} /> AppData
           </span>
         </td>
         <td>

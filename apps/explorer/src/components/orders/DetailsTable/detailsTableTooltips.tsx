@@ -1,5 +1,3 @@
-import React from 'react'
-
 export const DetailsTableTooltips = {
   orderID: 'A unique identifier ID for this order.',
   from: 'The account address which signed the order.',
@@ -33,7 +31,7 @@ export const DetailsTableTooltips = {
       <ul>
         <li>
           <strong>Fill or kill</strong>: Either the order is fully filled, or not filled at all. Currently all market
-          orders and limit orders are fill or kill.
+          orders are fill or kill.
         </li>
         <li>
           <strong>Partial execution</strong>: The order can be executed partially, as long as the limit price is
