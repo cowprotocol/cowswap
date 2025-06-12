@@ -33,7 +33,6 @@ export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: str
   overflow: hidden;
 
   ${Media.upToSmall()} {
-    min-height: auto;
     height: auto;
   }
 
