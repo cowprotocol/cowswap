@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
 
@@ -16,9 +16,9 @@ export function AmountsDisplay(props: Props): React.ReactNode | null {
   const { kind, buyAmount, buyToken, sellAmount, feeAmount, sellToken } = order
   const network = useNetworkId()
 
-  const isSell = useMemo(() => isSellOrder(kind), [kind])
+  const isSell = isSellOrder(kind)
 
-  const fromAmount = useMemo(() => sellAmount.plus(feeAmount), [sellAmount, feeAmount])
+  const fromAmount = sellAmount.plus(feeAmount)
 
   if (!buyToken || !sellToken || !network) {
     return null
