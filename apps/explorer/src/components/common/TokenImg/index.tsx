@@ -3,7 +3,6 @@ import React from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import unknownTokenImg from 'assets/img/unknown-token.png'
-// import styled from 'styled-components/macro'
 import { getImageUrl, RequireContextMock, safeTokenName } from 'utils'
 
 import { Wrapper } from './styled'
@@ -27,7 +26,7 @@ export interface Props {
 const tokensIconsRequire =
   process.env.NODE_ENV === 'test'
     ? RequireContextMock
-    : import.meta.glob('../../assets/img/tokens/*.png', { eager: true })
+    : import.meta.glob('../../../assets/img/tokens/*.png', { eager: true })
 
 const TOKEN_ICON_FILENAME_REGEX = /(0x\w{40}|eth|xdai)/
 
