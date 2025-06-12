@@ -3,10 +3,10 @@ import type { TokenInfo } from '@uniswap/token-lists'
 
 import { useTokenList } from '../../../hooks/useTokenList'
 
-export interface CrossChainTokens {
-  sourceToken: TokenInfo | undefined
-  intermediateToken: TokenInfo | undefined
-  destinationToken: TokenInfo | undefined
+export interface CrossChainTokens<T = TokenInfo | undefined> {
+  sourceToken: T
+  intermediateToken: T
+  destinationToken: T
 }
 
 export function useCrossChainTokens(crossChainOrder: CrossChainOrder): CrossChainTokens {

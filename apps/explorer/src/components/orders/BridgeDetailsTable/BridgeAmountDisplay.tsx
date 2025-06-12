@@ -1,17 +1,19 @@
 import React, { useMemo } from 'react'
 
+import type { TokenInfo } from '@uniswap/token-lists'
+
 import BigNumber from 'bignumber.js'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { TokenDisplay as CommonTokenDisplay } from 'components/common/TokenDisplay'
 import ShimmerBar from 'explorer/components/common/ShimmerBar'
 
-import { formatTokenAmount, mapBridgeableToErc20 } from 'utils/tokenFormatting'
+import { formatTokenAmount } from 'utils/tokenFormatting'
 
 import { AmountDetailBlock, AmountLabel, AmountTokenDisplayAndCopyWrapper } from './styled'
 
 interface BridgeAmountDisplayProps {
   labelPrefix: string
-  bridgeToken?: { address: string; decimals?: number; symbol?: string; chainId: number }
+  bridgeToken?: TokenInfo
   amount?: string | BigNumber | null
   isLoading?: boolean
 }
@@ -22,19 +24,18 @@ export function BridgeAmountDisplay({
   amount,
   isLoading,
 }: BridgeAmountDisplayProps): React.ReactNode {
-  const mappedToken = useMemo(() => (bridgeToken ? mapBridgeableToErc20(bridgeToken) : null), [bridgeToken])
-
   const { formattedAmount, isNative } = useMemo(() => {
-    if (!mappedToken || amount === undefined || amount === null) {
+    if (!bridgeToken || amount === undefined || amount === null) {
       return { formattedAmount: null, isNative: false }
     }
-    return formatTokenAmount(new BigNumber(amount), mappedToken)
-  }, [mappedToken, amount])
+    return formatTokenAmount(new BigNumber(amount), bridgeToken)
+  }, [bridgeToken, amount])
 
   const tokenDisplayElement = useMemo(() => {
-    if (!mappedToken || !bridgeToken?.chainId) return null
-    return <CommonTokenDisplay erc20={mappedToken} network={bridgeToken.chainId} showNetworkName />
-  }, [mappedToken, bridgeToken?.chainId])
+    if (!bridgeToken?.chainId) return null
+
+    return <CommonTokenDisplay erc20={bridgeToken} network={bridgeToken.chainId} showNetworkName />
+  }, [bridgeToken])
 
   if (isLoading) {
     return (
@@ -62,7 +63,7 @@ export function BridgeAmountDisplay({
         {isNative ? (
           tokenDisplayElement
         ) : (
-          <RowWithCopyButton textToCopy={mappedToken?.address || ''} contentsToDisplay={tokenDisplayElement} />
+          <RowWithCopyButton textToCopy={bridgeToken.address} contentsToDisplay={tokenDisplayElement} />
         )}
       </AmountTokenDisplayAndCopyWrapper>
     </AmountDetailBlock>
