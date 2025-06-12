@@ -42,8 +42,6 @@ const tokensIconsRequire =
 
 const TOKEN_ICON_FILENAME_REGEX = /(0x\w{40}|eth|xdai|avax|pol)/
 
-console.log(tokensIconsRequire)
-
 const tokensIconsFilesByAddress: Record<string, string> = Object.keys(tokensIconsRequire).reduce((acc, file) => {
   const address = TOKEN_ICON_FILENAME_REGEX.exec(file)?.[0]
   if (!address) {
