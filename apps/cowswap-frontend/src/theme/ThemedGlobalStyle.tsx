@@ -5,6 +5,43 @@ import { createGlobalStyle } from 'styled-components/macro'
 export const ThemedGlobalStyle = createGlobalStyle`
   ${ThemeColorVars}
 
+  /* Define Inter fonts with font-display: optional to prevent font swapping */
+  @font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 400;
+    font-display: optional;
+    src: url("/fonts/Inter-roman.var.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 500;
+    font-display: optional;
+    src: url("/fonts/Inter-roman.var.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 600;
+    font-display: optional;
+    src: url("/fonts/Inter-roman.var.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 700;
+    font-display: optional;
+    src: url("/fonts/Inter-roman.var.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "Inter var";
+    font-weight: 100 900;
+    font-display: optional;
+    font-style: normal;
+    src: url("/fonts/Inter-roman.var.woff2") format("woff2");
+  }
+
   html,
   input,
   textarea,
