@@ -1,9 +1,8 @@
 import React, { ReactNode } from 'react'
 
 import { BridgeStatus, CrossChainOrder } from '@cowprotocol/cow-sdk'
+import { Nullish } from '@cowprotocol/types'
 import { Loader } from '@cowprotocol/ui'
-
-import { Nullish } from 'types'
 
 import { FillsTableWithData, FillsTableWithDataProps } from './FillsTableWithData'
 import { TabContent } from './styled'

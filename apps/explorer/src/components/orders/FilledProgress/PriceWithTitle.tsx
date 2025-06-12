@@ -1,10 +1,11 @@
 import React, { ReactNode } from 'react'
 
+import { Nullish } from '@cowprotocol/types'
+
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 
 import { TableHeadingContent } from './styled'
 
-import { Nullish } from '../../../types'
 import { OrderPriceDisplay, OrderPriceDisplayProps } from '../OrderPriceDisplay'
 
 interface PriceWithTitleProps extends Omit<OrderPriceDisplayProps, 'buyToken' | 'sellToken'> {

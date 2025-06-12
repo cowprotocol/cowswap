@@ -1,7 +1,7 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
+import { Nullish } from '@cowprotocol/types'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
-import { Nullish } from 'types'
 
 import { Order } from '../../../api/operator'
 import { safeTokenName } from '../../../utils'
