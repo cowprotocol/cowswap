@@ -1,11 +1,12 @@
 import { FULL_PRICE_PRECISION } from '@cowprotocol/common-const'
+import { Nullish } from '@cowprotocol/types'
 import { BigintIsh, Currency, CurrencyAmount, Fraction, Price, Rounding, Token } from '@uniswap/sdk-core'
 
 import { BigNumber } from 'bignumber.js'
 import JSBI from 'jsbi'
 
 import { trimTrailingZeros } from './trimTrailingZeros'
-import { FractionLike, Nullish } from './types'
+import { FractionLike } from './types'
 
 export class FractionUtils {
   static serializeFractionToJSON(amount: Nullish<CurrencyAmount<Currency>>): string {

@@ -5,8 +5,7 @@ import { Story, Meta } from '@storybook/react/types-6-0'
 import BigNumber from 'bignumber.js'
 import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 
-import { StatusLabel, Props } from '.'
-
+import { StatusLabel, StatusLabelProps } from '.'
 
 export default {
   title: 'Orders/StatusLabel',
@@ -14,7 +13,7 @@ export default {
   decorators: [GlobalStyles, ThemeToggler],
 } as Meta
 
-const Template: Story<Props> = (args) => <StatusLabel {...args} />
+const Template: Story<StatusLabelProps> = (args) => <StatusLabel {...args} />
 
 export const Filled = Template.bind({})
 Filled.args = { status: 'filled' }

@@ -13,7 +13,7 @@ import {
   NO_ADJUSTMENT_NEEDED_PRECISION,
 } from '../../../explorer/const'
 
-export type Props = {
+export type OrderPriceDisplayProps = {
   buyAmount: string | BigNumber
   buyToken: TokenErc20
   sellAmount: string | BigNumber
@@ -23,7 +23,7 @@ export type Props = {
   showInvertButton?: boolean
 }
 
-export function OrderPriceDisplay(props: Readonly<Props>): React.ReactNode {
+export function OrderPriceDisplay(props: Readonly<OrderPriceDisplayProps>): React.ReactNode {
   const {
     buyAmount,
     buyToken,

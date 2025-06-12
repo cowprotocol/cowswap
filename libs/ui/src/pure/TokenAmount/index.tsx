@@ -1,10 +1,11 @@
 import { LONG_PRECISION } from '@cowprotocol/common-const'
 import { formatTokenAmount, FractionUtils } from '@cowprotocol/common-utils'
+import { Nullish } from '@cowprotocol/types'
+import { Fraction } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
 import { UI } from '../../enum'
-import { FractionLike, Nullish } from '../../types'
 import { TokenNameAndSymbol, TokenSymbol } from '../TokenSymbol'
 
 export const Wrapper = styled.span<{ lowVolumeWarning?: boolean; clickable?: boolean }>`
@@ -38,7 +39,7 @@ export const SymbolElement = styled.span<{ opacitySymbol?: boolean }>`
 `
 
 export interface TokenAmountProps {
-  amount: Nullish<FractionLike>
+  amount: Nullish<Fraction>
   defaultValue?: string
   tokenSymbol?: Nullish<TokenNameAndSymbol>
   className?: string

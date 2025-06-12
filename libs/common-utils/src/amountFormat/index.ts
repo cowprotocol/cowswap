@@ -5,6 +5,7 @@ import {
   PERCENTAGE_PRECISION,
   ZERO_FRACTION,
 } from '@cowprotocol/common-const'
+import { Nullish } from '@cowprotocol/types'
 import { Currency, CurrencyAmount, Percent, Rounding } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
@@ -14,7 +15,7 @@ import { getPrecisionForAmount, getSuffixForAmount, lessThanPrecisionSymbol, tri
 import { FractionUtils } from '../fractionUtils'
 import { maxAmountSpend } from '../maxAmountSpend'
 import { trimTrailingZeros } from '../trimTrailingZeros'
-import { FractionLike, Nullish } from '../types'
+import { FractionLike } from '../types'
 
 export function formatFiatAmount(amount: Nullish<FractionLike>): string {
   return formatAmountWithPrecision(amount, FIAT_PRECISION)

@@ -8,8 +8,7 @@ import { Network } from 'types'
 
 import { USDT } from '../../../test/data'
 
-import { TokenDisplay, Props } from '.'
-
+import { TokenDisplay, TokenDisplayProps } from '.'
 
 export default {
   title: 'Common/TokenDisplay',
@@ -17,9 +16,9 @@ export default {
   decorators: [GlobalStyles, ThemeToggler],
 } as Meta
 
-const Template: Story<Props> = (args) => <TokenDisplay {...args} />
+const Template: Story<TokenDisplayProps> = (args) => <TokenDisplay {...args} />
 
-const defaultProps: Props = { erc20: USDT, network: Network.MAINNET }
+const defaultProps: TokenDisplayProps = { erc20: USDT, network: Network.MAINNET }
 
 export const Default = Template.bind({})
 Default.args = { ...defaultProps }
