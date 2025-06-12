@@ -173,7 +173,7 @@ export const FAQ_DATA = [
           Coincidences of Wants
         </Link>{' '}
         (CoWs) to settle the order. CoW Swap is the leader among intent-based trading protocols by transaction volume
-        and currently operates on Ethereum, Arbitrum One, and Gnosis Chain.
+        and currently operates on Ethereum, Arbitrum One, Gnosis Chain, Base, Polygon, and Avalanche.
       </>
     ),
   },
