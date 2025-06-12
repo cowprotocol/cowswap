@@ -24,12 +24,6 @@ import FONT_STUDIO_FEIXEN_SERIF_BOOK from '@cowprotocol/assets/fonts/StudioFeixe
 import FONT_STUDIO_FEIXEN_SERIF_MEDIUM from '@cowprotocol/assets/fonts/StudioFeixenSerif-Medium.woff2'
 import FONT_STUDIO_FEIXEN_SERIF_REGULAR from '@cowprotocol/assets/fonts/StudioFeixenSerif-Regular.woff2'
 
-import FONT_INTER_BOLD from 'inter-ui/Inter (web)/Inter-Bold.woff2'
-import FONT_INTER_MEDIUM from 'inter-ui/Inter (web)/Inter-Medium.woff2'
-import FONT_INTER_REGULAR from 'inter-ui/Inter (web)/Inter-Regular.woff2'
-import FONT_INTER_VARIABLE from 'inter-ui/Inter (web)/Inter-roman.var.woff2'
-import FONT_INTER_SEMIBOLD from 'inter-ui/Inter (web)/Inter-SemiBold.woff2'
-
 export const CoWDAOFonts = {
   FONT_STUDIO_FEIXEN_BOLD,
   FONT_STUDIO_FEIXEN_BOLD_ITALIC,
@@ -56,9 +50,4 @@ export const CoWDAOFonts = {
   FONT_STUDIO_FEIXEN_MONO_SEMIBOLD,
   FONT_STUDIO_FEIXEN_MONO_LIGHT,
   FONT_STUDIO_FEIXEN_MONO_ULTRALIGHT,
-  FONT_INTER_REGULAR,
-  FONT_INTER_MEDIUM,
-  FONT_INTER_SEMIBOLD,
-  FONT_INTER_BOLD,
-  FONT_INTER_VARIABLE,
 }
