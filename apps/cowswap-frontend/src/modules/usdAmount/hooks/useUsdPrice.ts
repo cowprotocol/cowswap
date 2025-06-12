@@ -9,6 +9,7 @@ import { useSafeEffect } from 'common/hooks/useSafeMemo'
 
 import { addCurrencyToUsdPriceQueue, removeCurrencyToUsdPriceFromQueue } from '../state/usdRawPricesAtom'
 import { UsdPriceState, usdTokenPricesAtom } from '../state/usdTokenPricesAtom'
+import { UsdPriceStateKey } from '../types'
 import { getUsdPriceStateKey } from '../utils/usdPriceStateKey'
 
 /**
@@ -76,13 +77,13 @@ function useSubscribeUsdPrices(currencies: Token[]): void {
 /**
  * Subscribe to USD prices for multiple currencies and returns the USD prices state
  */
-export function useUsdPrices(currencies: Token[]): Record<string, UsdPriceState | null> {
+export function useUsdPrices(currencies: Token[]): Record<UsdPriceStateKey, UsdPriceState | null> {
   useSubscribeUsdPrices(currencies)
   const usdPrices = useAtomValue(usdTokenPricesAtom)
 
   return useMemo(
     () =>
-      currencies.reduce<Record<string, UsdPriceState | null>>((acc, currency) => {
+      currencies.reduce<Record<UsdPriceStateKey, UsdPriceState | null>>((acc, currency) => {
         const key = getUsdPriceStateKey(currency)
 
         acc[key] = usdPrices[key] || null
