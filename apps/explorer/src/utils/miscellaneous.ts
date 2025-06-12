@@ -75,7 +75,16 @@ export function getImageAddress(address: string, network: Network): string {
     // Well, this address here is the path on `src/assets/tokens/`
     // So these special values will use the local images,
     // because they are native tokens and don't really have an address
-    return network === Network.GNOSIS_CHAIN ? 'xdai' : 'eth'
+    switch (network) {
+      case Network.GNOSIS_CHAIN:
+        return 'xdai'
+      case Network.AVALANCHE:
+        return 'avax'
+      case Network.POLYGON:
+        return 'pol'
+      default:
+        return 'eth'
+    }
   }
   return address
 }
