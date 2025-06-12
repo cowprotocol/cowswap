@@ -8,15 +8,7 @@ export interface FormattedTokenAmount {
   isNative: boolean
 }
 
-export function formatTokenAmount(amount: BigNumber, token: TokenErc20 | null, address?: string): FormattedTokenAmount {
-  if (!token) {
-    return {
-      formattedAmount: amount.toString(10),
-      symbol: address || 'Unknown',
-      isNative: false,
-    }
-  }
-
+export function formatTokenAmount(amount: BigNumber, token: TokenErc20): FormattedTokenAmount {
   const formattedAmount = token.decimals >= 0 ? formatSmartMaxPrecision(amount, token) : amount.toString(10)
 
   return {

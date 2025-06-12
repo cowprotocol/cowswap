@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
@@ -21,12 +21,9 @@ interface AmountRowProps {
 export function AmountRow(props: AmountRowProps): React.ReactNode {
   const { title, titleSuffix, amount, erc20, network } = props
 
-  const { formattedAmount, isNative } = useMemo(() => formatTokenAmount(amount, erc20), [amount, erc20])
+  const { formattedAmount, isNative } = formatTokenAmount(amount, erc20)
 
-  const tokenDisplay = useMemo(
-    () => <TokenDisplay erc20={erc20} network={network} showNetworkName={true} />,
-    [erc20, network],
-  )
+  const tokenDisplay = <TokenDisplay erc20={erc20} network={network} showNetworkName={true} />
 
   return (
     <>
