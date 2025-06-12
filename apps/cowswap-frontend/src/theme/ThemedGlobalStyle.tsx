@@ -2,44 +2,46 @@ import { Color, Media, ThemeColorVars, UI } from '@cowprotocol/ui'
 
 import { createGlobalStyle } from 'styled-components/macro'
 
+import { CoWDAOFonts } from '../common/styles/CoWDAOFonts'
+
 export const ThemedGlobalStyle = createGlobalStyle`
   ${ThemeColorVars}
 
-  /* Define Inter fonts with font-display: optional to prevent font swapping */
+  /* Define Inter fonts with font-display: fallback for reliable loading */
   @font-face {
     font-family: "Inter";
     font-style: normal;
     font-weight: 400;
-    font-display: optional;
-    src: url("/fonts/Inter-roman.var.woff2") format("woff2");
+    font-display: fallback;
+    src: url(${CoWDAOFonts.FONT_INTER_REGULAR}) format('woff2');
   }
   @font-face {
     font-family: "Inter";
     font-style: normal;
     font-weight: 500;
-    font-display: optional;
-    src: url("/fonts/Inter-roman.var.woff2") format("woff2");
+    font-display: fallback;
+    src: url(${CoWDAOFonts.FONT_INTER_MEDIUM}) format('woff2');
   }
   @font-face {
     font-family: "Inter";
     font-style: normal;
     font-weight: 600;
-    font-display: optional;
-    src: url("/fonts/Inter-roman.var.woff2") format("woff2");
+    font-display: fallback;
+    src: url(${CoWDAOFonts.FONT_INTER_SEMIBOLD}) format('woff2');
   }
   @font-face {
     font-family: "Inter";
     font-style: normal;
     font-weight: 700;
-    font-display: optional;
-    src: url("/fonts/Inter-roman.var.woff2") format("woff2");
+    font-display: fallback;
+    src: url(${CoWDAOFonts.FONT_INTER_BOLD}) format('woff2');
   }
   @font-face {
     font-family: "Inter var";
     font-weight: 100 900;
-    font-display: optional;
+    font-display: fallback;
     font-style: normal;
-    src: url("/fonts/Inter-roman.var.woff2") format("woff2");
+    src: url(${CoWDAOFonts.FONT_INTER_VARIABLE}) format('woff2');
   }
 
   html,
