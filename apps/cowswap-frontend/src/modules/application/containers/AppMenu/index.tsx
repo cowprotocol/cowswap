@@ -17,7 +17,7 @@ import { useMenuItems } from 'common/hooks/useMenuItems'
 
 import { NAV_ITEMS, PRODUCT_VARIANT } from '../App/menuConsts'
 
-const LinkComponent = ({ href, children }: PropsWithChildren<{ href: string }>) => {
+const LinkComponent = ({ href, children }: PropsWithChildren<{ href: string }>): ReactNode => {
   const external = href.startsWith('http')
 
   return (
