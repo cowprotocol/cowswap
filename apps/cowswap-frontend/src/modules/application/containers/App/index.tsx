@@ -38,6 +38,8 @@ import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/Redir
 import { ADDITIONAL_FOOTER_CONTENT, NAV_ITEMS, PRODUCT_VARIANT } from './menuConsts'
 import * as styledEl from './styled'
 
+import { useRenderCount } from 'utils/performanceMonitoring'
+
 const RoutesApp = lazy(() => import('./RoutesApp').then((module) => ({ default: module.RoutesApp })))
 
 const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts, 'transparent')
@@ -62,6 +64,8 @@ const LinkComponent = ({ href, children }: PropsWithChildren<{ href: string }>) 
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function App() {
+  useRenderCount('App') // Track main app re-renders
+  
   const { chainId, account } = useWalletInfo()
   const { walletName } = useWalletDetails()
   const cowAnalytics = useCowAnalytics()

@@ -29,8 +29,12 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { APP_HEADER_ELEMENT_ID } from '../common/constants/common'
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 import { BlockNumberProvider } from '../common/hooks/useBlockNumber'
+import { initPerformanceMonitoring } from '../utils/performanceMonitoring'
 
 const cowAnalytics = initGtm()
+
+// Initialize performance monitoring in development
+initPerformanceMonitoring()
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600

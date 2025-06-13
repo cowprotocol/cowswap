@@ -16239,6 +16239,11 @@ eslint-plugin-react-hooks@^4.3.0:
   resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-4.6.2.tgz#c829eb06c0e6f484b3fbb85a97e57784f328c596"
   integrity sha512-QzliNJq4GinDBcD8gPB5v0wh6g8q3SUi6EFF0x8N/BL9PoVs0atuGc47ozMRyOWAKdwaZ5OnbOEa3WR+dSGKuQ==
 
+eslint-plugin-react-perf@^3.3.3:
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-react-perf/-/eslint-plugin-react-perf-3.3.3.tgz#29f97ab494fff18dc5e6ec34b056d9a21a86ee71"
+  integrity sha512-EzPdxsRJg5IllCAH9ny/3nK7sv9251tvKmi/d3Ouv5KzI8TB3zNhzScxL9wnh9Hvv8GYC5LEtzTauynfOEYiAw==
+
 eslint-plugin-react@7.37.5, eslint-plugin-react@^7.27.1, eslint-plugin-react@^7.37.0:
   version "7.37.5"
   resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.37.5.tgz#2975511472bdda1b272b34d779335c9b0e877065"
@@ -31391,10 +31396,10 @@ web-namespaces@^2.0.0:
   resolved "https://registry.yarnpkg.com/web-namespaces/-/web-namespaces-2.0.1.tgz#1010ff7c650eccb2592cebeeaf9a1b253fd40692"
   integrity sha512-bKr1DkiNa2krS7qxNtdrtHAmzuYGFQLiQ13TsorsdT6ULTkPLKuu5+GsFpDlg6JFjUTwX2DyhMPG2be8uPrqsQ==
 
-web-vitals@^2.1.4:
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/web-vitals/-/web-vitals-2.1.4.tgz#76563175a475a5e835264d373704f9dde718290c"
-  integrity sha512-sVWcwhU5mX6crfI5Vd2dC4qchyTqxV8URinzt25XqVh+bHEPGH4C3NPrNionCP7Obx59wrYEbNlw4Z8sjALzZg==
+web-vitals@^5.0.3:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/web-vitals/-/web-vitals-5.0.3.tgz#29708ca3ab7ff96f676c6ff68fa8e8ed09a93d9b"
+  integrity sha512-4KmOFYxj7qT6RAdCH0SWwq8eKeXNhAFXR4PmgF6nrWFmrJ41n7lq3UCA6UK0GebQ4uu+XP8e8zGjaDO3wZlqTg==
 
 web3-bzz@1.10.0:
   version "1.10.0"

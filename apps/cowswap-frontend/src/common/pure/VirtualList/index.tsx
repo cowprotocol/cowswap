@@ -5,6 +5,8 @@ import ms from 'ms.macro'
 
 import { ListInner, ListScroller, ListWrapper, LoadingRows } from './styled'
 
+import { useRenderCount } from 'utils/performanceMonitoring'
+
 const scrollDelay = ms`400ms`
 
 // TODO: Add proper return type annotation
@@ -38,6 +40,8 @@ export function VirtualList<T>({
   children,
   estimateSize = () => 56,
 }: VirtualListProps<T>) {
+  useRenderCount('VirtualList') // Track virtual list re-renders
+  
   const parentRef = useRef<HTMLDivElement>(null)
   const wrapperRef = useRef<HTMLDivElement>(null)
   const scrollTimeoutRef = useRef<NodeJS.Timeout>(undefined)

@@ -41,6 +41,8 @@ import { SelectTokenModal } from '../../pure/SelectTokenModal'
 import { LpTokenPage } from '../LpTokenPage'
 import { ManageListsAndTokens } from '../ManageListsAndTokens'
 
+import { useRenderCount } from 'utils/performanceMonitoring'
+
 const Wrapper = styled.div`
   width: 100%;
 
@@ -58,6 +60,8 @@ interface SelectTokenWidgetProps {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProps) {
+  useRenderCount('SelectTokenWidget') // Track token selection widget re-renders
+  
   const {
     open,
     onSelectToken,

@@ -12,6 +12,8 @@ import { Nullish } from 'types'
 import * as styledEl from './styled'
 import { StyledTokenSymbol, TokenSubText } from './styled'
 
+import { useRenderCount } from 'utils/performanceMonitoring'
+
 const TOKEN_SYMBOL_LENGTH = 40
 const TOKEN_NAME_LENGTH = 110
 const TOKEN_LOGO_SIZE = {
@@ -34,6 +36,8 @@ export interface CurrencySelectButtonProps {
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function CurrencySelectButton(props: CurrencySelectButtonProps) {
+  useRenderCount('CurrencySelectButton') // Track currency select button re-renders
+  
   const {
     currency,
     onClick,
