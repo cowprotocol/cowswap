@@ -19,7 +19,7 @@ import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
 import { useLocation } from 'react-router'
 import { useNetworkId } from 'state/network'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { Errors } from 'types'
 import { formatPercentage } from 'utils'
 
@@ -85,7 +85,7 @@ function useQueryViewParams(): string {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, complexity
+// eslint-disable-next-line complexity
 const tabItems = (
   chainId: SupportedChainId,
   _order: Order | null,

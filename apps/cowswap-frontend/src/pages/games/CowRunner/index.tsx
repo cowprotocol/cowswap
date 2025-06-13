@@ -4,7 +4,7 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { CowGame } from '@cowprotocol/cow-runner-game'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'

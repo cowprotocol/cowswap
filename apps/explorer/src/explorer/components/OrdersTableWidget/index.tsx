@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Media } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { OrdersTableContext, BlockchainNetwork } from './context/OrdersTableContext'
 import { OrdersTableWithData } from './OrdersTableWithData'

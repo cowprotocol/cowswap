@@ -16,7 +16,7 @@ import { TokenAmount } from 'components/token/TokenAmount'
 import { TEN_BIG_NUMBER } from 'const'
 import { useMultipleErc20 } from 'hooks/useErc20'
 import { useNetworkId } from 'state/network'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { abbreviateString } from 'utils'
 
 import { Order, Trade } from 'api/operator'
@@ -49,7 +49,7 @@ function calculateExecutionPrice(
   sellAmount: BigNumber,
   buyAmount: BigNumber,
   sellToken?: TokenErc20 | null,
-  buyToken?: TokenErc20 | null
+  buyToken?: TokenErc20 | null,
 ): BigNumber | null {
   if (!sellToken || !buyToken) return null
 
@@ -63,7 +63,7 @@ function calculateExecutionPrice(
 }
 
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line complexity
+
 const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted }) => {
   const network = useNetworkId() ?? undefined
   const {

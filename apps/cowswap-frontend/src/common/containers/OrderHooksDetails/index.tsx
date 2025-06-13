@@ -24,7 +24,7 @@ interface OrderHooksDetailsProps {
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
 export function OrderHooksDetails({ appData, children, margin, isTradeConfirmation }: OrderHooksDetailsProps) {
   const [isOpen, setOpen] = useState(false)
   const appDataDoc = useMemo(() => {
@@ -53,7 +53,7 @@ export function OrderHooksDetails({ appData, children, margin, isTradeConfirmati
   if (!preHooksToDapp.length && !postHooksToDapp.length) return null
 
   return children(
-    <styledEl.Wrapper isOpen={isOpen} margin={margin}>
+    <styledEl.Wrapper $margin={margin}>
       <styledEl.Summary>
         <styledEl.Label>
           Hooks
@@ -73,8 +73,8 @@ export function OrderHooksDetails({ appData, children, margin, isTradeConfirmati
             </styledEl.HookTag>
           )}
         </styledEl.Content>
-        <styledEl.ToggleButton isOpen={isOpen} onClick={() => setOpen(!isOpen)}>
-          <styledEl.ToggleIcon isOpen={isOpen}>
+        <styledEl.ToggleButton $isOpen={isOpen} onClick={() => setOpen(!isOpen)}>
+          <styledEl.ToggleIcon $isOpen={isOpen}>
             {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           </styledEl.ToggleIcon>
         </styledEl.ToggleButton>

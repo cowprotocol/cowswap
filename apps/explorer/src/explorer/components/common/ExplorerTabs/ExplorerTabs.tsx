@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Color, Media } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import Tabs, { getTabTheme, Props as TabsProps, IndicatorTabSize } from '../../../../components/common/Tabs/Tabs'
 

@@ -42,13 +42,13 @@ export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
       {label ? (
         <Row>
           {label && (
-            <Label labelOpacity={labelOpacity}>
+            <Label $labelOpacity={labelOpacity}>
               {label}
               {tooltip && <InfoTooltip className="info-tooltip" content={tooltip} />}
             </Label>
           )}
 
-          <Content contentTextColor={contentTextColor}>{children}</Content>
+          <Content $contentTextColor={contentTextColor}>{children}</Content>
         </Row>
       ) : (
         children

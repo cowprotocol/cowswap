@@ -3,7 +3,7 @@ import { Fragment } from 'react'
 import { Media } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { useMultipleActivityDescriptors, groupActivitiesByDay } from 'legacy/hooks/useRecentActivity'
 

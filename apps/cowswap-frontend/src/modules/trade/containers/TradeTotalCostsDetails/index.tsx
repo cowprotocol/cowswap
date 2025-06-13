@@ -30,14 +30,14 @@ export function TradeTotalCostsDetails(props: TradeRatesProps) {
 
   return (
     <TradeDetailsAccordion
-      rateInfo={<styledEl.StyledRateInfo noLabel={true} stylized={true} rateInfoParams={rateInfoParams} />}
+      rateInfo={<styledEl.StyledRateInfo noLabel rateInfoParams={rateInfoParams} />}
       feeUsdTotalAmount={totalCostsUsd}
       feeTotalAmount={totalCosts}
       open={isFeeDetailsOpen}
       onToggle={toggleAccordion}
       feeWrapper={feeWrapper}
     >
-      <styledEl.Box noMargin>{children}</styledEl.Box>
+      <styledEl.Box $noMargin>{children}</styledEl.Box>
     </TradeDetailsAccordion>
   )
 }

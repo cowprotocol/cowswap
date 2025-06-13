@@ -7,7 +7,7 @@ import CLOSE_ICON_X from '@cowprotocol/assets/cow-swap/x.svg'
 import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { StyledSpinnerIcon, StyledRefundCompleteIcon } from '../../styles'
 import { SwapAndBridgeStatus } from '../../types'

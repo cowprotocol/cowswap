@@ -3,7 +3,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLink'
 import { HashType } from 'legacy/state/enhancedTransactions/reducer'

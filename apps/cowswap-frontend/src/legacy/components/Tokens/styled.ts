@@ -4,7 +4,7 @@ import { BaseButton, Media, UI } from '@cowprotocol/ui'
 import { transparentize } from 'color2k'
 import { HelpCircle } from 'react-feather'
 import { Link } from 'react-router'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -114,9 +114,9 @@ export const ArrowButton = styled.button`
   border: none;
 `
 
-export const Arrow = styled.div<{ faded: boolean }>`
+export const Arrow = styled.div<{ $faded: boolean }>`
   color: var(${UI.COLOR_TEXT});
-  opacity: ${(props) => (props.faded ? 0.3 : 1)};
+  opacity: ${(props) => (props.$faded ? 0.3 : 1)};
   padding: 0 10px;
   user-select: none;
 
@@ -124,8 +124,8 @@ export const Arrow = styled.div<{ faded: boolean }>`
     padding: 5px;
   }
 
-  ${({ faded }) =>
-    !faded &&
+  ${({ $faded }) =>
+    !$faded &&
     `
     :hover {
       cursor: pointer;

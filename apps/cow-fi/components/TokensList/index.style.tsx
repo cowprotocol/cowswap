@@ -1,5 +1,6 @@
-import styled from 'styled-components/macro'
 import { Media, Color } from '@cowprotocol/ui'
+
+import styled from 'styled-components'
 
 export const Wrapper = styled.div`
   --tokenSize: 2.6rem;
@@ -37,7 +38,10 @@ export const SearchTokens = styled.input`
   margin: 0 auto 1.6rem;
   color: ${Color.neutral30};
   font-size: 1.8rem;
-  transition: border-color 0.2s ease-in-out, background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  transition:
+    border-color 0.2s ease-in-out,
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
   outline: 0;
 `
 

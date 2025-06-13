@@ -5,7 +5,7 @@ import { ButtonError, ButtonSize, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { Field } from 'legacy/state/types'
 

@@ -4,7 +4,7 @@ import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { Color, Media } from '@cowprotocol/ui'
 
 import { formatDistanceToNowStrict } from 'date-fns'
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 
 import { TotalSummaryResponse } from './useGetSummaryData'
 import { numberFormatter } from './utils'

@@ -3,7 +3,7 @@ import { UI } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { AlertTriangle } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 

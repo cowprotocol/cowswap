@@ -2,7 +2,7 @@ import { TokenLogoWrapper } from '@cowprotocol/tokens'
 import { UI, Media, ExternalLink } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
-import styled, { keyframes } from 'styled-components/macro'
+import styled, { keyframes } from 'styled-components'
 
 const arrowUpAnimation = keyframes`
   0% {

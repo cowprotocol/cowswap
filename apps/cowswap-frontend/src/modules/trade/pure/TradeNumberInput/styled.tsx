@@ -1,6 +1,6 @@
 import { Media, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import Input from 'legacy/components/NumericalInput'
 
@@ -42,7 +42,9 @@ export const ArrowsWrapper = styled.div`
     overflow: hidden;
     cursor: pointer;
     opacity: 0.5;
-    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
+    transition:
+      opacity var(${UI.ANIMATION_DURATION}) ease-in-out,
+      color var(${UI.ANIMATION_DURATION}) ease-in-out;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -78,7 +80,7 @@ export const ArrowsWrapper = styled.div`
   }
 `
 
-export const InputWrapper = styled.span<{ showUpDownArrows?: boolean; upDownArrowsLeftAlign?: boolean }>`
+export const InputWrapper = styled.span<{ $showUpDownArrows?: boolean; $upDownArrowsLeftAlign?: boolean }>`
   position: relative;
   display: flex;
   align-items: center;
@@ -87,8 +89,8 @@ export const InputWrapper = styled.span<{ showUpDownArrows?: boolean; upDownArro
     opacity: 1;
   }
 
-  ${({ upDownArrowsLeftAlign }) =>
-    upDownArrowsLeftAlign &&
+  ${({ $upDownArrowsLeftAlign }) =>
+    $upDownArrowsLeftAlign &&
     `
     ${ArrowsWrapper} {
       order: -1;

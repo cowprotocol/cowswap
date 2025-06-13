@@ -4,7 +4,7 @@ import { Placement } from '@popperjs/core'
 import { Tooltip } from 'components/Tooltip'
 import { formatDistanceToNowStrict, format } from 'date-fns'
 import { usePopperOnClick } from 'hooks/usePopper'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const IconWrapper = styled(FontAwesomeIcon)`
   &:hover {

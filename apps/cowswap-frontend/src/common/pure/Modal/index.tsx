@@ -7,7 +7,7 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import { useSpringValue, useTransition } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { ContentWrapper, HeaderRow, HoverText, StyledDialogContent, StyledDialogOverlay } from './styled'
 
@@ -31,7 +31,7 @@ interface ModalProps {
  */
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Modal({
   isOpen,
   onDismiss,

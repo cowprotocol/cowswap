@@ -2,7 +2,7 @@ import { TokenLogoWrapper } from '@cowprotocol/tokens'
 import { ExternalLink, FiatAmount, Media, RowFixed, StyledLink, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
-import styled, { css, keyframes } from 'styled-components/macro'
+import styled, { css, keyframes } from 'styled-components'
 
 import { RateWrapper } from 'common/pure/RateInfo'
 
@@ -328,10 +328,13 @@ export const OldTransactionState = styled(ExternalLink)<{ pending: boolean; succ
 
 // override the href, pending and success props
 // override mouse actions via CSS when we dont want a clickable row
-export const TransactionState = styled(OldTransactionState).attrs(
-  (props): { href?: string; disableMouseActions?: boolean; pending?: boolean; success?: boolean } => props,
-)`
-  ${(props): string | false => !!props.disableMouseActions && `pointer-events: none; cursor: none;`}
+export const TransactionState = styled(OldTransactionState).attrs<{
+  href?: string
+  $disableMouseActions?: boolean
+  pending?: boolean
+  success?: boolean
+}>((props) => props)`
+  ${(props): string | false => !!props.$disableMouseActions && `pointer-events: none; cursor: none;`}
   width: 100%;
   border-radius: 0;
   display: flex;

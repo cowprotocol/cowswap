@@ -5,7 +5,7 @@ import { useAddSnackbar, useRemoveSnackbar, SnackbarItem } from '@cowprotocol/sn
 import { UI } from '@cowprotocol/ui'
 
 import { AlertTriangle } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const OfflineIcon = styled(AlertTriangle)`
   color: var(${UI.COLOR_DANGER});

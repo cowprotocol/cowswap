@@ -1,6 +1,6 @@
 import { Color, Media } from '@cowprotocol/ui'
 
-import styled, { createGlobalStyle, css } from 'styled-components/macro'
+import styled, { createGlobalStyle, css } from 'styled-components'
 
 export const ScrollBarStyle = css`
   --scrollbarWidth: 0.6rem;

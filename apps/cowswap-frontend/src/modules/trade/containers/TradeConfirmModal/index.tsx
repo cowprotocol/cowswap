@@ -5,7 +5,7 @@ import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { PermitModal } from 'common/containers/PermitModal'
 import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'

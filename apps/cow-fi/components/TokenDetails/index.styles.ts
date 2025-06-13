@@ -1,6 +1,7 @@
-import styled from 'styled-components/macro'
 import { Media, Color, UI } from '@cowprotocol/ui'
+
 import Link from 'next/link'
+import styled from 'styled-components'
 
 export const Wrapper = styled.div`
   display: grid;

@@ -5,7 +5,7 @@ import { Color, Media } from '@cowprotocol/ui'
 import SupportIcon from 'assets/img/support.png'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { useLocation, useNavigate, useParams } from 'react-router'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { Search } from '../../../explorer/components/common/Search'
 

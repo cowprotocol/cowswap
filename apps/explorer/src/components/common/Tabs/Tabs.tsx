@@ -4,8 +4,8 @@ import { Media, Color } from '@cowprotocol/ui'
 
 import TabContent from 'components/common/Tabs/TabContent'
 import TabItem from 'components/common/Tabs/TabItem'
-import { DefaultTheme } from 'styled-components/macro'
-import styled from 'styled-components/macro'
+import { DefaultTheme } from 'styled-components'
+import styled from 'styled-components'
 
 // Components
 export { default as TabIcon } from 'components/common/Tabs/TabIcon'

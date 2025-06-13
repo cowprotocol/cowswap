@@ -6,7 +6,7 @@ import { Color, Media } from '@cowprotocol/ui'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import LogoWrapper, { LOGO_MAP } from 'components/common/LogoWrapper'
 import { useNetworkId } from 'state/network'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { Network } from 'types'
 
 import { footerConfig } from './config'

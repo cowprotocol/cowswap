@@ -1,7 +1,7 @@
 import { ReactElement, useEffect, useRef } from 'react'
 
 import { Link } from 'react-router'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { headingToId } from './utils'
 

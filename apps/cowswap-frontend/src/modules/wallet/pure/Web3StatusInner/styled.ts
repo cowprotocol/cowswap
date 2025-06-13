@@ -1,11 +1,11 @@
 import { ButtonSecondary } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 
 export const Web3StatusGeneric = styled(ButtonSecondary)``
 
-export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
+export const Web3StatusConnect = styled(Web3StatusGeneric)`
   > svg {
     display: ${({ theme }) => (theme.isInjectedWidgetMode ? '' : 'none')};
   }

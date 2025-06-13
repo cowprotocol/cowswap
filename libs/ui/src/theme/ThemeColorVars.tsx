@@ -1,7 +1,7 @@
 import { getContrastText } from '@cowprotocol/ui-utils'
 
 import { darken, lighten, transparentize } from 'color2k'
-import { css } from 'styled-components/macro'
+import { css } from 'styled-components'
 
 import { UI } from '../enum'
 

@@ -1,6 +1,6 @@
 import { Color } from '@cowprotocol/ui'
 
-import styled, { keyframes } from 'styled-components/macro'
+import styled, { keyframes } from 'styled-components'
 
 const ShimmerKeyframe = keyframes`
   0% {

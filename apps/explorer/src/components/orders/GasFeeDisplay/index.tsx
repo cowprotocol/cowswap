@@ -2,7 +2,7 @@
 // import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
 
 import { ZERO_BIG_NUMBER } from 'const'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { formatSmartMaxPrecision, safeTokenName } from 'utils'
 
 import { Order } from 'api/operator'

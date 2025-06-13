@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { InfoTooltip } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { YieldFormState } from '../../hooks/useYieldFormState'
 

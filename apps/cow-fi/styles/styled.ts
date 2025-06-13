@@ -1,7 +1,7 @@
 import { Font, Color, Media } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 
 import { PAGE_MAX_WIDTH } from '@/components/Layout/const'
 
@@ -229,9 +229,7 @@ interface TopicCardProps {
   border?: string
 }
 
-export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
-  as: asProp || 'a',
-}))<TopicCardProps>`
+export const TopicCard = styled.a<TopicCardProps>`
   display: ${({ columns, fullWidth }) => (fullWidth ? 'block' : columns ? 'grid' : 'flex')};
   grid-template-columns: ${({ columns, fullWidth }) => (fullWidth ? '1fr' : columns || '1fr')};
   flex-flow: ${({ horizontal, fullWidth }) => (fullWidth ? 'column nowrap' : horizontal ? 'row wrap' : 'column wrap')};

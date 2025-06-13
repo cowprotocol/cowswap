@@ -1,7 +1,7 @@
 import { Color, Media } from '@cowprotocol/ui'
 
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const Wrapper = styled.div`
   display: flex;

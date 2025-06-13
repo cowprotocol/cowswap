@@ -2,7 +2,7 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { InlineBanner, LinkStyledButton, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { Field } from 'legacy/state/types'
 

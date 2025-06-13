@@ -1,6 +1,6 @@
 import { UI, Media } from '@cowprotocol/ui'
 
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 
 const BaseButton = css`
   display: flex;

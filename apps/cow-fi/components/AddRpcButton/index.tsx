@@ -1,12 +1,14 @@
-import { Confetti, Color } from '@cowprotocol/ui'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
-import styled from 'styled-components/macro'
-import { darken, transparentize } from 'polished'
-import { useConnectAndAddToWallet } from '../../lib/hooks/useConnectAndAddToWallet'
-import { useAccount } from 'wagmi'
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { Confetti, Color } from '@cowprotocol/ui'
+
+import { darken, transparentize } from 'polished'
+import styled from 'styled-components'
+import { useAccount } from 'wagmi'
 
 import { Link, LinkType } from '@/components/Link'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+
+import { useConnectAndAddToWallet } from '../../lib/hooks/useConnectAndAddToWallet'
 import { AddToWalletStateValues } from '../../types/addToWalletState'
 
 const Message = styled.p<{ state: AddToWalletStateValues }>`

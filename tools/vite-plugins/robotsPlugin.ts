@@ -29,11 +29,13 @@ export function robotsPlugin(_options: Options = DEFAULT_OPTIONS): Plugin {
       rootConfig = c
     },
     async buildStart() {
-      const localRobotsFileName = `.robots.${rootConfig.mode}.txt.local`
+      const mode = rootConfig.mode === 'production' ? 'prod' : rootConfig.mode
+
+      const localRobotsFileName = `.robots.${mode}.txt.local`
       const robotsDir = path.resolve(rootConfig.root, options.robotsDir)
       const robotsFileName = fs.existsSync(path.resolve(robotsDir, localRobotsFileName))
         ? localRobotsFileName
-        : `.robots.${rootConfig.mode}.txt`
+        : `.robots.${mode}.txt`
       const robotsPath = path.resolve(robotsDir, robotsFileName)
 
       const robotsOutputPath = path.resolve(options.publicPath, options.outputRobotsFileName)

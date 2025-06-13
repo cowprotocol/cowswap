@@ -5,7 +5,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink, InfoTooltip, TokenSymbol, UI } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { LP_PAGE_LINKS } from '../lpPageLinks'
 

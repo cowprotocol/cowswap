@@ -1,7 +1,7 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId, ChainInfo } from '@cowprotocol/cow-sdk'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { mapChainInfo } from '../../hooks/useChainsToSelect'
 

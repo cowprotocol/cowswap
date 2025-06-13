@@ -3,7 +3,7 @@ import { ReactNode, useState } from 'react'
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 import { Media } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { RouteOverviewTitle } from '../RouteOverviewTitle'
 

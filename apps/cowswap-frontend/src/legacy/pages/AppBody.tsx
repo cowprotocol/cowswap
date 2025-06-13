@@ -2,7 +2,7 @@ import React from 'react'
 
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { Z_INDEX } from 'theme'
 
 export const BodyWrapper = styled.main`

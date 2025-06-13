@@ -3,7 +3,7 @@ import { PropsWithChildren } from 'react'
 import { Media, UI } from '@cowprotocol/ui'
 
 import { lighten } from 'color2k'
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 import { WIDGET_MAX_WIDTH } from 'theme'
 
 import { WithClassName } from 'legacy/types'

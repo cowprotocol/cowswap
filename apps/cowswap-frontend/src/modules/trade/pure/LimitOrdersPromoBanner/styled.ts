@@ -1,7 +1,7 @@
 import { UI, Media } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
-import styled, { css, keyframes } from 'styled-components/macro'
+import styled, { css, keyframes } from 'styled-components'
 
 const springEasing = `linear(
   0, 0.002, 0.01 0.9%, 0.038 1.8%, 0.156, 0.312 5.8%, 0.789 11.1%, 1.015 14.2%,
@@ -23,10 +23,10 @@ const wipe = keyframes`
 const text = keyframes`
   0% {
     background-position: 100% center;
-  }    
+  }
   100% {
     background-position: -100% center;
-  }    
+  }
 `
 
 export const BannerWrapper = styled.div`

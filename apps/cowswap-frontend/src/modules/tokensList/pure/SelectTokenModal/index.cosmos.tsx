@@ -3,7 +3,7 @@ import { getRandomInt } from '@cowprotocol/common-utils'
 import { SupportedChainId, ChainInfo } from '@cowprotocol/cow-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { allTokensMock, favoriteTokensMock } from '../../mocks'
 

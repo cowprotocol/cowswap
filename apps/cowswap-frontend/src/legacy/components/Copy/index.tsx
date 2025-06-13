@@ -1,6 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { CopyIcon } from './CopyMod'
 
@@ -15,4 +15,3 @@ export const TransactionStatusText = styled.span<{ isCopied?: boolean }>`
 `
 
 export * from './CopyMod'
-export { default } from './CopyMod'

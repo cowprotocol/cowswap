@@ -31,8 +31,8 @@ export const TradeDetailsAccordion = ({
   open,
   onToggle,
   feeWrapper,
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }: TradeDetailsAccordionProps) => {
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -64,7 +64,7 @@ export const TradeDetailsAccordion = ({
   )
 
   return (
-    <Wrapper isOpen={open}>
+    <Wrapper>
       <Summary>
         {rateInfo}
         <SummaryClickable
@@ -72,14 +72,14 @@ export const TradeDetailsAccordion = ({
           onKeyDown={handleKeyDown}
           aria-expanded={open}
           tabIndex={0}
-          isOpen={open}
+          $isOpen={open}
         >
           {feeWrapper ? feeWrapper(defaultFeeContent) : defaultFeeContent}
 
           <ToggleArrow isOpen={open} />
         </SummaryClickable>
       </Summary>
-      <Details isVisible={open}>{children}</Details>
+      <Details $isVisible={open}>{children}</Details>
     </Wrapper>
   )
 }

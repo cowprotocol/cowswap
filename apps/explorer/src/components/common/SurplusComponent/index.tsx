@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { TokenAmount } from 'components/token/TokenAmount'
 import { MAX_SURPLUS_PERCENTAGE } from 'const'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { formatPercentage, Surplus } from 'utils'
 
 const IconWrapper = styled(FontAwesomeIcon)`

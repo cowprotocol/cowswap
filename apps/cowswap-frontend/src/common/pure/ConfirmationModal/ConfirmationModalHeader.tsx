@@ -4,7 +4,7 @@ import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 
 import { X as CloseIcon } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const Container = styled.header`
   display: flex;

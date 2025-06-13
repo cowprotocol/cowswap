@@ -45,8 +45,8 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
   if (alwaysExpanded) {
     return (
       <>
-        <StyledRateInfo label="Limit price" stylized={true} rateInfoParams={rateInfoParams} rightAlign />
-        <Box noMargin>{partnerFeeRow}</Box>
+        <StyledRateInfo label="Limit price" rateInfoParams={rateInfoParams} $rightAlign />
+        <Box $noMargin>{partnerFeeRow}</Box>
       </>
     )
   }

@@ -7,7 +7,7 @@ import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import Spinner from 'components/common/Spinner'
 import { Notification } from 'components/Notification'
 import { useAppData } from 'hooks/useAppData'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 type Props = {
   appData: string
@@ -16,7 +16,7 @@ type Props = {
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 const DecodeAppData = (props: Props): React.ReactNode => {
   const { appData, showExpanded = false, fullAppData } = props
   const {

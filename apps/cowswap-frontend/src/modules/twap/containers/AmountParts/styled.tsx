@@ -1,7 +1,7 @@
 import { FiatAmount, Media, QuestionTooltipIconWrapper, TokenAmount } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { TradeWidgetFieldBox, TradeWidgetFieldLabel } from 'modules/trade/pure/TradeWidgetField/styled'
 

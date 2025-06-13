@@ -3,7 +3,7 @@ import React from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import unknownTokenImg from 'assets/img/unknown-token.png'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { getImageUrl, RequireContextMock, safeTokenName } from 'utils'
 
 import { useTokenList } from '../../hooks/useTokenList'

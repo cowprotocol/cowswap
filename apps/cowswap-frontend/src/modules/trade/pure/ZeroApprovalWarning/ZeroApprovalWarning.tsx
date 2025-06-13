@@ -1,7 +1,7 @@
 import { Currency } from '@uniswap/sdk-core'
 
 import { Link as ReactRouterLink } from 'react-router'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { Nullish } from 'types'
 
 import { WarningCard } from 'common/pure/WarningCard'

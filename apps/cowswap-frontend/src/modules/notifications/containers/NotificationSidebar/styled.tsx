@@ -5,7 +5,7 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import { Settings } from 'react-feather'
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 interface IconProps {
   onClick?: () => void

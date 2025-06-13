@@ -1,5 +1,6 @@
 import React from 'react'
-import styled from 'styled-components/macro'
+
+import styled from 'styled-components'
 
 const HighlightedText = styled.span`
   background: yellow;

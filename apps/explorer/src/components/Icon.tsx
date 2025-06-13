@@ -1,7 +1,7 @@
 import { Color } from '@cowprotocol/ui'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const Icon = styled(FontAwesomeIcon)`
   background: ${Color.explorer_greyOpacity};

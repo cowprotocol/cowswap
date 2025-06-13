@@ -124,8 +124,8 @@ export function WarningTooltip({
       <styledEl.StyledQuestionHelper
         text={tooltipContent}
         placement="bottom"
-        bgColor={`var(${UI.COLOR_DANGER_BG})`}
-        color={`var(${UI.COLOR_DANGER_TEXT})`}
+        $bgColor={`var(${UI.COLOR_DANGER_BG})`}
+        $color={`var(${UI.COLOR_DANGER_TEXT})`}
         Icon={<SVG src={alertCircle} description="warning" width="14" height="14" />}
       />
       {children}

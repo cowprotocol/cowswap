@@ -3,7 +3,7 @@ import { UI } from '@cowprotocol/ui'
 
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button'
 import { Edit, FileText, Link2, MoreVertical, Repeat, Trash2 } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { AlternativeOrderModalContext } from '../OrdersReceiptModal/hooks'
 

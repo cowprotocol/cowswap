@@ -7,7 +7,7 @@ import questionImg from 'assets/img/question.svg'
 import Portal from 'components/Portal'
 import { usePopperOnClick, usePopperDefault, TOOLTIP_OFFSET } from 'hooks/usePopper'
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const CustomSvgIcon = styled(SVG)`
   width: 1.4rem;

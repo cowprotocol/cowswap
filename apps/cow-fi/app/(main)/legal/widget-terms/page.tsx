@@ -1,14 +1,13 @@
 'use client'
 
-import { Color } from '@cowprotocol/ui'
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { CowFiCategory } from 'src/common/analytics/types'
+import { Color } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { Link } from '@/components/Link'
-
 import { ArticleContent, ArticleMainTitle, BodyContent, Breadcrumbs, ContainerCard } from '@/styles/styled'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 const Wrapper = styled.div`
   display: flex;

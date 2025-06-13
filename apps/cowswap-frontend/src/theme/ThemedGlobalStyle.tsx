@@ -1,6 +1,6 @@
 import { Color, Media, ThemeColorVars, UI } from '@cowprotocol/ui'
 
-import { createGlobalStyle } from 'styled-components/macro'
+import { createGlobalStyle } from 'styled-components'
 
 export const ThemedGlobalStyle = createGlobalStyle`
   ${ThemeColorVars}

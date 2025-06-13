@@ -4,7 +4,7 @@ import { isFractionFalsy, percentToBps } from '@cowprotocol/common-utils'
 import { BannerOrientation, InfoTooltip, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { useDerivedTradeState } from 'modules/trade'
 import { useIsSmartSlippageApplied, useTradeSlippage } from 'modules/tradeSlippage'

@@ -1,4 +1,4 @@
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { UI } from '../../enum'
 
@@ -9,14 +9,16 @@ export const ReferenceElement = styled.div`
 `
 
 export const PopoverContainer = styled.div<PopoverContainerProps>`
-  visibility: ${(props) => (props.show ? 'visible' : 'hidden')};
-  opacity: ${(props) => (props.show ? 1 : 0)};
-  transition: visibility 150ms linear, opacity 150ms linear;
+  visibility: ${(props) => (props.$show ? 'visible' : 'hidden')};
+  opacity: ${(props) => (props.$show ? 1 : 0)};
+  transition:
+    visibility 150ms linear,
+    opacity 150ms linear;
 
-  background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
-  color: ${({ color }) => color || `var(${UI.COLOR_TEXT_PAPER})`};
+  background: ${({ $bgColor }) => $bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
+  color: ${({ $color }) => $color || `var(${UI.COLOR_TEXT_PAPER})`};
   box-shadow: var(${UI.BOX_SHADOW});
-  border: 1px solid ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKEST})`};
+  border: 1px solid ${({ $bgColor }) => $bgColor || `var(${UI.COLOR_PAPER_DARKEST})`};
   border-radius: 12px;
   padding: 6px 3px;
   z-index: 10;
@@ -28,7 +30,7 @@ export const PopoverContainer = styled.div<PopoverContainerProps>`
   }
 `
 
-export const Arrow = styled.div<Omit<PopoverContainerProps, 'color' | 'show'>>`
+export const Arrow = styled.div<Omit<PopoverContainerProps, '$color' | '$show'>>`
   width: 8px;
   height: 8px;
   z-index: 9998;
@@ -77,7 +79,7 @@ export const Arrow = styled.div<Omit<PopoverContainerProps, 'color' | 'show'>>`
   }
 
   ::before {
-    background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
-    border: 1px solid ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKEST})`};
+    background: ${({ $bgColor }) => $bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
+    border: 1px solid ${({ $bgColor }) => $bgColor || `var(${UI.COLOR_PAPER_DARKEST})`};
   }
 `

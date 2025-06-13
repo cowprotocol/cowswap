@@ -13,7 +13,7 @@ import {
   Coordinate,
   LogicalRange,
 } from 'lightweight-charts'
-import { useTheme } from 'styled-components/macro'
+import { useTheme } from 'styled-components'
 import { Color } from 'theme/styles/colours'
 
 import {

@@ -3,7 +3,7 @@ import { SupportedChainId, BridgeStatus } from '@cowprotocol/cow-sdk'
 import { UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { Order } from 'legacy/state/orders/actions'
 

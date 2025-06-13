@@ -1,6 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
-import { css } from 'styled-components/macro'
+import { css } from 'styled-components'
 
 export const loadingAnimationMixin = css`
   position: absolute;

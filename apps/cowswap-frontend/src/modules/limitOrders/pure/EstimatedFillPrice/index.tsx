@@ -3,7 +3,7 @@ import { UI } from '@cowprotocol/ui'
 import { FractionLike, Nullish } from '@cowprotocol/ui'
 import { Currency, Price, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { ExecutionPriceTooltip } from '../ExecutionPriceTooltip'
 

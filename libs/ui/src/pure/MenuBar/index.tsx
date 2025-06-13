@@ -203,7 +203,7 @@ const NavItem = ({
       LinkComponent={LinkComponent}
     />
   ) : href ? (
-    <RootNavItem mobileMode={mobileMode}>
+    <RootNavItem $mobileMode={mobileMode}>
       <LinkComponent href={href}>
         {item.label} {item.external && <span>&#8599;</span>}
       </LinkComponent>
@@ -305,9 +305,9 @@ const DropdownContentItem: React.FC<{
         <StyledDropdownContentItem
           as="div"
           onClick={handleToggleChildrenVisibility}
-          isOpen={isChildrenVisible}
+          $isOpen={isChildrenVisible}
           className={itemClassName}
-          hoverColor={item.hoverColor}
+          $hoverColor={item.hoverColor}
         >
           {renderItemContent()}
           <SVG src={IMG_ICON_CARRET_DOWN} />
@@ -316,7 +316,7 @@ const DropdownContentItem: React.FC<{
           <DropdownContentWrapper
             isThirdLevel
             content={{ title: undefined, items: item.children }}
-            mobileMode={true}
+            mobileMode
             closeDropdown={closeMenu}
             rootDomain={rootDomain}
             LinkComponent={LinkComponent}
@@ -333,11 +333,11 @@ const DropdownContentItem: React.FC<{
       onClick={(e: React.MouseEvent<HTMLLIElement>) => {
         handleLinkClick(e as unknown as React.MouseEvent<HTMLButtonElement | HTMLDivElement>)
       }}
-      isOpen={isChildrenVisible}
-      bgColor={item.bgColor}
-      color={item.color}
-      hoverBgColor={item.hoverBgColor}
-      hoverColor={item.hoverColor}
+      $isOpen={isChildrenVisible}
+      $bgColor={item.bgColor}
+      $color={item.color}
+      $hoverBgColor={item.hoverBgColor}
+      $hoverColor={item.hoverColor}
       className={itemClassName}
     >
       <LinkComponent href={href}>
@@ -356,7 +356,6 @@ const NavDaoTrigger: React.FC<{
   rootDomain: string
   LinkComponent: LinkComponentType
   // TODO: Break down this large function into smaller functions
-  // eslint-disable-next-line max-lines-per-function
 }> = ({ isOpen, setIsOpen, mobileMode, rootDomain, LinkComponent }) => {
   const triggerRef = useRef<HTMLDivElement>(null)
   const dropdownRef = useRef<HTMLUListElement>(null)
@@ -376,13 +375,7 @@ const NavDaoTrigger: React.FC<{
 
   return (
     <>
-      <NavDaoTriggerElement
-        ref={triggerRef}
-        isActive={isOpen}
-        mobileMode={mobileMode}
-        onClick={handleToggle}
-        isOpen={isOpen}
-      >
+      <NavDaoTriggerElement ref={triggerRef} $isActive={isOpen} onClick={handleToggle}>
         <SVG src={IMG_ICON_MENU_DOTS} />
       </NavDaoTriggerElement>
       {isOpen &&
@@ -402,7 +395,7 @@ const NavDaoTrigger: React.FC<{
             ))}
           </MobileDropdownContainer>
         ) : (
-          <DropdownContent isOpen={true} ref={dropdownRef} mobileMode={mobileMode}>
+          <DropdownContent $isOpen ref={dropdownRef} $mobileMode={mobileMode}>
             {DAO_NAV_ITEMS.map((item, index) => (
               <DropdownContentItem
                 key={index}
@@ -445,8 +438,8 @@ const GenericDropdown: React.FC<DropdownProps> = ({
   }, [interaction, onTrigger])
 
   return (
-    <DropdownMenu {...interactionProps} mobileMode={mobileMode}>
-      <RootNavItem as="button" aria-haspopup="true" aria-expanded={isOpen} isOpen={isOpen} mobileMode={mobileMode}>
+    <DropdownMenu {...interactionProps} $mobileMode={mobileMode}>
+      <RootNavItem as="button" aria-haspopup="true" aria-expanded={isOpen} $isOpen={isOpen} $mobileMode={mobileMode}>
         <span>{item.label}</span>
         {(item.badge || item.badgeImage) && (
           <Badge {...(item.badgeType && { type: item.badgeType })}>
@@ -511,14 +504,14 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
 
   return (
     <DropdownContent
-      isOpen={isVisible}
-      isThirdLevel={isThirdLevel}
-      mobileMode={mobileMode}
-      isNavItemDropdown={isNavItemDropdown}
+      $isOpen={isVisible}
+      $isThirdLevel={isThirdLevel}
+      $mobileMode={mobileMode}
+      $isNavItemDropdown={isNavItemDropdown}
     >
       {/* TODO: Break down this large function into smaller functions */}
       {/* TODO: Reduce function complexity by extracting logic */}
-      {/* eslint-disable-next-line max-lines-per-function, complexity */}
+      {/* eslint-disable-next-line complexity */}
       {content.items?.map((item: DropdownMenuItem, index: number) => {
         const hasChildren = !!item.children
         const Tag = hasChildren ? 'div' : item.isButton ? DropdownContentItemButton : undefined
@@ -559,18 +552,19 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
           </>
         )
         return (
+          // @ts-ignore
           <StyledDropdownContentItem
             key={index}
             as={Tag}
-            isOpen={visibleThirdLevel === index}
-            isThirdLevel={isThirdLevel}
+            $isOpen={visibleThirdLevel === index}
+            $isThirdLevel={isThirdLevel}
             target={!hasChildren && item.external ? '_blank' : undefined}
             rel={!hasChildren && item.external ? 'noopener noreferrer nofollow' : undefined}
-            bgColor={item.bgColor}
-            color={item.color}
-            hoverBgColor={item.hoverBgColor}
-            hoverColor={item.hoverColor}
-            mobileMode={mobileMode}
+            $bgColor={item.bgColor}
+            $color={item.color}
+            $hoverBgColor={item.hoverBgColor}
+            $hoverColor={item.hoverColor}
+            $mobileMode={mobileMode}
             onClick={(e: React.MouseEvent<HTMLElement>) => {
               if (hasChildren) {
                 handleToggleThirdLevelVisibility(e as React.MouseEvent<HTMLDivElement>, index)
@@ -631,7 +625,7 @@ interface GlobalSettingsDropdownProps {
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdownProps>((props, ref) => {
   const { mobileMode, settingsNavItems, isOpen, closeDropdown, rootDomain, LinkComponent } = props
 
@@ -644,7 +638,7 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
       {isOpen &&
         (mobileMode ? (
           <MobileDropdownContainer mobileMode={mobileMode} ref={ref as unknown as React.RefObject<HTMLDivElement>}>
-            <DropdownContent isOpen={true} alignRight={true} mobileMode={mobileMode}>
+            <DropdownContent $isOpen $alignRight $mobileMode={mobileMode}>
               {settingsNavItems.map((item, index) => {
                 const to = item.external
                   ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
@@ -670,7 +664,7 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
             </DropdownContent>
           </MobileDropdownContainer>
         ) : (
-          <DropdownContent isOpen={true} ref={ref} alignRight={true} mobileMode={mobileMode}>
+          <DropdownContent $isOpen ref={ref} $alignRight $mobileMode={mobileMode}>
             {settingsNavItems.map((item, index) => {
               const to = item.external
                 ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
@@ -828,23 +822,23 @@ export const MenuBar = (props: MenuBarProps) => {
     <MenuBarWrapper
       id={id}
       ref={menuRef}
-      bgColorLight={bgColorLight}
-      bgColorDark={bgColorDark}
-      bgDropdownColorLight={bgDropdownColorLight}
-      bgDropdownColorDark={bgDropdownColorDark}
-      colorLight={colorLight}
-      colorDark={colorDark}
-      defaultFillLight={defaultFillLight}
-      defaultFillDark={defaultFillDark}
-      activeBackgroundLight={activeBackgroundLight}
-      activeBackgroundDark={activeBackgroundDark}
-      activeFillLight={activeFillLight}
-      activeFillDark={activeFillDark}
-      hoverBackgroundLight={hoverBackgroundLight}
-      hoverBackgroundDark={hoverBackgroundDark}
-      padding={padding}
-      mobileMode={isMobile}
-      maxWidth={maxWidth}
+      $bgColorLight={bgColorLight}
+      $bgColorDark={bgColorDark}
+      $bgDropdownColorLight={bgDropdownColorLight}
+      $bgDropdownColorDark={bgDropdownColorDark}
+      $colorLight={colorLight}
+      $colorDark={colorDark}
+      $defaultFillLight={defaultFillLight}
+      $defaultFillDark={defaultFillDark}
+      $activeBackgroundLight={activeBackgroundLight}
+      $activeBackgroundDark={activeBackgroundDark}
+      $activeFillLight={activeFillLight}
+      $activeFillDark={activeFillDark}
+      $hoverBackgroundLight={hoverBackgroundLight}
+      $hoverBackgroundDark={hoverBackgroundDark}
+      $padding={padding}
+      $mobileMode={isMobile}
+      $maxWidth={maxWidth}
     >
       <MenuBarInner>
         <NavDaoTrigger
@@ -873,7 +867,7 @@ export const MenuBar = (props: MenuBarProps) => {
           </NavItems>
         )}
 
-        <RightAligned mobileMode={isMedium} flexFlowMobile="row wrap">
+        <RightAligned $mobileMode={isMedium} $flexFlowMobile="row wrap">
           {persistentAdditionalContent} {/* Always render this content */}
           {!isMedium && additionalContent} {/* Render this content only on desktop */}
           {!isMedium &&
@@ -907,7 +901,7 @@ export const MenuBar = (props: MenuBarProps) => {
             })}
           {showGlobalSettings && settingsNavItems && (
             <>
-              <GlobalSettingsButton ref={settingsButtonRef} mobileMode={isMedium} onClick={handleSettingsToggle}>
+              <GlobalSettingsButton ref={settingsButtonRef} $mobileMode={isMedium} onClick={handleSettingsToggle}>
                 <SVG src={IMG_ICON_SETTINGS_GLOBAL} />
               </GlobalSettingsButton>
               {isSettingsOpen && (
@@ -926,14 +920,14 @@ export const MenuBar = (props: MenuBarProps) => {
         </RightAligned>
 
         {isMobile && (
-          <MobileMenuTrigger ref={mobileMenuTriggerRef} mobileMode={isMobile} onClick={handleMobileMenuToggle}>
+          <MobileMenuTrigger ref={mobileMenuTriggerRef} onClick={handleMobileMenuToggle}>
             <SVG src={isMobileMenuOpen ? IMG_ICON_X : IMG_ICON_MENU_HAMBURGER} />
           </MobileMenuTrigger>
         )}
       </MenuBarInner>
 
       {isMobile && isMobileMenuOpen && (
-        <NavItems mobileMode={isMobile} ref={mobileMenuRef}>
+        <NavItems $mobileMode={isMobile} ref={mobileMenuRef}>
           <div>
             {navItems.map((item, index) => (
               <NavItem
@@ -950,7 +944,7 @@ export const MenuBar = (props: MenuBarProps) => {
                 LinkComponent={LinkComponent}
               />
             ))}
-            <RightAligned mobileMode={isMobile}>
+            <RightAligned $mobileMode={isMobile}>
               {additionalContent} {/* Add additional content here */}
               {additionalNavButtons &&
                 additionalNavButtons.map((item, index) => (

@@ -1,6 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
-import styled, { keyframes } from 'styled-components/macro'
+import styled, { keyframes } from 'styled-components'
 
 const spin = keyframes`
   from {

@@ -14,7 +14,7 @@ export interface ToggleArrowProps {
 export function ToggleArrow({ isOpen, title }: ToggleArrowProps): React.ReactElement {
   const SvgTitle = title ?? (isOpen ? 'Close' : 'Open')
   return (
-    <StyledToggleArrow isOpen={isOpen}>
+    <StyledToggleArrow $isOpen={isOpen}>
       <SVG src={CarretIcon} title={SvgTitle} />
     </StyledToggleArrow>
   )

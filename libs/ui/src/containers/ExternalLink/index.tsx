@@ -4,7 +4,7 @@ import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import { anonymizeLink } from '@cowprotocol/common-utils'
 
 import { ExternalLink as LinkIconFeather } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { UI } from '../../enum'
 

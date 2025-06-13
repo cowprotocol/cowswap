@@ -1,4 +1,4 @@
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const NetworkLogoWrapper = styled.div<{ size: number }>`
   display: inline-flex;

@@ -23,10 +23,10 @@ export function RegularLimitOrders() {
 
   return (
     <styledEl.PageWrapper
-      isUnlocked={isUnlocked}
-      secondaryOnLeft={ordersTableOnLeft}
-      maxWidth={LIMIT_ORDERS_MAX_WIDTH}
-      hideOrdersTable={hideOrdersTable}
+      $isUnlocked={isUnlocked}
+      $secondaryOnLeft={ordersTableOnLeft}
+      $maxWidth={LIMIT_ORDERS_MAX_WIDTH}
+      $hideOrdersTable={hideOrdersTable}
     >
       <styledEl.PrimaryWrapper>
         <LimitOrdersWidget />

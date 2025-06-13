@@ -2,7 +2,7 @@ import React from 'react'
 
 import CowLoadingSVG from 'assets/img/CowProtocol-logo.svg'
 import SVG from 'react-inlinesvg'
-import styled, { keyframes } from 'styled-components/macro'
+import styled, { keyframes } from 'styled-components'
 
 export const WrapperCenter = styled.div`
   display: flex;

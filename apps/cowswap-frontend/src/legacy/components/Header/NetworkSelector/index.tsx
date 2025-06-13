@@ -12,7 +12,7 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Trans } from '@lingui/macro'
 import { darken, transparentize } from 'color2k'
 import { AlertTriangle, ChevronDown } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { useModalIsOpen, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
@@ -75,7 +75,7 @@ const SelectorLabel = styled.div`
     display: none;
   }
 `
-const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
+const SelectorControls = styled.div<{ $isChainIdUnsupported: boolean }>`
   align-items: center;
   color: inherit;
   display: flex;
@@ -96,8 +96,8 @@ const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
     border: 2px solid ${({ theme }) => transparentize(theme.text, 0.7)};
   }
 
-  ${({ isChainIdUnsupported, theme }) =>
-    isChainIdUnsupported &&
+  ${({ $isChainIdUnsupported, theme }) =>
+    $isChainIdUnsupported &&
     `
       color: ${theme.danger}!important;
       background: ${transparentize(theme.danger, 0.85)}!important;
@@ -156,7 +156,7 @@ const NetworkAlertLabel = styled.div`
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function NetworkSelector() {
   const provider = useWalletProvider()
   const { chainId } = useWalletInfo()
@@ -189,7 +189,7 @@ export function NetworkSelector() {
 
   return (
     <SelectorWrapper ref={node} onClick={toggleModal}>
-      <SelectorControls isChainIdUnsupported={isChainIdUnsupported}>
+      <SelectorControls $isChainIdUnsupported={isChainIdUnsupported}>
         {!isChainIdUnsupported ? (
           <>
             <SelectorLogo src={logoUrl} />
