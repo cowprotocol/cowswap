@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { DEFAULT_SLIPPAGE_BPS, MINIMUM_ETH_FLOW_SLIPPAGE_BPS } from '@cowprotocol/common-const'
+import { DEFAULT_SLIPPAGE_BPS, MAX_SLIPPAGE_BPS, MINIMUM_ETH_FLOW_SLIPPAGE_BPS } from '@cowprotocol/common-const'
 import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
@@ -10,7 +10,7 @@ import { isEoaEthFlowAtom } from 'modules/trade'
 
 type SlippageBpsPerNetwork = PersistentStateByChain<number>
 
-type SlippageType = 'smart' | 'default' | 'user'
+export type SlippageType = 'smart' | 'default' | 'user'
 
 const normalTradeSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>(
   'swapSlippageAtom:v0',
@@ -22,7 +22,15 @@ const ethFlowSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>(
   mapSupportedNetworks(undefined),
 )
 
-export const smartTradeSlippageAtom = atom<number | null>(null)
+const smartTradeSlippageInnerAtom = atom<number | null>(null)
+
+export const setSmartTradeSlippageAtom = atom(null, (_, set, slippage: number | null) => {
+  const cappedSlippage = typeof slippage === 'number' ? Math.min(slippage, MAX_SLIPPAGE_BPS) : slippage
+
+  set(smartTradeSlippageInnerAtom, cappedSlippage)
+})
+
+export const smartTradeSlippageAtom = atom((get) => get(smartTradeSlippageInnerAtom))
 
 export const defaultSlippageAtom = atom((get) => {
   const { chainId } = get(walletInfoAtom)

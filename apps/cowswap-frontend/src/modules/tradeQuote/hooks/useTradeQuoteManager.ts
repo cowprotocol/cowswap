@@ -26,8 +26,6 @@ export interface TradeQuoteManager {
   onResponse(data: QuoteAndPost, bridgeQuote: BridgeQuoteResults | null, fetchParams: TradeQuoteFetchParams): void
 }
 
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
 export function useTradeQuoteManager(
   sellTokenAddress: SellTokenAddress | undefined,
   enableSmartSlippage: boolean,
