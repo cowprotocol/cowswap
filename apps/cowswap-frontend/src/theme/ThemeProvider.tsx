@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { isIframe, isInjectedWidget } from '@cowprotocol/common-utils'
-import { baseTheme } from '@cowprotocol/ui'
+import { baseTheme, GlobalCoWDAOStyles } from '@cowprotocol/ui'
 
 import { CoWSwapTheme } from 'styled-components'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
@@ -13,6 +13,7 @@ import { useInjectedWidgetPalette } from 'modules/injectedWidget'
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 
 import { mapWidgetTheme } from './mapWidgetTheme'
+import { ThemedGlobalStyle } from './ThemedGlobalStyle'
 
 // These values are static and don't change during runtime
 const isWidget = isInjectedWidget()
@@ -24,6 +25,8 @@ const widgetMode = {
   isInjectedWidgetMode: isWidget,
 }
 
+const GlobalStyles = GlobalCoWDAOStyles()
+
 export function getCowswapTheme(darkmode: boolean): CoWSwapTheme {
   return {
     ...baseTheme(darkmode ? 'dark' : 'light'),
@@ -31,9 +34,7 @@ export function getCowswapTheme(darkmode: boolean): CoWSwapTheme {
   }
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function ThemeProvider({ children }: { children?: React.ReactNode }) {
+export function ThemeProvider({ children }: { children?: ReactNode }): ReactNode {
   const darkMode = useIsDarkMode()
   const injectedWidgetTheme = useInjectedWidgetPalette()
 
@@ -49,8 +50,12 @@ export function ThemeProvider({ children }: { children?: React.ReactNode }) {
 
   return (
     <>
+      <GlobalStyles />
       <ThemeFromUrlUpdater />
-      <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
+      <StyledComponentsThemeProvider theme={themeObject}>
+        <ThemedGlobalStyle />
+        {children}
+      </StyledComponentsThemeProvider>
     </>
   )
 }

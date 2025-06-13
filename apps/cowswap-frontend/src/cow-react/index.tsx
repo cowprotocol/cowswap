@@ -16,7 +16,7 @@ import SvgCacheProvider from 'react-inlinesvg/provider'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
-import { ThemedGlobalStyle, ThemeProvider } from 'theme'
+import { ThemeProvider } from 'theme'
 
 import { cowSwapStore } from 'legacy/state'
 import { useAppSelector } from 'legacy/state/hooks'
@@ -40,9 +40,7 @@ if (window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function Main() {
+function Main(): ReactNode {
   return (
     <StrictMode>
       <SvgCacheProvider>
@@ -52,7 +50,6 @@ function Main() {
               <LanguageProvider>
                 <Web3ProviderInstance>
                   <ThemeProvider>
-                    <ThemedGlobalStyle />
                     <BlockNumberProvider>
                       <WithLDProvider>
                         <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
@@ -74,9 +71,7 @@ function Main() {
   )
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function Web3ProviderInstance({ children }: { children: ReactNode }) {
+function Web3ProviderInstance({ children }: { children: ReactNode }): ReactNode {
   const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
   const { standaloneMode } = useInjectedWidgetParams()
 
@@ -87,9 +82,7 @@ function Web3ProviderInstance({ children }: { children: ReactNode }) {
   )
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function Toasts() {
+function Toasts(): ReactNode {
   const { disableToastMessages = false } = useInjectedWidgetParams()
 
   return <SnackbarsWidget hidden={disableToastMessages} anchorElementId={APP_HEADER_ELEMENT_ID} />
