@@ -137,9 +137,17 @@ export default defineConfig(({ mode }) => {
 
     build: {
       assetsInlineLimit: 0, // prevent inlining assets
+      assetsDir: 'static', // All assets go to /static/ directory
       // sourcemap: true, // disabled for now, as this is causing vercel builds to fail
       rollupOptions: {
         output: {
+          // Remove hash for font files to enable preloading
+          assetFileNames: (assetInfo) => {
+            if (assetInfo.name && (/StudioFeixen/i.test(assetInfo.name) || /Inter-/i.test(assetInfo.name))) {
+              return 'static/[name][extname]' // Fonts without hash
+            }
+            return 'static/[name]-[hash][extname]' // Everything else with hash
+          },
           manualChunks(id) {
             if (id.includes('@1inch')) return '@1inch'
             if (id.includes('@safe-global') || id.includes('viem')) return '@safe-global'
