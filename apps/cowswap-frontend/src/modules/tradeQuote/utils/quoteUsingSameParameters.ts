@@ -24,12 +24,8 @@ export function quoteUsingSameParameters(
   const currentParams = currentQuote.quote?.quoteResults.tradeParameters
   if (!currentParams || !nextParams) return false
 
-  const isNativeToken = getIsNativeToken(chainId, nextParams.sellTokenAddress)
-  const wrappedToken = WRAPPED_NATIVE_CURRENCIES[chainId]
-  /**
-   * Due to CoW Protocol design, we do
-   */
-  const nextSellToken = isNativeToken ? wrappedToken.address.toLowerCase() : nextParams.sellTokenAddress.toLowerCase()
+  const nextSellToken = getErc20TokenAddress(chainId, nextParams.sellTokenAddress)
+  const currentSellToken = getErc20TokenAddress(chainId, currentParams.sellToken)
 
   if (currentQuote.bridgeQuote) {
     const bridgeTradeParams = currentQuote.bridgeQuote.tradeParameters
@@ -46,9 +42,9 @@ export function quoteUsingSameParameters(
       bridgeTradeParams.validFor === nextParams.validFor,
       bridgeTradeParams.receiver === nextParams.receiver,
       bridgeTradeParams.slippageBps === nextParams.slippageBps,
-      currentParams.sellToken.toLowerCase() === nextSellToken,
+      areAddressesEqual(currentSellToken, nextSellToken),
       bridgeTradeParams.sellTokenChainId === nextParams.sellTokenChainId,
-      bridgeTradeParams.buyTokenAddress.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(),
+      areAddressesEqual(bridgeTradeParams.buyTokenAddress, nextParams.buyTokenAddress),
     ]
 
     return cases.every(Boolean)
@@ -61,11 +57,26 @@ export function quoteUsingSameParameters(
     currentParams.amount === nextParams.amount.toString(),
     currentParams.validFor === nextParams.validFor,
     currentParams.receiver === nextParams.receiver,
-    currentParams.sellToken.toLowerCase() === nextSellToken,
-    currentParams.buyToken.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(),
+    areAddressesEqual(currentSellToken, nextSellToken),
+    areAddressesEqual(currentParams.buyToken, nextParams.buyTokenAddress),
   ]
 
   return cases.every(Boolean)
+}
+
+// todo move to common-utils
+/**
+ * Returns the ERC20 token address for a given token address (if it's native, returns the wrapped token address)
+*/
+function getErc20TokenAddress(chainId: SupportedChainId, tokenAddress: string): string {
+  const isNativeToken = getIsNativeToken(chainId, tokenAddress)
+  const wrappedToken = WRAPPED_NATIVE_CURRENCIES[chainId]
+  return isNativeToken ? wrappedToken.address : tokenAddress
+}
+
+// todo move to common-utils
+function areAddressesEqual(a: string, b: string): boolean {
+  return a.toLowerCase() === b.toLowerCase()
 }
 
 /**

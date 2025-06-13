@@ -44,13 +44,12 @@ export const slippageValueAndTypeAtom = atom<{ type: SlippageType; value: number
   const currentSlippage = get(currentSlippageAtom)
   const defaultSlippage = get(defaultSlippageAtom)
   const smartSlippage = get(smartTradeSlippageAtom)
-  const isEoaEthFlow = get(isEoaEthFlowAtom)
 
   if (typeof currentSlippage === 'number') {
     return { type: 'user', value: currentSlippage }
   }
 
-  if (!isEoaEthFlow && smartSlippage && smartSlippage !== defaultSlippage) {
+  if (smartSlippage && smartSlippage !== defaultSlippage) {
     return { type: 'smart', value: smartSlippage }
   }
 

@@ -187,7 +187,7 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
 
   const tooLow = swapSlippage.lessThan(new Percent(isEoaEthFlow ? minEthFlowSlippageBps : LOW_SLIPPAGE_BPS, 10_000))
   const tooHigh = swapSlippage.greaterThan(
-    new Percent(isEoaEthFlow ? HIGH_ETH_FLOW_SLIPPAGE_BPS : smartSlippage || HIGH_SLIPPAGE_BPS, 10_000),
+    new Percent(isEoaEthFlow ? smartSlippage || HIGH_ETH_FLOW_SLIPPAGE_BPS : smartSlippage || HIGH_SLIPPAGE_BPS, 10_000),
   )
 
   const minDeadline = isEoaEthFlow

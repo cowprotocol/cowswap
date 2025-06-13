@@ -48,8 +48,8 @@ export function RowSlippage({
       isSmartSlippageApplied,
       isSmartSlippageLoading: isTradePriceUpdating,
       smartSlippage:
-        smartSlippage && !isEoaEthFlow ? `${formatPercent(new Percent(smartSlippage, 10_000))}%` : undefined,
-      setAutoSlippage: smartSlippage && !isEoaEthFlow ? () => setSlippage(null) : undefined,
+        smartSlippage ? `${formatPercent(new Percent(smartSlippage, 10_000))}%` : undefined,
+      setAutoSlippage: smartSlippage ? () => setSlippage(null) : undefined,
     }),
     [
       chainId,
