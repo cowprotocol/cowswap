@@ -1,7 +1,6 @@
 import { Media, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
-import { FlattenSimpleInterpolation } from 'styled-components'
 import styled, { css, keyframes } from 'styled-components'
 
 import { ARROW_ICON_SIZE } from 'common/pure/ToggleArrow/styled'
@@ -61,7 +60,7 @@ const stopCircleBase = css`
   }
 `
 
-const StopStatusStyles: Record<SwapAndBridgeStatus, FlattenSimpleInterpolation> = {
+const StopStatusStyles: Record<SwapAndBridgeStatus, ReturnType<typeof css>> = {
   [SwapAndBridgeStatus.DONE]: css`
     background-color: var(${UI.COLOR_SUCCESS_BG});
     color: var(${UI.COLOR_SUCCESS});

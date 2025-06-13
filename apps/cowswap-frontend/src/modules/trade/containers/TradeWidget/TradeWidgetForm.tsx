@@ -220,7 +220,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 </div>
                 {!isWrapOrUnwrap && middleContent}
 
-                <styledEl.CurrencySeparatorBox compactView={compactView}>
+                <styledEl.CurrencySeparatorBox $compactView={compactView}>
                   <CurrencyArrowSeparator
                     isCollapsed={compactView}
                     hasSeparatorLine={!compactView}

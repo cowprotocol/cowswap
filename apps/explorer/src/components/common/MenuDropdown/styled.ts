@@ -2,7 +2,7 @@ import { Media, Color } from '@cowprotocol/ui'
 
 import InternalExternalMenuLink from 'components/common/MenuDropdown/InternalExternalLink'
 import Icon from 'components/Icon'
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
+import styled, { css } from 'styled-components'
 import { ResetButtonCSS } from 'theme/styles'
 
 export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
@@ -30,7 +30,7 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   }
   ${Media.upToSmall()} {
     grid-template-columns: unset;
-    ${({ isMobileMenuOpen }): FlattenSimpleInterpolation | false =>
+    ${({ isMobileMenuOpen }): ReturnType<typeof css> | false =>
       isMobileMenuOpen &&
       css`
         top: 0;

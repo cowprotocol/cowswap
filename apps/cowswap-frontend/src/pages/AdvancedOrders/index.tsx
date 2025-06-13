@@ -32,7 +32,7 @@ const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function AdvancedOrdersPage() {
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
@@ -55,10 +55,10 @@ export default function AdvancedOrdersPage() {
       <FillAdvancedOrdersDerivedStateUpdater slippage={twapSlippage} />
       <SetupAdvancedOrderAmountsFromUrlUpdater />
       <styledEl.PageWrapper
-        isUnlocked={isUnlocked}
-        maxWidth={ADVANCED_ORDERS_MAX_WIDTH}
-        secondaryOnLeft={ordersTableOnLeft}
-        hideOrdersTable={hideOrdersTable}
+        $isUnlocked={isUnlocked}
+        $maxWidth={ADVANCED_ORDERS_MAX_WIDTH}
+        $secondaryOnLeft={ordersTableOnLeft}
+        $hideOrdersTable={hideOrdersTable}
       >
         <styledEl.PrimaryWrapper>
           {isFallbackHandlerRequired && pendingOrders.length > 0 && <SetupFallbackHandlerWarning />}

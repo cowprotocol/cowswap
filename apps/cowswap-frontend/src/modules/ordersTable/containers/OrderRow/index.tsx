@@ -216,11 +216,11 @@ export function OrderRow({
 
       {/* Order sell/buy tokens */}
       <styledEl.CurrencyCell>
-        <styledEl.CurrencyLogoPair clickable onClick={onClick}>
+        <styledEl.CurrencyLogoPair $clickable onClick={onClick}>
           <TokenLogo token={order.inputToken} size={28} />
           <TokenLogo token={buyAmount.currency} size={28} />
         </styledEl.CurrencyLogoPair>
-        <styledEl.CurrencyAmountWrapper clickable onClick={onClick}>
+        <styledEl.CurrencyAmountWrapper $clickable onClick={onClick}>
           <CurrencyAmountItem amount={getSellAmountWithFee(order)} />
           <CurrencyAmountItem amount={buyAmount} />
         </styledEl.CurrencyAmountWrapper>
@@ -229,13 +229,13 @@ export function OrderRow({
       {/* Limit price */}
       <styledEl.PriceElement>
         <RateInfo
-          prependSymbol={false}
+          prependSymbol
           isInvertedState={isInvertedState}
-          noLabel={true}
+          noLabel
           doNotUseSmartQuote
           isInverted={isInverted}
           rateInfoParams={rateInfoParams}
-          opacitySymbol={true}
+          opacitySymbol
         />
       </styledEl.PriceElement>
 
@@ -278,7 +278,7 @@ export function OrderRow({
           </styledEl.PriceElement>
 
           {/* Expires and Created for open orders */}
-          <styledEl.CellElement doubleRow>
+          <styledEl.CellElement $doubleRow>
             <b
               title={
                 expirationTime && !shouldShowDashForExpiration(order)
@@ -329,7 +329,7 @@ export function OrderRow({
       )}
 
       {/* Filled % */}
-      <styledEl.CellElement doubleRow clickable onClick={onClick}>
+      <styledEl.CellElement $doubleRow $clickable onClick={onClick}>
         <styledEl.FilledPercentageContainer>
           <styledEl.ProgressBar value={filledPercentDisplay}></styledEl.ProgressBar>
           <b>

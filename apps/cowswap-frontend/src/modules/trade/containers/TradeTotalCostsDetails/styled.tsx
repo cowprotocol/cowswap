@@ -4,11 +4,11 @@ import styled from 'styled-components'
 
 import { RateInfo, RateWrapper } from 'common/pure/RateInfo'
 
-export const Box = styled.div<{ noMargin: boolean }>`
+export const Box = styled.div<{ $noMargin: boolean }>`
   display: flex;
   flex-flow: column wrap;
   width: 100%;
-  margin: ${({ noMargin }) => (noMargin ? '0' : '6px 8px')};
+  margin: ${({ $noMargin }) => ($noMargin ? '0' : '6px 8px')};
   gap: 7px;
 `
 
@@ -44,12 +44,12 @@ export const Row = styled.div`
   }
 `
 
-export const StyledRateInfo = styled(RateInfo)<{ rightAlign?: boolean }>`
+export const StyledRateInfo = styled(RateInfo)<{ $rightAlign?: boolean }>`
   font-size: 13px;
   font-weight: 500;
 
-  ${({ rightAlign }) =>
-    rightAlign &&
+  ${({ $rightAlign }) =>
+    $rightAlign &&
     `
     ${RateWrapper} {
       text-align: right;

@@ -7,14 +7,13 @@ import { UI } from '../../enum'
 import { FractionLike, Nullish } from '../../types'
 import { TokenNameAndSymbol, TokenSymbol } from '../TokenSymbol'
 
-export const Wrapper = styled.span<{ lowVolumeWarning?: boolean; clickable?: boolean }>`
-  background: ${({ lowVolumeWarning }) => (lowVolumeWarning ? `var(${UI.COLOR_ALERT_BG})` : '')};
-  color: ${({ lowVolumeWarning }) => (lowVolumeWarning ? `var(${UI.COLOR_ALERT_TEXT})` : 'inherit')};
+const Wrapper = styled.span<{ $clickable?: boolean }>`
+  color: inherit;
   border-radius: 2px;
   word-break: break-word;
 
-  ${({ clickable }) =>
-    clickable &&
+  ${({ $clickable }) =>
+    $clickable &&
     `
     cursor: pointer;
     transition:
@@ -32,9 +31,9 @@ export const Wrapper = styled.span<{ lowVolumeWarning?: boolean; clickable?: boo
   `}
 `
 
-export const SymbolElement = styled.span<{ opacitySymbol?: boolean }>`
+export const SymbolElement = styled.span<{ $opacitySymbol?: boolean }>`
   color: inherit;
-  opacity: ${({ opacitySymbol }) => (opacitySymbol ? 0.7 : 1)};
+  opacity: ${({ $opacitySymbol }) => ($opacitySymbol ? 0.7 : 1)};
 `
 
 export interface TokenAmountProps {
@@ -76,9 +75,9 @@ export function TokenAmount({
 
   const roundedAmount = round ? FractionUtils.round(amount) : amount
   return (
-    <Wrapper title={title} className={className} clickable={clickable}>
+    <Wrapper title={title} className={className} $clickable={clickable}>
       {formatTokenAmount(roundedAmount) || defaultValue}
-      <SymbolElement opacitySymbol={opacitySymbol}>{tokenSymbolElement}</SymbolElement>
+      <SymbolElement $opacitySymbol={opacitySymbol}>{tokenSymbolElement}</SymbolElement>
     </Wrapper>
   )
 }

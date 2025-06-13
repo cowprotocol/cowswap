@@ -32,10 +32,10 @@ const List = styled.div`
   gap: 10px;
 `
 
-const Host = styled.div<{ hidden$: boolean; top$: number }>`
+const Host = styled.div<{ $hidden: boolean; $top: number }>`
   position: fixed;
-  top: ${({ top$ }) => top$ + 'px'};
-  right: ${({ hidden$ }) => (hidden$ ? '-9999px' : '20px')};
+  top: ${({ $top }) => $top + 'px'};
+  right: ${({ $hidden }) => ($hidden ? '-9999px' : '20px')};
   z-index: 6;
   min-width: 300px;
   max-width: 800px;
@@ -43,7 +43,7 @@ const Host = styled.div<{ hidden$: boolean; top$: number }>`
   ${Media.upToSmall()} {
     width: 90%;
     left: 0;
-    right: ${({ hidden$ }) => (hidden$ ? '-9999px' : '0')};
+    right: ${({ $hidden }) => ($hidden ? '-9999px' : '0')};
     margin: auto;
 
     ${Overlay} {
@@ -115,7 +115,7 @@ export function SnackbarsWidget({ hidden, anchorElementId }: SnackbarsWidgetProp
   }, [isOverlayDisplayed])
 
   return (
-    <Host hidden$={!!hidden} top$={widgetTop}>
+    <Host $hidden={!!hidden} $top={widgetTop}>
       <List>
         {snackbars.map((snackbar) => {
           const icon = snackbar.icon

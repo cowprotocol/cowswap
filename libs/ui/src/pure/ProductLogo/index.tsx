@@ -255,20 +255,20 @@ export interface LogoProps {
 }
 
 export const ProductLogoWrapper = styled.span<{
-  color?: string
-  hoverColor?: string
-  height?: number | string
-  heightMobile?: number | string
-  preserveOriginalColors?: boolean
+  $color?: string
+  $hoverColor?: string
+  $height?: number | string
+  $heightMobile?: number | string
+  $preserveOriginalColors?: boolean
 }>`
-  --height: ${({ height }) => (typeof height === 'number' ? `${height}px` : height || '28px')};
-  --heightMobile: ${({ heightMobile }) =>
-    typeof heightMobile === 'number' ? `${heightMobile}px` : heightMobile || 'var(--height)'};
-  ${({ preserveOriginalColors, color, hoverColor }) =>
-    !preserveOriginalColors &&
+  --height: ${({ $height }) => (typeof $height === 'number' ? `${$height}px` : $height || '28px')};
+  --heightMobile: ${({ $heightMobile }) =>
+    typeof $heightMobile === 'number' ? `${$heightMobile}px` : $heightMobile || 'var(--height)'};
+  ${({ $preserveOriginalColors, $color, $hoverColor }) =>
+    !$preserveOriginalColors &&
     `
-    --color: ${color || 'inherit'};
-    --hoverColor: ${hoverColor || 'inherit'};
+    --color: ${$color || 'inherit'};
+    --hoverColor: ${$hoverColor || 'inherit'};
     color: var(--color);
   `}
 
@@ -289,8 +289,8 @@ export const ProductLogoWrapper = styled.span<{
   > svg {
     height: 100%;
     width: auto;
-    ${({ preserveOriginalColors }) =>
-      !preserveOriginalColors &&
+    ${({ $preserveOriginalColors }) =>
+      !$preserveOriginalColors &&
       `
       color: inherit;
       fill: currentColor;
@@ -299,11 +299,11 @@ export const ProductLogoWrapper = styled.span<{
 
   > a > svg path,
   > svg path {
-    ${({ preserveOriginalColors }) => !preserveOriginalColors && `fill: currentColor;`}
+    ${({ $preserveOriginalColors }) => !$preserveOriginalColors && `fill: currentColor;`}
   }
 
   &:hover {
-    ${({ preserveOriginalColors }) => !preserveOriginalColors && `color: var(--hoverColor);`}
+    ${({ $preserveOriginalColors }) => !$preserveOriginalColors && `color: var(--hoverColor);`}
   }
 `
 
@@ -347,11 +347,11 @@ export const ProductLogo = ({
   return (
     <ProductLogoWrapper
       className={className}
-      color={initialColor}
-      hoverColor={overrideHoverColor || 'inherit'}
-      height={logoHeight}
-      heightMobile={logoHeightMobile}
-      preserveOriginalColors={logoInfo.preserveOriginalColors}
+      $color={initialColor}
+      $hoverColor={overrideHoverColor || 'inherit'}
+      $height={logoHeight}
+      $heightMobile={logoHeightMobile}
+      $preserveOriginalColors={logoInfo.preserveOriginalColors}
     >
       {href ? (
         <a

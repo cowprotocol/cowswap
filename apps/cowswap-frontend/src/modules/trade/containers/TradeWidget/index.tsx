@@ -15,7 +15,7 @@ export function TradeWidget(props: TradeWidgetProps) {
   const { open: isTokenSelectOpen } = useSelectTokenWidgetState()
 
   return (
-    <styledEl.Container id={id} isTokenSelectOpen={isTokenSelectOpen}>
+    <styledEl.Container id={id} $isTokenSelectOpen={isTokenSelectOpen}>
       <TradeWidgetUpdaters
         disableQuotePolling={disableQuotePolling}
         disableNativeSelling={disableNativeSelling}

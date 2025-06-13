@@ -34,11 +34,11 @@ const OptionCardLeft = styled.div`
 
 // TODO: Replace any with proper type definitions
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const OptionCardClickable = styled(OptionCard as any)<{ clickable?: boolean; isDeprecated?: boolean }>`
+export const OptionCardClickable = styled(OptionCard as any)<{ $clickable?: boolean; $isDeprecated?: boolean }>`
   margin-top: 0;
-  opacity: ${({ isDeprecated }) => (isDeprecated ? '0.5' : '1')};
-  background-color: ${({ active }) => (active ? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PAPER_DARKER})`)};
-  color: ${({ active }) => (active ? `var(${UI.COLOR_BUTTON_TEXT})` : 'inherit')};
+  opacity: ${({ $isDeprecated }) => ($isDeprecated ? '0.5' : '1')};
+  background-color: ${({ $active }) => ($active ? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PAPER_DARKER})`)};
+  color: ${({ $active }) => ($active ? `var(${UI.COLOR_BUTTON_TEXT})` : 'inherit')};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -48,8 +48,8 @@ export const OptionCardClickable = styled(OptionCard as any)<{ clickable?: boole
   border: 0;
 
   &:hover {
-    cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
-    background-color: ${({ clickable }) => clickable && `var(${UI.COLOR_PAPER_DARKEST})`};
+    cursor: ${({ $clickable }) => ($clickable ? 'pointer' : '')};
+    background-color: ${({ $clickable }) => $clickable && `var(${UI.COLOR_PAPER_DARKEST})`};
   }
 `
 
@@ -137,10 +137,10 @@ export function ConnectWalletOption({
     <OptionCardClickable
       id={id}
       onClick={clickable ? onClick : null}
-      clickable={clickable && !isActive}
-      active={isActive}
+      $clickable={clickable && !isActive}
+      $active={isActive}
       data-testid="wallet-modal-option"
-      isDeprecated={isDeprecated}
+      $isDeprecated={isDeprecated}
     >
       <OptionCardLeft>
         <IconWrapper size={size}>

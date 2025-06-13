@@ -257,8 +257,8 @@ const appendUtmParams = (
   rootDomain: string,
   isExternal: boolean,
   label: string | undefined,
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 ) => {
   const finalRootDomain = rootDomain || (typeof window !== 'undefined' ? window.location.host : '')
 
@@ -296,8 +296,8 @@ export const Footer = ({
   hasTouchFooter = false,
   maxWidth,
   host,
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }: FooterProps) => {
   const [isFooterExpanded, setIsFooterExpanded] = useState(expanded)
   const footerRef = useRef<HTMLDivElement>(null)
@@ -318,7 +318,7 @@ export const Footer = ({
   }
 
   return (
-    <FooterContainer ref={footerRef} expanded={isFooterExpanded} hasTouchFooter={hasTouchFooter}>
+    <FooterContainer ref={footerRef} $expanded={isFooterExpanded} $hasTouchFooter={hasTouchFooter}>
       {isFooterExpanded && (
         <>
           <FooterContent maxWidth={maxWidth}>
@@ -387,7 +387,7 @@ export const Footer = ({
 
         <BottomRight>
           {additionalFooterContent && additionalFooterContent}
-          <ToggleFooterButton onClick={toggleFooter} expanded={isFooterExpanded}>
+          <ToggleFooterButton onClick={toggleFooter} $expanded={isFooterExpanded}>
             <SVG src={IMG_ICON_ARROW_RIGHT_CIRCULAR} title="Toggle Footer" />
           </ToggleFooterButton>
         </BottomRight>

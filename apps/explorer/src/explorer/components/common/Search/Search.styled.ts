@@ -2,11 +2,11 @@ import { Color, Media } from '@cowprotocol/ui'
 
 import * as CSS from 'csstype'
 import SVG from 'react-inlinesvg'
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
+import styled, { css } from 'styled-components'
 
 export const Wrapper = styled.form`
   display: flex;
-  ${({ className }): FlattenSimpleInterpolation =>
+  ${({ className }): ReturnType<typeof css> =>
     className === 'home'
       ? css`
           width: 100%;

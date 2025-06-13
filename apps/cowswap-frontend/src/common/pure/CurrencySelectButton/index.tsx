@@ -32,7 +32,7 @@ export interface CurrencySelectButtonProps {
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
 export function CurrencySelectButton(props: CurrencySelectButtonProps) {
   const {
     currency,
@@ -58,13 +58,13 @@ export function CurrencySelectButton(props: CurrencySelectButtonProps) {
   return (
     <styledEl.CurrencySelectWrapper
       className="open-currency-select-button"
-      readonlyMode={readonlyMode}
+      $readonlyMode={readonlyMode}
       disabled={readonlyMode}
       onClick={onClick}
-      isLoading={loading}
+      $isLoading={loading}
       $noCurrencySelected={$noCurrencySelected}
-      displayTokenName={displayTokenName}
-      displayChainName={displayChainName}
+      $displayTokenName={displayTokenName}
+      $displayChainName={displayChainName}
       role="button"
       aria-label={currency ? `Selected token: ${currency.symbol}` : 'Select a token'}
       tabIndex={readonlyMode ? -1 : 0}

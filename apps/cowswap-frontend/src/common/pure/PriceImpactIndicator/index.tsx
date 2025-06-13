@@ -29,8 +29,8 @@ function getPriceImpactColor(theme: DefaultTheme, priceImpact: Percent): string 
   return theme.danger
 }
 
-const PriceImpactWrapper = styled.span<{ priceImpact$: Percent }>`
-  color: ${({ theme, priceImpact$ }) => getPriceImpactColor(theme, priceImpact$)};
+const PriceImpactWrapper = styled.span<{ $priceImpact: Percent }>`
+  color: ${({ theme, $priceImpact }) => getPriceImpactColor(theme, $priceImpact)};
 `
 
 // TODO: Add proper return type annotation
@@ -41,7 +41,7 @@ export function PriceImpactIndicator(props: PriceImpactIndicatorProps) {
   return (
     <span>
       {priceImpact ? (
-        <PriceImpactWrapper priceImpact$={priceImpact}>
+        <PriceImpactWrapper $priceImpact={priceImpact}>
           {' '}
           <HoverTooltip wrapInContainer content={t`Price impact due to current liquidity levels`}>
             ({formatPercent(priceImpact.multiply(-1))}%)

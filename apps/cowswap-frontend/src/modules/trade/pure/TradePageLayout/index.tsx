@@ -6,34 +6,34 @@ import { WIDGET_MAX_WIDTH } from 'theme'
 const DEFAULT_MAX_WIDTH = '1500px'
 
 export const PageWrapper = styled.div<{
-  isUnlocked: boolean
-  secondaryOnLeft?: boolean
-  maxWidth?: string
-  hideOrdersTable?: boolean
+  $isUnlocked: boolean
+  $secondaryOnLeft?: boolean
+  $maxWidth?: string
+  $hideOrdersTable?: boolean
 }>`
   width: 100%;
   display: grid;
-  max-width: ${({ maxWidth = DEFAULT_MAX_WIDTH }) => maxWidth};
+  max-width: ${({ $maxWidth = DEFAULT_MAX_WIDTH }) => $maxWidth};
   margin: 0 auto;
   grid-template-columns: 1fr;
   grid-template-rows: auto;
-  grid-template-areas: ${({ hideOrdersTable }) => (hideOrdersTable ? '"primary"' : '"primary" "secondary"')};
+  grid-template-areas: ${({ $hideOrdersTable }) => ($hideOrdersTable ? '"primary"' : '"primary" "secondary"')};
   gap: 20px;
 
   ${Media.LargeAndUp()} {
-    grid-template-columns: ${({ isUnlocked, hideOrdersTable, secondaryOnLeft }) =>
-      isUnlocked && !hideOrdersTable
-        ? secondaryOnLeft
+    grid-template-columns: ${({ $isUnlocked, $hideOrdersTable, $secondaryOnLeft }) =>
+      $isUnlocked && !$hideOrdersTable
+        ? $secondaryOnLeft
           ? '1fr minmax(auto, ' + WIDGET_MAX_WIDTH.swap.replace('px', '') + 'px)'
           : 'minmax(auto, ' + WIDGET_MAX_WIDTH.swap.replace('px', '') + 'px) 1fr'
         : '1fr'};
     grid-template-rows: 1fr;
-    grid-template-areas: ${({ secondaryOnLeft, hideOrdersTable }) =>
-      hideOrdersTable ? '"primary"' : secondaryOnLeft ? '"secondary primary"' : '"primary secondary"'};
+    grid-template-areas: ${({ $secondaryOnLeft, $hideOrdersTable }) =>
+      $hideOrdersTable ? '"primary"' : $secondaryOnLeft ? '"secondary primary"' : '"primary secondary"'};
   }
 
   > div:last-child {
-    display: ${({ isUnlocked }) => (!isUnlocked ? 'none' : '')};
+    display: ${({ $isUnlocked }) => (!$isUnlocked ? 'none' : '')};
   }
 `
 

@@ -56,18 +56,18 @@ export const StyledTokenSymbol = styled(TokenSymbol)<{ displayTokenName: boolean
 `
 
 export const CurrencySelectWrapper = styled.button<{
-  isLoading: boolean
+  $isLoading: boolean
   $noCurrencySelected: boolean
-  readonlyMode: boolean
-  displayTokenName: boolean
-  displayChainName: boolean
+  $readonlyMode: boolean
+  $displayTokenName: boolean
+  $displayChainName: boolean
 }>`
   --min-height: 35px;
   --min-width: 190px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  cursor: ${({ readonlyMode }) => (readonlyMode ? '' : 'pointer')};
+  cursor: ${({ $readonlyMode }) => ($readonlyMode ? '' : 'pointer')};
   gap: 6px;
   border: 0;
   outline: none;
@@ -76,14 +76,14 @@ export const CurrencySelectWrapper = styled.button<{
   color: ${({ $noCurrencySelected }) =>
     $noCurrencySelected ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_TEXT_PAPER})`};
   box-shadow: var(${UI.BOX_SHADOW_2});
-  opacity: ${({ isLoading }) => (isLoading ? 0.6 : 1)};
+  opacity: ${({ $isLoading }) => ($isLoading ? 0.6 : 1)};
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
-  ${({ readonlyMode }) => (readonlyMode ? 'padding-right: 10px;' : '')}
+  ${({ $readonlyMode }) => ($readonlyMode ? 'padding-right: 10px;' : '')}
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
   max-width: var(--max-width);
   min-height: var(--min-height);
-  padding: ${({ displayTokenName, displayChainName }) =>
-    displayTokenName || displayChainName ? '5px 10px 5px 5px' : '5px'};
+  padding: ${({ $displayTokenName, $displayChainName }) =>
+    $displayTokenName || $displayChainName ? '5px 10px 5px 5px' : '5px'};
 
   ${StyledTokenSymbol} {
     color: ${({ $noCurrencySelected }) =>
@@ -91,8 +91,8 @@ export const CurrencySelectWrapper = styled.button<{
   }
 
   &:hover {
-    background: ${({ readonlyMode, $noCurrencySelected }) =>
-      readonlyMode ? '' : $noCurrencySelected ? `var(${UI.COLOR_PRIMARY_LIGHTER});` : `var(${UI.COLOR_PRIMARY});`};
+    background: ${({ $readonlyMode, $noCurrencySelected }) =>
+      $readonlyMode ? '' : $noCurrencySelected ? `var(${UI.COLOR_PRIMARY_LIGHTER});` : `var(${UI.COLOR_PRIMARY});`};
 
     ${TokenSubText}, ${StyledTokenSymbol}, ${CurrencySymbol} {
       color: var(${UI.COLOR_BUTTON_TEXT});

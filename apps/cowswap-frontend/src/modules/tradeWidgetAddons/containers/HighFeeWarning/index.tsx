@@ -35,7 +35,7 @@ export function HighFeeWarning({ readonlyMode }: HighFeeWarningProps) {
   if (!isHighFee) return null
 
   return (
-    <WarningContainer level={level} isDarkMode={darkMode}>
+    <WarningContainer level={level} $isDarkMode={darkMode}>
       <div>
         <AlertTriangle size={24} />
         Costs exceed {level}% of the swap amount!{' '}

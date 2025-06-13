@@ -35,11 +35,11 @@ const TokenWrapper = styled.div`
   color: var(${UI.COLOR_TEXT});
 `
 
-const TextWrapper = styled.span<{ clickable: boolean }>`
+const TextWrapper = styled.span<{ $clickable: boolean }>`
   display: flex;
   align-items: center;
   gap: 4px;
-  cursor: ${({ clickable }) => (clickable ? 'pointer' : 'default')};
+  cursor: ${({ $clickable }) => ($clickable ? 'pointer' : 'default')};
   transition:
     opacity var(${UI.ANIMATION_DURATION}) ease-in-out,
     text-decoration-color var(${UI.ANIMATION_DURATION}) ease-in-out;
@@ -64,7 +64,7 @@ export function HeadingText({ inputCurrency, currency, rateImpact, toggleIcon, o
   return (
     <Wrapper>
       {toggleIcon}
-      <TextWrapper clickable={!!onToggle} onClick={onToggle}>
+      <TextWrapper $clickable={!!onToggle} onClick={onToggle}>
         When
         <TokenWrapper>
           1

@@ -13,7 +13,7 @@ import * as styledEl from './styled'
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function HookItem({ details, item, index }: { details?: CowHookDetails; item: HookToDappMatch; index: number }) {
   const [isOpen, setIsOpen] = useState(false)
   const simulationData = useSimulationData(details?.uuid)
@@ -41,7 +41,7 @@ export function HookItem({ details, item, index }: { details?: CowHookDetails; i
             <span>Unknown hook dapp</span>
           )}
         </styledEl.HookItemInfo>
-        <styledEl.ToggleIcon isOpen={isOpen}>
+        <styledEl.ToggleIcon $isOpen={isOpen}>
           {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </styledEl.ToggleIcon>
       </styledEl.HookItemHeader>

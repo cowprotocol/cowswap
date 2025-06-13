@@ -56,7 +56,7 @@ type TokenTableParams = {
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export default function TokenTable({
   tokensData: rawTokensData = [],
   maxItems = MAX_ITEMS,
@@ -248,11 +248,11 @@ export default function TokenTable({
         {tokensData && sortedTokens.length !== 0 && (
           <PageButtons>
             <ArrowButton onClick={() => setPage(1)}>
-              <Arrow faded={page === 1}>{'<<'}</Arrow>
+              <Arrow $faded={page === 1}>{'<<'}</Arrow>
             </ArrowButton>
 
             <ArrowButton onClick={() => setPage(prevPage)}>
-              <Arrow faded={page === 1}>←</Arrow>
+              <Arrow $faded={page === 1}>←</Arrow>
             </ArrowButton>
 
             <PaginationText>
@@ -260,11 +260,11 @@ export default function TokenTable({
             </PaginationText>
 
             <ArrowButton onClick={() => setPage(nextPage)}>
-              <Arrow faded={page === maxPage}>→</Arrow>
+              <Arrow $faded={page === maxPage}>→</Arrow>
             </ArrowButton>
 
             <ArrowButton onClick={() => setPage(maxPage)}>
-              <Arrow faded={page === maxPage}>{'>>'}</Arrow>
+              <Arrow $faded={page === maxPage}>{'>>'}</Arrow>
             </ArrowButton>
           </PageButtons>
         )}

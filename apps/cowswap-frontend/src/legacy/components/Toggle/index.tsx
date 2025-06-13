@@ -42,25 +42,27 @@ const ToggleElementHoverStyle = (hasBgColor: boolean, theme: any, isActive?: boo
         color: isActive ? theme.white : theme.info,
       }
 
-export const ToggleElement = styled.span<{ isActive?: boolean; bgColor?: string; isInitialToggleLoad?: boolean }>`
+export const ToggleElement = styled.span<{ $isActive?: boolean; $bgColor?: string; $isInitialToggleLoad?: boolean }>`
   animation: 0.1s
-    ${({ isActive, isInitialToggleLoad }) => (isInitialToggleLoad ? 'none' : isActive ? turnOnToggle : turnOffToggle)}
+    ${({ $isActive, $isInitialToggleLoad }) =>
+      $isInitialToggleLoad ? 'none' : $isActive ? turnOnToggle : turnOffToggle}
     ease-in;
-  background: ${({ bgColor, isActive }) =>
-    isActive ? (bgColor ?? `var(${UI.COLOR_PRIMARY})`) : `var(${UI.COLOR_PAPER_DARKER})`};
+  background: ${({ $bgColor, $isActive }) =>
+    $isActive ? ($bgColor ?? `var(${UI.COLOR_PRIMARY})`) : `var(${UI.COLOR_PAPER_DARKER})`};
   border-radius: 50%;
   height: 24px;
   :hover {
-    ${({ bgColor, theme, isActive }) => ToggleElementHoverStyle(!!bgColor, theme, isActive)}
+    ${({ $bgColor, theme, $isActive }) => ToggleElementHoverStyle(!!$bgColor, theme, $isActive)}
   }
-  margin-left: ${({ isActive }) => (isActive ? '2.2em' : '0em')};
-  margin-right: ${({ isActive }) => (!isActive ? '2.2em' : '0em')};
+  margin-left: ${({ $isActive }) => ($isActive ? '2.2em' : '0em')};
+  margin-right: ${({ $isActive }) => (!$isActive ? '2.2em' : '0em')};
   width: 24px;
 `
 
-const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
+const Wrapper = styled.button<{ $isActive?: boolean; $activeElement?: boolean }>`
   align-items: center;
-  background: ${({ isActive }) => (isActive ? `var(${UI.COLOR_PRIMARY_OPACITY_25})` : `var(${UI.COLOR_PAPER_DARKER})`)};
+  background: ${({ $isActive }) =>
+    $isActive ? `var(${UI.COLOR_PRIMARY_OPACITY_25})` : `var(${UI.COLOR_PAPER_DARKER})`};
   border: none;
   border-radius: 20px;
   cursor: pointer;
@@ -70,14 +72,14 @@ const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
   width: fit-content;
 
   ${ToggleElement} {
-    color: ${({ isActive }) => (isActive ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_BUTTON_TEXT_DISABLED})`)};
+    color: ${({ $isActive }) => ($isActive ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_BUTTON_TEXT_DISABLED})`)};
     border: none;
     transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
-    background: ${({ isActive }) => (isActive ? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PRIMARY_OPACITY_50})`)};
+    background: ${({ $isActive }) => ($isActive ? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PRIMARY_OPACITY_50})`)};
 
     &:hover {
-      color: ${({ theme, isActive }) => (isActive ? theme.white : `var(${UI.COLOR_TEXT})`)};
-      background: ${({ isActive }) => (isActive ? `var(${UI.COLOR_PRIMARY_LIGHTER})` : `var(${UI.COLOR_PRIMARY})`)};
+      color: ${({ theme, $isActive }) => ($isActive ? theme.white : `var(${UI.COLOR_TEXT})`)};
+      background: ${({ $isActive }) => ($isActive ? `var(${UI.COLOR_PRIMARY_LIGHTER})` : `var(${UI.COLOR_PRIMARY})`)};
     }
   }
 
@@ -125,8 +127,14 @@ export function Toggle({
   }
 
   return (
-    <Wrapper id={id} isActive={isActive} onClick={switchToggle} className={className} data-click-event={dataClickEvent}>
-      <ToggleElement isActive={isActive} bgColor={bgColor} isInitialToggleLoad={isInitialToggleLoad} />
+    <Wrapper
+      id={id}
+      $isActive={isActive}
+      onClick={switchToggle}
+      className={className}
+      data-click-event={dataClickEvent}
+    >
+      <ToggleElement $isActive={isActive} $bgColor={bgColor} $isInitialToggleLoad={isInitialToggleLoad} />
     </Wrapper>
   )
 }

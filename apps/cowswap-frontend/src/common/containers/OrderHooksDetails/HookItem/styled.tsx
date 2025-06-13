@@ -112,23 +112,9 @@ export const HookItemContent = styled.div`
   }
 `
 
-export const ToggleButton = styled.div<{ isOpen: boolean }>`
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  opacity: ${({ isOpen }) => (isOpen ? 1 : 0.7)};
-  transition: opacity ${UI.ANIMATION_DURATION_SLOW} ease-in-out;
-  outline: none;
-
-  &:hover {
-    opacity: 1;
-  }
-`
-
-export const ToggleIcon = styled.div<{ isOpen: boolean }>`
+export const ToggleIcon = styled.div<{ $isOpen: boolean }>`
   --size: 16px;
-  transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+  transform: ${({ $isOpen }) => ($isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
   transition: transform var(${UI.ANIMATION_DURATION_SLOW}) ease-in-out;
   display: flex;
   align-items: center;

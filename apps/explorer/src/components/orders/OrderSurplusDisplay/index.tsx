@@ -8,7 +8,7 @@ import BigNumber from 'bignumber.js'
 import { SurplusComponent } from 'components/common/SurplusComponent'
 import { TokenAmount } from 'components/token/TokenAmount'
 import { BaseIconTooltipOnHover } from 'components/Tooltip'
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import { Order } from 'api/operator'
 // TODO: Enable once API is ready
@@ -88,7 +88,7 @@ export function OrderSurplusDisplay(props: Props): React.ReactNode | null {
 
 const HiddenSection = styled.span<{ showHiddenSection: boolean; stretchHiddenSection?: boolean }>`
   display: ${({ showHiddenSection }): string => (showHiddenSection ? 'flex' : 'none')};
-  ${({ stretchHiddenSection }): FlattenSimpleInterpolation | false | undefined =>
+  ${({ stretchHiddenSection }): ReturnType<typeof css> | false | undefined =>
     stretchHiddenSection &&
     css`
       width: 3.4rem;

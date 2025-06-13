@@ -3,28 +3,28 @@ import styled from 'styled-components'
 import { Color } from '../../colors'
 import { Media } from '../../consts'
 
-export const FooterContainer = styled.footer<{ expanded: boolean; hasTouchFooter: boolean }>`
+export const FooterContainer = styled.footer<{ $expanded: boolean; $hasTouchFooter: boolean }>`
   --bgColor: ${({ theme }) => (theme.darkMode ? Color.neutral0 : Color.neutral10)};
   --color: ${({ theme }) => (theme.darkMode ? Color.neutral50 : Color.neutral50)};
   --colorTitle: ${({ theme }) => (theme.darkMode ? Color.neutral90 : Color.neutral98)};
   background: var(--bgColor);
   color: var(--color);
-  padding: ${({ expanded, hasTouchFooter }) =>
-    !expanded && hasTouchFooter ? '68px 0 0' : expanded ? '134px 0 0' : '0'};
+  padding: ${({ $expanded, $hasTouchFooter }) =>
+    !$expanded && $hasTouchFooter ? '68px 0 0' : $expanded ? '134px 0 0' : '0'};
   text-align: left;
   transition: padding 0.3s ease;
   font-size: 18px;
   width: 100%;
 
   ${Media.upToSmall()} {
-    padding: ${({ expanded }) => (expanded ? '54px 0 0' : '0')};
+    padding: ${({ $expanded }) => ($expanded ? '54px 0 0' : '0')};
 
-    padding: ${({ expanded, hasTouchFooter }) =>
-      !expanded && hasTouchFooter
+    padding: ${({ $expanded, $hasTouchFooter }) =>
+      !$expanded && $hasTouchFooter
         ? '120px 0 0'
-        : expanded && hasTouchFooter
+        : $expanded && $hasTouchFooter
           ? '120px 0 0'
-          : expanded
+          : $expanded
             ? '54px 0 0'
             : '0'};
   }
@@ -221,7 +221,7 @@ export const BottomRight = styled.div`
   }
 `
 
-export const ToggleFooterButton = styled.button<{ expanded: boolean }>`
+export const ToggleFooterButton = styled.button<{ $expanded: boolean }>`
   --size: 24px;
   height: var(--size);
   width: var(--size);
@@ -235,7 +235,7 @@ export const ToggleFooterButton = styled.button<{ expanded: boolean }>`
   transition:
     transform 0.5s ease-in-out,
     color 0.2s ease-in-out;
-  transform: ${({ expanded }) => (expanded ? 'rotate(-90deg)' : 'rotate(0deg)')};
+  transform: ${({ $expanded }) => ($expanded ? 'rotate(-90deg)' : 'rotate(0deg)')};
 
   &:hover {
     color: var(--colorTitle);

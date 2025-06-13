@@ -11,18 +11,18 @@ export const OuterWrapper = styled.div`
   flex-flow: column wrap;
 `
 
-export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean; readOnly: boolean; pointerDisabled: boolean }>`
+export const Wrapper = styled.div<{ $withReceiveAmountInfo: boolean; $readOnly: boolean; $pointerDisabled: boolean }>`
   display: flex;
   flex-flow: row wrap;
   align-content: space-between;
   gap: 10px;
   padding: 16px;
-  background: ${({ readOnly }) => (readOnly ? 'transparent' : `var(${UI.COLOR_PAPER_DARKER})`)};
-  border: ${({ readOnly }) => (readOnly ? `1px solid var(${UI.COLOR_PAPER_DARKER})` : 'none')};
-  border-radius: ${({ withReceiveAmountInfo }) => (withReceiveAmountInfo ? '16px 16px 0 0' : '16px')};
+  background: ${({ $readOnly }) => ($readOnly ? 'transparent' : `var(${UI.COLOR_PAPER_DARKER})`)};
+  border: ${({ $readOnly }) => ($readOnly ? `1px solid var(${UI.COLOR_PAPER_DARKER})` : 'none')};
+  border-radius: ${({ $withReceiveAmountInfo }) => ($withReceiveAmountInfo ? '16px 16px 0 0' : '16px')};
   color: inherit;
   min-height: 106px;
-  pointer-events: ${({ pointerDisabled }) => (pointerDisabled ? 'none' : '')};
+  pointer-events: ${({ $pointerDisabled }) => ($pointerDisabled ? 'none' : '')};
   max-width: 100%;
 
   ${Media.upToSmall()} {

@@ -65,8 +65,8 @@ export const StatusBox = styled.div`
 `
 
 export const CellElement = styled.div<{
-  clickable?: boolean
-  doubleRow?: boolean
+  $clickable?: boolean
+  $doubleRow?: boolean
 }>`
   padding: 0;
   font-size: 12px;
@@ -75,9 +75,9 @@ export const CellElement = styled.div<{
   height: 100%;
   display: flex;
   flex-flow: row nowrap;
-  align-items: ${({ doubleRow }) => (doubleRow ? 'flex-start' : 'center')};
+  align-items: ${({ $doubleRow }) => ($doubleRow ? 'flex-start' : 'center')};
   text-align: left;
-  cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
+  cursor: ${({ $clickable }) => ($clickable ? 'pointer' : '')};
 
   > b {
     font-weight: 500;
@@ -93,8 +93,8 @@ export const CellElement = styled.div<{
     cursor: help;
   }
 
-  ${({ doubleRow }) =>
-    doubleRow &&
+  ${({ $doubleRow }) =>
+    $doubleRow &&
     `
     flex-flow: column wrap;
     justify-content: center;
@@ -120,9 +120,9 @@ export const PriceElement = styled(CellElement)`
   cursor: pointer;
 `
 
-export const CurrencyLogoPair = styled.div<{ clickable?: boolean }>`
+export const CurrencyLogoPair = styled.div<{ $clickable?: boolean }>`
   display: flex;
-  cursor: ${({ clickable }) => (clickable ? 'pointer' : 'initial')};
+  cursor: ${({ $clickable }) => ($clickable ? 'pointer' : 'initial')};
 
   > div,
   > svg {
@@ -135,25 +135,25 @@ export const CurrencyLogoPair = styled.div<{ clickable?: boolean }>`
   }
 `
 
-export const CurrencyCell = styled.div<{ clickable?: boolean }>`
+export const CurrencyCell = styled.div<{ $clickable?: boolean }>`
   display: flex;
   flex-flow: row;
   align-items: center;
   gap: 6px;
   font-size: 12px;
   font-weight: 500;
-  cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
+  cursor: ${({ $clickable }) => ($clickable ? 'pointer' : '')};
 
   &:hover {
     span {
-      text-decoration: ${({ clickable }) => (clickable ? 'underline' : '')};
+      text-decoration: ${({ $clickable }) => ($clickable ? 'underline' : '')};
     }
   }
 `
 
-export const CurrencyAmountWrapper = styled.div<{ clickable?: boolean }>`
+export const CurrencyAmountWrapper = styled.div<{ $clickable?: boolean }>`
   display: flex;
-  cursor: ${({ clickable }) => (clickable ? 'pointer' : 'initial')};
+  cursor: ${({ $clickable }) => ($clickable ? 'pointer' : 'initial')};
   flex-flow: column wrap;
   gap: 2px;
 `

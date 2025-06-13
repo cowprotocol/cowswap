@@ -38,10 +38,10 @@ const pageButtonStyles = css<{ $active?: boolean }>`
     color: inherit;
   }
 `
-export const PageButtonLink = styled(Link)`
+export const PageButtonLink = styled(Link)<{ $active?: boolean }>`
   ${pageButtonStyles}
 `
-export const PageButton = styled.div`
+export const PageButton = styled.div<{ $active?: boolean }>`
   ${pageButtonStyles}
 `
 export const BlankButton = styled(PageButton)`
@@ -52,7 +52,7 @@ export const BlankButton = styled(PageButton)`
     color: var(${UI.COLOR_TEXT_OPACITY_25}) !important;
   }
 `
-export const ArrowButton = styled.button`
+export const ArrowButton = styled.button<{ $active?: boolean }>`
   ${pageButtonStyles};
   width: 30px;
   height: 30px;

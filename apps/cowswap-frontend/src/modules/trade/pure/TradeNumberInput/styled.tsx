@@ -80,7 +80,7 @@ export const ArrowsWrapper = styled.div`
   }
 `
 
-export const InputWrapper = styled.span<{ showUpDownArrows?: boolean; upDownArrowsLeftAlign?: boolean }>`
+export const InputWrapper = styled.span<{ $showUpDownArrows?: boolean; $upDownArrowsLeftAlign?: boolean }>`
   position: relative;
   display: flex;
   align-items: center;
@@ -89,8 +89,8 @@ export const InputWrapper = styled.span<{ showUpDownArrows?: boolean; upDownArro
     opacity: 1;
   }
 
-  ${({ upDownArrowsLeftAlign }) =>
-    upDownArrowsLeftAlign &&
+  ${({ $upDownArrowsLeftAlign }) =>
+    $upDownArrowsLeftAlign &&
     `
     ${ArrowsWrapper} {
       order: -1;

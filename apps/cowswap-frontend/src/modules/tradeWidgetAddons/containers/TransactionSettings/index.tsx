@@ -284,11 +284,10 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
               onClick={() => {
                 setSwapSlippage(null)
               }}
-              active={!isSlippageModified}
             >
               <Trans>Auto</Trans>
             </styledEl.Option>
-            <styledEl.OptionCustom active={isSlippageModified} warning={!!slippageError} tabIndex={-1}>
+            <styledEl.OptionCustom $active={isSlippageModified} $warning={!!slippageError} tabIndex={-1}>
               <RowBetween>
                 {!isSmartSlippageApplied && !chosenSlippageMatchesSmartSlippage && (tooLow || tooHigh) ? (
                   <styledEl.SlippageEmojiContainer>
@@ -313,7 +312,7 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
               style={{
                 fontSize: '14px',
                 paddingTop: '7px',
-                color: slippageError ? `var(${UI.COLOR_DANGER})` : theme.warning,
+                color: slippageError ? `var(${UI.COLOR_DANGER})` : theme?.warning,
               }}
             >
               {slippageError ? (
@@ -362,7 +361,7 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
               />
             </RowFixed>
             <RowFixed>
-              <styledEl.OptionCustom style={{ width: '80px' }} warning={!!deadlineError} tabIndex={-1}>
+              <styledEl.OptionCustom style={{ width: '80px' }} $warning={!!deadlineError} tabIndex={-1}>
                 <styledEl.Input
                   placeholder={(DEFAULT_DEADLINE_FROM_NOW / 60).toString()}
                   value={

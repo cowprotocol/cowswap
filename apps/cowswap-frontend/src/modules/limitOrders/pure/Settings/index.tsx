@@ -47,8 +47,8 @@ const DropdownButton = styled.button`
   }
 `
 
-const DropdownList = styled.div<{ isOpen: boolean }>`
-  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+const DropdownList = styled.div<{ $isOpen: boolean }>`
+  display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
@@ -231,7 +231,7 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
           </SettingsLabel>
           <DropdownContainer>
             <DropdownButton onClick={toggleDropdown}>{POSITION_LABELS[limitPricePosition]}</DropdownButton>
-            <DropdownList isOpen={isOpen}>
+            <DropdownList $isOpen={isOpen}>
               {Object.entries(POSITION_LABELS).map(([value, label]) => (
                 <DropdownItem
                   key={value}

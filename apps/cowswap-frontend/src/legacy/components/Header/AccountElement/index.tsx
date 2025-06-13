@@ -49,7 +49,7 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
 
   return (
     <>
-      <Wrapper className={className} active={!!account}>
+      <Wrapper className={className} $active={!!account}>
         {standaloneMode !== false && account && !isChainIdUnsupported && userEthBalance && chainId && !isUpToLarge && (
           <BalanceText>
             <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeTokenSymbol }} />

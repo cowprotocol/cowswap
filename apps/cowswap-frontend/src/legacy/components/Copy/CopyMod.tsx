@@ -5,7 +5,7 @@ import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { CheckCircle, Copy } from 'react-feather'
-import styled, { DefaultTheme, StyledComponentProps } from 'styled-components'
+import styled from 'styled-components'
 import { LinkStyledButton } from 'theme'
 
 import { TransactionStatusText } from 'legacy/components/Copy/index'
@@ -38,27 +38,17 @@ const CheckCircleIconWrapper = styled(CheckCircle)`
   margin: 0 4px 0 0;
 `
 
-interface CopyHelperProps
-  extends StyledComponentProps<
-    typeof CopyIcon,
-    DefaultTheme,
-    {
-      disabled?: boolean
-      bg?: boolean
-      isCopied?: boolean
-      color?: string
-    },
-    never
-  > {
+interface CopyHelperProps {
   toCopy: string
   children?: React.ReactNode
   clickableLink?: boolean
   copyIconWidth?: string
+  className?: string
 }
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function CopyHelper(props: CopyHelperProps) {
+export function CopyHelper(props: CopyHelperProps) {
   const { toCopy, children, clickableLink, copyIconWidth, ...rest } = props
   const [isCopied, setCopied] = useCopyClipboard()
 

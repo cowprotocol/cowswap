@@ -3,7 +3,7 @@ import React from 'react'
 import { Command } from '@cowprotocol/types'
 import { Media, Color } from '@cowprotocol/ui'
 
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
+import styled, { css } from 'styled-components'
 
 const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   z-index: 102;
@@ -31,7 +31,7 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   span:nth-child(1) {
     left: 0;
     top: 0;
-    ${({ isMobileMenuOpen }): FlattenSimpleInterpolation | null =>
+    ${({ isMobileMenuOpen }): ReturnType<typeof css> | null =>
       isMobileMenuOpen
         ? css`
             transform: rotate(45deg);
@@ -46,7 +46,7 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
     opacity: 1;
     top: 50%;
     bottom: 50%;
-    ${({ isMobileMenuOpen }): FlattenSimpleInterpolation | null =>
+    ${({ isMobileMenuOpen }): ReturnType<typeof css> | null =>
       isMobileMenuOpen
         ? css`
             opacity: 0;
@@ -58,7 +58,7 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
     bottom: 0;
     left: 0;
     width: 75%;
-    ${({ isMobileMenuOpen }): FlattenSimpleInterpolation | null =>
+    ${({ isMobileMenuOpen }): ReturnType<typeof css> | null =>
       isMobileMenuOpen
         ? css`
             transform: rotate(-45deg);

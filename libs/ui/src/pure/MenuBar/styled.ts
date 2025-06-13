@@ -6,57 +6,57 @@ import { CowSwapTheme } from '../../types'
 import { ProductLogoWrapper } from '../ProductLogo'
 
 export const MenuBarWrapper = styled.div<{
-  bgColorLight?: string
-  bgColorDark?: string
-  colorLight?: string
-  colorDark?: string
-  bgDropdownColorLight?: string
-  bgDropdownColorDark?: string
-  defaultFillLight?: string
-  defaultFillDark?: string
-  activeBackgroundLight?: string
-  activeBackgroundDark?: string
-  activeFillLight?: string
-  activeFillDark?: string
-  hoverBackgroundLight?: string
-  hoverBackgroundDark?: string
-  padding?: string
-  mobileMode?: boolean
-  maxWidth?: number
+  $bgColorLight?: string
+  $bgColorDark?: string
+  $colorLight?: string
+  $colorDark?: string
+  $bgDropdownColorLight?: string
+  $bgDropdownColorDark?: string
+  $defaultFillLight?: string
+  $defaultFillDark?: string
+  $activeBackgroundLight?: string
+  $activeBackgroundDark?: string
+  $activeFillLight?: string
+  $activeFillDark?: string
+  $hoverBackgroundLight?: string
+  $hoverBackgroundDark?: string
+  $padding?: string
+  $mobileMode?: boolean
+  $maxWidth?: number
 }>`
   --height: 56px;
   --width: 100%;
-  --bgColor: ${({ theme, bgColorLight, bgColorDark }) =>
-    theme.darkMode ? bgColorDark || Color.neutral10 : bgColorLight || 'rgb(255 248 247 / 40%)'};
-  --bgDropdownColor: ${({ theme, bgDropdownColorLight, bgDropdownColorDark }) =>
-    theme.darkMode ? bgDropdownColorDark || Color.neutral10 : bgDropdownColorLight || Color.neutral100};
-  --color: ${({ theme, colorLight, colorDark }) =>
-    theme.darkMode ? colorDark || Color.neutral98 : colorLight || Color.neutral0};
+  --bgColor: ${({ theme, $bgColorLight, $bgColorDark }) =>
+    theme.darkMode ? $bgColorDark || Color.neutral10 : $bgColorLight || 'rgb(255 248 247 / 40%)'};
+  --bgDropdownColor: ${({ theme, $bgDropdownColorLight, $bgDropdownColorDark }) =>
+    theme.darkMode ? $bgDropdownColorDark || Color.neutral10 : $bgDropdownColorLight || Color.neutral100};
+  --color: ${({ theme, $colorLight, $colorDark }) =>
+    theme.darkMode ? $colorDark || Color.neutral98 : $colorLight || Color.neutral0};
   --borderRadius: 28px;
   --blur: 16px;
 
   // Elements
-  --defaultFill: ${({ theme, defaultFillLight, defaultFillDark }) =>
-    theme.darkMode ? defaultFillDark || Color.neutral60 : defaultFillLight || 'rgb(0 0 0 / 50%)'};
-  --activeBackground: ${({ theme, activeBackgroundLight, activeBackgroundDark }) =>
-    theme.darkMode ? activeBackgroundDark || Color.neutral30 : activeBackgroundLight || Color.neutral100};
-  --activeFill: ${({ theme, activeFillLight, activeFillDark }) =>
-    theme.darkMode ? activeFillDark || Color.neutral100 : activeFillLight || Color.neutral0};
-  --hoverBackground: ${({ theme, hoverBackgroundLight, hoverBackgroundDark }) =>
-    theme.darkMode ? hoverBackgroundDark || Color.neutral20 : hoverBackgroundLight || Color.neutral90};
+  --defaultFill: ${({ theme, $defaultFillLight, $defaultFillDark }) =>
+    theme.darkMode ? $defaultFillDark || Color.neutral60 : $defaultFillLight || 'rgb(0 0 0 / 50%)'};
+  --activeBackground: ${({ theme, $activeBackgroundLight, $activeBackgroundDark }) =>
+    theme.darkMode ? $activeBackgroundDark || Color.neutral30 : $activeBackgroundLight || Color.neutral100};
+  --activeFill: ${({ theme, $activeFillLight, $activeFillDark }) =>
+    theme.darkMode ? $activeFillDark || Color.neutral100 : $activeFillLight || Color.neutral0};
+  --hoverBackground: ${({ theme, $hoverBackgroundLight, $hoverBackgroundDark }) =>
+    theme.darkMode ? $hoverBackgroundDark || Color.neutral20 : $hoverBackgroundLight || Color.neutral90};
 
   display: flex;
   width: 100%;
-  padding: ${({ padding }) => padding || '10px'};
+  padding: ${({ $padding }) => $padding || '10px'};
   z-index: 9;
   position: sticky;
   top: 0;
   color: var(--color);
   margin: 0 auto;
-  max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
+  max-width: ${({ $maxWidth }) => ($maxWidth ? `${$maxWidth}px` : '100%')};
 
-  ${({ mobileMode }) =>
-    mobileMode &&
+  ${({ $mobileMode }) =>
+    $mobileMode &&
     css`
       padding: 10px;
     `}
@@ -77,7 +77,7 @@ export const MenuBarInner = styled.div<{ theme: CowSwapTheme }>`
   color: var(--color);
 `
 
-export const NavDaoTriggerElement = styled.div<{ isActive: boolean; mobileMode?: boolean; isOpen?: boolean }>`
+export const NavDaoTriggerElement = styled.div<{ $isActive: boolean }>`
   --size: 42px;
 
   display: flex;
@@ -90,8 +90,8 @@ export const NavDaoTriggerElement = styled.div<{ isActive: boolean; mobileMode?:
   min-width: var(--size);
   min-height: var(--size);
   border-radius: 50%;
-  background: ${({ isActive }) => (isActive ? 'var(--activeBackground)' : 'transparent')};
-  color: ${({ isActive }) => (isActive ? 'var(--activeFill)' : 'var(--defaultFill)')};
+  background: ${({ $isActive }) => ($isActive ? 'var(--activeBackground)' : 'transparent')};
+  color: ${({ $isActive }) => ($isActive ? 'var(--activeFill)' : 'var(--defaultFill)')};
   cursor: pointer;
   transition:
     background 0.2s,
@@ -116,7 +116,7 @@ export const NavDaoTriggerElement = styled.div<{ isActive: boolean; mobileMode?:
   }
 `
 
-export const MobileMenuTrigger = styled.div<{ theme: CowSwapTheme; mobileMode?: boolean }>`
+export const MobileMenuTrigger = styled.div<{ theme: CowSwapTheme }>`
   --size: 42px;
 
   display: flex;
@@ -155,7 +155,7 @@ export const MobileMenuTrigger = styled.div<{ theme: CowSwapTheme; mobileMode?: 
   }
 `
 
-export const NavItems = styled.ul<{ mobileMode?: boolean; theme: CowSwapTheme }>`
+export const NavItems = styled.ul<{ $mobileMode?: boolean; theme: CowSwapTheme }>`
   --marginLeft: 20px;
   --borderRadius: 28px;
   --blur: 16px;
@@ -172,8 +172,8 @@ export const NavItems = styled.ul<{ mobileMode?: boolean; theme: CowSwapTheme }>
   padding: 0;
   color: inherit;
 
-  ${({ mobileMode }) =>
-    mobileMode &&
+  ${({ $mobileMode }) =>
+    $mobileMode &&
     css`
       flex-flow: column wrap;
       align-items: flex-start;
@@ -226,47 +226,39 @@ export const NavItems = styled.ul<{ mobileMode?: boolean; theme: CowSwapTheme }>
 `
 
 interface DropdownContentProps {
-  isOpen: boolean
-  isThirdLevel?: boolean
-  mobileMode?: boolean
-  isNavItemDropdown?: boolean
-  alignRight?: boolean
-}
-
-interface DropdownContentProps {
-  isOpen: boolean
-  isThirdLevel?: boolean
-  alignRight?: boolean
-  mobileMode?: boolean
-  isNavItemDropdown?: boolean
+  $isOpen: boolean
+  $isThirdLevel?: boolean
+  $alignRight?: boolean
+  $mobileMode?: boolean
+  $isNavItemDropdown?: boolean
 }
 
 export const DropdownContent = styled.ul<DropdownContentProps>`
   --dropdownOffset: 8px;
 
-  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
-  flex: ${({ isThirdLevel }) => (isThirdLevel ? '1 1 100%;' : 'initial')};
+  display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
+  flex: ${({ $isThirdLevel }) => ($isThirdLevel ? '1 1 100%;' : 'initial')};
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  background: ${({ isThirdLevel }) => (isThirdLevel ? 'transparent' : 'var(--bgDropdownColor)')};
+  background: ${({ $isThirdLevel }) => ($isThirdLevel ? 'transparent' : 'var(--bgDropdownColor)')};
   backdrop-filter: blur(var(--blur));
   z-index: 1000;
-  padding: ${({ isThirdLevel }) => (isThirdLevel ? '6px' : '6px')};
+  padding: ${({ $isThirdLevel }) => ($isThirdLevel ? '6px' : '6px')};
   margin: 0;
-  width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : '320px')};
+  width: ${({ $isThirdLevel }) => ($isThirdLevel ? '100%' : '320px')};
   height: auto;
   border-radius: 28px;
-  position: ${({ isThirdLevel }) => (isThirdLevel ? 'relative' : 'absolute')};
-  top: ${({ isThirdLevel }) => (isThirdLevel ? 'initial' : 'calc(100% + var(--dropdownOffset))')};
-  right: ${({ alignRight }) => (alignRight ? 0 : 'initial')};
-  left: ${({ alignRight }) => (alignRight ? 'initial' : 0)};
+  position: ${({ $isThirdLevel }) => ($isThirdLevel ? 'relative' : 'absolute')};
+  top: ${({ $isThirdLevel }) => ($isThirdLevel ? 'initial' : 'calc(100% + var(--dropdownOffset))')};
+  right: ${({ $alignRight }) => ($alignRight ? 0 : 'initial')};
+  left: ${({ $alignRight }) => ($alignRight ? 'initial' : 0)};
   cursor: pointer;
   border: 1px solid var(--hoverBackground);
   list-style: none;
 
-  ${({ mobileMode }) =>
-    mobileMode &&
+  ${({ $mobileMode }) =>
+    $mobileMode &&
     css`
       max-width: 100%;
       width: 100%;
@@ -274,9 +266,9 @@ export const DropdownContent = styled.ul<DropdownContentProps>`
       border: 0;
     `}
 
-  ${({ mobileMode, isNavItemDropdown, isThirdLevel }) =>
-    mobileMode &&
-    isNavItemDropdown &&
+  ${({ $mobileMode, $isNavItemDropdown, $isThirdLevel }) =>
+    $mobileMode &&
+    $isNavItemDropdown &&
     css`
       position: relative;
       top: initial;
@@ -286,7 +278,7 @@ export const DropdownContent = styled.ul<DropdownContentProps>`
       padding: 6px;
       margin: 0 0 16px;
       background: var(--hoverBackground);
-      background: ${isThirdLevel ? 'var(--activeBackground)' : 'var(--hoverBackground)'};
+      background: ${$isThirdLevel ? 'var(--activeBackground)' : 'var(--hoverBackground)'};
       border-radius: 12px;
     `}
   &::before {
@@ -297,8 +289,8 @@ export const DropdownContent = styled.ul<DropdownContentProps>`
     border: var(--dropdownOffset) solid transparent;
     width: 100%;
 
-    ${({ mobileMode }) =>
-      mobileMode &&
+    ${({ $mobileMode }) =>
+      $mobileMode &&
       css`
         content: none;
       `}
@@ -360,13 +352,13 @@ export const MobileDropdownContainer = styled.div<{ mobileMode: boolean }>`
 `
 
 export const StyledDropdownContentItem = styled.li<{
-  isOpen?: boolean
-  isThirdLevel?: boolean
-  bgColor?: string
-  color?: string
-  hoverBgColor?: string
-  hoverColor?: string
-  mobileMode?: boolean
+  $isOpen?: boolean
+  $isThirdLevel?: boolean
+  $bgColor?: string
+  $color?: string
+  $hoverBgColor?: string
+  $hoverColor?: string
+  $mobileMode?: boolean
 }>`
   border-radius: 24px;
 
@@ -387,8 +379,8 @@ export const StyledDropdownContentItem = styled.li<{
     width: 100%;
   }
 
-  ${({ mobileMode }) =>
-    mobileMode &&
+  ${({ $mobileMode }) =>
+    $mobileMode &&
     css`
       padding: 8px;
     `}
@@ -416,12 +408,12 @@ export const StyledDropdownContentItem = styled.li<{
   }
 
   &:hover {
-    background: ${({ hoverBgColor, isThirdLevel }) =>
-      isThirdLevel ? 'var(--activeBackground)' : hoverBgColor || 'var(--hoverBackground)'};
-    color: ${({ hoverColor }) => hoverColor || 'inherit'};
+    background: ${({ $hoverBgColor, $isThirdLevel }) =>
+      $isThirdLevel ? 'var(--activeBackground)' : $hoverBgColor || 'var(--hoverBackground)'};
+    color: ${({ $hoverColor }) => $hoverColor || 'inherit'};
 
     ${ProductLogoWrapper} {
-      color: ${({ hoverColor }) => hoverColor || 'inherit'};
+      color: ${({ $hoverColor }) => $hoverColor || 'inherit'};
     }
 
     > a > svg.arrow-icon-right {
@@ -444,7 +436,7 @@ export const StyledDropdownContentItem = styled.li<{
     margin: 0 0 0 auto;
     object-fit: contain;
     color: inherit;
-    transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+    transform: ${({ $isOpen }) => ($isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
     transition:
       transform 0.2s ease-in-out,
       opacity 0.2s ease-in-out;
@@ -535,7 +527,7 @@ export const DropdownContentItemButton = styled(StyledDropdownContentItem)<{
 `
 
 export const DropdownMenu = styled.li<{
-  mobileMode?: boolean
+  $mobileMode?: boolean
 }>`
   position: relative;
   display: inline-block;
@@ -553,14 +545,14 @@ export const DropdownMenu = styled.li<{
     background: var(--activeBackground);
   }
 
-  ${({ mobileMode }) =>
-    mobileMode &&
+  ${({ $mobileMode }) =>
+    $mobileMode &&
     css`
       width: 100%;
     `}
 `
 
-export const RootNavItem = styled.li<{ isOpen?: boolean; mobileMode?: boolean }>`
+export const RootNavItem = styled.li<{ $isOpen?: boolean; $mobileMode?: boolean }>`
   color: inherit;
   font-size: 16px;
   padding: 12px 16px;
@@ -589,8 +581,8 @@ export const RootNavItem = styled.li<{ isOpen?: boolean; mobileMode?: boolean }>
     }
   }
 
-  ${({ mobileMode }) =>
-    mobileMode &&
+  ${({ $mobileMode }) =>
+    $mobileMode &&
     css`
       width: 100%;
       align-items: center;
@@ -605,11 +597,11 @@ export const RootNavItem = styled.li<{ isOpen?: boolean; mobileMode?: boolean }>
     object-fit: contain;
     margin: 3px auto 0;
     color: var(--defaultFill);
-    transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+    transform: ${({ $isOpen }) => ($isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
     transition: transform 0.2s ease-in-out;
 
-    ${({ mobileMode }) =>
-      mobileMode &&
+    ${({ $mobileMode }) =>
+      $mobileMode &&
       css`
         margin: 3px 0 0 auto;
         height: 15px;
@@ -618,10 +610,9 @@ export const RootNavItem = styled.li<{ isOpen?: boolean; mobileMode?: boolean }>
   }
 `
 
-export const RightAligned = styled.div<{ mobileMode?: boolean; flexFlow?: string; flexFlowMobile?: string }>`
+export const RightAligned = styled.div<{ $mobileMode?: boolean; $flexFlowMobile?: string }>`
   display: flex;
   flex-flow: row nowrap;
-  flex-flow: ${({ flexFlow }) => flexFlow || 'row nowrap'};
   justify-content: flex-end;
   align-items: center;
   gap: 6px;
@@ -641,16 +632,16 @@ export const RightAligned = styled.div<{ mobileMode?: boolean; flexFlow?: string
     }
   }
 
-  ${({ mobileMode, flexFlowMobile }) =>
-    mobileMode &&
+  ${({ $mobileMode, $flexFlowMobile }) =>
+    $mobileMode &&
     css`
       height: auto;
       gap: 16px;
-      flex-flow: ${flexFlowMobile || 'column wrap'};
+      flex-flow: ${$flexFlowMobile || 'column wrap'};
     `}
 `
 
-export const GlobalSettingsButton = styled.button<{ mobileMode?: boolean }>`
+export const GlobalSettingsButton = styled.button<{ $mobileMode?: boolean }>`
   --size: 42px;
   display: flex;
   flex-flow: row wrap;
@@ -669,8 +660,8 @@ export const GlobalSettingsButton = styled.button<{ mobileMode?: boolean }>`
     transform 0.2s ease-in-out;
   color: inherit;
 
-  ${({ mobileMode }) =>
-    mobileMode &&
+  ${({ $mobileMode }) =>
+    $mobileMode &&
     css`
       --size: 33px;
       padding: 0;

@@ -36,7 +36,7 @@ export function ReviewOrderModalAmountRow({
   highlighted = false,
 }: ReviewOrderAmountRowProps) {
   const Amount = (
-    <Content highlighted={highlighted}>
+    <Content $highlighted={highlighted}>
       {children}
       {!isAmountAccurate && '≈ '}
       <TokenAmount amount={amount} defaultValue="-" tokenSymbol={amount?.currency} />

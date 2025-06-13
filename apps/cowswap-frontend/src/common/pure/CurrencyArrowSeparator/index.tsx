@@ -20,8 +20,8 @@ export function CurrencyArrowSeparator(props: CurrencyArrowSeparatorProps) {
   const isInjectedWidgetMode = isInjectedWidget()
 
   return (
-    <styledEl.Box isCollapsed={isCollapsed} hasSeparatorLine={hasSeparatorLine} disabled={disabled}>
-      <styledEl.LoadingWrapper isLoading={isLoading} onClick={disabled ? undefined : onSwitchTokens}>
+    <styledEl.Box $isCollapsed={isCollapsed} $hasSeparatorLine={hasSeparatorLine} disabled={disabled}>
+      <styledEl.LoadingWrapper $isLoading={isLoading} onClick={disabled ? undefined : onSwitchTokens}>
         {!isInjectedWidgetMode && isLoading ? (
           <styledEl.CowImg src={loadingCowWebp} alt="loading" />
         ) : (

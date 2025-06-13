@@ -26,7 +26,7 @@ export function TradeWidgetField(props: TradeWidgetFieldProps) {
   const tooltipElement = renderTooltip(tooltip, props)
 
   return (
-    <TradeWidgetFieldBox className={className} hasPrefix={hasPrefix}>
+    <TradeWidgetFieldBox className={className} $hasPrefix={hasPrefix}>
       <TradeWidgetFieldLabel>
         <Trans>{label}</Trans>
         {tooltip && <HelpTooltip text={tooltipElement} />}

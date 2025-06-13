@@ -3,9 +3,9 @@ import { UI } from '@cowprotocol/ui'
 import styled from 'styled-components'
 import { WIDGET_MAX_WIDTH } from 'theme'
 
-export const Container = styled.div<{ isTokenSelectOpen?: boolean }>`
+export const Container = styled.div<{ $isTokenSelectOpen?: boolean }>`
   width: 100%;
-  max-width: ${({ isTokenSelectOpen }) => (isTokenSelectOpen ? WIDGET_MAX_WIDTH.tokenSelect : WIDGET_MAX_WIDTH.swap)};
+  max-width: ${({ $isTokenSelectOpen }) => ($isTokenSelectOpen ? WIDGET_MAX_WIDTH.tokenSelect : WIDGET_MAX_WIDTH.swap)};
   margin: 0 auto;
   position: relative;
 `
@@ -46,9 +46,9 @@ export const OuterContentWrapper = styled.div`
   margin-top: 10px;
 `
 
-export const CurrencySeparatorBox = styled.div<{ compactView: boolean }>`
+export const CurrencySeparatorBox = styled.div<{ $compactView: boolean }>`
   display: flex;
   justify-content: space-between;
-  margin: ${({ compactView }) => (compactView ? '-5px 0' : '0')};
+  margin: ${({ $compactView }) => ($compactView ? '-5px 0' : '0')};
   padding: 0;
 `

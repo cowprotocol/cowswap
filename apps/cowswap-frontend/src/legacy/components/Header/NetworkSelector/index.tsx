@@ -75,7 +75,7 @@ const SelectorLabel = styled.div`
     display: none;
   }
 `
-const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
+const SelectorControls = styled.div<{ $isChainIdUnsupported: boolean }>`
   align-items: center;
   color: inherit;
   display: flex;
@@ -96,8 +96,8 @@ const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
     border: 2px solid ${({ theme }) => transparentize(theme.text, 0.7)};
   }
 
-  ${({ isChainIdUnsupported, theme }) =>
-    isChainIdUnsupported &&
+  ${({ $isChainIdUnsupported, theme }) =>
+    $isChainIdUnsupported &&
     `
       color: ${theme.danger}!important;
       background: ${transparentize(theme.danger, 0.85)}!important;
@@ -189,7 +189,7 @@ export function NetworkSelector() {
 
   return (
     <SelectorWrapper ref={node} onClick={toggleModal}>
-      <SelectorControls isChainIdUnsupported={isChainIdUnsupported}>
+      <SelectorControls $isChainIdUnsupported={isChainIdUnsupported}>
         {!isChainIdUnsupported ? (
           <>
             <SelectorLogo src={logoUrl} />

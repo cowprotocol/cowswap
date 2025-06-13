@@ -91,7 +91,7 @@ function SmartQuoteSelection() {
                     {' -> '}
                     {outputCurrencyAmount?.toExact()} {<TokenSymbol token={outputCurrencyAmount?.currency} />}{' '}
                   </p>
-                  <RateInfo noLabel={true} rateInfoParams={rate} />
+                  <RateInfo noLabel rateInfoParams={rate} />
                 </Box>
               )
             })}

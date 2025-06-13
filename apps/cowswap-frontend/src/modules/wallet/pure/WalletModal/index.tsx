@@ -58,7 +58,7 @@ export function WalletModal(props: Readonly<WalletModalProps>) {
               {!isPending && (
                 <ConnectWalletOptions tryActivation={tryActivation}>
                   {(content, count) => (
-                    <OptionGrid data-testid="option-grid" itemsCount={count}>
+                    <OptionGrid data-testid="option-grid" $itemsCount={count}>
                       {content}
                     </OptionGrid>
                   )}

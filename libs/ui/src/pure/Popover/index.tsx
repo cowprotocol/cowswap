@@ -9,9 +9,9 @@ import { usePopper } from 'react-popper'
 import { Arrow, PopoverContainer, ReferenceElement } from './styled'
 
 export interface PopoverContainerProps {
-  show: boolean
-  bgColor?: string
-  color?: string
+  $show: boolean
+  $bgColor?: string
+  $color?: string
 }
 
 export interface PopoverProps extends PopoverContainerProps, Omit<React.HTMLAttributes<HTMLDivElement>, 'content'> {
@@ -22,9 +22,9 @@ export interface PopoverProps extends PopoverContainerProps, Omit<React.HTMLAttr
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export default function Popover(props: PopoverProps) {
-  const { content, show, children, placement = 'auto', bgColor, color, className } = props
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function Popover(props: PopoverProps) {
+  const { content, $show, children, placement = 'auto', $bgColor, $color, className } = props
 
   const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null)
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null)
@@ -49,7 +49,7 @@ export default function Popover(props: PopoverProps) {
     update && update()
   }, [update])
 
-  useInterval(updateCallback, show ? 100 : null)
+  useInterval(updateCallback, $show ? 100 : null)
 
   return (
     <>
@@ -59,7 +59,7 @@ export default function Popover(props: PopoverProps) {
       <Portal>
         <PopoverContainer
           className={className}
-          show={show}
+          $show={$show}
           /* TODO: Replace any with proper type definitions */
           /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
           ref={setPopperElement as any}
@@ -68,8 +68,8 @@ export default function Popover(props: PopoverProps) {
             zIndex: 999999,
           }}
           {...attributes.popper}
-          bgColor={bgColor}
-          color={color}
+          $bgColor={$bgColor}
+          $color={$color}
         >
           {content}
           <Arrow
@@ -78,7 +78,7 @@ export default function Popover(props: PopoverProps) {
             /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
             ref={setArrowElement as any}
             style={styles.arrow}
-            bgColor={bgColor}
+            $bgColor={$bgColor}
             {...attributes.arrow}
           />
         </PopoverContainer>

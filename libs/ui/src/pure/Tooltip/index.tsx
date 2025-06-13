@@ -6,7 +6,7 @@ import { Command } from '@cowprotocol/types'
 
 import styled from 'styled-components'
 
-import Popover, { PopoverProps } from '../Popover'
+import { Popover, PopoverProps } from '../Popover'
 
 const TOOLTIP_CLOSE_DELAY = 300 // in milliseconds
 
@@ -17,7 +17,7 @@ export const TooltipContainer = styled.div`
   word-break: break-word;
 `
 
-export interface HoverTooltipProps extends Omit<PopoverProps, 'content' | 'show'> {
+export interface HoverTooltipProps extends Omit<PopoverProps, 'content' | '$show'> {
   /**
    * The content of the tooltip
    */
@@ -159,8 +159,9 @@ export function HoverTooltip(props: HoverTooltipProps) {
       {wrapInContainer ? <TooltipContainer>{content}</TooltipContainer> : content}
     </div>
   )
+
   return (
-    <Popover show={show} content={tooltipContent} {...rest}>
+    <Popover $show={show} content={tooltipContent} {...rest}>
       <div onMouseEnter={open} onMouseLeave={close} onClick={isMobile ? undefined : toggleTooltip}>
         {children}
       </div>
@@ -169,11 +170,6 @@ export function HoverTooltip(props: HoverTooltipProps) {
 }
 
 export interface TooltipProps extends Omit<PopoverProps, 'content'> {
-  /**
-   * Shows the tooltip
-   */
-  show: boolean
-
   /**
    * Whether to wrap the content in a container
    */
@@ -195,14 +191,14 @@ export interface TooltipProps extends Omit<PopoverProps, 'content'> {
  */
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function Tooltip({ content, className, wrapInContainer, show, containerRef, ...rest }: TooltipProps) {
+export function Tooltip({ content, className, wrapInContainer, $show, containerRef, ...rest }: TooltipProps) {
   const tooltipRef = useRef<HTMLDivElement>(null)
 
   const handleClick = useCallback(() => {
-    if (show && rest.onClickCapture) {
+    if ($show && rest.onClickCapture) {
       rest.onClickCapture({} as React.MouseEvent<HTMLDivElement>)
     }
-  }, [show, rest])
+  }, [$show, rest])
 
   useOnClickOutside([tooltipRef], handleClick)
 
@@ -211,7 +207,7 @@ export function Tooltip({ content, className, wrapInContainer, show, containerRe
   return (
     <Popover
       className={className}
-      show={show}
+      $show={$show}
       content={<div ref={tooltipRef}>{wrapInContainer ? <TooltipContainer>{content}</TooltipContainer> : content}</div>}
       {...rest}
     />

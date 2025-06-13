@@ -1,6 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
-import { MenuButton, MenuList } from '@reach/menu-button'
+import { MenuButton } from '@reach/menu-button'
 import styled, { css } from 'styled-components'
 
 export const SettingsContainer = styled.div`
@@ -66,10 +66,10 @@ export const SettingsButton = styled(MenuButton)`
   cursor: pointer;
 `
 
-const iconButtonStyles = css<{ active?: boolean; iconSize?: string }>`
+const iconButtonStyles = css`
   --maxSize: 28px;
-  --iconSize: ${({ iconSize }) => iconSize || `var(${UI.ICON_SIZE_NORMAL})`};
-  background: ${({ active }) => (active ? `var(${UI.COLOR_PAPER_DARKER})` : 'none')};
+  --iconSize: var(${UI.ICON_SIZE_NORMAL});
+  background: var(${UI.COLOR_PAPER_DARKER});
   border: none;
   padding: 4px;
   cursor: pointer;
@@ -97,16 +97,10 @@ const iconButtonStyles = css<{ active?: boolean; iconSize?: string }>`
   }
 `
 
-export const SettingsButtonIcon = styled.span<{ active?: boolean; iconSize?: string }>`
+export const SettingsButtonIcon = styled.span`
   ${iconButtonStyles}
   --iconSize: 18px;
   margin: auto;
-`
-
-export const MenuContent = styled(MenuList)`
-  position: relative;
-  z-index: 2;
-  color: var(${UI.COLOR_TEXT_PAPER});
 `
 
 export const ButtonsContainer = styled.div`
@@ -119,9 +113,4 @@ export const ButtonsContainer = styled.div`
     left: 0;
     top: 0;
   }
-`
-
-export const UsdButton = styled.button<{ active?: boolean }>`
-  ${iconButtonStyles}
-  --iconSize: 20px;
 `

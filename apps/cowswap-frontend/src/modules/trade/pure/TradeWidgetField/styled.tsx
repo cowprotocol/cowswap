@@ -38,15 +38,15 @@ export const ErrorText = styled.div<{ type?: 'error' | 'warning' }>`
   margin-top: 5px;
 `
 
-export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
+export const TradeWidgetFieldBox = styled.div<{ $hasPrefix?: boolean }>`
   --minHeight: 45px;
-  background: ${({ hasPrefix }) => (hasPrefix ? 'transparent' : `var(${UI.COLOR_PAPER_DARKER})`)};
-  border: 1px solid ${({ hasPrefix }) => (hasPrefix ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
+  background: ${({ $hasPrefix }) => ($hasPrefix ? 'transparent' : `var(${UI.COLOR_PAPER_DARKER})`)};
+  border: 1px solid ${({ $hasPrefix }) => ($hasPrefix ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
   border-radius: 16px;
   min-height: var(--minHeight);
   font-size: 18px;
   padding: 10px 16px;
-  padding: ${({ hasPrefix }) => (hasPrefix ? '0' : '10px 16px')};
+  padding: ${({ $hasPrefix }) => ($hasPrefix ? '0' : '10px 16px')};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -59,8 +59,8 @@ export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
     gap: 0;
   }
 
-  ${({ hasPrefix }) =>
-    hasPrefix &&
+  ${({ $hasPrefix }) =>
+    $hasPrefix &&
     css`
       display: grid;
       grid-template-columns: max-content auto;
@@ -73,7 +73,7 @@ export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
     `}
 
   ${TradeWidgetFieldLabel} {
-    padding: ${({ hasPrefix }) => (hasPrefix ? '10px 16px' : 'initial')};
+    padding: ${({ $hasPrefix }) => ($hasPrefix ? '10px 16px' : 'initial')};
   }
 
   ${Content} {
@@ -86,8 +86,8 @@ export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
       appearance: textfield;
     }
 
-    ${({ hasPrefix }) =>
-      hasPrefix &&
+    ${({ $hasPrefix }) =>
+      $hasPrefix &&
       css`
         flex: 1 1 auto;
         justify-content: center;
@@ -112,10 +112,10 @@ export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
     }
 
     > span {
-      background: ${({ hasPrefix }) => (hasPrefix ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
+      background: ${({ $hasPrefix }) => ($hasPrefix ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
 
-      ${({ hasPrefix }) =>
-        hasPrefix &&
+      ${({ $hasPrefix }) =>
+        $hasPrefix &&
         css`
           margin: auto;
           height: 100%;

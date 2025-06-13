@@ -204,8 +204,8 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
                 )}
               </styledEl.WarningContent>
             }
-            bgColor={`var(${UI.COLOR_DANGER_BG})`}
-            color={`var(${UI.COLOR_DANGER_TEXT})`}
+            $bgColor={`var(${UI.COLOR_DANGER_BG})`}
+            $color={`var(${UI.COLOR_DANGER_TEXT})`}
           >
             <WarningContent>
               <SVG src={allowanceIcon} />
@@ -300,8 +300,8 @@ function UnlikelyToExecuteWarning(props: UnlikelyToExecuteWarningProps) {
       <HoverTooltip
         wrapInContainer={true}
         placement="bottom"
-        bgColor={`var(${UI.COLOR_ALERT_BG})`}
-        color={`var(${UI.COLOR_ALERT_TEXT})`}
+        $bgColor={`var(${UI.COLOR_ALERT_BG})`}
+        $color={`var(${UI.COLOR_ALERT_TEXT})`}
         content={
           <styledEl.WarningContent>
             <h3>Order unlikely to execute</h3>

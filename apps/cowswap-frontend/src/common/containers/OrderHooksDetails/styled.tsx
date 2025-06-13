@@ -2,7 +2,7 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components'
 
-export const Wrapper = styled.div<{ isOpen: boolean; margin?: string }>`
+export const Wrapper = styled.div<{ $margin?: string }>`
   display: flex;
   flex-flow: row wrap;
   align-items: center;
@@ -13,7 +13,7 @@ export const Wrapper = styled.div<{ isOpen: boolean; margin?: string }>`
   height: auto;
   font-size: 13px;
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
-  margin: ${({ margin }) => margin || '0'};
+  margin: ${({ $margin }) => $margin || '0'};
 `
 
 export const Summary = styled.div`
@@ -60,13 +60,13 @@ export const Content = styled.div`
   }
 `
 
-export const ToggleButton = styled.div<{ isOpen: boolean }>`
+export const ToggleButton = styled.div<{ $isOpen: boolean }>`
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 7px;
-  opacity: ${({ isOpen }) => (isOpen ? 1 : 0.7)};
+  opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0.7)};
   transition: opacity ${UI.ANIMATION_DURATION_SLOW} ease-in-out;
   outline: none;
   font-size: inherit;
@@ -77,9 +77,9 @@ export const ToggleButton = styled.div<{ isOpen: boolean }>`
   }
 `
 
-export const ToggleIcon = styled.div<{ isOpen: boolean }>`
+export const ToggleIcon = styled.div<{ $isOpen: boolean }>`
   --size: 16px;
-  transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+  transform: ${({ $isOpen }) => ($isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
   transition: transform var(${UI.ANIMATION_DURATION_SLOW}) ease-in-out;
   display: flex;
   align-items: center;

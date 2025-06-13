@@ -6,12 +6,12 @@ import styled, { css } from 'styled-components'
 import { loadingAnimationMixin } from './style-mixins'
 
 export const Box = styled.div<{
-  isCollapsed: boolean
-  hasSeparatorLine?: boolean
+  $isCollapsed: boolean
+  $hasSeparatorLine?: boolean
   disabled: boolean
 }>`
   display: block;
-  margin: ${({ isCollapsed }) => (isCollapsed ? '-13px auto' : '2px auto')};
+  margin: ${({ $isCollapsed }) => ($isCollapsed ? '-13px auto' : '2px auto')};
   cursor: ${({ disabled }) => (disabled ? 'inherit' : 'pointer')};
   color: inherit;
   position: relative;
@@ -21,8 +21,8 @@ export const Box = styled.div<{
   justify-content: center;
   transition: width var(${UI.ANIMATION_DURATION}) ease-in-out;
 
-  ${({ hasSeparatorLine }) =>
-    hasSeparatorLine &&
+  ${({ $hasSeparatorLine }) =>
+    $hasSeparatorLine &&
     css`
       &::before {
         content: '';
@@ -36,7 +36,7 @@ export const Box = styled.div<{
     `}
 `
 
-export const LoadingWrapper = styled.div<{ isLoading: boolean }>`
+export const LoadingWrapper = styled.div<{ $isLoading: boolean }>`
   --size: 26px;
   position: absolute;
   left: calc(50% - var(--size) / 2);
@@ -59,7 +59,7 @@ export const LoadingWrapper = styled.div<{ isLoading: boolean }>`
     transform: translateY(-2px);
   }
 
-  ${({ isLoading }) => isLoading && loadingAnimationMixin}
+  ${({ $isLoading }) => $isLoading && loadingAnimationMixin}
 `
 
 export const ArrowDownIcon = styled(ArrowDown)<{ disabled: boolean }>`

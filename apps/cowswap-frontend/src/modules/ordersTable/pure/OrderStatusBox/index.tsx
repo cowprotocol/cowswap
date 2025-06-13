@@ -22,17 +22,17 @@ const shimmerAnimation = keyframes`
 `
 
 const Wrapper = styled.div<{
-  color: string
-  background: string
-  withWarning?: boolean
-  widthAuto?: boolean
-  clickable?: boolean
-  isCancelling?: boolean
-  isSigning?: boolean
+  $color: string
+  $background: string
+  $withWarning?: boolean
+  $widthAuto?: boolean
+  $clickable?: boolean
+  $isCancelling?: boolean
+  $isSigning?: boolean
 }>`
   --height: 26px;
-  --statusColor: ${({ color }) => color};
-  --statusBackground: ${({ background }) => background};
+  --statusColor: ${({ $color }) => $color};
+  --statusBackground: ${({ $background }) => $background};
 
   display: flex;
   align-items: center;
@@ -44,8 +44,8 @@ const Wrapper = styled.div<{
   font-size: 12px;
   font-weight: 600;
   height: var(--height);
-  width: ${({ widthAuto }) => (widthAuto ? 'auto' : '100%')};
-  cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
+  width: ${({ $widthAuto }) => ($widthAuto ? 'auto' : '100%')};
+  cursor: ${({ $clickable }) => ($clickable ? 'pointer' : '')};
 
   &::before {
     content: '';
@@ -60,8 +60,8 @@ const Wrapper = styled.div<{
     border-radius: 16px;
   }
 
-  ${({ isCancelling, isSigning }) =>
-    (isCancelling || isSigning) &&
+  ${({ $isCancelling, $isSigning }) =>
+    ($isCancelling || $isSigning) &&
     css`
       overflow: hidden;
       border-radius: 16px;
@@ -125,14 +125,14 @@ export function OrderStatusBox({ order, widthAuto, withWarning, onClick, Warning
 
   return (
     <Wrapper
-      color={color}
-      background={background}
-      widthAuto={widthAuto}
-      withWarning={withWarning}
-      clickable={!!onClick}
+      $color={color}
+      $background={background}
+      $widthAuto={widthAuto}
+      $withWarning={withWarning}
+      $clickable={!!onClick}
       onClick={onClick}
-      isCancelling={order.isCancelling && !order.executionData.fullyFilled}
-      isSigning={order.status === OrderStatus.PRESIGNATURE_PENDING}
+      $isCancelling={order.isCancelling && !order.executionData.fullyFilled}
+      $isSigning={order.status === OrderStatus.PRESIGNATURE_PENDING}
     >
       {content}
     </Wrapper>

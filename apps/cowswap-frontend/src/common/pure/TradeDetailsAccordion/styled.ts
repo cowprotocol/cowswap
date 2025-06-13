@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 import { StyledToggleArrow } from '../ToggleArrow/styled'
 
-export const Wrapper = styled.div<{ isOpen: boolean }>`
+export const Wrapper = styled.div`
   display: flex;
   flex-flow: row wrap;
   align-items: center;
@@ -20,9 +20,9 @@ export const Wrapper = styled.div<{ isOpen: boolean }>`
   }
 `
 
-export const Details = styled.div<{ isVisible: boolean }>`
-  display: ${({ isVisible }) => (isVisible ? 'flex' : 'none')};
-  height: ${({ isVisible }) => (isVisible ? 'auto' : '0')};
+export const Details = styled.div<{ $isVisible: boolean }>`
+  display: ${({ $isVisible }) => ($isVisible ? 'flex' : 'none')};
+  height: ${({ $isVisible }) => ($isVisible ? 'auto' : '0')};
   margin: 0;
   flex-flow: row wrap;
   align-items: center;
@@ -44,14 +44,14 @@ export const Summary = styled.div`
   }
 `
 
-export const SummaryClickable = styled.div<{ isOpen: boolean }>`
+export const SummaryClickable = styled.div<{ $isOpen: boolean }>`
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   flex-flow: row wrap;
   gap: 4px;
-  color: ${({ isOpen }) => (isOpen ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_70})`)};
+  color: ${({ $isOpen }) => ($isOpen ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_70})`)};
   transition: all var(${UI.ANIMATION_DURATION}) ease-in-out;
   outline: none;
   font-size: inherit;
@@ -65,8 +65,8 @@ export const SummaryClickable = styled.div<{ isOpen: boolean }>`
   }
 
   > *:not(${StyledToggleArrow}) {
-    opacity: ${({ isOpen }) => (isOpen ? '0' : '1')};
-    visibility: ${({ isOpen }) => (isOpen ? 'hidden' : 'visible')};
+    opacity: ${({ $isOpen }) => ($isOpen ? '0' : '1')};
+    visibility: ${({ $isOpen }) => ($isOpen ? 'hidden' : 'visible')};
     transition:
       opacity var(${UI.ANIMATION_DURATION}) ease-in-out,
       visibility var(${UI.ANIMATION_DURATION}) ease-in-out;

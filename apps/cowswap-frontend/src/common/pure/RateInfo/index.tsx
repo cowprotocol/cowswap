@@ -26,7 +26,6 @@ export interface RateInfoParams {
 export interface RateInfoProps {
   className?: string
   label?: React.ReactNode
-  stylized?: boolean
   noLabel?: boolean
   prependSymbol?: boolean
   isInverted?: boolean
@@ -39,7 +38,7 @@ export interface RateInfoProps {
   rightAlign?: boolean
 }
 
-const Wrapper = styled.div<{ stylized: boolean }>`
+const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
@@ -112,7 +111,7 @@ const InvertIcon = styled.div`
   }
 `
 
-export const RateWrapper = styled.button<{ rightAlign?: boolean }>`
+export const RateWrapper = styled.button<{ $rightAlign?: boolean }>`
   display: inline;
   background: none;
   border: 0;
@@ -123,7 +122,7 @@ export const RateWrapper = styled.button<{ rightAlign?: boolean }>`
   color: inherit;
   font-size: 13px;
   letter-spacing: -0.1px;
-  text-align: ${({ rightAlign }) => (rightAlign ? 'right' : 'left')};
+  text-align: ${({ $rightAlign }) => ($rightAlign ? 'right' : 'left')};
   font-weight: 500;
   width: 100%;
 `
@@ -156,7 +155,6 @@ export function RateInfo({
   label = 'Limit price',
   setSmartQuoteSelectionOnce = false,
   doNotUseSmartQuote = false,
-  stylized = false,
   isInverted = false,
   noLabel = false,
   prependSymbol = true,
@@ -233,7 +231,7 @@ export function RateInfo({
   const toggleInverted = () => setCurrentIsInverted((state) => !state)
 
   return (
-    <Wrapper stylized={stylized} className={className}>
+    <Wrapper className={className}>
       {!noLabel && (
         <RateLabel>
           <Trans>{label}</Trans>
@@ -241,7 +239,7 @@ export function RateInfo({
         </RateLabel>
       )}
       <div>
-        <RateWrapper onClick={toggleInverted} rightAlign={rightAlign}>
+        <RateWrapper onClick={toggleInverted} $rightAlign={rightAlign}>
           <span
             title={
               currentActiveRate.toFixed(rateOutputCurrency.decimals || DEFAULT_DECIMALS) +

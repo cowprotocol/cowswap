@@ -11,7 +11,7 @@ import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 const JUST_CLICKED_TIMEOUT = ms`1s`
 const LONG_TEXT_LENGTH = 20
 
-const ActionButton = styled.button<{ hasLongText$: boolean }>`
+const ActionButton = styled.button<{ $hasLongText: boolean }>`
   display: flex;
   gap: 8px;
   width: 100%;
@@ -19,7 +19,7 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
   justify-content: center;
   background: var(${UI.COLOR_PRIMARY});
   color: var(${UI.COLOR_BUTTON_TEXT});
-  font-size: ${({ hasLongText$ }) => (hasLongText$ ? '16px' : '18px')};
+  font-size: ${({ $hasLongText }) => ($hasLongText ? '16px' : '18px')};
   font-weight: 600;
   border-radius: 16px;
   cursor: pointer;
@@ -113,7 +113,7 @@ export function TradeFormBlankButton({
       className={className}
       onClick={handleClick}
       disabled={showLoader || disabled}
-      hasLongText$={hasLongText}
+      $hasLongText={hasLongText}
     >
       {showLoader ? (
         <>

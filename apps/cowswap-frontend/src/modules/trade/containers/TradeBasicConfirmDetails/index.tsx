@@ -95,12 +95,7 @@ export function TradeBasicConfirmDetails(props: Props) {
   return (
     <styledEl.Wrapper>
       {/* Price */}
-      <styledEl.StyledRateInfo
-        label={priceLabel}
-        stylized={true}
-        rateInfoParams={rateInfoParams}
-        isInvertedState={isInvertedState}
-      />
+      <styledEl.StyledRateInfo label={priceLabel} rateInfoParams={rateInfoParams} isInvertedState={isInvertedState} />
 
       <TradeFeesAndCosts
         receiveAmountInfo={receiveAmountInfo}

@@ -15,7 +15,7 @@ export const AuxInformationContainer = styled.div<{
   margin?: string
   borderColor?: string
   borderWidth?: string
-  hideInput: boolean
+  hideInput?: boolean
   disabled?: boolean
   showAux?: boolean
 }>`
@@ -71,7 +71,7 @@ export const WarningCheckboxContainer = styled.label`
   }
 `
 
-export const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
+export const WarningContainer = styled(AuxInformationContainer).attrs<{ $isDarkMode: boolean }>((props) => ({
   ...props,
   hideInput: true,
 }))<HighFeeContainerProps>`
@@ -104,7 +104,7 @@ export const WarningContainer = styled(AuxInformationContainer).attrs((props) =>
     left: 0;
     border-radius: inherit;
     background: var(--warningColor);
-    opacity: ${({ isDarkMode }) => (isDarkMode ? 0.2 : 0.15)};
+    opacity: ${({ $isDarkMode }) => ($isDarkMode ? 0.2 : 0.15)};
     z-index: -1;
     width: 100%;
     height: 100%;

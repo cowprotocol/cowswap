@@ -46,10 +46,10 @@ export const Menu = styled.div`
   padding: 12px;
 `
 
-export const MenuItem = styled.div<{ active: boolean }>`
+export const MenuItem = styled.div<{ $active: boolean }>`
   transition: background 0.2s ease-in;
-  background: ${({ active }) => (active ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
-  color: ${({ active }) => (active ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_70})`)};
+  background: ${({ $active }) => ($active ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
+  color: ${({ $active }) => ($active ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_70})`)};
   justify-content: space-between;
   border-radius: 8px;
   padding: 0.4rem 0.8rem;

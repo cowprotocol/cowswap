@@ -16,7 +16,7 @@ import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
 
-import CopyHelper from 'legacy/components/Copy'
+import { CopyHelper } from 'legacy/components/Copy'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { SwapVCowStatus } from 'legacy/state/cowToken/actions'
 import { useSetSwapVCowStatus, useSwapVCowCallback, useSwapVCowStatus, useVCowData } from 'legacy/state/cowToken/hooks'

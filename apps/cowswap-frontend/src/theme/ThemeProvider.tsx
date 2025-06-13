@@ -3,7 +3,7 @@ import { ReactNode, useMemo } from 'react'
 import { isIframe, isInjectedWidget } from '@cowprotocol/common-utils'
 import { baseTheme, GlobalCoWDAOStyles } from '@cowprotocol/ui'
 
-import { ThemeProvider as StyledComponentsThemeProvider, CoWSwapTheme } from 'styled-components'
+import { ThemeProvider as StyledComponentsThemeProvider, DefaultTheme } from 'styled-components'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
@@ -26,7 +26,7 @@ const widgetMode = {
 
 const GlobalStyles = GlobalCoWDAOStyles()
 
-export function getCowswapTheme(darkmode: boolean): CoWSwapTheme {
+export function getCowswapTheme(darkmode: boolean): DefaultTheme {
   return {
     ...baseTheme(darkmode ? 'dark' : 'light'),
     ...widgetMode,

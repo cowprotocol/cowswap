@@ -69,7 +69,7 @@ export function ApproveButton(props: ApproveButtonProps) {
               </Trans>
             }
           >
-            {isPending ? <Loader stroke={theme.text1} /> : <HelpCircle size="24" />}
+            {isPending ? <Loader stroke={theme?.text1} /> : <HelpCircle size="24" />}
           </HoverTooltip>
         </>
       )

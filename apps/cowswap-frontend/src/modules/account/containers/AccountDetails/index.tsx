@@ -17,7 +17,7 @@ import {
 
 import { Trans } from '@lingui/macro'
 
-import Copy from 'legacy/components/Copy'
+import { CopyHelper as Copy } from 'legacy/components/Copy'
 import {
   ActivityDescriptors,
   groupActivitiesByDay,

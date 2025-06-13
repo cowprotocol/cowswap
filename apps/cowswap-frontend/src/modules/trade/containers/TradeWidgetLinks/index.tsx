@@ -77,10 +77,10 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
 
       const tradeUrlParams = isCurrentPathYield
         ? ({
-          chainId,
-          inputCurrencyId: itemTradeState.inputCurrencyId || defaultState?.inputCurrencyId || null,
-          outputCurrencyId: itemTradeState.outputCurrencyId,
-        } as TradeUrlParams)
+            chainId,
+            inputCurrencyId: itemTradeState.inputCurrencyId || defaultState?.inputCurrencyId || null,
+            outputCurrencyId: itemTradeState.outputCurrencyId,
+          } as TradeUrlParams)
         : getTradeUrlParams(item)
 
       const routePath =
@@ -120,7 +120,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
     <>
       <styledEl.MenuItem
         onClick={() => !singleMenuItem && setDropdownVisible(!isDropdownVisible)}
-        isDropdownVisible={isDropdownVisible}
+        $isDropdownVisible={isDropdownVisible}
       >
         <styledEl.DropdownButton>
           {selectedMenuItem.props.item.label}
@@ -152,10 +152,10 @@ const MenuItem = ({
   isActive: boolean
   onClick: Command
   isDropdownVisible: boolean
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }) => (
-  <styledEl.MenuItem isActive={isActive} onClick={onClick} isDropdownVisible={isDropdownVisible}>
+  <styledEl.MenuItem $isActive={isActive} onClick={onClick} $isDropdownVisible={isDropdownVisible}>
     <styledEl.Link to={routePath}>
       <Trans>{item.label}</Trans>
       {(!isActive && item.badgeImage) || item.badge ? (

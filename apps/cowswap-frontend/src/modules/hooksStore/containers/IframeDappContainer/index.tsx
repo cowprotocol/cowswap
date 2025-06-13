@@ -9,7 +9,7 @@ import styled from 'styled-components'
 
 import { HookDappContext as HookDappContextType, HookDappIframe } from '../../types/hooks'
 
-const Iframe = styled.iframe`
+const Iframe = styled.iframe<{ $isLoading: boolean }>`
   border: 0;
   min-height: 300px;
   opacity: ${({ $isLoading }: { $isLoading: boolean }) => ($isLoading ? 0 : 1)};

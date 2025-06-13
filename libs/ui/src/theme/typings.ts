@@ -1,6 +1,8 @@
+import { css } from 'styled-components'
+
 import { CowSwapTheme } from '../types'
 
-import type { FlattenSimpleInterpolation as StyledFlattenSimpleInterpolation } from 'styled-components'
+type StyledFlattenSimpleInterpolation = ReturnType<typeof css>
 
 type ColorValue = string
 

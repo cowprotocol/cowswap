@@ -19,7 +19,7 @@ export function CurrencyField({ label, token, amount }: Props) {
       <b>{label}</b>
 
       <div>
-        <CurrencySelectButton readonlyMode={true} loading={false} currency={token} />
+        <CurrencySelectButton readonlyMode loading currency={token} />
         <styledEl.CurrencyValue>
           <TokenAmount amount={amount} />
         </styledEl.CurrencyValue>

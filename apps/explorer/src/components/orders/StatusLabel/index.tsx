@@ -13,7 +13,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import BigNumber from 'bignumber.js'
-import styled, { DefaultTheme, css, keyframes, FlattenSimpleInterpolation } from 'styled-components'
+import styled, { DefaultTheme, css, keyframes } from 'styled-components'
 import { capitalize, formatPercentage } from 'utils'
 
 import { OrderStatus } from 'api/operator'
@@ -29,7 +29,7 @@ function setStatusColors({
 }: {
   theme: DefaultTheme
   status: CustomOrderStatus
-}): string | FlattenSimpleInterpolation {
+}): string | ReturnType<typeof css> {
   let background: string, text: string
 
   switch (status) {
@@ -64,7 +64,7 @@ type PartiallyTagProps = { partialFill: boolean; tagPosition: PartiallyTagPositi
 
 const PartiallyTagLabel = css<PartiallyTagProps>`
   &:after {
-    ${({ partialFill, theme, tagPosition, filledPercentage }): FlattenSimpleInterpolation | null =>
+    ${({ partialFill, theme, tagPosition, filledPercentage }): ReturnType<typeof css> | null =>
       partialFill
         ? css`
             content: ${tagPosition === 'bottom' ? `"${filledPercentage} filled"` : `"Partially filled"`};
@@ -122,8 +122,8 @@ const Label = styled.div<DisplayProps & ShimmingProps & PartiallyTagProps>`
   width: 100%;
   white-space: normal;
 
-  ${({ theme, status }): string | FlattenSimpleInterpolation => setStatusColors({ theme, status })}
-  ${({ shimming }): FlattenSimpleInterpolation | null =>
+  ${({ theme, status }): string | ReturnType<typeof css> => setStatusColors({ theme, status })}
+  ${({ shimming }): ReturnType<typeof css> | null =>
     shimming
       ? css`
           mask: linear-gradient(-60deg, #000 30%, #0005, #000 70%) right/300% 100%;
@@ -132,7 +132,7 @@ const Label = styled.div<DisplayProps & ShimmingProps & PartiallyTagProps>`
           animation-name: ${frameAnimation};
         `
       : null}
-  ${({ partialFill: partiallyFilled, tagPosition }): FlattenSimpleInterpolation | null =>
+  ${({ partialFill: partiallyFilled, tagPosition }): ReturnType<typeof css> | null =>
     partiallyFilled
       ? tagPosition === 'bottom'
         ? css`

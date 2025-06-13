@@ -15,4 +15,3 @@ export const TransactionStatusText = styled.span<{ isCopied?: boolean }>`
 `
 
 export * from './CopyMod'
-export { default } from './CopyMod'

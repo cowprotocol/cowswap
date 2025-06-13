@@ -171,7 +171,7 @@ export default function TokensOverview() {
                   {Object.entries(PageView).map(([key, value]) => (
                     <MenuItem
                       key={key}
-                      active={selectedView === key}
+                      $active={selectedView === key}
                       onClick={() => handleMenuClick(key as PageViewKeys)}
                     >
                       <span>{value.label}</span>

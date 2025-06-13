@@ -6,7 +6,7 @@ import { faCopy } from '@fortawesome/free-regular-svg-icons'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import { DISPLAY_TEXT_COPIED_CHECK } from '../../../explorer/const'
 
@@ -24,7 +24,7 @@ const Icon = styled(FontAwesomeIcon)<{ copied?: string; height?: number }>`
   margin: 0 0 0 0.3rem;
   width: 1.6rem !important;
 
-  ${({ height }): FlattenSimpleInterpolation | undefined | number =>
+  ${({ height }): ReturnType<typeof css> | undefined | number =>
     height &&
     css`
       height: ${height}rem;

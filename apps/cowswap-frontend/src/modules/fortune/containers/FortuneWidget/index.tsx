@@ -27,15 +27,15 @@ import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/ty
 
 import { SuccessBanner } from './styled'
 
-const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
+const FortuneButton = styled.div<{ $isDailyFortuneChecked: boolean }>`
   --size: 32px;
   display: flex;
 
   width: var(--size);
   height: var(--size);
   text-align: center;
-  animation: ${({ isDailyFortuneChecked }) =>
-    isDailyFortuneChecked ? '' : 'floating 3.5s ease-in-out forwards infinite'};
+  animation: ${({ $isDailyFortuneChecked }) =>
+    $isDailyFortuneChecked ? '' : 'floating 3.5s ease-in-out forwards infinite'};
   cursor: pointer;
   transform: scale(1);
   font-size: 40px;
@@ -386,7 +386,7 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
   return (
     <>
       <FortuneButton
-        isDailyFortuneChecked={isDailyFortuneChecked}
+        $isDailyFortuneChecked={isDailyFortuneChecked}
         onClick={openFortuneModal}
         data-click-event={toCowSwapGtmEvent({
           category: CowSwapAnalyticsCategory.COW_FORTUNE,

@@ -73,7 +73,7 @@ export const Wrapper = styled.div`
   }
 `
 
-export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: boolean }>`
+export const MenuItem = styled.div<{ $isActive?: boolean; $isDropdownVisible: boolean }>`
   display: flex;
   align-items: center;
   color: inherit;
@@ -95,8 +95,8 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
       background: var(${UI.COLOR_PAPER_DARKER});
     }
 
-    ${({ isActive }) =>
-      isActive &&
+    ${({ $isActive }) =>
+      $isActive &&
       css`
         background: var(${UI.COLOR_PAPER_DARKER});
 
@@ -109,8 +109,8 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
         }
       `}
 
-    ${({ isDropdownVisible }) =>
-      isDropdownVisible &&
+    ${({ $isDropdownVisible }) =>
+      $isDropdownVisible &&
       css`
         padding: 16px;
         width: 100%;
