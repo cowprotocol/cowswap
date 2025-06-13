@@ -8,32 +8,31 @@ import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import Snowfall from 'react-snowfall'
 
-import { AccountElement } from 'legacy/components/Header/AccountElement'
-import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
-import { HeaderControls, HeaderElement } from 'legacy/components/Header/styled'
 import { URLWarning } from 'legacy/components/Header/URLWarning'
-import { TopLevelModals } from 'legacy/components/TopLevelModals'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { OrdersPanel } from 'modules/account'
-import { useInjectedWidgetMetaData, useInjectedWidgetParams } from 'modules/injectedWidget'
+import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
 import { useInitializeUtm } from 'modules/utm'
 
 import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
-import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useCustomTheme } from 'common/hooks/useCustomTheme'
 import { useGetMarketDimension } from 'common/hooks/useGetMarketDimension'
 
 import { ADDITIONAL_FOOTER_CONTENT, PRODUCT_VARIANT } from '../App/menuConsts'
-import { RoutesApp } from '../App/RoutesApp'
 import * as styledEl from '../App/styled'
 import { AppMenu } from '../AppMenu'
+import { NetworkAndAccountControls } from '../NetworkAndAccountControls'
 
 // Initialize static analytics instance
 const pixel = initPixelAnalytics()
 
-export function AppContainer(): ReactNode {
+interface AppContainerProps {
+  children: ReactNode | ReactNode[]
+}
+
+export function AppContainer({ children }: AppContainerProps): ReactNode {
   const { chainId, account } = useWalletInfo()
   const { walletName } = useWalletDetails()
   const cowAnalytics = useCowAnalytics()
@@ -56,20 +55,11 @@ export function AppContainer(): ReactNode {
   const isInjectedWidgetMode = isInjectedWidget()
   const [darkMode] = useDarkModeManager()
 
-  const { hideNetworkSelector } = useInjectedWidgetParams()
-  const { pendingActivity } = useCategorizeRecentActivity()
   const isMobile = useMediaQuery(Media.upToMedium(false))
 
   const customTheme = useCustomTheme()
 
-  const persistentAdditionalContent = (
-    <HeaderControls>
-      {!hideNetworkSelector && <NetworkSelector />}
-      <HeaderElement>
-        <AccountElement pendingActivities={pendingActivity} />
-      </HeaderElement>
-    </HeaderControls>
-  )
+  const networkAndAccountControls = <NetworkAndAccountControls />
 
   const isChristmasTheme = customTheme === 'darkChristmas' || customTheme === 'lightChristmas'
 
@@ -80,13 +70,12 @@ export function AppContainer(): ReactNode {
 
       <OrdersPanel />
 
-      <AppMenu>{persistentAdditionalContent}</AppMenu>
+      <AppMenu>{networkAndAccountControls}</AppMenu>
 
       {isYieldEnabled && <CoWAmmBanner />}
 
       <styledEl.BodyWrapper customTheme={customTheme}>
-        <TopLevelModals />
-        <RoutesApp />
+        {children}
         <styledEl.Marginer />
       </styledEl.BodyWrapper>
 
@@ -113,7 +102,7 @@ export function AppContainer(): ReactNode {
       )}
 
       {/* Render MobileHeaderControls outside of MenuBar on mobile */}
-      {isMobile && !isInjectedWidgetMode && persistentAdditionalContent}
+      {isMobile && !isInjectedWidgetMode && networkAndAccountControls}
     </styledEl.AppWrapper>
   )
 }
