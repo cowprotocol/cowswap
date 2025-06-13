@@ -8,8 +8,6 @@ import { baseTheme } from '@cowprotocol/ui'
 import Link from 'next/link'
 import styled, { createGlobalStyle, css, ThemeProvider } from 'styled-components/macro'
 
-import { CoWDAOFonts } from '@/styles/CoWDAOFonts'
-
 import { NAV_ADDITIONAL_BUTTONS, NAV_ITEMS, PAGE_MAX_WIDTH, PRODUCT_VARIANT } from './const'
 
 import { useSetupPage } from '../../hooks/useSetupPage'
@@ -44,8 +42,7 @@ interface LayoutProps {
 export function Layout({ children, bgColor, host }: Readonly<LayoutProps>): ReactNode {
   useSetupPage()
 
-  const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts)
-
+  const GlobalStyles = GlobalCoWDAOStyles()
   const LocalStyles = createGlobalStyle(
     () => css`
       body {

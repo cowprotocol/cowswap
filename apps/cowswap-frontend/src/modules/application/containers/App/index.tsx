@@ -8,12 +8,11 @@ import { ThemeProvider } from 'theme'
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
 
 import { LoadingApp } from 'common/pure/LoadingApp'
-import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 
 import { AppContainer } from '../AppContainer'
 
-const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts)
+const GlobalStyles = GlobalCoWDAOStyles()
 const LocalGlobalStyles = createGlobalStyle(
   () => css`
     body {
