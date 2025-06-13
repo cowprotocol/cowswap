@@ -1,6 +1,6 @@
 import { Media, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const ClaimSummaryTitle = styled.h1`
   font-size: 1.6rem;

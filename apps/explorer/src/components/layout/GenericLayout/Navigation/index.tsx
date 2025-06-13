@@ -2,7 +2,7 @@ import { Media } from '@cowprotocol/ui'
 import { Color } from '@cowprotocol/ui'
 
 import * as CSS from 'csstype'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const Navigation = styled.ol<Partial<CSS.Properties & { isActive: boolean }>>`
   list-style: none;

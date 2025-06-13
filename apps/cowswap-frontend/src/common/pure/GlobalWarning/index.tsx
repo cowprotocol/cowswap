@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { Media, UI } from '@cowprotocol/ui'
 
 import { AlertTriangle, X } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 // TODO: Replace any with proper type definitions
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

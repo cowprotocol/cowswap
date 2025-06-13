@@ -4,7 +4,7 @@ import { Color, Media } from '@cowprotocol/ui'
 
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 
 import { Dropdown, DropdownOption } from '../Dropdown'
 
@@ -60,8 +60,8 @@ const Icon = styled(FontAwesomeIcon)`
     color: ${Color.explorer_textActive};
   }
 `
-const PaginationButton = styled.button.attrs<{ disabled?: boolean }>(props => ({
-  disabled: props.disabled ?? true
+const PaginationButton = styled.button.attrs<{ disabled?: boolean }>((props) => ({
+  disabled: props.disabled ?? true,
 }))`
   align-items: center;
   background: none;
@@ -124,7 +124,7 @@ type PaginationProps<T> = {
 
 // TODO: Replace any with proper type definitions
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, max-lines-per-function
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const TablePagination: React.FC<PaginationProps<any>> = ({ context, fixedResultsPerPage }) => {
   const {
     isLoading,

@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react'
 import { UI } from '@cowprotocol/ui'
 import { HelpTooltip } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { ORDERS_TABLE_SETTINGS } from 'modules/trade/const/common'
 import { SettingsBox, SettingsContainer, SettingsTitle } from 'modules/trade/pure/Settings'

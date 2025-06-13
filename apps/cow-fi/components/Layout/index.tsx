@@ -6,7 +6,7 @@ import { Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
 import { baseTheme } from '@cowprotocol/ui'
 
 import Link from 'next/link'
-import styled, { createGlobalStyle, css, ThemeProvider } from 'styled-components/macro'
+import styled, { createGlobalStyle, css, ThemeProvider } from 'styled-components'
 
 import { NAV_ADDITIONAL_BUTTONS, NAV_ITEMS, PAGE_MAX_WIDTH, PRODUCT_VARIANT } from './const'
 

@@ -1,7 +1,7 @@
 import { Media, TokenAmount, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const AmountItem = styled.div`
   display: flex;

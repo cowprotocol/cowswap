@@ -2,7 +2,7 @@ import { USDC_MAINNET, WBTC } from '@cowprotocol/common-const'
 import { Identicon } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { IconSpinner } from '../IconSpinner'
 

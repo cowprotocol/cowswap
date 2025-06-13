@@ -1,6 +1,6 @@
 import { ProductLogo, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const CoWAmmLogo = styled(ProductLogo)`
   --size: 33px;

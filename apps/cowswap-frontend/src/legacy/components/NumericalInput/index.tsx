@@ -2,7 +2,7 @@ import React from 'react'
 
 import { UI } from '@cowprotocol/ui'
 
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 
 import { autofocus } from 'common/utils/autofocus'
 

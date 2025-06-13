@@ -1,6 +1,6 @@
 import 'inter-ui' // TODO: We need to do a cosmos wrapper with the global styles! Will reiterate to remove this line
 import { useSelect } from 'react-cosmos/client'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { EthFlowStepper, EthFlowStepperProps, SmartOrderStatus } from './index'
 

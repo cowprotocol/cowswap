@@ -1,7 +1,7 @@
 import { InputHTMLAttributes } from 'react'
 
 import { Search } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { UI } from '../../enum'
 

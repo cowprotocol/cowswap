@@ -1,4 +1,4 @@
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const TradeWidgetWrapper = styled.div<{ visible$: boolean }>`
   visibility: ${({ visible$ }) => (visible$ ? 'visible' : 'hidden')};

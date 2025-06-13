@@ -8,7 +8,7 @@ import BigNumber from 'bignumber.js'
 import { SurplusComponent } from 'components/common/SurplusComponent'
 import { TokenAmount } from 'components/token/TokenAmount'
 import { BaseIconTooltipOnHover } from 'components/Tooltip'
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
+import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
 
 import { Order } from 'api/operator'
 // TODO: Enable once API is ready

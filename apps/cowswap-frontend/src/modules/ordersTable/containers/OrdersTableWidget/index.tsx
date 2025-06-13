@@ -7,7 +7,7 @@ import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wa
 
 import { Search } from 'react-feather'
 import { useLocation } from 'react-router'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { Order } from 'legacy/state/orders/actions'
 

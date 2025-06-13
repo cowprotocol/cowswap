@@ -1,11 +1,11 @@
 import type { CowSwapWidgetPalette } from '@cowprotocol/widget-lib'
 
-import { DefaultTheme } from 'styled-components/macro'
+import { DefaultTheme } from 'styled-components'
 
 // Map the provided data from consumer to styled-components theme
 export function mapWidgetTheme(
   widgetTheme: Partial<CowSwapWidgetPalette> | undefined,
-  defaultTheme: DefaultTheme
+  defaultTheme: DefaultTheme,
 ): DefaultTheme {
   if (!widgetTheme) return defaultTheme
 

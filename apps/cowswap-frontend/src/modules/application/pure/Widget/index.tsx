@@ -1,6 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { WIDGET_MAX_WIDTH } from 'theme'
 
 import { BodyWrapper as BodyWrapperMod } from 'legacy/pages/AppBody'

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Story, Meta } from '@storybook/react'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { buildVolumeData } from './useGetVolumeData'
 import { VolumeChart, VolumeChartProps } from './VolumeChart'

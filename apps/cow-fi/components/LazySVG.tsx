@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
-import SVG, { Props as SVGProps } from 'react-inlinesvg'
-import styled, { keyframes } from 'styled-components/macro'
+
 import { Color } from '@cowprotocol/ui'
+
+import SVG, { Props as SVGProps } from 'react-inlinesvg'
+import styled, { keyframes } from 'styled-components'
 
 interface LazySVGProps extends Omit<SVGProps, 'loader'> {
   src: string

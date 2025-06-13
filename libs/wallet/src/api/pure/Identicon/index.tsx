@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Command } from '@cowprotocol/types'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const StyledIdenticon = styled.div`
   height: 1rem;

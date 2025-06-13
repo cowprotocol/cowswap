@@ -1,7 +1,7 @@
 import { LONG_PRECISION } from '@cowprotocol/common-const'
 import { formatFiatAmount, FractionUtils } from '@cowprotocol/common-utils'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { FractionLike, Nullish } from '../../types'
 

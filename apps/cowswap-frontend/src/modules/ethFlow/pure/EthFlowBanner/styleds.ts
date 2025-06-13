@@ -1,7 +1,7 @@
 import { ButtonPrimary, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const BannerWrapper = styled.div`
   display: flex;

@@ -1,7 +1,7 @@
 import { UI } from '@cowprotocol/ui'
 
 import { ArrowDown } from 'react-feather'
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 
 import { loadingAnimationMixin } from './style-mixins'
 

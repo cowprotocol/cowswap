@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { Menu, MenuItem, MenuPopover, MenuItems } from '@reach/menu-button'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { Settings } from 'modules/advancedOrders/pure/Settings'
 import { SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'

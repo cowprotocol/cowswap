@@ -1,7 +1,7 @@
 import { Color, Media } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import AppDataWrapper from '../../../components/common/AppDataWrapper'
 import ExplorerTabs from '../../components/common/ExplorerTabs/ExplorerTabs'

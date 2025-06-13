@@ -2,7 +2,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { activityDerivedStateMock } from 'mocks/activityDerivedStateMock'
 import { getOrderMock } from 'mocks/orderMock'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { TransactionSubmittedContent } from './index'
 

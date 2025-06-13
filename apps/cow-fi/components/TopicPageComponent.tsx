@@ -1,12 +1,14 @@
 'use client'
 
-import styled from 'styled-components/macro'
-import { CmsImage, Color, Font, Media } from '@cowprotocol/ui'
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { CowFiCategory } from 'src/common/analytics/types'
+import { CmsImage, Color, Font, Media } from '@cowprotocol/ui'
+
+import Link from 'next/link'
+import styled from 'styled-components'
+
+import { ArrowButton } from '@/components/ArrowButton'
 import { CategoryLinks } from '@/components/CategoryLinks'
 import { SearchBar } from '@/components/SearchBar'
-import { ArrowButton } from '@/components/ArrowButton'
 import {
   Breadcrumbs,
   ContainerCard,
@@ -17,7 +19,8 @@ import {
   LinkItem,
   LinkSection,
 } from '@/styles/styled'
-import Link from 'next/link'
+import { CowFiCategory } from 'src/common/analytics/types'
+
 import { Article } from '../services/cms'
 
 const Wrapper = styled.div`

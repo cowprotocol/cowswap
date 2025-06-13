@@ -1,6 +1,6 @@
 import { ExternalLink, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const Wrapper = styled.div`
   --grid-columns: 1fr 90px 60px 20px;

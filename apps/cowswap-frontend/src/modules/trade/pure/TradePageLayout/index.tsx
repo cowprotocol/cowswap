@@ -1,6 +1,6 @@
 import { Media, UI, MY_ORDERS_ID } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { WIDGET_MAX_WIDTH } from 'theme'
 
 const DEFAULT_MAX_WIDTH = '1500px'

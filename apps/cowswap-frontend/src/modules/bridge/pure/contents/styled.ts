@@ -1,7 +1,7 @@
 import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
-import styled, { keyframes } from 'styled-components/macro'
+import styled, { keyframes } from 'styled-components'
 
 import { Link, RecipientWrapper } from '../../styles'
 

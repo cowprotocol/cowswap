@@ -4,7 +4,7 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import { Color, Font, Media } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { ArrowButton } from '@/components/ArrowButton'
 import { CategoryLinks } from '@/components/CategoryLinks'

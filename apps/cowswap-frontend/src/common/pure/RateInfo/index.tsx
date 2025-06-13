@@ -7,7 +7,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import { Repeat } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { Nullish } from 'types'
 
 import { usePrice } from 'common/hooks/usePrice'

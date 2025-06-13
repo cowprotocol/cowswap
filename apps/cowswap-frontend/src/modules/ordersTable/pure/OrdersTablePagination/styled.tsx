@@ -2,7 +2,7 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import { Link } from 'react-router'
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 
 export const PaginationBox = styled.div`
   width: 100%;
@@ -28,7 +28,9 @@ const pageButtonStyles = css<{ $active?: boolean }>`
   width: 34px;
   margin: 0 5px;
   cursor: pointer;
-  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  transition:
+    background var(${UI.ANIMATION_DURATION}) ease-in-out,
+    color var(${UI.ANIMATION_DURATION}) ease-in-out;
   text-decoration: none;
 
   &:hover {

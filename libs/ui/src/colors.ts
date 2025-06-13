@@ -1,5 +1,5 @@
 import { transparentize } from 'polished'
-import { css } from 'styled-components/macro'
+import { css } from 'styled-components'
 
 /**
  * Central color system for CoW Protocol applications
@@ -150,7 +150,8 @@ export const Gradients = {
   cowfi_gradient2: 'linear-gradient(0deg, #071B3B 0%, #052B65 100%)',
   cowfi_gradientMesh: css`
     background-color: hsla(142, 0%, 100%, 1);
-    background-image: radial-gradient(at 5% 70%, hsla(204, 100%, 89%, 1) 0px, transparent 50%),
+    background-image:
+      radial-gradient(at 5% 70%, hsla(204, 100%, 89%, 1) 0px, transparent 50%),
       radial-gradient(at 47% 40%, hsla(214, 100%, 88%, 1) 0px, transparent 50%),
       radial-gradient(at 73% 3%, hsla(308, 67%, 91%, 1) 0px, transparent 50%),
       radial-gradient(at 44% 13%, hsla(13, 100%, 93%, 1) 0px, transparent 50%),

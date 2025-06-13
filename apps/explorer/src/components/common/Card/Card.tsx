@@ -1,7 +1,7 @@
 import { Media, Color } from '@cowprotocol/ui'
 
 import Grid, { GridSize } from '@material-ui/core/Grid'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const DefaultCard = styled.div`
   height: inherit;

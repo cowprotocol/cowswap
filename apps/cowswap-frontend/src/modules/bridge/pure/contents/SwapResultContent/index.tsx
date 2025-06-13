@@ -1,7 +1,7 @@
 import PlusIcon from '@cowprotocol/assets/cow-swap/plus.svg'
 import { isTruthy } from '@cowprotocol/common-utils'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 
@@ -23,7 +23,7 @@ interface SwapResultContentProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SwapResultContentContent({
   context: { winningSolver, receivedAmount, receivedAmountUsd, surplusAmount, surplusAmountUsd },
 }: SwapResultContentProps) {

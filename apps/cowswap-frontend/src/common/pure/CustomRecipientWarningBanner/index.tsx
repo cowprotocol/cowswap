@@ -1,7 +1,7 @@
 import { Command } from '@cowprotocol/types'
 import { ButtonSecondaryAlt, InlineBanner, InlineBannerProps } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 type CustomRecipientBannerProps = InlineBannerProps & { onDismiss?: Command }
 

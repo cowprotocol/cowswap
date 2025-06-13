@@ -1,6 +1,6 @@
 import { Color } from '@cowprotocol/ui'
 
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 
 export const BaseCard = styled.div<{ noPadding?: boolean }>`
   background-color: ${Color.explorer_bg};

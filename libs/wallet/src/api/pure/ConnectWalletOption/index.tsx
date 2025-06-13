@@ -3,7 +3,7 @@ import React from 'react'
 import { Command } from '@cowprotocol/types'
 import { ExternalLink, HoverTooltip, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const InfoCard = styled.button<{ isActive?: boolean }>`
   background-color: ${({ theme, isActive }) => (isActive ? theme.background : theme.bg2)};
@@ -118,7 +118,7 @@ export interface ConnectWalletOptionProps {
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ConnectWalletOption({
   onClick = null,
   link = null,

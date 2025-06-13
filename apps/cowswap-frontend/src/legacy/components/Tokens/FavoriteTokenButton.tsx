@@ -7,7 +7,7 @@ import { ButtonStar } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 import { Token } from '@uniswap/sdk-core'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const StyledButtonStar = styled(ButtonStar)`
   z-index: 9;
@@ -30,12 +30,12 @@ export default function FavoriteTokenButton({ tokenData }: FavoriteTokenButtonPa
       event.preventDefault()
       toggleFavoriteToken(tokenData)
     },
-    [toggleFavoriteToken, tokenData]
+    [toggleFavoriteToken, tokenData],
   )
 
   const isFavoriteToken = useMemo(
     () => favoriteTokens.some((t: Token) => t.address === tokenData.address),
-    [favoriteTokens, tokenData]
+    [favoriteTokens, tokenData],
   )
 
   return (

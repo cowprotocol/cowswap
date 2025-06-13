@@ -1,6 +1,6 @@
 import { Color } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const AppDataWrapper = styled.div`
   .json-formatter {

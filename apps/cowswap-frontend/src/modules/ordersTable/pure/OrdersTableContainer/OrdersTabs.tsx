@@ -5,7 +5,7 @@ import { Media, UI } from '@cowprotocol/ui'
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
@@ -150,7 +150,7 @@ export interface OrdersTabsProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function OrdersTabs({ tabs, isWalletConnected = true }: OrdersTabsProps) {
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
   const navigate = useNavigate()

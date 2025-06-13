@@ -1,4 +1,4 @@
-import { css } from 'styled-components/macro'
+import { css } from 'styled-components'
 
 export const ResetButtonCSS = css`
   background-color: transparent;

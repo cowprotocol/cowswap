@@ -1,6 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const HookItemWrapper = styled.li`
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});

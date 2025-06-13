@@ -5,7 +5,7 @@ import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { CheckCircle, Copy } from 'react-feather'
-import styled, { DefaultTheme, StyledComponentProps } from 'styled-components/macro'
+import styled, { DefaultTheme, StyledComponentProps } from 'styled-components'
 import { LinkStyledButton } from 'theme'
 
 import { TransactionStatusText } from 'legacy/components/Copy/index'

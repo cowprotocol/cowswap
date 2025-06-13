@@ -1,6 +1,6 @@
 import { Media, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const Wrapper = styled.div`
   border-top: 1px solid var(${UI.COLOR_BORDER});

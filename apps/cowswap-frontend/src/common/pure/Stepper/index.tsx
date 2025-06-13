@@ -2,7 +2,7 @@ import { UI } from '@cowprotocol/ui'
 
 import ICON_CHECK from 'assets/icon/check.svg'
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { IconSpinner } from 'common/pure/IconSpinner'
 
@@ -90,8 +90,8 @@ const Step = styled.div<StepProps>`
       stepState === 'error'
         ? `var(${stateStyles['error'].dotBackground})`
         : stepState === 'finished'
-        ? `var(${stateStyles['finished'].dotBackground})`
-        : `var(${UI.COLOR_TEXT_OPACITY_25})`};
+          ? `var(${stateStyles['finished'].dotBackground})`
+          : `var(${UI.COLOR_TEXT_OPACITY_25})`};
     border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   }
 

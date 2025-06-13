@@ -6,7 +6,7 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { ExternalLink, FiatAmount, SymbolElement, TokenAmount, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { Order } from 'legacy/state/orders/actions'
 

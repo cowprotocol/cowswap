@@ -1,6 +1,6 @@
 import { BaseChainInfo } from '@cowprotocol/common-const'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { WarningCard } from '../WarningCard'
 

@@ -1,7 +1,7 @@
 import { TokenAmount, loadingOpacityMixin, Media } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import Input from 'legacy/components/NumericalInput'
 

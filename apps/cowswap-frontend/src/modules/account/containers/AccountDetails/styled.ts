@@ -3,7 +3,7 @@ import { ButtonSecondary, Media } from '@cowprotocol/ui'
 import { ExternalLink, StyledLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { YellowCard } from 'legacy/components/Card'
 import { CopyIcon, TransactionStatusText } from 'legacy/components/Copy'

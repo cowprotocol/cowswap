@@ -13,7 +13,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import BigNumber from 'bignumber.js'
-import styled, { DefaultTheme, css, keyframes, FlattenSimpleInterpolation } from 'styled-components/macro'
+import styled, { DefaultTheme, css, keyframes, FlattenSimpleInterpolation } from 'styled-components'
 import { capitalize, formatPercentage } from 'utils'
 
 import { OrderStatus } from 'api/operator'
@@ -87,7 +87,7 @@ const PartiallyTagLabel = css<PartiallyTagProps>`
               border-left-width: 0;
               border-radius: 0 0.4rem 0.4rem 0;
               padding: 0 0.6rem;
-              font-size: 0.84em;              
+              font-size: 0.84em;
             `}
           `
         : null}

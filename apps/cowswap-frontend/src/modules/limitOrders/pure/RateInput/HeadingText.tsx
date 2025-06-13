@@ -2,7 +2,7 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenSymbol, UI } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { RateImpactIndicator } from 'modules/limitOrders/pure/RateImpactIndicator'
 

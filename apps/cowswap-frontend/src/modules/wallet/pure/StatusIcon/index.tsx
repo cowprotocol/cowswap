@@ -1,7 +1,7 @@
 import { Identicon, ConnectionType } from '@cowprotocol/wallet'
 import { CoinbaseWalletIcon, WalletConnectIcon } from '@cowprotocol/wallet'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const IconWrapper = styled.div<{ size?: number }>`
   ${({ theme }) => theme.flexColumnNoWrap};

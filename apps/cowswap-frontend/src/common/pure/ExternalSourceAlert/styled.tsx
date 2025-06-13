@@ -1,6 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const Contents = styled.div`
   display: flex;

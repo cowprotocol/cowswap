@@ -1,7 +1,7 @@
 import { Font, Color, Media } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 
 import { PAGE_MAX_WIDTH } from '@/components/Layout/const'
 

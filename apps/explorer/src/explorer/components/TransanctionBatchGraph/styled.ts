@@ -1,7 +1,7 @@
 import { Color } from '@cowprotocol/ui'
 
 import { StylesheetCSS } from 'cytoscape'
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 
 // TODO: update icon
 import CowProtocolIcon from '../../../assets/img/CoW-protocol.svg'

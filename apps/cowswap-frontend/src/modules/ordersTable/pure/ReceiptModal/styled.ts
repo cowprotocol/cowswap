@@ -1,7 +1,7 @@
 import { AutoRow, Media } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const Wrapper = styled.div`
   background: var(${UI.COLOR_PAPER});

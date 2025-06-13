@@ -10,7 +10,7 @@ import {
 } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
@@ -24,7 +24,6 @@ const ARBITRUM_ONE_START_DATE = 'May 2024'
 const BASE_START_DATE = 'December 2024'
 const POLYGON_START_DATE = 'May 2025'
 const AVALANCHE_START_DATE = 'May 2025'
-
 
 const START_DATE: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: DEFAULT_START_DATE,

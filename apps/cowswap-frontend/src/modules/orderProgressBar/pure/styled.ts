@@ -1,6 +1,6 @@
 import { Media, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const getOpacity = (status: string, isDarkMode: boolean): number => {
   const opacityMap = {

@@ -1,4 +1,4 @@
-import { keyframes } from 'styled-components/macro'
+import { keyframes } from 'styled-components'
 
 export const fadeIn = keyframes`
   from {

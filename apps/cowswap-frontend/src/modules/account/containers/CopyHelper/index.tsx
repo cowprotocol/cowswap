@@ -4,7 +4,7 @@ import { useCopyClipboard } from '@cowprotocol/common-hooks'
 
 import { Trans } from '@lingui/macro'
 import { CheckCircle, Copy } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { LinkStyledButton } from 'theme'
 
 const CopyIcon = styled(LinkStyledButton)`

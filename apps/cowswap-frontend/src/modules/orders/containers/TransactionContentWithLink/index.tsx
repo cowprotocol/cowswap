@@ -3,7 +3,7 @@ import { ReactElement } from 'react'
 import { isCowOrder } from '@cowprotocol/common-utils'
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLink'
 import { HashType } from 'legacy/state/enhancedTransactions/reducer'
@@ -27,7 +27,7 @@ interface TransactionContentWithLinkProps {
 
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TransactionContentWithLink(props: TransactionContentWithLinkProps) {
   const { chainId } = useWalletInfo()
   const safeInfo = useGnosisSafeInfo()

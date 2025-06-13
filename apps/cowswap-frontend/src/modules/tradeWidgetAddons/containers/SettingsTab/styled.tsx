@@ -2,7 +2,7 @@ import { Media, RowFixed, UI } from '@cowprotocol/ui'
 
 import { MenuButton, MenuList } from '@reach/menu-button'
 import { transparentize } from 'color2k'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const StyledMenuButton = styled(MenuButton)`
   position: relative;

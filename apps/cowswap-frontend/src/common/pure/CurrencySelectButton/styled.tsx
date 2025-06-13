@@ -1,7 +1,7 @@
 import DropDown from '@cowprotocol/assets/images/dropdown.svg?react'
 import { Media, TokenSymbol, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const TokenSubText = styled.div`
   font-size: 12px;

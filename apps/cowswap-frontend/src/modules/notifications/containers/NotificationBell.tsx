@@ -5,7 +5,7 @@ import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 

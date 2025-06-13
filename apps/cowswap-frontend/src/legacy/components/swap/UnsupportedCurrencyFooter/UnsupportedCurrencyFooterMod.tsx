@@ -7,7 +7,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { ThemedText, Z_INDEX, CloseIcon } from 'theme'
 
 import Card, { OutlineCard } from 'legacy/components/Card'
@@ -57,7 +57,7 @@ export interface UnsupportedCurrencyFooterParams {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function UnsupportedCurrencyFooter({
   show,
   currencies,

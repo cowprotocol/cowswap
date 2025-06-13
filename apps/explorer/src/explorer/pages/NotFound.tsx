@@ -2,7 +2,7 @@ import { Media } from '@cowprotocol/ui'
 
 import { getNetworkFromId } from '@gnosis.pm/dex-js'
 import { Helmet } from 'react-helmet'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { ContentCard as Content, StyledLink, Title, Wrapper as WrapperTemplate } from './styled'
 

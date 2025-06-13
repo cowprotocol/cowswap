@@ -7,7 +7,7 @@ import { InfoTooltip, HelpTooltip, RowFixed } from '@cowprotocol/ui'
 import { Currency, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { ExecutionPriceTooltip } from 'modules/limitOrders/pure/ExecutionPriceTooltip'
 import { OrderType } from 'modules/limitOrders/pure/OrderType'
@@ -52,7 +52,7 @@ export interface LimitOrdersDetailsProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
   const {
     executionPrice,

@@ -1,7 +1,8 @@
 'use client'
 
-import { createGlobalStyle } from 'styled-components/macro'
 import { Color, Media, ThemeColorVars, UI } from '@cowprotocol/ui'
+
+import { createGlobalStyle } from 'styled-components'
 
 const GlobalStyles = createGlobalStyle`
 ${ThemeColorVars}

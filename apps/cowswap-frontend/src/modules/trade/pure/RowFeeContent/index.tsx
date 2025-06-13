@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { FiatAmount, getTokenAmountTitle, InfoTooltip, RowBetween, RowFixed, TokenAmount, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { FiatRate } from 'common/pure/RateInfo'
 

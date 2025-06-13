@@ -41,7 +41,15 @@ export default defineConfig(({ mode }) => {
       protocolImports: true,
     }),
     react({
-      plugins: [['@lingui/swc-plugin', {}]],
+      plugins: [
+        ['@lingui/swc-plugin', {}],
+        [
+          '@swc/plugin-styled-components',
+          {
+            displayName: true,
+          },
+        ],
+      ],
     }),
     viteTsConfigPaths({
       root: '../../',

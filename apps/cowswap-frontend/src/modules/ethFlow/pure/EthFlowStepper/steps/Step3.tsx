@@ -6,7 +6,7 @@ import Finish from '@cowprotocol/assets/cow-swap/finish.svg'
 import Refund from '@cowprotocol/assets/cow-swap/refund.svg'
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { EthFlowStepperProps, SmartOrderStatus } from '../index'
 import { ExplorerLinkStyled, Step, StepProps } from '../Step'

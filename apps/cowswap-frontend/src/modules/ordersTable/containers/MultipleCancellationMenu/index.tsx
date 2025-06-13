@@ -5,7 +5,7 @@ import { Media, UI } from '@cowprotocol/ui'
 import { useWalletDetails } from '@cowprotocol/wallet'
 
 import { Trash2 } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { useMultipleOrdersCancellation } from 'common/hooks/useMultipleOrdersCancellation'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'

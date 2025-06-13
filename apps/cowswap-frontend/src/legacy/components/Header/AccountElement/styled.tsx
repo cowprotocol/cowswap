@@ -1,7 +1,7 @@
 import { Media, UI } from '@cowprotocol/ui'
 
 import { Text } from 'rebass'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const BalanceText = styled(Text)`
   font-weight: 500;

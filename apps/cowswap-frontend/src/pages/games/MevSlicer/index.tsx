@@ -2,7 +2,7 @@ import ninjaCowImg from '@cowprotocol/assets/cow-swap/ninja-cow.png'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'

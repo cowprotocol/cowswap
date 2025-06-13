@@ -1,6 +1,6 @@
 import { CowSwapTheme } from '../types'
 
-import type { FlattenSimpleInterpolation as StyledFlattenSimpleInterpolation } from 'styled-components/macro'
+import type { FlattenSimpleInterpolation as StyledFlattenSimpleInterpolation } from 'styled-components'
 
 type ColorValue = string
 

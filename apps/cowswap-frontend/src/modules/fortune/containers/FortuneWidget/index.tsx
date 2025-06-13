@@ -13,7 +13,7 @@ import { Trans } from '@lingui/macro'
 import ReactDOM from 'react-dom'
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { useOpenRandomFortune } from 'modules/fortune/hooks/useOpenRandomFortune'
 import { lastCheckedFortuneAtom } from 'modules/fortune/state/checkedFortunesListAtom'

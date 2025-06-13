@@ -1,5 +1,6 @@
-import styled from 'styled-components/macro'
 import { Media, Color } from '@cowprotocol/ui'
+
+import styled from 'styled-components'
 
 export const NetworkHeaderItem = styled.div`
   display: grid;

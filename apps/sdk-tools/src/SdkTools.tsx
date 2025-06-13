@@ -8,7 +8,7 @@ import {
   IsValidResult,
 } from '@cowprotocol/cow-sdk'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const ordersFactory = new ConditionalOrderFactory(DEFAULT_CONDITIONAL_ORDER_REGISTRY)
 
@@ -175,7 +175,7 @@ export function SdkTools() {
 
   // TODO: Break down this large function into smaller functions
   // TODO: Add proper return type annotation
-  // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setError(undefined)

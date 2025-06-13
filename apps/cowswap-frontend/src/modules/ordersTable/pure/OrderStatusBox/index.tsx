@@ -4,7 +4,7 @@ import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presign
 import { Command } from '@cowprotocol/types'
 
 import SVG from 'react-inlinesvg'
-import styled, { css, keyframes } from 'styled-components/macro'
+import styled, { css, keyframes } from 'styled-components'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 

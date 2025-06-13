@@ -4,7 +4,7 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { ButtonPrimary, ExternalLink } from '@cowprotocol/ui'
 
 import { AlertCircle } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import * as styledEl from './styled'
 

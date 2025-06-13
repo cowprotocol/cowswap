@@ -2,7 +2,7 @@ import { Media, Color } from '@cowprotocol/ui'
 
 import InternalExternalMenuLink from 'components/common/MenuDropdown/InternalExternalLink'
 import Icon from 'components/Icon'
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
+import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
 import { ResetButtonCSS } from 'theme/styles'
 
 export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`

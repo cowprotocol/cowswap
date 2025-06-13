@@ -7,7 +7,7 @@ import { RowFixed, TokenSymbol } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { CheckCircle } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 

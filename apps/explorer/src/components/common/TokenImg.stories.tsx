@@ -4,7 +4,7 @@ import React from 'react'
 import { Story, Meta } from '@storybook/react/types-6-0'
 import { WETH_ADDRESS_MAINNET, WXDAI_ADDRESS_XDAI } from 'const'
 import { ADDRESS_GNO_XDAI } from 'storybook/data'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { Frame } from './Frame'
 import { TokenImg, Props } from './TokenImg'

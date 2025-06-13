@@ -2,7 +2,7 @@ import { UI } from '@cowprotocol/ui'
 import { Media } from '@cowprotocol/ui'
 
 import { MenuList } from '@reach/menu-button'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const Wrapper = styled.div`
   display: flex;

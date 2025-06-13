@@ -1,6 +1,6 @@
 import { Media, UI } from '@cowprotocol/ui'
 
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 
 import { NumericalInput } from '../TradeNumberInput/styled'
 

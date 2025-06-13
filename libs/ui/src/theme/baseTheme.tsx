@@ -1,6 +1,6 @@
 import { darken } from 'color2k'
 import { transparentize } from 'polished'
-import { css } from 'styled-components/macro'
+import { css } from 'styled-components'
 
 import { Colors, CowProtocolTheme } from './typings'
 
@@ -41,7 +41,7 @@ export function baseTheme<T extends CowProtocolTheme>(theme: CowSwapTheme): CowP
  */
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, complexity
+// eslint-disable-next-line complexity
 function colors(darkMode: boolean): Colors {
   // TODO(theme-cleanup): These colors were migrated from apps/cow-fi/styles/variables.ts
   // They should be reviewed and potentially consolidated with the existing color system.

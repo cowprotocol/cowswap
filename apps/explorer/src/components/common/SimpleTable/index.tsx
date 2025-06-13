@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Media, Color } from '@cowprotocol/ui'
 
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 
 import { ScrollBarStyle } from '../../../explorer/styled'
 

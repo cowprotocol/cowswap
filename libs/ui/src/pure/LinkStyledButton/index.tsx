@@ -1,4 +1,4 @@
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 // A button that triggers some onClick result, but looks like a link.
 export const LinkStyledButton = styled.button<{ disabled?: boolean; bg?: boolean; isCopied?: boolean }>`

@@ -2,7 +2,7 @@ import cow404IMG from '@cowprotocol/assets/cow-swap/cow-404.png'
 import { ButtonPrimary, Media } from '@cowprotocol/ui'
 
 import { Link } from 'react-router'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { Content, GdocsListStyle, Page, Title } from 'modules/application/pure/Page'
 

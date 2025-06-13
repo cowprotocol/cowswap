@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 import IMG_FLYING_WINK_COW_DARK from '@cowprotocol/assets/images/flying-wink-cow-dark-mode.svg'
 
 import SVG from 'react-inlinesvg'
-import styled, { keyframes } from 'styled-components/macro'
+import styled, { keyframes } from 'styled-components'
 
 import { Color } from '../../colors'
 

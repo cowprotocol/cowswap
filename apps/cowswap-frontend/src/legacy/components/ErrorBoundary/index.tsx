@@ -5,7 +5,7 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { MEDIA_WIDTHS } from '@cowprotocol/ui'
 
 import * as Sentry from '@sentry/react'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { ChunkLoadError } from 'legacy/components/ErrorBoundary/ChunkLoadError'
 import { ErrorWithStackTrace } from 'legacy/components/ErrorBoundary/ErrorWithStackTrace'

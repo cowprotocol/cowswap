@@ -4,7 +4,7 @@ import { BaseButton, Media, UI } from '@cowprotocol/ui'
 import { transparentize } from 'color2k'
 import { HelpCircle } from 'react-feather'
 import { Link } from 'react-router'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const Wrapper = styled.div`
   width: 100%;

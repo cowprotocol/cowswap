@@ -1,6 +1,6 @@
 import { Media, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { StyledRowBetween } from 'modules/tradeWidgetAddons/pure/Row/styled'
 

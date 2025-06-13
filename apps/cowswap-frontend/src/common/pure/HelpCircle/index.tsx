@@ -2,7 +2,7 @@ import { questionIcon } from '@cowprotocol/assets/cow-swap/question'
 import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 

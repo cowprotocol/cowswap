@@ -1,4 +1,4 @@
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { UI } from '../../enum'
 
@@ -11,7 +11,9 @@ export const ReferenceElement = styled.div`
 export const PopoverContainer = styled.div<PopoverContainerProps>`
   visibility: ${(props) => (props.show ? 'visible' : 'hidden')};
   opacity: ${(props) => (props.show ? 1 : 0)};
-  transition: visibility 150ms linear, opacity 150ms linear;
+  transition:
+    visibility 150ms linear,
+    opacity 150ms linear;
 
   background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
   color: ${({ color }) => color || `var(${UI.COLOR_TEXT_PAPER})`};

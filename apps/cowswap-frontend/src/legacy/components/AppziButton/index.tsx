@@ -7,7 +7,7 @@ import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { isAppziEnabled, openFeedbackAppzi } from 'appzi'
 import { transparentize } from 'color2k'
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const Wrapper = styled.div`
   --size: 26px;

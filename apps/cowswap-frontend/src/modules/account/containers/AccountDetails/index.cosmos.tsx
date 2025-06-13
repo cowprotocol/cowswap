@@ -1,5 +1,5 @@
 import { useSelect } from 'react-cosmos/client'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { AccountDetails } from './index'
 

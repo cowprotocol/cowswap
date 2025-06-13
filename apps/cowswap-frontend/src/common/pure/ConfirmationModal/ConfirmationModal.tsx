@@ -1,7 +1,7 @@
 import { Command } from '@cowprotocol/types'
 
 import { Trans } from '@lingui/macro'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { ContentWrapper, Modal } from 'common/pure/Modal'
 

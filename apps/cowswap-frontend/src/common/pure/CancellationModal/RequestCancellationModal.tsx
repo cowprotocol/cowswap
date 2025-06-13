@@ -7,7 +7,7 @@ import type { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { ArrowLeft, ArrowRight } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { LinkStyledButton } from 'theme'
 
 import NotificationBanner from 'legacy/components/NotificationBanner'
@@ -82,7 +82,7 @@ const OrderTypeDetails = styled.div`
 `
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 export function RequestCancellationModal(props: RequestCancellationModalProps): ReactElement {
   const { onDismiss, triggerCancellation, summary, shortId, defaultType, txCost, nativeCurrency } = props
   const isOffChainCancellable = defaultType === 'offChain'

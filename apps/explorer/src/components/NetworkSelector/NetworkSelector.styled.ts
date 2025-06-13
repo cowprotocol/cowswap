@@ -3,7 +3,7 @@ import { Color, Media } from '@cowprotocol/ui'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ArrowIconCSS } from 'components/icons/cssIcons'
 import { NavLink } from 'react-router'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const SelectorContainer = styled.div`
   display: flex;

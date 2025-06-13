@@ -1,7 +1,7 @@
 import { UI } from '@cowprotocol/ui'
 
 import { MenuButton, MenuList } from '@reach/menu-button'
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 
 export const SettingsContainer = styled.div`
   --padding: 10px;

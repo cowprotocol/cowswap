@@ -8,7 +8,7 @@ import { PercentDisplay } from '@cowprotocol/ui/pure/PercentDisplay'
 import { ProgressBar } from 'components/common/ProgressBar'
 import { Amount, Percentage, SurplusComponent } from 'components/common/SurplusComponent'
 import { TokenAmount } from 'components/token/TokenAmount'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { safeTokenName } from 'utils'
 
 import { Order } from 'api/operator'

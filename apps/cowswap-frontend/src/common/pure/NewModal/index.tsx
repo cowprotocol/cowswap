@@ -5,7 +5,7 @@ import { BackButton, Media, UI } from '@cowprotocol/ui'
 
 import CLOSE_ICON from 'assets/icon/x.svg'
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const ModalInner = styled.div`
   display: flex;

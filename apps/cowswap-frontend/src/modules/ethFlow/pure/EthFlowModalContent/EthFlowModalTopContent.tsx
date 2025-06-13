@@ -2,7 +2,7 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { darken, transparentize } from 'color2k'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { EthFlowState } from '../../services/ethFlow/types'
 

@@ -4,7 +4,7 @@ import EqualIcon from '@cowprotocol/assets/cow-swap/equal.svg'
 import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 type EqualSignVariant = 'default' | 'success'
 

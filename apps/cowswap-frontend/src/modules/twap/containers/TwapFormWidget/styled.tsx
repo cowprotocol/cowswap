@@ -1,6 +1,6 @@
 import { Media, QuestionTooltipIconWrapper, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { RateInfo, RateWrapper } from 'common/pure/RateInfo'

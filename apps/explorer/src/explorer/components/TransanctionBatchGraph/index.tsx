@@ -18,7 +18,7 @@ import klay from 'cytoscape-klay'
 import noOverlap from 'cytoscape-no-overlap'
 import popper from 'cytoscape-popper'
 import CytoscapeComponent from 'react-cytoscapejs'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { useCytoscape, useTxBatchData, useVisualization } from './hooks'
 import { LAYOUTS } from './layouts'

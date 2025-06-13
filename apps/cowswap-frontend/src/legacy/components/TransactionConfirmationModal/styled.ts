@@ -2,7 +2,7 @@ import { Media, RowBetween } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { CloseIcon } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'

@@ -3,7 +3,7 @@ import { memo } from 'react'
 
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const ArrowBackgroundWrapper = styled.div<{ $maxOpacity: number }>`
   position: absolute;

@@ -1,6 +1,6 @@
 import { Media, UI } from '@cowprotocol/ui'
 
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 
 import { StatusIconState } from './StatusIcon'
 import { Progress1 } from './steps/Progress1'

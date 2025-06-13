@@ -1,6 +1,6 @@
 import ICON_ARROW from 'assets/icon/arrow.svg'
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { IMAGE_ACCOUNT, MOCK_TOKEN } from 'common/constants/cosmos'
 import { IconSpinner } from 'common/pure/IconSpinner'

@@ -5,7 +5,7 @@ import { Media, UI } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { transparentize } from 'color2k'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { toggleAccountSelectorModalAtom } from 'modules/wallet/containers/AccountSelectorModal/state'
 

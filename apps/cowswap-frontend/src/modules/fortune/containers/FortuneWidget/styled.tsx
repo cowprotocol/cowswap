@@ -1,7 +1,7 @@
 import { Media, UI } from '@cowprotocol/ui'
 
 import { darken, transparentize } from 'color2k'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const SuccessBannerColors = {
   opacity: 0.8,
@@ -29,8 +29,8 @@ export const SuccessBanner = styled.div<{ type: string }>`
     type === 'Twitter'
       ? transparentize(SuccessBannerColors.twitter, SuccessBannerColors.opacity)
       : type === 'Discord'
-      ? transparentize(SuccessBannerColors.discord, SuccessBannerColors.opacity)
-      : theme.blueShade3};
+        ? transparentize(SuccessBannerColors.discord, SuccessBannerColors.opacity)
+        : theme.blueShade3};
 
   &:hover {
     border: 2px solid
@@ -38,8 +38,8 @@ export const SuccessBanner = styled.div<{ type: string }>`
         type === 'Twitter'
           ? darken(SuccessBannerColors.twitter, SuccessBannerColors.darken)
           : type === 'Discord'
-          ? darken(SuccessBannerColors.discord, SuccessBannerColors.darken)
-          : darken(theme.blueShade3, SuccessBannerColors.darken)};
+            ? darken(SuccessBannerColors.discord, SuccessBannerColors.darken)
+            : darken(theme.blueShade3, SuccessBannerColors.darken)};
   }
 
   ${Media.upToSmall()} {
@@ -64,8 +64,8 @@ export const SuccessBanner = styled.div<{ type: string }>`
         type === 'Twitter'
           ? SuccessBannerColors.twitter
           : type === 'Discord'
-          ? SuccessBannerColors.discord
-          : theme.text1};
+            ? SuccessBannerColors.discord
+            : theme.text1};
     }
   }
 `

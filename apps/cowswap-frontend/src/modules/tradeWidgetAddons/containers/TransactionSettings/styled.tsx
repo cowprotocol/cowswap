@@ -1,7 +1,7 @@
 import { FancyButton, Media, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 
 import { darken } from 'color2k'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const Option = styled(FancyButton)<{ active: boolean }>`
   margin-right: 8px;

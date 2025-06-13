@@ -6,7 +6,7 @@ import { CenteredDots, HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cow
 import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
 
@@ -52,7 +52,7 @@ export interface RowSlippageContentProps {
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function RowSlippageContent(props: RowSlippageContentProps) {
   const {
     chainId,

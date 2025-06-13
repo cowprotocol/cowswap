@@ -17,7 +17,7 @@ import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@uniswap/sdk
 
 import { darken } from 'color2k'
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { Nullish } from 'types'
 
 import { HIGH_FEE_WARNING_PERCENTAGE, PENDING_EXECUTION_THRESHOLD_PERCENTAGE } from 'common/constants/common'
@@ -262,7 +262,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
                     />
                   </b>
                   .
-                    <styledEl.ExecuteInformationTooltipWarning>
+                  <styledEl.ExecuteInformationTooltipWarning>
                     This price is taken from external sources and may not accurately reflect the current on-chain price.
                   </styledEl.ExecuteInformationTooltipWarning>
                 </>

@@ -10,7 +10,7 @@ import { format, fromUnixTime, startOfToday } from 'date-fns'
 import { Token } from 'hooks/useGetTokens'
 import { createChart, IChartApi } from 'lightweight-charts'
 import { useNetworkId } from 'state/network'
-import styled, { useTheme } from 'styled-components/macro'
+import styled, { useTheme } from 'styled-components'
 
 import ShimmerBar from '../../../explorer/components/common/ShimmerBar'
 import { TextWithTooltip } from '../../../explorer/components/common/TextWithTooltip'
@@ -123,7 +123,7 @@ function _buildChart(chartContainer: HTMLDivElement, width: number | undefined, 
 
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, complexity
+// eslint-disable-next-line max-lines-per-function
 const RowToken: React.FC<RowProps> = ({ token, index }) => {
   const {
     id,

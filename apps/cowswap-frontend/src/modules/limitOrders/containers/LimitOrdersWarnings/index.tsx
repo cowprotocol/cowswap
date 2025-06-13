@@ -4,7 +4,7 @@ import React, { useCallback, useEffect } from 'react'
 import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { Nullish } from 'types'
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'

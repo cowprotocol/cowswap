@@ -22,7 +22,7 @@ import { TradeType } from '@cowprotocol/widget-lib'
 import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import { ThemeContext } from 'styled-components/macro'
+import { ThemeContext } from 'styled-components'
 import { ThemedText } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
@@ -218,8 +218,8 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
             sendDeadlineAnalytics('Custom', parsed)
             setDeadline(parsed)
           }
-        // TODO: Replace any with proper type definitions
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // TODO: Replace any with proper type definitions
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           console.error(error)
           setDeadlineError(DeadlineError.InvalidInput)

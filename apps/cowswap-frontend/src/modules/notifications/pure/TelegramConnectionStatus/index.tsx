@@ -1,7 +1,7 @@
 import { Loader, UI } from '@cowprotocol/ui'
 
 import { CheckCircle } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { Toggle } from 'legacy/components/Toggle'
 

@@ -4,7 +4,7 @@ import { Media, Color } from '@cowprotocol/ui'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { transparentize } from 'polished'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { faCircleCheck, faExclamationEllipsis, faExclamationTriangle } from './icons'
 

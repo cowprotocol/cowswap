@@ -2,7 +2,7 @@ import { UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import { ArrowDownCircle } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const ActiveRowWrapper = styled.div`
   background-color: ${({ theme }) => transparentize(theme.paperCustom, 0.4)};

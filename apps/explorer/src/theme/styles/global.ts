@@ -1,7 +1,7 @@
 import { Color } from '@cowprotocol/ui'
 
 import variables from 'components/layout/GenericLayout/variablesCss'
-import { createGlobalStyle, css } from 'styled-components/macro'
+import { createGlobalStyle, css } from 'styled-components'
 
 // TODO: remove for constants from colour palette later
 

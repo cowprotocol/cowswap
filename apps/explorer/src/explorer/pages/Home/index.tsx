@@ -5,7 +5,7 @@ import { Media } from '@cowprotocol/ui'
 
 import { useFlags } from 'launchdarkly-react-client-sdk'
 import { Helmet } from 'react-helmet'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { SUBGRAPH_URLS } from '../../../consts/subgraphUrls'
 import { useNetworkId } from '../../../state/network'

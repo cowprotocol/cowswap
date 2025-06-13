@@ -3,7 +3,7 @@ import { UI } from '@cowprotocol/ui'
 import { MenuButton, MenuItem, MenuList } from '@reach/menu-button'
 import { transparentize } from 'color2k'
 import { X } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const Wrapper = styled.div`
   color: inherit;

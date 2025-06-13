@@ -3,7 +3,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenSymbol } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { RateInfo, RateInfoParams } from './index'
 

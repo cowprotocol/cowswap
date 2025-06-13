@@ -1,7 +1,7 @@
 import { UI } from '@cowprotocol/ui'
 
 import { Link2 } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import CopyHelper from 'legacy/components/Copy'
 

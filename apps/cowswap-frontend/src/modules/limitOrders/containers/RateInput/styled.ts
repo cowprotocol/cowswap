@@ -1,7 +1,7 @@
 import { Loader, Media, TokenSymbol } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import Input from 'legacy/components/NumericalInput'
 
@@ -221,7 +221,7 @@ export const ActiveSymbol = styled.span<{ $active?: boolean }>`
     > div > img {
       opacity: 0.5;
     }
-    
+
     > ${TokenSymbol} {
       color: var(${UI.COLOR_TEXT_OPACITY_50});
     }

@@ -1,7 +1,7 @@
 import { Badge, UI } from '@cowprotocol/ui'
 
 import { NavLink } from 'react-router'
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 
 const ItemWithIcon = css`
   svg {

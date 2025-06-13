@@ -3,7 +3,7 @@ import { useRef, useState, useEffect, useCallback, useMemo } from 'react'
 import { useENSAvatar } from '@cowprotocol/ens'
 
 import jazzicon from '@metamask/jazzicon'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { useWalletInfo } from '../../hooks'
 import { Identicon as IdenticonPure } from '../../pure/Identicon'

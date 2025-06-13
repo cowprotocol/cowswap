@@ -1,7 +1,7 @@
 import { UI, Media } from '@cowprotocol/ui'
 
 import { AlertCircle } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 

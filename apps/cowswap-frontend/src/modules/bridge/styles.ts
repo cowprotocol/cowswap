@@ -2,7 +2,7 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import { FlattenSimpleInterpolation } from 'styled-components'
-import styled, { css, keyframes } from 'styled-components/macro'
+import styled, { css, keyframes } from 'styled-components'
 
 import { ARROW_ICON_SIZE } from 'common/pure/ToggleArrow/styled'
 

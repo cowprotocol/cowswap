@@ -2,7 +2,7 @@ import { UI } from '@cowprotocol/ui'
 
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button'
 import { ChevronDown } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { TradeWidgetField, TradeWidgetFieldProps } from '../TradeWidgetField'
 

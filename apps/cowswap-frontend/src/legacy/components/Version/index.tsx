@@ -15,7 +15,7 @@ import { UI, ExternalLink, Media } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import pkg from '../../../../package.json'
 

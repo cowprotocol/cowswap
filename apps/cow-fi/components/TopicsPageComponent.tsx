@@ -1,5 +1,11 @@
 'use client'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { CmsImage, Color, Font, Media } from '@cowprotocol/ui'
+
+import styled from 'styled-components'
+
+import { ArrowButton } from '@/components/ArrowButton'
 import { SearchBar } from '@/components/SearchBar'
 import {
   ContainerCard,
@@ -12,12 +18,9 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-import { ArrowButton } from '@/components/ArrowButton'
-import { useCowAnalytics } from '@cowprotocol/analytics'
 import { CowFiCategory } from 'src/common/analytics/types'
-import { CmsImage, Color, Font, Media } from '@cowprotocol/ui'
+
 import { ArticleListResponse } from '../services/cms'
-import styled from 'styled-components/macro'
 
 interface PageProps {
   categories: {

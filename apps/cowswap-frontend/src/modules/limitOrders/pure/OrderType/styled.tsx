@@ -2,7 +2,7 @@ import { UI } from '@cowprotocol/ui'
 
 import { MenuButton, MenuItem, MenuList } from '@reach/menu-button'
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const Wrapper = styled.div`
   position: relative;

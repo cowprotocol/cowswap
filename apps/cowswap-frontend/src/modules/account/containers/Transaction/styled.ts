@@ -2,7 +2,7 @@ import { TokenLogoWrapper } from '@cowprotocol/tokens'
 import { ExternalLink, FiatAmount, Media, RowFixed, StyledLink, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
-import styled, { css, keyframes } from 'styled-components/macro'
+import styled, { css, keyframes } from 'styled-components'
 
 import { RateWrapper } from 'common/pure/RateInfo'
 

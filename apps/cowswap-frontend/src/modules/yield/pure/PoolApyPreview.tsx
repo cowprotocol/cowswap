@@ -1,6 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const Wrapper = styled.div<{ isSuperior: boolean }>`
   padding: 6px 10px;

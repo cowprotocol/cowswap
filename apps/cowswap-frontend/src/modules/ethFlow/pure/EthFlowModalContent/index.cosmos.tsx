@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { useSelect, useValue } from 'react-cosmos/client'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { CowModal } from 'common/pure/Modal'
 import { ActivityStatus } from 'common/types/activity'
@@ -66,7 +66,7 @@ const txStatusMap: { [key: string]: ActivityStatus } = {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function Custom() {
   const [opened, setOpened] = useState(true)
   // TODO: Add proper return type annotation

@@ -4,7 +4,7 @@ import { isTruthy } from '@cowprotocol/common-utils'
 import { TokensByAddress } from '@cowprotocol/tokens'
 import { LpTokenProvider } from '@cowprotocol/types'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 

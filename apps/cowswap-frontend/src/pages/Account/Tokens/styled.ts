@@ -1,7 +1,7 @@
 import { Media, UI } from '@cowprotocol/ui'
 
 import { ChevronDown } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import Column from 'legacy/components/Column'
 

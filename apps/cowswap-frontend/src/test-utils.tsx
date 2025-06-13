@@ -12,7 +12,7 @@ import { I18nProvider } from '@lingui/react'
 import { render } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { MemoryRouter } from 'react-router'
-import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
+import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components'
 import { getCowswapTheme } from 'theme'
 
 import { cowSwapStore } from 'legacy/state'
@@ -100,8 +100,8 @@ const HydrateAtoms = ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   initialValues: any[]
   children?: ReactNode
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }) => {
   useHydrateAtoms(initialValues, { store })
   return <>{children}</>
@@ -117,8 +117,8 @@ export const JotaiTestProvider = ({
   initialValues: any[]
   children?: ReactNode
   store?: JotaiStore
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }) => (
   <JotaiProvider store={store}>
     <HydrateAtoms initialValues={initialValues} store={store}>

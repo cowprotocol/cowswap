@@ -1,6 +1,8 @@
-import styled, { css } from 'styled-components/macro'
-import { Color, Media, Font } from '@cowprotocol/ui'
 import React, { forwardRef } from 'react'
+
+import { Color, Media, Font } from '@cowprotocol/ui'
+
+import styled, { css } from 'styled-components'
 
 export enum ButtonVariant {
   OUTLINE = 'outline',
@@ -49,7 +51,9 @@ const Wrapper = styled.span<Omit<ButtonProps, 'href' | 'label' | 'target' | 'rel
   font-size: ${({ fontSize }) => (fontSize ? `${fontSize}rem` : '2.2rem')};
   font-weight: ${({ fontWeight }) => (fontWeight ? fontWeight : Font.weight.bold)};
   justify-content: center;
-  transition: color 0.2s ease-in-out, background 0.2s ease-in-out;
+  transition:
+    color 0.2s ease-in-out,
+    background 0.2s ease-in-out;
   white-space: ${({ wrapText }) => (wrapText ? 'initial' : 'nowrap')};
   text-decoration: none;
 
@@ -141,7 +145,7 @@ export const Button = forwardRef<HTMLAnchorElement, ButtonProps>(
       minHeight,
       onClick,
     },
-    ref
+    ref,
   ) => {
     return (
       <Wrapper
@@ -170,7 +174,7 @@ export const Button = forwardRef<HTMLAnchorElement, ButtonProps>(
         {label}
       </Wrapper>
     )
-  }
+  },
 )
 
 Button.displayName = 'Button'

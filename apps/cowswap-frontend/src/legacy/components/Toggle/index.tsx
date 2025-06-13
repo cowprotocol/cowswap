@@ -4,7 +4,7 @@ import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 
 import { darken } from 'color2k'
-import styled, { keyframes } from 'styled-components/macro'
+import styled, { keyframes } from 'styled-components'
 import { WithClassName } from 'types'
 
 const turnOnToggle = keyframes`

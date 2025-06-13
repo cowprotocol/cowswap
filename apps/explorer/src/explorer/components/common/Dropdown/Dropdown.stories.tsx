@@ -3,7 +3,7 @@ import React, { ReactElement, useState } from 'react'
 import { Color } from '@cowprotocol/ui'
 
 import { Meta, Story } from '@storybook/react'
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 
 import { GlobalStyles, ThemeToggler } from '../../../../storybook/decorators'
 

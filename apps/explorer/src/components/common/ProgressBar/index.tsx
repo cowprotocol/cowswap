@@ -3,7 +3,7 @@ import React from 'react'
 import { Color } from '@cowprotocol/ui'
 import { PercentDisplay } from '@cowprotocol/ui/pure/PercentDisplay'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export type Props = {
   readonly percentage?: string

@@ -7,7 +7,7 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import { CheckCircle, HelpCircle } from 'react-feather'
-import styled, { ThemeContext } from 'styled-components/macro'
+import styled, { ThemeContext } from 'styled-components'
 
 import { ApprovalState } from '../../hooks/useApproveState'
 
@@ -32,7 +32,7 @@ export interface ApproveButtonProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ApproveButton(props: ApproveButtonProps) {
   const { currency, state, onClick, isDisabled } = props
 

@@ -3,7 +3,7 @@ import { Color } from '@cowprotocol/ui'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import TokenImg from 'components/common/TokenImg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { Network } from 'types'
 import { abbreviateString, getImageAddress, isNativeToken } from 'utils'
 
@@ -27,7 +27,7 @@ const StyledImg = styled(TokenImg)`
 `
 
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line complexity
+
 export function TokenDisplay(props: Readonly<Props>): React.ReactNode {
   const { erc20, network, showAbbreviated } = props
 

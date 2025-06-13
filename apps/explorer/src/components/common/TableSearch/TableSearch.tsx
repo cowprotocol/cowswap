@@ -3,7 +3,7 @@ import React from 'react'
 import { Media, Color } from '@cowprotocol/ui'
 
 import searchImg from 'assets/img/search2.svg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { Wrapper, Input, SearchIcon } from '../../../explorer/components/common/Search/Search.styled'
 

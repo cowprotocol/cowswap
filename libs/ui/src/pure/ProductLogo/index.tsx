@@ -12,7 +12,7 @@ import LOGO_MEVBLOCKER from '@cowprotocol/assets/images/logo-mevblocker.svg'
 import { useTheme } from '@cowprotocol/common-hooks'
 
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { Color } from '../../colors'
 import { Media } from '../../consts'
@@ -320,8 +320,8 @@ export const ProductLogo = ({
   href,
   external = false,
   className,
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }: LogoProps) => {
   const themeMode = useTheme()
   const selectedTheme = customThemeMode || (themeMode.darkMode ? 'dark' : 'light')
