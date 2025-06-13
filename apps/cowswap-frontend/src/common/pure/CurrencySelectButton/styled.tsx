@@ -90,6 +90,11 @@ export const CurrencySelectWrapper = styled.button<{
       $noCurrencySelected ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_TEXT_PAPER})`};
   }
 
+  ${ArrowDown} > path {
+    stroke: ${({ $noCurrencySelected }) =>
+      $noCurrencySelected ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_50})`};
+  }
+
   &:hover {
     background: ${({ readonlyMode, $noCurrencySelected }) =>
       readonlyMode ? '' : $noCurrencySelected ? `var(${UI.COLOR_PRIMARY_LIGHTER});` : `var(${UI.COLOR_PRIMARY});`};
@@ -99,8 +104,7 @@ export const CurrencySelectWrapper = styled.button<{
     }
 
     ${ArrowDown} > path {
-      stroke: ${({ $noCurrencySelected }) =>
-        $noCurrencySelected ? `var(${UI.COLOR_TEXT_OPACITY_50})` : `var(${UI.COLOR_BUTTON_TEXT})`};
+      stroke: var(${UI.COLOR_BUTTON_TEXT});
     }
   }
 `
