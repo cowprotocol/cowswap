@@ -1,7 +1,3 @@
-'use client'
-
-import { UI } from '@cowprotocol/ui'
-
 import { LearnPageComponent } from '@/components/LearnPageComponent'
 import { FEATURED_ARTICLES_PAGE_SIZE } from '@/const/pagination'
 
@@ -30,7 +26,7 @@ export default async function LearnPage() {
   })
 
   const categoriesResponse = await getCategories()
-  // Format categories for the component
+  // Pass raw categories data to client component for styling
   const categories =
     categoriesResponse?.map((category: any) => {
       const imageUrl = category?.attributes?.image?.data?.attributes?.url || ''
@@ -39,10 +35,9 @@ export default async function LearnPage() {
         name: category?.attributes?.name || '',
         slug: category?.attributes?.slug || '',
         description: category?.attributes?.description || '',
-        bgColor: category?.attributes?.backgroundColor || `var(${UI.COLOR_NEUTRAL_100})`,
-        textColor: category?.attributes?.textColor || `var(${UI.COLOR_NEUTRAL_0})`,
+        bgColor: category?.attributes?.backgroundColor || '',
+        textColor: category?.attributes?.textColor || '',
         link: `/learn/topic/${category?.attributes?.slug}`,
-        iconColor: `var(${UI.COLOR_NEUTRAL_100})`,
         imageUrl,
       }
     }) || []

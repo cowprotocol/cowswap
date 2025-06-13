@@ -112,7 +112,6 @@ interface PageProps {
     bgColor: string
     textColor: string
     link: string
-    iconColor: string
     imageUrl: string
   }[]
   featuredArticles: {
@@ -147,6 +146,7 @@ const Wrapper = styled.div`
 
   h2 {
     font-size: 67px;
+    color: var(${UI.COLOR_BLACK});
     text-align: center;
     padding: 0 10px 16px;
 
@@ -205,12 +205,16 @@ export function LearnPageComponent({ categories, featuredArticles }: PageProps) 
               <ContainerCardSectionTopTitle>Topics</ContainerCardSectionTopTitle>
             </ContainerCardSectionTop>
             <TopicList columns={3}>
-              {categories.map(({ name, bgColor, textColor, iconColor, link, imageUrl }, index) => {
+              {categories.map(({ name, bgColor, textColor, link, imageUrl }, index) => {
+                const finalBgColor = bgColor || `var(${UI.COLOR_NEUTRAL_100})`
+                const finalTextColor = textColor || `var(${UI.COLOR_NEUTRAL_0})`
+                const iconColor = `var(${UI.COLOR_NEUTRAL_100})`
+
                 return (
                   <TopicCard
                     key={index}
-                    bgColor={bgColor}
-                    textColor={textColor}
+                    bgColor={finalBgColor}
+                    textColor={finalTextColor}
                     href={link}
                     onClick={() =>
                       analytics.sendEvent({
@@ -219,7 +223,7 @@ export function LearnPageComponent({ categories, featuredArticles }: PageProps) 
                       })
                     }
                   >
-                    <TopicImage iconColor={iconColor} bgColor={bgColor} borderRadius={90} widthMobile={'auto'}>
+                    <TopicImage iconColor={iconColor} bgColor={finalBgColor} borderRadius={90} widthMobile={'auto'}>
                       {imageUrl ? (
                         <LazyImage
                           src={imageUrl}
