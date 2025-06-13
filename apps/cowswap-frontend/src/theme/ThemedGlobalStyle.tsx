@@ -26,6 +26,10 @@ export const ThemedGlobalStyle = createGlobalStyle`
     padding: 0;
   }
 
+  body {
+    background: transparent;
+  }
+
   a {
     color: ${({ theme }) => theme.blue1};
   }
