@@ -5,7 +5,7 @@
   font-weight: 100 900;
   font-display: fallback;
   font-style: normal;
-  src: url("/fonts/Inter-roman.var.woff2") format("woff2");
+  src: url("/static/Inter-roman.var.woff2") format("woff2");
 }
 
 @font-face {
@@ -13,13 +13,13 @@
   font-weight: 100 900;
   font-display: fallback;
   font-style: italic;
-  src: url("/fonts/Inter-italic.var.woff2") format("woff2");
+  src: url("/static/Inter-italic.var.woff2") format("woff2");
 }
 
 /* StudioFeixen fonts - all commonly used weights to prevent styled-components lookups */
 @font-face {
   font-family: 'studiofeixen';
-  src: url('/fonts/StudioFeixenSans-Regular.woff2') format('woff2');
+  src: url('/static/StudioFeixenSans-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: fallback;
@@ -27,7 +27,7 @@
 
 @font-face {
   font-family: 'studiofeixen';
-  src: url('/fonts/StudioFeixenSans-Medium.woff2') format('woff2');
+  src: url('/static/StudioFeixenSans-Medium.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
   font-display: fallback;
@@ -35,7 +35,7 @@
 
 @font-face {
   font-family: 'studiofeixen';
-  src: url('/fonts/StudioFeixenSans-Semibold.woff2') format('woff2');
+  src: url('/static/StudioFeixenSans-Semibold.woff2') format('woff2');
   font-weight: 600;
   font-style: normal;
   font-display: fallback;
@@ -43,7 +43,7 @@
 
 @font-face {
   font-family: 'studiofeixen';
-  src: url('/fonts/StudioFeixenSans-Bold.woff2') format('woff2');
+  src: url('/static/StudioFeixenSans-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: fallback;
@@ -51,7 +51,7 @@
 
 @font-face {
   font-family: 'studiofeixenmono';
-  src: url('/fonts/StudioFeixenMono-Regular.woff2') format('woff2');
+  src: url('/static/StudioFeixenMono-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: fallback;
