@@ -5,22 +5,6 @@ import { createGlobalStyle } from 'styled-components/macro'
 export const ThemedGlobalStyle = createGlobalStyle`
   ${ThemeColorVars}
 
-  /* Override Inter variable fonts to use font-display: fallback */
-  @font-face {
-    font-family: "Inter var";
-    font-weight: 100 900;
-    font-display: fallback;
-    font-style: normal;
-    src: url("/fonts/Inter-roman.var.woff2") format("woff2");
-  }
-  @font-face {
-    font-family: "Inter var";
-    font-weight: 100 900;
-    font-display: fallback;
-    font-style: italic;
-    src: url("/fonts/Inter-italic.var.woff2") format("woff2");
-  }
-
   html,
   input,
   textarea,
