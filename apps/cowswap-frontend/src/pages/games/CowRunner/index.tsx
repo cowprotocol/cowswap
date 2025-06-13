@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, ReactNode } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
@@ -37,6 +37,15 @@ const Wrapper = styled(Page)`
   }
 `
 
+let cowGame: ReactNode | null = null
+
+function getCoWGame(): ReactNode {
+  if (!cowGame) {
+    cowGame = <CowGame />
+  }
+  return cowGame
+}
+
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function CowRunnerPage() {
@@ -60,9 +69,7 @@ export default function CowRunnerPage() {
         - MEV is lethal these days!
       </p>
 
-      <Content>
-        <CowGame />
-      </Content>
+      <Content>{getCoWGame()}</Content>
     </Wrapper>
   )
 }
