@@ -22,7 +22,7 @@ import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
 
 export interface TradeConfirmationProps {
-  onConfirm(): void
+  onConfirm(): Promise<void | false>
 
   onDismiss(): void
 
@@ -107,13 +107,17 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
   // Combine local onClick logic with incoming onClick
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleConfirmClick = () => {
+  const handleConfirmClick = async () => {
     if (isUpToMedium) {
       window.scrollTo({ top: 0, left: 0 })
     }
 
     setIsConfirmClicked(true)
-    onConfirm()
+    const isConfirmed = await onConfirm()
+
+    if (!isConfirmed) {
+      setIsConfirmClicked(false)
+    }
   }
 
   const hookDetailsElement = (
