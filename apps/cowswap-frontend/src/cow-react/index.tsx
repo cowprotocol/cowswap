@@ -1,5 +1,4 @@
 import '@reach/dialog/styles.css'
-import 'inter-ui'
 import { Provider as AtomProvider } from 'jotai'
 import { ReactNode, StrictMode } from 'react'
 import './sentry'
