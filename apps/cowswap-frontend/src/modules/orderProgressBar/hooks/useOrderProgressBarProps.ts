@@ -163,7 +163,12 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
   const doNotQuery = getDoNotQueryStatusEndpoint(order, apiSolverCompetition, !!disableProgressBar)
 
   const winnerSolver = apiSolverCompetition?.[0]
-  const swapAndBridgeContext = useSwapAndBridgeContext(chainId, order, winnerSolver, bridgeQuoteAmounts)
+  const swapAndBridgeContext = useSwapAndBridgeContext(
+    chainId,
+    isBridgingTrade ? order : undefined,
+    winnerSolver,
+    bridgeQuoteAmounts,
+  )
   const bridgingStatus = swapAndBridgeContext?.bridgingStatus
 
   // Local updaters of the respective atom
@@ -310,7 +315,7 @@ function useCancellingOrderUpdater(orderId: string, isCancelling: boolean) {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useProgressBarStepNameUpdater(
   orderId: string,
   isUnfillable: boolean,
@@ -383,7 +388,7 @@ function useProgressBarStepNameUpdater(
 
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, complexity
+// eslint-disable-next-line complexity
 function getProgressBarStepName(
   isUnfillable: boolean,
   isCancelled: boolean,
