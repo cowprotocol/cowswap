@@ -1,6 +1,8 @@
 import { atom } from 'jotai'
 
 
+import { MAX_SLIPPAGE_BPS } from '@cowprotocol/common-const'
+
 import { useTradeQuote } from './useTradeQuote'
 
 import { tradeQuotesAtom } from '../state/tradeQuoteAtom'
@@ -13,5 +15,6 @@ export const tradeQuoteSlippageAtom = atom<number | null>((get) => {
 
 export const useSmartSlippageFromQuote = (): number | null => {
   const tradeQuote = useTradeQuote()
-  return tradeQuote?.quote?.quoteResults.suggestedSlippageBps || null
+  const slippage = tradeQuote?.quote?.quoteResults.suggestedSlippageBps || null
+  return slippage ? Math.min(slippage, MAX_SLIPPAGE_BPS) : null
 }
