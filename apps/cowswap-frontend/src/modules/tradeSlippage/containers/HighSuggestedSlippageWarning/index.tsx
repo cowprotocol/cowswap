@@ -1,9 +1,12 @@
-import { percentToBps } from '@cowprotocol/common-utils'
+import { ReactNode } from 'react'
+
+import { isFractionFalsy, percentToBps } from '@cowprotocol/common-utils'
 import { BannerOrientation, InfoTooltip, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 
+import { useDerivedTradeState } from 'modules/trade'
 import { useIsSmartSlippageApplied, useTradeSlippage } from 'modules/tradeSlippage'
 
 const StyledInlineBanner = styled(InlineBanner)`
@@ -14,18 +17,18 @@ export type HighSuggestedSlippageWarningProps = {
   isTradePriceUpdating: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function HighSuggestedSlippageWarning(props: HighSuggestedSlippageWarningProps) {
+export function HighSuggestedSlippageWarning(props: HighSuggestedSlippageWarningProps): ReactNode {
   const { isTradePriceUpdating } = props
   const { account } = useWalletInfo()
   const slippage = useTradeSlippage()
+  const state = useDerivedTradeState()
 
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
   const isSuggestedSlippage = isSmartSlippageApplied && !isTradePriceUpdating && !!account
   const slippageBps = percentToBps(slippage)
+  const amountsAreSet = !isFractionFalsy(state?.inputCurrencyAmount) && !isFractionFalsy(state?.outputCurrencyAmount)
 
-  if (!isSuggestedSlippage || !slippageBps || slippageBps <= 200) {
+  if (!isSuggestedSlippage || !slippageBps || slippageBps <= 200 || !amountsAreSet) {
     return null
   }
 
