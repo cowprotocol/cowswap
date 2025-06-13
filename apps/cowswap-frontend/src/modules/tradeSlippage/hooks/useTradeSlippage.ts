@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import { bpsToPercent } from '@cowprotocol/common-utils'
 import { Percent } from '@uniswap/sdk-core'
 
-import { useTradeQuoteSlippage } from 'modules/tradeQuote'
+import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
 
 import {
   defaultSlippageAtom,
@@ -16,7 +16,7 @@ import {
 export function useTradeSlippageValueAndType(): { type: SlippageType; value: number } {
   const currentUserSlippage = useAtomValue(currentUserSlippageAtom)
   const defaultSlippage = useAtomValue(defaultSlippageAtom)
-  const smartSlippage = useTradeQuoteSlippage()
+  const smartSlippage = useSmartSlippageFromQuote()
 
   if (typeof currentUserSlippage === 'number') {
     return { type: 'user', value: currentUserSlippage }
