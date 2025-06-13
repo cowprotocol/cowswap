@@ -137,7 +137,6 @@ export default defineConfig(({ mode }) => {
 
     build: {
       assetsInlineLimit: 0, // prevent inlining assets
-      assetsDir: 'fonts', // serve fonts from /fonts/ directory
       // sourcemap: true, // disabled for now, as this is causing vercel builds to fail
       rollupOptions: {
         output: {
