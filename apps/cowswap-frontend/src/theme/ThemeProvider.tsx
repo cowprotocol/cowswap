@@ -1,7 +1,7 @@
 import { ReactNode, useMemo } from 'react'
 
 import { isIframe, isInjectedWidget } from '@cowprotocol/common-utils'
-import { baseTheme, GlobalCoWDAOStyles } from '@cowprotocol/ui'
+import { baseTheme } from '@cowprotocol/ui'
 
 import { CoWSwapTheme } from 'styled-components'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
@@ -15,6 +15,8 @@ import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { mapWidgetTheme } from './mapWidgetTheme'
 import { ThemedGlobalStyle } from './ThemedGlobalStyle'
 
+import { CustomGlobalStyles } from '../styles/CustomGlobalStyles'
+
 // These values are static and don't change during runtime
 const isWidget = isInjectedWidget()
 const widgetMode = {
@@ -24,8 +26,6 @@ const widgetMode = {
   // This alias is kept for backward compatibility with styled components
   isInjectedWidgetMode: isWidget,
 }
-
-const GlobalStyles = GlobalCoWDAOStyles()
 
 export function getCowswapTheme(darkmode: boolean): CoWSwapTheme {
   return {
@@ -50,7 +50,7 @@ export function ThemeProvider({ children }: { children?: ReactNode }): ReactNode
 
   return (
     <>
-      <GlobalStyles />
+      <CustomGlobalStyles />
       <ThemeFromUrlUpdater />
       <StyledComponentsThemeProvider theme={themeObject}>
         <ThemedGlobalStyle />
