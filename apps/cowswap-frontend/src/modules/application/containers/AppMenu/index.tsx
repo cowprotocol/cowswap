@@ -9,11 +9,9 @@ import { NavLink } from 'react-router'
 
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { parameterizeTradeRoute, useGetTradeUrlParams } from 'modules/trade'
 
 import { APP_HEADER_ELEMENT_ID } from 'common/constants/common'
-import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useCustomTheme } from 'common/hooks/useCustomTheme'
 import { useMenuItems } from 'common/hooks/useMenuItems'
 
@@ -36,9 +34,6 @@ interface AppMenuProps {
 export function AppMenu({ children }: AppMenuProps): ReactNode {
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
-  const { hideNetworkSelector } = useInjectedWidgetParams()
-  const { pendingActivity } = useCategorizeRecentActivity()
-
   const [darkMode, toggleDarkMode] = useDarkModeManager()
 
   const isMobile = useMediaQuery(Media.upToMedium(false))
