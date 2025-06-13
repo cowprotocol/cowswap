@@ -7,6 +7,8 @@ import { ColorPalette } from '../types'
 
 const LOCAL_STORAGE_KEY_NAME = 'COW_WIDGET_PALETTE_'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const getCachedPalette = (mode: PaletteMode) => {
   const cache = localStorage.getItem(`${LOCAL_STORAGE_KEY_NAME}${mode}`)
 

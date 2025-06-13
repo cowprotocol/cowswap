@@ -16,6 +16,9 @@ import { useWalletConnectionError } from '../../hooks/useWalletConnectionError'
 import { WalletModal as WalletModalPure, WalletModalView } from '../../pure/WalletModal'
 import { toggleAccountSelectorModalAtom } from '../AccountSelectorModal/state'
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function WalletModal() {
   const dispatch = useAppDispatch()
   const { account } = useWalletInfo()
@@ -66,6 +69,8 @@ export function WalletModal() {
           closeWalletModal()
           setWalletView('account')
         },
+        // TODO: Replace any with proper type definitions
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onActivationError(error: any) {
           dispatch(updateSelectedWallet({ wallet: undefined }))
           setWalletConnectionError(errorToString(error))

@@ -63,6 +63,8 @@ const jotaiMock = [
 ]
 
 const Wrapper =
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (mocks: any) =>
   ({ children }: { children: ReactNode }) => (
     <WithMockedWeb3 location={{ pathname: '/5/limit' }}>

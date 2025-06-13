@@ -46,6 +46,8 @@ const emptyFromListsResult: FromListsResult = { tokensFromActiveLists: [], token
  * The hook is searching into 4 sources: active lists, inactive lists, external API, and blockchain
  * useSWR is widely used inside to cache the search results
  */
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function useSearchToken(input: string | null): TokenSearchResponse {
   const inputLowerCase = input?.toLowerCase()
   const [isLoading, setIsLoading] = useState(false)
@@ -151,6 +153,8 @@ function useSearchTokensInLists(input: string | undefined): FromListsResult {
   return inListsResult || emptyFromListsResult
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useSearchTokensInApi(input: string | undefined, isTokenAlreadyFoundByAddress: boolean) {
   const { chainId } = useAtomValue(environmentAtom)
 
@@ -163,6 +167,8 @@ function useSearchTokensInApi(input: string | undefined, isTokenAlreadyFoundByAd
   })
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useFetchTokenFromBlockchain(input: string | undefined, isTokenAlreadyFoundByAddress: boolean) {
   const { chainId } = useAtomValue(environmentAtom)
   const provider = useWalletProvider()

@@ -17,11 +17,15 @@ interface HookListItemProps {
   onRemove?: Command
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function HookListItem({ dapp, walletType, onSelect, onOpenDetails, onRemove }: HookListItemProps) {
   const { name, descriptionShort, image, version } = dapp
 
   const isCompatible = isHookCompatible(dapp, walletType)
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleItemClick = (event: React.MouseEvent<HTMLLIElement>) => {
     const target = event.target as HTMLElement
     // Check if the click target is not a button or the info icon

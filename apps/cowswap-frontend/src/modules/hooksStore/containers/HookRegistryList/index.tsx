@@ -31,6 +31,9 @@ interface HookStoreModal {
   walletType: HookDappWalletCompatibility
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType }: HookStoreModal) {
   const [selectedDapp, setSelectedDapp] = useState<HookDapp | null>(null)
   const [dappDetails, setDappDetails] = useState<HookDapp | null>(null)

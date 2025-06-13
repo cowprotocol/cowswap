@@ -19,6 +19,8 @@ export interface PostHookButtonProps {
 
 const isPreHook = false
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function PostHookButton({ onOpen, onEditHook, hideTooltip }: PostHookButtonProps) {
   const { account } = useWalletInfo()
   const { postHooks } = useHooks()

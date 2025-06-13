@@ -87,6 +87,8 @@ function calculatePriceDifferenceAux({
   return { percentage, amount: differenceInQuoteToken }
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function assertSameMarket(price1: Price<Currency, Currency>, price2: Price<Currency, Currency>) {
   // Assert I'm comparing apples with apples (prices should refer to market)
   invariant(

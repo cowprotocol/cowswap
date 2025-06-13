@@ -14,6 +14,8 @@ export const MEDIA_WIDTHS = {
   upToExtraLarge: 2560,
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const getMediaQuery = (query: string, useMediaPrefix = true) => {
   return useMediaPrefix ? `@media ${query}` : query
 }

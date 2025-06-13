@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components/macro'
 
 import { CopyIcon as ClickToCopy } from 'legacy/components/Copy'
 
-import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
+import { WatchAssetInWallet } from 'modules/wallet'
 
 export const Container = styled.div`
   max-width: 100%;

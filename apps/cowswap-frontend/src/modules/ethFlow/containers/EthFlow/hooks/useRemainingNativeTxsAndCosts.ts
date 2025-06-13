@@ -15,6 +15,8 @@ import { BalanceChecks } from '../../../pure/EthFlowModalContent/EthFlowModalTop
 export const MINIMUM_TXS = '10'
 export const DEFAULT_GAS_FEE = parseUnits('50', 'gwei')
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function _estimateTxCost(gasPrice: ReturnType<typeof useGasPrices>, native: Currency | undefined) {
   if (!native) {
     return {}
@@ -39,6 +41,8 @@ export const _getAvailableTransactions = ({
   nativeBalance?: CurrencyAmount<Currency>
   nativeInput?: CurrencyAmount<Currency>
   singleTxCost?: CurrencyAmount<Currency>
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }) => {
   if (!nativeBalance || !nativeInput || !singleTxCost || nativeBalance.lessThan(nativeInput.add(singleTxCost))) {
     return null
@@ -49,6 +53,8 @@ export const _getAvailableTransactions = ({
   return txsAvailable.lessThan('1') ? null : txsAvailable.quotient.toString()
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function _isLowBalanceCheck({
   threshold,
   txCost,
@@ -72,6 +78,8 @@ export type RemainingTxAndCostsParams = {
   native: Currency | undefined
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function useRemainingNativeTxsAndCosts({
   native,
   nativeBalance,

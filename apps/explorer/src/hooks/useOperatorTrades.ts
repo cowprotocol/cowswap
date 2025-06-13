@@ -45,6 +45,8 @@ async function fetchTradesTimestamps(rawTrades: RawTrade[]): Promise<TradesTimes
 /**
  * Fetches trades for given order
  */
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function useOrderTrades(order: Order | null): Result {
   const [error, setError] = useState<UiError>()
   const [trades, setTrades] = useState<Trade[]>([])

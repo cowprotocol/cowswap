@@ -28,6 +28,8 @@ export const StyledLink = styled.a`
   }
 `
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const LinkIcon = styled(LinkIconFeather as any)`
   height: 16px;
   width: 18px;
@@ -43,6 +45,8 @@ export type ExternalLinkProps = Omit<HTMLProps<HTMLAnchorElement>, 'as' | 'ref' 
 /**
  * Outbound link that handles firing google analytics events
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ExternalLink({
   children,
   target = '_blank',
@@ -54,6 +58,8 @@ export function ExternalLink({
   const anonymizedHref = anonymizeLink(href)
   const isNewTab = target === '_blank'
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (onClickOptional) onClickOptional(event)
 

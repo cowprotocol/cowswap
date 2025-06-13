@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback, ReactElement } from 'react'
+import { useMemo, useState, useCallback, ReactNode } from 'react'
 
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -14,7 +14,6 @@ import {
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
 import { useUsdAmount } from 'modules/usdAmount'
-import { useVolumeFeeTooltip } from 'modules/volumeFee'
 
 import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
@@ -27,11 +26,22 @@ import { RowSlippage } from '../RowSlippage'
 interface TradeRateDetailsProps {
   deadline: number
   rateInfoParams: RateInfoParams
-  children?: ReactElement
   isTradePriceUpdating: boolean
+  accordionContent?: ReactNode
+  feeWrapper?: (feeElement: ReactNode) => React.ReactNode
 }
 
-export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdating }: TradeRateDetailsProps) {
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+export function TradeRateDetails({
+  rateInfoParams,
+  deadline,
+  isTradePriceUpdating,
+  accordionContent,
+  feeWrapper,
+}: TradeRateDetailsProps) {
   const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(false)
 
   const slippage = useTradeSlippage()
@@ -42,15 +52,14 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
   const shouldPayGas = useShouldPayGas()
 
   const inputCurrency = derivedTradeState?.inputCurrency
+
   const costsExceedFeeRaw = tradeQuote.error instanceof QuoteApiError ? tradeQuote?.error?.data?.fee_amount : undefined
 
   const networkFeeAmount = useMemo(() => {
     if (!costsExceedFeeRaw || !inputCurrency) return null
-
     return CurrencyAmount.fromRawAmount(inputCurrency, costsExceedFeeRaw)
   }, [costsExceedFeeRaw, inputCurrency])
 
-  const volumeFeeTooltip = useVolumeFeeTooltip()
   const networkFeeAmountUsd = useUsdAmount(networkFeeAmount).value
 
   const toggleAccordion = useCallback(() => {
@@ -75,19 +84,14 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
 
   const totalCosts = getTotalCosts(receiveAmountInfo)
 
-  return (
-    <TradeTotalCostsDetails
-      totalCosts={totalCosts}
-      rateInfoParams={rateInfoParams}
-      isFeeDetailsOpen={isFeeDetailsOpen}
-      toggleAccordion={toggleAccordion}
-    >
+  // Default expanded content if accordionContent prop is not supplied
+  const defaultExpandedContent = (
+    <>
       <TradeFeesAndCosts
         receiveAmountInfo={receiveAmountInfo}
         withTimelineDot={false}
         networkCostsSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
         networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
-        volumeFeeTooltip={volumeFeeTooltip}
       />
       {slippage && (
         <RowSlippage
@@ -97,6 +101,18 @@ export function TradeRateDetails({ rateInfoParams, deadline, isTradePriceUpdatin
         />
       )}
       <RowDeadline deadline={deadline} />
+    </>
+  )
+
+  return (
+    <TradeTotalCostsDetails
+      totalCosts={totalCosts}
+      rateInfoParams={rateInfoParams}
+      isFeeDetailsOpen={isFeeDetailsOpen}
+      toggleAccordion={toggleAccordion}
+      feeWrapper={feeWrapper}
+    >
+      {accordionContent || defaultExpandedContent}
     </TradeTotalCostsDetails>
   )
 }

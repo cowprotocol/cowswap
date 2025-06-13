@@ -76,6 +76,9 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
   return next(action)
 }
 
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
 function _triggerAppzi(
   store: MiddlewareAPI<Dispatch<AnyAction>>,
   chainId: ChainId,
@@ -115,10 +118,15 @@ function _triggerAppzi(
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getPendingOrderIds(store: MiddlewareAPI<Dispatch<AnyAction>>, chainId: ChainId) {
   return Object.keys(store.getState().orders[chainId]?.pending || {})
 }
 
+// TODO: Add proper return type annotation
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
 function getUiOrderTypeFromStore(store: MiddlewareAPI<Dispatch<AnyAction>>, chainId: any, id: any) {
   const orders = store.getState().orders[chainId]
   const order = getOrderByIdFromState(orders, id)?.order

@@ -13,6 +13,8 @@ import { networkConnection } from '../../connection/network'
 import { gnosisSafeConnection } from '../../connection/safe'
 import { getWeb3ReactConnection } from '../../utils/getWeb3ReactConnection'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function connect(connector: Connector) {
   const chainId = getCurrentChainIdFromUrl()
 
@@ -22,11 +24,15 @@ async function connect(connector: Connector) {
     } else {
       await connector.activate(chainId)
     }
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.debug(`web3-react eager connection error: ${error}`)
   }
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useEagerlyConnect(selectedWallet: ConnectionType | undefined, standaloneMode?: boolean) {
   const [tryConnectEip6963Provider, setTryConnectEip6963Provider] = useState(false)
   const eagerlyConnectInitRef = useRef(false)

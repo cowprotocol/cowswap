@@ -60,6 +60,8 @@ export const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function renderActivities(activities: ActivityDescriptors[]) {
   return (
     <TransactionListWrapper>
@@ -79,6 +81,10 @@ export interface AccountDetailsProps {
   handleCloseOrdersPanel: Command
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function AccountDetails({
   pendingTransactions = [],
   confirmedTransactions = [],
@@ -107,6 +113,8 @@ export function AccountDetails({
 
   const unsupportedNetworksText = useUnsupportedNetworksText()
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   function formatConnectorName() {
     const name = walletDetails?.walletName
     // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
@@ -122,6 +130,8 @@ export function AccountDetails({
     )
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleDisconnectClick = () => {
     disconnectWallet()
     handleCloseOrdersPanel()

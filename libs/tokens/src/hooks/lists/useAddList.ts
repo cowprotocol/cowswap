@@ -24,6 +24,8 @@ Tokens in update: ${updateCount}.
   `
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useAddList(onAddList: (source: string) => void) {
   const { chainId } = useAtomValue(environmentAtom)
   const listsStatesByChain = useAtomValue(listsStatesByChainAtom)

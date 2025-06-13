@@ -5,11 +5,11 @@ import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useAppData } from 'modules/appData'
+import { useOrderSubmittedContent } from 'modules/orderProgressBar'
 import {
   TradeBasicConfirmDetails,
   TradeConfirmation,
   TradeConfirmModal,
-  useOrderSubmittedContent,
   useReceiveAmountInfo,
   useTradeConfirmActions,
 } from 'modules/trade'
@@ -37,6 +37,8 @@ export interface YieldConfirmModalProps {
   recipient?: string | null
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function YieldConfirmModal(props: YieldConfirmModalProps) {
   const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade: _doTrade } = props
 

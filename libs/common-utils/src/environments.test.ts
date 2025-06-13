@@ -10,6 +10,8 @@ const DEFAULT_ENVIRONMENTS_CHECKS: EnvironmentChecks = {
   isLocal: false,
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('Detect environments using host and path', () => {
   describe('Not a known environment', () => {
     it('Empty strings', () => {

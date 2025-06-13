@@ -20,6 +20,8 @@ import { Title } from 'modules/application/pure/Page'
  */
 let cowNoConnectionIMGCache: string | null = null
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function preloadNoConnectionImg() {
   fetch(cowNoConnectionIMG)
     .then((res) => res.blob())
@@ -85,6 +87,8 @@ const AutoRowWithGap = styled(AutoRow)`
   gap: 16px;
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const ChunkLoadError = () => {
   const reloadPage = useCallback(() => {
     window.location.reload()

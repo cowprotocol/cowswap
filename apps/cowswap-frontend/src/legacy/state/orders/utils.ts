@@ -1,7 +1,7 @@
 import type { LatestAppDataDocVersion } from '@cowprotocol/app-data'
 import { ONE_HUNDRED_PERCENT, PENDING_ORDERS_BUFFER, ZERO_FRACTION } from '@cowprotocol/common-const'
 import { bpsToPercent, buildPriceFromCurrencyAmounts, getWrappedToken, isSellOrder } from '@cowprotocol/common-utils'
-import { EnrichedOrder, OrderKind, OrderStatus } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, getPartnerFeeBps, OrderKind, OrderStatus } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { Currency, CurrencyAmount, Percent, Price, Token } from '@uniswap/sdk-core'
 
@@ -255,6 +255,9 @@ export function getEstimatedExecutionPrice(
  * IF (Kind = Partial)
  *        EEP = MAX(FEP, FBOP)
  */
+// TODO: Break down this large function into smaller functions
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, complexity
 export function getEstimatedExecutionPrice(
   order: Order | ParsedOrder | undefined,
   fillPrice: Price<Currency, Currency>,
@@ -440,6 +443,8 @@ export function getRemainderAmount(kind: OrderKind, order: Order | ParsedOrder):
   return JSBI.subtract(JSBI.BigInt(fullAmount), executedAmount).toString()
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getExecutedAmounts(order: Order | ParsedOrder) {
   let sellAmount: string
   let executedSellAmount: string | undefined
@@ -496,12 +501,10 @@ export function partialOrderUpdate({ chainId, order, isSafeWallet }: UpdateOrder
   dispatch(updateOrder(params))
 }
 
-export function getOrderVolumeFee(
-  fullAppData: EnrichedOrder['fullAppData'],
-): LatestAppDataDocVersion['metadata']['partnerFee'] | undefined {
+export function getOrderVolumeFee(fullAppData: EnrichedOrder['fullAppData']): number | undefined {
   const appData = decodeAppData(fullAppData) as LatestAppDataDocVersion
 
-  return appData?.metadata?.partnerFee
+  return getPartnerFeeBps(appData?.metadata?.partnerFee)
 }
 
 type LimitPriceOrder = Pick<Order, 'inputToken' | 'outputToken' | 'sellAmount' | 'buyAmount' | 'kind' | 'fullAppData'>
@@ -535,7 +538,7 @@ function getOrderAmountsWithPartnerFee(
     }
   }
 
-  const partnerFeePercent = bpsToPercent(volumeFee.bps)
+  const partnerFeePercent = bpsToPercent(volumeFee)
 
   if (isSellOrder) {
     return {

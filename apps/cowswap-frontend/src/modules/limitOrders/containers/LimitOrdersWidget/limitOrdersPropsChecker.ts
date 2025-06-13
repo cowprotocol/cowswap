@@ -25,6 +25,8 @@ export interface LimitOrdersProps {
   widgetActions: TradeWidgetActions
 }
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps): boolean {
   return (
     checkCurrencyInfo(a.inputCurrencyInfo, b.inputCurrencyInfo) &&

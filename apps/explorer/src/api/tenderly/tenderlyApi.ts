@@ -72,6 +72,8 @@ export async function getTradesAndTransfers(
   return traceToTransfersAndTrades(trace)
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function traceToTransfersAndTrades(trace: Trace): TxTradesAndTransfers {
   const transfers: Array<Transfer> = []
   const trades: Array<Trade> = []

@@ -7,6 +7,8 @@ import { Token } from '@uniswap/sdk-core'
 const PRIORITISED_TOKENS = ['COW', 'GNO']
 
 // compare two token amounts with highest one coming first
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function balanceComparator(balanceA: BigNumber | undefined, balanceB: BigNumber | undefined) {
   if (balanceA && balanceB) {
     return balanceA.gt(balanceB) ? -1 : balanceA.eq(balanceB) ? 0 : 1
@@ -19,6 +21,8 @@ export function balanceComparator(balanceA: BigNumber | undefined, balanceB: Big
 }
 
 function getTokenComparator(balances: BalancesState['values']): (tokenA: Token, tokenB: Token) => number {
+  // TODO: Reduce function complexity by extracting logic
+  // eslint-disable-next-line complexity
   return function sortTokens(tokenA: Token, tokenB: Token): number {
     // -1 = a is first
     // 1 = b is first

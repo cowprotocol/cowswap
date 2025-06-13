@@ -20,6 +20,9 @@ interface Props {
   onDismiss: Command
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function MultipleOrdersCancellationModal(props: Props) {
   const { isOpen, onDismiss } = props
 
@@ -57,6 +60,8 @@ export function MultipleOrdersCancellationModal(props: Props) {
       // Clean cancellation queue
       updateOrdersToCancel([])
       dismissAll()
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setCancellationInProgress(false)
       setCancellationError(error)
@@ -97,11 +102,15 @@ export function MultipleOrdersCancellationModal(props: Props) {
       <LegacyConfirmationModalContent
         title={`Cancel multiple orders: ${ordersCount}`}
         onDismiss={onDismiss}
+        // TODO: Extract nested component outside render function
+        // eslint-disable-next-line react/no-unstable-nested-components
         topContent={() => (
           <div>
             <p>Are you sure you want to cancel {ordersCount} orders?</p>
           </div>
         )}
+        // TODO: Extract nested component outside render function
+        // eslint-disable-next-line react/no-unstable-nested-components
         bottomContent={() => (
           <div>
             <ButtonPrimary onClick={signAndSendCancellation}>Request cancellations</ButtonPrimary>

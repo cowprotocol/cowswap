@@ -25,6 +25,8 @@ export interface Web3StatusInnerProps {
   ensName?: string | null
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Web3StatusInner(props: Web3StatusInnerProps) {
   const { account, pendingCount, ensName, connectionType, connectWallet } = props
 

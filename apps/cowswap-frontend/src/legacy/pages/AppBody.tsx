@@ -25,6 +25,8 @@ export const BodyWrapper = styled.main`
 /**
  * The styled container element that wraps the content of most pages and the tabs.
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function AppBody({ children, ...rest }: { children: React.ReactNode }) {
   return <BodyWrapper {...rest}>{children}</BodyWrapper>
 }

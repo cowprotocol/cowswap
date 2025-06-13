@@ -97,14 +97,20 @@ class ErrorBoundaryComponent extends React.Component<ErrorBoundaryProps, ErrorBo
     return { error }
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     this.props.onError?.(error, errorInfo)
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   render() {
     return (
       <Sentry.ErrorBoundary
         showDialog={false}
+        // TODO: Extract nested component outside render function
+        // eslint-disable-next-line react/no-unstable-nested-components
         fallback={({ error: sentryError }) => {
           document.body.classList.remove('noScroll')
           const { error: localError } = this.state
@@ -139,9 +145,13 @@ class ErrorBoundaryComponent extends React.Component<ErrorBoundaryProps, ErrorBo
 }
 
 // HOC to inject analytics into error boundary
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function ErrorBoundary(props: PropsWithChildren) {
   const cowAnalytics = useCowAnalytics()
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleError = (error: Error, errorInfo: ErrorInfo) => {
     cowAnalytics.sendError(error, errorInfo.toString())
   }

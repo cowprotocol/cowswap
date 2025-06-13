@@ -20,6 +20,10 @@ const ExpiredMessage = styled.span`
   color: var(${UI.COLOR_WARNING});
 `
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function Step3({ nativeTokenSymbol, tokenLabel, order, creation, refund, cancellation }: EthFlowStepperProps) {
   const { state, isExpired, rejectedReason } = order
   const { failed: creationFailed, cancelled: creationCancelled, replaced: creationReplaced } = creation

@@ -74,6 +74,8 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props,
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
 })
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function a11yProps(id: number) {
   return {
     id: `simple-tab-${id}`,
@@ -88,6 +90,9 @@ export interface EmbedDialogProps {
   handleClose: Command
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function EmbedDialog({ params, open, handleClose, defaultPalette }: EmbedDialogProps) {
   const [scroll, setScroll] = useState<DialogProps['scroll']>('paper')
   const [tabInfo, setCurrentTabInfo] = useState<TabInfo>(TABS[0])
@@ -96,6 +101,8 @@ export function EmbedDialog({ params, open, handleClose, defaultPalette }: Embed
   const cowAnalytics = useCowAnalytics()
 
   const [snackbarOpen, setSnackbarOpen] = useState(false)
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleCopyClick = () => {
     navigator.clipboard.writeText(code)
     cowAnalytics.sendEvent({
@@ -105,6 +112,8 @@ export function EmbedDialog({ params, open, handleClose, defaultPalette }: Embed
     setSnackbarOpen(true)
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return

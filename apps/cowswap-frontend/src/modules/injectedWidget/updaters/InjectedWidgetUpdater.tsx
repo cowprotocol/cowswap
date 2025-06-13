@@ -23,9 +23,13 @@ import { validateWidgetParams } from '../utils/validateWidgetParams'
 
 const messagesCache: { [method: string]: unknown } = {}
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const getEventMethod = (event: MessageEvent) =>
   (event.data.key === widgetIframeTransport.key && (event.data.method as string)) || null
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const cacheMessages = (event: MessageEvent) => {
   const method = getEventMethod(event)
 
@@ -70,6 +74,9 @@ const cacheMessages = (event: MessageEvent) => {
   })
 })()
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function InjectedWidgetUpdater() {
   const [
     {
@@ -137,6 +144,8 @@ export function InjectedWidgetUpdater() {
 
     // Process all cached messages
     Object.keys(messagesCache).forEach((method) => {
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       widgetIframeTransport.postMessageToWindow(window, method as any, messagesCache[method])
 
       delete messagesCache[method]

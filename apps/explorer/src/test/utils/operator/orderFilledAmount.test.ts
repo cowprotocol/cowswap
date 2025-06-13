@@ -66,6 +66,8 @@ describe('Order partially filled', () => {
   })
 })
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('Order filled', () => {
   describe('Buy order', () => {
     test('100% filled, no surplus', () => {

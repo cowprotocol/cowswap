@@ -20,6 +20,8 @@ export function useLimitOrdersDerivedState(): LimitOrdersDerivedState {
   return useAtomValue(limitOrdersDerivedStateAtom)
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useFillLimitOrdersDerivedState() {
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const updateDerivedState = useSetAtom(limitOrdersDerivedStateAtom)

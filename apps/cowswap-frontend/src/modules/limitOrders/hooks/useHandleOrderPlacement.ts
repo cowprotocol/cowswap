@@ -26,6 +26,8 @@ import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { TradeAmounts } from 'common/types'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useAlternativeModalAnalytics() {
   const analytics = useCowAnalytics()
 
@@ -41,6 +43,8 @@ function useAlternativeModalAnalytics() {
   )
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function useHandleOrderPlacement(
   tradeContext: TradeFlowContext,
   priceImpact: PriceImpact,

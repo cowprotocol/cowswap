@@ -40,6 +40,8 @@ const AcceptButton = styled.button`
   }
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function PriceUpdatedBanner({ onClick }: { onClick(): void }) {
   return (
     <StyledBanner>

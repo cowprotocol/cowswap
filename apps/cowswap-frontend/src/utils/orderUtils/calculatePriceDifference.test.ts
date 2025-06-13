@@ -67,6 +67,8 @@ describe('Prices are Negative or Zero', () => {
   })
 })
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('Not Inverted Price', () => {
   const baseParams = {
     isInverted: false,
@@ -143,6 +145,8 @@ describe('Not Inverted Price', () => {
   })
 })
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('Inverted Price', () => {
   const baseParams = {
     isInverted: true,

@@ -28,6 +28,8 @@ const APP_TOKEN_TAGS: TokenListTags = {
   },
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TokenTags({
   isUnsupported,
   isPermitCompatible,
@@ -65,6 +67,8 @@ export function TokenTags({
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function TagDescriptor({ tags, children }: { children?: React.ReactNode; tags: TagInfo[] }) {
   return (
     <styledEl.TagContainer>

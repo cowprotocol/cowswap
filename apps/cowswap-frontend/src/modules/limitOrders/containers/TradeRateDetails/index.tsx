@@ -1,8 +1,7 @@
-import React, { useState, useCallback } from 'react'
+import { useCallback, useState } from 'react'
 
-import { TradeTotalCostsDetails, PartnerFeeRow } from 'modules/trade'
-import { StyledRateInfo } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
-import { Box } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
+import { PartnerFeeRow, TradeTotalCostsDetails } from 'modules/trade'
+import { Box, StyledRateInfo } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
 import { useUsdAmount } from 'modules/usdAmount'
 import { useVolumeFee, useVolumeFeeTooltip } from 'modules/volumeFee'
 
@@ -15,13 +14,14 @@ interface TradeRateDetailsProps {
   alwaysExpanded?: boolean
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: TradeRateDetailsProps) {
   const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(alwaysExpanded)
-  const volumeFee = useVolumeFee()
+  const { volumeBps: partnerFeeBps } = useVolumeFee() || {}
   const partnerFeeAmount = useLimitOrderPartnerFeeAmount()
   const volumeFeeTooltip = useVolumeFeeTooltip()
   const partnerFeeUsd = useUsdAmount(partnerFeeAmount).value
-  const partnerFeeBps = volumeFee?.bps
 
   const toggleAccordion = useCallback(() => {
     if (alwaysExpanded) return

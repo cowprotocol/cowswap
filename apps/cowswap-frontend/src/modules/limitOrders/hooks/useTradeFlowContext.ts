@@ -23,6 +23,8 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function useTradeFlowContext(): TradeFlowContext | null {
   const provider = useWalletProvider()
   const { account } = useWalletInfo()
@@ -57,6 +59,8 @@ export function useTradeFlowContext(): TradeFlowContext | null {
 
   const partiallyFillable = settingsState.partialFillsEnabled
 
+  // TODO: Reduce function complexity by extracting logic
+  // eslint-disable-next-line complexity
   return useSafeMemo(() => {
     if (
       !account ||

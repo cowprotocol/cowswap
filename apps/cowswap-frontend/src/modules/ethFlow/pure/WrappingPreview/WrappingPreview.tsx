@@ -13,6 +13,8 @@ export type WrappingPreviewProps = {
   amount: CurrencyAmount<Currency> | undefined
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const WrappingPreview = (props: WrappingPreviewProps) => {
   const { nativeBalance, native, wrapped, wrappedBalance, amount } = props
 

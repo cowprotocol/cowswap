@@ -44,10 +44,14 @@ const Wrapper = styled(Page)`
   }
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function openGame() {
   window?.open(GAME_URL, '_blank')?.focus()
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function MevSlicer() {
   return (
     <Wrapper>

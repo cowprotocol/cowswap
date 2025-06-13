@@ -17,6 +17,8 @@ interface WarningsProps {
   buyingFiatAmount: CurrencyAmount<Currency> | null
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Warnings({ buyingFiatAmount }: WarningsProps) {
   const { chainId } = useWalletInfo()
   const { inputCurrency, inputCurrencyAmount } = useSwapDerivedState()

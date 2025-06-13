@@ -17,6 +17,8 @@ type FavoriteTokenButtonParams = {
   tokenData: TokenWithLogo
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function FavoriteTokenButton({ tokenData }: FavoriteTokenButtonParams) {
   const favoriteTokens = useFavoriteTokens()
   const theme = useTheme()

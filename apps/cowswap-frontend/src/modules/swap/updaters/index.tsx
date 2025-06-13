@@ -12,6 +12,8 @@ import { SetupSwapAmountsFromUrlUpdater } from './SetupSwapAmountsFromUrlUpdater
 import { useFillSwapDerivedState, useSwapDerivedState } from '../hooks/useSwapDerivedState'
 import { useSwapDeadlineState } from '../hooks/useSwapSettings'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SwapUpdaters() {
   const { orderKind, inputCurrencyAmount, outputCurrencyAmount, slippage } = useSwapDerivedState()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()

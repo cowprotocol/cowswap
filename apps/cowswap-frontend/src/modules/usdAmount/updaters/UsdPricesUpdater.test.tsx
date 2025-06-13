@@ -17,6 +17,7 @@ import * as cowProtocolApi from '../apis/getCowProtocolUsdPrice'
 import * as defillamaApi from '../apis/getDefillamaUsdPrice'
 import * as services from '../services/fetchCurrencyUsdPrice'
 import { currenciesUsdPriceQueueAtom, UsdRawPrices, usdRawPricesAtom } from '../state/usdRawPricesAtom'
+import { getUsdPriceStateKey } from '../utils/usdPriceStateKey'
 
 jest.mock('common/hooks/useIsProviderNetworkUnsupported', () => {
   return {
@@ -33,14 +34,16 @@ const mockFetchCurrencyUsdPrice = jest.spyOn(services, 'fetchCurrencyUsdPrice')
 const USDC = USDC_MAINNET
 const COW = COWS[SupportedChainId.MAINNET]
 
-const usdcAddress = USDC.address.toLowerCase()
-const cowAddress = COW.address.toLowerCase()
+const usdcKey = getUsdPriceStateKey(USDC)
+const cowKey = getUsdPriceStateKey(COW)
 
 const defaultQueue = {
-  [usdcAddress]: USDC,
-  [cowAddress]: COW,
+  [usdcKey]: USDC,
+  [cowKey]: COW,
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getWrapper() {
   const store = createStore()
   const initialValues = [[currenciesUsdPriceQueueAtom, { ...defaultQueue }]]
@@ -85,6 +88,8 @@ async function performTest(
   return store.get(usdRawPricesAtom)
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('UsdPricesUpdater', () => {
   afterEach(() => {
     jest.resetAllMocks()
@@ -96,8 +101,8 @@ describe('UsdPricesUpdater', () => {
       return new Promise(() => void 0)
     }, 0)
 
-    expect(state[usdcAddress].isLoading).toBe(true)
-    expect(state[cowAddress].isLoading).toBe(true)
+    expect(state[usdcKey].isLoading).toBe(true)
+    expect(state[cowKey].isLoading).toBe(true)
   })
 
   it('Should reset isLoading and value fields on fetching error', async () => {
@@ -108,8 +113,8 @@ describe('UsdPricesUpdater', () => {
       })
     }, 2)
 
-    expect(state[usdcAddress]).toEqual({ isLoading: false, price: null, currency: USDC })
-    expect(state[cowAddress]).toEqual({ isLoading: false, price: null, currency: COW })
+    expect(state[usdcKey]).toEqual({ isLoading: false, price: null, currency: USDC })
+    expect(state[cowKey]).toEqual({ isLoading: false, price: null, currency: COW })
   })
 
   it('Should set price value and isLoading=false on fetching success', async () => {
@@ -127,13 +132,13 @@ describe('UsdPricesUpdater', () => {
       })
     }, 2)
 
-    expect(state[usdcAddress]).toEqual({
+    expect(state[usdcKey]).toEqual({
       isLoading: false,
       price: usdcPrice,
       currency: USDC,
       updatedAt: expect.any(Number),
     })
-    expect(state[cowAddress]).toEqual({
+    expect(state[cowKey]).toEqual({
       isLoading: false,
       price: cowPrice,
       currency: COW,
@@ -149,8 +154,8 @@ describe('UsdPricesUpdater', () => {
 
     const state = await performTest()
 
-    expect(state[usdcAddress].price).toBe(price)
-    expect(state[cowAddress].price).toBe(price)
+    expect(state[usdcKey].price).toBe(price)
+    expect(state[cowKey].price).toBe(price)
 
     expect(mockGetBffUsdPrice).toHaveBeenCalledTimes(2)
     expect(mockGetCowProtocolUsdPrice).toHaveBeenCalledTimes(0)
@@ -166,8 +171,8 @@ describe('UsdPricesUpdater', () => {
 
     const state = await performTest()
 
-    expect(state[usdcAddress].price).toBe(price)
-    expect(state[cowAddress].price).toBe(price)
+    expect(state[usdcKey].price).toBe(price)
+    expect(state[cowKey].price).toBe(price)
 
     expect(mockGetDefillamaUsdPrice).toHaveBeenCalledTimes(2)
     expect(mockGetCowProtocolUsdPrice).toHaveBeenCalledTimes(0)
@@ -183,8 +188,8 @@ describe('UsdPricesUpdater', () => {
 
     const state = await performTest()
 
-    expect(state[usdcAddress].price).toBe(price)
-    expect(state[cowAddress].price).toBe(price)
+    expect(state[usdcKey].price).toBe(price)
+    expect(state[cowKey].price).toBe(price)
 
     expect(mockGetCowProtocolUsdPrice).toHaveBeenCalledTimes(2)
   })

@@ -32,10 +32,18 @@ class CustomizedBridge extends Eip1193Bridge {
 
   chainId = CHAIN_ID
 
+  // TODO: Add proper return type annotation
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
   async sendAsync(...args: any[]) {
     console.debug('sendAsync called', ...args)
     return this.send(...args)
   }
+  // TODO: Break down this large function into smaller functions
+  // TODO: Add proper return type annotation
+  // TODO: Reduce function complexity by extracting logic
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity, @typescript-eslint/no-explicit-any
   async send(...args: any[]) {
     console.debug('send called', ...args)
     const isCallbackForm = typeof args[0] === 'object' && typeof args[1] === 'function'

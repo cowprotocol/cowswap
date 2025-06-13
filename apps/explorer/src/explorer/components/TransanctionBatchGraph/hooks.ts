@@ -37,6 +37,8 @@ export type UseCytoscapeReturn = {
   tokensStylesheets: StylesheetCSS[]
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
   const {
     txBatchData: { error, isLoading, txSettlement },
@@ -216,6 +218,8 @@ function useUpdateVisQuery(): (vis: string) => void {
   return useCallback((vis: string) => updateQueryString(VISUALIZATION_PARAM_NAME, vis), [updateQueryString])
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function useTxBatchData(
   networkId: Network | undefined,
   orders: Order[] | undefined,

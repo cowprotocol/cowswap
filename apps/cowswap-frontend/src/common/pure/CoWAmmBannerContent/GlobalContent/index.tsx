@@ -16,6 +16,8 @@ interface GlobalContentProps {
   children: ReactNode
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function GlobalContent({ context, children, arrowBackgroundRef, comparedProviders }: GlobalContentProps) {
   const { title, ctaText, onClose, isMobile, onCtaClick, handleCTAMouseLeave, handleCTAMouseEnter } = context
 

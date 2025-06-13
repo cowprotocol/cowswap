@@ -2,6 +2,8 @@ import { isAddress } from '@cowprotocol/common-utils'
 import { TokenInfo } from '@cowprotocol/types'
 import { NativeCurrency, Token } from '@uniswap/sdk-core'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const alwaysTrue = () => true
 
 /** Creates a filter function that filters tokens that do not match the query. */

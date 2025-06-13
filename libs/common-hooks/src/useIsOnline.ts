@@ -8,6 +8,8 @@ const CONNECTIVITY_CHECK_POLLING_TIME = ms`30s`
 const CONNECTIVITY_CHECK_TIMEOUT = ms`15s`
 const IS_SUPPORTED = typeof window !== 'undefined' && navigator.onLine !== undefined
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function isOnline() {
   return typeof window !== 'undefined' && (window.navigator.onLine || !IS_SUPPORTED)
 }
@@ -44,6 +46,8 @@ export function useIsOnline(): boolean {
   useEffect(() => {
     let isCancelled = false
 
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     async function checkConnectivity() {
       const connected = await hasConnectivity()
 

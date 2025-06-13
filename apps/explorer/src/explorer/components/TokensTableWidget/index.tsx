@@ -97,6 +97,8 @@ const tabItems = (query: string, setQuery: (query: string) => void): TabItemInte
 
 const RESULTS_PER_PAGE = 10
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export const TokensTableWidget: React.FC<Props> = () => {
   const networkId = useNetworkId() || undefined
   const [query, setQuery] = useState('')

@@ -1,31 +1,36 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
+
+import { StyledToggleArrow } from '../ToggleArrow/styled'
 
 export const Wrapper = styled.div<{ isOpen: boolean }>`
   display: flex;
   flex-flow: row wrap;
   align-items: center;
   width: 100%;
-  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
-  border-radius: 16px;
-  padding: 10px;
+  padding: 6px;
+  gap: 8px;
   height: auto;
   font-size: 13px;
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
+
+  ${Media.upToSmall()} {
+    padding: 2px;
+  }
 `
 
-export const Details = styled.div`
-  display: flex;
+export const Details = styled.div<{ isVisible: boolean }>`
+  display: ${({ isVisible }) => (isVisible ? 'flex' : 'none')};
+  height: ${({ isVisible }) => (isVisible ? 'auto' : '0')};
+  margin: 0;
   flex-flow: row wrap;
   align-items: center;
   width: 100%;
-  margin: 16px 0 0;
 `
 
 export const Summary = styled.div`
-  display: grid;
-  grid-template-columns: 1fr auto;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
@@ -44,41 +49,30 @@ export const SummaryClickable = styled.div<{ isOpen: boolean }>`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 7px;
-  opacity: ${({ isOpen }) => (isOpen ? 1 : 0.7)};
-  transition: opacity ${UI.ANIMATION_DURATION_SLOW} ease-in-out;
+  flex-flow: row wrap;
+  gap: 4px;
+  color: ${({ isOpen }) => (isOpen ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_70})`)};
+  transition: all var(${UI.ANIMATION_DURATION}) ease-in-out;
   outline: none;
   font-size: inherit;
   font-weight: inherit;
 
-  &:hover {
-    opacity: 1;
+  > span {
+    text-align: right;
+    gap: 4px;
+    display: flex;
+    flex: 0 0 auto;
   }
 
-  // If it's the only child, make it take all the space
+  > *:not(${StyledToggleArrow}) {
+    opacity: ${({ isOpen }) => (isOpen ? '0' : '1')};
+    visibility: ${({ isOpen }) => (isOpen ? 'hidden' : 'visible')};
+    transition:
+      opacity var(${UI.ANIMATION_DURATION}) ease-in-out,
+      visibility var(${UI.ANIMATION_DURATION}) ease-in-out;
+  }
+
   &:only-child {
     grid-column: 1 / -1;
-  }
-`
-
-export const ToggleIcon = styled.div<{ isOpen: boolean }>`
-  --size: var(${UI.ICON_SIZE_SMALL});
-  transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
-  transition: transform var(${UI.ANIMATION_DURATION_SLOW}) ease-in-out;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--size);
-  height: var(--size);
-
-  > svg {
-    --size: var(${UI.ICON_SIZE_TINY});
-    width: var(--size);
-    height: var(--size);
-    object-fit: contain;
-
-    path {
-      fill: var(${UI.COLOR_TEXT});
-    }
   }
 `

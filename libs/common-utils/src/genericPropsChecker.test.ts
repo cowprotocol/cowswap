@@ -19,6 +19,8 @@ describe('genericPropsChecker() to check component props via React.memo', () => 
   })
 
   it('Must return true, when props are functions with the same reference', () => {
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const func = function () {
       console.log('***')
     }

@@ -3,6 +3,8 @@ import { CowSwapWidgetPalette, CowSwapWidgetPaletteColors, CowSwapWidgetParams }
 import { ColorPalette } from '../../configurator/types'
 import { SANITIZE_PARAMS } from '../const'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function sanitizeParameters(params: CowSwapWidgetParams, defaultPalette: ColorPalette) {
   return {
     ...params,

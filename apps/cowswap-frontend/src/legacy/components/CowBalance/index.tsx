@@ -31,6 +31,8 @@ type CowBalanceProps = Omit<CowSubsidyInfoProps, 'subsidy'> & {
   title?: string
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const CowBalance = ({ balance, title }: CowBalanceProps) => {
   return (
     <Wrapper>

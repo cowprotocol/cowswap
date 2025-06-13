@@ -6,8 +6,8 @@ import { TradeWidgetModals } from './TradeWidgetModals'
 import { TradeWidgetUpdaters } from './TradeWidgetUpdaters'
 import { TradeWidgetProps } from './types'
 
-export const TradeWidgetContainer = styledEl.Container
-
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TradeWidget(props: TradeWidgetProps) {
   const { id, slots, params, confirmModal, genericModal } = props
   const { disableQuotePolling = false, disableNativeSelling = false, enableSmartSlippage } = params

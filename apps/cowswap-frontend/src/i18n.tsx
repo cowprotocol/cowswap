@@ -9,6 +9,8 @@ import { dynamicActivate, Provider } from 'lib/i18n'
 
 dynamicActivate(initialLocale)
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const locale = useActiveLocale()
   const [, setUserLocale] = useUserLocaleManager()

@@ -6,7 +6,7 @@
       "permanent": false
     }
   ],
-  "buildCommand": "cd ../../ && yarn build:cowswap",
+  "buildCommand": "cd ../../ && npx nx build cowswap-frontend --configuration=$NX_CONFIGURATION",
   "outputDirectory": "../../build/cowswap",
   "installCommand": "cd ../../ && yarn"
 }

@@ -39,6 +39,9 @@ const AUTH_OPTIONS = {
   request_access: 'write',
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function ConnectTelegram() {
   const { account } = useWalletInfo()
   const [isAuthChecked, setIsAuthChecked] = useState<boolean>(false)
@@ -51,6 +54,8 @@ export function ConnectTelegram() {
   const telegramWrapperRef = useRef<HTMLDivElement>(null)
   const isAuthRequestedRef = useRef(false)
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const authenticate = (callback?: () => void) => {
     getTelegramAuth(TG_BOT_ID, (response) => {
       if (response && response.user) {
@@ -61,6 +66,8 @@ export function ConnectTelegram() {
     })
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const authorize = (callback: () => void) => {
     if (!window.Telegram) return
 
@@ -98,7 +105,11 @@ export function ConnectTelegram() {
     [tgData, account],
   )
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const subscribeAccount = () => {
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const addSubscription = () => {
       checkOrAddTgSubscription('/add-tg-subscription')
     }

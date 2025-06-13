@@ -7,6 +7,8 @@ import { getFilledAmounts } from 'utils/orderUtils/getFilledAmounts'
 
 import { isParsedOrder, ParsedOrder, parseOrder } from './orderUtils/parseOrder'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getExecutedSummaryData(order: Order | ParsedOrder) {
   const parsedOrder = isParsedOrder(order) ? order : parseOrder(order)
 
@@ -18,14 +20,14 @@ export function getExecutedSummaryData(order: Order | ParsedOrder) {
     inputToken.address,
     inputToken.decimals,
     inputToken.symbol,
-    inputToken.name
+    inputToken.name,
   )
   const parsedOutputToken = new Token(
     outputToken.chainId,
     outputToken.address,
     outputToken.decimals,
     outputToken.symbol,
-    outputToken.name
+    outputToken.name,
   )
 
   const surplusToken = isSellOrder(order.kind) ? parsedOutputToken : parsedInputToken
@@ -33,7 +35,7 @@ export function getExecutedSummaryData(order: Order | ParsedOrder) {
   const surplusAmount = CurrencyAmount.fromRawAmount(surplusToken, amount?.decimalPlaces(0).toFixed())
   const surplusPercent = percentage?.multipliedBy(100)?.toFixed(2)
 
-  const { formattedFilledAmount, formattedSwappedAmount } = getFilledAmounts({
+  const { formattedFilledAmount, formattedSwappedAmount, swappedAmountWithFee } = getFilledAmounts({
     ...parsedOrder,
     inputToken: parsedInputToken,
     outputToken: parsedOutputToken,
@@ -45,5 +47,6 @@ export function getExecutedSummaryData(order: Order | ParsedOrder) {
     surplusToken,
     formattedFilledAmount,
     formattedSwappedAmount,
+    swappedAmountWithFee,
   }
 }

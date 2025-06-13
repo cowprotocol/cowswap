@@ -6,6 +6,8 @@ import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/re
 
 import { useBlockNumber } from 'common/hooks/useBlockNumber'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useShouldCheckPendingTx() {
   const { account } = useWalletInfo()
 
@@ -18,6 +20,8 @@ export function useShouldCheckPendingTx() {
   )
 }
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 function shouldCheckPendingTx(
   lastBlockNumber: number | undefined,
   accountLowerCase: string,

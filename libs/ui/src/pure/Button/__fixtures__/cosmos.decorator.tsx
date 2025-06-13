@@ -12,12 +12,16 @@ const WrapperElem = styled.div<{ background?: string }>`
   width: 200px;
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const Wrapper = ({ background, children }: WrapperParams) => (
   <WrapperElem background={background}>
     <Box>{children}</Box>
   </WrapperElem>
 )
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const ButtonDecorator = ({ children }: { children: ReactNode }) => <Wrapper>{children}</Wrapper>
 
 export default ButtonDecorator

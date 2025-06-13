@@ -11,6 +11,8 @@ import { useUpdateActiveRate } from '../../hooks/useUpdateActiveRate'
 import { limitRateAtom, LimitRateState, updateLimitRateAtom } from '../../state/limitRateAtom'
 
 // Fetch and update initial price for the selected token pair
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function InitialPriceUpdater() {
   const { inputCurrencyId, outputCurrencyId, chainId } = useLimitOrdersRawState()
   const { isTypedValue, activeRate } = useAtomValue(limitRateAtom)

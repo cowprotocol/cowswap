@@ -15,7 +15,7 @@ import {
 } from 'modules/trade'
 import { useHandleSwap } from 'modules/tradeFlow'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { SettingsTab, TradeRateDetails } from 'modules/tradeWidgetAddons'
+import { SettingsTab } from 'modules/tradeWidgetAddons'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
@@ -27,9 +27,9 @@ import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrapp
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapDeadlineState, useSwapRecipientToggleState, useSwapSettings } from '../../hooks/useSwapSettings'
 import { useSwapWidgetActions } from '../../hooks/useSwapWidgetActions'
-import { BridgeQuoteDetails } from '../../pure/BridgeQuoteDetails'
 import { BottomBanners } from '../BottomBanners'
 import { SwapConfirmModal } from '../SwapConfirmModal'
+import { SwapRateDetails } from '../SwapRateDetails'
 import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
 
@@ -38,12 +38,15 @@ export interface SwapWidgetProps {
   bottomContent?: ReactNode
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const { showRecipient } = useSwapSettings()
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
   const hooksEnabledState = useHooksEnabledManager()
-  const { isLoading: isRateLoading, bridgeQuote } = useTradeQuote()
+  const { isLoading: isRateLoading } = useTradeQuote()
   const priceImpact = useTradePriceImpact()
   const widgetActions = useSwapWidgetActions()
   const receiveAmountInfo = useReceiveAmountInfo()
@@ -133,14 +136,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         return (
           <>
             {bottomContent}
-            <TradeRateDetails
-              isTradePriceUpdating={isRateLoading}
-              rateInfoParams={rateInfoParams}
-              deadline={deadlineState[0]}
-            />
-            {outputCurrency && bridgeQuote && (
-              <BridgeQuoteDetails details={bridgeQuote} outputCurrency={outputCurrency} />
-            )}
+            <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
             <Warnings buyingFiatAmount={buyingFiatAmount} />
             {tradeWarnings}
             <TradeButtons
@@ -152,16 +148,13 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         )
       },
       [
-        doTrade.contextIsReady,
-        isRateLoading,
+        bottomContent,
         rateInfoParams,
         deadlineState,
-        bottomContent,
         buyingFiatAmount,
-        hasEnoughWrappedBalanceForSwap,
+        doTrade.contextIsReady,
         openNativeWrapModal,
-        bridgeQuote,
-        outputCurrency,
+        hasEnoughWrappedBalanceForSwap,
       ],
     ),
   }

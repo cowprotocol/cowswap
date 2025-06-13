@@ -27,6 +27,8 @@ interface TradeButtonsProps {
   isTradeContextReady: boolean
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TradeButtons({ isTradeContextReady }: TradeButtonsProps) {
   const localFormValidation = useLimitOrdersFormState()
   const primaryFormValidation = useGetTradeFormValidation()

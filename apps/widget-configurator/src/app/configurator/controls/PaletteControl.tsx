@@ -8,6 +8,8 @@ import { ColorPalette } from '../types'
 
 const visibleColorKeys: Array<keyof ColorPalette> = ['primary', 'paper', 'text']
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function PaletteControl({ paletteManager }: { paletteManager: ColorPaletteManager }) {
   const { colorPalette, resetColorPalette } = paletteManager
 
@@ -44,6 +46,8 @@ interface ColorInputProps {
   colorKey: keyof ColorPalette
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function ColorInput({ colorKey, paletteManager }: ColorInputProps) {
   const { colorPalette, setColorPalette, defaultPalette } = paletteManager
   // Use the custom color or fallback to the default color

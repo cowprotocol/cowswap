@@ -11,6 +11,8 @@ import * as styledEl from './styled'
 import { OrderSummary } from '../../pure/OrderSummary'
 import { OrderSummaryTemplateProps } from '../../pure/OrderSummary/summaryTemplates'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function FulfilledSummaryTemplate({ inputAmount, outputAmount }: OrderSummaryTemplateProps) {
   return (
     <>
@@ -24,6 +26,8 @@ interface ExecutedSummaryProps {
   orderUid: string
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function FulfilledOrderInfo({ chainId, orderUid }: ExecutedSummaryProps) {
   const order = useOrder({ chainId, id: orderUid })
   const surplusData = useGetSurplusData(order)

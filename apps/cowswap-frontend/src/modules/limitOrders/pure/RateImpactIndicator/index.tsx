@@ -30,6 +30,8 @@ const ImpactTooltip = styled.span`
   max-width: 300px;
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function RateImpactIndicator({ rateImpact, inputCurrency }: RateImpactProps) {
   const isPositive = rateImpact > 0
   const hugePositiveImpact = rateImpact > MAX_POSITIVE_RATE_IMPACT_PERCENT

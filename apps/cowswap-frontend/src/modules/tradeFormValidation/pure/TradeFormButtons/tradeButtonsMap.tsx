@@ -46,6 +46,8 @@ const quoteErrorTexts: Record<QuoteApiErrorCodes, string> = {
   [QuoteApiErrorCodes.SameBuyAndSellToken]: 'Tokens must be different',
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const unsupportedTokenButton = (context: TradeFormButtonContext) => {
   const { derivedState, isSupportedWallet } = context
   const { inputCurrency, outputCurrency } = derivedState

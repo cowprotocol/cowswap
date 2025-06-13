@@ -56,10 +56,14 @@ interface CopyHelperProps
   copyIconWidth?: string
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function CopyHelper(props: CopyHelperProps) {
   const { toCopy, children, clickableLink, copyIconWidth, ...rest } = props
   const [isCopied, setCopied] = useCopyClipboard()
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation()
     setCopied(toCopy)

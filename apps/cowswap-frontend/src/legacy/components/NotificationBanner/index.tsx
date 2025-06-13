@@ -53,6 +53,8 @@ const BannerContainer = styled.div`
   flex: 1;
   justify-content: center;
 `
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function NotificationBanner(props: BannerProps) {
   const { id, isVisible, canClose = true } = props
   const [isActive, setIsActive] = useState(isVisible)
@@ -60,6 +62,8 @@ export default function NotificationBanner(props: BannerProps) {
 
   const isHidden = !isVisible || isClosed || !isActive
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleClose = () => {
     setIsActive(false)
     setNotificationState({ isClosed: true })

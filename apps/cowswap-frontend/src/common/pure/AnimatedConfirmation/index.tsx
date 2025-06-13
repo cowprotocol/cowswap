@@ -41,6 +41,8 @@ const PolyLine = styled.polyline`
   animation: ${dashCheck} 0.9s 0.35s ease-in-out forwards;
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function AnimatedConfirmation() {
   const theme = useTheme()
 

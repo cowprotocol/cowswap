@@ -14,6 +14,8 @@ interface HookDetailHeaderProps {
   padding?: string
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function HookDetailHeader({ dapp, walletType, onSelect, iconSize, gap, padding }: HookDetailHeaderProps) {
   const { name, image, descriptionShort } = dapp
   const isCompatible = isHookCompatible(dapp, walletType)

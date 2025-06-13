@@ -27,6 +27,8 @@ export interface CowSubsidyInfoProps {
   subsidy: CowSubsidy
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const CowSubsidyInfo = ({ account, balance, subsidy }: CowSubsidyInfoProps) => (
   <AutoColumn style={{ marginTop: 32 }} gap="18px" justify="center">
     <Text fontWeight={400} fontSize={15} style={{ textAlign: 'center', width: '100%', wordBreak: 'break-word' }}>
@@ -38,6 +40,8 @@ const CowSubsidyInfo = ({ account, balance, subsidy }: CowSubsidyInfoProps) => (
   </AutoColumn>
 )
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function CowSubsidyModal({
   isOpen,
   onDismiss,

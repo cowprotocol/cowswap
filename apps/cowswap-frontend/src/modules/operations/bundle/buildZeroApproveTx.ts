@@ -9,6 +9,8 @@ type BuildZeroApproveTxParams = Omit<BuildApproveTxParams, 'amountToApprove'> & 
 /**
  * Builds the zero approval tx, without sending it.
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export async function buildZeroApproveTx({ currency, ...params }: BuildZeroApproveTxParams) {
   return buildApproveTx({
     ...params,

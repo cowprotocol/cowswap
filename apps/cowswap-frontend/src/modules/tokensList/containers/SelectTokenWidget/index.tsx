@@ -54,6 +54,9 @@ interface SelectTokenWidgetProps {
   displayLpTokenLists?: boolean
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProps) {
   const {
     open,
@@ -126,12 +129,16 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
     closeTokenSelectWidget()
   }, [closeTokenSelectWidget])
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const importTokenAndClose = (tokens: TokenWithLogo[]) => {
     importTokenCallback(tokens)
     onSelectToken?.(tokens[0])
     onDismiss()
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const importListAndBack = (list: ListState) => {
     try {
       addCustomTokenLists(list)

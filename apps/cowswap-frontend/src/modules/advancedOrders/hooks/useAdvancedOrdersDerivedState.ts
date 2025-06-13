@@ -16,6 +16,8 @@ export function useAdvancedOrdersDerivedState(): AdvancedOrdersDerivedState {
   return useAtomValue(advancedOrdersDerivedStateAtom)
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useFillAdvancedOrdersDerivedState(slippage: Percent) {
   const rawState = useAtomValue(advancedOrdersAtom)
   const updateDerivedState = useSetAtom(advancedOrdersDerivedStateAtom)

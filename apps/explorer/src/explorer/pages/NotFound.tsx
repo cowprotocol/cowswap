@@ -15,6 +15,8 @@ const Wrapper = styled(WrapperTemplate)`
   }
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const NotFoundRequestPage = () => {
   const networkId = useNetworkId() ?? 1
   const network = networkId !== 1 ? getNetworkFromId(networkId).toLowerCase() : ''

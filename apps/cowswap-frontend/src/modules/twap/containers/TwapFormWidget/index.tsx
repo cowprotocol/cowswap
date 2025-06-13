@@ -53,6 +53,9 @@ interface TwapFormWidget {
   tradeWarnings: ReactNode
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
   const { account } = useWalletInfo()
 

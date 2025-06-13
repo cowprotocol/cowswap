@@ -29,6 +29,8 @@ interface RecipientRowProps {
   account: Nullish<string>
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function RecipientRow(props: RecipientRowProps) {
   const { chainId, recipient, account } = props
   return (

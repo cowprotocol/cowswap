@@ -10,8 +10,12 @@ type HookDappBaseInfo = Omit<HookDappBase, 'type' | 'conditions'>
 
 const MANDATORY_DAPP_FIELDS: (keyof HookDappBaseInfo)[] = ['id', 'name', 'image', 'version', 'website']
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const isHex = (val: string) => Boolean(val.match(/^[0-9a-f]+$/i))
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function validateHookDappManifest(
   data: HookDappBase,
   chainId: SupportedChainId | undefined,

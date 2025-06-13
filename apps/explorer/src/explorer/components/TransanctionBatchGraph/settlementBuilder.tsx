@@ -36,6 +36,8 @@ function groupTransfers(arr: Transfer[]): Transfer[] {
   ]
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function buildTransfersBasedSettlement(params: BuildSettlementParams): Settlement | undefined {
   const { networkId, orders, txData, tokens, trades, transfers } = params
   const { trace, contracts } = txData

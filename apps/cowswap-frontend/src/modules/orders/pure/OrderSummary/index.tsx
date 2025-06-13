@@ -19,6 +19,8 @@ interface OrderSummaryProps {
   customTemplate?: typeof SellForAtLeastTemplate
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function OrderSummary(props: OrderSummaryProps) {
   const { kind, sellAmount, buyAmount, outputToken, inputToken, children, customTemplate } = props
   const isSell = isSellOrder(kind)

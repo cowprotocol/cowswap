@@ -121,6 +121,9 @@ function _buildChart(chartContainer: HTMLDivElement, width: number | undefined, 
   })
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, complexity
 const RowToken: React.FC<RowProps> = ({ token, index }) => {
   const {
     id,

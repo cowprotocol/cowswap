@@ -166,6 +166,8 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
  * @param params - New params for the widget.
  * @param contentWindow - Window object of the widget's iframe.
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function updateParams(contentWindow: Window, params: CowSwapWidgetParams, provider: EthereumProvider | undefined) {
   const hasProvider = !!provider
 
@@ -191,6 +193,8 @@ function updateParams(contentWindow: Window, params: CowSwapWidgetParams, provid
  * @param contentWindow - Window object of the widget's iframe.
  * @param appCode - A unique identifier for the app.
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function sendAppCodeOnActivation(contentWindow: Window, appCode: string | undefined) {
   return widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsEmit.ACTIVATE, () => {
     // Update the appData
@@ -203,6 +207,8 @@ function sendAppCodeOnActivation(contentWindow: Window, appCode: string | undefi
 /**
  * Since deeplinks are not supported in iframes, this function intercepts the window.open calls from the widget and opens
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function interceptDeepLinks() {
   return widgetIframeTransport.listenToMessageFromWindow(
     window,

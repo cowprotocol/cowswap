@@ -31,6 +31,8 @@ export interface EthFlowActions {
   directSwap(): void
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowActions {
   const { chainId } = useWalletInfo()
 
@@ -58,6 +60,8 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
         })
     }
 
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const swap = async () => {
       callbacks.dismiss()
       onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCIES[chainId], () => {
@@ -65,12 +69,16 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
       })
     }
 
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const approve = (useModals?: boolean) => {
       return sendTransaction('approve', () => {
         return callbacks.approve({ useModals: !!useModals }).then((res) => res?.hash)
       })
     }
 
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const wrap = (useModals?: boolean) => {
       return sendTransaction('wrap', () => {
         if (!callbacks.wrap) return Promise.resolve(undefined)
@@ -79,6 +87,8 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
       })
     }
 
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const directSwap = () => {
       callbacks.dismiss()
       onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCIES[chainId])

@@ -86,6 +86,8 @@ interface SnackbarsWidgetProps {
   anchorElementId?: string
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SnackbarsWidget({ hidden, anchorElementId }: SnackbarsWidgetProps) {
   const snackbarsState = useAtomValue(snackbarsAtom)
   const resetSnackbarsState = useResetAtom(snackbarsAtom)

@@ -6,6 +6,8 @@ import { useAddUnsupportedToken } from '@cowprotocol/tokens'
 
 import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useProcessUnsupportedTokenError() {
   const addGpUnsupportedToken = useAddUnsupportedToken()
 

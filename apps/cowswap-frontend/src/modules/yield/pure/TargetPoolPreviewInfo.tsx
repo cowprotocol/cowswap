@@ -47,6 +47,8 @@ interface TargetPoolPreviewInfoProps {
   oppositeToken?: Currency | null
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TargetPoolPreviewInfo({ chainId, sellToken, oppositeToken, children }: TargetPoolPreviewInfoProps) {
   if (!(sellToken instanceof LpToken) || !sellToken.lpTokenProvider) return null
 

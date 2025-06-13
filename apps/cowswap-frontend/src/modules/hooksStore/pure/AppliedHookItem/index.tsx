@@ -29,6 +29,10 @@ interface HookItemProp {
 // TODO: refactor tu use single simulation as fallback
 const isBundleSimulationReady = true
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function AppliedHookItem({ account, hookDetails, dapp, isPreHook, editHook, removeHook, index }: HookItemProp) {
   const { isValidating, mutate } = useTenderlyBundleSimulation()
 

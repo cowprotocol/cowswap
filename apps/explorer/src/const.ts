@@ -98,6 +98,8 @@ export const WXDAI_ADDRESS_XDAI = '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d'
 export const WETH_ADDRESS_ARBITRUM_ONE = '0x82af49447d8a07e3bd95bd0d56f35241523fbab1'
 export const WETH_ADDRESS_BASE = '0x4200000000000000000000000000000000000006'
 export const WETH_ADDRESS_SEPOLIA = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
+export const WPOL_ADDRESS_POLYGON = '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270'
+export const WAVAX_ADDRESS_AVALANCHE = '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7'
 export const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 export const NATIVE_TOKEN_ADDRESS_LOWERCASE = NATIVE_TOKEN_ADDRESS.toLowerCase()
 
@@ -107,6 +109,8 @@ export const WRAPPED_NATIVE_ADDRESS: Record<SupportedChainId, string> = {
   [SupportedChainId.ARBITRUM_ONE]: WETH_ADDRESS_ARBITRUM_ONE,
   [SupportedChainId.BASE]: WETH_ADDRESS_BASE,
   [SupportedChainId.SEPOLIA]: WETH_ADDRESS_SEPOLIA,
+  [SupportedChainId.POLYGON]: WPOL_ADDRESS_POLYGON,
+  [SupportedChainId.AVALANCHE]: WAVAX_ADDRESS_AVALANCHE,
 }
 
 export const ETH: TokenErc20 = {
@@ -123,12 +127,28 @@ export const XDAI: TokenErc20 = {
   address: NATIVE_TOKEN_ADDRESS,
 }
 
+export const POL: TokenErc20 = {
+  name: 'POL',
+  symbol: 'POL',
+  decimals: 18,
+  address: NATIVE_TOKEN_ADDRESS,
+}
+
+export const AVAX: TokenErc20 = {
+  name: 'AVAX',
+  symbol: 'AVAX',
+  decimals: 18,
+  address: NATIVE_TOKEN_ADDRESS,
+}
+
 export const NATIVE_TOKEN_PER_NETWORK: Record<SupportedChainId, TokenErc20> = {
   [SupportedChainId.MAINNET]: ETH,
   [SupportedChainId.GNOSIS_CHAIN]: XDAI,
   [SupportedChainId.ARBITRUM_ONE]: ETH,
   [SupportedChainId.BASE]: ETH,
   [SupportedChainId.SEPOLIA]: ETH,
+  [SupportedChainId.POLYGON]: POL,
+  [SupportedChainId.AVALANCHE]: AVAX,
 }
 
 export const TENDERLY_API_URL = 'https://api.tenderly.co/api/v1/public-contract'

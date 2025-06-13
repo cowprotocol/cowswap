@@ -20,11 +20,15 @@ export const INITIAL_FORM_VALUES = {
   metadata: {},
 }
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type FormProps = Record<string, any>
 
 export const getSchema = async (): Promise<JSONSchema7> => {
   const latestSchema = (await metadataApiSDK
     .getAppDataSchema(LATEST_APP_DATA_VERSION)
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .then((m) => (m as any).default)) as JSONSchema7
 
   return makeSchemaCopy(latestSchema)

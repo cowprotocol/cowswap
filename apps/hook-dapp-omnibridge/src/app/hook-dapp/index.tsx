@@ -17,6 +17,8 @@ const cowShed = new CowShedHooks(SupportedChainId.GNOSIS_CHAIN, {
   implementationAddress: COW_SHED_IMPLEMENTATION,
 })
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function OmnibridgeApp() {
   const [actions, setActions] = useState<CoWHookDappActions | null>(null)
   const [context, setContext] = useState<HookDappContext | null>(null)

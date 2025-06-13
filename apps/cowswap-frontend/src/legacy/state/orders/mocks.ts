@@ -4,11 +4,15 @@ import { Token } from '@uniswap/sdk-core'
 
 import { Order, OrderStatus } from './actions'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const randomNumberInRange = (min: number, max: number) => {
   return Math.random() * (max - min) + min
 }
 
 // Infinity to not trigger condition
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const randomIntInRangeExcept = (min: number, max: number, exception = Infinity) => {
   let num = Math.floor(randomNumberInRange(min, max))
   // >= because we Math.floor
@@ -25,6 +29,8 @@ interface GenerateOrderParams extends Pick<Order, 'owner'> {
 
 // increment for OrderId
 let orderN = 1
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const generateOrderId = (ind: number) => {
   return `OrderId_${ind}_`.padEnd(56 * 2, 'X')
 }

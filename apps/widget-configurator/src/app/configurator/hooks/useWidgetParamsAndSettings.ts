@@ -21,7 +21,11 @@ const getBaseUrl = (): string => {
 
 const DEFAULT_BASE_URL = getBaseUrl()
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetParams {
+  // TODO: Break down this large function into smaller functions
+  // eslint-disable-next-line max-lines-per-function
   return useMemo(() => {
     const {
       chainId,

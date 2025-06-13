@@ -6,6 +6,8 @@ import { PermitModal as Pure, PermitModalProps } from '../../pure/PermitModal'
 
 export type PermitModalContainerProps = Omit<PermitModalProps, 'icon'>
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function PermitModal(props: PermitModalContainerProps) {
   const { account } = useWalletInfo()
 

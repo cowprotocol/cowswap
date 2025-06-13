@@ -50,6 +50,8 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
   const resolveCurrencyAddressOrSymbol = useResolveCurrencyAddressOrSymbol()
 
   return useCallback(
+    // TODO: Reduce function complexity by extracting logic
+    // eslint-disable-next-line complexity
     (field: Field, currency: Currency | null, stateUpdateCallback?: Command, searchParams?: TradeSearchParams) => {
       if (!state) return
 

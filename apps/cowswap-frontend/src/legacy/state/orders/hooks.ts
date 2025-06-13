@@ -100,6 +100,8 @@ export type UpdatePresignGnosisSafeTxCallback = (
 export type SetIsOrderUnfillable = (params: SetIsOrderUnfillableParams) => void
 export type SetIsOrderRefundedBatchCallback = (params: SetIsOrderRefundedBatch) => void
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function _concatOrdersState(state: OrdersStateNetwork, keys: OrderTypeKeys[]) {
   if (!state) return []
 
@@ -113,6 +115,8 @@ function _concatOrdersState(state: OrdersStateNetwork, keys: OrderTypeKeys[]) {
 }
 
 export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order | undefined => {
+  // TODO: Reduce function complexity by extracting logic
+  // eslint-disable-next-line complexity
   return useSelector<AppState, Order | undefined>((state) => {
     if (!id || !chainId) return undefined
 
@@ -393,6 +397,8 @@ export const useSetIsOrderRefundedBatch = (): SetIsOrderRefundedBatchCallback =>
  * Related issue https://github.com/cowprotocol/cowswap/issues/2690
  *
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const useClearOrdersStorage = () => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(() => dispatch(clearOrdersStorage()), [dispatch])

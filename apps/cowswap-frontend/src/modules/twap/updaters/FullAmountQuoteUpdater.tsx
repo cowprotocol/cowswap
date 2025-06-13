@@ -14,6 +14,8 @@ import { fullAmountQuoteAtom } from '../state/fullAmountQuoteAtom'
 const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
 const getQuoteOnlyResolveLast = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function FullAmountQuoteUpdater() {
   const { inputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const { quote, error, isLoading } = useTradeQuote()

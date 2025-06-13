@@ -36,6 +36,8 @@ const WarningIcon = styled(AlertCircle)`
   color: #764e0766;
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function WarningCard({ children, className }: PropsWithChildren & { className?: string }) {
   return (
     <Wrapper className={className}>

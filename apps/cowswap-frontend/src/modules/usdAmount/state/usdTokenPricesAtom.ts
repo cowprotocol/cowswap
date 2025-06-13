@@ -7,19 +7,22 @@ import { Fraction, Price, Token } from '@uniswap/sdk-core'
 
 import { usdRawPricesAtom, UsdRawPriceState } from './usdRawPricesAtom'
 
+import { UsdPriceStateKey } from '../types'
+
 export interface UsdPriceState extends Omit<UsdRawPriceState, 'price'> {
   price: Price<Token, Token> | null
 }
 
-export type UsdPrices = { [tokenAddress: string]: UsdPriceState }
+export type UsdPrices = { [key: UsdPriceStateKey]: UsdPriceState }
 
 export const usdTokenPricesAtom = atom((get) => {
   const usdPrices = get(usdRawPricesAtom)
 
-  return Object.keys(usdPrices).reduce<UsdPrices>((acc, tokenAddress) => {
-    const usdPrice = usdPrices[tokenAddress]
+  return Object.keys(usdPrices).reduce<UsdPrices>((acc, _key) => {
+    const key = _key as UsdPriceStateKey
+    const usdPrice = usdPrices[key]
 
-    acc[tokenAddress] = {
+    acc[key] = {
       ...usdPrice,
       price: calculatePrice(usdPrice.currency, usdPrice.price),
     }

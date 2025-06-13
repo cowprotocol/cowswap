@@ -15,6 +15,8 @@ type Props = {
   showExpanded?: boolean
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 const DecodeAppData = (props: Props): React.ReactNode => {
   const { appData, showExpanded = false, fullAppData } = props
   const {

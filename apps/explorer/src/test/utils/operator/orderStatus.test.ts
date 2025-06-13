@@ -24,6 +24,8 @@ function _creationDatePlusMilliseconds(milliseconds: number): Date {
 // mockTimes set's Date.now() to creationDate plus twice time PendingBuffer const in the test context
 beforeEach(() => mockTimes(_creationDatePlusMilliseconds(PENDING_ORDERS_BUFFER * 2)))
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('Filled status', () => {
   describe('Buy order', () => {
     test('Filled, exact amount', () => {
@@ -186,6 +188,8 @@ describe('Expired status', () => {
   })
 })
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('Open status', () => {
   describe('Buy order', () => {
     test('Open, no fills', () => {

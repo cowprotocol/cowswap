@@ -12,6 +12,8 @@ const SOLVERS_INFO_SWR_CONFIG: SWRConfiguration = {
 
 const EMPTY_VALUE: CmsSolversInfo = []
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useCmsSolversInfo() {
   const { data } = useSWR<CmsSolversInfo, Error, string>('/solvers', getSolversInfo, SOLVERS_INFO_SWR_CONFIG)
 

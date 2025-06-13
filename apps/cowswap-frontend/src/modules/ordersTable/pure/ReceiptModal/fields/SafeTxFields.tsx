@@ -21,6 +21,8 @@ export interface SafeTxFieldsProps {
   confirmationsRequired: number
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SafeTxFields(props: SafeTxFieldsProps) {
   const { chainId, safeAddress, safeTxHash, nonce, confirmationsRequired, confirmations } = props
   const safeTransaction = { safe: safeAddress, safeTxHash }

@@ -31,8 +31,14 @@ export function withTimeout<T>(promise: Promise<T>, ms: number, context?: string
   return Promise.race([promise, failOnTimeout])
 }
 
+// TODO: Add proper return type annotation
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
 export function debounce<F extends (...args: any) => any>(func: F, wait = 200) {
   let timeout: NodeJS.Timeout
+  // TODO: Replace any with proper type definitions
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-function-return-type
   const debounced = (...args: any) => {
     clearTimeout(timeout)
     timeout = setTimeout(() => func(args), wait)
@@ -48,6 +54,8 @@ export function isPromiseFulfilled<T>(
 }
 
 // To properly handle PromiseSettleResult which returns and object
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getPromiseFulfilledValue<T, E = undefined>(
   promiseResult: PromiseSettledResult<T>,
   nonFulfilledReturn: E
@@ -55,8 +63,13 @@ export function getPromiseFulfilledValue<T, E = undefined>(
   return isPromiseFulfilled(promiseResult) ? promiseResult.value : nonFulfilledReturn
 }
 
+// TODO: Replace any with proper type definitions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-function-return-type
 export const registerOnWindow = (registerMapping: Record<string, any>) => {
   Object.entries(registerMapping).forEach(([key, value]) => {
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ;(window as any)[key] = value
   })
 }
@@ -149,6 +162,9 @@ export function getProviderErrorMessage(error: unknown): string | undefined {
  *
  * @returns true if the user rejected the request in their wallet
  */
+// TODO: Add proper return type annotation
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
 export function isRejectRequestProviderError(error: any) {
   if (error) {
     // Check the error code is the user rejection as described in eip-1193

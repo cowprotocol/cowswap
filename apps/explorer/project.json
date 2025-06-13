@@ -6,7 +6,9 @@
   "targets": {
     "build": {
       "executor": "@nx/vite:build",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "build/explorer"
@@ -61,15 +63,52 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["apps/explorer/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "apps/explorer/**/*.{ts,tsx,js,jsx}"
+        ]
       }
     },
     "serve-static": {
       "executor": "@nx/web:file-server",
       "options": {
         "buildTarget": "explorer:build"
+      }
+    },
+    "cosmos": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "cosmos"
+          }
+        ],
+        "cwd": "apps/explorer"
+      }
+    },
+    "cosmos:run": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "cosmos -p 5002"
+          }
+        ],
+        "cwd": "apps/explorer"
+      }
+    },
+    "build:cosmos": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "cosmos-export"
+          }
+        ],
+        "cwd": "apps/explorer"
       }
     }
   },

@@ -15,6 +15,8 @@ const STORAGE_KEY = 'limitOrdersPromoBanner:v0'
 
 const promoBannerAtom = atomWithStorage<boolean>(STORAGE_KEY, true)
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useLimitOrdersPromoBanner() {
   const isLimitOrdersTab = !!useMatch(Routes.LIMIT_ORDER)
   const { standaloneMode } = useInjectedWidgetParams()

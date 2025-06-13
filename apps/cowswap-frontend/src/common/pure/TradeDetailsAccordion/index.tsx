@@ -1,21 +1,28 @@
+import { ReactNode } from 'react'
 
-import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import SVG from 'react-inlinesvg'
+import { ToggleArrow } from 'common/pure/ToggleArrow'
 
-import { Wrapper, Summary, SummaryClickable, ToggleIcon, Details } from './styled'
+import { Wrapper, Summary, SummaryClickable, Details } from './styled'
 
 interface TradeDetailsAccordionProps {
-  rateInfo: React.ReactNode
+  rateInfo: ReactNode
   feeTotalAmount: CurrencyAmount<Currency> | null
   feeUsdTotalAmount: CurrencyAmount<Currency> | null
-  children?: React.ReactNode
+  children?: ReactNode
   open: boolean
   onToggle: () => void
+  feeWrapper?: (feeElement: ReactNode) => ReactNode
 }
 
+/**
+ * A reusable accordion component for displaying trade details.
+ *
+ * This component displays rate information, fee amounts, and can expand to show
+ * more detailed information about a trade.
+ */
 export const TradeDetailsAccordion = ({
   rateInfo,
   feeTotalAmount,
@@ -23,17 +30,38 @@ export const TradeDetailsAccordion = ({
   children,
   open,
   onToggle,
+  feeWrapper,
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }: TradeDetailsAccordionProps) => {
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleToggle = () => {
     onToggle?.()
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleKeyDown = (e: { key: string; preventDefault: () => void }) => {
     if (['Enter', ' ', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
       e.preventDefault()
       handleToggle()
     }
   }
+
+  const defaultFeeContent = feeUsdTotalAmount?.greaterThan(0) ? (
+    <FiatAmount amount={feeUsdTotalAmount} />
+  ) : (
+    <>
+      {feeTotalAmount?.greaterThan(0) ? (
+        <>
+          Fee <TokenAmount amount={feeTotalAmount} tokenSymbol={feeTotalAmount?.currency} />
+        </>
+      ) : (
+        'Free'
+      )}
+    </>
+  )
 
   return (
     <Wrapper isOpen={open}>
@@ -46,31 +74,12 @@ export const TradeDetailsAccordion = ({
           tabIndex={0}
           isOpen={open}
         >
-          {!open && (
-            <>
-              {feeUsdTotalAmount?.greaterThan(0) ? (
-                <>
-                  <FiatAmount amount={feeUsdTotalAmount} />
-                </>
-              ) : (
-                <>
-                  {feeTotalAmount?.greaterThan(0) ? (
-                    <>
-                      Fee <TokenAmount amount={feeTotalAmount} tokenSymbol={feeTotalAmount?.currency} />
-                    </>
-                  ) : (
-                    'Free'
-                  )}
-                </>
-              )}
-            </>
-          )}
-          <ToggleIcon isOpen={open}>
-            <SVG src={CarretIcon} title={open ? 'Close' : 'Open'} />
-          </ToggleIcon>
+          {feeWrapper ? feeWrapper(defaultFeeContent) : defaultFeeContent}
+
+          <ToggleArrow isOpen={open} />
         </SummaryClickable>
       </Summary>
-      {open && <Details>{children}</Details>}
+      <Details isVisible={open}>{children}</Details>
     </Wrapper>
   )
 }

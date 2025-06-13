@@ -14,6 +14,8 @@ import { CowSwapTheme, Media } from '@cowprotocol/ui'
 import * as CSS from 'csstype'
 import styled from 'styled-components/macro'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function isChristmasTheme(theme?: CowSwapTheme) {
   if (!theme) {
     return false

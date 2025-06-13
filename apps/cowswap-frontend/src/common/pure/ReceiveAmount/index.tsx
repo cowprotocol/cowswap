@@ -18,6 +18,8 @@ export interface ReceiveAmountProps {
   allowsOffchainSigning: boolean
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ReceiveAmount(props: ReceiveAmountProps) {
   const { isSell } = props.receiveAmountInfo
 

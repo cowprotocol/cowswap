@@ -47,6 +47,8 @@ export interface HelpTooltipProps extends Omit<HoverTooltipProps, 'QuestionMark'
   Icon?: ReactElement
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function HelpTooltip({ text, Icon, className, ...props }: HelpTooltipProps) {
   const tooltip = renderTooltip(text, props)
   const content = <div>{tooltip}</div>

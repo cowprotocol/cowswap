@@ -31,6 +31,8 @@ const NetworkInfo = styled.div`
 
 const VERSION_WHERE_BUG_WAS_FIXED = '12.10.4' // Anything smaller than this version is potentially affected by the bug
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency }) {
   const isNativeSellToken = getIsNativeToken(sellToken)
 
@@ -58,6 +60,8 @@ export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency 
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useWidgetProviderMetaInfo() {
   const provider = useWalletProvider()
   const [widgetProviderMetaInfo, setWidgetProviderMetaInfo] = useState<ProviderMetaInfoPayload | null>(null)

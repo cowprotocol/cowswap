@@ -10,6 +10,8 @@ export interface CurrencyInputProps {
   tokenIdState: [string, Dispatch<SetStateAction<string>>]
   tokenAmountState: [number, Dispatch<SetStateAction<number>>]
 }
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function CurrencyInputControl(props: CurrencyInputProps) {
   const { tokenIdState, tokenAmountState, label } = props
   const [tokenId, setTokenId] = tokenIdState

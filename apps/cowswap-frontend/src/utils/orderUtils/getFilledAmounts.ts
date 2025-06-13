@@ -12,6 +12,8 @@ function legacyBigNumberToCurrencyAmount(currency: Token, value: BigNumber | und
   return CurrencyAmount.fromRawAmount(currency, Math.ceil((value?.toNumber() || 0) * 10 ** currency.decimals))
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getFilledAmounts(order: ParsedOrder) {
   const { inputToken, outputToken, kind, feeAmount, sellAmount, buyAmount } = order
   const { executedBuyAmount, executedSellAmount, executedFeeAmount, filledAmount } = order.executionData
@@ -26,7 +28,8 @@ export function getFilledAmounts(order: ParsedOrder) {
   const buyAmountCurrency = CurrencyAmount.fromRawAmount(outputToken, buyAmount.toString())
 
   // TODO: set types, move calculations logic to a function
-  let filledAmountWithFee, swappedAmountWithFee
+  let filledAmountWithFee: BigNumber
+  let swappedAmountWithFee: BigNumber
   if (isSellOrder(kind)) {
     action = 'sold'
 
@@ -65,5 +68,7 @@ export function getFilledAmounts(order: ParsedOrder) {
     formattedSwappedAmount,
     mainAmount,
     action,
+    swappedAmountWithFee,
+    filledAmountWithFee,
   }
 }

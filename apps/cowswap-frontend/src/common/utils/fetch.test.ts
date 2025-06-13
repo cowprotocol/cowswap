@@ -20,16 +20,22 @@ beforeEach(() => {
   fetchMock.mockClear()
 })
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function mockAndFailUntilAttempt(attempt: number) {
   let count = 0
 
   fetchMock.mockImplementation((() => {
     count++
     return count >= attempt ? Promise.resolve(OK_RESPONSE) : Promise.reject(ERROR_MESSAGE)
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any)
 }
 
 // We use fetchWithRateLimit instead of fetchWithBackoff, since that is just a default config version of fetchWithBackoff
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const fetchUrlWithBackoff = (attempts: number) =>
   fetchWithRateLimit({ backoff: { numOfAttempts: attempts } })(URL, undefined)
 

@@ -26,6 +26,8 @@ export const closableBannersStateAtom = atomWithStorage<ClosableBannersState>(
   getJotaiMergerStorage(),
 )
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function ClosableBannerInner({ storageKey, callback }: ClosableBannerProps) {
   const [state, setState] = useAtom(closableBannersStateAtom)
 
@@ -39,6 +41,8 @@ function ClosableBannerInner({ storageKey, callback }: ClosableBannerProps) {
   return isBannerDisplayed ? callback(closeBanner) : null
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ClosableBanner(storageKey: string, callback: ClosableBannerCallback) {
   return <ClosableBannerInner storageKey={storageKey} callback={callback}></ClosableBannerInner>
 }

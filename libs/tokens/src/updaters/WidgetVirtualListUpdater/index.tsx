@@ -19,6 +19,8 @@ export interface WidgetVirtualListUpdaterProps {
  * The updater converts custom tokens provided by widget integrator to a virtual list
  * This list will be used by CoW Swap as a regular list, but it will not be displayed in the token lists settings
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function WidgetVirtualListUpdater({ customTokens, appCode }: WidgetVirtualListUpdaterProps) {
   const setVirtualListsState = useSetAtom(virtualListsStateAtom)
 

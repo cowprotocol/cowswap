@@ -15,6 +15,8 @@ const InfoCard = styled.button<{ isActive?: boolean }>`
   border-color: ${({ theme, isActive }) => (isActive ? 'transparent' : theme.background)};
 `
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const OptionCard = styled(InfoCard as any)`
   display: flex;
   flex-direction: row;
@@ -30,6 +32,8 @@ const OptionCardLeft = styled.div`
   height: 100%;
 `
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const OptionCardClickable = styled(OptionCard as any)<{ clickable?: boolean; isDeprecated?: boolean }>`
   margin-top: 0;
   opacity: ${({ isDeprecated }) => (isDeprecated ? '0.5' : '1')};
@@ -111,6 +115,10 @@ export interface ConnectWalletOptionProps {
   isDeprecated?: boolean
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function ConnectWalletOption({
   onClick = null,
   link = null,

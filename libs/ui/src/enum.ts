@@ -30,6 +30,7 @@ export enum UI {
   COLOR_TEXT_OPACITY_60 = '--cow-color-text-opacity-60',
   COLOR_TEXT_OPACITY_50 = '--cow-color-text-opacity-50',
   COLOR_TEXT_OPACITY_25 = '--cow-color-text-opacity-25',
+  COLOR_TEXT_OPACITY_15 = '--cow-color-text-opacity-15',
   COLOR_TEXT_OPACITY_10 = '--cow-color-text-opacity-10',
 
   COLOR_SECONDARY_TEXT = '--cow-color-secondary-text',
@@ -72,6 +73,7 @@ export enum UI {
   COLOR_COWAMM_BLUE = '--cow-color-cowamm-blue',
   COLOR_COWAMM_DARK_BLUE = '--cow-color-cowamm-dark-blue',
   COLOR_COWAMM_LIGHT_BLUE = '--cow-color-cowamm-light-blue',
+  COLOR_COWAMM_LIGHT_ORANGE = '--cow-color-cowamm-light-orange',
 
   // ================================================================================
 
@@ -82,6 +84,10 @@ export enum UI {
   // Colors
   COLOR_WHITE = '--cow-color-white',
   COLOR_BLUE = '--cow-color-blue',
+  COLOR_BLUE_100_PRIMARY = '--cow-color-blue-100-primary',
+  COLOR_BLUE_300_PRIMARY = '--cow-color-blue-300-primary',
+  COLOR_BLUE_400_PRIMARY = '--cow-color-blue-400-primary',
+  COLOR_BLUE_900_PRIMARY = '--cow-color-blue-900-primary',
   COLOR_LIGHT_BLUE_OPACITY_90 = '--cow-color-lightBlue-opacity-90',
   COLOR_LIGHT_BLUE_OPACITY_80 = '--cow-color-lightBlue-opacity-80',
   COLOR_YELLOW_LIGHT = '--cow-color-yellow-light',

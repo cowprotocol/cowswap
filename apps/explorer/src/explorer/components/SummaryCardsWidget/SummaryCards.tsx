@@ -59,6 +59,9 @@ interface SummaryCardsProps {
   children: React.ReactNode
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, complexity
 export function SummaryCards({ summaryData, children }: SummaryCardsProps): React.ReactNode {
   const { batchInfo, dailyTransactions, totalTokens, volumeUsd, dailyFees, isLoading } = summaryData || {}
   const isDesktop = useMediaQuery(Media.LargeAndUp(false))

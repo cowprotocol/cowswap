@@ -47,6 +47,8 @@ if (SENTRY_DSN) {
   })
 }
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Router: typeof BrowserRouter & typeof HashRouter = (window as any).IS_IPFS ? HashRouter : BrowserRouter
 
 const NotFound = React.lazy(

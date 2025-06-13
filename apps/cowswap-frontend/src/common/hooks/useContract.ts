@@ -41,6 +41,8 @@ export type UseContractResult<T extends Contract = Contract> = {
 // returns null on errors
 export function useContract<T extends Contract = Contract>(
   addressOrAddressMap: string | { [chainId: number]: string | undefined | null } | undefined,
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ABI: any,
   withSignerIfPossible = true,
   customProvider?: Web3Provider,
@@ -81,6 +83,8 @@ export function useContract<T extends Contract = Contract>(
         chainId,
         loading: false,
       }
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       // Error getting the contract instance
       console.error('Failed to get contract', error)
@@ -94,10 +98,14 @@ export function useContract<T extends Contract = Contract>(
   }, [addressOrAddressMap, ABI, provider, chainId, withSignerIfPossible, account]) as UseContractResult<T>
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean) {
   return useContract<Erc20>(tokenAddress, Erc20Abi, withSignerIfPossible)
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useWethContract(withSignerIfPossible?: boolean) {
   return useContract<Weth>(WETH_CONTRACT_ADDRESS_MAP, WethAbi, withSignerIfPossible)
 }

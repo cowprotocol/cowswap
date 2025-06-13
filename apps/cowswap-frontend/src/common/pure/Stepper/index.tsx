@@ -122,6 +122,8 @@ export interface StepperProps {
   dotSize?: number
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Stepper({ steps, maxWidth, dotSize = 21 }: StepperProps) {
   return (
     <Wrapper maxWidth={maxWidth} dotSize={dotSize}>

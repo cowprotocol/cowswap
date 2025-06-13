@@ -4,6 +4,8 @@ import SVG from 'react-inlinesvg'
 
 import { SettingsButtonIcon } from './styled'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SettingsIcon() {
   return (
     <SettingsButtonIcon>

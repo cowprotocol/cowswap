@@ -1,7 +1,7 @@
 import { HelpCircle } from '.'
 
 const fixtures = {
-  default: <HelpCircle />,
+  default: () => <HelpCircle />,
   size16: <HelpCircle size={16} />,
 }
 

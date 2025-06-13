@@ -22,6 +22,9 @@ function isSimulationSuccessful(res: TenderlySimulation | SimulationError): res 
 const tenderlySimulationLinksAtom = atom<Record<string, string | undefined>>({})
 const tenderlySimulationErrorsAtom = atom<Record<string, string | undefined>>({})
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function TenderlySimulate({ hook }: TenderlySimulateProps) {
   const hookId = [hook.target, hook.callData, hook.gasLimit].join(':')
   const [simulationLinks, setSimulationLink] = useAtom(tenderlySimulationLinksAtom)
@@ -47,6 +50,8 @@ export function TenderlySimulate({ hook }: TenderlySimulateProps) {
       } else {
         setSimulationError({ [hookId]: response.error.message })
       }
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setSimulationError({ [hookId]: errorToString(error) })
     } finally {

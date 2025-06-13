@@ -18,6 +18,8 @@ export interface TokensVirtualListProps extends SelectTokenContext {
   displayLpTokenLists?: boolean
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TokensVirtualList(props: TokensVirtualListProps) {
   const {
     allTokens,

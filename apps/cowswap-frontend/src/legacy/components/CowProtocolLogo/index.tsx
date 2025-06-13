@@ -25,6 +25,8 @@ interface Props {
   size?: number | undefined
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function CowProtocolLogo({ size }: Props) {
   return <Icon size={size} />
 }

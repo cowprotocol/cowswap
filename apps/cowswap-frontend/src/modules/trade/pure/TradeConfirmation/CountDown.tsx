@@ -10,6 +10,8 @@ interface CountdownComponentProps {
   refreshInterval: number | undefined
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const QuoteCountdown = ({ refreshInterval }: CountdownComponentProps) => {
   const [blink, setBlink] = useState<boolean>(false)
 

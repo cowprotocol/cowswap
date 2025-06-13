@@ -13,6 +13,8 @@ const UNSUPPORTED_TOKEN_TTL = ms`1h`
 /**
  * Since an unsupported token might become supported in the future, we should periodically reset the list of unsupported tokens.
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function UnsupportedTokensUpdater() {
   const removeUnsupportedTokens = useSetAtom(removeUnsupportedTokensAtom)
   const unsupportedTokens = useUnsupportedTokens()

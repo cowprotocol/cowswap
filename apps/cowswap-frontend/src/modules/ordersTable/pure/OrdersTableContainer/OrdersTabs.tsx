@@ -148,6 +148,9 @@ export interface OrdersTabsProps {
   isWalletConnected: boolean
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function OrdersTabs({ tabs, isWalletConnected = true }: OrdersTabsProps) {
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
   const navigate = useNavigate()
@@ -156,6 +159,8 @@ export function OrdersTabs({ tabs, isWalletConnected = true }: OrdersTabsProps) 
     0,
   )
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const tabId = event.target.value
     navigate(buildOrdersTableUrl({ tabId, pageNumber: 1 }))

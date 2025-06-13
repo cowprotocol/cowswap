@@ -1,6 +1,4 @@
 // Custom
-import _ethFlowBarnJson from '@cowprotocol/ethflowcontract/networks.barn.json'
-import _ethFlowProdJson from '@cowprotocol/ethflowcontract/networks.prod.json'
 import { Interface } from '@ethersproject/abi'
 
 import _AirdropAbi from './abis/Airdrop.json'
@@ -60,8 +58,6 @@ export { Erc20__factory } from './generated/legacy/factories/Erc20__factory'
 // EthFlow
 export type { CoWSwapEthFlow } from './generated/ethflow'
 
-export const ethFlowBarnJson = _ethFlowBarnJson
-export const ethFlowProdJson = _ethFlowProdJson
 export const ArgentWalletContractAbi = _ArgentWalletContractAbi
 export const ArgentWalletDetectorAbi = _ArgentWalletDetectorAbi
 export const Eip2612Abi = _Eip2612Abi

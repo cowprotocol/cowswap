@@ -58,6 +58,8 @@ describe('calculateAmountForRate', () => {
      * *** It happens, because the Price was constructed from CurrencyAmounts with different decimals
      * *** To avoid that FractionUtils.fromPrice() in order to normalize the Fraction
      */
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((JSBI as any).__absoluteCompare(multiplied.numerator, multiplied.denominator)).toBe(-1)
     expect(JSBI.divide(multiplied.numerator, multiplied.denominator).toString()).toBe('0')
   })

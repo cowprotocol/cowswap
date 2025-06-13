@@ -19,6 +19,8 @@ interface ModalProps {
   onDismiss: Command
   minHeight?: number | false
   maxHeight?: number
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   initialFocusRef?: React.RefObject<any>
   className?: string
   children?: React.ReactNode
@@ -27,6 +29,9 @@ interface ModalProps {
 /**
  * @deprecated use common/pure/NewModal instead
  */
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function Modal({
   isOpen,
   onDismiss,

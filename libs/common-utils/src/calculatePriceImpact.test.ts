@@ -4,6 +4,8 @@ import { CurrencyAmount, Percent, Token, WETH9 } from '@uniswap/sdk-core'
 
 import BigNumber from 'bignumber.js'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function _calculateAbaPriceImpact(initialValue: string, finalValue: string) {
   const initialValueBn = new BigNumber(initialValue)
   const finalValueBn = new BigNumber(finalValue)

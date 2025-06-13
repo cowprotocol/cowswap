@@ -15,10 +15,13 @@ export interface TradeRatesProps {
   isFeeDetailsOpen: boolean
   toggleAccordion: () => void
   children?: ReactNode
+  feeWrapper?: (defaultFeeContent: React.ReactNode) => React.ReactNode
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TradeTotalCostsDetails(props: TradeRatesProps) {
-  const { rateInfoParams, totalCosts, isFeeDetailsOpen, toggleAccordion, children } = props
+  const { rateInfoParams, totalCosts, isFeeDetailsOpen, toggleAccordion, children, feeWrapper } = props
   const totalCostsUsd = useUsdAmount(totalCosts).value
 
   if (!totalCosts) {
@@ -32,6 +35,7 @@ export function TradeTotalCostsDetails(props: TradeRatesProps) {
       feeTotalAmount={totalCosts}
       open={isFeeDetailsOpen}
       onToggle={toggleAccordion}
+      feeWrapper={feeWrapper}
     >
       <styledEl.Box noMargin>{children}</styledEl.Box>
     </TradeDetailsAccordion>

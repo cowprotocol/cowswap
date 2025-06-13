@@ -14,7 +14,11 @@ interface DelegateProps {
   rowOnMobile?: boolean
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function Delegate({ dismissable = false, rowOnMobile }: DelegateProps) {
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const renderContent = (onClose?: () => void) => (
     <BannerCard rowOnMobile={rowOnMobile}>
       {dismissable && onClose && <CloseButton onClick={onClose} />}

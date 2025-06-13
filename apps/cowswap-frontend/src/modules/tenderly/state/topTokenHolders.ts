@@ -14,6 +14,8 @@ export interface TokenHolder {
   balance: string
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export async function getTopTokenHolder({ tokenAddress, chainId }: GetTopTokenHoldersParams) {
   if (!tokenAddress) return
 

@@ -30,6 +30,8 @@ class DerivedHDKeyInfoIterator {
   private index = 0
 
   constructor(private parentDerivedKeyInfo: DerivedHDKeyInfo, private offset = 0, private limit = 100) {}
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   next() {
     const baseDerivationPath = this.parentDerivedKeyInfo.baseDerivationPath
     const derivationIndex = this.offset + this.index
@@ -50,6 +52,8 @@ class DerivedHDKeyInfoIterator {
       value: derivedKey,
     }
   }
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   [Symbol.iterator]() {
     return this
   }

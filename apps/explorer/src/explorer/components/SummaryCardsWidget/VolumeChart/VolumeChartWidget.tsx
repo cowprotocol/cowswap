@@ -29,6 +29,8 @@ const logicalTimeRange = {
   [VolumePeriod.WEEKLY]: { from: 3.4, to: 9 }, // by the 7 points
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function VolumeChartWidget(): React.ReactNode {
   const [periodSelected, setVolumeTimePeriod] = useState(VolumePeriod.DAILY)
   const volumeData = useGetVolumeData(periodSelected)

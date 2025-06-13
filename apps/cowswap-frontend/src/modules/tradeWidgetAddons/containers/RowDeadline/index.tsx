@@ -6,6 +6,8 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { RowDeadlineContent } from '../../pure/Row/RowDeadline'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function RowDeadline({ deadline }: { deadline: number }) {
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()

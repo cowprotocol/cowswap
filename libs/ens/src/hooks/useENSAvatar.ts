@@ -66,6 +66,8 @@ function useAvatarFromNode(node?: string): { avatar?: string; loading: boolean }
   )
 }
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 function useAvatarFromNFT(
   account: string | undefined,
   nftUri = '',

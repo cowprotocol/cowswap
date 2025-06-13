@@ -58,6 +58,8 @@ function useCustomProps(): Partial<CurrencyInputPanelProps> {
   return { allowsOffchainSigning, showSetMax, currencyInfo, priceImpactParams, subsidyAndBalance }
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const Custom = () => {
   return (
     <DemoContainer>
@@ -67,9 +69,9 @@ const Custom = () => {
 }
 
 const Fixtures = {
-  default: <CurrencyInputPanel {...defaultProps} />,
-  CurrencyPreview: <CurrencyAmountPreview {...defaultProps} />,
-  custom: <Custom />,
+  default: () => <CurrencyInputPanel {...defaultProps} />,
+  CurrencyPreview: () => <CurrencyAmountPreview {...defaultProps} />,
+  custom: () => <Custom />,
 }
 
 export default Fixtures

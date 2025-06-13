@@ -7,7 +7,6 @@ import { Percent, Price } from '@uniswap/sdk-core'
 import { Nullish } from 'types'
 
 import { useUsdAmount } from 'modules/usdAmount'
-import { useVolumeFeeTooltip } from 'modules/volumeFee'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
 
@@ -47,6 +46,10 @@ type LabelsAndTooltips = {
   networkCostsTooltipSuffix?: ReactNode
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function TradeBasicConfirmDetails(props: Props) {
   const {
     rateInfoParams,
@@ -61,7 +64,6 @@ export function TradeBasicConfirmDetails(props: Props) {
     account,
   } = props
   const isInvertedState = useState(false)
-  const volumeFeeTooltip = useVolumeFeeTooltip()
   const { amountAfterFees, amountAfterSlippage } = getOrderTypeReceiveAmounts(receiveAmountInfo)
   const { networkCostsSuffix, networkCostsTooltipSuffix } = labelsAndTooltips || {}
 
@@ -105,7 +107,6 @@ export function TradeBasicConfirmDetails(props: Props) {
         withTimelineDot={withTimelineDot}
         networkCostsSuffix={networkCostsSuffix}
         networkCostsTooltipSuffix={networkCostsTooltipSuffix}
-        volumeFeeTooltip={volumeFeeTooltip}
       />
 
       <ReviewOrderModalAmountRow

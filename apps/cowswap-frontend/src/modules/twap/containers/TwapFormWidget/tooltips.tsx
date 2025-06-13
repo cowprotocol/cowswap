@@ -18,6 +18,8 @@ const IconImage = styled.div`
 
 export interface LabelTooltip {
   label: React.ReactNode
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tooltip?: React.ReactNode | ((params: any) => React.ReactNode)
 }
 

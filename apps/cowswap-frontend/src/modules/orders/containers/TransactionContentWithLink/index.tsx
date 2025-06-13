@@ -25,6 +25,9 @@ interface TransactionContentWithLinkProps {
   isEthFlow?: boolean
 }
 
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
 export function TransactionContentWithLink(props: TransactionContentWithLinkProps) {
   const { chainId } = useWalletInfo()
   const safeInfo = useGnosisSafeInfo()

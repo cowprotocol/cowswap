@@ -1,9 +1,11 @@
-import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
+import { ActivityStatus } from 'common/types/activity'
 
 import { EthFlowState } from '../../../services/ethFlow/types'
 import { EthFlowContext } from '../../../state/ethFlowContextAtom'
 
 // returns derived ethflow state from current props
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function getDerivedEthFlowState(context: EthFlowContext): EthFlowState {
   const approveActivityStatus = context.approve.txStatus
   const wrapActivityStatus = context.wrap.txStatus

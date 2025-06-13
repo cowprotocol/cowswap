@@ -1,19 +1,19 @@
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import {
-  PriceQuality,
-  CrossChainQuoteAndPost,
-  SupportedChainId,
-  QuoteBridgeRequest,
-  SwapAdvancedSettings,
-  isBridgeQuoteAndPost,
   BridgeProviderQuoteError,
+  CrossChainQuoteAndPost,
+  isBridgeQuoteAndPost,
+  PriceQuality,
+  QuoteBridgeRequest,
+  SupportedChainId,
+  SwapAdvancedSettings,
 } from '@cowprotocol/cow-sdk'
 
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { AppDataInfo } from 'modules/appData'
 
-import { QuoteApiError, mapOperatorErrorToQuoteError } from 'api/cowProtocol/errors/QuoteError'
+import { mapOperatorErrorToQuoteError, QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 import { getIsOrderBookTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
@@ -24,6 +24,8 @@ const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
 const getFastQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 const getOptimalQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export async function fetchAndProcessQuote(
   chainId: SupportedChainId,
   fetchParams: TradeQuoteFetchParams,
@@ -40,7 +42,7 @@ export async function fetchAndProcessQuote(
     quoteRequest: {
       priceQuality,
     },
-    appData: appData,
+    appData,
     quoteSigner: isBridge ? getBridgeQuoteSigner(chainId) : undefined,
   }
 

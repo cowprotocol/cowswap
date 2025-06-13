@@ -12,6 +12,8 @@ type DisplayLinkProps = {
   onClick?: Command
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function DisplayLink({ id, chainId }: DisplayLinkProps) {
   const { orderCreationHash, status } = useOrder({ id, chainId }) || {}
 

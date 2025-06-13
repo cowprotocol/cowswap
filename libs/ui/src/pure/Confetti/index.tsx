@@ -2,6 +2,8 @@ import { useWindowSize } from '@cowprotocol/common-hooks'
 
 import ReactConfetti from 'react-confetti'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Confetti({ start, variant }: { start: boolean; variant?: string }) {
   const { width, height } = useWindowSize()
 

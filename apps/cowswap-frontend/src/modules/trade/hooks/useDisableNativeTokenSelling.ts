@@ -13,12 +13,16 @@ import { getDefaultTradeRawState } from '../types/TradeRawState'
  * Since the selling of ETH is not supported in limit and advanced orders
  * We automatically replace it by WETH
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useDisableNativeTokenSelling() {
   const { chainId } = useWalletInfo()
   const { state } = useTradeState()
   const { inputCurrencyId, outputCurrencyId } = state || {}
   const navigate = useTradeNavigate()
 
+  // TODO: Reduce function complexity by extracting logic
+  // eslint-disable-next-line complexity
   useEffect(() => {
     const nativeToken = chainId ? NATIVE_CURRENCIES[chainId] : null
     const wrappedToken = chainId ? WRAPPED_NATIVE_CURRENCIES[chainId] : null

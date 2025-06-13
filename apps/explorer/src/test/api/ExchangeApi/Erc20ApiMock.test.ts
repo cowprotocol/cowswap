@@ -26,6 +26,8 @@ const NETWORK_ID = 0
 
 let instance: Erc20Api = new Erc20ApiMock({ balances: BALANCES, allowances: ALLOWANCES, tokens: unregisteredTokens })
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('Basic view functions', () => {
   describe('balanceOf', () => {
     it('returns balance', async () => {
@@ -173,6 +175,8 @@ describe('Basic view functions', () => {
   })
 })
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('Write functions', () => {
   const mockFunction = jest.fn()
   const txOptionalParams: TxOptionalParams = {
@@ -274,6 +278,8 @@ describe('Write functions', () => {
       expect(mockFunction.mock.calls.length).toBe(1)
     })
   })
+  // TODO: Break down this large function into smaller functions
+  // eslint-disable-next-line max-lines-per-function
   describe('transferFrom', () => {
     const amount = new BN('78565893578')
 

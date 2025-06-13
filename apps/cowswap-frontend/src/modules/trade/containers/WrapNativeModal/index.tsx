@@ -8,6 +8,8 @@ import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingConte
 import { useDerivedTradeState } from '../../hooks/useDerivedTradeState'
 import { useWrapNativeScreenState } from '../../hooks/useWrapNativeScreenState'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function WrapNativeModal() {
   const [, setWrapNativeState] = useWrapNativeScreenState()
 

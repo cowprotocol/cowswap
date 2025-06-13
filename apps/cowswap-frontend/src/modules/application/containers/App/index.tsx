@@ -4,12 +4,13 @@ import { initPixelAnalytics, useAnalyticsReporter, useCowAnalytics, WebVitalsAna
 import { ACTIVE_CUSTOM_THEME, CustomTheme } from '@cowprotocol/common-const'
 import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
+import { Color, Footer, Media, MenuBar } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router'
 import Snowfall from 'react-snowfall'
+import { CustomGlobalStyles } from 'styles/CustomGlobalStyles'
 import { ThemeProvider } from 'theme'
 
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
@@ -17,7 +18,7 @@ import { AccountElement } from 'legacy/components/Header/AccountElement'
 import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
 import { HeaderControls, HeaderElement } from 'legacy/components/Header/styled'
 import { URLWarning } from 'legacy/components/Header/URLWarning'
-import TopLevelModals from 'legacy/components/TopLevelModals'
+import { TopLevelModals } from 'legacy/components/TopLevelModals'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { OrdersPanel } from 'modules/account'
@@ -32,7 +33,6 @@ import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentAct
 import { useGetMarketDimension } from 'common/hooks/useGetMarketDimension'
 import { useMenuItems } from 'common/hooks/useMenuItems'
 import { LoadingApp } from 'common/pure/LoadingApp'
-import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 
 import { ADDITIONAL_FOOTER_CONTENT, NAV_ITEMS, PRODUCT_VARIANT } from './menuConsts'
@@ -40,11 +40,11 @@ import * as styledEl from './styled'
 
 const RoutesApp = lazy(() => import('./RoutesApp').then((module) => ({ default: module.RoutesApp })))
 
-const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts, 'transparent')
-
 // Initialize static analytics instance
 const pixel = initPixelAnalytics()
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const LinkComponent = ({ href, children }: PropsWithChildren<{ href: string }>) => {
   const external = href.startsWith('http')
 
@@ -55,6 +55,10 @@ const LinkComponent = ({ href, children }: PropsWithChildren<{ href: string }>) 
   )
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function App() {
   const { chainId, account } = useWalletInfo()
   const { walletName } = useWalletDetails()
@@ -145,7 +149,7 @@ export function App() {
       <Suspense fallback={<LoadingApp />}>
         <RedirectAnySwapAffectedUsers />
         <ThemeProvider />
-        <GlobalStyles />
+        <CustomGlobalStyles />
 
         <styledEl.AppWrapper>
           <URLWarning />

@@ -14,6 +14,8 @@ import {
   updateLimitOrdersSettingsAtom,
 } from '../../state/limitOrdersSettingsAtom'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SettingsWidget() {
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)

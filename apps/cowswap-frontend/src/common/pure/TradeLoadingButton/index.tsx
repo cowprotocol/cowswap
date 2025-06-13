@@ -6,6 +6,8 @@ import { CenteredDots, LongLoadText } from '@cowprotocol/ui'
 import { Text } from 'rebass'
 import { ThemedText } from 'theme'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const TradeLoadingButton = () => {
   const [isLongLoad, setIsLongLoad] = useState<boolean>(false)
 

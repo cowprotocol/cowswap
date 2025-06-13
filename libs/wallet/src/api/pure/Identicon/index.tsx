@@ -34,6 +34,8 @@ export interface IdenticonProps {
   onErrorFetchAvatar: Command
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Identicon({ size = 16, iconRef, onErrorFetchAvatar, avatar, showAvatar }: IdenticonProps) {
   return (
     <Wrapper size={size}>

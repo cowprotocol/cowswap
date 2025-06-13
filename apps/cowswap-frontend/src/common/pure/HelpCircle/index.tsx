@@ -24,6 +24,8 @@ export interface HelpCircleProps {
   size?: number
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function HelpCircle({ size }: HelpCircleProps) {
   const darkMode = useIsDarkMode()
   return (

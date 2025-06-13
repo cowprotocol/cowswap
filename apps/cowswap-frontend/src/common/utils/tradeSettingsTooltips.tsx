@@ -8,6 +8,8 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { Trans } from '@lingui/macro'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getNativeOrderDeadlineTooltip(symbols: (string | undefined)[] | undefined) {
   return (
     <Trans>
@@ -20,6 +22,8 @@ export function getNativeOrderDeadlineTooltip(symbols: (string | undefined)[] | 
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getNonNativeOrderDeadlineTooltip() {
   return (
     <Trans>
@@ -31,6 +35,8 @@ export function getNonNativeOrderDeadlineTooltip() {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const getNativeSlippageTooltip = (chainId: SupportedChainId, symbols: (string | undefined)[] | undefined) => (
   <Trans>
     When selling {symbols?.[0] || 'a native currency'}, the minimum slippage tolerance is set to{' '}
@@ -43,6 +49,8 @@ export const getNativeSlippageTooltip = (chainId: SupportedChainId, symbols: (st
   </Trans>
 )
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const getNonNativeSlippageTooltip = (params?: { isDynamic?: boolean; isSettingsModal?: boolean }) => (
   <Trans>
     {params?.isDynamic ? (

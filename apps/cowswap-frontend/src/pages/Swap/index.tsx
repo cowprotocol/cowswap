@@ -10,6 +10,8 @@ import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRou
 
 import { Routes } from 'common/constants/routes'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SwapPage() {
   const params = useParams()
 
@@ -26,6 +28,8 @@ export function SwapPage() {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function SwapPageRedirect() {
   const { chainId } = useWalletInfo()
   const location = useLocation()

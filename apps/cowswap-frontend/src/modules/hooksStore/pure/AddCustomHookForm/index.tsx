@@ -27,6 +27,9 @@ interface AddCustomHookFormProps {
   children: ReactElement | null
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType }: AddCustomHookFormProps) {
   const [input, setInput] = useState<string>('')
   const [isSearchOpen, setSearchOpen] = useState<boolean>(false)
@@ -57,6 +60,8 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType
   }, [addHookDapp, dappInfo, goBack])
 
   // Normalizes URLs only on explicit actions (paste/submit) to prevent interrupting user typing
+  // TODO: Reduce function complexity by extracting logic
+  // eslint-disable-next-line complexity
   const normalizeUrl = useCallback((url: string, shouldNormalize = false) => {
     if (!url) return ''
 

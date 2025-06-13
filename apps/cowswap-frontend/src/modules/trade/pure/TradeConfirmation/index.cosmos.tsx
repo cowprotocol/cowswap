@@ -3,14 +3,14 @@ import { inputCurrencyInfoMock, outputCurrencyInfoMock, priceImpactMock } from '
 import { TradeConfirmation } from './index'
 
 const Fixtures = {
-  default: (
+  default: () => (
     <TradeConfirmation
       title="Review order"
       account={undefined}
       ensName={undefined}
       inputCurrencyInfo={inputCurrencyInfoMock}
       outputCurrencyInfo={outputCurrencyInfoMock}
-      onConfirm={() => void 0}
+      onConfirm={async () => void 0}
       onDismiss={() => void 0}
       isConfirmDisabled={false}
       priceImpact={priceImpactMock}

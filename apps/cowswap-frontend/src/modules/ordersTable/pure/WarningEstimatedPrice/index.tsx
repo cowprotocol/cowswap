@@ -24,6 +24,8 @@ interface WarningEstimatedPriceProps {
   approveOrderToken(token: Token): void
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function WarningEstimatedPrice(props: WarningEstimatedPriceProps) {
   const { order, isInverted, withAllowanceWarning, approveOrderToken } = props
   const warningChildWithParams = findWarningChildWithParams(props)
@@ -55,12 +57,16 @@ export function WarningEstimatedPrice(props: WarningEstimatedPriceProps) {
   )
 }
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 const findWarningChildWithParams = ({
   isChild,
   childOrders,
   isTwapTable,
   chainId,
   balancesAndAllowances,
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }: WarningEstimatedPriceProps) => {
   if (!isTwapTable || isChild || !childOrders) return null
 

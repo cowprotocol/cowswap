@@ -43,6 +43,8 @@ export class PixelAnalytics {
   /**
    * Register a pixel callback for the given set of events events
    */
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   private enablePixelEvents<T>(eventMap: Record<PixelEvent, T>, sendPixel: SendPixel) {
     Object.keys(eventMap).forEach((event) => {
       const e = event as PixelEvent
@@ -50,6 +52,8 @@ export class PixelAnalytics {
     })
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   private enablePixel(event: PixelEvent, sendPixel: SendPixel) {
     let callbacks = this.sendPixelCallbacks.get(event)
     if (!callbacks) {
@@ -65,6 +69,8 @@ export function sendPixelWithErrorHandling(sendFn: SendPixel): SendPixel {
   return (event) => {
     try {
       sendFn(event)
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       console.error('Error sending pixel event', e)
     }

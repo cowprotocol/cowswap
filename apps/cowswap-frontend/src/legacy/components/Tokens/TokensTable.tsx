@@ -53,6 +53,10 @@ type TokenTableParams = {
   children?: React.ReactNode
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export default function TokenTable({
   tokensData: rawTokensData = [],
   maxItems = MAX_ITEMS,

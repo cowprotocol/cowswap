@@ -9,6 +9,8 @@ import { SetupYieldAmountsFromUrlUpdater } from './SetupYieldAmountsFromUrlUpdat
 
 import { useFillYieldDerivedState, useYieldDerivedState } from '../hooks/useYieldDerivedState'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function YieldUpdaters() {
   const { inputCurrencyAmount } = useYieldDerivedState()
 

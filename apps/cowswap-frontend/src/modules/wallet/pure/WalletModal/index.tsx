@@ -28,6 +28,8 @@ interface WalletModalProps {
   account: string | undefined
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function WalletModal(props: Readonly<WalletModalProps>) {
   const { isOpen, onDismiss, view, openOptions, pendingError, tryActivation, tryConnection } = props
 
@@ -79,6 +81,8 @@ export function WalletModal(props: Readonly<WalletModalProps>) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function CustomTerms() {
   return (
     <TermsWrapper>

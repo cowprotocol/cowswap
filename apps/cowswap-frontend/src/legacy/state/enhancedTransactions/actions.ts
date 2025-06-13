@@ -16,6 +16,8 @@ export interface SerializableTransactionReceipt {
 }
 
 type WithChainId = { chainId: number }
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type WithData = { data?: any }
 
 export type AddTransactionParams = WithChainId &

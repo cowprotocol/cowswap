@@ -9,8 +9,9 @@ import { UiOrderType } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
+
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
-import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { useToggleAccountModal } from 'modules/account'
@@ -18,17 +19,18 @@ import { EthFlowStepper } from 'modules/ethFlow'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
-import { useAddOrderToSurplusQueue } from 'common/containers/SurplusModalSetup/surplusModal'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
+import { TransactionInnerDetail } from 'common/pure/TransactionInnerDetail'
 import {
   useHideReceiverWalletBanner,
   useIsReceiverWalletBannerHidden,
 } from 'common/state/receiverWalletBannerVisibility'
+import { ActivityDerivedState, ActivityStatus } from 'common/types/activity'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
@@ -42,11 +44,8 @@ import {
   SummaryInner,
   SummaryInnerRow,
   TextAlert,
-  TransactionInnerDetail,
   TransactionState as ActivityLink,
 } from './styled'
-
-import { ActivityDerivedState } from './index'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -55,6 +54,9 @@ const DEFAULT_ORDER_SUMMARY = {
   validTo: '',
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, complexity
 export function GnosisSafeTxDetails(props: {
   chainId: number
   activityDerivedState: ActivityDerivedState
@@ -169,6 +171,10 @@ interface OrderSummaryType {
   kind?: string
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function ActivityDetails(props: {
   chainId: number
   activityDerivedState: ActivityDerivedState

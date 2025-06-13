@@ -5,6 +5,8 @@ import { validatePartnerFee } from './validatePartnerFee'
 
 import { PARTNER_FEE_MAX_BPS } from '../consts'
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('validatePartnerFee()', () => {
   it(`When BPS is higher than ${PARTNER_FEE_MAX_BPS}, then should return error`, () => {
     const result = validatePartnerFee({
@@ -55,6 +57,8 @@ describe('validatePartnerFee()', () => {
     })
   })
 
+  // TODO: Break down this large function into smaller functions
+  // eslint-disable-next-line max-lines-per-function
   describe('When bps is a map', () => {
     it('When one of bps is not a valid, then should return error', () => {
       const result = validatePartnerFee({
@@ -175,6 +179,8 @@ describe('validatePartnerFee()', () => {
     })
   })
 
+  // TODO: Break down this large function into smaller functions
+  // eslint-disable-next-line max-lines-per-function
   describe('When bps and recipient are maps', () => {
     it('When one of bps is not a valid, then should return error', () => {
       const result = validatePartnerFee({

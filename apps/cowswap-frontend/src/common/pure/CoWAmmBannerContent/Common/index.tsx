@@ -15,6 +15,8 @@ interface TextFitProps {
   maxFontSize: number
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TextFit({ mode, children, minFontSize, maxFontSize }: TextFitProps) {
   return (
     <ReactTextFit mode={mode} forceSingleModeWidth={false} min={minFontSize} max={maxFontSize}>
@@ -30,6 +32,8 @@ interface StarIconProps {
   right: number
   color?: UI
 }
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function StarIcon({ size, top, bottom, right, color }: StarIconProps) {
   return (
     <styledEl.StarIcon {...{ size, top, bottom, right, color: color ? `var(${color})` : undefined }}>

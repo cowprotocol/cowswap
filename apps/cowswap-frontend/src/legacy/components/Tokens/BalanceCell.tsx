@@ -10,6 +10,8 @@ type BalanceCellProps = {
   balance: CurrencyAmount<Token> | undefined
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function BalanceCell({ balance }: BalanceCellProps) {
   const { account } = useWalletInfo()
   const hasBalance = balance?.greaterThan(0)

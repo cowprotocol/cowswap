@@ -44,6 +44,8 @@ export type UseMultipleErc20Params = { addresses: string[]; networkId?: Network 
  * Returns `isLoading` to indicate whether fetching the value
  * Returns `error` with the error messages, if any.
  */
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function useMultipleErc20(
   params: UseMultipleErc20Params
 ): Return<Record<string, UiError>, Record<string, SingleErc20State>> {

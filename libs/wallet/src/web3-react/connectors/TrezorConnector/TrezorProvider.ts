@@ -18,6 +18,8 @@ export class TrezorProvider extends JsonRpcProvider {
     super(url)
   }
 
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async send(method: string, params: Array<any>): Promise<any> {
     if (method === 'eth_accounts') {
       return [this.getCurrentAccount()]

@@ -13,12 +13,16 @@ import SVG from 'react-inlinesvg'
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 
 import { CancelButton } from 'common/pure/CancelButton'
+import { ActivityDerivedState } from 'common/types/activity'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 
 import { CancelTxLink, StatusLabel, StatusLabelBelow, StatusLabelWrapper } from './styled'
 
-import { ActivityDerivedState, determinePillColour } from './index'
+import { determinePillColour } from './index'
 
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
 function _getStateLabel(activityDerivedState: ActivityDerivedState) {
   const activityState = getActivityState(activityDerivedState)
 
@@ -55,6 +59,10 @@ export type StatusDetailsProps = {
   showProgressBar: Command | null
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function StatusDetails(props: StatusDetailsProps) {
   const { chainId, activityDerivedState, showCancellationModal, showProgressBar } = props
 

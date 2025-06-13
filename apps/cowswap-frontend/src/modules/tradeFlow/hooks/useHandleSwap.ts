@@ -17,6 +17,9 @@ import { safeBundleApprovalFlow, safeBundleEthFlow } from '../services/safeBundl
 import { swapFlow } from '../services/swapFlow'
 import { FlowType } from '../types/TradeFlowContext'
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function useHandleSwap(params: TradeFlowParams, actions: TradeWidgetActions) {
   const tradeFlowType = useTradeFlowType()
   const tradeFlowContext = useTradeFlowContext(params)

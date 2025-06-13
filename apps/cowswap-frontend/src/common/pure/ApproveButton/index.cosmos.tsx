@@ -11,6 +11,8 @@ import { ApproveButton } from '.'
 const COW_TOKEN = COW[SupportedChainId.MAINNET]
 const GNO_TOKEN = GNO_MAINNET
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const Custom = () => {
   const [currencyRaw] = useSelect('currency', {
     options: [COW_TOKEN.symbol || '', GNO_TOKEN.symbol || ''],
@@ -30,7 +32,7 @@ const Custom = () => {
 }
 
 const Fixtures = {
-  default: <Custom />,
+  default: () => <Custom />,
 }
 
 export default Fixtures

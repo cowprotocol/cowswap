@@ -81,6 +81,8 @@ const OrderTypeDetails = styled.div`
   }
 `
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function RequestCancellationModal(props: RequestCancellationModalProps): ReactElement {
   const { onDismiss, triggerCancellation, summary, shortId, defaultType, txCost, nativeCurrency } = props
   const isOffChainCancellable = defaultType === 'offChain'
@@ -88,6 +90,8 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
   const [showMore, setShowMore] = useState(false)
   const [type, setType] = useState(defaultType)
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const toggleShowMore = () => setShowMore((showMore) => !showMore)
 
   const toggleType = useCallback(() => {
@@ -110,6 +114,8 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
     <LegacyConfirmationModalContent
       title={`Cancel order ${shortId}`}
       onDismiss={onDismiss}
+      // TODO: Extract nested component outside render function
+      // eslint-disable-next-line react/no-unstable-nested-components
       topContent={() => (
         <Wrapper>
           <p>
@@ -151,6 +157,8 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
           )}
         </Wrapper>
       )}
+      // TODO: Extract nested component outside render function
+      // eslint-disable-next-line react/no-unstable-nested-components
       bottomContent={() => (
         <ButtonPrimary onClick={() => triggerCancellation(type)}>Request cancellation</ButtonPrimary>
       )}

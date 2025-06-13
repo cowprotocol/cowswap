@@ -38,6 +38,9 @@ interface RowProps {
   invertLimitPrice: Command
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, complexity
 const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted }) => {
   const {
     buyToken,
@@ -109,6 +112,8 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted }) => {
   )
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 const TransactionTable: React.FC<Props> = (props) => {
   const { orders } = props
   const [isPriceInverted, setIsPriceInverted] = useState(false)

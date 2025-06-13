@@ -44,6 +44,8 @@ export const setPartOrdersAtom = atom(null, async (get, set, nextState: TwapPart
         // We need to keep virtual fields from the previous state if they are present in it
         // Because they get updates from `useSetPartOrderCancelling` and `CreatedInOrderBookOrdersUpdater`
         ...virtualFields.reduce<Partial<TwapPartOrderItem>>((acc, val) => {
+          // TODO: Replace any with proper type definitions
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           acc[val] = (currentItemsMap[item.uid]?.[val] || item[val]) as any
           return acc
         }, {}),

@@ -1,8 +1,18 @@
 'use client'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { Color, Font, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+
+import { Link, LinkType } from '@/components/Link'
+import { CONFIG } from '@/const/meta'
 import {
   ContainerCard,
   ContainerCardSection,
+  DisclaimerColumn,
+  DisclaimerGrid,
+  DisclaimerHighlight,
+  DisclaimerList,
+  DisclaimerSection,
   PageWrapper,
   SectionTitleDescription,
   SectionTitleIcon,
@@ -14,11 +24,7 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-import { Color, Font, ProductLogo, ProductVariant } from '@cowprotocol/ui'
-import { Link, LinkType } from '@/components/Link'
 import { CowFiCategory } from 'src/common/analytics/types'
-import { CONFIG } from '@/const/meta'
-import { useCowAnalytics } from '@cowprotocol/analytics'
 
 interface CareersPageContentProps {
   department: string
@@ -51,6 +57,7 @@ export function CareersPageContent({
             </SectionTitleDescription>
           </SectionTitleWrapper>
 
+          {/* Jobs content */}
           <SectionTitleWrapper maxWidth={900} margin="0 auto">
             <SectionTitleText fontSize={32}>
               We&apos;re currently hiring for {jobsCountForDepartment} position{jobsCountForDepartment > 1 && 's'}
@@ -181,6 +188,98 @@ export function CareersPageContent({
               </TopicCardInner>
             </TopicCard>
           </TopicList>
+
+          {/* Disclaimer content */}
+          <SectionTitleWrapper maxWidth={900} margin="0 auto 32px">
+            <SectionTitleText fontSize={32} color={Color.cowfi_orange_bright}>
+              Important Notice: Beware of Recruitment Scams
+            </SectionTitleText>
+            <SectionTitleDescription fontSize={18} color={Color.neutral40} fontWeight={Font.weight.regular}>
+              We have been made aware of individuals impersonating our team and reaching out to job seekers via Telegram
+              and other unofficial channels, falsely claiming to represent CoW DAO
+            </SectionTitleDescription>
+
+            <DisclaimerGrid>
+              <DisclaimerColumn>
+                <SectionTitleText fontSize={20} fontSizeMobile={18} textAlign="left">
+                  We Never:
+                </SectionTitleText>
+                <DisclaimerList>
+                  <li>Ask for payment or wallet information during the hiring process.</li>
+                  <li>Request sensitive personal documents (e.g. passport) via chat apps.</li>
+                </DisclaimerList>
+
+                <DisclaimerSection>
+                  <SectionTitleText fontSize={20} fontSizeMobile={18} textAlign="left">
+                    What You Should Do:
+                  </SectionTitleText>
+                  <DisclaimerList>
+                    <li>Do not engage with suspicious messages claiming to offer you a job at CoW DAO.</li>
+                    <li>Do not share personal information, crypto wallet data, or make payments.</li>
+                    <li>
+                      Report impersonation attempts to us at <a href="mailto:people@cow.fi">people@cow.fi</a>.
+                    </li>
+                    <li>
+                      Report fake accounts directly on Telegram or to{' '}
+                      <a href="mailto:abuse@telegram.org">abuse@telegram.org</a>.
+                    </li>
+                  </DisclaimerList>
+                </DisclaimerSection>
+              </DisclaimerColumn>
+
+              <DisclaimerColumn>
+                <SectionTitleText fontSize={20} fontSizeMobile={18} textAlign="left">
+                  Official Communication Channels:
+                </SectionTitleText>
+                <SectionTitleDescription
+                  fontSize={16}
+                  fontSizeMobile={14}
+                  color={Color.neutral40}
+                  textAlign="left"
+                  margin="8px 0"
+                >
+                  All our hiring communications come from:
+                </SectionTitleDescription>
+                <DisclaimerList>
+                  <li>Official emails are sent from the cow.fi domain.</li>
+                  <li>Telegram (we&apos;ll send confirmation email from the cow.fi domain).</li>
+                  <li>
+                    Verified listings on{' '}
+                    <a href="https://linkedin.com/company/cow-protocol" target="_blank" rel="noopener noreferrer">
+                      LinkedIn
+                    </a>{' '}
+                    or official job boards.
+                  </li>
+                  <li>Official email or video conferencing platforms (Zoom, Meet).</li>
+                </DisclaimerList>
+
+                <DisclaimerHighlight>
+                  <SectionTitleDescription
+                    fontSize={16}
+                    fontSizeMobile={14}
+                    color={Color.neutral30}
+                    textAlign="left"
+                    margin="0 0 12px"
+                  >
+                    We are actively working to report and remove these impersonators. Your safety and trust are
+                    important to us.
+                  </SectionTitleDescription>
+                  <SectionTitleDescription
+                    fontSize={16}
+                    fontSizeMobile={14}
+                    color={Color.neutral30}
+                    textAlign="left"
+                    margin="0"
+                  >
+                    Stay safe,
+                    <br />
+                    The CoW DAO Team
+                  </SectionTitleDescription>
+                </DisclaimerHighlight>
+              </DisclaimerColumn>
+            </DisclaimerGrid>
+          </SectionTitleWrapper>
+          {/* End of disclaimer content */}
 
           <SectionTitleWrapper maxWidth={900} margin="32px auto">
             <SectionTitleText fontSize={24}>

@@ -12,6 +12,9 @@ const SYMBOL_AND_NAME_VALIDATION = [
   }
 ]
 
+// TODO: Replace any with proper type definitions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-function-return-type
 const patchValidationSchema = (schema: any) => ({
   ...schema,
   definitions: {

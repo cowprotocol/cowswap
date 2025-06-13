@@ -51,6 +51,9 @@ const CONFIRM_MODAL_CONFIG = {
     'This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute.',
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function TwapConfirmModal() {
   const { account } = useWalletInfo()
   const { ensName, allowsOffchainSigning } = useWalletDetails()

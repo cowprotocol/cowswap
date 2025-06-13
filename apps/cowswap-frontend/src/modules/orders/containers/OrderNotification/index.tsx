@@ -32,6 +32,8 @@ export interface BaseOrderNotificationProps {
   children?: ReactElement
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function OrderNotification(props: BaseOrderNotificationProps) {
   const { title, orderUid, orderType, transactionHash, chainId, messageType, children, orderInfo, isEthFlow } = props
 

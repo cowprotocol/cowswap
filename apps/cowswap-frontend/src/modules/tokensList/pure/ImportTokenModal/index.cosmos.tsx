@@ -9,7 +9,7 @@ const Wrapper = styled.div`
 `
 
 const Fixtures = {
-  default: (
+  default: () => (
     <Wrapper>
       <ImportTokenModal
         tokens={customTokensMock}

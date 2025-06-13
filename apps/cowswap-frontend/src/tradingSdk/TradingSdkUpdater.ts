@@ -9,6 +9,8 @@ import { tradingSdk } from './tradingSdk'
 import { orderBookApi } from '../cowSdk'
 import { useAppCode } from '../modules/appData/hooks'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TradingSdkUpdater() {
   const provider = useWalletProvider()
   const appCode = useAppCode()

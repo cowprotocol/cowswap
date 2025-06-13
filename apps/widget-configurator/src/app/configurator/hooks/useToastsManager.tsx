@@ -9,11 +9,16 @@ import {
 
 import { COW_LISTENERS } from '../consts'
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function useToastsManager(setListeners: (listeners: CowWidgetEventListeners) => void) {
   const isInitRef = useRef(false)
   const [disableToastMessages, setDisableToastMessages] = useState<boolean>(false)
   const [toasts, setToasts] = useState<(ReactElement | string)[]>([])
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const openToast = (message: ReactElement | string) => {
     setToasts((t) => [...t, message])
   }

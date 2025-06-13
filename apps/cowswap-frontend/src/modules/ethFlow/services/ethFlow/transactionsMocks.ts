@@ -10,6 +10,9 @@ export const ApprovePendingTxHashMock = '0x138b032570b443508a0a102f1d15949401acf
 export const ApproveSuccessfulTxHashMock = '0x138b032570b443508a0a102f1d15949401acf2b83ed377f1343432908901cccc'
 export const ApproveErrorTxHashMock = '0x138b032570b443508a0a102f1d15949401acf2b83ed377f1343432908901eeee'
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function mockEthFlowPendingTxs() {
   // Wrap transactions
   cowSwapStore.dispatch(

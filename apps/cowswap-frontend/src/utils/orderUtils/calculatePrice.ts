@@ -2,6 +2,8 @@ import { Price, Token } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const isZero = (x: JSBI) => JSBI.equal(x, JSBI.BigInt(0))
 
 interface CalculatePriceParams {

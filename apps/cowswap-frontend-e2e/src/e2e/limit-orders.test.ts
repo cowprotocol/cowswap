@@ -2,10 +2,14 @@ const CHAIN_ID = 11155111
 const SELL_TOKEN = 'WETH'
 const BUY_TOKEN = 'COW'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function unlock() {
   cy.get('#unlock-limit-orders-btn', { timeout: 10000 }).click()
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function navigate(path = '', unlockLimitOrders = true) {
   cy.visit(`/#/${CHAIN_ID}/limit${path}`)
 
@@ -14,10 +18,14 @@ function navigate(path = '', unlockLimitOrders = true) {
   }
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getInputToken() {
   return cy.get('#input-currency-input .token-amount-input').should('be.enabled')
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getOutputToken() {
   return cy.get('#output-currency-input .token-amount-input').should('be.enabled')
 }

@@ -21,6 +21,8 @@ export interface IdenticonProps {
   account?: string
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Identicon({ account: customAccount, size = 16 }: IdenticonProps) {
   const [avatarError, setAvatarError] = useState(false)
   const [fetchable, setFetchable] = useState(true)

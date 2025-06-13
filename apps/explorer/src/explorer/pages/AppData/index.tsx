@@ -20,7 +20,11 @@ export enum TabView {
 }
 
 export type TabData = {
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   encode: { formData: FormProps; options: any }
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   decode: { formData: FormProps; options: any }
 }
 
@@ -50,6 +54,8 @@ const tabItems = (
   ]
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const AppDataPage = () => {
   const tab = useQueryViewParams()
   const [tabData, setTabData] = useState<TabData>({

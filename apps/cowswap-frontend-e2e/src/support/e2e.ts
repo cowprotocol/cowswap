@@ -14,7 +14,7 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands';
+import './commands'
 import { injected } from './ethereum'
 
 declare global {
@@ -43,14 +43,14 @@ Cypress.Commands.overwrite(
         win.ethereum = injected
       },
     })
-  }
+  },
 )
 
 beforeEach(() => {
-  cy.on('window:load', win => {
+  cy.on('window:load', (win) => {
     win.localStorage.clear()
     win.ethereum = injected
-  });
+  })
 
   // Infura security policies are based on Origin headers.
   // These are stripped by cypress because chromeWebSecurity === false; this adds them back in.

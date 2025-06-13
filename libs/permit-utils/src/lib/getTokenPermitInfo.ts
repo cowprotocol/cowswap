@@ -46,6 +46,9 @@ export async function getTokenPermitInfo(params: GetTokenPermitInfoParams): Prom
   return request
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, complexity
 async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams): Promise<GetTokenPermitIntoResult> {
   const { spender, tokenAddress, chainId, provider, minGasLimit } = params
 

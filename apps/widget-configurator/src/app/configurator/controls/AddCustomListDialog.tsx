@@ -34,6 +34,9 @@ type AddCustomListDialogProps = {
   onAddCustomTokens: (tokens: TokenInfo[]) => void
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function AddCustomListDialog({
   open,
   onClose,
@@ -50,6 +53,8 @@ export function AddCustomListDialog({
 
   const [tabIndex, setTabIndex] = useState(0)
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const resetForm = () => {
     // Reset custom URL
     setCustomListUrl('')
@@ -60,11 +65,15 @@ export function AddCustomListDialog({
     setHasJsonErrors(false)
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setTabIndex(newValue)
     resetForm()
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleUrlInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
 
@@ -73,6 +82,8 @@ export function AddCustomListDialog({
     setHasErrors(value ? !validateURL(value) : false)
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleJsonInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setHasJsonErrors(false)
 
@@ -94,6 +105,8 @@ export function AddCustomListDialog({
     }
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleSubmit = () => {
     if (customListUrl) {
       onAddListUrl(customListUrl)
@@ -105,6 +118,8 @@ export function AddCustomListDialog({
     onClose()
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const addJsonExample = () => {
     if (textareaRef.current) {
       textareaRef.current.value = JSON.stringify(DEFAULT_CUSTOM_TOKENS, null, 2)
@@ -167,6 +182,8 @@ interface TabPanelProps {
   value: number
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function CustomTabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props
 

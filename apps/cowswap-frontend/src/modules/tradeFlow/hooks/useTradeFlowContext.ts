@@ -30,6 +30,9 @@ export interface TradeFlowParams {
   deadline: number
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, complexity
 export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowContext | null {
   const { account } = useWalletInfo()
   const provider = useWalletProvider()
@@ -121,6 +124,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             uiOrderType,
           ]
         : null,
+      // TODO: Break down this large function into smaller functions
+      // eslint-disable-next-line max-lines-per-function
       ([
         account,
         allowsOffchainSigning,

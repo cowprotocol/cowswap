@@ -11,6 +11,8 @@ type FiatBalanceCellProps = {
   balance: CurrencyAmount<Token> | undefined
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function FiatBalanceCell({ balance }: FiatBalanceCellProps) {
   const hasBalance = balance?.greaterThan(0)
   const fiatValue = useUsdAmount(balance).value

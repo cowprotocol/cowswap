@@ -43,6 +43,9 @@ const StyledRateImpactWarning = styled(RateImpactWarning)`
   margin: 10px auto 0;
 `
 
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
 export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const { feeAmount, isConfirmScreen = false, className } = props
 

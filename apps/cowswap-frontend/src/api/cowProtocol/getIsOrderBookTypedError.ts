@@ -4,6 +4,8 @@ import { ApiErrorObject } from './errors/OperatorError'
 
 export type OrderBookTypedError = OrderBookApiError<ApiErrorObject>
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getIsOrderBookTypedError(e: any): e is OrderBookTypedError {
   const error = e as OrderBookTypedError
 

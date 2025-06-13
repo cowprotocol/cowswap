@@ -31,6 +31,9 @@ interface SettingsTabProps {
   deadlineState: StatefulValue<number>
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function SettingsTab({ className, recipientToggleState, hooksEnabledState, deadlineState }: SettingsTabProps) {
   const menuButtonRef = useRef<HTMLButtonElement>(null)
 
@@ -141,6 +144,8 @@ interface SettingsTabControllerProps {
 /**
  * https://stackoverflow.com/questions/70596487/how-to-programmatically-expand-react-reach-ui-reach-menu-button-menu
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function SettingsTabController({ buttonRef, children }: SettingsTabControllerProps) {
   const [settingsTabState, setSettingsTabState] = useAtom(settingsTabStateAtom)
   const { isExpanded } = useMenuButtonContext()

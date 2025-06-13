@@ -7,10 +7,9 @@ import { GnosisSafeInfo, useGnosisSafeInfo } from '@cowprotocol/wallet'
 import { EnhancedTransactionDetails, HashType } from 'legacy/state/enhancedTransactions/reducer'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
-import { ActivityDerivedState, OrderCreationTxInfo } from 'modules/account/containers/Transaction'
+import { ActivityDescriptors } from './useRecentActivity'
 
-import { ActivityDescriptors, ActivityStatus, ActivityType } from './useRecentActivity'
-
+import { ActivityDerivedState, ActivityStatus, ActivityType, OrderCreationTxInfo } from '../../common/types/activity'
 import { useAllTransactions } from '../state/enhancedTransactions/hooks'
 
 export function useActivityDerivedState({
@@ -56,6 +55,8 @@ export function useActivityDerivedState({
   }, [chainId, activity, gnosisSafeInfo, orderCreationTxInfo])
 }
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function getActivityDerivedState(props: {
   chainId?: number
   activityData: ActivityDescriptors | null
@@ -115,6 +116,8 @@ export function getActivityDerivedState(props: {
   }
 }
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function getActivityLinkUrl(params: {
   chainId: number
   id: string
@@ -166,6 +169,8 @@ type ActivityState =
   | 'cancelling'
   | 'creating'
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function getActivityState({
   isPending,
   isOrder,

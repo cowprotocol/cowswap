@@ -19,6 +19,8 @@ import styled from 'styled-components/macro'
 
 import pkg from '../../../../package.json'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const _getContractsUrls = (chainId: ChainId, contractAddressMap: typeof COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS) => {
   const contractAddress = contractAddressMap[chainId]
   return contractAddress ? getEtherscanLink(chainId, 'address', contractAddress) : '-'
@@ -152,6 +154,8 @@ const CloseButton = styled.span`
   }
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const Version = ({ className }: { className?: string }) => {
   const { chainId } = useWalletInfo()
   const [showDropdown, setShowDropdown] = useState(false)
@@ -161,6 +165,8 @@ export const Version = ({ className }: { className?: string }) => {
 
   useOnClickOutside([dropdownRef], () => setShowDropdown(false))
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleLinkClick = () => {
     setShowDropdown(false)
   }

@@ -53,3 +53,4 @@ cypress-custom/fixtures/example.json
 
 # public
 public/version.json
+.vercel

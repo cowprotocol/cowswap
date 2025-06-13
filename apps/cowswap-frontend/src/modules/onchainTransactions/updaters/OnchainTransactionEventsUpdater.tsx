@@ -14,6 +14,8 @@ import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 import { TransactionContentWithLink } from 'modules/orders'
 import { getCowSoundError } from 'modules/sounds'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function OnchainTransactionEventsUpdater() {
   const addSnackbar = useAddSnackbar()
 

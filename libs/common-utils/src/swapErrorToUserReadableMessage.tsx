@@ -6,6 +6,10 @@ import { Trans } from '@lingui/macro'
  * This object seems to be undocumented by ethers.
  * @param error an error from the ethers provider
  */
+// TODO: Break down this large function into smaller functions
+// TODO: Reduce function complexity by extracting logic
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line max-lines-per-function, complexity, @typescript-eslint/no-explicit-any
 export function swapErrorToUserReadableMessage(error: any): ReactNode {
   let reason: string | undefined
   while (error) {

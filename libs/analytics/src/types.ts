@@ -22,6 +22,8 @@ export type GtmCategory = Category
  */
 export interface GA4Event {
   event: string // The event name
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any // Additional parameters
 }
 
@@ -38,6 +40,8 @@ export interface BaseGtmEvent<T extends string = Category> {
   orderType?: string
   tokenSymbol?: string
   chainId?: number
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any // Allow additional custom parameters
 }
 

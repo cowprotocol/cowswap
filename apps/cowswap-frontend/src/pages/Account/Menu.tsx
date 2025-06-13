@@ -4,6 +4,8 @@ import { NavLink } from 'react-router'
 
 import { SideMenu } from 'legacy/components/SideMenu'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function AccountMenu() {
   return (
     <SideMenu longList={true}>

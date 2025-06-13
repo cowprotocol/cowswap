@@ -3,9 +3,8 @@ import { useState } from 'react'
 import { useSelect, useValue } from 'react-cosmos/client'
 import styled from 'styled-components/macro'
 
-import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
-
 import { CowModal } from 'common/pure/Modal'
+import { ActivityStatus } from 'common/types/activity'
 
 import { getEthFlowModalContentProps } from '../../services/ethFlow/mocks'
 import {
@@ -26,6 +25,8 @@ const ALL_STATES = Object.values(EthFlowState)
 
 const STATE_DESCRIPTIONS = ALL_STATES.map((state) => state)
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getStateFromDescription(description: string) {
   return ALL_STATES.find((state) => state === description)
 }
@@ -63,9 +64,16 @@ const txStatusMap: { [key: string]: ActivityStatus } = {
   error: ActivityStatus.EXPIRED,
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 function Custom() {
   const [opened, setOpened] = useState(true)
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const openModal = () => setOpened(true)
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const onDismiss = () => setOpened(false)
 
   const [stateDescription] = useSelect('state', {

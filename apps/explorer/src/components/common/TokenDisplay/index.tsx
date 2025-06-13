@@ -26,6 +26,8 @@ const StyledImg = styled(TokenImg)`
   margin: 0 0.5rem;
 `
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function TokenDisplay(props: Readonly<Props>): React.ReactNode {
   const { erc20, network, showAbbreviated } = props
 

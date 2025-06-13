@@ -22,6 +22,8 @@ const SimpleWrapper = styled(Wrapper)<StyledWrapperProps>`
   }
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SimpleAccountDetails({
   pendingTransactions = [],
   confirmedTransactions = [],

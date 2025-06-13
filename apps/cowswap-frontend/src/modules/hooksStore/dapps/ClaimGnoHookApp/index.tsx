@@ -21,6 +21,9 @@ const SbcDepositContractInterface = SBCDepositContract.interface
  *    - Proxy: 0x0B98057eA310F4d31F2a452B414647007d1645d9 (https://gnosisscan.io/address/0x0B98057eA310F4d31F2a452B414647007d1645d9#readProxyContract)
  *    - Master: 0x4fef25519256e24a1fc536f7677152da742fe3ef
  */
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function ClaimGnoHookApp({ context }: HookDappProps) {
   const provider = useWalletProvider()
   const [claimable, setClaimable] = useState<BigNumber | undefined>(undefined)
@@ -44,6 +47,9 @@ export function ClaimGnoHookApp({ context }: HookDappProps) {
       return
     }
 
+    // TODO: Replace any with proper type definitions
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-function-return-type
     const handleError = (e: any) => {
       console.error('[ClaimGnoHookApp] Error getting balance/gasEstimation', e)
       setError(true)
@@ -108,6 +114,8 @@ export function ClaimGnoHookApp({ context }: HookDappProps) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function ClaimableAmount(props: { loading: boolean; error: boolean; claimable: BigNumber | undefined }) {
   const { loading, error, claimable } = props
   if (error) {

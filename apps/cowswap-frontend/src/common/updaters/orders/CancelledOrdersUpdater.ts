@@ -4,6 +4,8 @@ import { CANCELLED_ORDERS_PENDING_TIME } from '@cowprotocol/common-const'
 import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
+import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
+
 import { MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useCancelledOrders, useFulfillOrdersBatch } from 'legacy/state/orders/hooks'
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
@@ -11,8 +13,6 @@ import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { emitFulfilledOrderEvent } from 'modules/orders'
 
 import { fetchAndClassifyOrder } from './utils'
-
-import { useAddOrderToSurplusQueue } from '../../containers/SurplusModalSetup/surplusModal'
 
 /**
  * Updater for cancelled orders.
@@ -28,6 +28,8 @@ import { useAddOrderToSurplusQueue } from '../../containers/SurplusModalSetup/su
  * Due to the network's nature, we can't tell whether an order has been really cancelled, so we prefer to wait a short
  * period and say it's cancelled even though in some cases it might actually be filled.
  */
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function CancelledOrdersUpdater(): null {
   const isSafeWallet = useIsSafeWallet()
   const { chainId, account } = useWalletInfo()
@@ -43,6 +45,8 @@ export function CancelledOrdersUpdater(): null {
   const fulfillOrdersBatch = useFulfillOrdersBatch()
 
   const updateOrders = useCallback(
+    // TODO: Break down this large function into smaller functions
+    // eslint-disable-next-line max-lines-per-function
     async (chainId: ChainId, account: string, isSafeWallet: boolean) => {
       const lowerCaseAccount = account.toLowerCase()
       const now = Date.now()

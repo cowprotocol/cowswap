@@ -7,6 +7,8 @@ export type SmallPartVolumeWarningBannerProps = {
   chainId: SupportedChainId
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SmallPartVolumeWarning({ chainId }: SmallPartVolumeWarningBannerProps) {
   const amount = MINIMUM_PART_SELL_AMOUNT_FIAT[chainId]
 

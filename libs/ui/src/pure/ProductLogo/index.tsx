@@ -307,6 +307,8 @@ export const ProductLogoWrapper = styled.span<{
   }
 `
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export const ProductLogo = ({
   variant,
   theme: customThemeMode,
@@ -318,6 +320,8 @@ export const ProductLogo = ({
   href,
   external = false,
   className,
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }: LogoProps) => {
   const themeMode = useTheme()
   const selectedTheme = customThemeMode || (themeMode.darkMode ? 'dark' : 'light')
@@ -330,6 +334,8 @@ export const ProductLogo = ({
   // First use logoInfo heightMobile, then prop heightMobile, then logoInfo height, then prop height, then default
   const logoHeightMobile = logoInfo.heightMobile || heightMobile || logoInfo.height || height || logoHeight
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const getAccessibleAltText = () => {
     const baseAlt = logoInfo.alt
     const linkText = href ? (external ? 'Visit external site: ' : 'Go to: ') : ''

@@ -22,6 +22,9 @@ export type WatchAssetInWalletProps = {
   onClick?: Command
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
   const { currency, shortLabel, className, fallback } = props
   const { icon, walletName } = useWalletDetails()

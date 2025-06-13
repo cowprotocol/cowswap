@@ -175,7 +175,11 @@ const NavItem = ({
   setOpenDropdown,
   rootDomain,
   LinkComponent,
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }: NavItemProps) => {
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleToggle = () => {
     setOpenDropdown((prev) => {
       return prev === item.label ? null : item.label || null
@@ -212,15 +216,22 @@ const DropdownContentItem: React.FC<{
   closeMenu: () => void
   rootDomain: string
   LinkComponent: LinkComponentType
+  // TODO: Break down this large function into smaller functions
+  // TODO: Reduce function complexity by extracting logic
+  // eslint-disable-next-line max-lines-per-function, complexity
 }> = ({ item, closeMenu, rootDomain, LinkComponent }) => {
   const [isChildrenVisible, setIsChildrenVisible] = useState(false)
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleToggleChildrenVisibility = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault()
     event.stopPropagation()
     setIsChildrenVisible(!isChildrenVisible)
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleLinkClick = (e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>) => {
     if (item.onClick) {
       e.preventDefault()
@@ -233,6 +244,8 @@ const DropdownContentItem: React.FC<{
     }
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const renderItemContent = () => {
     const { productVariant, icon, label, description, hoverColor } = item
     return (
@@ -342,17 +355,23 @@ const NavDaoTrigger: React.FC<{
   mobileMode: boolean
   rootDomain: string
   LinkComponent: LinkComponentType
+  // TODO: Break down this large function into smaller functions
+  // eslint-disable-next-line max-lines-per-function
 }> = ({ isOpen, setIsOpen, mobileMode, rootDomain, LinkComponent }) => {
   const triggerRef = useRef<HTMLDivElement>(null)
   const dropdownRef = useRef<HTMLUListElement>(null)
 
   useOnClickOutside([triggerRef, dropdownRef], () => setIsOpen(false))
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleToggle = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
     setIsOpen(!isOpen)
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const closeMenu = () => setIsOpen(false)
 
   return (
@@ -461,6 +480,8 @@ interface DropdownContentWrapperProps {
   LinkComponent: LinkComponentType
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
   content,
   isThirdLevel = false,
@@ -473,12 +494,16 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
 }) => {
   const [visibleThirdLevel, setVisibleThirdLevel] = useState<number | null>(null)
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleToggleThirdLevelVisibility = (event: React.MouseEvent<HTMLDivElement>, index: number) => {
     event.preventDefault()
     event.stopPropagation()
     setVisibleThirdLevel((prevState) => (prevState === index ? null : index))
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleLinkClick = (e: React.MouseEvent<HTMLElement>) => {
     closeDropdown()
     e.stopPropagation()
@@ -491,6 +516,9 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
       mobileMode={mobileMode}
       isNavItemDropdown={isNavItemDropdown}
     >
+      {/* TODO: Break down this large function into smaller functions */}
+      {/* TODO: Reduce function complexity by extracting logic */}
+      {/* eslint-disable-next-line max-lines-per-function, complexity */}
       {content.items?.map((item: DropdownMenuItem, index: number) => {
         const hasChildren = !!item.children
         const Tag = hasChildren ? 'div' : item.isButton ? DropdownContentItemButton : undefined
@@ -566,6 +594,8 @@ const appendUtmParams = (
   rootDomain: string,
   isExternal: boolean,
   label: string | undefined,
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 ) => {
   const defaultUtm = {
     utmSource: rootDomain,
@@ -600,6 +630,8 @@ interface GlobalSettingsDropdownProps {
   LinkComponent: LinkComponentType
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdownProps>((props, ref) => {
   const { mobileMode, settingsNavItems, isOpen, closeDropdown, rootDomain, LinkComponent } = props
 
@@ -703,6 +735,10 @@ interface MenuBarProps {
   customTheme?: CowSwapTheme
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Reduce function complexity by extracting logic
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, complexity, @typescript-eslint/explicit-function-return-type
 export const MenuBar = (props: MenuBarProps) => {
   const {
     id,
@@ -748,6 +784,8 @@ export const MenuBar = (props: MenuBarProps) => {
 
   const rootDomain = typeof window !== 'undefined' ? window.location.host : ''
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleSettingsToggle = () => setIsSettingsOpen((prev) => !prev)
 
   const isMobile = useMediaQuery(Media.upToLarge(false))
@@ -761,6 +799,8 @@ export const MenuBar = (props: MenuBarProps) => {
 
   useOnClickOutside([settingsButtonRef, settingsDropdownRef], () => setIsSettingsOpen(false))
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleMobileMenuToggle = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
     setIsMobileMenuOpen((prev) => !prev)

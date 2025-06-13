@@ -64,6 +64,8 @@ const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor: UI }>`
   }
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function IconSpinner({
   currency,
   image,

@@ -9,6 +9,8 @@ const LinkScrollableStyled = styled(Link)`
   color: ${({ theme }) => theme.blue1} !important;
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function Table({ children }: { children: ReactElement }) {
   return (
     <div id="table-container">
@@ -17,6 +19,8 @@ function Table({ children }: { children: ReactElement }) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function H2({ children }: { children: ReactElement }) {
   const ref = useRef<HTMLHeadingElement>(null)
 

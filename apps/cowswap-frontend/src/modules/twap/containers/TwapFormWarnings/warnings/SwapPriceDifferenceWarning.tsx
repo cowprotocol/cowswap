@@ -29,6 +29,8 @@ const StyledNavLink = styled(NavLink)`
 
 const SWAP_PRICE_DIFFERENCE_LIMIT = 0.5 // 0.5%
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SwapPriceDifferenceWarning({
   tradeUrlParams,
   swapAmountDifference,

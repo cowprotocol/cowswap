@@ -28,6 +28,9 @@ import { SPECIAL_ADDRESSES, TOKEN_SYMBOL_UNKNOWN } from '../../const'
 const PROTOCOL_NAME = APP_NAME
 const INTERNAL_NODE_NAME = `${APP_NAME} Buffer`
 
+// TODO: Break down this large function into smaller functions
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, complexity
 export const buildContractViewNodes: BuildNodesFn = function getNodes(
   txSettlement: Settlement,
   networkId: Network,
@@ -86,6 +89,8 @@ export const buildContractViewNodes: BuildNodesFn = function getNodes(
 
   let internalNodeCreated = false
 
+  // TODO: Reduce function complexity by extracting logic
+  // eslint-disable-next-line complexity
   txSettlement.transfers.forEach((transfer) => {
     // Custom from id when internal transfer to avoid re-using existing node
     const fromId = transfer.isInternal ? INTERNAL_NODE_NAME : transfer.from
@@ -276,6 +281,8 @@ function isRoutingTrade(contractTrade: ContractTrade): boolean {
   return contractTrade.sellTransfers.length === 0 && contractTrade.buyTransfers.length === 0
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function getNotesAndEdges(
   userTrades: Trade[],
   contractTrades: ContractTrade[],

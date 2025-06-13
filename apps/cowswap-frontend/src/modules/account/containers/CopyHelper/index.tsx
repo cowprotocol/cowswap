@@ -25,6 +25,8 @@ const StyledText = styled.span`
   align-items: center;
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const Copied = ({ iconSize }: { iconSize?: number }) => (
   <StyledText>
     <CheckCircle size={iconSize ?? '16'} />
@@ -34,6 +36,8 @@ const Copied = ({ iconSize }: { iconSize?: number }) => (
   </StyledText>
 )
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const Icon = ({ iconSize }: { iconSize?: number }) => (
   <StyledText>
     <Copy size={iconSize ?? '16'} />
@@ -48,6 +52,8 @@ interface BaseProps {
 }
 export type CopyHelperProps = BaseProps & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof BaseProps>
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function CopyHelper({ color, toCopy, children, iconSize, iconPosition }: CopyHelperProps) {
   const [isCopied, setCopied] = useCopyClipboard()
   const copy = useCallback(() => {

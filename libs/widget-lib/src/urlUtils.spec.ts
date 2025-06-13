@@ -5,6 +5,8 @@ const chainId = 1
 const tradeType = TradeType.SWAP
 
 // TODO: fix these tests! uncommenting to unblock a hotfix
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe.skip('buildWidgetUrl', () => {
   describe('env', () => {
     it('local', () => {

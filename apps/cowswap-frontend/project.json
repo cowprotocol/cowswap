@@ -9,7 +9,7 @@
       "outputs": [
         "{options.outputPath}"
       ],
-      "defaultConfiguration": "production",
+      "defaultConfiguration": "prod",
       "dependsOn": [
         "i18n"
       ],
@@ -17,11 +17,17 @@
         "outputPath": "build/cowswap"
       },
       "configurations": {
-        "development": {
-          "mode": "development"
+        "dev": {
+          "mode": "dev"
         },
-        "production": {
-          "mode": "production"
+        "staging": {
+          "mode": "staging"
+        },
+        "barn": {
+          "mode": "barn"
+        },
+        "prod": {
+          "mode": "prod"
         }
       }
     },

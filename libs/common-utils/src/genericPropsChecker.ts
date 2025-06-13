@@ -4,6 +4,8 @@ const JSX_ELEMENT_TYPE = '$$typeof'
  * This is a function for generic React.memo() usage
  * The function compares previous and next props by values using JSON.stringify. It returns true when props are equal and vice versa
  */
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function genericPropsChecker(prev: any, next: any): boolean {
   if (typeof prev === 'object' && next !== null && prev !== null) {
     const prevKeys = Object.keys(prev)

@@ -1,9 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function isVisibilityStateSupported() {
   return 'visibilityState' in document
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function isWindowVisible() {
   return !isVisibilityStateSupported() || document.visibilityState !== 'hidden'
 }

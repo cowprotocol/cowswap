@@ -94,6 +94,8 @@ function parseSafeTranasctionsResult(
     .filter(isTruthy)
 }
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isSafeMultisigTransactionListResponse(response: any): response is SafeMultisigTransactionResponse {
   return !!response.data && !!response.submissionDate
 }
@@ -105,6 +107,8 @@ function parseConditionalOrderParams(
 ): ConditionalOrderParams | null {
   try {
     const _result = composableCowContract.interface.decodeFunctionData('createWithContext', callData)
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { params } = _result as any as { params: ConditionalOrderParams }
 
     return { handler: params.handler, salt: params.salt, staticInput: params.staticInput }

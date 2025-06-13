@@ -25,6 +25,9 @@ type CurrencyAmountProps = {
   isPriceUpdate?: boolean
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function useUpdateCurrencyAmount() {
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
@@ -32,6 +35,8 @@ export function useUpdateCurrencyAmount() {
   const { limitPriceLocked } = useAtomValue(limitOrdersSettingsAtom)
 
   return useCallback(
+    // TODO: Reduce function complexity by extracting logic
+    // eslint-disable-next-line complexity
     (params: CurrencyAmountProps) => {
       const { activeRate, amount, orderKind, isPriceUpdate } = params
       const field = isSellOrder(orderKind) ? Field.INPUT : Field.OUTPUT

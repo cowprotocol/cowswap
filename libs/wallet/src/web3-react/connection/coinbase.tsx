@@ -47,6 +47,8 @@ export const coinbaseWalletConnection: Web3ReactConnection = {
   type: ConnectionType.COINBASE_WALLET,
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function CoinbaseWalletOption({ tryActivation, selectedWallet }: ConnectionOptionProps) {
   const isActive = useIsActiveConnection(selectedWallet, coinbaseWalletConnection)
 

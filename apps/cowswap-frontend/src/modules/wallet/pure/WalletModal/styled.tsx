@@ -29,6 +29,8 @@ export const Blurb = styled.div`
   line-height: 1.5;
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const NewToEthereum = () => (
   <Blurb>
     <div>New to decentralised applications?</div>{' '}

@@ -9,6 +9,8 @@ import { useAllTransactionHashes } from 'legacy/state/enhancedTransactions/hooks
 import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 import { useAppDispatch } from 'legacy/state/hooks'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function watchTxChanges(_pendingHashes: string[], _chainId: number, _dispatch: Dispatch) {
   return
   // for (const hash of pendingHashes) {
@@ -43,6 +45,8 @@ function watchTxChanges(_pendingHashes: string[], _chainId: number, _dispatch: D
   // }
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function unwatchTxChanges(_pendingHashes: string[], _chainId: number) {
   return
   // const blocknativeSdk = null

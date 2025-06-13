@@ -103,6 +103,8 @@ const fetchAddressIsEligible = async ({
   return airDropData[0]
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const useClaimData = (tokenToClaimData?: IAirdrop) => {
   const { account } = useWalletInfo()
   const { contract: airdropContract, chainId: airdropChainId } = useContract<Airdrop>(

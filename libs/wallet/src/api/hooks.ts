@@ -40,18 +40,26 @@ export function useIsTxBundlingSupported(): boolean | null {
   return isSafeApp || (isSafeViaWc && !!capabilities?.atomicBatch?.supported)
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useMultiInjectedProviders() {
   return useAtomValue(multiInjectedProvidersAtom)
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useSetEip6963Provider() {
   return useSetAtom(selectedEip6963ProviderRdnsAtom)
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useSelectedEip6963ProviderRdns() {
   return useAtomValue(selectedEip6963ProviderRdnsAtom)
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useSelectedEip6963ProviderInfo() {
   return useAtomValue(selectedEip6963ProviderAtom)
 }

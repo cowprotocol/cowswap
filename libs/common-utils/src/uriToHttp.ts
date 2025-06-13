@@ -2,6 +2,8 @@
  * Given a URI that may be ipfs, ipns, http, https, ar, or data protocol, return the fetch-able http(s) URLs for the same content
  * @param uri to convert to fetch-able http url
  */
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function uriToHttp(uri: string): string[] {
   // For local development
   if (uri.startsWith('/@fs/')) {

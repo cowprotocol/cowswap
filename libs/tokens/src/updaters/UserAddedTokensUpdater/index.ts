@@ -5,6 +5,8 @@ import { environmentAtom } from '../../state/environmentAtom'
 import { activeTokensMapAtom } from '../../state/tokens/allTokensAtom'
 import { removeUserTokensAtom, userAddedTokensAtom } from '../../state/tokens/userAddedTokensAtom'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function UserAddedTokensUpdater() {
   const { chainId } = useAtomValue(environmentAtom)
   const removeUserTokens = useSetAtom(removeUserTokensAtom)

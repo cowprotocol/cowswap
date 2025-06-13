@@ -5,6 +5,8 @@ export interface OrderSummaryTemplateProps {
   outputAmount: ReactElement
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SellForAtLeastTemplate({ inputAmount, outputAmount }: OrderSummaryTemplateProps) {
   return (
     <>
@@ -13,6 +15,8 @@ export function SellForAtLeastTemplate({ inputAmount, outputAmount }: OrderSumma
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function BuyForAtMostTemplate({ inputAmount, outputAmount }: OrderSummaryTemplateProps) {
   return (
     <>

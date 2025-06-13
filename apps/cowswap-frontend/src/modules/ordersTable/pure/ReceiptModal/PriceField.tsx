@@ -11,6 +11,8 @@ interface Props {
   price: Fraction | null
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function PriceField({ order, price }: Props) {
   return (
     <styledEl.Value>

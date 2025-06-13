@@ -27,6 +27,8 @@ export interface CurrencyPreviewProps extends Partial<BuiltItProps> {
   priceImpactParams?: PriceImpact
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function CurrencyAmountPreview(props: CurrencyPreviewProps) {
   const { id, currencyInfo, className, priceImpactParams } = props
   const { fiatAmount, amount } = currencyInfo

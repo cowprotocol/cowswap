@@ -19,6 +19,8 @@ export interface OrdersTableList {
   all: OrderTableItem[]
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const ordersSorter = (a: OrderTableItem, b: OrderTableItem) => {
   const aCreationTime = getParsedOrderFromTableItem(a).creationTime
   const bCreationTime = getParsedOrderFromTableItem(b).creationTime
@@ -28,10 +30,14 @@ const ordersSorter = (a: OrderTableItem, b: OrderTableItem) => {
 
 const ORDERS_LIMIT = 100
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function useOrdersTableList(
   allOrders: Order[],
   orderType: TabOrderTypes,
   chainId: number,
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   balancesAndAllowances: any,
 ): OrdersTableList {
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
@@ -45,6 +51,8 @@ export function useOrdersTableList(
   return useMemo(
     () =>
       allSortedOrders.slice(0, ORDERS_LIMIT).reduce<OrdersTableList>(
+        // TODO: Reduce function complexity by extracting logic
+        // eslint-disable-next-line complexity
         (acc, item) => {
           const order = isParsedOrder(item) ? item : item.parent
 

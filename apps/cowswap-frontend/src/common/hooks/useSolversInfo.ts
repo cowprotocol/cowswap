@@ -9,13 +9,14 @@ export function useSolversInfo(chainId: SupportedChainId): Record<string, Solver
   const allSolversInfo = useAtomValue(solversInfoAtom)
 
   return useMemo(() => {
-    const env = isProdLike ? 'prod' : 'barn' // Should match what's set on CMS!
+    // Filters by 'staging' for non-prod (dev/local/"barn") environments because the `solversInfoAtom` data (via CMS mapping) uses 'staging' for these cases.
+    const envToFilter = isProdLike ? 'prod' : 'staging'
 
     return allSolversInfo.reduce<Record<string, SolverInfo>>((acc, info) => {
       if (
         info.solverNetworks.some(
           ({ env: solverEnv, chainId: solverChainId, active }) =>
-            solverEnv === env && solverChainId === chainId && active,
+            solverEnv === envToFilter && solverChainId === chainId && active,
         )
       ) {
         acc[info.solverId] = info

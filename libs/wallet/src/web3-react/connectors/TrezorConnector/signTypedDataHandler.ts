@@ -8,6 +8,8 @@ import type { TrezorConnect } from '@trezor/connect-web'
 export async function signTypedDataHandler(
   domain: TypedDataDomain,
   types: Record<string, Array<TypedDataField>>,
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   message: Record<string, any>,
   primaryType: string,
   trezorConnect: TrezorConnect,

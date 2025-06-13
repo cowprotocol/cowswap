@@ -8,6 +8,8 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { getOrderStatusTitleAndColor } from './getOrderStatusTitleAndColor'
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('getOrderStatusTitleAndColor()', () => {
   let orderMock: ParsedOrder
 
@@ -15,6 +17,8 @@ describe('getOrderStatusTitleAndColor()', () => {
     orderMock = mock<ParsedOrder>()
   })
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const getResult = () => getOrderStatusTitleAndColor(instance(orderMock))
 
   describe('Order Status and Colors', () => {
@@ -64,6 +68,8 @@ describe('getOrderStatusTitleAndColor()', () => {
 
     it('Then should display partiallyFilled state', () => {
       when(orderMock.status).thenReturn(OrderStatus.CANCELLED)
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       when(orderMock.executionData).thenReturn({ partiallyFilled: true } as any)
 
       const result = getResult()

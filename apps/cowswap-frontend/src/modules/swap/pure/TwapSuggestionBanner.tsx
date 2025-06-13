@@ -35,8 +35,13 @@ const AMOUNT_LIMIT: Record<SupportedChainId, number> = {
   [SupportedChainId.ARBITRUM_ONE]: 500, // $500
   [SupportedChainId.BASE]: 500, // $500
   [SupportedChainId.SEPOLIA]: 100, // $100
+  [SupportedChainId.POLYGON]: 500, // $500
+  [SupportedChainId.AVALANCHE]: 500, // $500
 }
 
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
 export function TwapSuggestionBanner({
   priceImpact,
   buyingFiatAmount,

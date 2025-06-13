@@ -28,10 +28,15 @@ export interface WalletMetaData {
   icon?: string
 }
 
+// TODO: Add proper return type annotation
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
 function getWcWalletIcon(meta: any) {
   return meta.icons?.length > 0 ? meta.icons[0] : undefined
 }
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getWcPeerMetadata(provider: any | undefined): WalletMetaData {
   // fix for this https://github.com/gnosis/cowswap/issues/1929
   const defaultOutput = { walletName: undefined, icon: undefined }
@@ -84,6 +89,8 @@ export function useWalletMetaData(standaloneMode?: boolean): WalletMetaData {
     if (connectionType === ConnectionType.WALLET_CONNECT_V2) {
       const wc = provider?.provider
 
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ((wc as any)?.isWalletConnect) {
         return getWcPeerMetadata(wc)
       }

@@ -15,6 +15,8 @@ const isIframe = window.top !== window.self
  * Because of that, we need to prioritize them on this hook.
  * `web3-react` will take the first active connector from the list and use it.
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useOrderedConnections(selectedWallet: ConnectionType | undefined) {
   return useMemo(() => {
     const orderedConnectionTypes: ConnectionType[] = []

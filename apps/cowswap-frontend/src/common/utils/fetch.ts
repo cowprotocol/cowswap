@@ -47,6 +47,8 @@ const DEFAULT_BACKOFF_OPTIONS: BackoffOptions = {
 // Types reference: https://stackoverflow.com/questions/55059436/typescript-conditional-return-type-based-on-string-argument
 export function fetchWithRateLimit(
   params?: FetchWithRateLimit
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): <T extends (RequestInfo | URL) | (() => Promise<any>)>(
   input: T,
   init?: RequestInit
@@ -54,6 +56,8 @@ export function fetchWithRateLimit(
 export function fetchWithRateLimit(
   params?: FetchWithRateLimit
 ): (
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   input: RequestInfo | URL | (() => Promise<any>),
   init?: RequestInit
 ) => typeof input extends () => infer R ? R : Promise<Response> {

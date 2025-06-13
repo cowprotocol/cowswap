@@ -37,6 +37,8 @@ const StyledAlertCircle = styled(AlertCircle)`
   color: var(${UI.COLOR_DANGER});
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function WalletUnsupportedNetworkBanner() {
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const unsupportedNetworksText = useUnsupportedNetworksText()

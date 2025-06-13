@@ -23,6 +23,9 @@ type HookPosition = 'pre' | 'post'
 
 console.log(ICON_HOOK)
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function HooksStoreWidget() {
   const { chainId } = useWalletInfo()
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)

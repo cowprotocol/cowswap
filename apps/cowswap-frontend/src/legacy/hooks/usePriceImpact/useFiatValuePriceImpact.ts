@@ -15,6 +15,8 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 const TRADE_SET_UP_DEBOUNCE_TIME = ms`100ms`
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useFiatValuePriceImpact() {
   const state = useDerivedTradeState()
   const { inputCurrencyAmount, outputCurrencyAmount, inputCurrency, outputCurrency } = state || {}
@@ -43,10 +45,9 @@ export function useFiatValuePriceImpact() {
 
 function computeFiatValuePriceImpact(
   fiatValueInput: CurrencyAmount<Currency> | undefined | null,
-  fiatValueOutput: CurrencyAmount<Currency> | undefined | null
+  fiatValueOutput: CurrencyAmount<Currency> | undefined | null,
 ): Percent | undefined {
   if (!fiatValueOutput || !fiatValueInput) return undefined
-  if (!fiatValueInput.currency.equals(fiatValueOutput.currency)) return undefined
   if (JSBI.equal(fiatValueInput.quotient, JSBI.BigInt(0))) return undefined
 
   const pct = ONE_HUNDRED_PERCENT.subtract(fiatValueOutput.divide(fiatValueInput))

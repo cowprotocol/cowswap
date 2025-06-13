@@ -375,6 +375,53 @@ export const USDT_SEPOLIA = new TokenWithLogo(
   'USDT',
   'Tether USD',
 )
+export const USDC_POLYGON = new TokenWithLogo(
+  USDC_MAINNET.logoURI,
+  SupportedChainId.POLYGON,
+  // https://polygonscan.com/address/0x3c499c542cef5e3811e1192ce70d8cc03d5c3359
+  '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+  6,
+  'USDC',
+  'USD Coin',
+)
+export const USDT_POLYGON = new TokenWithLogo(
+  USDT.logoURI,
+  SupportedChainId.POLYGON,
+  // https://polygonscan.com/address/0xc2132d05d31c914a87c6611c10748aeb04b58e8f
+  '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
+  6,
+  'USDT',
+  'Tether USD',
+)
+export const DAI_POLYGON = new TokenWithLogo(
+  DAI.logoURI,
+  SupportedChainId.POLYGON,
+  // https://polygonscan.com/address/0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063
+  '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
+  18,
+  'DAI',
+  'Dai',
+)
+
+export const USDC_AVALANCHE = new TokenWithLogo(
+  USDC_MAINNET.logoURI,
+  SupportedChainId.AVALANCHE,
+  // https://snowtrace.io/token/0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e
+  '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e',
+  6,
+  'USDC',
+  'USD Coin',
+)
+
+export const USDT_AVALANCHE = new TokenWithLogo(
+  USDT.logoURI,
+  SupportedChainId.AVALANCHE,
+  // https://snowtrace.io/token/0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7
+  '0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7',
+  6,
+  'USDT',
+  'Tether USD',
+)
 
 export const USDC: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: USDC_MAINNET,
@@ -382,6 +429,8 @@ export const USDC: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.ARBITRUM_ONE]: USDC_ARBITRUM_ONE,
   [SupportedChainId.BASE]: USDC_BASE,
   [SupportedChainId.SEPOLIA]: USDC_SEPOLIA,
+  [SupportedChainId.POLYGON]: USDC_POLYGON,
+  [SupportedChainId.AVALANCHE]: USDC_AVALANCHE,
 }
 
 export const TOKEN_SHORTHANDS: { [shorthand: string]: Record<SupportedChainId, string> } = {
@@ -391,6 +440,8 @@ export const TOKEN_SHORTHANDS: { [shorthand: string]: Record<SupportedChainId, s
     [SupportedChainId.ARBITRUM_ONE]: USDC_ARBITRUM_ONE.address,
     [SupportedChainId.BASE]: USDC_BASE.address,
     [SupportedChainId.SEPOLIA]: USDC_SEPOLIA.address,
+    [SupportedChainId.POLYGON]: USDC_POLYGON.address,
+    [SupportedChainId.AVALANCHE]: USDC_AVALANCHE.address,
   },
 }
 
@@ -430,6 +481,8 @@ export const V_COW: Record<SupportedChainId, TokenWithLogo | null> = {
   [SupportedChainId.ARBITRUM_ONE]: null,
   [SupportedChainId.BASE]: null,
   [SupportedChainId.SEPOLIA]: V_COW_TOKEN_SEPOLIA,
+  [SupportedChainId.POLYGON]: null,
+  [SupportedChainId.AVALANCHE]: null,
 }
 
 /**
@@ -480,12 +533,34 @@ const COW_TOKEN_SEPOLIA = new TokenWithLogo(
   'CoW Protocol Token',
 )
 
+// TODO: handle when COW doesn't exist in Avalanche
+export const COW_TOKEN_POLYGON = new TokenWithLogo(
+  COW_TOKEN_MAINNET.logoURI,
+  SupportedChainId.POLYGON,
+  COW_CONTRACT_ADDRESS[SupportedChainId.POLYGON],
+  18,
+  'COW',
+  'CoW Protocol Token',
+)
+
+// TODO: handle when COW doesn't exist in Avalanche
+export const COW_TOKEN_AVALANCHE = new TokenWithLogo(
+  COW_TOKEN_MAINNET.logoURI,
+  SupportedChainId.AVALANCHE,
+  COW_CONTRACT_ADDRESS[SupportedChainId.AVALANCHE],
+  18,
+  'COW',
+  'CoW Protocol Token',
+)
+
 export const COW: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: COW_TOKEN_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: COW_TOKEN_XDAI,
   [SupportedChainId.ARBITRUM_ONE]: COW_TOKEN_ARBITRUM,
   [SupportedChainId.BASE]: COW_TOKEN_BASE,
   [SupportedChainId.SEPOLIA]: COW_TOKEN_SEPOLIA,
+  [SupportedChainId.POLYGON]: COW_TOKEN_POLYGON,
+  [SupportedChainId.AVALANCHE]: COW_TOKEN_AVALANCHE,
 }
 
 export const GNO: Record<SupportedChainId, TokenWithLogo | null> = {
@@ -494,6 +569,8 @@ export const GNO: Record<SupportedChainId, TokenWithLogo | null> = {
   [SupportedChainId.ARBITRUM_ONE]: GNO_ARBITRUM_ONE,
   [SupportedChainId.BASE]: null,
   [SupportedChainId.SEPOLIA]: GNO_SEPOLIA,
+  [SupportedChainId.POLYGON]: null,
+  [SupportedChainId.AVALANCHE]: null,
 }
 
 const SDAI_GNOSIS_CHAIN_ADDRESS = '0xaf204776c7245bf4147c2612bf6e5972ee483701'
@@ -548,6 +625,12 @@ const BASE_STABLECOINS = [
   USDT_BASE.address,
 ].map((t) => t.toLowerCase())
 
+const POLYGON_STABLECOINS = [USDC_POLYGON.address, USDT_POLYGON.address, DAI_POLYGON.address].map((t) =>
+  t.toLowerCase(),
+)
+
+const AVALANCHE_STABLECOINS = [USDC_AVALANCHE.address, USDT_AVALANCHE.address].map((t) => t.toLowerCase())
+
 // Not used for fees
 const SEPOLIA_STABLECOINS = [USDC_SEPOLIA.address, USDT_SEPOLIA.address].map((t) => t.toLowerCase())
 
@@ -557,6 +640,8 @@ export const STABLECOINS: Record<ChainId, Set<string>> = {
   [SupportedChainId.ARBITRUM_ONE]: new Set(ARBITRUM_ONE_STABLECOINS),
   [SupportedChainId.SEPOLIA]: new Set(SEPOLIA_STABLECOINS),
   [SupportedChainId.BASE]: new Set(BASE_STABLECOINS),
+  [SupportedChainId.POLYGON]: new Set(POLYGON_STABLECOINS),
+  [SupportedChainId.AVALANCHE]: new Set(AVALANCHE_STABLECOINS),
 }
 
 /**
@@ -569,6 +654,8 @@ export const MERKLE_DROP_CONTRACT_ADDRESSES: Record<SupportedChainId, string> = 
   [SupportedChainId.ARBITRUM_ONE]: '', // doesn't exist
   [SupportedChainId.BASE]: '', // doesn't exist
   [SupportedChainId.SEPOLIA]: '', // TODO SEPOLIA: check it
+  [SupportedChainId.POLYGON]: '', // TODO POLYGON: doesn't exist
+  [SupportedChainId.AVALANCHE]: '', // TODO AVALANCHE: doesn't exist
 }
 
 export const TOKEN_DISTRO_CONTRACT_ADDRESSES: Record<SupportedChainId, string> = {
@@ -577,4 +664,6 @@ export const TOKEN_DISTRO_CONTRACT_ADDRESSES: Record<SupportedChainId, string> =
   [SupportedChainId.ARBITRUM_ONE]: '', // doesn't exist
   [SupportedChainId.BASE]: '', // doesn't exist
   [SupportedChainId.SEPOLIA]: '', // TODO SEPOLIA: check it
+  [SupportedChainId.POLYGON]: '', // doesn't exist
+  [SupportedChainId.AVALANCHE]: '', //doesn't exist
 }

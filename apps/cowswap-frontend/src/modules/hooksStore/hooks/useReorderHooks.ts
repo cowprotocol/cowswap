@@ -5,6 +5,8 @@ import { useHooks } from './useHooks'
 
 import { HooksStoreState, setHooksAtom } from '../state/hookDetailsAtom'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useReorderHooks(hookType: keyof HooksStoreState) {
   const hooksState = useHooks()
   const hooks = hooksState[hookType]

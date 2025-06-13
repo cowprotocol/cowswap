@@ -92,6 +92,8 @@ export function getBlockExplorerUrl(chainId: SupportedChainId, type: BlockExplor
   return getEtherscanUrl(chainId, data, type)
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function isCowOrder(type: BlockExplorerLinkType, data?: string) {
   if (!data) return false
 

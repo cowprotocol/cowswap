@@ -9,6 +9,8 @@ interface ReceiverInfoProps {
   owner: string
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ReceiverInfo({ receiver, owner }: ReceiverInfoProps) {
   const toAddress = receiver && isAddress(receiver) ? shortenAddress(receiver) : receiver
 

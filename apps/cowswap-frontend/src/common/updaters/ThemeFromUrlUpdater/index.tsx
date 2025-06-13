@@ -9,6 +9,8 @@ import { updateUserDarkMode } from 'legacy/state/user/reducer'
 /**
  * Switch theme depending on theme query parameter
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ThemeFromUrlUpdater() {
   const darkMode = useIsDarkMode()
   const darkModeRef = useRef(darkMode)

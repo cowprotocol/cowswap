@@ -41,8 +41,6 @@ export const Color = {
   cowfi_peach: '#FDC99F',
   cowfi_blue: '#00A1FF',
   cowfi_blue_bright: '#3FC4FF',
-  cowfi_blue_dark: '#012f7a',
-  cowfi_blue_lighter: '#65d9ff',
   cowfi_yellow: '#F2CD16',
   cowfi_purple1: '#8702AA',
   cowfi_purple2: '#FCCAF2',

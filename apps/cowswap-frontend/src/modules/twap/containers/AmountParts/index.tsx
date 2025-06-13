@@ -23,6 +23,8 @@ interface TradeAmountPreviewProps {
   children?: ReactNode
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function TradeAmountPreview(props: TradeAmountPreviewProps) {
   const { amount, usdAmount, label, tooltip, children } = props
 
@@ -40,6 +42,8 @@ function TradeAmountPreview(props: TradeAmountPreviewProps) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function AmountParts() {
   const {
     sellAmount: { label: sellLabel, tooltip: sellTooltip },

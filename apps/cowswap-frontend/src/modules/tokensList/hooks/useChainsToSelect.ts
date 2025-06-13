@@ -5,9 +5,9 @@ import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { SupportedChainId, ChainInfo } from '@cowprotocol/cow-sdk'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
-import { Field } from 'legacy/state/types'
+import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 
-import { useBridgeSupportedNetworks } from 'modules/bridge'
+import { Field } from 'legacy/state/types'
 
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 

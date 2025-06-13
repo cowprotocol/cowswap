@@ -13,6 +13,8 @@ type DecodeProps = {
   setTabData: React.Dispatch<React.SetStateAction<TabData>>
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 const DecodePage: React.FC<DecodeProps> = ({ tabData, setTabData }) => {
   const { decode } = tabData
   const [formData, setFormdata] = useState<FormProps>(decode.formData)

@@ -7,6 +7,8 @@ import styled from 'styled-components/macro'
 
 import { UI } from '../../enum'
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const BackIcon = styled(ArrowLeft as any)<{ onClick: Command }>`
   cursor: pointer;
   opacity: 1;
@@ -26,11 +28,15 @@ interface BackButtonProps {
   onClick(): void
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function BackButton(props: BackButtonProps) {
   const { className, size = 22, onClick } = props
 
   // Close on Escape press
   useEffect(() => {
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const keyDownHandler = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         onClick()

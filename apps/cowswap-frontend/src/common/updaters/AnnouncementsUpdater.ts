@@ -5,6 +5,8 @@ import { announcementsAtom, mapCmsAnnouncementsToAnnouncements } from '@cowproto
 
 import { useCmsAnnouncements } from 'common/hooks/useCmsAnnouncements'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function AnnouncementsUpdater() {
   const setAnnouncements = useSetAtom(announcementsAtom)
 

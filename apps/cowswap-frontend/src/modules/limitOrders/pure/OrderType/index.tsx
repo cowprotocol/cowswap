@@ -14,6 +14,8 @@ export type OrderTypeProps = {
   className?: string
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function OrderType(props: OrderTypeProps) {
   const {
     isPartiallyFillable,
@@ -38,6 +40,8 @@ export function OrderType(props: OrderTypeProps) {
 
 const LABELS = ['Partially fillable', 'Fill or kill']
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function OrderTypePicker({ isPartiallyFillable, partiallyFillableOverride }: OrderTypeProps) {
   const [override, setOverride] = partiallyFillableOverride
 
@@ -45,6 +49,8 @@ function OrderTypePicker({ isPartiallyFillable, partiallyFillableOverride }: Ord
 
   const [labelText] = showPartiallyFillable ? LABELS : [...LABELS].reverse()
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const onSelect = (label: string) => setOverride(label === LABELS[0])
 
   return (

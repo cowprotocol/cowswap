@@ -10,6 +10,8 @@ export interface UnsupportedWalletWarningProps {
   isSafeViaWc: boolean
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function UnsupportedWalletWarning({ isSafeViaWc, chainId, account }: UnsupportedWalletWarningProps) {
   if (isSafeViaWc && account) {
     return (

@@ -31,6 +31,8 @@ interface ConnectedAccountBlockedProps {
   isOpen: boolean
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function ConnectedAccountBlocked(props: ConnectedAccountBlockedProps) {
   const theme = useTheme()
   return (

@@ -213,6 +213,8 @@ type ButtonCustomProps = ButtonProps & {
   buttonSize?: ButtonSize
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ButtonConfirmed({
   confirmed,
   altDisabledStyle,
@@ -225,6 +227,8 @@ export function ButtonConfirmed({
   }
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonCustomProps) {
   if (error) {
     return <ButtonErrorStyle {...rest} />
@@ -233,6 +237,8 @@ export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonCust
   }
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ButtonDropdown({ disabled = false, children, ...rest }: { disabled?: boolean } & ButtonCustomProps) {
   return (
     <ButtonPrimary {...rest} disabled={disabled}>
@@ -249,6 +255,8 @@ export const ButtonStar = ({
   size = '18px',
   stroke,
   ...rest
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }: { fill?: string; size?: string; stroke: string } & HTMLAttributes<HTMLDivElement>) => {
   return (
     <HoverIcon {...rest}>

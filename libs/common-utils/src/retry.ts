@@ -41,7 +41,7 @@ export interface RetryOptions {
  */
 export function retry<T>(
   fn: () => Promise<T>,
-  { n, minWait, maxWait }: RetryOptions
+  { n, minWait, maxWait }: RetryOptions,
 ): { promise: Promise<T>; cancel: Command } {
   let completed = false
   let rejectCancelled: (error: Error) => void
@@ -58,6 +58,8 @@ export function retry<T>(
           completed = true
         }
         break
+        // TODO: Replace any with proper type definitions
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         if (completed) {
           break

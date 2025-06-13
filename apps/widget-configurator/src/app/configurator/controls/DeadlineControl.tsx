@@ -7,6 +7,8 @@ export type DeadlineControlProps = {
   deadlineState: [number | undefined, Dispatch<SetStateAction<number | undefined>>]
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function DeadlineControl({ label, deadlineState: [state, setState] }: DeadlineControlProps) {
   return (
     <FormControl>

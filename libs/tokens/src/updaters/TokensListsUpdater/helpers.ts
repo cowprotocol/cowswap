@@ -10,6 +10,8 @@ export const getIsTimeToUpdate = (lastUpdateTime: number): boolean => {
   return Date.now() - lastUpdateTime > TOKENS_LISTS_UPDATER_INTERVAL
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const getFulfilledResults = (results: PromiseSettledResult<ListState>[]) => {
   return results.reduce<ListState[]>((acc, val) => {
     if (val.status === 'fulfilled') {

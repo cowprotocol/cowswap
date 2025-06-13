@@ -8,6 +8,8 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 /**
  * Creates a debounced function that sends analytics events for trade amount changes
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function createDebouncedTradeAmountAnalytics(cowAnalytics: CowAnalytics) {
   return debounce(([field, amount]: [Field, number]) => {
     cowAnalytics.sendEvent({

@@ -15,6 +15,9 @@ export interface AccountIndexSelectProps {
   loadMoreAccounts(): Promise<void>
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function AccountIndexSelect(props: AccountIndexSelectProps) {
   const { currentIndex, accountsList, balances, onAccountIndexChange, loadMoreAccounts } = props
   const selectRef = useRef<HTMLSelectElement>(null)

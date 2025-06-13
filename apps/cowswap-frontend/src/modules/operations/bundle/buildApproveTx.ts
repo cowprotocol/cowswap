@@ -12,6 +12,8 @@ export type BuildApproveTxParams = {
 /**
  * Builds the approval tx, without sending it
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export async function buildApproveTx(params: BuildApproveTxParams) {
   const { erc20Contract, spender, amountToApprove } = params
 

@@ -15,6 +15,8 @@ import { ExtendedTradeRawState } from '../types/TradeRawState'
 
 const EMPTY_CURRENCY_ID = '_'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useSwitchTokensPlaces(stateOverride: Partial<ExtendedTradeRawState> = {}) {
   const { chainId } = useWalletInfo()
   const tradeState = useTradeState()

@@ -3,6 +3,8 @@ type ApiActionType = 'get' | 'create' | 'delete'
 export interface ApiErrorObject {
   errorType: ApiErrorCodes
   description: string
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any
 }
 
@@ -92,6 +94,8 @@ export enum ApiErrorCodeDetails {
   UNHANDLED_DELETE_ERROR = 'The order cancellation was not accepted by the network.',
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function _mapActionToErrorDetail(action?: ApiActionType) {
   switch (action) {
     case 'get':
@@ -132,6 +136,8 @@ export default class OperatorError extends Error {
       return _mapActionToErrorDetail(action)
     }
   }
+  // TODO: Reduce function complexity by extracting logic
+  // eslint-disable-next-line complexity
   static getErrorFromStatusCode(statusCode: number, errorObject: ApiErrorObject, action: 'create' | 'delete'): string {
     switch (statusCode) {
       case 400:
@@ -168,6 +174,8 @@ export default class OperatorError extends Error {
   }
 }
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isValidOperatorError(error: any): error is OperatorError {
   return error instanceof OperatorError
 }

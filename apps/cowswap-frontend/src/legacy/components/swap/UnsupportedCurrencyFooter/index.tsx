@@ -42,6 +42,8 @@ const Wrapper = styled.div`
   }
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function UnsupportedCurrencyFooter({
   detailsText = DEFAULT_DETAILS_TEXT,
   detailsTitle = DEFAULT_DETAILS_TITLE,

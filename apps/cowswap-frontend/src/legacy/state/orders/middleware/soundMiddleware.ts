@@ -27,6 +27,8 @@ const isBatchCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch)
 // const isBatchPresignOrders = isAnyOf(OrderActions.preSignOrders)
 const isFulfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch)
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
   const result = next(action)
 
@@ -93,6 +95,8 @@ function _shouldPlayExpiredOrderSound(
   })
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function _getUpdatedOrderSound(payload: UpdateOrderParams) {
   if (!payload.order.isHidden) {
     // Trigger COW sound when an order is being updated to a non-hidden state

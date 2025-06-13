@@ -13,6 +13,8 @@ const themeObject = {
   ...getFonts(),
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const ThemeProvider = ({ children }: PropsWithChildren) => {
   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }

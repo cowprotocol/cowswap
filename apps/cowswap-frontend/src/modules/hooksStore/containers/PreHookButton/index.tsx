@@ -20,6 +20,8 @@ export interface PreHookButtonProps {
 
 const isPreHook = true
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function PreHookButton({ onOpen, onEditHook, hideTooltip }: PreHookButtonProps) {
   const { account } = useWalletInfo()
   const { preHooks } = useHooks()

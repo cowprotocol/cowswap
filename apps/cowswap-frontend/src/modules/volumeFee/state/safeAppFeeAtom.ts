@@ -35,6 +35,8 @@ const FEE_PERCENTAGE_BPS = {
  * https://help.safe.global/en/articles/178530-how-does-the-widget-fee-work-for-native-swaps
  * https://github.com/safe-global/safe-wallet-web/blob/0818e713fa0f9bb7a6472e34a05888896ffc3835/src/features/swap/helpers/fee.ts
  */
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export const safeAppFeeAtom = atom<VolumeFee | null>((get) => {
   const { chainId } = get(walletInfoAtom)
   const { isSafeApp } = get(walletDetailsAtom)
@@ -54,7 +56,7 @@ export const safeAppFeeAtom = atom<VolumeFee | null>((get) => {
   const isOutputStableCoin = !!outputCurrency && stablecoins.has(getCurrencyAddress(outputCurrency).toLowerCase())
   const isStableCoinTrade = isInputStableCoin && isOutputStableCoin
 
-  const bps = (() => {
+  const volumeBps = (() => {
     if (fiatAmount < FEE_TIERS.TIER_1) {
       return isStableCoinTrade ? FEE_PERCENTAGE_BPS.STABLE.TIER_1 : FEE_PERCENTAGE_BPS.REGULAR.TIER_1
     }
@@ -66,5 +68,5 @@ export const safeAppFeeAtom = atom<VolumeFee | null>((get) => {
     return isStableCoinTrade ? FEE_PERCENTAGE_BPS.STABLE.TIER_3 : FEE_PERCENTAGE_BPS.REGULAR.TIER_3
   })()
 
-  return { bps, recipient: SAFE_FEE_RECIPIENT }
+  return { volumeBps, recipient: SAFE_FEE_RECIPIENT }
 })

@@ -17,6 +17,8 @@ const ORDER_UI_TYPE_LABELS: Record<UiOrderType, string> = {
   [UiOrderType.YIELD]: 'Yield',
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function OrderTypeField({ order }: Props) {
   const uiOrderType = getUiOrderType(order)
 

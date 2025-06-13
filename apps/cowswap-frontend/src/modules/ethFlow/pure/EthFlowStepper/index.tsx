@@ -155,6 +155,8 @@ export const Progress = styled.div<ProgressProps>`
   }
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function EthFlowStepper(props: EthFlowStepperProps) {
   const { showProgressBar } = props
 

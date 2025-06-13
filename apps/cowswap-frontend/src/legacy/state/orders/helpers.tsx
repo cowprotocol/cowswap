@@ -42,6 +42,8 @@ type PopupContent<T extends OrderTxTypes> = {
 type MetaPopupContent = PopupContent<OrderTxTypes.METATXN>
 type TxnPopupContent = PopupContent<OrderTxTypes.TXN>
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function setOrderSummary({ id, summary, status, descriptor }: SetOrderSummaryParams) {
   // If there isn't summary, return generalized summary
   if (!summary) {
@@ -79,6 +81,8 @@ export function setPopupData(
 ): { key?: string; content: TxnPopupContent }
 export function setPopupData(
   type: OrderTxTypes,
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   { hash, success = true, id, summary, status, descriptor, orderType }: any,
 ): { key?: string; content: TxnPopupContent | MetaPopupContent } {
   const key = id + '_' + status
@@ -113,6 +117,8 @@ export function setPopupData(
   return { key, content }
 }
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function getOrderByIdFromState(orders: OrdersStateNetwork | undefined, id: string): OrderObject | undefined {
   if (!orders) {
     return

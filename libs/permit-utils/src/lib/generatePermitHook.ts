@@ -35,6 +35,8 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
   return request
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHookData> {
   const { inputToken, spender, chainId, permitInfo, provider, account, eip2612Utils, nonce: preFetchedNonce } = params
 

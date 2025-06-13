@@ -50,6 +50,8 @@ export interface WrapUnwrapContext {
 
 type WrapAction = 'Send' | 'Sign' | 'Reject' | 'Error'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function sendWrapEvent(
   analytics: WrapUnwrapContext['analytics'],
   action: WrapAction,
@@ -68,6 +70,8 @@ interface WrapUnwrapTxData {
   txResponse: TransactionResponse
 }
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export async function wrapUnwrapCallback(
   context: WrapUnwrapContext,
   params: WrapUnwrapCallbackParams = { useModals: true },
@@ -104,6 +108,8 @@ export async function wrapUnwrapCallback(
     useModals && closeModals()
 
     return txResponse
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     useModals && closeModals()
 
@@ -191,6 +197,8 @@ async function unwrapContractCall(
   }
 }
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function _handleGasEstimateError(error: any): BigNumber {
   console.log(
     '[useWrapCallback] Error estimating gas for wrap/unwrap. Using default gas limit ' +

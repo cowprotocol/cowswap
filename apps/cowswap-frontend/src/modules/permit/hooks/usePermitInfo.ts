@@ -40,6 +40,9 @@ export const PERMIT_GAS_LIMIT_MIN: Record<SupportedChainId, number> = mapSupport
  * When it is not, returned type is `{type: 'unsupported'}`
  * When it is unknown, returned type is `undefined`
  */
+// TODO: Break down this large function into smaller functions
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, complexity
 export function usePermitInfo(
   token: Nullish<Currency>,
   tradeType: Nullish<TradeType>,
@@ -118,6 +121,8 @@ export function usePermitInfo(
 /**
  * Returns a callback for adding PermitInfo for a given token
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useAddPermitInfo() {
   return useSetAtom(addPermitInfoForTokenAtom)
 }

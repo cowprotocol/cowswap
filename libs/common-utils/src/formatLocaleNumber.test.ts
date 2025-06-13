@@ -4,6 +4,8 @@ import formatLocaleNumber from './formatLocaleNumber'
 
 const INPUT = 4000000.123 // 4 million
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 function expectedOutput(l: SupportedLocale): string {
   switch (l) {
     case 'en-US':

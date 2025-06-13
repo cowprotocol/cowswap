@@ -60,27 +60,27 @@ const defaultProps: SelectTokenModalProps = {
 }
 
 const Fixtures = {
-  default: (
+  default: () => (
     <Wrapper>
       <SelectTokenModal {...defaultProps} />
     </Wrapper>
   ),
-  importByAddress: (
+  importByAddress: () => (
     <Wrapper>
       <SelectTokenModal defaultInputValue={'0x252d98fab648203aa33310721bbbddfa8f1b6587'} {...defaultProps} />
     </Wrapper>
   ),
-  NoTokenFound: (
+  NoTokenFound: () => (
     <Wrapper>
       <SelectTokenModal defaultInputValue={'0x543ff227f64aa17ea132bf9886cab5db55dcaddd'} {...defaultProps} />
     </Wrapper>
   ),
-  searchFromInactiveLists: (
+  searchFromInactiveLists: () => (
     <Wrapper>
       <SelectTokenModal defaultInputValue={'cDAI'} {...defaultProps} />
     </Wrapper>
   ),
-  searchFromExternalSources: (
+  searchFromExternalSources: () => (
     <Wrapper>
       <SelectTokenModal defaultInputValue={'Coo'} {...defaultProps} />
     </Wrapper>

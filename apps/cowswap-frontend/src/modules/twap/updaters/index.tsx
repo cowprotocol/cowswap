@@ -14,6 +14,8 @@ import { TwapOrdersUpdater } from './TwapOrdersUpdater'
 
 import { useTwapSlippage } from '../hooks/useTwapSlippage'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TwapUpdaters() {
   const { account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()

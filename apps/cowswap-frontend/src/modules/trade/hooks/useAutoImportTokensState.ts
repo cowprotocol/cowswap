@@ -15,6 +15,8 @@ interface AutoImportTokensState {
   tokensToImport: Array<TokenWithLogo>
   modalState: ModalState<void>
 }
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function useAutoImportTokensState(
   inputToken: Nullish<string>,
   outputToken: Nullish<string>,

@@ -5,6 +5,8 @@ import { useIsEoaEthFlow } from 'modules/trade'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function NetworkCostsTooltipSuffix() {
   const { allowsOffchainSigning } = useWalletDetails()
   const isEoaEthFlow = useIsEoaEthFlow()

@@ -13,6 +13,8 @@ export interface ImportTokenListItemProps {
   importList(list: ListState): void
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ImportTokenListItem(props: ImportTokenListItemProps) {
   const { list, source, importList } = props
 

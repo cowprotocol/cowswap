@@ -19,6 +19,8 @@ function useCustomProps(): CurrencySelectButtonProps {
   return { currency, loading: false }
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const Custom = () => {
   return <CurrencySelectButton {...useCustomProps()} />
 }

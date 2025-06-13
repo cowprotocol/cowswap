@@ -13,6 +13,8 @@ export interface CurrencyArrowSeparatorProps {
   onSwitchTokens(): void
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function CurrencyArrowSeparator(props: CurrencyArrowSeparatorProps) {
   const { isLoading, onSwitchTokens, isCollapsed = true, hasSeparatorLine, disabled = false } = props
   const isInjectedWidgetMode = isInjectedWidget()

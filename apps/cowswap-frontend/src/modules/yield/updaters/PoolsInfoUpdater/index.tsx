@@ -17,11 +17,15 @@ const POOL_INFO_CACHE_TIME = ms`1h`
  * The API should return info about requested pools + alternative COW AMM pools
  * When tokenAddresses is null, it should return info about all pools
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function fetchPoolsInfo(tokenAddresses: string[] | null) {
   console.log('TODO', tokenAddresses)
   return Promise.resolve(MOCK_POOL_INFO)
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function PoolsInfoUpdater() {
   const poolsInfo = usePoolsInfo()
   const upsertPoolsInfo = useSetAtom(upsertPoolsInfoAtom)

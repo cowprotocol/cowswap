@@ -23,6 +23,8 @@ const Wrapper = styled.div`
   margin: 0 auto;
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function BottomBanners() {
   const { chainId, account } = useWalletInfo()
   const isHookTradeType = useIsHooksTradeType()

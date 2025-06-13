@@ -16,6 +16,8 @@ export interface CowEventEmitter<M extends EventMap<E>, E extends EventKey> {
 
 export class SimpleCowEventEmitter<M extends EventMap<E>, E extends EventKey> implements CowEventEmitter<M, E> {
   private subscriptions: {
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: CowEventHandler<any, any>[] // Use generic parameter for listener type
   } = {}
 
