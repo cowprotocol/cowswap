@@ -69,13 +69,23 @@ export function isNativeToken(address: string): boolean {
   return address.toLowerCase() === NATIVE_TOKEN_ADDRESS.toLowerCase()
 }
 
+const NetworkImageAddressMap: Record<Network, string> = {
+  [Network.MAINNET]: 'eth',
+  [Network.BASE]: 'eth',
+  [Network.ARBITRUM_ONE]: 'eth',
+  [Network.GNOSIS_CHAIN]: 'xdai',
+  [Network.POLYGON]: 'pol',
+  [Network.AVALANCHE]: 'avax',
+  [Network.SEPOLIA]: 'eth',
+}
+
 export function getImageAddress(address: string, network: Network): string {
   if (isNativeToken(address)) {
     // What is going on here?
     // Well, this address here is the path on `src/assets/tokens/`
     // So these special values will use the local images,
     // because they are native tokens and don't really have an address
-    return network === Network.GNOSIS_CHAIN ? 'xdai' : 'eth'
+    return NetworkImageAddressMap[network]
   }
   return address
 }
