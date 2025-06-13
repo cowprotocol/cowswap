@@ -38,12 +38,12 @@
         "buildTarget": "cowswap-frontend:build"
       },
       "configurations": {
-        "development": {
-          "buildTarget": "cowswap-frontend:build:development",
+        "dev": {
+          "buildTarget": "cowswap-frontend:build:dev",
           "hmr": true
         },
-        "production": {
-          "buildTarget": "cowswap-frontend:build:production",
+        "prod": {
+          "buildTarget": "cowswap-frontend:build:prod",
           "hmr": false
         }
       }
@@ -55,11 +55,11 @@
         "buildTarget": "cowswap-frontend:build"
       },
       "configurations": {
-        "development": {
-          "buildTarget": "cowswap-frontend:build:development"
+        "dev": {
+          "buildTarget": "cowswap-frontend:build:dev"
         },
-        "production": {
-          "buildTarget": "cowswap-frontend:build:production"
+        "prod": {
+          "buildTarget": "cowswap-frontend:build:prod"
         }
       }
     },

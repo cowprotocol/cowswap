@@ -2,11 +2,10 @@ import { UI } from '@cowprotocol/ui'
 
 import { createGlobalStyle } from 'styled-components/macro'
 
-// Custom GlobalCoWDAOStyles that excludes fonts already defined in static CSS
 // This prevents duplicate font declarations that cause re-fetching
 export const CustomGlobalStyles = createGlobalStyle`
   /* NO FONT DECLARATIONS - All fonts now handled by static CSS to prevent re-injection */
-  
+
   body {
     font-family: 'studiofeixen', Arial, sans-serif;
     margin: 0;
