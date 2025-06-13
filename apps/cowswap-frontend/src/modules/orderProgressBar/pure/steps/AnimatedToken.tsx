@@ -10,7 +10,7 @@ import * as styledEl from './styled'
 const ICON_SIZE = 136
 const MOBILE_ICON_SIZE = 72
 
-function AnimatedTokens({
+export function AnimatedTokens({
   sellToken,
   buyToken,
 }: {
@@ -43,5 +43,3 @@ function AnimatedTokens({
     </styledEl.AnimatedTokensWrapper>
   )
 }
-
-export default AnimatedTokens
