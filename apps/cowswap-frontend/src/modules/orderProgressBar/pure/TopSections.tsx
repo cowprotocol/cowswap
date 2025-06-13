@@ -12,7 +12,7 @@ import SVG from 'react-inlinesvg'
 import { Textfit } from 'react-textfit'
 
 import { ProgressImageWrapper } from './ProgressImageWrapper'
-import AnimatedTokens from './steps/AnimatedToken'
+import { AnimatedTokens } from './steps/AnimatedToken'
 import { CircularCountdown } from './steps/CircularCountdown'
 import * as styledEl from './styled'
 
