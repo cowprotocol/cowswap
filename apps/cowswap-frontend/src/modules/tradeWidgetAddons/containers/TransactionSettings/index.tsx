@@ -29,7 +29,7 @@ import { AutoColumn } from 'legacy/components/Column'
 
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
 import { useIsEoaEthFlow } from 'modules/trade'
-import { useTradeQuoteSlippage } from 'modules/tradeQuote'
+import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
 import {
   useDefaultTradeSlippage,
   useIsSlippageModified,
@@ -96,7 +96,7 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
   const defaultSwapSlippage = useDefaultTradeSlippage()
   const setSwapSlippage = useSetSlippage()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
-  const smartSlippage = useTradeQuoteSlippage()
+  const smartSlippage = useSmartSlippageFromQuote()
 
   const chosenSlippageMatchesSmartSlippage = smartSlippage && new Percent(smartSlippage, 10_000).equalTo(swapSlippage)
 
