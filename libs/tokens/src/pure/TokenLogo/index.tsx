@@ -45,7 +45,15 @@ export interface TokenLogoProps {
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
-export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, noWrap, hideNetworkBadge }: TokenLogoProps) {
+export function TokenLogo({
+  logoURI,
+  token,
+  className,
+  size = 36,
+  sizeMobile,
+  noWrap,
+  hideNetworkBadge,
+}: TokenLogoProps) {
   const tokensByAddress = useTokensByAddressMap()
 
   const [invalidUrls, setInvalidUrls] = useAtom(invalidUrlsAtom)
