@@ -27,7 +27,6 @@ interface TradeWidgetUpdatersProps {
 export function TradeWidgetUpdaters({
   disableQuotePolling,
   disableNativeSelling,
-  enableSmartSlippage,
   onChangeRecipient,
   children,
 }: TradeWidgetUpdatersProps) {
@@ -43,7 +42,7 @@ export function TradeWidgetUpdaters({
       <RecipientAddressUpdater />
 
       {!disableQuotePolling && (
-        <TradeQuoteUpdater isConfirmOpen={isConfirmOpen} enableSmartSlippage={enableSmartSlippage} />
+        <TradeQuoteUpdater isConfirmOpen={isConfirmOpen} />
       )}
       <PriceImpactUpdater />
       <TradeFormValidationUpdater />

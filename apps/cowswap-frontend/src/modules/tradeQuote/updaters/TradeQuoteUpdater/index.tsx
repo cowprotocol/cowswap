@@ -11,10 +11,10 @@ export interface TradeQuoteUpdaterProps {
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TradeQuoteUpdater({ isConfirmOpen, enableSmartSlippage = false }: TradeQuoteUpdaterProps) {
+export function TradeQuoteUpdater({ isConfirmOpen }: TradeQuoteUpdaterProps) {
   const quoteState = useTradeQuote()
 
-  useTradeQuotePolling(isConfirmOpen, enableSmartSlippage)
+  useTradeQuotePolling(isConfirmOpen)
 
   useSetLocalTimeOffset(getQuoteTimeOffset(quoteState))
 
