@@ -38,13 +38,14 @@ export interface TokenLogoProps {
   size?: number
   sizeMobile?: number
   noWrap?: boolean
+  hideNetworkBadge?: boolean
 }
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
-export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, noWrap }: TokenLogoProps) {
+export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, noWrap, hideNetworkBadge }: TokenLogoProps) {
   const tokensByAddress = useTokensByAddressMap()
 
   const [invalidUrls, setInvalidUrls] = useAtom(invalidUrlsAtom)
@@ -70,6 +71,7 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, no
   const currentUrl = validUrls?.[0]
 
   const logoUrl = useNetworkLogo(token?.chainId)
+  const showNetworkBadge = logoUrl && !hideNetworkBadge
 
   const onError = useCallback(() => {
     if (!currentUrl) return
@@ -119,7 +121,7 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, no
 
   return (
     <Styled.TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
-      {logoUrl ? (
+      {showNetworkBadge ? (
         <Styled.ClippedTokenContentWrapper
           parentSize={size}
           chainLogoSize={chainLogoSizeForCalc}
@@ -131,7 +133,7 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, no
       ) : (
         actualTokenContent
       )}
-      {logoUrl && (
+      {showNetworkBadge && (
         <Styled.ChainLogoWrapper size={chainLogoSizeForCalc}>
           <img src={logoUrl} alt={`${chainName} network logo`} />
         </Styled.ChainLogoWrapper>
