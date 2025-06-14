@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { bpsToPercent } from '@cowprotocol/common-utils'
 import { Percent } from '@uniswap/sdk-core'
 
+import { useIsEoaEthFlow } from 'modules/trade'
 import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
 
 import {
@@ -17,12 +18,13 @@ export function useTradeSlippageValueAndType(): { type: SlippageType; value: num
   const currentUserSlippage = useAtomValue(currentUserSlippageAtom)
   const defaultSlippage = useAtomValue(defaultSlippageAtom)
   const smartSlippage = useSmartSlippageFromQuote()
+  const isEoaEthFlow = useIsEoaEthFlow()
 
   if (typeof currentUserSlippage === 'number') {
     return { type: 'user', value: currentUserSlippage }
   }
 
-  if (smartSlippage && smartSlippage !== defaultSlippage) {
+  if (!isEoaEthFlow && smartSlippage && smartSlippage !== defaultSlippage) {
     return { type: 'smart', value: smartSlippage }
   }
 
