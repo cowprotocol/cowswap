@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
+
+import { UI } from '@cowprotocol/ui'
+
 import SVG, { Props as SVGProps } from 'react-inlinesvg'
 import styled, { keyframes } from 'styled-components/macro'
-import { Color } from '@cowprotocol/ui'
 
 interface LazySVGProps extends Omit<SVGProps, 'loader'> {
   src: string
@@ -20,7 +22,7 @@ const Spinner = styled.div`
   width: 40px;
   height: 40px;
   border: 4px solid transparent;
-  border-top: 4px solid ${Color.neutral60};
+  border-top: 4px solid var(${UI.COLOR_NEUTRAL_60});
   margin: 0 auto;
   border-radius: 50%;
   animation: ${spin} 1s linear infinite;

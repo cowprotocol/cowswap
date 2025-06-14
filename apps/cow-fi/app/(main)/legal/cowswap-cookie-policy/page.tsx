@@ -1,11 +1,11 @@
 'use client'
 
-import { Color } from '@cowprotocol/ui'
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { CowFiCategory } from 'src/common/analytics/types'
-import styled from 'styled-components/macro'
-import { Link } from '@/components/Link'
+import { UI } from '@cowprotocol/ui'
 
+import styled from 'styled-components/macro'
+
+import { Link } from '@/components/Link'
 import {
   ArticleContent,
   ArticleMainTitle,
@@ -14,6 +14,7 @@ import {
   ColorTableContainer,
   ContainerCard,
 } from '@/styles/styled'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 const Wrapper = styled.div`
   display: flex;
@@ -32,7 +33,14 @@ export default function Page() {
 
   return (
     <Wrapper>
-      <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
+      <ContainerCard
+        bgColor={`var(${UI.COLOR_NEUTRAL_100})`}
+        minHeight="70vh"
+        gap={62}
+        gapMobile={42}
+        centerContent
+        touchFooter
+      >
         <ArticleContent maxWidth="100%">
           <Breadcrumbs>
             <Link
@@ -79,9 +87,10 @@ export default function Page() {
             <p>
               This Cookie Policy sets out some further detail on how and why we use these technologies on our website or
               websites we may host on behalf of clients. The terms &quot;Nomev&quot;, &quot;we&quot;, &quot;us&quot;,
-              and &quot;our&quot; include Nomev Labs, Lda and affiliates. The terms "you" and "your" include our
-              clients, business partners and users of this website. By using our website, you consent to storage and
-              access to cookies and other technologies on your device, in accordance with this Cookie Policy.
+              and &quot;our&quot; include Nomev Labs, Lda and affiliates. The terms &quot;you&quot; and &quot;your&quot;
+              include our clients, business partners and users of this website. By using our website, you consent to
+              storage and access to cookies and other technologies on your device, in accordance with this Cookie
+              Policy.
             </p>
             <h2 id="1-what-are-cookies-">1. What are cookies?</h2>
             <p>
@@ -268,8 +277,8 @@ export default function Page() {
               .
             </p>
             <h2 id="7-what-if-you-don-t-agree-with-us-monitoring-your-use-of-our-website-even-if-we-don-t-collect-your-personal-data-">
-              7. What if you don't agree with us monitoring your use of our website (even if we don't collect your
-              personal data)?
+              7. What if you don&apos;t agree with us monitoring your use of our website (even if we don&apos;t collect
+              your personal data)?
             </h2>
             <p>
               Enabling these cookies is not strictly necessary for our website to work but it will provide you with a
@@ -293,7 +302,7 @@ export default function Page() {
             </p>
             <p>
               If you have any further questions regarding disabling cookies you should consult with your preferred
-              browser's provider or manufacturer.
+              browser&apos;s provider or manufacturer.
             </p>
             <p>
               In order to implement your objection it may be necessary to install an opt-out cookie on your browser.
@@ -315,10 +324,10 @@ export default function Page() {
             <p>
               We may modify this Cookie Policy from time to time. If we make changes to this Cookie Policy, we will
               provide notice of such changes, such as by sending an email notification, providing notice through our
-              website or updating the 'Last Updated' date at the beginning of this Cookie Policy. The amended Cookie
-              Policy will be effective immediately after the date it is posted. By continuing to access or use our
-              website after the effective date, you confirm your acceptance of the revised Cookie Policy and all of the
-              terms incorporated therein by reference. We encourage you to review our Privacy Policy and our Cookie
+              website or updating the &apos;Last Updated&apos; date at the beginning of this Cookie Policy. The amended
+              Cookie Policy will be effective immediately after the date it is posted. By continuing to access or use
+              our website after the effective date, you confirm your acceptance of the revised Cookie Policy and all of
+              the terms incorporated therein by reference. We encourage you to review our Privacy Policy and our Cookie
               Policy whenever you access or use our website to stay informed about our information practices and the
               choices available to you.
             </p>
@@ -354,7 +363,7 @@ export default function Page() {
                     <td>__cookielawinfo_checkbox_performance</td>
                     <td>
                       Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
-                      category "performance".
+                      category &quot;performance&quot;.
                     </td>
                     <td>1 year from set/update</td>
                     <td>User activity won&#39;t be tracked</td>
@@ -363,7 +372,7 @@ export default function Page() {
                     <td>__cookielawinfo_checkbox_other</td>
                     <td>
                       Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
-                      category "other".
+                      category &quot;other&quot;.
                     </td>
                     <td>1 year from set/update</td>
                     <td>User activity won&#39;t be tracked</td>
@@ -372,7 +381,7 @@ export default function Page() {
                     <td>__cookielawinfo_checkbox_necessary</td>
                     <td>
                       Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
-                      category "necessary".
+                      category &quot;necessary&quot;.
                     </td>
                     <td>1 year from set/update</td>
                     <td>User activity won&#39;t be tracked</td>
@@ -381,7 +390,7 @@ export default function Page() {
                     <td>__cookielawinfo_checkbox_functional</td>
                     <td>
                       Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
-                      category "functional".
+                      category &quot;functional&quot;.
                     </td>
                     <td>1 year from set/update</td>
                     <td>User activity won&#39;t be tracked</td>
@@ -390,7 +399,7 @@ export default function Page() {
                     <td>__cookielawinfo_checkbox_analytics</td>
                     <td>
                       Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
-                      category "analytics".
+                      category &quot;analytics&quot;.
                     </td>
                     <td>1 year from set/update</td>
                     <td>User activity won&#39;t be tracked</td>
@@ -399,7 +408,7 @@ export default function Page() {
                     <td>__cookielawinfo_checkbox_advertisement</td>
                     <td>
                       Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
-                      category "advertisement".
+                      category &quot;advertisement&quot;.
                     </td>
                     <td>1 year from set/update</td>
                     <td>User activity won&#39;t be tracked</td>
@@ -408,7 +417,7 @@ export default function Page() {
                     <td>CookieLawInfoConsent</td>
                     <td>
                       Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
-                      category "LawInfoConsent".
+                      category &quot;LawInfoConsent&quot;.
                     </td>
                     <td>1 year from set/update</td>
                     <td>User activity won&#39;t be tracked</td>

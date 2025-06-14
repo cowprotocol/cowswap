@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { Media, Color } from '@cowprotocol/ui'
+import { Media, Color, UI } from '@cowprotocol/ui'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { transparentize } from 'polished'
@@ -76,7 +76,7 @@ const CloseButton = styled.button`
     display: block;
     width: 20px;
     height: 2px;
-    background-color: ${Color.neutral100};
+    background-color: var(${UI.COLOR_NEUTRAL_100});
     position: absolute;
   }
   &:after {

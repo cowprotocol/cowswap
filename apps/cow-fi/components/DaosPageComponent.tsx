@@ -1,5 +1,20 @@
 'use client'
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import 'swiper/css'
+import 'swiper/css/pagination'
+import 'swiper/css/navigation'
+import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
+import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
+import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
+import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
+import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
+import { Autoplay, Navigation, Pagination } from 'swiper/modules'
+import { Swiper, SwiperSlide } from 'swiper/react'
+
+import LazySVG from '@/components/LazySVG'
+import { Link, LinkType } from '@/components/Link'
+import { DAO_CONTENT as CONTENT } from '@/data/widget/const'
 import {
   ContainerCard,
   ContainerCardSection,
@@ -24,24 +39,7 @@ import {
   TopicTitle,
   TrustedBy,
 } from '@/styles/styled'
-import LazySVG from '@/components/LazySVG'
-import { DAO_CONTENT as CONTENT } from '@/data/widget/const'
-import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Autoplay, Navigation, Pagination } from 'swiper/modules'
-
-import { Link, LinkType } from '@/components/Link'
-import { useCowAnalytics } from '@cowprotocol/analytics'
 import { CowFiCategory } from 'src/common/analytics/types'
-
-import 'swiper/css'
-import 'swiper/css/pagination'
-import 'swiper/css/navigation'
-
-import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
-import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
-import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
-import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
 
 export function DaosPageComponent() {
   const analytics = useCowAnalytics()
@@ -77,9 +75,9 @@ export function DaosPageComponent() {
         </TrustedBy>
       </MetricsCard>
 
-      <ContainerCard bgColor={Color.neutral10}>
+      <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_10})`}>
         <ContainerCardSection>
-          <SectionTitleWrapper color={Color.neutral100} maxWidth={1100} gap={56}>
+          <SectionTitleWrapper color={`var(${UI.COLOR_NEUTRAL_100})`} maxWidth={1100} gap={56}>
             <SectionTitleIcon $size={98}>
               <LazySVG src={IMG_ICON_CROWN_COW} />
             </SectionTitleIcon>
@@ -131,27 +129,33 @@ export function DaosPageComponent() {
         </ContainerCardSection>
       </ContainerCard>
 
-      <ContainerCard bgColor={'transparent'} color={Color.neutral10}>
+      <ContainerCard bgColor={'transparent'} color={`var(${UI.COLOR_NEUTRAL_10})`}>
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 0" maxWidth={800}>
             <SectionTitleIcon $size={60}>
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
             </SectionTitleIcon>
             <SectionTitleText>Advanced order types</SectionTitleText>
-            <SectionTitleDescription fontSize={24} color={Color.neutral40}>
-              CoW Swap's many order types help you get better prices for your trades, manage token launches, facilitate
-              buybacks, and much more
+            <SectionTitleDescription fontSize={24} color={`var(${UI.COLOR_NEUTRAL_40})`}>
+              CoW Swap&apos;s many order types help you get better prices for your trades, manage token launches,
+              facilitate buybacks, and much more
             </SectionTitleDescription>
           </SectionTitleWrapper>
 
           <TopicList columns={3} columnsTablet={2}>
-            <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
+            <TopicCard
+              contentAlign={'left'}
+              bgColor={`var(${UI.COLOR_NEUTRAL_100})`}
+              padding={'32px'}
+              gap={16}
+              asProp="div"
+            >
               <TopicImage bgColor="transparent" height={75} width={'auto'}>
                 <LazySVG src="images/icon-milkman.svg" />
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle>Milkman Orders</TopicTitle>
-                <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                <TopicDescription fontSize={18} color={`var(${UI.COLOR_NEUTRAL_40})`} margin="0">
                   Ensure your trades are always close to the real-time market price thanks to the{' '}
                   <Link
                     href="https://github.com/charlesndalton/milkman"
@@ -172,52 +176,76 @@ export function DaosPageComponent() {
               </TopicCardInner>
             </TopicCard>
 
-            <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
+            <TopicCard
+              contentAlign={'left'}
+              bgColor={`var(${UI.COLOR_NEUTRAL_100})`}
+              padding={'32px'}
+              gap={16}
+              asProp="div"
+            >
               <TopicImage bgColor="transparent" height={75} width={'auto'}>
                 <LazySVG src="images/icon-twap-orders.svg" />
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle>TWAP Orders</TopicTitle>
-                <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                <TopicDescription fontSize={18} color={`var(${UI.COLOR_NEUTRAL_40})`} margin="0">
                   Time-weighted average price orders allow you to spread your trade out over time, averaging out your
                   trading price, minimizing price impact, and allowing for lower slippage
                 </TopicDescription>
               </TopicCardInner>
             </TopicCard>
 
-            <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
+            <TopicCard
+              contentAlign={'left'}
+              bgColor={`var(${UI.COLOR_NEUTRAL_100})`}
+              padding={'32px'}
+              gap={16}
+              asProp="div"
+            >
               <TopicImage bgColor="transparent" height={75} width={'auto'}>
                 <LazySVG src="images/icon-limit-orders.svg" />
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle>Limit Orders</TopicTitle>
-                <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
-                  CoW Swap's surplus-capturing limit orders allow you to set a price and sit back while your order gets
-                  filled over time - perfect for token buybacks and other large trades
+                <TopicDescription fontSize={18} color={`var(${UI.COLOR_NEUTRAL_40})`} margin="0">
+                  CoW Swap&apos;s surplus-capturing limit orders allow you to set a price and sit back while your order
+                  gets filled over time - perfect for token buybacks and other large trades
                 </TopicDescription>
               </TopicCardInner>
             </TopicCard>
 
-            <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
+            <TopicCard
+              contentAlign={'left'}
+              bgColor={`var(${UI.COLOR_NEUTRAL_100})`}
+              padding={'32px'}
+              gap={16}
+              asProp="div"
+            >
               <TopicImage bgColor="transparent" height={75} width={'auto'}>
                 <LazySVG src="images/icon-price-walls.svg" />
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle>Price Walls</TopicTitle>
-                <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                <TopicDescription fontSize={18} color={`var(${UI.COLOR_NEUTRAL_40})`} margin="0">
                   Pick an asset, define a threshold price, and CoW Swap will automatically sell above the threshold, and
                   buy below it
                 </TopicDescription>
               </TopicCardInner>
             </TopicCard>
 
-            <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
+            <TopicCard
+              contentAlign={'left'}
+              bgColor={`var(${UI.COLOR_NEUTRAL_100})`}
+              padding={'32px'}
+              gap={16}
+              asProp="div"
+            >
               <TopicImage bgColor="transparent" height={75} width={'auto'}>
                 <LazySVG src="images/icon-basket-sells.svg" />
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle>Basket Sells</TopicTitle>
-                <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                <TopicDescription fontSize={18} color={`var(${UI.COLOR_NEUTRAL_40})`} margin="0">
                   <Link
                     href="https://dump.services/"
                     external
@@ -238,13 +266,19 @@ export function DaosPageComponent() {
               </TopicCardInner>
             </TopicCard>
 
-            <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
+            <TopicCard
+              contentAlign={'left'}
+              bgColor={`var(${UI.COLOR_NEUTRAL_100})`}
+              padding={'32px'}
+              gap={16}
+              asProp="div"
+            >
               <TopicImage bgColor="transparent" height={75} width={'auto'}>
                 <LazySVG src="images/icon-logic.svg" />
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle>Place Your Logic Here</TopicTitle>
-                <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                <TopicDescription fontSize={18} color={`var(${UI.COLOR_NEUTRAL_40})`} margin="0">
                   ERC-1271 Smart Orders and CoW Hooks allow you to define your own complex trading logic; if you can
                   think it, you can trade it
                 </TopicDescription>
@@ -271,7 +305,7 @@ export function DaosPageComponent() {
         </ContainerCardSection>
       </ContainerCard>
 
-      <ContainerCard bgColor={Color.neutral10} color={Color.neutral98} touchFooter>
+      <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_10})`} color={`var(${UI.COLOR_NEUTRAL_98})`} touchFooter>
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 0">
             <SectionTitleIcon $multiple>
@@ -289,19 +323,19 @@ export function DaosPageComponent() {
                 <TopicCard
                   key={index}
                   contentAlign={'center'}
-                  bgColor={Color.neutral20}
+                  bgColor={`var(${UI.COLOR_NEUTRAL_20})`}
                   padding={'24px'}
                   gap={12}
                   asProp="div"
                 >
-                  <TopicImage iconColor={Color.neutral98} bgColor={'transparent'} height={100}>
+                  <TopicImage iconColor={`var(${UI.COLOR_NEUTRAL_98})`} bgColor={'transparent'} height={100}>
                     {isPng ? <img src={dao.icon} alt={dao.title} /> : <LazySVG src={dao.icon} />}
                   </TopicImage>
                   <TopicCardInner contentAlign="center">
-                    <TopicTitle fontSize={28} color={Color.neutral98}>
+                    <TopicTitle fontSize={28} color={`var(${UI.COLOR_NEUTRAL_98})`}>
                       {dao.title}
                     </TopicTitle>
-                    <TopicDescription fontSize={18} color={Color.neutral70}>
+                    <TopicDescription fontSize={18} color={`var(${UI.COLOR_NEUTRAL_70})`}>
                       {dao.description}
                     </TopicDescription>
                     <Link
@@ -325,7 +359,7 @@ export function DaosPageComponent() {
                 <TopicCard
                   key={index}
                   contentAlign={'center'}
-                  bgColor={Color.neutral20}
+                  bgColor={`var(${UI.COLOR_NEUTRAL_20})`}
                   padding={'10px'}
                   href={`${dao.link}?utm_source=cow.fi&utm_medium=web&utm_content=dao-${dao.title}`}
                   target="_blank"
@@ -339,7 +373,7 @@ export function DaosPageComponent() {
                   }
                 >
                   <TopicImage
-                    iconColor={Color.neutral0}
+                    iconColor={`var(${UI.COLOR_NEUTRAL_0})`}
                     bgColor={'transparent'}
                     width={'100%'}
                     height={100}

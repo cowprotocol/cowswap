@@ -1,6 +1,10 @@
+'use client'
+
+import { UI } from '@cowprotocol/ui'
+
 import { TopicsPageComponent } from '@/components/TopicsPageComponent'
 import { ARTICLES_LARGE_PAGE_SIZE } from '@/const/pagination'
-import { Color } from '@cowprotocol/ui'
+
 import { getArticles, getCategories } from '../../../../services/cms'
 
 export default async function TopicsPage() {
@@ -16,8 +20,8 @@ export default async function TopicsPage() {
         name: category?.attributes?.name || '',
         slug: category?.attributes?.slug || '',
         description: category?.attributes?.description || '',
-        bgColor: category?.attributes?.backgroundColor || Color.neutral100,
-        textColor: category?.attributes?.textColor || Color.neutral0,
+        bgColor: category?.attributes?.backgroundColor || `var(${UI.COLOR_NEUTRAL_100})`,
+        textColor: category?.attributes?.textColor || `var(${UI.COLOR_NEUTRAL_0})`,
         link: `/learn/topic/${category?.attributes?.slug}`,
         iconColor: 'transparent',
         imageUrl,

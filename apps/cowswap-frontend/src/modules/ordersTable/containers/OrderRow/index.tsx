@@ -4,7 +4,6 @@ import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { formatDateWithTimezone, getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { PercentDisplay, percentIsAlmostHundred, TokenAmount } from '@cowprotocol/ui'
 import { useIsSafeWallet } from '@cowprotocol/wallet'
@@ -23,6 +22,7 @@ import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
+import { CurrencyLogoPairWithBridging } from './CurrencyLogoPairWithBridging'
 import { OrderContextMenu } from './OrderContextMenu'
 import { WarningTooltip } from './OrderWarning'
 import * as styledEl from './styled'
@@ -216,10 +216,12 @@ export function OrderRow({
 
       {/* Order sell/buy tokens */}
       <styledEl.CurrencyCell>
-        <styledEl.CurrencyLogoPair clickable onClick={onClick}>
-          <TokenLogo token={order.inputToken} size={28} />
-          <TokenLogo token={buyAmount.currency} size={28} />
-        </styledEl.CurrencyLogoPair>
+        <CurrencyLogoPairWithBridging
+          sellToken={order.inputToken}
+          buyToken={buyAmount.currency}
+          clickable
+          onClick={onClick}
+        />
         <styledEl.CurrencyAmountWrapper clickable onClick={onClick}>
           <CurrencyAmountItem amount={getSellAmountWithFee(order)} />
           <CurrencyAmountItem amount={buyAmount} />

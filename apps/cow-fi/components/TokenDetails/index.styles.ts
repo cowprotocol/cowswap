@@ -1,6 +1,7 @@
-import styled from 'styled-components/macro'
-import { Media, Color, UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
+
 import Link from 'next/link'
+import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
   display: grid;
@@ -11,7 +12,7 @@ export const Wrapper = styled.div`
   margin: 0 auto;
   padding: 0 1.6rem;
   position: relative;
-  color: ${Color.neutral10};
+  color: var(${UI.COLOR_NEUTRAL_10});
 
   ${Media.upToSmall()} {
     display: flex;
@@ -62,7 +63,7 @@ export const SwapWidgetWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: ${Color.neutral100};
+  background: var(${UI.COLOR_NEUTRAL_100});
   height: 26.2rem;
   width: 100%;
   box-shadow:
@@ -94,7 +95,7 @@ export const Section = styled.div`
   > div > pre,
   > div > ul {
     line-height: 1.6;
-    color: ${Color.neutral10};
+    color: var(${UI.COLOR_NEUTRAL_10});
     margin: 0 0 2.8rem;
   }
 
@@ -109,7 +110,7 @@ export const Section = styled.div`
   > div > pre {
     margin: 0 0 1.6rem;
     padding: 1.6rem;
-    background: ${Color.neutral40};
+    background: var(${UI.COLOR_NEUTRAL_40});
     border-radius: 1rem;
   }
 
@@ -123,7 +124,7 @@ export const Section = styled.div`
   }
 
   a {
-    color: ${Color.neutral10};
+    color: var(${UI.COLOR_NEUTRAL_10});
     text-decoration: none;
     transition: color 0.3s ease-in-out;
   }
@@ -171,8 +172,8 @@ export const TokenTitle = styled.div`
 
   > span {
     padding: 0.6rem;
-    background: ${Color.neutral80};
-    color: ${Color.neutral10};
+    background: var(${UI.COLOR_NEUTRAL_80});
+    color: var(${UI.COLOR_NEUTRAL_10});
     border-radius: 0.4rem;
     font-size: 1.4rem;
     letter-spacing: 0.05rem;
@@ -208,11 +209,11 @@ export const TokenLink = styled(Link)`
   line-height: 1.2;
   gap: 0.8rem;
   text-decoration: none;
-  color: ${Color.neutral10};
+  color: var(${UI.COLOR_NEUTRAL_10});
   transition: color 0.2s ease-in-out;
 
   &:hover {
-    color: ${Color.neutral10};
+    color: var(${UI.COLOR_NEUTRAL_10});
     text-decoration: underline;
   }
 
@@ -220,7 +221,7 @@ export const TokenLink = styled(Link)`
     width: var(--tokenSize);
     height: var(--tokenSize);
     border-radius: var(--tokenSize);
-    background-color: ${Color.neutral10};
+    background-color: var(${UI.COLOR_NEUTRAL_10});
   }
 
   > span {
@@ -229,7 +230,7 @@ export const TokenLink = styled(Link)`
   > span > i {
     text-transform: uppercase;
     font-style: normal;
-    color: ${Color.neutral50};
+    color: var(${UI.COLOR_NEUTRAL_50});
   }
 `
 
@@ -247,14 +248,14 @@ export const SwapCard = styled.div`
   flex-flow: column wrap;
   align-items: flex-start;
   justify-content: flex-start;
-  border: 0.1rem solid ${Color.neutral40};
+  border: 0.1rem solid var(${UI.COLOR_NEUTRAL_40});
   transition: border 0.2s ease-in-out;
   border-radius: 1.2rem;
   padding: 0;
   font-size: 1.4rem;
 
   &:hover {
-    border: 0.1rem solid ${Color.neutral10};
+    border: 0.1rem solid var(${UI.COLOR_NEUTRAL_10});
 
     > a > img:last-child {
       opacity: 1;
@@ -316,7 +317,7 @@ export const StatItem = styled.div`
 export const StatTitle = styled.div`
   font-size: 1.4rem;
   line-height: 1.2;
-  color: ${Color.neutral10};
+  color: var(${UI.COLOR_NEUTRAL_10});
 `
 
 export const StatValue = styled.h5`

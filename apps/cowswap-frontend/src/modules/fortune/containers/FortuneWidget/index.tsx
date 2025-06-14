@@ -6,7 +6,7 @@ import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
 import IMAGE_ICON_FORTUNE_COOKIE from '@cowprotocol/assets/images/icon-fortune-cookie.svg'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { ExternalLink, Media } from '@cowprotocol/ui'
-import { UI, Color } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { Confetti } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -43,7 +43,7 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
   color: inherit;
 
   &:hover {
-    color: ${Color.neutral100};
+    color: var(${UI.COLOR_NEUTRAL_100});
   }
 
   > span {

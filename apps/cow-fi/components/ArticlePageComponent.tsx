@@ -3,7 +3,7 @@
 import { useMemo } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { CmsImage, Color, Media } from '@cowprotocol/ui'
+import { CmsImage, Media, UI } from '@cowprotocol/ui'
 
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
@@ -156,8 +156,8 @@ export function ArticlePageComponent({ article, randomArticles, featuredArticles
               onClick={handleShareClick}
               asButton
               linkType={LinkType.SectionTitleButton}
-              color={Color.neutral98}
-              bgColor={Color.neutral10}
+              color={`var(${UI.COLOR_NEUTRAL_98})`}
+              bgColor={`var(${UI.COLOR_NEUTRAL_10})`}
             >
               Share article
             </Link>
@@ -201,7 +201,7 @@ export function ArticlePageComponent({ article, randomArticles, featuredArticles
       </ContainerCard>
 
       {/* Read More Section */}
-      <ContainerCard bgColor={Color.neutral98} touchFooter>
+      <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_98})`} touchFooter>
         <ContainerCardSection>
           <ContainerCardSectionTop>
             <ContainerCardSectionTopTitle>Read more</ContainerCardSectionTopTitle>

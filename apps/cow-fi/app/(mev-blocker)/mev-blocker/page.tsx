@@ -1,27 +1,25 @@
 'use client'
 
-import Script from 'next/script'
-
-import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
-
-import FAQ from '@/components/FAQ'
-import { AddRpcButton } from '@/components/AddRpcButton'
-import { Link, LinkType } from '@/components/Link'
-
-import useWebShare from '../../../hooks/useWebShare'
-
-import { WagmiConfig, createConfig, configureChains, mainnet } from 'wagmi'
-import { publicProvider } from 'wagmi/providers/public'
-import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit'
 import '@rainbow-me/rainbowkit/styles.css'
 
+import IMAGE_ICON_MEVBLOCKER_CHATBALLOON from '@cowprotocol/assets/images/icon-mevblocker-chatballoon.svg'
 import IMAGE_ICON_MEVBLOCKER_PROTECT from '@cowprotocol/assets/images/icon-mevblocker-protect.svg'
 import IMAGE_ICON_MEVBLOCKER_PROTECT2 from '@cowprotocol/assets/images/icon-mevblocker-protect2.svg'
-import IMAGE_ICON_MEVBLOCKER_CHATBALLOON from '@cowprotocol/assets/images/icon-mevblocker-chatballoon.svg'
 import IMAGE_ICON_MEVBLOCKER_TRUST from '@cowprotocol/assets/images/icon-mevblocker-trust.svg'
 import IMAGE_ICON_QUESTIONBALLOON from '@cowprotocol/assets/images/icon-question-balloon.svg'
 import IMAGE_SANDWICH_GUY from '@cowprotocol/assets/images/image-sandwich-guy.svg'
+import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
+import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit'
+import Script from 'next/script'
+import { WagmiConfig, createConfig, configureChains, mainnet } from 'wagmi'
+import { publicProvider } from 'wagmi/providers/public'
+
+import { AddRpcButton } from '@/components/AddRpcButton'
+import FAQ from '@/components/FAQ'
+import LazySVG from '@/components/LazySVG'
+import { Link, LinkType } from '@/components/Link'
+import { FAQ_DATA, TRUSTED_BY_CONTENT, TESTIMONIAL_LIST, MEV_BLOCKER_LIST } from '@/data/mev-blocker/const'
 import {
   PageWrapper,
   ContainerCard,
@@ -50,12 +48,9 @@ import {
   ColorTableContainer,
   TopicTable,
 } from '@/styles/styled'
-
-import LazySVG from '@/components/LazySVG'
-
-import { FAQ_DATA, TRUSTED_BY_CONTENT, TESTIMONIAL_LIST, MEV_BLOCKER_LIST } from '@/data/mev-blocker/const'
-
 import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+
+import useWebShare from '../../../hooks/useWebShare'
 
 const isClient = typeof window === 'object'
 
@@ -158,14 +153,14 @@ export default function Page() {
             </Link>
           </MetricsCard>
 
-          <ContainerCard bgColor={Color.neutral100}>
+          <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_100})`}>
             <ContainerCardSection gap={60}>
-              <SectionTitleWrapper color={Color.neutral10} maxWidth={1300} gap={56}>
+              <SectionTitleWrapper color={`var(${UI.COLOR_NEUTRAL_10})`} maxWidth={1300} gap={56}>
                 <SectionTitleIcon $multiple $size={82}>
                   <LazySVG src={IMAGE_ICON_MEVBLOCKER_PROTECT} />
                 </SectionTitleIcon>
                 <SectionTitleText maxWidth={500}>Broad spectrum MEV defense</SectionTitleText>
-                <SectionTitleDescription maxWidth={'100%'} color={Color.neutral50}>
+                <SectionTitleDescription maxWidth={'100%'} color={`var(${UI.COLOR_NEUTRAL_50})`}>
                   MEV bots have extracted more than{' '}
                   <Link
                     href="https://dune.com/queries/2259793/3703605"
@@ -199,8 +194,8 @@ export default function Page() {
               </TopicList>
 
               <SectionTitleWrapper maxWidth={1200} margin="0 auto">
-                <SectionTitleDescription fontSize={28} color={Color.neutral50}>
-                  Curious if you've been the victim of an MEV attack?{' '}
+                <SectionTitleDescription fontSize={28} color={`var(${UI.COLOR_NEUTRAL_50})`}>
+                  Curious if you&apos;ve been the victim of an MEV attack?{' '}
                   <Link
                     href="https://www.mevscanner.com/"
                     external
@@ -218,24 +213,24 @@ export default function Page() {
             </ContainerCardSection>
           </ContainerCard>
 
-          <ContainerCard bgColor="transparent" color={Color.neutral10} id="rpc">
+          <ContainerCard bgColor="transparent" color={`var(${UI.COLOR_NEUTRAL_10})`} id="rpc">
             <ContainerCardSection>
               <SectionTitleWrapper maxWidth={850} gap={56} margin="24px auto">
                 <SectionTitleIcon $multiple $size={82}>
                   <LazySVG src={IMAGE_ICON_MEVBLOCKER_PROTECT2} />
                 </SectionTitleIcon>
                 <SectionTitleText>Get Protected</SectionTitleText>
-                <SectionTitleDescription color={Color.neutral50}>
+                <SectionTitleDescription color={`var(${UI.COLOR_NEUTRAL_50})`}>
                   Add this RPC endpoint to your wallet to enjoy the full benefits of MEV Blocker
                 </SectionTitleDescription>
-                <SectionTitleDescription fontSize={21} color={Color.neutral50}>
+                <SectionTitleDescription fontSize={21} color={`var(${UI.COLOR_NEUTRAL_50})`}>
                   Note: some wallets make you reselect MEV Blocker every time you change networks
                 </SectionTitleDescription>
               </SectionTitleWrapper>
               <TopicList columns={2} columnsTablet={1}>
-                <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} asProp="div">
+                <TopicCard contentAlign={'left'} bgColor={`var(${UI.COLOR_NEUTRAL_100})`} padding={'32px'} asProp="div">
                   <TopicCardInner contentAlign="left">
-                    <TopicTitle color={Color.neutral0} fontSize={28}>
+                    <TopicTitle color={`var(${UI.COLOR_NEUTRAL_0})`} fontSize={28}>
                       Click to add to your client
                     </TopicTitle>
                     <TopicDescription fontSize={21}>MEV Blocker (Ethereum Mainnet)</TopicDescription>
@@ -243,9 +238,9 @@ export default function Page() {
                   </TopicCardInner>
                 </TopicCard>
 
-                <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} asProp="div">
+                <TopicCard contentAlign={'left'} bgColor={`var(${UI.COLOR_NEUTRAL_100})`} padding={'32px'} asProp="div">
                   <TopicCardInner contentAlign="left">
-                    <TopicTitle color={Color.neutral0} fontSize={28}>
+                    <TopicTitle color={`var(${UI.COLOR_NEUTRAL_0})`} fontSize={28}>
                       Add manually
                     </TopicTitle>
 
@@ -287,21 +282,22 @@ export default function Page() {
                 </TopicCard>
               </TopicList>
               <SectionTitleWrapper margin={'24px auto 0'}>
-                <SectionTitleDescription fontSize={28} color={Color.neutral50} maxWidth={700}>
-                  Having trouble? Check your wallet's documentation for instructions on how to update your RPC endpoint
+                <SectionTitleDescription fontSize={28} color={`var(${UI.COLOR_NEUTRAL_50})`} maxWidth={700}>
+                  Having trouble? Check your wallet&apos;s documentation for instructions on how to update your RPC
+                  endpoint
                 </SectionTitleDescription>
               </SectionTitleWrapper>
             </ContainerCardSection>
           </ContainerCard>
 
-          <ContainerCard bgColor={Color.neutral10} color={Color.neutral100}>
+          <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_10})`} color={`var(${UI.COLOR_NEUTRAL_100})`}>
             <ContainerCardSection>
               <SectionTitleWrapper maxWidth={700}>
                 <SectionTitleIcon>
                   <ProductLogo variant={ProductVariant.MevBlocker} theme="dark" logoIconOnly />
                 </SectionTitleIcon>
                 <SectionTitleText>Multiple endpoints for multiple protection types</SectionTitleText>
-                <SectionTitleDescription color={Color.neutral50}>
+                <SectionTitleDescription color={`var(${UI.COLOR_NEUTRAL_50})`}>
                   Advanced MEV Blocker users can select from a variety of endpoints to suit their specific needs
                 </SectionTitleDescription>
               </SectionTitleWrapper>
@@ -352,7 +348,7 @@ export default function Page() {
               </ColorTableContainer>
 
               <SectionTitleWrapper margin={'24px auto 0'}>
-                <SectionTitleDescription color={Color.neutral50}>
+                <SectionTitleDescription color={`var(${UI.COLOR_NEUTRAL_50})`}>
                   To learn more about each of the endpoints MEV Blocker has to offer,{' '}
                   <Link
                     href="https://docs.cow.fi/mevblocker"
@@ -364,7 +360,7 @@ export default function Page() {
                     })}
                   >
                     read the MEV Blocker docs
-                  </Link>                  
+                  </Link>
                 </SectionTitleDescription>
               </SectionTitleWrapper>
             </ContainerCardSection>
@@ -421,18 +417,18 @@ export default function Page() {
             </ContainerCardSection>
           </ContainerCard>
 
-          <ContainerCard bgColor={Color.neutral100}>
+          <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_100})`}>
             <ContainerCardSection>
               <SectionTitleWrapper maxWidth={900}>
                 <SectionTitleIcon>
                   <ProductLogo variant={ProductVariant.MevBlocker} theme="light" logoIconOnly />
                 </SectionTitleIcon>
                 <SectionTitleText textAlign="center" maxWidth={480}>
-                  Don't let your users get burned by MEV
+                  Don&apos;t let your users get burned by MEV
                 </SectionTitleText>
-                <SectionTitleDescription color={Color.neutral50}>
-                  If you're a wallet, a solver, or any project that settles transactions on behalf of users, you should
-                  integrate MEV Blocker to protect them from MEV and earn some extra revenue
+                <SectionTitleDescription color={`var(${UI.COLOR_NEUTRAL_50})`}>
+                  If you&apos;re a wallet, a solver, or any project that settles transactions on behalf of users, you
+                  should integrate MEV Blocker to protect them from MEV and earn some extra revenue
                 </SectionTitleDescription>
 
                 <Link
@@ -467,7 +463,7 @@ export default function Page() {
                   <TopicCard
                     key={item.href}
                     contentAlign={'center'}
-                    bgColor={Color.neutral98}
+                    bgColor={`var(${UI.COLOR_NEUTRAL_98})`}
                     padding={'28px'}
                     href={item.href}
                     rel={'noopener noreferrer nofollow'}
@@ -478,7 +474,7 @@ export default function Page() {
                     })}
                   >
                     <TopicImage
-                      iconColor={Color.neutral20}
+                      iconColor={`var(${UI.COLOR_NEUTRAL_20})`}
                       bgColor={'transparent'}
                       width={'90%'}
                       height={72}
@@ -492,7 +488,7 @@ export default function Page() {
             </ContainerCardSection>
           </ContainerCard>
 
-          <ContainerCard bgColor={Color.neutral100}>
+          <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_100})`}>
             <ContainerCardSection>
               <SectionTitleWrapper>
                 <SectionTitleIcon>
@@ -511,7 +507,9 @@ export default function Page() {
                 <SectionTitleIcon>
                   <ProductLogo variant={ProductVariant.MevBlocker} theme="light" logoIconOnly />
                 </SectionTitleIcon>
-                <SectionTitleText textAlign="center">Friends don't let friends suffer from MEV damage</SectionTitleText>
+                <SectionTitleText textAlign="center">
+                  Friends don&apos;t let friends suffer from MEV damage
+                </SectionTitleText>
 
                 <Link
                   linkType={LinkType.SectionTitleButton}

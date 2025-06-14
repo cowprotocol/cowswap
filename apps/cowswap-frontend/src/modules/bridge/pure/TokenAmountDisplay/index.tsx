@@ -31,7 +31,7 @@ export function TokenAmountDisplay({
 
   return (
     <AmountWithTokenIcon colorVariant={status}>
-      {!hideTokenIcon && <TokenLogo token={token} size={18} />}
+      {!hideTokenIcon && <TokenLogo token={token} size={21} />}
       <LibTokenAmount
         amount={currencyAmount}
         tokenSymbol={displaySymbol ? token : undefined}

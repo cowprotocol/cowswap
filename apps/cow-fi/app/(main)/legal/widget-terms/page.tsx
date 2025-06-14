@@ -1,14 +1,13 @@
 'use client'
 
-import { Color } from '@cowprotocol/ui'
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { CowFiCategory } from 'src/common/analytics/types'
+import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
 import { Link } from '@/components/Link'
-
 import { ArticleContent, ArticleMainTitle, BodyContent, Breadcrumbs, ContainerCard } from '@/styles/styled'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 const Wrapper = styled.div`
   display: flex;
@@ -27,7 +26,14 @@ export default function Page() {
 
   return (
     <Wrapper>
-      <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
+      <ContainerCard
+        bgColor={`var(${UI.COLOR_NEUTRAL_100})`}
+        minHeight="70vh"
+        gap={62}
+        gapMobile={42}
+        centerContent
+        touchFooter
+      >
         <ArticleContent maxWidth="100%">
           <Breadcrumbs>
             <Link
@@ -61,12 +67,13 @@ export default function Page() {
 
           <BodyContent>
             <p>
-              These Terms and Conditions (the "Terms") govern the integration of the CoW Swap Widget (the "Widget"). The
-              Widget is provided to you ("you", the "Partner") by CoW DAO (the "Provider", "we", "our", or "us").
+              These Terms and Conditions (the &quot;Terms&quot;) govern the integration of the CoW Swap Widget (the
+              &quot;Widget&quot;). The Widget is provided to you (&quot;you&quot;, the &quot;Partner&quot;) by CoW DAO
+              (the &quot;Provider&quot;, &quot;we&quot;, &quot;our&quot;, or &quot;us&quot;).
             </p>
             <p>
               CoW DAO is an Ethereum and Gnosis Chain based collective managed by community members in accordance with
-              the CoW DAO's{' '}
+              the CoW DAO&apos;s{' '}
               <a target="_blank" rel="noreferrer" href="https://snapshot.org/#/cow.eth/about">
                 participation agreement
               </a>
@@ -115,8 +122,8 @@ export default function Page() {
             </p>
             <h2>CoW Protocol</h2>
             <p>
-              Cow Protocol (the "Protocol") is a decentralised protocol operated by CoW DAO on the Ethereum, Gnosis
-              Chain as well as other EVM compatible chains that allows users to trade certain digital assets. The
+              Cow Protocol (the &quot;Protocol&quot;) is a decentralised protocol operated by CoW DAO on the Ethereum,
+              Gnosis Chain as well as other EVM compatible chains that allows users to trade certain digital assets. The
               Protocol is a set of smart contracts owned by CoW DAO.
             </p>
             <p>
@@ -134,7 +141,8 @@ export default function Page() {
             </p>
             <h2>The Widget</h2>
             <p>
-              The Widget is an iframe solution mirroring the web-hosted user interface (the "Interface") published at{' '}
+              The Widget is an iframe solution mirroring the web-hosted user interface (the &quot;Interface&quot;)
+              published at{' '}
               <a target="_blank" rel="noreferrer" href="https://swap.cow.fi/">
                 https://swap.cow.fi/
               </a>{' '}
@@ -154,7 +162,7 @@ export default function Page() {
                 Terms &amp; Conditions
               </a>{' '}
               for the use of the Interface apply to the Widget. It is your duty to ensure that all persons who access
-              the Widget through your website are aware of the Interface's{' '}
+              the Widget through your website are aware of the Interface&apos;s{' '}
               <a target="_blank" rel="noreferrer" href="https://cow.fi/legal/cowswap-terms">
                 Terms &amp; Conditions
               </a>{' '}
@@ -162,12 +170,12 @@ export default function Page() {
             </p>
             <h2>Widget Integration</h2>
             <p>
-              The Partner may integrate the Widget into their website or application in accordance with the Provider's
-              integration guidelines and these Terms.
+              The Partner may integrate the Widget into their website or application in accordance with the
+              Provider&apos;s integration guidelines and these Terms.
             </p>
             <p>
               The Partner may customize the design and appearance of the Widget within reasonable limits, provided that
-              the Provider's branding and logos remain visible.
+              the Provider&apos;s branding and logos remain visible.
             </p>
             <h2>Obligations of the Partner</h2>
             <p>
@@ -200,7 +208,8 @@ export default function Page() {
             <h2>License and Ownership</h2>
             <p>
               The Provider grants the Partner a limited, non-exclusive, non-transferable, revocable license to integrate
-              and use the Widget solely for the purpose of providing access to the Interface to the Partner's users.
+              and use the Widget solely for the purpose of providing access to the Interface to the Partner&apos;s
+              users.
             </p>
             <p>
               The Widget and all intellectual property rights therein are and shall remain the exclusive property of the
@@ -210,11 +219,11 @@ export default function Page() {
             <h3>Partner Fee</h3>
 
             <p>
-              Partners may participate in the Provider's Partner Fee Program ("Program"). The Program enables Partners
-              to earn fees on trades their users execute through the Widget. For comprehensive details and conditions of
-              the Partner Fee Program, please refer to the dedicated{' '}
+              Partners may participate in the Provider&apos;s Partner Fee Program (&quot;Program&quot;). The Program
+              enables Partners to earn fees on trades their users execute through the Widget. For comprehensive details
+              and conditions of the Partner Fee Program, please refer to the dedicated{' '}
               <a target="_blank" rel="noreferrer" href="https://docs.cow.fi/cow-protocol/tutorials/widget#partner-fee">
-                Widget documentation page under the "Partner Fee" section
+                Widget documentation page under the &quot;Partner Fee&quot; section
               </a>
               .
             </p>
@@ -227,15 +236,15 @@ export default function Page() {
             </p>
             <h3>Service Fee</h3>
             <p>
-              The Provider will retain a service fee ("Service Fee") from the total fees earned by the Partner. Specific
-              terms and conditions regarding the Service Fee are outlined in the{' '}
+              The Provider will retain a service fee (&quot;Service Fee&quot;) from the total fees earned by the
+              Partner. Specific terms and conditions regarding the Service Fee are outlined in the{' '}
               <a target="_blank" rel="noreferrer" href="https://docs.cow.fi/cow-protocol/tutorials/widget#partner-fee">
-                Widget's dedicated documentation page under the "Partner Fee" section
+                Widget&apos;s dedicated documentation page under the &quot;Partner Fee&quot; section
               </a>
               .
             </p>
             <p>The Provider reserves the right to adjust the Service Fee charged to the Partner with prior notice.</p>
-            <h3>Partner Fee Payment at the Provider's Discretion</h3>
+            <h3>Partner Fee Payment at the Provider&apos;s Discretion</h3>
             <p>
               The Provider retains sole and absolute discretion in determining whether the transactions on the Widget
               are eligible for Partner Fee. The Provider may choose not to issue Partner Fees for any reason, including
@@ -263,7 +272,7 @@ export default function Page() {
             </p>
 
             <h2>Warranties and Limitations</h2>
-            <p>The Widget is provided "as is" without warranty of any kind, express or implied.</p>
+            <p>The Widget is provided &quot;as is&quot; without warranty of any kind, express or implied.</p>
             <p>
               Provider shall not be liable for any damages or losses arising from the use or inability to use the
               Widget, including but not limited to direct, indirect, incidental, consequential, or punitive damages.
@@ -276,8 +285,8 @@ export default function Page() {
             <p>
               The Partner shall indemnify, defend, and hold harmless the Provider, its affiliates, and their agents from
               and against any and all claims, liabilities, damages, losses, and expenses, including reasonable
-              attorneys' fees and costs, arising out of or relating to the Partner's use of the Widget or breach of
-              these Terms.
+              attorneys&apos; fees and costs, arising out of or relating to the Partner&apos;s use of the Widget or
+              breach of these Terms.
             </p>
             <h2>Breach of Terms</h2>
             <p>
@@ -286,8 +295,8 @@ export default function Page() {
             </p>
             <h2>Termination</h2>
             <p>
-              The&nbsp; Provider may terminate this Agreement at any time and revoke the Partner's license to use the
-              Widget at any time, with or without cause, upon written notice to Partner.
+              The&nbsp; Provider may terminate this Agreement at any time and revoke the Partner&apos;s license to use
+              the Widget at any time, with or without cause, upon written notice to Partner.
             </p>
             <p>
               Upon termination, the Partner shall immediately cease all use of the Widget and remove it from its website
@@ -297,8 +306,8 @@ export default function Page() {
             <h3>Amicable Dispute Resolution</h3>
             <p>
               If an alleged breach, controversy, claim, dispute or difference arises out of or in connection with the
-              present Terms about or in connection to the Widget between you and us (a "Dispute"), you agree to seek to
-              resolve the matter with us amicably by referring the matter to{' '}
+              present Terms about or in connection to the Widget between you and us (a &quot;Dispute&quot;), you agree
+              to seek to resolve the matter with us amicably by referring the matter to{' '}
               <a href="mailto:legal@cow.fi" target="_blank" rel="noreferrer">
                 legal@cow.fi
               </a>
@@ -315,9 +324,9 @@ export default function Page() {
             <h3>Mediation and Arbitration</h3>
             <p>
               In the event a Dispute cannot be resolved amicably, you must first refer the Dispute to proceedings under
-              the International Chamber of Commerce ("ICC") Mediation Rules, which Rules are deemed to be incorporated
-              by reference into this clause. The place of mediation shall be London, United Kingdom. The language of the
-              mediation proceedings shall be English.
+              the International Chamber of Commerce (&quot;ICC&quot;) Mediation Rules, which Rules are deemed to be
+              incorporated by reference into this clause. The place of mediation shall be London, United Kingdom. The
+              language of the mediation proceedings shall be English.
             </p>
             <p>
               If the Dispute has not been settled pursuant to the ICC Mediation Rules within forty (40) days following

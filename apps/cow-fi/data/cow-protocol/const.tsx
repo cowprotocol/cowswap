@@ -422,7 +422,7 @@ export const ADVANCED_ORDER_TYPES = [
       'Placing a limit order is like setting a trap for a price for your trade. CoW Swap is the only DEX that offers surplus on limit orders - and one of the only DEXs that offers limit orders at all',
     bgColor: Color.cowfi_purple1,
     textColor: Color.cowfi_purple2,
-    titleColor: Color.cowfi_white2,
+    titleColor: Color.neutral98,
     imageSrc: IMG_SURPLUS,
   },
   {
@@ -440,7 +440,7 @@ export const ADVANCED_ORDER_TYPES = [
       "Created with our friends at Yearn.fi, Milkman orders let you prep a trade today to be executed in the future - with the help of a price oracle so you don't get rekt",
     bgColor: Color.cowfi_purple_dark,
     textColor: Color.cowfi_purple_bright,
-    titleColor: Color.cowfi_white2,
+    titleColor: Color.neutral98,
     imageSrc: IMG_MILKMAN,
   },
 ]
@@ -459,7 +459,7 @@ export const UNIQUE_TRADING_LOGIC = [
     description: 'Easily deploy conditional orders that trigger when specified on-chain conditions are met',
     bgColor: Color.cowfi_purple_dark,
     textColor: Color.cowfi_purple_bright,
-    titleColor: Color.cowfi_white2,
+    titleColor: Color.neutral98,
     imageSrc: IMG_PROGRAMMATIC_ORDERS,
   },
   {
@@ -468,7 +468,7 @@ export const UNIQUE_TRADING_LOGIC = [
       'Add pre- and post- hooks to tie your trade to any other DeFi activity (bridging, staking, depositing, etc.)',
     bgColor: Color.cowfi_purple3,
     textColor: Color.cowfi_purple_bright,
-    titleColor: Color.cowfi_white2,
+    titleColor: Color.neutral98,
     imageSrc: IMG_HOOKS,
   },
 ]
@@ -527,7 +527,7 @@ export const COW_PROTOCOL_SECTIONS = [
       'CoW Protocol is open-source and permissionless. Thanks to comprehensive documentation and live coding tutorials, integrating the protocol is easy',
     bgColor: Color.cowfi_purple3,
     textColor: Color.cowfi_purple_bright,
-    titleColor: Color.cowfi_white2,
+    titleColor: Color.neutral98,
     linkHref: 'https://docs.cow.fi/',
     linkText: 'Read the docs',
     linkEvent: 'click-docs',
@@ -540,7 +540,7 @@ export const COW_PROTOCOL_SECTIONS = [
       "Don't need overly custom trading logic? The CoW Swap widget is the easiest way to integrate swaps, TWAPs, and limit orders directly into your project site",
     bgColor: Color.cowfi_purple_dark,
     textColor: Color.cowfi_purple_bright,
-    titleColor: Color.cowfi_white2,
+    titleColor: Color.neutral98,
     linkHref: '/widget',
     linkText: 'Integrate the widget',
     linkEvent: 'click-integrate-widget',

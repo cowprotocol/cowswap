@@ -30,16 +30,12 @@ interface CollapsibleBridgeRouteProps {
   className?: string
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function CollapsibleBridgeRoute(props: CollapsibleBridgeRouteProps) {
+export function CollapsibleBridgeRoute(props: CollapsibleBridgeRouteProps): ReactNode {
   const { isCollapsible = false, children, providerInfo, collapsedDefault, className } = props
 
   const [isExpanded, setIsExpanded] = useState(props.isExpanded || false)
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const toggleExpanded = () => setIsExpanded((state) => !state)
+  const toggleExpanded = (): void => setIsExpanded((state) => !state)
 
   return (
     <Wrapper className={className}>

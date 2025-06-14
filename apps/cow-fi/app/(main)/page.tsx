@@ -1,12 +1,15 @@
 'use client'
 
-import { Color, Font } from '@cowprotocol/ui'
-import IMG_ICON_GOVERNANCE from '@cowprotocol/assets/images/icon-governance.svg'
-import VIDEO_HERO_HOME from '@cowprotocol/assets/video/cow-dao-hero-animation.mp4'
-import { Link, LinkType } from '@/components/Link'
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { CowFiCategory } from 'src/common/analytics/types'
+import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
+import IMG_ICON_GOVERNANCE from '@cowprotocol/assets/images/icon-governance.svg'
+import IMG_ICON_GRANTS_CARTON from '@cowprotocol/assets/images/icon-grants-carton.svg'
+import VIDEO_HERO_HOME from '@cowprotocol/assets/video/cow-dao-hero-animation.mp4'
+import { Font, UI } from '@cowprotocol/ui'
 
+import LazySVG from '@/components/LazySVG'
+import { Link, LinkType } from '@/components/Link'
+import { CHANNEL_LIST, PRODUCT_CONTAINERS } from '@/data/home/const'
 import {
   ContainerCard,
   ContainerCardSection,
@@ -24,12 +27,7 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-
-import LazySVG from '@/components/LazySVG'
-import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
-import IMG_ICON_GRANTS_CARTON from '@cowprotocol/assets/images/icon-grants-carton.svg'
-
-import { CHANNEL_LIST, PRODUCT_CONTAINERS } from '@/data/home/const'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 export default function Page() {
   const cowAnalytics = useCowAnalytics()
@@ -51,7 +49,7 @@ export default function Page() {
         </HeroBackground>
         <HeroContent flex={'0 1 0'}>
           <HeroTitle fontSize={148} fontSizeMobile={80}>
-            Don't get milked!
+            Don&apos;t get milked!
           </HeroTitle>
         </HeroContent>
       </HeroContainer>
@@ -65,10 +63,10 @@ export default function Page() {
               <LazySVG src={IMG_ICON_BULB_COW} />
             </SectionTitleIcon>
             <SectionTitleText>Innovation in action</SectionTitleText>
-            <SectionTitleDescription color={Color.neutral30}>
+            <SectionTitleDescription color={`var(${UI.COLOR_NEUTRAL_30})`}>
               CoW DAO is famous for pioneering technology at the forefront of intents, MEV protection, and more. <br />
-              Whether you're a crypto beginner or an Ethereum OG, you can learn more about these important topics in the
-              CoW DAO Knowledge Base.
+              Whether you&apos;re a crypto beginner or an Ethereum OG, you can learn more about these important topics
+              in the CoW DAO Knowledge Base.
             </SectionTitleDescription>
 
             <Link
@@ -82,14 +80,18 @@ export default function Page() {
         </ContainerCardSection>
       </ContainerCard>
 
-      <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
+      <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_10})`} color={`var(${UI.COLOR_NEUTRAL_98})`}>
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 0" maxWidth={900}>
             <SectionTitleIcon $size={90}>
               <LazySVG src={IMG_ICON_GOVERNANCE} />
             </SectionTitleIcon>
             <SectionTitleText textAlign="center">Governance</SectionTitleText>
-            <SectionTitleDescription color={Color.neutral60} fontWeight={Font.weight.regular} textAlign="center">
+            <SectionTitleDescription
+              color={`var(${UI.COLOR_NEUTRAL_60})`}
+              fontWeight={Font.weight.regular}
+              textAlign="center"
+            >
               Anyone can join CoW DAO by holding{' '}
               <Link
                 href="https://swap.cow.fi/#/1/swap/USDC/COW"
@@ -98,8 +100,8 @@ export default function Page() {
               >
                 COW tokens
               </Link>
-              . Tokenholders contribute to CoW DAO's mission by participating in "CoWmunity" discussions on Discord, by
-              adding proposals to the CoW DAO Forum, and by voting on governance actions in Snapshot.
+              . Tokenholders contribute to CoW DAO&apos;s mission by participating in &quot;CoWmunity&quot; discussions
+              on Discord, by adding proposals to the CoW DAO Forum, and by voting on governance actions in Snapshot.
             </SectionTitleDescription>
           </SectionTitleWrapper>
 
@@ -124,14 +126,18 @@ export default function Page() {
         </ContainerCardSection>
       </ContainerCard>
 
-      <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} touchFooter>
+      <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_90})`} color={`var(${UI.COLOR_NEUTRAL_10})`} touchFooter>
         <ContainerCardSection>
           <SectionTitleWrapper maxWidth={900}>
             <SectionTitleIcon $size={90}>
               <LazySVG src={IMG_ICON_GRANTS_CARTON} />
             </SectionTitleIcon>
             <SectionTitleText textAlign="center">Grants</SectionTitleText>
-            <SectionTitleDescription color={Color.neutral30} fontWeight={Font.weight.regular} textAlign="center">
+            <SectionTitleDescription
+              color={`var(${UI.COLOR_NEUTRAL_30})`}
+              fontWeight={Font.weight.regular}
+              textAlign="center"
+            >
               The CoW DAO Grants Program funds mission-aligned projects and people working on MEV protection, trading
               innovation, and ecosystem development.
             </SectionTitleDescription>
