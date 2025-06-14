@@ -98,7 +98,7 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
   const smartSlippage = useSmartSlippageFromQuote()
 
-  const chosenSlippageMatchesSmartSlippage = smartSlippage && new Percent(smartSlippage, 10_000).equalTo(swapSlippage)
+  const chosenSlippageMatchesSmartSlippage = smartSlippage !== null && new Percent(smartSlippage, 10_000).equalTo(swapSlippage)
 
   const [deadline, setDeadline] = deadlineState
   const widgetDeadline = useInjectedWidgetDeadline(TradeType.SWAP)
