@@ -107,7 +107,8 @@ export const CowImage = styled.div`
 
 export const TokenPairTitle = styled.span`
   margin: 4px 0 4px 4px;
-  background: #99ecff;
+  background: var(${UI.COLOR_BLUE_100_PRIMARY});
+  color: var(${UI.COLOR_BLUE_900_PRIMARY});
   border-radius: 12px;
   padding: 0 6px;
   word-break: break-word;
@@ -236,11 +237,11 @@ export const FinishedImageContent = styled.div`
   height: 100%;
   width: 50%;
   position: relative;
-  border: 2px solid #99ecff;
+  border: 2px solid var(${UI.COLOR_BLUE_900_PRIMARY});
   border-radius: 21px;
   padding: 12px;
   gap: 14px;
-  color: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_TEXT})`)};
+  color: var(${UI.COLOR_BLUE_900_PRIMARY});
 
   ${Media.upToSmall()} {
     width: 100%;
