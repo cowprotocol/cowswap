@@ -11,8 +11,7 @@ export const tradeQuoteSlippageAtom = atom<number | null>((get) => {
   return quote?.quote?.quoteResults.suggestedSlippageBps || null
 })
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const useTradeQuoteSlippage = () => {
+export const useTradeQuoteSlippage = (): number | null => {
   const tradeQuote = useTradeQuote()
   return tradeQuote?.quote?.quoteResults.suggestedSlippageBps || null
 }
