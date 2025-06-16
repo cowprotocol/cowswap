@@ -488,7 +488,7 @@ export const V_COW: Record<SupportedChainId, TokenWithLogo | null> = {
 /**
  * Cow token
  */
-const COW_TOKEN_MAINNET = new TokenWithLogo(
+export const COW_TOKEN_MAINNET = new TokenWithLogo(
   undefined,
   SupportedChainId.MAINNET,
   COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET],
@@ -497,7 +497,7 @@ const COW_TOKEN_MAINNET = new TokenWithLogo(
   'CoW Protocol Token',
 )
 
-const COW_TOKEN_XDAI = new TokenWithLogo(
+export const COW_TOKEN_XDAI = new TokenWithLogo(
   COW_TOKEN_MAINNET.logoURI,
   SupportedChainId.GNOSIS_CHAIN,
   COW_CONTRACT_ADDRESS[SupportedChainId.GNOSIS_CHAIN],
@@ -524,7 +524,7 @@ export const COW_TOKEN_BASE = new TokenWithLogo(
   'CoW Protocol Token',
 )
 
-const COW_TOKEN_SEPOLIA = new TokenWithLogo(
+export const COW_TOKEN_SEPOLIA = new TokenWithLogo(
   COW_TOKEN_MAINNET.logoURI,
   SupportedChainId.SEPOLIA,
   COW_CONTRACT_ADDRESS[SupportedChainId.SEPOLIA],
@@ -533,7 +533,6 @@ const COW_TOKEN_SEPOLIA = new TokenWithLogo(
   'CoW Protocol Token',
 )
 
-// TODO: handle when COW doesn't exist in Avalanche
 export const COW_TOKEN_POLYGON = new TokenWithLogo(
   COW_TOKEN_MAINNET.logoURI,
   SupportedChainId.POLYGON,
