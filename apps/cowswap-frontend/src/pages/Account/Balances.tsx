@@ -7,6 +7,7 @@ import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { COW, COW_CONTRACT_ADDRESS, V_COW } from '@cowprotocol/common-const'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getProviderErrorMessage } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonPrimary, HoverTooltip, TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -30,6 +31,9 @@ import { CowModal } from 'common/pure/Modal'
 import { useCowFromLockedGnoBalances } from 'pages/Account/LockedGnoVesting/hooks'
 import {
   BalanceDisplay,
+  BannerCard,
+  BannerCardContent,
+  BannerCardTitle,
   Card,
   CardActions,
   CardsLoader,
@@ -45,6 +49,8 @@ import LockedGnoVesting from './LockedGnoVesting'
 // Number of blocks to wait before we re-enable the swap COW -> vCOW button after confirmation
 const BLOCKS_TO_WAIT = 2
 
+const CHAINS_TO_IGNORE = [SupportedChainId.AVALANCHE]
+
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
@@ -53,6 +59,10 @@ export default function Profile() {
   const provider = useWalletProvider()
   const { account, chainId } = useWalletInfo()
   const previousAccount = usePrevious(account)
+
+  const isCowTokenAvailable = useMemo(() => {
+    return !CHAINS_TO_IGNORE.includes(chainId)
+  }, [chainId])
 
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const blockNumber = useBlockNumber()
@@ -265,39 +275,51 @@ export default function Profile() {
             </Card>
           )}
 
-          <Card>
-            <BalanceDisplay titleSize={26}>
-              <img src={CowImage} alt="Cow Balance" height="80" width="80" />
-              <span>
-                <i>Available COW balance</i>
-                <b>
-                  {!isProviderNetworkUnsupported && (
-                    <TokenAmount amount={cow} defaultValue="0" tokenSymbol={cowToken} />
-                  )}
-                </b>
-              </span>
-            </BalanceDisplay>
-            <CardActions>
-              <ExtLink
-                title="View contract"
-                href={getBlockExplorerUrl(chainId, 'token', COW_CONTRACT_ADDRESS[chainId])}
-              >
-                View contract ↗
-              </ExtLink>
+          {isCowTokenAvailable && (
+            <Card>
+              <BalanceDisplay titleSize={26}>
+                <img src={CowImage} alt="Cow Balance" height="80" width="80" />
+                <span>
+                  <i>Available COW balance</i>
+                  <b>
+                    {!isProviderNetworkUnsupported && (
+                      <TokenAmount amount={cow} defaultValue="0" tokenSymbol={cowToken} />
+                    )}
+                  </b>
+                </span>
+              </BalanceDisplay>
+              <CardActions>
+                <ExtLink
+                  title="View contract"
+                  href={getBlockExplorerUrl(chainId, 'token', COW_CONTRACT_ADDRESS[chainId])}
+                >
+                  View contract ↗
+                </ExtLink>
 
-              <StyledWatchAssetInWallet
-                shortLabel
-                currency={cowToken}
-                fallback={
-                  <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>
-                    <div title="Click to copy token contract address">Copy contract</div>
-                  </CopyHelper>
-                }
-              />
+                <StyledWatchAssetInWallet
+                  shortLabel
+                  currency={cowToken}
+                  fallback={
+                    <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>
+                      <div title="Click to copy token contract address">Copy contract</div>
+                    </CopyHelper>
+                  }
+                />
 
-              <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId]}`}>Buy COW</Link>
-            </CardActions>
-          </Card>
+                <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId]}`}>Buy COW</Link>
+              </CardActions>
+            </Card>
+          )}
+
+          {!isCowTokenAvailable && (
+            <BannerCard>
+              <BannerCardContent justifyContent="center">
+                <BannerCardTitle fontSize={24}>
+                  <Trans>COW token is not available on this network</Trans>
+                </BannerCardTitle>
+              </BannerCardContent>
+            </BannerCard>
+          )}
 
           <LockedGnoVesting
             {...lockedGnoBalances}
