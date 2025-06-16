@@ -1,21 +1,15 @@
-import { useEffect, useState } from 'react'
-
 import { ProviderMetaInfoPayload, WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
-export function useWidgetProviderMetaInfo(): ProviderMetaInfoPayload | null {
+import useSWR, { SWRResponse } from 'swr'
+
+export function useWidgetProviderMetaInfo(): SWRResponse<ProviderMetaInfoPayload | null> {
   const provider = useWalletProvider()
-  const [widgetProviderMetaInfo, setWidgetProviderMetaInfo] = useState<ProviderMetaInfoPayload | null>(null)
 
   const rawProvider = provider?.provider as unknown
+  const isWidgetEthereumProvider = rawProvider instanceof WidgetEthereumProvider
 
-  useEffect(() => {
-    const isWidgetEthereumProvider = rawProvider instanceof WidgetEthereumProvider
-
-    if (!isWidgetEthereumProvider) return
-
-    rawProvider.onProviderMetaInfo(setWidgetProviderMetaInfo)
-  }, [rawProvider])
-
-  return widgetProviderMetaInfo
+  return useSWR(isWidgetEthereumProvider ? [rawProvider, 'useWidgetProviderMetaInfo'] : null, async ([rawProvider]) => {
+    return new Promise((resolve) => rawProvider.onProviderMetaInfo(resolve))
+  })
 }

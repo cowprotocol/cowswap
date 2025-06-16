@@ -115,7 +115,7 @@ function useShouldDisplayMetamaskWarning(): { shouldDisplayMetamaskWarning: bool
 
   const widgetProviderMetaInfo = useWidgetProviderMetaInfo()
 
-  const isWidgetMetamaskBrowserExtension = widgetProviderMetaInfo?.providerEip6963Info?.rdns === METAMASK_RDNS
+  const isWidgetMetamaskBrowserExtension = widgetProviderMetaInfo.data?.providerEip6963Info?.rdns === METAMASK_RDNS
 
   const isMetamask = isMetamaskBrowserExtension || isWidgetMetamaskBrowserExtension
 
