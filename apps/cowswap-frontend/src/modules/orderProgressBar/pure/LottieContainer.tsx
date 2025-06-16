@@ -34,17 +34,13 @@ export function FullSizeLottie({ animationData, loop = true, autoplay = true }: 
 
   useEffect(() => {
     // Set the correct preserveAspectRatio - this is the equivalent of object-fit: cover for SVG
-    const timer = setTimeout(() => {
-      if (lottieRef.current) {
-        const svgElement = lottieRef.current.querySelector('svg')
-        if (svgElement) {
-          svgElement.setAttribute('preserveAspectRatio', 'xMidYMid slice')
-        }
+    if (lottieRef.current) {
+      const svgElement = lottieRef.current.querySelector('svg')
+      if (svgElement) {
+        svgElement.setAttribute('preserveAspectRatio', 'xMidYMid slice')
       }
-    }, 0)
-
-    return () => clearTimeout(timer)
-  }, [])
+    }
+  }, [animationData])
 
   return (
     <LottieWrapper ref={lottieRef}>
