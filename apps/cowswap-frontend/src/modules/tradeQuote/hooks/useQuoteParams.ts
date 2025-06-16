@@ -27,8 +27,6 @@ export interface QuoteParams {
   appData: AppDataInfo['doc'] | undefined
 }
 
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
 export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
   const { account } = useWalletInfo()
   const provider = useWalletProvider()
