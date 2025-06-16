@@ -164,36 +164,34 @@ export function FinishedCancellationFailedTopSection({
   randomBenefit,
 }: FinishedCancellationFailedTopSectionProps): ReactNode {
   return (
-    <styledEl.ProgressTopSection>
-      <ProgressImageWrapper stepName={stepName}>
-        <styledEl.CowImage>
-          <SVG src={randomImage} />
-        </styledEl.CowImage>
-        <styledEl.FinishedImageContent>
-          <styledEl.FinishedTagLine>
-            {shouldShowSurplus ? (
-              <ShowSurplus
-                order={order}
-                shouldShowSurplus={shouldShowSurplus}
-                surplusPercentValue={surplusPercentValue}
-              />
-            ) : (
-              <NoSurplus randomBenefit={randomBenefit} />
-            )}
-          </styledEl.FinishedTagLine>
-          <styledEl.FinishedLogo>
-            <ProductLogo
-              variant={ProductVariant.CowSwap}
-              theme="light"
-              overrideColor={UI.COLOR_PRIMARY_DARKER}
-              height={19}
-              logoIconOnly
+    <ProgressImageWrapper stepName={stepName}>
+      <styledEl.CowImage>
+        <SVG src={randomImage} />
+      </styledEl.CowImage>
+      <styledEl.FinishedImageContent>
+        <styledEl.FinishedTagLine>
+          {shouldShowSurplus ? (
+            <ShowSurplus
+              order={order}
+              shouldShowSurplus={shouldShowSurplus}
+              surplusPercentValue={surplusPercentValue}
             />
-            <b>CoW Swap</b>
-          </styledEl.FinishedLogo>
-        </styledEl.FinishedImageContent>
-      </ProgressImageWrapper>
-    </styledEl.ProgressTopSection>
+          ) : (
+            <NoSurplus randomBenefit={randomBenefit} />
+          )}
+        </styledEl.FinishedTagLine>
+        <styledEl.FinishedLogo>
+          <ProductLogo
+            variant={ProductVariant.CowSwap}
+            theme="light"
+            overrideColor={UI.COLOR_PRIMARY_DARKER}
+            height={19}
+            logoIconOnly
+          />
+          <b>CoW Swap</b>
+        </styledEl.FinishedLogo>
+      </styledEl.FinishedImageContent>
+    </ProgressImageWrapper>
   )
 }
 

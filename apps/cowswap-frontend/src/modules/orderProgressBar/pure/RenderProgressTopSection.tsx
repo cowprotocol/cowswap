@@ -4,6 +4,7 @@ import { getRandomInt } from '@cowprotocol/common-utils'
 
 import { AnimatePresence, motion } from 'framer-motion'
 
+import { FinishedStepContentSection } from './FinishedStepContentSection'
 import { ProgressSkeleton } from './ProgressSkeleton'
 import { ProgressTopSection } from './ProgressTopSection'
 import { OrderIntent } from './steps/OrderIntent'
@@ -38,9 +39,12 @@ export function RenderProgressTopSection({
   const { surplusPercent, showSurplus } = surplusData || {}
   const shouldShowSurplus = debugForceShowSurplus || showSurplus
   const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
+  
+  const isFinishedStep = stepName === 'finished' || stepName === 'cancellationFailed'
+  const WrapperComponent = isFinishedStep ? FinishedStepContentSection : styledEl.ProgressTopSection
 
   return (
-    <styledEl.ProgressTopSection style={cssVariables as React.CSSProperties}>
+    <WrapperComponent style={cssVariables as React.CSSProperties}>
       {!isLayoutReady ? (
         <ProgressSkeleton />
       ) : (
@@ -76,6 +80,6 @@ export function RenderProgressTopSection({
           {!hideIntent && <OrderIntent order={order} />}
         </>
       )}
-    </styledEl.ProgressTopSection>
+    </WrapperComponent>
   )
 }
