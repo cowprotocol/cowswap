@@ -13,17 +13,16 @@ const getOpacity = (status: string, isDarkMode: boolean): number => {
   return opacityMap[status as keyof typeof opacityMap] || 1
 }
 
-export const StepsContainer = styled.div<{ $height: number; $minHeight?: string; bottomGradient?: boolean; $stepContentHeight?: number }>`
+export const StepsContainer = styled.div<{ $height: number; $minHeight?: string; bottomGradient?: boolean }>`
   position: relative;
   height: ${({ $height }) => $height}px;
-  min-height: ${({ $minHeight }) => $minHeight || 'var(--progress-min-container-height, 400px)'};
+  min-height: ${({ $minHeight }) => $minHeight || '192px'};
   overflow: hidden;
   transition: height var(--progress-transition-height, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
   width: 100%;
   padding: 0;
   contain: layout style paint;
   will-change: height;
-  --progress-step-content-height: ${({ $stepContentHeight }) => $stepContentHeight ? `${$stepContentHeight}px` : '120px'};
 
   // implement a gradient to hide the bottom of the steps container using white to opacity white using pseudo element
   &::after {
@@ -56,7 +55,6 @@ export const Step = styled.div<{ status: string; isFirst: boolean }>`
   width: 100%;
   padding: 30px 30px 10px;
   opacity: ${({ status, theme }) => getOpacity(status, theme.darkMode)};
-  min-height: var(--progress-step-content-height, 120px);
   contain: layout style;
 `
 

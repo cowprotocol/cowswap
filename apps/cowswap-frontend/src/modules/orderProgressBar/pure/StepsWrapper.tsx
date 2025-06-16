@@ -1,13 +1,9 @@
-import { useEffect, useRef, ReactNode, useMemo } from 'react'
-
-import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { Media } from '@cowprotocol/ui'
+import { useEffect, useRef, ReactNode, useState } from 'react'
 
 import { StepComponent } from './StepComponent'
 import * as styledEl from './styled'
 
 import { STEPS } from '../constants'
-import { calculateContainerHeight, calculateTransformOffset, STEP_HEIGHTS } from '../utils/heightManager'
 
 export function StepsWrapper({
   steps,
@@ -29,26 +25,21 @@ export function StepsWrapper({
   isBridgingTrade?: boolean
 }): ReactNode {
   const wrapperRef = useRef<HTMLDivElement>(null)
-  const isMobile = useMediaQuery(Media.upToSmall(false))
+  const [containerHeight, setContainerHeight] = useState(0)
 
-  // Calculate consistent heights
-  const { containerHeight, transformOffset } = useMemo(() => {
-    const stepHeight = isMobile ? STEP_HEIGHTS.mobile.stepContent : STEP_HEIGHTS.desktop.stepContent
-    const height = calculateContainerHeight(currentStep, steps.length, isMobile)
-    const offset = calculateTransformOffset(currentStep, stepHeight)
-
-    return {
-      containerHeight: height,
-      transformOffset: offset,
-    }
-  }, [currentStep, steps.length, isMobile])
-
-  // Apply transform with fixed step heights
   useEffect(() => {
     if (wrapperRef.current) {
-      wrapperRef.current.style.transform = `translateY(-${transformOffset}px)`
+      const stepElements = Array.from(wrapperRef.current.children)
+      const activeStepHeight = stepElements[currentStep]?.clientHeight || 0
+      const nextStepHeight = stepElements[currentStep + 1]?.clientHeight || 0
+      const totalHeight = activeStepHeight + nextStepHeight
+
+      setContainerHeight(totalHeight)
+
+      const offsetY = stepElements.slice(0, currentStep).reduce((acc, el) => acc + el.clientHeight, 0)
+      wrapperRef.current.style.transform = `translateY(-${offsetY}px)`
     }
-  }, [transformOffset])
+  }, [currentStep, steps.length])
 
   const getStatus = (index: number): 'cancelling' | 'cancelled' | 'expired' | 'active' | 'next' | 'future' | 'done' => {
     if (index === currentStep) return isCancelling ? 'cancelling' : 'active'
@@ -62,7 +53,6 @@ export function StepsWrapper({
       $height={containerHeight}
       $minHeight={isCancelling ? '80px' : undefined}
       bottomGradient={!isCancelling}
-      $stepContentHeight={isMobile ? STEP_HEIGHTS.mobile.stepContent : STEP_HEIGHTS.desktop.stepContent}
     >
       <styledEl.StepsWrapper ref={wrapperRef}>
         {steps.map((stepInit, index) => {

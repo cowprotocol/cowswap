@@ -4,15 +4,15 @@ import { OrderProgressBarProps } from '../types'
 export const STEP_HEIGHTS = {
   // Desktop heights
   desktop: {
-    topSection: 246, // Base height for all steps
-    stepContent: 120, // Consistent step content height
-    minContainer: 400, // Minimum container height
+    topSection: 230,
+    stepContent: 80,
+    minContainer: 192,
   },
   // Mobile heights
   mobile: {
     topSection: 200,
-    stepContent: 100,
-    minContainer: 320,
+    stepContent: 70,
+    minContainer: 160,
   },
 } as const
 
@@ -35,27 +35,20 @@ export const STEP_HEIGHT_OVERRIDES: StepHeightConfig = {
 /**
  * Calculate the total container height based on visible steps
  */
-export function calculateContainerHeight(
-  currentStep: number,
-  totalSteps: number,
-  isMobile: boolean
-): number {
+export function calculateContainerHeight(currentStep: number, totalSteps: number, isMobile: boolean): number {
   const heights = isMobile ? STEP_HEIGHTS.mobile : STEP_HEIGHTS.desktop
-  
+
   // Always show current step + next step (for smooth transitions)
   const visibleSteps = currentStep === totalSteps - 1 ? 1 : 2
   const totalHeight = heights.stepContent * visibleSteps
-  
+
   return Math.max(totalHeight, heights.minContainer)
 }
 
 /**
  * Get the height for a specific step's top section
  */
-export function getStepTopSectionHeight(
-  stepName: OrderProgressBarProps['stepName'],
-  isMobile: boolean
-): number {
+export function getStepTopSectionHeight(stepName: OrderProgressBarProps['stepName'], isMobile: boolean): number {
   const baseHeight = isMobile ? STEP_HEIGHTS.mobile.topSection : STEP_HEIGHTS.desktop.topSection
   return STEP_HEIGHT_OVERRIDES[stepName!] || baseHeight
 }
@@ -63,10 +56,7 @@ export function getStepTopSectionHeight(
 /**
  * Calculate transform offset for smooth step transitions
  */
-export function calculateTransformOffset(
-  currentStep: number,
-  stepHeight: number
-): number {
+export function calculateTransformOffset(currentStep: number, stepHeight: number): number {
   return currentStep * stepHeight
 }
 
@@ -75,7 +65,7 @@ export function calculateTransformOffset(
  */
 export function getHeightCSSVariables(isMobile: boolean): Record<string, string> {
   const heights = isMobile ? STEP_HEIGHTS.mobile : STEP_HEIGHTS.desktop
-  
+
   return {
     '--progress-top-section-height': `${heights.topSection}px`,
     '--progress-step-content-height': `${heights.stepContent}px`,
