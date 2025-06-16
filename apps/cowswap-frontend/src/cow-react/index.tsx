@@ -11,6 +11,7 @@ import { Web3Provider } from '@cowprotocol/wallet'
 
 import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
+import { HelmetProvider } from 'react-helmet-async'
 import SvgCacheProvider from 'react-inlinesvg/provider'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router'
@@ -30,6 +31,7 @@ import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsup
 import { BlockNumberProvider } from '../common/hooks/useBlockNumber'
 
 const cowAnalytics = initGtm()
+const helmetContext = {}
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
@@ -43,28 +45,30 @@ function Main(): ReactNode {
   return (
     <StrictMode>
       <SvgCacheProvider>
-        <Provider store={cowSwapStore}>
-          <AtomProvider store={jotaiStore}>
-            <ThemeProvider>
-              <HashRouter>
-                <LanguageProvider>
-                  <Web3ProviderInstance>
-                    <BlockNumberProvider>
-                      <WithLDProvider>
-                        <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
-                          <WalletUnsupportedNetworkBanner />
-                          <Updaters />
-                          <Toasts />
-                          <App />
-                        </CowAnalyticsProvider>
-                      </WithLDProvider>
-                    </BlockNumberProvider>
-                  </Web3ProviderInstance>
-                </LanguageProvider>
-              </HashRouter>
-            </ThemeProvider>
-          </AtomProvider>
-        </Provider>
+        <HelmetProvider context={helmetContext}>
+          <Provider store={cowSwapStore}>
+            <AtomProvider store={jotaiStore}>
+              <ThemeProvider>
+                <HashRouter>
+                  <LanguageProvider>
+                    <Web3ProviderInstance>
+                      <BlockNumberProvider>
+                        <WithLDProvider>
+                          <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+                            <WalletUnsupportedNetworkBanner />
+                            <Updaters />
+                            <Toasts />
+                            <App />
+                          </CowAnalyticsProvider>
+                        </WithLDProvider>
+                      </BlockNumberProvider>
+                    </Web3ProviderInstance>
+                  </LanguageProvider>
+                </HashRouter>
+              </ThemeProvider>
+            </AtomProvider>
+          </Provider>
+        </HelmetProvider>
       </SvgCacheProvider>
     </StrictMode>
   )

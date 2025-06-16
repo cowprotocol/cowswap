@@ -1,6 +1,6 @@
 import { APP_TITLE } from '@cowprotocol/common-const'
 
-import { Helmet } from 'react-helmet'
+import { Helmet } from 'react-helmet-async'
 
 type PageTitleProps = {
   title?: string
