@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useLayoutEffect, useRef } from 'react'
 
-import { isIframe } from '@cowprotocol/common-utils'
+import { isIframe, isInjectedWidget } from '@cowprotocol/common-utils'
 import { MEDIA_WIDTHS } from '@cowprotocol/ui'
 import { WidgetMethodsEmit, widgetIframeTransport } from '@cowprotocol/widget-lib'
 
@@ -14,7 +14,7 @@ export function IframeResizer() {
   const previousHeightRef = useRef(0)
 
   useLayoutEffect(() => {
-    if (!isIframe()) return
+    if (!isIframe() || !isInjectedWidget()) return
 
     // Initial height calculation and message
     // TODO: Add proper return type annotation
