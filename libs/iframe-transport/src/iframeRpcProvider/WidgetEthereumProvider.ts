@@ -291,10 +291,11 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
 
   /**
    * Request the parent window to enable access to the user's web3 provider. Return accounts list immediately if already enabled.
+   * Keep the legacy method for backward compatibility.
    */
   public async enable(): Promise<string[]> {
     if (this.enabled === null) {
-      const promise = (this.enabled = this.send('enable', []).catch((error) => {
+      const promise = (this.enabled = this.send('eth_requestAccounts', []).catch((error) => {
         // Clear this.enabled if it's this promise so we try again next call.
         // this.enabled might be set from elsewhere if, e.g. the accounts changed event is emitted
         if (this.enabled === promise) {
