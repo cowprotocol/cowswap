@@ -1,4 +1,4 @@
-import { useEffect, useRef, ReactNode, useState } from 'react'
+import { useRef, ReactNode, useState, useLayoutEffect } from 'react'
 
 import { StepComponent } from './StepComponent'
 import * as styledEl from './styled'
@@ -26,8 +26,9 @@ export function StepsWrapper({
 }): ReactNode {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [containerHeight, setContainerHeight] = useState(0)
+  const [translateY, setTranslateY] = useState(0)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (wrapperRef.current) {
       const stepElements = Array.from(wrapperRef.current.children)
       const activeStepHeight = stepElements[currentStep]?.clientHeight || 0
@@ -37,7 +38,7 @@ export function StepsWrapper({
       setContainerHeight(totalHeight)
 
       const offsetY = stepElements.slice(0, currentStep).reduce((acc, el) => acc + el.clientHeight, 0)
-      wrapperRef.current.style.transform = `translateY(-${offsetY}px)`
+      setTranslateY(offsetY)
     }
   }, [currentStep, steps.length])
 
@@ -54,7 +55,7 @@ export function StepsWrapper({
       $minHeight={isCancelling ? '80px' : undefined}
       bottomGradient={!isCancelling}
     >
-      <styledEl.StepsWrapper ref={wrapperRef}>
+      <styledEl.StepsWrapper ref={wrapperRef} $translateY={translateY}>
         {steps.map((stepInit, index) => {
           const step = typeof stepInit === 'function' ? stepInit(isBridgingTrade) : stepInit
           const customTitle = customStepTitles?.[index]

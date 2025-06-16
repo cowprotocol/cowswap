@@ -37,12 +37,13 @@ export const StepsContainer = styled.div<{ $height: number; $minHeight?: string;
   }
 `
 
-export const StepsWrapper = styled.div`
+export const StepsWrapper = styled.div<{ $translateY: number }>`
   display: flex;
   flex-flow: column nowrap;
   padding: 0;
   width: 100%;
   position: relative;
+  transform: translateY(${({ $translateY }) => -$translateY}px);
   transition: transform var(--progress-transition-transform, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
   will-change: transform;
 `
