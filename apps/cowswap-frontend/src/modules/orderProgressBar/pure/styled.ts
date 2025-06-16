@@ -13,14 +13,17 @@ const getOpacity = (status: string, isDarkMode: boolean): number => {
   return opacityMap[status as keyof typeof opacityMap] || 1
 }
 
-export const StepsContainer = styled.div<{ $height: number; $minHeight?: string; bottomGradient?: boolean }>`
+export const StepsContainer = styled.div<{ $height: number; $minHeight?: string; bottomGradient?: boolean; $stepContentHeight?: number }>`
   position: relative;
   height: ${({ $height }) => $height}px;
-  min-height: ${({ $minHeight }) => $minHeight || '192px'};
+  min-height: ${({ $minHeight }) => $minHeight || 'var(--progress-min-container-height, 400px)'};
   overflow: hidden;
-  transition: height 0.5s ease-in-out;
+  transition: height var(--progress-transition-height, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
   width: 100%;
   padding: 0;
+  contain: layout style paint;
+  will-change: height;
+  --progress-step-content-height: ${({ $stepContentHeight }) => $stepContentHeight ? `${$stepContentHeight}px` : '120px'};
 
   // implement a gradient to hide the bottom of the steps container using white to opacity white using pseudo element
   &::after {
@@ -31,6 +34,7 @@ export const StepsContainer = styled.div<{ $height: number; $minHeight?: string;
     width: 100%;
     height: 30px;
     background: linear-gradient(to bottom, transparent, var(${UI.COLOR_PAPER}));
+    pointer-events: none;
   }
 `
 
@@ -40,17 +44,20 @@ export const StepsWrapper = styled.div`
   padding: 0;
   width: 100%;
   position: relative;
-  transition: transform 1s ease-in-out;
+  transition: transform var(--progress-transition-transform, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
+  will-change: transform;
 `
 
 export const Step = styled.div<{ status: string; isFirst: boolean }>`
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity var(--progress-transition-opacity, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
   display: flex;
   align-items: flex-start;
   margin: 0 auto;
   width: 100%;
   padding: 30px 30px 10px;
   opacity: ${({ status, theme }) => getOpacity(status, theme.darkMode)};
+  min-height: var(--progress-step-content-height, 120px);
+  contain: layout style;
 `
 
 export const Content = styled.div`
@@ -72,14 +79,19 @@ export const ProgressTopSection = styled.div`
   align-items: center;
   border-radius: 21px;
   background: var(${UI.COLOR_PAPER_DARKER});
-  min-height: 230px;
+  height: var(--progress-top-section-height, 246px);
+  min-height: var(--progress-top-section-height, 246px);
+  contain: layout style paint;
+  overflow: hidden;
 
   ${Media.upToSmall()} {
-    min-height: auto;
+    height: var(--progress-top-section-height, 200px);
+    min-height: var(--progress-top-section-height, 200px);
   }
 `
 
 export const CowImage = styled.div`
+  flex: 1;
   height: 100%;
   width: auto;
   display: flex;
@@ -98,6 +110,7 @@ export const CowImage = styled.div`
     height: 100%;
     width: 100%;
     max-width: 199px;
+    object-fit: contain;
 
     ${Media.upToSmall()} {
       max-width: 100%;

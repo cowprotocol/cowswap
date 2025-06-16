@@ -4,11 +4,13 @@ import { getRandomInt } from '@cowprotocol/common-utils'
 
 import { AnimatePresence, motion } from 'framer-motion'
 
+import { ProgressSkeleton } from './ProgressSkeleton'
 import { ProgressTopSection } from './ProgressTopSection'
 import { OrderIntent } from './steps/OrderIntent'
 import * as styledEl from './styled'
 
 import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../constants'
+import { useProgressBarLayout } from '../hooks/useProgressBarLayout'
 import { OrderProgressBarProps } from '../types'
 
 export function RenderProgressTopSection({
@@ -21,6 +23,7 @@ export function RenderProgressTopSection({
 }: Pick<OrderProgressBarProps, 'stepName' | 'order' | 'countdown' | 'chainId' | 'surplusData'> & {
   debugForceShowSurplus?: boolean
 }): ReactNode {
+  const { cssVariables, isLayoutReady } = useProgressBarLayout()
   const hideIntent = stepName === 'finished' || stepName === 'cancellationFailed'
 
   const { randomImage, randomBenefit } = useMemo(() => {
@@ -37,36 +40,42 @@ export function RenderProgressTopSection({
   const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
 
   return (
-    <styledEl.ProgressTopSection>
-      <AnimatePresence mode="wait">
-        <motion.div
-          key="solving-group"
-          initial={false}
-          animate={{
-            opacity: 1,
-            width: '100%',
-            transition: {
-              duration: 0.15,
-              ease: 'easeOut',
-            },
-          }}
-          exit={{ opacity: 0, width: '100%' }}
-          style={{ width: '100%' }}
-        >
-          {stepName && (
-            <ProgressTopSection
-              stepName={stepName}
-              order={order}
-              countdown={countdown || 0}
-              randomImage={randomImage}
-              surplusPercentValue={surplusPercentValue}
-              randomBenefit={randomBenefit}
-              shouldShowSurplus={shouldShowSurplus}
-            />
-          )}
-        </motion.div>
-      </AnimatePresence>
-      {!hideIntent && <OrderIntent order={order} />}
+    <styledEl.ProgressTopSection style={cssVariables as React.CSSProperties}>
+      {!isLayoutReady ? (
+        <ProgressSkeleton />
+      ) : (
+        <>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key="solving-group"
+              initial={false}
+              animate={{
+                opacity: 1,
+                width: '100%',
+                transition: {
+                  duration: 0.3,
+                  ease: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                },
+              }}
+              exit={{ opacity: 0, width: '100%' }}
+              style={{ width: '100%' }}
+            >
+              {stepName && (
+                <ProgressTopSection
+                  stepName={stepName}
+                  order={order}
+                  countdown={countdown || 0}
+                  randomImage={randomImage}
+                  surplusPercentValue={surplusPercentValue}
+                  randomBenefit={randomBenefit}
+                  shouldShowSurplus={shouldShowSurplus}
+                />
+              )}
+            </motion.div>
+          </AnimatePresence>
+          {!hideIntent && <OrderIntent order={order} />}
+        </>
+      )}
     </styledEl.ProgressTopSection>
   )
 }

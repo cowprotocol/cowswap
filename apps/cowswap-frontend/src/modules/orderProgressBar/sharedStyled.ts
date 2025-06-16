@@ -17,9 +17,9 @@ export const Description = styled.div<{ center?: boolean; margin?: string }>`
 
 export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: string; height?: string; gap?: string }>`
   width: 100%;
-  height: ${({ height }) => height || '246px'};
-  min-height: 200px;
-  max-height: ${({ height }) => height || '246px'};
+  height: var(--progress-top-section-height, 246px);
+  min-height: var(--progress-top-section-height, 246px);
+  max-height: var(--progress-top-section-height, 246px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -28,28 +28,34 @@ export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: str
   padding: ${({ padding }) => padding || '0'};
   gap: ${({ gap }) => gap || '0'};
   background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
-  transition: height 0.3s ease-in-out;
+  transition: all var(--progress-transition-all, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
   position: relative;
   overflow: hidden;
+  contain: layout style paint;
 
   ${Media.upToSmall()} {
-    min-height: auto;
-    height: auto;
+    height: var(--progress-top-section-height, 200px);
+    min-height: var(--progress-top-section-height, 200px);
+    max-height: var(--progress-top-section-height, 200px);
   }
 
   > img,
   > svg {
-    --size: 100%;
-    max-width: var(--size);
-    max-height: var(--size);
-    height: var(--size);
-    width: var(--size);
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
+    object-position: center;
     padding: 0;
     margin: 0;
   }
 
   > div {
     display: flex;
+    width: 100%;
+    height: 100%;
+    flex: 1;
   }
 `

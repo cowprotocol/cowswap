@@ -131,7 +131,72 @@ function SolvingFixture(): ReactNode {
   )
 }
 
+function AnimatedProgressFixture(): ReactNode {
+  const [stepIndex, setStepIndex] = useState(0)
+  const [direction, setDirection] = useState(1) // 1 for forward, -1 for backward
+
+  // All available step names in order
+  const stepNames: OrderProgressBarProps['stepName'][] = [
+    'initial',
+    'solving',
+    'delayed',
+    'solved',
+    'executing',
+    'finished',
+    'cancellationFailed',
+    'cancelling',
+    'cancelled',
+    'expired',
+    'unfillable',
+    'submissionFailed',
+  ]
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStepIndex((prevIndex) => {
+        const nextIndex = prevIndex + direction
+        
+        // If we've reached the end, reverse direction
+        if (nextIndex >= stepNames.length - 1) {
+          setDirection(-1)
+          return stepNames.length - 1
+        }
+        
+        // If we've reached the beginning, reverse direction
+        if (nextIndex <= 0) {
+          setDirection(1)
+          return 0
+        }
+        
+        return nextIndex
+      })
+    }, 3000) // Stay on each step for 3 seconds
+
+    return () => clearInterval(interval)
+  }, [direction, stepNames.length])
+
+  const currentStepName = stepNames[stepIndex]
+  const countdown = currentStepName === 'solving' ? 15 : 0
+
+  return (
+    <Wrapper>
+      <div style={{ marginBottom: '16px', padding: '8px', background: 'rgba(0,0,0,0.1)', borderRadius: '8px' }}>
+        <strong>Current Step:</strong> {currentStepName} ({stepIndex + 1}/{stepNames.length})
+        <br />
+        <strong>Direction:</strong> {direction > 0 ? 'Forward' : 'Backward'}
+      </div>
+      <OrderProgressBar 
+        {...defaultProps} 
+        stepName={currentStepName} 
+        countdown={countdown}
+        key={`${currentStepName}-${stepIndex}`} // Force re-render on step change
+      />
+    </Wrapper>
+  )
+}
+
 const Fixtures = {
+  '0-animated-all-steps': () => <AnimatedProgressFixture />,
   '1-initial': () => (
     <Wrapper>
       <OrderProgressBar {...defaultProps} />

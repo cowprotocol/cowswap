@@ -87,7 +87,8 @@ export const AnimatedTokensWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 136px;
+  height: 100%;
+  min-height: 136px;
   position: relative;
   overflow: hidden;
 `

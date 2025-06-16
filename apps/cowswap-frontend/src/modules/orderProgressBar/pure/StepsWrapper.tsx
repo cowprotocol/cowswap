@@ -1,13 +1,14 @@
-import { useEffect, useRef, useState, ReactNode } from 'react'
+import { useEffect, useRef, ReactNode, useMemo } from 'react'
+
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { Media } from '@cowprotocol/ui'
 
 import { StepComponent } from './StepComponent'
 import * as styledEl from './styled'
 
 import { STEPS } from '../constants'
+import { calculateContainerHeight, calculateTransformOffset, STEP_HEIGHTS } from '../utils/heightManager'
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function StepsWrapper({
   steps,
   currentStep,
@@ -26,27 +27,30 @@ export function StepsWrapper({
   isCancelling?: boolean
   isUnfillable?: boolean
   isBridgingTrade?: boolean
-}) {
+}): ReactNode {
   const wrapperRef = useRef<HTMLDivElement>(null)
-  const [containerHeight, setContainerHeight] = useState(0)
+  const isMobile = useMediaQuery(Media.upToSmall(false))
 
+  // Calculate consistent heights
+  const { containerHeight, transformOffset } = useMemo(() => {
+    const stepHeight = isMobile ? STEP_HEIGHTS.mobile.stepContent : STEP_HEIGHTS.desktop.stepContent
+    const height = calculateContainerHeight(currentStep, steps.length, isMobile)
+    const offset = calculateTransformOffset(currentStep, stepHeight)
+
+    return {
+      containerHeight: height,
+      transformOffset: offset,
+    }
+  }, [currentStep, steps.length, isMobile])
+
+  // Apply transform with fixed step heights
   useEffect(() => {
     if (wrapperRef.current) {
-      const stepElements = Array.from(wrapperRef.current.children)
-      const activeStepHeight = stepElements[currentStep]?.clientHeight || 0
-      const nextStepHeight = stepElements[currentStep + 1]?.clientHeight || 0
-      const totalHeight = activeStepHeight + nextStepHeight
-
-      setContainerHeight(totalHeight)
-
-      const offsetY = stepElements.slice(0, currentStep).reduce((acc, el) => acc + el.clientHeight, 0)
-      wrapperRef.current.style.transform = `translateY(-${offsetY}px)`
+      wrapperRef.current.style.transform = `translateY(-${transformOffset}px)`
     }
-  }, [currentStep, steps.length])
+  }, [transformOffset])
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const getStatus = (index: number) => {
+  const getStatus = (index: number): 'cancelling' | 'cancelled' | 'expired' | 'active' | 'next' | 'future' | 'done' => {
     if (index === currentStep) return isCancelling ? 'cancelling' : 'active'
     if (index === currentStep + 1) return 'next'
     if (index < currentStep) return 'done'
@@ -58,6 +62,7 @@ export function StepsWrapper({
       $height={containerHeight}
       $minHeight={isCancelling ? '80px' : undefined}
       bottomGradient={!isCancelling}
+      $stepContentHeight={isMobile ? STEP_HEIGHTS.mobile.stepContent : STEP_HEIGHTS.desktop.stepContent}
     >
       <styledEl.StepsWrapper ref={wrapperRef}>
         {steps.map((stepInit, index) => {
