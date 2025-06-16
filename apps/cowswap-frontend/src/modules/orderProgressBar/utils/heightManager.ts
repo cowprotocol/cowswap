@@ -50,7 +50,8 @@ export function calculateContainerHeight(currentStep: number, totalSteps: number
  */
 export function getStepTopSectionHeight(stepName: OrderProgressBarProps['stepName'], isMobile: boolean): number {
   const baseHeight = isMobile ? STEP_HEIGHTS.mobile.topSection : STEP_HEIGHTS.desktop.topSection
-  return STEP_HEIGHT_OVERRIDES[stepName!] || baseHeight
+  if (!stepName) return baseHeight
+  return STEP_HEIGHT_OVERRIDES[stepName] || baseHeight
 }
 
 /**
