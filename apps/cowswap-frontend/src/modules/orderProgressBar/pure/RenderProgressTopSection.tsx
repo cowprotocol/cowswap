@@ -51,7 +51,7 @@ export function RenderProgressTopSection({
         <>
           <AnimatePresence mode="wait">
             <motion.div
-              key="solving-group"
+              key={stepName}
               initial={false}
               animate={{
                 opacity: 1,
