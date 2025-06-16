@@ -1,4 +1,5 @@
 import { useSetAtom } from 'jotai'
+import { JSX } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
@@ -139,14 +140,12 @@ type SlippageTextContentsProps = {
   isDynamicSlippageSet: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function SlippageTextContents({ isEoaEthFlow, slippageLabel, isDynamicSlippageSet }: SlippageTextContentsProps) {
+function SlippageTextContents({ isEoaEthFlow, slippageLabel, isDynamicSlippageSet }: SlippageTextContentsProps): JSX.Element {
   return (
     <TransactionText>
       <Trans>{slippageLabel || 'Slippage tolerance'}</Trans>
-      {isEoaEthFlow && <i>(modified)</i>}
       {isDynamicSlippageSet && <i>(dynamic)</i>}
+      {isEoaEthFlow && !isDynamicSlippageSet && <i>(modified)</i>}
     </TransactionText>
   )
 }

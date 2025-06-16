@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { JSX, useMemo } from 'react'
 
 import { formatPercent } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -20,15 +20,13 @@ export interface RowSlippageProps {
   isTradePriceUpdating: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function RowSlippage({
   allowedSlippage,
   slippageTooltip,
   slippageLabel,
   isTradePriceUpdating,
   isSlippageModified,
-}: RowSlippageProps) {
+}: RowSlippageProps): JSX.Element {
   const { chainId } = useWalletInfo()
 
   const isEoaEthFlow = useIsEoaEthFlow()
@@ -49,8 +47,8 @@ export function RowSlippage({
       isSmartSlippageApplied,
       isSmartSlippageLoading: isTradePriceUpdating,
       smartSlippage:
-        smartSlippage && !isEoaEthFlow ? `${formatPercent(new Percent(smartSlippage, 10_000))}%` : undefined,
-      setAutoSlippage: smartSlippage && !isEoaEthFlow ? () => setSlippage(null) : undefined,
+        smartSlippage ? `${formatPercent(new Percent(smartSlippage, 10_000))}%` : undefined,
+      setAutoSlippage: smartSlippage ? () => setSlippage(null) : undefined,
     }),
     [
       chainId,
