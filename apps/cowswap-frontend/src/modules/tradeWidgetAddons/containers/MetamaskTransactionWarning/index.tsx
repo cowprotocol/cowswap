@@ -3,9 +3,8 @@ import { useEffect, useState } from 'react'
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ProviderMetaInfoPayload, WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
-import { METAMASK_RDNS, useIsMetamaskBrowserExtensionWallet } from '@cowprotocol/wallet'
+import { METAMASK_RDNS, useIsMetamaskBrowserExtensionWallet, useWidgetProviderMetaInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { ExternalProvider } from '@ethersproject/providers'
 import { Currency } from '@uniswap/sdk-core'
@@ -58,25 +57,6 @@ export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency 
       </NetworkInfo>
     </Banner>
   )
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function useWidgetProviderMetaInfo() {
-  const provider = useWalletProvider()
-  const [widgetProviderMetaInfo, setWidgetProviderMetaInfo] = useState<ProviderMetaInfoPayload | null>(null)
-
-  const rawProvider = provider?.provider as unknown
-
-  useEffect(() => {
-    const isWidgetEthereumProvider = rawProvider instanceof WidgetEthereumProvider
-
-    if (!isWidgetEthereumProvider) return
-
-    rawProvider.onProviderMetaInfo(setWidgetProviderMetaInfo)
-  }, [rawProvider])
-
-  return widgetProviderMetaInfo
 }
 
 /**

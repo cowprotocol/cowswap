@@ -5,6 +5,8 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import ms from 'ms.macro'
 import useSWR, { SWRResponse } from 'swr'
 
+import { useWidgetProviderMetaInfo } from './useWidgetProviderMetaInfo'
+
 import { useIsWalletConnect } from '../../web3-react/hooks/useIsWalletConnect'
 import { useWalletInfo } from '../hooks'
 
@@ -17,12 +19,15 @@ const requestTimeout = ms`10s`
 export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefined> {
   const provider = useWalletProvider()
   const isWalletConnect = useIsWalletConnect()
+  const widgetProviderMetaInfo = useWidgetProviderMetaInfo()
   const { chainId, account } = useWalletInfo()
+
+  const isWalletConnectViaWidget = Boolean(widgetProviderMetaInfo?.providerWcMetadata)
   /**
    * Walletconnect in mobile browsers initiates a request with confirmation to the wallet
    * to get the capabilities. It breaks the flow with perpetual reuqests.
    */
-  const shouldCheckCapabilities = !(isWalletConnect && isMobile)
+  const shouldCheckCapabilities = !((isWalletConnect || isWalletConnectViaWidget) && isMobile)
 
   return useSWR(
     shouldCheckCapabilities && provider && account && chainId ? [provider, account, chainId] : null,
