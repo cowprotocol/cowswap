@@ -190,7 +190,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     isBridgingTrade,
   )
   useCancellingOrderUpdater(orderId, isCancelling)
-  useCountdownStartUpdater(orderId, countdown, backendApiStatus)
+  useCountdownStartUpdater(orderId, countdown, backendApiStatus, progressBarStepName || 'initial')
 
   const solverCompetition = useMemo(
     () =>
@@ -289,18 +289,21 @@ function useCountdownStartUpdater(
   orderId: string,
   countdown: OrderProgressBarState['countdown'],
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
+  currentVisibleStepName: OrderProgressBarStepName,
 ) {
   const setCountdown = useSetExecutingOrderCountdownCallback()
 
   useEffect(() => {
-    if (!countdown && countdown !== 0 && backendApiStatus === 'active') {
-      // Start countdown when it becomes active
+    // Only start countdown when backend is active AND we're actually showing the solving step to the user
+    // This prevents countdown from running in background during step transition delays
+    if (!countdown && countdown !== 0 && backendApiStatus === 'active' && currentVisibleStepName === 'solving') {
+      // Start countdown when it becomes active AND we're showing solving step
       setCountdown(orderId, PROGRESS_BAR_TIMER_DURATION)
     } else if (backendApiStatus !== 'active' && countdown) {
       // Every time backend status is not `active` and countdown is set, reset the countdown
       setCountdown(orderId, null)
     }
-  }, [backendApiStatus, setCountdown, countdown, orderId])
+  }, [backendApiStatus, setCountdown, countdown, orderId, currentVisibleStepName])
 }
 
 // TODO: Add proper return type annotation
