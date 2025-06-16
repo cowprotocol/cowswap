@@ -190,7 +190,18 @@ export const CountdownWrapper = styled.div`
   align-items: center;
 `
 
-export const CountdownText = styled.div`
+const pulseAnimation = keyframes`
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+`
+
+export const CountdownText = styled.div<{ $shouldPulse?: boolean }>`
   font-family: ${Font.familyMono};
   font-size: 68px;
   font-weight: bold;
@@ -198,6 +209,11 @@ export const CountdownText = styled.div`
   z-index: 1;
   font-variant-numeric: slashed-zero;
   letter-spacing: -3px;
+  ${({ $shouldPulse }) =>
+    $shouldPulse &&
+    css`
+      animation: ${pulseAnimation} 1.5s ease-in-out infinite;
+    `}
 `
 
 export const FinishedStepContainer = styled.div`

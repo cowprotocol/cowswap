@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { getRandomInt } from '@cowprotocol/common-utils'
 
@@ -11,9 +11,6 @@ import * as styledEl from './styled'
 import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../constants'
 import { OrderProgressBarProps } from '../types'
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function RenderProgressTopSection({
   stepName,
   order,
@@ -23,7 +20,7 @@ export function RenderProgressTopSection({
   debugForceShowSurplus = false,
 }: Pick<OrderProgressBarProps, 'stepName' | 'order' | 'countdown' | 'chainId' | 'surplusData'> & {
   debugForceShowSurplus?: boolean
-}) {
+}): ReactNode {
   const hideIntent = stepName === 'finished' || stepName === 'cancellationFailed'
 
   const { randomImage, randomBenefit } = useMemo(() => {

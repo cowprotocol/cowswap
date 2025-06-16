@@ -1,3 +1,5 @@
+import { useEffect, useState, ReactNode } from 'react'
+
 import { USDC_BASE, USDC_GNOSIS_CHAIN } from '@cowprotocol/common-const'
 import { SupportedChainId, BridgeStatus } from '@cowprotocol/cow-sdk'
 import { UI } from '@cowprotocol/ui'
@@ -111,17 +113,31 @@ const Wrapper = styled.div`
   background: var(${UI.COLOR_PAPER});
 `
 
+function SolvingFixture(): ReactNode {
+  const [countdown, setCountdown] = useState(15)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCountdown((prev) => (prev > 0 ? prev - 1 : 0))
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  return (
+    <Wrapper>
+      <OrderProgressBar {...defaultProps} stepName="solving" countdown={countdown} />
+    </Wrapper>
+  )
+}
+
 const Fixtures = {
   '1-initial': () => (
     <Wrapper>
       <OrderProgressBar {...defaultProps} />
     </Wrapper>
   ),
-  '2-solving': () => (
-    <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="solving" countdown={15} />
-    </Wrapper>
-  ),
+  '2-solving': () => <SolvingFixture />,
   '2a-delayed': () => (
     <Wrapper>
       <OrderProgressBar {...defaultProps} stepName="delayed" />

@@ -67,7 +67,7 @@ export function SolvingTopSection({ countdown }: SolvingTopSectionProps) {
   return (
     <>
       <SVG src={STEP_IMAGE_SOLVING} />
-      <CircularCountdown countdown={countdown || 0} />
+      <CircularCountdown countdown={countdown || 0} isDelayed={countdown === 0} />
     </>
   )
 }
