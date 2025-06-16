@@ -45,10 +45,10 @@ function Main(): ReactNode {
       <SvgCacheProvider>
         <Provider store={cowSwapStore}>
           <AtomProvider store={jotaiStore}>
-            <HashRouter>
-              <LanguageProvider>
-                <Web3ProviderInstance>
-                  <ThemeProvider>
+            <ThemeProvider>
+              <HashRouter>
+                <LanguageProvider>
+                  <Web3ProviderInstance>
                     <BlockNumberProvider>
                       <WithLDProvider>
                         <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
@@ -59,10 +59,10 @@ function Main(): ReactNode {
                         </CowAnalyticsProvider>
                       </WithLDProvider>
                     </BlockNumberProvider>
-                  </ThemeProvider>
-                </Web3ProviderInstance>
-              </LanguageProvider>
-            </HashRouter>
+                  </Web3ProviderInstance>
+                </LanguageProvider>
+              </HashRouter>
+            </ThemeProvider>
           </AtomProvider>
         </Provider>
       </SvgCacheProvider>
