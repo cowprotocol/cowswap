@@ -27,9 +27,9 @@ interface TradeWidgetUpdatersProps {
 export function TradeWidgetUpdaters({
   disableQuotePolling,
   disableNativeSelling,
+  enableSmartSlippage,
   onChangeRecipient,
   children,
-  enableSmartSlippage,
 }: TradeWidgetUpdatersProps) {
   const { chainId, account } = useWalletInfo()
   const priorityTokenAddresses = usePriorityTokenAddresses()
