@@ -11,7 +11,7 @@ import {
   defaultSlippageAtom,
   SlippageType,
   currentUserSlippageAtom,
-  isSmartSlippageEnabledByWidgetAtom,
+  shouldUseAutoSlippageAtom,
 } from '../state/slippageValueAndTypeAtom'
 
 
@@ -20,7 +20,7 @@ export function useTradeSlippageValueAndType(): { type: SlippageType; value: num
   const defaultSlippage = useAtomValue(defaultSlippageAtom)
   const smartSlippage = useSmartSlippageFromQuote()
   const isEoaEthFlow = useIsEoaEthFlow()
-  const isSmartSlippageEnabledByWidget = useAtomValue(isSmartSlippageEnabledByWidgetAtom)
+  const isSmartSlippageEnabledByWidget = useAtomValue(shouldUseAutoSlippageAtom)
 
   return useMemo(() => {
     if (typeof currentUserSlippage === 'number') {

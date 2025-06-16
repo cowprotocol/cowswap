@@ -4,8 +4,6 @@ import { useMemo } from 'react'
 import { BridgeQuoteResults, PriceQuality, QuoteBridgeRequest, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { QuoteAndPost } from '@cowprotocol/cow-sdk'
 
-import { useSetSmartSlippageEnabledByWidget } from 'modules/tradeSlippage'
-
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 
 import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenError'
@@ -29,10 +27,8 @@ export interface TradeQuoteManager {
 
 export function useTradeQuoteManager(
   sellTokenAddress: SellTokenAddress | undefined,
-  enableSmartSlippage: boolean,
 ): TradeQuoteManager | null {
   const update = useSetAtom(updateTradeQuoteAtom)
-  const setIsSmartSlippageEnabledByWidget = useSetSmartSlippageEnabledByWidget()
   const processUnsupportedTokenError = useProcessUnsupportedTokenError()
 
   return useMemo(
@@ -76,11 +72,9 @@ export function useTradeQuoteManager(
                 hasParamsChanged: false,
                 fetchParams,
               })
-
-              setIsSmartSlippageEnabledByWidget(enableSmartSlippage)
             },
           }
         : null,
-    [update, processUnsupportedTokenError, setIsSmartSlippageEnabledByWidget, enableSmartSlippage, sellTokenAddress],
+    [update, processUnsupportedTokenError, sellTokenAddress],
   )
 }

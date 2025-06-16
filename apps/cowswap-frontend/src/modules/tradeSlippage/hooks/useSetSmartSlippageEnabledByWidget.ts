@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 
-import { setIsSmartSlippageEnabledByWidgetAtom } from '../state/slippageValueAndTypeAtom'
+import { setShouldUseAutoSlippageAtom } from '../state/slippageValueAndTypeAtom'
 
-export function useSetSmartSlippageEnabledByWidget(): (isEnabled: boolean) => void {
-  return useSetAtom(setIsSmartSlippageEnabledByWidgetAtom)
+export function useSetShouldUseAutoSlippage(): (isEnabled: boolean) => void {
+  return useSetAtom(setShouldUseAutoSlippageAtom)
 }

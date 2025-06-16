@@ -22,10 +22,10 @@ const ethFlowSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>(
   mapSupportedNetworks(undefined),
 )
 
-export const isSmartSlippageEnabledByWidgetAtom = atom<boolean>(false)
+export const shouldUseAutoSlippageAtom = atom<boolean>(false)
 
-export const setIsSmartSlippageEnabledByWidgetAtom = atom(null, (_, set, isEnabled: boolean) => {
-  set(isSmartSlippageEnabledByWidgetAtom, isEnabled)
+export const setShouldUseAutoSlippageAtom = atom(null, (_, set, isEnabled: boolean) => {
+  set(shouldUseAutoSlippageAtom, isEnabled)
 })
 
 export const defaultSlippageAtom = atom((get) => {
