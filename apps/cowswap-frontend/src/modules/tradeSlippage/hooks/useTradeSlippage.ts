@@ -11,6 +11,7 @@ import {
   defaultSlippageAtom,
   SlippageType,
   currentUserSlippageAtom,
+  isSmartSlippageEnabledByWidgetAtom,
 } from '../state/slippageValueAndTypeAtom'
 
 
@@ -19,16 +20,19 @@ export function useTradeSlippageValueAndType(): { type: SlippageType; value: num
   const defaultSlippage = useAtomValue(defaultSlippageAtom)
   const smartSlippage = useSmartSlippageFromQuote()
   const isEoaEthFlow = useIsEoaEthFlow()
+  const isSmartSlippageEnabledByWidget = useAtomValue(isSmartSlippageEnabledByWidgetAtom)
 
-  if (typeof currentUserSlippage === 'number') {
-    return { type: 'user', value: currentUserSlippage }
-  }
+  return useMemo(() => {
+    if (typeof currentUserSlippage === 'number') {
+      return { type: 'user', value: currentUserSlippage }
+    }
 
-  if (!isEoaEthFlow && smartSlippage && smartSlippage !== defaultSlippage) {
-    return { type: 'smart', value: smartSlippage }
-  }
+    if (!isEoaEthFlow && isSmartSlippageEnabledByWidget && smartSlippage && smartSlippage !== defaultSlippage) {
+      return { type: 'smart', value: smartSlippage }
+    }
 
-  return { type: 'default', value: defaultSlippage }
+    return { type: 'default', value: defaultSlippage }
+  }, [currentUserSlippage, defaultSlippage, smartSlippage, isEoaEthFlow, isSmartSlippageEnabledByWidget])
 }
 export function useTradeSlippage(): Percent {
   const { value } = useTradeSlippageValueAndType()

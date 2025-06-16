@@ -10,7 +10,7 @@ import { TradeWidgetProps } from './types'
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TradeWidget(props: TradeWidgetProps) {
   const { id, slots, params, confirmModal, genericModal } = props
-  const { disableQuotePolling = false, disableNativeSelling = false } = params
+  const { disableQuotePolling = false, disableNativeSelling = false, enableSmartSlippage = false } = params
   const modals = TradeWidgetModals({ confirmModal, genericModal, selectTokenWidget: slots.selectTokenWidget })
   const { open: isTokenSelectOpen } = useSelectTokenWidgetState()
 
@@ -20,6 +20,7 @@ export function TradeWidget(props: TradeWidgetProps) {
         disableQuotePolling={disableQuotePolling}
         disableNativeSelling={disableNativeSelling}
         onChangeRecipient={props.actions.onChangeRecipient}
+        enableSmartSlippage={enableSmartSlippage}
       >
         {slots.updaters}
       </TradeWidgetUpdaters>

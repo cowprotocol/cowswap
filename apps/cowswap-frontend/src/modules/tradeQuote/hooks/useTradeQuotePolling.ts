@@ -28,7 +28,7 @@ const QUOTE_EXPIRATION_CHECK_INTERVAL = ms`2s`
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function useTradeQuotePolling(isConfirmOpen = false) {
+export function useTradeQuotePolling(isConfirmOpen = false, enableSmartSlippage = false) {
   const { amount, fastQuote, partiallyFillable } = useAtomValue(tradeQuoteInputAtom)
   const tradeQuote = useTradeQuote()
   const tradeQuoteRef = useRef(tradeQuote)
@@ -39,7 +39,8 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
   const { quoteParams, appData, inputCurrency } = useQuoteParams(amountStr, partiallyFillable) || {}
 
   const tradeQuoteManager = useTradeQuoteManager(
-    inputCurrency && getCurrencyAddress(inputCurrency)
+    inputCurrency && getCurrencyAddress(inputCurrency),
+    enableSmartSlippage,
   )
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const getIsUnsupportedTokens = useAreUnsupportedTokens()

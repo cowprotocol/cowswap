@@ -29,6 +29,7 @@ export function TradeWidgetUpdaters({
   disableNativeSelling,
   onChangeRecipient,
   children,
+  enableSmartSlippage,
 }: TradeWidgetUpdatersProps) {
   const { chainId, account } = useWalletInfo()
   const priorityTokenAddresses = usePriorityTokenAddresses()
@@ -42,7 +43,7 @@ export function TradeWidgetUpdaters({
       <RecipientAddressUpdater />
 
       {!disableQuotePolling && (
-        <TradeQuoteUpdater isConfirmOpen={isConfirmOpen} />
+        <TradeQuoteUpdater isConfirmOpen={isConfirmOpen} enableSmartSlippage={enableSmartSlippage} />
       )}
       <PriceImpactUpdater />
       <TradeFormValidationUpdater />

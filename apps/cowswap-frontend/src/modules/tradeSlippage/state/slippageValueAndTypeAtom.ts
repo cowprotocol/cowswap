@@ -22,12 +22,10 @@ const ethFlowSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>(
   mapSupportedNetworks(undefined),
 )
 
-const smartTradeSlippageInnerAtom = atom<number | null>(null)
+export const isSmartSlippageEnabledByWidgetAtom = atom<boolean>(false)
 
-export const setSmartTradeSlippageAtom = atom(null, (_, set, slippage: number | null) => {
-  const cappedSlippage = typeof slippage === 'number' ? Math.min(slippage, MAX_SLIPPAGE_BPS) : slippage
-
-  set(smartTradeSlippageInnerAtom, cappedSlippage)
+export const setIsSmartSlippageEnabledByWidgetAtom = atom(null, (_, set, isEnabled: boolean) => {
+  set(isSmartSlippageEnabledByWidgetAtom, isEnabled)
 })
 
 export const defaultSlippageAtom = atom((get) => {
