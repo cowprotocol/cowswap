@@ -4,7 +4,7 @@ import { useLayoutEffect, useRef } from 'react'
 import { waitForAnalytics } from '@cowprotocol/analytics'
 import { getUtmParams, cleanUpUtmParams, UtmParams } from '@cowprotocol/common-utils'
 
-import { useLocation } from 'react-router'
+import { useLocation } from 'react-router-dom'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 

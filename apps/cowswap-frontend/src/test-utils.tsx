@@ -11,7 +11,7 @@ import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { render } from '@testing-library/react'
 import { Provider } from 'react-redux'
-import { MemoryRouter } from 'react-router'
+import { MemoryRouter } from 'react-router-dom'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 import { getCowswapTheme } from 'theme'
 

@@ -4,10 +4,10 @@ import { usePrevious } from '@cowprotocol/common-hooks'
 import { isMobile } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { useLocation } from 'react-router'
+import { useLocation } from 'react-router-dom'
 
 import { AnalyticsContext, CowAnalytics } from '../CowAnalytics'
-import { PixelAnalytics, PixelEvent } from '../pixels/PixelAnalytics'
+import { PixelEvent, PixelAnalytics } from '../pixels/PixelAnalytics'
 import { Category } from '../types'
 import { WebVitalsAnalytics } from '../webVitals/WebVitalsAnalytics'
 

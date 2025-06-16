@@ -1,7 +1,7 @@
-import { Color, Media } from '@cowprotocol/ui'
+import { Media, Color } from '@cowprotocol/ui'
 
 import * as CSS from 'csstype'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { RowWithCopyButton } from '../../components/common/RowWithCopyButton'

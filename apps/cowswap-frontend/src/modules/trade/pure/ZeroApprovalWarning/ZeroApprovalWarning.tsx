@@ -1,12 +1,12 @@
 import { Currency } from '@uniswap/sdk-core'
 
-import { Link as ReactRouterLink } from 'react-router'
+import { HashLink } from 'react-router-hash-link'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
 import { WarningCard } from 'common/pure/WarningCard'
 
-const Link = styled(ReactRouterLink)`
+const Link = styled(HashLink)`
   text-decoration: underline;
 `
 

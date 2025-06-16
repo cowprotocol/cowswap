@@ -4,7 +4,7 @@ import { CHAIN_INFO, getChainInfo } from '@cowprotocol/common-const'
 import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { BlockchainNetwork } from './context/OrdersTableContext'

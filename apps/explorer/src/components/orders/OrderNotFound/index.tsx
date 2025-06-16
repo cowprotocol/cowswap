@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react'
 
-import { Color, Media } from '@cowprotocol/ui'
+import { Media, Color } from '@cowprotocol/ui'
 
 import SupportIcon from 'assets/img/support.png'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
-import { useLocation, useNavigate, useParams } from 'react-router'
+import { useParams } from 'react-router'
+import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { Search } from '../../../explorer/components/common/Search'

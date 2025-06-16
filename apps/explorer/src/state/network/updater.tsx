@@ -2,7 +2,7 @@ import React from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 
-import { Navigate, useLocation } from 'react-router'
+import { Navigate, useLocation } from 'react-router-dom'
 import { Network } from 'types'
 
 import { NETWORK_PREFIXES } from './const'

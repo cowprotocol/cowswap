@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router'
+import { Navigate } from 'react-router-dom'
 
 // Redirects to swap but only replace the pathname
 // TODO: Add proper return type annotation

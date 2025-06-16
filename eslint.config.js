@@ -204,7 +204,7 @@ module.exports = [
         {
           paths: [
             {
-              name: 'react-router',
+              name: 'react-router-dom',
               importNames: ['useNavigate'],
               message: "Please import useNavigate from our own common package instead: 'common/hooks/useNavigate'",
             },

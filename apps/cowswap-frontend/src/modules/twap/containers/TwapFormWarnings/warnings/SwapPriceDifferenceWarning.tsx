@@ -1,7 +1,7 @@
-import { FiatAmount, InlineBanner, StatusColorVariant, TokenAmount } from '@cowprotocol/ui'
+import { FiatAmount, TokenAmount, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { NavLink } from 'react-router'
+import { NavLink } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'

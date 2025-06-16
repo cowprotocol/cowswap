@@ -2,7 +2,7 @@ import AlertIcon from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import { ClosableBanner } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
-import { Link as ReactRouterLink } from 'react-router'
+import { HashLink } from 'react-router-hash-link'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
@@ -23,7 +23,7 @@ export function InfoBanner() {
             </div>
             <div className="content">
               Your order may not fill exactly when the market price reaches your limit price.{' '}
-              <ReactRouterLink
+              <HashLink
                 target="_blank"
                 to="https://docs.cow.fi/cow-protocol/tutorials/cow-swap/limit#track-a-limit-order"
                 data-click-event={toCowSwapGtmEvent({
@@ -32,7 +32,7 @@ export function InfoBanner() {
                 })}
               >
                 Learn more
-              </ReactRouterLink>
+              </HashLink>
             </div>
 
             <styledEl.CloseIcon

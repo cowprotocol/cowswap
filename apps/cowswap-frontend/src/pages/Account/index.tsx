@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 
-import { Outlet, useLocation } from 'react-router'
+import { useLocation, Outlet } from 'react-router-dom'
 
 import { Loading } from 'legacy/components/FlashingLoading'
 
@@ -12,8 +12,8 @@ import { Content, Title } from 'modules/application/pure/Page'
 import { Routes as RoutesEnum } from 'common/constants/routes'
 
 import { AccountMenu } from './Menu'
-import { CardsWrapper, Container } from './styled'
-import { AccountPageWrapper, Wrapper } from './Tokens/styled'
+import { Container, CardsWrapper } from './styled'
+import { Wrapper, AccountPageWrapper } from './Tokens/styled'
 
 // Account pages
 const Balances = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Balances'))

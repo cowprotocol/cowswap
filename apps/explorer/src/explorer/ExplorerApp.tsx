@@ -2,16 +2,16 @@ import React from 'react'
 
 import {
   CowAnalyticsProvider,
-  initGtm,
-  initPixelAnalytics,
   useAnalyticsReporter,
   WebVitalsAnalytics,
+  initGtm,
+  initPixelAnalytics,
 } from '@cowprotocol/analytics'
 import { CHAIN_INFO_ARRAY } from '@cowprotocol/common-const'
 
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
-import { BrowserRouter, HashRouter, Navigate, Route, Routes, useLocation } from 'react-router'
+import { BrowserRouter, HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 
 import { WithLDProvider } from './components/common/WithLDProvider'
 import { Header } from './layout/Header'

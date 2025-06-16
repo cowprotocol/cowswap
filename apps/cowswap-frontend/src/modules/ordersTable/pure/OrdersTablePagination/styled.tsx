@@ -1,7 +1,7 @@
 import { Media, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
 export const PaginationBox = styled.div`

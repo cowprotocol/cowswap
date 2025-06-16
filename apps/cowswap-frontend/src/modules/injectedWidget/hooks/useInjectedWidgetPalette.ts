@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { CowSwapWidgetPaletteParams } from '@cowprotocol/widget-lib'
 
-import { useLocation } from 'react-router'
+import { useLocation } from 'react-router-dom'
 
 // The theme palette provided by a consumer
 export function useInjectedWidgetPalette(): Partial<CowSwapWidgetPaletteParams> | undefined {

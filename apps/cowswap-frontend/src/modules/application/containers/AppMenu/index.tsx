@@ -5,7 +5,7 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, Media, MenuBar } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
-import { NavLink } from 'react-router'
+import { NavLink } from 'react-router-dom'
 
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 

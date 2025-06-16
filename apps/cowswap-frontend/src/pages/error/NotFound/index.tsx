@@ -1,10 +1,10 @@
 import cow404IMG from '@cowprotocol/assets/cow-swap/cow-404.png'
 import { ButtonPrimary, Media } from '@cowprotocol/ui'
 
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
-import { Content, GdocsListStyle, Page, Title } from 'modules/application/pure/Page'
+import { Page, Title, Content, GdocsListStyle } from 'modules/application/pure/Page'
 
 const Wrapper = styled(Page)`
   ${GdocsListStyle};

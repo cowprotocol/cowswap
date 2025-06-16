@@ -3,7 +3,7 @@ import { memo } from 'react'
 import { genericPropsChecker } from '@cowprotocol/common-utils'
 import { Currency } from '@uniswap/sdk-core'
 
-import { Link as ReactRouterLink } from 'react-router'
+import { HashLink } from 'react-router-hash-link'
 
 import UnsupportedCurrencyFooter from 'legacy/components/swap/UnsupportedCurrencyFooter'
 
@@ -27,11 +27,10 @@ export const CompatibilityIssuesWarning = memo((props: CompatibilityIssuesWarnin
           <>
             <p>CoW Swap requires offline signatures, which is currently not supported by some wallets.</p>
             <p>
-              {/*TODO: I think FAQ doesn't exist anymore. Point to docs instead?*/}
               Read more in the{' '}
-              <ReactRouterLink target="_blank" to="/faq/protocol#wallet-not-supported">
+              <HashLink target="_blank" to="/faq/protocol#wallet-not-supported">
                 FAQ
-              </ReactRouterLink>
+              </HashLink>
               .
             </p>
           </>

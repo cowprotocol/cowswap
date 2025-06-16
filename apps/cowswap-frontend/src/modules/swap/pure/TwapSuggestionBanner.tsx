@@ -3,7 +3,7 @@ import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
-import { NavLink } from 'react-router'
+import { NavLink } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { parameterizeTradeRoute, parameterizeTradeSearch, TradeUrlParams } from 'modules/trade'
