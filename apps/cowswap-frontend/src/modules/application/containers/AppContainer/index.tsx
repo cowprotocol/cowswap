@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { initPixelAnalytics, useAnalyticsReporter, useCowAnalytics, WebVitalsAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
@@ -36,7 +36,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   const { chainId, account } = useWalletInfo()
   const { walletName } = useWalletDetails()
   const cowAnalytics = useCowAnalytics()
-  const webVitals = new WebVitalsAnalytics(cowAnalytics)
+  const webVitals = useMemo(() => new WebVitalsAnalytics(cowAnalytics), [cowAnalytics])
 
   useAnalyticsReporter({
     account,
