@@ -1,4 +1,4 @@
-import { Color } from '@cowprotocol/ui'
+import { Color, Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -10,33 +10,18 @@ export const Wrapper = styled.div`
   gap: 1rem;
 `
 
-export const TokenDisplayWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-`
-
-export const FeesWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`
-
-export const FeeItem = styled.div`
-  display: flex;
-  gap: 0.5rem;
-`
-
-export const FeeLabel = styled.span`
-  font-weight: bold;
-`
-
-export const FeeValue = styled.span``
-
 export const AmountSectionWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+
+  ${Media.upToSmall()} {
+    > div {
+      display: flex;
+      flex-flow: column wrap;
+      align-items: flex-start;
+    }
+  }
 `
 
 export const AmountDetailBlock = styled.div`
@@ -56,6 +41,11 @@ export const AmountTokenDisplayAndCopyWrapper = styled.div`
   align-items: center;
   gap: 0.5rem;
   flex-grow: 1;
+
+  ${Media.upToSmall()} {
+    flex-direction: column;
+    align-items: start;
+  }
 `
 
 export const ProviderDisplayWrapper = styled.div`
@@ -100,16 +90,4 @@ export const StatusWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-`
-
-export const BridgeStatusWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-`
-
-export const ErrorMessage = styled.div`
-  font-size: 0.875rem;
-  color: ${Color.explorer_red1};
-  margin-top: 0.25rem;
 `
