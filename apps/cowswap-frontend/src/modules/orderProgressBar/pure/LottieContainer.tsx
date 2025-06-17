@@ -4,8 +4,9 @@ import Lottie from 'lottie-react'
 import styled from 'styled-components/macro'
 
 const LottieWrapper = styled.div`
-  width: 100%;
-  height: 100%;
+  --size: 100%;
+  width: var(--size);
+  height: var(--size);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,13 +14,13 @@ const LottieWrapper = styled.div`
 
   /* Ensure Lottie container uses full space */
   > div {
-    width: 100% !important;
-    height: 100% !important;
+    width: var(--size) !important;
+    height: var(--size) !important;
   }
 
   svg {
-    width: 100% !important;
-    height: 100% !important;
+    width: var(--size) !important;
+    height: var(--size) !important;
   }
 `
 
@@ -51,7 +52,7 @@ export function FullSizeLottie({ animationData, loop = true, autoplay = true }: 
       const timeoutId = setTimeout((): void => {
         applyPreserveAspectRatio()
       }, 0)
-      
+
       return (): void => clearTimeout(timeoutId)
     }
   }, [animationData])
