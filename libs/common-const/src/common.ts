@@ -1,4 +1,4 @@
-import { NATIVE_CURRENCY_ADDRESS, SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
 import BigNumber from 'bignumber.js'
@@ -32,6 +32,9 @@ export const LONG_LOAD_THRESHOLD = 2000
 export const AVG_APPROVE_COST_GWEI = '50000'
 export const DEFAULT_APP_CODE = 'CoW Swap'
 export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
+
+// Mock address used for Avalanche until we have a COW contract
+export const MOCK_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 export const APP_TITLE = 'CoW Swap | The smartest way to trade cryptocurrencies'
 
@@ -76,7 +79,7 @@ export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string> = {
   [SupportedChainId.SEPOLIA]: '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59',
   // https://polygonscan.com/token/0x2f4efd3aa42e15a1ec6114547151b63ee5d39958
   [SupportedChainId.POLYGON]: '0x2f4efd3aa42e15a1ec6114547151b63ee5d39958',
-  [SupportedChainId.AVALANCHE]: NATIVE_CURRENCY_ADDRESS, // TODO: stopgap solution until we have COW contract on Avalanche
+  [SupportedChainId.AVALANCHE]: MOCK_ADDRESS,
 }
 
 export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'

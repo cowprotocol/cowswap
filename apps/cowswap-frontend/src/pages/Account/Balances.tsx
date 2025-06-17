@@ -4,10 +4,9 @@ import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
 import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import vCOWImage from '@cowprotocol/assets/images/vCOW.svg'
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
-import { COW, COW_CONTRACT_ADDRESS, V_COW } from '@cowprotocol/common-const'
+import { COW, COW_CONTRACT_ADDRESS, MOCK_ADDRESS, V_COW } from '@cowprotocol/common-const'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getProviderErrorMessage } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonPrimary, HoverTooltip, TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -49,8 +48,6 @@ import LockedGnoVesting from './LockedGnoVesting'
 // Number of blocks to wait before we re-enable the swap COW -> vCOW button after confirmation
 const BLOCKS_TO_WAIT = 2
 
-const CHAINS_TO_IGNORE = [SupportedChainId.AVALANCHE]
-
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
@@ -61,7 +58,7 @@ export default function Profile() {
   const previousAccount = usePrevious(account)
 
   const isCowTokenAvailable = useMemo(() => {
-    return !CHAINS_TO_IGNORE.includes(chainId)
+    return COW_CONTRACT_ADDRESS[chainId] !== MOCK_ADDRESS
   }, [chainId])
 
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
