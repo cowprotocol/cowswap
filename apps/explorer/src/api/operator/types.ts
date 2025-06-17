@@ -24,6 +24,8 @@ export const RAW_ORDER_STATUS = {
   EXPIRED: 'expired',
 } as const
 
+export const ORDER_FINAL_FAILED_STATUSES = [OrderStatus.Expired, OrderStatus.Cancelled]
+
 export type RawOrderStatusFromAPI = (typeof RAW_ORDER_STATUS)[keyof typeof RAW_ORDER_STATUS]
 
 // Raw API response

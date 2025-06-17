@@ -5,7 +5,7 @@ import { BridgeStatus } from '@cowprotocol/cow-sdk'
 import BigNumber from 'bignumber.js'
 import { capitalize, formatPercentage } from 'utils'
 
-import { OrderStatus } from 'api/operator'
+import { ORDER_FINAL_FAILED_STATUSES, OrderStatus } from 'api/operator'
 import { canBePartiallyFilled } from 'utils/statusHelpers'
 
 import { StatusIcon } from './StatusIcon'
@@ -27,7 +27,7 @@ const SHIMMING_STATUSES = [
   BridgeStatus.IN_PROGRESS.toLowerCase(),
 ]
 
-const FINAL_STATUSES = [OrderStatus.Expired.toLowerCase(), OrderStatus.Cancelled.toLowerCase()]
+const FINAL_STATUSES = ORDER_FINAL_FAILED_STATUSES.map((t) => t.toLowerCase())
 
 export function StatusLabel({
   status: _status,

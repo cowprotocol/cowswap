@@ -21,7 +21,7 @@ import { formatPercentage } from 'utils'
 
 import { useCrossChainOrder } from 'modules/bridge'
 
-import { Order, Trade } from 'api/operator'
+import { Order, ORDER_FINAL_FAILED_STATUSES, Trade } from 'api/operator'
 
 import { FillsTableContext } from './context/FillsTableContext'
 import { TitleUid, WrapperExtraComponents, StyledExplorerTabs, TabContent } from './styled'
@@ -91,6 +91,7 @@ const tabItems = (
     ) : null
 
   const isBridging = !!order?.bridgeProviderId
+  const isOrderInFinalStatus = !!order && ORDER_FINAL_FAILED_STATUSES.includes(order?.status)
 
   const overviewTabTitle = isBridging ? (
     <TabContent>
@@ -102,7 +103,7 @@ const tabItems = (
   const overviewTab = getOverviewTab(overviewTabTitle, defaultDetails, noTokens, isLoadingForTheFirstTime)
 
   // Swap & Bridge
-  if (isBridging) {
+  if (isBridging && !isOrderInFinalStatus) {
     return [overviewTab, getBridgeTab(order, crossChainOrder, crossChainOrderLoading)]
   }
 
