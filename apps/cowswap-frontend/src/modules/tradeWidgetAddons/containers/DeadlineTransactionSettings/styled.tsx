@@ -1,5 +1,6 @@
-import styled from 'styled-components/macro'
 import { FancyButton, UI } from '@cowprotocol/ui'
+
+import styled from 'styled-components/macro'
 
 export const Input = styled.input`
   font-size: 16px;
