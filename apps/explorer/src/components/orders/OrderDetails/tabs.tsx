@@ -9,7 +9,7 @@ import { TabContent } from './styled'
 
 import { Order, OrderStatus } from '../../../api/operator'
 import CowLoading from '../../common/CowLoading'
-import { BridgeDetailsTable } from '../BridgeDetailsTable'
+import { BridgeDetailsTable, LoadingWrapper } from '../BridgeDetailsTable'
 import { StatusLabel } from '../StatusLabel'
 
 export enum TabView {
@@ -37,7 +37,12 @@ export function getOverviewTab(
       <>
         {children}
         {noTokens && <p>Not able to load tokens</p>}
-        {isLoadingForTheFirstTime && <CowLoading />}
+        {isLoadingForTheFirstTime && (
+          <LoadingWrapper>
+            <CowLoading />
+            <h3>Order loading</h3>
+          </LoadingWrapper>
+        )}
       </>
     ),
   }
