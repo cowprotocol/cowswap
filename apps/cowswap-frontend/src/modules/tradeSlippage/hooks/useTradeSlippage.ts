@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { bpsToPercent } from '@cowprotocol/common-utils'
 import { Percent } from '@uniswap/sdk-core'
 
+import { useIsEoaEthFlow } from 'modules/trade'
 import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
 
 import {
