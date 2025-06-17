@@ -36,7 +36,7 @@ function TransactionLink({ link, label }: TransactionLinkProps): ReactNode {
         </>
       }
     >
-      <ExternalLink href={link}>View on Explorer ↗</ExternalLink>
+      <ExternalLink href={link}>View on bridge explorer ↗</ExternalLink>
     </ConfirmDetailsItem>
   )
 }
