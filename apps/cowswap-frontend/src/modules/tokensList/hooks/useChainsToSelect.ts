@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { BaseChainInfo, CHAIN_INFO, RPC_URLS } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { SupportedChainId, ChainInfo } from '@cowprotocol/cow-sdk'
-import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 
@@ -67,8 +67,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
   const { chainId } = useWalletInfo()
   const { field, selectedTargetChainId = chainId } = useSelectTokenWidgetState()
   const { data: bridgeSupportedNetworks, isLoading } = useBridgeSupportedNetworks()
-  const isSmartContractWallet = useIsSmartContractWallet()
-  const isBridgingEnabled = useIsBridgingEnabled(isSmartContractWallet)
+  const isBridgingEnabled = useIsBridgingEnabled()
 
   return useMemo(() => {
     if (!field || !isBridgingEnabled) return undefined

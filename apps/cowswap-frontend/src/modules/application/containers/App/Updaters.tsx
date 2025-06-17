@@ -29,6 +29,7 @@ import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } f
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { AnnouncementsUpdater } from 'common/updaters/AnnouncementsUpdater'
+import { BridgingEnabledUpdater } from 'common/updaters/BridgingEnabledUpdater'
 import { ConnectionStatusUpdater } from 'common/updaters/ConnectionStatusUpdater'
 import { FeatureFlagsUpdater } from 'common/updaters/FeatureFlagsUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
@@ -47,7 +48,7 @@ import { UserUpdater } from 'common/updaters/UserUpdater'
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Updaters() {
   const { account } = useWalletInfo()
   const { tokenLists, appCode, customTokens, standaloneMode } = useInjectedWidgetParams()
@@ -88,6 +89,7 @@ export function Updaters() {
       <ProgressBarExecutingOrdersUpdater />
       <SolversInfoUpdater />
       <AnnouncementsUpdater />
+      <BridgingEnabledUpdater />
 
       <TokensListsUpdater
         chainId={sourceChainId}
