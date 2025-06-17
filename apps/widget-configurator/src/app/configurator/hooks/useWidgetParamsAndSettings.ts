@@ -11,7 +11,9 @@ const getBaseUrl = (): string => {
   if (typeof window === 'undefined' || !window) return ''
 
   if (isLocalHost) return 'http://localhost:3000'
+
   if (isDev) return 'https://dev.swap.cow.fi'
+
   if (isVercel) {
     const prKey = window.location.hostname.replace('widget-configurator-git-', '').replace(vercelSuffix, '')
 
@@ -24,10 +26,8 @@ const getBaseUrl = (): string => {
 const DEFAULT_BASE_URL = getBaseUrl()
 
 // TODO: Break down this large function into smaller functions
-
 export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetParams {
   // TODO: Break down this large function into smaller functions
-
   return useMemo(() => {
     const {
       chainId,
