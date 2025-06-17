@@ -32,7 +32,7 @@ const confirmationState: TradeConfirmationProps = {
   isConfirmDisabled: false,
   refreshInterval: 10_000,
   recipient: null,
-  onConfirm() {
+  async onConfirm() {
     console.log('onConfirm')
   },
   onDismiss() {

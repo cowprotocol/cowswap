@@ -5,7 +5,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { useIsEoaEthFlow } from 'modules/trade'
-import { useIsSmartSlippageApplied, useSetSlippage, useSmartTradeSlippage } from 'modules/tradeSlippage'
+import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
+import { useIsSmartSlippageApplied, useSetSlippage } from 'modules/tradeSlippage'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
@@ -32,7 +33,7 @@ export function RowSlippage({
 
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
-  const smartSlippage = useSmartTradeSlippage()
+  const smartSlippage = useSmartSlippageFromQuote()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
   const setSlippage = useSetSlippage()
 
