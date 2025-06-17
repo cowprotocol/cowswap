@@ -71,9 +71,11 @@ export const OriginalOrderIntent = styled.span`
   justify-content: center;
   font-size: 13px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
+  background: var(${UI.COLOR_PAPER_DARKER});
   padding: 10px;
   width: 100%;
   text-align: center;
+  border-radius: 0 0 21px 21px;
   gap: 5px;
 
   ${SingleLetterLogoWrapper} {

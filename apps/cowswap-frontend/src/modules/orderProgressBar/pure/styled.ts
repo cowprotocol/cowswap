@@ -76,7 +76,7 @@ export const ProgressTopSection = styled.div`
   display: flex;
   flex-flow: column wrap;
   align-items: center;
-  border-radius: 21px;
+  border-radius: 21px 21px 0 0;
   background: var(${UI.COLOR_PAPER_DARKER});
   height: var(--progress-top-section-height, 246px);
   min-height: var(--progress-top-section-height, 246px);

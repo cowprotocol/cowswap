@@ -25,7 +25,7 @@ export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: str
   justify-content: center;
   align-items: center;
   flex-flow: column wrap;
-  border-radius: 21px;
+  border-radius: 21px 21px 0 0;
   padding: ${({ padding }) => padding || '0'};
   gap: ${({ gap }) => gap || '0'};
   background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};

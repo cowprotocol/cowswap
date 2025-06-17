@@ -32,7 +32,7 @@ const SkeletonContainer = styled.div`
   flex-direction: column;
   padding: 24px;
   gap: 16px;
-  border-radius: 21px;
+  border-radius: 21px 21px 0 0;
   background: var(${UI.COLOR_PAPER_DARKER});
   position: relative;
   overflow: hidden;

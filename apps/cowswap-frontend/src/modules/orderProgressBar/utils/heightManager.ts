@@ -1,5 +1,3 @@
-import { OrderProgressBarProps } from '../types'
-
 // Height constants for consistent layout
 export const STEP_HEIGHTS = {
   // Desktop heights
@@ -24,13 +22,6 @@ export const TRANSITION_TIMINGS = {
   all: '0.3s cubic-bezier(0.4, 0, 0.2, 1)',
 } as const
 
-// Step-specific height overrides (if needed)
-type StepHeightConfig = Partial<Record<NonNullable<OrderProgressBarProps['stepName']>, number>>
-
-export const STEP_HEIGHT_OVERRIDES: StepHeightConfig = {
-  // All steps use consistent height to prevent shifts
-  // Override only if absolutely necessary
-} as const
 
 /**
  * Calculate the total container height based on visible steps
@@ -45,14 +36,6 @@ export function calculateContainerHeight(currentStep: number, totalSteps: number
   return Math.max(totalHeight, heights.minContainer)
 }
 
-/**
- * Get the height for a specific step's top section
- */
-export function getStepTopSectionHeight(stepName: OrderProgressBarProps['stepName'], isMobile: boolean): number {
-  const baseHeight = isMobile ? STEP_HEIGHTS.mobile.topSection : STEP_HEIGHTS.desktop.topSection
-  if (!stepName) return baseHeight
-  return STEP_HEIGHT_OVERRIDES[stepName] || baseHeight
-}
 
 /**
  * Calculate transform offset for smooth step transitions

@@ -44,11 +44,11 @@ export function RenderProgressTopSection({
   const WrapperComponent = isFinishedStep ? FinishedStepContentSection : styledEl.ProgressTopSection
 
   return (
-    <WrapperComponent style={cssVariables as React.CSSProperties}>
-      {!isLayoutReady ? (
-        <ProgressSkeleton />
-      ) : (
-        <>
+    <>
+      <WrapperComponent style={cssVariables as React.CSSProperties}>
+        {!isLayoutReady ? (
+          <ProgressSkeleton />
+        ) : (
           <AnimatePresence mode="wait">
             <motion.div
               key={stepName}
@@ -77,9 +77,9 @@ export function RenderProgressTopSection({
               )}
             </motion.div>
           </AnimatePresence>
-          {!hideIntent && <OrderIntent order={order} />}
-        </>
-      )}
-    </WrapperComponent>
+        )}
+      </WrapperComponent>
+      {!hideIntent && <OrderIntent order={order} />}
+    </>
   )
 }
