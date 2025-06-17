@@ -26,10 +26,8 @@ const getBaseUrl = (): string => {
 const DEFAULT_BASE_URL = getBaseUrl()
 
 // TODO: Break down this large function into smaller functions
-
 export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetParams {
   // TODO: Break down this large function into smaller functions
-
   return useMemo(() => {
     const {
       chainId,
