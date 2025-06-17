@@ -1,3 +1,5 @@
+import { JSX } from 'react'
+
 import {
   INPUT_OUTPUT_EXPLANATION,
   MINIMUM_ETH_FLOW_DEADLINE_SECONDS,
@@ -35,9 +37,7 @@ export function getNonNativeOrderDeadlineTooltip() {
   )
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const getNativeSlippageTooltip = (chainId: SupportedChainId, symbols: (string | undefined)[] | undefined) => (
+export const getNativeSlippageTooltip = (chainId: SupportedChainId, symbols: (string | undefined)[] | undefined): JSX.Element => (
   <Trans>
     When selling {symbols?.[0] || 'a native currency'}, the minimum slippage tolerance is set to{' '}
     {MINIMUM_ETH_FLOW_SLIPPAGE[chainId].toSignificant(PERCENTAGE_PRECISION)}% to ensure a high likelihood of order
@@ -49,9 +49,8 @@ export const getNativeSlippageTooltip = (chainId: SupportedChainId, symbols: (st
   </Trans>
 )
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const getNonNativeSlippageTooltip = (params?: { isDynamic?: boolean; isSettingsModal?: boolean }) => (
+
+export const getNonNativeSlippageTooltip = (params?: { isDynamic?: boolean; isSettingsModal?: boolean }): JSX.Element => (
   <Trans>
     {params?.isDynamic ? (
       <>

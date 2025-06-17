@@ -30,7 +30,7 @@ export function useLabelsAndTooltips() {
   return useMemo(
     () => ({
       slippageLabel:
-        isEoaEthFlow || isSmartSlippageApplied
+        isSmartSlippageApplied
           ? `Slippage tolerance (${isSmartSlippageApplied ? 'dynamic' : 'modified'})`
           : undefined,
       slippageTooltip: isEoaEthFlow

@@ -50,11 +50,8 @@ export interface RowSlippageContentProps {
   isSmartSlippageLoading: boolean
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
-export function RowSlippageContent(props: RowSlippageContentProps) {
+
+export function RowSlippageContent(props: RowSlippageContentProps): JSX.Element {
   const {
     chainId,
     displaySlippage,
@@ -72,9 +69,7 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
 
   const setSettingTabState = useSetAtom(settingsTabStateAtom)
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const openSettings = () => setSettingTabState({ open: true })
+  const openSettings: () => void = () => setSettingTabState({ open: true })
 
   const tooltipContent =
     slippageTooltip ||
