@@ -4,7 +4,8 @@ import { getMinimumReceivedTooltip, isSellOrder } from '@cowprotocol/common-util
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useIsEoaEthFlow, useShouldPayGas } from 'modules/trade'
-import { useIsSmartSlippageApplied, useSmartTradeSlippage } from 'modules/tradeSlippage'
+import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
+import { useIsSmartSlippageApplied } from 'modules/tradeSlippage'
 import { NetworkCostsTooltipSuffix } from 'modules/tradeWidgetAddons'
 
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
@@ -23,7 +24,7 @@ export function useLabelsAndTooltips() {
   const nativeCurrency = useNativeCurrency()
 
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
-  const smartSlippage = useSmartTradeSlippage()
+  const smartSlippage = useSmartSlippageFromQuote()
   const isSell = isSellOrder(orderKind)
 
   return useMemo(

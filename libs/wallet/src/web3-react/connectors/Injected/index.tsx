@@ -68,30 +68,32 @@ export class InjectedWallet extends Connector {
 
         const desiredChainIdHex = `0x${desiredChainId.toString(16)}`
 
-        return this.provider
-          // TODO: Replace any with proper type definitions
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          .request<any>({
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId: desiredChainIdHex }],
-          })
-          .catch((error: ProviderRpcError) => {
-            if (error.code === 4902 && typeof desiredChainIdOrChainParameters !== 'number') {
-              if (!this.provider) throw new Error('No provider')
-              // if we're here, we can try to add a new network
-              return this.provider.request({
-                method: 'wallet_addEthereumChain',
-                params: [{ ...desiredChainIdOrChainParameters, chainId: desiredChainIdHex }],
-              })
-            }
+        return (
+          this.provider
+            // TODO: Replace any with proper type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .request<any>({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: desiredChainIdHex }],
+            })
+            .catch((error: ProviderRpcError) => {
+              if (error.code === 4902 && typeof desiredChainIdOrChainParameters !== 'number') {
+                if (!this.provider) throw new Error('No provider')
+                // if we're here, we can try to add a new network
+                return this.provider.request({
+                  method: 'wallet_addEthereumChain',
+                  params: [{ ...desiredChainIdOrChainParameters, chainId: desiredChainIdHex }],
+                })
+              }
 
-            throw error
-          })
-          .then(() => {
-            if (this.provider) {
-              this.onConnect?.(this.provider)
-            }
-          })
+              throw error
+            })
+            .then(() => {
+              if (this.provider) {
+                this.onConnect?.(this.provider)
+              }
+            })
+        )
       })
       .catch((error: Error) => {
         cancelActivation?.()
@@ -111,8 +113,6 @@ export class InjectedWallet extends Connector {
 
       // Fix to call this only once
       this.eagerConnection = true
-
-      await this.provider.enable?.()
 
       // Wallets may resolve eth_chainId and hang on eth_accounts pending user interaction, which may include changing
       // chains; they should be requested serially, with accounts first, so that the chainId can settle.
