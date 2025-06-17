@@ -13,6 +13,7 @@ import {
 import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
+import { ThemeConfigUpdater } from 'theme/ThemeConfigUpdater'
 import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
@@ -46,6 +47,7 @@ import {
 import { SpotPricesUpdater } from 'common/updaters/orders/SpotPricesUpdater'
 import { SentryUpdater } from 'common/updaters/SentryUpdater'
 import { SolversInfoUpdater } from 'common/updaters/SolversInfoUpdater'
+import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
 
 export function Updaters(): ReactNode {
@@ -61,6 +63,8 @@ export function Updaters(): ReactNode {
 
   return (
     <>
+      <ThemeConfigUpdater />
+      <ThemeFromUrlUpdater />
       <ConnectionStatusUpdater />
       <TradingSdkUpdater />
       <MultiCallUpdater chainId={sourceChainId} />
