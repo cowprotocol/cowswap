@@ -37,7 +37,7 @@ jobs:
 
       - name: Build Project Artifacts
         run: >
-          NX_CONFIGURATION=${{ inputs.env_name }}
+          NX_CONFIGURATION=${{ inputs.env_name == 'prod' && 'production' || inputs.env_name }}
           REACT_APP_SENTRY_DSN=${{ secrets.SENTRY_DSN }}
           REACT_APP_PINATA_API_KEY=${{ secrets.REACT_APP_PINATA_API_KEY }}
           REACT_APP_PINATA_SECRET_API_KEY=${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
