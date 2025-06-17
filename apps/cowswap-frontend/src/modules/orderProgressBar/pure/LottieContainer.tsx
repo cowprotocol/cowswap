@@ -32,13 +32,27 @@ interface FullSizeLottieProps {
 export function FullSizeLottie({ animationData, loop = true, autoplay = true }: FullSizeLottieProps): ReactNode {
   const lottieRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
+  useEffect((): (() => void) | void => {
     // Set the correct preserveAspectRatio - this is the equivalent of object-fit: cover for SVG
-    if (lottieRef.current) {
-      const svgElement = lottieRef.current.querySelector('svg')
-      if (svgElement) {
-        svgElement.setAttribute('preserveAspectRatio', 'xMidYMid slice')
+    const applyPreserveAspectRatio = (): boolean => {
+      if (lottieRef.current) {
+        const svgElement = lottieRef.current.querySelector('svg')
+        if (svgElement) {
+          svgElement.setAttribute('preserveAspectRatio', 'xMidYMid slice')
+          return true
+        }
       }
+      return false
+    }
+
+    // Try to apply immediately
+    if (!applyPreserveAspectRatio()) {
+      // If SVG not ready, wait a bit for Lottie to render
+      const timeoutId = setTimeout((): void => {
+        applyPreserveAspectRatio()
+      }, 0)
+      
+      return (): void => clearTimeout(timeoutId)
     }
   }, [animationData])
 
