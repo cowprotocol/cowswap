@@ -17,6 +17,7 @@ export function AmountsDisplay(props: Props): React.ReactNode | null {
   const network = useNetworkId()
 
   const isSell = isSellOrder(kind)
+  const isBridging = !!order?.bridgeProviderId
 
   const fromAmount = sellAmount.plus(feeAmount)
 
@@ -32,6 +33,7 @@ export function AmountsDisplay(props: Props): React.ReactNode | null {
         amount={fromAmount}
         erc20={sellToken}
         network={network}
+        isBridging={isBridging}
       />
       <AmountRow
         title="To"
@@ -39,6 +41,7 @@ export function AmountsDisplay(props: Props): React.ReactNode | null {
         amount={buyAmount}
         erc20={buyToken}
         network={network}
+        isBridging={isBridging}
       />
     </Wrapper>
   )

@@ -16,14 +16,15 @@ interface AmountRowProps {
   amount: BigNumber
   erc20: TokenErc20
   network: Network
+  isBridging: boolean
 }
 
 export function AmountRow(props: AmountRowProps): React.ReactNode {
-  const { title, titleSuffix, amount, erc20, network } = props
+  const { title, titleSuffix, amount, erc20, network, isBridging } = props
 
   const { formattedAmount, isNative } = formatTokenAmount(amount, erc20)
 
-  const tokenDisplay = <TokenDisplay erc20={erc20} network={network} showNetworkName={true} />
+  const tokenDisplay = <TokenDisplay erc20={erc20} network={network} showNetworkName={isBridging} />
 
   return (
     <>

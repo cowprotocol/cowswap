@@ -42,14 +42,14 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
       <DetailRow label="From" tooltipText={BridgeDetailsTooltips.ownerAddress}>
         <RowWithCopyButton
           textToCopy={owner}
-          contentsToDisplay={<AddressLink address={owner} chainId={sourceChainId} />}
+          contentsToDisplay={<AddressLink address={owner} chainId={sourceChainId} showNetworkName />}
         />
       </DetailRow>
 
       <DetailRow label="To" tooltipText={BridgeDetailsTooltips.receiverAddress}>
         <RowWithCopyButton
           textToCopy={recipient}
-          contentsToDisplay={<AddressLink address={recipient} chainId={destinationChainId} />}
+          contentsToDisplay={<AddressLink address={recipient} chainId={destinationChainId} showNetworkName />}
         />
       </DetailRow>
 

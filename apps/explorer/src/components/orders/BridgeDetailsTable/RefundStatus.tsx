@@ -33,7 +33,7 @@ export function RefundStatus({ status, refundWalletAddress, refundChainId }: Ref
               textToCopy={refundWalletAddress}
               contentsToDisplay={
                 <RefundAddressWrapper>
-                  <AddressLink address={refundWalletAddress} chainId={refundChainId} />
+                  <AddressLink address={refundWalletAddress} chainId={refundChainId} showNetworkName />
                 </RefundAddressWrapper>
               }
             />

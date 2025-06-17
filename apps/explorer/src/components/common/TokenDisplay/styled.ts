@@ -8,6 +8,7 @@ export const Wrapper = styled.div`
   align-items: center;
   flex-flow: row nowrap;
   font-size: inherit;
+  gap: 4px;
 `
 
 export const NativeWrapper = styled.span`

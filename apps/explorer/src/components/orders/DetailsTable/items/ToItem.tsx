@@ -14,10 +14,11 @@ import { LinkButton, Wrapper } from '../styled'
 interface ToItemProps {
   chainId: SupportedChainId
   receiver: string
+  isBridgingOrder: boolean
   onCopy(label: string): void
 }
 
-export function ToItem({ receiver, onCopy, chainId }: ToItemProps): ReactNode {
+export function ToItem({ receiver, isBridgingOrder, onCopy, chainId }: ToItemProps): ReactNode {
   return (
     <DetailRow label="To" tooltipText={DetailsTableTooltips.to}>
       <Wrapper>
@@ -26,7 +27,7 @@ export function ToItem({ receiver, onCopy, chainId }: ToItemProps): ReactNode {
           onCopy={() => onCopy('receiverAddress')}
           contentsToDisplay={
             <span>
-              <AddressLink address={receiver} chainId={chainId} />
+              <AddressLink address={receiver} chainId={chainId} showNetworkName={isBridgingOrder} />
             </span>
           }
         />

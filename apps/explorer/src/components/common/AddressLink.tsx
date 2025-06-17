@@ -30,15 +30,10 @@ export interface AddressLinkProps {
   address: string
   chainId: number
   showIcon?: boolean
-  showNetworkName?: boolean
+  showNetworkName: boolean
 }
 
-export function AddressLink({
-  address,
-  chainId,
-  showIcon = true,
-  showNetworkName = true,
-}: AddressLinkProps): ReactNode {
+export function AddressLink({ address, chainId, showIcon, showNetworkName }: AddressLinkProps): ReactNode {
   const chainInfo = getChainInfo(chainId)
 
   if (!chainInfo) return null
@@ -47,7 +42,7 @@ export function AddressLink({
     <AddressLinkWrapper>
       <LinkWithPrefixNetwork to={getExplorerLink(chainId, address, ExplorerDataType.ADDRESS)} target="_blank" noPrefix>
         <LinkWithNetworkWrapper>
-          {showIcon && <NetworkLogo chainId={chainId} size={16} forceLightMode={true} />}
+          {(showIcon || showNetworkName) && <NetworkLogo chainId={chainId} size={16} forceLightMode={true} />}
           {address} ↗
         </LinkWithNetworkWrapper>
       </LinkWithPrefixNetwork>

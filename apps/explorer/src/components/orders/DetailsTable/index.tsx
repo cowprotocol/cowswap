@@ -32,6 +32,7 @@ export type Props = {
   children?: ReactNode
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function DetailsTable(props: Props): ReactNode {
   const { chainId, order, areTradesLoading, showFillsButton = false, children } = props
   const cowAnalytics = useCowAnalytics()
@@ -53,6 +54,8 @@ export function DetailsTable(props: Props): ReactNode {
   if (!buyToken || !sellToken) {
     return null
   }
+
+  const isBridgingOrder = !!order.bridgeProviderId
 
   const onCopy = (label: string): void => {
     cowAnalytics.sendEvent({
@@ -82,8 +85,14 @@ export function DetailsTable(props: Props): ReactNode {
               onCopy={() => onCopy('orderId')}
             />
           </DetailRow>
-          <FromItem chainId={chainId} isSigning={isSigning} onCopy={onCopy} owner={owner} />
-          <ToItem chainId={chainId} onCopy={onCopy} receiver={receiver} />
+          <FromItem
+            chainId={chainId}
+            isSigning={isSigning}
+            onCopy={onCopy}
+            owner={owner}
+            isBridgingOrder={isBridgingOrder}
+          />
+          <ToItem chainId={chainId} onCopy={onCopy} receiver={receiver} isBridgingOrder={isBridgingOrder} />
           {!partiallyFilled && (
             <TxHashItem chainId={chainId} txHash={txHash} isLoading={areTradesLoading} onCopy={onCopy} />
           )}

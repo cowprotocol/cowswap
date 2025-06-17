@@ -15,11 +15,12 @@ import { LinkButton, Wrapper } from '../styled'
 interface FromItemProps {
   chainId: SupportedChainId
   isSigning: boolean
+  isBridgingOrder: boolean
   owner: string
   onCopy(label: string): void
 }
 
-export function FromItem({ chainId, isSigning, onCopy, owner }: FromItemProps): ReactNode {
+export function FromItem({ chainId, isSigning, isBridgingOrder, onCopy, owner }: FromItemProps): ReactNode {
   return (
     <DetailRow label="From" tooltipText={DetailsTableTooltips.from}>
       <Wrapper>
@@ -34,7 +35,7 @@ export function FromItem({ chainId, isSigning, onCopy, owner }: FromItemProps): 
           onCopy={() => onCopy('ownerAddress')}
           contentsToDisplay={
             <span>
-              <AddressLink address={owner} chainId={chainId} />
+              <AddressLink address={owner} chainId={chainId} showNetworkName={isBridgingOrder} />
             </span>
           }
         />
