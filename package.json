@@ -20,7 +20,7 @@
     "start:sdk-tools": "nx run sdk-tools:serve",
     "build": "yarn run build:cowswap",
     "build:all": "nx run-many -t build",
-    "build:cowswap": "nx build cowswap-frontend",
+    "build:cowswap": "cross-env NODE_ENV=production nx build cowswap-frontend",
     "build:explorer": "nx build explorer",
     "build:widget": "nx build widget-configurator",
     "build:cowfi": "nx build cow-fi && yarn postbuild:cowfi",
