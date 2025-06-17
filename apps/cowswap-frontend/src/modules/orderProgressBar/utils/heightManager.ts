@@ -25,17 +25,22 @@ export const TRANSITION_TIMINGS = {
 
 /**
  * Calculate the total container height based on visible steps
+ * @param currentStep - Zero-indexed current step (0 to totalSteps-1)
+ * @param totalSteps - Total number of steps (must be > 0)
+ * @param isMobile - Whether to use mobile layout dimensions
+ * @returns Container height in pixels
+ * @throws {Error} When parameters are invalid or would cause layout issues
  */
 export function calculateContainerHeight(currentStep: number, totalSteps: number, isMobile: boolean): number {
-  // Defensive checks to prevent misleading height calculations
-  if (totalSteps <= 0) {
-    throw new Error(`Invalid totalSteps: ${totalSteps}. Must be greater than 0.`)
+  // Input validation with context for debugging
+  if (!Number.isInteger(totalSteps) || totalSteps <= 0) {
+    throw new Error(`calculateContainerHeight: totalSteps must be a positive integer, got ${totalSteps}`)
   }
-  if (currentStep < 0) {
-    throw new Error(`Invalid currentStep: ${currentStep}. Must be >= 0.`)
+  if (!Number.isInteger(currentStep) || currentStep < 0) {
+    throw new Error(`calculateContainerHeight: currentStep must be a non-negative integer, got ${currentStep}`)
   }
   if (currentStep >= totalSteps) {
-    throw new Error(`Invalid currentStep: ${currentStep}. Must be < totalSteps (${totalSteps}).`)
+    throw new Error(`calculateContainerHeight: currentStep (${currentStep}) must be less than totalSteps (${totalSteps})`)
   }
 
   const heights = isMobile ? STEP_HEIGHTS.mobile : STEP_HEIGHTS.desktop
