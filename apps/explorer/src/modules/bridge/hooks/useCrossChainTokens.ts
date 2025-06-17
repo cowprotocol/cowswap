@@ -19,7 +19,9 @@ export function useCrossChainTokens(crossChainOrder: CrossChainOrder): CrossChai
 
   const sourceToken = sourceTokens && sourceTokens[inputTokenAddress.toLowerCase()]
   const intermediateToken = destinationTokens && destinationTokens[order.buyToken.toLowerCase()]
-  const destinationToken = destinationTokens && destinationTokens[outputTokenAddress.toLowerCase()]
+  const destinationToken = Boolean(destinationTokens && outputTokenAddress)
+    ? destinationTokens[outputTokenAddress.toLowerCase()]
+    : undefined
 
   return { sourceToken, intermediateToken, destinationToken }
 }
