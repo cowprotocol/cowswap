@@ -1,37 +1,40 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 
-import useSWR from 'swr'
+import useSWR, { SWRResponse } from 'swr'
 
 import { useBridgeProvider } from './useBridgeProvider'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useBridgeSupportedTokens(chainId: number | undefined) {
+export function useBridgeSupportedTokens(chainId: number | undefined): SWRResponse<TokenWithLogo[] | null> {
+  const isBridgingEnabled = useIsBridgingEnabled()
   const bridgeProvider = useBridgeProvider()
 
-  return useSWR([bridgeProvider, chainId, 'useBridgeSupportedTokens'], ([bridgeProvider, chainId]) => {
-    if (typeof chainId === 'undefined') return null
+  return useSWR(
+    isBridgingEnabled ? [bridgeProvider, chainId, 'useBridgeSupportedTokens'] : null,
+    ([bridgeProvider, chainId]) => {
+      if (typeof chainId === 'undefined') return null
 
-    return bridgeProvider
-      .getBuyTokens(chainId)
-      .then((tokens) => {
-        return (
-          tokens &&
-          tokens.map((token) =>
-            TokenWithLogo.fromToken(
-              {
-                ...token,
-                name: token.name || '',
-                symbol: token.symbol || '',
-              },
-              token.logoUrl,
-            ),
+      return bridgeProvider
+        .getBuyTokens(chainId)
+        .then((tokens) => {
+          return (
+            tokens &&
+            tokens.map((token) =>
+              TokenWithLogo.fromToken(
+                {
+                  ...token,
+                  name: token.name || '',
+                  symbol: token.symbol || '',
+                },
+                token.logoUrl,
+              ),
+            )
           )
-        )
-      })
-      .catch((error) => {
-        console.error('Cannot getBuyTokens from bridgeProvider', error)
-        return Promise.reject(error)
-      })
-  })
+        })
+        .catch((error) => {
+          console.error('Cannot getBuyTokens from bridgeProvider', error)
+          return Promise.reject(error)
+        })
+    },
+  )
 }
