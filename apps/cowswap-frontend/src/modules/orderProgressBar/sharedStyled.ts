@@ -41,11 +41,12 @@ export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: str
 
   > img,
   > svg {
+    --size: 100%;
     flex: 1;
-    width: 100%;
-    height: 100%;
-    max-width: 100%;
-    max-height: 100%;
+    width: var(--size);
+    height: var(--size);
+    max-width: var(--size);
+    max-height: var(--size);
     object-fit: contain;
     object-position: center;
     padding: 0;
