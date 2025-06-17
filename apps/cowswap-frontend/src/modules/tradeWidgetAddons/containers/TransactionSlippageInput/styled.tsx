@@ -1,6 +1,5 @@
 import { FancyButton, Media, UI } from '@cowprotocol/ui'
 
-import { darken } from 'color2k'
 import styled from 'styled-components/macro'
 
 export const SlippageEmojiContainer = styled.span`
@@ -44,7 +43,6 @@ export const Input = styled.input`
   height: 100%;
   border: 0;
   border-radius: 2rem;
-
   background: transparent;
   color: inherit;
 
@@ -72,11 +70,6 @@ export const OptionCustom = styled(FancyButton)<{ active?: boolean; warning?: bo
   padding: 0 0.75rem;
   flex: 1;
   background-color: var(${UI.COLOR_PAPER_DARKER});
-  border: 0;
   color: inherit;
-
-  :hover {
-    border: ${({ theme, active, warning }) =>
-  active && `1px solid ${warning ? darken(theme.error, 0.1) : darken(theme.bg2, 0.1)}`};
-  }
+  border: 0;
 `
