@@ -27,6 +27,17 @@ export const TRANSITION_TIMINGS = {
  * Calculate the total container height based on visible steps
  */
 export function calculateContainerHeight(currentStep: number, totalSteps: number, isMobile: boolean): number {
+  // Defensive checks to prevent misleading height calculations
+  if (totalSteps <= 0) {
+    throw new Error(`Invalid totalSteps: ${totalSteps}. Must be greater than 0.`)
+  }
+  if (currentStep < 0) {
+    throw new Error(`Invalid currentStep: ${currentStep}. Must be >= 0.`)
+  }
+  if (currentStep >= totalSteps) {
+    throw new Error(`Invalid currentStep: ${currentStep}. Must be < totalSteps (${totalSteps}).`)
+  }
+
   const heights = isMobile ? STEP_HEIGHTS.mobile : STEP_HEIGHTS.desktop
 
   // Always show current step + next step (for smooth transitions)
