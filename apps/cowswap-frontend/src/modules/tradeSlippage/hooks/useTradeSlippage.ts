@@ -4,16 +4,35 @@ import { useMemo } from 'react'
 import { bpsToPercent } from '@cowprotocol/common-utils'
 import { Percent } from '@uniswap/sdk-core'
 
+import { useIsEoaEthFlow } from 'modules/trade'
+import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
+
 import {
   defaultSlippageAtom,
-  slippageValueAndTypeAtom,
-  smartTradeSlippageAtom,
+  SlippageType,
+  currentUserSlippageAtom,
+  shouldUseAutoSlippageAtom,
 } from '../state/slippageValueAndTypeAtom'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useTradeSlippageValueAndType() {
-  return useAtomValue(slippageValueAndTypeAtom)
+
+export function useTradeSlippageValueAndType(): { type: SlippageType; value: number } {
+  const currentUserSlippage = useAtomValue(currentUserSlippageAtom)
+  const defaultSlippage = useAtomValue(defaultSlippageAtom)
+  const smartSlippage = useSmartSlippageFromQuote()
+  const isEoaEthFlow = useIsEoaEthFlow()
+  const isSmartSlippageEnabledByWidget = useAtomValue(shouldUseAutoSlippageAtom)
+
+  return useMemo(() => {
+    if (typeof currentUserSlippage === 'number') {
+      return { type: 'user', value: currentUserSlippage }
+    }
+
+    if (!isEoaEthFlow && isSmartSlippageEnabledByWidget && smartSlippage && smartSlippage !== defaultSlippage) {
+      return { type: 'smart', value: smartSlippage }
+    }
+
+    return { type: 'default', value: defaultSlippage }
+  }, [currentUserSlippage, defaultSlippage, smartSlippage, isEoaEthFlow, isSmartSlippageEnabledByWidget])
 }
 export function useTradeSlippage(): Percent {
   const { value } = useTradeSlippageValueAndType()
@@ -21,14 +40,6 @@ export function useTradeSlippage(): Percent {
   return useMemo(() => bpsToPercent(value), [value])
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useDefaultTradeSlippage() {
+export function useDefaultTradeSlippage(): Percent {
   return bpsToPercent(useAtomValue(defaultSlippageAtom))
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useSmartTradeSlippage() {
-  return useAtomValue(smartTradeSlippageAtom)
 }

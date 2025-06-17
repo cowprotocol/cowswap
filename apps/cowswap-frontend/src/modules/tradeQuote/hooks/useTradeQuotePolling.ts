@@ -28,7 +28,7 @@ const QUOTE_EXPIRATION_CHECK_INTERVAL = ms`2s`
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function useTradeQuotePolling(isConfirmOpen = false, enableSmartSlippage = false) {
+export function useTradeQuotePolling(isConfirmOpen = false) {
   const { amount, fastQuote, partiallyFillable } = useAtomValue(tradeQuoteInputAtom)
   const tradeQuote = useTradeQuote()
   const tradeQuoteRef = useRef(tradeQuote)
@@ -39,8 +39,7 @@ export function useTradeQuotePolling(isConfirmOpen = false, enableSmartSlippage 
   const { quoteParams, appData, inputCurrency } = useQuoteParams(amountStr, partiallyFillable) || {}
 
   const tradeQuoteManager = useTradeQuoteManager(
-    inputCurrency && getCurrencyAddress(inputCurrency),
-    enableSmartSlippage,
+    inputCurrency && getCurrencyAddress(inputCurrency)
   )
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const getIsUnsupportedTokens = useAreUnsupportedTokens()
@@ -63,7 +62,7 @@ export function useTradeQuotePolling(isConfirmOpen = false, enableSmartSlippage 
   }, [isWindowVisible, tradeQuoteManager, isConfirmOpen, amountStr])
 
   // TODO: Break down this large function into smaller functions
-  // eslint-disable-next-line max-lines-per-function
+
   useLayoutEffect(() => {
     if (!tradeQuoteManager) {
       return
@@ -89,7 +88,7 @@ export function useTradeQuotePolling(isConfirmOpen = false, enableSmartSlippage 
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
     function fetchAndUpdateQuote(hasParamsChanged: boolean, forceUpdate = false) {
       const currentQuote = tradeQuoteRef.current
-      const currentQuoteAppData = currentQuote.quote?.quoteResults.appDataInfo
+      const currentQuoteAppDataDoc = currentQuote.quote?.quoteResults.appDataInfo.doc
       const hasCachedResponse = !!currentQuote.quote
       const hasCachedError = !!currentQuote.error
 
@@ -99,7 +98,7 @@ export function useTradeQuotePolling(isConfirmOpen = false, enableSmartSlippage 
         // Important! We should skip quote updateing only if there is no quote response
         if (
           (hasCachedResponse || hasCachedError) &&
-          quoteUsingSameParameters(chainId, currentQuote, quoteParams, currentQuoteAppData?.doc, appData)
+          quoteUsingSameParameters(currentQuote, quoteParams, currentQuoteAppDataDoc, appData)
         ) {
           return
         }
