@@ -9,7 +9,7 @@
       "outputs": [
         "{options.outputPath}"
       ],
-      "defaultConfiguration": "prod",
+      "defaultConfiguration": "production",
       "dependsOn": [
         "i18n"
       ],
@@ -26,8 +26,8 @@
         "barn": {
           "mode": "barn"
         },
-        "prod": {
-          "mode": "prod"
+        "production": {
+          "mode": "production"
         }
       }
     },
@@ -42,8 +42,8 @@
           "buildTarget": "cowswap-frontend:build:dev",
           "hmr": true
         },
-        "prod": {
-          "buildTarget": "cowswap-frontend:build:prod",
+        "production": {
+          "buildTarget": "cowswap-frontend:build:production",
           "hmr": false
         }
       }
@@ -58,8 +58,8 @@
         "dev": {
           "buildTarget": "cowswap-frontend:build:dev"
         },
-        "prod": {
-          "buildTarget": "cowswap-frontend:build:prod"
+        "production": {
+          "buildTarget": "cowswap-frontend:build:production"
         }
       }
     },
