@@ -1,20 +1,7 @@
-import { FancyButton, Media, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
+import { FancyButton, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 
 import { darken } from 'color2k'
 import styled from 'styled-components/macro'
-
-export const Option = styled(FancyButton)<{ active: boolean }>`
-  margin-right: 8px;
-
-  :hover {
-    cursor: pointer;
-  }
-
-  &:disabled {
-    border: none;
-    pointer-events: none;
-  }
-`
 
 export const Input = styled.input`
   background: var(${UI.COLOR_PAPER});
@@ -48,28 +35,6 @@ export const OptionCustom = styled(FancyButton)<{ active?: boolean; warning?: bo
     height: 100%;
     border: 0;
     border-radius: 2rem;
-  }
-`
-
-export const SlippageEmojiContainer = styled.span`
-  color: #f3841e;
-  ${Media.upToSmall()} {
-    display: none;
-  }
-`
-
-export const SmartSlippageInfo = styled.div`
-  color: var(${UI.COLOR_GREEN});
-  font-size: 13px;
-  text-align: right;
-  width: 100%;
-  padding-right: 0.2rem;
-  display: flex;
-  justify-content: flex-end;
-  padding-bottom: 0.35rem;
-
-  > span {
-    margin-left: 4px;
   }
 `
 

@@ -1,19 +1,22 @@
 import { useCallback, useRef, useState } from 'react'
-import { CowSwapAnalyticsCategory } from '../../../../../common/analytics/types'
-import { isValidInteger, percentToBps } from '@cowprotocol/common-utils'
-import { MAX_SLIPPAGE_BPS, MIN_SLIPPAGE_BPS } from '@cowprotocol/common-const'
-import { Percent } from '@uniswap/sdk-core'
-import { StatefulValue } from '@cowprotocol/types'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { MAX_SLIPPAGE_BPS, MIN_SLIPPAGE_BPS } from '@cowprotocol/common-const'
+import { useOnClickOutside } from '@cowprotocol/common-hooks'
+import { isValidInteger, percentToBps } from '@cowprotocol/common-utils'
+import { Percent } from '@uniswap/sdk-core'
+
+import { useMinEthFlowSlippage } from './useMinEthFlowSlippage'
+
+import { CowSwapAnalyticsCategory } from '../../../../../common/analytics/types'
+import { useIsEoaEthFlow } from '../../../../trade'
 import {
   useDefaultTradeSlippage,
   useIsSlippageModified,
   useSetSlippage,
   useTradeSlippage
 } from '../../../../tradeSlippage'
-import { useIsEoaEthFlow } from '../../../../trade'
-import { useMinEthFlowSlippage } from './useMinEthFlowSlippage'
-import { useOnClickOutside } from '@cowprotocol/common-hooks'
+
 
 enum SlippageError {
   InvalidInput = 'InvalidInput',
