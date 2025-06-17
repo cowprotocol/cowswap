@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react'
 import { CrossChainOrder } from '@cowprotocol/cow-sdk'
 
 import { DetailRow } from 'components/common/DetailRow'
-import CowLoading from 'components/common/CowLoading'
+import { LoadingWrapper } from 'components/common/LoadingWrapper'
 import { SimpleTable } from 'components/common/SimpleTable'
 import styled from 'styled-components/macro'
 
@@ -12,15 +12,6 @@ import { BridgeDetailsTooltips } from './bridgeDetailsTooltips'
 import { BridgeTxOverview } from './BridgeTxOverview'
 import { Wrapper } from './styled'
 
-export const LoadingWrapper = styled.div`
-  text-align: center;
-  margin: 50px 0;
-  
-  h3 {
-    font-size: var(--font-size-larger);
-    font-weight: var(--font-weight-normal);
-  }
-`
 
 interface BridgeDetailsTableProps {
   crossChainOrder: CrossChainOrder | undefined
@@ -44,10 +35,7 @@ export function BridgeDetailsTable({ crossChainOrder, isLoading = false }: Bridg
               </DetailRow>
             )}
             {isLoading || !crossChainOrder ? (
-              <LoadingWrapper>
-                <CowLoading />
-                <h3>Bridging data loading</h3>
-              </LoadingWrapper>
+              <LoadingWrapper message="Loading bridging data" />
             ) : (
               <BridgeDetailsContent crossChainOrder={crossChainOrder} />
             )}
