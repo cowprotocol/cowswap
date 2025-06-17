@@ -35,7 +35,7 @@ export function quoteUsingSameParameters(
       currentParams.amount === nextParams.amount.toString(),
       bridgeTradeParams.validFor === nextParams.validFor,
       bridgeTradeParams.receiver === nextParams.receiver,
-      bridgeTradeParams.slippageBps === nextParams.slippageBps,
+      nextParams.slippageBps ? bridgeTradeParams.slippageBps === nextParams.slippageBps : true,
       currentParams.sellToken.toLowerCase() === nextParams.sellTokenAddress.toLowerCase(),
       bridgeTradeParams.sellTokenChainId === nextParams.sellTokenChainId,
       bridgeTradeParams.buyTokenAddress.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(),
@@ -51,6 +51,13 @@ export function quoteUsingSameParameters(
     currentParams.amount === nextParams.amount.toString(),
     currentParams.validFor === nextParams.validFor,
     currentParams.receiver === nextParams.receiver,
+    /**
+     * Check slippage only if it is set in nextParams
+     * Because we should refetch quote only when a user changed slippage
+     * Auto-slippage should not trigger quote refetching
+     * See how slippageBps is defined in `useQuoteParams()`
+     */
+    nextParams.slippageBps ? currentParams.slippageBps === nextParams.slippageBps : true,
     currentParams.sellToken.toLowerCase() === nextParams.sellTokenAddress.toLowerCase(),
     currentParams.buyToken.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(),
   ]
