@@ -1,5 +1,3 @@
-import { ReactNode } from 'react'
-
 import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -15,7 +13,7 @@ import styled from 'styled-components/macro'
  * - On desktop: laid out horizontally with fixed height (246px)
  * - On mobile: content stacks vertically and needs flexible height
  */
-const FinishedStepContentSectionContainer = styled.div`
+export const FinishedStepContentSection = styled.div`
   position: relative;
   width: 100%;
   display: flex;
@@ -42,17 +40,3 @@ const FinishedStepContentSectionContainer = styled.div`
     max-height: none;
   }
 `
-
-interface FinishedStepContentSectionProps {
-  children: ReactNode
-  style?: React.CSSProperties
-}
-
-/**
- * Content section wrapper specifically for finished and cancellation steps
- * that display tips/surplus information at the bottom of the progress bar.
- * Provides flexible mobile layout to prevent content cutoff.
- */
-export function FinishedStepContentSection({ children, style }: FinishedStepContentSectionProps): ReactNode {
-  return <FinishedStepContentSectionContainer style={style}>{children}</FinishedStepContentSectionContainer>
-}
