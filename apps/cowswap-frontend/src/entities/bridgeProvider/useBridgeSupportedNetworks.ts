@@ -9,7 +9,10 @@ export function useBridgeSupportedNetworks(): SWRResponse<ChainInfo[]> {
   const isBridgingEnabled = useIsBridgingEnabled()
   const bridgeProvider = useBridgeProvider()
 
-  return useSWR(isBridgingEnabled ? [bridgeProvider, 'useBridgeSupportedNetworks'] : null, ([bridgeProvider]) => {
-    return bridgeProvider.getNetworks()
-  })
+  return useSWR(
+    isBridgingEnabled ? [bridgeProvider, bridgeProvider.info.dappId, 'useBridgeSupportedNetworks'] : null,
+    ([bridgeProvider]) => {
+      return bridgeProvider.getNetworks()
+    },
+  )
 }

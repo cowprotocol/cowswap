@@ -10,7 +10,7 @@ export function useBridgeSupportedTokens(chainId: number | undefined): SWRRespon
   const bridgeProvider = useBridgeProvider()
 
   return useSWR(
-    isBridgingEnabled ? [bridgeProvider, chainId, 'useBridgeSupportedTokens'] : null,
+    isBridgingEnabled ? [bridgeProvider, chainId, bridgeProvider.info.dappId, 'useBridgeSupportedTokens'] : null,
     ([bridgeProvider, chainId]) => {
       if (typeof chainId === 'undefined') return null
 
