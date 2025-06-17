@@ -43,6 +43,7 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import * as styledEl from './styled'
 import { DeadlineTransactionSettings } from '../DeadlineTransactionSettings'
+import { SlippageWarningMessage } from '../SlippageWarning'
 
 enum SlippageError {
   InvalidInput = 'InvalidInput',
@@ -60,9 +61,6 @@ interface SlippageAnalyticsEvent {
   value: number
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
 export function TransactionSettings({ deadlineState }: TransactionSettingsProps): JSX.Element {
   const { chainId } = useWalletInfo()
   const theme = useContext(ThemeContext)
@@ -214,26 +212,14 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
               </RowBetween>
             </styledEl.OptionCustom>
           </RowBetween>
-          {!isSmartSlippageApplied && !chosenSlippageMatchesSmartSlippage && (slippageError || tooLow || tooHigh) ? (
-            <RowBetween
-              style={{
-                fontSize: '14px',
-                paddingTop: '7px',
-                color: slippageError ? `var(${UI.COLOR_DANGER})` : theme.warning,
-              }}
-            >
-              {slippageError ? (
-                <Trans>
-                  Enter slippage percentage between{' '}
-                  {isEoaEthFlow ? minEthFlowSlippage.toFixed(1) : MIN_SLIPPAGE_BPS / 100}% and {MAX_SLIPPAGE_BPS / 100}%
-                </Trans>
-              ) : tooLow ? (
-                <Trans>Your transaction may expire</Trans>
-              ) : (
-                <Trans>High slippage amount selected</Trans>
-              )}
-            </RowBetween>
-          ) : null}
+          { !isSmartSlippageApplied && !chosenSlippageMatchesSmartSlippage && (
+            <SlippageWarningMessage error={!!slippageError}
+                                    theme={theme}
+                                    tooLow={tooLow}
+                                    tooHigh={tooHigh}
+                                    max={MAX_SLIPPAGE_BPS / 100}
+                                    min={isEoaEthFlow ? +minEthFlowSlippage.toFixed(1) : MIN_SLIPPAGE_BPS / 100}/>
+          )}
           {isSmartSlippageApplied && (
             <RowBetween>
               <styledEl.SmartSlippageInfo>
