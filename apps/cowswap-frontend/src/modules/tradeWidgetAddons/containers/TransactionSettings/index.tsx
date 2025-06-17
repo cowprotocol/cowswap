@@ -1,4 +1,4 @@
-import { useCallback, useContext, useRef, useState } from 'react'
+import { JSX, useCallback, useContext, useRef, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import {
@@ -11,7 +11,7 @@ import {
   MINIMUM_ETH_FLOW_SLIPPAGE_BPS,
 } from '@cowprotocol/common-const'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
-import { getWrappedToken, percentToBps } from '@cowprotocol/common-utils'
+import { getWrappedToken, isValidInteger, percentToBps } from '@cowprotocol/common-utils'
 import { StatefulValue } from '@cowprotocol/types'
 import { HelpTooltip, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -63,8 +63,7 @@ interface SlippageAnalyticsEvent {
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
-export function TransactionSettings({ deadlineState }: TransactionSettingsProps) {
+export function TransactionSettings({ deadlineState }: TransactionSettingsProps): JSX.Element {
   const { chainId } = useWalletInfo()
   const theme = useContext(ThemeContext)
   const analytics = useCowAnalytics()
@@ -123,12 +122,12 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
         }
 
         const parsed = Math.round(Number.parseFloat(v) * 100)
+        const isValidInput = isValidInteger(
+          isEoaEthFlow ? minEthFlowSlippageBps : MIN_SLIPPAGE_BPS,
+          MAX_SLIPPAGE_BPS,
+        )
 
-        if (
-          !Number.isInteger(parsed) ||
-          parsed < (isEoaEthFlow ? minEthFlowSlippageBps : MIN_SLIPPAGE_BPS) ||
-          parsed > MAX_SLIPPAGE_BPS
-        ) {
+        if (!isValidInput(parsed)) {
           if (v !== '.') {
             setSlippageError(SlippageError.InvalidInput)
           }
