@@ -12,7 +12,7 @@ import * as styledEl from './styled'
 
 import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../constants'
 import { useProgressBarLayout } from '../hooks/useProgressBarLayout'
-import { OrderProgressBarProps } from '../types'
+import { OrderProgressBarProps, STEP_NAMES } from '../types'
 
 export function RenderProgressTopSection({
   stepName,
@@ -25,7 +25,7 @@ export function RenderProgressTopSection({
   debugForceShowSurplus?: boolean
 }): ReactNode {
   const { cssVariables, isLayoutReady } = useProgressBarLayout()
-  const hideIntent = stepName === 'finished' || stepName === 'cancellationFailed'
+  const hideIntent = stepName === STEP_NAMES.FINISHED || stepName === STEP_NAMES.CANCELLATION_FAILED
 
   const { randomImage, randomBenefit } = useMemo(() => {
     const benefits = CHAIN_SPECIFIC_BENEFITS[chainId]
@@ -40,7 +40,7 @@ export function RenderProgressTopSection({
   const shouldShowSurplus = debugForceShowSurplus || showSurplus
   const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
   
-  const isFinishedStep = stepName === 'finished' || stepName === 'cancellationFailed'
+  const isFinishedStep = stepName === STEP_NAMES.FINISHED || stepName === STEP_NAMES.CANCELLATION_FAILED
   const WrapperComponent = isFinishedStep ? FinishedStepContentSection : styledEl.ProgressTopSection
 
   return (

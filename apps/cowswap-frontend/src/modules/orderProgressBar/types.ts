@@ -29,6 +29,32 @@ type errorFlow = 'delayed' | 'solved' | 'unfillable' | 'submissionFailed'
 type cancellationFlow = 'cancelling' | 'cancelled' | 'expired' | 'cancellationFailed'
 export type OrderProgressBarStepName = happyPath | errorFlow | cancellationFlow | BridgingFlowStep
 
+/**
+ * Frontend-defined step name constants.
+ * These are mapped from backend CompetitionOrderStatus.type values
+ * but provide more granular UI states for better user experience.
+ */
+export const STEP_NAMES = {
+  INITIAL: 'initial',
+  SOLVING: 'solving',
+  EXECUTING: 'executing',
+  FINISHED: 'finished',
+  DELAYED: 'delayed',
+  SOLVED: 'solved',
+  UNFILLABLE: 'unfillable',
+  SUBMISSION_FAILED: 'submissionFailed',
+  CANCELLING: 'cancelling',
+  CANCELLED: 'cancelled',
+  EXPIRED: 'expired',
+  CANCELLATION_FAILED: 'cancellationFailed',
+  BRIDGING_IN_PROGRESS: 'bridgingInProgress',
+  BRIDGING_FAILED: 'bridgingFailed',
+  REFUND_COMPLETED: 'refundCompleted',
+  BRIDGING_FINISHED: 'bridgingFinished',
+} as const
+
+export const DEFAULT_STEP_NAME: OrderProgressBarStepName = STEP_NAMES.INITIAL
+
 type Unpacked<T> = T extends (infer U)[] ? U : never
 export type ApiSolverCompetition = Unpacked<CompetitionOrderStatus['value']>
 export type SolverCompetition = ApiSolverCompetition & Partial<SolverInfo>
