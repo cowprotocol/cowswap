@@ -1,4 +1,4 @@
-import { useEffect, useState, ReactNode } from 'react'
+import { useEffect, useState, ReactNode, useRef } from 'react'
 
 import { USDC_BASE, USDC_GNOSIS_CHAIN } from '@cowprotocol/common-const'
 import { SupportedChainId, BridgeStatus } from '@cowprotocol/cow-sdk'
@@ -13,7 +13,7 @@ import { SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
 
 import { getOrderMock } from '../../../../mocks/orderMock'
 import { inputCurrencyInfoMock } from '../../../../mocks/tradeStateMock'
-import { OrderProgressBarProps } from '../../types'
+import { OrderProgressBarProps, STEP_NAMES } from '../../types'
 
 import { OrderProgressBar } from './index'
 
@@ -115,14 +115,29 @@ const Wrapper = styled.div`
 
 function SolvingFixture(): ReactNode {
   const [countdown, setCountdown] = useState(15)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCountdown((prev) => (prev > 0 ? prev - 1 : 0))
+    intervalRef.current = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          // Clear interval when we're about to hit 0
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current)
+            intervalRef.current = null
+          }
+          return 0
+        }
+        return prev - 1
+      })
     }, 1000)
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+    }
+  }, []) // Empty dependency array - set up only once
 
   return (
     <Wrapper>
@@ -131,38 +146,39 @@ function SolvingFixture(): ReactNode {
   )
 }
 
-function AnimatedProgressFixture(): ReactNode {
-  const [stepIndex, setStepIndex] = useState(0)
-  const [direction, setDirection] = useState(1) // 1 for forward, -1 for backward
+const ALL_STEP_NAMES: OrderProgressBarProps['stepName'][] = [
+  STEP_NAMES.INITIAL,
+  STEP_NAMES.SOLVING,
+  STEP_NAMES.DELAYED,
+  STEP_NAMES.SOLVED,
+  STEP_NAMES.EXECUTING,
+  STEP_NAMES.FINISHED,
+  STEP_NAMES.CANCELLATION_FAILED,
+  STEP_NAMES.CANCELLING,
+  STEP_NAMES.CANCELLED,
+  STEP_NAMES.EXPIRED,
+  STEP_NAMES.UNFILLABLE,
+  STEP_NAMES.SUBMISSION_FAILED,
+]
 
-  // All available step names in order
-  const stepNames: OrderProgressBarProps['stepName'][] = [
-    'initial',
-    'solving',
-    'delayed',
-    'solved',
-    'executing',
-    'finished',
-    'cancellationFailed',
-    'cancelling',
-    'cancelled',
-    'expired',
-    'unfillable',
-    'submissionFailed',
-  ]
+function useStepTransitions(): {
+  stepIndex: number
+  direction: number
+  currentStepName: OrderProgressBarProps['stepName']
+} {
+  const [stepIndex, setStepIndex] = useState(0)
+  const [direction, setDirection] = useState(1)
 
   useEffect(() => {
     const interval = setInterval(() => {
       setStepIndex((prevIndex) => {
         const nextIndex = prevIndex + direction
         
-        // If we've reached the end, reverse direction
-        if (nextIndex >= stepNames.length - 1) {
+        if (nextIndex >= ALL_STEP_NAMES.length - 1) {
           setDirection(-1)
-          return stepNames.length - 1
+          return ALL_STEP_NAMES.length - 1
         }
         
-        // If we've reached the beginning, reverse direction
         if (nextIndex <= 0) {
           setDirection(1)
           return 0
@@ -170,18 +186,65 @@ function AnimatedProgressFixture(): ReactNode {
         
         return nextIndex
       })
-    }, 3000) // Stay on each step for 3 seconds
+    }, 3000)
 
     return () => clearInterval(interval)
-  }, [direction, stepNames.length])
+  }, [direction])
 
-  const currentStepName = stepNames[stepIndex]
-  const countdown = currentStepName === 'solving' ? 15 : 0
+  return {
+    stepIndex,
+    direction,
+    currentStepName: ALL_STEP_NAMES[stepIndex],
+  }
+}
+
+function useCountdownForSolving(currentStepName: OrderProgressBarProps['stepName']): number {
+  const [countdown, setCountdown] = useState(0)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+
+  useEffect(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
+    }
+
+    if (currentStepName === STEP_NAMES.SOLVING) {
+      setCountdown(15)
+      
+      intervalRef.current = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            if (intervalRef.current) {
+              clearInterval(intervalRef.current)
+              intervalRef.current = null
+            }
+            return 0
+          }
+          return prev - 1
+        })
+      }, 1000)
+    } else {
+      setCountdown(0)
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+    }
+  }, [currentStepName])
+
+  return countdown
+}
+
+function AnimatedProgressFixture(): ReactNode {
+  const { stepIndex, direction, currentStepName } = useStepTransitions()
+  const countdown = useCountdownForSolving(currentStepName)
 
   return (
     <Wrapper>
       <div style={{ marginBottom: '16px', padding: '8px', background: 'rgba(0,0,0,0.1)', borderRadius: '8px' }}>
-        <strong>Current Step:</strong> {currentStepName} ({stepIndex + 1}/{stepNames.length})
+        <strong>Current Step:</strong> {currentStepName} ({stepIndex + 1}/{ALL_STEP_NAMES.length})
         <br />
         <strong>Direction:</strong> {direction > 0 ? 'Forward' : 'Backward'}
       </div>
@@ -189,7 +252,7 @@ function AnimatedProgressFixture(): ReactNode {
         {...defaultProps} 
         stepName={currentStepName} 
         countdown={countdown}
-        key={`${currentStepName}-${stepIndex}`} // Force re-render on step change
+        key={`${currentStepName}-${stepIndex}`}
       />
     </Wrapper>
   )
