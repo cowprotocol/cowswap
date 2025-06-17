@@ -8,6 +8,7 @@ import { HelpTooltip, RowFixed } from '@cowprotocol/ui'
 import { Trans } from '@lingui/macro'
 
 import { useCustomDeadline } from './hooks/useCustomDeadline'
+import * as styledEl from './styled'
 
 import {
   getNativeOrderDeadlineTooltip,
@@ -16,7 +17,6 @@ import {
 import useNativeCurrency from '../../../../lib/hooks/useNativeCurrency'
 import { ThemedText } from '../../../../theme'
 import { useIsEoaEthFlow } from '../../../trade'
-import * as styledEl from '../TransactionSettings/styled'
 
 interface DeadlineSettingsProps {
   deadlineState: StatefulValue<number>
