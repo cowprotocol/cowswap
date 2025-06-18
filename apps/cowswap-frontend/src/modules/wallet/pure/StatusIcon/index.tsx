@@ -21,6 +21,8 @@ export interface StatusIconProps {
   size?: number
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function StatusIcon({ connectionType, account, size = 16 }: StatusIconProps) {
   let image
   switch (connectionType) {

@@ -14,6 +14,8 @@ export interface SettingsProps {
   onStateChanged: (state: Partial<AdvancedOrdersSettingsState>) => void
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Settings({ state, onStateChanged }: SettingsProps) {
   const { showRecipient } = state
   // TODO: we should use limit orders settings in Advanced Orders!

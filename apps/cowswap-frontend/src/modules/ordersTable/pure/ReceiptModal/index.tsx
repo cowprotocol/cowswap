@@ -94,6 +94,10 @@ const tooltips: { [key: string]: string | ReactElement } = {
 const TWAP_PART_ORDER_EXISTS_STATES = new Set([OrderStatus.PENDING, OrderStatus.FULFILLED, OrderStatus.EXPIRED])
 
 // TODO: add cosmos fixture for this component
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function ReceiptModal({
   isOpen,
   onDismiss,
@@ -127,7 +131,7 @@ export function ReceiptModal({
   const outputLabel = isSell ? 'You receive at least' : 'You receive exactly'
   const safeTxParams = twapOrder?.safeTxParams
 
-  const volumeFee = getOrderVolumeFee(order.fullAppData)
+  const volumeFeeBps = getOrderVolumeFee(order.fullAppData)
 
   return (
     <CowModal onDismiss={onDismiss} isOpen={isOpen}>
@@ -213,10 +217,10 @@ export function ReceiptModal({
               </styledEl.Field>
             )}
 
-            {volumeFee && (
+            {volumeFeeBps && (
               <styledEl.Field>
                 <FieldLabel label="Total fee" tooltip={tooltips.TOTAL_FEE} />
-                <span>{(volumeFee.bps / 100).toFixed(2)}%</span>
+                <span>{(volumeFeeBps / 100).toFixed(2)}%</span>
               </styledEl.Field>
             )}
 

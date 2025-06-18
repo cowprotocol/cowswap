@@ -2,7 +2,7 @@ import { Erc20 } from '@cowprotocol/abis'
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
-import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
@@ -30,6 +30,8 @@ import { SafeBundleFlowContext, TradeFlowContext } from '../../types/TradeFlowCo
 
 const LOG_PREFIX = 'SAFE BUNDLE ETH FLOW'
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export async function safeBundleEthFlow(
   tradeContext: TradeFlowContext,
   safeBundleContext: SafeBundleFlowContext,

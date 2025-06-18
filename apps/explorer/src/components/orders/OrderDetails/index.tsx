@@ -83,6 +83,9 @@ function useQueryViewParams(): string {
   return query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB // if URL param empty will be used DEFAULT
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, complexity
 const tabItems = (
   chainId: SupportedChainId,
   _order: Order | null,
@@ -155,6 +158,8 @@ function getOrderWithTxHash(order: Order | null, trades: Trade[]): Order | null 
 
 const RESULTS_PER_PAGE = 10
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export const OrderDetails: React.FC<Props> = (props) => {
   const { order, isOrderLoading, areTradesLoading, errors, trades } = props
   const chainId = useNetworkId()

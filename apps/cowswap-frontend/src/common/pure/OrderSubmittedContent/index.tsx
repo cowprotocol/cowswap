@@ -37,6 +37,8 @@ export interface OrderSubmittedContentProps {
   hash: string
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function OrderSubmittedContent({ chainId, account, isSafeWallet, hash, onDismiss }: OrderSubmittedContentProps) {
   const tx = {
     hash,

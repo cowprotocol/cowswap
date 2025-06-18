@@ -40,6 +40,8 @@ interface HookParams {
   cowShed: CowShedHooks
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export async function buildOmnibridgePostHook({
   cowShed,
   proxyAddress,
@@ -145,5 +147,5 @@ export async function buildOmnibridgePostHook({
   // TODO: add estimation
   const gasLimit = '850000'
 
-  return { target: COW_SHED_FACTORY, callData: hooksCalldata, gasLimit }
+  return { target: COW_SHED_FACTORY, callData: hooksCalldata, gasLimit, dappId: 'omnibridge' }
 }

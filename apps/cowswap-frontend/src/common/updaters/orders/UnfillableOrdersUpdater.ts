@@ -36,6 +36,8 @@ import { FeeQuoteParams } from '../../types'
 /**
  * Updater that checks whether pending orders are still "fillable"
  */
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function UnfillableOrdersUpdater(): null {
   const { chainId, account } = useWalletInfo()
   const updatePendingOrderPrices = useSetAtom(updatePendingOrderPricesAtom)
@@ -186,6 +188,8 @@ export function UnfillableOrdersUpdater(): null {
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function _getOrderPrice(chainId: ChainId, order: Order) {
   let baseToken, quoteToken
 

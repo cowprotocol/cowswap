@@ -8,7 +8,7 @@ export interface TradeQuoteUpdaterProps {
   isConfirmOpen: boolean
 }
 
-export function TradeQuoteUpdater({ isConfirmOpen }: TradeQuoteUpdaterProps) {
+export function TradeQuoteUpdater({ isConfirmOpen }: TradeQuoteUpdaterProps): null {
   const quoteState = useTradeQuote()
 
   useTradeQuotePolling(isConfirmOpen)

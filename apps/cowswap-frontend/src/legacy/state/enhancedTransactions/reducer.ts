@@ -1,5 +1,5 @@
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 
 import { createReducer } from '@reduxjs/toolkit'
 
@@ -34,6 +34,8 @@ export interface EnhancedTransactionDetails {
   summary?: string
   confirmedTime?: number
   receipt?: SerializableTransactionReceipt // Ethereum transaction receipt
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any // any attached data type
 
   // Operations
@@ -70,8 +72,12 @@ export interface EnhancedTransactionState {
 
 export const initialState: EnhancedTransactionState = {}
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const now = () => new Date().getTime()
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function updateBlockNumber(tx: EnhancedTransactionDetails, blockNumber: number) {
   if (!tx.lastCheckedBlockNumber) {
     tx.lastCheckedBlockNumber = blockNumber
@@ -80,6 +86,8 @@ function updateBlockNumber(tx: EnhancedTransactionDetails, blockNumber: number) 
   }
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export default createReducer(initialState, (builder) =>
   builder
     .addCase(
@@ -104,7 +112,7 @@ export default createReducer(initialState, (builder) =>
             ethFlow,
             onChainCancellation,
           },
-        }
+        },
       ) => {
         if (transactions[chainId]?.[hash]) {
           console.warn('[state::enhancedTransactions] Attempted to add existing transaction', hash)
@@ -133,7 +141,7 @@ export default createReducer(initialState, (builder) =>
           onChainCancellation,
         }
         transactions[chainId] = txs
-      }
+      },
     )
 
     .addCase(clearAllTransactions, (transactions, { payload: { chainId } }) => {
@@ -215,5 +223,5 @@ export default createReducer(initialState, (builder) =>
 
       // Update safe info
       tx.safeTransaction = safeTransaction
-    })
+    }),
 )

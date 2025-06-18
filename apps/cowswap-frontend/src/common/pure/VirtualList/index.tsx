@@ -7,6 +7,8 @@ import { ListInner, ListScroller, ListWrapper, LoadingRows } from './styled'
 
 const scrollDelay = ms`400ms`
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const threeDivs = () => (
   <>
     <div />
@@ -26,6 +28,8 @@ interface VirtualListProps<T> {
   children?: ReactNode
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function VirtualList<T>({
   id,
   items,

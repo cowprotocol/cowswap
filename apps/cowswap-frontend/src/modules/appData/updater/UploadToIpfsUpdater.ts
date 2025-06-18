@@ -34,6 +34,8 @@ export function UploadToIpfsUpdater(): null {
   }, [newlyAdded, removePending, updatePending])
 
   useEffect(() => {
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     async function uploadPendingAppData() {
       console.debug(`[UploadToIpfsUpdater] Iterating over ${refToUpload.current.length} appData on upload queue`)
       refToUpload.current.forEach((appDataRecord) => _uploadToIpfs(appDataRecord, updatePending, removePending))
@@ -49,6 +51,8 @@ export function UploadToIpfsUpdater(): null {
   return null
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function _uploadToIpfs(
   appDataRecord: AppDataRecord,
   updatePending: (params: UpdateAppDataOnUploadQueueParams) => void,
@@ -84,6 +88,8 @@ function _canUpload(uploading: boolean, attempts: number, lastAttempt?: number):
   return true
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function _actuallyUploadToIpfs(
   appDataRecord: AppDataRecord,
   updatePending: (params: UpdateAppDataOnUploadQueueParams) => void,
@@ -99,6 +105,8 @@ async function _actuallyUploadToIpfs(
   try {
     await uploadAppDataDocOrderbookApi({ appDataKeccak256, fullAppData, chainId, env })
     removePending({ chainId, orderId })
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     console.error(`[UploadToIpfsUpdater] Failed to upload doc, will try again. Reason: ${e.message}`, e, fullAppData)
     updatePending({ chainId, orderId, uploading: false, failedAttempts: failedAttempts + 1, lastAttempt: Date.now() })

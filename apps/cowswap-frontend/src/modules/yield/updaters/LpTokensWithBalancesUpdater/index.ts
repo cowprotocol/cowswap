@@ -9,6 +9,8 @@ import { LP_TOKENS_WITH_BALANCES_DEFAULT_STATE, lpTokensWithBalancesAtom } from 
 
 const LP_CATEGORY = [TokenListCategory.LP]
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function LpTokensWithBalancesUpdater() {
   const { account } = useWalletInfo()
   const lpTokens = useAllLpTokens(LP_CATEGORY)

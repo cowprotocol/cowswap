@@ -1,7 +1,13 @@
 import { atom, useAtom } from 'jotai'
 import { useCallback, useMemo } from 'react'
 
-import { cowprotocolTokenLogoUrl, LpToken, NATIVE_CURRENCY_ADDRESS, TokenWithLogo } from '@cowprotocol/common-const'
+import {
+  BaseChainInfo,
+  cowprotocolTokenLogoUrl,
+  LpToken,
+  NATIVE_CURRENCY_ADDRESS,
+  TokenWithLogo,
+} from '@cowprotocol/common-const'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { uriToHttp } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -71,7 +77,7 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
   }
 `
 
-const ChainLogoWrapper = styled.div<{ size?: number }>`
+const ChainLogoWrapper = styled.div<{ size?: number; sizeMobile?: number }>`
   ${({ size = DEFAULT_CHAIN_LOGO_SIZE }) => {
     const borderWidth = getBorderWidth(size)
     return `
@@ -89,6 +95,16 @@ const ChainLogoWrapper = styled.div<{ size?: number }>`
       right: -${borderWidth}px;
     `
   }}
+
+  ${Media.upToSmall()} {
+    ${({ sizeMobile }) =>
+      sizeMobile
+        ? css`
+            width: ${sizeMobile}px;
+            height: ${sizeMobile}px;
+          `
+        : ''}
+  }
 
   > img,
   > svg {
@@ -139,6 +155,10 @@ export interface TokenLogoProps {
   noWrap?: boolean
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
 export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, noWrap }: TokenLogoProps) {
   const tokensByAddress = useTokensByAddressMap()
 
@@ -203,16 +223,14 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile, no
 
   if (noWrap) return tokenContent
 
-  const chainName =
-    token?.chainId && Object.values(SupportedChainId).includes(token.chainId)
-      ? getChainInfo(token.chainId as SupportedChainId).label
-      : ''
+  const chainInfo: BaseChainInfo | undefined = getChainInfo(token?.chainId as SupportedChainId)
+  const chainName = chainInfo?.label || ''
 
   return (
     <TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
       {tokenContent}
       {logoUrl && (
-        <ChainLogoWrapper size={size / 1.85}>
+        <ChainLogoWrapper size={size / 1.85} sizeMobile={sizeMobile ? sizeMobile / 1.85 : undefined}>
           <img src={logoUrl} alt={`${chainName} network logo`} />
         </ChainLogoWrapper>
       )}

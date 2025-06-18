@@ -18,6 +18,8 @@ const Wrapper = styled.div`
 
 // const chainId = 5
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function Host() {
   const [isHardWare] = useSelect('Is hardware wallet', {
     options: ['true', 'false'],
@@ -32,7 +34,7 @@ function Host() {
 }
 
 const Fixtures = {
-  default: <Host />,
+  default: () => <Host />,
 }
 
 export default Fixtures

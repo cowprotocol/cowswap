@@ -1,13 +1,16 @@
 'use client'
 
-import { PropsWithChildren } from 'react'
-import Link from 'next/link'
+import { PropsWithChildren, ReactNode } from 'react'
+
 import { Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
-import styled, { createGlobalStyle, css, ThemeProvider } from 'styled-components/macro'
-import { CoWDAOFonts } from '@/styles/CoWDAOFonts'
-import { NAV_ADDITIONAL_BUTTONS, NAV_ITEMS, PAGE_MAX_WIDTH, PRODUCT_VARIANT } from './const'
-import { useSetupPage } from '../../hooks/useSetupPage'
 import { baseTheme } from '@cowprotocol/ui'
+
+import Link from 'next/link'
+import styled, { createGlobalStyle, css, ThemeProvider } from 'styled-components/macro'
+
+import { NAV_ADDITIONAL_BUTTONS, NAV_ITEMS, PAGE_MAX_WIDTH, PRODUCT_VARIANT } from './const'
+
+import { useSetupPage } from '../../hooks/useSetupPage'
 
 const darkTheme = baseTheme('dark')
 
@@ -31,16 +34,15 @@ const Wrapper = styled.div`
 `
 
 interface LayoutProps {
-  children: React.ReactNode
+  children: ReactNode
   bgColor?: string
   host?: string
 }
 
-export function Layout({ children, bgColor, host }: Readonly<LayoutProps>) {
+export function Layout({ children, bgColor, host }: Readonly<LayoutProps>): ReactNode {
   useSetupPage()
 
-  const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts)
-
+  const GlobalStyles = GlobalCoWDAOStyles()
   const LocalStyles = createGlobalStyle(
     () => css`
       body {

@@ -1,6 +1,6 @@
 import { SigningScheme } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
-import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
@@ -24,6 +24,8 @@ import { SafeBundleFlowContext, TradeFlowContext } from '../../types/TradeFlowCo
 
 const LOG_PREFIX = 'SAFE APPROVAL BUNDLE FLOW'
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export async function safeBundleApprovalFlow(
   tradeContext: TradeFlowContext,
   safeBundleContext: SafeBundleFlowContext,

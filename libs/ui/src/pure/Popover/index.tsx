@@ -20,6 +20,9 @@ export interface PopoverProps extends PopoverContainerProps, Omit<React.HTMLAttr
   placement?: Placement
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export default function Popover(props: PopoverProps) {
   const { content, show, children, placement = 'auto', bgColor, color, className } = props
 
@@ -50,11 +53,15 @@ export default function Popover(props: PopoverProps) {
 
   return (
     <>
+      {/* TODO: Replace any with proper type definitions */}
+      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
       <ReferenceElement ref={setReferenceElement as any}>{children}</ReferenceElement>
       <Portal>
         <PopoverContainer
           className={className}
           show={show}
+          /* TODO: Replace any with proper type definitions */
+          /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
           ref={setPopperElement as any}
           style={{
             ...styles.popper,
@@ -67,6 +74,8 @@ export default function Popover(props: PopoverProps) {
           {content}
           <Arrow
             className={`arrow-${attributes.popper?.['data-popper-placement'] ?? ''}`}
+            /* TODO: Replace any with proper type definitions */
+            /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
             ref={setArrowElement as any}
             style={styles.arrow}
             bgColor={bgColor}
@@ -80,6 +89,8 @@ export default function Popover(props: PopoverProps) {
 
 // TODO: reuse hook from @cowprotocol/common-hooks
 // Currently it's not possible because of dependency inversion
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useInterval(callback: Command, delay: null | number, leading = true) {
   const savedCallback = useRef<Command>(null)
 
@@ -90,6 +101,8 @@ function useInterval(callback: Command, delay: null | number, leading = true) {
 
   // Set up the interval.
   useEffect(() => {
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     function tick() {
       const { current } = savedCallback
       current && current()

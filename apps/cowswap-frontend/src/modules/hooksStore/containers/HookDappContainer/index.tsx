@@ -24,6 +24,9 @@ interface HookDappContainerProps {
   hookToEdit?: string
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: HookDappContainerProps) {
   const { chainId, account } = useWalletInfo()
   const addHook = useAddHook(dapp, isPreHook)

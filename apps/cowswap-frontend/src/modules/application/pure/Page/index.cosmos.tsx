@@ -1,5 +1,7 @@
 import { Content, Page, Title, SectionTitle } from '.'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function Custom() {
   return (
     <Page>

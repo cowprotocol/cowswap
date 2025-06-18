@@ -22,6 +22,8 @@ export interface ImportTokenModalProps {
   onImport(tokens: TokenWithLogo[]): void
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ImportTokenModal(props: ImportTokenModalProps) {
   const { tokens, onBack, onDismiss, onImport } = props
 

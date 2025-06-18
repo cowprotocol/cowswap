@@ -4,7 +4,8 @@ import { getMinimumReceivedTooltip, isSellOrder } from '@cowprotocol/common-util
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useIsEoaEthFlow, useShouldPayGas } from 'modules/trade'
-import { useIsSmartSlippageApplied, useSmartTradeSlippage } from 'modules/tradeSlippage'
+import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
+import { useIsSmartSlippageApplied } from 'modules/tradeSlippage'
 import { NetworkCostsTooltipSuffix } from 'modules/tradeWidgetAddons'
 
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
@@ -13,6 +14,8 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useLabelsAndTooltips() {
   const { slippage, orderKind } = useSwapDerivedState()
   const { chainId } = useWalletInfo()
@@ -21,7 +24,7 @@ export function useLabelsAndTooltips() {
   const nativeCurrency = useNativeCurrency()
 
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
-  const smartSlippage = useSmartTradeSlippage()
+  const smartSlippage = useSmartSlippageFromQuote()
   const isSell = isSellOrder(orderKind)
 
   return useMemo(

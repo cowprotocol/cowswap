@@ -6,6 +6,8 @@ export type SmallVolumeWarningBannerProps = {
   feeAmount: Nullish<CurrencyAmount<Currency>>
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SmallVolumeWarningBanner({ feePercentage, feeAmount }: SmallVolumeWarningBannerProps) {
   return (
     <InlineBanner iconSize={32}>

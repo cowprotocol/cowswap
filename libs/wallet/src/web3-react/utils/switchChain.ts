@@ -20,8 +20,12 @@ const WALLET_RPC_SUGGESTION: Record<SupportedChainId, string | null> = {
   [SupportedChainId.ARBITRUM_ONE]: 'https://arb1.arbitrum.io/rpc',
   [SupportedChainId.BASE]: 'https://mainnet.base.org',
   [SupportedChainId.SEPOLIA]: null,
+  [SupportedChainId.POLYGON]: 'https://polygon-rpc.com/',
+  [SupportedChainId.AVALANCHE]: 'https://avalanche-c-chain.public.blastapi.io/',
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const switchChain = async (connector: Connector, chainId: SupportedChainId) => {
   if (!isChainAllowed(connector, chainId)) {
     throw new Error(`Chain ${chainId} not supported for connector (${typeof connector})`)

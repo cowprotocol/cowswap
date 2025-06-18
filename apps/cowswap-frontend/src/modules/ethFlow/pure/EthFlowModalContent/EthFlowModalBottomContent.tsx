@@ -2,10 +2,10 @@ import { useCallback, useMemo, useState } from 'react'
 
 import { Trans } from '@lingui/macro'
 
-import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
-
 import { SimpleAccountDetails } from 'modules/account/containers/SimpleAccountDetails'
 import { TradeFormBlankButton } from 'modules/tradeFormValidation'
+
+import { ActivityStatus } from 'common/types/activity'
 
 import { EthFlowActions } from '../../containers/EthFlow/hooks/useEthFlowActions'
 import { EthFlowState } from '../../services/ethFlow/types'
@@ -34,6 +34,8 @@ export type BottomContentParams = {
   wrappingPreview: WrappingPreviewProps
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function EthFlowModalBottomContent(params: BottomContentParams) {
   const { state, buttonText, ethFlowContext, ethFlowActions, wrappingPreview } = params
   const {

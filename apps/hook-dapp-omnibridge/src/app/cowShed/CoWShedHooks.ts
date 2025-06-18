@@ -63,6 +63,8 @@ export class CowShedHooks {
     return await ecdsaSignTypedData(signingScheme, signer, domain, types, message)
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   infoToSign(calls: ICoWShedCall[], nonce: string, deadline: bigint, proxy: string) {
     const message = {
       calls,
@@ -82,10 +84,14 @@ export class CowShedHooks {
     return domain
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   getFactoryAddress() {
     return this.customOptions?.factoryAddress ?? COW_SHED_FACTORY
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   getImplementationAddress() {
     return this.customOptions?.implementationAddress ?? COW_SHED_IMPLEMENTATION
   }

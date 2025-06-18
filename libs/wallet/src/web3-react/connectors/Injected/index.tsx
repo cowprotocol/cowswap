@@ -68,28 +68,32 @@ export class InjectedWallet extends Connector {
 
         const desiredChainIdHex = `0x${desiredChainId.toString(16)}`
 
-        return this.provider
-          .request<any>({
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId: desiredChainIdHex }],
-          })
-          .catch((error: ProviderRpcError) => {
-            if (error.code === 4902 && typeof desiredChainIdOrChainParameters !== 'number') {
-              if (!this.provider) throw new Error('No provider')
-              // if we're here, we can try to add a new network
-              return this.provider.request({
-                method: 'wallet_addEthereumChain',
-                params: [{ ...desiredChainIdOrChainParameters, chainId: desiredChainIdHex }],
-              })
-            }
+        return (
+          this.provider
+            // TODO: Replace any with proper type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .request<any>({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: desiredChainIdHex }],
+            })
+            .catch((error: ProviderRpcError) => {
+              if (error.code === 4902 && typeof desiredChainIdOrChainParameters !== 'number') {
+                if (!this.provider) throw new Error('No provider')
+                // if we're here, we can try to add a new network
+                return this.provider.request({
+                  method: 'wallet_addEthereumChain',
+                  params: [{ ...desiredChainIdOrChainParameters, chainId: desiredChainIdHex }],
+                })
+              }
 
-            throw error
-          })
-          .then(() => {
-            if (this.provider) {
-              this.onConnect?.(this.provider)
-            }
-          })
+              throw error
+            })
+            .then(() => {
+              if (this.provider) {
+                this.onConnect?.(this.provider)
+              }
+            })
+        )
       })
       .catch((error: Error) => {
         cancelActivation?.()
@@ -109,8 +113,6 @@ export class InjectedWallet extends Connector {
 
       // Fix to call this only once
       this.eagerConnection = true
-
-      await this.provider.enable?.()
 
       // Wallets may resolve eth_chainId and hang on eth_accounts pending user interaction, which may include changing
       // chains; they should be requested serially, with accounts first, so that the chainId can settle.
@@ -133,6 +135,8 @@ export class InjectedWallet extends Connector {
     const provider = this.detectProvider()
 
     if (provider) {
+      // TODO: Add proper return type annotation
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       const doesProviderMatches = () => this.provider === provider
 
       provider.on('connect', (data: ProviderConnectInfo): void => {
@@ -215,13 +219,21 @@ export class InjectedWallet extends Connector {
   // Some wallets such as Tally will inject custom providers array on window.ethereum
   // This array will contain all injected providers and we can select the one we want based on keywords passed to constructor
   // For example to select tally we would search for isTally or isTallyWallet property keys
+  // TODO: Add proper return type annotation
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
   private detectOnProvider(providers: any) {
     if (!providers) return null
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return providers.find((provider: any) => this.searchKeywords.some((keyword) => provider[keyword]))
   }
 
   // Mod: Added custom method
   // Here we check for specific provider directly on window.ethereum
+  // TODO: Add proper return type annotation
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
   private detectOnEthereum(ethereum?: any) {
     if (!ethereum) return null
 
@@ -233,6 +245,8 @@ export class InjectedWallet extends Connector {
 
   // Mod: Added custom method
   // Try 2 different RPC methods to get accounts first with eth_requestAccounts and if it fails, try eth_accounts
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   public async getAccounts() {
     const { provider } = this
 

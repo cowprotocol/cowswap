@@ -1,3 +1,7 @@
+// Disable workbox verbose logging
+declare const self: ServiceWorkerGlobalScope & { __WB_DISABLE_DEV_LOGS?: boolean }
+self.__WB_DISABLE_DEV_LOGS = true
+
 import 'workbox-precaching' // defines __WB_MANIFEST
 
 import { clientsClaim, setCacheNameDetails } from 'workbox-core'
@@ -14,8 +18,6 @@ import { toURL } from './utils'
 import pkg from '../../package.json'
 
 const WEB_VERSION = pkg.version
-
-declare const self: ServiceWorkerGlobalScope
 
 // Set Cache name
 //  See https://dev.to/atonchev/flawless-and-silent-upgrade-of-the-service-worker-2o95
@@ -51,7 +53,7 @@ const { assets, entries } = self.__WB_MANIFEST.reduce<{ assets: { [key: string]:
 
     return acc
   },
-  { assets: {}, entries: [] }
+  { assets: {}, entries: [] },
 )
 
 // Registers the assets' routes for on-demand caching.
@@ -61,8 +63,8 @@ registerRoute(
     new CacheFirst({
       cacheName: 'assets',
       plugins: [new ExpirationPlugin({ maxEntries: 16 })],
-    })
-  )
+    }),
+  ),
 )
 
 // Precaches entries and registers a default route to serve them.

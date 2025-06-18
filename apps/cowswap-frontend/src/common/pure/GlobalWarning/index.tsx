@@ -5,6 +5,8 @@ import { Media, UI } from '@cowprotocol/ui'
 import { AlertTriangle, X } from 'react-feather'
 import styled from 'styled-components/macro'
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const StyledClose = styled(X as any)`
   flex-shrink: 0;
   opacity: 0.5;
@@ -20,6 +22,8 @@ const StyledClose = styled(X as any)`
   }
 `
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const StyledAlertTriangle = styled(AlertTriangle as any)`
   flex-shrink: 0;
 `
@@ -57,6 +61,8 @@ const Wrapper = styled.div`
   }
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function GlobalWarning({ children, onClose }: { children: ReactNode; onClose?: () => void }) {
   return (
     <Container>

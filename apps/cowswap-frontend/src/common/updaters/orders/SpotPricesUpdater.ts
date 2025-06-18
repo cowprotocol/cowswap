@@ -5,11 +5,12 @@ import { FractionUtils } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Token } from '@uniswap/sdk-core'
+import { Price, Token } from '@uniswap/sdk-core'
 
 import { useCombinedPendingOrders } from 'legacy/state/orders/hooks'
 
 import { updateSpotPricesAtom } from 'modules/orders/state/spotPricesAtom'
+import { getUsdPriceStateKey, UsdPriceState } from 'modules/usdAmount'
 import { useUsdPrices } from 'modules/usdAmount/hooks/useUsdPrice'
 
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
@@ -80,10 +81,10 @@ export function SpotPricesUpdater(): null {
 
   useEffect(() => {
     Object.values(markets).forEach(({ inputCurrency, outputCurrency }) => {
-      const inputPrice = usdPrices[inputCurrency.address.toLowerCase()]
-      const outputPrice = usdPrices[outputCurrency.address.toLowerCase()]
+      const inputPrice = usdPrices[getUsdPriceStateKey(inputCurrency)]
+      const outputPrice = usdPrices[getUsdPriceStateKey(outputCurrency)]
 
-      if (!inputPrice?.price || !outputPrice?.price || !inputPrice?.isLoading || !outputPrice?.isLoading) {
+      if (!isUsdPriceStateReady(inputPrice) || !isUsdPriceStateReady(outputPrice)) {
         return
       }
 
@@ -117,4 +118,10 @@ export function SpotPricesUpdater(): null {
   }, [usdPrices, markets, chainId, updateSpotPrices])
 
   return null
+}
+
+function isUsdPriceStateReady(
+  state: UsdPriceState | null,
+): state is UsdPriceState & { price: Price<Token, Token>; isLoading: false } {
+  return !!state && !!state.price && !state.isLoading
 }

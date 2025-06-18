@@ -1,10 +1,10 @@
 import { RowFixed } from '@cowprotocol/ui'
-import { GnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
-import { ActivityDescriptors, ActivityStatus, ActivityType } from 'legacy/hooks/useRecentActivity'
-import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
-import { Order } from 'legacy/state/orders/actions'
+import { ActivityDescriptors } from 'legacy/hooks/useRecentActivity'
+
+import { ActivityStatus, ActivityType } from 'common/types/activity'
 
 import { ActivityDetails } from './ActivityDetails'
 import { TransactionStatusText as ActivityDetailsText, TransactionWrapper, Wrapper } from './styled'
@@ -21,6 +21,8 @@ const PILL_COLOUR_MAP = {
   FAILED: 'danger',
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function determinePillColour(status: ActivityStatus, type: ActivityType) {
   const isOrder = type === ActivityType.ORDER
 
@@ -44,47 +46,9 @@ export function determinePillColour(status: ActivityStatus, type: ActivityType) 
   }
 }
 
-export interface OrderCreationTxInfo {
-  orderCreationTx: EnhancedTransactionDetails
-  orderCreationLinkedTx?: EnhancedTransactionDetails
-}
-/**
- * Object derived from the activity state
- */
-export interface ActivityDerivedState {
-  id: string
-  status: ActivityStatus
-  type: ActivityType
-  summary?: string
-  activityLinkUrl?: string
-
-  // Convenient flags
-  isTransaction: boolean
-  isOrder: boolean
-  isPending: boolean
-  isConfirmed: boolean
-  isExpired: boolean
-  isCancelling: boolean
-  isCancelled: boolean
-  isReplaced: boolean
-  isPresignaturePending: boolean
-  isUnfillable?: boolean
-  // EthFlow flags
-  isCreating: boolean
-  isFailed: boolean
-  // TODO: refactor these convenience flags
-
-  // Possible activity types
-  enhancedTransaction?: EnhancedTransactionDetails
-  order?: Order
-
-  // Gnosis Safe
-  gnosisSafeInfo?: GnosisSafeInfo
-
-  // Eth-flow order related transactions
-  orderCreationTxInfo?: OrderCreationTxInfo
-}
-
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
 export default function Activity({ activity }: { activity: ActivityDescriptors }) {
   const { chainId } = useWalletInfo()
 
@@ -100,8 +64,8 @@ export default function Activity({ activity }: { activity: ActivityDescriptors }
   const creationTimeFull = creationTimeEnhanced
     ? new Date(creationTimeEnhanced)
     : creationTimeOrder
-    ? new Date(Date.parse(creationTimeOrder))
-    : undefined
+      ? new Date(Date.parse(creationTimeOrder))
+      : undefined
 
   const timeFormatOptionHM: Intl.DateTimeFormatOptions = {
     timeStyle: 'short',

@@ -12,6 +12,7 @@ import { Nullish } from 'types'
 import { AppDataInfo, useAppData } from 'modules/appData'
 import { useIsWrapOrUnwrap } from 'modules/trade'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { useTradeSlippageValueAndType } from 'modules/tradeSlippage'
 import { useVolumeFee } from 'modules/volumeFee'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -35,11 +36,15 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
 
   const state = useDerivedTradeState()
   const volumeFee = useVolumeFee()
+  const tradeSlippage = useTradeSlippageValueAndType()
+  const slippageBps = tradeSlippage.type === 'user' ? tradeSlippage.value : undefined
 
   const { inputCurrency, outputCurrency, orderKind, recipientAddress } = state || {}
 
   const receiver = recipientAddress && isAddress(recipientAddress) ? recipientAddress : account
 
+  // TODO: Reduce function complexity by extracting logic
+  // eslint-disable-next-line complexity
   const params = useSafeMemo(() => {
     if (isWrapOrUnwrap || isProviderNetworkUnsupported) return
     if (!inputCurrency || !outputCurrency || !orderKind || !provider) return
@@ -80,8 +85,9 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
 
       receiver,
       validFor: DEFAULT_QUOTE_TTL,
-      ...(volumeFee ? { partnerFee: volumeFee } : null),
+      ...(volumeFee ? { partnerFee: volumeFee } : undefined),
       partiallyFillable,
+      slippageBps,
     }
 
     return { quoteParams, inputCurrency, appData: appData?.doc }
@@ -97,6 +103,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
     account,
     isWrapOrUnwrap,
     isProviderNetworkUnsupported,
+    slippageBps,
   ])
 
   return useDebounce(params, AMOUNT_CHANGE_DEBOUNCE_TIME)

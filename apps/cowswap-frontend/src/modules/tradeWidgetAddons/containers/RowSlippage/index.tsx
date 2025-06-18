@@ -5,7 +5,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { useIsEoaEthFlow } from 'modules/trade'
-import { useIsSmartSlippageApplied, useSetSlippage, useSmartTradeSlippage } from 'modules/tradeSlippage'
+import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
+import { useIsSmartSlippageApplied, useSetSlippage } from 'modules/tradeSlippage'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
@@ -19,6 +20,8 @@ export interface RowSlippageProps {
   isTradePriceUpdating: boolean
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function RowSlippage({
   allowedSlippage,
   slippageTooltip,
@@ -30,7 +33,7 @@ export function RowSlippage({
 
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
-  const smartSlippage = useSmartTradeSlippage()
+  const smartSlippage = useSmartSlippageFromQuote()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
   const setSlippage = useSetSlippage()
 

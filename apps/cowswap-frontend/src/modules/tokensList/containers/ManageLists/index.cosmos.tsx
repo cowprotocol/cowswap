@@ -37,17 +37,17 @@ const internalListSearchResponse = {
 }
 
 const Fixtures = {
-  default: (
+  default: () => (
     <Wrapper>
       <ManageLists lists={listsMock} listSearchResponse={emptyListSearchResponse as never} />
     </Wrapper>
   ),
-  importList: (
+  importList: () => (
     <Wrapper>
       <ManageLists lists={listsMock} listSearchResponse={externalListSearchResponse as never} />
     </Wrapper>
   ),
-  loadedLists: (
+  loadedLists: () => (
     <Wrapper>
       <ManageLists lists={listsMock} listSearchResponse={internalListSearchResponse as never} />
     </Wrapper>

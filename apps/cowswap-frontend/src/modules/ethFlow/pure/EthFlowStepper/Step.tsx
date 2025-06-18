@@ -54,6 +54,8 @@ export type StepProps = PropsWithChildren<{
   errorMessage?: string
 }>
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Step(props: StepProps) {
   const { label, crossOut, children, state, icon, errorMessage } = props
   return (

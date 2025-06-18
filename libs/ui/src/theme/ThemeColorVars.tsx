@@ -92,6 +92,10 @@ export const ThemeColorVars = css`
     // Colors
     ${UI.COLOR_WHITE}: ${({ theme }) => theme.white};
     ${UI.COLOR_BLUE}: ${({ theme }) => theme.blueDark2};
+    ${UI.COLOR_BLUE_100_PRIMARY}: ${({ theme }) => theme.blue100Primary};
+    ${UI.COLOR_BLUE_300_PRIMARY}: ${({ theme }) => theme.blue300Primary};
+    ${UI.COLOR_BLUE_400_PRIMARY}: ${({ theme }) => theme.blue400Primary};
+    ${UI.COLOR_BLUE_900_PRIMARY}: ${({ theme }) => theme.blue900Primary};
     ${UI.COLOR_LIGHT_BLUE_OPACITY_90}: ${({ theme }) => theme.info};
     ${UI.COLOR_LIGHT_BLUE_OPACITY_80}: ${({ theme }) => transparentize(theme.info, 0.2)}; // 80% opacity
     ${UI.COLOR_YELLOW_LIGHT}: ${({ theme }) => theme.alert2};
@@ -109,6 +113,7 @@ export const ThemeColorVars = css`
     ${UI.COLOR_COWAMM_BLUE}: #3fc4ff;
     ${UI.COLOR_COWAMM_DARK_BLUE}: #012F7A;
     ${UI.COLOR_COWAMM_LIGHT_BLUE}: #ccf8ff;
+    ${UI.COLOR_COWAMM_LIGHT_ORANGE}: ${() => transparentize('#DB971E', 0.7)};
 
     // Base
     ${UI.COLOR_CONTAINER_BG_02}: var(${UI.COLOR_PAPER});
@@ -126,6 +131,7 @@ export const ThemeColorVars = css`
 
     // Text
     ${UI.COLOR_TEXT_OPACITY_25}: ${({ theme }) => transparentize(theme.text, 0.75)};
+    ${UI.COLOR_TEXT_OPACITY_15}: ${({ theme }) => transparentize(theme.text, 0.85)};
     ${UI.COLOR_TEXT_OPACITY_10}: ${({ theme }) => transparentize(theme.text, 0.9)};
     ${UI.COLOR_TEXT2}: ${({ theme }) => transparentize(theme.text, 0.3)};
     ${UI.COLOR_LINK}: var(${UI.COLOR_PRIMARY});

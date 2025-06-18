@@ -145,6 +145,8 @@ const ButtonContainer = styled.div`
   margin-top: 20px;
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function IsValid({ isValid }: { isValid: IsValidResult }) {
   if (isValid.isValid) {
     return <span style={{ color: 'green' }}>true</span>
@@ -153,10 +155,15 @@ function IsValid({ isValid }: { isValid: IsValidResult }) {
   return <span style={{ color: 'red' }}>false: {isValid.reason}</span>
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function BooleanValue({ value }: { value: boolean }) {
   return <span style={{ color: value ? 'green' : 'red' }}>{Boolean(value).toString()}</span>
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function SdkTools() {
   const [handler, setHandler] = React.useState('0x6cF1e9cA41f7611dEf408122793c358a3d11E5a5')
   const [salt, setSalt] = React.useState('0x000000000000000000000000000000000000000000000000000000192a56162a')
@@ -166,6 +173,9 @@ export function SdkTools() {
   const [conditionalOrder, setConditionalOrder] = React.useState<ConditionalOrder<unknown, unknown> | undefined>()
   const [error, setError] = React.useState<React.ReactNode | undefined>()
 
+  // TODO: Break down this large function into smaller functions
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setError(undefined)

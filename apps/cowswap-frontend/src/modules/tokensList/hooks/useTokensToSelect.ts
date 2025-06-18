@@ -4,27 +4,30 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useAllActiveTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { Field } from 'legacy/state/types'
+import { useBridgeSupportedTokens } from 'entities/bridgeProvider'
 
-import { useBridgeSupportedTokens } from 'modules/bridge'
+import { Field } from 'legacy/state/types'
 
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 
 const EMPTY_TOKENS: TokenWithLogo[] = []
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useTokensToSelect() {
   const { chainId } = useWalletInfo()
   const { selectedTargetChainId = chainId, field } = useSelectTokenWidgetState()
   const allTokens = useAllActiveTokens().tokens
 
-  const { data: bridgeSupportedTokens, isLoading } = useBridgeSupportedTokens(selectedTargetChainId)
+  const areTokensFromBridge = field === Field.OUTPUT && selectedTargetChainId !== chainId
 
+  const { data: bridgeSupportedTokens, isLoading } = useBridgeSupportedTokens(
+    areTokensFromBridge ? selectedTargetChainId : undefined,
+  )
   return useMemo(() => {
-    const areTokensFromBridge = field === Field.OUTPUT && selectedTargetChainId !== chainId
-
     return {
       isLoading: areTokensFromBridge ? isLoading : false,
       tokens: (areTokensFromBridge ? bridgeSupportedTokens : allTokens) || EMPTY_TOKENS,
     }
-  }, [allTokens, bridgeSupportedTokens, chainId, field, isLoading, selectedTargetChainId])
+  }, [allTokens, bridgeSupportedTokens, isLoading, areTokensFromBridge])
 }

@@ -33,6 +33,8 @@ const DarkModeToggleButton = styled.button`
   padding: 6px 10px;
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const DarkModeToggle = ({ children }: { children?: ReactNode }) => {
   const theme = useContext(ThemeContext)
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
@@ -92,6 +94,8 @@ connector.activate(chainId)
 // Initialize analytics for cosmos
 const cowAnalytics = initGtm()
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const Fixture = ({ children }: { children: ReactNode }) => {
   return (
     <StrictMode>
