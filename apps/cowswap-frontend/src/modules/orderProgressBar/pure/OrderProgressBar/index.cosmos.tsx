@@ -1,3 +1,5 @@
+import { useEffect, useState, ReactNode, useRef } from 'react'
+
 import { USDC_BASE, USDC_GNOSIS_CHAIN } from '@cowprotocol/common-const'
 import { SupportedChainId, BridgeStatus } from '@cowprotocol/cow-sdk'
 import { UI } from '@cowprotocol/ui'
@@ -11,7 +13,7 @@ import { SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
 
 import { getOrderMock } from '../../../../mocks/orderMock'
 import { inputCurrencyInfoMock } from '../../../../mocks/tradeStateMock'
-import { OrderProgressBarProps } from '../../types'
+import { OrderProgressBarProps, STEP_NAMES } from '../../types'
 
 import { OrderProgressBar } from './index'
 
@@ -111,17 +113,159 @@ const Wrapper = styled.div`
   background: var(${UI.COLOR_PAPER});
 `
 
+function SolvingFixture(): ReactNode {
+  const [countdown, setCountdown] = useState(15)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          // Clear interval when we're about to hit 0
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current)
+            intervalRef.current = null
+          }
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+    }
+  }, []) // Empty dependency array - set up only once
+
+  return (
+    <Wrapper>
+      <OrderProgressBar {...defaultProps} stepName="solving" countdown={countdown} />
+    </Wrapper>
+  )
+}
+
+const ALL_STEP_NAMES: OrderProgressBarProps['stepName'][] = [
+  STEP_NAMES.INITIAL,
+  STEP_NAMES.SOLVING,
+  STEP_NAMES.DELAYED,
+  STEP_NAMES.SOLVED,
+  STEP_NAMES.EXECUTING,
+  STEP_NAMES.FINISHED,
+  STEP_NAMES.CANCELLATION_FAILED,
+  STEP_NAMES.CANCELLING,
+  STEP_NAMES.CANCELLED,
+  STEP_NAMES.EXPIRED,
+  STEP_NAMES.UNFILLABLE,
+  STEP_NAMES.SUBMISSION_FAILED,
+]
+
+function useStepTransitions(): {
+  stepIndex: number
+  direction: number
+  currentStepName: OrderProgressBarProps['stepName']
+} {
+  const [stepIndex, setStepIndex] = useState(0)
+  const [direction, setDirection] = useState(1)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStepIndex((prevIndex) => {
+        const nextIndex = prevIndex + direction
+        
+        if (nextIndex >= ALL_STEP_NAMES.length - 1) {
+          setDirection(-1)
+          return ALL_STEP_NAMES.length - 1
+        }
+        
+        if (nextIndex <= 0) {
+          setDirection(1)
+          return 0
+        }
+        
+        return nextIndex
+      })
+    }, 3000)
+
+    return () => clearInterval(interval)
+  }, [direction])
+
+  return {
+    stepIndex,
+    direction,
+    currentStepName: ALL_STEP_NAMES[stepIndex],
+  }
+}
+
+function useCountdownForSolving(currentStepName: OrderProgressBarProps['stepName']): number {
+  const [countdown, setCountdown] = useState(0)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+
+  useEffect(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
+    }
+
+    if (currentStepName === STEP_NAMES.SOLVING) {
+      setCountdown(15)
+      
+      intervalRef.current = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            if (intervalRef.current) {
+              clearInterval(intervalRef.current)
+              intervalRef.current = null
+            }
+            return 0
+          }
+          return prev - 1
+        })
+      }, 1000)
+    } else {
+      setCountdown(0)
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+    }
+  }, [currentStepName])
+
+  return countdown
+}
+
+function AnimatedProgressFixture(): ReactNode {
+  const { stepIndex, direction, currentStepName } = useStepTransitions()
+  const countdown = useCountdownForSolving(currentStepName)
+
+  return (
+    <Wrapper>
+      <div style={{ marginBottom: '16px', padding: '8px', background: 'rgba(0,0,0,0.1)', borderRadius: '8px' }}>
+        <strong>Current Step:</strong> {currentStepName} ({stepIndex + 1}/{ALL_STEP_NAMES.length})
+        <br />
+        <strong>Direction:</strong> {direction > 0 ? 'Forward' : 'Backward'}
+      </div>
+      <OrderProgressBar 
+        {...defaultProps} 
+        stepName={currentStepName} 
+        countdown={countdown}
+        key={`${currentStepName}-${stepIndex}`}
+      />
+    </Wrapper>
+  )
+}
+
 const Fixtures = {
+  '0-animated-all-steps': () => <AnimatedProgressFixture />,
   '1-initial': () => (
     <Wrapper>
       <OrderProgressBar {...defaultProps} />
     </Wrapper>
   ),
-  '2-solving': () => (
-    <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="solving" countdown={15} />
-    </Wrapper>
-  ),
+  '2-solving': () => <SolvingFixture />,
   '2a-delayed': () => (
     <Wrapper>
       <OrderProgressBar {...defaultProps} stepName="delayed" />

@@ -4,10 +4,30 @@ import PROGRESSBAR_COW_SURPLUS_3 from '@cowprotocol/assets/cow-swap/progressbar-
 import PROGRESSBAR_COW_SURPLUS_4 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-4.svg'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { OrderProgressBarStepName } from './types'
+import { OrderProgressBarStepName, STEP_NAMES } from './types'
 
 type StepConfig = { title: string; description?: string }
 type BridgeStepConfig = (isBridgingTrade: boolean) => StepConfig
+
+/**
+ * Visual states for progress bar steps UI presentation.
+ * These are purely for styling and visual feedback, determining:
+ * - Opacity levels (active=1, next=0.6, done=0.3, etc.)
+ * - Background colors (active=blue, cancelling=red, etc.)
+ * - Animations (spinner for active, lottie for cancelling)
+ * 
+ * Different from STEP_NAMES/OrderProgressBarStepName which represents actual order states
+ * mapped from backend CompetitionOrderStatus.type values (e.g., 'initial', 'solving', 'executing').
+ */
+export enum StepStatus {
+  CANCELLING = 'cancelling',
+  CANCELLED = 'cancelled',
+  EXPIRED = 'expired',
+  ACTIVE = 'active',
+  NEXT = 'next',
+  FUTURE = 'future',
+  DONE = 'done',
+}
 
 export const STEPS: (StepConfig | BridgeStepConfig)[] = [
   {
@@ -20,7 +40,12 @@ export const STEPS: (StepConfig | BridgeStepConfig)[] = [
   (isBridgingTrade: boolean) => ({ title: isBridgingTrade ? 'Start bridging' : 'Transaction completed' }),
 ]
 
-export const FINAL_STATES: OrderProgressBarStepName[] = ['expired', 'finished', 'cancelled', 'cancellationFailed']
+export const FINAL_STATES: OrderProgressBarStepName[] = [
+  STEP_NAMES.EXPIRED,
+  STEP_NAMES.FINISHED,
+  STEP_NAMES.CANCELLED,
+  STEP_NAMES.CANCELLATION_FAILED,
+]
 
 export const COW_SWAP_BENEFITS = [
   'CoW Swap solvers search Uniswap, 1inch, Matcha, Sushi and more to find you the best price.',

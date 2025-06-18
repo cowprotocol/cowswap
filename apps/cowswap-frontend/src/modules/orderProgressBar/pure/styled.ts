@@ -2,12 +2,14 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-const getOpacity = (status: string, isDarkMode: boolean): number => {
+import { StepStatus } from '../constants'
+
+const getOpacity = (status: StepStatus | string, isDarkMode: boolean): number => {
   const opacityMap = {
-    done: isDarkMode ? 0.3 : 0.1,
-    active: 1,
-    next: isDarkMode ? 0.6 : 0.5,
-    future: isDarkMode ? 0.3 : 0.2,
+    [StepStatus.DONE]: isDarkMode ? 0.3 : 0.1,
+    [StepStatus.ACTIVE]: 1,
+    [StepStatus.NEXT]: isDarkMode ? 0.6 : 0.5,
+    [StepStatus.FUTURE]: isDarkMode ? 0.3 : 0.2,
     disabled: 0.2,
   }
   return opacityMap[status as keyof typeof opacityMap] || 1
@@ -18,9 +20,11 @@ export const StepsContainer = styled.div<{ $height: number; $minHeight?: string;
   height: ${({ $height }) => $height}px;
   min-height: ${({ $minHeight }) => $minHeight || '192px'};
   overflow: hidden;
-  transition: height 0.5s ease-in-out;
+  transition: height var(--progress-transition-height, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
   width: 100%;
   padding: 0;
+  contain: layout style paint;
+  will-change: height;
 
   // implement a gradient to hide the bottom of the steps container using white to opacity white using pseudo element
   &::after {
@@ -31,26 +35,30 @@ export const StepsContainer = styled.div<{ $height: number; $minHeight?: string;
     width: 100%;
     height: 30px;
     background: linear-gradient(to bottom, transparent, var(${UI.COLOR_PAPER}));
+    pointer-events: none;
   }
 `
 
-export const StepsWrapper = styled.div`
+export const StepsWrapper = styled.div<{ $translateY: number }>`
   display: flex;
   flex-flow: column nowrap;
   padding: 0;
   width: 100%;
   position: relative;
-  transition: transform 1s ease-in-out;
+  transform: translateY(${({ $translateY }) => -$translateY}px);
+  transition: transform var(--progress-transition-transform, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
+  will-change: transform;
 `
 
-export const Step = styled.div<{ status: string; isFirst: boolean }>`
-  transition: opacity 0.3s ease-in-out;
+export const Step = styled.div<{ status: StepStatus; isFirst: boolean }>`
+  transition: opacity var(--progress-transition-opacity, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
   display: flex;
   align-items: flex-start;
   margin: 0 auto;
   width: 100%;
   padding: 30px 30px 10px;
   opacity: ${({ status, theme }) => getOpacity(status, theme.darkMode)};
+  contain: layout style;
 `
 
 export const Content = styled.div`
@@ -70,16 +78,21 @@ export const ProgressTopSection = styled.div`
   display: flex;
   flex-flow: column wrap;
   align-items: center;
-  border-radius: 21px;
+  border-radius: 21px 21px 0 0;
   background: var(${UI.COLOR_PAPER_DARKER});
-  min-height: 230px;
+  height: var(--progress-top-section-height, 246px);
+  min-height: var(--progress-top-section-height, 246px);
+  contain: layout style paint;
+  overflow: hidden;
 
   ${Media.upToSmall()} {
-    min-height: auto;
+    height: var(--progress-top-section-height, 200px);
+    min-height: var(--progress-top-section-height, 200px);
   }
 `
 
 export const CowImage = styled.div`
+  flex: 1;
   height: 100%;
   width: auto;
   display: flex;
@@ -98,6 +111,7 @@ export const CowImage = styled.div`
     height: 100%;
     width: 100%;
     max-width: 199px;
+    object-fit: contain;
 
     ${Media.upToSmall()} {
       max-width: 100%;
@@ -161,7 +175,7 @@ export const FinishedLogo = styled.div`
 `
 
 export const NumberedElement = styled.div<{
-  status: string
+  status: StepStatus
   customColor?: string
   $isUnfillable?: boolean
   $isCancelling?: boolean
@@ -174,7 +188,7 @@ export const NumberedElement = styled.div<{
   justify-content: center;
   align-items: center;
   margin-right: 15px;
-  color: ${({ status }) => (status === 'active' ? `var(${UI.COLOR_PAPER})` : `var(${UI.COLOR_PAPER})`)};
+  color: ${({ status }) => (status === StepStatus.ACTIVE ? `var(${UI.COLOR_PAPER})` : `var(${UI.COLOR_PAPER})`)};
   font-weight: bold;
   font-size: 16px;
   background-color: ${({ status, customColor, $isUnfillable, $isCancelling }) =>
@@ -182,7 +196,7 @@ export const NumberedElement = styled.div<{
       ? `var(${UI.COLOR_DANGER_BG})`
       : $isUnfillable
         ? '#996815'
-        : customColor || (status === 'active' ? '#2196F3' : `var(${UI.COLOR_TEXT})`)};
+        : customColor || (status === StepStatus.ACTIVE ? '#2196F3' : `var(${UI.COLOR_TEXT})`)};
   border-radius: 50%;
   position: relative;
 `

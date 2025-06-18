@@ -1,16 +1,19 @@
+import { ReactElement } from 'react'
+
 import * as styledEl from './styled'
 
 import { PROGRESS_BAR_TIMER_DURATION } from '../../hooks/useOrderProgressBarProps'
 
 interface CircularCountdownProps {
   countdown: number
+  isDelayed?: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function CircularCountdown({ countdown }: CircularCountdownProps) {
+export function CircularCountdown({ countdown, isDelayed }: CircularCountdownProps): ReactElement {
   const radius = 45
   const circumference = 2 * Math.PI * radius
+  const displayValue = Math.max(countdown, 1)
+  const shouldPulse = countdown <= 0 || !!isDelayed
 
   return (
     <styledEl.CountdownWrapper>
@@ -24,7 +27,7 @@ export function CircularCountdown({ countdown }: CircularCountdownProps) {
           end={PROGRESS_BAR_TIMER_DURATION}
         />
       </styledEl.CircularProgress>
-      <styledEl.CountdownText>{countdown}</styledEl.CountdownText>
+      <styledEl.CountdownText $shouldPulse={shouldPulse}>{displayValue}</styledEl.CountdownText>
     </styledEl.CountdownWrapper>
   )
 }

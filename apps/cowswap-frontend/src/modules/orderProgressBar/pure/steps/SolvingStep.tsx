@@ -8,7 +8,7 @@ import * as styledEl from './styled'
 
 import { STEPS } from '../../constants'
 import { Description } from '../../sharedStyled'
-import { OrderProgressBarStepName } from '../../types'
+import { OrderProgressBarStepName, STEP_NAMES } from '../../types'
 import { StepsWrapper } from '../StepsWrapper'
 
 interface SolvingStepProps {
@@ -38,10 +38,10 @@ function getCustomStepTitles(
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function SolvingStep({ children, stepName, showCancellationModal, isBridgingTrade }: SolvingStepProps) {
-  const isUnfillable = stepName === 'unfillable'
-  const isDelayed = stepName === 'delayed'
-  const isSubmissionFailed = stepName === 'submissionFailed'
-  const isSolved = stepName === 'solved'
+  const isUnfillable = stepName === STEP_NAMES.UNFILLABLE
+  const isDelayed = stepName === STEP_NAMES.DELAYED
+  const isSubmissionFailed = stepName === STEP_NAMES.SUBMISSION_FAILED
+  const isSolved = stepName === STEP_NAMES.SOLVED
 
   const cancelEventData = toCowSwapGtmEvent({
     category: CowSwapAnalyticsCategory.PROGRESS_BAR,
