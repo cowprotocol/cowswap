@@ -13,7 +13,8 @@ import { SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
 
 import { getOrderMock } from '../../../../mocks/orderMock'
 import { inputCurrencyInfoMock } from '../../../../mocks/tradeStateMock'
-import { OrderProgressBarProps, STEP_NAMES } from '../../types'
+import { OrderProgressBarStepName } from '../../constants'
+import { OrderProgressBarProps } from '../../types'
 
 import { OrderProgressBar } from './index'
 
@@ -147,18 +148,18 @@ function SolvingFixture(): ReactNode {
 }
 
 const ALL_STEP_NAMES: OrderProgressBarProps['stepName'][] = [
-  STEP_NAMES.INITIAL,
-  STEP_NAMES.SOLVING,
-  STEP_NAMES.DELAYED,
-  STEP_NAMES.SOLVED,
-  STEP_NAMES.EXECUTING,
-  STEP_NAMES.FINISHED,
-  STEP_NAMES.CANCELLATION_FAILED,
-  STEP_NAMES.CANCELLING,
-  STEP_NAMES.CANCELLED,
-  STEP_NAMES.EXPIRED,
-  STEP_NAMES.UNFILLABLE,
-  STEP_NAMES.SUBMISSION_FAILED,
+  OrderProgressBarStepName.INITIAL,
+  OrderProgressBarStepName.SOLVING,
+  OrderProgressBarStepName.DELAYED,
+  OrderProgressBarStepName.SOLVED,
+  OrderProgressBarStepName.EXECUTING,
+  OrderProgressBarStepName.FINISHED,
+  OrderProgressBarStepName.CANCELLATION_FAILED,
+  OrderProgressBarStepName.CANCELLING,
+  OrderProgressBarStepName.CANCELLED,
+  OrderProgressBarStepName.EXPIRED,
+  OrderProgressBarStepName.UNFILLABLE,
+  OrderProgressBarStepName.SUBMISSION_FAILED,
 ]
 
 function useStepTransitions(): {
@@ -208,7 +209,7 @@ function useCountdownForSolving(currentStepName: OrderProgressBarProps['stepName
       intervalRef.current = null
     }
 
-    if (currentStepName === STEP_NAMES.SOLVING) {
+    if (currentStepName === OrderProgressBarStepName.SOLVING) {
       setCountdown(15)
       
       intervalRef.current = setInterval(() => {
