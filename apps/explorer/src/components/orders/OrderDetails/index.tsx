@@ -93,13 +93,14 @@ const tabItems = (
   const isBridging = !!order?.bridgeProviderId
   const isOrderInFinalStatus = !!order && ORDER_FINAL_FAILED_STATUSES.includes(order?.status)
 
-  const overviewTabTitle = isBridging ? (
-    <TabContent>
-      1. Swap <StatusLabel status={order.status} />
-    </TabContent>
-  ) : (
-    <span>Overview</span>
-  )
+  const overviewTabTitle =
+    isBridging && !isOrderInFinalStatus ? (
+      <TabContent>
+        1. Swap <StatusLabel status={order.status} />
+      </TabContent>
+    ) : (
+      <span>Overview</span>
+    )
   const overviewTab = getOverviewTab(overviewTabTitle, defaultDetails, noTokens, isLoadingForTheFirstTime)
 
   // Swap & Bridge

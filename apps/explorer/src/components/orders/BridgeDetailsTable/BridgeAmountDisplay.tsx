@@ -50,7 +50,7 @@ export function BridgeAmountDisplay({
     return (
       <AmountDetailBlock>
         <AmountLabel>{labelPrefix}</AmountLabel>
-        <span>N/A</span>
+        <span>-</span>
       </AmountDetailBlock>
     )
   }
