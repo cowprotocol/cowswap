@@ -3,18 +3,18 @@ import React, { ReactNode } from 'react'
 import { BridgeStatus } from '@cowprotocol/cow-sdk'
 
 import BigNumber from 'bignumber.js'
-import { capitalize, formatPercentage } from 'utils'
+import { formatPercentage } from 'utils'
 
 import { ORDER_FINAL_FAILED_STATUSES, OrderStatus } from 'api/operator'
 import { canBePartiallyFilled } from 'utils/statusHelpers'
 
 import { StatusIcon } from './StatusIcon'
-import { Wrapper, Label, GenericStatus as StyledGenericStatus } from './styled'
+import { GenericStatus as StyledGenericStatus, Label, Wrapper } from './styled'
 
 export type PartiallyTagPosition = 'right' | 'bottom'
 
 export type StatusLabelProps = {
-  status: string
+  status: OrderStatus | BridgeStatus
   partiallyFilled?: boolean
   filledPercentage?: BigNumber
   partialTagPosition?: PartiallyTagPosition
@@ -28,6 +28,14 @@ const SHIMMING_STATUSES = [
 ]
 
 const FINAL_STATUSES = ORDER_FINAL_FAILED_STATUSES.map((t) => t.toLowerCase())
+
+const bridgeStatusTitleMap: Record<BridgeStatus, string> = {
+  [BridgeStatus.UNKNOWN]: 'UNKNOWN',
+  [BridgeStatus.IN_PROGRESS]: 'IN PROGRESS',
+  [BridgeStatus.EXECUTED]: 'EXECUTED',
+  [BridgeStatus.EXPIRED]: 'EXPIRED',
+  [BridgeStatus.REFUND]: 'REFUND',
+}
 
 export function StatusLabel({
   status: _status,
@@ -45,7 +53,8 @@ export function StatusLabel({
 
   const formattedPercentage = filledPercentage !== undefined && formatPercentage(filledPercentage)
 
-  const displayStatus: StyledGenericStatus = customizeStatus && partiallyFilled ? OrderStatus.PartiallyFilled : status
+  const displayStatus: StyledGenericStatus =
+    customizeStatus && partiallyFilled ? OrderStatus.PartiallyFilled : bridgeStatusTitleMap[_status] || status
 
   return (
     <Wrapper
@@ -60,7 +69,7 @@ export function StatusLabel({
         tagPosition={partialTagPosition}
       >
         <StatusIcon status={displayStatus} />
-        {customText || capitalize(displayStatus.replace(/([A-Z])/g, ' $1').trim())}
+        {customText || displayStatus.toUpperCase()}
       </Label>
     </Wrapper>
   )

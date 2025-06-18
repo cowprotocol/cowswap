@@ -37,9 +37,7 @@ export function getOverviewTab(
       <>
         {children}
         {noTokens && <p>Not able to load tokens</p>}
-        {isLoadingForTheFirstTime && (
-          <LoadingWrapper message="Loading order" />
-        )}
+        {isLoadingForTheFirstTime && <LoadingWrapper message="Loading order" />}
       </>
     ),
   }
@@ -58,22 +56,19 @@ export function getBridgeTab(
   crossChainOrder: Nullish<CrossChainOrder>,
   crossChainOrderLoading: boolean,
 ): OrderTab {
-  const bridgeStatus = crossChainOrder?.statusResult.status || BridgeStatus.UNKNOWN
+  const bridgeStatus = crossChainOrder?.statusResult.status
 
   // Note: swap+bridge orders don't support partial fills for now
   const isSwapComplete = order.status === OrderStatus.Filled || order.partiallyFilled
-
-  // Determine effective bridge status for tab title
-  const effectiveBridgeStatusForTab = !isSwapComplete && bridgeStatus === BridgeStatus.IN_PROGRESS
 
   return {
     id: TabView.BRIDGE,
     tab: (
       <TabContent>
         2. Bridge{' '}
-        {effectiveBridgeStatusForTab ? (
+        {!isSwapComplete ? (
           <StatusLabel status={BridgeStatus.IN_PROGRESS} customText="Waiting for swap" />
-        ) : crossChainOrderLoading ? (
+        ) : crossChainOrderLoading || !bridgeStatus ? (
           <Loader />
         ) : (
           <StatusLabel status={bridgeStatus} />
