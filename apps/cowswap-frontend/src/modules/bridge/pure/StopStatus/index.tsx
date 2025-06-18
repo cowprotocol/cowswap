@@ -4,7 +4,6 @@ import CheckmarkIcon from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
 import SpinnerIcon from '@cowprotocol/assets/cow-swap/spinner.svg'
 import CLOSE_ICON_X from '@cowprotocol/assets/cow-swap/x.svg'
-import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -15,11 +14,11 @@ import { SwapAndBridgeStatus } from '../../types'
 const StyledStatusCheckmarkIcon = styled(SVG)`
   width: 24px;
   height: 18px;
-  color: var(${UI.COLOR_SUCCESS});
+  color: inherit;
 `
 
 const StyledStatusCloseIcon = styled(SVG)`
-  color: var(${UI.COLOR_DANGER_TEXT});
+  color: inherit;
   width: 18px;
   height: 18px;
 `

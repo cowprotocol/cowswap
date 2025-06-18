@@ -1,3 +1,6 @@
+import { ReactNode } from 'react'
+
+import ReceiptIcon from '@cowprotocol/assets/cow-swap/icon-receipt.svg'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink } from '@cowprotocol/ui'
@@ -5,7 +8,7 @@ import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
-import { SuccessTextBold } from '../../../../styles'
+import { StyledTimelineReceiptIcon, SuccessTextBold, TimelineIconCircleWrapper } from '../../../../styles'
 import { TokenAmountDisplay } from '../../../TokenAmountDisplay'
 
 interface ReceivedBridgingContentProps {
@@ -16,15 +19,35 @@ interface ReceivedBridgingContentProps {
   receivedAmountUsd: CurrencyAmount<Token> | null | undefined
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+interface TransactionLinkProps {
+  link: string
+  label: string
+}
+
+function TransactionLink({ link, label }: TransactionLinkProps): ReactNode {
+  return (
+    <ConfirmDetailsItem
+      label={
+        <>
+          <TimelineIconCircleWrapper padding="0" bgColor={'transparent'}>
+            <StyledTimelineReceiptIcon src={ReceiptIcon} />
+          </TimelineIconCircleWrapper>{' '}
+          {label}
+        </>
+      }
+    >
+      <ExternalLink href={link}>View on bridge explorer ↗</ExternalLink>
+    </ConfirmDetailsItem>
+  )
+}
+
 export function ReceivedBridgingContent({
   statusResult,
   receivedAmountUsd,
   receivedAmount,
   sourceChainId,
   destinationChainId,
-}: ReceivedBridgingContentProps) {
+}: ReceivedBridgingContentProps): ReactNode {
   const { depositTxHash, fillTxHash } = statusResult || {}
 
   const depositLink = depositTxHash && getExplorerLink(sourceChainId, depositTxHash, ExplorerDataType.TRANSACTION)
@@ -46,8 +69,9 @@ export function ReceivedBridgingContent({
           <TokenAmountDisplay displaySymbol currencyAmount={receivedAmount} usdValue={receivedAmountUsd} />
         </b>
       </ConfirmDetailsItem>
-      {depositLink && <ExternalLink href={depositLink}>Deposit transaction ↗</ExternalLink>}
-      {fillTxLink && <ExternalLink href={fillTxLink}>Settlement transaction ↗</ExternalLink>}
+
+      {depositLink && <TransactionLink link={depositLink} label="Source transaction" />}
+      {fillTxLink && <TransactionLink link={fillTxLink} label="Destination transaction" />}
     </>
   )
 }

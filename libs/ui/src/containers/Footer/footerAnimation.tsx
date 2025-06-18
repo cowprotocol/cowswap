@@ -5,7 +5,7 @@ import IMG_FLYING_WINK_COW_DARK from '@cowprotocol/assets/images/flying-wink-cow
 import SVG from 'react-inlinesvg'
 import styled, { keyframes } from 'styled-components/macro'
 
-import { Color } from '../../colors'
+import { UI } from '../../enum'
 
 const scrollHorizontal = keyframes`
   0% {
@@ -27,7 +27,7 @@ const FooterAnimationContainer = styled.div`
   position: relative;
   height: var(--height);
   white-space: nowrap;
-  color: ${Color.neutral98};
+  color: var(${UI.COLOR_NEUTRAL_98});
   margin: 50px 0;
   overflow: hidden;
 `

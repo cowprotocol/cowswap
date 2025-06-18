@@ -1,4 +1,6 @@
-import { ReactNode } from 'react'
+import { ReactNode, useCallback } from 'react'
+
+import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 
 import {
   BridgeAccordionSummary,
@@ -17,9 +19,27 @@ export interface SwapRateDetailsProps {
   deadline: number
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsProps) {
+interface BridgeFeeWrapperProps {
+  bridgeEstimatedTime: number | undefined
+  bridgeProtocol: BridgeProviderInfo
+  feeElement: ReactNode
+  isOpen: boolean
+}
+
+function BridgeFeeWrapper({
+  bridgeEstimatedTime,
+  bridgeProtocol,
+  feeElement,
+  isOpen,
+}: BridgeFeeWrapperProps): ReactNode {
+  return (
+    <BridgeAccordionSummary bridgeEstimatedTime={bridgeEstimatedTime} bridgeProtocol={bridgeProtocol} isOpen={isOpen}>
+      {feeElement}
+    </BridgeAccordionSummary>
+  )
+}
+
+export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsProps): ReactNode {
   const { isLoading: isRateLoading, bridgeQuote } = useTradeQuote()
 
   const shouldDisplayBridgeDetails = useShouldDisplayBridgeDetails()
@@ -29,6 +49,18 @@ export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsPro
 
   const swapContext = useQuoteSwapContext()
   const bridgeContext = useQuoteBridgeContext()
+
+  const feeWrapper = useCallback(
+    (feeElement: ReactNode, isOpen: boolean) => (
+      <BridgeFeeWrapper
+        bridgeEstimatedTime={bridgeEstimatedTime}
+        bridgeProtocol={providerDetails!}
+        feeElement={feeElement}
+        isOpen={isOpen}
+      />
+    ),
+    [bridgeEstimatedTime, providerDetails],
+  )
 
   return (
     <TradeRateDetails
@@ -45,17 +77,7 @@ export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsPro
           </>
         )
       }
-      feeWrapper={
-        shouldDisplayBridgeDetails && providerDetails
-          // TODO: Extract nested component outside render function
-          // eslint-disable-next-line react/no-unstable-nested-components
-          ? (feeElement: ReactNode) => (
-              <BridgeAccordionSummary bridgeEstimatedTime={bridgeEstimatedTime} bridgeProtocol={providerDetails}>
-                {feeElement}
-              </BridgeAccordionSummary>
-            )
-          : undefined
-      }
+      feeWrapper={shouldDisplayBridgeDetails && providerDetails ? feeWrapper : undefined}
     />
   )
 }

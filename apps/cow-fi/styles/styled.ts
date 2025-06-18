@@ -1,4 +1,4 @@
-import { Font, Color, Media } from '@cowprotocol/ui'
+import { Font, Color, UI, Media } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled, { css } from 'styled-components/macro'
@@ -38,9 +38,9 @@ export const ContainerCard = styled.div<{
   width: 100%;
   padding: ${({ padding }) => padding || '6rem'};
   border-radius: 6rem;
-  background: ${({ bgColor }) => bgColor || Color.neutral90};
+  background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_NEUTRAL_90})`};
   position: relative;
-  color: ${({ color }) => color || Color.neutral10};
+  color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_10})`};
   min-height: ${({ minHeight }) => minHeight || 'initial'};
 
   ${Media.upToMedium()} {
@@ -145,14 +145,14 @@ export const ArticleCard = styled.a`
   transition: background 0.2s ease-in-out;
 
   &:hover {
-    background: ${Color.neutral98};
+    background: var(${UI.COLOR_NEUTRAL_98});
   }
 `
 
 export const ArticleImage = styled.div<{ color?: string }>`
   width: 100%;
   height: 20rem;
-  background: ${({ color }) => color || Color.neutral70};
+  background: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_70})`};
   border-radius: 2rem;
 
   > img {
@@ -166,7 +166,7 @@ export const ArticleImage = styled.div<{ color?: string }>`
 export const ArticleTitle = styled.h4<{ fontSize?: number; fontSizeMobile?: number }>`
   font-size: ${({ fontSize }) => fontSize || 28}px;
   font-weight: ${Font.weight.bold};
-  color: ${Color.neutral0};
+  color: var(${UI.COLOR_NEUTRAL_0});
   margin: 1.6rem 0 0.8rem;
   line-height: 1.2;
 
@@ -177,7 +177,7 @@ export const ArticleTitle = styled.h4<{ fontSize?: number; fontSizeMobile?: numb
 
 export const ArticleDescription = styled.p<{ color?: string; fontSize?: number; fontWeight?: number }>`
   font-size: ${({ fontSize }) => fontSize || 16}px;
-  color: ${({ color }) => color || Color.neutral50};
+  color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_50})`};
   font-weight: ${({ fontWeight }) => fontWeight || Font.weight.medium};
   line-height: 1.5;
 `
@@ -237,8 +237,8 @@ export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
   flex-flow: ${({ horizontal, fullWidth }) => (fullWidth ? 'column nowrap' : horizontal ? 'row wrap' : 'column wrap')};
   align-items: ${({ contentAlign }) => (contentAlign === 'left' ? 'flex-start' : 'center')};
   justify-content: flex-start;
-  background: ${({ bgColor }) => bgColor || Color.neutral90};
-  color: ${({ textColor }) => textColor || Color.neutral0};
+  background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_NEUTRAL_90})`};
+  color: ${({ textColor }) => textColor || `var(${UI.COLOR_NEUTRAL_0})`};
   padding: ${({ padding }) => padding || '5.6rem 2rem'};
   border-radius: 2rem;
   text-align: center;
@@ -257,7 +257,7 @@ export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
 
   &:hover {
     border: ${({ asProp, border }) =>
-      asProp === 'div' ? border || '0.4rem solid transparent' : `0.4rem solid ${Color.neutral40}`};
+      asProp === 'div' ? border || '0.4rem solid transparent' : `0.4rem solid ${`var(${UI.COLOR_NEUTRAL_40})`}`};
   }
 
   ${Media.upToLarge()} {
@@ -365,8 +365,8 @@ export const TopicImage = styled.div<{
         ? `${height}px`
         : height || '100%'};
   border-radius: ${({ borderRadius }) => (borderRadius ? `${borderRadius}px` : 0)};
-  background: ${({ bgColor, iconColor }) => bgColor || iconColor || Color.neutral90};
-  color: ${({ iconColor }) => iconColor || Color.neutral90};
+  background: ${({ bgColor, iconColor }) => bgColor || iconColor || `var(${UI.COLOR_NEUTRAL_90})`};
+  color: ${({ iconColor }) => iconColor || `var(${UI.COLOR_NEUTRAL_90})`};
   margin: ${({ margin }) => margin || '0 0 16px'};
   overflow: hidden;
   position: ${({ position }) => position || 'relative'};
@@ -491,7 +491,7 @@ export const TopicTable = styled.table`
   }
 
   > tbody > tr > td:first-child {
-    color: ${Color.neutral30};
+    color: var(${UI.COLOR_NEUTRAL_30});
     padding: 0 1.6rem 0 0;
 
     ${Media.upToMedium()} {
@@ -510,7 +510,7 @@ export const LinkSection = styled.div<{
 }>`
   display: grid;
   grid-template-columns: ${({ columns }) => `repeat(${columns || 2}, 1fr)`};
-  background: ${({ bgColor }) => bgColor || Color.neutral100};
+  background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_NEUTRAL_100})`};
   border-radius: 2.8rem;
   padding: ${({ padding }) => padding || '2.4rem'};
   width: 100%;
@@ -531,7 +531,7 @@ export const LinkColumn = styled.div`
   > h5 {
     font-size: 2.1rem;
     font-weight: ${Font.weight.bold};
-    color: ${Color.neutral0};
+    color: var(${UI.COLOR_NEUTRAL_0});
     margin: 0 0 1.6rem;
     line-height: 1.2;
   }
@@ -546,7 +546,7 @@ export const LinkItem = styled.a`
   border-radius: 3.6rem;
   padding: 0.8rem 0;
   text-decoration: none;
-  color: ${Color.neutral20};
+  color: var(${UI.COLOR_NEUTRAL_20});
   transition:
     background 0.2s ease-in-out,
     0.2s ease-in-out,
@@ -560,13 +560,13 @@ export const LinkItem = styled.a`
   }
 
   &:hover {
-    color: ${Color.neutral0};
-    background: ${Color.neutral80};
+    color: var(${UI.COLOR_NEUTRAL_0});
+    background: var(${UI.COLOR_NEUTRAL_80});
     padding: 0.8rem 0.8rem 0.8rem 2.1rem;
 
     > span {
-      color: ${Color.neutral0};
-      background: ${Color.neutral100};
+      color: var(${UI.COLOR_NEUTRAL_0});
+      background: var(${UI.COLOR_NEUTRAL_100});
       transform: translateX(0.3rem);
     }
   }
@@ -584,7 +584,7 @@ export const LinkItem = styled.a`
     width: var(--size);
     min-height: var(--size);
     min-width: var(--size);
-    color: ${Color.neutral50};
+    color: var(${UI.COLOR_NEUTRAL_50});
     border-radius: 2.4rem;
     font-size: 2.4rem;
     transition: transform 0.2s ease-in-out;
@@ -625,7 +625,7 @@ export const CTAImage = styled.div<{ bgColor?: string; color?: string }>`
 export const CTATitle = styled.h6`
   font-size: 4.8rem;
   font-weight: ${Font.weight.bold};
-  color: ${Color.neutral0};
+  color: var(${UI.COLOR_NEUTRAL_0});
   margin: 0;
   line-height: 1.2;
   white-space: wrap;
@@ -637,7 +637,7 @@ export const CTATitle = styled.h6`
 
 export const CTASubtitle = styled.p`
   font-size: 2.8rem;
-  color: ${Color.neutral30};
+  color: var(${UI.COLOR_NEUTRAL_30});
   margin: 0;
   line-height: 1.2;
 `
@@ -651,8 +651,8 @@ export const CTAButton = styled.a`
   padding: 1.2rem 2.4rem;
   font-size: 2.4rem;
   font-weight: ${Font.weight.medium};
-  color: ${Color.neutral98};
-  background: ${Color.neutral0};
+  color: var(${UI.COLOR_NEUTRAL_98});
+  background: var(${UI.COLOR_NEUTRAL_0});
   border: none;
   border-radius: var(--height);
   text-decoration: none;
@@ -662,8 +662,8 @@ export const CTAButton = styled.a`
     color 0.2s ease-in-out;
 
   &:hover {
-    color: ${Color.neutral100};
-    background: ${Color.neutral20};
+    color: var(${UI.COLOR_NEUTRAL_100});
+    background: var(${UI.COLOR_NEUTRAL_20});
   }
 `
 
@@ -673,7 +673,7 @@ export const Breadcrumbs = styled.div<{ padding?: string }>`
   font-size: 1.6rem;
   line-height: 1.2;
   padding: ${({ padding }) => padding || '0 0 2.4rem'};
-  color: ${Color.neutral10};
+  color: var(${UI.COLOR_NEUTRAL_10});
   flex-flow: row wrap;
 
   ${Media.upToMedium()} {
@@ -689,13 +689,13 @@ export const Breadcrumbs = styled.div<{ padding?: string }>`
   }
 
   > a {
-    color: ${Color.neutral40};
+    color: var(${UI.COLOR_NEUTRAL_40});
     text-decoration: none;
     margin-right: 0.8rem;
     transition: color 0.2s ease-in-out;
 
     &:hover {
-      color: ${Color.neutral0};
+      color: var(${UI.COLOR_NEUTRAL_0});
     }
 
     &:after {
@@ -709,13 +709,13 @@ export const Breadcrumbs = styled.div<{ padding?: string }>`
   }
 
   > span {
-    color: ${Color.neutral0};
+    color: var(${UI.COLOR_NEUTRAL_0});
   }
 `
 
 export const ArticleCount = styled.p`
   font-size: 1.6rem;
-  color: ${Color.neutral50};
+  color: var(${UI.COLOR_NEUTRAL_50});
 `
 
 export const Pagination = styled.div`
@@ -725,8 +725,8 @@ export const Pagination = styled.div`
   gap: 0.8rem;
   margin: 2.4rem auto 0;
   padding: 0.4rem;
-  background: ${Color.neutral100};
-  color: ${Color.neutral10};
+  background: var(${UI.COLOR_NEUTRAL_100});
+  color: var(${UI.COLOR_NEUTRAL_10});
   border-radius: 2.1rem;
   width: min-content;
   font-size: 1.6rem;
@@ -749,18 +749,18 @@ export const Pagination = styled.div`
       color 0.2s;
 
     &:hover {
-      background: ${Color.neutral80};
+      background: var(${UI.COLOR_NEUTRAL_80});
     }
 
     &.active {
-      background: ${Color.neutral10};
-      color: ${Color.neutral100};
+      background: var(${UI.COLOR_NEUTRAL_10});
+      color: var(${UI.COLOR_NEUTRAL_100});
     }
   }
 
   span {
     font-size: 1.6rem;
-    color: ${Color.neutral60};
+    color: var(${UI.COLOR_NEUTRAL_60});
   }
 `
 
@@ -774,7 +774,7 @@ export const SectionTitleWrapper = styled.div<{
   marginMobile?: string
   rowWrap?: boolean
 }>`
-  --color: ${Color.neutral10};
+  --color: var(${UI.COLOR_NEUTRAL_10});
   display: flex;
   flex-flow: column wrap;
   flex-flow: ${({ rowWrap }) => (rowWrap ? 'row wrap' : 'column wrap')};
@@ -960,7 +960,7 @@ export const HeroContent = styled.div<{ variant?: string; gap?: number; flex?: s
   position: relative;
   z-index: 2;
   text-align: ${({ variant }) => (variant === 'secondary' ? 'left' : 'center')};
-  color: ${Color.neutral0};
+  color: var(${UI.COLOR_NEUTRAL_0});
   gap: ${({ gap }) => gap || 32}px;
   display: flex;
   flex-flow: column wrap;
@@ -988,7 +988,7 @@ export const HeroTitle = styled.h1<{
 }>`
   font-size: ${({ fontSize }) => fontSize || 51}px;
   font-weight: ${({ fontWeight }) => fontWeight || Font.weight.bold};
-  color: ${({ color }) => color || Color.neutral10};
+  color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_10})`};
   margin: 0;
   line-height: 1.2;
   max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
@@ -1001,10 +1001,10 @@ export const HeroTitle = styled.h1<{
 `
 
 export const HeroSubtitle = styled.p<{ variant?: string; color?: string }>`
-  --color: ${({ color }) => color || Color.neutral10};
+  --color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_10})`};
   font-size: 2.8rem;
   font-weight: ${Font.weight.bold};
-  background: ${({ variant }) => (variant === 'pill' ? Color.neutral100 : 'transparent')};
+  background: ${({ variant }) => (variant === 'pill' ? `var(${UI.COLOR_NEUTRAL_100})` : 'transparent')};
   color: var(--color);
   padding: ${({ variant }) => (variant === 'pill' ? '0.8rem 1.6rem' : '0')};
   border-radius: ${({ variant }) => (variant === 'pill' ? '3.2rem' : '0')};
@@ -1022,7 +1022,7 @@ export const HeroSubtitle = styled.p<{ variant?: string; color?: string }>`
 export const HeroDescription = styled.span<{ fontSize?: number; fontSizeMobile?: number; color?: string }>`
   font-size: ${({ fontSize }) => fontSize || 26}px;
   font-weight: ${Font.weight.medium};
-  color: ${({ color }) => color || Color.neutral10};
+  color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_10})`};
   margin: 1.6rem 0;
   padding: 0;
   line-height: 1.5;
@@ -1064,7 +1064,7 @@ export const HeroImage = styled.div<{
   max-width: 100%;
   margin: ${({ margin }) => margin || '0 auto'};
   padding: 0;
-  color: ${({ color }) => color || Color.neutral0};
+  color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_0})`};
 
   ${Media.upToMedium()} {
     margin: ${({ marginMobile }) => marginMobile || '0 auto'};
@@ -1092,8 +1092,8 @@ export const MetricsCard = styled.div<{
   width: 100%;
   padding: 6rem 6rem var(--paddingBottomOffset);
   border-radius: 6rem;
-  background: ${({ bgColor }) => bgColor || Color.neutral90};
-  color: ${({ color }) => color || Color.neutral0};
+  background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_NEUTRAL_90})`};
+  color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_0})`};
   position: relative;
   margin: ${({ touchFooter }) => (touchFooter ? '0 0 calc(-1 * var(--paddingBottomOffset))' : '2.4rem 0')};
   max-width: 100%;
@@ -1124,7 +1124,7 @@ export const MetricsItem = styled.div<{ dividerColor?: string }>`
       height: 100%;
       padding: 0;
       margin: 0 0 0 auto;
-      background: ${dividerColor || Color.neutral80};
+      background: ${dividerColor || `var(${UI.COLOR_NEUTRAL_80})`};
 
       ${Media.upToMedium()} {
         width: 100%;
@@ -1169,7 +1169,7 @@ export const TrustedBy = styled.div`
   padding: 0;
   width: 100%;
   font-size: 3.2rem;
-  color: ${Color.neutral0};
+  color: var(${UI.COLOR_NEUTRAL_0});
   font-weight: ${Font.weight.regular};
 
   ${Media.upToMedium()} {
@@ -1206,7 +1206,7 @@ export const TrustedBy = styled.div`
     height: 100%;
     width: 100%;
     font-size: 2.6rem;
-    color: ${Color.neutral0};
+    color: var(${UI.COLOR_NEUTRAL_0});
     position: absolute;
     top: 0;
     left: 0;
@@ -1244,14 +1244,14 @@ export const TrustedBy = styled.div`
     }
 
     > g {
-      fill: ${Color.neutral0};
+      fill: var(${UI.COLOR_NEUTRAL_0});
     }
   }
 
   > ul > li > strong {
     font-weight: ${Font.weight.bold};
     white-space: nowrap;
-    color: ${Color.neutral0};
+    color: var(${UI.COLOR_NEUTRAL_0});
   }
 
   @keyframes slide {
@@ -1280,10 +1280,10 @@ export const TrustedBy = styled.div`
 
 // From legacy cow.fi
 export const SwiperSlideWrapper = styled.div`
-  --swiper-navigation-color: ${Color.neutral0};
-  --swiper-theme-color: ${Color.neutral0};
-  --swiper-pagination-bullet-inactive-color: ${Color.neutral100};
-  --swiper-pagination-color: ${Color.neutral100};
+  --swiper-navigation-color: var(${UI.COLOR_NEUTRAL_0});
+  --swiper-theme-color: var(${UI.COLOR_NEUTRAL_0});
+  --swiper-pagination-bullet-inactive-color: var(${UI.COLOR_NEUTRAL_100});
+  --swiper-pagination-color: var(${UI.COLOR_NEUTRAL_100});
   --swiper-pagination-bullet-size: 1.2rem;
 
   display: flex;
@@ -1304,7 +1304,7 @@ export const SwiperSlideWrapper = styled.div`
       position: absolute;
       left: 0;
       top: 0;
-      background: linear-gradient(90deg, ${Color.neutral10}, ${transparentize('white', 1)} 100%);
+      background: linear-gradient(90deg, ${`var(${UI.COLOR_NEUTRAL_10})`}, ${transparentize('white', 1)} 100%);
       z-index: 10;
 
       ${Media.upToMedium()} {
@@ -1314,7 +1314,7 @@ export const SwiperSlideWrapper = styled.div`
     }
 
     &::after {
-      background: linear-gradient(270deg, ${Color.neutral10}, ${transparentize('white', 1)} 100%);
+      background: linear-gradient(270deg, ${`var(${UI.COLOR_NEUTRAL_10})`}, ${transparentize('white', 1)} 100%);
       left: initial;
       right: 0;
     }
@@ -1345,7 +1345,7 @@ export const SwiperSlideWrapper = styled.div`
     margin: 0 auto;
     border-radius: 6rem;
     border: 0.1rem solid grey;
-    color: ${Color.neutral70};
+    color: var(${UI.COLOR_NEUTRAL_70});
     font-size: 2.4rem;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1387,7 +1387,7 @@ export const SwiperSlideWrapper = styled.div`
       margin: 0;
       font-size: 3.4rem;
       line-height: 1.2;
-      color: ${Color.neutral100};
+      color: var(${UI.COLOR_NEUTRAL_100});
       font-weight: ${Font.weight.bold};
 
       ${Media.upToMedium()} {
@@ -1407,7 +1407,7 @@ export const SwiperSlideWrapper = styled.div`
 
   .swiper-button-next {
     z-index: 20;
-    color: ${Color.neutral100};
+    color: var(${UI.COLOR_NEUTRAL_100});
 
     ${Media.upToMedium()} {
       left: initial;
@@ -1417,7 +1417,7 @@ export const SwiperSlideWrapper = styled.div`
 
   .swiper-button-prev {
     z-index: 20;
-    color: ${Color.neutral100};
+    color: var(${UI.COLOR_NEUTRAL_100});
 
     ${Media.upToMedium()} {
       left: 0.5rem;
@@ -1436,7 +1436,7 @@ export const WidgetContainer = styled.div`
   gap: 1.6rem;
 
   &::before {
-    color: ${Color.neutral0};
+    color: var(${UI.COLOR_NEUTRAL_0});
     font-size: 2.1rem;
     font-weight: ${Font.weight.bold};
     content: 'Try it out!';
@@ -1481,8 +1481,8 @@ export const StickyMenu = styled.div`
   flex: 1;
   position: sticky;
   top: 10rem;
-  background: ${Color.neutral100};
-  color: ${Color.neutral0};
+  background: var(${UI.COLOR_NEUTRAL_100});
+  color: var(${UI.COLOR_NEUTRAL_0});
   padding: 3rem 2.4rem;
   border-radius: 3.2rem;
 
@@ -1494,7 +1494,7 @@ export const StickyMenu = styled.div`
     display: block;
     font-size: 1.8rem;
     font-weight: ${Font.weight.bold};
-    color: ${Color.neutral10};
+    color: var(${UI.COLOR_NEUTRAL_10});
     margin: 0 0 2.4rem;
   }
 `
@@ -1502,7 +1502,7 @@ export const StickyMenu = styled.div`
 export const ArticleMainTitle = styled.h1<{ margin?: string; fontSize?: number }>`
   font-size: ${({ fontSize }) => (fontSize ? `${fontSize}px` : '6.7rem')};
   font-weight: ${Font.weight.bold};
-  color: ${Color.neutral10};
+  color: var(${UI.COLOR_NEUTRAL_10});
   margin: ${({ margin }) => margin || '0 0 1.6rem'};
 
   ${Media.upToMedium()} {
@@ -1514,7 +1514,7 @@ export const BodyContent = styled.div<{ color?: string }>`
   font-family: ${Font.familySerif};
   font-size: 1.8rem;
   line-height: 1.6;
-  color: ${({ color }) => color || Color.neutral0};
+  color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_0})`};
 
   img {
     max-width: 100%;
@@ -1529,12 +1529,12 @@ export const BodyContent = styled.div<{ color?: string }>`
   }
 
   a {
-    color: ${Color.neutral20};
+    color: var(${UI.COLOR_NEUTRAL_20});
     text-decoration: underline;
     transition: color 0.2s ease-in-out;
 
     &:hover {
-      color: ${Color.neutral40};
+      color: var(${UI.COLOR_NEUTRAL_40});
     }
   }
 
@@ -1581,9 +1581,9 @@ export const BodyContent = styled.div<{ color?: string }>`
   > blockquote {
     margin: 2.4rem 0;
     padding: 0.8rem 2.4rem;
-    background: ${Color.neutral90};
-    border-left: 0.4rem solid ${Color.neutral20};
-    color: ${Color.neutral20};
+    background: var(${UI.COLOR_NEUTRAL_90});
+    border-left: 0.4rem solid var(${UI.COLOR_NEUTRAL_20});
+    color: var(${UI.COLOR_NEUTRAL_20});
     font-style: italic;
     font-size: inherit;
 
@@ -1603,19 +1603,19 @@ export const BodyContent = styled.div<{ color?: string }>`
     border-radius: 3.2rem;
 
     > thead {
-      background: ${Color.neutral90};
-      color: ${Color.neutral20};
+      background: var(${UI.COLOR_NEUTRAL_90});
+      color: var(${UI.COLOR_NEUTRAL_20});
     }
 
     > tbody {
       > tr {
         &:nth-child(odd) {
-          background: ${Color.neutral98};
+          background: var(${UI.COLOR_NEUTRAL_98});
         }
 
         > td {
           padding: 0.8rem 1.2rem;
-          border: 1px solid ${Color.neutral90};
+          border: 1px solid var(${UI.COLOR_NEUTRAL_90});
         }
       }
     }
@@ -1674,7 +1674,7 @@ export const BodyContent = styled.div<{ color?: string }>`
 
 export const RelatedArticles = styled.div`
   font-size: 1.8rem;
-  color: ${Color.neutral0};
+  color: var(${UI.COLOR_NEUTRAL_0});
 
   > ul {
     list-style: disc;
@@ -1698,7 +1698,7 @@ export const RelatedArticles = styled.div`
 `
 
 export const ArticleSubtitleWrapper = styled.div`
-  color: ${Color.neutral40};
+  color: var(${UI.COLOR_NEUTRAL_40});
   font-weight: ${Font.weight.bold};
   font-size: 1.6rem;
   display: flex;
@@ -1717,13 +1717,13 @@ export const CategoryTags = styled.div`
   gap: 0.8rem;
   margin-bottom: 2.4rem;
   font-size: 1.6rem;
-  color: ${Color.neutral10};
+  color: var(${UI.COLOR_NEUTRAL_10});
   font-weight: ${Font.weight.medium};
 
   a {
     display: inline-block;
     padding: 0.8rem 1.2rem;
-    background: ${Color.neutral98};
+    background: var(${UI.COLOR_NEUTRAL_98});
     border-radius: 1.6rem;
     text-decoration: none;
     transition:
@@ -1734,19 +1734,19 @@ export const CategoryTags = styled.div`
     font-size: inherit;
 
     &:hover {
-      background: ${Color.neutral10};
-      color: ${Color.neutral98};
+      background: var(${UI.COLOR_NEUTRAL_10});
+      color: var(${UI.COLOR_NEUTRAL_98});
     }
   }
 `
 
 export const DropDown = styled.div<{ maxWidth?: number; margin?: string }>`
-  border: 0.1rem solid ${transparentize(Color.neutral100, 0.9)};
+  border: 0.1rem solid color-mix(in srgb, var(${UI.COLOR_NEUTRAL_100}) 10%, transparent);
   border-radius: 0.6rem;
   width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
   padding: 0;
-  background: ${Color.neutral0};
-  color: ${Color.neutral100};
+  background: var(${UI.COLOR_NEUTRAL_0});
+  color: var(${UI.COLOR_NEUTRAL_100});
   font-size: 1.8rem;
   margin: ${({ margin }) => margin || '0 0 2.4rem'};
   display: flex;
@@ -1782,15 +1782,15 @@ export const DropDown = styled.div<{ maxWidth?: number; margin?: string }>`
     font-size: inherit;
     border: 0;
     border-radius: inherit;
-    background: ${transparentize(Color.neutral0, 0.9)};
+    background: color-mix(in srgb, var(${UI.COLOR_NEUTRAL_0}) 10%, transparent);
 
     &:focus {
       outline: none;
     }
 
     > option {
-      background-color: ${Color.neutral0};
-      color: ${Color.neutral0};
+      background-color: var(${UI.COLOR_NEUTRAL_0});
+      color: var(${UI.COLOR_NEUTRAL_0});
     }
   }
 `
@@ -1801,24 +1801,24 @@ export const ColorTableContainer = styled.div`
   border-radius: 3.2rem;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
-  scrollbar-color: ${Color.neutral70} ${Color.neutral90};
+  scrollbar-color: var(${UI.COLOR_NEUTRAL_70}) var(${UI.COLOR_NEUTRAL_90});
 
   &::-webkit-scrollbar {
     width: 0.8rem;
   }
 
   &::-webkit-scrollbar-track {
-    background: ${Color.neutral90};
+    background: var(${UI.COLOR_NEUTRAL_90});
     border-radius: 1rem;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: ${Color.neutral70};
+    background: var(${UI.COLOR_NEUTRAL_70});
     border-radius: 1rem;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background: ${Color.neutral50};
+    background: var(${UI.COLOR_NEUTRAL_50});
   }
 
   ${Media.upToMedium()} {
@@ -1830,7 +1830,7 @@ export const ColorTable = styled.table`
   --green: ${Color.cowfi_green};
   --red: ${Color.cowfi_orange_bright};
   --neutral: ${Color.cowfi_orange_pale};
-  --border: ${Color.neutral10};
+  --border: var(${UI.COLOR_NEUTRAL_10});
   width: 100%;
   border-collapse: collapse;
   margin-top: 2rem;
@@ -1906,7 +1906,7 @@ export const DisclaimerGrid = styled.div`
   text-align: left;
   width: 100%;
   padding: 2.4rem;
-  background-color: ${Color.neutral98};
+  background-color: var(${UI.COLOR_NEUTRAL_98});
   border-radius: 1.6rem;
   border-left: 0.6rem solid ${Color.cowfi_orange_bright};
 
@@ -1927,19 +1927,19 @@ export const DisclaimerList = styled.ul`
   padding: 0 0 0 0.4rem;
   font-size: 1.6rem;
   line-height: 1.5;
-  color: ${Color.neutral30};
+  color: var(${UI.COLOR_NEUTRAL_30});
 
   ${Media.upToMedium()} {
     font-size: 1.5rem;
   }
 
   a {
-    color: ${Color.neutral10};
+    color: var(${UI.COLOR_NEUTRAL_10});
     text-decoration: underline;
     transition: color 0.2s ease-in-out;
 
     &:hover {
-      color: ${Color.neutral30};
+      color: var(${UI.COLOR_NEUTRAL_30});
     }
   }
 `
@@ -1947,7 +1947,7 @@ export const DisclaimerList = styled.ul`
 export const DisclaimerHighlight = styled.div`
   margin: 2.4rem 0 0;
   padding: 1.6rem;
-  background-color: ${Color.neutral90};
+  background-color: var(${UI.COLOR_NEUTRAL_90});
   border-radius: 0.8rem;
 `
 

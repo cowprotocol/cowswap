@@ -1,4 +1,4 @@
-import { Color, Media } from '@cowprotocol/ui'
+import { Color, Media, UI } from '@cowprotocol/ui'
 
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import styled from 'styled-components/macro'
@@ -38,7 +38,7 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
 
   &:hover {
     opacity: 0.8;
-    color: ${Color.neutral100};
+    color: var(${UI.COLOR_NEUTRAL_100});
     text-decoration: none;
   }
 

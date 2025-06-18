@@ -75,7 +75,7 @@ function _buildChart(chartContainer: HTMLDivElement, width: number | undefined, 
     handleScale: false,
     layout: {
       backgroundColor: 'transparent',
-      textColor: Color.explorer_textPrimary,
+      textColor: Color.neutral100,
     },
     rightPriceScale: {
       scaleMargins: {

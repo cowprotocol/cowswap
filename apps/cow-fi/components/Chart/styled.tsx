@@ -1,6 +1,7 @@
-import styled from 'styled-components/macro'
+import { TransitionDuration, textFadeIn, Color, UI } from '@cowprotocol/ui'
+
 import { ArrowDownRight, ArrowUpRight } from 'react-feather'
-import { TransitionDuration, textFadeIn, Color } from '@cowprotocol/ui'
+import styled from 'styled-components/macro'
 
 export const ChartHeader = styled.div`
   position: absolute;
@@ -48,5 +49,5 @@ export const TokenPriceWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  color: ${Color.neutral10};
+  color: var(${UI.COLOR_NEUTRAL_10});
 `

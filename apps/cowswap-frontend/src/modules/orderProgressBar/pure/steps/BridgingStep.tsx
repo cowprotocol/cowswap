@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { Confetti } from '@cowprotocol/ui'
+import { Confetti, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -32,7 +32,7 @@ const Wrapper = styled.div`
 
 const ProgressDetailsStyled = styled(ProgressDetails)`
   border-radius: 16px;
-  background: #f2f2f2;
+  background: var(${UI.COLOR_PAPER_DARKER});
   padding: 16px;
 `
 
@@ -55,6 +55,8 @@ export function BridgingStep({ context, surplusData }: BridgingInProgressStepPro
           stepName={statusesMap[context.bridgingStatus]}
           sellToken={context.overview.sourceAmounts.sellAmount.currency}
           buyToken={context.overview.targetCurrency}
+          sourceChainId={context.bridgingProgressContext?.sourceChainId}
+          destinationChainId={context.bridgingProgressContext?.destinationChainId}
         />
         <ProgressDetailsStyled context={context} />
       </Wrapper>

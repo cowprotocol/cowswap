@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 import { InfoTooltip } from '@cowprotocol/ui'
 
@@ -14,9 +16,12 @@ interface RouteOverviewTitleProps {
   onClick(): void
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function RouteOverviewTitle({ isCollapsible, isExpanded, providerInfo, onClick }: RouteOverviewTitleProps) {
+export function RouteOverviewTitle({
+  isCollapsible,
+  isExpanded,
+  providerInfo,
+  onClick,
+}: RouteOverviewTitleProps): ReactNode {
   const HeaderComponent = isCollapsible ? ClickableRouteHeader : RouteHeader
 
   return (
