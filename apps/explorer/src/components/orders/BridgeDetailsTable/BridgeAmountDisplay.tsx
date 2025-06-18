@@ -7,9 +7,10 @@ import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { TokenDisplay as CommonTokenDisplay } from 'components/common/TokenDisplay'
 import ShimmerBar from 'explorer/components/common/ShimmerBar'
 
-import { formatTokenAmount } from 'utils/tokenFormatting'
-
 import { AmountDetailBlock, AmountLabel, AmountTokenDisplayAndCopyWrapper } from './styled'
+
+import { isNativeToken } from '../../../utils'
+import { TokenAmount } from '../../token/TokenAmount'
 
 interface BridgeAmountDisplayProps {
   labelPrefix: string
@@ -24,12 +25,7 @@ export function BridgeAmountDisplay({
   amount,
   isLoading,
 }: BridgeAmountDisplayProps): React.ReactNode {
-  const { formattedAmount, isNative } = useMemo(() => {
-    if (!bridgeToken || amount === undefined || amount === null) {
-      return { formattedAmount: null, isNative: false }
-    }
-    return formatTokenAmount(new BigNumber(amount), bridgeToken)
-  }, [bridgeToken, amount])
+  const isNative = isNativeToken(bridgeToken.address)
 
   const tokenDisplayElement = useMemo(() => {
     if (!bridgeToken?.chainId) return null
@@ -46,7 +42,7 @@ export function BridgeAmountDisplay({
     )
   }
 
-  if (!bridgeToken || !formattedAmount) {
+  if (!bridgeToken || !amount) {
     return (
       <AmountDetailBlock>
         <AmountLabel>{labelPrefix}</AmountLabel>
@@ -59,7 +55,7 @@ export function BridgeAmountDisplay({
     <AmountDetailBlock>
       <AmountLabel>{labelPrefix}</AmountLabel>
       <AmountTokenDisplayAndCopyWrapper>
-        <span>{formattedAmount}</span>
+        <TokenAmount amount={amount} token={bridgeToken} noSymbol />
         {isNative ? (
           tokenDisplayElement
         ) : (

@@ -2,11 +2,10 @@ import React, { ReactNode } from 'react'
 
 import type { TokenInfo } from '@uniswap/token-lists'
 
-import BigNumber from 'bignumber.js'
-
-import { formatTokenAmount } from '../../../utils/tokenFormatting'
+import { isNativeToken } from '../../../utils'
 import { RowWithCopyButton } from '../../common/RowWithCopyButton'
 import { TokenDisplay as CommonTokenDisplay } from '../../common/TokenDisplay'
+import { TokenAmount } from '../../token/TokenAmount'
 
 interface BridgeReceiveAmountProps {
   destinationToken: TokenInfo
@@ -14,7 +13,7 @@ interface BridgeReceiveAmountProps {
 }
 
 export function BridgeReceiveAmount({ destinationToken, amount }: BridgeReceiveAmountProps): ReactNode {
-  const { formattedAmount, isNative } = formatTokenAmount(new BigNumber(amount.toString()), destinationToken)
+  const isNative = isNativeToken(destinationToken.address)
 
   const tokenDisplayElement = (
     <CommonTokenDisplay erc20={destinationToken} network={destinationToken.chainId} showNetworkName={true} />
@@ -22,7 +21,9 @@ export function BridgeReceiveAmount({ destinationToken, amount }: BridgeReceiveA
 
   return (
     <span>
-      <span>{formattedAmount} </span>
+      <span>
+        <TokenAmount amount={amount} token={destinationToken} noSymbol />{' '}
+      </span>
       {isNative ? (
         tokenDisplayElement
       ) : (
