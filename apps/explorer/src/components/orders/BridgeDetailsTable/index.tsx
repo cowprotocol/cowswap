@@ -5,13 +5,11 @@ import { CrossChainOrder } from '@cowprotocol/cow-sdk'
 import { DetailRow } from 'components/common/DetailRow'
 import { LoadingWrapper } from 'components/common/LoadingWrapper'
 import { SimpleTable } from 'components/common/SimpleTable'
-import styled from 'styled-components/macro'
 
 import { BridgeDetailsContent } from './BridgeDetailsContent'
 import { BridgeDetailsTooltips } from './bridgeDetailsTooltips'
 import { BridgeTxOverview } from './BridgeTxOverview'
 import { Wrapper } from './styled'
-
 
 interface BridgeDetailsTableProps {
   crossChainOrder: CrossChainOrder | undefined
