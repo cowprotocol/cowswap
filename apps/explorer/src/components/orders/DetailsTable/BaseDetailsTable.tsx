@@ -13,7 +13,6 @@ import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { SimpleTable } from 'components/common/SimpleTable'
 import Spinner from 'components/common/Spinner'
 import { AmountsDisplay } from 'components/orders/AmountsDisplay'
-import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
 import { StatusLabel } from 'components/orders/StatusLabel'
 import { HelpTooltip } from 'components/Tooltip'
 import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
@@ -58,6 +57,7 @@ export function BaseDetailsTable({
     partiallyFillable,
     creationDate,
     executionDate,
+    expirationDate,
     status,
     partiallyFilled,
     buyToken,
@@ -232,6 +232,16 @@ export function BaseDetailsTable({
           <tr>
             <td>
               <span>
+                <HelpTooltip tooltip={DetailsTableTooltips.expiration} /> Expiration Time
+              </span>
+            </td>
+            <td>
+              <DateDisplay date={expirationDate} showIcon={true} />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span>
                 <HelpTooltip tooltip={DetailsTableTooltips.type} /> Type
               </span>
             </td>
@@ -251,16 +261,6 @@ export function BaseDetailsTable({
             </td>
           </tr>
           {children}
-          <tr>
-            <td>
-              <span>
-                <HelpTooltip tooltip={DetailsTableTooltips.fees} /> Costs &amp; Fees
-              </span>
-            </td>
-            <td>
-              <GasFeeDisplay order={order} />
-            </td>
-          </tr>
         </>
       }
     />
