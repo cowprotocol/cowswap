@@ -53,6 +53,8 @@ function mapChainInfoToBaseChainInfo(
 /**
  * Map with chain information for supported networks.
  * Ordered by relevance, first is most relevant.
+ * Keep in mind when iterating over this map that the order of keys is guaranteed to be numerically sorted.
+ * So this order is mostly for reference and not for iteration.
  */
 export const CHAIN_INFO: ChainInfoMap = {
   [SupportedChainId.MAINNET]: {
@@ -113,7 +115,7 @@ export const SORTED_CHAIN_IDS: SupportedChainId[] = [
   SupportedChainId.SEPOLIA,
 ]
 
-export const CHAIN_INFO_ARRAY: BaseChainInfo[] = Object.values(CHAIN_INFO)
+export const CHAIN_INFO_ARRAY: BaseChainInfo[] = SORTED_CHAIN_IDS.map((id) => CHAIN_INFO[id])
 
 export function getChainInfo(chainId: SupportedChainId): BaseChainInfo {
   return CHAIN_INFO[chainId]
