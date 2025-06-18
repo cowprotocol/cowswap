@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "yarn start:cowswap",
-    "start:cowswap": "nx run cowswap-frontend:serve",
+    "start:cowswap": "cross-env NODE_ENV=development nx run cowswap-frontend:serve",
     "start:widget": "nx run widget-configurator:serve",
     "start:omnibridge-hook": "nx run hook-dapp-omnibridge:serve",
     "start:cosmos": "nx run cowswap-frontend:cosmos:run",
