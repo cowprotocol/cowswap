@@ -21,8 +21,8 @@ import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/ty
 
 import * as styledEl from './styled'
 
-import { settingsTabStateAtom } from '../../state/settingsTabState'
 import { TransactionSettings } from '../../pure/TransactionSettings'
+import { settingsTabStateAtom } from '../../state/settingsTabState'
 
 interface SettingsTabProps {
   className?: string

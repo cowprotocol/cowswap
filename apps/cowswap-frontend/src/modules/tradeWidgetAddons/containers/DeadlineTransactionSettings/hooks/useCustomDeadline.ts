@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { DEFAULT_DEADLINE_FROM_NOW } from '@cowprotocol/common-const'
+import { isValidInteger } from '@cowprotocol/common-utils'
 import { StatefulValue } from '@cowprotocol/types'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
@@ -10,7 +11,6 @@ import { CowSwapAnalyticsCategory } from '../../../../../common/analytics/types'
 import { useInjectedWidgetDeadline } from '../../../../injectedWidget'
 import { useIsEoaEthFlow } from '../../../../trade'
 import { clampDeadline, deadlineToView, getDeadlineRange } from '../utils'
-import { isValidInteger } from '@cowprotocol/common-utils'
 
 
 type TxSettingAction = 'Default' | 'Custom'
