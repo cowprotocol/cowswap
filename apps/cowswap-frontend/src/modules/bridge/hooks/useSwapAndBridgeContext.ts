@@ -110,7 +110,7 @@ function createOverview(
   targetAmounts: { sellAmount: CurrencyAmount<Currency>; buyAmount: CurrencyAmount<Currency> } | undefined,
 ): SwapAndBridgeOverview {
   return {
-    sourceChainName: sourceChainData.name,
+    sourceChainName: sourceChainData.label,
     targetChainName: destChainData.label,
     targetCurrency: order.outputToken,
     sourceAmounts: {
