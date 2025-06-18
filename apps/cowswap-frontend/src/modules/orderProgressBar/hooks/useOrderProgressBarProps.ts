@@ -26,6 +26,7 @@ import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
 import { BridgeQuoteAmounts, type SwapAndBridgeContext, SwapAndBridgeStatus } from '../../bridge'
 import { useSwapAndBridgeContext } from '../../bridge/hooks/useSwapAndBridgeContext'
+import { OrderProgressBarStepName, DEFAULT_STEP_NAME } from '../constants'
 import {
   ordersProgressBarStateAtom,
   setOrderProgressBarCancellationTriggered,
@@ -33,15 +34,7 @@ import {
   updateOrderProgressBarCountdown,
   updateOrderProgressBarStepName,
 } from '../state/atoms'
-import {
-  ApiSolverCompetition,
-  DEFAULT_STEP_NAME,
-  OrderProgressBarProps,
-  OrderProgressBarState,
-  OrderProgressBarStepName,
-  SolverCompetition,
-  STEP_NAMES,
-} from '../types'
+import { ApiSolverCompetition, OrderProgressBarProps, OrderProgressBarState, SolverCompetition } from '../types'
 
 type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null
@@ -192,7 +185,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     isBridgingTrade,
   )
   useCancellingOrderUpdater(orderId, isCancelling)
-  useCountdownStartUpdater(orderId, countdown, backendApiStatus, progressBarStepName || DEFAULT_STEP_NAME)
+  useCountdownStartUpdater(orderId, countdown, backendApiStatus)
 
   const solverCompetition = useMemo(
     () =>
@@ -291,21 +284,19 @@ function useCountdownStartUpdater(
   orderId: string,
   countdown: OrderProgressBarState['countdown'],
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
-  currentVisibleStepName: OrderProgressBarStepName,
 ) {
   const setCountdown = useSetExecutingOrderCountdownCallback()
 
   useEffect(() => {
-    // Only start countdown when backend is active AND we're actually showing the solving step to the user
-    // This prevents countdown from running in background during step transition delays
-    if (countdown == null && backendApiStatus === 'active' && currentVisibleStepName === STEP_NAMES.SOLVING) {
-      // Start countdown when it becomes active AND we're showing solving step
+    // Start countdown immediately when backend becomes active to reflect real protocol timing
+    // The solver competition genuinely starts when backend is active, regardless of UI delays
+    if (countdown == null && backendApiStatus === 'active') {
       setCountdown(orderId, PROGRESS_BAR_TIMER_DURATION)
     } else if (backendApiStatus !== 'active' && countdown) {
       // Every time backend status is not `active` and countdown is set, reset the countdown
       setCountdown(orderId, null)
     }
-  }, [backendApiStatus, setCountdown, countdown, orderId, currentVisibleStepName])
+  }, [backendApiStatus, setCountdown, countdown, orderId])
 }
 
 // TODO: Add proper return type annotation
@@ -369,16 +360,16 @@ function useProgressBarStepNameUpdater(
     if (
       lastTimeChangedSteps === undefined ||
       timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
-      stepName === STEP_NAMES.FINISHED ||
-      stepName === STEP_NAMES.CANCELLATION_FAILED ||
-      stepName === STEP_NAMES.CANCELLED ||
-      stepName === STEP_NAMES.EXPIRED
+      stepName === OrderProgressBarStepName.FINISHED ||
+      stepName === OrderProgressBarStepName.CANCELLATION_FAILED ||
+      stepName === OrderProgressBarStepName.CANCELLED ||
+      stepName === OrderProgressBarStepName.EXPIRED
     ) {
       updateStepName(stepName)
 
       // schedule update for temporary steps
-      if (stepName === STEP_NAMES.SUBMISSION_FAILED) {
-        timer = setTimeout(() => updateStepName(STEP_NAMES.SOLVING), MINIMUM_STEP_DISPLAY_TIME)
+      if (stepName === OrderProgressBarStepName.SUBMISSION_FAILED) {
+        timer = setTimeout(() => updateStepName(OrderProgressBarStepName.SOLVING), MINIMUM_STEP_DISPLAY_TIME)
       }
     } else {
       // Delay if it was updated less than MINIMUM_STEP_DISPLAY_TIME ago
@@ -412,73 +403,73 @@ function getProgressBarStepName(
 
   if (bridgingStatus) {
     if (bridgingStatus === SwapAndBridgeStatus.DONE) {
-      return 'bridgingFinished'
+      return OrderProgressBarStepName.BRIDGING_FINISHED
     }
 
     if (bridgingStatus === SwapAndBridgeStatus.REFUND_COMPLETE) {
-      return 'refundCompleted'
+      return OrderProgressBarStepName.REFUND_COMPLETED
     }
 
     if (bridgingStatus === SwapAndBridgeStatus.FAILED) {
-      return 'bridgingFailed'
+      return OrderProgressBarStepName.BRIDGING_FAILED
     }
 
     if (bridgingStatus && [SwapAndBridgeStatus.PENDING, SwapAndBridgeStatus.DEFAULT].includes(bridgingStatus)) {
-      return 'bridgingInProgress'
+      return OrderProgressBarStepName.BRIDGING_IN_PROGRESS
     }
   }
 
   if (isTradedOrConfirmed && isBridgingTrade && !bridgingStatus) {
-    return 'executing'
+    return OrderProgressBarStepName.EXECUTING
   }
 
   if (isExpired) {
-    return 'expired'
+    return OrderProgressBarStepName.EXPIRED
   } else if (isCancelled) {
-    return 'cancelled'
+    return OrderProgressBarStepName.CANCELLED
   } else if (isCancelling) {
-    return STEP_NAMES.CANCELLING
+    return OrderProgressBarStepName.CANCELLING
   } else if (cancellationTriggered && isTradedOrConfirmed) {
     // Was cancelling, but got executed in the meantime
-    return STEP_NAMES.CANCELLATION_FAILED
+    return OrderProgressBarStepName.CANCELLATION_FAILED
   } else if (isConfirmed) {
     // already traded
-    return STEP_NAMES.FINISHED
+    return OrderProgressBarStepName.FINISHED
   } else if (
     previousBackendApiStatus === 'executing' &&
     (backendApiStatus === 'active' || backendApiStatus === 'open' || backendApiStatus === 'scheduled')
   ) {
     // moved back from executing to active
-    return STEP_NAMES.SUBMISSION_FAILED
+    return OrderProgressBarStepName.SUBMISSION_FAILED
   } else if (isUnfillable) {
     // out of market order
-    return STEP_NAMES.UNFILLABLE
+    return OrderProgressBarStepName.UNFILLABLE
   } else if (backendApiStatus === 'active' && countdown === 0) {
     // solving, but took longer than stipulated countdown
-    return STEP_NAMES.DELAYED
+    return OrderProgressBarStepName.DELAYED
   } else if (
     (backendApiStatus === 'open' || backendApiStatus === 'scheduled') &&
     previousStepName &&
-    previousStepName !== STEP_NAMES.INITIAL
+    previousStepName !== OrderProgressBarStepName.INITIAL
   ) {
     // once moved out of initial state, never go back to it
-    return STEP_NAMES.DELAYED
+    return OrderProgressBarStepName.DELAYED
   } else if (backendApiStatus) {
     // straight mapping API status to progress bar steps
     return BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME[backendApiStatus]
   }
 
-  return 'initial'
+  return OrderProgressBarStepName.INITIAL
 }
 
 const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<CompetitionOrderStatus.type, OrderProgressBarStepName> = {
-  scheduled: STEP_NAMES.INITIAL,
-  open: STEP_NAMES.INITIAL,
-  active: STEP_NAMES.SOLVING,
-  solved: STEP_NAMES.SOLVED,
-  executing: STEP_NAMES.EXECUTING,
-  traded: STEP_NAMES.FINISHED,
-  cancelled: STEP_NAMES.INITIAL, // TODO: maybe add another state for finished with error?
+  scheduled: OrderProgressBarStepName.INITIAL,
+  open: OrderProgressBarStepName.INITIAL,
+  active: OrderProgressBarStepName.SOLVING,
+  solved: OrderProgressBarStepName.SOLVED,
+  executing: OrderProgressBarStepName.EXECUTING,
+  traded: OrderProgressBarStepName.FINISHED,
+  cancelled: OrderProgressBarStepName.INITIAL, // TODO: maybe add another state for finished with error?
 }
 
 // TODO: Add proper return type annotation
