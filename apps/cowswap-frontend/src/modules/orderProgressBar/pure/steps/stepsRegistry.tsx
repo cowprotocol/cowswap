@@ -9,7 +9,8 @@ import { FinishedStep } from './FinishedStep'
 import { InitialStep } from './InitialStep'
 import { SolvingStep } from './SolvingStep'
 
-import { OrderProgressBarProps, OrderProgressBarStepName, STEP_NAMES } from '../../types'
+import { OrderProgressBarStepName } from '../../constants'
+import { OrderProgressBarProps } from '../../types'
 import { RenderProgressTopSection } from '../RenderProgressTopSection'
 
 const DEBUG_FORCE_SHOW_SURPLUS = false
@@ -51,10 +52,10 @@ function FinishedStepWrapper(props: OrderProgressBarProps): ReactNode {
 
 function SolvingStepWrapper(props: OrderProgressBarProps): ReactNode {
   const { countdown, stepName, showCancellationModal, isBridgingTrade } = props
-  const isUnfillable = stepName === STEP_NAMES.UNFILLABLE
-  const isDelayed = stepName === STEP_NAMES.DELAYED
-  const isSubmissionFailed = stepName === STEP_NAMES.SUBMISSION_FAILED
-  const isSolved = stepName === STEP_NAMES.SOLVED
+  const isUnfillable = stepName === OrderProgressBarStepName.UNFILLABLE
+  const isDelayed = stepName === OrderProgressBarStepName.DELAYED
+  const isSubmissionFailed = stepName === OrderProgressBarStepName.SUBMISSION_FAILED
+  const isSolved = stepName === OrderProgressBarStepName.SOLVED
   const calculatedCountdownValue = isUnfillable || isDelayed || isSubmissionFailed || isSolved ? undefined : countdown
 
   return (
@@ -99,20 +100,20 @@ function BridgingStepWrapper(props: OrderProgressBarProps): ReactNode {
 }
 
 export const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, ComponentType<OrderProgressBarProps>> = {
-  initial: InitialStepWrapper,
-  solving: SolvingStepWrapper,
-  executing: ExecutingStepWrapper,
-  finished: FinishedStepWrapper,
-  solved: SolvingStepWrapper, // Use SolvingStep for 'solved' state
-  delayed: SolvingStepWrapper,
-  unfillable: SolvingStepWrapper,
-  submissionFailed: SolvingStepWrapper,
-  cancelling: CancellingStepWrapper,
-  cancelled: CancelledStepWrapper,
-  expired: ExpiredStepWrapper,
-  cancellationFailed: FinishedStepWrapper,
-  bridgingInProgress: BridgingStepWrapper,
-  bridgingFailed: BridgingStepWrapper,
-  bridgingFinished: BridgingStepWrapper,
-  refundCompleted: BridgingStepWrapper,
+  [OrderProgressBarStepName.INITIAL]: InitialStepWrapper,
+  [OrderProgressBarStepName.SOLVING]: SolvingStepWrapper,
+  [OrderProgressBarStepName.EXECUTING]: ExecutingStepWrapper,
+  [OrderProgressBarStepName.FINISHED]: FinishedStepWrapper,
+  [OrderProgressBarStepName.SOLVED]: SolvingStepWrapper, // Use SolvingStep for 'solved' state
+  [OrderProgressBarStepName.DELAYED]: SolvingStepWrapper,
+  [OrderProgressBarStepName.UNFILLABLE]: SolvingStepWrapper,
+  [OrderProgressBarStepName.SUBMISSION_FAILED]: SolvingStepWrapper,
+  [OrderProgressBarStepName.CANCELLING]: CancellingStepWrapper,
+  [OrderProgressBarStepName.CANCELLED]: CancelledStepWrapper,
+  [OrderProgressBarStepName.EXPIRED]: ExpiredStepWrapper,
+  [OrderProgressBarStepName.CANCELLATION_FAILED]: FinishedStepWrapper,
+  [OrderProgressBarStepName.BRIDGING_IN_PROGRESS]: BridgingStepWrapper,
+  [OrderProgressBarStepName.BRIDGING_FAILED]: BridgingStepWrapper,
+  [OrderProgressBarStepName.BRIDGING_FINISHED]: BridgingStepWrapper,
+  [OrderProgressBarStepName.REFUND_COMPLETED]: BridgingStepWrapper,
 }

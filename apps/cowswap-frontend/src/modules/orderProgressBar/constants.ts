@@ -4,7 +4,31 @@ import PROGRESSBAR_COW_SURPLUS_3 from '@cowprotocol/assets/cow-swap/progressbar-
 import PROGRESSBAR_COW_SURPLUS_4 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-4.svg'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { OrderProgressBarStepName, STEP_NAMES } from './types'
+/**
+ * Frontend-defined step name enum.
+ * These are mapped from backend CompetitionOrderStatus.type values
+ * but provide more granular UI states for better user experience.
+ */
+export enum OrderProgressBarStepName {
+  INITIAL = 'initial',
+  SOLVING = 'solving',
+  EXECUTING = 'executing',
+  FINISHED = 'finished',
+  DELAYED = 'delayed',
+  SOLVED = 'solved',
+  UNFILLABLE = 'unfillable',
+  SUBMISSION_FAILED = 'submissionFailed',
+  CANCELLING = 'cancelling',
+  CANCELLED = 'cancelled',
+  EXPIRED = 'expired',
+  CANCELLATION_FAILED = 'cancellationFailed',
+  BRIDGING_IN_PROGRESS = 'bridgingInProgress',
+  BRIDGING_FAILED = 'bridgingFailed',
+  REFUND_COMPLETED = 'refundCompleted',
+  BRIDGING_FINISHED = 'bridgingFinished',
+}
+
+export const DEFAULT_STEP_NAME: OrderProgressBarStepName = OrderProgressBarStepName.INITIAL
 
 type StepConfig = { title: string; description?: string }
 type BridgeStepConfig = (isBridgingTrade: boolean) => StepConfig
@@ -41,10 +65,10 @@ export const STEPS: (StepConfig | BridgeStepConfig)[] = [
 ]
 
 export const FINAL_STATES: OrderProgressBarStepName[] = [
-  STEP_NAMES.EXPIRED,
-  STEP_NAMES.FINISHED,
-  STEP_NAMES.CANCELLED,
-  STEP_NAMES.CANCELLATION_FAILED,
+  OrderProgressBarStepName.EXPIRED,
+  OrderProgressBarStepName.FINISHED,
+  OrderProgressBarStepName.CANCELLED,
+  OrderProgressBarStepName.CANCELLATION_FAILED,
 ]
 
 export const COW_SWAP_BENEFITS = [
