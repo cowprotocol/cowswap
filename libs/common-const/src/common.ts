@@ -33,9 +33,6 @@ export const AVG_APPROVE_COST_GWEI = '50000'
 export const DEFAULT_APP_CODE = 'CoW Swap'
 export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
 
-// Mock address used for Avalanche until we have a COW contract
-export const MOCK_ADDRESS = '0x0000000000000000000000000000000000000000'
-
 export const APP_TITLE = 'CoW Swap | The smartest way to trade cryptocurrencies'
 
 export const PAGE_TITLES = {
@@ -71,7 +68,7 @@ export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.AVALANCHE]: null, // doesn't exist!
 }
 
-export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string> = {
+export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: '0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB',
   [SupportedChainId.GNOSIS_CHAIN]: '0x177127622c4A00F3d409B75571e12cB3c8973d3c',
   [SupportedChainId.ARBITRUM_ONE]: '0xcb8b5cd20bdcaea9a010ac1f8d835824f5c87a04',
@@ -79,7 +76,7 @@ export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string> = {
   [SupportedChainId.SEPOLIA]: '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59',
   // https://polygonscan.com/token/0x2f4efd3aa42e15a1ec6114547151b63ee5d39958
   [SupportedChainId.POLYGON]: '0x2f4efd3aa42e15a1ec6114547151b63ee5d39958',
-  [SupportedChainId.AVALANCHE]: MOCK_ADDRESS,
+  [SupportedChainId.AVALANCHE]: null,
 }
 
 export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'

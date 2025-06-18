@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { MerkleDrop, MerkleDropAbi, TokenDistro, TokenDistroAbi } from '@cowprotocol/abis'
 import {
-  COW,
+  COW_TOKEN_TO_CHAIN,
   LOCKED_GNO_VESTING_DURATION,
   LOCKED_GNO_VESTING_START_TIME,
   MERKLE_DROP_CONTRACT_ADDRESSES,
@@ -23,7 +23,11 @@ import { useContract } from 'common/hooks/useContract'
 import { fetchClaim } from './claimData'
 
 // We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter
-const _COW = COW[SupportedChainId.MAINNET]
+const _COW = COW_TOKEN_TO_CHAIN[SupportedChainId.MAINNET]
+
+if (!_COW) {
+  throw new Error(`COW token not found for chain ${SupportedChainId.MAINNET}`)
+}
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

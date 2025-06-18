@@ -1,7 +1,7 @@
 import { createStore } from 'jotai/vanilla'
 import { ReactNode } from 'react'
 
-import { COW as COWS, USDC_MAINNET } from '@cowprotocol/common-const'
+import { COW_TOKEN_TO_CHAIN, USDC_MAINNET } from '@cowprotocol/common-const'
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Fraction, Token } from '@uniswap/sdk-core'
@@ -32,14 +32,18 @@ const mockGetCowProtocolUsdPrice = jest.spyOn(cowProtocolApi, 'getCowProtocolUsd
 const mockFetchCurrencyUsdPrice = jest.spyOn(services, 'fetchCurrencyUsdPrice')
 
 const USDC = USDC_MAINNET
-const COW = COWS[SupportedChainId.MAINNET]
+const CowToken = COW_TOKEN_TO_CHAIN[SupportedChainId.MAINNET]
+
+if (!CowToken) {
+  throw new Error(`COW token not found for chain ${SupportedChainId.MAINNET}`)
+}
 
 const usdcKey = getUsdPriceStateKey(USDC)
-const cowKey = getUsdPriceStateKey(COW)
+const cowKey = getUsdPriceStateKey(CowToken)
 
 const defaultQueue = {
   [usdcKey]: USDC,
-  [cowKey]: COW,
+  [cowKey]: CowToken,
 }
 
 // TODO: Add proper return type annotation
@@ -114,7 +118,7 @@ describe('UsdPricesUpdater', () => {
     }, 2)
 
     expect(state[usdcKey]).toEqual({ isLoading: false, price: null, currency: USDC })
-    expect(state[cowKey]).toEqual({ isLoading: false, price: null, currency: COW })
+    expect(state[cowKey]).toEqual({ isLoading: false, price: null, currency: CowToken })
   })
 
   it('Should set price value and isLoading=false on fetching success', async () => {
@@ -126,7 +130,7 @@ describe('UsdPricesUpdater', () => {
       return new Promise((resolve) => {
         if (currency === USDC) {
           resolve(usdcPrice)
-        } else if (currency === COW) {
+        } else if (currency === CowToken) {
           resolve(cowPrice)
         }
       })
@@ -141,7 +145,7 @@ describe('UsdPricesUpdater', () => {
     expect(state[cowKey]).toEqual({
       isLoading: false,
       price: cowPrice,
-      currency: COW,
+      currency: CowToken,
       updatedAt: expect.any(Number),
     })
   })

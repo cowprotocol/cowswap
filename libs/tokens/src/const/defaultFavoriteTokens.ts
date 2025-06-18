@@ -38,18 +38,20 @@ import { TokensMap } from '../types'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const tokensListToMap = (list: TokenWithLogo[]) =>
-  list.reduce<TokensMap>((acc, token) => {
-    acc[token.address.toLowerCase()] = {
-      chainId: token.chainId,
-      address: token.address,
-      name: token.name || '',
-      decimals: token.decimals,
-      symbol: token.symbol || '',
-      logoURI: token.logoURI,
-    }
-    return acc
-  }, {})
+const tokensListToMap = (list: (TokenWithLogo | null)[]) =>
+  list
+    .filter((token) => token !== null)
+    .reduce<TokensMap>((acc, token) => {
+      acc[token.address.toLowerCase()] = {
+        chainId: token.chainId,
+        address: token.address,
+        name: token.name || '',
+        decimals: token.decimals,
+        symbol: token.symbol || '',
+        logoURI: token.logoURI,
+      }
+      return acc
+    }, {})
 
 export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
   [SupportedChainId.MAINNET]: tokensListToMap([

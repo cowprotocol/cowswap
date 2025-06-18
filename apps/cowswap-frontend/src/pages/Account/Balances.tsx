@@ -4,7 +4,7 @@ import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
 import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import vCOWImage from '@cowprotocol/assets/images/vCOW.svg'
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
-import { COW, COW_CONTRACT_ADDRESS, MOCK_ADDRESS, V_COW } from '@cowprotocol/common-const'
+import { COW_TOKEN_TO_CHAIN, COW_CONTRACT_ADDRESS, V_COW } from '@cowprotocol/common-const'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getProviderErrorMessage } from '@cowprotocol/common-utils'
 import { ButtonPrimary, HoverTooltip, TokenAmount } from '@cowprotocol/ui'
@@ -58,7 +58,7 @@ export default function Profile() {
   const previousAccount = usePrevious(account)
 
   const isCowTokenAvailable = useMemo(() => {
-    return COW_CONTRACT_ADDRESS[chainId] !== MOCK_ADDRESS
+    return COW_CONTRACT_ADDRESS[chainId] !== null
   }, [chainId])
 
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -72,10 +72,12 @@ export default function Profile() {
   // Locked GNO balance
   const { loading: isLockedGnoLoading, ...lockedGnoBalances } = useCowFromLockedGnoBalances()
 
-  const cowToken = COW[chainId]
+  const cowToken = COW_TOKEN_TO_CHAIN[chainId]
   const vCowToken = V_COW[chainId]
   // Cow balance
-  const cow = useCurrencyAmountBalance(chainId ? cowToken : undefined) || CurrencyAmount.fromRawAmount(cowToken, 0)
+  const cowBalance =
+    useCurrencyAmountBalance(chainId ? cowToken : undefined) ||
+    (cowToken ? CurrencyAmount.fromRawAmount(cowToken, 0) : undefined)
 
   // vCow balance values
   const { unvested, vested, total, isLoading: isVCowLoading } = useVCowData()
@@ -280,7 +282,7 @@ export default function Profile() {
                   <i>Available COW balance</i>
                   <b>
                     {!isProviderNetworkUnsupported && (
-                      <TokenAmount amount={cow} defaultValue="0" tokenSymbol={cowToken} />
+                      <TokenAmount amount={cowBalance} defaultValue="0" tokenSymbol={cowToken} />
                     )}
                   </b>
                 </span>
@@ -288,7 +290,7 @@ export default function Profile() {
               <CardActions>
                 <ExtLink
                   title="View contract"
-                  href={getBlockExplorerUrl(chainId, 'token', COW_CONTRACT_ADDRESS[chainId])}
+                  href={getBlockExplorerUrl(chainId, 'token', COW_CONTRACT_ADDRESS[chainId]!)}
                 >
                   View contract ↗
                 </ExtLink>
@@ -297,7 +299,7 @@ export default function Profile() {
                   shortLabel
                   currency={cowToken}
                   fallback={
-                    <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>
+                    <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]!}>
                       <div title="Click to copy token contract address">Copy contract</div>
                     </CopyHelper>
                   }

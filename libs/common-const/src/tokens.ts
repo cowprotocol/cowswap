@@ -488,71 +488,84 @@ export const V_COW: Record<SupportedChainId, TokenWithLogo | null> = {
 /**
  * Cow token
  */
-export const COW_TOKEN_MAINNET = new TokenWithLogo(
-  undefined,
-  SupportedChainId.MAINNET,
-  COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET],
-  18,
-  'COW',
-  'CoW Protocol Token',
-)
+export const COW_TOKEN_MAINNET = COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET]
+  ? new TokenWithLogo(
+      undefined,
+      SupportedChainId.MAINNET,
+      COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET]!,
+      18,
+      'COW',
+      'CoW Protocol Token',
+    )
+  : null
 
-export const COW_TOKEN_XDAI = new TokenWithLogo(
-  COW_TOKEN_MAINNET.logoURI,
-  SupportedChainId.GNOSIS_CHAIN,
-  COW_CONTRACT_ADDRESS[SupportedChainId.GNOSIS_CHAIN],
-  18,
-  'COW',
-  'CoW Protocol Token',
-)
+export const COW_TOKEN_XDAI = COW_CONTRACT_ADDRESS[SupportedChainId.GNOSIS_CHAIN]
+  ? new TokenWithLogo(
+      COW_TOKEN_MAINNET?.logoURI,
+      SupportedChainId.GNOSIS_CHAIN,
+      COW_CONTRACT_ADDRESS[SupportedChainId.GNOSIS_CHAIN]!,
+      18,
+      'COW',
+      'CoW Protocol Token',
+    )
+  : null
 
-export const COW_TOKEN_ARBITRUM = new TokenWithLogo(
-  COW_TOKEN_MAINNET.logoURI,
-  SupportedChainId.ARBITRUM_ONE,
-  COW_CONTRACT_ADDRESS[SupportedChainId.ARBITRUM_ONE],
-  18,
-  'COW',
-  'CoW Protocol Token',
-)
+export const COW_TOKEN_ARBITRUM = COW_CONTRACT_ADDRESS[SupportedChainId.ARBITRUM_ONE]
+  ? new TokenWithLogo(
+      COW_TOKEN_MAINNET?.logoURI,
+      SupportedChainId.ARBITRUM_ONE,
+      COW_CONTRACT_ADDRESS[SupportedChainId.ARBITRUM_ONE],
+      18,
+      'COW',
+      'CoW Protocol Token',
+    )
+  : null
 
-export const COW_TOKEN_BASE = new TokenWithLogo(
-  COW_TOKEN_MAINNET.logoURI,
-  SupportedChainId.BASE,
-  COW_CONTRACT_ADDRESS[SupportedChainId.BASE],
-  18,
-  'COW',
-  'CoW Protocol Token',
-)
+export const COW_TOKEN_BASE = COW_CONTRACT_ADDRESS[SupportedChainId.BASE]
+  ? new TokenWithLogo(
+      COW_TOKEN_MAINNET?.logoURI,
+      SupportedChainId.BASE,
+      COW_CONTRACT_ADDRESS[SupportedChainId.BASE],
+      18,
+      'COW',
+      'CoW Protocol Token',
+    )
+  : null
 
-export const COW_TOKEN_SEPOLIA = new TokenWithLogo(
-  COW_TOKEN_MAINNET.logoURI,
-  SupportedChainId.SEPOLIA,
-  COW_CONTRACT_ADDRESS[SupportedChainId.SEPOLIA],
-  18,
-  'COW',
-  'CoW Protocol Token',
-)
+export const COW_TOKEN_SEPOLIA = COW_CONTRACT_ADDRESS[SupportedChainId.SEPOLIA]
+  ? new TokenWithLogo(
+      COW_TOKEN_MAINNET?.logoURI,
+      SupportedChainId.SEPOLIA,
+      COW_CONTRACT_ADDRESS[SupportedChainId.SEPOLIA],
+      18,
+      'COW',
+      'CoW Protocol Token',
+    )
+  : null
 
-export const COW_TOKEN_POLYGON = new TokenWithLogo(
-  COW_TOKEN_MAINNET.logoURI,
-  SupportedChainId.POLYGON,
-  COW_CONTRACT_ADDRESS[SupportedChainId.POLYGON],
-  18,
-  'COW',
-  'CoW Protocol Token',
-)
+export const COW_TOKEN_POLYGON = COW_CONTRACT_ADDRESS[SupportedChainId.POLYGON]
+  ? new TokenWithLogo(
+      COW_TOKEN_MAINNET?.logoURI,
+      SupportedChainId.POLYGON,
+      COW_CONTRACT_ADDRESS[SupportedChainId.POLYGON],
+      18,
+      'COW',
+      'CoW Protocol Token',
+    )
+  : null
 
-// TODO: handle when COW doesn't exist in Avalanche
-export const COW_TOKEN_AVALANCHE = new TokenWithLogo(
-  COW_TOKEN_MAINNET.logoURI,
-  SupportedChainId.AVALANCHE,
-  COW_CONTRACT_ADDRESS[SupportedChainId.AVALANCHE],
-  18,
-  'COW',
-  'CoW Protocol Token',
-)
+export const COW_TOKEN_AVALANCHE = COW_CONTRACT_ADDRESS[SupportedChainId.AVALANCHE]
+  ? new TokenWithLogo(
+      COW_TOKEN_MAINNET?.logoURI,
+      SupportedChainId.AVALANCHE,
+      COW_CONTRACT_ADDRESS[SupportedChainId.AVALANCHE],
+      18,
+      'COW',
+      'CoW Protocol Token',
+    )
+  : null
 
-export const COW: Record<SupportedChainId, TokenWithLogo> = {
+export const COW_TOKEN_TO_CHAIN: Record<SupportedChainId, TokenWithLogo | null> = {
   [SupportedChainId.MAINNET]: COW_TOKEN_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: COW_TOKEN_XDAI,
   [SupportedChainId.ARBITRUM_ONE]: COW_TOKEN_ARBITRUM,
