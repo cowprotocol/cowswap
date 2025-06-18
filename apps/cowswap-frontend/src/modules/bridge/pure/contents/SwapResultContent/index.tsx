@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import PlusIcon from '@cowprotocol/assets/cow-swap/plus.svg'
 import { isTruthy } from '@cowprotocol/common-utils'
 
@@ -21,12 +23,9 @@ interface SwapResultContentProps {
   context: SwapResultContext
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function SwapResultContentContent({
+export function SwapResultContent({
   context: { winningSolver, receivedAmount, receivedAmountUsd, surplusAmount, surplusAmountUsd },
-}: SwapResultContentProps) {
+}: SwapResultContentProps): ReactNode {
   const contents = [
     winningSolver
       ? {

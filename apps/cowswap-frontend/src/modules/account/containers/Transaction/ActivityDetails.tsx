@@ -15,7 +15,7 @@ import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { useToggleAccountModal } from 'modules/account'
-import { useSwapAndBridgeContext, ProgressDetails } from 'modules/bridge'
+import { useSwapAndBridgeContext, ProgressDetails, BridgeActivitySummary } from 'modules/bridge'
 import { EthFlowStepper } from 'modules/ethFlow'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
@@ -337,76 +337,92 @@ export function ActivityDetails(props: {
           <b>{activityName}</b>
           {isOrder ? (
             <>
-              <SummaryInnerRow>
-                <b>From{kind === 'buy' && ' at most'}</b>
-                <i>{from}</i>
-              </SummaryInnerRow>
-              <SummaryInnerRow>
-                <b>To{kind === 'sell' && ' at least'}</b>
-                <i>{to}</i>
-              </SummaryInnerRow>
-              <SummaryInnerRow>
-                <b>{isOrderFulfilled ? 'Exec. price' : 'Limit price'}</b>
-                <i>
-                  <RateInfo noLabel={true} rateInfoParams={rateInfoParams} />
-                </i>
-              </SummaryInnerRow>
-              <SummaryInnerRow isCancelled={isCancelled} isExpired={isExpired}>
-                {fulfillmentTime ? (
-                  <>
-                    <b>Filled on</b>
-                    <i>{fulfillmentTime}</i>
-                  </>
-                ) : (
-                  <>
-                    <b>Valid to</b>
-                    <i>{validTo}</i>
-                  </>
-                )}
-              </SummaryInnerRow>
-
-              {order && isCustomRecipient && (
-                <SummaryInnerRow>
-                  <b>Recipient:</b>
-                  <i>
-                    {isCustomRecipientWarningBannerVisible && (
-                      <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" size={18} />
+              {swapAndBridgeContext && order?.kind === 'sell' ? (
+                // Bridge order layout - Currently only displayed for SELL orders
+                // TODO: Consider extending to BUY orders
+                <BridgeActivitySummary
+                  context={swapAndBridgeContext}
+                  order={order}
+                  fulfillmentTime={fulfillmentTime}
+                  isCustomRecipient={isCustomRecipient}
+                  receiverEnsName={receiverEnsName}
+                  appData={appData}
+                />
+              ) : (
+                // Regular order layout
+                <>
+                  <SummaryInnerRow>
+                    <b>From{kind === 'buy' && ' at most'}</b>
+                    <i>{from}</i>
+                  </SummaryInnerRow>
+                  <SummaryInnerRow>
+                    <b>To{kind === 'sell' && ' at least'}</b>
+                    <i>{to}</i>
+                  </SummaryInnerRow>
+                  <SummaryInnerRow>
+                    <b>{isOrderFulfilled ? 'Exec. price' : 'Limit price'}</b>
+                    <i>
+                      <RateInfo noLabel={true} rateInfoParams={rateInfoParams} />
+                    </i>
+                  </SummaryInnerRow>
+                  <SummaryInnerRow isCancelled={isCancelled} isExpired={isExpired}>
+                    {fulfillmentTime ? (
+                      <>
+                        <b>Filled on</b>
+                        <i>{fulfillmentTime}</i>
+                      </>
+                    ) : (
+                      <>
+                        <b>Valid to</b>
+                        <i>{validTo}</i>
+                      </>
                     )}
-                    <ExternalLink
-                      href={getExplorerLink(chainId, order.receiver || order.owner, ExplorerDataType.ADDRESS)}
-                    >
-                      {receiverEnsName || shortenAddress(order.receiver || order.owner)} ↗
-                    </ExternalLink>
-                  </i>
-                </SummaryInnerRow>
-              )}
+                  </SummaryInnerRow>
 
-              {surplusAmount?.greaterThan(0) && (
-                <SummaryInnerRow>
-                  <b>Surplus</b>
-                  <i>
-                    <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
-                    {showFiatValue && (
-                      <FiatWrapper>
-                        (<StyledFiatAmount amount={surplusFiatValue} />)
-                      </FiatWrapper>
-                    )}
-                  </i>
-                </SummaryInnerRow>
-              )}
-
-              {appData && (
-                <OrderHooksDetails appData={appData} margin="10px 0 0">
-                  {(children) => (
+                  {order && isCustomRecipient && (
                     <SummaryInnerRow>
-                      <b>Hooks</b>
-                      <i>{children}</i>
+                      <b>Recipient:</b>
+                      <i>
+                        {isCustomRecipientWarningBannerVisible && (
+                          <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" size={18} />
+                        )}
+                        <ExternalLink
+                          href={getExplorerLink(chainId, order.receiver || order.owner, ExplorerDataType.ADDRESS)}
+                        >
+                          {receiverEnsName || shortenAddress(order.receiver || order.owner)} ↗
+                        </ExternalLink>
+                      </i>
                     </SummaryInnerRow>
                   )}
-                </OrderHooksDetails>
-              )}
 
-              {swapAndBridgeContext && <ProgressDetails context={swapAndBridgeContext} />}
+                  {surplusAmount?.greaterThan(0) && (
+                    <SummaryInnerRow>
+                      <b>Surplus</b>
+                      <i>
+                        <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
+                        {showFiatValue && (
+                          <FiatWrapper>
+                            (<StyledFiatAmount amount={surplusFiatValue} />)
+                          </FiatWrapper>
+                        )}
+                      </i>
+                    </SummaryInnerRow>
+                  )}
+
+                  {appData && (
+                    <OrderHooksDetails appData={appData} margin="10px 0 0">
+                      {(children) => (
+                        <SummaryInnerRow>
+                          <b>Hooks</b>
+                          <i>{children}</i>
+                        </SummaryInnerRow>
+                      )}
+                    </OrderHooksDetails>
+                  )}
+
+                  {swapAndBridgeContext && <ProgressDetails context={swapAndBridgeContext} />}
+                </>
+              )}
             </>
           ) : (
             (summary ?? id)

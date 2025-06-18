@@ -1,33 +1,31 @@
+import { ReactNode } from 'react'
+
 import { DividerHorizontal } from '../../styles'
 import { SwapAndBridgeStatus, SwapAndBridgeContext } from '../../types'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { CollapsibleBridgeRoute } from '../CollapsibleBridgeRoute'
 import { BridgingProgressContent } from '../contents/BridgingProgressContent'
 import { PreparingBridgingContent } from '../contents/BridgingProgressContent/PreparingBridgingContent'
-import { SwapResultContentContent } from '../contents/SwapResultContent'
+import { SwapResultContent } from '../contents/SwapResultContent'
 import { BridgeStatusIcons, BridgeStatusTitlePrefixes, SwapStatusIcons, SwapStatusTitlePrefixes } from '../StopStatus'
 
 interface QuoteDetailsProps {
   className?: string
-
   context: SwapAndBridgeContext
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function ProgressDetails({
   className,
   context: {
-    bridgeProvider,
     overview,
     swapResultContext,
-    quoteBridgeContext,
+    bridgeProvider,
     bridgingProgressContext,
+    quoteBridgeContext,
     bridgingStatus,
     statusResult,
   },
-}: QuoteDetailsProps) {
+}: QuoteDetailsProps): ReactNode {
   const { sourceAmounts, targetAmounts, sourceChainName, targetChainName } = overview
   const swapStatus = SwapAndBridgeStatus.DONE
   const bridgeStatus = bridgingStatus === SwapAndBridgeStatus.DEFAULT ? SwapAndBridgeStatus.PENDING : bridgingStatus
@@ -41,14 +39,14 @@ export function ProgressDetails({
         statusIcon={SwapStatusIcons[swapStatus]}
         protocolIconShowOnly="first"
         protocolIconSize={21}
-        titlePrefix={SwapStatusTitlePrefixes[swapStatus]}
+        titlePrefix={SwapStatusTitlePrefixes[swapStatus] || ''}
         protocolName="CoW Protocol"
         bridgeProvider={bridgeProvider}
         chainName={sourceChainName}
         sellAmount={sourceAmounts.sellAmount}
         buyAmount={sourceAmounts.buyAmount}
       >
-        <SwapResultContentContent context={swapResultContext} />
+        <SwapResultContent context={swapResultContext} />
       </BridgeDetailsContainer>
       <DividerHorizontal margin="8px 0 4px" />
       <BridgeDetailsContainer
@@ -57,7 +55,8 @@ export function ProgressDetails({
         status={bridgeStatus}
         statusIcon={BridgeStatusIcons[bridgeStatus]}
         protocolIconShowOnly="second"
-        titlePrefix={BridgeStatusTitlePrefixes[bridgeStatus]}
+        protocolIconSize={21}
+        titlePrefix={BridgeStatusTitlePrefixes[bridgeStatus] || ''}
         protocolName={bridgeProvider.name}
         bridgeProvider={bridgeProvider}
         chainName={targetChainName}
