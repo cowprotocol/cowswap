@@ -30,6 +30,7 @@ import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } f
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { AnnouncementsUpdater } from 'common/updaters/AnnouncementsUpdater'
+import { ConnectionStatusUpdater } from 'common/updaters/ConnectionStatusUpdater'
 import { FeatureFlagsUpdater } from 'common/updaters/FeatureFlagsUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
 import { LpBalancesAndAllowancesUpdater } from 'common/updaters/LpBalancesAndAllowancesUpdater'
@@ -64,6 +65,7 @@ export function Updaters() {
     <>
       <ThemeConfigUpdater />
       <ThemeFromUrlUpdater />
+      <ConnectionStatusUpdater />
       <TradingSdkUpdater />
       <MultiCallUpdater chainId={sourceChainId} />
       <FeatureFlagsUpdater />

@@ -124,7 +124,10 @@ export class IframeRpcProviderBridge {
       return
     }
     const requestPromise =
-      method === 'enable' ? this.ethereumProvider.enable() : this.ethereumProvider.request({ ...request, id })
+      // Keep the legacy "enable" method for backward compatibility
+      method === 'enable'
+        ? this.ethereumProvider.request({ method: 'eth_requestAccounts', id })
+        : this.ethereumProvider.request({ ...request, id })
 
     // Do request, and forward the result or error to the iFrame window
     requestPromise
