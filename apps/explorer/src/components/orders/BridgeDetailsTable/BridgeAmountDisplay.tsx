@@ -15,7 +15,7 @@ import { TokenAmount } from '../../token/TokenAmount'
 interface BridgeAmountDisplayProps {
   labelPrefix: string
   bridgeToken?: TokenInfo
-  amount?: string | BigNumber | null
+  amount?: string | null
   isLoading?: boolean
 }
 
@@ -25,7 +25,7 @@ export function BridgeAmountDisplay({
   amount,
   isLoading,
 }: BridgeAmountDisplayProps): React.ReactNode {
-  const isNative = isNativeToken(bridgeToken.address)
+  const isNative = !!bridgeToken && isNativeToken(bridgeToken.address)
 
   const tokenDisplayElement = useMemo(() => {
     if (!bridgeToken?.chainId) return null
@@ -55,7 +55,7 @@ export function BridgeAmountDisplay({
     <AmountDetailBlock>
       <AmountLabel>{labelPrefix}</AmountLabel>
       <AmountTokenDisplayAndCopyWrapper>
-        <TokenAmount amount={amount} token={bridgeToken} noSymbol />
+        <TokenAmount amount={new BigNumber(amount)} token={bridgeToken} noSymbol />
         {isNative ? (
           tokenDisplayElement
         ) : (

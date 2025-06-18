@@ -2,6 +2,8 @@ import React, { ReactNode } from 'react'
 
 import type { TokenInfo } from '@uniswap/token-lists'
 
+import BigNumber from 'bignumber.js'
+
 import { isNativeToken } from '../../../utils'
 import { RowWithCopyButton } from '../../common/RowWithCopyButton'
 import { TokenDisplay as CommonTokenDisplay } from '../../common/TokenDisplay'
@@ -22,7 +24,7 @@ export function BridgeReceiveAmount({ destinationToken, amount }: BridgeReceiveA
   return (
     <span>
       <span>
-        <TokenAmount amount={amount} token={destinationToken} noSymbol />{' '}
+        <TokenAmount amount={new BigNumber(amount.toString())} token={destinationToken} noSymbol />{' '}
       </span>
       {isNative ? (
         tokenDisplayElement
