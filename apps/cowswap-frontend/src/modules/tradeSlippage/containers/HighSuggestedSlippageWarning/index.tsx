@@ -6,8 +6,11 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 
-import { useDerivedTradeState } from 'modules/trade'
+import { useDerivedTradeState, useIsEoaEthFlow } from 'modules/trade'
 import { useIsSmartSlippageApplied, useTradeSlippage } from 'modules/tradeSlippage'
+
+const MINIMAL_ERC20_FLOW_SLIPPAGE_BPS = 200
+const MINIMAL_ETH_FLOW_SLIPPAGE_BPS = 500
 
 const StyledInlineBanner = styled(InlineBanner)`
   text-align: center;
@@ -28,7 +31,10 @@ export function HighSuggestedSlippageWarning(props: HighSuggestedSlippageWarning
   const slippageBps = percentToBps(slippage)
   const amountsAreSet = !isFractionFalsy(state?.inputCurrencyAmount) && !isFractionFalsy(state?.outputCurrencyAmount)
 
-  if (!isSuggestedSlippage || !slippageBps || slippageBps <= 200 || !amountsAreSet) {
+  const isEoaEthFlow = useIsEoaEthFlow()
+  const minimalSlippageBps = isEoaEthFlow ? MINIMAL_ETH_FLOW_SLIPPAGE_BPS : MINIMAL_ERC20_FLOW_SLIPPAGE_BPS
+
+  if (!isSuggestedSlippage || !slippageBps || slippageBps <= minimalSlippageBps || !amountsAreSet) {
     return null
   }
 
