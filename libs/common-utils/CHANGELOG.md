@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.15.0...common-utils-v1.16.0) (2025-06-18)
+
+
+### Features
+
+* **analytics:** enhance UTM handling and analytics readiness checks ([#5779](https://github.com/cowprotocol/cowswap/issues/5779)) ([3fb616c](https://github.com/cowprotocol/cowswap/commit/3fb616cf8f5b5ad7c1736bd095912d692bbf1fd5))
+
 ## [1.15.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.14.0...common-utils-v1.15.0) (2025-05-28)
 
 
