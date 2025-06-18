@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/cowprotocol/cowswap/compare/ens-v1.3.1...ens-v1.4.0) (2025-06-18)
+
+
+### Features
+
+* **new-networks:** add support to `Avalanche` and `Polygon` networks ([#5715](https://github.com/cowprotocol/cowswap/issues/5715)) ([e3e8a8d](https://github.com/cowprotocol/cowswap/commit/e3e8a8d6b94569a5dda7a425d1a79f0b4f6d5200))
+
 ## [1.3.1](https://github.com/cowprotocol/cowswap/compare/ens-v1.3.0...ens-v1.3.1) (2025-05-19)
 
 

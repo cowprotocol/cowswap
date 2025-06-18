@@ -1,6 +1,4 @@
-import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { areHooksEqual, QuoteBridgeRequest, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { QuoteBridgeRequest, areHooksEqual } from '@cowprotocol/cow-sdk'
 
 import jsonStringify from 'json-stringify-deterministic'
 import { Nullish } from 'types'
@@ -15,7 +13,6 @@ import type { TradeQuoteState } from '../state/tradeQuoteAtom'
  * Quotes are only valid for a given token-pair and amount. If any of these parameter change, the fee needs to be re-fetched
  */
 export function quoteUsingSameParameters(
-  chainId: SupportedChainId,
   currentQuote: TradeQuoteState,
   nextParams: Nullish<QuoteBridgeRequest>,
   currentAppData: AppDataInfo['doc'] | undefined,
@@ -23,13 +20,6 @@ export function quoteUsingSameParameters(
 ): boolean {
   const currentParams = currentQuote.quote?.quoteResults.tradeParameters
   if (!currentParams || !nextParams) return false
-
-  const isNativeToken = getIsNativeToken(chainId, nextParams.sellTokenAddress)
-  const wrappedToken = WRAPPED_NATIVE_CURRENCIES[chainId]
-  /**
-   * Due to CoW Protocol design, we do
-   */
-  const nextSellToken = isNativeToken ? wrappedToken.address.toLowerCase() : nextParams.sellTokenAddress.toLowerCase()
 
   if (currentQuote.bridgeQuote) {
     const bridgeTradeParams = currentQuote.bridgeQuote.tradeParameters
@@ -45,8 +35,8 @@ export function quoteUsingSameParameters(
       currentParams.amount === nextParams.amount.toString(),
       bridgeTradeParams.validFor === nextParams.validFor,
       bridgeTradeParams.receiver === nextParams.receiver,
-      bridgeTradeParams.slippageBps === nextParams.slippageBps,
-      currentParams.sellToken.toLowerCase() === nextSellToken,
+      nextParams.slippageBps ? bridgeTradeParams.slippageBps === nextParams.slippageBps : true,
+      currentParams.sellToken.toLowerCase() === nextParams.sellTokenAddress.toLowerCase(),
       bridgeTradeParams.sellTokenChainId === nextParams.sellTokenChainId,
       bridgeTradeParams.buyTokenAddress.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(),
     ]
@@ -61,7 +51,14 @@ export function quoteUsingSameParameters(
     currentParams.amount === nextParams.amount.toString(),
     currentParams.validFor === nextParams.validFor,
     currentParams.receiver === nextParams.receiver,
-    currentParams.sellToken.toLowerCase() === nextSellToken,
+    /**
+     * Check slippage only if it is set in nextParams
+     * Because we should refetch quote only when a user changed slippage
+     * Auto-slippage should not trigger quote refetching
+     * See how slippageBps is defined in `useQuoteParams()`
+     */
+    nextParams.slippageBps ? currentParams.slippageBps === nextParams.slippageBps : true,
+    currentParams.sellToken.toLowerCase() === nextParams.sellTokenAddress.toLowerCase(),
     currentParams.buyToken.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(),
   ]
 

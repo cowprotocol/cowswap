@@ -1,3 +1,5 @@
+import { useEffect, useState, ReactNode, useRef } from 'react'
+
 import { USDC_BASE, USDC_GNOSIS_CHAIN } from '@cowprotocol/common-const'
 import { SupportedChainId, BridgeStatus } from '@cowprotocol/cow-sdk'
 import { UI } from '@cowprotocol/ui'
@@ -11,6 +13,7 @@ import { SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
 
 import { getOrderMock } from '../../../../mocks/orderMock'
 import { inputCurrencyInfoMock } from '../../../../mocks/tradeStateMock'
+import { OrderProgressBarStepName } from '../../constants'
 import { OrderProgressBarProps } from '../../types'
 
 import { OrderProgressBar } from './index'
@@ -29,6 +32,7 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
       'https://raw.githubusercontent.com/cowprotocol/cow-sdk/refs/heads/main/src/bridging/providers/across/across-logo.png',
     name: 'Across',
     dappId: 'cow-sdk://bridging/providers/across',
+    website: 'across.to',
   },
   overview: {
     sourceChainName: 'Ethereum',
@@ -75,7 +79,7 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
 const defaultProps: OrderProgressBarProps = {
   order,
   chainId: 1,
-  stepName: 'initial',
+  stepName: OrderProgressBarStepName.INITIAL,
   isBridgingTrade: false,
   showCancellationModal: () => {
     alert('cancellation triggered o/')
@@ -110,45 +114,174 @@ const Wrapper = styled.div`
   background: var(${UI.COLOR_PAPER});
 `
 
+function SolvingFixture(): ReactNode {
+  const [countdown, setCountdown] = useState(15)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          // Clear interval when we're about to hit 0
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current)
+            intervalRef.current = null
+          }
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+    }
+  }, []) // Empty dependency array - set up only once
+
+  return (
+    <Wrapper>
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.SOLVING} countdown={countdown} />
+    </Wrapper>
+  )
+}
+
+const ALL_STEP_NAMES = Object.values(OrderProgressBarStepName)
+
+function useStepTransitions(): {
+  stepIndex: number
+  direction: number
+  currentStepName: OrderProgressBarProps['stepName']
+} {
+  const [stepIndex, setStepIndex] = useState(0)
+  const [direction, setDirection] = useState(1)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStepIndex((prevIndex) => {
+        const nextIndex = prevIndex + direction
+        
+        if (nextIndex >= ALL_STEP_NAMES.length - 1) {
+          setDirection(-1)
+          return ALL_STEP_NAMES.length - 1
+        }
+        
+        if (nextIndex <= 0) {
+          setDirection(1)
+          return 0
+        }
+        
+        return nextIndex
+      })
+    }, 3000)
+
+    return () => clearInterval(interval)
+  }, [direction])
+
+  return {
+    stepIndex,
+    direction,
+    currentStepName: ALL_STEP_NAMES[stepIndex],
+  }
+}
+
+function useCountdownForSolving(currentStepName: OrderProgressBarProps['stepName']): number {
+  const [countdown, setCountdown] = useState(0)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+
+  useEffect(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
+    }
+
+    if (currentStepName === OrderProgressBarStepName.SOLVING) {
+      setCountdown(15)
+      
+      intervalRef.current = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            if (intervalRef.current) {
+              clearInterval(intervalRef.current)
+              intervalRef.current = null
+            }
+            return 0
+          }
+          return prev - 1
+        })
+      }, 1000)
+    } else {
+      setCountdown(0)
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+    }
+  }, [currentStepName])
+
+  return countdown
+}
+
+function AnimatedProgressFixture(): ReactNode {
+  const { stepIndex, direction, currentStepName } = useStepTransitions()
+  const countdown = useCountdownForSolving(currentStepName)
+
+  return (
+    <Wrapper>
+      <div style={{ marginBottom: '16px', padding: '8px', background: 'rgba(0,0,0,0.1)', borderRadius: '8px' }}>
+        <strong>Current Step:</strong> {currentStepName} ({stepIndex + 1}/{ALL_STEP_NAMES.length})
+        <br />
+        <strong>Direction:</strong> {direction > 0 ? 'Forward' : 'Backward'}
+      </div>
+      <OrderProgressBar 
+        {...defaultProps} 
+        stepName={currentStepName} 
+        countdown={countdown}
+        key={`${currentStepName}-${stepIndex}`}
+      />
+    </Wrapper>
+  )
+}
+
 const Fixtures = {
+  '0-animated-all-steps': () => <AnimatedProgressFixture />,
   '1-initial': () => (
     <Wrapper>
       <OrderProgressBar {...defaultProps} />
     </Wrapper>
   ),
-  '2-solving': () => (
-    <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="solving" countdown={15} />
-    </Wrapper>
-  ),
+  '2-solving': () => <SolvingFixture />,
   '2a-delayed': () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="delayed" />
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.DELAYED} />
     </Wrapper>
   ),
   '2b-unfillable': () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="unfillable" />
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.UNFILLABLE} />
     </Wrapper>
   ),
   '2c-solved': () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="solved" />
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.SOLVED} />
     </Wrapper>
   ),
   '3-executing': () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="executing" />
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.EXECUTING} />
     </Wrapper>
   ),
   '3a-submissionFailed': () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="submissionFailed" />
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.SUBMISSION_FAILED} />
     </Wrapper>
   ),
   '4-finished': () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="finished" />
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.FINISHED} />
     </Wrapper>
   ),
   '4-finished-customReceiver': () => (
@@ -156,7 +289,7 @@ const Fixtures = {
       <OrderProgressBar
         {...defaultProps}
         order={{ ...order, receiver: '0xdd9EB88C5C6D2A85A08a96c7F0ccccE27Cb843cb' }}
-        stepName="finished"
+        stepName={OrderProgressBarStepName.FINISHED}
       />
     </Wrapper>
   ),
@@ -166,33 +299,33 @@ const Fixtures = {
         {...defaultProps}
         order={{ ...order, receiver: '0xdd9EB88C5C6D2A85A08a96c7F0ccccE27Cb843cb' }}
         receiverEnsName={'ihaveaname.eth'}
-        stepName="finished"
+        stepName={OrderProgressBarStepName.FINISHED}
       />
     </Wrapper>
   ),
   '4a-cancellationFailed': () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="cancellationFailed" />
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.CANCELLATION_FAILED} />
     </Wrapper>
   ),
   cancelling: () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="cancelling" />
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.CANCELLING} />
     </Wrapper>
   ),
   cancelled: () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="cancelled" />
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.CANCELLED} />
     </Wrapper>
   ),
   expired: () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="expired" />
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.EXPIRED} />
     </Wrapper>
   ),
   bridgingInProgress: () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} isBridgingTrade stepName="bridgingInProgress" />
+      <OrderProgressBar {...defaultProps} isBridgingTrade stepName={OrderProgressBarStepName.BRIDGING_IN_PROGRESS} />
     </Wrapper>
   ),
   bridgingFailed: () => (
@@ -209,7 +342,7 @@ const Fixtures = {
             isFailed: true,
           },
         }}
-        stepName="bridgingFailed"
+        stepName={OrderProgressBarStepName.BRIDGING_FAILED}
       />
     </Wrapper>
   ),
@@ -227,7 +360,7 @@ const Fixtures = {
             isRefunded: true,
           },
         }}
-        stepName="refundCompleted"
+        stepName={OrderProgressBarStepName.REFUND_COMPLETED}
       />
     </Wrapper>
   ),
@@ -251,7 +384,7 @@ const Fixtures = {
             fillTxHash: '0x851ff28340f67ebce1f530bea8665c911787767cf9563ad5aeb232110aa50651',
           },
         }}
-        stepName="bridgingFinished"
+        stepName={OrderProgressBarStepName.BRIDGING_FINISHED}
       />
     </Wrapper>
   ),
@@ -270,7 +403,7 @@ const Fixtures = {
             targetAmounts: undefined,
           },
         }}
-        stepName="bridgingInProgress"
+        stepName={OrderProgressBarStepName.BRIDGING_IN_PROGRESS}
       />
     </Wrapper>
   ),

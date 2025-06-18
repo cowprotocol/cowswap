@@ -4,8 +4,6 @@ import { useMemo } from 'react'
 import { BridgeQuoteResults, PriceQuality, QuoteBridgeRequest, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { QuoteAndPost } from '@cowprotocol/cow-sdk'
 
-import { useSetSmartSlippage } from 'modules/tradeSlippage'
-
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 
 import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenError'
@@ -13,6 +11,7 @@ import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenErr
 import { TradeQuoteState, updateTradeQuoteAtom } from '../state/tradeQuoteAtom'
 import { SellTokenAddress } from '../state/tradeQuoteInputAtom'
 import { TradeQuoteFetchParams } from '../types'
+
 
 export interface TradeQuoteManager {
   setLoading(hasParamsChanged: boolean): void
@@ -26,14 +25,10 @@ export interface TradeQuoteManager {
   onResponse(data: QuoteAndPost, bridgeQuote: BridgeQuoteResults | null, fetchParams: TradeQuoteFetchParams): void
 }
 
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
 export function useTradeQuoteManager(
   sellTokenAddress: SellTokenAddress | undefined,
-  enableSmartSlippage: boolean,
 ): TradeQuoteManager | null {
   const update = useSetAtom(updateTradeQuoteAtom)
-  const setSmartSlippage = useSetSmartSlippage()
   const processUnsupportedTokenError = useProcessUnsupportedTokenError()
 
   return useMemo(
@@ -77,15 +72,9 @@ export function useTradeQuoteManager(
                 hasParamsChanged: false,
                 fetchParams,
               })
-
-              const { suggestedSlippageBps } = quote.quoteResults
-
-              if (enableSmartSlippage && suggestedSlippageBps) {
-                setSmartSlippage(suggestedSlippageBps)
-              }
             },
           }
         : null,
-    [update, setSmartSlippage, processUnsupportedTokenError, enableSmartSlippage, sellTokenAddress],
+    [update, processUnsupportedTokenError, sellTokenAddress],
   )
 }

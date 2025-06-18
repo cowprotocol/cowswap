@@ -1,10 +1,10 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 
+import { UtmParams } from '@cowprotocol/common-utils'
 import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { AppCodeWithWidgetMetadata } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
-import { UtmParams } from 'modules/utm'
 
 import { appDataInfoAtom } from '../state/atoms'
 import { AppDataOrderClass, AppDataPartnerFee, TypedAppDataHooks } from '../types'

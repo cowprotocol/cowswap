@@ -10,7 +10,7 @@ const Fixtures = {
       ensName={undefined}
       inputCurrencyInfo={inputCurrencyInfoMock}
       outputCurrencyInfo={outputCurrencyInfoMock}
-      onConfirm={() => void 0}
+      onConfirm={async () => void 0}
       onDismiss={() => void 0}
       isConfirmDisabled={false}
       priceImpact={priceImpactMock}

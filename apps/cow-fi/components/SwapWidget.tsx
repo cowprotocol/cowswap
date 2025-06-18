@@ -1,10 +1,14 @@
 import React, { useState, useEffect, ChangeEvent } from 'react'
-import styled from 'styled-components/macro'
+
+import { Color } from '@cowprotocol/ui'
+
 import { transparentize } from 'polished'
+import styled from 'styled-components/macro'
+
+import { LinkWithUtmComponent } from 'modules/utm/components'
+
 import { Button } from '@/components/Button'
 import { CONFIG } from '@/const/meta'
-import { LinkWithUtmComponent } from 'modules/utm'
-import { Color } from '@cowprotocol/ui'
 
 type TabProps = {
   active: boolean

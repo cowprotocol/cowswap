@@ -12,7 +12,7 @@ interface QuoteDetailsContentProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function QuoteSwapContent({
   context: {
     receiveAmountInfo,
@@ -36,7 +36,7 @@ export function QuoteSwapContent({
           <InfoTooltip
             content={
               <>
-                The estimated amount you\'ll receive after estimated network costs and the max slippage setting (
+                The estimated amount you will receive after estimated network costs and the max slippage setting (
                 {slippagePercentDisplay}).
               </>
             }
