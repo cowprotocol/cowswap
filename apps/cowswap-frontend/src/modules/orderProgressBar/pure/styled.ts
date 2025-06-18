@@ -2,12 +2,14 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-const getOpacity = (status: string, isDarkMode: boolean): number => {
+import { StepStatus } from '../constants'
+
+const getOpacity = (status: StepStatus | string, isDarkMode: boolean): number => {
   const opacityMap = {
-    done: isDarkMode ? 0.3 : 0.1,
-    active: 1,
-    next: isDarkMode ? 0.6 : 0.5,
-    future: isDarkMode ? 0.3 : 0.2,
+    [StepStatus.DONE]: isDarkMode ? 0.3 : 0.1,
+    [StepStatus.ACTIVE]: 1,
+    [StepStatus.NEXT]: isDarkMode ? 0.6 : 0.5,
+    [StepStatus.FUTURE]: isDarkMode ? 0.3 : 0.2,
     disabled: 0.2,
   }
   return opacityMap[status as keyof typeof opacityMap] || 1
@@ -48,7 +50,7 @@ export const StepsWrapper = styled.div<{ $translateY: number }>`
   will-change: transform;
 `
 
-export const Step = styled.div<{ status: string; isFirst: boolean }>`
+export const Step = styled.div<{ status: StepStatus; isFirst: boolean }>`
   transition: opacity var(--progress-transition-opacity, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
   display: flex;
   align-items: flex-start;
@@ -173,7 +175,7 @@ export const FinishedLogo = styled.div`
 `
 
 export const NumberedElement = styled.div<{
-  status: string
+  status: StepStatus
   customColor?: string
   $isUnfillable?: boolean
   $isCancelling?: boolean
@@ -186,7 +188,7 @@ export const NumberedElement = styled.div<{
   justify-content: center;
   align-items: center;
   margin-right: 15px;
-  color: ${({ status }) => (status === 'active' ? `var(${UI.COLOR_PAPER})` : `var(${UI.COLOR_PAPER})`)};
+  color: ${({ status }) => (status === StepStatus.ACTIVE ? `var(${UI.COLOR_PAPER})` : `var(${UI.COLOR_PAPER})`)};
   font-weight: bold;
   font-size: 16px;
   background-color: ${({ status, customColor, $isUnfillable, $isCancelling }) =>
@@ -194,7 +196,7 @@ export const NumberedElement = styled.div<{
       ? `var(${UI.COLOR_DANGER_BG})`
       : $isUnfillable
         ? '#996815'
-        : customColor || (status === 'active' ? '#2196F3' : `var(${UI.COLOR_TEXT})`)};
+        : customColor || (status === StepStatus.ACTIVE ? '#2196F3' : `var(${UI.COLOR_TEXT})`)};
   border-radius: 50%;
   position: relative;
 `

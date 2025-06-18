@@ -3,7 +3,7 @@ import { useRef, ReactNode, useState, useLayoutEffect } from 'react'
 import { StepComponent } from './StepComponent'
 import * as styledEl from './styled'
 
-import { STEPS } from '../constants'
+import { STEPS, StepStatus } from '../constants'
 
 export function StepsWrapper({
   steps,
@@ -42,11 +42,11 @@ export function StepsWrapper({
     }
   }, [currentStep, steps.length])
 
-  const getStatus = (index: number): 'cancelling' | 'cancelled' | 'expired' | 'active' | 'next' | 'future' | 'done' => {
-    if (index === currentStep) return isCancelling ? 'cancelling' : 'active'
-    if (index === currentStep + 1) return 'next'
-    if (index < currentStep) return 'done'
-    return 'future'
+  const getStatus = (index: number): StepStatus => {
+    if (index === currentStep) return isCancelling ? StepStatus.CANCELLING : StepStatus.ACTIVE
+    if (index === currentStep + 1) return StepStatus.NEXT
+    if (index < currentStep) return StepStatus.DONE
+    return StepStatus.FUTURE
   }
 
   return (

@@ -6,6 +6,7 @@ import Lottie from 'lottie-react'
 
 import * as styledEl from './styled'
 
+import { StepStatus } from '../constants'
 import { Description } from '../sharedStyled'
 
 // TODO: Add proper return type annotation
@@ -20,7 +21,7 @@ export function StepComponent({
   isUnfillable,
   isCancelling,
 }: {
-  status: 'cancelling' | 'cancelled' | 'expired' | 'active' | 'next' | 'future' | 'done'
+  status: StepStatus
   isFirst: boolean
   step: { title: string }
   index: number
@@ -37,7 +38,7 @@ export function StepComponent({
         $isUnfillable={isUnfillable}
         $isCancelling={isCancelling}
       >
-        {status === 'cancelling' ? (
+        {status === StepStatus.CANCELLING ? (
           <Lottie
             animationData={LOTTIE_RED_CROSS}
             loop={true}
@@ -47,13 +48,13 @@ export function StepComponent({
         ) : (
           <>
             {index + 1}
-            {status === 'active' && !isUnfillable && <styledEl.Spinner />}
+            {status === StepStatus.ACTIVE && !isUnfillable && <styledEl.Spinner />}
           </>
         )}
       </styledEl.NumberedElement>
       <styledEl.Content>
         <styledEl.Title customColor={customColor}>{step.title}</styledEl.Title>
-        {status !== 'next' && extraContent && <Description>{extraContent}</Description>}
+        {status !== StepStatus.NEXT && extraContent && <Description>{extraContent}</Description>}
       </styledEl.Content>
     </styledEl.Step>
   )

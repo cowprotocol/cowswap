@@ -9,6 +9,26 @@ import { OrderProgressBarStepName, STEP_NAMES } from './types'
 type StepConfig = { title: string; description?: string }
 type BridgeStepConfig = (isBridgingTrade: boolean) => StepConfig
 
+/**
+ * Visual states for progress bar steps UI presentation.
+ * These are purely for styling and visual feedback, determining:
+ * - Opacity levels (active=1, next=0.6, done=0.3, etc.)
+ * - Background colors (active=blue, cancelling=red, etc.)
+ * - Animations (spinner for active, lottie for cancelling)
+ * 
+ * Different from STEP_NAMES/OrderProgressBarStepName which represents actual order states
+ * mapped from backend CompetitionOrderStatus.type values (e.g., 'initial', 'solving', 'executing').
+ */
+export enum StepStatus {
+  CANCELLING = 'cancelling',
+  CANCELLED = 'cancelled',
+  EXPIRED = 'expired',
+  ACTIVE = 'active',
+  NEXT = 'next',
+  FUTURE = 'future',
+  DONE = 'done',
+}
+
 export const STEPS: (StepConfig | BridgeStepConfig)[] = [
   {
     title: 'Batching orders',
