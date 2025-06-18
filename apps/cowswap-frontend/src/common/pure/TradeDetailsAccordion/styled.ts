@@ -50,7 +50,7 @@ export const SummaryClickable = styled.div<{ isOpen: boolean }>`
   align-items: center;
   justify-content: flex-end;
   flex-flow: row wrap;
-  gap: 4px;
+  gap: 5px;
   color: var(${UI.COLOR_TEXT});
   transition: all var(${UI.ANIMATION_DURATION}) ease-in-out;
   outline: none;

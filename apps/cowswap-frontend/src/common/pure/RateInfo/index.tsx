@@ -129,7 +129,7 @@ export const RateWrapper = styled.button<{ rightAlign?: boolean }>`
 
 export const FiatRate = styled.span`
   color: inherit;
-  font-weight: 400;
+  font-weight: inherit;
   text-align: right;
   white-space: nowrap;
 `
@@ -261,7 +261,7 @@ export function RateInfo({
           </span>{' '}
           {!!fiatAmount && (
             <FiatRate>
-              (<FiatAmount amount={fiatAmount} />)
+              <FiatAmount amount={fiatAmount} withParentheses />
             </FiatRate>
           )}
         </RateWrapper>
