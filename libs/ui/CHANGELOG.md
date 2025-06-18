@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.24.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.23.2...ui-v1.24.0) (2025-06-18)
+
+
+### Features
+
+* **bridge:** swap and bridge refactoring + progress UI ([#5755](https://github.com/cowprotocol/cowswap/issues/5755)) ([8a4cb5c](https://github.com/cowprotocol/cowswap/commit/8a4cb5c497cdd006df860a9240611e12cff3e60c))
+
+
+### Bug Fixes
+
+* reduce rerenders count and theme recalculation ([#5831](https://github.com/cowprotocol/cowswap/issues/5831)) ([96a7a35](https://github.com/cowprotocol/cowswap/commit/96a7a350f366615a1e5149097541b5e2ccf880f1))
+* **service-worker:** disable verbose workbox logging in production ([#5815](https://github.com/cowprotocol/cowswap/issues/5815)) ([cb53ccb](https://github.com/cowprotocol/cowswap/commit/cb53ccb5a39a8857dfc030f0fb13869060211c8a))
+
 ## [1.23.2](https://github.com/cowprotocol/cowswap/compare/ui-v1.23.1...ui-v1.23.2) (2025-05-19)
 
 
