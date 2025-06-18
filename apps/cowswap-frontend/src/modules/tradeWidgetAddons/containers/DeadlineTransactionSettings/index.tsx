@@ -6,17 +6,15 @@ import { HelpTooltip, RowFixed } from '@cowprotocol/ui'
 
 
 import { Trans } from '@lingui/macro'
+import { ThemedText } from 'theme'
+
+import { useIsEoaEthFlow } from 'modules/trade'
+
+import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'common/utils/tradeSettingsTooltips'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { useCustomDeadline } from './hooks/useCustomDeadline'
 import * as styledEl from './styled'
-
-import {
-  getNativeOrderDeadlineTooltip,
-  getNonNativeOrderDeadlineTooltip,
-} from '../../../../common/utils/tradeSettingsTooltips'
-import useNativeCurrency from '../../../../lib/hooks/useNativeCurrency'
-import { ThemedText } from '../../../../theme'
-import { useIsEoaEthFlow } from '../../../trade'
 
 interface DeadlineSettingsProps {
   deadlineState: StatefulValue<number>

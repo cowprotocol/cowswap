@@ -12,17 +12,20 @@ import { Percent } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 import { ThemeContext } from 'styled-components/macro'
 
+import { useIsEoaEthFlow } from 'modules/trade'
+import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
+import {
+  useIsSlippageModified,
+  useIsSmartSlippageApplied,
+  useTradeSlippage,
+} from 'modules/tradeSlippage'
+import { SlippageWarningMessage } from 'modules/tradeWidgetAddons/pure/SlippageWarning'
+
 import { useMinEthFlowSlippage } from './hooks/useMinEthFlowSlippage'
 import { useSlippageInput } from './hooks/useSlippageInput'
 import * as styledEl from './styled'
 
-import { useIsEoaEthFlow } from '../../../trade'
-import { useSmartSlippageFromQuote } from '../../../tradeQuote'
-import { useIsSlippageModified, useIsSmartSlippageApplied, useTradeSlippage } from '../../../tradeSlippage'
 import { SlippageTooltip } from '../SlippageTooltip'
-import { SlippageWarningMessage } from '../SlippageWarning'
-
-
 
 export function TransactionSlippageInput(): JSX.Element {
   const theme = useContext(ThemeContext)
@@ -35,7 +38,7 @@ export function TransactionSlippageInput(): JSX.Element {
 
   const chosenSlippageMatchesSmartSlippage = smartSlippage !== null && new Percent(smartSlippage, 10_000).equalTo(swapSlippage)
 
-  const { minEthFlowSlippageBps, minEthFlowSlippage } = useMinEthFlowSlippage();
+  const { minEthFlowSlippageBps, minEthFlowSlippage } = useMinEthFlowSlippage()
 
   const isSlippageModified = useIsSlippageModified()
 
@@ -80,7 +83,6 @@ export function TransactionSlippageInput(): JSX.Element {
               value={slippageViewValue}
               onChange={(e) => parseSlippageInput(e.target.value)}
               onBlur={onSlippageInputBlur}
-              color={slippageError ? 'red' : ''}
             />
             %
           </RowBetween>

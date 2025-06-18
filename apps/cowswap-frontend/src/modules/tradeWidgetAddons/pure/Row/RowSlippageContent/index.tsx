@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { JSX } from 'react'
+import { ReactNode } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
@@ -51,7 +51,7 @@ export interface RowSlippageContentProps {
 }
 
 
-export function RowSlippageContent(props: RowSlippageContentProps): JSX.Element {
+export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
   const {
     chainId,
     displaySlippage,
@@ -113,7 +113,6 @@ export function RowSlippageContent(props: RowSlippageContentProps): JSX.Element 
       <RowFixed>
         <TextWrapper onClick={openSettings}>
           <SlippageTextContents
-            isEoaEthFlow={isEoaEthFlow}
             slippageLabel={slippageLabel}
             isDynamicSlippageSet={isSmartSlippageApplied}
           />
@@ -130,17 +129,15 @@ export function RowSlippageContent(props: RowSlippageContentProps): JSX.Element 
 }
 
 type SlippageTextContentsProps = {
-  isEoaEthFlow: boolean
   slippageLabel?: React.ReactNode
   isDynamicSlippageSet: boolean
 }
 
-function SlippageTextContents({ isEoaEthFlow, slippageLabel, isDynamicSlippageSet }: SlippageTextContentsProps): JSX.Element {
+function SlippageTextContents({ slippageLabel, isDynamicSlippageSet }: SlippageTextContentsProps): ReactNode {
   return (
     <TransactionText>
       <Trans>{slippageLabel || 'Slippage tolerance'}</Trans>
       {isDynamicSlippageSet && <i>(dynamic)</i>}
-      {isEoaEthFlow && !isDynamicSlippageSet && <i>(modified)</i>}
     </TransactionText>
   )
 }

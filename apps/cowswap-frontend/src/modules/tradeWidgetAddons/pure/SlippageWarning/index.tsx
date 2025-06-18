@@ -1,4 +1,4 @@
-import { JSX } from 'react'
+import { ReactNode } from 'react'
 
 import { RowBetween, UI } from '@cowprotocol/ui'
 
@@ -14,7 +14,7 @@ interface WarningProps {
   theme: DefaultTheme
 }
 
-export function SlippageWarningMessage({ error, tooLow, tooHigh, min, max, theme }: WarningProps): JSX.Element | null {
+export function SlippageWarningMessage({ error, tooLow, tooHigh, min, max, theme }: WarningProps): ReactNode | null {
   if (!error && !tooLow && !tooHigh) {
     return null
   }

@@ -3,19 +3,16 @@ import { useCallback, useRef, useState } from 'react'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { MAX_SLIPPAGE_BPS, MIN_SLIPPAGE_BPS } from '@cowprotocol/common-const'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
-import { isValidInteger, percentToBps } from '@cowprotocol/common-utils'
+import { isValidIntegerFactory, percentToBps } from '@cowprotocol/common-utils'
 import { Percent } from '@uniswap/sdk-core'
 
-import { useMinEthFlowSlippage } from './useMinEthFlowSlippage'
 
-import { CowSwapAnalyticsCategory } from '../../../../../common/analytics/types'
-import { useIsEoaEthFlow } from '../../../../trade'
-import {
-  useDefaultTradeSlippage,
-  useIsSlippageModified,
-  useSetSlippage,
-  useTradeSlippage
-} from '../../../../tradeSlippage'
+import { useIsEoaEthFlow } from 'modules/trade'
+import { useDefaultTradeSlippage, useIsSlippageModified, useSetSlippage, useTradeSlippage } from 'modules/tradeSlippage'
+
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
+
+import { useMinEthFlowSlippage } from './useMinEthFlowSlippage'
 
 
 enum SlippageError {
@@ -72,7 +69,7 @@ export function useSlippageInput(): ReturnType {
   )
 
   const slippageViewValue = getSlippageForView(slippageInput, isSlippageModified, swapSlippage)
-  const { minEthFlowSlippageBps } = useMinEthFlowSlippage();
+  const { minEthFlowSlippageBps } = useMinEthFlowSlippage()
 
   const parseSlippageInput = useCallback(
     (value: string) => {
@@ -95,7 +92,7 @@ export function useSlippageInput(): ReturnType {
         }
 
         const parsed = Math.round(Number.parseFloat(v) * 100)
-        const isValidInput = isValidInteger(
+        const isValidInput = isValidIntegerFactory(
           isEoaEthFlow ? minEthFlowSlippageBps : MIN_SLIPPAGE_BPS,
           MAX_SLIPPAGE_BPS,
         )

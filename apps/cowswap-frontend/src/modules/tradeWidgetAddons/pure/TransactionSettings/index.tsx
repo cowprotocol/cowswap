@@ -2,11 +2,13 @@ import { JSX } from 'react'
 
 import { StatefulValue } from '@cowprotocol/types'
 
-import * as styledEl from './styled'
 
-import { AutoColumn } from '../../../../legacy/components/Column'
-import { DeadlineTransactionSettings } from '../../containers/DeadlineTransactionSettings'
-import { TransactionSlippageInput } from '../../containers/TransactionSlippageInput'
+import { AutoColumn } from 'legacy/components/Column'
+
+import { DeadlineTransactionSettings } from 'modules/tradeWidgetAddons/containers/DeadlineTransactionSettings'
+import { TransactionSlippageInput } from 'modules/tradeWidgetAddons/containers/TransactionSlippageInput'
+
+import * as styledEl from './styled'
 
 
 interface TransactionSettingsProps {

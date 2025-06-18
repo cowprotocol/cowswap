@@ -2,14 +2,16 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { DEFAULT_DEADLINE_FROM_NOW } from '@cowprotocol/common-const'
-import { isValidInteger } from '@cowprotocol/common-utils'
+import { isValidIntegerFactory } from '@cowprotocol/common-utils'
 import { StatefulValue } from '@cowprotocol/types'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
 
-import { CowSwapAnalyticsCategory } from '../../../../../common/analytics/types'
-import { useInjectedWidgetDeadline } from '../../../../injectedWidget'
-import { useIsEoaEthFlow } from '../../../../trade'
+import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
+import { useIsEoaEthFlow } from 'modules/trade'
+
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
+
 import { clampDeadline, deadlineToView, getDeadlineRange } from '../utils'
 
 
@@ -76,7 +78,7 @@ export function useCustomDeadline(deadlineState: StatefulValue<number>): {
       // populate what the user typed and clear the error
       setDeadlineInput(value)
       setDeadlineError(false)
-      const isValidInput = isValidInteger(minDeadline, maxDeadline);
+      const isValidInput = isValidIntegerFactory(minDeadline, maxDeadline);
 
       if (value.length === 0) {
         sendDeadlineAnalytics('Default', DEFAULT_DEADLINE_FROM_NOW)
