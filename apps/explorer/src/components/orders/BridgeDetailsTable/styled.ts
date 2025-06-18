@@ -58,6 +58,7 @@ export const ProviderLogo = styled.img`
   --provider-logo-size: 1.8rem;
   width: var(--provider-logo-size);
   height: var(--provider-logo-size);
+  border-radius: var(--provider-logo-size);
 `
 
 export const NetworkName = styled.span`

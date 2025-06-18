@@ -33,9 +33,7 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
       <DetailRow label="Provider" tooltipText={BridgeDetailsTooltips.provider}>
         <ProviderDisplayWrapper>
           {providerInfo.logoUrl && <ProviderLogo src={providerInfo.logoUrl} alt={`${providerInfo.name} logo`} />}
-          <a href={providerInfo.website} target="_blank" rel="noopener noreferrer">
-            {providerInfo.name} ↗
-          </a>
+          <span>{providerInfo.name}</span>
         </ProviderDisplayWrapper>
       </DetailRow>
 

@@ -11,7 +11,7 @@ interface TransactionDetailsDisplayProps {
 }
 
 export function BridgeTxOverview({ crossChainOrder }: TransactionDetailsDisplayProps): ReactNode {
-  const { explorerUrl, provider, statusResult } = crossChainOrder
+  const { explorerUrl, statusResult } = crossChainOrder
 
   if (explorerUrl) {
     return (
@@ -19,7 +19,7 @@ export function BridgeTxOverview({ crossChainOrder }: TransactionDetailsDisplayP
         textToCopy={explorerUrl}
         contentsToDisplay={
           <a href={explorerUrl} target="_blank" rel="noopener noreferrer">
-            View on {provider.info.name} ↗
+            View on bridge explorer ↗
           </a>
         }
       />
