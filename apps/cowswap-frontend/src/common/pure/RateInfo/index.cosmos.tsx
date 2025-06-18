@@ -17,7 +17,7 @@ import { RateInfo, RateInfoParams } from './index'
 const inputCurrency = WETH_GNOSIS_CHAIN
 const outputCurrency = WXDAI
 
-const COW_SEPOLIA = COW_TOKEN_TO_CHAIN[SupportedChainId.GNOSIS_CHAIN]
+const COW_SEPOLIA = COW_TOKEN_TO_CHAIN[SupportedChainId.SEPOLIA]
 
 const rateInfoParams = {
   chainId: 5,
