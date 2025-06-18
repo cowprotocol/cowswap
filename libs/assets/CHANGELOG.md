@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.14.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.13.1...assets-v1.14.0) (2025-06-18)
+
+
+### Features
+
+* consume chain data from sdk ([#5773](https://github.com/cowprotocol/cowswap/issues/5773)) ([895fdf1](https://github.com/cowprotocol/cowswap/commit/895fdf14b058d14fd9c4aa60aea94ef3af55f47c))
+* **new-networks:** add support to `Avalanche` and `Polygon` networks ([#5715](https://github.com/cowprotocol/cowswap/issues/5715)) ([e3e8a8d](https://github.com/cowprotocol/cowswap/commit/e3e8a8d6b94569a5dda7a425d1a79f0b4f6d5200))
+
+
+### Bug Fixes
+
+* make order progress bar UI more stable ([#5834](https://github.com/cowprotocol/cowswap/issues/5834)) ([80cebd1](https://github.com/cowprotocol/cowswap/commit/80cebd1104a0a2e30e12ce8a4b3d62c212559cec))
+
 ## [1.13.1](https://github.com/cowprotocol/cowswap/compare/assets-v1.13.0...assets-v1.13.1) (2025-05-19)
 
 
