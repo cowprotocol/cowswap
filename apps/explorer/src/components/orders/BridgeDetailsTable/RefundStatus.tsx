@@ -1,15 +1,13 @@
 import React from 'react'
 
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
-import { StatusLabel } from 'components/orders/StatusLabel'
 
-import { RefundStatusText, RefundAddressWrapper, StatusWrapper } from './styled'
+import { RefundStatusText, RefundAddressWrapper } from './styled'
 
 import { AddressLink } from '../../common/AddressLink'
 
 export enum RefundStatusEnum {
   NOT_INITIATED = 'not_initiated',
-  REFUNDING = 'refunding',
   COMPLETED = 'completed',
   FAILED = 'failed',
 }
@@ -41,22 +39,6 @@ export function RefundStatus({ status, refundWalletAddress, refundChainId }: Ref
         )
       }
       return <RefundStatusText status={status}>Refund completed</RefundStatusText>
-
-    case RefundStatusEnum.REFUNDING:
-      return (
-        <StatusWrapper>
-          <StatusLabel status="refunding" />
-          <span>Refund in progress</span>
-        </StatusWrapper>
-      )
-
-    case RefundStatusEnum.FAILED:
-      return (
-        <StatusWrapper>
-          <StatusLabel status="failed" />
-          <span>Refund failed</span>
-        </StatusWrapper>
-      )
 
     case RefundStatusEnum.NOT_INITIATED:
     default:
