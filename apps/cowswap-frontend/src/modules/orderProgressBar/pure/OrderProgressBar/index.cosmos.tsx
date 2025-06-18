@@ -147,20 +147,7 @@ function SolvingFixture(): ReactNode {
   )
 }
 
-const ALL_STEP_NAMES: OrderProgressBarProps['stepName'][] = [
-  OrderProgressBarStepName.INITIAL,
-  OrderProgressBarStepName.SOLVING,
-  OrderProgressBarStepName.DELAYED,
-  OrderProgressBarStepName.SOLVED,
-  OrderProgressBarStepName.EXECUTING,
-  OrderProgressBarStepName.FINISHED,
-  OrderProgressBarStepName.CANCELLATION_FAILED,
-  OrderProgressBarStepName.CANCELLING,
-  OrderProgressBarStepName.CANCELLED,
-  OrderProgressBarStepName.EXPIRED,
-  OrderProgressBarStepName.UNFILLABLE,
-  OrderProgressBarStepName.SUBMISSION_FAILED,
-]
+const ALL_STEP_NAMES = Object.values(OrderProgressBarStepName)
 
 function useStepTransitions(): {
   stepIndex: number
