@@ -6,9 +6,8 @@ import { Command } from '@cowprotocol/types'
 import { Order } from 'api/operator'
 
 import { FullDetailsTable } from './FullDetailsTable'
-import { SummaryDetailsTable } from './SummaryDetailsTable'
 
-export { FullDetailsTable, SummaryDetailsTable }
+export { FullDetailsTable }
 
 export type Props = {
   chainId: SupportedChainId
