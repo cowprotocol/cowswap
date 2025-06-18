@@ -73,7 +73,6 @@ export function Updaters(): ReactNode {
       <HwAccountIndexUpdater />
       <UserUpdater />
       <FinalizeTxUpdater />
-      {/*<CancelReplaceTxUpdater />*/}
       <PendingOrdersUpdater />
       <CancelledOrdersUpdater />
       <ExpiredOrdersUpdater />
@@ -101,7 +100,6 @@ export function Updaters(): ReactNode {
         isYieldEnabled={isYieldEnabled}
         bridgeNetworkInfo={bridgeNetworkInfo?.data}
       />
-
       <TokensListsTagsUpdater />
 
       <WidgetTokensListsUpdater
