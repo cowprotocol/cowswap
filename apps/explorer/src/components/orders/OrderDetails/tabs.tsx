@@ -24,6 +24,8 @@ export interface OrderTab {
   content: ReactNode
 }
 
+const WAITING_SWAP = 'Waiting for swap'
+
 export function getOverviewTab(
   title: ReactNode,
   children: ReactNode,
@@ -67,7 +69,7 @@ export function getBridgeTab(
       <TabContent>
         2. Bridge{' '}
         {!isSwapComplete ? (
-          <StatusLabel status={BridgeStatus.IN_PROGRESS} customText="Waiting for swap" />
+          <StatusLabel status={BridgeStatus.IN_PROGRESS} customText={WAITING_SWAP} />
         ) : crossChainOrderLoading || !bridgeStatus ? (
           <Loader />
         ) : (
@@ -75,6 +77,12 @@ export function getBridgeTab(
         )}
       </TabContent>
     ),
-    content: <BridgeDetailsTable crossChainOrder={crossChainOrder || undefined} isLoading={crossChainOrderLoading} />,
+    content: (
+      <BridgeDetailsTable
+        crossChainOrder={crossChainOrder || undefined}
+        isLoading={crossChainOrderLoading}
+        message={!isSwapComplete ? WAITING_SWAP : undefined}
+      />
+    ),
   }
 }

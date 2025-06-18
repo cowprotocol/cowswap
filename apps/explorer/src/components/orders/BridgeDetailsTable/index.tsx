@@ -14,9 +14,14 @@ import { Wrapper } from './styled'
 interface BridgeDetailsTableProps {
   crossChainOrder: CrossChainOrder | undefined
   isLoading?: boolean
+  message?: string
 }
 
-export function BridgeDetailsTable({ crossChainOrder, isLoading = false }: BridgeDetailsTableProps): ReactNode {
+export function BridgeDetailsTable({
+  crossChainOrder,
+  message,
+  isLoading = false,
+}: BridgeDetailsTableProps): ReactNode {
   return (
     <Wrapper>
       <SimpleTable
@@ -33,7 +38,7 @@ export function BridgeDetailsTable({ crossChainOrder, isLoading = false }: Bridg
               </DetailRow>
             )}
             {isLoading || !crossChainOrder ? (
-              <LoadingWrapper message="Loading bridging data" />
+              <LoadingWrapper message={message || 'Loading bridging data'} />
             ) : (
               <BridgeDetailsContent crossChainOrder={crossChainOrder} />
             )}
