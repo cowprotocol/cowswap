@@ -185,7 +185,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     isBridgingTrade,
   )
   useCancellingOrderUpdater(orderId, isCancelling)
-  useCountdownStartUpdater(orderId, countdown, backendApiStatus, progressBarStepName || DEFAULT_STEP_NAME)
+  useCountdownStartUpdater(orderId, countdown, backendApiStatus)
 
   const solverCompetition = useMemo(
     () =>
@@ -284,25 +284,19 @@ function useCountdownStartUpdater(
   orderId: string,
   countdown: OrderProgressBarState['countdown'],
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
-  currentVisibleStepName: OrderProgressBarStepName,
 ) {
   const setCountdown = useSetExecutingOrderCountdownCallback()
 
   useEffect(() => {
-    // Only start countdown when backend is active AND we're actually showing the solving step to the user
-    // This prevents countdown from running in background during step transition delays
-    if (
-      countdown == null &&
-      backendApiStatus === 'active' &&
-      currentVisibleStepName === OrderProgressBarStepName.SOLVING
-    ) {
-      // Start countdown when it becomes active AND we're showing solving step
+    // Start countdown immediately when backend becomes active to reflect real protocol timing
+    // The solver competition genuinely starts when backend is active, regardless of UI delays
+    if (countdown == null && backendApiStatus === 'active') {
       setCountdown(orderId, PROGRESS_BAR_TIMER_DURATION)
     } else if (backendApiStatus !== 'active' && countdown) {
       // Every time backend status is not `active` and countdown is set, reset the countdown
       setCountdown(orderId, null)
     }
-  }, [backendApiStatus, setCountdown, countdown, orderId, currentVisibleStepName])
+  }, [backendApiStatus, setCountdown, countdown, orderId])
 }
 
 // TODO: Add proper return type annotation
