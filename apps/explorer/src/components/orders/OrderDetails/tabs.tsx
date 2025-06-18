@@ -8,7 +8,7 @@ import { FillsTableWithData, FillsTableWithDataProps } from './FillsTableWithDat
 import { TabContent } from './styled'
 
 import { Order, OrderStatus } from '../../../api/operator'
-import CowLoading from '../../common/CowLoading'
+import { LoadingWrapper } from '../../common/LoadingWrapper'
 import { BridgeDetailsTable } from '../BridgeDetailsTable'
 import { StatusLabel } from '../StatusLabel'
 
@@ -37,7 +37,9 @@ export function getOverviewTab(
       <>
         {children}
         {noTokens && <p>Not able to load tokens</p>}
-        {isLoadingForTheFirstTime && <CowLoading />}
+        {isLoadingForTheFirstTime && (
+          <LoadingWrapper message="Loading order" />
+        )}
       </>
     ),
   }
