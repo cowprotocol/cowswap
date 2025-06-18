@@ -30,19 +30,26 @@ interface SlippageAnalyticsEvent {
   value: number
 }
 
-export function useSlippageInput(): {
+interface ReturnType {
   slippageViewValue: string
   slippageError: SlippageError | false
   parseSlippageInput: (value: string) => void
   placeholderSlippage: Percent
   onSlippageInputBlur: () => void
   setAutoSlippage: () => void
-} {
+}
+
+function getSlippageForView(slippageInput: string, isSlippageModified: boolean, swapSlippage: Percent): string {
+  return slippageInput.length > 0
+    ? slippageInput
+    : (!isSlippageModified ? '' : swapSlippage.toFixed(2))
+}
+
+export function useSlippageInput(): ReturnType {
   const [slippageInput, setSlippageInput] = useState('')
   const [slippageError, setSlippageError] = useState<SlippageError | false>(false)
 
   const setSwapSlippage = useSetSlippage()
-
   const isEoaEthFlow = useIsEoaEthFlow()
   const analytics = useCowAnalytics()
 
@@ -64,10 +71,7 @@ export function useSlippageInput(): {
     [analytics],
   )
 
-  const slippageViewValue = slippageInput.length > 0
-    ? slippageInput
-    : (!isSlippageModified ? '' : swapSlippage.toFixed(2))
-
+  const slippageViewValue = getSlippageForView(slippageInput, isSlippageModified, swapSlippage)
   const { minEthFlowSlippageBps } = useMinEthFlowSlippage();
 
   const parseSlippageInput = useCallback(
@@ -126,7 +130,6 @@ export function useSlippageInput(): {
   }, [slippageError, placeholderSlippage, setSwapSlippage, sendSlippageAnalytics])
 
   const wrapperRef = useRef(null)
-
   useOnClickOutside([wrapperRef], onSlippageInputBlur)
 
   const setAutoSlippage = useCallback(() => {

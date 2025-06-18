@@ -2,10 +2,9 @@ import { JSX } from 'react'
 
 import { StatefulValue } from '@cowprotocol/types'
 
-import { AutoColumn } from '../../../../legacy/components/Column'
-
 import * as styledEl from './styled'
 
+import { AutoColumn } from '../../../../legacy/components/Column'
 import { DeadlineTransactionSettings } from '../../containers/DeadlineTransactionSettings'
 import { TransactionSlippageInput } from '../../containers/TransactionSlippageInput'
 

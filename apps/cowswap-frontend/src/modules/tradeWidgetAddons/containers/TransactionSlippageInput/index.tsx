@@ -47,9 +47,9 @@ export function TransactionSlippageInput(): JSX.Element {
 
   const {
     slippageError,
+    slippageViewValue,
     parseSlippageInput,
     placeholderSlippage,
-    slippageViewValue,
     onSlippageInputBlur,
     setAutoSlippage
   } = useSlippageInput()
