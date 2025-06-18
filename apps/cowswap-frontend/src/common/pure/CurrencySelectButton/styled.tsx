@@ -67,7 +67,7 @@ export const CurrencySelectWrapper = styled.button<{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  cursor: ${({ readonlyMode }) => (readonlyMode ? '' : 'pointer')};
+  cursor: ${({ readonlyMode }) => (readonlyMode ? 'default' : 'pointer')};
   gap: 6px;
   border: 0;
   outline: none;
@@ -96,8 +96,10 @@ export const CurrencySelectWrapper = styled.button<{
   }
 
   &:hover {
-    background: ${({ readonlyMode, $noCurrencySelected }) =>
-      readonlyMode ? '' : $noCurrencySelected ? `var(${UI.COLOR_PRIMARY_LIGHTER});` : `var(${UI.COLOR_PRIMARY});`};
+    ${({ readonlyMode, $noCurrencySelected }) =>
+      readonlyMode
+        ? ''
+        : `background: ${$noCurrencySelected ? `var(${UI.COLOR_PRIMARY_LIGHTER})` : `var(${UI.COLOR_PRIMARY})`};`}
 
     ${TokenSubText}, ${StyledTokenSymbol}, ${CurrencySymbol} {
       color: var(${UI.COLOR_BUTTON_TEXT});
