@@ -1,10 +1,11 @@
+import React from 'react'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 
 import { faFill } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import DecodeAppData from 'components/AppData/DecodeAppData'
-import { DateDisplay } from 'components/common/DateDisplay'
 import { FilledProgress } from 'components/orders/FilledProgress'
 import { OrderPriceDisplay } from 'components/orders/OrderPriceDisplay'
 import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
@@ -17,6 +18,7 @@ import { BaseDetailsTable } from './BaseDetailsTable'
 import { LinkButton, Wrapper } from './styled'
 import { tooltip } from './tooltips'
 
+import { GasFeeDisplay } from '../GasFeeDisplay'
 import { OrderHooksDetails } from '../OrderHooksDetails'
 
 export interface FullDetailsTableProps {
@@ -44,7 +46,6 @@ export function FullDetailsTable({
 }: FullDetailsTableProps) {
   const {
     uid,
-    expirationDate,
     buyAmount,
     sellAmount,
     executedBuyAmount,
@@ -63,16 +64,6 @@ export function FullDetailsTable({
 
   const fullModeFields = (
     <>
-      <tr>
-        <td>
-          <span>
-            <HelpTooltip tooltip={tooltip.expiration} /> Expiration Time
-          </span>
-        </td>
-        <td>
-          <DateDisplay date={expirationDate} showIcon={true} />
-        </td>
-      </tr>
       <tr>
         <td>
           <span>
@@ -138,6 +129,16 @@ export function FullDetailsTable({
           </span>
         </td>
         <td>{!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}</td>
+      </tr>
+      <tr>
+        <td>
+          <span>
+            <HelpTooltip tooltip={tooltip.fees} /> Costs &amp; Fees
+          </span>
+        </td>
+        <td>
+          <GasFeeDisplay order={order} />
+        </td>
       </tr>
       <OrderHooksDetails appData={appData} fullAppData={fullAppData ?? undefined}>
         {(content) => (

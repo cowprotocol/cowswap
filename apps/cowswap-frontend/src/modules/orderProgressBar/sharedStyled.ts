@@ -16,35 +16,41 @@ export const Description = styled.div<{ center?: boolean; margin?: string }>`
 `
 
 export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: string; height?: string; gap?: string }>`
+  --fallback-height: 246px;
   width: 100%;
-  height: ${({ height }) => height || '246px'};
-  min-height: 200px;
-  max-height: ${({ height }) => height || '246px'};
+  height: var(--progress-top-section-height, var(--fallback-height));
+  min-height: var(--progress-top-section-height, var(--fallback-height));
+  max-height: var(--progress-top-section-height, var(--fallback-height));
   display: flex;
   justify-content: center;
   align-items: center;
   flex-flow: column wrap;
-  border-radius: 21px;
+  border-radius: 21px 21px 0 0;
   padding: ${({ padding }) => padding || '0'};
   gap: ${({ gap }) => gap || '0'};
   background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
-  transition: height 0.3s ease-in-out;
+  transition: all var(--progress-transition-all, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
   position: relative;
   overflow: hidden;
+  contain: layout style paint;
 
   ${Media.upToSmall()} {
-    min-height: auto;
-    height: auto;
+    --fallback-height: 200px;
+    height: var(--progress-top-section-height, var(--fallback-height));
+    min-height: var(--progress-top-section-height, var(--fallback-height));
+    max-height: var(--progress-top-section-height, var(--fallback-height));
   }
 
   > img,
   > svg {
     --size: 100%;
+    flex: 1;
+    width: var(--size);
+    height: var(--size);
     max-width: var(--size);
     max-height: var(--size);
-    height: var(--size);
-    width: var(--size);
     object-fit: contain;
+    object-position: center;
     padding: 0;
     margin: 0;
   }

@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.14.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.13.2...widget-configurator-v1.14.0) (2025-06-18)
+
+
+### Features
+
+* **new-networks:** add support to `Avalanche` and `Polygon` networks ([#5715](https://github.com/cowprotocol/cowswap/issues/5715)) ([e3e8a8d](https://github.com/cowprotocol/cowswap/commit/e3e8a8d6b94569a5dda7a425d1a79f0b4f6d5200))
+
+
+### Bug Fixes
+
+* make order progress bar UI more stable ([#5834](https://github.com/cowprotocol/cowswap/issues/5834)) ([80cebd1](https://github.com/cowprotocol/cowswap/commit/80cebd1104a0a2e30e12ce8a4b3d62c212559cec))
+* **widget:** do not request wallet capabilities for wallet-connect ([#5823](https://github.com/cowprotocol/cowswap/issues/5823)) ([49f22ad](https://github.com/cowprotocol/cowswap/commit/49f22ade0da4ffe95aaa11a6265cd4eeaf339e08))
+
 ## [1.13.2](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.13.1...widget-configurator-v1.13.2) (2025-05-19)
 
 

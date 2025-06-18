@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.48.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.47.0...explorer-v2.48.0) (2025-06-18)
+
+
+### Features
+
+* **bridge:** add bridge types and order type guard to explorer ([#5725](https://github.com/cowprotocol/cowswap/issues/5725)) ([e4896fd](https://github.com/cowprotocol/cowswap/commit/e4896fd9bf3d9a8f3315cf8350ab45a702092534))
+* **bridge:** add cosmos explorer configuration and global decorator ([#5729](https://github.com/cowprotocol/cowswap/issues/5729)) ([8249f4a](https://github.com/cowprotocol/cowswap/commit/8249f4aa27b067cfecfb164b6ba9c2c2e45d46d4))
+* **new-networks:** add support to `Avalanche` and `Polygon` networks ([#5715](https://github.com/cowprotocol/cowswap/issues/5715)) ([e3e8a8d](https://github.com/cowprotocol/cowswap/commit/e3e8a8d6b94569a5dda7a425d1a79f0b4f6d5200))
+
+
+### Bug Fixes
+
+* **explorer:** adjust items order in order details ([#5846](https://github.com/cowprotocol/cowswap/issues/5846)) ([bf0e321](https://github.com/cowprotocol/cowswap/commit/bf0e3217132d7188bbb6749d2ef1e39c1dbbaa73))
+* make order progress bar UI more stable ([#5834](https://github.com/cowprotocol/cowswap/issues/5834)) ([80cebd1](https://github.com/cowprotocol/cowswap/commit/80cebd1104a0a2e30e12ce8a4b3d62c212559cec))
+
 ## [2.47.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.46.0...explorer-v2.47.0) (2025-05-19)
 
 
