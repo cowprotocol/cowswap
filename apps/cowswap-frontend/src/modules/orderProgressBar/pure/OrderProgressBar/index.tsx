@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 
@@ -11,11 +11,8 @@ import { STEP_NAME_TO_STEP_COMPONENT } from '../steps/stepsRegistry'
 
 const IS_DEBUG_MODE = false
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function OrderProgressBar(props: OrderProgressBarProps) {
-  const { stepName = 'initial', debugMode = IS_DEBUG_MODE } = props
+export function OrderProgressBar(props: OrderProgressBarProps): ReactNode {
+  const { stepName = OrderProgressBarStepName.INITIAL, debugMode = IS_DEBUG_MODE } = props
   const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
   const currentStep = debugMode ? debugStep : stepName
   const analytics = useCowAnalytics()
@@ -29,7 +26,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
 
   // Separate useEffect for initial step
   useEffect(() => {
-    if (currentStep === 'initial' && !initialStepTriggeredRef.current) {
+    if (currentStep === OrderProgressBarStepName.INITIAL && !initialStepTriggeredRef.current) {
       startTimeRef.current = Date.now()
       initialStepTriggeredRef.current = true
       analytics.sendEvent({
@@ -43,7 +40,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
 
   // useEffect for other steps
   useEffect(() => {
-    if (currentStep === 'initial') return // Skip for initial step
+    if (currentStep === OrderProgressBarStepName.INITIAL) return // Skip for initial step
 
     const duration = getDuration()
     const isFinalState = FINAL_STATES.includes(currentStep)

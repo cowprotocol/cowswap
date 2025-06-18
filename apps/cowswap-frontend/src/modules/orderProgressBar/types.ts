@@ -10,6 +10,8 @@ import type { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 
 import { OrderProgressBarStepName } from './constants'
 
+export { OrderProgressBarStepName }
+
 export type OrderProgressBarState = {
   countdown?: number | null
   backendApiStatus?: CompetitionOrderStatus.type

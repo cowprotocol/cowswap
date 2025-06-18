@@ -79,7 +79,7 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
 const defaultProps: OrderProgressBarProps = {
   order,
   chainId: 1,
-  stepName: 'initial',
+  stepName: OrderProgressBarStepName.INITIAL,
   isBridgingTrade: false,
   showCancellationModal: () => {
     alert('cancellation triggered o/')
@@ -142,7 +142,7 @@ function SolvingFixture(): ReactNode {
 
   return (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="solving" countdown={countdown} />
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.SOLVING} countdown={countdown} />
     </Wrapper>
   )
 }
@@ -269,32 +269,32 @@ const Fixtures = {
   '2-solving': () => <SolvingFixture />,
   '2a-delayed': () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="delayed" />
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.DELAYED} />
     </Wrapper>
   ),
   '2b-unfillable': () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="unfillable" />
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.UNFILLABLE} />
     </Wrapper>
   ),
   '2c-solved': () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="solved" />
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.SOLVED} />
     </Wrapper>
   ),
   '3-executing': () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="executing" />
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.EXECUTING} />
     </Wrapper>
   ),
   '3a-submissionFailed': () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="submissionFailed" />
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.SUBMISSION_FAILED} />
     </Wrapper>
   ),
   '4-finished': () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="finished" />
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.FINISHED} />
     </Wrapper>
   ),
   '4-finished-customReceiver': () => (
@@ -302,7 +302,7 @@ const Fixtures = {
       <OrderProgressBar
         {...defaultProps}
         order={{ ...order, receiver: '0xdd9EB88C5C6D2A85A08a96c7F0ccccE27Cb843cb' }}
-        stepName="finished"
+        stepName={OrderProgressBarStepName.FINISHED}
       />
     </Wrapper>
   ),
@@ -312,33 +312,33 @@ const Fixtures = {
         {...defaultProps}
         order={{ ...order, receiver: '0xdd9EB88C5C6D2A85A08a96c7F0ccccE27Cb843cb' }}
         receiverEnsName={'ihaveaname.eth'}
-        stepName="finished"
+        stepName={OrderProgressBarStepName.FINISHED}
       />
     </Wrapper>
   ),
   '4a-cancellationFailed': () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="cancellationFailed" />
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.CANCELLATION_FAILED} />
     </Wrapper>
   ),
   cancelling: () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="cancelling" />
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.CANCELLING} />
     </Wrapper>
   ),
   cancelled: () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="cancelled" />
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.CANCELLED} />
     </Wrapper>
   ),
   expired: () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="expired" />
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.EXPIRED} />
     </Wrapper>
   ),
   bridgingInProgress: () => (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} isBridgingTrade stepName="bridgingInProgress" />
+      <OrderProgressBar {...defaultProps} isBridgingTrade stepName={OrderProgressBarStepName.BRIDGING_IN_PROGRESS} />
     </Wrapper>
   ),
   bridgingFailed: () => (
@@ -355,7 +355,7 @@ const Fixtures = {
             isFailed: true,
           },
         }}
-        stepName="bridgingFailed"
+        stepName={OrderProgressBarStepName.BRIDGING_FAILED}
       />
     </Wrapper>
   ),
@@ -373,7 +373,7 @@ const Fixtures = {
             isRefunded: true,
           },
         }}
-        stepName="refundCompleted"
+        stepName={OrderProgressBarStepName.REFUND_COMPLETED}
       />
     </Wrapper>
   ),
@@ -397,7 +397,7 @@ const Fixtures = {
             fillTxHash: '0x851ff28340f67ebce1f530bea8665c911787767cf9563ad5aeb232110aa50651',
           },
         }}
-        stepName="bridgingFinished"
+        stepName={OrderProgressBarStepName.BRIDGING_FINISHED}
       />
     </Wrapper>
   ),
@@ -416,7 +416,7 @@ const Fixtures = {
             targetAmounts: undefined,
           },
         }}
-        stepName="bridgingInProgress"
+        stepName={OrderProgressBarStepName.BRIDGING_IN_PROGRESS}
       />
     </Wrapper>
   ),

@@ -403,30 +403,30 @@ function getProgressBarStepName(
 
   if (bridgingStatus) {
     if (bridgingStatus === SwapAndBridgeStatus.DONE) {
-      return 'bridgingFinished'
+      return OrderProgressBarStepName.BRIDGING_FINISHED
     }
 
     if (bridgingStatus === SwapAndBridgeStatus.REFUND_COMPLETE) {
-      return 'refundCompleted'
+      return OrderProgressBarStepName.REFUND_COMPLETED
     }
 
     if (bridgingStatus === SwapAndBridgeStatus.FAILED) {
-      return 'bridgingFailed'
+      return OrderProgressBarStepName.BRIDGING_FAILED
     }
 
     if (bridgingStatus && [SwapAndBridgeStatus.PENDING, SwapAndBridgeStatus.DEFAULT].includes(bridgingStatus)) {
-      return 'bridgingInProgress'
+      return OrderProgressBarStepName.BRIDGING_IN_PROGRESS
     }
   }
 
   if (isTradedOrConfirmed && isBridgingTrade && !bridgingStatus) {
-    return 'executing'
+    return OrderProgressBarStepName.EXECUTING
   }
 
   if (isExpired) {
-    return 'expired'
+    return OrderProgressBarStepName.EXPIRED
   } else if (isCancelled) {
-    return 'cancelled'
+    return OrderProgressBarStepName.CANCELLED
   } else if (isCancelling) {
     return OrderProgressBarStepName.CANCELLING
   } else if (cancellationTriggered && isTradedOrConfirmed) {
@@ -459,7 +459,7 @@ function getProgressBarStepName(
     return BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME[backendApiStatus]
   }
 
-  return 'initial'
+  return OrderProgressBarStepName.INITIAL
 }
 
 const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<CompetitionOrderStatus.type, OrderProgressBarStepName> = {

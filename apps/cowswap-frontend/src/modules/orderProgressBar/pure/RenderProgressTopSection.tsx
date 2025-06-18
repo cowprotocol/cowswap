@@ -96,7 +96,7 @@ export function RenderProgressTopSection({
   }, [chainId])
 
   const { surplusPercent, showSurplus } = surplusData || {}
-  const shouldShowSurplus = debugForceShowSurplus || showSurplus
+  const shouldShowSurplus = debugForceShowSurplus || Boolean(showSurplus)
   const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
 
   const isFinishedStep =
