@@ -1,7 +1,6 @@
 import { formatSymbol } from '@cowprotocol/common-utils'
+import { Nullish } from '@cowprotocol/types'
 import { Currency } from '@uniswap/sdk-core'
-
-import { Nullish } from '../../types'
 
 export type TokenNameAndSymbol = Pick<Currency, 'symbol' | 'name'>
 

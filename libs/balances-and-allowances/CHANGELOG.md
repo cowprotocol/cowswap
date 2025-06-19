@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.3.4...balances-and-allowances-v1.4.0) (2025-06-18)
+
+
+### Features
+
+* **bridge:** swap and bridge refactoring + progress UI ([#5755](https://github.com/cowprotocol/cowswap/issues/5755)) ([8a4cb5c](https://github.com/cowprotocol/cowswap/commit/8a4cb5c497cdd006df860a9240611e12cff3e60c))
+
 ## [1.3.4](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.3.3...balances-and-allowances-v1.3.4) (2025-05-19)
 
 

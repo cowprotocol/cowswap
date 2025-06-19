@@ -1,13 +1,10 @@
-import { useEffect, useRef, useState, ReactNode } from 'react'
+import { useRef, ReactNode, useState, useLayoutEffect } from 'react'
 
 import { StepComponent } from './StepComponent'
 import * as styledEl from './styled'
 
-import { STEPS } from '../constants'
+import { STEPS, StepStatus } from '../constants'
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function StepsWrapper({
   steps,
   currentStep,
@@ -26,11 +23,12 @@ export function StepsWrapper({
   isCancelling?: boolean
   isUnfillable?: boolean
   isBridgingTrade?: boolean
-}) {
+}): ReactNode {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [containerHeight, setContainerHeight] = useState(0)
+  const [translateY, setTranslateY] = useState(0)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (wrapperRef.current) {
       const stepElements = Array.from(wrapperRef.current.children)
       const activeStepHeight = stepElements[currentStep]?.clientHeight || 0
@@ -40,17 +38,15 @@ export function StepsWrapper({
       setContainerHeight(totalHeight)
 
       const offsetY = stepElements.slice(0, currentStep).reduce((acc, el) => acc + el.clientHeight, 0)
-      wrapperRef.current.style.transform = `translateY(-${offsetY}px)`
+      setTranslateY(offsetY)
     }
   }, [currentStep, steps.length])
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const getStatus = (index: number) => {
-    if (index === currentStep) return isCancelling ? 'cancelling' : 'active'
-    if (index === currentStep + 1) return 'next'
-    if (index < currentStep) return 'done'
-    return 'future'
+  const getStatus = (index: number): StepStatus => {
+    if (index === currentStep) return isCancelling ? StepStatus.CANCELLING : StepStatus.ACTIVE
+    if (index === currentStep + 1) return StepStatus.NEXT
+    if (index < currentStep) return StepStatus.DONE
+    return StepStatus.FUTURE
   }
 
   return (
@@ -59,7 +55,7 @@ export function StepsWrapper({
       $minHeight={isCancelling ? '80px' : undefined}
       bottomGradient={!isCancelling}
     >
-      <styledEl.StepsWrapper ref={wrapperRef}>
+      <styledEl.StepsWrapper ref={wrapperRef} $translateY={translateY}>
         {steps.map((stepInit, index) => {
           const step = typeof stepInit === 'function' ? stepInit(isBridgingTrade) : stepInit
           const customTitle = customStepTitles?.[index]

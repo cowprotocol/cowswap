@@ -1841,10 +1841,10 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@6.0.0-RC.61":
-  version "6.0.0-RC.61"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-6.0.0-RC.61.tgz#7c4fb0518c378d94881281dd3df49ffd12c94fca"
-  integrity sha512-vKxsMeL2IG7iLs42MJ91H5L2T2sS7iXrhkkOdqDGxl5rFDbBqjWy1Uqy4IQhY8VoGvqLlhyGboH0DXI1a97Lcw==
+"@cowprotocol/cow-sdk@6.0.0-RC.63":
+  version "6.0.0-RC.63"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-6.0.0-RC.63.tgz#b031051d6d85f35446bea094c7df7870eb7729b9"
+  integrity sha512-3oKP2fvW08eoVT3SIp2ghESLitPpmJP5xdoMRhIsO98Z54vjJ/WidGQN3YRQZuPRXF61LwJ+gFKZPtOBtF7I1g==
   dependencies:
     "@cowprotocol/app-data" "^3.1.0"
     "@cowprotocol/contracts" "^1.8.0"
@@ -1853,7 +1853,6 @@
     "@weiroll/weiroll.js" "^0.3.0"
     cross-fetch "^3.2.0"
     deepmerge "^4.3.1"
-    ethers "^5.8.0"
     exponential-backoff "^3.1.2"
     graphql "^16.11.0"
     graphql-request "^4.3.0"
@@ -26653,6 +26652,15 @@ react-from-dom@^0.7.5:
   version "0.7.5"
   resolved "https://registry.yarnpkg.com/react-from-dom/-/react-from-dom-0.7.5.tgz#2d2d2bf6d80149c053bcf71bb6615e5e7f6d23db"
   integrity sha512-CO92PmMKo/23uYPm6OFvh5CtZbMgHs/Xn+o095Lz/TZj9t8DSDhGdSOMLxBxwWI4sr0MF17KUn9yJWc5Q00R/w==
+
+react-helmet-async@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/react-helmet-async/-/react-helmet-async-2.0.5.tgz#cfc70cd7bb32df7883a8ed55502a1513747223ec"
+  integrity sha512-rYUYHeus+i27MvFE+Jaa4WsyBKGkL6qVgbJvSBoX8mbsWoABJXdEO0bZyi0F6i+4f0NuIb8AvqPMj3iXFHkMwg==
+  dependencies:
+    invariant "^2.2.4"
+    react-fast-compare "^3.2.2"
+    shallowequal "^1.1.0"
 
 react-helmet@^6.1.0:
   version "6.1.0"

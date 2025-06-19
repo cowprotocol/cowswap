@@ -48,6 +48,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   }
 
   if (!isWrapUnwrap && tradeQuote.error) {
+    if (inputAmountIsNotSet) {
+      return TradeFormValidation.InputAmountNotSet
+    }
+
     return TradeFormValidation.QuoteErrors
   }
 

@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.20.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.19.1...tokens-v1.20.0) (2025-06-18)
+
+
+### Features
+
+* **bridge:** swap and bridge refactoring + progress UI ([#5755](https://github.com/cowprotocol/cowswap/issues/5755)) ([8a4cb5c](https://github.com/cowprotocol/cowswap/commit/8a4cb5c497cdd006df860a9240611e12cff3e60c))
+* **new-networks:** add support to `Avalanche` and `Polygon` networks ([#5715](https://github.com/cowprotocol/cowswap/issues/5715)) ([e3e8a8d](https://github.com/cowprotocol/cowswap/commit/e3e8a8d6b94569a5dda7a425d1a79f0b4f6d5200))
+
+
+### Bug Fixes
+
+* make order progress bar UI more stable ([#5834](https://github.com/cowprotocol/cowswap/issues/5834)) ([80cebd1](https://github.com/cowprotocol/cowswap/commit/80cebd1104a0a2e30e12ce8a4b3d62c212559cec))
+* **token-logo:** fix network logo size in mobile ([#5809](https://github.com/cowprotocol/cowswap/issues/5809)) ([6c4d2f4](https://github.com/cowprotocol/cowswap/commit/6c4d2f47771f3868a3fe530bc9ac1779175b2db5))
+* **tokens:** remove user-added tokens twice ([#5748](https://github.com/cowprotocol/cowswap/issues/5748)) ([78b9bc6](https://github.com/cowprotocol/cowswap/commit/78b9bc6b519ebc8aafe13a9be3194f1377d3461c))
+
 ## [1.19.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.19.0...tokens-v1.19.1) (2025-05-22)
 
 

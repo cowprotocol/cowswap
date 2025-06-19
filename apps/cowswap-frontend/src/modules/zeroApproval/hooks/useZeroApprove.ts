@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 
 import { useIsSafeWallet, useIsWalletConnect } from '@cowprotocol/wallet'
 import SafeApiKit from '@safe-global/api-kit'
-import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useApproveCallback } from 'common/hooks/useApproveCallback'

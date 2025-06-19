@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.12.4](https://github.com/cowprotocol/cowswap/compare/wallet-v1.12.3...wallet-v1.12.4) (2025-06-18)
+
+
+### Bug Fixes
+
+* make order progress bar UI more stable ([#5834](https://github.com/cowprotocol/cowswap/issues/5834)) ([80cebd1](https://github.com/cowprotocol/cowswap/commit/80cebd1104a0a2e30e12ce8a4b3d62c212559cec))
+* **widget:** do not request wallet capabilities for wallet-connect ([#5823](https://github.com/cowprotocol/cowswap/issues/5823)) ([49f22ad](https://github.com/cowprotocol/cowswap/commit/49f22ade0da4ffe95aaa11a6265cd4eeaf339e08))
+
 ## [1.12.3](https://github.com/cowprotocol/cowswap/compare/wallet-v1.12.2...wallet-v1.12.3) (2025-06-06)
 
 

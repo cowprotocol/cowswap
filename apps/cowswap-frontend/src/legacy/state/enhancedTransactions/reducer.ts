@@ -1,5 +1,5 @@
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 
 import { createReducer } from '@reduxjs/toolkit'
 
@@ -112,7 +112,7 @@ export default createReducer(initialState, (builder) =>
             ethFlow,
             onChainCancellation,
           },
-        }
+        },
       ) => {
         if (transactions[chainId]?.[hash]) {
           console.warn('[state::enhancedTransactions] Attempted to add existing transaction', hash)
@@ -141,7 +141,7 @@ export default createReducer(initialState, (builder) =>
           onChainCancellation,
         }
         transactions[chainId] = txs
-      }
+      },
     )
 
     .addCase(clearAllTransactions, (transactions, { payload: { chainId } }) => {
@@ -223,5 +223,5 @@ export default createReducer(initialState, (builder) =>
 
       // Update safe info
       tx.safeTransaction = safeTransaction
-    })
+    }),
 )
