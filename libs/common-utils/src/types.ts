@@ -1,9 +1,5 @@
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 
-export type Writeable<T> = { -readonly [P in keyof T]: T[P] }
-
-export type Nullish<T> = T | null | undefined
-
 // This is for Pixel tracking injected code
 declare global {
   interface Window {

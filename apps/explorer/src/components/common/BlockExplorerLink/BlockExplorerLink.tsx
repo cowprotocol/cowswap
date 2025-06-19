@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react'
+import React, { ReactNode } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { BlockExplorerLinkType, getBlockExplorerUrl } from '@cowprotocol/common-utils'
@@ -24,7 +24,7 @@ export interface Props {
   /**
    * label to replace textContent generated from identifier
    */
-  label?: string | ReactElement | void
+  label?: ReactNode
 
   /**
    * Use the URL as a label

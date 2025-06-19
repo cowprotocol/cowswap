@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.19.2](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.19.1...widget-lib-v0.19.2) (2025-06-18)
+
+
+### Bug Fixes
+
+* make order progress bar UI more stable ([#5834](https://github.com/cowprotocol/cowswap/issues/5834)) ([80cebd1](https://github.com/cowprotocol/cowswap/commit/80cebd1104a0a2e30e12ce8a4b3d62c212559cec))
+
 ## [0.19.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.19.0...widget-lib-v0.19.1) (2025-05-19)
 
 

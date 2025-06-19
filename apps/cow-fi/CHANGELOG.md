@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.23.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.7...cow-fi-v1.23.0) (2025-06-18)
+
+
+### Features
+
+* **analytics:** enhance UTM handling and analytics readiness checks ([#5779](https://github.com/cowprotocol/cowswap/issues/5779)) ([3fb616c](https://github.com/cowprotocol/cowswap/commit/3fb616cf8f5b5ad7c1736bd095912d692bbf1fd5))
+
+
+### Bug Fixes
+
+* punctuation on the careers page disclaimer ([#5796](https://github.com/cowprotocol/cowswap/issues/5796)) ([e378e84](https://github.com/cowprotocol/cowswap/commit/e378e8422ad296f59717cdfa6363d091d5408a1b))
+* reduce rerenders count and theme recalculation ([#5831](https://github.com/cowprotocol/cowswap/issues/5831)) ([96a7a35](https://github.com/cowprotocol/cowswap/commit/96a7a350f366615a1e5149097541b5e2ccf880f1))
+
 ## [1.22.7](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.6...cow-fi-v1.22.7) (2025-05-29)
 
 
