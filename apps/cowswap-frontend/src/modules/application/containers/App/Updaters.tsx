@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
@@ -30,6 +32,7 @@ import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } f
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { AnnouncementsUpdater } from 'common/updaters/AnnouncementsUpdater'
+import { BridgingEnabledUpdater } from 'common/updaters/BridgingEnabledUpdater'
 import { ConnectionStatusUpdater } from 'common/updaters/ConnectionStatusUpdater'
 import { FeatureFlagsUpdater } from 'common/updaters/FeatureFlagsUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
@@ -47,10 +50,7 @@ import { SolversInfoUpdater } from 'common/updaters/SolversInfoUpdater'
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function Updaters() {
+export function Updaters(): ReactNode {
   const { account } = useWalletInfo()
   const { tokenLists, appCode, customTokens, standaloneMode } = useInjectedWidgetParams()
   const onTokenListAddingError = useOnTokenListAddingError()
@@ -73,7 +73,6 @@ export function Updaters() {
       <HwAccountIndexUpdater />
       <UserUpdater />
       <FinalizeTxUpdater />
-      {/*<CancelReplaceTxUpdater />*/}
       <PendingOrdersUpdater />
       <CancelledOrdersUpdater />
       <ExpiredOrdersUpdater />
@@ -92,6 +91,7 @@ export function Updaters() {
       <ProgressBarExecutingOrdersUpdater />
       <SolversInfoUpdater />
       <AnnouncementsUpdater />
+      <BridgingEnabledUpdater />
 
       <TokensListsUpdater
         chainId={sourceChainId}
@@ -100,7 +100,6 @@ export function Updaters() {
         isYieldEnabled={isYieldEnabled}
         bridgeNetworkInfo={bridgeNetworkInfo?.data}
       />
-
       <TokensListsTagsUpdater />
 
       <WidgetTokensListsUpdater
