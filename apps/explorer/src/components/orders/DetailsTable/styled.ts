@@ -1,7 +1,8 @@
 import { Color, Media } from '@cowprotocol/ui'
 
-import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import styled from 'styled-components/macro'
+
+import { LinkWithPrefixNetwork } from '../../common/LinkWithPrefixNetwork'
 
 export const Wrapper = styled.div`
   display: flex;
@@ -24,7 +25,7 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
   font-weight: ${({ theme }): string => theme.fontBold};
   font-size: 1.3rem;
   color: ${Color.explorer_orange1};
-  border: 1px solid ${() => Color.explorer_orange1};
+  border: 0.1rem solid ${() => Color.explorer_orange1};
   background-color: ${Color.explorer_orangeOpacity};
   border-radius: 0.4rem;
   padding: 0.8rem 1.5rem;

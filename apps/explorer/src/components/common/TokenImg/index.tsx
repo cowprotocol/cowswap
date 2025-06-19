@@ -3,19 +3,11 @@ import React from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import unknownTokenImg from 'assets/img/unknown-token.png'
-import styled from 'styled-components/macro'
 import { getImageUrl, RequireContextMock, safeTokenName } from 'utils'
 
-import { useTokenList } from '../../hooks/useTokenList'
+import { Wrapper } from './styled'
 
-const Wrapper = styled.img<WrapperProps>`
-  width: 2.8rem;
-  height: 2.8rem;
-  border-radius: 3.6rem;
-  object-fit: contain;
-  background-color: white;
-  opacity: ${(props): number => (props.faded ? 0.4 : 1)};
-`
+import { useTokenList } from '../../../hooks/useTokenList'
 
 function _loadFallbackTokenImage(event: React.SyntheticEvent<HTMLImageElement>): void {
   const image = event.currentTarget
@@ -31,14 +23,10 @@ export interface Props {
   faded?: boolean
 }
 
-export interface WrapperProps {
-  faded?: boolean
-}
-
 const tokensIconsRequire =
   process.env.NODE_ENV === 'test'
     ? RequireContextMock
-    : import.meta.glob('../../assets/img/tokens/*.png', { eager: true })
+    : import.meta.glob('../../../assets/img/tokens/*.png', { eager: true })
 
 const TOKEN_ICON_FILENAME_REGEX = /(0x\w{40}|eth|xdai|avax|pol)/
 
