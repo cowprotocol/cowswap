@@ -26,7 +26,7 @@ import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
 import { BridgeQuoteAmounts, type SwapAndBridgeContext, SwapAndBridgeStatus } from '../../bridge'
 import { useSwapAndBridgeContext } from '../../bridge/hooks/useSwapAndBridgeContext'
-import { OrderProgressBarStepName, DEFAULT_STEP_NAME } from '../constants'
+import { DEFAULT_STEP_NAME, OrderProgressBarStepName } from '../constants'
 import {
   ordersProgressBarStateAtom,
   setOrderProgressBarCancellationTriggered,
@@ -484,17 +484,20 @@ const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<CompetitionOrderStatus.type
   cancelled: OrderProgressBarStepName.INITIAL, // TODO: maybe add another state for finished with error?
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string, doNotQuery: boolean) {
+function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string, doNotQuery: boolean): void {
   const setAtom = useSetAtom(updateOrderProgressBarBackendInfo)
-  const { type: backendApiStatus, value: solverCompetition } = usePendingOrderStatus(chainId, orderId, doNotQuery) || {}
+  const { type: backendApiStatus, value } = usePendingOrderStatus(chainId, orderId, doNotQuery) || {}
 
   useEffect(() => {
-    if (orderId && (backendApiStatus || solverCompetition)) {
+    if (orderId && (backendApiStatus || value)) {
+      // Lowercase solver names as CMS might return them in different cases
+      const solverCompetition = value?.map(({ solver, ...rest }) => ({
+        ...rest,
+        solver: solver.toLowerCase(),
+      }))
       setAtom({ orderId, value: { backendApiStatus, solverCompetition } })
     }
-  }, [orderId, setAtom, backendApiStatus, solverCompetition])
+  }, [orderId, setAtom, backendApiStatus, value])
 }
 
 const POOLING_SWR_OPTIONS = {
@@ -525,7 +528,7 @@ function mergeSolverData(
   // Backend has the prefix `-solve` on some solvers. We should discard that for now.
   // In the future this prefix will be removed.
   const solverId = solverCompetition.solver.replace(/-solve$/, '')
-  const solverInfo = solversInfo[solverId]
+  const solverInfo = solversInfo[solverId.toLowerCase()]
 
   return { ...solverCompetition, ...solverInfo, solverId, solver: solverId }
 }
