@@ -7,7 +7,7 @@ import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
 import { ConnectionStatus } from 'components/ConnectionStatus'
 import { Notification } from 'components/Notification'
-import { DetailsTable } from 'components/orders/DetailsTable'
+import { FullDetailsTable } from 'components/orders/DetailsTable/FullDetailsTable'
 import RedirectToSearch from 'components/RedirectToSearch'
 import TablePagination from 'explorer/components/common/TablePagination'
 import { useTable } from 'explorer/components/TokensTableWidget/useTable'
@@ -79,7 +79,7 @@ const tabItems = (
 
   const defaultDetails =
     order && areTokensLoaded ? (
-      <DetailsTable chainId={chainId} order={order} showFillsButton={showFills} areTradesLoading={areTradesLoading}>
+      <FullDetailsTable chainId={chainId} order={order} showFillsButton={showFills} areTradesLoading={areTradesLoading}>
         <VerboseDetails
           order={order}
           showFillsButton={showFills}
@@ -87,7 +87,7 @@ const tabItems = (
           isPriceInverted={isPriceInverted}
           invertPrice={invertPrice}
         />
-      </DetailsTable>
+      </FullDetailsTable>
     ) : null
 
   const isBridging = !!order?.bridgeProviderId

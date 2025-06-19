@@ -11,7 +11,6 @@ import { LinkButton, Wrapper } from './styled'
 import { Order } from '../../../api/operator'
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
 import DecodeAppData from '../../AppData/DecodeAppData'
-import { DateDisplay } from '../../common/DateDisplay'
 import { DetailRow } from '../../common/DetailRow'
 import { FilledProgress } from '../FilledProgress'
 import { GasFeeDisplay } from '../GasFeeDisplay'
@@ -62,9 +61,6 @@ export function VerboseDetails({
   }
   return (
     <>
-      <DetailRow label="Expiration Time" tooltipText={DetailsTableTooltips.expiration}>
-        <DateDisplay date={expirationDate} showIcon={true} />
-      </DetailRow>
       <DetailRow label="Limit Price" tooltipText={DetailsTableTooltips.priceLimit}>
         <OrderPriceDisplay buyAmount={buyAmount} sellAmount={sellAmount} {...priceDisplayContext} />
       </DetailRow>
