@@ -5,8 +5,8 @@ import { StatefulValue } from '@cowprotocol/types'
 
 import { AutoColumn } from 'legacy/components/Column'
 
-import { DeadlineTransactionSettings } from 'modules/tradeWidgetAddons/containers/DeadlineTransactionSettings'
-import { TransactionSlippageInput } from 'modules/tradeWidgetAddons/containers/TransactionSlippageInput'
+import { DeadlineTransactionSettings } from 'modules/tradeWidgetAddons'
+import { TransactionSlippageInput } from 'modules/tradeWidgetAddons'
 
 import * as styledEl from './styled'
 
