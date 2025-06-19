@@ -35,7 +35,6 @@ export function VerboseDetails({
 }: VerboseDetailsProps): ReactNode {
   const {
     uid,
-    expirationDate,
     buyAmount,
     sellAmount,
     executedBuyAmount,
