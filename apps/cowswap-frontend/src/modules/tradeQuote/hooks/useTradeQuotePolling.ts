@@ -9,26 +9,20 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 
-import { useUpdateCurrencyAmount } from 'modules/trade'
-
-import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenError'
 import { useQuoteParams } from './useQuoteParams'
 import { useTradeQuote } from './useTradeQuote'
 import { useTradeQuoteManager } from './useTradeQuoteManager'
 
+import { doQuotePolling, QuoteUpdateContext } from '../services/doQuotePolling'
 import { fetchAndProcessQuote } from '../services/fetchAndProcessQuote'
 import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
 import { TradeQuoteFetchParams } from '../types'
 import { isQuoteExpired } from '../utils/quoteDeadline'
-import { quoteUsingSameParameters } from '../utils/quoteUsingSameParameters'
 
 export const PRICE_UPDATE_INTERVAL = ms`30s`
 const QUOTE_EXPIRATION_CHECK_INTERVAL = ms`2s`
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function useTradeQuotePolling(isConfirmOpen = false) {
+export function useTradeQuotePolling(isConfirmOpen = false): null {
   const { amount, fastQuote, partiallyFillable } = useAtomValue(tradeQuoteInputAtom)
   const tradeQuote = useTradeQuote()
   const tradeQuoteRef = useRef(tradeQuote)
@@ -38,15 +32,10 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
   const { chainId } = useWalletInfo()
   const { quoteParams, appData, inputCurrency } = useQuoteParams(amountStr, partiallyFillable) || {}
 
-  const tradeQuoteManager = useTradeQuoteManager(
-    inputCurrency && getCurrencyAddress(inputCurrency)
-  )
-  const updateCurrencyAmount = useUpdateCurrencyAmount()
+  const tradeQuoteManager = useTradeQuoteManager(inputCurrency && getCurrencyAddress(inputCurrency))
   const getIsUnsupportedTokens = useAreUnsupportedTokens()
-  const processUnsupportedTokenError = useProcessUnsupportedTokenError()
 
   const isWindowVisible = useIsWindowVisible()
-
   const isOnline = useIsOnline()
   const isOnlineRef = useRef(isOnline)
   isOnlineRef.current = isOnline
@@ -55,13 +44,12 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
     // Do not reset the quote if the confirm modal is open
     // Because we already have a quote and don't want to reset it
     if (isConfirmOpen) return
+    if (!tradeQuoteManager) return
 
-    if ((!isWindowVisible || !amountStr) && tradeQuoteManager) {
+    if (!isWindowVisible || !amountStr) {
       tradeQuoteManager.reset()
     }
   }, [isWindowVisible, tradeQuoteManager, isConfirmOpen, amountStr])
-
-  // TODO: Break down this large function into smaller functions
 
   useLayoutEffect(() => {
     if (!tradeQuoteManager) {
@@ -78,55 +66,33 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
       return
     }
 
-    // TODO: Add proper return type annotation
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    const fetchQuote = (fetchParams: TradeQuoteFetchParams) =>
+    const fetchQuote = (fetchParams: TradeQuoteFetchParams): Promise<void> =>
       fetchAndProcessQuote(chainId, fetchParams, quoteParams, appData, tradeQuoteManager)
 
-    // TODO: Add proper return type annotation
-    // TODO: Reduce function complexity by extracting logic
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
-    function fetchAndUpdateQuote(hasParamsChanged: boolean, forceUpdate = false) {
-      const currentQuote = tradeQuoteRef.current
-      const currentQuoteAppDataDoc = currentQuote.quote?.quoteResults.appDataInfo.doc
-      const hasCachedResponse = !!currentQuote.quote
-      const hasCachedError = !!currentQuote.error
-
-      if (!forceUpdate) {
-        // Don't fetch quote if the parameters are the same
-        // Also avoid quote refresh when only appData.quote (contains slippage) is changed
-        // Important! We should skip quote updateing only if there is no quote response
-        if (
-          (hasCachedResponse || hasCachedError) &&
-          quoteUsingSameParameters(currentQuote, quoteParams, currentQuoteAppDataDoc, appData)
-        ) {
-          return
-        }
-
-        // When browser is offline or the tab is not active do no fetch
-        if (!isOnlineRef.current || !isWindowVisible) {
-          return
-        }
+    function getQuoteUpdateContext(hasParamsChanged: boolean, forceUpdate = false): QuoteUpdateContext {
+      return {
+        currentQuote: tradeQuoteRef.current,
+        quoteParams,
+        appData,
+        fetchQuote,
+        hasParamsChanged,
+        forceUpdate,
+        isBrowserOnline: isOnlineRef.current && isWindowVisible,
+        isConfirmOpen,
+        fastQuote,
       }
-
-      const fetchStartTimestamp = Date.now()
-      // Don't fetch fast quote in confirm screen
-      if (fastQuote && !isConfirmOpen) {
-        fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.FAST, fetchStartTimestamp })
-      }
-      fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.OPTIMAL, fetchStartTimestamp })
     }
 
     /**
      * Fetch the quote instantly once the quote params are changed
      */
-    fetchAndUpdateQuote(true)
+    doQuotePolling(getQuoteUpdateContext(true))
 
     /**
      * Start polling for the quote
      */
     const pollingIntervalId = setInterval(() => {
-      fetchAndUpdateQuote(false)
+      doQuotePolling(getQuoteUpdateContext(false))
     }, PRICE_UPDATE_INTERVAL)
 
     /**
@@ -143,7 +109,7 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
         /**
          * Reset the quote state in order to not trigger the quote expiration check again
          */
-        fetchAndUpdateQuote(false, true)
+        doQuotePolling(getQuoteUpdateContext(false, true))
       }
     }, QUOTE_EXPIRATION_CHECK_INTERVAL)
 
@@ -157,8 +123,6 @@ export function useTradeQuotePolling(isConfirmOpen = false) {
     quoteParams,
     appData,
     tradeQuoteManager,
-    updateCurrencyAmount,
-    processUnsupportedTokenError,
     getIsUnsupportedTokens,
     isWindowVisible,
     isConfirmOpen,
