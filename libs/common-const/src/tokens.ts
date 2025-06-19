@@ -487,82 +487,23 @@ export const V_COW: Record<SupportedChainId, TokenWithLogo | null> = {
 /**
  * Cow token
  */
-export const COW_TOKEN_MAINNET = COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET]
-  ? new TokenWithLogo(
-      undefined,
-      SupportedChainId.MAINNET,
-      COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET]!,
-      18,
-      'COW',
-      'CoW Protocol Token',
-    )
-  : null
+const COW_TOKEN_SYMBOL = 'COW'
+const COW_TOKEN_NAME = 'CoW Protocol Token'
 
-export const COW_TOKEN_XDAI = COW_CONTRACT_ADDRESS[SupportedChainId.GNOSIS_CHAIN]
-  ? new TokenWithLogo(
-      COW_TOKEN_MAINNET?.logoURI,
-      SupportedChainId.GNOSIS_CHAIN,
-      COW_CONTRACT_ADDRESS[SupportedChainId.GNOSIS_CHAIN]!,
-      18,
-      'COW',
-      'CoW Protocol Token',
-    )
-  : null
+function getMaybeCowTokenForChain(chain: SupportedChainId): TokenWithLogo | null {
+  const address = COW_CONTRACT_ADDRESS[chain]
 
-export const COW_TOKEN_ARBITRUM = COW_CONTRACT_ADDRESS[SupportedChainId.ARBITRUM_ONE]
-  ? new TokenWithLogo(
-      COW_TOKEN_MAINNET?.logoURI,
-      SupportedChainId.ARBITRUM_ONE,
-      COW_CONTRACT_ADDRESS[SupportedChainId.ARBITRUM_ONE],
-      18,
-      'COW',
-      'CoW Protocol Token',
-    )
-  : null
+  if (!address) return null
 
-export const COW_TOKEN_BASE = COW_CONTRACT_ADDRESS[SupportedChainId.BASE]
-  ? new TokenWithLogo(
-      COW_TOKEN_MAINNET?.logoURI,
-      SupportedChainId.BASE,
-      COW_CONTRACT_ADDRESS[SupportedChainId.BASE],
-      18,
-      'COW',
-      'CoW Protocol Token',
-    )
-  : null
-
-export const COW_TOKEN_SEPOLIA = COW_CONTRACT_ADDRESS[SupportedChainId.SEPOLIA]
-  ? new TokenWithLogo(
-      COW_TOKEN_MAINNET?.logoURI,
-      SupportedChainId.SEPOLIA,
-      COW_CONTRACT_ADDRESS[SupportedChainId.SEPOLIA],
-      18,
-      'COW',
-      'CoW Protocol Token',
-    )
-  : null
-
-export const COW_TOKEN_POLYGON = COW_CONTRACT_ADDRESS[SupportedChainId.POLYGON]
-  ? new TokenWithLogo(
-      COW_TOKEN_MAINNET?.logoURI,
-      SupportedChainId.POLYGON,
-      COW_CONTRACT_ADDRESS[SupportedChainId.POLYGON],
-      18,
-      'COW',
-      'CoW Protocol Token',
-    )
-  : null
-
-export const COW_TOKEN_AVALANCHE = COW_CONTRACT_ADDRESS[SupportedChainId.AVALANCHE]
-  ? new TokenWithLogo(
-      COW_TOKEN_MAINNET?.logoURI,
-      SupportedChainId.AVALANCHE,
-      COW_CONTRACT_ADDRESS[SupportedChainId.AVALANCHE],
-      18,
-      'COW',
-      'CoW Protocol Token',
-    )
-  : null
+  return new TokenWithLogo(COW_TOKEN_MAINNET?.logoURI, chain, address, 18, COW_TOKEN_SYMBOL, COW_TOKEN_NAME)
+}
+export const COW_TOKEN_MAINNET = getMaybeCowTokenForChain(SupportedChainId.MAINNET)
+export const COW_TOKEN_XDAI = getMaybeCowTokenForChain(SupportedChainId.GNOSIS_CHAIN)
+export const COW_TOKEN_ARBITRUM = getMaybeCowTokenForChain(SupportedChainId.ARBITRUM_ONE)
+export const COW_TOKEN_BASE = getMaybeCowTokenForChain(SupportedChainId.BASE)
+export const COW_TOKEN_SEPOLIA = getMaybeCowTokenForChain(SupportedChainId.SEPOLIA)
+export const COW_TOKEN_POLYGON = getMaybeCowTokenForChain(SupportedChainId.POLYGON)
+export const COW_TOKEN_AVALANCHE = getMaybeCowTokenForChain(SupportedChainId.AVALANCHE)
 
 export const COW_TOKEN_TO_CHAIN: Record<SupportedChainId, TokenWithLogo | null> = {
   [SupportedChainId.MAINNET]: COW_TOKEN_MAINNET,
