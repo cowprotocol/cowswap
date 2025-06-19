@@ -1,7 +1,7 @@
 import { BridgeStatus } from '@cowprotocol/cow-sdk'
 import { Color } from '@cowprotocol/ui'
 
-import styled, { DefaultTheme, css, keyframes, FlattenSimpleInterpolation } from 'styled-components'
+import styled, { DefaultTheme, css, keyframes } from 'styled-components'
 
 export type GenericStatus = string
 export type DisplayProps = { status: GenericStatus }
@@ -12,12 +12,7 @@ export type ShimmingProps = {
 }
 
 // eslint-disable-next-line complexity
-function setStatusColors({
-  status,
-}: {
-  status: GenericStatus
-  _theme: DefaultTheme
-}): string | FlattenSimpleInterpolation {
+function setStatusColors({ status }: { status: GenericStatus; _theme: DefaultTheme }): string | ReturnType<typeof css> {
   let background: string, text: string
 
   switch (status.toLowerCase()) {
@@ -68,7 +63,7 @@ function setStatusColors({
 
 export const PartiallyTagLabel = css<PartiallyTagProps>`
   &:after {
-    ${({ partialFill, theme, tagPosition, filledPercentage }): FlattenSimpleInterpolation | null =>
+    ${({ partialFill, theme, tagPosition, filledPercentage }): ReturnType<typeof css> | null =>
       partialFill
         ? css`
             content: ${tagPosition === 'bottom' ? `"${filledPercentage} filled"` : `"Partially filled"`};
@@ -125,8 +120,8 @@ export const Label = styled.div<DisplayProps & ShimmingProps & PartiallyTagProps
   width: 100%;
   white-space: normal;
 
-  ${({ theme, status }): string | FlattenSimpleInterpolation => setStatusColors({ status, _theme: theme })}
-  ${({ shimming }): FlattenSimpleInterpolation | null =>
+  ${({ theme, status }): string | ReturnType<typeof css> => setStatusColors({ status, _theme: theme })}
+  ${({ shimming }): ReturnType<typeof css> | null =>
     shimming
       ? css`
           mask: linear-gradient(-60deg, #000 30%, #0005, #000 70%) right/300% 100%;
@@ -135,7 +130,7 @@ export const Label = styled.div<DisplayProps & ShimmingProps & PartiallyTagProps
           animation-name: ${frameAnimation};
         `
       : null}
-  ${({ partialFill: partiallyFilled, tagPosition }): FlattenSimpleInterpolation | null =>
+  ${({ partialFill: partiallyFilled, tagPosition }): ReturnType<typeof css> | null =>
     partiallyFilled
       ? tagPosition === 'bottom'
         ? css`

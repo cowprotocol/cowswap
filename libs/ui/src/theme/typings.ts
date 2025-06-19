@@ -2,7 +2,7 @@ import { css } from 'styled-components'
 
 import { CowSwapTheme } from '../types'
 
-type StyledFlattenSimpleInterpolation = ReturnType<typeof css>
+type CssResult = ReturnType<typeof css>
 
 type ColorValue = string
 
@@ -75,7 +75,7 @@ export interface Colors {
   cowfi_borderGradient: ColorValue
   cowfi_gradient: ColorValue
   cowfi_gradient2: ColorValue
-  cowfi_gradientMesh: StyledFlattenSimpleInterpolation
+  cowfi_gradientMesh: CssResult
   cowfi_purple1: ColorValue
   cowfi_purple2: ColorValue
   cowfi_purple3: ColorValue
@@ -90,11 +90,11 @@ export interface Colors {
 }
 
 export interface ThemeUtils {
-  shimmer: StyledFlattenSimpleInterpolation
-  colorScrollbar: StyledFlattenSimpleInterpolation
+  shimmer: CssResult
+  colorScrollbar: CssResult
   invertImageForDarkMode: string | null
-  flexColumnNoWrap: StyledFlattenSimpleInterpolation
-  flexRowNoWrap: StyledFlattenSimpleInterpolation
+  flexColumnNoWrap: CssResult
+  flexRowNoWrap: CssResult
 }
 
 // Export the theme interface for external use
