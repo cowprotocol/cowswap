@@ -4,7 +4,7 @@ import { getChainInfo } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const NetworkLogoWrapper = styled.div<{ size: number; margin?: string }>`
   display: inline-flex;
