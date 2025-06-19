@@ -36,7 +36,7 @@ export function getNonNativeOrderDeadlineTooltip(): ReactNode {
 export const getNativeSlippageTooltip = (chainId: SupportedChainId, symbols: (string | undefined)[] | undefined): ReactNode => (
   <Trans>
     When selling {symbols?.[0] || 'a native currency'}, the minimum slippage tolerance is set to{' '}
-    {MINIMUM_ETH_FLOW_SLIPPAGE[chainId].toSignificant(PERCENTAGE_PRECISION)}% to ensure a high likelihood of order
+    {MINIMUM_ETH_FLOW_SLIPPAGE[chainId].toSignificant(PERCENTAGE_PRECISION)}% or higher to ensure a high likelihood of order
     matching, even in volatile market conditions.
     <br />
     <br />
