@@ -1,6 +1,6 @@
 import { Color, Media } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { RefundStatusType, RefundStatusEnum } from './RefundStatus'
 

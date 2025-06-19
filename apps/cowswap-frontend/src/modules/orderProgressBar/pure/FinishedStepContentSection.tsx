@@ -1,6 +1,6 @@
 import { Media, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 /**
  * Specialized content section component for finished/cancellation steps.
@@ -27,11 +27,11 @@ export const FinishedStepContentSection = styled.div`
   overflow: hidden;
 
   ${Media.upToSmall()} {
-    /* 
+    /*
      * MOBILE LAYOUT: Allow flexible height for tips/surplus content
      * The finished step shows complex bottom content that stacks on mobile:
      * - Large cow illustration
-     * - Tips text or surplus information  
+     * - Tips text or surplus information
      * - CoW Swap logo
      * Fixed height (200px) would cut off this stacked content
      */

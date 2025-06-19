@@ -11,7 +11,7 @@ import { TokenAmount } from 'components/token/TokenAmount'
 import ShimmerBar from 'explorer/components/common/ShimmerBar'
 import { useMultipleErc20 } from 'hooks/useErc20'
 import { useNetworkId } from 'state/network'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { abbreviateString } from 'utils'
 
 import { Trade } from 'api/operator'

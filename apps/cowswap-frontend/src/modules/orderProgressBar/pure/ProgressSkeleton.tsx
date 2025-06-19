@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { UI } from '@cowprotocol/ui'
 
-import styled, { keyframes } from 'styled-components/macro'
+import styled, { keyframes } from 'styled-components'
 
 const shimmer = keyframes`
   0% {

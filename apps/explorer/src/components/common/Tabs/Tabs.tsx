@@ -4,7 +4,7 @@ import { Color } from '@cowprotocol/ui'
 
 import TabContent from 'components/common/Tabs/TabContent'
 import TabItem from 'components/common/Tabs/TabItem'
-import { DefaultTheme } from 'styled-components/macro'
+import { DefaultTheme } from 'styled-components'
 
 import { Wrapper, TabList } from './styled'
 

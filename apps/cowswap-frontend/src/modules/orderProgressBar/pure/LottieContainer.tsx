@@ -1,7 +1,7 @@
 import { ReactNode, useRef, useEffect } from 'react'
 
 import Lottie from 'lottie-react'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const LottieWrapper = styled.div`
   --size: 100%;

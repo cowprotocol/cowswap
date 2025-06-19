@@ -1,7 +1,7 @@
 import { BridgeStatus } from '@cowprotocol/cow-sdk'
 import { Color } from '@cowprotocol/ui'
 
-import styled, { DefaultTheme, css, keyframes, FlattenSimpleInterpolation } from 'styled-components/macro'
+import styled, { DefaultTheme, css, keyframes, FlattenSimpleInterpolation } from 'styled-components'
 
 export type GenericStatus = string
 export type DisplayProps = { status: GenericStatus }
