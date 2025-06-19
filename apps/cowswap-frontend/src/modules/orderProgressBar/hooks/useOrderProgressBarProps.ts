@@ -187,14 +187,26 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
   useCancellingOrderUpdater(orderId, isCancelling)
   useCountdownStartUpdater(orderId, countdown, backendApiStatus)
 
-  const solverCompetition = useMemo(
-    () =>
-      apiSolverCompetition
-        ?.map((entry) => mergeSolverData(entry, solversInfo))
+  const solverCompetition = useMemo(() => {
+    const solversMap = apiSolverCompetition?.reduce(
+      (acc, entry) => {
+        // If the entry is not a valid or has no executedAmounts, the solution doesn't consider this order, skip it
+        if (!entry || !entry.solver || !entry.executedAmounts) {
+          return acc
+        }
+        // Merge the solver competition data with the info fetched from CMS under the same key, to avoid duplicates
+        acc[entry.solver] = mergeSolverData(entry, solversInfo)
+        return acc
+      },
+      {} as Record<string, SolverCompetition>,
+    )
+
+    return (
+      Object.values(solversMap || {})
         // Reverse it since backend returns the solutions ranked ascending. Winner is the last one.
-        .reverse(),
-    [apiSolverCompetition, solversInfo],
-  )
+        .reverse()
+    )
+  }, [apiSolverCompetition, solversInfo])
 
   return useMemo(() => {
     if (disableProgressBar) {
