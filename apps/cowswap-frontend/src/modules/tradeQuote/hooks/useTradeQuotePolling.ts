@@ -101,6 +101,9 @@ export function useTradeQuotePolling(isConfirmOpen = false): null {
     const quoteExpirationInterval = setInterval(() => {
       const currentQuote = tradeQuoteRef.current
 
+      /**
+       * Check if a quote expired only when quote is optimal
+       */
       if (
         currentQuote.quote &&
         currentQuote.fetchParams?.priceQuality === PriceQuality.OPTIMAL &&
