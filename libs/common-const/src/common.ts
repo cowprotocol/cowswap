@@ -1,4 +1,4 @@
-import { NATIVE_CURRENCY_ADDRESS, SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
 import BigNumber from 'bignumber.js'
@@ -68,14 +68,15 @@ export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.AVALANCHE]: null, // doesn't exist!
 }
 
-export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string> = {
+export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: '0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB',
   [SupportedChainId.GNOSIS_CHAIN]: '0x177127622c4A00F3d409B75571e12cB3c8973d3c',
   [SupportedChainId.ARBITRUM_ONE]: '0xcb8b5cd20bdcaea9a010ac1f8d835824f5c87a04',
   [SupportedChainId.BASE]: '0xc694a91e6b071bF030A18BD3053A7fE09B6DaE69',
   [SupportedChainId.SEPOLIA]: '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59',
-  [SupportedChainId.POLYGON]: NATIVE_CURRENCY_ADDRESS, // TODO: stopgap solution until we have COW contract on Polygon
-  [SupportedChainId.AVALANCHE]: NATIVE_CURRENCY_ADDRESS, // TODO: stopgap solution until we have COW contract on Avalanche
+  // https://polygonscan.com/token/0x2f4efd3aa42e15a1ec6114547151b63ee5d39958
+  [SupportedChainId.POLYGON]: '0x2f4efd3aa42e15a1ec6114547151b63ee5d39958',
+  [SupportedChainId.AVALANCHE]: null,
 }
 
 export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
