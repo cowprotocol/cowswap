@@ -1,8 +1,10 @@
 'use client'
 
-import { TokenInfo } from '../types'
+import styled from 'styled-components'
+
 import { TokenList } from '@/components/TokensList'
-import styled from 'styled-components/macro'
+
+import { TokenInfo } from '../types'
 
 const Wrapper = styled.div`
   display: flex;

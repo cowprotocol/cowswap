@@ -1,6 +1,6 @@
 import { Media, Color } from '@cowprotocol/ui'
 
-import styled, { keyframes } from 'styled-components/macro'
+import styled, { keyframes } from 'styled-components'
 
 import GraphSkeleton from '../../../../assets/img/graph-skeleton.svg'
 import ShimmerBar from '../../common/ShimmerBar'

@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Color } from '@cowprotocol/ui'
 
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 import { BASE_STYLES } from 'styles'
 
 const { borderRadius, buttonBorder, buttonFontSize } = BASE_STYLES

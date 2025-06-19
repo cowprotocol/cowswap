@@ -18,14 +18,14 @@ export interface NetworksListProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function NetworksList(props: NetworksListProps) {
   const { currentChainId, isDarkMode, availableChains, onSelectChain } = props
 
   return (
     <>
       {/* TODO: Break down this large function into smaller functions */}
-      {/* eslint-disable-next-line max-lines-per-function */}
+      {}
       {availableChains.map((targetChainId: SupportedChainId) => {
         const info = getChainInfo(targetChainId)
         const { label, logo, bridge, explorer, explorerTitle, helpCenterUrl } = info
@@ -35,7 +35,7 @@ export function NetworksList(props: NetworksListProps) {
         const isNewNetwork = NEW_NETWORK_IDS.includes(targetChainId)
 
         const rowContent = (
-          <styledEl.FlyoutRow key={targetChainId} onClick={() => onSelectChain(targetChainId)} active={isActive}>
+          <styledEl.FlyoutRow key={targetChainId} onClick={() => onSelectChain(targetChainId)} $active={isActive}>
             <styledEl.Logo src={logoUrl} />
             <styledEl.NetworkLabel color={info.color}>{label}</styledEl.NetworkLabel>
             {isNewNetwork && (
@@ -43,7 +43,7 @@ export function NetworksList(props: NetworksListProps) {
                 NEW
               </Badge>
             )}
-            {isActive && <styledEl.FlyoutRowActiveIndicator active />}
+            {isActive && <styledEl.FlyoutRowActiveIndicator $active />}
           </styledEl.FlyoutRow>
         )
 

@@ -2,7 +2,7 @@ import { ExplorerDataType, getExplorerLink, isAddress, shortenAddress } from '@c
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InfoTooltip } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { Nullish } from 'types'
 
 const Row = styled.div`

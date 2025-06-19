@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { ReactNode } from 'react'
 
-import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
+import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components'
 
 import { themeConfigAtom } from './themeConfigAtom'
 import { ThemedGlobalStyle } from './ThemedGlobalStyle'

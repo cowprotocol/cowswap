@@ -1,6 +1,6 @@
 import { TokenAmount, FiatAmount } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const StyledTokenAmount = styled(TokenAmount)`
   font-size: 0.9rem;

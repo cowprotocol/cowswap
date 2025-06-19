@@ -17,7 +17,7 @@ import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@uniswap/sdk
 
 import { darken } from 'color2k'
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { Nullish } from 'types'
 
 import { HIGH_FEE_WARNING_PERCENTAGE, PENDING_EXECUTION_THRESHOLD_PERCENTAGE } from 'common/constants/common'
@@ -204,8 +204,8 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
                 )}
               </styledEl.WarningContent>
             }
-            bgColor={`var(${UI.COLOR_DANGER_BG})`}
-            color={`var(${UI.COLOR_DANGER_TEXT})`}
+            $bgColor={`var(${UI.COLOR_DANGER_BG})`}
+            $color={`var(${UI.COLOR_DANGER_TEXT})`}
           >
             <WarningContent>
               <SVG src={allowanceIcon} />
@@ -262,7 +262,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
                     />
                   </b>
                   .
-                    <styledEl.ExecuteInformationTooltipWarning>
+                  <styledEl.ExecuteInformationTooltipWarning>
                     This price is taken from external sources and may not accurately reflect the current on-chain price.
                   </styledEl.ExecuteInformationTooltipWarning>
                 </>
@@ -300,8 +300,8 @@ function UnlikelyToExecuteWarning(props: UnlikelyToExecuteWarningProps) {
       <HoverTooltip
         wrapInContainer={true}
         placement="bottom"
-        bgColor={`var(${UI.COLOR_ALERT_BG})`}
-        color={`var(${UI.COLOR_ALERT_TEXT})`}
+        $bgColor={`var(${UI.COLOR_ALERT_BG})`}
+        $color={`var(${UI.COLOR_ALERT_TEXT})`}
         content={
           <styledEl.WarningContent>
             <h3>Order unlikely to execute</h3>

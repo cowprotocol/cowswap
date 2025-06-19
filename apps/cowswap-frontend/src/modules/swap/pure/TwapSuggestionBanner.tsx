@@ -4,7 +4,7 @@ import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { NavLink } from 'react-router'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { parameterizeTradeRoute, parameterizeTradeSearch, TradeUrlParams } from 'modules/trade'
 
@@ -41,7 +41,7 @@ const AMOUNT_LIMIT: Record<SupportedChainId, number> = {
 
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TwapSuggestionBanner({
   priceImpact,
   buyingFiatAmount,

@@ -2,7 +2,7 @@
 import { isIframe, isInjectedWidget } from '@cowprotocol/common-utils'
 import { baseTheme } from '@cowprotocol/ui'
 
-import { CoWSwapTheme } from 'styled-components'
+import { DefaultTheme } from 'styled-components'
 
 const isWidget = isInjectedWidget()
 const widgetMode = {
@@ -13,7 +13,7 @@ const widgetMode = {
   isInjectedWidgetMode: isWidget,
 }
 
-export function getCowswapTheme(darkmode: boolean): CoWSwapTheme {
+export function getCowswapTheme(darkmode: boolean): DefaultTheme {
   return {
     ...baseTheme(darkmode ? 'dark' : 'light'),
     ...widgetMode,

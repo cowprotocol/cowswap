@@ -2,7 +2,7 @@ import { FiatAmount, InlineBanner, StatusColorVariant, TokenAmount } from '@cowp
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { NavLink } from 'react-router'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'

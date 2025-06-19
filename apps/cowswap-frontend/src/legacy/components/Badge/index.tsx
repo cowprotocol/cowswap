@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react'
 
 import { readableColor } from 'color2k'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import type { DefaultTheme } from 'styled-components'
 

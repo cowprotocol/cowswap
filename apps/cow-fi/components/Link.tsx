@@ -4,7 +4,7 @@ import { Font, Color, Media } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import NextLink from 'next/link'
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 
 import { defaultUtm } from 'modules/utm'
 

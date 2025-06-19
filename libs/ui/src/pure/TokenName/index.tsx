@@ -1,6 +1,6 @@
 import { formatSymbol } from '@cowprotocol/common-utils'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { sanitizeTokenName } from './sanitizeTokenName'
 

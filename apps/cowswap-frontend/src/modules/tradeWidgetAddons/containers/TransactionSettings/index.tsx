@@ -22,7 +22,7 @@ import { TradeType } from '@cowprotocol/widget-lib'
 import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import { ThemeContext } from 'styled-components/macro'
+import { ThemeContext } from 'styled-components'
 import { ThemedText } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
@@ -219,8 +219,8 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
             sendDeadlineAnalytics('Custom', parsed)
             setDeadline(parsed)
           }
-        // TODO: Replace any with proper type definitions
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // TODO: Replace any with proper type definitions
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           console.error(error)
           setDeadlineError(DeadlineError.InvalidInput)
@@ -285,11 +285,10 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
               onClick={() => {
                 setSwapSlippage(null)
               }}
-              active={!isSlippageModified}
             >
               <Trans>Auto</Trans>
             </styledEl.Option>
-            <styledEl.OptionCustom active={isSlippageModified} warning={!!slippageError} tabIndex={-1}>
+            <styledEl.OptionCustom $active={isSlippageModified} $warning={!!slippageError} tabIndex={-1}>
               <RowBetween>
                 {!isSmartSlippageApplied && !chosenSlippageMatchesSmartSlippage && (tooLow || tooHigh) ? (
                   <styledEl.SlippageEmojiContainer>
@@ -314,7 +313,7 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
               style={{
                 fontSize: '14px',
                 paddingTop: '7px',
-                color: slippageError ? `var(${UI.COLOR_DANGER})` : theme.warning,
+                color: slippageError ? `var(${UI.COLOR_DANGER})` : theme?.warning,
               }}
             >
               {slippageError ? (
@@ -363,7 +362,7 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
               />
             </RowFixed>
             <RowFixed>
-              <styledEl.OptionCustom style={{ width: '80px' }} warning={!!deadlineError} tabIndex={-1}>
+              <styledEl.OptionCustom style={{ width: '80px' }} $warning={!!deadlineError} tabIndex={-1}>
                 <styledEl.Input
                   placeholder={(DEFAULT_DEADLINE_FROM_NOW / 60).toString()}
                   value={

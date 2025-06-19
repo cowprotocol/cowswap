@@ -2,7 +2,7 @@ import IMAGE_STAR_SHINE from '@cowprotocol/assets/cow-swap/star-shine.svg'
 import { SingleLetterLogoWrapper } from '@cowprotocol/tokens'
 import { ButtonPrimary, Font, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
 
-import styled, { css, keyframes } from 'styled-components/macro'
+import styled, { css, keyframes } from 'styled-components'
 
 import { CancelButton as CancelButtonOriginal } from 'common/pure/CancelButton'
 

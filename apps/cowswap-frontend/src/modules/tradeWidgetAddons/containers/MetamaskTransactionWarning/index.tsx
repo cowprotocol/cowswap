@@ -10,7 +10,7 @@ import { ExternalProvider } from '@ethersproject/providers'
 import { Currency } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const Banner = styled(InlineBanner)`
   font-size: 14px;

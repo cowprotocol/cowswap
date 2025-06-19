@@ -4,7 +4,7 @@ import { UI } from '@cowprotocol/ui'
 import { BackButton } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { IconButton } from '../commonElements'
 

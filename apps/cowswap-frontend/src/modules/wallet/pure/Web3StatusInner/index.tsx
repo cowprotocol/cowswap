@@ -67,7 +67,6 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
       id="connect-wallet"
       onClick={connectWallet}
       data-click-event={toCowSwapGtmEvent(connectWalletEvent)}
-      faded={!account}
     >
       <Text>
         <Trans>Connect wallet</Trans>

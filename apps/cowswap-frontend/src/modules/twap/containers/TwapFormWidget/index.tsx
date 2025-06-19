@@ -188,8 +188,8 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
         max={MAX_TWAP_SLIPPAGE}
         label={LABELS_TOOLTIPS.slippage.label}
         tooltip={renderTooltip(LABELS_TOOLTIPS.slippage.tooltip)}
-        showUpDownArrows={true}
-        upDownArrowsLeftAlign={true}
+        showUpDownArrows
+        upDownArrowsLeftAlign
         prefixComponent={
           <em>
             {limitPriceAfterSlippage ? (
@@ -214,7 +214,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
           min={DEFAULT_NUM_OF_PARTS}
           label={LABELS_TOOLTIPS.numberOfParts.label}
           tooltip={renderTooltip(LABELS_TOOLTIPS.numberOfParts.tooltip)}
-          showUpDownArrows={true}
+          showUpDownArrows
         />
       </styledEl.Row>
 

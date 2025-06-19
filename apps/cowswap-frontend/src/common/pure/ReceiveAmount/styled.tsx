@@ -1,7 +1,7 @@
 import { Media, UI } from '@cowprotocol/ui'
 import { HelpTooltip } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const ReceiveAmountBox = styled.div`
   display: flex;

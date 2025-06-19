@@ -100,7 +100,7 @@ export function OrderFillsAt({
   if (isTwapTable && !isChild && childOrders) {
     return (
       estimatedPriceWarning || (
-        <styledEl.CellElement doubleRow>
+        <styledEl.CellElement $doubleRow>
           <TwapOrderStatus orderStatus={order.status} childOrders={childOrders}>
             -
           </TwapOrderStatus>

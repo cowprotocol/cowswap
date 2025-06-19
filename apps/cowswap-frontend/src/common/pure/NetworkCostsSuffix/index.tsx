@@ -2,7 +2,7 @@ import React from 'react'
 
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const Wrapper = styled.span`
   color: var(${UI.COLOR_TEXT_OPACITY_70});

@@ -110,19 +110,12 @@ module.exports = [
               name: 'ethers',
               message: "Please import from '@ethersproject/module' directly to support tree-shaking.",
             },
-            {
-              name: 'styled-components',
-              message: 'Please import from styled-components/macro.',
-            },
           ],
 
           patterns: [
             {
               group: ['**/dist'],
               message: 'Do not import from dist/ - this is an implementation detail, and breaks tree-shaking.',
-            },
-            {
-              group: ['!styled-components/macro'],
             },
           ],
         },
@@ -214,9 +207,6 @@ module.exports = [
             {
               group: ['**/dist'],
               message: 'Do not import from dist/ - this is an implementation detail, and breaks tree-shaking.',
-            },
-            {
-              group: ['!styled-components/macro'],
             },
           ],
         },

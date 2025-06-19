@@ -1,7 +1,7 @@
 import { Color } from '@cowprotocol/ui'
 
 import TokenImg from 'components/common/TokenImg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const Wrapper = styled.div`
   display: flex;

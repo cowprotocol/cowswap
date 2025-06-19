@@ -1,7 +1,9 @@
 'use client'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
+
 import { TokenDetails as TokenDetailsPure } from '@/components/TokenDetails'
+
 import { type TokenDetails } from '../types'
 
 const Wrapper = styled.div`

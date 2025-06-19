@@ -1,6 +1,6 @@
 import { Media, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const Description = styled.div<{ center?: boolean; margin?: string }>`
   margin: ${({ margin }) => margin || '8px 0 0'};

@@ -15,7 +15,7 @@ import { Media, UI } from '@cowprotocol/ui'
 import { Currency, NativeCurrency } from '@uniswap/sdk-core'
 
 import { Slash } from 'react-feather'
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 
 import { SingleLetterLogo } from './SingleLetterLogo'
 

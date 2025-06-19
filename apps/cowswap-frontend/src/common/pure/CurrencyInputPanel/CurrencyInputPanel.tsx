@@ -222,9 +222,9 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         id={id}
         className={className}
         data-address={selectedTokenAddress}
-        withReceiveAmountInfo={!!receiveAmountInfo}
-        pointerDisabled={disabled}
-        readOnly={inputDisabled}
+        $withReceiveAmountInfo={!!receiveAmountInfo}
+        $pointerDisabled={disabled}
+        $readOnly={inputDisabled}
       >
         <styledEl.TopRow>
           {topLabel && (

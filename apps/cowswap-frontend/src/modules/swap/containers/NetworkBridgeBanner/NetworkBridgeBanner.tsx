@@ -6,7 +6,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
 import { ArrowUpRight } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 

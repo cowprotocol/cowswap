@@ -1,7 +1,9 @@
 import React from 'react'
-import styled from 'styled-components/macro'
+
 import { Color } from '@cowprotocol/ui'
+
 import Link from 'next/link'
+import styled from 'styled-components'
 
 export const StyledBreadcrumbs = styled.div`
   display: flex;

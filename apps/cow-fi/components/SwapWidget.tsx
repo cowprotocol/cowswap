@@ -3,7 +3,7 @@ import React, { useState, useEffect, ChangeEvent } from 'react'
 import { Color } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { LinkWithUtmComponent } from 'modules/utm/components'
 

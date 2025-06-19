@@ -1,8 +1,9 @@
-import styled from 'styled-components/macro'
-import { Color, Font } from '@cowprotocol/ui'
-import SVG from 'react-inlinesvg'
 import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'
+import { Color, Font } from '@cowprotocol/ui'
+
 import Link from 'next/link'
+import SVG from 'react-inlinesvg'
+import styled from 'styled-components'
 
 const Wrapper = styled(Link)`
   --size: 48px;

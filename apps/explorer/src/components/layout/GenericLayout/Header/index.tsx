@@ -4,7 +4,7 @@ import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { Color, Media, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
 import { Link } from 'react-router'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const HeaderStyled = styled.header`
   height: auto;

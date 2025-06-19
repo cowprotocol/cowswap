@@ -22,7 +22,7 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
   }, [enableSmartSlippage, setShouldUseAutoSlippage])
 
   return (
-    <styledEl.Container id={id} isTokenSelectOpen={isTokenSelectOpen}>
+    <styledEl.Container id={id} $isTokenSelectOpen={isTokenSelectOpen}>
       <TradeWidgetUpdaters
         disableQuotePolling={disableQuotePolling}
         disableNativeSelling={disableNativeSelling}

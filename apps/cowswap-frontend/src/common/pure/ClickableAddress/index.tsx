@@ -50,7 +50,7 @@ export function ClickableAddress(props: ClickableAddressProps) {
             content={<Content address={address} target={target} />}
             placement="bottom"
             wrapInContainer={false}
-            show={openTooltip}
+            $show={openTooltip}
             onClickCapture={handleClickOutside}
             containerRef={wrapperRef}
           >

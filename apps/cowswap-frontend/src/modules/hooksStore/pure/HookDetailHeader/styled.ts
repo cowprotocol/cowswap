@@ -1,6 +1,6 @@
 import { UI, Media } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const Header = styled.div<{ iconSize?: number; gap?: number; padding?: string }>`
   display: flex;

@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { Command } from '@cowprotocol/types'
 
 import { ArrowLeft } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { UI } from '../../enum'
 

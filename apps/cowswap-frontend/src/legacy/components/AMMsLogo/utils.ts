@@ -1,4 +1,4 @@
-import { css, keyframes } from 'styled-components/macro'
+import { css, keyframes } from 'styled-components'
 
 /*
 a = presentation time for one image
@@ -35,7 +35,7 @@ export const fadeInOut = (a: number, b: number, n: number, t = (a + b) * n) => k
   }
   ${`${100 - (b / t) * 100}%`} {
     opacity: 0;
-  } 
+  }
   100% {
     opacity: 1;
   }
@@ -49,5 +49,5 @@ export const imagesAnimationDelay = (n: number, animationDelay: number) =>
       img:nth-of-type(${i + 1}) {
         animation-delay: ${animationDelay * n - i * animationDelay}s;
       }
-    `
+    `,
   )

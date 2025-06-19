@@ -12,7 +12,7 @@ import IMAGE_BACKGROUND_LIGHT from '@cowprotocol/assets/images/background-cowswa
 import { CowSwapTheme, Media } from '@cowprotocol/ui'
 
 import * as CSS from 'csstype'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

@@ -3,7 +3,7 @@ import { formatFiatAmount, FractionUtils } from '@cowprotocol/common-utils'
 import { Nullish } from '@cowprotocol/types'
 import { Fraction } from '@uniswap/sdk-core'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export interface FiatAmountProps {
   amount: Nullish<Fraction>

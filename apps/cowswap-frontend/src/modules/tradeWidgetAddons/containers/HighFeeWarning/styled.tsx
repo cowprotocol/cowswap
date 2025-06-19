@@ -1,7 +1,7 @@
 import { Media, UI } from '@cowprotocol/ui'
 
 import { Info } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { HIGH_TIER_FEE, LOW_TIER_FEE, MEDIUM_TIER_FEE } from './consts'
 
@@ -15,7 +15,7 @@ export const AuxInformationContainer = styled.div<{
   margin?: string
   borderColor?: string
   borderWidth?: string
-  hideInput: boolean
+  hideInput?: boolean
   disabled?: boolean
   showAux?: boolean
 }>`
@@ -74,7 +74,7 @@ export const WarningCheckboxContainer = styled.label`
 export const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
   ...props,
   hideInput: true,
-}))<HighFeeContainerProps>`
+}))<HighFeeContainerProps & { $isDarkMode: boolean }>`
   --warningColor: ${({ theme, level }) =>
     level === HIGH_TIER_FEE
       ? theme.danger
@@ -104,7 +104,7 @@ export const WarningContainer = styled(AuxInformationContainer).attrs((props) =>
     left: 0;
     border-radius: inherit;
     background: var(--warningColor);
-    opacity: ${({ isDarkMode }) => (isDarkMode ? 0.2 : 0.15)};
+    opacity: ${({ $isDarkMode }) => ($isDarkMode ? 0.2 : 0.15)};
     z-index: -1;
     width: 100%;
     height: 100%;

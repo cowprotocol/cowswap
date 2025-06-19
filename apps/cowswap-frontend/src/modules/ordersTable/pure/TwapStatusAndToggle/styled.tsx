@@ -1,5 +1,5 @@
 import { transparentize } from 'color2k'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
   display: flex;

@@ -5,7 +5,7 @@ import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { NetworkLogo } from '@cowprotocol/ui'
 import { Color } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { LinkWithPrefixNetwork } from './LinkWithPrefixNetwork'
 

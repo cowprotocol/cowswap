@@ -5,8 +5,7 @@ import { InfoTooltip } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { AlertTriangle } from 'react-feather'
-import styled from 'styled-components/macro'
-
+import styled from 'styled-components'
 
 export enum TradeWarningType {
   LOW = 'LOW',

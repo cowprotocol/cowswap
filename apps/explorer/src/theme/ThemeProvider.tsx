@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from 'react'
 
 import { baseTheme } from '@cowprotocol/ui'
 
-import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
+import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components'
 
 import { getFonts } from './styles'
 import { Theme } from './types'

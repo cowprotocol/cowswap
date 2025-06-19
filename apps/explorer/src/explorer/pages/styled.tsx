@@ -2,7 +2,7 @@ import { Color, Media } from '@cowprotocol/ui'
 
 import * as CSS from 'csstype'
 import { Link } from 'react-router'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { RowWithCopyButton } from '../../components/common/RowWithCopyButton'
 import { Search } from '../components/common/Search'

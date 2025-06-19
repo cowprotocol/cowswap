@@ -4,7 +4,7 @@ import { UI } from '@cowprotocol/ui'
 
 import { animated, useSpring } from '@react-spring/web'
 import { X } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const Wrapper = styled.div`
   display: inline-block;

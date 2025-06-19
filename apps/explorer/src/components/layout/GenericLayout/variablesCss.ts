@@ -1,6 +1,6 @@
 import { Color } from '@cowprotocol/ui'
 
-import { css } from 'styled-components/macro'
+import { css } from 'styled-components'
 
 const AllColors = css`
   /* HEIGHTS */

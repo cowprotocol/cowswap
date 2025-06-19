@@ -7,7 +7,7 @@ import { CmsImage, Color, Media } from '@cowprotocol/ui'
 
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { CategoryLinks } from '@/components/CategoryLinks'
 import { Link, LinkType } from '@/components/Link'

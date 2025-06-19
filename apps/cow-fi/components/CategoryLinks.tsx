@@ -1,9 +1,12 @@
 import React from 'react'
-import styled from 'styled-components/macro'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { CowFiCategory } from 'src/common/analytics/types'
 import { Color, Media } from '@cowprotocol/ui'
+
 import Link from 'next/link'
+import styled from 'styled-components'
+
+import { CowFiCategory } from 'src/common/analytics/types'
 
 interface CategoryItem {
   name: string

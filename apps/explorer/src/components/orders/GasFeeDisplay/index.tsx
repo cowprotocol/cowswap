@@ -4,7 +4,7 @@
 import React, { useMemo } from 'react'
 
 import { ZERO_BIG_NUMBER } from 'const'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { Order } from 'api/operator'
 import { formatTokenAmount } from 'utils/tokenFormatting'

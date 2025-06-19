@@ -5,7 +5,7 @@ import { Media, UI } from '@cowprotocol/ui'
 import { DialogContent, DialogOverlay } from '@reach/dialog'
 import { animated } from '@react-spring/web'
 import { transparentize } from 'color2k'
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 
 export const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};

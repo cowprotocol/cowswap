@@ -1,7 +1,7 @@
 import { Color } from '@cowprotocol/ui'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const IconWrapper = styled(FontAwesomeIcon)`
   padding: 0 0.5rem 0 0;

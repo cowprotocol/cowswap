@@ -4,7 +4,7 @@ import { Command } from '@cowprotocol/types'
 import { ButtonError } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 const Container = styled.div``
 const Instruction = styled.p`
@@ -63,7 +63,7 @@ export function ConfirmedButton({
 
       onConfirm()
     },
-    [onConfirm, shouldButtonBeDisabled]
+    [onConfirm, shouldButtonBeDisabled],
   )
 
   return (

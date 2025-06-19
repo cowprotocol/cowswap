@@ -1,7 +1,7 @@
 import { UI, ExternalLink, Loader as SpinnerLoader, ButtonPrimary, Media } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
-import styled, { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components'
 
 import { CopyIcon as ClickToCopy } from 'legacy/components/Copy'
 

@@ -1,7 +1,7 @@
 import { Media, UI } from '@cowprotocol/ui'
 
 import { Text } from 'rebass'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const BalanceText = styled(Text)`
   font-weight: 500;
@@ -25,13 +25,13 @@ export const BalanceText = styled(Text)`
   }
 `
 
-export const Wrapper = styled.div<{ active: boolean }>`
+export const Wrapper = styled.div<{ $active: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
   white-space: nowrap;
   cursor: pointer;
-  background: ${({ active }) => (active ? `var(${UI.COLOR_PAPER_DARKER})` : `var(${UI.COLOR_PAPER})`)};
+  background: ${({ $active }) => ($active ? `var(${UI.COLOR_PAPER_DARKER})` : `var(${UI.COLOR_PAPER})`)};
   border-radius: 28px;
   border: none;
   transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
