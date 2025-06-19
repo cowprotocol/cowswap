@@ -57,9 +57,7 @@ export default function Profile() {
   const { account, chainId } = useWalletInfo()
   const previousAccount = usePrevious(account)
 
-  const isCowTokenAvailable = useMemo(() => {
-    return COW_CONTRACT_ADDRESS[chainId] !== null
-  }, [chainId])
+  const cowContractAddress = COW_CONTRACT_ADDRESS[chainId]
 
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const blockNumber = useBlockNumber()
@@ -274,7 +272,7 @@ export default function Profile() {
             </Card>
           )}
 
-          {isCowTokenAvailable && (
+          {cowContractAddress && (
             <Card>
               <BalanceDisplay titleSize={26}>
                 <img src={CowImage} alt="Cow Balance" height="80" width="80" />
@@ -288,10 +286,7 @@ export default function Profile() {
                 </span>
               </BalanceDisplay>
               <CardActions>
-                <ExtLink
-                  title="View contract"
-                  href={getBlockExplorerUrl(chainId, 'token', COW_CONTRACT_ADDRESS[chainId]!)}
-                >
+                <ExtLink title="View contract" href={getBlockExplorerUrl(chainId, 'token', cowContractAddress)}>
                   View contract ↗
                 </ExtLink>
 
@@ -299,7 +294,7 @@ export default function Profile() {
                   shortLabel
                   currency={cowToken}
                   fallback={
-                    <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]!}>
+                    <CopyHelper toCopy={cowContractAddress}>
                       <div title="Click to copy token contract address">Copy contract</div>
                     </CopyHelper>
                   }
@@ -310,7 +305,7 @@ export default function Profile() {
             </Card>
           )}
 
-          {!isCowTokenAvailable && (
+          {!cowContractAddress && (
             <BannerCard>
               <BannerCardContent justifyContent="center">
                 <BannerCardTitle fontSize={24}>
