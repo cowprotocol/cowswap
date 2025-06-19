@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react'
 
 import { TokensTableContext } from './context/TokensTableContext'
 
-import CowLoading from '../../../components/common/CowLoading'
+import { LoadingWrapper } from '../../../components/common/LoadingWrapper'
 import TokenTable from '../../../components/token/TokenTable'
 import { DEFAULT_TIMEOUT } from '../../../const'
 import useFirstRender from '../../../hooks/useFirstRender'
@@ -31,5 +31,5 @@ export const TokensTableWithData: React.FC = () => {
     }
   }, [tokens, tokens?.length])
 
-  return isFirstRender || isFirstLoading ? <CowLoading /> : <TokenTable tokens={tokens} tableState={tableState} />
+  return isFirstRender || isFirstLoading ? <LoadingWrapper message="Loading tokens" /> : <TokenTable tokens={tokens} tableState={tableState} />
 }
