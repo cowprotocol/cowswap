@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { ReactNode, useCallback } from 'react'
 
 import { HoverTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -18,9 +18,7 @@ interface HighFeeWarningProps {
   readonlyMode?: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function HighFeeWarning({ readonlyMode }: HighFeeWarningProps) {
+export function HighFeeWarning({ readonlyMode }: HighFeeWarningProps): ReactNode {
   const { account } = useWalletInfo()
   const { feeWarningAccepted, setFeeWarningAccepted } = useHighFeeWarning()
   const darkMode = useIsDarkMode()

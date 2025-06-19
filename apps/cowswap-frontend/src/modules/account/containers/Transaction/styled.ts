@@ -315,7 +315,7 @@ export const StatusLabelBelow = styled.div<{ isCancelling?: boolean }>`
   color: ${({ isCancelling }) => (isCancelling ? `var(${UI.COLOR_TEXT})` : 'inherit')};
 `
 
-export const OldTransactionState = styled(ExternalLink)<{ pending: boolean; success?: boolean }>`
+export const OldTransactionState = styled(ExternalLink)<{ success?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -328,12 +328,12 @@ export const OldTransactionState = styled(ExternalLink)<{ pending: boolean; succ
 
 // override the href, pending and success props
 // override mouse actions via CSS when we dont want a clickable row
-export const TransactionState = styled(OldTransactionState).attrs<{
+export const TransactionState = styled(OldTransactionState)<{
   href?: string
   $disableMouseActions?: boolean
   pending?: boolean
   success?: boolean
-}>((props) => props)`
+}>`
   ${(props): string | false => !!props.$disableMouseActions && `pointer-events: none; cursor: none;`}
   width: 100%;
   border-radius: 0;

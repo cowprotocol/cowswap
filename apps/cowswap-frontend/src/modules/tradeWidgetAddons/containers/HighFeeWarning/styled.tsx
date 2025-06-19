@@ -71,10 +71,10 @@ export const WarningCheckboxContainer = styled.label`
   }
 `
 
-export const WarningContainer = styled(AuxInformationContainer).attrs<{ $isDarkMode: boolean }>((props) => ({
+export const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
   ...props,
   hideInput: true,
-}))<HighFeeContainerProps>`
+}))<HighFeeContainerProps & { $isDarkMode: boolean }>`
   --warningColor: ${({ theme, level }) =>
     level === HIGH_TIER_FEE
       ? theme.danger
