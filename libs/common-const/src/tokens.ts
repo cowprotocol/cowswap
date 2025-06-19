@@ -489,21 +489,22 @@ export const V_COW: Record<SupportedChainId, TokenWithLogo | null> = {
  */
 const COW_TOKEN_SYMBOL = 'COW'
 const COW_TOKEN_NAME = 'CoW Protocol Token'
+const COW_TOKEN_DECIMALS = 18
 
-function getMaybeCowTokenForChain(chain: SupportedChainId): TokenWithLogo | null {
+function getMaybeCowTokenForChain(chain: SupportedChainId, logoURI?: string): TokenWithLogo | null {
   const address = COW_CONTRACT_ADDRESS[chain]
 
   if (!address) return null
 
-  return new TokenWithLogo(COW_TOKEN_MAINNET?.logoURI, chain, address, 18, COW_TOKEN_SYMBOL, COW_TOKEN_NAME)
+  return new TokenWithLogo(logoURI, chain, address, COW_TOKEN_DECIMALS, COW_TOKEN_SYMBOL, COW_TOKEN_NAME)
 }
 export const COW_TOKEN_MAINNET = getMaybeCowTokenForChain(SupportedChainId.MAINNET)
-export const COW_TOKEN_XDAI = getMaybeCowTokenForChain(SupportedChainId.GNOSIS_CHAIN)
-export const COW_TOKEN_ARBITRUM = getMaybeCowTokenForChain(SupportedChainId.ARBITRUM_ONE)
-export const COW_TOKEN_BASE = getMaybeCowTokenForChain(SupportedChainId.BASE)
-export const COW_TOKEN_SEPOLIA = getMaybeCowTokenForChain(SupportedChainId.SEPOLIA)
-export const COW_TOKEN_POLYGON = getMaybeCowTokenForChain(SupportedChainId.POLYGON)
-export const COW_TOKEN_AVALANCHE = getMaybeCowTokenForChain(SupportedChainId.AVALANCHE)
+export const COW_TOKEN_XDAI = getMaybeCowTokenForChain(SupportedChainId.GNOSIS_CHAIN, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_ARBITRUM = getMaybeCowTokenForChain(SupportedChainId.ARBITRUM_ONE, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_BASE = getMaybeCowTokenForChain(SupportedChainId.BASE, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_SEPOLIA = getMaybeCowTokenForChain(SupportedChainId.SEPOLIA, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_POLYGON = getMaybeCowTokenForChain(SupportedChainId.POLYGON, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_AVALANCHE = getMaybeCowTokenForChain(SupportedChainId.AVALANCHE, COW_TOKEN_MAINNET?.logoURI)
 
 export const COW_TOKEN_TO_CHAIN: Record<SupportedChainId, TokenWithLogo | null> = {
   [SupportedChainId.MAINNET]: COW_TOKEN_MAINNET,
