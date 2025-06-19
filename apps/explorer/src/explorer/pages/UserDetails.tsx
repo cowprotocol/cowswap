@@ -7,7 +7,7 @@ import styled from 'styled-components'
 import { TitleAddress, Wrapper as WrapperMod, FlexContainerVar, StyledSearch } from './styled'
 
 import { BlockExplorerLink } from '../../components/common/BlockExplorerLink'
-import CowLoading from '../../components/common/CowLoading'
+import { LoadingWrapper } from '../../components/common/LoadingWrapper'
 import RedirectToSearch from '../../components/RedirectToSearch'
 import { useResolveEns } from '../../hooks/useResolveEns'
 import { useNetworkId } from '../../state/network'
@@ -51,7 +51,7 @@ const UserDetails: React.FC = () => {
           <OrdersTableWidget ownerAddress={addressAccount.address} networkId={networkId} />
         </>
       ) : (
-        <CowLoading />
+        <LoadingWrapper message="Loading orders" />
       )}
     </Wrapper>
   )

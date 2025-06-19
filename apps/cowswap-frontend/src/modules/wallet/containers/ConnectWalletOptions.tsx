@@ -36,17 +36,17 @@ export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletO
 
   const connectionProps = { darkMode, selectedWallet, tryActivation }
 
-  const metaMaskSdkOption = <MetaMaskSdkOption key="metaMaskSdkOption" {...connectionProps} />
+  const metaMaskSdkOption = <MetaMaskSdkOption key="MetaMaskSdkOption" {...connectionProps} />
 
   const coinbaseWalletOption =
     (!hasCoinbaseEip6963 && !(isMobile && isWidget) && (
-      <CoinbaseWalletOption key="coinbaseWalletOption" {...connectionProps} />
+      <CoinbaseWalletOption key="CoinbaseWalletOption" {...connectionProps} />
     )) ??
     null
 
   const walletConnectionV2Option =
     ((!isInjectedMobileBrowser || isWidget) && (
-      <WalletConnectV2Option key="walletConnectionV2Option" {...connectionProps} />
+      <WalletConnectV2Option key="WalletConnectV2Option" {...connectionProps} />
     )) ??
     null
   // TODO: the Trezor connector is not working now and need to be repaired
@@ -54,7 +54,7 @@ export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletO
   const injectedOption =
     (getIsInjected() && (
       <InjectedOptions
-        key="injectedOption"
+        key="InjectedOptions"
         connectionProps={connectionProps}
         multiInjectedProviders={multiInjectedProviders}
       />

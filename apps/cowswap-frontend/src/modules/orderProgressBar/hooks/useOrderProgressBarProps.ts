@@ -26,6 +26,7 @@ import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
 import { BridgeQuoteAmounts, type SwapAndBridgeContext, SwapAndBridgeStatus } from '../../bridge'
 import { useSwapAndBridgeContext } from '../../bridge/hooks/useSwapAndBridgeContext'
+import { OrderProgressBarStepName, DEFAULT_STEP_NAME } from '../constants'
 import {
   ordersProgressBarStateAtom,
   setOrderProgressBarCancellationTriggered,
@@ -33,13 +34,7 @@ import {
   updateOrderProgressBarCountdown,
   updateOrderProgressBarStepName,
 } from '../state/atoms'
-import {
-  ApiSolverCompetition,
-  OrderProgressBarProps,
-  OrderProgressBarState,
-  OrderProgressBarStepName,
-  SolverCompetition,
-} from '../types'
+import { ApiSolverCompetition, OrderProgressBarProps, OrderProgressBarState, SolverCompetition } from '../types'
 
 type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null
@@ -210,7 +205,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
       countdown,
       totalSolvers,
       solverCompetition,
-      stepName: progressBarStepName || 'initial',
+      stepName: progressBarStepName || DEFAULT_STEP_NAME,
       showCancellationModal,
       swapAndBridgeContext,
     }
@@ -293,8 +288,9 @@ function useCountdownStartUpdater(
   const setCountdown = useSetExecutingOrderCountdownCallback()
 
   useEffect(() => {
-    if (!countdown && countdown !== 0 && backendApiStatus === 'active') {
-      // Start countdown when it becomes active
+    // Start countdown immediately when backend becomes active to reflect real protocol timing
+    // The solver competition genuinely starts when backend is active, regardless of UI delays
+    if (countdown == null && backendApiStatus === 'active') {
       setCountdown(orderId, PROGRESS_BAR_TIMER_DURATION)
     } else if (backendApiStatus !== 'active' && countdown) {
       // Every time backend status is not `active` and countdown is set, reset the countdown
@@ -354,7 +350,7 @@ function useProgressBarStepNameUpdater(
     // TODO: Add proper return type annotation
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     function updateStepName(name: OrderProgressBarStepName) {
-      setProgressBarStepName(orderId, name || 'initial')
+      setProgressBarStepName(orderId, name || DEFAULT_STEP_NAME)
     }
 
     let timer: NodeJS.Timeout
@@ -364,16 +360,16 @@ function useProgressBarStepNameUpdater(
     if (
       lastTimeChangedSteps === undefined ||
       timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
-      stepName === 'finished' ||
-      stepName === 'cancellationFailed' ||
-      stepName === 'cancelled' ||
-      stepName === 'expired'
+      stepName === OrderProgressBarStepName.FINISHED ||
+      stepName === OrderProgressBarStepName.CANCELLATION_FAILED ||
+      stepName === OrderProgressBarStepName.CANCELLED ||
+      stepName === OrderProgressBarStepName.EXPIRED
     ) {
       updateStepName(stepName)
 
       // schedule update for temporary steps
-      if (stepName === 'submissionFailed') {
-        timer = setTimeout(() => updateStepName('solving'), MINIMUM_STEP_DISPLAY_TIME)
+      if (stepName === OrderProgressBarStepName.SUBMISSION_FAILED) {
+        timer = setTimeout(() => updateStepName(OrderProgressBarStepName.SOLVING), MINIMUM_STEP_DISPLAY_TIME)
       }
     } else {
       // Delay if it was updated less than MINIMUM_STEP_DISPLAY_TIME ago
@@ -407,73 +403,73 @@ function getProgressBarStepName(
 
   if (bridgingStatus) {
     if (bridgingStatus === SwapAndBridgeStatus.DONE) {
-      return 'bridgingFinished'
+      return OrderProgressBarStepName.BRIDGING_FINISHED
     }
 
     if (bridgingStatus === SwapAndBridgeStatus.REFUND_COMPLETE) {
-      return 'refundCompleted'
+      return OrderProgressBarStepName.REFUND_COMPLETED
     }
 
     if (bridgingStatus === SwapAndBridgeStatus.FAILED) {
-      return 'bridgingFailed'
+      return OrderProgressBarStepName.BRIDGING_FAILED
     }
 
     if (bridgingStatus && [SwapAndBridgeStatus.PENDING, SwapAndBridgeStatus.DEFAULT].includes(bridgingStatus)) {
-      return 'bridgingInProgress'
+      return OrderProgressBarStepName.BRIDGING_IN_PROGRESS
     }
   }
 
   if (isTradedOrConfirmed && isBridgingTrade && !bridgingStatus) {
-    return 'executing'
+    return OrderProgressBarStepName.EXECUTING
   }
 
   if (isExpired) {
-    return 'expired'
+    return OrderProgressBarStepName.EXPIRED
   } else if (isCancelled) {
-    return 'cancelled'
+    return OrderProgressBarStepName.CANCELLED
   } else if (isCancelling) {
-    return 'cancelling'
+    return OrderProgressBarStepName.CANCELLING
   } else if (cancellationTriggered && isTradedOrConfirmed) {
     // Was cancelling, but got executed in the meantime
-    return 'cancellationFailed'
+    return OrderProgressBarStepName.CANCELLATION_FAILED
   } else if (isConfirmed) {
     // already traded
-    return 'finished'
+    return OrderProgressBarStepName.FINISHED
   } else if (
     previousBackendApiStatus === 'executing' &&
     (backendApiStatus === 'active' || backendApiStatus === 'open' || backendApiStatus === 'scheduled')
   ) {
     // moved back from executing to active
-    return 'submissionFailed'
+    return OrderProgressBarStepName.SUBMISSION_FAILED
   } else if (isUnfillable) {
     // out of market order
-    return 'unfillable'
+    return OrderProgressBarStepName.UNFILLABLE
   } else if (backendApiStatus === 'active' && countdown === 0) {
     // solving, but took longer than stipulated countdown
-    return 'delayed'
+    return OrderProgressBarStepName.DELAYED
   } else if (
     (backendApiStatus === 'open' || backendApiStatus === 'scheduled') &&
     previousStepName &&
-    previousStepName !== 'initial'
+    previousStepName !== OrderProgressBarStepName.INITIAL
   ) {
     // once moved out of initial state, never go back to it
-    return 'delayed'
+    return OrderProgressBarStepName.DELAYED
   } else if (backendApiStatus) {
     // straight mapping API status to progress bar steps
     return BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME[backendApiStatus]
   }
 
-  return 'initial'
+  return OrderProgressBarStepName.INITIAL
 }
 
 const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<CompetitionOrderStatus.type, OrderProgressBarStepName> = {
-  scheduled: 'initial',
-  open: 'initial',
-  active: 'solving',
-  solved: 'solved',
-  executing: 'executing',
-  traded: 'finished',
-  cancelled: 'initial', // TODO: maybe add another state for finished with error?
+  scheduled: OrderProgressBarStepName.INITIAL,
+  open: OrderProgressBarStepName.INITIAL,
+  active: OrderProgressBarStepName.SOLVING,
+  solved: OrderProgressBarStepName.SOLVED,
+  executing: OrderProgressBarStepName.EXECUTING,
+  traded: OrderProgressBarStepName.FINISHED,
+  cancelled: OrderProgressBarStepName.INITIAL, // TODO: maybe add another state for finished with error?
 }
 
 // TODO: Add proper return type annotation

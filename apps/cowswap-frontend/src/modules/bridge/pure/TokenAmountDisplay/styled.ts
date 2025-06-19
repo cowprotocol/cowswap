@@ -19,4 +19,8 @@ export const AmountWithTokenIcon = styled.div<{ colorVariant?: StatusColor }>`
   line-height: 1;
   gap: 4px;
   color: ${({ colorVariant }) => colorVariant || 'inherit'};
+
+  > i {
+    font-style: normal;
+  }
 `

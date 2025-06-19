@@ -9,7 +9,7 @@ import { TokensTableWithData } from './TokensTableWithData'
 import { useTable } from './useTable'
 
 import { CardRow } from '../../../components/common/CardRow'
-import CowLoading from '../../../components/common/CowLoading'
+import { LoadingWrapper } from '../../../components/common/LoadingWrapper'
 import { TableSearch } from '../../../components/common/TableSearch/TableSearch'
 import { TabItemInterface } from '../../../components/common/Tabs/Tabs'
 import { TabList } from '../../../components/common/Tabs/Tabs'
@@ -143,7 +143,7 @@ export const TokensTableWidget: React.FC<Props> = () => {
   }
 
   if (!tokens?.length) {
-    return <CowLoading />
+    return <LoadingWrapper message="Loading tokens" />
   }
 
   return (

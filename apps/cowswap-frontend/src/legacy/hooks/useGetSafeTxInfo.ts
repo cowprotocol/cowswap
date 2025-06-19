@@ -4,7 +4,7 @@ import { retry, RetryOptions } from '@cowprotocol/common-utils'
 import { getSafeTransaction } from '@cowprotocol/core'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 
 import { RetryResult } from 'types'
 
@@ -26,7 +26,7 @@ export function useGetSafeTxInfo(): GetSafeTxInfo {
         return getSafeTransaction(chainId, hash, provider)
       }, DEFAULT_RETRY_OPTIONS)
     },
-    [chainId, provider]
+    [chainId, provider],
   )
 
   return getSafeInfo

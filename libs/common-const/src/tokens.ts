@@ -1,4 +1,4 @@
-import { SupportedChainId as ChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, AdditionalTargetChainId } from '@cowprotocol/cow-sdk'
 
 import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './common'
 import { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
@@ -97,10 +97,10 @@ const sUSD_MAINNET = new TokenWithLogo(
 
 // Gnosis chain
 export const XDAI_SYMBOL = 'XDAI'
-export const XDAI_NAME = 'xDai'
+
 export const USDT_GNOSIS_CHAIN = new TokenWithLogo(
   USDT.logoURI,
-  ChainId.GNOSIS_CHAIN,
+  SupportedChainId.GNOSIS_CHAIN,
   '0x4ECaBa5870353805a9F068101A40E0f32ed605C6',
   6,
   'USDT',
@@ -108,7 +108,7 @@ export const USDT_GNOSIS_CHAIN = new TokenWithLogo(
 )
 export const USDC_GNOSIS_CHAIN = new TokenWithLogo(
   USDC_MAINNET.logoURI,
-  ChainId.GNOSIS_CHAIN,
+  SupportedChainId.GNOSIS_CHAIN,
   '0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83',
   6,
   'USDC',
@@ -116,7 +116,7 @@ export const USDC_GNOSIS_CHAIN = new TokenWithLogo(
 )
 export const USDCe_GNOSIS_CHAIN = new TokenWithLogo(
   USDC_MAINNET.logoURI,
-  ChainId.GNOSIS_CHAIN,
+  SupportedChainId.GNOSIS_CHAIN,
   '0x2a22f9c3b484c3629090feed35f17ff8f88f76f0',
   6,
   'USDC.e',
@@ -124,7 +124,7 @@ export const USDCe_GNOSIS_CHAIN = new TokenWithLogo(
 )
 export const WBTC_GNOSIS_CHAIN = new TokenWithLogo(
   WBTC.logoURI,
-  ChainId.GNOSIS_CHAIN,
+  SupportedChainId.GNOSIS_CHAIN,
   '0x8e5bbbb09ed1ebde8674cda39a0c169401db4252',
   8,
   'WBTC',
@@ -132,7 +132,7 @@ export const WBTC_GNOSIS_CHAIN = new TokenWithLogo(
 )
 export const WETH_GNOSIS_CHAIN = new TokenWithLogo(
   WETH_MAINNET.logoURI,
-  ChainId.GNOSIS_CHAIN,
+  SupportedChainId.GNOSIS_CHAIN,
   '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1',
   18,
   'WETH',
@@ -140,7 +140,7 @@ export const WETH_GNOSIS_CHAIN = new TokenWithLogo(
 )
 export const GNO_GNOSIS_CHAIN = new TokenWithLogo(
   GNO_MAINNET.logoURI,
-  ChainId.GNOSIS_CHAIN,
+  SupportedChainId.GNOSIS_CHAIN,
   '0x9C58BAcC331c9aa871AFD802DB6379a98e80CEdb',
   18,
   'GNO',
@@ -406,8 +406,18 @@ export const DAI_POLYGON = new TokenWithLogo(
 export const USDC_AVALANCHE = new TokenWithLogo(
   USDC_MAINNET.logoURI,
   SupportedChainId.AVALANCHE,
-  // https://snowtrace.io/token/0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e
+  // https://snowscan.xyz/token/0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e
   '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e',
+  6,
+  'USDC',
+  'USD Coin',
+)
+
+export const USDC_OPTIMISM = new TokenWithLogo(
+  USDC_MAINNET.logoURI,
+  AdditionalTargetChainId.OPTIMISM,
+  // https://optimistic.etherscan.io/address/0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85
+  '0x0b2c639c533813f4aa9d7837caf62653d097ff85',
   6,
   'USDC',
   'USD Coin',
@@ -416,14 +426,14 @@ export const USDC_AVALANCHE = new TokenWithLogo(
 export const USDT_AVALANCHE = new TokenWithLogo(
   USDT.logoURI,
   SupportedChainId.AVALANCHE,
-  // https://snowtrace.io/token/0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7
+  // https://snowscan.xyz/token/0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7
   '0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7',
   6,
   'USDT',
   'Tether USD',
 )
 
-export const USDC: Record<SupportedChainId, TokenWithLogo> = {
+export const USDC: Record<SupportedChainId | AdditionalTargetChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: USDC_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: USDC_GNOSIS_CHAIN,
   [SupportedChainId.ARBITRUM_ONE]: USDC_ARBITRUM_ONE,
@@ -431,18 +441,7 @@ export const USDC: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.SEPOLIA]: USDC_SEPOLIA,
   [SupportedChainId.POLYGON]: USDC_POLYGON,
   [SupportedChainId.AVALANCHE]: USDC_AVALANCHE,
-}
-
-export const TOKEN_SHORTHANDS: { [shorthand: string]: Record<SupportedChainId, string> } = {
-  USDC: {
-    [SupportedChainId.MAINNET]: USDC_MAINNET.address,
-    [SupportedChainId.GNOSIS_CHAIN]: USDC_GNOSIS_CHAIN.address,
-    [SupportedChainId.ARBITRUM_ONE]: USDC_ARBITRUM_ONE.address,
-    [SupportedChainId.BASE]: USDC_BASE.address,
-    [SupportedChainId.SEPOLIA]: USDC_SEPOLIA.address,
-    [SupportedChainId.POLYGON]: USDC_POLYGON.address,
-    [SupportedChainId.AVALANCHE]: USDC_AVALANCHE.address,
-  },
+  [AdditionalTargetChainId.OPTIMISM]: USDC_OPTIMISM,
 }
 
 /**
@@ -634,7 +633,7 @@ const AVALANCHE_STABLECOINS = [USDC_AVALANCHE.address, USDT_AVALANCHE.address].m
 // Not used for fees
 const SEPOLIA_STABLECOINS = [USDC_SEPOLIA.address, USDT_SEPOLIA.address].map((t) => t.toLowerCase())
 
-export const STABLECOINS: Record<ChainId, Set<string>> = {
+export const STABLECOINS: Record<SupportedChainId, Set<string>> = {
   [SupportedChainId.MAINNET]: new Set(MAINNET_STABLECOINS),
   [SupportedChainId.GNOSIS_CHAIN]: new Set(GNOSIS_CHAIN_STABLECOINS),
   [SupportedChainId.ARBITRUM_ONE]: new Set(ARBITRUM_ONE_STABLECOINS),

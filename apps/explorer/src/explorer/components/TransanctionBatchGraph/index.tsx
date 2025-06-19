@@ -27,7 +27,7 @@ import { LayoutNames, ViewType } from './types'
 import { removePopper } from './utils'
 
 import { Order } from '../../../api/operator'
-import CowLoading from '../../../components/common/CowLoading'
+import { LoadingWrapper } from '../../../components/common/LoadingWrapper'
 import { usePrevious } from '../../../hooks/usePrevious'
 import { Network } from '../../../types'
 import { DropdownOption, DropdownPosition } from '../common/Dropdown'
@@ -121,7 +121,7 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): React.ReactNo
   }, [tokensStylesheets])
 
   if (isLoading) {
-    return <CowLoading />
+    return <LoadingWrapper message="Loading transaction graph" />
   }
 
   if (failedToLoadGraph) {

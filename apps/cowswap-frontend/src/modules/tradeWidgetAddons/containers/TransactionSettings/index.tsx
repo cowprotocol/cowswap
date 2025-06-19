@@ -29,12 +29,12 @@ import { AutoColumn } from 'legacy/components/Column'
 
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
 import { useIsEoaEthFlow } from 'modules/trade'
+import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
 import {
   useDefaultTradeSlippage,
   useIsSlippageModified,
   useIsSmartSlippageApplied,
   useSetSlippage,
-  useSmartTradeSlippage,
   useTradeSlippage,
 } from 'modules/tradeSlippage'
 
@@ -46,6 +46,7 @@ import {
   getNonNativeSlippageTooltip,
 } from 'common/utils/tradeSettingsTooltips'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+
 
 import * as styledEl from './styled'
 
@@ -95,9 +96,9 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
   const defaultSwapSlippage = useDefaultTradeSlippage()
   const setSwapSlippage = useSetSlippage()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
-  const smartSlippage = useSmartTradeSlippage()
+  const smartSlippage = useSmartSlippageFromQuote()
 
-  const chosenSlippageMatchesSmartSlippage = smartSlippage && new Percent(smartSlippage, 10_000).equalTo(swapSlippage)
+  const chosenSlippageMatchesSmartSlippage = smartSlippage !== null && new Percent(smartSlippage, 10_000).equalTo(swapSlippage)
 
   const [deadline, setDeadline] = deadlineState
   const widgetDeadline = useInjectedWidgetDeadline(TradeType.SWAP)
@@ -298,7 +299,7 @@ export function TransactionSettings({ deadlineState }: TransactionSettingsProps)
                 ) : null}
                 <styledEl.Input
                   placeholder={placeholderSlippage.toFixed(2)}
-                  value={slippageInput.length > 0 ? slippageInput : !isSlippageModified ? '' : swapSlippage.toFixed(2)}
+                  value={slippageInput.length > 0 ? slippageInput : (!isSlippageModified ? '' : swapSlippage.toFixed(2))}
                   onChange={(e) => parseSlippageInput(e.target.value)}
                   onBlur={onSlippageInputBlur}
                   color={slippageError ? 'red' : ''}

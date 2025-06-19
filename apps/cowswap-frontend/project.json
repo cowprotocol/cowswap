@@ -9,7 +9,7 @@
       "outputs": [
         "{options.outputPath}"
       ],
-      "defaultConfiguration": "prod",
+      "defaultConfiguration": "production",
       "dependsOn": [
         "i18n"
       ],
@@ -26,8 +26,8 @@
         "barn": {
           "mode": "barn"
         },
-        "prod": {
-          "mode": "prod"
+        "production": {
+          "mode": "production"
         }
       }
     },

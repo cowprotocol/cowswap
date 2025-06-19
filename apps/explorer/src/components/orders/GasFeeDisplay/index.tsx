@@ -1,11 +1,13 @@
 // TODO: Enable once API is ready
 // import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
 
+import React, { useMemo } from 'react'
+
 import { ZERO_BIG_NUMBER } from 'const'
-import styled from 'styled-components'
-import { formatSmartMaxPrecision, safeTokenName } from 'utils'
+import styled from 'styled-components/macro'
 
 import { Order } from 'api/operator'
+import { formatTokenAmount } from 'utils/tokenFormatting'
 
 const Wrapper = styled.div`
   > span {
@@ -54,30 +56,37 @@ export function GasFeeDisplay(props: Props): React.ReactNode | null {
     order: { feeAmount, sellToken, sellTokenAddress, fullyFilled, totalFee },
   } = props
 
-  let formattedExecutedFee: string = totalFee.toString(10)
-  let formattedTotalFee: string = feeAmount.toString(10)
-  let quoteSymbol: string = sellTokenAddress
+  const { executedFeeFormatted, totalFeeFormatted, quoteSymbol } = useMemo(() => {
+    if (!sellToken) {
+      return {
+        executedFeeFormatted: totalFee.toString(10),
+        totalFeeFormatted: feeAmount.toString(10),
+        quoteSymbol: sellTokenAddress,
+      }
+    }
 
-  if (sellToken) {
-    formattedExecutedFee = formatSmartMaxPrecision(totalFee, sellToken)
-    formattedTotalFee = formatSmartMaxPrecision(feeAmount, sellToken)
+    const { formattedAmount: executedFeeFormatted } = formatTokenAmount(totalFee, sellToken)
+    const { formattedAmount: totalFeeFormatted, symbol: quoteSymbol } = formatTokenAmount(feeAmount, sellToken)
 
-    quoteSymbol = safeTokenName(sellToken)
-  }
+    return { executedFeeFormatted, totalFeeFormatted, quoteSymbol }
+  }, [totalFee, feeAmount, sellToken, sellTokenAddress])
 
-  const noFee = feeAmount.isZero() && totalFee.isZero()
+  const noFee = useMemo(() => feeAmount.isZero() && totalFee.isZero(), [feeAmount, totalFee])
 
-  const FeeElement = (
-    <span>
-      {noFee ? '-' : `${formattedExecutedFee} ${quoteSymbol}`}
-      {!fullyFilled && feeAmount.gt(ZERO_BIG_NUMBER) && (
-        <>
-          <span>
-            of {formattedTotalFee} {quoteSymbol}
-          </span>
-        </>
-      )}
-    </span>
+  const FeeElement = useMemo(
+    () => (
+      <span>
+        {noFee ? '-' : `${executedFeeFormatted} ${quoteSymbol}`}
+        {!fullyFilled && feeAmount.gt(ZERO_BIG_NUMBER) && (
+          <>
+            <span>
+              of {totalFeeFormatted} {quoteSymbol}
+            </span>
+          </>
+        )}
+      </span>
+    ),
+    [noFee, executedFeeFormatted, quoteSymbol, fullyFilled, feeAmount, totalFeeFormatted],
   )
 
   return (

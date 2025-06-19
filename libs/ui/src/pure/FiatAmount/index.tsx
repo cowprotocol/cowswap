@@ -1,12 +1,12 @@
 import { LONG_PRECISION } from '@cowprotocol/common-const'
 import { formatFiatAmount, FractionUtils } from '@cowprotocol/common-utils'
+import { Nullish } from '@cowprotocol/types'
+import { Fraction } from '@uniswap/sdk-core'
 
 import styled from 'styled-components'
 
-import { FractionLike, Nullish } from '../../types'
-
 export interface FiatAmountProps {
-  amount: Nullish<FractionLike>
+  amount: Nullish<Fraction>
   accurate?: boolean
   defaultValue?: string
   className?: string

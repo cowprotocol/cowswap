@@ -159,7 +159,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
         </LpTokenListsWidget>
       ) : (
         <>
-          {chainsToSelect?.chains && (
+          {!!chainsToSelect?.chains?.length && (
             <>
               <styledEl.ChainsSelectorWrapper>
                 <ChainsSelector

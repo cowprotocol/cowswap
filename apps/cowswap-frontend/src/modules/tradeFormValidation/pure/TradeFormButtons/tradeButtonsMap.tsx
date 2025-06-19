@@ -117,6 +117,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
             <Trans>Bridge quote error</Trans>
             {'  '}
             <InfoTooltip>
+              <p>{quote.error.message}</p>
               <JsonDisplay>{JSON.stringify(quote.error.context, null, 2)}</JsonDisplay>
             </InfoTooltip>
           </>

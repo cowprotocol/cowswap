@@ -71,9 +71,11 @@ export const OriginalOrderIntent = styled.span`
   justify-content: center;
   font-size: 13px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
+  background: var(${UI.COLOR_PAPER_DARKER});
   padding: 10px;
   width: 100%;
   text-align: center;
+  border-radius: 0 0 21px 21px;
   gap: 5px;
 
   ${SingleLetterLogoWrapper} {
@@ -87,7 +89,8 @@ export const AnimatedTokensWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 136px;
+  height: 100%;
+  min-height: 136px;
   position: relative;
   overflow: hidden;
 `
@@ -190,7 +193,18 @@ export const CountdownWrapper = styled.div`
   align-items: center;
 `
 
-export const CountdownText = styled.div`
+const pulseAnimation = keyframes`
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+`
+
+export const CountdownText = styled.div<{ $shouldPulse?: boolean }>`
   font-family: ${Font.familyMono};
   font-size: 68px;
   font-weight: bold;
@@ -198,6 +212,11 @@ export const CountdownText = styled.div`
   z-index: 1;
   font-variant-numeric: slashed-zero;
   letter-spacing: -3px;
+  ${({ $shouldPulse }) =>
+    $shouldPulse &&
+    css`
+      animation: ${pulseAnimation} 1.5s ease-in-out infinite;
+    `}
 `
 
 export const FinishedStepContainer = styled.div`

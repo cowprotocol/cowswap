@@ -51,12 +51,6 @@ export interface EthereumProvider {
    * @returns A promise that resolves with the response.
    */
   request<T>(params: JsonRpcRequest): Promise<T>
-
-  /**
-   * Requests permission to connect to the Ethereum provider.
-   * @returns A promise that resolves once permission is granted.
-   */
-  enable(): Promise<void>
 }
 
 export type WindowListener = (event: MessageEvent<unknown>) => void

@@ -28,7 +28,7 @@ const analyzeBundle = process.env.ANALYZE_BUNDLE === 'true'
 const analyzeBundleTemplate: TemplateType = (process.env.ANALYZE_BUNDLE_TEMPLATE as TemplateType) || 'treemap' //  "sunburst" | "treemap" | "network" | "raw-data" | "list";
 
 export default defineConfig(({ mode }) => {
-  const isProduction = mode === 'prod'
+  const isProduction = mode === 'production'
 
   const plugins = [
     nodePolyfills({
