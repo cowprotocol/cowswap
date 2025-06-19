@@ -46,6 +46,7 @@ export interface RowSlippageContentProps {
   isSlippageModified: boolean
   setAutoSlippage?: Command // todo: make them optional
   smartSlippage?: string
+  isDefaultSlippageApplied: boolean;
   isSmartSlippageApplied: boolean
   isSmartSlippageLoading: boolean
 }
@@ -65,6 +66,7 @@ export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
     smartSlippage,
     isSmartSlippageApplied,
     isSmartSlippageLoading,
+    isDefaultSlippageApplied,
   } = props
 
   const setSettingTabState = useSetAtom(settingsTabStateAtom)
@@ -113,7 +115,9 @@ export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
       <RowFixed>
         <TextWrapper onClick={openSettings}>
           <SlippageTextContents
+            isDefaultSlippageApplied={isDefaultSlippageApplied}
             slippageLabel={slippageLabel}
+            isEoaEthFlow={isEoaEthFlow}
             isDynamicSlippageSet={isSmartSlippageApplied}
           />
         </TextWrapper>
@@ -129,15 +133,18 @@ export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
 }
 
 type SlippageTextContentsProps = {
+  isEoaEthFlow: boolean
+  isDefaultSlippageApplied: boolean
   slippageLabel?: React.ReactNode
   isDynamicSlippageSet: boolean
 }
 
-function SlippageTextContents({ slippageLabel, isDynamicSlippageSet }: SlippageTextContentsProps): ReactNode {
+function SlippageTextContents({ slippageLabel, isDynamicSlippageSet, isEoaEthFlow, isDefaultSlippageApplied }: SlippageTextContentsProps): ReactNode {
   return (
     <TransactionText>
       <Trans>{slippageLabel || 'Slippage tolerance'}</Trans>
-      {isDynamicSlippageSet && <i>(dynamic)</i>}
+      {isDynamicSlippageSet && !isDefaultSlippageApplied && <i>(dynamic)</i>}
+      {isEoaEthFlow && isDefaultSlippageApplied && <i>(modified)</i>}
     </TransactionText>
   )
 }

@@ -10,6 +10,7 @@ import { useIsSmartSlippageApplied, useSetSlippage } from 'modules/tradeSlippage
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
+import { useIsDefaultSlippageApplied } from '../../../tradeSlippage/hooks/useIsDefaultSlippageApplied'
 import { RowSlippageContent } from '../../pure/Row/RowSlippageContent'
 
 export interface RowSlippageProps {
@@ -33,6 +34,7 @@ export function RowSlippage({
   const nativeCurrency = useNativeCurrency()
   const smartSlippage = useSmartSlippageFromQuote()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
+  const isDefaultSlippageApplied = useIsDefaultSlippageApplied()
   const setSlippage = useSetSlippage()
 
   const props = useMemo(
@@ -45,6 +47,7 @@ export function RowSlippage({
       slippageTooltip,
       displaySlippage: `${formatPercent(allowedSlippage)}%`,
       isSmartSlippageApplied,
+      isDefaultSlippageApplied,
       isSmartSlippageLoading: isTradePriceUpdating,
       smartSlippage:
         smartSlippage ? `${formatPercent(new Percent(smartSlippage, 10_000))}%` : undefined,
@@ -58,6 +61,7 @@ export function RowSlippage({
       slippageLabel,
       slippageTooltip,
       smartSlippage,
+      isDefaultSlippageApplied,
       isSmartSlippageApplied,
       isTradePriceUpdating,
       setSlippage,
