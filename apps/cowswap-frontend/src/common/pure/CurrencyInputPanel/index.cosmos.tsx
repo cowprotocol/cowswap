@@ -1,4 +1,4 @@
-import { COW } from '@cowprotocol/common-const'
+import { COW_TOKEN_TO_CHAIN } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
@@ -13,7 +13,7 @@ import { defaultCurrencyInputPanelProps } from './defaultCurrencyInputProps'
 
 import { CurrencyAmountPreview } from '../CurrencyAmountPreview'
 
-const currency = COW[SupportedChainId.MAINNET]
+const currency = COW_TOKEN_TO_CHAIN[SupportedChainId.MAINNET]
 const defaultProps = defaultCurrencyInputPanelProps
 
 function useCustomProps(): Partial<CurrencyInputPanelProps> {
@@ -30,8 +30,8 @@ function useCustomProps(): Partial<CurrencyInputPanelProps> {
 
   const [priceImpactRaw] = useValue('priceImpactParams.priceImpact', { defaultValue: 2 })
 
-  const balance = CurrencyAmount.fromRawAmount(currency, balanceAmountRaw * 10 ** 18)
-  const fiatAmount = CurrencyAmount.fromRawAmount(currency, fiatAmountRaw * 10 ** 18)
+  const balance = currency ? CurrencyAmount.fromRawAmount(currency, balanceAmountRaw * 10 ** 18) : null
+  const fiatAmount = currency ? CurrencyAmount.fromRawAmount(currency, fiatAmountRaw * 10 ** 18) : null
   const priceImpact = new Percent(priceImpactRaw, 10_000)
 
   const currencyInfo = {
@@ -52,7 +52,7 @@ function useCustomProps(): Partial<CurrencyInputPanelProps> {
       tier: useValue('subsidyAndBalance.tier', { defaultValue: 2 })[0],
       discount: useValue('subsidyAndBalance.discount', { defaultValue: 10 })[0],
     },
-    balance,
+    balance: balance ?? undefined,
   }
 
   return { allowsOffchainSigning, showSetMax, currencyInfo, priceImpactParams, subsidyAndBalance }
