@@ -406,7 +406,7 @@ export const DAI_POLYGON = new TokenWithLogo(
 export const USDC_AVALANCHE = new TokenWithLogo(
   USDC_MAINNET.logoURI,
   SupportedChainId.AVALANCHE,
-  // https://snowtrace.io/token/0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e
+  // https://snowscan.xyz/token/0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e
   '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e',
   6,
   'USDC',
@@ -416,7 +416,7 @@ export const USDC_AVALANCHE = new TokenWithLogo(
 export const USDT_AVALANCHE = new TokenWithLogo(
   USDT.logoURI,
   SupportedChainId.AVALANCHE,
-  // https://snowtrace.io/token/0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7
+  // https://snowscan.xyz/token/0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7
   '0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7',
   6,
   'USDT',
