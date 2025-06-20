@@ -4,8 +4,6 @@ import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import ms from 'ms.macro'
-
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useAppData } from 'modules/appData'
@@ -38,7 +36,6 @@ import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapDeadlineState } from '../../hooks/useSwapSettings'
 
 const CONFIRM_TITLE = 'Swap'
-const PRICE_UPDATE_INTERVAL = ms`30s`
 
 export interface SwapConfirmModalProps {
   doTrade(): Promise<false | void>
@@ -78,7 +75,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
   const { values: balances } = useTokensBalancesCombined()
 
   // TODO: Reduce function complexity by extracting logic
-  // eslint-disable-next-line complexity
+
   const disableConfirm = useMemo(() => {
     const current = inputCurrencyInfo?.amount?.currency
 
@@ -125,7 +122,6 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
         buttonText={buttonText}
         recipient={recipient}
         appData={appData || undefined}
-        refreshInterval={PRICE_UPDATE_INTERVAL}
       >
         {shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext
           ? (restContent) => (

@@ -46,6 +46,14 @@ export const OuterContentWrapper = styled.div`
   margin-top: 10px;
 `
 
+export const HeaderRight = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+  font-size: 0;
+`
+
 export const CurrencySeparatorBox = styled.div<{ compactView: boolean }>`
   display: flex;
   justify-content: space-between;

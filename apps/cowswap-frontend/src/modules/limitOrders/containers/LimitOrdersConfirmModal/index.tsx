@@ -38,7 +38,7 @@ export interface LimitOrdersConfirmModalProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const { inputCurrencyInfo, outputCurrencyInfo, tradeContext: tradeContextInitial, priceImpact, recipient } = props
 
@@ -96,7 +96,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
         buttonText={buttonText}
         recipient={recipient}
         appData={tradeContext.postOrderParams.appData || undefined}
-        isPriceStatic={true}
+        isPriceStatic
       >
         {(restContent) => (
           <>
