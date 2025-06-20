@@ -489,12 +489,12 @@ function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string, 
   const [stopQuerying, setStopQuerying] = useState(false)
   const { type: backendApiStatus, value } = usePendingOrderStatus(chainId, orderId, stopQuerying) || {}
 
-  // Once doNotQuery is set to true, keep querying for another 5 seconds to ensure we get the final status and then stop
+  // Once doNotQuery is set to true, keep querying for another 3 seconds to ensure we get the final status and then stop
   useEffect(() => {
     let timer: NodeJS.Timeout | undefined
 
     if (doNotQuery) {
-      timer = setTimeout(() => setStopQuerying(true), ms`5s`)
+      timer = setTimeout(() => setStopQuerying(true), ms`3s`)
     } else {
       setStopQuerying(false) // Reset the stop querying state when doNotQuery is false
     }
