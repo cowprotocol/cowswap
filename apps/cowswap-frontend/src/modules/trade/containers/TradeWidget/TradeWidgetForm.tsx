@@ -39,6 +39,7 @@ import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner'
 import { SetRecipient } from '../../pure/SetRecipient'
 import { LimitOrdersPromoBannerWrapper } from '../LimitOrdersPromoBannerWrapper'
+import { QuotePolingProgress } from '../QuotePolingProgress'
 import { TradeWarnings } from '../TradeWarnings'
 import { TradeWidgetLinks } from '../TradeWidgetLinks'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
@@ -84,6 +85,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     displayChainName = isBridgingEnabled && isCurrentTradeBridging,
     isMarketOrderWidget = false,
     isSellingEthSupported = false,
+    isPriceStatic = false,
   } = params
 
   const inputCurrencyInfo = useMemo(
@@ -195,7 +197,10 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
             </ButtonOutlined>
           )}
 
-          {!lockScreen && settingsWidget}
+          <styledEl.HeaderRight>
+            {!isPriceStatic && <QuotePolingProgress />}
+            {!lockScreen && settingsWidget}
+          </styledEl.HeaderRight>
         </styledEl.Header>
 
         <LimitOrdersPromoBannerWrapper>
