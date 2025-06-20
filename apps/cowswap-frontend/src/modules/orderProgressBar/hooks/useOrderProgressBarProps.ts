@@ -14,6 +14,7 @@ import { useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
+import { BridgeQuoteAmounts, type SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
@@ -22,9 +23,10 @@ import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { useSolversInfo } from 'common/hooks/useSolversInfo'
 import { featureFlagsAtom } from 'common/state/featureFlagsState'
 import { ActivityDerivedState } from 'common/types/activity'
+import { ApiSolverCompetition, SolverCompetition } from 'common/types/soverCompetition'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
-import { BridgeQuoteAmounts, type SwapAndBridgeContext, SwapAndBridgeStatus } from '../../bridge'
+// TODO: fix import. When import from modules/bridge it causes circular dependency
 import { useSwapAndBridgeContext } from '../../bridge/hooks/useSwapAndBridgeContext'
 import { DEFAULT_STEP_NAME, OrderProgressBarStepName } from '../constants'
 import {
@@ -34,7 +36,7 @@ import {
   updateOrderProgressBarCountdown,
   updateOrderProgressBarStepName,
 } from '../state/atoms'
-import { ApiSolverCompetition, OrderProgressBarProps, OrderProgressBarState, SolverCompetition } from '../types'
+import { OrderProgressBarProps, OrderProgressBarState } from '../types'
 
 type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null
