@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.20.0...tokens-v1.21.0) (2025-06-20)
+
+
+### Features
+
+* account shows banner is COW token is unavaillable ([#5833](https://github.com/cowprotocol/cowswap/issues/5833)) ([b553228](https://github.com/cowprotocol/cowswap/commit/b55322899161785076f95ee420a1b796661a1e52))
+
 ## [1.20.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.19.1...tokens-v1.20.0) (2025-06-18)
 
 
