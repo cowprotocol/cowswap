@@ -29,7 +29,7 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
   return useMemo(() => {
     if (!quoteAmounts || !bridgeQuote || !recipient) return null
 
-    const targetChainId = quoteAmounts.swapMinReceiveAmount.currency.chainId
+    const targetChainId = quoteAmounts.bridgeMinReceiveAmount.currency.chainId
     const destChainData = bridgeSupportedNetworks?.find((chain) => chain.id === targetChainId)
 
     if (!destChainData) return null
