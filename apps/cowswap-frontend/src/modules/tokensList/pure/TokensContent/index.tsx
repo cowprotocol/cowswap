@@ -44,17 +44,19 @@ export function TokensContent({
 }: TokensContentProps): ReactNode {
   return (
     <>
-      {!areTokensLoading && (
-        <styledEl.Row>
-          <FavoriteTokensList
-            onSelectToken={onSelectToken}
-            selectedToken={(selectedToken && getCurrencyAddress(selectedToken)) || undefined}
-            tokens={favoriteTokens}
-            hideTooltip={hideFavoriteTokensTooltip}
-          />
-        </styledEl.Row>
+      {!areTokensLoading && favoriteTokens.length && (
+        <>
+          <styledEl.Row>
+            <FavoriteTokensList
+              onSelectToken={onSelectToken}
+              selectedToken={(selectedToken && getCurrencyAddress(selectedToken)) || undefined}
+              tokens={favoriteTokens}
+              hideTooltip={hideFavoriteTokensTooltip}
+            />
+          </styledEl.Row>
+          <styledEl.Separator />
+        </>
       )}
-      <styledEl.Separator />
       {areTokensLoading ? (
         <styledEl.TokensLoader>
           <Loader />
