@@ -1,5 +1,4 @@
-import { COW } from '@cowprotocol/common-const'
-import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { COW_TOKEN_TO_CHAIN, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
@@ -10,7 +9,7 @@ import { isOrderCancellable } from './isOrderCancellable'
 describe('isOrderCancellable', () => {
   it('When order cancellation in progress, the it cannot be cancelled', () => {
     const order = {
-      inputToken: COW[1],
+      inputToken: COW_TOKEN_TO_CHAIN[1],
       status: OrderStatus.PENDING,
       isCancelling: true, // <-----
       cancellationHash: undefined,
@@ -22,7 +21,7 @@ describe('isOrderCancellable', () => {
 
   it('When an order has a cancellationHash, the it cannot be cancelled', () => {
     const order = {
-      inputToken: COW[1],
+      inputToken: COW_TOKEN_TO_CHAIN[1],
       status: OrderStatus.PENDING,
       isCancelling: false,
       cancellationHash: '0x0003', // <-----
