@@ -44,7 +44,7 @@ export function TokensContent({
 }: TokensContentProps): ReactNode {
   return (
     <>
-      {!areTokensLoading && favoriteTokens.length && (
+      {!areTokensLoading && !!favoriteTokens.length && (
         <>
           <styledEl.Row>
             <FavoriteTokensList
