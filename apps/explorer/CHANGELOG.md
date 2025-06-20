@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.48.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.48.0...explorer-v2.48.1) (2025-06-20)
+
+
+### Bug Fixes
+
+* **explorer:** empty change to trigger build ([#5873](https://github.com/cowprotocol/cowswap/issues/5873)) ([b309e70](https://github.com/cowprotocol/cowswap/commit/b309e70fe042f566af2d10097cbcd90e433e2e0e))
+
 ## [2.48.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.47.0...explorer-v2.48.0) (2025-06-18)
 
 
