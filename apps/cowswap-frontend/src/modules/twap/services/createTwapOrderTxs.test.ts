@@ -1,4 +1,4 @@
-import { COW, WETH_SEPOLIA } from '@cowprotocol/common-const'
+import { COW_TOKEN_TO_CHAIN, WETH_SEPOLIA } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -17,8 +17,12 @@ const APP_DATA_HASH = getAppData().appDataKeccak256
 
 const chainId = SupportedChainId.SEPOLIA
 
+if (!COW_TOKEN_TO_CHAIN[SupportedChainId.SEPOLIA]) {
+  throw new Error(`COW token not found for chain ${SupportedChainId.SEPOLIA}`)
+}
+
 const order: TWAPOrder = {
-  sellAmount: CurrencyAmount.fromRawAmount(COW[SupportedChainId.SEPOLIA], 100_000_000_000),
+  sellAmount: CurrencyAmount.fromRawAmount(COW_TOKEN_TO_CHAIN[SupportedChainId.SEPOLIA], 100_000_000_000),
   buyAmount: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 200_000),
   receiver: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
   numOfParts: 3,
@@ -49,8 +53,8 @@ describe('Create TWAP order', () => {
       composableCowContract: {
         interface: { encodeFunctionData: createCowFn },
         address: COMPOSABLE_COW_ADDRESS[chainId],
-      // TODO: Replace any with proper type definitions
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // TODO: Replace any with proper type definitions
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
       needsApproval: false,
       needsZeroApproval: false,

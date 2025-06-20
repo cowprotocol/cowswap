@@ -406,7 +406,7 @@ export const DAI_POLYGON = new TokenWithLogo(
 export const USDC_AVALANCHE = new TokenWithLogo(
   USDC_MAINNET.logoURI,
   SupportedChainId.AVALANCHE,
-  // https://snowtrace.io/token/0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e
+  // https://snowscan.xyz/token/0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e
   '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e',
   6,
   'USDC',
@@ -416,7 +416,7 @@ export const USDC_AVALANCHE = new TokenWithLogo(
 export const USDT_AVALANCHE = new TokenWithLogo(
   USDT.logoURI,
   SupportedChainId.AVALANCHE,
-  // https://snowtrace.io/token/0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7
+  // https://snowscan.xyz/token/0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7
   '0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7',
   6,
   'USDT',
@@ -488,72 +488,26 @@ export const V_COW: Record<SupportedChainId, TokenWithLogo | null> = {
 /**
  * Cow token
  */
-const COW_TOKEN_MAINNET = new TokenWithLogo(
-  undefined,
-  SupportedChainId.MAINNET,
-  COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET],
-  18,
-  'COW',
-  'CoW Protocol Token',
-)
+const COW_TOKEN_SYMBOL = 'COW'
+const COW_TOKEN_NAME = 'CoW Protocol Token'
+const COW_TOKEN_DECIMALS = 18
 
-const COW_TOKEN_XDAI = new TokenWithLogo(
-  COW_TOKEN_MAINNET.logoURI,
-  SupportedChainId.GNOSIS_CHAIN,
-  COW_CONTRACT_ADDRESS[SupportedChainId.GNOSIS_CHAIN],
-  18,
-  'COW',
-  'CoW Protocol Token',
-)
+function getMaybeCowTokenForChain(chain: SupportedChainId, logoURI?: string): TokenWithLogo | null {
+  const address = COW_CONTRACT_ADDRESS[chain]
 
-export const COW_TOKEN_ARBITRUM = new TokenWithLogo(
-  COW_TOKEN_MAINNET.logoURI,
-  SupportedChainId.ARBITRUM_ONE,
-  COW_CONTRACT_ADDRESS[SupportedChainId.ARBITRUM_ONE],
-  18,
-  'COW',
-  'CoW Protocol Token',
-)
+  if (!address) return null
 
-export const COW_TOKEN_BASE = new TokenWithLogo(
-  COW_TOKEN_MAINNET.logoURI,
-  SupportedChainId.BASE,
-  COW_CONTRACT_ADDRESS[SupportedChainId.BASE],
-  18,
-  'COW',
-  'CoW Protocol Token',
-)
+  return new TokenWithLogo(logoURI, chain, address, COW_TOKEN_DECIMALS, COW_TOKEN_SYMBOL, COW_TOKEN_NAME)
+}
+export const COW_TOKEN_MAINNET = getMaybeCowTokenForChain(SupportedChainId.MAINNET)
+export const COW_TOKEN_XDAI = getMaybeCowTokenForChain(SupportedChainId.GNOSIS_CHAIN, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_ARBITRUM = getMaybeCowTokenForChain(SupportedChainId.ARBITRUM_ONE, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_BASE = getMaybeCowTokenForChain(SupportedChainId.BASE, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_SEPOLIA = getMaybeCowTokenForChain(SupportedChainId.SEPOLIA, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_POLYGON = getMaybeCowTokenForChain(SupportedChainId.POLYGON, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_AVALANCHE = getMaybeCowTokenForChain(SupportedChainId.AVALANCHE, COW_TOKEN_MAINNET?.logoURI)
 
-const COW_TOKEN_SEPOLIA = new TokenWithLogo(
-  COW_TOKEN_MAINNET.logoURI,
-  SupportedChainId.SEPOLIA,
-  COW_CONTRACT_ADDRESS[SupportedChainId.SEPOLIA],
-  18,
-  'COW',
-  'CoW Protocol Token',
-)
-
-// TODO: handle when COW doesn't exist in Avalanche
-export const COW_TOKEN_POLYGON = new TokenWithLogo(
-  COW_TOKEN_MAINNET.logoURI,
-  SupportedChainId.POLYGON,
-  COW_CONTRACT_ADDRESS[SupportedChainId.POLYGON],
-  18,
-  'COW',
-  'CoW Protocol Token',
-)
-
-// TODO: handle when COW doesn't exist in Avalanche
-export const COW_TOKEN_AVALANCHE = new TokenWithLogo(
-  COW_TOKEN_MAINNET.logoURI,
-  SupportedChainId.AVALANCHE,
-  COW_CONTRACT_ADDRESS[SupportedChainId.AVALANCHE],
-  18,
-  'COW',
-  'CoW Protocol Token',
-)
-
-export const COW: Record<SupportedChainId, TokenWithLogo> = {
+export const COW_TOKEN_TO_CHAIN: Record<SupportedChainId, TokenWithLogo | null> = {
   [SupportedChainId.MAINNET]: COW_TOKEN_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: COW_TOKEN_XDAI,
   [SupportedChainId.ARBITRUM_ONE]: COW_TOKEN_ARBITRUM,

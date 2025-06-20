@@ -30,8 +30,8 @@ export function useLabelsAndTooltips() {
   return useMemo(
     () => ({
       slippageLabel:
-        isEoaEthFlow || isSmartSlippageApplied
-          ? `Slippage tolerance (${isEoaEthFlow ? 'modified' : 'dynamic'})`
+        isSmartSlippageApplied
+          ? `Slippage tolerance (${isSmartSlippageApplied ? 'dynamic' : 'modified'})`
           : undefined,
       slippageTooltip: isEoaEthFlow
         ? getNativeSlippageTooltip(chainId, [nativeCurrency.symbol])
