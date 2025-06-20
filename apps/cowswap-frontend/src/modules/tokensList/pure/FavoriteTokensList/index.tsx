@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
@@ -12,9 +14,7 @@ export interface FavoriteTokensListProps {
   onSelectToken(token: TokenWithLogo): void
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function FavoriteTokensList(props: FavoriteTokensListProps) {
+export function FavoriteTokensList(props: FavoriteTokensListProps): ReactNode {
   const { tokens, hideTooltip, selectedToken, onSelectToken } = props
 
   return (
