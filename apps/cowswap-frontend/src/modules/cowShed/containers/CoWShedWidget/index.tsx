@@ -1,9 +1,10 @@
-import { ReactNode, useCallback } from 'react'
+import { ReactNode, useCallback, useEffect } from 'react'
 
 import { getEtherscanLink } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useSetBalancesContext } from 'entities/balancesContext/useBalancesContext'
 import { Pocket } from 'react-feather'
 import { useParams } from 'react-router'
 
@@ -23,13 +24,26 @@ import { RecoverFundsWidget } from '../RecoverFundsWidget'
 export function CoWShedWidget({ onDismiss }: { onDismiss: Command }): ReactNode {
   const { chainId } = useWalletInfo()
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
-  const { proxyAddress } = useCurrentAccountProxyAddress() || {}
+  const { proxyAddress, isProxyDeployed } = useCurrentAccountProxyAddress() || {}
   const params = useParams()
+  const setBalancesContext = useSetBalancesContext()
 
   const onDismissCallback = useCallback(() => {
     updateSelectTokenWidget({ open: false })
     onDismiss()
   }, [updateSelectTokenWidget, onDismiss])
+
+  useEffect(() => {
+    if (!isProxyDeployed) return
+
+    if (proxyAddress) {
+      setBalancesContext({ account: proxyAddress })
+    }
+
+    return () => {
+      setBalancesContext({ account: null })
+    }
+  }, [proxyAddress, isProxyDeployed, setBalancesContext])
 
   const explorerLink = proxyAddress ? getEtherscanLink(chainId, 'address', proxyAddress) : undefined
 

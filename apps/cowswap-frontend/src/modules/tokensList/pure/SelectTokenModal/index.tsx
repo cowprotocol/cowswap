@@ -64,7 +64,6 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
     chainsToSelect,
     onSelectChain,
     tokenListTags,
-    standalone,
   } = props
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
 
