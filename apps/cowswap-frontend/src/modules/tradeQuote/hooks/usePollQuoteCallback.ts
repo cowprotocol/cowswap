@@ -64,9 +64,7 @@ export function usePollQuoteCallback(
       /**
        * Fetch the quote instantly once the quote params are changed
        */
-      doQuotePolling(context)
-
-      return true
+      return doQuotePolling(context)
     },
     [
       chainId,

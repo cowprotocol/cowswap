@@ -1,7 +1,7 @@
 import { useAtom, useAtomValue } from 'jotai'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 
-import { useIsOnline, useIsWindowVisible } from '@cowprotocol/common-hooks'
+import { useIsOnline, useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 
 import { usePollQuoteCallback } from './usePollQuoteCallback'
@@ -21,6 +21,7 @@ export function useTradeQuotePolling(isConfirmOpen = false): null {
   const [tradeQuotePolling, setTradeQuotePolling] = useAtom(tradeQuoteCounterAtom)
   const resetQuoteCounter = useResetQuoteCounter()
   const tradeQuote = useTradeQuote()
+  const prevIsConfirmOpen = usePrevious(isConfirmOpen)
   const tradeQuoteRef = useRef(tradeQuote)
   tradeQuoteRef.current = tradeQuote
 
@@ -70,13 +71,20 @@ export function useTradeQuotePolling(isConfirmOpen = false): null {
   }, [pollQuote, tradeQuotePolling])
 
   /**
+   * Reset counter and update quote each time when confirmation modal is closed
+   */
+  useLayoutEffect(() => {
+    if (prevIsConfirmOpen === isConfirmOpen) return
+
+    if (!isConfirmOpen) {
+      setTradeQuotePolling(0)
+    }
+  }, [setTradeQuotePolling, prevIsConfirmOpen, isConfirmOpen])
+
+  /**
    * Tick quote polling counter
    */
   useEffect(() => {
-    if (isConfirmOpen) {
-      resetQuoteCounter()
-    }
-
     const interval = setInterval(() => {
       setTradeQuotePolling((state) => {
         const newState = state - 1000
@@ -89,8 +97,10 @@ export function useTradeQuotePolling(isConfirmOpen = false): null {
       })
     }, ONE_SEC)
 
-    return () => clearInterval(interval)
-  }, [setTradeQuotePolling, resetQuoteCounter, isConfirmOpen])
+    return () => {
+      clearInterval(interval)
+    }
+  }, [setTradeQuotePolling])
 
   return null
 }

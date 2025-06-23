@@ -34,7 +34,7 @@ export function doQuotePolling({
   isConfirmOpen,
   fastQuote,
   fetchQuote,
-}: QuoteUpdateContext): void {
+}: QuoteUpdateContext): boolean {
   const currentQuoteAppDataDoc = currentQuote.quote?.quoteResults.appDataInfo.doc
 
   if (!forceUpdate) {
@@ -45,12 +45,12 @@ export function doQuotePolling({
       isQuoteCached(currentQuote) &&
       quoteUsingSameParameters(currentQuote, quoteParams, currentQuoteAppDataDoc, appData)
     ) {
-      return
+      return false
     }
 
     // When browser is offline or the tab is not active do no fetch
     if (!isBrowserOnline) {
-      return
+      return false
     }
   }
 
@@ -60,4 +60,6 @@ export function doQuotePolling({
     fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.FAST, fetchStartTimestamp })
   }
   fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.OPTIMAL, fetchStartTimestamp })
+
+  return true
 }
