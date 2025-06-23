@@ -41,7 +41,7 @@ export const NAV_ITEMS: MenuItem[] = [
   },
   {
     label: 'More',
-   children: [
+    children: [
       {
         href: 'https://cow.fi/cow-protocol',
         label: 'CoW Protocol',
