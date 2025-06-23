@@ -41,8 +41,7 @@ export const NAV_ITEMS: MenuItem[] = [
   },
   {
     label: 'More',
-    badgeType: BadgeTypes.ALERT,
-    children: [
+   children: [
       {
         href: 'https://cow.fi/cow-protocol',
         label: 'CoW Protocol',
@@ -51,7 +50,6 @@ export const NAV_ITEMS: MenuItem[] = [
       {
         href: 'https://cow.fi/cow-amm',
         label: 'CoW AMM',
-        badgeType: BadgeTypes.ALERT,
         external: true,
       },
       {
