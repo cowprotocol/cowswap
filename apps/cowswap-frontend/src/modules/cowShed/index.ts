@@ -1,4 +1,4 @@
-export { RecoverFundsFromProxy } from './containers/RecoverFundsFromProxy'
+export { CoWShedWidget } from './containers/CoWShedWidget'
 
 export { ProxyRecipient } from './containers/ProxyRecipient'
 

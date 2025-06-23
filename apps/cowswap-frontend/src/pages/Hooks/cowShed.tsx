@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { RecoverFundsFromProxy } from 'modules/cowShed'
+import { CoWShedWidget } from 'modules/cowShed'
 
 import { useNavigateBack } from 'common/hooks/useNavigate'
 
@@ -9,7 +9,7 @@ export function CowShed(): ReactNode {
 
   return (
     <>
-      <RecoverFundsFromProxy onDismiss={navigateBack} />
+      <CoWShedWidget onDismiss={navigateBack} />
     </>
   )
 }

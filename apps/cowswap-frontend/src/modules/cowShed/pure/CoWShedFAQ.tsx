@@ -6,7 +6,7 @@ import { ExternalLink } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 
-import { FAQItem, FAQWrapper } from '../containers/RecoverFundsFromProxy/styled'
+import { FAQItem, FAQWrapper } from '../containers/CoWShedWidget/styled'
 
 export function CoWShedFAQ({ explorerLink }: { explorerLink: string | undefined }): ReactNode {
   const [openItems, setOpenItems] = useState<Record<number, boolean>>({})

@@ -37,7 +37,7 @@ const BALANCE_SWR_CFG = { refreshInterval: BALANCE_UPDATE_INTERVAL, revalidateOn
 const selectedCurrencyAtom = atom<Currency | undefined>(undefined)
 
 // eslint-disable-next-line max-lines-per-function,complexity
-export function RecoverFundsFromProxy({ onDismiss }: { onDismiss: Command }): ReactNode {
+export function CoWShedWidget({ onDismiss }: { onDismiss: Command }): ReactNode {
   const [selectedCurrency, setSelectedCurrency] = useAtom(selectedCurrencyAtom)
   const [tokenBalance, setTokenBalance] = useState<CurrencyAmount<Currency> | null>(null)
 
