@@ -18,11 +18,11 @@ export function CoWShedFAQ({ explorerLink }: { explorerLink: string | undefined 
 
   const FAQ_DATA = [
     {
-      question: 'What is CoW Shed?',
+      question: 'What is Account Proxy?',
       answer: (
         <>
-          <ExternalLink href="https://github.com/cowdao-grants/cow-shed">CoW Shed</ExternalLink> is a helper contract
-          that enhances user experience inside CoW Swap for features like{' '}
+          <ExternalLink href="https://github.com/cowdao-grants/cow-shed">Account Proxy aka CoW Shed</ExternalLink> is a
+          helper contract that enhances user experience inside CoW Swap for features like{' '}
           <ExternalLink href="https://docs.cow.fi/cow-protocol/reference/core/intents/hooks">CoW Hooks</ExternalLink>
           .
           <br />

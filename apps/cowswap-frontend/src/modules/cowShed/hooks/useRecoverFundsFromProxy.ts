@@ -18,7 +18,7 @@ import { getRecoverFundsCalls } from '../services/getRecoverFundsCalls'
 const INFINITE_DEADLINE = 99999999999
 const DEFAULT_GAS_LIMIT = 600_000
 
-interface RecoverFundsContext {
+export interface RecoverFundsContext {
   callback: () => Promise<string | undefined>
   isTxSigningInProgress: boolean
   proxyAddress: string | undefined

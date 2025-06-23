@@ -15,12 +15,19 @@ const Link = styled.a`
 interface AddressLinkProps {
   address: string
   chainId: number
+  className?: string
+  noShorten?: boolean
 }
 
-export function AddressLink({ address, chainId }: AddressLinkProps): ReactNode {
+export function AddressLink({ address, chainId, className, noShorten }: AddressLinkProps): ReactNode {
   return isAddress(address) ? (
-    <Link href={getExplorerLink(chainId, address, ExplorerDataType.ADDRESS)} target="_blank" rel="noreferrer">
-      {shortenAddress(address)} ↗
+    <Link
+      className={className}
+      href={getExplorerLink(chainId, address, ExplorerDataType.ADDRESS)}
+      target="_blank"
+      rel="noreferrer"
+    >
+      {noShorten ? address : shortenAddress(address)} ↗
     </Link>
   ) : (
     address
