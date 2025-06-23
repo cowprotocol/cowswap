@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { ETH_FLOW_SLIPPAGE_WARNING_BORDER } from '@cowprotocol/common-const'
+import { ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD } from '@cowprotocol/common-const'
 import { isFractionFalsy, percentToBps } from '@cowprotocol/common-utils'
 import { BannerOrientation, InfoTooltip, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -32,7 +32,7 @@ export function HighSuggestedSlippageWarning(props: HighSuggestedSlippageWarning
   const amountsAreSet = !isFractionFalsy(state?.inputCurrencyAmount) && !isFractionFalsy(state?.outputCurrencyAmount)
 
   const isEoaEthFlow = useIsEoaEthFlow()
-  const minimalSlippageBps = isEoaEthFlow ? ETH_FLOW_SLIPPAGE_WARNING_BORDER[chainId] : MINIMAL_ERC20_FLOW_SLIPPAGE_BPS
+  const minimalSlippageBps = isEoaEthFlow ? ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD[chainId] : MINIMAL_ERC20_FLOW_SLIPPAGE_BPS
 
   if (!isSuggestedSlippage || !slippageBps || slippageBps <= minimalSlippageBps || !amountsAreSet) {
     return null
