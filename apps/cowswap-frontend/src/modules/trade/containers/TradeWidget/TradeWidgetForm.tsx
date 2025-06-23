@@ -198,8 +198,12 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
           )}
 
           <styledEl.HeaderRight>
-            {!isPriceStatic && <QuotePolingProgress />}
-            {!lockScreen && settingsWidget}
+            {!lockScreen && (
+              <>
+                {!isPriceStatic && !showDropdown && <QuotePolingProgress />}
+                {settingsWidget}
+              </>
+            )}
           </styledEl.HeaderRight>
         </styledEl.Header>
 
