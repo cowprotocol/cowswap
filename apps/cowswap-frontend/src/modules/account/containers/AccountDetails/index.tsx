@@ -46,9 +46,11 @@ import {
   WalletSecondaryActions,
   WalletWrapper,
   Wrapper,
+  CowShedInfoStyled,
 } from './styled'
 import { SurplusCard } from './SurplusCard'
 
+import { useCloseAccountModal } from '../../hooks/useToggleAccountModal'
 import { CreationDateText } from '../Transaction/styled'
 
 export const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
@@ -82,6 +84,7 @@ export function AccountDetails({
   const dispatch = useAppDispatch()
   const disconnectWallet = useDisconnectWallet()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
+  const closeAccountModal = useCloseAccountModal()
   const { standaloneMode } = useInjectedWidgetParams()
 
   const explorerOrdersLink = account && getExplorerAddressLink(chainId, account)
@@ -141,6 +144,8 @@ export function AccountDetails({
                 <Trans>Connected with</Trans> {walletDetails?.walletName} {walletConnectSuffix}
               </WalletName>
             </WalletActions>
+
+            <CowShedInfoStyled onClick={closeAccountModal} />
           </AccountControl>
         </AccountGroupingRow>
         <AccountGroupingRow>
