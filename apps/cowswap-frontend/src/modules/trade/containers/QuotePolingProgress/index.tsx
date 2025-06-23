@@ -11,7 +11,9 @@ export function QuotePolingProgress(): ReactNode {
   const counter = useTradeQuoteCounter()
   const percent = Math.ceil((counter * 100) / QUOTE_POLLING_INTERVAL)
 
-  const content = <span>Quote will be updated in {displayTime(counter, true)}</span>
+  const content = (
+    <span>{counter === 0 ? 'Quote is updating...' : <>Quote will be updated in {displayTime(counter, true)}</>}</span>
+  )
 
   return (
     <HoverTooltip wrapInContainer placement="top" content={content}>

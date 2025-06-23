@@ -23,9 +23,17 @@ export const QuoteCountdown = (): ReactNode => {
     return
   }, [counter])
 
+  const value = counter / ONE_SEC
+
   return (
     <QuoteCountdownWrapper blink={blink}>
-      Quote refresh in <b>{counter / ONE_SEC} sec</b>
+      {value === 0 ? (
+        'Refreshing quote...'
+      ) : (
+        <>
+          Quote refresh in <b>{counter / ONE_SEC} sec</b>
+        </>
+      )}
     </QuoteCountdownWrapper>
   )
 }
