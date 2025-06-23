@@ -5,11 +5,17 @@ import IMG_ICON_PLUS from '@cowprotocol/assets/images/icon-plus.svg'
 import { ExternalLink } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
+import { Link } from 'react-router'
 
 import { FAQItem, FAQWrapper } from '../containers/CoWShedWidget/styled'
 
-export function CoWShedFAQ({ explorerLink }: { explorerLink: string | undefined }): ReactNode {
-  const [openItems, setOpenItems] = useState<Record<number, boolean>>({})
+interface CoWShedFAQProps {
+  recoverRouteLink: string
+  explorerLink: string | undefined
+}
+
+export function CoWShedFAQ({ explorerLink, recoverRouteLink }: CoWShedFAQProps): ReactNode {
+  const [openItems, setOpenItems] = useState<Record<number, boolean>>({ 0: true })
 
   const handleToggle = (index: number) => (e: React.MouseEvent) => {
     e.preventDefault()
@@ -49,7 +55,9 @@ export function CoWShedFAQ({ explorerLink }: { explorerLink: string | undefined 
               )}{' '}
               if your own CoW Shed has any token
             </li>
-            <li>Select the token you want to recover from CoW Shed</li>
+            <li>
+              <Link to={recoverRouteLink}>Select the token</Link> you want to recover from CoW Shed
+            </li>
             <li>Recover!</li>
           </ol>
         </>

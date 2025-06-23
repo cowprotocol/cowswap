@@ -1,19 +1,12 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { parameterizeTradeRoute } from 'modules/trade'
-
 import { Routes } from 'common/constants/routes'
 
-export function getShedRouteLink(chainId: SupportedChainId): string {
-  return parameterizeTradeRoute(
-    {
-      chainId: chainId.toString(),
-      inputCurrencyId: undefined,
-      outputCurrencyId: undefined,
-      inputCurrencyAmount: undefined,
-      outputCurrencyAmount: undefined,
-      orderKind: undefined,
-    },
-    Routes.COW_SHED,
+import { CoWShedWidgetTabs } from '../const'
+
+export function getShedRouteLink(chainId: SupportedChainId, tab?: CoWShedWidgetTabs): string {
+  return Routes.COW_SHED.replace('/:chainId?', chainId ? `/${encodeURIComponent(chainId)}` : '').replace(
+    '/:tab?',
+    tab ? `/${encodeURIComponent(tab)}` : '',
   )
 }

@@ -5,25 +5,26 @@ import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Pocket } from 'react-feather'
+import { useParams } from 'react-router'
 
-import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-
-import { SelectTokenWidget, useSelectTokenWidgetState, useUpdateSelectTokenWidgetState } from 'modules/tokensList'
+import { useUpdateSelectTokenWidgetState } from 'modules/tokensList'
 
 import { NewModal } from 'common/pure/NewModal'
 
 import { AddressLinkStyled, Content, Title, Wrapper } from './styled'
 
+import { CoWShedWidgetTabs } from '../../const'
 import { useCurrentAccountProxyAddress } from '../../hooks/useCurrentAccountProxyAddress'
 import { CoWShedFAQ } from '../../pure/CoWShedFAQ'
+import { CoWShedTabs } from '../../pure/CoWShedTabs'
+import { getShedRouteLink } from '../../utils/getShedRouteLink'
 import { RecoverFundsWidget } from '../RecoverFundsWidget'
 
 export function CoWShedWidget({ onDismiss }: { onDismiss: Command }): ReactNode {
   const { chainId } = useWalletInfo()
-  const { ErrorModal } = useErrorModal()
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
-  const { open: isSelectTokenWidgetOpen } = useSelectTokenWidgetState()
   const { proxyAddress } = useCurrentAccountProxyAddress() || {}
+  const params = useParams()
 
   const onDismissCallback = useCallback(() => {
     updateSelectTokenWidget({ open: false })
@@ -36,27 +37,31 @@ export function CoWShedWidget({ onDismiss }: { onDismiss: Command }): ReactNode 
     <Wrapper>
       <NewModal
         modalMode={false}
-        title="CoW Shed"
+        title="Account Proxy"
         onDismiss={onDismissCallback}
         contentPadding="10px"
         justifyContent="flex-start"
       >
-        <ErrorModal />
-        <SelectTokenWidget />
-        {!isSelectTokenWidgetOpen && (
-          <>
-            <Content>
-              <Title>
-                <Pocket size={20} /> Account Proxy
-              </Title>
+        <CoWShedTabs
+          chainId={chainId}
+          tab={params.tab as CoWShedWidgetTabs}
+          aboutContent={
+            <>
+              <Content>
+                <Title>
+                  <Pocket size={20} /> Account Proxy
+                </Title>
 
-              {proxyAddress && <AddressLinkStyled address={proxyAddress} chainId={chainId} noShorten />}
-
-              <RecoverFundsWidget />
-            </Content>
-            <CoWShedFAQ explorerLink={explorerLink} />
-          </>
-        )}
+                {proxyAddress && <AddressLinkStyled address={proxyAddress} chainId={chainId} noShorten />}
+              </Content>
+              <CoWShedFAQ
+                explorerLink={explorerLink}
+                recoverRouteLink={getShedRouteLink(chainId, CoWShedWidgetTabs.RECOVER_FUNDS)}
+              />
+            </>
+          }
+          recoverFundsContent={<RecoverFundsWidget />}
+        />
       </NewModal>
     </Wrapper>
   )

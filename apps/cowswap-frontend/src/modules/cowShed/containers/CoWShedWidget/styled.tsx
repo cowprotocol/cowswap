@@ -18,13 +18,6 @@ export const Wrapper = styled.div`
   li {
     padding: 0.3rem;
   }
-
-  .noFunds {
-    color: var(${UI.COLOR_ALERT_TEXT});
-    background: var(${UI.COLOR_ALERT_BG});
-    padding: 10px;
-    border-radius: 16px;
-  }
 `
 
 export const AddressLinkStyled = styled(AddressLink)`
@@ -59,7 +52,7 @@ export const Content = styled.div`
 export const Title = styled.div`
   font-size: 24px;
   font-weight: 600;
-  margin: 10px 0;
+  margin: 5px 0;
 `
 
 export const FAQWrapper = styled.div`

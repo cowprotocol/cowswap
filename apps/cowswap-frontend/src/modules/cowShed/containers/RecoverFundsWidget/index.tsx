@@ -9,10 +9,14 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import ms from 'ms.macro'
 import useSWR from 'swr'
 
-import { useOpenTokenSelectWidget, useSourceChainId } from 'modules/tokensList'
+import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
+
+import { SelectTokenWidget, useOpenTokenSelectWidget, useSourceChainId } from 'modules/tokensList'
 
 import { useTokenContract } from 'common/hooks/useContract'
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
+
+import { NoFunds, Wrapper } from './styled'
 
 import { useRecoverFundsCallback } from '../../hooks/useRecoverFundsCallback'
 import { useRecoverFundsFromProxy } from '../../hooks/useRecoverFundsFromProxy'
@@ -26,6 +30,8 @@ const selectedCurrencyAtom = atom<Currency | undefined>(undefined)
 export function RecoverFundsWidget(): ReactNode {
   const [selectedCurrency, setSelectedCurrency] = useAtom(selectedCurrencyAtom)
   const [tokenBalance, setTokenBalance] = useState<CurrencyAmount<Currency> | null>(null)
+
+  const { ErrorModal } = useErrorModal()
 
   const selectedTokenAddress = selectedCurrency ? getCurrencyAddress(selectedCurrency) : undefined
   const hasBalance = !!tokenBalance?.greaterThan(0)
@@ -73,25 +79,28 @@ export function RecoverFundsWidget(): ReactNode {
   }, [onSelectToken, selectedCurrency, setSelectedCurrency])
 
   return (
-    <>
-      <CurrencySelectButton currency={selectedCurrency} loading={false} onClick={onCurrencySelectClick} />
+    <Wrapper>
+      <ErrorModal />
+      <SelectTokenWidget standalone />
+
+      <div>
+        <CurrencySelectButton currency={selectedCurrency} loading={false} onClick={onCurrencySelectClick} />
+      </div>
 
       {selectedTokenAddress ? (
         <>
           <BalanceToRecover tokenBalance={tokenBalance} isBalanceLoading={isBalanceLoading} />
-          <ButtonPrimary onClick={recoverFunds} disabled={!hasBalance || isTxSigningInProgress}>
-            {isTxSigningInProgress ? (
-              <Loader />
-            ) : hasBalance ? (
-              'Recover funds'
-            ) : (
-              <span className="noFunds">No funds to recover</span>
-            )}
-          </ButtonPrimary>
+          {isTxSigningInProgress || hasBalance ? (
+            <ButtonPrimary onClick={recoverFunds} disabled={!hasBalance || isTxSigningInProgress}>
+              {isTxSigningInProgress ? <Loader /> : 'Recover funds'}
+            </ButtonPrimary>
+          ) : (
+            <NoFunds>No funds to recover</NoFunds>
+          )}
         </>
       ) : (
         <div></div>
       )}
-    </>
+    </Wrapper>
   )
 }
