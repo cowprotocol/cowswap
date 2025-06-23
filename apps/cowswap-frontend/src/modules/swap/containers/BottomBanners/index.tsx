@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { ReactNode } from 'react'
 
 import HAND_SVG from '@cowprotocol/assets/cow-swap/hand.svg'
 import { BannerOrientation, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
@@ -8,10 +8,9 @@ import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 import { WIDGET_MAX_WIDTH } from 'theme'
 
-import { parameterizeTradeRoute, useIsHooksTradeType } from 'modules/trade'
+import { useIsHooksTradeType } from 'modules/trade'
 
-import { Routes } from 'common/constants/routes'
-
+import { getShedRouteLink } from '../../../cowShed'
 import { NetworkBridgeBanner } from '../NetworkBridgeBanner/NetworkBridgeBanner'
 
 const Wrapper = styled.div`
@@ -23,26 +22,10 @@ const Wrapper = styled.div`
   margin: 0 auto;
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function BottomBanners() {
+export function BottomBanners(): ReactNode {
   const { chainId, account } = useWalletInfo()
   const isHookTradeType = useIsHooksTradeType()
-  const cowShedLink = useMemo(
-    () =>
-      parameterizeTradeRoute(
-        {
-          chainId: chainId.toString(),
-          inputCurrencyId: undefined,
-          outputCurrencyId: undefined,
-          inputCurrencyAmount: undefined,
-          outputCurrencyAmount: undefined,
-          orderKind: undefined,
-        },
-        Routes.COW_SHED,
-      ),
-    [chainId],
-  )
+  const cowShedLink = getShedRouteLink(chainId)
 
   return (
     <Wrapper>

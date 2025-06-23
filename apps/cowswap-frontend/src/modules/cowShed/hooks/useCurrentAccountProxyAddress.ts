@@ -1,17 +1,27 @@
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import useSWR, { SWRResponse } from 'swr'
+import useSWR from 'swr'
 
 import { useCowShedHooks } from './useCowShedHooks'
 
-export function useCurrentAccountProxyAddress(): SWRResponse<string> {
+interface ProxyAndAccount {
+  proxyAddress: string
+  account: string
+}
+
+export function useCurrentAccountProxyAddress(): ProxyAndAccount | undefined {
   const { account } = useWalletInfo()
   const cowShedHooks = useCowShedHooks()
 
   return useSWR(
     account && cowShedHooks ? [account, cowShedHooks, 'useCurrentAccountProxyAddress'] : null,
     ([account, cowShedHooks]) => {
-      return cowShedHooks.proxyOf(account)
+      const proxyAddress = cowShedHooks.proxyOf(account)
+
+      return {
+        proxyAddress,
+        account,
+      }
     },
-  )
+  ).data
 }

@@ -36,7 +36,7 @@ export function useRecoverFundsFromProxy(
   const cowShedHooks = useCowShedHooks()
   const { contract: cowShedContract } = useContract<CowShedContract>(COW_SHED_FACTORY, CowShedContractAbi)
 
-  const proxyAddress = useCurrentAccountProxyAddress().data
+  const { proxyAddress } = useCurrentAccountProxyAddress() || {}
 
   const callback = useCallback(async () => {
     if (
