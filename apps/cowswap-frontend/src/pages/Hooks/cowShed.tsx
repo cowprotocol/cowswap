@@ -1,10 +1,10 @@
-import { RecoverFundsFromProxy } from 'modules/hooksStore/containers/RecoverFundsFromProxy'
+import { ReactNode } from 'react'
+
+import { RecoverFundsFromProxy } from 'modules/cowShed'
 
 import { useNavigateBack } from 'common/hooks/useNavigate'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function CowShed() {
+export function CowShed(): ReactNode {
   const navigateBack = useNavigateBack()
 
   return (
