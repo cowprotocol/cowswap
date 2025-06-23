@@ -1,4 +1,4 @@
-import { BadgeTypes, MenuItem, ProductVariant } from '@cowprotocol/ui'
+import { MenuItem, ProductVariant } from '@cowprotocol/ui'
 
 import AppziButton from 'legacy/components/AppziButton'
 import { Version } from 'legacy/components/Version'
