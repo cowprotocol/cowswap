@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { ETH_FLOW_SLIPPAGE_WARNING_BORDER } from '@cowprotocol/common-const'
 import { isFractionFalsy, percentToBps } from '@cowprotocol/common-utils'
 import { BannerOrientation, InfoTooltip, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -8,10 +9,8 @@ import styled from 'styled-components/macro'
 
 import { useDerivedTradeState, useIsEoaEthFlow } from 'modules/trade'
 import { useIsSmartSlippageApplied, useTradeSlippage } from 'modules/tradeSlippage'
-import { ETH_FLOW_SLIPPAGE_WARNING_BORDER } from '@cowprotocol/common-const'
 
 const MINIMAL_ERC20_FLOW_SLIPPAGE_BPS = 200
-const MINIMAL_ETH_FLOW_SLIPPAGE_BPS = 500
 
 const StyledInlineBanner = styled(InlineBanner)`
   text-align: center;
