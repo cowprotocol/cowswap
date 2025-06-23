@@ -47,6 +47,10 @@ import {
   TransactionState as ActivityLink,
 } from './styled'
 
+import { useCurrentAccountProxyAddress } from '../../../cowShed'
+import { useCloseAccountModal } from '../../hooks/useToggleAccountModal'
+import { CowShedInfo } from '../CowShedInfo'
+
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
   to: '',
@@ -189,6 +193,8 @@ export function ActivityDetails(props: {
     enhancedTransaction?.approval?.tokenAddress ||
     (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId as SupportedChainId])
   const singleToken = useTokenBySymbolOrAddress(tokenAddress) || null
+  const closeAccountModal = useCloseAccountModal()
+  const cowShedAddress = useCurrentAccountProxyAddress()?.proxyAddress
 
   const getShowCancellationModal = useCancelOrder()
 
@@ -299,6 +305,8 @@ export function ActivityDetails(props: {
 
   const isCustomRecipient = !!order && getIsCustomRecipient(order)
 
+  const orderReceiver = order?.receiver || order?.owner
+
   return (
     <>
       {/* Warning banner if custom recipient */}
@@ -362,19 +370,21 @@ export function ActivityDetails(props: {
                 )}
               </SummaryInnerRow>
 
-              {order && isCustomRecipient && (
+              {orderReceiver && isCustomRecipient && (
                 <SummaryInnerRow>
                   <b>Recipient:</b>
-                  <i>
-                    {isCustomRecipientWarningBannerVisible && (
-                      <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" size={18} />
-                    )}
-                    <ExternalLink
-                      href={getExplorerLink(chainId, order.receiver || order.owner, ExplorerDataType.ADDRESS)}
-                    >
-                      {receiverEnsName || shortenAddress(order.receiver || order.owner)} ↗
-                    </ExternalLink>
-                  </i>
+                  {orderReceiver.toLowerCase() === cowShedAddress?.toLowerCase() ? (
+                    <CowShedInfo onClick={closeAccountModal} />
+                  ) : (
+                    <i>
+                      {isCustomRecipientWarningBannerVisible && (
+                        <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" size={18} />
+                      )}
+                      <ExternalLink href={getExplorerLink(chainId, orderReceiver, ExplorerDataType.ADDRESS)}>
+                        {receiverEnsName || shortenAddress(orderReceiver)} ↗
+                      </ExternalLink>
+                    </i>
+                  )}
                 </SummaryInnerRow>
               )}
 
