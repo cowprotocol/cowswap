@@ -6,10 +6,12 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { balancesAtom, balancesCacheAtom } from '../state/balancesAtom'
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function BalancesCacheUpdater({ chainId, account }: { chainId: SupportedChainId; account: string | undefined }) {
+interface BalancesCacheUpdaterProps {
+  chainId: SupportedChainId
+  account: string | undefined
+}
+
+export function BalancesCacheUpdater({ chainId, account }: BalancesCacheUpdaterProps): null {
   const [balances, setBalances] = useAtom(balancesAtom)
   const [balancesCache, setBalancesCache] = useAtom(balancesCacheAtom)
   const areBalancesRestoredFromCacheRef = useRef(false)
@@ -20,11 +22,7 @@ export function BalancesCacheUpdater({ chainId, account }: { chainId: SupportedC
 
   // Persist into localStorage only non-zero balances
   useEffect(() => {
-    if (!account) {
-      return
-    }
-
-    if (balances.chainId !== chainId) return
+    if (!account || balances.chainId !== chainId) return
 
     setBalancesCache((state) => {
       const balancesValues = balances.values
@@ -42,7 +40,7 @@ export function BalancesCacheUpdater({ chainId, account }: { chainId: SupportedC
         {} as Record<string, string>,
       )
 
-      const currentCache = state[chainId] || {}
+      const currentCache = state[chainId]?.[account.toLowerCase()] || {}
       // Remove zero balances from the current cache
       const updatedCache = Object.keys(currentCache).reduce(
         (acc, tokenAddress) => {
@@ -58,8 +56,11 @@ export function BalancesCacheUpdater({ chainId, account }: { chainId: SupportedC
       return {
         ...state,
         [chainId]: {
-          ...updatedCache,
-          ...balancesToCache,
+          ...state[chainId],
+          [account.toLowerCase()]: {
+            ...updatedCache,
+            ...balancesToCache,
+          },
         },
       }
     })
@@ -67,10 +68,11 @@ export function BalancesCacheUpdater({ chainId, account }: { chainId: SupportedC
 
   // Restore balances from cache once
   useLayoutEffect(() => {
-    const cache = balancesCache[chainId]
-
     if (!account) return
     if (areBalancesRestoredFromCacheRef.current) return
+
+    const cache = balancesCache[chainId]?.[account.toLowerCase()]
+
     if (!cache) return
 
     const cacheKeys = Object.keys(cache)

@@ -10,8 +10,6 @@ import { useMultiCallRpcProvider } from './useMultiCallRpcProvider'
 
 import { multiCall, MultiCallOptions } from '../multicall'
 
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
 export function useMultipleContractSingleData<T = Result>(
   addresses: string[],
   contractInterface: Interface,
@@ -19,6 +17,7 @@ export function useMultipleContractSingleData<T = Result>(
   params: unknown[] | undefined,
   multicallOptions: MultiCallOptions = {},
   swrConfig?: SWRConfiguration,
+  cacheKey?: string,
 ): SWRResponse<(T | undefined)[] | null> {
   const provider = useMultiCallRpcProvider()
 
@@ -52,6 +51,7 @@ export function useMultipleContractSingleData<T = Result>(
           contractInterface,
           chainId,
           calls.length,
+          cacheKey,
           'useMultipleContractSingleData',
         ],
     async ([provider, calls, multicallOptions, methodName, contractInterface]: [
