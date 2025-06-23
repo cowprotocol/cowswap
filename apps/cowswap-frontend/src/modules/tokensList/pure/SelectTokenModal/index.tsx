@@ -36,6 +36,7 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   defaultInputValue?: string
   areTokensLoading: boolean
   tokenListTags: TokenListTags
+  standalone?: boolean
 
   onSelectToken(token: TokenWithLogo): void
   openPoolPage(poolAddress: string): void
@@ -63,6 +64,7 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
     chainsToSelect,
     onSelectChain,
     tokenListTags,
+    standalone,
   } = props
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
 

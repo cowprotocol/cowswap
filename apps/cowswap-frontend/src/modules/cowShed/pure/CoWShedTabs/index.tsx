@@ -20,11 +20,11 @@ export function CoWShedTabs({ chainId, aboutContent, recoverFundsContent, tab }:
   return (
     <div>
       <Tabs>
-        <Tab $active={isAboutTab} to={getShedRouteLink(chainId, CoWShedWidgetTabs.ABOUT)}>
+        <Tab $active={isAboutTab} to={getShedRouteLink(chainId, CoWShedWidgetTabs.ABOUT)} replace>
           About
         </Tab>
 
-        <Tab $active={!isAboutTab} to={getShedRouteLink(chainId, CoWShedWidgetTabs.RECOVER_FUNDS)}>
+        <Tab $active={!isAboutTab} to={getShedRouteLink(chainId, CoWShedWidgetTabs.RECOVER_FUNDS)} replace>
           Recover funds
         </Tab>
       </Tabs>

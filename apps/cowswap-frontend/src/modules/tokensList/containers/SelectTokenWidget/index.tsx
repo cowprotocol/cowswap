@@ -199,6 +199,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
 
         return (
           <SelectTokenModal
+            standalone={standalone}
             displayLpTokenLists={displayLpTokenLists}
             unsupportedTokens={unsupportedTokens}
             selectedToken={selectedToken}
