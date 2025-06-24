@@ -14,6 +14,7 @@ interface BridgeRouteTitleProps {
   bridgeProvider: BridgeProviderInfo
   protocolIconShowOnly?: 'first' | 'second'
   protocolIconSize?: number
+  circleSize?: number
   stopNumber?: number
 }
 // TODO: Add proper return type annotation
@@ -26,11 +27,12 @@ export function BridgeRouteTitle({
   bridgeProvider,
   protocolIconShowOnly,
   protocolIconSize = 21,
+  circleSize,
   stopNumber,
 }: BridgeRouteTitleProps) {
   return (
     <>
-      <StopNumberCircle status={status} stopNumber={stopNumber}>
+      <StopNumberCircle status={status} stopNumber={stopNumber} size={circleSize}>
         {icon}
       </StopNumberCircle>
       <b>
