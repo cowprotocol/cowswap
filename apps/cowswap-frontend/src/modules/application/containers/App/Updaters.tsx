@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { MultiCallUpdater } from '@cowprotocol/multicall'
 import {
@@ -49,6 +48,8 @@ import { SentryUpdater } from 'common/updaters/SentryUpdater'
 import { SolversInfoUpdater } from 'common/updaters/SolversInfoUpdater'
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
+
+import { CommonPriorityBalancesAndAllowancesUpdater } from '../../../balancesAndAllowances'
 
 export function Updaters(): ReactNode {
   const { account } = useWalletInfo()
@@ -124,7 +125,7 @@ export function Updaters(): ReactNode {
       />
 
       <UnsupportedTokensUpdater />
-      <BalancesAndAllowancesUpdater chainId={sourceChainId} account={account} />
+      <CommonPriorityBalancesAndAllowancesUpdater/>
       <LpBalancesAndAllowancesUpdater chainId={sourceChainId} account={account} enablePolling={isYieldWidget} />
       <PoolsInfoUpdater />
       <LpTokensWithBalancesUpdater />

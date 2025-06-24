@@ -1,6 +1,6 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
-import { getAddress, isTruthy } from '@cowprotocol/common-utils'
+import { areSetsEqual, getAddress, isTruthy } from '@cowprotocol/common-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -13,25 +13,15 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 
-export function usePriorityTokenAddresses(): string[] {
+export function usePriorityTokenAddresses(): Set<string> {
   const { chainId } = useWalletInfo()
   const state = useDerivedTradeState()
+
+  const setOfTokensRef = useRef(new Set<string>())
 
   const pending = useSelector<AppState, PartialOrdersMap | undefined>((state) => {
     return state.orders?.[chainId]?.pending
   })
-
-  const pendingOrdersTokenAddresses = useMemo(() => {
-    if (!pending) return undefined
-
-    return Object.values(pending)
-      .filter(isTruthy)
-      .filter(({ order }) => getUiOrderType(order) === UiOrderType.SWAP)
-      .map(({ order }) => {
-        return [order.inputToken.address, order.outputToken.address]
-      })
-      .flat()
-  }, [pending])
 
   const inputCurrency = state?.inputCurrency
   const outputCurrency = state?.outputCurrency
@@ -39,7 +29,39 @@ export function usePriorityTokenAddresses(): string[] {
   const inputCurrencyAddress = getAddress(inputCurrency)
   const outputCurrencyAddress = getAddress(outputCurrency)
 
-  return useMemo(() => {
-    return (pendingOrdersTokenAddresses || []).concat(inputCurrencyAddress || [], outputCurrencyAddress || [])
-  }, [inputCurrencyAddress, outputCurrencyAddress, pendingOrdersTokenAddresses])
+  const newSetOfTokens = useMemo(() => {
+    if (!pending) return new Set<string>()
+
+    const setOfTokens = new Set(Object.values(pending)
+      .filter(isTruthy)
+      .filter(({ order }) => getUiOrderType(order) === UiOrderType.SWAP)
+      .map(({ order }) => {
+        return [order.inputToken.address, order.outputToken.address]
+      })
+      .flat());
+
+    if (inputCurrencyAddress) {
+      setOfTokens.add(inputCurrencyAddress)
+    }
+
+    if (outputCurrencyAddress) {
+      setOfTokens.add(outputCurrencyAddress)
+    }
+
+    return setOfTokens
+  }, [pending, inputCurrencyAddress, outputCurrencyAddress])
+
+  useEffect(() => {
+    const prev = setOfTokensRef.current
+    const next = newSetOfTokens
+
+    if (!areSetsEqual(prev, next)) {
+      console.log('update token set')
+      setOfTokensRef.current = next
+    } else {
+      console.log('no update token set')
+    }
+  }, [newSetOfTokens])
+
+  return setOfTokensRef.current
 }
