@@ -27,6 +27,9 @@ export function ProgressDetails({
   },
 }: QuoteDetailsProps): ReactNode {
   const { sourceAmounts, targetAmounts, sourceChainName, targetChainName } = overview
+  
+  // Swap is complete by the time this context exists (context requires execution data)
+  // If context exists, swap must be DONE - otherwise component wouldn't render
   const swapStatus = SwapAndBridgeStatus.DONE
   const bridgeStatus = bridgingStatus === SwapAndBridgeStatus.DEFAULT ? SwapAndBridgeStatus.PENDING : bridgingStatus
 

@@ -34,7 +34,7 @@ export function BridgeRouteTitle({
         {icon}
       </StopNumberCircle>
       <b>
-        <span>{titlePrefix} </span>
+        {titlePrefix && <span>{titlePrefix} </span>}
         <ProtocolIcons
           size={protocolIconSize}
           showOnlyFirst={protocolIconShowOnly === 'first'}

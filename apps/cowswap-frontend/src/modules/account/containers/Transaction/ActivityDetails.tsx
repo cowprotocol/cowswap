@@ -213,6 +213,9 @@ export function ActivityDetails(props: {
 
   const swapAndBridgeContext = useSwapAndBridgeContext(chainId, order, undefined)
 
+  // Early bridge order detection using chain ID comparison (available immediately)
+  const isBridgeOrder = !!order && order.inputToken.chainId !== order.outputToken.chainId
+
   const showProgressBarCallback = useMemo(() => {
     if (!showProgressBar) {
       return null
@@ -337,11 +340,11 @@ export function ActivityDetails(props: {
           <b>{activityName}</b>
           {isOrder ? (
             <>
-              {swapAndBridgeContext && order?.kind === 'sell' ? (
-                // Bridge order layout - Currently only displayed for SELL orders
+              {isBridgeOrder && order?.kind === 'sell' ? (
+                // Bridge order layout - handles both loading and full context states
                 // TODO: Consider extending to BUY orders
                 <BridgeActivitySummary
-                  context={swapAndBridgeContext}
+                  context={swapAndBridgeContext || null}
                   order={order}
                   fulfillmentTime={fulfillmentTime}
                   isCustomRecipient={isCustomRecipient}
