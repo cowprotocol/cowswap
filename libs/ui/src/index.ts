@@ -36,6 +36,8 @@ export * from './pure/CmsImage'
 export * from './pure/DismissableInlineBanner'
 export * from './pure/Input'
 export * from './pure/Badge'
+export * from './pure/NetworkLogo'
+export * from './pure/CircleProgress'
 
 export * from './containers/CowSwapSafeAppLink'
 export * from './containers/InlineBanner'

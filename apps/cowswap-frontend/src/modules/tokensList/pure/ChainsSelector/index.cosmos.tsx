@@ -3,7 +3,7 @@ import { SupportedChainId, ChainInfo } from '@cowprotocol/cow-sdk'
 
 import styled from 'styled-components/macro'
 
-import { mapChainInfo } from '../../hooks/useChainsToSelect'
+import { mapChainInfo } from '../../utils/mapChainInfo'
 
 import { ChainsSelector } from './index'
 

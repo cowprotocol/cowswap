@@ -40,6 +40,8 @@ function calculatePrice(currency: Token, price: Fraction | null): Price<Token, T
 
   const usdcToken = USDC[currency.chainId as SupportedChainId]
 
+  if (!usdcToken) return null
+
   if (price.lessThan(MINIMAL_PRICE_VALUE)) {
     console.error('Price is too small, cannot create a Price instance', currency.address, currency, price)
     return null

@@ -1,11 +1,11 @@
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
-import { Percent } from '@uniswap/sdk-core'
+import { Fraction, Percent } from '@uniswap/sdk-core'
 
-import { FractionLike, Nullish } from 'types'
+import { Nullish } from 'types'
 
 export type CalculateAmountPercentDifferenceProps = {
-  reference: Nullish<FractionLike>
-  value: Nullish<FractionLike>
+  reference: Nullish<Fraction>
+  value: Nullish<Fraction>
 }
 
 /**

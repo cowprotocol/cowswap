@@ -1,6 +1,6 @@
 import { ReactElement, ReactNode, useMemo } from 'react'
 
-import { COW, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
+import { COW_TOKEN_TO_CHAIN, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
@@ -297,7 +297,7 @@ export function ActivityDetails(props: {
 
   if (enhancedTransaction?.swapVCow || enhancedTransaction?.swapLockedGNOvCow) {
     inputToken = V_COW[chainId as SupportedChainId]
-    outputToken = COW[chainId as SupportedChainId]
+    outputToken = COW_TOKEN_TO_CHAIN[chainId as SupportedChainId]
   }
 
   const isCustomRecipient = !!order && getIsCustomRecipient(order)

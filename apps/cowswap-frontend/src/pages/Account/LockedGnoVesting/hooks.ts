@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { MerkleDrop, MerkleDropAbi, TokenDistro, TokenDistroAbi } from '@cowprotocol/abis'
 import {
-  COW,
+  COW_TOKEN_TO_CHAIN,
   LOCKED_GNO_VESTING_DURATION,
   LOCKED_GNO_VESTING_START_TIME,
   MERKLE_DROP_CONTRACT_ADDRESSES,
@@ -23,7 +23,7 @@ import { useContract } from 'common/hooks/useContract'
 import { fetchClaim } from './claimData'
 
 // We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter
-const _COW = COW[SupportedChainId.MAINNET]
+const _COW = COW_TOKEN_TO_CHAIN[SupportedChainId.MAINNET]
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -33,6 +33,10 @@ const useMerkleDropContract = () => useContract<MerkleDrop>(MERKLE_DROP_CONTRACT
 const useTokenDistroContract = () => useContract<TokenDistro>(TOKEN_DISTRO_CONTRACT_ADDRESSES, TokenDistroAbi, true)
 
 export const useAllocation = (): CurrencyAmount<Token> => {
+  if (!_COW) {
+    throw new Error(`COW token not found for chain ${SupportedChainId.MAINNET}`)
+  }
+
   const { chainId, account } = useWalletInfo()
   const initialAllocation = useRef(CurrencyAmount.fromRawAmount(_COW, 0))
   const [allocation, setAllocation] = useState(initialAllocation.current)
@@ -59,6 +63,9 @@ export const useAllocation = (): CurrencyAmount<Token> => {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const useCowFromLockedGnoBalances = () => {
+  if (!_COW) {
+    throw new Error(`COW token not found for chain ${SupportedChainId.MAINNET}`)
+  }
   const { account } = useWalletInfo()
   const allocated = useAllocation()
   const vested = allocated

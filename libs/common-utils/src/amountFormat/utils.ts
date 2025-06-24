@@ -1,9 +1,10 @@
+import { Nullish } from '@cowprotocol/types'
 import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
 import { FractionUtils } from '../fractionUtils'
-import { FractionLike, Nullish } from '../types'
+import { FractionLike } from '../types'
 
 const TINIEST = new Fraction(1, 100_000_000)
 const TINY = new Fraction(1, 100_000)

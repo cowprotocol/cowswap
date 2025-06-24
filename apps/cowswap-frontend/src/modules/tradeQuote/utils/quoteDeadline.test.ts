@@ -111,10 +111,11 @@ describe('Quote deadline utils', () => {
     it('ValidTo should be now + deadline + timeOffset', () => {
       const deadline = 5400 // 1.5 hours
       const offset = 3600 // 1 hour
+      const localQuoteTimestamp = Math.floor(NOW_TIME / 1000)
       const quoteDeadlineParams = {
         validFor: deadline,
-        quoteValidTo: NOW_TIME + deadline + offset,
-        localQuoteTimestamp: NOW_TIME,
+        quoteValidTo: localQuoteTimestamp + deadline + offset,
+        localQuoteTimestamp: localQuoteTimestamp,
       }
 
       expect(getOrderValidTo(deadline, getQuoteState(quoteDeadlineParams))).toEqual(
@@ -124,10 +125,11 @@ describe('Quote deadline utils', () => {
 
     it('When the result is too big, then it should be capped by MAX_VALID_TO_EPOCH', () => {
       const deadline = 54000000000000000
+      const localQuoteTimestamp = Math.floor(NOW_TIME / 1000)
       const quoteDeadlineParams = {
         validFor: deadline,
-        quoteValidTo: NOW_TIME + deadline,
-        localQuoteTimestamp: NOW_TIME,
+        quoteValidTo: localQuoteTimestamp + deadline,
+        localQuoteTimestamp,
       }
 
       expect(getOrderValidTo(deadline, getQuoteState(quoteDeadlineParams))).toEqual(MAX_VALID_TO_EPOCH)
@@ -158,10 +160,11 @@ describe('Quote deadline utils', () => {
       const expirationDate = '2024-04-16T10:44:01.334Z'
 
       const deadline = 5400 // 1.5 hours
+      const localQuoteTimestamp = Math.floor(NOW_TIME / 1000)
       const deadlineParams = {
         validFor: deadline,
-        quoteValidTo: NOW_TIME + deadline,
-        localQuoteTimestamp: NOW_TIME,
+        quoteValidTo: localQuoteTimestamp + deadline,
+        localQuoteTimestamp: localQuoteTimestamp,
         expiration: expirationDate,
       }
 
@@ -172,11 +175,12 @@ describe('Quote deadline utils', () => {
       // Now is 10:54:01, expiration is 11:04:01
       const expirationDate = '2024-04-16T11:04:01.334Z'
 
+      const localQuoteTimestamp = Math.floor(NOW_TIME / 1000)
       const deadline = 5400 // 1.5 hours
       const deadlineParams = {
         validFor: deadline,
-        quoteValidTo: NOW_TIME + deadline,
-        localQuoteTimestamp: NOW_TIME,
+        quoteValidTo: localQuoteTimestamp + deadline,
+        localQuoteTimestamp,
         expiration: expirationDate,
       }
 
@@ -189,14 +193,52 @@ describe('Quote deadline utils', () => {
 
       const deadline = 5400 // 1.5 hours
       const offset = 3600 // 1 hour
+      const localQuoteTimestamp = Math.floor(NOW_TIME / 1000)
       const deadlineParams = {
         validFor: deadline,
-        quoteValidTo: NOW_TIME + deadline + offset,
-        localQuoteTimestamp: NOW_TIME,
+        quoteValidTo: localQuoteTimestamp + deadline + offset,
+        localQuoteTimestamp,
         expiration: expirationDate,
       }
 
       expect(isQuoteExpired(getQuoteState(deadlineParams))).toBe(true)
+    })
+
+    describe('When quote expiration is out of limit', () => {
+      // Now is 10:54:01, expiration is 11:54:01 - will expire in 1 hour
+      const expirationDate = '2024-04-16T11:54:01.334Z'
+
+      it('And quote is not expired yet, then should return false', () => {
+        const expirationGap = 59 // < 1 min
+        const localQuoteTimestamp = Math.floor(NOW_TIME / 1000) - expirationGap // Not expired
+
+        const deadline = 5400 // 1.5 hours
+        const offset = 0
+        const deadlineParams = {
+          validFor: deadline,
+          quoteValidTo: localQuoteTimestamp + deadline + offset,
+          localQuoteTimestamp,
+          expiration: expirationDate,
+        }
+
+        expect(isQuoteExpired(getQuoteState(deadlineParams))).toBe(false)
+      })
+
+      it('And quote is not expired yet, then should return false', () => {
+        const expirationGap = 60 // 1 min
+        const localQuoteTimestamp = Math.floor(NOW_TIME / 1000) - expirationGap // Expired
+
+        const deadline = 5400 // 1.5 hours
+        const offset = 0
+        const deadlineParams = {
+          validFor: deadline,
+          quoteValidTo: localQuoteTimestamp + deadline + offset,
+          localQuoteTimestamp,
+          expiration: expirationDate,
+        }
+
+        expect(isQuoteExpired(getQuoteState(deadlineParams))).toBe(true)
+      })
     })
   })
 })
