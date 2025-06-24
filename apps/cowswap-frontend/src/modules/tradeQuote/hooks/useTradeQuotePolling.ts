@@ -87,7 +87,7 @@ export function useTradeQuotePolling(isConfirmOpen = false): null {
   useEffect(() => {
     const interval = setInterval(() => {
       setTradeQuotePolling((state) => {
-        const newState = state - 1000
+        const newState = state - ONE_SEC
 
         if (newState < 0) {
           return QUOTE_POLLING_INTERVAL
