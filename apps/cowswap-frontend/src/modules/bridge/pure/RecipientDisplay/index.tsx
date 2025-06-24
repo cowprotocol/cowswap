@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { ExplorerDataType, getExplorerLink, isAddress, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { NetworkLogo } from '@cowprotocol/ui'
@@ -11,14 +13,12 @@ interface RecipientDisplayProps {
   linkRelAttribute?: string
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function RecipientDisplay({
   recipient,
   chainId,
   logoSize = 16,
   linkRelAttribute = 'noreferrer',
-}: RecipientDisplayProps) {
+}: RecipientDisplayProps): ReactNode {
   return (
     <RecipientWrapper>
       <NetworkLogo chainId={chainId} size={logoSize} />

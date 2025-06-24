@@ -1,9 +1,8 @@
 import { ReactNode, memo } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
-import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { TokenAmount, FiatAmount, ExternalLink } from '@cowprotocol/ui'
+import { TokenAmount, FiatAmount } from '@cowprotocol/ui'
 import type { Currency } from '@uniswap/sdk-core'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -14,7 +13,6 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
 import { SummaryRow } from 'common/pure/SummaryRow'
-import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import { ShimmerWrapper, StepContent, SwapSummaryRow, BridgeSummaryRow } from './styled'
 
@@ -23,6 +21,7 @@ import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { BridgingProgressContent } from '../contents/BridgingProgressContent'
 import { PreparingBridgingContent } from '../contents/BridgingProgressContent/PreparingBridgingContent'
 import { SwapResultContent } from '../contents/SwapResultContent'
+import { RecipientDisplay } from '../RecipientDisplay'
 import { BridgeStatusIcons, SwapStatusIcons } from '../StopStatus'
 
 const FiatWrapper = styled.span`
@@ -191,10 +190,10 @@ const BridgeMetaDetails = memo(function BridgeMetaDetails({
   surplusAmountUsd,
   sourceToken,
   fulfillmentTime,
-  order,
   isCustomRecipient,
-  receiverEnsName,
   appData,
+  quoteBridgeContext,
+  targetToken,
 }: {
   surplusAmount: SwapAndBridgeContext['swapResultContext']['surplusAmount']
   surplusAmountUsd: SwapAndBridgeContext['swapResultContext']['surplusAmountUsd']
@@ -204,6 +203,8 @@ const BridgeMetaDetails = memo(function BridgeMetaDetails({
   isCustomRecipient?: boolean
   receiverEnsName?: string | null
   appData?: string | false | null
+  quoteBridgeContext?: SwapAndBridgeContext['quoteBridgeContext']
+  targetToken: Currency
 }): ReactNode {
   return (
     <>
@@ -230,16 +231,16 @@ const BridgeMetaDetails = memo(function BridgeMetaDetails({
         </SummaryRow>
       )}
 
-      {/* Recipient Section */}
+      {/* Recipient Section - Always show for custom recipients, with shimmer if loading */}
       {isCustomRecipient && (
         <SummaryRow>
-          <b>Recipient:</b>
+          <b>Recipient</b>
           <i>
-            <ExternalLink
-              href={getExplorerLink(order.inputToken.chainId, order.receiver || order.owner, ExplorerDataType.ADDRESS)}
-            >
-              {receiverEnsName || shortenAddress(order.receiver || order.owner)} ↗
-            </ExternalLink>
+            {quoteBridgeContext?.recipient ? (
+              <RecipientDisplay recipient={quoteBridgeContext.recipient} chainId={targetToken.chainId} logoSize={16} />
+            ) : (
+              <ShimmerWrapper />
+            )}
           </i>
         </SummaryRow>
       )}
@@ -306,21 +307,19 @@ const BridgeSummaryHeader = memo(function BridgeSummaryHeader({
 const BridgeLoadingState = memo(function BridgeLoadingState({
   order,
   fulfillmentTime,
-  receiverEnsName,
   appData,
+  isCustomRecipient,
 }: {
   order: Order
   fulfillmentTime?: string
-  receiverEnsName?: string | null
   appData?: string | false | null
+  isCustomRecipient?: boolean
 }): ReactNode {
-  const isCustomRecipient = getIsCustomRecipient(order)
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
   const inputAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
   const feeAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.feeAmount)
   const sourceChainData = getChainInfo(order.inputToken.chainId)
   const targetChainData = bridgeSupportedNetworks?.find((chain) => chain.id === order.outputToken.chainId)
-  const receiverAddress = order.receiver || order.owner
 
   return (
     <>
@@ -360,11 +359,9 @@ const BridgeLoadingState = memo(function BridgeLoadingState({
       )}
       {isCustomRecipient && (
         <SummaryRow>
-          <b>Recipient:</b>
+          <b>Recipient</b>
           <i>
-            <ExternalLink href={getExplorerLink(order.inputToken.chainId, receiverAddress, ExplorerDataType.ADDRESS)}>
-              {receiverEnsName || shortenAddress(receiverAddress)} ↗
-            </ExternalLink>
+            <ShimmerWrapper />
           </i>
         </SummaryRow>
       )}
@@ -382,100 +379,79 @@ const BridgeLoadingState = memo(function BridgeLoadingState({
   )
 })
 
-function validateBridgeData(context: SwapAndBridgeContext | null, order: Order | null): ReactNode | null {
-  if (!context || !order) {
-    return (
-      <SummaryRow>
-        <b>Loading...</b>
-        <i>Bridge details unavailable</i>
-      </SummaryRow>
-    )
-  }
-
-  const { overview, swapResultContext } = context
-
-  if (!overview || !swapResultContext) {
-    return (
-      <SummaryRow>
-        <b>Error</b>
-        <i>Bridge data incomplete</i>
-      </SummaryRow>
-    )
-  }
-
-  const { sourceAmounts, targetCurrency } = overview
-
-  if (!sourceAmounts || !targetCurrency) {
-    return (
-      <SummaryRow>
-        <b>Error</b>
-        <i>Missing bridge token data</i>
-      </SummaryRow>
-    )
-  }
-
-  return null
-}
-
 export function BridgeActivitySummary(props: BridgeActivitySummaryProps): ReactNode {
   const { context, order, fulfillmentTime, isCustomRecipient, receiverEnsName, appData } = props
 
-  // If we don't have context but have order data, show loading state
-  if (!context && order) {
+  // Show loading state if we don't have complete bridge data yet
+  if (!context || !order || !context?.overview || !context?.swapResultContext) {
+    // Can't show bridge activity without order data
+    if (!order) {
+      return null
+    }
+    
     return (
       <BridgeLoadingState
         order={order}
         fulfillmentTime={fulfillmentTime}
-        receiverEnsName={receiverEnsName}
         appData={appData}
+        isCustomRecipient={isCustomRecipient}
       />
     )
   }
 
-  // Validate data and return early if invalid
-  const validationError = validateBridgeData(context, order)
-  if (validationError) return validationError
+  // Additional validation for required data
+  const { overview, swapResultContext } = context
+  const { sourceAmounts, targetCurrency } = overview
+
+  if (!sourceAmounts || !targetCurrency) {
+    return (
+      <BridgeLoadingState
+        order={order}
+        fulfillmentTime={fulfillmentTime}
+        appData={appData}
+        isCustomRecipient={isCustomRecipient}
+      />
+    )
+  }
 
   const {
-    overview,
-    swapResultContext,
     bridgeProvider,
     bridgingProgressContext,
     quoteBridgeContext,
     statusResult,
     bridgingStatus,
-  } = context!
+  } = context
 
-  const { sourceAmounts, targetAmounts, sourceChainName, targetChainName, targetCurrency } = overview!
-  const { surplusAmount, surplusAmountUsd } = swapResultContext!
+  const { targetAmounts, sourceChainName, targetChainName } = overview
+  const { surplusAmount, surplusAmountUsd } = swapResultContext
 
   // Get tokens for display
-  const sourceToken = sourceAmounts!.buyAmount.currency // intermediate token after swap
-  const targetToken = targetCurrency!
+  const sourceToken = sourceAmounts.buyAmount.currency // intermediate token after swap
+  const targetToken = targetCurrency
 
   return (
     <>
       <BridgeSummaryHeader
         sourceToken={sourceToken}
         targetToken={targetToken}
-        sourceAmounts={sourceAmounts!}
+        sourceAmounts={sourceAmounts}
         targetAmounts={targetAmounts}
-        sourceChainName={sourceChainName!}
-        targetChainName={targetChainName!}
+        sourceChainName={sourceChainName}
+        targetChainName={targetChainName}
       />
 
       <BridgeStepDetails
-        swapResultContext={swapResultContext!}
+        swapResultContext={swapResultContext}
         bridgeProvider={bridgeProvider}
-        sourceAmounts={sourceAmounts!}
+        sourceAmounts={sourceAmounts}
         targetAmounts={targetAmounts}
-        sourceChainName={sourceChainName!}
-        targetChainName={targetChainName!}
+        sourceChainName={sourceChainName}
+        targetChainName={targetChainName}
         bridgingProgressContext={bridgingProgressContext}
         quoteBridgeContext={quoteBridgeContext}
         statusResult={statusResult}
         bridgingStatus={bridgingStatus}
-        order={order!}
+        order={order}
       />
 
       <BridgeMetaDetails
@@ -483,10 +459,12 @@ export function BridgeActivitySummary(props: BridgeActivitySummaryProps): ReactN
         surplusAmountUsd={surplusAmountUsd}
         sourceToken={sourceToken}
         fulfillmentTime={fulfillmentTime}
-        order={order!}
+        order={order}
         isCustomRecipient={isCustomRecipient}
         receiverEnsName={receiverEnsName}
         appData={appData}
+        quoteBridgeContext={quoteBridgeContext}
+        targetToken={targetToken}
       />
     </>
   )
