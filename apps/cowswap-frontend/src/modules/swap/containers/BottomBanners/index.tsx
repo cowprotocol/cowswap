@@ -8,9 +8,9 @@ import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 import { WIDGET_MAX_WIDTH } from 'theme'
 
+import { getShedRouteLink } from 'modules/cowShed'
 import { useIsHooksTradeType } from 'modules/trade'
 
-import { getShedRouteLink } from '../../../cowShed'
 import { NetworkBridgeBanner } from '../NetworkBridgeBanner/NetworkBridgeBanner'
 
 const Wrapper = styled.div`

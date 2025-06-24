@@ -15,6 +15,7 @@ import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { useToggleAccountModal } from 'modules/account'
+import { useCurrentAccountProxyAddress } from 'modules/cowShed'
 import { EthFlowStepper } from 'modules/ethFlow'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
@@ -47,7 +48,6 @@ import {
   TransactionState as ActivityLink,
 } from './styled'
 
-import { useCurrentAccountProxyAddress } from '../../../cowShed'
 import { useCloseAccountModal } from '../../hooks/useToggleAccountModal'
 import { CowShedInfo } from '../CowShedInfo'
 
