@@ -21,14 +21,13 @@ import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { useSolversInfo } from 'common/hooks/useSolversInfo'
+import { useSwapAndBridgeContext } from 'common/hooks/useSwapAndBridgeContext'
 import { featureFlagsAtom } from 'common/state/featureFlagsState'
 import { ActivityDerivedState } from 'common/types/activity'
 import { ApiSolverCompetition, SolverCompetition } from 'common/types/soverCompetition'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
-// TODO: fix import. When import from modules/bridge it causes circular dependency
-import { useSwapAndBridgeContext } from '../../bridge/hooks/useSwapAndBridgeContext'
-import { DEFAULT_STEP_NAME, OrderProgressBarStepName } from '../constants'
+import { OrderProgressBarStepName, DEFAULT_STEP_NAME } from '../constants'
 import {
   ordersProgressBarStateAtom,
   setOrderProgressBarCancellationTriggered,
