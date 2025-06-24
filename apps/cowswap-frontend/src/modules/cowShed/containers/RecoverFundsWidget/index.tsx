@@ -1,6 +1,7 @@
 import { atom, useAtom } from 'jotai/index'
 import { ReactNode, useCallback } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getCurrencyAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { ButtonPrimary, Loader } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
@@ -25,8 +26,13 @@ import { BalanceToRecover } from '../../pure/BalanceToRecover'
 
 const selectedCurrencyAtom = atom<Currency | undefined>(undefined)
 
-export function RecoverFundsWidget(): ReactNode {
-  const [selectedCurrency, setSelectedCurrency] = useAtom(selectedCurrencyAtom)
+interface RecoverFundsWidgetProps {
+  defaultToken: TokenWithLogo | undefined
+}
+
+export function RecoverFundsWidget({ defaultToken: defaultTokenToRefund }: RecoverFundsWidgetProps): ReactNode {
+  const [_selectedCurrency, setSelectedCurrency] = useAtom(selectedCurrencyAtom)
+  const selectedCurrency = _selectedCurrency ?? defaultTokenToRefund
 
   const { ErrorModal } = useErrorModal()
   const { open: isSelectTokenWidgetOpen } = useSelectTokenWidgetState()

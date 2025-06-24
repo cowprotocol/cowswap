@@ -16,8 +16,10 @@ import { AddressLinkStyled, Content, Title, Wrapper } from './styled'
 
 import { CoWShedWidgetTabs } from '../../const'
 import { useCurrentAccountProxyAddress } from '../../hooks/useCurrentAccountProxyAddress'
+import { useDefaultTokenToRefund } from '../../hooks/useDefaultTokenToRefund'
 import { CoWShedFAQ } from '../../pure/CoWShedFAQ'
 import { CoWShedTabs } from '../../pure/CoWShedTabs'
+import { TokensInProxyBanner } from '../../pure/TokensInProxyBanner'
 import { getShedRouteLink } from '../../utils/getShedRouteLink'
 import { RecoverFundsWidget } from '../RecoverFundsWidget'
 
@@ -27,6 +29,8 @@ export function CoWShedWidget({ onDismiss }: { onDismiss: Command }): ReactNode 
   const { proxyAddress, isProxyDeployed } = useCurrentAccountProxyAddress() || {}
   const params = useParams()
   const setBalancesContext = useSetBalancesContext()
+
+  const defaultTokenToRefund = useDefaultTokenToRefund(!!isProxyDeployed)
 
   const onDismissCallback = useCallback(() => {
     updateSelectTokenWidget({ open: false })
@@ -68,13 +72,21 @@ export function CoWShedWidget({ onDismiss }: { onDismiss: Command }): ReactNode 
 
                 {proxyAddress && <AddressLinkStyled address={proxyAddress} chainId={chainId} noShorten />}
               </Content>
+              {isProxyDeployed && defaultTokenToRefund && (
+                <>
+                  <br />
+                  <TokensInProxyBanner token={defaultTokenToRefund.token} chainId={chainId} />
+                </>
+              )}
               <CoWShedFAQ
                 explorerLink={explorerLink}
                 recoverRouteLink={getShedRouteLink(chainId, CoWShedWidgetTabs.RECOVER_FUNDS)}
               />
             </>
           }
-          recoverFundsContent={<RecoverFundsWidget />}
+          recoverFundsContent={
+            <RecoverFundsWidget defaultToken={isProxyDeployed ? defaultTokenToRefund?.token : undefined} />
+          }
         />
       </NewModal>
     </Wrapper>
