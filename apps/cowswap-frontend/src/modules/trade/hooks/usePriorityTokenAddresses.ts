@@ -18,6 +18,7 @@ export function usePriorityTokenAddresses(): Set<string> {
   const state = useDerivedTradeState()
 
   const setOfTokensRef = useRef(new Set<string>())
+  const pendingRef = useRef(0)
 
   const pending = useSelector<AppState, PartialOrdersMap | undefined>((state) => {
     return state.orders?.[chainId]?.pending
@@ -55,10 +56,17 @@ export function usePriorityTokenAddresses(): Set<string> {
     const prev = setOfTokensRef.current
     const next = newSetOfTokens
 
+    const pendingCount = Object.keys(pending || {}).length
+    if (pendingCount != pendingRef.current) {
+      pendingRef.current = pendingCount
+      setOfTokensRef.current = next
+      return
+    }
+
     if (!areSetsEqual(prev, next)) {
       setOfTokensRef.current = next
     }
-  }, [newSetOfTokens])
+  }, [newSetOfTokens, pending])
 
   return setOfTokensRef.current
 }
