@@ -1,6 +1,7 @@
 import { Fragment, ReactNode } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { styled } from '@cowprotocol/common-hooks'
 import { getEtherscanLink, getExplorerLabel, shortenAddress, getExplorerAddressLink } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { ExternalLink } from '@cowprotocol/ui'
@@ -46,12 +47,16 @@ import {
   WalletSecondaryActions,
   WalletWrapper,
   Wrapper,
-  CowShedInfoStyled,
 } from './styled'
 import { SurplusCard } from './SurplusCard'
 
 import { useCloseAccountModal } from '../../hooks/useToggleAccountModal'
+import { CowShedInfo } from '../CowShedInfo'
 import { CreationDateText } from '../Transaction/styled'
+
+const CowShedInfoStyled = styled(CowShedInfo)`
+  margin-top: 10px;
+`
 
 export const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',

@@ -18,7 +18,6 @@ import {
   TransactionStatusText as ActivityDetailsText,
   TransactionWrapper,
 } from '../../containers/Transaction/styled'
-import { CowShedInfo } from '../CowShedInfo'
 
 export const WalletName = styled.div`
   width: initial;
@@ -488,6 +487,3 @@ export const WalletSelector = styled.div<WalletSelectorProps>`
   `}
 `
 
-export const CowShedInfoStyled = styled(CowShedInfo)`
-  margin-top: 10px;
-`

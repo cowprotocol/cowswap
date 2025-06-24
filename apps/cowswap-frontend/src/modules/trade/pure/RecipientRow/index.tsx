@@ -18,14 +18,6 @@ const Row = styled.div`
   gap: 3px;
 `
 
-const Link = styled.a`
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`
-
 interface RecipientRowProps {
   chainId: SupportedChainId
   recipient: Nullish<string>
