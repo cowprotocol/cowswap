@@ -155,10 +155,6 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
       font-weight: 600;
       margin: 6px 0 0;
     }
-
-    &.cancelled {
-      text-decoration: line-through;
-    }
   }
 
   + ${StyledLink} {

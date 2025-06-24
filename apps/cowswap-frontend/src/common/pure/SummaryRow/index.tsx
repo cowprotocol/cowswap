@@ -43,9 +43,5 @@ export const SummaryRow = styled.div<{ isExpired?: boolean; isCancelled?: boolea
       font-weight: 600;
       margin: 6px 0 0;
     }
-
-    &.cancelled {
-      text-decoration: line-through;
-    }
   }
 `
