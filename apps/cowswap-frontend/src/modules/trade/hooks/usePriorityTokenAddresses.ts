@@ -56,10 +56,7 @@ export function usePriorityTokenAddresses(): Set<string> {
     const next = newSetOfTokens
 
     if (!areSetsEqual(prev, next)) {
-      console.log('update token set')
       setOfTokensRef.current = next
-    } else {
-      console.log('no update token set')
     }
   }, [newSetOfTokens])
 
