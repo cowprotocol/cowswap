@@ -86,7 +86,7 @@ export function ProxyRecipient({ recipient, chainId, size = 14 }: ProxyRecipient
   return (
     <>
       {cowShedModal.isOpen && ReactDOM.createPortal(<CoWShedWidget onDismiss={toggleModal} modalMode />, document.body)}
-      <HoverTooltip content={tooltipContent} placement="bottom">
+      <HoverTooltip content={tooltipContent} placement="bottom" isClosed={cowShedModal.isOpen}>
         <Wrapper>
           <Pocket size={size} />
           <AddressLink address={proxyAddress} chainId={chainId} />
