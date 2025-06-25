@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { capitalizeFirstLetter } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenAmount } from '@cowprotocol/ui'
 
@@ -23,7 +24,7 @@ export function BridgeSummaryHeader({ context }: BridgeSummaryHeaderProps): Reac
         <i>
           <TokenLogo token={sourceAmounts.sellAmount.currency} size={20} />
           <TokenAmount amount={sourceAmounts.sellAmount} tokenSymbol={sourceAmounts.sellAmount.currency} />
-          {` on ${sourceChainName}`}
+          {` on ${capitalizeFirstLetter(sourceChainName)}`}
         </i>
       </SummaryRow>
 
@@ -38,7 +39,7 @@ export function BridgeSummaryHeader({ context }: BridgeSummaryHeaderProps): Reac
           ) : (
             <ShimmerWrapper />
           )}
-          {` on ${targetChainName}`}
+          {` on ${capitalizeFirstLetter(targetChainName)}`}
         </i>
       </SummaryRow>
     </>

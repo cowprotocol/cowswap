@@ -188,7 +188,8 @@ export function ActivityDetails(props: {
   creationTime?: string | undefined
 }) {
   const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime } = props
-  const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired } = activityDerivedState
+  const { id, isOrder, summary, order, enhancedTransaction, isExpired, isCancelled, isFailed, isCancelling } =
+    activityDerivedState
   const activityState = getActivityState(activityDerivedState)
   const tokenAddress =
     enhancedTransaction?.approval?.tokenAddress ||
@@ -214,9 +215,10 @@ export function ActivityDetails(props: {
   const setShowProgressBar = useAddOrderToSurplusQueue() // TODO: not exactly the proper tool, rethink this
   const toggleAccountModal = useToggleAccountModal()
 
+  const skipBridgingDisplay = isExpired || isCancelled || isFailed || isCancelling
   const fullAppData = order?.apiAdditionalInfo?.fullAppData
   const orderBridgeProvider = fullAppData ? bridgingSdk.getProviderFromAppData(fullAppData) : undefined
-  const isBridgeOrder = !!orderBridgeProvider
+  const isBridgeOrder = !!orderBridgeProvider && !skipBridgingDisplay
 
   const swapAndBridgeContext = useSwapAndBridgeContext(chainId, isBridgeOrder ? order : undefined, undefined)
 

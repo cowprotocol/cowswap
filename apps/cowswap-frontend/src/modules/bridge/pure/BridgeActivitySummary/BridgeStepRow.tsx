@@ -24,12 +24,14 @@ export function BridgeStepRow({ context }: BridgeStepRowProps): ReactNode {
 
   const bridgeStatus = bridgingStatus === SwapAndBridgeStatus.DEFAULT ? SwapAndBridgeStatus.PENDING : bridgingStatus
 
+  const isCollapsible = Boolean(bridgingProgressContext && quoteBridgeContext)
+
   return (
     <BridgeSummaryRow>
       <b>Bridge</b>
       <StepContent>
         <BridgeDetailsContainer
-          isCollapsible={true}
+          isCollapsible={isCollapsible}
           defaultExpanded={false}
           status={bridgeStatus}
           statusIcon={BridgeStatusIcons[bridgeStatus]}

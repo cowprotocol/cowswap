@@ -71,13 +71,14 @@ export function SwapResultContent({
           ),
           content: (
             <SuccessTextBold>
-              +{' '}
               <TokenAmountDisplay
                 currencyAmount={surplusAmount}
                 displaySymbol
                 usdValue={surplusAmountUsd}
                 hideTokenIcon={true}
-              />
+              >
+                +
+              </TokenAmountDisplay>
             </SuccessTextBold>
           ),
         }
