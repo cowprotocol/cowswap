@@ -17,9 +17,9 @@ import { CoWShedWidgetTabs } from '../../const'
 import { useCurrentAccountProxyAddress } from '../../hooks/useCurrentAccountProxyAddress'
 import { useTokensToRefund } from '../../hooks/useTokensToRefund'
 import { CoWShedFAQ } from '../../pure/CoWShedFAQ'
-import { CoWShedTabs } from '../../pure/CoWShedTabs'
 import { TokensInProxyBanner } from '../../pure/TokensInProxyBanner'
 import { getShedRouteLink } from '../../utils/getShedRouteLink'
+import { CoWShedTabs } from '../CoWShedTabs'
 import { RecoverFundsWidget } from '../RecoverFundsWidget'
 
 interface CoWShedWidgetProps {

@@ -2,6 +2,8 @@ import { ReactNode, useEffect, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { useUpdateSelectTokenWidgetState } from 'modules/tokensList'
+
 import { useNavigate } from 'common/hooks/useNavigate'
 import { Tabs, Tab } from 'common/pure/Tabs'
 
@@ -27,8 +29,11 @@ export function CoWShedTabs({
   const isAboutTab = currentTab !== CoWShedWidgetTabs.RECOVER_FUNDS
 
   const navigate = useNavigate()
+  const updateSelectTokenWidgetState = useUpdateSelectTokenWidgetState()
 
   const onTabSelect = (tab: CoWShedWidgetTabs): void => {
+    updateSelectTokenWidgetState({ open: false })
+
     if (modalMode) {
       setCurrentTab(tab)
     } else {
