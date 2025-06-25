@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { SolverInfo } from '@cowprotocol/core'
@@ -487,7 +487,23 @@ const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<CompetitionOrderStatus.type
 
 function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string, doNotQuery: boolean): void {
   const setAtom = useSetAtom(updateOrderProgressBarBackendInfo)
-  const { type: backendApiStatus, value } = usePendingOrderStatus(chainId, orderId, doNotQuery) || {}
+  const [stopQuerying, setStopQuerying] = useState(false)
+  const { type: backendApiStatus, value } = usePendingOrderStatus(chainId, orderId, stopQuerying) || {}
+
+  // Once doNotQuery is set to true, keep querying for another 3 seconds to ensure we get the final status and then stop
+  useEffect(() => {
+    if (doNotQuery) {
+      const timer = setTimeout(() => setStopQuerying(true), ms`3s`)
+
+      return () => {
+        clearTimeout(timer)
+      }
+    } else {
+      setStopQuerying(false) // Reset the stop querying state when doNotQuery is false
+
+      return
+    }
+  }, [doNotQuery, orderId])
 
   useEffect(() => {
     if (orderId && (backendApiStatus || value)) {
