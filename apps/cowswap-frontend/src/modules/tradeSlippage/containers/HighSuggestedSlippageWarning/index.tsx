@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD } from '@cowprotocol/common-const'
 import { isFractionFalsy, percentToBps } from '@cowprotocol/common-utils'
 import { BannerOrientation, InfoTooltip, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -10,7 +11,6 @@ import { useDerivedTradeState, useIsEoaEthFlow } from 'modules/trade'
 import { useIsSmartSlippageApplied, useTradeSlippage } from 'modules/tradeSlippage'
 
 const MINIMAL_ERC20_FLOW_SLIPPAGE_BPS = 200
-const MINIMAL_ETH_FLOW_SLIPPAGE_BPS = 500
 
 const StyledInlineBanner = styled(InlineBanner)`
   text-align: center;
@@ -22,7 +22,7 @@ export type HighSuggestedSlippageWarningProps = {
 
 export function HighSuggestedSlippageWarning(props: HighSuggestedSlippageWarningProps): ReactNode {
   const { isTradePriceUpdating } = props
-  const { account } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const slippage = useTradeSlippage()
   const state = useDerivedTradeState()
 
@@ -32,7 +32,7 @@ export function HighSuggestedSlippageWarning(props: HighSuggestedSlippageWarning
   const amountsAreSet = !isFractionFalsy(state?.inputCurrencyAmount) && !isFractionFalsy(state?.outputCurrencyAmount)
 
   const isEoaEthFlow = useIsEoaEthFlow()
-  const minimalSlippageBps = isEoaEthFlow ? MINIMAL_ETH_FLOW_SLIPPAGE_BPS : MINIMAL_ERC20_FLOW_SLIPPAGE_BPS
+  const minimalSlippageBps = isEoaEthFlow ? ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD[chainId] : MINIMAL_ERC20_FLOW_SLIPPAGE_BPS
 
   if (!isSuggestedSlippage || !slippageBps || slippageBps <= minimalSlippageBps || !amountsAreSet) {
     return null
