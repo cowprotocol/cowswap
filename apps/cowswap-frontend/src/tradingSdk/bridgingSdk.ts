@@ -1,3 +1,4 @@
+import { getRpcProvider } from '@cowprotocol/common-const'
 import { BridgingSdk, BungeeBridgeProvider } from '@cowprotocol/cow-sdk'
 
 import { orderBookApi } from 'cowSdk'
@@ -8,6 +9,7 @@ export const bungeeBridgeProvider = new BungeeBridgeProvider({
   apiOptions: {
     includeBridges: ['across', 'cctp'],
   },
+  getRpcProvider,
 })
 
 export const bridgingSdk = new BridgingSdk({

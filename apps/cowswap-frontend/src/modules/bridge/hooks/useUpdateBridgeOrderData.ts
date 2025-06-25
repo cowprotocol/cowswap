@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 
-import { getRpcProvider } from '@cowprotocol/common-const'
 import { useInterval } from '@cowprotocol/common-hooks'
 import { CrossChainOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -20,14 +19,11 @@ export function useUpdateBridgeOrderData(
   pollingInterval = BRIDGE_TRANSACTION_POLLING_INTERVAL,
 ) {
   const updateBridgeOrderData = useCallback(async () => {
-    const rpcProvider = getRpcProvider(chainId)
-
-    if (!order || !rpcProvider) return
+    if (!order) return
 
     const crossChainOrder = await bridgingSdk.getOrder({
       chainId,
       orderId: order.id,
-      rpcProvider,
     })
 
     setCrossChainOrder(crossChainOrder)
