@@ -15,7 +15,7 @@ import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { useToggleAccountModal } from 'modules/account'
-import { useCurrentAccountProxyAddress } from 'modules/cowShed'
+import { ProxyRecipient, useCurrentAccountProxyAddress } from 'modules/cowShed'
 import { EthFlowStepper } from 'modules/ethFlow'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
@@ -47,9 +47,6 @@ import {
   TextAlert,
   TransactionState as ActivityLink,
 } from './styled'
-
-import { useCloseAccountModal } from '../../hooks/useToggleAccountModal'
-import { CowShedInfo } from '../CowShedInfo'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -193,7 +190,6 @@ export function ActivityDetails(props: {
     enhancedTransaction?.approval?.tokenAddress ||
     (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId as SupportedChainId])
   const singleToken = useTokenBySymbolOrAddress(tokenAddress) || null
-  const closeAccountModal = useCloseAccountModal()
   const cowShedAddress = useCurrentAccountProxyAddress()?.proxyAddress
 
   const getShowCancellationModal = useCancelOrder()
@@ -374,7 +370,9 @@ export function ActivityDetails(props: {
                 <SummaryInnerRow>
                   <b>Recipient:</b>
                   {cowShedAddress && orderReceiver.toLowerCase() === cowShedAddress.toLowerCase() ? (
-                    <CowShedInfo onClick={closeAccountModal} />
+                    <div>
+                      <ProxyRecipient chainId={chainId} recipient={orderReceiver} />
+                    </div>
                   ) : (
                     <i>
                       {isCustomRecipientWarningBannerVisible && (

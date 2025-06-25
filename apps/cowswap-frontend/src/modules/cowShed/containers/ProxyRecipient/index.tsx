@@ -89,7 +89,7 @@ export function ProxyRecipient({ recipient, chainId, size = 14 }: ProxyRecipient
       <HoverTooltip content={tooltipContent} placement="bottom">
         <Wrapper>
           <Pocket size={size} />
-          <span>Account proxy</span>
+          <AddressLink address={proxyAddress} chainId={chainId} />
         </Wrapper>
       </HoverTooltip>
     </>
