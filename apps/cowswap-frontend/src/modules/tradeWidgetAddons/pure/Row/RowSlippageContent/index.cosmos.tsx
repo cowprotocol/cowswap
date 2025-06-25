@@ -12,6 +12,7 @@ const defaultProps: RowSlippageContentProps = {
   },
   isSlippageModified: false,
   isSmartSlippageApplied: false,
+  isDefaultSlippageApplied: false,
   smartSlippage: '0.2%',
   setAutoSlippage: () => {
     console.log('setAutoSlippage called!')

@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.20.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.19.0...common-const-v1.20.0) (2025-06-20)
+
+
+### Features
+
+* account shows banner is COW token is unavaillable ([#5833](https://github.com/cowprotocol/cowswap/issues/5833)) ([b553228](https://github.com/cowprotocol/cowswap/commit/b55322899161785076f95ee420a1b796661a1e52))
+* **new-newtworks:** fixed sort order for chains ([#5856](https://github.com/cowprotocol/cowswap/issues/5856)) ([65c1b36](https://github.com/cowprotocol/cowswap/commit/65c1b36b84b3a1d3570ce574e8d105da048b8c20))
+
 ## [1.19.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.18.0...common-const-v1.19.0) (2025-06-18)
 
 

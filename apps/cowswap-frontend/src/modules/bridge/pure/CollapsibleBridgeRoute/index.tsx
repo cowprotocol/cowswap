@@ -35,6 +35,7 @@ export function CollapsibleBridgeRoute(props: CollapsibleBridgeRouteProps): Reac
 
   const [isExpanded, setIsExpanded] = useState(props.isExpanded || false)
 
+  // TODO: Add proper return type annotation
   const toggleExpanded = (): void => setIsExpanded((state) => !state)
 
   return (

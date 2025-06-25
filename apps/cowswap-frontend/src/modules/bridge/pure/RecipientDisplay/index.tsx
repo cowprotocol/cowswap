@@ -2,9 +2,9 @@ import { ReactNode } from 'react'
 
 import { ExplorerDataType, getExplorerLink, isAddress, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { NetworkLogo } from '@cowprotocol/ui'
 
 import { Link, RecipientWrapper } from '../../styles'
-import { NetworkLogo } from '../NetworkLogo'
 
 interface RecipientDisplayProps {
   recipient: string

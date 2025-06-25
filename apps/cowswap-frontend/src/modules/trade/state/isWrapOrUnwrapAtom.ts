@@ -9,8 +9,12 @@ export const isWrapOrUnwrapAtom = atom((get) => {
   const { chainId } = get(walletInfoAtom)
   const { inputCurrency, outputCurrency } = get(derivedTradeStateAtom) || {}
 
-  const onputCurrencyId = inputCurrency ? getCurrencyAddress(inputCurrency) : null
-  const outputCurrencyId = outputCurrency ? getCurrencyAddress(outputCurrency) : null
+  if (!inputCurrency || !outputCurrency) return false
+
+  if (inputCurrency.chainId !== outputCurrency.chainId) return false
+
+  const onputCurrencyId = getCurrencyAddress(inputCurrency)
+  const outputCurrencyId = getCurrencyAddress(outputCurrency)
 
   return getIsWrapOrUnwrap(chainId, onputCurrencyId, outputCurrencyId)
 })
