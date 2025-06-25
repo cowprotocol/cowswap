@@ -212,12 +212,12 @@ export function ActivityDetails(props: {
   const setShowProgressBar = useAddOrderToSurplusQueue() // TODO: not exactly the proper tool, rethink this
   const toggleAccountModal = useToggleAccountModal()
 
-  const swapAndBridgeContext = useSwapAndBridgeContext(chainId, order, undefined)
-
   // Early bridge order detection using chain ID comparison (available immediately)
   const fullAppData = order?.apiAdditionalInfo?.fullAppData
   const orderBridgeProvider = fullAppData ? bridgingSdk.getProviderFromAppData(fullAppData) : undefined
   const isBridgeOrder = !!orderBridgeProvider
+
+  const swapAndBridgeContext = useSwapAndBridgeContext(chainId, isBridgeOrder ? order : undefined, undefined)
 
   const showProgressBarCallback = useMemo(() => {
     if (!showProgressBar) {
