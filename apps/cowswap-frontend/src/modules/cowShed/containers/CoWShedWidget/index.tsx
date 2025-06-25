@@ -1,7 +1,7 @@
-import { ReactNode, useCallback, useEffect } from 'react'
+import { ReactNode, useCallback, useEffect, useRef } from 'react'
 
+import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { getEtherscanLink } from '@cowprotocol/common-utils'
-import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useSetBalancesContext } from 'entities/balancesContext/useBalancesContext'
@@ -12,7 +12,7 @@ import { useUpdateSelectTokenWidgetState } from 'modules/tokensList'
 
 import { NewModal } from 'common/pure/NewModal'
 
-import { AddressLinkStyled, Content, Title, Wrapper } from './styled'
+import { AddressLinkStyled, Content, EmptyWrapper, ModalWrapper, Title, WidgetWrapper } from './styled'
 
 import { CoWShedWidgetTabs } from '../../const'
 import { useCurrentAccountProxyAddress } from '../../hooks/useCurrentAccountProxyAddress'
@@ -23,12 +23,18 @@ import { TokensInProxyBanner } from '../../pure/TokensInProxyBanner'
 import { getShedRouteLink } from '../../utils/getShedRouteLink'
 import { RecoverFundsWidget } from '../RecoverFundsWidget'
 
-export function CoWShedWidget({ onDismiss }: { onDismiss: Command }): ReactNode {
+interface CoWShedWidgetProps {
+  modalMode: boolean
+  onDismiss(): void
+}
+
+export function CoWShedWidget({ onDismiss, modalMode }: CoWShedWidgetProps): ReactNode {
   const { chainId } = useWalletInfo()
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
   const { proxyAddress, isProxyDeployed } = useCurrentAccountProxyAddress() || {}
   const params = useParams()
   const setBalancesContext = useSetBalancesContext()
+  const widgetRef = useRef(null)
 
   const defaultTokenToRefund = useDefaultTokenToRefund(!!isProxyDeployed)
 
@@ -49,46 +55,52 @@ export function CoWShedWidget({ onDismiss }: { onDismiss: Command }): ReactNode 
     }
   }, [proxyAddress, isProxyDeployed, setBalancesContext])
 
+  useOnClickOutside([widgetRef], onDismissCallback)
+
   const explorerLink = proxyAddress ? getEtherscanLink(chainId, 'address', proxyAddress) : undefined
+  const Wrapper = modalMode ? ModalWrapper : EmptyWrapper
 
   return (
-    <Wrapper>
-      <NewModal
-        modalMode={false}
-        title="Account Proxy"
-        onDismiss={onDismissCallback}
-        contentPadding="10px"
-        justifyContent="flex-start"
-      >
-        <CoWShedTabs
-          chainId={chainId}
-          tab={params.tab as CoWShedWidgetTabs}
-          aboutContent={
-            <>
-              <Content>
-                <Title>
-                  <Pocket size={20} /> Account Proxy
-                </Title>
+    <Wrapper $modalMode={modalMode}>
+      <WidgetWrapper ref={widgetRef}>
+        <NewModal
+          modalMode={modalMode}
+          title="Account Proxy"
+          onDismiss={onDismissCallback}
+          contentPadding="10px"
+          justifyContent="flex-start"
+        >
+          <CoWShedTabs
+            chainId={chainId}
+            modalMode={modalMode}
+            tab={modalMode ? undefined : (params.tab as CoWShedWidgetTabs)}
+            aboutContent={
+              <>
+                <Content>
+                  <Title>
+                    <Pocket size={20} /> Account Proxy
+                  </Title>
 
-                {proxyAddress && <AddressLinkStyled address={proxyAddress} chainId={chainId} noShorten />}
-              </Content>
-              {isProxyDeployed && defaultTokenToRefund && (
-                <>
-                  <br />
-                  <TokensInProxyBanner token={defaultTokenToRefund.token} chainId={chainId} />
-                </>
-              )}
-              <CoWShedFAQ
-                explorerLink={explorerLink}
-                recoverRouteLink={getShedRouteLink(chainId, CoWShedWidgetTabs.RECOVER_FUNDS)}
-              />
-            </>
-          }
-          recoverFundsContent={
-            <RecoverFundsWidget defaultToken={isProxyDeployed ? defaultTokenToRefund?.token : undefined} />
-          }
-        />
-      </NewModal>
+                  {proxyAddress && <AddressLinkStyled address={proxyAddress} chainId={chainId} noShorten />}
+                </Content>
+                {isProxyDeployed && defaultTokenToRefund && (
+                  <>
+                    <br />
+                    <TokensInProxyBanner token={defaultTokenToRefund.token} chainId={chainId} />
+                  </>
+                )}
+                <CoWShedFAQ
+                  explorerLink={explorerLink}
+                  recoverRouteLink={getShedRouteLink(chainId, CoWShedWidgetTabs.RECOVER_FUNDS)}
+                />
+              </>
+            }
+            recoverFundsContent={
+              <RecoverFundsWidget defaultToken={isProxyDeployed ? defaultTokenToRefund?.token : undefined} />
+            }
+          />
+        </NewModal>
+      </WidgetWrapper>
     </Wrapper>
   )
 }

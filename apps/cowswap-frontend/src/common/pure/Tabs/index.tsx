@@ -1,6 +1,5 @@
 import { UI } from '@cowprotocol/ui'
 
-import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 
 export const Tabs = styled.div`
@@ -11,7 +10,7 @@ export const Tabs = styled.div`
   border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
 `
 
-export const Tab = styled(Link)<{ $active: boolean }>`
+export const Tab = styled.button<{ $active: boolean }>`
   background: none;
   margin: 0;
   outline: none;

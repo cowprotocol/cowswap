@@ -18,10 +18,10 @@ export function HookListsTabs({
 }: HookListsTabsProps): ReactNode {
   return (
     <styledEl.Tabs>
-      <styledEl.Tab to="" $active={isAllHooksTab} onClick={() => setIsAllHooksTab(true)}>
+      <styledEl.Tab $active={isAllHooksTab} onClick={() => setIsAllHooksTab(true)}>
         All Hooks ({allHooksCount})
       </styledEl.Tab>
-      <styledEl.Tab to="" $active={!isAllHooksTab} onClick={() => setIsAllHooksTab(false)}>
+      <styledEl.Tab $active={!isAllHooksTab} onClick={() => setIsAllHooksTab(false)}>
         My Custom Hooks ({customHooksCount})
       </styledEl.Tab>
     </styledEl.Tabs>

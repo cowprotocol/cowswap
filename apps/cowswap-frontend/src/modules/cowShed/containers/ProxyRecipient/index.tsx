@@ -1,15 +1,17 @@
+import { useAtom } from 'jotai'
 import { ReactNode } from 'react'
 
 import { ButtonSecondary, HoverTooltip } from '@cowprotocol/ui'
 
+import ReactDOM from 'react-dom'
 import { Pocket } from 'react-feather'
-import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 
 import { AddressLink } from 'common/pure/AddressLink'
 
 import { useCurrentAccountProxyAddress } from '../../hooks/useCurrentAccountProxyAddress'
-import { getShedRouteLink } from '../../utils/getShedRouteLink'
+import { cowShedModalAtom } from '../../state/cowShedModalAtom'
+import { CoWShedWidget } from '../CoWShedWidget'
 
 const TooltipWrapper = styled.div`
   max-width: 320px;
@@ -18,11 +20,6 @@ const TooltipWrapper = styled.div`
   > p {
     margin-top: 0;
   }
-`
-
-const ReadMore = styled(Link)`
-  text-decoration: none !important;
-  font-size: 15px;
 `
 
 const Wrapper = styled.div`
@@ -36,30 +33,40 @@ const Wrapper = styled.div`
   }
 `
 
-interface ProxyRecipientProps {
-  recipient: string
+interface TooltipProps {
   chainId: number
-  size?: number
+  account: string
+  onReadMore(): void
 }
 
-function Tooltip({ account, chainId }: { account: string; chainId: number }): ReactNode {
-  const cowShedLink = getShedRouteLink(chainId)
-
+function Tooltip({ account, chainId, onReadMore }: TooltipProps): ReactNode {
   return (
     <TooltipWrapper>
       <p>
         Funds will be handled by a smart contract that is owned and fully controlled by your account (
         <AddressLink address={account} chainId={chainId} />)
       </p>
-      <ReadMore to={cowShedLink} target="_blank">
-        <ButtonSecondary>Read more</ButtonSecondary>
-      </ReadMore>
+      <ButtonSecondary onClick={onReadMore}>Read more</ButtonSecondary>
     </TooltipWrapper>
   )
 }
 
+interface ProxyRecipientProps {
+  recipient: string
+  chainId: number
+  size?: number
+}
+
 export function ProxyRecipient({ recipient, chainId, size = 14 }: ProxyRecipientProps): ReactNode {
   const proxyAndAccount = useCurrentAccountProxyAddress()
+  const [cowShedModal, setCowShedModal] = useAtom(cowShedModalAtom)
+
+  const toggleModal = (): void => {
+    setCowShedModal((state) => ({
+      ...state,
+      isOpen: !state.isOpen,
+    }))
+  }
 
   if (!recipient || !proxyAndAccount) return null
 
@@ -71,14 +78,17 @@ export function ProxyRecipient({ recipient, chainId, size = 14 }: ProxyRecipient
     )
   }
 
-  const tooltipContent = <Tooltip account={account} chainId={chainId} />
+  const tooltipContent = <Tooltip account={account} chainId={chainId} onReadMore={toggleModal} />
 
   return (
-    <HoverTooltip content={tooltipContent} placement="bottom">
-      <Wrapper>
-        <Pocket size={size} />
-        <span>Account proxy</span>
-      </Wrapper>
-    </HoverTooltip>
+    <>
+      {cowShedModal.isOpen && ReactDOM.createPortal(<CoWShedWidget onDismiss={toggleModal} modalMode />, document.body)}
+      <HoverTooltip content={tooltipContent} placement="bottom">
+        <Wrapper>
+          <Pocket size={size} />
+          <span>Account proxy</span>
+        </Wrapper>
+      </HoverTooltip>
+    </>
   )
 }

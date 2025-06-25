@@ -1,3 +1,5 @@
+export * from './const'
+
 export { CoWShedWidget } from './containers/CoWShedWidget'
 
 export { ProxyRecipient } from './containers/ProxyRecipient'

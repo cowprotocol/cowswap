@@ -1,11 +1,29 @@
 import { UI } from '@cowprotocol/ui'
 
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 import { WIDGET_MAX_WIDTH } from 'theme'
 
 import { AddressLink } from 'common/pure/AddressLink'
 
-export const Wrapper = styled.div`
+export const EmptyWrapper = styled.div<{ $modalMode: boolean }>`
+  width: 100%;
+`
+
+export const ModalWrapper = styled.div<{ $modalMode: boolean }>`
+  position: ${({ $modalMode }) => ($modalMode ? 'fixed' : 'static')};
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  overflow-y: scroll;
+  padding: 50px 0;
+  background: ${({ theme }) => (theme.isInjectedWidgetMode ? 'transparent' : transparentize(theme.black, 0.1))};
+  backdrop-filter: blur(3px);
+`
+
+export const WidgetWrapper = styled.div`
   width: 100%;
   max-width: ${WIDGET_MAX_WIDTH.swap};
   margin: 0 auto;

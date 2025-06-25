@@ -8,7 +8,7 @@ import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 import { WIDGET_MAX_WIDTH } from 'theme'
 
-import { getShedRouteLink } from 'modules/cowShed'
+import { getShedRouteLink, CoWShedWidgetTabs } from 'modules/cowShed'
 import { useIsHooksTradeType } from 'modules/trade'
 
 import { NetworkBridgeBanner } from '../NetworkBridgeBanner/NetworkBridgeBanner'
@@ -25,7 +25,7 @@ const Wrapper = styled.div`
 export function BottomBanners(): ReactNode {
   const { chainId, account } = useWalletInfo()
   const isHookTradeType = useIsHooksTradeType()
-  const cowShedLink = getShedRouteLink(chainId)
+  const cowShedLink = getShedRouteLink(chainId, CoWShedWidgetTabs.RECOVER_FUNDS, undefined, 'hooks')
 
   return (
     <Wrapper>
