@@ -214,7 +214,6 @@ export function ActivityDetails(props: {
   const setShowProgressBar = useAddOrderToSurplusQueue() // TODO: not exactly the proper tool, rethink this
   const toggleAccountModal = useToggleAccountModal()
 
-  // Early bridge order detection using chain ID comparison (available immediately)
   const fullAppData = order?.apiAdditionalInfo?.fullAppData
   const orderBridgeProvider = fullAppData ? bridgingSdk.getProviderFromAppData(fullAppData) : undefined
   const isBridgeOrder = !!orderBridgeProvider

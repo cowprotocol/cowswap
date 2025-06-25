@@ -24,7 +24,6 @@ export function BridgeMetaDetails({ context }: BridgeMetaDetailsProps): ReactNod
 
   return (
     <>
-      {/* Surplus Section */}
       {surplusAmount?.greaterThan(0) && (
         <SummaryRow>
           <b>Surplus</b>
