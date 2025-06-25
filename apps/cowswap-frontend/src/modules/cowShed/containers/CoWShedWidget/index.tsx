@@ -59,6 +59,28 @@ export function CoWShedWidget({ onDismiss, modalMode }: CoWShedWidgetProps): Rea
 
   const Wrapper = modalMode ? ModalWrapper : EmptyWrapper
 
+  const AboutContent = (
+    <>
+      <Content>
+        <Title>
+          <Pocket size={20} /> Account Proxy
+        </Title>
+
+        {proxyAddress && <AddressLinkStyled address={proxyAddress} chainId={chainId} noShorten />}
+      </Content>
+      {isProxyDeployed && !!tokensToRefund?.length && (
+        <>
+          <br />
+          <TokensInProxyBanner tokensToRefund={tokensToRefund} />
+        </>
+      )}
+      <CoWShedFAQ
+        isProxyDeployed={isProxyDeployed}
+        recoverRouteLink={getShedRouteLink(chainId, CoWShedWidgetTabs.RECOVER_FUNDS)}
+      />
+    </>
+  )
+
   return (
     <Wrapper $modalMode={modalMode}>
       <WidgetWrapper ref={widgetRef}>
@@ -69,32 +91,19 @@ export function CoWShedWidget({ onDismiss, modalMode }: CoWShedWidgetProps): Rea
           contentPadding="10px"
           justifyContent="flex-start"
         >
-          <CoWShedTabs
-            chainId={chainId}
-            modalMode={modalMode}
-            tab={modalMode ? undefined : (params.tab as CoWShedWidgetTabs)}
-            aboutContent={
-              <>
-                <Content>
-                  <Title>
-                    <Pocket size={20} /> Account Proxy
-                  </Title>
-
-                  {proxyAddress && <AddressLinkStyled address={proxyAddress} chainId={chainId} noShorten />}
-                </Content>
-                {isProxyDeployed && tokensToRefund?.length && (
-                  <>
-                    <br />
-                    <TokensInProxyBanner tokensToRefund={tokensToRefund} />
-                  </>
-                )}
-                <CoWShedFAQ recoverRouteLink={getShedRouteLink(chainId, CoWShedWidgetTabs.RECOVER_FUNDS)} />
-              </>
-            }
-            recoverFundsContent={
-              <RecoverFundsWidget defaultToken={isProxyDeployed ? defaultTokenToRefund?.token : undefined} />
-            }
-          />
+          {isProxyDeployed ? (
+            <CoWShedTabs
+              chainId={chainId}
+              modalMode={modalMode}
+              tab={modalMode ? undefined : (params.tab as CoWShedWidgetTabs)}
+              aboutContent={AboutContent}
+              recoverFundsContent={
+                <RecoverFundsWidget defaultToken={isProxyDeployed ? defaultTokenToRefund?.token : undefined} />
+              }
+            />
+          ) : (
+            AboutContent
+          )}
         </NewModal>
       </WidgetWrapper>
     </Wrapper>

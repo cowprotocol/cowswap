@@ -22,10 +22,6 @@ const FAQ_DATA = [
         <br />
         This contract is deployed only once per account. This account becomes the only owner. CoW Shed will act as an
         intermediary account who will do the trading on your behalf.
-        <br />
-        <br />
-        Because this contract holds the funds temporarily, it's possible the funds are stuck in some edge cases. This
-        tool will help you recover your funds.
       </>
     ),
   },
@@ -34,6 +30,8 @@ const FAQ_DATA = [
     answer(recoverRouteLink: string) {
       return (
         <>
+          Because this contract holds the funds temporarily, it's possible the funds are stuck in some edge cases. This
+          tool will help you recover your funds.
           <ol>
             <li>
               <Link to={recoverRouteLink}>Select the token</Link> you want to recover from CoW Shed
@@ -48,9 +46,10 @@ const FAQ_DATA = [
 
 interface CoWShedFAQProps {
   recoverRouteLink: string
+  isProxyDeployed: boolean | undefined
 }
 
-export function CoWShedFAQ({ recoverRouteLink }: CoWShedFAQProps): ReactNode {
+export function CoWShedFAQ({ recoverRouteLink, isProxyDeployed }: CoWShedFAQProps): ReactNode {
   const [openItems, setOpenItems] = useState<Record<number, boolean>>({ 0: true })
 
   const handleToggle = (index: number) => (e: React.MouseEvent) => {
@@ -58,9 +57,11 @@ export function CoWShedFAQ({ recoverRouteLink }: CoWShedFAQProps): ReactNode {
     setOpenItems((prev) => ({ ...prev, [index]: !prev[index] }))
   }
 
+  const data = isProxyDeployed ? FAQ_DATA : [FAQ_DATA[0]]
+
   return (
     <FAQWrapper>
-      {FAQ_DATA.map((faq, index) => (
+      {data.map((faq, index) => (
         <FAQItem key={index} open={openItems[index]}>
           <summary onClick={handleToggle(index)}>
             {faq.question}

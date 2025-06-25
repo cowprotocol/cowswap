@@ -14,7 +14,7 @@ import { cowShedModalAtom } from '../../state/cowShedModalAtom'
 import { CoWShedWidget } from '../CoWShedWidget'
 
 const TooltipWrapper = styled.div`
-  min-width: 300px;
+  min-width: 320px;
   max-width: 360px;
   padding: 10px;
 
