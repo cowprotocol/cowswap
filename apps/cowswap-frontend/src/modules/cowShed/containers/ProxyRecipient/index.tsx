@@ -3,7 +3,6 @@ import { ReactNode } from 'react'
 
 import { ButtonSecondary, HoverTooltip } from '@cowprotocol/ui'
 
-import ReactDOM from 'react-dom'
 import { Pocket } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -11,7 +10,6 @@ import { AddressLink } from 'common/pure/AddressLink'
 
 import { useCurrentAccountProxyAddress } from '../../hooks/useCurrentAccountProxyAddress'
 import { cowShedModalAtom } from '../../state/cowShedModalAtom'
-import { CoWShedWidget } from '../CoWShedWidget'
 
 const TooltipWrapper = styled.div`
   min-width: 320px;
@@ -85,7 +83,6 @@ export function ProxyRecipient({ recipient, chainId, size = 14 }: ProxyRecipient
 
   return (
     <>
-      {cowShedModal.isOpen && ReactDOM.createPortal(<CoWShedWidget onDismiss={toggleModal} modalMode />, document.body)}
       <HoverTooltip content={tooltipContent} placement="bottom" isClosed={cowShedModal.isOpen}>
         <Wrapper>
           <Pocket size={size} />

@@ -55,7 +55,7 @@ export function CoWShedWidget({ onDismiss, modalMode }: CoWShedWidgetProps): Rea
     }
   }, [proxyAddress, isProxyDeployed, setBalancesContext])
 
-  useOnClickOutside([widgetRef], onDismissCallback)
+  useOnClickOutside([widgetRef], modalMode ? onDismissCallback : undefined)
 
   const Wrapper = modalMode ? ModalWrapper : EmptyWrapper
 
