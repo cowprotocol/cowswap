@@ -3,20 +3,16 @@ import { useState } from 'react'
 import { Command } from '@cowprotocol/types'
 
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
-import { calculatePrice, formatSmart, invertPrice, safeTokenName, TokenErc20 } from '@gnosis.pm/dex-js'
+import { safeTokenName, TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import Icon from 'components/Icon'
 
-import {
-  HIGH_PRECISION_DECIMALS,
-  HIGH_PRECISION_SMALL_LIMIT,
-  NO_ADJUSTMENT_NEEDED_PRECISION,
-} from '../../../explorer/const'
+import { getLimitPrice } from 'utils/getLimitPrice'
 
 export type OrderPriceDisplayProps = {
-  buyAmount: string | BigNumber
+  buyAmount: BigNumber
   buyToken: TokenErc20
-  sellAmount: string | BigNumber
+  sellAmount: BigNumber
   sellToken: TokenErc20
   isPriceInverted?: boolean
   invertPrice?: Command
@@ -40,26 +36,23 @@ export function OrderPriceDisplay(props: Readonly<OrderPriceDisplayProps>): Reac
   const isPriceInverted = parentIsInvertedPrice ?? innerIsPriceInverted
   const invert = parentInvertPrice ?? ((): void => setInnerIsPriceInverted((curr) => !curr))
 
-  const calculatedPrice = calculatePrice({
-    denominator: { amount: buyAmount, decimals: buyToken.decimals },
-    numerator: { amount: sellAmount, decimals: sellToken.decimals },
-  })
-  const displayPrice = (isPriceInverted ? invertPrice(calculatedPrice) : calculatedPrice).toString(10)
-  const formattedPrice = formatSmart({
-    amount: displayPrice,
-    precision: NO_ADJUSTMENT_NEEDED_PRECISION,
-    smallLimit: HIGH_PRECISION_SMALL_LIMIT,
-    decimals: HIGH_PRECISION_DECIMALS,
-  })
+  const limitPrice = getLimitPrice({
+    buyAmount,
+    buyToken,
+    sellAmount,
+    sellToken,
+  },
+    isPriceInverted || false,
+  )
 
   const buySymbol = safeTokenName(buyToken)
   const sellSymbol = safeTokenName(sellToken)
 
-  const [baseSymbol, quoteSymbol] = isPriceInverted ? [sellSymbol, buySymbol] : [buySymbol, sellSymbol]
+  const baseSymbol = isPriceInverted ? sellSymbol : buySymbol
 
   return (
     <>
-      {formattedPrice} {quoteSymbol} for {baseSymbol}{' '}
+      {limitPrice} for {baseSymbol}{' '}
       {showInvertButton && <Icon icon={faExchangeAlt} onClick={invert} />}
     </>
   )
