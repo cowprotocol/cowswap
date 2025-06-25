@@ -196,7 +196,6 @@ export function ActivityDetails(props: {
   const getShowCancellationModal = useCancelOrder()
 
   const isSwap = order && getUiOrderType(order) === UiOrderType.SWAP
-  const appData = !!order && order.fullAppData
 
   const { disableProgressBar } = useInjectedWidgetParams()
 
@@ -351,7 +350,6 @@ export function ActivityDetails(props: {
                   fulfillmentTime={fulfillmentTime}
                   isCustomRecipient={isCustomRecipient}
                   receiverEnsName={receiverEnsName}
-                  appData={appData}
                 />
               ) : (
                 // Regular order layout
@@ -411,8 +409,8 @@ export function ActivityDetails(props: {
                       </i>
                     </SummaryInnerRow>
                   )}
-                  {appData && (
-                    <OrderHooksDetails appData={appData} margin="10px 0 0">
+                  {fullAppData && (
+                    <OrderHooksDetails appData={fullAppData} margin="10px 0 0">
                       {(children) => (
                         <SummaryInnerRow>
                           <b>Hooks</b>

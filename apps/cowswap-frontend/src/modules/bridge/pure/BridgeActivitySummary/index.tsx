@@ -28,7 +28,6 @@ interface BridgeActivitySummaryProps {
   fulfillmentTime?: string
   isCustomRecipient?: boolean
   receiverEnsName?: string | null
-  appData?: string | false | null
 }
 
 interface StepDetailsProps {
@@ -45,7 +44,7 @@ interface StepDetailsProps {
   order: Order
 }
 
-const SwapStepRow = memo(function SwapStepRow({
+function SwapStepRow({
   swapResultContext,
   bridgeProvider,
   sourceAmounts,
@@ -82,7 +81,7 @@ const SwapStepRow = memo(function SwapStepRow({
       </StepContent>
     </SwapSummaryRow>
   )
-})
+}
 
 const BridgeStepRow = memo(function BridgeStepRow({
   bridgeProvider,
@@ -183,9 +182,9 @@ const BridgeMetaDetails = memo(function BridgeMetaDetails({
   sourceToken,
   fulfillmentTime,
   isCustomRecipient,
-  appData,
   quoteBridgeContext,
   targetToken,
+  order,
 }: {
   surplusAmount: SwapAndBridgeContext['swapResultContext']['surplusAmount']
   surplusAmountUsd: SwapAndBridgeContext['swapResultContext']['surplusAmountUsd']
@@ -194,7 +193,6 @@ const BridgeMetaDetails = memo(function BridgeMetaDetails({
   order: Order
   isCustomRecipient?: boolean
   receiverEnsName?: string | null
-  appData?: string | false | null
   quoteBridgeContext?: SwapAndBridgeContext['quoteBridgeContext']
   targetToken: Currency
 }): ReactNode {
@@ -238,8 +236,8 @@ const BridgeMetaDetails = memo(function BridgeMetaDetails({
       )}
 
       {/* Hooks Section */}
-      {appData && (
-        <OrderHooksDetails appData={appData} margin="10px 0 0">
+      {order.apiAdditionalInfo?.fullAppData && (
+        <OrderHooksDetails appData={order.apiAdditionalInfo?.fullAppData} margin="10px 0 0">
           {(children) => (
             <SummaryRow>
               <b>Hooks</b>
@@ -299,12 +297,10 @@ const BridgeSummaryHeader = memo(function BridgeSummaryHeader({
 const BridgeLoadingState = memo(function BridgeLoadingState({
   order,
   fulfillmentTime,
-  appData,
   isCustomRecipient,
 }: {
   order: Order
   fulfillmentTime?: string
-  appData?: string | false | null
   isCustomRecipient?: boolean
 }): ReactNode {
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
@@ -357,8 +353,8 @@ const BridgeLoadingState = memo(function BridgeLoadingState({
           </i>
         </SummaryRow>
       )}
-      {appData && (
-        <OrderHooksDetails appData={appData} margin="10px 0 0">
+      {order.apiAdditionalInfo?.fullAppData && (
+        <OrderHooksDetails appData={order.apiAdditionalInfo?.fullAppData} margin="10px 0 0">
           {(children) => (
             <SummaryRow>
               <b>Hooks</b>
@@ -372,7 +368,7 @@ const BridgeLoadingState = memo(function BridgeLoadingState({
 })
 
 export function BridgeActivitySummary(props: BridgeActivitySummaryProps): ReactNode {
-  const { context, order, fulfillmentTime, isCustomRecipient, receiverEnsName, appData } = props
+  const { context, order, fulfillmentTime, isCustomRecipient, receiverEnsName } = props
 
   // Show loading state if we don't have complete bridge data yet
   if (!context || !order || !context?.overview || !context?.swapResultContext) {
@@ -381,14 +377,7 @@ export function BridgeActivitySummary(props: BridgeActivitySummaryProps): ReactN
       return null
     }
 
-    return (
-      <BridgeLoadingState
-        order={order}
-        fulfillmentTime={fulfillmentTime}
-        appData={appData}
-        isCustomRecipient={isCustomRecipient}
-      />
-    )
+    return <BridgeLoadingState order={order} fulfillmentTime={fulfillmentTime} isCustomRecipient={isCustomRecipient} />
   }
 
   // Additional validation for required data
@@ -396,14 +385,7 @@ export function BridgeActivitySummary(props: BridgeActivitySummaryProps): ReactN
   const { sourceAmounts, targetCurrency } = overview
 
   if (!sourceAmounts || !targetCurrency) {
-    return (
-      <BridgeLoadingState
-        order={order}
-        fulfillmentTime={fulfillmentTime}
-        appData={appData}
-        isCustomRecipient={isCustomRecipient}
-      />
-    )
+    return <BridgeLoadingState order={order} fulfillmentTime={fulfillmentTime} isCustomRecipient={isCustomRecipient} />
   }
 
   const { bridgeProvider, bridgingProgressContext, quoteBridgeContext, statusResult, bridgingStatus } = context
@@ -448,11 +430,9 @@ export function BridgeActivitySummary(props: BridgeActivitySummaryProps): ReactN
         order={order}
         isCustomRecipient={isCustomRecipient}
         receiverEnsName={receiverEnsName}
-        appData={appData}
         quoteBridgeContext={quoteBridgeContext}
         targetToken={targetToken}
       />
     </>
   )
 }
-export { SummaryRow } from './styled'
