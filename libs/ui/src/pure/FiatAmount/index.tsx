@@ -7,6 +7,8 @@ import { Fraction } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
+import { UI } from '../../enum'
+
 export interface FiatAmountProps {
   amount: Nullish<Fraction>
   accurate?: boolean
