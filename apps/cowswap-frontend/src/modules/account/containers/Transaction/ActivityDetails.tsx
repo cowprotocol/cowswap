@@ -10,12 +10,13 @@ import { BannerOrientation, ExternalLink, Icon, IconType, TokenAmount, UI } from
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
+import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { useToggleAccountModal } from 'modules/account'
-import { ProgressDetails, BridgeActivitySummary } from 'modules/bridge'
+import { BridgeActivitySummary } from 'modules/bridge'
 import { EthFlowStepper } from 'modules/ethFlow'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
@@ -215,7 +216,9 @@ export function ActivityDetails(props: {
   const swapAndBridgeContext = useSwapAndBridgeContext(chainId, order, undefined)
 
   // Early bridge order detection using chain ID comparison (available immediately)
-  const isBridgeOrder = !!order && order.inputToken.chainId !== order.outputToken.chainId
+  const fullAppData = order?.apiAdditionalInfo?.fullAppData
+  const orderBridgeProvider = fullAppData ? bridgingSdk.getProviderFromAppData(fullAppData) : undefined
+  const isBridgeOrder = !!orderBridgeProvider
 
   const showProgressBarCallback = useMemo(() => {
     if (!showProgressBar) {
@@ -341,9 +344,7 @@ export function ActivityDetails(props: {
           <b>{activityName}</b>
           {isOrder ? (
             <>
-              {isBridgeOrder && order?.kind === 'sell' ? (
-                // Bridge order layout - handles both loading and full context states
-                // TODO: Consider extending to BUY orders
+              {order && isBridgeOrder ? (
                 <BridgeActivitySummary
                   context={swapAndBridgeContext || null}
                   order={order}
@@ -382,7 +383,6 @@ export function ActivityDetails(props: {
                       </>
                     )}
                   </SummaryInnerRow>
-
                   {order && isCustomRecipient && (
                     <SummaryInnerRow>
                       <b>Recipient:</b>
@@ -398,7 +398,6 @@ export function ActivityDetails(props: {
                       </i>
                     </SummaryInnerRow>
                   )}
-
                   {surplusAmount?.greaterThan(0) && (
                     <SummaryInnerRow>
                       <b>Surplus</b>
@@ -412,7 +411,6 @@ export function ActivityDetails(props: {
                       </i>
                     </SummaryInnerRow>
                   )}
-
                   {appData && (
                     <OrderHooksDetails appData={appData} margin="10px 0 0">
                       {(children) => (
@@ -423,8 +421,6 @@ export function ActivityDetails(props: {
                       )}
                     </OrderHooksDetails>
                   )}
-
-                  {swapAndBridgeContext && <ProgressDetails context={swapAndBridgeContext} />}
                 </>
               )}
             </>
