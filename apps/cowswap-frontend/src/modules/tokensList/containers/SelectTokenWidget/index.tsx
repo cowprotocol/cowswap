@@ -49,6 +49,8 @@ const Wrapper = styled.div`
   }
 `
 
+const EMPTY_FAV_TOKENS: TokenWithLogo[] = []
+
 interface SelectTokenWidgetProps {
   displayLpTokenLists?: boolean
   standalone?: boolean
@@ -204,7 +206,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
             unsupportedTokens={unsupportedTokens}
             selectedToken={selectedToken}
             allTokens={allTokens}
-            favoriteTokens={favoriteTokens}
+            favoriteTokens={standalone ? EMPTY_FAV_TOKENS : favoriteTokens}
             balancesState={balancesState}
             permitCompatibleTokens={permitCompatibleTokens}
             onSelectToken={onSelectToken}
