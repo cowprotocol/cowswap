@@ -85,7 +85,7 @@ export function CoWShedWidget({ onDismiss, modalMode }: CoWShedWidgetProps): Rea
                 {isProxyDeployed && tokensToRefund?.length && (
                   <>
                     <br />
-                    <TokensInProxyBanner tokensToRefund={tokensToRefund} chainId={chainId} />
+                    <TokensInProxyBanner tokensToRefund={tokensToRefund} />
                   </>
                 )}
                 <CoWShedFAQ recoverRouteLink={getShedRouteLink(chainId, CoWShedWidgetTabs.RECOVER_FUNDS)} />
