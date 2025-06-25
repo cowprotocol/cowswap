@@ -308,6 +308,17 @@ export function ActivityDetails(props: {
 
   const isCustomRecipient = !!order && getIsCustomRecipient(order)
 
+  const hooksDetails = fullAppData ? (
+    <OrderHooksDetails appData={fullAppData} margin="10px 0 0">
+      {(children) => (
+        <SummaryInnerRow>
+          <b>Hooks</b>
+          <i>{children}</i>
+        </SummaryInnerRow>
+      )}
+    </OrderHooksDetails>
+  ) : null
+
   return (
     <>
       {/* Warning banner if custom recipient */}
@@ -350,7 +361,9 @@ export function ActivityDetails(props: {
                   fulfillmentTime={fulfillmentTime}
                   isCustomRecipient={isCustomRecipient}
                   receiverEnsName={receiverEnsName}
-                />
+                >
+                  {hooksDetails}
+                </BridgeActivitySummary>
               ) : (
                 // Regular order layout
                 <>
@@ -409,16 +422,7 @@ export function ActivityDetails(props: {
                       </i>
                     </SummaryInnerRow>
                   )}
-                  {fullAppData && (
-                    <OrderHooksDetails appData={fullAppData} margin="10px 0 0">
-                      {(children) => (
-                        <SummaryInnerRow>
-                          <b>Hooks</b>
-                          <i>{children}</i>
-                        </SummaryInnerRow>
-                      )}
-                    </OrderHooksDetails>
-                  )}
+                  {hooksDetails}
                 </>
               )}
             </>

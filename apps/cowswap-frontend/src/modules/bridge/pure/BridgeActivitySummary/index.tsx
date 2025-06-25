@@ -25,6 +25,7 @@ import { BridgeStatusIcons, SwapStatusIcons } from '../StopStatus'
 interface BridgeActivitySummaryProps {
   context: SwapAndBridgeContext | null
   order: Order
+  children: ReactNode
   fulfillmentTime?: string
   isCustomRecipient?: boolean
   receiverEnsName?: string | null
@@ -234,18 +235,6 @@ const BridgeMetaDetails = memo(function BridgeMetaDetails({
           </i>
         </SummaryRow>
       )}
-
-      {/* Hooks Section */}
-      {order.apiAdditionalInfo?.fullAppData && (
-        <OrderHooksDetails appData={order.apiAdditionalInfo?.fullAppData} margin="10px 0 0">
-          {(children) => (
-            <SummaryRow>
-              <b>Hooks</b>
-              <i>{children}</i>
-            </SummaryRow>
-          )}
-        </OrderHooksDetails>
-      )}
     </>
   )
 })
@@ -368,7 +357,7 @@ const BridgeLoadingState = memo(function BridgeLoadingState({
 })
 
 export function BridgeActivitySummary(props: BridgeActivitySummaryProps): ReactNode {
-  const { context, order, fulfillmentTime, isCustomRecipient, receiverEnsName } = props
+  const { context, order, fulfillmentTime, isCustomRecipient, receiverEnsName, children } = props
 
   // Show loading state if we don't have complete bridge data yet
   if (!context || !order || !context?.overview || !context?.swapResultContext) {
@@ -433,6 +422,8 @@ export function BridgeActivitySummary(props: BridgeActivitySummaryProps): ReactN
         quoteBridgeContext={quoteBridgeContext}
         targetToken={targetToken}
       />
+
+      {children}
     </>
   )
 }
