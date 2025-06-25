@@ -56,6 +56,7 @@ export function usePriorityTokenAddresses(): Set<string> {
     const prev = setOfTokensRef.current
     const next = newSetOfTokens
 
+    // if some of the orders was filled, we need to update balances
     const pendingCount = Object.keys(pending || {}).length
     if (pendingCount != pendingRef.current) {
       pendingRef.current = pendingCount
@@ -63,6 +64,7 @@ export function usePriorityTokenAddresses(): Set<string> {
       return
     }
 
+    // we don't need to push updating of the balances if the set of tokens is the same (f.e. user reverse tokens on swap form)
     if (!areSetsEqual(prev, next)) {
       setOfTokensRef.current = next
     }
