@@ -1,16 +1,15 @@
 import { TokenLogo as TokenLogoOriginal } from '@cowprotocol/tokens'
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled, { DefaultTheme } from 'styled-components/macro'
 
 import { BridgingFlowStep } from '../../types'
 
-export const stepColors: Record<
-  BridgingFlowStep,
-  { background: string; title: string; icon: string; iconBackground: string }
-> = {
+export const getStepColors = (
+  theme: DefaultTheme,
+): Record<BridgingFlowStep, { background: string; title: string; icon: string; iconBackground: string }> => ({
   bridgingInProgress: {
-    background: UI.COLOR_BLUE_100_PRIMARY,
+    background: theme.darkMode ? UI.COLOR_INFO_BG : UI.COLOR_BLUE_100_PRIMARY,
     title: UI.COLOR_BLUE_900_PRIMARY,
     icon: UI.COLOR_BLUE_500_PRIMARY,
     iconBackground: UI.COLOR_BLUE_200_PRIMARY,
@@ -33,7 +32,7 @@ export const stepColors: Record<
     icon: UI.COLOR_SUCCESS,
     iconBackground: UI.COLOR_SUCCESS_BG,
   },
-}
+})
 
 export const Header = styled.div<{ $step: BridgingFlowStep }>`
   display: flex;
@@ -41,8 +40,8 @@ export const Header = styled.div<{ $step: BridgingFlowStep }>`
   align-items: center;
   justify-content: center;
   gap: 20px;
-  background: var(${({ $step }) => stepColors[$step].background});
-  color: var(${({ $step }) => stepColors[$step].title});
+  background: var(${({ $step, theme }) => getStepColors(theme)[$step].background});
+  color: var(${({ $step, theme }) => getStepColors(theme)[$step].title});
   width: 100%;
   border-radius: 16px;
   text-align: center;
@@ -78,7 +77,7 @@ export const TokenLogo = styled(TokenLogoOriginal)<{ $step: BridgingFlowStep; $t
     display: block;
     width: var(--size);
     height: ${CONNECTOR_HEIGHT};
-    background: var(${({ $step }) => stepColors[$step].iconBackground});
+    background: var(${({ $step, theme }) => getStepColors(theme)[$step].iconBackground});
     position: absolute;
   }
 
@@ -104,8 +103,8 @@ export const StatusIcon = styled.div<{ $step: BridgingFlowStep }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(${({ $step }) => stepColors[$step].iconBackground});
-  color: var(${({ $step }) => stepColors[$step].icon});
+  background: var(${({ $step, theme }) => getStepColors(theme)[$step].iconBackground});
+  color: var(${({ $step, theme }) => getStepColors(theme)[$step].icon});
   border-radius: var(--iconSize);
   width: var(--iconSize);
   height: var(--iconSize);
@@ -115,5 +114,9 @@ export const StatusIcon = styled.div<{ $step: BridgingFlowStep }>`
     height: 100%;
     padding: ${({ $step }) => ($step === 'bridgingInProgress' ? '10%' : '18%')};
     color: currentColor;
+  }
+
+  > svg > path {
+    fill: currentColor;
   }
 `

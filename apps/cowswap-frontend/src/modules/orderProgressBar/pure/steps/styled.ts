@@ -208,7 +208,7 @@ export const CountdownText = styled.div<{ $shouldPulse?: boolean }>`
   font-family: ${Font.familyMono};
   font-size: 68px;
   font-weight: bold;
-  color: var(${UI.COLOR_TEXT});
+  color: var(${UI.COLOR_TEXT_PAPER});
   z-index: 1;
   font-variant-numeric: slashed-zero;
   letter-spacing: -3px;
