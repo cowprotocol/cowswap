@@ -8,7 +8,7 @@ import { useHooksStateWithSimulatedGas } from 'entities/orderHooks/useHooksState
 import { ChevronDown, ChevronUp } from 'react-feather'
 
 import { AppDataInfo, decodeAppData } from 'modules/appData'
-import { useCustomHookDapps } from 'modules/hooksStore'
+import { useCustomHookDapps } from 'modules/hooksStore/hooks/useCustomHookDapps'
 import { useTenderlyBundleSimulation } from 'modules/tenderly/hooks/useTenderlyBundleSimulation'
 
 import { HookItem } from './HookItem'
