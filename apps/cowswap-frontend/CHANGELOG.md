@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.110.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.109.0...cowswap-v1.110.0) (2025-06-20)
+
+
+### Features
+
+* account shows banner is COW token is unavaillable ([#5833](https://github.com/cowprotocol/cowswap/issues/5833)) ([b553228](https://github.com/cowprotocol/cowswap/commit/b55322899161785076f95ee420a1b796661a1e52))
+* **auto-slippage:** apply auto slippage for ETH flow ([#5836](https://github.com/cowprotocol/cowswap/issues/5836)) ([5bd3807](https://github.com/cowprotocol/cowswap/commit/5bd38079e73380ee489727bcaff0614b89e24439))
+
 ## [1.109.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.108.2...cowswap-v1.109.0) (2025-06-18)
 
 

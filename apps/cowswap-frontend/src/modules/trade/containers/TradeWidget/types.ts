@@ -28,6 +28,7 @@ interface TradeWidgetParams {
   isMarketOrderWidget?: boolean
   displayTokenName?: boolean
   displayChainName?: boolean
+  isPriceStatic?: boolean
   customSelectTokenButton?: ReactNode
 }
 
