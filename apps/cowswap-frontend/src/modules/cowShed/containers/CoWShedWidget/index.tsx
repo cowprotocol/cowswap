@@ -1,7 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef } from 'react'
 
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
-import { getEtherscanLink } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useSetBalancesContext } from 'entities/balancesContext/useBalancesContext'
@@ -57,7 +56,6 @@ export function CoWShedWidget({ onDismiss, modalMode }: CoWShedWidgetProps): Rea
 
   useOnClickOutside([widgetRef], onDismissCallback)
 
-  const explorerLink = proxyAddress ? getEtherscanLink(chainId, 'address', proxyAddress) : undefined
   const Wrapper = modalMode ? ModalWrapper : EmptyWrapper
 
   return (
@@ -89,10 +87,7 @@ export function CoWShedWidget({ onDismiss, modalMode }: CoWShedWidgetProps): Rea
                     <TokensInProxyBanner token={defaultTokenToRefund.token} chainId={chainId} />
                   </>
                 )}
-                <CoWShedFAQ
-                  explorerLink={explorerLink}
-                  recoverRouteLink={getShedRouteLink(chainId, CoWShedWidgetTabs.RECOVER_FUNDS)}
-                />
+                <CoWShedFAQ recoverRouteLink={getShedRouteLink(chainId, CoWShedWidgetTabs.RECOVER_FUNDS)} />
               </>
             }
             recoverFundsContent={

@@ -9,61 +9,54 @@ import { Link } from 'react-router'
 
 import { FAQItem, FAQWrapper } from '../containers/CoWShedWidget/styled'
 
-interface CoWShedFAQProps {
-  recoverRouteLink: string
-  explorerLink: string | undefined
-}
-
-export function CoWShedFAQ({ explorerLink, recoverRouteLink }: CoWShedFAQProps): ReactNode {
-  const [openItems, setOpenItems] = useState<Record<number, boolean>>({ 0: true })
-
-  const handleToggle = (index: number) => (e: React.MouseEvent) => {
-    e.preventDefault()
-    setOpenItems((prev) => ({ ...prev, [index]: !prev[index] }))
-  }
-
-  const FAQ_DATA = [
-    {
-      question: 'What is Account Proxy?',
-      answer: (
-        <>
-          <ExternalLink href="https://github.com/cowdao-grants/cow-shed">Account Proxy aka CoW Shed</ExternalLink> is a
-          helper contract that enhances user experience inside CoW Swap for features like{' '}
-          <ExternalLink href="https://docs.cow.fi/cow-protocol/reference/core/intents/hooks">CoW Hooks</ExternalLink>
-          .
-          <br />
-          <br />
-          This contract is deployed only once per account. This account becomes the only owner. CoW Shed will act as an
-          intermediary account who will do the trading on your behalf.
-          <br />
-          <br />
-          Because this contract holds the funds temporarily, it's possible the funds are stuck in some edge cases. This
-          tool will help you recover your funds.
-        </>
-      ),
-    },
-    {
-      question: 'How do I recover my funds from CoW Shed?',
-      answer: (
+const FAQ_DATA = [
+  {
+    question: 'What is Account Proxy?',
+    answer: (
+      <>
+        <ExternalLink href="https://github.com/cowdao-grants/cow-shed">Account Proxy aka CoW Shed</ExternalLink> is a
+        helper contract that enhances user experience inside CoW Swap for features like{' '}
+        <ExternalLink href="https://docs.cow.fi/cow-protocol/reference/core/intents/hooks">CoW Hooks</ExternalLink>
+        .
+        <br />
+        <br />
+        This contract is deployed only once per account. This account becomes the only owner. CoW Shed will act as an
+        intermediary account who will do the trading on your behalf.
+        <br />
+        <br />
+        Because this contract holds the funds temporarily, it's possible the funds are stuck in some edge cases. This
+        tool will help you recover your funds.
+      </>
+    ),
+  },
+  {
+    question: 'How do I recover my funds from CoW Shed?',
+    answer(recoverRouteLink: string) {
+      return (
         <>
           <ol>
-            <li>
-              {explorerLink ? (
-                <ExternalLink href={explorerLink}>Check in the block explorer</ExternalLink>
-              ) : (
-                'Check in block explorer'
-              )}{' '}
-              if your own CoW Shed has any token
-            </li>
             <li>
               <Link to={recoverRouteLink}>Select the token</Link> you want to recover from CoW Shed
             </li>
             <li>Recover!</li>
           </ol>
         </>
-      ),
+      )
     },
-  ]
+  },
+]
+
+interface CoWShedFAQProps {
+  recoverRouteLink: string
+}
+
+export function CoWShedFAQ({ recoverRouteLink }: CoWShedFAQProps): ReactNode {
+  const [openItems, setOpenItems] = useState<Record<number, boolean>>({ 0: true })
+
+  const handleToggle = (index: number) => (e: React.MouseEvent) => {
+    e.preventDefault()
+    setOpenItems((prev) => ({ ...prev, [index]: !prev[index] }))
+  }
 
   return (
     <FAQWrapper>
@@ -75,7 +68,9 @@ export function CoWShedFAQ({ explorerLink, recoverRouteLink }: CoWShedFAQProps):
               <SVG src={openItems[index] ? IMG_ICON_MINUS : IMG_ICON_PLUS} />
             </i>
           </summary>
-          {openItems[index] && <div>{faq.answer}</div>}
+          {openItems[index] && (
+            <div>{typeof faq.answer === 'function' ? faq.answer(recoverRouteLink) : faq.answer}</div>
+          )}
         </FAQItem>
       ))}
     </FAQWrapper>

@@ -373,7 +373,7 @@ export function ActivityDetails(props: {
               {orderReceiver && isCustomRecipient && (
                 <SummaryInnerRow>
                   <b>Recipient:</b>
-                  {orderReceiver.toLowerCase() === cowShedAddress?.toLowerCase() ? (
+                  {cowShedAddress && orderReceiver.toLowerCase() === cowShedAddress.toLowerCase() ? (
                     <CowShedInfo onClick={closeAccountModal} />
                   ) : (
                     <i>
