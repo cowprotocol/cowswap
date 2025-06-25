@@ -14,7 +14,8 @@ import { cowShedModalAtom } from '../../state/cowShedModalAtom'
 import { CoWShedWidget } from '../CoWShedWidget'
 
 const TooltipWrapper = styled.div`
-  max-width: 320px;
+  min-width: 300px;
+  max-width: 360px;
   padding: 10px;
 
   > p {
@@ -35,16 +36,18 @@ const Wrapper = styled.div`
 
 interface TooltipProps {
   chainId: number
-  account: string
+  proxyAddress: string
   onReadMore(): void
 }
 
-function Tooltip({ account, chainId, onReadMore }: TooltipProps): ReactNode {
+function Tooltip({ proxyAddress, chainId, onReadMore }: TooltipProps): ReactNode {
   return (
     <TooltipWrapper>
       <p>
-        Funds will be handled by a smart contract that is owned and fully controlled by your account (
-        <AddressLink address={account} chainId={chainId} />)
+        Funds will be handled by a smart contract that is owned and fully controlled by your account:
+        <br />
+        <br />
+        <AddressLink address={proxyAddress} chainId={chainId} noShorten />
       </p>
       <ButtonSecondary onClick={onReadMore}>Read more</ButtonSecondary>
     </TooltipWrapper>
@@ -70,7 +73,7 @@ export function ProxyRecipient({ recipient, chainId, size = 14 }: ProxyRecipient
 
   if (!recipient || !proxyAndAccount) return null
 
-  const { proxyAddress, account } = proxyAndAccount
+  const { proxyAddress } = proxyAndAccount
 
   if (recipient.toLowerCase() !== proxyAddress.toLowerCase()) {
     throw new Error(
@@ -78,7 +81,7 @@ export function ProxyRecipient({ recipient, chainId, size = 14 }: ProxyRecipient
     )
   }
 
-  const tooltipContent = <Tooltip account={account} chainId={chainId} onReadMore={toggleModal} />
+  const tooltipContent = <Tooltip proxyAddress={proxyAddress} chainId={chainId} onReadMore={toggleModal} />
 
   return (
     <>

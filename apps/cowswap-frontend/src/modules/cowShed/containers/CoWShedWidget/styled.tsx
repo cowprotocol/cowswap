@@ -41,7 +41,7 @@ export const WidgetWrapper = styled.div`
 export const AddressLinkStyled = styled(AddressLink)`
   color: inherit;
   width: 100%;
-  font-size: 100%;
+  font-size: 14px;
   background: var(${UI.COLOR_PAPER});
   border-radius: 16px;
   padding: 10px;
